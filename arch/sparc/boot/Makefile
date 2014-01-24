@@ -6,12 +6,18 @@
 ROOT_IMG	:= /usr/src/root.img
 ELFTOAOUT	:= elftoaout
 <<<<<<< HEAD
+<<<<<<< HEAD
 MKIMAGE 	:= $(srctree)/scripts/mkuboot.sh
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 
 hostprogs-y	:= piggyback btfixupprep
 targets		:= tftpboot.img btfix.o btfix.S image zImage vmlinux.aout
+=======
+
+hostprogs-y	:= piggyback
+targets		:= tftpboot.img image zImage vmlinux.aout
+>>>>>>> refs/remotes/origin/master
 clean-files	:= System.map
 
 quiet_cmd_elftoaout	= ELFTOAOUT $@
@@ -21,6 +27,7 @@ quiet_cmd_piggy		= PIGGY   $@
 quiet_cmd_strip		= STRIP   $@
       cmd_strip		= $(STRIP) -R .comment -R .note -K sun4u_init -K _end -K _start $< -o $@
 
+<<<<<<< HEAD
 ifeq ($(CONFIG_SPARC32),y)
 quiet_cmd_btfix		= BTFIX   $@
       cmd_btfix		= $(OBJDUMP) -x vmlinux | $(obj)/btfixupprep > $@
@@ -73,6 +80,11 @@ ifeq ($(CONFIG_SPARC64),y)
 $(obj)/image: vmlinux FORCE
 	$(call if_changed,strip)
 	@echo '  kernel: $@ is ready'
+=======
+ifeq ($(CONFIG_SPARC64),y)
+
+# Actual linking
+>>>>>>> refs/remotes/origin/master
 
 $(obj)/zImage: $(obj)/image
 	$(call if_changed,gzip)
@@ -83,6 +95,13 @@ $(obj)/vmlinux.aout: vmlinux FORCE
 	@echo '  kernel: $@ is ready'
 else
 
+<<<<<<< HEAD
+=======
+$(obj)/zImage: $(obj)/image
+	$(call if_changed,strip)
+	@echo '  kernel: $@ is ready'
+
+>>>>>>> refs/remotes/origin/master
 # The following lines make a readable image for U-Boot.
 #  uImage   - Binary file read by U-boot
 #  uImage.o - object file of uImage for loading with a
@@ -96,6 +115,7 @@ $(obj)/image.gz: $(obj)/image.bin
 	$(call if_changed,gzip)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 quiet_cmd_uimage = UIMAGE  $@
       cmd_uimage = $(CONFIG_SHELL) $(MKIMAGE) -A sparc -O linux -T kernel \
                -C gzip -a $(CONFIG_UBOOT_LOAD_ADDR) \
@@ -106,6 +126,11 @@ UIMAGE_LOADADDR = $(CONFIG_UBOOT_LOAD_ADDR)
 UIMAGE_ENTRYADDR = $(CONFIG_UBOOT_ENTRY_ADDR)
 UIMAGE_COMPRESSION = gzip
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+UIMAGE_LOADADDR = $(CONFIG_UBOOT_LOAD_ADDR)
+UIMAGE_ENTRYADDR = $(CONFIG_UBOOT_ENTRY_ADDR)
+UIMAGE_COMPRESSION = gzip
+>>>>>>> refs/remotes/origin/master
 
 quiet_cmd_uimage.o = UIMAGE.O $@
       cmd_uimage.o = $(LD) -Tdata $(CONFIG_UBOOT_FLASH_ADDR) \
@@ -119,6 +144,13 @@ $(obj)/uImage: $(obj)/image.gz
 
 endif
 
+<<<<<<< HEAD
+=======
+$(obj)/image: vmlinux FORCE
+	$(call if_changed,strip)
+	@echo '  kernel: $@ is ready'
+
+>>>>>>> refs/remotes/origin/master
 $(obj)/tftpboot.img: $(obj)/image $(obj)/piggyback System.map $(ROOT_IMG) FORCE
 	$(call if_changed,elftoaout)
 	$(call if_changed,piggy)

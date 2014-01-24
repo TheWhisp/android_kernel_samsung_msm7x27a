@@ -21,6 +21,7 @@
 #define MCLK1_RATE (44100 * 512)
 #define CLKOUT_RATE (44100 * 256)
 
+<<<<<<< HEAD
 static int lowland_hw_params(struct snd_pcm_substream *substream,
 			     struct snd_pcm_hw_params *params)
 {
@@ -48,6 +49,8 @@ static struct snd_soc_ops lowland_ops = {
 	.hw_params = lowland_hw_params,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct snd_soc_jack lowland_headset;
 
 /* Headset jack detection DAPM pins */
@@ -101,15 +104,44 @@ static int lowland_wm5100_init(struct snd_soc_pcm_runtime *rtd)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int lowland_wm9081_init(struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_soc_codec *codec = rtd->codec;
+
+	snd_soc_dapm_nc_pin(&codec->dapm, "LINEOUT");
+
+	/* At any time the WM9081 is active it will have this clock */
+	return snd_soc_codec_set_sysclk(codec, WM9081_SYSCLK_MCLK, 0,
+					CLKOUT_RATE, 0);
+}
+
+static const struct snd_soc_pcm_stream sub_params = {
+	.formats = SNDRV_PCM_FMTBIT_S32_LE,
+	.rate_min = 44100,
+	.rate_max = 44100,
+	.channels_min = 2,
+	.channels_max = 2,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct snd_soc_dai_link lowland_dai[] = {
 	{
 		.name = "CPU",
 		.stream_name = "CPU",
 		.cpu_dai_name = "samsung-i2s.0",
 		.codec_dai_name = "wm5100-aif1",
+<<<<<<< HEAD
 		.platform_name = "samsung-audio",
 		.codec_name = "wm5100.1-001a",
 		.ops = &lowland_ops,
+=======
+		.platform_name = "samsung-i2s.0",
+		.codec_name = "wm5100.1-001a",
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+				SND_SOC_DAIFMT_CBM_CFM,
+>>>>>>> refs/remotes/origin/master
 		.init = lowland_wm5100_init,
 	},
 	{
@@ -118,6 +150,7 @@ static struct snd_soc_dai_link lowland_dai[] = {
 		.cpu_dai_name = "wm5100-aif2",
 		.codec_dai_name = "wm1250-ev1",
 		.codec_name = "wm1250-ev1.1-0027",
+<<<<<<< HEAD
 		.ops = &lowland_ops,
 		.ignore_suspend = 1,
 	},
@@ -136,6 +169,22 @@ static struct snd_soc_aux_dev lowland_aux_dev[] = {
 	{
 		.name = "wm9081",
 		.codec_name = "wm9081.1-006c",
+=======
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+				SND_SOC_DAIFMT_CBM_CFM,
+		.ignore_suspend = 1,
+	},
+	{
+		.name = "Sub Speaker",
+		.stream_name = "Sub Speaker",
+		.cpu_dai_name = "wm5100-aif3",
+		.codec_dai_name = "wm9081-hifi",
+		.codec_name = "wm9081.1-006c",
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+				SND_SOC_DAIFMT_CBM_CFM,
+		.ignore_suspend = 1,
+		.params = &sub_params,
+>>>>>>> refs/remotes/origin/master
 		.init = lowland_wm9081_init,
 	},
 };
@@ -180,8 +229,11 @@ static struct snd_soc_card lowland = {
 	.owner = THIS_MODULE,
 	.dai_link = lowland_dai,
 	.num_links = ARRAY_SIZE(lowland_dai),
+<<<<<<< HEAD
 	.aux_dev = lowland_aux_dev,
 	.num_aux_devs = ARRAY_SIZE(lowland_aux_dev),
+=======
+>>>>>>> refs/remotes/origin/master
 	.codec_conf = lowland_codec_conf,
 	.num_configs = ARRAY_SIZE(lowland_codec_conf),
 
@@ -193,7 +245,11 @@ static struct snd_soc_card lowland = {
 	.num_dapm_routes = ARRAY_SIZE(audio_paths),
 };
 
+<<<<<<< HEAD
 static __devinit int lowland_probe(struct platform_device *pdev)
+=======
+static int lowland_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = &lowland;
 	int ret;
@@ -210,7 +266,11 @@ static __devinit int lowland_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit lowland_remove(struct platform_device *pdev)
+=======
+static int lowland_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = platform_get_drvdata(pdev);
 
@@ -226,7 +286,11 @@ static struct platform_driver lowland_driver = {
 		.pm = &snd_soc_pm_ops,
 	},
 	.probe = lowland_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(lowland_remove),
+=======
+	.remove = lowland_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 module_platform_driver(lowland_driver);

@@ -20,6 +20,11 @@
  * Copyright (C) 2007-2008 Marvell Semiconductor
  *			   Lennert Buytenhek <buytenh@marvell.com>
  *
+<<<<<<< HEAD
+=======
+ * Copyright (C) 2013 Michael Stapelberg <michael@stapelberg.de>
+ *
+>>>>>>> refs/remotes/origin/master
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -54,9 +59,20 @@
 #include <linux/phy.h>
 #include <linux/mv643xx_eth.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/inet_lro.h>
 #include <linux/slab.h>
+=======
+#include <linux/interrupt.h>
+#include <linux/types.h>
+#include <linux/slab.h>
+#include <linux/clk.h>
+#include <linux/of.h>
+#include <linux/of_irq.h>
+#include <linux/of_net.h>
+#include <linux/of_mdio.h>
+>>>>>>> refs/remotes/origin/master
 
 static char mv643xx_eth_driver_name[] = "mv643xx_eth";
 static char mv643xx_eth_driver_version[] = "1.4";
@@ -66,6 +82,7 @@ static char mv643xx_eth_driver_version[] = "1.4";
  * Registers shared between all ports.
  */
 #define PHY_ADDR			0x0000
+<<<<<<< HEAD
 #define SMI_REG				0x0004
 #define  SMI_BUSY			0x10000000
 #define  SMI_READ_VALID			0x08000000
@@ -74,6 +91,8 @@ static char mv643xx_eth_driver_version[] = "1.4";
 #define ERR_INT_CAUSE			0x0080
 #define  ERR_INT_SMI_DONE		0x00000010
 #define ERR_INT_MASK			0x0084
+=======
+>>>>>>> refs/remotes/origin/master
 #define WINDOW_BASE(w)			(0x0200 + ((w) << 3))
 #define WINDOW_SIZE(w)			(0x0204 + ((w) << 3))
 #define WINDOW_REMAP_HIGH(w)		(0x0280 + ((w) << 2))
@@ -120,6 +139,11 @@ static char mv643xx_eth_driver_version[] = "1.4";
 #define  LINK_UP			0x00000002
 #define TXQ_COMMAND			0x0048
 #define TXQ_FIX_PRIO_CONF		0x004c
+<<<<<<< HEAD
+=======
+#define PORT_SERIAL_CONTROL1		0x004c
+#define  CLK125_BYPASS_EN		0x00000010
+>>>>>>> refs/remotes/origin/master
 #define TX_BW_RATE			0x0050
 #define TX_BW_MTU			0x0058
 #define TX_BW_BURST			0x005c
@@ -263,6 +287,7 @@ struct mv643xx_eth_shared_private {
 	void __iomem *base;
 
 	/*
+<<<<<<< HEAD
 	 * Points at the right SMI instance to use.
 	 */
 	struct mv643xx_eth_shared_private *smi;
@@ -282,6 +307,8 @@ struct mv643xx_eth_shared_private {
 	wait_queue_head_t smi_busy_wait;
 
 	/*
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Per-port MBUS window access register value.
 	 */
 	u32 win_protect;
@@ -289,10 +316,17 @@ struct mv643xx_eth_shared_private {
 	/*
 	 * Hardware-specific parameters.
 	 */
+<<<<<<< HEAD
 	unsigned int t_clk;
 	int extended_rx_coal_limit;
 	int tx_bw_control;
 	int tx_csum_limit;
+=======
+	int extended_rx_coal_limit;
+	int tx_bw_control;
+	int tx_csum_limit;
+	struct clk *clk;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define TX_BW_CONTROL_ABSENT		0
@@ -340,12 +374,15 @@ struct mib_counters {
 	u32 rx_overrun;
 };
 
+<<<<<<< HEAD
 struct lro_counters {
 	u32 lro_aggregated;
 	u32 lro_flushed;
 	u32 lro_no_desc;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct rx_queue {
 	int index;
 
@@ -359,9 +396,12 @@ struct rx_queue {
 	dma_addr_t rx_desc_dma;
 	int rx_desc_area_size;
 	struct sk_buff **rx_skb;
+<<<<<<< HEAD
 
 	struct net_lro_mgr lro_mgr;
 	struct net_lro_desc lro_arr[8];
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct tx_queue {
@@ -397,8 +437,11 @@ struct mv643xx_eth_private {
 	spinlock_t mib_counters_lock;
 	struct mib_counters mib_counters;
 
+<<<<<<< HEAD
 	struct lro_counters lro_counters;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	struct work_struct tx_timeout_task;
 
 	struct napi_struct napi;
@@ -411,7 +454,10 @@ struct mv643xx_eth_private {
 	u8 work_rx_refill;
 
 	int skb_size;
+<<<<<<< HEAD
 	struct sk_buff_head rx_recycle;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * RX state.
@@ -431,6 +477,15 @@ struct mv643xx_eth_private {
 	int tx_desc_sram_size;
 	int txq_count;
 	struct tx_queue txq[8];
+<<<<<<< HEAD
+=======
+
+	/*
+	 * Hardware-specific parameters.
+	 */
+	struct clk *clk;
+	unsigned int t_clk;
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -522,6 +577,7 @@ static void txq_maybe_wake(struct tx_queue *txq)
 	}
 }
 
+<<<<<<< HEAD
 
 /* rx napi ******************************************************************/
 static int
@@ -550,14 +606,21 @@ mv643xx_get_skb_header(struct sk_buff *skb, void **iphdr, void **tcph,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int rxq_process(struct rx_queue *rxq, int budget)
 {
 	struct mv643xx_eth_private *mp = rxq_to_mp(rxq);
 	struct net_device_stats *stats = &mp->dev->stats;
+<<<<<<< HEAD
 	int lro_flush_needed;
 	int rx;
 
 	lro_flush_needed = 0;
+=======
+	int rx;
+
+>>>>>>> refs/remotes/origin/master
 	rx = 0;
 	while (rx < budget && rxq->rx_desc_count) {
 		struct rx_desc *rx_desc;
@@ -618,12 +681,16 @@ static int rxq_process(struct rx_queue *rxq, int budget)
 			skb->ip_summed = CHECKSUM_UNNECESSARY;
 		skb->protocol = eth_type_trans(skb, mp->dev);
 
+<<<<<<< HEAD
 		if (skb->dev->features & NETIF_F_LRO &&
 		    skb->ip_summed == CHECKSUM_UNNECESSARY) {
 			lro_receive_skb(&rxq->lro_mgr, skb, (void *)cmd_sts);
 			lro_flush_needed = 1;
 		} else
 			netif_receive_skb(skb);
+=======
+		napi_gro_receive(&mp->napi, skb);
+>>>>>>> refs/remotes/origin/master
 
 		continue;
 
@@ -643,9 +710,12 @@ err:
 		dev_kfree_skb(skb);
 	}
 
+<<<<<<< HEAD
 	if (lro_flush_needed)
 		lro_flush_all(&rxq->lro_mgr);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (rx < budget)
 		mp->work_rx &= ~(1 << rxq->index);
 
@@ -664,9 +734,13 @@ static int rxq_refill(struct rx_queue *rxq, int budget)
 		struct rx_desc *rx_desc;
 		int size;
 
+<<<<<<< HEAD
 		skb = __skb_dequeue(&mp->rx_recycle);
 		if (skb == NULL)
 			skb = netdev_alloc_skb(mp->dev, mp->skb_size);
+=======
+		skb = netdev_alloc_skb(mp->dev, mp->skb_size);
+>>>>>>> refs/remotes/origin/master
 
 		if (skb == NULL) {
 			mp->oom = 1;
@@ -685,7 +759,11 @@ static int rxq_refill(struct rx_queue *rxq, int budget)
 
 		rx_desc = rxq->rx_desc_area + rx;
 
+<<<<<<< HEAD
 		size = skb->end - skb->data;
+=======
+		size = skb_end_pointer(skb) - skb->data;
+>>>>>>> refs/remotes/origin/master
 		rx_desc->buf_ptr = dma_map_single(mp->dev->dev.parent,
 						  skb->data, size,
 						  DMA_FROM_DEVICE);
@@ -937,7 +1015,11 @@ static int txq_reclaim(struct tx_queue *txq, int budget, int force)
 	struct netdev_queue *nq = netdev_get_tx_queue(mp->dev, txq->index);
 	int reclaimed;
 
+<<<<<<< HEAD
 	__netif_tx_lock(nq, smp_processor_id());
+=======
+	__netif_tx_lock_bh(nq);
+>>>>>>> refs/remotes/origin/master
 
 	reclaimed = 0;
 	while (reclaimed < budget && txq->tx_desc_count > 0) {
@@ -980,6 +1062,7 @@ static int txq_reclaim(struct tx_queue *txq, int budget, int force)
 				       desc->byte_cnt, DMA_TO_DEVICE);
 		}
 
+<<<<<<< HEAD
 		if (skb != NULL) {
 			if (skb_queue_len(&mp->rx_recycle) <
 					mp->rx_ring_size &&
@@ -991,6 +1074,12 @@ static int txq_reclaim(struct tx_queue *txq, int budget, int force)
 	}
 
 	__netif_tx_unlock(nq);
+=======
+		dev_kfree_skb(skb);
+	}
+
+	__netif_tx_unlock_bh(nq);
+>>>>>>> refs/remotes/origin/master
 
 	if (reclaimed < budget)
 		mp->work_tx &= ~(1 << txq->index);
@@ -1010,7 +1099,11 @@ static void tx_set_rate(struct mv643xx_eth_private *mp, int rate, int burst)
 	int mtu;
 	int bucket_size;
 
+<<<<<<< HEAD
 	token_rate = ((rate / 1000) * 64) / (mp->shared->t_clk / 1000);
+=======
+	token_rate = ((rate / 1000) * 64) / (mp->t_clk / 1000);
+>>>>>>> refs/remotes/origin/master
 	if (token_rate > 1023)
 		token_rate = 1023;
 
@@ -1042,7 +1135,11 @@ static void txq_set_rate(struct tx_queue *txq, int rate, int burst)
 	int token_rate;
 	int bucket_size;
 
+<<<<<<< HEAD
 	token_rate = ((rate / 1000) * 64) / (mp->shared->t_clk / 1000);
+=======
+	token_rate = ((rate / 1000) * 64) / (mp->t_clk / 1000);
+>>>>>>> refs/remotes/origin/master
 	if (token_rate > 1023)
 		token_rate = 1023;
 
@@ -1082,6 +1179,7 @@ static void txq_set_fixed_prio_mode(struct tx_queue *txq)
 
 
 /* mii management interface *************************************************/
+<<<<<<< HEAD
 static irqreturn_t mv643xx_eth_err_irq(int irq, void *dev_id)
 {
 	struct mv643xx_eth_shared_private *msp = dev_id;
@@ -1173,6 +1271,47 @@ static int smi_bus_write(struct mii_bus *bus, int addr, int reg, u16 val)
 }
 
 
+=======
+static void mv643xx_adjust_pscr(struct mv643xx_eth_private *mp)
+{
+	u32 pscr = rdlp(mp, PORT_SERIAL_CONTROL);
+	u32 autoneg_disable = FORCE_LINK_PASS |
+	             DISABLE_AUTO_NEG_SPEED_GMII |
+		     DISABLE_AUTO_NEG_FOR_FLOW_CTRL |
+		     DISABLE_AUTO_NEG_FOR_DUPLEX;
+
+	if (mp->phy->autoneg == AUTONEG_ENABLE) {
+		/* enable auto negotiation */
+		pscr &= ~autoneg_disable;
+		goto out_write;
+	}
+
+	pscr |= autoneg_disable;
+
+	if (mp->phy->speed == SPEED_1000) {
+		/* force gigabit, half duplex not supported */
+		pscr |= SET_GMII_SPEED_TO_1000;
+		pscr |= SET_FULL_DUPLEX_MODE;
+		goto out_write;
+	}
+
+	pscr &= ~SET_GMII_SPEED_TO_1000;
+
+	if (mp->phy->speed == SPEED_100)
+		pscr |= SET_MII_SPEED_TO_100;
+	else
+		pscr &= ~SET_MII_SPEED_TO_100;
+
+	if (mp->phy->duplex == DUPLEX_FULL)
+		pscr |= SET_FULL_DUPLEX_MODE;
+	else
+		pscr &= ~SET_FULL_DUPLEX_MODE;
+
+out_write:
+	wrlp(mp, PORT_SERIAL_CONTROL, pscr);
+}
+
+>>>>>>> refs/remotes/origin/master
 /* statistics ***************************************************************/
 static struct net_device_stats *mv643xx_eth_get_stats(struct net_device *dev)
 {
@@ -1198,6 +1337,7 @@ static struct net_device_stats *mv643xx_eth_get_stats(struct net_device *dev)
 	return stats;
 }
 
+<<<<<<< HEAD
 static void mv643xx_eth_grab_lro_stats(struct mv643xx_eth_private *mp)
 {
 	u32 lro_aggregated = 0;
@@ -1218,6 +1358,8 @@ static void mv643xx_eth_grab_lro_stats(struct mv643xx_eth_private *mp)
 	mp->lro_counters.lro_no_desc = lro_no_desc;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 mib_read(struct mv643xx_eth_private *mp, int offset)
 {
 	return rdl(mp, MIB_COUNTERS(mp->port_num) + offset);
@@ -1307,7 +1449,11 @@ static unsigned int get_rx_coal(struct mv643xx_eth_private *mp)
 		temp = (val & 0x003fff00) >> 8;
 
 	temp *= 64000000;
+<<<<<<< HEAD
 	do_div(temp, mp->shared->t_clk);
+=======
+	do_div(temp, mp->t_clk);
+>>>>>>> refs/remotes/origin/master
 
 	return (unsigned int)temp;
 }
@@ -1317,7 +1463,11 @@ static void set_rx_coal(struct mv643xx_eth_private *mp, unsigned int usec)
 	u64 temp;
 	u32 val;
 
+<<<<<<< HEAD
 	temp = (u64)usec * mp->shared->t_clk;
+=======
+	temp = (u64)usec * mp->t_clk;
+>>>>>>> refs/remotes/origin/master
 	temp += 31999999;
 	do_div(temp, 64000000);
 
@@ -1343,7 +1493,11 @@ static unsigned int get_tx_coal(struct mv643xx_eth_private *mp)
 
 	temp = (rdlp(mp, TX_FIFO_URGENT_THRESHOLD) & 0x3fff0) >> 4;
 	temp *= 64000000;
+<<<<<<< HEAD
 	do_div(temp, mp->shared->t_clk);
+=======
+	do_div(temp, mp->t_clk);
+>>>>>>> refs/remotes/origin/master
 
 	return (unsigned int)temp;
 }
@@ -1352,7 +1506,11 @@ static void set_tx_coal(struct mv643xx_eth_private *mp, unsigned int usec)
 {
 	u64 temp;
 
+<<<<<<< HEAD
 	temp = (u64)usec * mp->shared->t_clk;
+=======
+	temp = (u64)usec * mp->t_clk;
+>>>>>>> refs/remotes/origin/master
 	temp += 31999999;
 	do_div(temp, 64000000);
 
@@ -1379,10 +1537,13 @@ struct mv643xx_eth_stats {
 	{ #m, FIELD_SIZEOF(struct mib_counters, m),		\
 	  -1, offsetof(struct mv643xx_eth_private, mib_counters.m) }
 
+<<<<<<< HEAD
 #define LROSTAT(m)						\
 	{ #m, FIELD_SIZEOF(struct lro_counters, m),		\
 	  -1, offsetof(struct mv643xx_eth_private, lro_counters.m) }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct mv643xx_eth_stats mv643xx_eth_stats[] = {
 	SSTAT(rx_packets),
 	SSTAT(tx_packets),
@@ -1424,9 +1585,12 @@ static const struct mv643xx_eth_stats mv643xx_eth_stats[] = {
 	MIBSTAT(late_collision),
 	MIBSTAT(rx_discard),
 	MIBSTAT(rx_overrun),
+<<<<<<< HEAD
 	LROSTAT(lro_aggregated),
 	LROSTAT(lro_flushed),
 	LROSTAT(lro_no_desc),
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int
@@ -1483,6 +1647,37 @@ mv643xx_eth_get_settings_phyless(struct mv643xx_eth_private *mp,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void
+mv643xx_eth_get_wol(struct net_device *dev, struct ethtool_wolinfo *wol)
+{
+	struct mv643xx_eth_private *mp = netdev_priv(dev);
+	wol->supported = 0;
+	wol->wolopts = 0;
+	if (mp->phy)
+		phy_ethtool_get_wol(mp->phy, wol);
+}
+
+static int
+mv643xx_eth_set_wol(struct net_device *dev, struct ethtool_wolinfo *wol)
+{
+	struct mv643xx_eth_private *mp = netdev_priv(dev);
+	int err;
+
+	if (mp->phy == NULL)
+		return -EOPNOTSUPP;
+
+	err = phy_ethtool_set_wol(mp->phy, wol);
+	/* Given that mv643xx_eth works without the marvell-specific PHY driver,
+	 * this debugging hint is useful to have.
+	 */
+	if (err == -EOPNOTSUPP)
+		netdev_info(dev, "The PHY does not support set_wol, was CONFIG_MARVELL_PHY enabled?\n");
+	return err;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int
 mv643xx_eth_get_settings(struct net_device *dev, struct ethtool_cmd *cmd)
 {
@@ -1498,6 +1693,10 @@ static int
 mv643xx_eth_set_settings(struct net_device *dev, struct ethtool_cmd *cmd)
 {
 	struct mv643xx_eth_private *mp = netdev_priv(dev);
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (mp->phy == NULL)
 		return -EINVAL;
@@ -1507,7 +1706,14 @@ mv643xx_eth_set_settings(struct net_device *dev, struct ethtool_cmd *cmd)
 	 */
 	cmd->advertising &= ~ADVERTISED_1000baseT_Half;
 
+<<<<<<< HEAD
 	return phy_ethtool_sset(mp->phy, cmd);
+=======
+	ret = phy_ethtool_sset(mp->phy, cmd);
+	if (!ret)
+		mv643xx_adjust_pscr(mp);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mv643xx_eth_get_drvinfo(struct net_device *dev,
@@ -1624,7 +1830,10 @@ static void mv643xx_eth_get_ethtool_stats(struct net_device *dev,
 
 	mv643xx_eth_get_stats(dev);
 	mib_counters_update(mp);
+<<<<<<< HEAD
 	mv643xx_eth_grab_lro_stats(mp);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ARRAY_SIZE(mv643xx_eth_stats); i++) {
 		const struct mv643xx_eth_stats *stat;
@@ -1663,6 +1872,12 @@ static const struct ethtool_ops mv643xx_eth_ethtool_ops = {
 	.get_strings		= mv643xx_eth_get_strings,
 	.get_ethtool_stats	= mv643xx_eth_get_ethtool_stats,
 	.get_sset_count		= mv643xx_eth_get_sset_count,
+<<<<<<< HEAD
+=======
+	.get_ts_info		= ethtool_op_get_ts_info,
+	.get_wol                = mv643xx_eth_get_wol,
+	.set_wol                = mv643xx_eth_set_wol,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -1877,6 +2092,7 @@ static int rxq_init(struct mv643xx_eth_private *mp, int index)
 	memset(rxq->rx_desc_area, 0, size);
 
 	rxq->rx_desc_area_size = size;
+<<<<<<< HEAD
 	rxq->rx_skb = kmalloc(rxq->rx_ring_size * sizeof(*rxq->rx_skb),
 								GFP_KERNEL);
 	if (rxq->rx_skb == NULL) {
@@ -1885,6 +2101,14 @@ static int rxq_init(struct mv643xx_eth_private *mp, int index)
 	}
 
 	rx_desc = (struct rx_desc *)rxq->rx_desc_area;
+=======
+	rxq->rx_skb = kcalloc(rxq->rx_ring_size, sizeof(*rxq->rx_skb),
+				    GFP_KERNEL);
+	if (rxq->rx_skb == NULL)
+		goto out_free;
+
+	rx_desc = rxq->rx_desc_area;
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < rxq->rx_ring_size; i++) {
 		int nexti;
 
@@ -1896,6 +2120,7 @@ static int rxq_init(struct mv643xx_eth_private *mp, int index)
 					nexti * sizeof(struct rx_desc);
 	}
 
+<<<<<<< HEAD
 	rxq->lro_mgr.dev = mp->dev;
 	memset(&rxq->lro_mgr.stats, 0, sizeof(rxq->lro_mgr.stats));
 	rxq->lro_mgr.features = LRO_F_NAPI;
@@ -1909,6 +2134,8 @@ static int rxq_init(struct mv643xx_eth_private *mp, int index)
 
 	memset(&rxq->lro_arr, 0, sizeof(rxq->lro_arr));
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 
@@ -1989,7 +2216,11 @@ static int txq_init(struct mv643xx_eth_private *mp, int index)
 
 	txq->tx_desc_area_size = size;
 
+<<<<<<< HEAD
 	tx_desc = (struct tx_desc *)txq->tx_desc_area;
+=======
+	tx_desc = txq->tx_desc_area;
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < txq->tx_ring_size; i++) {
 		struct tx_desc *txd = tx_desc + i;
 		int nexti;
@@ -2337,8 +2568,11 @@ static int mv643xx_eth_open(struct net_device *dev)
 
 	napi_enable(&mp->napi);
 
+<<<<<<< HEAD
 	skb_queue_head_init(&mp->rx_recycle);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	mp->int_mask = INT_EXT;
 
 	for (i = 0; i < mp->rxq_count; i++) {
@@ -2434,8 +2668,11 @@ static int mv643xx_eth_stop(struct net_device *dev)
 	mib_counters_update(mp);
 	del_timer_sync(&mp->mib_counters_timer);
 
+<<<<<<< HEAD
 	skb_queue_purge(&mp->rx_recycle);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < mp->rxq_count; i++)
 		rxq_deinit(mp->rxq + i);
 	for (i = 0; i < mp->txq_count; i++)
@@ -2447,11 +2684,23 @@ static int mv643xx_eth_stop(struct net_device *dev)
 static int mv643xx_eth_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 {
 	struct mv643xx_eth_private *mp = netdev_priv(dev);
+<<<<<<< HEAD
 
 	if (mp->phy != NULL)
 		return phy_mii_ioctl(mp->phy, ifr, cmd);
 
 	return -EOPNOTSUPP;
+=======
+	int ret;
+
+	if (mp->phy == NULL)
+		return -ENOTSUPP;
+
+	ret = phy_mii_ioctl(mp->phy, ifr, cmd);
+	if (!ret)
+		mv643xx_adjust_pscr(mp);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mv643xx_eth_change_mtu(struct net_device *dev, int new_mtu)
@@ -2586,10 +2835,163 @@ static void infer_hw_params(struct mv643xx_eth_shared_private *msp)
 	}
 }
 
+<<<<<<< HEAD
 static int mv643xx_eth_shared_probe(struct platform_device *pdev)
 {
 	static int mv643xx_eth_version_printed;
 	struct mv643xx_eth_shared_platform_data *pd = pdev->dev.platform_data;
+=======
+#if defined(CONFIG_OF)
+static const struct of_device_id mv643xx_eth_shared_ids[] = {
+	{ .compatible = "marvell,orion-eth", },
+	{ .compatible = "marvell,kirkwood-eth", },
+	{ }
+};
+MODULE_DEVICE_TABLE(of, mv643xx_eth_shared_ids);
+#endif
+
+#if defined(CONFIG_OF) && !defined(CONFIG_MV64X60)
+#define mv643xx_eth_property(_np, _name, _v)				\
+	do {								\
+		u32 tmp;						\
+		if (!of_property_read_u32(_np, "marvell," _name, &tmp))	\
+			_v = tmp;					\
+	} while (0)
+
+static struct platform_device *port_platdev[3];
+
+static int mv643xx_eth_shared_of_add_port(struct platform_device *pdev,
+					  struct device_node *pnp)
+{
+	struct platform_device *ppdev;
+	struct mv643xx_eth_platform_data ppd;
+	struct resource res;
+	const char *mac_addr;
+	int ret;
+	int dev_num = 0;
+
+	memset(&ppd, 0, sizeof(ppd));
+	ppd.shared = pdev;
+
+	memset(&res, 0, sizeof(res));
+	if (!of_irq_to_resource(pnp, 0, &res)) {
+		dev_err(&pdev->dev, "missing interrupt on %s\n", pnp->name);
+		return -EINVAL;
+	}
+
+	if (of_property_read_u32(pnp, "reg", &ppd.port_number)) {
+		dev_err(&pdev->dev, "missing reg property on %s\n", pnp->name);
+		return -EINVAL;
+	}
+
+	if (ppd.port_number >= 3) {
+		dev_err(&pdev->dev, "invalid reg property on %s\n", pnp->name);
+		return -EINVAL;
+	}
+
+	while (dev_num < 3 && port_platdev[dev_num])
+		dev_num++;
+
+	if (dev_num == 3) {
+		dev_err(&pdev->dev, "too many ports registered\n");
+		return -EINVAL;
+	}
+
+	mac_addr = of_get_mac_address(pnp);
+	if (mac_addr)
+		memcpy(ppd.mac_addr, mac_addr, ETH_ALEN);
+
+	mv643xx_eth_property(pnp, "tx-queue-size", ppd.tx_queue_size);
+	mv643xx_eth_property(pnp, "tx-sram-addr", ppd.tx_sram_addr);
+	mv643xx_eth_property(pnp, "tx-sram-size", ppd.tx_sram_size);
+	mv643xx_eth_property(pnp, "rx-queue-size", ppd.rx_queue_size);
+	mv643xx_eth_property(pnp, "rx-sram-addr", ppd.rx_sram_addr);
+	mv643xx_eth_property(pnp, "rx-sram-size", ppd.rx_sram_size);
+
+	ppd.phy_node = of_parse_phandle(pnp, "phy-handle", 0);
+	if (!ppd.phy_node) {
+		ppd.phy_addr = MV643XX_ETH_PHY_NONE;
+		of_property_read_u32(pnp, "speed", &ppd.speed);
+		of_property_read_u32(pnp, "duplex", &ppd.duplex);
+	}
+
+	ppdev = platform_device_alloc(MV643XX_ETH_NAME, dev_num);
+	if (!ppdev)
+		return -ENOMEM;
+	ppdev->dev.coherent_dma_mask = DMA_BIT_MASK(32);
+	ppdev->dev.of_node = pnp;
+
+	ret = platform_device_add_resources(ppdev, &res, 1);
+	if (ret)
+		goto port_err;
+
+	ret = platform_device_add_data(ppdev, &ppd, sizeof(ppd));
+	if (ret)
+		goto port_err;
+
+	ret = platform_device_add(ppdev);
+	if (ret)
+		goto port_err;
+
+	port_platdev[dev_num] = ppdev;
+
+	return 0;
+
+port_err:
+	platform_device_put(ppdev);
+	return ret;
+}
+
+static int mv643xx_eth_shared_of_probe(struct platform_device *pdev)
+{
+	struct mv643xx_eth_shared_platform_data *pd;
+	struct device_node *pnp, *np = pdev->dev.of_node;
+	int ret;
+
+	/* bail out if not registered from DT */
+	if (!np)
+		return 0;
+
+	pd = devm_kzalloc(&pdev->dev, sizeof(*pd), GFP_KERNEL);
+	if (!pd)
+		return -ENOMEM;
+	pdev->dev.platform_data = pd;
+
+	mv643xx_eth_property(np, "tx-checksum-limit", pd->tx_csum_limit);
+
+	for_each_available_child_of_node(np, pnp) {
+		ret = mv643xx_eth_shared_of_add_port(pdev, pnp);
+		if (ret)
+			return ret;
+	}
+	return 0;
+}
+
+static void mv643xx_eth_shared_of_remove(void)
+{
+	int n;
+
+	for (n = 0; n < 3; n++) {
+		platform_device_del(port_platdev[n]);
+		port_platdev[n] = NULL;
+	}
+}
+#else
+static inline int mv643xx_eth_shared_of_probe(struct platform_device *pdev)
+{
+	return 0;
+}
+
+static inline void mv643xx_eth_shared_of_remove(void)
+{
+}
+#endif
+
+static int mv643xx_eth_shared_probe(struct platform_device *pdev)
+{
+	static int mv643xx_eth_version_printed;
+	struct mv643xx_eth_shared_platform_data *pd;
+>>>>>>> refs/remotes/origin/master
 	struct mv643xx_eth_shared_private *msp;
 	const struct mbus_dram_target_info *dram;
 	struct resource *res;
@@ -2599,6 +3001,7 @@ static int mv643xx_eth_shared_probe(struct platform_device *pdev)
 		pr_notice("MV-643xx 10/100/1000 ethernet driver version %s\n",
 			  mv643xx_eth_driver_version);
 
+<<<<<<< HEAD
 	ret = -EINVAL;
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (res == NULL)
@@ -2653,6 +3056,24 @@ static int mv643xx_eth_shared_probe(struct platform_device *pdev)
 			msp->err_interrupt = res->start;
 		}
 	}
+=======
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (res == NULL)
+		return -EINVAL;
+
+	msp = devm_kzalloc(&pdev->dev, sizeof(*msp), GFP_KERNEL);
+	if (msp == NULL)
+		return -ENOMEM;
+	platform_set_drvdata(pdev, msp);
+
+	msp->base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+	if (msp->base == NULL)
+		return -ENOMEM;
+
+	msp->clk = devm_clk_get(&pdev->dev, NULL);
+	if (!IS_ERR(msp->clk))
+		clk_prepare_enable(msp->clk);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * (Re-)program MBUS remapping windows if we are asked to.
@@ -2661,14 +3082,23 @@ static int mv643xx_eth_shared_probe(struct platform_device *pdev)
 	if (dram)
 		mv643xx_eth_conf_mbus_windows(msp, dram);
 
+<<<<<<< HEAD
 	/*
 	 * Detect hardware parameters.
 	 */
 	msp->t_clk = (pd != NULL && pd->t_clk != 0) ? pd->t_clk : 133000000;
+=======
+	ret = mv643xx_eth_shared_of_probe(pdev);
+	if (ret)
+		return ret;
+	pd = dev_get_platdata(&pdev->dev);
+
+>>>>>>> refs/remotes/origin/master
 	msp->tx_csum_limit = (pd != NULL && pd->tx_csum_limit) ?
 					pd->tx_csum_limit : 9 * 1024;
 	infer_hw_params(msp);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, msp);
 
 	return 0;
@@ -2681,11 +3111,15 @@ out_free:
 	kfree(msp);
 out:
 	return ret;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mv643xx_eth_shared_remove(struct platform_device *pdev)
 {
 	struct mv643xx_eth_shared_private *msp = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 	struct mv643xx_eth_shared_platform_data *pd = pdev->dev.platform_data;
 
 	if (pd == NULL || pd->shared_smi == NULL) {
@@ -2697,6 +3131,12 @@ static int mv643xx_eth_shared_remove(struct platform_device *pdev)
 	iounmap(msp->base);
 	kfree(msp);
 
+=======
+
+	mv643xx_eth_shared_of_remove();
+	if (!IS_ERR(msp->clk))
+		clk_disable_unprepare(msp->clk);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2706,6 +3146,10 @@ static struct platform_driver mv643xx_eth_shared_driver = {
 	.driver = {
 		.name	= MV643XX_ETH_SHARED_NAME,
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.of_match_table = of_match_ptr(mv643xx_eth_shared_ids),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -2735,7 +3179,11 @@ static void set_params(struct mv643xx_eth_private *mp,
 	struct net_device *dev = mp->dev;
 
 	if (is_valid_ether_addr(pd->mac_addr))
+<<<<<<< HEAD
 		memcpy(dev->dev_addr, pd->mac_addr, 6);
+=======
+		memcpy(dev->dev_addr, pd->mac_addr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 	else
 		uc_addr_get(mp, dev->dev_addr);
 
@@ -2756,14 +3204,31 @@ static void set_params(struct mv643xx_eth_private *mp,
 	mp->txq_count = pd->tx_queue_count ? : 1;
 }
 
+<<<<<<< HEAD
 static struct phy_device *phy_scan(struct mv643xx_eth_private *mp,
 				   int phy_addr)
 {
 	struct mii_bus *bus = mp->shared->smi->smi_bus;
+=======
+static void mv643xx_eth_adjust_link(struct net_device *dev)
+{
+	struct mv643xx_eth_private *mp = netdev_priv(dev);
+
+	mv643xx_adjust_pscr(mp);
+}
+
+static struct phy_device *phy_scan(struct mv643xx_eth_private *mp,
+				   int phy_addr)
+{
+>>>>>>> refs/remotes/origin/master
 	struct phy_device *phydev;
 	int start;
 	int num;
 	int i;
+<<<<<<< HEAD
+=======
+	char phy_id[MII_BUS_ID_SIZE + 3];
+>>>>>>> refs/remotes/origin/master
 
 	if (phy_addr == MV643XX_ETH_PHY_ADDR_DEFAULT) {
 		start = phy_addr_get(mp) & 0x1f;
@@ -2773,6 +3238,7 @@ static struct phy_device *phy_scan(struct mv643xx_eth_private *mp,
 		num = 1;
 	}
 
+<<<<<<< HEAD
 	phydev = NULL;
 	for (i = 0; i < num; i++) {
 		int addr = (start + i) & 0x1f;
@@ -2784,6 +3250,21 @@ static struct phy_device *phy_scan(struct mv643xx_eth_private *mp,
 			phydev = bus->phy_map[addr];
 			if (phydev != NULL)
 				phy_addr_set(mp, addr);
+=======
+	/* Attempt to connect to the PHY using orion-mdio */
+	phydev = ERR_PTR(-ENODEV);
+	for (i = 0; i < num; i++) {
+		int addr = (start + i) & 0x1f;
+
+		snprintf(phy_id, sizeof(phy_id), PHY_ID_FMT,
+				"orion-mdio-mii", addr);
+
+		phydev = phy_connect(mp->dev, phy_id, mv643xx_eth_adjust_link,
+				PHY_INTERFACE_MODE_GMII);
+		if (!IS_ERR(phydev)) {
+			phy_addr_set(mp, addr);
+			break;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -2796,8 +3277,11 @@ static void phy_init(struct mv643xx_eth_private *mp, int speed, int duplex)
 
 	phy_reset(mp);
 
+<<<<<<< HEAD
 	phy_attach(mp->dev, dev_name(&phy->dev), 0, PHY_INTERFACE_MODE_GMII);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (speed == 0) {
 		phy->autoneg = AUTONEG_ENABLE;
 		phy->speed = 0;
@@ -2865,7 +3349,11 @@ static int mv643xx_eth_probe(struct platform_device *pdev)
 	struct resource *res;
 	int err;
 
+<<<<<<< HEAD
 	pd = pdev->dev.platform_data;
+=======
+	pd = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (pd == NULL) {
 		dev_err(&pdev->dev, "no mv643xx_eth_platform_data\n");
 		return -ENODEV;
@@ -2889,15 +3377,66 @@ static int mv643xx_eth_probe(struct platform_device *pdev)
 
 	mp->dev = dev;
 
+<<<<<<< HEAD
+=======
+	/* Kirkwood resets some registers on gated clocks. Especially
+	 * CLK125_BYPASS_EN must be cleared but is not available on
+	 * all other SoCs/System Controllers using this driver.
+	 */
+	if (of_device_is_compatible(pdev->dev.of_node,
+				    "marvell,kirkwood-eth-port"))
+		wrlp(mp, PORT_SERIAL_CONTROL1,
+		     rdlp(mp, PORT_SERIAL_CONTROL1) & ~CLK125_BYPASS_EN);
+
+	/*
+	 * Start with a default rate, and if there is a clock, allow
+	 * it to override the default.
+	 */
+	mp->t_clk = 133000000;
+	mp->clk = devm_clk_get(&pdev->dev, NULL);
+	if (!IS_ERR(mp->clk)) {
+		clk_prepare_enable(mp->clk);
+		mp->t_clk = clk_get_rate(mp->clk);
+	} else if (!IS_ERR(mp->shared->clk)) {
+		mp->t_clk = clk_get_rate(mp->shared->clk);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	set_params(mp, pd);
 	netif_set_real_num_tx_queues(dev, mp->txq_count);
 	netif_set_real_num_rx_queues(dev, mp->rxq_count);
 
+<<<<<<< HEAD
 	if (pd->phy_addr != MV643XX_ETH_PHY_NONE)
 		mp->phy = phy_scan(mp, pd->phy_addr);
 
 	if (mp->phy != NULL)
 		phy_init(mp, pd->speed, pd->duplex);
+=======
+	err = 0;
+	if (pd->phy_node) {
+		mp->phy = of_phy_connect(mp->dev, pd->phy_node,
+					 mv643xx_eth_adjust_link, 0,
+					 PHY_INTERFACE_MODE_GMII);
+		if (!mp->phy)
+			err = -ENODEV;
+		else
+			phy_addr_set(mp, mp->phy->addr);
+	} else if (pd->phy_addr != MV643XX_ETH_PHY_NONE) {
+		mp->phy = phy_scan(mp, pd->phy_addr);
+
+		if (IS_ERR(mp->phy))
+			err = PTR_ERR(mp->phy);
+		else
+			phy_init(mp, pd->speed, pd->duplex);
+	}
+	if (err == -ENODEV) {
+		err = -EPROBE_DEFER;
+		goto out;
+	}
+	if (err)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	SET_ETHTOOL_OPS(dev, &mv643xx_eth_ethtool_ops);
 
@@ -2915,7 +3454,11 @@ static int mv643xx_eth_probe(struct platform_device *pdev)
 
 	INIT_WORK(&mp->tx_timeout_task, tx_timeout_task);
 
+<<<<<<< HEAD
 	netif_napi_add(dev, &mp->napi, mv643xx_eth_poll, 128);
+=======
+	netif_napi_add(dev, &mp->napi, mv643xx_eth_poll, NAPI_POLL_WEIGHT);
+>>>>>>> refs/remotes/origin/master
 
 	init_timer(&mp->rx_oom);
 	mp->rx_oom.data = (unsigned long)mp;
@@ -2931,8 +3474,12 @@ static int mv643xx_eth_probe(struct platform_device *pdev)
 	dev->watchdog_timeo = 2 * HZ;
 	dev->base_addr = 0;
 
+<<<<<<< HEAD
 	dev->hw_features = NETIF_F_SG | NETIF_F_IP_CSUM |
 		NETIF_F_RXCSUM | NETIF_F_LRO;
+=======
+	dev->hw_features = NETIF_F_SG | NETIF_F_IP_CSUM | NETIF_F_RXCSUM;
+>>>>>>> refs/remotes/origin/master
 	dev->features = NETIF_F_SG | NETIF_F_IP_CSUM | NETIF_F_RXCSUM;
 	dev->vlan_features = NETIF_F_SG | NETIF_F_IP_CSUM;
 
@@ -2963,6 +3510,11 @@ static int mv643xx_eth_probe(struct platform_device *pdev)
 	return 0;
 
 out:
+<<<<<<< HEAD
+=======
+	if (!IS_ERR(mp->clk))
+		clk_disable_unprepare(mp->clk);
+>>>>>>> refs/remotes/origin/master
 	free_netdev(dev);
 
 	return err;
@@ -2974,11 +3526,21 @@ static int mv643xx_eth_remove(struct platform_device *pdev)
 
 	unregister_netdev(mp->dev);
 	if (mp->phy != NULL)
+<<<<<<< HEAD
 		phy_detach(mp->phy);
 	cancel_work_sync(&mp->tx_timeout_task);
 	free_netdev(mp->dev);
 
 	platform_set_drvdata(pdev, NULL);
+=======
+		phy_disconnect(mp->phy);
+	cancel_work_sync(&mp->tx_timeout_task);
+
+	if (!IS_ERR(mp->clk))
+		clk_disable_unprepare(mp->clk);
+
+	free_netdev(mp->dev);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

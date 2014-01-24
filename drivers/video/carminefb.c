@@ -13,9 +13,13 @@
 #include <linux/pci.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "carminefb.h"
 #include "carminefb_regs.h"
@@ -81,7 +85,11 @@ struct carmine_fb {
 	u32 pseudo_palette[16];
 };
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo carminefb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo carminefb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id = "Carmine",
 	.type = FB_TYPE_PACKED_PIXELS,
 	.visual = FB_VISUAL_TRUECOLOR,
@@ -540,8 +548,14 @@ static struct fb_ops carminefb_ops = {
 	.fb_setcolreg	= carmine_setcolreg,
 };
 
+<<<<<<< HEAD
 static int __devinit alloc_carmine_fb(void __iomem *regs, void __iomem *smem_base,
 		int smem_offset, struct device *device, struct fb_info **rinfo)
+=======
+static int alloc_carmine_fb(void __iomem *regs, void __iomem *smem_base,
+			    int smem_offset, struct device *device,
+			    struct fb_info **rinfo)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct fb_info *info;
@@ -587,8 +601,12 @@ static int __devinit alloc_carmine_fb(void __iomem *regs, void __iomem *smem_bas
 	if (ret < 0)
 		goto err_dealloc_cmap;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: %s frame buffer device\n", info->node,
 			info->fix.id);
+=======
+	fb_info(info, "%s frame buffer device\n", info->fix.id);
+>>>>>>> refs/remotes/origin/master
 
 	*rinfo = info;
 	return 0;
@@ -609,8 +627,12 @@ static void cleanup_fb_device(struct fb_info *info)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit carminefb_probe(struct pci_dev *dev,
 		const struct pci_device_id *ent)
+=======
+static int carminefb_probe(struct pci_dev *dev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct carmine_hw *hw;
 	struct device *device = &dev->dev;
@@ -724,7 +746,11 @@ err_enable_pci:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit carminefb_remove(struct pci_dev *dev)
+=======
+static void carminefb_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct carmine_hw *hw = pci_get_drvdata(dev);
 	struct fb_fix_screeninfo fix;
@@ -749,13 +775,20 @@ static void __devexit carminefb_remove(struct pci_dev *dev)
 	iounmap(hw->v_regs);
 	release_mem_region(fix.mmio_start, fix.mmio_len);
 
+<<<<<<< HEAD
 	pci_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_disable_device(dev);
 	kfree(hw);
 }
 
 #define PCI_VENDOR_ID_FUJITU_LIMITED 0x10cf
+<<<<<<< HEAD
 static struct pci_device_id carmine_devices[] __devinitdata = {
+=======
+static struct pci_device_id carmine_devices[] = {
+>>>>>>> refs/remotes/origin/master
 {
 	PCI_DEVICE(PCI_VENDOR_ID_FUJITU_LIMITED, 0x202b)},
 	{0, 0, 0, 0, 0, 0, 0}
@@ -767,7 +800,11 @@ static struct pci_driver carmine_pci_driver = {
 	.name		= "carminefb",
 	.id_table	= carmine_devices,
 	.probe		= carminefb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(carminefb_remove),
+=======
+	.remove		= carminefb_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init carminefb_init(void)

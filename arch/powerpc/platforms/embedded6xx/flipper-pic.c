@@ -18,6 +18,10 @@
 #include <linux/init.h>
 #include <linux/irq.h>
 #include <linux/of.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 #include "flipper-pic.h"
@@ -97,6 +101,7 @@ static struct irq_chip flipper_pic = {
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct irq_host *flipper_irq_host;
 
 static int flipper_pic_map(struct irq_host *h, unsigned int virq,
@@ -105,6 +110,11 @@ static struct irq_domain *flipper_irq_host;
 
 static int flipper_pic_map(struct irq_domain *h, unsigned int virq,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct irq_domain *flipper_irq_host;
+
+static int flipper_pic_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/master
 			   irq_hw_number_t hwirq)
 {
 	irq_set_chip_data(virq, h->host_data);
@@ -114,20 +124,28 @@ static int flipper_pic_map(struct irq_domain *h, unsigned int virq,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int flipper_pic_match(struct irq_host *h, struct device_node *np)
 =======
 static int flipper_pic_match(struct irq_domain *h, struct device_node *np)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int flipper_pic_match(struct irq_domain *h, struct device_node *np)
+>>>>>>> refs/remotes/origin/master
 {
 	return 1;
 }
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct irq_host_ops flipper_irq_host_ops = {
 =======
 static const struct irq_domain_ops flipper_irq_domain_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct irq_domain_ops flipper_irq_domain_ops = {
+>>>>>>> refs/remotes/origin/master
 	.map = flipper_pic_map,
 	.match = flipper_pic_match,
 };
@@ -145,16 +163,22 @@ static void __flipper_quiesce(void __iomem *io_base)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct irq_host * __init flipper_pic_init(struct device_node *np)
 {
 	struct device_node *pi;
 	struct irq_host *irq_host = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct irq_domain * __init flipper_pic_init(struct device_node *np)
 {
 	struct device_node *pi;
 	struct irq_domain *irq_domain = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct resource res;
 	void __iomem *io_base;
 	int retval;
@@ -181,6 +205,7 @@ struct irq_domain * __init flipper_pic_init(struct device_node *np)
 	__flipper_quiesce(io_base);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	irq_host = irq_alloc_host(np, IRQ_HOST_MAP_LINEAR, FLIPPER_NR_IRQS,
 				  &flipper_irq_host_ops, -1);
 	if (!irq_host) {
@@ -193,6 +218,8 @@ struct irq_domain * __init flipper_pic_init(struct device_node *np)
 out:
 	return irq_host;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	irq_domain = irq_domain_add_linear(np, FLIPPER_NR_IRQS,
 				  &flipper_irq_domain_ops, io_base);
 	if (!irq_domain) {
@@ -202,7 +229,10 @@ out:
 
 out:
 	return irq_domain;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 unsigned int flipper_pic_get_irq(void)

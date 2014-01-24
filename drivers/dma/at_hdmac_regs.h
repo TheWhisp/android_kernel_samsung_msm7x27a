@@ -11,7 +11,11 @@
 #ifndef AT_HDMAC_REGS_H
 #define	AT_HDMAC_REGS_H
 
+<<<<<<< HEAD
 #include <mach/at_hdmac.h>
+=======
+#include <linux/platform_data/dma-atmel.h>
+>>>>>>> refs/remotes/origin/master
 
 #define	AT_DMA_MAX_NR_CHANNELS	8
 
@@ -87,7 +91,30 @@
 /* Bitfields in CTRLA */
 #define	ATC_BTSIZE_MAX		0xFFFFUL	/* Maximum Buffer Transfer Size */
 #define	ATC_BTSIZE(x)		(ATC_BTSIZE_MAX & (x)) /* Buffer Transfer Size */
+<<<<<<< HEAD
 /* Chunck Tranfer size definitions are in at_hdmac.h */
+=======
+#define	ATC_SCSIZE_MASK		(0x7 << 16)	/* Source Chunk Transfer Size */
+#define		ATC_SCSIZE(x)		(ATC_SCSIZE_MASK & ((x) << 16))
+#define		ATC_SCSIZE_1		(0x0 << 16)
+#define		ATC_SCSIZE_4		(0x1 << 16)
+#define		ATC_SCSIZE_8		(0x2 << 16)
+#define		ATC_SCSIZE_16		(0x3 << 16)
+#define		ATC_SCSIZE_32		(0x4 << 16)
+#define		ATC_SCSIZE_64		(0x5 << 16)
+#define		ATC_SCSIZE_128		(0x6 << 16)
+#define		ATC_SCSIZE_256		(0x7 << 16)
+#define	ATC_DCSIZE_MASK		(0x7 << 20)	/* Destination Chunk Transfer Size */
+#define		ATC_DCSIZE(x)		(ATC_DCSIZE_MASK & ((x) << 20))
+#define		ATC_DCSIZE_1		(0x0 << 20)
+#define		ATC_DCSIZE_4		(0x1 << 20)
+#define		ATC_DCSIZE_8		(0x2 << 20)
+#define		ATC_DCSIZE_16		(0x3 << 20)
+#define		ATC_DCSIZE_32		(0x4 << 20)
+#define		ATC_DCSIZE_64		(0x5 << 20)
+#define		ATC_DCSIZE_128		(0x6 << 20)
+#define		ATC_DCSIZE_256		(0x7 << 20)
+>>>>>>> refs/remotes/origin/master
 #define	ATC_SRC_WIDTH_MASK	(0x3 << 24)	/* Source Single Transfer Size */
 #define		ATC_SRC_WIDTH(x)	((x) << 24)
 #define		ATC_SRC_WIDTH_BYTE	(0x0 << 24)
@@ -163,6 +190,10 @@ struct at_lli {
  * @txd: support for the async_tx api
  * @desc_node: node on the channed descriptors list
  * @len: total transaction bytecount
+<<<<<<< HEAD
+=======
+ * @tx_width: transfer width
+>>>>>>> refs/remotes/origin/master
  */
 struct at_desc {
 	/* FIRST values the hardware uses */
@@ -173,6 +204,10 @@ struct at_desc {
 	struct dma_async_tx_descriptor	txd;
 	struct list_head		desc_node;
 	size_t				len;
+<<<<<<< HEAD
+=======
+	u32				tx_width;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct at_desc *
@@ -192,6 +227,10 @@ txd_to_at_desc(struct dma_async_tx_descriptor *txd)
 enum atc_status {
 	ATC_IS_ERROR = 0,
 	ATC_IS_PAUSED = 1,
+<<<<<<< HEAD
+=======
+	ATC_IS_BTC = 2,
+>>>>>>> refs/remotes/origin/master
 	ATC_IS_CYCLIC = 24,
 };
 
@@ -201,6 +240,7 @@ enum atc_status {
  * @device: parent device
  * @ch_regs: memory mapped register base
  * @mask: channel index in a mask
+<<<<<<< HEAD
  * @status: transmit status information from irq/prep* functions
  *                to tasklet (use atomic operations)
  * @tasklet: bottom half to finish transaction work
@@ -214,6 +254,19 @@ enum atc_status {
  * @dma_sconfig: configuration for slave transfers, passed via DMA_SLAVE_CONFIG
  * @lock: serializes enqueue/dequeue operations to descriptors lists
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @per_if: peripheral interface
+ * @mem_if: memory interface
+ * @status: transmit status information from irq/prep* functions
+ *                to tasklet (use atomic operations)
+ * @tasklet: bottom half to finish transaction work
+ * @save_cfg: configuration register that is saved on suspend/resume cycle
+ * @save_dscr: for cyclic operations, preserve next descriptor address in
+ *             the cyclic list on suspend/resume cycle
+ * @remain_desc: to save remain desc length
+ * @dma_sconfig: configuration for slave transfers, passed via DMA_SLAVE_CONFIG
+ * @lock: serializes enqueue/dequeue operations to descriptors lists
+>>>>>>> refs/remotes/origin/master
  * @active_list: list of descriptors dmaengine is being running on
  * @queue: list of descriptors ready to be submitted to engine
  * @free_list: list of descriptors usable by the channel
@@ -224,6 +277,7 @@ struct at_dma_chan {
 	struct at_dma		*device;
 	void __iomem		*ch_regs;
 	u8			mask;
+<<<<<<< HEAD
 	unsigned long		status;
 	struct tasklet_struct	tasklet;
 <<<<<<< HEAD
@@ -232,14 +286,27 @@ struct at_dma_chan {
 	u32			save_dscr;
 	struct dma_slave_config dma_sconfig;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8			per_if;
+	u8			mem_if;
+	unsigned long		status;
+	struct tasklet_struct	tasklet;
+	u32			save_cfg;
+	u32			save_dscr;
+	u32			remain_desc;
+	struct dma_slave_config dma_sconfig;
+>>>>>>> refs/remotes/origin/master
 
 	spinlock_t		lock;
 
 	/* these other elements are all protected by lock */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dma_cookie_t		completed_cookie;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head	active_list;
 	struct list_head	queue;
 	struct list_head	free_list;
@@ -258,7 +325,10 @@ static inline struct at_dma_chan *to_at_dma_chan(struct dma_chan *dchan)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Fix sconfig's burst size according to at_hdmac. We need to convert them as:
  * 1 -> 0, 4 -> 1, 8 -> 2, 16 -> 3, 32 -> 4, 64 -> 5, 128 -> 6, 256 -> 7.
@@ -289,7 +359,10 @@ static inline u8 convert_buswidth(enum dma_slave_buswidth addr_width)
 		return 0;
 	}
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*--  Controller  ------------------------------------------------------*/
 
@@ -297,14 +370,20 @@ static inline u8 convert_buswidth(enum dma_slave_buswidth addr_width)
  * struct at_dma - internal representation of an Atmel HDMA Controller
  * @chan_common: common dmaengine dma_device object members
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @ch_regs: memory mapped register base
  * @clk: dma controller clock
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @atdma_devtype: identifier of DMA controller compatibility
  * @ch_regs: memory mapped register base
  * @clk: dma controller clock
  * @save_imr: interrupt mask register that is saved on suspend/resume cycle
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @all_chan_mask: all channels availlable in a mask
  * @dma_desc_pool: base of DMA descriptor region (DMA address)
  * @chan: channels table to store at_dma_chan structures
@@ -314,9 +393,13 @@ struct at_dma {
 	void __iomem		*regs;
 	struct clk		*clk;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32			save_imr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32			save_imr;
+>>>>>>> refs/remotes/origin/master
 
 	u8			all_chan_mask;
 
@@ -342,10 +425,13 @@ static struct device *chan2dev(struct dma_chan *chan)
 {
 	return &chan->dev->device;
 }
+<<<<<<< HEAD
 static struct device *chan2parent(struct dma_chan *chan)
 {
 	return chan->dev->device.parent;
 }
+=======
+>>>>>>> refs/remotes/origin/master
 
 #if defined(VERBOSE_DEBUG)
 static void vdbg_dump_regs(struct at_dma_chan *atchan)
@@ -373,10 +459,17 @@ static void vdbg_dump_regs(struct at_dma_chan *atchan) {}
 
 static void atc_dump_lli(struct at_dma_chan *atchan, struct at_lli *lli)
 {
+<<<<<<< HEAD
 	dev_printk(KERN_CRIT, chan2dev(&atchan->chan_common),
 			"  desc: s0x%x d0x%x ctrl0x%x:0x%x l0x%x\n",
 			lli->saddr, lli->daddr,
 			lli->ctrla, lli->ctrlb, lli->dscr);
+=======
+	dev_crit(chan2dev(&atchan->chan_common),
+		 "  desc: s0x%x d0x%x ctrl0x%x:0x%x l0x%x\n",
+		 lli->saddr, lli->daddr,
+		 lli->ctrla, lli->ctrlb, lli->dscr);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -416,7 +509,10 @@ static inline int atc_chan_is_enabled(struct at_dma_chan *atchan)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * atc_chan_is_paused - test channel pause/resume status
  * @atchan: channel we want to test status
@@ -434,7 +530,10 @@ static inline int atc_chan_is_cyclic(struct at_dma_chan *atchan)
 {
 	return test_bit(ATC_IS_CYCLIC, &atchan->status);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * set_desc_eol - set end-of-link to descriptor so it will end transfer

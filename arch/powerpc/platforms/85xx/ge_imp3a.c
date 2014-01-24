@@ -22,7 +22,10 @@
 #include <linux/seq_file.h>
 #include <linux/interrupt.h>
 #include <linux/of_platform.h>
+<<<<<<< HEAD
 #include <linux/memblock.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/time.h>
 #include <asm/machdep.h>
@@ -84,6 +87,7 @@ void __init ge_imp3a_pic_init(void)
 	of_node_put(cascade_node);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 static int primary_phb_addr;
 #endif	/* CONFIG_PCI */
@@ -104,10 +108,19 @@ static void __init ge_imp3a_setup_arch(void)
 		ppc_md.progress("ge_imp3a_setup_arch()", 0);
 
 #ifdef CONFIG_PCI
+=======
+static void ge_imp3a_pci_assign_primary(void)
+{
+#ifdef CONFIG_PCI
+	struct device_node *np;
+	struct resource rsrc;
+
+>>>>>>> refs/remotes/origin/master
 	for_each_node_by_type(np, "pci") {
 		if (of_device_is_compatible(np, "fsl,mpc8540-pci") ||
 		    of_device_is_compatible(np, "fsl,mpc8548-pcie") ||
 		    of_device_is_compatible(np, "fsl,p2020-pcie")) {
+<<<<<<< HEAD
 			struct resource rsrc;
 			of_address_to_resource(np, 0, &rsrc);
 			if ((rsrc.start & 0xfffff) == primary_phb_addr)
@@ -131,6 +144,31 @@ static void __init ge_imp3a_setup_arch(void)
 		ppc_md.pci_dma_dev_setup = pci_dma_dev_setup_swiotlb;
 	}
 #endif
+=======
+			of_address_to_resource(np, 0, &rsrc);
+			if ((rsrc.start & 0xfffff) == 0x9000)
+				fsl_pci_primary = np;
+		}
+	}
+#endif
+}
+
+/*
+ * Setup the architecture
+ */
+static void __init ge_imp3a_setup_arch(void)
+{
+	struct device_node *regs;
+
+	if (ppc_md.progress)
+		ppc_md.progress("ge_imp3a_setup_arch()", 0);
+
+	mpc85xx_smp_init();
+
+	ge_imp3a_pci_assign_primary();
+
+	swiotlb_detect_4g();
+>>>>>>> refs/remotes/origin/master
 
 	/* Remap basic board registers */
 	regs = of_find_compatible_node(NULL, NULL, "ge,imp3a-fpga-regs");
@@ -215,6 +253,7 @@ static int __init ge_imp3a_probe(void)
 {
 	unsigned long root = of_get_flat_dt_root();
 
+<<<<<<< HEAD
 	if (of_flat_dt_is_compatible(root, "ge,IMP3A")) {
 #ifdef CONFIG_PCI
 		primary_phb_addr = 0x9000;
@@ -226,6 +265,12 @@ static int __init ge_imp3a_probe(void)
 }
 
 machine_device_initcall(ge_imp3a, mpc85xx_common_publish_devices);
+=======
+	return of_flat_dt_is_compatible(root, "ge,IMP3A");
+}
+
+machine_arch_initcall(ge_imp3a, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/master
 
 machine_arch_initcall(ge_imp3a, swiotlb_setup_bus_notifier);
 

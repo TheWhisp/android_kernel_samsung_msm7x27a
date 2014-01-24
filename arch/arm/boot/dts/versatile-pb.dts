@@ -41,7 +41,11 @@
 			mmc@b000 {
 				compatible = "arm,primecell";
 				reg = <0xb000 0x1000>;
+<<<<<<< HEAD
 				interrupts = <23 34>;
+=======
+				interrupts-extended = <&vic 23 &sic 2>;
+>>>>>>> refs/remotes/origin/master
 			};
 		};
 	};

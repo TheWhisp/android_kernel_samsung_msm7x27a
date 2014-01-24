@@ -25,12 +25,18 @@
  * offset: absolute starting position within the master MTD device; if
  * 	defined as MTDPART_OFS_APPEND, the partition will start where the
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 	previous one ended; if MTDPART_OFS_NXTBLK, at the next erase block.
 =======
  *	previous one ended; if MTDPART_OFS_NXTBLK, at the next erase block;
  *	if MTDPART_OFS_RETAIN, consume as much as possible, leaving size
  *	after the end of partition.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	previous one ended; if MTDPART_OFS_NXTBLK, at the next erase block;
+ *	if MTDPART_OFS_RETAIN, consume as much as possible, leaving size
+ *	after the end of partition.
+>>>>>>> refs/remotes/origin/master
  * mask_flags: contains flags that have to be masked (removed) from the
  * 	master MTD flag set for the corresponding MTD partition.
  * 	For example, to force a read-only partition, simply adding
@@ -49,9 +55,13 @@ struct mtd_partition {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MTDPART_OFS_RETAIN	(-3)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MTDPART_OFS_RETAIN	(-3)
+>>>>>>> refs/remotes/origin/master
 #define MTDPART_OFS_NXTBLK	(-2)
 #define MTDPART_OFS_APPEND	(-1)
 #define MTDPART_SIZ_FULL	(0)
@@ -59,7 +69,10 @@ struct mtd_partition {
 
 struct mtd_info;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct device_node;
 
 /**
@@ -73,9 +86,12 @@ struct mtd_part_parser_data {
 };
 
 
+<<<<<<< HEAD
 void part_fill_badblockstats(struct mtd_info *mtd);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Functions dealing with the various ways of partitioning the space
  */
@@ -85,15 +101,21 @@ struct mtd_part_parser {
 	struct module *owner;
 	const char *name;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int (*parse_fn)(struct mtd_info *, struct mtd_partition **, unsigned long);
 =======
 	int (*parse_fn)(struct mtd_info *, struct mtd_partition **,
 			struct mtd_part_parser_data *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*parse_fn)(struct mtd_info *, struct mtd_partition **,
+			struct mtd_part_parser_data *);
+>>>>>>> refs/remotes/origin/master
 };
 
 extern int register_mtd_parser(struct mtd_part_parser *parser);
 extern int deregister_mtd_parser(struct mtd_part_parser *parser);
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern int parse_mtd_partitions(struct mtd_info *master, const char **types,
 				struct mtd_partition **pparts, unsigned long origin);
@@ -128,5 +150,13 @@ int mtd_is_partition(struct mtd_info *mtd);
 int mtd_add_partition(struct mtd_info *master, char *name,
 		      long long offset, long long length);
 int mtd_del_partition(struct mtd_info *master, int partno);
+=======
+
+int mtd_is_partition(const struct mtd_info *mtd);
+int mtd_add_partition(struct mtd_info *master, char *name,
+		      long long offset, long long length);
+int mtd_del_partition(struct mtd_info *master, int partno);
+uint64_t mtd_get_device_size(const struct mtd_info *mtd);
+>>>>>>> refs/remotes/origin/master
 
 #endif

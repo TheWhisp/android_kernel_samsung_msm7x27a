@@ -176,10 +176,13 @@ static void nilfs_i_callback(struct rcu_head *head)
 	struct nilfs_mdt_info *mdi = NILFS_MDT(inode);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (mdi) {
 		kfree(mdi->mi_bgl); /* kfree(NULL) is safe */
 		kfree(mdi);
@@ -559,8 +562,15 @@ int nilfs_attach_checkpoint(struct super_block *sb, __u64 cno, int curr_mnt,
 	if (err)
 		goto failed_bh;
 
+<<<<<<< HEAD
 	atomic_set(&root->inodes_count, le64_to_cpu(raw_cp->cp_inodes_count));
 	atomic_set(&root->blocks_count, le64_to_cpu(raw_cp->cp_blocks_count));
+=======
+	atomic64_set(&root->inodes_count,
+			le64_to_cpu(raw_cp->cp_inodes_count));
+	atomic64_set(&root->blocks_count,
+			le64_to_cpu(raw_cp->cp_blocks_count));
+>>>>>>> refs/remotes/origin/master
 
 	nilfs_cpfile_put_checkpoint(nilfs->ns_cpfile, cno, bh_cp);
 
@@ -614,6 +624,10 @@ static int nilfs_statfs(struct dentry *dentry, struct kstatfs *buf)
 	unsigned long overhead;
 	unsigned long nrsvblocks;
 	sector_t nfreeblocks;
+<<<<<<< HEAD
+=======
+	u64 nmaxinodes, nfreeinodes;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	/*
@@ -638,14 +652,42 @@ static int nilfs_statfs(struct dentry *dentry, struct kstatfs *buf)
 	if (unlikely(err))
 		return err;
 
+<<<<<<< HEAD
+=======
+	err = nilfs_ifile_count_free_inodes(root->ifile,
+					    &nmaxinodes, &nfreeinodes);
+	if (unlikely(err)) {
+		printk(KERN_WARNING
+			"NILFS warning: fail to count free inodes: err %d.\n",
+			err);
+		if (err == -ERANGE) {
+			/*
+			 * If nilfs_palloc_count_max_entries() returns
+			 * -ERANGE error code then we simply treat
+			 * curent inodes count as maximum possible and
+			 * zero as free inodes value.
+			 */
+			nmaxinodes = atomic64_read(&root->inodes_count);
+			nfreeinodes = 0;
+			err = 0;
+		} else
+			return err;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	buf->f_type = NILFS_SUPER_MAGIC;
 	buf->f_bsize = sb->s_blocksize;
 	buf->f_blocks = blocks - overhead;
 	buf->f_bfree = nfreeblocks;
 	buf->f_bavail = (buf->f_bfree >= nrsvblocks) ?
 		(buf->f_bfree - nrsvblocks) : 0;
+<<<<<<< HEAD
 	buf->f_files = atomic_read(&root->inodes_count);
 	buf->f_ffree = 0; /* nilfs_count_free_inodes(sb); */
+=======
+	buf->f_files = nmaxinodes;
+	buf->f_ffree = nfreeinodes;
+>>>>>>> refs/remotes/origin/master
 	buf->f_namelen = NILFS_NAME_LEN;
 	buf->f_fsid.val[0] = (u32)id;
 	buf->f_fsid.val[1] = (u32)(id >> 32);
@@ -654,18 +696,24 @@ static int nilfs_statfs(struct dentry *dentry, struct kstatfs *buf)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nilfs_show_options(struct seq_file *seq, struct vfsmount *vfs)
 {
 	struct super_block *sb = vfs->mnt_sb;
 	struct the_nilfs *nilfs = sb->s_fs_info;
 	struct nilfs_root *root = NILFS_I(vfs->mnt_root->d_inode)->i_root;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int nilfs_show_options(struct seq_file *seq, struct dentry *dentry)
 {
 	struct super_block *sb = dentry->d_sb;
 	struct the_nilfs *nilfs = sb->s_fs_info;
 	struct nilfs_root *root = NILFS_I(dentry->d_inode)->i_root;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!nilfs_test_opt(nilfs, BARRIER))
 		seq_puts(seq, ",nobarrier");
@@ -689,6 +737,7 @@ static const struct super_operations nilfs_sops = {
 	.alloc_inode    = nilfs_alloc_inode,
 	.destroy_inode  = nilfs_destroy_inode,
 	.dirty_inode    = nilfs_dirty_inode,
+<<<<<<< HEAD
 	/* .write_inode    = nilfs_write_inode, */
 	/* .put_inode      = nilfs_put_inode, */
 	/* .drop_inode	  = nilfs_drop_inode, */
@@ -703,6 +752,15 @@ static const struct super_operations nilfs_sops = {
 	.statfs         = nilfs_statfs,
 	.remount_fs     = nilfs_remount,
 	/* .umount_begin */
+=======
+	.evict_inode    = nilfs_evict_inode,
+	.put_super      = nilfs_put_super,
+	.sync_fs        = nilfs_sync_fs,
+	.freeze_fs	= nilfs_freeze,
+	.unfreeze_fs	= nilfs_unfreeze,
+	.statfs         = nilfs_statfs,
+	.remount_fs     = nilfs_remount,
+>>>>>>> refs/remotes/origin/master
 	.show_options = nilfs_show_options
 };
 
@@ -931,6 +989,7 @@ static int nilfs_get_root_dentry(struct super_block *sb,
 		dentry = d_find_alias(inode);
 		if (!dentry) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dentry = d_alloc_root(inode);
 			if (!dentry) {
 				iput(inode);
@@ -938,6 +997,10 @@ static int nilfs_get_root_dentry(struct super_block *sb,
 			dentry = d_make_root(inode);
 			if (!dentry) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dentry = d_make_root(inode);
+			if (!dentry) {
+>>>>>>> refs/remotes/origin/master
 				ret = -ENOMEM;
 				goto failed_dentry;
 			}
@@ -997,6 +1060,7 @@ static int nilfs_attach_snapshot(struct super_block *s, __u64 cno,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int nilfs_tree_was_touched(struct dentry *root_dentry)
 {
 	return root_dentry->d_count > 1;
@@ -1004,16 +1068,27 @@ static int nilfs_tree_was_touched(struct dentry *root_dentry)
 
 /**
  * nilfs_try_to_shrink_tree() - try to shrink dentries of a checkpoint
+=======
+/**
+ * nilfs_tree_is_busy() - try to shrink dentries of a checkpoint
+>>>>>>> refs/remotes/origin/master
  * @root_dentry: root dentry of the tree to be shrunk
  *
  * This function returns true if the tree was in-use.
  */
+<<<<<<< HEAD
 static int nilfs_try_to_shrink_tree(struct dentry *root_dentry)
 {
 	if (have_submounts(root_dentry))
 		return true;
 	shrink_dcache_parent(root_dentry);
 	return nilfs_tree_was_touched(root_dentry);
+=======
+static bool nilfs_tree_is_busy(struct dentry *root_dentry)
+{
+	shrink_dcache_parent(root_dentry);
+	return d_count(root_dentry) > 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 int nilfs_checkpoint_is_mounted(struct super_block *sb, __u64 cno)
@@ -1037,8 +1112,12 @@ int nilfs_checkpoint_is_mounted(struct super_block *sb, __u64 cno)
 		if (inode) {
 			dentry = d_find_alias(inode);
 			if (dentry) {
+<<<<<<< HEAD
 				if (nilfs_tree_was_touched(dentry))
 					ret = nilfs_try_to_shrink_tree(dentry);
+=======
+				ret = nilfs_tree_is_busy(dentry);
+>>>>>>> refs/remotes/origin/master
 				dput(dentry);
 			}
 			iput(inode);
@@ -1081,9 +1160,13 @@ nilfs_fill_super(struct super_block *sb, void *data, int silent)
 	sb->s_root = NULL;
 	sb->s_time_gran = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	sb->s_max_links = NILFS_LINK_MAX;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sb->s_max_links = NILFS_LINK_MAX;
+>>>>>>> refs/remotes/origin/master
 
 	bdi = sb->s_bdev->bd_inode->i_mapping->backing_dev_info;
 	sb->s_bdi = bdi ? : &default_backing_dev_info;
@@ -1313,7 +1396,12 @@ nilfs_mount(struct file_system_type *fs_type, int flags,
 		err = -EBUSY;
 		goto failed;
 	}
+<<<<<<< HEAD
 	s = sget(fs_type, nilfs_test_bdev_super, nilfs_set_bdev_super, sd.bdev);
+=======
+	s = sget(fs_type, nilfs_test_bdev_super, nilfs_set_bdev_super, flags,
+		 sd.bdev);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&sd.bdev->bd_fsfreeze_mutex);
 	if (IS_ERR(s)) {
 		err = PTR_ERR(s);
@@ -1326,7 +1414,10 @@ nilfs_mount(struct file_system_type *fs_type, int flags,
 		s_new = true;
 
 		/* New superblock instance created */
+<<<<<<< HEAD
 		s->s_flags = flags;
+=======
+>>>>>>> refs/remotes/origin/master
 		s->s_mode = mode;
 		strlcpy(s->s_id, bdevname(sd.bdev, b), sizeof(s->s_id));
 		sb_set_blocksize(s, block_size(sd.bdev));
@@ -1337,11 +1428,16 @@ nilfs_mount(struct file_system_type *fs_type, int flags,
 
 		s->s_flags |= MS_ACTIVE;
 	} else if (!sd.cno) {
+<<<<<<< HEAD
 		int busy = false;
 
 		if (nilfs_tree_was_touched(s->s_root)) {
 			busy = nilfs_try_to_shrink_tree(s->s_root);
 			if (busy && (flags ^ s->s_flags) & MS_RDONLY) {
+=======
+		if (nilfs_tree_is_busy(s->s_root)) {
+			if ((flags ^ s->s_flags) & MS_RDONLY) {
+>>>>>>> refs/remotes/origin/master
 				printk(KERN_ERR "NILFS: the device already "
 				       "has a %s mount.\n",
 				       (s->s_flags & MS_RDONLY) ?
@@ -1349,8 +1445,12 @@ nilfs_mount(struct file_system_type *fs_type, int flags,
 				err = -EBUSY;
 				goto failed_super;
 			}
+<<<<<<< HEAD
 		}
 		if (!busy) {
+=======
+		} else {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Try remount to setup mount states if the current
 			 * tree is not mounted and only snapshots use this sb.
@@ -1390,6 +1490,10 @@ struct file_system_type nilfs_fs_type = {
 	.kill_sb  = kill_block_super,
 	.fs_flags = FS_REQUIRES_DEV,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("nilfs2");
+>>>>>>> refs/remotes/origin/master
 
 static void nilfs_inode_init_once(void *obj)
 {
@@ -1411,6 +1515,15 @@ static void nilfs_segbuf_init_once(void *obj)
 
 static void nilfs_destroy_cachep(void)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+
+>>>>>>> refs/remotes/origin/master
 	if (nilfs_inode_cachep)
 		kmem_cache_destroy(nilfs_inode_cachep);
 	if (nilfs_transaction_cachep)

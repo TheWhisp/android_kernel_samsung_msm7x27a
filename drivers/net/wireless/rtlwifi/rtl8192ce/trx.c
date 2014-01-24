@@ -1,10 +1,14 @@
 /******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
 =======
  * Copyright(c) 2009-2012  Realtek Corporation.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -34,6 +38,10 @@
 #include "../wifi.h"
 #include "../pci.h"
 #include "../base.h"
+<<<<<<< HEAD
+=======
+#include "../stats.h"
+>>>>>>> refs/remotes/origin/master
 #include "reg.h"
 #include "def.h"
 #include "phy.h"
@@ -46,12 +54,17 @@ static u8 _rtl92ce_map_hwqueue_to_fwqueue(struct sk_buff *skb, u8 hw_queue)
 
 	if (unlikely(ieee80211_is_beacon(fc)))
 		return QSLT_BEACON;
+<<<<<<< HEAD
 	if (ieee80211_is_mgmt(fc))
+=======
+	if (ieee80211_is_mgmt(fc) || ieee80211_is_ctl(fc))
+>>>>>>> refs/remotes/origin/master
 		return QSLT_MGNT;
 
 	return skb->priority;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int _rtl92ce_rate_mapping(bool isht, u8 desc_rate, bool first_ampdu)
 {
@@ -153,6 +166,8 @@ static int _rtl92ce_rate_mapping(bool isht, u8 desc_rate, bool first_ampdu)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u8 _rtl92c_query_rxpwrpercentage(char antpower)
 {
 	if ((antpower <= -100) || (antpower >= 20))
@@ -183,6 +198,7 @@ static u8 _rtl92c_evm_db_to_percentage(char value)
 	return ret_val;
 }
 
+<<<<<<< HEAD
 static long _rtl92ce_translate_todbm(struct ieee80211_hw *hw,
 				     u8 signal_strength_index)
 {
@@ -193,6 +209,8 @@ static long _rtl92ce_translate_todbm(struct ieee80211_hw *hw,
 	return signal_power;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static long _rtl92ce_signal_scale_mapping(struct ieee80211_hw *hw,
 		long currsig)
 {
@@ -233,6 +251,7 @@ static void _rtl92ce_query_rxphystatus(struct ieee80211_hw *hw,
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 	struct phy_sts_cck_8192s_t *cck_buf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	s8 rx_pwr_all, rx_pwr[4];
 =======
 	s8 rx_pwr_all = 0, rx_pwr[4];
@@ -241,6 +260,13 @@ static void _rtl92ce_query_rxphystatus(struct ieee80211_hw *hw,
 	u8 i, max_spatial_stream;
 	u32 rssi, total_rssi = 0;
 	bool in_powersavemode = false;
+=======
+	struct rtl_ps_ctl *ppsc = rtl_psc(rtlpriv);
+	s8 rx_pwr_all = 0, rx_pwr[4];
+	u8 evm, pwdb_all, rf_rx_num = 0;
+	u8 i, max_spatial_stream;
+	u32 rssi, total_rssi = 0;
+>>>>>>> refs/remotes/origin/master
 	bool is_cck_rate;
 
 	is_cck_rate = RX_HAL_IS_CCK_RATE(pdesc);
@@ -248,15 +274,24 @@ static void _rtl92ce_query_rxphystatus(struct ieee80211_hw *hw,
 	pstats->packet_toself = packet_toself;
 	pstats->is_cck = is_cck_rate;
 	pstats->packet_beacon = packet_beacon;
+<<<<<<< HEAD
 	pstats->is_cck = is_cck_rate;
 	pstats->rx_mimo_signalquality[0] = -1;
 	pstats->rx_mimo_signalquality[1] = -1;
+=======
+	pstats->rx_mimo_sig_qual[0] = -1;
+	pstats->rx_mimo_sig_qual[1] = -1;
+>>>>>>> refs/remotes/origin/master
 
 	if (is_cck_rate) {
 		u8 report, cck_highpwr;
 		cck_buf = (struct phy_sts_cck_8192s_t *)p_drvinfo;
 
+<<<<<<< HEAD
 		if (!in_powersavemode)
+=======
+		if (ppsc->rfpwr_state == ERFON)
+>>>>>>> refs/remotes/origin/master
 			cck_highpwr = (u8) rtl_get_bbreg(hw,
 						 RFPGA0_XA_HSSIPARAMETER2,
 						 BIT(9));
@@ -301,10 +336,37 @@ static void _rtl92ce_query_rxphystatus(struct ieee80211_hw *hw,
 			}
 		}
 
+<<<<<<< HEAD
 		pwdb_all = _rtl92c_query_rxpwrpercentage(rx_pwr_all);
 		pstats->rx_pwdb_all = pwdb_all;
 		pstats->recvsignalpower = rx_pwr_all;
 
+=======
+		pwdb_all = rtl_query_rxpwrpercentage(rx_pwr_all);
+		/* CCK gain is smaller than OFDM/MCS gain,
+		 * so we add gain diff by experiences,
+		 * the val is 6
+		 */
+		pwdb_all += 6;
+		if (pwdb_all > 100)
+			pwdb_all = 100;
+		/* modify the offset to make the same
+		 * gain index with OFDM.
+		 */
+		if (pwdb_all > 34 && pwdb_all <= 42)
+			pwdb_all -= 2;
+		else if (pwdb_all > 26 && pwdb_all <= 34)
+			pwdb_all -= 6;
+		else if (pwdb_all > 14 && pwdb_all <= 26)
+			pwdb_all -= 8;
+		else if (pwdb_all > 4 && pwdb_all <= 14)
+			pwdb_all -= 4;
+
+		pstats->rx_pwdb_all = pwdb_all;
+		pstats->recvsignalpower = rx_pwr_all;
+
+		/* (3) Get Signal Quality (EVM) */
+>>>>>>> refs/remotes/origin/master
 		if (packet_match_bssid) {
 			u8 sq;
 			if (pstats->rx_pwdb_all > 40)
@@ -320,27 +382,55 @@ static void _rtl92ce_query_rxphystatus(struct ieee80211_hw *hw,
 			}
 
 			pstats->signalquality = sq;
+<<<<<<< HEAD
 			pstats->rx_mimo_signalquality[0] = sq;
 			pstats->rx_mimo_signalquality[1] = -1;
+=======
+			pstats->rx_mimo_sig_qual[0] = sq;
+			pstats->rx_mimo_sig_qual[1] = -1;
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		rtlpriv->dm.rfpath_rxenable[0] =
 		    rtlpriv->dm.rfpath_rxenable[1] = true;
+<<<<<<< HEAD
 		for (i = RF90_PATH_A; i < RF90_PATH_MAX; i++) {
+=======
+		/* (1)Get RSSI for HT rate */
+		for (i = RF90_PATH_A; i < RF90_PATH_MAX; i++) {
+			/* we will judge RF RX path now. */
+>>>>>>> refs/remotes/origin/master
 			if (rtlpriv->dm.rfpath_rxenable[i])
 				rf_rx_num++;
 
 			rx_pwr[i] =
 			    ((p_drvinfo->gain_trsw[i] & 0x3f) * 2) - 110;
+<<<<<<< HEAD
 			rssi = _rtl92c_query_rxpwrpercentage(rx_pwr[i]);
 			total_rssi += rssi;
 			rtlpriv->stats.rx_snr_db[i] =
 			    (long)(p_drvinfo->rxsnr[i] / 2);
 
+=======
+			/* Translate DBM to percentage. */
+			rssi = _rtl92c_query_rxpwrpercentage(rx_pwr[i]);
+			total_rssi += rssi;
+			/* Get Rx snr value in DB */
+			rtlpriv->stats.rx_snr_db[i] =
+			    (long)(p_drvinfo->rxsnr[i] / 2);
+
+			/* Record Signal Strength for next packet */
+>>>>>>> refs/remotes/origin/master
 			if (packet_match_bssid)
 				pstats->rx_mimo_signalstrength[i] = (u8) rssi;
 		}
 
+<<<<<<< HEAD
+=======
+		/* (2)PWDB, Average PWDB cacluated by
+		 * hardware (for rate adaptive)
+		 */
+>>>>>>> refs/remotes/origin/master
 		rx_pwr_all = ((p_drvinfo->pwdb_all >> 1) & 0x7f) - 110;
 		pwdb_all = _rtl92c_query_rxpwrpercentage(rx_pwr_all);
 		pstats->rx_pwdb_all = pwdb_all;
@@ -348,12 +438,18 @@ static void _rtl92ce_query_rxphystatus(struct ieee80211_hw *hw,
 		pstats->recvsignalpower = rx_pwr_all;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (pdesc->rxht && pdesc->rxmcs >= DESC92C_RATEMCS8 &&
 		    pdesc->rxmcs <= DESC92C_RATEMCS15)
 =======
 		if (pdesc->rxht && pdesc->rxmcs >= DESC92_RATEMCS8 &&
 		    pdesc->rxmcs <= DESC92_RATEMCS15)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* (3)EVM of HT rate */
+		if (pstats->is_ht && pstats->rate >= DESC92_RATEMCS8 &&
+		    pstats->rate <= DESC92_RATEMCS15)
+>>>>>>> refs/remotes/origin/master
 			max_spatial_stream = 2;
 		else
 			max_spatial_stream = 1;
@@ -362,15 +458,31 @@ static void _rtl92ce_query_rxphystatus(struct ieee80211_hw *hw,
 			evm = _rtl92c_evm_db_to_percentage(p_drvinfo->rxevm[i]);
 
 			if (packet_match_bssid) {
+<<<<<<< HEAD
 				if (i == 0)
 					pstats->signalquality =
 					    (u8) (evm & 0xff);
 				pstats->rx_mimo_signalquality[i] =
 				    (u8) (evm & 0xff);
+=======
+				/* Fill value in RFD, Get the first
+				 * spatial stream only
+				 */
+				if (i == 0)
+					pstats->signalquality =
+					    (u8) (evm & 0xff);
+				pstats->rx_mimo_sig_qual[i] = (u8) (evm & 0xff);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	/* UI BSS List signal strength(in percentage),
+	 * make it good looking, from 0~100.
+	 */
+>>>>>>> refs/remotes/origin/master
 	if (is_cck_rate)
 		pstats->signalstrength =
 		    (u8) (_rtl92ce_signal_scale_mapping(hw, pwdb_all));
@@ -380,6 +492,7 @@ static void _rtl92ce_query_rxphystatus(struct ieee80211_hw *hw,
 			  (hw, total_rssi /= rf_rx_num));
 }
 
+<<<<<<< HEAD
 static void _rtl92ce_process_ui_rssi(struct ieee80211_hw *hw,
 		struct rtl_stats *pstats)
 {
@@ -596,6 +709,8 @@ static void _rtl92ce_process_phyinfo(struct ieee80211_hw *hw,
 	_rtl92ce_process_ui_link_quality(hw, pcurrent_stats);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void _rtl92ce_translate_rx_signal_stuff(struct ieee80211_hw *hw,
 					       struct sk_buff *skb,
 					       struct rtl_stats *pstats,
@@ -609,12 +724,18 @@ static void _rtl92ce_translate_rx_signal_stuff(struct ieee80211_hw *hw,
 	u8 *tmp_buf;
 	u8 *praddr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 *psaddr;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	__le16 fc;
 	u16 type, c_fc;
 	bool packet_matchbssid, packet_toself, packet_beacon;
+=======
+	__le16 fc;
+	u16 type, c_fc;
+	bool packet_matchbssid, packet_toself, packet_beacon = false;
+>>>>>>> refs/remotes/origin/master
 
 	tmp_buf = skb->data + pstats->rx_drvinfo_size + pstats->rx_bufshift;
 
@@ -623,6 +744,7 @@ static void _rtl92ce_translate_rx_signal_stuff(struct ieee80211_hw *hw,
 	c_fc = le16_to_cpu(fc);
 	type = WLAN_FC_GET_TYPE(fc);
 	praddr = hdr->addr1;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	psaddr = hdr->addr2;
 =======
@@ -638,6 +760,19 @@ static void _rtl92ce_translate_rx_signal_stuff(struct ieee80211_hw *hw,
 
 	packet_toself = packet_matchbssid &&
 	    (!compare_ether_addr(praddr, rtlefuse->dev_addr));
+=======
+
+	packet_matchbssid =
+	    ((IEEE80211_FTYPE_CTL != type) &&
+	     ether_addr_equal(mac->bssid,
+			      (c_fc & IEEE80211_FCTL_TODS) ? hdr->addr1 :
+			      (c_fc & IEEE80211_FCTL_FROMDS) ? hdr->addr2 :
+			      hdr->addr3) &&
+	     (!pstats->hwerror) && (!pstats->crc) && (!pstats->icv));
+
+	packet_toself = packet_matchbssid &&
+	     ether_addr_equal(praddr, rtlefuse->dev_addr);
+>>>>>>> refs/remotes/origin/master
 
 	if (ieee80211_is_beacon(fc))
 		packet_beacon = true;
@@ -646,7 +781,11 @@ static void _rtl92ce_translate_rx_signal_stuff(struct ieee80211_hw *hw,
 				   packet_matchbssid, packet_toself,
 				   packet_beacon);
 
+<<<<<<< HEAD
 	_rtl92ce_process_phyinfo(hw, tmp_buf, pstats);
+=======
+	rtl_process_phyinfo(hw, tmp_buf, pstats);
+>>>>>>> refs/remotes/origin/master
 }
 
 bool rtl92ce_rx_query_desc(struct ieee80211_hw *hw,
@@ -656,7 +795,11 @@ bool rtl92ce_rx_query_desc(struct ieee80211_hw *hw,
 {
 	struct rx_fwinfo_92c *p_drvinfo;
 	struct rx_desc_92c *pdesc = (struct rx_desc_92c *)p_desc;
+<<<<<<< HEAD
 
+=======
+	struct ieee80211_hdr *hdr;
+>>>>>>> refs/remotes/origin/master
 	u32 phystatus = GET_RX_DESC_PHYST(pdesc);
 	stats->length = (u16) GET_RX_DESC_PKT_LEN(pdesc);
 	stats->rx_drvinfo_size = (u8) GET_RX_DESC_DRV_INFO_SIZE(pdesc) *
@@ -669,6 +812,7 @@ bool rtl92ce_rx_query_desc(struct ieee80211_hw *hw,
 	stats->rate = (u8) GET_RX_DESC_RXMCS(pdesc);
 	stats->shortpreamble = (u16) GET_RX_DESC_SPLCP(pdesc);
 	stats->isampdu = (bool) (GET_RX_DESC_PAGGR(pdesc) == 1);
+<<<<<<< HEAD
 	stats->isampdu = (bool) ((GET_RX_DESC_PAGGR(pdesc) == 1)
 				   && (GET_RX_DESC_FAGGR(pdesc) == 1));
 	stats->timestamp_low = GET_RX_DESC_TSFL(pdesc);
@@ -713,6 +857,63 @@ bool rtl92ce_rx_query_desc(struct ieee80211_hw *hw,
 	rx_status->mactime = GET_RX_DESC_TSFL(pdesc);
 	if (phystatus) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	stats->isfirst_ampdu = (bool) ((GET_RX_DESC_PAGGR(pdesc) == 1)
+				   && (GET_RX_DESC_FAGGR(pdesc) == 1));
+	stats->timestamp_low = GET_RX_DESC_TSFL(pdesc);
+	stats->rx_is40Mhzpacket = (bool) GET_RX_DESC_BW(pdesc);
+	stats->is_ht = (bool)GET_RX_DESC_RXHT(pdesc);
+
+	stats->is_cck = RX_HAL_IS_CCK_RATE(pdesc);
+
+	rx_status->freq = hw->conf.chandef.chan->center_freq;
+	rx_status->band = hw->conf.chandef.chan->band;
+
+	hdr = (struct ieee80211_hdr *)(skb->data + stats->rx_drvinfo_size
+			+ stats->rx_bufshift);
+
+	if (stats->crc)
+		rx_status->flag |= RX_FLAG_FAILED_FCS_CRC;
+
+	if (stats->rx_is40Mhzpacket)
+		rx_status->flag |= RX_FLAG_40MHZ;
+
+	if (stats->is_ht)
+		rx_status->flag |= RX_FLAG_HT;
+
+	rx_status->flag |= RX_FLAG_MACTIME_START;
+
+	/* hw will set stats->decrypted true, if it finds the
+	 * frame is open data frame or mgmt frame.
+	 * So hw will not decryption robust managment frame
+	 * for IEEE80211w but still set status->decrypted
+	 * true, so here we should set it back to undecrypted
+	 * for IEEE80211w frame, and mac80211 sw will help
+	 * to decrypt it
+	 */
+	if (stats->decrypted) {
+		if (!hdr) {
+			/* In testing, hdr was NULL here */
+			return false;
+		}
+		if ((ieee80211_is_robust_mgmt_frame(hdr)) &&
+		    (ieee80211_has_protected(hdr->frame_control)))
+			rx_status->flag &= ~RX_FLAG_DECRYPTED;
+		else
+			rx_status->flag |= RX_FLAG_DECRYPTED;
+	}
+	/* rate_idx: index of data rate into band's
+	 * supported rates or MCS index if HT rates
+	 * are use (RX_FLAG_HT)
+	 * Notice: this is diff with windows define
+	 */
+	rx_status->rate_idx = rtlwifi_rate_mapping(hw,
+				stats->is_ht, stats->rate,
+				stats->isfirst_ampdu);
+
+	rx_status->mactime = stats->timestamp_low;
+	if (phystatus) {
+>>>>>>> refs/remotes/origin/master
 		p_drvinfo = (struct rx_fwinfo_92c *)(skb->data +
 						     stats->rx_bufshift);
 
@@ -722,15 +923,25 @@ bool rtl92ce_rx_query_desc(struct ieee80211_hw *hw,
 	}
 
 	/*rx_status->qual = stats->signal; */
+<<<<<<< HEAD
 	rx_status->signal = stats->rssi + 10;
 	/*rx_status->noise = -stats->noise; */
+=======
+	rx_status->signal = stats->recvsignalpower + 10;
+>>>>>>> refs/remotes/origin/master
 
 	return true;
 }
 
 void rtl92ce_tx_fill_desc(struct ieee80211_hw *hw,
 			  struct ieee80211_hdr *hdr, u8 *pdesc_tx,
+<<<<<<< HEAD
 			  struct ieee80211_tx_info *info, struct sk_buff *skb,
+=======
+			  struct ieee80211_tx_info *info,
+			  struct ieee80211_sta *sta,
+			  struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/master
 			  u8 hw_queue, struct rtl_tcb_desc *tcb_desc)
 {
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
@@ -738,8 +949,12 @@ void rtl92ce_tx_fill_desc(struct ieee80211_hw *hw,
 	struct rtl_pci *rtlpci = rtl_pcidev(rtl_pcipriv(hw));
 	struct rtl_ps_ctl *ppsc = rtl_psc(rtl_priv(hw));
 	bool defaultadapter = true;
+<<<<<<< HEAD
 	struct ieee80211_sta *sta;
 	u8 *pdesc = (u8 *) pdesc_tx;
+=======
+	u8 *pdesc = pdesc_tx;
+>>>>>>> refs/remotes/origin/master
 	u16 seq_number;
 	__le16 fc = hdr->frame_control;
 	u8 fw_qsel = _rtl92ce_map_hwqueue_to_fwqueue(skb, hw_queue);
@@ -752,17 +967,35 @@ void rtl92ce_tx_fill_desc(struct ieee80211_hw *hw,
 	dma_addr_t mapping = pci_map_single(rtlpci->pdev,
 					    skb->data, skb->len,
 					    PCI_DMA_TODEVICE);
+<<<<<<< HEAD
 	u8 bw_40 = 0;
 
+=======
+
+	u8 bw_40 = 0;
+
+	if (pci_dma_mapping_error(rtlpci->pdev, mapping)) {
+		RT_TRACE(rtlpriv, COMP_SEND, DBG_TRACE,
+			 "DMA mapping error");
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 	rcu_read_lock();
 	sta = get_sta(hw, mac->vif, mac->bssid);
 	if (mac->opmode == NL80211_IFTYPE_STATION) {
 		bw_40 = mac->bw_40;
 	} else if (mac->opmode == NL80211_IFTYPE_AP ||
+<<<<<<< HEAD
 		mac->opmode == NL80211_IFTYPE_ADHOC) {
 		if (sta)
 			bw_40 = sta->ht_cap.cap &
 				IEEE80211_HT_CAP_SUP_WIDTH_20_40;
+=======
+		   mac->opmode == NL80211_IFTYPE_ADHOC ||
+		   mac->opmode == NL80211_IFTYPE_MESH_POINT) {
+		if (sta)
+			bw_40 = sta->bandwidth >= IEEE80211_STA_RX_BW_40;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	seq_number = (le16_to_cpu(hdr->seq_ctrl) & IEEE80211_SCTL_SEQ) >> 4;
@@ -803,10 +1036,14 @@ void rtl92ce_tx_fill_desc(struct ieee80211_hw *hw,
 		SET_TX_DESC_RTS_SC(pdesc, tcb_desc->rts_sc);
 		SET_TX_DESC_RTS_SHORT(pdesc,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				      ((tcb_desc->rts_rate <= DESC92C_RATE54M) ?
 =======
 				      ((tcb_desc->rts_rate <= DESC92_RATE54M) ?
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      ((tcb_desc->rts_rate <= DESC92_RATE54M) ?
+>>>>>>> refs/remotes/origin/master
 				       (tcb_desc->rts_use_shortpreamble ? 1 : 0)
 				       : (tcb_desc->rts_use_shortgi ? 1 : 0)));
 
@@ -864,10 +1101,14 @@ void rtl92ce_tx_fill_desc(struct ieee80211_hw *hw,
 			if (mac->rdg_en) {
 				RT_TRACE(rtlpriv, COMP_SEND, DBG_TRACE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					 ("Enable RDG function.\n"));
 =======
 					 "Enable RDG function\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 "Enable RDG function\n");
+>>>>>>> refs/remotes/origin/master
 				SET_TX_DESC_RDG_ENABLE(pdesc, 1);
 				SET_TX_DESC_HTC(pdesc, 1);
 			}
@@ -906,10 +1147,14 @@ void rtl92ce_tx_fill_desc(struct ieee80211_hw *hw,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	RT_TRACE(rtlpriv, COMP_SEND, DBG_TRACE, ("\n"));
 =======
 	RT_TRACE(rtlpriv, COMP_SEND, DBG_TRACE, "\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RT_TRACE(rtlpriv, COMP_SEND, DBG_TRACE, "\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 void rtl92ce_tx_fill_cmddesc(struct ieee80211_hw *hw,
@@ -927,16 +1172,28 @@ void rtl92ce_tx_fill_cmddesc(struct ieee80211_hw *hw,
 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)(skb->data);
 	__le16 fc = hdr->frame_control;
 
+<<<<<<< HEAD
+=======
+	if (pci_dma_mapping_error(rtlpci->pdev, mapping)) {
+		RT_TRACE(rtlpriv, COMP_SEND, DBG_TRACE,
+			 "DMA mapping error");
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 	CLEAR_PCI_TX_DESC_CONTENT(pdesc, TX_DESC_SIZE);
 
 	if (firstseg)
 		SET_TX_DESC_OFFSET(pdesc, USB_HWDESC_HEADER_LEN);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SET_TX_DESC_TX_RATE(pdesc, DESC92C_RATE1M);
 =======
 	SET_TX_DESC_TX_RATE(pdesc, DESC92_RATE1M);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SET_TX_DESC_TX_RATE(pdesc, DESC92_RATE1M);
+>>>>>>> refs/remotes/origin/master
 
 	SET_TX_DESC_SEQ(pdesc, 0);
 
@@ -956,7 +1213,11 @@ void rtl92ce_tx_fill_cmddesc(struct ieee80211_hw *hw,
 
 	SET_TX_DESC_OWN(pdesc, 1);
 
+<<<<<<< HEAD
 	SET_TX_DESC_PKT_SIZE((u8 *) pdesc, (u16) (skb->len));
+=======
+	SET_TX_DESC_PKT_SIZE(pdesc, (u16) (skb->len));
+>>>>>>> refs/remotes/origin/master
 
 	SET_TX_DESC_FIRST_SEG(pdesc, 1);
 	SET_TX_DESC_LAST_SEG(pdesc, 1);
@@ -972,25 +1233,35 @@ void rtl92ce_tx_fill_cmddesc(struct ieee80211_hw *hw,
 
 	RT_PRINT_DATA(rtlpriv, COMP_CMD, DBG_LOUD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		      "H2C Tx Cmd Content\n",
 		      pdesc, TX_DESC_SIZE);
 =======
 		      "H2C Tx Cmd Content", pdesc, TX_DESC_SIZE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      "H2C Tx Cmd Content", pdesc, TX_DESC_SIZE);
+>>>>>>> refs/remotes/origin/master
 }
 
 void rtl92ce_set_desc(u8 *pdesc, bool istx, u8 desc_name, u8 *val)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (istx == true) {
 		switch (desc_name) {
 		case HW_DESC_OWN:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (istx) {
 		switch (desc_name) {
 		case HW_DESC_OWN:
 			wmb();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			SET_TX_DESC_OWN(pdesc, 1);
 			break;
 		case HW_DESC_TX_NEXTDESC_ADDR:
@@ -998,21 +1269,30 @@ void rtl92ce_set_desc(u8 *pdesc, bool istx, u8 desc_name, u8 *val)
 			break;
 		default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			RT_ASSERT(false, ("ERR txdesc :%d"
 					  " not process\n", desc_name));
 =======
 			RT_ASSERT(false, "ERR txdesc :%d not process\n",
 				  desc_name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			RT_ASSERT(false, "ERR txdesc :%d not process\n",
+				  desc_name);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	} else {
 		switch (desc_name) {
 		case HW_DESC_RXOWN:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			wmb();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			wmb();
+>>>>>>> refs/remotes/origin/master
 			SET_RX_DESC_OWN(pdesc, 1);
 			break;
 		case HW_DESC_RXBUFF_ADDR:
@@ -1026,12 +1306,17 @@ void rtl92ce_set_desc(u8 *pdesc, bool istx, u8 desc_name, u8 *val)
 			break;
 		default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			RT_ASSERT(false, ("ERR rxdesc :%d "
 					  "not process\n", desc_name));
 =======
 			RT_ASSERT(false, "ERR rxdesc :%d not process\n",
 				  desc_name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			RT_ASSERT(false, "ERR rxdesc :%d not process\n",
+				  desc_name);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -1042,10 +1327,14 @@ u32 rtl92ce_get_desc(u8 *p_desc, bool istx, u8 desc_name)
 	u32 ret = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (istx == true) {
 =======
 	if (istx) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (istx) {
+>>>>>>> refs/remotes/origin/master
 		switch (desc_name) {
 		case HW_DESC_OWN:
 			ret = GET_TX_DESC_OWN(p_desc);
@@ -1055,12 +1344,17 @@ u32 rtl92ce_get_desc(u8 *p_desc, bool istx, u8 desc_name)
 			break;
 		default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			RT_ASSERT(false, ("ERR txdesc :%d "
 					  "not process\n", desc_name));
 =======
 			RT_ASSERT(false, "ERR txdesc :%d not process\n",
 				  desc_name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			RT_ASSERT(false, "ERR txdesc :%d not process\n",
+				  desc_name);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	} else {
@@ -1074,12 +1368,17 @@ u32 rtl92ce_get_desc(u8 *p_desc, bool istx, u8 desc_name)
 			break;
 		default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			RT_ASSERT(false, ("ERR rxdesc :%d "
 					  "not process\n", desc_name));
 =======
 			RT_ASSERT(false, "ERR rxdesc :%d not process\n",
 				  desc_name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			RT_ASSERT(false, "ERR rxdesc :%d not process\n",
+				  desc_name);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}

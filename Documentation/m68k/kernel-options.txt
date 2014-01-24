@@ -80,8 +80,11 @@ Valid names are:
   /dev/sdd: -> 0x0830 (forth SCSI disk)
   /dev/sde: -> 0x0840 (fifth SCSI disk)
   /dev/fd : -> 0x0200 (floppy disk)
+<<<<<<< HEAD
   /dev/xda: -> 0x0c00 (first XT disk, unused in Linux/m68k)
   /dev/xdb: -> 0x0c40 (second XT disk, unused in Linux/m68k)
+=======
+>>>>>>> refs/remotes/origin/master
 
   The name must be followed by a decimal number, that stands for the
 partition number. Internally, the value of the number is just
@@ -130,7 +133,10 @@ the first of these. You can find out all valid major numbers by
 looking into include/linux/major.h.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 In addition to major and minor numbers, if the device containing your
 root partition uses a partition table format with unique partition
 identifiers, then you may use them.  For instance,
@@ -145,7 +151,10 @@ follows:
 Authoritative information can be found in
 "Documentation/kernel-parameters.txt".
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 2.2) ro, rw
 -----------

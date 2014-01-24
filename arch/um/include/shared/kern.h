@@ -14,6 +14,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int errno;
 
 extern int clone(int (*proc)(void *), void *sp, int flags, void *data);
@@ -37,11 +38,16 @@ extern int pipe(int *);
 extern int sched_yield(void);
 extern int ptrace(int op, int pid, long addr, long data);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern int printf(const char *fmt, ...);
 extern void *sbrk(int increment);
 extern int pause(void);
 extern void exit(int);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

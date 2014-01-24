@@ -3,10 +3,14 @@
  *
  *	(C) 2006 Red Hat
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	(C) 2007 Bartlomiej Zolnierkiewicz
 =======
  *	(C) 2007,2011 Bartlomiej Zolnierkiewicz
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	(C) 2007,2011 Bartlomiej Zolnierkiewicz
+>>>>>>> refs/remotes/origin/master
  *
  *    Based in part on drivers/ide/pci/aec62xx.c
  *	Copyright (C) 1999-2002	Andre Hedrick <andre@linux-ide.org>
@@ -33,10 +37,14 @@
 
 #define DRV_NAME	"pata_artop"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DRV_VERSION	"0.4.5"
 =======
 #define DRV_VERSION	"0.4.6"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DRV_VERSION	"0.4.6"
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	The ARTOP has 33 Mhz and "over clocked" timing tables. Until we
@@ -47,6 +55,7 @@
 
 static int clock = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int artop6210_pre_reset(struct ata_link *link, unsigned long deadline)
 {
@@ -74,6 +83,8 @@ static int artop6210_pre_reset(struct ata_link *link, unsigned long deadline)
 
 static int artop6260_pre_reset(struct ata_link *link, unsigned long deadline)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  *	artop62x0_pre_reset	-	probe begin
  *	@link: link
@@ -83,7 +94,10 @@ static int artop6260_pre_reset(struct ata_link *link, unsigned long deadline)
  */
 
 static int artop62x0_pre_reset(struct ata_link *link, unsigned long deadline)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	static const struct pci_bits artop_enable_bits[] = {
 		{ 0x4AU, 1U, 0x02UL, 0x02UL },	/* port 0 */
@@ -94,10 +108,14 @@ static int artop62x0_pre_reset(struct ata_link *link, unsigned long deadline)
 	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Odd numbered device ids are the units with enable bits (the -R cards) */
 =======
 	/* Odd numbered device ids are the units with enable bits. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Odd numbered device ids are the units with enable bits. */
+>>>>>>> refs/remotes/origin/master
 	if ((pdev->device & 1) &&
 	    !pci_test_config_bits(pdev, &artop_enable_bits[ap->port_no]))
 		return -ENOENT;
@@ -342,10 +360,14 @@ static struct ata_port_operations artop6210_ops = {
 	.set_piomode		= artop6210_set_piomode,
 	.set_dmamode		= artop6210_set_dmamode,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.prereset		= artop6210_pre_reset,
 =======
 	.prereset		= artop62x0_pre_reset,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.prereset		= artop62x0_pre_reset,
+>>>>>>> refs/remotes/origin/master
 	.qc_defer		= artop6210_qc_defer,
 };
 
@@ -355,10 +377,13 @@ static struct ata_port_operations artop6260_ops = {
 	.set_piomode		= artop6260_set_piomode,
 	.set_dmamode		= artop6260_set_dmamode,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.prereset		= artop6260_pre_reset,
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.prereset		= artop62x0_pre_reset,
 };
 
@@ -389,7 +414,10 @@ static void atp8xx_fixup(struct pci_dev *pdev)
 		pci_write_config_byte(pdev, 0x4a, (reg & ~0x01) | 0x80);
 	}
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  *	artop_init_one - Register ARTOP ATA PCI device with kernel services
@@ -408,9 +436,12 @@ static void atp8xx_fixup(struct pci_dev *pdev)
 static int artop_init_one (struct pci_dev *pdev, const struct pci_device_id *id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	static const struct ata_port_info info_6210 = {
 		.flags		= ATA_FLAG_SLAVE_POSS,
 		.pio_mask	= ATA_PIO4,
@@ -443,17 +474,22 @@ static int artop_init_one (struct pci_dev *pdev, const struct pci_device_id *id)
 	int rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev,
 			   "version " DRV_VERSION "\n");
 =======
 	ata_print_version_once(&pdev->dev, DRV_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	rc = pcim_enable_device(pdev);
 	if (rc)
 		return rc;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (id->driver_data == 0) {	/* 6210 variant */
 		ppi[0] = &info_6210;
@@ -464,18 +500,26 @@ static int artop_init_one (struct pci_dev *pdev, const struct pci_device_id *id)
 	if (id->driver_data == 0)	/* 6210 variant */
 		ppi[0] = &info_6210;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (id->driver_data == 0)	/* 6210 variant */
+		ppi[0] = &info_6210;
+>>>>>>> refs/remotes/origin/master
 	else if (id->driver_data == 1)	/* 6260 */
 		ppi[0] = &info_626x;
 	else if (id->driver_data == 2)	{ /* 6280 or 6280 + fast */
 		unsigned long io = pci_resource_start(pdev, 4);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		u8 reg;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		ppi[0] = &info_628x;
 		if (inb(io) & 0x10)
 			ppi[0] = &info_628x_fast;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* Mac systems come up with some registers not set as we
 		   will need them */
@@ -497,15 +541,22 @@ static int artop_init_one (struct pci_dev *pdev, const struct pci_device_id *id)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	BUG_ON(ppi[0] == NULL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	atp8xx_fixup(pdev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atp8xx_fixup(pdev);
+
+>>>>>>> refs/remotes/origin/master
 	return ata_pci_bmdma_init_one(pdev, ppi, &artop_sht, NULL, 0);
 }
 
@@ -520,11 +571,18 @@ static const struct pci_device_id artop_pci_tbl[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_PM
 static int atp8xx_reinit_one(struct pci_dev *pdev)
 {
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+#ifdef CONFIG_PM
+static int atp8xx_reinit_one(struct pci_dev *pdev)
+{
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = ata_pci_device_do_resume(pdev);
@@ -538,18 +596,25 @@ static int atp8xx_reinit_one(struct pci_dev *pdev)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct pci_driver artop_pci_driver = {
 	.name			= DRV_NAME,
 	.id_table		= artop_pci_tbl,
 	.probe			= artop_init_one,
 	.remove			= ata_pci_remove_one,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend		= ata_pci_device_suspend,
 	.resume			= atp8xx_reinit_one,
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
@@ -571,11 +636,21 @@ MODULE_AUTHOR("Alan Cox");
 =======
 MODULE_AUTHOR("Alan Cox, Bartlomiej Zolnierkiewicz");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+module_pci_driver(artop_pci_driver);
+
+MODULE_AUTHOR("Alan Cox, Bartlomiej Zolnierkiewicz");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("SCSI low-level driver for ARTOP PATA");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, artop_pci_tbl);
 MODULE_VERSION(DRV_VERSION);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

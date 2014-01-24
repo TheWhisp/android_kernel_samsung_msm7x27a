@@ -179,7 +179,11 @@ static void jornadakbd680_poll(struct input_polled_dev *dev)
 	memcpy(jornadakbd->old_scan, jornadakbd->new_scan, JORNADA_SCAN_SIZE);
 }
 
+<<<<<<< HEAD
 static int __devinit jornada680kbd_probe(struct platform_device *pdev)
+=======
+static int jornada680kbd_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct jornadakbd *jornadakbd;
 	struct input_polled_dev *poll_dev;
@@ -233,18 +237,28 @@ static int __devinit jornada680kbd_probe(struct platform_device *pdev)
  failed:
 	printk(KERN_ERR "Jornadakbd: failed to register driver, error: %d\n",
 		error);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	input_free_polled_device(poll_dev);
 	kfree(jornadakbd);
 	return error;
 
 }
 
+<<<<<<< HEAD
 static int __devexit jornada680kbd_remove(struct platform_device *pdev)
 {
 	struct jornadakbd *jornadakbd = platform_get_drvdata(pdev);
 
 	platform_set_drvdata(pdev, NULL);
+=======
+static int jornada680kbd_remove(struct platform_device *pdev)
+{
+	struct jornadakbd *jornadakbd = platform_get_drvdata(pdev);
+
+>>>>>>> refs/remotes/origin/master
 	input_unregister_polled_device(jornadakbd->poll_dev);
 	input_free_polled_device(jornadakbd->poll_dev);
 	kfree(jornadakbd);
@@ -258,6 +272,7 @@ static struct platform_driver jornada680kbd_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe	= jornada680kbd_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(jornada680kbd_remove),
 };
 <<<<<<< HEAD
@@ -277,6 +292,11 @@ module_exit(jornada680kbd_exit);
 =======
 module_platform_driver(jornada680kbd_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove	= jornada680kbd_remove,
+};
+module_platform_driver(jornada680kbd_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Kristoffer Ericson <kristoffer.ericson@gmail.com>");
 MODULE_DESCRIPTION("HP Jornada 620/660/680/690 Keyboard Driver");

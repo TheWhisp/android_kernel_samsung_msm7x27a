@@ -20,6 +20,7 @@
 
 #include <asm/irq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/setup.h>
 #include <asm/irq_controller.h>
@@ -27,12 +28,17 @@
 #include <linux/atomic.h>
 #include <asm/setup.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_OF
 extern int of_ioapic;
 extern u64 initial_dtb;
 extern void add_dtb(u64 data);
 extern void x86_add_irq_domains(void);
+<<<<<<< HEAD
 void __cpuinit x86_of_pci_init(void);
 void x86_dtb_init(void);
 <<<<<<< HEAD
@@ -49,6 +55,10 @@ static inline struct device_node *pci_bus_to_OF_node(struct pci_bus *bus)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void x86_of_pci_init(void);
+void x86_dtb_init(void);
+>>>>>>> refs/remotes/origin/master
 #else
 static inline void add_dtb(u64 data) { }
 static inline void x86_add_irq_domains(void) { }
@@ -59,6 +69,7 @@ static inline void x86_dtb_init(void) { }
 
 extern char cmd_line[COMMAND_LINE_SIZE];
 
+<<<<<<< HEAD
 #define pci_address_to_pio pci_address_to_pio
 unsigned long pci_address_to_pio(phys_addr_t addr);
 
@@ -76,5 +87,7 @@ static inline void irq_dispose_mapping(unsigned int virq) { }
 >>>>>>> refs/remotes/origin/cm-10.0
 #define HAVE_ARCH_DEVTREE_FIXUPS
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASSEMBLY__ */
 #endif

@@ -27,12 +27,17 @@
 #include <linux/serial_core.h>
 #include <linux/of_platform.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/system.h>
 =======
 #include <linux/module.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/prom.h>
@@ -153,16 +158,20 @@ static void __init holly_init_IRQ(void)
 {
 	struct mpic *mpic;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	phys_addr_t mpic_paddr = 0;
 	struct device_node *tsi_pic;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PCI
 	unsigned int cascade_pci_irq;
 	struct device_node *tsi_pci;
 	struct device_node *cascade_node = NULL;
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tsi_pic = of_find_node_by_type(NULL, "open-pic");
 	if (tsi_pic) {
@@ -188,15 +197,24 @@ static void __init holly_init_IRQ(void)
 			MPIC_SPV_EOI | MPIC_NO_PTHROU_DIS | MPIC_REGSET_TSI108,
 			24, 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN |
+			MPIC_SPV_EOI | MPIC_NO_PTHROU_DIS | MPIC_REGSET_TSI108,
+			24, 0,
+>>>>>>> refs/remotes/origin/master
 			"Tsi108_PIC");
 
 	BUG_ON(mpic == NULL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mpic_assign_isu(mpic, 0, mpic_paddr + 0x100);
 =======
 	mpic_assign_isu(mpic, 0, mpic->paddr + 0x100);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mpic_assign_isu(mpic, 0, mpic->paddr + 0x100);
+>>>>>>> refs/remotes/origin/master
 
 	mpic_init(mpic);
 
@@ -222,9 +240,12 @@ static void __init holly_init_IRQ(void)
 	/* Configure MPIC outputs to CPU0 */
 	tsi108_write_reg(TSI108_MPIC_OFFSET + 0x30c, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	of_node_put(tsi_pic);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void holly_show_cpuinfo(struct seq_file *m)

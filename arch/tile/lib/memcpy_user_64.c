@@ -15,8 +15,11 @@
  *
  * Note: this idiom only works when memcpy() compiles to a leaf function.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * If "sp" is updated during memcpy, the "jrp lr" will be incorrect.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Here leaf function not only means it does not have calls, but also
  * requires no stack operations (sp, stack frame pointer) and no
  * use of callee-saved registers, else "jrp lr" will be incorrect since
@@ -24,7 +27,10 @@
  * these conditions are satisfied here, but we need to be careful when
  * modifying this file. This is not a clean solution but is the best
  * one so far.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Also note that we are capturing "n" from the containing scope here.
  */
@@ -35,6 +41,10 @@
 		    ".pushsection .coldtext.memcpy,\"ax\";"	\
 		    "2: { move r0, %2; jrp lr };"		\
 		    ".section __ex_table,\"a\";"		\
+<<<<<<< HEAD
+=======
+		    ".align 8;"					\
+>>>>>>> refs/remotes/origin/master
 		    ".quad 1b, 2b;"				\
 		    ".popsection"				\
 		    : "=m" (*(p)) : "r" (v), "r" (n));		\
@@ -47,6 +57,10 @@
 		    ".pushsection .coldtext.memcpy,\"ax\";"	\
 		    "2: { move r0, %2; jrp lr };"		\
 		    ".section __ex_table,\"a\";"		\
+<<<<<<< HEAD
+=======
+		    ".align 8;"					\
+>>>>>>> refs/remotes/origin/master
 		    ".quad 1b, 2b;"				\
 		    ".popsection"				\
 		    : "=r" (__v) : "m" (*(p)), "r" (n));	\

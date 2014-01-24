@@ -2,10 +2,14 @@
  * This file is part of the Emulex Linux Device Driver for         *
  * Fibre Channel Host Bus Adapters.                                *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2007-2011 Emulex.  All rights reserved.           *
 =======
  * Copyright (C) 2007-2012 Emulex.  All rights reserved.           *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2007-2012 Emulex.  All rights reserved.           *
+>>>>>>> refs/remotes/origin/master
  * EMULEX and SLI are trademarks of Emulex.                        *
  * www.emulex.com                                                  *
  *                                                                 *
@@ -25,9 +29,13 @@
 #include <linux/blkdev.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/dma-mapping.h>
 #include <linux/idr.h>
 #include <linux/interrupt.h>
@@ -57,9 +65,13 @@
 #include "lpfc_compat.h"
 #include "lpfc_debugfs.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "lpfc_bsg.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "lpfc_bsg.h"
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
 /*
@@ -148,14 +160,20 @@ lpfc_debugfs_disc_trc_data(struct lpfc_vport *vport, char *buf, int size)
 	uint32_t ms;
 	struct lpfc_debugfs_trc *dtp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char buffer[LPFC_DEBUG_TRC_ENTRY_SIZE];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	char *buffer;
 
 	buffer = kmalloc(LPFC_DEBUG_TRC_ENTRY_SIZE, GFP_KERNEL);
 	if (!buffer)
 		return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	enable = lpfc_debugfs_enable;
 	lpfc_debugfs_enable = 0;
@@ -188,10 +206,15 @@ lpfc_debugfs_disc_trc_data(struct lpfc_vport *vport, char *buf, int size)
 
 	lpfc_debugfs_enable = enable;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(buffer);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(buffer);
+
+>>>>>>> refs/remotes/origin/master
 	return len;
 }
 
@@ -221,15 +244,21 @@ lpfc_debugfs_slow_ring_trc_data(struct lpfc_hba *phba, char *buf, int size)
 	uint32_t ms;
 	struct lpfc_debugfs_trc *dtp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char buffer[LPFC_DEBUG_TRC_ENTRY_SIZE];
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	char *buffer;
 
 	buffer = kmalloc(LPFC_DEBUG_TRC_ENTRY_SIZE, GFP_KERNEL);
 	if (!buffer)
 		return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	enable = lpfc_debugfs_enable;
 	lpfc_debugfs_enable = 0;
@@ -262,10 +291,15 @@ lpfc_debugfs_slow_ring_trc_data(struct lpfc_hba *phba, char *buf, int size)
 
 	lpfc_debugfs_enable = enable;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(buffer);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(buffer);
+
+>>>>>>> refs/remotes/origin/master
 	return len;
 }
 
@@ -417,14 +451,20 @@ lpfc_debugfs_dumpHBASlim_data(struct lpfc_hba *phba, char *buf, int size)
 	int i, off;
 	uint32_t *ptr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char buffer[1024];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	char *buffer;
 
 	buffer = kmalloc(1024, GFP_KERNEL);
 	if (!buffer)
 		return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	off = 0;
 	spin_lock_irq(&phba->hbalock);
@@ -454,10 +494,15 @@ lpfc_debugfs_dumpHBASlim_data(struct lpfc_hba *phba, char *buf, int size)
 
 	spin_unlock_irq(&phba->hbalock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(buffer);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(buffer);
+
+>>>>>>> refs/remotes/origin/master
 	return len;
 }
 
@@ -522,9 +567,17 @@ lpfc_debugfs_dumpHostSlim_data(struct lpfc_hba *phba, char *buf, int size)
 		len +=  snprintf(buf+len, size-len,
 				 "Ring %d: CMD GetInx:%d (Max:%d Next:%d "
 				 "Local:%d flg:x%x)  RSP PutInx:%d Max:%d\n",
+<<<<<<< HEAD
 				 i, pgpp->cmdGetInx, pring->numCiocb,
 				 pring->next_cmdidx, pring->local_getidx,
 				 pring->flag, pgpp->rspPutInx, pring->numRiocb);
+=======
+				 i, pgpp->cmdGetInx, pring->sli.sli3.numCiocb,
+				 pring->sli.sli3.next_cmdidx,
+				 pring->sli.sli3.local_getidx,
+				 pring->flag, pgpp->rspPutInx,
+				 pring->sli.sli3.numRiocb);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (phba->sli_rev <= LPFC_SLI_REV3) {
@@ -589,6 +642,12 @@ lpfc_debugfs_nodelist_data(struct lpfc_vport *vport, char *buf, int size)
 		case NLP_STE_PRLI_ISSUE:
 			statep = "PRLI  ";
 			break;
+<<<<<<< HEAD
+=======
+		case NLP_STE_LOGO_ISSUE:
+			statep = "LOGO  ";
+			break;
+>>>>>>> refs/remotes/origin/master
 		case NLP_STE_UNMAPPED_NODE:
 			statep = "UNMAP ";
 			break;
@@ -613,8 +672,18 @@ lpfc_debugfs_nodelist_data(struct lpfc_vport *vport, char *buf, int size)
 			"WWNN %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x ",
 			*name, *(name+1), *(name+2), *(name+3),
 			*(name+4), *(name+5), *(name+6), *(name+7));
+<<<<<<< HEAD
 		len +=  snprintf(buf+len, size-len, "RPI:%03d flag:x%08x ",
 			ndlp->nlp_rpi, ndlp->nlp_flag);
+=======
+		if (ndlp->nlp_flag & NLP_RPI_REGISTERED)
+			len +=  snprintf(buf+len, size-len, "RPI:%03d ",
+				ndlp->nlp_rpi);
+		else
+			len +=  snprintf(buf+len, size-len, "RPI:none ");
+		len +=  snprintf(buf+len, size-len, "flag:x%08x ",
+			ndlp->nlp_flag);
+>>>>>>> refs/remotes/origin/master
 		if (!ndlp->nlp_type)
 			len +=  snprintf(buf+len, size-len, "UNKNOWN_TYPE ");
 		if (ndlp->nlp_type & NLP_FC_NODE)
@@ -1030,7 +1099,10 @@ lpfc_debugfs_dumpDataDif_write(struct file *file, const char __user *buf,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t
 lpfc_debugfs_dif_err_read(struct file *file, char __user *buf,
 	size_t nbytes, loff_t *ppos)
@@ -1127,7 +1199,10 @@ lpfc_debugfs_dif_err_release(struct inode *inode, struct file *file)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * lpfc_debugfs_nodelist_open - Open the nodelist debugfs file
  * @inode: The inode pointer that contains a vport pointer.
@@ -1190,6 +1265,7 @@ out:
 static loff_t
 lpfc_debugfs_lseek(struct file *file, loff_t off, int whence)
 {
+<<<<<<< HEAD
 	struct lpfc_debug *debug;
 	loff_t pos = -1;
 
@@ -1206,6 +1282,10 @@ lpfc_debugfs_lseek(struct file *file, loff_t off, int whence)
 		pos = debug->len - off;
 	}
 	return (pos < 0 || pos > debug->len) ? -EINVAL : (file->f_pos = pos);
+=======
+	struct lpfc_debug *debug = file->private_data;
+	return fixed_size_llseek(file, off, whence, debug->len);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1298,11 +1378,16 @@ static int lpfc_idiag_cmd_get(const char __user *buf, size_t nbytes,
 	char mybuf[64];
 	char *pbuf, *step_str;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int bsize, i;
 =======
 	int i;
 	size_t bsize;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i;
+	size_t bsize;
+>>>>>>> refs/remotes/origin/master
 
 	/* Protect copy from user */
 	if (!access_ok(VERIFY_READ, buf, nbytes))
@@ -1482,12 +1567,17 @@ lpfc_idiag_pcicfg_read(struct file *file, char __user *buf, size_t nbytes,
 
 	if (idiag.cmd.opcode == LPFC_IDIAG_CMD_PCICFG_RD) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		where = idiag.cmd.data[0];
 		count = idiag.cmd.data[1];
 =======
 		where = idiag.cmd.data[IDIAG_PCICFG_WHERE_INDX];
 		count = idiag.cmd.data[IDIAG_PCICFG_COUNT_INDX];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		where = idiag.cmd.data[IDIAG_PCICFG_WHERE_INDX];
+		count = idiag.cmd.data[IDIAG_PCICFG_COUNT_INDX];
+>>>>>>> refs/remotes/origin/master
 	} else
 		return 0;
 
@@ -1533,13 +1623,19 @@ pcicfg_browse:
 				"%08x ", u32val);
 		offset += sizeof(uint32_t);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (offset >= LPFC_PCI_CFG_SIZE) {
 			len += snprintf(pbuffer+len,
 					LPFC_PCI_CFG_SIZE-len, "\n");
 			break;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		index -= sizeof(uint32_t);
 		if (!index)
 			len += snprintf(pbuffer+len, LPFC_PCI_CFG_SIZE-len,
@@ -1553,15 +1649,21 @@ pcicfg_browse:
 
 	/* Set up the offset for next portion of pci cfg read */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	idiag.offset.last_rd += LPFC_PCI_CFG_RD_SIZE;
 	if (idiag.offset.last_rd >= LPFC_PCI_CFG_SIZE)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (index == 0) {
 		idiag.offset.last_rd += LPFC_PCI_CFG_RD_SIZE;
 		if (idiag.offset.last_rd >= LPFC_PCI_CFG_SIZE)
 			idiag.offset.last_rd = 0;
 	} else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		idiag.offset.last_rd = 0;
 
 	return simple_read_from_buffer(buf, nbytes, ppos, pbuffer, len);
@@ -1615,12 +1717,17 @@ lpfc_idiag_pcicfg_write(struct file *file, const char __user *buf,
 			goto error_out;
 		/* Read command from PCI config space, set up command fields */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		where = idiag.cmd.data[0];
 		count = idiag.cmd.data[1];
 =======
 		where = idiag.cmd.data[IDIAG_PCICFG_WHERE_INDX];
 		count = idiag.cmd.data[IDIAG_PCICFG_COUNT_INDX];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		where = idiag.cmd.data[IDIAG_PCICFG_WHERE_INDX];
+		count = idiag.cmd.data[IDIAG_PCICFG_COUNT_INDX];
+>>>>>>> refs/remotes/origin/master
 		if (count == LPFC_PCI_CFG_BROWSE) {
 			if (where % sizeof(uint32_t))
 				goto error_out;
@@ -1656,6 +1763,7 @@ lpfc_idiag_pcicfg_write(struct file *file, const char __user *buf,
 			goto error_out;
 		/* Write command to PCI config space, read-modify-write */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		where = idiag.cmd.data[0];
 		count = idiag.cmd.data[1];
 		value = idiag.cmd.data[2];
@@ -1664,6 +1772,11 @@ lpfc_idiag_pcicfg_write(struct file *file, const char __user *buf,
 		count = idiag.cmd.data[IDIAG_PCICFG_COUNT_INDX];
 		value = idiag.cmd.data[IDIAG_PCICFG_VALUE_INDX];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		where = idiag.cmd.data[IDIAG_PCICFG_WHERE_INDX];
+		count = idiag.cmd.data[IDIAG_PCICFG_COUNT_INDX];
+		value = idiag.cmd.data[IDIAG_PCICFG_VALUE_INDX];
+>>>>>>> refs/remotes/origin/master
 		/* Sanity checks */
 		if ((count != sizeof(uint8_t)) &&
 		    (count != sizeof(uint16_t)) &&
@@ -1757,7 +1870,10 @@ error_out:
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * lpfc_idiag_baracc_read - idiag debugfs pci bar access read
  * @file: The file pointer to read from.
  * @buf: The buffer to copy the data to.
@@ -2044,7 +2160,10 @@ error_out:
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * lpfc_idiag_queinfo_read - idiag debugfs read queue information
  * @file: The file pointer to read from.
  * @buf: The buffer to copy the data to.
@@ -2065,18 +2184,32 @@ lpfc_idiag_queinfo_read(struct file *file, char __user *buf, size_t nbytes,
 {
 	struct lpfc_debug *debug = file->private_data;
 	struct lpfc_hba *phba = (struct lpfc_hba *)debug->i_private;
+<<<<<<< HEAD
 	int len = 0, fcp_qidx;
 	char *pbuffer;
+=======
+	int len = 0;
+	char *pbuffer;
+	int x, cnt;
+	int max_cnt;
+	struct lpfc_queue *qp = NULL;
+
+>>>>>>> refs/remotes/origin/master
 
 	if (!debug->buffer)
 		debug->buffer = kmalloc(LPFC_QUE_INFO_GET_BUF_SIZE, GFP_KERNEL);
 	if (!debug->buffer)
 		return 0;
 	pbuffer = debug->buffer;
+<<<<<<< HEAD
+=======
+	max_cnt = LPFC_QUE_INFO_GET_BUF_SIZE - 128;
+>>>>>>> refs/remotes/origin/master
 
 	if (*ppos)
 		return 0;
 
+<<<<<<< HEAD
 	/* Get slow-path event queue information */
 	len += snprintf(pbuffer+len, LPFC_QUE_INFO_GET_BUF_SIZE-len,
 			"Slow-path EQ information:\n");
@@ -2362,6 +2495,283 @@ lpfc_idiag_queinfo_read(struct file *file, char __user *buf, size_t nbytes,
 =======
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irq(&phba->hbalock);
+
+	/* Fast-path event queue */
+	if (phba->sli4_hba.hba_eq && phba->cfg_fcp_io_channel) {
+		cnt = phba->cfg_fcp_io_channel;
+
+		for (x = 0; x < cnt; x++) {
+
+			/* Fast-path EQ */
+			qp = phba->sli4_hba.hba_eq[x];
+			if (!qp)
+				goto proc_cq;
+
+			len += snprintf(pbuffer+len,
+				LPFC_QUE_INFO_GET_BUF_SIZE-len,
+				"\nHBA EQ info: "
+				"EQ-STAT[max:x%x noE:x%x "
+				"bs:x%x proc:x%llx]\n",
+				qp->q_cnt_1, qp->q_cnt_2,
+				qp->q_cnt_3, (unsigned long long)qp->q_cnt_4);
+
+			len += snprintf(pbuffer+len,
+				LPFC_QUE_INFO_GET_BUF_SIZE-len,
+				"EQID[%02d], "
+				"QE-CNT[%04d], QE-SIZE[%04d], "
+				"HOST-IDX[%04d], PORT-IDX[%04d]",
+				qp->queue_id,
+				qp->entry_count,
+				qp->entry_size,
+				qp->host_index,
+				qp->hba_index);
+
+
+			/* Reset max counter */
+			qp->EQ_max_eqe = 0;
+
+			len +=  snprintf(pbuffer+len,
+				LPFC_QUE_INFO_GET_BUF_SIZE-len, "\n");
+			if (len >= max_cnt)
+				goto too_big;
+proc_cq:
+			/* Fast-path FCP CQ */
+			qp = phba->sli4_hba.fcp_cq[x];
+			len += snprintf(pbuffer+len,
+				LPFC_QUE_INFO_GET_BUF_SIZE-len,
+				"\tFCP CQ info: ");
+			len += snprintf(pbuffer+len,
+				LPFC_QUE_INFO_GET_BUF_SIZE-len,
+				"AssocEQID[%02d]: "
+				"CQ STAT[max:x%x relw:x%x "
+				"xabt:x%x wq:x%llx]\n",
+				qp->assoc_qid,
+				qp->q_cnt_1, qp->q_cnt_2,
+				qp->q_cnt_3, (unsigned long long)qp->q_cnt_4);
+			len += snprintf(pbuffer+len,
+				LPFC_QUE_INFO_GET_BUF_SIZE-len,
+				"\tCQID[%02d], "
+				"QE-CNT[%04d], QE-SIZE[%04d], "
+				"HOST-IDX[%04d], PORT-IDX[%04d]",
+				qp->queue_id, qp->entry_count,
+				qp->entry_size, qp->host_index,
+				qp->hba_index);
+
+
+			/* Reset max counter */
+			qp->CQ_max_cqe = 0;
+
+			len +=  snprintf(pbuffer+len,
+				LPFC_QUE_INFO_GET_BUF_SIZE-len, "\n");
+			if (len >= max_cnt)
+				goto too_big;
+
+			/* Fast-path FCP WQ */
+			qp = phba->sli4_hba.fcp_wq[x];
+
+			len += snprintf(pbuffer+len,
+				LPFC_QUE_INFO_GET_BUF_SIZE-len,
+				"\t\tFCP WQ info: ");
+			len += snprintf(pbuffer+len,
+				LPFC_QUE_INFO_GET_BUF_SIZE-len,
+				"AssocCQID[%02d]: "
+				"WQ-STAT[oflow:x%x posted:x%llx]\n",
+				qp->assoc_qid,
+				qp->q_cnt_1, (unsigned long long)qp->q_cnt_4);
+			len += snprintf(pbuffer+len,
+				LPFC_QUE_INFO_GET_BUF_SIZE-len,
+				"\t\tWQID[%02d], "
+				"QE-CNT[%04d], QE-SIZE[%04d], "
+				"HOST-IDX[%04d], PORT-IDX[%04d]",
+				qp->queue_id,
+				qp->entry_count,
+				qp->entry_size,
+				qp->host_index,
+				qp->hba_index);
+
+			len +=  snprintf(pbuffer+len,
+				LPFC_QUE_INFO_GET_BUF_SIZE-len, "\n");
+			if (len >= max_cnt)
+				goto too_big;
+
+			if (x)
+				continue;
+
+			/* Only EQ 0 has slow path CQs configured */
+
+			/* Slow-path mailbox CQ */
+			qp = phba->sli4_hba.mbx_cq;
+			if (qp) {
+				len += snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len,
+					"\tMBX CQ info: ");
+				len += snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len,
+					"AssocEQID[%02d]: "
+					"CQ-STAT[mbox:x%x relw:x%x "
+					"xabt:x%x wq:x%llx]\n",
+					qp->assoc_qid,
+					qp->q_cnt_1, qp->q_cnt_2,
+					qp->q_cnt_3,
+					(unsigned long long)qp->q_cnt_4);
+				len += snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len,
+					"\tCQID[%02d], "
+					"QE-CNT[%04d], QE-SIZE[%04d], "
+					"HOST-IDX[%04d], PORT-IDX[%04d]",
+					qp->queue_id, qp->entry_count,
+					qp->entry_size, qp->host_index,
+					qp->hba_index);
+
+				len +=  snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len, "\n");
+				if (len >= max_cnt)
+					goto too_big;
+			}
+
+			/* Slow-path MBOX MQ */
+			qp = phba->sli4_hba.mbx_wq;
+			if (qp) {
+				len += snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len,
+					"\t\tMBX MQ info: ");
+				len += snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len,
+					"AssocCQID[%02d]:\n",
+					phba->sli4_hba.mbx_wq->assoc_qid);
+				len += snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len,
+					"\t\tWQID[%02d], "
+					"QE-CNT[%04d], QE-SIZE[%04d], "
+					"HOST-IDX[%04d], PORT-IDX[%04d]",
+					qp->queue_id, qp->entry_count,
+					qp->entry_size, qp->host_index,
+					qp->hba_index);
+
+				len +=  snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len, "\n");
+				if (len >= max_cnt)
+					goto too_big;
+			}
+
+			/* Slow-path ELS response CQ */
+			qp = phba->sli4_hba.els_cq;
+			if (qp) {
+				len += snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len,
+					"\tELS CQ info: ");
+				len += snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len,
+					"AssocEQID[%02d]: "
+					"CQ-STAT[max:x%x relw:x%x "
+					"xabt:x%x wq:x%llx]\n",
+					qp->assoc_qid,
+					qp->q_cnt_1, qp->q_cnt_2,
+					qp->q_cnt_3,
+					(unsigned long long)qp->q_cnt_4);
+				len += snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len,
+					"\tCQID [%02d], "
+					"QE-CNT[%04d], QE-SIZE[%04d], "
+					"HOST-IDX[%04d], PORT-IDX[%04d]",
+					qp->queue_id, qp->entry_count,
+					qp->entry_size, qp->host_index,
+					qp->hba_index);
+
+				/* Reset max counter */
+				qp->CQ_max_cqe = 0;
+
+				len +=  snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len, "\n");
+				if (len >= max_cnt)
+					goto too_big;
+			}
+
+			/* Slow-path ELS WQ */
+			qp = phba->sli4_hba.els_wq;
+			if (qp) {
+				len += snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len,
+					"\t\tELS WQ info: ");
+				len += snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len,
+					"AssocCQID[%02d]: "
+					" WQ-STAT[oflow:x%x "
+					"posted:x%llx]\n",
+					qp->assoc_qid,
+					qp->q_cnt_1,
+					(unsigned long long)qp->q_cnt_4);
+				len += snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len,
+					"\t\tWQID[%02d], "
+					"QE-CNT[%04d], QE-SIZE[%04d], "
+					"HOST-IDX[%04d], PORT-IDX[%04d]",
+					qp->queue_id, qp->entry_count,
+					qp->entry_size, qp->host_index,
+					qp->hba_index);
+
+				len +=  snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len, "\n");
+				if (len >= max_cnt)
+					goto too_big;
+			}
+
+			if (phba->sli4_hba.hdr_rq && phba->sli4_hba.dat_rq) {
+				/* Slow-path RQ header */
+				qp = phba->sli4_hba.hdr_rq;
+
+				len += snprintf(pbuffer+len,
+				LPFC_QUE_INFO_GET_BUF_SIZE-len,
+					"\t\tRQ info: ");
+				len += snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len,
+					"AssocCQID[%02d]: "
+					"RQ-STAT[nopost:x%x nobuf:x%x "
+					"trunc:x%x rcv:x%llx]\n",
+					qp->assoc_qid,
+					qp->q_cnt_1, qp->q_cnt_2,
+					qp->q_cnt_3,
+					(unsigned long long)qp->q_cnt_4);
+				len += snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len,
+					"\t\tHQID[%02d], "
+					"QE-CNT[%04d], QE-SIZE[%04d], "
+					"HOST-IDX[%04d], PORT-IDX[%04d]\n",
+					qp->queue_id,
+					qp->entry_count,
+					qp->entry_size,
+					qp->host_index,
+					qp->hba_index);
+
+				/* Slow-path RQ data */
+				qp = phba->sli4_hba.dat_rq;
+				len += snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len,
+					"\t\tDQID[%02d], "
+					"QE-CNT[%04d], QE-SIZE[%04d], "
+					"HOST-IDX[%04d], PORT-IDX[%04d]\n",
+					qp->queue_id,
+					qp->entry_count,
+					qp->entry_size,
+					qp->host_index,
+					qp->hba_index);
+
+				len +=  snprintf(pbuffer+len,
+					LPFC_QUE_INFO_GET_BUF_SIZE-len, "\n");
+			}
+		}
+	}
+
+	spin_unlock_irq(&phba->hbalock);
+	return simple_read_from_buffer(buf, nbytes, ppos, pbuffer, len);
+
+too_big:
+	len +=  snprintf(pbuffer+len,
+		LPFC_QUE_INFO_GET_BUF_SIZE-len, "Truncated ...\n");
+	spin_unlock_irq(&phba->hbalock);
+>>>>>>> refs/remotes/origin/master
 	return simple_read_from_buffer(buf, nbytes, ppos, pbuffer, len);
 }
 
@@ -2475,12 +2885,17 @@ lpfc_idiag_queacc_read(struct file *file, char __user *buf, size_t nbytes,
 
 	if (idiag.cmd.opcode == LPFC_IDIAG_CMD_QUEACC_RD) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		index = idiag.cmd.data[2];
 		count = idiag.cmd.data[3];
 =======
 		index = idiag.cmd.data[IDIAG_QUEACC_INDEX_INDX];
 		count = idiag.cmd.data[IDIAG_QUEACC_COUNT_INDX];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		index = idiag.cmd.data[IDIAG_QUEACC_INDEX_INDX];
+		count = idiag.cmd.data[IDIAG_QUEACC_COUNT_INDX];
+>>>>>>> refs/remotes/origin/master
 		pque = (struct lpfc_queue *)idiag.ptr_private;
 	} else
 		return 0;
@@ -2553,6 +2968,7 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
 
 	/* Get and sanity check on command feilds */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	quetp  = idiag.cmd.data[0];
 	queid  = idiag.cmd.data[1];
 	index  = idiag.cmd.data[2];
@@ -2560,13 +2976,18 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
 	offset = idiag.cmd.data[4];
 	value  = idiag.cmd.data[5];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	quetp  = idiag.cmd.data[IDIAG_QUEACC_QUETP_INDX];
 	queid  = idiag.cmd.data[IDIAG_QUEACC_QUEID_INDX];
 	index  = idiag.cmd.data[IDIAG_QUEACC_INDEX_INDX];
 	count  = idiag.cmd.data[IDIAG_QUEACC_COUNT_INDX];
 	offset = idiag.cmd.data[IDIAG_QUEACC_OFFST_INDX];
 	value  = idiag.cmd.data[IDIAG_QUEACC_VALUE_INDX];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Sanity check on command line arguments */
 	if (idiag.cmd.opcode == LPFC_IDIAG_CMD_QUEACC_WR ||
@@ -2584,6 +3005,7 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
 
 	switch (quetp) {
 	case LPFC_IDIAG_EQ:
+<<<<<<< HEAD
 		/* Slow-path event queue */
 <<<<<<< HEAD
 		if (phba->sli4_hba.sp_eq->queue_id == queid) {
@@ -2620,14 +3042,32 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
 					/* Sanity check */
 					rc = lpfc_idiag_que_param_check(
 						phba->sli4_hba.fp_eq[qidx],
+=======
+		/* HBA event queue */
+		if (phba->sli4_hba.hba_eq) {
+			for (qidx = 0; qidx < phba->cfg_fcp_io_channel;
+				qidx++) {
+				if (phba->sli4_hba.hba_eq[qidx] &&
+				    phba->sli4_hba.hba_eq[qidx]->queue_id ==
+				    queid) {
+					/* Sanity check */
+					rc = lpfc_idiag_que_param_check(
+						phba->sli4_hba.hba_eq[qidx],
+>>>>>>> refs/remotes/origin/master
 						index, count);
 					if (rc)
 						goto error_out;
 					idiag.ptr_private =
+<<<<<<< HEAD
 						phba->sli4_hba.fp_eq[qidx];
 					goto pass_check;
 				}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						phba->sli4_hba.hba_eq[qidx];
+					goto pass_check;
+				}
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		goto error_out;
@@ -2635,11 +3075,16 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
 	case LPFC_IDIAG_CQ:
 		/* MBX complete queue */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (phba->sli4_hba.mbx_cq->queue_id == queid) {
 =======
 		if (phba->sli4_hba.mbx_cq &&
 		    phba->sli4_hba.mbx_cq->queue_id == queid) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (phba->sli4_hba.mbx_cq &&
+		    phba->sli4_hba.mbx_cq->queue_id == queid) {
+>>>>>>> refs/remotes/origin/master
 			/* Sanity check */
 			rc = lpfc_idiag_que_param_check(
 					phba->sli4_hba.mbx_cq, index, count);
@@ -2650,11 +3095,16 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
 		}
 		/* ELS complete queue */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (phba->sli4_hba.els_cq->queue_id == queid) {
 =======
 		if (phba->sli4_hba.els_cq &&
 		    phba->sli4_hba.els_cq->queue_id == queid) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (phba->sli4_hba.els_cq &&
+		    phba->sli4_hba.els_cq->queue_id == queid) {
+>>>>>>> refs/remotes/origin/master
 			/* Sanity check */
 			rc = lpfc_idiag_que_param_check(
 					phba->sli4_hba.els_cq, index, count);
@@ -2664,6 +3114,7 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
 			goto pass_check;
 		}
 		/* FCP complete queue */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		qidx = 0;
 		do {
@@ -2680,6 +3131,8 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
 			}
 		} while (++qidx < phba->cfg_fcp_eq_count);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (phba->sli4_hba.fcp_cq) {
 			qidx = 0;
 			do {
@@ -2696,19 +3149,29 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
 						phba->sli4_hba.fcp_cq[qidx];
 					goto pass_check;
 				}
+<<<<<<< HEAD
 			} while (++qidx < phba->cfg_fcp_eq_count);
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			} while (++qidx < phba->cfg_fcp_io_channel);
+		}
+>>>>>>> refs/remotes/origin/master
 		goto error_out;
 		break;
 	case LPFC_IDIAG_MQ:
 		/* MBX work queue */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (phba->sli4_hba.mbx_wq->queue_id == queid) {
 =======
 		if (phba->sli4_hba.mbx_wq &&
 		    phba->sli4_hba.mbx_wq->queue_id == queid) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (phba->sli4_hba.mbx_wq &&
+		    phba->sli4_hba.mbx_wq->queue_id == queid) {
+>>>>>>> refs/remotes/origin/master
 			/* Sanity check */
 			rc = lpfc_idiag_que_param_check(
 					phba->sli4_hba.mbx_wq, index, count);
@@ -2718,18 +3181,24 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
 			goto pass_check;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		break;
 	case LPFC_IDIAG_WQ:
 		/* ELS work queue */
 		if (phba->sli4_hba.els_wq->queue_id == queid) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		goto error_out;
 		break;
 	case LPFC_IDIAG_WQ:
 		/* ELS work queue */
 		if (phba->sli4_hba.els_wq &&
 		    phba->sli4_hba.els_wq->queue_id == queid) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/* Sanity check */
 			rc = lpfc_idiag_que_param_check(
 					phba->sli4_hba.els_wq, index, count);
@@ -2739,6 +3208,7 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
 			goto pass_check;
 		}
 		/* FCP work queue */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		for (qidx = 0; qidx < phba->cfg_fcp_wq_count; qidx++) {
 			if (phba->sli4_hba.fcp_wq[qidx]->queue_id == queid) {
@@ -2754,6 +3224,11 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
 =======
 		if (phba->sli4_hba.fcp_wq) {
 			for (qidx = 0; qidx < phba->cfg_fcp_wq_count; qidx++) {
+=======
+		if (phba->sli4_hba.fcp_wq) {
+			for (qidx = 0; qidx < phba->cfg_fcp_io_channel;
+				qidx++) {
+>>>>>>> refs/remotes/origin/master
 				if (!phba->sli4_hba.fcp_wq[qidx])
 					continue;
 				if (phba->sli4_hba.fcp_wq[qidx]->queue_id ==
@@ -2768,7 +3243,10 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
 						phba->sli4_hba.fcp_wq[qidx];
 					goto pass_check;
 				}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		goto error_out;
@@ -2776,11 +3254,16 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
 	case LPFC_IDIAG_RQ:
 		/* HDR queue */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (phba->sli4_hba.hdr_rq->queue_id == queid) {
 =======
 		if (phba->sli4_hba.hdr_rq &&
 		    phba->sli4_hba.hdr_rq->queue_id == queid) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (phba->sli4_hba.hdr_rq &&
+		    phba->sli4_hba.hdr_rq->queue_id == queid) {
+>>>>>>> refs/remotes/origin/master
 			/* Sanity check */
 			rc = lpfc_idiag_que_param_check(
 					phba->sli4_hba.hdr_rq, index, count);
@@ -2791,11 +3274,16 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
 		}
 		/* DAT queue */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (phba->sli4_hba.dat_rq->queue_id == queid) {
 =======
 		if (phba->sli4_hba.dat_rq &&
 		    phba->sli4_hba.dat_rq->queue_id == queid) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (phba->sli4_hba.dat_rq &&
+		    phba->sli4_hba.dat_rq->queue_id == queid) {
+>>>>>>> refs/remotes/origin/master
 			/* Sanity check */
 			rc = lpfc_idiag_que_param_check(
 					phba->sli4_hba.dat_rq, index, count);
@@ -2933,10 +3421,14 @@ lpfc_idiag_drbacc_read(struct file *file, char __user *buf, size_t nbytes,
 
 	if (idiag.cmd.opcode == LPFC_IDIAG_CMD_DRBACC_RD)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		drb_reg_id = idiag.cmd.data[0];
 =======
 		drb_reg_id = idiag.cmd.data[IDIAG_DRBACC_REGID_INDX];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		drb_reg_id = idiag.cmd.data[IDIAG_DRBACC_REGID_INDX];
+>>>>>>> refs/remotes/origin/master
 	else
 		return 0;
 
@@ -2976,10 +3468,14 @@ lpfc_idiag_drbacc_write(struct file *file, const char __user *buf,
 	struct lpfc_debug *debug = file->private_data;
 	struct lpfc_hba *phba = (struct lpfc_hba *)debug->i_private;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t drb_reg_id, value, reg_val;
 =======
 	uint32_t drb_reg_id, value, reg_val = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t drb_reg_id, value, reg_val = 0;
+>>>>>>> refs/remotes/origin/master
 	void __iomem *drb_reg;
 	int rc;
 
@@ -2992,12 +3488,17 @@ lpfc_idiag_drbacc_write(struct file *file, const char __user *buf,
 
 	/* Sanity check on command line arguments */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	drb_reg_id = idiag.cmd.data[0];
 	value = idiag.cmd.data[1];
 =======
 	drb_reg_id = idiag.cmd.data[IDIAG_DRBACC_REGID_INDX];
 	value = idiag.cmd.data[IDIAG_DRBACC_VALUE_INDX];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	drb_reg_id = idiag.cmd.data[IDIAG_DRBACC_REGID_INDX];
+	value = idiag.cmd.data[IDIAG_DRBACC_VALUE_INDX];
+>>>>>>> refs/remotes/origin/master
 
 	if (idiag.cmd.opcode == LPFC_IDIAG_CMD_DRBACC_WR ||
 	    idiag.cmd.opcode == LPFC_IDIAG_CMD_DRBACC_ST ||
@@ -3058,6 +3559,7 @@ error_out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #undef lpfc_debugfs_op_disc_trc
 static const struct file_operations lpfc_debugfs_op_disc_trc = {
 	.owner =        THIS_MODULE,
@@ -3070,6 +3572,8 @@ static const struct file_operations lpfc_debugfs_op_disc_trc = {
 #undef lpfc_debugfs_op_nodelist
 static const struct file_operations lpfc_debugfs_op_nodelist = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * lpfc_idiag_ctlacc_read_reg - idiag debugfs read a control registers
  * @phba: The pointer to hba structure.
@@ -3754,7 +4258,10 @@ static const struct file_operations lpfc_debugfs_op_disc_trc = {
 
 #undef lpfc_debugfs_op_nodelist
 static const struct file_operations lpfc_debugfs_op_nodelist = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.owner =        THIS_MODULE,
 	.open =         lpfc_debugfs_nodelist_open,
 	.llseek =       lpfc_debugfs_lseek,
@@ -3810,7 +4317,10 @@ static const struct file_operations lpfc_debugfs_op_dumpDif = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #undef lpfc_debugfs_op_dif_err
 static const struct file_operations lpfc_debugfs_op_dif_err = {
 	.owner =	THIS_MODULE,
@@ -3821,7 +4331,10 @@ static const struct file_operations lpfc_debugfs_op_dif_err = {
 	.release =	lpfc_debugfs_dif_err_release,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #undef lpfc_debugfs_op_slow_ring_trc
 static const struct file_operations lpfc_debugfs_op_slow_ring_trc = {
 	.owner =        THIS_MODULE,
@@ -3848,7 +4361,10 @@ static const struct file_operations lpfc_idiag_op_pciCfg = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #undef lpfc_idiag_op_barAcc
 static const struct file_operations lpfc_idiag_op_barAcc = {
 	.owner =        THIS_MODULE,
@@ -3859,7 +4375,10 @@ static const struct file_operations lpfc_idiag_op_barAcc = {
 	.release =      lpfc_idiag_cmd_release,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #undef lpfc_idiag_op_queInfo
 static const struct file_operations lpfc_idiag_op_queInfo = {
 	.owner =        THIS_MODULE,
@@ -3869,10 +4388,14 @@ static const struct file_operations lpfc_idiag_op_queInfo = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #undef lpfc_idiag_op_queacc
 =======
 #undef lpfc_idiag_op_queAcc
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#undef lpfc_idiag_op_queAcc
+>>>>>>> refs/remotes/origin/master
 static const struct file_operations lpfc_idiag_op_queAcc = {
 	.owner =        THIS_MODULE,
 	.open =         lpfc_idiag_open,
@@ -3883,10 +4406,14 @@ static const struct file_operations lpfc_idiag_op_queAcc = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #undef lpfc_idiag_op_drbacc
 =======
 #undef lpfc_idiag_op_drbAcc
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#undef lpfc_idiag_op_drbAcc
+>>>>>>> refs/remotes/origin/master
 static const struct file_operations lpfc_idiag_op_drbAcc = {
 	.owner =        THIS_MODULE,
 	.open =         lpfc_idiag_open,
@@ -3897,8 +4424,11 @@ static const struct file_operations lpfc_idiag_op_drbAcc = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #undef lpfc_idiag_op_ctlAcc
 static const struct file_operations lpfc_idiag_op_ctlAcc = {
 	.owner =        THIS_MODULE,
@@ -4126,7 +4656,10 @@ lpfc_idiag_mbxacc_dump_issue_mbox(struct lpfc_hba *phba, MAILBOX_t *pmbox)
 	return;
 #endif
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * lpfc_debugfs_initialize - Initialize debugfs for a vport
@@ -4246,7 +4779,10 @@ lpfc_debugfs_initialize(struct lpfc_vport *vport)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Setup DIF Error Injections */
 		snprintf(name, sizeof(name), "InjErrLBA");
 		phba->debug_InjErrLBA =
@@ -4348,7 +4884,10 @@ lpfc_debugfs_initialize(struct lpfc_vport *vport)
 			goto debug_failed;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Setup slow ring trace */
 		if (lpfc_debugfs_max_slow_ring_trc) {
 			num = lpfc_debugfs_max_slow_ring_trc - 1;
@@ -4456,10 +4995,14 @@ lpfc_debugfs_initialize(struct lpfc_vport *vport)
 	if (!vport->debug_nodelist) {
 		lpfc_printf_vlog(vport, KERN_ERR, LOG_INIT,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 "0409 Can't create debugfs nodelist\n");
 =======
 				 "2985 Can't create debugfs nodelist\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 "2985 Can't create debugfs nodelist\n");
+>>>>>>> refs/remotes/origin/master
 		goto debug_failed;
 	}
 
@@ -4497,7 +5040,10 @@ lpfc_debugfs_initialize(struct lpfc_vport *vport)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* iDiag PCI BAR access */
 	snprintf(name, sizeof(name), "barAcc");
 	if (!phba->idiag_bar_acc) {
@@ -4512,7 +5058,10 @@ lpfc_debugfs_initialize(struct lpfc_vport *vport)
 		idiag.offset.last_rd = 0;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* iDiag get PCI function queue information */
 	snprintf(name, sizeof(name), "queInfo");
 	if (!phba->idiag_que_info) {
@@ -4553,7 +5102,10 @@ lpfc_debugfs_initialize(struct lpfc_vport *vport)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* iDiag access PCI function control registers */
 	snprintf(name, sizeof(name), "ctlAcc");
 	if (!phba->idiag_ctl_acc) {
@@ -4598,7 +5150,10 @@ lpfc_debugfs_initialize(struct lpfc_vport *vport)
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 debug_failed:
 	return;
 #endif
@@ -4634,9 +5189,12 @@ lpfc_debugfs_terminate(struct lpfc_vport *vport)
 		vport->debug_nodelist = NULL;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (vport->vport_debugfs_root) {
 		debugfs_remove(vport->vport_debugfs_root); /* vportX */
 		vport->vport_debugfs_root = NULL;
@@ -4666,7 +5224,10 @@ lpfc_debugfs_terminate(struct lpfc_vport *vport)
 			phba->debug_dumpDif = NULL;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (phba->debug_InjErrLBA) {
 			debugfs_remove(phba->debug_InjErrLBA); /* InjErrLBA */
 			phba->debug_InjErrLBA = NULL;
@@ -4703,7 +5264,10 @@ lpfc_debugfs_terminate(struct lpfc_vport *vport)
 			debugfs_remove(phba->debug_readRef); /* readRef */
 			phba->debug_readRef = NULL;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (phba->slow_ring_trc) {
 			kfree(phba->slow_ring_trc);
@@ -4720,7 +5284,10 @@ lpfc_debugfs_terminate(struct lpfc_vport *vport)
 		 */
 		if (phba->sli_rev == LPFC_SLI_REV4) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (phba->idiag_ext_acc) {
 				/* iDiag extAcc */
 				debugfs_remove(phba->idiag_ext_acc);
@@ -4736,7 +5303,10 @@ lpfc_debugfs_terminate(struct lpfc_vport *vport)
 				debugfs_remove(phba->idiag_ctl_acc);
 				phba->idiag_ctl_acc = NULL;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (phba->idiag_drb_acc) {
 				/* iDiag drbAcc */
 				debugfs_remove(phba->idiag_drb_acc);
@@ -4753,13 +5323,19 @@ lpfc_debugfs_terminate(struct lpfc_vport *vport)
 				phba->idiag_que_info = NULL;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (phba->idiag_bar_acc) {
 				/* iDiag barAcc */
 				debugfs_remove(phba->idiag_bar_acc);
 				phba->idiag_bar_acc = NULL;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (phba->idiag_pci_cfg) {
 				/* iDiag pciCfg */
 				debugfs_remove(phba->idiag_pci_cfg);
@@ -4788,3 +5364,50 @@ lpfc_debugfs_terminate(struct lpfc_vport *vport)
 #endif
 	return;
 }
+<<<<<<< HEAD
+=======
+
+/*
+ * Driver debug utility routines outside of debugfs. The debug utility
+ * routines implemented here is intended to be used in the instrumented
+ * debug driver for debugging host or port issues.
+ */
+
+/**
+ * lpfc_debug_dump_all_queues - dump all the queues with a hba
+ * @phba: Pointer to HBA context object.
+ *
+ * This function dumps entries of all the queues asociated with the @phba.
+ **/
+void
+lpfc_debug_dump_all_queues(struct lpfc_hba *phba)
+{
+	int fcp_wqidx;
+
+	/*
+	 * Dump Work Queues (WQs)
+	 */
+	lpfc_debug_dump_mbx_wq(phba);
+	lpfc_debug_dump_els_wq(phba);
+
+	for (fcp_wqidx = 0; fcp_wqidx < phba->cfg_fcp_io_channel; fcp_wqidx++)
+		lpfc_debug_dump_fcp_wq(phba, fcp_wqidx);
+
+	lpfc_debug_dump_hdr_rq(phba);
+	lpfc_debug_dump_dat_rq(phba);
+	/*
+	 * Dump Complete Queues (CQs)
+	 */
+	lpfc_debug_dump_mbx_cq(phba);
+	lpfc_debug_dump_els_cq(phba);
+
+	for (fcp_wqidx = 0; fcp_wqidx < phba->cfg_fcp_io_channel; fcp_wqidx++)
+		lpfc_debug_dump_fcp_cq(phba, fcp_wqidx);
+
+	/*
+	 * Dump Event Queues (EQs)
+	 */
+	for (fcp_wqidx = 0; fcp_wqidx < phba->cfg_fcp_io_channel; fcp_wqidx++)
+		lpfc_debug_dump_hba_eq(phba, fcp_wqidx);
+}
+>>>>>>> refs/remotes/origin/master

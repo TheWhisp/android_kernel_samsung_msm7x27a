@@ -28,6 +28,7 @@ EXPORT_SYMBOL(__ndelay);
 EXPORT_SYMBOL(__ret_efault);
 EXPORT_SYMBOL(empty_zero_page);
 
+<<<<<<< HEAD
 /* Defined using magic */
 #ifndef CONFIG_SMP
 EXPORT_SYMBOL(BTFIXUP_CALL(___xchg32));
@@ -42,5 +43,7 @@ EXPORT_SYMBOL(BTFIXUP_CALL(mmu_release_scsi_sgl));
 EXPORT_SYMBOL(BTFIXUP_CALL(mmu_release_scsi_one));
 EXPORT_SYMBOL(BTFIXUP_CALL(pgprot_noncached));
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Exporting a symbol from /init/main.c */
 EXPORT_SYMBOL(saved_command_line);

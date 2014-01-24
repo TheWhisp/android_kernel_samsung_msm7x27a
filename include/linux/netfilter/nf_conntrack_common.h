@@ -1,5 +1,6 @@
 #ifndef _NF_CONNTRACK_COMMON_H
 #define _NF_CONNTRACK_COMMON_H
+<<<<<<< HEAD
 /* Connection state tracking for netfilter.  This is separated from,
    but required by, the NAT layer; it can also be used by an iptables
    extension. */
@@ -110,6 +111,11 @@ enum ip_conntrack_expect_events {
 #define NF_CT_EXPECT_USERSPACE		0x4
 
 #ifdef __KERNEL__
+=======
+
+#include <uapi/linux/netfilter/nf_conntrack_common.h>
+
+>>>>>>> refs/remotes/origin/master
 struct ip_conntrack_stat {
 	unsigned int searched;
 	unsigned int found;
@@ -130,8 +136,12 @@ struct ip_conntrack_stat {
 };
 
 /* call to create an explicit dependency on nf_conntrack. */
+<<<<<<< HEAD
 extern void need_conntrack(void);
 
 #endif /* __KERNEL__ */
+=======
+void need_conntrack(void);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _NF_CONNTRACK_COMMON_H */

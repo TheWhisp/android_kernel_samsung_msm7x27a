@@ -44,7 +44,11 @@ static cycle_t sb1250_hpt_read(struct clocksource *cs)
 
 struct clocksource bcm1250_clocksource = {
 	.name	= "bcm1250-counter-3",
+<<<<<<< HEAD
 	.rating	= 200,
+=======
+	.rating = 200,
+>>>>>>> refs/remotes/origin/master
 	.read	= sb1250_hpt_read,
 	.mask	= CLOCKSOURCE_MASK(23),
 	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,

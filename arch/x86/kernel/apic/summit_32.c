@@ -26,8 +26,14 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/mm.h>
 #include <linux/init.h>
+=======
+#define pr_fmt(fmt) "summit: %s: " fmt, __func__
+
+#include <linux/mm.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/bios_ebda.h>
 
@@ -235,8 +241,13 @@ static int summit_apic_id_registered(void)
 
 static void summit_setup_apic_routing(void)
 {
+<<<<<<< HEAD
 	printk("Enabling APIC mode:  Summit.  Using %d I/O APICs\n",
 						nr_ioapics);
+=======
+	pr_info("Enabling APIC mode:  Summit.  Using %d I/O APICs\n",
+		nr_ioapics);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int summit_cpu_present_to_apicid(int mps_cpu)
@@ -263,24 +274,42 @@ static int summit_check_phys_apicid_present(int physical_apicid)
 	return 1;
 }
 
+<<<<<<< HEAD
 static unsigned int summit_cpu_mask_to_apicid(const struct cpumask *cpumask)
 {
 	unsigned int round = 0;
 	int cpu, apicid = 0;
+=======
+static inline int
+summit_cpu_mask_to_apicid(const struct cpumask *cpumask, unsigned int *dest_id)
+{
+	unsigned int round = 0;
+	unsigned int cpu, apicid = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * The cpus in the mask must all be on the apic cluster.
 	 */
+<<<<<<< HEAD
 	for_each_cpu(cpu, cpumask) {
 		int new_apicid = early_per_cpu(x86_cpu_to_logical_apicid, cpu);
 
 		if (round && APIC_CLUSTER(apicid) != APIC_CLUSTER(new_apicid)) {
 			printk("%s: Not a valid mask!\n", __func__);
 			return BAD_APICID;
+=======
+	for_each_cpu_and(cpu, cpumask, cpu_online_mask) {
+		int new_apicid = early_per_cpu(x86_cpu_to_logical_apicid, cpu);
+
+		if (round && APIC_CLUSTER(apicid) != APIC_CLUSTER(new_apicid)) {
+			pr_err("Not a valid mask!\n");
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		}
 		apicid |= new_apicid;
 		round++;
 	}
+<<<<<<< HEAD
 	return apicid;
 }
 
@@ -300,6 +329,31 @@ static unsigned int summit_cpu_mask_to_apicid_and(const struct cpumask *inmask,
 	free_cpumask_var(cpumask);
 
 	return apicid;
+=======
+	if (!round)
+		return -EINVAL;
+	*dest_id = apicid;
+	return 0;
+}
+
+static int
+summit_cpu_mask_to_apicid_and(const struct cpumask *inmask,
+			      const struct cpumask *andmask,
+			      unsigned int *apicid)
+{
+	cpumask_var_t cpumask;
+	*apicid = early_per_cpu(x86_cpu_to_logical_apicid, 0);
+
+	if (!alloc_cpumask_var(&cpumask, GFP_ATOMIC))
+		return 0;
+
+	cpumask_and(cpumask, inmask, andmask);
+	summit_cpu_mask_to_apicid(cpumask, apicid);
+
+	free_cpumask_var(cpumask);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -320,6 +374,7 @@ static int probe_summit(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void summit_vector_allocation_domain(int cpu, struct cpumask *retmask)
 {
 	/* Careful. Some cpus do not strictly honor the set of cpus
@@ -334,6 +389,8 @@ static void summit_vector_allocation_domain(int cpu, struct cpumask *retmask)
 	cpumask_bits(retmask)[0] = APIC_ALL_CPUS;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_SUMMIT_NUMA
 static struct rio_table_hdr *rio_table_hdr;
 static struct scal_detail   *scal_devs[MAX_NUMNODES];
@@ -355,7 +412,11 @@ static int setup_pci_node_map_for_wpeg(int wpeg_num, int last_bus)
 		}
 	}
 	if (i == rio_table_hdr->num_rio_dev) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Couldn't find owner Cyclone for Winnipeg!\n", __func__);
+=======
+		pr_err("Couldn't find owner Cyclone for Winnipeg!\n");
+>>>>>>> refs/remotes/origin/master
 		return last_bus;
 	}
 
@@ -366,7 +427,11 @@ static int setup_pci_node_map_for_wpeg(int wpeg_num, int last_bus)
 		}
 	}
 	if (i == rio_table_hdr->num_scal_dev) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Couldn't find owner Twister for Cyclone!\n", __func__);
+=======
+		pr_err("Couldn't find owner Twister for Cyclone!\n");
+>>>>>>> refs/remotes/origin/master
 		return last_bus;
 	}
 
@@ -396,7 +461,11 @@ static int setup_pci_node_map_for_wpeg(int wpeg_num, int last_bus)
 		num_buses = 9;
 		break;
 	default:
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: Unsupported Winnipeg type!\n", __func__);
+=======
+		pr_info("Unsupported Winnipeg type!\n");
+>>>>>>> refs/remotes/origin/master
 		return last_bus;
 	}
 
@@ -411,13 +480,23 @@ static int build_detail_arrays(void)
 	int i, scal_detail_size, rio_detail_size;
 
 	if (rio_table_hdr->num_scal_dev > MAX_NUMNODES) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: MAX_NUMNODES too low!  Defined as %d, but system has %d nodes.\n", __func__, MAX_NUMNODES, rio_table_hdr->num_scal_dev);
+=======
+		pr_warn("MAX_NUMNODES too low!  Defined as %d, but system has %d nodes\n",
+			MAX_NUMNODES, rio_table_hdr->num_scal_dev);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	switch (rio_table_hdr->version) {
 	default:
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: Invalid Rio Grande Table Version: %d\n", __func__, rio_table_hdr->version);
+=======
+		pr_warn("Invalid Rio Grande Table Version: %d\n",
+			rio_table_hdr->version);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	case 2:
 		scal_detail_size = 11;
@@ -462,7 +541,11 @@ void setup_summit(void)
 		offset = *((unsigned short *)(ptr + offset));
 	}
 	if (!rio_table_hdr) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Unable to locate Rio Grande Table in EBDA - bailing!\n", __func__);
+=======
+		pr_err("Unable to locate Rio Grande Table in EBDA - bailing!\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -497,9 +580,13 @@ static struct apic apic_summit = {
 	.probe				= probe_summit,
 	.acpi_madt_oem_check		= summit_acpi_madt_oem_check,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.apic_id_valid			= default_apic_id_valid,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.apic_id_valid			= default_apic_id_valid,
+>>>>>>> refs/remotes/origin/master
 	.apic_id_registered		= summit_apic_id_registered,
 
 	.irq_delivery_mode		= dest_LowestPrio,
@@ -512,7 +599,11 @@ static struct apic apic_summit = {
 	.check_apicid_used		= summit_check_apicid_used,
 	.check_apicid_present		= summit_check_apicid_present,
 
+<<<<<<< HEAD
 	.vector_allocation_domain	= summit_vector_allocation_domain,
+=======
+	.vector_allocation_domain	= flat_vector_allocation_domain,
+>>>>>>> refs/remotes/origin/master
 	.init_apic_ldr			= summit_init_apic_ldr,
 
 	.ioapic_phys_id_map		= summit_ioapic_phys_id_map,
@@ -530,7 +621,10 @@ static struct apic apic_summit = {
 	.set_apic_id			= NULL,
 	.apic_id_mask			= 0xFF << 24,
 
+<<<<<<< HEAD
 	.cpu_mask_to_apicid		= summit_cpu_mask_to_apicid,
+=======
+>>>>>>> refs/remotes/origin/master
 	.cpu_mask_to_apicid_and		= summit_cpu_mask_to_apicid_and,
 
 	.send_IPI_mask			= summit_send_IPI_mask,
@@ -549,6 +643,10 @@ static struct apic apic_summit = {
 
 	.read				= native_apic_mem_read,
 	.write				= native_apic_mem_write,
+<<<<<<< HEAD
+=======
+	.eoi_write			= native_apic_mem_write,
+>>>>>>> refs/remotes/origin/master
 	.icr_read			= native_apic_icr_read,
 	.icr_write			= native_apic_icr_write,
 	.wait_icr_idle			= native_apic_wait_icr_idle,

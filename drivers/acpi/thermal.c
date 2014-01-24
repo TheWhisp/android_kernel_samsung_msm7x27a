@@ -50,11 +50,14 @@
 
 #define ACPI_THERMAL_CLASS		"thermal_zone"
 #define ACPI_THERMAL_DEVICE_NAME	"Thermal Zone"
+<<<<<<< HEAD
 #define ACPI_THERMAL_FILE_STATE		"state"
 #define ACPI_THERMAL_FILE_TEMPERATURE	"temperature"
 #define ACPI_THERMAL_FILE_TRIP_POINTS	"trip_points"
 #define ACPI_THERMAL_FILE_COOLING_MODE	"cooling_mode"
 #define ACPI_THERMAL_FILE_POLLING_FREQ	"polling_frequency"
+=======
+>>>>>>> refs/remotes/origin/master
 #define ACPI_THERMAL_NOTIFY_TEMPERATURE	0x80
 #define ACPI_THERMAL_NOTIFY_THRESHOLDS	0x81
 #define ACPI_THERMAL_NOTIFY_DEVICES	0x82
@@ -97,8 +100,12 @@ module_param(psv, int, 0644);
 MODULE_PARM_DESC(psv, "Disable or override all passive trip points.");
 
 static int acpi_thermal_add(struct acpi_device *device);
+<<<<<<< HEAD
 static int acpi_thermal_remove(struct acpi_device *device, int type);
 static int acpi_thermal_resume(struct acpi_device *device);
+=======
+static int acpi_thermal_remove(struct acpi_device *device);
+>>>>>>> refs/remotes/origin/master
 static void acpi_thermal_notify(struct acpi_device *device, u32 event);
 
 static const struct acpi_device_id  thermal_device_ids[] = {
@@ -107,6 +114,14 @@ static const struct acpi_device_id  thermal_device_ids[] = {
 };
 MODULE_DEVICE_TABLE(acpi, thermal_device_ids);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_SLEEP
+static int acpi_thermal_resume(struct device *dev);
+#endif
+static SIMPLE_DEV_PM_OPS(acpi_thermal_pm, NULL, acpi_thermal_resume);
+
+>>>>>>> refs/remotes/origin/master
 static struct acpi_driver acpi_thermal_driver = {
 	.name = "thermal",
 	.class = ACPI_THERMAL_CLASS,
@@ -114,9 +129,15 @@ static struct acpi_driver acpi_thermal_driver = {
 	.ops = {
 		.add = acpi_thermal_add,
 		.remove = acpi_thermal_remove,
+<<<<<<< HEAD
 		.resume = acpi_thermal_resume,
 		.notify = acpi_thermal_notify,
 		},
+=======
+		.notify = acpi_thermal_notify,
+		},
+	.drv.pm = &acpi_thermal_pm,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct acpi_thermal_state {
@@ -186,7 +207,10 @@ struct acpi_thermal {
 	struct thermal_zone_device *thermal_zone;
 	int tz_enabled;
 	int kelvin_offset;
+<<<<<<< HEAD
 	struct mutex lock;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* --------------------------------------------------------------------------
@@ -235,6 +259,7 @@ static int acpi_thermal_get_polling_frequency(struct acpi_thermal *tz)
 
 static int acpi_thermal_set_cooling_mode(struct acpi_thermal *tz, int mode)
 {
+<<<<<<< HEAD
 	acpi_status status = AE_OK;
 	union acpi_object arg0 = { ACPI_TYPE_INTEGER };
 	struct acpi_object_list arg_list = { 1, &arg0 };
@@ -255,6 +280,18 @@ static int acpi_thermal_set_cooling_mode(struct acpi_thermal *tz, int mode)
 	status = acpi_evaluate_object(handle, NULL, &arg_list, NULL);
 	if (ACPI_FAILURE(status))
 		return -ENODEV;
+=======
+	if (!tz)
+		return -EINVAL;
+
+	if (!acpi_has_method(tz->device->handle, "_SCP")) {
+		ACPI_DEBUG_PRINT((ACPI_DB_INFO, "_SCP not present\n"));
+		return -ENODEV;
+	} else if (ACPI_FAILURE(acpi_execute_simple_method(tz->device->handle,
+							   "_SCP", mode))) {
+		return -ENODEV;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -284,7 +321,11 @@ do {	\
 	if (flags != ACPI_TRIPS_INIT)	\
 		ACPI_EXCEPTION((AE_INFO, AE_ERROR,	\
 		"ACPI thermal trip point %s changed\n"	\
+<<<<<<< HEAD
 		"Please send acpidump to linux-acpi@vger.kernel.org\n", str)); \
+=======
+		"Please send acpidump to linux-acpi@vger.kernel.org", str)); \
+>>>>>>> refs/remotes/origin/master
 } while (0)
 
 static int acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
@@ -311,8 +352,13 @@ static int acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
 			ACPI_DEBUG_PRINT((ACPI_DB_INFO,
 					  "No critical threshold\n"));
 		} else if (tmp <= 2732) {
+<<<<<<< HEAD
 			printk(KERN_WARNING FW_BUG "Invalid critical threshold "
 			       "(%llu)\n", tmp);
+=======
+			pr_warn(FW_BUG "Invalid critical threshold (%llu)\n",
+				tmp);
+>>>>>>> refs/remotes/origin/master
 			tz->trips.critical.flags.valid = 0;
 		} else {
 			tz->trips.critical.flags.valid = 1;
@@ -329,8 +375,13 @@ static int acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
 				 * Allow override critical threshold
 				 */
 				if (crt_k > tz->trips.critical.temperature)
+<<<<<<< HEAD
 					printk(KERN_WARNING PREFIX
 						"Critical threshold %d C\n", crt);
+=======
+					pr_warn(PREFIX "Critical threshold %d C\n",
+						crt);
+>>>>>>> refs/remotes/origin/master
 				tz->trips.critical.temperature = crt_k;
 			}
 		}
@@ -402,8 +453,12 @@ static int acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
 		status = acpi_evaluate_reference(tz->device->handle, "_PSL",
 							NULL, &devices);
 		if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 			printk(KERN_WARNING PREFIX
 				"Invalid passive threshold\n");
+=======
+			pr_warn(PREFIX "Invalid passive threshold\n");
+>>>>>>> refs/remotes/origin/master
 			tz->trips.passive.flags.valid = 0;
 		}
 		else
@@ -465,8 +520,13 @@ static int acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
 			status = acpi_evaluate_reference(tz->device->handle,
 						name, NULL, &devices);
 			if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 				printk(KERN_WARNING PREFIX
 					"Invalid active%d threshold\n", i);
+=======
+				pr_warn(PREFIX "Invalid active%d threshold\n",
+					i);
+>>>>>>> refs/remotes/origin/master
 				tz->trips.active[i].flags.valid = 0;
 			}
 			else
@@ -487,6 +547,7 @@ static int acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
 			break;
 	}
 
+<<<<<<< HEAD
 	if (flag & ACPI_TRIPS_DEVICES) {
 		memset(&devices, 0, sizeof(struct acpi_handle_list));
 		status = acpi_evaluate_reference(tz->device->handle, "_TZD",
@@ -495,6 +556,16 @@ static int acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
 				sizeof(struct acpi_handle_list))) {
 			memcpy(&tz->devices, &devices,
 				sizeof(struct acpi_handle_list));
+=======
+	if ((flag & ACPI_TRIPS_DEVICES)
+	    && acpi_has_method(tz->device->handle, "_TZD")) {
+		memset(&devices, 0, sizeof(devices));
+		status = acpi_evaluate_reference(tz->device->handle, "_TZD",
+						NULL, &devices);
+		if (ACPI_SUCCESS(status)
+		    && memcmp(&tz->devices, &devices, sizeof(devices))) {
+			tz->devices = devices;
+>>>>>>> refs/remotes/origin/master
 			ACPI_THERMAL_TRIPS_EXCEPTION(flag, "device");
 		}
 	}
@@ -517,7 +588,11 @@ static int acpi_thermal_get_trip_points(struct acpi_thermal *tz)
 		valid |= tz->trips.active[i].flags.valid;
 
 	if (!valid) {
+<<<<<<< HEAD
 		printk(KERN_WARNING FW_BUG "No valid trip found\n");
+=======
+		pr_warn(FW_BUG "No valid trip found\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 	return 0;
@@ -527,6 +602,12 @@ static void acpi_thermal_check(void *data)
 {
 	struct acpi_thermal *tz = data;
 
+<<<<<<< HEAD
+=======
+	if (!tz->tz_enabled)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	thermal_zone_device_update(tz->thermal_zone);
 }
 
@@ -550,8 +631,11 @@ static int thermal_get_temp(struct thermal_zone_device *thermal,
 	return 0;
 }
 
+<<<<<<< HEAD
 static const char enabled[] = "kernel";
 static const char disabled[] = "user";
+=======
+>>>>>>> refs/remotes/origin/master
 static int thermal_get_mode(struct thermal_zone_device *thermal,
 				enum thermal_device_mode *mode)
 {
@@ -580,16 +664,28 @@ static int thermal_set_mode(struct thermal_zone_device *thermal,
 	 */
 	if (mode == THERMAL_DEVICE_ENABLED)
 		enable = 1;
+<<<<<<< HEAD
 	else if (mode == THERMAL_DEVICE_DISABLED)
 		enable = 0;
 	else
+=======
+	else if (mode == THERMAL_DEVICE_DISABLED) {
+		enable = 0;
+		pr_warn("thermal zone will be disabled\n");
+	} else
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (enable != tz->tz_enabled) {
 		tz->tz_enabled = enable;
 		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
+<<<<<<< HEAD
 			"%s ACPI thermal control\n",
 			tz->tz_enabled ? enabled : disabled));
+=======
+			"%s kernel ACPI thermal control\n",
+			tz->tz_enabled ? "Enable" : "Disable"));
+>>>>>>> refs/remotes/origin/master
 		acpi_thermal_check(tz);
 	}
 	return 0;
@@ -706,6 +802,53 @@ static int thermal_get_crit_temp(struct thermal_zone_device *thermal,
 		return -EINVAL;
 }
 
+<<<<<<< HEAD
+=======
+static int thermal_get_trend(struct thermal_zone_device *thermal,
+				int trip, enum thermal_trend *trend)
+{
+	struct acpi_thermal *tz = thermal->devdata;
+	enum thermal_trip_type type;
+	int i;
+
+	if (thermal_get_trip_type(thermal, trip, &type))
+		return -EINVAL;
+
+	if (type == THERMAL_TRIP_ACTIVE) {
+		unsigned long trip_temp;
+		unsigned long temp = KELVIN_TO_MILLICELSIUS(tz->temperature,
+							tz->kelvin_offset);
+		if (thermal_get_trip_temp(thermal, trip, &trip_temp))
+			return -EINVAL;
+
+		if (temp > trip_temp) {
+			*trend = THERMAL_TREND_RAISING;
+			return 0;
+		} else {
+			/* Fall back on default trend */
+			return -EINVAL;
+		}
+	}
+
+	/*
+	 * tz->temperature has already been updated by generic thermal layer,
+	 * before this callback being invoked
+	 */
+	i = (tz->trips.passive.tc1 * (tz->temperature - tz->last_temperature))
+		+ (tz->trips.passive.tc2
+		* (tz->temperature - tz->trips.passive.temperature));
+
+	if (i > 0)
+		*trend = THERMAL_TREND_RAISING;
+	else if (i < 0)
+		*trend = THERMAL_TREND_DROPPING;
+	else
+		*trend = THERMAL_TREND_STABLE;
+	return 0;
+}
+
+
+>>>>>>> refs/remotes/origin/master
 static int thermal_notify(struct thermal_zone_device *thermal, int trip,
 			   enum thermal_trip_type trip_type)
 {
@@ -719,7 +862,10 @@ static int thermal_notify(struct thermal_zone_device *thermal, int trip,
 	else
 		return 0;
 
+<<<<<<< HEAD
 	acpi_bus_generate_proc_event(tz->device, type, 1);
+=======
+>>>>>>> refs/remotes/origin/master
 	acpi_bus_generate_netlink_event(tz->device->pnp.device_class,
 					dev_name(&tz->device->dev), type, 1);
 
@@ -729,11 +875,17 @@ static int thermal_notify(struct thermal_zone_device *thermal, int trip,
 	return 0;
 }
 
+<<<<<<< HEAD
 typedef int (*cb)(struct thermal_zone_device *, int,
 		  struct thermal_cooling_device *);
 static int acpi_thermal_cooling_device_cb(struct thermal_zone_device *thermal,
 					struct thermal_cooling_device *cdev,
 					cb action)
+=======
+static int acpi_thermal_cooling_device_cb(struct thermal_zone_device *thermal,
+					struct thermal_cooling_device *cdev,
+					bool bind)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_device *device = cdev->devdata;
 	struct acpi_thermal *tz = thermal->devdata;
@@ -757,11 +909,27 @@ static int acpi_thermal_cooling_device_cb(struct thermal_zone_device *thermal,
 		    i++) {
 			handle = tz->trips.passive.devices.handles[i];
 			status = acpi_bus_get_device(handle, &dev);
+<<<<<<< HEAD
 			if (ACPI_SUCCESS(status) && (dev == device)) {
 				result = action(thermal, trip, cdev);
 				if (result)
 					goto failed;
 			}
+=======
+			if (ACPI_FAILURE(status) || dev != device)
+				continue;
+			if (bind)
+				result =
+					thermal_zone_bind_cooling_device
+					(thermal, trip, cdev,
+					 THERMAL_NO_LIMIT, THERMAL_NO_LIMIT);
+			else
+				result =
+					thermal_zone_unbind_cooling_device
+					(thermal, trip, cdev);
+			if (result)
+				goto failed;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -774,11 +942,25 @@ static int acpi_thermal_cooling_device_cb(struct thermal_zone_device *thermal,
 		    j++) {
 			handle = tz->trips.active[i].devices.handles[j];
 			status = acpi_bus_get_device(handle, &dev);
+<<<<<<< HEAD
 			if (ACPI_SUCCESS(status) && (dev == device)) {
 				result = action(thermal, trip, cdev);
 				if (result)
 					goto failed;
 			}
+=======
+			if (ACPI_FAILURE(status) || dev != device)
+				continue;
+			if (bind)
+				result = thermal_zone_bind_cooling_device
+					(thermal, trip, cdev,
+					 THERMAL_NO_LIMIT, THERMAL_NO_LIMIT);
+			else
+				result = thermal_zone_unbind_cooling_device
+					(thermal, trip, cdev);
+			if (result)
+				goto failed;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -786,7 +968,19 @@ static int acpi_thermal_cooling_device_cb(struct thermal_zone_device *thermal,
 		handle = tz->devices.handles[i];
 		status = acpi_bus_get_device(handle, &dev);
 		if (ACPI_SUCCESS(status) && (dev == device)) {
+<<<<<<< HEAD
 			result = action(thermal, -1, cdev);
+=======
+			if (bind)
+				result = thermal_zone_bind_cooling_device
+						(thermal, THERMAL_TRIPS_NONE,
+						 cdev, THERMAL_NO_LIMIT,
+						 THERMAL_NO_LIMIT);
+			else
+				result = thermal_zone_unbind_cooling_device
+						(thermal, THERMAL_TRIPS_NONE,
+						 cdev);
+>>>>>>> refs/remotes/origin/master
 			if (result)
 				goto failed;
 		}
@@ -800,14 +994,19 @@ static int
 acpi_thermal_bind_cooling_device(struct thermal_zone_device *thermal,
 					struct thermal_cooling_device *cdev)
 {
+<<<<<<< HEAD
 	return acpi_thermal_cooling_device_cb(thermal, cdev,
 				thermal_zone_bind_cooling_device);
+=======
+	return acpi_thermal_cooling_device_cb(thermal, cdev, true);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 acpi_thermal_unbind_cooling_device(struct thermal_zone_device *thermal,
 					struct thermal_cooling_device *cdev)
 {
+<<<<<<< HEAD
 	return acpi_thermal_cooling_device_cb(thermal, cdev,
 				thermal_zone_unbind_cooling_device);
 }
@@ -817,6 +1016,12 @@ static struct thermal_zone_device_ops acpi_thermal_zone_ops = {
 =======
 static const struct thermal_zone_device_ops acpi_thermal_zone_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return acpi_thermal_cooling_device_cb(thermal, cdev, false);
+}
+
+static const struct thermal_zone_device_ops acpi_thermal_zone_ops = {
+>>>>>>> refs/remotes/origin/master
 	.bind = acpi_thermal_bind_cooling_device,
 	.unbind	= acpi_thermal_unbind_cooling_device,
 	.get_temp = thermal_get_temp,
@@ -825,6 +1030,10 @@ static const struct thermal_zone_device_ops acpi_thermal_zone_ops = {
 	.get_trip_type = thermal_get_trip_type,
 	.get_trip_temp = thermal_get_trip_temp,
 	.get_crit_temp = thermal_get_crit_temp,
+<<<<<<< HEAD
+=======
+	.get_trend = thermal_get_trend,
+>>>>>>> refs/remotes/origin/master
 	.notify = thermal_notify,
 };
 
@@ -849,18 +1058,29 @@ static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz)
 
 	if (tz->trips.passive.flags.valid)
 		tz->thermal_zone =
+<<<<<<< HEAD
 			thermal_zone_device_register("acpitz", trips, tz,
 						     &acpi_thermal_zone_ops,
 						     tz->trips.passive.tc1,
 						     tz->trips.passive.tc2,
+=======
+			thermal_zone_device_register("acpitz", trips, 0, tz,
+						&acpi_thermal_zone_ops, NULL,
+>>>>>>> refs/remotes/origin/master
 						     tz->trips.passive.tsp*100,
 						     tz->polling_frequency*100);
 	else
 		tz->thermal_zone =
+<<<<<<< HEAD
 			thermal_zone_device_register("acpitz", trips, tz,
 						     &acpi_thermal_zone_ops,
 						     0, 0, 0,
 						     tz->polling_frequency*100);
+=======
+			thermal_zone_device_register("acpitz", trips, 0, tz,
+						&acpi_thermal_zone_ops, NULL,
+						0, tz->polling_frequency*100);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(tz->thermal_zone))
 		return -ENODEV;
 
@@ -878,8 +1098,12 @@ static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz)
 				  acpi_bus_private_data_handler,
 				  tz->thermal_zone);
 	if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 		printk(KERN_ERR PREFIX
 				"Error attaching device data\n");
+=======
+		pr_err(PREFIX "Error attaching device data\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -919,14 +1143,20 @@ static void acpi_thermal_notify(struct acpi_device *device, u32 event)
 	case ACPI_THERMAL_NOTIFY_THRESHOLDS:
 		acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_THRESHOLDS);
 		acpi_thermal_check(tz);
+<<<<<<< HEAD
 		acpi_bus_generate_proc_event(device, event, 0);
+=======
+>>>>>>> refs/remotes/origin/master
 		acpi_bus_generate_netlink_event(device->pnp.device_class,
 						  dev_name(&device->dev), event, 0);
 		break;
 	case ACPI_THERMAL_NOTIFY_DEVICES:
 		acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_DEVICES);
 		acpi_thermal_check(tz);
+<<<<<<< HEAD
 		acpi_bus_generate_proc_event(device, event, 0);
+=======
+>>>>>>> refs/remotes/origin/master
 		acpi_bus_generate_netlink_event(device->pnp.device_class,
 						  dev_name(&device->dev), event, 0);
 		break;
@@ -937,6 +1167,41 @@ static void acpi_thermal_notify(struct acpi_device *device, u32 event)
 	}
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * On some platforms, the AML code has dependency about
+ * the evaluating order of _TMP and _CRT/_HOT/_PSV/_ACx.
+ * 1. On HP Pavilion G4-1016tx, _TMP must be invoked after
+ *    /_CRT/_HOT/_PSV/_ACx, or else system will be power off.
+ * 2. On HP Compaq 6715b/6715s, the return value of _PSV is 0
+ *    if _TMP has never been evaluated.
+ *
+ * As this dependency is totally transparent to OS, evaluate
+ * all of them once, in the order of _CRT/_HOT/_PSV/_ACx,
+ * _TMP, before they are actually used.
+ */
+static void acpi_thermal_aml_dependency_fix(struct acpi_thermal *tz)
+{
+	acpi_handle handle = tz->device->handle;
+	unsigned long long value;
+	int i;
+
+	acpi_evaluate_integer(handle, "_CRT", NULL, &value);
+	acpi_evaluate_integer(handle, "_HOT", NULL, &value);
+	acpi_evaluate_integer(handle, "_PSV", NULL, &value);
+	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++) {
+		char name[5] = { '_', 'A', 'C', ('0' + i), '\0' };
+		acpi_status status;
+
+		status = acpi_evaluate_integer(handle, name, NULL, &value);
+		if (status == AE_NOT_FOUND)
+			break;
+	}
+	acpi_evaluate_integer(handle, "_TMP", NULL, &value);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int acpi_thermal_get_info(struct acpi_thermal *tz)
 {
 	int result = 0;
@@ -945,6 +1210,7 @@ static int acpi_thermal_get_info(struct acpi_thermal *tz)
 	if (!tz)
 		return -EINVAL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Get temperature [_TMP] (required) */
 	result = acpi_thermal_get_temperature(tz);
@@ -956,12 +1222,21 @@ static int acpi_thermal_get_info(struct acpi_thermal *tz)
 =======
 	/* Get trip points [_CRT, _PSV, etc.] (required) */
 	result = acpi_thermal_get_trip_points(tz);
+=======
+	acpi_thermal_aml_dependency_fix(tz);
+
+	/* Get trip points [_CRT, _PSV, etc.] (required) */
+	result = acpi_thermal_get_trip_points(tz);
+>>>>>>> refs/remotes/origin/master
 	if (result)
 		return result;
 
 	/* Get temperature [_TMP] (required) */
 	result = acpi_thermal_get_temperature(tz);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (result)
 		return result;
 
@@ -1016,8 +1291,11 @@ static int acpi_thermal_add(struct acpi_device *device)
 	strcpy(acpi_device_name(device), ACPI_THERMAL_DEVICE_NAME);
 	strcpy(acpi_device_class(device), ACPI_THERMAL_CLASS);
 	device->driver_data = tz;
+<<<<<<< HEAD
 	mutex_init(&tz->lock);
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 	result = acpi_thermal_get_info(tz);
 	if (result)
@@ -1029,9 +1307,14 @@ static int acpi_thermal_add(struct acpi_device *device)
 	if (result)
 		goto free_memory;
 
+<<<<<<< HEAD
 	printk(KERN_INFO PREFIX "%s [%s] (%ld C)\n",
 	       acpi_device_name(device), acpi_device_bid(device),
 	       KELVIN_TO_CELSIUS(tz->temperature));
+=======
+	pr_info(PREFIX "%s [%s] (%ld C)\n", acpi_device_name(device),
+		acpi_device_bid(device), KELVIN_TO_CELSIUS(tz->temperature));
+>>>>>>> refs/remotes/origin/master
 	goto end;
 
 free_memory:
@@ -1040,7 +1323,11 @@ end:
 	return result;
 }
 
+<<<<<<< HEAD
 static int acpi_thermal_remove(struct acpi_device *device, int type)
+=======
+static int acpi_thermal_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_thermal *tz = NULL;
 
@@ -1050,11 +1337,15 @@ static int acpi_thermal_remove(struct acpi_device *device, int type)
 	tz = acpi_driver_data(device);
 
 	acpi_thermal_unregister_thermal_zone(tz);
+<<<<<<< HEAD
 	mutex_destroy(&tz->lock);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(tz);
 	return 0;
 }
 
+<<<<<<< HEAD
 static int acpi_thermal_resume(struct acpi_device *device)
 {
 	struct acpi_thermal *tz = NULL;
@@ -1065,6 +1356,20 @@ static int acpi_thermal_resume(struct acpi_device *device)
 		return -EINVAL;
 
 	tz = acpi_driver_data(device);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int acpi_thermal_resume(struct device *dev)
+{
+	struct acpi_thermal *tz;
+	int i, j, power_state, result;
+
+	if (!dev)
+		return -EINVAL;
+
+	tz = acpi_driver_data(to_acpi_device(dev));
+	if (!tz)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++) {
 		if (!(&tz->trips.active[i]))
@@ -1088,28 +1393,47 @@ static int acpi_thermal_resume(struct acpi_device *device)
 
 	return AE_OK;
 }
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static int thermal_act(const struct dmi_system_id *d) {
 
 	if (act == 0) {
+<<<<<<< HEAD
 		printk(KERN_NOTICE "ACPI: %s detected: "
 			"disabling all active thermal trip points\n", d->ident);
+=======
+		pr_notice(PREFIX "%s detected: "
+			  "disabling all active thermal trip points\n", d->ident);
+>>>>>>> refs/remotes/origin/master
 		act = -1;
 	}
 	return 0;
 }
 static int thermal_nocrt(const struct dmi_system_id *d) {
 
+<<<<<<< HEAD
 	printk(KERN_NOTICE "ACPI: %s detected: "
 		"disabling all critical thermal trip point actions.\n", d->ident);
+=======
+	pr_notice(PREFIX "%s detected: "
+		  "disabling all critical thermal trip point actions.\n", d->ident);
+>>>>>>> refs/remotes/origin/master
 	nocrt = 1;
 	return 0;
 }
 static int thermal_tzp(const struct dmi_system_id *d) {
 
 	if (tzp == 0) {
+<<<<<<< HEAD
 		printk(KERN_NOTICE "ACPI: %s detected: "
 			"enabling thermal zone polling\n", d->ident);
+=======
+		pr_notice(PREFIX "%s detected: "
+			  "enabling thermal zone polling\n", d->ident);
+>>>>>>> refs/remotes/origin/master
 		tzp = 300;	/* 300 dS = 30 Seconds */
 	}
 	return 0;
@@ -1117,8 +1441,13 @@ static int thermal_tzp(const struct dmi_system_id *d) {
 static int thermal_psv(const struct dmi_system_id *d) {
 
 	if (psv == 0) {
+<<<<<<< HEAD
 		printk(KERN_NOTICE "ACPI: %s detected: "
 			"disabling all passive thermal trip points\n", d->ident);
+=======
+		pr_notice(PREFIX "%s detected: "
+			  "disabling all passive thermal trip points\n", d->ident);
+>>>>>>> refs/remotes/origin/master
 		psv = -1;
 	}
 	return 0;
@@ -1171,7 +1500,11 @@ static int __init acpi_thermal_init(void)
 	dmi_check_system(thermal_dmi_table);
 
 	if (off) {
+<<<<<<< HEAD
 		printk(KERN_NOTICE "ACPI: thermal control disabled\n");
+=======
+		pr_notice(PREFIX "thermal control disabled\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 

@@ -252,7 +252,12 @@ static void afs_defer_unlock(struct afs_vnode *vnode, struct key *key)
  */
 static int afs_do_setlk(struct file *file, struct file_lock *fl)
 {
+<<<<<<< HEAD
 	struct afs_vnode *vnode = AFS_FS_I(file->f_mapping->host);
+=======
+	struct inode *inode = file_inode(file);
+	struct afs_vnode *vnode = AFS_FS_I(inode);
+>>>>>>> refs/remotes/origin/master
 	afs_lock_type_t type;
 	struct key *key = file->private_data;
 	int ret;
@@ -273,7 +278,11 @@ static int afs_do_setlk(struct file *file, struct file_lock *fl)
 
 	type = (fl->fl_type == F_RDLCK) ? AFS_LOCK_READ : AFS_LOCK_WRITE;
 
+<<<<<<< HEAD
 	lock_flocks();
+=======
+	spin_lock(&inode->i_lock);
+>>>>>>> refs/remotes/origin/master
 
 	/* make sure we've got a callback on this file and that our view of the
 	 * data version is up to date */
@@ -420,7 +429,11 @@ given_lock:
 	afs_vnode_fetch_status(vnode, NULL, key);
 
 error:
+<<<<<<< HEAD
 	unlock_flocks();
+=======
+	spin_unlock(&inode->i_lock);
+>>>>>>> refs/remotes/origin/master
 	_leave(" = %d", ret);
 	return ret;
 
@@ -514,7 +527,11 @@ error:
  */
 int afs_lock(struct file *file, int cmd, struct file_lock *fl)
 {
+<<<<<<< HEAD
 	struct afs_vnode *vnode = AFS_FS_I(file->f_dentry->d_inode);
+=======
+	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 
 	_enter("{%x:%u},%d,{t=%x,fl=%x,r=%Ld:%Ld}",
 	       vnode->fid.vid, vnode->fid.vnode, cmd,
@@ -537,7 +554,11 @@ int afs_lock(struct file *file, int cmd, struct file_lock *fl)
  */
 int afs_flock(struct file *file, int cmd, struct file_lock *fl)
 {
+<<<<<<< HEAD
 	struct afs_vnode *vnode = AFS_FS_I(file->f_dentry->d_inode);
+=======
+	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 
 	_enter("{%x:%u},%d,{t=%x,fl=%x}",
 	       vnode->fid.vid, vnode->fid.vnode, cmd,

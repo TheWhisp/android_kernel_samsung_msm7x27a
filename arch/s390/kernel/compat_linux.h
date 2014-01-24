@@ -17,6 +17,7 @@ struct ipc_kludge_32 {
         __s32   msgtyp;
 };
 
+<<<<<<< HEAD
 struct old_sigaction32 {
        __u32			sa_handler;	/* Really a pointer, but need to deal with 32 bits */
        compat_old_sigset_t	sa_mask;	/* A 32 bit mask */
@@ -92,6 +93,8 @@ typedef struct compat_siginfo {
 #define si_tid		_sifields._timer._tid
 #define si_overrun	_sifields._timer._overrun
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* asm/sigcontext.h */
 typedef union
 {
@@ -102,6 +105,10 @@ typedef union
 typedef struct
 {
 	unsigned int	fpc;
+<<<<<<< HEAD
+=======
+	unsigned int	pad;
+>>>>>>> refs/remotes/origin/master
 	freg_t32	fprs[__NUM_FPRS];              
 } _s390_fp_regs32;
 
@@ -136,6 +143,7 @@ struct sigcontext32
 };
 
 /* asm/signal.h */
+<<<<<<< HEAD
 struct sigaction32 {
 	__u32		sa_handler;		/* pointer */
 	__u32		sa_flags;
@@ -148,12 +156,18 @@ typedef struct {
 	int			ss_flags;
 	compat_size_t		ss_size;
 } stack_t32;
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* asm/ucontext.h */
 struct ucontext32 {
 	__u32			uc_flags;
 	__u32			uc_link;	/* pointer */	
+<<<<<<< HEAD
 	stack_t32		uc_stack;
+=======
+	compat_stack_t		uc_stack;
+>>>>>>> refs/remotes/origin/master
 	_sigregs32		uc_mcontext;
 	compat_sigset_t		uc_sigmask;	/* mask last for extensibility */
 };
@@ -161,8 +175,11 @@ struct ucontext32 {
 struct stat64_emu31;
 struct mmap_arg_struct_emu31;
 struct fadvise64_64_args;
+<<<<<<< HEAD
 struct old_sigaction32;
 struct old_sigaction32;
+=======
+>>>>>>> refs/remotes/origin/master
 
 long sys32_chown16(const char __user * filename, u16 user, u16 group);
 long sys32_lchown16(const char __user * filename, u16 user, u16 group);
@@ -183,6 +200,7 @@ long sys32_getuid16(void);
 long sys32_geteuid16(void);
 long sys32_getgid16(void);
 long sys32_getegid16(void);
+<<<<<<< HEAD
 long sys32_ipc(u32 call, int first, int second, int third, u32 ptr);
 long sys32_truncate64(const char __user * path, unsigned long high,
 		      unsigned long low);
@@ -195,6 +213,11 @@ long sys32_rt_sigpending(compat_sigset_t __user *set, size_t sigsetsize);
 long sys32_rt_sigqueueinfo(int pid, int sig, compat_siginfo_t __user *uinfo);
 long sys32_execve(const char __user *name, compat_uptr_t __user *argv,
 		  compat_uptr_t __user *envp);
+=======
+long sys32_truncate64(const char __user * path, unsigned long high,
+		      unsigned long low);
+long sys32_ftruncate64(unsigned int fd, unsigned long high, unsigned long low);
+>>>>>>> refs/remotes/origin/master
 long sys32_init_module(void __user *umod, unsigned long len,
 		       const char __user *uargs);
 long sys32_delete_module(const char __user *name_user, unsigned int flags);
@@ -203,10 +226,13 @@ long sys32_pread64(unsigned int fd, char __user *ubuf, size_t count,
 long sys32_pwrite64(unsigned int fd, const char __user *ubuf,
 		    size_t count, u32 poshi, u32 poslo);
 compat_ssize_t sys32_readahead(int fd, u32 offhi, u32 offlo, s32 count);
+<<<<<<< HEAD
 long sys32_sendfile(int out_fd, int in_fd, compat_off_t __user *offset,
 		    size_t count);
 long sys32_sendfile64(int out_fd, int in_fd, compat_loff_t __user *offset,
 		      s32 count);
+=======
+>>>>>>> refs/remotes/origin/master
 long sys32_stat64(const char __user * filename, struct stat64_emu31 __user * statbuf);
 long sys32_lstat64(const char __user * filename,
 		   struct stat64_emu31 __user * statbuf);
@@ -219,9 +245,12 @@ long sys32_read(unsigned int fd, char __user * buf, size_t count);
 long sys32_write(unsigned int fd, const char __user * buf, size_t count);
 long sys32_fadvise64(int fd, loff_t offset, size_t len, int advise);
 long sys32_fadvise64_64(struct fadvise64_64_args __user *args);
+<<<<<<< HEAD
 long sys32_sigaction(int sig, const struct old_sigaction32 __user *act,
 		     struct old_sigaction32 __user *oact);
 long sys32_rt_sigaction(int sig, const struct sigaction32 __user *act,
 			struct sigaction32 __user *oact, size_t sigsetsize);
 long sys32_sigaltstack(const stack_t32 __user *uss, stack_t32 __user *uoss);
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_S390X_S390_H */

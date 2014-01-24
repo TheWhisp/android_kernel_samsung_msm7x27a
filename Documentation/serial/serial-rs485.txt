@@ -29,12 +29,18 @@
    parameters in the platform data and in ioctls.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    The device tree can also provide RS485 boot time parameters (see [2]
    for bindings). The driver is in charge of filling this data structure from
    the values given by the device tree.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
    Any driver for devices capable of working both as RS232 and RS485 should
    provide at least the following ioctls:
 
@@ -101,6 +107,7 @@
 	struct serial_rs485 rs485conf;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Set RS485 mode: */
 	rs485conf.flags |= SER_RS485_ENABLED;
 
@@ -113,6 +120,8 @@
 	rs485conf.delay_rts_after_send = ...;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Enable RS485 mode: */
 	rs485conf.flags |= SER_RS485_ENABLED;
 
@@ -135,7 +144,10 @@
 	/* Set this flag if you want to receive data even whilst sending data */
 	rs485conf.flags |= SER_RS485_RX_DURING_TX;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ioctl (fd, TIOCSRS485, &rs485conf) < 0) {
 		/* Error handling. See errno. */
 	}
@@ -151,6 +163,10 @@
 
  [1]	include/linux/serial.h
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  [2]	Documentation/devicetree/bindings/serial/rs485.txt
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ [2]	Documentation/devicetree/bindings/serial/rs485.txt
+>>>>>>> refs/remotes/origin/master

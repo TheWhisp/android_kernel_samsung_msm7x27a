@@ -8,10 +8,15 @@
  *  publishhed by the Free Software Foundation.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+#include <linux/gpio-pxa.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
@@ -23,10 +28,14 @@
 #include <mach/mfp-pxa910.h>
 #include <mach/pxa910.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
 =======
 #include <mach/irqs.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "common.h"
 
@@ -68,6 +77,13 @@ static unsigned long tavorevb_pin_config[] __initdata = {
 	DF_RDY0_DF_RDY0,
 };
 
+<<<<<<< HEAD
+=======
+static struct pxa_gpio_platform_data pxa910_gpio_pdata = {
+	.irq_base	= MMP_GPIO_TO_IRQ(0),
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct smc91x_platdata tavorevb_smc91x_info = {
 	.flags	= SMC91X_USE_16BIT | SMC91X_NOWAIT,
 };
@@ -80,12 +96,17 @@ static struct resource smc91x_resources[] = {
 	},
 	[1] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= gpio_to_irq(80),
 		.end	= gpio_to_irq(80),
 =======
 		.start	= MMP_GPIO_TO_IRQ(80),
 		.end	= MMP_GPIO_TO_IRQ(80),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start	= MMP_GPIO_TO_IRQ(80),
+		.end	= MMP_GPIO_TO_IRQ(80),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE,
 	}
 };
@@ -107,9 +128,15 @@ static void __init tavorevb_init(void)
 	/* on-chip devices */
 	pxa910_add_uart(1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	platform_device_register(&pxa910_device_gpio);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	platform_device_add_data(&pxa910_device_gpio, &pxa910_gpio_pdata,
+				 sizeof(struct pxa_gpio_platform_data));
+	platform_device_register(&pxa910_device_gpio);
+>>>>>>> refs/remotes/origin/master
 
 	/* off-chip devices */
 	platform_device_register(&smc91x_device);
@@ -117,6 +144,7 @@ static void __init tavorevb_init(void)
 
 MACHINE_START(TAVOREVB, "PXA910 Evaluation Board (aka TavorEVB)")
 	.map_io		= mmp_map_io,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.init_irq       = pxa910_init_irq,
 	.timer          = &pxa910_timer,
@@ -128,4 +156,11 @@ MACHINE_START(TAVOREVB, "PXA910 Evaluation Board (aka TavorEVB)")
 	.init_machine   = tavorevb_init,
 	.restart	= mmp_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.nr_irqs	= MMP_NR_IRQS,
+	.init_irq       = pxa910_init_irq,
+	.init_time	= pxa910_timer_init,
+	.init_machine   = tavorevb_init,
+	.restart	= mmp_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

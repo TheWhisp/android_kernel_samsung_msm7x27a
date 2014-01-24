@@ -35,6 +35,10 @@ static inline void autogroup_destroy(struct kref *kref)
 	ag->tg->rt_se = NULL;
 	ag->tg->rt_rq = NULL;
 #endif
+<<<<<<< HEAD
+=======
+	sched_offline_group(ag->tg);
+>>>>>>> refs/remotes/origin/master
 	sched_destroy_group(ag->tg);
 }
 
@@ -95,6 +99,10 @@ static inline struct autogroup *autogroup_create(void)
 #endif
 	tg->autogroup = ag;
 
+<<<<<<< HEAD
+=======
+	sched_online_group(tg, &root_task_group);
+>>>>>>> refs/remotes/origin/master
 	return ag;
 
 out_free:
@@ -143,11 +151,21 @@ autogroup_move_group(struct task_struct *p, struct autogroup *ag)
 
 	p->signal->autogroup = autogroup_kref_get(ag);
 
+<<<<<<< HEAD
+=======
+	if (!ACCESS_ONCE(sysctl_sched_autogroup_enabled))
+		goto out;
+
+>>>>>>> refs/remotes/origin/master
 	t = p;
 	do {
 		sched_move_task(t);
 	} while_each_thread(p, t);
 
+<<<<<<< HEAD
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	unlock_task_sighand(p, &flags);
 	autogroup_kref_put(prev);
 }

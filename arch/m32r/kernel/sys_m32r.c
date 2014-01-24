@@ -88,6 +88,7 @@ asmlinkage int sys_cachectl(char *addr, int nbytes, int op)
 	/* Not implemented yet. */
 	return -ENOSYS;
 }
+<<<<<<< HEAD
 
 /*
  * Do a system call from kernel instead of calling sys_execve so we
@@ -109,3 +110,5 @@ int kernel_execve(const char *filename,
 		: "memory");
 	return __res;
 }
+=======
+>>>>>>> refs/remotes/origin/master

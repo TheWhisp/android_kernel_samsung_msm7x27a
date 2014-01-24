@@ -18,22 +18,31 @@
 #include <linux/lockd/bind.h>
 #include <linux/nfs_mount.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/freezer.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/freezer.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "iostat.h"
 #include "internal.h"
 
 #define NFSDBG_FACILITY		NFSDBG_PROC
 
+<<<<<<< HEAD
 /* A wrapper to handle the EJUKEBOX and EKEYEXPIRED error messages */
+=======
+/* A wrapper to handle the EJUKEBOX error messages */
+>>>>>>> refs/remotes/origin/master
 static int
 nfs3_rpc_wrapper(struct rpc_clnt *clnt, struct rpc_message *msg, int flags)
 {
 	int res;
 	do {
 		res = rpc_call_sync(clnt, msg, flags);
+<<<<<<< HEAD
 		if (res != -EJUKEBOX && res != -EKEYEXPIRED)
 			break;
 <<<<<<< HEAD
@@ -41,6 +50,11 @@ nfs3_rpc_wrapper(struct rpc_clnt *clnt, struct rpc_message *msg, int flags)
 =======
 		freezable_schedule_timeout_killable(NFS_JUKEBOX_RETRY_TIME);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (res != -EJUKEBOX)
+			break;
+		freezable_schedule_timeout_killable_unsafe(NFS_JUKEBOX_RETRY_TIME);
+>>>>>>> refs/remotes/origin/master
 		res = -ERESTARTSYS;
 	} while (!fatal_signal_pending(current));
 	return res;
@@ -51,7 +65,11 @@ nfs3_rpc_wrapper(struct rpc_clnt *clnt, struct rpc_message *msg, int flags)
 static int
 nfs3_async_handle_jukebox(struct rpc_task *task, struct inode *inode)
 {
+<<<<<<< HEAD
 	if (task->tk_status != -EJUKEBOX && task->tk_status != -EKEYEXPIRED)
+=======
+	if (task->tk_status != -EJUKEBOX)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	if (task->tk_status == -EJUKEBOX)
 		nfs_inc_stats(inode, NFSIOS_DELAY);
@@ -105,7 +123,11 @@ nfs3_proc_get_root(struct nfs_server *server, struct nfs_fh *fhandle,
  */
 static int
 nfs3_proc_getattr(struct nfs_server *server, struct nfs_fh *fhandle,
+<<<<<<< HEAD
 		struct nfs_fattr *fattr)
+=======
+		struct nfs_fattr *fattr, struct nfs4_label *label)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rpc_message msg = {
 		.rpc_proc	= &nfs3_procedures[NFS3PROC_GETATTR],
@@ -149,8 +171,14 @@ nfs3_proc_setattr(struct dentry *dentry, struct nfs_fattr *fattr,
 }
 
 static int
+<<<<<<< HEAD
 nfs3_proc_lookup(struct rpc_clnt *clnt, struct inode *dir, struct qstr *name,
 		 struct nfs_fh *fhandle, struct nfs_fattr *fattr)
+=======
+nfs3_proc_lookup(struct inode *dir, struct qstr *name,
+		 struct nfs_fh *fhandle, struct nfs_fattr *fattr,
+		 struct nfs4_label *label)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nfs3_diropargs	arg = {
 		.fh		= NFS_FH(dir),
@@ -307,7 +335,11 @@ static int nfs3_do_create(struct inode *dir, struct dentry *dentry, struct nfs3_
 	status = rpc_call_sync(NFS_CLIENT(dir), &data->msg, 0);
 	nfs_post_op_update_inode(dir, data->res.dir_attr);
 	if (status == 0)
+<<<<<<< HEAD
 		status = nfs_instantiate(dentry, data->res.fh, data->res.fattr);
+=======
+		status = nfs_instantiate(dentry, data->res.fh, data->res.fattr, NULL);
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -321,6 +353,7 @@ static void nfs3_free_createdata(struct nfs3_createdata *data)
  */
 static int
 nfs3_proc_create(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
+<<<<<<< HEAD
 		 int flags, struct nfs_open_context *ctx)
 {
 	struct nfs3_createdata *data;
@@ -332,6 +365,15 @@ nfs3_proc_create(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
 	int status = -ENOMEM;
 
 	dprintk("NFS call  create %s\n", dentry->d_name.name);
+=======
+		 int flags)
+{
+	struct nfs3_createdata *data;
+	umode_t mode = sattr->ia_mode;
+	int status = -ENOMEM;
+
+	dprintk("NFS call  create %pd\n", dentry);
+>>>>>>> refs/remotes/origin/master
 
 	data = nfs3_alloc_createdata();
 	if (data == NULL)
@@ -346,8 +388,13 @@ nfs3_proc_create(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
 	data->arg.create.createmode = NFS3_CREATE_UNCHECKED;
 	if (flags & O_EXCL) {
 		data->arg.create.createmode  = NFS3_CREATE_EXCLUSIVE;
+<<<<<<< HEAD
 		data->arg.create.verifier[0] = jiffies;
 		data->arg.create.verifier[1] = current->pid;
+=======
+		data->arg.create.verifier[0] = cpu_to_be32(jiffies);
+		data->arg.create.verifier[1] = cpu_to_be32(current->pid);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	sattr->ia_mode &= ~current_umask();
@@ -409,8 +456,12 @@ nfs3_proc_remove(struct inode *dir, struct qstr *name)
 {
 	struct nfs_removeargs arg = {
 		.fh = NFS_FH(dir),
+<<<<<<< HEAD
 		.name.len = name->len,
 		.name.name = name->name,
+=======
+		.name = *name,
+>>>>>>> refs/remotes/origin/master
 	};
 	struct nfs_removeres res;
 	struct rpc_message msg = {
@@ -440,13 +491,19 @@ nfs3_proc_unlink_setup(struct rpc_message *msg, struct inode *dir)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void nfs3_proc_unlink_rpc_prepare(struct rpc_task *task, struct nfs_unlinkdata *data)
 {
 	rpc_call_start(task);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 nfs3_proc_unlink_done(struct rpc_task *task, struct inode *dir)
 {
@@ -465,13 +522,19 @@ nfs3_proc_rename_setup(struct rpc_message *msg, struct inode *dir)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void nfs3_proc_rename_rpc_prepare(struct rpc_task *task, struct nfs_renamedata *data)
 {
 	rpc_call_start(task);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 nfs3_proc_rename_done(struct rpc_task *task, struct inode *old_dir,
 		      struct inode *new_dir)
@@ -565,7 +628,11 @@ nfs3_proc_symlink(struct inode *dir, struct dentry *dentry, struct page *page,
 	if (len > NFS3_MAXPATHLEN)
 		return -ENAMETOOLONG;
 
+<<<<<<< HEAD
 	dprintk("NFS call  symlink %s\n", dentry->d_name.name);
+=======
+	dprintk("NFS call  symlink %pd\n", dentry);
+>>>>>>> refs/remotes/origin/master
 
 	data = nfs3_alloc_createdata();
 	if (data == NULL)
@@ -591,6 +658,7 @@ nfs3_proc_mkdir(struct inode *dir, struct dentry *dentry, struct iattr *sattr)
 {
 	struct nfs3_createdata *data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int mode = sattr->ia_mode;
 =======
 	umode_t mode = sattr->ia_mode;
@@ -598,6 +666,12 @@ nfs3_proc_mkdir(struct inode *dir, struct dentry *dentry, struct iattr *sattr)
 	int status = -ENOMEM;
 
 	dprintk("NFS call  mkdir %s\n", dentry->d_name.name);
+=======
+	umode_t mode = sattr->ia_mode;
+	int status = -ENOMEM;
+
+	dprintk("NFS call  mkdir %pd\n", dentry);
+>>>>>>> refs/remotes/origin/master
 
 	sattr->ia_mode &= ~current_umask();
 
@@ -714,6 +788,7 @@ nfs3_proc_mknod(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
 {
 	struct nfs3_createdata *data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mode = sattr->ia_mode;
 =======
 	umode_t mode = sattr->ia_mode;
@@ -721,6 +796,12 @@ nfs3_proc_mknod(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
 	int status = -ENOMEM;
 
 	dprintk("NFS call  mknod %s %u:%u\n", dentry->d_name.name,
+=======
+	umode_t mode = sattr->ia_mode;
+	int status = -ENOMEM;
+
+	dprintk("NFS call  mknod %pd %u:%u\n", dentry,
+>>>>>>> refs/remotes/origin/master
 			MAJOR(rdev), MINOR(rdev));
 
 	sattr->ia_mode &= ~current_umask();
@@ -836,11 +917,21 @@ nfs3_proc_pathconf(struct nfs_server *server, struct nfs_fh *fhandle,
 
 static int nfs3_read_done(struct rpc_task *task, struct nfs_read_data *data)
 {
+<<<<<<< HEAD
 	if (nfs3_async_handle_jukebox(task, data->inode))
 		return -EAGAIN;
 
 	nfs_invalidate_atime(data->inode);
 	nfs_refresh_inode(data->inode, &data->fattr);
+=======
+	struct inode *inode = data->header->inode;
+
+	if (nfs3_async_handle_jukebox(task, inode))
+		return -EAGAIN;
+
+	nfs_invalidate_atime(inode);
+	nfs_refresh_inode(inode, &data->fattr);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -849,6 +940,7 @@ static void nfs3_proc_read_setup(struct nfs_read_data *data, struct rpc_message 
 	msg->rpc_proc = &nfs3_procedures[NFS3PROC_READ];
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static void nfs3_proc_read_rpc_prepare(struct rpc_task *task, struct nfs_read_data *data)
@@ -863,6 +955,22 @@ static int nfs3_write_done(struct rpc_task *task, struct nfs_write_data *data)
 		return -EAGAIN;
 	if (task->tk_status >= 0)
 		nfs_post_op_update_inode_force_wcc(data->inode, data->res.fattr);
+=======
+static int nfs3_proc_read_rpc_prepare(struct rpc_task *task, struct nfs_read_data *data)
+{
+	rpc_call_start(task);
+	return 0;
+}
+
+static int nfs3_write_done(struct rpc_task *task, struct nfs_write_data *data)
+{
+	struct inode *inode = data->header->inode;
+
+	if (nfs3_async_handle_jukebox(task, inode))
+		return -EAGAIN;
+	if (task->tk_status >= 0)
+		nfs_post_op_update_inode_force_wcc(inode, data->res.fattr);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -872,14 +980,28 @@ static void nfs3_proc_write_setup(struct nfs_write_data *data, struct rpc_messag
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static void nfs3_proc_write_rpc_prepare(struct rpc_task *task, struct nfs_write_data *data)
+=======
+static int nfs3_proc_write_rpc_prepare(struct rpc_task *task, struct nfs_write_data *data)
+{
+	rpc_call_start(task);
+	return 0;
+}
+
+static void nfs3_proc_commit_rpc_prepare(struct rpc_task *task, struct nfs_commit_data *data)
+>>>>>>> refs/remotes/origin/master
 {
 	rpc_call_start(task);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int nfs3_commit_done(struct rpc_task *task, struct nfs_write_data *data)
+=======
+static int nfs3_commit_done(struct rpc_task *task, struct nfs_commit_data *data)
+>>>>>>> refs/remotes/origin/master
 {
 	if (nfs3_async_handle_jukebox(task, data->inode))
 		return -EAGAIN;
@@ -887,7 +1009,11 @@ static int nfs3_commit_done(struct rpc_task *task, struct nfs_write_data *data)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void nfs3_proc_commit_setup(struct nfs_write_data *data, struct rpc_message *msg)
+=======
+static void nfs3_proc_commit_setup(struct nfs_commit_data *data, struct rpc_message *msg)
+>>>>>>> refs/remotes/origin/master
 {
 	msg->rpc_proc = &nfs3_procedures[NFS3PROC_COMMIT];
 }
@@ -895,11 +1021,58 @@ static void nfs3_proc_commit_setup(struct nfs_write_data *data, struct rpc_messa
 static int
 nfs3_proc_lock(struct file *filp, int cmd, struct file_lock *fl)
 {
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 
 	return nlmclnt_proc(NFS_SERVER(inode)->nlm_host, cmd, fl);
 }
 
+<<<<<<< HEAD
+=======
+static int nfs3_have_delegation(struct inode *inode, fmode_t flags)
+{
+	return 0;
+}
+
+static int nfs3_return_delegation(struct inode *inode)
+{
+	nfs_wb_all(inode);
+	return 0;
+}
+
+static const struct inode_operations nfs3_dir_inode_operations = {
+	.create		= nfs_create,
+	.lookup		= nfs_lookup,
+	.link		= nfs_link,
+	.unlink		= nfs_unlink,
+	.symlink	= nfs_symlink,
+	.mkdir		= nfs_mkdir,
+	.rmdir		= nfs_rmdir,
+	.mknod		= nfs_mknod,
+	.rename		= nfs_rename,
+	.permission	= nfs_permission,
+	.getattr	= nfs_getattr,
+	.setattr	= nfs_setattr,
+	.listxattr	= nfs3_listxattr,
+	.getxattr	= nfs3_getxattr,
+	.setxattr	= nfs3_setxattr,
+	.removexattr	= nfs3_removexattr,
+};
+
+static const struct inode_operations nfs3_file_inode_operations = {
+	.permission	= nfs_permission,
+	.getattr	= nfs_getattr,
+	.setattr	= nfs_setattr,
+	.listxattr	= nfs3_listxattr,
+	.getxattr	= nfs3_getxattr,
+	.setxattr	= nfs3_setxattr,
+	.removexattr	= nfs3_removexattr,
+};
+
+>>>>>>> refs/remotes/origin/master
 const struct nfs_rpc_ops nfs_v3_clientops = {
 	.version	= 3,			/* protocol version */
 	.dentry_ops	= &nfs_dentry_operations,
@@ -907,6 +1080,11 @@ const struct nfs_rpc_ops nfs_v3_clientops = {
 	.file_inode_ops	= &nfs3_file_inode_operations,
 	.file_ops	= &nfs_file_operations,
 	.getroot	= nfs3_proc_get_root,
+<<<<<<< HEAD
+=======
+	.submount	= nfs_submount,
+	.try_mount	= nfs_try_mount,
+>>>>>>> refs/remotes/origin/master
 	.getattr	= nfs3_proc_getattr,
 	.setattr	= nfs3_proc_setattr,
 	.lookup		= nfs3_proc_lookup,
@@ -916,16 +1094,22 @@ const struct nfs_rpc_ops nfs_v3_clientops = {
 	.remove		= nfs3_proc_remove,
 	.unlink_setup	= nfs3_proc_unlink_setup,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.unlink_done	= nfs3_proc_unlink_done,
 	.rename		= nfs3_proc_rename,
 	.rename_setup	= nfs3_proc_rename_setup,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.unlink_rpc_prepare = nfs3_proc_unlink_rpc_prepare,
 	.unlink_done	= nfs3_proc_unlink_done,
 	.rename		= nfs3_proc_rename,
 	.rename_setup	= nfs3_proc_rename_setup,
 	.rename_rpc_prepare = nfs3_proc_rename_rpc_prepare,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.rename_done	= nfs3_proc_rename_done,
 	.link		= nfs3_proc_link,
 	.symlink	= nfs3_proc_symlink,
@@ -939,6 +1123,7 @@ const struct nfs_rpc_ops nfs_v3_clientops = {
 	.decode_dirent	= nfs3_decode_dirent,
 	.read_setup	= nfs3_proc_read_setup,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.read_done	= nfs3_read_done,
 	.write_setup	= nfs3_proc_write_setup,
 =======
@@ -949,9 +1134,30 @@ const struct nfs_rpc_ops nfs_v3_clientops = {
 >>>>>>> refs/remotes/origin/cm-10.0
 	.write_done	= nfs3_write_done,
 	.commit_setup	= nfs3_proc_commit_setup,
+=======
+	.read_pageio_init = nfs_pageio_init_read,
+	.read_rpc_prepare = nfs3_proc_read_rpc_prepare,
+	.read_done	= nfs3_read_done,
+	.write_setup	= nfs3_proc_write_setup,
+	.write_pageio_init = nfs_pageio_init_write,
+	.write_rpc_prepare = nfs3_proc_write_rpc_prepare,
+	.write_done	= nfs3_write_done,
+	.commit_setup	= nfs3_proc_commit_setup,
+	.commit_rpc_prepare = nfs3_proc_commit_rpc_prepare,
+>>>>>>> refs/remotes/origin/master
 	.commit_done	= nfs3_commit_done,
 	.lock		= nfs3_proc_lock,
 	.clear_acl_cache = nfs3_forget_cached_acls,
 	.close_context	= nfs_close_context,
+<<<<<<< HEAD
 	.init_client	= nfs_init_client,
+=======
+	.have_delegation = nfs3_have_delegation,
+	.return_delegation = nfs3_return_delegation,
+	.alloc_client	= nfs_alloc_client,
+	.init_client	= nfs_init_client,
+	.free_client	= nfs_free_client,
+	.create_server	= nfs3_create_server,
+	.clone_server	= nfs3_clone_server,
+>>>>>>> refs/remotes/origin/master
 };

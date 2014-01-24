@@ -30,16 +30,21 @@
 .align 4;
 _tlbia:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	addik	r12, r0, MICROBLAZE_TLB_SIZE - 1 /* flush all entries (63 - 3) */
 =======
 	lwi	r12, r0, tlb_skip;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lwi	r12, r0, tlb_skip;
+>>>>>>> refs/remotes/origin/master
 	/* isync */
 _tlbia_1:
 	mts	rtlbx, r12
 	nop
 	mts	rtlbhi, r0 /* flush: ensure V is clear */
 	nop
+<<<<<<< HEAD
 <<<<<<< HEAD
 	addik	r11, r12, -2
 	bneid	r11, _tlbia_1 /* loop for all entries */
@@ -49,6 +54,11 @@ _tlbia_1:
 	bneid	r11, _tlbia_1 /* loop for all entries */
 	addik	r12, r12, 1
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rsubi	r11, r12, MICROBLAZE_TLB_SIZE - 1
+	bneid	r11, _tlbia_1 /* loop for all entries */
+	addik	r12, r12, 1
+>>>>>>> refs/remotes/origin/master
 	/* sync */
 	rtsd	r15, 8
 	nop
@@ -86,10 +96,14 @@ early_console_reg_tlb_alloc:
 	 * the UARTs nice and early.  We use a 4k real==virtual mapping.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ori	r4, r0, MICROBLAZE_TLB_SIZE - 1
 =======
 	lwi	r4, r0, tlb_skip
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lwi	r4, r0, tlb_skip
+>>>>>>> refs/remotes/origin/master
 	mts	rtlbx, r4 /* TLB slot 63 */
 
 	or	r4,r5,r0
@@ -104,13 +118,19 @@ early_console_reg_tlb_alloc:
 	mts	rtlbhi,r5 /* Load the tag portion of the entry */
 	nop
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	lwi	r5, r0, tlb_skip
 	addik	r5, r5, 1
 	swi	r5, r0, tlb_skip
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rtsd	r15, 8
 	nop
 

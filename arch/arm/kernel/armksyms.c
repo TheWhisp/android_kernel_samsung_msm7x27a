@@ -8,10 +8,14 @@
  * published by the Free Software Foundation.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/string.h>
 #include <linux/cryptohash.h>
@@ -23,9 +27,12 @@
 
 #include <asm/checksum.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/ftrace.h>
 
 /*
@@ -57,11 +64,17 @@ extern void __aeabi_ulcmp(void);
 extern void fpundefinstr(void);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 EXPORT_SYMBOL(__backtrace);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* platform dependent support */
+EXPORT_SYMBOL(arm_delay_ops);
+
+>>>>>>> refs/remotes/origin/master
 	/* networking */
 EXPORT_SYMBOL(csum_partial);
 EXPORT_SYMBOL(csum_partial_copy_from_user);
@@ -97,10 +110,13 @@ EXPORT_SYMBOL(memmove);
 EXPORT_SYMBOL(memchr);
 EXPORT_SYMBOL(__memzero);
 
+<<<<<<< HEAD
 	/* user mem (segment) */
 EXPORT_SYMBOL(__strnlen_user);
 EXPORT_SYMBOL(__strncpy_from_user);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MMU
 EXPORT_SYMBOL(copy_page);
 
@@ -119,11 +135,14 @@ EXPORT_SYMBOL(__put_user_8);
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* crypto hash */
 EXPORT_SYMBOL(sha_transform);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* gcc lib functions */
 EXPORT_SYMBOL(__ashldi3);
 EXPORT_SYMBOL(__ashrdi3);
@@ -176,4 +195,8 @@ EXPORT_SYMBOL(__gnu_mcount_nc);
 
 #ifdef CONFIG_ARM_PATCH_PHYS_VIRT
 EXPORT_SYMBOL(__pv_phys_offset);
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(__pv_offset);
+>>>>>>> refs/remotes/origin/master
 #endif

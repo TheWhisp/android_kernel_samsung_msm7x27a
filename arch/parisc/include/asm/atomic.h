@@ -7,10 +7,14 @@
 
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 #include <asm/cmpxchg.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cmpxchg.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Atomic operations that C can't guarantee us.  Useful for
@@ -53,6 +57,7 @@ extern arch_spinlock_t __atomic_hash[ATOMIC_HASH_SIZE] __lock_aligned;
 #  define _atomic_spin_unlock_irqrestore(l,f) do { local_irq_restore(f); } while (0)
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* This should get optimized out since it's never called.
 ** Or get a link error if xchg is used "wrong".
@@ -162,6 +167,8 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Note that we need not lock read accesses - aligned word writes/reads
  * are atomic, so a reader never sees inconsistent values.
@@ -205,15 +212,20 @@ static __inline__ int atomic_read(const atomic_t *v)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * atomic_add_unless - add unless the number is a given value
 =======
  * __atomic_add_unless - add unless the number is a given value
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * __atomic_add_unless - add unless the number is a given value
+>>>>>>> refs/remotes/origin/master
  * @v: pointer of type atomic_t
  * @a: the amount to add to v...
  * @u: ...unless v is equal to u.
  *
  * Atomically adds @a to @v, so long as it was not @u.
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Returns non-zero if @v was not @u, and zero otherwise.
  */
@@ -223,6 +235,11 @@ static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
  */
 static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Returns the old value of @v.
+ */
+static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/master
 {
 	int c, old;
 	c = atomic_read(v);
@@ -234,6 +251,7 @@ static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
 			break;
 		c = old;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return c != (u);
 }
@@ -247,6 +265,14 @@ static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
 
 #define atomic_add(i,v)	((void)(__atomic_add_return( (i),(v))))
 #define atomic_sub(i,v)	((void)(__atomic_add_return(-(i),(v))))
+=======
+	return c;
+}
+
+
+#define atomic_add(i,v)	((void)(__atomic_add_return(        (i),(v))))
+#define atomic_sub(i,v)	((void)(__atomic_add_return(-((int) (i)),(v))))
+>>>>>>> refs/remotes/origin/master
 #define atomic_inc(v)	((void)(__atomic_add_return(   1,(v))))
 #define atomic_dec(v)	((void)(__atomic_add_return(  -1,(v))))
 
@@ -341,10 +367,14 @@ atomic64_read(const atomic64_t *v)
  *
  * Atomically adds @a to @v, so long as it was not @u.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Returns non-zero if @v was not @u, and zero otherwise.
 =======
  * Returns the old value of @v.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Returns the old value of @v.
+>>>>>>> refs/remotes/origin/master
  */
 static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
 {
@@ -364,6 +394,7 @@ static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
 #define atomic64_inc_not_zero(v) atomic64_add_unless((v), 1, 0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #else /* CONFIG_64BIT */
 
 #include <asm-generic/atomic64.h>
@@ -375,5 +406,32 @@ static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
 #endif /* !CONFIG_64BIT */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * atomic64_dec_if_positive - decrement by 1 if old value positive
+ * @v: pointer of type atomic_t
+ *
+ * The function returns the old value of *v minus 1, even if
+ * the atomic variable, v, was not decremented.
+ */
+static inline long atomic64_dec_if_positive(atomic64_t *v)
+{
+	long c, old, dec;
+	c = atomic64_read(v);
+	for (;;) {
+		dec = c - 1;
+		if (unlikely(dec < 0))
+			break;
+		old = atomic64_cmpxchg((v), c, dec);
+		if (likely(old == c))
+			break;
+		c = old;
+	}
+	return dec;
+}
+
+#endif /* !CONFIG_64BIT */
+
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_PARISC_ATOMIC_H_ */

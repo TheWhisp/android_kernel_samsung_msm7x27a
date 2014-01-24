@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Source for:
+=======
+ * cyttsp_i2c.c
+>>>>>>> refs/remotes/origin/master
  * Cypress TrueTouch(TM) Standard Product (TTSP) I2C touchscreen driver.
  * For use with Cypress Txx3xx parts.
  * Supported parts include:
@@ -19,11 +23,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+<<<<<<< HEAD
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * Contact Cypress Semiconductor at www.cypress.com <kev@cypress.com>
+=======
+ * Contact Cypress Semiconductor at www.cypress.com <ttdrivers@cypress.com>
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -34,6 +42,7 @@
 
 #define CY_I2C_DATA_SIZE	128
 
+<<<<<<< HEAD
 static int cyttsp_i2c_read_block_data(struct cyttsp *ts,
 				      u8 addr, u8 length, void *values)
 {
@@ -75,13 +84,19 @@ static int cyttsp_i2c_write_block_data(struct cyttsp *ts,
 	return retval < 0 ? retval : 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct cyttsp_bus_ops cyttsp_i2c_bus_ops = {
 	.bustype	= BUS_I2C,
 	.write		= cyttsp_i2c_write_block_data,
 	.read           = cyttsp_i2c_read_block_data,
 };
 
+<<<<<<< HEAD
 static int __devinit cyttsp_i2c_probe(struct i2c_client *client,
+=======
+static int cyttsp_i2c_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 				      const struct i2c_device_id *id)
 {
 	struct cyttsp *ts;
@@ -98,11 +113,18 @@ static int __devinit cyttsp_i2c_probe(struct i2c_client *client,
 		return PTR_ERR(ts);
 
 	i2c_set_clientdata(client, ts);
+<<<<<<< HEAD
 
 	return 0;
 }
 
 static int __devexit cyttsp_i2c_remove(struct i2c_client *client)
+=======
+	return 0;
+}
+
+static int cyttsp_i2c_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cyttsp *ts = i2c_get_clientdata(client);
 
@@ -124,7 +146,11 @@ static struct i2c_driver cyttsp_i2c_driver = {
 		.pm	= &cyttsp_pm_ops,
 	},
 	.probe		= cyttsp_i2c_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(cyttsp_i2c_remove),
+=======
+	.remove		= cyttsp_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= cyttsp_i2c_id,
 };
 

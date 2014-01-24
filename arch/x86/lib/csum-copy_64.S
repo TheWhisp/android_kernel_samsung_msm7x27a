@@ -8,6 +8,10 @@
 #include <linux/linkage.h>
 #include <asm/dwarf2.h>
 #include <asm/errno.h>
+<<<<<<< HEAD
+=======
+#include <asm/asm.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Checksum copy with exception handling.
@@ -31,26 +35,38 @@
 
 	.macro source
 10:
+<<<<<<< HEAD
 	.section __ex_table, "a"
 	.align 8
 	.quad 10b, .Lbad_source
 	.previous
+=======
+	_ASM_EXTABLE(10b, .Lbad_source)
+>>>>>>> refs/remotes/origin/master
 	.endm
 
 	.macro dest
 20:
+<<<<<<< HEAD
 	.section __ex_table, "a"
 	.align 8
 	.quad 20b, .Lbad_dest
 	.previous
+=======
+	_ASM_EXTABLE(20b, .Lbad_dest)
+>>>>>>> refs/remotes/origin/master
 	.endm
 
 	.macro ignore L=.Lignore
 30:
+<<<<<<< HEAD
 	.section __ex_table, "a"
 	.align 8
 	.quad 30b, \L
 	.previous
+=======
+	_ASM_EXTABLE(30b, \L)
+>>>>>>> refs/remotes/origin/master
 	.endm
 
 

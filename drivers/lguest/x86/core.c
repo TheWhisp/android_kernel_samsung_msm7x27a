@@ -59,6 +59,7 @@ static struct {
 /* Offset from where switcher.S was compiled to where we've copied it */
 static unsigned long switcher_offset(void)
 {
+<<<<<<< HEAD
 	return SWITCHER_ADDR - (unsigned long)start_switcher_text;
 }
 
@@ -67,6 +68,15 @@ static struct lguest_pages *lguest_pages(unsigned int cpu)
 {
 	return &(((struct lguest_pages *)
 		  (SWITCHER_ADDR + SHARED_SWITCHER_PAGES*PAGE_SIZE))[cpu]);
+=======
+	return switcher_addr - (unsigned long)start_switcher_text;
+}
+
+/* This cpu's struct lguest_pages (after the Switcher text page) */
+static struct lguest_pages *lguest_pages(unsigned int cpu)
+{
+	return &(((struct lguest_pages *)(switcher_addr + PAGE_SIZE))[cpu]);
+>>>>>>> refs/remotes/origin/master
 }
 
 static DEFINE_PER_CPU(struct lg_cpu *, lg_last_cpu);
@@ -158,7 +168,11 @@ static void run_guest_once(struct lg_cpu *cpu, struct lguest_pages *pages)
 	 * stack, then the address of this call.  This stack layout happens to
 	 * exactly match the stack layout created by an interrupt...
 	 */
+<<<<<<< HEAD
 	asm volatile("pushf; lcall *lguest_entry"
+=======
+	asm volatile("pushf; lcall *%4"
+>>>>>>> refs/remotes/origin/master
 		     /*
 		      * This is how we tell GCC that %eax ("a") and %ebx ("b")
 		      * are changed by this routine.  The "=" means output.
@@ -170,7 +184,13 @@ static void run_guest_once(struct lg_cpu *cpu, struct lguest_pages *pages)
 		      * physical address of the Guest's top-level page
 		      * directory.
 		      */
+<<<<<<< HEAD
 		     : "0"(pages), "1"(__pa(cpu->lg->pgdirs[cpu->cpu_pgd].pgdir))
+=======
+		     : "0"(pages), 
+		       "1"(__pa(cpu->lg->pgdirs[cpu->cpu_pgd].pgdir)),
+		       "m"(lguest_entry)
+>>>>>>> refs/remotes/origin/master
 		     /*
 		      * We tell gcc that all these registers could change,
 		      * which means we don't have to save and restore them in
@@ -203,8 +223,13 @@ void lguest_arch_run_guest(struct lg_cpu *cpu)
 	 * we set it now, so we can trap and pass that trap to the Guest if it
 	 * uses the FPU.
 	 */
+<<<<<<< HEAD
 	if (cpu->ts)
 		unlazy_fpu(current);
+=======
+	if (cpu->ts && user_has_fpu())
+		stts();
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * SYSENTER is an optimized way of doing system calls.  We can't allow
@@ -234,6 +259,13 @@ void lguest_arch_run_guest(struct lg_cpu *cpu)
 	 if (boot_cpu_has(X86_FEATURE_SEP))
 		wrmsr(MSR_IA32_SYSENTER_CS, __KERNEL_CS, 0);
 
+<<<<<<< HEAD
+=======
+	/* Clear the host TS bit if it was set above. */
+	if (cpu->ts && user_has_fpu())
+		clts();
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If the Guest page faulted, then the cr2 register will tell us the
 	 * bad virtual address.  We have to grab this now, because once we
@@ -249,7 +281,11 @@ void lguest_arch_run_guest(struct lg_cpu *cpu)
 	 * a different CPU. So all the critical stuff should be done
 	 * before this.
 	 */
+<<<<<<< HEAD
 	else if (cpu->regs->trapnum == 7)
+=======
+	else if (cpu->regs->trapnum == 7 && !user_has_fpu())
+>>>>>>> refs/remotes/origin/master
 		math_state_restore();
 }
 
@@ -270,16 +306,22 @@ static int emulate_insn(struct lg_cpu *cpu)
 {
 	u8 insn;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int insnlen = 0, in = 0, shift = 0;
 	/*
 	 * The eip contains the *virtual* address of the Guest's instruction:
 	 * guest_pa just subtracts the Guest's page_offset.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int insnlen = 0, in = 0, small_operand = 0;
 	/*
 	 * The eip contains the *virtual* address of the Guest's instruction:
 	 * walk the Guest's page tables to find the "physical" address.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 */
 	unsigned long physaddr = guest_pa(cpu, cpu->regs->eip);
 
@@ -308,17 +350,23 @@ static int emulate_insn(struct lg_cpu *cpu)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * 0x66 is an "operand prefix".  It means it's using the upper 16 bits
 	 * of the eax register.
 	 */
 	if (insn == 0x66) {
 		shift = 16;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * 0x66 is an "operand prefix".  It means a 16, not 32 bit in/out.
 	 */
 	if (insn == 0x66) {
 		small_operand = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* The instruction is 1 byte so far, read the next byte. */
 		insnlen = 1;
 		insn = lgread(cpu, physaddr + insnlen, u8);
@@ -355,12 +403,15 @@ static int emulate_insn(struct lg_cpu *cpu)
 	 */
 	if (in) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* Lower bit tells is whether it's a 16 or 32 bit access */
 		if (insn & 0x1)
 			cpu->regs->eax = 0xFFFFFFFF;
 		else
 			cpu->regs->eax |= (0xFFFF << shift);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Lower bit tells means it's a 32/16 bit access */
 		if (insn & 0x1) {
 			if (small_operand)
@@ -369,7 +420,10 @@ static int emulate_insn(struct lg_cpu *cpu)
 				cpu->regs->eax = 0xFFFFFFFF;
 		} else
 			cpu->regs->eax |= 0xFF;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	/* Finally, we've "done" the instruction, so move past it. */
 	cpu->regs->eip += insnlen;
@@ -377,6 +431,7 @@ static int emulate_insn(struct lg_cpu *cpu)
 	return 1;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Our hypercalls mechanism used to be based on direct software interrupts.
@@ -443,6 +498,8 @@ static bool is_hypercall(struct lg_cpu *cpu)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*H:050 Once we've re-enabled interrupts, we look at why the Guest exited. */
 void lguest_arch_handle_trap(struct lg_cpu *cpu)
 {
@@ -457,6 +514,7 @@ void lguest_arch_handle_trap(struct lg_cpu *cpu)
 			if (emulate_insn(cpu))
 				return;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/*
 		 * If KVM is active, the vmcall instruction triggers a General
@@ -474,6 +532,8 @@ void lguest_arch_handle_trap(struct lg_cpu *cpu)
 		}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case 14: /* We've intercepted a Page Fault. */
 		/*
@@ -518,10 +578,14 @@ void lguest_arch_handle_trap(struct lg_cpu *cpu)
 		 * the Host handler has already been run. We just do a
 		 * friendly check if another process should now be run, then
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * return to run the Guest again
 =======
 		 * return to run the Guest again.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * return to run the Guest again.
+>>>>>>> refs/remotes/origin/master
 		 */
 		cond_resched();
 		return;
@@ -572,10 +636,14 @@ void __init lguest_arch_host_init(void)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * Most of the i386/switcher.S doesn't care that it's been moved; on
 =======
 	 * Most of the x86/switcher_32.S doesn't care that it's been moved; on
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * Most of the x86/switcher_32.S doesn't care that it's been moved; on
+>>>>>>> refs/remotes/origin/master
 	 * Intel, jumps are relative, and it doesn't access any references to
 	 * external code or data.
 	 *
@@ -704,10 +772,14 @@ void __init lguest_arch_host_init(void)
 	}
 	put_online_cpus();
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 =======
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+>>>>>>> refs/remotes/origin/master
 /*:*/
 
 void __exit lguest_arch_host_fini(void)
@@ -791,10 +863,13 @@ int lguest_arch_init_hypercalls(struct lg_cpu *cpu)
 
 /*L:030
 <<<<<<< HEAD
+<<<<<<< HEAD
  * lguest_arch_setup_regs()
  *
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Most of the Guest's registers are left alone: we used get_zeroed_page() to
  * allocate the structure, so they will be 0.
  */
@@ -821,10 +896,14 @@ void lguest_arch_setup_regs(struct lg_cpu *cpu, unsigned long start)
 	 * running the Guest.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	regs->eflags = X86_EFLAGS_IF | 0x2;
 =======
 	regs->eflags = X86_EFLAGS_IF | X86_EFLAGS_BIT1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	regs->eflags = X86_EFLAGS_IF | X86_EFLAGS_FIXED;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * The "Extended Instruction Pointer" register says where the Guest is

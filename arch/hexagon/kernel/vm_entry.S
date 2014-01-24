@@ -1,7 +1,11 @@
 /*
  * Event entry/exit for Hexagon
  *
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2010-2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -45,6 +49,7 @@
  * number in the case where we decode a system call (trap0(#1)).
  */
 
+<<<<<<< HEAD
 #define save_pt_regs()\
 	memd(R0 + #_PT_R3130) = R31:30; \
 	{ memw(R0 + #_PT_R2928) = R28; \
@@ -82,11 +87,94 @@
 	  R2 = and(R0,R2); } \
 	{ memd(R0 + #_PT_PREDSUSR) =  R15:14; \
 	  THREADINFO_REG = R2; } \
+=======
+#if CONFIG_HEXAGON_ARCH_VERSION < 4
+#define save_pt_regs()\
+ memd(R0 + #_PT_R3130) = R31:30; \
+ { memw(R0 + #_PT_R2928) = R28; \
+   R31 = memw(R0 + #_PT_ER_VMPSP); }\
+ { memw(R0 + #(_PT_R2928 + 4)) = R31; \
+   R31 = ugp; } \
+ { memd(R0 + #_PT_R2726) = R27:26; \
+   R30 = gp ; } \
+ memd(R0 + #_PT_R2524) = R25:24; \
+ memd(R0 + #_PT_R2322) = R23:22; \
+ memd(R0 + #_PT_R2120) = R21:20; \
+ memd(R0 + #_PT_R1918) = R19:18; \
+ memd(R0 + #_PT_R1716) = R17:16; \
+ memd(R0 + #_PT_R1514) = R15:14; \
+ memd(R0 + #_PT_R1312) = R13:12; \
+ { memd(R0 + #_PT_R1110) = R11:10; \
+   R15 = lc0; } \
+ { memd(R0 + #_PT_R0908) = R9:8; \
+   R14 = sa0; } \
+ { memd(R0 + #_PT_R0706) = R7:6; \
+   R13 = lc1; } \
+ { memd(R0 + #_PT_R0504) = R5:4; \
+   R12 = sa1; } \
+ { memd(R0 + #_PT_GPUGP) = R31:30; \
+   R11 = m1; \
+   R2.H = #HI(_THREAD_SIZE); } \
+ { memd(R0 + #_PT_LC0SA0) = R15:14; \
+   R10 = m0; \
+   R2.L = #LO(_THREAD_SIZE); } \
+ { memd(R0 + #_PT_LC1SA1) = R13:12; \
+   R15 = p3:0; \
+   R2 = neg(R2); } \
+ { memd(R0 + #_PT_M1M0) = R11:10; \
+   R14  = usr; \
+   R2 = and(R0,R2); } \
+ { memd(R0 + #_PT_PREDSUSR) =  R15:14; \
+   THREADINFO_REG = R2; } \
+ { r24 = memw(THREADINFO_REG + #_THREAD_INFO_PT_REGS); \
+   memw(THREADINFO_REG + #_THREAD_INFO_PT_REGS) = R0; \
+   R2 = #-1; } \
+ { memw(R0 + #_PT_SYSCALL_NR) = R2; \
+   R30 = #0; }
+#else
+/* V4+ */
+/* the # ## # syntax inserts a literal ## */
+#define save_pt_regs()\
+	{ memd(R0 + #_PT_R3130) = R31:30; \
+		R30 = memw(R0 + #_PT_ER_VMPSP); }\
+	{ memw(R0 + #_PT_R2928) = R28; \
+		memw(R0 + #(_PT_R2928 + 4)) = R30; }\
+	{ R31:30 = C11:10; \
+		memd(R0 + #_PT_R2726) = R27:26; \
+		memd(R0 + #_PT_R2524) = R25:24; }\
+	{ memd(R0 + #_PT_R2322) = R23:22; \
+		memd(R0 + #_PT_R2120) = R21:20; }\
+	{ memd(R0 + #_PT_R1918) = R19:18; \
+		memd(R0 + #_PT_R1716) = R17:16; }\
+	{ memd(R0 + #_PT_R1514) = R15:14; \
+		memd(R0 + #_PT_R1312) = R13:12; \
+		R17:16 = C13:12; }\
+	{ memd(R0 + #_PT_R1110) = R11:10; \
+		memd(R0 + #_PT_R0908) = R9:8; \
+	  R15:14 = C1:0; } \
+	{ memd(R0 + #_PT_R0706) = R7:6; \
+		memd(R0 + #_PT_R0504) = R5:4; \
+    R13:12 = C3:2; } \
+	{ memd(R0 + #_PT_GPUGP) = R31:30; \
+		memd(R0 + #_PT_LC0SA0) = R15:14; \
+	  R11:10 = C7:6; }\
+	{	THREADINFO_REG = and(R0, # ## #-_THREAD_SIZE); \
+		memd(R0 + #_PT_LC1SA1) = R13:12; \
+	  R15 = p3:0; }\
+	{ memd(R0 + #_PT_M1M0) = R11:10; \
+		memw(R0 + #_PT_PREDSUSR + 4) =  R15; }\
+>>>>>>> refs/remotes/origin/master
 	{ r24 = memw(THREADINFO_REG + #_THREAD_INFO_PT_REGS); \
 	  memw(THREADINFO_REG + #_THREAD_INFO_PT_REGS) = R0; \
 	  R2 = #-1; } \
 	{ memw(R0 + #_PT_SYSCALL_NR) = R2; \
+<<<<<<< HEAD
 	  R30 = #0; }
+=======
+		memd(R0 + #_PT_CS1CS0) = R17:16; \
+	  R30 = #0; }
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Restore registers and thread_info.regs state. THREADINFO_REG
@@ -94,6 +182,10 @@
  * preserved. Don't restore R29 (SP) until later.
  */
 
+<<<<<<< HEAD
+=======
+#if CONFIG_HEXAGON_ARCH_VERSION < 4
+>>>>>>> refs/remotes/origin/master
 #define restore_pt_regs() \
 	{ memw(THREADINFO_REG + #_THREAD_INFO_PT_REGS) = R24; \
 	  R15:14 = memd(R0 + #_PT_PREDSUSR); } \
@@ -121,11 +213,51 @@
 	  R23:22 = memd(R0 + #_PT_R2322); } \
 	{ R25:24 = memd(R0 + #_PT_R2524); \
 	  R27:26 = memd(R0 + #_PT_R2726); } \
+<<<<<<< HEAD
 	R31:30 = memd(R0 + #_PT_UGPGP); \
+=======
+	R31:30 = memd(R0 + #_PT_GPUGP); \
+>>>>>>> refs/remotes/origin/master
 	{ R28 = memw(R0 + #_PT_R2928); \
 	  ugp = R31; } \
 	{ R31:30 = memd(R0 + #_PT_R3130); \
 	  gp = R30; }
+<<<<<<< HEAD
+=======
+#else
+/* V4+ */
+#define restore_pt_regs() \
+	{ memw(THREADINFO_REG + #_THREAD_INFO_PT_REGS) = R24; \
+	  R15:14 = memd(R0 + #_PT_PREDSUSR); } \
+	{ R11:10 = memd(R0 + #_PT_M1M0); \
+		R13:12 = memd(R0 + #_PT_LC1SA1); \
+		p3:0 = R15; } \
+	{ R15:14 = memd(R0 + #_PT_LC0SA0); \
+		R3:2 = memd(R0 + #_PT_R0302); \
+		usr = R14; } \
+	{ R5:4 = memd(R0 + #_PT_R0504); \
+		R7:6 = memd(R0 + #_PT_R0706); \
+		C7:6 = R11:10; }\
+	{ R9:8 = memd(R0 + #_PT_R0908); \
+		R11:10 = memd(R0 + #_PT_R1110); \
+    C3:2 = R13:12; }\
+	{ R13:12 = memd(R0 + #_PT_R1312); \
+	  R15:14 = memd(R0 + #_PT_R1514); \
+		C1:0 = R15:14; }\
+	{ R17:16 = memd(R0 + #_PT_R1716); \
+	  R19:18 = memd(R0 + #_PT_R1918); } \
+	{ R21:20 = memd(R0 + #_PT_R2120); \
+	  R23:22 = memd(R0 + #_PT_R2322); } \
+	{ R25:24 = memd(R0 + #_PT_R2524); \
+	  R27:26 = memd(R0 + #_PT_R2726); } \
+	R31:30 = memd(R0 + #_PT_CS1CS0); \
+	{ C13:12 = R31:30; \
+		R31:30 = memd(R0 + #_PT_GPUGP) ; \
+		R28 = memw(R0 + #_PT_R2928); }\
+	{ C11:10 = R31:30; \
+		R31:30 = memd(R0 + #_PT_R3130); }
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Clears off enough space for the rest of pt_regs; evrec is a part
@@ -139,6 +271,10 @@
  * Need to save off R0, R1, R2, R3 immediately.
  */
 
+<<<<<<< HEAD
+=======
+#if CONFIG_HEXAGON_ARCH_VERSION < 4
+>>>>>>> refs/remotes/origin/master
 #define	vm_event_entry(CHandler) \
 	{ \
 		R29 = add(R29, #-(_PT_REGS_SIZE)); \
@@ -158,6 +294,37 @@
 		R1.H = #HI(CHandler); \
 		jump event_dispatch; \
 	}
+<<<<<<< HEAD
+=======
+#else
+/* V4+ */
+/* turn on I$ prefetch early */
+/* the # ## # syntax inserts a literal ## */
+#define	vm_event_entry(CHandler) \
+	{ \
+		R29 = add(R29, #-(_PT_REGS_SIZE)); \
+		memd(R29 + #(_PT_R0100 + -_PT_REGS_SIZE)) = R1:0; \
+		memd(R29 + #(_PT_R0302 + -_PT_REGS_SIZE)) = R3:2; \
+		R0 = usr; \
+	} \
+	{ \
+		memw(R29 + #_PT_PREDSUSR) = R0; \
+		R0 = setbit(R0, #16); \
+	} \
+	usr = R0; \
+	R1:0 = G1:0; \
+	{ \
+		memd(R29 + #_PT_ER_VMEL) = R1:0; \
+		R1 = # ## #(CHandler); \
+		R3:2 = G3:2; \
+	} \
+	{ \
+		R0 = R29; \
+		memd(R29 + #_PT_ER_VMPSP) = R3:2; \
+		jump event_dispatch; \
+	}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 .text
 	/*
@@ -171,6 +338,12 @@ event_dispatch:
 	callr	r1
 
 	/*
+<<<<<<< HEAD
+=======
+	 * Coming back from the C-world, our thread info pointer
+	 * should be in the designated register (usually R19)
+	 *
+>>>>>>> refs/remotes/origin/master
 	 * If we were in kernel mode, we don't need to check scheduler
 	 * or signals if CONFIG_PREEMPT is not set.  If set, then it has
 	 * to jump to a need_resched kind of block.
@@ -183,6 +356,7 @@ event_dispatch:
 #endif
 
 	/*  "Nested control path" -- if the previous mode was kernel  */
+<<<<<<< HEAD
 	R0 = memw(R29 + #_PT_ER_VMEST);
 	P0 = tstbit(R0, #HVM_VMEST_UM_SFT);
 	if !P0 jump restore_all;
@@ -231,10 +405,50 @@ work_notifysig:
 restore_all:
 	/* Disable interrupts, if they weren't already, before reg restore.  */
 	R0 = #VM_INT_DISABLE
+=======
+	{
+		R0 = memw(R29 + #_PT_ER_VMEST);
+		R26.L = #LO(do_work_pending);
+	}
+	{
+		P0 = tstbit(R0, #HVM_VMEST_UM_SFT);
+		if (!P0.new) jump:nt restore_all;
+		R26.H = #HI(do_work_pending);
+		R0 = #VM_INT_DISABLE;
+	}
+
+	/*
+	 * Check also the return from fork/system call, normally coming back from
+	 * user mode
+	 *
+	 * R26 needs to have do_work_pending, and R0 should have VM_INT_DISABLE
+	 */
+
+check_work_pending:
+	/*  Disable interrupts while checking TIF  */
+	trap1(#HVM_TRAP1_VMSETIE)
+	{
+		R0 = R29;  /*  regs should still be at top of stack  */
+		R1 = memw(THREADINFO_REG + #_THREAD_INFO_FLAGS);
+		callr R26;
+	}
+
+	{
+		P0 = cmp.eq(R0, #0); if (!P0.new) jump:nt check_work_pending;
+		R0 = #VM_INT_DISABLE;
+	}
+
+restore_all:
+	/*
+	 * Disable interrupts, if they weren't already, before reg restore.
+	 * R0 gets preloaded with #VM_INT_DISABLE before we get here.
+	 */
+>>>>>>> refs/remotes/origin/master
 	trap1(#HVM_TRAP1_VMSETIE)
 
 	/*  do the setregs here for VM 0.5  */
 	/*  R29 here should already be pointing at pt_regs  */
+<<<<<<< HEAD
 	R1:0 = memd(R29 + #_PT_ER_VMEL);
 	R3:2 = memd(R29 + #_PT_ER_VMPSP);
 	trap1(#HVM_TRAP1_VMSETREGS);
@@ -246,6 +460,29 @@ restore_all:
 	trap1(#HVM_TRAP1_VMRTE)
 	/* Notreached */
 
+=======
+	{
+		R1:0 = memd(R29 + #_PT_ER_VMEL);
+		R3:2 = memd(R29 + #_PT_ER_VMPSP);
+	}
+#if CONFIG_HEXAGON_ARCH_VERSION < 4
+	trap1(#HVM_TRAP1_VMSETREGS);
+#else
+	G1:0 = R1:0;
+	G3:2 = R3:2;
+#endif
+
+	R0 = R29
+	restore_pt_regs()
+	{
+		R1:0 = memd(R29 + #_PT_R0100);
+		R29 = add(R29, #_PT_REGS_SIZE);
+	}
+	trap1(#HVM_TRAP1_VMRTE)
+	/* Notreached */
+
+
+>>>>>>> refs/remotes/origin/master
 	.globl _K_enter_genex
 _K_enter_genex:
 	vm_event_entry(do_genex)
@@ -262,8 +499,35 @@ _K_enter_trap0:
 _K_enter_machcheck:
 	vm_event_entry(do_machcheck)
 
+<<<<<<< HEAD
 
 	.globl ret_from_fork
 ret_from_fork:
 	call schedule_tail
 	jump return_from_syscall
+=======
+	.globl _K_enter_debug
+_K_enter_debug:
+	vm_event_entry(do_debug_exception)
+
+	.globl ret_from_fork
+ret_from_fork:
+	{
+		call schedule_tail
+		R26.H = #HI(do_work_pending);
+	}
+	{
+		P0 = cmp.eq(R24, #0);
+		R26.L = #LO(do_work_pending);
+		R0 = #VM_INT_DISABLE;
+	}
+	if P0 jump check_work_pending
+	{
+		R0 = R25;
+		callr R24
+	}
+	{
+		jump check_work_pending
+		R0 = #VM_INT_DISABLE;
+	}
+>>>>>>> refs/remotes/origin/master

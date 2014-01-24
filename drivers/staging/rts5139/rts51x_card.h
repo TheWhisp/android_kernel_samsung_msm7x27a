@@ -204,6 +204,7 @@
 
 /* LDO_POWER_CFG */
 #define TUNE_SD18_MASK			0x1C
+<<<<<<< HEAD
 #define TUNE_SD18_1V7			0x00
 #define TUNE_SD18_1V8			(0x01 << 2)
 #define TUNE_SD18_1V9			(0x02 << 2)
@@ -211,6 +212,9 @@
 #define TUNE_SD18_2V7			(0x04 << 2)
 #define TUNE_SD18_2V8			(0x05 << 2)
 #define TUNE_SD18_2V9			(0x06 << 2)
+=======
+#define TUNE_SD18_1V8			(0x01 << 2)
+>>>>>>> refs/remotes/origin/master
 #define TUNE_SD18_3V3			(0x07 << 2)
 
 /* XD_CP_WAITTIME */
@@ -743,6 +747,7 @@
 
 int monitor_card_cd(struct rts51x_chip *chip, u8 card);
 
+<<<<<<< HEAD
 void do_remaining_work(struct rts51x_chip *chip);
 void do_reset_xd_card(struct rts51x_chip *chip);
 void do_reset_sd_card(struct rts51x_chip *chip);
@@ -766,6 +771,26 @@ int card_power_off(struct rts51x_chip *chip, u8 card);
 int toggle_gpio(struct rts51x_chip *chip, u8 gpio);
 int turn_on_led(struct rts51x_chip *chip, u8 gpio);
 int turn_off_led(struct rts51x_chip *chip, u8 gpio);
+=======
+void rts51x_do_remaining_work(struct rts51x_chip *chip);
+void rts51x_do_rts51x_reset_sd_card(struct rts51x_chip *chip);
+void rts51x_init_cards(struct rts51x_chip *chip);
+void rts51x_release_cards(struct rts51x_chip *chip);
+int rts51x_switch_ssc_clock(struct rts51x_chip *chip, int clk);
+int rts51x_switch_normal_clock(struct rts51x_chip *chip, int clk);
+int rts51x_card_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip,
+		u32 sec_addr, u16 sec_cnt);
+u8 rts51x_get_lun_card(struct rts51x_chip *chip, unsigned int lun);
+int rts51x_select_card(struct rts51x_chip *chip, int card);
+void rts51x_eject_card(struct rts51x_chip *chip, unsigned int lun);
+void rts51x_trans_dma_enable(enum dma_data_direction dir,
+		struct rts51x_chip *chip, u32 byte_cnt, u8 pack_size);
+int rts51x_enable_card_clock(struct rts51x_chip *chip, u8 card);
+int rts51x_card_power_on(struct rts51x_chip *chip, u8 card);
+int rts51x_toggle_gpio(struct rts51x_chip *chip, u8 gpio);
+int rts51x_turn_on_led(struct rts51x_chip *chip, u8 gpio);
+int rts51x_turn_off_led(struct rts51x_chip *chip, u8 gpio);
+>>>>>>> refs/remotes/origin/master
 
 static inline int check_card_ready(struct rts51x_chip *chip, unsigned int lun)
 {
@@ -841,9 +866,15 @@ static inline int switch_clock(struct rts51x_chip *chip, int clk)
 	int retval = 0;
 
 	if (chip->asic_code)
+<<<<<<< HEAD
 		retval = switch_ssc_clock(chip, clk);
 	else
 		retval = switch_normal_clock(chip, clk);
+=======
+		retval = rts51x_switch_ssc_clock(chip, clk);
+	else
+		retval = rts51x_switch_normal_clock(chip, clk);
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }

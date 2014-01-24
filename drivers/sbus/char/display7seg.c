@@ -17,10 +17,14 @@
 #include <linux/of.h>
 #include <linux/of_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>		/* put_/get_user			*/
 #include <asm/io.h>
 
@@ -111,7 +115,11 @@ static long d7s_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	int error = 0;
 	u8 ireg = 0;
 
+<<<<<<< HEAD
 	if (D7S_MINOR != iminor(file->f_path.dentry->d_inode))
+=======
+	if (D7S_MINOR != iminor(file_inode(file)))
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	mutex_lock(&d7s_mutex);
@@ -154,7 +162,11 @@ static long d7s_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			regs |= D7S_FLIP;
 		writeb(regs, p->regs);
 		break;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&d7s_mutex);
 
 	return error;
@@ -175,7 +187,11 @@ static struct miscdevice d7s_miscdev = {
 	.fops		= &d7s_fops
 };
 
+<<<<<<< HEAD
 static int __devinit d7s_probe(struct platform_device *op)
+=======
+static int d7s_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *opts;
 	int err = -EINVAL;
@@ -240,7 +256,11 @@ out_free:
 	goto out;
 }
 
+<<<<<<< HEAD
 static int __devexit d7s_remove(struct platform_device *op)
+=======
+static int d7s_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct d7s *p = dev_get_drvdata(&op->dev);
 	u8 regs = readb(p->regs);
@@ -276,6 +296,7 @@ static struct platform_driver d7s_driver = {
 		.of_match_table = d7s_match,
 	},
 	.probe		= d7s_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(d7s_remove),
 };
 
@@ -295,3 +316,9 @@ module_exit(d7s_exit);
 =======
 module_platform_driver(d7s_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= d7s_remove,
+};
+
+module_platform_driver(d7s_driver);
+>>>>>>> refs/remotes/origin/master

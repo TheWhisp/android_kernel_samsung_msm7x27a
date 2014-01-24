@@ -50,10 +50,18 @@ void hold_module_trace_bprintk_format(const char **start, const char **end)
 {
 	const char **iter;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char *fmt = NULL;
 =======
 	char *fmt;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char *fmt;
+
+	/* allocate the trace_printk per cpu buffers */
+	if (start != end)
+		trace_printk_init_buffers();
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&btrace_mutex);
 	for (iter = start; iter < end; iter++) {
@@ -63,6 +71,7 @@ void hold_module_trace_bprintk_format(const char **start, const char **end)
 			continue;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		tb_fmt = kmalloc(sizeof(*tb_fmt), GFP_KERNEL);
 		if (tb_fmt)
@@ -77,6 +86,8 @@ void hold_module_trace_bprintk_format(const char **start, const char **end)
 			*iter = NULL;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		fmt = NULL;
 		tb_fmt = kmalloc(sizeof(*tb_fmt), GFP_KERNEL);
 		if (tb_fmt) {
@@ -90,7 +101,10 @@ void hold_module_trace_bprintk_format(const char **start, const char **end)
 		}
 		*iter = fmt;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&btrace_mutex);
 }
@@ -259,12 +273,37 @@ static const char **find_next(void *v, loff_t *pos)
 {
 	const char **fmt = v;
 	int start_index;
+<<<<<<< HEAD
+=======
+	int last_index;
+>>>>>>> refs/remotes/origin/master
 
 	start_index = __stop___trace_bprintk_fmt - __start___trace_bprintk_fmt;
 
 	if (*pos < start_index)
 		return __start___trace_bprintk_fmt + *pos;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * The __tracepoint_str section is treated the same as the
+	 * __trace_printk_fmt section. The difference is that the
+	 * __trace_printk_fmt section should only be used by trace_printk()
+	 * in a debugging environment, as if anything exists in that section
+	 * the trace_prink() helper buffers are allocated, which would just
+	 * waste space in a production environment.
+	 *
+	 * The __tracepoint_str sections on the other hand are used by
+	 * tracepoints which need to map pointers to their strings to
+	 * the ASCII text for userspace.
+	 */
+	last_index = start_index;
+	start_index = __stop___tracepoint_str - __start___tracepoint_str;
+
+	if (*pos < last_index + start_index)
+		return __start___tracepoint_str + (*pos - last_index);
+
+>>>>>>> refs/remotes/origin/master
 	return find_next_mod_format(start_index, v, fmt, pos);
 }
 

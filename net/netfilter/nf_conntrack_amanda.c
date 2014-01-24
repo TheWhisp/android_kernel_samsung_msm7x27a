@@ -2,6 +2,10 @@
  *
  * (C) 2002 by Brian J. Murrell <netfilter@interlinx.bc.ca>
  * based on HW's ip_conntrack_irc.c as well as other modules
+<<<<<<< HEAD
+=======
+ * (C) 2006 Patrick McHardy <kaber@trash.net>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -40,6 +44,10 @@ MODULE_PARM_DESC(ts_algo, "textsearch algorithm to use (default kmp)");
 
 unsigned int (*nf_nat_amanda_hook)(struct sk_buff *skb,
 				   enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+				   unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 				   unsigned int matchoff,
 				   unsigned int matchlen,
 				   struct nf_conntrack_expect *exp)
@@ -107,8 +115,12 @@ static int amanda_help(struct sk_buff *skb,
 	/* No data? */
 	dataoff = protoff + sizeof(struct udphdr);
 	if (dataoff >= skb->len) {
+<<<<<<< HEAD
 		if (net_ratelimit())
 			printk(KERN_ERR "amanda_help: skblen = %u\n", skb->len);
+=======
+		net_err_ratelimited("amanda_help: skblen = %u\n", skb->len);
+>>>>>>> refs/remotes/origin/master
 		return NF_ACCEPT;
 	}
 
@@ -145,6 +157,10 @@ static int amanda_help(struct sk_buff *skb,
 
 		exp = nf_ct_expect_alloc(ct);
 		if (exp == NULL) {
+<<<<<<< HEAD
+=======
+			nf_ct_helper_log(skb, ct, "cannot alloc expectation");
+>>>>>>> refs/remotes/origin/master
 			ret = NF_DROP;
 			goto out;
 		}
@@ -156,10 +172,19 @@ static int amanda_help(struct sk_buff *skb,
 
 		nf_nat_amanda = rcu_dereference(nf_nat_amanda_hook);
 		if (nf_nat_amanda && ct->status & IPS_NAT_MASK)
+<<<<<<< HEAD
 			ret = nf_nat_amanda(skb, ctinfo, off - dataoff,
 					    len, exp);
 		else if (nf_ct_expect_related(exp) != 0)
 			ret = NF_DROP;
+=======
+			ret = nf_nat_amanda(skb, ctinfo, protoff,
+					    off - dataoff, len, exp);
+		else if (nf_ct_expect_related(exp) != 0) {
+			nf_ct_helper_log(skb, ct, "cannot add expectation");
+			ret = NF_DROP;
+		}
+>>>>>>> refs/remotes/origin/master
 		nf_ct_expect_put(exp);
 	}
 

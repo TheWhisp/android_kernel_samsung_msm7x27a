@@ -29,8 +29,13 @@
 
 #include <linux/sungem_phy.h>
 
+<<<<<<< HEAD
 extern int spider_net_stop(struct net_device *netdev);
 extern int spider_net_open(struct net_device *netdev);
+=======
+int spider_net_stop(struct net_device *netdev);
+int spider_net_open(struct net_device *netdev);
+>>>>>>> refs/remotes/origin/master
 
 extern const struct ethtool_ops spider_net_ethtool_ops;
 

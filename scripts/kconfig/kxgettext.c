@@ -8,9 +8,12 @@
 #include <string.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define LKC_DIRECT_LINK
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "lkc.h"
 
 static char *escape(const char* text, char *bf, int len)

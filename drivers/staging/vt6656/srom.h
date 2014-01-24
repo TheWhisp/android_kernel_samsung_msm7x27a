@@ -30,10 +30,13 @@
 #ifndef __SROM_H__
 #define __SROM_H__
 
+<<<<<<< HEAD
 #include "ttype.h"
 
 /*---------------------  Export Definitions -------------------------*/
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define EEP_MAX_CONTEXT_SIZE    256
 
 #define CB_EEPROM_READBYTE_WAIT 900     //us
@@ -56,7 +59,10 @@
 #define EEP_OFS_SETPT_CCK   0x21
 #define EEP_OFS_PWR_OFDMG   0x23
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define EEP_OFS_CALIB_TX_IQ 0x24
 #define EEP_OFS_CALIB_TX_DC 0x25
 #define EEP_OFS_CALIB_RX_IQ 0x26
@@ -80,12 +86,16 @@
 //
 #define EEP_RADIOCTL_ENABLE 0x80
 
+<<<<<<< HEAD
 /*---------------------  Export Types  ------------------------------*/
 
+=======
+>>>>>>> refs/remotes/origin/master
 // AT24C02 eeprom contents
 //      2048 bits = 256 bytes = 128 words
 //
 typedef struct tagSSromReg {
+<<<<<<< HEAD
     BYTE    abyPAR[6];                  // 0x00 (WORD)
 
     WORD    wSUB_VID;                   // 0x03 (WORD)
@@ -124,4 +134,36 @@ typedef struct tagSSromReg {
 
 /*---------------------  Export Functions  --------------------------*/
 
+=======
+    u8    abyPAR[6];                  // 0x00 (u16)
+
+    u16    wSUB_VID;                   // 0x03 (u16)
+    u16    wSUB_SID;
+
+    u8    byBCFG0;                    // 0x05 (u16)
+    u8    byBCFG1;
+
+    u8    byFCR0;                     // 0x06 (u16)
+    u8    byFCR1;
+    u8    byPMC0;                     // 0x07 (u16)
+    u8    byPMC1;
+    u8    byMAXLAT;                   // 0x08 (u16)
+    u8    byMINGNT;
+    u8    byCFG0;                     // 0x09 (u16)
+    u8    byCFG1;
+    u16    wCISPTR;                    // 0x0A (u16)
+    u16    wRsv0;                      // 0x0B (u16)
+    u16    wRsv1;                      // 0x0C (u16)
+    u8    byBBPAIR;                   // 0x0D (u16)
+    u8    byRFTYPE;
+    u8    byMinChannel;               // 0x0E (u16)
+    u8    byMaxChannel;
+    u8    bySignature;                // 0x0F (u16)
+    u8    byCheckSum;
+
+    u8    abyReserved0[96];           // 0x10 (u16)
+    u8    abyCIS[128];                // 0x80 (u16)
+} SSromReg, *PSSromReg;
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __EEPROM_H__ */

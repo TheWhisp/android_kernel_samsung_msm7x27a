@@ -29,11 +29,18 @@
 #include "seq_oss_event.h"
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/moduleparam.h>
 #include <linux/slab.h>
+=======
+#include <linux/export.h>
+#include <linux/moduleparam.h>
+#include <linux/slab.h>
+#include <linux/workqueue.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * common variables
@@ -63,6 +70,17 @@ static void free_devinfo(void *private);
 #define call_ctl(type,rec) snd_seq_kernel_client_ctl(system_client, type, rec)
 
 
+<<<<<<< HEAD
+=======
+/* call snd_seq_oss_midi_lookup_ports() asynchronously */
+static void async_call_lookup_ports(struct work_struct *work)
+{
+	snd_seq_oss_midi_lookup_ports(system_client);
+}
+
+static DECLARE_WORK(async_lookup_work, async_call_lookup_ports);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * create sequencer client for OSS sequencer
  */
@@ -88,9 +106,12 @@ snd_seq_oss_create_client(void)
 	system_client = rc;
 	debug_printk(("new client = %d\n", rc));
 
+<<<<<<< HEAD
 	/* look up midi devices */
 	snd_seq_oss_midi_lookup_ports(system_client);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* create annoucement receiver port */
 	memset(port, 0, sizeof(*port));
 	strcpy(port->name, "Receiver");
@@ -118,6 +139,12 @@ snd_seq_oss_create_client(void)
 	}
 	rc = 0;
 
+<<<<<<< HEAD
+=======
+	/* look up midi devices */
+	schedule_work(&async_lookup_work);
+
+>>>>>>> refs/remotes/origin/master
  __error:
 	kfree(port);
 	return rc;
@@ -163,6 +190,10 @@ receive_announce(struct snd_seq_event *ev, int direct, void *private, int atomic
 int
 snd_seq_oss_delete_client(void)
 {
+<<<<<<< HEAD
+=======
+	cancel_work_sync(&async_lookup_work);
+>>>>>>> refs/remotes/origin/master
 	if (system_client >= 0)
 		snd_seq_delete_kernel_client(system_client);
 

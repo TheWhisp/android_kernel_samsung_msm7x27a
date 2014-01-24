@@ -2,6 +2,7 @@
  * Xen implementation for transcendent memory (tmem)
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2009-2010 Oracle Corp.  All rights reserved.
 =======
  * Copyright (C) 2009-2011 Oracle Corp.  All rights reserved.
@@ -9,11 +10,21 @@
  * Author: Dan Magenheimer
  */
 
+=======
+ * Copyright (C) 2009-2011 Oracle Corp.  All rights reserved.
+ * Author: Dan Magenheimer
+ */
+
+#define pr_fmt(fmt) "xen:" KBUILD_MODNAME ": " fmt
+
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/types.h>
 #include <linux/init.h>
 #include <linux/pagemap.h>
 #include <linux/cleancache.h>
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
@@ -23,11 +34,49 @@
 #endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/frontswap.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <xen/xen.h>
 #include <xen/interface/xen.h>
 #include <asm/xen/hypercall.h>
 #include <asm/xen/page.h>
 #include <asm/xen/hypervisor.h>
+<<<<<<< HEAD
+=======
+#include <xen/tmem.h>
+
+#ifndef CONFIG_XEN_TMEM_MODULE
+bool __read_mostly tmem_enabled = false;
+
+static int __init enable_tmem(char *s)
+{
+	tmem_enabled = true;
+	return 1;
+}
+__setup("tmem", enable_tmem);
+#endif
+
+#ifdef CONFIG_CLEANCACHE
+static bool cleancache __read_mostly = true;
+module_param(cleancache, bool, S_IRUGO);
+static bool selfballooning __read_mostly = true;
+module_param(selfballooning, bool, S_IRUGO);
+#endif /* CONFIG_CLEANCACHE */
+
+#ifdef CONFIG_FRONTSWAP
+static bool frontswap __read_mostly = true;
+module_param(frontswap, bool, S_IRUGO);
+#else /* CONFIG_FRONTSWAP */
+#define frontswap (0)
+#endif /* CONFIG_FRONTSWAP */
+
+#ifdef CONFIG_XEN_SELFBALLOONING
+static bool selfshrinking __read_mostly = true;
+module_param(selfshrinking, bool, S_IRUGO);
+#endif /* CONFIG_XEN_SELFBALLOONING */
+>>>>>>> refs/remotes/origin/master
 
 #define TMEM_CONTROL               0
 #define TMEM_NEW_POOL              1
@@ -135,6 +184,7 @@ static int xen_tmem_flush_object(u32 pool_id, struct tmem_oid oid)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int xen_tmem_destroy_pool(u32 pool_id)
 {
 	struct tmem_oid oid = { { 0 } };
@@ -161,6 +211,8 @@ static int __init enable_tmem(char *s)
 	return 1;
 }
 __setup("tmem", enable_tmem);
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_CLEANCACHE
 static int xen_tmem_destroy_pool(u32 pool_id)
@@ -170,7 +222,10 @@ static int xen_tmem_destroy_pool(u32 pool_id)
 	return xen_tmem_op(TMEM_DESTROY_POOL, pool_id, oid, 0, 0, 0, 0, 0);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* cleancache ops */
 
 static void tmem_cleancache_put_page(int pool, struct cleancache_filekey key,
@@ -254,6 +309,7 @@ static int tmem_cleancache_init_shared_fs(char *uuid, size_t pagesize)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int use_cleancache = 1;
 
 static int __init no_cleancache(char *s)
@@ -293,6 +349,11 @@ __setup("nocleancache", no_cleancache);
 static struct cleancache_ops __initdata tmem_cleancache_ops = {
 	.put_page = tmem_cleancache_put_page,
 	.get_page = tmem_cleancache_get_page,
+=======
+static struct cleancache_ops tmem_cleancache_ops = {
+	.put_page = tmem_cleancache_put_page,
+	.get_page = tmem_cleancache_get_page,
+>>>>>>> refs/remotes/origin/master
 	.invalidate_page = tmem_cleancache_flush_page,
 	.invalidate_inode = tmem_cleancache_flush_inode,
 	.invalidate_fs = tmem_cleancache_flush_fs,
@@ -324,7 +385,11 @@ static inline struct tmem_oid oswiz(unsigned type, u32 ind)
 }
 
 /* returns 0 if the page was successfully put into frontswap, -1 if not */
+<<<<<<< HEAD
 static int tmem_frontswap_put_page(unsigned type, pgoff_t offset,
+=======
+static int tmem_frontswap_store(unsigned type, pgoff_t offset,
+>>>>>>> refs/remotes/origin/master
 				   struct page *page)
 {
 	u64 ind64 = (u64)offset;
@@ -350,7 +415,11 @@ static int tmem_frontswap_put_page(unsigned type, pgoff_t offset,
  * returns 0 if the page was successfully gotten from frontswap, -1 if
  * was not present (should never happen!)
  */
+<<<<<<< HEAD
 static int tmem_frontswap_get_page(unsigned type, pgoff_t offset,
+=======
+static int tmem_frontswap_load(unsigned type, pgoff_t offset,
+>>>>>>> refs/remotes/origin/master
 				   struct page *page)
 {
 	u64 ind64 = (u64)offset;
@@ -407,6 +476,7 @@ static void tmem_frontswap_init(unsigned ignored)
 		    xen_tmem_new_pool(private, TMEM_POOL_PERSIST, PAGE_SIZE);
 }
 
+<<<<<<< HEAD
 static bool __initdata use_frontswap = true;
 
 static int __init no_frontswap(char *s)
@@ -419,17 +489,27 @@ __setup("nofrontswap", no_frontswap);
 static struct frontswap_ops __initdata tmem_frontswap_ops = {
 	.put_page = tmem_frontswap_put_page,
 	.get_page = tmem_frontswap_get_page,
+=======
+static struct frontswap_ops tmem_frontswap_ops = {
+	.store = tmem_frontswap_store,
+	.load = tmem_frontswap_load,
+>>>>>>> refs/remotes/origin/master
 	.invalidate_page = tmem_frontswap_flush_page,
 	.invalidate_area = tmem_frontswap_flush_area,
 	.init = tmem_frontswap_init
 };
 #endif
 
+<<<<<<< HEAD
 static int __init xen_tmem_init(void)
+=======
+static int xen_tmem_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!xen_domain())
 		return 0;
 #ifdef CONFIG_FRONTSWAP
+<<<<<<< HEAD
 	if (tmem_enabled && use_frontswap) {
 		char *s = "";
 		struct frontswap_ops old_ops =
@@ -458,8 +538,53 @@ static int __init xen_tmem_init(void)
 		printk(KERN_INFO "cleancache enabled, RAM provided by "
 				 "Xen Transcendent Memory%s\n", s);
 	}
+=======
+	if (tmem_enabled && frontswap) {
+		char *s = "";
+		struct frontswap_ops *old_ops;
+
+		tmem_frontswap_poolid = -1;
+		old_ops = frontswap_register_ops(&tmem_frontswap_ops);
+		if (IS_ERR(old_ops) || old_ops) {
+			if (IS_ERR(old_ops))
+				return PTR_ERR(old_ops);
+			s = " (WARNING: frontswap_ops overridden)";
+		}
+		pr_info("frontswap enabled, RAM provided by Xen Transcendent Memory%s\n",
+			s);
+	}
+#endif
+#ifdef CONFIG_CLEANCACHE
+	BUG_ON(sizeof(struct cleancache_filekey) != sizeof(struct tmem_oid));
+	if (tmem_enabled && cleancache) {
+		char *s = "";
+		struct cleancache_ops *old_ops =
+			cleancache_register_ops(&tmem_cleancache_ops);
+		if (old_ops)
+			s = " (WARNING: cleancache_ops overridden)";
+		pr_info("cleancache enabled, RAM provided by Xen Transcendent Memory%s\n",
+			s);
+	}
+#endif
+#ifdef CONFIG_XEN_SELFBALLOONING
+	/*
+	 * There is no point of driving pages to the swap system if they
+	 * aren't going anywhere in tmem universe.
+	 */
+	if (!frontswap) {
+		selfshrinking = false;
+		selfballooning = false;
+	}
+	xen_selfballoon_init(selfballooning, selfshrinking);
+>>>>>>> refs/remotes/origin/master
 #endif
 	return 0;
 }
 
 module_init(xen_tmem_init)
+<<<<<<< HEAD
+=======
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Dan Magenheimer <dan.magenheimer@oracle.com>");
+MODULE_DESCRIPTION("Shim to Xen transcendent memory");
+>>>>>>> refs/remotes/origin/master

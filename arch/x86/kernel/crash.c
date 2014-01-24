@@ -7,7 +7,10 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <linux/smp.h>
@@ -16,6 +19,10 @@
 #include <linux/delay.h>
 #include <linux/elf.h>
 #include <linux/elfcore.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/processor.h>
 #include <asm/hardirq.h>
@@ -30,6 +37,7 @@
 
 int in_crash_kexec;
 
+<<<<<<< HEAD
 #if defined(CONFIG_SMP) && defined(CONFIG_X86_LOCAL_APIC)
 
 <<<<<<< HEAD
@@ -40,15 +48,45 @@ static void kdump_nmi_callback(int cpu, struct die_args *args)
 static void kdump_nmi_callback(int cpu, struct pt_regs *regs)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * This is used to VMCLEAR all VMCSs loaded on the
+ * processor. And when loading kvm_intel module, the
+ * callback function pointer will be assigned.
+ *
+ * protected by rcu.
+ */
+crash_vmclear_fn __rcu *crash_vmclear_loaded_vmcss = NULL;
+EXPORT_SYMBOL_GPL(crash_vmclear_loaded_vmcss);
+
+static inline void cpu_crash_vmclear_loaded_vmcss(void)
+{
+	crash_vmclear_fn *do_vmclear_operation = NULL;
+
+	rcu_read_lock();
+	do_vmclear_operation = rcu_dereference(crash_vmclear_loaded_vmcss);
+	if (do_vmclear_operation)
+		do_vmclear_operation();
+	rcu_read_unlock();
+}
+
+#if defined(CONFIG_SMP) && defined(CONFIG_X86_LOCAL_APIC)
+
+static void kdump_nmi_callback(int cpu, struct pt_regs *regs)
+{
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_32
 	struct pt_regs fixed_regs;
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	regs = args->regs;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_32
 	if (!user_mode_vm(regs)) {
 		crash_fixup_ss_esp(&fixed_regs, regs);
@@ -57,6 +95,14 @@ static void kdump_nmi_callback(int cpu, struct pt_regs *regs)
 #endif
 	crash_save_cpu(regs, cpu);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * VMCLEAR VMCSs loaded on all cpus if needed.
+	 */
+	cpu_crash_vmclear_loaded_vmcss();
+
+>>>>>>> refs/remotes/origin/master
 	/* Disable VMX or SVM if needed.
 	 *
 	 * We need to disable virtualization on all CPUs.
@@ -99,6 +145,14 @@ void native_machine_crash_shutdown(struct pt_regs *regs)
 
 	kdump_nmi_shootdown_cpus();
 
+<<<<<<< HEAD
+=======
+	/*
+	 * VMCLEAR VMCSs loaded on this cpu if needed.
+	 */
+	cpu_crash_vmclear_loaded_vmcss();
+
+>>>>>>> refs/remotes/origin/master
 	/* Booting kdump kernel with VMX or SVM enabled won't work,
 	 * because (among other limitations) we can't disable paging
 	 * with the virt flags.
@@ -106,10 +160,19 @@ void native_machine_crash_shutdown(struct pt_regs *regs)
 	cpu_emergency_vmxoff();
 	cpu_emergency_svm_disable();
 
+<<<<<<< HEAD
 	lapic_shutdown();
 #if defined(CONFIG_X86_IO_APIC)
 	disable_IO_APIC();
 #endif
+=======
+#ifdef CONFIG_X86_IO_APIC
+	/* Prevent crash_kexec() from deadlocking on ioapic_lock. */
+	ioapic_zap_locks();
+	disable_IO_APIC();
+#endif
+	lapic_shutdown();
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HPET_TIMER
 	hpet_disable();
 #endif

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef _ASM_POWERPC_TYPES_H
 #define _ASM_POWERPC_TYPES_H
 
@@ -22,6 +23,8 @@
 
 #ifndef __ASSEMBLY__
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This file is never included by application software unless
  * explicitly requested (e.g., via linux/types.h) in which case the
@@ -34,6 +37,7 @@
  * as published by the Free Software Foundation; either version
  * 2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 #ifdef __powerpc64__
@@ -51,6 +55,13 @@ typedef struct {
 #endif /* __ASSEMBLY__ */
 
 #ifdef __KERNEL__
+=======
+#ifndef _ASM_POWERPC_TYPES_H
+#define _ASM_POWERPC_TYPES_H
+
+#include <uapi/asm/types.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 
 typedef __vector128 vector128;
@@ -63,6 +74,9 @@ typedef struct {
 
 #endif /* __ASSEMBLY__ */
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_POWERPC_TYPES_H */

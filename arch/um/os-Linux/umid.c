@@ -12,6 +12,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
+<<<<<<< HEAD
 #include "init.h"
 <<<<<<< HEAD
 #include "kern_constants.h"
@@ -20,6 +21,10 @@
 =======
 #include "os.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <init.h>
+#include <os.h>
+>>>>>>> refs/remotes/origin/master
 
 #define UML_DIR "~/.uml/"
 

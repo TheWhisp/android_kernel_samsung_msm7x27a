@@ -12,9 +12,13 @@
 #include <linux/usb/input.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_DESC    "ATI/Philips USB RF remote driver"
 #define DRIVER_VERSION "0.3"
@@ -46,20 +50,28 @@ static int ati_remote2_set_mask(const char *val,
 				unsigned int max)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long mask;
 =======
 	unsigned int mask;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int mask;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (!val)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = strict_strtoul(val, 0, &mask);
 =======
 	ret = kstrtouint(val, 0, &mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = kstrtouint(val, 0, &mask);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -732,19 +744,25 @@ static ssize_t ati_remote2_store_channel_mask(struct device *dev,
 	struct usb_interface *intf = usb_ifnum_to_if(udev, 0);
 	struct ati_remote2 *ar2 = usb_get_intfdata(intf);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long mask;
 	int r;
 
 	if (strict_strtoul(buf, 0, &mask))
 		return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int mask;
 	int r;
 
 	r = kstrtouint(buf, 0, &mask);
 	if (r)
 		return r;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (mask & ~ATI_REMOTE2_MAX_CHANNEL_MASK)
 		return -EINVAL;
@@ -790,18 +808,24 @@ static ssize_t ati_remote2_store_mode_mask(struct device *dev,
 	struct usb_interface *intf = usb_ifnum_to_if(udev, 0);
 	struct ati_remote2 *ar2 = usb_get_intfdata(intf);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long mask;
 
 	if (strict_strtoul(buf, 0, &mask))
 		return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int mask;
 	int err;
 
 	err = kstrtouint(buf, 0, &mask);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (mask & ~ATI_REMOTE2_MAX_MODE_MASK)
 		return -EINVAL;
@@ -1040,6 +1064,7 @@ static int ati_remote2_post_reset(struct usb_interface *interface)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init ati_remote2_init(void)
 {
 	int r;
@@ -1063,3 +1088,6 @@ module_exit(ati_remote2_exit);
 =======
 module_usb_driver(ati_remote2_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(ati_remote2_driver);
+>>>>>>> refs/remotes/origin/master

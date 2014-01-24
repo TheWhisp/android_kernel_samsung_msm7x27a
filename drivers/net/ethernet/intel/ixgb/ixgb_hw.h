@@ -759,6 +759,7 @@ struct ixgb_hw_stats {
 };
 
 /* Function Prototypes */
+<<<<<<< HEAD
 extern bool ixgb_adapter_stop(struct ixgb_hw *hw);
 extern bool ixgb_init_hw(struct ixgb_hw *hw);
 extern bool ixgb_adapter_start(struct ixgb_hw *hw);
@@ -780,6 +781,22 @@ extern void ixgb_mc_addr_list_update(struct ixgb_hw *hw,
 extern void ixgb_write_vfta(struct ixgb_hw *hw,
 				 u32 offset,
 				 u32 value);
+=======
+bool ixgb_adapter_stop(struct ixgb_hw *hw);
+bool ixgb_init_hw(struct ixgb_hw *hw);
+bool ixgb_adapter_start(struct ixgb_hw *hw);
+void ixgb_check_for_link(struct ixgb_hw *hw);
+bool ixgb_check_for_bad_link(struct ixgb_hw *hw);
+
+void ixgb_rar_set(struct ixgb_hw *hw, u8 *addr, u32 index);
+
+/* Filters (multicast, vlan, receive) */
+void ixgb_mc_addr_list_update(struct ixgb_hw *hw, u8 *mc_addr_list,
+			      u32 mc_addr_count, u32 pad);
+
+/* Vfta functions */
+void ixgb_write_vfta(struct ixgb_hw *hw, u32 offset, u32 value);
+>>>>>>> refs/remotes/origin/master
 
 /* Access functions to eeprom data */
 void ixgb_get_ee_mac_addr(struct ixgb_hw *hw, u8 *mac_addr);

@@ -5,7 +5,11 @@ comment "SIR device drivers"
 
 config IRTTY_SIR
 	tristate "IrTTY (uses Linux serial driver)"
+<<<<<<< HEAD
 	depends on IRDA
+=======
+	depends on IRDA && TTY
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to build support for the IrTTY line
 	  discipline.  To compile it as a module, choose M here: the module
@@ -140,7 +144,11 @@ config LITELINK_DONGLE
 
 config MA600_DONGLE
 	tristate "Mobile Action MA600 dongle"
+<<<<<<< HEAD
 	depends on IRTTY_SIR && DONGLE && IRDA && EXPERIMENTAL
+=======
+	depends on IRTTY_SIR && DONGLE && IRDA
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to build support for the Mobile Action MA600
 	  dongle.  To compile it as a module, choose M here. The MA600 dongle
@@ -153,7 +161,11 @@ config MA600_DONGLE
 
 config GIRBIL_DONGLE
 	tristate "Greenwich GIrBIL dongle"
+<<<<<<< HEAD
 	depends on IRTTY_SIR && DONGLE && IRDA && EXPERIMENTAL
+=======
+	depends on IRTTY_SIR && DONGLE && IRDA
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to build support for the Greenwich GIrBIL
 	  dongle.  If you want to compile it as a module, choose M here.
@@ -164,7 +176,11 @@ config GIRBIL_DONGLE
 
 config MCP2120_DONGLE
 	tristate "Microchip MCP2120"
+<<<<<<< HEAD
 	depends on IRTTY_SIR && DONGLE && IRDA && EXPERIMENTAL
+=======
+	depends on IRTTY_SIR && DONGLE && IRDA
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to build support for the Microchip MCP2120
 	  dongle.  If you want to compile it as a module, choose M here.
@@ -178,11 +194,16 @@ config MCP2120_DONGLE
 
 config OLD_BELKIN_DONGLE
 	tristate "Old Belkin dongle"
+<<<<<<< HEAD
 	depends on IRTTY_SIR && DONGLE && IRDA && EXPERIMENTAL
+=======
+	depends on IRTTY_SIR && DONGLE && IRDA
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to build support for the Adaptec Airport 1000
 	  and 2000 dongles.  If you want to compile it as a module, choose
 	  M here. Some information is contained in the comments
+<<<<<<< HEAD
 <<<<<<< HEAD
 	  at the top of <file:drivers/net/irda/old_belkin.c>.
 =======
@@ -192,6 +213,13 @@ config OLD_BELKIN_DONGLE
 config ACT200L_DONGLE
 	tristate "ACTiSYS IR-200L dongle"
 	depends on IRTTY_SIR && DONGLE && IRDA && EXPERIMENTAL
+=======
+	  at the top of <file:drivers/net/irda/old_belkin-sir.c>.
+
+config ACT200L_DONGLE
+	tristate "ACTiSYS IR-200L dongle"
+	depends on IRTTY_SIR && DONGLE && IRDA
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to build support for the ACTiSYS IR-200L
 	  dongle. If you want to compile it as a module, choose M here.
@@ -202,7 +230,11 @@ config ACT200L_DONGLE
 
 config KINGSUN_DONGLE
 	tristate "KingSun/DonShine DS-620 IrDA-USB dongle"
+<<<<<<< HEAD
 	depends on IRDA && USB && EXPERIMENTAL
+=======
+	depends on IRDA && USB
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y or M here if you want to build support for the KingSun/DonShine
 	  DS-620 IrDA-USB bridge device driver.
@@ -215,15 +247,25 @@ config KINGSUN_DONGLE
 	  kingsun-sir.
 
 config EP7211_DONGLE
+<<<<<<< HEAD
 	tristate "EP7211 I/R support"
 	depends on IRTTY_SIR && ARCH_EP7211 && IRDA && EXPERIMENTAL
+=======
+	tristate "Cirrus Logic clps711x I/R support"
+	depends on IRTTY_SIR && ARCH_CLPS711X && IRDA
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to build support for the Cirrus logic
 	  EP7211 chipset's infrared module.
 
 config KSDAZZLE_DONGLE
+<<<<<<< HEAD
 	tristate "KingSun Dazzle IrDA-USB dongle (EXPERIMENTAL)"
 	depends on IRDA && USB && EXPERIMENTAL
+=======
+	tristate "KingSun Dazzle IrDA-USB dongle"
+	depends on IRDA && USB
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y or M here if you want to build support for the KingSun Dazzle
 	  IrDA-USB bridge device driver.
@@ -236,8 +278,13 @@ config KSDAZZLE_DONGLE
 	  ksdazzle-sir.
 
 config KS959_DONGLE
+<<<<<<< HEAD
 	tristate "KingSun KS-959 IrDA-USB dongle (EXPERIMENTAL)"
 	depends on IRDA && USB && EXPERIMENTAL
+=======
+	tristate "KingSun KS-959 IrDA-USB dongle"
+	depends on IRDA && USB
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y or M here if you want to build support for the KingSun KS-959
 	  IrDA-USB bridge device driver.
@@ -268,8 +315,13 @@ config USB_IRDA
 	  you will need both USB and IrDA support in your kernel...
 
 config SIGMATEL_FIR
+<<<<<<< HEAD
 	tristate "SigmaTel STIr4200 bridge (EXPERIMENTAL)"
 	depends on IRDA && USB && EXPERIMENTAL
+=======
+	tristate "SigmaTel STIr4200 bridge"
+	depends on IRDA && USB
+>>>>>>> refs/remotes/origin/master
 	select CRC32
 	---help---
 	  Say Y here if you want to build support for the SigmaTel STIr4200
@@ -318,6 +370,7 @@ config TOSHIBA_FIR
 
 config AU1000_FIR
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "Alchemy Au1000 SIR/FIR"
 	depends on SOC_AU1000 && IRDA
 =======
@@ -332,6 +385,18 @@ config AU1000_FIR
 config SMC_IRCC_FIR
 	tristate "SMSC IrCC (EXPERIMENTAL)"
 	depends on EXPERIMENTAL && IRDA && ISA_DMA_API
+=======
+	tristate "Alchemy IrDA SIR/FIR"
+	depends on IRDA && MIPS_ALCHEMY
+	help
+	  Say Y/M here to build support the IrDA peripheral on the
+	  Alchemy Au1000 and Au1100 SoCs.
+	  Say M to build a module; it will be called au1k_ir.ko
+
+config SMC_IRCC_FIR
+	tristate "SMSC IrCC"
+	depends on IRDA && ISA_DMA_API
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to build support for the SMC Infrared
 	  Communications Controller.  It is used in a wide variety of
@@ -340,8 +405,13 @@ config SMC_IRCC_FIR
 	  smsc-ircc2.o.
 
 config ALI_FIR
+<<<<<<< HEAD
 	tristate "ALi M5123 FIR (EXPERIMENTAL)"
 	depends on EXPERIMENTAL && IRDA && ISA_DMA_API
+=======
+	tristate "ALi M5123 FIR"
+	depends on IRDA && ISA_DMA_API
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to build support for the ALi M5123 FIR
 	  Controller.  The ALi M5123 FIR Controller is embedded in ALi M1543C,
@@ -352,8 +422,13 @@ config ALI_FIR
 	  ali-ircc.
 
 config VLSI_FIR
+<<<<<<< HEAD
 	tristate "VLSI 82C147 SIR/MIR/FIR (EXPERIMENTAL)"
 	depends on EXPERIMENTAL && IRDA && PCI
+=======
+	tristate "VLSI 82C147 SIR/MIR/FIR"
+	depends on IRDA && PCI
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to build support for the VLSI 82C147
 	  PCI-IrDA Controller. This controller is used by the HP OmniBook 800
@@ -366,10 +441,14 @@ config VLSI_FIR
 config SA1100_FIR
 	tristate "SA1100 Internal IR"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on ARCH_SA1100 && IRDA
 =======
 	depends on ARCH_SA1100 && IRDA && DMA_SA11X0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on ARCH_SA1100 && IRDA && DMA_SA11X0
+>>>>>>> refs/remotes/origin/master
 
 config VIA_FIR
 	tristate "VIA VT8231/VT1211 SIR/MIR/FIR"
@@ -400,7 +479,11 @@ config PXA_FICP
 
 config MCS_FIR
 	tristate "MosChip MCS7780 IrDA-USB dongle"
+<<<<<<< HEAD
 	depends on IRDA && USB && EXPERIMENTAL
+=======
+	depends on IRDA && USB
+>>>>>>> refs/remotes/origin/master
 	select CRC32
 	help
 	  Say Y or M here if you want to build support for the MosChip

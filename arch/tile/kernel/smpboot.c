@@ -133,22 +133,39 @@ static __init int reset_init_affinity(void)
 }
 late_initcall(reset_init_affinity);
 
+<<<<<<< HEAD
 static struct cpumask cpu_started __cpuinitdata;
+=======
+static struct cpumask cpu_started;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Activate a secondary processor.  Very minimal; don't add anything
  * to this path without knowing what you're doing, since SMP booting
  * is pretty fragile.
  */
+<<<<<<< HEAD
 static void __cpuinit start_secondary(void)
 {
 	int cpuid = smp_processor_id();
+=======
+static void start_secondary(void)
+{
+	int cpuid;
+
+	preempt_disable();
+
+	cpuid = smp_processor_id();
+>>>>>>> refs/remotes/origin/master
 
 	/* Set our thread pointer appropriately. */
 	set_my_cpu_offset(__per_cpu_offset[cpuid]);
 
+<<<<<<< HEAD
 	preempt_disable();
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * In large machines even this will slow us down, since we
 	 * will be contending for for the printk spinlock.
@@ -183,7 +200,11 @@ static void __cpuinit start_secondary(void)
 /*
  * Bring a secondary processor online.
  */
+<<<<<<< HEAD
 void __cpuinit online_secondary(void)
+=======
+void online_secondary(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * low-memory mappings have been cleared, flush them from
@@ -196,6 +217,7 @@ void __cpuinit online_secondary(void)
 	/* This must be done before setting cpu_online_mask */
 	wmb();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	notify_cpu_starting(smp_processor_id());
@@ -212,6 +234,11 @@ void __cpuinit online_secondary(void)
 	ipi_call_lock();
 	set_cpu_online(smp_processor_id(), 1);
 	ipi_call_unlock();
+=======
+	notify_cpu_starting(smp_processor_id());
+
+	set_cpu_online(smp_processor_id(), 1);
+>>>>>>> refs/remotes/origin/master
 	__get_cpu_var(cpu_state) = CPU_ONLINE;
 
 	/* Set up tile-specific state for this cpu. */
@@ -220,12 +247,19 @@ void __cpuinit online_secondary(void)
 	/* Set up tile-timer clock-event device on this cpu */
 	setup_tile_timer();
 
+<<<<<<< HEAD
 	preempt_enable();
 
 	cpu_idle();
 }
 
 int __cpuinit __cpu_up(unsigned int cpu)
+=======
+	cpu_startup_entry(CPUHP_ONLINE);
+}
+
+int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Wait 5s total for all CPUs for them to come online */
 	static int timeout;

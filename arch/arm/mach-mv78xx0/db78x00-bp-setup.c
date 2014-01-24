@@ -94,17 +94,26 @@ subsys_initcall(db78x00_pci_init);
 MACHINE_START(DB78X00_BP, "Marvell DB-78x00-BP Development Board")
 	/* Maintainer: Lennert Buytenhek <buytenh@marvell.com> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 =======
 	.atag_offset	= 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= db78x00_init,
 	.map_io		= mv78xx0_map_io,
 	.init_early	= mv78xx0_init_early,
 	.init_irq	= mv78xx0_init_irq,
+<<<<<<< HEAD
 	.timer		= &mv78xx0_timer,
 <<<<<<< HEAD
 =======
 	.restart	= mv78xx0_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= mv78xx0_timer_init,
+	.restart	= mv78xx0_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

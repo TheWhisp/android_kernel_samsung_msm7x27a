@@ -114,7 +114,11 @@ static int misc_open(struct inode * inode, struct file * file)
 	int minor = iminor(inode);
 	struct miscdevice *c;
 	int err = -ENODEV;
+<<<<<<< HEAD
 	const struct file_operations *old_fops, *new_fops = NULL;
+=======
+	const struct file_operations *new_fops = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&misc_mtx);
 	
@@ -141,6 +145,7 @@ static int misc_open(struct inode * inode, struct file * file)
 	}
 
 	err = 0;
+<<<<<<< HEAD
 	old_fops = file->f_op;
 	file->f_op = new_fops;
 	if (file->f_op->open) {
@@ -152,6 +157,13 @@ static int misc_open(struct inode * inode, struct file * file)
 		}
 	}
 	fops_put(old_fops);
+=======
+	replace_fops(file, new_fops);
+	if (file->f_op->open) {
+		file->private_data = c;
+		err = file->f_op->open(inode,file);
+	}
+>>>>>>> refs/remotes/origin/master
 fail:
 	mutex_unlock(&misc_mtx);
 	return err;
@@ -183,28 +195,51 @@ static const struct file_operations misc_fops = {
  
 int misc_register(struct miscdevice * misc)
 {
+<<<<<<< HEAD
 	struct miscdevice *c;
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_t dev;
 	int err = 0;
 
 	INIT_LIST_HEAD(&misc->list);
 
 	mutex_lock(&misc_mtx);
+<<<<<<< HEAD
 	list_for_each_entry(c, &misc_list, list) {
 		if (c->minor == misc->minor) {
 			mutex_unlock(&misc_mtx);
 			return -EBUSY;
 		}
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (misc->minor == MISC_DYNAMIC_MINOR) {
 		int i = find_first_zero_bit(misc_minors, DYNAMIC_MINORS);
 		if (i >= DYNAMIC_MINORS) {
+<<<<<<< HEAD
 			mutex_unlock(&misc_mtx);
 			return -EBUSY;
 		}
 		misc->minor = DYNAMIC_MINORS - i - 1;
 		set_bit(i, misc_minors);
+=======
+			err = -EBUSY;
+			goto out;
+		}
+		misc->minor = DYNAMIC_MINORS - i - 1;
+		set_bit(i, misc_minors);
+	} else {
+		struct miscdevice *c;
+
+		list_for_each_entry(c, &misc_list, list) {
+			if (c->minor == misc->minor) {
+				err = -EBUSY;
+				goto out;
+			}
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dev = MKDEV(MISC_MAJOR, misc->minor);
@@ -259,10 +294,14 @@ EXPORT_SYMBOL(misc_register);
 EXPORT_SYMBOL(misc_deregister);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static char *misc_devnode(struct device *dev, mode_t *mode)
 =======
 static char *misc_devnode(struct device *dev, umode_t *mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *misc_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct miscdevice *c = dev_get_drvdata(dev);
 

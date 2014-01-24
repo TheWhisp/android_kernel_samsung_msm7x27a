@@ -29,7 +29,10 @@
 .globl ret_from_exception
 .globl ret_from_signal
 .globl sys_call_table
+<<<<<<< HEAD
 .globl ret_from_interrupt
+=======
+>>>>>>> refs/remotes/origin/master
 .globl bad_interrupt
 .globl inthandler
 
@@ -64,10 +67,14 @@ ret_from_signal:
 
 ENTRY(system_call)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SAVE_ALL
 =======
 	SAVE_ALL_SYS
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SAVE_ALL_SYS
+>>>>>>> refs/remotes/origin/master
 
 	/* save top of frame*/
 	pea	%sp@
@@ -119,7 +126,11 @@ Lsignal_return:
 	subql	#4,%sp			/* dummy return address*/
 	SAVE_SWITCH_STACK
 	pea	%sp@(SWITCH_STACK_SIZE)
+<<<<<<< HEAD
 	bsrw	do_signal
+=======
+	bsrw	do_notify_resume
+>>>>>>> refs/remotes/origin/master
 	addql	#4,%sp
 	RESTORE_SWITCH_STACK
 	addql	#4,%sp
@@ -130,16 +141,21 @@ Lsignal_return:
  */
 inthandler:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SAVE_ALL
 =======
 	SAVE_ALL_INT
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SAVE_ALL_INT
+>>>>>>> refs/remotes/origin/master
 	movew	%sp@(PT_OFF_FORMATVEC), %d0
 	and.l	#0x3ff, %d0
 	lsr.l   #0x02,  %d0
 
 	movel	%sp,%sp@-
 	movel	%d0,%sp@- 		/*  put vector # on stack*/
+<<<<<<< HEAD
 	jbsr	do_IRQ			/*  process the IRQ*/
 3:     	addql	#8,%sp			/*  pop parameters off stack*/
 	bra	ret_from_interrupt
@@ -160,30 +176,44 @@ ret_from_interrupt:
 	pea	ret_from_exception
 	jra	do_softirq
 
+=======
+	jbsr	do_IRQ			/*  process the IRQ */
+	addql	#8,%sp			/*  pop parameters off stack*/
+	jra	ret_from_exception
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Handler for uninitialized and spurious interrupts.
  */
 bad_interrupt:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	addql	#1,num_spurious
 =======
 	addql	#1,irq_err_count
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	addql	#1,irq_err_count
+>>>>>>> refs/remotes/origin/master
 	rte
 
 /*
  * Beware - when entering resume, prev (the current task) is
 <<<<<<< HEAD
+<<<<<<< HEAD
  * in a0, next (the new task) is in a1,so don't change these
 =======
  * in a0, next (the new task) is in a1, so don't change these
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * in a0, next (the new task) is in a1, so don't change these
+>>>>>>> refs/remotes/origin/master
  * registers until their contents are no longer needed.
  */
 ENTRY(resume)
 	movel	%a0,%d1				/* save prev thread in d1 */
 	movew	%sr,%a0@(TASK_THREAD+THREAD_SR)	/* save sr */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	movel	%usp,%a2			/* save usp */
 	movel	%a2,%a0@(TASK_THREAD+THREAD_USP)
@@ -196,6 +226,8 @@ ENTRY(resume)
 	movel	%a1@(TASK_THREAD+THREAD_USP),%a0 /* restore user stack */
 	movel	%a0,%usp
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	SAVE_SWITCH_STACK
 	movel	%sp,%a0@(TASK_THREAD+THREAD_KSP) /* save kernel stack */
 	movel	%usp,%a3			/* save usp */
@@ -205,7 +237,10 @@ ENTRY(resume)
 	movel	%a3,%usp
 	movel	%a1@(TASK_THREAD+THREAD_KSP),%sp /* restore new thread stack */
 	RESTORE_SWITCH_STACK
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	movew	%a1@(TASK_THREAD+THREAD_SR),%sr	/* restore thread status reg */
 	rts
 

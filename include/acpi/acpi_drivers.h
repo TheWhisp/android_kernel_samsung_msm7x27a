@@ -90,17 +90,23 @@ int acpi_pci_link_allocate_irq(acpi_handle handle, int index, int *triggering,
 			       int *polarity, char **name);
 int acpi_pci_link_free_irq(acpi_handle handle);
 
+<<<<<<< HEAD
 /* ACPI PCI Interrupt Routing (pci_irq.c) */
 
 int acpi_pci_irq_add_prt(acpi_handle handle, struct pci_bus *bus);
 void acpi_pci_irq_del_prt(struct pci_bus *bus);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* ACPI PCI Device Binding (pci_bind.c) */
 
 struct pci_bus;
 
 struct pci_dev *acpi_get_pci_dev(acpi_handle);
+<<<<<<< HEAD
 int acpi_pci_bind_root(struct acpi_device *device);
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Arch-defined function to add a bus to the system */
 
@@ -119,10 +125,15 @@ void pci_acpi_crs_quirks(void);
                                   Dock Station
   -------------------------------------------------------------------------- */
 struct acpi_dock_ops {
+<<<<<<< HEAD
+=======
+	acpi_notify_handler fixup;
+>>>>>>> refs/remotes/origin/master
 	acpi_notify_handler handler;
 	acpi_notify_handler uevent;
 };
 
+<<<<<<< HEAD
 #if defined(CONFIG_ACPI_DOCK) || defined(CONFIG_ACPI_DOCK_MODULE)
 extern int is_dock_device(acpi_handle handle);
 extern int register_dock_notifier(struct notifier_block *nb);
@@ -134,12 +145,22 @@ extern int register_hotplug_dock_device(acpi_handle handle,
 					const struct acpi_dock_ops *ops,
 >>>>>>> refs/remotes/origin/cm-10.0
 					void *context);
+=======
+#ifdef CONFIG_ACPI_DOCK
+extern int is_dock_device(acpi_handle handle);
+extern int register_hotplug_dock_device(acpi_handle handle,
+					const struct acpi_dock_ops *ops,
+					void *context,
+					void (*init)(void *),
+					void (*release)(void *));
+>>>>>>> refs/remotes/origin/master
 extern void unregister_hotplug_dock_device(acpi_handle handle);
 #else
 static inline int is_dock_device(acpi_handle handle)
 {
 	return 0;
 }
+<<<<<<< HEAD
 static inline int register_dock_notifier(struct notifier_block *nb)
 {
 	return -ENODEV;
@@ -154,12 +175,23 @@ static inline int register_hotplug_dock_device(acpi_handle handle,
 					       const struct acpi_dock_ops *ops,
 >>>>>>> refs/remotes/origin/cm-10.0
 					       void *context)
+=======
+static inline int register_hotplug_dock_device(acpi_handle handle,
+					       const struct acpi_dock_ops *ops,
+					       void *context,
+					       void (*init)(void *),
+					       void (*release)(void *))
+>>>>>>> refs/remotes/origin/master
 {
 	return -ENODEV;
 }
 static inline void unregister_hotplug_dock_device(acpi_handle handle)
 {
 }
+<<<<<<< HEAD
 #endif
+=======
+#endif /* CONFIG_ACPI_DOCK */
+>>>>>>> refs/remotes/origin/master
 
 #endif /*__ACPI_DRIVERS_H__*/

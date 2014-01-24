@@ -10,9 +10,13 @@
 #include <linux/ftrace.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/apic.h>
 #include <asm/io_apic.h>
@@ -21,6 +25,12 @@
 #include <asm/mce.h>
 #include <asm/hw_irq.h>
 
+<<<<<<< HEAD
+=======
+#define CREATE_TRACE_POINTS
+#include <asm/trace/irq_vectors.h>
+
+>>>>>>> refs/remotes/origin/master
 atomic_t irq_err_count;
 
 /* Function pointer for generic interrupt vector handling */
@@ -78,12 +88,18 @@ int arch_show_interrupts(struct seq_file *p, int prec)
 		seq_printf(p, "%10u ", irq_stats(j)->apic_irq_work_irqs);
 	seq_printf(p, "  IRQ work interrupts\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	seq_printf(p, "%*s: ", prec, "RTR");
 	for_each_online_cpu(j)
 		seq_printf(p, "%10u ", irq_stats(j)->icr_read_retry_count);
 	seq_printf(p, "  APIC ICR read retries\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	if (x86_platform_ipi_callback) {
 		seq_printf(p, "%*s: ", prec, "PLT");
@@ -98,7 +114,12 @@ int arch_show_interrupts(struct seq_file *p, int prec)
 	seq_printf(p, "  Rescheduling interrupts\n");
 	seq_printf(p, "%*s: ", prec, "CAL");
 	for_each_online_cpu(j)
+<<<<<<< HEAD
 		seq_printf(p, "%10u ", irq_stats(j)->irq_call_count);
+=======
+		seq_printf(p, "%10u ", irq_stats(j)->irq_call_count -
+					irq_stats(j)->irq_tlb_count);
+>>>>>>> refs/remotes/origin/master
 	seq_printf(p, "  Function call interrupts\n");
 	seq_printf(p, "%*s: ", prec, "TLB");
 	for_each_online_cpu(j)
@@ -147,16 +168,23 @@ u64 arch_irq_stat_cpu(unsigned int cpu)
 	sum += irq_stats(cpu)->apic_perf_irqs;
 	sum += irq_stats(cpu)->apic_irq_work_irqs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	sum += irq_stats(cpu)->icr_read_retry_count;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sum += irq_stats(cpu)->icr_read_retry_count;
+>>>>>>> refs/remotes/origin/master
 #endif
 	if (x86_platform_ipi_callback)
 		sum += irq_stats(cpu)->x86_platform_ipis;
 #ifdef CONFIG_SMP
 	sum += irq_stats(cpu)->irq_resched_count;
 	sum += irq_stats(cpu)->irq_call_count;
+<<<<<<< HEAD
 	sum += irq_stats(cpu)->irq_tlb_count;
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 #ifdef CONFIG_X86_THERMAL_VECTOR
 	sum += irq_stats(cpu)->irq_thermal_count;
@@ -183,7 +211,11 @@ u64 arch_irq_stat(void)
  * SMP cross-CPU interrupts have their own specific
  * handlers).
  */
+<<<<<<< HEAD
 unsigned int __irq_entry do_IRQ(struct pt_regs *regs)
+=======
+__visible unsigned int __irq_entry do_IRQ(struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pt_regs *old_regs = set_irq_regs(regs);
 
@@ -192,21 +224,36 @@ unsigned int __irq_entry do_IRQ(struct pt_regs *regs)
 	unsigned irq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	exit_idle();
 	irq_enter();
 =======
 	irq_enter();
 	exit_idle();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq_enter();
+	exit_idle();
+>>>>>>> refs/remotes/origin/master
 
 	irq = __this_cpu_read(vector_irq[vector]);
 
 	if (!handle_irq(irq, regs)) {
 		ack_APIC_irq();
 
+<<<<<<< HEAD
 		if (printk_ratelimit())
 			pr_emerg("%s: %d.%d No irq handler for vector (irq %d)\n",
 				__func__, smp_processor_id(), vector, irq);
+=======
+		if (irq != VECTOR_RETRIGGERED) {
+			pr_emerg_ratelimited("%s: %d.%d No irq handler for vector (irq %d)\n",
+					     __func__, smp_processor_id(),
+					     vector, irq);
+		} else {
+			__this_cpu_write(vector_irq[vector], VECTOR_UNDEFINED);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	irq_exit();
@@ -218,6 +265,7 @@ unsigned int __irq_entry do_IRQ(struct pt_regs *regs)
 /*
  * Handler for X86_PLATFORM_IPI_VECTOR.
  */
+<<<<<<< HEAD
 void smp_x86_platform_ipi(struct pt_regs *regs)
 {
 	struct pt_regs *old_regs = set_irq_regs(regs);
@@ -230,24 +278,147 @@ void smp_x86_platform_ipi(struct pt_regs *regs)
 	irq_enter();
 
 =======
+=======
+void __smp_x86_platform_ipi(void)
+{
+	inc_irq_stat(x86_platform_ipis);
+
+	if (x86_platform_ipi_callback)
+		x86_platform_ipi_callback();
+}
+
+__visible void smp_x86_platform_ipi(struct pt_regs *regs)
+{
+	struct pt_regs *old_regs = set_irq_regs(regs);
+
+	entering_ack_irq();
+	__smp_x86_platform_ipi();
+	exiting_irq();
+	set_irq_regs(old_regs);
+}
+
+#ifdef CONFIG_HAVE_KVM
+/*
+ * Handler for POSTED_INTERRUPT_VECTOR.
+ */
+__visible void smp_kvm_posted_intr_ipi(struct pt_regs *regs)
+{
+	struct pt_regs *old_regs = set_irq_regs(regs);
+
+	ack_APIC_irq();
+
+>>>>>>> refs/remotes/origin/master
 	irq_enter();
 
 	exit_idle();
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	inc_irq_stat(x86_platform_ipis);
 
 	if (x86_platform_ipi_callback)
 		x86_platform_ipi_callback();
+=======
+	inc_irq_stat(kvm_posted_intr_ipis);
+>>>>>>> refs/remotes/origin/master
 
 	irq_exit();
 
 	set_irq_regs(old_regs);
 }
+<<<<<<< HEAD
+=======
+#endif
+
+__visible void smp_trace_x86_platform_ipi(struct pt_regs *regs)
+{
+	struct pt_regs *old_regs = set_irq_regs(regs);
+
+	entering_ack_irq();
+	trace_x86_platform_ipi_entry(X86_PLATFORM_IPI_VECTOR);
+	__smp_x86_platform_ipi();
+	trace_x86_platform_ipi_exit(X86_PLATFORM_IPI_VECTOR);
+	exiting_irq();
+	set_irq_regs(old_regs);
+}
+>>>>>>> refs/remotes/origin/master
 
 EXPORT_SYMBOL_GPL(vector_used_by_percpu_irq);
 
 #ifdef CONFIG_HOTPLUG_CPU
+<<<<<<< HEAD
+=======
+/*
+ * This cpu is going to be removed and its vectors migrated to the remaining
+ * online cpus.  Check to see if there are enough vectors in the remaining cpus.
+ * This function is protected by stop_machine().
+ */
+int check_irq_vectors_for_cpu_disable(void)
+{
+	int irq, cpu;
+	unsigned int this_cpu, vector, this_count, count;
+	struct irq_desc *desc;
+	struct irq_data *data;
+	struct cpumask affinity_new, online_new;
+
+	this_cpu = smp_processor_id();
+	cpumask_copy(&online_new, cpu_online_mask);
+	cpu_clear(this_cpu, online_new);
+
+	this_count = 0;
+	for (vector = FIRST_EXTERNAL_VECTOR; vector < NR_VECTORS; vector++) {
+		irq = __this_cpu_read(vector_irq[vector]);
+		if (irq >= 0) {
+			desc = irq_to_desc(irq);
+			data = irq_desc_get_irq_data(desc);
+			cpumask_copy(&affinity_new, data->affinity);
+			cpu_clear(this_cpu, affinity_new);
+
+			/* Do not count inactive or per-cpu irqs. */
+			if (!irq_has_action(irq) || irqd_is_per_cpu(data))
+				continue;
+
+			/*
+			 * A single irq may be mapped to multiple
+			 * cpu's vector_irq[] (for example IOAPIC cluster
+			 * mode).  In this case we have two
+			 * possibilities:
+			 *
+			 * 1) the resulting affinity mask is empty; that is
+			 * this the down'd cpu is the last cpu in the irq's
+			 * affinity mask, or
+			 *
+			 * 2) the resulting affinity mask is no longer
+			 * a subset of the online cpus but the affinity
+			 * mask is not zero; that is the down'd cpu is the
+			 * last online cpu in a user set affinity mask.
+			 */
+			if (cpumask_empty(&affinity_new) ||
+			    !cpumask_subset(&affinity_new, &online_new))
+				this_count++;
+		}
+	}
+
+	count = 0;
+	for_each_online_cpu(cpu) {
+		if (cpu == this_cpu)
+			continue;
+		for (vector = FIRST_EXTERNAL_VECTOR; vector < NR_VECTORS;
+		     vector++) {
+			if (per_cpu(vector_irq, cpu)[vector] < 0)
+				count++;
+		}
+	}
+
+	if (count < this_count) {
+		pr_warn("CPU %d disable failed: CPU has %u vectors assigned and there are only %u available.\n",
+			this_cpu, this_count, count);
+		return -ERANGE;
+	}
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* A cpu has been removed from cpu_online_mask.  Reset irq affinities. */
 void fixup_irqs(void)
 {
@@ -287,7 +458,11 @@ void fixup_irqs(void)
 
 		if (cpumask_any_and(affinity, cpu_online_mask) >= nr_cpu_ids) {
 			break_affinity = 1;
+<<<<<<< HEAD
 			affinity = cpu_all_mask;
+=======
+			affinity = cpu_online_mask;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		chip = irq_data_get_irq_chip(data);
@@ -300,9 +475,12 @@ void fixup_irqs(void)
 			set_affinity = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!irqd_can_move_in_process_context(data) &&
 		    !irqd_irq_disabled(data) && chip->irq_unmask)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * We unmask if the irq was not marked masked by the
 		 * core code. That respects the lazy irq disable
@@ -310,15 +488,24 @@ void fixup_irqs(void)
 		 */
 		if (!irqd_can_move_in_process_context(data) &&
 		    !irqd_irq_masked(data) && chip->irq_unmask)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			chip->irq_unmask(data);
 
 		raw_spin_unlock(&desc->lock);
 
 		if (break_affinity && set_affinity)
+<<<<<<< HEAD
 			printk("Broke affinity for irq %i\n", irq);
 		else if (!set_affinity)
 			printk("Cannot set affinity for irq %i\n", irq);
+=======
+			pr_notice("Broke affinity for irq %i\n", irq);
+		else if (!set_affinity)
+			pr_notice("Cannot set affinity for irq %i\n", irq);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -335,7 +522,11 @@ void fixup_irqs(void)
 	for (vector = FIRST_EXTERNAL_VECTOR; vector < NR_VECTORS; vector++) {
 		unsigned int irr;
 
+<<<<<<< HEAD
 		if (__this_cpu_read(vector_irq[vector]) < 0)
+=======
+		if (__this_cpu_read(vector_irq[vector]) <= VECTOR_UNDEFINED)
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		irr = apic_read(APIC_IRR + (vector / 32 * 0x10));
@@ -346,10 +537,21 @@ void fixup_irqs(void)
 			data = irq_desc_get_irq_data(desc);
 			chip = irq_data_get_irq_chip(data);
 			raw_spin_lock(&desc->lock);
+<<<<<<< HEAD
 			if (chip->irq_retrigger)
 				chip->irq_retrigger(data);
 			raw_spin_unlock(&desc->lock);
 		}
+=======
+			if (chip->irq_retrigger) {
+				chip->irq_retrigger(data);
+				__this_cpu_write(vector_irq[vector], VECTOR_RETRIGGERED);
+			}
+			raw_spin_unlock(&desc->lock);
+		}
+		if (__this_cpu_read(vector_irq[vector]) != VECTOR_RETRIGGERED)
+			__this_cpu_write(vector_irq[vector], VECTOR_UNDEFINED);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 #endif

@@ -83,6 +83,7 @@ gss_krb5_remove_padding(struct xdr_buf *buf, int blocksize)
 		unsigned int offset = (buf->page_base + len - 1)
 					& (PAGE_CACHE_SIZE - 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ptr = kmap_atomic(buf->pages[last], KM_USER0);
 		pad = *(ptr + offset);
 		kunmap_atomic(ptr, KM_USER0);
@@ -91,6 +92,11 @@ gss_krb5_remove_padding(struct xdr_buf *buf, int blocksize)
 		pad = *(ptr + offset);
 		kunmap_atomic(ptr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ptr = kmap_atomic(buf->pages[last]);
+		pad = *(ptr + offset);
+		kunmap_atomic(ptr);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	} else
 		len -= buf->page_len;
@@ -136,8 +142,13 @@ gss_krb5_make_confounder(char *p, u32 conflen)
 
 	/* initialize to random value */
 	if (i == 0) {
+<<<<<<< HEAD
 		i = random32();
 		i = (i << 32) | random32();
+=======
+		i = prandom_u32();
+		i = (i << 32) | prandom_u32();
+>>>>>>> refs/remotes/origin/master
 	}
 
 	switch (conflen) {
@@ -387,6 +398,7 @@ gss_unwrap_kerberos_v1(struct krb5_ctx *kctx, int offset, struct xdr_buf *buf)
 }
 
 /*
+<<<<<<< HEAD
  * We cannot currently handle tokens with rotated data.  We need a
  * generalized routine to rotate the data in place.  It is anticipated
  * that we won't encounter rotated data in the general case.
@@ -402,6 +414,55 @@ rotate_left(struct krb5_ctx *kctx, u32 offset, struct xdr_buf *buf, u16 rrc)
 	dprintk("%s: cannot process token with rotated data: "
 		"rrc %u, realrrc %u\n", __func__, rrc, realrrc);
 	return 1;
+=======
+ * We can shift data by up to LOCAL_BUF_LEN bytes in a pass.  If we need
+ * to do more than that, we shift repeatedly.  Kevin Coffman reports
+ * seeing 28 bytes as the value used by Microsoft clients and servers
+ * with AES, so this constant is chosen to allow handling 28 in one pass
+ * without using too much stack space.
+ *
+ * If that proves to a problem perhaps we could use a more clever
+ * algorithm.
+ */
+#define LOCAL_BUF_LEN 32u
+
+static void rotate_buf_a_little(struct xdr_buf *buf, unsigned int shift)
+{
+	char head[LOCAL_BUF_LEN];
+	char tmp[LOCAL_BUF_LEN];
+	unsigned int this_len, i;
+
+	BUG_ON(shift > LOCAL_BUF_LEN);
+
+	read_bytes_from_xdr_buf(buf, 0, head, shift);
+	for (i = 0; i + shift < buf->len; i += LOCAL_BUF_LEN) {
+		this_len = min(LOCAL_BUF_LEN, buf->len - (i + shift));
+		read_bytes_from_xdr_buf(buf, i+shift, tmp, this_len);
+		write_bytes_to_xdr_buf(buf, i, tmp, this_len);
+	}
+	write_bytes_to_xdr_buf(buf, buf->len - shift, head, shift);
+}
+
+static void _rotate_left(struct xdr_buf *buf, unsigned int shift)
+{
+	int shifted = 0;
+	int this_shift;
+
+	shift %= buf->len;
+	while (shifted < shift) {
+		this_shift = min(shift - shifted, LOCAL_BUF_LEN);
+		rotate_buf_a_little(buf, this_shift);
+		shifted += this_shift;
+	}
+}
+
+static void rotate_left(u32 base, struct xdr_buf *buf, unsigned int shift)
+{
+	struct xdr_buf subbuf;
+
+	xdr_buf_subsegment(buf, &subbuf, base, buf->len - base);
+	_rotate_left(&subbuf, shift);
+>>>>>>> refs/remotes/origin/master
 }
 
 static u32
@@ -463,7 +524,10 @@ static u32
 gss_unwrap_kerberos_v2(struct krb5_ctx *kctx, int offset, struct xdr_buf *buf)
 {
 	s32		now;
+<<<<<<< HEAD
 	u64		seqnum;
+=======
+>>>>>>> refs/remotes/origin/master
 	u8		*ptr;
 	u8		flags = 0x00;
 	u16		ec, rrc;
@@ -499,6 +563,7 @@ gss_unwrap_kerberos_v2(struct krb5_ctx *kctx, int offset, struct xdr_buf *buf)
 	ec = be16_to_cpup((__be16 *)(ptr + 4));
 	rrc = be16_to_cpup((__be16 *)(ptr + 6));
 
+<<<<<<< HEAD
 	seqnum = be64_to_cpup((__be64 *)(ptr + 8));
 
 	if (rrc != 0) {
@@ -506,6 +571,15 @@ gss_unwrap_kerberos_v2(struct krb5_ctx *kctx, int offset, struct xdr_buf *buf)
 		if (err)
 			return GSS_S_FAILURE;
 	}
+=======
+	/*
+	 * NOTE: the sequence number at ptr + 8 is skipped, rpcsec_gss
+	 * doesn't want it checked; see page 6 of rfc 2203.
+	 */
+
+	if (rrc != 0)
+		rotate_left(offset + 16, buf, rrc);
+>>>>>>> refs/remotes/origin/master
 
 	err = (*kctx->gk5e->decrypt_v2)(kctx, offset, buf,
 					&headskip, &tailskip);
@@ -551,6 +625,11 @@ gss_unwrap_kerberos_v2(struct krb5_ctx *kctx, int offset, struct xdr_buf *buf)
 	buf->head[0].iov_len -= GSS_KRB5_TOK_HDR_LEN + headskip;
 	buf->len -= GSS_KRB5_TOK_HDR_LEN + headskip;
 
+<<<<<<< HEAD
+=======
+	/* Trim off the trailing "extra count" and checksum blob */
+	xdr_buf_trim(buf, ec + GSS_KRB5_TOK_HDR_LEN + tailskip);
+>>>>>>> refs/remotes/origin/master
 	return GSS_S_COMPLETE;
 }
 

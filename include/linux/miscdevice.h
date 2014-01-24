@@ -1,6 +1,7 @@
 #ifndef _LINUX_MISCDEVICE_H
 #define _LINUX_MISCDEVICE_H
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/major.h>
 =======
@@ -8,6 +9,11 @@
 #include <linux/list.h>
 #include <linux/types.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/major.h>
+#include <linux/list.h>
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	These allocations are managed by device@lanana.org. If you use an
@@ -36,10 +42,20 @@
 #define I2O_MINOR		166
 #define MICROCODE_MINOR		184
 #define TUN_MINOR		200
+<<<<<<< HEAD
 #define MWAVE_MINOR		219	/* ACP/Mwave Modem */
 #define MPT_MINOR		220
 #define MPT2SAS_MINOR		221
 #define UINPUT_MINOR		223
+=======
+#define CUSE_MINOR		203
+#define MWAVE_MINOR		219	/* ACP/Mwave Modem */
+#define MPT_MINOR		220
+#define MPT2SAS_MINOR		221
+#define MPT3SAS_MINOR		222
+#define UINPUT_MINOR		223
+#define MISC_MCELOG_MINOR	227
+>>>>>>> refs/remotes/origin/master
 #define HPET_MINOR		228
 #define FUSE_MINOR		229
 #define KVM_MINOR		232
@@ -47,10 +63,16 @@
 #define AUTOFS_MINOR		235
 #define MAPPER_CTRL_MINOR	236
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define LOOP_CTRL_MINOR		237
 #define VHOST_NET_MINOR		238
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LOOP_CTRL_MINOR		237
+#define VHOST_NET_MINOR		238
+#define UHID_MINOR		239
+>>>>>>> refs/remotes/origin/master
 #define MISC_DYNAMIC_MINOR	255
 
 struct device;
@@ -64,10 +86,14 @@ struct miscdevice  {
 	struct device *this_device;
 	const char *nodename;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mode;
 =======
 	umode_t mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t mode;
+>>>>>>> refs/remotes/origin/master
 };
 
 extern int misc_register(struct miscdevice * misc);

@@ -102,7 +102,11 @@ static int vortex_debug = 1;
 #include <linux/delay.h>
 
 
+<<<<<<< HEAD
 static const char version[] __devinitconst =
+=======
+static const char version[] =
+>>>>>>> refs/remotes/origin/master
 	DRV_NAME ": Donald Becker and others.\n";
 
 MODULE_AUTHOR("Donald Becker <becker@scyld.com>");
@@ -277,7 +281,11 @@ static struct vortex_chip_info {
 	int flags;
 	int drv_flags;
 	int io_size;
+<<<<<<< HEAD
 } vortex_info_tbl[] __devinitdata = {
+=======
+} vortex_info_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{"3c590 Vortex 10Mbps",
 	 PCI_USES_MASTER, IS_VORTEX, 32, },
 	{"3c592 EISA 10Mbps Demon/Vortex",					/* AKPM: from Don's 3c59x_cb.c 0.49H */
@@ -930,7 +938,11 @@ static int __init vortex_eisa_probe(struct device *device)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit vortex_eisa_remove(struct device *device)
+=======
+static int vortex_eisa_remove(struct device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct eisa_device *edev;
 	struct net_device *dev;
@@ -961,7 +973,11 @@ static struct eisa_driver vortex_eisa_driver = {
 	.driver   = {
 		.name    = "3c59x",
 		.probe   = vortex_eisa_probe,
+<<<<<<< HEAD
 		.remove  = __devexit_p(vortex_eisa_remove)
+=======
+		.remove  = vortex_eisa_remove
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
@@ -999,8 +1015,13 @@ static int __init vortex_eisa_init(void)
 }
 
 /* returns count (>= 0), or negative on error */
+<<<<<<< HEAD
 static int __devinit vortex_init_one(struct pci_dev *pdev,
 				      const struct pci_device_id *ent)
+=======
+static int vortex_init_one(struct pci_dev *pdev,
+			   const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc, unit, pci_bar;
 	struct vortex_chip_info *vci;
@@ -1012,10 +1033,15 @@ static int __devinit vortex_init_one(struct pci_dev *pdev,
 		goto out;
 
 	rc = pci_request_regions(pdev, DRV_NAME);
+<<<<<<< HEAD
 	if (rc < 0) {
 		pci_disable_device(pdev);
 		goto out;
 	}
+=======
+	if (rc < 0)
+		goto out_disable;
+>>>>>>> refs/remotes/origin/master
 
 	unit = vortex_cards_found;
 
@@ -1032,14 +1058,20 @@ static int __devinit vortex_init_one(struct pci_dev *pdev,
 	if (!ioaddr) /* If mapping fails, fall-back to BAR 0... */
 		ioaddr = pci_iomap(pdev, 0, 0);
 	if (!ioaddr) {
+<<<<<<< HEAD
 		pci_release_regions(pdev);
 		pci_disable_device(pdev);
 		rc = -ENOMEM;
 		goto out;
+=======
+		rc = -ENOMEM;
+		goto out_release;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rc = vortex_probe1(&pdev->dev, ioaddr, pdev->irq,
 			   ent->driver_data, unit);
+<<<<<<< HEAD
 	if (rc < 0) {
 		pci_iounmap(pdev, ioaddr);
 		pci_release_regions(pdev);
@@ -1049,6 +1081,20 @@ static int __devinit vortex_init_one(struct pci_dev *pdev,
 
 	vortex_cards_found++;
 
+=======
+	if (rc < 0)
+		goto out_iounmap;
+
+	vortex_cards_found++;
+	goto out;
+
+out_iounmap:
+	pci_iounmap(pdev, ioaddr);
+out_release:
+	pci_release_regions(pdev);
+out_disable:
+	pci_disable_device(pdev);
+>>>>>>> refs/remotes/origin/master
 out:
 	return rc;
 }
@@ -1095,9 +1141,14 @@ static const struct net_device_ops vortex_netdev_ops = {
  *
  * NOTE: pdev can be NULL, for the case of a Compaq device
  */
+<<<<<<< HEAD
 static int __devinit vortex_probe1(struct device *gendev,
 				   void __iomem *ioaddr, int irq,
 				   int chip_idx, int card_idx)
+=======
+static int vortex_probe1(struct device *gendev, void __iomem *ioaddr, int irq,
+			 int chip_idx, int card_idx)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vortex_private *vp;
 	int option;
@@ -1296,7 +1347,10 @@ static int __devinit vortex_probe1(struct device *gendev,
 		pr_cont(" ***INVALID CHECKSUM %4.4x*** ", checksum);
 	for (i = 0; i < 3; i++)
 		((__be16 *)dev->dev_addr)[i] = htons(eeprom[i + 10]);
+<<<<<<< HEAD
 	memcpy(dev->perm_addr, dev->dev_addr, dev->addr_len);
+=======
+>>>>>>> refs/remotes/origin/master
 	if (print_info)
 		pr_cont(" %pM", dev->dev_addr);
 	/* Unfortunately an all zero eeprom passes the checksum and this
@@ -1475,7 +1529,11 @@ static int __devinit vortex_probe1(struct device *gendev,
 
 	if (pdev) {
 		vp->pm_state_valid = 1;
+<<<<<<< HEAD
  		pci_save_state(VORTEX_PCI(vp));
+=======
+		pci_save_state(pdev);
+>>>>>>> refs/remotes/origin/master
  		acpi_set_WOL(dev);
 	}
 	retval = register_netdev(dev);
@@ -3222,7 +3280,11 @@ static void acpi_set_WOL(struct net_device *dev)
 }
 
 
+<<<<<<< HEAD
 static void __devexit vortex_remove_one(struct pci_dev *pdev)
+=======
+static void vortex_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 	struct vortex_private *vp;
@@ -3235,6 +3297,7 @@ static void __devexit vortex_remove_one(struct pci_dev *pdev)
 	vp = netdev_priv(dev);
 
 	if (vp->cb_fn_base)
+<<<<<<< HEAD
 		pci_iounmap(VORTEX_PCI(vp), vp->cb_fn_base);
 
 	unregister_netdev(dev);
@@ -3245,11 +3308,26 @@ static void __devexit vortex_remove_one(struct pci_dev *pdev)
 			pci_restore_state(VORTEX_PCI(vp));
 		pci_disable_device(VORTEX_PCI(vp));
 	}
+=======
+		pci_iounmap(pdev, vp->cb_fn_base);
+
+	unregister_netdev(dev);
+
+	pci_set_power_state(pdev, PCI_D0);	/* Go active */
+	if (vp->pm_state_valid)
+		pci_restore_state(pdev);
+	pci_disable_device(pdev);
+
+>>>>>>> refs/remotes/origin/master
 	/* Should really use issue_and_wait() here */
 	iowrite16(TotalReset | ((vp->drv_flags & EEPROM_RESET) ? 0x04 : 0x14),
 	     vp->ioaddr + EL3_CMD);
 
+<<<<<<< HEAD
 	pci_iounmap(VORTEX_PCI(vp), vp->ioaddr);
+=======
+	pci_iounmap(pdev, vp->ioaddr);
+>>>>>>> refs/remotes/origin/master
 
 	pci_free_consistent(pdev,
 						sizeof(struct boom_rx_desc) * RX_RING_SIZE
@@ -3266,7 +3344,11 @@ static void __devexit vortex_remove_one(struct pci_dev *pdev)
 static struct pci_driver vortex_driver = {
 	.name		= "3c59x",
 	.probe		= vortex_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(vortex_remove_one),
+=======
+	.remove		= vortex_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= vortex_pci_tbl,
 	.driver.pm	= VORTEX_PM_OPS,
 };

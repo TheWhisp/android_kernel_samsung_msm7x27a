@@ -1,5 +1,9 @@
 /****************************************************************************
+<<<<<<< HEAD
  * Driver for Solarflare Solarstorm network controllers and boards
+=======
+ * Driver for Solarflare network controllers and boards
+>>>>>>> refs/remotes/origin/master
  * Copyright 2006-2011 Solarflare Communications Inc.
  *
  * This program is free software; you can redistribute it and/or modify it

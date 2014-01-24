@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -24,6 +28,7 @@
  */
 struct pm8xxx_pwrkey_platform_data  {
 	bool pull_up;
+<<<<<<< HEAD
 	/* Time delay for pwr-key state change interrupt triggering in micro-
 	 * second. The actual delay can only be one of these eight levels:
 	 * 2 sec, 1 sec, 1/2 sec, 1/4 sec, 1/8 sec, 1/16 sec, 1/32 sec, and
@@ -31,6 +36,8 @@ struct pm8xxx_pwrkey_platform_data  {
 	 * 2 seconds. A value within the valid range will be rounded down to the
 	 * closest level. Any value outside the valid range will be rejected.
 	 */
+=======
+>>>>>>> refs/remotes/origin/master
 	u32  kpd_trigger_delay_us;
 	u32  wakeup;
 };

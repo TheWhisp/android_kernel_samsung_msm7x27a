@@ -23,12 +23,15 @@ extern int s3c2440_set_dsc(unsigned int pin, unsigned int value);
 
 #endif /* CONFIG_CPU_S3C2440 */
 
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_S3C2412
 
 extern int s3c2412_gpio_set_sleepcfg(unsigned int pin, unsigned int state);
 
 #endif /* CONFIG_CPU_S3C2412 */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASSEMBLY__ */
 
 #include <asm/sizes.h>

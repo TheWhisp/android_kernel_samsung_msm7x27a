@@ -26,11 +26,16 @@ static struct file_system_type autofs_fs_type = {
 	.mount		= autofs_mount,
 	.kill_sb	= autofs4_kill_sb,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("autofs");
+>>>>>>> refs/remotes/origin/master
 
 static int __init init_autofs4_fs(void)
 {
 	int err;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = register_filesystem(&autofs_fs_type);
 	if (err)
@@ -38,12 +43,17 @@ static int __init init_autofs4_fs(void)
 
 	autofs_dev_ioctl_init();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	autofs_dev_ioctl_init();
 
 	err = register_filesystem(&autofs_fs_type);
 	if (err)
 		autofs_dev_ioctl_exit();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }

@@ -51,6 +51,7 @@ struct timer {
 #define RC32434_CTC_TO_BIT		1
 
 /* Real time clock registers */
+<<<<<<< HEAD
 #define RC32434_RTC_MSK(x)              BIT_TO_MASK(x)
 #define RC32434_RTC_CE_BIT              0
 #define RC32434_RTC_TO_BIT              1
@@ -63,3 +64,17 @@ struct timer {
 #define RC32434_RCOMP_MSK               0x0000ffff
 
 #endif  /* __ASM_RC32434_TIMER_H */
+=======
+#define RC32434_RTC_MSK(x)		BIT_TO_MASK(x)
+#define RC32434_RTC_CE_BIT		0
+#define RC32434_RTC_TO_BIT		1
+#define RC32434_RTC_RQE_BIT		2
+
+/* Counter registers */
+#define RC32434_RCOUNT_BIT		0
+#define RC32434_RCOUNT_MSK		0x0000ffff
+#define RC32434_RCOMP_BIT		0
+#define RC32434_RCOMP_MSK		0x0000ffff
+
+#endif	/* __ASM_RC32434_TIMER_H */
+>>>>>>> refs/remotes/origin/master

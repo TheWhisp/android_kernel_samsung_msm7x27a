@@ -30,6 +30,7 @@
  * IN THE SOFTWARE.
  */
 
+<<<<<<< HEAD
 #include <linux/slab.h>
 #include <linux/types.h>
 <<<<<<< HEAD
@@ -41,6 +42,11 @@
 #include <xen/grant_table.h>
 #include <xen/xenbus.h>
 =======
+=======
+#include <linux/mm.h>
+#include <linux/slab.h>
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 #include <linux/vmalloc.h>
 #include <linux/export.h>
@@ -74,7 +80,10 @@ struct xenbus_ring_ops {
 };
 
 static const struct xenbus_ring_ops *ring_ops __read_mostly;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 const char *xenbus_strstate(enum xenbus_state state)
 {
@@ -471,6 +480,7 @@ EXPORT_SYMBOL_GPL(xenbus_free_evtchn);
 int xenbus_map_ring_valloc(struct xenbus_device *dev, int gnt_ref, void **vaddr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct gnttab_map_grant_ref op = {
 		.flags = GNTMAP_host_map,
 		.ref   = gnt_ref,
@@ -486,6 +496,8 @@ int xenbus_map_ring_valloc(struct xenbus_device *dev, int gnt_ref, void **vaddr)
 
 	op.host_addr = (unsigned long)area->addr;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return ring_ops->map(dev, gnt_ref, vaddr);
 }
 EXPORT_SYMBOL_GPL(xenbus_map_ring_valloc);
@@ -515,6 +527,7 @@ static int xenbus_map_ring_valloc_pv(struct xenbus_device *dev,
 	}
 
 	op.host_addr = arbitrary_virt_to_machine(pte).maddr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	if (HYPERVISOR_grant_table_op(GNTTABOP_map_grant_ref, &op, 1))
@@ -527,6 +540,14 @@ static int xenbus_map_ring_valloc_pv(struct xenbus_device *dev,
 		free_vm_area(area);
 		kfree(node);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	gnttab_batch_map(&op, 1);
+
+	if (op.status != GNTST_okay) {
+		free_vm_area(area);
+		kfree(node);
+>>>>>>> refs/remotes/origin/master
 		xenbus_dev_fatal(dev, op.status,
 				 "mapping in shared page %d from domain %d",
 				 gnt_ref, dev->otherend_id);
@@ -534,23 +555,32 @@ static int xenbus_map_ring_valloc_pv(struct xenbus_device *dev,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Stuff the handle in an unused field */
 	area->phys_addr = (unsigned long)op.handle;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	node->handle = op.handle;
 	node->area = area;
 
 	spin_lock(&xenbus_valloc_lock);
 	list_add(&node->next, &xenbus_valloc_pages);
 	spin_unlock(&xenbus_valloc_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	*vaddr = area->addr;
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(xenbus_map_ring_valloc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int xenbus_map_ring_valloc_hvm(struct xenbus_device *dev,
 				      int gnt_ref, void **vaddr)
@@ -573,7 +603,11 @@ static int xenbus_map_ring_valloc_hvm(struct xenbus_device *dev,
 
 	err = xenbus_map_ring(dev, gnt_ref, &node->handle, addr);
 	if (err)
+<<<<<<< HEAD
 		goto out_err;
+=======
+		goto out_err_free_ballooned_pages;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&xenbus_valloc_lock);
 	list_add(&node->next, &xenbus_valloc_pages);
@@ -582,12 +616,21 @@ static int xenbus_map_ring_valloc_hvm(struct xenbus_device *dev,
 	*vaddr = addr;
 	return 0;
 
+<<<<<<< HEAD
  out_err:
 	free_xenballooned_pages(1, &node->page);
 	kfree(node);
 	return err;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ out_err_free_ballooned_pages:
+	free_xenballooned_pages(1, &node->page);
+ out_err:
+	kfree(node);
+	return err;
+}
+>>>>>>> refs/remotes/origin/master
 
 
 /**
@@ -608,6 +651,7 @@ int xenbus_map_ring(struct xenbus_device *dev, int gnt_ref,
 		    grant_handle_t *handle, void *vaddr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct gnttab_map_grant_ref op = {
 		.host_addr = (unsigned long)vaddr,
 		.flags     = GNTMAP_host_map,
@@ -615,14 +659,21 @@ int xenbus_map_ring(struct xenbus_device *dev, int gnt_ref,
 		.dom       = dev->otherend_id,
 	};
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct gnttab_map_grant_ref op;
 
 	gnttab_set_map_op(&op, (unsigned long)vaddr, GNTMAP_host_map, gnt_ref,
 			  dev->otherend_id);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	if (HYPERVISOR_grant_table_op(GNTTABOP_map_grant_ref, &op, 1))
 		BUG();
+=======
+
+	gnttab_batch_map(&op, 1);
+>>>>>>> refs/remotes/origin/master
 
 	if (op.status != GNTST_okay) {
 		xenbus_dev_fatal(dev, op.status,
@@ -651,6 +702,7 @@ EXPORT_SYMBOL_GPL(xenbus_map_ring);
 int xenbus_unmap_ring_vfree(struct xenbus_device *dev, void *vaddr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct vm_struct *area;
 	struct gnttab_unmap_grant_ref op = {
 		.host_addr = (unsigned long)vaddr,
@@ -671,6 +723,8 @@ int xenbus_unmap_ring_vfree(struct xenbus_device *dev, void *vaddr)
 
 	if (!area) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return ring_ops->unmap(dev, vaddr);
 }
 EXPORT_SYMBOL_GPL(xenbus_unmap_ring_vfree);
@@ -695,12 +749,16 @@ static int xenbus_unmap_ring_vfree_pv(struct xenbus_device *dev, void *vaddr)
 	spin_unlock(&xenbus_valloc_lock);
 
 	if (!node) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		xenbus_dev_error(dev, -ENOENT,
 				 "can't find mapped virtual address %p", vaddr);
 		return GNTST_bad_virt_addr;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	op.handle = (grant_handle_t)area->phys_addr;
 =======
@@ -708,11 +766,17 @@ static int xenbus_unmap_ring_vfree_pv(struct xenbus_device *dev, void *vaddr)
 	op.host_addr = arbitrary_virt_to_machine(
 		lookup_address((unsigned long)vaddr, &level)).maddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	op.handle = node->handle;
+	op.host_addr = arbitrary_virt_to_machine(
+		lookup_address((unsigned long)vaddr, &level)).maddr;
+>>>>>>> refs/remotes/origin/master
 
 	if (HYPERVISOR_grant_table_op(GNTTABOP_unmap_grant_ref, &op, 1))
 		BUG();
 
 	if (op.status == GNTST_okay)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		xen_free_vm_area(area);
 	else
@@ -725,6 +789,8 @@ static int xenbus_unmap_ring_vfree_pv(struct xenbus_device *dev, void *vaddr)
 EXPORT_SYMBOL_GPL(xenbus_unmap_ring_vfree);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		free_vm_area(node->area);
 	else
 		xenbus_dev_error(dev, op.status,
@@ -769,7 +835,10 @@ static int xenbus_unmap_ring_vfree_hvm(struct xenbus_device *dev, void *vaddr)
 	kfree(node);
 	return rv;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * xenbus_unmap_ring
@@ -785,6 +854,7 @@ int xenbus_unmap_ring(struct xenbus_device *dev,
 		      grant_handle_t handle, void *vaddr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct gnttab_unmap_grant_ref op = {
 		.host_addr = (unsigned long)vaddr,
 		.handle    = handle,
@@ -794,6 +864,11 @@ int xenbus_unmap_ring(struct xenbus_device *dev,
 
 	gnttab_set_unmap_op(&op, (unsigned long)vaddr, GNTMAP_host_map, handle);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct gnttab_unmap_grant_ref op;
+
+	gnttab_set_unmap_op(&op, (unsigned long)vaddr, GNTMAP_host_map, handle);
+>>>>>>> refs/remotes/origin/master
 
 	if (HYPERVISOR_grant_table_op(GNTTABOP_unmap_grant_ref, &op, 1))
 		BUG();
@@ -826,7 +901,10 @@ enum xenbus_state xenbus_read_driver_state(const char *path)
 }
 EXPORT_SYMBOL_GPL(xenbus_read_driver_state);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static const struct xenbus_ring_ops ring_ops_pv = {
 	.map = xenbus_map_ring_valloc_pv,
@@ -845,4 +923,7 @@ void __init xenbus_ring_ops_init(void)
 	else
 		ring_ops = &ring_ops_hvm;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

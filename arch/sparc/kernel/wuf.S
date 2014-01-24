@@ -131,12 +131,18 @@ fwin_from_user:
 
 	/* LOCATION: Window 'W' */
 
+<<<<<<< HEAD
 	/* Branch to the architecture specific stack validation
 	 * routine.  They can be found below...
 	 */
 	.globl	fwin_mmu_patchme
 fwin_mmu_patchme:	b	sun4c_fwin_stackchk
 				 andcc	%sp, 0x7, %g0
+=======
+	/* Branch to the stack validation routine */
+	b	srmmu_fwin_stackchk
+	 andcc	%sp, 0x7, %g0
+>>>>>>> refs/remotes/origin/master
 
 #define STACK_OFFSET (THREAD_SIZE - TRACEREG_SZ - STACKFRAME_SZ)
 
@@ -242,6 +248,7 @@ fwin_user_finish_up:
 	 * 'someone elses' window possibly.
 	 */
 
+<<<<<<< HEAD
 	.align	4
 sun4c_fwin_stackchk:
 	/* LOCATION: Window 'W' */
@@ -293,6 +300,8 @@ sun4c_fwin_onepage:
 	/* A page had bad page permissions, losing... */
 	b,a	fwin_user_stack_is_bolixed
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.globl	srmmu_fwin_stackchk
 srmmu_fwin_stackchk:
 	/* LOCATION: Window 'W' */
@@ -308,16 +317,29 @@ srmmu_fwin_stackchk:
 	mov	AC_M_SFSR, %l4
 	cmp	%l5, %sp
 	bleu	fwin_user_stack_is_bolixed
+<<<<<<< HEAD
 	 lda	[%l4] ASI_M_MMUREGS, %g0	! clear fault status
+=======
+LEON_PI( lda	[%l4] ASI_LEON_MMUREGS, %g0)	! clear fault status
+SUN_PI_( lda	[%l4] ASI_M_MMUREGS, %g0)	! clear fault status
+>>>>>>> refs/remotes/origin/master
 
 	/* The technique is, turn off faults on this processor,
 	 * just let the load rip, then check the sfsr to see if
 	 * a fault did occur.  Then we turn on fault traps again
 	 * and branch conditionally based upon what happened.
 	 */
+<<<<<<< HEAD
 	lda	[%g0] ASI_M_MMUREGS, %l5	! read mmu-ctrl reg
 	or	%l5, 0x2, %l5			! turn on no-fault bit
 	sta	%l5, [%g0] ASI_M_MMUREGS	! store it
+=======
+LEON_PI(lda	[%g0] ASI_LEON_MMUREGS, %l5)	! read mmu-ctrl reg
+SUN_PI_(lda	[%g0] ASI_M_MMUREGS, %l5)	! read mmu-ctrl reg
+	or	%l5, 0x2, %l5			! turn on no-fault bit
+LEON_PI(sta	%l5, [%g0] ASI_LEON_MMUREGS)	! store it
+SUN_PI_(sta	%l5, [%g0] ASI_M_MMUREGS)	! store it
+>>>>>>> refs/remotes/origin/master
 
 	/* Cross fingers and go for it. */
 	LOAD_WINDOW(sp)
@@ -329,6 +351,7 @@ srmmu_fwin_stackchk:
 
 	/* LOCATION: Window 'T' */
 
+<<<<<<< HEAD
 	lda	[%g0] ASI_M_MMUREGS, %twin_tmp1	! load mmu-ctrl again
 	andn	%twin_tmp1, 0x2, %twin_tmp1	! clear no-fault bit
 	sta	%twin_tmp1, [%g0] ASI_M_MMUREGS	! store it
@@ -341,6 +364,24 @@ srmmu_fwin_stackchk:
 	andcc	%twin_tmp2, 0x2, %g0			! did fault occur?
 
 	bne	1f					! yep, cleanup
+=======
+LEON_PI(lda	[%g0] ASI_LEON_MMUREGS, %twin_tmp1)	! load mmu-ctrl again
+SUN_PI_(lda	[%g0] ASI_M_MMUREGS, %twin_tmp1)	! load mmu-ctrl again
+	andn	%twin_tmp1, 0x2, %twin_tmp1		! clear no-fault bit
+LEON_PI(sta	%twin_tmp1, [%g0] ASI_LEON_MMUREGS)	! store it
+SUN_PI_(sta	%twin_tmp1, [%g0] ASI_M_MMUREGS)	! store it
+
+	mov	AC_M_SFAR, %twin_tmp2
+LEON_PI(lda	[%twin_tmp2] ASI_LEON_MMUREGS, %g0)	! read fault address
+SUN_PI_(lda	[%twin_tmp2] ASI_M_MMUREGS, %g0)	! read fault address
+
+	mov	AC_M_SFSR, %twin_tmp2
+LEON_PI(lda	[%twin_tmp2] ASI_LEON_MMUREGS, %twin_tmp2) ! read fault status
+SUN_PI_(lda	[%twin_tmp2] ASI_M_MMUREGS, %twin_tmp2)	   ! read fault status
+	andcc	%twin_tmp2, 0x2, %g0			   ! did fault occur?
+
+	bne	1f					   ! yep, cleanup
+>>>>>>> refs/remotes/origin/master
 	 nop
 
 	wr	%t_psr, 0x0, %psr

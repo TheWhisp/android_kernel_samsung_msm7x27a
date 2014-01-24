@@ -107,7 +107,11 @@ enum pcpu_fc {
 
 	PCPU_FC_NR,
 };
+<<<<<<< HEAD
 extern const char *pcpu_fc_names[PCPU_FC_NR];
+=======
+extern const char * const pcpu_fc_names[PCPU_FC_NR];
+>>>>>>> refs/remotes/origin/master
 
 extern enum pcpu_fc pcpu_chosen_fc;
 
@@ -166,6 +170,7 @@ extern phys_addr_t per_cpu_ptr_to_phys(void *addr);
 	(typeof(type) __percpu *)__alloc_percpu(sizeof(type), __alignof__(type))
 
 /*
+<<<<<<< HEAD
  * Optional methods for optimized non-lvalue per-cpu variable access.
  *
  * @var can be a percpu variable or a field of it and its size should
@@ -227,6 +232,8 @@ do {									\
 #endif
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Branching function to split up a function into a set of functions that
  * are called for different scalar sizes of the objects handled.
  */
@@ -355,15 +362,21 @@ do {									\
 #define _this_cpu_generic_to_op(pcp, val, op)				\
 do {									\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	preempt_disable();						\
 	*__this_cpu_ptr(&(pcp)) op val;					\
 	preempt_enable();						\
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;						\
 	raw_local_irq_save(flags);					\
 	*__this_cpu_ptr(&(pcp)) op val;					\
 	raw_local_irq_restore(flags);					\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } while (0)
 
 #ifndef this_cpu_write
@@ -399,7 +412,11 @@ do {									\
 #endif
 
 #ifndef this_cpu_sub
+<<<<<<< HEAD
 # define this_cpu_sub(pcp, val)		this_cpu_add((pcp), -(val))
+=======
+# define this_cpu_sub(pcp, val)		this_cpu_add((pcp), -(typeof(pcp))(val))
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifndef this_cpu_inc
@@ -442,6 +459,7 @@ do {									\
 # define this_cpu_or(pcp, val)		__pcpu_size_call(this_cpu_or_, (pcp), (val))
 #endif
 
+<<<<<<< HEAD
 #ifndef this_cpu_xor
 # ifndef this_cpu_xor_1
 #  define this_cpu_xor_1(pcp, val)	_this_cpu_generic_to_op((pcp), (val), ^=)
@@ -467,12 +485,20 @@ do {									\
 	ret__ = __this_cpu_read(pcp);					\
 	preempt_enable();						\
 =======
+=======
+#define _this_cpu_generic_add_return(pcp, val)				\
+({									\
+	typeof(pcp) ret__;						\
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;						\
 	raw_local_irq_save(flags);					\
 	__this_cpu_add(pcp, val);					\
 	ret__ = __this_cpu_read(pcp);					\
 	raw_local_irq_restore(flags);					\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret__;								\
 })
 
@@ -492,24 +518,34 @@ do {									\
 # define this_cpu_add_return(pcp, val)	__pcpu_size_call_return2(this_cpu_add_return_, pcp, val)
 #endif
 
+<<<<<<< HEAD
 #define this_cpu_sub_return(pcp, val)	this_cpu_add_return(pcp, -(val))
+=======
+#define this_cpu_sub_return(pcp, val)	this_cpu_add_return(pcp, -(typeof(pcp))(val))
+>>>>>>> refs/remotes/origin/master
 #define this_cpu_inc_return(pcp)	this_cpu_add_return(pcp, 1)
 #define this_cpu_dec_return(pcp)	this_cpu_add_return(pcp, -1)
 
 #define _this_cpu_generic_xchg(pcp, nval)				\
 ({	typeof(pcp) ret__;						\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	preempt_disable();						\
 	ret__ = __this_cpu_read(pcp);					\
 	__this_cpu_write(pcp, nval);					\
 	preempt_enable();						\
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;						\
 	raw_local_irq_save(flags);					\
 	ret__ = __this_cpu_read(pcp);					\
 	__this_cpu_write(pcp, nval);					\
 	raw_local_irq_restore(flags);					\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret__;								\
 })
 
@@ -532,6 +568,7 @@ do {									\
 
 #define _this_cpu_generic_cmpxchg(pcp, oval, nval)			\
 <<<<<<< HEAD
+<<<<<<< HEAD
 ({	typeof(pcp) ret__;						\
 	preempt_disable();						\
 	ret__ = __this_cpu_read(pcp);					\
@@ -539,6 +576,8 @@ do {									\
 		__this_cpu_write(pcp, nval);				\
 	preempt_enable();						\
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 ({									\
 	typeof(pcp) ret__;						\
 	unsigned long flags;						\
@@ -547,7 +586,10 @@ do {									\
 	if (ret__ == (oval))						\
 		__this_cpu_write(pcp, nval);				\
 	raw_local_irq_restore(flags);					\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret__;								\
 })
 
@@ -580,17 +622,23 @@ do {									\
 ({									\
 	int ret__;							\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	preempt_disable();						\
 	ret__ = __this_cpu_generic_cmpxchg_double(pcp1, pcp2,		\
 			oval1, oval2, nval1, nval2);			\
 	preempt_enable();						\
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;						\
 	raw_local_irq_save(flags);					\
 	ret__ = __this_cpu_generic_cmpxchg_double(pcp1, pcp2,		\
 			oval1, oval2, nval1, nval2);			\
 	raw_local_irq_restore(flags);					\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret__;								\
 })
 
@@ -617,6 +665,7 @@ do {									\
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Generic percpu operations that do not require preemption handling.
  * Either we do not care about races or the caller has the
  * responsibility of handling preemptions issues. Arch code can still
@@ -625,6 +674,11 @@ do {									\
  * Either we do not care about races or the caller has the
  * responsibility of handling preemption/interrupt issues. Arch code can still
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Generic percpu operations for context that are safe from preemption/interrupts.
+ * Either we do not care about races or the caller has the
+ * responsibility of handling preemption/interrupt issues. Arch code can still
+>>>>>>> refs/remotes/origin/master
  * override these instructions since the arch per cpu code may be more
  * efficient and may actually get race freeness for free (that is the
  * case for x86 for example).
@@ -689,7 +743,11 @@ do {									\
 #endif
 
 #ifndef __this_cpu_sub
+<<<<<<< HEAD
 # define __this_cpu_sub(pcp, val)	__this_cpu_add((pcp), -(val))
+=======
+# define __this_cpu_sub(pcp, val)	__this_cpu_add((pcp), -(typeof(pcp))(val))
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifndef __this_cpu_inc
@@ -732,6 +790,7 @@ do {									\
 # define __this_cpu_or(pcp, val)	__pcpu_size_call(__this_cpu_or_, (pcp), (val))
 #endif
 
+<<<<<<< HEAD
 #ifndef __this_cpu_xor
 # ifndef __this_cpu_xor_1
 #  define __this_cpu_xor_1(pcp, val)	__this_cpu_generic_to_op((pcp), (val), ^=)
@@ -748,6 +807,8 @@ do {									\
 # define __this_cpu_xor(pcp, val)	__pcpu_size_call(__this_cpu_xor_, (pcp), (val))
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define __this_cpu_generic_add_return(pcp, val)				\
 ({									\
 	__this_cpu_add(pcp, val);					\
@@ -768,6 +829,7 @@ do {									\
 #  define __this_cpu_add_return_8(pcp, val)	__this_cpu_generic_add_return(pcp, val)
 # endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 # define __this_cpu_add_return(pcp, val)	__pcpu_size_call_return2(this_cpu_add_return_, pcp, val)
 #endif
 
@@ -775,14 +837,22 @@ do {									\
 #define __this_cpu_inc_return(pcp)	this_cpu_add_return(pcp, 1)
 #define __this_cpu_dec_return(pcp)	this_cpu_add_return(pcp, -1)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 # define __this_cpu_add_return(pcp, val)	\
 	__pcpu_size_call_return2(__this_cpu_add_return_, pcp, val)
 #endif
 
+<<<<<<< HEAD
 #define __this_cpu_sub_return(pcp, val)	__this_cpu_add_return(pcp, -(val))
 #define __this_cpu_inc_return(pcp)	__this_cpu_add_return(pcp, 1)
 #define __this_cpu_dec_return(pcp)	__this_cpu_add_return(pcp, -1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define __this_cpu_sub_return(pcp, val)	__this_cpu_add_return(pcp, -(typeof(pcp))(val))
+#define __this_cpu_inc_return(pcp)	__this_cpu_add_return(pcp, 1)
+#define __this_cpu_dec_return(pcp)	__this_cpu_add_return(pcp, -1)
+>>>>>>> refs/remotes/origin/master
 
 #define __this_cpu_generic_xchg(pcp, nval)				\
 ({	typeof(pcp) ret__;						\
@@ -867,6 +937,7 @@ do {									\
 	__pcpu_double_call_return_bool(__this_cpu_cmpxchg_double_, (pcp1), (pcp2), (oval1), (oval2), (nval1), (nval2))
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * IRQ safe versions of the per cpu RMW operations. Note that these operations
@@ -1022,4 +1093,6 @@ do {									\
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_PERCPU_H */

@@ -13,6 +13,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* TRUE if it is user context */
 #define P9_IS_USER_CONTEXT (!segment_eq(get_fs(), KERNEL_DS))
 
@@ -36,3 +37,8 @@ void p9_release_pages(struct page **, int);
 int p9_payload_gup(char *, int *, struct page **, int);
 int p9_nr_pages(char *, int);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void p9_release_pages(struct page **, int);
+int p9_payload_gup(char *, int *, struct page **, int);
+int p9_nr_pages(char *, int);
+>>>>>>> refs/remotes/origin/master

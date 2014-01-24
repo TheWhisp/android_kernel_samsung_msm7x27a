@@ -24,6 +24,7 @@
  *          Alex Deucher
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "drmP.h"
 =======
 #include <linux/export.h>
@@ -37,20 +38,37 @@
 
 <<<<<<< HEAD
 =======
+=======
+#include <linux/export.h>
+
+#include <drm/drmP.h>
+#include <drm/drm_edid.h>
+#include <drm/radeon_drm.h>
+#include "radeon.h"
+#include "atom.h"
+
+>>>>>>> refs/remotes/origin/master
 extern int radeon_atom_hw_i2c_xfer(struct i2c_adapter *i2c_adap,
 				   struct i2c_msg *msgs, int num);
 extern u32 radeon_atom_hw_i2c_func(struct i2c_adapter *adap);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * radeon_ddc_probe
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool requires_extended_probe)
 =======
 bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use_aux)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use_aux)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 out = 0x0;
 	u8 buf[8];
@@ -58,15 +76,20 @@ bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use_aux)
 	struct i2c_msg msgs[] = {
 		{
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.addr = 0x50,
 =======
 			.addr = DDC_ADDR,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.addr = DDC_ADDR,
+>>>>>>> refs/remotes/origin/master
 			.flags = 0,
 			.len = 1,
 			.buf = &out,
 		},
 		{
+<<<<<<< HEAD
 <<<<<<< HEAD
 			.addr = 0x50,
 			.flags = I2C_M_RD,
@@ -76,10 +99,16 @@ bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use_aux)
 			.flags = I2C_M_RD,
 			.len = 8,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.addr = DDC_ADDR,
+			.flags = I2C_M_RD,
+			.len = 8,
+>>>>>>> refs/remotes/origin/master
 			.buf = buf,
 		}
 	};
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Read 8 bytes from i2c for extended probe of EDID header */
 	if (requires_extended_probe)
@@ -87,10 +116,13 @@ bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use_aux)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* on hw with routers, select right port */
 	if (radeon_connector->router.ddc_valid)
 		radeon_router_select_ddc_port(radeon_connector);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = i2c_transfer(&radeon_connector->ddc_bus->adapter, msgs, 2);
 	if (ret != 2)
@@ -108,6 +140,8 @@ bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use_aux)
 			return false;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (use_aux) {
 		struct radeon_connector_atom_dig *dig = radeon_connector->con_priv;
 		ret = i2c_transfer(&dig->dp_i2c_bus->adapter, msgs, 2);
@@ -127,13 +161,17 @@ bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use_aux)
 		/* Couldn't find an accessible EDID on this
 		 * connector */
 		return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return true;
 }
 
 /* bit banging i2c */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void radeon_i2c_do_lock(struct radeon_i2c_chan *i2c, int lock_state)
 {
@@ -142,6 +180,11 @@ static int pre_xfer(struct i2c_adapter *i2c_adap)
 {
 	struct radeon_i2c_chan *i2c = i2c_get_adapdata(i2c_adap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pre_xfer(struct i2c_adapter *i2c_adap)
+{
+	struct radeon_i2c_chan *i2c = i2c_get_adapdata(i2c_adap);
+>>>>>>> refs/remotes/origin/master
 	struct radeon_device *rdev = i2c->dev->dev_private;
 	struct radeon_i2c_bus_rec *rec = &i2c->rec;
 	uint32_t temp;
@@ -197,6 +240,7 @@ static int pre_xfer(struct i2c_adapter *i2c_adap)
 
 	/* mask the gpio pins for software use */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	temp = RREG32(rec->mask_clk_reg);
 	if (lock_state)
 		temp |= rec->mask_clk_mask;
@@ -211,6 +255,8 @@ static int pre_xfer(struct i2c_adapter *i2c_adap)
 	else
 		temp &= ~rec->mask_data_mask;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	temp = RREG32(rec->mask_clk_reg) | rec->mask_clk_mask;
 	WREG32(rec->mask_clk_reg, temp);
 	temp = RREG32(rec->mask_clk_reg);
@@ -235,7 +281,10 @@ static void post_xfer(struct i2c_adapter *i2c_adap)
 	temp = RREG32(rec->mask_clk_reg);
 
 	temp = RREG32(rec->mask_data_reg) & ~rec->mask_data_mask;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	WREG32(rec->mask_data_reg, temp);
 	temp = RREG32(rec->mask_data_reg);
 }
@@ -296,6 +345,7 @@ static void set_data(void *i2c_priv, int data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pre_xfer(struct i2c_adapter *i2c_adap)
 {
 	struct radeon_i2c_chan *i2c = i2c_get_adapdata(i2c_adap);
@@ -314,6 +364,8 @@ static void post_xfer(struct i2c_adapter *i2c_adap)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* hw i2c */
 
 static u32 radeon_get_i2c_prescale(struct radeon_device *rdev)
@@ -980,13 +1032,19 @@ static const struct i2c_algorithm radeon_i2c_algo = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct i2c_algorithm radeon_atom_i2c_algo = {
 	.master_xfer = radeon_atom_hw_i2c_xfer,
 	.functionality = radeon_atom_hw_i2c_func,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct radeon_i2c_chan *radeon_i2c_create(struct drm_device *dev,
 					  struct radeon_i2c_bus_rec *rec,
 					  const char *name)
@@ -1007,9 +1065,13 @@ struct radeon_i2c_chan *radeon_i2c_create(struct drm_device *dev,
 	i2c->adapter.owner = THIS_MODULE;
 	i2c->adapter.class = I2C_CLASS_DDC;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	i2c->adapter.dev.parent = &dev->pdev->dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i2c->adapter.dev.parent = &dev->pdev->dev;
+>>>>>>> refs/remotes/origin/master
 	i2c->dev = dev;
 	i2c_set_adapdata(&i2c->adapter, i2c);
 	if (rec->mm_i2c ||
@@ -1027,7 +1089,10 @@ struct radeon_i2c_chan *radeon_i2c_create(struct drm_device *dev,
 			goto out_free;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} else if (rec->hw_capable &&
 		   radeon_hw_i2c &&
 		   ASIC_IS_DCE3(rdev)) {
@@ -1040,7 +1105,10 @@ struct radeon_i2c_chan *radeon_i2c_create(struct drm_device *dev,
 			DRM_ERROR("Failed to register hw i2c %s\n", name);
 			goto out_free;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* set the radeon bit adapter */
 		snprintf(i2c->adapter.name, sizeof(i2c->adapter.name),
@@ -1053,6 +1121,7 @@ struct radeon_i2c_chan *radeon_i2c_create(struct drm_device *dev,
 		i2c->algo.bit.getsda = get_data;
 		i2c->algo.bit.getscl = get_clock;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		i2c->algo.bit.udelay = 20;
 		/* vesa says 2.2 ms is enough, 1 jiffy doesn't seem to always
 		 * make this, 2 jiffies is a lot more reliable */
@@ -1061,6 +1130,10 @@ struct radeon_i2c_chan *radeon_i2c_create(struct drm_device *dev,
 		i2c->algo.bit.udelay = 10;
 		i2c->algo.bit.timeout = usecs_to_jiffies(2200);	/* from VESA */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		i2c->algo.bit.udelay = 10;
+		i2c->algo.bit.timeout = usecs_to_jiffies(2200);	/* from VESA */
+>>>>>>> refs/remotes/origin/master
 		i2c->algo.bit.data = i2c;
 		ret = i2c_bit_add_bus(&i2c->adapter);
 		if (ret) {
@@ -1091,9 +1164,13 @@ struct radeon_i2c_chan *radeon_i2c_create_dp(struct drm_device *dev,
 	i2c->adapter.owner = THIS_MODULE;
 	i2c->adapter.class = I2C_CLASS_DDC;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	i2c->adapter.dev.parent = &dev->pdev->dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i2c->adapter.dev.parent = &dev->pdev->dev;
+>>>>>>> refs/remotes/origin/master
 	i2c->dev = dev;
 	snprintf(i2c->adapter.name, sizeof(i2c->adapter.name),
 		 "Radeon aux bus %s", name);

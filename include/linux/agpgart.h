@@ -23,6 +23,7 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+<<<<<<< HEAD
 
 #ifndef _AGP_H
 #define _AGP_H 1
@@ -111,6 +112,14 @@ typedef struct _agp_unbind {
 #else				/* __KERNEL__ */
 #include <linux/mutex.h>
 #include <linux/agp_backend.h>
+=======
+#ifndef _AGP_H
+#define _AGP_H 1
+
+#include <linux/mutex.h>
+#include <linux/agp_backend.h>
+#include <uapi/linux/agpgart.h>
+>>>>>>> refs/remotes/origin/master
 
 #define AGPGART_MINOR 175
 
@@ -209,6 +218,9 @@ struct agp_front_data {
 	bool backend_acquired;
 };
 
+<<<<<<< HEAD
 #endif				/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif				/* _AGP_H */

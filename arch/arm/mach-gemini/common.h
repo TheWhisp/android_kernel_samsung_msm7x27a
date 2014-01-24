@@ -26,4 +26,9 @@ extern int platform_register_pflash(unsigned int size,
 				    struct mtd_partition *parts,
 				    unsigned int nr_parts);
 
+<<<<<<< HEAD
+=======
+extern void gemini_restart(char mode, const char *cmd);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __GEMINI_COMMON_H__ */

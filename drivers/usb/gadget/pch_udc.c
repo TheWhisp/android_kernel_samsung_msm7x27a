@@ -1,13 +1,18 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2010 OKI SEMICONDUCTOR CO., LTD.
 =======
  * Copyright (C) 2011 LAPIS Semiconductor Co., Ltd.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2011 LAPIS Semiconductor Co., Ltd.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
+<<<<<<< HEAD
 <<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
@@ -20,6 +25,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 #include <linux/kernel.h>
@@ -32,7 +39,10 @@
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/gpio.h>
 #include <linux/irq.h>
 
@@ -41,7 +51,10 @@ static int vbus_gpio_port = -1;		/* GPIO port number (-1:Not used) */
 
 #define PCH_VBUS_PERIOD		3000	/* VBUS polling period (msec) */
 #define PCH_VBUS_INTERVAL	10	/* VBUS polling interval (msec) */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Address offset of Registers */
 #define UDC_EP_REG_SHIFT	0x20	/* Offset to next EP */
@@ -314,7 +327,10 @@ struct pch_udc_ep {
 	struct pch_udc_data_dma_desc	*td_data;
 	struct pch_udc_dev		*dev;
 	unsigned long			offset_addr;
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor	*desc;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head		queue;
 	unsigned			num:5,
 					in:1,
@@ -324,7 +340,10 @@ struct pch_udc_ep {
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * struct pch_vbus_gpio_data - Structure holding GPIO informaton
  *					for detecting VBUS
  * @port:		gpio port number
@@ -340,7 +359,10 @@ struct pch_vbus_gpio_data {
 };
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * struct pch_udc_dev - Structure holding complete information
  *			of the PCH USB device
  * @gadget:		gadget driver data
@@ -369,9 +391,13 @@ struct pch_vbus_gpio_data {
  * @irq:		IRQ line for the device
  * @cfg_data:		current cfg, intf, and alt in use
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @vbus_gpio:		GPIO informaton for detecting VBUS
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @vbus_gpio:		GPIO informaton for detecting VBUS
+>>>>>>> refs/remotes/origin/master
  */
 struct pch_udc_dev {
 	struct usb_gadget		gadget;
@@ -384,7 +410,10 @@ struct pch_udc_dev {
 			prot_stall:1,
 			irq_registered:1,
 			mem_region:1,
+<<<<<<< HEAD
 			registered:1,
+=======
+>>>>>>> refs/remotes/origin/master
 			suspended:1,
 			connected:1,
 			vbus_session:1,
@@ -399,12 +428,19 @@ struct pch_udc_dev {
 	void __iomem			*base_addr;
 	unsigned			irq;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pch_udc_cfg_data	cfg_data;
 =======
 	struct pch_udc_cfg_data		cfg_data;
 	struct pch_vbus_gpio_data	vbus_gpio;
 >>>>>>> refs/remotes/origin/cm-10.0
 };
+=======
+	struct pch_udc_cfg_data		cfg_data;
+	struct pch_vbus_gpio_data	vbus_gpio;
+};
+#define to_pch_udc(g)	(container_of((g), struct pch_udc_dev, gadget))
+>>>>>>> refs/remotes/origin/master
 
 #define PCH_UDC_PCI_BAR			1
 #define PCI_DEVICE_ID_INTEL_EG20T_UDC	0x8808
@@ -414,12 +450,16 @@ struct pch_udc_dev {
 
 static const char	ep0_string[] = "ep0in";
 static DEFINE_SPINLOCK(udc_stall_spinlock);	/* stall spin lock */
+<<<<<<< HEAD
 struct pch_udc_dev *pch_udc;		/* pointer to device object */
 <<<<<<< HEAD
 static int speed_fs;
 =======
 static bool speed_fs;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool speed_fs;
+>>>>>>> refs/remotes/origin/master
 module_param_named(speed_fs, speed_fs, bool, S_IRUGO);
 MODULE_PARM_DESC(speed_fs, "true for Full speed operation");
 
@@ -1031,10 +1071,14 @@ static void pch_udc_ep_enable(struct pch_udc_ep *ep,
 		buff_size = UDC_EPOUT_BUFF_SIZE;
 	pch_udc_ep_set_bufsz(ep, buff_size, ep->in);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pch_udc_ep_set_maxpkt(ep, le16_to_cpu(desc->wMaxPacketSize));
 =======
 	pch_udc_ep_set_maxpkt(ep, usb_endpoint_maxp(desc));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pch_udc_ep_set_maxpkt(ep, usb_endpoint_maxp(desc));
+>>>>>>> refs/remotes/origin/master
 	pch_udc_ep_set_nak(ep);
 	pch_udc_ep_fifo_flush(ep, ep->in);
 	/* Configure the endpoint */
@@ -1045,10 +1089,14 @@ static void pch_udc_ep_enable(struct pch_udc_ep *ep,
 	      (cfg->cur_intf << UDC_CSR_NE_INTF_SHIFT) |
 	      (cfg->cur_alt << UDC_CSR_NE_ALT_SHIFT) |
 <<<<<<< HEAD
+<<<<<<< HEAD
 	      le16_to_cpu(desc->wMaxPacketSize) << UDC_CSR_NE_MAX_PKT_SHIFT;
 =======
 	      usb_endpoint_maxp(desc) << UDC_CSR_NE_MAX_PKT_SHIFT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	      usb_endpoint_maxp(desc) << UDC_CSR_NE_MAX_PKT_SHIFT;
+>>>>>>> refs/remotes/origin/master
 
 	if (ep->in)
 		pch_udc_write_csr(ep->dev, val, UDC_EPIN_IDX(ep->num));
@@ -1278,11 +1326,18 @@ static int pch_udc_pcd_vbus_draw(struct usb_gadget *gadget, unsigned int mA)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int pch_udc_start(struct usb_gadget_driver *driver,
 	int (*bind)(struct usb_gadget *));
 static int pch_udc_stop(struct usb_gadget_driver *driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pch_udc_start(struct usb_gadget *g,
+		struct usb_gadget_driver *driver);
+static int pch_udc_stop(struct usb_gadget *g,
+		struct usb_gadget_driver *driver);
+>>>>>>> refs/remotes/origin/master
 static const struct usb_gadget_ops pch_udc_ops = {
 	.get_frame = pch_udc_pcd_get_frame,
 	.wakeup = pch_udc_pcd_wakeup,
@@ -1291,12 +1346,17 @@ static const struct usb_gadget_ops pch_udc_ops = {
 	.vbus_session = pch_udc_pcd_vbus_session,
 	.vbus_draw = pch_udc_pcd_vbus_draw,
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 /**
 =======
 	.start	= pch_udc_start,
 	.stop	= pch_udc_stop,
+=======
+	.udc_start = pch_udc_start,
+	.udc_stop = pch_udc_stop,
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -1482,7 +1542,10 @@ static void pch_vbus_gpio_free(struct pch_udc_dev *dev)
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * complete_req() - This API is invoked from the driver when processing
  *			of a request is complete
  * @ep:		Reference to the endpoint structure
@@ -1491,6 +1554,11 @@ static void pch_vbus_gpio_free(struct pch_udc_dev *dev)
  */
 static void complete_req(struct pch_udc_ep *ep, struct pch_udc_request *req,
 								 int status)
+<<<<<<< HEAD
+=======
+	__releases(&dev->lock)
+	__acquires(&dev->lock)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pch_udc_dev	*dev;
 	unsigned halted = ep->halted;
@@ -1755,6 +1823,7 @@ static int pch_udc_pcd_ep_enable(struct usb_ep *usbep,
 	if (!dev->driver || (dev->gadget.speed == USB_SPEED_UNKNOWN))
 		return -ESHUTDOWN;
 	spin_lock_irqsave(&dev->lock, iflags);
+<<<<<<< HEAD
 	ep->desc = desc;
 	ep->halted = 0;
 	pch_udc_ep_enable(ep, &ep->dev->cfg_data, desc);
@@ -1763,6 +1832,12 @@ static int pch_udc_pcd_ep_enable(struct usb_ep *usbep,
 =======
 	ep->ep.maxpacket = usb_endpoint_maxp(desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ep->ep.desc = desc;
+	ep->halted = 0;
+	pch_udc_ep_enable(ep, &ep->dev->cfg_data, desc);
+	ep->ep.maxpacket = usb_endpoint_maxp(desc);
+>>>>>>> refs/remotes/origin/master
 	pch_udc_enable_ep_interrupts(ep->dev, PCH_UDC_EPINT(ep->in, ep->num));
 	spin_unlock_irqrestore(&dev->lock, iflags);
 	return 0;
@@ -1788,7 +1863,11 @@ static int pch_udc_pcd_ep_disable(struct usb_ep *usbep)
 
 	ep = container_of(usbep, struct pch_udc_ep, ep);
 	dev = ep->dev;
+<<<<<<< HEAD
 	if ((usbep->name == ep0_string) || !ep->desc)
+=======
+	if ((usbep->name == ep0_string) || !ep->ep.desc)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	spin_lock_irqsave(&ep->dev->lock, iflags);
@@ -1796,11 +1875,15 @@ static int pch_udc_pcd_ep_disable(struct usb_ep *usbep)
 	ep->halted = 1;
 	pch_udc_ep_disable(ep);
 	pch_udc_disable_ep_interrupts(ep->dev, PCH_UDC_EPINT(ep->in, ep->num));
+<<<<<<< HEAD
 	ep->desc = NULL;
 <<<<<<< HEAD
 =======
 	ep->ep.desc = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ep->ep.desc = NULL;
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&ep->queue);
 	spin_unlock_irqrestore(&ep->dev->lock, iflags);
 	return 0;
@@ -1906,7 +1989,11 @@ static int pch_udc_pcd_queue(struct usb_ep *usbep, struct usb_request *usbreq,
 		return -EINVAL;
 	ep = container_of(usbep, struct pch_udc_ep, ep);
 	dev = ep->dev;
+<<<<<<< HEAD
 	if (!ep->desc && ep->num)
+=======
+	if (!ep->ep.desc && ep->num)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	req = container_of(usbreq, struct pch_udc_request, req);
 	if (!list_empty(&req->queue))
@@ -2006,7 +2093,11 @@ static int pch_udc_pcd_dequeue(struct usb_ep *usbep,
 
 	ep = container_of(usbep, struct pch_udc_ep, ep);
 	dev = ep->dev;
+<<<<<<< HEAD
 	if (!usbep || !usbreq || (!ep->desc && ep->num))
+=======
+	if (!usbep || !usbreq || (!ep->ep.desc && ep->num))
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	req = container_of(usbreq, struct pch_udc_request, req);
 	spin_lock_irqsave(&ep->dev->lock, flags);
@@ -2045,7 +2136,11 @@ static int pch_udc_pcd_set_halt(struct usb_ep *usbep, int halt)
 		return -EINVAL;
 	ep = container_of(usbep, struct pch_udc_ep, ep);
 	dev = ep->dev;
+<<<<<<< HEAD
 	if (!ep->desc && !ep->num)
+=======
+	if (!ep->ep.desc && !ep->num)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	if (!ep->dev->driver || (ep->dev->gadget.speed == USB_SPEED_UNKNOWN))
 		return -ESHUTDOWN;
@@ -2090,7 +2185,11 @@ static int pch_udc_pcd_set_wedge(struct usb_ep *usbep)
 		return -EINVAL;
 	ep = container_of(usbep, struct pch_udc_ep, ep);
 	dev = ep->dev;
+<<<<<<< HEAD
 	if (!ep->desc && !ep->num)
+=======
+	if (!ep->ep.desc && !ep->num)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	if (!ep->dev->driver || (ep->dev->gadget.speed == USB_SPEED_UNKNOWN))
 		return -ESHUTDOWN;
@@ -2122,7 +2221,11 @@ static void pch_udc_pcd_fifo_flush(struct usb_ep *usbep)
 		return;
 
 	ep = container_of(usbep, struct pch_udc_ep, ep);
+<<<<<<< HEAD
 	if (ep->desc || !ep->num)
+=======
+	if (ep->ep.desc || !ep->num)
+>>>>>>> refs/remotes/origin/master
 		pch_udc_ep_fifo_flush(ep, ep->in);
 }
 
@@ -2267,7 +2370,11 @@ static void pch_udc_complete_receiver(struct pch_udc_ep *ep)
 			return;
 		}
 		if ((td->status & PCH_UDC_BUFF_STS) == PCH_UDC_BS_DMA_DONE)
+<<<<<<< HEAD
 			if (td->status | PCH_UDC_DMA_LAST) {
+=======
+			if (td->status & PCH_UDC_DMA_LAST) {
+>>>>>>> refs/remotes/origin/master
 				count = td->status & PCH_UDC_RXTX_BYTES;
 				break;
 			}
@@ -2440,6 +2547,11 @@ static void pch_udc_svc_control_in(struct pch_udc_dev *dev)
  * @dev:	Reference to the device structure
  */
 static void pch_udc_svc_control_out(struct pch_udc_dev *dev)
+<<<<<<< HEAD
+=======
+	__releases(&dev->lock)
+	__acquires(&dev->lock)
+>>>>>>> refs/remotes/origin/master
 {
 	u32	stat;
 	int setup_supported;
@@ -2776,6 +2888,7 @@ static void pch_udc_svc_cfg_interrupt(struct pch_udc_dev *dev)
 static void pch_udc_dev_isr(struct pch_udc_dev *dev, u32 dev_intr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* USB Reset Interrupt */
 	if (dev_intr & UDC_DEVINT_UR)
 		pch_udc_svc_ur_interrupt(dev);
@@ -2783,6 +2896,8 @@ static void pch_udc_dev_isr(struct pch_udc_dev *dev, u32 dev_intr)
 	if (dev_intr & UDC_DEVINT_ENUM)
 		pch_udc_svc_enum_interrupt(dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int vbus;
 
 	/* USB Reset Interrupt */
@@ -2795,7 +2910,10 @@ static void pch_udc_dev_isr(struct pch_udc_dev *dev, u32 dev_intr)
 		pch_udc_svc_enum_interrupt(dev);
 		dev_dbg(&dev->pdev->dev, "USB_ENUM\n");
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Set Interface Interrupt */
 	if (dev_intr & UDC_DEVINT_SI)
 		pch_udc_svc_intf_interrupt(dev);
@@ -2812,12 +2930,18 @@ static void pch_udc_dev_isr(struct pch_udc_dev *dev, u32 dev_intr)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (dev->vbus_session == 0) {
 =======
 		vbus = pch_vbus_gpio_get_value(dev);
 		if ((dev->vbus_session == 0)
 			&& (vbus != 1)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		vbus = pch_vbus_gpio_get_value(dev);
+		if ((dev->vbus_session == 0)
+			&& (vbus != 1)) {
+>>>>>>> refs/remotes/origin/master
 			if (dev->driver && dev->driver->disconnect) {
 				spin_unlock(&dev->lock);
 				dev->driver->disconnect(&dev->gadget);
@@ -2825,14 +2949,20 @@ static void pch_udc_dev_isr(struct pch_udc_dev *dev, u32 dev_intr)
 			}
 			pch_udc_reconnect(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		} else if ((dev->vbus_session == 0)
 			&& (vbus == 1)
 			&& !dev->vbus_gpio.intr)
 			schedule_work(&dev->vbus_gpio.irq_work_fall);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dev_dbg(&dev->pdev->dev, "USB_SUSPEND\n");
 	}
 	/* Clear the SOF interrupt, if enabled */
@@ -2968,12 +3098,21 @@ static void pch_udc_pcd_reinit(struct pch_udc_dev *dev)
 			ep->offset_addr = (UDC_EPINT_OUT_SHIFT + ep->num) *
 					  UDC_EP_REG_SHIFT;
 		/* need to set ep->ep.maxpacket and set Default Configuration?*/
+<<<<<<< HEAD
 		ep->ep.maxpacket = UDC_BULK_MAX_PKT_SIZE;
 		list_add_tail(&ep->ep.ep_list, &dev->gadget.ep_list);
 		INIT_LIST_HEAD(&ep->queue);
 	}
 	dev->ep[UDC_EP0IN_IDX].ep.maxpacket = UDC_EP0IN_MAX_PKT_SIZE;
 	dev->ep[UDC_EP0OUT_IDX].ep.maxpacket = UDC_EP0OUT_MAX_PKT_SIZE;
+=======
+		usb_ep_set_maxpacket_limit(&ep->ep, UDC_BULK_MAX_PKT_SIZE);
+		list_add_tail(&ep->ep.ep_list, &dev->gadget.ep_list);
+		INIT_LIST_HEAD(&ep->queue);
+	}
+	usb_ep_set_maxpacket_limit(&dev->ep[UDC_EP0IN_IDX].ep, UDC_EP0IN_MAX_PKT_SIZE);
+	usb_ep_set_maxpacket_limit(&dev->ep[UDC_EP0OUT_IDX].ep, UDC_EP0OUT_MAX_PKT_SIZE);
+>>>>>>> refs/remotes/origin/master
 
 	/* remove ep0 in and out from the list.  They have own pointer */
 	list_del_init(&dev->ep[UDC_EP0IN_IDX].ep.ep_list);
@@ -2995,9 +3134,13 @@ static int pch_udc_pcd_init(struct pch_udc_dev *dev)
 	pch_udc_init(dev);
 	pch_udc_pcd_reinit(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pch_vbus_gpio_init(dev, vbus_gpio_port);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pch_vbus_gpio_init(dev, vbus_gpio_port);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -3061,6 +3204,7 @@ static int init_dma_pools(struct pch_udc_dev *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 =======
 static int pch_udc_start(struct usb_gadget_driver *driver,
@@ -3102,20 +3246,36 @@ static int pch_udc_start(struct usb_gadget_driver *driver,
 		dev->gadget.dev.driver = NULL;
 		return retval;
 	}
+=======
+static int pch_udc_start(struct usb_gadget *g,
+		struct usb_gadget_driver *driver)
+{
+	struct pch_udc_dev	*dev = to_pch_udc(g);
+
+	driver->driver.bus = NULL;
+	dev->driver = driver;
+
+>>>>>>> refs/remotes/origin/master
 	/* get ready for ep0 traffic */
 	pch_udc_setup_ep0(dev);
 
 	/* clear SD */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pch_udc_clear_disconnect(dev);
 =======
 	if ((pch_vbus_gpio_get_value(dev) != 0) || !dev->vbus_gpio.intr)
 		pch_udc_clear_disconnect(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((pch_vbus_gpio_get_value(dev) != 0) || !dev->vbus_gpio.intr)
+		pch_udc_clear_disconnect(dev);
+>>>>>>> refs/remotes/origin/master
 
 	dev->connected = 1;
 	return 0;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 EXPORT_SYMBOL(usb_gadget_probe_driver);
 
@@ -3135,24 +3295,40 @@ static int pch_udc_stop(struct usb_gadget_driver *driver)
 			"%s: invalid driver parameter\n", __func__);
 		return -EINVAL;
 	}
+=======
+
+static int pch_udc_stop(struct usb_gadget *g,
+		struct usb_gadget_driver *driver)
+{
+	struct pch_udc_dev	*dev = to_pch_udc(g);
+>>>>>>> refs/remotes/origin/master
 
 	pch_udc_disable_interrupts(dev, UDC_DEVINT_MSK);
 
 	/* Assures that there are no pending requests with this driver */
+<<<<<<< HEAD
 	driver->disconnect(&dev->gadget);
 	driver->unbind(&dev->gadget);
 	dev->gadget.dev.driver = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->driver = NULL;
 	dev->connected = 0;
 
 	/* set SD */
 	pch_udc_set_disconnect(dev);
+<<<<<<< HEAD
 	return 0;
 }
 <<<<<<< HEAD
 EXPORT_SYMBOL(usb_gadget_unregister_driver);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 static void pch_udc_shutdown(struct pci_dev *pdev)
 {
@@ -3170,10 +3346,15 @@ static void pch_udc_remove(struct pci_dev *pdev)
 	struct pch_udc_dev	*dev = pci_get_drvdata(pdev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	usb_del_gadget_udc(&dev->gadget);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_del_gadget_udc(&dev->gadget);
+
+>>>>>>> refs/remotes/origin/master
 	/* gadget driver must not be registered */
 	if (dev->driver)
 		dev_err(&pdev->dev,
@@ -3203,10 +3384,15 @@ static void pch_udc_remove(struct pci_dev *pdev)
 	kfree(dev->ep0out_buf);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pch_vbus_gpio_free(dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pch_vbus_gpio_free(dev);
+
+>>>>>>> refs/remotes/origin/master
 	pch_udc_exit(dev);
 
 	if (dev->irq_registered)
@@ -3218,10 +3404,14 @@ static void pch_udc_remove(struct pci_dev *pdev)
 				   pci_resource_len(pdev, PCH_UDC_PCI_BAR));
 	if (dev->active)
 		pci_disable_device(pdev);
+<<<<<<< HEAD
 	if (dev->registered)
 		device_unregister(&dev->gadget.dev);
 	kfree(dev);
 	pci_set_drvdata(pdev, NULL);
+=======
+	kfree(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_PM
@@ -3271,11 +3461,14 @@ static int pch_udc_probe(struct pci_dev *pdev,
 	int			retval;
 	struct pch_udc_dev	*dev;
 
+<<<<<<< HEAD
 	/* one udc only */
 	if (pch_udc) {
 		pr_err("%s: already probed\n", __func__);
 		return -EBUSY;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	/* init */
 	dev = kzalloc(sizeof *dev, GFP_KERNEL);
 	if (!dev) {
@@ -3314,7 +3507,10 @@ static int pch_udc_probe(struct pci_dev *pdev,
 		retval = -ENODEV;
 		goto finished;
 	}
+<<<<<<< HEAD
 	pch_udc = dev;
+=======
+>>>>>>> refs/remotes/origin/master
 	/* initialize the hardware */
 	if (pch_udc_pcd_init(dev)) {
 		retval = -ENODEV;
@@ -3342,6 +3538,7 @@ static int pch_udc_probe(struct pci_dev *pdev,
 	if (retval)
 		goto finished;
 
+<<<<<<< HEAD
 	dev_set_name(&dev->gadget.dev, "gadget");
 	dev->gadget.dev.parent = &pdev->dev;
 	dev->gadget.dev.dma_mask = pdev->dev.dma_mask;
@@ -3366,6 +3563,17 @@ static int pch_udc_probe(struct pci_dev *pdev,
 	if (retval)
 		goto finished;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->gadget.name = KBUILD_MODNAME;
+	dev->gadget.max_speed = USB_SPEED_HIGH;
+
+	/* Put the device in disconnected state till a driver is bound */
+	pch_udc_set_disconnect(dev);
+	retval = usb_add_gadget_udc_release(&pdev->dev, &dev->gadget,
+			gadget_release);
+	if (retval)
+		goto finished;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 finished:
@@ -3373,7 +3581,11 @@ finished:
 	return retval;
 }
 
+<<<<<<< HEAD
 static DEFINE_PCI_DEVICE_TABLE(pch_udc_pcidev_id) = {
+=======
+static const struct pci_device_id pch_udc_pcidev_id[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_EG20T_UDC),
 		.class = (PCI_CLASS_SERIAL_USB << 8) | 0xfe,
@@ -3394,7 +3606,10 @@ static DEFINE_PCI_DEVICE_TABLE(pch_udc_pcidev_id) = {
 
 MODULE_DEVICE_TABLE(pci, pch_udc_pcidev_id);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct pci_driver pch_udc_driver = {
 	.name =	KBUILD_MODNAME,
 	.id_table =	pch_udc_pcidev_id,
@@ -3405,6 +3620,7 @@ static struct pci_driver pch_udc_driver = {
 	.shutdown =	pch_udc_shutdown,
 };
 
+<<<<<<< HEAD
 static int __init pch_udc_pci_init(void)
 {
 	return pci_register_driver(&pch_udc_driver);
@@ -3423,4 +3639,10 @@ MODULE_AUTHOR("OKI SEMICONDUCTOR, <toshiharu-linux@dsn.okisemi.com>");
 =======
 MODULE_AUTHOR("LAPIS Semiconductor, <tomoya-linux@dsn.lapis-semi.com>");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_pci_driver(pch_udc_driver);
+
+MODULE_DESCRIPTION("Intel EG20T USB Device Controller");
+MODULE_AUTHOR("LAPIS Semiconductor, <tomoya-linux@dsn.lapis-semi.com>");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

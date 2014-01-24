@@ -26,9 +26,12 @@
 #include <net/sock.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/fcntl.h>
 #include <linux/mm.h>
 #include <linux/interrupt.h>
@@ -74,7 +77,10 @@ static void ax25_ds_timeout(unsigned long arg)
 {
 	ax25_dev *ax25_dev = (struct ax25_dev *) arg;
 	ax25_cb *ax25;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (ax25_dev == NULL || !ax25_dev->dama.slave)
 		return;			/* Yikes! */
@@ -85,7 +91,11 @@ static void ax25_ds_timeout(unsigned long arg)
 	}
 
 	spin_lock(&ax25_list_lock);
+<<<<<<< HEAD
 	ax25_for_each(ax25, node, &ax25_list) {
+=======
+	ax25_for_each(ax25, &ax25_list) {
+>>>>>>> refs/remotes/origin/master
 		if (ax25->ax25_dev != ax25_dev || !(ax25->condition & AX25_COND_DAMA_MODE))
 			continue;
 

@@ -38,6 +38,12 @@
 
 #define TCES_PER_PAGE	(PAGE_SIZE / sizeof(u64))
 
+<<<<<<< HEAD
+=======
+/* WARNING: This will be called in real-mode on HV KVM and virtual
+ *          mode on PR KVM
+ */
+>>>>>>> refs/remotes/origin/master
 long kvmppc_h_put_tce(struct kvm_vcpu *vcpu, unsigned long liobn,
 		      unsigned long ioba, unsigned long tce)
 {
@@ -71,3 +77,7 @@ long kvmppc_h_put_tce(struct kvm_vcpu *vcpu, unsigned long liobn,
 	/* Didn't find the liobn, punt it to userspace */
 	return H_TOO_HARD;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(kvmppc_h_put_tce);
+>>>>>>> refs/remotes/origin/master

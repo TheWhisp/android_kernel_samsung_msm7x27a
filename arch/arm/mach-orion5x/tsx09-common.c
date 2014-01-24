@@ -16,9 +16,13 @@
 #include <linux/timex.h>
 #include <linux/serial_reg.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <mach/orion5x.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/orion5x.h>
+>>>>>>> refs/remotes/origin/master
 #include "tsx09-common.h"
 #include "common.h"
 

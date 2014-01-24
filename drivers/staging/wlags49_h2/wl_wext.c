@@ -19,10 +19,14 @@
  * not agree with these terms and conditions, do not use the software.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright � 2003 Agere Systems Inc.
 =======
  * Copyright © 2003 Agere Systems Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright © 2003 Agere Systems Inc.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source or binary forms, with or without
@@ -44,10 +48,14 @@
  * Disclaimer
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * THIS SOFTWARE IS PROVIDED �AS IS� AND ANY EXPRESS OR IMPLIED WARRANTIES,
 =======
  * THIS SOFTWARE IS PROVIDED AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * THIS SOFTWARE IS PROVIDED AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
+>>>>>>> refs/remotes/origin/master
  * INCLUDING, BUT NOT LIMITED TO, INFRINGEMENT AND THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  ANY
  * USE, MODIFICATION OR DISTRIBUTION OF THIS SOFTWARE IS SOLELY AT THE USERS OWN
@@ -70,6 +78,10 @@
 #include <linux/if_arp.h>
 #include <linux/ioport.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/etherdevice.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 #include <debug.h>
@@ -83,6 +95,7 @@
 #include <wl_wext.h>
 #include <wl_priv.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 
@@ -111,6 +124,8 @@ extern dbg_info_t *DbgInfo;
 <<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Set up the LTV to program the appropriate key */
 static int hermes_set_tkip_keys(ltv_t *ltv, u16 key_idx, u8 *addr,
 				int set_tx, u8 *seq, u8 *key, size_t key_len)
@@ -120,8 +135,11 @@ static int hermes_set_tkip_keys(ltv_t *ltv, u16 key_idx, u8 *addr,
 	hcf_8 tsc[IW_ENCODE_SEQ_MAX_SIZE] =
 		{ 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00 };
 
+<<<<<<< HEAD
 	DBG_ENTER(DbgInfo);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Check the key index here; if 0, load as Pairwise Key, otherwise,
 	 * load as a group key. Note that for the Hermes, the RIDs for
@@ -190,7 +208,10 @@ static int hermes_set_tkip_keys(ltv_t *ltv, u16 key_idx, u8 *addr,
 		break;
 	}
 
+<<<<<<< HEAD
 	DBG_LEAVE(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -201,7 +222,11 @@ static int hermes_clear_tkip_keys(ltv_t *ltv, u16 key_idx, u8 *addr)
 
 	switch (key_idx) {
 	case 0:
+<<<<<<< HEAD
 		if (memcmp(addr, "\xff\xff\xff\xff\xff\xff", ETH_ALEN) != 0) {
+=======
+		if (!is_broadcast_ether_addr(addr)) {
+>>>>>>> refs/remotes/origin/master
 			ltv->len = 7;
 			ltv->typ = CFG_REMOVE_TKIP_MAPPED_KEY;
 			memcpy(&ltv->u.u8[0], addr, ETH_ALEN);
@@ -328,7 +353,10 @@ static int hermes_set_wep_keys(struct wl_private *lp, u16 key_idx,
 out:
 	return ret;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*******************************************************************************
  *	wireless_commit()
@@ -355,10 +383,13 @@ static int wireless_commit(struct net_device *dev,
 	struct wl_private *lp = wl_priv(dev);
 	unsigned long flags;
 	int ret = 0;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 	DBG_FUNC( "wireless_commit" );
 	DBG_ENTER(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -376,7 +407,10 @@ static int wireless_commit(struct net_device *dev,
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_commit
 /*============================================================================*/
@@ -404,16 +438,22 @@ out:
  ******************************************************************************/
 static int wireless_get_protocol(struct net_device *dev, struct iw_request_info *info, char *name, char *extra)
 {
+<<<<<<< HEAD
 	DBG_FUNC( "wireless_get_protocol" );
 	DBG_ENTER( DbgInfo );
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Originally, the driver was placing the string "Wireless" here. However,
 	   the wireless extensions (/linux/wireless.h) indicate this string should
 	   describe the wireless protocol. */
 
 	strcpy(name, "IEEE 802.11b");
 
+<<<<<<< HEAD
 	DBG_LEAVE(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 } // wireless_get_protocol
 /*============================================================================*/
@@ -446,11 +486,14 @@ static int wireless_set_frequency(struct net_device *dev, struct iw_request_info
 	unsigned long flags;
 	int channel = 0;
 	int ret     = 0;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_set_frequency" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -459,7 +502,10 @@ static int wireless_set_frequency(struct net_device *dev, struct iw_request_info
 
 	if( !capable( CAP_NET_ADMIN )) {
 		ret = -EPERM;
+<<<<<<< HEAD
 		DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
@@ -501,7 +547,10 @@ static int wireless_set_frequency(struct net_device *dev, struct iw_request_info
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_set_frequency
 /*============================================================================*/
@@ -533,11 +582,14 @@ static int wireless_get_frequency(struct net_device *dev, struct iw_request_info
 	struct wl_private *lp = wl_priv(dev);
 	unsigned long flags;
 	int ret = -1;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_get_frequency" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -556,6 +608,7 @@ static int wireless_get_frequency(struct net_device *dev, struct iw_request_info
 		hcf_16 channel = CNV_LITTLE_TO_INT( lp->ltvRecord.u.u16[0] );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef USE_FREQUENCY
 
 		freq->m = wl_get_freq_from_chan( channel ) * 100000;
@@ -570,6 +623,10 @@ static int wireless_get_frequency(struct net_device *dev, struct iw_request_info
 		freq->m = wl_get_freq_from_chan( channel ) * 100000;
 		freq->e = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		freq->m = wl_get_freq_from_chan( channel ) * 100000;
+		freq->e = 1;
+>>>>>>> refs/remotes/origin/master
 	}
 
     	wl_act_int_on( lp );
@@ -579,7 +636,10 @@ static int wireless_get_frequency(struct net_device *dev, struct iw_request_info
 	ret = (ret == HCF_SUCCESS ? 0 : -EFAULT);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_get_frequency
 /*============================================================================*/
@@ -617,11 +677,14 @@ static int wireless_get_range(struct net_device *dev, struct iw_request_info *in
 	int                count;
 	__u16             *pTxRate;
 	int                retries = 0;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_get_range" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Set range information */
 	data->length = sizeof(struct iw_range);
@@ -647,7 +710,11 @@ retry:
 		if (retries < 10) {
 			retries++;
 
+<<<<<<< HEAD
 			/* Holding the lock too long, make a gap to allow other processes */
+=======
+			/* Holding the lock too long, makes a gap to allow other processes */
+>>>>>>> refs/remotes/origin/master
 			wl_unlock(lp, &flags);
 			wl_lock( lp, &flags );
 
@@ -659,7 +726,11 @@ retry:
 				goto out_unlock;
 			}
 
+<<<<<<< HEAD
 			/* Holding the lock too long, make a gap to allow other processes */
+=======
+			/* Holding the lock too long, makes a gap to allow other processes */
+>>>>>>> refs/remotes/origin/master
 			wl_unlock(lp, &flags);
 			wl_lock( lp, &flags );
 
@@ -672,7 +743,11 @@ retry:
 		}
 	}
 
+<<<<<<< HEAD
 	/* Holding the lock too long, make a gap to allow other processes */
+=======
+	/* Holding the lock too long, makes a gap to allow other processes */
+>>>>>>> refs/remotes/origin/master
 	wl_unlock(lp, &flags);
 	wl_lock( lp, &flags );
 
@@ -697,10 +772,13 @@ retry:
 
 	/* Link quality */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef USE_DBM
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	range->max_qual.qual     = (u_char)HCF_MAX_COMM_QUALITY;
 
 	/* If the value returned in /proc/net/wireless is greater than the maximum range,
@@ -709,6 +787,7 @@ retry:
 
 	range->max_qual.level   = (u_char)( dbm( HCF_MIN_SIGNAL_LEVEL ) - 1 );
 	range->max_qual.noise   = (u_char)( dbm( HCF_MIN_NOISE_LEVEL ) - 1 );
+<<<<<<< HEAD
 <<<<<<< HEAD
 #else
 
@@ -719,6 +798,8 @@ retry:
 #endif /* USE_DBM */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 	/* Set available rates */
@@ -751,11 +832,15 @@ retry:
 	/* Encryption */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if WIRELESS_EXT > 8
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* Holding the lock too long, make a gap to allow other processes */
+=======
+	/* Holding the lock too long, makes a gap to allow other processes */
+>>>>>>> refs/remotes/origin/master
 	wl_unlock(lp, &flags);
 	wl_lock( lp, &flags );
 
@@ -772,26 +857,33 @@ retry:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* WIRELESS_EXT > 8 */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Tx Power Info */
 	range->txpower_capa  = IW_TXPOW_MWATT;
 	range->num_txpower   = 1;
 	range->txpower[0]    = RADIO_TX_POWER_MWATT;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if WIRELESS_EXT > 10
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Wireless Extension Info */
 	range->we_version_compiled   = WIRELESS_EXT;
 	range->we_version_source     = WIRELESS_SUPPORT;
 
 	// Retry Limits and Lifetime - NOT SUPPORTED
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 
@@ -801,6 +893,9 @@ retry:
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* Holding the lock too long, make a gap to allow other processes */
+=======
+	/* Holding the lock too long, makes a gap to allow other processes */
+>>>>>>> refs/remotes/origin/master
 	wl_unlock(lp, &flags);
 	wl_lock( lp, &flags );
 
@@ -809,6 +904,7 @@ retry:
 	range->avg_qual = lp->wstats.qual;
 	DBG_TRACE( DbgInfo, "wl_wireless_stats done\n" );
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 
@@ -823,6 +919,8 @@ retry:
 
 	range->enc_capa = IW_ENC_CAPA_WPA | IW_ENC_CAPA_CIPHER_TKIP;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Event capability (kernel + driver) */
 	IW_EVENT_CAPA_SET_KERNEL(range->event_capa);
 	IW_EVENT_CAPA_SET(range->event_capa, SIOCGIWAP);
@@ -835,14 +933,20 @@ retry:
 
 	range->enc_capa = IW_ENC_CAPA_WPA | IW_ENC_CAPA_CIPHER_TKIP;
 	range->scan_capa = IW_SCAN_CAPA_NONE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 out_unlock:
     	wl_act_int_on( lp );
 
 	wl_unlock(lp, &flags);
 
+<<<<<<< HEAD
 	DBG_LEAVE(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_get_range
 /*============================================================================*/
@@ -875,11 +979,14 @@ static int wireless_get_bssid(struct net_device *dev, struct iw_request_info *in
 #if 1 //;? (HCF_TYPE) & HCF_TYPE_STA
 	int status = -1;
 #endif /* (HCF_TYPE) & HCF_TYPE_STA */
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_get_bssid" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -890,8 +997,11 @@ static int wireless_get_bssid(struct net_device *dev, struct iw_request_info *in
 
     	wl_act_int_off( lp );
 
+<<<<<<< HEAD
 	memset( &ap_addr->sa_data, 0, ETH_ALEN );
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ap_addr->sa_family = ARPHRD_ETHER;
 
 	/* Assume AP mode here, which means the BSSID is our own MAC address. In
@@ -924,7 +1034,10 @@ static int wireless_get_bssid(struct net_device *dev, struct iw_request_info *in
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_get_bssid
 /*============================================================================*/
@@ -970,10 +1083,13 @@ static int wireless_get_ap_list (struct net_device *dev, struct iw_request_info 
 #else
 	ProbeResult         *p = &lp->probe_results;
 #endif  // WARP
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 	DBG_FUNC( "wireless_get_ap_list" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -1073,7 +1189,10 @@ static int wireless_get_ap_list (struct net_device *dev, struct iw_request_info 
 		}
 	}
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_get_ap_list
 /*============================================================================*/
@@ -1106,11 +1225,14 @@ static int wireless_set_sensitivity(struct net_device *dev, struct iw_request_in
 	unsigned long flags;
 	int ret = 0;
 	int dens = sens->value;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_set_sensitivity" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -1134,7 +1256,10 @@ static int wireless_set_sensitivity(struct net_device *dev, struct iw_request_in
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_set_sensitivity
 /*============================================================================*/
@@ -1165,12 +1290,15 @@ static int wireless_get_sensitivity(struct net_device *dev, struct iw_request_in
 {
 	struct wl_private *lp = wl_priv(dev);
 	int ret = 0;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_get_sensitivity" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -1181,7 +1309,10 @@ static int wireless_get_sensitivity(struct net_device *dev, struct iw_request_in
 	sens->value = lp->DistanceBetweenAPs;
 	sens->fixed = 0;	/* auto */
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_get_sensitivity
 /*============================================================================*/
@@ -1215,9 +1346,12 @@ static int wireless_set_essid(struct net_device *dev, struct iw_request_info *in
 	unsigned long flags;
 	int ret = 0;
 
+<<<<<<< HEAD
 	DBG_FUNC( "wireless_set_essid" );
 	DBG_ENTER( DbgInfo );
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
 		goto out;
@@ -1261,7 +1395,10 @@ static int wireless_set_essid(struct net_device *dev, struct iw_request_info *in
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_set_essid
 /*============================================================================*/
@@ -1297,11 +1434,14 @@ static int wireless_get_essid(struct net_device *dev, struct iw_request_info *in
 	int         ret = 0;
 	int         status = -1;
 	wvName_t    *pName;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_get_essid" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -1345,11 +1485,14 @@ static int wireless_get_essid(struct net_device *dev, struct iw_request_info *in
 		data->length = pName->length;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* NOTE: Null terminating is necessary for proper display of the SSID in
 		   the wireless tools */
 		data->length = pName->length + 1;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if( pName->length < HCF_MAX_NAME_LEN ) {
 			pName->name[pName->length] = '\0';
 		}
@@ -1360,9 +1503,12 @@ static int wireless_get_essid(struct net_device *dev, struct iw_request_info *in
 #if 1 //;? (HCF_TYPE) & HCF_TYPE_STA
 					//;?should we return an error status in AP mode
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef RETURN_CURRENT_NETWORKNAME
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* if desired is null ("any"), return current or "any" */
 		if( pName->name[0] == '\0' ) {
@@ -1380,6 +1526,7 @@ static int wireless_get_essid(struct net_device *dev, struct iw_request_info *in
 
 				/* Copy the information into the user buffer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				data->length = pName->length + 1;
 				if( pName->length < HCF_MAX_NAME_LEN ) {
 					pName->name[pName->length] = '\0';
@@ -1388,6 +1535,9 @@ static int wireless_get_essid(struct net_device *dev, struct iw_request_info *in
 =======
 				data->length = pName->length;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				data->length = pName->length;
+>>>>>>> refs/remotes/origin/master
 				data->flags = 1;
 			} else {
 				ret = -EFAULT;
@@ -1395,6 +1545,7 @@ static int wireless_get_essid(struct net_device *dev, struct iw_request_info *in
 			}
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif // RETURN_CURRENT_NETWORKNAME
 #endif // HCF_STA
@@ -1405,6 +1556,10 @@ static int wireless_get_essid(struct net_device *dev, struct iw_request_info *in
 #endif // HCF_STA
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif // HCF_STA
+
+>>>>>>> refs/remotes/origin/master
 		if (pName->length > IW_ESSID_MAX_SIZE) {
 			ret = -EFAULT;
 			goto out_unlock;
@@ -1422,7 +1577,10 @@ out_unlock:
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_get_essid
 /*============================================================================*/
@@ -1454,6 +1612,7 @@ static int wireless_set_encode(struct net_device *dev, struct iw_request_info *i
 	struct wl_private *lp = wl_priv(dev);
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int     ret = 0;
 
 #if 1 //;? #if WIRELESS_EXT > 8 - used unconditionally in the rest of the code...
@@ -1467,18 +1626,25 @@ static int wireless_set_encode(struct net_device *dev, struct iw_request_info *i
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int key_idx = (erq->flags & IW_ENCODE_INDEX) - 1;
 	int ret = 0;
 	bool enable = true;
 
+<<<<<<< HEAD
 	DBG_ENTER(DbgInfo);
 
 	if (lp->portState == WVLAN_PORT_STATE_DISABLED) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (lp->portState == WVLAN_PORT_STATE_DISABLED) {
+>>>>>>> refs/remotes/origin/master
 		ret = -EBUSY;
 		goto out;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	wl_lock( lp, &flags );
 
@@ -1604,6 +1770,8 @@ out_unlock:
 
     	wl_act_int_on( lp );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (erq->flags & IW_ENCODE_DISABLED)
 		enable = false;
 
@@ -1619,11 +1787,15 @@ out_unlock:
 		wl_wext_event_encode(dev);
 
 	wl_act_int_on(lp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
 	return ret;
@@ -1637,6 +1809,10 @@ out:
 	return ret;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*******************************************************************************
  *	wireless_get_encode()
@@ -1664,11 +1840,15 @@ static int wireless_get_encode(struct net_device *dev, struct iw_request_info *i
 	unsigned long flags;
 	int ret = 0;
 	int index;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_get_encode" );
 	DBG_ENTER( DbgInfo );
+=======
+
+>>>>>>> refs/remotes/origin/master
 	DBG_NOTICE(DbgInfo, "GIWENCODE: encrypt: %d, ID: %d\n", lp->EnableEncryption, lp->TransmitKeyID);
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
@@ -1679,7 +1859,10 @@ static int wireless_get_encode(struct net_device *dev, struct iw_request_info *i
 	/* Only super-user can see WEP key */
 	if( !capable( CAP_NET_ADMIN )) {
 		ret = -EPERM;
+<<<<<<< HEAD
 		DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
@@ -1723,7 +1906,10 @@ out_unlock:
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_get_encode
 /*============================================================================*/
@@ -1755,11 +1941,14 @@ static int wireless_set_nickname(struct net_device *dev, struct iw_request_info 
 	struct wl_private *lp = wl_priv(dev);
 	unsigned long flags;
 	int ret = 0;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_set_nickname" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -1769,7 +1958,10 @@ static int wireless_set_nickname(struct net_device *dev, struct iw_request_info 
 #if 0 //;? Needed, was present in original code but not in 7.18 Linux 2.6 kernel version
 	if( !capable(CAP_NET_ADMIN )) {
 		ret = -EPERM;
+<<<<<<< HEAD
 		DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 #endif
@@ -1796,7 +1988,10 @@ static int wireless_set_nickname(struct net_device *dev, struct iw_request_info 
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_set_nickname
 /*============================================================================*/
@@ -1830,11 +2025,14 @@ static int wireless_get_nickname(struct net_device *dev, struct iw_request_info 
 	int         ret = 0;
 	int         status = -1;
 	wvName_t    *pName;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_get_nickname" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -1873,7 +2071,10 @@ static int wireless_get_nickname(struct net_device *dev, struct iw_request_info 
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_get_nickname
 /*============================================================================*/
@@ -1907,10 +2108,13 @@ static int wireless_set_porttype(struct net_device *dev, struct iw_request_info 
 	int ret = 0;
 	hcf_16  portType;
 	hcf_16	createIBSS;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 	DBG_FUNC( "wireless_set_porttype" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -1987,7 +2191,10 @@ static int wireless_set_porttype(struct net_device *dev, struct iw_request_info 
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_set_porttype
 /*============================================================================*/
@@ -2022,11 +2229,14 @@ static int wireless_get_porttype(struct net_device *dev, struct iw_request_info 
 	int     ret = 0;
 	int     status = -1;
 	hcf_16  *pPortType;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_get_porttype" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -2097,7 +2307,10 @@ static int wireless_get_porttype(struct net_device *dev, struct iw_request_info 
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_get_porttype
 /*============================================================================*/
@@ -2129,11 +2342,14 @@ static int wireless_set_power(struct net_device *dev, struct iw_request_info *in
 	struct wl_private *lp = wl_priv(dev);
 	unsigned long flags;
 	int ret = 0;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_set_power" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -2145,8 +2361,11 @@ static int wireless_set_power(struct net_device *dev, struct iw_request_info *in
 #if 0 //;? Needed, was present in original code but not in 7.18 Linux 2.6 kernel version
 	if( !capable( CAP_NET_ADMIN )) {
 		ret = -EPERM;
+<<<<<<< HEAD
 
 		DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 #endif
@@ -2170,7 +2389,10 @@ static int wireless_set_power(struct net_device *dev, struct iw_request_info *in
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_set_power
 /*============================================================================*/
@@ -2203,9 +2425,12 @@ static int wireless_get_power(struct net_device *dev, struct iw_request_info *in
 	struct wl_private *lp = wl_priv(dev);
 	unsigned long flags;
 	int ret = 0;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wireless_get_power" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -2232,7 +2457,10 @@ static int wireless_get_power(struct net_device *dev, struct iw_request_info *in
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_get_power
 /*============================================================================*/
@@ -2264,9 +2492,12 @@ static int wireless_get_tx_power(struct net_device *dev, struct iw_request_info 
 	struct wl_private *lp = wl_priv(dev);
 	unsigned long flags;
 	int ret = 0;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wireless_get_tx_power" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -2292,7 +2523,10 @@ static int wireless_get_tx_power(struct net_device *dev, struct iw_request_info 
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_get_tx_power
 /*============================================================================*/
@@ -2325,11 +2559,14 @@ static int wireless_set_rts_threshold (struct net_device *dev, struct iw_request
 	struct wl_private *lp = wl_priv(dev);
 	unsigned long flags;
 	int rthr = rts->value;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_set_rts_threshold" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -2342,6 +2579,7 @@ static int wireless_set_rts_threshold (struct net_device *dev, struct iw_request
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if WIRELESS_EXT > 8
 	if( rts->disabled ) {
 		rthr = 2347;
@@ -2352,6 +2590,11 @@ static int wireless_set_rts_threshold (struct net_device *dev, struct iw_request
 		rthr = 2347;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if( rts->disabled ) {
+		rthr = 2347;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if(( rthr < 256 ) || ( rthr > 2347 )) {
 		ret = -EINVAL;
@@ -2371,7 +2614,10 @@ static int wireless_set_rts_threshold (struct net_device *dev, struct iw_request
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_set_rts_threshold
 /*============================================================================*/
@@ -2403,10 +2649,13 @@ static int wireless_get_rts_threshold (struct net_device *dev, struct iw_request
 	int ret = 0;
 	struct wl_private *lp = wl_priv(dev);
 	unsigned long flags;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 	DBG_FUNC( "wireless_get_rts_threshold" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -2420,6 +2669,7 @@ static int wireless_get_rts_threshold (struct net_device *dev, struct iw_request
 	rts->value = lp->RTSThreshold;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if WIRELESS_EXT > 8
 
 	rts->disabled = ( rts->value == 2347 );
@@ -2430,6 +2680,10 @@ static int wireless_get_rts_threshold (struct net_device *dev, struct iw_request
 	rts->disabled = ( rts->value == 2347 );
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rts->disabled = ( rts->value == 2347 );
+
+>>>>>>> refs/remotes/origin/master
 	rts->fixed = 1;
 
     	wl_act_int_on( lp );
@@ -2437,7 +2691,10 @@ static int wireless_get_rts_threshold (struct net_device *dev, struct iw_request
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_get_rts_threshold
 /*============================================================================*/
@@ -2474,11 +2731,14 @@ static int wireless_set_rate(struct net_device *dev, struct iw_request_info *inf
 	int status = -1;
 	int index = 0;
 #endif  // WARP
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_set_rate" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -2504,7 +2764,10 @@ static int wireless_set_rate(struct net_device *dev, struct iw_request_info *inf
 		DBG_PRINT( "Index: %d\n", index );
 	} else {
 		DBG_ERROR( DbgInfo, "Could not determine radio frequency\n" );
+<<<<<<< HEAD
 		DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto out_unlock;
 	}
@@ -2665,7 +2928,10 @@ out_unlock:
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_set_rate
 /*============================================================================*/
@@ -2700,11 +2966,14 @@ static int wireless_get_rate(struct net_device *dev, struct iw_request_info *inf
 	int     ret = 0;
 	int     status = -1;
 	hcf_16  txRate;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_get_rate" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -2780,7 +3049,10 @@ static int wireless_get_rate(struct net_device *dev, struct iw_request_info *inf
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_get_rate
 /*============================================================================*/
@@ -2812,11 +3084,14 @@ out:
 int wireless_get_private_interface( struct iwreq *wrq, struct wl_private *lp )
 {
 	int ret = 0;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_get_private_interface" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -2837,10 +3112,15 @@ int wireless_get_private_interface( struct iwreq *wrq, struct wl_private *lp )
 		/* Verify the user buffer */
 		ret = verify_area( VERIFY_WRITE, wrq->u.data.pointer, sizeof( priv ));
 
+<<<<<<< HEAD
 		if( ret != 0 ) {
 			DBG_LEAVE( DbgInfo );
 			return ret;
 		}
+=======
+		if( ret != 0 )
+			return ret;
+>>>>>>> refs/remotes/origin/master
 
 		/* Copy the data into the user's buffer */
 		wrq->u.data.length = NELEM( priv );
@@ -2848,7 +3128,10 @@ int wireless_get_private_interface( struct iwreq *wrq, struct wl_private *lp )
 	}
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_get_private_interface
 /*============================================================================*/
@@ -2857,10 +3140,13 @@ out:
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if WIRELESS_EXT > 13
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *	wireless_set_scan()
  *******************************************************************************
@@ -2887,12 +3173,17 @@ static int wireless_set_scan(struct net_device *dev, struct iw_request_info *inf
 	int                 ret = 0;
 	int                 status = -1;
 	int		    retries = 0;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 	//;? Note: shows results as trace, retruns always 0 unless BUSY
 
 	DBG_FUNC( "wireless_set_scan" );
 	DBG_ENTER( DbgInfo );
+=======
+
+	//;? Note: shows results as trace, returns always 0 unless BUSY
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -2939,7 +3230,11 @@ retry:
 
 	DBG_TRACE( DbgInfo, "CFG_SCAN_CHANNEL result      : 0x%x\n", status );
 
+<<<<<<< HEAD
 	// Holding the lock too long, make a gap to allow other processes
+=======
+	// Holding the lock too long, makes a gap to allow other processes
+>>>>>>> refs/remotes/origin/master
 	wl_unlock(lp, &flags);
 	wl_lock( lp, &flags );
 
@@ -2950,7 +3245,11 @@ retry:
 			DBG_TRACE( DbgInfo, "Reset card to recover, attempt: %d\n", retries );
 			wl_reset( dev );
 
+<<<<<<< HEAD
 			// Holding the lock too long, make a gap to allow other processes
+=======
+			// Holding the lock too long, makes a gap to allow other processes
+>>>>>>> refs/remotes/origin/master
 			wl_unlock(lp, &flags);
 			wl_lock( lp, &flags );
 
@@ -2967,7 +3266,11 @@ retry:
 
 	status = hcf_put_info( &( lp->hcfCtx ), (LTVP)&( lp->ltvRecord ));
 
+<<<<<<< HEAD
 	// Holding the lock too long, make a gap to allow other processes
+=======
+	// Holding the lock too long, makes a gap to allow other processes
+>>>>>>> refs/remotes/origin/master
 	wl_unlock(lp, &flags);
 	wl_lock( lp, &flags );
 
@@ -2975,7 +3278,11 @@ retry:
 
 	/* Initiate the scan */
 	/* NOTE: Using HCF_ACT_SCAN has been removed, as using HCF_ACT_ACS_SCAN to
+<<<<<<< HEAD
 	   retrieve probe responses must always be used to support WPA */
+=======
+	   retrieve probe response must always be used to support WPA */
+>>>>>>> refs/remotes/origin/master
 	status = hcf_action( &( lp->hcfCtx ), HCF_ACT_ACS_SCAN );
 
 	if( status == HCF_SUCCESS ) {
@@ -2989,7 +3296,10 @@ retry:
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_set_scan
 /*============================================================================*/
@@ -3029,11 +3339,14 @@ static int wireless_get_scan(struct net_device *dev, struct iw_request_info *inf
 	hcf_8               msg[512];
 	hcf_8               *wpa_ie;
 	hcf_16              wpa_ie_len;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wireless_get_scan" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if(lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
@@ -3070,12 +3383,17 @@ static int wireless_get_scan(struct net_device *dev, struct iw_request_info *inf
 		iwe.len                 = IW_EV_ADDR_LEN;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf = IWE_STREAM_ADD_EVENT(info, buf, buf_end, &iwe, IW_EV_ADDR_LEN);
 
 =======
 		buf = iwe_stream_add_event(info, buf, buf_end,
 					   &iwe, IW_EV_ADDR_LEN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		buf = iwe_stream_add_event(info, buf, buf_end,
+					   &iwe, IW_EV_ADDR_LEN);
+>>>>>>> refs/remotes/origin/master
 
 		/* Use the mode to indicate if it's a station or AP */
 		/* Won't always be an AP if in IBSS mode */
@@ -3092,12 +3410,17 @@ static int wireless_get_scan(struct net_device *dev, struct iw_request_info *inf
 		iwe.len = IW_EV_UINT_LEN;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf = IWE_STREAM_ADD_EVENT(info, buf, buf_end, &iwe, IW_EV_UINT_LEN);
 
 =======
 		buf = iwe_stream_add_event(info, buf, buf_end,
 					   &iwe, IW_EV_UINT_LEN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		buf = iwe_stream_add_event(info, buf, buf_end,
+					   &iwe, IW_EV_UINT_LEN);
+>>>>>>> refs/remotes/origin/master
 
 		/* Any quality information */
 		memset(&iwe, 0, sizeof(iwe));
@@ -3110,11 +3433,16 @@ static int wireless_get_scan(struct net_device *dev, struct iw_request_info *inf
 		iwe.len             = IW_EV_QUAL_LEN;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf = IWE_STREAM_ADD_EVENT(info, buf, buf_end, &iwe, IW_EV_QUAL_LEN);
 =======
 		buf = iwe_stream_add_event(info, buf, buf_end,
 					   &iwe, IW_EV_QUAL_LEN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		buf = iwe_stream_add_event(info, buf, buf_end,
+					   &iwe, IW_EV_QUAL_LEN);
+>>>>>>> refs/remotes/origin/master
 
 
 		/* ESSID information */
@@ -3126,11 +3454,16 @@ static int wireless_get_scan(struct net_device *dev, struct iw_request_info *inf
 			iwe.u.data.flags = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			buf = IWE_STREAM_ADD_POINT(info, buf, buf_end, &iwe, &probe_resp->rawData[2]);
 =======
 			buf = iwe_stream_add_point(info, buf, buf_end,
 					       &iwe, &probe_resp->rawData[2]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			buf = iwe_stream_add_point(info, buf, buf_end,
+					       &iwe, &probe_resp->rawData[2]);
+>>>>>>> refs/remotes/origin/master
 		}
 
 
@@ -3149,10 +3482,14 @@ static int wireless_get_scan(struct net_device *dev, struct iw_request_info *inf
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf = IWE_STREAM_ADD_POINT(info, buf, buf_end, &iwe, NULL);
 =======
 		buf = iwe_stream_add_point(info, buf, buf_end, &iwe, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		buf = iwe_stream_add_point(info, buf, buf_end, &iwe, NULL);
+>>>>>>> refs/remotes/origin/master
 
 
 		/* Frequency Info */
@@ -3164,16 +3501,22 @@ static int wireless_get_scan(struct net_device *dev, struct iw_request_info *inf
 		iwe.u.freq.e = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf = IWE_STREAM_ADD_EVENT(info, buf, buf_end, &iwe, IW_EV_FREQ_LEN);
 
 
 #if WIRELESS_EXT > 14
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		buf = iwe_stream_add_event(info, buf, buf_end,
 					   &iwe, IW_EV_FREQ_LEN);
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Custom info (Beacon Interval) */
 		memset( &iwe, 0, sizeof( iwe ));
 		memset( msg, 0, sizeof( msg ));
@@ -3183,21 +3526,28 @@ static int wireless_get_scan(struct net_device *dev, struct iw_request_info *inf
 		iwe.u.data.length = strlen( msg );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf = IWE_STREAM_ADD_POINT(info, buf, buf_end, &iwe, msg);
 
 
 		/* Custom info (WPA-IE) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		buf = iwe_stream_add_point(info, buf, buf_end, &iwe, msg);
 
 
 		/* WPA-IE */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		wpa_ie = NULL;
 		wpa_ie_len = 0;
 
 		wpa_ie = wl_parse_wpa_ie( probe_resp, &wpa_ie_len );
 		if( wpa_ie != NULL ) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			memset( &iwe, 0, sizeof( iwe ));
 			memset( msg, 0, sizeof( msg ));
@@ -3212,6 +3562,8 @@ static int wireless_get_scan(struct net_device *dev, struct iw_request_info *inf
 		/* Add other custom info in formatted string format as needed... */
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			memset(&iwe, 0, sizeof(iwe));
 
 			iwe.cmd = IWEVGENIE;
@@ -3222,7 +3574,10 @@ static int wireless_get_scan(struct net_device *dev, struct iw_request_info *inf
 		}
 
 		/* Add other custom info in formatted string format as needed... */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	data->length = buf - extra;
@@ -3234,17 +3589,23 @@ out_unlock:
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_get_scan
 /*============================================================================*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif  // WIRELESS_EXT > 13
 
 
 #if WIRELESS_EXT > 17
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if DBG
 static const char * const auth_names[] = {
 	"IW_AUTH_WPA_VERSION",
@@ -3263,7 +3624,10 @@ static const char * const auth_names[] = {
 	"Unsupported"
 };
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int wireless_set_auth(struct net_device *dev,
 			  struct iw_request_info *info,
@@ -3272,14 +3636,18 @@ static int wireless_set_auth(struct net_device *dev,
 	struct wl_private *lp = wl_priv(dev);
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int			      ret;
 	int			      iwa_idx = data->flags & IW_AUTH_INDEX;
 	int			      iwa_val = data->value;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ltv_t ltv;
 	int ret;
 	int iwa_idx = data->flags & IW_AUTH_INDEX;
 	int iwa_val = data->value;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	DBG_FUNC( "wireless_set_auth" );
@@ -3290,6 +3658,10 @@ static int wireless_set_auth(struct net_device *dev,
 =======
 	if (lp->portState == WVLAN_PORT_STATE_DISABLED) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (lp->portState == WVLAN_PORT_STATE_DISABLED) {
+>>>>>>> refs/remotes/origin/master
 		ret = -EBUSY;
 		goto out;
 	}
@@ -3298,6 +3670,7 @@ static int wireless_set_auth(struct net_device *dev,
 
     	wl_act_int_off( lp );
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch (iwa_idx) {
 		case IW_AUTH_WPA_VERSION:
@@ -3383,6 +3756,8 @@ static int wireless_set_auth(struct net_device *dev,
 			ret = -EINVAL;
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (iwa_idx > IW_AUTH_MFP)
 		iwa_idx = IW_AUTH_MFP + 1;
 	DBG_TRACE(DbgInfo, "%s\n", auth_names[iwa_idx]);
@@ -3479,7 +3854,10 @@ static int wireless_set_auth(struct net_device *dev,
 		/* return an error */
 		ret = -EOPNOTSUPP;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
     	wl_act_int_on( lp );
@@ -3487,12 +3865,16 @@ static int wireless_set_auth(struct net_device *dev,
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 } // wireless_set_auth
 /*============================================================================*/
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int hermes_set_key(ltv_t *ltv, int alg, int key_idx, u8 *addr,
@@ -3725,6 +4107,8 @@ out_unlock:
 
     	wl_act_int_on( lp );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void flush_tx(struct wl_private *lp)
 {
 	ltv_t ltv;
@@ -3734,7 +4118,11 @@ static void flush_tx(struct wl_private *lp)
 	 * Make sure that there is no data queued up in the firmware
 	 * before setting the TKIP keys. If this check is not
 	 * performed, some data may be sent out with incorrect MIC
+<<<<<<< HEAD
 	 * and cause synchronizarion errors with the AP
+=======
+	 * and cause synchronization errors with the AP
+>>>>>>> refs/remotes/origin/master
 	 */
 	/* Check every 1ms for 100ms */
 	for (count = 0; count < 100; count++) {
@@ -3768,8 +4156,11 @@ static int wireless_set_encodeext(struct net_device *dev,
 	bool enable = true;
 	bool set_tx = false;
 
+<<<<<<< HEAD
 	DBG_ENTER(DbgInfo);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (lp->portState == WVLAN_PORT_STATE_DISABLED) {
 		ret = -EBUSY;
 		goto out;
@@ -3795,7 +4186,10 @@ static int wireless_set_encodeext(struct net_device *dev,
 
 		if (sizeof(ext->rx_seq) != 8) {
 			DBG_TRACE(DbgInfo, "rx_seq size mismatch\n");
+<<<<<<< HEAD
 			DBG_LEAVE(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 			ret = -EINVAL;
 			goto out_unlock;
 		}
@@ -3865,11 +4259,15 @@ static int wireless_set_encodeext(struct net_device *dev,
 out_unlock:
 
 	wl_act_int_on(lp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	wl_unlock(lp, &flags);
 
 out:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
 	return ret;
@@ -3879,10 +4277,15 @@ out:
 	return ret;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+}
+>>>>>>> refs/remotes/origin/master
 /*============================================================================*/
 
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int wireless_get_genie(struct net_device *dev,
 					   struct iw_request_info *info,
@@ -3921,6 +4324,8 @@ static int wireless_get_genie(struct net_device *dev,
 out:
 	DBG_LEAVE( DbgInfo );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int wireless_set_genie(struct net_device *dev,
 			      struct iw_request_info *info,
 			      struct iw_point *data, char *extra)
@@ -3928,24 +4333,33 @@ static int wireless_set_genie(struct net_device *dev,
 {
 	int   ret = 0;
 
+<<<<<<< HEAD
 	DBG_ENTER(DbgInfo);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* We can't write this to the card, but apparently this
 	 * operation needs to succeed */
 	ret = 0;
 
+<<<<<<< HEAD
 	DBG_LEAVE(DbgInfo);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 /*============================================================================*/
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif // WIRELESS_EXT > 17
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *	wl_wireless_stats()
  *******************************************************************************
@@ -3969,11 +4383,15 @@ struct iw_statistics * wl_wireless_stats( struct net_device *dev )
 {
 	struct iw_statistics    *pStats;
 	struct wl_private       *lp = wl_priv(dev);
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 
 	DBG_FUNC( "wl_wireless_stats" );
 	DBG_ENTER(DbgInfo);
+=======
+
+>>>>>>> refs/remotes/origin/master
 	DBG_PARAM(DbgInfo, "dev", "%s (0x%p)", dev->name, dev);
 
 	pStats = NULL;
@@ -4000,9 +4418,12 @@ struct iw_statistics * wl_wireless_stats( struct net_device *dev )
 			pQual = (CFG_COMMS_QUALITY_STRCT *)&( lp->ltvRecord );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef USE_DBM
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			pStats->qual.qual  = (u_char) CNV_LITTLE_TO_INT( pQual->coms_qual );
 			pStats->qual.level = (u_char) dbm( CNV_LITTLE_TO_INT( pQual->signal_lvl ));
 			pStats->qual.noise = (u_char) dbm( CNV_LITTLE_TO_INT( pQual->noise_lvl ));
@@ -4011,6 +4432,7 @@ struct iw_statistics * wl_wireless_stats( struct net_device *dev )
                                                  IW_QUAL_LEVEL_UPDATED |
                                                  IW_QUAL_NOISE_UPDATED |
                                                  IW_QUAL_DBM);
+<<<<<<< HEAD
 <<<<<<< HEAD
 #else
 			pStats->qual.qual = percent( CNV_LITTLE_TO_INT( pQual->coms_qual ),
@@ -4031,6 +4453,8 @@ struct iw_statistics * wl_wireless_stats( struct net_device *dev )
 #endif /* USE_DBM */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			memset( &( pStats->qual ), 0, sizeof( pStats->qual ));
 		}
@@ -4058,7 +4482,10 @@ struct iw_statistics * wl_wireless_stats( struct net_device *dev )
 		}
 	}
 
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return pStats;
 } // wl_wireless_stats
 /*============================================================================*/
@@ -4092,10 +4519,13 @@ struct iw_statistics * wl_get_wireless_stats( struct net_device *dev )
 	unsigned long           flags;
 	struct wl_private       *lp = wl_priv(dev);
 	struct iw_statistics    *pStats = NULL;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 	DBG_FUNC( "wl_get_wireless_stats" );
 	DBG_ENTER(DbgInfo);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	wl_lock( lp, &flags );
 
@@ -4113,7 +4543,10 @@ struct iw_statistics * wl_get_wireless_stats( struct net_device *dev )
 
 	wl_unlock(lp, &flags);
 
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return pStats;
 } // wl_get_wireless_stats
 
@@ -4202,9 +4635,12 @@ inline void wl_spy_gather( struct net_device *dev, u_char *mac )
 void wl_wext_event_freq( struct net_device *dev )
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if WIRELESS_EXT > 13
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	union iwreq_data wrqu;
 	struct wl_private *lp = wl_priv(dev);
 	/*------------------------------------------------------------------------*/
@@ -4217,9 +4653,12 @@ void wl_wext_event_freq( struct net_device *dev )
 
 	wireless_send_event( dev, SIOCSIWFREQ, &wrqu, NULL );
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* WIRELESS_EXT > 13 */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return;
 } // wl_wext_event_freq
@@ -4250,9 +4689,12 @@ void wl_wext_event_freq( struct net_device *dev )
 void wl_wext_event_mode( struct net_device *dev )
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if WIRELESS_EXT > 13
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	union iwreq_data wrqu;
 	struct wl_private *lp = wl_priv(dev);
 	/*------------------------------------------------------------------------*/
@@ -4268,9 +4710,12 @@ void wl_wext_event_mode( struct net_device *dev )
 
 	wireless_send_event( dev, SIOCSIWMODE, &wrqu, NULL );
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* WIRELESS_EXT > 13 */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return;
 } // wl_wext_event_mode
@@ -4301,9 +4746,12 @@ void wl_wext_event_mode( struct net_device *dev )
 void wl_wext_event_essid( struct net_device *dev )
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if WIRELESS_EXT > 13
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	union iwreq_data wrqu;
 	struct wl_private *lp = wl_priv(dev);
 	/*------------------------------------------------------------------------*/
@@ -4321,9 +4769,12 @@ void wl_wext_event_essid( struct net_device *dev )
 
 	wireless_send_event( dev, SIOCSIWESSID, &wrqu, lp->NetworkName );
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* WIRELESS_EXT > 13 */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return;
 } // wl_wext_event_essid
@@ -4354,9 +4805,12 @@ void wl_wext_event_essid( struct net_device *dev )
 void wl_wext_event_encode( struct net_device *dev )
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if WIRELESS_EXT > 13
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	union iwreq_data wrqu;
 	struct wl_private *lp = wl_priv(dev);
 	int index = 0;
@@ -4399,9 +4853,12 @@ void wl_wext_event_encode( struct net_device *dev )
 	wireless_send_event( dev, SIOCSIWENCODE, &wrqu,
 						 lp->DefaultKeys.key[index].key );
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* WIRELESS_EXT > 13 */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return;
 } // wl_wext_event_encode
@@ -4432,9 +4889,12 @@ void wl_wext_event_encode( struct net_device *dev )
 void wl_wext_event_ap( struct net_device *dev )
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if WIRELESS_EXT > 13
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	union iwreq_data wrqu;
 	struct wl_private *lp = wl_priv(dev);
 	int status;
@@ -4445,7 +4905,11 @@ void wl_wext_event_ap( struct net_device *dev )
 	   this event BEFORE sending the association event, as there are timing
 	   issues with the hostap supplicant. The supplicant will attempt to process
 	   an EAPOL-Key frame from an AP before receiving this information, which
+<<<<<<< HEAD
 	   is required properly process the said frame. */
+=======
+	   is required for a proper processed frame. */
+>>>>>>> refs/remotes/origin/master
 	wl_wext_event_assoc_ie( dev );
 
 	/* Get the BSSID */
@@ -4464,10 +4928,13 @@ void wl_wext_event_ap( struct net_device *dev )
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* WIRELESS_EXT > 13 */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return;
 } // wl_wext_event_ap
 /*============================================================================*/
@@ -4496,9 +4963,12 @@ void wl_wext_event_ap( struct net_device *dev )
 void wl_wext_event_scan_complete( struct net_device *dev )
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if WIRELESS_EXT > 13
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	union iwreq_data wrqu;
 	/*------------------------------------------------------------------------*/
 
@@ -4508,9 +4978,12 @@ void wl_wext_event_scan_complete( struct net_device *dev )
 	wrqu.addr.sa_family = ARPHRD_ETHER;
 	wireless_send_event( dev, SIOCGIWSCAN, &wrqu, NULL );
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* WIRELESS_EXT > 13 */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return;
 } // wl_wext_event_scan_complete
@@ -4541,9 +5014,12 @@ void wl_wext_event_scan_complete( struct net_device *dev )
 void wl_wext_event_new_sta( struct net_device *dev )
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if WIRELESS_EXT > 14
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	union iwreq_data wrqu;
 	/*------------------------------------------------------------------------*/
 
@@ -4555,9 +5031,12 @@ void wl_wext_event_new_sta( struct net_device *dev )
 	wrqu.addr.sa_family = ARPHRD_ETHER;
 	wireless_send_event( dev, IWEVREGISTERED, &wrqu, NULL );
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* WIRELESS_EXT > 14 */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return;
 } // wl_wext_event_new_sta
@@ -4588,9 +5067,12 @@ void wl_wext_event_new_sta( struct net_device *dev )
 void wl_wext_event_expired_sta( struct net_device *dev )
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if WIRELESS_EXT > 14
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	union iwreq_data wrqu;
 	/*------------------------------------------------------------------------*/
 
@@ -4601,9 +5083,12 @@ void wl_wext_event_expired_sta( struct net_device *dev )
 	wrqu.addr.sa_family = ARPHRD_ETHER;
 	wireless_send_event( dev, IWEVEXPIRED, &wrqu, NULL );
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* WIRELESS_EXT > 14 */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return;
 } // wl_wext_event_expired_sta
@@ -4633,6 +5118,7 @@ void wl_wext_event_expired_sta( struct net_device *dev )
 void wl_wext_event_mic_failed( struct net_device *dev )
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if WIRELESS_EXT > 14
 	char               msg[512];
 	union iwreq_data   wrqu;
@@ -4642,6 +5128,11 @@ void wl_wext_event_mic_failed( struct net_device *dev )
 	struct wl_private *lp = wl_priv(dev);
 	struct iw_michaelmicfailure wxmic;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	union iwreq_data   wrqu;
+	struct wl_private *lp = wl_priv(dev);
+	struct iw_michaelmicfailure wxmic;
+>>>>>>> refs/remotes/origin/master
 	int                key_idx;
 	char              *addr1;
 	char              *addr2;
@@ -4663,6 +5154,7 @@ void wl_wext_event_mic_failed( struct net_device *dev )
 	DBG_PRINT( "MIC FAIL - KEY USED : %d, STATUS : 0x%04x\n", key_idx,
 			   hdr->status );
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	memset( &wrqu, 0, sizeof( wrqu ));
 	memset( msg, 0, sizeof( msg ));
@@ -4690,6 +5182,8 @@ void wl_wext_event_mic_failed( struct net_device *dev )
 	wireless_send_event( dev, IWEVCUSTOM, &wrqu, msg );
 #endif /* WIRELESS_EXT > 14 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(&wrqu, 0, sizeof(wrqu));
 	memset(&wxmic, 0, sizeof(wxmic));
 
@@ -4701,7 +5195,10 @@ void wl_wext_event_mic_failed( struct net_device *dev )
 
 	wrqu.data.length = sizeof(wxmic);
 	wireless_send_event(dev, IWEVMICHAELMICFAILURE, &wrqu, (char *)&wxmic);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return;
 } // wl_wext_event_mic_failed
@@ -4732,10 +5229,13 @@ void wl_wext_event_mic_failed( struct net_device *dev )
 void wl_wext_event_assoc_ie( struct net_device *dev )
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if WIRELESS_EXT > 14
 	char               msg[512];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	union iwreq_data   wrqu;
 	struct wl_private *lp = wl_priv(dev);
 	int status;
@@ -4747,9 +5247,12 @@ void wl_wext_event_assoc_ie( struct net_device *dev )
 
 	memset( &wrqu, 0, sizeof( wrqu ));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memset( msg, 0, sizeof( msg ));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Retrieve the Association Request IE */
 	lp->ltvRecord.len = 45;
@@ -4762,6 +5265,7 @@ void wl_wext_event_assoc_ie( struct net_device *dev )
 		memcpy( &data.rawData, &( lp->ltvRecord.u.u8[1] ), 88 );
 		wpa_ie = wl_parse_wpa_ie( &data, &length );
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* Because this event (Association WPA-IE) is not part of the Wireless
 		Extensions yet, it must be passed as a string using an IWEVCUSTOM event.
@@ -4782,6 +5286,8 @@ void wl_wext_event_assoc_ie( struct net_device *dev )
 	}
 #endif /* WIRELESS_EXT > 14 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if( length != 0 )
 		{
 			wrqu.data.length = wpa_ie[1] + 2;
@@ -4794,7 +5300,10 @@ void wl_wext_event_assoc_ie( struct net_device *dev )
 					    &wrqu, wpa_ie);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return;
 }  // wl_wext_event_assoc_ie
@@ -4803,6 +5312,7 @@ void wl_wext_event_assoc_ie( struct net_device *dev )
 
 static const iw_handler wl_handler[] =
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
                 (iw_handler) wireless_commit,           /* SIOCSIWCOMMIT */
                 (iw_handler) wireless_get_protocol,     /* SIOCGIWNAME */
@@ -4865,6 +5375,8 @@ static const iw_handler wl_handler[] =
                 (iw_handler) NULL,                      /* SIOCSIWPMKSA */
                 (iw_handler) NULL,                      /* -- hole -- */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	IW_HANDLER(SIOCSIWCOMMIT, (iw_handler) wireless_commit),
 	IW_HANDLER(SIOCGIWNAME, (iw_handler) wireless_get_protocol),
 	IW_HANDLER(SIOCSIWFREQ, (iw_handler) wireless_set_frequency),
@@ -4898,7 +5410,10 @@ static const iw_handler wl_handler[] =
 	IW_HANDLER(SIOCSIWGENIE, (iw_handler) wireless_set_genie),
 	IW_HANDLER(SIOCSIWAUTH, (iw_handler) wireless_set_auth),
 	IW_HANDLER(SIOCSIWENCODEEXT, (iw_handler) wireless_set_encodeext),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const iw_handler wl_private_handler[] =
@@ -4935,7 +5450,10 @@ const struct iw_handler_def wl_iw_handler_def =
         .get_wireless_stats = wl_get_wireless_stats,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #endif // WIRELESS_EXT
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

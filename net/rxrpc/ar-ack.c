@@ -19,7 +19,11 @@
 #include <net/af_rxrpc.h>
 #include "ar-internal.h"
 
+<<<<<<< HEAD
 static unsigned rxrpc_ack_defer = 1;
+=======
+static unsigned int rxrpc_ack_defer = 1;
+>>>>>>> refs/remotes/origin/master
 
 static const char *const rxrpc_acks[] = {
 	"---", "REQ", "DUP", "OOS", "WIN", "MEM", "PNG", "PNR", "DLY", "IDL",
@@ -196,10 +200,14 @@ static void rxrpc_resend(struct rxrpc_call *call)
 
 		if (sp->need_resend) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sp->need_resend = 0;
 =======
 			sp->need_resend = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			sp->need_resend = false;
+>>>>>>> refs/remotes/origin/master
 
 			/* each Tx packet has a new serial number */
 			sp->hdr.serial =
@@ -221,10 +229,14 @@ static void rxrpc_resend(struct rxrpc_call *call)
 
 		if (time_after_eq(jiffies + 1, sp->resend_at)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sp->need_resend = 1;
 =======
 			sp->need_resend = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			sp->need_resend = true;
+>>>>>>> refs/remotes/origin/master
 			resend |= 1;
 		} else if (resend & 2) {
 			if (time_before(sp->resend_at, resend_at))
@@ -274,10 +286,14 @@ static void rxrpc_resend_timer(struct rxrpc_call *call)
 			;
 		} else if (time_after_eq(jiffies + 1, sp->resend_at)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sp->need_resend = 1;
 =======
 			sp->need_resend = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			sp->need_resend = true;
+>>>>>>> refs/remotes/origin/master
 			resend |= 1;
 		} else if (resend & 2) {
 			if (time_before(sp->resend_at, resend_at))
@@ -327,18 +343,24 @@ static int rxrpc_process_soft_ACKs(struct rxrpc_call *call,
 		switch (sacks[loop]) {
 		case RXRPC_ACK_TYPE_ACK:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sp->need_resend = 0;
 			*p_txb |= 1;
 			break;
 		case RXRPC_ACK_TYPE_NACK:
 			sp->need_resend = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			sp->need_resend = false;
 			*p_txb |= 1;
 			break;
 		case RXRPC_ACK_TYPE_NACK:
 			sp->need_resend = true;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			*p_txb &= ~1;
 			resend = 1;
 			break;
@@ -365,20 +387,28 @@ static int rxrpc_process_soft_ACKs(struct rxrpc_call *call,
 		if (*p_txb & 1) {
 			/* packet must have been discarded */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sp->need_resend = 1;
 =======
 			sp->need_resend = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			sp->need_resend = true;
+>>>>>>> refs/remotes/origin/master
 			*p_txb &= ~1;
 			resend |= 1;
 		} else if (sp->need_resend) {
 			;
 		} else if (time_after_eq(jiffies + 1, sp->resend_at)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sp->need_resend = 1;
 =======
 			sp->need_resend = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			sp->need_resend = true;
+>>>>>>> refs/remotes/origin/master
 			resend |= 1;
 		} else if (resend & 2) {
 			if (time_before(sp->resend_at, resend_at))
@@ -576,11 +606,19 @@ static void rxrpc_zap_tx_window(struct rxrpc_call *call)
  * process the extra information that may be appended to an ACK packet
  */
 static void rxrpc_extract_ackinfo(struct rxrpc_call *call, struct sk_buff *skb,
+<<<<<<< HEAD
 				  unsigned latest, int nAcks)
 {
 	struct rxrpc_ackinfo ackinfo;
 	struct rxrpc_peer *peer;
 	unsigned mtu;
+=======
+				  unsigned int latest, int nAcks)
+{
+	struct rxrpc_ackinfo ackinfo;
+	struct rxrpc_peer *peer;
+	unsigned int mtu;
+>>>>>>> refs/remotes/origin/master
 
 	if (skb_copy_bits(skb, nAcks + 3, &ackinfo, sizeof(ackinfo)) < 0) {
 		_leave(" [no ackinfo]");

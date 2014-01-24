@@ -1,7 +1,11 @@
 /*
  * ELF definitions for the Hexagon architecture
  *
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -104,6 +108,19 @@ typedef unsigned long elf_fpregset_t;
  * Bypass the whole "regsets" thing for now and use the define.
  */
 
+<<<<<<< HEAD
+=======
+#if CONFIG_HEXAGON_ARCH_VERSION >= 4
+#define CS_COPYREGS(DEST,REGS) \
+do {\
+	DEST.cs0 = REGS->cs0;\
+	DEST.cs1 = REGS->cs1;\
+} while (0)
+#else
+#define CS_COPYREGS(DEST,REGS)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #define ELF_CORE_COPY_REGS(DEST, REGS)	\
 do {					\
 	DEST.r0 = REGS->r00;		\
@@ -148,13 +165,21 @@ do {					\
 	DEST.p3_0 = REGS->preds;	\
 	DEST.gp = REGS->gp;		\
 	DEST.ugp = REGS->ugp;		\
+<<<<<<< HEAD
 	DEST.pc = pt_elr(REGS);	\
+=======
+	CS_COPYREGS(DEST,REGS);		\
+	DEST.pc = pt_elr(REGS);		\
+>>>>>>> refs/remotes/origin/master
 	DEST.cause = pt_cause(REGS);	\
 	DEST.badva = pt_badva(REGS);	\
 } while (0);
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This is used to ensure we don't load something for the wrong architecture.
  * Checks the machine and ABI type.
@@ -168,6 +193,7 @@ do {					\
 #define ELF_DATA	ELFDATA2LSB
 #define ELF_ARCH	EM_HEXAGON
 
+<<<<<<< HEAD
 #ifdef CONFIG_HEXAGON_ARCH_V2
 #define ELF_CORE_EFLAGS 0x1
 #endif
@@ -177,6 +203,17 @@ do {					\
 #endif
 
 #ifdef CONFIG_HEXAGON_ARCH_V4
+=======
+#if CONFIG_HEXAGON_ARCH_VERSION == 2
+#define ELF_CORE_EFLAGS 0x1
+#endif
+
+#if CONFIG_HEXAGON_ARCH_VERSION == 3
+#define ELF_CORE_EFLAGS 0x2
+#endif
+
+#if CONFIG_HEXAGON_ARCH_VERSION == 4
+>>>>>>> refs/remotes/origin/master
 #define ELF_CORE_EFLAGS 0x3
 #endif
 
@@ -216,10 +253,13 @@ do {					\
  */
 #define ELF_PLATFORM  (NULL)
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
 #define SET_PERSONALITY(ex) set_personality(PER_LINUX)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define ARCH_HAS_SETUP_ADDITIONAL_PAGES 1
 struct linux_binprm;
 extern int arch_setup_additional_pages(struct linux_binprm *bprm,

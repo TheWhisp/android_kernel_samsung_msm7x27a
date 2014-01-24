@@ -40,15 +40,21 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define VERSION "0.6"
 #define WATCHDOG_NAME "mixcomwd"
 #define PFX WATCHDOG_NAME ": "
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #define VERSION "0.6"
 #define WATCHDOG_NAME "mixcomwd"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/module.h>
 #include <linux/moduleparam.h>
@@ -79,7 +85,11 @@
 static struct {
 	int ioport;
 	int id;
+<<<<<<< HEAD
 } mixcomwd_io_info[] __devinitdata = {
+=======
+} mixcomwd_io_info[] = {
+>>>>>>> refs/remotes/origin/master
 	/* The Mixcom cards */
 	{0x0d90, MIXCOM_ID},
 	{0x0e90, MIXCOM_ID},
@@ -115,12 +125,17 @@ static DEFINE_TIMER(mixcomwd_timer, mixcomwd_timerfun, 0, 0);
 static char expect_close;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -169,22 +184,30 @@ static int mixcomwd_release(struct inode *inode, struct file *file)
 	if (expect_close == 42) {
 		if (mixcomwd_timer_alive) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR PFX
 				"release called while internal timer alive");
 =======
 			pr_err("release called while internal timer alive\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("release called while internal timer alive\n");
+>>>>>>> refs/remotes/origin/master
 			return -EBUSY;
 		}
 		mixcomwd_timer_alive = 1;
 		mod_timer(&mixcomwd_timer, jiffies + 5 * HZ);
 	} else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 		    "WDT device closed unexpectedly.  WDT will not stop!\n");
 =======
 		pr_crit("WDT device closed unexpectedly.  WDT will not stop!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("WDT device closed unexpectedly.  WDT will not stop!\n");
+>>>>>>> refs/remotes/origin/master
 
 	clear_bit(0, &mixcomwd_opened);
 	expect_close = 0;
@@ -295,16 +318,21 @@ static int __init mixcomwd_init(void)
 
 	if (!found) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"No card detected, or port not available.\n");
 =======
 		pr_err("No card detected, or port not available\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("No card detected, or port not available\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
 	ret = misc_register(&mixcomwd_miscdev);
 	if (ret) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
@@ -316,6 +344,8 @@ static int __init mixcomwd_init(void)
 		"MixCOM watchdog driver v%s, watchdog port at 0x%3x\n",
 					VERSION, watchdog_port);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
 		       WATCHDOG_MINOR, ret);
 		goto error_misc_register_watchdog;
@@ -323,7 +353,10 @@ static int __init mixcomwd_init(void)
 
 	pr_info("MixCOM watchdog driver v%s, watchdog port at 0x%3x\n",
 		VERSION, watchdog_port);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -338,11 +371,15 @@ static void __exit mixcomwd_exit(void)
 	if (!nowayout) {
 		if (mixcomwd_timer_alive) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING PFX "I quit now, hardware will"
 			       " probably reboot!\n");
 =======
 			pr_warn("I quit now, hardware will probably reboot!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn("I quit now, hardware will probably reboot!\n");
+>>>>>>> refs/remotes/origin/master
 			del_timer_sync(&mixcomwd_timer);
 			mixcomwd_timer_alive = 0;
 		}
@@ -358,4 +395,7 @@ MODULE_AUTHOR("Gergely Madarasz <gorgo@itc.hu>");
 MODULE_DESCRIPTION("MixCom Watchdog driver");
 MODULE_VERSION(VERSION);
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

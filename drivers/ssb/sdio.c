@@ -7,10 +7,14 @@
  * Based on drivers/ssb/pcmcia.c
  * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2007-2008 Michael Buesch <mb@bu3sch.de>
 =======
  * Copyright 2007-2008 Michael Buesch <m@bues.ch>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2007-2008 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
  *
  * Licensed under the GNU/GPL. See COPYING for details.
  *
@@ -556,6 +560,7 @@ int ssb_sdio_get_invariants(struct ssb_bus *bus,
 				GOTO_ERROR_ON(tuple->size != 2,
 					      "antg tpl size");
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sprom->antenna_gain.ghz24.a0 = tuple->data[1];
 				sprom->antenna_gain.ghz24.a1 = tuple->data[1];
 				sprom->antenna_gain.ghz24.a2 = tuple->data[1];
@@ -565,11 +570,16 @@ int ssb_sdio_get_invariants(struct ssb_bus *bus,
 				sprom->antenna_gain.ghz5.a2 = tuple->data[1];
 				sprom->antenna_gain.ghz5.a3 = tuple->data[1];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				sprom->antenna_gain.a0 = tuple->data[1];
 				sprom->antenna_gain.a1 = tuple->data[1];
 				sprom->antenna_gain.a2 = tuple->data[1];
 				sprom->antenna_gain.a3 = tuple->data[1];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				break;
 			case SSB_SDIO_CIS_BFLAGS:
 				GOTO_ERROR_ON((tuple->size != 3) &&

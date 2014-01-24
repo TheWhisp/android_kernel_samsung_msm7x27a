@@ -24,21 +24,48 @@
 #include <trace/events/ext4.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static unsigned ext4_num_base_meta_clusters(struct super_block *sb,
 					    ext4_group_t block_group);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned ext4_num_base_meta_clusters(struct super_block *sb,
+					    ext4_group_t block_group);
+>>>>>>> refs/remotes/origin/master
 /*
  * balloc.c contains the blocks allocation and deallocation routines
  */
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Calculate the block group number and offset, given a block number
 =======
  * Calculate the block group number and offset into the block/cluster
  * allocation bitmap, given a block number
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Calculate block group number for a given block number
+ */
+ext4_group_t ext4_get_group_number(struct super_block *sb,
+				   ext4_fsblk_t block)
+{
+	ext4_group_t group;
+
+	if (test_opt2(sb, STD_GROUP_SIZE))
+		group = (block -
+			 le32_to_cpu(EXT4_SB(sb)->s_es->s_first_data_block)) >>
+			(EXT4_BLOCK_SIZE_BITS(sb) + EXT4_CLUSTER_BITS(sb) + 3);
+	else
+		ext4_get_group_no_and_offset(sb, block, &group, NULL);
+	return group;
+}
+
+/*
+ * Calculate the block group number and offset into the block/cluster
+ * allocation bitmap, given a block number
+>>>>>>> refs/remotes/origin/master
  */
 void ext4_get_group_no_and_offset(struct super_block *sb, ext4_fsblk_t blocknr,
 		ext4_group_t *blockgrpp, ext4_grpblk_t *offsetp)
@@ -48,11 +75,16 @@ void ext4_get_group_no_and_offset(struct super_block *sb, ext4_fsblk_t blocknr,
 
 	blocknr = blocknr - le32_to_cpu(es->s_first_data_block);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	offset = do_div(blocknr, EXT4_BLOCKS_PER_GROUP(sb));
 =======
 	offset = do_div(blocknr, EXT4_BLOCKS_PER_GROUP(sb)) >>
 		EXT4_SB(sb)->s_cluster_bits;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	offset = do_div(blocknr, EXT4_BLOCKS_PER_GROUP(sb)) >>
+		EXT4_SB(sb)->s_cluster_bits;
+>>>>>>> refs/remotes/origin/master
 	if (offsetp)
 		*offsetp = offset;
 	if (blockgrpp)
@@ -60,6 +92,7 @@ void ext4_get_group_no_and_offset(struct super_block *sb, ext4_fsblk_t blocknr,
 
 }
 
+<<<<<<< HEAD
 static int ext4_block_in_group(struct super_block *sb, ext4_fsblk_t block,
 			ext4_group_t block_group)
 {
@@ -196,6 +229,22 @@ unsigned ext4_init_block_bitmap(struct super_block *sb, struct buffer_head *bh,
 }
 
 =======
+=======
+/*
+ * Check whether the 'block' lives within the 'block_group'. Returns 1 if so
+ * and 0 otherwise.
+ */
+static inline int ext4_block_in_group(struct super_block *sb,
+				      ext4_fsblk_t block,
+				      ext4_group_t block_group)
+{
+	ext4_group_t actual_group;
+
+	actual_group = ext4_get_group_number(sb, block);
+	return (actual_group == block_group) ? 1 : 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Return the number of clusters used for file system metadata; this
  * represents the overhead needed by the file system.
  */
@@ -300,17 +349,29 @@ void ext4_init_block_bitmap(struct super_block *sb, struct buffer_head *bh,
 	struct ext4_sb_info *sbi = EXT4_SB(sb);
 	ext4_fsblk_t start, tmp;
 	int flex_bg = 0;
+<<<<<<< HEAD
+=======
+	struct ext4_group_info *grp;
+>>>>>>> refs/remotes/origin/master
 
 	J_ASSERT_BH(bh, buffer_locked(bh));
 
 	/* If checksum is bad mark all blocks used to prevent allocation
 	 * essentially implementing a per-group read-only flag. */
+<<<<<<< HEAD
 	if (!ext4_group_desc_csum_verify(sbi, block_group, gdp)) {
 		ext4_error(sb, "Checksum bad for group %u", block_group);
 		ext4_free_group_clusters_set(sb, gdp, 0);
 		ext4_free_inodes_set(sb, gdp, 0);
 		ext4_itable_unused_set(sb, gdp, 0);
 		memset(bh->b_data, 0xff, sb->s_blocksize);
+=======
+	if (!ext4_group_desc_csum_verify(sb, block_group, gdp)) {
+		ext4_error(sb, "Checksum bad for group %u", block_group);
+		grp = ext4_get_group_info(sb, block_group);
+		set_bit(EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT, &grp->bb_state);
+		set_bit(EXT4_GROUP_INFO_IBITMAP_CORRUPT_BIT, &grp->bb_state);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	memset(bh->b_data, 0, sb->s_blocksize);
@@ -347,6 +408,11 @@ void ext4_init_block_bitmap(struct super_block *sb, struct buffer_head *bh,
 	 */
 	ext4_mark_bitmap_end(num_clusters_in_group(sb, block_group),
 			     sb->s_blocksize * 8, bh->b_data);
+<<<<<<< HEAD
+=======
+	ext4_block_bitmap_csum_set(sb, block_group, gdp, bh);
+	ext4_group_desc_csum_set(sb, block_group, gdp);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Return the number of free blocks in a block group.  It is used when
@@ -359,7 +425,10 @@ unsigned ext4_free_clusters_after_init(struct super_block *sb,
 	return num_clusters_in_group(sb, block_group) - 
 		ext4_num_overhead_clusters(sb, block_group, gdp);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The free blocks are managed by bitmaps.  A file system contains several
@@ -413,6 +482,7 @@ struct ext4_group_desc * ext4_get_group_desc(struct super_block *sb,
 	return desc;
 }
 
+<<<<<<< HEAD
 static int ext4_valid_block_bitmap(struct super_block *sb,
 					struct ext4_group_desc *desc,
 					unsigned int block_group,
@@ -421,6 +491,20 @@ static int ext4_valid_block_bitmap(struct super_block *sb,
 	ext4_grpblk_t offset;
 	ext4_grpblk_t next_zero_bit;
 	ext4_fsblk_t bitmap_blk;
+=======
+/*
+ * Return the block number which was discovered to be invalid, or 0 if
+ * the block bitmap is valid.
+ */
+static ext4_fsblk_t ext4_valid_block_bitmap(struct super_block *sb,
+					    struct ext4_group_desc *desc,
+					    ext4_group_t block_group,
+					    struct buffer_head *bh)
+{
+	ext4_grpblk_t offset;
+	ext4_grpblk_t next_zero_bit;
+	ext4_fsblk_t blk;
+>>>>>>> refs/remotes/origin/master
 	ext4_fsblk_t group_first_block;
 
 	if (EXT4_HAS_INCOMPAT_FEATURE(sb, EXT4_FEATURE_INCOMPAT_FLEX_BG)) {
@@ -431,15 +515,22 @@ static int ext4_valid_block_bitmap(struct super_block *sb,
 		 * are located to verify they are set.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
 =======
 		return 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	}
 	group_first_block = ext4_group_first_block_no(sb, block_group);
 
 	/* check whether block bitmap block number is set */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 	blk = ext4_block_bitmap(sb, desc);
 	offset = blk - group_first_block;
 	if (!ext4_test_bit(offset, bh->b_data))
@@ -464,6 +555,7 @@ static int ext4_valid_block_bitmap(struct super_block *sb,
 		return blk;
 	return 0;
 }
+<<<<<<< HEAD
 /**
  * ext4_read_block_bitmap()
 =======
@@ -498,6 +590,42 @@ err_out:
 /**
  * ext4_read_block_bitmap_nowait()
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+void ext4_validate_block_bitmap(struct super_block *sb,
+			       struct ext4_group_desc *desc,
+			       ext4_group_t block_group,
+			       struct buffer_head *bh)
+{
+	ext4_fsblk_t	blk;
+	struct ext4_group_info *grp = ext4_get_group_info(sb, block_group);
+
+	if (buffer_verified(bh))
+		return;
+
+	ext4_lock_group(sb, block_group);
+	blk = ext4_valid_block_bitmap(sb, desc, block_group, bh);
+	if (unlikely(blk != 0)) {
+		ext4_unlock_group(sb, block_group);
+		ext4_error(sb, "bg %u: block %llu: invalid block bitmap",
+			   block_group, blk);
+		set_bit(EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT, &grp->bb_state);
+		return;
+	}
+	if (unlikely(!ext4_block_bitmap_csum_verify(sb, block_group,
+			desc, bh))) {
+		ext4_unlock_group(sb, block_group);
+		ext4_error(sb, "bg %u: bad block bitmap checksum", block_group);
+		set_bit(EXT4_GROUP_INFO_BBITMAP_CORRUPT_BIT, &grp->bb_state);
+		return;
+	}
+	set_buffer_verified(bh);
+	ext4_unlock_group(sb, block_group);
+}
+
+/**
+ * ext4_read_block_bitmap_nowait()
+>>>>>>> refs/remotes/origin/master
  * @sb:			super block
  * @block_group:	given block group
  *
@@ -508,16 +636,22 @@ err_out:
  */
 struct buffer_head *
 <<<<<<< HEAD
+<<<<<<< HEAD
 ext4_read_block_bitmap(struct super_block *sb, ext4_group_t block_group)
 {
 	struct ext4_group_desc *desc;
 	struct buffer_head *bh = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 ext4_read_block_bitmap_nowait(struct super_block *sb, ext4_group_t block_group)
 {
 	struct ext4_group_desc *desc;
 	struct buffer_head *bh;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ext4_fsblk_t bitmap_blk;
 
 	desc = ext4_get_group_desc(sb, block_group, NULL);
@@ -527,6 +661,7 @@ ext4_read_block_bitmap_nowait(struct super_block *sb, ext4_group_t block_group)
 	bh = sb_getblk(sb, bitmap_blk);
 	if (unlikely(!bh)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ext4_error(sb, "Cannot read block bitmap - "
 			    "block_group = %u, block_bitmap = %llu",
 			    block_group, bitmap_blk);
@@ -535,16 +670,29 @@ ext4_read_block_bitmap_nowait(struct super_block *sb, ext4_group_t block_group)
 			   "block_group = %u, block_bitmap = %llu",
 			   block_group, bitmap_blk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ext4_error(sb, "Cannot get buffer for block bitmap - "
+			   "block_group = %u, block_bitmap = %llu",
+			   block_group, bitmap_blk);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
 	if (bitmap_uptodate(bh))
+<<<<<<< HEAD
 		return bh;
+=======
+		goto verify;
+>>>>>>> refs/remotes/origin/master
 
 	lock_buffer(bh);
 	if (bitmap_uptodate(bh)) {
 		unlock_buffer(bh);
+<<<<<<< HEAD
 		return bh;
+=======
+		goto verify;
+>>>>>>> refs/remotes/origin/master
 	}
 	ext4_lock_group(sb, block_group);
 	if (desc->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT)) {
@@ -563,6 +711,7 @@ ext4_read_block_bitmap_nowait(struct super_block *sb, ext4_group_t block_group)
 		 */
 		set_bitmap_uptodate(bh);
 		unlock_buffer(bh);
+<<<<<<< HEAD
 		return bh;
 	}
 	/*
@@ -587,14 +736,30 @@ ext4_read_block_bitmap_nowait(struct super_block *sb, ext4_group_t block_group)
 	 * continue with corrupt bitmap
 	 */
 =======
+=======
+		goto verify;
+	}
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * submit the buffer_head for reading
 	 */
 	set_buffer_new(bh);
 	trace_ext4_read_block_bitmap_load(sb, block_group);
 	bh->b_end_io = ext4_end_bitmap_read;
 	get_bh(bh);
+<<<<<<< HEAD
 	submit_bh(READ, bh);
 	return bh;
+=======
+	submit_bh(READ | REQ_META | REQ_PRIO, bh);
+	return bh;
+verify:
+	ext4_validate_block_bitmap(sb, desc, block_group, bh);
+	if (buffer_verified(bh))
+		return bh;
+	put_bh(bh);
+	return NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Returns 0 on success, 1 on error */
@@ -617,8 +782,14 @@ int ext4_wait_block_bitmap(struct super_block *sb, ext4_group_t block_group,
 	}
 	clear_buffer_new(bh);
 	/* Panic or remount fs read-only if block bitmap is invalid */
+<<<<<<< HEAD
 	ext4_valid_block_bitmap(sb, desc, block_group, bh);
 	return 0;
+=======
+	ext4_validate_block_bitmap(sb, desc, block_group, bh);
+	/* ...but check for error just in case errors=continue. */
+	return !buffer_verified(bh);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct buffer_head *
@@ -633,11 +804,15 @@ ext4_read_block_bitmap(struct super_block *sb, ext4_group_t block_group)
 		put_bh(bh);
 		return NULL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return bh;
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * ext4_has_free_blocks()
  * @sbi:	in-core super block structure.
@@ -670,6 +845,8 @@ static int ext4_has_free_blocks(struct ext4_sb_info *sbi,
 
 	/* Hm, nope.  Are (enough) root reserved blocks available? */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * ext4_has_free_clusters()
  * @sbi:	in-core super block structure.
  * @nclusters:	number of needed blocks
@@ -681,20 +858,35 @@ static int ext4_has_free_blocks(struct ext4_sb_info *sbi,
 static int ext4_has_free_clusters(struct ext4_sb_info *sbi,
 				  s64 nclusters, unsigned int flags)
 {
+<<<<<<< HEAD
 	s64 free_clusters, dirty_clusters, root_clusters;
+=======
+	s64 free_clusters, dirty_clusters, rsv, resv_clusters;
+>>>>>>> refs/remotes/origin/master
 	struct percpu_counter *fcc = &sbi->s_freeclusters_counter;
 	struct percpu_counter *dcc = &sbi->s_dirtyclusters_counter;
 
 	free_clusters  = percpu_counter_read_positive(fcc);
 	dirty_clusters = percpu_counter_read_positive(dcc);
+<<<<<<< HEAD
+=======
+	resv_clusters = atomic64_read(&sbi->s_resv_clusters);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * r_blocks_count should always be multiple of the cluster ratio so
 	 * we are safe to do a plane bit shift only.
 	 */
+<<<<<<< HEAD
 	root_clusters = ext4_r_blocks_count(sbi->s_es) >> sbi->s_cluster_bits;
 
 	if (free_clusters - (nclusters + root_clusters + dirty_clusters) <
+=======
+	rsv = (ext4_r_blocks_count(sbi->s_es) >> sbi->s_cluster_bits) +
+	      resv_clusters;
+
+	if (free_clusters - (nclusters + rsv + dirty_clusters) <
+>>>>>>> refs/remotes/origin/master
 					EXT4_FREECLUSTERS_WATERMARK) {
 		free_clusters  = percpu_counter_sum_positive(fcc);
 		dirty_clusters = percpu_counter_sum_positive(dcc);
@@ -702,6 +894,7 @@ static int ext4_has_free_clusters(struct ext4_sb_info *sbi,
 	/* Check whether we have space after accounting for current
 	 * dirty clusters & root reserved clusters.
 	 */
+<<<<<<< HEAD
 	if (free_clusters >= ((root_clusters + nclusters) + dirty_clusters))
 		return 1;
 
@@ -717,6 +910,24 @@ static int ext4_has_free_clusters(struct ext4_sb_info *sbi,
 =======
 		if (free_clusters >= (nclusters + dirty_clusters))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (free_clusters >= (rsv + nclusters + dirty_clusters))
+		return 1;
+
+	/* Hm, nope.  Are (enough) root reserved clusters available? */
+	if (uid_eq(sbi->s_resuid, current_fsuid()) ||
+	    (!gid_eq(sbi->s_resgid, GLOBAL_ROOT_GID) && in_group_p(sbi->s_resgid)) ||
+	    capable(CAP_SYS_RESOURCE) ||
+	    (flags & EXT4_MB_USE_ROOT_BLOCKS)) {
+
+		if (free_clusters >= (nclusters + dirty_clusters +
+				      resv_clusters))
+			return 1;
+	}
+	/* No free blocks. Let's see if we can dip into reserved pool */
+	if (flags & EXT4_MB_USE_RESERVED) {
+		if (free_clusters >= (nclusters + dirty_clusters))
+>>>>>>> refs/remotes/origin/master
 			return 1;
 	}
 
@@ -724,18 +935,24 @@ static int ext4_has_free_clusters(struct ext4_sb_info *sbi,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ext4_claim_free_blocks(struct ext4_sb_info *sbi,
 			   s64 nblocks, unsigned int flags)
 {
 	if (ext4_has_free_blocks(sbi, nblocks, flags)) {
 		percpu_counter_add(&sbi->s_dirtyblocks_counter, nblocks);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int ext4_claim_free_clusters(struct ext4_sb_info *sbi,
 			     s64 nclusters, unsigned int flags)
 {
 	if (ext4_has_free_clusters(sbi, nclusters, flags)) {
 		percpu_counter_add(&sbi->s_dirtyclusters_counter, nclusters);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	} else
 		return -ENOSPC;
@@ -756,10 +973,14 @@ int ext4_claim_free_clusters(struct ext4_sb_info *sbi,
 int ext4_should_retry_alloc(struct super_block *sb, int *retries)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ext4_has_free_blocks(EXT4_SB(sb), 1, 0) ||
 =======
 	if (!ext4_has_free_clusters(EXT4_SB(sb), 1, 0) ||
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ext4_has_free_clusters(EXT4_SB(sb), 1, 0) ||
+>>>>>>> refs/remotes/origin/master
 	    (*retries)++ > 3 ||
 	    !EXT4_SB(sb)->s_journal)
 		return 0;
@@ -776,10 +997,14 @@ int ext4_should_retry_alloc(struct super_block *sb, int *retries)
  * @inode:              file inode
  * @goal:               given target block(filesystem wide)
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @count:		pointer to total number of blocks needed
 =======
  * @count:		pointer to total number of clusters needed
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @count:		pointer to total number of clusters needed
+>>>>>>> refs/remotes/origin/master
  * @errp:               error code
  *
  * Return 1st allocated block number on success, *count stores total account
@@ -812,16 +1037,22 @@ ext4_fsblk_t ext4_new_meta_blocks(handle_t *handle, struct inode *inode,
 		EXT4_I(inode)->i_allocated_meta_blocks += ar.len;
 		spin_unlock(&EXT4_I(inode)->i_block_reservation_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dquot_alloc_block_nofail(inode, ar.len);
 =======
 		dquot_alloc_block_nofail(inode,
 				EXT4_C2B(EXT4_SB(inode->i_sb), ar.len));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dquot_alloc_block_nofail(inode,
+				EXT4_C2B(EXT4_SB(inode->i_sb), ar.len));
+>>>>>>> refs/remotes/origin/master
 	}
 	return ret;
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * ext4_count_free_blocks() -- count filesystem free blocks
  * @sb:		superblock
@@ -830,18 +1061,27 @@ ext4_fsblk_t ext4_new_meta_blocks(handle_t *handle, struct inode *inode,
  */
 ext4_fsblk_t ext4_count_free_blocks(struct super_block *sb)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * ext4_count_free_clusters() -- count filesystem free clusters
  * @sb:		superblock
  *
  * Adds up the number of free clusters from each block group.
  */
 ext4_fsblk_t ext4_count_free_clusters(struct super_block *sb)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	ext4_fsblk_t desc_count;
 	struct ext4_group_desc *gdp;
 	ext4_group_t i;
 	ext4_group_t ngroups = ext4_get_groups_count(sb);
+<<<<<<< HEAD
+=======
+	struct ext4_group_info *grp;
+>>>>>>> refs/remotes/origin/master
 #ifdef EXT4FS_DEBUG
 	struct ext4_super_block *es;
 	ext4_fsblk_t bitmap_count;
@@ -858,10 +1098,18 @@ ext4_fsblk_t ext4_count_free_clusters(struct super_block *sb)
 		if (!gdp)
 			continue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		desc_count += ext4_free_blks_count(sb, gdp);
 =======
 		desc_count += ext4_free_group_clusters(sb, gdp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		grp = NULL;
+		if (EXT4_SB(sb)->s_group_info)
+			grp = ext4_get_group_info(sb, i);
+		if (!grp || !EXT4_MB_GRP_BBITMAP_CORRUPT(grp))
+			desc_count += ext4_free_group_clusters(sb, gdp);
+>>>>>>> refs/remotes/origin/master
 		brelse(bitmap_bh);
 		bitmap_bh = ext4_read_block_bitmap(sb, i);
 		if (bitmap_bh == NULL)
@@ -871,6 +1119,7 @@ ext4_fsblk_t ext4_count_free_clusters(struct super_block *sb)
 				    EXT4_BLOCKS_PER_GROUP(sb) / 8);
 		printk(KERN_DEBUG "group %u: stored = %d, counted = %u\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			i, ext4_free_blks_count(sb, gdp), x);
 		bitmap_count += x;
 	}
@@ -878,6 +1127,8 @@ ext4_fsblk_t ext4_count_free_clusters(struct super_block *sb)
 	printk(KERN_DEBUG "ext4_count_free_blocks: stored = %llu"
 		", computed = %llu, %llu\n", ext4_free_blocks_count(es),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			i, ext4_free_group_clusters(sb, gdp), x);
 		bitmap_count += x;
 	}
@@ -885,7 +1136,10 @@ ext4_fsblk_t ext4_count_free_clusters(struct super_block *sb)
 	printk(KERN_DEBUG "ext4_count_free_clusters: stored = %llu"
 	       ", computed = %llu, %llu\n",
 	       EXT4_NUM_B2C(EXT4_SB(sb), ext4_free_blocks_count(es)),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	       desc_count, bitmap_count);
 	return bitmap_count;
 #else
@@ -895,10 +1149,18 @@ ext4_fsblk_t ext4_count_free_clusters(struct super_block *sb)
 		if (!gdp)
 			continue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		desc_count += ext4_free_blks_count(sb, gdp);
 =======
 		desc_count += ext4_free_group_clusters(sb, gdp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		grp = NULL;
+		if (EXT4_SB(sb)->s_group_info)
+			grp = ext4_get_group_info(sb, i);
+		if (!grp || !EXT4_MB_GRP_BBITMAP_CORRUPT(grp))
+			desc_count += ext4_free_group_clusters(sb, gdp);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return desc_count;
@@ -907,11 +1169,23 @@ ext4_fsblk_t ext4_count_free_clusters(struct super_block *sb)
 
 static inline int test_root(ext4_group_t a, int b)
 {
+<<<<<<< HEAD
 	int num = b;
 
 	while (a > num)
 		num *= b;
 	return num == a;
+=======
+	while (1) {
+		if (a < b)
+			return 0;
+		if (a == b)
+			return 1;
+		if ((a % b) != 0)
+			return 0;
+		a = a / b;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ext4_group_sparse(ext4_group_t group)
@@ -989,7 +1263,10 @@ unsigned long ext4_bg_num_gdb(struct super_block *sb, ext4_group_t group)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This function returns the number of file system metadata clusters at
  * the beginning of a block group, including the reserved gdt blocks.
@@ -1063,4 +1340,7 @@ ext4_fsblk_t ext4_inode_to_goal_block(struct inode *inode)
 	return bg_start + colour;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

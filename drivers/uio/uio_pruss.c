@@ -25,7 +25,11 @@
 #include <linux/clk.h>
 #include <linux/dma-mapping.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <mach/sram.h>
+=======
+#include <linux/genalloc.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_NAME "pruss_uio"
 #define DRV_VERSION "1.0"
@@ -65,10 +69,18 @@ struct uio_pruss_dev {
 	dma_addr_t sram_paddr;
 	dma_addr_t ddr_paddr;
 	void __iomem *prussio_vaddr;
+<<<<<<< HEAD
 	void *sram_vaddr;
 	void *ddr_vaddr;
 	unsigned int hostirq_start;
 	unsigned int pintc_base;
+=======
+	unsigned long sram_vaddr;
+	void *ddr_vaddr;
+	unsigned int hostirq_start;
+	unsigned int pintc_base;
+	struct gen_pool *sram_pool;
+>>>>>>> refs/remotes/origin/master
 };
 
 static irqreturn_t pruss_handler(int irq, struct uio_info *info)
@@ -106,19 +118,33 @@ static void pruss_cleanup(struct platform_device *dev,
 			gdev->ddr_paddr);
 	}
 	if (gdev->sram_vaddr)
+<<<<<<< HEAD
 		sram_free(gdev->sram_vaddr, sram_pool_sz);
+=======
+		gen_pool_free(gdev->sram_pool,
+			      gdev->sram_vaddr,
+			      sram_pool_sz);
+>>>>>>> refs/remotes/origin/master
 	kfree(gdev->info);
 	clk_put(gdev->pruss_clk);
 	kfree(gdev);
 }
 
+<<<<<<< HEAD
 static int __devinit pruss_probe(struct platform_device *dev)
+=======
+static int pruss_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct uio_info *p;
 	struct uio_pruss_dev *gdev;
 	struct resource *regs_prussio;
 	int ret = -ENODEV, cnt = 0, len;
+<<<<<<< HEAD
 	struct uio_pruss_pdata *pdata = dev->dev.platform_data;
+=======
+	struct uio_pruss_pdata *pdata = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	gdev = kzalloc(sizeof(struct uio_pruss_dev), GFP_KERNEL);
 	if (!gdev)
@@ -133,9 +159,15 @@ static int __devinit pruss_probe(struct platform_device *dev)
 	gdev->pruss_clk = clk_get(&dev->dev, "pruss");
 	if (IS_ERR(gdev->pruss_clk)) {
 		dev_err(&dev->dev, "Failed to get clock\n");
+<<<<<<< HEAD
 		kfree(gdev->info);
 		kfree(gdev);
 		ret = PTR_ERR(gdev->pruss_clk);
+=======
+		ret = PTR_ERR(gdev->pruss_clk);
+		kfree(gdev->info);
+		kfree(gdev);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	} else {
 		clk_enable(gdev->pruss_clk);
@@ -152,10 +184,22 @@ static int __devinit pruss_probe(struct platform_device *dev)
 		goto out_free;
 	}
 
+<<<<<<< HEAD
 	gdev->sram_vaddr = sram_alloc(sram_pool_sz, &(gdev->sram_paddr));
 	if (!gdev->sram_vaddr) {
 		dev_err(&dev->dev, "Could not allocate SRAM pool\n");
 		goto out_free;
+=======
+	if (pdata->sram_pool) {
+		gdev->sram_pool = pdata->sram_pool;
+		gdev->sram_vaddr =
+			(unsigned long)gen_pool_dma_alloc(gdev->sram_pool,
+					sram_pool_sz, &gdev->sram_paddr);
+		if (!gdev->sram_vaddr) {
+			dev_err(&dev->dev, "Could not allocate SRAM pool\n");
+			goto out_free;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	gdev->ddr_vaddr = dma_alloc_coherent(&dev->dev, extram_pool_sz,
@@ -209,24 +253,36 @@ out_free:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit pruss_remove(struct platform_device *dev)
+=======
+static int pruss_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct uio_pruss_dev *gdev = platform_get_drvdata(dev);
 
 	pruss_cleanup(dev, gdev);
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver pruss_driver = {
 	.probe = pruss_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(pruss_remove),
+=======
+	.remove = pruss_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		   .name = DRV_NAME,
 		   .owner = THIS_MODULE,
 		   },
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init pruss_init_module(void)
 {
@@ -244,6 +300,9 @@ module_exit(pruss_exit_module);
 =======
 module_platform_driver(pruss_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(pruss_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL v2");
 MODULE_VERSION(DRV_VERSION);

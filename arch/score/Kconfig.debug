@@ -23,10 +23,14 @@ config RUNTIME_DEBUG
 	  If you say Y here, some debugging macros will do run-time checking.
 	  If you say N here, those macros will mostly turn to no-ops.  See
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  include/asm-score/debug.h for debuging macros.
 =======
 	  include/asm-score/debug.h for debugging macros.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  include/asm-score/debug.h for debugging macros.
+>>>>>>> refs/remotes/origin/master
 	  If unsure, say N.
 
 endmenu

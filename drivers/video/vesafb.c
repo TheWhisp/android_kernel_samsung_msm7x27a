@@ -29,7 +29,11 @@
 
 /* --------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static struct fb_var_screeninfo vesafb_defined __initdata = {
+=======
+static struct fb_var_screeninfo vesafb_defined = {
+>>>>>>> refs/remotes/origin/master
 	.activate	= FB_ACTIVATE_NOW,
 	.height		= -1,
 	.width		= -1,
@@ -40,7 +44,11 @@ static struct fb_var_screeninfo vesafb_defined __initdata = {
 	.vmode		= FB_VMODE_NONINTERLACED,
 };
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo vesafb_fix __initdata = {
+=======
+static struct fb_fix_screeninfo vesafb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id	= "VESA VGA",
 	.type	= FB_TYPE_PACKED_PIXELS,
 	.accel	= FB_ACCEL_NONE,
@@ -48,8 +56,13 @@ static struct fb_fix_screeninfo vesafb_fix __initdata = {
 
 static int   inverse    __read_mostly;
 static int   mtrr       __read_mostly;		/* disable mtrr */
+<<<<<<< HEAD
 static int   vram_remap __initdata;		/* Set amount of memory to be used */
 static int   vram_total __initdata;		/* Set total amount of memory */
+=======
+static int   vram_remap;			/* Set amount of memory to be used */
+static int   vram_total;			/* Set total amount of memory */
+>>>>>>> refs/remotes/origin/master
 static int   pmi_setpal __read_mostly = 1;	/* pmi for palette changes ??? */
 static int   ypan       __read_mostly;		/* 0..nothing, 1..ypan, 2..ywrap */
 static void  (*pmi_start)(void) __read_mostly;
@@ -192,7 +205,11 @@ static struct fb_ops vesafb_ops = {
 	.fb_imageblit	= cfb_imageblit,
 };
 
+<<<<<<< HEAD
 static int __init vesafb_setup(char *options)
+=======
+static int vesafb_setup(char *options)
+>>>>>>> refs/remotes/origin/master
 {
 	char *this_opt;
 	
@@ -226,13 +243,25 @@ static int __init vesafb_setup(char *options)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __init vesafb_probe(struct platform_device *dev)
+=======
+static int vesafb_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	int i, err;
 	unsigned int size_vmode;
 	unsigned int size_remap;
 	unsigned int size_total;
+<<<<<<< HEAD
+=======
+	char *option = NULL;
+
+	/* ignore error return of fb_get_options */
+	fb_get_options("vesafb", &option);
+	vesafb_setup(option);
+>>>>>>> refs/remotes/origin/master
 
 	if (screen_info.orig_video_isVGA != VIDEO_TYPE_VLFB)
 		return -ENODEV;
@@ -484,8 +513,12 @@ static int __init vesafb_probe(struct platform_device *dev)
 		fb_dealloc_cmap(&info->cmap);
 		goto err;
 	}
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: %s frame buffer device\n",
 	       info->node, info->fix.id);
+=======
+	fb_info(info, "%s frame buffer device\n", info->fix.id);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 err:
 	if (info->screen_base)
@@ -496,6 +529,7 @@ err:
 }
 
 static struct platform_driver vesafb_driver = {
+<<<<<<< HEAD
 	.driver	= {
 		.name	= "vesafb",
 	},
@@ -532,4 +566,14 @@ static int __init vesafb_init(void)
 }
 module_init(vesafb_init);
 
+=======
+	.driver = {
+		.name = "vesa-framebuffer",
+		.owner = THIS_MODULE,
+	},
+	.probe = vesafb_probe,
+};
+
+module_platform_driver(vesafb_driver);
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

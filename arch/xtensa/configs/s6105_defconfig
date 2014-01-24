@@ -9,16 +9,22 @@ CONFIG_XTENSA=y
 CONFIG_RWSEM_XCHGADD_ALGORITHM=y
 CONFIG_GENERIC_FIND_NEXT_BIT=y
 CONFIG_GENERIC_HWEIGHT=y
+<<<<<<< HEAD
 CONFIG_GENERIC_HARDIRQS=y
 CONFIG_GENERIC_GPIO=y
+=======
+>>>>>>> refs/remotes/origin/master
 # CONFIG_ARCH_HAS_ILOG2_U32 is not set
 # CONFIG_ARCH_HAS_ILOG2_U64 is not set
 CONFIG_NO_IOPORT=y
 CONFIG_HZ=100
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_GENERIC_TIME=y
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_DEFCONFIG_LIST="/lib/modules/$UNAME_RELEASE/.config"
 
 #
@@ -545,11 +551,14 @@ CONFIG_MSDOS_PARTITION=y
 # CONFIG_DLM is not set
 
 #
+<<<<<<< HEAD
 # Xtensa initrd options
 #
 # CONFIG_EMBEDDED_RAMDISK is not set
 
 #
+=======
+>>>>>>> refs/remotes/origin/master
 # Kernel hacking
 #
 CONFIG_PRINTK_TIME=y

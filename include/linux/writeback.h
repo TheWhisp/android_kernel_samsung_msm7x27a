@@ -5,6 +5,7 @@
 #define WRITEBACK_H
 
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/fs.h>
 
 <<<<<<< HEAD
@@ -12,6 +13,11 @@ struct backing_dev_info;
 
 extern spinlock_t inode_wb_list_lock;
 =======
+=======
+#include <linux/workqueue.h>
+#include <linux/fs.h>
+
+>>>>>>> refs/remotes/origin/master
 DECLARE_PER_CPU(int, dirty_throttle_leaks);
 
 /*
@@ -31,7 +37,10 @@ DECLARE_PER_CPU(int, dirty_throttle_leaks);
 #define DIRTY_FULL_SCOPE	(DIRTY_SCOPE / 2)
 
 struct backing_dev_info;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * fs/fs-writeback.c
@@ -43,7 +52,10 @@ enum writeback_sync_modes {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * why some writeback work was initiated
  */
 enum wb_reason {
@@ -54,19 +66,34 @@ enum wb_reason {
 	WB_REASON_LAPTOP_TIMER,
 	WB_REASON_FREE_MORE_MEM,
 	WB_REASON_FS_FREE_SPACE,
+<<<<<<< HEAD
+=======
+	/*
+	 * There is no bdi forker thread any more and works are done
+	 * by emergency worker, however, this is TPs userland visible
+	 * and we'll be exposing exactly the same information,
+	 * so it has a mismatch name.
+	 */
+>>>>>>> refs/remotes/origin/master
 	WB_REASON_FORKER_THREAD,
 
 	WB_REASON_MAX,
 };
+<<<<<<< HEAD
 extern const char *wb_reason_name[];
 
 /*
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/*
+>>>>>>> refs/remotes/origin/master
  * A control structure which tells the writeback code what to do.  These are
  * always on the stack, and hence need no locking.  They are always initialised
  * in a manner such that unspecified fields are set to zero.
  */
 struct writeback_control {
+<<<<<<< HEAD
 	enum writeback_sync_modes sync_mode;
 <<<<<<< HEAD
 	unsigned long *older_than_this;	/* If !NULL, only write back inodes
@@ -76,16 +103,22 @@ struct writeback_control {
 					   extra jobs and livelock */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	long nr_to_write;		/* Write this many pages, and decrement
 					   this for each page written */
 	long pages_skipped;		/* Pages which were not written */
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * For a_ops->writepages(): is start or end are non-zero then this is
 =======
 	 * For a_ops->writepages(): if start or end are non-zero then this is
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * For a_ops->writepages(): if start or end are non-zero then this is
+>>>>>>> refs/remotes/origin/master
 	 * a hint that the filesystem need only write out the pages inside that
 	 * byterange.  The byte at `end' is included in the writeout request.
 	 */
@@ -93,19 +126,28 @@ struct writeback_control {
 	loff_t range_end;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned nonblocking:1;		/* Don't get stuck on request queues */
 	unsigned encountered_congestion:1; /* An output: a queue is full */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum writeback_sync_modes sync_mode;
+
+>>>>>>> refs/remotes/origin/master
 	unsigned for_kupdate:1;		/* A kupdate writeback */
 	unsigned for_background:1;	/* A background writeback */
 	unsigned tagged_writepages:1;	/* tag-and-write to avoid livelock */
 	unsigned for_reclaim:1;		/* Invoked from the page allocator */
 	unsigned range_cyclic:1;	/* range_start is cyclic */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned more_io:1;		/* more io to be dispatched */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned for_sync:1;		/* sync(2) WB_SYNC_ALL writeback */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -113,6 +155,7 @@ struct writeback_control {
  */	
 struct bdi_writeback;
 int inode_wait(void *);
+<<<<<<< HEAD
 <<<<<<< HEAD
 void writeback_inodes_sb(struct super_block *);
 void writeback_inodes_sb_nr(struct super_block *, unsigned long nr);
@@ -136,6 +179,17 @@ long writeback_inodes_wb(struct bdi_writeback *wb, long nr_pages,
 long wb_do_writeback(struct bdi_writeback *wb, int force_wait);
 void wakeup_flusher_threads(long nr_pages, enum wb_reason reason);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void writeback_inodes_sb(struct super_block *, enum wb_reason reason);
+void writeback_inodes_sb_nr(struct super_block *, unsigned long nr,
+							enum wb_reason reason);
+int try_to_writeback_inodes_sb(struct super_block *, enum wb_reason reason);
+int try_to_writeback_inodes_sb_nr(struct super_block *, unsigned long nr,
+				  enum wb_reason reason);
+void sync_inodes_sb(struct super_block *sb, unsigned long older_than_this);
+void wakeup_flusher_threads(long nr_pages, enum wb_reason reason);
+void inode_wait_for_writeback(struct inode *inode);
+>>>>>>> refs/remotes/origin/master
 
 /* writeback.h requires fs.h; it, too, is not included from here. */
 static inline void wait_on_inode(struct inode *inode)
@@ -143,6 +197,7 @@ static inline void wait_on_inode(struct inode *inode)
 	might_sleep();
 	wait_on_bit(&inode->i_state, __I_NEW, inode_wait, TASK_UNINTERRUPTIBLE);
 }
+<<<<<<< HEAD
 static inline void inode_sync_wait(struct inode *inode)
 {
 	might_sleep();
@@ -150,6 +205,8 @@ static inline void inode_sync_wait(struct inode *inode)
 							TASK_UNINTERRUPTIBLE);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * mm/page-writeback.c
@@ -164,11 +221,17 @@ static inline void laptop_sync_completion(void) { }
 #endif
 void throttle_vm_writeout(gfp_t gfp_mask);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 bool zone_dirty_ok(struct zone *zone);
 
 extern unsigned long global_dirty_limit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool zone_dirty_ok(struct zone *zone);
+
+extern unsigned long global_dirty_limit;
+>>>>>>> refs/remotes/origin/master
 
 /* These are exported to sysctl. */
 extern int dirty_background_ratio;
@@ -182,10 +245,13 @@ extern int block_dump;
 extern int laptop_mode;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern unsigned long determine_dirtyable_memory(void);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern int dirty_background_ratio_handler(struct ctl_table *table, int write,
 		void __user *buffer, size_t *lenp,
 		loff_t *ppos);
@@ -208,7 +274,10 @@ unsigned long bdi_dirty_limit(struct backing_dev_info *bdi,
 			       unsigned long dirty);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void __bdi_update_bandwidth(struct backing_dev_info *bdi,
 			    unsigned long thresh,
 			    unsigned long bg_thresh,
@@ -217,6 +286,7 @@ void __bdi_update_bandwidth(struct backing_dev_info *bdi,
 			    unsigned long bdi_dirty,
 			    unsigned long start_time);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 void page_writeback_init(void);
 void balance_dirty_pages_ratelimited_nr(struct address_space *mapping,
@@ -227,6 +297,10 @@ balance_dirty_pages_ratelimited(struct address_space *mapping)
 {
 	balance_dirty_pages_ratelimited_nr(mapping, 1);
 }
+=======
+void page_writeback_init(void);
+void balance_dirty_pages_ratelimited(struct address_space *mapping);
+>>>>>>> refs/remotes/origin/master
 
 typedef int (*writepage_t)(struct page *page, struct writeback_control *wbc,
 				void *data);
@@ -245,6 +319,7 @@ void tag_pages_for_writeback(struct address_space *mapping,
 			     pgoff_t start, pgoff_t end);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void account_page_redirty(struct page *page);
 
@@ -254,4 +329,8 @@ extern int nr_pdflush_threads;	/* Global so it can be exported to sysctl
 				   read-only. */
 
 
+=======
+void account_page_redirty(struct page *page);
+
+>>>>>>> refs/remotes/origin/master
 #endif		/* WRITEBACK_H */

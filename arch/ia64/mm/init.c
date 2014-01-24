@@ -11,9 +11,13 @@
 #include <linux/efi.h>
 #include <linux/elf.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/memblock.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/memblock.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/mmzone.h>
 #include <linux/module.h>
@@ -34,9 +38,12 @@
 #include <asm/sal.h>
 #include <asm/sections.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/tlb.h>
 #include <asm/uaccess.h>
 #include <asm/unistd.h>
@@ -145,7 +152,12 @@ ia64_init_addr_space (void)
 			vma->vm_mm = current->mm;
 			vma->vm_end = PAGE_SIZE;
 			vma->vm_page_prot = __pgprot(pgprot_val(PAGE_READONLY) | _PAGE_MA_NAT);
+<<<<<<< HEAD
 			vma->vm_flags = VM_READ | VM_MAYREAD | VM_IO | VM_RESERVED;
+=======
+			vma->vm_flags = VM_READ | VM_MAYREAD | VM_IO |
+					VM_DONTEXPAND | VM_DONTDUMP;
+>>>>>>> refs/remotes/origin/master
 			down_write(&current->mm->mmap_sem);
 			if (insert_vm_struct(current->mm, vma)) {
 				up_write(&current->mm->mmap_sem);
@@ -160,6 +172,7 @@ ia64_init_addr_space (void)
 void
 free_initmem (void)
 {
+<<<<<<< HEAD
 	unsigned long addr, eaddr;
 
 	addr = (unsigned long) ia64_imva(__init_begin);
@@ -173,12 +186,19 @@ free_initmem (void)
 	}
 	printk(KERN_INFO "Freeing unused kernel memory: %ldkB freed\n",
 	       (__init_end - __init_begin) >> 10);
+=======
+	free_reserved_area(ia64_imva(__init_begin), ia64_imva(__init_end),
+			   -1, "unused kernel");
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init
 free_initrd_mem (unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 	struct page *page;
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * EFI uses 4KB pages while the kernel can use 4KB or bigger.
 	 * Thus EFI and the kernel may have different page sizes. It is
@@ -219,11 +239,15 @@ free_initrd_mem (unsigned long start, unsigned long end)
 	for (; start < end; start += PAGE_SIZE) {
 		if (!virt_addr_valid(start))
 			continue;
+<<<<<<< HEAD
 		page = virt_to_page(start);
 		ClearPageReserved(page);
 		init_page_count(page);
 		free_page(start);
 		++totalram_pages;
+=======
+		free_reserved_page(virt_to_page(start));
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -300,11 +324,18 @@ setup_gate (void)
 	ia64_patch_gate();
 }
 
+<<<<<<< HEAD
 void __devinit
 ia64_mmu_init (void *my_cpu_data)
 {
 	unsigned long pta, impl_va_bits;
 	extern void __devinit tlb_init (void);
+=======
+void ia64_mmu_init(void *my_cpu_data)
+{
+	unsigned long pta, impl_va_bits;
+	extern void tlb_init(void);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_DISABLE_VHPT
 #	define VHPT_ENABLE_BIT	0
@@ -380,9 +411,13 @@ int vmemmap_find_next_valid_pfn(int node, int i)
 
 	end_address = (unsigned long) &vmem_map[pgdat->node_start_pfn + i];
 	end_address = PAGE_ALIGN(end_address);
+<<<<<<< HEAD
 
 	stop_address = (unsigned long) &vmem_map[
 		pgdat->node_start_pfn + pgdat->node_spanned_pages];
+=======
+	stop_address = (unsigned long) &vmem_map[pgdat_end_pfn(pgdat)];
+>>>>>>> refs/remotes/origin/master
 
 	do {
 		pgd_t *pgd;
@@ -565,6 +600,7 @@ int __init register_active_ranges(u64 start, u64 len, int nid)
 
 	if (start < end)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		add_active_range(nid, __pa(start) >> PAGE_SHIFT,
 			__pa(end) >> PAGE_SHIFT);
 =======
@@ -583,6 +619,9 @@ count_reserved_pages(u64 start, u64 end, void *arg)
 		if (PageReserved(virt_to_page(start)))
 			++num_reserved;
 	*count += num_reserved;
+=======
+		memblock_add_node(__pa(start), end - start, nid);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -624,8 +663,11 @@ __setup("nolwsys", nolwsys_setup);
 void __init
 mem_init (void)
 {
+<<<<<<< HEAD
 	long reserved_pages, codesize, datasize, initsize;
 	pg_data_t *pgdat;
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	BUG_ON(PTRS_PER_PGD * sizeof(pgd_t) != PAGE_SIZE);
@@ -643,6 +685,7 @@ mem_init (void)
 
 #ifdef CONFIG_FLATMEM
 	BUG_ON(!mem_map);
+<<<<<<< HEAD
 	max_mapnr = max_low_pfn;
 #endif
 
@@ -664,6 +707,14 @@ mem_init (void)
 	       num_physpages << (PAGE_SHIFT - 10), codesize >> 10,
 	       reserved_pages << (PAGE_SHIFT - 10), datasize >> 10, initsize >> 10);
 
+=======
+#endif
+
+	set_max_mapnr(max_low_pfn);
+	high_memory = __va(max_low_pfn * PAGE_SIZE);
+	free_all_bootmem();
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * For fsyscall entrpoints with no light-weight handler, use the ordinary
@@ -700,6 +751,27 @@ int arch_add_memory(int nid, u64 start, u64 size)
 
 	return ret;
 }
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_MEMORY_HOTREMOVE
+int arch_remove_memory(u64 start, u64 size)
+{
+	unsigned long start_pfn = start >> PAGE_SHIFT;
+	unsigned long nr_pages = size >> PAGE_SHIFT;
+	struct zone *zone;
+	int ret;
+
+	zone = page_zone(pfn_to_page(start_pfn));
+	ret = __remove_pages(zone, start_pfn, nr_pages);
+	if (ret)
+		pr_warn("%s: Problem encountered in __remove_pages() as"
+			" ret=%d\n", __func__,  ret);
+
+	return ret;
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -726,3 +798,54 @@ per_linux32_init(void)
 }
 
 __initcall(per_linux32_init);
+<<<<<<< HEAD
+=======
+
+/**
+ * show_mem - give short summary of memory stats
+ *
+ * Shows a simple page count of reserved and used pages in the system.
+ * For discontig machines, it does this on a per-pgdat basis.
+ */
+void show_mem(unsigned int filter)
+{
+	int total_reserved = 0;
+	unsigned long total_present = 0;
+	pg_data_t *pgdat;
+
+	printk(KERN_INFO "Mem-info:\n");
+	show_free_areas(filter);
+	printk(KERN_INFO "Node memory in pages:\n");
+	for_each_online_pgdat(pgdat) {
+		unsigned long present;
+		unsigned long flags;
+		int reserved = 0;
+		int nid = pgdat->node_id;
+		int zoneid;
+
+		if (skip_free_areas_node(filter, nid))
+			continue;
+		pgdat_resize_lock(pgdat, &flags);
+
+		for (zoneid = 0; zoneid < MAX_NR_ZONES; zoneid++) {
+			struct zone *zone = &pgdat->node_zones[zoneid];
+			if (!populated_zone(zone))
+				continue;
+
+			reserved += zone->present_pages - zone->managed_pages;
+		}
+		present = pgdat->node_present_pages;
+
+		pgdat_resize_unlock(pgdat, &flags);
+		total_present += present;
+		total_reserved += reserved;
+		printk(KERN_INFO "Node %4d:  RAM: %11ld, rsvd: %8d, ",
+		       nid, present, reserved);
+	}
+	printk(KERN_INFO "%ld pages of RAM\n", total_present);
+	printk(KERN_INFO "%d reserved pages\n", total_reserved);
+	printk(KERN_INFO "Total of %ld pages in page table cache\n",
+	       quicklist_total_size());
+	printk(KERN_INFO "%ld free buffer pages\n", nr_free_buffer_pages());
+}
+>>>>>>> refs/remotes/origin/master

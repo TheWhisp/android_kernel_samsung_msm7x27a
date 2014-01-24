@@ -157,7 +157,11 @@ static int bfin_eval_adau1373_probe(struct platform_device *pdev)
 	return snd_soc_register_card(&bfin_eval_adau1373);
 }
 
+<<<<<<< HEAD
 static int __devexit bfin_eval_adau1373_remove(struct platform_device *pdev)
+=======
+static int bfin_eval_adau1373_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = platform_get_drvdata(pdev);
 
@@ -173,7 +177,11 @@ static struct platform_driver bfin_eval_adau1373_driver = {
 		.pm = &snd_soc_pm_ops,
 	},
 	.probe = bfin_eval_adau1373_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(bfin_eval_adau1373_remove),
+=======
+	.remove = bfin_eval_adau1373_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 module_platform_driver(bfin_eval_adau1373_driver);

@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2010 Tilera Corporation. All Rights Reserved.
 =======
  * Copyright 2011 Tilera Corporation. All Rights Reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2011 Tilera Corporation. All Rights Reserved.
+>>>>>>> refs/remotes/origin/master
  *
  *   This program is free software; you can redistribute it and/or
  *   modify it under the terms of the GNU General Public License
@@ -18,6 +22,7 @@
 
 #include <linux/kernel.h>
 #include <linux/string.h>
+<<<<<<< HEAD
 #include <asm/backtrace.h>
 <<<<<<< HEAD
 #include <asm/opcode-tile.h>
@@ -28,12 +33,19 @@
 #define TILE_MAX_INSTRUCTIONS_PER_BUNDLE TILEGX_MAX_INSTRUCTIONS_PER_BUNDLE
 #define TILE_BUNDLE_ALIGNMENT_IN_BYTES TILEGX_BUNDLE_ALIGNMENT_IN_BYTES
 =======
+=======
+#include <asm/byteorder.h>
+#include <asm/backtrace.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/tile-desc.h>
 #include <arch/abi.h>
 
 #ifdef __tilegx__
 #define TILE_MAX_INSTRUCTIONS_PER_BUNDLE TILEGX_MAX_INSTRUCTIONS_PER_BUNDLE
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define tile_decoded_instruction tilegx_decoded_instruction
 #define tile_mnemonic tilegx_mnemonic
 #define parse_insn_tile parse_insn_tilegx
@@ -48,8 +60,11 @@
 typedef long long bt_int_reg_t;
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define OPCODE_STORE TILE_OPC_SW
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define TILE_MAX_INSTRUCTIONS_PER_BUNDLE TILEPRO_MAX_INSTRUCTIONS_PER_BUNDLE
 #define tile_decoded_instruction tilepro_decoded_instruction
 #define tile_mnemonic tilepro_mnemonic
@@ -62,7 +77,10 @@ typedef long long bt_int_reg_t;
 #define TILE_OPC_JRP TILEPRO_OPC_JRP
 #define TILE_OPC_MOVE TILEPRO_OPC_MOVE
 #define OPCODE_STORE TILEPRO_OPC_SW
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 typedef int bt_int_reg_t;
 #endif
 
@@ -354,8 +372,17 @@ static void find_caller_pc_and_caller_sp(CallerLocation *location,
 				bytes_to_prefetch / sizeof(tile_bundle_bits);
 		}
 
+<<<<<<< HEAD
 		/* Decode the next bundle. */
 		bundle.bits = prefetched_bundles[next_bundle++];
+=======
+		/*
+		 * Decode the next bundle.
+		 * TILE always stores instruction bundles in little-endian
+		 * mode, even when the chip is running in big-endian mode.
+		 */
+		bundle.bits = le64_to_cpu(prefetched_bundles[next_bundle++]);
+>>>>>>> refs/remotes/origin/master
 		bundle.num_insns =
 			parse_insn_tile(bundle.bits, pc, bundle.insns);
 		num_info_ops = bt_get_info_ops(&bundle, info_operands);

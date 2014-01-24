@@ -40,6 +40,10 @@
 #include <linux/wait.h>
 
 #include "inotify.h"
+<<<<<<< HEAD
+=======
+#include "../fdinfo.h"
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/ioctls.h>
 
@@ -49,7 +53,10 @@ static int inotify_max_queued_events __read_mostly;
 static int inotify_max_user_watches __read_mostly;
 
 static struct kmem_cache *inotify_inode_mark_cachep __read_mostly;
+<<<<<<< HEAD
 struct kmem_cache *event_priv_cachep __read_mostly;
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SYSCTL
 
@@ -123,6 +130,19 @@ static unsigned int inotify_poll(struct file *file, poll_table *wait)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static int round_event_name_len(struct fsnotify_event *fsn_event)
+{
+	struct inotify_event_info *event;
+
+	event = INOTIFY_E(fsn_event);
+	if (!event->name_len)
+		return 0;
+	return roundup(event->name_len + 1, sizeof(struct inotify_event));
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Get an inotify_kernel_event if one exists and is small
  * enough to fit in "count". Return an error pointer if
@@ -143,9 +163,13 @@ static struct fsnotify_event *get_one_event(struct fsnotify_group *group,
 
 	pr_debug("%s: group=%p event=%p\n", __func__, group, event);
 
+<<<<<<< HEAD
 	if (event->name_len)
 		event_size += roundup(event->name_len + 1, event_size);
 
+=======
+	event_size += round_event_name_len(event);
+>>>>>>> refs/remotes/origin/master
 	if (event_size > count)
 		return ERR_PTR(-EINVAL);
 
@@ -163,6 +187,7 @@ static struct fsnotify_event *get_one_event(struct fsnotify_group *group,
  * buffer we had in "get_one_event()" above.
  */
 static ssize_t copy_event_to_user(struct fsnotify_group *group,
+<<<<<<< HEAD
 				  struct fsnotify_event *event,
 				  char __user *buf)
 {
@@ -197,6 +222,29 @@ static ssize_t copy_event_to_user(struct fsnotify_group *group,
 	inotify_event.len = name_len;
 
 	inotify_event.mask = inotify_mask_to_arg(event->mask);
+=======
+				  struct fsnotify_event *fsn_event,
+				  char __user *buf)
+{
+	struct inotify_event inotify_event;
+	struct inotify_event_info *event;
+	size_t event_size = sizeof(struct inotify_event);
+	size_t name_len;
+	size_t pad_name_len;
+
+	pr_debug("%s: group=%p event=%p\n", __func__, group, fsn_event);
+
+	event = INOTIFY_E(fsn_event);
+	name_len = event->name_len;
+	/*
+	 * round up name length so it is a multiple of event_size
+	 * plus an extra byte for the terminating '\0'.
+	 */
+	pad_name_len = round_event_name_len(fsn_event);
+	inotify_event.len = pad_name_len;
+	inotify_event.mask = inotify_mask_to_arg(fsn_event->mask);
+	inotify_event.wd = event->wd;
+>>>>>>> refs/remotes/origin/master
 	inotify_event.cookie = event->sync_cookie;
 
 	/* send the main event */
@@ -208,6 +256,7 @@ static ssize_t copy_event_to_user(struct fsnotify_group *group,
 	/*
 	 * fsnotify only stores the pathname, so here we have to send the pathname
 	 * and then pad that pathname out to a multiple of sizeof(inotify_event)
+<<<<<<< HEAD
 	 * with zeros.  I get my zeros from the nul_inotify_event.
 	 */
 	if (name_len) {
@@ -222,6 +271,20 @@ static ssize_t copy_event_to_user(struct fsnotify_group *group,
 			return -EFAULT;
 		buf += len_to_zero;
 		event_size += name_len;
+=======
+	 * with zeros.
+	 */
+	if (pad_name_len) {
+		/* copy the path name */
+		if (copy_to_user(buf, event->name, name_len))
+			return -EFAULT;
+		buf += name_len;
+
+		/* fill userspace with 0's */
+		if (clear_user(buf, pad_name_len - name_len))
+			return -EFAULT;
+		event_size += pad_name_len;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return event_size;
@@ -253,7 +316,11 @@ static ssize_t inotify_read(struct file *file, char __user *buf,
 			if (IS_ERR(kevent))
 				break;
 			ret = copy_event_to_user(group, kevent, buf);
+<<<<<<< HEAD
 			fsnotify_put_event(kevent);
+=======
+			fsnotify_destroy_event(group, kevent);
+>>>>>>> refs/remotes/origin/master
 			if (ret < 0)
 				break;
 			buf += ret;
@@ -264,7 +331,11 @@ static ssize_t inotify_read(struct file *file, char __user *buf,
 		ret = -EAGAIN;
 		if (file->f_flags & O_NONBLOCK)
 			break;
+<<<<<<< HEAD
 		ret = -EINTR;
+=======
+		ret = -ERESTARTSYS;
+>>>>>>> refs/remotes/origin/master
 		if (signal_pending(current))
 			break;
 
@@ -280,6 +351,7 @@ static ssize_t inotify_read(struct file *file, char __user *buf,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int inotify_fasync(int fd, struct file *file, int on)
 {
 	struct fsnotify_group *group = file->private_data;
@@ -287,16 +359,23 @@ static int inotify_fasync(int fd, struct file *file, int on)
 	return fasync_helper(fd, file, on, &group->inotify_data.fa) >= 0 ? 0 : -EIO;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int inotify_release(struct inode *ignored, struct file *file)
 {
 	struct fsnotify_group *group = file->private_data;
 
 	pr_debug("%s: group=%p\n", __func__, group);
 
+<<<<<<< HEAD
 	fsnotify_clear_marks_by_group(group);
 
 	/* free this group, matching get was inotify_init->fsnotify_obtain_group */
 	fsnotify_put_group(group);
+=======
+	/* free this group, matching get was inotify_init->fsnotify_obtain_group */
+	fsnotify_destroy_group(group);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -305,8 +384,12 @@ static long inotify_ioctl(struct file *file, unsigned int cmd,
 			  unsigned long arg)
 {
 	struct fsnotify_group *group;
+<<<<<<< HEAD
 	struct fsnotify_event_holder *holder;
 	struct fsnotify_event *event;
+=======
+	struct fsnotify_event *fsn_event;
+>>>>>>> refs/remotes/origin/master
 	void __user *p;
 	int ret = -ENOTTY;
 	size_t send_len = 0;
@@ -319,12 +402,19 @@ static long inotify_ioctl(struct file *file, unsigned int cmd,
 	switch (cmd) {
 	case FIONREAD:
 		mutex_lock(&group->notification_mutex);
+<<<<<<< HEAD
 		list_for_each_entry(holder, &group->notification_list, event_list) {
 			event = holder->event;
 			send_len += sizeof(struct inotify_event);
 			if (event->name_len)
 				send_len += roundup(event->name_len + 1,
 						sizeof(struct inotify_event));
+=======
+		list_for_each_entry(fsn_event, &group->notification_list,
+				    list) {
+			send_len += sizeof(struct inotify_event);
+			send_len += round_event_name_len(fsn_event);
+>>>>>>> refs/remotes/origin/master
 		}
 		mutex_unlock(&group->notification_mutex);
 		ret = put_user(send_len, (int __user *) p);
@@ -335,9 +425,16 @@ static long inotify_ioctl(struct file *file, unsigned int cmd,
 }
 
 static const struct file_operations inotify_fops = {
+<<<<<<< HEAD
 	.poll		= inotify_poll,
 	.read		= inotify_read,
 	.fasync		= inotify_fasync,
+=======
+	.show_fdinfo	= inotify_show_fdinfo,
+	.poll		= inotify_poll,
+	.read		= inotify_read,
+	.fasync		= fsnotify_fasync,
+>>>>>>> refs/remotes/origin/master
 	.release	= inotify_release,
 	.unlocked_ioctl	= inotify_ioctl,
 	.compat_ioctl	= inotify_ioctl,
@@ -363,11 +460,15 @@ static int inotify_find_inode(const char __user *dirname, struct path *path, uns
 }
 
 static int inotify_add_to_idr(struct idr *idr, spinlock_t *idr_lock,
+<<<<<<< HEAD
 			      int *last_wd,
+=======
+>>>>>>> refs/remotes/origin/master
 			      struct inotify_inode_mark *i_mark)
 {
 	int ret;
 
+<<<<<<< HEAD
 	do {
 		if (unlikely(!idr_pre_get(idr, GFP_KERNEL)))
 			return -ENOMEM;
@@ -384,6 +485,21 @@ static int inotify_add_to_idr(struct idr *idr, spinlock_t *idr_lock,
 	} while (ret == -EAGAIN);
 
 	return ret;
+=======
+	idr_preload(GFP_KERNEL);
+	spin_lock(idr_lock);
+
+	ret = idr_alloc_cyclic(idr, i_mark, 1, 0, GFP_NOWAIT);
+	if (ret >= 0) {
+		/* we added the mark to the idr, take a reference */
+		i_mark->wd = ret;
+		fsnotify_get_mark(&i_mark->fsn_mark);
+	}
+
+	spin_unlock(idr_lock);
+	idr_preload_end();
+	return ret < 0 ? ret : 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct inotify_inode_mark *inotify_idr_find_locked(struct fsnotify_group *group,
@@ -514,6 +630,7 @@ void inotify_ignored_and_remove_idr(struct fsnotify_mark *fsn_mark,
 				    struct fsnotify_group *group)
 {
 	struct inotify_inode_mark *i_mark;
+<<<<<<< HEAD
 	struct fsnotify_event *ignored_event, *notify_event;
 	struct inotify_event_private_data *event_priv;
 	struct fsnotify_event_private_data *fsn_event_priv;
@@ -550,6 +667,14 @@ skip_send_ignore:
 	/* matches the reference taken when the event was created */
 	fsnotify_put_event(ignored_event);
 
+=======
+
+	/* Queue ignore event for the watch */
+	inotify_handle_event(group, NULL, fsn_mark, NULL, FS_IN_IGNORED,
+			     NULL, FSNOTIFY_EVENT_NONE, NULL);
+
+	i_mark = container_of(fsn_mark, struct inotify_inode_mark, fsn_mark);
+>>>>>>> refs/remotes/origin/master
 	/* remove this mark from the idr */
 	inotify_remove_from_idr(group, i_mark);
 
@@ -578,9 +703,12 @@ static int inotify_update_existing_watch(struct fsnotify_group *group,
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* don't allow invalid bits: we don't want flags set */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mask = inotify_arg_to_mask(arg);
 
 	fsn_mark = fsnotify_find_inode_mark(group, inode);
@@ -632,9 +760,12 @@ static int inotify_new_watch(struct fsnotify_group *group,
 	spinlock_t *idr_lock = &group->inotify_data.idr_lock;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* don't allow invalid bits: we don't want flags set */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mask = inotify_arg_to_mask(arg);
 
 	tmp_i_mark = kmem_cache_alloc(inotify_inode_mark_cachep, GFP_KERNEL);
@@ -649,13 +780,22 @@ static int inotify_new_watch(struct fsnotify_group *group,
 	if (atomic_read(&group->inotify_data.user->inotify_watches) >= inotify_max_user_watches)
 		goto out_err;
 
+<<<<<<< HEAD
 	ret = inotify_add_to_idr(idr, idr_lock, &group->inotify_data.last_wd,
 				 tmp_i_mark);
+=======
+	ret = inotify_add_to_idr(idr, idr_lock, tmp_i_mark);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto out_err;
 
 	/* we are on the idr, now get on the inode */
+<<<<<<< HEAD
 	ret = fsnotify_add_mark(&tmp_i_mark->fsn_mark, group, inode, NULL, 0);
+=======
+	ret = fsnotify_add_mark_locked(&tmp_i_mark->fsn_mark, group, inode,
+				       NULL, 0);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		/* we failed to get on the inode, get off the idr */
 		inotify_remove_from_idr(group, tmp_i_mark);
@@ -679,12 +819,17 @@ static int inotify_update_watch(struct fsnotify_group *group, struct inode *inod
 {
 	int ret = 0;
 
+<<<<<<< HEAD
 retry:
+=======
+	mutex_lock(&group->mark_mutex);
+>>>>>>> refs/remotes/origin/master
 	/* try to update and existing watch with the new arg */
 	ret = inotify_update_existing_watch(group, inode, arg);
 	/* no mark present, try to add a new one */
 	if (ret == -ENOENT)
 		ret = inotify_new_watch(group, inode, arg);
+<<<<<<< HEAD
 	/*
 	 * inotify_new_watch could race with another thread which did an
 	 * inotify_new_watch between the update_existing and the add watch
@@ -692,6 +837,9 @@ retry:
 	 */
 	if (ret == -EEXIST)
 		goto retry;
+=======
+	mutex_unlock(&group->mark_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -708,13 +856,20 @@ static struct fsnotify_group *inotify_new_group(unsigned int max_events)
 
 	spin_lock_init(&group->inotify_data.idr_lock);
 	idr_init(&group->inotify_data.idr);
+<<<<<<< HEAD
 	group->inotify_data.last_wd = 0;
 	group->inotify_data.fa = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	group->inotify_data.user = get_current_user();
 
 	if (atomic_inc_return(&group->inotify_data.user->inotify_devs) >
 	    inotify_max_user_instances) {
+<<<<<<< HEAD
 		fsnotify_put_group(group);
+=======
+		fsnotify_destroy_group(group);
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-EMFILE);
 	}
 
@@ -743,7 +898,11 @@ SYSCALL_DEFINE1(inotify_init1, int, flags)
 	ret = anon_inode_getfd("inotify", &inotify_fops, group,
 				  O_RDONLY | flags);
 	if (ret < 0)
+<<<<<<< HEAD
 		fsnotify_put_group(group);
+=======
+		fsnotify_destroy_group(group);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -759,16 +918,24 @@ SYSCALL_DEFINE3(inotify_add_watch, int, fd, const char __user *, pathname,
 	struct fsnotify_group *group;
 	struct inode *inode;
 	struct path path;
+<<<<<<< HEAD
 	struct file *filp;
 	int ret, fput_needed;
 	unsigned flags = 0;
 
 <<<<<<< HEAD
 =======
+=======
+	struct fd f;
+	int ret;
+	unsigned flags = 0;
+
+>>>>>>> refs/remotes/origin/master
 	/* don't allow invalid bits: we don't want flags set */
 	if (unlikely(!(mask & ALL_INOTIFY_BITS)))
 		return -EINVAL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	filp = fget_light(fd, &fput_needed);
 	if (unlikely(!filp))
@@ -776,6 +943,14 @@ SYSCALL_DEFINE3(inotify_add_watch, int, fd, const char __user *, pathname,
 
 	/* verify that this is indeed an inotify instance */
 	if (unlikely(filp->f_op != &inotify_fops)) {
+=======
+	f = fdget(fd);
+	if (unlikely(!f.file))
+		return -EBADF;
+
+	/* verify that this is indeed an inotify instance */
+	if (unlikely(f.file->f_op != &inotify_fops)) {
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto fput_and_out;
 	}
@@ -791,13 +966,21 @@ SYSCALL_DEFINE3(inotify_add_watch, int, fd, const char __user *, pathname,
 
 	/* inode held in place by reference to path; group by fget on fd */
 	inode = path.dentry->d_inode;
+<<<<<<< HEAD
 	group = filp->private_data;
+=======
+	group = f.file->private_data;
+>>>>>>> refs/remotes/origin/master
 
 	/* create/update an inode mark */
 	ret = inotify_update_watch(group, inode, mask);
 	path_put(&path);
 fput_and_out:
+<<<<<<< HEAD
 	fput_light(filp, fput_needed);
+=======
+	fdput(f);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -805,19 +988,34 @@ SYSCALL_DEFINE2(inotify_rm_watch, int, fd, __s32, wd)
 {
 	struct fsnotify_group *group;
 	struct inotify_inode_mark *i_mark;
+<<<<<<< HEAD
 	struct file *filp;
 	int ret = 0, fput_needed;
 
 	filp = fget_light(fd, &fput_needed);
 	if (unlikely(!filp))
+=======
+	struct fd f;
+	int ret = 0;
+
+	f = fdget(fd);
+	if (unlikely(!f.file))
+>>>>>>> refs/remotes/origin/master
 		return -EBADF;
 
 	/* verify that this is indeed an inotify instance */
 	ret = -EINVAL;
+<<<<<<< HEAD
 	if (unlikely(filp->f_op != &inotify_fops))
 		goto out;
 
 	group = filp->private_data;
+=======
+	if (unlikely(f.file->f_op != &inotify_fops))
+		goto out;
+
+	group = f.file->private_data;
+>>>>>>> refs/remotes/origin/master
 
 	ret = -EINVAL;
 	i_mark = inotify_idr_find(group, wd);
@@ -826,13 +1024,21 @@ SYSCALL_DEFINE2(inotify_rm_watch, int, fd, __s32, wd)
 
 	ret = 0;
 
+<<<<<<< HEAD
 	fsnotify_destroy_mark(&i_mark->fsn_mark);
+=======
+	fsnotify_destroy_mark(&i_mark->fsn_mark, group);
+>>>>>>> refs/remotes/origin/master
 
 	/* match ref taken by inotify_idr_find */
 	fsnotify_put_mark(&i_mark->fsn_mark);
 
 out:
+<<<<<<< HEAD
 	fput_light(filp, fput_needed);
+=======
+	fdput(f);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -865,7 +1071,10 @@ static int __init inotify_user_setup(void)
 	BUG_ON(hweight32(ALL_INOTIFY_BITS) != 21);
 
 	inotify_inode_mark_cachep = KMEM_CACHE(inotify_inode_mark, SLAB_PANIC);
+<<<<<<< HEAD
 	event_priv_cachep = KMEM_CACHE(inotify_event_private_data, SLAB_PANIC);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	inotify_max_queued_events = 16384;
 	inotify_max_user_instances = 128;

@@ -17,6 +17,11 @@
  * GNU General Public License for more details.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "logger: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/module.h>
 #include <linux/fs.h>
@@ -25,18 +30,38 @@
 #include <linux/poll.h>
 #include <linux/slab.h>
 #include <linux/time.h>
+<<<<<<< HEAD
+=======
+#include <linux/vmalloc.h>
+#include <linux/aio.h>
+>>>>>>> refs/remotes/origin/master
 #include "logger.h"
 
 #include <asm/ioctls.h>
 
+<<<<<<< HEAD
 /*
  * struct logger_log - represents a specific log, such as 'main' or 'radio'
+=======
+/**
+ * struct logger_log - represents a specific log, such as 'main' or 'radio'
+ * @buffer:	The actual ring buffer
+ * @misc:	The "misc" device representing the log
+ * @wq:		The wait queue for @readers
+ * @readers:	This log's readers
+ * @mutex:	The mutex that protects the @buffer
+ * @w_off:	The current write head offset
+ * @head:	The head, or location that readers start reading at.
+ * @size:	The size of the log
+ * @logs:	The list of log channels
+>>>>>>> refs/remotes/origin/master
  *
  * This structure lives from module insertion until module removal, so it does
  * not need additional reference counting. The structure is protected by the
  * mutex 'mutex'.
  */
 struct logger_log {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned char 		*buffer;/* the ring buffer itself */
 =======
@@ -53,11 +78,35 @@ struct logger_log {
 
 /*
  * struct logger_reader - a logging device open for reading
+=======
+	unsigned char		*buffer;
+	struct miscdevice	misc;
+	wait_queue_head_t	wq;
+	struct list_head	readers;
+	struct mutex		mutex;
+	size_t			w_off;
+	size_t			head;
+	size_t			size;
+	struct list_head	logs;
+};
+
+static LIST_HEAD(log_list);
+
+
+/**
+ * struct logger_reader - a logging device open for reading
+ * @log:	The associated log
+ * @list:	The associated entry in @logger_log's list
+ * @r_off:	The current read head offset.
+ * @r_all:	Reader can read all entries
+ * @r_ver:	Reader ABI version
+>>>>>>> refs/remotes/origin/master
  *
  * This object lives from open to release, so we don't need additional
  * reference counting. The structure is protected by log->mutex.
  */
 struct logger_reader {
+<<<<<<< HEAD
 	struct logger_log	*log;	/* associated log */
 	struct list_head	list;	/* entry in logger_log's list */
 	size_t			r_off;	/* current read head offset */
@@ -78,12 +127,28 @@ size_t logger_offset(struct logger_log *log, size_t n)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct logger_log	*log;
+	struct list_head	list;
+	size_t			r_off;
+	bool			r_all;
+	int			r_ver;
+};
+
+/* logger_offset - returns index 'n' into the log via (optimized) modulus */
+static size_t logger_offset(struct logger_log *log, size_t n)
+{
+	return n & (log->size - 1);
+}
+
+>>>>>>> refs/remotes/origin/master
 
 /*
  * file_get_log - Given a file structure, return the associated log
  *
  * This isn't aesthetic. We have several goals:
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * 	1) Need to quickly obtain the associated log during an I/O operation
  * 	2) Readers need to maintain state (logger_reader)
@@ -93,6 +158,11 @@ size_t logger_offset(struct logger_log *log, size_t n)
  *	2) Readers need to maintain state (logger_reader)
  *	3) Writers need to be very fast (open() should be a near no-op)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	1) Need to quickly obtain the associated log during an I/O operation
+ *	2) Readers need to maintain state (logger_reader)
+ *	3) Writers need to be very fast (open() should be a near no-op)
+>>>>>>> refs/remotes/origin/master
  *
  * In the reader case, we can trivially go file->logger_reader->logger_log.
  * For a writer, we don't want to maintain a logger_reader, so we just go
@@ -110,6 +180,9 @@ static inline struct logger_log *file_get_log(struct file *file)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
  * get_entry_header - returns a pointer to the logger_entry header within
  * 'log' starting at offset 'off'. A temporary logger_entry 'scratch' must
  * be provided. Typically the return value will be a pointer within
@@ -134,6 +207,13 @@ static struct logger_entry *get_entry_header(struct logger_log *log,
  * get_entry_msg_len - Grabs the length of the message of the entry
  * starting from from 'off'.
  *
+<<<<<<< HEAD
+=======
+ * An entry length is 2 bytes (16 bits) in host endian order.
+ * In the log, the length does not include the size of the log entry structure.
+ * This function returns the size including the log entry structure.
+ *
+>>>>>>> refs/remotes/origin/master
  * Caller needs to hold log->mutex.
  */
 static __u32 get_entry_msg_len(struct logger_log *log, size_t off)
@@ -175,6 +255,7 @@ static ssize_t copy_header_to_user(int ver, struct logger_entry *entry,
 	}
 
 	return copy_to_user(buf, hdr, hdr_len);
+<<<<<<< HEAD
 =======
  * get_entry_len - Grabs the length of the payload of the next entry starting
  * from 'off'.
@@ -200,6 +281,8 @@ static __u32 get_entry_len(struct logger_log *log, size_t off)
 
 	return sizeof(struct logger_entry) + val;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -214,6 +297,9 @@ static ssize_t do_read_log_to_user(struct logger_log *log,
 				   size_t count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 	struct logger_entry scratch;
 	struct logger_entry *entry;
 	size_t len;
@@ -229,7 +315,12 @@ static ssize_t do_read_log_to_user(struct logger_log *log,
 
 	count -= get_user_hdr_len(reader->r_ver);
 	buf += get_user_hdr_len(reader->r_ver);
+<<<<<<< HEAD
 	msg_start = logger_offset(reader->r_off + sizeof(struct logger_entry));
+=======
+	msg_start = logger_offset(log,
+		reader->r_off + sizeof(struct logger_entry));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We read from the msg in two disjoint operations. First, we read from
@@ -238,6 +329,7 @@ static ssize_t do_read_log_to_user(struct logger_log *log,
 	 */
 	len = min(count, log->size - msg_start);
 	if (copy_to_user(buf, log->buffer + msg_start, len))
+<<<<<<< HEAD
 =======
 	size_t len;
 
@@ -249,6 +341,8 @@ static ssize_t do_read_log_to_user(struct logger_log *log,
 	len = min(count, log->size - reader->r_off);
 	if (copy_to_user(buf, log->buffer + reader->r_off, len))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EFAULT;
 
 	/*
@@ -260,7 +354,11 @@ static ssize_t do_read_log_to_user(struct logger_log *log,
 			return -EFAULT;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	reader->r_off = logger_offset(reader->r_off +
+=======
+	reader->r_off = logger_offset(log, reader->r_off +
+>>>>>>> refs/remotes/origin/master
 		sizeof(struct logger_entry) + count);
 
 	return count + get_user_hdr_len(reader->r_ver);
@@ -271,7 +369,11 @@ static ssize_t do_read_log_to_user(struct logger_log *log,
  * 'log->buffer' which contains the first entry readable by 'euid'
  */
 static size_t get_next_entry_by_uid(struct logger_log *log,
+<<<<<<< HEAD
 		size_t off, uid_t euid)
+=======
+		size_t off, kuid_t euid)
+>>>>>>> refs/remotes/origin/master
 {
 	while (off != log->w_off) {
 		struct logger_entry *entry;
@@ -280,6 +382,7 @@ static size_t get_next_entry_by_uid(struct logger_log *log,
 
 		entry = get_entry_header(log, off, &scratch);
 
+<<<<<<< HEAD
 		if (entry->euid == euid)
 			return off;
 
@@ -293,6 +396,16 @@ static size_t get_next_entry_by_uid(struct logger_log *log,
 
 	return count;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (uid_eq(entry->euid, euid))
+			return off;
+
+		next_len = sizeof(struct logger_entry) + entry->len;
+		off = logger_offset(log, off + next_len);
+	}
+
+	return off;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -301,18 +414,25 @@ static size_t get_next_entry_by_uid(struct logger_log *log,
  * Behavior:
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 	- O_NONBLOCK works
  * 	- If there are no log entries to read, blocks until log is written to
  * 	- Atomically reads exactly one log entry
  *
  * Will set errno to EINVAL if read
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *	- O_NONBLOCK works
  *	- If there are no log entries to read, blocks until log is written to
  *	- Atomically reads exactly one log entry
  *
+<<<<<<< HEAD
  * Optimal read size is LOGGER_ENTRY_MAX_LEN. Will set errno to EINVAL if read
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Will set errno to EINVAL if read
+>>>>>>> refs/remotes/origin/master
  * buffer is insufficient to hold next entry.
  */
 static ssize_t logger_read(struct file *file, char __user *buf,
@@ -326,15 +446,21 @@ static ssize_t logger_read(struct file *file, char __user *buf,
 start:
 	while (1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		prepare_to_wait(&log->wq, &wait, TASK_INTERRUPTIBLE);
 
 		mutex_lock(&log->mutex);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		mutex_lock(&log->mutex);
 
 		prepare_to_wait(&log->wq, &wait, TASK_INTERRUPTIBLE);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = (log->w_off == reader->r_off);
 		mutex_unlock(&log->mutex);
 		if (!ret)
@@ -360,12 +486,18 @@ start:
 	mutex_lock(&log->mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!reader->r_all)
 		reader->r_off = get_next_entry_by_uid(log,
 			reader->r_off, current_euid());
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* is there still something to read or did we race? */
 	if (unlikely(log->w_off == reader->r_off)) {
 		mutex_unlock(&log->mutex);
@@ -374,11 +506,16 @@ start:
 
 	/* get the size of the next entry */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = get_user_hdr_len(reader->r_ver) +
 		get_entry_msg_len(log, reader->r_off);
 =======
 	ret = get_entry_len(log, reader->r_off);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = get_user_hdr_len(reader->r_ver) +
+		get_entry_msg_len(log, reader->r_off);
+>>>>>>> refs/remotes/origin/master
 	if (count < ret) {
 		ret = -EINVAL;
 		goto out;
@@ -405,6 +542,7 @@ static size_t get_next_entry(struct logger_log *log, size_t off, size_t len)
 
 	do {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		size_t nr = sizeof(struct logger_entry) +
 			get_entry_msg_len(log, off);
 		off = logger_offset(off + nr);
@@ -412,6 +550,11 @@ static size_t get_next_entry(struct logger_log *log, size_t off, size_t len)
 		size_t nr = get_entry_len(log, off);
 		off = logger_offset(log, off + nr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		size_t nr = sizeof(struct logger_entry) +
+			get_entry_msg_len(log, off);
+		off = logger_offset(log, off + nr);
+>>>>>>> refs/remotes/origin/master
 		count += nr;
 	} while (count < len);
 
@@ -419,6 +562,7 @@ static size_t get_next_entry(struct logger_log *log, size_t off, size_t len)
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * clock_interval - is a < c < b in mod-space? Put another way, does the line
  * from a to b cross c?
@@ -431,6 +575,8 @@ static inline int clock_interval(size_t a, size_t b, size_t c)
 	} else {
 		if (a < c && b >= c)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * is_between - is a < c < b, accounting for wrapping of a, b, and c
  *    positions in the buffer
  *
@@ -453,7 +599,10 @@ static inline int is_between(size_t a, size_t b, size_t c)
 	} else {
 		/* is c outside of b through a? */
 		if (c <= b || a < c)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return 1;
 	}
 
@@ -472,6 +621,7 @@ static void fix_up_readers(struct logger_log *log, size_t len)
 {
 	size_t old = log->w_off;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	size_t new = logger_offset(old + len);
 	struct logger_reader *reader;
 
@@ -481,6 +631,8 @@ static void fix_up_readers(struct logger_log *log, size_t len)
 	list_for_each_entry(reader, &log->readers, list)
 		if (clock_interval(old, new, reader->r_off))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	size_t new = logger_offset(log, old + len);
 	struct logger_reader *reader;
 
@@ -489,7 +641,10 @@ static void fix_up_readers(struct logger_log *log, size_t len)
 
 	list_for_each_entry(reader, &log->readers, list)
 		if (is_between(old, new, reader->r_off))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			reader->r_off = get_next_entry(log, reader->r_off, len);
 }
 
@@ -509,10 +664,14 @@ static void do_write_log(struct logger_log *log, const void *buf, size_t count)
 		memcpy(log->buffer, buf + len, count - len);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	log->w_off = logger_offset(log->w_off + count);
 =======
 	log->w_off = logger_offset(log, log->w_off + count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	log->w_off = logger_offset(log, log->w_off + count);
+>>>>>>> refs/remotes/origin/master
 
 }
 
@@ -536,10 +695,13 @@ static ssize_t do_write_log_from_user(struct logger_log *log,
 	if (count != len)
 		if (copy_from_user(log->buffer, buf + len, count - len))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return -EFAULT;
 
 	log->w_off = logger_offset(log->w_off + count);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Note that by not updating w_off, this abandons the
 			 * portion of the new entry that *was* successfully
@@ -549,7 +711,10 @@ static ssize_t do_write_log_from_user(struct logger_log *log,
 			return -EFAULT;
 
 	log->w_off = logger_offset(log, log->w_off + count);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return count;
 }
@@ -559,11 +724,19 @@ static ssize_t do_write_log_from_user(struct logger_log *log,
  * writev(), and aio_write(). Writes are our fast path, and we try to optimize
  * them above all else.
  */
+<<<<<<< HEAD
 ssize_t logger_aio_write(struct kiocb *iocb, const struct iovec *iov,
 			 unsigned long nr_segs, loff_t ppos)
 {
 	struct logger_log *log = file_get_log(iocb->ki_filp);
 	size_t orig = log->w_off;
+=======
+static ssize_t logger_aio_write(struct kiocb *iocb, const struct iovec *iov,
+			 unsigned long nr_segs, loff_t ppos)
+{
+	struct logger_log *log = file_get_log(iocb->ki_filp);
+	size_t orig;
+>>>>>>> refs/remotes/origin/master
 	struct logger_entry header;
 	struct timespec now;
 	ssize_t ret = 0;
@@ -575,12 +748,18 @@ ssize_t logger_aio_write(struct kiocb *iocb, const struct iovec *iov,
 	header.sec = now.tv_sec;
 	header.nsec = now.tv_nsec;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	header.euid = current_euid();
 	header.len = min_t(size_t, iocb->ki_left, LOGGER_ENTRY_MAX_PAYLOAD);
 	header.hdr_size = sizeof(struct logger_entry);
 =======
 	header.len = min_t(size_t, iocb->ki_left, LOGGER_ENTRY_MAX_PAYLOAD);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	header.euid = current_euid();
+	header.len = min_t(size_t, iocb->ki_nbytes, LOGGER_ENTRY_MAX_PAYLOAD);
+	header.hdr_size = sizeof(struct logger_entry);
+>>>>>>> refs/remotes/origin/master
 
 	/* null writes succeed, return zero */
 	if (unlikely(!header.len))
@@ -588,6 +767,11 @@ ssize_t logger_aio_write(struct kiocb *iocb, const struct iovec *iov,
 
 	mutex_lock(&log->mutex);
 
+<<<<<<< HEAD
+=======
+	orig = log->w_off;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Fix up any readers, pulling them forward to the first readable
 	 * entry after (what will be) the new write offset. We do this now
@@ -625,7 +809,19 @@ ssize_t logger_aio_write(struct kiocb *iocb, const struct iovec *iov,
 	return ret;
 }
 
+<<<<<<< HEAD
 static struct logger_log *get_log_from_minor(int);
+=======
+static struct logger_log *get_log_from_minor(int minor)
+{
+	struct logger_log *log;
+
+	list_for_each_entry(log, &log_list, logs)
+		if (log->misc.minor == minor)
+			return log;
+	return NULL;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * logger_open - the log's open() file operation
@@ -654,12 +850,18 @@ static int logger_open(struct inode *inode, struct file *file)
 
 		reader->log = log;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 		reader->r_ver = 1;
 		reader->r_all = in_egroup_p(inode->i_gid) ||
 			capable(CAP_SYSLOG);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		INIT_LIST_HEAD(&reader->list);
 
 		mutex_lock(&log->mutex);
@@ -684,15 +886,21 @@ static int logger_release(struct inode *ignored, struct file *file)
 	if (file->f_mode & FMODE_READ) {
 		struct logger_reader *reader = file->private_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		list_del(&reader->list);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		struct logger_log *log = reader->log;
 
 		mutex_lock(&log->mutex);
 		list_del(&reader->list);
 		mutex_unlock(&log->mutex);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(reader);
 	}
 
@@ -724,12 +932,18 @@ static unsigned int logger_poll(struct file *file, poll_table *wait)
 
 	mutex_lock(&log->mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!reader->r_all)
 		reader->r_off = get_next_entry_by_uid(log,
 			reader->r_off, current_euid());
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (log->w_off != reader->r_off)
 		ret |= POLLIN | POLLRDNORM;
 	mutex_unlock(&log->mutex);
@@ -738,6 +952,9 @@ static unsigned int logger_poll(struct file *file, poll_table *wait)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 static long logger_set_version(struct logger_reader *reader, void __user *arg)
 {
 	int version;
@@ -751,18 +968,26 @@ static long logger_set_version(struct logger_reader *reader, void __user *arg)
 	return 0;
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static long logger_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	struct logger_log *log = file_get_log(file);
 	struct logger_reader *reader;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	long ret = -EINVAL;
 	void __user *argp = (void __user *) arg;
 =======
 	long ret = -ENOTTY;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	long ret = -EINVAL;
+	void __user *argp = (void __user *) arg;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&log->mutex);
 
@@ -788,6 +1013,9 @@ static long logger_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		}
 		reader = file->private_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (!reader->r_all)
 			reader->r_off = get_next_entry_by_uid(log,
@@ -796,10 +1024,13 @@ static long logger_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		if (log->w_off != reader->r_off)
 			ret = get_user_hdr_len(reader->r_ver) +
 				get_entry_msg_len(log, reader->r_off);
+<<<<<<< HEAD
 =======
 		if (log->w_off != reader->r_off)
 			ret = get_entry_len(log, reader->r_off);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		else
 			ret = 0;
 		break;
@@ -808,12 +1039,23 @@ static long logger_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			ret = -EBADF;
 			break;
 		}
+<<<<<<< HEAD
+=======
+		if (!(in_egroup_p(file_inode(file)->i_gid) ||
+				capable(CAP_SYSLOG))) {
+			ret = -EPERM;
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 		list_for_each_entry(reader, &log->readers, list)
 			reader->r_off = log->w_off;
 		log->head = log->w_off;
 		ret = 0;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 	case LOGGER_GET_VERSION:
 		if (!(file->f_mode & FMODE_READ)) {
 			ret = -EBADF;
@@ -830,8 +1072,11 @@ static long logger_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		reader = file->private_data;
 		ret = logger_set_version(reader, argp);
 		break;
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_unlock(&log->mutex);
@@ -851,6 +1096,7 @@ static const struct file_operations logger_fops = {
 };
 
 /*
+<<<<<<< HEAD
  * Defines a log structure with name 'NAME' and a size of 'SIZE' bytes, which
 <<<<<<< HEAD
  * must be a power of two, and greater than
@@ -911,12 +1157,74 @@ static int __init init_log(struct logger_log *log)
 	       (unsigned long) log->size >> 10, log->misc.name);
 
 	return 0;
+=======
+ * Log size must must be a power of two, and greater than
+ * (LOGGER_ENTRY_MAX_PAYLOAD + sizeof(struct logger_entry)).
+ */
+static int __init create_log(char *log_name, int size)
+{
+	int ret = 0;
+	struct logger_log *log;
+	unsigned char *buffer;
+
+	buffer = vmalloc(size);
+	if (buffer == NULL)
+		return -ENOMEM;
+
+	log = kzalloc(sizeof(struct logger_log), GFP_KERNEL);
+	if (log == NULL) {
+		ret = -ENOMEM;
+		goto out_free_buffer;
+	}
+	log->buffer = buffer;
+
+	log->misc.minor = MISC_DYNAMIC_MINOR;
+	log->misc.name = kstrdup(log_name, GFP_KERNEL);
+	if (log->misc.name == NULL) {
+		ret = -ENOMEM;
+		goto out_free_log;
+	}
+
+	log->misc.fops = &logger_fops;
+	log->misc.parent = NULL;
+
+	init_waitqueue_head(&log->wq);
+	INIT_LIST_HEAD(&log->readers);
+	mutex_init(&log->mutex);
+	log->w_off = 0;
+	log->head = 0;
+	log->size = size;
+
+	INIT_LIST_HEAD(&log->logs);
+	list_add_tail(&log->logs, &log_list);
+
+	/* finally, initialize the misc device for this log */
+	ret = misc_register(&log->misc);
+	if (unlikely(ret)) {
+		pr_err("failed to register misc device for log '%s'!\n",
+				log->misc.name);
+		goto out_free_log;
+	}
+
+	pr_info("created %luK log '%s'\n",
+		(unsigned long) log->size >> 10, log->misc.name);
+
+	return 0;
+
+out_free_log:
+	kfree(log);
+
+out_free_buffer:
+	vfree(buffer);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init logger_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
 	ret = init_log(&log_main);
 	if (unlikely(ret))
 		goto out;
@@ -930,10 +1238,50 @@ static int __init logger_init(void)
 		goto out;
 
 	ret = init_log(&log_system);
+=======
+	ret = create_log(LOGGER_LOG_MAIN, 256*1024);
+	if (unlikely(ret))
+		goto out;
+
+	ret = create_log(LOGGER_LOG_EVENTS, 256*1024);
+	if (unlikely(ret))
+		goto out;
+
+	ret = create_log(LOGGER_LOG_RADIO, 256*1024);
+	if (unlikely(ret))
+		goto out;
+
+	ret = create_log(LOGGER_LOG_SYSTEM, 256*1024);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(ret))
 		goto out;
 
 out:
 	return ret;
 }
+<<<<<<< HEAD
 device_initcall(logger_init);
+=======
+
+static void __exit logger_exit(void)
+{
+	struct logger_log *current_log, *next_log;
+
+	list_for_each_entry_safe(current_log, next_log, &log_list, logs) {
+		/* we have to delete all the entry inside log_list */
+		misc_deregister(&current_log->misc);
+		vfree(current_log->buffer);
+		kfree(current_log->misc.name);
+		list_del(&current_log->logs);
+		kfree(current_log);
+	}
+}
+
+
+device_initcall(logger_init);
+module_exit(logger_exit);
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Robert Love, <rlove@google.com>");
+MODULE_DESCRIPTION("Android Logger");
+>>>>>>> refs/remotes/origin/master

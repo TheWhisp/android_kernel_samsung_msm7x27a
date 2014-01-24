@@ -17,13 +17,18 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/clk.h>
 #include <linux/err.h>
 #include <linux/io.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #include <linux/of.h>
@@ -38,6 +43,14 @@
 =======
 #include "fuse.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of.h>
+#include <linux/platform_device.h>
+#include <linux/platform_data/tegra_emc.h>
+
+#include "tegra2_emc.h"
+#include "fuse.h"
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_TEGRA_EMC_SCALING_ENABLE
 static bool emc_enable = true;
@@ -47,6 +60,7 @@ static bool emc_enable;
 module_param(emc_enable, bool, 0644);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __iomem *emc = IO_ADDRESS(TEGRA_EMC_BASE);
 static const struct tegra_emc_table *tegra_emc_table;
 static int tegra_emc_table_size;
@@ -55,22 +69,31 @@ static inline void emc_writel(u32 val, unsigned long addr)
 {
 	writel(val, emc + addr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device *emc_pdev;
 static void __iomem *emc_regbase;
 
 static inline void emc_writel(u32 val, unsigned long addr)
 {
 	writel(val, emc_regbase + addr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline u32 emc_readl(unsigned long addr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return readl(emc + addr);
 =======
 	return readl(emc_regbase + addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return readl(emc_regbase + addr);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const unsigned long emc_reg_addr[TEGRA_EMC_NUM_REGS] = {
@@ -126,13 +149,18 @@ static const unsigned long emc_reg_addr[TEGRA_EMC_NUM_REGS] = {
 long tegra_emc_round_rate(unsigned long rate)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct tegra_emc_pdata *pdata;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct tegra_emc_pdata *pdata;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int best = -1;
 	unsigned long distance = ULONG_MAX;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!tegra_emc_table)
 		return -EINVAL;
@@ -140,11 +168,16 @@ long tegra_emc_round_rate(unsigned long rate)
 	if (!emc_enable)
 		return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!emc_pdev)
 		return -EINVAL;
 
 	pdata = emc_pdev->dev.platform_data;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("%s: %lu\n", __func__, rate);
 
@@ -155,16 +188,22 @@ long tegra_emc_round_rate(unsigned long rate)
 	rate = rate / 2 / 1000;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < tegra_emc_table_size; i++) {
 		if (tegra_emc_table[i].rate >= rate &&
 		    (tegra_emc_table[i].rate - rate) < distance) {
 			distance = tegra_emc_table[i].rate - rate;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < pdata->num_tables; i++) {
 		if (pdata->tables[i].rate >= rate &&
 		    (pdata->tables[i].rate - rate) < distance) {
 			distance = pdata->tables[i].rate - rate;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			best = i;
 		}
 	}
@@ -172,6 +211,7 @@ long tegra_emc_round_rate(unsigned long rate)
 	if (best < 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pr_debug("%s: using %lu\n", __func__, tegra_emc_table[best].rate);
 
@@ -181,6 +221,11 @@ long tegra_emc_round_rate(unsigned long rate)
 
 	return pdata->tables[best].rate * 2 * 1000;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s: using %lu\n", __func__, pdata->tables[best].rate);
+
+	return pdata->tables[best].rate * 2 * 1000;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -194,6 +239,7 @@ long tegra_emc_round_rate(unsigned long rate)
 int tegra_emc_set_rate(unsigned long rate)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 	int j;
 
@@ -201,6 +247,8 @@ int tegra_emc_set_rate(unsigned long rate)
 		return -EINVAL;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct tegra_emc_pdata *pdata;
 	int i;
 	int j;
@@ -210,7 +258,10 @@ int tegra_emc_set_rate(unsigned long rate)
 
 	pdata = emc_pdev->dev.platform_data;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The EMC clock rate is twice the bus rate, and the bus rate is
 	 * measured in kHz
@@ -218,23 +269,30 @@ int tegra_emc_set_rate(unsigned long rate)
 	rate = rate / 2 / 1000;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < tegra_emc_table_size; i++)
 		if (tegra_emc_table[i].rate == rate)
 			break;
 
 	if (i >= tegra_emc_table_size)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < pdata->num_tables; i++)
 		if (pdata->tables[i].rate == rate)
 			break;
 
 	if (i >= pdata->num_tables)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	pr_debug("%s: setting to %lu\n", __func__, rate);
 
 	for (j = 0; j < TEGRA_EMC_NUM_REGS; j++)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		emc_writel(tegra_emc_table[i].regs[j], emc_reg_addr[j]);
 
@@ -244,10 +302,16 @@ int tegra_emc_set_rate(unsigned long rate)
 
 	emc_readl(pdata->tables[i].regs[TEGRA_EMC_NUM_REGS - 1]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		emc_writel(pdata->tables[i].regs[j], emc_reg_addr[j]);
+
+	emc_readl(pdata->tables[i].regs[TEGRA_EMC_NUM_REGS - 1]);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void tegra_init_emc(const struct tegra_emc_table *table, int table_size)
 {
@@ -255,6 +319,8 @@ void tegra_init_emc(const struct tegra_emc_table *table, int table_size)
 	tegra_emc_table_size = table_size;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_OF
 static struct device_node *tegra_emc_ramcode_devnode(struct device_node *np)
 {
@@ -262,7 +328,11 @@ static struct device_node *tegra_emc_ramcode_devnode(struct device_node *np)
 	u32 reg;
 
 	for_each_child_of_node(np, iter) {
+<<<<<<< HEAD
 		if (of_property_read_u32(np, "nvidia,ram-code", &reg))
+=======
+		if (of_property_read_u32(iter, "nvidia,ram-code", &reg))
+>>>>>>> refs/remotes/origin/master
 			continue;
 		if (reg == tegra_bct_strapping)
 			return of_node_get(iter);
@@ -347,7 +417,11 @@ static struct tegra_emc_pdata *tegra_emc_dt_parse_pdata(
 }
 #endif
 
+<<<<<<< HEAD
 static struct tegra_emc_pdata __devinit *tegra_emc_fill_pdata(struct platform_device *pdev)
+=======
+static struct tegra_emc_pdata *tegra_emc_fill_pdata(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct clk *c = clk_get_sys(NULL, "emc");
 	struct tegra_emc_pdata *pdata;
@@ -355,7 +429,11 @@ static struct tegra_emc_pdata __devinit *tegra_emc_fill_pdata(struct platform_de
 	int i;
 
 	WARN_ON(pdev->dev.platform_data);
+<<<<<<< HEAD
 	BUG_ON(IS_ERR_OR_NULL(c));
+=======
+	BUG_ON(IS_ERR(c));
+>>>>>>> refs/remotes/origin/master
 
 	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
 	pdata->tables = devm_kzalloc(&pdev->dev, sizeof(*pdata->tables),
@@ -375,7 +453,11 @@ static struct tegra_emc_pdata __devinit *tegra_emc_fill_pdata(struct platform_de
 	return pdata;
 }
 
+<<<<<<< HEAD
 static int __devinit tegra_emc_probe(struct platform_device *pdev)
+=======
+static int tegra_emc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tegra_emc_pdata *pdata;
 	struct resource *res;
@@ -386,6 +468,7 @@ static int __devinit tegra_emc_probe(struct platform_device *pdev)
 	}
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (!res) {
 		dev_err(&pdev->dev, "missing register base\n");
 		return -ENOMEM;
@@ -396,6 +479,11 @@ static int __devinit tegra_emc_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "failed to remap registers\n");
 		return -ENOMEM;
 	}
+=======
+	emc_regbase = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(emc_regbase))
+		return PTR_ERR(emc_regbase);
+>>>>>>> refs/remotes/origin/master
 
 	pdata = pdev->dev.platform_data;
 
@@ -412,7 +500,11 @@ static int __devinit tegra_emc_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct of_device_id tegra_emc_of_match[] __devinitdata = {
+=======
+static struct of_device_id tegra_emc_of_match[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .compatible = "nvidia,tegra20-emc", },
 	{ },
 };
@@ -431,4 +523,7 @@ static int __init tegra_emc_init(void)
 	return platform_driver_register(&tegra_emc_driver);
 }
 device_initcall(tegra_emc_init);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

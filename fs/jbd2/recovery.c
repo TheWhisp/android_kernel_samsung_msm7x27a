@@ -22,9 +22,13 @@
 #include <linux/errno.h>
 #include <linux/crc32.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/blkdev.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/blkdev.h>
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -94,10 +98,14 @@ static int do_readahead(journal_t *journal, unsigned int start)
 
 		if (err) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk (KERN_ERR "JBD: bad block at offset %u\n",
 =======
 			printk(KERN_ERR "JBD2: bad block at offset %u\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			printk(KERN_ERR "JBD2: bad block at offset %u\n",
+>>>>>>> refs/remotes/origin/master
 				next);
 			goto failed;
 		}
@@ -147,10 +155,14 @@ static int jread(struct buffer_head **bhp, journal_t *journal,
 
 	if (offset >= journal->j_maxlen) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "JBD: corrupted journal superblock\n");
 =======
 		printk(KERN_ERR "JBD2: corrupted journal superblock\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR "JBD2: corrupted journal superblock\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -158,10 +170,14 @@ static int jread(struct buffer_head **bhp, journal_t *journal,
 
 	if (err) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk (KERN_ERR "JBD: bad block at offset %u\n",
 =======
 		printk(KERN_ERR "JBD2: bad block at offset %u\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR "JBD2: bad block at offset %u\n",
+>>>>>>> refs/remotes/origin/master
 			offset);
 		return err;
 	}
@@ -180,10 +196,14 @@ static int jread(struct buffer_head **bhp, journal_t *journal,
 
 	if (!buffer_uptodate(bh)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk (KERN_ERR "JBD: Failed to read block at offset %u\n",
 =======
 		printk(KERN_ERR "JBD2: Failed to read block at offset %u\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR "JBD2: Failed to read block at offset %u\n",
+>>>>>>> refs/remotes/origin/master
 			offset);
 		brelse(bh);
 		return -EIO;
@@ -193,6 +213,28 @@ static int jread(struct buffer_head **bhp, journal_t *journal,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int jbd2_descr_block_csum_verify(journal_t *j,
+					void *buf)
+{
+	struct jbd2_journal_block_tail *tail;
+	__be32 provided;
+	__u32 calculated;
+
+	if (!JBD2_HAS_INCOMPAT_FEATURE(j, JBD2_FEATURE_INCOMPAT_CSUM_V2))
+		return 1;
+
+	tail = (struct jbd2_journal_block_tail *)(buf + j->j_blocksize -
+			sizeof(struct jbd2_journal_block_tail));
+	provided = tail->t_checksum;
+	tail->t_checksum = 0;
+	calculated = jbd2_chksum(j, j->j_csum_seed, buf, j->j_blocksize);
+	tail->t_checksum = provided;
+
+	return provided == cpu_to_be32(calculated);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Count the number of in-use tags in a journal descriptor block.
@@ -205,6 +247,12 @@ static int count_tags(journal_t *journal, struct buffer_head *bh)
 	int			nr = 0, size = journal->j_blocksize;
 	int			tag_bytes = journal_tag_bytes(journal);
 
+<<<<<<< HEAD
+=======
+	if (JBD2_HAS_INCOMPAT_FEATURE(journal, JBD2_FEATURE_INCOMPAT_CSUM_V2))
+		size -= sizeof(struct jbd2_journal_block_tail);
+
+>>>>>>> refs/remotes/origin/master
 	tagp = &bh->b_data[sizeof(journal_header_t)];
 
 	while ((tagp - bh->b_data + tag_bytes) <= size) {
@@ -212,10 +260,17 @@ static int count_tags(journal_t *journal, struct buffer_head *bh)
 
 		nr++;
 		tagp += tag_bytes;
+<<<<<<< HEAD
 		if (!(tag->t_flags & cpu_to_be32(JBD2_FLAG_SAME_UUID)))
 			tagp += 16;
 
 		if (tag->t_flags & cpu_to_be32(JBD2_FLAG_LAST_TAG))
+=======
+		if (!(tag->t_flags & cpu_to_be16(JBD2_FLAG_SAME_UUID)))
+			tagp += 16;
+
+		if (tag->t_flags & cpu_to_be16(JBD2_FLAG_LAST_TAG))
+>>>>>>> refs/remotes/origin/master
 			break;
 	}
 
@@ -272,16 +327,22 @@ int jbd2_journal_recover(journal_t *journal)
 		err = do_one_pass(journal, &info, PASS_REPLAY);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	jbd_debug(1, "JBD: recovery, exit status %d, "
 		  "recovered transactions %u to %u\n",
 		  err, info.start_transaction, info.end_transaction);
 	jbd_debug(1, "JBD: Replayed %d and revoked %d/%d blocks\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	jbd_debug(1, "JBD2: recovery, exit status %d, "
 		  "recovered transactions %u to %u\n",
 		  err, info.start_transaction, info.end_transaction);
 	jbd_debug(1, "JBD2: Replayed %d and revoked %d/%d blocks\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		  info.nr_replays, info.nr_revoke_hits, info.nr_revokes);
 
 	/* Restart the log at the next transaction ID, thus invalidating
@@ -293,12 +354,21 @@ int jbd2_journal_recover(journal_t *journal)
 	if (!err)
 		err = err2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	/* Make sure all replayed data is on permanent storage */
 	if (journal->j_flags & JBD2_BARRIER)
 		blkdev_issue_flush(journal->j_fs_dev, GFP_KERNEL, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Make sure all replayed data is on permanent storage */
+	if (journal->j_flags & JBD2_BARRIER) {
+		err2 = blkdev_issue_flush(journal->j_fs_dev, GFP_KERNEL, NULL);
+		if (!err)
+			err = err2;
+	}
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -327,10 +397,14 @@ int jbd2_journal_skip_recovery(journal_t *journal)
 
 	if (err) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "JBD: error %d scanning journal\n", err);
 =======
 		printk(KERN_ERR "JBD2: error %d scanning journal\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR "JBD2: error %d scanning journal\n", err);
+>>>>>>> refs/remotes/origin/master
 		++journal->j_transaction_sequence;
 	} else {
 #ifdef CONFIG_JBD2_DEBUG
@@ -338,10 +412,14 @@ int jbd2_journal_skip_recovery(journal_t *journal)
 			be32_to_cpu(journal->j_superblock->s_sequence);
 		jbd_debug(1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			  "JBD: ignoring %d transaction%s from the journal.\n",
 =======
 			  "JBD2: ignoring %d transaction%s from the journal.\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  "JBD2: ignoring %d transaction%s from the journal.\n",
+>>>>>>> refs/remotes/origin/master
 			  dropped, (dropped == 1) ? "" : "s");
 #endif
 		journal->j_transaction_sequence = ++info.end_transaction;
@@ -380,10 +458,14 @@ static int calc_chksums(journal_t *journal, struct buffer_head *bh,
 		err = jread(&obh, journal, io_block);
 		if (err) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "JBD: IO error %d recovering block "
 =======
 			printk(KERN_ERR "JBD2: IO error %d recovering block "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			printk(KERN_ERR "JBD2: IO error %d recovering block "
+>>>>>>> refs/remotes/origin/master
 				"%lu in log\n", err, io_block);
 			return 1;
 		} else {
@@ -395,6 +477,43 @@ static int calc_chksums(journal_t *journal, struct buffer_head *bh,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int jbd2_commit_block_csum_verify(journal_t *j, void *buf)
+{
+	struct commit_header *h;
+	__be32 provided;
+	__u32 calculated;
+
+	if (!JBD2_HAS_INCOMPAT_FEATURE(j, JBD2_FEATURE_INCOMPAT_CSUM_V2))
+		return 1;
+
+	h = buf;
+	provided = h->h_chksum[0];
+	h->h_chksum[0] = 0;
+	calculated = jbd2_chksum(j, j->j_csum_seed, buf, j->j_blocksize);
+	h->h_chksum[0] = provided;
+
+	return provided == cpu_to_be32(calculated);
+}
+
+static int jbd2_block_tag_csum_verify(journal_t *j, journal_block_tag_t *tag,
+				      void *buf, __u32 sequence)
+{
+	__u32 csum32;
+	__be32 seq;
+
+	if (!JBD2_HAS_INCOMPAT_FEATURE(j, JBD2_FEATURE_INCOMPAT_CSUM_V2))
+		return 1;
+
+	seq = cpu_to_be32(sequence);
+	csum32 = jbd2_chksum(j, j->j_csum_seed, (__u8 *)&seq, sizeof(seq));
+	csum32 = jbd2_chksum(j, csum32, buf, j->j_blocksize);
+
+	return tag->t_checksum == cpu_to_be16(csum32);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int do_one_pass(journal_t *journal,
 			struct recovery_info *info, enum passtype pass)
 {
@@ -408,6 +527,10 @@ static int do_one_pass(journal_t *journal,
 	int			blocktype;
 	int			tag_bytes = journal_tag_bytes(journal);
 	__u32			crc32_sum = ~0; /* Transactional Checksums */
+<<<<<<< HEAD
+=======
+	int			descr_csum_size = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * First thing is to establish what we expect to find in the log
@@ -457,10 +580,14 @@ static int do_one_pass(journal_t *journal,
 		 * record. */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		jbd_debug(3, "JBD: checking block %ld\n", next_log_block);
 =======
 		jbd_debug(3, "JBD2: checking block %ld\n", next_log_block);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		jbd_debug(3, "JBD2: checking block %ld\n", next_log_block);
+>>>>>>> refs/remotes/origin/master
 		err = jread(&bh, journal, next_log_block);
 		if (err)
 			goto failed;
@@ -497,6 +624,21 @@ static int do_one_pass(journal_t *journal,
 
 		switch(blocktype) {
 		case JBD2_DESCRIPTOR_BLOCK:
+<<<<<<< HEAD
+=======
+			/* Verify checksum first */
+			if (JBD2_HAS_INCOMPAT_FEATURE(journal,
+					JBD2_FEATURE_INCOMPAT_CSUM_V2))
+				descr_csum_size =
+					sizeof(struct jbd2_journal_block_tail);
+			if (descr_csum_size > 0 &&
+			    !jbd2_descr_block_csum_verify(journal,
+							  bh->b_data)) {
+				err = -EIO;
+				goto failed;
+			}
+
+>>>>>>> refs/remotes/origin/master
 			/* If it is a valid descriptor block, replay it
 			 * in pass REPLAY; if journal_checksums enabled, then
 			 * calculate checksums in PASS_SCAN, otherwise,
@@ -527,11 +669,19 @@ static int do_one_pass(journal_t *journal,
 
 			tagp = &bh->b_data[sizeof(journal_header_t)];
 			while ((tagp - bh->b_data + tag_bytes)
+<<<<<<< HEAD
 			       <= journal->j_blocksize) {
 				unsigned long io_block;
 
 				tag = (journal_block_tag_t *) tagp;
 				flags = be32_to_cpu(tag->t_flags);
+=======
+			       <= journal->j_blocksize - descr_csum_size) {
+				unsigned long io_block;
+
+				tag = (journal_block_tag_t *) tagp;
+				flags = be16_to_cpu(tag->t_flags);
+>>>>>>> refs/remotes/origin/master
 
 				io_block = next_log_block++;
 				wrap(journal, next_log_block);
@@ -541,12 +691,17 @@ static int do_one_pass(journal_t *journal,
 					 * report failure at the end. */
 					success = err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 					printk (KERN_ERR
 						"JBD: IO error %d recovering "
 =======
 					printk(KERN_ERR
 						"JBD2: IO error %d recovering "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					printk(KERN_ERR
+						"JBD2: IO error %d recovering "
+>>>>>>> refs/remotes/origin/master
 						"block %ld in log\n",
 						err, io_block);
 				} else {
@@ -567,6 +722,22 @@ static int do_one_pass(journal_t *journal,
 						goto skip_write;
 					}
 
+<<<<<<< HEAD
+=======
+					/* Look for block corruption */
+					if (!jbd2_block_tag_csum_verify(
+						journal, tag, obh->b_data,
+						be32_to_cpu(tmp->h_sequence))) {
+						brelse(obh);
+						success = -EIO;
+						printk(KERN_ERR "JBD2: Invalid "
+						       "checksum recovering "
+						       "block %llu in log\n",
+						       blocknr);
+						continue;
+					}
+
+>>>>>>> refs/remotes/origin/master
 					/* Find a buffer for the new
 					 * data being restored */
 					nbh = __getblk(journal->j_fs_dev,
@@ -575,10 +746,14 @@ static int do_one_pass(journal_t *journal,
 					if (nbh == NULL) {
 						printk(KERN_ERR
 <<<<<<< HEAD
+<<<<<<< HEAD
 						       "JBD: Out of memory "
 =======
 						       "JBD2: Out of memory "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						       "JBD2: Out of memory "
+>>>>>>> refs/remotes/origin/master
 						       "during recovery.\n");
 						err = -ENOMEM;
 						brelse(bh);
@@ -705,6 +880,22 @@ static int do_one_pass(journal_t *journal,
 				}
 				crc32_sum = ~0;
 			}
+<<<<<<< HEAD
+=======
+			if (pass == PASS_SCAN &&
+			    !jbd2_commit_block_csum_verify(journal,
+							   bh->b_data)) {
+				info->end_transaction = next_commit_ID;
+
+				if (!JBD2_HAS_INCOMPAT_FEATURE(journal,
+				     JBD2_FEATURE_INCOMPAT_ASYNC_COMMIT)) {
+					journal->j_failed_commit =
+						next_commit_ID;
+					brelse(bh);
+					break;
+				}
+			}
+>>>>>>> refs/remotes/origin/master
 			brelse(bh);
 			next_commit_ID++;
 			continue;
@@ -748,10 +939,14 @@ static int do_one_pass(journal_t *journal,
 		 * different places (but possible due to IO errors). */
 		if (info->end_transaction != next_commit_ID) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk (KERN_ERR "JBD: recovery pass %d ended at "
 =======
 			printk(KERN_ERR "JBD2: recovery pass %d ended at "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			printk(KERN_ERR "JBD2: recovery pass %d ended at "
+>>>>>>> refs/remotes/origin/master
 				"transaction %u, expected %u\n",
 				pass, next_commit_ID, info->end_transaction);
 			if (!success)
@@ -765,6 +960,28 @@ static int do_one_pass(journal_t *journal,
 	return err;
 }
 
+<<<<<<< HEAD
+=======
+static int jbd2_revoke_block_csum_verify(journal_t *j,
+					 void *buf)
+{
+	struct jbd2_journal_revoke_tail *tail;
+	__be32 provided;
+	__u32 calculated;
+
+	if (!JBD2_HAS_INCOMPAT_FEATURE(j, JBD2_FEATURE_INCOMPAT_CSUM_V2))
+		return 1;
+
+	tail = (struct jbd2_journal_revoke_tail *)(buf + j->j_blocksize -
+			sizeof(struct jbd2_journal_revoke_tail));
+	provided = tail->r_checksum;
+	tail->r_checksum = 0;
+	calculated = jbd2_chksum(j, j->j_csum_seed, buf, j->j_blocksize);
+	tail->r_checksum = provided;
+
+	return provided == cpu_to_be32(calculated);
+}
+>>>>>>> refs/remotes/origin/master
 
 /* Scan a revoke record, marking all blocks mentioned as revoked. */
 
@@ -779,6 +996,12 @@ static int scan_revoke_records(journal_t *journal, struct buffer_head *bh,
 	offset = sizeof(jbd2_journal_revoke_header_t);
 	max = be32_to_cpu(header->r_count);
 
+<<<<<<< HEAD
+=======
+	if (!jbd2_revoke_block_csum_verify(journal, header))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	if (JBD2_HAS_INCOMPAT_FEATURE(journal, JBD2_FEATURE_INCOMPAT_64BIT))
 		record_len = 8;
 

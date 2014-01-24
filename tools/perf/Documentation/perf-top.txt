@@ -50,7 +50,10 @@ Default is to monitor all CPUS.
 --count-filter=<count>::
 	Only display functions with more events than this.
 
+<<<<<<< HEAD
 -g::
+=======
+>>>>>>> refs/remotes/origin/master
 --group::
         Put the counters into a counter group.
 
@@ -60,7 +63,11 @@ Default is to monitor all CPUS.
 
 -i::
 --inherit::
+<<<<<<< HEAD
 	Child tasks inherit counters, only makes sens with -p option.
+=======
+	Child tasks do not inherit counters.
+>>>>>>> refs/remotes/origin/master
 
 -k <path>::
 --vmlinux=<path>::
@@ -68,6 +75,7 @@ Default is to monitor all CPUS.
 
 -m <pages>::
 --mmap-pages=<pages>::
+<<<<<<< HEAD
 	Number of mmapped data pages.
 
 -p <pid>::
@@ -79,6 +87,14 @@ Default is to monitor all CPUS.
 --tid=<tid>::
         Profile events on existing thread ID.
 =======
+=======
+	Number of mmap data pages (must be a power of two) or size
+	specification with appended unit character - B/K/M/G. The
+	size is rounded up to have nearest pages power of two value.
+
+-p <pid>::
+--pid=<pid>::
+>>>>>>> refs/remotes/origin/master
 	Profile events on existing Process ID (comma separated list).
 
 -t <tid>::
@@ -88,7 +104,10 @@ Default is to monitor all CPUS.
 -u::
 --uid=::
         Record events in threads owned by uid. Name or number.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 -r <priority>::
 --realtime=<priority>::
@@ -119,10 +138,17 @@ Default is to monitor all CPUS.
 	Zero history across display updates.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 -s::
 --sort::
 	Sort by key(s): pid, comm, dso, symbol, parent
+=======
+-s::
+--sort::
+	Sort by key(s): pid, comm, dso, symbol, parent, srcline, weight,
+	local_weight, abort, in_tx, transaction
+>>>>>>> refs/remotes/origin/master
 
 -n::
 --show-nr-samples::
@@ -150,6 +176,7 @@ Default is to monitor all CPUS.
 --asm-raw::
 	Show raw instruction encoding of assembly instructions.
 
+<<<<<<< HEAD
 -G [type,min,order]::
 --call-graph::
         Display call chains using type, min percent threshold and order.
@@ -166,6 +193,32 @@ Default is to monitor all CPUS.
 	Default: fractal,0.5,callee.
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+-g::
+	Enables call-graph (stack chain/backtrace) recording.
+
+--call-graph::
+	Setup and enable call-graph (stack chain/backtrace) recording,
+	implies -g.
+
+--max-stack::
+	Set the stack depth limit when parsing the callchain, anything
+	beyond the specified depth will be ignored. This is a trade-off
+	between information loss and faster processing especially for
+	workloads that can have a very long callchain stack.
+
+	Default: 127
+
+--ignore-callees=<regex>::
+        Ignore callees of the function(s) matching the given regex.
+        This has the effect of collecting the callers of each such
+        function into one place in the call-graph tree.
+
+--percent-limit::
+	Do not show entries which have an overhead under that percent.
+	(Default: 0).
+
+>>>>>>> refs/remotes/origin/master
 INTERACTIVE PROMPTING KEYS
 --------------------------
 
@@ -191,11 +244,14 @@ INTERACTIVE PROMPTING KEYS
 	Stop annotation, return to full profile display.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 [w]::
 	Toggle between weighted sum and individual count[E]r profile.
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 [z]::
 	Toggle event count zeroing across display updates.
 

@@ -6,12 +6,20 @@
 #include <linux/threads.h>
 #include <linux/list.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <linux/prio_tree.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/rbtree.h>
 #include <linux/rwsem.h>
 #include <linux/completion.h>
 #include <linux/cpumask.h>
 #include <linux/page-debug-flags.h>
+<<<<<<< HEAD
+=======
+#include <linux/uprobes.h>
+#include <linux/page-flags-layout.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/page.h>
 #include <asm/mmu.h>
 
@@ -22,7 +30,14 @@
 
 struct address_space;
 
+<<<<<<< HEAD
 #define USE_SPLIT_PTLOCKS	(NR_CPUS >= CONFIG_SPLIT_PTLOCK_CPUS)
+=======
+#define USE_SPLIT_PTE_PTLOCKS	(NR_CPUS >= CONFIG_SPLIT_PTLOCK_CPUS)
+#define USE_SPLIT_PMD_PTLOCKS	(USE_SPLIT_PTE_PTLOCKS && \
+		IS_ENABLED(CONFIG_ARCH_ENABLE_SPLIT_PMD_PTLOCK))
+#define ALLOC_SPLIT_PTLOCKS	(SPINLOCK_SIZE > BITS_PER_LONG/8)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Each physical page in the system has a struct page associated with
@@ -30,6 +45,7 @@ struct address_space;
  * moment. Note that we have no way to track which tasks are using
  * a page, though if it is a pagecache page, rmap structures can tell us
  * who is mapping it.
+<<<<<<< HEAD
 <<<<<<< HEAD
  */
 struct page {
@@ -63,6 +79,8 @@ struct page {
 	union {
 	    struct {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * The objects in struct page are organized in double word blocks in
  * order to allows us to use atomic double word operations on portions
@@ -74,6 +92,7 @@ struct page {
 	/* First double word block */
 	unsigned long flags;		/* Atomic flags, some possibly
 					 * updated asynchronously */
+<<<<<<< HEAD
 	struct address_space *mapping;	/* If low bit clear, points to
 					 * inode address_space, or NULL.
 					 * If page mapped as anonymous
@@ -81,11 +100,37 @@ struct page {
 					 * it points to anon_vma object:
 					 * see PAGE_MAPPING_ANON below.
 					 */
+=======
+	union {
+		struct address_space *mapping;	/* If low bit clear, points to
+						 * inode address_space, or NULL.
+						 * If page mapped as anonymous
+						 * memory, low bit is set, and
+						 * it points to anon_vma object:
+						 * see PAGE_MAPPING_ANON below.
+						 */
+		void *s_mem;			/* slab first object */
+	};
+
+>>>>>>> refs/remotes/origin/master
 	/* Second double word */
 	struct {
 		union {
 			pgoff_t index;		/* Our offset within mapping. */
+<<<<<<< HEAD
 			void *freelist;		/* slub first free object */
+=======
+			void *freelist;		/* sl[aou]b first free object */
+			bool pfmemalloc;	/* If set by the page allocator,
+						 * ALLOC_NO_WATERMARKS was set
+						 * and the low watermark was not
+						 * met implying that the system
+						 * is under some pressure. The
+						 * caller should try ensure
+						 * this page is only used to
+						 * free other pages.
+						 */
+>>>>>>> refs/remotes/origin/master
 		};
 
 		union {
@@ -123,14 +168,26 @@ struct page {
 					 */
 					atomic_t _mapcount;
 
+<<<<<<< HEAD
 					struct {
+=======
+					struct { /* SLUB */
+>>>>>>> refs/remotes/origin/master
 						unsigned inuse:16;
 						unsigned objects:15;
 						unsigned frozen:1;
 					};
+<<<<<<< HEAD
 				};
 				atomic_t _count;		/* Usage count, see below. */
 			};
+=======
+					int units;	/* SLOB */
+				};
+				atomic_t _count;		/* Usage count, see below. */
+			};
+			unsigned int active;	/* SLAB */
+>>>>>>> refs/remotes/origin/master
 		};
 	};
 
@@ -149,11 +206,26 @@ struct page {
 			short int pobjects;
 #endif
 		};
+<<<<<<< HEAD
+=======
+
+		struct list_head list;	/* slobs list of pages */
+		struct slab *slab_page; /* slab fields */
+		struct rcu_head rcu_head;	/* Used by SLAB
+						 * when destroying via RCU
+						 */
+#if defined(CONFIG_TRANSPARENT_HUGEPAGE) && USE_SPLIT_PMD_PTLOCKS
+		pgtable_t pmd_huge_pte; /* protected by page->ptl */
+#endif
+>>>>>>> refs/remotes/origin/master
 	};
 
 	/* Remainder is not double word aligned */
 	union {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		unsigned long private;		/* Mapping-private opaque data:
 					 	 * usually used for buffer_heads
 						 * if PagePrivate set; used for
@@ -161,6 +233,7 @@ struct page {
 						 * indicates order in the buddy
 						 * system if PG_buddy is set.
 						 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		struct address_space *mapping;	/* If low bit clear, points to
 						 * inode address_space, or NULL.
@@ -192,6 +265,19 @@ struct page {
 	};
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if USE_SPLIT_PTE_PTLOCKS
+#if ALLOC_SPLIT_PTLOCKS
+		spinlock_t *ptl;
+#else
+		spinlock_t ptl;
+#endif
+#endif
+		struct kmem_cache *slab_cache;	/* SL[AU]B: Pointer to slab */
+		struct page *first_page;	/* Compound tail pages */
+	};
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * On machines where all RAM is mapped into kernel address space,
 	 * we can simply calculate the virtual address. On machines with
@@ -218,7 +304,14 @@ struct page {
 	void *shadow;
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+
+#ifdef LAST_CPUPID_NOT_IN_PAGE_FLAGS
+	int _last_cpupid;
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 /*
  * The struct page can be forced to be double word aligned so that atomic ops
@@ -238,7 +331,10 @@ struct page_frag {
 	__u16 offset;
 	__u16 size;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 typedef unsigned long __nocast vm_flags_t;
@@ -269,7 +365,12 @@ struct vm_region {
  * library, the executable area etc).
  */
 struct vm_area_struct {
+<<<<<<< HEAD
 	struct mm_struct * vm_mm;	/* The address space we belong to. */
+=======
+	/* The first cache line has the info for VMA tree walking. */
+
+>>>>>>> refs/remotes/origin/master
 	unsigned long vm_start;		/* Our start address within vm_mm. */
 	unsigned long vm_end;		/* The first byte after our end address
 					   within vm_mm. */
@@ -277,6 +378,7 @@ struct vm_area_struct {
 	/* linked list of VM areas per task, sorted by address */
 	struct vm_area_struct *vm_next, *vm_prev;
 
+<<<<<<< HEAD
 	pgprot_t vm_page_prot;		/* Access permissions of this VMA. */
 	unsigned long vm_flags;		/* Flags, see mm.h. */
 
@@ -286,16 +388,44 @@ struct vm_area_struct {
 	 * For areas with an address space and backing store,
 	 * linkage into the address_space->i_mmap prio tree, or
 	 * linkage to the list of like vmas hanging off its node, or
+=======
+	struct rb_node vm_rb;
+
+	/*
+	 * Largest free memory gap in bytes to the left of this VMA.
+	 * Either between this VMA and vma->vm_prev, or between one of the
+	 * VMAs below us in the VMA rbtree and its ->vm_prev. This helps
+	 * get_unmapped_area find a free area of the right size.
+	 */
+	unsigned long rb_subtree_gap;
+
+	/* Second cache line starts here. */
+
+	struct mm_struct *vm_mm;	/* The address space we belong to. */
+	pgprot_t vm_page_prot;		/* Access permissions of this VMA. */
+	unsigned long vm_flags;		/* Flags, see mm.h. */
+
+	/*
+	 * For areas with an address space and backing store,
+	 * linkage into the address_space->i_mmap interval tree, or
+>>>>>>> refs/remotes/origin/master
 	 * linkage of vma in the address_space->i_mmap_nonlinear list.
 	 */
 	union {
 		struct {
+<<<<<<< HEAD
 			struct list_head list;
 			void *parent;	/* aligns with prio_tree_node parent */
 			struct vm_area_struct *head;
 		} vm_set;
 
 		struct raw_prio_tree_node prio_tree_node;
+=======
+			struct rb_node rb;
+			unsigned long rb_subtree_last;
+		} linear;
+		struct list_head nonlinear;
+>>>>>>> refs/remotes/origin/master
 	} shared;
 
 	/*
@@ -343,19 +473,31 @@ enum {
 	NR_MM_COUNTERS
 };
 
+<<<<<<< HEAD
 #if USE_SPLIT_PTLOCKS && defined(CONFIG_MMU)
+=======
+#if USE_SPLIT_PTE_PTLOCKS && defined(CONFIG_MMU)
+>>>>>>> refs/remotes/origin/master
 #define SPLIT_RSS_COUNTING
 /* per-thread cached information, */
 struct task_rss_stat {
 	int events;	/* for synchronization threshold */
 	int count[NR_MM_COUNTERS];
 };
+<<<<<<< HEAD
 #endif /* USE_SPLIT_PTLOCKS */
+=======
+#endif /* USE_SPLIT_PTE_PTLOCKS */
+>>>>>>> refs/remotes/origin/master
 
 struct mm_rss_stat {
 	atomic_long_t count[NR_MM_COUNTERS];
 };
 
+<<<<<<< HEAD
+=======
+struct kioctx_table;
+>>>>>>> refs/remotes/origin/master
 struct mm_struct {
 	struct vm_area_struct * mmap;		/* list of VMAs */
 	struct rb_root mm_rb;
@@ -364,6 +506,7 @@ struct mm_struct {
 	unsigned long (*get_unmapped_area) (struct file *filp,
 				unsigned long addr, unsigned long len,
 				unsigned long pgoff, unsigned long flags);
+<<<<<<< HEAD
 	void (*unmap_area) (struct mm_struct *mm, unsigned long addr);
 #endif
 	unsigned long mmap_base;		/* base of mmap area */
@@ -373,6 +516,17 @@ struct mm_struct {
 	pgd_t * pgd;
 	atomic_t mm_users;			/* How many users with user space? */
 	atomic_t mm_count;			/* How many references to "struct mm_struct" (users count as 1) */
+=======
+#endif
+	unsigned long mmap_base;		/* base of mmap area */
+	unsigned long mmap_legacy_base;         /* base of mmap area in bottom-up allocations */
+	unsigned long task_size;		/* size of task vm space */
+	unsigned long highest_vm_end;		/* highest vma end address */
+	pgd_t * pgd;
+	atomic_t mm_users;			/* How many users with user space? */
+	atomic_t mm_count;			/* How many references to "struct mm_struct" (users count as 1) */
+	atomic_long_t nr_ptes;			/* Page table pages */
+>>>>>>> refs/remotes/origin/master
 	int map_count;				/* number of VMAs */
 
 	spinlock_t page_table_lock;		/* Protects page tables and some counters */
@@ -388,19 +542,26 @@ struct mm_struct {
 	unsigned long hiwater_vm;	/* High-water virtual memory usage */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long total_vm, locked_vm, shared_vm, exec_vm;
 	unsigned long stack_vm, reserved_vm, def_flags, nr_ptes;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long total_vm;		/* Total pages mapped */
 	unsigned long locked_vm;	/* Pages that have PG_mlocked set */
 	unsigned long pinned_vm;	/* Refcount permanently increased */
 	unsigned long shared_vm;	/* Shared pages (files) */
 	unsigned long exec_vm;		/* VM_EXEC & ~VM_WRITE */
 	unsigned long stack_vm;		/* VM_GROWSUP/DOWN */
+<<<<<<< HEAD
 	unsigned long reserved_vm;	/* VM_RESERVED|VM_IO pages */
 	unsigned long def_flags;
 	unsigned long nr_ptes;		/* Page table pages */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long def_flags;
+>>>>>>> refs/remotes/origin/master
 	unsigned long start_code, end_code, start_data, end_data;
 	unsigned long start_brk, brk, start_stack;
 	unsigned long arg_start, arg_end, env_start, env_end;
@@ -420,6 +581,7 @@ struct mm_struct {
 	/* Architecture-specific MM context */
 	mm_context_t context;
 
+<<<<<<< HEAD
 	/* Swap token stuff */
 	/*
 	 * Last value of global fault stamp as seen by this process.
@@ -437,12 +599,19 @@ struct mm_struct {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags; /* Must use atomic bitops to access the bits */
 
 	struct core_state *core_state; /* coredumping support */
 #ifdef CONFIG_AIO
+<<<<<<< HEAD
 	spinlock_t		ioctx_lock;
 	struct hlist_head	ioctx_list;
+=======
+	spinlock_t			ioctx_lock;
+	struct kioctx_table __rcu	*ioctx_table;
+>>>>>>> refs/remotes/origin/master
 #endif
 #ifdef CONFIG_MM_OWNER
 	/*
@@ -460,16 +629,49 @@ struct mm_struct {
 
 	/* store ref to file /proc/<pid>/exe symlink points to */
 	struct file *exe_file;
+<<<<<<< HEAD
 	unsigned long num_exe_file_vmas;
 #ifdef CONFIG_MMU_NOTIFIER
 	struct mmu_notifier_mm *mmu_notifier_mm;
 #endif
 #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+=======
+#ifdef CONFIG_MMU_NOTIFIER
+	struct mmu_notifier_mm *mmu_notifier_mm;
+#endif
+#if defined(CONFIG_TRANSPARENT_HUGEPAGE) && !USE_SPLIT_PMD_PTLOCKS
+>>>>>>> refs/remotes/origin/master
 	pgtable_t pmd_huge_pte; /* protected by page_table_lock */
 #endif
 #ifdef CONFIG_CPUMASK_OFFSTACK
 	struct cpumask cpumask_allocation;
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_NUMA_BALANCING
+	/*
+	 * numa_next_scan is the next time that the PTEs will be marked
+	 * pte_numa. NUMA hinting faults will gather statistics and migrate
+	 * pages to new nodes if necessary.
+	 */
+	unsigned long numa_next_scan;
+
+	/* Restart point for scanning and setting pte_numa */
+	unsigned long numa_scan_offset;
+
+	/* numa_scan_seq prevents two threads setting pte_numa */
+	int numa_scan_seq;
+#endif
+#if defined(CONFIG_NUMA_BALANCING) || defined(CONFIG_COMPACTION)
+	/*
+	 * An operation with batched TLB flushing is going on. Anything that
+	 * can move process memory needs to flush the TLB when moving a
+	 * PROT_NONE or PROT_NUMA mapped page.
+	 */
+	bool tlb_flush_pending;
+#endif
+	struct uprobes_state uprobes_state;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline void mm_init_cpumask(struct mm_struct *mm)
@@ -485,4 +687,48 @@ static inline cpumask_t *mm_cpumask(struct mm_struct *mm)
 	return mm->cpu_vm_mask_var;
 }
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_NUMA_BALANCING) || defined(CONFIG_COMPACTION)
+/*
+ * Memory barriers to keep this state in sync are graciously provided by
+ * the page table locks, outside of which no page table modifications happen.
+ * The barriers below prevent the compiler from re-ordering the instructions
+ * around the memory barriers that are already present in the code.
+ */
+static inline bool mm_tlb_flush_pending(struct mm_struct *mm)
+{
+	barrier();
+	return mm->tlb_flush_pending;
+}
+static inline void set_tlb_flush_pending(struct mm_struct *mm)
+{
+	mm->tlb_flush_pending = true;
+
+	/*
+	 * Guarantee that the tlb_flush_pending store does not leak into the
+	 * critical section updating the page tables
+	 */
+	smp_mb__before_spinlock();
+}
+/* Clearing is done after a TLB flush, which also provides a barrier. */
+static inline void clear_tlb_flush_pending(struct mm_struct *mm)
+{
+	barrier();
+	mm->tlb_flush_pending = false;
+}
+#else
+static inline bool mm_tlb_flush_pending(struct mm_struct *mm)
+{
+	return false;
+}
+static inline void set_tlb_flush_pending(struct mm_struct *mm)
+{
+}
+static inline void clear_tlb_flush_pending(struct mm_struct *mm)
+{
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_MM_TYPES_H */

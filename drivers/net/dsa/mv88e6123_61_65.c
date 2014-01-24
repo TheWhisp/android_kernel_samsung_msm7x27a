@@ -8,6 +8,11 @@
  * (at your option) any later version.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/delay.h>
+#include <linux/jiffies.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/list.h>
 #include <linux/module.h>
 #include <linux/netdevice.h>
@@ -50,15 +55,22 @@ static int mv88e6123_61_65_switch_reset(struct dsa_switch *ds)
 {
 	int i;
 	int ret;
+<<<<<<< HEAD
 
 	/*
 	 * Set all ports to the disabled state.
 	 */
+=======
+	unsigned long timeout;
+
+	/* Set all ports to the disabled state. */
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 8; i++) {
 		ret = REG_READ(REG_PORT(i), 0x04);
 		REG_WRITE(REG_PORT(i), 0x04, ret & 0xfffc);
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Wait for transmit queues to drain.
 	 */
@@ -73,13 +85,30 @@ static int mv88e6123_61_65_switch_reset(struct dsa_switch *ds)
 	 * Wait up to one second for reset to complete.
 	 */
 	for (i = 0; i < 1000; i++) {
+=======
+	/* Wait for transmit queues to drain. */
+	usleep_range(2000, 4000);
+
+	/* Reset the switch. */
+	REG_WRITE(REG_GLOBAL, 0x04, 0xc400);
+
+	/* Wait up to one second for reset to complete. */
+	timeout = jiffies + 1 * HZ;
+	while (time_before(jiffies, timeout)) {
+>>>>>>> refs/remotes/origin/master
 		ret = REG_READ(REG_GLOBAL, 0x00);
 		if ((ret & 0xc800) == 0xc800)
 			break;
 
+<<<<<<< HEAD
 		msleep(1);
 	}
 	if (i == 1000)
+=======
+		usleep_range(1000, 2000);
+	}
+	if (time_after(jiffies, timeout))
+>>>>>>> refs/remotes/origin/master
 		return -ETIMEDOUT;
 
 	return 0;
@@ -90,54 +119,86 @@ static int mv88e6123_61_65_setup_global(struct dsa_switch *ds)
 	int ret;
 	int i;
 
+<<<<<<< HEAD
 	/*
 	 * Disable the PHY polling unit (since there won't be any
+=======
+	/* Disable the PHY polling unit (since there won't be any
+>>>>>>> refs/remotes/origin/master
 	 * external PHYs to poll), don't discard packets with
 	 * excessive collisions, and mask all interrupt sources.
 	 */
 	REG_WRITE(REG_GLOBAL, 0x04, 0x0000);
 
+<<<<<<< HEAD
 	/*
 	 * Set the default address aging time to 5 minutes, and
+=======
+	/* Set the default address aging time to 5 minutes, and
+>>>>>>> refs/remotes/origin/master
 	 * enable address learn messages to be sent to all message
 	 * ports.
 	 */
 	REG_WRITE(REG_GLOBAL, 0x0a, 0x0148);
 
+<<<<<<< HEAD
 	/*
 	 * Configure the priority mapping registers.
 	 */
+=======
+	/* Configure the priority mapping registers. */
+>>>>>>> refs/remotes/origin/master
 	ret = mv88e6xxx_config_prio(ds);
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	/*
 	 * Configure the upstream port, and configure the upstream
+=======
+	/* Configure the upstream port, and configure the upstream
+>>>>>>> refs/remotes/origin/master
 	 * port as the port to which ingress and egress monitor frames
 	 * are to be sent.
 	 */
 	REG_WRITE(REG_GLOBAL, 0x1a, (dsa_upstream_port(ds) * 0x1110));
 
+<<<<<<< HEAD
 	/*
 	 * Disable remote management for now, and set the switch's
+=======
+	/* Disable remote management for now, and set the switch's
+>>>>>>> refs/remotes/origin/master
 	 * DSA device number.
 	 */
 	REG_WRITE(REG_GLOBAL, 0x1c, ds->index & 0x1f);
 
+<<<<<<< HEAD
 	/*
 	 * Send all frames with destination addresses matching
+=======
+	/* Send all frames with destination addresses matching
+>>>>>>> refs/remotes/origin/master
 	 * 01:80:c2:00:00:2x to the CPU port.
 	 */
 	REG_WRITE(REG_GLOBAL2, 0x02, 0xffff);
 
+<<<<<<< HEAD
 	/*
 	 * Send all frames with destination addresses matching
+=======
+	/* Send all frames with destination addresses matching
+>>>>>>> refs/remotes/origin/master
 	 * 01:80:c2:00:00:0x to the CPU port.
 	 */
 	REG_WRITE(REG_GLOBAL2, 0x03, 0xffff);
 
+<<<<<<< HEAD
 	/*
 	 * Disable the loopback filter, disable flow control
+=======
+	/* Disable the loopback filter, disable flow control
+>>>>>>> refs/remotes/origin/master
 	 * messages, disable flood broadcast override, disable
 	 * removing of provider tags, disable ATU age violation
 	 * interrupts, disable tag flow control, force flow
@@ -146,9 +207,13 @@ static int mv88e6123_61_65_setup_global(struct dsa_switch *ds)
 	 */
 	REG_WRITE(REG_GLOBAL2, 0x05, 0x00ff);
 
+<<<<<<< HEAD
 	/*
 	 * Program the DSA routing table.
 	 */
+=======
+	/* Program the DSA routing table. */
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 32; i++) {
 		int nexthop;
 
@@ -159,6 +224,7 @@ static int mv88e6123_61_65_setup_global(struct dsa_switch *ds)
 		REG_WRITE(REG_GLOBAL2, 0x06, 0x8000 | (i << 8) | nexthop);
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Clear all trunk masks.
 	 */
@@ -173,11 +239,23 @@ static int mv88e6123_61_65_setup_global(struct dsa_switch *ds)
 
 	/*
 	 * Disable ingress rate limiting by resetting all ingress
+=======
+	/* Clear all trunk masks. */
+	for (i = 0; i < 8; i++)
+		REG_WRITE(REG_GLOBAL2, 0x07, 0x8000 | (i << 12) | 0xff);
+
+	/* Clear all trunk mappings. */
+	for (i = 0; i < 16; i++)
+		REG_WRITE(REG_GLOBAL2, 0x08, 0x8000 | (i << 11));
+
+	/* Disable ingress rate limiting by resetting all ingress
+>>>>>>> refs/remotes/origin/master
 	 * rate limit registers to their initial state.
 	 */
 	for (i = 0; i < 6; i++)
 		REG_WRITE(REG_GLOBAL2, 0x09, 0x9000 | (i << 8));
 
+<<<<<<< HEAD
 	/*
 	 * Initialise cross-chip port VLAN table to reset defaults.
 	 */
@@ -186,6 +264,12 @@ static int mv88e6123_61_65_setup_global(struct dsa_switch *ds)
 	/*
 	 * Clear the priority override table.
 	 */
+=======
+	/* Initialise cross-chip port VLAN table to reset defaults. */
+	REG_WRITE(REG_GLOBAL2, 0x0b, 0x9000);
+
+	/* Clear the priority override table. */
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 16; i++)
 		REG_WRITE(REG_GLOBAL2, 0x0f, 0x8000 | (i << 8));
 
@@ -199,8 +283,12 @@ static int mv88e6123_61_65_setup_port(struct dsa_switch *ds, int p)
 	int addr = REG_PORT(p);
 	u16 val;
 
+<<<<<<< HEAD
 	/*
 	 * MAC Forcing register: don't force link, speed, duplex
+=======
+	/* MAC Forcing register: don't force link, speed, duplex
+>>>>>>> refs/remotes/origin/master
 	 * or flow control state to any particular values on physical
 	 * ports, but force the CPU port and all DSA ports to 1000 Mb/s
 	 * full duplex.
@@ -210,15 +298,23 @@ static int mv88e6123_61_65_setup_port(struct dsa_switch *ds, int p)
 	else
 		REG_WRITE(addr, 0x01, 0x0003);
 
+<<<<<<< HEAD
 	/*
 	 * Do not limit the period of time that this port can be
+=======
+	/* Do not limit the period of time that this port can be
+>>>>>>> refs/remotes/origin/master
 	 * paused for by the remote end or the period of time that
 	 * this port can pause the remote end.
 	 */
 	REG_WRITE(addr, 0x02, 0x0000);
 
+<<<<<<< HEAD
 	/*
 	 * Port Control: disable Drop-on-Unlock, disable Drop-on-Lock,
+=======
+	/* Port Control: disable Drop-on-Unlock, disable Drop-on-Lock,
+>>>>>>> refs/remotes/origin/master
 	 * disable Header mode, enable IGMP/MLD snooping, disable VLAN
 	 * tunneling, determine priority by looking at 802.1p and IP
 	 * priority fields (IP prio has precedence), and set STP state
@@ -245,14 +341,22 @@ static int mv88e6123_61_65_setup_port(struct dsa_switch *ds, int p)
 		val |= 0x000c;
 	REG_WRITE(addr, 0x04, val);
 
+<<<<<<< HEAD
 	/*
 	 * Port Control 1: disable trunking.  Also, if this is the
+=======
+	/* Port Control 1: disable trunking.  Also, if this is the
+>>>>>>> refs/remotes/origin/master
 	 * CPU port, enable learn messages to be sent to this port.
 	 */
 	REG_WRITE(addr, 0x05, dsa_is_cpu_port(ds, p) ? 0x8000 : 0x0000);
 
+<<<<<<< HEAD
 	/*
 	 * Port based VLAN map: give each port its own address
+=======
+	/* Port based VLAN map: give each port its own address
+>>>>>>> refs/remotes/origin/master
 	 * database, allow the CPU port to talk to each of the 'real'
 	 * ports, and allow each of the 'real' ports to only talk to
 	 * the upstream port.
@@ -264,14 +368,22 @@ static int mv88e6123_61_65_setup_port(struct dsa_switch *ds, int p)
 		val |= 1 << dsa_upstream_port(ds);
 	REG_WRITE(addr, 0x06, val);
 
+<<<<<<< HEAD
 	/*
 	 * Default VLAN ID and priority: don't set a default VLAN
+=======
+	/* Default VLAN ID and priority: don't set a default VLAN
+>>>>>>> refs/remotes/origin/master
 	 * ID, and set the default packet priority to zero.
 	 */
 	REG_WRITE(addr, 0x07, 0x0000);
 
+<<<<<<< HEAD
 	/*
 	 * Port Control 2: don't force a good FCS, set the maximum
+=======
+	/* Port Control 2: don't force a good FCS, set the maximum
+>>>>>>> refs/remotes/origin/master
 	 * frame size to 10240 bytes, don't let the switch add or
 	 * strip 802.1q tags, don't discard tagged or untagged frames
 	 * on this port, do a destination address lookup on all
@@ -281,6 +393,7 @@ static int mv88e6123_61_65_setup_port(struct dsa_switch *ds, int p)
 	 */
 	REG_WRITE(addr, 0x08, 0x2080);
 
+<<<<<<< HEAD
 	/*
 	 * Egress rate control: disable egress rate control.
 	 */
@@ -293,18 +406,32 @@ static int mv88e6123_61_65_setup_port(struct dsa_switch *ds, int p)
 
 	/*
 	 * Port Association Vector: when learning source addresses
+=======
+	/* Egress rate control: disable egress rate control. */
+	REG_WRITE(addr, 0x09, 0x0001);
+
+	/* Egress rate control 2: disable egress rate control. */
+	REG_WRITE(addr, 0x0a, 0x0000);
+
+	/* Port Association Vector: when learning source addresses
+>>>>>>> refs/remotes/origin/master
 	 * of packets, add the address to the address database using
 	 * a port bitmap that has only the bit for this port set and
 	 * the other bits clear.
 	 */
 	REG_WRITE(addr, 0x0b, 1 << p);
 
+<<<<<<< HEAD
 	/*
 	 * Port ATU control: disable limiting the number of address
+=======
+	/* Port ATU control: disable limiting the number of address
+>>>>>>> refs/remotes/origin/master
 	 * database entries that this port is allowed to use.
 	 */
 	REG_WRITE(addr, 0x0c, 0x0000);
 
+<<<<<<< HEAD
 	/*
 	 * Priorit Override: disable DA, SA and VTU priority override.
 	 */
@@ -317,12 +444,25 @@ static int mv88e6123_61_65_setup_port(struct dsa_switch *ds, int p)
 
 	/*
 	 * Tag Remap: use an identity 802.1p prio -> switch prio
+=======
+	/* Priority Override: disable DA, SA and VTU priority override. */
+	REG_WRITE(addr, 0x0d, 0x0000);
+
+	/* Port Ethertype: use the Ethertype DSA Ethertype value. */
+	REG_WRITE(addr, 0x0f, ETH_P_EDSA);
+
+	/* Tag Remap: use an identity 802.1p prio -> switch prio
+>>>>>>> refs/remotes/origin/master
 	 * mapping.
 	 */
 	REG_WRITE(addr, 0x18, 0x3210);
 
+<<<<<<< HEAD
 	/*
 	 * Tag Remap 2: use an identity 802.1p prio -> switch prio
+=======
+	/* Tag Remap 2: use an identity 802.1p prio -> switch prio
+>>>>>>> refs/remotes/origin/master
 	 * mapping.
 	 */
 	REG_WRITE(addr, 0x19, 0x7654);

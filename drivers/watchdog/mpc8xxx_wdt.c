@@ -18,15 +18,24 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/timer.h>
 #include <linux/miscdevice.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <linux/module.h>
 #include <linux/watchdog.h>
@@ -61,14 +70,19 @@ MODULE_PARM_DESC(timeout,
 	"Watchdog timeout in ticks. (0<timeout<65536, default=65535)");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int reset = 1;
 =======
 static bool reset = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool reset = 1;
+>>>>>>> refs/remotes/origin/master
 module_param(reset, bool, 0);
 MODULE_PARM_DESC(reset,
 	"Watchdog Interrupt/Reset Mode. 0 = interrupt, 1 = reset");
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
@@ -76,6 +90,10 @@ module_param(nowayout, int, 0);
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started "
 		 "(default=" __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
@@ -111,10 +129,14 @@ static void mpc8xxx_wdt_timer_ping(unsigned long arg)
 static void mpc8xxx_wdt_pr_warn(const char *msg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_crit("mpc8xxx_wdt: %s, expect the %s soon!\n", msg,
 =======
 	pr_crit("%s, expect the %s soon!\n", msg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_crit("%s, expect the %s soon!\n", msg,
+>>>>>>> refs/remotes/origin/master
 		reset ? "reset" : "machine check exception");
 }
 
@@ -204,12 +226,20 @@ static struct miscdevice mpc8xxx_wdt_miscdev = {
 };
 
 static const struct of_device_id mpc8xxx_wdt_match[];
+<<<<<<< HEAD
 static int __devinit mpc8xxx_wdt_probe(struct platform_device *ofdev)
+=======
+static int mpc8xxx_wdt_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	const struct of_device_id *match;
 	struct device_node *np = ofdev->dev.of_node;
+<<<<<<< HEAD
 	struct mpc8xxx_wdt_type *wdt_type;
+=======
+	const struct mpc8xxx_wdt_type *wdt_type;
+>>>>>>> refs/remotes/origin/master
 	u32 freq = fsl_get_sys_freq();
 	bool enabled;
 
@@ -228,10 +258,14 @@ static int __devinit mpc8xxx_wdt_probe(struct platform_device *ofdev)
 	enabled = in_be32(&wd_base->swcrr) & SWCRR_SWEN;
 	if (!enabled && wdt_type->hw_enabled) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_info("mpc8xxx_wdt: could not be enabled in software\n");
 =======
 		pr_info("could not be enabled in software\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("could not be enabled in software\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOSYS;
 		goto err_unmap;
 	}
@@ -249,6 +283,7 @@ static int __devinit mpc8xxx_wdt_probe(struct platform_device *ofdev)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("WDT driver for MPC8xxx initialized. mode:%s timeout=%d "
 		"(%d seconds)\n", reset ? "reset" : "interrupt", timeout,
 		timeout_sec);
@@ -256,6 +291,10 @@ static int __devinit mpc8xxx_wdt_probe(struct platform_device *ofdev)
 	pr_info("WDT driver for MPC8xxx initialized. mode:%s timeout=%d (%d seconds)\n",
 		reset ? "reset" : "interrupt", timeout, timeout_sec);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("WDT driver for MPC8xxx initialized. mode:%s timeout=%d (%d seconds)\n",
+		reset ? "reset" : "interrupt", timeout, timeout_sec);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If the watchdog was previously enabled or we're running on
@@ -271,7 +310,11 @@ err_unmap:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit mpc8xxx_wdt_remove(struct platform_device *ofdev)
+=======
+static int mpc8xxx_wdt_remove(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	mpc8xxx_wdt_pr_warn("watchdog removed");
 	del_timer_sync(&wdt_timer);
@@ -307,7 +350,11 @@ MODULE_DEVICE_TABLE(of, mpc8xxx_wdt_match);
 
 static struct platform_driver mpc8xxx_wdt_driver = {
 	.probe		= mpc8xxx_wdt_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(mpc8xxx_wdt_remove),
+=======
+	.remove		= mpc8xxx_wdt_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "mpc8xxx_wdt",
 		.owner = THIS_MODULE,
@@ -331,10 +378,14 @@ static int mpc8xxx_wdt_init_late(void)
 	if (ret) {
 		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			WATCHDOG_MINOR, ret);
 =======
 		       WATCHDOG_MINOR, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       WATCHDOG_MINOR, ret);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 	return 0;
@@ -359,4 +410,7 @@ MODULE_AUTHOR("Dave Updegraff, Kumar Gala");
 MODULE_DESCRIPTION("Driver for watchdog timer in MPC8xx/MPC83xx/MPC86xx "
 		   "uProcessors");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

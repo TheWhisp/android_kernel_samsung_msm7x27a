@@ -53,9 +53,12 @@
 #ifndef __6LOWPAN_H__
 #define __6LOWPAN_H__
 
+<<<<<<< HEAD
 /* need to know address length to manipulate with it */
 #define IEEE802154_ALEN		8
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define UIP_802154_SHORTADDR_LEN	2  /* compressed ipv6 address length */
 #define UIP_IPH_LEN			40 /* ipv6 fixed header size */
 #define UIP_PROTO_UDP			17 /* ipv6 next header value for UDP */
@@ -95,9 +98,16 @@
  */
 #define lowpan_is_iid_16_bit_compressable(a)	\
 	((((a)->s6_addr16[4]) == 0) &&		\
+<<<<<<< HEAD
 	 (((a)->s6_addr16[5]) == 0) &&		\
 	 (((a)->s6_addr16[6]) == 0) &&		\
 	 ((((a)->s6_addr[14]) & 0x80) == 0))
+=======
+	 (((a)->s6_addr[10]) == 0) &&		\
+	 (((a)->s6_addr[11]) == 0xff) &&	\
+	 (((a)->s6_addr[12]) == 0xfe) &&	\
+	 (((a)->s6_addr[13]) == 0))
+>>>>>>> refs/remotes/origin/master
 
 /* multicast address */
 #define is_addr_mcast(a) (((a)->s6_addr[0]) == 0xFF)
@@ -195,10 +205,19 @@
 /* Values of fields within the IPHC encoding second byte */
 #define LOWPAN_IPHC_CID		0x80
 
+<<<<<<< HEAD
 #define LOWPAN_IPHC_SAC		0x40
 #define LOWPAN_IPHC_SAM_00	0x00
 #define LOWPAN_IPHC_SAM_01	0x10
 #define LOWPAN_IPHC_SAM_10	0x20
+=======
+#define LOWPAN_IPHC_ADDR_00	0x00
+#define LOWPAN_IPHC_ADDR_01	0x01
+#define LOWPAN_IPHC_ADDR_02	0x02
+#define LOWPAN_IPHC_ADDR_03	0x03
+
+#define LOWPAN_IPHC_SAC		0x40
+>>>>>>> refs/remotes/origin/master
 #define LOWPAN_IPHC_SAM		0x30
 
 #define LOWPAN_IPHC_SAM_BIT	4
@@ -232,4 +251,19 @@
 					dest = 16 bit inline */
 #define LOWPAN_NHC_UDP_CS_P_11	0xF3 /* source & dest = 0xF0B + 4bit inline */
 
+<<<<<<< HEAD
+=======
+static inline bool lowpan_fetch_skb(struct sk_buff *skb,
+		void *data, const unsigned int len)
+{
+	if (unlikely(!pskb_may_pull(skb, len)))
+		return true;
+
+	skb_copy_from_linear_data(skb, data, len);
+	skb_pull(skb, len);
+
+	return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __6LOWPAN_H__ */

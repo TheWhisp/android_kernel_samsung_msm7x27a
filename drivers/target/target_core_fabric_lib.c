@@ -4,8 +4,12 @@
  * This file contains generic high level protocol identifier and PR
  * handlers for TCM fabric modules
  *
+<<<<<<< HEAD
  * Copyright (c) 2010 Rising Tide Systems, Inc.
  * Copyright (c) 2010 Linux-iSCSI.org
+=======
+ * (c) Copyright 2010-2013 Datera, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Nicholas A. Bellinger <nab@linux-iscsi.org>
  *
@@ -26,20 +30,27 @@
  ******************************************************************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/string.h>
 #include <linux/ctype.h>
 #include <linux/spinlock.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/ctype.h>
 #include <linux/spinlock.h>
 #include <linux/export.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <scsi/scsi.h>
 #include <scsi/scsi_cmnd.h>
 
 #include <target/target_core_base.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <target/target_core_device.h>
 #include <target/target_core_transport.h>
@@ -49,11 +60,16 @@
 
 #include "target_core_hba.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <target/target_core_fabric.h>
 #include <target/target_core_configfs.h>
 
 #include "target_core_internal.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "target_core_pr.h"
 
 /*
@@ -77,6 +93,7 @@ u32 sas_get_pr_transport_id(
 	unsigned char *buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned char binary, *ptr;
 	int i;
 	u32 off = 4;
@@ -85,6 +102,11 @@ u32 sas_get_pr_transport_id(
 	int ret;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned char *ptr;
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Set PROTOCOL IDENTIFIER to 6h for SAS
 	 */
@@ -96,16 +118,22 @@ u32 sas_get_pr_transport_id(
 	ptr = &se_nacl->initiatorname[4]; /* Skip over 'naa. prefix */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < 16; i += 2) {
 		binary = transport_asciihex_to_binaryhex(&ptr[i]);
 		buf[off++] = binary;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = hex2bin(&buf[4], ptr, 8);
 	if (ret < 0)
 		pr_debug("sas transport_id: invalid hex string\n");
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The SAS Transport ID is a hardcoded 24-byte length
 	 */
@@ -186,15 +214,21 @@ u32 fc_get_pr_transport_id(
 	unsigned char *buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned char binary, *ptr;
 	int i;
 	u32 off = 8;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char *ptr;
 	int i, ret;
 	u32 off = 8;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * PROTOCOL IDENTIFIER is 0h for FCP-2
 	 *
@@ -208,6 +242,7 @@ u32 fc_get_pr_transport_id(
 
 	for (i = 0; i < 24; ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!(strncmp(&ptr[i], ":", 1))) {
 			i++;
 			continue;
@@ -215,6 +250,8 @@ u32 fc_get_pr_transport_id(
 		binary = transport_asciihex_to_binaryhex(&ptr[i]);
 		buf[off++] = binary;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!strncmp(&ptr[i], ":", 1)) {
 			i++;
 			continue;
@@ -222,7 +259,10 @@ u32 fc_get_pr_transport_id(
 		ret = hex2bin(&buf[off++], &ptr[i], 1);
 		if (ret < 0)
 			pr_debug("fc transport_id: invalid hex string\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		i += 2;
 	}
 	/*
@@ -382,7 +422,11 @@ u32 iscsi_get_pr_transport_id_len(
 	 * 00b: iSCSI Initiator device TransportID format
 	 */
 	if (pr_reg->isid_present_at_reg) {
+<<<<<<< HEAD
 		len += 5; /* For ",i,0x" ASCII seperator */
+=======
+		len += 5; /* For ",i,0x" ASCII separator */
+>>>>>>> refs/remotes/origin/master
 		len += 7; /* For iSCSI Initiator Session ID + Null terminator */
 		*format_code = 1;
 	} else
@@ -432,10 +476,14 @@ char *iscsi_parse_pr_out_transport_id(
 	 */
 	if ((format_code != 0x00) && (format_code != 0x40)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "Illegal format code: 0x%02x for iSCSI"
 =======
 		pr_err("Illegal format code: 0x%02x for iSCSI"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Illegal format code: 0x%02x for iSCSI"
+>>>>>>> refs/remotes/origin/master
 			" Initiator Transport ID\n", format_code);
 		return NULL;
 	}
@@ -448,10 +496,14 @@ char *iscsi_parse_pr_out_transport_id(
 		add_len |= (buf[3] & 0xff);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tid_len = strlen((char *)&buf[4]);
 =======
 		tid_len = strlen(&buf[4]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tid_len = strlen(&buf[4]);
+>>>>>>> refs/remotes/origin/master
 		tid_len += 4; /* Add four bytes for iSCSI Transport ID header */
 		tid_len += 1; /* Add one byte for NULL terminator */
 		padding = ((-tid_len) & 3);
@@ -460,10 +512,14 @@ char *iscsi_parse_pr_out_transport_id(
 
 		if ((add_len + 4) != tid_len) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "LIO-Target Extracted add_len: %hu "
 =======
 			pr_debug("LIO-Target Extracted add_len: %hu "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("LIO-Target Extracted add_len: %hu "
+>>>>>>> refs/remotes/origin/master
 				"does not match calculated tid_len: %u,"
 				" using tid_len instead\n", add_len+4, tid_len);
 			*out_tid_len = tid_len;
@@ -471,11 +527,16 @@ char *iscsi_parse_pr_out_transport_id(
 			*out_tid_len = (add_len + 4);
 	}
 	/*
+<<<<<<< HEAD
 	 * Check for ',i,0x' seperator between iSCSI Name and iSCSI Initiator
+=======
+	 * Check for ',i,0x' separator between iSCSI Name and iSCSI Initiator
+>>>>>>> refs/remotes/origin/master
 	 * Session ID as defined in Table 390 - iSCSI initiator port TransportID
 	 * format.
 	 */
 	if (format_code == 0x40) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		p = strstr((char *)&buf[4], ",i,0x");
 		if (!(p)) {
@@ -493,6 +554,17 @@ char *iscsi_parse_pr_out_transport_id(
 		}
 		*p = '\0'; /* Terminate iSCSI Name */
 		p += 5; /* Skip over ",i,0x" seperator */
+=======
+		p = strstr(&buf[4], ",i,0x");
+		if (!p) {
+			pr_err("Unable to locate \",i,0x\" separator"
+				" for Initiator port identifier: %s\n",
+				&buf[4]);
+			return NULL;
+		}
+		*p = '\0'; /* Terminate iSCSI Name */
+		p += 5; /* Skip over ",i,0x" separator */
+>>>>>>> refs/remotes/origin/master
 
 		*port_nexus_ptr = p;
 		/*

@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -85,7 +89,11 @@ acpi_status acpi_ut_mutex_initialize(void)
 		}
 	}
 
+<<<<<<< HEAD
 	/* Create the spinlocks for use at interrupt level */
+=======
+	/* Create the spinlocks for use at interrupt level or for speed */
+>>>>>>> refs/remotes/origin/master
 
 	status = acpi_os_create_lock (&acpi_gbl_gpe_lock);
 	if (ACPI_FAILURE (status)) {
@@ -97,7 +105,17 @@ acpi_status acpi_ut_mutex_initialize(void)
 		return_ACPI_STATUS (status);
 	}
 
+<<<<<<< HEAD
 	/* Mutex for _OSI support */
+=======
+	status = acpi_os_create_lock(&acpi_gbl_reference_count_lock);
+	if (ACPI_FAILURE(status)) {
+		return_ACPI_STATUS(status);
+	}
+
+	/* Mutex for _OSI support */
+
+>>>>>>> refs/remotes/origin/master
 	status = acpi_os_create_mutex(&acpi_gbl_osi_mutex);
 	if (ACPI_FAILURE(status)) {
 		return_ACPI_STATUS(status);
@@ -140,6 +158,10 @@ void acpi_ut_mutex_terminate(void)
 
 	acpi_os_delete_lock(acpi_gbl_gpe_lock);
 	acpi_os_delete_lock(acpi_gbl_hardware_lock);
+<<<<<<< HEAD
+=======
+	acpi_os_delete_lock(acpi_gbl_reference_count_lock);
+>>>>>>> refs/remotes/origin/master
 
 	/* Delete the reader/writer lock */
 
@@ -151,7 +173,11 @@ void acpi_ut_mutex_terminate(void)
  *
  * FUNCTION:    acpi_ut_create_mutex
  *
+<<<<<<< HEAD
  * PARAMETERS:  mutex_iD        - ID of the mutex to be created
+=======
+ * PARAMETERS:  mutex_ID        - ID of the mutex to be created
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -180,7 +206,11 @@ static acpi_status acpi_ut_create_mutex(acpi_mutex_handle mutex_id)
  *
  * FUNCTION:    acpi_ut_delete_mutex
  *
+<<<<<<< HEAD
  * PARAMETERS:  mutex_iD        - ID of the mutex to be deleted
+=======
+ * PARAMETERS:  mutex_ID        - ID of the mutex to be deleted
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -197,13 +227,22 @@ static void acpi_ut_delete_mutex(acpi_mutex_handle mutex_id)
 
 	acpi_gbl_mutex_info[mutex_id].mutex = NULL;
 	acpi_gbl_mutex_info[mutex_id].thread_id = ACPI_MUTEX_NOT_ACQUIRED;
+<<<<<<< HEAD
+=======
+
+	return_VOID;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*******************************************************************************
  *
  * FUNCTION:    acpi_ut_acquire_mutex
  *
+<<<<<<< HEAD
  * PARAMETERS:  mutex_iD        - ID of the mutex to be acquired
+=======
+ * PARAMETERS:  mutex_ID        - ID of the mutex to be acquired
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -230,9 +269,15 @@ acpi_status acpi_ut_acquire_mutex(acpi_mutex_handle mutex_id)
 		/*
 		 * Mutex debug code, for internal debugging only.
 		 *
+<<<<<<< HEAD
 		 * Deadlock prevention.  Check if this thread owns any mutexes of value
 		 * greater than or equal to this one.  If so, the thread has violated
 		 * the mutex ordering rule.  This indicates a coding error somewhere in
+=======
+		 * Deadlock prevention. Check if this thread owns any mutexes of value
+		 * greater than or equal to this one. If so, the thread has violated
+		 * the mutex ordering rule. This indicates a coding error somewhere in
+>>>>>>> refs/remotes/origin/master
 		 * the ACPI subsystem code.
 		 */
 		for (i = mutex_id; i < ACPI_NUM_MUTEX; i++) {
@@ -287,7 +332,11 @@ acpi_status acpi_ut_acquire_mutex(acpi_mutex_handle mutex_id)
  *
  * FUNCTION:    acpi_ut_release_mutex
  *
+<<<<<<< HEAD
  * PARAMETERS:  mutex_iD        - ID of the mutex to be released
+=======
+ * PARAMETERS:  mutex_ID        - ID of the mutex to be released
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -298,6 +347,7 @@ acpi_status acpi_ut_acquire_mutex(acpi_mutex_handle mutex_id)
 acpi_status acpi_ut_release_mutex(acpi_mutex_handle mutex_id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	acpi_thread_id this_thread_id;
 
 	ACPI_FUNCTION_NAME(ut_release_mutex);
@@ -307,11 +357,16 @@ acpi_status acpi_ut_release_mutex(acpi_mutex_handle mutex_id)
 	ACPI_DEBUG_PRINT((ACPI_DB_MUTEX, "Thread %u releasing Mutex [%s]\n",
 			  (u32)this_thread_id,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ACPI_FUNCTION_NAME(ut_release_mutex);
 
 	ACPI_DEBUG_PRINT((ACPI_DB_MUTEX, "Thread %u releasing Mutex [%s]\n",
 			  (u32)acpi_os_get_thread_id(),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			  acpi_ut_get_mutex_name(mutex_id)));
 
 	if (mutex_id > ACPI_MAX_MUTEX) {
@@ -334,6 +389,7 @@ acpi_status acpi_ut_release_mutex(acpi_mutex_handle mutex_id)
 		/*
 		 * Mutex debug code, for internal debugging only.
 		 *
+<<<<<<< HEAD
 		 * Deadlock prevention.  Check if this thread owns any mutexes of value
 		 * greater than this one.  If so, the thread has violated the mutex
 		 * ordering rule.  This indicates a coding error somewhere in
@@ -346,6 +402,16 @@ acpi_status acpi_ut_release_mutex(acpi_mutex_handle mutex_id)
 			if (acpi_gbl_mutex_info[i].thread_id ==
 			    acpi_os_get_thread_id()) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * Deadlock prevention. Check if this thread owns any mutexes of value
+		 * greater than this one. If so, the thread has violated the mutex
+		 * ordering rule. This indicates a coding error somewhere in
+		 * the ACPI subsystem code.
+		 */
+		for (i = mutex_id; i < ACPI_NUM_MUTEX; i++) {
+			if (acpi_gbl_mutex_info[i].thread_id ==
+			    acpi_os_get_thread_id()) {
+>>>>>>> refs/remotes/origin/master
 				if (i == mutex_id) {
 					continue;
 				}

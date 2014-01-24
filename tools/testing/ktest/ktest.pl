@@ -19,6 +19,7 @@ my %opt;
 my %repeat_tests;
 my %repeats;
 <<<<<<< HEAD
+<<<<<<< HEAD
 my %default;
 
 #default opts
@@ -52,6 +53,9 @@ $default{"STOP_AFTER_FAILURE"}	= 60;
 $default{"STOP_TEST_AFTER"}	= 600;
 $default{"LOCALVERSION"}	= "-test";
 =======
+=======
+my %evals;
+>>>>>>> refs/remotes/origin/master
 
 #default opts
 my %default = (
@@ -59,6 +63,10 @@ my %default = (
     "TEST_TYPE"			=> "build",
     "BUILD_TYPE"		=> "randconfig",
     "MAKE_CMD"			=> "make",
+<<<<<<< HEAD
+=======
+    "CLOSE_CONSOLE_SIGNAL"	=> "INT",
+>>>>>>> refs/remotes/origin/master
     "TIMEOUT"			=> 120,
     "TMP_DIR"			=> "/tmp/ktest/\${MACHINE}",
     "SLEEP_TIME"		=> 60,	# sleep time between tests
@@ -73,6 +81,11 @@ my %default = (
     "CLEAR_LOG"			=> 0,
     "BISECT_MANUAL"		=> 0,
     "BISECT_SKIP"		=> 1,
+<<<<<<< HEAD
+=======
+    "BISECT_TRIES"		=> 1,
+    "MIN_CONFIG_TYPE"		=> "boot",
+>>>>>>> refs/remotes/origin/master
     "SUCCESS_LINE"		=> "login:",
     "DETECT_TRIPLE_FAULT"	=> 1,
     "NO_INSTALL"		=> 0,
@@ -85,6 +98,13 @@ my %default = (
     "STOP_AFTER_SUCCESS"	=> 10,
     "STOP_AFTER_FAILURE"	=> 60,
     "STOP_TEST_AFTER"		=> 600,
+<<<<<<< HEAD
+=======
+    "MAX_MONITOR_WAIT"		=> 1800,
+    "GRUB_REBOOT"		=> "grub2-reboot",
+    "SYSLINUX"			=> "extlinux",
+    "SYSLINUX_PATH"		=> "/boot/extlinux",
+>>>>>>> refs/remotes/origin/master
 
 # required, and we will ask users if they don't have them but we keep the default
 # value something that is common.
@@ -97,11 +117,20 @@ my %default = (
     "LOG_FILE"			=> undef,
     "IGNORE_UNUSED"		=> 0,
 );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 my $ktest_config;
 my $version;
 my $machine;
+=======
+
+my $ktest_config;
+my $version;
+my $have_version = 0;
+my $machine;
+my $last_machine;
+>>>>>>> refs/remotes/origin/master
 my $ssh_user;
 my $tmpdir;
 my $builddir;
@@ -111,24 +140,39 @@ my $test_type;
 my $build_type;
 my $build_options;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+my $final_post_ktest;
+my $pre_ktest;
+my $post_ktest;
+my $pre_test;
+my $post_test;
+>>>>>>> refs/remotes/origin/master
 my $pre_build;
 my $post_build;
 my $pre_build_die;
 my $post_build_die;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 my $reboot_type;
 my $reboot_script;
 my $power_cycle;
 my $reboot;
 my $reboot_on_error;
 <<<<<<< HEAD
+<<<<<<< HEAD
 my $poweroff_on_error;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 my $switch_to_good;
 my $switch_to_test;
 my $poweroff_on_error;
 my $reboot_on_success;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 my $die_on_failure;
 my $powercycle_after_reboot;
@@ -155,12 +199,40 @@ my $reverse_bisect;
 my $bisect_manual;
 my $bisect_skip;
 =======
+=======
+my $die_on_failure;
+my $powercycle_after_reboot;
+my $poweroff_after_halt;
+my $max_monitor_wait;
+my $ssh_exec;
+my $scp_to_target;
+my $scp_to_target_install;
+my $power_off;
+my $grub_menu;
+my $last_grub_menu;
+my $grub_file;
+my $grub_number;
+my $grub_reboot;
+my $syslinux;
+my $syslinux_path;
+my $syslinux_label;
+my $target;
+my $make;
+my $pre_install;
+my $post_install;
+>>>>>>> refs/remotes/origin/master
 my $no_install;
 my $noclean;
 my $minconfig;
 my $start_minconfig;
 my $start_minconfig_defined;
 my $output_minconfig;
+<<<<<<< HEAD
+=======
+my $minconfig_type;
+my $use_output_minconfig;
+my $warnings_file;
+>>>>>>> refs/remotes/origin/master
 my $ignore_config;
 my $ignore_errors;
 my $addconfig;
@@ -169,21 +241,32 @@ my $bisect_bad_commit = "";
 my $reverse_bisect;
 my $bisect_manual;
 my $bisect_skip;
+<<<<<<< HEAD
+=======
+my $bisect_tries;
+>>>>>>> refs/remotes/origin/master
 my $config_bisect_good;
 my $bisect_ret_good;
 my $bisect_ret_bad;
 my $bisect_ret_skip;
 my $bisect_ret_abort;
 my $bisect_ret_default;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 my $in_patchcheck = 0;
 my $run_test;
 my $redirect;
 my $buildlog;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 my $testlog;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+my $testlog;
+>>>>>>> refs/remotes/origin/master
 my $dmesg;
 my $monitor_fp;
 my $monitor_pid;
@@ -192,11 +275,14 @@ my $sleep_time;
 my $bisect_sleep_time;
 my $patchcheck_sleep_time;
 <<<<<<< HEAD
+<<<<<<< HEAD
 my $store_failures;
 my $timeout;
 my $booted_timeout;
 my $console;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 my $ignore_warnings;
 my $store_failures;
 my $store_successes;
@@ -205,8 +291,13 @@ my $timeout;
 my $booted_timeout;
 my $detect_triplefault;
 my $console;
+<<<<<<< HEAD
 my $reboot_success_line;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+my $close_console_signal;
+my $reboot_success_line;
+>>>>>>> refs/remotes/origin/master
 my $success_line;
 my $stop_after_success;
 my $stop_after_failure;
@@ -214,13 +305,18 @@ my $stop_test_after;
 my $build_target;
 my $target_image;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 my $checkout;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+my $checkout;
+>>>>>>> refs/remotes/origin/master
 my $localversion;
 my $iteration = 0;
 my $successes = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 my %entered_configs;
 my %config_help;
@@ -229,6 +325,8 @@ my %variable;
 $config_help{"MACHINE"} = << "EOF"
  The machine hostname that you will test.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 my $bisect_good;
 my $bisect_bad;
 my $bisect_type;
@@ -240,6 +338,10 @@ my $bisect_check;
 
 my $config_bisect;
 my $config_bisect_type;
+<<<<<<< HEAD
+=======
+my $config_bisect_check;
+>>>>>>> refs/remotes/origin/master
 
 my $patchcheck_type;
 my $patchcheck_start;
@@ -249,12 +351,24 @@ my $patchcheck_end;
 # which would require more options.
 my $buildonly = 1;
 
+<<<<<<< HEAD
+=======
+# tell build not to worry about warnings, even when WARNINGS_FILE is set
+my $warnings_ok = 0;
+
+>>>>>>> refs/remotes/origin/master
 # set when creating a new config
 my $newconfig = 0;
 
 my %entered_configs;
 my %config_help;
 my %variable;
+<<<<<<< HEAD
+=======
+
+# force_config is the list of configs that we force enabled (or disabled)
+# in a .config file. The MIN_CONFIG and ADD_CONFIG configs.
+>>>>>>> refs/remotes/origin/master
 my %force_config;
 
 # do not force reboots on config problems
@@ -270,6 +384,13 @@ my %option_map = (
     "OUTPUT_DIR"		=> \$outputdir,
     "BUILD_DIR"			=> \$builddir,
     "TEST_TYPE"			=> \$test_type,
+<<<<<<< HEAD
+=======
+    "PRE_KTEST"			=> \$pre_ktest,
+    "POST_KTEST"		=> \$post_ktest,
+    "PRE_TEST"			=> \$pre_test,
+    "POST_TEST"			=> \$post_test,
+>>>>>>> refs/remotes/origin/master
     "BUILD_TYPE"		=> \$build_type,
     "BUILD_OPTIONS"		=> \$build_options,
     "PRE_BUILD"			=> \$pre_build,
@@ -282,11 +403,26 @@ my %option_map = (
     "MIN_CONFIG"		=> \$minconfig,
     "OUTPUT_MIN_CONFIG"		=> \$output_minconfig,
     "START_MIN_CONFIG"		=> \$start_minconfig,
+<<<<<<< HEAD
+=======
+    "MIN_CONFIG_TYPE"		=> \$minconfig_type,
+    "USE_OUTPUT_MIN_CONFIG"	=> \$use_output_minconfig,
+    "WARNINGS_FILE"		=> \$warnings_file,
+>>>>>>> refs/remotes/origin/master
     "IGNORE_CONFIG"		=> \$ignore_config,
     "TEST"			=> \$run_test,
     "ADD_CONFIG"		=> \$addconfig,
     "REBOOT_TYPE"		=> \$reboot_type,
     "GRUB_MENU"			=> \$grub_menu,
+<<<<<<< HEAD
+=======
+    "GRUB_FILE"			=> \$grub_file,
+    "GRUB_REBOOT"		=> \$grub_reboot,
+    "SYSLINUX"			=> \$syslinux,
+    "SYSLINUX_PATH"		=> \$syslinux_path,
+    "SYSLINUX_LABEL"		=> \$syslinux_label,
+    "PRE_INSTALL"		=> \$pre_install,
+>>>>>>> refs/remotes/origin/master
     "POST_INSTALL"		=> \$post_install,
     "NO_INSTALL"		=> \$no_install,
     "REBOOT_SCRIPT"		=> \$reboot_script,
@@ -299,6 +435,10 @@ my %option_map = (
     "POWER_OFF"			=> \$power_off,
     "POWERCYCLE_AFTER_REBOOT"	=> \$powercycle_after_reboot,
     "POWEROFF_AFTER_HALT"	=> \$poweroff_after_halt,
+<<<<<<< HEAD
+=======
+    "MAX_MONITOR_WAIT"		=> \$max_monitor_wait,
+>>>>>>> refs/remotes/origin/master
     "SLEEP_TIME"		=> \$sleep_time,
     "BISECT_SLEEP_TIME"		=> \$bisect_sleep_time,
     "PATCHCHECK_SLEEP_TIME"	=> \$patchcheck_sleep_time,
@@ -306,6 +446,10 @@ my %option_map = (
     "IGNORE_ERRORS"		=> \$ignore_errors,
     "BISECT_MANUAL"		=> \$bisect_manual,
     "BISECT_SKIP"		=> \$bisect_skip,
+<<<<<<< HEAD
+=======
+    "BISECT_TRIES"		=> \$bisect_tries,
+>>>>>>> refs/remotes/origin/master
     "CONFIG_BISECT_GOOD"	=> \$config_bisect_good,
     "BISECT_RET_GOOD"		=> \$bisect_ret_good,
     "BISECT_RET_BAD"		=> \$bisect_ret_bad,
@@ -318,6 +462,10 @@ my %option_map = (
     "TIMEOUT"			=> \$timeout,
     "BOOTED_TIMEOUT"		=> \$booted_timeout,
     "CONSOLE"			=> \$console,
+<<<<<<< HEAD
+=======
+    "CLOSE_CONSOLE_SIGNAL"	=> \$close_console_signal,
+>>>>>>> refs/remotes/origin/master
     "DETECT_TRIPLE_FAULT"	=> \$detect_triplefault,
     "SUCCESS_LINE"		=> \$success_line,
     "REBOOT_SUCCESS_LINE"	=> \$reboot_success_line,
@@ -343,6 +491,10 @@ my %option_map = (
 
     "CONFIG_BISECT"		=> \$config_bisect,
     "CONFIG_BISECT_TYPE"	=> \$config_bisect_type,
+<<<<<<< HEAD
+=======
+    "CONFIG_BISECT_CHECK"	=> \$config_bisect_check,
+>>>>>>> refs/remotes/origin/master
 
     "PATCHCHECK_TYPE"		=> \$patchcheck_type,
     "PATCHCHECK_START"		=> \$patchcheck_start,
@@ -358,7 +510,10 @@ chomp ($variable{"PWD"} = `pwd`);
 $config_help{"MACHINE"} = << "EOF"
  The machine hostname that you will test.
  For build only tests, it is still needed to differentiate log files.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EOF
     ;
 $config_help{"SSH_USER"} = << "EOF"
@@ -369,20 +524,30 @@ EOF
 $config_help{"BUILD_DIR"} = << "EOF"
  The directory that contains the Linux source code (full path).
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  You can use \${PWD} that will be the path where ktest.pl is run, or use
  \${THIS_DIR} which is assigned \${PWD} but may be changed later.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ You can use \${PWD} that will be the path where ktest.pl is run, or use
+ \${THIS_DIR} which is assigned \${PWD} but may be changed later.
+>>>>>>> refs/remotes/origin/master
 EOF
     ;
 $config_help{"OUTPUT_DIR"} = << "EOF"
  The directory that the objects will be built (full path).
  (can not be same as BUILD_DIR)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  You can use \${PWD} that will be the path where ktest.pl is run, or use
  \${THIS_DIR} which is assigned \${PWD} but may be changed later.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ You can use \${PWD} that will be the path where ktest.pl is run, or use
+ \${THIS_DIR} which is assigned \${PWD} but may be changed later.
+>>>>>>> refs/remotes/origin/master
 EOF
     ;
 $config_help{"BUILD_TARGET"} = << "EOF"
@@ -391,13 +556,19 @@ $config_help{"BUILD_TARGET"} = << "EOF"
 EOF
     ;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 $config_help{"BUILD_OPTIONS"} = << "EOF"
  Options to add to \"make\" when building.
  i.e.  -j20
 EOF
     ;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 $config_help{"TARGET_IMAGE"} = << "EOF"
  The place to put your image on the test machine.
 EOF
@@ -430,7 +601,11 @@ EOF
     ;
 $config_help{"REBOOT_TYPE"} = << "EOF"
  Way to reboot the box to the test kernel.
+<<<<<<< HEAD
  Only valid options so far are "grub" and "script".
+=======
+ Only valid options so far are "grub", "grub2", "syslinux", and "script".
+>>>>>>> refs/remotes/origin/master
 
  If you specify grub, it will assume grub version 1
  and will search in /boot/grub/menu.lst for the title \$GRUB_MENU
@@ -440,11 +615,26 @@ $config_help{"REBOOT_TYPE"} = << "EOF"
 
  The entry in /boot/grub/menu.lst must be entered in manually.
  The test will not modify that file.
+<<<<<<< HEAD
+=======
+
+ If you specify grub2, then you also need to specify both \$GRUB_MENU
+ and \$GRUB_FILE.
+
+ If you specify syslinux, then you may use SYSLINUX to define the syslinux
+ command (defaults to extlinux), and SYSLINUX_PATH to specify the path to
+ the syslinux install (defaults to /boot/extlinux). But you have to specify
+ SYSLINUX_LABEL to define the label to boot to for the test kernel.
+>>>>>>> refs/remotes/origin/master
 EOF
     ;
 $config_help{"GRUB_MENU"} = << "EOF"
  The grub title name for the test kernel to boot
+<<<<<<< HEAD
  (Only mandatory if REBOOT_TYPE = grub)
+=======
+ (Only mandatory if REBOOT_TYPE = grub or grub2)
+>>>>>>> refs/remotes/origin/master
 
  Note, ktest.pl will not update the grub menu.lst, you need to
  manually add an option for the test. ktest.pl will search
@@ -455,6 +645,25 @@ $config_help{"GRUB_MENU"} = << "EOF"
  title Test Kernel
  kernel vmlinuz-test
  GRUB_MENU = Test Kernel
+<<<<<<< HEAD
+=======
+
+ For grub2, a search of \$GRUB_FILE is performed for the lines
+ that begin with "menuentry". It will not detect submenus. The
+ menu must be a non-nested menu. Add the quotes used in the menu
+ to guarantee your selection, as the first menuentry with the content
+ of \$GRUB_MENU that is found will be used.
+EOF
+    ;
+$config_help{"GRUB_FILE"} = << "EOF"
+ If grub2 is used, the full path for the grub.cfg file is placed
+ here. Use something like /boot/grub2/grub.cfg to search.
+EOF
+    ;
+$config_help{"SYSLINUX_LABEL"} = << "EOF"
+ If syslinux is used, the label that boots the target kernel must
+ be specified with SYSLINUX_LABEL.
+>>>>>>> refs/remotes/origin/master
 EOF
     ;
 $config_help{"REBOOT_SCRIPT"} = << "EOF"
@@ -464,10 +673,34 @@ EOF
     ;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 sub get_ktest_config {
     my ($config) = @_;
 =======
+=======
+sub _logit {
+    if (defined($opt{"LOG_FILE"})) {
+	open(OUT, ">> $opt{LOG_FILE}") or die "Can't write to $opt{LOG_FILE}";
+	print OUT @_;
+	close(OUT);
+    }
+}
+
+sub logit {
+    if (defined($opt{"LOG_FILE"})) {
+	_logit @_;
+    } else {
+	print @_;
+    }
+}
+
+sub doprint {
+    print @_;
+    _logit @_;
+}
+
+>>>>>>> refs/remotes/origin/master
 sub read_prompt {
     my ($cancel, $prompt) = @_;
 
@@ -520,7 +753,10 @@ sub read_ync {
 sub get_ktest_config {
     my ($config) = @_;
     my $ans;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
     return if (defined($opt{$config}));
 
@@ -532,6 +768,7 @@ sub get_ktest_config {
     for (;;) {
 	print "$config = ";
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (defined($default{$config})) {
 	    print "\[$default{$config}\] ";
 	}
@@ -541,6 +778,8 @@ sub get_ktest_config {
 	    if ($default{$config}) {
 		$entered_configs{$config} = $default{$config};
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (defined($default{$config}) && length($default{$config})) {
 	    print "\[$default{$config}\] ";
 	}
@@ -549,22 +788,30 @@ sub get_ktest_config {
 	if ($ans =~ /^\s*$/) {
 	    if ($default{$config}) {
 		$ans = $default{$config};
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	    } else {
 		print "Your answer can not be blank\n";
 		next;
 	    }
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	$entered_configs{$config} = ${ans};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	$entered_configs{$config} = ${ans};
+>>>>>>> refs/remotes/origin/master
 	last;
     }
 }
 
 sub get_ktest_configs {
     get_ktest_config("MACHINE");
+<<<<<<< HEAD
 <<<<<<< HEAD
     get_ktest_config("SSH_USER");
     get_ktest_config("BUILD_DIR");
@@ -576,6 +823,8 @@ sub get_ktest_configs {
     get_ktest_config("LOCALVERSION");
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     get_ktest_config("BUILD_DIR");
     get_ktest_config("OUTPUT_DIR");
 
@@ -600,7 +849,10 @@ sub get_ktest_configs {
 
     return if ($buildonly);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     my $rtype = $opt{"REBOOT_TYPE"};
 
     if (!defined($rtype)) {
@@ -615,19 +867,35 @@ sub get_ktest_configs {
     if ($rtype eq "grub") {
 	get_ktest_config("GRUB_MENU");
 <<<<<<< HEAD
+<<<<<<< HEAD
     } else {
 	get_ktest_config("REBOOT_SCRIPT");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    }
+
+    if ($rtype eq "grub2") {
+	get_ktest_config("GRUB_MENU");
+	get_ktest_config("GRUB_FILE");
+    }
+
+    if ($rtype eq "syslinux") {
+	get_ktest_config("SYSLINUX_LABEL");
+>>>>>>> refs/remotes/origin/master
     }
 }
 
 sub process_variables {
 <<<<<<< HEAD
+<<<<<<< HEAD
     my ($value) = @_;
 =======
     my ($value, $remove_undef) = @_;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    my ($value, $remove_undef) = @_;
+>>>>>>> refs/remotes/origin/master
     my $retval = "";
 
     # We want to check for '\', and it is just easier
@@ -646,10 +914,13 @@ sub process_variables {
 	if (defined($variable{$var})) {
 	    $retval = "$retval$variable{$var}";
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else {
 	    # put back the origin piece.
 	    $retval = "$retval\$\{$var\}";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} elsif (defined($remove_undef) && $remove_undef) {
 	    # for if statements, any variable that is not defined,
 	    # we simple convert to 0
@@ -661,7 +932,10 @@ sub process_variables {
 	    # it so we don't warn if this option is not one of
 	    # ktests options.
 	    $used_options{$var} = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	$value = $end;
     }
@@ -675,11 +949,14 @@ sub process_variables {
 
 sub set_value {
 <<<<<<< HEAD
+<<<<<<< HEAD
     my ($lvalue, $rvalue) = @_;
 
     if (defined($opt{$lvalue})) {
 	die "Error: Option $lvalue defined more than once!\n";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     my ($lvalue, $rvalue, $override, $overrides, $name) = @_;
 
     my $prvalue = process_variables($rvalue);
@@ -688,6 +965,21 @@ sub set_value {
 	# Note if a test is something other than build, then we
 	# will need other manditory options.
 	if ($prvalue ne "install") {
+<<<<<<< HEAD
+=======
+	    # for bisect, we need to check BISECT_TYPE
+	    if ($prvalue ne "bisect") {
+		$buildonly = 0;
+	    }
+	} else {
+	    # install still limits some manditory options.
+	    $buildonly = 2;
+	}
+    }
+
+    if ($buildonly && $lvalue =~ /^BISECT_TYPE(\[.*\])?$/ && $prvalue ne "build") {
+	if ($prvalue ne "install") {
+>>>>>>> refs/remotes/origin/master
 	    $buildonly = 0;
 	} else {
 	    # install still limits some manditory options.
@@ -704,11 +996,15 @@ sub set_value {
 	    die "$name: $.: Option $lvalue defined more than once!\n$extra";
 	}
 	${$overrides}{$lvalue} = $prvalue;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     }
     if ($rvalue =~ /^\s*$/) {
 	delete $opt{$lvalue};
     } else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	$rvalue = process_variables($rvalue);
 	$opt{$lvalue} = $rvalue;
@@ -718,6 +1014,28 @@ sub set_value {
     }
 }
 
+=======
+	$opt{$lvalue} = $prvalue;
+    }
+}
+
+sub set_eval {
+    my ($lvalue, $rvalue, $name) = @_;
+
+    my $prvalue = process_variables($rvalue);
+    my $arr;
+
+    if (defined($evals{$lvalue})) {
+	$arr = $evals{$lvalue};
+    } else {
+	$arr = [];
+	$evals{$lvalue} = $arr;
+    }
+
+    push @{$arr}, $rvalue;
+}
+
+>>>>>>> refs/remotes/origin/master
 sub set_variable {
     my ($lvalue, $rvalue) = @_;
 
@@ -730,11 +1048,14 @@ sub set_variable {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 sub read_config {
     my ($config) = @_;
 
     open(IN, $config) || die "can't read file $config";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 sub process_compare {
     my ($lval, $cmp, $rval) = @_;
 
@@ -750,6 +1071,13 @@ sub process_compare {
 	return $lval eq $rval;
     } elsif ($cmp eq "!=") {
 	return $lval ne $rval;
+<<<<<<< HEAD
+=======
+    } elsif ($cmp eq "=~") {
+	return $lval =~ m/$rval/;
+    } elsif ($cmp eq "!~") {
+	return $lval !~ m/$rval/;
+>>>>>>> refs/remotes/origin/master
     }
 
     my $statement = "$lval $cmp $rval";
@@ -805,7 +1133,11 @@ sub process_expression {
 	}
     }
 
+<<<<<<< HEAD
     if ($val =~ /(.*)(==|\!=|>=|<=|>|<)(.*)/) {
+=======
+    if ($val =~ /(.*)(==|\!=|>=|<=|>|<|=~|\!~)(.*)/) {
+>>>>>>> refs/remotes/origin/master
 	my $ret = process_compare($1, $2, $3);
 	if ($ret < 0) {
 	    die "$name: $.: Unable to process comparison\n";
@@ -845,25 +1177,35 @@ sub __read_config {
 
     my $in;
     open($in, $config) || die "can't read file $config";
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
     my $name = $config;
     $name =~ s,.*/(.*),$1,;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     my $test_num = 0;
 =======
     my $test_num = $$current_test_num;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    my $test_num = $$current_test_num;
+>>>>>>> refs/remotes/origin/master
     my $default = 1;
     my $repeat = 1;
     my $num_tests_set = 0;
     my $skip = 0;
     my $rest;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     while (<IN>) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     my $line;
     my $test_case = 0;
     my $if = 0;
@@ -873,11 +1215,15 @@ sub __read_config {
     my %overrides;
 
     while (<$in>) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	# ignore blank lines and comments
 	next if (/^\s*$/ || /\s*\#/);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (/^\s*TEST_START(.*)/) {
 
@@ -918,6 +1264,8 @@ sub __read_config {
 
 	    if ($skip) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (/^\s*(TEST_START|DEFAULTS)\b(.*)/) {
 
 	    my $type = $1;
@@ -996,11 +1344,15 @@ sub __read_config {
 	    }
 
 	    if ($skip && $type eq "TEST_START") {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		$test_num = $old_test_num;
 		$repeat = $old_repeat;
 	    }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	} elsif (/^\s*DEFAULTS(.*)$/) {
 	    $default = 1;
@@ -1013,6 +1365,8 @@ sub __read_config {
 	    } else {
 		$skip = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} elsif (/^\s*ELSE\b(.*)$/) {
 	    if (!$if) {
 		die "$name: $.: ELSE found with out matching IF section\n$_";
@@ -1026,14 +1380,23 @@ sub __read_config {
 
 		if ($rest =~ /\sIF\s+(.*)/) {
 		    # May be a ELSE IF section.
+<<<<<<< HEAD
 		    if (!process_if($name, $1)) {
+=======
+		    if (process_if($name, $1)) {
+			$if_set = 1;
+		    } else {
+>>>>>>> refs/remotes/origin/master
 			$skip = 1;
 		    }
 		    $rest = "";
 		} else {
 		    $if = 0;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	    }
 
 	    if ($rest !~ /^\s*$/) {
@@ -1041,7 +1404,10 @@ sub __read_config {
 	    }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} elsif (/^\s*INCLUDE\s+(\S+)/) {
 
 	    next if ($skip);
@@ -1069,7 +1435,24 @@ sub __read_config {
 		$test_case = 1;
 	    }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} elsif (/^\s*([A-Z_\[\]\d]+)\s*=~\s*(.*?)\s*$/) {
+
+	    next if ($skip);
+
+	    my $lvalue = $1;
+	    my $rvalue = $2;
+
+	    if ($default || $lvalue =~ /\[\d+\]$/) {
+		set_eval($lvalue, $rvalue, $name);
+	    } else {
+		my $val = "$lvalue\[$test_num\]";
+		set_eval($val, $rvalue, $name);
+	    }
+
+>>>>>>> refs/remotes/origin/master
 	} elsif (/^\s*([A-Z_\[\]\d]+)\s*=\s*(.*?)\s*$/) {
 
 	    next if ($skip);
@@ -1096,16 +1479,22 @@ sub __read_config {
 
 	    if ($default || $lvalue =~ /\[\d+\]$/) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		set_value($lvalue, $rvalue);
 	    } else {
 		my $val = "$lvalue\[$test_num\]";
 		set_value($val, $rvalue);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		set_value($lvalue, $rvalue, $override, \%overrides, $name);
 	    } else {
 		my $val = "$lvalue\[$test_num\]";
 		set_value($val, $rvalue, $override, \%overrides, $name);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if ($repeat > 1) {
 		    $repeats{$val} = $repeat;
@@ -1133,20 +1522,26 @@ sub __read_config {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     close(IN);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     if ($test_num) {
 	$test_num += $repeat - 1;
 	$opt{"NUM_TESTS"} = $test_num;
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     # make sure we have all mandatory configs
     get_ktest_configs;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     close($in);
 
     $$current_test_num = $test_num;
@@ -1180,7 +1575,10 @@ sub read_config {
 	get_test_case;
     }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     # set any defaults
 
     foreach my $default (keys %default) {
@@ -1189,7 +1587,10 @@ sub read_config {
 	}
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
     if ($opt{"IGNORE_UNUSED"} == 1) {
 	return;
@@ -1224,7 +1625,11 @@ sub read_config {
 }
 
 sub __eval_option {
+<<<<<<< HEAD
     my ($option, $i) = @_;
+=======
+    my ($name, $option, $i) = @_;
+>>>>>>> refs/remotes/origin/master
 
     # Add space to evaluate the character before $
     $option = " $option";
@@ -1256,7 +1661,15 @@ sub __eval_option {
 	my $o = "$var\[$i\]";
 	my $parento = "$var\[$parent\]";
 
+<<<<<<< HEAD
 	if (defined($opt{$o})) {
+=======
+	# If a variable contains itself, use the default var
+	if (($var eq $name) && defined($opt{$var})) {
+	    $o = $opt{$var};
+	    $retval = "$retval$o";
+	} elsif (defined($opt{$o})) {
+>>>>>>> refs/remotes/origin/master
 	    $o = $opt{$o};
 	    $retval = "$retval$o";
 	} elsif ($repeated && defined($opt{$parento})) {
@@ -1265,6 +1678,13 @@ sub __eval_option {
 	} elsif (defined($opt{$var})) {
 	    $o = $opt{$var};
 	    $retval = "$retval$o";
+<<<<<<< HEAD
+=======
+	} elsif ($var eq "KERNEL_VERSION" && defined($make)) {
+	    # special option KERNEL_VERSION uses kernel version
+	    get_version();
+	    $retval = "$retval$version";
+>>>>>>> refs/remotes/origin/master
 	} else {
 	    $retval = "$retval\$\{$var\}";
 	}
@@ -1279,8 +1699,40 @@ sub __eval_option {
     return $retval;
 }
 
+<<<<<<< HEAD
 sub eval_option {
     my ($option, $i) = @_;
+=======
+sub process_evals {
+    my ($name, $option, $i) = @_;
+
+    my $option_name = "$name\[$i\]";
+    my $ev;
+
+    my $old_option = $option;
+
+    if (defined($evals{$option_name})) {
+	$ev = $evals{$option_name};
+    } elsif (defined($evals{$name})) {
+	$ev = $evals{$name};
+    } else {
+	return $option;
+    }
+
+    for my $e (@{$ev}) {
+	eval "\$option =~ $e";
+    }
+
+    if ($option ne $old_option) {
+	doprint("$name changed from '$old_option' to '$option'\n");
+    }
+
+    return $option;
+}
+
+sub eval_option {
+    my ($name, $option, $i) = @_;
+>>>>>>> refs/remotes/origin/master
 
     my $prev = "";
 
@@ -1296,6 +1748,7 @@ sub eval_option {
 		"Check for recursive variables\n";
 	}
 	$prev = $option;
+<<<<<<< HEAD
 	$option = __eval_option($option, $i);
     }
 
@@ -1329,6 +1782,17 @@ sub run_command;
 
 sub reboot {
 =======
+=======
+	$option = __eval_option($name, $option, $i);
+    }
+
+    $option = process_evals($name, $option, $i);
+
+    return $option;
+}
+
+sub run_command;
+>>>>>>> refs/remotes/origin/master
 sub start_monitor;
 sub end_monitor;
 sub wait_for_monitor;
@@ -1336,6 +1800,12 @@ sub wait_for_monitor;
 sub reboot {
     my ($time) = @_;
 
+<<<<<<< HEAD
+=======
+    # Make sure everything has been written to disk
+    run_ssh("sync");
+
+>>>>>>> refs/remotes/origin/master
     if (defined($time)) {
 	start_monitor;
 	# flush out current monitor
@@ -1343,7 +1813,10 @@ sub reboot {
 	wait_for_monitor 1;
     }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     # try to reboot normally
     if (run_command $reboot) {
 	if (defined($powercycle_after_reboot)) {
@@ -1355,10 +1828,33 @@ sub reboot {
 	run_command "$power_cycle";
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
     if (defined($time)) {
 	wait_for_monitor($time, $reboot_success_line);
+=======
+
+    if (defined($time)) {
+
+	# We only want to get to the new kernel, don't fail
+	# if we stumble over a call trace.
+	my $save_ignore_errors = $ignore_errors;
+	$ignore_errors = 1;
+
+	# Look for the good kernel to boot
+	if (wait_for_monitor($time, "Linux version")) {
+	    # reboot got stuck?
+	    doprint "Reboot did not finish. Forcing power cycle\n";
+	    run_command "$power_cycle";
+	}
+
+	$ignore_errors = $save_ignore_errors;
+
+	# Still need to wait for the reboot to finish
+	wait_for_monitor($time, $reboot_success_line);
+
+>>>>>>> refs/remotes/origin/master
 	end_monitor;
     }
 }
@@ -1371,17 +1867,24 @@ sub reboot_to_good {
     }
 
     reboot $time;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 sub do_not_reboot {
     my $i = $iteration;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     return $test_type eq "build" ||
 =======
     return $test_type eq "build" || $no_reboot ||
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    return $test_type eq "build" || $no_reboot ||
+>>>>>>> refs/remotes/origin/master
 	($test_type eq "patchcheck" && $opt{"PATCHCHECK_TYPE[$i]"} eq "build") ||
 	($test_type eq "bisect" && $opt{"BISECT_TYPE[$i]"} eq "build");
 }
@@ -1395,10 +1898,14 @@ sub dodie {
 
 	doprint "REBOOTING\n";
 <<<<<<< HEAD
+<<<<<<< HEAD
 	reboot;
 =======
 	reboot_to_good;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	reboot_to_good;
+>>>>>>> refs/remotes/origin/master
 
     } elsif ($poweroff_on_error && defined($power_off)) {
 	doprint "POWERING OFF\n";
@@ -1432,7 +1939,11 @@ sub close_console {
     my ($fp, $pid) = @_;
 
     doprint "kill child process $pid\n";
+<<<<<<< HEAD
     kill 2, $pid;
+=======
+    kill $close_console_signal, $pid;
+>>>>>>> refs/remotes/origin/master
 
     print "closing!\n";
     close($fp);
@@ -1451,6 +1962,10 @@ sub start_monitor {
 }
 
 sub end_monitor {
+<<<<<<< HEAD
+=======
+    return if (!defined $console);
+>>>>>>> refs/remotes/origin/master
     if (--$monitor_cnt) {
 	return;
     }
@@ -1459,18 +1974,30 @@ sub end_monitor {
 
 sub wait_for_monitor {
 <<<<<<< HEAD
+<<<<<<< HEAD
     my ($time) = @_;
     my $line;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     my ($time, $stop) = @_;
     my $full_line = "";
     my $line;
     my $booted = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    my $start_time = time;
+    my $skip_call_trace = 0;
+    my $bug = 0;
+    my $bug_ignored = 0;
+    my $now;
+>>>>>>> refs/remotes/origin/master
 
     doprint "** Wait for monitor to settle down **\n";
 
     # read the monitor and wait for the system to calm down
+<<<<<<< HEAD
 <<<<<<< HEAD
     do {
 	$line = wait_for_input($monitor_fp, $time);
@@ -1480,6 +2007,8 @@ sub wait_for_monitor {
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     while (!$booted) {
 	$line = wait_for_input($monitor_fp, $time);
 	last if (!defined($line));
@@ -1491,11 +2020,47 @@ sub wait_for_monitor {
 	    $booted = 1;
 	}
 
+<<<<<<< HEAD
 	if ($line =~ /\n/) {
 	    $full_line = "";
 	}
     }
     print "** Monitor flushed **\n";
+=======
+	if ($full_line =~ /\[ backtrace testing \]/) {
+	    $skip_call_trace = 1;
+	}
+
+	if ($full_line =~ /call trace:/i) {
+	    if (!$bug && !$skip_call_trace) {
+		if ($ignore_errors) {
+		    $bug_ignored = 1;
+		} else {
+		    $bug = 1;
+		}
+	    }
+	}
+
+	if ($full_line =~ /\[ end of backtrace testing \]/) {
+	    $skip_call_trace = 0;
+	}
+
+	if ($full_line =~ /Kernel panic -/) {
+	    $bug = 1;
+	}
+
+	if ($line =~ /\n/) {
+	    $full_line = "";
+	}
+	$now = time;
+	if ($now - $start_time >= $max_monitor_wait) {
+	    doprint "Exiting monitor flush due to hitting MAX_MONITOR_WAIT\n";
+	    return 1;
+	}
+    }
+    print "** Monitor flushed **\n";
+    return $bug;
+>>>>>>> refs/remotes/origin/master
 }
 
 sub save_logs {
@@ -1535,9 +2100,18 @@ sub save_logs {
 	doprint "*** Saved info to $dir ***\n";
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 sub fail {
 
+=======
+sub fail {
+
+	if (defined($post_test)) {
+		run_command $post_test;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if ($die_on_failure) {
 		dodie @_;
 	}
@@ -1550,11 +2124,14 @@ sub fail {
 	if (!do_not_reboot) {
 	    doprint "REBOOTING\n";
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    reboot;
 	    start_monitor;
 	    wait_for_monitor $sleep_time;
 	    end_monitor;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	    reboot_to_good $sleep_time;
 	}
 
@@ -1562,11 +2139,15 @@ sub fail {
 
 	if (defined($test_name)) {
 	    $name = " ($test_name)";
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	doprint "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
 	doprint "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
+<<<<<<< HEAD
 <<<<<<< HEAD
 	doprint "KTEST RESULT: TEST $i Failed: ", @_, "\n";
 	doprint "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
@@ -1605,6 +2186,8 @@ sub fail {
 
 	doprint "*** Saved info to $faildir ***\n";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	doprint "KTEST RESULT: TEST $i$name Failed: ", @_, "\n";
 	doprint "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
 	doprint "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
@@ -1612,7 +2195,10 @@ sub fail {
 	if (defined($store_failures)) {
 	    save_logs "fail", $store_failures;
         }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -1674,11 +2260,15 @@ sub run_ssh {
 
 sub run_scp {
 <<<<<<< HEAD
+<<<<<<< HEAD
     my ($src, $dst) = @_;
     my $cp_scp = $scp_to_target;
 =======
     my ($src, $dst, $cp_scp) = @_;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    my ($src, $dst, $cp_scp) = @_;
+>>>>>>> refs/remotes/origin/master
 
     $cp_scp =~ s/\$SRC_FILE/$src/g;
     $cp_scp =~ s/\$DST_FILE/$dst/g;
@@ -1687,7 +2277,10 @@ sub run_scp {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 sub run_scp_install {
     my ($src, $dst) = @_;
 
@@ -1704,6 +2297,7 @@ sub run_scp_mod {
     return run_scp($src, $dst, $cp_scp);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 sub get_grub_index {
 
@@ -1711,6 +2305,56 @@ sub get_grub_index {
 	return;
     }
     return if (defined($grub_number));
+=======
+sub get_grub2_index {
+
+    return if (defined($grub_number) && defined($last_grub_menu) &&
+	       $last_grub_menu eq $grub_menu && defined($last_machine) &&
+	       $last_machine eq $machine);
+
+    doprint "Find grub2 menu ... ";
+    $grub_number = -1;
+
+    my $ssh_grub = $ssh_exec;
+    $ssh_grub =~ s,\$SSH_COMMAND,cat $grub_file,g;
+
+    open(IN, "$ssh_grub |")
+	or die "unable to get $grub_file";
+
+    my $found = 0;
+
+    while (<IN>) {
+	if (/^menuentry.*$grub_menu/) {
+	    $grub_number++;
+	    $found = 1;
+	    last;
+	} elsif (/^menuentry\s/) {
+	    $grub_number++;
+	}
+    }
+    close(IN);
+
+    die "Could not find '$grub_menu' in $grub_file on $machine"
+	if (!$found);
+    doprint "$grub_number\n";
+    $last_grub_menu = $grub_menu;
+    $last_machine = $machine;
+}
+
+sub get_grub_index {
+
+    if ($reboot_type eq "grub2") {
+	get_grub2_index;
+	return;
+    }
+
+    if ($reboot_type ne "grub") {
+	return;
+    }
+    return if (defined($grub_number) && defined($last_grub_menu) &&
+	       $last_grub_menu eq $grub_menu && defined($last_machine) &&
+	       $last_machine eq $machine);
+>>>>>>> refs/remotes/origin/master
 
     doprint "Find grub menu ... ";
     $grub_number = -1;
@@ -1722,17 +2366,23 @@ sub get_grub_index {
 	or die "unable to get menu.lst";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     while (<IN>) {
 	if (/^\s*title\s+$grub_menu\s*$/) {
 	    $grub_number++;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     my $found = 0;
 
     while (<IN>) {
 	if (/^\s*title\s+$grub_menu\s*$/) {
 	    $grub_number++;
 	    $found = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	    last;
 	} elsif (/^\s*title\s/) {
 	    $grub_number++;
@@ -1742,11 +2392,18 @@ sub get_grub_index {
 
     die "Could not find '$grub_menu' in /boot/grub/menu on $machine"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ($grub_number < 0);
 =======
 	if (!$found);
 >>>>>>> refs/remotes/origin/cm-10.0
     doprint "$grub_number\n";
+=======
+	if (!$found);
+    doprint "$grub_number\n";
+    $last_grub_menu = $grub_menu;
+    $last_machine = $machine;
+>>>>>>> refs/remotes/origin/master
 }
 
 sub wait_for_input
@@ -1763,7 +2420,11 @@ sub wait_for_input
 
     $rin = '';
     vec($rin, fileno($fp), 1) = 1;
+<<<<<<< HEAD
     $ready = select($rin, undef, undef, $time);
+=======
+    ($ready, $time) = select($rin, undef, undef, $time);
+>>>>>>> refs/remotes/origin/master
 
     $line = "";
 
@@ -1782,6 +2443,7 @@ sub wait_for_input
 
 sub reboot_to {
 <<<<<<< HEAD
+<<<<<<< HEAD
     if ($reboot_type eq "grub") {
 	run_ssh "'(echo \"savedefault --default=$grub_number --once\" | grub --batch && reboot)'";
 	return;
@@ -1789,17 +2451,29 @@ sub reboot_to {
 
     run_command "$reboot_script";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     if (defined($switch_to_test)) {
 	run_command $switch_to_test;
     }
 
     if ($reboot_type eq "grub") {
 	run_ssh "'(echo \"savedefault --default=$grub_number --once\" | grub --batch)'";
+<<<<<<< HEAD
+=======
+    } elsif ($reboot_type eq "grub2") {
+	run_ssh "$grub_reboot $grub_number";
+    } elsif ($reboot_type eq "syslinux") {
+	run_ssh "$syslinux --once \\\"$syslinux_label\\\" $syslinux_path";
+>>>>>>> refs/remotes/origin/master
     } elsif (defined $reboot_script) {
 	run_command "$reboot_script";
     }
     reboot;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 sub get_sha1 {
@@ -1827,9 +2501,13 @@ sub monitor {
     my $booted = 0;
     my $bug = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     my $bug_ignored = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    my $bug_ignored = 0;
+>>>>>>> refs/remotes/origin/master
     my $skip_call_trace = 0;
     my $loops;
 
@@ -1848,6 +2526,7 @@ sub monitor {
     my $monitor_start = time;
     my $done = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     while (!$done) {
 
@@ -1860,6 +2539,8 @@ sub monitor {
 	last if (!defined($line));
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     my $version_found = 0;
 
     while (!$done) {
@@ -1889,7 +2570,10 @@ sub monitor {
 	    }
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	doprint $line;
 	print DMESG $line;
 
@@ -1917,16 +2601,22 @@ sub monitor {
 	if ($full_line =~ /call trace:/i) {
 	    if (!$bug && !$skip_call_trace) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		$bug = 1;
 		$failure_start = time;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if ($ignore_errors) {
 		    $bug_ignored = 1;
 		} else {
 		    $bug = 1;
 		    $failure_start = time;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	    }
 	}
 
@@ -1949,7 +2639,10 @@ sub monitor {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	# Detect triple faults by testing the banner
 	if ($full_line =~ /\bLinux version (\S+).*\n/) {
 	    if ($1 eq $version) {
@@ -1958,7 +2651,11 @@ sub monitor {
 		# We already booted into the kernel we are testing,
 		# but now we booted into another kernel?
 		# Consider this a triple fault.
+<<<<<<< HEAD
 		doprint "Aleady booted in Linux kernel $version, but now\n";
+=======
+		doprint "Already booted in Linux kernel $version, but now\n";
+>>>>>>> refs/remotes/origin/master
 		doprint "we booted into Linux kernel $1.\n";
 		doprint "Assuming that this is a triple fault.\n";
 		doprint "To disable this: set DETECT_TRIPLE_FAULT to 0\n";
@@ -1966,7 +2663,10 @@ sub monitor {
 	    }
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if ($line =~ /\n/) {
 	    $full_line = "";
 	}
@@ -1992,6 +2692,7 @@ sub monitor {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     return 1;
 }
 
@@ -1999,6 +2700,8 @@ sub install {
 
     run_scp "$outputdir/$build_target", "$target_image" or
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     if ($bug_ignored) {
 	doprint "WARNING: Call Trace detected but ignored due to IGNORE_ERRORS=1\n";
     }
@@ -2023,14 +2726,39 @@ sub do_post_install {
 	dodie "Failed to run post install";
 }
 
+<<<<<<< HEAD
+=======
+# Sometimes the reboot fails, and will hang. We try to ssh to the box
+# and if we fail, we force another reboot, that should powercycle it.
+sub test_booted {
+    if (!run_ssh "echo testing connection") {
+	reboot $sleep_time;
+    }
+}
+
+>>>>>>> refs/remotes/origin/master
 sub install {
 
     return if ($no_install);
 
+<<<<<<< HEAD
     my $cp_target = eval_kernel_version $target_image;
 
     run_scp_install "$outputdir/$build_target", "$cp_target" or
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    if (defined($pre_install)) {
+	my $cp_pre_install = eval_kernel_version $pre_install;
+	run_command "$cp_pre_install" or
+	    dodie "Failed to run pre install";
+    }
+
+    my $cp_target = eval_kernel_version $target_image;
+
+    test_booted;
+
+    run_scp_install "$outputdir/$build_target", "$cp_target" or
+>>>>>>> refs/remotes/origin/master
 	dodie "failed to copy image";
 
     my $install_mods = 0;
@@ -2040,26 +2768,41 @@ sub install {
     open(IN, "$output_config") or dodie("Can't read config file");
     while (<IN>) {
 	if (/CONFIG_MODULES(=y)?/) {
+<<<<<<< HEAD
 	    $install_mods = 1 if (defined($1));
 	    last;
+=======
+	    if (defined($1)) {
+		$install_mods = 1;
+		last;
+	    }
+>>>>>>> refs/remotes/origin/master
 	}
     }
     close(IN);
 
     if (!$install_mods) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	do_post_install;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	do_post_install;
+>>>>>>> refs/remotes/origin/master
 	doprint "No modules needed\n";
 	return;
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     run_command "$make INSTALL_MOD_PATH=$tmpdir modules_install" or
 =======
     run_command "$make INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$tmpdir modules_install" or
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    run_command "$make INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$tmpdir modules_install" or
+>>>>>>> refs/remotes/origin/master
 	dodie "Failed to install modules";
 
     my $modlib = "/lib/modules/$version";
@@ -2073,23 +2816,32 @@ sub install {
 	dodie "making tarball";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     run_scp "$tmpdir/$modtar", "/tmp" or
 =======
     run_scp_mod "$tmpdir/$modtar", "/tmp" or
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    run_scp_mod "$tmpdir/$modtar", "/tmp" or
+>>>>>>> refs/remotes/origin/master
 	dodie "failed to copy modules";
 
     unlink "$tmpdir/$modtar";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     run_ssh "'(cd / && tar xf /tmp/$modtar)'" or
 =======
     run_ssh "'(cd / && tar xjf /tmp/$modtar)'" or
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    run_ssh "'(cd / && tar xjf /tmp/$modtar)'" or
+>>>>>>> refs/remotes/origin/master
 	dodie "failed to tar modules";
 
     run_ssh "rm -f /tmp/$modtar";
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     return if (!defined($post_install));
 
@@ -2098,37 +2850,143 @@ sub install {
     run_command "$cp_post_install" or
 	dodie "Failed to run post install";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     do_post_install;
 }
 
 sub get_version {
     # get the release name
+<<<<<<< HEAD
+=======
+    return if ($have_version);
+>>>>>>> refs/remotes/origin/master
     doprint "$make kernelrelease ... ";
     $version = `$make kernelrelease | tail -1`;
     chomp($version);
     doprint "$version\n";
+<<<<<<< HEAD
+=======
+    $have_version = 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 sub start_monitor_and_boot {
     # Make sure the stable kernel has finished booting
+<<<<<<< HEAD
     start_monitor;
     wait_for_monitor 5;
     end_monitor;
+=======
+
+    # Install bisects, don't need console
+    if (defined $console) {
+	start_monitor;
+	wait_for_monitor 5;
+	end_monitor;
+    }
+>>>>>>> refs/remotes/origin/master
 
     get_grub_index;
     get_version;
     install;
 
+<<<<<<< HEAD
     start_monitor;
     return monitor;
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 sub check_buildlog {
+=======
+    start_monitor if (defined $console);
+    return monitor;
+}
+
+my $check_build_re = ".*:.*(warning|error|Error):.*";
+my $utf8_quote = "\\x{e2}\\x{80}(\\x{98}|\\x{99})";
+
+sub process_warning_line {
+    my ($line) = @_;
+
+    chomp $line;
+
+    # for distcc heterogeneous systems, some compilers
+    # do things differently causing warning lines
+    # to be slightly different. This makes an attempt
+    # to fixe those issues.
+
+    # chop off the index into the line
+    # using distcc, some compilers give different indexes
+    # depending on white space
+    $line =~ s/^(\s*\S+:\d+:)\d+/$1/;
+
+    # Some compilers use UTF-8 extended for quotes and some don't.
+    $line =~ s/$utf8_quote/'/g;
+
+    return $line;
+}
+
+# Read buildlog and check against warnings file for any
+# new warnings.
+#
+# Returns 1 if OK
+#         0 otherwise
+sub check_buildlog {
+    return 1 if (!defined $warnings_file);
+
+    my %warnings_list;
+
+    # Failed builds should not reboot the target
+    my $save_no_reboot = $no_reboot;
+    $no_reboot = 1;
+
+    if (-f $warnings_file) {
+	open(IN, $warnings_file) or
+	    dodie "Error opening $warnings_file";
+
+	while (<IN>) {
+	    if (/$check_build_re/) {
+		my $warning = process_warning_line $_;
+		
+		$warnings_list{$warning} = 1;
+	    }
+	}
+	close(IN);
+    }
+
+    # If warnings file didn't exist, and WARNINGS_FILE exist,
+    # then we fail on any warning!
+
+    open(IN, $buildlog) or dodie "Can't open $buildlog";
+    while (<IN>) {
+	if (/$check_build_re/) {
+	    my $warning = process_warning_line $_;
+
+	    if (!defined $warnings_list{$warning}) {
+		fail "New warning found (not in $warnings_file)\n$_\n";
+		$no_reboot = $save_no_reboot;
+		return 0;
+	    }
+	}
+    }
+    $no_reboot = $save_no_reboot;
+    close(IN);
+}
+
+sub check_patch_buildlog {
+>>>>>>> refs/remotes/origin/master
     my ($patch) = @_;
 
     my @files = `git show $patch | diffstat -l`;
 
+<<<<<<< HEAD
+=======
+    foreach my $file (@files) {
+	chomp $file;
+    }
+
+>>>>>>> refs/remotes/origin/master
     open(IN, "git show $patch |") or
 	dodie "failed to show $patch";
     while (<IN>) {
@@ -2157,6 +3015,7 @@ sub check_buildlog {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 sub make_oldconfig {
     my ($defconfig) = @_;
 
@@ -2166,6 +3025,8 @@ sub make_oldconfig {
 	doprint "oldnoconfig failed, trying yes '' | make oldconfig\n";
 	run_command "yes '' | $defconfig $make oldconfig" or
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 sub apply_min_config {
     my $outconfig = "$output_config.new";
 
@@ -2205,6 +3066,7 @@ sub make_oldconfig {
 	apply_min_config;
     }
 
+<<<<<<< HEAD
     if (!run_command "$make oldnoconfig") {
 	# Perhaps oldnoconfig doesn't exist in this version of the kernel
 	# try a yes '' | oldconfig
@@ -2223,10 +3085,29 @@ sub build {
     unlink $buildlog;
 
 =======
+=======
+    if (!run_command "$make olddefconfig") {
+	# Perhaps olddefconfig doesn't exist in this version of the kernel
+	# try oldnoconfig
+	doprint "olddefconfig failed, trying make oldnoconfig\n";
+	if (!run_command "$make oldnoconfig") {
+	    doprint "oldnoconfig failed, trying yes '' | make oldconfig\n";
+	    # try a yes '' | oldconfig
+	    run_command "yes '' | $make oldconfig" or
+		dodie "failed make config oldconfig";
+	}
+    }
+}
+
+>>>>>>> refs/remotes/origin/master
 # read a config file and use this to force new configs.
 sub load_force_config {
     my ($config) = @_;
 
+<<<<<<< HEAD
+=======
+    doprint "Loading force configs from $config\n";
+>>>>>>> refs/remotes/origin/master
     open(IN, $config) or
 	dodie "failed to read $config";
     while (<IN>) {
@@ -2249,6 +3130,12 @@ sub build {
     my $save_no_reboot = $no_reboot;
     $no_reboot = 1;
 
+<<<<<<< HEAD
+=======
+    # Calculate a new version from here.
+    $have_version = 0;
+
+>>>>>>> refs/remotes/origin/master
     if (defined($pre_build)) {
 	my $ret = run_command $pre_build;
 	if (!$ret && defined($pre_build_die) &&
@@ -2257,7 +3144,10 @@ sub build {
 	}
     }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     if ($type =~ /^useconfig:(.*)/) {
 	run_command "cp $1 $output_config" or
 	    dodie "could not copy $1 to .config";
@@ -2267,11 +3157,16 @@ sub build {
 
     # old config can ask questions
     if ($type eq "oldconfig") {
+<<<<<<< HEAD
 	$type = "oldnoconfig";
+=======
+	$type = "olddefconfig";
+>>>>>>> refs/remotes/origin/master
 
 	# allow for empty configs
 	run_command "touch $output_config";
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	run_command "mv $output_config $outputdir/config_temp" or
 	    dodie "moving .config";
@@ -2283,6 +3178,8 @@ sub build {
 	run_command "mv $outputdir/config_temp $output_config" or
 	    dodie "moving config_temp";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!$noclean) {
 	    run_command "mv $output_config $outputdir/config_temp" or
 		dodie "moving .config";
@@ -2292,7 +3189,10 @@ sub build {
 	    run_command "mv $outputdir/config_temp $output_config" or
 		dodie "moving config_temp";
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
     } elsif (!$noclean) {
 	unlink "$output_config";
@@ -2303,6 +3203,7 @@ sub build {
     # add something to distinguish this build
     open(OUT, "> $outputdir/localversion") or dodie("Can't make localversion file");
     print OUT "$localversion\n";
+<<<<<<< HEAD
     close(OUT);
 
     if (defined($minconfig)) {
@@ -2330,6 +3231,15 @@ sub build {
     }
 
     if ($type ne "oldnoconfig") {
+=======
+    close(OUT);
+
+    if (defined($minconfig)) {
+	load_force_config($minconfig);
+    }
+
+    if ($type ne "olddefconfig") {
+>>>>>>> refs/remotes/origin/master
 	run_command "$make $type" or
 	    dodie "failed make config";
     }
@@ -2341,6 +3251,12 @@ sub build {
     undef $redirect;
 
     if (defined($post_build)) {
+<<<<<<< HEAD
+=======
+	# Because a post build may change the kernel version
+	# do it now.
+	get_version;
+>>>>>>> refs/remotes/origin/master
 	my $ret = run_command $post_build;
 	if (!$ret && defined($post_build_die) &&
 	    $post_build_die) {
@@ -2358,7 +3274,10 @@ sub build {
     }
 
     $no_reboot = $save_no_reboot;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
     return 1;
 }
@@ -2378,6 +3297,7 @@ sub halt {
 sub success {
     my ($i) = @_;
 
+<<<<<<< HEAD
     $successes++;
 
 <<<<<<< HEAD
@@ -2405,6 +3325,14 @@ sub get_version {
 }
 
 =======
+=======
+    if (defined($post_test)) {
+	run_command $post_test;
+    }
+
+    $successes++;
+
+>>>>>>> refs/remotes/origin/master
     my $name = "";
 
     if (defined($test_name)) {
@@ -2427,7 +3355,10 @@ sub get_version {
     }
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 sub answer_bisect {
     for (;;) {
 	doprint "Pass or fail? [p/f]";
@@ -2452,13 +3383,19 @@ sub child_run_test {
     $die_on_failure = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     run_command $run_test or $failed = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     $redirect = "$testlog";
     run_command $run_test or $failed = 1;
     undef $redirect;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     exit $failed;
 }
 
@@ -2474,6 +3411,10 @@ sub do_run_test {
     my $line;
     my $full_line;
     my $bug = 0;
+<<<<<<< HEAD
+=======
+    my $bug_ignored = 0;
+>>>>>>> refs/remotes/origin/master
 
     wait_for_monitor 1;
 
@@ -2498,7 +3439,15 @@ sub do_run_test {
 	    doprint $line;
 
 	    if ($full_line =~ /call trace:/i) {
+<<<<<<< HEAD
 		$bug = 1;
+=======
+		if ($ignore_errors) {
+		    $bug_ignored = 1;
+		} else {
+		    $bug = 1;
+		}
+>>>>>>> refs/remotes/origin/master
 	    }
 
 	    if ($full_line =~ /Kernel panic -/) {
@@ -2511,6 +3460,13 @@ sub do_run_test {
 	}
     } while (!$child_done && !$bug);
 
+<<<<<<< HEAD
+=======
+    if (!$bug && $bug_ignored) {
+	doprint "WARNING: Call Trace detected but ignored due to IGNORE_ERRORS=1\n";
+    }
+
+>>>>>>> refs/remotes/origin/master
     if ($bug) {
 	my $failure_start = time;
 	my $now;
@@ -2534,7 +3490,10 @@ sub do_run_test {
     $child_exit = $?;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     if (!$bug && $in_bisect) {
 	if (defined($bisect_ret_good)) {
 	    if ($child_exit == $bisect_ret_good) {
@@ -2572,7 +3531,10 @@ sub do_run_test {
 	}
     }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     if ($bug || $child_exit) {
 	return 0 if $in_bisect;
 	fail "test failed" and return 0;
@@ -2600,10 +3562,14 @@ sub run_git_bisect {
 	doprint "$1 [$2]\n";
     } elsif ($output =~ m/^([[:xdigit:]]+) is the first bad commit/) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	$bisect_bad = $1;
 =======
 	$bisect_bad_commit = $1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	$bisect_bad_commit = $1;
+>>>>>>> refs/remotes/origin/master
 	doprint "Found bad commit... $1\n";
 	return 0;
     } else {
@@ -2617,6 +3583,7 @@ sub run_git_bisect {
 sub bisect_reboot {
     doprint "Reboot and sleep $bisect_sleep_time seconds\n";
 <<<<<<< HEAD
+<<<<<<< HEAD
     reboot;
     start_monitor;
     wait_for_monitor $bisect_sleep_time;
@@ -2624,6 +3591,9 @@ sub bisect_reboot {
 =======
     reboot_to_good $bisect_sleep_time;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    reboot_to_good $bisect_sleep_time;
+>>>>>>> refs/remotes/origin/master
 }
 
 # returns 1 on success, 0 on failure, -1 on skip
@@ -2648,6 +3618,7 @@ sub run_bisect_test {
 
 	# Now boot the box
 <<<<<<< HEAD
+<<<<<<< HEAD
 	get_grub_index;
 	get_version;
 	install;
@@ -2657,6 +3628,9 @@ sub run_bisect_test {
 =======
 	start_monitor_and_boot or $failed = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	start_monitor_and_boot or $failed = 1;
+>>>>>>> refs/remotes/origin/master
 
 	if ($type ne "boot") {
 	    if ($failed && $bisect_skip) {
@@ -2696,6 +3670,7 @@ sub run_bisect {
 	$buildtype = "useconfig:$minconfig";
     }
 
+<<<<<<< HEAD
     my $ret = run_bisect_test $type, $buildtype;
 
     if ($bisect_manual) {
@@ -2708,6 +3683,33 @@ sub run_bisect {
 =======
     if ($reverse_bisect && $ret >= 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    # If the user sets bisect_tries to less than 1, then no tries
+    # is a success.
+    my $ret = 1;
+
+    # Still let the user manually decide that though.
+    if ($bisect_tries < 1 && $bisect_manual) {
+	$ret = answer_bisect;
+    }
+
+    for (my $i = 0; $i < $bisect_tries; $i++) {
+	if ($bisect_tries > 1) {
+	    my $t = $i + 1;
+	    doprint("Running bisect trial $t of $bisect_tries:\n");
+	}
+	$ret = run_bisect_test $type, $buildtype;
+
+	if ($bisect_manual) {
+	    $ret = answer_bisect;
+	}
+
+	last if (!$ret);
+    }
+
+    # Are we looking for where it worked, not failed?
+    if ($reverse_bisect && $ret >= 0) {
+>>>>>>> refs/remotes/origin/master
 	$ret = !$ret;
     }
 
@@ -2722,7 +3724,10 @@ sub run_bisect {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 sub update_bisect_replay {
     my $tmp_log = "$tmpdir/ktest_bisect_log";
     run_command "git bisect log > $tmp_log" or
@@ -2730,12 +3735,16 @@ sub update_bisect_replay {
     return $tmp_log;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 sub bisect {
     my ($i) = @_;
 
     my $result;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     die "BISECT_GOOD[$i] not defined\n"	if (!defined($opt{"BISECT_GOOD[$i]"}));
     die "BISECT_BAD[$i] not defined\n"	if (!defined($opt{"BISECT_BAD[$i]"}));
@@ -2748,6 +3757,8 @@ sub bisect {
     my $replay = $opt{"BISECT_REPLAY[$i]"};
     my $start_files = $opt{"BISECT_FILES[$i]"};
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     die "BISECT_GOOD[$i] not defined\n"	if (!defined($bisect_good));
     die "BISECT_BAD[$i] not defined\n"	if (!defined($bisect_bad));
     die "BISECT_TYPE[$i] not defined\n"	if (!defined($bisect_type));
@@ -2758,7 +3769,10 @@ sub bisect {
     my $start = $bisect_start;
     my $replay = $bisect_replay;
     my $start_files = $bisect_files;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
     if (defined($start_files)) {
 	$start_files = " -- " . $start_files;
@@ -2771,11 +3785,15 @@ sub bisect {
     $bad = get_sha1($bad);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     if (defined($opt{"BISECT_REVERSE[$i]"}) &&
 	$opt{"BISECT_REVERSE[$i]"} == 1) {
 =======
     if (defined($bisect_reverse) && $bisect_reverse == 1) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    if (defined($bisect_reverse) && $bisect_reverse == 1) {
+>>>>>>> refs/remotes/origin/master
 	doprint "Performing a reverse bisect (bad is good, good is bad!)\n";
 	$reverse_bisect = 1;
     } else {
@@ -2788,9 +3806,12 @@ sub bisect {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     my $check = $opt{"BISECT_CHECK[$i]"};
     if (defined($check) && $check ne "0") {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     # Check if a bisect was running
     my $bisect_start_file = "$builddir/.git/BISECT_START";
 
@@ -2816,7 +3837,10 @@ sub bisect {
     }
 
     if ($do_check) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	# get current HEAD
 	my $head = get_sha1("HEAD");
@@ -2882,22 +3906,47 @@ sub bisect {
 	dodie "could not reset git bisect";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     doprint "Bad commit was [$bisect_bad]\n";
 =======
     doprint "Bad commit was [$bisect_bad_commit]\n";
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    doprint "Bad commit was [$bisect_bad_commit]\n";
+>>>>>>> refs/remotes/origin/master
 
     success $i;
 }
 
+<<<<<<< HEAD
 my %config_ignore;
 my %config_set;
 
+=======
+# config_ignore holds the configs that were set (or unset) for
+# a good config and we will ignore these configs for the rest
+# of a config bisect. These configs stay as they were.
+my %config_ignore;
+
+# config_set holds what all configs were set as.
+my %config_set;
+
+# config_off holds the set of configs that the bad config had disabled.
+# We need to record them and set them in the .config when running
+# olddefconfig, because olddefconfig keeps the defaults.
+my %config_off;
+
+# config_off_tmp holds a set of configs to turn off for now
+my @config_off_tmp;
+
+# config_list is the set of configs that are being tested
+>>>>>>> refs/remotes/origin/master
 my %config_list;
 my %null_config;
 
 my %dependency;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 sub process_config_ignore {
     my ($config) = @_;
@@ -2905,6 +3954,10 @@ sub process_config_ignore {
 sub assign_configs {
     my ($hash, $config) = @_;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+sub assign_configs {
+    my ($hash, $config) = @_;
+>>>>>>> refs/remotes/origin/master
 
     open (IN, $config)
 	or dodie "Failed to read $config";
@@ -2912,10 +3965,14 @@ sub assign_configs {
     while (<IN>) {
 	if (/^((CONFIG\S*)=.*)/) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    $config_ignore{$2} = $1;
 =======
 	    ${$hash}{$2} = $1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    ${$hash}{$2} = $1;
+>>>>>>> refs/remotes/origin/master
 	}
     }
 
@@ -2923,14 +3980,20 @@ sub assign_configs {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 sub process_config_ignore {
     my ($config) = @_;
 
     assign_configs \%config_ignore, $config;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 sub read_current_config {
     my ($config_ref) = @_;
 
@@ -2983,17 +4046,34 @@ sub create_config {
 	}
     }
 
+<<<<<<< HEAD
+=======
+    # turn off configs to keep off
+    foreach my $config (keys %config_off) {
+	print OUT "# $config is not set\n";
+    }
+
+    # turn off configs that should be off for now
+    foreach my $config (@config_off_tmp) {
+	print OUT "# $config is not set\n";
+    }
+
+>>>>>>> refs/remotes/origin/master
     foreach my $config (keys %config_ignore) {
 	print OUT "$config_ignore{$config}\n";
     }
     close(OUT);
 
+<<<<<<< HEAD
 #    exit;
 <<<<<<< HEAD
     make_oldconfig "";
 =======
     make_oldconfig;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    make_oldconfig;
+>>>>>>> refs/remotes/origin/master
 }
 
 sub compare_configs {
@@ -3058,10 +4138,14 @@ sub run_config_bisect {
 
     doprint "***** RUN TEST ***\n";
 <<<<<<< HEAD
+<<<<<<< HEAD
     my $type = $opt{"CONFIG_BISECT_TYPE[$iteration]"};
 =======
     my $type = $config_bisect_type;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    my $type = $config_bisect_type;
+>>>>>>> refs/remotes/origin/master
     my $ret;
     my %current_config;
 
@@ -3073,6 +4157,16 @@ sub run_config_bisect {
     do {
 	my @tophalf = @start_list[0 .. $half];
 
+<<<<<<< HEAD
+=======
+	# keep the bottom half off
+	if ($half < $#start_list) {
+	    @config_off_tmp = @start_list[$half + 1 .. $#start_list];
+	} else {
+	    @config_off_tmp = ();
+	}
+
+>>>>>>> refs/remotes/origin/master
 	create_config @tophalf;
 	read_current_config \%current_config;
 
@@ -3089,7 +4183,15 @@ sub run_config_bisect {
 	if (!$found) {
 	    # try the other half
 	    doprint "Top half produced no set configs, trying bottom half\n";
+<<<<<<< HEAD
 	    @tophalf = @start_list[$half + 1 .. $#start_list];
+=======
+
+	    # keep the top half off
+	    @config_off_tmp = @tophalf;
+	    @tophalf = @start_list[$half + 1 .. $#start_list];
+
+>>>>>>> refs/remotes/origin/master
 	    create_config @tophalf;
 	    read_current_config \%current_config;
 	    foreach my $config (@tophalf) {
@@ -3166,11 +4268,14 @@ sub config_bisect {
     my ($i) = @_;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     my $start_config = $opt{"CONFIG_BISECT[$i]"};
 
     my $tmpconfig = "$tmpdir/use_config";
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     my $start_config = $config_bisect;
 
     my $tmpconfig = "$tmpdir/use_config";
@@ -3179,7 +4284,10 @@ sub config_bisect {
 	process_config_ignore $config_bisect_good;
     }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     # Make the file with the bad config and the min config
     if (defined($minconfig)) {
 	# read the min config for things to ignore
@@ -3189,6 +4297,7 @@ sub config_bisect {
 	unlink $tmpconfig;
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     # Add other configs
     if (defined($addconfig)) {
@@ -3203,6 +4312,10 @@ sub config_bisect {
     if (-f $tmpconfig) {
 	load_force_config($tmpconfig);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    if (-f $tmpconfig) {
+	load_force_config($tmpconfig);
+>>>>>>> refs/remotes/origin/master
 	process_config_ignore $tmpconfig;
     }
 
@@ -3214,10 +4327,14 @@ sub config_bisect {
     my %config_check;
     open (IN, $output_config)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	or dodie "faied to open $output_config";
 =======
 	or dodie "failed to open $output_config";
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	or dodie "failed to open $output_config";
+>>>>>>> refs/remotes/origin/master
 
     while (<IN>) {
 	if (/^((CONFIG\S*)=.*)/) {
@@ -3227,12 +4344,17 @@ sub config_bisect {
     close(IN);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     # Now run oldconfig with the minconfig (and addconfigs)
     make_oldconfig $defconfig;
 =======
     # Now run oldconfig with the minconfig
     make_oldconfig;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    # Now run oldconfig with the minconfig
+    make_oldconfig;
+>>>>>>> refs/remotes/origin/master
 
     # check to see what we lost (or gained)
     open (IN, $output_config)
@@ -3255,6 +4377,13 @@ sub config_bisect {
 		$added_configs{$2} = $1;
 		$config_list{$2} = $1;
 	    }
+<<<<<<< HEAD
+=======
+	} elsif (/^# ((CONFIG\S*).*)/) {
+	    # Keep these configs disabled
+	    $config_set{$2} = $1;
+	    $config_off{$2} = $1;
+>>>>>>> refs/remotes/origin/master
 	}
     }
     close(IN);
@@ -3277,6 +4406,11 @@ sub config_bisect {
     my %config_test;
     my $once = 0;
 
+<<<<<<< HEAD
+=======
+    @config_off_tmp = ();
+
+>>>>>>> refs/remotes/origin/master
     # Sometimes kconfig does weird things. We must make sure
     # that the config we autocreate has everything we need
     # to test, otherwise we may miss testing configs, or
@@ -3295,6 +4429,21 @@ sub config_bisect {
 	}
     }
     my $ret;
+<<<<<<< HEAD
+=======
+
+    if (defined($config_bisect_check) && $config_bisect_check) {
+	doprint " Checking to make sure bad config with min config fails\n";
+	create_config keys %config_list;
+	$ret = run_config_bisect_test $config_bisect_type;
+	if ($ret) {
+	    doprint " FAILED! Bad config with min config boots fine\n";
+	    return -1;
+	}
+	doprint " Bad config with min config fails as expected\n";
+    }
+
+>>>>>>> refs/remotes/origin/master
     do {
 	$ret = run_config_bisect;
     } while (!$ret);
@@ -3307,6 +4456,7 @@ sub config_bisect {
 sub patchcheck_reboot {
     doprint "Reboot and sleep $patchcheck_sleep_time seconds\n";
 <<<<<<< HEAD
+<<<<<<< HEAD
     reboot;
     start_monitor;
     wait_for_monitor $patchcheck_sleep_time;
@@ -3314,12 +4464,16 @@ sub patchcheck_reboot {
 =======
     reboot_to_good $patchcheck_sleep_time;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    reboot_to_good $patchcheck_sleep_time;
+>>>>>>> refs/remotes/origin/master
 }
 
 sub patchcheck {
     my ($i) = @_;
 
     die "PATCHCHECK_START[$i] not defined\n"
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!defined($opt{"PATCHCHECK_START[$i]"}));
     die "PATCHCHECK_TYPE[$i] not defined\n"
@@ -3331,6 +4485,8 @@ sub patchcheck {
     if (defined($opt{"PATCHCHECK_END[$i]"})) {
 	$end = $opt{"PATCHCHECK_END[$i]"};
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!defined($patchcheck_start));
     die "PATCHCHECK_TYPE[$i] not defined\n"
 	if (!defined($patchcheck_type));
@@ -3340,7 +4496,10 @@ sub patchcheck {
     my $end = "HEAD";
     if (defined($patchcheck_end)) {
 	$end = $patchcheck_end;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     }
 
     # Get the true sha1's since we can use things like HEAD~3
@@ -3348,10 +4507,14 @@ sub patchcheck {
     $end = get_sha1($end);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     my $type = $opt{"PATCHCHECK_TYPE[$i]"};
 =======
     my $type = $patchcheck_type;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    my $type = $patchcheck_type;
+>>>>>>> refs/remotes/origin/master
 
     # Can't have a test without having a test to run
     if ($type eq "test" && !defined($run_test)) {
@@ -3379,7 +4542,10 @@ sub patchcheck {
 
     my $save_clean = $noclean;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     my %ignored_warnings;
 
     if (defined($ignore_warnings)) {
@@ -3387,7 +4553,10 @@ sub patchcheck {
 	    $ignored_warnings{$sha1} = 1;
 	}
     }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
     $in_patchcheck = 1;
     foreach my $item (@list) {
@@ -3415,6 +4584,7 @@ sub patchcheck {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	check_buildlog $sha1 or return 0;
 
 	next if ($type eq "build");
@@ -3433,12 +4603,24 @@ sub patchcheck {
 	    check_buildlog $sha1 or return 0;
 	}
 
+=======
+	# No need to do per patch checking if warnings file exists
+	if (!defined($warnings_file) && !defined($ignored_warnings{$sha1})) {
+	    check_patch_buildlog $sha1 or return 0;
+	}
+
+	check_buildlog or return 0;
+
+>>>>>>> refs/remotes/origin/master
 	next if ($type eq "build");
 
 	my $failed = 0;
 
 	start_monitor_and_boot or $failed = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!$failed && $type ne "boot"){
 	    do_run_test or $failed = 1;
@@ -3455,6 +4637,7 @@ sub patchcheck {
     return 1;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 $#ARGV < 1 or die "ktest.pl version: $VERSION\n   usage: ktest.pl config-file\n";
 
@@ -3490,6 +4673,8 @@ if (! -f $ktest_config) {
 # The config options below it will override the defaults
 TEST_START
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 my %depends;
 my %depcount;
 my $iflevel = 0;
@@ -3763,7 +4948,11 @@ sub test_this_config {
     }
 
     # Remove this config from the list of configs
+<<<<<<< HEAD
     # do a make oldnoconfig and then read the resulting
+=======
+    # do a make olddefconfig and then read the resulting
+>>>>>>> refs/remotes/origin/master
     # .config to make sure it is missing the config that
     # we had before
     my %configs = %min_configs;
@@ -3785,6 +4974,15 @@ sub test_this_config {
 sub make_min_config {
     my ($i) = @_;
 
+<<<<<<< HEAD
+=======
+    my $type = $minconfig_type;
+    if ($type ne "boot" && $type ne "test") {
+	fail "Invalid MIN_CONFIG_TYPE '$minconfig_type'\n" .
+	    " make_min_config works only with 'boot' and 'test'\n" and return;
+    }
+
+>>>>>>> refs/remotes/origin/master
     if (!defined($output_minconfig)) {
 	fail "OUTPUT_MIN_CONFIG not defined" and return;
     }
@@ -3794,8 +4992,20 @@ sub make_min_config {
     # that instead.
     if (-f $output_minconfig && !$start_minconfig_defined) {
 	print "$output_minconfig exists\n";
+<<<<<<< HEAD
 	if (read_yn " Use it as minconfig?") {
 	    $start_minconfig = $output_minconfig;
+=======
+	if (!defined($use_output_minconfig)) {
+	    if (read_yn " Use it as minconfig?") {
+		$start_minconfig = $output_minconfig;
+	    }
+	} elsif ($use_output_minconfig > 0) {
+	    doprint "Using $output_minconfig as MIN_CONFIG\n";
+	    $start_minconfig = $output_minconfig;
+	} else {
+	    doprint "Set to still use MIN_CONFIG as starting point\n";
+>>>>>>> refs/remotes/origin/master
 	}
     }
 
@@ -3944,6 +5154,14 @@ sub make_min_config {
 	build "oldconfig" or $failed = 1;
 	if (!$failed) {
 		start_monitor_and_boot or $failed = 1;
+<<<<<<< HEAD
+=======
+
+		if ($type eq "test" && !$failed) {
+		    do_run_test or $failed = 1;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		end_monitor;
 	}
 
@@ -4008,6 +5226,42 @@ sub make_min_config {
     return 1;
 }
 
+<<<<<<< HEAD
+=======
+sub make_warnings_file {
+    my ($i) = @_;
+
+    if (!defined($warnings_file)) {
+	dodie "Must define WARNINGS_FILE for make_warnings_file test";
+    }
+
+    if ($build_type eq "nobuild") {
+	dodie "BUILD_TYPE can not be 'nobuild' for make_warnings_file test";
+    }
+
+    build $build_type or dodie "Failed to build";
+
+    open(OUT, ">$warnings_file") or dodie "Can't create $warnings_file";
+
+    open(IN, $buildlog) or dodie "Can't open $buildlog";
+    while (<IN>) {
+
+	# Some compilers use UTF-8 extended for quotes
+	# for distcc heterogeneous systems, this causes issues
+	s/$utf8_quote/'/g;
+
+	if (/$check_build_re/) {
+	    print OUT;
+	}
+    }
+    close(IN);
+
+    close(OUT);
+
+    success $i;
+}
+
+>>>>>>> refs/remotes/origin/master
 $#ARGV < 1 or die "ktest.pl version: $VERSION\n   usage: ktest.pl config-file\n";
 
 if ($#ARGV == 0) {
@@ -4044,7 +5298,10 @@ THIS_DIR := $variable{"PWD"}
 # The config options below it will override the defaults
 TEST_START
 TEST_TYPE = $default{"TEST_TYPE"}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 DEFAULTS
 EOF
@@ -4054,12 +5311,19 @@ EOF
 read_config $ktest_config;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 if (defined($opt{"LOG_FILE"})) {
     $opt{"LOG_FILE"} = eval_option($opt{"LOG_FILE"}, -1);
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+if (defined($opt{"LOG_FILE"})) {
+    $opt{"LOG_FILE"} = eval_option("LOG_FILE", $opt{"LOG_FILE"}, -1);
+}
+
+>>>>>>> refs/remotes/origin/master
 # Append any configs entered in manually to the config file.
 my @new_configs = keys %entered_configs;
 if ($#new_configs >= 0) {
@@ -4068,10 +5332,14 @@ if ($#new_configs >= 0) {
     foreach my $config (@new_configs) {
 	print OUT "$config = $entered_configs{$config}\n";
 <<<<<<< HEAD
+<<<<<<< HEAD
 	$opt{$config} = $entered_configs{$config};
 =======
 	$opt{$config} = process_variables($entered_configs{$config});
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	$opt{$config} = process_variables($entered_configs{$config});
+>>>>>>> refs/remotes/origin/master
     }
 }
 
@@ -4133,6 +5401,7 @@ sub __set_test_option {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 sub eval_option {
     my ($option, $i) = @_;
 
@@ -4175,12 +5444,15 @@ sub eval_option {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 sub set_test_option {
     my ($name, $i) = @_;
 
     my $option = __set_test_option($name, $i);
     return $option if (!defined($option));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     my $prev = "";
 
@@ -4203,17 +5475,24 @@ sub set_test_option {
 =======
     return eval_option($option, $i);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    return eval_option($name, $option, $i);
+>>>>>>> refs/remotes/origin/master
 }
 
 # First we need to do is the builds
 for (my $i = 1; $i <= $opt{"NUM_TESTS"}; $i++) {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     # Do not reboot on failing test options
     $no_reboot = 1;
     $reboot_success = 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
     $iteration = $i;
 
@@ -4269,6 +5548,28 @@ for (my $i = 1; $i <= $opt{"NUM_TESTS"}; $i++) {
 	mkpath($tmpdir) or
 	    die "can't create $tmpdir";
 =======
+=======
+    $have_version = 0;
+
+    $iteration = $i;
+
+    undef %force_config;
+
+    my $makecmd = set_test_option("MAKE_CMD", $i);
+
+    $outputdir = set_test_option("OUTPUT_DIR", $i);
+    $builddir = set_test_option("BUILD_DIR", $i);
+
+    chdir $builddir || die "can't change directory to $builddir";
+
+    if (!-d $outputdir) {
+	mkpath($outputdir) or
+	    die "can't create $outputdir";
+    }
+
+    $make = "$makecmd O=$outputdir";
+
+>>>>>>> refs/remotes/origin/master
     # Load all the options into their mapped variable names
     foreach my $opt (keys %option_map) {
 	${$option_map{$opt}} = set_test_option($opt, $i);
@@ -4276,11 +5577,27 @@ for (my $i = 1; $i <= $opt{"NUM_TESTS"}; $i++) {
 
     $start_minconfig_defined = 1;
 
+<<<<<<< HEAD
+=======
+    # The first test may override the PRE_KTEST option
+    if (defined($pre_ktest) && $i == 1) {
+	doprint "\n";
+	run_command $pre_ktest;
+    }
+
+    # Any test can override the POST_KTEST option
+    # The last test takes precedence.
+    if (defined($post_ktest)) {
+	$final_post_ktest = $post_ktest;
+    }
+
+>>>>>>> refs/remotes/origin/master
     if (!defined($start_minconfig)) {
 	$start_minconfig_defined = 0;
 	$start_minconfig = $minconfig;
     }
 
+<<<<<<< HEAD
     chdir $builddir || die "can't change directory to $builddir";
 
     foreach my $dir ($tmpdir, $outputdir) {
@@ -4289,11 +5606,17 @@ for (my $i = 1; $i <= $opt{"NUM_TESTS"}; $i++) {
 		die "can't create $dir";
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    if (!-d $tmpdir) {
+	mkpath($tmpdir) or
+	    die "can't create $tmpdir";
+>>>>>>> refs/remotes/origin/master
     }
 
     $ENV{"SSH_USER"} = $ssh_user;
     $ENV{"MACHINE"} = $machine;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     $target = "$ssh_user\@$machine";
 
@@ -4312,16 +5635,33 @@ for (my $i = 1; $i <= $opt{"NUM_TESTS"}; $i++) {
     } elsif (!defined($reboot_script)) {
 	dodie "REBOOT_SCRIPT not defined"
 =======
+=======
+    $buildlog = "$tmpdir/buildlog-$machine";
+    $testlog = "$tmpdir/testlog-$machine";
+    $dmesg = "$tmpdir/dmesg-$machine";
+    $output_config = "$outputdir/.config";
+
+>>>>>>> refs/remotes/origin/master
     if (!$buildonly) {
 	$target = "$ssh_user\@$machine";
 	if ($reboot_type eq "grub") {
 	    dodie "GRUB_MENU not defined" if (!defined($grub_menu));
+<<<<<<< HEAD
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} elsif ($reboot_type eq "grub2") {
+	    dodie "GRUB_MENU not defined" if (!defined($grub_menu));
+	    dodie "GRUB_FILE not defined" if (!defined($grub_file));
+	} elsif ($reboot_type eq "syslinux") {
+	    dodie "SYSLINUX_LABEL not defined" if (!defined($syslinux_label));
+	}
+>>>>>>> refs/remotes/origin/master
     }
 
     my $run_type = $build_type;
     if ($test_type eq "patchcheck") {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	$run_type = $opt{"PATCHCHECK_TYPE[$i]"};
     } elsif ($test_type eq "bisect") {
@@ -4329,16 +5669,25 @@ for (my $i = 1; $i <= $opt{"NUM_TESTS"}; $i++) {
     } elsif ($test_type eq "config_bisect") {
 	$run_type = $opt{"CONFIG_BISECT_TYPE[$i]"};
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	$run_type = $patchcheck_type;
     } elsif ($test_type eq "bisect") {
 	$run_type = $bisect_type;
     } elsif ($test_type eq "config_bisect") {
 	$run_type = $config_bisect_type;
+<<<<<<< HEAD
     }
 
     if ($test_type eq "make_min_config") {
 	$run_type = "";
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    } elsif ($test_type eq "make_min_config") {
+	$run_type = "";
+    } elsif ($test_type eq "make_warnings_file") {
+	$run_type = "";
+>>>>>>> refs/remotes/origin/master
     }
 
     # mistake in config file?
@@ -4346,6 +5695,7 @@ for (my $i = 1; $i <= $opt{"NUM_TESTS"}; $i++) {
 	$run_type = "ERROR";
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     doprint "\n\n";
     doprint "RUNNING TEST $i of $opt{NUM_TESTS} with option $test_type $run_type\n\n";
@@ -4359,12 +5709,21 @@ for (my $i = 1; $i <= $opt{"NUM_TESTS"}; $i++) {
     } elsif (defined($addconfig)) {
 	run_command "cat $addconfig $minconfig > $tmpdir/add_config" or
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     my $installme = "";
     $installme = " no_install" if ($no_install);
 
     doprint "\n\n";
     doprint "RUNNING TEST $i of $opt{NUM_TESTS} with option $test_type $run_type$installme\n\n";
 
+<<<<<<< HEAD
+=======
+    if (defined($pre_test)) {
+	run_command $pre_test;
+    }
+
+>>>>>>> refs/remotes/origin/master
     unlink $dmesg;
     unlink $buildlog;
     unlink $testlog;
@@ -4375,22 +5734,31 @@ for (my $i = 1; $i <= $opt{"NUM_TESTS"}; $i++) {
 	    $min = "";
 	}
 	run_command "cat $addconfig $min > $tmpdir/add_config" or
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	    dodie "Failed to create temp config";
 	$minconfig = "$tmpdir/add_config";
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     my $checkout = $opt{"CHECKOUT[$i]"};
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     if (defined($checkout)) {
 	run_command "git checkout $checkout" or
 	    die "failed to checkout $checkout";
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     $no_reboot = 0;
 
     # A test may opt to not reboot the box
@@ -4398,7 +5766,10 @@ for (my $i = 1; $i <= $opt{"NUM_TESTS"}; $i++) {
 	$reboot_success = 1;
     }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     if ($test_type eq "bisect") {
 	bisect $i;
 	next;
@@ -4409,15 +5780,26 @@ for (my $i = 1; $i <= $opt{"NUM_TESTS"}; $i++) {
 	patchcheck $i;
 	next;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     } elsif ($test_type eq "make_min_config") {
 	make_min_config $i;
 	next;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    } elsif ($test_type eq "make_min_config") {
+	make_min_config $i;
+	next;
+    } elsif ($test_type eq "make_warnings_file") {
+	$no_reboot = 1;
+	make_warnings_file $i;
+	next;
+>>>>>>> refs/remotes/origin/master
     }
 
     if ($build_type ne "nobuild") {
 	build $build_type or next;
+<<<<<<< HEAD
     }
 
 <<<<<<< HEAD
@@ -4430,6 +5812,11 @@ for (my $i = 1; $i <= $opt{"NUM_TESTS"}; $i++) {
 	start_monitor;
 	monitor or $failed = 1;;
 =======
+=======
+	check_buildlog or next;
+    }
+
+>>>>>>> refs/remotes/origin/master
     if ($test_type eq "install") {
 	get_version;
 	install;
@@ -4440,7 +5827,10 @@ for (my $i = 1; $i <= $opt{"NUM_TESTS"}; $i++) {
     if ($test_type ne "build") {
 	my $failed = 0;
 	start_monitor_and_boot or $failed = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!$failed && $test_type ne "boot" && defined($run_test)) {
 	    do_run_test or $failed = 1;
@@ -4452,6 +5842,7 @@ for (my $i = 1; $i <= $opt{"NUM_TESTS"}; $i++) {
     success $i;
 }
 
+<<<<<<< HEAD
 if ($opt{"POWEROFF_ON_SUCCESS"}) {
     halt;
 <<<<<<< HEAD
@@ -4460,6 +5851,14 @@ if ($opt{"POWEROFF_ON_SUCCESS"}) {
 }
 
 =======
+=======
+if (defined($final_post_ktest)) {
+    run_command $final_post_ktest;
+}
+
+if ($opt{"POWEROFF_ON_SUCCESS"}) {
+    halt;
+>>>>>>> refs/remotes/origin/master
 } elsif ($opt{"REBOOT_ON_SUCCESS"} && !do_not_reboot && $reboot_success) {
     reboot_to_good;
 } elsif (defined($switch_to_good)) {
@@ -4468,7 +5867,10 @@ if ($opt{"POWEROFF_ON_SUCCESS"}) {
 }
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 doprint "\n    $successes of $opt{NUM_TESTS} tests were successful\n\n";
 
 exit 0;

@@ -22,9 +22,14 @@
 #include <asm/pgalloc.h>
 #include <asm/sections.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <arch/sim_def.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/vdso.h>
+#include <arch/sim.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Notify a running simulator, if any, that an exec just occurred. */
 static void sim_notify_exec(const char *binary_name)
@@ -39,6 +44,7 @@ static void sim_notify_exec(const char *binary_name)
 	} while (c);
 }
 
+<<<<<<< HEAD
 static int notify_exec(void)
 {
 	int retval = 0;  /* failure */
@@ -61,6 +67,59 @@ static int notify_exec(void)
 		}
 	}
 	return retval;
+=======
+static int notify_exec(struct mm_struct *mm)
+{
+	char *buf, *path;
+	struct vm_area_struct *vma;
+
+	if (!sim_is_simulator())
+		return 1;
+
+	if (mm->exe_file == NULL)
+		return 0;
+
+	for (vma = current->mm->mmap; ; vma = vma->vm_next) {
+		if (vma == NULL)
+			return 0;
+		if (vma->vm_file == mm->exe_file)
+			break;
+	}
+
+	buf = (char *) __get_free_page(GFP_KERNEL);
+	if (buf == NULL)
+		return 0;
+
+	path = d_path(&mm->exe_file->f_path, buf, PAGE_SIZE);
+	if (IS_ERR(path)) {
+		free_page((unsigned long)buf);
+		return 0;
+	}
+
+	/*
+	 * Notify simulator of an ET_DYN object so we know the load address.
+	 * The somewhat cryptic overuse of SIM_CONTROL_DLOPEN allows us
+	 * to be backward-compatible with older simulator releases.
+	 */
+	if (vma->vm_start == (ELF_ET_DYN_BASE & PAGE_MASK)) {
+		char buf[64];
+		int i;
+
+		snprintf(buf, sizeof(buf), "0x%lx:@", vma->vm_start);
+		for (i = 0; ; ++i) {
+			char c = buf[i];
+			__insn_mtspr(SPR_SIM_CONTROL,
+				     (SIM_CONTROL_DLOPEN
+				      | (c << _SIM_CONTROL_OPERATOR_BITS)));
+			if (c == '\0')
+				break;
+		}
+	}
+
+	sim_notify_exec(path);
+	free_page((unsigned long)buf);
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Notify a running simulator, if any, that we loaded an interpreter. */
@@ -76,6 +135,7 @@ static void sim_notify_interp(unsigned long load_addr)
 }
 
 
+<<<<<<< HEAD
 /* Kernel address of page used to map read-only kernel data into userspace. */
 static void *vdso_page;
 
@@ -102,18 +162,28 @@ const char *arch_vma_name(struct vm_area_struct *vma)
 	return NULL;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 int arch_setup_additional_pages(struct linux_binprm *bprm,
 				int executable_stack)
 {
 	struct mm_struct *mm = current->mm;
+<<<<<<< HEAD
 	unsigned long vdso_base;
 	int retval = 0;
 
+=======
+	int retval = 0;
+
+	down_write(&mm->mmap_sem);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Notify the simulator that an exec just occurred.
 	 * If we can't find the filename of the mapping, just use
 	 * whatever was passed as the linux_binprm filename.
 	 */
+<<<<<<< HEAD
 	if (!notify_exec())
 		sim_notify_exec(bprm->filename);
 
@@ -140,6 +210,12 @@ int arch_setup_additional_pages(struct linux_binprm *bprm,
 					 VM_MAYREAD|VM_MAYWRITE|VM_MAYEXEC,
 >>>>>>> refs/remotes/origin/cm-10.0
 					 vdso_pages);
+=======
+	if (!notify_exec(mm))
+		sim_notify_exec(bprm->filename);
+
+	retval = setup_vdso_pages();
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __tilegx__
 	/*
@@ -151,7 +227,10 @@ int arch_setup_additional_pages(struct linux_binprm *bprm,
 	if (!retval) {
 		unsigned long addr = MEM_USER_INTRPT;
 		addr = mmap_region(NULL, addr, INTRPT_SIZE,
+<<<<<<< HEAD
 				   MAP_FIXED|MAP_ANONYMOUS|MAP_PRIVATE,
+=======
+>>>>>>> refs/remotes/origin/master
 				   VM_READ|VM_EXEC|
 				   VM_MAYREAD|VM_MAYWRITE|VM_MAYEXEC, 0);
 		if (addr > (unsigned long) -PAGE_SIZE)

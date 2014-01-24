@@ -22,6 +22,7 @@
  */
 
 /* Linkage, sets prot link and updates hdrlen in pub */
+<<<<<<< HEAD
 extern int brcmf_proto_attach(struct brcmf_pub *drvr);
 
 /* Unlink, frees allocated protocol memory (including brcmf_proto) */
@@ -34,10 +35,20 @@ extern int brcmf_proto_init(struct brcmf_pub *drvr);
 
 /* Stop protocol: sync w/dongle state. */
 extern void brcmf_proto_stop(struct brcmf_pub *drvr);
+=======
+int brcmf_proto_attach(struct brcmf_pub *drvr);
+
+/* Unlink, frees allocated protocol memory (including brcmf_proto) */
+void brcmf_proto_detach(struct brcmf_pub *drvr);
+
+/* Stop protocol: sync w/dongle state. */
+void brcmf_proto_stop(struct brcmf_pub *drvr);
+>>>>>>> refs/remotes/origin/master
 
 /* Add any protocol-specific data header.
  * Caller must reserve prot_hdrlen prepend space.
  */
+<<<<<<< HEAD
 extern void brcmf_proto_hdrpush(struct brcmf_pub *, int ifidx,
 				struct sk_buff *txp);
 
@@ -49,5 +60,12 @@ extern int brcmf_c_preinit_dcmds(struct brcmf_pub *drvr);
 
 extern int brcmf_proto_cdc_set_dcmd(struct brcmf_pub *drvr, int ifidx,
 				     uint cmd, void *buf, uint len);
+=======
+void brcmf_proto_hdrpush(struct brcmf_pub *, int ifidx, u8 offset,
+			 struct sk_buff *txp);
+
+/* Sets dongle media info (drv_version, mac address). */
+int brcmf_c_preinit_dcmds(struct brcmf_if *ifp);
+>>>>>>> refs/remotes/origin/master
 
 #endif				/* _BRCMF_PROTO_H_ */

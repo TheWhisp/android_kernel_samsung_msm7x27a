@@ -53,9 +53,12 @@ struct acpi_prt_entry {
 	u32			index;		/* GSI, or link _CRS index */
 };
 
+<<<<<<< HEAD
 static LIST_HEAD(acpi_prt_list);
 static DEFINE_SPINLOCK(acpi_prt_lock);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline char pin_name(int pin)
 {
 	return 'A' + pin - 1;
@@ -65,6 +68,7 @@ static inline char pin_name(int pin)
                          PCI IRQ Routing Table (PRT) Support
    -------------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static struct acpi_prt_entry *acpi_pci_irq_find_prt_entry(struct pci_dev *dev,
 							  int pin)
 {
@@ -87,6 +91,8 @@ static struct acpi_prt_entry *acpi_pci_irq_find_prt_entry(struct pci_dev *dev,
 	return NULL;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* http://bugzilla.kernel.org/show_bug.cgi?id=4773 */
 static const struct dmi_system_id medion_md9580[] = {
 	{
@@ -184,11 +190,27 @@ static void do_prt_fixups(struct acpi_prt_entry *entry,
 	}
 }
 
+<<<<<<< HEAD
 static int acpi_pci_irq_add_entry(acpi_handle handle, struct pci_bus *bus,
 				  struct acpi_pci_routing_table *prt)
 {
 	struct acpi_prt_entry *entry;
 
+=======
+static int acpi_pci_irq_check_entry(acpi_handle handle, struct pci_dev *dev,
+				  int pin, struct acpi_pci_routing_table *prt,
+				  struct acpi_prt_entry **entry_ptr)
+{
+	int segment = pci_domain_nr(dev->bus);
+	int bus = dev->bus->number;
+	int device = PCI_SLOT(dev->devfn);
+	struct acpi_prt_entry *entry;
+
+	if (((prt->address >> 16) & 0xffff) != device ||
+	    prt->pin + 1 != pin)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	entry = kzalloc(sizeof(struct acpi_prt_entry), GFP_KERNEL);
 	if (!entry)
 		return -ENOMEM;
@@ -198,8 +220,13 @@ static int acpi_pci_irq_add_entry(acpi_handle handle, struct pci_bus *bus,
 	 * 1=INTA, 2=INTB.  We use the PCI encoding throughout, so convert
 	 * it here.
 	 */
+<<<<<<< HEAD
 	entry->id.segment = pci_domain_nr(bus);
 	entry->id.bus = bus->number;
+=======
+	entry->id.segment = segment;
+	entry->id.bus = bus;
+>>>>>>> refs/remotes/origin/master
 	entry->id.device = (prt->address >> 16) & 0xFFFF;
 	entry->pin = prt->pin + 1;
 
@@ -237,18 +264,28 @@ static int acpi_pci_irq_add_entry(acpi_handle handle, struct pci_bus *bus,
 			      entry->id.device, pin_name(entry->pin),
 			      prt->source, entry->index));
 
+<<<<<<< HEAD
 	spin_lock(&acpi_prt_lock);
 	list_add_tail(&entry->list, &acpi_prt_list);
 	spin_unlock(&acpi_prt_lock);
+=======
+	*entry_ptr = entry;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 int acpi_pci_irq_add_prt(acpi_handle handle, struct pci_bus *bus)
+=======
+static int acpi_pci_irq_find_prt_entry(struct pci_dev *dev,
+			  int pin, struct acpi_prt_entry **entry_ptr)
+>>>>>>> refs/remotes/origin/master
 {
 	acpi_status status;
 	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
 	struct acpi_pci_routing_table *entry;
+<<<<<<< HEAD
 
 	/* 'handle' is the _PRT's parent (root bridge or PCI-PCI bridge) */
 	status = acpi_get_name(handle, ACPI_FULL_PATHNAME, &buffer);
@@ -267,13 +304,32 @@ int acpi_pci_irq_add_prt(acpi_handle handle, struct pci_bus *bus)
 	if (ACPI_FAILURE(status)) {
 		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _PRT [%s]",
 				acpi_format_exception(status)));
+=======
+	acpi_handle handle = NULL;
+
+	if (dev->bus->bridge)
+		handle = ACPI_HANDLE(dev->bus->bridge);
+
+	if (!handle)
+		return -ENODEV;
+
+	/* 'handle' is the _PRT's parent (root bridge or PCI-PCI bridge) */
+	status = acpi_get_irq_routing_table(handle, &buffer);
+	if (ACPI_FAILURE(status)) {
+>>>>>>> refs/remotes/origin/master
 		kfree(buffer.pointer);
 		return -ENODEV;
 	}
 
 	entry = buffer.pointer;
 	while (entry && (entry->length > 0)) {
+<<<<<<< HEAD
 		acpi_pci_irq_add_entry(handle, bus, entry);
+=======
+		if (!acpi_pci_irq_check_entry(handle, dev, pin,
+						 entry, entry_ptr))
+			break;
+>>>>>>> refs/remotes/origin/master
 		entry = (struct acpi_pci_routing_table *)
 		    ((unsigned long)entry + entry->length);
 	}
@@ -282,6 +338,7 @@ int acpi_pci_irq_add_prt(acpi_handle handle, struct pci_bus *bus)
 	return 0;
 }
 
+<<<<<<< HEAD
 void acpi_pci_irq_del_prt(struct pci_bus *bus)
 {
 	struct acpi_prt_entry *entry, *tmp;
@@ -305,6 +362,11 @@ void acpi_pci_irq_del_prt(struct pci_bus *bus)
    -------------------------------------------------------------------------- */
 <<<<<<< HEAD
 =======
+=======
+/* --------------------------------------------------------------------------
+                          PCI Interrupt Routing Support
+   -------------------------------------------------------------------------- */
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_IO_APIC
 extern int noioapicquirk;
 extern int noioapicreroute;
@@ -360,6 +422,7 @@ static int acpi_reroute_boot_interrupt(struct pci_dev *dev,
 }
 #endif /* CONFIG_X86_IO_APIC */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static struct acpi_prt_entry *acpi_pci_irq_lookup(struct pci_dev *dev, int pin)
 {
@@ -375,12 +438,30 @@ static struct acpi_prt_entry *acpi_pci_irq_lookup(struct pci_dev *dev, int pin)
 		acpi_reroute_boot_interrupt(dev, entry);
 #endif /* CONFIG_X86_IO_APIC */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct acpi_prt_entry *acpi_pci_irq_lookup(struct pci_dev *dev, int pin)
+{
+	struct acpi_prt_entry *entry = NULL;
+	struct pci_dev *bridge;
+	u8 bridge_pin, orig_pin = pin;
+	int ret;
+
+	ret = acpi_pci_irq_find_prt_entry(dev, pin, &entry);
+	if (!ret && entry) {
+#ifdef CONFIG_X86_IO_APIC
+		acpi_reroute_boot_interrupt(dev, entry);
+#endif /* CONFIG_X86_IO_APIC */
+>>>>>>> refs/remotes/origin/master
 		ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Found %s[%c] _PRT entry\n",
 				  pci_name(dev), pin_name(pin)));
 		return entry;
 	}
 
+<<<<<<< HEAD
 	/* 
+=======
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * Attempt to derive an IRQ for this device from a parent bridge's
 	 * PCI interrupt routing entry (eg. yenta bridge and add-in card bridge).
 	 */
@@ -400,8 +481,13 @@ static struct acpi_prt_entry *acpi_pci_irq_lookup(struct pci_dev *dev, int pin)
 			pin = bridge_pin;
 		}
 
+<<<<<<< HEAD
 		entry = acpi_pci_irq_find_prt_entry(bridge, pin);
 		if (entry) {
+=======
+		ret = acpi_pci_irq_find_prt_entry(bridge, pin, &entry);
+		if (!ret && entry) {
+>>>>>>> refs/remotes/origin/master
 			ACPI_DEBUG_PRINT((ACPI_DB_INFO,
 					 "Derived GSI for %s INT %c from %s\n",
 					 pci_name(dev), pin_name(orig_pin),
@@ -465,6 +551,7 @@ int acpi_pci_irq_enable(struct pci_dev *dev)
 	 */
 	if (gsi < 0) {
 		u32 dev_gsi;
+<<<<<<< HEAD
 		dev_warn(&dev->dev, "PCI INT %c: no GSI", pin_name(pin));
 		/* Interrupt Line values above 0xF are forbidden */
 		if (dev->irq > 0 && (dev->irq <= 0xF) &&
@@ -478,12 +565,32 @@ int acpi_pci_irq_enable(struct pci_dev *dev)
 			printk("\n");
 			return 0;
 		}
+=======
+		/* Interrupt Line values above 0xF are forbidden */
+		if (dev->irq > 0 && (dev->irq <= 0xF) &&
+		    (acpi_isa_irq_to_gsi(dev->irq, &dev_gsi) == 0)) {
+			dev_warn(&dev->dev, "PCI INT %c: no GSI - using ISA IRQ %d\n",
+				 pin_name(pin), dev->irq);
+			acpi_register_gsi(&dev->dev, dev_gsi,
+					  ACPI_LEVEL_SENSITIVE,
+					  ACPI_ACTIVE_LOW);
+		} else {
+			dev_warn(&dev->dev, "PCI INT %c: no GSI\n",
+				 pin_name(pin));
+		}
+
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rc = acpi_register_gsi(&dev->dev, gsi, triggering, polarity);
 	if (rc < 0) {
 		dev_warn(&dev->dev, "PCI INT %c: failed to register GSI\n",
 			 pin_name(pin));
+<<<<<<< HEAD
+=======
+		kfree(entry);
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 	dev->irq = rc;
@@ -494,15 +601,19 @@ int acpi_pci_irq_enable(struct pci_dev *dev)
 		link_desc[0] = '\0';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_info(&dev->dev, "PCI INT %c%s -> GSI %u (%s, %s) -> IRQ %d\n",
 		 pin_name(pin), link_desc, gsi,
 		 (triggering == ACPI_LEVEL_SENSITIVE) ? "level" : "edge",
 		 (polarity == ACPI_ACTIVE_LOW) ? "low" : "high", dev->irq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(&dev->dev, "PCI INT %c%s -> GSI %u (%s, %s) -> IRQ %d\n",
 		pin_name(pin), link_desc, gsi,
 		(triggering == ACPI_LEVEL_SENSITIVE) ? "level" : "edge",
 		(polarity == ACPI_ACTIVE_LOW) ? "low" : "high", dev->irq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
@@ -513,6 +624,13 @@ void __attribute__ ((weak)) acpi_unregister_gsi(u32 i)
 {
 }
 
+=======
+
+	kfree(entry);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 void acpi_pci_irq_disable(struct pci_dev *dev)
 {
 	struct acpi_prt_entry *entry;
@@ -532,15 +650,24 @@ void acpi_pci_irq_disable(struct pci_dev *dev)
 	else
 		gsi = entry->index;
 
+<<<<<<< HEAD
+=======
+	kfree(entry);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * TBD: It might be worth clearing dev->irq by magic constant
 	 * (e.g. PCI_UNDEFINED_IRQ).
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_info(&dev->dev, "PCI INT %c disabled\n", pin_name(pin));
 =======
 	dev_dbg(&dev->dev, "PCI INT %c disabled\n", pin_name(pin));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(&dev->dev, "PCI INT %c disabled\n", pin_name(pin));
+>>>>>>> refs/remotes/origin/master
 	acpi_unregister_gsi(gsi);
 }

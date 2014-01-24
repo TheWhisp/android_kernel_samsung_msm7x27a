@@ -16,9 +16,12 @@
 #include <asm/sigcontext.h>
 #include <asm/mca.h>
 
+<<<<<<< HEAD
 #include <asm/xen/interface.h>
 #include <asm/xen/hypervisor.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include "../kernel/sigframe.h"
 #include "../kernel/fsyscall_gtod_data.h"
 
@@ -41,7 +44,11 @@ void foo(void)
 	DEFINE(TI_FLAGS, offsetof(struct thread_info, flags));
 	DEFINE(TI_CPU, offsetof(struct thread_info, cpu));
 	DEFINE(TI_PRE_COUNT, offsetof(struct thread_info, preempt_count));
+<<<<<<< HEAD
 #ifdef CONFIG_VIRT_CPU_ACCOUNTING
+=======
+#ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+>>>>>>> refs/remotes/origin/master
 	DEFINE(TI_AC_STAMP, offsetof(struct thread_info, ac_stamp));
 	DEFINE(TI_AC_LEAVE, offsetof(struct thread_info, ac_leave));
 	DEFINE(TI_AC_STIME, offsetof(struct thread_info, ac_stime));
@@ -270,12 +277,17 @@ void foo(void)
 
 	/* used by fsys_gettimeofday in arch/ia64/kernel/fsys.S */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEFINE(IA64_GTOD_LOCK_OFFSET,
 		offsetof (struct fsyscall_gtod_data_t, lock));
 =======
 	DEFINE(IA64_GTOD_SEQ_OFFSET,
 	       offsetof (struct fsyscall_gtod_data_t, seq));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DEFINE(IA64_GTOD_SEQ_OFFSET,
+	       offsetof (struct fsyscall_gtod_data_t, seq));
+>>>>>>> refs/remotes/origin/master
 	DEFINE(IA64_GTOD_WALL_TIME_OFFSET,
 		offsetof (struct fsyscall_gtod_data_t, wall_time));
 	DEFINE(IA64_GTOD_MONO_TIME_OFFSET,
@@ -295,6 +307,7 @@ void foo(void)
 	DEFINE(IA64_ITC_LASTCYCLE_OFFSET,
 		offsetof (struct itc_jitter_data_t, itc_lastcycle));
 
+<<<<<<< HEAD
 #ifdef CONFIG_XEN
 	BLANK();
 
@@ -324,4 +337,6 @@ void foo(void)
 	DEFINE_MAPPED_REG_OFS(XSI_ITC_OFFSET_OFS, itc_offset);
 	DEFINE_MAPPED_REG_OFS(XSI_ITC_LAST_OFS, itc_last);
 #endif /* CONFIG_XEN */
+=======
+>>>>>>> refs/remotes/origin/master
 }

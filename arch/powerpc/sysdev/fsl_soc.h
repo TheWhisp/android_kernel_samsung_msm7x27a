@@ -21,6 +21,7 @@ struct device_node;
 
 extern void fsl_rstcr_restart(char *cmd);
 
+<<<<<<< HEAD
 #if defined(CONFIG_FB_FSL_DIU) || defined(CONFIG_FB_FSL_DIU_MODULE)
 <<<<<<< HEAD
 struct platform_diu_data_ops {
@@ -34,6 +35,8 @@ struct platform_diu_data_ops {
 	void (*release_bootmem) (void);
 =======
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* The different ports that the DIU can be connected to */
 enum fsl_diu_monitor_port {
 	FSL_DIU_PORT_DVI,	/* DVI */
@@ -51,6 +54,7 @@ struct platform_diu_data_ops {
 	enum fsl_diu_monitor_port (*valid_monitor_port)
 		(enum fsl_diu_monitor_port port);
 	void (*release_bootmem)(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
@@ -63,5 +67,14 @@ void fsl_hv_restart(char *cmd);
 void fsl_hv_halt(void);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+extern struct platform_diu_data_ops diu_ops;
+
+void fsl_hv_restart(char *cmd);
+void fsl_hv_halt(void);
+
+>>>>>>> refs/remotes/origin/master
 #endif
 #endif

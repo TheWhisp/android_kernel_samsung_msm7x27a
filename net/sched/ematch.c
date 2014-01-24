@@ -441,7 +441,12 @@ int tcf_em_tree_dump(struct sk_buff *skb, struct tcf_ematch_tree *tree, int tlv)
 	if (top_start == NULL)
 		goto nla_put_failure;
 
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_EMATCH_TREE_HDR, sizeof(tree->hdr), &tree->hdr);
+=======
+	if (nla_put(skb, TCA_EMATCH_TREE_HDR, sizeof(tree->hdr), &tree->hdr))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 
 	list_start = nla_nest_start(skb, TCA_EMATCH_TREE_LIST);
 	if (list_start == NULL)
@@ -457,7 +462,12 @@ int tcf_em_tree_dump(struct sk_buff *skb, struct tcf_ematch_tree *tree, int tlv)
 			.flags = em->flags
 		};
 
+<<<<<<< HEAD
 		NLA_PUT(skb, i + 1, sizeof(em_hdr), &em_hdr);
+=======
+		if (nla_put(skb, i + 1, sizeof(em_hdr), &em_hdr))
+			goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 
 		if (em->ops && em->ops->dump) {
 			if (em->ops->dump(skb, em) < 0)
@@ -535,9 +545,13 @@ pop_stack:
 	return res;
 
 stack_overflow:
+<<<<<<< HEAD
 	if (net_ratelimit())
 		pr_warning("tc ematch: local stack overflow,"
 			   " increase NET_EMATCH_STACK\n");
+=======
+	net_warn_ratelimited("tc ematch: local stack overflow, increase NET_EMATCH_STACK\n");
+>>>>>>> refs/remotes/origin/master
 	return -1;
 }
 EXPORT_SYMBOL(__tcf_em_tree_match);

@@ -1,8 +1,13 @@
 /*
+<<<<<<< HEAD
  *  include/asm-s390/cache.h
  *
  *  S390 version
  *    Copyright (C) 1999 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+ *  S390 version
+ *    Copyright IBM Corp. 1999
+>>>>>>> refs/remotes/origin/master
  *
  *  Derived from "include/asm-i386/cache.h"
  *    Copyright (C) 1992, Linus Torvalds

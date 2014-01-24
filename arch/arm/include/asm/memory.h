@@ -17,17 +17,26 @@
 #include <linux/const.h>
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/memory.h>
 #include <asm/sizes.h>
 
 =======
 #include <asm/sizes.h>
+=======
+#include <linux/sizes.h>
+
+#include <asm/cache.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_NEED_MACH_MEMORY_H
 #include <mach/memory.h>
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Allow for constants defined here to be used from assembly code
  * by prepending the UL suffix only with actual C code compilation.
@@ -42,23 +51,39 @@
  * TASK_UNMAPPED_BASE - the lower boundary of the mmap VM area
  */
 #define PAGE_OFFSET		UL(CONFIG_PAGE_OFFSET)
+<<<<<<< HEAD
 #define TASK_SIZE		(UL(CONFIG_PAGE_OFFSET) - UL(0x01000000))
 #define TASK_UNMAPPED_BASE	(UL(CONFIG_PAGE_OFFSET) / 3)
+=======
+#define TASK_SIZE		(UL(CONFIG_PAGE_OFFSET) - UL(SZ_16M))
+#define TASK_UNMAPPED_BASE	ALIGN(TASK_SIZE / 3, SZ_16M)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The maximum size of a 26-bit user space task.
  */
+<<<<<<< HEAD
 #define TASK_SIZE_26		UL(0x04000000)
+=======
+#define TASK_SIZE_26		(UL(1) << 26)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The module space lives between the addresses given by TASK_SIZE
  * and PAGE_OFFSET - it must be within 32MB of the kernel text.
  */
 #ifndef CONFIG_THUMB2_KERNEL
+<<<<<<< HEAD
 #define MODULES_VADDR		(PAGE_OFFSET - 16*1024*1024)
 #else
 /* smaller range for Thumb-2 symbols relocation (2^24)*/
 #define MODULES_VADDR		(PAGE_OFFSET - 8*1024*1024)
+=======
+#define MODULES_VADDR		(PAGE_OFFSET - SZ_16M)
+#else
+/* smaller range for Thumb-2 symbols relocation (2^24)*/
+#define MODULES_VADDR		(PAGE_OFFSET - SZ_8M)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #if TASK_SIZE > MODULES_VADDR
@@ -87,6 +112,7 @@
 #define IOREMAP_MAX_ORDER	24
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Size of DMA-consistent memory region.  Must be multiple of 2M,
  * between 2MB and 14MB inclusive.
@@ -100,6 +126,9 @@
 =======
 #define CONSISTENT_END		(0xffe00000UL)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CONSISTENT_END		(0xffe00000UL)
+>>>>>>> refs/remotes/origin/master
 
 #else /* CONFIG_MMU */
 
@@ -117,22 +146,30 @@
 #define TASK_UNMAPPED_BASE	UL(0x00000000)
 #endif
 
+<<<<<<< HEAD
 #ifndef PHYS_OFFSET
 #define PHYS_OFFSET 		UL(CONFIG_DRAM_BASE)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef END_MEM
 #define END_MEM     		(UL(CONFIG_DRAM_BASE) + CONFIG_DRAM_SIZE)
 #endif
 
 #ifndef PAGE_OFFSET
+<<<<<<< HEAD
 #define PAGE_OFFSET		(PHYS_OFFSET)
+=======
+#define PAGE_OFFSET		PLAT_PHYS_OFFSET
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
  * The module can be at any place in ram in nommu mode.
  */
 #define MODULES_END		(END_MEM)
+<<<<<<< HEAD
 #define MODULES_VADDR		(PHYS_OFFSET)
 
 <<<<<<< HEAD
@@ -140,6 +177,12 @@
 #define XIP_VIRT_ADDR(physaddr)  (physaddr)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MODULES_VADDR		PAGE_OFFSET
+
+#define XIP_VIRT_ADDR(physaddr)  (physaddr)
+
+>>>>>>> refs/remotes/origin/master
 #endif /* !CONFIG_MMU */
 
 /*
@@ -163,6 +206,33 @@
 #define page_to_phys(page)	(__pfn_to_phys(page_to_pfn(page)))
 #define phys_to_page(phys)	(pfn_to_page(__phys_to_pfn(phys)))
 
+<<<<<<< HEAD
+=======
+/*
+ * Minimum guaranted alignment in pgd_alloc().  The page table pointers passed
+ * around in head.S and proc-*.S are shifted by this amount, in order to
+ * leave spare high bits for systems with physical address extension.  This
+ * does not fully accomodate the 40-bit addressing capability of ARM LPAE, but
+ * gives us about 38-bits or so.
+ */
+#ifdef CONFIG_ARM_LPAE
+#define ARCH_PGD_SHIFT		L1_CACHE_SHIFT
+#else
+#define ARCH_PGD_SHIFT		0
+#endif
+#define ARCH_PGD_MASK		((1 << ARCH_PGD_SHIFT) - 1)
+
+/*
+ * PLAT_PHYS_OFFSET is the offset (from zero) of the start of physical
+ * memory.  This is used for XIP and NoMMU kernels, or by kernels which
+ * have their own mach/memory.h.  Assembly code must always use
+ * PLAT_PHYS_OFFSET and not PHYS_OFFSET.
+ */
+#ifndef PLAT_PHYS_OFFSET
+#define PLAT_PHYS_OFFSET	UL(CONFIG_PHYS_OFFSET)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 
 /*
@@ -179,11 +249,21 @@
  */
 #define __PV_BITS_31_24	0x81000000
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define __PV_BITS_23_16	0x00810000
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 
 extern unsigned long __pv_phys_offset;
+=======
+#define __PV_BITS_7_0	0x81
+
+extern u64 __pv_phys_offset;
+extern u64 __pv_offset;
+extern void fixup_pv_table(const void *, unsigned long);
+extern const void *__pv_table_begin, *__pv_table_end;
+
+>>>>>>> refs/remotes/origin/master
 #define PHYS_OFFSET __pv_phys_offset
 
 #define __pv_stub(from,to,instr,type)			\
@@ -195,6 +275,7 @@ extern unsigned long __pv_phys_offset;
 	: "=r" (to)					\
 	: "r" (from), "I" (type))
 
+<<<<<<< HEAD
 static inline unsigned long __virt_to_phys(unsigned long x)
 {
 	unsigned long t;
@@ -248,6 +329,70 @@ static inline unsigned long __phys_to_virt(unsigned long x)
 #define PHYS_OFFSET	UL(CONFIG_PHYS_OFFSET)
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define __pv_stub_mov_hi(t)				\
+	__asm__ volatile("@ __pv_stub_mov\n"		\
+	"1:	mov	%R0, %1\n"			\
+	"	.pushsection .pv_table,\"a\"\n"		\
+	"	.long	1b\n"				\
+	"	.popsection\n"				\
+	: "=r" (t)					\
+	: "I" (__PV_BITS_7_0))
+
+#define __pv_add_carry_stub(x, y)			\
+	__asm__ volatile("@ __pv_add_carry_stub\n"	\
+	"1:	adds	%Q0, %1, %2\n"			\
+	"	adc	%R0, %R0, #0\n"			\
+	"	.pushsection .pv_table,\"a\"\n"		\
+	"	.long	1b\n"				\
+	"	.popsection\n"				\
+	: "+r" (y)					\
+	: "r" (x), "I" (__PV_BITS_31_24)		\
+	: "cc")
+
+static inline phys_addr_t __virt_to_phys(unsigned long x)
+{
+	phys_addr_t t;
+
+	if (sizeof(phys_addr_t) == 4) {
+		__pv_stub(x, t, "add", __PV_BITS_31_24);
+	} else {
+		__pv_stub_mov_hi(t);
+		__pv_add_carry_stub(x, t);
+	}
+	return t;
+}
+
+static inline unsigned long __phys_to_virt(phys_addr_t x)
+{
+	unsigned long t;
+
+	/*
+	 * 'unsigned long' cast discard upper word when
+	 * phys_addr_t is 64 bit, and makes sure that inline
+	 * assembler expression receives 32 bit argument
+	 * in place where 'r' 32 bit operand is expected.
+	 */
+	__pv_stub((unsigned long) x, t, "sub", __PV_BITS_31_24);
+	return t;
+}
+
+#else
+
+#define PHYS_OFFSET	PLAT_PHYS_OFFSET
+
+static inline phys_addr_t __virt_to_phys(unsigned long x)
+{
+	return (phys_addr_t)x - PAGE_OFFSET + PHYS_OFFSET;
+}
+
+static inline unsigned long __phys_to_virt(phys_addr_t x)
+{
+	return x - PHYS_OFFSET + PAGE_OFFSET;
+}
+
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -258,7 +403,11 @@ static inline unsigned long __phys_to_virt(unsigned long x)
  * direct-mapped view.  We assume this is the first page
  * of RAM in the mem_map as well.
  */
+<<<<<<< HEAD
 #define PHYS_PFN_OFFSET	(PHYS_OFFSET >> PAGE_SHIFT)
+=======
+#define PHYS_PFN_OFFSET	((unsigned long)(PHYS_OFFSET >> PAGE_SHIFT))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These are *only* valid on the kernel direct mapped RAM memory.
@@ -273,16 +422,43 @@ static inline phys_addr_t virt_to_phys(const volatile void *x)
 
 static inline void *phys_to_virt(phys_addr_t x)
 {
+<<<<<<< HEAD
 	return (void *)(__phys_to_virt((unsigned long)(x)));
+=======
+	return (void *)__phys_to_virt(x);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Drivers should NOT use these either.
  */
 #define __pa(x)			__virt_to_phys((unsigned long)(x))
+<<<<<<< HEAD
 #define __va(x)			((void *)__phys_to_virt((unsigned long)(x)))
 #define pfn_to_kaddr(pfn)	__va((pfn) << PAGE_SHIFT)
 
+=======
+#define __va(x)			((void *)__phys_to_virt((phys_addr_t)(x)))
+#define pfn_to_kaddr(pfn)	__va((pfn) << PAGE_SHIFT)
+
+extern phys_addr_t (*arch_virt_to_idmap)(unsigned long x);
+
+/*
+ * These are for systems that have a hardware interconnect supported alias of
+ * physical memory for idmap purposes.  Most cases should leave these
+ * untouched.
+ */
+static inline phys_addr_t __virt_to_idmap(unsigned long x)
+{
+	if (arch_virt_to_idmap)
+		return arch_virt_to_idmap(x);
+	else
+		return __virt_to_phys(x);
+}
+
+#define virt_to_idmap(x)	__virt_to_idmap((unsigned long)(x))
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Virtual <-> DMA view memory address translations
  * Again, these are *only* valid on the kernel direct mapped RAM
@@ -296,6 +472,10 @@ static inline void *phys_to_virt(phys_addr_t x)
 #define __bus_to_pfn(x)	__phys_to_pfn(x)
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_VIRT_TO_BUS
+>>>>>>> refs/remotes/origin/master
 static inline __deprecated unsigned long virt_to_bus(void *x)
 {
 	return __virt_to_bus((unsigned long)x);
@@ -305,16 +485,23 @@ static inline __deprecated void *bus_to_virt(unsigned long x)
 {
 	return (void *)__bus_to_virt(x);
 }
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Conversion between a struct page and a physical address.
  *
+<<<<<<< HEAD
  * Note: when converting an unknown physical address to a
  * struct page, the resulting pointer must be validated
  * using VALID_PAGE().  It must return an invalid struct page
  * for any physical address not corresponding to a system
  * RAM address.
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *  page_to_pfn(page)	convert a struct page * to a PFN number
  *  pfn_to_page(pfn)	convert a _valid_ PFN number to struct page *
  *
@@ -324,6 +511,7 @@ static inline __deprecated void *bus_to_virt(unsigned long x)
 #define ARCH_PFN_OFFSET		PHYS_PFN_OFFSET
 
 #define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
+<<<<<<< HEAD
 #define virt_addr_valid(kaddr)	((unsigned long)(kaddr) >= PAGE_OFFSET && (unsigned long)(kaddr) < (unsigned long)high_memory)
 
 /*
@@ -340,6 +528,10 @@ static inline __deprecated void *bus_to_virt(unsigned long x)
 #ifndef arch_has_speculative_dfetch
 #define arch_has_speculative_dfetch()	0
 #endif
+=======
+#define virt_addr_valid(kaddr)	(((unsigned long)(kaddr) >= PAGE_OFFSET && (unsigned long)(kaddr) < (unsigned long)high_memory) \
+					&& pfn_valid(__pa(kaddr) >> PAGE_SHIFT) )
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

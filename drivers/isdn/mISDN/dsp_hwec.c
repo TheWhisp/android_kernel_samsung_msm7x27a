@@ -57,10 +57,14 @@ void dsp_hwec_enable(struct dsp *dsp, const char *arg)
 	if (!dsp) {
 		printk(KERN_ERR "%s: failed to enable hwec: dsp is NULL\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			__func__);
 =======
 		       __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -98,20 +102,28 @@ void dsp_hwec_enable(struct dsp *dsp, const char *arg)
 _do:
 	printk(KERN_DEBUG "%s: enabling hwec with deftaps=%d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__func__, deftaps);
 =======
 	       __func__, deftaps);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       __func__, deftaps);
+>>>>>>> refs/remotes/origin/master
 	memset(&cq, 0, sizeof(cq));
 	cq.op = MISDN_CTRL_HFC_ECHOCAN_ON;
 	cq.p1 = deftaps;
 	if (!dsp->ch.peer->ctrl(&dsp->ch, CONTROL_CHANNEL, &cq)) {
 		printk(KERN_DEBUG "%s: CONTROL_CHANNEL failed\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			__func__);
 =======
 		       __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 }
@@ -123,10 +135,14 @@ void dsp_hwec_disable(struct dsp *dsp)
 	if (!dsp) {
 		printk(KERN_ERR "%s: failed to disable hwec: dsp is NULL\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			__func__);
 =======
 		       __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -136,10 +152,14 @@ void dsp_hwec_disable(struct dsp *dsp)
 	if (!dsp->ch.peer->ctrl(&dsp->ch, CONTROL_CHANNEL, &cq)) {
 		printk(KERN_DEBUG "%s: CONTROL_CHANNEL failed\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			__func__);
 =======
 		       __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 }
@@ -156,6 +176,9 @@ void dsp_hwec_exit(void)
 	mISDN_dsp_element_unregister(dsp_hwec);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

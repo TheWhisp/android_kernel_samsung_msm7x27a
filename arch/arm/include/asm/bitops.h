@@ -25,16 +25,22 @@
 
 #include <linux/compiler.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 
 #define smp_mb__before_clear_bit()	mb()
 #define smp_mb__after_clear_bit()	mb()
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/irqflags.h>
 
 #define smp_mb__before_clear_bit()	smp_mb()
 #define smp_mb__after_clear_bit()	smp_mb()
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These functions are the basis of our bit ops.
@@ -318,6 +324,7 @@ static inline int find_next_bit_le(const void *p, int size, int offset)
  * Ext2 is defined to use little-endian byte ordering.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ext2_set_bit_atomic(lock, nr, p)	\
 		test_and_set_bit_le(nr, p)
 #define ext2_clear_bit_atomic(lock, nr, p)	\
@@ -325,6 +332,9 @@ static inline int find_next_bit_le(const void *p, int size, int offset)
 =======
 #include <asm-generic/bitops/ext2-atomic-setbit.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm-generic/bitops/ext2-atomic-setbit.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __KERNEL__ */
 

@@ -614,7 +614,11 @@ struct _pll_div {
 };
 
 /* Note : pll code from original alc5632 driver. Not sure of how good it is */
+<<<<<<< HEAD
 /* usefull only for master mode */
+=======
+/* useful only for master mode */
+>>>>>>> refs/remotes/origin/master
 static const struct _pll_div codec_master_pll_div[] = {
 
 	{  2048000,  8192000,	0x0ea0},
@@ -861,8 +865,12 @@ static int alc5632_set_dai_fmt(struct snd_soc_dai *codec_dai,
 static int alc5632_pcm_hw_params(struct snd_pcm_substream *substream,
 		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	int coeff, rate;
 	u16 iface;
 
@@ -870,6 +878,7 @@ static int alc5632_pcm_hw_params(struct snd_pcm_substream *substream,
 	iface &= ~ALC5632_DAI_I2S_DL_MASK;
 
 	/* bit size */
+<<<<<<< HEAD
 	switch (params_format(params)) {
 	case SNDRV_PCM_FORMAT_S16_LE:
 		iface |= ALC5632_DAI_I2S_DL_16;
@@ -878,6 +887,16 @@ static int alc5632_pcm_hw_params(struct snd_pcm_substream *substream,
 		iface |= ALC5632_DAI_I2S_DL_20;
 		break;
 	case SNDRV_PCM_FORMAT_S24_LE:
+=======
+	switch (params_width(params)) {
+	case 16:
+		iface |= ALC5632_DAI_I2S_DL_16;
+		break;
+	case 20:
+		iface |= ALC5632_DAI_I2S_DL_20;
+		break;
+	case 24:
+>>>>>>> refs/remotes/origin/master
 		iface |= ALC5632_DAI_I2S_DL_24;
 		break;
 	default:
@@ -1117,8 +1136,13 @@ static struct regmap_config alc5632_regmap = {
  *    low  = 0x1a
  *    high = 0x1b
  */
+<<<<<<< HEAD
 static __devinit int alc5632_i2c_probe(struct i2c_client *client,
 				const struct i2c_device_id *id)
+=======
+static int alc5632_i2c_probe(struct i2c_client *client,
+			     const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct alc5632_priv *alc5632;
 	int ret, ret1, ret2;
@@ -1131,7 +1155,11 @@ static __devinit int alc5632_i2c_probe(struct i2c_client *client,
 
 	i2c_set_clientdata(client, alc5632);
 
+<<<<<<< HEAD
 	alc5632->regmap = regmap_init_i2c(client, &alc5632_regmap);
+=======
+	alc5632->regmap = devm_regmap_init_i2c(client, &alc5632_regmap);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(alc5632->regmap)) {
 		ret = PTR_ERR(alc5632->regmap);
 		dev_err(&client->dev, "regmap_init() failed: %d\n", ret);
@@ -1143,7 +1171,10 @@ static __devinit int alc5632_i2c_probe(struct i2c_client *client,
 	if (ret1 != 0 || ret2 != 0) {
 		dev_err(&client->dev,
 		"Failed to read chip ID: ret1=%d, ret2=%d\n", ret1, ret2);
+<<<<<<< HEAD
 		regmap_exit(alc5632->regmap);
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -1152,14 +1183,20 @@ static __devinit int alc5632_i2c_probe(struct i2c_client *client,
 	if ((vid1 != 0x10EC) || (vid2 != id->driver_data)) {
 		dev_err(&client->dev,
 		"Device is not a ALC5632: VID1=0x%x, VID2=0x%x\n", vid1, vid2);
+<<<<<<< HEAD
 		regmap_exit(alc5632->regmap);
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	ret = alc5632_reset(alc5632->regmap);
 	if (ret < 0) {
 		dev_err(&client->dev, "Failed to issue reset\n");
+<<<<<<< HEAD
 		regmap_exit(alc5632->regmap);
+=======
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
@@ -1177,18 +1214,27 @@ static __devinit int alc5632_i2c_probe(struct i2c_client *client,
 
 	if (ret < 0) {
 		dev_err(&client->dev, "Failed to register codec: %d\n", ret);
+<<<<<<< HEAD
 		regmap_exit(alc5632->regmap);
+=======
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static __devexit int alc5632_i2c_remove(struct i2c_client *client)
 {
 	struct alc5632_priv *alc5632 = i2c_get_clientdata(client);
 	snd_soc_unregister_codec(&client->dev);
 	regmap_exit(alc5632->regmap);
+=======
+static int alc5632_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1205,6 +1251,7 @@ static struct i2c_driver alc5632_i2c_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = alc5632_i2c_probe,
+<<<<<<< HEAD
 	.remove =  __devexit_p(alc5632_i2c_remove),
 	.id_table = alc5632_i2c_table,
 };
@@ -1228,6 +1275,13 @@ static void __exit alc5632_modexit(void)
 	i2c_del_driver(&alc5632_i2c_driver);
 }
 module_exit(alc5632_modexit);
+=======
+	.remove =  alc5632_i2c_remove,
+	.id_table = alc5632_i2c_table,
+};
+
+module_i2c_driver(alc5632_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC ALC5632 driver");
 MODULE_AUTHOR("Leon Romanovsky <leon@leon.nu>");

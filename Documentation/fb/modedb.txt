@@ -21,10 +21,14 @@ in a video= option, fbmem considers that to be a global video mode option.
 Valid mode specifiers (mode_option argument):
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     <xres>x<yres>[M][R][-<bpp>][@<refresh>][i][m]
 =======
     <xres>x<yres>[M][R][-<bpp>][@<refresh>][i][m][eDd]
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    <xres>x<yres>[M][R][-<bpp>][@<refresh>][i][m][eDd]
+>>>>>>> refs/remotes/origin/master
     <name>[-<bpp>][@<refresh>]
 
 with <xres>, <yres>, <bpp> and <refresh> decimal numbers and <name> a string.
@@ -41,7 +45,10 @@ pixels and 1.8% of yres).
        Sample usage: 1024x768M@60m - CVT timing with margins
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 DRM drivers also add options to enable or disable outputs:
 
 'e' will force the display to be enabled, i.e. it will override the detection
@@ -57,7 +64,10 @@ To force the VGA output to be enabled and drive a specific mode say:
 Specifying the option multiple times for different ports is possible, e.g.:
     video=LVDS-1:d video=HDMI-1:D
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 ***** oOo ***** oOo ***** oOo ***** oOo ***** oOo ***** oOo ***** oOo *****
 
 What is the VESA(TM) Coordinated Video Timings (CVT)?
@@ -155,9 +165,14 @@ There may be more modes.
     vt8623fb	- VIA 8623 frame buffer
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 BTW, only a few drivers use this at the moment. Others are to follow
 (feel free to send patches).
 =======
 BTW, only a few fb drivers use this at the moment. Others are to follow
 (feel free to send patches). The DRM drivers also support this.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+BTW, only a few fb drivers use this at the moment. Others are to follow
+(feel free to send patches). The DRM drivers also support this.
+>>>>>>> refs/remotes/origin/master

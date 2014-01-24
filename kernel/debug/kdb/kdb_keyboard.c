@@ -26,9 +26,13 @@
 
 static int kbd_exists;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int kbd_last_ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int kbd_last_ret;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Check if the keyboard controller has a keypress for us.
@@ -95,15 +99,21 @@ int kdb_get_kbd_char(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((scancode & 0x80) != 0)
 		return -1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((scancode & 0x80) != 0) {
 		if (scancode == 0x9c)
 			kbd_last_ret = 0;
 		return -1;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	scancode &= 0x7f;
 
@@ -191,6 +201,7 @@ int kdb_get_kbd_char(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((scancode & 0x7f) == 0x1c) {
 		/*
 		 * enter key.  All done.  Absorb the release scancode.
@@ -201,6 +212,8 @@ int kdb_get_kbd_char(void)
 		/*
 		 * Fetch the scancode
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (scancode == 0x1c) {
 		kbd_last_ret = 1;
 		return 13;
@@ -248,11 +261,15 @@ void kdb_kbd_cleanup_state(void)
 
 		/*
 		 * Fetch the scancode.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		 */
 		scancode = inb(KBD_DATA_REG);
 		scanstatus = inb(KBD_STATUS_REG);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		while (scanstatus & KBD_STAT_MOUSE_OBF) {
 			scancode = inb(KBD_DATA_REG);
@@ -274,6 +291,8 @@ void kdb_kbd_cleanup_state(void)
 }
 EXPORT_SYMBOL_GPL(kdb_get_kbd_char);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Skip mouse input.
 		 */
@@ -302,4 +321,7 @@ EXPORT_SYMBOL_GPL(kdb_get_kbd_char);
 		return;
 	}
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

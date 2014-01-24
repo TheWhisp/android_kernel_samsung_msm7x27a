@@ -2,12 +2,16 @@
  * security/tomoyo/domain.c
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Domain transition functions for TOMOYO.
  *
  * Copyright (C) 2005-2010  NTT DATA CORPORATION
 =======
  * Copyright (C) 2005-2011  NTT DATA CORPORATION
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2005-2011  NTT DATA CORPORATION
+>>>>>>> refs/remotes/origin/master
  */
 
 #include "common.h"
@@ -25,11 +29,15 @@ struct tomoyo_domain_info tomoyo_kernel_domain;
  * @new_entry:       Pointer to "struct tomoyo_acl_info".
  * @size:            Size of @new_entry in bytes.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @is_delete:       True if it is a delete request.
  * @list:            Pointer to "struct list_head".
 =======
  * @param:           Pointer to "struct tomoyo_acl_param".
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @param:           Pointer to "struct tomoyo_acl_param".
+>>>>>>> refs/remotes/origin/master
  * @check_duplicate: Callback function to find duplicated entry.
  *
  * Returns 0 on success, negative value otherwise.
@@ -38,15 +46,20 @@ struct tomoyo_domain_info tomoyo_kernel_domain;
  */
 int tomoyo_update_policy(struct tomoyo_acl_head *new_entry, const int size,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 bool is_delete, struct list_head *list,
 =======
 			 struct tomoyo_acl_param *param,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 struct tomoyo_acl_param *param,
+>>>>>>> refs/remotes/origin/master
 			 bool (*check_duplicate) (const struct tomoyo_acl_head
 						  *,
 						  const struct tomoyo_acl_head
 						  *))
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int error = is_delete ? -ENOENT : -ENOMEM;
 	struct tomoyo_acl_head *entry;
@@ -55,10 +68,16 @@ int tomoyo_update_policy(struct tomoyo_acl_head *new_entry, const int size,
 	struct tomoyo_acl_head *entry;
 	struct list_head *list = param->list;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int error = param->is_delete ? -ENOENT : -ENOMEM;
+	struct tomoyo_acl_head *entry;
+	struct list_head *list = param->list;
+>>>>>>> refs/remotes/origin/master
 
 	if (mutex_lock_interruptible(&tomoyo_policy_lock))
 		return -ENOMEM;
 	list_for_each_entry_rcu(entry, list, list) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (!check_duplicate(entry, new_entry))
 			continue;
@@ -68,6 +87,8 @@ int tomoyo_update_policy(struct tomoyo_acl_head *new_entry, const int size,
 	}
 	if (error && !is_delete) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (entry->is_deleted == TOMOYO_GC_IN_PROGRESS)
 			continue;
 		if (!check_duplicate(entry, new_entry))
@@ -77,7 +98,10 @@ int tomoyo_update_policy(struct tomoyo_acl_head *new_entry, const int size,
 		break;
 	}
 	if (error && !param->is_delete) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		entry = tomoyo_commit_ok(new_entry, size);
 		if (entry) {
 			list_add_tail_rcu(&entry->list, list);
@@ -90,7 +114,10 @@ int tomoyo_update_policy(struct tomoyo_acl_head *new_entry, const int size,
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * tomoyo_same_acl_head - Check for duplicated "struct tomoyo_acl_info" entry.
  *
  * @a: Pointer to "struct tomoyo_acl_info".
@@ -105,17 +132,24 @@ static inline bool tomoyo_same_acl_head(const struct tomoyo_acl_info *a,
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * tomoyo_update_domain - Update an entry for domain policy.
  *
  * @new_entry:       Pointer to "struct tomoyo_acl_info".
  * @size:            Size of @new_entry in bytes.
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @is_delete:       True if it is a delete request.
  * @domain:          Pointer to "struct tomoyo_domain_info".
 =======
  * @param:           Pointer to "struct tomoyo_acl_param".
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @param:           Pointer to "struct tomoyo_acl_param".
+>>>>>>> refs/remotes/origin/master
  * @check_duplicate: Callback function to find duplicated entry.
  * @merge_duplicate: Callback function to merge duplicated entry.
  *
@@ -125,10 +159,14 @@ static inline bool tomoyo_same_acl_head(const struct tomoyo_acl_info *a,
  */
 int tomoyo_update_domain(struct tomoyo_acl_info *new_entry, const int size,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 bool is_delete, struct tomoyo_domain_info *domain,
 =======
 			 struct tomoyo_acl_param *param,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 struct tomoyo_acl_param *param,
+>>>>>>> refs/remotes/origin/master
 			 bool (*check_duplicate) (const struct tomoyo_acl_info
 						  *,
 						  const struct tomoyo_acl_info
@@ -138,6 +176,7 @@ int tomoyo_update_domain(struct tomoyo_acl_info *new_entry, const int size,
 						  const bool))
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int error = is_delete ? -ENOENT : -ENOMEM;
 	struct tomoyo_acl_info *entry;
 
@@ -146,6 +185,8 @@ int tomoyo_update_domain(struct tomoyo_acl_info *new_entry, const int size,
 	list_for_each_entry_rcu(entry, &domain->acl_info_list, list) {
 		if (!check_duplicate(entry, new_entry))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	const bool is_delete = param->is_delete;
 	int error = is_delete ? -ENOENT : -ENOMEM;
 	struct tomoyo_acl_info *entry;
@@ -172,7 +213,10 @@ int tomoyo_update_domain(struct tomoyo_acl_info *new_entry, const int size,
 			continue;
 		if (!tomoyo_same_acl_head(entry, new_entry) ||
 		    !check_duplicate(entry, new_entry))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			continue;
 		if (merge_duplicate)
 			entry->is_deleted = merge_duplicate(entry, new_entry,
@@ -186,19 +230,26 @@ int tomoyo_update_domain(struct tomoyo_acl_info *new_entry, const int size,
 		entry = tomoyo_commit_ok(new_entry, size);
 		if (entry) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			list_add_tail_rcu(&entry->list, &domain->acl_info_list);
 =======
 			list_add_tail_rcu(&entry->list, list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			list_add_tail_rcu(&entry->list, list);
+>>>>>>> refs/remotes/origin/master
 			error = 0;
 		}
 	}
 	mutex_unlock(&tomoyo_policy_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return error;
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	tomoyo_put_condition(new_entry->cond);
 	return error;
@@ -214,13 +265,17 @@ out:
  *
  * Caller holds tomoyo_read_lock().
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void tomoyo_check_acl(struct tomoyo_request_info *r,
 		      bool (*check_entry) (struct tomoyo_request_info *,
 					   const struct tomoyo_acl_info *))
 {
 	const struct tomoyo_domain_info *domain = r->domain;
 	struct tomoyo_acl_info *ptr;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	list_for_each_entry_rcu(ptr, &domain->acl_info_list, list) {
@@ -231,6 +286,8 @@ void tomoyo_check_acl(struct tomoyo_request_info *r,
 			return;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bool retried = false;
 	const struct list_head *list = &domain->acl_info_list;
 
@@ -250,7 +307,10 @@ retry:
 		retried = true;
 		list = &domain->ns->acl_group[domain->group];
 		goto retry;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	r->granted = false;
 }
@@ -258,6 +318,7 @@ retry:
 /* The list for "struct tomoyo_domain_info". */
 LIST_HEAD(tomoyo_domain_list);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct list_head tomoyo_policy_list[TOMOYO_MAX_POLICY];
 struct list_head tomoyo_group_list[TOMOYO_MAX_GROUP];
@@ -267,16 +328,22 @@ struct list_head tomoyo_group_list[TOMOYO_MAX_GROUP];
  *
  * @domainname: Domainname to check.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_last_word - Get last component of a domainname.
  *
  * @name: Domainname to check.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Returns the last word of @domainname.
  */
 static const char *tomoyo_last_word(const char *name)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         const char *cp = strrchr(name, ' ');
         if (cp)
@@ -285,6 +352,8 @@ static const char *tomoyo_last_word(const char *name)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	const char *cp = strrchr(name, ' ');
 	if (cp)
 		return cp + 1;
@@ -299,7 +368,10 @@ static const char *tomoyo_last_word(const char *name)
  *
  * Returns true if @a == @b, false otherwise.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static bool tomoyo_same_transition_control(const struct tomoyo_acl_head *a,
 					   const struct tomoyo_acl_head *b)
 {
@@ -315,6 +387,7 @@ static bool tomoyo_same_transition_control(const struct tomoyo_acl_head *a,
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * tomoyo_update_transition_control_entry - Update "struct tomoyo_transition_control" list.
  *
@@ -334,6 +407,8 @@ static int tomoyo_update_transition_control_entry(const char *domainname,
 	int error = is_delete ? -ENOENT : -ENOMEM;
 	if (program) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * tomoyo_write_transition_control - Write "struct tomoyo_transition_control" list.
  *
  * @param: Pointer to "struct tomoyo_acl_param".
@@ -357,7 +432,10 @@ int tomoyo_write_transition_control(struct tomoyo_acl_param *param,
 		program = NULL;
 	}
 	if (program && strcmp(program, "any")) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!tomoyo_correct_path(program))
 			return -EINVAL;
 		e.program = tomoyo_get_name(program);
@@ -365,10 +443,14 @@ int tomoyo_write_transition_control(struct tomoyo_acl_param *param,
 			goto out;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (domainname) {
 =======
 	if (domainname && strcmp(domainname, "any")) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (domainname && strcmp(domainname, "any")) {
+>>>>>>> refs/remotes/origin/master
 		if (!tomoyo_correct_domain(domainname)) {
 			if (!tomoyo_correct_path(domainname))
 				goto out;
@@ -379,23 +461,30 @@ int tomoyo_write_transition_control(struct tomoyo_acl_param *param,
 			goto out;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = tomoyo_update_policy(&e.head, sizeof(e), is_delete,
 				     &tomoyo_policy_list
 				     [TOMOYO_ID_TRANSITION_CONTROL],
 				     tomoyo_same_transition_control);
  out:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	param->list = &param->ns->policy_list[TOMOYO_ID_TRANSITION_CONTROL];
 	error = tomoyo_update_policy(&e.head, sizeof(e), param,
 				     tomoyo_same_transition_control);
 out:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tomoyo_put_name(e.domainname);
 	tomoyo_put_name(e.program);
 	return error;
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * tomoyo_write_transition_control - Write "struct tomoyo_transition_control" list.
  *
@@ -420,6 +509,8 @@ int tomoyo_write_transition_control(char *data, const bool is_delete,
 	return tomoyo_update_transition_control_entry(domainname, data, type,
 						      is_delete);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * tomoyo_scan_transition - Try to find specific domain transition type.
  *
  * @list:       Pointer to "struct list_head".
@@ -459,12 +550,16 @@ static inline bool tomoyo_scan_transition
 		return true;
 	}
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * tomoyo_transition_type - Get domain transition type.
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @domainname: The name of domain.
  * @program:    The name of program.
@@ -526,6 +621,8 @@ static bool tomoyo_same_aggregator(const struct tomoyo_acl_head *a,
 	const struct tomoyo_aggregator *p1 = container_of(a, typeof(*p1), head);
 	const struct tomoyo_aggregator *p2 = container_of(b, typeof(*p2), head);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @ns:         Pointer to "struct tomoyo_policy_namespace".
  * @domainname: The name of current domain.
  * @program:    The name of requested program.
@@ -582,12 +679,16 @@ static bool tomoyo_same_aggregator(const struct tomoyo_acl_head *a,
 							  head);
 	const struct tomoyo_aggregator *p2 = container_of(b, typeof(*p2),
 							  head);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return p1->original_name == p2->original_name &&
 		p1->aggregated_name == p2->aggregated_name;
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * tomoyo_update_aggregator_entry - Update "struct tomoyo_aggregator" list.
  *
@@ -599,11 +700,17 @@ static bool tomoyo_same_aggregator(const struct tomoyo_acl_head *a,
  *
  * @param: Pointer to "struct tomoyo_acl_param".
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * tomoyo_write_aggregator - Write "struct tomoyo_aggregator" list.
+ *
+ * @param: Pointer to "struct tomoyo_acl_param".
+>>>>>>> refs/remotes/origin/master
  *
  * Returns 0 on success, negative value otherwise.
  *
  * Caller holds tomoyo_read_lock().
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int tomoyo_update_aggregator_entry(const char *original_name,
 					  const char *aggregated_name,
@@ -614,6 +721,8 @@ static int tomoyo_update_aggregator_entry(const char *original_name,
 
 	if (!tomoyo_correct_path(original_name) ||
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int tomoyo_write_aggregator(struct tomoyo_acl_param *param)
 {
 	struct tomoyo_aggregator e = { };
@@ -621,7 +730,10 @@ int tomoyo_write_aggregator(struct tomoyo_acl_param *param)
 	const char *original_name = tomoyo_read_token(param);
 	const char *aggregated_name = tomoyo_read_token(param);
 	if (!tomoyo_correct_word(original_name) ||
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	    !tomoyo_correct_path(aggregated_name))
 		return -EINVAL;
 	e.original_name = tomoyo_get_name(original_name);
@@ -630,22 +742,29 @@ int tomoyo_write_aggregator(struct tomoyo_acl_param *param)
 	    e.aggregated_name->is_patterned) /* No patterns allowed. */
 		goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = tomoyo_update_policy(&e.head, sizeof(e), is_delete,
 				     &tomoyo_policy_list[TOMOYO_ID_AGGREGATOR],
 				     tomoyo_same_aggregator);
  out:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	param->list = &param->ns->policy_list[TOMOYO_ID_AGGREGATOR];
 	error = tomoyo_update_policy(&e.head, sizeof(e), param,
 				     tomoyo_same_aggregator);
 out:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tomoyo_put_name(e.original_name);
 	tomoyo_put_name(e.aggregated_name);
 	return error;
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * tomoyo_write_aggregator - Write "struct tomoyo_aggregator" list.
  *
@@ -672,6 +791,8 @@ int tomoyo_write_aggregator(char *data, const bool is_delete)
  * @domainname: The name of domain.
  * @profile:    Profile number to assign if the domain was newly created.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * tomoyo_find_namespace - Find specified namespace.
  *
  * @name: Name of namespace to find.
@@ -759,13 +880,17 @@ static bool tomoyo_namespace_jump(const char *domainname)
  *
  * @domainname: The name of domain.
  * @transit:    True if transit to domain found or created.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Returns pointer to "struct tomoyo_domain_info" on success, NULL otherwise.
  *
  * Caller holds tomoyo_read_lock().
  */
 struct tomoyo_domain_info *tomoyo_assign_domain(const char *domainname,
+<<<<<<< HEAD
 <<<<<<< HEAD
 						const u8 profile)
 {
@@ -805,6 +930,8 @@ struct tomoyo_domain_info *tomoyo_assign_domain(const char *domainname,
 	kfree(entry);
 	return found ? domain : NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 						const bool transit)
 {
 	struct tomoyo_domain_info e = { };
@@ -965,7 +1092,10 @@ out:
 	kfree(env_page.data);
 	kfree(arg_ptr);
 	return error;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -979,6 +1109,7 @@ out:
  */
 int tomoyo_find_next_domain(struct linux_binprm *bprm)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct tomoyo_request_info r;
 	char *tmp = kzalloc(TOMOYO_EXEC_TMPSIZE, GFP_NOFS);
@@ -1023,6 +1154,8 @@ int tomoyo_find_next_domain(struct linux_binprm *bprm)
 			/* This is OK because it is read only. */
 			rn = *ptr->aggregated_name;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct tomoyo_domain_info *old_domain = tomoyo_domain();
 	struct tomoyo_domain_info *domain = NULL;
 	const char *original_name = bprm->filename;
@@ -1065,17 +1198,24 @@ retry:
 							 ptr->original_name))
 				continue;
 			candidate = ptr->aggregated_name;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
 
 	/* Check execute permission. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	retval = tomoyo_path_permission(&r, TOMOYO_TYPE_EXECUTE, &rn);
 =======
 	retval = tomoyo_execute_permission(&ee->r, candidate);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = tomoyo_execute_permission(&ee->r, candidate);
+>>>>>>> refs/remotes/origin/master
 	if (retval == TOMOYO_RETRY_REQUEST)
 		goto retry;
 	if (retval < 0)
@@ -1086,6 +1226,7 @@ retry:
 	 * wildcard) rather than the pathname passed to execve()
 	 * (which never contains wildcard).
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (r.param.path.matched_path) {
 		if (need_kfree)
@@ -1104,6 +1245,8 @@ retry:
 		break;
 	case TOMOYO_TRANSITION_CONTROL_KEEP:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ee->r.param.path.matched_path)
 		candidate = ee->r.param.path.matched_path;
 
@@ -1163,7 +1306,10 @@ force_initialize_domain:
 		break;
 	case TOMOYO_TRANSITION_CONTROL_KEEP:
 force_keep_domain:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Keep current domain. */
 		domain = old_domain;
 		break;
@@ -1177,6 +1323,7 @@ force_keep_domain:
 			 * before /sbin/init.
 			 */
 			domain = old_domain;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		} else {
 			/* Normal domain transition. */
@@ -1208,6 +1355,8 @@ force_keep_domain:
 	else
 		old_domain->transition_failed = true;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 force_child_domain:
@@ -1238,7 +1387,10 @@ force_jump_domain:
 			       "ERROR: Domain '%s' not defined.\n", ee->tmp);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  out:
 	if (!domain)
 		domain = old_domain;
@@ -1246,12 +1398,15 @@ force_jump_domain:
 	atomic_inc(&domain->users);
 	bprm->cred->security = domain;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (need_kfree)
 		kfree(rn.name);
 	kfree(tmp);
 	return retval;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(exename.name);
 	if (!retval) {
 		ee->r.domain = domain;
@@ -1310,4 +1465,7 @@ bool tomoyo_dump_page(struct linux_binprm *bprm, unsigned long pos,
 #endif
 	return true;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -14,11 +14,14 @@
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
+<<<<<<< HEAD
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
  */
 /*
 Driver: daqboard2000
@@ -31,6 +34,7 @@ Devices: [IOTech] DAQBoard/2000 (daqboard2000)
 Much of the functionality of this driver was determined from reading
 the source code for the Windows driver.
 
+<<<<<<< HEAD
 The FPGA on the board requires initialization code, which can
 be loaded by comedi_config using the -i
 option.  The initialization code is available from http://www.comedi.org
@@ -41,6 +45,12 @@ Configuration options:
   [1] - PCI slot of device (optional)
   If bus/slot is not specified, the first supported
   PCI device found will be used.
+=======
+The FPGA on the board requires fimware, which is available from
+http://www.comedi.org in the comedi_nonfree_firmware tarball.
+
+Configuration options: not applicable, uses PCI auto config
+>>>>>>> refs/remotes/origin/master
 */
 /*
    This card was obviously never intended to leave the Windows world,
@@ -113,6 +123,7 @@ Configuration options:
 
  */
 
+<<<<<<< HEAD
 #include "../comedidev.h"
 
 #include <linux/delay.h>
@@ -126,6 +137,21 @@ Configuration options:
 
 #define DAQBOARD2000_DAQ_SIZE 		0x1002
 #define DAQBOARD2000_PLX_SIZE 		0x100
+=======
+#include <linux/module.h>
+#include <linux/pci.h>
+#include <linux/delay.h>
+#include <linux/interrupt.h>
+
+#include "../comedidev.h"
+
+#include "8255.h"
+
+#define DAQBOARD2000_FIRMWARE		"daqboard2000_firmware.bin"
+
+#define DAQBOARD2000_SUBSYSTEM_IDS2 	0x0002	/* Daqboard/2000 - 2 Dacs */
+#define DAQBOARD2000_SUBSYSTEM_IDS4 	0x0004	/* Daqboard/2000 - 4 Dacs */
+>>>>>>> refs/remotes/origin/master
 
 /* Initialization bits for the Serial EEPROM Control Register */
 #define DAQBOARD2000_SECRProgPinHi      0x8001767e
@@ -142,6 +168,7 @@ Configuration options:
 #define DAQBOARD2000_CPLD_INIT 		0x0002
 #define DAQBOARD2000_CPLD_DONE 		0x0004
 
+<<<<<<< HEAD
 /* Available ranges */
 static const struct comedi_lrange range_daqboard2000_ai = { 13, {
 								 RANGE(-10, 10),
@@ -221,6 +248,58 @@ struct daqboard2000_hw {
 	volatile u16 fill14;	/*  0xbe */
 	volatile s16 dioP2ExpansionIO16Bit[32];	/*  0xc0 */
 };
+=======
+static const struct comedi_lrange range_daqboard2000_ai = {
+	13, {
+		BIP_RANGE(10),
+		BIP_RANGE(5),
+		BIP_RANGE(2.5),
+		BIP_RANGE(1.25),
+		BIP_RANGE(0.625),
+		BIP_RANGE(0.3125),
+		BIP_RANGE(0.156),
+		UNI_RANGE(10),
+		UNI_RANGE(5),
+		UNI_RANGE(2.5),
+		UNI_RANGE(1.25),
+		UNI_RANGE(0.625),
+		UNI_RANGE(0.3125)
+	}
+};
+
+/*
+ * Register Memory Map
+ */
+#define acqControl			0x00		/* u16 */
+#define acqScanListFIFO			0x02		/* u16 */
+#define acqPacerClockDivLow		0x04		/* u32 */
+#define acqScanCounter			0x08		/* u16 */
+#define acqPacerClockDivHigh		0x0a		/* u16 */
+#define acqTriggerCount			0x0c		/* u16 */
+#define acqResultsFIFO			0x10		/* u16 */
+#define acqResultsShadow		0x14		/* u16 */
+#define acqAdcResult			0x18		/* u16 */
+#define dacScanCounter			0x1c		/* u16 */
+#define dacControl			0x20		/* u16 */
+#define dacFIFO				0x24		/* s16 */
+#define dacPacerClockDiv		0x2a		/* u16 */
+#define refDacs				0x2c		/* u16 */
+#define dioControl			0x30		/* u16 */
+#define dioP3hsioData			0x32		/* s16 */
+#define dioP3Control			0x34		/* u16 */
+#define calEepromControl		0x36		/* u16 */
+#define dacSetting(x)			(0x38 + (x)*2)	/* s16 */
+#define dioP2ExpansionIO8Bit		0x40		/* s16 */
+#define ctrTmrControl			0x80		/* u16 */
+#define ctrInput(x)			(0x88 + (x)*2)	/* s16 */
+#define timerDivisor(x)			(0xa0 + (x)*2)	/* u16 */
+#define dmaControl			0xb0		/* u16 */
+#define trigControl			0xb2		/* u16 */
+#define calEeprom			0xb8		/* u16 */
+#define acqDigitalMark			0xba		/* u16 */
+#define trigDacs			0xbc		/* u16 */
+#define dioP2ExpansionIO16Bit(x)	(0xc0 + (x)*2)	/* s16 */
+>>>>>>> refs/remotes/origin/master
 
 /* Scan Sequencer programming */
 #define DAQBOARD2000_SeqStartScanList            0x0011
@@ -301,6 +380,7 @@ struct daqboard2000_hw {
 #define DAQBOARD2000_PosRefDacSelect             0x0100
 #define DAQBOARD2000_NegRefDacSelect             0x0000
 
+<<<<<<< HEAD
 static int daqboard2000_attach(struct comedi_device *dev,
 			       struct comedi_devconfig *it);
 static int daqboard2000_detach(struct comedi_device *dev);
@@ -312,6 +392,8 @@ static struct comedi_driver driver_daqboard2000 = {
 	.detach = daqboard2000_detach,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct daq200_boardtype {
 	const char *name;
 	int id;
@@ -321,6 +403,7 @@ static const struct daq200_boardtype boardtypes[] = {
 	{"ids4", DAQBOARD2000_SUBSYSTEM_IDS4},
 };
 
+<<<<<<< HEAD
 #define n_boardtypes (sizeof(boardtypes)/sizeof(struct daq200_boardtype))
 #define this_board ((const struct daq200_boardtype *)dev->board_ptr)
 
@@ -337,10 +420,13 @@ static DEFINE_PCI_DEVICE_TABLE(daqboard2000_pci_table) = {
 
 MODULE_DEVICE_TABLE(pci, daqboard2000_pci_table);
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct daqboard2000_private {
 	enum {
 		card_daqboard_2000
 	} card;
+<<<<<<< HEAD
 	struct pci_dev *pci_dev;
 	void *daq;
 	void *plx;
@@ -358,6 +444,21 @@ static void writeAcqScanListEntry(struct comedi_device *dev, u16 entry)
 	fpga->acqScanListFIFO = entry & 0x00ff;
 /* udelay(4); */
 	fpga->acqScanListFIFO = (entry >> 8) & 0x00ff;
+=======
+	void __iomem *daq;
+	void __iomem *plx;
+	unsigned int ao_readback[2];
+};
+
+static void writeAcqScanListEntry(struct comedi_device *dev, u16 entry)
+{
+	struct daqboard2000_private *devpriv = dev->private;
+
+	/* udelay(4); */
+	writew(entry & 0x00ff, devpriv->daq + acqScanListFIFO);
+	/* udelay(4); */
+	writew((entry >> 8) & 0x00ff, devpriv->daq + acqScanListFIFO);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void setup_sampling(struct comedi_device *dev, int chan, int gain)
@@ -398,7 +499,10 @@ static void setup_sampling(struct comedi_device *dev, int chan, int gain)
 	/* These should be read from EEPROM */
 	word2 |= 0x0800;
 	word3 |= 0xc000;
+<<<<<<< HEAD
 /*  printk("%d %4.4x %4.4x %4.4x %4.4x\n", chan, word0, word1, word2, word3);*/
+=======
+>>>>>>> refs/remotes/origin/master
 	writeAcqScanListEntry(dev, word0);
 	writeAcqScanListEntry(dev, word1);
 	writeAcqScanListEntry(dev, word2);
@@ -410,6 +514,7 @@ static int daqboard2000_ai_insn_read(struct comedi_device *dev,
 				     struct comedi_insn *insn,
 				     unsigned int *data)
 {
+<<<<<<< HEAD
 	int i;
 	struct daqboard2000_hw *fpga = devpriv->daq;
 	int gain, chan, timeout;
@@ -422,6 +527,24 @@ static int daqboard2000_ai_insn_read(struct comedi_device *dev,
 	   risk multiple samples to be put into the result FIFO. */
 	fpga->acqPacerClockDivLow = 1000000;	/* 1 second, should be long enough */
 	fpga->acqPacerClockDivHigh = 0;
+=======
+	struct daqboard2000_private *devpriv = dev->private;
+	unsigned int val;
+	int gain, chan, timeout;
+	int i;
+
+	writew(DAQBOARD2000_AcqResetScanListFifo |
+	       DAQBOARD2000_AcqResetResultsFifo |
+	       DAQBOARD2000_AcqResetConfigPipe, devpriv->daq + acqControl);
+
+	/*
+	 * If pacer clock is not set to some high value (> 10 us), we
+	 * risk multiple samples to be put into the result FIFO.
+	 */
+	/* 1 second, should be long enough */
+	writel(1000000, devpriv->daq + acqPacerClockDivLow);
+	writew(0, devpriv->daq + acqPacerClockDivHigh);
+>>>>>>> refs/remotes/origin/master
 
 	gain = CR_RANGE(insn->chanspec);
 	chan = CR_CHAN(insn->chanspec);
@@ -433,6 +556,7 @@ static int daqboard2000_ai_insn_read(struct comedi_device *dev,
 	for (i = 0; i < insn->n; i++) {
 		setup_sampling(dev, chan, gain);
 		/* Enable reading from the scanlist FIFO */
+<<<<<<< HEAD
 		fpga->acqControl = DAQBOARD2000_SeqStartScanList;
 		for (timeout = 0; timeout < 20; timeout++) {
 <<<<<<< HEAD
@@ -467,6 +591,32 @@ static int daqboard2000_ai_insn_read(struct comedi_device *dev,
 		data[i] = fpga->acqResultsFIFO;
 		fpga->acqControl = DAQBOARD2000_AdcPacerDisable;
 		fpga->acqControl = DAQBOARD2000_SeqStopScanList;
+=======
+		writew(DAQBOARD2000_SeqStartScanList,
+		       devpriv->daq + acqControl);
+		for (timeout = 0; timeout < 20; timeout++) {
+			val = readw(devpriv->daq + acqControl);
+			if (val & DAQBOARD2000_AcqConfigPipeFull)
+				break;
+			/* udelay(2); */
+		}
+		writew(DAQBOARD2000_AdcPacerEnable, devpriv->daq + acqControl);
+		for (timeout = 0; timeout < 20; timeout++) {
+			val = readw(devpriv->daq + acqControl);
+			if (val & DAQBOARD2000_AcqLogicScanning)
+				break;
+			/* udelay(2); */
+		}
+		for (timeout = 0; timeout < 20; timeout++) {
+			val = readw(devpriv->daq + acqControl);
+			if (val & DAQBOARD2000_AcqResultsFIFOHasValidData)
+				break;
+			/* udelay(2); */
+		}
+		data[i] = readw(devpriv->daq + acqResultsFIFO);
+		writew(DAQBOARD2000_AdcPacerDisable, devpriv->daq + acqControl);
+		writew(DAQBOARD2000_SeqStopScanList, devpriv->daq + acqControl);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return i;
@@ -477,6 +627,7 @@ static int daqboard2000_ao_insn_read(struct comedi_device *dev,
 				     struct comedi_insn *insn,
 				     unsigned int *data)
 {
+<<<<<<< HEAD
 	int i;
 	int chan = CR_CHAN(insn->chanspec);
 
@@ -488,6 +639,14 @@ static int daqboard2000_ao_insn_read(struct comedi_device *dev,
 	for (i = 0; i < insn->n; i++)
 		data[i] = devpriv->ao_readback[chan];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct daqboard2000_private *devpriv = dev->private;
+	int chan = CR_CHAN(insn->chanspec);
+	int i;
+
+	for (i = 0; i < insn->n; i++)
+		data[i] = devpriv->ao_readback[chan];
+>>>>>>> refs/remotes/origin/master
 
 	return i;
 }
@@ -497,6 +656,7 @@ static int daqboard2000_ao_insn_write(struct comedi_device *dev,
 				      struct comedi_insn *insn,
 				      unsigned int *data)
 {
+<<<<<<< HEAD
 	int i;
 	int chan = CR_CHAN(insn->chanspec);
 	struct daqboard2000_hw *fpga = devpriv->daq;
@@ -525,6 +685,41 @@ static int daqboard2000_ao_insn_write(struct comedi_device *dev,
 		 * Since we never enabled the DAC's, we don't need to disable it...
 		 * fpga->dacControl = (chan + 2) * 0x0010 | 0x0000; udelay(1000);
 		 */
+=======
+	struct daqboard2000_private *devpriv = dev->private;
+	int chan = CR_CHAN(insn->chanspec);
+	unsigned int val;
+	int timeout;
+	int i;
+
+	for (i = 0; i < insn->n; i++) {
+#if 0
+		/*
+		 * OK, since it works OK without enabling the DAC's,
+		 * let's keep it as simple as possible...
+		 */
+		writew((chan + 2) * 0x0010 | 0x0001,
+		       devpriv->daq + dacControl);
+		udelay(1000);
+#endif
+		writew(data[i], devpriv->daq + dacSetting(chan));
+		for (timeout = 0; timeout < 20; timeout++) {
+			val = readw(devpriv->daq + dacControl);
+			if ((val & ((chan + 1) * 0x0010)) == 0)
+				break;
+			/* udelay(2); */
+		}
+		devpriv->ao_readback[chan] = data[i];
+#if 0
+		/*
+		 * Since we never enabled the DAC's, we don't need
+		 * to disable it...
+		 */
+		writew((chan + 2) * 0x0010 | 0x0000,
+		       devpriv->daq + dacControl);
+		udelay(1000);
+#endif
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return i;
@@ -532,6 +727,7 @@ static int daqboard2000_ao_insn_write(struct comedi_device *dev,
 
 static void daqboard2000_resetLocalBus(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	printk("daqboard2000_resetLocalBus\n");
 =======
@@ -541,10 +737,19 @@ static void daqboard2000_resetLocalBus(struct comedi_device *dev)
 	udelay(10000);
 	writel(DAQBOARD2000_SECRLocalBusLo, devpriv->plx + 0x6c);
 	udelay(10000);
+=======
+	struct daqboard2000_private *devpriv = dev->private;
+
+	writel(DAQBOARD2000_SECRLocalBusHi, devpriv->plx + 0x6c);
+	mdelay(10);
+	writel(DAQBOARD2000_SECRLocalBusLo, devpriv->plx + 0x6c);
+	mdelay(10);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void daqboard2000_reloadPLX(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	printk("daqboard2000_reloadPLX\n");
 =======
@@ -556,10 +761,21 @@ static void daqboard2000_reloadPLX(struct comedi_device *dev)
 	udelay(10000);
 	writel(DAQBOARD2000_SECRReloadLo, devpriv->plx + 0x6c);
 	udelay(10000);
+=======
+	struct daqboard2000_private *devpriv = dev->private;
+
+	writel(DAQBOARD2000_SECRReloadLo, devpriv->plx + 0x6c);
+	mdelay(10);
+	writel(DAQBOARD2000_SECRReloadHi, devpriv->plx + 0x6c);
+	mdelay(10);
+	writel(DAQBOARD2000_SECRReloadLo, devpriv->plx + 0x6c);
+	mdelay(10);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void daqboard2000_pulseProgPin(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	printk("daqboard2000_pulseProgPin 1\n");
 =======
@@ -569,10 +785,22 @@ static void daqboard2000_pulseProgPin(struct comedi_device *dev)
 	udelay(10000);
 	writel(DAQBOARD2000_SECRProgPinLo, devpriv->plx + 0x6c);
 	udelay(10000);		/* Not in the original code, but I like symmetry... */
+=======
+	struct daqboard2000_private *devpriv = dev->private;
+
+	writel(DAQBOARD2000_SECRProgPinHi, devpriv->plx + 0x6c);
+	mdelay(10);
+	writel(DAQBOARD2000_SECRProgPinLo, devpriv->plx + 0x6c);
+	mdelay(10);	/* Not in the original code, but I like symmetry... */
+>>>>>>> refs/remotes/origin/master
 }
 
 static int daqboard2000_pollCPLD(struct comedi_device *dev, int mask)
 {
+<<<<<<< HEAD
+=======
+	struct daqboard2000_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int result = 0;
 	int i;
 	int cpld;
@@ -592,6 +820,10 @@ static int daqboard2000_pollCPLD(struct comedi_device *dev, int mask)
 
 static int daqboard2000_writeCPLD(struct comedi_device *dev, int data)
 {
+<<<<<<< HEAD
+=======
+	struct daqboard2000_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int result = 0;
 
 	udelay(10);
@@ -604,12 +836,20 @@ static int daqboard2000_writeCPLD(struct comedi_device *dev, int data)
 }
 
 static int initialize_daqboard2000(struct comedi_device *dev,
+<<<<<<< HEAD
 				   unsigned char *cpld_array, int len)
 {
+=======
+				   const u8 *cpld_array, size_t len,
+				   unsigned long context)
+{
+	struct daqboard2000_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int result = -EIO;
 	/* Read the serial EEPROM control register */
 	int secr;
 	int retry;
+<<<<<<< HEAD
 	int i;
 
 	/* Check to make sure the serial eeprom is present on the board */
@@ -634,11 +874,22 @@ static int initialize_daqboard2000(struct comedi_device *dev,
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
+=======
+	size_t i;
+
+	/* Check to make sure the serial eeprom is present on the board */
+	secr = readl(devpriv->plx + 0x6c);
+	if (!(secr & DAQBOARD2000_EEPROM_PRESENT))
+		return -EIO;
+
+	for (retry = 0; retry < 3; retry++) {
+>>>>>>> refs/remotes/origin/master
 		daqboard2000_resetLocalBus(dev);
 		daqboard2000_reloadPLX(dev);
 		daqboard2000_pulseProgPin(dev);
 		if (daqboard2000_pollCPLD(dev, DAQBOARD2000_CPLD_INIT)) {
 			for (i = 0; i < len; i++) {
+<<<<<<< HEAD
 				if (cpld_array[i] == 0xff
 				    && cpld_array[i + 1] == 0x20) {
 #ifdef DEBUG_EEPROM
@@ -651,10 +902,16 @@ static int initialize_daqboard2000(struct comedi_device *dev,
 #endif
 					break;
 				}
+=======
+				if (cpld_array[i] == 0xff &&
+				    cpld_array[i + 1] == 0x20)
+					break;
+>>>>>>> refs/remotes/origin/master
 			}
 			for (; i < len; i += 2) {
 				int data =
 				    (cpld_array[i] << 8) + cpld_array[i + 1];
+<<<<<<< HEAD
 <<<<<<< HEAD
 				if (!daqboard2000_writeCPLD(dev, data)) {
 					break;
@@ -664,14 +921,19 @@ static int initialize_daqboard2000(struct comedi_device *dev,
 #ifdef DEBUG_EEPROM
 				printk("Programmed\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				if (!daqboard2000_writeCPLD(dev, data))
 					break;
 			}
 			if (i >= len) {
+<<<<<<< HEAD
 #ifdef DEBUG_EEPROM
 				dev_dbg(dev->hw_dev, "Programmed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 				daqboard2000_resetLocalBus(dev);
 				daqboard2000_reloadPLX(dev);
 				result = 0;
@@ -684,11 +946,15 @@ static int initialize_daqboard2000(struct comedi_device *dev,
 
 static void daqboard2000_adcStopDmaTransfer(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 /*  printk("Implement: daqboard2000_adcStopDmaTransfer\n");*/
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void daqboard2000_adcDisarm(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 	struct daqboard2000_hw *fpga = devpriv->daq;
 
 	/* Disable hardware triggers */
@@ -704,6 +970,25 @@ static void daqboard2000_adcDisarm(struct comedi_device *dev)
 	/* Stop the pacer clock */
 	udelay(2);
 	fpga->acqControl = DAQBOARD2000_AdcPacerDisable;
+=======
+	struct daqboard2000_private *devpriv = dev->private;
+
+	/* Disable hardware triggers */
+	udelay(2);
+	writew(DAQBOARD2000_TrigAnalog | DAQBOARD2000_TrigDisable,
+	       devpriv->daq + trigControl);
+	udelay(2);
+	writew(DAQBOARD2000_TrigTTL | DAQBOARD2000_TrigDisable,
+	       devpriv->daq + trigControl);
+
+	/* Stop the scan list FIFO from loading the configuration pipe */
+	udelay(2);
+	writew(DAQBOARD2000_SeqStopScanList, devpriv->daq + acqControl);
+
+	/* Stop the pacer clock */
+	udelay(2);
+	writew(DAQBOARD2000_AdcPacerDisable, devpriv->daq + acqControl);
+>>>>>>> refs/remotes/origin/master
 
 	/* Stop the input dma (abort channel 1) */
 	daqboard2000_adcStopDmaTransfer(dev);
@@ -711,6 +996,7 @@ static void daqboard2000_adcDisarm(struct comedi_device *dev)
 
 static void daqboard2000_activateReferenceDacs(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 	struct daqboard2000_hw *fpga = devpriv->daq;
 	int timeout;
 
@@ -743,21 +1029,53 @@ static void daqboard2000_activateReferenceDacs(struct comedi_device *dev)
 		udelay(2);
 	}
 /*  printk("DAQBOARD2000_NegRefDacSelect %d\n", timeout);*/
+=======
+	struct daqboard2000_private *devpriv = dev->private;
+	unsigned int val;
+	int timeout;
+
+	/*  Set the + reference dac value in the FPGA */
+	writew(0x80 | DAQBOARD2000_PosRefDacSelect, devpriv->daq + refDacs);
+	for (timeout = 0; timeout < 20; timeout++) {
+		val = readw(devpriv->daq + dacControl);
+		if ((val & DAQBOARD2000_RefBusy) == 0)
+			break;
+		udelay(2);
+	}
+
+	/*  Set the - reference dac value in the FPGA */
+	writew(0x80 | DAQBOARD2000_NegRefDacSelect, devpriv->daq + refDacs);
+	for (timeout = 0; timeout < 20; timeout++) {
+		val = readw(devpriv->daq + dacControl);
+		if ((val & DAQBOARD2000_RefBusy) == 0)
+			break;
+		udelay(2);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static void daqboard2000_initializeCtrs(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 /*  printk("Implement: daqboard2000_initializeCtrs\n");*/
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void daqboard2000_initializeTmrs(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 /*  printk("Implement: daqboard2000_initializeTmrs\n");*/
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void daqboard2000_dacDisarm(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 /*  printk("Implement: daqboard2000_dacDisarm\n");*/
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void daqboard2000_initializeAdc(struct comedi_device *dev)
@@ -773,6 +1091,7 @@ static void daqboard2000_initializeDac(struct comedi_device *dev)
 	daqboard2000_dacDisarm(dev);
 }
 
+<<<<<<< HEAD
 /*
 The test command, REMOVE!!:
 
@@ -938,6 +1257,82 @@ static int daqboard2000_attach(struct comedi_device *dev,
 	dev->board_name = this_board->name;
 
 	s = dev->subdevices + 0;
+=======
+static int daqboard2000_8255_cb(int dir, int port, int data,
+				unsigned long ioaddr)
+{
+	void __iomem *mmio_base = (void __iomem *)ioaddr;
+
+	if (dir) {
+		writew(data, mmio_base + port * 2);
+		return 0;
+	} else {
+		return readw(mmio_base + port * 2);
+	}
+}
+
+static const void *daqboard2000_find_boardinfo(struct comedi_device *dev,
+					       struct pci_dev *pcidev)
+{
+	const struct daq200_boardtype *board;
+	int i;
+
+	if (pcidev->subsystem_device != PCI_VENDOR_ID_IOTECH)
+		return NULL;
+
+	for (i = 0; i < ARRAY_SIZE(boardtypes); i++) {
+		board = &boardtypes[i];
+		if (pcidev->subsystem_device == board->id)
+			return board;
+	}
+	return NULL;
+}
+
+static int daqboard2000_auto_attach(struct comedi_device *dev,
+					      unsigned long context_unused)
+{
+	struct pci_dev *pcidev = comedi_to_pci_dev(dev);
+	const struct daq200_boardtype *board;
+	struct daqboard2000_private *devpriv;
+	struct comedi_subdevice *s;
+	int result;
+
+	board = daqboard2000_find_boardinfo(dev, pcidev);
+	if (!board)
+		return -ENODEV;
+	dev->board_ptr = board;
+	dev->board_name = board->name;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	result = comedi_pci_enable(dev);
+	if (result)
+		return result;
+
+	devpriv->plx = pci_ioremap_bar(pcidev, 0);
+	devpriv->daq = pci_ioremap_bar(pcidev, 2);
+	if (!devpriv->plx || !devpriv->daq)
+		return -ENOMEM;
+
+	result = comedi_alloc_subdevices(dev, 3);
+	if (result)
+		return result;
+
+	readl(devpriv->plx + 0x6c);
+
+	result = comedi_load_firmware(dev, &comedi_to_pci_dev(dev)->dev,
+				      DAQBOARD2000_FIRMWARE,
+				      initialize_daqboard2000, 0);
+	if (result < 0)
+		return result;
+
+	daqboard2000_initializeAdc(dev);
+	daqboard2000_initializeDac(dev);
+
+	s = &dev->subdevices[0];
+>>>>>>> refs/remotes/origin/master
 	/* ai subdevice */
 	s->type = COMEDI_SUBD_AI;
 	s->subdev_flags = SDF_READABLE | SDF_GROUND;
@@ -946,7 +1341,11 @@ static int daqboard2000_attach(struct comedi_device *dev,
 	s->insn_read = daqboard2000_ai_insn_read;
 	s->range_table = &range_daqboard2000_ai;
 
+<<<<<<< HEAD
 	s = dev->subdevices + 1;
+=======
+	s = &dev->subdevices[1];
+>>>>>>> refs/remotes/origin/master
 	/* ao subdevice */
 	s->type = COMEDI_SUBD_AO;
 	s->subdev_flags = SDF_WRITABLE;
@@ -954,6 +1353,7 @@ static int daqboard2000_attach(struct comedi_device *dev,
 	s->maxdata = 0xffff;
 	s->insn_read = daqboard2000_ao_insn_read;
 	s->insn_write = daqboard2000_ao_insn_write;
+<<<<<<< HEAD
 	s->range_table = &range_daqboard2000_ao;
 
 	s = dev->subdevices + 2;
@@ -987,11 +1387,34 @@ static int daqboard2000_detach(struct comedi_device *dev)
 		free_irq(dev->irq, dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s->range_table = &range_bipolar10;
+
+	s = &dev->subdevices[2];
+	result = subdev_8255_init(dev, s, daqboard2000_8255_cb,
+			(unsigned long)(devpriv->daq + dioP2ExpansionIO8Bit));
+	if (result)
+		return result;
+
+	dev_info(dev->class_dev, "%s: %s attached\n",
+		dev->driver->driver_name, dev->board_name);
+
+	return 0;
+}
+
+static void daqboard2000_detach(struct comedi_device *dev)
+{
+	struct daqboard2000_private *devpriv = dev->private;
+
+	if (dev->irq)
+		free_irq(dev->irq, dev);
+>>>>>>> refs/remotes/origin/master
 	if (devpriv) {
 		if (devpriv->daq)
 			iounmap(devpriv->daq);
 		if (devpriv->plx)
 			iounmap(devpriv->plx);
+<<<<<<< HEAD
 		if (devpriv->pci_dev) {
 <<<<<<< HEAD
 			if (devpriv->got_regions) {
@@ -1046,7 +1469,44 @@ static void __exit driver_daqboard2000_cleanup_module(void)
 
 module_init(driver_daqboard2000_init_module);
 module_exit(driver_daqboard2000_cleanup_module);
+=======
+	}
+	comedi_pci_disable(dev);
+}
+
+static struct comedi_driver daqboard2000_driver = {
+	.driver_name	= "daqboard2000",
+	.module		= THIS_MODULE,
+	.auto_attach	= daqboard2000_auto_attach,
+	.detach		= daqboard2000_detach,
+};
+
+static int daqboard2000_pci_probe(struct pci_dev *dev,
+				  const struct pci_device_id *id)
+{
+	return comedi_pci_auto_config(dev, &daqboard2000_driver,
+				      id->driver_data);
+}
+
+static const struct pci_device_id daqboard2000_pci_table[] = {
+	{ PCI_DEVICE(PCI_VENDOR_ID_IOTECH, 0x0409) },
+	{ 0 }
+};
+MODULE_DEVICE_TABLE(pci, daqboard2000_pci_table);
+
+static struct pci_driver daqboard2000_pci_driver = {
+	.name		= "daqboard2000",
+	.id_table	= daqboard2000_pci_table,
+	.probe		= daqboard2000_pci_probe,
+	.remove		= comedi_pci_auto_unconfig,
+};
+module_comedi_pci_driver(daqboard2000_driver, daqboard2000_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_FIRMWARE(DAQBOARD2000_FIRMWARE);
+>>>>>>> refs/remotes/origin/master

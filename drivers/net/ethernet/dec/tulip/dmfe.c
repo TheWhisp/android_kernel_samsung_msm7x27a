@@ -150,6 +150,15 @@
 #define DMFE_TX_TIMEOUT ((3*HZ)/2)	/* tx packet time-out time 1.5 s" */
 #define DMFE_TX_KICK 	(HZ/2)	/* tx packet Kick-out time 0.5 s" */
 
+<<<<<<< HEAD
+=======
+#define dw32(reg, val)	iowrite32(val, ioaddr + (reg))
+#define dw16(reg, val)	iowrite16(val, ioaddr + (reg))
+#define dr32(reg)	ioread32(ioaddr + (reg))
+#define dr16(reg)	ioread16(ioaddr + (reg))
+#define dr8(reg)	ioread8(ioaddr + (reg))
+
+>>>>>>> refs/remotes/origin/master
 #define DMFE_DBUG(dbug_now, msg, value)			\
 	do {						\
 		if (dmfe_debug || (dbug_now))		\
@@ -178,6 +187,7 @@
 
 #define SROM_V41_CODE   0x14
 
+<<<<<<< HEAD
 #define SROM_CLK_WRITE(data, ioaddr) \
 	outl(data|CR9_SROM_READ|CR9_SRCS,ioaddr); \
 	udelay(5); \
@@ -186,6 +196,8 @@
 	outl(data|CR9_SROM_READ|CR9_SRCS,ioaddr); \
 	udelay(5);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define __CHK_IO_SIZE(pci_id, dev_rev) \
  (( ((pci_id)==PCI_DM9132_ID) || ((dev_rev) >= 0x30) ) ? \
 	DM9102A_IO_SIZE: DM9102_IO_SIZE)
@@ -213,11 +225,19 @@ struct rx_desc {
 struct dmfe_board_info {
 	u32 chip_id;			/* Chip vendor/Device ID */
 	u8 chip_revision;		/* Chip revision */
+<<<<<<< HEAD
 	struct DEVICE *next_dev;	/* next device */
 	struct pci_dev *pdev;		/* PCI device */
 	spinlock_t lock;
 
 	long ioaddr;			/* I/O base address */
+=======
+	struct net_device *next_dev;	/* next device */
+	struct pci_dev *pdev;		/* PCI device */
+	spinlock_t lock;
+
+	void __iomem *ioaddr;		/* I/O base address */
+>>>>>>> refs/remotes/origin/master
 	u32 cr0_data;
 	u32 cr5_data;
 	u32 cr6_data;
@@ -293,8 +313,13 @@ enum dmfe_CR6_bits {
 };
 
 /* Global variable declaration ----------------------------- */
+<<<<<<< HEAD
 static int __devinitdata printed_version;
 static const char version[] __devinitconst =
+=======
+static int printed_version;
+static const char version[] =
+>>>>>>> refs/remotes/origin/master
 	"Davicom DM9xxx net driver, version " DRV_VERSION " (" DRV_RELDATE ")";
 
 static int dmfe_debug;
@@ -320,11 +345,16 @@ static netdev_tx_t dmfe_start_xmit(struct sk_buff *, struct DEVICE *);
 static int dmfe_stop(struct DEVICE *);
 static void dmfe_set_filter_mode(struct DEVICE *);
 static const struct ethtool_ops netdev_ethtool_ops;
+<<<<<<< HEAD
 static u16 read_srom_word(long ,int);
+=======
+static u16 read_srom_word(void __iomem *, int);
+>>>>>>> refs/remotes/origin/master
 static irqreturn_t dmfe_interrupt(int , void *);
 #ifdef CONFIG_NET_POLL_CONTROLLER
 static void poll_dmfe (struct net_device *dev);
 #endif
+<<<<<<< HEAD
 static void dmfe_descriptor_init(struct net_device *, unsigned long);
 static void allocate_rx_buffer(struct net_device *);
 static void update_cr6(u32, unsigned long);
@@ -334,6 +364,17 @@ static u16 phy_read(unsigned long, u8, u8, u32);
 static void phy_write(unsigned long, u8, u8, u16, u32);
 static void phy_write_1bit(unsigned long, u32);
 static u16 phy_read_1bit(unsigned long);
+=======
+static void dmfe_descriptor_init(struct net_device *);
+static void allocate_rx_buffer(struct net_device *);
+static void update_cr6(u32, void __iomem *);
+static void send_filter_frame(struct DEVICE *);
+static void dm9132_id_table(struct DEVICE *);
+static u16 phy_read(void __iomem *, u8, u8, u32);
+static void phy_write(void __iomem *, u8, u8, u16, u32);
+static void phy_write_1bit(void __iomem *, u32);
+static u16 phy_read_1bit(void __iomem *);
+>>>>>>> refs/remotes/origin/master
 static u8 dmfe_sense_speed(struct dmfe_board_info *);
 static void dmfe_process_mode(struct dmfe_board_info *);
 static void dmfe_timer(unsigned long);
@@ -369,8 +410,12 @@ static const struct net_device_ops netdev_ops = {
  *	Search DM910X board ,allocate space and register it
  */
 
+<<<<<<< HEAD
 static int __devinit dmfe_init_one (struct pci_dev *pdev,
 				    const struct pci_device_id *ent)
+=======
+static int dmfe_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dmfe_board_info *db;	/* board information structure */
 	struct net_device *dev;
@@ -448,6 +493,7 @@ static int __devinit dmfe_init_one (struct pci_dev *pdev,
 	/* Allocate Tx/Rx descriptor memory */
 	db->desc_pool_ptr = pci_alloc_consistent(pdev, sizeof(struct tx_desc) *
 			DESC_ALL_CNT + 0x20, &db->desc_pool_dma_ptr);
+<<<<<<< HEAD
 	if (!db->desc_pool_ptr)
 		goto err_out_res;
 
@@ -455,6 +501,19 @@ static int __devinit dmfe_init_one (struct pci_dev *pdev,
 			TX_DESC_CNT + 4, &db->buf_pool_dma_ptr);
 	if (!db->buf_pool_ptr)
 		goto err_out_free_desc;
+=======
+	if (!db->desc_pool_ptr) {
+		err = -ENOMEM;
+		goto err_out_res;
+	}
+
+	db->buf_pool_ptr = pci_alloc_consistent(pdev, TX_BUF_ALLOC *
+			TX_DESC_CNT + 4, &db->buf_pool_dma_ptr);
+	if (!db->buf_pool_ptr) {
+		err = -ENOMEM;
+		goto err_out_free_desc;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	db->first_tx_desc = (struct tx_desc *) db->desc_pool_ptr;
 	db->first_tx_desc_dma = db->desc_pool_dma_ptr;
@@ -462,14 +521,27 @@ static int __devinit dmfe_init_one (struct pci_dev *pdev,
 	db->buf_pool_dma_start = db->buf_pool_dma_ptr;
 
 	db->chip_id = ent->driver_data;
+<<<<<<< HEAD
 	db->ioaddr = pci_resource_start(pdev, 0);
+=======
+	/* IO type range. */
+	db->ioaddr = pci_iomap(pdev, 0, 0);
+	if (!db->ioaddr) {
+		err = -ENOMEM;
+		goto err_out_free_buf;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	db->chip_revision = pdev->revision;
 	db->wol_mode = 0;
 
 	db->pdev = pdev;
 
+<<<<<<< HEAD
 	dev->base_addr = db->ioaddr;
 	dev->irq = pdev->irq;
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_set_drvdata(pdev, dev);
 	dev->netdev_ops = &netdev_ops;
 	dev->ethtool_ops = &netdev_ethtool_ops;
@@ -484,9 +556,16 @@ static int __devinit dmfe_init_one (struct pci_dev *pdev,
 		db->chip_type = 0;
 
 	/* read 64 word srom data */
+<<<<<<< HEAD
 	for (i = 0; i < 64; i++)
 		((__le16 *) db->srom)[i] =
 			cpu_to_le16(read_srom_word(db->ioaddr, i));
+=======
+	for (i = 0; i < 64; i++) {
+		((__le16 *) db->srom)[i] =
+			cpu_to_le16(read_srom_word(db->ioaddr, i));
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Set Node address */
 	for (i = 0; i < 6; i++)
@@ -494,16 +573,29 @@ static int __devinit dmfe_init_one (struct pci_dev *pdev,
 
 	err = register_netdev (dev);
 	if (err)
+<<<<<<< HEAD
 		goto err_out_free_buf;
 
 	dev_info(&dev->dev, "Davicom DM%04lx at pci%s, %pM, irq %d\n",
 		 ent->driver_data >> 16,
 		 pci_name(pdev), dev->dev_addr, dev->irq);
+=======
+		goto err_out_unmap;
+
+	dev_info(&dev->dev, "Davicom DM%04lx at pci%s, %pM, irq %d\n",
+		 ent->driver_data >> 16,
+		 pci_name(pdev), dev->dev_addr, pdev->irq);
+>>>>>>> refs/remotes/origin/master
 
 	pci_set_master(pdev);
 
 	return 0;
 
+<<<<<<< HEAD
+=======
+err_out_unmap:
+	pci_iounmap(pdev, db->ioaddr);
+>>>>>>> refs/remotes/origin/master
 err_out_free_buf:
 	pci_free_consistent(pdev, TX_BUF_ALLOC * TX_DESC_CNT + 4,
 			    db->buf_pool_ptr, db->buf_pool_dma_ptr);
@@ -515,14 +607,21 @@ err_out_res:
 err_out_disable:
 	pci_disable_device(pdev);
 err_out_free:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_netdev(dev);
 
 	return err;
 }
 
 
+<<<<<<< HEAD
 static void __devexit dmfe_remove_one (struct pci_dev *pdev)
+=======
+static void dmfe_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 	struct dmfe_board_info *db = netdev_priv(dev);
@@ -532,7 +631,11 @@ static void __devexit dmfe_remove_one (struct pci_dev *pdev)
  	if (dev) {
 
 		unregister_netdev(dev);
+<<<<<<< HEAD
 
+=======
+		pci_iounmap(db->pdev, db->ioaddr);
+>>>>>>> refs/remotes/origin/master
 		pci_free_consistent(db->pdev, sizeof(struct tx_desc) *
 					DESC_ALL_CNT + 0x20, db->desc_pool_ptr,
  					db->desc_pool_dma_ptr);
@@ -540,8 +643,11 @@ static void __devexit dmfe_remove_one (struct pci_dev *pdev)
 					db->buf_pool_ptr, db->buf_pool_dma_ptr);
 		pci_release_regions(pdev);
 		free_netdev(dev);	/* free board information */
+<<<<<<< HEAD
 
 		pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	DMFE_DBUG(0, "dmfe_remove_one() exit", 0);
@@ -555,6 +661,7 @@ static void __devexit dmfe_remove_one (struct pci_dev *pdev)
 
 static int dmfe_open(struct DEVICE *dev)
 {
+<<<<<<< HEAD
 	int ret;
 	struct dmfe_board_info *db = netdev_priv(dev);
 
@@ -562,6 +669,15 @@ static int dmfe_open(struct DEVICE *dev)
 
 	ret = request_irq(dev->irq, dmfe_interrupt,
 			  IRQF_SHARED, dev->name, dev);
+=======
+	struct dmfe_board_info *db = netdev_priv(dev);
+	const int irq = db->pdev->irq;
+	int ret;
+
+	DMFE_DBUG(0, "dmfe_open", 0);
+
+	ret = request_irq(irq, dmfe_interrupt, IRQF_SHARED, dev->name, dev);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -615,14 +731,24 @@ static int dmfe_open(struct DEVICE *dev)
 static void dmfe_init_dm910x(struct DEVICE *dev)
 {
 	struct dmfe_board_info *db = netdev_priv(dev);
+<<<<<<< HEAD
 	unsigned long ioaddr = db->ioaddr;
+=======
+	void __iomem *ioaddr = db->ioaddr;
+>>>>>>> refs/remotes/origin/master
 
 	DMFE_DBUG(0, "dmfe_init_dm910x()", 0);
 
 	/* Reset DM910x MAC controller */
+<<<<<<< HEAD
 	outl(DM910X_RESET, ioaddr + DCR0);	/* RESET MAC */
 	udelay(100);
 	outl(db->cr0_data, ioaddr + DCR0);
+=======
+	dw32(DCR0, DM910X_RESET);	/* RESET MAC */
+	udelay(100);
+	dw32(DCR0, db->cr0_data);
+>>>>>>> refs/remotes/origin/master
 	udelay(5);
 
 	/* Phy addr : DM910(A)2/DM9132/9801, phy address = 1 */
@@ -633,12 +759,21 @@ static void dmfe_init_dm910x(struct DEVICE *dev)
 	db->media_mode = dmfe_media_mode;
 
 	/* RESET Phyxcer Chip by GPR port bit 7 */
+<<<<<<< HEAD
 	outl(0x180, ioaddr + DCR12);		/* Let bit 7 output port */
 	if (db->chip_id == PCI_DM9009_ID) {
 		outl(0x80, ioaddr + DCR12);	/* Issue RESET signal */
 		mdelay(300);			/* Delay 300 ms */
 	}
 	outl(0x0, ioaddr + DCR12);	/* Clear RESET signal */
+=======
+	dw32(DCR12, 0x180);		/* Let bit 7 output port */
+	if (db->chip_id == PCI_DM9009_ID) {
+		dw32(DCR12, 0x80);	/* Issue RESET signal */
+		mdelay(300);			/* Delay 300 ms */
+	}
+	dw32(DCR12, 0x0);	/* Clear RESET signal */
+>>>>>>> refs/remotes/origin/master
 
 	/* Process Phyxcer Media Mode */
 	if ( !(db->media_mode & 0x10) )	/* Force 1M mode */
@@ -649,7 +784,11 @@ static void dmfe_init_dm910x(struct DEVICE *dev)
 		db->op_mode = db->media_mode; 	/* Force Mode */
 
 	/* Initialize Transmit/Receive decriptor and CR3/4 */
+<<<<<<< HEAD
 	dmfe_descriptor_init(dev, ioaddr);
+=======
+	dmfe_descriptor_init(dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* Init CR6 to program DM910x operation */
 	update_cr6(db->cr6_data, ioaddr);
@@ -662,10 +801,17 @@ static void dmfe_init_dm910x(struct DEVICE *dev)
 
 	/* Init CR7, interrupt active bit */
 	db->cr7_data = CR7_DEFAULT;
+<<<<<<< HEAD
 	outl(db->cr7_data, ioaddr + DCR7);
 
 	/* Init CR15, Tx jabber and Rx watchdog timer */
 	outl(db->cr15_data, ioaddr + DCR15);
+=======
+	dw32(DCR7, db->cr7_data);
+
+	/* Init CR15, Tx jabber and Rx watchdog timer */
+	dw32(DCR15, db->cr15_data);
+>>>>>>> refs/remotes/origin/master
 
 	/* Enable DM910X Tx/Rx function */
 	db->cr6_data |= CR6_RXSC | CR6_TXSC | 0x40000;
@@ -682,6 +828,10 @@ static netdev_tx_t dmfe_start_xmit(struct sk_buff *skb,
 					 struct DEVICE *dev)
 {
 	struct dmfe_board_info *db = netdev_priv(dev);
+<<<<<<< HEAD
+=======
+	void __iomem *ioaddr = db->ioaddr;
+>>>>>>> refs/remotes/origin/master
 	struct tx_desc *txptr;
 	unsigned long flags;
 
@@ -707,7 +857,11 @@ static netdev_tx_t dmfe_start_xmit(struct sk_buff *skb,
 	}
 
 	/* Disable NIC interrupt */
+<<<<<<< HEAD
 	outl(0, dev->base_addr + DCR7);
+=======
+	dw32(DCR7, 0);
+>>>>>>> refs/remotes/origin/master
 
 	/* transmit this packet */
 	txptr = db->tx_insert_ptr;
@@ -721,11 +875,19 @@ static netdev_tx_t dmfe_start_xmit(struct sk_buff *skb,
 	if ( (!db->tx_queue_cnt) && (db->tx_packet_cnt < TX_MAX_SEND_CNT) ) {
 		txptr->tdes0 = cpu_to_le32(0x80000000);	/* Set owner bit */
 		db->tx_packet_cnt++;			/* Ready to send */
+<<<<<<< HEAD
 		outl(0x1, dev->base_addr + DCR1);	/* Issue Tx polling */
 		dev->trans_start = jiffies;		/* saved time stamp */
 	} else {
 		db->tx_queue_cnt++;			/* queue TX packet */
 		outl(0x1, dev->base_addr + DCR1);	/* Issue Tx polling */
+=======
+		dw32(DCR1, 0x1);			/* Issue Tx polling */
+		dev->trans_start = jiffies;		/* saved time stamp */
+	} else {
+		db->tx_queue_cnt++;			/* queue TX packet */
+		dw32(DCR1, 0x1);			/* Issue Tx polling */
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Tx resource check */
@@ -734,7 +896,11 @@ static netdev_tx_t dmfe_start_xmit(struct sk_buff *skb,
 
 	/* Restore CR7 to enable interrupt */
 	spin_unlock_irqrestore(&db->lock, flags);
+<<<<<<< HEAD
 	outl(db->cr7_data, dev->base_addr + DCR7);
+=======
+	dw32(DCR7, db->cr7_data);
+>>>>>>> refs/remotes/origin/master
 
 	/* free this SKB */
 	dev_kfree_skb(skb);
@@ -751,7 +917,11 @@ static netdev_tx_t dmfe_start_xmit(struct sk_buff *skb,
 static int dmfe_stop(struct DEVICE *dev)
 {
 	struct dmfe_board_info *db = netdev_priv(dev);
+<<<<<<< HEAD
 	unsigned long ioaddr = dev->base_addr;
+=======
+	void __iomem *ioaddr = db->ioaddr;
+>>>>>>> refs/remotes/origin/master
 
 	DMFE_DBUG(0, "dmfe_stop", 0);
 
@@ -762,12 +932,21 @@ static int dmfe_stop(struct DEVICE *dev)
 	del_timer_sync(&db->timer);
 
 	/* Reset & stop DM910X board */
+<<<<<<< HEAD
 	outl(DM910X_RESET, ioaddr + DCR0);
 	udelay(5);
 	phy_write(db->ioaddr, db->phy_addr, 0, 0x8000, db->chip_id);
 
 	/* free interrupt */
 	free_irq(dev->irq, dev);
+=======
+	dw32(DCR0, DM910X_RESET);
+	udelay(100);
+	phy_write(ioaddr, db->phy_addr, 0, 0x8000, db->chip_id);
+
+	/* free interrupt */
+	free_irq(db->pdev->irq, dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* free allocated rx buffer */
 	dmfe_free_rxbuffer(db);
@@ -794,7 +973,11 @@ static irqreturn_t dmfe_interrupt(int irq, void *dev_id)
 {
 	struct DEVICE *dev = dev_id;
 	struct dmfe_board_info *db = netdev_priv(dev);
+<<<<<<< HEAD
 	unsigned long ioaddr = dev->base_addr;
+=======
+	void __iomem *ioaddr = db->ioaddr;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	DMFE_DBUG(0, "dmfe_interrupt()", 0);
@@ -802,15 +985,24 @@ static irqreturn_t dmfe_interrupt(int irq, void *dev_id)
 	spin_lock_irqsave(&db->lock, flags);
 
 	/* Got DM910X status */
+<<<<<<< HEAD
 	db->cr5_data = inl(ioaddr + DCR5);
 	outl(db->cr5_data, ioaddr + DCR5);
+=======
+	db->cr5_data = dr32(DCR5);
+	dw32(DCR5, db->cr5_data);
+>>>>>>> refs/remotes/origin/master
 	if ( !(db->cr5_data & 0xc1) ) {
 		spin_unlock_irqrestore(&db->lock, flags);
 		return IRQ_HANDLED;
 	}
 
 	/* Disable all interrupt in CR7 to solve the interrupt edge problem */
+<<<<<<< HEAD
 	outl(0, ioaddr + DCR7);
+=======
+	dw32(DCR7, 0);
+>>>>>>> refs/remotes/origin/master
 
 	/* Check system status */
 	if (db->cr5_data & 0x2000) {
@@ -838,11 +1030,19 @@ static irqreturn_t dmfe_interrupt(int irq, void *dev_id)
 	if (db->dm910x_chk_mode & 0x2) {
 		db->dm910x_chk_mode = 0x4;
 		db->cr6_data |= 0x100;
+<<<<<<< HEAD
 		update_cr6(db->cr6_data, db->ioaddr);
 	}
 
 	/* Restore CR7 to enable interrupt mask */
 	outl(db->cr7_data, ioaddr + DCR7);
+=======
+		update_cr6(db->cr6_data, ioaddr);
+	}
+
+	/* Restore CR7 to enable interrupt mask */
+	dw32(DCR7, db->cr7_data);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&db->lock, flags);
 	return IRQ_HANDLED;
@@ -858,11 +1058,22 @@ static irqreturn_t dmfe_interrupt(int irq, void *dev_id)
 
 static void poll_dmfe (struct net_device *dev)
 {
+<<<<<<< HEAD
 	/* disable_irq here is not very nice, but with the lockless
 	   interrupt handler we have no other choice. */
 	disable_irq(dev->irq);
 	dmfe_interrupt (dev->irq, dev);
 	enable_irq(dev->irq);
+=======
+	struct dmfe_board_info *db = netdev_priv(dev);
+	const int irq = db->pdev->irq;
+
+	/* disable_irq here is not very nice, but with the lockless
+	   interrupt handler we have no other choice. */
+	disable_irq(irq);
+	dmfe_interrupt (irq, dev);
+	enable_irq(irq);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -873,7 +1084,11 @@ static void poll_dmfe (struct net_device *dev)
 static void dmfe_free_tx_pkt(struct DEVICE *dev, struct dmfe_board_info * db)
 {
 	struct tx_desc *txptr;
+<<<<<<< HEAD
 	unsigned long ioaddr = dev->base_addr;
+=======
+	void __iomem *ioaddr = db->ioaddr;
+>>>>>>> refs/remotes/origin/master
 	u32 tdes0;
 
 	txptr = db->tx_remove_ptr;
@@ -897,7 +1112,11 @@ static void dmfe_free_tx_pkt(struct DEVICE *dev, struct dmfe_board_info * db)
 					db->tx_fifo_underrun++;
 					if ( !(db->cr6_data & CR6_SFT) ) {
 						db->cr6_data = db->cr6_data | CR6_SFT;
+<<<<<<< HEAD
 						update_cr6(db->cr6_data, db->ioaddr);
+=======
+						update_cr6(db->cr6_data, ioaddr);
+>>>>>>> refs/remotes/origin/master
 					}
 				}
 				if (tdes0 & 0x0100)
@@ -924,7 +1143,11 @@ static void dmfe_free_tx_pkt(struct DEVICE *dev, struct dmfe_board_info * db)
 		txptr->tdes0 = cpu_to_le32(0x80000000);	/* Set owner bit */
 		db->tx_packet_cnt++;			/* Ready to send */
 		db->tx_queue_cnt--;
+<<<<<<< HEAD
 		outl(0x1, ioaddr + DCR1);		/* Issue Tx polling */
+=======
+		dw32(DCR1, 0x1);			/* Issue Tx polling */
+>>>>>>> refs/remotes/origin/master
 		dev->trans_start = jiffies;		/* saved time stamp */
 	}
 
@@ -1087,12 +1310,16 @@ static void dmfe_ethtool_get_drvinfo(struct net_device *dev,
 
 	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
 	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+<<<<<<< HEAD
 	if (np->pdev)
 		strlcpy(info->bus_info, pci_name(np->pdev),
 			sizeof(info->bus_info));
 	else
 		sprintf(info->bus_info, "EISA 0x%lx %d",
 			dev->base_addr, dev->irq);
+=======
+	strlcpy(info->bus_info, pci_name(np->pdev), sizeof(info->bus_info));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int dmfe_ethtool_set_wol(struct net_device *dev,
@@ -1132,10 +1359,18 @@ static const struct ethtool_ops netdev_ethtool_ops = {
 
 static void dmfe_timer(unsigned long data)
 {
+<<<<<<< HEAD
 	u32 tmp_cr8;
 	unsigned char tmp_cr12;
 	struct DEVICE *dev = (struct DEVICE *) data;
 	struct dmfe_board_info *db = netdev_priv(dev);
+=======
+	struct net_device *dev = (struct net_device *)data;
+	struct dmfe_board_info *db = netdev_priv(dev);
+	void __iomem *ioaddr = db->ioaddr;
+	u32 tmp_cr8;
+	unsigned char tmp_cr12;
+>>>>>>> refs/remotes/origin/master
  	unsigned long flags;
 
 	int link_ok, link_ok_phy;
@@ -1148,11 +1383,18 @@ static void dmfe_timer(unsigned long data)
 		db->first_in_callback = 1;
 		if (db->chip_type && (db->chip_id==PCI_DM9102_ID)) {
 			db->cr6_data &= ~0x40000;
+<<<<<<< HEAD
 			update_cr6(db->cr6_data, db->ioaddr);
 			phy_write(db->ioaddr,
 				  db->phy_addr, 0, 0x1000, db->chip_id);
 			db->cr6_data |= 0x40000;
 			update_cr6(db->cr6_data, db->ioaddr);
+=======
+			update_cr6(db->cr6_data, ioaddr);
+			phy_write(ioaddr, db->phy_addr, 0, 0x1000, db->chip_id);
+			db->cr6_data |= 0x40000;
+			update_cr6(db->cr6_data, ioaddr);
+>>>>>>> refs/remotes/origin/master
 			db->timer.expires = DMFE_TIMER_WUT + HZ * 2;
 			add_timer(&db->timer);
 			spin_unlock_irqrestore(&db->lock, flags);
@@ -1167,7 +1409,11 @@ static void dmfe_timer(unsigned long data)
 		db->dm910x_chk_mode = 0x4;
 
 	/* Dynamic reset DM910X : system error or transmit time-out */
+<<<<<<< HEAD
 	tmp_cr8 = inl(db->ioaddr + DCR8);
+=======
+	tmp_cr8 = dr32(DCR8);
+>>>>>>> refs/remotes/origin/master
 	if ( (db->interval_rx_cnt==0) && (tmp_cr8) ) {
 		db->reset_cr8++;
 		db->wait_reset = 1;
@@ -1177,7 +1423,11 @@ static void dmfe_timer(unsigned long data)
 	/* TX polling kick monitor */
 	if ( db->tx_packet_cnt &&
 	     time_after(jiffies, dev_trans_start(dev) + DMFE_TX_KICK) ) {
+<<<<<<< HEAD
 		outl(0x1, dev->base_addr + DCR1);   /* Tx polling again */
+=======
+		dw32(DCR1, 0x1);   /* Tx polling again */
+>>>>>>> refs/remotes/origin/master
 
 		/* TX Timeout */
 		if (time_after(jiffies, dev_trans_start(dev) + DMFE_TX_TIMEOUT) ) {
@@ -1200,9 +1450,15 @@ static void dmfe_timer(unsigned long data)
 
 	/* Link status check, Dynamic media type change */
 	if (db->chip_id == PCI_DM9132_ID)
+<<<<<<< HEAD
 		tmp_cr12 = inb(db->ioaddr + DCR9 + 3);	/* DM9132 */
 	else
 		tmp_cr12 = inb(db->ioaddr + DCR12);	/* DM9102/DM9102A */
+=======
+		tmp_cr12 = dr8(DCR9 + 3);	/* DM9132 */
+	else
+		tmp_cr12 = dr8(DCR12);		/* DM9102/DM9102A */
+>>>>>>> refs/remotes/origin/master
 
 	if ( ((db->chip_id == PCI_DM9102_ID) &&
 		(db->chip_revision == 0x30)) ||
@@ -1251,7 +1507,11 @@ static void dmfe_timer(unsigned long data)
 			/* 10/100M link failed, used 1M Home-Net */
 			db->cr6_data|=0x00040000;	/* bit18=1, MII */
 			db->cr6_data&=~0x00000200;	/* bit9=0, HD mode */
+<<<<<<< HEAD
 			update_cr6(db->cr6_data, db->ioaddr);
+=======
+			update_cr6(db->cr6_data, ioaddr);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else if (!netif_carrier_ok(dev)) {
 
@@ -1288,17 +1548,30 @@ static void dmfe_timer(unsigned long data)
  *	Re-initialize DM910X board
  */
 
+<<<<<<< HEAD
 static void dmfe_dynamic_reset(struct DEVICE *dev)
 {
 	struct dmfe_board_info *db = netdev_priv(dev);
+=======
+static void dmfe_dynamic_reset(struct net_device *dev)
+{
+	struct dmfe_board_info *db = netdev_priv(dev);
+	void __iomem *ioaddr = db->ioaddr;
+>>>>>>> refs/remotes/origin/master
 
 	DMFE_DBUG(0, "dmfe_dynamic_reset()", 0);
 
 	/* Sopt MAC controller */
 	db->cr6_data &= ~(CR6_RXSC | CR6_TXSC);	/* Disable Tx/Rx */
+<<<<<<< HEAD
 	update_cr6(db->cr6_data, dev->base_addr);
 	outl(0, dev->base_addr + DCR7);		/* Disable Interrupt */
 	outl(inl(dev->base_addr + DCR5), dev->base_addr + DCR5);
+=======
+	update_cr6(db->cr6_data, ioaddr);
+	dw32(DCR7, 0);				/* Disable Interrupt */
+	dw32(DCR5, dr32(DCR5));
+>>>>>>> refs/remotes/origin/master
 
 	/* Disable upper layer interface */
 	netif_stop_queue(dev);
@@ -1364,9 +1637,16 @@ static void dmfe_reuse_skb(struct dmfe_board_info *db, struct sk_buff * skb)
  *	Using Chain structure, and allocate Tx/Rx buffer
  */
 
+<<<<<<< HEAD
 static void dmfe_descriptor_init(struct net_device *dev, unsigned long ioaddr)
 {
 	struct dmfe_board_info *db = netdev_priv(dev);
+=======
+static void dmfe_descriptor_init(struct net_device *dev)
+{
+	struct dmfe_board_info *db = netdev_priv(dev);
+	void __iomem *ioaddr = db->ioaddr;
+>>>>>>> refs/remotes/origin/master
 	struct tx_desc *tmp_tx;
 	struct rx_desc *tmp_rx;
 	unsigned char *tmp_buf;
@@ -1379,7 +1659,11 @@ static void dmfe_descriptor_init(struct net_device *dev, unsigned long ioaddr)
 	/* tx descriptor start pointer */
 	db->tx_insert_ptr = db->first_tx_desc;
 	db->tx_remove_ptr = db->first_tx_desc;
+<<<<<<< HEAD
 	outl(db->first_tx_desc_dma, ioaddr + DCR4);     /* TX DESC address */
+=======
+	dw32(DCR4, db->first_tx_desc_dma);     /* TX DESC address */
+>>>>>>> refs/remotes/origin/master
 
 	/* rx descriptor start pointer */
 	db->first_rx_desc = (void *)db->first_tx_desc +
@@ -1389,7 +1673,11 @@ static void dmfe_descriptor_init(struct net_device *dev, unsigned long ioaddr)
 			sizeof(struct tx_desc) * TX_DESC_CNT;
 	db->rx_insert_ptr = db->first_rx_desc;
 	db->rx_ready_ptr = db->first_rx_desc;
+<<<<<<< HEAD
 	outl(db->first_rx_desc_dma, ioaddr + DCR3);	/* RX DESC address */
+=======
+	dw32(DCR3, db->first_rx_desc_dma);		/* RX DESC address */
+>>>>>>> refs/remotes/origin/master
 
 	/* Init Transmit chain */
 	tmp_buf = db->buf_pool_start;
@@ -1431,14 +1719,24 @@ static void dmfe_descriptor_init(struct net_device *dev, unsigned long ioaddr)
  *	Firstly stop DM910X , then written value and start
  */
 
+<<<<<<< HEAD
 static void update_cr6(u32 cr6_data, unsigned long ioaddr)
+=======
+static void update_cr6(u32 cr6_data, void __iomem *ioaddr)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 cr6_tmp;
 
 	cr6_tmp = cr6_data & ~0x2002;           /* stop Tx/Rx */
+<<<<<<< HEAD
 	outl(cr6_tmp, ioaddr + DCR6);
 	udelay(5);
 	outl(cr6_data, ioaddr + DCR6);
+=======
+	dw32(DCR6, cr6_tmp);
+	udelay(5);
+	dw32(DCR6, cr6_data);
+>>>>>>> refs/remotes/origin/master
 	udelay(5);
 }
 
@@ -1448,6 +1746,7 @@ static void update_cr6(u32 cr6_data, unsigned long ioaddr)
  *	This setup frame initialize DM910X address filter mode
 */
 
+<<<<<<< HEAD
 static void dm9132_id_table(struct DEVICE *dev)
 {
 	struct netdev_hw_addr *ha;
@@ -1466,6 +1765,21 @@ static void dm9132_id_table(struct DEVICE *dev)
 	ioaddr += 4;
 	outw(addrptr[2], ioaddr);
 	ioaddr += 4;
+=======
+static void dm9132_id_table(struct net_device *dev)
+{
+	struct dmfe_board_info *db = netdev_priv(dev);
+	void __iomem *ioaddr = db->ioaddr + 0xc0;
+	u16 *addrptr = (u16 *)dev->dev_addr;
+	struct netdev_hw_addr *ha;
+	u16 i, hash_table[4];
+
+	/* Node address */
+	for (i = 0; i < 3; i++) {
+		dw16(0, addrptr[i]);
+		ioaddr += 4;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Clear Hash Table */
 	memset(hash_table, 0, sizeof(hash_table));
@@ -1475,13 +1789,22 @@ static void dm9132_id_table(struct DEVICE *dev)
 
 	/* the multicast address in Hash Table : 64 bits */
 	netdev_for_each_mc_addr(ha, dev) {
+<<<<<<< HEAD
 		hash_val = cal_CRC((char *) ha->addr, 6, 0) & 0x3f;
+=======
+		u32 hash_val = cal_CRC((char *)ha->addr, 6, 0) & 0x3f;
+
+>>>>>>> refs/remotes/origin/master
 		hash_table[hash_val / 16] |= (u16) 1 << (hash_val % 16);
 	}
 
 	/* Write the hash table to MAC MD table */
 	for (i = 0; i < 4; i++, ioaddr += 4)
+<<<<<<< HEAD
 		outw(hash_table[i], ioaddr);
+=======
+		dw16(0, hash_table[i]);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1490,7 +1813,11 @@ static void dm9132_id_table(struct DEVICE *dev)
  *	This setup frame initialize DM910X address filter mode
  */
 
+<<<<<<< HEAD
 static void send_filter_frame(struct DEVICE *dev)
+=======
+static void send_filter_frame(struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dmfe_board_info *db = netdev_priv(dev);
 	struct netdev_hw_addr *ha;
@@ -1535,12 +1862,23 @@ static void send_filter_frame(struct DEVICE *dev)
 
 	/* Resource Check and Send the setup packet */
 	if (!db->tx_packet_cnt) {
+<<<<<<< HEAD
 		/* Resource Empty */
 		db->tx_packet_cnt++;
 		txptr->tdes0 = cpu_to_le32(0x80000000);
 		update_cr6(db->cr6_data | 0x2000, dev->base_addr);
 		outl(0x1, dev->base_addr + DCR1);	/* Issue Tx polling */
 		update_cr6(db->cr6_data, dev->base_addr);
+=======
+		void __iomem *ioaddr = db->ioaddr;
+
+		/* Resource Empty */
+		db->tx_packet_cnt++;
+		txptr->tdes0 = cpu_to_le32(0x80000000);
+		update_cr6(db->cr6_data | 0x2000, ioaddr);
+		dw32(DCR1, 0x1);	/* Issue Tx polling */
+		update_cr6(db->cr6_data, ioaddr);
+>>>>>>> refs/remotes/origin/master
 		dev->trans_start = jiffies;
 	} else
 		db->tx_queue_cnt++;	/* Put in TX queue */
@@ -1575,10 +1913,28 @@ static void allocate_rx_buffer(struct net_device *dev)
 	db->rx_insert_ptr = rxptr;
 }
 
+<<<<<<< HEAD
+=======
+static void srom_clk_write(void __iomem *ioaddr, u32 data)
+{
+	static const u32 cmd[] = {
+		CR9_SROM_READ | CR9_SRCS,
+		CR9_SROM_READ | CR9_SRCS | CR9_SRCLK,
+		CR9_SROM_READ | CR9_SRCS
+	};
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(cmd); i++) {
+		dw32(DCR9, data | cmd[i]);
+		udelay(5);
+	}
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	Read one word data from the serial ROM
  */
+<<<<<<< HEAD
 
 static u16 read_srom_word(long ioaddr, int offset)
 {
@@ -1593,10 +1949,27 @@ static u16 read_srom_word(long ioaddr, int offset)
 	SROM_CLK_WRITE(SROM_DATA_1, cr9_ioaddr);
 	SROM_CLK_WRITE(SROM_DATA_1, cr9_ioaddr);
 	SROM_CLK_WRITE(SROM_DATA_0, cr9_ioaddr);
+=======
+static u16 read_srom_word(void __iomem *ioaddr, int offset)
+{
+	u16 srom_data;
+	int i;
+
+	dw32(DCR9, CR9_SROM_READ);
+	udelay(5);
+	dw32(DCR9, CR9_SROM_READ | CR9_SRCS);
+	udelay(5);
+
+	/* Send the Read Command 110b */
+	srom_clk_write(ioaddr, SROM_DATA_1);
+	srom_clk_write(ioaddr, SROM_DATA_1);
+	srom_clk_write(ioaddr, SROM_DATA_0);
+>>>>>>> refs/remotes/origin/master
 
 	/* Send the offset */
 	for (i = 5; i >= 0; i--) {
 		srom_data = (offset & (1 << i)) ? SROM_DATA_1 : SROM_DATA_0;
+<<<<<<< HEAD
 		SROM_CLK_WRITE(srom_data, cr9_ioaddr);
 	}
 
@@ -1612,6 +1985,25 @@ static u16 read_srom_word(long ioaddr, int offset)
 	}
 
 	outl(CR9_SROM_READ, cr9_ioaddr);
+=======
+		srom_clk_write(ioaddr, srom_data);
+	}
+
+	dw32(DCR9, CR9_SROM_READ | CR9_SRCS);
+	udelay(5);
+
+	for (i = 16; i > 0; i--) {
+		dw32(DCR9, CR9_SROM_READ | CR9_SRCS | CR9_SRCLK);
+		udelay(5);
+		srom_data = (srom_data << 1) |
+				((dr32(DCR9) & CR9_CRDOUT) ? 1 : 0);
+		dw32(DCR9, CR9_SROM_READ | CR9_SRCS);
+		udelay(5);
+	}
+
+	dw32(DCR9, CR9_SROM_READ);
+	udelay(5);
+>>>>>>> refs/remotes/origin/master
 	return srom_data;
 }
 
@@ -1620,13 +2012,23 @@ static u16 read_srom_word(long ioaddr, int offset)
  *	Auto sense the media mode
  */
 
+<<<<<<< HEAD
 static u8 dmfe_sense_speed(struct dmfe_board_info * db)
 {
+=======
+static u8 dmfe_sense_speed(struct dmfe_board_info *db)
+{
+	void __iomem *ioaddr = db->ioaddr;
+>>>>>>> refs/remotes/origin/master
 	u8 ErrFlag = 0;
 	u16 phy_mode;
 
 	/* CR6 bit18=0, select 10/100M */
+<<<<<<< HEAD
 	update_cr6( (db->cr6_data & ~0x40000), db->ioaddr);
+=======
+	update_cr6(db->cr6_data & ~0x40000, ioaddr);
+>>>>>>> refs/remotes/origin/master
 
 	phy_mode = phy_read(db->ioaddr, db->phy_addr, 1, db->chip_id);
 	phy_mode = phy_read(db->ioaddr, db->phy_addr, 1, db->chip_id);
@@ -1665,11 +2067,19 @@ static u8 dmfe_sense_speed(struct dmfe_board_info * db)
 
 static void dmfe_set_phyxcer(struct dmfe_board_info *db)
 {
+<<<<<<< HEAD
+=======
+	void __iomem *ioaddr = db->ioaddr;
+>>>>>>> refs/remotes/origin/master
 	u16 phy_reg;
 
 	/* Select 10/100M phyxcer */
 	db->cr6_data &= ~0x40000;
+<<<<<<< HEAD
 	update_cr6(db->cr6_data, db->ioaddr);
+=======
+	update_cr6(db->cr6_data, ioaddr);
+>>>>>>> refs/remotes/origin/master
 
 	/* DM9009 Chip: Phyxcer reg18 bit12=0 */
 	if (db->chip_id == PCI_DM9009_ID) {
@@ -1765,6 +2175,7 @@ static void dmfe_process_mode(struct dmfe_board_info *db)
  *	Write a word to Phy register
  */
 
+<<<<<<< HEAD
 static void phy_write(unsigned long iobase, u8 phy_addr, u8 offset,
 		      u16 phy_data, u32 chip_id)
 {
@@ -1777,6 +2188,17 @@ static void phy_write(unsigned long iobase, u8 phy_addr, u8 offset,
 	} else {
 		/* DM9102/DM9102A Chip */
 		ioaddr = iobase + DCR9;
+=======
+static void phy_write(void __iomem *ioaddr, u8 phy_addr, u8 offset,
+		      u16 phy_data, u32 chip_id)
+{
+	u16 i;
+
+	if (chip_id == PCI_DM9132_ID) {
+		dw16(0x80 + offset * 4, phy_data);
+	} else {
+		/* DM9102/DM9102A Chip */
+>>>>>>> refs/remotes/origin/master
 
 		/* Send 33 synchronization clock to Phy controller */
 		for (i = 0; i < 35; i++)
@@ -1816,6 +2238,7 @@ static void phy_write(unsigned long iobase, u8 phy_addr, u8 offset,
  *	Read a word data from phy register
  */
 
+<<<<<<< HEAD
 static u16 phy_read(unsigned long iobase, u8 phy_addr, u8 offset, u32 chip_id)
 {
 	int i;
@@ -1829,6 +2252,18 @@ static u16 phy_read(unsigned long iobase, u8 phy_addr, u8 offset, u32 chip_id)
 	} else {
 		/* DM9102/DM9102A Chip */
 		ioaddr = iobase + DCR9;
+=======
+static u16 phy_read(void __iomem *ioaddr, u8 phy_addr, u8 offset, u32 chip_id)
+{
+	int i;
+	u16 phy_data;
+
+	if (chip_id == PCI_DM9132_ID) {
+		/* DM9132 Chip */
+		phy_data = dr16(0x80 + offset * 4);
+	} else {
+		/* DM9102/DM9102A Chip */
+>>>>>>> refs/remotes/origin/master
 
 		/* Send 33 synchronization clock to Phy controller */
 		for (i = 0; i < 35; i++)
@@ -1870,6 +2305,7 @@ static u16 phy_read(unsigned long iobase, u8 phy_addr, u8 offset, u32 chip_id)
  *	Write one bit data to Phy Controller
  */
 
+<<<<<<< HEAD
 static void phy_write_1bit(unsigned long ioaddr, u32 phy_data)
 {
 	outl(phy_data, ioaddr);			/* MII Clock Low */
@@ -1877,6 +2313,15 @@ static void phy_write_1bit(unsigned long ioaddr, u32 phy_data)
 	outl(phy_data | MDCLKH, ioaddr);	/* MII Clock High */
 	udelay(1);
 	outl(phy_data, ioaddr);			/* MII Clock Low */
+=======
+static void phy_write_1bit(void __iomem *ioaddr, u32 phy_data)
+{
+	dw32(DCR9, phy_data);		/* MII Clock Low */
+	udelay(1);
+	dw32(DCR9, phy_data | MDCLKH);	/* MII Clock High */
+	udelay(1);
+	dw32(DCR9, phy_data);		/* MII Clock Low */
+>>>>>>> refs/remotes/origin/master
 	udelay(1);
 }
 
@@ -1885,6 +2330,7 @@ static void phy_write_1bit(unsigned long ioaddr, u32 phy_data)
  *	Read one bit phy data from PHY controller
  */
 
+<<<<<<< HEAD
 static u16 phy_read_1bit(unsigned long ioaddr)
 {
 	u16 phy_data;
@@ -1893,6 +2339,16 @@ static u16 phy_read_1bit(unsigned long ioaddr)
 	udelay(1);
 	phy_data = ( inl(ioaddr) >> 19 ) & 0x1;
 	outl(0x40000, ioaddr);
+=======
+static u16 phy_read_1bit(void __iomem *ioaddr)
+{
+	u16 phy_data;
+
+	dw32(DCR9, 0x50000);
+	udelay(1);
+	phy_data = (dr32(DCR9) >> 19) & 0x1;
+	dw32(DCR9, 0x40000);
+>>>>>>> refs/remotes/origin/master
 	udelay(1);
 
 	return phy_data;
@@ -1978,7 +2434,11 @@ static void dmfe_parse_srom(struct dmfe_board_info * db)
 
 	/* Check DM9801 or DM9802 present or not */
 	db->HPNA_present = 0;
+<<<<<<< HEAD
 	update_cr6(db->cr6_data|0x40000, db->ioaddr);
+=======
+	update_cr6(db->cr6_data | 0x40000, db->ioaddr);
+>>>>>>> refs/remotes/origin/master
 	tmp_reg = phy_read(db->ioaddr, db->phy_addr, 3, db->chip_id);
 	if ( ( tmp_reg & 0xfff0 ) == 0xb900 ) {
 		/* DM9801 or DM9802 present */
@@ -2095,6 +2555,10 @@ static int dmfe_suspend(struct pci_dev *pci_dev, pm_message_t state)
 {
 	struct net_device *dev = pci_get_drvdata(pci_dev);
 	struct dmfe_board_info *db = netdev_priv(dev);
+<<<<<<< HEAD
+=======
+	void __iomem *ioaddr = db->ioaddr;
+>>>>>>> refs/remotes/origin/master
 	u32 tmp;
 
 	/* Disable upper layer interface */
@@ -2102,11 +2566,19 @@ static int dmfe_suspend(struct pci_dev *pci_dev, pm_message_t state)
 
 	/* Disable Tx/Rx */
 	db->cr6_data &= ~(CR6_RXSC | CR6_TXSC);
+<<<<<<< HEAD
 	update_cr6(db->cr6_data, dev->base_addr);
 
 	/* Disable Interrupt */
 	outl(0, dev->base_addr + DCR7);
 	outl(inl (dev->base_addr + DCR5), dev->base_addr + DCR5);
+=======
+	update_cr6(db->cr6_data, ioaddr);
+
+	/* Disable Interrupt */
+	dw32(DCR7, 0);
+	dw32(DCR5, dr32(DCR5));
+>>>>>>> refs/remotes/origin/master
 
 	/* Fre RX buffers */
 	dmfe_free_rxbuffer(db);
@@ -2166,7 +2638,11 @@ static struct pci_driver dmfe_driver = {
 	.name		= "dmfe",
 	.id_table	= dmfe_pci_tbl,
 	.probe		= dmfe_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(dmfe_remove_one),
+=======
+	.remove		= dmfe_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.suspend        = dmfe_suspend,
 	.resume         = dmfe_resume
 };

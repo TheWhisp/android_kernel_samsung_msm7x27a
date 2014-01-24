@@ -22,7 +22,10 @@
 
 #include <linux/module.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/delay.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/init.h>
 #include <linux/err.h>
@@ -34,7 +37,11 @@
 #include <linux/hwmon-sysfs.h>
 
 #include <plat/adc.h>
+<<<<<<< HEAD
 #include <plat/hwmon.h>
+=======
+#include <linux/platform_data/hwmon-s3c.h>
+>>>>>>> refs/remotes/origin/master
 
 struct s3c_hwmon_attr {
 	struct sensor_device_attribute	in;
@@ -108,6 +115,7 @@ static ssize_t s3c_hwmon_show_raw(struct device *dev,
 	return  (ret < 0) ? ret : snprintf(buf, PAGE_SIZE, "%d\n", ret);
 }
 
+<<<<<<< HEAD
 #define DEF_ADC_ATTR(x)	\
 	static SENSOR_DEVICE_ATTR(adc##x##_raw, S_IRUGO, s3c_hwmon_show_raw, NULL, x)
 
@@ -119,6 +127,16 @@ DEF_ADC_ATTR(4);
 DEF_ADC_ATTR(5);
 DEF_ADC_ATTR(6);
 DEF_ADC_ATTR(7);
+=======
+static SENSOR_DEVICE_ATTR(adc0_raw, S_IRUGO, s3c_hwmon_show_raw, NULL, 0);
+static SENSOR_DEVICE_ATTR(adc1_raw, S_IRUGO, s3c_hwmon_show_raw, NULL, 1);
+static SENSOR_DEVICE_ATTR(adc2_raw, S_IRUGO, s3c_hwmon_show_raw, NULL, 2);
+static SENSOR_DEVICE_ATTR(adc3_raw, S_IRUGO, s3c_hwmon_show_raw, NULL, 3);
+static SENSOR_DEVICE_ATTR(adc4_raw, S_IRUGO, s3c_hwmon_show_raw, NULL, 4);
+static SENSOR_DEVICE_ATTR(adc5_raw, S_IRUGO, s3c_hwmon_show_raw, NULL, 5);
+static SENSOR_DEVICE_ATTR(adc6_raw, S_IRUGO, s3c_hwmon_show_raw, NULL, 6);
+static SENSOR_DEVICE_ATTR(adc7_raw, S_IRUGO, s3c_hwmon_show_raw, NULL, 7);
+>>>>>>> refs/remotes/origin/master
 
 static struct attribute *s3c_hwmon_attrs[9] = {
 	&sensor_dev_attr_adc0_raw.dev_attr.attr,
@@ -169,7 +187,11 @@ static ssize_t s3c_hwmon_ch_show(struct device *dev,
 {
 	struct sensor_device_attribute *sen_attr = to_sensor_dev_attr(attr);
 	struct s3c_hwmon *hwmon = platform_get_drvdata(to_platform_device(dev));
+<<<<<<< HEAD
 	struct s3c_hwmon_pdata *pdata = dev->platform_data;
+=======
+	struct s3c_hwmon_pdata *pdata = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct s3c_hwmon_chcfg *cfg;
 	int ret;
 
@@ -198,7 +220,11 @@ static ssize_t s3c_hwmon_label_show(struct device *dev,
 				    char *buf)
 {
 	struct sensor_device_attribute *sen_attr = to_sensor_dev_attr(attr);
+<<<<<<< HEAD
 	struct s3c_hwmon_pdata *pdata = dev->platform_data;
+=======
+	struct s3c_hwmon_pdata *pdata = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct s3c_hwmon_chcfg *cfg;
 
 	cfg = pdata->in[sen_attr->index];
@@ -276,9 +302,15 @@ static void s3c_hwmon_remove_attr(struct device *dev,
  * s3c_hwmon_probe - device probe entry.
  * @dev: The device being probed.
 */
+<<<<<<< HEAD
 static int __devinit s3c_hwmon_probe(struct platform_device *dev)
 {
 	struct s3c_hwmon_pdata *pdata = dev->dev.platform_data;
+=======
+static int s3c_hwmon_probe(struct platform_device *dev)
+{
+	struct s3c_hwmon_pdata *pdata = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct s3c_hwmon *hwmon;
 	int ret = 0;
 	int i;
@@ -288,7 +320,11 @@ static int __devinit s3c_hwmon_probe(struct platform_device *dev)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	hwmon = kzalloc(sizeof(struct s3c_hwmon), GFP_KERNEL);
+=======
+	hwmon = devm_kzalloc(&dev->dev, sizeof(struct s3c_hwmon), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (hwmon == NULL) {
 		dev_err(&dev->dev, "no memory\n");
 		return -ENOMEM;
@@ -303,8 +339,12 @@ static int __devinit s3c_hwmon_probe(struct platform_device *dev)
 	hwmon->client = s3c_adc_register(dev, NULL, NULL, 0);
 	if (IS_ERR(hwmon->client)) {
 		dev_err(&dev->dev, "cannot register adc\n");
+<<<<<<< HEAD
 		ret = PTR_ERR(hwmon->client);
 		goto err_mem;
+=======
+		return PTR_ERR(hwmon->client);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* add attributes for our adc devices. */
@@ -363,12 +403,19 @@ static int __devinit s3c_hwmon_probe(struct platform_device *dev)
  err_registered:
 	s3c_adc_release(hwmon->client);
 
+<<<<<<< HEAD
  err_mem:
 	kfree(hwmon);
 	return ret;
 }
 
 static int __devexit s3c_hwmon_remove(struct platform_device *dev)
+=======
+	return ret;
+}
+
+static int s3c_hwmon_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s3c_hwmon *hwmon = platform_get_drvdata(dev);
 	int i;
@@ -390,6 +437,7 @@ static struct platform_driver s3c_hwmon_driver = {
 		.owner		= THIS_MODULE,
 	},
 	.probe		= s3c_hwmon_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(s3c_hwmon_remove),
 };
 
@@ -409,6 +457,12 @@ module_exit(s3c_hwmon_exit);
 =======
 module_platform_driver(s3c_hwmon_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= s3c_hwmon_remove,
+};
+
+module_platform_driver(s3c_hwmon_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
 MODULE_DESCRIPTION("S3C ADC HWMon driver");

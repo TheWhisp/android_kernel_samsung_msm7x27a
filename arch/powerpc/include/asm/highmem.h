@@ -80,10 +80,14 @@ static inline void kunmap(struct page *page)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void *__kmap_atomic(struct page *page)
 =======
 static inline void *kmap_atomic(struct page *page)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void *kmap_atomic(struct page *page)
+>>>>>>> refs/remotes/origin/master
 {
 	return kmap_atomic_prot(page, kmap_prot);
 }

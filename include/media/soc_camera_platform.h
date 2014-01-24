@@ -14,9 +14,13 @@
 #include <linux/videodev2.h>
 #include <media/soc_camera.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <media/v4l2-mediabus.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <media/v4l2-mediabus.h>
+>>>>>>> refs/remotes/origin/master
 
 struct device;
 
@@ -25,6 +29,7 @@ struct soc_camera_platform_info {
 	unsigned long format_depth;
 	struct v4l2_mbus_framefmt format;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long bus_param;
 	struct device *dev;
 =======
@@ -32,6 +37,11 @@ struct soc_camera_platform_info {
 	enum v4l2_mbus_type mbus_type;
 	struct soc_camera_device *icd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long mbus_param;
+	enum v4l2_mbus_type mbus_type;
+	struct soc_camera_device *icd;
+>>>>>>> refs/remotes/origin/master
 	int (*set_capture)(struct soc_camera_platform_info *info, int enable);
 };
 
@@ -41,16 +51,21 @@ static inline void soc_camera_platform_release(struct platform_device **pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int soc_camera_platform_add(const struct soc_camera_link *icl,
 					  struct device *dev,
 =======
 static inline int soc_camera_platform_add(struct soc_camera_device *icd,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int soc_camera_platform_add(struct soc_camera_device *icd,
+>>>>>>> refs/remotes/origin/master
 					  struct platform_device **pdev,
 					  struct soc_camera_link *plink,
 					  void (*release)(struct device *dev),
 					  int id)
 {
+<<<<<<< HEAD
 	struct soc_camera_platform_info *info = plink->priv;
 	int ret;
 
@@ -59,6 +74,14 @@ static inline int soc_camera_platform_add(struct soc_camera_device *icd,
 =======
 	if (icd->link != plink)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct soc_camera_subdev_desc *ssdd =
+		(struct soc_camera_subdev_desc *)plink;
+	struct soc_camera_platform_info *info = ssdd->drv_priv;
+	int ret;
+
+	if (&icd->sdesc->subdev_desc != ssdd)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	if (*pdev)
@@ -69,10 +92,14 @@ static inline int soc_camera_platform_add(struct soc_camera_device *icd,
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	info->dev = dev;
 =======
 	info->icd = icd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	info->icd = icd;
+>>>>>>> refs/remotes/origin/master
 
 	(*pdev)->dev.platform_data = info;
 	(*pdev)->dev.release = release;
@@ -82,15 +109,20 @@ static inline int soc_camera_platform_add(struct soc_camera_device *icd,
 		platform_device_put(*pdev);
 		*pdev = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		info->dev = NULL;
 =======
 		info->icd = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		info->icd = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline void soc_camera_platform_del(const struct soc_camera_link *icl,
 					   struct platform_device *pdev,
@@ -98,12 +130,20 @@ static inline void soc_camera_platform_del(const struct soc_camera_link *icl,
 {
 	if (icl != plink || !pdev)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void soc_camera_platform_del(const struct soc_camera_device *icd,
 					   struct platform_device *pdev,
 					   const struct soc_camera_link *plink)
 {
+<<<<<<< HEAD
 	if (icd->link != plink || !pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct soc_camera_subdev_desc *ssdd =
+		(const struct soc_camera_subdev_desc *)plink;
+	if (&icd->sdesc->subdev_desc != ssdd || !pdev)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	platform_device_unregister(pdev);

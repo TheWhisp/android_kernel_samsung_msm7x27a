@@ -2,6 +2,7 @@
 #define _ASM_X86_SIGNAL_H
 
 #ifndef __ASSEMBLY__
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/time.h>
 #include <linux/compiler.h>
@@ -10,6 +11,8 @@
 struct siginfo;
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/linkage.h>
 
 /* Most things should be clean enough to redefine this at will, if care
@@ -31,6 +34,7 @@ typedef struct {
 	unsigned long sig[_NSIG_WORDS];
 } sigset_t;
 
+<<<<<<< HEAD
 #else
 /* Here we must cater to libcs that poke about in kernel headers.  */
 
@@ -186,6 +190,19 @@ typedef struct sigaltstack {
 } stack_t;
 
 #ifdef __KERNEL__
+=======
+#ifndef CONFIG_COMPAT
+typedef sigset_t compat_sigset_t;
+#endif
+
+#endif /* __ASSEMBLY__ */
+#include <uapi/asm/signal.h>
+#ifndef __ASSEMBLY__
+extern void do_notify_resume(struct pt_regs *, void *, __u32);
+
+#define __ARCH_HAS_SA_RESTORER
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/sigcontext.h>
 
 #ifdef __i386__
@@ -258,9 +275,13 @@ struct pt_regs;
 
 #endif /* !__i386__ */
 
+<<<<<<< HEAD
 #define ptrace_signal_deliver(regs, cookie) do { } while (0)
 
 #endif /* __KERNEL__ */
 #endif /* __ASSEMBLY__ */
 
+=======
+#endif /* __ASSEMBLY__ */
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_SIGNAL_H */

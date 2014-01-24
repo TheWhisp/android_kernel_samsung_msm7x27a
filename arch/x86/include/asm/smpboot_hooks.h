@@ -11,14 +11,20 @@ static inline void smpboot_clear_io_apic_irqs(void)
 static inline void smpboot_setup_warm_reset_vector(unsigned long start_eip)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	CMOS_WRITE(0xa, 0xf);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	spin_lock_irqsave(&rtc_lock, flags);
 	CMOS_WRITE(0xa, 0xf);
 	spin_unlock_irqrestore(&rtc_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	local_flush_tlb();
 	pr_debug("1.\n");
 	*((volatile unsigned short *)phys_to_virt(apic->trampoline_phys_high)) =
@@ -32,10 +38,15 @@ static inline void smpboot_setup_warm_reset_vector(unsigned long start_eip)
 static inline void smpboot_restore_warm_reset_vector(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long flags;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long flags;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Install writable page 0 entry to set BIOS data area.
 	 */
@@ -46,12 +57,18 @@ static inline void smpboot_restore_warm_reset_vector(void)
 	 * to default values.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	CMOS_WRITE(0, 0xf);
 =======
 	spin_lock_irqsave(&rtc_lock, flags);
 	CMOS_WRITE(0, 0xf);
 	spin_unlock_irqrestore(&rtc_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&rtc_lock, flags);
+	CMOS_WRITE(0, 0xf);
+	spin_unlock_irqrestore(&rtc_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	*((volatile u32 *)phys_to_virt(apic->trampoline_phys_low)) = 0;
 }

@@ -26,9 +26,16 @@
  * at 0 on boot (but people really shouldn't rely on that).
  *
  * cpu_clock(i)       -- can be used from any context, including NMI.
+<<<<<<< HEAD
  * sched_clock_cpu(i) -- must be used with local IRQs disabled (implied by NMI)
  * local_clock()      -- is cpu_clock() on the current cpu.
  *
+=======
+ * local_clock()      -- is cpu_clock() on the current cpu.
+ *
+ * sched_clock_cpu(i)
+ *
+>>>>>>> refs/remotes/origin/master
  * How:
  *
  * The implementation either uses sched_clock() when
@@ -50,6 +57,7 @@
  * Furthermore, explicit sleep and wakeup hooks allow us to account for time
  * that is otherwise invisible (TSC gets stopped).
  *
+<<<<<<< HEAD
  *
  * Notes:
  *
@@ -59,6 +67,8 @@
  * sched_clock_cpu() should mitigate serious artifacts we cannot rely on it
  * in general since for !CONFIG_HAVE_UNSTABLE_SCHED_CLOCK we fully rely on
  * sched_clock().
+=======
+>>>>>>> refs/remotes/origin/master
  */
 #include <linux/spinlock.h>
 #include <linux/hardirq.h>
@@ -66,6 +76,11 @@
 #include <linux/percpu.h>
 #include <linux/ktime.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+=======
+#include <linux/static_key.h>
+#include <linux/workqueue.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Scheduler clock - returns current time in nanosec units.
@@ -82,7 +97,41 @@ EXPORT_SYMBOL_GPL(sched_clock);
 __read_mostly int sched_clock_running;
 
 #ifdef CONFIG_HAVE_UNSTABLE_SCHED_CLOCK
+<<<<<<< HEAD
 __read_mostly int sched_clock_stable;
+=======
+static struct static_key __sched_clock_stable = STATIC_KEY_INIT;
+
+int sched_clock_stable(void)
+{
+	if (static_key_false(&__sched_clock_stable))
+		return false;
+	return true;
+}
+
+void set_sched_clock_stable(void)
+{
+	if (!sched_clock_stable())
+		static_key_slow_dec(&__sched_clock_stable);
+}
+
+static void __clear_sched_clock_stable(struct work_struct *work)
+{
+	/* XXX worry about clock continuity */
+	if (sched_clock_stable())
+		static_key_slow_inc(&__sched_clock_stable);
+}
+
+static DECLARE_WORK(sched_clock_work, __clear_sched_clock_stable);
+
+void clear_sched_clock_stable(void)
+{
+	if (keventd_up())
+		schedule_work(&sched_clock_work);
+	else
+		__clear_sched_clock_stable(&sched_clock_work);
+}
+>>>>>>> refs/remotes/origin/master
 
 struct sched_clock_data {
 	u64			tick_raw;
@@ -242,20 +291,32 @@ u64 sched_clock_cpu(int cpu)
 	struct sched_clock_data *scd;
 	u64 clock;
 
+<<<<<<< HEAD
 	WARN_ON_ONCE(!irqs_disabled());
 
 	if (sched_clock_stable)
+=======
+	if (sched_clock_stable())
+>>>>>>> refs/remotes/origin/master
 		return sched_clock();
 
 	if (unlikely(!sched_clock_running))
 		return 0ull;
 
+<<<<<<< HEAD
+=======
+	preempt_disable();
+>>>>>>> refs/remotes/origin/master
 	scd = cpu_sdc(cpu);
 
 	if (cpu != smp_processor_id())
 		clock = sched_clock_remote(scd);
 	else
 		clock = sched_clock_local(scd);
+<<<<<<< HEAD
+=======
+	preempt_enable();
+>>>>>>> refs/remotes/origin/master
 
 	return clock;
 }
@@ -265,7 +326,11 @@ void sched_clock_tick(void)
 	struct sched_clock_data *scd;
 	u64 now, now_gtod;
 
+<<<<<<< HEAD
 	if (sched_clock_stable)
+=======
+	if (sched_clock_stable())
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	if (unlikely(!sched_clock_running))
@@ -316,6 +381,7 @@ EXPORT_SYMBOL_GPL(sched_clock_idle_wakeup_event);
  */
 u64 cpu_clock(int cpu)
 {
+<<<<<<< HEAD
 	u64 clock;
 	unsigned long flags;
 
@@ -324,6 +390,12 @@ u64 cpu_clock(int cpu)
 	local_irq_restore(flags);
 
 	return clock;
+=======
+	if (static_key_false(&__sched_clock_stable))
+		return sched_clock_cpu(cpu);
+
+	return sched_clock();
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -335,6 +407,7 @@ u64 cpu_clock(int cpu)
  */
 u64 local_clock(void)
 {
+<<<<<<< HEAD
 	u64 clock;
 	unsigned long flags;
 
@@ -343,6 +416,12 @@ u64 local_clock(void)
 	local_irq_restore(flags);
 
 	return clock;
+=======
+	if (static_key_false(&__sched_clock_stable))
+		return sched_clock_cpu(raw_smp_processor_id());
+
+	return sched_clock();
+>>>>>>> refs/remotes/origin/master
 }
 
 #else /* CONFIG_HAVE_UNSTABLE_SCHED_CLOCK */
@@ -362,12 +441,20 @@ u64 sched_clock_cpu(int cpu)
 
 u64 cpu_clock(int cpu)
 {
+<<<<<<< HEAD
 	return sched_clock_cpu(cpu);
+=======
+	return sched_clock();
+>>>>>>> refs/remotes/origin/master
 }
 
 u64 local_clock(void)
 {
+<<<<<<< HEAD
 	return sched_clock_cpu(0);
+=======
+	return sched_clock();
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* CONFIG_HAVE_UNSTABLE_SCHED_CLOCK */

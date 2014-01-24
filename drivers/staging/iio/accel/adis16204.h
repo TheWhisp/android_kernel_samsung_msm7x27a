@@ -3,9 +3,12 @@
 
 #define ADIS16204_STARTUP_DELAY	220 /* ms */
 
+<<<<<<< HEAD
 #define ADIS16204_READ_REG(a)    a
 #define ADIS16204_WRITE_REG(a) ((a) | 0x80)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define ADIS16204_FLASH_CNT      0x00 /* Flash memory write count */
 #define ADIS16204_SUPPLY_OUT     0x02 /* Output, power supply */
 #define ADIS16204_XACCL_OUT      0x04 /* Output, x-axis accelerometer */
@@ -35,8 +38,11 @@
 #define ADIS16204_DIAG_STAT      0x3C /* Diagnostics, system status register */
 #define ADIS16204_GLOB_CMD       0x3E /* Operation, system command register */
 
+<<<<<<< HEAD
 #define ADIS16204_OUTPUTS        5
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* MSC_CTRL */
 #define ADIS16204_MSC_CTRL_PWRUP_SELF_TEST	(1 << 10) /* Self-test at power-on: 1 = disabled, 0 = enabled */
 #define ADIS16204_MSC_CTRL_SELF_TEST_EN	        (1 << 8)  /* Self-test enable */
@@ -47,18 +53,28 @@
 /* DIAG_STAT */
 #define ADIS16204_DIAG_STAT_ALARM2        (1<<9) /* Alarm 2 status: 1 = alarm active, 0 = alarm inactive */
 #define ADIS16204_DIAG_STAT_ALARM1        (1<<8) /* Alarm 1 status: 1 = alarm active, 0 = alarm inactive */
+<<<<<<< HEAD
 #define ADIS16204_DIAG_STAT_SELFTEST_FAIL (1<<5) /* Self-test diagnostic error flag: 1 = error condition,
 						0 = normal operation */
 #define ADIS16204_DIAG_STAT_SPI_FAIL	  (1<<3) /* SPI communications failure */
 #define ADIS16204_DIAG_STAT_FLASH_UPT	  (1<<2) /* Flash update failure */
 #define ADIS16204_DIAG_STAT_POWER_HIGH	  (1<<1) /* Power supply above 3.625 V */
 #define ADIS16204_DIAG_STAT_POWER_LOW	  (1<<0) /* Power supply below 2.975 V */
+=======
+#define ADIS16204_DIAG_STAT_SELFTEST_FAIL_BIT 5 /* Self-test diagnostic error flag: 1 = error condition,
+						0 = normal operation */
+#define ADIS16204_DIAG_STAT_SPI_FAIL_BIT      3 /* SPI communications failure */
+#define ADIS16204_DIAG_STAT_FLASH_UPT_BIT     2 /* Flash update failure */
+#define ADIS16204_DIAG_STAT_POWER_HIGH_BIT    1 /* Power supply above 3.625 V */
+#define ADIS16204_DIAG_STAT_POWER_LOW_BIT     0 /* Power supply below 2.975 V */
+>>>>>>> refs/remotes/origin/master
 
 /* GLOB_CMD */
 #define ADIS16204_GLOB_CMD_SW_RESET	(1<<7)
 #define ADIS16204_GLOB_CMD_CLEAR_STAT	(1<<4)
 #define ADIS16204_GLOB_CMD_FACTORY_CAL	(1<<1)
 
+<<<<<<< HEAD
 #define ADIS16204_MAX_TX 24
 #define ADIS16204_MAX_RX 24
 
@@ -99,10 +115,20 @@ enum adis16204_scan {
 	ADIS16204_SCAN_SUPPLY,
 	ADIS16204_SCAN_ACC_X,
 	ADIS16204_SCAN_ACC_Y,
+=======
+#define ADIS16204_ERROR_ACTIVE          (1<<14)
+
+enum adis16204_scan {
+	ADIS16204_SCAN_ACC_X,
+	ADIS16204_SCAN_ACC_Y,
+	ADIS16204_SCAN_ACC_XY,
+	ADIS16204_SCAN_SUPPLY,
+>>>>>>> refs/remotes/origin/master
 	ADIS16204_SCAN_AUX_ADC,
 	ADIS16204_SCAN_TEMP,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_IIO_RING_BUFFER
 =======
@@ -155,4 +181,6 @@ static inline void adis16204_unconfigure_ring(struct iio_dev *indio_dev)
 =======
 #endif /* CONFIG_IIO_BUFFER */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* SPI_ADIS16204_H_ */

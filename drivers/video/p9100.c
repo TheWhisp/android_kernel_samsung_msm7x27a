@@ -249,7 +249,11 @@ static void p9100_init_fix(struct fb_info *info, int linebytes, struct device_no
 	info->fix.accel = FB_ACCEL_SUN_CGTHREE;
 }
 
+<<<<<<< HEAD
 static int __devinit p9100_probe(struct platform_device *op)
+=======
+static int p9100_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dp = op->dev.of_node;
 	struct fb_info *info;
@@ -326,7 +330,11 @@ out_err:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit p9100_remove(struct platform_device *op)
+=======
+static int p9100_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = dev_get_drvdata(&op->dev);
 	struct p9100_par *par = info->par;
@@ -339,8 +347,11 @@ static int __devexit p9100_remove(struct platform_device *op)
 
 	framebuffer_release(info);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -359,7 +370,11 @@ static struct platform_driver p9100_driver = {
 		.of_match_table = p9100_match,
 	},
 	.probe		= p9100_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(p9100_remove),
+=======
+	.remove		= p9100_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init p9100_init(void)

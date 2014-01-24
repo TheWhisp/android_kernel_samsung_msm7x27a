@@ -567,6 +567,7 @@ static void serpent_decrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
 	__serpent_decrypt(ctx, dst, src);
 }
 
+<<<<<<< HEAD
 static struct crypto_alg serpent_alg = {
 	.cra_name		=	"serpent",
 	.cra_driver_name	=	"serpent-generic",
@@ -585,6 +586,8 @@ static struct crypto_alg serpent_alg = {
 	.cia_decrypt		=	serpent_decrypt } }
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int tnepres_setkey(struct crypto_tfm *tfm, const u8 *key,
 			  unsigned int keylen)
 {
@@ -637,20 +640,43 @@ static void tnepres_decrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
 	d[3] = swab32(rd[0]);
 }
 
+<<<<<<< HEAD
 static struct crypto_alg tnepres_alg = {
+=======
+static struct crypto_alg srp_algs[2] = { {
+	.cra_name		=	"serpent",
+	.cra_driver_name	=	"serpent-generic",
+	.cra_priority		=	100,
+	.cra_flags		=	CRYPTO_ALG_TYPE_CIPHER,
+	.cra_blocksize		=	SERPENT_BLOCK_SIZE,
+	.cra_ctxsize		=	sizeof(struct serpent_ctx),
+	.cra_alignmask		=	3,
+	.cra_module		=	THIS_MODULE,
+	.cra_u			=	{ .cipher = {
+	.cia_min_keysize	=	SERPENT_MIN_KEY_SIZE,
+	.cia_max_keysize	=	SERPENT_MAX_KEY_SIZE,
+	.cia_setkey		=	serpent_setkey,
+	.cia_encrypt		=	serpent_encrypt,
+	.cia_decrypt		=	serpent_decrypt } }
+}, {
+>>>>>>> refs/remotes/origin/master
 	.cra_name		=	"tnepres",
 	.cra_flags		=	CRYPTO_ALG_TYPE_CIPHER,
 	.cra_blocksize		=	SERPENT_BLOCK_SIZE,
 	.cra_ctxsize		=	sizeof(struct serpent_ctx),
 	.cra_alignmask		=	3,
 	.cra_module		=	THIS_MODULE,
+<<<<<<< HEAD
 	.cra_list		=	LIST_HEAD_INIT(serpent_alg.cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 	.cra_u			=	{ .cipher = {
 	.cia_min_keysize	=	SERPENT_MIN_KEY_SIZE,
 	.cia_max_keysize	=	SERPENT_MAX_KEY_SIZE,
 	.cia_setkey		=	tnepres_setkey,
 	.cia_encrypt		=	tnepres_encrypt,
 	.cia_decrypt		=	tnepres_decrypt } }
+<<<<<<< HEAD
 };
 
 static int __init serpent_mod_init(void)
@@ -666,12 +692,23 @@ static int __init serpent_mod_init(void)
 		crypto_unregister_alg(&serpent_alg);
 
 	return ret;
+=======
+} };
+
+static int __init serpent_mod_init(void)
+{
+	return crypto_register_algs(srp_algs, ARRAY_SIZE(srp_algs));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit serpent_mod_fini(void)
 {
+<<<<<<< HEAD
 	crypto_unregister_alg(&tnepres_alg);
 	crypto_unregister_alg(&serpent_alg);
+=======
+	crypto_unregister_algs(srp_algs, ARRAY_SIZE(srp_algs));
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(serpent_mod_init);

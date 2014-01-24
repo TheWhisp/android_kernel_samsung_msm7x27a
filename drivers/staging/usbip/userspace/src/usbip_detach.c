@@ -19,6 +19,10 @@
 #include <sysfs/libsysfs.h>
 
 #include <ctype.h>
+<<<<<<< HEAD
+=======
+#include <limits.h>
+>>>>>>> refs/remotes/origin/master
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,8 +50,14 @@ static int detach_port(char *port)
 {
 	int ret;
 	uint8_t portnum;
+<<<<<<< HEAD
 
 	for (unsigned int i=0; i < strlen(port); i++)
+=======
+	char path[PATH_MAX+1];
+
+	for (unsigned int i = 0; i < strlen(port); i++)
+>>>>>>> refs/remotes/origin/master
 		if (!isdigit(port[i])) {
 			err("invalid port %s", port);
 			return -1;
@@ -57,6 +67,16 @@ static int detach_port(char *port)
 
 	portnum = atoi(port);
 
+<<<<<<< HEAD
+=======
+	/* remove the port state file */
+
+	snprintf(path, PATH_MAX, VHCI_STATE_PATH"/port%d", portnum);
+
+	remove(path);
+	rmdir(VHCI_STATE_PATH);
+
+>>>>>>> refs/remotes/origin/master
 	ret = usbip_vhci_driver_open();
 	if (ret < 0) {
 		err("open vhci_driver");

@@ -7,12 +7,16 @@
  * the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 /* Made up value to limit allocation sizes */
+=======
+>>>>>>> refs/remotes/origin/master
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdint.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define IIO_MAX_NAME_LENGTH 30
@@ -25,6 +29,15 @@
 
 #define FORMAT_SCAN_ELEMENTS_DIR "%s/scan_elements"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <dirent.h>
+#include <errno.h>
+
+/* Made up value to limit allocation sizes */
+#define IIO_MAX_NAME_LENGTH 30
+
+#define FORMAT_SCAN_ELEMENTS_DIR "%s/scan_elements"
+>>>>>>> refs/remotes/origin/master
 #define FORMAT_TYPE_FILE "%s_type"
 
 const char *iio_dir = "/sys/bus/iio/devices/";
@@ -34,7 +47,11 @@ const char *iio_dir = "/sys/bus/iio/devices/";
  * @full_name: the full channel name
  * @generic_name: the output generic channel name
  **/
+<<<<<<< HEAD
 static int iioutils_break_up_name(const char *full_name,
+=======
+inline int iioutils_break_up_name(const char *full_name,
+>>>>>>> refs/remotes/origin/master
 				  char **generic_name)
 {
 	char *current;
@@ -82,9 +99,13 @@ struct iio_channel_info {
 	unsigned shift;
 	uint64_t mask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned be;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned be;
+>>>>>>> refs/remotes/origin/master
 	unsigned is_signed;
 	unsigned enabled;
 	unsigned location;
@@ -96,9 +117,13 @@ struct iio_channel_info {
  * @bytes: output how many bytes the channel storage occupies
  * @mask: output a bit mask for the raw data
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @be: big endian
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @be: big endian
+>>>>>>> refs/remotes/origin/master
  * @device_dir: the iio device directory
  * @name: the channel name
  * @generic_name: the channel type name
@@ -109,9 +134,13 @@ inline int iioutils_get_type(unsigned *is_signed,
 			     unsigned *shift,
 			     uint64_t *mask,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			     unsigned *be,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     unsigned *be,
+>>>>>>> refs/remotes/origin/master
 			     const char *device_dir,
 			     const char *name,
 			     const char *generic_name)
@@ -121,10 +150,14 @@ inline int iioutils_get_type(unsigned *is_signed,
 	DIR *dp;
 	char *scan_el_dir, *builtname, *builtname_generic, *filename = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char signchar;
 =======
 	char signchar, endianchar;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char signchar, endianchar;
+>>>>>>> refs/remotes/origin/master
 	unsigned padint;
 	const struct dirent *ent;
 
@@ -169,10 +202,13 @@ inline int iioutils_get_type(unsigned *is_signed,
 				goto error_free_filename;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			fscanf(sysfsfp,
 			       "%c%u/%u>>%u", &signchar, bits_used,
 			       &padint, shift);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 			ret = fscanf(sysfsfp,
 				     "%ce:%c%u/%u>>%u",
@@ -182,10 +218,17 @@ inline int iioutils_get_type(unsigned *is_signed,
 				     &padint, shift);
 			if (ret < 0) {
 				printf("failed to pass scan type description\n");
+<<<<<<< HEAD
 				return ret;
 			}
 			*be = (endianchar == 'b');
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ret = -errno;
+				goto error_close_sysfsfp;
+			}
+			*be = (endianchar == 'b');
+>>>>>>> refs/remotes/origin/master
 			*bytes = padint / 8;
 			if (*bits_used == 64)
 				*mask = ~0;
@@ -196,13 +239,24 @@ inline int iioutils_get_type(unsigned *is_signed,
 			else
 				*is_signed = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			fclose(sysfsfp);
 			free(filename);
 
 			filename = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		}
+=======
+			sysfsfp = 0;
+		}
+error_close_sysfsfp:
+	if (sysfsfp)
+		fclose(sysfsfp);
+>>>>>>> refs/remotes/origin/master
 error_free_filename:
 	if (filename)
 		free(filename);
@@ -309,7 +363,11 @@ inline int build_channel_array(const char *device_dir,
 {
 	DIR *dp;
 	FILE *sysfsfp;
+<<<<<<< HEAD
 	int count, temp, i;
+=======
+	int count, i;
+>>>>>>> refs/remotes/origin/master
 	struct iio_channel_info *current;
 	int ret;
 	const struct dirent *ent;
@@ -433,9 +491,13 @@ inline int build_channel_array(const char *device_dir,
 						&current->shift,
 						&current->mask,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 						&current->be,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						&current->be,
+>>>>>>> refs/remotes/origin/master
 						device_dir,
 						current->name,
 						current->generic_name);
@@ -479,7 +541,11 @@ inline int find_type_by_name(const char *name, const char *type)
 
 	dp = opendir(iio_dir);
 	if (dp == NULL) {
+<<<<<<< HEAD
 		printf("No industrialio devices available");
+=======
+		printf("No industrialio devices available\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -499,13 +565,21 @@ inline int find_type_by_name(const char *name, const char *type)
 						+ strlen(type)
 						+ numstrlen
 						+ 6);
+<<<<<<< HEAD
 				if (filename == NULL)
 					return -ENOMEM;
+=======
+				if (filename == NULL) {
+					closedir(dp);
+					return -ENOMEM;
+				}
+>>>>>>> refs/remotes/origin/master
 				sprintf(filename, "%s%s%d/name",
 					iio_dir,
 					type,
 					number);
 				nameFile = fopen(filename, "r");
+<<<<<<< HEAD
 				if (!nameFile)
 					continue;
 				free(filename);
@@ -516,12 +590,33 @@ inline int find_type_by_name(const char *name, const char *type)
 			}
 		}
 	}
+=======
+				if (!nameFile) {
+					free(filename);
+					continue;
+				}
+				free(filename);
+				fscanf(nameFile, "%s", thisname);
+				fclose(nameFile);
+				if (strcmp(name, thisname) == 0) {
+					closedir(dp);
+					return number;
+				}
+			}
+		}
+	}
+	closedir(dp);
+>>>>>>> refs/remotes/origin/master
 	return -ENODEV;
 }
 
 inline int _write_sysfs_int(char *filename, char *basedir, int val, int verify)
 {
+<<<<<<< HEAD
 	int ret;
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 	FILE *sysfsfp;
 	int test;
 	char *temp = malloc(strlen(basedir) + strlen(filename) + 2);
@@ -544,6 +639,10 @@ inline int _write_sysfs_int(char *filename, char *basedir, int val, int verify)
 			goto error_free;
 		}
 		fscanf(sysfsfp, "%d", &test);
+<<<<<<< HEAD
+=======
+		fclose(sysfsfp);
+>>>>>>> refs/remotes/origin/master
 		if (test != val) {
 			printf("Possible failure in int write %d to %s%s\n",
 				val,
@@ -593,6 +692,10 @@ int _write_sysfs_string(char *filename, char *basedir, char *val, int verify)
 			goto error_free;
 		}
 		fscanf(sysfsfp, "%s", temp);
+<<<<<<< HEAD
+=======
+		fclose(sysfsfp);
+>>>>>>> refs/remotes/origin/master
 		if (strcmp(temp, val) != 0) {
 			printf("Possible failure in string write of %s "
 				"Should be %s "

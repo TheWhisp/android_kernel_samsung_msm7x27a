@@ -30,7 +30,10 @@
 #include <linux/errno.h>
 #include <linux/freezer.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/mutex.h>
 #include <linux/utsname.h>
@@ -56,12 +59,15 @@ MODULE_DESCRIPTION(RTS51X_DESC);
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRIVER_VERSION);
 
+<<<<<<< HEAD
 #ifdef SCSI_SCAN_DELAY
 static unsigned int delay_use = 5;
 module_param(delay_use, uint, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(delay_use, "seconds to delay before using a new device");
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int auto_delink_en;
 module_param(auto_delink_en, int, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(auto_delink_en, "enable auto delink");
@@ -114,7 +120,11 @@ static inline void usb_autopm_disable(struct usb_interface *intf)
 	usb_autopm_get_interface(intf);
 }
 
+<<<<<<< HEAD
 void rts51x_try_to_enter_ss(struct rts51x_chip *chip)
+=======
+static void rts51x_try_to_enter_ss(struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	RTS51X_DEBUGP("Ready to enter SS state\n");
 	usb_autopm_enable(chip->usb->pusb_intf);
@@ -207,7 +217,11 @@ int rts51x_reset_resume(struct usb_interface *iface)
 
 #else /* CONFIG_PM */
 
+<<<<<<< HEAD
 void rts51x_try_to_enter_ss(struct rts51x_chip *chip)
+=======
+static void rts51x_try_to_enter_ss(struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 }
 
@@ -312,7 +326,11 @@ static int rts51x_control_thread(void *__chip)
 
 		/* we've got a command, let's do it! */
 		else {
+<<<<<<< HEAD
 			RTS51X_DEBUG(scsi_show_command(chip->srb));
+=======
+			RTS51X_DEBUG(rts51x_scsi_show_command(chip->srb));
+>>>>>>> refs/remotes/origin/master
 			rts51x_invoke_transport(chip->srb, chip);
 		}
 
@@ -364,11 +382,14 @@ static int rts51x_polling_thread(void *__chip)
 {
 	struct rts51x_chip *chip = (struct rts51x_chip *)__chip;
 
+<<<<<<< HEAD
 #ifdef SCSI_SCAN_DELAY
 	/* Wait until SCSI scan finished */
 	wait_timeout((delay_use + 5) * HZ);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	for (;;) {
 		wait_timeout(POLLING_INTERVAL);
 
@@ -408,7 +429,11 @@ static int rts51x_polling_thread(void *__chip)
 		}
 #endif
 
+<<<<<<< HEAD
 		mspro_polling_format_status(chip);
+=======
+		rts51x_mspro_polling_format_status(chip);
+>>>>>>> refs/remotes/origin/master
 
 		/* lock the device pointers */
 		mutex_lock(&(chip->usb->dev_mutex));
@@ -432,6 +457,7 @@ static int rts51x_polling_thread(void *__chip)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef SCSI_SCAN_DELAY
 /* Thread to carry out delayed SCSI-device scanning */
 static int rts51x_scan_thread(void *__chip)
@@ -464,6 +490,8 @@ static int rts51x_scan_thread(void *__chip)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Associate our private data with the USB device */
 static int associate_dev(struct rts51x_chip *chip, struct usb_interface *intf)
 {
@@ -521,8 +549,12 @@ static void rts51x_init_options(struct rts51x_chip *chip)
 {
 	struct rts51x_option *option = &(chip->option);
 
+<<<<<<< HEAD
 	option->led_blink_speed = 7;
 	option->mspro_formatter_enable = 1;
+=======
+	option->rts51x_mspro_formatter_enable = 1;
+>>>>>>> refs/remotes/origin/master
 
 	option->fpga_sd_sdr104_clk = CLK_100;
 	option->fpga_sd_sdr50_clk = CLK_100;
@@ -549,24 +581,37 @@ static void rts51x_init_options(struct rts51x_chip *chip)
 
 	option->ss_en = ss_en;
 	option->ss_delay = ss_delay;
+<<<<<<< HEAD
 	option->needs_remote_wakeup = needs_remote_wakeup;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	option->auto_delink_en = auto_delink_en;
 
 	option->FT2_fast_mode = 0;
 	option->pwr_delay = 800;
+<<<<<<< HEAD
 	option->xd_rw_step = 0;
+=======
+	option->rts51x_xd_rw_step = 0;
+>>>>>>> refs/remotes/origin/master
 	option->D3318_off_delay = 50;
 	option->delink_delay = 100;
 	option->rts5129_D3318_off_enable = 0;
 	option->sd20_pad_drive = 0;
 	option->reset_or_rw_fail_set_pad_drive = 1;
+<<<<<<< HEAD
 	option->rcc_fail_flag = 0;
 	option->rcc_bug_fix_en = 1;
 	option->debounce_num = 2;
 	option->polling_time = 100;
 	option->led_toggle_interval = 6;
 	option->xd_rwn_step = 0;
+=======
+	option->debounce_num = 2;
+	option->led_toggle_interval = 6;
+	option->rts51x_xd_rwn_step = 0;
+>>>>>>> refs/remotes/origin/master
 	option->sd_send_status_en = 0;
 	option->sdr50_tx_phase = 0x01;
 	option->sdr50_rx_phase = 0x05;
@@ -737,6 +782,7 @@ static void quiesce_and_remove_host(struct rts51x_chip *chip)
 	if (rts51x->pusb_dev->state == USB_STATE_NOTATTACHED)
 		set_bit(FLIDX_DISCONNECTING, &rts51x->dflags);
 
+<<<<<<< HEAD
 #ifdef SCSI_SCAN_DELAY
 	/* Prevent SCSI-scanning (if it hasn't started yet)
 	 * and wait for the SCSI-scanning thread to stop.
@@ -746,6 +792,8 @@ static void quiesce_and_remove_host(struct rts51x_chip *chip)
 	wait_for_completion(&rts51x->scanning_done);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Removing the host will perform an orderly shutdown: caches
 	 * synchronized, disks spun down, etc.
 	 */
@@ -757,9 +805,12 @@ static void quiesce_and_remove_host(struct rts51x_chip *chip)
 	scsi_lock(host);
 	set_bit(FLIDX_DISCONNECTING, &rts51x->dflags);
 	scsi_unlock(host);
+<<<<<<< HEAD
 #ifdef SCSI_SCAN_DELAY
 	wake_up(&rts51x->delay_wait);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Second stage of disconnect processing: deallocate all resources */
@@ -818,10 +869,13 @@ static int rts51x_probe(struct usb_interface *intf,
 	init_completion(&rts51x->control_exit);
 	init_completion(&rts51x->polling_exit);
 	init_completion(&(rts51x->notify));
+<<<<<<< HEAD
 #ifdef SCSI_SCAN_DELAY
 	init_waitqueue_head(&rts51x->delay_wait);
 	init_completion(&rts51x->scanning_done);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	chip->usb = rts51x;
 
@@ -855,6 +909,7 @@ static int rts51x_probe(struct usb_interface *intf,
 		printk(KERN_WARNING RTS51X_TIP "Unable to add the scsi host\n");
 		goto BadDevice;
 	}
+<<<<<<< HEAD
 #ifdef SCSI_SCAN_DELAY
 	/* Start up the thread for delayed SCSI-device scanning */
 	th = kthread_create(rts51x_scan_thread, chip, RTS51X_SCAN_THREAD);
@@ -871,6 +926,9 @@ static int rts51x_probe(struct usb_interface *intf,
 #else
 	scsi_scan_host(rts51x_to_host(chip));
 #endif
+=======
+	scsi_scan_host(rts51x_to_host(chip));
+>>>>>>> refs/remotes/origin/master
 
 	/* Start up our polling thread */
 	th = kthread_run(rts51x_polling_thread, chip, RTS51X_POLLING_THREAD);

@@ -24,6 +24,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/linkage.h>
+
+>>>>>>> refs/remotes/origin/master
 .file "serpent-sse2-x86_64-asm_64.S"
 .text
 
@@ -632,11 +637,15 @@
 	pxor t0,		x3; \
 	movdqu x3,		(3*4*4)(out);
 
+<<<<<<< HEAD
 .align 8
 .global __serpent_enc_blk_8way
 .type   __serpent_enc_blk_8way,@function;
 
 __serpent_enc_blk_8way:
+=======
+ENTRY(__serpent_enc_blk_8way)
+>>>>>>> refs/remotes/origin/master
 	/* input:
 	 *	%rdi: ctx, CTX
 	 *	%rsi: dst
@@ -687,24 +696,38 @@ __serpent_enc_blk_8way:
 	leaq (4*4*4)(%rsi), %rax;
 
 	testb %cl, %cl;
+<<<<<<< HEAD
 	jnz __enc_xor8;
+=======
+	jnz .L__enc_xor8;
+>>>>>>> refs/remotes/origin/master
 
 	write_blocks(%rsi, RA1, RB1, RC1, RD1, RK0, RK1, RK2);
 	write_blocks(%rax, RA2, RB2, RC2, RD2, RK0, RK1, RK2);
 
 	ret;
 
+<<<<<<< HEAD
 __enc_xor8:
+=======
+.L__enc_xor8:
+>>>>>>> refs/remotes/origin/master
 	xor_blocks(%rsi, RA1, RB1, RC1, RD1, RK0, RK1, RK2);
 	xor_blocks(%rax, RA2, RB2, RC2, RD2, RK0, RK1, RK2);
 
 	ret;
+<<<<<<< HEAD
 
 .align 8
 .global serpent_dec_blk_8way
 .type   serpent_dec_blk_8way,@function;
 
 serpent_dec_blk_8way:
+=======
+ENDPROC(__serpent_enc_blk_8way)
+
+ENTRY(serpent_dec_blk_8way)
+>>>>>>> refs/remotes/origin/master
 	/* input:
 	 *	%rdi: ctx, CTX
 	 *	%rsi: dst
@@ -756,3 +779,7 @@ serpent_dec_blk_8way:
 	write_blocks(%rax, RC2, RD2, RB2, RE2, RK0, RK1, RK2);
 
 	ret;
+<<<<<<< HEAD
+=======
+ENDPROC(serpent_dec_blk_8way)
+>>>>>>> refs/remotes/origin/master

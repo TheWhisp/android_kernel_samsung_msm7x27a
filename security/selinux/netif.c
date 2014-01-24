@@ -9,10 +9,14 @@
  * Copyright (C) 2003 Red Hat, Inc., James Morris <jmorris@redhat.com>
  * Copyright (C) 2007 Hewlett-Packard Development Company, L.P.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *		      Paul Moore <paul.moore@hp.com>
 =======
  *		      Paul Moore <paul@paul-moore.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *		      Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -256,8 +260,12 @@ static void sel_netif_flush(void)
 	spin_unlock_bh(&sel_netif_lock);
 }
 
+<<<<<<< HEAD
 static int sel_netif_avc_callback(u32 event, u32 ssid, u32 tsid,
 				  u16 class, u32 perms, u32 *retained)
+=======
+static int sel_netif_avc_callback(u32 event)
+>>>>>>> refs/remotes/origin/master
 {
 	if (event == AVC_CALLBACK_RESET) {
 		sel_netif_flush();
@@ -269,7 +277,11 @@ static int sel_netif_avc_callback(u32 event, u32 ssid, u32 tsid,
 static int sel_netif_netdev_notifier_handler(struct notifier_block *this,
 					     unsigned long event, void *ptr)
 {
+<<<<<<< HEAD
 	struct net_device *dev = ptr;
+=======
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 
 	if (dev_net(dev) != &init_net)
 		return NOTIFY_DONE;
@@ -296,8 +308,12 @@ static __init int sel_netif_init(void)
 
 	register_netdevice_notifier(&sel_netif_netdev_notifier);
 
+<<<<<<< HEAD
 	err = avc_add_callback(sel_netif_avc_callback, AVC_CALLBACK_RESET,
 			       SECSID_NULL, SECSID_NULL, SECCLASS_NULL, 0);
+=======
+	err = avc_add_callback(sel_netif_avc_callback, AVC_CALLBACK_RESET);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		panic("avc_add_callback() failed, error %d\n", err);
 

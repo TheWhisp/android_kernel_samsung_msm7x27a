@@ -77,10 +77,14 @@ _GLOBAL(__setup_cpu_ppc970)
 	mfmsr	r0
 	rldicl.	r0,r0,4,63
 <<<<<<< HEAD
+<<<<<<< HEAD
 	beqlr
 =======
 	beq	no_hv_mode
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	beq	no_hv_mode
+>>>>>>> refs/remotes/origin/master
 
 	mfspr	r0,SPRN_HID0
 	li	r11,5			/* clear DOZE and SLEEP */
@@ -95,10 +99,14 @@ _GLOBAL(__setup_cpu_ppc970MP)
 	mfmsr	r0
 	rldicl.	r0,r0,4,63
 <<<<<<< HEAD
+<<<<<<< HEAD
 	beqlr
 =======
 	beq	no_hv_mode
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	beq	no_hv_mode
+>>>>>>> refs/remotes/origin/master
 
 	mfspr	r0,SPRN_HID0
 	li	r11,0x15		/* clear DOZE and SLEEP */
@@ -118,7 +126,10 @@ load_hids:
 	isync
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Try to set LPES = 01 in HID4 */
 	mfspr	r0,SPRN_HID4
 	clrldi	r0,r0,1			/* clear LPES0 */
@@ -127,7 +138,10 @@ load_hids:
 	mtspr	SPRN_HID4,r0
 	isync
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Save away cpu state */
 	LOAD_REG_ADDR(r5,cpu_state_storage)
 
@@ -137,12 +151,15 @@ load_hids:
 	mfspr	r3,SPRN_HID1
 	std	r3,CS_HID1(r5)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mfspr	r3,SPRN_HID4
 	std	r3,CS_HID4(r5)
 	mfspr	r3,SPRN_HID5
 	std	r3,CS_HID5(r5)
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mfspr	r4,SPRN_HID4
 	std	r4,CS_HID4(r5)
 	mfspr	r3,SPRN_HID5
@@ -158,7 +175,10 @@ no_hv_mode:
 	LOAD_REG_IMMEDIATE(r6,CPU_FTR_HVMODE)
 	andc	r5,r5,r6
 	std	r5,CPU_SPEC_FEATURES(r4)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	blr
 
 /* Called with no MMU context (typically MSR:IR/DR off) to

@@ -25,8 +25,13 @@
 #include <asm/mach/irq.h>
 
 #include <mach/map.h>
+<<<<<<< HEAD
 #include <mach/bast-map.h>
 #include <mach/bast-irq.h>
+=======
+
+#include "bast.h"
+>>>>>>> refs/remotes/origin/master
 
 /* IDE ports */
 
@@ -34,6 +39,7 @@ static struct pata_platform_info bast_ide_platdata = {
 	.ioport_shift	= 5,
 };
 
+<<<<<<< HEAD
 #define IDE_CS	S3C2410_CS5
 
 static struct resource bast_ide0_resource[] = {
@@ -52,6 +58,12 @@ static struct resource bast_ide0_resource[] = {
 		.end	= IRQ_IDE0,
 		.flags	= IORESOURCE_IRQ,
 	},
+=======
+static struct resource bast_ide0_resource[] = {
+	[0] = DEFINE_RES_MEM(BAST_IDE_CS + BAST_PA_IDEPRI, 8 * 0x20),
+	[1] = DEFINE_RES_MEM(BAST_IDE_CS + BAST_PA_IDEPRIAUX + (6 * 0x20), 0x20),
+	[2] = DEFINE_RES_IRQ(BAST_IRQ_IDE0),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device bast_device_ide0 = {
@@ -67,6 +79,7 @@ static struct platform_device bast_device_ide0 = {
 };
 
 static struct resource bast_ide1_resource[] = {
+<<<<<<< HEAD
 	[0]	= {
 		.start	= IDE_CS + BAST_PA_IDESEC,
 		.end	= IDE_CS + BAST_PA_IDESEC + (8 * 0x20) - 1,
@@ -82,6 +95,11 @@ static struct resource bast_ide1_resource[] = {
 		.end	= IRQ_IDE1,
 		.flags	= IORESOURCE_IRQ,
 	},
+=======
+	[0] = DEFINE_RES_MEM(BAST_IDE_CS + BAST_PA_IDESEC, 8 * 0x20),
+	[1] = DEFINE_RES_MEM(BAST_IDE_CS + BAST_PA_IDESECAUX + (6 * 0x20), 0x20),
+	[2] = DEFINE_RES_IRQ(BAST_IRQ_IDE1),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device bast_device_ide1 = {

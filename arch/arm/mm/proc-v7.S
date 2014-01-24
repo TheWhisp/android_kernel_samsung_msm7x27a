@@ -13,9 +13,12 @@
 #include <linux/linkage.h>
 #include <asm/assembler.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/domain.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/asm-offsets.h>
 #include <asm/hwcap.h>
 #include <asm/pgtable-hwdef.h>
@@ -23,6 +26,7 @@
 
 #include "proc-macros.S"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define TTB_S		(1 << 1)
 #define TTB_RGN_NC	(0 << 3)
@@ -43,12 +47,17 @@
 #define TTB_FLAGS_SMP	TTB_IRGN_WBWA|TTB_S|TTB_NOS|TTB_RGN_OC_WBWA
 #define PMD_FLAGS_SMP	PMD_SECT_WBWA|PMD_SECT_S
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ARM_LPAE
 #include "proc-v7-3level.S"
 #else
 #include "proc-v7-2level.S"
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 ENTRY(cpu_v7_proc_init)
 	mov	pc, lr
@@ -71,6 +80,7 @@ ENDPROC(cpu_v7_proc_fin)
  *
  *	- loc   - location to jump to for soft reset
 <<<<<<< HEAD
+<<<<<<< HEAD
  */
 	.align	5
 ENTRY(cpu_v7_reset)
@@ -84,6 +94,8 @@ ENTRY(cpu_v7_reset)
 	mov     pc,r0
 ENDPROC(cpu_v7_reset)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *	This code must be executed using a flat identity mapping with
  *      caches disabled.
@@ -95,6 +107,7 @@ ENTRY(cpu_v7_reset)
 	bic	r1, r1, #0x1			@ ...............m
  THUMB(	bic	r1, r1, #1 << 30 )		@ SCTLR.TE (Thumb exceptions)
 	mcr	p15, 0, r1, c1, c0, 0		@ disable MMU
+<<<<<<< HEAD
 	mcr     p15, 0, ip, c8, c7, 0           @ invalidate I & D,flush TLB
 	mcr     p15, 0, ip, c7, c5, 6           @ flush BTC
 	dsb
@@ -103,6 +116,12 @@ ENTRY(cpu_v7_reset)
 ENDPROC(cpu_v7_reset)
 	.popsection
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	isb
+	bx	r0
+ENDPROC(cpu_v7_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	cpu_v7_do_idle()
@@ -118,6 +137,7 @@ ENTRY(cpu_v7_do_idle)
 ENDPROC(cpu_v7_do_idle)
 
 ENTRY(cpu_v7_dcache_clean_area)
+<<<<<<< HEAD
 #ifndef TLB_CAN_READ_FROM_L1_CACHE
 	dcache_line_size r2, r3
 1:	mcr	p15, 0, r0, c7, c10, 1		@ clean D entry
@@ -283,18 +303,37 @@ ENTRY(cpu_v7_do_suspend)
 	stmia	r0, {r6 - r11}
 	ldmfd	sp!, {r4 - r11, pc}
 =======
+=======
+	ALT_SMP(W(nop))			@ MP extensions imply L1 PTW
+	ALT_UP_B(1f)
+	mov	pc, lr
+1:	dcache_line_size r2, r3
+2:	mcr	p15, 0, r0, c7, c10, 1		@ clean D entry
+	add	r0, r0, r2
+	subs	r1, r1, r2
+	bhi	2b
+	dsb	ishst
+	mov	pc, lr
+ENDPROC(cpu_v7_dcache_clean_area)
+
+>>>>>>> refs/remotes/origin/master
 	string	cpu_v7_name, "ARMv7 Processor"
 	.align
 
 /* Suspend/resume support: derived from arch/arm/mach-s5pv210/sleep.S */
 .globl	cpu_v7_suspend_size
+<<<<<<< HEAD
 .equ	cpu_v7_suspend_size, 4 * 8
+=======
+.equ	cpu_v7_suspend_size, 4 * 9
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ARM_CPU_SUSPEND
 ENTRY(cpu_v7_do_suspend)
 	stmfd	sp!, {r4 - r10, lr}
 	mrc	p15, 0, r4, c13, c0, 0	@ FCSE/PID
 	mrc	p15, 0, r5, c13, c0, 3	@ User r/o thread ID
 	stmia	r0!, {r4 - r5}
+<<<<<<< HEAD
 	mrc	p15, 0, r6, c3, c0, 0	@ Domain ID
 	mrc	p15, 0, r7, c2, c0, 1	@ TTB 1
 	mrc	p15, 0, r11, c2, c0, 2	@ TTB control register
@@ -304,10 +343,27 @@ ENTRY(cpu_v7_do_suspend)
 	stmia	r0, {r6 - r11}
 	ldmfd	sp!, {r4 - r10, pc}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_MMU
+	mrc	p15, 0, r6, c3, c0, 0	@ Domain ID
+#ifdef CONFIG_ARM_LPAE
+	mrrc	p15, 1, r5, r7, c2	@ TTB 1
+#else
+	mrc	p15, 0, r7, c2, c0, 1	@ TTB 1
+#endif
+	mrc	p15, 0, r11, c2, c0, 2	@ TTB control register
+#endif
+	mrc	p15, 0, r8, c1, c0, 0	@ Control register
+	mrc	p15, 0, r9, c1, c0, 1	@ Auxiliary control register
+	mrc	p15, 0, r10, c1, c0, 2	@ Co-processor access control
+	stmia	r0, {r5 - r11}
+	ldmfd	sp!, {r4 - r10, pc}
+>>>>>>> refs/remotes/origin/master
 ENDPROC(cpu_v7_do_suspend)
 
 ENTRY(cpu_v7_do_resume)
 	mov	ip, #0
+<<<<<<< HEAD
 	mcr	p15, 0, ip, c8, c7, 0	@ invalidate TLBs
 	mcr	p15, 0, ip, c7, c5, 0	@ invalidate I cache
 <<<<<<< HEAD
@@ -323,10 +379,14 @@ ENTRY(cpu_v7_do_resume)
 	mcr	p15, 0, r10, c1, c0, 1	@ Auxiliary control register
 	mcr	p15, 0, r11, c1, c0, 2	@ Co-processor access control
 =======
+=======
+	mcr	p15, 0, ip, c7, c5, 0	@ invalidate I cache
+>>>>>>> refs/remotes/origin/master
 	mcr	p15, 0, ip, c13, c0, 1	@ set reserved context ID
 	ldmia	r0!, {r4 - r5}
 	mcr	p15, 0, r4, c13, c0, 0	@ FCSE/PID
 	mcr	p15, 0, r5, c13, c0, 3	@ User r/o thread ID
+<<<<<<< HEAD
 	ldmia	r0, {r6 - r11}
 	mcr	p15, 0, r6, c3, c0, 0	@ Domain ID
 #ifndef CONFIG_ARM_LPAE
@@ -341,10 +401,27 @@ ENTRY(cpu_v7_do_resume)
 	mcrne	p15, 0, r9, c1, c0, 1	@ No, so write it
 	mcr	p15, 0, r10, c1, c0, 2	@ Co-processor access control
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ldmia	r0, {r5 - r11}
+#ifdef CONFIG_MMU
+	mcr	p15, 0, ip, c8, c7, 0	@ invalidate TLBs
+	mcr	p15, 0, r6, c3, c0, 0	@ Domain ID
+#ifdef CONFIG_ARM_LPAE
+	mcrr	p15, 0, r1, ip, c2	@ TTB 0
+	mcrr	p15, 1, r5, r7, c2	@ TTB 1
+#else
+	ALT_SMP(orr	r1, r1, #TTB_FLAGS_SMP)
+	ALT_UP(orr	r1, r1, #TTB_FLAGS_UP)
+	mcr	p15, 0, r1, c2, c0, 0	@ TTB 0
+	mcr	p15, 0, r7, c2, c0, 1	@ TTB 1
+#endif
+	mcr	p15, 0, r11, c2, c0, 2	@ TTB control register
+>>>>>>> refs/remotes/origin/master
 	ldr	r4, =PRRR		@ PRRR
 	ldr	r5, =NMRR		@ NMRR
 	mcr	p15, 0, r4, c10, c2, 0	@ write PRRR
 	mcr	p15, 0, r5, c10, c2, 1	@ write NMRR
+<<<<<<< HEAD
 	isb
 <<<<<<< HEAD
 	mov	r0, r9			@ control register
@@ -360,14 +437,49 @@ cpu_resume_l1_flags:
 #define cpu_v7_do_suspend	0
 #define cpu_v7_do_resume	0
 =======
+=======
+#endif	/* CONFIG_MMU */
+	mrc	p15, 0, r4, c1, c0, 1	@ Read Auxiliary control register
+	teq	r4, r9			@ Is it already set?
+	mcrne	p15, 0, r9, c1, c0, 1	@ No, so write it
+	mcr	p15, 0, r10, c1, c0, 2	@ Co-processor access control
+	isb
+>>>>>>> refs/remotes/origin/master
 	dsb
 	mov	r0, r8			@ control register
 	b	cpu_resume_mmu
 ENDPROC(cpu_v7_do_resume)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	__CPUINIT
+=======
+#endif
+
+#ifdef CONFIG_CPU_PJ4B
+	globl_equ	cpu_pj4b_switch_mm,     cpu_v7_switch_mm
+	globl_equ	cpu_pj4b_set_pte_ext,	cpu_v7_set_pte_ext
+	globl_equ	cpu_pj4b_proc_init,	cpu_v7_proc_init
+	globl_equ	cpu_pj4b_proc_fin, 	cpu_v7_proc_fin
+	globl_equ	cpu_pj4b_reset,	   	cpu_v7_reset
+#ifdef CONFIG_PJ4B_ERRATA_4742
+ENTRY(cpu_pj4b_do_idle)
+	dsb					@ WFI may enter a low-power mode
+	wfi
+	dsb					@barrier
+	mov	pc, lr
+ENDPROC(cpu_pj4b_do_idle)
+#else
+	globl_equ	cpu_pj4b_do_idle,  	cpu_v7_do_idle
+#endif
+	globl_equ	cpu_pj4b_dcache_clean_area,	cpu_v7_dcache_clean_area
+	globl_equ	cpu_pj4b_do_suspend,	cpu_v7_do_suspend
+	globl_equ	cpu_pj4b_do_resume,	cpu_v7_do_resume
+	globl_equ	cpu_pj4b_suspend_size,	cpu_v7_suspend_size
+
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	__v7_setup
@@ -383,6 +495,7 @@ ENDPROC(cpu_v7_do_resume)
 __v7_ca5mp_setup:
 __v7_ca9mp_setup:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mov     r10, #(1 << 0)                  @ TLB ops broadcasting
 	b       1f
 __v7_ca15mp_setup:
@@ -397,6 +510,10 @@ __v7_ca15mp_setup:
 	mcreq   p15, 0, r0, c1, c0, 1
 =======
 	mov	r10, #(1 << 0)			@ TLB ops broadcasting
+=======
+__v7_cr7mp_setup:
+	mov	r10, #(1 << 0)			@ Cache/TLB ops broadcasting
+>>>>>>> refs/remotes/origin/master
 	b	1f
 __v7_ca7mp_setup:
 __v7_ca15mp_setup:
@@ -409,12 +526,78 @@ __v7_ca15mp_setup:
 	orreq	r0, r0, #(1 << 6)		@ Enable SMP/nAMP mode
 	orreq	r0, r0, r10			@ Enable CPU-specific SMP bits
 	mcreq	p15, 0, r0, c1, c0, 1
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 __v7_setup:
 	adr	r12, __v7_setup_stack		@ the local stack
 	stmia	r12, {r0-r5, r7, r9, r11, lr}
 	bl	v7_flush_dcache_all
+=======
+#endif
+	b	__v7_setup
+
+__v7_pj4b_setup:
+#ifdef CONFIG_CPU_PJ4B
+
+/* Auxiliary Debug Modes Control 1 Register */
+#define PJ4B_STATIC_BP (1 << 2) /* Enable Static BP */
+#define PJ4B_INTER_PARITY (1 << 8) /* Disable Internal Parity Handling */
+#define PJ4B_BCK_OFF_STREX (1 << 5) /* Enable the back off of STREX instr */
+#define PJ4B_CLEAN_LINE (1 << 16) /* Disable data transfer for clean line */
+
+/* Auxiliary Debug Modes Control 2 Register */
+#define PJ4B_FAST_LDR (1 << 23) /* Disable fast LDR */
+#define PJ4B_SNOOP_DATA (1 << 25) /* Do not interleave write and snoop data */
+#define PJ4B_CWF (1 << 27) /* Disable Critical Word First feature */
+#define PJ4B_OUTSDNG_NC (1 << 29) /* Disable outstanding non cacheable rqst */
+#define PJ4B_L1_REP_RR (1 << 30) /* L1 replacement - Strict round robin */
+#define PJ4B_AUX_DBG_CTRL2 (PJ4B_SNOOP_DATA | PJ4B_CWF |\
+			    PJ4B_OUTSDNG_NC | PJ4B_L1_REP_RR)
+
+/* Auxiliary Functional Modes Control Register 0 */
+#define PJ4B_SMP_CFB (1 << 1) /* Set SMP mode. Join the coherency fabric */
+#define PJ4B_L1_PAR_CHK (1 << 2) /* Support L1 parity checking */
+#define PJ4B_BROADCAST_CACHE (1 << 8) /* Broadcast Cache and TLB maintenance */
+
+/* Auxiliary Debug Modes Control 0 Register */
+#define PJ4B_WFI_WFE (1 << 22) /* WFI/WFE - serve the DVM and back to idle */
+
+	/* Auxiliary Debug Modes Control 1 Register */
+	mrc	p15, 1,	r0, c15, c1, 1
+	orr     r0, r0, #PJ4B_CLEAN_LINE
+	orr     r0, r0, #PJ4B_BCK_OFF_STREX
+	orr     r0, r0, #PJ4B_INTER_PARITY
+	bic	r0, r0, #PJ4B_STATIC_BP
+	mcr	p15, 1,	r0, c15, c1, 1
+
+	/* Auxiliary Debug Modes Control 2 Register */
+	mrc	p15, 1,	r0, c15, c1, 2
+	bic	r0, r0, #PJ4B_FAST_LDR
+	orr	r0, r0, #PJ4B_AUX_DBG_CTRL2
+	mcr	p15, 1,	r0, c15, c1, 2
+
+	/* Auxiliary Functional Modes Control Register 0 */
+	mrc	p15, 1,	r0, c15, c2, 0
+#ifdef CONFIG_SMP
+	orr	r0, r0, #PJ4B_SMP_CFB
+#endif
+	orr	r0, r0, #PJ4B_L1_PAR_CHK
+	orr	r0, r0, #PJ4B_BROADCAST_CACHE
+	mcr	p15, 1,	r0, c15, c2, 0
+
+	/* Auxiliary Debug Modes Control 0 Register */
+	mrc	p15, 1,	r0, c15, c1, 0
+	orr	r0, r0, #PJ4B_WFI_WFE
+	mcr	p15, 1,	r0, c15, c1, 0
+
+#endif /* CONFIG_CPU_PJ4B */
+
+__v7_setup:
+	adr	r12, __v7_setup_stack		@ the local stack
+	stmia	r12, {r0-r5, r7, r9, r11, lr}
+	bl      v7_flush_dcache_louis
+>>>>>>> refs/remotes/origin/master
 	ldmia	r12, {r0-r5, r7, r9, r11, lr}
 
 	mrc	p15, 0, r0, c0, c0, 0		@ read main ID register
@@ -430,7 +613,12 @@ __v7_setup:
 	ldr	r10, =0x00000c08		@ Cortex-A8 primary part number
 	teq	r0, r10
 	bne	2f
+<<<<<<< HEAD
 #ifdef CONFIG_ARM_ERRATA_430973
+=======
+#if defined(CONFIG_ARM_ERRATA_430973) && !defined(CONFIG_ARCH_MULTIPLATFORM)
+
+>>>>>>> refs/remotes/origin/master
 	teq	r5, #0x00100000			@ only present in r1p*
 	mrceq	p15, 0, r10, c1, c0, 1		@ read aux control register
 	orreq	r10, r10, #(1 << 6)		@ set IBE to 1
@@ -478,12 +666,15 @@ __v7_setup:
 	mcreq	p15, 0, r10, c15, c0, 1		@ write diagnostic register
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ARM_ERRATA_751472
 	cmp	r6, #0x30			@ present prior to r3p0
 	mrclt	p15, 0, r10, c15, c0, 1		@ read diagnostic register
 	orrlt	r10, r10, #1 << 11		@ set bit #11
 	mcrlt	p15, 0, r10, c15, c0, 1		@ write diagnostic register
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_ARM_ERRATA_751472) && defined(CONFIG_SMP)
 	ALT_SMP(cmp r6, #0x30)			@ present prior to r3p0
 	ALT_UP_B(1f)
@@ -491,14 +682,33 @@ __v7_setup:
 	orrlt	r10, r10, #1 << 11		@ set bit #11
 	mcrlt	p15, 0, r10, c15, c0, 1		@ write diagnostic register
 1:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 3:	mov	r10, #0
+=======
+#endif
+
+	/* Cortex-A15 Errata */
+3:	ldr	r10, =0x00000c0f		@ Cortex-A15 primary part number
+	teq	r0, r10
+	bne	4f
+
+#ifdef CONFIG_ARM_ERRATA_773022
+	cmp	r6, #0x4			@ only present up to r0p4
+	mrcle	p15, 0, r10, c1, c0, 1		@ read aux control register
+	orrle	r10, r10, #1 << 1		@ disable loop buffer
+	mcrle	p15, 0, r10, c1, c0, 1		@ write aux control register
+#endif
+
+4:	mov	r10, #0
+>>>>>>> refs/remotes/origin/master
 	mcr	p15, 0, r10, c7, c5, 0		@ I+BTB cache invalidate
 	dsb
 #ifdef CONFIG_MMU
 	mcr	p15, 0, r10, c8, c7, 0		@ invalidate I + D TLBs
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mcr	p15, 0, r10, c2, c0, 2		@ TTB control register
 	ALT_SMP(orr	r4, r4, #TTB_FLAGS_SMP)
@@ -511,12 +721,15 @@ __v7_setup:
 	mcr     p15, 0, r10, c3, c0, 0          @ load domain access register
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	v7_ttb_setup r10, r4, r8, r5		@ TTBCR, TTBRx setup
 	ldr	r5, =PRRR			@ PRRR
 	ldr	r6, =NMRR			@ NMRR
 	mcr	p15, 0, r5, c10, c2, 0		@ write PRRR
 	mcr	p15, 0, r6, c10, c2, 1		@ write NMRR
 #endif
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
@@ -558,6 +771,8 @@ __v7_setup:
 #endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_ARM_THUMBEE
 	mrc	p15, 0, r0, c0, c1, 0		@ read ID_PFR0 for ThumbEE
 	and	r0, r0, #(0xf << 12)		@ ThumbEE enabled field
@@ -572,9 +787,13 @@ __v7_setup:
 #endif
 	adr	r5, v7_crval
 	ldmia	r5, {r5, r6}
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_ENDIAN_BE8
 	orr	r6, r6, #1 << 25		@ big-endian page tables
 #endif
+=======
+ ARM_BE8(orr	r6, r6, #1 << 25)		@ big-endian page tables
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SWP_EMULATE
 	orr     r5, r5, #(1 << 10)              @ set SW bit in "clear"
 	bic     r6, r6, #(1 << 10)              @ clear it in "mmuset"
@@ -586,6 +805,7 @@ __v7_setup:
 	mov	pc, lr				@ return to head.S:__ret
 ENDPROC(__v7_setup)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*   AT
 	 *  TFR   EV X F   I D LR    S
@@ -600,11 +820,15 @@ v7_crval:
 =======
 	.align	2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.align	2
+>>>>>>> refs/remotes/origin/master
 __v7_setup_stack:
 	.space	4 * 11				@ 11 registers
 
 	__INITDATA
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.type	v7_processor_functions, #object
 ENTRY(v7_processor_functions)
@@ -636,12 +860,22 @@ cpu_elf_name:
 =======
 	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
 	define_processor_functions v7, dabort=v7_early_abort, pabort=v7_pabort, suspend=1
+=======
+	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
+	define_processor_functions v7, dabort=v7_early_abort, pabort=v7_pabort, suspend=1
+#ifdef CONFIG_CPU_PJ4B
+	define_processor_functions pj4b, dabort=v7_early_abort, pabort=v7_pabort, suspend=1
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	.section ".rodata"
 
 	string	cpu_arch_name, "armv7"
 	string	cpu_elf_name, "v7"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.align
 
 	.section ".proc.info.init", #alloc, #execinstr
@@ -649,6 +883,7 @@ cpu_elf_name:
 	/*
 	 * Standard v7 proc info content
 	 */
+<<<<<<< HEAD
 .macro __v7_proc initfunc, mm_mmuflags = 0, io_mmuflags = 0, hwcaps = 0
 	ALT_SMP(.long	PMD_TYPE_SECT | PMD_SECT_AP_WRITE | PMD_SECT_AP_READ | \
 <<<<<<< HEAD
@@ -658,28 +893,43 @@ cpu_elf_name:
 	.long	PMD_TYPE_SECT | PMD_SECT_XN | PMD_SECT_AP_WRITE | \
 		PMD_SECT_AP_READ | \io_mmuflags
 =======
+=======
+.macro __v7_proc initfunc, mm_mmuflags = 0, io_mmuflags = 0, hwcaps = 0, proc_fns = v7_processor_functions
+	ALT_SMP(.long	PMD_TYPE_SECT | PMD_SECT_AP_WRITE | PMD_SECT_AP_READ | \
+>>>>>>> refs/remotes/origin/master
 			PMD_SECT_AF | PMD_FLAGS_SMP | \mm_mmuflags)
 	ALT_UP(.long	PMD_TYPE_SECT | PMD_SECT_AP_WRITE | PMD_SECT_AP_READ | \
 			PMD_SECT_AF | PMD_FLAGS_UP | \mm_mmuflags)
 	.long	PMD_TYPE_SECT | PMD_SECT_AP_WRITE | \
 		PMD_SECT_AP_READ | PMD_SECT_AF | \io_mmuflags
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	W(b)	\initfunc
 	.long	cpu_arch_name
 	.long	cpu_elf_name
 	.long	HWCAP_SWP | HWCAP_HALF | HWCAP_THUMB | HWCAP_FAST_MULT | \
 		HWCAP_EDSP | HWCAP_TLS | \hwcaps
 	.long	cpu_v7_name
+<<<<<<< HEAD
 	.long	v7_processor_functions
+=======
+	.long	\proc_fns
+>>>>>>> refs/remotes/origin/master
 	.long	v7wbi_tlb_fns
 	.long	v6_user_fns
 	.long	v7_cache_fns
 .endm
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifndef CONFIG_ARM_LPAE
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef CONFIG_ARM_LPAE
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * ARM Ltd. Cortex A5 processor.
 	 */
@@ -700,6 +950,7 @@ __v7_ca9mp_proc_info:
 	__v7_proc __v7_ca9mp_setup
 	.size	__v7_ca9mp_proc_info, . - __v7_ca9mp_proc_info
 <<<<<<< HEAD
+<<<<<<< HEAD
 
         /*
 	 * ARM Ltd. Cortex A15 processor.
@@ -714,13 +965,45 @@ __v7_ca15mp_proc_info:
 #endif	/* CONFIG_ARM_LPAE */
 
 	/*
+=======
+
+#endif	/* CONFIG_ARM_LPAE */
+
+	/*
+	 * Marvell PJ4B processor.
+	 */
+#ifdef CONFIG_CPU_PJ4B
+	.type   __v7_pj4b_proc_info, #object
+__v7_pj4b_proc_info:
+	.long	0x560f5800
+	.long	0xff0fff00
+	__v7_proc __v7_pj4b_setup, proc_fns = pj4b_processor_functions
+	.size	__v7_pj4b_proc_info, . - __v7_pj4b_proc_info
+#endif
+
+	/*
+	 * ARM Ltd. Cortex R7 processor.
+	 */
+	.type	__v7_cr7mp_proc_info, #object
+__v7_cr7mp_proc_info:
+	.long	0x410fc170
+	.long	0xff0ffff0
+	__v7_proc __v7_cr7mp_setup
+	.size	__v7_cr7mp_proc_info, . - __v7_cr7mp_proc_info
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * ARM Ltd. Cortex A7 processor.
 	 */
 	.type	__v7_ca7mp_proc_info, #object
 __v7_ca7mp_proc_info:
 	.long	0x410fc070
 	.long	0xff0ffff0
+<<<<<<< HEAD
 	__v7_proc __v7_ca7mp_setup, hwcaps = HWCAP_IDIV
+=======
+	__v7_proc __v7_ca7mp_setup
+>>>>>>> refs/remotes/origin/master
 	.size	__v7_ca7mp_proc_info, . - __v7_ca7mp_proc_info
 
 	/*
@@ -730,9 +1013,29 @@ __v7_ca7mp_proc_info:
 __v7_ca15mp_proc_info:
 	.long	0x410fc0f0
 	.long	0xff0ffff0
+<<<<<<< HEAD
 	__v7_proc __v7_ca15mp_setup, hwcaps = HWCAP_IDIV
 	.size	__v7_ca15mp_proc_info, . - __v7_ca15mp_proc_info
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__v7_proc __v7_ca15mp_setup
+	.size	__v7_ca15mp_proc_info, . - __v7_ca15mp_proc_info
+
+	/*
+	 * Qualcomm Inc. Krait processors.
+	 */
+	.type	__krait_proc_info, #object
+__krait_proc_info:
+	.long	0x510f0400		@ Required ID value
+	.long	0xff0ffc00		@ Mask for ID
+	/*
+	 * Some Krait processors don't indicate support for SDIV and UDIV
+	 * instructions in the ARM instruction set, even though they actually
+	 * do support them.
+	 */
+	__v7_proc __v7_setup, hwcaps = HWCAP_IDIV
+	.size	__krait_proc_info, . - __krait_proc_info
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Match any ARMv7 processor core.

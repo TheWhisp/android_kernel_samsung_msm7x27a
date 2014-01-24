@@ -48,7 +48,12 @@
 
 #endif /* CONFIG_MAPPED_KERNEL */
 
+<<<<<<< HEAD
 #define MAPPED_KERN_RO_TO_K0(x)	PHYS_TO_K0(MAPPED_KERN_RO_TO_PHYS(x))
 #define MAPPED_KERN_RW_TO_K0(x)	PHYS_TO_K0(MAPPED_KERN_RW_TO_PHYS(x))
+=======
+#define MAPPED_KERN_RO_TO_K0(x) PHYS_TO_K0(MAPPED_KERN_RO_TO_PHYS(x))
+#define MAPPED_KERN_RW_TO_K0(x) PHYS_TO_K0(MAPPED_KERN_RW_TO_PHYS(x))
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_SN_MAPPED_KERNEL_H  */

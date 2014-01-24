@@ -20,27 +20,37 @@
 #include <linux/init.h>
 #include <linux/ioport.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>      /* for KERNEL_VERSION MACRO     */
 #include <linux/videodev2.h>
 #include <linux/io.h>
 #include <media/v4l2-device.h>
 #include <media/v4l2-ioctl.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/videodev2.h>
 #include <linux/io.h>
 #include <linux/slab.h>
 #include <media/v4l2-device.h>
 #include <media/v4l2-ioctl.h>
 #include "radio-isa.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Eric Lammerts, Russell Kroll, Quay Lu, Donald Song, Jason Lewis, Scott McGrath, William McGrath");
 MODULE_DESCRIPTION("A driver for the Trust FM Radio card.");
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_VERSION("0.1.99");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_VERSION("0.1.99");
+>>>>>>> refs/remotes/origin/master
 
 /* acceptable ports: 0x350 (JP3 shorted), 0x358 (JP3 open) */
 
@@ -48,6 +58,7 @@ MODULE_VERSION("0.1.99");
 #define CONFIG_RADIO_TRUST_PORT -1
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int io = CONFIG_RADIO_TRUST_PORT;
 static int radio_nr = -1;
@@ -75,6 +86,8 @@ struct trust {
 
 static struct trust trust_card;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define TRUST_MAX 2
 
 static int io[TRUST_MAX] = { [0] = CONFIG_RADIO_TRUST_PORT,
@@ -97,12 +110,16 @@ static struct radio_isa_card *trust_alloc(void)
 
 	return tr ? &tr->isa : NULL;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* i2c addresses */
 #define TDA7318_ADDR 0x88
 #define TSA6060T_ADDR 0xc4
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define TR_DELAY do { inb(tr->io); inb(tr->io); inb(tr->io); } while (0)
 #define TR_SET_SCL outb(tr->ioval |= 2, tr->io)
@@ -110,12 +127,17 @@ static struct radio_isa_card *trust_alloc(void)
 #define TR_SET_SDA outb(tr->ioval |= 1, tr->io)
 #define TR_CLR_SDA outb(tr->ioval &= 0xfe, tr->io)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define TR_DELAY do { inb(tr->isa.io); inb(tr->isa.io); inb(tr->isa.io); } while (0)
 #define TR_SET_SCL outb(tr->ioval |= 2, tr->isa.io)
 #define TR_CLR_SCL outb(tr->ioval &= 0xfd, tr->isa.io)
 #define TR_SET_SDA outb(tr->ioval |= 1, tr->isa.io)
 #define TR_CLR_SDA outb(tr->ioval &= 0xfe, tr->isa.io)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void write_i2c(struct trust *tr, int n, ...)
 {
@@ -133,16 +155,22 @@ static void write_i2c(struct trust *tr, int n, ...)
 	TR_DELAY;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for(; n; n--) {
 		val = va_arg(args, unsigned);
 		for(mask = 0x80; mask; mask >>= 1) {
 			if(val & mask)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (; n; n--) {
 		val = va_arg(args, unsigned);
 		for (mask = 0x80; mask; mask >>= 1) {
 			if (val & mask)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				TR_SET_SDA;
 			else
 				TR_CLR_SDA;
@@ -170,6 +198,7 @@ static void write_i2c(struct trust *tr, int n, ...)
 	va_end(args);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void tr_setvol(struct trust *tr, __u16 vol)
 {
@@ -366,6 +395,8 @@ static int vidioc_s_ctrl(struct file *file, void *priv,
 	case V4L2_CID_AUDIO_TREBLE:
 		tr_settreble(tr, ctrl->value);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int trust_s_mute_volume(struct radio_isa_card *isa, bool mute, int vol)
 {
 	struct trust *tr = container_of(isa, struct trust, isa);
@@ -421,12 +452,16 @@ static int trust_s_ctrl(struct v4l2_ctrl *ctrl)
 		return 0;
 	case V4L2_CID_AUDIO_TREBLE:
 		write_i2c(tr, 2, TDA7318_ADDR, 0x70 | basstreble2chip[ctrl->val]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int vidioc_g_input(struct file *filp, void *priv, unsigned int *i)
 {
@@ -509,6 +544,8 @@ static int __init trust_init(void)
 	video_set_drvdata(&tr->vdev, tr);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct v4l2_ctrl_ops trust_ctrl_ops = {
 	.s_ctrl = trust_s_ctrl,
 };
@@ -518,13 +555,17 @@ static int trust_initialize(struct radio_isa_card *isa)
 	struct trust *tr = container_of(isa, struct trust, isa);
 
 	tr->ioval = 0xf;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	write_i2c(tr, 2, TDA7318_ADDR, 0x80);	/* speaker att. LF = 0 dB */
 	write_i2c(tr, 2, TDA7318_ADDR, 0xa0);	/* speaker att. RF = 0 dB */
 	write_i2c(tr, 2, TDA7318_ADDR, 0xc0);	/* speaker att. LR = 0 dB */
 	write_i2c(tr, 2, TDA7318_ADDR, 0xe0);	/* speaker att. RR = 0 dB */
 	write_i2c(tr, 2, TDA7318_ADDR, 0x40);	/* stereo 1 input, gain = 18.75 dB */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tr_setvol(tr, 0xffff);
 	tr_setbass(tr, 0x8000);
@@ -557,6 +598,8 @@ static void __exit cleanup_trust_module(void)
 module_init(trust_init);
 module_exit(cleanup_trust_module);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	v4l2_ctrl_new_std(&isa->hdl, &trust_ctrl_ops,
 				V4L2_CID_AUDIO_BASS, 0, 15, 1, 8);
 	v4l2_ctrl_new_std(&isa->hdl, &trust_ctrl_ops,
@@ -607,4 +650,7 @@ static void __exit trust_exit(void)
 
 module_init(trust_init);
 module_exit(trust_exit);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

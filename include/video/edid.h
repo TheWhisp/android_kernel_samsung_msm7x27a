@@ -2,6 +2,7 @@
 #define __linux_video_edid_h__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if !defined(__KERNEL__) || defined(CONFIG_X86)
 
 =======
@@ -22,4 +23,11 @@ extern struct edid_info edid_info;
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
+=======
+#include <uapi/video/edid.h>
+
+#ifdef CONFIG_X86
+extern struct edid_info edid_info;
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif /* __linux_video_edid_h__ */

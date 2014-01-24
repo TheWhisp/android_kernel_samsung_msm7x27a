@@ -53,8 +53,13 @@ struct cfg_hostres {
 	u32 chnl_buf_size;
 	u32 num_chnls;
 	void __iomem *per_base;
+<<<<<<< HEAD
 	u32 per_pm_base;
 	u32 core_pm_base;
+=======
+	void __iomem *per_pm_base;
+	void __iomem *core_pm_base;
+>>>>>>> refs/remotes/origin/master
 	void __iomem *dmmu_base;
 };
 

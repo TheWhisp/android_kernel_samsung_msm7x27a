@@ -166,6 +166,7 @@ static struct serio_driver tsc_drv = {
 	.disconnect     = tsc_disconnect,
 };
 
+<<<<<<< HEAD
 static int __init tsc_ser_init(void)
 {
 	return serio_register_driver(&tsc_drv);
@@ -177,6 +178,9 @@ static void __exit tsc_exit(void)
 	serio_unregister_driver(&tsc_drv);
 }
 module_exit(tsc_exit);
+=======
+module_serio_driver(tsc_drv);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Sebastian Andrzej Siewior <bigeasy@linutronix.de>");
 MODULE_DESCRIPTION(DRIVER_DESC);

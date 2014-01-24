@@ -24,6 +24,10 @@
 
 #include <linux/scatterlist.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/async.h>
+>>>>>>> refs/remotes/origin/master
 #include <scsi/scsi_host.h>
 #include <scsi/scsi_eh.h>
 #include "sas_internal.h"
@@ -31,15 +35,20 @@
 #include <scsi/scsi_transport.h>
 #include <scsi/scsi_transport_sas.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <scsi/sas_ata.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <scsi/sas_ata.h>
+>>>>>>> refs/remotes/origin/master
 #include "../scsi_sas_internal.h"
 
 /* ---------- Basic task processing for discovery purposes ---------- */
 
 void sas_init_dev(struct domain_device *dev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         INIT_LIST_HEAD(&dev->siblings);
         INIT_LIST_HEAD(&dev->dev_list_node);
@@ -77,6 +86,20 @@ void sas_init_dev(struct domain_device *dev)
 		break;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	switch (dev->dev_type) {
+	case SAS_END_DEVICE:
+		INIT_LIST_HEAD(&dev->ssp_dev.eh_list_node);
+		break;
+	case SAS_EDGE_EXPANDER_DEVICE:
+	case SAS_FANOUT_EXPANDER_DEVICE:
+		INIT_LIST_HEAD(&dev->ex_dev.children);
+		mutex_init(&dev->ex_dev.cmd_mutex);
+		break;
+	default:
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /* ---------- Domain device discovery ---------- */
@@ -93,6 +116,7 @@ void sas_init_dev(struct domain_device *dev)
 static int sas_get_port_device(struct asd_sas_port *port)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 	struct asd_sas_phy *phy;
 	struct sas_rphy *rphy;
@@ -107,6 +131,8 @@ static int sas_get_port_device(struct asd_sas_port *port)
 		spin_unlock_irqrestore(&port->phy_list_lock, flags);
 		kfree(dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct asd_sas_phy *phy;
 	struct sas_rphy *rphy;
 	struct domain_device *dev;
@@ -120,7 +146,10 @@ static int sas_get_port_device(struct asd_sas_port *port)
 	if (list_empty(&port->phy_list)) {
 		spin_unlock_irq(&port->phy_list_lock);
 		sas_put_device(dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 	phy = container_of(port->phy_list.next, struct asd_sas_phy, port_phy_el);
@@ -129,10 +158,14 @@ static int sas_get_port_device(struct asd_sas_port *port)
 					     (size_t)phy->frame_rcvd_size));
 	spin_unlock(&phy->frame_rcvd_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&port->phy_list_lock, flags);
 =======
 	spin_unlock_irq(&port->phy_list_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irq(&port->phy_list_lock);
+>>>>>>> refs/remotes/origin/master
 
 	if (dev->frame_rcvd[0] == 0x34 && port->oob_mode == SATA_OOB_MODE) {
 		struct dev_to_host_fis *fis =
@@ -140,9 +173,15 @@ static int sas_get_port_device(struct asd_sas_port *port)
 		if (fis->interrupt_reason == 1 && fis->lbal == 1 &&
 		    fis->byte_count_low==0x69 && fis->byte_count_high == 0x96
 		    && (fis->device & ~0x10) == 0)
+<<<<<<< HEAD
 			dev->dev_type = SATA_PM;
 		else
 			dev->dev_type = SATA_DEV;
+=======
+			dev->dev_type = SAS_SATA_PM;
+		else
+			dev->dev_type = SAS_SATA_DEV;
+>>>>>>> refs/remotes/origin/master
 		dev->tproto = SAS_PROTOCOL_SATA;
 	} else {
 		struct sas_identify_frame *id =
@@ -155,6 +194,7 @@ static int sas_get_port_device(struct asd_sas_port *port)
 	sas_init_dev(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch (dev->dev_type) {
 	case SAS_END_DEV:
 	case SATA_DEV:
@@ -162,12 +202,18 @@ static int sas_get_port_device(struct asd_sas_port *port)
 	dev->port = port;
 	switch (dev->dev_type) {
 	case SATA_DEV:
+=======
+	dev->port = port;
+	switch (dev->dev_type) {
+	case SAS_SATA_DEV:
+>>>>>>> refs/remotes/origin/master
 		rc = sas_ata_init(dev);
 		if (rc) {
 			rphy = NULL;
 			break;
 		}
 		/* fall through */
+<<<<<<< HEAD
 	case SAS_END_DEV:
 >>>>>>> refs/remotes/origin/cm-10.0
 		rphy = sas_end_device_alloc(port->port);
@@ -177,6 +223,16 @@ static int sas_get_port_device(struct asd_sas_port *port)
 					  SAS_EDGE_EXPANDER_DEVICE);
 		break;
 	case FANOUT_DEV:
+=======
+	case SAS_END_DEVICE:
+		rphy = sas_end_device_alloc(port->port);
+		break;
+	case SAS_EDGE_EXPANDER_DEVICE:
+		rphy = sas_expander_alloc(port->port,
+					  SAS_EDGE_EXPANDER_DEVICE);
+		break;
+	case SAS_FANOUT_EXPANDER_DEVICE:
+>>>>>>> refs/remotes/origin/master
 		rphy = sas_expander_alloc(port->port,
 					  SAS_FANOUT_EXPANDER_DEVICE);
 		break;
@@ -188,24 +244,33 @@ static int sas_get_port_device(struct asd_sas_port *port)
 
 	if (!rphy) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kfree(dev);
 		return -ENODEV;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		sas_put_device(dev);
 		return rc;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rphy->identify.phy_identifier = phy->phy->identify.phy_identifier;
 	memcpy(dev->sas_addr, port->attached_sas_addr, SAS_ADDR_SIZE);
 	sas_fill_in_rphy(dev, rphy);
 	sas_hash_addr(dev->hashed_sas_addr, dev->sas_addr);
 	port->port_dev = dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->port = port;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->linkrate = port->linkrate;
 	dev->min_linkrate = port->linkrate;
 	dev->max_linkrate = port->linkrate;
@@ -215,18 +280,25 @@ static int sas_get_port_device(struct asd_sas_port *port)
 	memset(port->disc.eeds_b, 0, SAS_ADDR_SIZE);
 	port->disc.max_level = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	dev->rphy = rphy;
 	spin_lock_irq(&port->dev_list_lock);
 	list_add_tail(&dev->dev_list_node, &port->dev_list);
 	spin_unlock_irq(&port->dev_list_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	sas_device_set_phy(dev, port->port);
 
 	dev->rphy = rphy;
 	get_device(&dev->rphy->dev);
 
+<<<<<<< HEAD
 	if (dev_is_sata(dev) || dev->dev_type == SAS_END_DEV)
+=======
+	if (dev_is_sata(dev) || dev->dev_type == SAS_END_DEVICE)
+>>>>>>> refs/remotes/origin/master
 		list_add_tail(&dev->disco_list_node, &port->disco_list);
 	else {
 		spin_lock_irq(&port->dev_list_lock);
@@ -238,7 +310,10 @@ static int sas_get_port_device(struct asd_sas_port *port)
 	list_for_each_entry(phy, &port->phy_list, port_phy_el)
 		sas_phy_set_target(phy, dev);
 	spin_unlock_irq(&port->phy_list_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -252,6 +327,7 @@ int sas_notify_lldd_dev_found(struct domain_device *dev)
 	struct Scsi_Host *shost = sas_ha->core.shost;
 	struct sas_internal *i = to_sas_internal(shost->transportt);
 
+<<<<<<< HEAD
 	if (i->dft->lldd_dev_found) {
 		res = i->dft->lldd_dev_found(dev);
 		if (res) {
@@ -265,6 +341,20 @@ int sas_notify_lldd_dev_found(struct domain_device *dev)
 		kref_get(&dev->kref);
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+	if (!i->dft->lldd_dev_found)
+		return 0;
+
+	res = i->dft->lldd_dev_found(dev);
+	if (res) {
+		printk("sas: driver on pcidev %s cannot handle "
+		       "device %llx, error:%d\n",
+		       dev_name(sas_ha->dev),
+		       SAS_ADDR(dev->sas_addr), res);
+	}
+	set_bit(SAS_DEV_FOUND, &dev->state);
+	kref_get(&dev->kref);
+>>>>>>> refs/remotes/origin/master
 	return res;
 }
 
@@ -276,6 +366,7 @@ void sas_notify_lldd_dev_gone(struct domain_device *dev)
 	struct sas_internal *i = to_sas_internal(shost->transportt);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (i->dft->lldd_dev_gone)
 		i->dft->lldd_dev_gone(dev);
 }
@@ -284,6 +375,12 @@ void sas_notify_lldd_dev_gone(struct domain_device *dev)
 
 =======
 	if (i->dft->lldd_dev_gone) {
+=======
+	if (!i->dft->lldd_dev_gone)
+		return;
+
+	if (test_and_clear_bit(SAS_DEV_FOUND, &dev->state)) {
+>>>>>>> refs/remotes/origin/master
 		i->dft->lldd_dev_gone(dev);
 		sas_put_device(dev);
 	}
@@ -316,7 +413,51 @@ static void sas_probe_devices(struct work_struct *work)
 			list_del_init(&dev->disco_list_node);
 	}
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static void sas_suspend_devices(struct work_struct *work)
+{
+	struct asd_sas_phy *phy;
+	struct domain_device *dev;
+	struct sas_discovery_event *ev = to_sas_discovery_event(work);
+	struct asd_sas_port *port = ev->port;
+	struct Scsi_Host *shost = port->ha->core.shost;
+	struct sas_internal *si = to_sas_internal(shost->transportt);
+
+	clear_bit(DISCE_SUSPEND, &port->disc.pending);
+
+	sas_suspend_sata(port);
+
+	/* lldd is free to forget the domain_device across the
+	 * suspension, we force the issue here to keep the reference
+	 * counts aligned
+	 */
+	list_for_each_entry(dev, &port->dev_list, dev_list_node)
+		sas_notify_lldd_dev_gone(dev);
+
+	/* we are suspending, so we know events are disabled and
+	 * phy_list is not being mutated
+	 */
+	list_for_each_entry(phy, &port->phy_list, port_phy_el) {
+		if (si->dft->lldd_port_formed)
+			si->dft->lldd_port_deformed(phy);
+		phy->suspended = 1;
+		port->suspended = 1;
+	}
+}
+
+static void sas_resume_devices(struct work_struct *work)
+{
+	struct sas_discovery_event *ev = to_sas_discovery_event(work);
+	struct asd_sas_port *port = ev->port;
+
+	clear_bit(DISCE_RESUME, &port->disc.pending);
+
+	sas_resume_sata(port);
+}
+>>>>>>> refs/remotes/origin/master
 
 /**
  * sas_discover_end_dev -- discover an end device (SSP, etc)
@@ -331,6 +472,7 @@ int sas_discover_end_dev(struct domain_device *dev)
 	res = sas_notify_lldd_dev_found(dev);
 	if (res)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto out_err2;
 
 	res = sas_rphy_add(dev->rphy);
@@ -344,18 +486,26 @@ out_err:
 out_err2:
 	return res;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return res;
 	sas_discover_event(dev->port, DISCE_PROBE);
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* ---------- Device registration and unregistration ---------- */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void sas_unregister_common_dev(struct domain_device *dev)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void sas_free_device(struct kref *kref)
 {
 	struct domain_device *dev = container_of(kref, typeof(*dev), kref);
@@ -370,7 +520,11 @@ void sas_free_device(struct kref *kref)
 	dev->phy = NULL;
 
 	/* remove the phys and ports, everything else should be gone */
+<<<<<<< HEAD
 	if (dev->dev_type == EDGE_DEV || dev->dev_type == FANOUT_DEV)
+=======
+	if (dev->dev_type == SAS_EDGE_EXPANDER_DEVICE || dev->dev_type == SAS_FANOUT_EXPANDER_DEVICE)
+>>>>>>> refs/remotes/origin/master
 		kfree(dev->ex_dev.ex_phy);
 
 	if (dev_is_sata(dev) && dev->sata_dev.ap) {
@@ -382,13 +536,20 @@ void sas_free_device(struct kref *kref)
 }
 
 static void sas_unregister_common_dev(struct asd_sas_port *port, struct domain_device *dev)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 {
+=======
+{
+	struct sas_ha_struct *ha = port->ha;
+
+>>>>>>> refs/remotes/origin/master
 	sas_notify_lldd_dev_gone(dev);
 	if (!dev->parent)
 		dev->port->port_dev = NULL;
 	else
 		list_del_init(&dev->siblings);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	list_del_init(&dev->dev_list_node);
 }
@@ -420,6 +581,23 @@ void sas_unregister_domain_devices(struct asd_sas_port *port)
 	list_del_init(&dev->dev_list_node);
 	spin_unlock_irq(&port->dev_list_lock);
 
+=======
+
+	spin_lock_irq(&port->dev_list_lock);
+	list_del_init(&dev->dev_list_node);
+	if (dev_is_sata(dev))
+		sas_ata_end_eh(dev->sata_dev.ap);
+	spin_unlock_irq(&port->dev_list_lock);
+
+	spin_lock_irq(&ha->lock);
+	if (dev->dev_type == SAS_END_DEVICE &&
+	    !list_empty(&dev->ssp_dev.eh_list_node)) {
+		list_del_init(&dev->ssp_dev.eh_list_node);
+		ha->eh_active--;
+	}
+	spin_unlock_irq(&ha->lock);
+
+>>>>>>> refs/remotes/origin/master
 	sas_put_device(dev);
 }
 
@@ -470,14 +648,20 @@ void sas_unregister_domain_devices(struct asd_sas_port *port, int gone)
 
 	list_for_each_entry_safe(dev, n, &port->disco_list, disco_list_node)
 		sas_unregister_dev(port, dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	port->port->rphy = NULL;
 
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void sas_device_set_phy(struct domain_device *dev, struct sas_port *port)
 {
 	struct sas_ha_struct *ha;
@@ -498,7 +682,10 @@ void sas_device_set_phy(struct domain_device *dev, struct sas_port *port)
 	spin_unlock_irq(&ha->phy_port_lock);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* ---------- Discovery and Revalidation ---------- */
 
 /**
@@ -515,6 +702,7 @@ static void sas_discover_domain(struct work_struct *work)
 	struct domain_device *dev;
 	int error = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sas_discovery_event *ev =
 		container_of(work, struct sas_discovery_event, work);
 	struct asd_sas_port *port = ev->port;
@@ -522,11 +710,16 @@ static void sas_discover_domain(struct work_struct *work)
 	sas_begin_event(DISCE_DISCOVER_DOMAIN, &port->disc.disc_event_lock,
 			&port->disc.pending);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sas_discovery_event *ev = to_sas_discovery_event(work);
 	struct asd_sas_port *port = ev->port;
 
 	clear_bit(DISCE_DISCOVER_DOMAIN, &port->disc.pending);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (port->port_dev)
 		return;
@@ -540,6 +733,7 @@ static void sas_discover_domain(struct work_struct *work)
 		    task_pid_nr(current));
 
 	switch (dev->dev_type) {
+<<<<<<< HEAD
 	case SAS_END_DEV:
 		error = sas_discover_end_dev(dev);
 		break;
@@ -549,6 +743,17 @@ static void sas_discover_domain(struct work_struct *work)
 		break;
 	case SATA_DEV:
 	case SATA_PM:
+=======
+	case SAS_END_DEVICE:
+		error = sas_discover_end_dev(dev);
+		break;
+	case SAS_EDGE_EXPANDER_DEVICE:
+	case SAS_FANOUT_EXPANDER_DEVICE:
+		error = sas_discover_root_expander(dev);
+		break;
+	case SAS_SATA_DEV:
+	case SAS_SATA_PM:
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SCSI_SAS_ATA
 		error = sas_discover_sata(dev);
 		break;
@@ -565,20 +770,28 @@ static void sas_discover_domain(struct work_struct *work)
 	if (error) {
 		sas_rphy_free(dev->rphy);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev->rphy = NULL;
 
 =======
 		list_del_init(&dev->disco_list_node);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		list_del_init(&dev->disco_list_node);
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irq(&port->dev_list_lock);
 		list_del_init(&dev->dev_list_node);
 		spin_unlock_irq(&port->dev_list_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kfree(dev); /* not kobject_register-ed yet */
 =======
 		sas_put_device(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sas_put_device(dev);
+>>>>>>> refs/remotes/origin/master
 		port->port_dev = NULL;
 	}
 
@@ -590,6 +803,7 @@ static void sas_revalidate_domain(struct work_struct *work)
 {
 	int res = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sas_discovery_event *ev =
 		container_of(work, struct sas_discovery_event, work);
 	struct asd_sas_port *port = ev->port;
@@ -600,6 +814,8 @@ static void sas_revalidate_domain(struct work_struct *work)
 	SAS_DPRINTK("REVALIDATING DOMAIN on port %d, pid:%d\n", port->id,
 		    task_pid_nr(current));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sas_discovery_event *ev = to_sas_discovery_event(work);
 	struct asd_sas_port *port = ev->port;
 	struct sas_ha_struct *ha = port->ha;
@@ -617,23 +833,34 @@ static void sas_revalidate_domain(struct work_struct *work)
 	SAS_DPRINTK("REVALIDATING DOMAIN on port %d, pid:%d\n", port->id,
 		    task_pid_nr(current));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (port->port_dev)
 		res = sas_ex_revalidate_domain(port->port_dev);
 
 	SAS_DPRINTK("done REVALIDATING DOMAIN on port %d, pid:%d, res 0x%x\n",
 		    port->id, task_pid_nr(current), res);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  out:
 	mutex_unlock(&ha->disco_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ out:
+	mutex_unlock(&ha->disco_mutex);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* ---------- Events ---------- */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void sas_chain_work(struct sas_ha_struct *ha, struct sas_work *sw)
 {
 	/* chained work is not subject to SA_HA_DRAINING or
@@ -651,6 +878,7 @@ static void sas_chain_event(int event, unsigned long *pending,
 	if (!test_and_set_bit(event, pending)) {
 		unsigned long flags;
 
+<<<<<<< HEAD
 		spin_lock_irqsave(&ha->state_lock, flags);
 		sas_chain_work(ha, sw);
 		spin_unlock_irqrestore(&ha->state_lock, flags);
@@ -658,6 +886,14 @@ static void sas_chain_event(int event, unsigned long *pending,
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_lock_irqsave(&ha->lock, flags);
+		sas_chain_work(ha, sw);
+		spin_unlock_irqrestore(&ha->lock, flags);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 int sas_discover_event(struct asd_sas_port *port, enum discover_event ev)
 {
 	struct sas_discovery *disc;
@@ -669,11 +905,15 @@ int sas_discover_event(struct asd_sas_port *port, enum discover_event ev)
 	BUG_ON(ev >= DISC_NUM_EVENTS);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sas_queue_event(ev, &disc->disc_event_lock, &disc->pending,
 			&disc->disc_work[ev].work, port->ha);
 =======
 	sas_chain_event(ev, &disc->pending, &disc->disc_work[ev].work, port->ha);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sas_chain_event(ev, &disc->pending, &disc->disc_work[ev].work, port->ha);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -692,6 +932,7 @@ void sas_init_disc(struct sas_discovery *disc, struct asd_sas_port *port)
 		[DISCE_DISCOVER_DOMAIN] = sas_discover_domain,
 		[DISCE_REVALIDATE_DOMAIN] = sas_revalidate_domain,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	};
 
 	spin_lock_init(&disc->disc_event_lock);
@@ -700,13 +941,21 @@ void sas_init_disc(struct sas_discovery *disc, struct asd_sas_port *port)
 		INIT_WORK(&disc->disc_work[i].work, sas_event_fns[i]);
 =======
 		[DISCE_PROBE] = sas_probe_devices,
+=======
+		[DISCE_PROBE] = sas_probe_devices,
+		[DISCE_SUSPEND] = sas_suspend_devices,
+		[DISCE_RESUME] = sas_resume_devices,
+>>>>>>> refs/remotes/origin/master
 		[DISCE_DESTRUCT] = sas_destruct_devices,
 	};
 
 	disc->pending = 0;
 	for (i = 0; i < DISC_NUM_EVENTS; i++) {
 		INIT_SAS_WORK(&disc->disc_work[i].work, sas_event_fns[i]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		disc->disc_work[i].port = port;
 	}
 }

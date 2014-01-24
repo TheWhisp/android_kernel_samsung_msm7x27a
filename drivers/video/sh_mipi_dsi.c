@@ -9,9 +9,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/bitmap.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bitmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/clk.h>
 #include <linux/delay.h>
 #include <linux/init.h>
@@ -22,19 +26,28 @@
 #include <linux/string.h>
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <video/mipi_display.h>
 #include <video/sh_mipi_dsi.h>
 #include <video/sh_mobile_lcdc.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "sh_mobile_lcdcfb.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "sh_mobile_lcdcfb.h"
+
+>>>>>>> refs/remotes/origin/master
 #define SYSCTRL		0x0000
 #define SYSCONF		0x0004
 #define TIMSET		0x0008
@@ -54,9 +67,13 @@
 #define VMCTR2		0x0024
 #define VMLEN1		0x0028
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define VMLEN2		0x002c
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define VMLEN2		0x002c
+>>>>>>> refs/remotes/origin/master
 #define CMTSRTREQ	0x0070
 #define CMTSRTCTR	0x00d0
 
@@ -64,6 +81,7 @@
 #define MAX_SH_MIPI_DSI 2
 
 struct sh_mipi {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	void __iomem	*base;
 	void __iomem	*linkbase;
@@ -77,6 +95,8 @@ struct sh_mipi {
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sh_mobile_lcdc_entity entity;
 
 	void __iomem	*base;
@@ -87,7 +107,10 @@ struct sh_mipi {
 
 #define to_sh_mipi(e)	container_of(e, struct sh_mipi, entity)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct sh_mipi *mipi_dsi[MAX_SH_MIPI_DSI];
 
 /* Protect the above array */
@@ -149,6 +172,7 @@ static void sh_mipi_dsi_enable(struct sh_mipi *mipi, bool enable)
 static void sh_mipi_shutdown(struct platform_device *pdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sh_mipi *mipi = platform_get_drvdata(pdev);
 
 	sh_mipi_dsi_enable(mipi, false);
@@ -195,6 +219,20 @@ static int __init sh_mipi_setup(struct sh_mipi *mipi,
 	bool yuv;
 	int bpp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sh_mipi *mipi = to_sh_mipi(platform_get_drvdata(pdev));
+
+	sh_mipi_dsi_enable(mipi, false);
+}
+
+static int sh_mipi_setup(struct sh_mipi *mipi, const struct fb_videomode *mode)
+{
+	void __iomem *base = mipi->base;
+	struct sh_mipi_dsi_info *pdata = mipi->pdev->dev.platform_data;
+	u32 pctype, datatype, pixfmt, linelength, vmctr2;
+	u32 tmp, top, bottom, delay, div;
+	int bpp;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Select data format. MIPI DSI is not hot-pluggable, so, we just use
@@ -207,121 +245,165 @@ static int __init sh_mipi_setup(struct sh_mipi *mipi,
 		datatype = MIPI_DSI_PACKED_PIXEL_STREAM_24;
 		pixfmt = MIPI_DCS_PIXEL_FMT_24BIT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		linelength = ch->lcd_cfg[0].xres * 3;
 =======
 		linelength = ch->lcd_modes[0].xres * 3;
 >>>>>>> refs/remotes/origin/cm-10.0
 		yuv = false;
+=======
+		linelength = mode->xres * 3;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MIPI_RGB565:
 		pctype = 1;
 		datatype = MIPI_DSI_PACKED_PIXEL_STREAM_16;
 		pixfmt = MIPI_DCS_PIXEL_FMT_16BIT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		linelength = ch->lcd_cfg[0].xres * 2;
 =======
 		linelength = ch->lcd_modes[0].xres * 2;
 >>>>>>> refs/remotes/origin/cm-10.0
 		yuv = false;
+=======
+		linelength = mode->xres * 2;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MIPI_RGB666_LP:
 		pctype = 2;
 		datatype = MIPI_DSI_PIXEL_STREAM_3BYTE_18;
 		pixfmt = MIPI_DCS_PIXEL_FMT_24BIT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		linelength = ch->lcd_cfg[0].xres * 3;
 =======
 		linelength = ch->lcd_modes[0].xres * 3;
 >>>>>>> refs/remotes/origin/cm-10.0
 		yuv = false;
+=======
+		linelength = mode->xres * 3;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MIPI_RGB666:
 		pctype = 3;
 		datatype = MIPI_DSI_PACKED_PIXEL_STREAM_18;
 		pixfmt = MIPI_DCS_PIXEL_FMT_18BIT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		linelength = (ch->lcd_cfg[0].xres * 18 + 7) / 8;
 =======
 		linelength = (ch->lcd_modes[0].xres * 18 + 7) / 8;
 >>>>>>> refs/remotes/origin/cm-10.0
 		yuv = false;
+=======
+		linelength = (mode->xres * 18 + 7) / 8;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MIPI_BGR888:
 		pctype = 8;
 		datatype = MIPI_DSI_PACKED_PIXEL_STREAM_24;
 		pixfmt = MIPI_DCS_PIXEL_FMT_24BIT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		linelength = ch->lcd_cfg[0].xres * 3;
 =======
 		linelength = ch->lcd_modes[0].xres * 3;
 >>>>>>> refs/remotes/origin/cm-10.0
 		yuv = false;
+=======
+		linelength = mode->xres * 3;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MIPI_BGR565:
 		pctype = 9;
 		datatype = MIPI_DSI_PACKED_PIXEL_STREAM_16;
 		pixfmt = MIPI_DCS_PIXEL_FMT_16BIT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		linelength = ch->lcd_cfg[0].xres * 2;
 =======
 		linelength = ch->lcd_modes[0].xres * 2;
 >>>>>>> refs/remotes/origin/cm-10.0
 		yuv = false;
+=======
+		linelength = mode->xres * 2;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MIPI_BGR666_LP:
 		pctype = 0xa;
 		datatype = MIPI_DSI_PIXEL_STREAM_3BYTE_18;
 		pixfmt = MIPI_DCS_PIXEL_FMT_24BIT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		linelength = ch->lcd_cfg[0].xres * 3;
 =======
 		linelength = ch->lcd_modes[0].xres * 3;
 >>>>>>> refs/remotes/origin/cm-10.0
 		yuv = false;
+=======
+		linelength = mode->xres * 3;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MIPI_BGR666:
 		pctype = 0xb;
 		datatype = MIPI_DSI_PACKED_PIXEL_STREAM_18;
 		pixfmt = MIPI_DCS_PIXEL_FMT_18BIT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		linelength = (ch->lcd_cfg[0].xres * 18 + 7) / 8;
 =======
 		linelength = (ch->lcd_modes[0].xres * 18 + 7) / 8;
 >>>>>>> refs/remotes/origin/cm-10.0
 		yuv = false;
+=======
+		linelength = (mode->xres * 18 + 7) / 8;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MIPI_YUYV:
 		pctype = 4;
 		datatype = MIPI_DSI_PACKED_PIXEL_STREAM_YCBCR16;
 		pixfmt = MIPI_DCS_PIXEL_FMT_16BIT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		linelength = ch->lcd_cfg[0].xres * 2;
 =======
 		linelength = ch->lcd_modes[0].xres * 2;
 >>>>>>> refs/remotes/origin/cm-10.0
 		yuv = true;
+=======
+		linelength = mode->xres * 2;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MIPI_UYVY:
 		pctype = 5;
 		datatype = MIPI_DSI_PACKED_PIXEL_STREAM_YCBCR16;
 		pixfmt = MIPI_DCS_PIXEL_FMT_16BIT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		linelength = ch->lcd_cfg[0].xres * 2;
 =======
 		linelength = ch->lcd_modes[0].xres * 2;
 >>>>>>> refs/remotes/origin/cm-10.0
 		yuv = true;
+=======
+		linelength = mode->xres * 2;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MIPI_YUV420_L:
 		pctype = 6;
 		datatype = MIPI_DSI_PACKED_PIXEL_STREAM_YCBCR12;
 		pixfmt = MIPI_DCS_PIXEL_FMT_12BIT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		linelength = (ch->lcd_cfg[0].xres * 12 + 7) / 8;
 =======
 		linelength = (ch->lcd_modes[0].xres * 12 + 7) / 8;
 >>>>>>> refs/remotes/origin/cm-10.0
 		yuv = true;
+=======
+		linelength = (mode->xres * 12 + 7) / 8;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MIPI_YUV420:
 		pctype = 7;
@@ -329,16 +411,21 @@ static int __init sh_mipi_setup(struct sh_mipi *mipi,
 		pixfmt = MIPI_DCS_PIXEL_FMT_12BIT;
 		/* Length of U/V line */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		linelength = (ch->lcd_cfg[0].xres + 1) / 2;
 =======
 		linelength = (ch->lcd_modes[0].xres + 1) / 2;
 >>>>>>> refs/remotes/origin/cm-10.0
 		yuv = true;
+=======
+		linelength = (mode->xres + 1) / 2;
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if ((yuv && ch->interface_type != YUV422) ||
 	    (!yuv && ch->interface_type != RGB24))
 		return -EINVAL;
@@ -349,6 +436,11 @@ static int __init sh_mipi_setup(struct sh_mipi *mipi,
 		return -EINVAL;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!pdata->lane)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	/* reset DSI link */
 	iowrite32(0x00000001, base + SYSCTRL);
 	/* Hold reset for 100 cycles of the slowest of bus, HS byte and LP clock */
@@ -358,6 +450,7 @@ static int __init sh_mipi_setup(struct sh_mipi *mipi,
 	/* setup DSI link */
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * Default = ULPS enable |
 	 *	Contention detection enabled |
@@ -370,6 +463,8 @@ static int __init sh_mipi_setup(struct sh_mipi *mipi,
 	/*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * T_wakeup = 0x7000
 	 * T_hs-trail = 3
 	 * T_hs-prepare = 3
@@ -390,19 +485,25 @@ static int __init sh_mipi_setup(struct sh_mipi *mipi,
 	/* Peripheral reset timeout, default 0xffffffff */
 	iowrite32(0x0fffffff, base + PRTOVSET);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Enable timeout counters */
 	iowrite32(0x00000f00, base + DSICTRL);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Interrupts not used, disable all */
 	iowrite32(0, base + DSIINTE);
 	/* DSI-Tx bias on */
 	iowrite32(0x00000001, base + PHYCTRL);
 	udelay(200);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Deassert resets, power on, set multiplier */
 	iowrite32(0x03070b01, base + PHYCTRL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Deassert resets, power on */
 	iowrite32(0x03070001 | pdata->phyctrl, base + PHYCTRL);
 
@@ -416,7 +517,10 @@ static int __init sh_mipi_setup(struct sh_mipi *mipi,
 	bitmap_fill((unsigned long *)&tmp, pdata->lane);
 	tmp |= 0x00003700;
 	iowrite32(tmp, base + SYSCONF);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* setup l-bridge */
 
@@ -427,10 +531,14 @@ static int __init sh_mipi_setup(struct sh_mipi *mipi,
 	iowrite32(0x00000006, mipi->linkbase + DTCTR);
 	/* VSYNC width = 2 (<< 17) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iowrite32((ch->lcd_cfg[0].vsync_len << pdata->vsynw_offset) |
 =======
 	iowrite32((ch->lcd_modes[0].vsync_len << pdata->vsynw_offset) |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iowrite32((mode->vsync_len << pdata->vsynw_offset) |
+>>>>>>> refs/remotes/origin/master
 		  (pdata->clksrc << 16) | (pctype << 12) | datatype,
 		  mipi->linkbase + VMCTR1);
 
@@ -438,6 +546,7 @@ static int __init sh_mipi_setup(struct sh_mipi *mipi,
 	 * Non-burst mode with sync pulses: VSE and HSE are output,
 	 * HSA period allowed, no commands in LP
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (pdata->flags & SH_MIPI_DSI_HSABM)
 		vmctr2 |= 0x20;
@@ -452,6 +561,8 @@ static int __init sh_mipi_setup(struct sh_mipi *mipi,
 	 */
 	iowrite32(1 | (linelength << 16), mipi->linkbase + VMLEN1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	vmctr2 = 0;
 	if (pdata->flags & SH_MIPI_DSI_VSEE)
 		vmctr2 |= 1 << 23;
@@ -478,7 +589,11 @@ static int __init sh_mipi_setup(struct sh_mipi *mipi,
 	top = linelength << 16; /* RGBLEN */
 	bottom = 0x00000001;
 	if (pdata->flags & SH_MIPI_DSI_HSABM) /* HSALEN */
+<<<<<<< HEAD
 		bottom = (pdata->lane * ch->lcd_modes[0].hsync_len) - 10;
+=======
+		bottom = (pdata->lane * mode->hsync_len) - 10;
+>>>>>>> refs/remotes/origin/master
 	iowrite32(top | bottom , mipi->linkbase + VMLEN1);
 
 	/*
@@ -498,6 +613,7 @@ static int __init sh_mipi_setup(struct sh_mipi *mipi,
 		div = 2;
 
 	if (pdata->flags & SH_MIPI_DSI_HFPBM) {	/* HBPLEN */
+<<<<<<< HEAD
 		top = ch->lcd_modes[0].hsync_len + ch->lcd_modes[0].left_margin;
 		top = ((pdata->lane * top / div) - 10) << 16;
 	}
@@ -510,18 +626,39 @@ static int __init sh_mipi_setup(struct sh_mipi *mipi,
 	if ((pdata->lane / div) > bpp) {
 		tmp = ch->lcd_modes[0].xres / bpp; /* output cycle */
 		tmp = ch->lcd_modes[0].xres - tmp; /* (input - output) cycle */
+=======
+		top = mode->hsync_len + mode->left_margin;
+		top = ((pdata->lane * top / div) - 10) << 16;
+	}
+	if (pdata->flags & SH_MIPI_DSI_HBPBM) { /* HFPLEN */
+		bottom = mode->right_margin;
+		bottom = (pdata->lane * bottom / div) - 12;
+	}
+
+	bpp = linelength / mode->xres; /* byte / pixel */
+	if ((pdata->lane / div) > bpp) {
+		tmp = mode->xres / bpp; /* output cycle */
+		tmp = mode->xres - tmp; /* (input - output) cycle */
+>>>>>>> refs/remotes/origin/master
 		delay = (pdata->lane * tmp);
 	}
 
 	iowrite32(top | (bottom + delay) , mipi->linkbase + VMLEN2);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	msleep(5);
 
 	/* setup LCD panel */
 
 	/* cf. drivers/video/omap/lcd_mipid.c */
+<<<<<<< HEAD
 	sh_mipi_dcs(ch->chan, MIPI_DCS_EXIT_SLEEP_MODE);
+=======
+	sh_mipi_dcs(pdata->channel, MIPI_DCS_EXIT_SLEEP_MODE);
+>>>>>>> refs/remotes/origin/master
 	msleep(120);
 	/*
 	 * [7] - Page Address Mode
@@ -533,6 +670,7 @@ static int __init sh_mipi_setup(struct sh_mipi *mipi,
 	 * [1] - Flip Horizontal
 	 * [0] - Flip Vertical
 	 */
+<<<<<<< HEAD
 	sh_mipi_dcs_param(ch->chan, MIPI_DCS_SET_ADDRESS_MODE, 0x00);
 	/* cf. set_data_lines() */
 	sh_mipi_dcs_param(ch->chan, MIPI_DCS_SET_PIXEL_FORMAT,
@@ -544,6 +682,14 @@ static int __init sh_mipi_setup(struct sh_mipi *mipi,
 }
 
 =======
+=======
+	sh_mipi_dcs_param(pdata->channel, MIPI_DCS_SET_ADDRESS_MODE, 0x00);
+	/* cf. set_data_lines() */
+	sh_mipi_dcs_param(pdata->channel, MIPI_DCS_SET_PIXEL_FORMAT,
+			  pixfmt << 4);
+	sh_mipi_dcs(pdata->channel, MIPI_DCS_SET_DISPLAY_ON);
+
+>>>>>>> refs/remotes/origin/master
 	/* Enable timeout counters */
 	iowrite32(0x00000f00, base + DSICTRL);
 
@@ -562,7 +708,11 @@ static int mipi_display_on(struct sh_mobile_lcdc_entity *entity)
 	if (ret < 0)
 		goto mipi_display_on_fail1;
 
+<<<<<<< HEAD
 	ret = sh_mipi_setup(mipi, pdata);
+=======
+	ret = sh_mipi_setup(mipi, &entity->def_mode);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto mipi_display_on_fail2;
 
@@ -595,7 +745,10 @@ static const struct sh_mobile_lcdc_entity_ops mipi_ops = {
 	.display_off = mipi_display_off,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init sh_mipi_probe(struct platform_device *pdev)
 {
 	struct sh_mipi *mipi;
@@ -605,19 +758,28 @@ static int __init sh_mipi_probe(struct platform_device *pdev)
 	unsigned long rate, f_current;
 	int idx = pdev->id, ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char dsip_clk[] = "dsi.p_clk";
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!res || !res2 || idx >= ARRAY_SIZE(mipi_dsi) || !pdata)
 		return -ENODEV;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (!pdata->set_dot_clock)
 		return -EINVAL;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!pdata->set_dot_clock)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&array_lock);
 	if (idx < 0)
 		for (idx = 0; idx < ARRAY_SIZE(mipi_dsi) && mipi_dsi[idx]; idx++)
@@ -635,11 +797,17 @@ static int __init sh_mipi_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mipi->entity.owner = THIS_MODULE;
 	mipi->entity.ops = &mipi_ops;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mipi->entity.owner = THIS_MODULE;
+	mipi->entity.ops = &mipi_ops;
+
+>>>>>>> refs/remotes/origin/master
 	if (!request_mem_region(res->start, resource_size(res), pdev->name)) {
 		dev_err(&pdev->dev, "MIPI register region already claimed\n");
 		ret = -EBUSY;
@@ -665,10 +833,14 @@ static int __init sh_mipi_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mipi->dev = &pdev->dev;
 =======
 	mipi->pdev = pdev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mipi->pdev = pdev;
+>>>>>>> refs/remotes/origin/master
 
 	mipi->dsit_clk = clk_get(&pdev->dev, "dsit_clk");
 	if (IS_ERR(mipi->dsit_clk)) {
@@ -688,6 +860,7 @@ static int __init sh_mipi_probe(struct platform_device *pdev)
 
 	dev_dbg(&pdev->dev, "DSI-T clk %lu -> %lu\n", f_current, rate);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sprintf(dsip_clk, "dsi%1.1dp_clk", idx);
 	mipi->dsip_clk = clk_get(&pdev->dev, dsip_clk);
@@ -712,10 +885,13 @@ static int __init sh_mipi_probe(struct platform_device *pdev)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = clk_enable(mipi->dsit_clk);
 	if (ret < 0)
 		goto eclkton;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = clk_enable(mipi->dsip_clk);
 	if (ret < 0)
@@ -723,11 +899,14 @@ static int __init sh_mipi_probe(struct platform_device *pdev)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mipi_dsi[idx] = mipi;
 
 	pm_runtime_enable(&pdev->dev);
 	pm_runtime_resume(&pdev->dev);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = sh_mipi_setup(mipi, pdata);
 	if (ret < 0)
@@ -760,13 +939,18 @@ esetprate:
 	clk_put(mipi->dsip_clk);
 eclkpget:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&array_lock);
 	platform_set_drvdata(pdev, &mipi->entity);
 
 	return 0;
 
 eclkton:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 esettrate:
 	clk_put(mipi->dsit_clk);
 eclktget:
@@ -786,6 +970,7 @@ efindslot:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __exit sh_mipi_remove(struct platform_device *pdev)
 {
 <<<<<<< HEAD
@@ -798,6 +983,13 @@ static int __exit sh_mipi_remove(struct platform_device *pdev)
 	struct resource *res2 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
 	struct sh_mipi *mipi = to_sh_mipi(platform_get_drvdata(pdev));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int sh_mipi_remove(struct platform_device *pdev)
+{
+	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	struct resource *res2 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+	struct sh_mipi *mipi = to_sh_mipi(platform_get_drvdata(pdev));
+>>>>>>> refs/remotes/origin/master
 	int i, ret;
 
 	mutex_lock(&array_lock);
@@ -818,6 +1010,7 @@ static int __exit sh_mipi_remove(struct platform_device *pdev)
 		return ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pdata->lcd_chan->board_cfg.owner = NULL;
 	pdata->lcd_chan->board_cfg.display_on = NULL;
 	pdata->lcd_chan->board_cfg.display_off = NULL;
@@ -829,31 +1022,44 @@ static int __exit sh_mipi_remove(struct platform_device *pdev)
 	clk_put(mipi->dsit_clk);
 	clk_put(mipi->dsip_clk);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pm_runtime_disable(&pdev->dev);
 	clk_disable(mipi->dsit_clk);
 	clk_put(mipi->dsit_clk);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	iounmap(mipi->linkbase);
 	if (res2)
 		release_mem_region(res2->start, resource_size(res2));
 	iounmap(mipi->base);
 	if (res)
 		release_mem_region(res->start, resource_size(res));
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(mipi);
 
 	return 0;
 }
 
 static struct platform_driver sh_mipi_driver = {
+<<<<<<< HEAD
 	.remove		= __exit_p(sh_mipi_remove),
+=======
+	.remove		= sh_mipi_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= sh_mipi_shutdown,
 	.driver = {
 		.name	= "sh-mipi-dsi",
 	},
 };
 
+<<<<<<< HEAD
 static int __init sh_mipi_init(void)
 {
 	return platform_driver_probe(&sh_mipi_driver, sh_mipi_probe);
@@ -865,6 +1071,9 @@ static void __exit sh_mipi_exit(void)
 	platform_driver_unregister(&sh_mipi_driver);
 }
 module_exit(sh_mipi_exit);
+=======
+module_platform_driver_probe(sh_mipi_driver, sh_mipi_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Guennadi Liakhovetski <g.liakhovetski@gmx.de>");
 MODULE_DESCRIPTION("SuperH / ARM-shmobile MIPI DSI driver");

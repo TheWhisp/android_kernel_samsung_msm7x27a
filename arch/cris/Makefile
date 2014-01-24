@@ -23,7 +23,13 @@ mach-$(CONFIG_ETRAXFS) := fs
 
 ifneq ($(arch-y),)
 SARCH := arch-$(arch-y)
+<<<<<<< HEAD
 inc := -Iarch/cris/include/$(SARCH)
+=======
+inc := -Iarch/cris/include/uapi/$(SARCH)
+inc += -Iarch/cris/include/$(SARCH)
+inc += -Iarch/cris/include/uapi/$(SARCH)/arch
+>>>>>>> refs/remotes/origin/master
 inc += -Iarch/cris/include/$(SARCH)/arch
 else
 SARCH :=

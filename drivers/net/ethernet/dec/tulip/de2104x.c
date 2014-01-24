@@ -661,9 +661,12 @@ static netdev_tx_t de_start_xmit (struct sk_buff *skb,
    new frame, not around filling de->setup_frame.  This is non-deterministic
    when re-entered but still correct. */
 
+<<<<<<< HEAD
 #undef set_bit_le
 #define set_bit_le(i,p) do { ((char *)(p))[(i)/8] |= (1<<((i)%8)); } while(0)
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void build_setup_frame_hash(u16 *setup_frm, struct net_device *dev)
 {
 	struct de_private *de = netdev_priv(dev);
@@ -673,12 +676,20 @@ static void build_setup_frame_hash(u16 *setup_frm, struct net_device *dev)
 	u16 *eaddrs;
 
 	memset(hash_table, 0, sizeof(hash_table));
+<<<<<<< HEAD
 	set_bit_le(255, hash_table); 			/* Broadcast entry */
+=======
+	__set_bit_le(255, hash_table);			/* Broadcast entry */
+>>>>>>> refs/remotes/origin/master
 	/* This should work on big-endian machines as well. */
 	netdev_for_each_mc_addr(ha, dev) {
 		int index = ether_crc_le(ETH_ALEN, ha->addr) & 0x1ff;
 
+<<<<<<< HEAD
 		set_bit_le(index, hash_table);
+=======
+		__set_bit_le(index, hash_table);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (i = 0; i < 32; i++) {
@@ -1380,6 +1391,10 @@ static void de_free_rings (struct de_private *de)
 static int de_open (struct net_device *dev)
 {
 	struct de_private *de = netdev_priv(dev);
+<<<<<<< HEAD
+=======
+	const int irq = de->pdev->irq;
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	netif_dbg(de, ifup, dev, "enabling interface\n");
@@ -1394,10 +1409,16 @@ static int de_open (struct net_device *dev)
 
 	dw32(IntrMask, 0);
 
+<<<<<<< HEAD
 	rc = request_irq(dev->irq, de_interrupt, IRQF_SHARED, dev->name, dev);
 	if (rc) {
 		netdev_err(dev, "IRQ %d request failure, err=%d\n",
 			   dev->irq, rc);
+=======
+	rc = request_irq(irq, de_interrupt, IRQF_SHARED, dev->name, dev);
+	if (rc) {
+		netdev_err(dev, "IRQ %d request failure, err=%d\n", irq, rc);
+>>>>>>> refs/remotes/origin/master
 		goto err_out_free;
 	}
 
@@ -1413,7 +1434,11 @@ static int de_open (struct net_device *dev)
 	return 0;
 
 err_out_free_irq:
+<<<<<<< HEAD
 	free_irq(dev->irq, dev);
+=======
+	free_irq(irq, dev);
+>>>>>>> refs/remotes/origin/master
 err_out_free:
 	de_free_rings(de);
 	return rc;
@@ -1434,7 +1459,11 @@ static int de_close (struct net_device *dev)
 	netif_carrier_off(dev);
 	spin_unlock_irqrestore(&de->lock, flags);
 
+<<<<<<< HEAD
 	free_irq(dev->irq, dev);
+=======
+	free_irq(de->pdev->irq, dev);
+>>>>>>> refs/remotes/origin/master
 
 	de_free_rings(de);
 	de_adapter_sleep(de);
@@ -1444,6 +1473,10 @@ static int de_close (struct net_device *dev)
 static void de_tx_timeout (struct net_device *dev)
 {
 	struct de_private *de = netdev_priv(dev);
+<<<<<<< HEAD
+=======
+	const int irq = de->pdev->irq;
+>>>>>>> refs/remotes/origin/master
 
 	netdev_dbg(dev, "NIC status %08x mode %08x sia %08x desc %u/%u/%u\n",
 		   dr32(MacStatus), dr32(MacMode), dr32(SIAStatus),
@@ -1451,7 +1484,11 @@ static void de_tx_timeout (struct net_device *dev)
 
 	del_timer_sync(&de->media_timer);
 
+<<<<<<< HEAD
 	disable_irq(dev->irq);
+=======
+	disable_irq(irq);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&de->lock);
 
 	de_stop_hw(de);
@@ -1459,12 +1496,20 @@ static void de_tx_timeout (struct net_device *dev)
 	netif_carrier_off(dev);
 
 	spin_unlock_irq(&de->lock);
+<<<<<<< HEAD
 	enable_irq(dev->irq);
+=======
+	enable_irq(irq);
+>>>>>>> refs/remotes/origin/master
 
 	/* Update the error counts. */
 	__de_get_stats(de);
 
+<<<<<<< HEAD
 	synchronize_irq(dev->irq);
+=======
+	synchronize_irq(irq);
+>>>>>>> refs/remotes/origin/master
 	de_clean_rings(de);
 
 	de_init_rings(de);
@@ -1702,7 +1747,11 @@ static const struct ethtool_ops de_ethtool_ops = {
 	.get_regs		= de_get_regs,
 };
 
+<<<<<<< HEAD
 static void __devinit de21040_get_mac_address (struct de_private *de)
+=======
+static void de21040_get_mac_address(struct de_private *de)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned i;
 
@@ -1723,7 +1772,11 @@ static void __devinit de21040_get_mac_address (struct de_private *de)
 	}
 }
 
+<<<<<<< HEAD
 static void __devinit de21040_get_media_info(struct de_private *de)
+=======
+static void de21040_get_media_info(struct de_private *de)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i;
 
@@ -1750,7 +1803,12 @@ static void __devinit de21040_get_media_info(struct de_private *de)
 }
 
 /* Note: this routine returns extra data bits for size detection. */
+<<<<<<< HEAD
 static unsigned __devinit tulip_read_eeprom(void __iomem *regs, int location, int addr_len)
+=======
+static unsigned tulip_read_eeprom(void __iomem *regs, int location,
+				  int addr_len)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	unsigned retval = 0;
@@ -1785,7 +1843,11 @@ static unsigned __devinit tulip_read_eeprom(void __iomem *regs, int location, in
 	return retval;
 }
 
+<<<<<<< HEAD
 static void __devinit de21041_get_srom_info (struct de_private *de)
+=======
+static void de21041_get_srom_info(struct de_private *de)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned i, sa_offset = 0, ofs;
 	u8 ee_data[DE_EEPROM_SIZE + 6] = {};
@@ -1963,8 +2025,12 @@ static const struct net_device_ops de_netdev_ops = {
 	.ndo_validate_addr	= eth_validate_addr,
 };
 
+<<<<<<< HEAD
 static int __devinit de_init_one (struct pci_dev *pdev,
 				  const struct pci_device_id *ent)
+=======
+static int de_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	struct de_private *de;
@@ -2024,8 +2090,11 @@ static int __devinit de_init_one (struct pci_dev *pdev,
 		goto err_out_res;
 	}
 
+<<<<<<< HEAD
 	dev->irq = pdev->irq;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* obtain and check validity of PCI I/O address */
 	pciaddr = pci_resource_start(pdev, 1);
 	if (!pciaddr) {
@@ -2050,7 +2119,10 @@ static int __devinit de_init_one (struct pci_dev *pdev,
 		       pciaddr, pci_name(pdev));
 		goto err_out_res;
 	}
+<<<<<<< HEAD
 	dev->base_addr = (unsigned long) regs;
+=======
+>>>>>>> refs/remotes/origin/master
 	de->regs = regs;
 
 	de_adapter_wake(de);
@@ -2078,11 +2150,17 @@ static int __devinit de_init_one (struct pci_dev *pdev,
 		goto err_out_iomap;
 
 	/* print info about board and interface just registered */
+<<<<<<< HEAD
 	netdev_info(dev, "%s at 0x%lx, %pM, IRQ %d\n",
 		    de->de21040 ? "21040" : "21041",
 		    dev->base_addr,
 		    dev->dev_addr,
 		    dev->irq);
+=======
+	netdev_info(dev, "%s at %p, %pM, IRQ %d\n",
+		    de->de21040 ? "21040" : "21041",
+		    regs, dev->dev_addr, pdev->irq);
+>>>>>>> refs/remotes/origin/master
 
 	pci_set_drvdata(pdev, dev);
 
@@ -2106,7 +2184,11 @@ err_out_free:
 	return rc;
 }
 
+<<<<<<< HEAD
 static void __devexit de_remove_one (struct pci_dev *pdev)
+=======
+static void de_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 	struct de_private *de = netdev_priv(dev);
@@ -2117,7 +2199,10 @@ static void __devexit de_remove_one (struct pci_dev *pdev)
 	iounmap(de->regs);
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_netdev(dev);
 }
 
@@ -2130,9 +2215,17 @@ static int de_suspend (struct pci_dev *pdev, pm_message_t state)
 
 	rtnl_lock();
 	if (netif_running (dev)) {
+<<<<<<< HEAD
 		del_timer_sync(&de->media_timer);
 
 		disable_irq(dev->irq);
+=======
+		const int irq = pdev->irq;
+
+		del_timer_sync(&de->media_timer);
+
+		disable_irq(irq);
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irq(&de->lock);
 
 		de_stop_hw(de);
@@ -2141,12 +2234,20 @@ static int de_suspend (struct pci_dev *pdev, pm_message_t state)
 		netif_carrier_off(dev);
 
 		spin_unlock_irq(&de->lock);
+<<<<<<< HEAD
 		enable_irq(dev->irq);
+=======
+		enable_irq(irq);
+>>>>>>> refs/remotes/origin/master
 
 		/* Update the error counts. */
 		__de_get_stats(de);
 
+<<<<<<< HEAD
 		synchronize_irq(dev->irq);
+=======
+		synchronize_irq(irq);
+>>>>>>> refs/remotes/origin/master
 		de_clean_rings(de);
 
 		de_adapter_sleep(de);
@@ -2189,7 +2290,11 @@ static struct pci_driver de_driver = {
 	.name		= DRV_NAME,
 	.id_table	= de_pci_tbl,
 	.probe		= de_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(de_remove_one),
+=======
+	.remove		= de_remove_one,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= de_suspend,
 	.resume		= de_resume,

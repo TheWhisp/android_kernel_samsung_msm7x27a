@@ -26,15 +26,26 @@
 #include <mach/serial.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define IOMEM(x)	((void __force __iomem *)(x))
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IOMEM(x)	((void __force __iomem *)(x))
+
+>>>>>>> refs/remotes/origin/master
 u32 *uart;
 
 /* PORT_16C550A, in polled non-fifo mode */
 static void putc(char c)
 {
+<<<<<<< HEAD
+=======
+	if (!uart)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	while (!(uart[UART_LSR] & UART_LSR_THRE))
 		barrier();
 	uart[UART_TX] = c;
@@ -42,10 +53,17 @@ static void putc(char c)
 
 static inline void flush(void)
 {
+<<<<<<< HEAD
+=======
+	if (!uart)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	while (!(uart[UART_LSR] & UART_LSR_THRE))
 		barrier();
 }
 
+<<<<<<< HEAD
 static inline void set_uart_info(u32 phys, void * __iomem virt)
 {
 <<<<<<< HEAD
@@ -81,6 +99,29 @@ static inline void set_uart_info(u32 phys, void * __iomem virt)
 #define DEBUG_LL_TNETV107X(machine, port)			\
 	_DEBUG_LL_ENTRY(machine, TNETV107X_UART##port##_BASE,	\
 			TNETV107X_UART##port##_VIRT)
+=======
+static inline void set_uart_info(u32 phys)
+{
+	uart = (u32 *)phys;
+}
+
+#define _DEBUG_LL_ENTRY(machine, phys)				\
+	{							\
+		if (machine_is_##machine()) {			\
+			set_uart_info(phys);			\
+			break;					\
+		}						\
+	}
+
+#define DEBUG_LL_DAVINCI(machine, port)				\
+	_DEBUG_LL_ENTRY(machine, DAVINCI_UART##port##_BASE)
+
+#define DEBUG_LL_DA8XX(machine, port)				\
+	_DEBUG_LL_ENTRY(machine, DA8XX_UART##port##_BASE)
+
+#define DEBUG_LL_TNETV107X(machine, port)			\
+	_DEBUG_LL_ENTRY(machine, TNETV107X_UART##port##_BASE)
+>>>>>>> refs/remotes/origin/master
 
 static inline void __arch_decomp_setup(unsigned long arch_id)
 {
@@ -112,4 +153,7 @@ static inline void __arch_decomp_setup(unsigned long arch_id)
 }
 
 #define arch_decomp_setup()	__arch_decomp_setup(arch_id)
+<<<<<<< HEAD
 #define arch_decomp_wdog()
+=======
+>>>>>>> refs/remotes/origin/master

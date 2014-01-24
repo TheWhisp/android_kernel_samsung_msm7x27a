@@ -49,7 +49,10 @@ static void mvs_94xx_detect_porttype(struct mvs_info *mvi, int i)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void set_phy_tuning(struct mvs_info *mvi, int phy_id,
 			struct phy_tuning phy_tuning)
 {
@@ -218,8 +221,12 @@ void set_phy_rate(struct mvs_info *mvi, int phy_id, u8 rate)
 	mvs_write_port_vsr_data(mvi, phy_id, phy_cfg.v);
 }
 
+<<<<<<< HEAD
 static void __devinit
 mvs_94xx_config_reg_from_hba(struct mvs_info *mvi, int phy_id)
+=======
+static void mvs_94xx_config_reg_from_hba(struct mvs_info *mvi, int phy_id)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 temp;
 	temp = (u32)(*(u32 *)&mvi->hba_info_param.phy_tuning[phy_id]);
@@ -260,8 +267,12 @@ mvs_94xx_config_reg_from_hba(struct mvs_info *mvi, int phy_id)
 		mvi->hba_info_param.phy_rate[phy_id]);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static void __devinit mvs_94xx_enable_xmt(struct mvs_info *mvi, int phy_id)
+=======
+static void mvs_94xx_enable_xmt(struct mvs_info *mvi, int phy_id)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *regs = mvi->regs;
 	u32 tmp;
@@ -275,8 +286,11 @@ static void mvs_94xx_phy_reset(struct mvs_info *mvi, u32 phy_id, int hard)
 {
 	u32 tmp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 delay = 5000;
 	if (hard == MVS_PHY_TUNE) {
 		mvs_write_port_cfg_addr(mvi, phy_id, PHYR_SATA_CTL);
@@ -285,7 +299,10 @@ static void mvs_94xx_phy_reset(struct mvs_info *mvi, u32 phy_id, int hard)
 		mvs_write_port_cfg_data(mvi, phy_id, tmp|0x100000);
 		return;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tmp = mvs_read_port_irq_stat(mvi, phy_id);
 	tmp &= ~PHYEV_RDY_CH;
 	mvs_write_port_irq_stat(mvi, phy_id, tmp);
@@ -296,6 +313,7 @@ static void mvs_94xx_phy_reset(struct mvs_info *mvi, u32 phy_id, int hard)
 		do {
 			tmp = mvs_read_phy_ctl(mvi, phy_id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} while (tmp & PHY_RST_HARD);
 	} else {
 		mvs_write_port_vsr_addr(mvi, phy_id, VSR_PHY_STAT);
@@ -303,6 +321,8 @@ static void mvs_94xx_phy_reset(struct mvs_info *mvi, u32 phy_id, int hard)
 		tmp |= PHY_RST;
 		mvs_write_port_vsr_data(mvi, phy_id, tmp);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			udelay(10);
 			delay--;
 		} while ((tmp & PHY_RST_HARD) && delay);
@@ -312,7 +332,10 @@ static void mvs_94xx_phy_reset(struct mvs_info *mvi, u32 phy_id, int hard)
 		tmp = mvs_read_phy_ctl(mvi, phy_id);
 		tmp |= PHY_RST;
 		mvs_write_phy_ctl(mvi, phy_id, tmp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -327,6 +350,7 @@ static void mvs_94xx_phy_disable(struct mvs_info *mvi, u32 phy_id)
 static void mvs_94xx_phy_enable(struct mvs_info *mvi, u32 phy_id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mvs_write_port_vsr_addr(mvi, phy_id, 0x1B4);
 	mvs_write_port_vsr_data(mvi, phy_id, 0x8300ffc1);
 	mvs_write_port_vsr_addr(mvi, phy_id, 0x104);
@@ -334,6 +358,8 @@ static void mvs_94xx_phy_enable(struct mvs_info *mvi, u32 phy_id)
 	mvs_write_port_vsr_addr(mvi, phy_id, VSR_PHY_MODE2);
 	mvs_write_port_vsr_data(mvi, phy_id, 0x00207fff);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 tmp;
 	u8 revision = 0;
 
@@ -353,14 +379,21 @@ static void mvs_94xx_phy_enable(struct mvs_info *mvi, u32 phy_id)
 	tmp = mvs_read_port_vsr_data(mvi, phy_id);
 	tmp |= bit(0);
 	mvs_write_port_vsr_data(mvi, phy_id, tmp & 0xfd7fffff);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __devinit mvs_94xx_init(struct mvs_info *mvi)
+=======
+}
+
+static int mvs_94xx_init(struct mvs_info *mvi)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *regs = mvi->regs;
 	int i;
 	u32 tmp, cctl;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 =======
@@ -368,6 +401,11 @@ static int __devinit mvs_94xx_init(struct mvs_info *mvi)
 
 	revision = mvi->pdev->revision;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 revision;
+
+	revision = mvi->pdev->revision;
+>>>>>>> refs/remotes/origin/master
 	mvs_show_pcie_usage(mvi);
 	if (mvi->flags & MVF_FLAG_SOC) {
 		tmp = mr32(MVS_PHY_CTL);
@@ -398,7 +436,10 @@ static int __devinit mvs_94xx_init(struct mvs_info *mvi)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* disable Multiplexing, enable phy implemented */
 	mw32(MVS_PORTS_IMP, 0xFF);
 
@@ -421,7 +462,10 @@ static int __devinit mvs_94xx_init(struct mvs_info *mvi)
 		mw32(MVS_PA_VSR_PORT, 0x0000705f);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* reset control */
 	mw32(MVS_PCS, 0);		/* MVS_PCS */
 	mw32(MVS_STP_REG_SET_0, 0);
@@ -430,6 +474,7 @@ static int __devinit mvs_94xx_init(struct mvs_info *mvi)
 	/* init phys */
 	mvs_phy_hacks(mvi);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* disable Multiplexing, enable phy implemented */
 	mw32(MVS_PORTS_IMP, 0xFF);
@@ -443,6 +488,8 @@ static int __devinit mvs_94xx_init(struct mvs_info *mvi)
 	/* set LED blink when IO*/
 	mw32(MVS_PA_VSR_ADDR, 0x00000030);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* disable non data frame retry */
 	tmp = mvs_cr32(mvi, CMD_SAS_CTL1);
 	if ((revision == VANIR_A0_REV) ||
@@ -455,7 +502,10 @@ static int __devinit mvs_94xx_init(struct mvs_info *mvi)
 
 	/* set LED blink when IO*/
 	mw32(MVS_PA_VSR_ADDR, VSR_PHY_ACT_LED);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tmp = mr32(MVS_PA_VSR_PORT);
 	tmp &= 0xFFFF00FF;
 	tmp |= 0x00003300;
@@ -480,6 +530,7 @@ static int __devinit mvs_94xx_init(struct mvs_info *mvi)
 		/* set phy local SAS address */
 		mvs_set_sas_addr(mvi, i, CONFIG_ID_FRAME3, CONFIG_ID_FRAME4,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						(mvi->phy[i].dev_sas_addr));
 
 		mvs_94xx_enable_xmt(mvi, i);
@@ -487,6 +538,8 @@ static int __devinit mvs_94xx_init(struct mvs_info *mvi)
 
 		mvs_94xx_phy_reset(mvi, i, 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 						cpu_to_le64(mvi->phy[i].dev_sas_addr));
 
 		mvs_94xx_enable_xmt(mvi, i);
@@ -494,7 +547,10 @@ static int __devinit mvs_94xx_init(struct mvs_info *mvi)
 		mvs_94xx_phy_enable(mvi, i);
 
 		mvs_94xx_phy_reset(mvi, i, PHY_RST_HARD);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		msleep(500);
 		mvs_94xx_detect_porttype(mvi, i);
 	}
@@ -526,6 +582,7 @@ static int __devinit mvs_94xx_init(struct mvs_info *mvi)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* FIXME: update wide port bitmaps */
 
 	/* little endian for open address and command table, etc. */
@@ -541,6 +598,11 @@ static int __devinit mvs_94xx_init(struct mvs_info *mvi)
 	cctl = mr32(MVS_CTL);
 	cctl |= CCTL_ENDIAN_CMD;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* little endian for open address and command table, etc. */
+	cctl = mr32(MVS_CTL);
+	cctl |= CCTL_ENDIAN_CMD;
+>>>>>>> refs/remotes/origin/master
 	cctl &= ~CCTL_ENDIAN_OPEN;
 	cctl |= CCTL_ENDIAN_RSP;
 	mw32_f(MVS_CTL, cctl);
@@ -548,6 +610,7 @@ static int __devinit mvs_94xx_init(struct mvs_info *mvi)
 	/* reset CMD queue */
 	tmp = mr32(MVS_PCS);
 	tmp |= PCS_CMD_RST;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mw32(MVS_PCS, tmp);
 	/* interrupt coalescing may cause missing HW interrput in some case,
@@ -559,6 +622,8 @@ static int __devinit mvs_94xx_init(struct mvs_info *mvi)
 
 	tmp = 0x100;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	tmp &= ~PCS_SELF_CLEAR;
 	mw32(MVS_PCS, tmp);
 	/*
@@ -573,7 +638,10 @@ static int __devinit mvs_94xx_init(struct mvs_info *mvi)
 
 	/* default interrupt coalescing time is 128us */
 	tmp = 0x10000 | interrupt_coalescing;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mw32(MVS_INT_COAL_TMOUT, tmp);
 
 	/* ladies and gentlemen, start your engines */
@@ -587,11 +655,14 @@ static int __devinit mvs_94xx_init(struct mvs_info *mvi)
 	/* enable completion queue interrupt */
 	tmp = (CINT_PORT_MASK | CINT_DONE | CINT_MEM | CINT_SRS | CINT_CI_STOP |
 <<<<<<< HEAD
+<<<<<<< HEAD
 		CINT_DMA_PCIE);
 	tmp |= CINT_PHY_MASK;
 	mw32(MVS_INT_MASK, tmp);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		CINT_DMA_PCIE | CINT_NON_SPEC_NCQ_ERROR);
 	tmp |= CINT_PHY_MASK;
 	mw32(MVS_INT_MASK, tmp);
@@ -617,7 +688,10 @@ static int __devinit mvs_94xx_init(struct mvs_info *mvi)
 	tmp &= 0xFFFFFFFE;
 	mvs_cw32(mvi, CMD_SL_MODE0, tmp);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Enable SRS interrupt */
 	mw32(MVS_INT_MASK_SRS_0, 0xFFFF);
 
@@ -698,6 +772,7 @@ static irqreturn_t mvs_94xx_isr(struct mvs_info *mvi, int irq, u32 stat)
 			((stat & IRQ_SAS_B) && mvi->id == 1)) {
 		mw32_f(MVS_INT_STAT, CINT_DONE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	#ifndef MVS_USE_TASKLET
 		spin_lock(&mvi->lock);
 	#endif
@@ -706,11 +781,16 @@ static irqreturn_t mvs_94xx_isr(struct mvs_info *mvi, int irq, u32 stat)
 		spin_unlock(&mvi->lock);
 	#endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		spin_lock(&mvi->lock);
 		mvs_int_full(mvi);
 		spin_unlock(&mvi->lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return IRQ_HANDLED;
 }
@@ -719,11 +799,14 @@ static void mvs_94xx_command_active(struct mvs_info *mvi, u32 slot_idx)
 {
 	u32 tmp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mvs_cw32(mvi, 0x300 + (slot_idx >> 3), 1 << (slot_idx % 32));
 	do {
 		tmp = mvs_cr32(mvi, 0x300 + (slot_idx >> 3));
 	} while (tmp & 1 << (slot_idx % 32));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	tmp = mvs_cr32(mvi, MVS_COMMAND_ACTIVE+(slot_idx >> 3));
 	if (tmp && 1 << (slot_idx % 32)) {
 		mv_printk("command active %08X,  slot [%x].\n", tmp, slot_idx);
@@ -766,7 +849,10 @@ void mvs_94xx_clear_srs_irq(struct mvs_info *mvi, u8 reg_set, u8 clear_all)
 				mw32(MVS_INT_STAT_SRS_0, 1 << (reg_set % 32));
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mvs_94xx_issue_stop(struct mvs_info *mvi, enum mvs_port_type type,
@@ -775,6 +861,7 @@ static void mvs_94xx_issue_stop(struct mvs_info *mvi, enum mvs_port_type type,
 	void __iomem *regs = mvi->regs;
 	u32 tmp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (type == PORT_TYPE_SATA) {
 		tmp = mr32(MVS_INT_STAT_SRS_0) | (1U << tfs);
@@ -782,21 +869,29 @@ static void mvs_94xx_issue_stop(struct mvs_info *mvi, enum mvs_port_type type,
 	}
 	mw32(MVS_INT_STAT, CINT_CI_STOP);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mvs_94xx_clear_srs_irq(mvi, 0, 1);
 
 	tmp = mr32(MVS_INT_STAT);
 	mw32(MVS_INT_STAT, tmp | CINT_CI_STOP);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tmp = mr32(MVS_PCS) | 0xFF00;
 	mw32(MVS_PCS, tmp);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void mvs_94xx_free_reg_set(struct mvs_info *mvi, u8 *tfs)
 {
 	void __iomem *regs = mvi->regs;
 	u32 tmp;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void mvs_94xx_non_spec_ncq_error(struct mvs_info *mvi)
 {
 	void __iomem *regs = mvi->regs;
@@ -829,13 +924,17 @@ static void mvs_94xx_non_spec_ncq_error(struct mvs_info *mvi)
 static void mvs_94xx_free_reg_set(struct mvs_info *mvi, u8 *tfs)
 {
 	void __iomem *regs = mvi->regs;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 reg_set = *tfs;
 
 	if (*tfs == MVS_ID_NOT_MAPPED)
 		return;
 
 	mvi->sata_reg_set &= ~bit(reg_set);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (reg_set < 32) {
 		w_reg_set_enable(reg_set, (u32)mvi->sata_reg_set);
@@ -849,11 +948,16 @@ static void mvs_94xx_free_reg_set(struct mvs_info *mvi, u8 *tfs)
 			mw32(MVS_INT_STAT_SRS_1, tmp);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (reg_set < 32)
 		w_reg_set_enable(reg_set, (u32)mvi->sata_reg_set);
 	else
 		w_reg_set_enable(reg_set, (u32)(mvi->sata_reg_set >> 32));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	*tfs = MVS_ID_NOT_MAPPED;
 
@@ -870,10 +974,14 @@ static u8 mvs_94xx_assign_reg_set(struct mvs_info *mvi, u8 *tfs)
 
 	i = mv_ffc64(mvi->sata_reg_set);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (i > 32) {
 =======
 	if (i >= 32) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (i >= 32) {
+>>>>>>> refs/remotes/origin/master
 		mvi->sata_reg_set |= bit(i);
 		w_reg_set_enable(i, (u32)(mvi->sata_reg_set >> 32));
 		*tfs = i;
@@ -893,17 +1001,23 @@ static void mvs_94xx_make_prd(struct scatterlist *scatter, int nr, void *prd)
 	struct scatterlist *sg;
 	struct mvs_prd *buf_prd = prd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for_each_sg(scatter, sg, nr, i) {
 		buf_prd->addr = cpu_to_le64(sg_dma_address(sg));
 		buf_prd->im_len.len = cpu_to_le32(sg_dma_len(sg));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mvs_prd_imt im_len;
 	*(u32 *)&im_len = 0;
 	for_each_sg(scatter, sg, nr, i) {
 		buf_prd->addr = cpu_to_le64(sg_dma_address(sg));
 		im_len.len = sg_dma_len(sg);
 		buf_prd->im_len = cpu_to_le32(*(u32 *)&im_len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		buf_prd++;
 	}
 }
@@ -913,10 +1027,14 @@ static int mvs_94xx_oob_done(struct mvs_info *mvi, int i)
 	u32 phy_st;
 	phy_st = mvs_read_phy_ctl(mvi, i);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (phy_st & PHY_READY_MASK)	/* phy ready */
 =======
 	if (phy_st & PHY_READY_MASK)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (phy_st & PHY_READY_MASK)
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	return 0;
 }
@@ -931,10 +1049,14 @@ static void mvs_94xx_get_dev_identify_frame(struct mvs_info *mvi, int port_id,
 		mvs_write_port_cfg_addr(mvi, port_id,
 					CONFIG_ID_FRAME0 + i * 4);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		id_frame[i] = mvs_read_port_cfg_data(mvi, port_id);
 =======
 		id_frame[i] = cpu_to_le32(mvs_read_port_cfg_data(mvi, port_id));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		id_frame[i] = cpu_to_le32(mvs_read_port_cfg_data(mvi, port_id));
+>>>>>>> refs/remotes/origin/master
 	}
 	memcpy(id, id_frame, 28);
 }
@@ -946,6 +1068,7 @@ static void mvs_94xx_get_att_identify_frame(struct mvs_info *mvi, int port_id,
 	u32 id_frame[7];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* mvs_hexdump(28, (u8 *)id_frame, 0); */
 	for (i = 0; i < 7; i++) {
 		mvs_write_port_cfg_addr(mvi, port_id,
@@ -956,6 +1079,8 @@ static void mvs_94xx_get_att_identify_frame(struct mvs_info *mvi, int port_id,
 	}
 	/* mvs_hexdump(28, (u8 *)id_frame, 0); */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 7; i++) {
 		mvs_write_port_cfg_addr(mvi, port_id,
 					CONFIG_ATT_ID_FRAME0 + i * 4);
@@ -963,7 +1088,10 @@ static void mvs_94xx_get_att_identify_frame(struct mvs_info *mvi, int port_id,
 		mv_dprintk("94xx phy %d atta frame %d %x.\n",
 			port_id + mvi->id * mvi->chip->n_phy, i, id_frame[i]);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memcpy(id, id_frame, 28);
 }
 
@@ -1019,20 +1147,29 @@ static void mvs_94xx_fix_phy_info(struct mvs_info *mvi, int i,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* enable spin up bit */
 	mvs_write_port_cfg_addr(mvi, i, PHYR_PHY_STAT);
 	mvs_write_port_cfg_data(mvi, i, 0x04);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void mvs_94xx_phy_set_link_rate(struct mvs_info *mvi, u32 phy_id,
 			struct sas_phy_linkrates *rates)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* TODO */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 lrmax = 0;
 	u32 tmp;
 
@@ -1045,7 +1182,10 @@ void mvs_94xx_phy_set_link_rate(struct mvs_info *mvi, u32 phy_id,
 	}
 	mvs_write_phy_ctl(mvi, phy_id, tmp);
 	mvs_94xx_phy_reset(mvi, phy_id, PHY_RST_HARD);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mvs_94xx_clear_active_cmds(struct mvs_info *mvi)
@@ -1123,6 +1263,7 @@ int mvs_94xx_spi_waitdataready(struct mvs_info *mvi, u32 timeout)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef DISABLE_HOTPLUG_DMA_FIX
 void mvs_94xx_fix_dma(dma_addr_t buf_dma, int buf_len, int from, void *prd)
 {
@@ -1145,6 +1286,8 @@ static void mvs_94xx_clear_srs_irq(struct mvs_info *mvi, u8 reg_set,
 				   u8 clear_all)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void mvs_94xx_fix_dma(struct mvs_info *mvi, u32 phy_mask,
 				int buf_len, int from, void *prd)
 {
@@ -1198,7 +1341,10 @@ static void mvs_94xx_tune_interrupt(struct mvs_info *mvi, u32 time)
 		mw32(MVS_INT_COAL_TMOUT, tmp);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 const struct mvs_dispatch mvs_94xx_dispatch = {
@@ -1224,9 +1370,12 @@ const struct mvs_dispatch mvs_94xx_dispatch = {
 	mvs_read_port_irq_mask,
 	mvs_write_port_irq_mask,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mvs_get_sas_addr,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mvs_94xx_command_active,
 	mvs_94xx_clear_srs_irq,
 	mvs_94xx_issue_stop,
@@ -1255,6 +1404,7 @@ const struct mvs_dispatch mvs_94xx_dispatch = {
 	mvs_94xx_spi_issuecmd,
 	mvs_94xx_spi_waitdataready,
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef DISABLE_HOTPLUG_DMA_FIX
 	mvs_94xx_fix_dma,
 #endif
@@ -1263,5 +1413,10 @@ const struct mvs_dispatch mvs_94xx_dispatch = {
 	mvs_94xx_tune_interrupt,
 	mvs_94xx_non_spec_ncq_error,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mvs_94xx_fix_dma,
+	mvs_94xx_tune_interrupt,
+	mvs_94xx_non_spec_ncq_error,
+>>>>>>> refs/remotes/origin/master
 };
 

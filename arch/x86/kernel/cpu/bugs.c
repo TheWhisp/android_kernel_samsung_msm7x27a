@@ -17,6 +17,7 @@
 #include <asm/paravirt.h>
 #include <asm/alternative.h>
 
+<<<<<<< HEAD
 static int __init no_halt(char *s)
 {
 	WARN_ONCE(1, "\"no-hlt\" is deprecated, please use \"idle=poll\"\n");
@@ -35,6 +36,8 @@ static int __init no_387(char *s)
 
 __setup("no387", no_387);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static double __initdata x = 4195835.0;
 static double __initdata y = 3145727.0;
 
@@ -53,6 +56,7 @@ static void __init check_fpu(void)
 {
 	s32 fdiv_bug;
 
+<<<<<<< HEAD
 	if (!boot_cpu_data.hard_math) {
 #ifndef CONFIG_MATH_EMULATION
 		printk(KERN_EMERG "No coprocessor found and no math emulation present.\n");
@@ -67,11 +71,19 @@ static void __init check_fpu(void)
 	kernel_fpu_begin();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kernel_fpu_begin();
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * trap_init() enabled FXSR and company _before_ testing for FP
 	 * problems here.
 	 *
+<<<<<<< HEAD
 	 * Test for the divl bug..
+=======
+	 * Test for the divl bug: http://en.wikipedia.org/wiki/Fdiv_bug
+>>>>>>> refs/remotes/origin/master
 	 */
 	__asm__("fninit\n\t"
 		"fldl %1\n\t"
@@ -85,6 +97,7 @@ static void __init check_fpu(void)
 		: "=m" (*&fdiv_bug)
 		: "m" (*&x), "m" (*&y));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	kernel_fpu_end();
@@ -163,10 +176,21 @@ static void __init check_config(void)
 }
 
 
+=======
+	kernel_fpu_end();
+
+	if (fdiv_bug) {
+		set_cpu_bug(&boot_cpu_data, X86_BUG_FDIV);
+		pr_warn("Hmm, FPU with FDIV bug\n");
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 void __init check_bugs(void)
 {
 	identify_boot_cpu();
 #ifndef CONFIG_SMP
+<<<<<<< HEAD
 	printk(KERN_INFO "CPU: ");
 	print_cpu_info(&boot_cpu_data);
 #endif
@@ -177,4 +201,30 @@ void __init check_bugs(void)
 	init_utsname()->machine[1] =
 		'0' + (boot_cpu_data.x86 > 6 ? 6 : boot_cpu_data.x86);
 	alternative_instructions();
+=======
+	pr_info("CPU: ");
+	print_cpu_info(&boot_cpu_data);
+#endif
+
+	/*
+	 * Check whether we are able to run this kernel safely on SMP.
+	 *
+	 * - i386 is no longer supported.
+	 * - In order to run on anything without a TSC, we need to be
+	 *   compiled for a i486.
+	 */
+	if (boot_cpu_data.x86 < 4)
+		panic("Kernel requires i486+ for 'invlpg' and other features");
+
+	init_utsname()->machine[1] =
+		'0' + (boot_cpu_data.x86 > 6 ? 6 : boot_cpu_data.x86);
+	alternative_instructions();
+
+	/*
+	 * kernel_fpu_begin/end() in check_fpu() relies on the patched
+	 * alternative instructions.
+	 */
+	if (cpu_has_fpu)
+		check_fpu();
+>>>>>>> refs/remotes/origin/master
 }

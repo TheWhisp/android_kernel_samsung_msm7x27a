@@ -98,6 +98,11 @@
 
 /* SPI */
 #define S3C2410_PA_SPI	   (0x59000000)
+<<<<<<< HEAD
+=======
+#define S3C2443_PA_SPI0		(0x52000000)
+#define S3C2443_PA_SPI1		S3C2410_PA_SPI
+>>>>>>> refs/remotes/origin/master
 
 /* SDI */
 #define S3C2410_PA_SDI	   (0x5A000000)
@@ -162,4 +167,12 @@
 #define S3C_PA_WDT	    S3C2410_PA_WATCHDOG
 #define S3C_PA_NAND	    S3C24XX_PA_NAND
 
+<<<<<<< HEAD
+=======
+#define S3C_PA_SPI0		S3C2443_PA_SPI0
+#define S3C_PA_SPI1		S3C2443_PA_SPI1
+
+#define SAMSUNG_PA_TIMER	S3C2410_PA_TIMER
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_ARCH_MAP_H */

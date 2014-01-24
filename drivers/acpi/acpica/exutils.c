@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Module Name: exutils - interpreter/scanner utilities
@@ -7,10 +10,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,12 +56,20 @@
 /*
  * DEFINE_AML_GLOBALS is tested in amlcode.h
  * to determine whether certain global names should be "defined" or only
+<<<<<<< HEAD
  * "declared" in the current compilation.  This enhances maintainability
+=======
+ * "declared" in the current compilation. This enhances maintainability
+>>>>>>> refs/remotes/origin/master
  * by enabling a single header file to embody all knowledge of the names
  * in question.
  *
  * Exactly one module of any executable should #define DEFINE_GLOBALS
+<<<<<<< HEAD
  * before #including the header files which use this convention.  The
+=======
+ * before #including the header files which use this convention. The
+>>>>>>> refs/remotes/origin/master
  * names in question will be defined and initialized in that module,
  * and declared as extern in all other modules which #include those
  * header files.
@@ -113,7 +128,11 @@ void acpi_ex_enter_interpreter(void)
  *
  * DESCRIPTION: Reacquire the interpreter execution region from within the
  *              interpreter code. Failure to enter the interpreter region is a
+<<<<<<< HEAD
  *              fatal system error. Used in  conjunction with
+=======
+ *              fatal system error. Used in conjunction with
+>>>>>>> refs/remotes/origin/master
  *              relinquish_interpreter
  *
  ******************************************************************************/
@@ -207,25 +226,38 @@ void acpi_ex_relinquish_interpreter(void)
  *
  * PARAMETERS:  obj_desc        - Object to be truncated
  *
+<<<<<<< HEAD
  * RETURN:      none
+=======
+ * RETURN:      TRUE if a truncation was performed, FALSE otherwise.
+>>>>>>> refs/remotes/origin/master
  *
  * DESCRIPTION: Truncate an ACPI Integer to 32 bits if the execution mode is
  *              32-bit, as determined by the revision of the DSDT.
  *
  ******************************************************************************/
 
+<<<<<<< HEAD
 void acpi_ex_truncate_for32bit_table(union acpi_operand_object *obj_desc)
+=======
+u8 acpi_ex_truncate_for32bit_table(union acpi_operand_object *obj_desc)
+>>>>>>> refs/remotes/origin/master
 {
 
 	ACPI_FUNCTION_ENTRY();
 
 	/*
 	 * Object must be a valid number and we must be executing
+<<<<<<< HEAD
 	 * a control method. NS node could be there for AML_INT_NAMEPATH_OP.
+=======
+	 * a control method. Object could be NS node for AML_INT_NAMEPATH_OP.
+>>>>>>> refs/remotes/origin/master
 	 */
 	if ((!obj_desc) ||
 	    (ACPI_GET_DESCRIPTOR_TYPE(obj_desc) != ACPI_DESC_TYPE_OPERAND) ||
 	    (obj_desc->common.type != ACPI_TYPE_INTEGER)) {
+<<<<<<< HEAD
 		return;
 	}
 
@@ -236,6 +268,22 @@ void acpi_ex_truncate_for32bit_table(union acpi_operand_object *obj_desc)
 		 */
 		obj_desc->integer.value &= (u64) ACPI_UINT32_MAX;
 	}
+=======
+		return (FALSE);
+	}
+
+	if ((acpi_gbl_integer_byte_width == 4) &&
+	    (obj_desc->integer.value > (u64)ACPI_UINT32_MAX)) {
+		/*
+		 * We are executing in a 32-bit ACPI table.
+		 * Truncate the value to 32 bits by zeroing out the upper 32-bit field
+		 */
+		obj_desc->integer.value &= (u64)ACPI_UINT32_MAX;
+		return (TRUE);
+	}
+
+	return (FALSE);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*******************************************************************************
@@ -321,8 +369,13 @@ void acpi_ex_release_global_lock(u32 field_flags)
  *
  * FUNCTION:    acpi_ex_digits_needed
  *
+<<<<<<< HEAD
  * PARAMETERS:  Value           - Value to be represented
  *              Base            - Base of representation
+=======
+ * PARAMETERS:  value           - Value to be represented
+ *              base            - Base of representation
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      The number of digits.
  *
@@ -412,7 +465,11 @@ void acpi_ex_eisa_id_to_string(char *out_string, u64 compressed_id)
  * PARAMETERS:  out_string      - Where to put the converted string. At least
  *                                21 bytes are needed to hold the largest
  *                                possible 64-bit integer.
+<<<<<<< HEAD
  *              Value           - Value to be converted
+=======
+ *              value           - Value to be converted
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None, string
  *
@@ -440,7 +497,10 @@ void acpi_ex_integer_to_string(char *out_string, u64 value)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_is_valid_space_id
@@ -449,7 +509,11 @@ void acpi_ex_integer_to_string(char *out_string, u64 value)
  *
  * RETURN:      TRUE if valid/supported ID.
  *
+<<<<<<< HEAD
  * DESCRIPTION: Validate an operation region space_iD.
+=======
+ * DESCRIPTION: Validate an operation region space_ID.
+>>>>>>> refs/remotes/origin/master
  *
  ******************************************************************************/
 
@@ -466,5 +530,8 @@ u8 acpi_is_valid_space_id(u8 space_id)
 	return (TRUE);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

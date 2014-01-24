@@ -55,7 +55,11 @@ static unsigned long rds_iw_sysctl_max_unsig_bytes_max = ~0UL;
 
 unsigned int rds_iw_sysctl_flow_control = 1;
 
+<<<<<<< HEAD
 static ctl_table rds_iw_sysctl_table[] = {
+=======
+static struct ctl_table rds_iw_sysctl_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname       = "max_send_wr",
 		.data		= &rds_iw_sysctl_max_send_wr,
@@ -109,6 +113,7 @@ static ctl_table rds_iw_sysctl_table[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 static struct ctl_path rds_iw_sysctl_path[] = {
 	{ .procname = "net", },
 	{ .procname = "rds", },
@@ -120,11 +125,21 @@ void rds_iw_sysctl_exit(void)
 {
 	if (rds_iw_sysctl_hdr)
 		unregister_sysctl_table(rds_iw_sysctl_hdr);
+=======
+void rds_iw_sysctl_exit(void)
+{
+	if (rds_iw_sysctl_hdr)
+		unregister_net_sysctl_table(rds_iw_sysctl_hdr);
+>>>>>>> refs/remotes/origin/master
 }
 
 int rds_iw_sysctl_init(void)
 {
+<<<<<<< HEAD
 	rds_iw_sysctl_hdr = register_sysctl_paths(rds_iw_sysctl_path, rds_iw_sysctl_table);
+=======
+	rds_iw_sysctl_hdr = register_net_sysctl(&init_net, "net/rds/iw", rds_iw_sysctl_table);
+>>>>>>> refs/remotes/origin/master
 	if (!rds_iw_sysctl_hdr)
 		return -ENOMEM;
 	return 0;

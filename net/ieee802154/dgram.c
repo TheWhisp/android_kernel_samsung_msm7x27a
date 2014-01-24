@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * ZigBee socket interface
 =======
  * IEEE 802.15.4 dgram socket interface
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * IEEE 802.15.4 dgram socket interface
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright 2007, 2008 Siemens AG
  *
@@ -48,8 +52,13 @@ struct dgram_sock {
 	struct ieee802154_addr src_addr;
 	struct ieee802154_addr dst_addr;
 
+<<<<<<< HEAD
 	unsigned bound:1;
 	unsigned want_ack:1;
+=======
+	unsigned int bound:1;
+	unsigned int want_ack:1;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct dgram_sock *dgram_sk(const struct sock *sk)
@@ -210,6 +219,7 @@ static int dgram_sendmsg(struct kiocb *iocb, struct sock *sk,
 		struct msghdr *msg, size_t size)
 {
 	struct net_device *dev;
+<<<<<<< HEAD
 	unsigned mtu;
 	struct sk_buff *skb;
 	struct dgram_sock *ro = dgram_sk(sk);
@@ -217,6 +227,12 @@ static int dgram_sendmsg(struct kiocb *iocb, struct sock *sk,
 =======
 	int hlen, tlen;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int mtu;
+	struct sk_buff *skb;
+	struct dgram_sock *ro = dgram_sk(sk);
+	int hlen, tlen;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	if (msg->msg_flags & MSG_OOB) {
@@ -238,22 +254,38 @@ static int dgram_sendmsg(struct kiocb *iocb, struct sock *sk,
 	pr_debug("name = %s, mtu = %u\n", dev->name, mtu);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skb = sock_alloc_send_skb(sk, LL_ALLOCATED_SPACE(dev) + size,
 =======
 	hlen = LL_RESERVED_SPACE(dev);
 	tlen = dev->needed_tailroom;
 	skb = sock_alloc_send_skb(sk, hlen + tlen + size,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (size > mtu) {
+		pr_debug("size = %Zu, mtu = %u\n", size, mtu);
+		err = -EINVAL;
+		goto out_dev;
+	}
+
+	hlen = LL_RESERVED_SPACE(dev);
+	tlen = dev->needed_tailroom;
+	skb = sock_alloc_send_skb(sk, hlen + tlen + size,
+>>>>>>> refs/remotes/origin/master
 			msg->msg_flags & MSG_DONTWAIT,
 			&err);
 	if (!skb)
 		goto out_dev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skb_reserve(skb, LL_RESERVED_SPACE(dev));
 =======
 	skb_reserve(skb, hlen);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	skb_reserve(skb, hlen);
+>>>>>>> refs/remotes/origin/master
 
 	skb_reset_network_header(skb);
 
@@ -273,12 +305,15 @@ static int dgram_sendmsg(struct kiocb *iocb, struct sock *sk,
 	if (err < 0)
 		goto out_skb;
 
+<<<<<<< HEAD
 	if (size > mtu) {
 		pr_debug("size = %Zu, mtu = %u\n", size, mtu);
 		err = -EINVAL;
 		goto out_skb;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	skb->dev = dev;
 	skb->sk  = sk;
 	skb->protocol = htons(ETH_P_IEEE802154);
@@ -306,6 +341,12 @@ static int dgram_recvmsg(struct kiocb *iocb, struct sock *sk,
 	size_t copied = 0;
 	int err = -EOPNOTSUPP;
 	struct sk_buff *skb;
+<<<<<<< HEAD
+=======
+	struct sockaddr_ieee802154 *saddr;
+
+	saddr = (struct sockaddr_ieee802154 *)msg->msg_name;
+>>>>>>> refs/remotes/origin/master
 
 	skb = skb_recv_datagram(sk, flags, noblock, &err);
 	if (!skb)
@@ -324,6 +365,15 @@ static int dgram_recvmsg(struct kiocb *iocb, struct sock *sk,
 
 	sock_recv_ts_and_drops(msg, sk, skb);
 
+<<<<<<< HEAD
+=======
+	if (saddr) {
+		saddr->family = AF_IEEE802154;
+		saddr->addr = mac_cb(skb)->sa;
+		*addr_len = sizeof(*saddr);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (flags & MSG_TRUNC)
 		copied = skb->len;
 done:
@@ -365,7 +415,10 @@ static inline int ieee802154_match_sock(u8 *hw_addr, u16 pan_id,
 int ieee802154_dgram_deliver(struct net_device *dev, struct sk_buff *skb)
 {
 	struct sock *sk, *prev = NULL;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = NET_RX_SUCCESS;
 	u16 pan_id, short_addr;
 
@@ -376,7 +429,11 @@ int ieee802154_dgram_deliver(struct net_device *dev, struct sk_buff *skb)
 	short_addr = ieee802154_mlme_ops(dev)->get_short_addr(dev);
 
 	read_lock(&dgram_lock);
+<<<<<<< HEAD
 	sk_for_each(sk, node, &dgram_head) {
+=======
+	sk_for_each(sk, &dgram_head) {
+>>>>>>> refs/remotes/origin/master
 		if (ieee802154_match_sock(dev->dev_addr, pan_id, short_addr,
 					dgram_sk(sk))) {
 			if (prev) {

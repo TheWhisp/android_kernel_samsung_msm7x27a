@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
     lm93.c - Part of lm_sensors, Linux kernel modules for hardware monitoring
 
     Author/Maintainer: Mark M. Hoffman <mhoffman@lightlink.com>
@@ -39,6 +40,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * lm93.c - Part of lm_sensors, Linux kernel modules for hardware monitoring
  *
  * Author/Maintainer: Mark M. Hoffman <mhoffman@lightlink.com>
@@ -77,7 +80,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/module.h>
 #include <linux/init.h>
@@ -88,6 +94,10 @@
 #include <linux/hwmon-vid.h>
 #include <linux/err.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/jiffies.h>
+>>>>>>> refs/remotes/origin/master
 
 /* LM93 REGISTER ADDRESSES */
 
@@ -125,10 +135,14 @@
 
 /* pwm outputs: pwm1-pwm2 (nr => 0-1, reg => 0-3) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define LM93_REG_PWM_CTL(nr,reg)	(0xc8 + (reg) + (nr) * 4)
 =======
 #define LM93_REG_PWM_CTL(nr, reg)	(0xc8 + (reg) + (nr) * 4)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LM93_REG_PWM_CTL(nr, reg)	(0xc8 + (reg) + (nr) * 4)
+>>>>>>> refs/remotes/origin/master
 #define LM93_PWM_CTL1	0x0
 #define LM93_PWM_CTL2	0x1
 #define LM93_PWM_CTL3	0x2
@@ -197,14 +211,19 @@ static const unsigned short normal_i2c[] = { 0x2c, 0x2d, 0x2e, I2C_CLIENT_END };
 /* Insmod parameters */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int disable_block;
 =======
 static bool disable_block;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool disable_block;
+>>>>>>> refs/remotes/origin/master
 module_param(disable_block, bool, 0);
 MODULE_PARM_DESC(disable_block,
 	"Set to non-zero to disable SMBus block data transactions.");
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int init;
 module_param(init, bool, 0);
@@ -212,12 +231,17 @@ MODULE_PARM_DESC(init, "Set to non-zero to force chip initialization.");
 
 static int vccp_limit_type[2] = {0,0};
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool init;
 module_param(init, bool, 0);
 MODULE_PARM_DESC(init, "Set to non-zero to force chip initialization.");
 
 static int vccp_limit_type[2] = {0, 0};
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_param_array(vccp_limit_type, int, NULL, 0);
 MODULE_PARM_DESC(vccp_limit_type, "Configures in7 and in8 limit modes.");
 
@@ -245,14 +269,20 @@ static const struct { u8 cmd; u8 len; } lm93_block_read_cmds[12] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* ALARMS: SYSCTL format described further below
    REG: 64 bits in 8 registers, as immediately below */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * ALARMS: SYSCTL format described further below
  * REG: 64 bits in 8 registers, as immediately below
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct block1_t {
 	u8 host_status_1;
 	u8 host_status_2;
@@ -282,14 +312,20 @@ struct lm93_data {
 	struct block1_t block1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* temp1 - temp4: unfiltered readings
 	   temp1 - temp2: filtered readings */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * temp1 - temp4: unfiltered readings
 	 * temp1 - temp2: filtered readings
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 block2[6];
 
 	/* vin1 - vin16: readings */
@@ -367,6 +403,7 @@ struct lm93_data {
 	u8 sf_tach_to_pwm;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* The two PWM CTL2  registers can read something other than what was
 	   last written for the OVR_DC field (duty cycle override).  So, we
 	   save the user-commanded value here. */
@@ -376,6 +413,8 @@ struct lm93_data {
 /* VID:	mV
    REG: 6-bits, right justified, *always* using Intel VRM/VRD 10 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The two PWM CTL2  registers can read something other than what was
 	 * last written for the OVR_DC field (duty cycle override).  So, we
@@ -388,7 +427,10 @@ struct lm93_data {
  * VID:	mV
  * REG: 6-bits, right justified, *always* using Intel VRM/VRD 10
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int LM93_VID_FROM_REG(u8 reg)
 {
 	return vid_from_reg((reg & 0x3f), 100);
@@ -404,6 +446,7 @@ static const u8 lm93_vin_reg_max[16] = {
 	0xff, 0xfa, 0xff, 0xff, 0xff, 0xff, 0xff, 0xd1,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Values from the datasheet. They're here for documentation only.
 static const u8 lm93_vin_reg_nom[16] = {
 	0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0,
@@ -411,6 +454,8 @@ static const u8 lm93_vin_reg_nom[16] = {
 };
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Values from the datasheet. They're here for documentation only.
  * static const u8 lm93_vin_reg_nom[16] = {
@@ -418,7 +463,10 @@ static const u8 lm93_vin_reg_nom[16] = {
  * 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0x40, 0xc0,
  * };
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* min, max, and nominal voltage readings, per channel (mV)*/
 static const unsigned long lm93_vin_val_min[16] = {
@@ -431,6 +479,7 @@ static const unsigned long lm93_vin_val_max[16] = {
 	4400, 6500, 3333, 2625, 1312, 1312, 1236, 3600,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Values from the datasheet. They're here for documentation only.
 static const unsigned long lm93_vin_val_nom[16] = {
 	 927,  927,  927, 1200, 1500, 1500, 1200, 1200,
@@ -438,6 +487,8 @@ static const unsigned long lm93_vin_val_nom[16] = {
 };
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Values from the datasheet. They're here for documentation only.
  * static const unsigned long lm93_vin_val_nom[16] = {
@@ -445,6 +496,7 @@ static const unsigned long lm93_vin_val_nom[16] = {
  * 3300, 5000, 2500, 1969,  984,  984,  309, 3300,
  * };
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 static unsigned LM93_IN_FROM_REG(int nr, u8 reg)
@@ -455,18 +507,33 @@ static unsigned LM93_IN_FROM_REG(int nr, u8 reg)
 	const long slope = (uV_max - uV_min) /
 		(lm93_vin_reg_max[nr] - lm93_vin_reg_min[nr]);
 	const long intercept = uV_min - slope * lm93_vin_reg_min[nr];
+=======
+
+static unsigned LM93_IN_FROM_REG(int nr, u8 reg)
+{
+	const long uv_max = lm93_vin_val_max[nr] * 1000;
+	const long uv_min = lm93_vin_val_min[nr] * 1000;
+
+	const long slope = (uv_max - uv_min) /
+		(lm93_vin_reg_max[nr] - lm93_vin_reg_min[nr]);
+	const long intercept = uv_min - slope * lm93_vin_reg_min[nr];
+>>>>>>> refs/remotes/origin/master
 
 	return (slope * reg + intercept + 500) / 1000;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* IN: mV, limits determined by channel nr
    REG: scaling determined by channel nr */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * IN: mV, limits determined by channel nr
  * REG: scaling determined by channel nr
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static u8 LM93_IN_TO_REG(int nr, unsigned val)
 {
@@ -487,12 +554,34 @@ static u8 LM93_IN_TO_REG(int nr, unsigned val)
 	u8 result = ((uV - intercept + (slope/2)) / slope);
 	result = SENSORS_LIMIT(result,
 			lm93_vin_reg_min[nr], lm93_vin_reg_max[nr]);
+=======
+static u8 LM93_IN_TO_REG(int nr, unsigned val)
+{
+	/* range limit */
+	const long mv = clamp_val(val,
+				  lm93_vin_val_min[nr], lm93_vin_val_max[nr]);
+
+	/* try not to lose too much precision here */
+	const long uv = mv * 1000;
+	const long uv_max = lm93_vin_val_max[nr] * 1000;
+	const long uv_min = lm93_vin_val_min[nr] * 1000;
+
+	/* convert */
+	const long slope = (uv_max - uv_min) /
+		(lm93_vin_reg_max[nr] - lm93_vin_reg_min[nr]);
+	const long intercept = uv_min - slope * lm93_vin_reg_min[nr];
+
+	u8 result = ((uv - intercept + (slope/2)) / slope);
+	result = clamp_val(result,
+			   lm93_vin_reg_min[nr], lm93_vin_reg_max[nr]);
+>>>>>>> refs/remotes/origin/master
 	return result;
 }
 
 /* vid in mV, upper == 0 indicates low limit, otherwise upper limit */
 static unsigned LM93_IN_REL_FROM_REG(u8 reg, int upper, int vid)
 {
+<<<<<<< HEAD
 	const long uV_offset = upper ? (((reg >> 4 & 0x0f) + 1) * 12500) :
 				(((reg >> 0 & 0x0f) + 1) * -25000);
 	const long uV_vid = vid * 1000;
@@ -507,6 +596,14 @@ static unsigned LM93_IN_REL_FROM_REG(u8 reg, int upper, int vid)
    upper also determines which nibble of the register is returned
    (the other nibble will be 0x0) */
 =======
+=======
+	const long uv_offset = upper ? (((reg >> 4 & 0x0f) + 1) * 12500) :
+				(((reg >> 0 & 0x0f) + 1) * -25000);
+	const long uv_vid = vid * 1000;
+	return (uv_vid + uv_offset + 5000) / 10000;
+}
+
+>>>>>>> refs/remotes/origin/master
 #define LM93_IN_MIN_FROM_REG(reg, vid)	LM93_IN_REL_FROM_REG((reg), 0, (vid))
 #define LM93_IN_MAX_FROM_REG(reg, vid)	LM93_IN_REL_FROM_REG((reg), 1, (vid))
 
@@ -515,6 +612,7 @@ static unsigned LM93_IN_REL_FROM_REG(u8 reg, int upper, int vid)
  * upper also determines which nibble of the register is returned
  * (the other nibble will be 0x0)
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static u8 LM93_IN_REL_TO_REG(unsigned val, int upper, int vid)
 {
@@ -532,17 +630,35 @@ static u8 LM93_IN_REL_TO_REG(unsigned val, int upper, int vid)
 /* TEMP: 1/1000 degrees C (-128C to +127C)
    REG: 1C/bit, two's complement */
 =======
+=======
+static u8 LM93_IN_REL_TO_REG(unsigned val, int upper, int vid)
+{
+	long uv_offset = vid * 1000 - val * 10000;
+	if (upper) {
+		uv_offset = clamp_val(uv_offset, 12500, 200000);
+		return (u8)((uv_offset /  12500 - 1) << 4);
+	} else {
+		uv_offset = clamp_val(uv_offset, -400000, -25000);
+		return (u8)((uv_offset / -25000 - 1) << 0);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * TEMP: 1/1000 degrees C (-128C to +127C)
  * REG: 1C/bit, two's complement
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int LM93_TEMP_FROM_REG(u8 reg)
 {
 	return (s8)reg * 1000;
 }
 
 #define LM93_TEMP_MIN (-128000)
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define LM93_TEMP_MAX ( 127000)
 
@@ -553,6 +669,8 @@ static u8 LM93_TEMP_TO_REG(long temp)
 	int ntemp = SENSORS_LIMIT(temp, LM93_TEMP_MIN, LM93_TEMP_MAX);
 	ntemp += (ntemp<0 ? -500 : 500);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define LM93_TEMP_MAX (127000)
 
 /*
@@ -561,9 +679,14 @@ static u8 LM93_TEMP_TO_REG(long temp)
  */
 static u8 LM93_TEMP_TO_REG(long temp)
 {
+<<<<<<< HEAD
 	int ntemp = SENSORS_LIMIT(temp, LM93_TEMP_MIN, LM93_TEMP_MAX);
 	ntemp += (ntemp < 0 ? -500 : 500);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ntemp = clamp_val(temp, LM93_TEMP_MIN, LM93_TEMP_MAX);
+	ntemp += (ntemp < 0 ? -500 : 500);
+>>>>>>> refs/remotes/origin/master
 	return (u8)(ntemp / 1000);
 }
 
@@ -575,21 +698,28 @@ static int LM93_TEMP_OFFSET_MODE_FROM_REG(u8 sfc2, int nr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* This function is common to all 4-bit temperature offsets
    reg is 4 bits right justified
    mode 0 => 1C/bit, mode !0 => 0.5C/bit */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This function is common to all 4-bit temperature offsets
  * reg is 4 bits right justified
  * mode 0 => 1C/bit, mode !0 => 0.5C/bit
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int LM93_TEMP_OFFSET_FROM_REG(u8 reg, int mode)
 {
 	return (reg & 0x0f) * (mode ? 5 : 10);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define LM93_TEMP_OFFSET_MIN  (  0)
 #define LM93_TEMP_OFFSET_MAX0 (150)
@@ -599,6 +729,8 @@ static int LM93_TEMP_OFFSET_FROM_REG(u8 reg, int mode)
    returns 4 bits right justified
    mode 0 => 1C/bit, mode !0 => 0.5C/bit */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define LM93_TEMP_OFFSET_MIN  (0)
 #define LM93_TEMP_OFFSET_MAX0 (150)
 #define LM93_TEMP_OFFSET_MAX1 (75)
@@ -608,12 +740,19 @@ static int LM93_TEMP_OFFSET_FROM_REG(u8 reg, int mode)
  * returns 4 bits right justified
  * mode 0 => 1C/bit, mode !0 => 0.5C/bit
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u8 LM93_TEMP_OFFSET_TO_REG(int off, int mode)
 {
 	int factor = mode ? 5 : 10;
 
+<<<<<<< HEAD
 	off = SENSORS_LIMIT(off, LM93_TEMP_OFFSET_MIN,
+=======
+	off = clamp_val(off, LM93_TEMP_OFFSET_MIN,
+>>>>>>> refs/remotes/origin/master
 		mode ? LM93_TEMP_OFFSET_MAX1 : LM93_TEMP_OFFSET_MAX0);
 	return (u8)((off + factor/2) / factor);
 }
@@ -631,16 +770,22 @@ static int LM93_TEMP_AUTO_OFFSET_FROM_REG(u8 reg, int nr, int mode)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* TEMP: 1/10 degrees C (0C to +15C (mode 0) or +7.5C (mode non-zero))
    REG: 1.0C/bit (mode 0) or 0.5C/bit (mode non-zero)
    0 <= nr <= 3 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * TEMP: 1/10 degrees C (0C to +15C (mode 0) or +7.5C (mode non-zero))
  * REG: 1.0C/bit (mode 0) or 0.5C/bit (mode non-zero)
  * 0 <= nr <= 3
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u8 LM93_TEMP_AUTO_OFFSET_TO_REG(u8 old, int off, int nr, int mode)
 {
 	u8 new = LM93_TEMP_OFFSET_TO_REG(off, mode);
@@ -705,17 +850,23 @@ static u8 LM93_AUTO_BOOST_HYST_TO_REG(struct lm93_data *data, long hyst,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* PWM: 0-255 per sensors documentation
    REG: 0-13 as mapped below... right justified */
 typedef enum { LM93_PWM_MAP_HI_FREQ, LM93_PWM_MAP_LO_FREQ } pwm_freq_t;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * PWM: 0-255 per sensors documentation
  * REG: 0-13 as mapped below... right justified
  */
 enum pwm_freq { LM93_PWM_MAP_HI_FREQ, LM93_PWM_MAP_LO_FREQ };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int lm93_pwm_map[2][16] = {
 	{
 		0x00, /*   0.00% */ 0x40, /*  25.00% */
@@ -740,20 +891,28 @@ static int lm93_pwm_map[2][16] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int LM93_PWM_FROM_REG(u8 reg, pwm_freq_t freq)
 =======
 static int LM93_PWM_FROM_REG(u8 reg, enum pwm_freq freq)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int LM93_PWM_FROM_REG(u8 reg, enum pwm_freq freq)
+>>>>>>> refs/remotes/origin/master
 {
 	return lm93_pwm_map[freq][reg & 0x0f];
 }
 
 /* round up to nearest match */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u8 LM93_PWM_TO_REG(int pwm, pwm_freq_t freq)
 =======
 static u8 LM93_PWM_TO_REG(int pwm, enum pwm_freq freq)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u8 LM93_PWM_TO_REG(int pwm, enum pwm_freq freq)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	for (i = 0; i < 13; i++)
@@ -768,10 +927,14 @@ static int LM93_FAN_FROM_REG(u16 regs)
 {
 	const u16 count = le16_to_cpu(regs) >> 2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return count==0 ? -1 : count==0x3fff ? 0: 1350000 / count;
 =======
 	return count == 0 ? -1 : count == 0x3fff ? 0 : 1350000 / count;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return count == 0 ? -1 : count == 0x3fff ? 0 : 1350000 / count;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -785,8 +948,13 @@ static u16 LM93_FAN_TO_REG(long rpm)
 	if (rpm == 0) {
 		count = 0x3fff;
 	} else {
+<<<<<<< HEAD
 		rpm = SENSORS_LIMIT(rpm, 1, 1000000);
 		count = SENSORS_LIMIT((1350000 + rpm) / rpm, 1, 0x3ffe);
+=======
+		rpm = clamp_val(rpm, 1, 1000000);
+		count = clamp_val((1350000 + rpm) / rpm, 1, 0x3ffe);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	regs = count << 2;
@@ -794,14 +962,20 @@ static u16 LM93_FAN_TO_REG(long rpm)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* PWM FREQ: HZ
    REG: 0-7 as mapped below */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * PWM FREQ: HZ
  * REG: 0-7 as mapped below
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int lm93_pwm_freq_map[8] = {
 	22500, 96, 84, 72, 60, 48, 36, 12
 };
@@ -824,14 +998,20 @@ static u8 LM93_PWM_FREQ_TO_REG(int freq)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* TIME: 1/100 seconds
  * REG: 0-7 as mapped below */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * TIME: 1/100 seconds
  * REG: 0-7 as mapped below
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int lm93_spinup_time_map[8] = {
 	0, 10, 25, 40, 70, 100, 200, 400,
 };
@@ -862,13 +1042,17 @@ static int LM93_RAMP_FROM_REG(u8 reg)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* RAMP: 1/100 seconds
    REG: 50mS/bit 4-bits right justified */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * RAMP: 1/100 seconds
  * REG: 50mS/bit 4-bits right justified
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static u8 LM93_RAMP_TO_REG(int ramp)
 {
@@ -880,10 +1064,19 @@ static u8 LM93_RAMP_TO_REG(int ramp)
 /* PROCHOT: 0-255, 0 => 0%, 255 => > 96.6%
  * REG: (same) */
 =======
+=======
+static u8 LM93_RAMP_TO_REG(int ramp)
+{
+	ramp = clamp_val(ramp, LM93_RAMP_MIN, LM93_RAMP_MAX);
+	return (u8)((ramp + 2) / 5);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * PROCHOT: 0-255, 0 => 0%, 255 => > 96.6%
  * REG: (same)
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static u8 LM93_PROCHOT_TO_REG(long prochot)
 {
@@ -895,11 +1088,22 @@ static u8 LM93_PROCHOT_TO_REG(long prochot)
 /* PROCHOT-INTERVAL: 73 - 37200 (1/100 seconds)
  * REG: 0-9 as mapped below */
 =======
+=======
+static u8 LM93_PROCHOT_TO_REG(long prochot)
+{
+	prochot = clamp_val(prochot, 0, 255);
+	return (u8)prochot;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * PROCHOT-INTERVAL: 73 - 37200 (1/100 seconds)
  * REG: 0-9 as mapped below
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int lm93_interval_map[10] = {
 	73, 146, 290, 580, 1170, 2330, 4660, 9320, 18600, 37200,
 };
@@ -922,19 +1126,26 @@ static u8 LM93_INTERVAL_TO_REG(long interval)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* GPIO: 0-255, GPIO0 is LSB
  * REG: inverted */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * GPIO: 0-255, GPIO0 is LSB
  * REG: inverted
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned LM93_GPI_FROM_REG(u8 reg)
 {
 	return ~reg & 0xff;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* alarm bitmask definitions
    The LM93 has nearly 64 bits of error status... I've pared that down to
@@ -946,6 +1157,8 @@ static unsigned LM93_GPI_FROM_REG(u8 reg)
    If libsensors is extended to support 64 bit values, this could be revisited.
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * alarm bitmask definitions
  * The LM93 has nearly 64 bits of error status... I've pared that down to
@@ -956,7 +1169,10 @@ static unsigned LM93_GPI_FROM_REG(u8 reg)
  *
  * If libsensors is extended to support 64 bit values, this could be revisited.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define LM93_ALARM_IN1		0x00000001
 #define LM93_ALARM_IN2		0x00000002
 #define LM93_ALARM_IN3		0x00000004
@@ -1021,20 +1237,29 @@ static u8 lm93_read_byte(struct i2c_client *client, u8 reg)
 
 	/* retry in case of read errors */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i=1; i<=MAX_RETRIES; i++) {
 		if ((value = i2c_smbus_read_byte_data(client, reg)) >= 0) {
 			return value;
 		} else {
 			dev_warn(&client->dev,"lm93: read byte data failed, "
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 1; i <= MAX_RETRIES; i++) {
 		value = i2c_smbus_read_byte_data(client, reg);
 		if (value >= 0) {
 			return value;
 		} else {
+<<<<<<< HEAD
 			dev_warn(&client->dev, "lm93: read byte data failed, "
 >>>>>>> refs/remotes/origin/cm-10.0
 				"address 0x%02x.\n", reg);
+=======
+			dev_warn(&client->dev,
+				 "lm93: read byte data failed, address 0x%02x.\n",
+				 reg);
+>>>>>>> refs/remotes/origin/master
 			mdelay(i + 3);
 		}
 
@@ -1042,10 +1267,14 @@ static u8 lm93_read_byte(struct i2c_client *client, u8 reg)
 
 	/* <TODO> what to return in case of error? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_err(&client->dev,"lm93: All read byte retries failed!!\n");
 =======
 	dev_err(&client->dev, "lm93: All read byte retries failed!!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_err(&client->dev, "lm93: All read byte retries failed!!\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1058,11 +1287,17 @@ static int lm93_write_byte(struct i2c_client *client, u8 reg, u8 value)
 
 	if (result < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_warn(&client->dev,"lm93: write byte data failed, "
 =======
 		dev_warn(&client->dev, "lm93: write byte data failed, "
 >>>>>>> refs/remotes/origin/cm-10.0
 			 "0x%02x at address 0x%02x.\n", value, reg);
+=======
+		dev_warn(&client->dev,
+			 "lm93: write byte data failed, 0x%02x at address 0x%02x.\n",
+			 value, reg);
+>>>>>>> refs/remotes/origin/master
 
 	return result;
 }
@@ -1073,20 +1308,29 @@ static u16 lm93_read_word(struct i2c_client *client, u8 reg)
 
 	/* retry in case of read errors */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i=1; i<=MAX_RETRIES; i++) {
 		if ((value = i2c_smbus_read_word_data(client, reg)) >= 0) {
 			return value;
 		} else {
 			dev_warn(&client->dev,"lm93: read word data failed, "
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 1; i <= MAX_RETRIES; i++) {
 		value = i2c_smbus_read_word_data(client, reg);
 		if (value >= 0) {
 			return value;
 		} else {
+<<<<<<< HEAD
 			dev_warn(&client->dev, "lm93: read word data failed, "
 >>>>>>> refs/remotes/origin/cm-10.0
 				 "address 0x%02x.\n", reg);
+=======
+			dev_warn(&client->dev,
+				 "lm93: read word data failed, address 0x%02x.\n",
+				 reg);
+>>>>>>> refs/remotes/origin/master
 			mdelay(i + 3);
 		}
 
@@ -1094,10 +1338,14 @@ static u16 lm93_read_word(struct i2c_client *client, u8 reg)
 
 	/* <TODO> what to return in case of error? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_err(&client->dev,"lm93: All read word retries failed!!\n");
 =======
 	dev_err(&client->dev, "lm93: All read word retries failed!!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_err(&client->dev, "lm93: All read word retries failed!!\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1110,11 +1358,17 @@ static int lm93_write_word(struct i2c_client *client, u8 reg, u16 value)
 
 	if (result < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_warn(&client->dev,"lm93: write word data failed, "
 =======
 		dev_warn(&client->dev, "lm93: write word data failed, "
 >>>>>>> refs/remotes/origin/cm-10.0
 			 "0x%04x at address 0x%02x.\n", value, reg);
+=======
+		dev_warn(&client->dev,
+			 "lm93: write word data failed, 0x%04x at address 0x%02x.\n",
+			 value, reg);
+>>>>>>> refs/remotes/origin/master
 
 	return result;
 }
@@ -1122,6 +1376,7 @@ static int lm93_write_word(struct i2c_client *client, u8 reg, u16 value)
 static u8 lm93_block_buffer[I2C_SMBUS_BLOCK_MAX];
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	read block data into values, retry if not expected length
 	fbn => index to lm93_block_read_cmds table
@@ -1131,6 +1386,8 @@ static void lm93_read_block(struct i2c_client *client, u8 fbn, u8 *values)
 {
 	int i, result=0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * read block data into values, retry if not expected length
  * fbn => index to lm93_block_read_cmds table
  * (Fixed Block Number - section 14.5.2 of LM93 datasheet)
@@ -1138,7 +1395,10 @@ static void lm93_read_block(struct i2c_client *client, u8 fbn, u8 *values)
 static void lm93_read_block(struct i2c_client *client, u8 fbn, u8 *values)
 {
 	int i, result = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 1; i <= MAX_RETRIES; i++) {
 		result = i2c_smbus_read_block_data(client,
@@ -1148,11 +1408,16 @@ static void lm93_read_block(struct i2c_client *client, u8 fbn, u8 *values)
 			break;
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_warn(&client->dev,"lm93: block read data failed, "
 =======
 			dev_warn(&client->dev, "lm93: block read data failed, "
 >>>>>>> refs/remotes/origin/cm-10.0
 				 "command 0x%02x.\n",
+=======
+			dev_warn(&client->dev,
+				 "lm93: block read data failed, command 0x%02x.\n",
+>>>>>>> refs/remotes/origin/master
 				 lm93_block_read_cmds[fbn].cmd);
 			mdelay(i + 3);
 		}
@@ -1160,11 +1425,16 @@ static void lm93_read_block(struct i2c_client *client, u8 fbn, u8 *values)
 
 	if (result == lm93_block_read_cmds[fbn].len) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		memcpy(values,lm93_block_buffer,lm93_block_read_cmds[fbn].len);
 =======
 		memcpy(values, lm93_block_buffer,
 		       lm93_block_read_cmds[fbn].len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memcpy(values, lm93_block_buffer,
+		       lm93_block_read_cmds[fbn].len);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* <TODO> what to do in case of error? */
 	}
@@ -1266,10 +1536,14 @@ static void lm93_update_client_full(struct lm93_data *data,
 				    struct i2c_client *client)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(&client->dev,"starting device update (block data enabled)\n");
 =======
 	dev_dbg(&client->dev, "starting device update (block data enabled)\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(&client->dev, "starting device update (block data enabled)\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* in1 - in16: values & limits */
 	lm93_read_block(client, 3, (u8 *)(data->block3));
@@ -1302,16 +1576,22 @@ static void lm93_update_client_min(struct lm93_data *data,
 				   struct i2c_client *client)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i,j;
 	u8 *ptr;
 
 	dev_dbg(&client->dev,"starting device update (block data disabled)\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int i, j;
 	u8 *ptr;
 
 	dev_dbg(&client->dev, "starting device update (block data disabled)\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* in1 - in16: values & limits */
 	for (i = 0; i < 16; i++) {
@@ -1350,10 +1630,14 @@ static void lm93_update_client_min(struct lm93_data *data,
 		for (j = 0; j < 4; j++) {
 			data->block9[i][j] =
 <<<<<<< HEAD
+<<<<<<< HEAD
 				lm93_read_byte(client, LM93_REG_PWM_CTL(i,j));
 =======
 				lm93_read_byte(client, LM93_REG_PWM_CTL(i, j));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				lm93_read_byte(client, LM93_REG_PWM_CTL(i, j));
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1414,6 +1698,7 @@ static ssize_t show_in_min(struct device *dev,
 	long rc, vid;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((nr==6 || nr==7) && (vccp_limit_type[vccp])) {
 		vid = LM93_VID_FROM_REG(data->vid[vccp]);
 		rc = LM93_IN_MIN_FROM_REG(data->vccp_limits[vccp], vid);
@@ -1423,6 +1708,8 @@ static ssize_t show_in_min(struct device *dev,
 	}
 	return sprintf(buf, "%ld\n", rc); \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((nr == 6 || nr == 7) && vccp_limit_type[vccp]) {
 		vid = LM93_VID_FROM_REG(data->vid[vccp]);
 		rc = LM93_IN_MIN_FROM_REG(data->vccp_limits[vccp], vid);
@@ -1430,7 +1717,10 @@ static ssize_t show_in_min(struct device *dev,
 		rc = LM93_IN_FROM_REG(nr, data->block7[nr].min);
 	}
 	return sprintf(buf, "%ld\n", rc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_in_min(struct device *dev, struct device_attribute *attr,
@@ -1440,6 +1730,7 @@ static ssize_t store_in_min(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 	int vccp = nr - 6;
 	long vid;
@@ -1447,6 +1738,8 @@ static ssize_t store_in_min(struct device *dev, struct device_attribute *attr,
 	mutex_lock(&data->update_lock);
 	if ((nr==6 || nr==7) && (vccp_limit_type[vccp])) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int vccp = nr - 6;
 	long vid;
 	unsigned long val;
@@ -1458,12 +1751,16 @@ static ssize_t store_in_min(struct device *dev, struct device_attribute *attr,
 
 	mutex_lock(&data->update_lock);
 	if ((nr == 6 || nr == 7) && vccp_limit_type[vccp]) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		vid = LM93_VID_FROM_REG(data->vid[vccp]);
 		data->vccp_limits[vccp] = (data->vccp_limits[vccp] & 0xf0) |
 				LM93_IN_REL_TO_REG(val, 0, vid);
 		lm93_write_byte(client, LM93_REG_VCCP_LIMIT_OFF(vccp),
 				data->vccp_limits[vccp]);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 	else {
@@ -1472,6 +1769,10 @@ static ssize_t store_in_min(struct device *dev, struct device_attribute *attr,
 	} else {
 		data->block7[nr].min = LM93_IN_TO_REG(nr, val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else {
+		data->block7[nr].min = LM93_IN_TO_REG(nr, val);
+>>>>>>> refs/remotes/origin/master
 		lm93_write_byte(client, LM93_REG_IN_MIN(nr),
 				data->block7[nr].min);
 	}
@@ -1521,6 +1822,7 @@ static ssize_t show_in_max(struct device *dev,
 	long rc, vid;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((nr==6 || nr==7) && (vccp_limit_type[vccp])) {
 		vid = LM93_VID_FROM_REG(data->vid[vccp]);
 		rc = LM93_IN_MAX_FROM_REG(data->vccp_limits[vccp],vid);
@@ -1530,6 +1832,8 @@ static ssize_t show_in_max(struct device *dev,
 	}
 	return sprintf(buf,"%ld\n",rc); \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((nr == 6 || nr == 7) && vccp_limit_type[vccp]) {
 		vid = LM93_VID_FROM_REG(data->vid[vccp]);
 		rc = LM93_IN_MAX_FROM_REG(data->vccp_limits[vccp], vid);
@@ -1537,7 +1841,10 @@ static ssize_t show_in_max(struct device *dev,
 		rc = LM93_IN_FROM_REG(nr, data->block7[nr].max);
 	}
 	return sprintf(buf, "%ld\n", rc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_in_max(struct device *dev, struct device_attribute *attr,
@@ -1547,6 +1854,7 @@ static ssize_t store_in_max(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 	int vccp = nr - 6;
 	long vid;
@@ -1554,6 +1862,8 @@ static ssize_t store_in_max(struct device *dev, struct device_attribute *attr,
 	mutex_lock(&data->update_lock);
 	if ((nr==6 || nr==7) && (vccp_limit_type[vccp])) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int vccp = nr - 6;
 	long vid;
 	unsigned long val;
@@ -1565,12 +1875,16 @@ static ssize_t store_in_max(struct device *dev, struct device_attribute *attr,
 
 	mutex_lock(&data->update_lock);
 	if ((nr == 6 || nr == 7) && vccp_limit_type[vccp]) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		vid = LM93_VID_FROM_REG(data->vid[vccp]);
 		data->vccp_limits[vccp] = (data->vccp_limits[vccp] & 0x0f) |
 				LM93_IN_REL_TO_REG(val, 1, vid);
 		lm93_write_byte(client, LM93_REG_VCCP_LIMIT_OFF(vccp),
 				data->vccp_limits[vccp]);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 	else {
@@ -1579,6 +1893,10 @@ static ssize_t store_in_max(struct device *dev, struct device_attribute *attr,
 	} else {
 		data->block7[nr].max = LM93_IN_TO_REG(nr, val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else {
+		data->block7[nr].max = LM93_IN_TO_REG(nr, val);
+>>>>>>> refs/remotes/origin/master
 		lm93_write_byte(client, LM93_REG_IN_MAX(nr),
 				data->block7[nr].max);
 	}
@@ -1625,10 +1943,14 @@ static ssize_t show_temp(struct device *dev,
 	int nr = (to_sensor_dev_attr(attr))->index;
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",LM93_TEMP_FROM_REG(data->block2[nr]));
 =======
 	return sprintf(buf, "%d\n", LM93_TEMP_FROM_REG(data->block2[nr]));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", LM93_TEMP_FROM_REG(data->block2[nr]));
+>>>>>>> refs/remotes/origin/master
 }
 
 static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO, show_temp, NULL, 0);
@@ -1641,10 +1963,14 @@ static ssize_t show_temp_min(struct device *dev,
 	int nr = (to_sensor_dev_attr(attr))->index;
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",LM93_TEMP_FROM_REG(data->temp_lim[nr].min));
 =======
 	return sprintf(buf, "%d\n", LM93_TEMP_FROM_REG(data->temp_lim[nr].min));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", LM93_TEMP_FROM_REG(data->temp_lim[nr].min));
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_temp_min(struct device *dev, struct device_attribute *attr,
@@ -1654,15 +1980,21 @@ static ssize_t store_temp_min(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->temp_lim[nr].min = LM93_TEMP_TO_REG(val);
@@ -1684,10 +2016,14 @@ static ssize_t show_temp_max(struct device *dev,
 	int nr = (to_sensor_dev_attr(attr))->index;
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",LM93_TEMP_FROM_REG(data->temp_lim[nr].max));
 =======
 	return sprintf(buf, "%d\n", LM93_TEMP_FROM_REG(data->temp_lim[nr].max));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", LM93_TEMP_FROM_REG(data->temp_lim[nr].max));
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_temp_max(struct device *dev, struct device_attribute *attr,
@@ -1697,15 +2033,21 @@ static ssize_t store_temp_max(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->temp_lim[nr].max = LM93_TEMP_TO_REG(val);
@@ -1727,10 +2069,14 @@ static ssize_t show_temp_auto_base(struct device *dev,
 	int nr = (to_sensor_dev_attr(attr))->index;
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",LM93_TEMP_FROM_REG(data->block10.base[nr]));
 =======
 	return sprintf(buf, "%d\n", LM93_TEMP_FROM_REG(data->block10.base[nr]));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", LM93_TEMP_FROM_REG(data->block10.base[nr]));
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_temp_auto_base(struct device *dev,
@@ -1741,15 +2087,21 @@ static ssize_t store_temp_auto_base(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->block10.base[nr] = LM93_TEMP_TO_REG(val);
@@ -1767,18 +2119,24 @@ static SENSOR_DEVICE_ATTR(temp3_auto_base, S_IWUSR | S_IRUGO,
 
 static ssize_t show_temp_auto_boost(struct device *dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    struct device_attribute *attr,char *buf)
 {
 	int nr = (to_sensor_dev_attr(attr))->index;
 	struct lm93_data *data = lm93_update_device(dev);
 	return sprintf(buf,"%d\n",LM93_TEMP_FROM_REG(data->boost[nr]));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				    struct device_attribute *attr, char *buf)
 {
 	int nr = (to_sensor_dev_attr(attr))->index;
 	struct lm93_data *data = lm93_update_device(dev);
 	return sprintf(buf, "%d\n", LM93_TEMP_FROM_REG(data->boost[nr]));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_temp_auto_boost(struct device *dev,
@@ -1789,15 +2147,21 @@ static ssize_t store_temp_auto_boost(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->boost[nr] = LM93_TEMP_TO_REG(val);
@@ -1821,10 +2185,14 @@ static ssize_t show_temp_auto_boost_hyst(struct device *dev,
 	struct lm93_data *data = lm93_update_device(dev);
 	int mode = LM93_TEMP_OFFSET_MODE_FROM_REG(data->sfc2, nr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",
 =======
 	return sprintf(buf, "%d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n",
+>>>>>>> refs/remotes/origin/master
 		       LM93_AUTO_BOOST_HYST_FROM_REGS(data, nr, mode));
 }
 
@@ -1836,15 +2204,21 @@ static ssize_t store_temp_auto_boost_hyst(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	/* force 0.5C/bit mode */
@@ -1877,6 +2251,7 @@ static ssize_t show_temp_auto_offset(struct device *dev,
 	struct lm93_data *data = lm93_update_device(dev);
 	int mode = LM93_TEMP_OFFSET_MODE_FROM_REG(data->sfc2, nr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",
 	       LM93_TEMP_AUTO_OFFSET_FROM_REG(data->block10.offset[ofs],
 					      nr,mode));
@@ -1885,6 +2260,11 @@ static ssize_t show_temp_auto_offset(struct device *dev,
 	       LM93_TEMP_AUTO_OFFSET_FROM_REG(data->block10.offset[ofs],
 					      nr, mode));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n",
+	       LM93_TEMP_AUTO_OFFSET_FROM_REG(data->block10.offset[ofs],
+					      nr, mode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_temp_auto_offset(struct device *dev,
@@ -1897,15 +2277,21 @@ static ssize_t store_temp_auto_offset(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	/* force 0.5C/bit mode */
@@ -2002,10 +2388,14 @@ static ssize_t show_temp_auto_pwm_min(struct device *dev,
 	reg = data->auto_pwm_min_hyst[nr/2] >> 4 & 0x0f;
 	ctl4 = data->block9[nr][LM93_PWM_CTL4];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",LM93_PWM_FROM_REG(reg, (ctl4 & 0x07) ?
 =======
 	return sprintf(buf, "%d\n", LM93_PWM_FROM_REG(reg, (ctl4 & 0x07) ?
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", LM93_PWM_FROM_REG(reg, (ctl4 & 0x07) ?
+>>>>>>> refs/remotes/origin/master
 				LM93_PWM_MAP_LO_FREQ : LM93_PWM_MAP_HI_FREQ));
 }
 
@@ -2017,6 +2407,7 @@ static ssize_t store_temp_auto_pwm_min(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 	u8 reg, ctl4;
 
@@ -2024,6 +2415,8 @@ static ssize_t store_temp_auto_pwm_min(struct device *dev,
 	reg = lm93_read_byte(client, LM93_REG_PWM_MIN_HYST(nr));
 	ctl4 = lm93_read_byte(client, LM93_REG_PWM_CTL(nr,LM93_PWM_CTL4));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 reg, ctl4;
 	unsigned long val;
 	int err;
@@ -2035,7 +2428,10 @@ static ssize_t store_temp_auto_pwm_min(struct device *dev,
 	mutex_lock(&data->update_lock);
 	reg = lm93_read_byte(client, LM93_REG_PWM_MIN_HYST(nr));
 	ctl4 = lm93_read_byte(client, LM93_REG_PWM_CTL(nr, LM93_PWM_CTL4));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	reg = (reg & 0x0f) |
 		LM93_PWM_TO_REG(val, (ctl4 & 0x07) ?
 				LM93_PWM_MAP_LO_FREQ :
@@ -2063,12 +2459,17 @@ static ssize_t show_temp_auto_offset_hyst(struct device *dev,
 	struct lm93_data *data = lm93_update_device(dev);
 	int mode = LM93_TEMP_OFFSET_MODE_FROM_REG(data->sfc2, nr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",LM93_TEMP_OFFSET_FROM_REG(
 					data->auto_pwm_min_hyst[nr/2], mode));
 =======
 	return sprintf(buf, "%d\n", LM93_TEMP_OFFSET_FROM_REG(
 					data->auto_pwm_min_hyst[nr / 2], mode));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", LM93_TEMP_OFFSET_FROM_REG(
+					data->auto_pwm_min_hyst[nr / 2], mode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_temp_auto_offset_hyst(struct device *dev,
@@ -2079,9 +2480,12 @@ static ssize_t store_temp_auto_offset_hyst(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 	u8 reg;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 reg;
 	unsigned long val;
 	int err;
@@ -2089,7 +2493,10 @@ static ssize_t store_temp_auto_offset_hyst(struct device *dev,
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	/* force 0.5C/bit mode */
@@ -2122,10 +2529,14 @@ static ssize_t show_fan_input(struct device *dev,
 	struct lm93_data *data = lm93_update_device(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",LM93_FAN_FROM_REG(data->block5[nr]));
 =======
 	return sprintf(buf, "%d\n", LM93_FAN_FROM_REG(data->block5[nr]));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", LM93_FAN_FROM_REG(data->block5[nr]));
+>>>>>>> refs/remotes/origin/master
 }
 
 static SENSOR_DEVICE_ATTR(fan1_input, S_IRUGO, show_fan_input, NULL, 0);
@@ -2140,10 +2551,14 @@ static ssize_t show_fan_min(struct device *dev,
 	struct lm93_data *data = lm93_update_device(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",LM93_FAN_FROM_REG(data->block8[nr]));
 =======
 	return sprintf(buf, "%d\n", LM93_FAN_FROM_REG(data->block8[nr]));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", LM93_FAN_FROM_REG(data->block8[nr]));
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_fan_min(struct device *dev, struct device_attribute *attr,
@@ -2153,12 +2568,15 @@ static ssize_t store_fan_min(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 
 	mutex_lock(&data->update_lock);
 	data->block8[nr] = LM93_FAN_TO_REG(val);
 	lm93_write_word(client,LM93_REG_FAN_MIN(nr),data->block8[nr]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
@@ -2169,7 +2587,10 @@ static ssize_t store_fan_min(struct device *dev, struct device_attribute *attr,
 	mutex_lock(&data->update_lock);
 	data->block8[nr] = LM93_FAN_TO_REG(val);
 	lm93_write_word(client, LM93_REG_FAN_MIN(nr), data->block8[nr]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 	return count;
 }
@@ -2184,6 +2605,7 @@ static SENSOR_DEVICE_ATTR(fan4_min, S_IWUSR | S_IRUGO,
 			  show_fan_min, store_fan_min, 3);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* some tedious bit-twiddling here to deal with the register format:
 
 	data->sf_tach_to_pwm: (tach to pwm mapping bits)
@@ -2197,6 +2619,8 @@ static SENSOR_DEVICE_ATTR(fan4_min, S_IWUSR | S_IRUGO,
 		       T4    T3    T2    T1
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * some tedious bit-twiddling here to deal with the register format:
  *
@@ -2210,7 +2634,10 @@ static SENSOR_DEVICE_ATTR(fan4_min, S_IWUSR | S_IRUGO,
  *		bit |  3  |  2  |  1  |  0
  *		       T4    T3    T2    T1
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t show_fan_smart_tach(struct device *dev,
 				struct device_attribute *attr, char *buf)
@@ -2227,12 +2654,15 @@ static ssize_t show_fan_smart_tach(struct device *dev,
 	if (mapping && ((data->sfc2 >> nr) & 0x01))
 		rc = mapping;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%ld\n",rc);
 }
 
 /* helper function - must grab data->update_lock before calling
    fan is 0-3, indicating fan1-fan4 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return sprintf(buf, "%ld\n", rc);
 }
 
@@ -2240,7 +2670,10 @@ static ssize_t show_fan_smart_tach(struct device *dev,
  * helper function - must grab data->update_lock before calling
  * fan is 0-3, indicating fan1-fan4
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void lm93_write_fan_smart_tach(struct i2c_client *client,
 	struct lm93_data *data, int fan, long value)
 {
@@ -2267,14 +2700,18 @@ static ssize_t store_fan_smart_tach(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
@@ -2288,6 +2725,16 @@ static ssize_t store_fan_smart_tach(struct device *dev,
 =======
 				LM93_REG_PWM_CTL(val - 1, LM93_PWM_CTL4));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	mutex_lock(&data->update_lock);
+	/* sanity test, ignore the write otherwise */
+	if (val <= 2) {
+		/* can't enable if pwm freq is 22.5KHz */
+		if (val) {
+			u8 ctl4 = lm93_read_byte(client,
+				LM93_REG_PWM_CTL(val - 1, LM93_PWM_CTL4));
+>>>>>>> refs/remotes/origin/master
 			if ((ctl4 & 0x07) == 0)
 				val = 0;
 		}
@@ -2322,10 +2769,14 @@ static ssize_t show_pwm(struct device *dev, struct device_attribute *attr,
 		rc = LM93_PWM_FROM_REG(ctl2 >> 4, (ctl4 & 0x07) ?
 			LM93_PWM_MAP_LO_FREQ : LM93_PWM_MAP_HI_FREQ);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%ld\n",rc);
 =======
 	return sprintf(buf, "%ld\n", rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%ld\n", rc);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_pwm(struct device *dev, struct device_attribute *attr,
@@ -2335,6 +2786,7 @@ static ssize_t store_pwm(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 	u8 ctl2, ctl4;
 
@@ -2343,6 +2795,8 @@ static ssize_t store_pwm(struct device *dev, struct device_attribute *attr,
 	ctl4 = lm93_read_byte(client, LM93_REG_PWM_CTL(nr,LM93_PWM_CTL4));
 	ctl2 = (ctl2 & 0x0f) | LM93_PWM_TO_REG(val,(ctl4 & 0x07) ?
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 ctl2, ctl4;
 	unsigned long val;
 	int err;
@@ -2355,17 +2809,24 @@ static ssize_t store_pwm(struct device *dev, struct device_attribute *attr,
 	ctl2 = lm93_read_byte(client, LM93_REG_PWM_CTL(nr, LM93_PWM_CTL2));
 	ctl4 = lm93_read_byte(client, LM93_REG_PWM_CTL(nr, LM93_PWM_CTL4));
 	ctl2 = (ctl2 & 0x0f) | LM93_PWM_TO_REG(val, (ctl4 & 0x07) ?
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			LM93_PWM_MAP_LO_FREQ : LM93_PWM_MAP_HI_FREQ) << 4;
 	/* save user commanded value */
 	data->pwm_override[nr] = LM93_PWM_FROM_REG(ctl2 >> 4,
 			(ctl4 & 0x07) ?  LM93_PWM_MAP_LO_FREQ :
 			LM93_PWM_MAP_HI_FREQ);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	lm93_write_byte(client,LM93_REG_PWM_CTL(nr,LM93_PWM_CTL2),ctl2);
 =======
 	lm93_write_byte(client, LM93_REG_PWM_CTL(nr, LM93_PWM_CTL2), ctl2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lm93_write_byte(client, LM93_REG_PWM_CTL(nr, LM93_PWM_CTL2), ctl2);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 	return count;
 }
@@ -2387,10 +2848,14 @@ static ssize_t show_pwm_enable(struct device *dev,
 	else
 		rc = 2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%ld\n",rc);
 =======
 	return sprintf(buf, "%ld\n", rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%ld\n", rc);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_pwm_enable(struct device *dev,
@@ -2401,12 +2866,15 @@ static ssize_t store_pwm_enable(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 	u8 ctl2;
 
 	mutex_lock(&data->update_lock);
 	ctl2 = lm93_read_byte(client,LM93_REG_PWM_CTL(nr,LM93_PWM_CTL2));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 ctl2;
 	unsigned long val;
 	int err;
@@ -2417,23 +2885,32 @@ static ssize_t store_pwm_enable(struct device *dev,
 
 	mutex_lock(&data->update_lock);
 	ctl2 = lm93_read_byte(client, LM93_REG_PWM_CTL(nr, LM93_PWM_CTL2));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (val) {
 	case 0:
 		ctl2 |= 0xF1; /* enable manual override, set PWM to max */
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case 1: ctl2 |= 0x01; /* enable manual override */
 		break;
 	case 2: ctl2 &= ~0x01; /* disable manual override */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case 1:
 		ctl2 |= 0x01; /* enable manual override */
 		break;
 	case 2:
 		ctl2 &= ~0x01; /* disable manual override */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		mutex_unlock(&data->update_lock);
@@ -2441,10 +2918,14 @@ static ssize_t store_pwm_enable(struct device *dev,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	lm93_write_byte(client,LM93_REG_PWM_CTL(nr,LM93_PWM_CTL2),ctl2);
 =======
 	lm93_write_byte(client, LM93_REG_PWM_CTL(nr, LM93_PWM_CTL2), ctl2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lm93_write_byte(client, LM93_REG_PWM_CTL(nr, LM93_PWM_CTL2), ctl2);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 	return count;
 }
@@ -2463,6 +2944,7 @@ static ssize_t show_pwm_freq(struct device *dev, struct device_attribute *attr,
 
 	ctl4 = data->block9[nr][LM93_PWM_CTL4];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",LM93_PWM_FREQ_FROM_REG(ctl4));
 }
 
@@ -2470,6 +2952,8 @@ static ssize_t show_pwm_freq(struct device *dev, struct device_attribute *attr,
    pwm is 0-1, indicating pwm1-pwm2
    this disables smart tach for all tach channels bound to the given pwm */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return sprintf(buf, "%d\n", LM93_PWM_FREQ_FROM_REG(ctl4));
 }
 
@@ -2478,7 +2962,10 @@ static ssize_t show_pwm_freq(struct device *dev, struct device_attribute *attr,
  * pwm is 0-1, indicating pwm1-pwm2
  * this disables smart tach for all tach channels bound to the given pwm
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void lm93_disable_fan_smart_tach(struct i2c_client *client,
 	struct lm93_data *data, int pwm)
 {
@@ -2506,12 +2993,15 @@ static ssize_t store_pwm_freq(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 	u8 ctl4;
 
 	mutex_lock(&data->update_lock);
 	ctl4 = lm93_read_byte(client,LM93_REG_PWM_CTL(nr,LM93_PWM_CTL4));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 ctl4;
 	unsigned long val;
 	int err;
@@ -2522,17 +3012,24 @@ static ssize_t store_pwm_freq(struct device *dev,
 
 	mutex_lock(&data->update_lock);
 	ctl4 = lm93_read_byte(client, LM93_REG_PWM_CTL(nr, LM93_PWM_CTL4));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ctl4 = (ctl4 & 0xf8) | LM93_PWM_FREQ_TO_REG(val);
 	data->block9[nr][LM93_PWM_CTL4] = ctl4;
 	/* ctl4 == 0 -> 22.5KHz -> disable smart tach */
 	if (!ctl4)
 		lm93_disable_fan_smart_tach(client, data, nr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	lm93_write_byte(client,	LM93_REG_PWM_CTL(nr,LM93_PWM_CTL4), ctl4);
 =======
 	lm93_write_byte(client, LM93_REG_PWM_CTL(nr, LM93_PWM_CTL4), ctl4);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lm93_write_byte(client, LM93_REG_PWM_CTL(nr, LM93_PWM_CTL4), ctl4);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 	return count;
 }
@@ -2548,10 +3045,14 @@ static ssize_t show_pwm_auto_channels(struct device *dev,
 	int nr = (to_sensor_dev_attr(attr))->index;
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",data->block9[nr][LM93_PWM_CTL1]);
 =======
 	return sprintf(buf, "%d\n", data->block9[nr][LM93_PWM_CTL1]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", data->block9[nr][LM93_PWM_CTL1]);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_pwm_auto_channels(struct device *dev,
@@ -2562,12 +3063,15 @@ static ssize_t store_pwm_auto_channels(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 
 	mutex_lock(&data->update_lock);
 	data->block9[nr][LM93_PWM_CTL1] = SENSORS_LIMIT(val, 0, 255);
 	lm93_write_byte(client,	LM93_REG_PWM_CTL(nr,LM93_PWM_CTL1),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
@@ -2576,9 +3080,14 @@ static ssize_t store_pwm_auto_channels(struct device *dev,
 		return err;
 
 	mutex_lock(&data->update_lock);
+<<<<<<< HEAD
 	data->block9[nr][LM93_PWM_CTL1] = SENSORS_LIMIT(val, 0, 255);
 	lm93_write_byte(client, LM93_REG_PWM_CTL(nr, LM93_PWM_CTL1),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data->block9[nr][LM93_PWM_CTL1] = clamp_val(val, 0, 255);
+	lm93_write_byte(client, LM93_REG_PWM_CTL(nr, LM93_PWM_CTL1),
+>>>>>>> refs/remotes/origin/master
 				data->block9[nr][LM93_PWM_CTL1]);
 	mutex_unlock(&data->update_lock);
 	return count;
@@ -2591,10 +3100,14 @@ static SENSOR_DEVICE_ATTR(pwm2_auto_channels, S_IWUSR | S_IRUGO,
 
 static ssize_t show_pwm_auto_spinup_min(struct device *dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				struct device_attribute *attr,char *buf)
 =======
 				struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	int nr = (to_sensor_dev_attr(attr))->index;
 	struct lm93_data *data = lm93_update_device(dev);
@@ -2603,10 +3116,14 @@ static ssize_t show_pwm_auto_spinup_min(struct device *dev,
 	ctl3 = data->block9[nr][LM93_PWM_CTL3];
 	ctl4 = data->block9[nr][LM93_PWM_CTL4];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",
 =======
 	return sprintf(buf, "%d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n",
+>>>>>>> refs/remotes/origin/master
 		       LM93_PWM_FROM_REG(ctl3 & 0x0f, (ctl4 & 0x07) ?
 			LM93_PWM_MAP_LO_FREQ : LM93_PWM_MAP_HI_FREQ));
 }
@@ -2618,6 +3135,7 @@ static ssize_t store_pwm_auto_spinup_min(struct device *dev,
 	int nr = (to_sensor_dev_attr(attr))->index;
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 	u8 ctl3, ctl4;
@@ -2631,6 +3149,8 @@ static ssize_t store_pwm_auto_spinup_min(struct device *dev,
 	data->block9[nr][LM93_PWM_CTL3] = ctl3;
 	lm93_write_byte(client,LM93_REG_PWM_CTL(nr, LM93_PWM_CTL3), ctl3);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 ctl3, ctl4;
 	unsigned long val;
 	int err;
@@ -2647,7 +3167,10 @@ static ssize_t store_pwm_auto_spinup_min(struct device *dev,
 			LM93_PWM_MAP_HI_FREQ);
 	data->block9[nr][LM93_PWM_CTL3] = ctl3;
 	lm93_write_byte(client, LM93_REG_PWM_CTL(nr, LM93_PWM_CTL3), ctl3);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 	return count;
 }
@@ -2665,10 +3188,14 @@ static ssize_t show_pwm_auto_spinup_time(struct device *dev,
 	int nr = (to_sensor_dev_attr(attr))->index;
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",LM93_SPINUP_TIME_FROM_REG(
 =======
 	return sprintf(buf, "%d\n", LM93_SPINUP_TIME_FROM_REG(
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", LM93_SPINUP_TIME_FROM_REG(
+>>>>>>> refs/remotes/origin/master
 				data->block9[nr][LM93_PWM_CTL3]));
 }
 
@@ -2680,6 +3207,7 @@ static ssize_t store_pwm_auto_spinup_time(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 	u8 ctl3;
 
@@ -2689,6 +3217,8 @@ static ssize_t store_pwm_auto_spinup_time(struct device *dev,
 	data->block9[nr][LM93_PWM_CTL3] = ctl3;
 	lm93_write_byte(client,LM93_REG_PWM_CTL(nr, LM93_PWM_CTL3), ctl3);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 ctl3;
 	unsigned long val;
 	int err;
@@ -2702,7 +3232,10 @@ static ssize_t store_pwm_auto_spinup_time(struct device *dev,
 	ctl3 = (ctl3 & 0x1f) | (LM93_SPINUP_TIME_TO_REG(val) << 5 & 0xe0);
 	data->block9[nr][LM93_PWM_CTL3] = ctl3;
 	lm93_write_byte(client, LM93_REG_PWM_CTL(nr, LM93_PWM_CTL3), ctl3);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 	return count;
 }
@@ -2719,10 +3252,14 @@ static ssize_t show_pwm_auto_prochot_ramp(struct device *dev,
 {
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",
 =======
 	return sprintf(buf, "%d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n",
+>>>>>>> refs/remotes/origin/master
 		       LM93_RAMP_FROM_REG(data->pwm_ramp_ctl >> 4 & 0x0f));
 }
 
@@ -2733,9 +3270,12 @@ static ssize_t store_pwm_auto_prochot_ramp(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 	u8 ramp;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 ramp;
 	unsigned long val;
 	int err;
@@ -2743,7 +3283,10 @@ static ssize_t store_pwm_auto_prochot_ramp(struct device *dev,
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	ramp = lm93_read_byte(client, LM93_REG_PWM_RAMP_CTL);
@@ -2762,10 +3305,14 @@ static ssize_t show_pwm_auto_vrdhot_ramp(struct device *dev,
 {
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",
 =======
 	return sprintf(buf, "%d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n",
+>>>>>>> refs/remotes/origin/master
 		       LM93_RAMP_FROM_REG(data->pwm_ramp_ctl & 0x0f));
 }
 
@@ -2776,9 +3323,12 @@ static ssize_t store_pwm_auto_vrdhot_ramp(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 	u8 ramp;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 ramp;
 	unsigned long val;
 	int err;
@@ -2786,7 +3336,10 @@ static ssize_t store_pwm_auto_vrdhot_ramp(struct device *dev,
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	ramp = lm93_read_byte(client, LM93_REG_PWM_RAMP_CTL);
@@ -2806,10 +3359,14 @@ static ssize_t show_vid(struct device *dev, struct device_attribute *attr,
 	int nr = (to_sensor_dev_attr(attr))->index;
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",LM93_VID_FROM_REG(data->vid[nr]));
 =======
 	return sprintf(buf, "%d\n", LM93_VID_FROM_REG(data->vid[nr]));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", LM93_VID_FROM_REG(data->vid[nr]));
+>>>>>>> refs/remotes/origin/master
 }
 
 static SENSOR_DEVICE_ATTR(cpu0_vid, S_IRUGO, show_vid, NULL, 0);
@@ -2821,10 +3378,14 @@ static ssize_t show_prochot(struct device *dev, struct device_attribute *attr,
 	int nr = (to_sensor_dev_attr(attr))->index;
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",data->block4[nr].cur);
 =======
 	return sprintf(buf, "%d\n", data->block4[nr].cur);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", data->block4[nr].cur);
+>>>>>>> refs/remotes/origin/master
 }
 
 static SENSOR_DEVICE_ATTR(prochot1, S_IRUGO, show_prochot, NULL, 0);
@@ -2836,10 +3397,14 @@ static ssize_t show_prochot_avg(struct device *dev,
 	int nr = (to_sensor_dev_attr(attr))->index;
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",data->block4[nr].avg);
 =======
 	return sprintf(buf, "%d\n", data->block4[nr].avg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", data->block4[nr].avg);
+>>>>>>> refs/remotes/origin/master
 }
 
 static SENSOR_DEVICE_ATTR(prochot1_avg, S_IRUGO, show_prochot_avg, NULL, 0);
@@ -2851,10 +3416,14 @@ static ssize_t show_prochot_max(struct device *dev,
 	int nr = (to_sensor_dev_attr(attr))->index;
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",data->prochot_max[nr]);
 =======
 	return sprintf(buf, "%d\n", data->prochot_max[nr]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", data->prochot_max[nr]);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_prochot_max(struct device *dev,
@@ -2865,15 +3434,21 @@ static ssize_t store_prochot_max(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->prochot_max[nr] = LM93_PROCHOT_TO_REG(val);
@@ -2896,10 +3471,14 @@ static ssize_t show_prochot_override(struct device *dev,
 	int nr = (to_sensor_dev_attr(attr))->index;
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",
 =======
 	return sprintf(buf, "%d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n",
+>>>>>>> refs/remotes/origin/master
 		(data->prochot_override & prochot_override_mask[nr]) ? 1 : 0);
 }
 
@@ -2911,15 +3490,21 @@ static ssize_t store_prochot_override(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	if (val)
@@ -2944,18 +3529,24 @@ static ssize_t show_prochot_interval(struct device *dev,
 	struct lm93_data *data = lm93_update_device(dev);
 	u8 tmp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (nr==1)
 		tmp = (data->prochot_interval & 0xf0) >> 4;
 	else
 		tmp = data->prochot_interval & 0x0f;
 	return sprintf(buf,"%d\n",LM93_INTERVAL_FROM_REG(tmp));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (nr == 1)
 		tmp = (data->prochot_interval & 0xf0) >> 4;
 	else
 		tmp = data->prochot_interval & 0x0f;
 	return sprintf(buf, "%d\n", LM93_INTERVAL_FROM_REG(tmp));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_prochot_interval(struct device *dev,
@@ -2966,6 +3557,7 @@ static ssize_t store_prochot_interval(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 	u8 tmp;
 
@@ -2973,6 +3565,8 @@ static ssize_t store_prochot_interval(struct device *dev,
 	tmp = lm93_read_byte(client, LM93_REG_PROCHOT_INTERVAL);
 	if (nr==1)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 tmp;
 	unsigned long val;
 	int err;
@@ -2984,7 +3578,10 @@ static ssize_t store_prochot_interval(struct device *dev,
 	mutex_lock(&data->update_lock);
 	tmp = lm93_read_byte(client, LM93_REG_PROCHOT_INTERVAL);
 	if (nr == 1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		tmp = (tmp & 0x0f) | (LM93_INTERVAL_TO_REG(val) << 4);
 	else
 		tmp = (tmp & 0xf0) | LM93_INTERVAL_TO_REG(val);
@@ -3005,10 +3602,14 @@ static ssize_t show_prochot_override_duty_cycle(struct device *dev,
 {
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",data->prochot_override & 0x0f);
 =======
 	return sprintf(buf, "%d\n", data->prochot_override & 0x0f);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", data->prochot_override & 0x0f);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_prochot_override_duty_cycle(struct device *dev,
@@ -3018,19 +3619,29 @@ static ssize_t store_prochot_override_duty_cycle(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->prochot_override = (data->prochot_override & 0xf0) |
 					SENSORS_LIMIT(val, 0, 15);
+=======
+
+	mutex_lock(&data->update_lock);
+	data->prochot_override = (data->prochot_override & 0xf0) |
+					clamp_val(val, 0, 15);
+>>>>>>> refs/remotes/origin/master
 	lm93_write_byte(client, LM93_REG_PROCHOT_OVERRIDE,
 			data->prochot_override);
 	mutex_unlock(&data->update_lock);
@@ -3046,10 +3657,14 @@ static ssize_t show_prochot_short(struct device *dev,
 {
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",(data->config & 0x10) ? 1 : 0);
 =======
 	return sprintf(buf, "%d\n", (data->config & 0x10) ? 1 : 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", (data->config & 0x10) ? 1 : 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_prochot_short(struct device *dev,
@@ -3059,15 +3674,21 @@ static ssize_t store_prochot_short(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm93_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	if (val)
@@ -3088,12 +3709,17 @@ static ssize_t show_vrdhot(struct device *dev, struct device_attribute *attr,
 	int nr = (to_sensor_dev_attr(attr))->index;
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",
 		       data->block1.host_status_1 & (1 << (nr+4)) ? 1 : 0);
 =======
 	return sprintf(buf, "%d\n",
 		       data->block1.host_status_1 & (1 << (nr + 4)) ? 1 : 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n",
+		       data->block1.host_status_1 & (1 << (nr + 4)) ? 1 : 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static SENSOR_DEVICE_ATTR(vrdhot1, S_IRUGO, show_vrdhot, NULL, 0);
@@ -3104,10 +3730,14 @@ static ssize_t show_gpio(struct device *dev, struct device_attribute *attr,
 {
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",LM93_GPI_FROM_REG(data->gpi));
 =======
 	return sprintf(buf, "%d\n", LM93_GPI_FROM_REG(data->gpi));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", LM93_GPI_FROM_REG(data->gpi));
+>>>>>>> refs/remotes/origin/master
 }
 
 static DEVICE_ATTR(gpio, S_IRUGO, show_gpio, NULL);
@@ -3117,10 +3747,14 @@ static ssize_t show_alarms(struct device *dev, struct device_attribute *attr,
 {
 	struct lm93_data *data = lm93_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%d\n",LM93_ALARMS_FROM_REG(data->block1));
 =======
 	return sprintf(buf, "%d\n", LM93_ALARMS_FROM_REG(data->block1));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", LM93_ALARMS_FROM_REG(data->block1));
+>>>>>>> refs/remotes/origin/master
 }
 
 static DEVICE_ATTR(alarms, S_IRUGO, show_alarms, NULL);
@@ -3321,21 +3955,30 @@ static void lm93_init_client(struct i2c_client *client)
 
 	/* spin until ready */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i=0; i<20; i++) {
 =======
 	for (i = 0; i < 20; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < 20; i++) {
+>>>>>>> refs/remotes/origin/master
 		msleep(10);
 		if ((lm93_read_byte(client, LM93_REG_CONFIG) & 0x80) == 0x80)
 			return;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_warn(&client->dev,"timed out waiting for sensor "
 =======
 	dev_warn(&client->dev, "timed out waiting for sensor "
 >>>>>>> refs/remotes/origin/cm-10.0
 		 "chip to signal ready!\n");
+=======
+	dev_warn(&client->dev,
+		 "timed out waiting for sensor chip to signal ready!\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Return 0 if detection is successful, -ENODEV otherwise */
@@ -3375,10 +4018,14 @@ static int lm93_detect(struct i2c_client *client, struct i2c_board_info *info)
 
 	strlcpy(info->type, name, I2C_NAME_SIZE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(&adapter->dev,"loading %s at %d,0x%02x\n",
 =======
 	dev_dbg(&adapter->dev, "loading %s at %d, 0x%02x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(&adapter->dev, "loading %s at %d, 0x%02x\n",
+>>>>>>> refs/remotes/origin/master
 		client->name, i2c_adapter_id(client->adapter),
 		client->addr);
 
@@ -3399,6 +4046,7 @@ static int lm93_probe(struct i2c_client *client,
 		dev_dbg(&client->dev, "using SMBus block data transactions\n");
 		update = lm93_update_client_full;
 	} else if ((LM93_SMBUS_FUNC_MIN & func) == LM93_SMBUS_FUNC_MIN) {
+<<<<<<< HEAD
 		dev_dbg(&client->dev, "disabled SMBus block data "
 			"transactions\n");
 		update = lm93_update_client_min;
@@ -3414,6 +4062,21 @@ static int lm93_probe(struct i2c_client *client,
 		dev_dbg(&client->dev, "out of memory!\n");
 		err = -ENOMEM;
 		goto err_out;
+=======
+		dev_dbg(&client->dev,
+			"disabled SMBus block data transactions\n");
+		update = lm93_update_client_min;
+	} else {
+		dev_dbg(&client->dev,
+			"detect failed, smbus byte and/or word data not supported!\n");
+		return -ENODEV;
+	}
+
+	data = devm_kzalloc(&client->dev, sizeof(struct lm93_data), GFP_KERNEL);
+	if (!data) {
+		dev_dbg(&client->dev, "out of memory!\n");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 	i2c_set_clientdata(client, data);
 
@@ -3427,6 +4090,7 @@ static int lm93_probe(struct i2c_client *client,
 
 	err = sysfs_create_group(&client->dev.kobj, &lm93_attr_grp);
 	if (err)
+<<<<<<< HEAD
 		goto err_free;
 
 	/* Register hwmon driver class */
@@ -3436,14 +4100,24 @@ static int lm93_probe(struct i2c_client *client,
 =======
 	if (!IS_ERR(data->hwmon_dev))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return err;
+
+	/* Register hwmon driver class */
+	data->hwmon_dev = hwmon_device_register(&client->dev);
+	if (!IS_ERR(data->hwmon_dev))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	err = PTR_ERR(data->hwmon_dev);
 	dev_err(&client->dev, "error registering hwmon device.\n");
 	sysfs_remove_group(&client->dev.kobj, &lm93_attr_grp);
+<<<<<<< HEAD
 err_free:
 	kfree(data);
 err_out:
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -3454,7 +4128,10 @@ static int lm93_remove(struct i2c_client *client)
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &lm93_attr_grp);
 
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -3478,6 +4155,7 @@ static struct i2c_driver lm93_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init lm93_init(void)
 {
 	return i2c_add_driver(&lm93_driver);
@@ -3490,14 +4168,20 @@ static void __exit lm93_exit(void)
 =======
 module_i2c_driver(lm93_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(lm93_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mark M. Hoffman <mhoffman@lightlink.com>, "
 		"Hans J. Koch <hjk@hansjkoch.de>");
 MODULE_DESCRIPTION("LM93 driver");
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(lm93_init);
 module_exit(lm93_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

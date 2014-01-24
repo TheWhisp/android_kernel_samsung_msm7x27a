@@ -75,21 +75,35 @@ static struct i2c_board_info timberdale_i2c_board_info[] = {
 	},
 };
 
+<<<<<<< HEAD
 static __devinitdata struct xiic_i2c_platform_data
+=======
+static struct xiic_i2c_platform_data
+>>>>>>> refs/remotes/origin/master
 timberdale_xiic_platform_data = {
 	.devices = timberdale_i2c_board_info,
 	.num_devices = ARRAY_SIZE(timberdale_i2c_board_info)
 };
 
+<<<<<<< HEAD
 static __devinitdata struct ocores_i2c_platform_data
 timberdale_ocores_platform_data = {
 	.regstep = 4,
+=======
+static struct ocores_i2c_platform_data
+timberdale_ocores_platform_data = {
+	.reg_shift = 2,
+>>>>>>> refs/remotes/origin/master
 	.clock_khz = 62500,
 	.devices = timberdale_i2c_board_info,
 	.num_devices = ARRAY_SIZE(timberdale_i2c_board_info)
 };
 
+<<<<<<< HEAD
 static const __devinitconst struct resource timberdale_xiic_resources[] = {
+=======
+static const struct resource timberdale_xiic_resources[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.start	= XIICOFFSET,
 		.end	= XIICEND,
@@ -102,7 +116,11 @@ static const __devinitconst struct resource timberdale_xiic_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static const __devinitconst struct resource timberdale_ocores_resources[] = {
+=======
+static const struct resource timberdale_ocores_resources[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.start	= OCORESOFFSET,
 		.end	= OCORESEND,
@@ -115,11 +133,19 @@ static const __devinitconst struct resource timberdale_ocores_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 const struct max7301_platform_data timberdale_max7301_platform_data = {
 	.base = 200
 };
 
 const struct mc33880_platform_data timberdale_mc33880_platform_data = {
+=======
+static const struct max7301_platform_data timberdale_max7301_platform_data = {
+	.base = 200
+};
+
+static const struct mc33880_platform_data timberdale_mc33880_platform_data = {
+>>>>>>> refs/remotes/origin/master
 	.base = 100
 };
 
@@ -143,15 +169,24 @@ static struct spi_board_info timberdale_spi_8bit_board_info[] = {
 	},
 };
 
+<<<<<<< HEAD
 static __devinitdata struct xspi_platform_data timberdale_xspi_platform_data = {
 	.num_chipselect = 3,
 	.little_endian = true,
+=======
+static struct xspi_platform_data timberdale_xspi_platform_data = {
+	.num_chipselect = 3,
+>>>>>>> refs/remotes/origin/master
 	/* bits per word and devices will be filled in runtime depending
 	 * on the HW config
 	 */
 };
 
+<<<<<<< HEAD
 static const __devinitconst struct resource timberdale_spi_resources[] = {
+=======
+static const struct resource timberdale_spi_resources[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.start 	= SPIOFFSET,
 		.end	= SPIEND,
@@ -164,13 +199,21 @@ static const __devinitconst struct resource timberdale_spi_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static __devinitdata struct ks8842_platform_data
+=======
+static struct ks8842_platform_data
+>>>>>>> refs/remotes/origin/master
 	timberdale_ks8842_platform_data = {
 	.rx_dma_channel = DMA_ETH_RX,
 	.tx_dma_channel = DMA_ETH_TX
 };
 
+<<<<<<< HEAD
 static const __devinitconst struct resource timberdale_eth_resources[] = {
+=======
+static const struct resource timberdale_eth_resources[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.start	= ETHOFFSET,
 		.end	= ETHEND,
@@ -183,14 +226,22 @@ static const __devinitconst struct resource timberdale_eth_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static __devinitdata struct timbgpio_platform_data
+=======
+static struct timbgpio_platform_data
+>>>>>>> refs/remotes/origin/master
 	timberdale_gpio_platform_data = {
 	.gpio_base = 0,
 	.nr_pins = GPIO_NR_PINS,
 	.irq_base = 200,
 };
 
+<<<<<<< HEAD
 static const __devinitconst struct resource timberdale_gpio_resources[] = {
+=======
+static const struct resource timberdale_gpio_resources[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.start	= GPIOOFFSET,
 		.end	= GPIOEND,
@@ -203,7 +254,11 @@ static const __devinitconst struct resource timberdale_gpio_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static const __devinitconst struct resource timberdale_mlogicore_resources[] = {
+=======
+static const struct resource timberdale_mlogicore_resources[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.start	= MLCOREOFFSET,
 		.end	= MLCOREEND,
@@ -221,7 +276,11 @@ static const __devinitconst struct resource timberdale_mlogicore_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static const __devinitconst struct resource timberdale_uart_resources[] = {
+=======
+static const struct resource timberdale_uart_resources[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.start	= UARTOFFSET,
 		.end	= UARTEND,
@@ -234,7 +293,11 @@ static const __devinitconst struct resource timberdale_uart_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static const __devinitconst struct resource timberdale_uartlite_resources[] = {
+=======
+static const struct resource timberdale_uartlite_resources[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.start	= UARTLITEOFFSET,
 		.end	= UARTLITEEND,
@@ -247,13 +310,21 @@ static const __devinitconst struct resource timberdale_uartlite_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static __devinitdata struct i2c_board_info timberdale_adv7180_i2c_board_info = {
+=======
+static struct i2c_board_info timberdale_adv7180_i2c_board_info = {
+>>>>>>> refs/remotes/origin/master
 	/* Requires jumper JP9 to be off */
 	I2C_BOARD_INFO("adv7180", 0x42 >> 1),
 	.irq = IRQ_TIMBERDALE_ADV7180
 };
 
+<<<<<<< HEAD
 static __devinitdata struct timb_video_platform_data
+=======
+static struct timb_video_platform_data
+>>>>>>> refs/remotes/origin/master
 	timberdale_video_platform_data = {
 	.dma_channel = DMA_VIDEO_RX,
 	.i2c_adapter = 0,
@@ -262,7 +333,11 @@ static __devinitdata struct timb_video_platform_data
 	}
 };
 
+<<<<<<< HEAD
 static const __devinitconst struct resource
+=======
+static const struct resource
+>>>>>>> refs/remotes/origin/master
 timberdale_radio_resources[] = {
 	{
 		.start	= RDSOFFSET,
@@ -276,6 +351,7 @@ timberdale_radio_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static __devinitdata struct i2c_board_info timberdale_tef6868_i2c_board_info = {
 	I2C_BOARD_INFO("tef6862", 0x60)
 };
@@ -301,6 +377,24 @@ static __devinitdata struct timb_radio_platform_data
 };
 
 static const __devinitconst struct resource timberdale_video_resources[] = {
+=======
+static struct i2c_board_info timberdale_tef6868_i2c_board_info = {
+	I2C_BOARD_INFO("tef6862", 0x60)
+};
+
+static struct i2c_board_info timberdale_saa7706_i2c_board_info = {
+	I2C_BOARD_INFO("saa7706h", 0x1C)
+};
+
+static struct timb_radio_platform_data
+	timberdale_radio_platform_data = {
+	.i2c_adapter = 0,
+	.tuner = &timberdale_tef6868_i2c_board_info,
+	.dsp = &timberdale_saa7706_i2c_board_info
+};
+
+static const struct resource timberdale_video_resources[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.start	= LOGIWOFFSET,
 		.end	= LOGIWEND,
@@ -312,7 +406,11 @@ static const __devinitconst struct resource timberdale_video_resources[] = {
 	*/
 };
 
+<<<<<<< HEAD
 static __devinitdata struct timb_dma_platform_data timb_dma_platform_data = {
+=======
+static struct timb_dma_platform_data timb_dma_platform_data = {
+>>>>>>> refs/remotes/origin/master
 	.nr_channels = 10,
 	.channels = {
 		{
@@ -371,7 +469,11 @@ static __devinitdata struct timb_dma_platform_data timb_dma_platform_data = {
 	}
 };
 
+<<<<<<< HEAD
 static const __devinitconst struct resource timberdale_dma_resources[] = {
+=======
+static const struct resource timberdale_dma_resources[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.start	= DMAOFFSET,
 		.end	= DMAEND,
@@ -384,7 +486,11 @@ static const __devinitconst struct resource timberdale_dma_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static __devinitdata struct mfd_cell timberdale_cells_bar0_cfg0[] = {
+=======
+static const struct mfd_cell timberdale_cells_bar0_cfg0[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "timb-dma",
 		.num_resources = ARRAY_SIZE(timberdale_dma_resources),
@@ -441,7 +547,11 @@ static __devinitdata struct mfd_cell timberdale_cells_bar0_cfg0[] = {
 	},
 };
 
+<<<<<<< HEAD
 static __devinitdata struct mfd_cell timberdale_cells_bar0_cfg1[] = {
+=======
+static const struct mfd_cell timberdale_cells_bar0_cfg1[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "timb-dma",
 		.num_resources = ARRAY_SIZE(timberdale_dma_resources),
@@ -508,7 +618,11 @@ static __devinitdata struct mfd_cell timberdale_cells_bar0_cfg1[] = {
 	},
 };
 
+<<<<<<< HEAD
 static __devinitdata struct mfd_cell timberdale_cells_bar0_cfg2[] = {
+=======
+static const struct mfd_cell timberdale_cells_bar0_cfg2[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "timb-dma",
 		.num_resources = ARRAY_SIZE(timberdale_dma_resources),
@@ -558,7 +672,11 @@ static __devinitdata struct mfd_cell timberdale_cells_bar0_cfg2[] = {
 	},
 };
 
+<<<<<<< HEAD
 static __devinitdata struct mfd_cell timberdale_cells_bar0_cfg3[] = {
+=======
+static const struct mfd_cell timberdale_cells_bar0_cfg3[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "timb-dma",
 		.num_resources = ARRAY_SIZE(timberdale_dma_resources),
@@ -615,7 +733,11 @@ static __devinitdata struct mfd_cell timberdale_cells_bar0_cfg3[] = {
 	},
 };
 
+<<<<<<< HEAD
 static const __devinitconst struct resource timberdale_sdhc_resources[] = {
+=======
+static const struct resource timberdale_sdhc_resources[] = {
+>>>>>>> refs/remotes/origin/master
 	/* located in bar 1 and bar 2 */
 	{
 		.start	= SDHC0OFFSET,
@@ -629,7 +751,11 @@ static const __devinitconst struct resource timberdale_sdhc_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static __devinitdata struct mfd_cell timberdale_cells_bar1[] = {
+=======
+static const struct mfd_cell timberdale_cells_bar1[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "sdhci",
 		.num_resources = ARRAY_SIZE(timberdale_sdhc_resources),
@@ -637,7 +763,11 @@ static __devinitdata struct mfd_cell timberdale_cells_bar1[] = {
 	},
 };
 
+<<<<<<< HEAD
 static __devinitdata struct mfd_cell timberdale_cells_bar2[] = {
+=======
+static const struct mfd_cell timberdale_cells_bar2[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "sdhci",
 		.num_resources = ARRAY_SIZE(timberdale_sdhc_resources),
@@ -659,7 +789,11 @@ static DEVICE_ATTR(fw_ver, S_IRUGO, show_fw_ver, NULL);
 
 /*--------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static int __devinit timb_probe(struct pci_dev *dev,
+=======
+static int timb_probe(struct pci_dev *dev,
+>>>>>>> refs/remotes/origin/master
 	const struct pci_device_id *id)
 {
 	struct timberdale_device *priv;
@@ -688,7 +822,11 @@ static int __devinit timb_probe(struct pci_dev *dev,
 	priv->ctl_mapbase = mapbase + CHIPCTLOFFSET;
 	if (!request_mem_region(priv->ctl_mapbase, CHIPCTLSIZE, "timb-ctl")) {
 		dev_err(&dev->dev, "Failed to request ctl mem\n");
+<<<<<<< HEAD
 		goto err_request;
+=======
+		goto err_start;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	priv->ctl_membase = ioremap(priv->ctl_mapbase, CHIPCTLSIZE);
@@ -707,10 +845,14 @@ static int __devinit timb_probe(struct pci_dev *dev,
 			"version of the FPGA, please update the driver to "
 			"support %d.%d\n", priv->fw.major, priv->fw.minor);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto err_ioremap;
 =======
 		goto err_config;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err_config;
+>>>>>>> refs/remotes/origin/master
 	}
 	if (priv->fw.major < TIMB_SUPPORTED_MAJOR ||
 		priv->fw.minor < TIMB_REQUIRED_MINOR) {
@@ -719,20 +861,28 @@ static int __devinit timb_probe(struct pci_dev *dev,
 			priv->fw.major, priv->fw.minor,
 			TIMB_SUPPORTED_MAJOR, TIMB_REQUIRED_MINOR);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto err_ioremap;
 =======
 		goto err_config;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err_config;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	msix_entries = kzalloc(TIMBERDALE_NR_IRQS * sizeof(*msix_entries),
 		GFP_KERNEL);
 	if (!msix_entries)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto err_ioremap;
 =======
 		goto err_config;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err_config;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < TIMBERDALE_NR_IRQS; i++)
 		msix_entries[i].entry = i;
@@ -778,32 +928,51 @@ static int __devinit timb_probe(struct pci_dev *dev,
 		err = mfd_add_devices(&dev->dev, -1,
 			timberdale_cells_bar0_cfg0,
 			ARRAY_SIZE(timberdale_cells_bar0_cfg0),
+<<<<<<< HEAD
 			&dev->resource[0], msix_entries[0].vector);
+=======
+			&dev->resource[0], msix_entries[0].vector, NULL);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case TIMB_HW_VER1:
 		err = mfd_add_devices(&dev->dev, -1,
 			timberdale_cells_bar0_cfg1,
 			ARRAY_SIZE(timberdale_cells_bar0_cfg1),
+<<<<<<< HEAD
 			&dev->resource[0], msix_entries[0].vector);
+=======
+			&dev->resource[0], msix_entries[0].vector, NULL);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case TIMB_HW_VER2:
 		err = mfd_add_devices(&dev->dev, -1,
 			timberdale_cells_bar0_cfg2,
 			ARRAY_SIZE(timberdale_cells_bar0_cfg2),
+<<<<<<< HEAD
 			&dev->resource[0], msix_entries[0].vector);
+=======
+			&dev->resource[0], msix_entries[0].vector, NULL);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case TIMB_HW_VER3:
 		err = mfd_add_devices(&dev->dev, -1,
 			timberdale_cells_bar0_cfg3,
 			ARRAY_SIZE(timberdale_cells_bar0_cfg3),
+<<<<<<< HEAD
 			&dev->resource[0], msix_entries[0].vector);
+=======
+			&dev->resource[0], msix_entries[0].vector, NULL);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		dev_err(&dev->dev, "Uknown IP setup: %d.%d.%d\n",
 			priv->fw.major, priv->fw.minor, ip_setup);
 		err = -ENODEV;
 		goto err_mfd;
+<<<<<<< HEAD
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (err) {
@@ -813,7 +982,11 @@ static int __devinit timb_probe(struct pci_dev *dev,
 
 	err = mfd_add_devices(&dev->dev, 0,
 		timberdale_cells_bar1, ARRAY_SIZE(timberdale_cells_bar1),
+<<<<<<< HEAD
 		&dev->resource[1], msix_entries[0].vector);
+=======
+		&dev->resource[1], msix_entries[0].vector, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		dev_err(&dev->dev, "mfd_add_devices failed: %d\n", err);
 		goto err_mfd2;
@@ -824,7 +997,11 @@ static int __devinit timb_probe(struct pci_dev *dev,
 		((priv->fw.config & TIMB_HW_VER_MASK) == TIMB_HW_VER3)) {
 		err = mfd_add_devices(&dev->dev, 1, timberdale_cells_bar2,
 			ARRAY_SIZE(timberdale_cells_bar2),
+<<<<<<< HEAD
 			&dev->resource[2], msix_entries[0].vector);
+=======
+			&dev->resource[2], msix_entries[0].vector, NULL);
+>>>>>>> refs/remotes/origin/master
 		if (err) {
 			dev_err(&dev->dev, "mfd_add_devices failed: %d\n", err);
 			goto err_mfd2;
@@ -846,6 +1023,7 @@ err_mfd:
 err_create_file:
 	pci_disable_msix(dev);
 err_msix:
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	kfree(msix_entries);
@@ -869,6 +1047,21 @@ err_enable:
 }
 
 static void __devexit timb_remove(struct pci_dev *dev)
+=======
+	kfree(msix_entries);
+err_config:
+	iounmap(priv->ctl_membase);
+err_ioremap:
+	release_mem_region(priv->ctl_mapbase, CHIPCTLSIZE);
+err_start:
+	pci_disable_device(dev);
+err_enable:
+	kfree(priv);
+	return -ENODEV;
+}
+
+static void timb_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct timberdale_device *priv = pci_get_drvdata(dev);
 
@@ -881,6 +1074,7 @@ static void __devexit timb_remove(struct pci_dev *dev)
 
 	pci_disable_msix(dev);
 	pci_disable_device(dev);
+<<<<<<< HEAD
 	pci_set_drvdata(dev, NULL);
 	kfree(priv);
 }
@@ -890,6 +1084,12 @@ static struct pci_device_id timberdale_pci_tbl[] = {
 =======
 static DEFINE_PCI_DEVICE_TABLE(timberdale_pci_tbl) = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(priv);
+}
+
+static const struct pci_device_id timberdale_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_TIMB, PCI_DEVICE_ID_TIMB) },
 	{ 0 }
 };
@@ -899,6 +1099,7 @@ static struct pci_driver timberdale_pci_driver = {
 	.name = DRIVER_NAME,
 	.id_table = timberdale_pci_tbl,
 	.probe = timb_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(timb_remove),
 };
 
@@ -930,6 +1131,12 @@ static void __exit timberdale_exit(void)
 
 module_init(timberdale_init);
 module_exit(timberdale_exit);
+=======
+	.remove = timb_remove,
+};
+
+module_pci_driver(timberdale_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mocean Laboratories <info@mocean-labs.com>");
 MODULE_VERSION(DRV_VERSION);

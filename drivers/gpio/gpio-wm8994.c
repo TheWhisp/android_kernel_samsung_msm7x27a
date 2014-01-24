@@ -19,6 +19,10 @@
 #include <linux/mfd/core.h>
 #include <linux/platform_device.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mfd/wm8994/core.h>
 #include <linux/mfd/wm8994/pdata.h>
@@ -112,10 +116,14 @@ static int wm8994_gpio_to_irq(struct gpio_chip *chip, unsigned offset)
 	struct wm8994_gpio *wm8994_gpio = to_wm8994_gpio(chip);
 	struct wm8994 *wm8994 = wm8994_gpio->wm8994;
 
+<<<<<<< HEAD
 	if (!wm8994->irq_base)
 		return -EINVAL;
 
 	return wm8994->irq_base + offset;
+=======
+	return regmap_irq_get_virq(wm8994->irq_data, offset);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -244,6 +252,7 @@ static struct gpio_chip template_chip = {
 	.set			= wm8994_gpio_set,
 	.to_irq			= wm8994_gpio_to_irq,
 	.dbg_show		= wm8994_gpio_dbg_show,
+<<<<<<< HEAD
 	.can_sleep		= 1,
 };
 
@@ -255,6 +264,20 @@ static int __devinit wm8994_gpio_probe(struct platform_device *pdev)
 	int ret;
 
 	wm8994_gpio = kzalloc(sizeof(*wm8994_gpio), GFP_KERNEL);
+=======
+	.can_sleep		= true,
+};
+
+static int wm8994_gpio_probe(struct platform_device *pdev)
+{
+	struct wm8994 *wm8994 = dev_get_drvdata(pdev->dev.parent);
+	struct wm8994_pdata *pdata = dev_get_platdata(wm8994->dev);
+	struct wm8994_gpio *wm8994_gpio;
+	int ret;
+
+	wm8994_gpio = devm_kzalloc(&pdev->dev, sizeof(*wm8994_gpio),
+				   GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (wm8994_gpio == NULL)
 		return -ENOMEM;
 
@@ -279,6 +302,7 @@ static int __devinit wm8994_gpio_probe(struct platform_device *pdev)
 	return ret;
 
 err:
+<<<<<<< HEAD
 	kfree(wm8994_gpio);
 	return ret;
 }
@@ -293,13 +317,27 @@ static int __devexit wm8994_gpio_remove(struct platform_device *pdev)
 		kfree(wm8994_gpio);
 
 	return ret;
+=======
+	return ret;
+}
+
+static int wm8994_gpio_remove(struct platform_device *pdev)
+{
+	struct wm8994_gpio *wm8994_gpio = platform_get_drvdata(pdev);
+
+	return gpiochip_remove(&wm8994_gpio->gpio_chip);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct platform_driver wm8994_gpio_driver = {
 	.driver.name	= "wm8994-gpio",
 	.driver.owner	= THIS_MODULE,
 	.probe		= wm8994_gpio_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(wm8994_gpio_remove),
+=======
+	.remove		= wm8994_gpio_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init wm8994_gpio_init(void)

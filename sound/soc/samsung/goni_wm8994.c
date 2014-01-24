@@ -12,9 +12,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/soc.h>
 #include <sound/jack.h>
 
@@ -104,6 +108,7 @@ static int goni_wm8994_init(struct snd_soc_pcm_runtime *rtd)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* add goni specific widgets */
 	snd_soc_dapm_new_controls(dapm, goni_dapm_widgets,
 			ARRAY_SIZE(goni_dapm_widgets));
@@ -114,6 +119,8 @@ static int goni_wm8994_init(struct snd_soc_pcm_runtime *rtd)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* set endpoints to not connected */
 	snd_soc_dapm_nc_pin(dapm, "IN2LP:VXRN");
 	snd_soc_dapm_nc_pin(dapm, "IN2RP:VXRP");
@@ -128,10 +135,13 @@ static int goni_wm8994_init(struct snd_soc_pcm_runtime *rtd)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Headset jack detection */
 	ret = snd_soc_jack_new(codec, "Headset Jack",
 			SND_JACK_HEADSET | SND_JACK_MECHANICAL | SND_JACK_AVOUT,
@@ -237,6 +247,13 @@ static struct snd_soc_dai_driver voice_dai = {
 		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
 };
 
+<<<<<<< HEAD
+=======
+static const struct snd_soc_component_driver voice_component = {
+	.name		= "goni-voice",
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct snd_soc_ops goni_voice_ops = {
 	.hw_params = goni_voice_hw_params,
 };
@@ -247,7 +264,11 @@ static struct snd_soc_dai_link goni_dai[] = {
 	.stream_name = "WM8994 HiFi",
 	.cpu_dai_name = "samsung-i2s.0",
 	.codec_dai_name = "wm8994-aif1",
+<<<<<<< HEAD
 	.platform_name = "samsung-audio",
+=======
+	.platform_name = "samsung-i2s.0",
+>>>>>>> refs/remotes/origin/master
 	.codec_name = "wm8994-codec.0-001a",
 	.init = goni_wm8994_init,
 	.ops = &goni_hifi_ops,
@@ -264,9 +285,12 @@ static struct snd_soc_dai_link goni_dai[] = {
 static struct snd_soc_card goni = {
 	.name = "goni",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.dai_link = goni_dai,
 	.num_links = ARRAY_SIZE(goni_dai),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.owner = THIS_MODULE,
 	.dai_link = goni_dai,
 	.num_links = ARRAY_SIZE(goni_dai),
@@ -275,7 +299,10 @@ static struct snd_soc_card goni = {
 	.num_dapm_widgets = ARRAY_SIZE(goni_dapm_widgets),
 	.dapm_routes = goni_dapm_routes,
 	.num_dapm_routes = ARRAY_SIZE(goni_dapm_routes),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init goni_init(void)
@@ -294,7 +321,12 @@ static int __init goni_init(void)
 		return -ENOMEM;
 
 	/* register voice DAI here */
+<<<<<<< HEAD
 	ret = snd_soc_register_dai(&goni_snd_device->dev, &voice_dai);
+=======
+	ret = snd_soc_register_component(&goni_snd_device->dev, &voice_component,
+					 &voice_dai, 1);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		platform_device_put(goni_snd_device);
 		return ret;
@@ -304,7 +336,11 @@ static int __init goni_init(void)
 	ret = platform_device_add(goni_snd_device);
 
 	if (ret) {
+<<<<<<< HEAD
 		snd_soc_unregister_dai(&goni_snd_device->dev);
+=======
+		snd_soc_unregister_component(&goni_snd_device->dev);
+>>>>>>> refs/remotes/origin/master
 		platform_device_put(goni_snd_device);
 	}
 
@@ -313,7 +349,11 @@ static int __init goni_init(void)
 
 static void __exit goni_exit(void)
 {
+<<<<<<< HEAD
 	snd_soc_unregister_dai(&goni_snd_device->dev);
+=======
+	snd_soc_unregister_component(&goni_snd_device->dev);
+>>>>>>> refs/remotes/origin/master
 	platform_device_unregister(goni_snd_device);
 }
 

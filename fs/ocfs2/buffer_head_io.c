@@ -115,7 +115,11 @@ int ocfs2_read_blocks_sync(struct ocfs2_super *osb, u64 block,
 		if (bhs[i] == NULL) {
 			bhs[i] = sb_getblk(osb->sb, block++);
 			if (bhs[i] == NULL) {
+<<<<<<< HEAD
 				status = -EIO;
+=======
+				status = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 				mlog_errno(status);
 				goto bail;
 			}
@@ -214,7 +218,11 @@ int ocfs2_read_blocks(struct ocfs2_caching_info *ci, u64 block, int nr,
 			bhs[i] = sb_getblk(sb, block++);
 			if (bhs[i] == NULL) {
 				ocfs2_metadata_cache_io_unlock(ci);
+<<<<<<< HEAD
 				status = -EIO;
+=======
+				status = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 				mlog_errno(status);
 				goto bail;
 			}

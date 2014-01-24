@@ -48,9 +48,13 @@
 #include <linux/sunrpc/sched.h>
 #include <linux/sunrpc/svc_rdma.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "xprt_rdma.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "xprt_rdma.h"
+>>>>>>> refs/remotes/origin/master
 
 #define RPCDBG_FACILITY	RPCDBG_SVCXPRT
 
@@ -87,7 +91,11 @@ struct workqueue_struct *svc_rdma_wq;
  * resets the associated statistic to zero. Any read returns it's
  * current value.
  */
+<<<<<<< HEAD
 static int read_reset_stat(ctl_table *table, int write,
+=======
+static int read_reset_stat(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 			   void __user *buffer, size_t *lenp,
 			   loff_t *ppos)
 {
@@ -122,7 +130,11 @@ static int read_reset_stat(ctl_table *table, int write,
 }
 
 static struct ctl_table_header *svcrdma_table_header;
+<<<<<<< HEAD
 static ctl_table svcrdma_parm_table[] = {
+=======
+static struct ctl_table svcrdma_parm_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "max_requests",
 		.data		= &svcrdma_max_requests,
@@ -217,7 +229,11 @@ static ctl_table svcrdma_parm_table[] = {
 	{ },
 };
 
+<<<<<<< HEAD
 static ctl_table svcrdma_table[] = {
+=======
+static struct ctl_table svcrdma_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "svc_rdma",
 		.mode		= 0555,
@@ -226,7 +242,11 @@ static ctl_table svcrdma_table[] = {
 	{ },
 };
 
+<<<<<<< HEAD
 static ctl_table svcrdma_root_table[] = {
+=======
+static struct ctl_table svcrdma_root_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "sunrpc",
 		.mode		= 0555,

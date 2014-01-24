@@ -21,7 +21,10 @@ if NET_VENDOR_FARADAY
 config FTMAC100
 	tristate "Faraday FTMAC100 10/100 Ethernet support"
 	depends on ARM
+<<<<<<< HEAD
 	select NET_CORE
+=======
+>>>>>>> refs/remotes/origin/master
 	select MII
 	---help---
 	  This driver supports the FTMAC100 10/100 Ethernet controller

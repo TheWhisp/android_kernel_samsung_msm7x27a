@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <libvdeplug.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "net_user.h"
 #include "um_malloc.h"
@@ -15,6 +16,10 @@
 #include "net_user.h"
 #include "um_malloc.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net_user.h>
+#include <um_malloc.h>
+>>>>>>> refs/remotes/origin/master
 #include "vde.h"
 
 static int vde_user_init(void *data, void *dev)

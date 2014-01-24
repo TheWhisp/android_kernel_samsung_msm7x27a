@@ -5,7 +5,11 @@ source "virt/kvm/Kconfig"
 
 menuconfig VIRTUALIZATION
 	def_bool y
+<<<<<<< HEAD
 	prompt "Virtualization"
+=======
+	prompt "KVM"
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Say Y here to get to see options for using your Linux host to run other
 	  operating systems inside virtual machines (guests).
@@ -18,9 +22,17 @@ if VIRTUALIZATION
 config KVM
 	def_tristate y
 	prompt "Kernel-based Virtual Machine (KVM) support"
+<<<<<<< HEAD
 	depends on HAVE_KVM && EXPERIMENTAL
 	select PREEMPT_NOTIFIERS
 	select ANON_INODES
+=======
+	depends on HAVE_KVM
+	select PREEMPT_NOTIFIERS
+	select ANON_INODES
+	select HAVE_KVM_CPU_RELAX_INTERCEPT
+	select HAVE_KVM_EVENTFD
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Support hosting paravirtualized guest machines using the SIE
 	  virtualization capability on the mainframe. This should work
@@ -35,11 +47,14 @@ config KVM
 	  If unsure, say N.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # OK, it's a little counter-intuitive to do this, but it puts it neatly under
 # the virtualization menu.
 source drivers/vhost/Kconfig
 source drivers/virtio/Kconfig
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config KVM_S390_UCONTROL
 	bool "Userspace controlled virtual machines"
 	depends on KVM
@@ -52,6 +67,9 @@ config KVM_S390_UCONTROL
 # OK, it's a little counter-intuitive to do this, but it puts it neatly under
 # the virtualization menu.
 source drivers/vhost/Kconfig
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 endif # VIRTUALIZATION

@@ -52,9 +52,13 @@
 #include <linux/mutex.h>
 #include <linux/pci.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/ac97_codec.h>
 #include <sound/control.h>
 #include <sound/core.h>
@@ -78,10 +82,14 @@ MODULE_SUPPORTED_DEVICE("{{C-Media,CMI8786}"
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 =======
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "card index");
@@ -101,6 +109,10 @@ enum {
 	MODEL_2CH_OUTPUT,
 	MODEL_HG2PCI,
 	MODEL_XONAR_DG,
+<<<<<<< HEAD
+=======
+	MODEL_XONAR_DGX,
+>>>>>>> refs/remotes/origin/master
 };
 
 static DEFINE_PCI_DEVICE_TABLE(oxygen_ids) = {
@@ -116,6 +128,11 @@ static DEFINE_PCI_DEVICE_TABLE(oxygen_ids) = {
 	{ OXYGEN_PCI_SUBID(0x1a58, 0x0910), .driver_data = MODEL_CMEDIA_REF },
 	/* Asus Xonar DG */
 	{ OXYGEN_PCI_SUBID(0x1043, 0x8467), .driver_data = MODEL_XONAR_DG },
+<<<<<<< HEAD
+=======
+	/* Asus Xonar DGX */
+	{ OXYGEN_PCI_SUBID(0x1043, 0x8521), .driver_data = MODEL_XONAR_DGX },
+>>>>>>> refs/remotes/origin/master
 	/* PCI 2.0 HD Audio */
 	{ OXYGEN_PCI_SUBID(0x13f6, 0x8782), .driver_data = MODEL_2CH_OUTPUT },
 	/* Kuroutoshikou CMI8787-HG2PCI */
@@ -760,8 +777,13 @@ static const struct oxygen_model model_generic = {
 	.adc_i2s_format = OXYGEN_I2S_FORMAT_LJUST,
 };
 
+<<<<<<< HEAD
 static int __devinit get_oxygen_model(struct oxygen *chip,
 				      const struct pci_device_id *id)
+=======
+static int get_oxygen_model(struct oxygen *chip,
+			    const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	static const char *const names[] = {
 		[MODEL_MERIDIAN]	= "AuzenTech X-Meridian",
@@ -834,6 +856,14 @@ static int __devinit get_oxygen_model(struct oxygen *chip,
 		break;
 	case MODEL_XONAR_DG:
 		chip->model = model_xonar_dg;
+<<<<<<< HEAD
+=======
+		chip->model.shortname = "Xonar DG";
+		break;
+	case MODEL_XONAR_DGX:
+		chip->model = model_xonar_dg;
+		chip->model.shortname = "Xonar DGX";
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	if (id->driver_data == MODEL_MERIDIAN ||
@@ -847,8 +877,13 @@ static int __devinit get_oxygen_model(struct oxygen *chip,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit generic_oxygen_probe(struct pci_dev *pci,
 					  const struct pci_device_id *pci_id)
+=======
+static int generic_oxygen_probe(struct pci_dev *pci,
+				const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	int err;
@@ -867,6 +902,7 @@ static int __devinit generic_oxygen_probe(struct pci_dev *pci,
 }
 
 static struct pci_driver oxygen_driver = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.name = "CMI8788",
 =======
@@ -893,3 +929,17 @@ static void __exit alsa_card_oxygen_exit(void)
 
 module_init(alsa_card_oxygen_init)
 module_exit(alsa_card_oxygen_exit)
+=======
+	.name = KBUILD_MODNAME,
+	.id_table = oxygen_ids,
+	.probe = generic_oxygen_probe,
+	.remove = oxygen_pci_remove,
+#ifdef CONFIG_PM_SLEEP
+	.driver = {
+		.pm = &oxygen_pci_pm,
+	},
+#endif
+};
+
+module_pci_driver(oxygen_driver);
+>>>>>>> refs/remotes/origin/master

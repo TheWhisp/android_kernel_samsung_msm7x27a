@@ -8,6 +8,7 @@
  */
 
 #include <linux/cpu_rmap.h>
+<<<<<<< HEAD
 #ifdef CONFIG_GENERIC_HARDIRQS
 #include <linux/interrupt.h>
 #endif
@@ -16,6 +17,10 @@
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These functions maintain a mapping from CPUs to some ordered set of
@@ -49,6 +54,10 @@ struct cpu_rmap *alloc_cpu_rmap(unsigned int size, gfp_t flags)
 	if (!rmap)
 		return NULL;
 
+<<<<<<< HEAD
+=======
+	kref_init(&rmap->refcount);
+>>>>>>> refs/remotes/origin/master
 	rmap->obj = (void **)((char *)rmap + obj_offset);
 
 	/* Initially assign CPUs to objects on a rota, since we have
@@ -67,6 +76,38 @@ struct cpu_rmap *alloc_cpu_rmap(unsigned int size, gfp_t flags)
 }
 EXPORT_SYMBOL(alloc_cpu_rmap);
 
+<<<<<<< HEAD
+=======
+/**
+ * cpu_rmap_release - internal reclaiming helper called from kref_put
+ * @ref: kref to struct cpu_rmap
+ */
+static void cpu_rmap_release(struct kref *ref)
+{
+	struct cpu_rmap *rmap = container_of(ref, struct cpu_rmap, refcount);
+	kfree(rmap);
+}
+
+/**
+ * cpu_rmap_get - internal helper to get new ref on a cpu_rmap
+ * @rmap: reverse-map allocated with alloc_cpu_rmap()
+ */
+static inline void cpu_rmap_get(struct cpu_rmap *rmap)
+{
+	kref_get(&rmap->refcount);
+}
+
+/**
+ * cpu_rmap_put - release ref on a cpu_rmap
+ * @rmap: reverse-map allocated with alloc_cpu_rmap()
+ */
+int cpu_rmap_put(struct cpu_rmap *rmap)
+{
+	return kref_put(&rmap->refcount, cpu_rmap_release);
+}
+EXPORT_SYMBOL(cpu_rmap_put);
+
+>>>>>>> refs/remotes/origin/master
 /* Reevaluate nearest object for given CPU, comparing with the given
  * neighbours at the given distance.
  */
@@ -187,8 +228,11 @@ int cpu_rmap_update(struct cpu_rmap *rmap, u16 index,
 }
 EXPORT_SYMBOL(cpu_rmap_update);
 
+<<<<<<< HEAD
 #ifdef CONFIG_GENERIC_HARDIRQS
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Glue between IRQ affinity notifiers and CPU rmaps */
 
 struct irq_glue {
@@ -201,8 +245,12 @@ struct irq_glue {
  * free_irq_cpu_rmap - free a CPU affinity reverse-map used for IRQs
  * @rmap: Reverse-map allocated with alloc_irq_cpu_map(), or %NULL
  *
+<<<<<<< HEAD
  * Must be called in process context, before freeing the IRQs, and
  * without holding any locks required by global workqueue items.
+=======
+ * Must be called in process context, before freeing the IRQs.
+>>>>>>> refs/remotes/origin/master
  */
 void free_irq_cpu_rmap(struct cpu_rmap *rmap)
 {
@@ -216,12 +264,27 @@ void free_irq_cpu_rmap(struct cpu_rmap *rmap)
 		glue = rmap->obj[index];
 		irq_set_affinity_notifier(glue->notify.irq, NULL);
 	}
+<<<<<<< HEAD
 	irq_run_affinity_notifiers();
 
 	kfree(rmap);
 }
 EXPORT_SYMBOL(free_irq_cpu_rmap);
 
+=======
+
+	cpu_rmap_put(rmap);
+}
+EXPORT_SYMBOL(free_irq_cpu_rmap);
+
+/**
+ * irq_cpu_rmap_notify - callback for IRQ subsystem when IRQ affinity updated
+ * @notify: struct irq_affinity_notify passed by irq/manage.c
+ * @mask: cpu mask for new SMP affinity
+ *
+ * This is executed in workqueue context.
+ */
+>>>>>>> refs/remotes/origin/master
 static void
 irq_cpu_rmap_notify(struct irq_affinity_notify *notify, const cpumask_t *mask)
 {
@@ -234,10 +297,22 @@ irq_cpu_rmap_notify(struct irq_affinity_notify *notify, const cpumask_t *mask)
 		pr_warning("irq_cpu_rmap_notify: update failed: %d\n", rc);
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * irq_cpu_rmap_release - reclaiming callback for IRQ subsystem
+ * @ref: kref to struct irq_affinity_notify passed by irq/manage.c
+ */
+>>>>>>> refs/remotes/origin/master
 static void irq_cpu_rmap_release(struct kref *ref)
 {
 	struct irq_glue *glue =
 		container_of(ref, struct irq_glue, notify.kref);
+<<<<<<< HEAD
+=======
+
+	cpu_rmap_put(glue->rmap);
+>>>>>>> refs/remotes/origin/master
 	kfree(glue);
 }
 
@@ -262,6 +337,7 @@ int irq_cpu_rmap_add(struct cpu_rmap *rmap, int irq)
 	glue->notify.notify = irq_cpu_rmap_notify;
 	glue->notify.release = irq_cpu_rmap_release;
 	glue->rmap = rmap;
+<<<<<<< HEAD
 	glue->index = cpu_rmap_add(rmap, glue);
 	rc = irq_set_affinity_notifier(irq, &glue->notify);
 	if (rc)
@@ -271,3 +347,15 @@ int irq_cpu_rmap_add(struct cpu_rmap *rmap, int irq)
 EXPORT_SYMBOL(irq_cpu_rmap_add);
 
 #endif /* CONFIG_GENERIC_HARDIRQS */
+=======
+	cpu_rmap_get(rmap);
+	glue->index = cpu_rmap_add(rmap, glue);
+	rc = irq_set_affinity_notifier(irq, &glue->notify);
+	if (rc) {
+		cpu_rmap_put(glue->rmap);
+		kfree(glue);
+	}
+	return rc;
+}
+EXPORT_SYMBOL(irq_cpu_rmap_add);
+>>>>>>> refs/remotes/origin/master

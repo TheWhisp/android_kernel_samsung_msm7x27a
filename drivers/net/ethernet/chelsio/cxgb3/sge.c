@@ -1278,7 +1278,11 @@ netdev_tx_t t3_eth_xmit(struct sk_buff *skb, struct net_device *dev)
 	}
 
 	/* update port statistics */
+<<<<<<< HEAD
 	if (skb->ip_summed == CHECKSUM_COMPLETE)
+=======
+	if (skb->ip_summed == CHECKSUM_PARTIAL)
+>>>>>>> refs/remotes/origin/master
 		qs->port_stats[SGE_PSTAT_TX_CSUM]++;
 	if (skb_shinfo(skb)->gso_size)
 		qs->port_stats[SGE_PSTAT_TSO]++;
@@ -1537,10 +1541,16 @@ static void deferred_unmap_destructor(struct sk_buff *skb)
 	dui = (struct deferred_unmap_info *)skb->head;
 	p = dui->addr;
 
+<<<<<<< HEAD
 	if (skb->tail - skb->transport_header)
 		pci_unmap_single(dui->pdev, *p++,
 				 skb->tail - skb->transport_header,
 				 PCI_DMA_TODEVICE);
+=======
+	if (skb_tail_pointer(skb) - skb_transport_header(skb))
+		pci_unmap_single(dui->pdev, *p++, skb_tail_pointer(skb) -
+				 skb_transport_header(skb), PCI_DMA_TODEVICE);
+>>>>>>> refs/remotes/origin/master
 
 	si = skb_shinfo(skb);
 	for (i = 0; i < si->nr_frags; i++)
@@ -1600,7 +1610,12 @@ static void write_ofld_wr(struct adapter *adap, struct sk_buff *skb,
 	flits = skb_transport_offset(skb) / 8;
 	sgp = ndesc == 1 ? (struct sg_ent *)&d->flit[flits] : sgl;
 	sgl_flits = make_sgl(skb, sgp, skb_transport_header(skb),
+<<<<<<< HEAD
 			     skb->tail - skb->transport_header,
+=======
+			     skb_tail_pointer(skb) -
+			     skb_transport_header(skb),
+>>>>>>> refs/remotes/origin/master
 			     adap->pdev);
 	if (need_skb_unmap()) {
 		setup_deferred_unmapping(skb, adap->pdev, sgp, sgl_flits);
@@ -1627,7 +1642,11 @@ static inline unsigned int calc_tx_descs_ofld(const struct sk_buff *skb)
 
 	flits = skb_transport_offset(skb) / 8;	/* headers */
 	cnt = skb_shinfo(skb)->nr_frags;
+<<<<<<< HEAD
 	if (skb->tail != skb->transport_header)
+=======
+	if (skb_tail_pointer(skb) != skb_transport_header(skb))
+>>>>>>> refs/remotes/origin/master
 		cnt++;
 	return flits_to_desc(flits + sgl_len(cnt));
 }
@@ -2030,7 +2049,11 @@ static void rx_eth(struct adapter *adap, struct sge_rspq *rq,
 
 	if (p->vlan_valid) {
 		qs->port_stats[SGE_PSTAT_VLANEX]++;
+<<<<<<< HEAD
 		__vlan_hwaccel_put_tag(skb, ntohs(p->vlan));
+=======
+		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), ntohs(p->vlan));
+>>>>>>> refs/remotes/origin/master
 	}
 	if (rq->polling) {
 		if (lro)
@@ -2130,8 +2153,15 @@ static void lro_add_page(struct adapter *adap, struct sge_qset *qs,
 
 	skb_record_rx_queue(skb, qs - &adap->sge.qs[pi->first_qset]);
 
+<<<<<<< HEAD
 	if (cpl->vlan_valid)
 		__vlan_hwaccel_put_tag(skb, ntohs(cpl->vlan));
+=======
+	if (cpl->vlan_valid) {
+		qs->port_stats[SGE_PSTAT_VLANEX]++;
+		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), ntohs(cpl->vlan));
+	}
+>>>>>>> refs/remotes/origin/master
 	napi_gro_frags(&qs->napi);
 }
 
@@ -2877,7 +2907,11 @@ static void sge_timer_tx(unsigned long data)
 	mod_timer(&qs->tx_reclaim_timer, jiffies + next_period);
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  *	sge_timer_rx - perform periodic maintenance of an SGE qset
  *	@data: the SGE queue set to maintain
  *

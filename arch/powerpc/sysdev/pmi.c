@@ -29,9 +29,13 @@
 #include <linux/completion.h>
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/workqueue.h>
 #include <linux/of_device.h>
 #include <linux/of_platform.h>
@@ -217,6 +221,7 @@ static struct platform_driver pmi_of_platform_driver = {
 		.of_match_table = pmi_match,
 	},
 };
+<<<<<<< HEAD
 
 static int __init pmi_module_init(void)
 {
@@ -229,6 +234,9 @@ static void __exit pmi_module_exit(void)
 	platform_driver_unregister(&pmi_of_platform_driver);
 }
 module_exit(pmi_module_exit);
+=======
+module_platform_driver(pmi_of_platform_driver);
+>>>>>>> refs/remotes/origin/master
 
 int pmi_send_message(pmi_message_t msg)
 {

@@ -1,6 +1,7 @@
 #ifndef _ASM_SOCKET_H
 #define _ASM_SOCKET_H
 
+<<<<<<< HEAD
 #include <asm/sockios.h>
 
 /* For setsockopt(2) */
@@ -80,10 +81,17 @@
 
 >>>>>>> refs/remotes/origin/cm-10.0
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/socket.h>
+
+>>>>>>> refs/remotes/origin/master
 /* O_NONBLOCK clashes with the bits used for socket types.  Therefore we
  * have to define SOCK_NONBLOCK to a different value here.
  */
 #define SOCK_NONBLOCK	0x40000000
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_SOCKET_H */

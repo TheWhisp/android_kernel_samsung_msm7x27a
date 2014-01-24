@@ -39,10 +39,15 @@ struct m66592_platdata {
 	unsigned	vif:1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* (external controller only) set one = WR0_N shorted to WR1_N */
 	unsigned	wr0_shorted_to_wr1:1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* (external controller only) set one = WR0_N shorted to WR1_N */
+	unsigned	wr0_shorted_to_wr1:1;
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* __LINUX_USB_M66592_H */

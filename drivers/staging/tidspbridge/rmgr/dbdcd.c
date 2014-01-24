@@ -30,10 +30,13 @@
 /*  ----------------------------------- DSP/BIOS Bridge */
 #include <dspbridge/dbdefs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*  ----------------------------------- Platform Manager */
 #include <dspbridge/cod.h>
@@ -79,6 +82,50 @@ static int get_dep_lib_info(struct dcd_manager *hdcd_mgr,
 				   enum nldr_phase phase);
 
 /*
+<<<<<<< HEAD
+=======
+ *  ======== dcd_uuid_from_string ========
+ *  Purpose:
+ *      Converts an ANSI string to a dsp_uuid.
+ *  Parameters:
+ *      sz_uuid:    Pointer to a string that represents a dsp_uuid object.
+ *      uuid_obj:      Pointer to a dsp_uuid object.
+ *  Returns:
+ *      0:        Success.
+ *      -EINVAL:  Coversion failed
+ *  Requires:
+ *      uuid_obj & sz_uuid are non-NULL values.
+ *  Ensures:
+ *  Details:
+ *      We assume the string representation of a UUID has the following format:
+ *      "12345678_1234_1234_1234_123456789abc".
+ */
+static int dcd_uuid_from_string(char *sz_uuid, struct dsp_uuid *uuid_obj)
+{
+	char c;
+	u64 t;
+	struct dsp_uuid uuid_tmp;
+
+	/*
+	 * sscanf implementation cannot deal with hh format modifier
+	 * if the converted value doesn't fit in u32. So, convert the
+	 * last six bytes to u64 and memcpy what is needed
+	 */
+	if(sscanf(sz_uuid, "%8x%c%4hx%c%4hx%c%2hhx%2hhx%c%llx",
+	       &uuid_tmp.data1, &c, &uuid_tmp.data2, &c,
+	       &uuid_tmp.data3, &c, &uuid_tmp.data4,
+	       &uuid_tmp.data5, &c, &t) != 10)
+		return -EINVAL;
+
+	t = cpu_to_be64(t);
+	memcpy(&uuid_tmp.data6[0], ((char*)&t) + 2, 6);
+	*uuid_obj = uuid_tmp;
+
+	return 0;
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  *  ======== dcd_auto_register ========
  *  Purpose:
  *      Parses the supplied image and resigsters with DCD.
@@ -89,10 +136,13 @@ int dcd_auto_register(struct dcd_manager *hdcd_mgr,
 	int status = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (hdcd_mgr)
 		status = dcd_get_objects(hdcd_mgr, sz_coff_path,
 					 (dcd_registerfxn) dcd_register_object,
@@ -114,10 +164,13 @@ int dcd_auto_unregister(struct dcd_manager *hdcd_mgr,
 	int status = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (hdcd_mgr)
 		status = dcd_get_objects(hdcd_mgr, sz_coff_path,
 					 (dcd_registerfxn) dcd_register_object,
@@ -141,11 +194,14 @@ int dcd_create_manager(char *sz_zl_dll_name,
 	int status = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs >= 0);
 	DBC_REQUIRE(dcd_mgr);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	status = cod_create(&cod_mgr, sz_zl_dll_name);
 	if (status)
 		goto func_end;
@@ -169,11 +225,14 @@ int dcd_create_manager(char *sz_zl_dll_name,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ENSURE((!status) ||
 			((dcd_mgr_obj == NULL) && (status == -ENOMEM)));
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 func_end:
 	return status;
 }
@@ -189,10 +248,13 @@ int dcd_destroy_manager(struct dcd_manager *hdcd_mgr)
 	int status = -EFAULT;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs >= 0);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (hdcd_mgr) {
 		/* Delete the COD manager. */
 		cod_delete(dcd_mgr_obj->cod_mgr);
@@ -224,12 +286,15 @@ int dcd_enumerate_object(s32 index, enum dsp_dcdobjtype obj_type,
 	int len;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs >= 0);
 	DBC_REQUIRE(index >= 0);
 	DBC_REQUIRE(uuid_obj != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((index != 0) && (enum_refs == 0)) {
 		/*
 		 * If an enumeration is being performed on an index greater
@@ -244,9 +309,12 @@ int dcd_enumerate_object(s32 index, enum dsp_dcdobjtype obj_type,
 		 */
 		dw_key_len = strlen(DCD_REGKEY) + 1 + sizeof(sz_obj_type) + 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_ASSERT(dw_key_len < DCD_MAXPATHLENGTH);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* Create proper REG key; concatenate DCD_REGKEY with
 		 * obj_type. */
@@ -296,6 +364,7 @@ int dcd_enumerate_object(s32 index, enum dsp_dcdobjtype obj_type,
 		if (!status) {
 			/* Create UUID value using string retrieved from
 			 * registry. */
+<<<<<<< HEAD
 			uuid_uuid_from_string(sz_value, &dsp_uuid_obj);
 
 			*uuid_obj = dsp_uuid_obj;
@@ -304,16 +373,31 @@ int dcd_enumerate_object(s32 index, enum dsp_dcdobjtype obj_type,
 			enum_refs++;
 
 			status = 0;
+=======
+			status = dcd_uuid_from_string(sz_value, &dsp_uuid_obj);
+
+			if (!status) {
+				*uuid_obj = dsp_uuid_obj;
+
+				/* Increment enum_refs to update reference
+				 * count. */
+				enum_refs++;
+			}
+>>>>>>> refs/remotes/origin/master
 		} else if (status == -ENODATA) {
 			/* At the end of enumeration. Reset enum_refs. */
 			enum_refs = 0;
 
 			/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 * TODO: Revisit, this is not an errror case but code
 =======
 			 * TODO: Revisit, this is not an error case but code
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 * TODO: Revisit, this is not an error case but code
+>>>>>>> refs/remotes/origin/master
 			 * expects non-zero value.
 			 */
 			status = ENODATA;
@@ -323,10 +407,13 @@ int dcd_enumerate_object(s32 index, enum dsp_dcdobjtype obj_type,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ENSURE(uuid_obj || (status == -EPERM));
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -339,6 +426,7 @@ void dcd_exit(void)
 {
 	struct dcd_key_elem *rv, *rv_tmp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 
 	refs--;
@@ -349,6 +437,11 @@ void dcd_exit(void)
 	refs--;
 	if (refs == 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	refs--;
+	if (refs == 0) {
+>>>>>>> refs/remotes/origin/master
 		list_for_each_entry_safe(rv, rv_tmp, &reg_key_list, link) {
 			list_del(&rv->link);
 			kfree(rv->path);
@@ -357,9 +450,12 @@ void dcd_exit(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ENSURE(refs >= 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -374,6 +470,7 @@ int dcd_get_dep_libs(struct dcd_manager *hdcd_mgr,
 	int status = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(hdcd_mgr);
 	DBC_REQUIRE(uuid_obj != NULL);
@@ -382,6 +479,8 @@ int dcd_get_dep_libs(struct dcd_manager *hdcd_mgr,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	status =
 	    get_dep_lib_info(hdcd_mgr, uuid_obj, &num_libs, NULL, dep_lib_uuids,
 			     prstnt_dep_libs, phase);
@@ -400,6 +499,7 @@ int dcd_get_num_dep_libs(struct dcd_manager *hdcd_mgr,
 	int status = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(hdcd_mgr);
 	DBC_REQUIRE(num_libs != NULL);
@@ -408,6 +508,8 @@ int dcd_get_num_dep_libs(struct dcd_manager *hdcd_mgr,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	status = get_dep_lib_info(hdcd_mgr, uuid_obj, num_libs, num_pers_libs,
 				  NULL, NULL, phase);
 
@@ -428,11 +530,19 @@ int dcd_get_object_def(struct dcd_manager *hdcd_mgr,
 	struct dcd_manager *dcd_mgr_obj = hdcd_mgr;	/* ptr to DCD mgr */
 	struct cod_libraryobj *lib = NULL;
 	int status = 0;
+<<<<<<< HEAD
+=======
+	int len;
+>>>>>>> refs/remotes/origin/master
 	u32 ul_addr = 0;	/* Used by cod_get_section */
 	u32 ul_len = 0;		/* Used by cod_get_section */
 	u32 dw_buf_size;	/* Used by REG functions */
 	char sz_reg_key[DCD_MAXPATHLENGTH];
 	char *sz_uuid;		/*[MAXUUIDLEN]; */
+<<<<<<< HEAD
+=======
+	char *tmp;
+>>>>>>> refs/remotes/origin/master
 	struct dcd_key_elem *dcd_key = NULL;
 	char sz_sect_name[MAXUUIDLEN + 2];	/* ".[UUID]\0" */
 	char *psz_coff_buf;
@@ -440,12 +550,15 @@ int dcd_get_object_def(struct dcd_manager *hdcd_mgr,
 	char sz_obj_type[MAX_INT2CHAR_LENGTH];	/* str. rep. of obj_type. */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(obj_def != NULL);
 	DBC_REQUIRE(obj_uuid != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	sz_uuid = kzalloc(MAXUUIDLEN, GFP_KERNEL);
 	if (!sz_uuid) {
 		status = -ENOMEM;
@@ -461,9 +574,12 @@ int dcd_get_object_def(struct dcd_manager *hdcd_mgr,
 	 *  "_\0" + length of sz_obj_type string + terminating NULL */
 	dw_key_len = strlen(DCD_REGKEY) + 1 + sizeof(sz_obj_type) + 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ASSERT(dw_key_len < DCD_MAXPATHLENGTH);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Create proper REG key; concatenate DCD_REGKEY with obj_type. */
 	strncpy(sz_reg_key, DCD_REGKEY, strlen(DCD_REGKEY) + 1);
@@ -488,7 +604,11 @@ int dcd_get_object_def(struct dcd_manager *hdcd_mgr,
 		}
 
 		/* Create UUID value to set in registry. */
+<<<<<<< HEAD
 		uuid_uuid_to_string(obj_uuid, sz_uuid, MAXUUIDLEN);
+=======
+		snprintf(sz_uuid, MAXUUIDLEN, "%pUL", obj_uuid);
+>>>>>>> refs/remotes/origin/master
 
 		if ((strlen(sz_reg_key) + MAXUUIDLEN) < DCD_MAXPATHLENGTH)
 			strncat(sz_reg_key, sz_uuid, MAXUUIDLEN);
@@ -523,15 +643,38 @@ int dcd_get_object_def(struct dcd_manager *hdcd_mgr,
 
 	/* Ensure sz_uuid + 1 is not greater than sizeof sz_sect_name. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ASSERT((strlen(sz_uuid) + 1) < sizeof(sz_sect_name));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	len = strlen(sz_uuid);
+	if (len + 1 > sizeof(sz_sect_name)) {
+		status = -EPERM;
+		goto func_end;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Create section name based on node UUID. A period is
 	 * pre-pended to the UUID string to form the section name.
 	 * I.e. ".24BC8D90_BB45_11d4_B756_006008BDB66F" */
+<<<<<<< HEAD
 	strncpy(sz_sect_name, ".", 2);
 	strncat(sz_sect_name, sz_uuid, strlen(sz_uuid));
+=======
+
+	len -= 4;	/* uuid has 4 delimiters '-' */
+	tmp = sz_uuid;
+
+	strncpy(sz_sect_name, ".", 2);
+	do {
+		char *uuid = strsep(&tmp, "-");
+		if (!uuid)
+			break;
+		len -= strlen(uuid);
+		strncat(sz_sect_name, uuid, strlen(uuid) + 1);
+	} while (len && strncat(sz_sect_name, "_", 2));
+>>>>>>> refs/remotes/origin/master
 
 	/* Get section information. */
 	status = cod_get_section(lib, sz_sect_name, &ul_addr, &ul_len);
@@ -560,7 +703,11 @@ int dcd_get_object_def(struct dcd_manager *hdcd_mgr,
 	status = cod_read_section(lib, sz_sect_name, psz_coff_buf, ul_len);
 #endif
 	if (!status) {
+<<<<<<< HEAD
 		/* Compres DSP buffer to conform to PC format. */
+=======
+		/* Compress DSP buffer to conform to PC format. */
+>>>>>>> refs/remotes/origin/master
 		if (strstr(dcd_key->path, "iva") == NULL) {
 			compress_buf(psz_coff_buf, ul_len, DSPWORDSIZE);
 		} else {
@@ -609,9 +756,12 @@ int dcd_get_objects(struct dcd_manager *hdcd_mgr,
 	s32 object_type;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hdcd_mgr) {
 		status = -EFAULT;
 		goto func_end;
@@ -665,6 +815,7 @@ int dcd_get_objects(struct dcd_manager *hdcd_mgr,
 		psz_cur = psz_coff_buf;
 		while ((token = strsep(&psz_cur, seps)) && *token != '\0') {
 			/*  Retrieve UUID string. */
+<<<<<<< HEAD
 			uuid_uuid_from_string(token, &dsp_uuid_obj);
 
 			/*  Retrieve object type */
@@ -683,6 +834,30 @@ int dcd_get_objects(struct dcd_manager *hdcd_mgr,
 			 */
 			status =
 			    register_fxn(&dsp_uuid_obj, object_type, handle);
+=======
+			status = dcd_uuid_from_string(token, &dsp_uuid_obj);
+
+			if (!status) {
+				/*  Retrieve object type */
+				token = strsep(&psz_cur, seps);
+
+				/*  Retrieve object type */
+				object_type = atoi(token);
+
+				/*
+				*  Apply register_fxn to the found DCD object.
+				*  Possible actions include:
+				*
+				*  1) Register found DCD object.
+				*  2) Unregister found DCD object
+				*     (when handle == NULL)
+				*  3) Add overlay node.
+				*/
+				status =
+				    register_fxn(&dsp_uuid_obj, object_type,
+						 handle);
+			}
+>>>>>>> refs/remotes/origin/master
 			if (status) {
 				/* if error occurs, break from while loop. */
 				break;
@@ -722,6 +897,7 @@ int dcd_get_library_name(struct dcd_manager *hdcd_mgr,
 	struct dcd_key_elem *dcd_key = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(uuid_obj != NULL);
 	DBC_REQUIRE(str_lib_name != NULL);
 	DBC_REQUIRE(buff_size != NULL);
@@ -729,6 +905,8 @@ int dcd_get_library_name(struct dcd_manager *hdcd_mgr,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(bridge, "%s: hdcd_mgr %p, uuid_obj %p, str_lib_name %p,"
 		" buff_size %p\n", __func__, hdcd_mgr, uuid_obj, str_lib_name,
 		buff_size);
@@ -739,9 +917,12 @@ int dcd_get_library_name(struct dcd_manager *hdcd_mgr,
 	 */
 	dw_key_len = strlen(DCD_REGKEY) + 1 + sizeof(sz_obj_type) + 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ASSERT(dw_key_len < DCD_MAXPATHLENGTH);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Create proper REG key; concatenate DCD_REGKEY with obj_type. */
 	strncpy(sz_reg_key, DCD_REGKEY, strlen(DCD_REGKEY) + 1);
@@ -770,9 +951,12 @@ int dcd_get_library_name(struct dcd_manager *hdcd_mgr,
 	default:
 		status = -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_ASSERT(false);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (!status) {
 		if ((strlen(sz_reg_key) + strlen(sz_obj_type)) <
@@ -783,7 +967,11 @@ int dcd_get_library_name(struct dcd_manager *hdcd_mgr,
 			status = -EPERM;
 		}
 		/* Create UUID value to find match in registry. */
+<<<<<<< HEAD
 		uuid_uuid_to_string(uuid_obj, sz_uuid, MAXUUIDLEN);
+=======
+		snprintf(sz_uuid, MAXUUIDLEN, "%pUL", uuid_obj);
+>>>>>>> refs/remotes/origin/master
 		if ((strlen(sz_reg_key) + MAXUUIDLEN) < DCD_MAXPATHLENGTH)
 			strncat(sz_reg_key, sz_uuid, MAXUUIDLEN);
 		else
@@ -823,7 +1011,11 @@ int dcd_get_library_name(struct dcd_manager *hdcd_mgr,
 		} else {
 			status = -EPERM;
 		}
+<<<<<<< HEAD
 		uuid_uuid_to_string(uuid_obj, sz_uuid, MAXUUIDLEN);
+=======
+		snprintf(sz_uuid, MAXUUIDLEN, "%pUL", uuid_obj);
+>>>>>>> refs/remotes/origin/master
 		if ((strlen(sz_reg_key) + MAXUUIDLEN) < DCD_MAXPATHLENGTH)
 			strncat(sz_reg_key, sz_uuid, MAXUUIDLEN);
 		else
@@ -855,6 +1047,7 @@ int dcd_get_library_name(struct dcd_manager *hdcd_mgr,
 bool dcd_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool init_cod;
 	bool ret = true;
 
@@ -874,20 +1067,28 @@ bool dcd_init(void)
 		INIT_LIST_HEAD(&reg_key_list);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bool ret = true;
 
 	if (refs == 0)
 		INIT_LIST_HEAD(&reg_key_list);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (ret)
 		refs++;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ENSURE((ret && (refs > 0)) || (!ret && (refs == 0)));
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -910,6 +1111,7 @@ int dcd_register_object(struct dsp_uuid *uuid_obj,
 	struct dcd_key_elem *dcd_key = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(uuid_obj != NULL);
 	DBC_REQUIRE((obj_type == DSP_DCDNODETYPE) ||
@@ -921,6 +1123,8 @@ int dcd_register_object(struct dsp_uuid *uuid_obj,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(bridge, "%s: object UUID %p, obj_type %d, szPathName %s\n",
 		__func__, uuid_obj, obj_type, psz_path_name);
 
@@ -930,9 +1134,12 @@ int dcd_register_object(struct dsp_uuid *uuid_obj,
 	 */
 	dw_key_len = strlen(DCD_REGKEY) + 1 + sizeof(sz_obj_type) + 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ASSERT(dw_key_len < DCD_MAXPATHLENGTH);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Create proper REG key; concatenate DCD_REGKEY with obj_type. */
 	strncpy(sz_reg_key, DCD_REGKEY, strlen(DCD_REGKEY) + 1);
@@ -956,7 +1163,11 @@ int dcd_register_object(struct dsp_uuid *uuid_obj,
 			status = -EPERM;
 
 		/* Create UUID value to set in registry. */
+<<<<<<< HEAD
 		uuid_uuid_to_string(uuid_obj, sz_uuid, MAXUUIDLEN);
+=======
+		snprintf(sz_uuid, MAXUUIDLEN, "%pUL", uuid_obj);
+>>>>>>> refs/remotes/origin/master
 		if ((strlen(sz_reg_key) + MAXUUIDLEN) < DCD_MAXPATHLENGTH)
 			strncat(sz_reg_key, sz_uuid, MAXUUIDLEN);
 		else
@@ -994,8 +1205,12 @@ int dcd_register_object(struct dsp_uuid *uuid_obj,
 				goto func_end;
 			}
 
+<<<<<<< HEAD
 			dcd_key->path = kmalloc(strlen(sz_reg_key) + 1,
 								GFP_KERNEL);
+=======
+			dcd_key->path = kmalloc(dw_path_size, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 
 			if (!dcd_key->path) {
 				kfree(dcd_key);
@@ -1071,6 +1286,7 @@ int dcd_unregister_object(struct dsp_uuid *uuid_obj,
 	int status = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(uuid_obj != NULL);
 	DBC_REQUIRE((obj_type == DSP_DCDNODETYPE) ||
@@ -1082,6 +1298,8 @@ int dcd_unregister_object(struct dsp_uuid *uuid_obj,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *  When dcd_register_object is called with NULL as pathname,
 	 *  it indicates an unregister object operation.
@@ -1142,6 +1360,7 @@ static int get_attrs_from_buf(char *psz_buf, u32 ul_buf_size,
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(psz_buf != NULL);
 	DBC_REQUIRE(ul_buf_size != 0);
 	DBC_REQUIRE((obj_type == DSP_DCDNODETYPE)
@@ -1150,6 +1369,8 @@ static int get_attrs_from_buf(char *psz_buf, u32 ul_buf_size,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (obj_type) {
 	case DSP_DCDNODETYPE:
 		/*
@@ -1165,6 +1386,7 @@ static int get_attrs_from_buf(char *psz_buf, u32 ul_buf_size,
 		token = strsep(&psz_cur, seps);
 
 		/* dsp_uuid ui_node_id */
+<<<<<<< HEAD
 		uuid_uuid_from_string(token,
 				      &gen_obj->obj_data.node_obj.ndb_props.
 				      ui_node_id);
@@ -1175,6 +1397,17 @@ static int get_attrs_from_buf(char *psz_buf, u32 ul_buf_size,
 		DBC_REQUIRE(token);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		status = dcd_uuid_from_string(token,
+					      &gen_obj->obj_data.node_obj.
+					      ndb_props.ui_node_id);
+		if (status)
+			break;
+
+		token = strsep(&psz_cur, seps);
+
+		/* ac_name */
+>>>>>>> refs/remotes/origin/master
 		token_len = strlen(token);
 		if (token_len > DSP_MAXNAMELEN - 1)
 			token_len = DSP_MAXNAMELEN - 1;
@@ -1260,9 +1493,12 @@ static int get_attrs_from_buf(char *psz_buf, u32 ul_buf_size,
 
 		/* char *str_create_phase_fxn */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_REQUIRE(token);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		token_len = strlen(token);
 		gen_obj->obj_data.node_obj.str_create_phase_fxn =
 					kzalloc(token_len + 1, GFP_KERNEL);
@@ -1274,9 +1510,12 @@ static int get_attrs_from_buf(char *psz_buf, u32 ul_buf_size,
 
 		/* char *str_execute_phase_fxn */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_REQUIRE(token);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		token_len = strlen(token);
 		gen_obj->obj_data.node_obj.str_execute_phase_fxn =
 					kzalloc(token_len + 1, GFP_KERNEL);
@@ -1288,9 +1527,12 @@ static int get_attrs_from_buf(char *psz_buf, u32 ul_buf_size,
 
 		/* char *str_delete_phase_fxn */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_REQUIRE(token);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		token_len = strlen(token);
 		gen_obj->obj_data.node_obj.str_delete_phase_fxn =
 					kzalloc(token_len + 1, GFP_KERNEL);
@@ -1523,6 +1765,7 @@ static int get_dep_lib_info(struct dcd_manager *hdcd_mgr,
 	int status = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 
 	DBC_REQUIRE(hdcd_mgr);
@@ -1531,6 +1774,8 @@ static int get_dep_lib_info(struct dcd_manager *hdcd_mgr,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*  Initialize to 0 dependent libraries, if only counting number of
 	 *  dependent libraries */
 	if (!get_uuids) {
@@ -1589,9 +1834,18 @@ static int get_dep_lib_info(struct dcd_manager *hdcd_mgr,
 				break;
 			} else {
 				/* Retrieve UUID string. */
+<<<<<<< HEAD
 				uuid_uuid_from_string(token,
 						      &(dep_lib_uuids
 							[dep_libs]));
+=======
+				status = dcd_uuid_from_string(token,
+							      &(dep_lib_uuids
+								[dep_libs]));
+				if (status)
+					break;
+
+>>>>>>> refs/remotes/origin/master
 				/* Is this library persistent? */
 				token = strsep(&psz_cur, seps);
 				prstnt_dep_libs[dep_libs] = atoi(token);

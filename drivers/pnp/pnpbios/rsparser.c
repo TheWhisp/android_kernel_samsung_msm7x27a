@@ -506,10 +506,14 @@ static void pnpbios_encode_mem(struct pnp_dev *dev, unsigned char *p,
 	if (pnp_resource_enabled(res)) {
 		base = res->start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		len = res->end - res->start + 1;
 =======
 		len = resource_size(res);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		len = resource_size(res);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		base = 0;
 		len = 0;
@@ -534,10 +538,14 @@ static void pnpbios_encode_mem32(struct pnp_dev *dev, unsigned char *p,
 	if (pnp_resource_enabled(res)) {
 		base = res->start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		len = res->end - res->start + 1;
 =======
 		len = resource_size(res);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		len = resource_size(res);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		base = 0;
 		len = 0;
@@ -568,10 +576,14 @@ static void pnpbios_encode_fixed_mem32(struct pnp_dev *dev, unsigned char *p,
 	if (pnp_resource_enabled(res)) {
 		base = res->start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		len = res->end - res->start + 1;
 =======
 		len = resource_size(res);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		len = resource_size(res);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		base = 0;
 		len = 0;
@@ -630,10 +642,14 @@ static void pnpbios_encode_port(struct pnp_dev *dev, unsigned char *p,
 	if (pnp_resource_enabled(res)) {
 		base = res->start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		len = res->end - res->start + 1;
 =======
 		len = resource_size(res);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		len = resource_size(res);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		base = 0;
 		len = 0;
@@ -653,18 +669,24 @@ static void pnpbios_encode_fixed_port(struct pnp_dev *dev, unsigned char *p,
 {
 	unsigned long base = res->start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long len = res->end - res->start + 1;
 
 	if (pnp_resource_enabled(res)) {
 		base = res->start;
 		len = res->end - res->start + 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long len = resource_size(res);
 
 	if (pnp_resource_enabled(res)) {
 		base = res->start;
 		len = resource_size(res);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		base = 0;
 		len = 0;

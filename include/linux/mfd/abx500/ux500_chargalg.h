@@ -17,8 +17,16 @@ struct ux500_charger;
 
 struct ux500_charger_ops {
 	int (*enable) (struct ux500_charger *, int, int, int);
+<<<<<<< HEAD
 	int (*kick_wd) (struct ux500_charger *);
 	int (*update_curr) (struct ux500_charger *, int);
+=======
+	int (*check_enable) (struct ux500_charger *, int, int);
+	int (*kick_wd) (struct ux500_charger *);
+	int (*update_curr) (struct ux500_charger *, int);
+	int (*pp_enable) (struct ux500_charger *, bool);
+	int (*pre_chg_enable) (struct ux500_charger *, bool);
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -27,12 +35,29 @@ struct ux500_charger_ops {
  * @ops			ux500 charger operations
  * @max_out_volt	maximum output charger voltage in mV
  * @max_out_curr	maximum output charger current in mA
+<<<<<<< HEAD
+=======
+ * @enabled		indicates if this charger is used or not
+ * @external		external charger unit (pm2xxx)
+ * @power_path		USB power path support
+>>>>>>> refs/remotes/origin/master
  */
 struct ux500_charger {
 	struct power_supply psy;
 	struct ux500_charger_ops ops;
 	int max_out_volt;
 	int max_out_curr;
+<<<<<<< HEAD
 };
 
+=======
+	int wdt_refresh;
+	bool enabled;
+	bool external;
+	bool power_path;
+};
+
+extern struct blocking_notifier_head charger_notifier_list;
+
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -33,6 +33,10 @@
 #include <linux/slab.h>
 #include <acpi/acpi_bus.h>
 #include <acpi/acpi_drivers.h>
+<<<<<<< HEAD
+=======
+#include <acpi/button.h>
+>>>>>>> refs/remotes/origin/master
 
 #define PREFIX "ACPI: "
 
@@ -75,20 +79,38 @@ static const struct acpi_device_id button_device_ids[] = {
 MODULE_DEVICE_TABLE(acpi, button_device_ids);
 
 static int acpi_button_add(struct acpi_device *device);
+<<<<<<< HEAD
 static int acpi_button_remove(struct acpi_device *device, int type);
 static int acpi_button_resume(struct acpi_device *device);
 static void acpi_button_notify(struct acpi_device *device, u32 event);
 
+=======
+static int acpi_button_remove(struct acpi_device *device);
+static void acpi_button_notify(struct acpi_device *device, u32 event);
+
+#ifdef CONFIG_PM_SLEEP
+static int acpi_button_resume(struct device *dev);
+#endif
+static SIMPLE_DEV_PM_OPS(acpi_button_pm, NULL, acpi_button_resume);
+
+>>>>>>> refs/remotes/origin/master
 static struct acpi_driver acpi_button_driver = {
 	.name = "button",
 	.class = ACPI_BUTTON_CLASS,
 	.ids = button_device_ids,
 	.ops = {
 		.add = acpi_button_add,
+<<<<<<< HEAD
 		.resume = acpi_button_resume,
 		.remove = acpi_button_remove,
 		.notify = acpi_button_notify,
 	},
+=======
+		.remove = acpi_button_remove,
+		.notify = acpi_button_notify,
+	},
+	.drv.pm = &acpi_button_pm,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct acpi_button {
@@ -124,7 +146,11 @@ static int acpi_button_state_seq_show(struct seq_file *seq, void *offset)
 
 static int acpi_button_state_open_fs(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, acpi_button_state_seq_show, PDE(inode)->data);
+=======
+	return single_open(file, acpi_button_state_seq_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations acpi_button_state_fops = {
@@ -298,8 +324,11 @@ static void acpi_button_notify(struct acpi_device *device, u32 event)
 
 			pm_wakeup_event(&device->dev, 0);
 		}
+<<<<<<< HEAD
 
 		acpi_bus_generate_proc_event(device, event, ++button->pushed);
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
@@ -308,14 +337,25 @@ static void acpi_button_notify(struct acpi_device *device, u32 event)
 	}
 }
 
+<<<<<<< HEAD
 static int acpi_button_resume(struct acpi_device *device)
 {
+=======
+#ifdef CONFIG_PM_SLEEP
+static int acpi_button_resume(struct device *dev)
+{
+	struct acpi_device *device = to_acpi_device(dev);
+>>>>>>> refs/remotes/origin/master
 	struct acpi_button *button = acpi_driver_data(device);
 
 	if (button->type == ACPI_BUTTON_TYPE_LID)
 		return acpi_lid_send_state(device);
 	return 0;
 }
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static int acpi_button_add(struct acpi_device *device)
 {
@@ -377,6 +417,7 @@ static int acpi_button_add(struct acpi_device *device)
 
 	switch (button->type) {
 	case ACPI_BUTTON_TYPE_POWER:
+<<<<<<< HEAD
 		input->evbit[0] = BIT_MASK(EV_KEY);
 		set_bit(KEY_POWER, input->keybit);
 		break;
@@ -389,6 +430,17 @@ static int acpi_button_add(struct acpi_device *device)
 	case ACPI_BUTTON_TYPE_LID:
 		input->evbit[0] = BIT_MASK(EV_SW);
 		set_bit(SW_LID, input->swbit);
+=======
+		input_set_capability(input, EV_KEY, KEY_POWER);
+		break;
+
+	case ACPI_BUTTON_TYPE_SLEEP:
+		input_set_capability(input, EV_KEY, KEY_SLEEP);
+		break;
+
+	case ACPI_BUTTON_TYPE_LID:
+		input_set_capability(input, EV_SW, SW_LID);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -426,7 +478,11 @@ static int acpi_button_add(struct acpi_device *device)
 	return error;
 }
 
+<<<<<<< HEAD
 static int acpi_button_remove(struct acpi_device *device, int type)
+=======
+static int acpi_button_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_button *button = acpi_driver_data(device);
 
@@ -443,6 +499,7 @@ static int acpi_button_remove(struct acpi_device *device, int type)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __init acpi_button_init(void)
 {
 	return acpi_bus_register_driver(&acpi_button_driver);
@@ -455,3 +512,6 @@ static void __exit acpi_button_exit(void)
 
 module_init(acpi_button_init);
 module_exit(acpi_button_exit);
+=======
+module_acpi_driver(acpi_button_driver);
+>>>>>>> refs/remotes/origin/master

@@ -7,8 +7,13 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
 #include "drm_usb.h"
 #include "drm_crtc_helper.h"
+=======
+#include <drm/drm_usb.h>
+#include <drm/drm_crtc_helper.h>
+>>>>>>> refs/remotes/origin/master
 #include "udl_drv.h"
 
 static struct drm_driver driver;
@@ -51,7 +56,11 @@ static void udl_usb_disconnect(struct usb_interface *interface)
 	drm_unplug_dev(dev);
 }
 
+<<<<<<< HEAD
 static struct vm_operations_struct udl_gem_vm_ops = {
+=======
+static const struct vm_operations_struct udl_gem_vm_ops = {
+>>>>>>> refs/remotes/origin/master
 	.fault = udl_gem_fault,
 	.open = drm_gem_vm_open,
 	.close = drm_gem_vm_close,
@@ -65,24 +74,46 @@ static const struct file_operations udl_driver_fops = {
 	.read = drm_read,
 	.unlocked_ioctl	= drm_ioctl,
 	.release = drm_release,
+<<<<<<< HEAD
 	.fasync = drm_fasync,
+=======
+#ifdef CONFIG_COMPAT
+	.compat_ioctl = drm_compat_ioctl,
+#endif
+>>>>>>> refs/remotes/origin/master
 	.llseek = noop_llseek,
 };
 
 static struct drm_driver driver = {
+<<<<<<< HEAD
 	.driver_features = DRIVER_MODESET | DRIVER_GEM,
+=======
+	.driver_features = DRIVER_MODESET | DRIVER_GEM | DRIVER_PRIME,
+>>>>>>> refs/remotes/origin/master
 	.load = udl_driver_load,
 	.unload = udl_driver_unload,
 
 	/* gem hooks */
+<<<<<<< HEAD
 	.gem_init_object = udl_gem_init_object,
+=======
+>>>>>>> refs/remotes/origin/master
 	.gem_free_object = udl_gem_free_object,
 	.gem_vm_ops = &udl_gem_vm_ops,
 
 	.dumb_create = udl_dumb_create,
 	.dumb_map_offset = udl_gem_mmap,
+<<<<<<< HEAD
 	.dumb_destroy = udl_dumb_destroy,
 	.fops = &udl_driver_fops,
+=======
+	.dumb_destroy = drm_gem_dumb_destroy,
+	.fops = &udl_driver_fops,
+
+	.prime_fd_to_handle = drm_gem_prime_fd_to_handle,
+	.gem_prime_import = udl_gem_prime_import,
+
+>>>>>>> refs/remotes/origin/master
 	.name = DRIVER_NAME,
 	.desc = DRIVER_DESC,
 	.date = DRIVER_DATE,

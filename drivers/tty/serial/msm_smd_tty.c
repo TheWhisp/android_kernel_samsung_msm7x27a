@@ -1,6 +1,10 @@
 /*
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -70,7 +74,11 @@ static void smd_tty_notify(void *priv, unsigned event)
 		if (avail == 0)
 			break;
 
+<<<<<<< HEAD
 		avail = tty_prepare_flip_string(tty, &ptr, avail);
+=======
+		avail = tty_prepare_flip_string(&info->port, &ptr, avail);
+>>>>>>> refs/remotes/origin/master
 
 		if (smd_read(info->ch, ptr, avail) != avail) {
 			/* shouldn't be possible since we're in interrupt
@@ -80,7 +88,11 @@ static void smd_tty_notify(void *priv, unsigned event)
 			pr_err("OOPS - smd_tty_buffer mismatch?!");
 		}
 
+<<<<<<< HEAD
 		tty_flip_buffer_push(tty);
+=======
+		tty_flip_buffer_push(&info->port);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* XXX only when writable and necessary */
@@ -90,6 +102,7 @@ static void smd_tty_notify(void *priv, unsigned event)
 
 static int smd_tty_port_activate(struct tty_port *tport, struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	int i, res = 0;
 	int n = tty->index;
 	const char *name = NULL;
@@ -97,6 +110,15 @@ static int smd_tty_port_activate(struct tty_port *tport, struct tty_struct *tty)
 
 	for (i = 0; i < smd_tty_channels_len; i++) {
 		if (smd_tty_channels[i].id == n) {
+=======
+	struct smd_tty_info *info = container_of(tport, struct smd_tty_info,
+			port);
+	int i, res = 0;
+	const char *name = NULL;
+
+	for (i = 0; i < smd_tty_channels_len; i++) {
+		if (smd_tty_channels[i].id == tty->index) {
+>>>>>>> refs/remotes/origin/master
 			name = smd_tty_channels[i].name;
 			break;
 		}
@@ -117,17 +139,26 @@ static int smd_tty_port_activate(struct tty_port *tport, struct tty_struct *tty)
 
 static void smd_tty_port_shutdown(struct tty_port *tport)
 {
+<<<<<<< HEAD
 	struct smd_tty_info *info;
 	struct tty_struct *tty = tty_port_tty_get(tport);
 
 	info = tty->driver_data;
+=======
+	struct smd_tty_info *info = container_of(tport, struct smd_tty_info,
+			port);
+
+>>>>>>> refs/remotes/origin/master
 	if (info->ch) {
 		smd_close(info->ch);
 		info->ch = 0;
 	}
+<<<<<<< HEAD
 
 	tty->driver_data = 0;
 	tty_kref_put(tty);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int smd_tty_open(struct tty_struct *tty, struct file *f)
@@ -204,9 +235,12 @@ static int __init smd_tty_init(void)
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	smd_tty_driver->owner = THIS_MODULE;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	smd_tty_driver->driver_name = "smd_tty_driver";
 	smd_tty_driver->name = "smd";
 	smd_tty_driver->major = 0;
@@ -227,9 +261,17 @@ static int __init smd_tty_init(void)
 		return ret;
 
 	for (i = 0; i < smd_tty_channels_len; i++) {
+<<<<<<< HEAD
 		tty_port_init(&smd_tty[smd_tty_channels[i].id].port);
 		smd_tty[smd_tty_channels[i].id].port.ops = &smd_tty_port_ops;
 		tty_register_device(smd_tty_driver, smd_tty_channels[i].id, 0);
+=======
+		struct tty_port *port = &smd_tty[smd_tty_channels[i].id].port;
+		tty_port_init(port);
+		port->ops = &smd_tty_port_ops;
+		tty_port_register_device(port, smd_tty_driver,
+				smd_tty_channels[i].id, NULL);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;

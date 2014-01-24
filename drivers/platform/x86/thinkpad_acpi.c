@@ -23,7 +23,11 @@
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
+<<<<<<< HEAD
 #define TPACPI_VERSION "0.24"
+=======
+#define TPACPI_VERSION "0.25"
+>>>>>>> refs/remotes/origin/master
 #define TPACPI_SYSFS_VERSION 0x020700
 
 /*
@@ -88,6 +92,10 @@
 
 #include <linux/pci_ids.h>
 
+<<<<<<< HEAD
+=======
+#include <linux/thinkpad_acpi.h>
+>>>>>>> refs/remotes/origin/master
 
 /* ThinkPad CMOS commands */
 #define TP_CMOS_VOLUME_DOWN	0
@@ -209,9 +217,14 @@ enum tpacpi_hkey_event_t {
 	TP_HKEY_EV_ALARM_SENSOR_XHOT	= 0x6022, /* sensor critically hot */
 	TP_HKEY_EV_THM_TABLE_CHANGED	= 0x6030, /* thermal table changed */
 
+<<<<<<< HEAD
 	TP_HKEY_EV_UNK_6040		= 0x6040, /* Related to AC change?
 						     some sort of APM hint,
 						     W520 */
+=======
+	/* AC-related events */
+	TP_HKEY_EV_AC_CHANGED		= 0x6040, /* AC status changed */
+>>>>>>> refs/remotes/origin/master
 
 	/* Misc */
 	TP_HKEY_EV_RFKILL_CHANGED	= 0x7000, /* rfkill switch changed */
@@ -277,7 +290,11 @@ struct ibm_struct {
 	int (*write) (char *);
 	void (*exit) (void);
 	void (*resume) (void);
+<<<<<<< HEAD
 	void (*suspend) (pm_message_t state);
+=======
+	void (*suspend) (void);
+>>>>>>> refs/remotes/origin/master
 	void (*shutdown) (void);
 
 	struct list_head all_drivers;
@@ -298,10 +315,14 @@ struct ibm_init_struct {
 
 	int (*init) (struct ibm_init_struct *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t base_procfs_mode;
 =======
 	umode_t base_procfs_mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t base_procfs_mode;
+>>>>>>> refs/remotes/origin/master
 	struct ibm_struct *data;
 };
 
@@ -374,7 +395,11 @@ struct tpacpi_led_classdev {
 	struct led_classdev led_classdev;
 	struct work_struct work;
 	enum led_status_t new_state;
+<<<<<<< HEAD
 	unsigned int led;
+=======
+	int led;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* brightness level capabilities */
@@ -382,6 +407,7 @@ static unsigned int bright_maxlvl;	/* 0 = unknown */
 
 #ifdef CONFIG_THINKPAD_ACPI_DEBUGFACILITIES
 static int dbg_wlswemul;
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int tpacpi_wlsw_emulstate;
 static int dbg_bluetoothemul;
@@ -391,6 +417,8 @@ static int tpacpi_wwan_emulstate;
 static int dbg_uwbemul;
 static int tpacpi_uwb_emulstate;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool tpacpi_wlsw_emulstate;
 static int dbg_bluetoothemul;
 static bool tpacpi_bluetooth_emulstate;
@@ -398,7 +426,10 @@ static int dbg_wwanemul;
 static bool tpacpi_wwan_emulstate;
 static int dbg_uwbemul;
 static bool tpacpi_uwb_emulstate;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 
@@ -536,7 +567,11 @@ static acpi_handle ec_handle;
 
 #define TPACPI_HANDLE(object, parent, paths...)			\
 	static acpi_handle  object##_handle;			\
+<<<<<<< HEAD
 	static const acpi_handle *object##_parent __initdata =	\
+=======
+	static const acpi_handle * const object##_parent __initconst =	\
+>>>>>>> refs/remotes/origin/master
 						&parent##_handle; \
 	static char *object##_paths[] __initdata = { paths }
 
@@ -559,7 +594,11 @@ TPACPI_HANDLE(hkey, ec, "\\_SB.HKEY",	/* 600e/x, 770e, 770x */
  */
 
 static int acpi_evalf(acpi_handle handle,
+<<<<<<< HEAD
 		      void *res, char *method, char *fmt, ...)
+=======
+		      int *res, char *method, char *fmt, ...)
+>>>>>>> refs/remotes/origin/master
 {
 	char *fmt0 = fmt;
 	struct acpi_object_list params;
@@ -620,7 +659,11 @@ static int acpi_evalf(acpi_handle handle,
 		success = (status == AE_OK &&
 			   out_obj.type == ACPI_TYPE_INTEGER);
 		if (success && res)
+<<<<<<< HEAD
 			*(int *)res = out_obj.integer.value;
+=======
+			*res = out_obj.integer.value;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case 'v':		/* void */
 		success = status == AE_OK;
@@ -715,6 +758,17 @@ static void __init drv_acpi_handle_init(const char *name,
 static acpi_status __init tpacpi_acpi_handle_locate_callback(acpi_handle handle,
 			u32 level, void *context, void **return_value)
 {
+<<<<<<< HEAD
+=======
+	struct acpi_device *dev;
+	if (!strcmp(context, "video")) {
+		if (acpi_bus_get_device(handle, &dev))
+			return AE_OK;
+		if (strcmp(ACPI_VIDEO_HID, acpi_device_hid(dev)))
+			return AE_OK;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	*(acpi_handle *)return_value = handle;
 
 	return AE_CTRL_TERMINATE;
@@ -727,10 +781,17 @@ static void __init tpacpi_acpi_handle_locate(const char *name,
 	acpi_status status;
 	acpi_handle device_found;
 
+<<<<<<< HEAD
 	BUG_ON(!name || !hid || !handle);
 	vdbg_printk(TPACPI_DBG_INIT,
 			"trying to locate ACPI handle for %s, using HID %s\n",
 			name, hid);
+=======
+	BUG_ON(!name || !handle);
+	vdbg_printk(TPACPI_DBG_INIT,
+			"trying to locate ACPI handle for %s, using HID %s\n",
+			name, hid ? hid : "NULL");
+>>>>>>> refs/remotes/origin/master
 
 	memset(&device_found, 0, sizeof(device_found));
 	status = acpi_get_devices(hid, tpacpi_acpi_handle_locate_callback,
@@ -859,14 +920,22 @@ static int dispatch_proc_show(struct seq_file *m, void *v)
 
 static int dispatch_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, dispatch_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, dispatch_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t dispatch_proc_write(struct file *file,
 			const char __user *userbuf,
 			size_t count, loff_t *pos)
 {
+<<<<<<< HEAD
 	struct ibm_struct *ibm = PDE(file->f_path.dentry->d_inode)->data;
+=======
+	struct ibm_struct *ibm = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	char *kernbuf;
 	int ret;
 
@@ -936,8 +1005,13 @@ static struct input_dev *tpacpi_inputdev;
 static struct mutex tpacpi_inputdev_send_mutex;
 static LIST_HEAD(tpacpi_all_drivers);
 
+<<<<<<< HEAD
 static int tpacpi_suspend_handler(struct platform_device *pdev,
 				  pm_message_t state)
+=======
+#ifdef CONFIG_PM_SLEEP
+static int tpacpi_suspend_handler(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ibm_struct *ibm, *itmp;
 
@@ -945,13 +1019,21 @@ static int tpacpi_suspend_handler(struct platform_device *pdev,
 				 &tpacpi_all_drivers,
 				 all_drivers) {
 		if (ibm->suspend)
+<<<<<<< HEAD
 			(ibm->suspend)(state);
+=======
+			(ibm->suspend)();
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int tpacpi_resume_handler(struct platform_device *pdev)
+=======
+static int tpacpi_resume_handler(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ibm_struct *ibm, *itmp;
 
@@ -964,6 +1046,13 @@ static int tpacpi_resume_handler(struct platform_device *pdev)
 
 	return 0;
 }
+<<<<<<< HEAD
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(tpacpi_pm,
+			 tpacpi_suspend_handler, tpacpi_resume_handler);
+>>>>>>> refs/remotes/origin/master
 
 static void tpacpi_shutdown_handler(struct platform_device *pdev)
 {
@@ -981,9 +1070,14 @@ static struct platform_driver tpacpi_pdriver = {
 	.driver = {
 		.name = TPACPI_DRVR_NAME,
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.suspend = tpacpi_suspend_handler,
 	.resume = tpacpi_resume_handler,
+=======
+		.pm = &tpacpi_pm,
+	},
+>>>>>>> refs/remotes/origin/master
 	.shutdown = tpacpi_shutdown_handler,
 };
 
@@ -1976,9 +2070,12 @@ struct tp_nvram_state {
 /* kthread for the hotkey poller */
 static struct task_struct *tpacpi_hotkey_task;
 
+<<<<<<< HEAD
 /* Acquired while the poller kthread is running, use to sync start/stop */
 static struct mutex hotkey_thread_mutex;
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Acquire mutex to write poller control variables as an
  * atomic block.
@@ -2037,8 +2134,11 @@ static u32 hotkey_driver_mask;		/* events needed by the driver */
 static u32 hotkey_user_mask;		/* events visible to userspace */
 static u32 hotkey_acpi_mask;		/* events enabled in firmware */
 
+<<<<<<< HEAD
 static unsigned int hotkey_report_mode;
 
+=======
+>>>>>>> refs/remotes/origin/master
 static u16 *hotkey_keycode_map;
 
 static struct attribute_set *hotkey_dev_attributes;
@@ -2297,10 +2397,13 @@ static struct tp_acpi_drv_struct ibm_hotkey_acpidriver;
 static void tpacpi_hotkey_send_key(unsigned int scancode)
 {
 	tpacpi_input_send_key_masked(scancode);
+<<<<<<< HEAD
 	if (hotkey_report_mode < 2) {
 		acpi_bus_generate_proc_event(ibm_hotkey_acpidriver.device,
 				0x80, TP_HKEY_EV_HOTKEY_BASE + scancode);
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void hotkey_read_nvram(struct tp_nvram_state *n, const u32 m)
@@ -2471,6 +2574,7 @@ static int hotkey_kthread(void *data)
 	unsigned int si, so;
 	unsigned long t;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int change_detector, must_reset;
 	unsigned int poll_freq;
 =======
@@ -2480,6 +2584,11 @@ static int hotkey_kthread(void *data)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&hotkey_thread_mutex);
+=======
+	unsigned int change_detector;
+	unsigned int poll_freq;
+	bool was_frozen;
+>>>>>>> refs/remotes/origin/master
 
 	if (tpacpi_lifecycle == TPACPI_LIFE_EXITING)
 		goto exit;
@@ -2509,6 +2618,7 @@ static int hotkey_kthread(void *data)
 		}
 		t = msleep_interruptible(t);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (unlikely(kthread_should_stop()))
 			break;
 		must_reset = try_to_freeze();
@@ -2518,6 +2628,8 @@ static int hotkey_kthread(void *data)
 		mutex_lock(&hotkey_thread_data_mutex);
 		if (must_reset || hotkey_config_change != change_detector) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (unlikely(kthread_freezable_should_stop(&was_frozen)))
 			break;
 
@@ -2526,7 +2638,10 @@ static int hotkey_kthread(void *data)
 
 		mutex_lock(&hotkey_thread_data_mutex);
 		if (was_frozen || hotkey_config_change != change_detector) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/* forget old state on thaw or config change */
 			si = so;
 			t = 0;
@@ -2551,7 +2666,10 @@ static int hotkey_kthread(void *data)
 	}
 
 exit:
+<<<<<<< HEAD
 	mutex_unlock(&hotkey_thread_mutex);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2559,6 +2677,7 @@ exit:
 static void hotkey_poll_stop_sync(void)
 {
 	if (tpacpi_hotkey_task) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (frozen(tpacpi_hotkey_task) ||
 		    freezing(tpacpi_hotkey_task))
@@ -2571,6 +2690,10 @@ static void hotkey_poll_stop_sync(void)
 		mutex_lock(&hotkey_thread_mutex);
 		/* at this point, the thread did exit */
 		mutex_unlock(&hotkey_thread_mutex);
+=======
+		kthread_stop(tpacpi_hotkey_task);
+		tpacpi_hotkey_task = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -2926,6 +3049,7 @@ static void hotkey_tablet_mode_notify_change(void)
 			     "hotkey_tablet_mode");
 }
 
+<<<<<<< HEAD
 /* sysfs hotkey report_mode -------------------------------------------- */
 static ssize_t hotkey_report_mode_show(struct device *dev,
 			   struct device_attribute *attr,
@@ -2938,6 +3062,8 @@ static ssize_t hotkey_report_mode_show(struct device *dev,
 static struct device_attribute dev_attr_hotkey_report_mode =
 	__ATTR(hotkey_report_mode, S_IRUGO, hotkey_report_mode_show, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* sysfs wakeup reason (pollable) -------------------------------------- */
 static ssize_t hotkey_wakeup_reason_show(struct device *dev,
 			   struct device_attribute *attr,
@@ -2979,7 +3105,10 @@ static struct attribute *hotkey_attributes[] __initdata = {
 	&dev_attr_hotkey_enable.attr,
 	&dev_attr_hotkey_bios_enabled.attr,
 	&dev_attr_hotkey_bios_mask.attr,
+<<<<<<< HEAD
 	&dev_attr_hotkey_report_mode.attr,
+=======
+>>>>>>> refs/remotes/origin/master
 	&dev_attr_hotkey_wakeup_reason.attr,
 	&dev_attr_hotkey_wakeup_hotunplug_complete.attr,
 	&dev_attr_hotkey_mask.attr,
@@ -3051,8 +3180,11 @@ static void hotkey_exit(void)
 	if (hotkey_dev_attributes)
 		delete_attr_set(hotkey_dev_attributes, &tpacpi_pdev->dev.kobj);
 
+<<<<<<< HEAD
 	kfree(hotkey_keycode_map);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	dbg_printk(TPACPI_DBG_EXIT | TPACPI_DBG_HKEY,
 		   "restoring original HKEY status and mask\n");
 	/* yes, there is a bitwise or below, we want the
@@ -3221,9 +3353,12 @@ static int __init hotkey_init(struct ibm_init_struct *iibm)
 
 		/* (assignments unknown, please report if found) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		KEY_UNKNOWN, KEY_UNKNOWN, KEY_UNKNOWN, KEY_UNKNOWN,
 		KEY_UNKNOWN, KEY_UNKNOWN, KEY_UNKNOWN, KEY_UNKNOWN,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		KEY_UNKNOWN, KEY_UNKNOWN,
 
 		/*
@@ -3235,7 +3370,10 @@ static int __init hotkey_init(struct ibm_init_struct *iibm)
 		/* (assignments unknown, please report if found) */
 		KEY_UNKNOWN, KEY_UNKNOWN, KEY_UNKNOWN, KEY_UNKNOWN,
 		KEY_UNKNOWN,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		},
 	};
 
@@ -3276,7 +3414,10 @@ static int __init hotkey_init(struct ibm_init_struct *iibm)
 	mutex_init(&hotkey_mutex);
 
 #ifdef CONFIG_THINKPAD_ACPI_HOTKEY_POLL
+<<<<<<< HEAD
 	mutex_init(&hotkey_thread_mutex);
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&hotkey_thread_data_mutex);
 #endif
 
@@ -3444,7 +3585,11 @@ static int __init hotkey_init(struct ibm_init_struct *iibm)
 	/* Do not issue duplicate brightness change events to
 	 * userspace. tpacpi_detect_brightness_capabilities() must have
 	 * been called before this point  */
+<<<<<<< HEAD
 	if (tp_features.bright_acpimode && acpi_video_backlight_support()) {
+=======
+	if (acpi_video_backlight_support()) {
+>>>>>>> refs/remotes/origin/master
 		pr_info("This ThinkPad has standard ACPI backlight "
 			"brightness control, supported by the ACPI "
 			"video driver\n");
@@ -3491,11 +3636,14 @@ static int __init hotkey_init(struct ibm_init_struct *iibm)
 		"initial masks: user=0x%08x, fw=0x%08x, poll=0x%08x\n",
 		hotkey_user_mask, hotkey_acpi_mask, hotkey_source_mask);
 
+<<<<<<< HEAD
 	dbg_printk(TPACPI_DBG_INIT | TPACPI_DBG_HKEY,
 			"legacy ibm/hotkey event reporting over procfs %s\n",
 			(hotkey_report_mode < 2) ?
 				"enabled" : "disabled");
 
+=======
+>>>>>>> refs/remotes/origin/master
 	tpacpi_inputdev->open = &hotkey_inputdev_open;
 	tpacpi_inputdev->close = &hotkey_inputdev_close;
 
@@ -3670,6 +3818,15 @@ static bool hotkey_notify_6xxx(const u32 hkey,
 			 "a sensor reports something is extremely hot!\n");
 		/* recommended action: immediate sleep/hibernate */
 		break;
+<<<<<<< HEAD
+=======
+	case TP_HKEY_EV_AC_CHANGED:
+		/* X120e, X121e, X220, X220i, X220t, X230, T420, T420s, W520:
+		 * AC status changed; can be triggered by plugging or
+		 * unplugging AC adapter, docking or undocking. */
+
+		/* fallthrough */
+>>>>>>> refs/remotes/origin/master
 
 	case TP_HKEY_EV_KEY_NUMLOCK:
 	case TP_HKEY_EV_KEY_FN:
@@ -3783,6 +3940,7 @@ static void hotkey_notify(struct ibm_struct *ibm, u32 event)
 				  "event happened to %s\n", TPACPI_MAIL);
 		}
 
+<<<<<<< HEAD
 		/* Legacy events */
 		if (!ignore_acpi_ev &&
 		    (send_acpi_ev || hotkey_report_mode < 2)) {
@@ -3790,6 +3948,8 @@ static void hotkey_notify(struct ibm_struct *ibm, u32 event)
 						     event, hkey);
 		}
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/* netlink events */
 		if (!ignore_acpi_ev && send_acpi_ev) {
 			acpi_bus_generate_netlink_event(
@@ -3800,7 +3960,11 @@ static void hotkey_notify(struct ibm_struct *ibm, u32 event)
 	}
 }
 
+<<<<<<< HEAD
 static void hotkey_suspend(pm_message_t state)
+=======
+static void hotkey_suspend(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Do these on suspend, we get the events on early resume! */
 	hotkey_wakeup_reason = TP_ACPI_WAKEUP_NONE;
@@ -4047,10 +4211,14 @@ static void bluetooth_shutdown(void)
 	else
 		vdbg_printk(TPACPI_DBG_RFKILL,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"bluestooth state saved to NVRAM\n");
 =======
 			"bluetooth state saved to NVRAM\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			"bluetooth state saved to NVRAM\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void bluetooth_exit(void)
@@ -4922,8 +5090,12 @@ static int __init light_init(struct ibm_init_struct *iibm)
 static void light_exit(void)
 {
 	led_classdev_unregister(&tpacpi_led_thinklight.led_classdev);
+<<<<<<< HEAD
 	if (work_pending(&tpacpi_led_thinklight.work))
 		flush_workqueue(tpacpi_wq);
+=======
+	flush_workqueue(tpacpi_wq);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int light_read(struct seq_file *m)
@@ -5262,6 +5434,10 @@ static void led_exit(void)
 			led_classdev_unregister(&tpacpi_leds[i].led_classdev);
 	}
 
+<<<<<<< HEAD
+=======
+	flush_workqueue(tpacpi_wq);
+>>>>>>> refs/remotes/origin/master
 	kfree(tpacpi_leds);
 }
 
@@ -5377,6 +5553,19 @@ static int __init led_init(struct ibm_init_struct *iibm)
 
 	led_supported = led_init_detect_mode();
 
+<<<<<<< HEAD
+=======
+	if (led_supported != TPACPI_LED_NONE) {
+		useful_leds = tpacpi_check_quirks(led_useful_qtable,
+				ARRAY_SIZE(led_useful_qtable));
+
+		if (!useful_leds) {
+			led_handle = NULL;
+			led_supported = TPACPI_LED_NONE;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	vdbg_printk(TPACPI_DBG_INIT, "LED commands are %s, mode %d\n",
 		str_supported(led_supported), led_supported);
 
@@ -5390,10 +5579,16 @@ static int __init led_init(struct ibm_init_struct *iibm)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	useful_leds = tpacpi_check_quirks(led_useful_qtable,
 					  ARRAY_SIZE(led_useful_qtable));
 
 	for (i = 0; i < TPACPI_LED_NUMLEDS; i++) {
+=======
+	for (i = 0; i < TPACPI_LED_NUMLEDS; i++) {
+		tpacpi_leds[i].led = -1;
+
+>>>>>>> refs/remotes/origin/master
 		if (!tpacpi_is_led_restricted(i) &&
 		    test_bit(i, &useful_leds)) {
 			rc = tpacpi_init_led(i);
@@ -5451,9 +5646,19 @@ static int led_write(char *buf)
 		return -ENODEV;
 
 	while ((cmd = next_cmd(&buf))) {
+<<<<<<< HEAD
 		if (sscanf(cmd, "%d", &led) != 1 || led < 0 || led > 15)
 			return -EINVAL;
 
+=======
+		if (sscanf(cmd, "%d", &led) != 1)
+			return -EINVAL;
+
+		if (led < 0 || led > (TPACPI_LED_NUMLEDS - 1) ||
+				tpacpi_leds[led].led < 0)
+			return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 		if (strstr(cmd, "off")) {
 			s = TPACPI_LED_OFF;
 		} else if (strstr(cmd, "on")) {
@@ -6158,6 +6363,7 @@ static int __init tpacpi_query_bcl_levels(acpi_handle handle)
 {
 	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
 	union acpi_object *obj;
+<<<<<<< HEAD
 	int rc;
 
 	if (ACPI_SUCCESS(acpi_evaluate_object(handle, "_BCL", NULL, &buffer))) {
@@ -6165,12 +6371,35 @@ static int __init tpacpi_query_bcl_levels(acpi_handle handle)
 		if (!obj || (obj->type != ACPI_TYPE_PACKAGE)) {
 			pr_err("Unknown _BCL data, please report this to %s\n",
 			       TPACPI_MAIL);
+=======
+	struct acpi_device *device, *child;
+	int rc;
+
+	if (acpi_bus_get_device(handle, &device))
+		return 0;
+
+	rc = 0;
+	list_for_each_entry(child, &device->children, node) {
+		acpi_status status = acpi_evaluate_object(child->handle, "_BCL",
+							  NULL, &buffer);
+		if (ACPI_FAILURE(status))
+			continue;
+
+		obj = (union acpi_object *)buffer.pointer;
+		if (!obj || (obj->type != ACPI_TYPE_PACKAGE)) {
+			pr_err("Unknown _BCL data, please report this to %s\n",
+				TPACPI_MAIL);
+>>>>>>> refs/remotes/origin/master
 			rc = 0;
 		} else {
 			rc = obj->package.count;
 		}
+<<<<<<< HEAD
 	} else {
 		return 0;
+=======
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	kfree(buffer.pointer);
@@ -6186,7 +6415,11 @@ static unsigned int __init tpacpi_check_std_acpi_brightness_support(void)
 	acpi_handle video_device;
 	int bcl_levels = 0;
 
+<<<<<<< HEAD
 	tpacpi_acpi_handle_locate("video", ACPI_VIDEO_HID, &video_device);
+=======
+	tpacpi_acpi_handle_locate("video", NULL, &video_device);
+>>>>>>> refs/remotes/origin/master
 	if (video_device)
 		bcl_levels = tpacpi_query_bcl_levels(video_device);
 
@@ -6375,7 +6608,11 @@ static int __init brightness_init(struct ibm_init_struct *iibm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void brightness_suspend(pm_message_t state)
+=======
+static void brightness_suspend(void)
+>>>>>>> refs/remotes/origin/master
 {
 	tpacpi_brightness_checkpoint_nvram();
 }
@@ -6488,6 +6725,7 @@ static struct ibm_struct brightness_driver_data = {
 #define TPACPI_ALSA_SHRTNAME "ThinkPad Console Audio Control"
 #define TPACPI_ALSA_MIXERNAME TPACPI_ALSA_SHRTNAME
 
+<<<<<<< HEAD
 static int alsa_index = ~((1 << (SNDRV_CARDS - 3)) - 1); /* last three slots */
 static char *alsa_id = "ThinkPadEC";
 <<<<<<< HEAD
@@ -6495,6 +6733,16 @@ static int alsa_enable = SNDRV_DEFAULT_ENABLE1;
 =======
 static bool alsa_enable = SNDRV_DEFAULT_ENABLE1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if SNDRV_CARDS <= 32
+#define DEFAULT_ALSA_IDX		~((1 << (SNDRV_CARDS - 3)) - 1)
+#else
+#define DEFAULT_ALSA_IDX		~((1 << (32 - 3)) - 1)
+#endif
+static int alsa_index = DEFAULT_ALSA_IDX; /* last three slots */
+static char *alsa_id = "ThinkPadEC";
+static bool alsa_enable = SNDRV_DEFAULT_ENABLE1;
+>>>>>>> refs/remotes/origin/master
 
 struct tpacpi_alsa_data {
 	struct snd_card *card;
@@ -6538,10 +6786,14 @@ static enum tpacpi_volume_access_mode volume_mode =
 
 static enum tpacpi_volume_capabilities volume_capabilities;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int volume_control_allowed;
 =======
 static bool volume_control_allowed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool volume_control_allowed;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Used to syncronize writers to TP_EC_AUDIO and
@@ -6784,7 +7036,11 @@ static int volume_alsa_mute_put(struct snd_kcontrol *kcontrol,
 	return volume_alsa_set_mute(!ucontrol->value.integer.value[0]);
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new volume_alsa_control_vol __devinitdata = {
+=======
+static struct snd_kcontrol_new volume_alsa_control_vol = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = "Console Playback Volume",
 	.index = 0,
@@ -6793,7 +7049,11 @@ static struct snd_kcontrol_new volume_alsa_control_vol __devinitdata = {
 	.get = volume_alsa_vol_get,
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new volume_alsa_control_mute __devinitdata = {
+=======
+static struct snd_kcontrol_new volume_alsa_control_mute = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = "Console Playback Switch",
 	.index = 0,
@@ -6802,7 +7062,11 @@ static struct snd_kcontrol_new volume_alsa_control_mute __devinitdata = {
 	.get = volume_alsa_mute_get,
 };
 
+<<<<<<< HEAD
 static void volume_suspend(pm_message_t state)
+=======
+static void volume_suspend(void)
+>>>>>>> refs/remotes/origin/master
 {
 	tpacpi_volume_checkpoint_nvram();
 }
@@ -7320,10 +7584,14 @@ enum fan_control_commands {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int fan_control_allowed;
 =======
 static bool fan_control_allowed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool fan_control_allowed;
+>>>>>>> refs/remotes/origin/master
 
 static enum fan_status_access_mode fan_status_access_mode;
 static enum fan_control_access_mode fan_control_access_mode;
@@ -7442,6 +7710,7 @@ static int fan_get_status(u8 *status)
 	 * Add TPACPI_FAN_RD_ACPI_FANS ? */
 
 	switch (fan_status_access_mode) {
+<<<<<<< HEAD
 	case TPACPI_FAN_RD_ACPI_GFAN:
 		/* 570, 600e/x, 770e, 770x */
 
@@ -7453,6 +7722,20 @@ static int fan_get_status(u8 *status)
 
 		break;
 
+=======
+	case TPACPI_FAN_RD_ACPI_GFAN: {
+		/* 570, 600e/x, 770e, 770x */
+		int res;
+
+		if (unlikely(!acpi_evalf(gfan_handle, &res, NULL, "d")))
+			return -EIO;
+
+		if (likely(status))
+			*status = res & 0x07;
+
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 	case TPACPI_FAN_RD_TPEC:
 		/* all except 570, 600e/x, 770e, 770x */
 		if (unlikely(!acpi_ec_read(fan_status_offset, &s)))
@@ -7740,6 +8023,7 @@ static int fan_set_speed(int speed)
 
 static void fan_watchdog_reset(void)
 {
+<<<<<<< HEAD
 	static int fan_watchdog_active;
 
 	if (fan_control_access_mode == TPACPI_FAN_WR_NONE)
@@ -7759,6 +8043,17 @@ static void fan_watchdog_reset(void)
 		}
 	} else
 		fan_watchdog_active = 0;
+=======
+	if (fan_control_access_mode == TPACPI_FAN_WR_NONE)
+		return;
+
+	if (fan_watchdog_maxinterval > 0 &&
+	    tpacpi_lifecycle != TPACPI_LIFE_EXITING)
+		mod_delayed_work(tpacpi_wq, &fan_watchdog_task,
+			msecs_to_jiffies(fan_watchdog_maxinterval * 1000));
+	else
+		cancel_delayed_work(&fan_watchdog_task);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void fan_watchdog_fire(struct work_struct *ignored)
@@ -8165,7 +8460,11 @@ static void fan_exit(void)
 	flush_workqueue(tpacpi_wq);
 }
 
+<<<<<<< HEAD
 static void fan_suspend(pm_message_t state)
+=======
+static void fan_suspend(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 
@@ -8439,6 +8738,94 @@ static struct ibm_struct fan_driver_data = {
 	.resume = fan_resume,
 };
 
+<<<<<<< HEAD
+=======
+/*************************************************************************
+ * Mute LED subdriver
+ */
+
+
+struct tp_led_table {
+	acpi_string name;
+	int on_value;
+	int off_value;
+	int state;
+};
+
+static struct tp_led_table led_tables[] = {
+	[TPACPI_LED_MUTE] = {
+		.name = "SSMS",
+		.on_value = 1,
+		.off_value = 0,
+	},
+	[TPACPI_LED_MICMUTE] = {
+		.name = "MMTS",
+		.on_value = 2,
+		.off_value = 0,
+	},
+};
+
+static int mute_led_on_off(struct tp_led_table *t, bool state)
+{
+	acpi_handle temp;
+	int output;
+
+	if (!ACPI_SUCCESS(acpi_get_handle(hkey_handle, t->name, &temp))) {
+		pr_warn("Thinkpad ACPI has no %s interface.\n", t->name);
+		return -EIO;
+	}
+
+	if (!acpi_evalf(hkey_handle, &output, t->name, "dd",
+			state ? t->on_value : t->off_value))
+		return -EIO;
+
+	t->state = state;
+	return state;
+}
+
+int tpacpi_led_set(int whichled, bool on)
+{
+	struct tp_led_table *t;
+
+	if (whichled < 0 || whichled >= TPACPI_LED_MAX)
+		return -EINVAL;
+
+	t = &led_tables[whichled];
+	if (t->state < 0 || t->state == on)
+		return t->state;
+	return mute_led_on_off(t, on);
+}
+EXPORT_SYMBOL_GPL(tpacpi_led_set);
+
+static int mute_led_init(struct ibm_init_struct *iibm)
+{
+	acpi_handle temp;
+	int i;
+
+	for (i = 0; i < TPACPI_LED_MAX; i++) {
+		struct tp_led_table *t = &led_tables[i];
+		if (ACPI_SUCCESS(acpi_get_handle(hkey_handle, t->name, &temp)))
+			mute_led_on_off(t, false);
+		else
+			t->state = -ENODEV;
+	}
+	return 0;
+}
+
+static void mute_led_exit(void)
+{
+	int i;
+
+	for (i = 0; i < TPACPI_LED_MAX; i++)
+		tpacpi_led_set(i, false);
+}
+
+static struct ibm_struct mute_led_driver_data = {
+	.name = "mute_led",
+	.exit = mute_led_exit,
+};
+
+>>>>>>> refs/remotes/origin/master
 /****************************************************************************
  ****************************************************************************
  *
@@ -8496,10 +8883,14 @@ static struct proc_dir_entry *proc_dir;
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int force_load;
 =======
 static bool force_load;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool force_load;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_THINKPAD_ACPI_DEBUG
 static const char * __init str_supported(int is_supported)
@@ -8602,10 +8993,14 @@ static int __init ibm_init(struct ibm_init_struct *iibm)
 
 	if (ibm->read) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mode_t mode = iibm->base_procfs_mode;
 =======
 		umode_t mode = iibm->base_procfs_mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		umode_t mode = iibm->base_procfs_mode;
+>>>>>>> refs/remotes/origin/master
 
 		if (!mode)
 			mode = S_IRUGO;
@@ -8648,7 +9043,12 @@ static bool __pure __init tpacpi_is_valid_fw_id(const char* const s,
 	return s && strlen(s) >= 8 &&
 		tpacpi_is_fw_digit(s[0]) &&
 		tpacpi_is_fw_digit(s[1]) &&
+<<<<<<< HEAD
 		s[2] == t && s[3] == 'T' &&
+=======
+		s[2] == t &&
+		(s[3] == 'T' || s[3] == 'N') &&
+>>>>>>> refs/remotes/origin/master
 		tpacpi_is_fw_digit(s[4]) &&
 		tpacpi_is_fw_digit(s[5]);
 }
@@ -8681,7 +9081,12 @@ static int __must_check __init get_thinkpad_model_data(
 		return -ENOMEM;
 
 	/* Really ancient ThinkPad 240X will fail this, which is fine */
+<<<<<<< HEAD
 	if (!tpacpi_is_valid_fw_id(tp->bios_version_str, 'E'))
+=======
+	if (!(tpacpi_is_valid_fw_id(tp->bios_version_str, 'E') ||
+	      tpacpi_is_valid_fw_id(tp->bios_version_str, 'C')))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	tp->bios_model = tp->bios_version_str[0]
@@ -8725,10 +9130,14 @@ static int __must_check __init get_thinkpad_model_data(
 
 	s = dmi_get_system_info(DMI_PRODUCT_VERSION);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (s && !strnicmp(s, "ThinkPad", 8)) {
 =======
 	if (s && !(strnicmp(s, "ThinkPad", 8) && strnicmp(s, "Lenovo", 6))) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (s && !(strnicmp(s, "ThinkPad", 8) && strnicmp(s, "Lenovo", 6))) {
+>>>>>>> refs/remotes/origin/master
 		tp->model_str = kstrdup(s, GFP_KERNEL);
 		if (!tp->model_str)
 			return -ENOMEM;
@@ -8867,6 +9276,13 @@ static struct ibm_init_struct ibms_init[] __initdata = {
 		.init = fan_init,
 		.data = &fan_driver_data,
 	},
+<<<<<<< HEAD
+=======
+	{
+		.init = mute_led_init,
+		.data = &mute_led_driver_data,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init set_ibm_param(const char *val, struct kernel_param *kp)
@@ -8921,11 +9337,14 @@ module_param(brightness_enable, uint, 0444);
 MODULE_PARM_DESC(brightness_enable,
 		 "Enables backlight control when 1, disables when 0");
 
+<<<<<<< HEAD
 module_param(hotkey_report_mode, uint, 0444);
 MODULE_PARM_DESC(hotkey_report_mode,
 		 "used for backwards compatibility with userspace, "
 		 "see documentation");
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_THINKPAD_ACPI_ALSA_SUPPORT
 module_param_named(volume_mode, volume_mode, uint, 0444);
 MODULE_PARM_DESC(volume_mode,
@@ -9012,6 +9431,10 @@ static void thinkpad_acpi_module_exit(void)
 			input_unregister_device(tpacpi_inputdev);
 		else
 			input_free_device(tpacpi_inputdev);
+<<<<<<< HEAD
+=======
+		kfree(hotkey_keycode_map);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (tpacpi_hwmon)
@@ -9045,6 +9468,10 @@ static void thinkpad_acpi_module_exit(void)
 	kfree(thinkpad_id.bios_version_str);
 	kfree(thinkpad_id.ec_version_str);
 	kfree(thinkpad_id.model_str);
+<<<<<<< HEAD
+=======
+	kfree(thinkpad_id.nummodel_str);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -9054,10 +9481,13 @@ static int __init thinkpad_acpi_module_init(void)
 
 	tpacpi_lifecycle = TPACPI_LIFE_INIT;
 
+<<<<<<< HEAD
 	/* Parameter checking */
 	if (hotkey_report_mode > 2)
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Driver-level probe */
 
 	ret = get_thinkpad_model_data(&thinkpad_id);
@@ -9162,7 +9592,10 @@ static int __init thinkpad_acpi_module_init(void)
 	mutex_init(&tpacpi_inputdev_send_mutex);
 	tpacpi_inputdev = input_allocate_device();
 	if (!tpacpi_inputdev) {
+<<<<<<< HEAD
 		pr_err("unable to allocate input device\n");
+=======
+>>>>>>> refs/remotes/origin/master
 		thinkpad_acpi_module_exit();
 		return -ENOMEM;
 	} else {

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifndef _LINUX_SOUND_H
 #define _LINUX_SOUND_H
@@ -31,6 +32,13 @@
 #define SND_DEV_ADMMIDI		14	/* Like /dev/dmmidi (onsolete) */
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_SOUND_H
+#define _LINUX_SOUND_H
+
+#include <uapi/linux/sound.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  *	Sound core interface functions
  */
@@ -46,9 +54,13 @@ extern void unregister_sound_special(int unit);
 extern void unregister_sound_mixer(int unit);
 extern void unregister_sound_midi(int unit);
 extern void unregister_sound_dsp(int unit);
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 <<<<<<< HEAD
 =======
 
 #endif /* _LINUX_SOUND_H */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* _LINUX_SOUND_H */
+>>>>>>> refs/remotes/origin/master

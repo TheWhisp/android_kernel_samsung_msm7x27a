@@ -53,6 +53,17 @@
  * as opposed to devices that do something strangely or wrongly.
  */
 
+<<<<<<< HEAD
+=======
+/* In-kernel mode switching is deprecated.  Do not add new devices to
+ * this list for the sole purpose of switching them to a different
+ * mode.  Existing userspace solutions are superior.
+ *
+ * New mode switching devices should instead be added to the database
+ * maintained at http://www.draisberghof.de/usb_modeswitch/
+ */
+
+>>>>>>> refs/remotes/origin/master
 #if !defined(CONFIG_USB_STORAGE_SDDR09) && \
 		!defined(CONFIG_USB_STORAGE_SDDR09_MODULE)
 #define NO_SDDR09
@@ -110,7 +121,11 @@ UNUSUAL_DEV(  0x040d, 0x6205, 0x0003, 0x0003,
 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
 		US_FL_IGNORE_RESIDUE ),
 
+<<<<<<< HEAD
 /* Deduced by Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+=======
+/* Deduced by Jonathan Woithe <jwoithe@just42.net>
+>>>>>>> refs/remotes/origin/master
  * Entry needed for flags: US_FL_FIX_INQUIRY because initial inquiry message
  * always fails and confuses drive.
  */
@@ -226,6 +241,16 @@ UNUSUAL_DEV(  0x0421, 0x0495, 0x0370, 0x0370,
 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
 		US_FL_MAX_SECTORS_64 ),
 
+<<<<<<< HEAD
+=======
+/* Patch submitted by Mikhail Zolotaryov <lebon@lebon.org.ua> */
+UNUSUAL_DEV(  0x0421, 0x06aa, 0x1110, 0x1110,
+		"Nokia",
+		"502",
+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
+		US_FL_MAX_SECTORS_64 ),
+
+>>>>>>> refs/remotes/origin/master
 #ifdef NO_SDDR09
 UNUSUAL_DEV(  0x0436, 0x0005, 0x0100, 0x0100,
 		"Microtech",
@@ -665,6 +690,7 @@ UNUSUAL_DEV(  0x054c, 0x02a5, 0x0100, 0x0100,
 		US_FL_NO_READ_CAPACITY_16 ),
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Submitted by Ren Bigcren <bigcren.ren@sonymobile.com> */
 UNUSUAL_DEV(  0x054c, 0x02a5, 0x0100, 0x0100,
 		"Sony Corp.",
@@ -674,6 +700,8 @@ UNUSUAL_DEV(  0x054c, 0x02a5, 0x0100, 0x0100,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* floppy reports multiple luns */
 UNUSUAL_DEV(  0x055d, 0x2020, 0x0000, 0x0210,
 		"SAMSUNG",
@@ -1297,6 +1325,15 @@ UNUSUAL_DEV( 0x0af0, 0xd357, 0x0000, 0x0000,
 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
 		0 ),
 
+<<<<<<< HEAD
+=======
+/* Reported by Namjae Jeon <namjae.jeon@samsung.com> */
+UNUSUAL_DEV(0x0bc2, 0x2300, 0x0000, 0x9999,
+		"Seagate",
+		"Portable HDD",
+		USB_SC_DEVICE, USB_PR_DEVICE, NULL, US_FL_WRITE_CACHE),
+
+>>>>>>> refs/remotes/origin/master
 /* Reported by Ben Efros <ben@pc-doctor.com> */
 UNUSUAL_DEV( 0x0bc2, 0x3010, 0x0000, 0x0000,
 		"Seagate",
@@ -1498,6 +1535,15 @@ UNUSUAL_DEV(  0x1058, 0x0704, 0x0000, 0x9999,
 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
 		US_FL_SANE_SENSE),
 
+<<<<<<< HEAD
+=======
+/* Reported by Namjae Jeon <namjae.jeon@samsung.com> */
+UNUSUAL_DEV(0x1058, 0x070a, 0x0000, 0x9999,
+		"Western Digital",
+		"My Passport HDD",
+		USB_SC_DEVICE, USB_PR_DEVICE, NULL, US_FL_WRITE_CACHE),
+
+>>>>>>> refs/remotes/origin/master
 /* Reported by Fabio Venturi <f.venturi@tdnet.it>
  * The device reports a vendor-specific bDeviceClass.
  */
@@ -1916,6 +1962,16 @@ UNUSUAL_DEV(  0x1652, 0x6600, 0x0201, 0x0201,
 		US_FL_IGNORE_RESIDUE ),
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+/* Reported by Oliver Neukum <oneukum@suse.com> */
+UNUSUAL_DEV(  0x174c, 0x55aa, 0x0100, 0x0100,
+		"ASMedia",
+		"AS2105",
+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
+		US_FL_NEEDS_CAP16),
+
+>>>>>>> refs/remotes/origin/master
 /* Reported by Jesse Feddema <jdfeddema@gmail.com> */
 UNUSUAL_DEV(  0x177f, 0x0400, 0x0000, 0x0000,
 		"Yarvik",
@@ -1923,8 +1979,11 @@ UNUSUAL_DEV(  0x177f, 0x0400, 0x0000, 0x0000,
 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
 		US_FL_BULK_IGNORE_TAG | US_FL_MAX_SECTORS_64 ),
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Reported by Hans de Goede <hdegoede@redhat.com>
  * These Appotech controllers are found in Picture Frames, they provide a
  * (buggy) emulation of a cdrom drive which contains the windows software
@@ -1955,10 +2014,14 @@ UNUSUAL_DEV(  0x1b1c, 0x1ab5, 0x0200, 0x0200,
 		US_FL_INITIAL_READ10 ),
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Patch by Richard Sch�tz <r.schtz@t-online.de>
 =======
 /* Patch by Richard Schütz <r.schtz@t-online.de>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Patch by Richard Schütz <r.schtz@t-online.de>
+>>>>>>> refs/remotes/origin/master
  * This external hard drive enclosure uses a JMicron chip which
  * needs the US_FL_IGNORE_RESIDUE flag to work properly. */
 UNUSUAL_DEV(  0x1e68, 0x001b, 0x0000, 0x0000,
@@ -2063,6 +2126,7 @@ UNUSUAL_DEV( 0xed10, 0x7636, 0x0001, 0x0001,
 		USB_SC_DEVICE, USB_PR_DEVICE, NULL, US_FL_NOT_LOCKABLE ),
 
 /* Control/Bulk transport for all SubClass values */
+<<<<<<< HEAD
 USUAL_DEV(USB_SC_RBC, USB_PR_CB, USB_US_TYPE_STOR),
 USUAL_DEV(USB_SC_8020, USB_PR_CB, USB_US_TYPE_STOR),
 USUAL_DEV(USB_SC_QIC, USB_PR_CB, USB_US_TYPE_STOR),
@@ -2085,3 +2149,27 @@ USUAL_DEV(USB_SC_QIC, USB_PR_BULK, USB_US_TYPE_STOR),
 USUAL_DEV(USB_SC_UFI, USB_PR_BULK, USB_US_TYPE_STOR),
 USUAL_DEV(USB_SC_8070, USB_PR_BULK, USB_US_TYPE_STOR),
 USUAL_DEV(USB_SC_SCSI, USB_PR_BULK, 0),
+=======
+USUAL_DEV(USB_SC_RBC, USB_PR_CB),
+USUAL_DEV(USB_SC_8020, USB_PR_CB),
+USUAL_DEV(USB_SC_QIC, USB_PR_CB),
+USUAL_DEV(USB_SC_UFI, USB_PR_CB),
+USUAL_DEV(USB_SC_8070, USB_PR_CB),
+USUAL_DEV(USB_SC_SCSI, USB_PR_CB),
+
+/* Control/Bulk/Interrupt transport for all SubClass values */
+USUAL_DEV(USB_SC_RBC, USB_PR_CBI),
+USUAL_DEV(USB_SC_8020, USB_PR_CBI),
+USUAL_DEV(USB_SC_QIC, USB_PR_CBI),
+USUAL_DEV(USB_SC_UFI, USB_PR_CBI),
+USUAL_DEV(USB_SC_8070, USB_PR_CBI),
+USUAL_DEV(USB_SC_SCSI, USB_PR_CBI),
+
+/* Bulk-only transport for all SubClass values */
+USUAL_DEV(USB_SC_RBC, USB_PR_BULK),
+USUAL_DEV(USB_SC_8020, USB_PR_BULK),
+USUAL_DEV(USB_SC_QIC, USB_PR_BULK),
+USUAL_DEV(USB_SC_UFI, USB_PR_BULK),
+USUAL_DEV(USB_SC_8070, USB_PR_BULK),
+USUAL_DEV(USB_SC_SCSI, USB_PR_BULK),
+>>>>>>> refs/remotes/origin/master

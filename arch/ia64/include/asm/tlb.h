@@ -22,7 +22,11 @@
  * unmapping a portion of the virtual address space, these hooks are called according to
  * the following template:
  *
+<<<<<<< HEAD
  *	tlb <- tlb_gather_mmu(mm, full_mm_flush);	// start unmap for address space MM
+=======
+ *	tlb <- tlb_gather_mmu(mm, start, end);		// start unmap for address space MM
+>>>>>>> refs/remotes/origin/master
  *	{
  *	  for each vma that needs a shootdown do {
  *	    tlb_start_vma(tlb, vma);
@@ -46,12 +50,15 @@
 #include <asm/tlbflush.h>
 #include <asm/machvec.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 # define tlb_fast_mode(tlb)	((tlb)->nr == ~0U)
 #else
 # define tlb_fast_mode(tlb)	(1)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * If we can't allocate a page to make a big batch of page pointers
  * to work on, then just handle a few from the on-stack structure.
@@ -60,10 +67,18 @@
 
 struct mmu_gather {
 	struct mm_struct	*mm;
+<<<<<<< HEAD
 	unsigned int		nr;		/* == ~0U => fast mode */
 	unsigned int		max;
 	unsigned char		fullmm;		/* non-zero means full mm flush */
 	unsigned char		need_flush;	/* really unmapped some PTEs? */
+=======
+	unsigned int		nr;
+	unsigned int		max;
+	unsigned char		fullmm;		/* non-zero means full mm flush */
+	unsigned char		need_flush;	/* really unmapped some PTEs? */
+	unsigned long		start, end;
+>>>>>>> refs/remotes/origin/master
 	unsigned long		start_addr;
 	unsigned long		end_addr;
 	struct page		**pages;
@@ -103,6 +118,10 @@ extern struct ia64_tr_entry *ia64_idtrs[NR_CPUS];
 static inline void
 ia64_tlb_flush_mmu (struct mmu_gather *tlb, unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
+=======
+	unsigned long i;
+>>>>>>> refs/remotes/origin/master
 	unsigned int nr;
 
 	if (!tlb->need_flush)
@@ -141,6 +160,7 @@ ia64_tlb_flush_mmu (struct mmu_gather *tlb, unsigned long start, unsigned long e
 
 	/* lastly, release the freed pages */
 	nr = tlb->nr;
+<<<<<<< HEAD
 	if (!tlb_fast_mode(tlb)) {
 		unsigned long i;
 		tlb->nr = 0;
@@ -148,6 +168,13 @@ ia64_tlb_flush_mmu (struct mmu_gather *tlb, unsigned long start, unsigned long e
 		for (i = 0; i < nr; ++i)
 			free_page_and_swap_cache(tlb->pages[i]);
 	}
+=======
+
+	tlb->nr = 0;
+	tlb->start_addr = ~0UL;
+	for (i = 0; i < nr; ++i)
+		free_page_and_swap_cache(tlb->pages[i]);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void __tlb_alloc_page(struct mmu_gather *tlb)
@@ -162,11 +189,16 @@ static inline void __tlb_alloc_page(struct mmu_gather *tlb)
 
 
 static inline void
+<<<<<<< HEAD
 tlb_gather_mmu(struct mmu_gather *tlb, struct mm_struct *mm, unsigned int full_mm_flush)
+=======
+tlb_gather_mmu(struct mmu_gather *tlb, struct mm_struct *mm, unsigned long start, unsigned long end)
+>>>>>>> refs/remotes/origin/master
 {
 	tlb->mm = mm;
 	tlb->max = ARRAY_SIZE(tlb->local);
 	tlb->pages = tlb->local;
+<<<<<<< HEAD
 	/*
 	 * Use fast mode if only 1 CPU is online.
 	 *
@@ -182,6 +214,12 @@ tlb_gather_mmu(struct mmu_gather *tlb, struct mm_struct *mm, unsigned int full_m
 	 */
 	tlb->nr = (num_online_cpus() == 1) ? ~0U : 0;
 	tlb->fullmm = full_mm_flush;
+=======
+	tlb->nr = 0;
+	tlb->fullmm = !(start | (end+1));
+	tlb->start = start;
+	tlb->end = end;
+>>>>>>> refs/remotes/origin/master
 	tlb->start_addr = ~0UL;
 }
 
@@ -214,11 +252,14 @@ static inline int __tlb_remove_page(struct mmu_gather *tlb, struct page *page)
 {
 	tlb->need_flush = 1;
 
+<<<<<<< HEAD
 	if (tlb_fast_mode(tlb)) {
 		free_page_and_swap_cache(page);
 		return 1; /* avoid calling tlb_flush_mmu */
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!tlb->nr && tlb->pages == tlb->local)
 		__tlb_alloc_page(tlb);
 

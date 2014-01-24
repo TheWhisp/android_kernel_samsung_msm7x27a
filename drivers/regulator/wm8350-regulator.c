@@ -100,10 +100,14 @@ static int get_isink_val(int min_uA, int max_uA, u16 *setting)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = ARRAY_SIZE(isink_cur) - 1; i >= 0; i--) {
 =======
 	for (i = 0; i < ARRAY_SIZE(isink_cur); i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < ARRAY_SIZE(isink_cur); i++) {
+>>>>>>> refs/remotes/origin/master
 		if (min_uA <= isink_cur[i] && max_uA >= isink_cur[i]) {
 			*setting = i;
 			return 0;
@@ -112,6 +116,7 @@ static int get_isink_val(int min_uA, int max_uA, u16 *setting)
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static inline int wm8350_ldo_val_to_mvolts(unsigned int val)
 {
 	if (val < 16)
@@ -139,6 +144,8 @@ static inline unsigned int wm8350_dcdc_mvolts_to_val(int mV)
 	return (mV - 850) / 25;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int wm8350_isink_set_current(struct regulator_dev *rdev, int min_uA,
 	int max_uA)
 {
@@ -191,10 +198,14 @@ static int wm8350_isink_get_current(struct regulator_dev *rdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (isink_cur[val] + 50) / 100;
 =======
 	return isink_cur[val];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return isink_cur[val];
+>>>>>>> refs/remotes/origin/master
 }
 
 /* turn on ISINK followed by DCDC */
@@ -367,6 +378,7 @@ int wm8350_isink_set_flash(struct wm8350 *wm8350, int isink, u16 mode,
 }
 EXPORT_SYMBOL_GPL(wm8350_isink_set_flash);
 
+<<<<<<< HEAD
 static int wm8350_dcdc_set_voltage(struct regulator_dev *rdev, int min_uV,
 				   int max_uV, unsigned *selector)
 {
@@ -465,6 +477,15 @@ static int wm8350_dcdc_set_suspend_voltage(struct regulator_dev *rdev, int uV)
 	}
 	if (mV == 0)
 		mV = 850;
+=======
+static int wm8350_dcdc_set_suspend_voltage(struct regulator_dev *rdev, int uV)
+{
+	struct wm8350 *wm8350 = rdev_get_drvdata(rdev);
+	int sel, volt_reg, dcdc = rdev_get_id(rdev);
+	u16 val;
+
+	dev_dbg(wm8350->dev, "%s %d mV %d\n", __func__, dcdc, uV / 1000);
+>>>>>>> refs/remotes/origin/master
 
 	switch (dcdc) {
 	case WM8350_DCDC_1:
@@ -485,10 +506,20 @@ static int wm8350_dcdc_set_suspend_voltage(struct regulator_dev *rdev, int uV)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	/* all DCDCs have same mV bits */
 	val = wm8350_reg_read(wm8350, volt_reg) & ~WM8350_DC1_VSEL_MASK;
 	wm8350_reg_write(wm8350, volt_reg,
 			 val | wm8350_dcdc_mvolts_to_val(mV));
+=======
+	sel = regulator_map_voltage_linear(rdev, uV, uV);
+	if (sel < 0)
+		return -EINVAL;
+
+	/* all DCDCs have same mV bits */
+	val = wm8350_reg_read(wm8350, volt_reg) & ~WM8350_DC1_VSEL_MASK;
+	wm8350_reg_write(wm8350, volt_reg, val | sel);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -504,40 +535,56 @@ static int wm8350_dcdc_set_suspend_enable(struct regulator_dev *rdev)
 			& ~WM8350_DCDC_HIB_MODE_MASK;
 		wm8350_reg_write(wm8350, WM8350_DCDC1_LOW_POWER,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			wm8350->pmic.dcdc1_hib_mode);
 =======
 			val | wm8350->pmic.dcdc1_hib_mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			val | wm8350->pmic.dcdc1_hib_mode);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case WM8350_DCDC_3:
 		val = wm8350_reg_read(wm8350, WM8350_DCDC3_LOW_POWER)
 			& ~WM8350_DCDC_HIB_MODE_MASK;
 		wm8350_reg_write(wm8350, WM8350_DCDC3_LOW_POWER,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			wm8350->pmic.dcdc3_hib_mode);
 =======
 			val | wm8350->pmic.dcdc3_hib_mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			val | wm8350->pmic.dcdc3_hib_mode);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case WM8350_DCDC_4:
 		val = wm8350_reg_read(wm8350, WM8350_DCDC4_LOW_POWER)
 			& ~WM8350_DCDC_HIB_MODE_MASK;
 		wm8350_reg_write(wm8350, WM8350_DCDC4_LOW_POWER,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			wm8350->pmic.dcdc4_hib_mode);
 =======
 			val | wm8350->pmic.dcdc4_hib_mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			val | wm8350->pmic.dcdc4_hib_mode);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case WM8350_DCDC_6:
 		val = wm8350_reg_read(wm8350, WM8350_DCDC6_LOW_POWER)
 			& ~WM8350_DCDC_HIB_MODE_MASK;
 		wm8350_reg_write(wm8350, WM8350_DCDC6_LOW_POWER,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			wm8350->pmic.dcdc6_hib_mode);
 =======
 			val | wm8350->pmic.dcdc6_hib_mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			val | wm8350->pmic.dcdc6_hib_mode);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case WM8350_DCDC_2:
 	case WM8350_DCDC_5:
@@ -560,40 +607,56 @@ static int wm8350_dcdc_set_suspend_disable(struct regulator_dev *rdev)
 		wm8350->pmic.dcdc1_hib_mode = val & WM8350_DCDC_HIB_MODE_MASK;
 		wm8350_reg_write(wm8350, WM8350_DCDC1_LOW_POWER,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			WM8350_DCDC_HIB_MODE_DIS);
 =======
 				 val | WM8350_DCDC_HIB_MODE_DIS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 val | WM8350_DCDC_HIB_MODE_DIS);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case WM8350_DCDC_3:
 		val = wm8350_reg_read(wm8350, WM8350_DCDC3_LOW_POWER);
 		wm8350->pmic.dcdc3_hib_mode = val & WM8350_DCDC_HIB_MODE_MASK;
 		wm8350_reg_write(wm8350, WM8350_DCDC3_LOW_POWER,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			WM8350_DCDC_HIB_MODE_DIS);
 =======
 				 val | WM8350_DCDC_HIB_MODE_DIS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 val | WM8350_DCDC_HIB_MODE_DIS);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case WM8350_DCDC_4:
 		val = wm8350_reg_read(wm8350, WM8350_DCDC4_LOW_POWER);
 		wm8350->pmic.dcdc4_hib_mode = val & WM8350_DCDC_HIB_MODE_MASK;
 		wm8350_reg_write(wm8350, WM8350_DCDC4_LOW_POWER,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			WM8350_DCDC_HIB_MODE_DIS);
 =======
 				 val | WM8350_DCDC_HIB_MODE_DIS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 val | WM8350_DCDC_HIB_MODE_DIS);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case WM8350_DCDC_6:
 		val = wm8350_reg_read(wm8350, WM8350_DCDC6_LOW_POWER);
 		wm8350->pmic.dcdc6_hib_mode = val & WM8350_DCDC_HIB_MODE_MASK;
 		wm8350_reg_write(wm8350, WM8350_DCDC6_LOW_POWER,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			WM8350_DCDC_HIB_MODE_DIS);
 =======
 				 val | WM8350_DCDC_HIB_MODE_DIS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 val | WM8350_DCDC_HIB_MODE_DIS);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case WM8350_DCDC_2:
 	case WM8350_DCDC_5:
@@ -616,6 +679,7 @@ static int wm8350_dcdc25_set_suspend_enable(struct regulator_dev *rdev)
 		    & ~WM8350_DC2_HIB_MODE_MASK;
 		wm8350_reg_write(wm8350, WM8350_DCDC2_CONTROL, val |
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 WM8350_DC2_HIB_MODE_ACTIVE);
 		break;
 	case WM8350_DCDC_5:
@@ -624,6 +688,8 @@ static int wm8350_dcdc25_set_suspend_enable(struct regulator_dev *rdev)
 		wm8350_reg_write(wm8350, WM8350_DCDC5_CONTROL, val |
 				 WM8350_DC5_HIB_MODE_ACTIVE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		    (WM8350_DC2_HIB_MODE_ACTIVE << WM8350_DC2_HIB_MODE_SHIFT));
 		break;
 	case WM8350_DCDC_5:
@@ -631,7 +697,10 @@ static int wm8350_dcdc25_set_suspend_enable(struct regulator_dev *rdev)
 		    & ~WM8350_DC5_HIB_MODE_MASK;
 		wm8350_reg_write(wm8350, WM8350_DCDC5_CONTROL, val |
 		    (WM8350_DC5_HIB_MODE_ACTIVE << WM8350_DC5_HIB_MODE_SHIFT));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return -EINVAL;
@@ -651,6 +720,7 @@ static int wm8350_dcdc25_set_suspend_disable(struct regulator_dev *rdev)
 		    & ~WM8350_DC2_HIB_MODE_MASK;
 		wm8350_reg_write(wm8350, WM8350_DCDC2_CONTROL, val |
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 WM8350_DC2_HIB_MODE_DISABLE);
 		break;
 	case WM8350_DCDC_5:
@@ -659,6 +729,8 @@ static int wm8350_dcdc25_set_suspend_disable(struct regulator_dev *rdev)
 		wm8350_reg_write(wm8350, WM8350_DCDC5_CONTROL, val |
 				 WM8350_DC2_HIB_MODE_DISABLE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		    (WM8350_DC2_HIB_MODE_DISABLE << WM8350_DC2_HIB_MODE_SHIFT));
 		break;
 	case WM8350_DCDC_5:
@@ -666,7 +738,10 @@ static int wm8350_dcdc25_set_suspend_disable(struct regulator_dev *rdev)
 		    & ~WM8350_DC5_HIB_MODE_MASK;
 		wm8350_reg_write(wm8350, WM8350_DCDC5_CONTROL, val |
 		    (WM8350_DC5_HIB_MODE_DISABLE << WM8350_DC5_HIB_MODE_SHIFT));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return -EINVAL;
@@ -717,6 +792,7 @@ static int wm8350_dcdc_set_suspend_mode(struct regulator_dev *rdev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int wm8350_ldo_set_suspend_voltage(struct regulator_dev *rdev, int uV)
 {
 	struct wm8350 *wm8350 = rdev_get_drvdata(rdev);
@@ -730,6 +806,20 @@ static int wm8350_ldo_set_suspend_voltage(struct regulator_dev *rdev, int uV)
 			ldo, mV);
 		return -EINVAL;
 	}
+=======
+static const struct regulator_linear_range wm8350_ldo_ranges[] = {
+	REGULATOR_LINEAR_RANGE(900000, 0, 15, 50000),
+	REGULATOR_LINEAR_RANGE(1800000, 16, 31, 100000),
+};
+
+static int wm8350_ldo_set_suspend_voltage(struct regulator_dev *rdev, int uV)
+{
+	struct wm8350 *wm8350 = rdev_get_drvdata(rdev);
+	int sel, volt_reg, ldo = rdev_get_id(rdev);
+	u16 val;
+
+	dev_dbg(wm8350->dev, "%s %d mV %d\n", __func__, ldo, uV / 1000);
+>>>>>>> refs/remotes/origin/master
 
 	switch (ldo) {
 	case WM8350_LDO_1:
@@ -748,10 +838,20 @@ static int wm8350_ldo_set_suspend_voltage(struct regulator_dev *rdev, int uV)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	/* all LDOs have same mV bits */
 	val = wm8350_reg_read(wm8350, volt_reg) & ~WM8350_LDO1_VSEL_MASK;
 	wm8350_reg_write(wm8350, volt_reg,
 			 val | wm8350_ldo_mvolts_to_val(mV));
+=======
+	sel = regulator_map_voltage_linear_range(rdev, uV, uV);
+	if (sel < 0)
+		return -EINVAL;
+
+	/* all LDOs have same mV bits */
+	val = wm8350_reg_read(wm8350, volt_reg) & ~WM8350_LDO1_VSEL_MASK;
+	wm8350_reg_write(wm8350, volt_reg, val | sel);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -809,6 +909,7 @@ static int wm8350_ldo_set_suspend_disable(struct regulator_dev *rdev)
 
 	/* all LDOs have same mV bits */
 	val = wm8350_reg_read(wm8350, volt_reg) & ~WM8350_LDO1_HIB_MODE_MASK;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	wm8350_reg_write(wm8350, volt_reg, WM8350_LDO1_HIB_MODE_DIS);
 =======
@@ -903,6 +1004,12 @@ static int wm8350_ldo_list_voltage(struct regulator_dev *rdev,
 	return wm8350_ldo_val_to_mvolts(selector) * 1000;
 }
 
+=======
+	wm8350_reg_write(wm8350, volt_reg, val | WM8350_LDO1_HIB_MODE_DIS);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 int wm8350_dcdc_set_slot(struct wm8350 *wm8350, int dcdc, u16 start,
 			 u16 stop, u16 fault)
 {
@@ -1023,6 +1130,7 @@ int wm8350_dcdc25_set_mode(struct wm8350 *wm8350, int dcdc, u16 mode,
 }
 EXPORT_SYMBOL_GPL(wm8350_dcdc25_set_mode);
 
+<<<<<<< HEAD
 static int wm8350_dcdc_enable(struct regulator_dev *rdev)
 {
 	struct wm8350 *wm8350 = rdev_get_drvdata(rdev);
@@ -1080,6 +1188,8 @@ static int wm8350_ldo_disable(struct regulator_dev *rdev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int force_continuous_enable(struct wm8350 *wm8350, int dcdc, int enable)
 {
 	int reg = 0, ret;
@@ -1261,6 +1371,7 @@ static unsigned int wm8350_dcdc_get_optimum_mode(struct regulator_dev *rdev,
 	return mode;
 }
 
+<<<<<<< HEAD
 static int wm8350_dcdc_is_enabled(struct regulator_dev *rdev)
 {
 	struct wm8350 *wm8350 = rdev_get_drvdata(rdev);
@@ -1297,6 +1408,19 @@ static struct regulator_ops wm8350_dcdc_ops = {
 	.set_mode = wm8350_dcdc_set_mode,
 	.get_optimum_mode = wm8350_dcdc_get_optimum_mode,
 	.is_enabled = wm8350_dcdc_is_enabled,
+=======
+static struct regulator_ops wm8350_dcdc_ops = {
+	.set_voltage_sel = regulator_set_voltage_sel_regmap,
+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
+	.list_voltage = regulator_list_voltage_linear,
+	.map_voltage = regulator_map_voltage_linear,
+	.enable = regulator_enable_regmap,
+	.disable = regulator_disable_regmap,
+	.is_enabled = regulator_is_enabled_regmap,
+	.get_mode = wm8350_dcdc_get_mode,
+	.set_mode = wm8350_dcdc_set_mode,
+	.get_optimum_mode = wm8350_dcdc_get_optimum_mode,
+>>>>>>> refs/remotes/origin/master
 	.set_suspend_voltage = wm8350_dcdc_set_suspend_voltage,
 	.set_suspend_enable = wm8350_dcdc_set_suspend_enable,
 	.set_suspend_disable = wm8350_dcdc_set_suspend_disable,
@@ -1304,20 +1428,36 @@ static struct regulator_ops wm8350_dcdc_ops = {
 };
 
 static struct regulator_ops wm8350_dcdc2_5_ops = {
+<<<<<<< HEAD
 	.enable = wm8350_dcdc_enable,
 	.disable = wm8350_dcdc_disable,
 	.is_enabled = wm8350_dcdc_is_enabled,
+=======
+	.enable = regulator_enable_regmap,
+	.disable = regulator_disable_regmap,
+	.is_enabled = regulator_is_enabled_regmap,
+>>>>>>> refs/remotes/origin/master
 	.set_suspend_enable = wm8350_dcdc25_set_suspend_enable,
 	.set_suspend_disable = wm8350_dcdc25_set_suspend_disable,
 };
 
 static struct regulator_ops wm8350_ldo_ops = {
+<<<<<<< HEAD
 	.set_voltage = wm8350_ldo_set_voltage,
 	.get_voltage_sel = wm8350_ldo_get_voltage_sel,
 	.list_voltage = wm8350_ldo_list_voltage,
 	.enable = wm8350_ldo_enable,
 	.disable = wm8350_ldo_disable,
 	.is_enabled = wm8350_ldo_is_enabled,
+=======
+	.map_voltage = regulator_map_voltage_linear_range,
+	.set_voltage_sel = regulator_set_voltage_sel_regmap,
+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
+	.list_voltage = regulator_list_voltage_linear_range,
+	.enable = regulator_enable_regmap,
+	.disable = regulator_disable_regmap,
+	.is_enabled = regulator_is_enabled_regmap,
+>>>>>>> refs/remotes/origin/master
 	.get_mode = wm8350_ldo_get_mode,
 	.set_suspend_voltage = wm8350_ldo_set_suspend_voltage,
 	.set_suspend_enable = wm8350_ldo_set_suspend_enable,
@@ -1333,7 +1473,11 @@ static struct regulator_ops wm8350_isink_ops = {
 	.enable_time = wm8350_isink_enable_time,
 };
 
+<<<<<<< HEAD
 static struct regulator_desc wm8350_reg[NUM_WM8350_REGULATORS] = {
+=======
+static const struct regulator_desc wm8350_reg[NUM_WM8350_REGULATORS] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "DCDC1",
 		.id = WM8350_DCDC_1,
@@ -1341,6 +1485,15 @@ static struct regulator_desc wm8350_reg[NUM_WM8350_REGULATORS] = {
 		.irq = WM8350_IRQ_UV_DC1,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = WM8350_DCDC_MAX_VSEL + 1,
+<<<<<<< HEAD
+=======
+		.min_uV = 850000,
+		.uV_step = 25000,
+		.vsel_reg = WM8350_DCDC1_CONTROL,
+		.vsel_mask = WM8350_DC1_VSEL_MASK,
+		.enable_reg = WM8350_DCDC_LDO_REQUESTED,
+		.enable_mask = WM8350_DC1_ENA,
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 	},
 	{
@@ -1349,6 +1502,11 @@ static struct regulator_desc wm8350_reg[NUM_WM8350_REGULATORS] = {
 		.ops = &wm8350_dcdc2_5_ops,
 		.irq = WM8350_IRQ_UV_DC2,
 		.type = REGULATOR_VOLTAGE,
+<<<<<<< HEAD
+=======
+		.enable_reg = WM8350_DCDC_LDO_REQUESTED,
+		.enable_mask = WM8350_DC2_ENA,
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 	},
 	{
@@ -1358,6 +1516,15 @@ static struct regulator_desc wm8350_reg[NUM_WM8350_REGULATORS] = {
 		.irq = WM8350_IRQ_UV_DC3,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = WM8350_DCDC_MAX_VSEL + 1,
+<<<<<<< HEAD
+=======
+		.min_uV = 850000,
+		.uV_step = 25000,
+		.vsel_reg = WM8350_DCDC3_CONTROL,
+		.vsel_mask = WM8350_DC3_VSEL_MASK,
+		.enable_reg = WM8350_DCDC_LDO_REQUESTED,
+		.enable_mask = WM8350_DC3_ENA,
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 	},
 	{
@@ -1367,6 +1534,15 @@ static struct regulator_desc wm8350_reg[NUM_WM8350_REGULATORS] = {
 		.irq = WM8350_IRQ_UV_DC4,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = WM8350_DCDC_MAX_VSEL + 1,
+<<<<<<< HEAD
+=======
+		.min_uV = 850000,
+		.uV_step = 25000,
+		.vsel_reg = WM8350_DCDC4_CONTROL,
+		.vsel_mask = WM8350_DC4_VSEL_MASK,
+		.enable_reg = WM8350_DCDC_LDO_REQUESTED,
+		.enable_mask = WM8350_DC4_ENA,
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 	},
 	{
@@ -1375,6 +1551,11 @@ static struct regulator_desc wm8350_reg[NUM_WM8350_REGULATORS] = {
 		.ops = &wm8350_dcdc2_5_ops,
 		.irq = WM8350_IRQ_UV_DC5,
 		.type = REGULATOR_VOLTAGE,
+<<<<<<< HEAD
+=======
+		.enable_reg = WM8350_DCDC_LDO_REQUESTED,
+		.enable_mask = WM8350_DC5_ENA,
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 	 },
 	{
@@ -1384,6 +1565,15 @@ static struct regulator_desc wm8350_reg[NUM_WM8350_REGULATORS] = {
 		.irq = WM8350_IRQ_UV_DC6,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = WM8350_DCDC_MAX_VSEL + 1,
+<<<<<<< HEAD
+=======
+		.min_uV = 850000,
+		.uV_step = 25000,
+		.vsel_reg = WM8350_DCDC6_CONTROL,
+		.vsel_mask = WM8350_DC6_VSEL_MASK,
+		.enable_reg = WM8350_DCDC_LDO_REQUESTED,
+		.enable_mask = WM8350_DC6_ENA,
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 	},
 	{
@@ -1393,6 +1583,15 @@ static struct regulator_desc wm8350_reg[NUM_WM8350_REGULATORS] = {
 		.irq = WM8350_IRQ_UV_LDO1,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = WM8350_LDO1_VSEL_MASK + 1,
+<<<<<<< HEAD
+=======
+		.linear_ranges = wm8350_ldo_ranges,
+		.n_linear_ranges = ARRAY_SIZE(wm8350_ldo_ranges),
+		.vsel_reg = WM8350_LDO1_CONTROL,
+		.vsel_mask = WM8350_LDO1_VSEL_MASK,
+		.enable_reg = WM8350_DCDC_LDO_REQUESTED,
+		.enable_mask = WM8350_LDO1_ENA,
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 	},
 	{
@@ -1402,6 +1601,15 @@ static struct regulator_desc wm8350_reg[NUM_WM8350_REGULATORS] = {
 		.irq = WM8350_IRQ_UV_LDO2,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = WM8350_LDO2_VSEL_MASK + 1,
+<<<<<<< HEAD
+=======
+		.linear_ranges = wm8350_ldo_ranges,
+		.n_linear_ranges = ARRAY_SIZE(wm8350_ldo_ranges),
+		.vsel_reg = WM8350_LDO2_CONTROL,
+		.vsel_mask = WM8350_LDO2_VSEL_MASK,
+		.enable_reg = WM8350_DCDC_LDO_REQUESTED,
+		.enable_mask = WM8350_LDO2_ENA,
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 	},
 	{
@@ -1411,6 +1619,15 @@ static struct regulator_desc wm8350_reg[NUM_WM8350_REGULATORS] = {
 		.irq = WM8350_IRQ_UV_LDO3,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = WM8350_LDO3_VSEL_MASK + 1,
+<<<<<<< HEAD
+=======
+		.linear_ranges = wm8350_ldo_ranges,
+		.n_linear_ranges = ARRAY_SIZE(wm8350_ldo_ranges),
+		.vsel_reg = WM8350_LDO3_CONTROL,
+		.vsel_mask = WM8350_LDO3_VSEL_MASK,
+		.enable_reg = WM8350_DCDC_LDO_REQUESTED,
+		.enable_mask = WM8350_LDO3_ENA,
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 	},
 	{
@@ -1420,6 +1637,15 @@ static struct regulator_desc wm8350_reg[NUM_WM8350_REGULATORS] = {
 		.irq = WM8350_IRQ_UV_LDO4,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = WM8350_LDO4_VSEL_MASK + 1,
+<<<<<<< HEAD
+=======
+		.linear_ranges = wm8350_ldo_ranges,
+		.n_linear_ranges = ARRAY_SIZE(wm8350_ldo_ranges),
+		.vsel_reg = WM8350_LDO4_CONTROL,
+		.vsel_mask = WM8350_LDO4_VSEL_MASK,
+		.enable_reg = WM8350_DCDC_LDO_REQUESTED,
+		.enable_mask = WM8350_LDO4_ENA,
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 	},
 	{
@@ -1462,6 +1688,10 @@ static irqreturn_t pmic_uv_handler(int irq, void *data)
 static int wm8350_regulator_probe(struct platform_device *pdev)
 {
 	struct wm8350 *wm8350 = dev_get_drvdata(&pdev->dev);
+<<<<<<< HEAD
+=======
+	struct regulator_config config = { };
+>>>>>>> refs/remotes/origin/master
 	struct regulator_dev *rdev;
 	int ret;
 	u16 val;
@@ -1489,6 +1719,7 @@ static int wm8350_regulator_probe(struct platform_device *pdev)
 		break;
 	}
 
+<<<<<<< HEAD
 	/* register regulator */
 	rdev = regulator_register(&wm8350_reg[pdev->id], &pdev->dev,
 				  pdev->dev.platform_data,
@@ -1497,6 +1728,16 @@ static int wm8350_regulator_probe(struct platform_device *pdev)
 =======
 				  dev_get_drvdata(&pdev->dev), NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	config.dev = &pdev->dev;
+	config.init_data = dev_get_platdata(&pdev->dev);
+	config.driver_data = dev_get_drvdata(&pdev->dev);
+	config.regmap = wm8350->regmap;
+
+	/* register regulator */
+	rdev = devm_regulator_register(&pdev->dev, &wm8350_reg[pdev->id],
+				       &config);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(rdev)) {
 		dev_err(&pdev->dev, "failed to register %s\n",
 			wm8350_reg[pdev->id].name);
@@ -1507,7 +1748,10 @@ static int wm8350_regulator_probe(struct platform_device *pdev)
 	ret = wm8350_register_irq(wm8350, wm8350_reg[pdev->id].irq,
 				  pmic_uv_handler, 0, "UV", rdev);
 	if (ret < 0) {
+<<<<<<< HEAD
 		regulator_unregister(rdev);
+=======
+>>>>>>> refs/remotes/origin/master
 		dev_err(&pdev->dev, "failed to register regulator %s IRQ\n",
 			wm8350_reg[pdev->id].name);
 		return ret;
@@ -1523,8 +1767,11 @@ static int wm8350_regulator_remove(struct platform_device *pdev)
 
 	wm8350_free_irq(wm8350, wm8350_reg[pdev->id].irq, rdev);
 
+<<<<<<< HEAD
 	regulator_unregister(rdev);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1613,10 +1860,14 @@ int wm8350_register_led(struct wm8350 *wm8350, int lednum, int dcdc, int isink,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	led->isink_consumer.dev = &pdev->dev;
 =======
 	led->isink_consumer.dev_name = dev_name(&pdev->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	led->isink_consumer.dev_name = dev_name(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	led->isink_consumer.supply = "led_isink";
 	led->isink_init.num_consumer_supplies = 1;
 	led->isink_init.consumer_supplies = &led->isink_consumer;
@@ -1632,10 +1883,14 @@ int wm8350_register_led(struct wm8350 *wm8350, int lednum, int dcdc, int isink,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	led->dcdc_consumer.dev = &pdev->dev;
 =======
 	led->dcdc_consumer.dev_name = dev_name(&pdev->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	led->dcdc_consumer.dev_name = dev_name(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	led->dcdc_consumer.supply = "led_vcc";
 	led->dcdc_init.num_consumer_supplies = 1;
 	led->dcdc_init.consumer_supplies = &led->dcdc_consumer;

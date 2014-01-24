@@ -7,6 +7,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
+<<<<<<< HEAD
+=======
+#include <signal.h>
+>>>>>>> refs/remotes/origin/master
 #include <sys/ioctl.h>
 #include <linux/types.h>
 #include <linux/watchdog.h>
@@ -29,6 +33,17 @@ static void keep_alive(void)
  * The main program.  Run the program with "-d" to disable the card,
  * or "-e" to enable the card.
  */
+<<<<<<< HEAD
+=======
+
+static void term(int sig)
+{
+    close(fd);
+    fprintf(stderr, "Stopping watchdog ticks...\n");
+    exit(0);
+}
+
+>>>>>>> refs/remotes/origin/master
 int main(int argc, char *argv[])
 {
     int flags;
@@ -47,26 +62,49 @@ int main(int argc, char *argv[])
 	    ioctl(fd, WDIOC_SETOPTIONS, &flags);
 	    fprintf(stderr, "Watchdog card disabled.\n");
 	    fflush(stderr);
+<<<<<<< HEAD
 	    exit(0);
+=======
+	    goto end;
+>>>>>>> refs/remotes/origin/master
 	} else if (!strncasecmp(argv[1], "-e", 2)) {
 	    flags = WDIOS_ENABLECARD;
 	    ioctl(fd, WDIOC_SETOPTIONS, &flags);
 	    fprintf(stderr, "Watchdog card enabled.\n");
 	    fflush(stderr);
+<<<<<<< HEAD
 	    exit(0);
+=======
+	    goto end;
+>>>>>>> refs/remotes/origin/master
 	} else {
 	    fprintf(stderr, "-d to disable, -e to enable.\n");
 	    fprintf(stderr, "run by itself to tick the card.\n");
 	    fflush(stderr);
+<<<<<<< HEAD
 	    exit(0);
+=======
+	    goto end;
+>>>>>>> refs/remotes/origin/master
 	}
     } else {
 	fprintf(stderr, "Watchdog Ticking Away!\n");
 	fflush(stderr);
     }
 
+<<<<<<< HEAD
+=======
+    signal(SIGINT, term);
+
+>>>>>>> refs/remotes/origin/master
     while(1) {
 	keep_alive();
 	sleep(1);
     }
+<<<<<<< HEAD
+=======
+end:
+    close(fd);
+    return 0;
+>>>>>>> refs/remotes/origin/master
 }

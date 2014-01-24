@@ -20,6 +20,7 @@
 #include <linux/bitops.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/io.h>
 #include <asm/atomic.h>
@@ -27,6 +28,10 @@
 #include <asm/io.h>
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/io.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/string.h>
 #include <asm/byteorder.h>
@@ -162,11 +167,14 @@ static int tx_complete = 0,dma_complete = 0,queued = 0,requeued = 0,
 static struct atm_dev *eni_boards = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u32 *cpu_zeroes = NULL; /* aligned "magic" zeroes */
 static dma_addr_t zeroes;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Read/write registers on card */
 #define eni_in(r)	readl(eni_dev->reg+(r)*4)
 #define eni_out(v,r)	writel((v),eni_dev->reg+(r)*4)
@@ -1143,12 +1151,15 @@ DPRINTK("doing direct send\n"); /* @@@ well, this doesn't work anyway */
 			else
 				put_dma(tx->index,eni_dev->dma,&j,(unsigned long)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    skb_shinfo(skb)->frags[i].page + skb_shinfo(skb)->frags[i].page_offset,
 				    skb_shinfo(skb)->frags[i].size);
 	}
 	if (skb->len & 3)
 		put_dma(tx->index,eni_dev->dma,&j,zeroes,4-(skb->len & 3));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				    skb_frag_page(&skb_shinfo(skb)->frags[i]) +
 					skb_shinfo(skb)->frags[i].page_offset,
 				    skb_frag_size(&skb_shinfo(skb)->frags[i]));
@@ -1157,7 +1168,10 @@ DPRINTK("doing direct send\n"); /* @@@ well, this doesn't work anyway */
 		put_dma(tx->index, eni_dev->dma, &j, eni_dev->zero.dma,
 			4 - (skb->len & 3));
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* JK for AAL5 trailer - AAL0 doesn't need it, but who cares ... */
 	eni_dev->dma[j++] = (((tx->tx_pos+size) & (tx->words-1)) <<
 	     MID_DMA_COUNT_SHIFT) | (tx->index << MID_DMA_CHAN_SHIFT) |
@@ -1587,7 +1601,11 @@ tx_complete++;
 /*--------------------------------- entries ---------------------------------*/
 
 
+<<<<<<< HEAD
 static const char *media_name[] __devinitdata = {
+=======
+static char * const media_name[] = {
+>>>>>>> refs/remotes/origin/master
     "MMF", "SMF", "MMF", "03?", /*  0- 3 */
     "UTP", "05?", "06?", "07?", /*  4- 7 */
     "TAXI","09?", "10?", "11?", /*  8-11 */
@@ -1611,7 +1629,11 @@ static const char *media_name[] __devinitdata = {
   } })
 
 
+<<<<<<< HEAD
 static int __devinit get_esi_asic(struct atm_dev *dev)
+=======
+static int get_esi_asic(struct atm_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct eni_dev *eni_dev;
 	unsigned char tonga;
@@ -1703,7 +1725,11 @@ static int __devinit get_esi_asic(struct atm_dev *dev)
 #undef GET_SEPROM
 
 
+<<<<<<< HEAD
 static int __devinit get_esi_fpga(struct atm_dev *dev, void __iomem *base)
+=======
+static int get_esi_fpga(struct atm_dev *dev, void __iomem *base)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *mac_base;
 	int i;
@@ -1714,7 +1740,11 @@ static int __devinit get_esi_fpga(struct atm_dev *dev, void __iomem *base)
 }
 
 
+<<<<<<< HEAD
 static int __devinit eni_do_init(struct atm_dev *dev)
+=======
+static int eni_do_init(struct atm_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct midway_eprom __iomem *eprom;
 	struct eni_dev *eni_dev;
@@ -1747,9 +1777,13 @@ static int __devinit eni_do_init(struct atm_dev *dev)
 		return error;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	eni_dev->ioaddr = base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	eni_dev->ioaddr = base;
+>>>>>>> refs/remotes/origin/master
 	eni_dev->base_diff = real_base - (unsigned long) base;
 	/* id may not be present in ASIC Tonga boards - check this @@@ */
 	if (!eni_dev->asic) {
@@ -1812,7 +1846,10 @@ unmap:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void eni_do_release(struct atm_dev *dev)
 {
 	struct eni_dev *ed = ENI_DEV(dev);
@@ -1821,9 +1858,14 @@ static void eni_do_release(struct atm_dev *dev)
 	dev->phy = NULL;
 	iounmap(ed->ioaddr);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 static int __devinit eni_start(struct atm_dev *dev)
+=======
+
+static int eni_start(struct atm_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct eni_dev *eni_dev;
 	
@@ -1907,10 +1949,14 @@ free_list:
 
 free_irq:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	free_irq(eni_dev->irq, eni_dev);
 =======
 	free_irq(eni_dev->irq, dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	free_irq(eni_dev->irq, dev);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	return error;
@@ -2123,7 +2169,10 @@ static unsigned char eni_phy_get(struct atm_dev *dev,unsigned long addr)
 
 static int eni_proc_read(struct atm_dev *dev,loff_t *pos,char *page)
 {
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sock *s;
 	static const char *signal[] = { "LOST","unknown","okay" };
 	struct eni_dev *eni_dev = ENI_DEV(dev);
@@ -2201,7 +2250,11 @@ static int eni_proc_read(struct atm_dev *dev,loff_t *pos,char *page)
 	for(i = 0; i < VCC_HTABLE_SIZE; ++i) {
 		struct hlist_head *head = &vcc_hash[i];
 
+<<<<<<< HEAD
 		sk_for_each(s, node, head) {
+=======
+		sk_for_each(s, head) {
+>>>>>>> refs/remotes/origin/master
 			struct eni_vcc *eni_vcc;
 			int length;
 
@@ -2256,6 +2309,7 @@ static const struct atmdev_ops ops = {
 };
 
 
+<<<<<<< HEAD
 static int __devinit eni_init_one(struct pci_dev *pci_dev,
 <<<<<<< HEAD
     const struct pci_device_id *ent)
@@ -2302,6 +2356,10 @@ out0:
 	return error;
 =======
 				  const struct pci_device_id *ent)
+=======
+static int eni_init_one(struct pci_dev *pci_dev,
+			const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct atm_dev *dev;
 	struct eni_dev *eni_dev;
@@ -2355,7 +2413,10 @@ err_kfree:
 err_disable:
 	pci_disable_device(pci_dev);
 	goto out;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -2368,11 +2429,15 @@ MODULE_DEVICE_TABLE(pci,eni_pci_tbl);
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __devexit eni_remove_one(struct pci_dev *pci_dev)
 {
 	/* grrr */
 =======
 static void __devexit eni_remove_one(struct pci_dev *pdev)
+=======
+static void eni_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct atm_dev *dev = pci_get_drvdata(pdev);
 	struct eni_dev *ed = ENI_DEV(dev);
@@ -2383,7 +2448,10 @@ static void __devexit eni_remove_one(struct pci_dev *pdev)
 	pci_free_consistent(pdev, ENI_ZEROES_SIZE, zero->addr, zero->dma);
 	kfree(ed);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -2391,7 +2459,11 @@ static struct pci_driver eni_driver = {
 	.name		= DEV_LABEL,
 	.id_table	= eni_pci_tbl,
 	.probe		= eni_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(eni_remove_one),
+=======
+	.remove		= eni_remove_one,
+>>>>>>> refs/remotes/origin/master
 };
 
 

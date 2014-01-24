@@ -441,11 +441,22 @@ static bool ftmac100_rx_packet(struct ftmac100 *priv, int *processed)
 	skb->len += length;
 	skb->data_len += length;
 
+<<<<<<< HEAD
 	/* page might be freed in __pskb_pull_tail() */
 	if (length > 64)
 		skb->truesize += PAGE_SIZE;
 	__pskb_pull_tail(skb, min(length, 64));
 
+=======
+	if (length > 128) {
+		skb->truesize += PAGE_SIZE;
+		/* We pull the minimum amount into linear part */
+		__pskb_pull_tail(skb, ETH_HLEN);
+	} else {
+		/* Small frames are copied into linear part to free one page */
+		__pskb_pull_tail(skb, length);
+	}
+>>>>>>> refs/remotes/origin/master
 	ftmac100_alloc_rx_page(priv, rxdes, GFP_ATOMIC);
 
 	ftmac100_rx_pointer_advance(priv);
@@ -729,6 +740,7 @@ static int ftmac100_alloc_buffers(struct ftmac100 *priv)
 {
 	int i;
 
+<<<<<<< HEAD
 	priv->descs = dma_alloc_coherent(priv->dev, sizeof(struct ftmac100_descs),
 					 &priv->descs_dma_addr, GFP_KERNEL);
 	if (!priv->descs)
@@ -736,6 +748,15 @@ static int ftmac100_alloc_buffers(struct ftmac100 *priv)
 
 	memset(priv->descs, 0, sizeof(struct ftmac100_descs));
 
+=======
+	priv->descs = dma_zalloc_coherent(priv->dev,
+					  sizeof(struct ftmac100_descs),
+					  &priv->descs_dma_addr,
+					  GFP_KERNEL);
+	if (!priv->descs)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	/* initialize RX ring */
 	ftmac100_rxdes_set_end_of_ring(&priv->descs->rxdes[RX_QUEUE_ENTRIES - 1]);
 
@@ -817,9 +838,15 @@ static void ftmac100_mdio_write(struct net_device *netdev, int phy_id, int reg,
 static void ftmac100_get_drvinfo(struct net_device *netdev,
 				 struct ethtool_drvinfo *info)
 {
+<<<<<<< HEAD
 	strcpy(info->driver, DRV_NAME);
 	strcpy(info->version, DRV_VERSION);
 	strcpy(info->bus_info, dev_name(&netdev->dev));
+=======
+	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+	strlcpy(info->bus_info, dev_name(&netdev->dev), sizeof(info->bus_info));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ftmac100_get_settings(struct net_device *netdev, struct ethtool_cmd *cmd)
@@ -1146,7 +1173,10 @@ err_ioremap:
 	release_resource(priv->res);
 err_req_mem:
 	netif_napi_del(&priv->napi);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_netdev(netdev);
 err_alloc_etherdev:
 	return err;
@@ -1166,7 +1196,10 @@ static int __exit ftmac100_remove(struct platform_device *pdev)
 	release_resource(priv->res);
 
 	netif_napi_del(&priv->napi);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_netdev(netdev);
 	return 0;
 }

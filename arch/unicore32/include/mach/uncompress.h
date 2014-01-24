@@ -13,8 +13,13 @@
 #ifndef __MACH_PUV3_UNCOMPRESS_H__
 #define __MACH_PUV3_UNCOMPRESS_H__
 
+<<<<<<< HEAD
 #include "hardware.h"
 #include "ocd.h"
+=======
+#include <mach/hardware.h>
+#include <mach/ocd.h>
+>>>>>>> refs/remotes/origin/master
 
 extern char input_data[];
 extern char input_data_end[];

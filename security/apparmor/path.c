@@ -14,9 +14,12 @@
 
 #include <linux/magic.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/mnt_namespace.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/mount.h>
 #include <linux/namei.h>
 #include <linux/nsproxy.h>
@@ -88,6 +91,7 @@ static int d_namespace_path(struct path *path, char *buf, int buflen,
 		get_fs_root(current->fs, &root);
 		res = __d_path(path, &root, buf, buflen);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (res && !IS_ERR(res)) {
 			/* everything's fine */
 			*name = res;
@@ -114,6 +118,8 @@ static int d_namespace_path(struct path *path, char *buf, int buflen,
 
 ok:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		path_put(&root);
 	} else {
 		res = d_absolute_path(path, buf, buflen);
@@ -125,6 +131,11 @@ ok:
 	 * be returned.
 	 */
 	if (!res || IS_ERR(res)) {
+<<<<<<< HEAD
+=======
+		if (PTR_ERR(res) == -ENAMETOOLONG)
+			return -ENAMETOOLONG;
+>>>>>>> refs/remotes/origin/master
 		connected = 0;
 		res = dentry_path_raw(path->dentry, buf, buflen);
 		if (IS_ERR(res)) {
@@ -137,7 +148,10 @@ ok:
 
 	*name = res;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Handle two cases:
 	 * 1. A deleted dentry && profile is not allowing mediation of deleted
 	 * 2. On some filesystems, newly allocated dentries appear to the
@@ -169,10 +183,14 @@ ok:
 			 * with '/'
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			error = -ESTALE;
 =======
 			error = -EACCES;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			error = -EACCES;
+>>>>>>> refs/remotes/origin/master
 			if (*res == '/')
 				*name = res + 1;
 		}
@@ -194,10 +212,14 @@ out:
  */
 static int get_name_to_buffer(struct path *path, int flags, char *buffer,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			      int size, char **name)
 =======
 			      int size, char **name, const char **info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      int size, char **name, const char **info)
+>>>>>>> refs/remotes/origin/master
 {
 	int adjust = (flags & PATH_IS_DIR) ? 1 : 0;
 	int error = d_namespace_path(path, buffer, size - adjust, name, flags);
@@ -210,11 +232,18 @@ static int get_name_to_buffer(struct path *path, int flags, char *buffer,
 		strcpy(&buffer[size - 2], "/");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (info && error) {
 		if (error == -ENOENT)
 			*info = "Failed name lookup - deleted entry";
 		else if (error == -ESTALE)
+=======
+	if (info && error) {
+		if (error == -ENOENT)
+			*info = "Failed name lookup - deleted entry";
+		else if (error == -EACCES)
+>>>>>>> refs/remotes/origin/master
 			*info = "Failed name lookup - disconnected path";
 		else if (error == -ENAMETOOLONG)
 			*info = "Failed name lookup - name too long";
@@ -222,24 +251,35 @@ static int get_name_to_buffer(struct path *path, int flags, char *buffer,
 			*info = "Failed name lookup";
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * aa_get_name - compute the pathname of a file
 =======
  * aa_path_name - compute the pathname of a file
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * aa_path_name - compute the pathname of a file
+>>>>>>> refs/remotes/origin/master
  * @path: path the file  (NOT NULL)
  * @flags: flags controlling path name generation
  * @buffer: buffer that aa_get_name() allocated  (NOT NULL)
  * @name: Returns - the generated path name if !error (NOT NULL)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @info: Returns - information on why the path lookup failed (MAYBE NULL)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @info: Returns - information on why the path lookup failed (MAYBE NULL)
+>>>>>>> refs/remotes/origin/master
  *
  * @name is a pointer to the beginning of the pathname (which usually differs
  * from the beginning of the buffer), or NULL.  If there is an error @name
@@ -253,11 +293,16 @@ static int get_name_to_buffer(struct path *path, int flags, char *buffer,
  * Returns: %0 else error code if could retrieve name
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int aa_get_name(struct path *path, int flags, char **buffer, const char **name)
 =======
 int aa_path_name(struct path *path, int flags, char **buffer, const char **name,
 		 const char **info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int aa_path_name(struct path *path, int flags, char **buffer, const char **name,
+		 const char **info)
+>>>>>>> refs/remotes/origin/master
 {
 	char *buf, *str = NULL;
 	int size = 256;
@@ -272,10 +317,14 @@ int aa_path_name(struct path *path, int flags, char **buffer, const char **name,
 			return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		error = get_name_to_buffer(path, flags, buf, size, &str);
 =======
 		error = get_name_to_buffer(path, flags, buf, size, &str, info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		error = get_name_to_buffer(path, flags, buf, size, &str, info);
+>>>>>>> refs/remotes/origin/master
 		if (error != -ENAMETOOLONG)
 			break;
 
@@ -284,9 +333,13 @@ int aa_path_name(struct path *path, int flags, char **buffer, const char **name,
 		if (size > aa_g_path_max)
 			return -ENAMETOOLONG;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		*info = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*info = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 	*buffer = buf;
 	*name = str;

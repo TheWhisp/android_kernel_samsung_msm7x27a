@@ -2,7 +2,11 @@
 #define _ASM_SCORE_PGALLOC_H
 
 #include <linux/mm.h>
+<<<<<<< HEAD
 
+=======
+#include <linux/highmem.h>
+>>>>>>> refs/remotes/origin/master
 static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd,
 	pte_t *pte)
 {
@@ -54,9 +58,18 @@ static inline struct page *pte_alloc_one(struct mm_struct *mm,
 	struct page *pte;
 
 	pte = alloc_pages(GFP_KERNEL | __GFP_REPEAT, PTE_ORDER);
+<<<<<<< HEAD
 	if (pte) {
 		clear_highpage(pte);
 		pgtable_page_ctor(pte);
+=======
+	if (!pte)
+		return NULL;
+	clear_highpage(pte);
+	if (!pgtable_page_ctor(pte)) {
+		__free_page(pte);
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 	return pte;
 }

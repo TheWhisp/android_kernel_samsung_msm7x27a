@@ -101,9 +101,12 @@ void r8712_cpwm_int_hdl(struct _adapter *padapter,
 	struct pwrctrl_priv *pwrpriv = &(padapter->pwrctrlpriv);
 	struct cmd_priv	*pcmdpriv = &(padapter->cmdpriv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct xmit_priv *pxmitpriv = &(padapter->xmitpriv);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (pwrpriv->cpwm_tog == ((preportpwrstate->state) & 0x80))
 		return;
@@ -114,10 +117,13 @@ void r8712_cpwm_int_hdl(struct _adapter *padapter,
 		if (pwrpriv->alives & CMD_ALIVE)
 			up(&(pcmdpriv->cmd_queue_sema));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (pwrpriv->alives & XMIT_ALIVE)
 			up(&(pxmitpriv->xmit_sema));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	pwrpriv->cpwm_tog = (preportpwrstate->state) & 0x80;
 	up(&pwrpriv->lock);
@@ -152,6 +158,7 @@ static void SetPSModeWorkItemCallback(struct work_struct *work)
 	struct _adapter *padapter = container_of(pwrpriv,
 				    struct _adapter, pwrctrlpriv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_enter_pwrlock(&pwrpriv->lock);
 	if (!pwrpriv->bSleep) {
 		if (pwrpriv->pwr_mode == PS_MODE_ACTIVE)
@@ -159,13 +166,18 @@ static void SetPSModeWorkItemCallback(struct work_struct *work)
 	}
 	up(&pwrpriv->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!pwrpriv->bSleep) {
 		_enter_pwrlock(&pwrpriv->lock);
 		if (pwrpriv->pwr_mode == PS_MODE_ACTIVE)
 			r8712_set_rpwm(padapter, PS_STATE_S4);
 		up(&pwrpriv->lock);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rpwm_workitem_callback(struct work_struct *work)
@@ -176,6 +188,7 @@ static void rpwm_workitem_callback(struct work_struct *work)
 				    struct _adapter, pwrctrlpriv);
 	u8 cpwm = pwrpriv->cpwm;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_enter_pwrlock(&pwrpriv->lock);
 	if (pwrpriv->cpwm != pwrpriv->rpwm) {
 		cpwm = r8712_read8(padapter, SDIO_HCPWM);
@@ -184,6 +197,8 @@ static void rpwm_workitem_callback(struct work_struct *work)
 	}
 	up(&pwrpriv->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pwrpriv->cpwm != pwrpriv->rpwm) {
 		_enter_pwrlock(&pwrpriv->lock);
 		cpwm = r8712_read8(padapter, SDIO_HCPWM);
@@ -191,7 +206,10 @@ static void rpwm_workitem_callback(struct work_struct *work)
 		r8712_set_rpwm(padapter, pwrpriv->rpwm);
 		up(&pwrpriv->lock);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rpwm_check_handler (void *FunctionContext)

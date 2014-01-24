@@ -14,15 +14,21 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <linux/init.h>
 #include <linux/crypto.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/atomic.h>
 #include <linux/init.h>
 #include <linux/crypto.h>
 #include <linux/module.h>	/* for module_name() */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/rwsem.h>
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>

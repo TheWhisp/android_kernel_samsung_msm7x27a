@@ -4,6 +4,12 @@
 #include <linux/seq_file.h>
 #include <linux/interrupt.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/bootinfo-mac.h>
+
+
+>>>>>>> refs/remotes/origin/master
 /*
  *	Apple Macintoshisms
  */
@@ -11,6 +17,7 @@
 extern void mac_reset(void);
 extern void mac_poweroff(void);
 extern void mac_init_IRQ(void);
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern int mac_irq_pending(unsigned int);
 
@@ -24,6 +31,11 @@ extern void via1_set_head(int);
 extern void mac_irq_enable(struct irq_data *data);
 extern void mac_irq_disable(struct irq_data *data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+extern void mac_irq_enable(struct irq_data *data);
+extern void mac_irq_disable(struct irq_data *data);
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	Macintosh Table
@@ -53,10 +65,14 @@ struct mac_model
 
 #define MAC_VIA_II		1
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MAC_VIA_IIci		2
 =======
 #define MAC_VIA_IICI		2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MAC_VIA_IICI		2
+>>>>>>> refs/remotes/origin/master
 #define MAC_VIA_QUADRA		3
 
 #define MAC_SCSI_NONE		0
@@ -88,6 +104,7 @@ struct mac_model
 #define MAC_FLOPPY_SWIM_IOP	3
 #define MAC_FLOPPY_AV		4
 
+<<<<<<< HEAD
 /*
  *	Gestalt numbers
  */
@@ -148,5 +165,31 @@ struct mac_model
 #define MAC_MODEL_PB150		115
 
 extern struct mac_model *macintosh_config;
+=======
+extern struct mac_model *macintosh_config;
+
+
+    /*
+     * Internal representation of the Mac hardware, filled in from bootinfo
+     */
+
+struct mac_booter_data
+{
+	unsigned long videoaddr;
+	unsigned long videorow;
+	unsigned long videodepth;
+	unsigned long dimensions;
+	unsigned long boottime;
+	unsigned long gmtbias;
+	unsigned long videological;
+	unsigned long sccbase;
+	unsigned long id;
+	unsigned long memsize;
+	unsigned long cpuid;
+	unsigned long rombase;
+};
+
+extern struct mac_booter_data mac_bi_data;
+>>>>>>> refs/remotes/origin/master
 
 #endif

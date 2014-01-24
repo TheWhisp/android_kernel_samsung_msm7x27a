@@ -66,13 +66,20 @@ PLAT_NODE_DATA_LOCALNR(unsigned long p, int n)
     ((unsigned long)__va(NODE_DATA(kvaddr_to_nid(kaddr))->node_start_pfn  \
 			 << PAGE_SHIFT))
 
+<<<<<<< HEAD
 /* XXX: FIXME -- wli */
+=======
+/* XXX: FIXME -- nyc */
+>>>>>>> refs/remotes/origin/master
 #define kern_addr_valid(kaddr)	(0)
 
 #define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
 
+<<<<<<< HEAD
 #define VALID_PAGE(page)	(((page) - mem_map) < max_mapnr)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define pmd_page(pmd)		(pfn_to_page(pmd_val(pmd) >> 32))
 #define pgd_page(pgd)		(pfn_to_page(pgd_val(pgd) >> 32))
 #define pte_pfn(pte)		(pte_val(pte) >> 32)

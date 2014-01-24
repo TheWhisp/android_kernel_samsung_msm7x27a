@@ -25,6 +25,7 @@
 #include <asm/processor.h>
 #include <asm/hypervisor.h>
 
+<<<<<<< HEAD
 /*
  * Hypervisor detect order.  This is specified explicitly here because
  * some hypervisors might implement compatibility modes for other
@@ -39,12 +40,22 @@ static const __initconst struct hypervisor_x86 * const hypervisors[] =
 	&x86_hyper_xen_hvm,
 #endif
 =======
+=======
+static const __initconst struct hypervisor_x86 * const hypervisors[] =
+{
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_XEN_PVHVM
 	&x86_hyper_xen_hvm,
 #endif
 	&x86_hyper_vmware,
 	&x86_hyper_ms_hyperv,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_KVM_GUEST
+	&x86_hyper_kvm,
+#endif
+>>>>>>> refs/remotes/origin/master
 };
 
 const struct hypervisor_x86 *x86_hyper;
@@ -54,6 +65,7 @@ static inline void __init
 detect_hypervisor_vendor(void)
 {
 	const struct hypervisor_x86 *h, * const *p;
+<<<<<<< HEAD
 
 	for (p = hypervisors; p < hypervisors + ARRAY_SIZE(hypervisors); p++) {
 		h = *p;
@@ -66,6 +78,24 @@ detect_hypervisor_vendor(void)
 }
 
 void __cpuinit init_hypervisor(struct cpuinfo_x86 *c)
+=======
+	uint32_t pri, max_pri = 0;
+
+	for (p = hypervisors; p < hypervisors + ARRAY_SIZE(hypervisors); p++) {
+		h = *p;
+		pri = h->detect();
+		if (pri != 0 && pri > max_pri) {
+			max_pri = pri;
+			x86_hyper = h;
+		}
+	}
+
+	if (max_pri)
+		printk(KERN_INFO "Hypervisor detected: %s\n", x86_hyper->name);
+}
+
+void init_hypervisor(struct cpuinfo_x86 *c)
+>>>>>>> refs/remotes/origin/master
 {
 	if (x86_hyper && x86_hyper->set_cpu_features)
 		x86_hyper->set_cpu_features(c);
@@ -84,3 +114,13 @@ void __init init_hypervisor_platform(void)
 	if (x86_hyper->init_platform)
 		x86_hyper->init_platform();
 }
+<<<<<<< HEAD
+=======
+
+bool __init hypervisor_x2apic_available(void)
+{
+	return x86_hyper                   &&
+	       x86_hyper->x2apic_available &&
+	       x86_hyper->x2apic_available();
+}
+>>>>>>> refs/remotes/origin/master

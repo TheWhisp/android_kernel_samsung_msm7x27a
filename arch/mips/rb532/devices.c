@@ -15,6 +15,10 @@
  *  GNU General Public License for more details.
  */
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/ctype.h>
 #include <linux/string.h>
@@ -214,9 +218,15 @@ static struct resource rb532_wdt_res[] = {
 };
 
 static struct platform_device rb532_wdt = {
+<<<<<<< HEAD
 	.name 		= "rc32434_wdt",
 	.id 		= -1,
 	.resource 	= rb532_wdt_res,
+=======
+	.name		= "rc32434_wdt",
+	.id		= -1,
+	.resource	= rb532_wdt_res,
+>>>>>>> refs/remotes/origin/master
 	.num_resources	= ARRAY_SIZE(rb532_wdt_res),
 };
 
@@ -234,8 +244,13 @@ static struct plat_serial8250_port rb532_uart_res[] = {
 };
 
 static struct platform_device rb532_uart = {
+<<<<<<< HEAD
 	.name              = "serial8250",
 	.id                = PLAT8250_DEV_PLATFORM,
+=======
+	.name		   = "serial8250",
+	.id		   = PLAT8250_DEV_PLATFORM,
+>>>>>>> refs/remotes/origin/master
 	.dev.platform_data = &rb532_uart_res,
 };
 
@@ -251,6 +266,7 @@ static struct platform_device *rb532_devs[] = {
 
 static void __init parse_mac_addr(char *macstr)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i, j;
 	unsigned char result, value;
@@ -275,6 +291,8 @@ static void __init parse_mac_addr(char *macstr)
 		macstr++;
 		korina_dev0_data.mac[i] = result;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int i, h, l;
 
 	for (i = 0; i < 6; i++) {
@@ -291,13 +309,20 @@ static void __init parse_mac_addr(char *macstr)
 
 		macstr++;
 		korina_dev0_data.mac[i] = (h << 4) + l;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 
 /* NAND definitions */
+<<<<<<< HEAD
 #define NAND_CHIP_DELAY	25
+=======
+#define NAND_CHIP_DELAY 25
+>>>>>>> refs/remotes/origin/master
 
 static void __init rb532_nand_setup(void)
 {
@@ -317,7 +342,10 @@ static void __init rb532_nand_setup(void)
 	rb532_nand_data.chip.nr_partitions = ARRAY_SIZE(rb532_partition_info);
 	rb532_nand_data.chip.partitions = rb532_partition_info;
 	rb532_nand_data.chip.chip_delay = NAND_CHIP_DELAY;
+<<<<<<< HEAD
 	rb532_nand_data.chip.options = NAND_NO_AUTOINCR;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 

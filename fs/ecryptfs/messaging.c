@@ -32,8 +32,13 @@ static struct mutex ecryptfs_msg_ctx_lists_mux;
 static struct hlist_head *ecryptfs_daemon_hash;
 struct mutex ecryptfs_daemon_hash_mux;
 static int ecryptfs_hash_bits;
+<<<<<<< HEAD
 #define ecryptfs_uid_hash(uid) \
         hash_long((unsigned long)uid, ecryptfs_hash_bits)
+=======
+#define ecryptfs_current_euid_hash(uid) \
+	hash_long((unsigned long)from_kuid(&init_user_ns, current_euid()), ecryptfs_hash_bits)
+>>>>>>> refs/remotes/origin/master
 
 static u32 ecryptfs_msg_counter;
 static struct ecryptfs_msg_ctx *ecryptfs_msg_ctx_arr;
@@ -97,20 +102,28 @@ static void ecryptfs_msg_ctx_free_to_alloc(struct ecryptfs_msg_ctx *msg_ctx)
 void ecryptfs_msg_ctx_alloc_to_free(struct ecryptfs_msg_ctx *msg_ctx)
 {
 	list_move(&(msg_ctx->node), &ecryptfs_msg_ctx_free_list);
+<<<<<<< HEAD
 	if (msg_ctx->msg)
 		kfree(msg_ctx->msg);
+=======
+	kfree(msg_ctx->msg);
+>>>>>>> refs/remotes/origin/master
 	msg_ctx->msg = NULL;
 	msg_ctx->state = ECRYPTFS_MSG_CTX_STATE_FREE;
 }
 
 /**
  * ecryptfs_find_daemon_by_euid
+<<<<<<< HEAD
  * @euid: The effective user id which maps to the desired daemon id
  * @user_ns: The namespace in which @euid applies
+=======
+>>>>>>> refs/remotes/origin/master
  * @daemon: If return value is zero, points to the desired daemon pointer
  *
  * Must be called with ecryptfs_daemon_hash_mux held.
  *
+<<<<<<< HEAD
  * Search the hash list for the given user id.
  *
  * Returns zero if the user id exists in the list; non-zero otherwise.
@@ -125,6 +138,20 @@ int ecryptfs_find_daemon_by_euid(struct ecryptfs_daemon **daemon, uid_t euid,
 			     &ecryptfs_daemon_hash[ecryptfs_uid_hash(euid)],
 			     euid_chain) {
 		if ((*daemon)->euid == euid && (*daemon)->user_ns == user_ns) {
+=======
+ * Search the hash list for the current effective user id.
+ *
+ * Returns zero if the user id exists in the list; non-zero otherwise.
+ */
+int ecryptfs_find_daemon_by_euid(struct ecryptfs_daemon **daemon)
+{
+	int rc;
+
+	hlist_for_each_entry(*daemon,
+			    &ecryptfs_daemon_hash[ecryptfs_current_euid_hash()],
+			    euid_chain) {
+		if (uid_eq((*daemon)->file->f_cred->euid, current_euid())) {
+>>>>>>> refs/remotes/origin/master
 			rc = 0;
 			goto out;
 		}
@@ -137,9 +164,13 @@ out:
 /**
  * ecryptfs_spawn_daemon - Create and initialize a new daemon struct
  * @daemon: Pointer to set to newly allocated daemon struct
+<<<<<<< HEAD
  * @euid: Effective user id for the daemon
  * @user_ns: The namespace in which @euid applies
  * @pid: Process id for the daemon
+=======
+ * @file: File used when opening /dev/ecryptfs
+>>>>>>> refs/remotes/origin/master
  *
  * Must be called ceremoniously while in possession of
  * ecryptfs_sacred_daemon_hash_mux
@@ -147,8 +178,12 @@ out:
  * Returns zero on success; non-zero otherwise
  */
 int
+<<<<<<< HEAD
 ecryptfs_spawn_daemon(struct ecryptfs_daemon **daemon, uid_t euid,
 		      struct user_namespace *user_ns, struct pid *pid)
+=======
+ecryptfs_spawn_daemon(struct ecryptfs_daemon **daemon, struct file *file)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc = 0;
 
@@ -159,16 +194,24 @@ ecryptfs_spawn_daemon(struct ecryptfs_daemon **daemon, uid_t euid,
 		       "GFP_KERNEL memory\n", __func__, sizeof(**daemon));
 		goto out;
 	}
+<<<<<<< HEAD
 	(*daemon)->euid = euid;
 	(*daemon)->user_ns = get_user_ns(user_ns);
 	(*daemon)->pid = get_pid(pid);
 	(*daemon)->task = current;
+=======
+	(*daemon)->file = file;
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&(*daemon)->mux);
 	INIT_LIST_HEAD(&(*daemon)->msg_ctx_out_queue);
 	init_waitqueue_head(&(*daemon)->wait);
 	(*daemon)->num_queued_msg_ctx = 0;
 	hlist_add_head(&(*daemon)->euid_chain,
+<<<<<<< HEAD
 		       &ecryptfs_daemon_hash[ecryptfs_uid_hash(euid)]);
+=======
+		       &ecryptfs_daemon_hash[ecryptfs_current_euid_hash()]);
+>>>>>>> refs/remotes/origin/master
 out:
 	return rc;
 }
@@ -188,9 +231,12 @@ int ecryptfs_exorcise_daemon(struct ecryptfs_daemon *daemon)
 	if ((daemon->flags & ECRYPTFS_DAEMON_IN_READ)
 	    || (daemon->flags & ECRYPTFS_DAEMON_IN_POLL)) {
 		rc = -EBUSY;
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: Attempt to destroy daemon with pid "
 		       "[0x%p], but it is in the midst of a read or a poll\n",
 		       __func__, daemon->pid);
+=======
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&daemon->mux);
 		goto out;
 	}
@@ -203,12 +249,15 @@ int ecryptfs_exorcise_daemon(struct ecryptfs_daemon *daemon)
 		ecryptfs_msg_ctx_alloc_to_free(msg_ctx);
 	}
 	hlist_del(&daemon->euid_chain);
+<<<<<<< HEAD
 	if (daemon->task)
 		wake_up_process(daemon->task);
 	if (daemon->pid)
 		put_pid(daemon->pid);
 	if (daemon->user_ns)
 		put_user_ns(daemon->user_ns);
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&daemon->mux);
 	kzfree(daemon);
 out:
@@ -216,6 +265,7 @@ out:
 }
 
 /**
+<<<<<<< HEAD
  * ecryptfs_process_quit
  * @euid: The user ID owner of the message
  * @user_ns: The namespace in which @euid applies
@@ -252,6 +302,11 @@ out_unlock:
  *       msg->data_len and free the memory
  * @pid: The process ID of the userspace application that sent the
  *       message
+=======
+ * ecryptfs_process_reponse
+ * @msg: The ecryptfs message received; the caller should sanity check
+ *       msg->data_len and free the memory
+>>>>>>> refs/remotes/origin/master
  * @seq: The sequence number of the message; must match the sequence
  *       number for the existing message context waiting for this
  *       response
@@ -270,6 +325,7 @@ out_unlock:
  *
  * Returns zero on success; non-zero otherwise
  */
+<<<<<<< HEAD
 int ecryptfs_process_response(struct ecryptfs_message *msg, uid_t euid,
 			      struct user_namespace *user_ns, struct pid *pid,
 			      u32 seq)
@@ -280,6 +336,13 @@ int ecryptfs_process_response(struct ecryptfs_message *msg, uid_t euid,
 	struct nsproxy *nsproxy;
 	struct user_namespace *tsk_user_ns;
 	uid_t ctx_euid;
+=======
+int ecryptfs_process_response(struct ecryptfs_daemon *daemon,
+			      struct ecryptfs_message *msg, u32 seq)
+{
+	struct ecryptfs_msg_ctx *msg_ctx;
+	size_t msg_size;
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	if (msg->index >= ecryptfs_message_buf_len) {
@@ -292,6 +355,7 @@ int ecryptfs_process_response(struct ecryptfs_message *msg, uid_t euid,
 	}
 	msg_ctx = &ecryptfs_msg_ctx_arr[msg->index];
 	mutex_lock(&msg_ctx->mux);
+<<<<<<< HEAD
 	mutex_lock(&ecryptfs_daemon_hash_mux);
 	rcu_read_lock();
 	nsproxy = task_nsproxy(msg_ctx->task);
@@ -337,6 +401,8 @@ int ecryptfs_process_response(struct ecryptfs_message *msg, uid_t euid,
 		       __func__, ctx_euid, pid);
 		goto unlock;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	if (msg_ctx->state != ECRYPTFS_MSG_CTX_STATE_PENDING) {
 		rc = -EINVAL;
 		printk(KERN_WARNING "%s: Desired context element is not "
@@ -350,18 +416,28 @@ int ecryptfs_process_response(struct ecryptfs_message *msg, uid_t euid,
 		goto unlock;
 	}
 	msg_size = (sizeof(*msg) + msg->data_len);
+<<<<<<< HEAD
 	msg_ctx->msg = kmalloc(msg_size, GFP_KERNEL);
+=======
+	msg_ctx->msg = kmemdup(msg, msg_size, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!msg_ctx->msg) {
 		rc = -ENOMEM;
 		printk(KERN_ERR "%s: Failed to allocate [%zd] bytes of "
 		       "GFP_KERNEL memory\n", __func__, msg_size);
 		goto unlock;
 	}
+<<<<<<< HEAD
 	memcpy(msg_ctx->msg, msg, msg_size);
 	msg_ctx->state = ECRYPTFS_MSG_CTX_STATE_DONE;
 	rc = 0;
 wake_up:
 	wake_up_process(msg_ctx->task);
+=======
+	msg_ctx->state = ECRYPTFS_MSG_CTX_STATE_DONE;
+	wake_up_process(msg_ctx->task);
+	rc = 0;
+>>>>>>> refs/remotes/origin/master
 unlock:
 	mutex_unlock(&msg_ctx->mux);
 out:
@@ -383,6 +459,7 @@ ecryptfs_send_message_locked(char *data, int data_len, u8 msg_type,
 			     struct ecryptfs_msg_ctx **msg_ctx)
 {
 	struct ecryptfs_daemon *daemon;
+<<<<<<< HEAD
 	uid_t euid = current_euid();
 	int rc;
 
@@ -391,6 +468,13 @@ ecryptfs_send_message_locked(char *data, int data_len, u8 msg_type,
 		rc = -ENOTCONN;
 		printk(KERN_ERR "%s: User [%d] does not have a daemon "
 		       "registered\n", __func__, euid);
+=======
+	int rc;
+
+	rc = ecryptfs_find_daemon_by_euid(&daemon);
+	if (rc) {
+		rc = -ENOTCONN;
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 	mutex_lock(&ecryptfs_msg_ctx_lists_mux);
@@ -550,7 +634,10 @@ void ecryptfs_release_messaging(void)
 		mutex_unlock(&ecryptfs_msg_ctx_lists_mux);
 	}
 	if (ecryptfs_daemon_hash) {
+<<<<<<< HEAD
 		struct hlist_node *elem;
+=======
+>>>>>>> refs/remotes/origin/master
 		struct ecryptfs_daemon *daemon;
 		int i;
 
@@ -558,7 +645,11 @@ void ecryptfs_release_messaging(void)
 		for (i = 0; i < (1 << ecryptfs_hash_bits); i++) {
 			int rc;
 
+<<<<<<< HEAD
 			hlist_for_each_entry(daemon, elem,
+=======
+			hlist_for_each_entry(daemon,
+>>>>>>> refs/remotes/origin/master
 					     &ecryptfs_daemon_hash[i],
 					     euid_chain) {
 				rc = ecryptfs_exorcise_daemon(daemon);

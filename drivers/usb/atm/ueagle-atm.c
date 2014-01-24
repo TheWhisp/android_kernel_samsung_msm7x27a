@@ -57,7 +57,10 @@
 
 #include <linux/module.h>
 #include <linux/moduleparam.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/crc32.h>
 #include <linux/usb.h>
 #include <linux/firmware.h>
@@ -117,10 +120,14 @@ struct uea_cmvs_v1 {
 	u16 offset;
 	u32 data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
 =======
 } __packed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 struct uea_cmvs_v2 {
 	u32 group;
@@ -128,10 +135,14 @@ struct uea_cmvs_v2 {
 	u32 offset;
 	u32 data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
 =======
 } __packed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 /* information about currently processed cmv */
 struct cmv_dsc_e1 {
@@ -315,6 +326,37 @@ enum {
 #define FW_GET_BYTE(p) (*((__u8 *) (p)))
 
 #define FW_DIR "ueagle-atm/"
+<<<<<<< HEAD
+=======
+#define EAGLE_FIRMWARE FW_DIR "eagle.fw"
+#define ADI930_FIRMWARE FW_DIR "adi930.fw"
+#define EAGLE_I_FIRMWARE FW_DIR "eagleI.fw"
+#define EAGLE_II_FIRMWARE FW_DIR "eagleII.fw"
+#define EAGLE_III_FIRMWARE FW_DIR "eagleIII.fw"
+#define EAGLE_IV_FIRMWARE FW_DIR "eagleIV.fw"
+
+#define DSP4I_FIRMWARE FW_DIR "DSP4i.bin"
+#define DSP4P_FIRMWARE FW_DIR "DSP4p.bin"
+#define DSP9I_FIRMWARE FW_DIR "DSP9i.bin"
+#define DSP9P_FIRMWARE FW_DIR "DSP9p.bin"
+#define DSPEI_FIRMWARE FW_DIR "DSPei.bin"
+#define DSPEP_FIRMWARE FW_DIR "DSPep.bin"
+#define FPGA930_FIRMWARE FW_DIR "930-fpga.bin"
+
+#define CMV4P_FIRMWARE FW_DIR "CMV4p.bin"
+#define CMV4PV2_FIRMWARE FW_DIR "CMV4p.bin.v2"
+#define CMV4I_FIRMWARE FW_DIR "CMV4i.bin"
+#define CMV4IV2_FIRMWARE FW_DIR "CMV4i.bin.v2"
+#define CMV9P_FIRMWARE FW_DIR "CMV9p.bin"
+#define CMV9PV2_FIRMWARE FW_DIR "CMV9p.bin.v2"
+#define CMV9I_FIRMWARE FW_DIR "CMV9i.bin"
+#define CMV9IV2_FIRMWARE FW_DIR "CMV9i.bin.v2"
+#define CMVEP_FIRMWARE FW_DIR "CMVep.bin"
+#define CMVEPV2_FIRMWARE FW_DIR "CMVep.bin.v2"
+#define CMVEI_FIRMWARE FW_DIR "CMVei.bin"
+#define CMVEIV2_FIRMWARE FW_DIR "CMVei.bin.v2"
+
+>>>>>>> refs/remotes/origin/master
 #define UEA_FW_NAME_MAX 30
 #define NB_MODEM 4
 
@@ -361,10 +403,14 @@ struct block_index {
 	__le16 dummy1;
 	__le16 PageNumber;
 <<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
 =======
 } __packed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 #define E4_IS_BOOT_PAGE(PageSize) ((le32_to_cpu(PageSize)) & 0x80000000)
 #define E4_PAGE_BYTES(PageSize) ((le32_to_cpu(PageSize) & 0x7fffffff) * 4)
@@ -380,10 +426,14 @@ struct l1_code {
 	struct block_index page_header[E4_NO_SWAPPAGE_HEADERS];
 	u8 code[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
 =======
 } __packed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 /* structures describing a block within a DSP page */
 struct block_info_e1 {
@@ -394,10 +444,14 @@ struct block_info_e1 {
 	__le16 wOvl;		/* overlay */
 	__le16 wLast;
 <<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
 =======
 } __packed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 #define E1_BLOCK_INFO_SIZE 12
 
 struct block_info_e4 {
@@ -408,10 +462,14 @@ struct block_info_e4 {
 	__be32 dwAddress;
 	__be16 wReserved;
 <<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
 =======
 } __packed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 #define E4_BLOCK_INFO_SIZE 14
 
 #define UEA_BIHDR 0xabcd
@@ -492,10 +550,14 @@ struct cmv_e1 {
 	__le16 wOffsetAddress;
 	__le32 dwData;
 <<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
 =======
 } __packed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 struct cmv_e4 {
 	__be16 wGroup;
@@ -504,15 +566,20 @@ struct cmv_e4 {
 	__be16 wAddress;
 	__be32 dwData[6];
 <<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
 =======
 } __packed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 /* structures representing swap information */
 struct swap_info_e1 {
 	__u8 bSwapPageNo;
 	__u8 bOvl;		/* overlay */
+<<<<<<< HEAD
 <<<<<<< HEAD
 } __attribute__ ((packed));
 
@@ -520,12 +587,17 @@ struct swap_info_e4 {
 	__u8 bSwapPageNo;
 } __attribute__ ((packed));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 } __packed;
 
 struct swap_info_e4 {
 	__u8 bSwapPageNo;
 } __packed;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* structures representing interrupt data */
 #define e1_bSwapPageNo	u.e1.s1.swapinfo.bSwapPageNo
@@ -540,6 +612,7 @@ union intr_data_e1 {
 		struct swap_info_e1 swapinfo;
 		__le16 wDataSize;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} __attribute__ ((packed)) s1;
 	struct {
 		struct cmv_e1 cmv;
@@ -547,18 +620,24 @@ union intr_data_e1 {
 	} __attribute__ ((packed)) s2;
 } __attribute__ ((packed));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} __packed s1;
 	struct {
 		struct cmv_e1 cmv;
 		__le16 wDataSize;
 	} __packed s2;
 } __packed;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 union intr_data_e4 {
 	struct {
 		struct swap_info_e4 swapinfo;
 		__le16 wDataSize;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	} __attribute__ ((packed)) s1;
 	struct {
@@ -567,13 +646,18 @@ union intr_data_e4 {
 	} __attribute__ ((packed)) s2;
 } __attribute__ ((packed));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} __packed s1;
 	struct {
 		struct cmv_e4 cmv;
 		__le16 wDataSize;
 	} __packed s2;
 } __packed;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct intr_pkt {
 	__u8 bType;
@@ -587,10 +671,14 @@ struct intr_pkt {
 		union intr_data_e4 e4;
 	} u;
 <<<<<<< HEAD
+<<<<<<< HEAD
 } __attribute__ ((packed));
 =======
 } __packed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 #define E1_INTR_PKT_SIZE 28
 #define E4_INTR_PKT_SIZE 64
@@ -598,22 +686,31 @@ struct intr_pkt {
 static struct usb_driver uea_driver;
 static DEFINE_MUTEX(uea_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const char *chip_name[] = {"ADI930", "Eagle I", "Eagle II", "Eagle III",
 								"Eagle IV"};
 =======
 static const char * const chip_name[] = {
 	"ADI930", "Eagle I", "Eagle II", "Eagle III", "Eagle IV"};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const char * const chip_name[] = {
+	"ADI930", "Eagle I", "Eagle II", "Eagle III", "Eagle IV"};
+>>>>>>> refs/remotes/origin/master
 
 static int modem_index;
 static unsigned int debug;
 static unsigned int altsetting[NB_MODEM] = {
 				[0 ... (NB_MODEM - 1)] = FASTEST_ISO_INTF};
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int sync_wait[NB_MODEM];
 =======
 static bool sync_wait[NB_MODEM];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool sync_wait[NB_MODEM];
+>>>>>>> refs/remotes/origin/master
 static char *cmv_file[NB_MODEM];
 static int annex[NB_MODEM];
 
@@ -765,13 +862,18 @@ err:
 static int uea_load_firmware(struct usb_device *usb, unsigned int ver)
 {
 	int ret;
+<<<<<<< HEAD
 	char *fw_name = FW_DIR "eagle.fw";
+=======
+	char *fw_name = EAGLE_FIRMWARE;
+>>>>>>> refs/remotes/origin/master
 
 	uea_enters(usb);
 	uea_info(usb, "pre-firmware device, uploading firmware\n");
 
 	switch (ver) {
 	case ADI930:
+<<<<<<< HEAD
 		fw_name = FW_DIR "adi930.fw";
 		break;
 	case EAGLE_I:
@@ -785,6 +887,21 @@ static int uea_load_firmware(struct usb_device *usb, unsigned int ver)
 		break;
 	case EAGLE_IV:
 		fw_name = FW_DIR "eagleIV.fw";
+=======
+		fw_name = ADI930_FIRMWARE;
+		break;
+	case EAGLE_I:
+		fw_name = EAGLE_I_FIRMWARE;
+		break;
+	case EAGLE_II:
+		fw_name = EAGLE_II_FIRMWARE;
+		break;
+	case EAGLE_III:
+		fw_name = EAGLE_III_FIRMWARE;
+		break;
+	case EAGLE_IV:
+		fw_name = EAGLE_IV_FIRMWARE;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -940,6 +1057,7 @@ static int request_dsp(struct uea_softc *sc)
 
 	if (UEA_CHIP_VERSION(sc) == EAGLE_IV) {
 		if (IS_ISDN(sc))
+<<<<<<< HEAD
 			dsp_name = FW_DIR "DSP4i.bin";
 		else
 			dsp_name = FW_DIR "DSP4p.bin";
@@ -953,6 +1071,21 @@ static int request_dsp(struct uea_softc *sc)
 			dsp_name = FW_DIR "DSPei.bin";
 		else
 			dsp_name = FW_DIR "DSPep.bin";
+=======
+			dsp_name = DSP4I_FIRMWARE;
+		else
+			dsp_name = DSP4P_FIRMWARE;
+	} else if (UEA_CHIP_VERSION(sc) == ADI930) {
+		if (IS_ISDN(sc))
+			dsp_name = DSP9I_FIRMWARE;
+		else
+			dsp_name = DSP9P_FIRMWARE;
+	} else {
+		if (IS_ISDN(sc))
+			dsp_name = DSPEI_FIRMWARE;
+		else
+			dsp_name = DSPEP_FIRMWARE;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = request_firmware(&sc->dsp_firm, dsp_name, &sc->usb_dev->dev);
@@ -1428,10 +1561,15 @@ static int uea_stat_e1(struct uea_softc *sc)
 		/* release the dsp firmware as it is not needed until
 		 * the next failure
 		 */
+<<<<<<< HEAD
 		if (sc->dsp_firm) {
 			release_firmware(sc->dsp_firm);
 			sc->dsp_firm = NULL;
 		}
+=======
+		release_firmware(sc->dsp_firm);
+		sc->dsp_firm = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* always update it as atm layer could not be init when we switch to
@@ -1567,10 +1705,15 @@ static int uea_stat_e4(struct uea_softc *sc)
 		/* release the dsp firmware as it is not needed until
 		 * the next failure
 		 */
+<<<<<<< HEAD
 		if (sc->dsp_firm) {
 			release_firmware(sc->dsp_firm);
 			sc->dsp_firm = NULL;
 		}
+=======
+		release_firmware(sc->dsp_firm);
+		sc->dsp_firm = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* always update it as atm layer could not be init when we switch to
@@ -2000,7 +2143,11 @@ static int load_XILINX_firmware(struct uea_softc *sc)
 	int ret, size, u, ln;
 	const u8 *pfw;
 	u8 value;
+<<<<<<< HEAD
 	char *fw_name = FW_DIR "930-fpga.bin";
+=======
+	char *fw_name = FPGA930_FIRMWARE;
+>>>>>>> refs/remotes/origin/master
 
 	uea_enters(INS_TO_USBDEV(sc));
 
@@ -2309,10 +2456,16 @@ static void uea_stop(struct uea_softc *sc)
 	usb_free_urb(sc->urb_int);
 
 	/* flush the work item, when no one can schedule it */
+<<<<<<< HEAD
 	flush_work_sync(&sc->task);
 
 	if (sc->dsp_firm)
 		release_firmware(sc->dsp_firm);
+=======
+	flush_work(&sc->task);
+
+	release_firmware(sc->dsp_firm);
+>>>>>>> refs/remotes/origin/master
 	uea_leaves(INS_TO_USBDEV(sc));
 }
 
@@ -2825,6 +2978,7 @@ static struct usb_driver uea_driver = {
 MODULE_DEVICE_TABLE(usb, uea_ids);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * uea_init - Initialize the module.
  *      Register to USB subsystem
@@ -2858,7 +3012,38 @@ module_exit(uea_exit);
 =======
 module_usb_driver(uea_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(uea_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Damien Bergamini/Matthieu Castet/Stanislaw W. Gruszka");
 MODULE_DESCRIPTION("ADI 930/Eagle USB ADSL Modem driver");
 MODULE_LICENSE("Dual BSD/GPL");
+<<<<<<< HEAD
+=======
+MODULE_FIRMWARE(EAGLE_FIRMWARE);
+MODULE_FIRMWARE(ADI930_FIRMWARE);
+MODULE_FIRMWARE(EAGLE_I_FIRMWARE);
+MODULE_FIRMWARE(EAGLE_II_FIRMWARE);
+MODULE_FIRMWARE(EAGLE_III_FIRMWARE);
+MODULE_FIRMWARE(EAGLE_IV_FIRMWARE);
+MODULE_FIRMWARE(DSP4I_FIRMWARE);
+MODULE_FIRMWARE(DSP4P_FIRMWARE);
+MODULE_FIRMWARE(DSP9I_FIRMWARE);
+MODULE_FIRMWARE(DSP9P_FIRMWARE);
+MODULE_FIRMWARE(DSPEI_FIRMWARE);
+MODULE_FIRMWARE(DSPEP_FIRMWARE);
+MODULE_FIRMWARE(FPGA930_FIRMWARE);
+MODULE_FIRMWARE(CMV4P_FIRMWARE);
+MODULE_FIRMWARE(CMV4PV2_FIRMWARE);
+MODULE_FIRMWARE(CMV4I_FIRMWARE);
+MODULE_FIRMWARE(CMV4IV2_FIRMWARE);
+MODULE_FIRMWARE(CMV9P_FIRMWARE);
+MODULE_FIRMWARE(CMV9PV2_FIRMWARE);
+MODULE_FIRMWARE(CMV9I_FIRMWARE);
+MODULE_FIRMWARE(CMV9IV2_FIRMWARE);
+MODULE_FIRMWARE(CMVEP_FIRMWARE);
+MODULE_FIRMWARE(CMVEPV2_FIRMWARE);
+MODULE_FIRMWARE(CMVEI_FIRMWARE);
+MODULE_FIRMWARE(CMVEIV2_FIRMWARE);
+>>>>>>> refs/remotes/origin/master

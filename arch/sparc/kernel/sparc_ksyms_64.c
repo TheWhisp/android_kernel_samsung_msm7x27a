@@ -6,27 +6,38 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/init.h>
 #include <linux/bitops.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/cpudata.h>
 #include <asm/uaccess.h>
 #include <asm/spitfire.h>
 #include <asm/oplib.h>
 #include <asm/hypervisor.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/cacheflush.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cacheflush.h>
+>>>>>>> refs/remotes/origin/master
 
 struct poll {
 	int fd;

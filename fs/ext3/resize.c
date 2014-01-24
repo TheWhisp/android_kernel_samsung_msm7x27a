@@ -12,6 +12,7 @@
 #define EXT3FS_DEBUG
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/ext3_jbd.h>
 
 #include <linux/errno.h>
@@ -19,6 +20,9 @@
 =======
 #include "ext3.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/master
 
 
 #define outside(b, first, last)	((b) < (first) || (b) >= (last))
@@ -123,8 +127,13 @@ static struct buffer_head *bclean(handle_t *handle, struct super_block *sb,
 	int err;
 
 	bh = sb_getblk(sb, blk);
+<<<<<<< HEAD
 	if (!bh)
 		return ERR_PTR(-EIO);
+=======
+	if (unlikely(!bh))
+		return ERR_PTR(-ENOMEM);
+>>>>>>> refs/remotes/origin/master
 	if ((err = ext3_journal_get_write_access(handle, bh))) {
 		brelse(bh);
 		bh = ERR_PTR(err);
@@ -241,8 +250,13 @@ static int setup_new_group_blocks(struct super_block *sb,
 			goto exit_bh;
 
 		gdb = sb_getblk(sb, block);
+<<<<<<< HEAD
 		if (!gdb) {
 			err = -EIO;
+=======
+		if (unlikely(!gdb)) {
+			err = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 			goto exit_bh;
 		}
 		if ((err = ext3_journal_get_write_access(handle, gdb))) {
@@ -729,8 +743,13 @@ static void update_backups(struct super_block *sb,
 			break;
 
 		bh = sb_getblk(sb, group * bpg + blk_off);
+<<<<<<< HEAD
 		if (!bh) {
 			err = -EIO;
+=======
+		if (unlikely(!bh)) {
+			err = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		ext3_debug("update metadata backup %#04lx\n",

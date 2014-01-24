@@ -1,10 +1,13 @@
 addnote
 empty.c
 hack-coff
+<<<<<<< HEAD
 infblock.c
 infblock.h
 infcodes.c
 infcodes.h
+=======
+>>>>>>> refs/remotes/origin/master
 inffast.c
 inffast.h
 inffixed.h
@@ -26,11 +29,16 @@ zImage.initrd
 zImage.bin.*
 zImage.chrp
 zImage.coff
+<<<<<<< HEAD
 zImage.holly
 <<<<<<< HEAD
 zImage.iseries
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+zImage.epapr
+zImage.holly
+>>>>>>> refs/remotes/origin/master
 zImage.*lds
 zImage.miboot
 zImage.pmac

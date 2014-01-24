@@ -12,10 +12,15 @@
 #include <linux/clk.h>
 #include <linux/errno.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/device.h>
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 #include <linux/debugfs.h>
@@ -24,6 +29,7 @@
 #include <linux/list.h>
 #include <linux/module.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #include <mach/hardware.h>
@@ -50,17 +56,40 @@ struct at91_gpio_chip {
 	struct at91_gpio_bank	*bank;		/* Bank definition */
 	void __iomem		*regbase;	/* Base of register bank */
 =======
+=======
+#include <linux/irqdomain.h>
+#include <linux/irqchip/chained_irq.h>
+#include <linux/of_address.h>
+
+#include <mach/hardware.h>
+#include <mach/at91_pio.h>
+
+#include "generic.h"
+
+#define MAX_NB_GPIO_PER_BANK	32
+
+struct at91_gpio_chip {
+	struct gpio_chip	chip;
+	struct at91_gpio_chip	*next;		/* Bank sharing same clock */
+>>>>>>> refs/remotes/origin/master
 	int			pioc_hwirq;	/* PIO bank interrupt identifier on AIC */
 	int			pioc_virq;	/* PIO bank Linux virtual interrupt */
 	int			pioc_idx;	/* PIO bank index */
 	void __iomem		*regbase;	/* PIO bank virtual address */
 	struct clk		*clock;		/* associated clock */
 	struct irq_domain	*domain;	/* associated irq domain */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define to_at91_gpio_chip(c) container_of(c, struct at91_gpio_chip, chip)
 
+<<<<<<< HEAD
+=======
+static int at91_gpiolib_request(struct gpio_chip *chip, unsigned offset);
+>>>>>>> refs/remotes/origin/master
 static void at91_gpiolib_dbg_show(struct seq_file *s, struct gpio_chip *chip);
 static void at91_gpiolib_set(struct gpio_chip *chip, unsigned offset, int val);
 static int at91_gpiolib_get(struct gpio_chip *chip, unsigned offset);
@@ -68,6 +97,7 @@ static int at91_gpiolib_direction_output(struct gpio_chip *chip,
 					 unsigned offset, int val);
 static int at91_gpiolib_direction_input(struct gpio_chip *chip,
 					unsigned offset);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define AT91_GPIO_CHIP(name, base_gpio, nr_gpio)			\
@@ -79,21 +109,36 @@ static int at91_gpiolib_to_irq(struct gpio_chip *chip, unsigned offset);
 	{								\
 		.chip = {						\
 			.label		  = name,			\
+=======
+static int at91_gpiolib_to_irq(struct gpio_chip *chip, unsigned offset);
+
+#define AT91_GPIO_CHIP(name)						\
+	{								\
+		.chip = {						\
+			.label		  = name,			\
+			.request	  = at91_gpiolib_request,	\
+>>>>>>> refs/remotes/origin/master
 			.direction_input  = at91_gpiolib_direction_input, \
 			.direction_output = at91_gpiolib_direction_output, \
 			.get		  = at91_gpiolib_get,		\
 			.set		  = at91_gpiolib_set,		\
 			.dbg_show	  = at91_gpiolib_dbg_show,	\
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.base		  = base_gpio,			\
 =======
 			.to_irq		  = at91_gpiolib_to_irq,	\
 >>>>>>> refs/remotes/origin/cm-10.0
 			.ngpio		  = nr_gpio,			\
+=======
+			.to_irq		  = at91_gpiolib_to_irq,	\
+			.ngpio		  = MAX_NB_GPIO_PER_BANK,	\
+>>>>>>> refs/remotes/origin/master
 		},							\
 	}
 
 static struct at91_gpio_chip gpio_chip[] = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	AT91_GPIO_CHIP("A", 0x00 + PIN_BASE, 32),
 	AT91_GPIO_CHIP("B", 0x20 + PIN_BASE, 32),
@@ -113,6 +158,13 @@ static inline void __iomem *pin_to_controller(unsigned pin)
 	AT91_GPIO_CHIP("pioC", 32),
 	AT91_GPIO_CHIP("pioD", 32),
 	AT91_GPIO_CHIP("pioE", 32),
+=======
+	AT91_GPIO_CHIP("pioA"),
+	AT91_GPIO_CHIP("pioB"),
+	AT91_GPIO_CHIP("pioC"),
+	AT91_GPIO_CHIP("pioD"),
+	AT91_GPIO_CHIP("pioE"),
+>>>>>>> refs/remotes/origin/master
 };
 
 static int gpio_banks;
@@ -127,8 +179,12 @@ static unsigned long at91_gpio_caps;
 
 static inline void __iomem *pin_to_controller(unsigned pin)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	pin /= 32;
+=======
+	pin /= MAX_NB_GPIO_PER_BANK;
+>>>>>>> refs/remotes/origin/master
 	if (likely(pin < gpio_banks))
 		return gpio_chip[pin].regbase;
 
@@ -137,6 +193,7 @@ static inline void __iomem *pin_to_controller(unsigned pin)
 
 static inline unsigned pin_to_mask(unsigned pin)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pin -= PIN_BASE;
 =======
@@ -147,6 +204,12 @@ static inline unsigned pin_to_mask(unsigned pin)
 
 <<<<<<< HEAD
 =======
+=======
+	return 1 << (pin % MAX_NB_GPIO_PER_BANK);
+}
+
+
+>>>>>>> refs/remotes/origin/master
 static char peripheral_function(void __iomem *pio, unsigned mask)
 {
 	char	ret = 'X';
@@ -166,7 +229,10 @@ static char peripheral_function(void __iomem *pio, unsigned mask)
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*--------------------------------------------------------------------------*/
 
 /* Not all hardware capabilities are exposed through these calls; they
@@ -215,8 +281,11 @@ int __init_or_module at91_set_A_periph(unsigned pin, int use_pullup)
 	__raw_writel(mask, pio + PIO_IDR);
 	__raw_writel(mask, pio + (use_pullup ? PIO_PUER : PIO_PUDR));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__raw_writel(mask, pio + PIO_ASR);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (has_pio3()) {
 		__raw_writel(__raw_readl(pio + PIO_ABCDSR1) & ~mask,
 							pio + PIO_ABCDSR1);
@@ -225,7 +294,10 @@ int __init_or_module at91_set_A_periph(unsigned pin, int use_pullup)
 	} else {
 		__raw_writel(mask, pio + PIO_ASR);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	__raw_writel(mask, pio + PIO_PDR);
 	return 0;
 }
@@ -246,8 +318,11 @@ int __init_or_module at91_set_B_periph(unsigned pin, int use_pullup)
 	__raw_writel(mask, pio + PIO_IDR);
 	__raw_writel(mask, pio + (use_pullup ? PIO_PUER : PIO_PUDR));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__raw_writel(mask, pio + PIO_BSR);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (has_pio3()) {
 		__raw_writel(__raw_readl(pio + PIO_ABCDSR1) | mask,
 							pio + PIO_ABCDSR1);
@@ -256,7 +331,10 @@ int __init_or_module at91_set_B_periph(unsigned pin, int use_pullup)
 	} else {
 		__raw_writel(mask, pio + PIO_BSR);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	__raw_writel(mask, pio + PIO_PDR);
 	return 0;
 }
@@ -265,9 +343,12 @@ EXPORT_SYMBOL(at91_set_B_periph);
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * mux the pin to the gpio controller (instead of "A" or "B" peripheral), and
  * configure it for an input.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * mux the pin to the "C" internal peripheral role.
  */
 int __init_or_module at91_set_C_periph(unsigned pin, int use_pullup)
@@ -312,7 +393,10 @@ EXPORT_SYMBOL(at91_set_D_periph);
 /*
  * mux the pin to the gpio controller (instead of "A", "B", "C"
  * or "D" peripheral), and configure it for an input.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 int __init_or_module at91_set_gpio_input(unsigned pin, int use_pullup)
 {
@@ -333,12 +417,17 @@ EXPORT_SYMBOL(at91_set_gpio_input);
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * mux the pin to the gpio controller (instead of "A" or "B" peripheral),
  * and configure it for an output.
 =======
  * mux the pin to the gpio controller (instead of "A", "B", "C"
  * or "D" peripheral), and configure it for an output.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * mux the pin to the gpio controller (instead of "A", "B", "C"
+ * or "D" peripheral), and configure it for an output.
+>>>>>>> refs/remotes/origin/master
  */
 int __init_or_module at91_set_gpio_output(unsigned pin, int value)
 {
@@ -369,11 +458,17 @@ int __init_or_module at91_set_deglitch(unsigned pin, int is_on)
 	if (!pio)
 		return -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	if (has_pio3() && is_on)
 		__raw_writel(mask, pio + PIO_IFSCDR);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (has_pio3() && is_on)
+		__raw_writel(mask, pio + PIO_IFSCDR);
+>>>>>>> refs/remotes/origin/master
 	__raw_writel(mask, pio + (is_on ? PIO_IFER : PIO_IFDR));
 	return 0;
 }
@@ -381,7 +476,10 @@ EXPORT_SYMBOL(at91_set_deglitch);
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * enable/disable the debounce filter;
  */
 int __init_or_module at91_set_debounce(unsigned pin, int is_on, int div)
@@ -404,7 +502,10 @@ int __init_or_module at91_set_debounce(unsigned pin, int is_on, int div)
 EXPORT_SYMBOL(at91_set_debounce);
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * enable/disable the multi-driver; This is only valid for output and
  * allows the output pin to run as an open collector output.
  */
@@ -423,7 +524,10 @@ EXPORT_SYMBOL(at91_set_multi_drive);
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * enable/disable the pull-down.
  * If pull-up already enabled while calling the function, we disable it.
  */
@@ -459,7 +563,10 @@ int __init_or_module at91_disable_schmitt_trig(unsigned pin)
 EXPORT_SYMBOL(at91_disable_schmitt_trig);
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * assuming the pin is muxed as a gpio output, set its value.
  */
 int at91_set_gpio_value(unsigned pin, int value)
@@ -501,6 +608,7 @@ static u32 backups[MAX_GPIO_BANKS];
 static int gpio_irq_set_wake(struct irq_data *d, unsigned state)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned	mask = pin_to_mask(d->irq);
 	unsigned	bank = (d->irq - PIN_BASE) / 32;
 =======
@@ -508,6 +616,11 @@ static int gpio_irq_set_wake(struct irq_data *d, unsigned state)
 	unsigned	mask = 1 << d->hwirq;
 	unsigned	bank = at91_gpio->pioc_idx;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct at91_gpio_chip *at91_gpio = irq_data_get_irq_chip_data(d);
+	unsigned	mask = 1 << d->hwirq;
+	unsigned	bank = at91_gpio->pioc_idx;
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(bank >= MAX_GPIO_BANKS))
 		return -EINVAL;
@@ -518,10 +631,14 @@ static int gpio_irq_set_wake(struct irq_data *d, unsigned state)
 		wakeups[bank] &= ~mask;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	irq_set_irq_wake(gpio_chip[bank].bank->id, state);
 =======
 	irq_set_irq_wake(at91_gpio->pioc_virq, state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq_set_irq_wake(at91_gpio->pioc_virq, state);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -538,15 +655,21 @@ void at91_gpio_suspend(void)
 		__raw_writel(wakeups[i], pio + PIO_IER);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!wakeups[i])
 			clk_disable(gpio_chip[i].bank->clock);
 		else {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!wakeups[i]) {
 			clk_unprepare(gpio_chip[i].clock);
 			clk_disable(gpio_chip[i].clock);
 		} else {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM_DEBUG
 			printk(KERN_DEBUG "GPIO-%c may wake for %08x\n", 'A'+i, wakeups[i]);
 #endif
@@ -562,14 +685,20 @@ void at91_gpio_resume(void)
 		void __iomem	*pio = gpio_chip[i].regbase;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!wakeups[i])
 			clk_enable(gpio_chip[i].bank->clock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!wakeups[i]) {
 			if (clk_prepare(gpio_chip[i].clock) == 0)
 				clk_enable(gpio_chip[i].clock);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		__raw_writel(wakeups[i], pio + PIO_IDR);
 		__raw_writel(backups[i], pio + PIO_IER);
@@ -586,13 +715,19 @@ void at91_gpio_resume(void)
  * at91_set_gpio_input() then maybe enable its glitch filter.
  * Then just request_irq() with the pin ID; it works like any ARM IRQ
 <<<<<<< HEAD
+<<<<<<< HEAD
  * handler, though it always triggers on rising and falling edges.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * handler.
  * First implementation always triggers on rising and falling edges
  * whereas the newer PIO3 can be additionally configured to trigger on
  * level, edge with any polarity.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Alternatively, certain pins may be used directly as IRQ0..IRQ6 after
  * configuring them with at91_set_a_periph() or at91_set_b_periph().
@@ -602,20 +737,6 @@ void at91_gpio_resume(void)
 static void gpio_irq_mask(struct irq_data *d)
 {
 <<<<<<< HEAD
-	void __iomem	*pio = pin_to_controller(d->irq);
-	unsigned	mask = pin_to_mask(d->irq);
-=======
-	struct at91_gpio_chip *at91_gpio = irq_data_get_irq_chip_data(d);
-	void __iomem	*pio = at91_gpio->regbase;
-	unsigned	mask = 1 << d->hwirq;
->>>>>>> refs/remotes/origin/cm-10.0
-
-	if (pio)
-		__raw_writel(mask, pio + PIO_IDR);
-}
-
-static void gpio_irq_unmask(struct irq_data *d)
-{
 <<<<<<< HEAD
 	void __iomem	*pio = pin_to_controller(d->irq);
 	unsigned	mask = pin_to_mask(d->irq);
@@ -624,6 +745,32 @@ static void gpio_irq_unmask(struct irq_data *d)
 	void __iomem	*pio = at91_gpio->regbase;
 	unsigned	mask = 1 << d->hwirq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct at91_gpio_chip *at91_gpio = irq_data_get_irq_chip_data(d);
+	void __iomem	*pio = at91_gpio->regbase;
+	unsigned	mask = 1 << d->hwirq;
+>>>>>>> refs/remotes/origin/master
+
+	if (pio)
+		__raw_writel(mask, pio + PIO_IDR);
+}
+
+static void gpio_irq_unmask(struct irq_data *d)
+{
+<<<<<<< HEAD
+<<<<<<< HEAD
+	void __iomem	*pio = pin_to_controller(d->irq);
+	unsigned	mask = pin_to_mask(d->irq);
+=======
+	struct at91_gpio_chip *at91_gpio = irq_data_get_irq_chip_data(d);
+	void __iomem	*pio = at91_gpio->regbase;
+	unsigned	mask = 1 << d->hwirq;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct at91_gpio_chip *at91_gpio = irq_data_get_irq_chip_data(d);
+	void __iomem	*pio = at91_gpio->regbase;
+	unsigned	mask = 1 << d->hwirq;
+>>>>>>> refs/remotes/origin/master
 
 	if (pio)
 		__raw_writel(mask, pio + PIO_IER);
@@ -641,7 +788,10 @@ static int gpio_irq_type(struct irq_data *d, unsigned type)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Alternate irq type for PIO3 support */
 static int alt_gpio_irq_type(struct irq_data *d, unsigned type)
 {
@@ -685,22 +835,30 @@ static int alt_gpio_irq_type(struct irq_data *d, unsigned type)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct irq_chip gpio_irqchip = {
 	.name		= "GPIO",
 	.irq_disable	= gpio_irq_mask,
 	.irq_mask	= gpio_irq_mask,
 	.irq_unmask	= gpio_irq_unmask,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.irq_set_type	= gpio_irq_type,
 =======
 	/* .irq_set_type is set dynamically */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* .irq_set_type is set dynamically */
+>>>>>>> refs/remotes/origin/master
 	.irq_set_wake	= gpio_irq_set_wake,
 };
 
 static void gpio_irq_handler(unsigned irq, struct irq_desc *desc)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned	pin;
 =======
@@ -718,6 +876,16 @@ static void gpio_irq_handler(unsigned irq, struct irq_desc *desc)
 
 	/* temporarily mask (level sensitive) parent IRQ */
 	chip->irq_ack(idata);
+=======
+	struct irq_chip *chip = irq_desc_get_chip(desc);
+	struct irq_data *idata = irq_desc_get_irq_data(desc);
+	struct at91_gpio_chip *at91_gpio = irq_data_get_irq_chip_data(idata);
+	void __iomem	*pio = at91_gpio->regbase;
+	unsigned long	isr;
+	int		n;
+
+	chained_irq_enter(chip, desc);
+>>>>>>> refs/remotes/origin/master
 	for (;;) {
 		/* Reading ISR acks pending (edge triggered) GPIO interrupts.
 		 * When there none are pending, we're finished unless we need
@@ -733,6 +901,7 @@ static void gpio_irq_handler(unsigned irq, struct irq_desc *desc)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pin = at91_gpio->chip.base;
 
 		while (isr) {
@@ -741,14 +910,22 @@ static void gpio_irq_handler(unsigned irq, struct irq_desc *desc)
 			pin++;
 			isr >>= 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		n = find_first_bit(&isr, BITS_PER_LONG);
 		while (n < BITS_PER_LONG) {
 			generic_handle_irq(irq_find_mapping(at91_gpio->domain, n));
 			n = find_next_bit(&isr, BITS_PER_LONG, n + 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		}
 	}
 	chip->irq_unmask(idata);
+=======
+		}
+	}
+	chained_irq_exit(chip, desc);
+>>>>>>> refs/remotes/origin/master
 	/* now it may re-trigger */
 }
 
@@ -757,7 +934,10 @@ static void gpio_irq_handler(unsigned irq, struct irq_desc *desc)
 #ifdef CONFIG_DEBUG_FS
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void gpio_printf(struct seq_file *s, void __iomem *pio, unsigned mask)
 {
 	char	*trigger = NULL;
@@ -785,7 +965,10 @@ static void gpio_printf(struct seq_file *s, void __iomem *pio, unsigned mask)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int at91_gpio_show(struct seq_file *s, void *unused)
 {
 	int bank, j;
@@ -794,10 +977,14 @@ static int at91_gpio_show(struct seq_file *s, void *unused)
 	seq_printf(s, "Pin\t");
 	for (bank = 0; bank < gpio_banks; bank++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		seq_printf(s, "PIO%c\t", 'A' + bank);
 =======
 		seq_printf(s, "PIO%c\t\t", 'A' + bank);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		seq_printf(s, "PIO%c\t\t", 'A' + bank);
+>>>>>>> refs/remotes/origin/master
 	};
 	seq_printf(s, "\n\n");
 
@@ -807,14 +994,19 @@ static int at91_gpio_show(struct seq_file *s, void *unused)
 
 		for (bank = 0; bank < gpio_banks; bank++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			unsigned	pin  = PIN_BASE + (32 * bank) + j;
 =======
 			unsigned	pin  = (32 * bank) + j;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			unsigned	pin  = (32 * bank) + j;
+>>>>>>> refs/remotes/origin/master
 			void __iomem	*pio = pin_to_controller(pin);
 			unsigned	mask = pin_to_mask(pin);
 
 			if (__raw_readl(pio + PIO_PSR) & mask)
+<<<<<<< HEAD
 <<<<<<< HEAD
 				seq_printf(s, "GPIO:%s", __raw_readl(pio + PIO_PDSR) & mask ? "1" : "0");
 			else
@@ -822,11 +1014,16 @@ static int at91_gpio_show(struct seq_file *s, void *unused)
 
 			seq_printf(s, "\t");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				gpio_printf(s, pio, mask);
 			else
 				seq_printf(s, "%c\t\t",
 						peripheral_function(pio, mask));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		seq_printf(s, "\n");
@@ -865,6 +1062,7 @@ postcore_initcall(at91_gpio_debugfs_init);
  */
 static struct lock_class_key gpio_lock_class;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #if defined(CONFIG_OF)
@@ -941,6 +1139,8 @@ int __init at91_gpio_of_irq_setup(struct device_node *node,
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * irqdomain initialization: pile up irqdomains on top of AIC range
  */
@@ -960,12 +1160,16 @@ static void __init at91_gpio_irqdomain(struct at91_gpio_chip *at91_gpio)
 			at91_gpio->pioc_idx);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Called from the processor-specific init to enable GPIO interrupt support.
  */
 void __init at91_gpio_irq_setup(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned		pioc, pin;
 	struct at91_gpio_chip	*this, *prev;
@@ -981,6 +1185,8 @@ void __init at91_gpio_irq_setup(void)
 		for (i = 0, pin = this->chip.base; i < 32; i++, pin++) {
 			irq_set_lockdep_class(pin, &gpio_lock_class);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned		pioc;
 	int			gpio_irqnbr = 0;
 	struct at91_gpio_chip	*this, *prev;
@@ -1004,12 +1210,16 @@ void __init at91_gpio_irq_setup(void)
 		for (offset = 0; offset < this->chip.ngpio; offset++) {
 			unsigned int virq = irq_find_mapping(this->domain, offset);
 			irq_set_lockdep_class(virq, &gpio_lock_class);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			/*
 			 * Can use the "simple" and not "edge" handler since it's
 			 * shorter, and the AIC handles interrupts sanely.
 			 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			irq_set_chip_and_handler(pin, &gpio_irqchip,
 						 handle_simple_irq);
@@ -1020,6 +1230,8 @@ void __init at91_gpio_irq_setup(void)
 		 * AT91SAM9263_ID_PIOCDE handles three... PIOC is first in
 		 * the list, so we only set up that handler.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			irq_set_chip_and_handler(virq, &gpio_irqchip,
 						 handle_simple_irq);
 			set_irq_flags(virq, IRQF_VALID);
@@ -1031,26 +1243,48 @@ void __init at91_gpio_irq_setup(void)
 		/* The toplevel handler handles one bank of GPIOs, except
 		 * on some SoC it can handles up to three...
 		 * We only set up the handler for the first of the list.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		 */
 		if (prev && prev->next == this)
 			continue;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		irq_set_chip_data(id, this);
 		irq_set_chained_handler(id, gpio_irq_handler);
 	}
 	pr_info("AT91: %d gpio irqs in %d banks\n", pin - PIN_BASE, gpio_banks);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		this->pioc_virq = irq_create_mapping(NULL, this->pioc_hwirq);
 		irq_set_chip_data(this->pioc_virq, this);
 		irq_set_chained_handler(this->pioc_virq, gpio_irq_handler);
 	}
 	pr_info("AT91: %d gpio irqs in %d banks\n", gpio_irqnbr, gpio_banks);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* gpiolib support */
+=======
+}
+
+/* gpiolib support */
+static int at91_gpiolib_request(struct gpio_chip *chip, unsigned offset)
+{
+	struct at91_gpio_chip *at91_gpio = to_at91_gpio_chip(chip);
+	void __iomem *pio = at91_gpio->regbase;
+	unsigned mask = 1 << offset;
+
+	__raw_writel(mask, pio + PIO_PER);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int at91_gpiolib_direction_input(struct gpio_chip *chip,
 					unsigned offset)
 {
@@ -1114,6 +1348,7 @@ static void at91_gpiolib_dbg_show(struct seq_file *s, struct gpio_chip *chip)
 					   "set" : "clear");
 			else
 <<<<<<< HEAD
+<<<<<<< HEAD
 				seq_printf(s, "[periph %s]\n",
 					   __raw_readl(pio + PIO_ABSR) &
 					   mask ? "B" : "A");
@@ -1121,12 +1356,19 @@ static void at91_gpiolib_dbg_show(struct seq_file *s, struct gpio_chip *chip)
 				seq_printf(s, "[periph %c]\n",
 					   peripheral_function(pio, mask));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				seq_printf(s, "[periph %c]\n",
+					   peripheral_function(pio, mask));
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int at91_gpiolib_to_irq(struct gpio_chip *chip, unsigned offset)
 {
 	struct at91_gpio_chip *at91_gpio = to_at91_gpio_chip(chip);
@@ -1172,6 +1414,7 @@ err:
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_OF_GPIO
 static void __init of_at91_gpio_init_one(struct device_node *np)
 {
@@ -1242,11 +1485,17 @@ static int __init of_at91_gpio_init(void)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init at91_gpio_init_one(int idx, u32 regbase, int pioc_hwirq)
 {
 	struct at91_gpio_chip *at91_gpio = &gpio_chip[idx];
 
+<<<<<<< HEAD
 	at91_gpio->chip.base = idx * at91_gpio->chip.ngpio;
+=======
+	at91_gpio->chip.base = idx * MAX_NB_GPIO_PER_BANK;
+>>>>>>> refs/remotes/origin/master
 	at91_gpio->pioc_hwirq = pioc_hwirq;
 	at91_gpio->pioc_idx = idx;
 
@@ -1266,21 +1515,29 @@ ioremap_err:
 	iounmap(at91_gpio->regbase);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Called from the processor-specific init to enable GPIO pin support.
  */
 void __init at91_gpio_init(struct at91_gpio_bank *data, int nr_banks)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned		i;
 =======
 	unsigned i;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned i;
+>>>>>>> refs/remotes/origin/master
 	struct at91_gpio_chip *at91_gpio, *last = NULL;
 
 	BUG_ON(nr_banks > MAX_GPIO_BANKS);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	gpio_banks = nr_banks;
 
@@ -1303,6 +1560,13 @@ void __init at91_gpio_init(struct at91_gpio_bank *data, int nr_banks)
 		for (i = 0; i < nr_banks; i++)
 			at91_gpio_init_one(i, data[i].regbase, data[i].id);
 	}
+=======
+	if (of_have_populated_dt())
+		return;
+
+	for (i = 0; i < nr_banks; i++)
+		at91_gpio_init_one(i, data[i].regbase, data[i].id);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < gpio_banks; i++) {
 		at91_gpio = &gpio_chip[i];
@@ -1312,7 +1576,10 @@ void __init at91_gpio_init(struct at91_gpio_bank *data, int nr_banks)
 		 * PIOC, PIOD and PIOE can share the same IRQ line
 		 */
 		if (last && last->pioc_hwirq == at91_gpio->pioc_hwirq)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			last->next = at91_gpio;
 		last = at91_gpio;
 

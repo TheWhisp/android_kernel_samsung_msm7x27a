@@ -183,12 +183,15 @@ Please mark the initialization and cleanup functions where appropriate
 			initializes.
 	__exit		Exit code. Ignored for non-modular drivers.
 
+<<<<<<< HEAD
 
 	__devinit	Device initialization code.
 			Identical to __init if the kernel is not compiled
 			with CONFIG_HOTPLUG, normal function otherwise.
 	__devexit	The same for __exit.
 
+=======
+>>>>>>> refs/remotes/origin/master
 Tips on when/where to use the above attributes:
 	o The module_init()/module_exit() functions (and all
 	  initialization functions called _only_ from these)
@@ -196,6 +199,7 @@ Tips on when/where to use the above attributes:
 
 	o Do not mark the struct pci_driver.
 
+<<<<<<< HEAD
 	o The ID table array should be marked __devinitconst; this is done
 	  automatically if the table is declared with DEFINE_PCI_DEVICE_TABLE().
 
@@ -210,6 +214,8 @@ Tips on when/where to use the above attributes:
 	  __devexit_p() will generate the function name _or_ NULL if the
 	  function will be discarded.  For an example, see drivers/net/tg3.c.
 
+=======
+>>>>>>> refs/remotes/origin/master
 	o Do NOT mark a function if you are not sure which mark to use.
 	  Better to not mark the function than mark the function wrong.
 
@@ -315,10 +321,14 @@ as the PCI "bus address" might have been remapped to a "host physical"
 address by the arch/chip-set specific kernel support.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 See Documentation/IO-mapping.txt for how to access device registers
 =======
 See Documentation/io-mapping.txt for how to access device registers
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+See Documentation/io-mapping.txt for how to access device registers
+>>>>>>> refs/remotes/origin/master
 or device memory.
 
 The device driver needs to call pci_request_region() to verify
@@ -549,8 +559,14 @@ corresponding register block for you.
 6. Other interesting functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+<<<<<<< HEAD
 pci_find_slot()			Find pci_dev corresponding to given bus and
 				slot numbers.
+=======
+pci_get_domain_bus_and_slot()	Find pci_dev corresponding to given domain,
+				bus and slot and number. If the device is
+				found, its reference count is increased.
+>>>>>>> refs/remotes/origin/master
 pci_set_power_state()		Set PCI Power Management state (0=D0 ... 3=D3)
 pci_find_capability()		Find specified capability in device's capability
 				list.
@@ -606,7 +622,12 @@ having sane locking.
 
 pci_find_device()	Superseded by pci_get_device()
 pci_find_subsys()	Superseded by pci_get_subsys()
+<<<<<<< HEAD
 pci_find_slot()		Superseded by pci_get_slot()
+=======
+pci_find_slot()		Superseded by pci_get_domain_bus_and_slot()
+pci_get_slot()		Superseded by pci_get_domain_bus_and_slot()
+>>>>>>> refs/remotes/origin/master
 
 
 The alternative is the traditional PCI device driver that walks PCI

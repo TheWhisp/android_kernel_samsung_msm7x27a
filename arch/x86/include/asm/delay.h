@@ -2,6 +2,7 @@
 #define _ASM_X86_DELAY_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Copyright (C) 1993 Linus Torvalds
  *
@@ -29,6 +30,9 @@ extern void __delay(unsigned long loops);
 =======
 #include <asm-generic/delay.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm-generic/delay.h>
+>>>>>>> refs/remotes/origin/master
 
 void use_tsc_delay(void);
 

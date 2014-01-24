@@ -5,7 +5,10 @@ config NETFILTER_NETLINK
 	tristate
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config NETFILTER_NETLINK_ACCT
 tristate "Netfilter NFACCT over NFNETLINK interface"
 	depends on NETFILTER_ADVANCED
@@ -14,7 +17,10 @@ tristate "Netfilter NFACCT over NFNETLINK interface"
 	  If this option is enabled, the kernel will include support
 	  for extended accounting via NFNETLINK.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config NETFILTER_NETLINK_QUEUE
 	tristate "Netfilter NFQUEUE over NFNETLINK interface"
 	depends on NETFILTER_ADVANCED
@@ -87,7 +93,10 @@ config NF_CONNTRACK_ZONES
 	  If unsure, say `N'.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config NF_CONNTRACK_PROCFS
 	bool "Supply CT list in procfs (OBSOLETE)"
 	default y
@@ -98,7 +107,10 @@ config NF_CONNTRACK_PROCFS
 	is considered obsolete in favor of using the conntrack(8)
 	tool which uses Netlink.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config NF_CONNTRACK_EVENTS
 	bool "Connection tracking events"
 	depends on NETFILTER_ADVANCED
@@ -110,7 +122,10 @@ config NF_CONNTRACK_EVENTS
 	  If unsure, say `N'.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config NF_CONNTRACK_TIMEOUT
 	bool  'Connection tracking timeout'
 	depends on NETFILTER_ADVANCED
@@ -121,7 +136,10 @@ config NF_CONNTRACK_TIMEOUT
 
 	  If unsure, say `N'.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config NF_CONNTRACK_TIMESTAMP
 	bool  'Connection tracking timestamping'
 	depends on NETFILTER_ADVANCED
@@ -133,9 +151,20 @@ config NF_CONNTRACK_TIMESTAMP
 
 	  If unsure, say `N'.
 
+<<<<<<< HEAD
 config NF_CT_PROTO_DCCP
 	tristate 'DCCP protocol connection tracking support (EXPERIMENTAL)'
 	depends on EXPERIMENTAL
+=======
+config NF_CONNTRACK_LABELS
+	bool
+	help
+	  This option enables support for assigning user-defined flag bits
+	  to connection tracking entries.  It selected by the connlabel match.
+
+config NF_CT_PROTO_DCCP
+	tristate 'DCCP protocol connection tracking support'
+>>>>>>> refs/remotes/origin/master
 	depends on NETFILTER_ADVANCED
 	default IP_DCCP
 	help
@@ -148,8 +177,12 @@ config NF_CT_PROTO_GRE
 	tristate
 
 config NF_CT_PROTO_SCTP
+<<<<<<< HEAD
 	tristate 'SCTP protocol connection tracking support (EXPERIMENTAL)'
 	depends on EXPERIMENTAL
+=======
+	tristate 'SCTP protocol connection tracking support'
+>>>>>>> refs/remotes/origin/master
 	depends on NETFILTER_ADVANCED
 	default IP_SCTP
 	help
@@ -239,9 +272,12 @@ config NF_CONNTRACK_BROADCAST
 config NF_CONNTRACK_NETBIOS_NS
 	tristate "NetBIOS name service protocol support"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on NETFILTER_ADVANCED
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	select NF_CONNTRACK_BROADCAST
 	help
 	  NetBIOS name service requests are sent as broadcast messages from an
@@ -294,8 +330,12 @@ config NF_CONNTRACK_PPTP
 	  To compile it as a module, choose M here.  If unsure, say N.
 
 config NF_CONNTRACK_SANE
+<<<<<<< HEAD
 	tristate "SANE protocol support (EXPERIMENTAL)"
 	depends on EXPERIMENTAL
+=======
+	tristate "SANE protocol support"
+>>>>>>> refs/remotes/origin/master
 	depends on NETFILTER_ADVANCED
 	help
 	  SANE is a protocol for remote access to scanners as implemented
@@ -338,7 +378,10 @@ config NF_CT_NETLINK
 	  This option enables support for a netlink-based userspace interface
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config NF_CT_NETLINK_TIMEOUT
 	tristate  'Connection tracking timeout tuning via Netlink'
 	select NETFILTER_NETLINK
@@ -350,6 +393,7 @@ config NF_CT_NETLINK_TIMEOUT
 
 	  If unsure, say `N'.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 endif # NF_CONNTRACK
 
@@ -367,6 +411,134 @@ config NETFILTER_TPROXY
 	  see Documentation/networking/tproxy.txt.
 
 	  To compile it as a module, choose M here.  If unsure, say N.
+=======
+config NF_CT_NETLINK_HELPER
+	tristate 'Connection tracking helpers in user-space via Netlink'
+	select NETFILTER_NETLINK
+	depends on NF_CT_NETLINK
+	depends on NETFILTER_NETLINK_QUEUE
+	depends on NETFILTER_NETLINK_QUEUE_CT
+	depends on NETFILTER_ADVANCED
+	help
+	  This option enables the user-space connection tracking helpers
+	  infrastructure.
+
+	  If unsure, say `N'.
+
+config NETFILTER_NETLINK_QUEUE_CT
+        bool "NFQUEUE integration with Connection Tracking"
+        default n
+        depends on NETFILTER_NETLINK_QUEUE
+	help
+	  If this option is enabled, NFQUEUE can include Connection Tracking
+	  information together with the packet is the enqueued via NFNETLINK.
+
+config NF_NAT
+	tristate
+
+config NF_NAT_NEEDED
+	bool
+	depends on NF_NAT
+	default y
+
+config NF_NAT_PROTO_DCCP
+	tristate
+	depends on NF_NAT && NF_CT_PROTO_DCCP
+	default NF_NAT && NF_CT_PROTO_DCCP
+
+config NF_NAT_PROTO_UDPLITE
+	tristate
+	depends on NF_NAT && NF_CT_PROTO_UDPLITE
+	default NF_NAT && NF_CT_PROTO_UDPLITE
+
+config NF_NAT_PROTO_SCTP
+	tristate
+	default NF_NAT && NF_CT_PROTO_SCTP
+	depends on NF_NAT && NF_CT_PROTO_SCTP
+	select LIBCRC32C
+
+config NF_NAT_AMANDA
+	tristate
+	depends on NF_CONNTRACK && NF_NAT
+	default NF_NAT && NF_CONNTRACK_AMANDA
+
+config NF_NAT_FTP
+	tristate
+	depends on NF_CONNTRACK && NF_NAT
+	default NF_NAT && NF_CONNTRACK_FTP
+
+config NF_NAT_IRC
+	tristate
+	depends on NF_CONNTRACK && NF_NAT
+	default NF_NAT && NF_CONNTRACK_IRC
+
+config NF_NAT_SIP
+	tristate
+	depends on NF_CONNTRACK && NF_NAT
+	default NF_NAT && NF_CONNTRACK_SIP
+
+config NF_NAT_TFTP
+	tristate
+	depends on NF_CONNTRACK && NF_NAT
+	default NF_NAT && NF_CONNTRACK_TFTP
+
+config NETFILTER_SYNPROXY
+	tristate
+
+endif # NF_CONNTRACK
+
+config NF_TABLES
+	depends on NETFILTER_NETLINK
+	tristate "Netfilter nf_tables support"
+
+config NFT_EXTHDR
+	depends on NF_TABLES
+	tristate "Netfilter nf_tables IPv6 exthdr module"
+
+config NFT_META
+	depends on NF_TABLES
+	tristate "Netfilter nf_tables meta module"
+
+config NFT_CT
+	depends on NF_TABLES
+	depends on NF_CONNTRACK
+	tristate "Netfilter nf_tables conntrack module"
+
+config NFT_RBTREE
+	depends on NF_TABLES
+	tristate "Netfilter nf_tables rbtree set module"
+
+config NFT_HASH
+	depends on NF_TABLES
+	tristate "Netfilter nf_tables hash set module"
+
+config NFT_COUNTER
+	depends on NF_TABLES
+	tristate "Netfilter nf_tables counter module"
+
+config NFT_LOG
+	depends on NF_TABLES
+	tristate "Netfilter nf_tables log module"
+
+config NFT_LIMIT
+	depends on NF_TABLES
+	tristate "Netfilter nf_tables limit module"
+
+config NFT_NAT
+	depends on NF_TABLES
+	depends on NF_CONNTRACK
+	depends on NF_NAT
+	tristate "Netfilter nf_tables nat module"
+
+config NFT_COMPAT
+	depends on NF_TABLES
+	depends on NETFILTER_XTABLES
+	tristate "Netfilter x_tables over nf_tables module"
+	help
+	  This is required if you intend to use any of existing
+	  x_tables match/target extensions over the nf_tables
+	  framework.
+>>>>>>> refs/remotes/origin/master
 
 config NETFILTER_XTABLES
 	tristate "Netfilter Xtables support (required for ip_tables)"
@@ -525,6 +697,24 @@ config NETFILTER_XT_TARGET_HL
 	since you can easily create immortal packets that loop
 	forever on the network.
 
+<<<<<<< HEAD
+=======
+config NETFILTER_XT_TARGET_HMARK
+	tristate '"HMARK" target support'
+	depends on (IP6_NF_IPTABLES || IP6_NF_IPTABLES=n)
+	depends on NETFILTER_ADVANCED
+	---help---
+	This option adds the "HMARK" target.
+
+	The target allows you to create rules in the "raw" and "mangle" tables
+	which set the skbuff mark by means of hash calculation within a given
+	range. The nfmark can influence the routing method (see "Use netfilter
+	MARK value as routing key") and can also be used by other subsystems to
+	change their behaviour.
+
+	To compile it as a module, choose M here. If unsure, say N.
+
+>>>>>>> refs/remotes/origin/master
 config NETFILTER_XT_TARGET_IDLETIMER
 	tristate  "IDLETIMER target support"
 	depends on NETFILTER_ADVANCED
@@ -560,8 +750,11 @@ config NETFILTER_XT_TARGET_LED
 
 	  For more information on the LEDs available on your system, see
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  Documentation/leds-class.txt
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  Documentation/leds/leds-class.txt
 
 config NETFILTER_XT_TARGET_LOG
@@ -572,7 +765,10 @@ config NETFILTER_XT_TARGET_LOG
 	  any iptables table which records the packet header to the syslog.
 
 	  To compile it as a module, choose M here.  If unsure, say N.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config NETFILTER_XT_TARGET_MARK
 	tristate '"MARK" target support'
@@ -583,6 +779,19 @@ config NETFILTER_XT_TARGET_MARK
 	(e.g. when running oldconfig). It selects
 	CONFIG_NETFILTER_XT_MARK (combined mark/MARK module).
 
+<<<<<<< HEAD
+=======
+config NETFILTER_XT_TARGET_NETMAP
+	tristate '"NETMAP" target support'
+	depends on NF_NAT
+	---help---
+	NETMAP is an implementation of static 1:1 NAT mapping of network
+	addresses. It maps the network address part, while keeping the host
+	address part intact.
+
+	To compile it as a module, choose M here. If unsure, say N.
+
+>>>>>>> refs/remotes/origin/master
 config NETFILTER_XT_TARGET_NFLOG
 	tristate '"NFLOG" target support'
 	default m if NETFILTER_ADVANCED=n
@@ -606,6 +815,7 @@ config NETFILTER_XT_TARGET_NFQUEUE
 	  To compile it as a module, choose M here.  If unsure, say N.
 
 config NETFILTER_XT_TARGET_NOTRACK
+<<<<<<< HEAD
 	tristate  '"NOTRACK" target support'
 	depends on IP_NF_RAW || IP6_NF_RAW
 	depends on NF_CONNTRACK
@@ -621,6 +831,13 @@ config NETFILTER_XT_TARGET_NOTRACK
 
 	  If you want to compile it as a module, say M here and read
 	  <file:Documentation/kbuild/modules.txt>.  If unsure, say `N'.
+=======
+	tristate  '"NOTRACK" target support (DEPRECATED)'
+	depends on NF_CONNTRACK
+	depends on IP_NF_RAW || IP6_NF_RAW
+	depends on NETFILTER_ADVANCED
+	select NETFILTER_XT_TARGET_CT
+>>>>>>> refs/remotes/origin/master
 
 config NETFILTER_XT_TARGET_RATEEST
 	tristate '"RATEEST" target support'
@@ -632,6 +849,20 @@ config NETFILTER_XT_TARGET_RATEEST
 
 	  To compile it as a module, choose M here.  If unsure, say N.
 
+<<<<<<< HEAD
+=======
+config NETFILTER_XT_TARGET_REDIRECT
+	tristate "REDIRECT target support"
+	depends on NF_NAT
+	---help---
+	REDIRECT is a special case of NAT: all incoming connections are
+	mapped onto the incoming interface's address, causing the packets to
+	come to the local machine instead of passing through. This is
+	useful for transparent proxies.
+
+	To compile it as a module, choose M here. If unsure, say N.
+
+>>>>>>> refs/remotes/origin/master
 config NETFILTER_XT_TARGET_TEE
 	tristate '"TEE" - packet cloning to alternate destination'
 	depends on NETFILTER_ADVANCED
@@ -642,11 +873,18 @@ config NETFILTER_XT_TARGET_TEE
 	this clone be rerouted to another nexthop.
 
 config NETFILTER_XT_TARGET_TPROXY
+<<<<<<< HEAD
 	tristate '"TPROXY" target support (EXPERIMENTAL)'
 	depends on EXPERIMENTAL
 	depends on NETFILTER_TPROXY
 	depends on NETFILTER_XTABLES
 	depends on NETFILTER_ADVANCED
+=======
+	tristate '"TPROXY" target transparent proxying support'
+	depends on NETFILTER_XTABLES
+	depends on NETFILTER_ADVANCED
+	depends on IP_NF_MANGLE
+>>>>>>> refs/remotes/origin/master
 	select NF_DEFRAG_IPV4
 	select NF_DEFRAG_IPV6 if IP6_NF_IPTABLES
 	help
@@ -654,6 +892,12 @@ config NETFILTER_XT_TARGET_TPROXY
 	  REDIRECT.  It can only be used in the mangle table and is useful
 	  to redirect traffic to a transparent proxy.  It does _not_ depend
 	  on Netfilter connection tracking and NAT, unlike REDIRECT.
+<<<<<<< HEAD
+=======
+	  For it to work you will have to configure certain iptables rules
+	  and use policy routing. For more information on how to set it up
+	  see Documentation/networking/tproxy.txt.
+>>>>>>> refs/remotes/origin/master
 
 	  To compile it as a module, choose M here.  If unsure, say N.
 
@@ -707,8 +951,12 @@ config NETFILTER_XT_TARGET_TCPMSS
 	  To compile it as a module, choose M here.  If unsure, say N.
 
 config NETFILTER_XT_TARGET_TCPOPTSTRIP
+<<<<<<< HEAD
 	tristate '"TCPOPTSTRIP" target support (EXPERIMENTAL)'
 	depends on EXPERIMENTAL
+=======
+	tristate '"TCPOPTSTRIP" target support'
+>>>>>>> refs/remotes/origin/master
 	depends on IP_NF_MANGLE || IP6_NF_MANGLE
 	depends on NETFILTER_ADVANCED
 	help
@@ -729,6 +977,18 @@ config NETFILTER_XT_MATCH_ADDRTYPE
 	  If you want to compile it as a module, say M here and read
 	  <file:Documentation/kbuild/modules.txt>.  If unsure, say `N'.
 
+<<<<<<< HEAD
+=======
+config NETFILTER_XT_MATCH_BPF
+	tristate '"bpf" match support'
+	depends on NETFILTER_ADVANCED
+	help
+	  BPF matching applies a linux socket filter to each packet and
+	  accepts those for which the filter returns non-zero.
+
+	  To compile it as a module, choose M here.  If unsure, say N.
+
+>>>>>>> refs/remotes/origin/master
 config NETFILTER_XT_MATCH_CLUSTER
 	tristate '"cluster" match support'
 	depends on NF_CONNTRACK
@@ -766,8 +1026,26 @@ config NETFILTER_XT_MATCH_CONNBYTES
 	  If you want to compile it as a module, say M here and read
 	  <file:Documentation/kbuild/modules.txt>.  If unsure, say `N'.
 
+<<<<<<< HEAD
 config NETFILTER_XT_MATCH_CONNLIMIT
 	tristate '"connlimit" match support"'
+=======
+config NETFILTER_XT_MATCH_CONNLABEL
+	tristate '"connlabel" match support'
+	select NF_CONNTRACK_LABELS
+	depends on NF_CONNTRACK
+	depends on NETFILTER_ADVANCED
+	---help---
+	  This match allows you to test and assign userspace-defined labels names
+	  to a connection.  The kernel only stores bit values - mapping
+	  names to bits is done by userspace.
+
+	  Unlike connmark, more than 32 flag bits may be assigned to a
+	  connection simultaneously.
+
+config NETFILTER_XT_MATCH_CONNLIMIT
+	tristate '"connlimit" match support'
+>>>>>>> refs/remotes/origin/master
 	depends on NF_CONNTRACK
 	depends on NETFILTER_ADVANCED
 	---help---
@@ -843,7 +1121,10 @@ config NETFILTER_XT_MATCH_DSCP
 	  To compile it as a module, choose M here.  If unsure, say N.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config NETFILTER_XT_MATCH_ECN
 	tristate '"ecn" match support'
 	depends on NETFILTER_ADVANCED
@@ -853,7 +1134,10 @@ config NETFILTER_XT_MATCH_ECN
 
 	To compile it as a module, choose M here. If unsure, say N.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config NETFILTER_XT_MATCH_ESP
 	tristate '"esp" match support'
 	depends on NETFILTER_ADVANCED
@@ -964,7 +1248,10 @@ config NETFILTER_XT_MATCH_MULTIPORT
 	  To compile it as a module, choose M here.  If unsure, say N.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config NETFILTER_XT_MATCH_NFACCT
 	tristate '"nfacct" match support'
 	depends on NETFILTER_ADVANCED
@@ -975,7 +1262,10 @@ config NETFILTER_XT_MATCH_NFACCT
 
 	  To compile it as a module, choose M here.  If unsure, say N.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config NETFILTER_XT_MATCH_OSF
 	tristate '"osf" Passive OS fingerprint match'
 	depends on NETFILTER_ADVANCED && NETFILTER_NETLINK
@@ -997,8 +1287,11 @@ config NETFILTER_XT_MATCH_OWNER
 	based on who created the socket: the user or group. It is also
 	possible to check whether a socket actually exists.
 
+<<<<<<< HEAD
 	Conflicts with '"quota, tag, uid" match'
 
+=======
+>>>>>>> refs/remotes/origin/master
 config NETFILTER_XT_MATCH_POLICY
 	tristate 'IPsec "policy" match support'
 	depends on XFRM
@@ -1032,6 +1325,7 @@ config NETFILTER_XT_MATCH_PKTTYPE
 
 	  To compile it as a module, choose M here.  If unsure, say N.
 
+<<<<<<< HEAD
 config NETFILTER_XT_MATCH_QTAGUID
 	bool '"quota, tag, owner" match and stats support'
         depends on NETFILTER_XT_MATCH_SOCKET
@@ -1048,6 +1342,8 @@ config NETFILTER_XT_MATCH_QTAGUID
 
 	  If unsure, say `N'.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config NETFILTER_XT_MATCH_QUOTA
 	tristate '"quota" match support'
 	depends on NETFILTER_ADVANCED
@@ -1058,6 +1354,7 @@ config NETFILTER_XT_MATCH_QUOTA
 	  If you want to compile it as a module, say M here and read
 	  <file:Documentation/kbuild/modules.txt>.  If unsure, say `N'.
 
+<<<<<<< HEAD
 config NETFILTER_XT_MATCH_QUOTA2
 	tristate '"quota2" match support'
 	depends on NETFILTER_ADVANCED
@@ -1082,6 +1379,8 @@ config NETFILTER_XT_MATCH_QUOTA2_LOG
 
 	  If unsure, say `N'.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config NETFILTER_XT_MATCH_RATEEST
 	tristate '"rateest" match support'
 	depends on NETFILTER_ADVANCED
@@ -1117,8 +1416,12 @@ config NETFILTER_XT_MATCH_RECENT
 	Official Website: <http://snowman.net/projects/ipt_recent/>
 
 config NETFILTER_XT_MATCH_SCTP
+<<<<<<< HEAD
 	tristate  '"sctp" protocol match support (EXPERIMENTAL)'
 	depends on EXPERIMENTAL
+=======
+	tristate  '"sctp" protocol match support'
+>>>>>>> refs/remotes/origin/master
 	depends on NETFILTER_ADVANCED
 	default IP_SCTP
 	help
@@ -1130,12 +1433,20 @@ config NETFILTER_XT_MATCH_SCTP
 	  <file:Documentation/kbuild/modules.txt>.  If unsure, say `N'.
 
 config NETFILTER_XT_MATCH_SOCKET
+<<<<<<< HEAD
 	tristate '"socket" match support (EXPERIMENTAL)'
 	depends on EXPERIMENTAL
 	depends on NETFILTER_TPROXY
 	depends on NETFILTER_XTABLES
 	depends on NETFILTER_ADVANCED
 	depends on !NF_CONNTRACK || NF_CONNTRACK
+=======
+	tristate '"socket" match support'
+	depends on NETFILTER_XTABLES
+	depends on NETFILTER_ADVANCED
+	depends on !NF_CONNTRACK || NF_CONNTRACK
+	depends on (IPV6 || IPV6=n)
+>>>>>>> refs/remotes/origin/master
 	select NF_DEFRAG_IPV4
 	select NF_DEFRAG_IPV6 if IP6_NF_IPTABLES
 	help

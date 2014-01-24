@@ -101,6 +101,7 @@ int hpfs_stop_cycles(struct super_block *s, int key, int *c1, int *c2,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void hpfs_put_super(struct super_block *s)
 {
 	struct hpfs_sb_info *sbi = hpfs_sb(s);
@@ -113,6 +114,26 @@ static void hpfs_put_super(struct super_block *s)
 	kfree(sbi->sb_bmp_dir);
 	s->s_fs_info = NULL;
 	kfree(sbi);
+=======
+static void free_sbi(struct hpfs_sb_info *sbi)
+{
+	kfree(sbi->sb_cp_table);
+	kfree(sbi->sb_bmp_dir);
+	kfree(sbi);
+}
+
+static void lazy_free_sbi(struct rcu_head *rcu)
+{
+	free_sbi(container_of(rcu, struct hpfs_sb_info, rcu));
+}
+
+static void hpfs_put_super(struct super_block *s)
+{
+	hpfs_lock(s);
+	unmark_dirty(s);
+	hpfs_unlock(s);
+	call_rcu(&hpfs_sb(s)->rcu, lazy_free_sbi);
+>>>>>>> refs/remotes/origin/master
 }
 
 unsigned hpfs_count_one_bitmap(struct super_block *s, secno secno)
@@ -121,7 +142,11 @@ unsigned hpfs_count_one_bitmap(struct super_block *s, secno secno)
 	unsigned long *bits;
 	unsigned count;
 
+<<<<<<< HEAD
 	bits = hpfs_map_4sectors(s, secno, &qbh, 4);
+=======
+	bits = hpfs_map_4sectors(s, secno, &qbh, 0);
+>>>>>>> refs/remotes/origin/master
 	if (!bits)
 		return 0;
 	count = bitmap_weight(bits, 2048 * BITS_PER_BYTE);
@@ -134,8 +159,18 @@ static unsigned count_bitmaps(struct super_block *s)
 	unsigned n, count, n_bands;
 	n_bands = (hpfs_sb(s)->sb_fs_size + 0x3fff) >> 14;
 	count = 0;
+<<<<<<< HEAD
 	for (n = 0; n < n_bands; n++)
 		count += hpfs_count_one_bitmap(s, le32_to_cpu(hpfs_sb(s)->sb_bmp_dir[n]));
+=======
+	for (n = 0; n < COUNT_RD_AHEAD; n++) {
+		hpfs_prefetch_bitmap(s, n);
+	}
+	for (n = 0; n < n_bands; n++) {
+		hpfs_prefetch_bitmap(s, n + COUNT_RD_AHEAD);
+		count += hpfs_count_one_bitmap(s, le32_to_cpu(hpfs_sb(s)->sb_bmp_dir[n]));
+	}
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
@@ -182,9 +217,12 @@ static void hpfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(hpfs_inode_cachep, hpfs_i(inode));
 }
 
@@ -214,6 +252,14 @@ static int init_inodecache(void)
 
 static void destroy_inodecache(void)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(hpfs_inode_cachep);
 }
 
@@ -255,7 +301,11 @@ static const match_table_t tokens = {
 	{Opt_err, NULL},
 };
 
+<<<<<<< HEAD
 static int parse_opts(char *opts, uid_t *uid, gid_t *gid, umode_t *umask,
+=======
+static int parse_opts(char *opts, kuid_t *uid, kgid_t *gid, umode_t *umask,
+>>>>>>> refs/remotes/origin/master
 		      int *lowercase, int *eas, int *chk, int *errs,
 		      int *chkdsk, int *timeshift)
 {
@@ -280,12 +330,24 @@ static int parse_opts(char *opts, uid_t *uid, gid_t *gid, umode_t *umask,
 		case Opt_uid:
 			if (match_int(args, &option))
 				return 0;
+<<<<<<< HEAD
 			*uid = option;
+=======
+			*uid = make_kuid(current_user_ns(), option);
+			if (!uid_valid(*uid))
+				return 0;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case Opt_gid:
 			if (match_int(args, &option))
 				return 0;
+<<<<<<< HEAD
 			*gid = option;
+=======
+			*gid = make_kgid(current_user_ns(), option);
+			if (!gid_valid(*gid))
+				return 0;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case Opt_umask:
 			if (match_octal(args, &option))
@@ -382,8 +444,13 @@ HPFS filesystem options:\n\
 
 static int hpfs_remount_fs(struct super_block *s, int *flags, char *data)
 {
+<<<<<<< HEAD
 	uid_t uid;
 	gid_t gid;
+=======
+	kuid_t uid;
+	kgid_t gid;
+>>>>>>> refs/remotes/origin/master
 	umode_t umask;
 	int lowercase, eas, chk, errs, chkdsk, timeshift;
 	int o;
@@ -393,7 +460,10 @@ static int hpfs_remount_fs(struct super_block *s, int *flags, char *data)
 	*flags |= MS_NOATIME;
 	
 	hpfs_lock(s);
+<<<<<<< HEAD
 	lock_super(s);
+=======
+>>>>>>> refs/remotes/origin/master
 	uid = sbi->sb_uid; gid = sbi->sb_gid;
 	umask = 0777 & ~sbi->sb_mode;
 	lowercase = sbi->sb_lowercase;
@@ -426,12 +496,18 @@ static int hpfs_remount_fs(struct super_block *s, int *flags, char *data)
 
 	replace_mount_options(s, new_opts);
 
+<<<<<<< HEAD
 	unlock_super(s);
+=======
+>>>>>>> refs/remotes/origin/master
 	hpfs_unlock(s);
 	return 0;
 
 out_err:
+<<<<<<< HEAD
 	unlock_super(s);
+=======
+>>>>>>> refs/remotes/origin/master
 	hpfs_unlock(s);
 	kfree(new_opts);
 	return -EINVAL;
@@ -459,8 +535,13 @@ static int hpfs_fill_super(struct super_block *s, void *options, int silent)
 	struct hpfs_sb_info *sbi;
 	struct inode *root;
 
+<<<<<<< HEAD
 	uid_t uid;
 	gid_t gid;
+=======
+	kuid_t uid;
+	kgid_t gid;
+>>>>>>> refs/remotes/origin/master
 	umode_t umask;
 	int lowercase, eas, chk, errs, chkdsk, timeshift;
 
@@ -478,9 +559,12 @@ static int hpfs_fill_super(struct super_block *s, void *options, int silent)
 	}
 	s->s_fs_info = sbi;
 
+<<<<<<< HEAD
 	sbi->sb_bmp_dir = NULL;
 	sbi->sb_cp_table = NULL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&sbi->hpfs_mutex);
 	hpfs_lock(s);
 
@@ -582,7 +666,11 @@ static int hpfs_fill_super(struct super_block *s, void *options, int silent)
 		mark_buffer_dirty(bh2);
 	}
 
+<<<<<<< HEAD
 	if (le32_to_cpu(spareblock->hotfixes_used) || le32_to_cpu(spareblock->n_spares_used)) {
+=======
+	if (spareblock->hotfixes_used || spareblock->n_spares_used) {
+>>>>>>> refs/remotes/origin/master
 		if (errs >= 2) {
 			printk("HPFS: Hotfixes not supported here, try chkdsk\n");
 			mark_dirty(s, 0);
@@ -636,6 +724,7 @@ static int hpfs_fill_super(struct super_block *s, void *options, int silent)
 	hpfs_read_inode(root);
 	unlock_new_inode(root);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	s->s_root = d_alloc_root(root);
 	if (!s->s_root) {
 		iput(root);
@@ -646,6 +735,11 @@ static int hpfs_fill_super(struct super_block *s, void *options, int silent)
 	if (!s->s_root)
 		goto bail0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s->s_root = d_make_root(root);
+	if (!s->s_root)
+		goto bail0;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * find the root directory's . pointer & finish filling in the inode
@@ -663,7 +757,11 @@ static int hpfs_fill_super(struct super_block *s, void *options, int silent)
 		root->i_mtime.tv_nsec = 0;
 		root->i_ctime.tv_sec = local_to_gmt(s, le32_to_cpu(de->creation_date));
 		root->i_ctime.tv_nsec = 0;
+<<<<<<< HEAD
 		hpfs_i(root)->i_ea_size = le16_to_cpu(de->ea_size);
+=======
+		hpfs_i(root)->i_ea_size = le32_to_cpu(de->ea_size);
+>>>>>>> refs/remotes/origin/master
 		hpfs_i(root)->i_parent_dir = root->i_ino;
 		if (root->i_size == -1)
 			root->i_size = 2048;
@@ -680,10 +778,14 @@ bail2:	brelse(bh0);
 bail1:
 bail0:
 	hpfs_unlock(s);
+<<<<<<< HEAD
 	kfree(sbi->sb_bmp_dir);
 	kfree(sbi->sb_cp_table);
 	s->s_fs_info = NULL;
 	kfree(sbi);
+=======
+	free_sbi(sbi);
+>>>>>>> refs/remotes/origin/master
 	return -EINVAL;
 }
 
@@ -700,6 +802,10 @@ static struct file_system_type hpfs_fs_type = {
 	.kill_sb	= kill_block_super,
 	.fs_flags	= FS_REQUIRES_DEV,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("hpfs");
+>>>>>>> refs/remotes/origin/master
 
 static int __init init_hpfs_fs(void)
 {

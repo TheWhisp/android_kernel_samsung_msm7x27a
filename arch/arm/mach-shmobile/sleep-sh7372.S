@@ -31,6 +31,7 @@
 
 #include <linux/linkage.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/assembler.h>
 
 #define SMFRAM 0xe6a70000
@@ -83,6 +84,8 @@ ENTRY(sh7372_cpu_suspend)
 	mov	lr, pc
 	bx	r1
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <asm/memory.h>
 #include <asm/assembler.h>
@@ -93,7 +96,15 @@ ENTRY(sh7372_cpu_suspend)
 	.global sh7372_resume_core_standby_sysc
 sh7372_resume_core_standby_sysc:
 	ldr     pc, 1f
+<<<<<<< HEAD
 1:	.long   cpu_resume - PAGE_OFFSET + PLAT_PHYS_OFFSET
+=======
+
+	.align	2
+	.globl	sh7372_cpu_resume
+sh7372_cpu_resume:
+1:	.space	4
+>>>>>>> refs/remotes/origin/master
 
 #define SPDCR 0xe6180008
 
@@ -101,7 +112,10 @@ sh7372_resume_core_standby_sysc:
 	.global	sh7372_do_idle_sysc
 sh7372_do_idle_sysc:
 	mov	r8, r0 /* sleep mode passed in r0 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Clear the SCTLR.C bit to prevent further data cache
@@ -114,15 +128,25 @@ sh7372_do_idle_sysc:
 	isb
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Invalidate L1 data cache. Even though only invalidate is
 	 * necessary exported flush API is used here. Doing clean
 	 * on already clean cache would be almost NOP.
 =======
+=======
+	/*
+	 * Clean and invalidate data cache again.
+	 */
+	ldr	r1, kernel_flush
+	blx	r1
+
+>>>>>>> refs/remotes/origin/master
 	/* disable L2 cache in the aux control register */
 	mrc     p15, 0, r10, c1, c0, 1
 	bic     r10, r10, #2
 	mcr     p15, 0, r10, c1, c0, 1
+<<<<<<< HEAD
 
 	/*
 	 * Invalidate data cache again.
@@ -131,6 +155,11 @@ sh7372_do_idle_sysc:
 	ldr	r1, kernel_flush
 	blx	r1
 	/*
+=======
+	isb
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * The kernel doesn't interwork: v7_flush_dcache_all in particluar will
 	 * always return in Thumb state when CONFIG_THUMB2_KERNEL is enabled.
 	 * This sequence switches back to ARM.  Note that .align may insert a
@@ -146,6 +175,7 @@ sh7372_do_idle_sysc:
 	dsb
 	dmb
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * ===================================
@@ -291,13 +321,22 @@ restoremmu_on:
 
 	ldmfd	sp!, {r0-r12, pc}	@ restore regs and return
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* SYSC power down */
 	ldr     r0, =SPDCR
 	str     r8, [r0]
 1:
 	b      1b
 
+<<<<<<< HEAD
 kernel_flush:
 	.word v7_flush_dcache_all
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.align	2
+kernel_flush:
+	.word v7_flush_dcache_all
+#endif
+>>>>>>> refs/remotes/origin/master

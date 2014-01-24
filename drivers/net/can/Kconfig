@@ -1,4 +1,5 @@
 menu "CAN Device Drivers"
+<<<<<<< HEAD
 	depends on CAN
 
 config CAN_VCAN
@@ -8,6 +9,11 @@ config CAN_VCAN
 	default N
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+config CAN_VCAN
+	tristate "Virtual Local CAN Interface (vcan)"
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Similar to the network loopback devices, vcan offers a
 	  virtual local CAN interface.
@@ -17,11 +23,15 @@ config CAN_VCAN
 
 config CAN_SLCAN
 	tristate "Serial / USB serial CAN Adaptors (slcan)"
+<<<<<<< HEAD
 	depends on CAN
 <<<<<<< HEAD
 	default N
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on TTY
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  CAN driver for several 'low cost' CAN interfaces that are attached
 	  via serial lines or via USB-to-serial adapters using the LAWICEL
@@ -41,16 +51,26 @@ config CAN_SLCAN
 
 config CAN_DEV
 	tristate "Platform CAN drivers with Netlink support"
+<<<<<<< HEAD
 	depends on CAN
+=======
+>>>>>>> refs/remotes/origin/master
 	default y
 	---help---
 	  Enables the common framework for platform CAN drivers with Netlink
 	  support. This is the standard library for CAN drivers.
 	  If unsure, say Y.
 
+<<<<<<< HEAD
 config CAN_CALC_BITTIMING
 	bool "CAN bit-timing calculation"
 	depends on CAN_DEV
+=======
+if CAN_DEV
+
+config CAN_CALC_BITTIMING
+	bool "CAN bit-timing calculation"
+>>>>>>> refs/remotes/origin/master
 	default y
 	---help---
 	  If enabled, CAN bit-timing parameters will be calculated for the
@@ -62,6 +82,7 @@ config CAN_CALC_BITTIMING
 	  arguments "tq", "prop_seg", "phase_seg1", "phase_seg2" and "sjw".
 	  If unsure, say Y.
 
+<<<<<<< HEAD
 config CAN_AT91
 	tristate "Atmel AT91 onchip CAN controller"
 <<<<<<< HEAD
@@ -77,6 +98,28 @@ config CAN_AT91
 
 config CAN_TI_HECC
 	depends on CAN_DEV && ARCH_OMAP3
+=======
+config CAN_LEDS
+	bool "Enable LED triggers for Netlink based drivers"
+	depends on LEDS_CLASS
+	select LEDS_TRIGGERS
+	---help---
+	  This option adds two LED triggers for packet receive and transmit
+	  events on each supported CAN device.
+
+	  Say Y here if you are working on a system with led-class supported
+	  LEDs and you want to use them as canbus activity indicators.
+
+config CAN_AT91
+	tristate "Atmel AT91 onchip CAN controller"
+	depends on ARM
+	---help---
+	  This is a driver for the SoC CAN controller in Atmel's AT91SAM9263
+	  and AT91SAM9X5 processors.
+
+config CAN_TI_HECC
+	depends on ARCH_OMAP3
+>>>>>>> refs/remotes/origin/master
 	tristate "TI High End CAN Controller"
 	---help---
 	  Driver for TI HECC (High End CAN Controller) module found on many
@@ -84,12 +127,20 @@ config CAN_TI_HECC
 
 config CAN_MCP251X
 	tristate "Microchip MCP251x SPI CAN controllers"
+<<<<<<< HEAD
 	depends on CAN_DEV && SPI && HAS_DMA
+=======
+	depends on SPI && HAS_DMA
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Driver for the Microchip MCP251x SPI CAN controllers.
 
 config CAN_BFIN
+<<<<<<< HEAD
 	depends on CAN_DEV && (BF534 || BF536 || BF537 || BF538 || BF539 || BF54x)
+=======
+	depends on BF534 || BF536 || BF537 || BF538 || BF539 || BF54x
+>>>>>>> refs/remotes/origin/master
 	tristate "Analog Devices Blackfin on-chip CAN"
 	---help---
 	  Driver for the Analog Devices Blackfin on-chip CAN controllers
@@ -99,7 +150,11 @@ config CAN_BFIN
 
 config CAN_JANZ_ICAN3
 	tristate "Janz VMOD-ICAN3 Intelligent CAN controller"
+<<<<<<< HEAD
 	depends on CAN_DEV && MFD_JANZ_CMODIO
+=======
+	depends on MFD_JANZ_CMODIO
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Driver for Janz VMOD-ICAN3 Intelligent CAN controller module, which
 	  connects to a MODULbus carrier board.
@@ -107,16 +162,23 @@ config CAN_JANZ_ICAN3
 	  This driver can also be built as a module. If so, the module will be
 	  called janz-ican3.ko.
 
+<<<<<<< HEAD
 config HAVE_CAN_FLEXCAN
 	bool
 
 config CAN_FLEXCAN
 	tristate "Support for Freescale FLEXCAN based chips"
 	depends on CAN_DEV && HAVE_CAN_FLEXCAN
+=======
+config CAN_FLEXCAN
+	tristate "Support for Freescale FLEXCAN based chips"
+	depends on ARM || PPC
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Say Y here if you want to support for Freescale FlexCAN.
 
 config PCH_CAN
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tristate "PCH CAN"
 	depends on CAN_DEV && PCI
@@ -132,6 +194,24 @@ config PCH_CAN
 >>>>>>> refs/remotes/origin/cm-10.0
 	  This driver can access CAN bus.
 
+=======
+	tristate "Intel EG20T PCH CAN controller"
+	depends on PCI
+	---help---
+	  This driver is for PCH CAN of Topcliff (Intel EG20T PCH) which
+	  is an IOH for x86 embedded processor (Intel Atom E6xx series).
+	  This driver can access CAN bus.
+
+config CAN_GRCAN
+	tristate "Aeroflex Gaisler GRCAN and GRHCAN CAN devices"
+	depends on OF
+	---help---
+	  Say Y here if you want to use Aeroflex Gaisler GRCAN or GRHCAN.
+	  Note that the driver supports little endian, even though little
+	  endian syntheses of the cores would need some modifications on
+	  the hardware level to work.
+
+>>>>>>> refs/remotes/origin/master
 source "drivers/net/can/mscan/Kconfig"
 
 source "drivers/net/can/sja1000/Kconfig"
@@ -139,14 +219,20 @@ source "drivers/net/can/sja1000/Kconfig"
 source "drivers/net/can/c_can/Kconfig"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 source "drivers/net/can/cc770/Kconfig"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+source "drivers/net/can/cc770/Kconfig"
+
+>>>>>>> refs/remotes/origin/master
 source "drivers/net/can/usb/Kconfig"
 
 source "drivers/net/can/softing/Kconfig"
 
+<<<<<<< HEAD
 config CAN_DEBUG_DEVICES
 	bool "CAN devices debugging messages"
 	depends on CAN
@@ -154,6 +240,12 @@ config CAN_DEBUG_DEVICES
 	default N
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+endif
+
+config CAN_DEBUG_DEVICES
+	bool "CAN devices debugging messages"
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Say Y here if you want the CAN device drivers to produce a bunch of
 	  debug messages to the system log.  Select this if you are having

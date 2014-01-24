@@ -9,12 +9,21 @@
  * (at your option) any later version.
  *
  *
+<<<<<<< HEAD
  * This supports the Atmel AHB DMA Controller,
  *
  * The driver has currently been tested with the Atmel AT91SAM9RL
  * and AT91SAM9G45 series.
  */
 
+=======
+ * This supports the Atmel AHB DMA Controller found in several Atmel SoCs.
+ * The only Atmel DMA Controller that is not covered by this driver is the one
+ * found on AT91SAM9263.
+ */
+
+#include <dt-bindings/dma/at91.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/clk.h>
 #include <linux/dmaengine.h>
 #include <linux/dma-mapping.h>
@@ -23,6 +32,7 @@
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #include "at_hdmac_regs.h"
@@ -33,6 +43,14 @@
 #include "at_hdmac_regs.h"
 #include "dmaengine.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of.h>
+#include <linux/of_device.h>
+#include <linux/of_dma.h>
+
+#include "at_hdmac_regs.h"
+#include "dmaengine.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Glossary
@@ -44,7 +62,10 @@
  */
 
 #define	ATC_DEFAULT_CFG		(ATC_FIFOCFG_HALFFIFO)
+<<<<<<< HEAD
 #define	ATC_DEFAULT_CTRLA	(0)
+=======
+>>>>>>> refs/remotes/origin/master
 #define	ATC_DEFAULT_CTRLB	(ATC_SIF(AT_DMA_MEM_IF) \
 				|ATC_DIF(AT_DMA_MEM_IF))
 
@@ -60,6 +81,10 @@ MODULE_PARM_DESC(init_nr_desc_per_channel,
 
 /* prototypes */
 static dma_cookie_t atc_tx_submit(struct dma_async_tx_descriptor *tx);
+<<<<<<< HEAD
+=======
+static void atc_issue_pending(struct dma_chan *chan);
+>>>>>>> refs/remotes/origin/master
 
 
 /*----------------------------------------------------------------------*/
@@ -116,17 +141,23 @@ static struct at_desc *atc_desc_get(struct at_dma_chan *atchan)
 	struct at_desc *desc, *_desc;
 	struct at_desc *ret = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int i = 0;
 	LIST_HEAD(tmp_list);
 
 	spin_lock_bh(&atchan->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	unsigned int i = 0;
 	LIST_HEAD(tmp_list);
 
 	spin_lock_irqsave(&atchan->lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry_safe(desc, _desc, &atchan->free_list, desc_node) {
 		i++;
 		if (async_tx_test_ack(&desc->txd)) {
@@ -138,10 +169,14 @@ static struct at_desc *atc_desc_get(struct at_dma_chan *atchan)
 				"desc %p not ACKed\n", desc);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_bh(&atchan->lock);
 =======
 	spin_unlock_irqrestore(&atchan->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&atchan->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	dev_vdbg(chan2dev(&atchan->chan_common),
 		"scanned %u descriptors on freelist\n", i);
 
@@ -149,6 +184,7 @@ static struct at_desc *atc_desc_get(struct at_dma_chan *atchan)
 	if (!ret) {
 		ret = atc_alloc_descriptor(&atchan->chan_common, GFP_ATOMIC);
 		if (ret) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			spin_lock_bh(&atchan->lock);
 			atchan->descs_allocated++;
@@ -158,6 +194,11 @@ static struct at_desc *atc_desc_get(struct at_dma_chan *atchan)
 			atchan->descs_allocated++;
 			spin_unlock_irqrestore(&atchan->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_lock_irqsave(&atchan->lock, flags);
+			atchan->descs_allocated++;
+			spin_unlock_irqrestore(&atchan->lock, flags);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			dev_err(chan2dev(&atchan->chan_common),
 					"not enough descriptors available\n");
@@ -177,6 +218,7 @@ static void atc_desc_put(struct at_dma_chan *atchan, struct at_desc *desc)
 	if (desc) {
 		struct at_desc *child;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		spin_lock_bh(&atchan->lock);
 =======
@@ -184,6 +226,11 @@ static void atc_desc_put(struct at_dma_chan *atchan, struct at_desc *desc)
 
 		spin_lock_irqsave(&atchan->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		unsigned long flags;
+
+		spin_lock_irqsave(&atchan->lock, flags);
+>>>>>>> refs/remotes/origin/master
 		list_for_each_entry(child, &desc->tx_list, desc_node)
 			dev_vdbg(chan2dev(&atchan->chan_common),
 					"moving child desc %p to freelist\n",
@@ -193,17 +240,27 @@ static void atc_desc_put(struct at_dma_chan *atchan, struct at_desc *desc)
 			 "moving desc %p to freelist\n", desc);
 		list_add(&desc->desc_node, &atchan->free_list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock_bh(&atchan->lock);
 =======
 		spin_unlock_irqrestore(&atchan->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_unlock_irqrestore(&atchan->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 /**
+<<<<<<< HEAD
  * atc_desc_chain - build chain adding a descripor
  * @first: address of first descripor of the chain
  * @prev: address of previous descripor of the chain
+=======
+ * atc_desc_chain - build chain adding a descriptor
+ * @first: address of first descriptor of the chain
+ * @prev: address of previous descriptor of the chain
+>>>>>>> refs/remotes/origin/master
  * @desc: descriptor to queue
  *
  * Called from prep_* functions
@@ -224,6 +281,7 @@ static void atc_desc_chain(struct at_desc **first, struct at_desc **prev,
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * atc_assign_cookie - compute and assign new cookie
  * @atchan: channel we work on
@@ -248,6 +306,8 @@ atc_assign_cookie(struct at_dma_chan *atchan, struct at_desc *desc)
 /**
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * atc_dostart - starts the DMA engine for real
  * @atchan: the channel we want to start
  * @first: first descriptor in the list we want to begin with
@@ -286,6 +346,98 @@ static void atc_dostart(struct at_dma_chan *atchan, struct at_desc *first)
 	vdbg_dump_regs(atchan);
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * atc_get_current_descriptors -
+ * locate the descriptor which equal to physical address in DSCR
+ * @atchan: the channel we want to start
+ * @dscr_addr: physical descriptor address in DSCR
+ */
+static struct at_desc *atc_get_current_descriptors(struct at_dma_chan *atchan,
+							u32 dscr_addr)
+{
+	struct at_desc  *desc, *_desc, *child, *desc_cur = NULL;
+
+	list_for_each_entry_safe(desc, _desc, &atchan->active_list, desc_node) {
+		if (desc->lli.dscr == dscr_addr) {
+			desc_cur = desc;
+			break;
+		}
+
+		list_for_each_entry(child, &desc->tx_list, desc_node) {
+			if (child->lli.dscr == dscr_addr) {
+				desc_cur = child;
+				break;
+			}
+		}
+	}
+
+	return desc_cur;
+}
+
+/*
+ * atc_get_bytes_left -
+ * Get the number of bytes residue in dma buffer,
+ * @chan: the channel we want to start
+ */
+static int atc_get_bytes_left(struct dma_chan *chan)
+{
+	struct at_dma_chan      *atchan = to_at_dma_chan(chan);
+	struct at_dma           *atdma = to_at_dma(chan->device);
+	int	chan_id = atchan->chan_common.chan_id;
+	struct at_desc *desc_first = atc_first_active(atchan);
+	struct at_desc *desc_cur;
+	int ret = 0, count = 0;
+
+	/*
+	 * Initialize necessary values in the first time.
+	 * remain_desc record remain desc length.
+	 */
+	if (atchan->remain_desc == 0)
+		/* First descriptor embedds the transaction length */
+		atchan->remain_desc = desc_first->len;
+
+	/*
+	 * This happens when current descriptor transfer complete.
+	 * The residual buffer size should reduce current descriptor length.
+	 */
+	if (unlikely(test_bit(ATC_IS_BTC, &atchan->status))) {
+		clear_bit(ATC_IS_BTC, &atchan->status);
+		desc_cur = atc_get_current_descriptors(atchan,
+						channel_readl(atchan, DSCR));
+		if (!desc_cur) {
+			ret = -EINVAL;
+			goto out;
+		}
+		atchan->remain_desc -= (desc_cur->lli.ctrla & ATC_BTSIZE_MAX)
+						<< (desc_first->tx_width);
+		if (atchan->remain_desc < 0) {
+			ret = -EINVAL;
+			goto out;
+		} else {
+			ret = atchan->remain_desc;
+		}
+	} else {
+		/*
+		 * Get residual bytes when current
+		 * descriptor transfer in progress.
+		 */
+		count = (channel_readl(atchan, CTRLA) & ATC_BTSIZE_MAX)
+				<< (desc_first->tx_width);
+		ret = atchan->remain_desc - count;
+	}
+	/*
+	 * Check fifo empty.
+	 */
+	if (!(dma_readl(atdma, CHSR) & AT_DMA_EMPT(chan_id)))
+		atc_issue_pending(chan);
+
+out:
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * atc_chain_complete - finish work for one transaction chain
  * @atchan: channel we work on
@@ -301,18 +453,25 @@ atc_chain_complete(struct at_dma_chan *atchan, struct at_desc *desc)
 		"descriptor %u complete\n", txd->cookie);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	atchan->completed_cookie = txd->cookie;
 =======
 	/* mark the descriptor as complete for non cyclic cases only */
 	if (!atc_chan_is_cyclic(atchan))
 		dma_cookie_complete(txd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* mark the descriptor as complete for non cyclic cases only */
+	if (!atc_chan_is_cyclic(atchan))
+		dma_cookie_complete(txd);
+>>>>>>> refs/remotes/origin/master
 
 	/* move children to free_list */
 	list_splice_init(&desc->tx_list, &atchan->free_list);
 	/* move myself to free_list */
 	list_move(&desc->desc_node, &atchan->free_list);
 
+<<<<<<< HEAD
 	/* unmap dma addresses (not on slave channels) */
 	if (!atchan->chan_common.private) {
 		struct device *parent = chan2parent(&atchan->chan_common);
@@ -345,6 +504,12 @@ atc_chain_complete(struct at_dma_chan *atchan, struct at_desc *desc)
 =======
 	if (!atc_chan_is_cyclic(atchan)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_descriptor_unmap(txd);
+	/* for cyclic transfers,
+	 * no need to replay callback function while stopping */
+	if (!atc_chan_is_cyclic(atchan)) {
+>>>>>>> refs/remotes/origin/master
 		dma_async_tx_callback	callback = txd->callback;
 		void			*param = txd->callback_param;
 
@@ -375,8 +540,11 @@ static void atc_complete_all(struct at_dma_chan *atchan)
 
 	dev_vdbg(chan2dev(&atchan->chan_common), "complete all\n");
 
+<<<<<<< HEAD
 	BUG_ON(atc_chan_is_enabled(atchan));
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Submit queued descriptors ASAP, i.e. before we go through
 	 * the completed ones.
@@ -393,6 +561,7 @@ static void atc_complete_all(struct at_dma_chan *atchan)
 }
 
 /**
+<<<<<<< HEAD
  * atc_cleanup_descriptors - cleanup up finished descriptors in active_list
  * @atchan: channel to be cleaned up
  *
@@ -424,6 +593,8 @@ static void atc_cleanup_descriptors(struct at_dma_chan *atchan)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * atc_advance_work - at the end of a transaction, move forward
  * @atchan: channel where the transaction ended
  *
@@ -433,6 +604,12 @@ static void atc_advance_work(struct at_dma_chan *atchan)
 {
 	dev_vdbg(chan2dev(&atchan->chan_common), "advance_work\n");
 
+<<<<<<< HEAD
+=======
+	if (atc_chan_is_enabled(atchan))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	if (list_empty(&atchan->active_list) ||
 	    list_is_singular(&atchan->active_list)) {
 		atc_complete_all(atchan);
@@ -517,28 +694,38 @@ static void atc_tasklet(unsigned long data)
 {
 	struct at_dma_chan *atchan = (struct at_dma_chan *)data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	spin_lock(&atchan->lock);
 	if (test_and_clear_bit(ATC_IS_ERROR, &atchan->status))
 		atc_handle_error(atchan);
 	else if (test_bit(ATC_IS_CYCLIC, &atchan->status))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	spin_lock_irqsave(&atchan->lock, flags);
 	if (test_and_clear_bit(ATC_IS_ERROR, &atchan->status))
 		atc_handle_error(atchan);
 	else if (atc_chan_is_cyclic(atchan))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		atc_handle_cyclic(atchan);
 	else
 		atc_advance_work(atchan);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&atchan->lock);
 =======
 	spin_unlock_irqrestore(&atchan->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&atchan->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t at_dma_interrupt(int irq, void *dev_id)
@@ -571,6 +758,11 @@ static irqreturn_t at_dma_interrupt(int irq, void *dev_id)
 					/* Give information to tasklet */
 					set_bit(ATC_IS_ERROR, &atchan->status);
 				}
+<<<<<<< HEAD
+=======
+				if (pending & AT_DMA_BTC(i))
+					set_bit(ATC_IS_BTC, &atchan->status);
+>>>>>>> refs/remotes/origin/master
 				tasklet_schedule(&atchan->tasklet);
 				ret = IRQ_HANDLED;
 			}
@@ -598,15 +790,21 @@ static dma_cookie_t atc_tx_submit(struct dma_async_tx_descriptor *tx)
 	struct at_dma_chan	*atchan = to_at_dma_chan(tx->chan);
 	dma_cookie_t		cookie;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	spin_lock_bh(&atchan->lock);
 	cookie = atc_assign_cookie(atchan, desc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long		flags;
 
 	spin_lock_irqsave(&atchan->lock, flags);
 	cookie = dma_cookie_assign(tx);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (list_empty(&atchan->active_list)) {
 		dev_vdbg(chan2dev(tx->chan), "tx_submit: started %u\n",
@@ -620,10 +818,14 @@ static dma_cookie_t atc_tx_submit(struct dma_async_tx_descriptor *tx)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_bh(&atchan->lock);
 =======
 	spin_unlock_irqrestore(&atchan->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&atchan->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	return cookie;
 }
@@ -659,7 +861,10 @@ atc_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dest, dma_addr_t src,
 		return NULL;
 	}
 
+<<<<<<< HEAD
 	ctrla =   ATC_DEFAULT_CTRLA;
+=======
+>>>>>>> refs/remotes/origin/master
 	ctrlb =   ATC_DEFAULT_CTRLB | ATC_IEN
 		| ATC_SRC_ADDR_MODE_INCR
 		| ATC_DST_ADDR_MODE_INCR
@@ -670,6 +875,7 @@ atc_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dest, dma_addr_t src,
 	 * of the most common optimization.
 	 */
 	if (!((src | dest  | len) & 3)) {
+<<<<<<< HEAD
 		ctrla |= ATC_SRC_WIDTH_WORD | ATC_DST_WIDTH_WORD;
 		src_width = dst_width = 2;
 	} else if (!((src | dest | len) & 1)) {
@@ -677,6 +883,15 @@ atc_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dest, dma_addr_t src,
 		src_width = dst_width = 1;
 	} else {
 		ctrla |= ATC_SRC_WIDTH_BYTE | ATC_DST_WIDTH_BYTE;
+=======
+		ctrla = ATC_SRC_WIDTH_WORD | ATC_DST_WIDTH_WORD;
+		src_width = dst_width = 2;
+	} else if (!((src | dest | len) & 1)) {
+		ctrla = ATC_SRC_WIDTH_HALFWORD | ATC_DST_WIDTH_HALFWORD;
+		src_width = dst_width = 1;
+	} else {
+		ctrla = ATC_SRC_WIDTH_BYTE | ATC_DST_WIDTH_BYTE;
+>>>>>>> refs/remotes/origin/master
 		src_width = dst_width = 0;
 	}
 
@@ -701,6 +916,10 @@ atc_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dest, dma_addr_t src,
 	/* First descriptor of the chain embedds additional information */
 	first->txd.cookie = -EBUSY;
 	first->len = len;
+<<<<<<< HEAD
+=======
+	first->tx_width = src_width;
+>>>>>>> refs/remotes/origin/master
 
 	/* set end-of-link to the last link descriptor of list*/
 	set_desc_eol(desc);
@@ -723,6 +942,7 @@ err_desc_get:
  * @direction: DMA direction
  * @flags: tx descriptor status flags
 <<<<<<< HEAD
+<<<<<<< HEAD
  */
 static struct dma_async_tx_descriptor *
 atc_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
@@ -732,6 +952,8 @@ atc_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 	struct at_dma_chan	*atchan = to_at_dma_chan(chan);
 	struct at_dma_slave	*atslave = chan->private;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @context: transaction context (ignored)
  */
 static struct dma_async_tx_descriptor *
@@ -742,7 +964,10 @@ atc_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 	struct at_dma_chan	*atchan = to_at_dma_chan(chan);
 	struct at_dma_slave	*atslave = chan->private;
 	struct dma_slave_config	*sconfig = &atchan->dma_sconfig;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct at_desc		*first = NULL;
 	struct at_desc		*prev = NULL;
 	u32			ctrla;
@@ -757,10 +982,14 @@ atc_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 	dev_vdbg(chan2dev(chan), "prep_slave_sg (%d): %s f0x%lx\n",
 			sg_len,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			direction == DMA_TO_DEVICE ? "TO DEVICE" : "FROM DEVICE",
 =======
 			direction == DMA_MEM_TO_DEV ? "TO DEVICE" : "FROM DEVICE",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			direction == DMA_MEM_TO_DEV ? "TO DEVICE" : "FROM DEVICE",
+>>>>>>> refs/remotes/origin/master
 			flags);
 
 	if (unlikely(!atslave || !sg_len)) {
@@ -768,6 +997,7 @@ atc_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 		return NULL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	reg_width = atslave->reg_width;
 
@@ -783,16 +1013,30 @@ atc_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 	case DMA_MEM_TO_DEV:
 		reg_width = convert_buswidth(sconfig->dst_addr_width);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctrla =   ATC_SCSIZE(sconfig->src_maxburst)
+		| ATC_DCSIZE(sconfig->dst_maxburst);
+	ctrlb = ATC_IEN;
+
+	switch (direction) {
+	case DMA_MEM_TO_DEV:
+		reg_width = convert_buswidth(sconfig->dst_addr_width);
+>>>>>>> refs/remotes/origin/master
 		ctrla |=  ATC_DST_WIDTH(reg_width);
 		ctrlb |=  ATC_DST_ADDR_MODE_FIXED
 			| ATC_SRC_ADDR_MODE_INCR
 			| ATC_FC_MEM2PER
+<<<<<<< HEAD
 			| ATC_SIF(AT_DMA_MEM_IF) | ATC_DIF(AT_DMA_PER_IF);
 <<<<<<< HEAD
 		reg = atslave->tx_reg;
 =======
 		reg = sconfig->dst_addr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			| ATC_SIF(atchan->mem_if) | ATC_DIF(atchan->per_if);
+		reg = sconfig->dst_addr;
+>>>>>>> refs/remotes/origin/master
 		for_each_sg(sgl, sg, sg_len, i) {
 			struct at_desc	*desc;
 			u32		len;
@@ -825,15 +1069,21 @@ atc_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case DMA_FROM_DEVICE:
 =======
 	case DMA_DEV_TO_MEM:
 		reg_width = convert_buswidth(sconfig->src_addr_width);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case DMA_DEV_TO_MEM:
+		reg_width = convert_buswidth(sconfig->src_addr_width);
+>>>>>>> refs/remotes/origin/master
 		ctrla |=  ATC_SRC_WIDTH(reg_width);
 		ctrlb |=  ATC_DST_ADDR_MODE_INCR
 			| ATC_SRC_ADDR_MODE_FIXED
 			| ATC_FC_PER2MEM
+<<<<<<< HEAD
 			| ATC_SIF(AT_DMA_PER_IF) | ATC_DIF(AT_DMA_MEM_IF);
 
 <<<<<<< HEAD
@@ -841,6 +1091,11 @@ atc_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 =======
 		reg = sconfig->src_addr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			| ATC_SIF(atchan->per_if) | ATC_DIF(atchan->mem_if);
+
+		reg = sconfig->src_addr;
+>>>>>>> refs/remotes/origin/master
 		for_each_sg(sgl, sg, sg_len, i) {
 			struct at_desc	*desc;
 			u32		len;
@@ -882,6 +1137,10 @@ atc_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 	/* First descriptor of the chain embedds additional information */
 	first->txd.cookie = -EBUSY;
 	first->len = total_len;
+<<<<<<< HEAD
+=======
+	first->tx_width = reg_width;
+>>>>>>> refs/remotes/origin/master
 
 	/* first link descriptor of list is responsible of flags */
 	first->txd.flags = flags; /* client is in control of this ack */
@@ -902,10 +1161,14 @@ err:
 static int
 atc_dma_cyclic_check_values(unsigned int reg_width, dma_addr_t buf_addr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		size_t period_len, enum dma_data_direction direction)
 =======
 		size_t period_len, enum dma_transfer_direction direction)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		size_t period_len)
+>>>>>>> refs/remotes/origin/master
 {
 	if (period_len > (ATC_BTSIZE_MAX << reg_width))
 		goto err_out;
@@ -914,11 +1177,14 @@ atc_dma_cyclic_check_values(unsigned int reg_width, dma_addr_t buf_addr,
 	if (unlikely(buf_addr & ((1 << reg_width) - 1)))
 		goto err_out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(!(direction & (DMA_TO_DEVICE | DMA_FROM_DEVICE))))
 =======
 	if (unlikely(!(direction & (DMA_DEV_TO_MEM | DMA_MEM_TO_DEV))))
 >>>>>>> refs/remotes/origin/cm-10.0
 		goto err_out;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -927,6 +1193,7 @@ err_out:
 }
 
 /**
+<<<<<<< HEAD
  * atc_dma_cyclic_fill_desc - Fill one period decriptor
  */
 static int
@@ -938,12 +1205,18 @@ atc_dma_cyclic_fill_desc(struct at_dma_slave *atslave, struct at_desc *desc,
 	u32		ctrla;
 	unsigned int	reg_width = atslave->reg_width;
 =======
+=======
+ * atc_dma_cyclic_fill_desc - Fill one period descriptor
+ */
+static int
+>>>>>>> refs/remotes/origin/master
 atc_dma_cyclic_fill_desc(struct dma_chan *chan, struct at_desc *desc,
 		unsigned int period_index, dma_addr_t buf_addr,
 		unsigned int reg_width, size_t period_len,
 		enum dma_transfer_direction direction)
 {
 	struct at_dma_chan	*atchan = to_at_dma_chan(chan);
+<<<<<<< HEAD
 	struct at_dma_slave	*atslave = chan->private;
 	struct dma_slave_config	*sconfig = &atchan->dma_sconfig;
 	u32			ctrla;
@@ -951,11 +1224,20 @@ atc_dma_cyclic_fill_desc(struct dma_chan *chan, struct at_desc *desc,
 
 	/* prepare common CRTLA value */
 	ctrla =   ATC_DEFAULT_CTRLA | atslave->ctrla
+=======
+	struct dma_slave_config	*sconfig = &atchan->dma_sconfig;
+	u32			ctrla;
+
+	/* prepare common CRTLA value */
+	ctrla =   ATC_SCSIZE(sconfig->src_maxburst)
+		| ATC_DCSIZE(sconfig->dst_maxburst)
+>>>>>>> refs/remotes/origin/master
 		| ATC_DST_WIDTH(reg_width)
 		| ATC_SRC_WIDTH(reg_width)
 		| period_len >> reg_width;
 
 	switch (direction) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	case DMA_TO_DEVICE:
 		desc->lli.saddr = buf_addr + (period_len * period_index);
@@ -965,10 +1247,16 @@ atc_dma_cyclic_fill_desc(struct dma_chan *chan, struct at_desc *desc,
 		desc->lli.saddr = buf_addr + (period_len * period_index);
 		desc->lli.daddr = sconfig->dst_addr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case DMA_MEM_TO_DEV:
+		desc->lli.saddr = buf_addr + (period_len * period_index);
+		desc->lli.daddr = sconfig->dst_addr;
+>>>>>>> refs/remotes/origin/master
 		desc->lli.ctrla = ctrla;
 		desc->lli.ctrlb = ATC_DST_ADDR_MODE_FIXED
 				| ATC_SRC_ADDR_MODE_INCR
 				| ATC_FC_MEM2PER
+<<<<<<< HEAD
 				| ATC_SIF(AT_DMA_MEM_IF)
 				| ATC_DIF(AT_DMA_PER_IF);
 		break;
@@ -980,13 +1268,26 @@ atc_dma_cyclic_fill_desc(struct dma_chan *chan, struct at_desc *desc,
 	case DMA_DEV_TO_MEM:
 		desc->lli.saddr = sconfig->src_addr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				| ATC_SIF(atchan->mem_if)
+				| ATC_DIF(atchan->per_if);
+		break;
+
+	case DMA_DEV_TO_MEM:
+		desc->lli.saddr = sconfig->src_addr;
+>>>>>>> refs/remotes/origin/master
 		desc->lli.daddr = buf_addr + (period_len * period_index);
 		desc->lli.ctrla = ctrla;
 		desc->lli.ctrlb = ATC_DST_ADDR_MODE_INCR
 				| ATC_SRC_ADDR_MODE_FIXED
 				| ATC_FC_PER2MEM
+<<<<<<< HEAD
 				| ATC_SIF(AT_DMA_PER_IF)
 				| ATC_DIF(AT_DMA_MEM_IF);
+=======
+				| ATC_SIF(atchan->per_if)
+				| ATC_DIF(atchan->mem_if);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -1004,6 +1305,7 @@ atc_dma_cyclic_fill_desc(struct dma_chan *chan, struct at_desc *desc,
  * @period_len: number of bytes for each period
  * @direction: transfer direction, to or from device
 <<<<<<< HEAD
+<<<<<<< HEAD
  */
 static struct dma_async_tx_descriptor *
 atc_prep_dma_cyclic(struct dma_chan *chan, dma_addr_t buf_addr, size_t buf_len,
@@ -1015,12 +1317,19 @@ atc_prep_dma_cyclic(struct dma_chan *chan, dma_addr_t buf_addr, size_t buf_len,
 	struct at_desc		*prev = NULL;
 	unsigned long		was_cyclic;
 =======
+=======
+ * @flags: tx descriptor status flags
+>>>>>>> refs/remotes/origin/master
  * @context: transfer context (ignored)
  */
 static struct dma_async_tx_descriptor *
 atc_prep_dma_cyclic(struct dma_chan *chan, dma_addr_t buf_addr, size_t buf_len,
 		size_t period_len, enum dma_transfer_direction direction,
+<<<<<<< HEAD
 		void *context)
+=======
+		unsigned long flags, void *context)
+>>>>>>> refs/remotes/origin/master
 {
 	struct at_dma_chan	*atchan = to_at_dma_chan(chan);
 	struct at_dma_slave	*atslave = chan->private;
@@ -1029,16 +1338,23 @@ atc_prep_dma_cyclic(struct dma_chan *chan, dma_addr_t buf_addr, size_t buf_len,
 	struct at_desc		*prev = NULL;
 	unsigned long		was_cyclic;
 	unsigned int		reg_width;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int		periods = buf_len / period_len;
 	unsigned int		i;
 
 	dev_vdbg(chan2dev(chan), "prep_dma_cyclic: %s buf@0x%08x - %d (%d/%d)\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			direction == DMA_TO_DEVICE ? "TO DEVICE" : "FROM DEVICE",
 =======
 			direction == DMA_MEM_TO_DEV ? "TO DEVICE" : "FROM DEVICE",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			direction == DMA_MEM_TO_DEV ? "TO DEVICE" : "FROM DEVICE",
+>>>>>>> refs/remotes/origin/master
 			buf_addr,
 			periods, buf_len, period_len);
 
@@ -1054,18 +1370,28 @@ atc_prep_dma_cyclic(struct dma_chan *chan, dma_addr_t buf_addr, size_t buf_len,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Check for too big/unaligned periods and unaligned DMA buffer */
 	if (atc_dma_cyclic_check_values(atslave->reg_width, buf_addr,
 =======
+=======
+	if (unlikely(!is_slave_direction(direction)))
+		goto err_out;
+
+>>>>>>> refs/remotes/origin/master
 	if (sconfig->direction == DMA_MEM_TO_DEV)
 		reg_width = convert_buswidth(sconfig->dst_addr_width);
 	else
 		reg_width = convert_buswidth(sconfig->src_addr_width);
 
 	/* Check for too big/unaligned periods and unaligned DMA buffer */
+<<<<<<< HEAD
 	if (atc_dma_cyclic_check_values(reg_width, buf_addr,
 >>>>>>> refs/remotes/origin/cm-10.0
 					period_len, direction))
+=======
+	if (atc_dma_cyclic_check_values(reg_width, buf_addr, period_len))
+>>>>>>> refs/remotes/origin/master
 		goto err_out;
 
 	/* build cyclic linked list */
@@ -1077,12 +1403,17 @@ atc_prep_dma_cyclic(struct dma_chan *chan, dma_addr_t buf_addr, size_t buf_len,
 			goto err_desc_get;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (atc_dma_cyclic_fill_desc(atslave, desc, i, buf_addr,
 						period_len, direction))
 =======
 		if (atc_dma_cyclic_fill_desc(chan, desc, i, buf_addr,
 					     reg_width, period_len, direction))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (atc_dma_cyclic_fill_desc(chan, desc, i, buf_addr,
+					     reg_width, period_len, direction))
+>>>>>>> refs/remotes/origin/master
 			goto err_desc_get;
 
 		atc_desc_chain(&first, &prev, desc);
@@ -1094,6 +1425,10 @@ atc_prep_dma_cyclic(struct dma_chan *chan, dma_addr_t buf_addr, size_t buf_len,
 	/* First descriptor of the chain embedds additional information */
 	first->txd.cookie = -EBUSY;
 	first->len = buf_len;
+<<<<<<< HEAD
+=======
+	first->tx_width = reg_width;
+>>>>>>> refs/remotes/origin/master
 
 	return &first->txd;
 
@@ -1106,7 +1441,10 @@ err_out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int set_runtime_config(struct dma_chan *chan,
 			      struct dma_slave_config *sconfig)
 {
@@ -1124,7 +1462,10 @@ static int set_runtime_config(struct dma_chan *chan,
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int atc_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 		       unsigned long arg)
@@ -1133,9 +1474,13 @@ static int atc_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 	struct at_dma		*atdma = to_at_dma(chan->device);
 	int			chan_id = atchan->chan_common.chan_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long		flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long		flags;
+>>>>>>> refs/remotes/origin/master
 
 	LIST_HEAD(list);
 
@@ -1143,14 +1488,19 @@ static int atc_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 
 	if (cmd == DMA_PAUSE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock_bh(&atchan->lock);
 =======
 		spin_lock_irqsave(&atchan->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_lock_irqsave(&atchan->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 		dma_writel(atdma, CHER, AT_DMA_SUSP(chan_id));
 		set_bit(ATC_IS_PAUSED, &atchan->status);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		spin_unlock_bh(&atchan->lock);
 	} else if (cmd == DMA_RESUME) {
@@ -1159,22 +1509,31 @@ static int atc_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 
 		spin_lock_bh(&atchan->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&atchan->lock, flags);
 	} else if (cmd == DMA_RESUME) {
 		if (!atc_chan_is_paused(atchan))
 			return 0;
 
 		spin_lock_irqsave(&atchan->lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		dma_writel(atdma, CHDR, AT_DMA_RES(chan_id));
 		clear_bit(ATC_IS_PAUSED, &atchan->status);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock_bh(&atchan->lock);
 =======
 		spin_unlock_irqrestore(&atchan->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_unlock_irqrestore(&atchan->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	} else if (cmd == DMA_TERMINATE_ALL) {
 		struct at_desc	*desc, *_desc;
 		/*
@@ -1184,10 +1543,14 @@ static int atc_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 		 * to AHB/HSB limitations.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock_bh(&atchan->lock);
 =======
 		spin_lock_irqsave(&atchan->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_lock_irqsave(&atchan->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 		/* disabling channel: must also remove suspend state */
 		dma_writel(atdma, CHDR, AT_DMA_RES(chan_id) | atchan->mask);
@@ -1209,12 +1572,18 @@ static int atc_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 		clear_bit(ATC_IS_CYCLIC, &atchan->status);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock_bh(&atchan->lock);
 =======
 		spin_unlock_irqrestore(&atchan->lock, flags);
 	} else if (cmd == DMA_SLAVE_CONFIG) {
 		return set_runtime_config(chan, (struct dma_slave_config *)arg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_unlock_irqrestore(&atchan->lock, flags);
+	} else if (cmd == DMA_SLAVE_CONFIG) {
+		return set_runtime_config(chan, (struct dma_slave_config *)arg);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		return -ENXIO;
 	}
@@ -1238,6 +1607,7 @@ atc_tx_status(struct dma_chan *chan,
 		struct dma_tx_state *txstate)
 {
 	struct at_dma_chan	*atchan = to_at_dma_chan(chan);
+<<<<<<< HEAD
 	dma_cookie_t		last_used;
 	dma_cookie_t		last_complete;
 <<<<<<< HEAD
@@ -1295,6 +1665,38 @@ atc_tx_status(struct dma_chan *chan,
 	dev_vdbg(chan2dev(chan), "tx_status %d: cookie = %d (d%d, u%d)\n",
 		 ret, cookie, last_complete ? last_complete : 0,
 		 last_used ? last_used : 0);
+=======
+	unsigned long		flags;
+	enum dma_status		ret;
+	int bytes = 0;
+
+	ret = dma_cookie_status(chan, cookie, txstate);
+	if (ret == DMA_COMPLETE)
+		return ret;
+	/*
+	 * There's no point calculating the residue if there's
+	 * no txstate to store the value.
+	 */
+	if (!txstate)
+		return DMA_ERROR;
+
+	spin_lock_irqsave(&atchan->lock, flags);
+
+	/*  Get number of bytes left in the active transactions */
+	bytes = atc_get_bytes_left(chan);
+
+	spin_unlock_irqrestore(&atchan->lock, flags);
+
+	if (unlikely(bytes < 0)) {
+		dev_vdbg(chan2dev(chan), "get residual bytes error\n");
+		return DMA_ERROR;
+	} else {
+		dma_set_residue(txstate, bytes);
+	}
+
+	dev_vdbg(chan2dev(chan), "tx_status %d: cookie = %d residue = %d\n",
+		 ret, cookie, bytes);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -1307,13 +1709,18 @@ static void atc_issue_pending(struct dma_chan *chan)
 {
 	struct at_dma_chan	*atchan = to_at_dma_chan(chan);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long		flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long		flags;
+>>>>>>> refs/remotes/origin/master
 
 	dev_vdbg(chan2dev(chan), "issue_pending\n");
 
 	/* Not needed for cyclic transfers */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (test_bit(ATC_IS_CYCLIC, &atchan->status))
 		return;
@@ -1324,15 +1731,22 @@ static void atc_issue_pending(struct dma_chan *chan)
 	}
 	spin_unlock_bh(&atchan->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (atc_chan_is_cyclic(atchan))
 		return;
 
 	spin_lock_irqsave(&atchan->lock, flags);
+<<<<<<< HEAD
 	if (!atc_chan_is_enabled(atchan)) {
 		atc_advance_work(atchan);
 	}
 	spin_unlock_irqrestore(&atchan->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atc_advance_work(atchan);
+	spin_unlock_irqrestore(&atchan->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1349,9 +1763,13 @@ static int atc_alloc_chan_resources(struct dma_chan *chan)
 	struct at_desc		*desc;
 	struct at_dma_slave	*atslave;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long		flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long		flags;
+>>>>>>> refs/remotes/origin/master
 	int			i;
 	u32			cfg;
 	LIST_HEAD(tmp_list);
@@ -1374,7 +1792,11 @@ static int atc_alloc_chan_resources(struct dma_chan *chan)
 		 */
 		BUG_ON(!atslave->dma_dev || atslave->dma_dev != atdma->dma_common.dev);
 
+<<<<<<< HEAD
 		/* if cfg configuration specified take it instad of default */
+=======
+		/* if cfg configuration specified take it instead of default */
+>>>>>>> refs/remotes/origin/master
 		if (atslave->cfg)
 			cfg = atslave->cfg;
 	}
@@ -1396,6 +1818,7 @@ static int atc_alloc_chan_resources(struct dma_chan *chan)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_bh(&atchan->lock);
 	atchan->descs_allocated = i;
 	list_splice(&tmp_list, &atchan->free_list);
@@ -1408,6 +1831,14 @@ static int atc_alloc_chan_resources(struct dma_chan *chan)
 	dma_cookie_init(chan);
 	spin_unlock_irqrestore(&atchan->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&atchan->lock, flags);
+	atchan->descs_allocated = i;
+	atchan->remain_desc = 0;
+	list_splice(&tmp_list, &atchan->free_list);
+	dma_cookie_init(chan);
+	spin_unlock_irqrestore(&atchan->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	/* channel parameters */
 	channel_writel(atchan, CFG, cfg);
@@ -1447,15 +1878,103 @@ static void atc_free_chan_resources(struct dma_chan *chan)
 	list_splice_init(&atchan->free_list, &list);
 	atchan->descs_allocated = 0;
 	atchan->status = 0;
+<<<<<<< HEAD
+=======
+	atchan->remain_desc = 0;
+>>>>>>> refs/remotes/origin/master
 
 	dev_vdbg(chan2dev(chan), "free_chan_resources: done\n");
 }
 
+<<<<<<< HEAD
 
 /*--  Module Management  -----------------------------------------------*/
 
 <<<<<<< HEAD
 =======
+=======
+#ifdef CONFIG_OF
+static bool at_dma_filter(struct dma_chan *chan, void *slave)
+{
+	struct at_dma_slave *atslave = slave;
+
+	if (atslave->dma_dev == chan->device->dev) {
+		chan->private = atslave;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+static struct dma_chan *at_dma_xlate(struct of_phandle_args *dma_spec,
+				     struct of_dma *of_dma)
+{
+	struct dma_chan *chan;
+	struct at_dma_chan *atchan;
+	struct at_dma_slave *atslave;
+	dma_cap_mask_t mask;
+	unsigned int per_id;
+	struct platform_device *dmac_pdev;
+
+	if (dma_spec->args_count != 2)
+		return NULL;
+
+	dmac_pdev = of_find_device_by_node(dma_spec->np);
+
+	dma_cap_zero(mask);
+	dma_cap_set(DMA_SLAVE, mask);
+
+	atslave = devm_kzalloc(&dmac_pdev->dev, sizeof(*atslave), GFP_KERNEL);
+	if (!atslave)
+		return NULL;
+
+	atslave->cfg = ATC_DST_H2SEL_HW | ATC_SRC_H2SEL_HW;
+	/*
+	 * We can fill both SRC_PER and DST_PER, one of these fields will be
+	 * ignored depending on DMA transfer direction.
+	 */
+	per_id = dma_spec->args[1] & AT91_DMA_CFG_PER_ID_MASK;
+	atslave->cfg |= ATC_DST_PER_MSB(per_id) | ATC_DST_PER(per_id)
+		     | ATC_SRC_PER_MSB(per_id) | ATC_SRC_PER(per_id);
+	/*
+	 * We have to translate the value we get from the device tree since
+	 * the half FIFO configuration value had to be 0 to keep backward
+	 * compatibility.
+	 */
+	switch (dma_spec->args[1] & AT91_DMA_CFG_FIFOCFG_MASK) {
+	case AT91_DMA_CFG_FIFOCFG_ALAP:
+		atslave->cfg |= ATC_FIFOCFG_LARGESTBURST;
+		break;
+	case AT91_DMA_CFG_FIFOCFG_ASAP:
+		atslave->cfg |= ATC_FIFOCFG_ENOUGHSPACE;
+		break;
+	case AT91_DMA_CFG_FIFOCFG_HALF:
+	default:
+		atslave->cfg |= ATC_FIFOCFG_HALFFIFO;
+	}
+	atslave->dma_dev = &dmac_pdev->dev;
+
+	chan = dma_request_channel(mask, at_dma_filter, atslave);
+	if (!chan)
+		return NULL;
+
+	atchan = to_at_dma_chan(chan);
+	atchan->per_if = dma_spec->args[0] & 0xff;
+	atchan->mem_if = (dma_spec->args[0] >> 16) & 0xff;
+
+	return chan;
+}
+#else
+static struct dma_chan *at_dma_xlate(struct of_phandle_args *dma_spec,
+				     struct of_dma *of_dma)
+{
+	return NULL;
+}
+#endif
+
+/*--  Module Management  -----------------------------------------------*/
+
+>>>>>>> refs/remotes/origin/master
 /* cap_mask is a multi-u32 bitfield, fill it with proper C code. */
 static struct at_dma_platform_data at91sam9rl_config = {
 	.nr_channels = 2,
@@ -1492,7 +2011,11 @@ static const struct platform_device_id atdma_devtypes[] = {
 	}
 };
 
+<<<<<<< HEAD
 static inline struct at_dma_platform_data * __init at_dma_get_driver_data(
+=======
+static inline const struct at_dma_platform_data * __init at_dma_get_driver_data(
+>>>>>>> refs/remotes/origin/master
 						struct platform_device *pdev)
 {
 	if (pdev->dev.of_node) {
@@ -1506,7 +2029,10 @@ static inline struct at_dma_platform_data * __init at_dma_get_driver_data(
 			platform_get_device_id(pdev)->driver_data;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * at_dma_off - disable DMA controller
  * @atdma: the Atmel HDAMC device
@@ -1526,15 +2052,19 @@ static void at_dma_off(struct at_dma *atdma)
 static int __init at_dma_probe(struct platform_device *pdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct at_dma_platform_data *pdata;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct resource		*io;
 	struct at_dma		*atdma;
 	size_t			size;
 	int			irq;
 	int			err;
 	int			i;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	/* get DMA Controller parameters from platform */
@@ -1543,6 +2073,9 @@ static int __init at_dma_probe(struct platform_device *pdev)
 		return -EINVAL;
 =======
 	struct at_dma_platform_data *plat_dat;
+=======
+	const struct at_dma_platform_data *plat_dat;
+>>>>>>> refs/remotes/origin/master
 
 	/* setup platform data for each SoC */
 	dma_cap_set(DMA_MEMCPY, at91sam9rl_config.cap_mask);
@@ -1553,7 +2086,10 @@ static int __init at_dma_probe(struct platform_device *pdev)
 	plat_dat = at_dma_get_driver_data(pdev);
 	if (!plat_dat)
 		return -ENODEV;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	io = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!io)
@@ -1565,14 +2101,19 @@ static int __init at_dma_probe(struct platform_device *pdev)
 
 	size = sizeof(struct at_dma);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	size += pdata->nr_channels * sizeof(struct at_dma_chan);
 =======
 	size += plat_dat->nr_channels * sizeof(struct at_dma_chan);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	size += plat_dat->nr_channels * sizeof(struct at_dma_chan);
+>>>>>>> refs/remotes/origin/master
 	atdma = kzalloc(size, GFP_KERNEL);
 	if (!atdma)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* discover transaction capabilites from the platform data */
 	atdma->dma_common.cap_mask = pdata->cap_mask;
@@ -1580,12 +2121,17 @@ static int __init at_dma_probe(struct platform_device *pdev)
 
 	size = io->end - io->start + 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* discover transaction capabilities */
 	atdma->dma_common.cap_mask = plat_dat->cap_mask;
 	atdma->all_chan_mask = (1 << plat_dat->nr_channels) - 1;
 
 	size = resource_size(io);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!request_mem_region(io->start, size, pdev->dev.driver->name)) {
 		err = -EBUSY;
 		goto err_kfree;
@@ -1602,7 +2148,13 @@ static int __init at_dma_probe(struct platform_device *pdev)
 		err = PTR_ERR(atdma->clk);
 		goto err_clk;
 	}
+<<<<<<< HEAD
 	clk_enable(atdma->clk);
+=======
+	err = clk_prepare_enable(atdma->clk);
+	if (err)
+		goto err_clk_prepare;
+>>>>>>> refs/remotes/origin/master
 
 	/* force dma off, just in case */
 	at_dma_off(atdma);
@@ -1630,6 +2182,7 @@ static int __init at_dma_probe(struct platform_device *pdev)
 	/* initialize channels related values */
 	INIT_LIST_HEAD(&atdma->dma_common.channels);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < pdata->nr_channels; i++, atdma->dma_common.chancnt++) {
 		struct at_dma_chan	*atchan = &atdma->chan[i];
 
@@ -1643,6 +2196,15 @@ static int __init at_dma_probe(struct platform_device *pdev)
 		atchan->chan_common.device = &atdma->dma_common;
 		dma_cookie_init(&atchan->chan_common);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < plat_dat->nr_channels; i++) {
+		struct at_dma_chan	*atchan = &atdma->chan[i];
+
+		atchan->mem_if = AT_DMA_MEM_IF;
+		atchan->per_if = AT_DMA_PER_IF;
+		atchan->chan_common.device = &atdma->dma_common;
+		dma_cookie_init(&atchan->chan_common);
+>>>>>>> refs/remotes/origin/master
 		list_add_tail(&atchan->chan_common.device_node,
 				&atdma->dma_common.channels);
 
@@ -1671,6 +2233,7 @@ static int __init at_dma_probe(struct platform_device *pdev)
 		atdma->dma_common.device_prep_dma_memcpy = atc_prep_dma_memcpy;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dma_has_cap(DMA_SLAVE, atdma->dma_common.cap_mask))
 		atdma->dma_common.device_prep_slave_sg = atc_prep_slave_sg;
 
@@ -1681,6 +2244,8 @@ static int __init at_dma_probe(struct platform_device *pdev)
 	    dma_has_cap(DMA_CYCLIC, atdma->dma_common.cap_mask))
 		atdma->dma_common.device_control = atc_control;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (dma_has_cap(DMA_SLAVE, atdma->dma_common.cap_mask)) {
 		atdma->dma_common.device_prep_slave_sg = atc_prep_slave_sg;
 		/* controller can do slave DMA: can trigger cyclic transfers */
@@ -1688,13 +2253,17 @@ static int __init at_dma_probe(struct platform_device *pdev)
 		atdma->dma_common.device_prep_dma_cyclic = atc_prep_dma_cyclic;
 		atdma->dma_common.device_control = atc_control;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dma_writel(atdma, EN, AT_DMA_ENABLE);
 
 	dev_info(&pdev->dev, "Atmel AHB DMA Controller ( %s%s), %d channels\n",
 	  dma_has_cap(DMA_MEMCPY, atdma->dma_common.cap_mask) ? "cpy " : "",
 	  dma_has_cap(DMA_SLAVE, atdma->dma_common.cap_mask)  ? "slave " : "",
+<<<<<<< HEAD
 <<<<<<< HEAD
 	  atdma->dma_common.chancnt);
 =======
@@ -1710,6 +2279,36 @@ err_pool_create:
 	free_irq(platform_get_irq(pdev, 0), atdma);
 err_irq:
 	clk_disable(atdma->clk);
+=======
+	  plat_dat->nr_channels);
+
+	dma_async_device_register(&atdma->dma_common);
+
+	/*
+	 * Do not return an error if the dmac node is not present in order to
+	 * not break the existing way of requesting channel with
+	 * dma_request_channel().
+	 */
+	if (pdev->dev.of_node) {
+		err = of_dma_controller_register(pdev->dev.of_node,
+						 at_dma_xlate, atdma);
+		if (err) {
+			dev_err(&pdev->dev, "could not register of_dma_controller\n");
+			goto err_of_dma_controller_register;
+		}
+	}
+
+	return 0;
+
+err_of_dma_controller_register:
+	dma_async_device_unregister(&atdma->dma_common);
+	dma_pool_destroy(atdma->dma_desc_pool);
+err_pool_create:
+	free_irq(platform_get_irq(pdev, 0), atdma);
+err_irq:
+	clk_disable_unprepare(atdma->clk);
+err_clk_prepare:
+>>>>>>> refs/remotes/origin/master
 	clk_put(atdma->clk);
 err_clk:
 	iounmap(atdma->regs);
@@ -1721,7 +2320,11 @@ err_kfree:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __exit at_dma_remove(struct platform_device *pdev)
+=======
+static int at_dma_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct at_dma		*atdma = platform_get_drvdata(pdev);
 	struct dma_chan		*chan, *_chan;
@@ -1731,7 +2334,10 @@ static int __exit at_dma_remove(struct platform_device *pdev)
 	dma_async_device_unregister(&atdma->dma_common);
 
 	dma_pool_destroy(atdma->dma_desc_pool);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_irq(platform_get_irq(pdev, 0), atdma);
 
 	list_for_each_entry_safe(chan, _chan, &atdma->dma_common.channels,
@@ -1746,7 +2352,11 @@ static int __exit at_dma_remove(struct platform_device *pdev)
 		list_del(&chan->device_node);
 	}
 
+<<<<<<< HEAD
 	clk_disable(atdma->clk);
+=======
+	clk_disable_unprepare(atdma->clk);
+>>>>>>> refs/remotes/origin/master
 	clk_put(atdma->clk);
 
 	iounmap(atdma->regs);
@@ -1754,10 +2364,14 @@ static int __exit at_dma_remove(struct platform_device *pdev)
 
 	io = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	release_mem_region(io->start, io->end - io->start + 1);
 =======
 	release_mem_region(io->start, resource_size(io));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	release_mem_region(io->start, resource_size(io));
+>>>>>>> refs/remotes/origin/master
 
 	kfree(atdma);
 
@@ -1769,11 +2383,17 @@ static void at_dma_shutdown(struct platform_device *pdev)
 	struct at_dma	*atdma = platform_get_drvdata(pdev);
 
 	at_dma_off(platform_get_drvdata(pdev));
+<<<<<<< HEAD
 	clk_disable(atdma->clk);
 }
 
 <<<<<<< HEAD
 =======
+=======
+	clk_disable_unprepare(atdma->clk);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int at_dma_prepare(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
@@ -1809,15 +2429,21 @@ static void atc_suspend_cyclic(struct at_dma_chan *atchan)
 	vdbg_dump_regs(atchan);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int at_dma_suspend_noirq(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
 	struct at_dma *atdma = platform_get_drvdata(pdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	at_dma_off(platform_get_drvdata(pdev));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dma_chan *chan, *_chan;
 
 	/* preserve data */
@@ -1833,6 +2459,7 @@ static int at_dma_suspend_noirq(struct device *dev)
 
 	/* disable DMA controller */
 	at_dma_off(atdma);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	clk_disable(atdma->clk);
 	return 0;
@@ -1840,6 +2467,12 @@ static int at_dma_suspend_noirq(struct device *dev)
 
 <<<<<<< HEAD
 =======
+=======
+	clk_disable_unprepare(atdma->clk);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void atc_resume_cyclic(struct at_dma_chan *atchan)
 {
 	struct at_dma	*atdma = to_at_dma(atchan->chan_common.device);
@@ -1859,11 +2492,15 @@ static void atc_resume_cyclic(struct at_dma_chan *atchan)
 	vdbg_dump_regs(atchan);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int at_dma_resume_noirq(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
 	struct at_dma *atdma = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	clk_enable(atdma->clk);
@@ -1873,6 +2510,12 @@ static int at_dma_resume_noirq(struct device *dev)
 
 	/* bring back DMA controller */
 	clk_enable(atdma->clk);
+=======
+	struct dma_chan *chan, *_chan;
+
+	/* bring back DMA controller */
+	clk_prepare_enable(atdma->clk);
+>>>>>>> refs/remotes/origin/master
 	dma_writel(atdma, EN, AT_DMA_ENABLE);
 
 	/* clear any pending interrupt */
@@ -1889,20 +2532,28 @@ static int at_dma_resume_noirq(struct device *dev)
 		if (atc_chan_is_cyclic(atchan))
 			atc_resume_cyclic(atchan);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static const struct dev_pm_ops at_dma_dev_pm_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.prepare = at_dma_prepare,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.prepare = at_dma_prepare,
+>>>>>>> refs/remotes/origin/master
 	.suspend_noirq = at_dma_suspend_noirq,
 	.resume_noirq = at_dma_resume_noirq,
 };
 
 static struct platform_driver at_dma_driver = {
+<<<<<<< HEAD
 	.remove		= __exit_p(at_dma_remove),
 	.shutdown	= at_dma_shutdown,
 <<<<<<< HEAD
@@ -1910,12 +2561,19 @@ static struct platform_driver at_dma_driver = {
 		.name	= "at_hdmac",
 		.pm	= &at_dma_dev_pm_ops,
 =======
+=======
+	.remove		= at_dma_remove,
+	.shutdown	= at_dma_shutdown,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= atdma_devtypes,
 	.driver = {
 		.name	= "at_hdmac",
 		.pm	= &at_dma_dev_pm_ops,
 		.of_match_table	= of_match_ptr(atmel_dma_dt_ids),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

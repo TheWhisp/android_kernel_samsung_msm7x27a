@@ -1,5 +1,9 @@
 /* IEEE 802.11 SoftMAC layer
+<<<<<<< HEAD
  * Copyright (c) 2005 Andrea Merello <andreamrl@tiscali.it>
+=======
+ * Copyright (c) 2005 Andrea Merello <andrea.merello@gmail.com>
+>>>>>>> refs/remotes/origin/master
  *
  * Mostly extracted from the rtl8180-sa2400 driver for the
  * in-kernel generic ieee802.11 stack.
@@ -19,6 +23,10 @@
 #include <linux/random.h>
 #include <linux/delay.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <linux/etherdevice.h>
+>>>>>>> refs/remotes/origin/master
 #include "dot11d.h"
 
 short rtllib_is_54g(struct rtllib_network *net)
@@ -31,7 +39,11 @@ short rtllib_is_shortslot(const struct rtllib_network *net)
 	return net->capability & WLAN_CAPABILITY_SHORT_SLOT_TIME;
 }
 
+<<<<<<< HEAD
 /* returns the total length needed for pleacing the RATE MFIE
+=======
+/* returns the total length needed for placing the RATE MFIE
+>>>>>>> refs/remotes/origin/master
  * tag and the EXTENDED RATE MFIE tag if needed.
  * It encludes two bytes per tag for the tag itself and its len
  */
@@ -49,7 +61,11 @@ static unsigned int rtllib_MFIE_rate_len(struct rtllib_device *ieee)
 	return rate_len;
 }
 
+<<<<<<< HEAD
 /* pleace the MFIE rate, tag to the memory (double) poined.
+=======
+/* place the MFIE rate, tag to the memory (double) pointed.
+>>>>>>> refs/remotes/origin/master
  * Then it updates the pointer so that
  * it points after the new MFIE tag added.
  */
@@ -226,7 +242,11 @@ inline void softmac_mgmt_xmit(struct sk_buff *skb, struct rtllib_device *ieee)
 	/* called with 2nd param 0, no mgmt lock required */
 	rtllib_sta_wakeup(ieee, 0);
 
+<<<<<<< HEAD
 	if (header->frame_ctl == RTLLIB_STYPE_BEACON)
+=======
+	if (le16_to_cpu(header->frame_ctl) == RTLLIB_STYPE_BEACON)
+>>>>>>> refs/remotes/origin/master
 		tcb_desc->queue_index = BEACON_QUEUE;
 	else
 		tcb_desc->queue_index = MGNT_QUEUE;
@@ -266,7 +286,11 @@ inline void softmac_mgmt_xmit(struct sk_buff *skb, struct rtllib_device *ieee)
 		else
 			ieee->seq_ctrl[0]++;
 
+<<<<<<< HEAD
 		/* check wether the managed packet queued greater than 5 */
+=======
+		/* check whether the managed packet queued greater than 5 */
+>>>>>>> refs/remotes/origin/master
 		if (!ieee->check_nic_enough_desc(ieee->dev, tcb_desc->queue_index) ||
 		    (skb_queue_len(&ieee->skb_waitQ[tcb_desc->queue_index]) != 0) ||
 		    (ieee->queue_stop)) {
@@ -294,7 +318,11 @@ inline void softmac_ps_mgmt_xmit(struct sk_buff *skb,
 	u16 fc, type, stype;
 	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + 8);
 
+<<<<<<< HEAD
 	fc = header->frame_ctl;
+=======
+	fc = le16_to_cpu(header->frame_ctl);
+>>>>>>> refs/remotes/origin/master
 	type = WLAN_FC_GET_TYPE(fc);
 	stype = WLAN_FC_GET_STYPE(fc);
 
@@ -557,7 +585,11 @@ void rtllib_softmac_scan_syncro(struct rtllib_device *ieee, u8 is_mesh)
 		 *    new network events, despite for updating the net list,
 		 *    but we are temporarly 'unlinked' as the driver shall
 		 *    not filter RX frames and the channel is changing.
+<<<<<<< HEAD
 		 * So the only situation in witch are interested is to check
+=======
+		 * So the only situation in which are interested is to check
+>>>>>>> refs/remotes/origin/master
 		 * if the state become LINKED because of the #1 situation
 		 */
 
@@ -603,7 +635,11 @@ static void rtllib_softmac_scan_wq(void *data)
 
 	if (!ieee->ieee_up)
 		return;
+<<<<<<< HEAD
 	if (rtllib_act_scanning(ieee, true) == true)
+=======
+	if (rtllib_act_scanning(ieee, true))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	down(&ieee->scan_sem);
@@ -704,7 +740,11 @@ static void rtllib_softmac_stop_scan(struct rtllib_device *ieee)
 	ieee->scan_watch_dog = 0;
 	if (ieee->scanning_continue == 1) {
 		ieee->scanning_continue = 0;
+<<<<<<< HEAD
 		ieee->actscanning = 0;
+=======
+		ieee->actscanning = false;
+>>>>>>> refs/remotes/origin/master
 
 		cancel_delayed_work(&ieee->softmac_scan_wq);
 	}
@@ -806,18 +846,30 @@ inline struct sk_buff *rtllib_authentication_req(struct rtllib_network *beacon,
 	auth = (struct rtllib_authentication *)
 		skb_put(skb, sizeof(struct rtllib_authentication));
 
+<<<<<<< HEAD
 	auth->header.frame_ctl = RTLLIB_STYPE_AUTH;
 	if (challengelen)
 		auth->header.frame_ctl |= RTLLIB_FCTL_WEP;
 
 	auth->header.duration_id = 0x013a;
+=======
+	auth->header.frame_ctl = cpu_to_le16(RTLLIB_STYPE_AUTH);
+	if (challengelen)
+		auth->header.frame_ctl |= cpu_to_le16(RTLLIB_FCTL_WEP);
+
+	auth->header.duration_id = cpu_to_le16(0x013a);
+>>>>>>> refs/remotes/origin/master
 	memcpy(auth->header.addr1, beacon->bssid, ETH_ALEN);
 	memcpy(auth->header.addr2, ieee->dev->dev_addr, ETH_ALEN);
 	memcpy(auth->header.addr3, beacon->bssid, ETH_ALEN);
 	if (ieee->auth_mode == 0)
 		auth->algorithm = WLAN_AUTH_OPEN;
 	else if (ieee->auth_mode == 1)
+<<<<<<< HEAD
 		auth->algorithm = WLAN_AUTH_SHARED_KEY;
+=======
+		auth->algorithm = cpu_to_le16(WLAN_AUTH_SHARED_KEY);
+>>>>>>> refs/remotes/origin/master
 	else if (ieee->auth_mode == 2)
 		auth->algorithm = WLAN_AUTH_OPEN;
 	auth->transaction = cpu_to_le16(ieee->associate_seq);
@@ -920,8 +972,13 @@ static struct sk_buff *rtllib_probe_resp(struct rtllib_device *ieee, u8 *dest)
 
 	if (ieee->short_slot && (ieee->current_network.capability &
 	    WLAN_CAPABILITY_SHORT_SLOT_TIME))
+<<<<<<< HEAD
 		cpu_to_le16((beacon_buf->capability |=
 				 WLAN_CAPABILITY_SHORT_SLOT_TIME));
+=======
+		beacon_buf->capability |=
+			cpu_to_le16(WLAN_CAPABILITY_SHORT_SLOT_TIME);
+>>>>>>> refs/remotes/origin/master
 
 	crypt = ieee->crypt_info.crypt[ieee->crypt_info.tx_keyidx];
 	if (encrypt)
@@ -951,7 +1008,11 @@ static struct sk_buff *rtllib_probe_resp(struct rtllib_device *ieee, u8 *dest)
 		u16 val16;
 		*(tag++) = MFIE_TYPE_IBSS_SET;
 		*(tag++) = 2;
+<<<<<<< HEAD
 		 val16 = cpu_to_le16(ieee->current_network.atim_window);
+=======
+		val16 = ieee->current_network.atim_window;
+>>>>>>> refs/remotes/origin/master
 		memcpy((u8 *)tag, (u8 *)&val16, 2);
 		tag += 2;
 	}
@@ -1201,7 +1262,11 @@ inline struct sk_buff *rtllib_association_req(struct rtllib_network *beacon,
 
 	if ((ieee->rtllib_ap_sec_type &&
 	    (ieee->rtllib_ap_sec_type(ieee) & SEC_ALG_TKIP)) ||
+<<<<<<< HEAD
 	    (ieee->bForcedBgMode == true)) {
+=======
+	    ieee->bForcedBgMode) {
+>>>>>>> refs/remotes/origin/master
 		ieee->pHTInfo->bEnableHT = 0;
 		ieee->mode = WIRELESS_MODE_G;
 	}
@@ -1259,7 +1324,11 @@ inline struct sk_buff *rtllib_association_req(struct rtllib_network *beacon,
 
 
 	hdr->header.frame_ctl = RTLLIB_STYPE_ASSOC_REQ;
+<<<<<<< HEAD
 	hdr->header.duration_id = 37;
+=======
+	hdr->header.duration_id = cpu_to_le16(37);
+>>>>>>> refs/remotes/origin/master
 	memcpy(hdr->header.addr1, beacon->bssid, ETH_ALEN);
 	memcpy(hdr->header.addr2, ieee->dev->dev_addr, ETH_ALEN);
 	memcpy(hdr->header.addr3, beacon->bssid, ETH_ALEN);
@@ -1278,7 +1347,11 @@ inline struct sk_buff *rtllib_association_req(struct rtllib_network *beacon,
 		hdr->capability |= cpu_to_le16(WLAN_CAPABILITY_SHORT_SLOT_TIME);
 
 
+<<<<<<< HEAD
 	hdr->listen_interval = beacon->listen_interval;
+=======
+	hdr->listen_interval = cpu_to_le16(beacon->listen_interval);
+>>>>>>> refs/remotes/origin/master
 
 	hdr->info_element[0].id = MFIE_TYPE_SSID;
 
@@ -1450,7 +1523,11 @@ static void rtllib_associate_abort_cb(unsigned long dev)
 	rtllib_associate_abort((struct rtllib_device *) dev);
 }
 
+<<<<<<< HEAD
 static void rtllib_associate_step1(struct rtllib_device *ieee, u8 * daddr)
+=======
+static void rtllib_associate_step1(struct rtllib_device *ieee, u8 *daddr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtllib_network *beacon = &ieee->current_network;
 	struct sk_buff *skb;
@@ -1534,7 +1611,11 @@ static void rtllib_associate_complete_wq(void *data)
 	struct rt_pwr_save_ctrl *pPSC = (struct rt_pwr_save_ctrl *)
 					(&(ieee->PowerSaveControl));
 	printk(KERN_INFO "Associated successfully\n");
+<<<<<<< HEAD
 	if (ieee->is_silent_reset == 0) {
+=======
+	if (!ieee->is_silent_reset) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_INFO "normal associate\n");
 		notify_wx_assoc_event(ieee);
 	}
@@ -1571,9 +1652,15 @@ static void rtllib_associate_complete_wq(void *data)
 	pPSC->LpsIdleCount = 0;
 	ieee->link_change(ieee->dev);
 
+<<<<<<< HEAD
 	if (ieee->is_silent_reset == 1) {
 		printk(KERN_INFO "silent reset associate\n");
 		ieee->is_silent_reset = 0;
+=======
+	if (ieee->is_silent_reset) {
+		printk(KERN_INFO "silent reset associate\n");
+		ieee->is_silent_reset = false;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (ieee->data_hard_resume)
@@ -1681,13 +1768,21 @@ inline void rtllib_softmac_new_net(struct rtllib_device *ieee,
 
 		/* if the user set the AP check if match.
 		 * if the network does not broadcast essid we check the
+<<<<<<< HEAD
 		 *	 user supplyed ANY essid
+=======
+		 *	 user supplied ANY essid
+>>>>>>> refs/remotes/origin/master
 		 * if the network does broadcast and the user does not set
 		 *	 essid it is OK
 		 * if the network does broadcast and the user did set essid
 		 * check if essid match
 		 * if the ap is not set, check that the user set the bssid
+<<<<<<< HEAD
 		 * and the network does bradcast and that those two bssid match
+=======
+		 * and the network does broadcast and that those two bssid match
+>>>>>>> refs/remotes/origin/master
 		 */
 		if ((apset && apmatch &&
 		   ((ssidset && ssidbroad && ssidmatch) ||
@@ -1784,7 +1879,11 @@ void rtllib_softmac_check_all_nets(struct rtllib_device *ieee)
 	spin_unlock_irqrestore(&ieee->lock, flags);
 }
 
+<<<<<<< HEAD
 static inline u16 auth_parse(struct sk_buff *skb, u8** challenge, int *chlen)
+=======
+static inline u16 auth_parse(struct sk_buff *skb, u8 **challenge, int *chlen)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtllib_authentication *a;
 	u8 *t;
@@ -1800,8 +1899,14 @@ static inline u16 auth_parse(struct sk_buff *skb, u8** challenge, int *chlen)
 
 		if (*(t++) == MFIE_TYPE_CHALLENGE) {
 			*chlen = *(t++);
+<<<<<<< HEAD
 			*challenge = kmalloc(*chlen, GFP_ATOMIC);
 			memcpy(*challenge, t, *chlen);	/*TODO - check here*/
+=======
+			*challenge = kmemdup(t, *chlen, GFP_ATOMIC);
+			if (!*challenge)
+				return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return cpu_to_le16(a->status);
@@ -1843,7 +1948,11 @@ static short probe_rq_parse(struct rtllib_device *ieee, struct sk_buff *skb,
 
 	bssid_match =
 	  (memcmp(header->addr3, ieee->current_network.bssid, ETH_ALEN) != 0) &&
+<<<<<<< HEAD
 	  (memcmp(header->addr3, "\xff\xff\xff\xff\xff\xff", ETH_ALEN) != 0);
+=======
+	  (!is_broadcast_ether_addr(header->addr3));
+>>>>>>> refs/remotes/origin/master
 	if (bssid_match)
 		return -1;
 
@@ -2003,7 +2112,11 @@ static short rtllib_sta_ps_sleep(struct rtllib_device *ieee, u64 *time)
 		return 0;
 
 	if (time) {
+<<<<<<< HEAD
 		if (ieee->bAwakePktSent == true) {
+=======
+		if (ieee->bAwakePktSent) {
+>>>>>>> refs/remotes/origin/master
 			pPSC->LPSAwakeIntvl = 1;
 		} else {
 			u8		MaxPeriod = 1;
@@ -2336,8 +2449,12 @@ inline int rtllib_rx_auth(struct rtllib_device *ieee, struct sk_buff *skb,
 					}
 
 					if (ieee->current_network.mode ==
+<<<<<<< HEAD
 					    IEEE_N_24G &&
 					    bHalfSupportNmode == true) {
+=======
+					    IEEE_N_24G && bHalfSupportNmode) {
+>>>>>>> refs/remotes/origin/master
 						printk(KERN_INFO "======>enter "
 						       "half N mode\n");
 						ieee->bHalfWirelessN24GMode =
@@ -2442,6 +2559,7 @@ inline int rtllib_rx_frame_softmac(struct rtllib_device *ieee,
 	return 0;
 }
 
+<<<<<<< HEAD
 /* following are for a simplier TX queue management.
  * Instead of using netif_[stop/wake]_queue the driver
  * will uses these two function (plus a reset one), that
@@ -2454,6 +2572,20 @@ inline int rtllib_rx_frame_softmac(struct rtllib_device *ieee,
  * descriptor, thus just keep a total free memory > than
  * the max fragmentation treshold is not enought.. If the
  * ieee802.11 stack passed a TXB struct then you needed
+=======
+/* following are for a simpler TX queue management.
+ * Instead of using netif_[stop/wake]_queue the driver
+ * will use these two functions (plus a reset one), that
+ * will internally use the kernel netif_* and takes
+ * care of the ieee802.11 fragmentation.
+ * So the driver receives a fragment per time and might
+ * call the stop function when it wants to not
+ * have enough room to TX an entire packet.
+ * This might be useful if each fragment needs it's own
+ * descriptor, thus just keep a total free memory > than
+ * the max fragmentation threshold is not enough.. If the
+ * ieee802.11 stack passed a TXB struct then you need
+>>>>>>> refs/remotes/origin/master
  * to keep N free descriptors where
  * N = MAX_PACKET_SIZE / MIN_FRAG_TRESHOLD
  * In this way you need just one and the 802.11 stack
@@ -2619,6 +2751,7 @@ void rtllib_wake_all_queues(struct rtllib_device *ieee)
 inline void rtllib_randomize_cell(struct rtllib_device *ieee)
 {
 
+<<<<<<< HEAD
 	get_random_bytes(ieee->current_network.bssid, ETH_ALEN);
 
 	/* an IBSS cell address must have the two less significant
@@ -2626,6 +2759,9 @@ inline void rtllib_randomize_cell(struct rtllib_device *ieee)
 	 */
 	ieee->current_network.bssid[0] &= ~0x01;
 	ieee->current_network.bssid[0] |= 0x02;
+=======
+	random_ether_addr(ieee->current_network.bssid);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* called in user context only */
@@ -2696,15 +2832,25 @@ static void rtllib_start_ibss_wq(void *data)
 	rtllib_softmac_check_all_nets(ieee);
 
 
+<<<<<<< HEAD
 	/* if not then the state is not linked. Maybe the user swithced to
+=======
+	/* if not then the state is not linked. Maybe the user switched to
+>>>>>>> refs/remotes/origin/master
 	 * ad-hoc mode just after being in monitor mode, or just after
 	 * being very few time in managed mode (so the card have had no
 	 * time to scan all the chans..) or we have just run up the iface
 	 * after setting ad-hoc mode. So we have to give another try..
 	 * Here, in ibss mode, should be safe to do this without extra care
+<<<<<<< HEAD
 	 * (in bss mode we had to make sure no-one tryed to associate when
 	 * we had just checked the ieee->state and we was going to start the
 	 * scan) beacause in ibss mode the rtllib_new_net function, when
+=======
+	 * (in bss mode we had to make sure no-one tried to associate when
+	 * we had just checked the ieee->state and we was going to start the
+	 * scan) because in ibss mode the rtllib_new_net function, when
+>>>>>>> refs/remotes/origin/master
 	 * finds a good net, just set the ieee->state to RTLLIB_LINKED,
 	 * so, at worst, we waste a bit of time to initiate an unneeded syncro
 	 * scan, that will stop at the first round because it sees the state
@@ -2819,7 +2965,11 @@ void rtllib_start_bss(struct rtllib_device *ieee)
 
 	/* ensure no-one start an associating process (thus setting
 	 * the ieee->state to rtllib_ASSOCIATING) while we
+<<<<<<< HEAD
 	 * have just cheked it and we are going to enable scan.
+=======
+	 * have just checked it and we are going to enable scan.
+>>>>>>> refs/remotes/origin/master
 	 * The rtllib_new_net function is always called with
 	 * lock held (from both rtllib_softmac_check_all_nets and
 	 * the rx path), so we cannot be in the middle of such function
@@ -2872,7 +3022,11 @@ static void rtllib_associate_retry_wq(void *data)
 
 	/* until we do not set the state to RTLLIB_NOLINK
 	* there are no possibility to have someone else trying
+<<<<<<< HEAD
 	* to start an association procdure (we get here with
+=======
+	* to start an association procedure (we get here with
+>>>>>>> refs/remotes/origin/master
 	* ieee->state = RTLLIB_ASSOCIATING).
 	* When we set the state to RTLLIB_NOLINK it is possible
 	* that the RX path run an attempt to associate, but
@@ -3102,7 +3256,11 @@ void rtllib_softmac_init(struct rtllib_device *ieee)
 	ieee->sta_edca_param[2] = 0x005E4342;
 	ieee->sta_edca_param[3] = 0x002F3262;
 	ieee->aggregation = true;
+<<<<<<< HEAD
 	ieee->enable_rx_imm_BA = 1;
+=======
+	ieee->enable_rx_imm_BA = true;
+>>>>>>> refs/remotes/origin/master
 	ieee->tx_pending.txb = NULL;
 
 	_setup_timer(&ieee->associate_timer,
@@ -3361,9 +3519,13 @@ static int rtllib_wpa_set_encryption(struct rtllib_device *ieee,
 			       param->u.crypt.key_len);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	if (param->sta_addr[0] == 0xff && param->sta_addr[1] == 0xff &&
 	    param->sta_addr[2] == 0xff && param->sta_addr[3] == 0xff &&
 	    param->sta_addr[4] == 0xff && param->sta_addr[5] == 0xff) {
+=======
+	if (is_broadcast_ether_addr(param->sta_addr)) {
+>>>>>>> refs/remotes/origin/master
 		if (param->u.crypt.idx >= NUM_WEP_KEYS)
 			return -EINVAL;
 		crypt = &ieee->crypt_info.crypt[param->u.crypt.idx];
@@ -3411,8 +3573,12 @@ static int rtllib_wpa_set_encryption(struct rtllib_device *ieee,
 
 		lib80211_crypt_delayed_deinit(&ieee->crypt_info, crypt);
 
+<<<<<<< HEAD
 		new_crypt = (struct lib80211_crypt_data *)
 			kmalloc(sizeof(*new_crypt), GFP_KERNEL);
+=======
+		new_crypt = kmalloc(sizeof(*new_crypt), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		if (new_crypt == NULL) {
 			ret = -ENOMEM;
 			goto done;
@@ -3598,6 +3764,7 @@ int rtllib_wpa_supplicant_ioctl(struct rtllib_device *ieee, struct iw_point *p,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	param = kmalloc(p->length, GFP_KERNEL);
 	if (param == NULL) {
 		ret = -ENOMEM;
@@ -3606,6 +3773,11 @@ int rtllib_wpa_supplicant_ioctl(struct rtllib_device *ieee, struct iw_point *p,
 	if (copy_from_user(param, p->pointer, p->length)) {
 		kfree(param);
 		ret = -EFAULT;
+=======
+	param = memdup_user(p->pointer, p->length);
+	if (IS_ERR(param)) {
+		ret = PTR_ERR(param);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -3646,7 +3818,11 @@ out:
 }
 EXPORT_SYMBOL(rtllib_wpa_supplicant_ioctl);
 
+<<<<<<< HEAD
 void rtllib_MgntDisconnectIBSS(struct rtllib_device *rtllib)
+=======
+static void rtllib_MgntDisconnectIBSS(struct rtllib_device *rtllib)
+>>>>>>> refs/remotes/origin/master
 {
 	u8	OpMode;
 	u8	i;
@@ -3671,7 +3847,11 @@ void rtllib_MgntDisconnectIBSS(struct rtllib_device *rtllib)
 
 }
 
+<<<<<<< HEAD
 void rtllib_MlmeDisassociateRequest(struct rtllib_device *rtllib, u8 *asSta,
+=======
+static void rtllib_MlmeDisassociateRequest(struct rtllib_device *rtllib, u8 *asSta,
+>>>>>>> refs/remotes/origin/master
 				    u8 asRsn)
 {
 	u8 i;
@@ -3679,8 +3859,12 @@ void rtllib_MlmeDisassociateRequest(struct rtllib_device *rtllib, u8 *asSta,
 
 	RemovePeerTS(rtllib, asSta);
 
+<<<<<<< HEAD
 
 	if (memcpy(rtllib->current_network.bssid, asSta, 6) == NULL) {
+=======
+	if (memcmp(rtllib->current_network.bssid, asSta, 6) == 0) {
+>>>>>>> refs/remotes/origin/master
 		rtllib->state = RTLLIB_NOLINK;
 
 		for (i = 0; i < 6; i++)
@@ -3698,7 +3882,11 @@ void rtllib_MlmeDisassociateRequest(struct rtllib_device *rtllib, u8 *asSta,
 
 }
 
+<<<<<<< HEAD
 void
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 rtllib_MgntDisconnectAP(
 	struct rtllib_device *rtllib,
 	u8 asRsn

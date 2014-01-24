@@ -2,6 +2,11 @@
 #define _SCSI_PRIV_H
 
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/async.h>
+#include <scsi/scsi_device.h>
+>>>>>>> refs/remotes/origin/master
 
 struct request_queue;
 struct request;
@@ -46,9 +51,12 @@ enum {
 	SCSI_DEVINFO_GLOBAL = 0,
 	SCSI_DEVINFO_SPI,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SCSI_DEVINFO_DH,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 extern int scsi_get_device_flags(struct scsi_device *sdev,
@@ -83,15 +91,22 @@ int scsi_noretry_cmd(struct scsi_cmnd *scmd);
 /* scsi_lib.c */
 extern int scsi_maybe_unblock_host(struct scsi_device *sdev);
 extern void scsi_device_unbusy(struct scsi_device *sdev);
+<<<<<<< HEAD
 extern int scsi_queue_insert(struct scsi_cmnd *cmd, int reason);
+=======
+extern void scsi_queue_insert(struct scsi_cmnd *cmd, int reason);
+>>>>>>> refs/remotes/origin/master
 extern void scsi_next_command(struct scsi_cmnd *cmd);
 extern void scsi_io_completion(struct scsi_cmnd *, unsigned int);
 extern void scsi_run_host_queues(struct Scsi_Host *shost);
 extern struct request_queue *scsi_alloc_queue(struct scsi_device *sdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void scsi_free_queue(struct request_queue *q);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern int scsi_init_queue(void);
 extern void scsi_exit_queue(void);
 struct request_queue;
@@ -170,6 +185,11 @@ static inline int scsi_autopm_get_host(struct Scsi_Host *h) { return 0; }
 static inline void scsi_autopm_put_host(struct Scsi_Host *h) {}
 #endif /* CONFIG_PM_RUNTIME */
 
+<<<<<<< HEAD
+=======
+extern struct async_domain scsi_sd_probe_domain;
+
+>>>>>>> refs/remotes/origin/master
 /* 
  * internal scsi timeout functions: for use by mid-layer and transport
  * classes.
@@ -177,6 +197,11 @@ static inline void scsi_autopm_put_host(struct Scsi_Host *h) {}
 
 #define SCSI_DEVICE_BLOCK_MAX_TIMEOUT	600	/* units in seconds */
 extern int scsi_internal_device_block(struct scsi_device *sdev);
+<<<<<<< HEAD
 extern int scsi_internal_device_unblock(struct scsi_device *sdev);
+=======
+extern int scsi_internal_device_unblock(struct scsi_device *sdev,
+					enum scsi_device_state new_state);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _SCSI_PRIV_H */

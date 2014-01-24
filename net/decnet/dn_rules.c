@@ -24,9 +24,13 @@
 #include <linux/list.h>
 #include <linux/rcupdate.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/neighbour.h>
 #include <net/dst.h>
 #include <net/flow.h>
@@ -180,11 +184,19 @@ static int dn_fib_rule_compare(struct fib_rule *rule, struct fib_rule_hdr *frh,
 	return 1;
 }
 
+<<<<<<< HEAD
 unsigned dnet_addr_type(__le16 addr)
 {
 	struct flowidn fld = { .daddr = addr };
 	struct dn_fib_res res;
 	unsigned ret = RTN_UNICAST;
+=======
+unsigned int dnet_addr_type(__le16 addr)
+{
+	struct flowidn fld = { .daddr = addr };
+	struct dn_fib_res res;
+	unsigned int ret = RTN_UNICAST;
+>>>>>>> refs/remotes/origin/master
 	struct dn_fib_table *tb = dn_fib_get_table(RT_TABLE_LOCAL, 0);
 
 	res.r = NULL;
@@ -207,11 +219,19 @@ static int dn_fib_rule_fill(struct fib_rule *rule, struct sk_buff *skb,
 	frh->src_len = r->src_len;
 	frh->tos = 0;
 
+<<<<<<< HEAD
 	if (r->dst_len)
 		NLA_PUT_LE16(skb, FRA_DST, r->dst);
 	if (r->src_len)
 		NLA_PUT_LE16(skb, FRA_SRC, r->src);
 
+=======
+	if ((r->dst_len &&
+	     nla_put_le16(skb, FRA_DST, r->dst)) ||
+	    (r->src_len &&
+	     nla_put_le16(skb, FRA_SRC, r->src)))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 nla_put_failure:
@@ -223,7 +243,11 @@ static void dn_fib_rule_flush_cache(struct fib_rules_ops *ops)
 	dn_rt_cache_flush(-1);
 }
 
+<<<<<<< HEAD
 static const struct fib_rules_ops __net_initdata dn_fib_rules_ops_template = {
+=======
+static const struct fib_rules_ops __net_initconst dn_fib_rules_ops_template = {
+>>>>>>> refs/remotes/origin/master
 	.family		= AF_DECnet,
 	.rule_size	= sizeof(struct dn_fib_rule),
 	.addr_size	= sizeof(u16),

@@ -12,6 +12,7 @@
  *   more details.
  */
 
+<<<<<<< HEAD
 #include <arch/chip.h>
 
 #include <linux/types.h>
@@ -19,6 +20,12 @@
 #include <linux/module.h>
 
 #undef memset
+=======
+#include <linux/types.h>
+#include <linux/string.h>
+#include <linux/module.h>
+#include <arch/chip.h>
+>>>>>>> refs/remotes/origin/master
 
 void *memset(void *s, int c, size_t n)
 {
@@ -26,11 +33,15 @@ void *memset(void *s, int c, size_t n)
 	int n32;
 	uint32_t v16, v32;
 	uint8_t *out8 = s;
+<<<<<<< HEAD
 #if !CHIP_HAS_WH64()
 	int ahead32;
 #else
 	int to_align32;
 #endif
+=======
+	int to_align32;
+>>>>>>> refs/remotes/origin/master
 
 	/* Experimentation shows that a trivial tight loop is a win up until
 	 * around a size of 20, where writing a word at a time starts to win.
@@ -61,6 +72,7 @@ void *memset(void *s, int c, size_t n)
 		return s;
 	}
 
+<<<<<<< HEAD
 #if !CHIP_HAS_WH64()
 	/* Use a spare issue slot to start prefetching the first cache
 	 * line early. This instruction is free as the store can be buried
@@ -76,6 +88,8 @@ void *memset(void *s, int c, size_t n)
 #endif /* !CHIP_HAS_WH64() */
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Align 'out8'. We know n >= 3 so this won't write past the end. */
 	while (((uintptr_t) out8 & 3) != 0) {
 		*out8++ = c;
@@ -96,6 +110,7 @@ void *memset(void *s, int c, size_t n)
 	/* This must be at least 8 or the following loop doesn't work. */
 #define CACHE_LINE_SIZE_IN_WORDS (CHIP_L2_LINE_SIZE() / 4)
 
+<<<<<<< HEAD
 #if !CHIP_HAS_WH64()
 
 	ahead32 = CACHE_LINE_SIZE_IN_WORDS;
@@ -180,6 +195,8 @@ void *memset(void *s, int c, size_t n)
 
 #else /* CHIP_HAS_WH64() */
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Determine how many words we need to emit before the 'out32'
 	 * pointer becomes aligned modulo the cache line size.
 	 */
@@ -236,8 +253,11 @@ void *memset(void *s, int c, size_t n)
 		n32 &= CACHE_LINE_SIZE_IN_WORDS - 1;
 	}
 
+<<<<<<< HEAD
 #endif /* CHIP_HAS_WH64() */
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Now handle any leftover values. */
 	if (n32 != 0) {
 		do {

@@ -377,7 +377,11 @@ static int ocfs2_init_xattr_bucket(struct ocfs2_xattr_bucket *bucket,
 		bucket->bu_bhs[i] = sb_getblk(bucket->bu_inode->i_sb,
 					      xb_blkno + i);
 		if (!bucket->bu_bhs[i]) {
+<<<<<<< HEAD
 			rc = -EIO;
+=======
+			rc = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 			mlog_errno(rc);
 			break;
 		}
@@ -624,10 +628,14 @@ int ocfs2_calc_security_init(struct inode *dir,
 int ocfs2_calc_xattr_init(struct inode *dir,
 			  struct buffer_head *dir_bh,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			  int mode,
 =======
 			  umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  umode_t mode,
+>>>>>>> refs/remotes/origin/master
 			  struct ocfs2_security_xattr_info *si,
 			  int *want_clusters,
 			  int *xattr_credits,
@@ -758,8 +766,12 @@ static int ocfs2_xattr_extend_allocation(struct inode *inode,
 			BUG_ON(why == RESTART_META);
 
 			credits = ocfs2_calc_extend_credits(inode->i_sb,
+<<<<<<< HEAD
 							    &vb->vb_xv->xr_list,
 							    clusters_to_add);
+=======
+							    &vb->vb_xv->xr_list);
+>>>>>>> refs/remotes/origin/master
 			status = ocfs2_extend_trans(handle, credits);
 			if (status < 0) {
 				status = -ENOMEM;
@@ -2381,12 +2393,15 @@ static int ocfs2_remove_value_outside(struct inode*inode,
 
 		ret = ocfs2_xattr_value_truncate(inode, vb, 0, &ctxt);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ret < 0) {
 			mlog_errno(ret);
 			break;
 		}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		ocfs2_commit_trans(osb, ctxt.handle);
 		if (ctxt.meta_ac) {
@@ -2394,14 +2409,20 @@ static int ocfs2_remove_value_outside(struct inode*inode,
 			ctxt.meta_ac = NULL;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (ret < 0) {
 			mlog_errno(ret);
 			break;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (ctxt.meta_ac)
@@ -2765,7 +2786,10 @@ static int ocfs2_xattr_ibody_set(struct inode *inode,
 {
 	int ret;
 	struct ocfs2_inode_info *oi = OCFS2_I(inode);
+<<<<<<< HEAD
 	struct ocfs2_dinode *di = (struct ocfs2_dinode *)xs->inode_bh->b_data;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ocfs2_xa_loc loc;
 
 	if (inode->i_sb->s_blocksize == OCFS2_MIN_BLOCKSIZE)
@@ -2773,6 +2797,7 @@ static int ocfs2_xattr_ibody_set(struct inode *inode,
 
 	down_write(&oi->ip_alloc_sem);
 	if (!(oi->ip_dyn_features & OCFS2_INLINE_XATTR_FL)) {
+<<<<<<< HEAD
 		if (!ocfs2_xattr_has_space_inline(inode, di)) {
 			ret = -ENOSPC;
 			goto out;
@@ -2780,6 +2805,8 @@ static int ocfs2_xattr_ibody_set(struct inode *inode,
 	}
 
 	if (!(oi->ip_dyn_features & OCFS2_INLINE_XATTR_FL)) {
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = ocfs2_xattr_ibody_init(inode, xs->inode_bh, ctxt);
 		if (ret) {
 			if (ret != -ENOSPC)
@@ -2887,6 +2914,15 @@ static int ocfs2_create_xattr_block(struct inode *inode,
 	}
 
 	new_bh = sb_getblk(inode->i_sb, first_blkno);
+<<<<<<< HEAD
+=======
+	if (!new_bh) {
+		ret = -ENOMEM;
+		mlog_errno(ret);
+		goto end;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	ocfs2_set_new_buffer_uptodate(INODE_CACHE(inode), new_bh);
 
 	ret = ocfs2_journal_access_xb(ctxt->handle, INODE_CACHE(inode),
@@ -3062,8 +3098,12 @@ static int ocfs2_calc_xattr_set_need(struct inode *inode,
 		if (xi->xi_value_len > OCFS2_XATTR_INLINE_SIZE) {
 			clusters_add += new_clusters;
 			credits += ocfs2_calc_extend_credits(inode->i_sb,
+<<<<<<< HEAD
 							&def_xv.xv.xr_list,
 							new_clusters);
+=======
+							&def_xv.xv.xr_list);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		goto meta_guess;
@@ -3128,8 +3168,12 @@ static int ocfs2_calc_xattr_set_need(struct inode *inode,
 			if (!ocfs2_xattr_is_local(xe))
 				credits += ocfs2_calc_extend_credits(
 							inode->i_sb,
+<<<<<<< HEAD
 							&def_xv.xv.xr_list,
 							new_clusters);
+=======
+							&def_xv.xv.xr_list);
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 	}
@@ -3154,9 +3198,13 @@ static int ocfs2_calc_xattr_set_need(struct inode *inode,
 			meta_add += ocfs2_extend_meta_needed(&xv->xr_list);
 			clusters_add += new_clusters - old_clusters;
 			credits += ocfs2_calc_extend_credits(inode->i_sb,
+<<<<<<< HEAD
 							     &xv->xr_list,
 							     new_clusters -
 							     old_clusters);
+=======
+							     &xv->xr_list);
+>>>>>>> refs/remotes/origin/master
 			if (value_size >= OCFS2_XATTR_ROOT_SIZE)
 				goto out;
 		}
@@ -3202,7 +3250,11 @@ meta_guess:
 				 &xb->xb_attrs.xb_root.xt_list;
 			meta_add += ocfs2_extend_meta_needed(el);
 			credits += ocfs2_calc_extend_credits(inode->i_sb,
+<<<<<<< HEAD
 							     el, 1);
+=======
+							     el);
+>>>>>>> refs/remotes/origin/master
 		} else
 			credits += OCFS2_SUBALLOC_ALLOC + 1;
 
@@ -3527,7 +3579,11 @@ int ocfs2_xattr_set(struct inode *inode,
 	int ret, credits, ref_meta = 0, ref_credits = 0;
 	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
 	struct inode *tl_inode = osb->osb_tl_inode;
+<<<<<<< HEAD
 	struct ocfs2_xattr_set_ctxt ctxt = { NULL, NULL, };
+=======
+	struct ocfs2_xattr_set_ctxt ctxt = { NULL, NULL, NULL, };
+>>>>>>> refs/remotes/origin/master
 	struct ocfs2_refcount_tree *ref_tree = NULL;
 
 	struct ocfs2_xattr_info xi = {
@@ -3631,13 +3687,21 @@ int ocfs2_xattr_set(struct inode *inode,
 	if (IS_ERR(ctxt.handle)) {
 		ret = PTR_ERR(ctxt.handle);
 		mlog_errno(ret);
+<<<<<<< HEAD
 		goto cleanup;
+=======
+		goto out_free_ac;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = __ocfs2_xattr_set_handle(inode, di, &xi, &xis, &xbs, &ctxt);
 
 	ocfs2_commit_trans(osb, ctxt.handle);
 
+<<<<<<< HEAD
+=======
+out_free_ac:
+>>>>>>> refs/remotes/origin/master
 	if (ctxt.data_ac)
 		ocfs2_free_alloc_context(ctxt.data_ac);
 	if (ctxt.meta_ac)
@@ -5903,6 +5967,13 @@ static int ocfs2_xattr_value_attach_refcount(struct inode *inode,
 	while (cpos < clusters) {
 		ret = ocfs2_xattr_get_clusters(inode, cpos, &p_cluster,
 					       &num_clusters, el, &ext_flags);
+<<<<<<< HEAD
+=======
+		if (ret) {
+			mlog_errno(ret);
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		cpos += num_clusters;
 		if ((ext_flags & OCFS2_EXT_REFCOUNTED))
@@ -6233,8 +6304,12 @@ static int ocfs2_value_metas_in_xattr_header(struct super_block *sb,
 			  le16_to_cpu(xv->xr_list.l_next_free_rec);
 
 		*credits += ocfs2_calc_extend_credits(sb,
+<<<<<<< HEAD
 						&def_xv.xv.xr_list,
 						le32_to_cpu(xv->xr_clusters));
+=======
+						&def_xv.xv.xr_list);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * If the value is a tree with depth > 1, We don't go deep
@@ -6799,7 +6874,11 @@ static int ocfs2_lock_reflink_xattr_rec_allocators(
 		metas.num_metas += ocfs2_extend_meta_needed(xt_et->et_root_el);
 
 	*credits += ocfs2_calc_extend_credits(osb->sb,
+<<<<<<< HEAD
 					      xt_et->et_root_el, len);
+=======
+					      xt_et->et_root_el);
+>>>>>>> refs/remotes/origin/master
 
 	if (metas.num_metas) {
 		ret = ocfs2_reserve_new_metadata_blocks(osb, metas.num_metas,
@@ -6819,7 +6898,11 @@ out:
 	if (ret) {
 		if (*meta_ac) {
 			ocfs2_free_alloc_context(*meta_ac);
+<<<<<<< HEAD
 			meta_ac = NULL;
+=======
+			*meta_ac = NULL;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -7212,6 +7295,7 @@ int ocfs2_init_security_and_acl(struct inode *dir,
 	int ret = 0;
 	struct buffer_head *dir_bh = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ocfs2_security_xattr_info si = {
 		.enable = 1,
 	};
@@ -7231,6 +7315,11 @@ int ocfs2_init_security_and_acl(struct inode *dir,
 	ret = ocfs2_init_security_get(inode, dir, qstr, NULL);
 	if (ret) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	ret = ocfs2_init_security_get(inode, dir, qstr, NULL);
+	if (ret) {
+>>>>>>> refs/remotes/origin/master
 		mlog_errno(ret);
 		goto leave;
 	}
@@ -7288,7 +7377,10 @@ static int ocfs2_xattr_security_set(struct dentry *dentry, const char *name,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int ocfs2_initxattrs(struct inode *inode, const struct xattr *xattr_array,
 		     void *fs_info)
 {
@@ -7305,7 +7397,10 @@ int ocfs2_initxattrs(struct inode *inode, const struct xattr *xattr_array,
 	return err;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int ocfs2_init_security_get(struct inode *inode,
 			    struct inode *dir,
 			    const struct qstr *qstr,
@@ -7315,9 +7410,12 @@ int ocfs2_init_security_get(struct inode *inode,
 	if (!ocfs2_supports_xattr(OCFS2_SB(dir->i_sb)))
 		return -EOPNOTSUPP;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return security_inode_init_security(inode, dir, qstr, &si->name,
 					    &si->value, &si->value_len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (si)
 		return security_old_inode_init_security(inode, dir, qstr,
 							&si->name, &si->value,
@@ -7325,7 +7423,10 @@ int ocfs2_init_security_get(struct inode *inode,
 
 	return security_inode_init_security(inode, dir, qstr,
 					    &ocfs2_initxattrs, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int ocfs2_init_security_set(handle_t *handle,

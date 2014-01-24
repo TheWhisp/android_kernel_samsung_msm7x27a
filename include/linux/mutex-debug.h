@@ -3,6 +3,10 @@
 
 #include <linux/linkage.h>
 #include <linux/lockdep.h>
+<<<<<<< HEAD
+=======
+#include <linux/debug_locks.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Mutexes - debugging helpers:

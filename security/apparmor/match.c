@@ -4,7 +4,11 @@
  * This file contains AppArmor dfa based regular expression matching engine
  *
  * Copyright (C) 1998-2008 Novell/SUSE
+<<<<<<< HEAD
  * Copyright 2009-2010 Canonical Ltd.
+=======
+ * Copyright 2009-2012 Canonical Ltd.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -23,6 +27,11 @@
 #include "include/apparmor.h"
 #include "include/match.h"
 
+<<<<<<< HEAD
+=======
+#define base_idx(X) ((X) & 0xffffff)
+
+>>>>>>> refs/remotes/origin/master
 /**
  * unpack_table - unpack a dfa table (one of accept, default, base, next check)
  * @blob: data to unpack (NOT NULL)
@@ -30,7 +39,11 @@
  *
  * Returns: pointer to table else NULL on failure
  *
+<<<<<<< HEAD
  * NOTE: must be freed by kvfree (not kmalloc)
+=======
+ * NOTE: must be freed by kvfree (not kfree)
+>>>>>>> refs/remotes/origin/master
  */
 static struct table_header *unpack_table(char *blob, size_t bsize)
 {
@@ -57,7 +70,11 @@ static struct table_header *unpack_table(char *blob, size_t bsize)
 	if (bsize < tsize)
 		goto out;
 
+<<<<<<< HEAD
 	table = kvmalloc(tsize);
+=======
+	table = kvzalloc(tsize);
+>>>>>>> refs/remotes/origin/master
 	if (table) {
 		*table = th;
 		if (th.td_flags == YYTD_DATA8)
@@ -137,8 +154,12 @@ static int verify_dfa(struct aa_dfa *dfa, int flags)
 		for (i = 0; i < state_count; i++) {
 			if (DEFAULT_TABLE(dfa)[i] >= state_count)
 				goto out;
+<<<<<<< HEAD
 			/* TODO: do check that DEF state recursion terminates */
 			if (BASE_TABLE(dfa)[i] + 255 >= trans_count) {
+=======
+			if (base_idx(BASE_TABLE(dfa)[i]) + 255 >= trans_count) {
+>>>>>>> refs/remotes/origin/master
 				printk(KERN_ERR "AppArmor DFA next/check upper "
 				       "bounds error\n");
 				goto out;
@@ -314,7 +335,11 @@ unsigned int aa_dfa_match_len(struct aa_dfa *dfa, unsigned int start,
 		u8 *equiv = EQUIV_TABLE(dfa);
 		/* default is direct to next state */
 		for (; len; len--) {
+<<<<<<< HEAD
 			pos = base[state] + equiv[(u8) *str++];
+=======
+			pos = base_idx(base[state]) + equiv[(u8) *str++];
+>>>>>>> refs/remotes/origin/master
 			if (check[pos] == state)
 				state = next[pos];
 			else
@@ -323,7 +348,11 @@ unsigned int aa_dfa_match_len(struct aa_dfa *dfa, unsigned int start,
 	} else {
 		/* default is direct to next state */
 		for (; len; len--) {
+<<<<<<< HEAD
 			pos = base[state] + (u8) *str++;
+=======
+			pos = base_idx(base[state]) + (u8) *str++;
+>>>>>>> refs/remotes/origin/master
 			if (check[pos] == state)
 				state = next[pos];
 			else
@@ -336,19 +365,27 @@ unsigned int aa_dfa_match_len(struct aa_dfa *dfa, unsigned int start,
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * aa_dfa_next_state - traverse @dfa to find state @str stops at
 =======
  * aa_dfa_match - traverse @dfa to find state @str stops at
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * aa_dfa_match - traverse @dfa to find state @str stops at
+>>>>>>> refs/remotes/origin/master
  * @dfa: the dfa to match @str against  (NOT NULL)
  * @start: the state of the dfa to start matching in
  * @str: the null terminated string of bytes to match against the dfa (NOT NULL)
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * aa_dfa_next_state will match @str against the dfa and return the state it
 =======
  * aa_dfa_match will match @str against the dfa and return the state it
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * aa_dfa_match will match @str against the dfa and return the state it
+>>>>>>> refs/remotes/origin/master
  * finished matching in. The final state can be used to look up the accepting
  * label, or as the start state of a continuing match.
  *
@@ -358,8 +395,11 @@ unsigned int aa_dfa_match(struct aa_dfa *dfa, unsigned int start,
 			  const char *str)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return aa_dfa_match_len(dfa, start, str, strlen(str));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 *def = DEFAULT_TABLE(dfa);
 	u32 *base = BASE_TABLE(dfa);
 	u16 *next = NEXT_TABLE(dfa);
@@ -375,7 +415,11 @@ unsigned int aa_dfa_match(struct aa_dfa *dfa, unsigned int start,
 		u8 *equiv = EQUIV_TABLE(dfa);
 		/* default is direct to next state */
 		while (*str) {
+<<<<<<< HEAD
 			pos = base[state] + equiv[(u8) *str++];
+=======
+			pos = base_idx(base[state]) + equiv[(u8) *str++];
+>>>>>>> refs/remotes/origin/master
 			if (check[pos] == state)
 				state = next[pos];
 			else
@@ -384,7 +428,11 @@ unsigned int aa_dfa_match(struct aa_dfa *dfa, unsigned int start,
 	} else {
 		/* default is direct to next state */
 		while (*str) {
+<<<<<<< HEAD
 			pos = base[state] + (u8) *str++;
+=======
+			pos = base_idx(base[state]) + (u8) *str++;
+>>>>>>> refs/remotes/origin/master
 			if (check[pos] == state)
 				state = next[pos];
 			else
@@ -420,14 +468,22 @@ unsigned int aa_dfa_next(struct aa_dfa *dfa, unsigned int state,
 		u8 *equiv = EQUIV_TABLE(dfa);
 		/* default is direct to next state */
 
+<<<<<<< HEAD
 		pos = base[state] + equiv[(u8) c];
+=======
+		pos = base_idx(base[state]) + equiv[(u8) c];
+>>>>>>> refs/remotes/origin/master
 		if (check[pos] == state)
 			state = next[pos];
 		else
 			state = def[state];
 	} else {
 		/* default is direct to next state */
+<<<<<<< HEAD
 		pos = base[state] + (u8) c;
+=======
+		pos = base_idx(base[state]) + (u8) c;
+>>>>>>> refs/remotes/origin/master
 		if (check[pos] == state)
 			state = next[pos];
 		else
@@ -435,5 +491,8 @@ unsigned int aa_dfa_next(struct aa_dfa *dfa, unsigned int state,
 	}
 
 	return state;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

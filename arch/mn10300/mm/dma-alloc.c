@@ -15,6 +15,10 @@
 #include <linux/string.h>
 #include <linux/pci.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 static unsigned long pci_sram_allocated = 0xbc000000;

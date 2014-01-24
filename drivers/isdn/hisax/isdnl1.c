@@ -6,10 +6,14 @@
  *              based on the teles driver from Jan den Ouden
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -45,10 +49,14 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define L1S_STATE_COUNT (ST_L1_F8+1)
 =======
 #define L1S_STATE_COUNT (ST_L1_F8 + 1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define L1S_STATE_COUNT (ST_L1_F8 + 1)
+>>>>>>> refs/remotes/origin/master
 
 static char *strL1SState[] =
 {
@@ -74,10 +82,14 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define L1U_STATE_COUNT (ST_L1_TRANS+1)
 =======
 #define L1U_STATE_COUNT (ST_L1_TRANS + 1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define L1U_STATE_COUNT (ST_L1_TRANS + 1)
+>>>>>>> refs/remotes/origin/master
 
 static char *strL1UState[] =
 {
@@ -96,10 +108,14 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define L1B_STATE_COUNT (ST_L1_ACTIV+1)
 =======
 #define L1B_STATE_COUNT (ST_L1_ACTIV + 1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define L1B_STATE_COUNT (ST_L1_ACTIV + 1)
+>>>>>>> refs/remotes/origin/master
 
 static char *strL1BState[] =
 {
@@ -117,10 +133,14 @@ enum {
 	EV_DEACT_IND,
 	EV_POWER_UP,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	EV_RSYNC_IND, 
 =======
 	EV_RSYNC_IND,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	EV_RSYNC_IND,
+>>>>>>> refs/remotes/origin/master
 	EV_INFO2_IND,
 	EV_INFO4_IND,
 	EV_TIMER_DEACT,
@@ -139,10 +159,14 @@ static char *strL1Event[] =
 	"EV_DEACT_IND",
 	"EV_POWER_UP",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	"EV_RSYNC_IND", 
 =======
 	"EV_RSYNC_IND",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"EV_RSYNC_IND",
+>>>>>>> refs/remotes/origin/master
 	"EV_INFO2_IND",
 	"EV_INFO4_IND",
 	"EV_TIMER_DEACT",
@@ -156,10 +180,14 @@ debugl1(struct IsdnCardState *cs, char *fmt, ...)
 	va_list args;
 	char tmp[8];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	va_start(args, fmt);
 	sprintf(tmp, "Card%d ", cs->cardnr + 1);
 	VHiSax_putstatus(cs, tmp, fmt, args);
@@ -174,10 +202,14 @@ l1m_debug(struct FsmInst *fi, char *fmt, ...)
 	struct IsdnCardState *cs = st->l1.hardware;
 	char tmp[8];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	va_start(args, fmt);
 	sprintf(tmp, "Card%d ", cs->cardnr + 1);
 	VHiSax_putstatus(cs, tmp, fmt, args);
@@ -242,16 +274,21 @@ DChannel_proc_rcv(struct IsdnCardState *cs)
 	if (stptr)
 		if (test_bit(FLG_L1_ACTTIMER, &stptr->l1.Flags))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			FsmEvent(&stptr->l1.l1m, EV_TIMER_ACT, NULL);	
 =======
 			FsmEvent(&stptr->l1.l1m, EV_TIMER_ACT, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			FsmEvent(&stptr->l1.l1m, EV_TIMER_ACT, NULL);
+>>>>>>> refs/remotes/origin/master
 	while ((skb = skb_dequeue(&cs->rq))) {
 #ifdef L2FRAME_DEBUG		/* psa */
 		if (cs->debug & L1_DEB_LAPD)
 			Logl2Frame(cs, skb, "PH_DATA", 1);
 #endif
 		stptr = cs->stlist;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (skb->len<3) {
 			debugl1(cs, "D-channel frame too short(%d)",skb->len);
@@ -260,13 +297,18 @@ DChannel_proc_rcv(struct IsdnCardState *cs)
 		}
 		if ((skb->data[0] & 1) || !(skb->data[1] &1)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (skb->len < 3) {
 			debugl1(cs, "D-channel frame too short(%d)", skb->len);
 			dev_kfree_skb(skb);
 			return;
 		}
 		if ((skb->data[0] & 1) || !(skb->data[1] & 1)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			debugl1(cs, "D-channel frame wrong EA0/EA1");
 			dev_kfree_skb(skb);
 			return;
@@ -424,6 +466,7 @@ l2cmd(u_char cmd)
 {
 	switch (cmd & ~0x10) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case 1:
 			return "RR";
 		case 5:
@@ -450,6 +493,8 @@ l2cmd(u_char cmd)
 			else
 				return "invalid command";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case 1:
 		return "RR";
 	case 5:
@@ -475,13 +520,17 @@ l2cmd(u_char cmd)
 			return "I";
 		else
 			return "invalid command";
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static char tmpdeb[32];
 
 static char *
+<<<<<<< HEAD
 <<<<<<< HEAD
 l2frames(u_char * ptr)
 {
@@ -507,6 +556,8 @@ l2frames(u_char * ptr)
 			} else
 				return "invalid command";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 l2frames(u_char *ptr)
 {
 	switch (ptr[2] & ~0x10) {
@@ -530,7 +581,10 @@ l2frames(u_char *ptr)
 			break;
 		} else
 			return "invalid command";
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 
@@ -647,10 +701,14 @@ l1_timer3(struct FsmInst *fi, int event, void *arg)
 	struct PStack *st = fi->userdata;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	test_and_clear_bit(FLG_L1_T3RUN, &st->l1.Flags);	
 =======
 	test_and_clear_bit(FLG_L1_T3RUN, &st->l1.Flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	test_and_clear_bit(FLG_L1_T3RUN, &st->l1.Flags);
+>>>>>>> refs/remotes/origin/master
 	if (test_and_clear_bit(FLG_L1_ACTIVATING, &st->l1.Flags))
 		L1deactivated(st->l1.hardware);
 
@@ -658,16 +716,22 @@ l1_timer3(struct FsmInst *fi, int event, void *arg)
 	if (!test_bit(FLG_L1_UINT, &st->l1.Flags))
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (st->l1.l1m.state != ST_L1_F6) {
 		FsmChangeState(fi, ST_L1_F3);
 		st->l1.l1hw(st, HW_ENABLE | REQUEST, NULL);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (st->l1.l1m.state != ST_L1_F6) {
 			FsmChangeState(fi, ST_L1_F3);
 			st->l1.l1hw(st, HW_ENABLE | REQUEST, NULL);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -675,10 +739,14 @@ l1_timer_act(struct FsmInst *fi, int event, void *arg)
 {
 	struct PStack *st = fi->userdata;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	test_and_clear_bit(FLG_L1_ACTTIMER, &st->l1.Flags);
 	test_and_set_bit(FLG_L1_ACTIVATED, &st->l1.Flags);
 	L1activated(st->l1.hardware);
@@ -689,10 +757,14 @@ l1_timer_deact(struct FsmInst *fi, int event, void *arg)
 {
 	struct PStack *st = fi->userdata;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	test_and_clear_bit(FLG_L1_DEACTTIMER, &st->l1.Flags);
 	test_and_clear_bit(FLG_L1_ACTIVATED, &st->l1.Flags);
 	L1deactivated(st->l1.hardware);
@@ -704,10 +776,14 @@ l1_activate_s(struct FsmInst *fi, int event, void *arg)
 {
 	struct PStack *st = fi->userdata;
 <<<<<<< HEAD
+<<<<<<< HEAD
                 
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	st->l1.l1hw(st, HW_RESET | REQUEST, NULL);
 }
 
@@ -802,10 +878,14 @@ l1_activate_u(struct FsmInst *fi, int event, void *arg)
 {
 	struct PStack *st = fi->userdata;
 <<<<<<< HEAD
+<<<<<<< HEAD
                 
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	st->l1.l1hw(st, HW_INFO1 | REQUEST, NULL);
 }
 
@@ -878,10 +958,14 @@ static struct FsmNode L1BFnList[] __initdata =
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __init 
 =======
 int __init
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __init
+>>>>>>> refs/remotes/origin/master
 Isdnl1New(void)
 {
 	int retval;
@@ -934,6 +1018,7 @@ dch_l2l1(struct PStack *st, int pr, void *arg)
 
 	switch (pr) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case (PH_DATA | REQUEST):
 		case (PH_PULL | REQUEST):
 		case (PH_PULL |INDICATION):
@@ -964,6 +1049,8 @@ dch_l2l1(struct PStack *st, int pr, void *arg)
 				debugl1(cs, "dch_l2l1 msg %04X unhandled", pr);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (PH_DATA | REQUEST):
 	case (PH_PULL | REQUEST):
 	case (PH_PULL | INDICATION):
@@ -993,7 +1080,10 @@ dch_l2l1(struct PStack *st, int pr, void *arg)
 		if (cs->debug)
 			debugl1(cs, "dch_l2l1 msg %04X unhandled", pr);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1002,6 +1092,7 @@ l1_msg(struct IsdnCardState *cs, int pr, void *arg) {
 	struct PStack *st;
 
 	st = cs->stlist;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
 	while (st) {
@@ -1033,6 +1124,8 @@ l1_msg(struct IsdnCardState *cs, int pr, void *arg) {
 					debugl1(cs, "l1msg %04X unhandled", pr);
 				break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	while (st) {
 		switch (pr) {
@@ -1062,7 +1155,10 @@ l1_msg(struct IsdnCardState *cs, int pr, void *arg) {
 			if (cs->debug)
 				debugl1(cs, "l1msg %04X unhandled", pr);
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		st = st->next;
 	}
@@ -1070,6 +1166,7 @@ l1_msg(struct IsdnCardState *cs, int pr, void *arg) {
 
 void
 l1_msg_b(struct PStack *st, int pr, void *arg) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch(pr) {
 		case (PH_ACTIVATE | REQUEST):
@@ -1079,6 +1176,8 @@ l1_msg_b(struct PStack *st, int pr, void *arg) {
 			FsmEvent(&st->l1.l1m, EV_PH_DEACTIVATE, NULL);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (pr) {
 	case (PH_ACTIVATE | REQUEST):
 		FsmEvent(&st->l1.l1m, EV_PH_ACTIVATE, NULL);
@@ -1086,7 +1185,10 @@ l1_msg_b(struct PStack *st, int pr, void *arg) {
 	case (PH_DEACTIVATE | REQUEST):
 		FsmEvent(&st->l1.l1m, EV_PH_DEACTIVATE, NULL);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

@@ -5,6 +5,10 @@
  *
  * Copyright (C) 2005-2007 Cavium Networks
  */
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/sched.h>
@@ -18,6 +22,7 @@
 #include <asm/bootinfo.h>
 #include <asm/cacheops.h>
 #include <asm/cpu-features.h>
+<<<<<<< HEAD
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include <asm/r4kcache.h>
@@ -25,12 +30,23 @@
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cpu-type.h>
+#include <asm/page.h>
+#include <asm/pgtable.h>
+#include <asm/r4kcache.h>
+#include <asm/traps.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mmu_context.h>
 #include <asm/war.h>
 
 #include <asm/octeon/octeon.h>
 
 unsigned long long cache_err_dcache[NR_CPUS];
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(cache_err_dcache);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * Octeon automatically flushes the dcache on tlb changes, so
@@ -85,6 +101,7 @@ static void octeon_flush_icache_all_cores(struct vm_area_struct *vma)
 		mask = *mm_cpumask(vma->vm_mm);
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mask = cpu_online_map;
 	cpu_clear(cpu, mask);
 	for_each_cpu_mask(cpu, mask)
@@ -93,6 +110,11 @@ static void octeon_flush_icache_all_cores(struct vm_area_struct *vma)
 	cpumask_clear_cpu(cpu, &mask);
 	for_each_cpu(cpu, &mask)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mask = *cpu_online_mask;
+	cpumask_clear_cpu(cpu, &mask);
+	for_each_cpu(cpu, &mask)
+>>>>>>> refs/remotes/origin/master
 		octeon_send_ipi_single(cpu, SMP_ICACHE_FLUSH);
 
 	preempt_enable();
@@ -113,7 +135,11 @@ static void octeon_flush_icache_all(void)
  * Called to flush all memory associated with a memory
  * context.
  *
+<<<<<<< HEAD
  * @mm:     Memory context to flush
+=======
+ * @mm:	    Memory context to flush
+>>>>>>> refs/remotes/origin/master
  */
 static void octeon_flush_cache_mm(struct mm_struct *mm)
 {
@@ -179,26 +205,43 @@ static void octeon_flush_cache_page(struct vm_area_struct *vma,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void octeon_flush_kernel_vmap_range(unsigned long vaddr, int size)
 {
 	BUG();
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * Probe Octeon's caches
  *
  */
+<<<<<<< HEAD
 static void __cpuinit probe_octeon(void)
+=======
+static void probe_octeon(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long icache_size;
 	unsigned long dcache_size;
 	unsigned int config1;
 	struct cpuinfo_mips *c = &current_cpu_data;
+<<<<<<< HEAD
 
 	config1 = read_c0_config1();
 	switch (c->cputype) {
+=======
+	int cputype = current_cpu_type();
+
+	config1 = read_c0_config1();
+	switch (cputype) {
+>>>>>>> refs/remotes/origin/master
 	case CPU_CAVIUM_OCTEON:
 	case CPU_CAVIUM_OCTEON_PLUS:
 		c->icache.linesz = 2 << ((config1 >> 19) & 7);
@@ -209,7 +252,11 @@ static void __cpuinit probe_octeon(void)
 			c->icache.sets * c->icache.ways * c->icache.linesz;
 		c->icache.waybit = ffs(icache_size / c->icache.ways) - 1;
 		c->dcache.linesz = 128;
+<<<<<<< HEAD
 		if (c->cputype == CPU_CAVIUM_OCTEON_PLUS)
+=======
+		if (cputype == CPU_CAVIUM_OCTEON_PLUS)
+>>>>>>> refs/remotes/origin/master
 			c->dcache.sets = 2; /* CN5XXX has two Dcache sets */
 		else
 			c->dcache.sets = 1; /* CN3XXX has one Dcache set */
@@ -234,12 +281,31 @@ static void __cpuinit probe_octeon(void)
 		c->options |= MIPS_CPU_PREFETCH;
 		break;
 
+<<<<<<< HEAD
 	default:
 <<<<<<< HEAD
 		panic("Unsupported Cavium Networks CPU type\n");
 =======
 		panic("Unsupported Cavium Networks CPU type");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case CPU_CAVIUM_OCTEON3:
+		c->icache.linesz = 128;
+		c->icache.sets = 16;
+		c->icache.ways = 39;
+		c->icache.flags |= MIPS_CACHE_VTAG;
+		icache_size = c->icache.sets * c->icache.ways * c->icache.linesz;
+
+		c->dcache.linesz = 128;
+		c->dcache.ways = 32;
+		c->dcache.sets = 8;
+		dcache_size = c->dcache.sets * c->dcache.ways * c->dcache.linesz;
+		c->options |= MIPS_CPU_PREFETCH;
+		break;
+
+	default:
+		panic("Unsupported Cavium Networks CPU type");
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -265,11 +331,20 @@ static void __cpuinit probe_octeon(void)
 	}
 }
 
+<<<<<<< HEAD
+=======
+static void  octeon_cache_error_setup(void)
+{
+	extern char except_vec2_octeon;
+	set_handler(0x100, &except_vec2_octeon, 0x80);
+}
+>>>>>>> refs/remotes/origin/master
 
 /**
  * Setup the Octeon cache flush routines
  *
  */
+<<<<<<< HEAD
 void __cpuinit octeon_cache_init(void)
 {
 	extern unsigned long ebase;
@@ -278,6 +353,10 @@ void __cpuinit octeon_cache_init(void)
 	memcpy((void *)(ebase + 0x100), &except_vec2_octeon, 0x80);
 	octeon_flush_cache_sigtramp(ebase + 0x100);
 
+=======
+void octeon_cache_init(void)
+{
+>>>>>>> refs/remotes/origin/master
 	probe_octeon();
 
 	shm_align_mask = PAGE_SIZE - 1;
@@ -293,6 +372,7 @@ void __cpuinit octeon_cache_init(void)
 	flush_icache_range		= octeon_flush_icache_range;
 	local_flush_icache_range	= local_octeon_flush_icache_range;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	__flush_kernel_vmap_range	= octeon_flush_kernel_vmap_range;
@@ -329,12 +409,73 @@ static void  cache_parity_error_octeon(int non_recoverable)
 }
 
 /**
+=======
+	__flush_kernel_vmap_range	= octeon_flush_kernel_vmap_range;
+
+	build_clear_page();
+	build_copy_page();
+
+	board_cache_error_setup = octeon_cache_error_setup;
+}
+
+/*
+ * Handle a cache error exception
+ */
+static RAW_NOTIFIER_HEAD(co_cache_error_chain);
+
+int register_co_cache_error_notifier(struct notifier_block *nb)
+{
+	return raw_notifier_chain_register(&co_cache_error_chain, nb);
+}
+EXPORT_SYMBOL_GPL(register_co_cache_error_notifier);
+
+int unregister_co_cache_error_notifier(struct notifier_block *nb)
+{
+	return raw_notifier_chain_unregister(&co_cache_error_chain, nb);
+}
+EXPORT_SYMBOL_GPL(unregister_co_cache_error_notifier);
+
+static void co_cache_error_call_notifiers(unsigned long val)
+{
+	int rv = raw_notifier_call_chain(&co_cache_error_chain, val, NULL);
+	if ((rv & ~NOTIFY_STOP_MASK) != NOTIFY_OK) {
+		u64 dcache_err;
+		unsigned long coreid = cvmx_get_core_num();
+		u64 icache_err = read_octeon_c0_icacheerr();
+
+		if (val) {
+			dcache_err = cache_err_dcache[coreid];
+			cache_err_dcache[coreid] = 0;
+		} else {
+			dcache_err = read_octeon_c0_dcacheerr();
+		}
+
+		pr_err("Core%lu: Cache error exception:\n", coreid);
+		pr_err("cp0_errorepc == %lx\n", read_c0_errorepc());
+		if (icache_err & 1) {
+			pr_err("CacheErr (Icache) == %llx\n",
+			       (unsigned long long)icache_err);
+			write_octeon_c0_icacheerr(0);
+		}
+		if (dcache_err & 1) {
+			pr_err("CacheErr (Dcache) == %llx\n",
+			       (unsigned long long)dcache_err);
+		}
+	}
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Called when the the exception is recoverable
  */
 
 asmlinkage void cache_parity_error_octeon_recoverable(void)
 {
+<<<<<<< HEAD
 	cache_parity_error_octeon(0);
+=======
+	co_cache_error_call_notifiers(0);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -343,5 +484,10 @@ asmlinkage void cache_parity_error_octeon_recoverable(void)
 
 asmlinkage void cache_parity_error_octeon_non_recoverable(void)
 {
+<<<<<<< HEAD
 	cache_parity_error_octeon(1);
+=======
+	co_cache_error_call_notifiers(1);
+	panic("Can't handle cache error: nested exception");
+>>>>>>> refs/remotes/origin/master
 }

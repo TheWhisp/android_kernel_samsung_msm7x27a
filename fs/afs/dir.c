@@ -20,14 +20,22 @@
 #include "internal.h"
 
 static struct dentry *afs_lookup(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
 				 struct nameidata *nd);
 static int afs_dir_open(struct inode *inode, struct file *file);
 static int afs_readdir(struct file *file, void *dirent, filldir_t filldir);
 static int afs_d_revalidate(struct dentry *dentry, struct nameidata *nd);
+=======
+				 unsigned int flags);
+static int afs_dir_open(struct inode *inode, struct file *file);
+static int afs_readdir(struct file *file, struct dir_context *ctx);
+static int afs_d_revalidate(struct dentry *dentry, unsigned int flags);
+>>>>>>> refs/remotes/origin/master
 static int afs_d_delete(const struct dentry *dentry);
 static void afs_d_release(struct dentry *dentry);
 static int afs_lookup_filldir(void *_cookie, const char *name, int nlen,
 				  loff_t fpos, u64 ino, unsigned dtype);
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int afs_create(struct inode *dir, struct dentry *dentry, int mode,
 		      struct nameidata *nd);
@@ -37,6 +45,11 @@ static int afs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 		      struct nameidata *nd);
 static int afs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int afs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+		      bool excl);
+static int afs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode);
+>>>>>>> refs/remotes/origin/master
 static int afs_rmdir(struct inode *dir, struct dentry *dentry);
 static int afs_unlink(struct inode *dir, struct dentry *dentry);
 static int afs_link(struct dentry *from, struct inode *dir,
@@ -49,7 +62,11 @@ static int afs_rename(struct inode *old_dir, struct dentry *old_dentry,
 const struct file_operations afs_dir_file_operations = {
 	.open		= afs_dir_open,
 	.release	= afs_release,
+<<<<<<< HEAD
 	.readdir	= afs_readdir,
+=======
+	.iterate	= afs_readdir,
+>>>>>>> refs/remotes/origin/master
 	.lock		= afs_lock,
 	.llseek		= generic_file_llseek,
 };
@@ -125,9 +142,15 @@ struct afs_dir_page {
 };
 
 struct afs_lookup_cookie {
+<<<<<<< HEAD
 	struct afs_fid	fid;
 	const char	*name;
 	size_t		nlen;
+=======
+	struct dir_context ctx;
+	struct afs_fid	fid;
+	struct qstr name;
+>>>>>>> refs/remotes/origin/master
 	int		found;
 };
 
@@ -234,20 +257,34 @@ static int afs_dir_open(struct inode *inode, struct file *file)
 /*
  * deal with one block in an AFS directory
  */
+<<<<<<< HEAD
 static int afs_dir_iterate_block(unsigned *fpos,
 				 union afs_dir_block *block,
 				 unsigned blkoff,
 				 void *cookie,
 				 filldir_t filldir)
+=======
+static int afs_dir_iterate_block(struct dir_context *ctx,
+				 union afs_dir_block *block,
+				 unsigned blkoff)
+>>>>>>> refs/remotes/origin/master
 {
 	union afs_dirent *dire;
 	unsigned offset, next, curr;
 	size_t nlen;
+<<<<<<< HEAD
 	int tmp, ret;
 
 	_enter("%u,%x,%p,,",*fpos,blkoff,block);
 
 	curr = (*fpos - blkoff) / sizeof(union afs_dirent);
+=======
+	int tmp;
+
+	_enter("%u,%x,%p,,",(unsigned)ctx->pos,blkoff,block);
+
+	curr = (ctx->pos - blkoff) / sizeof(union afs_dirent);
+>>>>>>> refs/remotes/origin/master
 
 	/* walk through the block, an entry at a time */
 	for (offset = AFS_DIRENT_PER_BLOCK - block->pagehdr.nentries;
@@ -262,7 +299,11 @@ static int afs_dir_iterate_block(unsigned *fpos,
 			_debug("ENT[%Zu.%u]: unused",
 			       blkoff / sizeof(union afs_dir_block), offset);
 			if (offset >= curr)
+<<<<<<< HEAD
 				*fpos = blkoff +
+=======
+				ctx->pos = blkoff +
+>>>>>>> refs/remotes/origin/master
 					next * sizeof(union afs_dirent);
 			continue;
 		}
@@ -308,6 +349,7 @@ static int afs_dir_iterate_block(unsigned *fpos,
 			continue;
 
 		/* found the next entry */
+<<<<<<< HEAD
 		ret = filldir(cookie,
 			      dire->u.name,
 			      nlen,
@@ -316,11 +358,21 @@ static int afs_dir_iterate_block(unsigned *fpos,
 			      filldir == afs_lookup_filldir ?
 			      ntohl(dire->u.unique) : DT_UNKNOWN);
 		if (ret < 0) {
+=======
+		if (!dir_emit(ctx, dire->u.name, nlen,
+			      ntohl(dire->u.vnode),
+			      ctx->actor == afs_lookup_filldir ?
+			      ntohl(dire->u.unique) : DT_UNKNOWN)) {
+>>>>>>> refs/remotes/origin/master
 			_leave(" = 0 [full]");
 			return 0;
 		}
 
+<<<<<<< HEAD
 		*fpos = blkoff + next * sizeof(union afs_dirent);
+=======
+		ctx->pos = blkoff + next * sizeof(union afs_dirent);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	_leave(" = 1 [more]");
@@ -330,8 +382,13 @@ static int afs_dir_iterate_block(unsigned *fpos,
 /*
  * iterate through the data blob that lists the contents of an AFS directory
  */
+<<<<<<< HEAD
 static int afs_dir_iterate(struct inode *dir, unsigned *fpos, void *cookie,
 			   filldir_t filldir, struct key *key)
+=======
+static int afs_dir_iterate(struct inode *dir, struct dir_context *ctx,
+			   struct key *key)
+>>>>>>> refs/remotes/origin/master
 {
 	union afs_dir_block *dblock;
 	struct afs_dir_page *dbuf;
@@ -339,7 +396,11 @@ static int afs_dir_iterate(struct inode *dir, unsigned *fpos, void *cookie,
 	unsigned blkoff, limit;
 	int ret;
 
+<<<<<<< HEAD
 	_enter("{%lu},%u,,", dir->i_ino, *fpos);
+=======
+	_enter("{%lu},%u,,", dir->i_ino, (unsigned)ctx->pos);
+>>>>>>> refs/remotes/origin/master
 
 	if (test_bit(AFS_VNODE_DELETED, &AFS_FS_I(dir)->flags)) {
 		_leave(" = -ESTALE");
@@ -347,6 +408,7 @@ static int afs_dir_iterate(struct inode *dir, unsigned *fpos, void *cookie,
 	}
 
 	/* round the file position up to the next entry boundary */
+<<<<<<< HEAD
 	*fpos += sizeof(union afs_dirent) - 1;
 	*fpos &= ~(sizeof(union afs_dirent) - 1);
 
@@ -354,6 +416,15 @@ static int afs_dir_iterate(struct inode *dir, unsigned *fpos, void *cookie,
 	ret = 0;
 	while (*fpos < dir->i_size) {
 		blkoff = *fpos & ~(sizeof(union afs_dir_block) - 1);
+=======
+	ctx->pos += sizeof(union afs_dirent) - 1;
+	ctx->pos &= ~(sizeof(union afs_dirent) - 1);
+
+	/* walk through the blocks in sequence */
+	ret = 0;
+	while (ctx->pos < dir->i_size) {
+		blkoff = ctx->pos & ~(sizeof(union afs_dir_block) - 1);
+>>>>>>> refs/remotes/origin/master
 
 		/* fetch the appropriate page from the directory */
 		page = afs_dir_get_page(dir, blkoff / PAGE_SIZE, key);
@@ -370,8 +441,12 @@ static int afs_dir_iterate(struct inode *dir, unsigned *fpos, void *cookie,
 		do {
 			dblock = &dbuf->blocks[(blkoff % PAGE_SIZE) /
 					       sizeof(union afs_dir_block)];
+<<<<<<< HEAD
 			ret = afs_dir_iterate_block(fpos, dblock, blkoff,
 						    cookie, filldir);
+=======
+			ret = afs_dir_iterate_block(ctx, dblock, blkoff);
+>>>>>>> refs/remotes/origin/master
 			if (ret != 1) {
 				afs_dir_put_page(page);
 				goto out;
@@ -379,7 +454,11 @@ static int afs_dir_iterate(struct inode *dir, unsigned *fpos, void *cookie,
 
 			blkoff += sizeof(union afs_dir_block);
 
+<<<<<<< HEAD
 		} while (*fpos < dir->i_size && blkoff < limit);
+=======
+		} while (ctx->pos < dir->i_size && blkoff < limit);
+>>>>>>> refs/remotes/origin/master
 
 		afs_dir_put_page(page);
 		ret = 0;
@@ -393,6 +472,7 @@ out:
 /*
  * read an AFS directory
  */
+<<<<<<< HEAD
 static int afs_readdir(struct file *file, void *cookie, filldir_t filldir)
 {
 	unsigned fpos;
@@ -410,6 +490,12 @@ static int afs_readdir(struct file *file, void *cookie, filldir_t filldir)
 
 	_leave(" = %d", ret);
 	return ret;
+=======
+static int afs_readdir(struct file *file, struct dir_context *ctx)
+{
+	return afs_dir_iterate(file_inode(file), 
+			      ctx, file->private_data);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -422,15 +508,25 @@ static int afs_lookup_filldir(void *_cookie, const char *name, int nlen,
 {
 	struct afs_lookup_cookie *cookie = _cookie;
 
+<<<<<<< HEAD
 	_enter("{%s,%Zu},%s,%u,,%llu,%u",
 	       cookie->name, cookie->nlen, name, nlen,
+=======
+	_enter("{%s,%u},%s,%u,,%llu,%u",
+	       cookie->name.name, cookie->name.len, name, nlen,
+>>>>>>> refs/remotes/origin/master
 	       (unsigned long long) ino, dtype);
 
 	/* insanity checks first */
 	BUILD_BUG_ON(sizeof(union afs_dir_block) != 2048);
 	BUILD_BUG_ON(sizeof(union afs_dirent) != 32);
 
+<<<<<<< HEAD
 	if (cookie->nlen != nlen || memcmp(cookie->name, name, nlen) != 0) {
+=======
+	if (cookie->name.len != nlen ||
+	    memcmp(cookie->name.name, name, nlen) != 0) {
+>>>>>>> refs/remotes/origin/master
 		_leave(" = 0 [no]");
 		return 0;
 	}
@@ -450,13 +546,23 @@ static int afs_lookup_filldir(void *_cookie, const char *name, int nlen,
 static int afs_do_lookup(struct inode *dir, struct dentry *dentry,
 			 struct afs_fid *fid, struct key *key)
 {
+<<<<<<< HEAD
 	struct afs_lookup_cookie cookie;
 	struct afs_super_info *as;
 	unsigned fpos;
+=======
+	struct afs_super_info *as = dir->i_sb->s_fs_info;
+	struct afs_lookup_cookie cookie = {
+		.ctx.actor = afs_lookup_filldir,
+		.name = dentry->d_name,
+		.fid.vid = as->volume->vid
+	};
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	_enter("{%lu},%p{%s},", dir->i_ino, dentry, dentry->d_name.name);
 
+<<<<<<< HEAD
 	as = dir->i_sb->s_fs_info;
 
 	/* search the directory */
@@ -468,6 +574,10 @@ static int afs_do_lookup(struct inode *dir, struct dentry *dentry,
 	fpos = 0;
 	ret = afs_dir_iterate(dir, &fpos, &cookie, afs_lookup_filldir,
 			      key);
+=======
+	/* search the directory */
+	ret = afs_dir_iterate(dir, &cookie.ctx, key);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		_leave(" = %d [iter]", ret);
 		return ret;
@@ -522,7 +632,11 @@ out:
  * look up an entry in a directory
  */
 static struct dentry *afs_lookup(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
 				 struct nameidata *nd)
+=======
+				 unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct afs_vnode *vnode;
 	struct afs_fid fid;
@@ -604,7 +718,11 @@ success:
  * - NOTE! the hit can be a negative hit too, so we can't assume we have an
  *   inode
  */
+<<<<<<< HEAD
 static int afs_d_revalidate(struct dentry *dentry, struct nameidata *nd)
+=======
+static int afs_d_revalidate(struct dentry *dentry, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct afs_vnode *vnode, *dir;
 	struct afs_fid uninitialized_var(fid);
@@ -613,7 +731,11 @@ static int afs_d_revalidate(struct dentry *dentry, struct nameidata *nd)
 	void *dir_version;
 	int ret;
 
+<<<<<<< HEAD
 	if (nd->flags & LOOKUP_RCU)
+=======
+	if (flags & LOOKUP_RCU)
+>>>>>>> refs/remotes/origin/master
 		return -ECHILD;
 
 	vnode = AFS_FS_I(dentry->d_inode);
@@ -631,9 +753,12 @@ static int afs_d_revalidate(struct dentry *dentry, struct nameidata *nd)
 
 	/* lock down the parent dentry so we can peer at it */
 	parent = dget_parent(dentry);
+<<<<<<< HEAD
 	if (!parent->d_inode)
 		goto out_bad;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	dir = AFS_FS_I(parent->d_inode);
 
 	/* validate the parent directory */
@@ -716,6 +841,7 @@ not_found:
 	spin_unlock(&dentry->d_lock);
 
 out_bad:
+<<<<<<< HEAD
 	if (dentry->d_inode) {
 		/* don't unhash if we have submounts */
 		if (have_submounts(dentry))
@@ -726,6 +852,14 @@ out_bad:
 	       parent->d_name.name, dentry->d_name.name);
 	shrink_dcache_parent(dentry);
 	d_drop(dentry);
+=======
+	/* don't unhash if we have submounts */
+	if (check_submounts_and_drop(dentry) != 0)
+		goto out_skip;
+
+	_debug("dropping dentry %s/%s",
+	       parent->d_name.name, dentry->d_name.name);
+>>>>>>> refs/remotes/origin/master
 	dput(parent);
 	key_put(key);
 
@@ -771,10 +905,14 @@ static void afs_d_release(struct dentry *dentry)
  * create a directory on an AFS filesystem
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int afs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 =======
 static int afs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int afs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct afs_file_status status;
 	struct afs_callback cb;
@@ -788,6 +926,7 @@ static int afs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 	dvnode = AFS_FS_I(dir);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_enter("{%x:%u},{%s},%o",
 =======
 	_enter("{%x:%u},{%s},%ho",
@@ -798,6 +937,11 @@ static int afs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 	if (dentry->d_name.len >= AFSNAMEMAX)
 		goto error;
 
+=======
+	_enter("{%x:%u},{%s},%ho",
+	       dvnode->fid.vid, dvnode->fid.vnode, dentry->d_name.name, mode);
+
+>>>>>>> refs/remotes/origin/master
 	key = afs_request_key(dvnode->volume->cell);
 	if (IS_ERR(key)) {
 		ret = PTR_ERR(key);
@@ -859,10 +1003,13 @@ static int afs_rmdir(struct inode *dir, struct dentry *dentry)
 	_enter("{%x:%u},{%s}",
 	       dvnode->fid.vid, dvnode->fid.vnode, dentry->d_name.name);
 
+<<<<<<< HEAD
 	ret = -ENAMETOOLONG;
 	if (dentry->d_name.len >= AFSNAMEMAX)
 		goto error;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	key = afs_request_key(dvnode->volume->cell);
 	if (IS_ERR(key)) {
 		ret = PTR_ERR(key);
@@ -963,11 +1110,16 @@ error:
  * create a regular file on an AFS filesystem
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int afs_create(struct inode *dir, struct dentry *dentry, int mode,
 =======
 static int afs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
 		      struct nameidata *nd)
+=======
+static int afs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+		      bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct afs_file_status status;
 	struct afs_callback cb;
@@ -981,6 +1133,7 @@ static int afs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 	dvnode = AFS_FS_I(dir);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_enter("{%x:%u},{%s},%o,",
 =======
 	_enter("{%x:%u},{%s},%ho,",
@@ -991,6 +1144,11 @@ static int afs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 	if (dentry->d_name.len >= AFSNAMEMAX)
 		goto error;
 
+=======
+	_enter("{%x:%u},{%s},%ho,",
+	       dvnode->fid.vid, dvnode->fid.vnode, dentry->d_name.name, mode);
+
+>>>>>>> refs/remotes/origin/master
 	key = afs_request_key(dvnode->volume->cell);
 	if (IS_ERR(key)) {
 		ret = PTR_ERR(key);
@@ -1056,10 +1214,13 @@ static int afs_link(struct dentry *from, struct inode *dir,
 	       dvnode->fid.vid, dvnode->fid.vnode,
 	       dentry->d_name.name);
 
+<<<<<<< HEAD
 	ret = -ENAMETOOLONG;
 	if (dentry->d_name.len >= AFSNAMEMAX)
 		goto error;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	key = afs_request_key(dvnode->volume->cell);
 	if (IS_ERR(key)) {
 		ret = PTR_ERR(key);
@@ -1104,10 +1265,13 @@ static int afs_symlink(struct inode *dir, struct dentry *dentry,
 	       dvnode->fid.vid, dvnode->fid.vnode, dentry->d_name.name,
 	       content);
 
+<<<<<<< HEAD
 	ret = -ENAMETOOLONG;
 	if (dentry->d_name.len >= AFSNAMEMAX)
 		goto error;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = -EINVAL;
 	if (strlen(content) >= AFSPATHMAX)
 		goto error;
@@ -1178,10 +1342,13 @@ static int afs_rename(struct inode *old_dir, struct dentry *old_dentry,
 	       new_dvnode->fid.vid, new_dvnode->fid.vnode,
 	       new_dentry->d_name.name);
 
+<<<<<<< HEAD
 	ret = -ENAMETOOLONG;
 	if (new_dentry->d_name.len >= AFSNAMEMAX)
 		goto error;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	key = afs_request_key(orig_dvnode->volume->cell);
 	if (IS_ERR(key)) {
 		ret = PTR_ERR(key);

@@ -143,7 +143,11 @@ static struct rtc_class_ops  ls1x_rtc_ops = {
 	.set_time	= ls1x_rtc_set_time,
 };
 
+<<<<<<< HEAD
 static int __devinit ls1x_rtc_probe(struct platform_device *pdev)
+=======
+static int ls1x_rtc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtc_device *rtcdev;
 	unsigned long v;
@@ -172,7 +176,11 @@ static int __devinit ls1x_rtc_probe(struct platform_device *pdev)
 	while (readl(SYS_COUNTER_CNTRL) & SYS_CNTRL_TTS)
 		usleep_range(1000, 3000);
 
+<<<<<<< HEAD
 	rtcdev = rtc_device_register("ls1x-rtc", &pdev->dev,
+=======
+	rtcdev = devm_rtc_device_register(&pdev->dev, "ls1x-rtc",
+>>>>>>> refs/remotes/origin/master
 					&ls1x_rtc_ops , THIS_MODULE);
 	if (IS_ERR(rtcdev)) {
 		ret = PTR_ERR(rtcdev);
@@ -185,6 +193,7 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit ls1x_rtc_remove(struct platform_device *pdev)
 {
 	struct rtc_device *rtcdev = platform_get_drvdata(pdev);
@@ -195,12 +204,17 @@ static int __devexit ls1x_rtc_remove(struct platform_device *pdev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver  ls1x_rtc_driver = {
 	.driver		= {
 		.name	= "ls1x-rtc",
 		.owner	= THIS_MODULE,
 	},
+<<<<<<< HEAD
 	.remove		= __devexit_p(ls1x_rtc_remove),
+=======
+>>>>>>> refs/remotes/origin/master
 	.probe		= ls1x_rtc_probe,
 };
 

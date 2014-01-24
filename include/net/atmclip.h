@@ -16,9 +16,12 @@
 
 #define CLIP_VCC(vcc) ((struct clip_vcc *) ((vcc)->user_back))
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define NEIGH2ENTRY(neigh) ((struct atmarp_entry *) (neigh)->primary_key)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct sk_buff;
 
@@ -40,9 +43,12 @@ struct clip_vcc {
 
 struct atmarp_entry {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__be32		ip;		/* IP address */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct clip_vcc	*vccs;		/* active VCCs; NULL if resolution is
 					   pending */
 	unsigned long	expires;	/* entry expiration time */
@@ -50,6 +56,7 @@ struct atmarp_entry {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define PRIV(dev) ((struct clip_priv *) netdev_priv(dev))
 
@@ -58,6 +65,10 @@ struct atmarp_entry {
 #define PRIV(dev) ((struct clip_priv *) netdev_priv(dev))
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PRIV(dev) ((struct clip_priv *) netdev_priv(dev))
+
+>>>>>>> refs/remotes/origin/master
 struct clip_priv {
 	int number;			/* for convenience ... */
 	spinlock_t xoff_lock;		/* ensures that pop is atomic (SMP) */
@@ -65,9 +76,12 @@ struct clip_priv {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 extern struct neigh_table *clip_tbl_hook;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

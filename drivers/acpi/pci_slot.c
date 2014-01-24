@@ -9,6 +9,12 @@
  *  Copyright (C) 2007-2008 Hewlett-Packard Development Company, L.P.
  *  	Alex Chiang <achiang@hp.com>
  *
+<<<<<<< HEAD
+=======
+ *  Copyright (C) 2013 Huawei Tech. Co., Ltd.
+ *	Jiang Liu <jiang.liu@huawei.com>
+ *
+>>>>>>> refs/remotes/origin/master
  *  This program is free software; you can redistribute it and/or modify it
  *  under the terms and conditions of the GNU General Public License,
  *  version 2, as published by the Free Software Foundation.
@@ -28,6 +34,7 @@
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <linux/pci.h>
 #include <linux/acpi.h>
 #include <acpi/acpi_bus.h>
@@ -39,6 +46,14 @@ static int debug;
 =======
 static bool debug;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/list.h>
+#include <linux/pci.h>
+#include <linux/acpi.h>
+#include <linux/dmi.h>
+
+static bool debug;
+>>>>>>> refs/remotes/origin/master
 static int check_sta_before_sun;
 
 #define DRIVER_VERSION 	"0.1"
@@ -54,6 +69,7 @@ module_param(debug, bool, 0644);
 ACPI_MODULE_NAME("pci_slot");
 
 #define MY_NAME "pci_slot"
+<<<<<<< HEAD
 #define err(format, arg...) printk(KERN_ERR "%s: " format , MY_NAME , ## arg)
 #define info(format, arg...) printk(KERN_INFO "%s: " format , MY_NAME , ## arg)
 #define dbg(format, arg...)					\
@@ -61,16 +77,28 @@ ACPI_MODULE_NAME("pci_slot");
 		if (debug)					\
 			printk(KERN_DEBUG "%s: " format,	\
 				MY_NAME , ## arg);		\
+=======
+#define err(format, arg...) pr_err("%s: " format , MY_NAME , ## arg)
+#define info(format, arg...) pr_info("%s: " format , MY_NAME , ## arg)
+#define dbg(format, arg...)					\
+	do {							\
+		if (debug)					\
+			pr_debug("%s: " format,	MY_NAME , ## arg); \
+>>>>>>> refs/remotes/origin/master
 	} while (0)
 
 #define SLOT_NAME_SIZE 21		/* Inspired by #define in acpiphp.h */
 
 struct acpi_pci_slot {
+<<<<<<< HEAD
 	acpi_handle root_handle;	/* handle of the root bridge */
+=======
+>>>>>>> refs/remotes/origin/master
 	struct pci_slot *pci_slot;	/* corresponding pci_slot */
 	struct list_head list;		/* node in the list of slots */
 };
 
+<<<<<<< HEAD
 static int acpi_pci_slot_add(acpi_handle handle);
 static void acpi_pci_slot_remove(acpi_handle handle);
 
@@ -80,6 +108,10 @@ static struct acpi_pci_driver acpi_pci_slot_driver = {
 	.add = acpi_pci_slot_add,
 	.remove = acpi_pci_slot_remove,
 };
+=======
+static LIST_HEAD(slot_list);
+static DEFINE_MUTEX(slot_list_lock);
+>>>>>>> refs/remotes/origin/master
 
 static int
 check_slot(acpi_handle handle, unsigned long long *sun)
@@ -118,6 +150,7 @@ out:
 	return device;
 }
 
+<<<<<<< HEAD
 struct callback_args {
 	acpi_walk_callback	user_function;	/* only for walk_p2p_bridge */
 	struct pci_bus		*pci_bus;
@@ -133,6 +166,10 @@ struct callback_args {
  *
  * The number of calls to pci_destroy_slot from unregister_slot is
  * symmetrical.
+=======
+/*
+ * Check whether handle has an associated slot and create PCI slot if it has.
+>>>>>>> refs/remotes/origin/master
  */
 static acpi_status
 register_slot(acpi_handle handle, u32 lvl, void *context, void **rv)
@@ -142,13 +179,30 @@ register_slot(acpi_handle handle, u32 lvl, void *context, void **rv)
 	char name[SLOT_NAME_SIZE];
 	struct acpi_pci_slot *slot;
 	struct pci_slot *pci_slot;
+<<<<<<< HEAD
 	struct callback_args *parent_context = context;
 	struct pci_bus *pci_bus = parent_context->pci_bus;
+=======
+	struct pci_bus *pci_bus = context;
+>>>>>>> refs/remotes/origin/master
 
 	device = check_slot(handle, &sun);
 	if (device < 0)
 		return AE_OK;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * There may be multiple PCI functions associated with the same slot.
+	 * Check whether PCI slot has already been created for this PCI device.
+	 */
+	list_for_each_entry(slot, &slot_list, list) {
+		pci_slot = slot->pci_slot;
+		if (pci_slot->bus == pci_bus && pci_slot->number == device)
+			return AE_OK;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	slot = kmalloc(sizeof(*slot), GFP_KERNEL);
 	if (!slot) {
 		err("%s: cannot allocate memory\n", __func__);
@@ -163,12 +217,17 @@ register_slot(acpi_handle handle, u32 lvl, void *context, void **rv)
 		return AE_OK;
 	}
 
+<<<<<<< HEAD
 	slot->root_handle = parent_context->root_handle;
 	slot->pci_slot = pci_slot;
 	INIT_LIST_HEAD(&slot->list);
 	mutex_lock(&slot_list_lock);
 	list_add(&slot->list, &slot_list);
 	mutex_unlock(&slot_list_lock);
+=======
+	slot->pci_slot = pci_slot;
+	list_add(&slot->list, &slot_list);
+>>>>>>> refs/remotes/origin/master
 
 	get_device(&pci_bus->dev);
 
@@ -178,6 +237,7 @@ register_slot(acpi_handle handle, u32 lvl, void *context, void **rv)
 	return AE_OK;
 }
 
+<<<<<<< HEAD
 /*
  * walk_p2p_bridge - discover and walk p2p bridges
  * @handle: points to an acpi_pci_root
@@ -327,6 +387,30 @@ acpi_pci_slot_remove(acpi_handle handle)
 			pbus = slot->pci_slot->bus;
 			pci_destroy_slot(slot->pci_slot);
 			put_device(&pbus->dev);
+=======
+void acpi_pci_slot_enumerate(struct pci_bus *bus)
+{
+	acpi_handle handle = ACPI_HANDLE(bus->bridge);
+
+	if (handle) {
+		mutex_lock(&slot_list_lock);
+		acpi_walk_namespace(ACPI_TYPE_DEVICE, handle, 1,
+				    register_slot, NULL, bus, NULL);
+		mutex_unlock(&slot_list_lock);
+	}
+}
+
+void acpi_pci_slot_remove(struct pci_bus *bus)
+{
+	struct acpi_pci_slot *slot, *tmp;
+
+	mutex_lock(&slot_list_lock);
+	list_for_each_entry_safe(slot, tmp, &slot_list, list) {
+		if (slot->pci_slot->bus == bus) {
+			list_del(&slot->list);
+			pci_destroy_slot(slot->pci_slot);
+			put_device(&bus->dev);
+>>>>>>> refs/remotes/origin/master
 			kfree(slot);
 		}
 	}
@@ -358,6 +442,7 @@ static struct dmi_system_id acpi_pci_slot_dmi_table[] __initdata = {
 	{}
 };
 
+<<<<<<< HEAD
 static int __init
 acpi_pci_slot_init(void)
 {
@@ -374,3 +459,9 @@ acpi_pci_slot_exit(void)
 
 module_init(acpi_pci_slot_init);
 module_exit(acpi_pci_slot_exit);
+=======
+void __init acpi_pci_slot_init(void)
+{
+	dmi_check_system(acpi_pci_slot_dmi_table);
+}
+>>>>>>> refs/remotes/origin/master

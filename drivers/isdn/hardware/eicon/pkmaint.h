@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,7 +46,10 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 #ifndef __DIVA_XDI_OS_DEPENDENT_PACK_MAIN_ON_BYTE_INC__
@@ -51,6 +57,7 @@
 
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	Only one purpose of this compiler dependent file to pack
 	structures, described in pc_maint.h so that no padding
@@ -60,6 +67,8 @@
 	after is restored by "poppack.h"
 	*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   Only one purpose of this compiler dependent file to pack
   structures, described in pc_maint.h so that no padding
   will be included.
@@ -67,7 +76,10 @@
   With microsoft compile it is done by "pshpack1.h" and
   after is restored by "poppack.h"
 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 #include "pc_maint.h"
@@ -75,6 +87,9 @@
 
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

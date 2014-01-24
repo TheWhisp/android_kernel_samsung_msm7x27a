@@ -9,6 +9,7 @@
 #ifndef __LINUX_USB_OTG_H
 #define __LINUX_USB_OTG_H
 
+<<<<<<< HEAD
 #include <linux/notifier.h>
 
 /* OTG defines lots of enumeration states before device reset */
@@ -93,6 +94,9 @@ struct usb_phy_io_ops {
 	int (*read)(struct usb_phy *x, u32 reg);
 	int (*write)(struct usb_phy *x, u32 val, u32 reg);
 };
+=======
+#include <linux/usb/phy.h>
+>>>>>>> refs/remotes/origin/master
 
 struct usb_otg {
 	u8			default_a;
@@ -117,6 +121,7 @@ struct usb_otg {
 	/* start or continue HNP role switch */
 	int	(*start_hnp)(struct usb_otg *otg);
 
+<<<<<<< HEAD
 	/* send events to user space */
 	int	(*send_event)(struct usb_otg *otg,
 			enum usb_otg_event event);
@@ -346,51 +351,75 @@ otg_start_hnp(struct otg_transceiver *otg)
 {
 	return otg->start_hnp(otg);
 =======
+=======
+};
+
+extern const char *usb_otg_state_string(enum usb_otg_state state);
+
+/* Context: can sleep */
+static inline int
+>>>>>>> refs/remotes/origin/master
 otg_start_hnp(struct usb_otg *otg)
 {
 	if (otg && otg->start_hnp)
 		return otg->start_hnp(otg);
 
 	return -ENOTSUPP;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Context: can sleep */
 static inline int
 <<<<<<< HEAD
+<<<<<<< HEAD
 otg_set_vbus(struct otg_transceiver *otg, bool enabled)
 {
 	return otg->set_vbus(otg, enabled);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 otg_set_vbus(struct usb_otg *otg, bool enabled)
 {
 	if (otg && otg->set_vbus)
 		return otg->set_vbus(otg, enabled);
 
 	return -ENOTSUPP;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* for HCDs */
 static inline int
 <<<<<<< HEAD
+<<<<<<< HEAD
 otg_set_host(struct otg_transceiver *otg, struct usb_bus *host)
 {
 	return otg->set_host(otg, host);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 otg_set_host(struct usb_otg *otg, struct usb_bus *host)
 {
 	if (otg && otg->set_host)
 		return otg->set_host(otg, host);
 
 	return -ENOTSUPP;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* for usb peripheral controller drivers */
 
 /* Context: can sleep */
 static inline int
+<<<<<<< HEAD
 <<<<<<< HEAD
 otg_set_peripheral(struct otg_transceiver *otg, struct usb_gadget *periph)
 {
@@ -402,6 +431,8 @@ otg_set_power(struct otg_transceiver *otg, unsigned mA)
 {
 	return otg->set_power(otg, mA);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 otg_set_peripheral(struct usb_otg *otg, struct usb_gadget *periph)
 {
 	if (otg && otg->set_peripheral)
@@ -411,6 +442,7 @@ otg_set_peripheral(struct usb_otg *otg, struct usb_gadget *periph)
 }
 
 static inline int
+<<<<<<< HEAD
 usb_phy_set_power(struct usb_phy *x, unsigned mA)
 {
 	if (x && x->set_power)
@@ -442,12 +474,15 @@ otg_start_srp(struct otg_transceiver *otg)
 {
 	return otg->start_srp(otg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 otg_start_srp(struct usb_otg *otg)
 {
 	if (otg && otg->start_srp)
 		return otg->start_srp(otg);
 
 	return -ENOTSUPP;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -474,9 +509,21 @@ usb_unregister_notifier(struct usb_phy *x, struct notifier_block *nb)
 {
 	atomic_notifier_chain_unregister(&x->notifier, nb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* for OTG controller drivers (and maybe other stuff) */
 extern int usb_bus_start_enum(struct usb_bus *bus, unsigned port_num);
 
+<<<<<<< HEAD
+=======
+enum usb_dr_mode {
+	USB_DR_MODE_UNKNOWN,
+	USB_DR_MODE_HOST,
+	USB_DR_MODE_PERIPHERAL,
+	USB_DR_MODE_OTG,
+};
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_USB_OTG_H */

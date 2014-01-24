@@ -3,14 +3,19 @@
  *
  * Author: Rabin Vincent <rabin.vincent@stericsson.com> for ST-Ericsson
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Author: Lee Jones <lee.jones@linaro.org> for ST-Ericsson
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Lee Jones <lee.jones@linaro.org> for ST-Ericsson
+>>>>>>> refs/remotes/origin/master
  * License terms: GNU General Public License (GPL) version 2
  */
 
 #include <linux/platform_device.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/clk.h>
 #include <linux/mfd/db8500-prcmu.h>
 #include <linux/mfd/db5500-prcmu.h>
@@ -24,6 +29,9 @@
 
 #include <plat/mtu.h>
 =======
+=======
+#include <linux/mfd/dbx500-prcmu.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/clksrc-dbx500-prcmu.h>
 #include <linux/sys_soc.h>
 #include <linux/err.h>
@@ -31,6 +39,7 @@
 #include <linux/stat.h>
 #include <linux/of.h>
 #include <linux/of_irq.h>
+<<<<<<< HEAD
 
 #include <asm/hardware/gic.h>
 #include <asm/mach/map.h>
@@ -55,20 +64,64 @@ static const struct of_device_id ux500_dt_irq_match[] = {
 };
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+#include <linux/irq.h>
+#include <linux/irqchip.h>
+#include <linux/irqchip/arm-gic.h>
+#include <linux/platform_data/clk-ux500.h>
+#include <linux/platform_data/arm-ux500-pm.h>
+
+#include <asm/mach/map.h>
+
+#include "setup.h"
+#include "devices.h"
+
+#include "board-mop500.h"
+#include "db8500-regs.h"
+#include "id.h"
+
+void ux500_restart(enum reboot_mode mode, const char *cmd)
+{
+	local_irq_disable();
+	local_fiq_disable();
+
+	prcmu_system_reset(0);
+}
+
+/*
+ * FIXME: Should we set up the GPIO domain here?
+ *
+ * The problem is that we cannot put the interrupt resources into the platform
+ * device until the irqdomain has been added. Right now, we set the GIC interrupt
+ * domain from init_irq(), then load the gpio driver from
+ * core_initcall(nmk_gpio_init) and add the platform devices from
+ * arch_initcall(customize_machine).
+ *
+ * This feels fragile because it depends on the gpio device getting probed
+ * _before_ any device uses the gpio interrupts.
+*/
+>>>>>>> refs/remotes/origin/master
 void __init ux500_init_irq(void)
 {
 	void __iomem *dist_base;
 	void __iomem *cpu_base;
 
+<<<<<<< HEAD
 	if (cpu_is_u5500()) {
 		dist_base = __io_address(U5500_GIC_DIST_BASE);
 		cpu_base = __io_address(U5500_GIC_CPU_BASE);
 	} else if (cpu_is_u8500()) {
+=======
+	gic_arch_extn.flags = IRQCHIP_SKIP_SET_WAKE | IRQCHIP_MASK_ON_SUSPEND;
+
+	if (cpu_is_u8500_family() || cpu_is_ux540_family()) {
+>>>>>>> refs/remotes/origin/master
 		dist_base = __io_address(U8500_GIC_DIST_BASE);
 		cpu_base = __io_address(U8500_GIC_CPU_BASE);
 	} else
 		ux500_unknown_soc();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	gic_init(0, 29, dist_base, cpu_base);
 =======
@@ -79,11 +132,20 @@ void __init ux500_init_irq(void)
 #endif
 		gic_init(0, 29, dist_base, cpu_base);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_OF
+	if (of_have_populated_dt())
+		irqchip_init();
+	else
+#endif
+		gic_init(0, 29, dist_base, cpu_base);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Init clocks here so that they are available for system timer
 	 * initialization.
 	 */
+<<<<<<< HEAD
 	if (cpu_is_u5500())
 		db5500_prcmu_early_init();
 	if (cpu_is_u8500())
@@ -207,6 +269,35 @@ struct sys_timer ux500_timer = {
 =======
 		db8500_prcmu_early_init();
 	clk_init();
+=======
+	if (cpu_is_u8500_family()) {
+		prcmu_early_init(U8500_PRCMU_BASE, SZ_8K - 1);
+		ux500_pm_init(U8500_PRCMU_BASE, SZ_8K - 1);
+
+		if (of_have_populated_dt())
+			u8500_of_clk_init(U8500_CLKRST1_BASE,
+					  U8500_CLKRST2_BASE,
+					  U8500_CLKRST3_BASE,
+					  U8500_CLKRST5_BASE,
+					  U8500_CLKRST6_BASE);
+		else
+			u8500_clk_init(U8500_CLKRST1_BASE, U8500_CLKRST2_BASE,
+				       U8500_CLKRST3_BASE, U8500_CLKRST5_BASE,
+				       U8500_CLKRST6_BASE);
+	} else if (cpu_is_u9540()) {
+		prcmu_early_init(U8500_PRCMU_BASE, SZ_8K - 1);
+		ux500_pm_init(U8500_PRCMU_BASE, SZ_8K - 1);
+		u9540_clk_init(U8500_CLKRST1_BASE, U8500_CLKRST2_BASE,
+			       U8500_CLKRST3_BASE, U8500_CLKRST5_BASE,
+			       U8500_CLKRST6_BASE);
+	} else if (cpu_is_u8540()) {
+		prcmu_early_init(U8500_PRCMU_BASE, SZ_8K + SZ_4K - 1);
+		ux500_pm_init(U8500_PRCMU_BASE, SZ_8K + SZ_4K - 1);
+		u8540_clk_init(U8500_CLKRST1_BASE, U8500_CLKRST2_BASE,
+			       U8500_CLKRST3_BASE, U8500_CLKRST5_BASE,
+			       U8500_CLKRST6_BASE);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static const char * __init ux500_get_machine(void)
@@ -267,15 +358,26 @@ struct device * __init ux500_soc_device_init(const char *soc_id)
 	soc_info_populate(soc_dev_attr, soc_id);
 
 	soc_dev = soc_device_register(soc_dev_attr);
+<<<<<<< HEAD
 	if (IS_ERR_OR_NULL(soc_dev)) {
+=======
+	if (IS_ERR(soc_dev)) {
+>>>>>>> refs/remotes/origin/master
 	        kfree(soc_dev_attr);
 		return NULL;
 	}
 
 	parent = soc_device_to_device(soc_dev);
+<<<<<<< HEAD
 	if (!IS_ERR_OR_NULL(parent))
 		device_create_file(parent, &ux500_soc_attr);
 
 	return parent;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	device_create_file(parent, &ux500_soc_attr);
+
+	return parent;
+}
+>>>>>>> refs/remotes/origin/master

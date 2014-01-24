@@ -1,7 +1,11 @@
 /* atomic.h: Thankfully the V9 is at least reasonable for this
  *           stuff.
  *
+<<<<<<< HEAD
  * Copyright (C) 1996, 1997, 2000 David S. Miller (davem@redhat.com)
+=======
+ * Copyright (C) 1996, 1997, 2000, 2012 David S. Miller (davem@redhat.com)
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef __ARCH_SPARC64_ATOMIC__
@@ -9,10 +13,14 @@
 
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 #include <asm/cmpxchg.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cmpxchg.h>
+>>>>>>> refs/remotes/origin/master
 
 #define ATOMIC_INIT(i)		{ (i) }
 #define ATOMIC64_INIT(i)	{ (i) }
@@ -75,10 +83,14 @@ extern long atomic64_sub_ret(long, atomic64_t *);
 #define atomic_xchg(v, new) (xchg(&((v)->counter), new))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int atomic_add_unless(atomic_t *v, int a, int u)
 =======
 static inline int __atomic_add_unless(atomic_t *v, int a, int u)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/master
 {
 	int c, old;
 	c = atomic_read(v);
@@ -91,6 +103,7 @@ static inline int __atomic_add_unless(atomic_t *v, int a, int u)
 		c = old;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return c != (u);
 }
 
@@ -101,6 +114,11 @@ static inline int __atomic_add_unless(atomic_t *v, int a, int u)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return c;
+}
+
+>>>>>>> refs/remotes/origin/master
 #define atomic64_cmpxchg(v, o, n) \
 	((__typeof__((v)->counter))cmpxchg(&((v)->counter), (o), (n)))
 #define atomic64_xchg(v, new) (xchg(&((v)->counter), new))
@@ -122,6 +140,11 @@ static inline long atomic64_add_unless(atomic64_t *v, long a, long u)
 
 #define atomic64_inc_not_zero(v) atomic64_add_unless((v), 1, 0)
 
+<<<<<<< HEAD
+=======
+extern long atomic64_dec_if_positive(atomic64_t *v);
+
+>>>>>>> refs/remotes/origin/master
 /* Atomic operations are already serializing */
 #define smp_mb__before_atomic_dec()	barrier()
 #define smp_mb__after_atomic_dec()	barrier()
@@ -129,7 +152,10 @@ static inline long atomic64_add_unless(atomic64_t *v, long a, long u)
 #define smp_mb__after_atomic_inc()	barrier()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm-generic/atomic-long.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !(__ARCH_SPARC64_ATOMIC__) */

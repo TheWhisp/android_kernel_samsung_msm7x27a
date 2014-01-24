@@ -7,6 +7,11 @@
 
 #include <linux/slab.h>
 
+<<<<<<< HEAD
+=======
+int sched_rr_timeslice = RR_TIMESLICE;
+
+>>>>>>> refs/remotes/origin/master
 static int do_sched_rt_period_timer(struct rt_bandwidth *rt_b, int overrun);
 
 struct rt_bandwidth def_rt_bandwidth;
@@ -244,8 +249,15 @@ static inline void rt_set_overload(struct rq *rq)
 	 * if we should look at the mask. It would be a shame
 	 * if we looked at the mask, but the mask was not
 	 * updated yet.
+<<<<<<< HEAD
 	 */
 	wmb();
+=======
+	 *
+	 * Matched by the barrier in pull_rt_task().
+	 */
+	smp_wmb();
+>>>>>>> refs/remotes/origin/master
 	atomic_inc(&rq->rd->rto_count);
 }
 
@@ -274,6 +286,7 @@ static void update_rt_migration(struct rt_rq *rt_rq)
 
 static void inc_rt_migration(struct sched_rt_entity *rt_se, struct rt_rq *rt_rq)
 {
+<<<<<<< HEAD
 	if (!rt_entity_is_task(rt_se))
 		return;
 
@@ -281,6 +294,18 @@ static void inc_rt_migration(struct sched_rt_entity *rt_se, struct rt_rq *rt_rq)
 
 	rt_rq->rt_nr_total++;
 	if (rt_se->nr_cpus_allowed > 1)
+=======
+	struct task_struct *p;
+
+	if (!rt_entity_is_task(rt_se))
+		return;
+
+	p = rt_task_of(rt_se);
+	rt_rq = &rq_of_rt_rq(rt_rq)->rt;
+
+	rt_rq->rt_nr_total++;
+	if (p->nr_cpus_allowed > 1)
+>>>>>>> refs/remotes/origin/master
 		rt_rq->rt_nr_migratory++;
 
 	update_rt_migration(rt_rq);
@@ -288,6 +313,7 @@ static void inc_rt_migration(struct sched_rt_entity *rt_se, struct rt_rq *rt_rq)
 
 static void dec_rt_migration(struct sched_rt_entity *rt_se, struct rt_rq *rt_rq)
 {
+<<<<<<< HEAD
 	if (!rt_entity_is_task(rt_se))
 		return;
 
@@ -295,6 +321,18 @@ static void dec_rt_migration(struct sched_rt_entity *rt_se, struct rt_rq *rt_rq)
 
 	rt_rq->rt_nr_total--;
 	if (rt_se->nr_cpus_allowed > 1)
+=======
+	struct task_struct *p;
+
+	if (!rt_entity_is_task(rt_se))
+		return;
+
+	p = rt_task_of(rt_se);
+	rt_rq = &rq_of_rt_rq(rt_rq)->rt;
+
+	rt_rq->rt_nr_total--;
+	if (p->nr_cpus_allowed > 1)
+>>>>>>> refs/remotes/origin/master
 		rt_rq->rt_nr_migratory--;
 
 	update_rt_migration(rt_rq);
@@ -391,6 +429,7 @@ static inline struct task_group *next_task_group(struct task_group *tg)
 		(iter = next_task_group(iter)) &&			\
 		(rt_rq = iter->rt_rq[cpu_of(rq)]);)
 
+<<<<<<< HEAD
 static inline void list_add_leaf_rt_rq(struct rt_rq *rt_rq)
 {
 	list_add_rcu(&rt_rq->leaf_rt_rq_list,
@@ -405,6 +444,8 @@ static inline void list_del_leaf_rt_rq(struct rt_rq *rt_rq)
 #define for_each_leaf_rt_rq(rt_rq, rq) \
 	list_for_each_entry_rcu(rt_rq, &rq->leaf_rt_rq_list, leaf_rt_rq_list)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define for_each_sched_rt_entity(rt_se) \
 	for (; rt_se; rt_se = rt_se->parent)
 
@@ -464,7 +505,11 @@ static int rt_se_boosted(struct sched_rt_entity *rt_se)
 #ifdef CONFIG_SMP
 static inline const struct cpumask *sched_rt_period_mask(void)
 {
+<<<<<<< HEAD
 	return cpu_rq(smp_processor_id())->rd->span;
+=======
+	return this_rq()->rd->span;
+>>>>>>> refs/remotes/origin/master
 }
 #else
 static inline const struct cpumask *sched_rt_period_mask(void)
@@ -501,6 +546,7 @@ typedef struct rt_rq *rt_rq_iter_t;
 #define for_each_rt_rq(rt_rq, iter, rq) \
 	for ((void) iter, rt_rq = &rq->rt; rt_rq; rt_rq = NULL)
 
+<<<<<<< HEAD
 static inline void list_add_leaf_rt_rq(struct rt_rq *rt_rq)
 {
 }
@@ -512,6 +558,8 @@ static inline void list_del_leaf_rt_rq(struct rt_rq *rt_rq)
 #define for_each_leaf_rt_rq(rt_rq, rq) \
 	for (rt_rq = &rq->rt; rt_rq; rt_rq = NULL)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define for_each_sched_rt_entity(rt_se) \
 	for (; rt_se; rt_se = NULL)
 
@@ -685,11 +733,16 @@ balanced:
 		 * runtime - in which case borrowing doesn't make sense.
 		 */
 		rt_rq->rt_runtime = RUNTIME_INF;
+<<<<<<< HEAD
+=======
+		rt_rq->rt_throttled = 0;
+>>>>>>> refs/remotes/origin/master
 		raw_spin_unlock(&rt_rq->rt_runtime_lock);
 		raw_spin_unlock(&rt_b->rt_runtime_lock);
 	}
 }
 
+<<<<<<< HEAD
 static void disable_runtime(struct rq *rq)
 {
 	unsigned long flags;
@@ -699,6 +752,8 @@ static void disable_runtime(struct rq *rq)
 	raw_spin_unlock_irqrestore(&rq->lock, flags);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void __enable_runtime(struct rq *rq)
 {
 	rt_rq_iter_t iter;
@@ -723,6 +778,7 @@ static void __enable_runtime(struct rq *rq)
 	}
 }
 
+<<<<<<< HEAD
 static void enable_runtime(struct rq *rq)
 {
 	unsigned long flags;
@@ -754,6 +810,8 @@ int update_runtime(struct notifier_block *nfb, unsigned long action, void *hcpu)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int balance_runtime(struct rt_rq *rt_rq)
 {
 	int more = 0;
@@ -782,6 +840,22 @@ static int do_sched_rt_period_timer(struct rt_bandwidth *rt_b, int overrun)
 	const struct cpumask *span;
 
 	span = sched_rt_period_mask();
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_RT_GROUP_SCHED
+	/*
+	 * FIXME: isolated CPUs should really leave the root task group,
+	 * whether they are isolcpus or were isolated via cpusets, lest
+	 * the timer run on a CPU which does not service all runqueues,
+	 * potentially leaving other CPUs indefinitely throttled.  If
+	 * isolation is really required, the user will turn the throttle
+	 * off to kill the perturbations it causes anyway.  Meanwhile,
+	 * this maintains functionality for boot and/or troubleshooting.
+	 */
+	if (rt_b == &root_task_group.rt_bandwidth)
+		span = cpu_online_mask;
+#endif
+>>>>>>> refs/remotes/origin/master
 	for_each_cpu(i, span) {
 		int enqueue = 0;
 		struct rt_rq *rt_rq = sched_rt_period_rt_rq(rt_b, i);
@@ -904,9 +978,15 @@ static void update_curr_rt(struct rq *rq)
 	if (curr->sched_class != &rt_sched_class)
 		return;
 
+<<<<<<< HEAD
 	delta_exec = rq->clock_task - curr->se.exec_start;
 	if (unlikely((s64)delta_exec < 0))
 		delta_exec = 0;
+=======
+	delta_exec = rq_clock_task(rq) - curr->se.exec_start;
+	if (unlikely((s64)delta_exec <= 0))
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	schedstat_set(curr->se.statistics.exec_max,
 		      max(curr->se.statistics.exec_max, delta_exec));
@@ -914,7 +994,11 @@ static void update_curr_rt(struct rq *rq)
 	curr->se.sum_exec_runtime += delta_exec;
 	account_group_exec_runtime(curr, delta_exec);
 
+<<<<<<< HEAD
 	curr->se.exec_start = rq->clock_task;
+=======
+	curr->se.exec_start = rq_clock_task(rq);
+>>>>>>> refs/remotes/origin/master
 	cpuacct_charge(curr, delta_exec);
 
 	sched_rt_avg_update(rq, delta_exec);
@@ -943,6 +1027,9 @@ inc_rt_prio_smp(struct rt_rq *rt_rq, int prio, int prev_prio)
 	struct rq *rq = rq_of_rt_rq(rt_rq);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_RT_GROUP_SCHED
 	/*
 	 * Change rq's cpupri only if rt_rq is the top queue.
@@ -950,8 +1037,11 @@ inc_rt_prio_smp(struct rt_rq *rt_rq, int prio, int prev_prio)
 	if (&rq->rt != rt_rq)
 		return;
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (rq->online && prio < prev_prio)
 		cpupri_set(&rq->rd->cpupri, rq->cpu, prio);
 }
@@ -962,6 +1052,9 @@ dec_rt_prio_smp(struct rt_rq *rt_rq, int prio, int prev_prio)
 	struct rq *rq = rq_of_rt_rq(rt_rq);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_RT_GROUP_SCHED
 	/*
 	 * Change rq's cpupri only if rt_rq is the top queue.
@@ -969,8 +1062,11 @@ dec_rt_prio_smp(struct rt_rq *rt_rq, int prio, int prev_prio)
 	if (&rq->rt != rt_rq)
 		return;
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (rq->online && rt_rq->highest_prio.curr != prev_prio)
 		cpupri_set(&rq->rd->cpupri, rq->cpu, rt_rq->highest_prio.curr);
 }
@@ -1104,9 +1200,12 @@ static void __enqueue_rt_entity(struct sched_rt_entity *rt_se, bool head)
 	if (group_rq && (rt_rq_throttled(group_rq) || !group_rq->rt_nr_running))
 		return;
 
+<<<<<<< HEAD
 	if (!rt_rq->rt_nr_running)
 		list_add_leaf_rt_rq(rt_rq);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (head)
 		list_add(&rt_se->run_list, queue);
 	else
@@ -1126,8 +1225,11 @@ static void __dequeue_rt_entity(struct sched_rt_entity *rt_se)
 		__clear_bit(rt_se_prio(rt_se), array->bitmap);
 
 	dec_rt_tasks(rt_se, rt_rq);
+<<<<<<< HEAD
 	if (!rt_rq->rt_nr_running)
 		list_del_leaf_rt_rq(rt_rq);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1181,7 +1283,11 @@ enqueue_task_rt(struct rq *rq, struct task_struct *p, int flags)
 
 	enqueue_rt_entity(rt_se, flags & ENQUEUE_HEAD);
 
+<<<<<<< HEAD
 	if (!task_current(rq, p) && p->rt.nr_cpus_allowed > 1)
+=======
+	if (!task_current(rq, p) && p->nr_cpus_allowed > 1)
+>>>>>>> refs/remotes/origin/master
 		enqueue_pushable_task(rq, p);
 
 	inc_nr_running(rq);
@@ -1237,6 +1343,7 @@ static void yield_task_rt(struct rq *rq)
 static int find_lowest_rq(struct task_struct *task);
 
 static int
+<<<<<<< HEAD
 select_task_rq_rt(struct task_struct *p, int sd_flag, int flags)
 {
 	struct task_struct *curr;
@@ -1246,6 +1353,14 @@ select_task_rq_rt(struct task_struct *p, int sd_flag, int flags)
 	cpu = task_cpu(p);
 
 	if (p->rt.nr_cpus_allowed == 1)
+=======
+select_task_rq_rt(struct task_struct *p, int cpu, int sd_flag, int flags)
+{
+	struct task_struct *curr;
+	struct rq *rq;
+
+	if (p->nr_cpus_allowed == 1)
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	/* For anything but wake ups, just return the task_cpu */
@@ -1280,9 +1395,14 @@ select_task_rq_rt(struct task_struct *p, int sd_flag, int flags)
 	 * will have to sort it out.
 	 */
 	if (curr && unlikely(rt_task(curr)) &&
+<<<<<<< HEAD
 	    (curr->rt.nr_cpus_allowed < 2 ||
 	     curr->prio <= p->prio) &&
 	    (p->rt.nr_cpus_allowed > 1)) {
+=======
+	    (curr->nr_cpus_allowed < 2 ||
+	     curr->prio <= p->prio)) {
+>>>>>>> refs/remotes/origin/master
 		int target = find_lowest_rq(p);
 
 		if (target != -1)
@@ -1296,10 +1416,17 @@ out:
 
 static void check_preempt_equal_prio(struct rq *rq, struct task_struct *p)
 {
+<<<<<<< HEAD
 	if (rq->curr->rt.nr_cpus_allowed == 1)
 		return;
 
 	if (p->rt.nr_cpus_allowed != 1
+=======
+	if (rq->curr->nr_cpus_allowed == 1)
+		return;
+
+	if (p->nr_cpus_allowed != 1
+>>>>>>> refs/remotes/origin/master
 	    && cpupri_find(&rq->rd->cpupri, p, NULL))
 		return;
 
@@ -1383,7 +1510,11 @@ static struct task_struct *_pick_next_task_rt(struct rq *rq)
 	} while (rt_rq);
 
 	p = rt_task_of(rt_se);
+<<<<<<< HEAD
 	p->se.exec_start = rq->clock_task;
+=======
+	p->se.exec_start = rq_clock_task(rq);
+>>>>>>> refs/remotes/origin/master
 
 	return p;
 }
@@ -1415,7 +1546,11 @@ static void put_prev_task_rt(struct rq *rq, struct task_struct *p)
 	 * The previous task needs to be made eligible for pushing
 	 * if it is still active
 	 */
+<<<<<<< HEAD
 	if (on_rt_rq(&p->rt) && p->rt.nr_cpus_allowed > 1)
+=======
+	if (on_rt_rq(&p->rt) && p->nr_cpus_allowed > 1)
+>>>>>>> refs/remotes/origin/master
 		enqueue_pushable_task(rq, p);
 }
 
@@ -1427,12 +1562,17 @@ static void put_prev_task_rt(struct rq *rq, struct task_struct *p)
 static int pick_rt_task(struct rq *rq, struct task_struct *p, int cpu)
 {
 	if (!task_running(rq, p) &&
+<<<<<<< HEAD
 	    (cpu < 0 || cpumask_test_cpu(cpu, tsk_cpus_allowed(p))) &&
 	    (p->rt.nr_cpus_allowed > 1))
+=======
+	    cpumask_test_cpu(cpu, tsk_cpus_allowed(p)))
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Return the second highest RT task, NULL otherwise */
 static struct task_struct *pick_next_highest_task_rt(struct rq *rq, int cpu)
 {
@@ -1469,6 +1609,26 @@ next_idx:
 	}
 
 	return next;
+=======
+/*
+ * Return the highest pushable rq's task, which is suitable to be executed
+ * on the cpu, NULL otherwise
+ */
+static struct task_struct *pick_highest_pushable_task(struct rq *rq, int cpu)
+{
+	struct plist_head *head = &rq->rt.pushable_tasks;
+	struct task_struct *p;
+
+	if (!has_pushable_tasks(rq))
+		return NULL;
+
+	plist_for_each_entry(p, head, pushable_tasks) {
+		if (pick_rt_task(rq, p, cpu))
+			return p;
+	}
+
+	return NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static DEFINE_PER_CPU(cpumask_var_t, local_cpu_mask);
@@ -1484,7 +1644,11 @@ static int find_lowest_rq(struct task_struct *task)
 	if (unlikely(!lowest_mask))
 		return -1;
 
+<<<<<<< HEAD
 	if (task->rt.nr_cpus_allowed == 1)
+=======
+	if (task->nr_cpus_allowed == 1)
+>>>>>>> refs/remotes/origin/master
 		return -1; /* No other targets possible */
 
 	if (!cpupri_find(&task_rq(task)->rd->cpupri, task, lowest_mask))
@@ -1576,7 +1740,11 @@ static struct rq *find_lock_lowest_rq(struct task_struct *task, struct rq *rq)
 				     task_running(rq, task) ||
 				     !task->on_rq)) {
 
+<<<<<<< HEAD
 				raw_spin_unlock(&lowest_rq->lock);
+=======
+				double_unlock_balance(rq, lowest_rq);
+>>>>>>> refs/remotes/origin/master
 				lowest_rq = NULL;
 				break;
 			}
@@ -1606,7 +1774,11 @@ static struct task_struct *pick_next_pushable_task(struct rq *rq)
 
 	BUG_ON(rq->cpu != task_cpu(p));
 	BUG_ON(task_current(rq, p));
+<<<<<<< HEAD
 	BUG_ON(p->rt.nr_cpus_allowed <= 1);
+=======
+	BUG_ON(p->nr_cpus_allowed <= 1);
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(!p->on_rq);
 	BUG_ON(!rt_task(p));
@@ -1632,11 +1804,14 @@ static int push_rt_task(struct rq *rq)
 	if (!next_task)
 		return 0;
 
+<<<<<<< HEAD
 #ifdef __ARCH_WANT_INTERRUPTS_ON_CTXSW
        if (unlikely(task_running(rq, next_task)))
                return 0;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 retry:
 	if (unlikely(next_task == rq->curr)) {
 		WARN_ON(1);
@@ -1722,6 +1897,15 @@ static int pull_rt_task(struct rq *this_rq)
 	if (likely(!rt_overloaded(this_rq)))
 		return 0;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Match the barrier from rt_set_overloaded; this guarantees that if we
+	 * see overloaded we must also see the rto_mask bit.
+	 */
+	smp_rmb();
+
+>>>>>>> refs/remotes/origin/master
 	for_each_cpu(cpu, this_rq->rd->rto_mask) {
 		if (this_cpu == cpu)
 			continue;
@@ -1747,12 +1931,19 @@ static int pull_rt_task(struct rq *this_rq)
 		double_lock_balance(this_rq, src_rq);
 
 		/*
+<<<<<<< HEAD
 		 * Are there still pullable RT tasks?
 		 */
 		if (src_rq->rt.rt_nr_running <= 1)
 			goto skip;
 
 		p = pick_next_highest_task_rt(src_rq, this_cpu);
+=======
+		 * We can pull only a task, which is pushable
+		 * on its rq, and no others.
+		 */
+		p = pick_highest_pushable_task(src_rq, this_cpu);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Do we have an RT task that preempts
@@ -1813,9 +2004,15 @@ static void task_woken_rt(struct rq *rq, struct task_struct *p)
 	if (!task_running(rq, p) &&
 	    !test_tsk_need_resched(rq->curr) &&
 	    has_pushable_tasks(rq) &&
+<<<<<<< HEAD
 	    p->rt.nr_cpus_allowed > 1 &&
 	    rt_task(rq->curr) &&
 	    (rq->curr->rt.nr_cpus_allowed < 2 ||
+=======
+	    p->nr_cpus_allowed > 1 &&
+	    (dl_task(rq->curr) || rt_task(rq->curr)) &&
+	    (rq->curr->nr_cpus_allowed < 2 ||
+>>>>>>> refs/remotes/origin/master
 	     rq->curr->prio <= p->prio))
 		push_rt_tasks(rq);
 }
@@ -1823,6 +2020,7 @@ static void task_woken_rt(struct rq *rq, struct task_struct *p)
 static void set_cpus_allowed_rt(struct task_struct *p,
 				const struct cpumask *new_mask)
 {
+<<<<<<< HEAD
 	int weight = cpumask_weight(new_mask);
 
 	BUG_ON(!rt_task(p));
@@ -1861,6 +2059,42 @@ static void set_cpus_allowed_rt(struct task_struct *p,
 
 		update_rt_migration(&rq->rt);
 	}
+=======
+	struct rq *rq;
+	int weight;
+
+	BUG_ON(!rt_task(p));
+
+	if (!p->on_rq)
+		return;
+
+	weight = cpumask_weight(new_mask);
+
+	/*
+	 * Only update if the process changes its state from whether it
+	 * can migrate or not.
+	 */
+	if ((p->nr_cpus_allowed > 1) == (weight > 1))
+		return;
+
+	rq = task_rq(p);
+
+	/*
+	 * The process used to be able to migrate OR it can now migrate
+	 */
+	if (weight <= 1) {
+		if (!task_current(rq, p))
+			dequeue_pushable_task(rq, p);
+		BUG_ON(!rq->rt.rt_nr_migratory);
+		rq->rt.rt_nr_migratory--;
+	} else {
+		if (!task_current(rq, p))
+			enqueue_pushable_task(rq, p);
+		rq->rt.rt_nr_migratory++;
+	}
+
+	update_rt_migration(&rq->rt);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Assumes rq->lock is held */
@@ -1898,8 +2132,16 @@ static void switched_from_rt(struct rq *rq, struct task_struct *p)
 	 * we may need to handle the pulling of RT tasks
 	 * now.
 	 */
+<<<<<<< HEAD
 	if (p->on_rq && !rq->rt.rt_nr_running)
 		pull_rt_task(rq);
+=======
+	if (!p->on_rq || rq->rt.rt_nr_running)
+		return;
+
+	if (pull_rt_task(rq))
+		resched_task(rq->curr);
+>>>>>>> refs/remotes/origin/master
 }
 
 void init_sched_rt_class(void)
@@ -1994,7 +2236,15 @@ static void watchdog(struct rq *rq, struct task_struct *p)
 	if (soft != RLIM_INFINITY) {
 		unsigned long next;
 
+<<<<<<< HEAD
 		p->rt.timeout++;
+=======
+		if (p->rt.watchdog_stamp != jiffies) {
+			p->rt.timeout++;
+			p->rt.watchdog_stamp = jiffies;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		next = DIV_ROUND_UP(min(soft, hard), USEC_PER_SEC/HZ);
 		if (p->rt.timeout > next)
 			p->cputime_expires.sched_exp = p->se.sum_exec_runtime;
@@ -2019,11 +2269,19 @@ static void task_tick_rt(struct rq *rq, struct task_struct *p, int queued)
 	if (--p->rt.time_slice)
 		return;
 
+<<<<<<< HEAD
 	p->rt.time_slice = RR_TIMESLICE;
 
 	/*
 	 * Requeue to the end of queue if we (and all of our ancestors) are the
 	 * only element on the queue
+=======
+	p->rt.time_slice = sched_rr_timeslice;
+
+	/*
+	 * Requeue to the end of queue if we (and all of our ancestors) are not
+	 * the only element on the queue
+>>>>>>> refs/remotes/origin/master
 	 */
 	for_each_sched_rt_entity(rt_se) {
 		if (rt_se->run_list.prev != rt_se->run_list.next) {
@@ -2038,7 +2296,11 @@ static void set_curr_task_rt(struct rq *rq)
 {
 	struct task_struct *p = rq->curr;
 
+<<<<<<< HEAD
 	p->se.exec_start = rq->clock_task;
+=======
+	p->se.exec_start = rq_clock_task(rq);
+>>>>>>> refs/remotes/origin/master
 
 	/* The running task is never eligible for pushing */
 	dequeue_pushable_task(rq, p);
@@ -2050,7 +2312,11 @@ static unsigned int get_rr_interval_rt(struct rq *rq, struct task_struct *task)
 	 * Time slice is 0 for SCHED_FIFO tasks
 	 */
 	if (task->policy == SCHED_RR)
+<<<<<<< HEAD
 		return RR_TIMESLICE;
+=======
+		return sched_rr_timeslice;
+>>>>>>> refs/remotes/origin/master
 	else
 		return 0;
 }

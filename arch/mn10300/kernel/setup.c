@@ -27,9 +27,12 @@
 #include <linux/console.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/setup.h>
 #include <asm/io.h>
 #include <asm/smp.h>
@@ -39,9 +42,13 @@
 
 struct mn10300_cpuinfo boot_cpu_data;
 
+<<<<<<< HEAD
 /* For PCI or other memory-mapped resources */
 unsigned long pci_mem_start = 0x18000000;
 
+=======
+static char __initdata cmd_line[COMMAND_LINE_SIZE];
+>>>>>>> refs/remotes/origin/master
 char redboot_command_line[COMMAND_LINE_SIZE] =
 	"console=ttyS0,115200 root=/dev/mtdblock3 rw";
 
@@ -78,6 +85,7 @@ static const char *const mn10300_cputypes[] = {
 };
 
 /*
+<<<<<<< HEAD
  *
  */
 static void __init parse_mem_cmdline(char **cmdline_p)
@@ -108,15 +116,29 @@ static void __init parse_mem_cmdline(char **cmdline_p)
 
 	*to = '\0';
 	*cmdline_p = redboot_command_line;
+=======
+ * Pick out the memory size.  We look for mem=size,
+ * where size is "size[KkMm]"
+ */
+static int __init early_mem(char *p)
+{
+	memory_size = memparse(p, &p);
+>>>>>>> refs/remotes/origin/master
 
 	if (memory_size == 0)
 		panic("Memory size not known\n");
 
+<<<<<<< HEAD
 	memory_end = (unsigned long) CONFIG_KERNEL_RAM_BASE_ADDRESS +
 		memory_size;
 	if (memory_end > phys_memory_end)
 		memory_end = phys_memory_end;
 }
+=======
+	return 0;
+}
+early_param("mem", early_mem);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * architecture specific setup
@@ -129,7 +151,24 @@ void __init setup_arch(char **cmdline_p)
 	cpu_init();
 	unit_setup();
 	smp_init_cpus();
+<<<<<<< HEAD
 	parse_mem_cmdline(cmdline_p);
+=======
+
+	/* save unparsed command line copy for /proc/cmdline */
+	strlcpy(boot_command_line, redboot_command_line, COMMAND_LINE_SIZE);
+
+	/* populate cmd_line too for later use, preserving boot_command_line */
+	strlcpy(cmd_line, boot_command_line, COMMAND_LINE_SIZE);
+	*cmdline_p = cmd_line;
+
+	parse_early_param();
+
+	memory_end = (unsigned long) CONFIG_KERNEL_RAM_BASE_ADDRESS +
+		memory_size;
+	if (memory_end > phys_memory_end)
+		memory_end = phys_memory_end;
+>>>>>>> refs/remotes/origin/master
 
 	init_mm.start_code = (unsigned long)&_text;
 	init_mm.end_code = (unsigned long) &_etext;

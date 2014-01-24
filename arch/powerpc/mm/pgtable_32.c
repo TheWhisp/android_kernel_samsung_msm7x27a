@@ -34,9 +34,13 @@
 #include <asm/fixmap.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/setup.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "mmu_decl.h"
 
@@ -124,7 +128,14 @@ pgtable_t pte_alloc_one(struct mm_struct *mm, unsigned long address)
 	ptepage = alloc_pages(flags, 0);
 	if (!ptepage)
 		return NULL;
+<<<<<<< HEAD
 	pgtable_page_ctor(ptepage);
+=======
+	if (!pgtable_page_ctor(ptepage)) {
+		__free_page(ptepage);
+		return NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 	return ptepage;
 }
 
@@ -212,10 +223,14 @@ __ioremap_caller(phys_addr_t addr, unsigned long size, unsigned long flags,
 	if (mem_init_done && (p < virt_to_phys(high_memory)) &&
 	    !(__allow_ioremap_reserved && memblock_is_region_reserved(p, size))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk("__ioremap(): phys addr 0x%llx is RAM lr %p\n",
 =======
 		printk("__ioremap(): phys addr 0x%llx is RAM lr %pf\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk("__ioremap(): phys addr 0x%llx is RAM lr %pf\n",
+>>>>>>> refs/remotes/origin/master
 		       (unsigned long long)p, __builtin_return_address(0));
 		return NULL;
 	}

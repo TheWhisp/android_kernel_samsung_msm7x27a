@@ -445,8 +445,13 @@ static const struct agp_bridge_driver sworks_driver = {
 	.agp_type_to_mask_type  = agp_generic_type_to_mask_type,
 };
 
+<<<<<<< HEAD
 static int __devinit agp_serverworks_probe(struct pci_dev *pdev,
 					   const struct pci_device_id *ent)
+=======
+static int agp_serverworks_probe(struct pci_dev *pdev,
+				 const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct agp_bridge_data *bridge;
 	struct pci_dev *bridge_dev;
@@ -518,7 +523,11 @@ static int __devinit agp_serverworks_probe(struct pci_dev *pdev,
 	return agp_add_bridge(bridge);
 }
 
+<<<<<<< HEAD
 static void __devexit agp_serverworks_remove(struct pci_dev *pdev)
+=======
+static void agp_serverworks_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct agp_bridge_data *bridge = pci_get_drvdata(pdev);
 

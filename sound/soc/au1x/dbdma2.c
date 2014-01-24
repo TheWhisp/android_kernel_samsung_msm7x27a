@@ -65,6 +65,7 @@ struct au1xpsc_audio_dmadata {
 #define AU1XPSC_PERIOD_MIN_BYTES	1024
 #define AU1XPSC_BUFFER_MIN_BYTES	65536
 
+<<<<<<< HEAD
 #define AU1XPSC_PCM_FMTS					\
 	(SNDRV_PCM_FMTBIT_S8     | SNDRV_PCM_FMTBIT_U8 |	\
 	 SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |	\
@@ -73,11 +74,16 @@ struct au1xpsc_audio_dmadata {
 	 SNDRV_PCM_FMTBIT_U32_LE | SNDRV_PCM_FMTBIT_U32_BE |	\
 	 0)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* PCM hardware DMA capabilities - platform specific */
 static const struct snd_pcm_hardware au1xpsc_pcm_hardware = {
 	.info		  = SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
 			    SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BATCH,
+<<<<<<< HEAD
 	.formats	  = AU1XPSC_PCM_FMTS,
+=======
+>>>>>>> refs/remotes/origin/master
 	.period_bytes_min = AU1XPSC_PERIOD_MIN_BYTES,
 	.period_bytes_max = 4096 * 1024 - 1,
 	.periods_min	  = 2,
@@ -170,10 +176,14 @@ static int au1x_pcm_dbdma_realloc(struct au1xpsc_audio_dmadata *pcd,
 	au1x_pcm_dbdma_free(pcd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (stype == PCM_RX)
 =======
 	if (stype == SNDRV_PCM_STREAM_CAPTURE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (stype == SNDRV_PCM_STREAM_CAPTURE)
+>>>>>>> refs/remotes/origin/master
 		pcd->ddma_chan = au1xxx_dbdma_chan_alloc(pcd->ddma_id,
 					DSCR_CMD0_ALWAYS,
 					au1x_pcm_dmarx_cb, (void *)pcd);
@@ -203,10 +213,14 @@ static inline struct au1xpsc_audio_dmadata *to_dmadata(struct snd_pcm_substream 
 	struct au1xpsc_audio_dmadata *pcd =
 				snd_soc_platform_get_drvdata(rtd->platform);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return &pcd[SUBSTREAM_TYPE(ss)];
 =======
 	return &pcd[ss->stream];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return &pcd[ss->stream];
+>>>>>>> refs/remotes/origin/master
 }
 
 static int au1xpsc_pcm_hw_params(struct snd_pcm_substream *substream,
@@ -221,10 +235,14 @@ static int au1xpsc_pcm_hw_params(struct snd_pcm_substream *substream,
 		goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	stype = SUBSTREAM_TYPE(substream);
 =======
 	stype = substream->stream;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	stype = substream->stream;
+>>>>>>> refs/remotes/origin/master
 	pcd = to_dmadata(substream);
 
 	DBG("runtime->dma_area = 0x%08lx dma_addr_t = 0x%08lx dma_size = %d "
@@ -268,10 +286,14 @@ static int au1xpsc_pcm_prepare(struct snd_pcm_substream *substream)
 	au1xxx_dbdma_reset(pcd->ddma_chan);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (SUBSTREAM_TYPE(substream) == PCM_RX) {
 =======
 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+>>>>>>> refs/remotes/origin/master
 		au1x_pcm_queue_rx(pcd);
 		au1x_pcm_queue_rx(pcd);
 	} else {
@@ -310,7 +332,10 @@ au1xpsc_pcm_pointer(struct snd_pcm_substream *substream)
 static int au1xpsc_pcm_open(struct snd_pcm_substream *substream)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct au1xpsc_audio_dmadata *pcd = to_dmadata(substream);
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	int stype = substream->stream, *dmaids;
@@ -321,7 +346,10 @@ static int au1xpsc_pcm_open(struct snd_pcm_substream *substream)
 
 	pcd->ddma_id = dmaids[stype];
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_soc_set_runtime_hwparams(substream, &au1xpsc_pcm_hardware);
 	return 0;
 }
@@ -361,15 +389,20 @@ static int au1xpsc_pcm_new(struct snd_soc_pcm_runtime *rtd)
 
 /* au1xpsc audio platform */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct snd_soc_platform_driver au1xpsc_soc_platform = {
 =======
 static struct snd_soc_platform_driver au1xpsc_soc_platform = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct snd_soc_platform_driver au1xpsc_soc_platform = {
+>>>>>>> refs/remotes/origin/master
 	.ops		= &au1xpsc_pcm_ops,
 	.pcm_new	= au1xpsc_pcm_new,
 	.pcm_free	= au1xpsc_pcm_free_dma_buffers,
 };
 
+<<<<<<< HEAD
 static int __devinit au1xpsc_pcm_drvprobe(struct platform_device *pdev)
 {
 	struct au1xpsc_audio_dmadata *dmadata;
@@ -406,6 +439,11 @@ out1:
 	kfree(dmadata);
 	return ret;
 =======
+=======
+static int au1xpsc_pcm_drvprobe(struct platform_device *pdev)
+{
+	struct au1xpsc_audio_dmadata *dmadata;
+>>>>>>> refs/remotes/origin/master
 
 	dmadata = devm_kzalloc(&pdev->dev,
 			       2 * sizeof(struct au1xpsc_audio_dmadata),
@@ -416,6 +454,7 @@ out1:
 	platform_set_drvdata(pdev, dmadata);
 
 	return snd_soc_register_platform(&pdev->dev, &au1xpsc_soc_platform);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -429,6 +468,13 @@ static int __devexit au1xpsc_pcm_drvremove(struct platform_device *pdev)
 =======
 	snd_soc_unregister_platform(&pdev->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+static int au1xpsc_pcm_drvremove(struct platform_device *pdev)
+{
+	snd_soc_unregister_platform(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -439,6 +485,7 @@ static struct platform_driver au1xpsc_pcm_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= au1xpsc_pcm_drvprobe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(au1xpsc_pcm_drvremove),
 };
 
@@ -509,6 +556,12 @@ EXPORT_SYMBOL_GPL(au1xpsc_pcm_destroy);
 =======
 module_platform_driver(au1xpsc_pcm_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= au1xpsc_pcm_drvremove,
+};
+
+module_platform_driver(au1xpsc_pcm_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Au12x0/Au1550 PSC Audio DMA driver");

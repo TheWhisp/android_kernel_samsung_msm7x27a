@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
  * Carsten Langgaard, carstenl@mips.com
  * Copyright (C) 2000 MIPS Technologies, Inc.  All rights reserved.
  *
@@ -21,11 +22,24 @@
  *
  * Defines for the Malta interrupt controller.
  *
+=======
+ * This file is subject to the terms and conditions of the GNU General Public
+ * License.  See the file "COPYING" in the main directory of this archive
+ * for more details.
+ *
+ * Copyright (C) 2000,2012 MIPS Technologies, Inc.  All rights reserved.
+ *	Carsten Langgaard <carstenl@mips.com>
+ *	Steven J. Hill <sjhill@mips.com>
+>>>>>>> refs/remotes/origin/master
  */
 #ifndef _MIPS_MALTAINT_H
 #define _MIPS_MALTAINT_H
 
+<<<<<<< HEAD
 #include <irq.h>
+=======
+#define MIPS_GIC_IRQ_BASE	(MIPS_CPU_IRQ_BASE + 8)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Interrupts 0..15 are used for Malta ISA compatible interrupts
@@ -39,9 +53,15 @@
 #define MIPSCPU_INT_I8259A	MIPSCPU_INT_MB0
 #define MIPSCPU_INT_MB1		3
 #define MIPSCPU_INT_SMI		MIPSCPU_INT_MB1
+<<<<<<< HEAD
 #define MIPSCPU_INT_IPI0	MIPSCPU_INT_MB1	/* GIC IPI */
 #define MIPSCPU_INT_MB2		4
 #define MIPSCPU_INT_IPI1	MIPSCPU_INT_MB2	/* GIC IPI */
+=======
+#define MIPSCPU_INT_IPI0	MIPSCPU_INT_MB1 /* GIC IPI */
+#define MIPSCPU_INT_MB2		4
+#define MIPSCPU_INT_IPI1	MIPSCPU_INT_MB2 /* GIC IPI */
+>>>>>>> refs/remotes/origin/master
 #define MIPSCPU_INT_MB3		5
 #define MIPSCPU_INT_COREHI	MIPSCPU_INT_MB3
 #define MIPSCPU_INT_MB4		6
@@ -78,6 +98,7 @@
 #define MSC01E_INT_PERFCTR	10
 #define MSC01E_INT_CPUCTR	11
 
+<<<<<<< HEAD
 /* GIC's Nomenclature for Core Interrupt Pins on the Malta */
 #define GIC_CPU_INT0		0 /* Core Interrupt 2 	*/
 #define GIC_CPU_INT1		1 /* .			*/
@@ -88,6 +109,8 @@
 
 #define GIC_EXT_INTR(x)		x
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* External Interrupts used for IPI */
 #define GIC_IPI_EXT_INTR_RESCHED_VPE0	16
 #define GIC_IPI_EXT_INTR_CALLFNC_VPE0	17
@@ -98,10 +121,13 @@
 #define GIC_IPI_EXT_INTR_RESCHED_VPE3	22
 #define GIC_IPI_EXT_INTR_CALLFNC_VPE3	23
 
+<<<<<<< HEAD
 #define MIPS_GIC_IRQ_BASE	(MIPS_CPU_IRQ_BASE + 8)
 
 #ifndef __ASSEMBLY__
 extern void maltaint_init(void);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !(_MIPS_MALTAINT_H) */

@@ -41,9 +41,13 @@
 #include <linux/string.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/crc32.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/crc32.h>
+>>>>>>> refs/remotes/origin/master
 
 #define CHKSUM_BLOCK_SIZE	1
 #define CHKSUM_DIGEST_SIZE	4
@@ -57,6 +61,7 @@ struct chksum_desc_ctx {
 };
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * This is the CRC-32C table
  * Generated with:
@@ -149,6 +154,8 @@ static u32 crc32c(u32 crc, const u8 *data, unsigned int length)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Steps through buffer one byte at at time, calculates reflected
  * crc using table.
  */
@@ -187,10 +194,14 @@ static int chksum_update(struct shash_desc *desc, const u8 *data,
 	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ctx->crc = crc32c(ctx->crc, data, length);
 =======
 	ctx->crc = __crc32c_le(ctx->crc, data, length);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctx->crc = __crc32c_le(ctx->crc, data, length);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -205,10 +216,14 @@ static int chksum_final(struct shash_desc *desc, u8 *out)
 static int __chksum_finup(u32 *crcp, const u8 *data, unsigned int len, u8 *out)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*(__le32 *)out = ~cpu_to_le32(crc32c(*crcp, data, len));
 =======
 	*(__le32 *)out = ~cpu_to_le32(__crc32c_le(*crcp, data, len));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*(__le32 *)out = ~cpu_to_le32(__crc32c_le(*crcp, data, len));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -240,18 +255,24 @@ static struct shash_alg alg = {
 	.digestsize		=	CHKSUM_DIGEST_SIZE,
 	.setkey			=	chksum_setkey,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.init   		= 	chksum_init,
 	.update 		=	chksum_update,
 	.final  		=	chksum_final,
 	.finup  		=	chksum_finup,
 	.digest  		=	chksum_digest,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.init		=	chksum_init,
 	.update		=	chksum_update,
 	.final		=	chksum_final,
 	.finup		=	chksum_finup,
 	.digest		=	chksum_digest,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.descsize		=	sizeof(struct chksum_desc_ctx),
 	.base			=	{
 		.cra_name		=	"crc32c",

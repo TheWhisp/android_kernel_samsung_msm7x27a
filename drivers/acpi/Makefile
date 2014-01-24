@@ -20,6 +20,7 @@ obj-y				+= acpi.o \
 # All the builtin files are in the "acpi." module_param namespace.
 acpi-y				+= osl.o utils.o reboot.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 acpi-y				+= atomicio.o
 =======
 acpi-y				+= nvs.o
@@ -33,6 +34,15 @@ acpi-$(CONFIG_ACPI_SLEEP)	+= proc.o nvs.o
 =======
 acpi-$(CONFIG_ACPI_SLEEP)	+= proc.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+acpi-y				+= nvs.o
+
+# Power management related files
+acpi-y				+= wakeup.o
+acpi-y				+= sleep.o
+acpi-y				+= device_pm.o
+acpi-$(CONFIG_ACPI_SLEEP)	+= proc.o
+>>>>>>> refs/remotes/origin/master
 
 
 #
@@ -40,6 +50,7 @@ acpi-$(CONFIG_ACPI_SLEEP)	+= proc.o
 #
 acpi-y				+= bus.o glue.o
 acpi-y				+= scan.o
+<<<<<<< HEAD
 acpi-y				+= processor_core.o
 acpi-y				+= ec.o
 acpi-$(CONFIG_ACPI_DOCK)	+= dock.o
@@ -50,11 +61,34 @@ acpi-y				+= sysfs.o
 acpi-$(CONFIG_DEBUG_FS)		+= debugfs.o
 acpi-$(CONFIG_ACPI_NUMA)	+= numa.o
 acpi-$(CONFIG_ACPI_PROCFS_POWER) += cm_sbs.o
+=======
+acpi-y				+= resource.o
+acpi-y				+= acpi_processor.o
+acpi-y				+= processor_core.o
+acpi-y				+= ec.o
+acpi-$(CONFIG_ACPI_DOCK)	+= dock.o
+acpi-y				+= pci_root.o pci_link.o pci_irq.o
+acpi-$(CONFIG_X86_INTEL_LPSS)	+= acpi_lpss.o
+acpi-y				+= acpi_platform.o
+acpi-y				+= power.o
+acpi-y				+= event.o
+acpi-y				+= sysfs.o
+acpi-$(CONFIG_X86)		+= acpi_cmos_rtc.o
+acpi-$(CONFIG_DEBUG_FS)		+= debugfs.o
+acpi-$(CONFIG_ACPI_NUMA)	+= numa.o
+>>>>>>> refs/remotes/origin/master
 ifdef CONFIG_ACPI_VIDEO
 acpi-y				+= video_detect.o
 endif
 
 # These are (potentially) separate modules
+<<<<<<< HEAD
+=======
+
+# IPMI may be used by other drivers, so it has to initialise before them
+obj-$(CONFIG_ACPI_IPMI)		+= acpi_ipmi.o
+
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_ACPI_AC) 		+= ac.o
 obj-$(CONFIG_ACPI_BUTTON)	+= button.o
 obj-$(CONFIG_ACPI_FAN)		+= fan.o
@@ -71,9 +105,13 @@ obj-$(CONFIG_ACPI_HED)		+= hed.o
 obj-$(CONFIG_ACPI_EC_DEBUGFS)	+= ec_sys.o
 obj-$(CONFIG_ACPI_CUSTOM_METHOD)+= custom_method.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_ACPI_BGRT)		+= bgrt.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_ACPI_BGRT)		+= bgrt.o
+>>>>>>> refs/remotes/origin/master
 
 # processor has its own "processor." module_param namespace
 processor-y			:= processor_driver.o processor_throttling.o
@@ -81,6 +119,13 @@ processor-y			+= processor_idle.o processor_thermal.o
 processor-$(CONFIG_CPU_FREQ)	+= processor_perflib.o
 
 obj-$(CONFIG_ACPI_PROCESSOR_AGGREGATOR) += acpi_pad.o
+<<<<<<< HEAD
 obj-$(CONFIG_ACPI_IPMI)		+= acpi_ipmi.o
 
 obj-$(CONFIG_ACPI_APEI)		+= apei/
+=======
+
+obj-$(CONFIG_ACPI_APEI)		+= apei/
+
+obj-$(CONFIG_ACPI_EXTLOG)	+= acpi_extlog.o
+>>>>>>> refs/remotes/origin/master

@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2006 - 2009 Intel Corporation.  All rights reserved.
 =======
  * Copyright (c) 2006 - 2011 Intel Corporation.  All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2006 - 2011 Intel Corporation.  All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This software is available to you under a choice of one of two
  * licenses.  You may choose to be licensed under the terms of the GNU
@@ -56,17 +60,23 @@
 #include "nes.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u16 nes_read16_eeprom(void __iomem *addr, u16 offset);
 
 u32 mh_detected;
 u32 mh_pauses_sent;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 nes_set_pau(struct nes_device *nesdev)
 {
 	u32 ret = 0;
@@ -90,7 +100,10 @@ static u32 nes_set_pau(struct nes_device *nesdev)
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * nes_read_eeprom_values -
  */
@@ -221,13 +234,19 @@ int nes_read_eeprom_values(struct nes_device *nesdev, struct nes_adapter *nesada
 			nesadapter->send_term_ok = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (nes_drv_opt & NES_DRV_OPT_ENABLE_PAU) {
 			if (!nes_set_pau(nesdev))
 				nesadapter->allow_unaligned_fpdus = 1;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		nesadapter->firmware_version = (((u32)(u8)(eeprom_data>>8))  <<  16) +
 				(u32)((u8)eeprom_data);
 
@@ -636,9 +655,13 @@ void nes_put_cqp_request(struct nes_device *nesdev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 /**
  * nes_post_cqp_request
  */
@@ -650,10 +673,15 @@ void nes_post_cqp_request(struct nes_device *nesdev,
 	u32 cqp_head;
 	u64 u64temp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 opcode;
 	int ctx_index = NES_CQP_WQE_COMP_CTX_LOW_IDX;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 opcode;
+	int ctx_index = NES_CQP_WQE_COMP_CTX_LOW_IDX;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&nesdev->cqp.lock, flags);
 
@@ -664,6 +692,7 @@ void nes_post_cqp_request(struct nes_device *nesdev,
 		nesdev->cqp.sq_head &= nesdev->cqp.sq_size-1;
 		cqp_wqe = &nesdev->cqp.sq_vbase[cqp_head];
 		memcpy(cqp_wqe, &cqp_request->cqp_wqe, sizeof(*cqp_wqe));
+<<<<<<< HEAD
 <<<<<<< HEAD
 		barrier();
 		u64temp = (unsigned long)cqp_request;
@@ -677,6 +706,8 @@ void nes_post_cqp_request(struct nes_device *nesdev,
 				nesdev->cqp.sq_head, nesdev->cqp.sq_tail, nesdev->cqp.sq_size,
 				cqp_request->waiting, atomic_read(&cqp_request->refcount));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		opcode = le32_to_cpu(cqp_wqe->wqe_words[NES_CQP_WQE_OPCODE_IDX]);
 		if ((opcode & NES_CQP_OPCODE_MASK) == NES_CQP_DOWNLOAD_SEGMENT)
 			ctx_index = NES_CQP_WQE_DL_COMP_CTX_LOW_IDX;
@@ -691,7 +722,10 @@ void nes_post_cqp_request(struct nes_device *nesdev,
 			nesdev->cqp.sq_head, nesdev->cqp.sq_tail, nesdev->cqp.sq_size,
 			cqp_request->waiting, atomic_read(&cqp_request->refcount));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		barrier();
 
 		/* Ring doorbell (1 WQEs) */
@@ -713,9 +747,12 @@ void nes_post_cqp_request(struct nes_device *nesdev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * nes_arp_table
  */
@@ -738,7 +775,11 @@ int nes_arp_table(struct nes_device *nesdev, u32 ip_addr, u8 *mac_addr, u32 acti
 
 		arp_index = 0;
 		err = nes_alloc_resource(nesadapter, nesadapter->allocated_arps,
+<<<<<<< HEAD
 				nesadapter->arp_table_size, (u32 *)&arp_index, &nesadapter->next_arp_index);
+=======
+				nesadapter->arp_table_size, (u32 *)&arp_index, &nesadapter->next_arp_index, NES_RESOURCE_ARP);
+>>>>>>> refs/remotes/origin/master
 		if (err) {
 			nes_debug(NES_DBG_NETDEV, "nes_alloc_resource returned error = %u\n", err);
 			return err;

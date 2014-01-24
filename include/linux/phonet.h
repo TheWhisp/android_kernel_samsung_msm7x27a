@@ -19,6 +19,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
+<<<<<<< HEAD
 
 #ifndef LINUX_PHONET_H
 #define LINUX_PHONET_H
@@ -199,6 +200,13 @@ static inline __u8 pn_sockaddr_get_resource(const struct sockaddr_pn *spn)
 
 /* Phonet device ioctl requests */
 #ifdef __KERNEL__
+=======
+#ifndef LINUX_PHONET_H
+#define LINUX_PHONET_H
+
+#include <uapi/linux/phonet.h>
+
+>>>>>>> refs/remotes/origin/master
 #define SIOCPNGAUTOCONF		(SIOCDEVPRIVATE + 0)
 
 struct if_phonet_autoconf {
@@ -212,6 +220,9 @@ struct if_phonet_req {
 	} ifr_ifru;
 };
 #define ifr_phonet_autoconf ifr_ifru.ifru_phonet_autoconf
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

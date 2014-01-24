@@ -4,10 +4,14 @@
 #include <linux/types.h>
 #include <asm/barrier.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 #include <asm/cmpxchg.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cmpxchg.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Atomic operations that C can't guarantee us.  Useful for
@@ -181,15 +185,20 @@ static __inline__ long atomic64_sub_return(long i, atomic64_t * v)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * atomic_add_unless - add unless the number is a given value
 =======
  * __atomic_add_unless - add unless the number is a given value
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * __atomic_add_unless - add unless the number is a given value
+>>>>>>> refs/remotes/origin/master
  * @v: pointer of type atomic_t
  * @a: the amount to add to v...
  * @u: ...unless v is equal to u.
  *
  * Atomically adds @a to @v, so long as it was not @u.
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Returns non-zero if @v was not @u, and zero otherwise.
  */
@@ -220,6 +229,32 @@ static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Returns the old value of @v.
+ */
+static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
+{
+	int c, new, old;
+	smp_mb();
+	__asm__ __volatile__(
+	"1:	ldl_l	%[old],%[mem]\n"
+	"	cmpeq	%[old],%[u],%[c]\n"
+	"	addl	%[old],%[a],%[new]\n"
+	"	bne	%[c],2f\n"
+	"	stl_c	%[new],%[mem]\n"
+	"	beq	%[new],3f\n"
+	"2:\n"
+	".subsection 2\n"
+	"3:	br	1b\n"
+	".previous"
+	: [old] "=&r"(old), [new] "=&r"(new), [c] "=&r"(c)
+	: [mem] "m"(*v), [a] "rI"(a), [u] "rI"((long)u)
+	: "memory");
+	smp_mb();
+	return old;
+}
+
+>>>>>>> refs/remotes/origin/master
 
 /**
  * atomic64_add_unless - add unless the number is a given value
@@ -228,6 +263,7 @@ static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
  * @u: ...unless v is equal to u.
  *
  * Atomically adds @a to @v, so long as it was not @u.
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Returns non-zero if @v was not @u, and zero otherwise.
 =======
@@ -247,6 +283,58 @@ static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
 		c = old;
 	}
 	return c != (u);
+=======
+ * Returns true iff @v was not @u.
+ */
+static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
+{
+	long c, tmp;
+	smp_mb();
+	__asm__ __volatile__(
+	"1:	ldq_l	%[tmp],%[mem]\n"
+	"	cmpeq	%[tmp],%[u],%[c]\n"
+	"	addq	%[tmp],%[a],%[tmp]\n"
+	"	bne	%[c],2f\n"
+	"	stq_c	%[tmp],%[mem]\n"
+	"	beq	%[tmp],3f\n"
+	"2:\n"
+	".subsection 2\n"
+	"3:	br	1b\n"
+	".previous"
+	: [tmp] "=&r"(tmp), [c] "=&r"(c)
+	: [mem] "m"(*v), [a] "rI"(a), [u] "rI"(u)
+	: "memory");
+	smp_mb();
+	return !c;
+}
+
+/*
+ * atomic64_dec_if_positive - decrement by 1 if old value positive
+ * @v: pointer of type atomic_t
+ *
+ * The function returns the old value of *v minus 1, even if
+ * the atomic variable, v, was not decremented.
+ */
+static inline long atomic64_dec_if_positive(atomic64_t *v)
+{
+	long old, tmp;
+	smp_mb();
+	__asm__ __volatile__(
+	"1:	ldq_l	%[old],%[mem]\n"
+	"	subq	%[old],1,%[tmp]\n"
+	"	ble	%[old],2f\n"
+	"	stq_c	%[tmp],%[mem]\n"
+	"	beq	%[tmp],3f\n"
+	"2:\n"
+	".subsection 2\n"
+	"3:	br	1b\n"
+	".previous"
+	: [old] "=&r"(old), [tmp] "=&r"(tmp)
+	: [mem] "m"(*v)
+	: "memory");
+	smp_mb();
+	return old - 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 #define atomic64_inc_not_zero(v) atomic64_add_unless((v), 1, 0)
@@ -281,7 +369,10 @@ static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
 #define smp_mb__after_atomic_inc()	smp_mb()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm-generic/atomic-long.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ALPHA_ATOMIC_H */

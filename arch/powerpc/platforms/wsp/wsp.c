@@ -13,6 +13,10 @@
 #include <linux/smp.h>
 #include <linux/delay.h>
 #include <linux/time.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/scom.h>
 
@@ -89,6 +93,10 @@ void wsp_halt(void)
 	struct device_node *dn;
 	struct device_node *mine;
 	struct device_node *me;
+<<<<<<< HEAD
+=======
+	int rc;
+>>>>>>> refs/remotes/origin/master
 
 	me = of_get_cpu_node(smp_processor_id(), NULL);
 	mine = scom_find_parent(me);
@@ -101,6 +109,7 @@ void wsp_halt(void)
 
 		/* read-modify-write it so the HW probe does not get
 		 * confused */
+<<<<<<< HEAD
 		val = scom_read(m, 0);
 		val |= 1;
 		scom_write(m, 0, val);
@@ -110,6 +119,17 @@ void wsp_halt(void)
 	val = scom_read(m, 0);
 	val |= 1;
 	scom_write(m, 0, val);
+=======
+		rc = scom_read(m, 0, &val);
+		if (rc == 0)
+			scom_write(m, 0, val | 1);
+		scom_unmap(m);
+	}
+	m = scom_map(mine, 0, 1);
+	rc = scom_read(m, 0, &val);
+	if (rc == 0)
+		scom_write(m, 0, val | 1);
+>>>>>>> refs/remotes/origin/master
 	/* should never return */
 	scom_unmap(m);
 }

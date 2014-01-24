@@ -55,8 +55,13 @@
 #define	CACHE_SIZE	0x2000		/* 8k of unified cache */
 #define	ICACHE_SIZE	CACHE_SIZE
 #define	DCACHE_SIZE	CACHE_SIZE
+<<<<<<< HEAD
 #elif defined(CONFIG_M532x)
 #define	CACHE_SIZE	0x4000		/* 32k of unified cache */
+=======
+#elif defined(CONFIG_M53xx)
+#define	CACHE_SIZE	0x4000		/* 16k of unified cache */
+>>>>>>> refs/remotes/origin/master
 #define	ICACHE_SIZE	CACHE_SIZE
 #define	DCACHE_SIZE	CACHE_SIZE
 #endif

@@ -43,6 +43,7 @@
 #include "control.h"
 #include "rndis.h"
 
+<<<<<<< HEAD
 /*---------------------  Static Definitions -------------------------*/
 /* static int          msglevel                =MSG_LEVEL_INFO;  */
 /* static int          msglevel                =MSG_LEVEL_DEBUG; */
@@ -95,4 +96,39 @@ void ControlvMaskByte(PSDevice pDevice, BYTE byRegType, BYTE byRegOfs,
 				byRegType,
 				2,
 				pbyData);
+=======
+/* static int          msglevel                =MSG_LEVEL_INFO;  */
+/* static int          msglevel                =MSG_LEVEL_DEBUG; */
+
+void ControlvWriteByte(struct vnt_private *pDevice, u8 reg, u8 reg_off,
+			u8 data)
+{
+
+	CONTROLnsRequestOut(pDevice, MESSAGE_TYPE_WRITE, reg_off, reg,
+		sizeof(u8), &data);
+
+	return;
+}
+
+void ControlvReadByte(struct vnt_private *pDevice, u8 reg, u8 reg_off,
+			u8 *data)
+{
+	CONTROLnsRequestIn(pDevice, MESSAGE_TYPE_READ,
+			reg_off, reg, sizeof(u8), data);
+	return;
+}
+
+void ControlvMaskByte(struct vnt_private *pDevice, u8 reg_type, u8 reg_off,
+			u8 reg_mask, u8 data)
+{
+	u8 reg_data[2];
+
+	reg_data[0] = data;
+	reg_data[1] = reg_mask;
+
+	CONTROLnsRequestOut(pDevice, MESSAGE_TYPE_WRITE_MASK, reg_off,
+			reg_type, ARRAY_SIZE(reg_data), reg_data);
+
+	return;
+>>>>>>> refs/remotes/origin/master
 }

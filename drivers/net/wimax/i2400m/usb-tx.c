@@ -178,9 +178,12 @@ static
 int i2400mu_txd(void *_i2400mu)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int result = 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct i2400mu *i2400mu = _i2400mu;
 	struct i2400m *i2400m = &i2400mu->i2400m;
 	struct device *dev = &i2400mu->usb_iface->dev;
@@ -212,10 +215,13 @@ int i2400mu_txd(void *_i2400mu)
 		i2400mu_tx(i2400mu, tx_msg, tx_msg_size);
 		i2400m_tx_msg_sent(i2400m);	/* ack it, advance the FIFO */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (result < 0)
 			break;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_lock_irqsave(&i2400m->tx_lock, flags);
@@ -223,12 +229,17 @@ int i2400mu_txd(void *_i2400mu)
 	spin_unlock_irqrestore(&i2400m->tx_lock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	d_fnend(4, dev, "(i2400mu %p) = %d\n", i2400mu, result);
 	return result;
 =======
 	d_fnend(4, dev, "(i2400mu %p)\n", i2400mu);
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	d_fnend(4, dev, "(i2400mu %p)\n", i2400mu);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 

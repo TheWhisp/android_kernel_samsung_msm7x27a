@@ -8,9 +8,14 @@
 extern void usb_wwan_dtr_rts(struct usb_serial_port *port, int on);
 extern int usb_wwan_open(struct tty_struct *tty, struct usb_serial_port *port);
 extern void usb_wwan_close(struct usb_serial_port *port);
+<<<<<<< HEAD
 extern int usb_wwan_startup(struct usb_serial *serial);
 extern void usb_wwan_disconnect(struct usb_serial *serial);
 extern void usb_wwan_release(struct usb_serial *serial);
+=======
+extern int usb_wwan_port_probe(struct usb_serial_port *port);
+extern int usb_wwan_port_remove(struct usb_serial_port *port);
+>>>>>>> refs/remotes/origin/master
 extern int usb_wwan_write_room(struct tty_struct *tty);
 extern void usb_wwan_set_termios(struct tty_struct *tty,
 				 struct usb_serial_port *port,
@@ -25,10 +30,13 @@ extern int usb_wwan_write(struct tty_struct *tty, struct usb_serial_port *port,
 			  const unsigned char *buf, int count);
 extern int usb_wwan_chars_in_buffer(struct tty_struct *tty);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void usb_wwan_throttle(struct tty_struct *tty);
 extern void usb_wwan_unthrottle(struct tty_struct *tty);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 extern int usb_wwan_suspend(struct usb_serial *serial, pm_message_t message);
 extern int usb_wwan_resume(struct usb_serial *serial);
@@ -37,16 +45,22 @@ extern int usb_wwan_resume(struct usb_serial *serial);
 /* per port private data */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 #define N_IN_URB 4
 #define N_OUT_URB 4
 #define IN_BUFLEN 4096
 #define OUT_BUFLEN 4096
+<<<<<<< HEAD
 =======
 #define N_IN_URB 5
 #define N_OUT_URB 5
 #define IN_BUFLEN 16384
 #define OUT_BUFLEN 65536
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct usb_wwan_intf_private {
 	spinlock_t susp_lock;
@@ -66,6 +80,7 @@ struct usb_wwan_port_private {
 	unsigned long out_busy;	/* Bit vector of URBs in use */
 	int opened;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct usb_anchor delayed;
 =======
 	struct usb_anchor submitted;
@@ -75,6 +90,9 @@ struct usb_wwan_port_private {
 	ssize_t n_read;
 	struct work_struct in_work;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_anchor delayed;
+>>>>>>> refs/remotes/origin/master
 
 	/* Settings for the port */
 	int rts_state;		/* Handshaking pins (outputs) */

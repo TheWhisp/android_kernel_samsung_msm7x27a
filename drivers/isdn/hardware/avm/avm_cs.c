@@ -19,9 +19,12 @@
 #include <linux/major.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <pcmcia/cistpl.h>
 #include <pcmcia/ciscode.h>
@@ -48,6 +51,7 @@ static void avmcs_detach(struct pcmcia_device *p_dev);
 static int avmcs_probe(struct pcmcia_device *p_dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
     /* General socket configuration */
     p_dev->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
     p_dev->config_index = 1;
@@ -55,13 +59,18 @@ static int avmcs_probe(struct pcmcia_device *p_dev)
 
     return avmcs_config(p_dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* General socket configuration */
 	p_dev->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
 	p_dev->config_index = 1;
 	p_dev->config_regs = PRESENT_OPTION;
 
 	return avmcs_config(p_dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } /* avmcs_attach */
 
 
@@ -81,6 +90,7 @@ static int avmcs_configcheck(struct pcmcia_device *p_dev, void *priv_data)
 
 static int avmcs_config(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
     int i = -1;
     char devname[128];
@@ -152,6 +162,8 @@ static int avmcs_config(struct pcmcia_device *link)
     }
     return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int i = -1;
 	char devname[128];
 	int cardtype;
@@ -221,7 +233,10 @@ static int avmcs_config(struct pcmcia_device *link)
 		return -ENODEV;
 	}
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 } /* avmcs_config */
 
@@ -248,6 +263,7 @@ static struct pcmcia_driver avmcs_driver = {
 	.remove	= avmcs_detach,
 	.id_table = avmcs_ids,
 };
+<<<<<<< HEAD
 
 static int __init avmcs_init(void)
 {
@@ -261,3 +277,6 @@ static void __exit avmcs_exit(void)
 
 module_init(avmcs_init);
 module_exit(avmcs_exit);
+=======
+module_pcmcia_driver(avmcs_driver);
+>>>>>>> refs/remotes/origin/master

@@ -4,6 +4,10 @@ xipImage
 bootpImage
 uImage
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 *.dtb
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+*.dtb
+>>>>>>> refs/remotes/origin/master

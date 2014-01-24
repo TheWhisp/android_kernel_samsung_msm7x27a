@@ -1,7 +1,11 @@
 /*
  * ALSA SoC WM9090 driver
  *
+<<<<<<< HEAD
  * Copyright 2009, 2010 Wolfson Microelectronics
+=======
+ * Copyright 2009-12 Wolfson Microelectronics
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
  *
@@ -26,9 +30,13 @@
 #include <linux/i2c.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/regmap.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <sound/initval.h>
 #include <sound/soc.h>
@@ -37,6 +45,7 @@
 
 #include "wm9090.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const u16 wm9090_reg_defaults[] = {
 	0x9093,     /* R0   - Software Reset */
@@ -141,6 +150,8 @@ static const u16 wm9090_reg_defaults[] = {
 	0xC000,     /* R99  - AGC Control 1 */
 	0x0200,     /* R100 - AGC Control 2 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct reg_default wm9090_reg_defaults[] = {
 	{ 1,  0x0006 },     /* R1   - Power Management (1) */
 	{ 2,  0x6000 },     /* R2   - Power Management (2) */
@@ -177,11 +188,15 @@ static const struct reg_default wm9090_reg_defaults[] = {
 	{ 98, 0x8640 },     /* R98  - AGC Control 0 */
 	{ 99, 0xC000 },     /* R99  - AGC Control 1 */
 	{ 100, 0x0200 },     /* R100 - AGC Control 2 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* This struct is used to save the context */
 struct wm9090_priv {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct mutex mutex;
 	struct wm9090_platform_data pdata;
@@ -190,12 +205,17 @@ struct wm9090_priv {
 
 static int wm9090_volatile(struct snd_soc_codec *codec, unsigned int reg)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct wm9090_platform_data pdata;
 	struct regmap *regmap;
 };
 
 static bool wm9090_volatile(struct device *dev, unsigned int reg)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	switch (reg) {
 	case WM9090_SOFTWARE_RESET:
@@ -204,11 +224,14 @@ static bool wm9090_volatile(struct device *dev, unsigned int reg)
 	case WM9090_DC_SERVO_READBACK_1:
 	case WM9090_DC_SERVO_READBACK_2:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return 1;
 
 	default:
 		return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return true;
 
 	default:
@@ -263,7 +286,10 @@ static bool wm9090_readable(struct device *dev, unsigned int reg)
 
 	default:
 		return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -288,30 +314,42 @@ static void wait_for_dc_servo(struct snd_soc_codec *codec)
 
 static const unsigned int in_tlv[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TLV_DB_RANGE_HEAD(6),
 =======
 	TLV_DB_RANGE_HEAD(3),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TLV_DB_RANGE_HEAD(3),
+>>>>>>> refs/remotes/origin/master
 	0, 0, TLV_DB_SCALE_ITEM(-600, 0, 0),
 	1, 3, TLV_DB_SCALE_ITEM(-350, 350, 0),
 	4, 6, TLV_DB_SCALE_ITEM(600, 600, 0),
 };
 static const unsigned int mix_tlv[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TLV_DB_RANGE_HEAD(4),
 =======
 	TLV_DB_RANGE_HEAD(2),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TLV_DB_RANGE_HEAD(2),
+>>>>>>> refs/remotes/origin/master
 	0, 2, TLV_DB_SCALE_ITEM(-1200, 300, 0),
 	3, 3, TLV_DB_SCALE_ITEM(0, 0, 0),
 };
 static const DECLARE_TLV_DB_SCALE(out_tlv, -5700, 100, 0);
 static const unsigned int spkboost_tlv[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TLV_DB_RANGE_HEAD(7),
 =======
 	TLV_DB_RANGE_HEAD(2),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TLV_DB_RANGE_HEAD(2),
+>>>>>>> refs/remotes/origin/master
 	0, 6, TLV_DB_SCALE_ITEM(0, 150, 0),
 	7, 7, TLV_DB_SCALE_ITEM(1200, 0, 0),
 };
@@ -570,10 +608,14 @@ static int wm9090_add_controls(struct snd_soc_codec *codec)
 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, wm9090_controls,
 =======
 	snd_soc_add_codec_controls(codec, wm9090_controls,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_add_codec_controls(codec, wm9090_controls,
+>>>>>>> refs/remotes/origin/master
 			     ARRAY_SIZE(wm9090_controls));
 
 	if (wm9090->pdata.lin1_diff) {
@@ -583,10 +625,14 @@ static int wm9090_add_controls(struct snd_soc_codec *codec)
 		snd_soc_dapm_add_routes(dapm, audio_map_in1_se,
 					ARRAY_SIZE(audio_map_in1_se));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		snd_soc_add_controls(codec, wm9090_in1_se_controls,
 =======
 		snd_soc_add_codec_controls(codec, wm9090_in1_se_controls,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		snd_soc_add_codec_controls(codec, wm9090_in1_se_controls,
+>>>>>>> refs/remotes/origin/master
 				     ARRAY_SIZE(wm9090_in1_se_controls));
 	}
 
@@ -597,10 +643,14 @@ static int wm9090_add_controls(struct snd_soc_codec *codec)
 		snd_soc_dapm_add_routes(dapm, audio_map_in2_se,
 					ARRAY_SIZE(audio_map_in2_se));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		snd_soc_add_controls(codec, wm9090_in2_se_controls,
 =======
 		snd_soc_add_codec_controls(codec, wm9090_in2_se_controls,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		snd_soc_add_codec_controls(codec, wm9090_in2_se_controls,
+>>>>>>> refs/remotes/origin/master
 				     ARRAY_SIZE(wm9090_in2_se_controls));
 	}
 
@@ -627,11 +677,15 @@ static int wm9090_set_bias_level(struct snd_soc_codec *codec,
 				 enum snd_soc_bias_level level)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 *reg_cache = codec->reg_cache;
 	int i, ret;
 =======
 	struct wm9090_priv *wm9090 = snd_soc_codec_get_drvdata(codec);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wm9090_priv *wm9090 = snd_soc_codec_get_drvdata(codec);
+>>>>>>> refs/remotes/origin/master
 
 	switch (level) {
 	case SND_SOC_BIAS_ON:
@@ -652,6 +706,7 @@ static int wm9090_set_bias_level(struct snd_soc_codec *codec,
 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
 			/* Restore the register cache */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			for (i = 1; i < codec->driver->reg_cache_size; i++) {
 				if (reg_cache[i] == wm9090_reg_defaults[i])
 					continue;
@@ -667,6 +722,9 @@ static int wm9090_set_bias_level(struct snd_soc_codec *codec,
 =======
 			regcache_sync(wm9090->regmap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			regcache_sync(wm9090->regmap);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* We keep VMID off during standby since the combination of
@@ -691,23 +749,30 @@ static int wm9090_set_bias_level(struct snd_soc_codec *codec,
 static int wm9090_probe(struct snd_soc_codec *codec)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct wm9090_priv *wm9090 = snd_soc_codec_get_drvdata(codec);
 	int ret;
 
 	codec->control_data = wm9090->control_data;
 	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_I2C);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct wm9090_priv *wm9090 = dev_get_drvdata(codec->dev);
 	int ret;
 
 	codec->control_data = wm9090->regmap;
 	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_REGMAP);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 		return ret;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = snd_soc_read(codec, WM9090_SOFTWARE_RESET);
 	if (ret < 0)
@@ -723,6 +788,8 @@ static int wm9090_probe(struct snd_soc_codec *codec)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Configure some defaults; they will be written out when we
 	 * bring the bias up.
 	 */
@@ -760,10 +827,14 @@ static int wm9090_probe(struct snd_soc_codec *codec)
 
 #ifdef CONFIG_PM
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int wm9090_suspend(struct snd_soc_codec *codec, pm_message_t state)
 =======
 static int wm9090_suspend(struct snd_soc_codec *codec)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wm9090_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	wm9090_set_bias_level(codec, SND_SOC_BIAS_OFF);
 
@@ -795,6 +866,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm9090 = {
 	.resume =	wm9090_resume,
 	.set_bias_level = wm9090_set_bias_level,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.reg_cache_size = (WM9090_MAX_REGISTER + 1),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm9090_reg_defaults,
@@ -802,6 +874,8 @@ static struct snd_soc_codec_driver soc_codec_dev_wm9090 = {
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct regmap_config wm9090_regmap = {
@@ -818,29 +892,42 @@ static const struct regmap_config wm9090_regmap = {
 };
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int wm9090_i2c_probe(struct i2c_client *i2c,
 			    const struct i2c_device_id *id)
 {
 	struct wm9090_priv *wm9090;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 
 	wm9090 = kzalloc(sizeof(*wm9090), GFP_KERNEL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int reg;
 	int ret;
 
 	wm9090 = devm_kzalloc(&i2c->dev, sizeof(*wm9090), GFP_KERNEL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (wm9090 == NULL) {
 		dev_err(&i2c->dev, "Can not allocate memory\n");
 		return -ENOMEM;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	wm9090->regmap = regmap_init_i2c(i2c, &wm9090_regmap);
+=======
+	wm9090->regmap = devm_regmap_init_i2c(i2c, &wm9090_regmap);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(wm9090->regmap)) {
 		ret = PTR_ERR(wm9090->regmap);
 		dev_err(&i2c->dev, "Failed to allocate regmap: %d\n", ret);
@@ -849,23 +936,37 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
 
 	ret = regmap_read(wm9090->regmap, WM9090_SOFTWARE_RESET, &reg);
 	if (ret < 0)
+<<<<<<< HEAD
 		goto err;
 	if (reg != 0x9093) {
 		dev_err(&i2c->dev, "Device is not a WM9090, ID=%x\n", reg);
 		ret = -ENODEV;
 		goto err;
+=======
+		return ret;
+
+	if (reg != 0x9093) {
+		dev_err(&i2c->dev, "Device is not a WM9090, ID=%x\n", reg);
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = regmap_write(wm9090->regmap, WM9090_SOFTWARE_RESET, 0);
 	if (ret < 0)
+<<<<<<< HEAD
 		goto err;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return ret;
+
+>>>>>>> refs/remotes/origin/master
 	if (i2c->dev.platform_data)
 		memcpy(&wm9090->pdata, i2c->dev.platform_data,
 		       sizeof(wm9090->pdata));
 
 	i2c_set_clientdata(i2c, wm9090);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	wm9090->control_data = i2c;
 	mutex_init(&wm9090->mutex);
@@ -875,11 +976,14 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
 	if (ret < 0)
 		kfree(wm9090);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret =  snd_soc_register_codec(&i2c->dev,
 			&soc_codec_dev_wm9090,  NULL, 0);
 	if (ret != 0) {
 		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
+<<<<<<< HEAD
 		goto err;
 	}
 
@@ -902,21 +1006,37 @@ static int __devexit wm9090_i2c_remove(struct i2c_client *i2c)
 	regmap_exit(wm9090->regmap);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+		return ret;
+	}
+
+	return 0;
+}
+
+static int wm9090_i2c_remove(struct i2c_client *i2c)
+{
+	snd_soc_unregister_codec(&i2c->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static const struct i2c_device_id wm9090_id[] = {
 	{ "wm9090", 0 },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ "wm9093", 0 },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "wm9093", 0 },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 MODULE_DEVICE_TABLE(i2c, wm9090_id);
 
 static struct i2c_driver wm9090_i2c_driver = {
 	.driver = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.name = "wm9090-codec",
 =======
@@ -940,6 +1060,17 @@ static void __exit wm9090_exit(void)
 	i2c_del_driver(&wm9090_i2c_driver);
 }
 module_exit(wm9090_exit);
+=======
+		.name = "wm9090",
+		.owner = THIS_MODULE,
+	},
+	.probe = wm9090_i2c_probe,
+	.remove = wm9090_i2c_remove,
+	.id_table = wm9090_id,
+};
+
+module_i2c_driver(wm9090_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
 MODULE_DESCRIPTION("WM9090 ASoC driver");

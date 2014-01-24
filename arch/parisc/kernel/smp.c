@@ -32,6 +32,7 @@
 #include <linux/bitops.h>
 #include <linux/ftrace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/system.h>
 #include <asm/atomic.h>
@@ -40,6 +41,11 @@
 
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/cpu.h>
+
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/current.h>
 #include <asm/delay.h>
 #include <asm/tlbflush.h>
@@ -68,9 +74,15 @@ static int smp_debug_lvl = 0;
 volatile struct task_struct *smp_init_current_idle_task;
 
 /* track which CPU is booting */
+<<<<<<< HEAD
 static volatile int cpu_now_booting __cpuinitdata;
 
 static int parisc_max_cpus __cpuinitdata = 1;
+=======
+static volatile int cpu_now_booting;
+
+static int parisc_max_cpus = 1;
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_PER_CPU(spinlock_t, ipi_lock);
 
@@ -78,7 +90,10 @@ enum ipi_message_type {
 	IPI_NOP=0,
 	IPI_RESCHEDULE=1,
 	IPI_CALL_FUNC,
+<<<<<<< HEAD
 	IPI_CALL_FUNC_SINGLE,
+=======
+>>>>>>> refs/remotes/origin/master
 	IPI_CPU_START,
 	IPI_CPU_STOP,
 	IPI_CPU_TEST
@@ -132,11 +147,14 @@ ipi_interrupt(int irq, void *dev_id)
 	unsigned long ops;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	/* Count this now; we may make a call that never returns. */
 	p->ipi_count++;
 
 	mb();	/* Order interrupt and bit testing. */
 
+=======
+>>>>>>> refs/remotes/origin/master
 	for (;;) {
 		spinlock_t *lock = &per_cpu(ipi_lock, this_cpu);
 		spin_lock_irqsave(lock, flags);
@@ -161,6 +179,10 @@ ipi_interrupt(int irq, void *dev_id)
 				
 			case IPI_RESCHEDULE:
 				smp_debug(100, KERN_DEBUG "CPU%d IPI_RESCHEDULE\n", this_cpu);
+<<<<<<< HEAD
+=======
+				inc_irq_stat(irq_resched_count);
+>>>>>>> refs/remotes/origin/master
 				scheduler_ipi();
 				break;
 
@@ -169,11 +191,14 @@ ipi_interrupt(int irq, void *dev_id)
 				generic_smp_call_function_interrupt();
 				break;
 
+<<<<<<< HEAD
 			case IPI_CALL_FUNC_SINGLE:
 				smp_debug(100, KERN_DEBUG "CPU%d IPI_CALL_FUNC_SINGLE\n", this_cpu);
 				generic_smp_call_function_single_interrupt();
 				break;
 
+=======
+>>>>>>> refs/remotes/origin/master
 			case IPI_CPU_START:
 				smp_debug(100, KERN_DEBUG "CPU%d IPI_CPU_START\n", this_cpu);
 				break;
@@ -265,6 +290,7 @@ void arch_send_call_function_ipi_mask(const struct cpumask *mask)
 
 void arch_send_call_function_single_ipi(int cpu)
 {
+<<<<<<< HEAD
 	send_IPI_single(cpu, IPI_CALL_FUNC_SINGLE);
 }
 
@@ -277,6 +303,9 @@ void
 smp_flush_tlb_all(void)
 {
 	on_each_cpu(flush_tlb_all_local, NULL, 1);
+=======
+	send_IPI_single(cpu, IPI_CALL_FUNC);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -298,27 +327,38 @@ smp_cpu_init(int cpunum)
 
 	/* Well, support 2.4 linux scheme as well. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu_isset(cpunum, cpu_online_map))
 	{
 =======
 	if (cpu_online(cpunum))	{
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cpu_online(cpunum))	{
+>>>>>>> refs/remotes/origin/master
 		extern void machine_halt(void); /* arch/parisc.../process.c */
 
 		printk(KERN_CRIT "CPU#%d already initialized!\n", cpunum);
 		machine_halt();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}  
 	set_cpu_online(cpunum, true);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	notify_cpu_starting(cpunum);
 
+<<<<<<< HEAD
 	ipi_call_lock();
 	set_cpu_online(cpunum, true);
 	ipi_call_unlock();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_cpu_online(cpunum, true);
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialise the idle task for this CPU */
 	atomic_inc(&init_mm.mm_count);
@@ -347,7 +387,11 @@ void __init smp_callin(void)
 
 	local_irq_enable();  /* Interrupts have been off until now */
 
+<<<<<<< HEAD
 	cpu_idle();      /* Wait for timer to schedule some work */
+=======
+	cpu_startup_entry(CPUHP_ONLINE);
+>>>>>>> refs/remotes/origin/master
 
 	/* NOTREACHED */
 	panic("smp_callin() AAAAaaaaahhhh....\n");
@@ -356,6 +400,7 @@ void __init smp_callin(void)
 /*
  * Bring one cpu online.
  */
+<<<<<<< HEAD
 int __cpuinit smp_boot_one_cpu(int cpuid)
 {
 	const struct cpuinfo_parisc *p = &per_cpu(cpu_data, cpuid);
@@ -376,6 +421,13 @@ int __cpuinit smp_boot_one_cpu(int cpuid)
 	if (IS_ERR(idle))
 		panic("SMP: fork failed for CPU:%d", cpuid);
 
+=======
+int smp_boot_one_cpu(int cpuid, struct task_struct *idle)
+{
+	const struct cpuinfo_parisc *p = &per_cpu(cpu_data, cpuid);
+	long timeout;
+
+>>>>>>> refs/remotes/origin/master
 	task_thread_info(idle)->cpu = cpuid;
 
 	/* Let _start know what logical CPU we're booting
@@ -419,10 +471,13 @@ int __cpuinit smp_boot_one_cpu(int cpuid)
 		udelay(100);
 		barrier();
 	}
+<<<<<<< HEAD
 
 	put_task_struct(idle);
 	idle = NULL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_CRIT "SMP: CPU:%d is stuck.\n", cpuid);
 	return -1;
 
@@ -471,10 +526,17 @@ void smp_cpus_done(unsigned int cpu_max)
 }
 
 
+<<<<<<< HEAD
 int __cpuinit __cpu_up(unsigned int cpu)
 {
 	if (cpu != 0 && cpu < parisc_max_cpus)
 		smp_boot_one_cpu(cpu);
+=======
+int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+{
+	if (cpu != 0 && cpu < parisc_max_cpus)
+		smp_boot_one_cpu(cpu, tidle);
+>>>>>>> refs/remotes/origin/master
 
 	return cpu_online(cpu) ? 0 : -ENOSYS;
 }

@@ -35,11 +35,14 @@
 //#define LART_DEBUG
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* partition support */
 #define HAVE_PARTITIONS
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/types.h>
@@ -48,12 +51,16 @@
 #include <linux/string.h>
 #include <linux/mtd/mtd.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef HAVE_PARTITIONS
 #include <linux/mtd/partitions.h>
 #endif
 =======
 #include <linux/mtd/partitions.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mtd/partitions.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CONFIG_SA1100_LART
 #error This is for LART architecture only
@@ -380,11 +387,14 @@ static int flash_erase (struct mtd_info *mtd,struct erase_info *instr)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
    /* sanity checks */
    if (instr->addr + instr->len > mtd->size) return (-EINVAL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
    /*
 	* check that both start and end of the requested erase are
 	* aligned with the erasesize at the appropriate addresses.
@@ -456,12 +466,15 @@ static int flash_read (struct mtd_info *mtd,loff_t from,size_t len,size_t *retle
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
    /* sanity checks */
    if (!len) return (0);
    if (from + len > mtd->size) return (-EINVAL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
    /* we always read len bytes */
    *retlen = len;
 
@@ -541,6 +554,7 @@ static int flash_write (struct mtd_info *mtd,loff_t to,size_t len,size_t *retlen
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
    *retlen = 0;
 
    /* sanity checks */
@@ -550,6 +564,10 @@ static int flash_write (struct mtd_info *mtd,loff_t to,size_t len,size_t *retlen
    /* sanity checks */
    if (!len) return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   /* sanity checks */
+   if (!len) return (0);
+>>>>>>> refs/remotes/origin/master
 
    /* first, we write a 0xFF.... padded byte until we reach a dword boundary */
    if (to & (BUSWIDTH - 1))
@@ -617,9 +635,12 @@ static struct mtd_erase_region_info erase_regions[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef HAVE_PARTITIONS
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct mtd_partition lart_partitions[] = {
 	/* blob */
 	{
@@ -641,10 +662,14 @@ static struct mtd_partition lart_partitions[] = {
 	}
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 #define NUM_PARTITIONS ARRAY_SIZE(lart_partitions)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NUM_PARTITIONS ARRAY_SIZE(lart_partitions)
+>>>>>>> refs/remotes/origin/master
 
 static int __init lart_flash_init (void)
 {
@@ -668,6 +693,7 @@ static int __init lart_flash_init (void)
    mtd.numeraseregions = ARRAY_SIZE(erase_regions);
    mtd.eraseregions = erase_regions;
 <<<<<<< HEAD
+<<<<<<< HEAD
    mtd.erase = flash_erase;
    mtd.read = flash_read;
    mtd.write = flash_write;
@@ -676,6 +702,11 @@ static int __init lart_flash_init (void)
    mtd._read = flash_read;
    mtd._write = flash_write;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   mtd._erase = flash_erase;
+   mtd._read = flash_read;
+   mtd._write = flash_write;
+>>>>>>> refs/remotes/origin/master
    mtd.owner = THIS_MODULE;
 
 #ifdef LART_DEBUG
@@ -701,9 +732,12 @@ static int __init lart_flash_init (void)
 			   result,mtd.eraseregions[result].numblocks);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef HAVE_PARTITIONS
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
    printk ("\npartitions = %d\n", ARRAY_SIZE(lart_partitions));
 
    for (result = 0; result < ARRAY_SIZE(lart_partitions); result++)
@@ -716,6 +750,7 @@ static int __init lart_flash_init (void)
 			 result,lart_partitions[result].offset,
 			 result,lart_partitions[result].size,lart_partitions[result].size / 1024);
 #endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 
@@ -730,12 +765,18 @@ static int __init lart_flash_init (void)
    result = mtd_device_register(&mtd, lart_partitions,
                                 ARRAY_SIZE(lart_partitions));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+   result = mtd_device_register(&mtd, lart_partitions,
+                                ARRAY_SIZE(lart_partitions));
+>>>>>>> refs/remotes/origin/master
 
    return (result);
 }
 
 static void __exit lart_flash_exit (void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifndef HAVE_PARTITIONS
    mtd_device_unregister(&mtd);
@@ -745,6 +786,9 @@ static void __exit lart_flash_exit (void)
 =======
    mtd_device_unregister(&mtd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   mtd_device_unregister(&mtd);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init (lart_flash_init);

@@ -37,9 +37,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/div64.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/div64.h>
+>>>>>>> refs/remotes/origin/master
 #include "carl9170.h"
 #include "cmd.h"
 
@@ -141,7 +145,11 @@ int carl9170_reboot(struct ar9170 *ar)
 	if (!cmd)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	err = __carl9170_exec_cmd(ar, (struct carl9170_cmd *)cmd, true);
+=======
+	err = __carl9170_exec_cmd(ar, cmd, true);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -170,7 +178,10 @@ int carl9170_bcn_ctrl(struct ar9170 *ar, const unsigned int vif_id,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int carl9170_collect_tally(struct ar9170 *ar)
 {
 	struct carl9170_tally_rsp tally;
@@ -204,7 +215,10 @@ int carl9170_collect_tally(struct ar9170 *ar)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int carl9170_powersave(struct ar9170 *ar, const bool ps)
 {
 	struct carl9170_cmd *cmd;

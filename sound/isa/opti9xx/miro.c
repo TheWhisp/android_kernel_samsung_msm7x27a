@@ -29,10 +29,14 @@
 #include <linux/delay.h>
 #include <linux/ioport.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/dma.h>
 #include <sound/core.h>
@@ -41,6 +45,10 @@
 #include <sound/opl4.h>
 #include <sound/control.h>
 #include <sound/info.h>
+<<<<<<< HEAD
+=======
+#define SNDRV_LEGACY_FIND_FREE_IOPORT
+>>>>>>> refs/remotes/origin/master
 #define SNDRV_LEGACY_FIND_FREE_IRQ
 #define SNDRV_LEGACY_FIND_FREE_DMA
 #include <sound/initval.h>
@@ -66,10 +74,14 @@ static int wss;
 static int ide;
 #ifdef CONFIG_PNP
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int isapnp = 1;				/* Enable ISA PnP detection */
 =======
 static bool isapnp = 1;				/* Enable ISA PnP detection */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool isapnp = 1;				/* Enable ISA PnP detection */
+>>>>>>> refs/remotes/origin/master
 #endif
 
 module_param(index, int, 0444);
@@ -594,7 +606,11 @@ static int snd_miro_put_double(struct snd_kcontrol *kcontrol,
 	return change;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_miro_controls[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_miro_controls[] = {
+>>>>>>> refs/remotes/origin/master
 MIRO_DOUBLE("Master Playback Volume", 0, ACI_GET_MASTER, ACI_SET_MASTER),
 MIRO_DOUBLE("Mic Playback Volume", 1, ACI_GET_MIC, ACI_SET_MIC),
 MIRO_DOUBLE("Line Playback Volume", 1, ACI_GET_LINE, ACI_SET_LINE),
@@ -606,7 +622,11 @@ MIRO_DOUBLE("Aux Playback Volume", 2, ACI_GET_LINE2, ACI_SET_LINE2),
 
 /* Equalizer with seven bands (only PCM20) 
    from -12dB up to +12dB on each band */
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_miro_eq_controls[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_miro_eq_controls[] = {
+>>>>>>> refs/remotes/origin/master
 MIRO_DOUBLE("Tone Control - 28 Hz", 0, ACI_GET_EQ1, ACI_SET_EQ1),
 MIRO_DOUBLE("Tone Control - 160 Hz", 0, ACI_GET_EQ2, ACI_SET_EQ2),
 MIRO_DOUBLE("Tone Control - 400 Hz", 0, ACI_GET_EQ3, ACI_SET_EQ3),
@@ -616,6 +636,7 @@ MIRO_DOUBLE("Tone Control - 6.3 kHz", 0, ACI_GET_EQ6, ACI_SET_EQ6),
 MIRO_DOUBLE("Tone Control - 16 kHz", 0, ACI_GET_EQ7, ACI_SET_EQ7),
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_miro_radio_control[] __devinitdata = {
 MIRO_DOUBLE("Radio Playback Volume", 0, ACI_GET_LINE1, ACI_SET_LINE1),
 };
@@ -625,6 +646,17 @@ MIRO_DOUBLE("Line Playback Volume", 2, ACI_GET_LINE1, ACI_SET_LINE1),
 };
 
 static struct snd_kcontrol_new snd_miro_preamp_control[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_miro_radio_control[] = {
+MIRO_DOUBLE("Radio Playback Volume", 0, ACI_GET_LINE1, ACI_SET_LINE1),
+};
+
+static struct snd_kcontrol_new snd_miro_line_control[] = {
+MIRO_DOUBLE("Line Playback Volume", 2, ACI_GET_LINE1, ACI_SET_LINE1),
+};
+
+static struct snd_kcontrol_new snd_miro_preamp_control[] = {
+>>>>>>> refs/remotes/origin/master
 {
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = "Mic Boost",
@@ -634,7 +666,11 @@ static struct snd_kcontrol_new snd_miro_preamp_control[] __devinitdata = {
 	.put = snd_miro_put_preamp,
 }};
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_miro_amp_control[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_miro_amp_control[] = {
+>>>>>>> refs/remotes/origin/master
 {
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = "Line Boost",
@@ -644,7 +680,11 @@ static struct snd_kcontrol_new snd_miro_amp_control[] __devinitdata = {
 	.put = snd_miro_put_amp,
 }};
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_miro_capture_control[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_miro_capture_control[] = {
+>>>>>>> refs/remotes/origin/master
 {
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = "PCM Capture Switch",
@@ -654,7 +694,11 @@ static struct snd_kcontrol_new snd_miro_capture_control[] __devinitdata = {
 	.put = snd_miro_put_capture,
 }};
 
+<<<<<<< HEAD
 static unsigned char aci_init_values[][2] __devinitdata = {
+=======
+static unsigned char aci_init_values[][2] = {
+>>>>>>> refs/remotes/origin/master
 	{ ACI_SET_MUTE, 0x00 },
 	{ ACI_SET_POWERAMP, 0x00 },
 	{ ACI_SET_PREAMP, 0x00 },
@@ -677,7 +721,11 @@ static unsigned char aci_init_values[][2] __devinitdata = {
 	{ ACI_SET_MASTER + 1, 0x20 },
 };
 
+<<<<<<< HEAD
 static int __devinit snd_set_aci_init_values(struct snd_miro *miro)
+=======
+static int snd_set_aci_init_values(struct snd_miro *miro)
+>>>>>>> refs/remotes/origin/master
 {
 	int idx, error;
 	struct snd_miro_aci *aci = miro->aci;
@@ -720,8 +768,13 @@ static int __devinit snd_set_aci_init_values(struct snd_miro *miro)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_miro_mixer(struct snd_card *card,
 				    struct snd_miro *miro)
+=======
+static int snd_miro_mixer(struct snd_card *card,
+			  struct snd_miro *miro)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int idx;
 	int err;
@@ -778,6 +831,7 @@ static int __devinit snd_miro_mixer(struct snd_card *card,
 	return 0;
 }
 
+<<<<<<< HEAD
 static long snd_legacy_find_free_ioport(long *port_table, long size)
 {
 	while (*port_table != -1) {
@@ -794,6 +848,10 @@ static long snd_legacy_find_free_ioport(long *port_table, long size)
 
 static int __devinit snd_miro_init(struct snd_miro *chip,
 				   unsigned short hardware)
+=======
+static int snd_miro_init(struct snd_miro *chip,
+			 unsigned short hardware)
+>>>>>>> refs/remotes/origin/master
 {
 	static int opti9xx_mc_size[] = {7, 7, 10, 10, 2, 2, 2};
 
@@ -1010,8 +1068,13 @@ static void snd_miro_proc_read(struct snd_info_entry * entry,
 	snd_iprintf(buffer, "  preamp  : 0x%x\n", aci->aci_preamp);
 }
 
+<<<<<<< HEAD
 static void __devinit snd_miro_proc_init(struct snd_card *card,
 					 struct snd_miro *miro)
+=======
+static void snd_miro_proc_init(struct snd_card *card,
+			       struct snd_miro *miro)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_info_entry *entry;
 
@@ -1023,7 +1086,11 @@ static void __devinit snd_miro_proc_init(struct snd_card *card,
  *  Init
  */
 
+<<<<<<< HEAD
 static int __devinit snd_miro_configure(struct snd_miro *chip)
+=======
+static int snd_miro_configure(struct snd_miro *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char wss_base_bits;
 	unsigned char irq_bits;
@@ -1183,7 +1250,11 @@ __skip_mpu:
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_miro_opti_check(struct snd_miro *chip)
+=======
+static int snd_miro_opti_check(struct snd_miro *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char value;
 
@@ -1203,8 +1274,13 @@ static int __devinit snd_miro_opti_check(struct snd_miro *chip)
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_card_miro_detect(struct snd_card *card,
 					  struct snd_miro *chip)
+=======
+static int snd_card_miro_detect(struct snd_card *card,
+				struct snd_miro *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, err;
 
@@ -1221,8 +1297,13 @@ static int __devinit snd_card_miro_detect(struct snd_card *card,
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_card_miro_aci_detect(struct snd_card *card,
 					      struct snd_miro *miro)
+=======
+static int snd_card_miro_aci_detect(struct snd_card *card,
+				    struct snd_miro *miro)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char regval;
 	int i;
@@ -1286,7 +1367,11 @@ static void snd_card_miro_free(struct snd_card *card)
 	release_and_free_resource(miro->res_mc_base);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_miro_probe(struct snd_card *card)
+=======
+static int snd_miro_probe(struct snd_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int error;
 	struct snd_miro *miro = card->private_data;
@@ -1307,7 +1392,10 @@ static int __devinit snd_miro_probe(struct snd_card *card)
 
 	error = snd_card_miro_aci_detect(card, miro);
 	if (error < 0) {
+<<<<<<< HEAD
 		snd_card_free(card);
+=======
+>>>>>>> refs/remotes/origin/master
 		snd_printk(KERN_ERR "unable to detect aci chip\n");
 		return -ENODEV;
 	}
@@ -1386,11 +1474,15 @@ static int __devinit snd_miro_probe(struct snd_card *card)
 	else {
 		error = snd_mpu401_uart_new(card, 0, MPU401_HW_MPU401,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				mpu_port, 0, miro->mpu_irq, IRQF_DISABLED,
 				&rmidi);
 =======
 				mpu_port, 0, miro->mpu_irq, &rmidi);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				mpu_port, 0, miro->mpu_irq, &rmidi);
+>>>>>>> refs/remotes/origin/master
 		if (error < 0)
 			snd_printk(KERN_WARNING "no MPU-401 device at 0x%lx?\n",
 				   mpu_port);
@@ -1413,7 +1505,11 @@ static int __devinit snd_miro_probe(struct snd_card *card)
 	return snd_card_register(card);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_miro_isa_match(struct device *devptr, unsigned int n)
+=======
+static int snd_miro_isa_match(struct device *devptr, unsigned int n)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef CONFIG_PNP
 	if (snd_miro_pnp_is_probed)
@@ -1424,7 +1520,11 @@ static int __devinit snd_miro_isa_match(struct device *devptr, unsigned int n)
 	return 1;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_miro_isa_probe(struct device *devptr, unsigned int n)
+=======
+static int snd_miro_isa_probe(struct device *devptr, unsigned int n)
+>>>>>>> refs/remotes/origin/master
 {
 	static long possible_ports[] = {0x530, 0xe80, 0xf40, 0x604, -1};
 	static long possible_mpu_ports[] = {0x330, 0x300, 0x310, 0x320, -1};
@@ -1518,11 +1618,18 @@ static int __devinit snd_miro_isa_probe(struct device *devptr, unsigned int n)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_miro_isa_remove(struct device *devptr,
 					 unsigned int dev)
 {
 	snd_card_free(dev_get_drvdata(devptr));
 	dev_set_drvdata(devptr, NULL);
+=======
+static int snd_miro_isa_remove(struct device *devptr,
+			       unsigned int dev)
+{
+	snd_card_free(dev_get_drvdata(devptr));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1531,7 +1638,11 @@ static int __devexit snd_miro_isa_remove(struct device *devptr,
 static struct isa_driver snd_miro_driver = {
 	.match		= snd_miro_isa_match,
 	.probe		= snd_miro_isa_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(snd_miro_isa_remove),
+=======
+	.remove		= snd_miro_isa_remove,
+>>>>>>> refs/remotes/origin/master
 	/* FIXME: suspend/resume */
 	.driver		= {
 		.name	= DEV_NAME
@@ -1540,9 +1651,15 @@ static struct isa_driver snd_miro_driver = {
 
 #ifdef CONFIG_PNP
 
+<<<<<<< HEAD
 static int __devinit snd_card_miro_pnp(struct snd_miro *chip,
 					struct pnp_card_link *card,
 					const struct pnp_card_device_id *pid)
+=======
+static int snd_card_miro_pnp(struct snd_miro *chip,
+			     struct pnp_card_link *card,
+			     const struct pnp_card_device_id *pid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pnp_dev *pdev;
 	int err;
@@ -1601,8 +1718,13 @@ static int __devinit snd_card_miro_pnp(struct snd_miro *chip,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_miro_pnp_probe(struct pnp_card_link *pcard,
 					const struct pnp_card_device_id *pid)
+=======
+static int snd_miro_pnp_probe(struct pnp_card_link *pcard,
+			      const struct pnp_card_device_id *pid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	int err;
@@ -1651,7 +1773,11 @@ static int __devinit snd_miro_pnp_probe(struct pnp_card_link *pcard,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_miro_pnp_remove(struct pnp_card_link * pcard)
+=======
+static void snd_miro_pnp_remove(struct pnp_card_link *pcard)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_card_free(pnp_get_card_drvdata(pcard));
 	pnp_set_card_drvdata(pcard, NULL);
@@ -1663,7 +1789,11 @@ static struct pnp_card_driver miro_pnpc_driver = {
 	.name		= "miro",
 	.id_table	= snd_miro_pnpids,
 	.probe		= snd_miro_pnp_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(snd_miro_pnp_remove),
+=======
+	.remove		= snd_miro_pnp_remove,
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 

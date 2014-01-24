@@ -12,9 +12,13 @@
 #include <linux/platform_device.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/gfp.h>
 #include <asm/txx9/tx4939.h>
@@ -247,9 +251,12 @@ static int __init tx4939_rtc_probe(struct platform_device *pdev)
 	struct resource *res;
 	int irq, ret;
 
+<<<<<<< HEAD
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res)
 		return -ENODEV;
+=======
+>>>>>>> refs/remotes/origin/master
 	irq = platform_get_irq(pdev, 0);
 	if (irq < 0)
 		return -ENODEV;
@@ -258,6 +265,7 @@ static int __init tx4939_rtc_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	platform_set_drvdata(pdev, pdata);
 
+<<<<<<< HEAD
 	if (!devm_request_mem_region(&pdev->dev, res->start,
 				     resource_size(res), pdev->name))
 		return -EBUSY;
@@ -265,10 +273,17 @@ static int __init tx4939_rtc_probe(struct platform_device *pdev)
 				     resource_size(res));
 	if (!pdata->rtcreg)
 		return -EBUSY;
+=======
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	pdata->rtcreg = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(pdata->rtcreg))
+		return PTR_ERR(pdata->rtcreg);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&pdata->lock);
 	tx4939_rtc_cmd(pdata->rtcreg, TX4939_RTCCTL_COMMAND_NOP);
 	if (devm_request_irq(&pdev->dev, irq, tx4939_rtc_interrupt,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			     IRQF_DISABLED, pdev->name, &pdev->dev) < 0)
 =======
@@ -276,13 +291,22 @@ static int __init tx4939_rtc_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 		return -EBUSY;
 	rtc = rtc_device_register(pdev->name, &pdev->dev,
+=======
+			     0, pdev->name, &pdev->dev) < 0)
+		return -EBUSY;
+	rtc = devm_rtc_device_register(&pdev->dev, pdev->name,
+>>>>>>> refs/remotes/origin/master
 				  &tx4939_rtc_ops, THIS_MODULE);
 	if (IS_ERR(rtc))
 		return PTR_ERR(rtc);
 	pdata->rtc = rtc;
 	ret = sysfs_create_bin_file(&pdev->dev.kobj, &tx4939_rtc_nvram_attr);
+<<<<<<< HEAD
 	if (ret)
 		rtc_device_unregister(rtc);
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -291,7 +315,10 @@ static int __exit tx4939_rtc_remove(struct platform_device *pdev)
 	struct tx4939rtc_plat_data *pdata = platform_get_drvdata(pdev);
 
 	sysfs_remove_bin_file(&pdev->dev.kobj, &tx4939_rtc_nvram_attr);
+<<<<<<< HEAD
 	rtc_device_unregister(pdata->rtc);
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&pdata->lock);
 	tx4939_rtc_cmd(pdata->rtcreg, TX4939_RTCCTL_COMMAND_NOP);
 	spin_unlock_irq(&pdata->lock);
@@ -306,6 +333,7 @@ static struct platform_driver tx4939_rtc_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init tx4939rtc_init(void)
 {
 	return platform_driver_probe(&tx4939_rtc_driver, tx4939_rtc_probe);
@@ -318,6 +346,9 @@ static void __exit tx4939rtc_exit(void)
 
 module_init(tx4939rtc_init);
 module_exit(tx4939rtc_exit);
+=======
+module_platform_driver_probe(tx4939_rtc_driver, tx4939_rtc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Atsushi Nemoto <anemo@mba.ocn.ne.jp>");
 MODULE_DESCRIPTION("TX4939 internal RTC driver");

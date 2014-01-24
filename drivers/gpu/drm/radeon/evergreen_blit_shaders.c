@@ -25,9 +25,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/bug.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/kernel.h>
 
@@ -303,6 +307,7 @@ const u32 evergreen_default_state[] =
 	0x00000010, /*  */
 };
 
+<<<<<<< HEAD
 const u32 evergreen_vs[] =
 {
 	0x00000004,
@@ -357,4 +362,6 @@ const u32 evergreen_ps[] =
 
 const u32 evergreen_ps_size = ARRAY_SIZE(evergreen_ps);
 const u32 evergreen_vs_size = ARRAY_SIZE(evergreen_vs);
+=======
+>>>>>>> refs/remotes/origin/master
 const u32 evergreen_default_size = ARRAY_SIZE(evergreen_default_state);

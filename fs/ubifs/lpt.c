@@ -702,12 +702,16 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
 			memset(p, 0xff, alen - len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			err = ubi_leb_change(c->ubi, lnum++, buf, alen,
 					     UBI_SHORTTERM);
 =======
 			err = ubifs_leb_change(c, lnum++, buf, alen,
 					       UBI_SHORTTERM);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = ubifs_leb_change(c, lnum++, buf, alen);
+>>>>>>> refs/remotes/origin/master
 			if (err)
 				goto out;
 			p = buf;
@@ -738,12 +742,16 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
 					    alen - len);
 				memset(p, 0xff, alen - len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				err = ubi_leb_change(c->ubi, lnum++, buf, alen,
 						     UBI_SHORTTERM);
 =======
 				err = ubifs_leb_change(c, lnum++, buf, alen,
 						       UBI_SHORTTERM);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				err = ubifs_leb_change(c, lnum++, buf, alen);
+>>>>>>> refs/remotes/origin/master
 				if (err)
 					goto out;
 				p = buf;
@@ -791,12 +799,16 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
 			memset(p, 0xff, alen - len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			err = ubi_leb_change(c->ubi, lnum++, buf, alen,
 					     UBI_SHORTTERM);
 =======
 			err = ubifs_leb_change(c, lnum++, buf, alen,
 					       UBI_SHORTTERM);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = ubifs_leb_change(c, lnum++, buf, alen);
+>>>>>>> refs/remotes/origin/master
 			if (err)
 				goto out;
 			p = buf;
@@ -822,10 +834,14 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
 		set_ltab(c, lnum, c->leb_size - alen, alen - len);
 		memset(p, 0xff, alen - len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = ubi_leb_change(c->ubi, lnum++, buf, alen, UBI_SHORTTERM);
 =======
 		err = ubifs_leb_change(c, lnum++, buf, alen, UBI_SHORTTERM);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ubifs_leb_change(c, lnum++, buf, alen);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out;
 		p = buf;
@@ -846,10 +862,14 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
 	/* Write remaining buffer */
 	memset(p, 0xff, alen - len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_leb_change(c->ubi, lnum, buf, alen, UBI_SHORTTERM);
 =======
 	err = ubifs_leb_change(c, lnum, buf, alen, UBI_SHORTTERM);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubifs_leb_change(c, lnum, buf, alen);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out;
 
@@ -949,7 +969,11 @@ static int check_lpt_crc(void *buf, int len)
 	if (crc != calc_crc) {
 		ubifs_err("invalid crc in LPT node: crc %hx calc %hx", crc,
 			  calc_crc);
+<<<<<<< HEAD
 		dbg_dump_stack();
+=======
+		dump_stack();
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	return 0;
@@ -972,7 +996,11 @@ static int check_lpt_type(uint8_t **addr, int *pos, int type)
 	if (node_type != type) {
 		ubifs_err("invalid type (%d) in LPT node type %d", node_type,
 			  type);
+<<<<<<< HEAD
 		dbg_dump_stack();
+=======
+		dump_stack();
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	return 0;
@@ -1246,10 +1274,14 @@ int ubifs_read_nnode(struct ubifs_info *c, struct ubifs_nnode *parent, int iip)
 			nnode->num = calc_nnode_num_from_parent(c, parent, iip);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = ubi_read(c->ubi, lnum, buf, offs, c->nnode_sz);
 =======
 		err = ubifs_leb_read(c, lnum, buf, offs, c->nnode_sz, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ubifs_leb_read(c, lnum, buf, offs, c->nnode_sz, 1);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out;
 		err = ubifs_unpack_nnode(c, buf, nnode);
@@ -1275,9 +1307,13 @@ int ubifs_read_nnode(struct ubifs_info *c, struct ubifs_nnode *parent, int iip)
 out:
 	ubifs_err("error %d reading nnode at %d:%d", err, lnum, offs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dbg_dump_stack();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dump_stack();
+>>>>>>> refs/remotes/origin/master
 	kfree(nnode);
 	return err;
 }
@@ -1322,10 +1358,14 @@ static int read_pnode(struct ubifs_info *c, struct ubifs_nnode *parent, int iip)
 		}
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = ubi_read(c->ubi, lnum, buf, offs, c->pnode_sz);
 =======
 		err = ubifs_leb_read(c, lnum, buf, offs, c->pnode_sz, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ubifs_leb_read(c, lnum, buf, offs, c->pnode_sz, 1);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out;
 		err = unpack_pnode(c, buf, pnode);
@@ -1346,12 +1386,18 @@ static int read_pnode(struct ubifs_info *c, struct ubifs_nnode *parent, int iip)
 
 out:
 	ubifs_err("error %d reading pnode at %d:%d", err, lnum, offs);
+<<<<<<< HEAD
 	dbg_dump_pnode(c, pnode, parent, iip);
 <<<<<<< HEAD
 =======
 	dbg_dump_stack();
 >>>>>>> refs/remotes/origin/cm-10.0
 	dbg_msg("calc num: %d", calc_pnode_num_from_parent(c, parent, iip));
+=======
+	ubifs_dump_pnode(c, pnode, parent, iip);
+	dump_stack();
+	ubifs_err("calc num: %d", calc_pnode_num_from_parent(c, parent, iip));
+>>>>>>> refs/remotes/origin/master
 	kfree(pnode);
 	return err;
 }
@@ -1371,10 +1417,14 @@ static int read_ltab(struct ubifs_info *c)
 	if (!buf)
 		return -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, c->ltab_lnum, buf, c->ltab_offs, c->ltab_sz);
 =======
 	err = ubifs_leb_read(c, c->ltab_lnum, buf, c->ltab_offs, c->ltab_sz, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubifs_leb_read(c, c->ltab_lnum, buf, c->ltab_offs, c->ltab_sz, 1);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out;
 	err = unpack_ltab(c, buf);
@@ -1398,11 +1448,16 @@ static int read_lsave(struct ubifs_info *c)
 	if (!buf)
 		return -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, c->lsave_lnum, buf, c->lsave_offs, c->lsave_sz);
 =======
 	err = ubifs_leb_read(c, c->lsave_lnum, buf, c->lsave_offs,
 			     c->lsave_sz, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubifs_leb_read(c, c->lsave_lnum, buf, c->lsave_offs,
+			     c->lsave_sz, 1);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out;
 	err = unpack_lsave(c, buf);
@@ -1785,16 +1840,34 @@ int ubifs_lpt_init(struct ubifs_info *c, int rd, int wr)
 	if (rd) {
 		err = lpt_init_rd(c);
 		if (err)
+<<<<<<< HEAD
 			return err;
+=======
+			goto out_err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (wr) {
 		err = lpt_init_wr(c);
 		if (err)
+<<<<<<< HEAD
 			return err;
 	}
 
 	return 0;
+=======
+			goto out_err;
+	}
+
+	return 0;
+
+out_err:
+	if (wr)
+		ubifs_lpt_free(c, 1);
+	if (rd)
+		ubifs_lpt_free(c, 0);
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1863,12 +1936,17 @@ static struct ubifs_nnode *scan_get_nnode(struct ubifs_info *c,
 			nnode->num = calc_nnode_num_from_parent(c, parent, iip);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = ubi_read(c->ubi, branch->lnum, buf, branch->offs,
 			       c->nnode_sz);
 =======
 		err = ubifs_leb_read(c, branch->lnum, buf, branch->offs,
 				     c->nnode_sz, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ubifs_leb_read(c, branch->lnum, buf, branch->offs,
+				     c->nnode_sz, 1);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return ERR_PTR(err);
 		err = ubifs_unpack_nnode(c, buf, nnode);
@@ -1937,12 +2015,17 @@ static struct ubifs_pnode *scan_get_pnode(struct ubifs_info *c,
 			     branch->lnum <= c->lpt_last);
 		ubifs_assert(branch->offs >= 0 && branch->offs < c->leb_size);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = ubi_read(c->ubi, branch->lnum, buf, branch->offs,
 			       c->pnode_sz);
 =======
 		err = ubifs_leb_read(c, branch->lnum, buf, branch->offs,
 				     c->pnode_sz, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ubifs_leb_read(c, branch->lnum, buf, branch->offs,
+				     c->pnode_sz, 1);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return ERR_PTR(err);
 		err = unpack_pnode(c, buf, pnode);
@@ -2042,18 +2125,25 @@ again:
 				if (path[h].in_tree)
 					continue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				nnode = kmalloc(sz, GFP_NOFS);
 =======
 				nnode = kmemdup(&path[h].nnode, sz, GFP_NOFS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				nnode = kmemdup(&path[h].nnode, sz, GFP_NOFS);
+>>>>>>> refs/remotes/origin/master
 				if (!nnode) {
 					err = -ENOMEM;
 					goto out;
 				}
 <<<<<<< HEAD
+<<<<<<< HEAD
 				memcpy(nnode, &path[h].nnode, sz);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				parent = nnode->parent;
 				parent->nbranch[nnode->iip].nnode = nnode;
 				path[h].ptr.nnode = nnode;
@@ -2067,18 +2157,25 @@ again:
 				struct ubifs_nnode *parent;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 				pnode = kmalloc(sz, GFP_NOFS);
 =======
 				pnode = kmemdup(&path[h].pnode, sz, GFP_NOFS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pnode = kmemdup(&path[h].pnode, sz, GFP_NOFS);
+>>>>>>> refs/remotes/origin/master
 				if (!pnode) {
 					err = -ENOMEM;
 					goto out;
 				}
 <<<<<<< HEAD
+<<<<<<< HEAD
 				memcpy(pnode, &path[h].pnode, sz);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				parent = pnode->parent;
 				parent->nbranch[pnode->iip].pnode = pnode;
 				path[h].ptr.pnode = pnode;
@@ -2151,8 +2248,11 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_DEBUG
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * dbg_chk_pnode - check a pnode.
  * @c: the UBIFS file-system description object
@@ -2167,8 +2267,13 @@ static int dbg_chk_pnode(struct ubifs_info *c, struct ubifs_pnode *pnode,
 	int i;
 
 	if (pnode->num != col) {
+<<<<<<< HEAD
 		dbg_err("pnode num %d expected %d parent num %d iip %d",
 			pnode->num, col, pnode->parent->num, pnode->iip);
+=======
+		ubifs_err("pnode num %d expected %d parent num %d iip %d",
+			  pnode->num, col, pnode->parent->num, pnode->iip);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	for (i = 0; i < UBIFS_LPT_FANOUT; i++) {
@@ -2182,14 +2287,24 @@ static int dbg_chk_pnode(struct ubifs_info *c, struct ubifs_pnode *pnode,
 		if (lnum >= c->leb_cnt)
 			continue;
 		if (lprops->lnum != lnum) {
+<<<<<<< HEAD
 			dbg_err("bad LEB number %d expected %d",
 				lprops->lnum, lnum);
+=======
+			ubifs_err("bad LEB number %d expected %d",
+				  lprops->lnum, lnum);
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 		if (lprops->flags & LPROPS_TAKEN) {
 			if (cat != LPROPS_UNCAT) {
+<<<<<<< HEAD
 				dbg_err("LEB %d taken but not uncat %d",
 					lprops->lnum, cat);
+=======
+				ubifs_err("LEB %d taken but not uncat %d",
+					  lprops->lnum, cat);
+>>>>>>> refs/remotes/origin/master
 				return -EINVAL;
 			}
 			continue;
@@ -2201,8 +2316,13 @@ static int dbg_chk_pnode(struct ubifs_info *c, struct ubifs_pnode *pnode,
 			case LPROPS_FRDI_IDX:
 				break;
 			default:
+<<<<<<< HEAD
 				dbg_err("LEB %d index but cat %d",
 					lprops->lnum, cat);
+=======
+				ubifs_err("LEB %d index but cat %d",
+					  lprops->lnum, cat);
+>>>>>>> refs/remotes/origin/master
 				return -EINVAL;
 			}
 		} else {
@@ -2214,8 +2334,13 @@ static int dbg_chk_pnode(struct ubifs_info *c, struct ubifs_pnode *pnode,
 			case LPROPS_FREEABLE:
 				break;
 			default:
+<<<<<<< HEAD
 				dbg_err("LEB %d not index but cat %d",
 					lprops->lnum, cat);
+=======
+				ubifs_err("LEB %d not index but cat %d",
+					  lprops->lnum, cat);
+>>>>>>> refs/remotes/origin/master
 				return -EINVAL;
 			}
 		}
@@ -2255,24 +2380,41 @@ static int dbg_chk_pnode(struct ubifs_info *c, struct ubifs_pnode *pnode,
 			break;
 		}
 		if (!found) {
+<<<<<<< HEAD
 			dbg_err("LEB %d cat %d not found in cat heap/list",
 				lprops->lnum, cat);
+=======
+			ubifs_err("LEB %d cat %d not found in cat heap/list",
+				  lprops->lnum, cat);
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 		switch (cat) {
 		case LPROPS_EMPTY:
 			if (lprops->free != c->leb_size) {
+<<<<<<< HEAD
 				dbg_err("LEB %d cat %d free %d dirty %d",
 					lprops->lnum, cat, lprops->free,
 					lprops->dirty);
+=======
+				ubifs_err("LEB %d cat %d free %d dirty %d",
+					  lprops->lnum, cat, lprops->free,
+					  lprops->dirty);
+>>>>>>> refs/remotes/origin/master
 				return -EINVAL;
 			}
 		case LPROPS_FREEABLE:
 		case LPROPS_FRDI_IDX:
 			if (lprops->free + lprops->dirty != c->leb_size) {
+<<<<<<< HEAD
 				dbg_err("LEB %d cat %d free %d dirty %d",
 					lprops->lnum, cat, lprops->free,
 					lprops->dirty);
+=======
+				ubifs_err("LEB %d cat %d free %d dirty %d",
+					  lprops->lnum, cat, lprops->free,
+					  lprops->dirty);
+>>>>>>> refs/remotes/origin/master
 				return -EINVAL;
 			}
 		}
@@ -2297,10 +2439,14 @@ int dbg_check_lpt_nodes(struct ubifs_info *c, struct ubifs_cnode *cnode,
 	int num, iip = 0, err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_LPROPS))
 =======
 	if (!dbg_is_chk_lprops(c))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dbg_is_chk_lprops(c))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	while (cnode) {
@@ -2310,9 +2456,15 @@ int dbg_check_lpt_nodes(struct ubifs_info *c, struct ubifs_cnode *cnode,
 			/* cnode is a nnode */
 			num = calc_nnode_num(row, col);
 			if (cnode->num != num) {
+<<<<<<< HEAD
 				dbg_err("nnode num %d expected %d "
 					"parent num %d iip %d", cnode->num, num,
 					(nnode ? nnode->num : 0), cnode->iip);
+=======
+				ubifs_err("nnode num %d expected %d parent num %d iip %d",
+					  cnode->num, num,
+					  (nnode ? nnode->num : 0), cnode->iip);
+>>>>>>> refs/remotes/origin/master
 				return -EINVAL;
 			}
 			nn = (struct ubifs_nnode *)cnode;
@@ -2349,5 +2501,8 @@ int dbg_check_lpt_nodes(struct ubifs_info *c, struct ubifs_cnode *cnode,
 	}
 	return 0;
 }
+<<<<<<< HEAD
 
 #endif /* CONFIG_UBIFS_FS_DEBUG */
+=======
+>>>>>>> refs/remotes/origin/master

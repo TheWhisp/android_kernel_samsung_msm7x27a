@@ -251,9 +251,13 @@ menuconfig SOUND_OSS
 	tristate "OSS sound modules"
 	depends on ISA_DMA_API && VIRT_TO_BUS
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	depends on !GENERIC_ISA_DMA_SUPPORT_BROKEN
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on !GENERIC_ISA_DMA_SUPPORT_BROKEN
+>>>>>>> refs/remotes/origin/master
 	help
 	  OSS is the Open Sound System suite of sound card drivers.  They make
 	  sound programming easier since they provide a common API.  Say Y or
@@ -437,12 +441,16 @@ config SOUND_SB
 	  for cards based on ESS chips (read
 	  <file:Documentation/sound/oss/ESS1868> and
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  <file:Documentation/sound/oss/ESS>). If you have an SB AWE 32 or SB AWE
 	  64, say Y here and also to "AWE32 synth" below and read
 	  <file:Documentation/sound/oss/INSTALL.awe>. If you have an IBM Mwave
 =======
 	  <file:Documentation/sound/oss/ESS>). If you have an IBM Mwave
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  <file:Documentation/sound/oss/ESS>). If you have an IBM Mwave
+>>>>>>> refs/remotes/origin/master
 	  card, say Y here and read <file:Documentation/sound/oss/mwave>.
 
 	  If you compile the driver into the kernel and don't want to use
@@ -532,10 +540,14 @@ config SC6600_CDROMBASE
 config SOUND_VIDC
 	tristate "VIDC 16-bit sound"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on ARM && (ARCH_ACORN || ARCH_CLPS7500)
 =======
 	depends on ARM && ARCH_ACORN
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on ARM && ARCH_ACORN
+>>>>>>> refs/remotes/origin/master
 	help
 	  16-bit support for the VIDC onboard sound hardware found on Acorn
 	  machines.

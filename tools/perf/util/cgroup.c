@@ -4,9 +4,12 @@
 #include "evsel.h"
 #include "cgroup.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "debugfs.h" /* MAX_PATH, STR() */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "evlist.h"
 
 int nr_cgroups;
@@ -16,10 +19,14 @@ cgroupfs_find_mountpoint(char *buf, size_t maxlen)
 {
 	FILE *fp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char mountpoint[MAX_PATH+1], tokens[MAX_PATH+1], type[MAX_PATH+1];
 =======
 	char mountpoint[PATH_MAX + 1], tokens[PATH_MAX + 1], type[PATH_MAX + 1];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char mountpoint[PATH_MAX + 1], tokens[PATH_MAX + 1], type[PATH_MAX + 1];
+>>>>>>> refs/remotes/origin/master
 	char *token, *saved_ptr = NULL;
 	int found = 0;
 
@@ -33,12 +40,17 @@ cgroupfs_find_mountpoint(char *buf, size_t maxlen)
 	 * perf_event subsystem
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while (fscanf(fp, "%*s %"STR(MAX_PATH)"s %"STR(MAX_PATH)"s %"
 				STR(MAX_PATH)"s %*d %*d\n",
 =======
 	while (fscanf(fp, "%*s %"STR(PATH_MAX)"s %"STR(PATH_MAX)"s %"
 				STR(PATH_MAX)"s %*d %*d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (fscanf(fp, "%*s %"STR(PATH_MAX)"s %"STR(PATH_MAX)"s %"
+				STR(PATH_MAX)"s %*d %*d\n",
+>>>>>>> refs/remotes/origin/master
 				mountpoint, type, tokens) == 3) {
 
 		if (!strcmp(type, "cgroup")) {
@@ -70,6 +82,7 @@ cgroupfs_find_mountpoint(char *buf, size_t maxlen)
 static int open_cgroup(char *name)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char path[MAX_PATH+1];
 	char mnt[MAX_PATH+1];
 	int fd;
@@ -80,6 +93,8 @@ static int open_cgroup(char *name)
 
 	snprintf(path, MAX_PATH, "%s/%s", mnt, name);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	char path[PATH_MAX + 1];
 	char mnt[PATH_MAX + 1];
 	int fd;
@@ -89,7 +104,10 @@ static int open_cgroup(char *name)
 		return -1;
 
 	snprintf(path, PATH_MAX, "%s/%s", mnt, name);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
@@ -106,7 +124,11 @@ static int add_cgroup(struct perf_evlist *evlist, char *str)
 	/*
 	 * check if cgrp is already defined, if so we reuse it
 	 */
+<<<<<<< HEAD
 	list_for_each_entry(counter, &evlist->entries, node) {
+=======
+	evlist__for_each(evlist, counter) {
+>>>>>>> refs/remotes/origin/master
 		cgrp = counter->cgrp;
 		if (!cgrp)
 			continue;
@@ -135,7 +157,11 @@ static int add_cgroup(struct perf_evlist *evlist, char *str)
 	 * if add cgroup N, then need to find event N
 	 */
 	n = 0;
+<<<<<<< HEAD
 	list_for_each_entry(counter, &evlist->entries, node) {
+=======
+	evlist__for_each(evlist, counter) {
+>>>>>>> refs/remotes/origin/master
 		if (n == nr_cgroups)
 			goto found;
 		n++;
@@ -158,13 +184,22 @@ void close_cgroup(struct cgroup_sel *cgrp)
 	/* XXX: not reentrant */
 	if (--cgrp->refcnt == 0) {
 		close(cgrp->fd);
+<<<<<<< HEAD
 		free(cgrp->name);
+=======
+		zfree(&cgrp->name);
+>>>>>>> refs/remotes/origin/master
 		free(cgrp);
 	}
 }
 
+<<<<<<< HEAD
 int parse_cgroups(const struct option *opt __used, const char *str,
 		  int unset __used)
+=======
+int parse_cgroups(const struct option *opt __maybe_unused, const char *str,
+		  int unset __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	struct perf_evlist *evlist = *(struct perf_evlist **)opt->value;
 	const char *p, *e, *eos = str + strlen(str);

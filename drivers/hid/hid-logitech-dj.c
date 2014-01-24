@@ -26,7 +26,11 @@
 #include <linux/hid.h>
 #include <linux/module.h>
 #include <linux/usb.h>
+<<<<<<< HEAD
 #include "usbhid/usbhid.h"
+=======
+#include <asm/unaligned.h>
+>>>>>>> refs/remotes/origin/master
 #include "hid-ids.h"
 #include "hid-logitech-dj.h"
 
@@ -155,6 +159,17 @@ static const char media_descriptor[] = {
 /* Maximum size of all defined hid reports in bytes (including report id) */
 #define MAX_REPORT_SIZE 8
 
+<<<<<<< HEAD
+=======
+/* Make sure all descriptors are present here */
+#define MAX_RDESC_SIZE				\
+	(sizeof(kbd_descriptor) +		\
+	 sizeof(mse_descriptor) +		\
+	 sizeof(consumer_descriptor) +		\
+	 sizeof(syscontrol_descriptor) +	\
+	 sizeof(media_descriptor))
+
+>>>>>>> refs/remotes/origin/master
 /* Number of possible hid report types that can be created by this driver.
  *
  * Right now, RF report types have the same report types (or report id's)
@@ -273,8 +288,13 @@ static void logi_dj_recv_add_djhid_device(struct dj_receiver_dev *djrcv_dev,
 		goto dj_device_allocate_fail;
 	}
 
+<<<<<<< HEAD
 	dj_dev->reports_supported = le32_to_cpu(
 		dj_report->report_params[DEVICE_PAIRED_RF_REPORT_TYPE]);
+=======
+	dj_dev->reports_supported = get_unaligned_le32(
+		dj_report->report_params + DEVICE_PAIRED_RF_REPORT_TYPE);
+>>>>>>> refs/remotes/origin/master
 	dj_dev->hdev = dj_hiddev;
 	dj_dev->dj_receiver_dev = djrcv_dev;
 	dj_dev->device_index = dj_report->device_index;
@@ -466,13 +486,18 @@ static int logi_dj_recv_send_report(struct dj_receiver_dev *djrcv_dev,
 	for (i = 0; i < DJREPORT_SHORT_LENGTH - 1; i++)
 		report->field[0]->value[i] = data[i];
 
+<<<<<<< HEAD
 	usbhid_submit_report(hdev, report, USB_DIR_OUT);
+=======
+	hid_hw_request(hdev, report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static int logi_dj_recv_query_paired_devices(struct dj_receiver_dev *djrcv_dev)
 {
+<<<<<<< HEAD
 	struct dj_report dj_report;
 
 	memset(&dj_report, 0, sizeof(dj_report));
@@ -480,12 +505,31 @@ static int logi_dj_recv_query_paired_devices(struct dj_receiver_dev *djrcv_dev)
 	dj_report.device_index = 0xFF;
 	dj_report.report_type = REPORT_TYPE_CMD_GET_PAIRED_DEVICES;
 	return logi_dj_recv_send_report(djrcv_dev, &dj_report);
+=======
+	struct dj_report *dj_report;
+	int retval;
+
+	/* no need to protect djrcv_dev->querying_devices */
+	if (djrcv_dev->querying_devices)
+		return 0;
+
+	dj_report = kzalloc(sizeof(struct dj_report), GFP_KERNEL);
+	if (!dj_report)
+		return -ENOMEM;
+	dj_report->report_id = REPORT_ID_DJ_SHORT;
+	dj_report->device_index = 0xFF;
+	dj_report->report_type = REPORT_TYPE_CMD_GET_PAIRED_DEVICES;
+	retval = logi_dj_recv_send_report(djrcv_dev, dj_report);
+	kfree(dj_report);
+	return retval;
+>>>>>>> refs/remotes/origin/master
 }
 
 
 static int logi_dj_recv_switch_to_dj_mode(struct dj_receiver_dev *djrcv_dev,
 					  unsigned timeout)
 {
+<<<<<<< HEAD
 	struct dj_report dj_report;
 
 	memset(&dj_report, 0, sizeof(dj_report));
@@ -495,6 +539,22 @@ static int logi_dj_recv_switch_to_dj_mode(struct dj_receiver_dev *djrcv_dev,
 	dj_report.report_params[CMD_SWITCH_PARAM_DEVBITFIELD] = 0x3F;
 	dj_report.report_params[CMD_SWITCH_PARAM_TIMEOUT_SECONDS] = (u8)timeout;
 	return logi_dj_recv_send_report(djrcv_dev, &dj_report);
+=======
+	struct dj_report *dj_report;
+	int retval;
+
+	dj_report = kzalloc(sizeof(struct dj_report), GFP_KERNEL);
+	if (!dj_report)
+		return -ENOMEM;
+	dj_report->report_id = REPORT_ID_DJ_SHORT;
+	dj_report->device_index = 0xFF;
+	dj_report->report_type = REPORT_TYPE_CMD_SWITCH;
+	dj_report->report_params[CMD_SWITCH_PARAM_DEVBITFIELD] = 0x3F;
+	dj_report->report_params[CMD_SWITCH_PARAM_TIMEOUT_SECONDS] = (u8)timeout;
+	retval = logi_dj_recv_send_report(djrcv_dev, dj_report);
+	kfree(dj_report);
+	return retval;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -520,9 +580,23 @@ static int logi_dj_output_hidraw_report(struct hid_device *hid, u8 * buf,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int logi_dj_ll_parse(struct hid_device *hid)
 {
 	struct dj_device *djdev = hid->driver_data;
+=======
+static void rdcat(char *rdesc, unsigned int *rsize, const char *data, unsigned int size)
+{
+	memcpy(rdesc + *rsize, data, size);
+	*rsize += size;
+}
+
+static int logi_dj_ll_parse(struct hid_device *hid)
+{
+	struct dj_device *djdev = hid->driver_data;
+	unsigned int rsize = 0;
+	char *rdesc;
+>>>>>>> refs/remotes/origin/master
 	int retval;
 
 	dbg_hid("%s\n", __func__);
@@ -530,6 +604,7 @@ static int logi_dj_ll_parse(struct hid_device *hid)
 	djdev->hdev->version = 0x0111;
 	djdev->hdev->country = 0x00;
 
+<<<<<<< HEAD
 	if (djdev->reports_supported & STD_KEYBOARD) {
 		dbg_hid("%s: sending a kbd descriptor, reports_supported: %x\n",
 			__func__, djdev->reports_supported);
@@ -541,11 +616,22 @@ static int logi_dj_ll_parse(struct hid_device *hid)
 				" error: %d\n", __func__, retval);
 			return retval;
 		}
+=======
+	rdesc = kmalloc(MAX_RDESC_SIZE, GFP_KERNEL);
+	if (!rdesc)
+		return -ENOMEM;
+
+	if (djdev->reports_supported & STD_KEYBOARD) {
+		dbg_hid("%s: sending a kbd descriptor, reports_supported: %x\n",
+			__func__, djdev->reports_supported);
+		rdcat(rdesc, &rsize, kbd_descriptor, sizeof(kbd_descriptor));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (djdev->reports_supported & STD_MOUSE) {
 		dbg_hid("%s: sending a mouse descriptor, reports_supported: "
 			"%x\n", __func__, djdev->reports_supported);
+<<<<<<< HEAD
 		retval = hid_parse_report(hid,
 					  (u8 *) mse_descriptor,
 					  sizeof(mse_descriptor));
@@ -554,11 +640,15 @@ static int logi_dj_ll_parse(struct hid_device *hid)
 				"failed error: %d\n", __func__, retval);
 			return retval;
 		}
+=======
+		rdcat(rdesc, &rsize, mse_descriptor, sizeof(mse_descriptor));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (djdev->reports_supported & MULTIMEDIA) {
 		dbg_hid("%s: sending a multimedia report descriptor: %x\n",
 			__func__, djdev->reports_supported);
+<<<<<<< HEAD
 		retval = hid_parse_report(hid,
 					  (u8 *) consumer_descriptor,
 					  sizeof(consumer_descriptor));
@@ -567,11 +657,15 @@ static int logi_dj_ll_parse(struct hid_device *hid)
 				"failed error: %d\n", __func__, retval);
 			return retval;
 		}
+=======
+		rdcat(rdesc, &rsize, consumer_descriptor, sizeof(consumer_descriptor));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (djdev->reports_supported & POWER_KEYS) {
 		dbg_hid("%s: sending a power keys report descriptor: %x\n",
 			__func__, djdev->reports_supported);
+<<<<<<< HEAD
 		retval = hid_parse_report(hid,
 					  (u8 *) syscontrol_descriptor,
 					  sizeof(syscontrol_descriptor));
@@ -581,11 +675,15 @@ static int logi_dj_ll_parse(struct hid_device *hid)
 				__func__, retval);
 			return retval;
 		}
+=======
+		rdcat(rdesc, &rsize, syscontrol_descriptor, sizeof(syscontrol_descriptor));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (djdev->reports_supported & MEDIA_CENTER) {
 		dbg_hid("%s: sending a media center report descriptor: %x\n",
 			__func__, djdev->reports_supported);
+<<<<<<< HEAD
 		retval = hid_parse_report(hid,
 					  (u8 *) media_descriptor,
 					  sizeof(media_descriptor));
@@ -594,6 +692,9 @@ static int logi_dj_ll_parse(struct hid_device *hid)
 				"failed error: %d\n", __func__, retval);
 			return retval;
 		}
+=======
+		rdcat(rdesc, &rsize, media_descriptor, sizeof(media_descriptor));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (djdev->reports_supported & KBD_LEDS) {
@@ -601,7 +702,14 @@ static int logi_dj_ll_parse(struct hid_device *hid)
 			__func__, djdev->reports_supported);
 	}
 
+<<<<<<< HEAD
 	return 0;
+=======
+	retval = hid_parse_report(hid, rdesc, rsize);
+	kfree(rdesc);
+
+	return retval;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int logi_dj_ll_input_event(struct input_dev *dev, unsigned int type,
@@ -618,7 +726,11 @@ static int logi_dj_ll_input_event(struct input_dev *dev, unsigned int type,
 
 	struct hid_field *field;
 	struct hid_report *report;
+<<<<<<< HEAD
 	unsigned char data[8];
+=======
+	unsigned char *data;
+>>>>>>> refs/remotes/origin/master
 	int offset;
 
 	dbg_hid("%s: %s, type:%d | code:%d | value:%d\n",
@@ -634,6 +746,16 @@ static int logi_dj_ll_input_event(struct input_dev *dev, unsigned int type,
 		return -1;
 	}
 	hid_set_field(field, offset, value);
+<<<<<<< HEAD
+=======
+
+	data = hid_alloc_report_buf(field->report, GFP_ATOMIC);
+	if (!data) {
+		dev_warn(&dev->dev, "failed to allocate report buf memory\n");
+		return -1;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	hid_output_report(field->report, &data[0]);
 
 	output_report_enum = &dj_rcv_hiddev->report_enum[HID_OUTPUT_REPORT];
@@ -642,10 +764,18 @@ static int logi_dj_ll_input_event(struct input_dev *dev, unsigned int type,
 	hid_set_field(report->field[0], 1, REPORT_TYPE_LEDS);
 	hid_set_field(report->field[0], 2, data[1]);
 
+<<<<<<< HEAD
 	usbhid_submit_report(dj_rcv_hiddev, report, USB_DIR_OUT);
 
 	return 0;
 
+=======
+	hid_hw_request(dj_rcv_hiddev, report, HID_REQ_SET_REPORT);
+
+	kfree(data);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int logi_dj_ll_start(struct hid_device *hid)
@@ -806,6 +936,7 @@ static int logi_dj_probe(struct hid_device *hdev,
 	}
 
 	/* This is enabling the polling urb on the IN endpoint */
+<<<<<<< HEAD
 	retval = hdev->ll_driver->open(hdev);
 	if (retval < 0) {
 		dev_err(&hdev->dev, "%s:hdev->ll_driver->open returned "
@@ -813,6 +944,18 @@ static int logi_dj_probe(struct hid_device *hdev,
 		goto llopen_failed;
 	}
 
+=======
+	retval = hid_hw_open(hdev);
+	if (retval < 0) {
+		dev_err(&hdev->dev, "%s:hid_hw_open returned error:%d\n",
+			__func__, retval);
+		goto llopen_failed;
+	}
+
+	/* Allow incoming packets to arrive: */
+	hid_device_io_start(hdev);
+
+>>>>>>> refs/remotes/origin/master
 	retval = logi_dj_recv_query_paired_devices(djrcv_dev);
 	if (retval < 0) {
 		dev_err(&hdev->dev, "%s:logi_dj_recv_query_paired_devices "
@@ -823,7 +966,11 @@ static int logi_dj_probe(struct hid_device *hdev,
 	return retval;
 
 logi_dj_recv_query_paired_devices_failed:
+<<<<<<< HEAD
 	hdev->ll_driver->close(hdev);
+=======
+	hid_hw_close(hdev);
+>>>>>>> refs/remotes/origin/master
 
 llopen_failed:
 switch_to_dj_mode_fail:
@@ -865,7 +1012,11 @@ static void logi_dj_remove(struct hid_device *hdev)
 
 	cancel_work_sync(&djrcv_dev->work);
 
+<<<<<<< HEAD
 	hdev->ll_driver->close(hdev);
+=======
+	hid_hw_close(hdev);
+>>>>>>> refs/remotes/origin/master
 	hid_hw_stop(hdev);
 
 	/* I suppose that at this point the only context that can access

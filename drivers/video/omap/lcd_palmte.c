@@ -23,7 +23,10 @@
 #include <linux/platform_device.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <plat/fpga.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include "omapfb.h"
 
 static int palmte_panel_init(struct lcd_panel *panel,
@@ -98,10 +101,14 @@ static int palmte_panel_resume(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_driver palmte_panel_driver = {
 =======
 static struct platform_driver palmte_panel_driver = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_driver palmte_panel_driver = {
+>>>>>>> refs/remotes/origin/master
 	.probe		= palmte_panel_probe,
 	.remove		= palmte_panel_remove,
 	.suspend	= palmte_panel_suspend,
@@ -112,6 +119,7 @@ static struct platform_driver palmte_panel_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init palmte_panel_drv_init(void)
 {
@@ -129,3 +137,6 @@ module_exit(palmte_panel_drv_cleanup);
 =======
 module_platform_driver(palmte_panel_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(palmte_panel_driver);
+>>>>>>> refs/remotes/origin/master

@@ -111,10 +111,14 @@ int adp5520_set_bits(struct device *dev, int reg, uint8_t bit_mask)
 	ret = __adp5520_read(chip->client, reg, &reg_val);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ret && ((reg_val & bit_mask) == 0)) {
 =======
 	if (!ret && ((reg_val & bit_mask) != bit_mask)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ret && ((reg_val & bit_mask) != bit_mask)) {
+>>>>>>> refs/remotes/origin/master
 		reg_val |= bit_mask;
 		ret = __adp5520_write(chip->client, reg, reg_val);
 	}
@@ -208,10 +212,17 @@ static int adp5520_remove_subdevs(struct adp5520_chip *chip)
 	return device_for_each_child(chip->dev, NULL, __remove_subdev);
 }
 
+<<<<<<< HEAD
 static int __devinit adp5520_probe(struct i2c_client *client,
 					const struct i2c_device_id *id)
 {
 	struct adp5520_platform_data *pdata = client->dev.platform_data;
+=======
+static int adp5520_probe(struct i2c_client *client,
+					const struct i2c_device_id *id)
+{
+	struct adp5520_platform_data *pdata = dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	struct platform_device *pdev;
 	struct adp5520_chip *chip;
 	int ret;
@@ -227,7 +238,11 @@ static int __devinit adp5520_probe(struct i2c_client *client,
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+=======
+	chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!chip)
 		return -ENOMEM;
 
@@ -248,7 +263,11 @@ static int __devinit adp5520_probe(struct i2c_client *client,
 		if (ret) {
 			dev_err(&client->dev, "failed to request irq %d\n",
 					chip->irq);
+<<<<<<< HEAD
 			goto out_free_chip;
+=======
+			return ret;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -306,6 +325,7 @@ out_free_irq:
 	if (chip->irq)
 		free_irq(chip->irq, chip);
 
+<<<<<<< HEAD
 out_free_chip:
 	kfree(chip);
 
@@ -313,6 +333,12 @@ out_free_chip:
 }
 
 static int __devexit adp5520_remove(struct i2c_client *client)
+=======
+	return ret;
+}
+
+static int adp5520_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adp5520_chip *chip = dev_get_drvdata(&client->dev);
 
@@ -321,11 +347,18 @@ static int __devexit adp5520_remove(struct i2c_client *client)
 
 	adp5520_remove_subdevs(chip);
 	adp5520_write(chip->dev, ADP5520_MODE_STATUS, 0);
+<<<<<<< HEAD
 	kfree(chip);
 	return 0;
 }
 
 #ifdef CONFIG_PM
+=======
+	return 0;
+}
+
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int adp5520_suspend(struct device *dev)
 {
 	struct i2c_client *client = to_i2c_client(dev);
@@ -364,6 +397,7 @@ static struct i2c_driver adp5520_driver = {
 		.pm	= &adp5520_pm,
 	},
 	.probe		= adp5520_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(adp5520_remove),
 	.id_table 	= adp5520_id,
 };
@@ -379,6 +413,13 @@ static void __exit adp5520_exit(void)
 	i2c_del_driver(&adp5520_driver);
 }
 module_exit(adp5520_exit);
+=======
+	.remove		= adp5520_remove,
+	.id_table 	= adp5520_id,
+};
+
+module_i2c_driver(adp5520_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("ADP5520(01) PMIC-MFD Driver");

@@ -16,6 +16,7 @@
 
 #include <linux/err.h>
 
+<<<<<<< HEAD
 #include "vc.h"
 #include "vp.h"
 
@@ -24,6 +25,15 @@
 struct powerdomain;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/voltage-omap.h>
+
+#include "vc.h"
+#include "vp.h"
+
+struct powerdomain;
+
+>>>>>>> refs/remotes/origin/master
 /* XXX document */
 #define VOLTSCALE_VPFORCEUPDATE		1
 #define VOLTSCALE_VCBYPASS		2
@@ -37,6 +47,7 @@ struct powerdomain;
 #define OMAP3_VOLTSETUP2	0xff
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * struct omap_vfsm_instance_data - per-voltage manager FSM register/bitfield
  * data
@@ -53,21 +64,32 @@ struct omap_vfsm_instance_data {
 	u8 voltsetup_reg;
 	u8 voltsetup_shift;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * struct omap_vfsm_instance - per-voltage manager FSM register/bitfield
  * data
  * @voltsetup_mask: SETUP_TIME* bitmask in the PRM_VOLTSETUP* register
  * @voltsetup_reg: register offset of PRM_VOLTSETUP from PRM base
+<<<<<<< HEAD
+=======
+ * @voltsetup_off_reg: register offset of PRM_VOLTSETUP_OFF from PRM base
+>>>>>>> refs/remotes/origin/master
  *
  * XXX What about VOLTOFFSET/VOLTCTRL?
  */
 struct omap_vfsm_instance {
 	u32 voltsetup_mask;
 	u8 voltsetup_reg;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 voltsetup_off_reg;
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
  * struct voltagedomain - omap voltage domain global structure.
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @name:	Name of the voltage domain which can be used as a unique
  *		identifier.
@@ -75,6 +97,8 @@ struct omap_vfsm_instance {
 struct voltagedomain {
 	char *name;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @name: Name of the voltage domain which can be used as a unique identifier.
  * @scalable: Whether or not this voltage domain is scalable
  * @node: list_head linking all voltage domains
@@ -99,6 +123,11 @@ struct voltagedomain {
 	const struct omap_vfsm_instance *vfsm;
 	struct omap_vp_instance *vp;
 	struct omap_voltdm_pmic *pmic;
+<<<<<<< HEAD
+=======
+	struct omap_vp_param *vp_param;
+	struct omap_vc_param *vc_param;
+>>>>>>> refs/remotes/origin/master
 
 	/* VC/VP register access functions: SoC specific */
 	u32 (*read) (u8 offset);
@@ -115,6 +144,7 @@ struct voltagedomain {
 
 	u32 nominal_volt;
 	struct omap_volt_data *volt_data;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
@@ -147,6 +177,29 @@ struct omap_volt_data {
  */
 struct omap_volt_pmic_info {
 =======
+=======
+};
+
+/* Min and max voltages from OMAP perspective */
+#define OMAP3430_VP1_VLIMITTO_VDDMIN	850000
+#define OMAP3430_VP1_VLIMITTO_VDDMAX	1425000
+#define OMAP3430_VP2_VLIMITTO_VDDMIN	900000
+#define OMAP3430_VP2_VLIMITTO_VDDMAX	1150000
+
+#define OMAP3630_VP1_VLIMITTO_VDDMIN	900000
+#define OMAP3630_VP1_VLIMITTO_VDDMAX	1350000
+#define OMAP3630_VP2_VLIMITTO_VDDMIN	900000
+#define OMAP3630_VP2_VLIMITTO_VDDMAX	1200000
+
+#define OMAP4_VP_MPU_VLIMITTO_VDDMIN	830000
+#define OMAP4_VP_MPU_VLIMITTO_VDDMAX	1410000
+#define OMAP4_VP_IVA_VLIMITTO_VDDMIN	830000
+#define OMAP4_VP_IVA_VLIMITTO_VDDMAX	1260000
+#define OMAP4_VP_CORE_VLIMITTO_VDDMIN	830000
+#define OMAP4_VP_CORE_VLIMITTO_VDDMAX	1200000
+
+/**
+>>>>>>> refs/remotes/origin/master
  * struct omap_voltdm_pmic - PMIC specific data required by voltage driver.
  * @slew_rate:	PMIC slew rate (in uv/us)
  * @step_size:	PMIC voltage step size (in uv)
@@ -159,6 +212,7 @@ struct omap_volt_pmic_info {
  * @uv_to_vsel:	PMIC API to convert voltage in uV to vsel value.
  */
 struct omap_voltdm_pmic {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	int slew_rate;
 	int step_size;
@@ -186,10 +240,27 @@ struct omap_voltdm_pmic {
 	bool i2c_high_speed;
 	u8 i2c_mcode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int slew_rate;
+	int step_size;
+	u16 i2c_slave_addr;
+	u16 volt_reg_addr;
+	u16 cmd_reg_addr;
+	u8 vp_erroroffset;
+	u8 vp_vstepmin;
+	u8 vp_vstepmax;
+	u32 vddmin;
+	u32 vddmax;
+	u8 vp_timeout_us;
+	bool i2c_high_speed;
+	u32 i2c_pad_load;
+	u8 i2c_mcode;
+>>>>>>> refs/remotes/origin/master
 	unsigned long (*vsel_to_uv) (const u8 vsel);
 	u8 (*uv_to_vsel) (unsigned long uV);
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /**
  * omap_vdd_info - Per Voltage Domain info
@@ -235,10 +306,25 @@ int omap_voltage_scale_vdd(struct voltagedomain *voltdm,
 void omap_voltage_reset(struct voltagedomain *voltdm);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct omap_vp_param {
+	u32 vddmax;
+	u32 vddmin;
+};
+
+struct omap_vc_param {
+	u32 on;
+	u32 onlp;
+	u32 ret;
+	u32 off;
+};
+
+>>>>>>> refs/remotes/origin/master
 void omap_voltage_get_volttable(struct voltagedomain *voltdm,
 		struct omap_volt_data **volt_data);
 struct omap_volt_data *omap_voltage_get_voltdata(struct voltagedomain *voltdm,
 		unsigned long volt);
+<<<<<<< HEAD
 <<<<<<< HEAD
 unsigned long omap_voltage_get_nom_volt(struct voltagedomain *voltdm);
 struct dentry *omap_voltage_get_dbgdir(struct voltagedomain *voltdm);
@@ -273,6 +359,8 @@ static inline struct voltagedomain *omap_voltage_domain_lookup(char *name)
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int omap_voltage_register_pmic(struct voltagedomain *voltdm,
 			       struct omap_voltdm_pmic *pmic);
 void omap_change_voltscale_method(struct voltagedomain *voltdm,
@@ -282,6 +370,10 @@ int omap_voltage_late_init(void);
 extern void omap2xxx_voltagedomains_init(void);
 extern void omap3xxx_voltagedomains_init(void);
 extern void omap44xx_voltagedomains_init(void);
+<<<<<<< HEAD
+=======
+extern void omap54xx_voltagedomains_init(void);
+>>>>>>> refs/remotes/origin/master
 
 struct voltagedomain *voltdm_lookup(const char *name);
 void voltdm_init(struct voltagedomain **voltdm_list);
@@ -294,5 +386,8 @@ int voltdm_for_each_pwrdm(struct voltagedomain *voltdm,
 int voltdm_scale(struct voltagedomain *voltdm, unsigned long target_volt);
 void voltdm_reset(struct voltagedomain *voltdm);
 unsigned long voltdm_get_voltage(struct voltagedomain *voltdm);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

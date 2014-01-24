@@ -12,9 +12,13 @@
 #include <linux/pagemap.h>
 #include <linux/vmalloc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 
 #define DM_MSG_PREFIX "snapshot exception stores"
@@ -145,24 +149,38 @@ EXPORT_SYMBOL(dm_exception_store_type_unregister);
 static int set_chunk_size(struct dm_exception_store *store,
 			  const char *chunk_size_arg, char **error)
 {
+<<<<<<< HEAD
 	unsigned long chunk_size_ulong;
 	char *value;
 
 	chunk_size_ulong = simple_strtoul(chunk_size_arg, &value, 10);
 	if (*chunk_size_arg == '\0' || *value != '\0' ||
 	    chunk_size_ulong > UINT_MAX) {
+=======
+	unsigned chunk_size;
+
+	if (kstrtouint(chunk_size_arg, 10, &chunk_size)) {
+>>>>>>> refs/remotes/origin/master
 		*error = "Invalid chunk size";
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (!chunk_size_ulong) {
+=======
+	if (!chunk_size) {
+>>>>>>> refs/remotes/origin/master
 		store->chunk_size = store->chunk_mask = store->chunk_shift = 0;
 		return 0;
 	}
 
+<<<<<<< HEAD
 	return dm_exception_store_set_chunk_size(store,
 						 (unsigned) chunk_size_ulong,
 						 error);
+=======
+	return dm_exception_store_set_chunk_size(store, chunk_size, error);
+>>>>>>> refs/remotes/origin/master
 }
 
 int dm_exception_store_set_chunk_size(struct dm_exception_store *store,

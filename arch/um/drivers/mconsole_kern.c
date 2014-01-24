@@ -21,6 +21,7 @@
 #include <linux/un.h>
 #include <linux/workqueue.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <asm/uaccess.h>
 <<<<<<< HEAD
 =======
@@ -34,6 +35,21 @@
 #include "mconsole.h"
 #include "mconsole_kern.h"
 #include "os.h"
+=======
+#include <linux/fs.h>
+#include <linux/mount.h>
+#include <linux/file.h>
+#include <asm/uaccess.h>
+#include <asm/switch_to.h>
+
+#include <init.h>
+#include <irq_kern.h>
+#include <irq_user.h>
+#include <kern_util.h>
+#include "mconsole.h"
+#include "mconsole_kern.h"
+#include <os.h>
+>>>>>>> refs/remotes/origin/master
 
 static int do_unlink_socket(struct notifier_block *notifier,
 			    unsigned long what, void *data)
@@ -121,6 +137,7 @@ void mconsole_log(struct mc_request *req)
 	mconsole_reply(req, "", 0, 0);
 }
 
+<<<<<<< HEAD
 /* This is a more convoluted version of mconsole_proc, which has some stability
  * problems; however, we need it fixed, because it is expected that UML users
  * mount HPPFS instead of procfs on /proc. And we want mconsole_proc to still
@@ -183,28 +200,57 @@ void mconsole_proc(struct mc_request *req)
 	char *buf;
 	int len;
 	int fd;
+=======
+void mconsole_proc(struct mc_request *req)
+{
+	struct vfsmount *mnt = task_active_pid_ns(current)->proc_mnt;
+	char *buf;
+	int len;
+	struct file *file;
+>>>>>>> refs/remotes/origin/master
 	int first_chunk = 1;
 	char *ptr = req->request.data;
 
 	ptr += strlen("proc");
 	ptr = skip_spaces(ptr);
+<<<<<<< HEAD
 	snprintf(path, sizeof(path), "/proc/%s", ptr);
 
 	fd = sys_open(path, 0, 0);
 	if (fd < 0) {
 		mconsole_reply(req, "Failed to open file", 1, 0);
 		printk(KERN_ERR "open %s: %d\n",path,fd);
+=======
+
+	file = file_open_root(mnt->mnt_root, mnt, ptr, O_RDONLY);
+	if (IS_ERR(file)) {
+		mconsole_reply(req, "Failed to open file", 1, 0);
+		printk(KERN_ERR "open /proc/%s: %ld\n", ptr, PTR_ERR(file));
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 	buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
 	if (buf == NULL) {
 		mconsole_reply(req, "Failed to allocate buffer", 1, 0);
+<<<<<<< HEAD
 		goto out_close;
 	}
 
 	for (;;) {
 		len = sys_read(fd, buf, PAGE_SIZE-1);
+=======
+		goto out_fput;
+	}
+
+	do {
+		loff_t pos = file->f_pos;
+		mm_segment_t old_fs = get_fs();
+		set_fs(KERNEL_DS);
+		len = vfs_read(file, buf, PAGE_SIZE - 1, &pos);
+		set_fs(old_fs);
+		file->f_pos = pos;
+>>>>>>> refs/remotes/origin/master
 		if (len < 0) {
 			mconsole_reply(req, "Read of file failed", 1, 0);
 			goto out_free;
@@ -214,6 +260,7 @@ void mconsole_proc(struct mc_request *req)
 			mconsole_reply(req, "\n", 0, 1);
 			first_chunk = 0;
 		}
+<<<<<<< HEAD
 		if (len == PAGE_SIZE-1) {
 			buf[len] = '\0';
 			mconsole_reply(req, buf, 0, 1);
@@ -230,6 +277,16 @@ void mconsole_proc(struct mc_request *req)
 	sys_close(fd);
  out:
 	/* nothing */;
+=======
+		buf[len] = '\0';
+		mconsole_reply(req, buf, 0, (len > 0));
+	} while (len > 0);
+ out_free:
+	kfree(buf);
+ out_fput:
+	fput(file);
+ out: ;
+>>>>>>> refs/remotes/origin/master
 }
 
 #define UML_MCONSOLE_HELPTEXT \
@@ -705,10 +762,16 @@ void mconsole_sysrq(struct mc_request *req)
 
 static void stack_proc(void *arg)
 {
+<<<<<<< HEAD
 	struct task_struct *from = current, *to = arg;
 
 	to->thread.saved_task = from;
 	switch_to(from, to, from);
+=======
+	struct task_struct *task = arg;
+
+	show_stack(task, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -778,11 +841,15 @@ static int __init mconsole_init(void)
 
 	err = um_request_irq(MCONSOLE_IRQ, sock, IRQ_READ, mconsole_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
 =======
 			     IRQF_SHARED | IRQF_SAMPLE_RANDOM,
 >>>>>>> refs/remotes/origin/cm-10.0
 			     "mconsole", (void *)sock);
+=======
+			     IRQF_SHARED, "mconsole", (void *)sock);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		printk(KERN_ERR "Failed to get IRQ for management console\n");
 		goto out;
@@ -846,8 +913,12 @@ static int create_proc_mconsole(void)
 
 	ent = proc_create("mconsole", 0200, NULL, &mconsole_proc_fops);
 	if (ent == NULL) {
+<<<<<<< HEAD
 		printk(KERN_INFO "create_proc_mconsole : create_proc_entry "
 		       "failed\n");
+=======
+		printk(KERN_INFO "create_proc_mconsole : proc_create failed\n");
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	return 0;

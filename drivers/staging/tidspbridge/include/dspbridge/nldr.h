@@ -37,9 +37,12 @@ extern int nldr_create(struct nldr_object **nldr,
 
 extern void nldr_delete(struct nldr_object *nldr_obj);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void nldr_exit(void);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern int nldr_get_fxn_addr(struct nldr_nodeobject *nldr_node_obj,
 				    char *str_fxn, u32 * addr);
@@ -48,9 +51,12 @@ extern int nldr_get_rmm_manager(struct nldr_object *nldr,
 				       struct rmm_target_obj **rmm_mgr);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern bool nldr_init(void);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern int nldr_load(struct nldr_nodeobject *nldr_node_obj,
 			    enum nldr_phase phase);
 extern int nldr_unload(struct nldr_nodeobject *nldr_node_obj,

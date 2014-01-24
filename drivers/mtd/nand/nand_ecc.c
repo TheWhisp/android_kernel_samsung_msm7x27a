@@ -55,8 +55,12 @@ struct mtd_info;
 #define MODULE_AUTHOR(x)	/* x */
 #define MODULE_DESCRIPTION(x)	/* x */
 
+<<<<<<< HEAD
 #define printk printf
 #define KERN_ERR		""
+=======
+#define pr_err printf
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -111,10 +115,14 @@ static const char bitsperbyte[256] = {
 /*
  * addressbits is a lookup table to filter out the bits from the xor-ed
 <<<<<<< HEAD
+<<<<<<< HEAD
  * ecc data that identify the faulty location.
 =======
  * ECC data that identify the faulty location.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ECC data that identify the faulty location.
+>>>>>>> refs/remotes/origin/master
  * this is only used for repairing parity
  * see the comments in nand_correct_data for more details
  */
@@ -158,10 +166,14 @@ static const char addressbits[256] = {
  *			 block
  * @buf:	input buffer with raw data
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @eccsize:	data bytes per ecc step (256 or 512)
 =======
  * @eccsize:	data bytes per ECC step (256 or 512)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @eccsize:	data bytes per ECC step (256 or 512)
+>>>>>>> refs/remotes/origin/master
  * @code:	output buffer with ECC
  */
 void __nand_calculate_ecc(const unsigned char *buf, unsigned int eccsize,
@@ -357,10 +369,14 @@ void __nand_calculate_ecc(const unsigned char *buf, unsigned int eccsize,
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * Finally calculate the ecc bits.
 =======
 	 * Finally calculate the ECC bits.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * Finally calculate the ECC bits.
+>>>>>>> refs/remotes/origin/master
 	 * Again here it might seem that there are performance optimisations
 	 * possible, but benchmarks showed that on the system this is developed
 	 * the code below is the fastest
@@ -449,10 +465,14 @@ EXPORT_SYMBOL(nand_calculate_ecc);
  * @read_ecc:	ECC from the chip
  * @calc_ecc:	the ECC calculated from raw data
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @eccsize:	data bytes per ecc step (256 or 512)
 =======
  * @eccsize:	data bytes per ECC step (256 or 512)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @eccsize:	data bytes per ECC step (256 or 512)
+>>>>>>> refs/remotes/origin/master
  *
  * Detect and correct a 1 bit error for eccsize byte block
  */
@@ -522,12 +542,18 @@ int __nand_correct_data(unsigned char *buf,
 	/* count nr of bits; use table lookup, faster than calculating it */
 	if ((bitsperbyte[b0] + bitsperbyte[b1] + bitsperbyte[b2]) == 1)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return 1;	/* error in ecc data; no action needed */
 =======
 		return 1;	/* error in ECC data; no action needed */
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	printk(KERN_ERR "uncorrectable error : ");
+=======
+		return 1;	/* error in ECC data; no action needed */
+
+	pr_err("%s: uncorrectable ECC error", __func__);
+>>>>>>> refs/remotes/origin/master
 	return -1;
 }
 EXPORT_SYMBOL(__nand_correct_data);

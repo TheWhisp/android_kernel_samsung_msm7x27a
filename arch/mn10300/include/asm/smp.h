@@ -24,6 +24,10 @@
 #ifndef __ASSEMBLY__
 #include <linux/threads.h>
 #include <linux/cpumask.h>
+<<<<<<< HEAD
+=======
+#include <linux/thread_info.h>
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_SMP
@@ -85,7 +89,11 @@ extern cpumask_t cpu_boot_map;
 extern void smp_init_cpus(void);
 extern void smp_cache_interrupt(void);
 extern void send_IPI_allbutself(int irq);
+<<<<<<< HEAD
 extern int smp_nmi_call_function(smp_call_func_t func, void *info, int wait);
+=======
+extern int smp_nmi_call_function(void (*func)(void *), void *info, int wait);
+>>>>>>> refs/remotes/origin/master
 
 extern void arch_send_call_function_single_ipi(int cpu);
 extern void arch_send_call_function_ipi_mask(const struct cpumask *mask);
@@ -100,6 +108,10 @@ extern void __cpu_die(unsigned int cpu);
 #ifndef __ASSEMBLY__
 
 static inline void smp_init_cpus(void) {}
+<<<<<<< HEAD
+=======
+#define raw_smp_processor_id() 0
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASSEMBLY__ */
 #endif /* CONFIG_SMP */

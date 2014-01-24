@@ -109,12 +109,17 @@ static unsigned int calibration_result;
 /* Function Prototypes                                                       */
 /*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*/
 
+<<<<<<< HEAD
 void smp_prepare_boot_cpu(void);
 void smp_prepare_cpus(unsigned int);
 static void init_ipi_lock(void);
 static void do_boot_cpu(int);
 int __cpu_up(unsigned int);
 void smp_cpus_done(unsigned int);
+=======
+static void init_ipi_lock(void);
+static void do_boot_cpu(int);
+>>>>>>> refs/remotes/origin/master
 
 int start_secondary(void *);
 static void smp_callin(void);
@@ -131,7 +136,11 @@ static void unmap_cpu_to_physid(int, int);
 /*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*/
 /* Boot up APs Routines : BSP                                                */
 /*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*/
+<<<<<<< HEAD
 void __devinit smp_prepare_boot_cpu(void)
+=======
+void smp_prepare_boot_cpu(void)
+>>>>>>> refs/remotes/origin/master
 {
 	bsp_phys_id = hard_smp_processor_id();
 	physid_set(bsp_phys_id, phys_cpu_present_map);
@@ -347,7 +356,11 @@ static void __init do_boot_cpu(int phys_id)
 	}
 }
 
+<<<<<<< HEAD
 int __cpuinit __cpu_up(unsigned int cpu_id)
+=======
+int __cpu_up(unsigned int cpu_id, struct task_struct *tidle)
+>>>>>>> refs/remotes/origin/master
 {
 	int timeout;
 
@@ -436,7 +449,11 @@ int __init start_secondary(void *unused)
 	 */
 	local_flush_tlb_all();
 
+<<<<<<< HEAD
 	cpu_idle();
+=======
+	cpu_startup_entry(CPUHP_ONLINE);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

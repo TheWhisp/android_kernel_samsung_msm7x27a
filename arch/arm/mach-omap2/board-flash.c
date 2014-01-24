@@ -16,6 +16,7 @@
 #include <linux/platform_device.h>
 #include <linux/mtd/physmap.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <plat/irqs.h>
 
 #include <plat/gpmc.h>
@@ -24,6 +25,17 @@
 #include <plat/tc.h>
 
 #include "board-flash.h"
+=======
+
+#include <linux/platform_data/mtd-nand-omap2.h>
+#include <linux/platform_data/mtd-onenand-omap2.h>
+
+#include "soc.h"
+#include "common.h"
+#include "board-flash.h"
+#include "gpmc-onenand.h"
+#include "gpmc-nand.h"
+>>>>>>> refs/remotes/origin/master
 
 #define REG_FPGA_REV			0x10
 #define REG_FPGA_DIP_SWITCH_INPUT2	0x60
@@ -87,7 +99,11 @@ static struct omap_onenand_platform_data board_onenand_data = {
 	.dma_channel	= -1,   /* disable DMA in OMAP OneNAND driver */
 };
 
+<<<<<<< HEAD
 static void
+=======
+void
+>>>>>>> refs/remotes/origin/master
 __init board_onenand_init(struct mtd_partition *onenand_parts,
 				u8 nr_parts, u8 cs)
 {
@@ -97,17 +113,21 @@ __init board_onenand_init(struct mtd_partition *onenand_parts,
 
 	gpmc_onenand_init(&board_onenand_data);
 }
+<<<<<<< HEAD
 #else
 static void
 __init board_onenand_init(struct mtd_partition *nor_parts, u8 nr_parts, u8 cs)
 {
 }
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_MTD_ONENAND_OMAP2 || CONFIG_MTD_ONENAND_OMAP2_MODULE */
 
 #if defined(CONFIG_MTD_NAND_OMAP2) || \
 		defined(CONFIG_MTD_NAND_OMAP2_MODULE)
 
 /* Note that all values in this struct are in nanoseconds */
+<<<<<<< HEAD
 static struct gpmc_timings nand_timings = {
 
 	.sync_clk = 0,
@@ -146,12 +166,47 @@ static struct omap_nand_platform_data board_nand_data = {
 void
 __init board_nand_init(struct mtd_partition *nand_parts,
 			u8 nr_parts, u8 cs, int nand_type)
+=======
+struct gpmc_timings nand_default_timings[1] = {
+	{
+		.sync_clk = 0,
+
+		.cs_on = 0,
+		.cs_rd_off = 36,
+		.cs_wr_off = 36,
+
+		.we_on = 6,
+		.oe_on = 6,
+
+		.adv_on = 6,
+		.adv_rd_off = 24,
+		.adv_wr_off = 36,
+
+		.we_off = 30,
+		.oe_off = 48,
+
+		.access = 54,
+		.rd_cycle = 72,
+		.wr_cycle = 72,
+
+		.wr_access = 30,
+		.wr_data_mux_bus = 0,
+	},
+};
+
+static struct omap_nand_platform_data board_nand_data;
+
+void
+__init board_nand_init(struct mtd_partition *nand_parts, u8 nr_parts, u8 cs,
+				int nand_type, struct gpmc_timings *gpmc_t)
+>>>>>>> refs/remotes/origin/master
 {
 	board_nand_data.cs		= cs;
 	board_nand_data.parts		= nand_parts;
 	board_nand_data.nr_parts	= nr_parts;
 	board_nand_data.devsize		= nand_type;
 
+<<<<<<< HEAD
 	board_nand_data.ecc_opt = OMAP_ECC_HAMMING_CODE_DEFAULT;
 	board_nand_data.gpmc_irq = OMAP_GPMC_IRQ_BASE + cs;
 	gpmc_nand_init(&board_nand_data);
@@ -164,6 +219,11 @@ __init board_nand_init(struct mtd_partition *nand_parts, u8 nr_parts, u8 cs, int
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	board_nand_data.ecc_opt = OMAP_ECC_BCH8_CODE_HW;
+	gpmc_nand_init(&board_nand_data, gpmc_t);
+}
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_MTD_NAND_OMAP2 || CONFIG_MTD_NAND_OMAP2_MODULE */
 
 /**
@@ -206,10 +266,14 @@ unmap:
  * @return - void.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void board_flash_init(struct flash_partitions partition_info[],
 =======
 void __init board_flash_init(struct flash_partitions partition_info[],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __init board_flash_init(struct flash_partitions partition_info[],
+>>>>>>> refs/remotes/origin/master
 			char chip_sel_board[][GPMC_CS_NUM], int nand_type)
 {
 	u8		cs = 0;
@@ -243,7 +307,11 @@ void __init board_flash_init(struct flash_partitions partition_info[],
 			if (onenandcs > GPMC_CS_NUM)
 				onenandcs = cs;
 			break;
+<<<<<<< HEAD
 		};
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 		cs++;
 	}
 
@@ -263,5 +331,10 @@ void __init board_flash_init(struct flash_partitions partition_info[],
 		pr_err("NAND: Unable to find configuration in GPMC\n");
 	else
 		board_nand_init(partition_info[2].parts,
+<<<<<<< HEAD
 			partition_info[2].nr_parts, nandcs, nand_type);
+=======
+			partition_info[2].nr_parts, nandcs,
+			nand_type, nand_default_timings);
+>>>>>>> refs/remotes/origin/master
 }

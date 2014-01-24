@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Trace files that want to automate creationg of all tracepoints defined
+=======
+ * Trace files that want to automate creation of all tracepoints defined
+>>>>>>> refs/remotes/origin/master
  * in their file should include this file. The following are macros that the
  * trace file may define:
  *
@@ -22,6 +26,7 @@
 
 #include <linux/stringify.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * module.h includes tracepoints, and because ftrace.h
  * pulls in module.h:
@@ -34,6 +39,8 @@
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #undef TRACE_EVENT
 #define TRACE_EVENT(name, proto, args, tstruct, assign, print)	\
@@ -57,6 +64,13 @@
 #define DEFINE_EVENT(template, name, proto, args) \
 	DEFINE_TRACE(name)
 
+<<<<<<< HEAD
+=======
+#undef DEFINE_EVENT_FN
+#define DEFINE_EVENT_FN(template, name, proto, args, reg, unreg) \
+	DEFINE_TRACE_FN(name, reg, unreg)
+
+>>>>>>> refs/remotes/origin/master
 #undef DEFINE_EVENT_PRINT
 #define DEFINE_EVENT_PRINT(template, name, proto, args, print)	\
 	DEFINE_TRACE(name)
@@ -104,6 +118,10 @@
 #undef TRACE_EVENT_CONDITION
 #undef DECLARE_EVENT_CLASS
 #undef DEFINE_EVENT
+<<<<<<< HEAD
+=======
+#undef DEFINE_EVENT_FN
+>>>>>>> refs/remotes/origin/master
 #undef DEFINE_EVENT_PRINT
 #undef DEFINE_EVENT_CONDITION
 #undef TRACE_HEADER_MULTI_READ

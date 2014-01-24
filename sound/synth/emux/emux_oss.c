@@ -26,9 +26,13 @@
 #ifdef CONFIG_SND_SEQUENCER_OSS
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <sound/core.h>
 #include "emux_voice.h"

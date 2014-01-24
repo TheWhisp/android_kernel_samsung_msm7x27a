@@ -4,7 +4,11 @@
 
 config AF_RXRPC
 	tristate "RxRPC session sockets"
+<<<<<<< HEAD
 	depends on INET && EXPERIMENTAL
+=======
+	depends on INET
+>>>>>>> refs/remotes/origin/master
 	select CRYPTO
 	select KEYS
 	help

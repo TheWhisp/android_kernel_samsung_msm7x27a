@@ -73,7 +73,11 @@ static struct clocksource clocksource_acpi_pm = {
 
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
 static int __devinitdata acpi_pm_good;
+=======
+static int acpi_pm_good;
+>>>>>>> refs/remotes/origin/master
 static int __init acpi_pm_good_setup(char *__str)
 {
 	acpi_pm_good = 1;
@@ -102,7 +106,11 @@ static inline void acpi_pm_need_workaround(void)
  * incorrect when read). As a result, the ACPI free running count up
  * timer specification is violated due to erroneous reads.
  */
+<<<<<<< HEAD
 static void __devinit acpi_pm_check_blacklist(struct pci_dev *dev)
+=======
+static void acpi_pm_check_blacklist(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (acpi_pm_good)
 		return;
@@ -120,7 +128,11 @@ static void __devinit acpi_pm_check_blacklist(struct pci_dev *dev)
 DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82371AB_3,
 			acpi_pm_check_blacklist);
 
+<<<<<<< HEAD
 static void __devinit acpi_pm_check_graylist(struct pci_dev *dev)
+=======
+static void acpi_pm_check_graylist(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (acpi_pm_good)
 		return;
@@ -144,10 +156,14 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SERVERWORKS, PCI_DEVICE_ID_SERVERWORKS_LE,
 #include <asm/mach_timer.h>
 #define PMTMR_EXPECTED_RATE \
 <<<<<<< HEAD
+<<<<<<< HEAD
   ((CALIBRATE_LATCH * (PMTMR_TICKS_PER_SEC >> 10)) / (CLOCK_TICK_RATE>>10))
 =======
   ((CALIBRATE_LATCH * (PMTMR_TICKS_PER_SEC >> 10)) / (PIT_TICK_RATE>>10))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  ((CALIBRATE_LATCH * (PMTMR_TICKS_PER_SEC >> 10)) / (PIT_TICK_RATE>>10))
+>>>>>>> refs/remotes/origin/master
 /*
  * Some boards have the PMTMR running way too fast. We check
  * the PMTMR rate against PIT channel 2 to catch these cases.
@@ -204,14 +220,22 @@ static int __init init_acpi_pm_clocksource(void)
 			if ((value2 < value1) && ((value2) < 0xFFF))
 				break;
 			printk(KERN_INFO "PM-Timer had inconsistent results:"
+<<<<<<< HEAD
 			       " 0x%#llx, 0x%#llx - aborting.\n",
+=======
+			       " %#llx, %#llx - aborting.\n",
+>>>>>>> refs/remotes/origin/master
 			       value1, value2);
 			pmtmr_ioport = 0;
 			return -EINVAL;
 		}
 		if (i == ACPI_PM_READ_CHECKS) {
 			printk(KERN_INFO "PM-Timer failed consistency check "
+<<<<<<< HEAD
 			       " (0x%#llx) - aborting.\n", value1);
+=======
+			       " (%#llx) - aborting.\n", value1);
+>>>>>>> refs/remotes/origin/master
 			pmtmr_ioport = 0;
 			return -ENODEV;
 		}
@@ -237,6 +261,7 @@ fs_initcall(init_acpi_pm_clocksource);
  */
 static int __init parse_pmtmr(char *arg)
 {
+<<<<<<< HEAD
 	unsigned long base;
 
 	if (strict_strtoul(arg, 16, &base))
@@ -247,6 +272,17 @@ static int __init parse_pmtmr(char *arg)
 #endif
 	printk(KERN_INFO "PMTMR IOPort override: 0x%04x -> 0x%04lx\n",
 	       pmtmr_ioport, base);
+=======
+	unsigned int base;
+	int ret;
+
+	ret = kstrtouint(arg, 16, &base);
+	if (ret)
+		return ret;
+
+	pr_info("PMTMR IOPort override: 0x%04x -> 0x%04x\n", pmtmr_ioport,
+		base);
+>>>>>>> refs/remotes/origin/master
 	pmtmr_ioport = base;
 
 	return 1;

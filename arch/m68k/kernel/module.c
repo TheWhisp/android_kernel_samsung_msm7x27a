@@ -1,10 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMU
 #include "module_mm.c"
 #else
 #include "module_no.c"
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This file is subject to the terms and conditions of the GNU General Public
  * License.  See the file COPYING in the main directory of this archive
@@ -54,7 +57,11 @@ int apply_relocate(Elf32_Shdr *sechdrs,
 			*location += sym->st_value;
 			break;
 		case R_68K_PC32:
+<<<<<<< HEAD
 			/* Add the value, subtract its postition */
+=======
+			/* Add the value, subtract its position */
+>>>>>>> refs/remotes/origin/master
 			*location += sym->st_value - (uint32_t)location;
 			break;
 		default:
@@ -94,7 +101,11 @@ int apply_relocate_add(Elf32_Shdr *sechdrs,
 			*location = rel[i].r_addend + sym->st_value;
 			break;
 		case R_68K_PC32:
+<<<<<<< HEAD
 			/* Add the value, subtract its postition */
+=======
+			/* Add the value, subtract its position */
+>>>>>>> refs/remotes/origin/master
 			*location = rel[i].r_addend + sym->st_value - (uint32_t)location;
 			break;
 		default:
@@ -134,4 +145,7 @@ void module_fixup(struct module *mod, struct m68k_fixup_info *start,
 	}
 #endif
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

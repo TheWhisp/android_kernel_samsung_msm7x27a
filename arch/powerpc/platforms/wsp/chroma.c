@@ -15,6 +15,10 @@
 #include <linux/of.h>
 #include <linux/smp.h>
 #include <linux/time.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_fdt.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/machdep.h>
 #include <asm/udbg.h>

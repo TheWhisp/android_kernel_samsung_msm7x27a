@@ -4,6 +4,7 @@
  * Integer declarations for architectures which use "long"
  * for 64-bit types.
  */
+<<<<<<< HEAD
 
 #ifndef _ASM_GENERIC_INT_L64_H
 #define _ASM_GENERIC_INT_L64_H
@@ -31,6 +32,13 @@ typedef unsigned long __u64;
 #endif /* __ASSEMBLY__ */
 
 #ifdef __KERNEL__
+=======
+#ifndef _ASM_GENERIC_INT_L64_H
+#define _ASM_GENERIC_INT_L64_H
+
+#include <uapi/asm-generic/int-l64.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 
@@ -68,6 +76,9 @@ typedef unsigned long u64;
 
 #endif /* __ASSEMBLY__ */
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_GENERIC_INT_L64_H */

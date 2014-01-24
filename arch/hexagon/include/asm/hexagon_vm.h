@@ -1,7 +1,11 @@
 /*
  * Declarations for to Hexagon Virtal Machine.
  *
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2010-2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -31,10 +35,33 @@
  * for tracing/debugging.
  */
 
+<<<<<<< HEAD
 /*
  * Lets make this stuff visible only if configured,
  * so we can unconditionally include the file.
  */
+=======
+#define HVM_TRAP1_VMVERSION		0
+#define HVM_TRAP1_VMRTE			1
+#define HVM_TRAP1_VMSETVEC		2
+#define HVM_TRAP1_VMSETIE		3
+#define HVM_TRAP1_VMGETIE		4
+#define HVM_TRAP1_VMINTOP		5
+#define HVM_TRAP1_VMCLRMAP		10
+#define HVM_TRAP1_VMNEWMAP		11
+#define HVM_TRAP1_FORMERLY_VMWIRE	12
+#define HVM_TRAP1_VMCACHE		13
+#define HVM_TRAP1_VMGETTIME		14
+#define HVM_TRAP1_VMSETTIME		15
+#define HVM_TRAP1_VMWAIT		16
+#define HVM_TRAP1_VMYIELD		17
+#define HVM_TRAP1_VMSTART		18
+#define HVM_TRAP1_VMSTOP		19
+#define HVM_TRAP1_VMVPID		20
+#define HVM_TRAP1_VMSETREGS		21
+#define HVM_TRAP1_VMGETREGS		22
+#define HVM_TRAP1_VMTIMEROP		24
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 
@@ -175,6 +202,7 @@ static inline long __vmintop_clear(long i)
 
 #else /* Only assembly code should reference these */
 
+<<<<<<< HEAD
 #define HVM_TRAP1_VMRTE			1
 #define HVM_TRAP1_VMSETVEC		2
 #define HVM_TRAP1_VMSETIE		3
@@ -194,12 +222,24 @@ static inline long __vmintop_clear(long i)
 #define HVM_TRAP1_VMSETREGS		21
 #define HVM_TRAP1_VMGETREGS		22
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASSEMBLY__ */
 
 /*
  * Constants for virtual instruction parameters and return values
  */
 
+<<<<<<< HEAD
+=======
+/* vmnewmap arguments */
+
+#define VM_TRANS_TYPE_LINEAR 0
+#define VM_TRANS_TYPE_TABLE 1
+#define VM_TLB_INVALIDATE_FALSE 0
+#define VM_TLB_INVALIDATE_TRUE 1
+
+>>>>>>> refs/remotes/origin/master
 /* vmsetie arguments */
 
 #define VM_INT_DISABLE	0
@@ -224,6 +264,11 @@ static inline long __vmintop_clear(long i)
 #define HVM_VMEST_UM_MSK	1
 #define HVM_VMEST_IE_SFT	30
 #define HVM_VMEST_IE_MSK	1
+<<<<<<< HEAD
+=======
+#define HVM_VMEST_SS_SFT	29
+#define HVM_VMEST_SS_MSK	1
+>>>>>>> refs/remotes/origin/master
 #define HVM_VMEST_EVENTNUM_SFT	16
 #define HVM_VMEST_EVENTNUM_MSK	0xff
 #define HVM_VMEST_CAUSE_SFT	0
@@ -260,6 +305,11 @@ static inline long __vmintop_clear(long i)
 #define HVM_GE_C_INVI	0x15
 #define HVM_GE_C_PRIVI	0x1B
 #define HVM_GE_C_XMAL	0x1C
+<<<<<<< HEAD
+=======
+#define HVM_GE_C_WREG	0x1D
+#define HVM_GE_C_PCAL	0x1E
+>>>>>>> refs/remotes/origin/master
 #define HVM_GE_C_RMAL	0x20
 #define HVM_GE_C_WMAL	0x21
 #define HVM_GE_C_RPROT	0x22

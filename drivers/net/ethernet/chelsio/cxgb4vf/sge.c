@@ -528,17 +528,32 @@ static void unmap_rx_buf(struct adapter *adapter, struct sge_fl *fl)
  */
 static inline void ring_fl_db(struct adapter *adapter, struct sge_fl *fl)
 {
+<<<<<<< HEAD
+=======
+	u32 val;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The SGE keeps track of its Producer and Consumer Indices in terms
 	 * of Egress Queue Units so we can only tell it about integral numbers
 	 * of multiples of Free List Entries per Egress Queue Units ...
 	 */
 	if (fl->pend_cred >= FL_PER_EQ_UNIT) {
+<<<<<<< HEAD
 		wmb();
 		t4_write_reg(adapter, T4VF_SGE_BASE_ADDR + SGE_VF_KDOORBELL,
 			     DBPRIO |
 			     QID(fl->cntxt_id) |
 			     PIDX(fl->pend_cred / FL_PER_EQ_UNIT));
+=======
+		val = PIDX(fl->pend_cred / FL_PER_EQ_UNIT);
+		if (!is_t4(adapter->params.chip))
+			val |= DBTYPE(1);
+		wmb();
+		t4_write_reg(adapter, T4VF_SGE_BASE_ADDR + SGE_VF_KDOORBELL,
+			     DBPRIO(1) |
+			     QID(fl->cntxt_id) | val);
+>>>>>>> refs/remotes/origin/master
 		fl->pend_cred %= FL_PER_EQ_UNIT;
 	}
 }
@@ -653,7 +668,11 @@ static unsigned int refill_fl(struct adapter *adapter, struct sge_fl *fl,
 
 alloc_small_pages:
 	while (n--) {
+<<<<<<< HEAD
 		page = alloc_page(gfp | __GFP_NOWARN | __GFP_COLD);
+=======
+		page = __skb_alloc_page(gfp | __GFP_NOWARN, NULL);
+>>>>>>> refs/remotes/origin/master
 		if (unlikely(!page)) {
 			fl->alloc_failed++;
 			break;
@@ -934,7 +953,11 @@ static void write_sgl(const struct sk_buff *skb, struct sge_txq *tq,
 		end = (void *)tq->desc + part1;
 	}
 	if ((uintptr_t)end & 8)           /* 0-pad to multiple of 16 */
+<<<<<<< HEAD
 		*(u64 *)end = 0;
+=======
+		*end = 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -952,7 +975,11 @@ static inline void ring_tx_db(struct adapter *adapter, struct sge_txq *tq,
 	 * Warn if we write doorbells with the wrong priority and write
 	 * descriptors before telling HW.
 	 */
+<<<<<<< HEAD
 	WARN_ON((QID(tq->cntxt_id) | PIDX(n)) & DBPRIO);
+=======
+	WARN_ON((QID(tq->cntxt_id) | PIDX(n)) & DBPRIO(1));
+>>>>>>> refs/remotes/origin/master
 	wmb();
 	t4_write_reg(adapter, T4VF_SGE_BASE_ADDR + SGE_VF_KDOORBELL,
 		     QID(tq->cntxt_id) | PIDX(n));
@@ -1323,8 +1350,12 @@ int t4vf_eth_xmit(struct sk_buff *skb, struct net_device *dev)
 		 */
 		if (unlikely((void *)sgl == (void *)tq->stat)) {
 			sgl = (void *)tq->desc;
+<<<<<<< HEAD
 			end = (void *)((void *)tq->desc +
 				       ((void *)end - (void *)tq->stat));
+=======
+			end = ((void *)tq->desc + ((void *)end - (void *)tq->stat));
+>>>>>>> refs/remotes/origin/master
 		}
 
 		write_sgl(skb, tq, sgl, end, 0, addr);
@@ -1393,8 +1424,14 @@ static inline void copy_frags(struct sk_buff *skb,
  *	Builds an sk_buff from the given packet gather list.  Returns the
  *	sk_buff or %NULL if sk_buff allocation failed.
  */
+<<<<<<< HEAD
 struct sk_buff *t4vf_pktgl_to_skb(const struct pkt_gl *gl,
 				  unsigned int skb_len, unsigned int pull_len)
+=======
+static struct sk_buff *t4vf_pktgl_to_skb(const struct pkt_gl *gl,
+					 unsigned int skb_len,
+					 unsigned int pull_len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *skb;
 
@@ -1440,7 +1477,11 @@ out:
  *	Releases the pages of a packet gather list.  We do not own the last
  *	page on the list and do not free it.
  */
+<<<<<<< HEAD
 void t4vf_pktgl_free(const struct pkt_gl *gl)
+=======
+static void t4vf_pktgl_free(const struct pkt_gl *gl)
+>>>>>>> refs/remotes/origin/master
 {
 	int frag;
 
@@ -1478,8 +1519,16 @@ static void do_gro(struct sge_eth_rxq *rxq, const struct pkt_gl *gl,
 	skb->ip_summed = CHECKSUM_UNNECESSARY;
 	skb_record_rx_queue(skb, rxq->rspq.idx);
 
+<<<<<<< HEAD
 	if (pkt->vlan_ex)
 		__vlan_hwaccel_put_tag(skb, be16_to_cpu(pkt->vlan));
+=======
+	if (pkt->vlan_ex) {
+		__vlan_hwaccel_put_tag(skb, cpu_to_be16(ETH_P_8021Q),
+					be16_to_cpu(pkt->vlan));
+		rxq->stats.vlan_ex++;
+	}
+>>>>>>> refs/remotes/origin/master
 	ret = napi_gro_frags(&rxq->rspq.napi);
 
 	if (ret == GRO_HELD)
@@ -1502,7 +1551,11 @@ int t4vf_ethrx_handler(struct sge_rspq *rspq, const __be64 *rsp,
 		       const struct pkt_gl *gl)
 {
 	struct sk_buff *skb;
+<<<<<<< HEAD
 	const struct cpl_rx_pkt *pkt = (void *)&rsp[1];
+=======
+	const struct cpl_rx_pkt *pkt = (void *)rsp;
+>>>>>>> refs/remotes/origin/master
 	bool csum_ok = pkt->csum_calc && !pkt->err_vec;
 	struct sge_eth_rxq *rxq = container_of(rspq, struct sge_eth_rxq, rspq);
 
@@ -1546,7 +1599,11 @@ int t4vf_ethrx_handler(struct sge_rspq *rspq, const __be64 *rsp,
 
 	if (pkt->vlan_ex) {
 		rxq->stats.vlan_ex++;
+<<<<<<< HEAD
 		__vlan_hwaccel_put_tag(skb, be16_to_cpu(pkt->vlan));
+=======
+		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), be16_to_cpu(pkt->vlan));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	netif_receive_skb(skb);
@@ -1634,7 +1691,11 @@ static inline void rspq_next(struct sge_rspq *rspq)
  *	on this queue.  If the system is under memory shortage use a fairly
  *	long delay to help recovery.
  */
+<<<<<<< HEAD
 int process_responses(struct sge_rspq *rspq, int budget)
+=======
+static int process_responses(struct sge_rspq *rspq, int budget)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sge_eth_rxq *rxq = container_of(rspq, struct sge_eth_rxq, rspq);
 	int budget_left = budget;
@@ -1887,7 +1948,11 @@ static unsigned int process_intrq(struct adapter *adapter)
  * The MSI interrupt handler handles data events from SGE response queues as
  * well as error and other async events as they all use the same MSI vector.
  */
+<<<<<<< HEAD
 irqreturn_t t4vf_intr_msi(int irq, void *cookie)
+=======
+static irqreturn_t t4vf_intr_msi(int irq, void *cookie)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adapter *adapter = cookie;
 
@@ -2127,8 +2192,13 @@ int t4vf_sge_alloc_rxq(struct adapter *adapter, struct sge_rspq *rspq,
 		cmd.iqns_to_fl0congen =
 			cpu_to_be32(
 				FW_IQ_CMD_FL0HOSTFCMODE(SGE_HOSTFCMODE_NONE) |
+<<<<<<< HEAD
 				FW_IQ_CMD_FL0PACKEN |
 				FW_IQ_CMD_FL0PADEN);
+=======
+				FW_IQ_CMD_FL0PACKEN(1) |
+				FW_IQ_CMD_FL0PADEN(1));
+>>>>>>> refs/remotes/origin/master
 		cmd.fl0dcaen_to_fl0cidxfthresh =
 			cpu_to_be16(
 				FW_IQ_CMD_FL0FBMIN(SGE_FETCHBURSTMIN_64B) |
@@ -2422,7 +2492,11 @@ int t4vf_sge_init(struct adapter *adapter)
 			fl0, fl1);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	if ((sge_params->sge_control & RXPKTCPLMODE) == 0) {
+=======
+	if ((sge_params->sge_control & RXPKTCPLMODE_MASK) == 0) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(adapter->pdev_dev, "bad SGE CPL MODE\n");
 		return -EINVAL;
 	}
@@ -2432,7 +2506,12 @@ int t4vf_sge_init(struct adapter *adapter)
 	 */
 	if (fl1)
 		FL_PG_ORDER = ilog2(fl1) - PAGE_SHIFT;
+<<<<<<< HEAD
 	STAT_LEN = ((sge_params->sge_control & EGRSTATUSPAGESIZE) ? 128 : 64);
+=======
+	STAT_LEN = ((sge_params->sge_control & EGRSTATUSPAGESIZE_MASK)
+		    ? 128 : 64);
+>>>>>>> refs/remotes/origin/master
 	PKTSHIFT = PKTSHIFT_GET(sge_params->sge_control);
 	FL_ALIGN = 1 << (INGPADBOUNDARY_GET(sge_params->sge_control) +
 			 SGE_INGPADBOUNDARY_SHIFT);

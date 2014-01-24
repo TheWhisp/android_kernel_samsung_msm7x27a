@@ -10,8 +10,12 @@
  */
 #include <linux/linkage.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 
 	__INIT
+=======
+#include <asm/assembler.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Realview/Versatile Express specific entry point for secondary CPUs.
@@ -19,8 +23,14 @@
  * until we're ready for them to initialise.
  */
 ENTRY(versatile_secondary_startup)
+<<<<<<< HEAD
 	mrc	p15, 0, r0, c0, c0, 5
 	and	r0, r0, #15
+=======
+ ARM_BE8(setend	be)
+	mrc	p15, 0, r0, c0, c0, 5
+	bic	r0, #0xff000000
+>>>>>>> refs/remotes/origin/master
 	adr	r4, 1f
 	ldmia	r4, {r5, r6}
 	sub	r4, r4, r5
@@ -39,6 +49,10 @@ pen:	ldr	r7, [r6]
 1:	.long	.
 	.long	pen_release
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 ENDPROC(versatile_secondary_startup)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENDPROC(versatile_secondary_startup)
+>>>>>>> refs/remotes/origin/master

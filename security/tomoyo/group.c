@@ -2,19 +2,26 @@
  * security/tomoyo/group.c
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2005-2010  NTT DATA CORPORATION
 =======
  * Copyright (C) 2005-2011  NTT DATA CORPORATION
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2005-2011  NTT DATA CORPORATION
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/slab.h>
 #include "common.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static bool tomoyo_same_path_group(const struct tomoyo_acl_head *a,
 				const struct tomoyo_acl_head *b)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_same_path_group - Check for duplicated "struct tomoyo_path_group" entry.
  *
@@ -25,16 +32,22 @@ static bool tomoyo_same_path_group(const struct tomoyo_acl_head *a,
  */
 static bool tomoyo_same_path_group(const struct tomoyo_acl_head *a,
 				   const struct tomoyo_acl_head *b)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	return container_of(a, struct tomoyo_path_group, head)->member_name ==
 		container_of(b, struct tomoyo_path_group, head)->member_name;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static bool tomoyo_same_number_group(const struct tomoyo_acl_head *a,
 				  const struct tomoyo_acl_head *b)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_same_number_group - Check for duplicated "struct tomoyo_number_group" entry.
  *
@@ -45,7 +58,10 @@ static bool tomoyo_same_number_group(const struct tomoyo_acl_head *a,
  */
 static bool tomoyo_same_number_group(const struct tomoyo_acl_head *a,
 				     const struct tomoyo_acl_head *b)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	return !memcmp(&container_of(a, struct tomoyo_number_group, head)
 		       ->number,
@@ -56,6 +72,7 @@ static bool tomoyo_same_number_group(const struct tomoyo_acl_head *a,
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * tomoyo_write_group - Write "struct tomoyo_path_group"/"struct tomoyo_number_group" list.
  *
@@ -81,6 +98,8 @@ int tomoyo_write_group(char *data, const bool is_delete, const u8 type)
 		struct tomoyo_path_group e = { };
 		e.member_name = tomoyo_get_name(w[1]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * tomoyo_same_address_group - Check for duplicated "struct tomoyo_address_group" entry.
  *
  * @a: Pointer to "struct tomoyo_acl_head".
@@ -117,11 +136,15 @@ int tomoyo_write_group(struct tomoyo_acl_param *param, const u8 type)
 	if (type == TOMOYO_PATH_GROUP) {
 		struct tomoyo_path_group e = { };
 		e.member_name = tomoyo_get_name(tomoyo_read_token(param));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!e.member_name) {
 			error = -ENOMEM;
 			goto out;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		error = tomoyo_update_policy(&e.head, sizeof(e), is_delete,
 					     member, tomoyo_same_path_group);
@@ -141,6 +164,8 @@ int tomoyo_write_group(struct tomoyo_acl_param *param, const u8 type)
 	}
  out:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		error = tomoyo_update_policy(&e.head, sizeof(e), param,
 					  tomoyo_same_path_group);
 		tomoyo_put_name(e.member_name);
@@ -165,7 +190,10 @@ int tomoyo_write_group(struct tomoyo_acl_param *param, const u8 type)
 					     tomoyo_same_address_group);
 	}
 out:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tomoyo_put_group(group);
 	return error;
 }
@@ -174,12 +202,17 @@ out:
  * tomoyo_path_matches_group - Check whether the given pathname matches members of the given pathname group.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @pathname:        The name of pathname.
  * @group:           Pointer to "struct tomoyo_path_group".
 =======
  * @pathname: The name of pathname.
  * @group:    Pointer to "struct tomoyo_path_group".
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @pathname: The name of pathname.
+ * @group:    Pointer to "struct tomoyo_path_group".
+>>>>>>> refs/remotes/origin/master
  *
  * Returns matched member's pathname if @pathname matches pathnames in @group,
  * NULL otherwise.
@@ -230,7 +263,10 @@ bool tomoyo_number_matches_group(const unsigned long min,
 	return matched;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * tomoyo_address_matches_group - Check whether the given address matches members of the given address group.
@@ -263,4 +299,7 @@ bool tomoyo_address_matches_group(const bool is_ipv6, const __be32 *address,
 	}
 	return matched;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

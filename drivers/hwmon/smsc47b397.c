@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
     smsc47b397.c - Part of lm_sensors, Linux kernel modules
 			for hardware monitoring
 
@@ -27,6 +28,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * smsc47b397.c - Part of lm_sensors, Linux kernel modules
  * for hardware monitoring
  *
@@ -53,7 +56,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
@@ -143,10 +149,14 @@ struct smsc47b397_data {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int smsc47b397_read_value(struct smsc47b397_data* data, u8 reg)
 =======
 static int smsc47b397_read_value(struct smsc47b397_data *data, u8 reg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int smsc47b397_read_value(struct smsc47b397_data *data, u8 reg)
+>>>>>>> refs/remotes/origin/master
 {
 	int res;
 
@@ -191,14 +201,20 @@ static struct smsc47b397_data *smsc47b397_update_device(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* TEMP: 0.001C/bit (-128C to +127C)
    REG: 1C/bit, two's complement */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * TEMP: 0.001C/bit (-128C to +127C)
  * REG: 1C/bit, two's complement
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int temp_from_reg(u8 reg)
 {
 	return (s8)reg * 1000;
@@ -218,14 +234,20 @@ static SENSOR_DEVICE_ATTR(temp3_input, S_IRUGO, show_temp, NULL, 2);
 static SENSOR_DEVICE_ATTR(temp4_input, S_IRUGO, show_temp, NULL, 3);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* FAN: 1 RPM/bit
    REG: count of 90kHz pulses / revolution */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * FAN: 1 RPM/bit
  * REG: count of 90kHz pulses / revolution
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int fan_from_reg(u16 reg)
 {
 	if (reg == 0 || reg == 0xffff)
@@ -271,6 +293,7 @@ static const struct attribute_group smsc47b397_group = {
 	.attrs = smsc47b397_attributes,
 };
 
+<<<<<<< HEAD
 static int __devexit smsc47b397_remove(struct platform_device *pdev)
 {
 	struct smsc47b397_data *data = platform_get_drvdata(pdev);
@@ -281,6 +304,14 @@ static int __devexit smsc47b397_remove(struct platform_device *pdev)
 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
 	release_region(res->start, SMSC_EXTENT);
 	kfree(data);
+=======
+static int smsc47b397_remove(struct platform_device *pdev)
+{
+	struct smsc47b397_data *data = platform_get_drvdata(pdev);
+
+	hwmon_device_unregister(data->hwmon_dev);
+	sysfs_remove_group(&pdev->dev.kobj, &smsc47b397_group);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -293,10 +324,17 @@ static struct platform_driver smsc47b397_driver = {
 		.name	= DRVNAME,
 	},
 	.probe		= smsc47b397_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(smsc47b397_remove),
 };
 
 static int __devinit smsc47b397_probe(struct platform_device *pdev)
+=======
+	.remove		= smsc47b397_remove,
+};
+
+static int smsc47b397_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = &pdev->dev;
 	struct smsc47b397_data *data;
@@ -304,14 +342,20 @@ static int __devinit smsc47b397_probe(struct platform_device *pdev)
 	int err = 0;
 
 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
+<<<<<<< HEAD
 	if (!request_region(res->start, SMSC_EXTENT,
 			    smsc47b397_driver.driver.name)) {
+=======
+	if (!devm_request_region(dev, res->start, SMSC_EXTENT,
+				 smsc47b397_driver.driver.name)) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(dev, "Region 0x%lx-0x%lx already in use!\n",
 			(unsigned long)res->start,
 			(unsigned long)res->start + SMSC_EXTENT - 1);
 		return -EBUSY;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!(data = kzalloc(sizeof(struct smsc47b397_data), GFP_KERNEL))) {
 =======
@@ -321,6 +365,11 @@ static int __devinit smsc47b397_probe(struct platform_device *pdev)
 		err = -ENOMEM;
 		goto error_release;
 	}
+=======
+	data = devm_kzalloc(dev, sizeof(struct smsc47b397_data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	data->addr = res->start;
 	data->name = "smsc47b397";
@@ -329,12 +378,18 @@ static int __devinit smsc47b397_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, data);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((err = sysfs_create_group(&dev->kobj, &smsc47b397_group)))
 =======
 	err = sysfs_create_group(&dev->kobj, &smsc47b397_group);
 	if (err)
 >>>>>>> refs/remotes/origin/cm-10.0
 		goto error_free;
+=======
+	err = sysfs_create_group(&dev->kobj, &smsc47b397_group);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -346,10 +401,13 @@ static int __devinit smsc47b397_probe(struct platform_device *pdev)
 
 error_remove:
 	sysfs_remove_group(&dev->kobj, &smsc47b397_group);
+<<<<<<< HEAD
 error_free:
 	kfree(data);
 error_release:
 	release_region(res->start, SMSC_EXTENT);
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -395,26 +453,36 @@ exit:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init smsc47b397_find(unsigned short *addr)
 {
 	u8 id, rev;
 	char *name;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init smsc47b397_find(void)
 {
 	u8 id, rev;
 	char *name;
 	unsigned short addr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	superio_enter();
 	id = force_id ? force_id : superio_inb(SUPERIO_REG_DEVID);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch(id) {
 =======
 	switch (id) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	switch (id) {
+>>>>>>> refs/remotes/origin/master
 	case 0x81:
 		name = "SCH5307-NS";
 		break;
@@ -434,6 +502,7 @@ static int __init smsc47b397_find(void)
 
 	superio_select(SUPERIO_REG_LD8);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*addr = (superio_inb(SUPERIO_REG_BASE_MSB) << 8)
 		 |  superio_inb(SUPERIO_REG_BASE_LSB);
 
@@ -443,6 +512,8 @@ static int __init smsc47b397_find(void)
 	superio_exit();
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	addr = (superio_inb(SUPERIO_REG_BASE_MSB) << 8)
 		 |  superio_inb(SUPERIO_REG_BASE_LSB);
 
@@ -451,7 +522,10 @@ static int __init smsc47b397_find(void)
 
 	superio_exit();
 	return addr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init smsc47b397_init(void)
@@ -460,14 +534,20 @@ static int __init smsc47b397_init(void)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ret = smsc47b397_find(&address)))
 		return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = smsc47b397_find();
 	if (ret < 0)
 		return ret;
 	address = ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = platform_driver_register(&smsc47b397_driver);
 	if (ret)

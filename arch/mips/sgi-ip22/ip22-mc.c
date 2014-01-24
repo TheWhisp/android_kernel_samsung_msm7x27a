@@ -121,21 +121,33 @@ void __init sgimc_init(void)
 	 */
 
 	/* Step 0: Make sure we turn off the watchdog in case it's
+<<<<<<< HEAD
 	 *         still running (which might be the case after a
 	 *         soft reboot).
+=======
+	 *	   still running (which might be the case after a
+	 *	   soft reboot).
+>>>>>>> refs/remotes/origin/master
 	 */
 	tmp = sgimc->cpuctrl0;
 	tmp &= ~SGIMC_CCTRL0_WDOG;
 	sgimc->cpuctrl0 = tmp;
 
 	/* Step 1: The CPU/GIO error status registers will not latch
+<<<<<<< HEAD
 	 *         up a new error status until the register has been
 	 *         cleared by the cpu.  These status registers are
 	 *         cleared by writing any value to them.
+=======
+	 *	   up a new error status until the register has been
+	 *	   cleared by the cpu.	These status registers are
+	 *	   cleared by writing any value to them.
+>>>>>>> refs/remotes/origin/master
 	 */
 	sgimc->cstat = sgimc->gstat = 0;
 
 	/* Step 2: Enable all parity checking in cpu control register
+<<<<<<< HEAD
 	 *         zero.
 	 */
 	/* don't touch parity settings for IP28 */
@@ -146,16 +158,28 @@ void __init sgimc_init(void)
 		SGIMC_CCTRL0_R4KNOCHKPARR);
 #endif
 =======
+=======
+	 *	   zero.
+	 */
+	/* don't touch parity settings for IP28 */
+>>>>>>> refs/remotes/origin/master
 	tmp = sgimc->cpuctrl0;
 #ifndef CONFIG_SGI_IP28
 	tmp |= SGIMC_CCTRL0_EPERRGIO | SGIMC_CCTRL0_EPERRMEM;
 #endif
 	tmp |= SGIMC_CCTRL0_R4KNOCHKPARR;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	sgimc->cpuctrl0 = tmp;
 
 	/* Step 3: Setup the MC write buffer depth, this is controlled
 	 *         in cpu control register 1 in the lower 4 bits.
+=======
+	sgimc->cpuctrl0 = tmp;
+
+	/* Step 3: Setup the MC write buffer depth, this is controlled
+	 *	   in cpu control register 1 in the lower 4 bits.
+>>>>>>> refs/remotes/origin/master
 	 */
 	tmp = sgimc->cpuctrl1;
 	tmp &= ~0xf;
@@ -163,6 +187,7 @@ void __init sgimc_init(void)
 	sgimc->cpuctrl1 = tmp;
 
 	/* Step 4: Initialize the RPSS divider register to run as fast
+<<<<<<< HEAD
 	 *         as it can correctly operate.  The register is laid
 	 *         out as follows:
 	 *
@@ -175,12 +200,27 @@ void __init sgimc_init(void)
 	 *         INCREMENT determines by how the RPSS increment
 	 *         registers value increases at each 'tick'. Thus,
 	 *         for IP22 we get INCREMENT=1, DIVIDER=1 == 0x101
+=======
+	 *	   as it can correctly operate.	 The register is laid
+	 *	   out as follows:
+	 *
+	 *	   ----------------------------------------
+	 *	   |  RESERVED	|   INCREMENT	| DIVIDER |
+	 *	   ----------------------------------------
+	 *	    31	      16 15	       8 7	 0
+	 *
+	 *	   DIVIDER determines how often a 'tick' happens,
+	 *	   INCREMENT determines by how the RPSS increment
+	 *	   registers value increases at each 'tick'. Thus,
+	 *	   for IP22 we get INCREMENT=1, DIVIDER=1 == 0x101
+>>>>>>> refs/remotes/origin/master
 	 */
 	sgimc->divider = 0x101;
 
 	/* Step 5: Initialize GIO64 arbitrator configuration register.
 	 *
 	 * NOTE: HPC init code in sgihpc_init() must run before us because
+<<<<<<< HEAD
 	 *       we need to know Guiness vs. FullHouse and the board
 	 *       revision on this machine. You have been warned.
 	 */
@@ -192,6 +232,15 @@ void __init sgimc_init(void)
 	tmp = sgimc->giopar & SGIMC_GIOPAR_GFX64; /* keep gfx 64bit settings */
 	tmp |= SGIMC_GIOPAR_HPC64;	/* All 1st HPC's interface at 64bits */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 *	 we need to know Guiness vs. FullHouse and the board
+	 *	 revision on this machine. You have been warned.
+	 */
+
+	/* First the basic invariants across all GIO64 implementations. */
+	tmp = sgimc->giopar & SGIMC_GIOPAR_GFX64; /* keep gfx 64bit settings */
+	tmp |= SGIMC_GIOPAR_HPC64;	/* All 1st HPC's interface at 64bits */
+>>>>>>> refs/remotes/origin/master
 	tmp |= SGIMC_GIOPAR_ONEBUS;	/* Only one physical GIO bus exists */
 
 	if (ip22_is_fullhouse()) {
@@ -199,22 +248,34 @@ void __init sgimc_init(void)
 		if (SGIOC_SYSID_BOARDREV(sgioc->sysid) < 2) {
 			tmp |= SGIMC_GIOPAR_HPC264;	/* 2nd HPC at 64bits */
 			tmp |= SGIMC_GIOPAR_PLINEEXP0;	/* exp0 pipelines */
+<<<<<<< HEAD
 			tmp |= SGIMC_GIOPAR_MASTEREXP1;	/* exp1 masters */
+=======
+			tmp |= SGIMC_GIOPAR_MASTEREXP1; /* exp1 masters */
+>>>>>>> refs/remotes/origin/master
 			tmp |= SGIMC_GIOPAR_RTIMEEXP0;	/* exp0 is realtime */
 		} else {
 			tmp |= SGIMC_GIOPAR_HPC264;	/* 2nd HPC 64bits */
 			tmp |= SGIMC_GIOPAR_PLINEEXP0;	/* exp[01] pipelined */
 			tmp |= SGIMC_GIOPAR_PLINEEXP1;
+<<<<<<< HEAD
 			tmp |= SGIMC_GIOPAR_MASTEREISA;	/* EISA masters */
 <<<<<<< HEAD
 			tmp |= SGIMC_GIOPAR_GFX64;	/* GFX at 64 bits */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			tmp |= SGIMC_GIOPAR_MASTEREISA; /* EISA masters */
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		/* Guiness specific settings. */
 		tmp |= SGIMC_GIOPAR_EISA64;	/* MC talks to EISA at 64bits */
+<<<<<<< HEAD
 		tmp |= SGIMC_GIOPAR_MASTEREISA;	/* EISA bus can act as master */
+=======
+		tmp |= SGIMC_GIOPAR_MASTEREISA; /* EISA bus can act as master */
+>>>>>>> refs/remotes/origin/master
 	}
 	sgimc->giopar = tmp;	/* poof */
 

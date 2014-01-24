@@ -5,9 +5,12 @@
 #include "util/strbuf.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern const char perf_version_string[];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern const char perf_usage_string[];
 extern const char perf_more_info_string[];
 
@@ -29,7 +32,10 @@ extern int cmd_list(int argc, const char **argv, const char *prefix);
 extern int cmd_record(int argc, const char **argv, const char *prefix);
 extern int cmd_report(int argc, const char **argv, const char *prefix);
 extern int cmd_stat(int argc, const char **argv, const char *prefix);
+<<<<<<< HEAD
 extern int cmd_periodic(int argc, const char **argv, const char *prefix);
+=======
+>>>>>>> refs/remotes/origin/master
 extern int cmd_timechart(int argc, const char **argv, const char *prefix);
 extern int cmd_top(int argc, const char **argv, const char *prefix);
 extern int cmd_script(int argc, const char **argv, const char *prefix);
@@ -39,6 +45,14 @@ extern int cmd_kmem(int argc, const char **argv, const char *prefix);
 extern int cmd_lock(int argc, const char **argv, const char *prefix);
 extern int cmd_kvm(int argc, const char **argv, const char *prefix);
 extern int cmd_test(int argc, const char **argv, const char *prefix);
+<<<<<<< HEAD
 extern int cmd_inject(int argc, const char **argv, const char *prefix);
 
+=======
+extern int cmd_trace(int argc, const char **argv, const char *prefix);
+extern int cmd_inject(int argc, const char **argv, const char *prefix);
+extern int cmd_mem(int argc, const char **argv, const char *prefix);
+
+extern int find_scripts(char **scripts_array, char **scripts_path_array);
+>>>>>>> refs/remotes/origin/master
 #endif

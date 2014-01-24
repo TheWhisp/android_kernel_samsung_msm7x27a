@@ -101,6 +101,7 @@ static int
 kalmia_init_and_get_ethernet_addr(struct usbnet *dev, u8 *ethernet_addr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const static char init_msg_1[] =
 		{ 0x57, 0x50, 0x04, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00,
 		0x00, 0x00 };
@@ -109,6 +110,8 @@ kalmia_init_and_get_ethernet_addr(struct usbnet *dev, u8 *ethernet_addr)
 		0x00, 0x00 };
 	const static int buflen = 28;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	static const char init_msg_1[] =
 		{ 0x57, 0x50, 0x04, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00,
 		0x00, 0x00 };
@@ -116,7 +119,10 @@ kalmia_init_and_get_ethernet_addr(struct usbnet *dev, u8 *ethernet_addr)
 		{ 0x57, 0x50, 0x04, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0xf4,
 		0x00, 0x00 };
 	static const int buflen = 28;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	char *usb_buf;
 	int status;
 
@@ -169,7 +175,10 @@ kalmia_bind(struct usbnet *dev, struct usb_interface *intf)
 	}
 
 	memcpy(dev->net->dev_addr, ethernet_addr, ETH_ALEN);
+<<<<<<< HEAD
 	memcpy(dev->net->perm_addr, ethernet_addr, ETH_ALEN);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return status;
 }
@@ -232,12 +241,18 @@ done:
 		memset(skb_put(skb, padlen), 0, padlen);
 	}
 
+<<<<<<< HEAD
 	netdev_dbg(
 		dev->net,
 		"Sending package with length %i and padding %i. Header: %02x:%02x:%02x:%02x:%02x:%02x.",
 		content_len, padlen, header_start[0], header_start[1],
 		header_start[2], header_start[3], header_start[4],
 		header_start[5]);
+=======
+	netdev_dbg(dev->net,
+		"Sending package with length %i and padding %i. Header: %6phC.",
+		content_len, padlen, header_start);
+>>>>>>> refs/remotes/origin/master
 
 	return skb;
 }
@@ -250,18 +265,24 @@ kalmia_rx_fixup(struct usbnet *dev, struct sk_buff *skb)
 	 * data frame for the usbnet framework code to process.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const static u8 HEADER_END_OF_USB_PACKET[] =
 		{ 0x57, 0x5a, 0x00, 0x00, 0x08, 0x00 };
 	const static u8 EXPECTED_UNKNOWN_HEADER_1[] =
 		{ 0x57, 0x43, 0x1e, 0x00, 0x15, 0x02 };
 	const static u8 EXPECTED_UNKNOWN_HEADER_2[] =
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	static const u8 HEADER_END_OF_USB_PACKET[] =
 		{ 0x57, 0x5a, 0x00, 0x00, 0x08, 0x00 };
 	static const u8 EXPECTED_UNKNOWN_HEADER_1[] =
 		{ 0x57, 0x43, 0x1e, 0x00, 0x15, 0x02 };
 	static const u8 EXPECTED_UNKNOWN_HEADER_2[] =
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		{ 0x57, 0x50, 0x0e, 0x00, 0x00, 0x00 };
 	int i = 0;
 
@@ -282,6 +303,7 @@ kalmia_rx_fixup(struct usbnet *dev, struct sk_buff *skb)
 				sizeof(EXPECTED_UNKNOWN_HEADER_1)) || !memcmp(
 				header_start, EXPECTED_UNKNOWN_HEADER_2,
 				sizeof(EXPECTED_UNKNOWN_HEADER_2))) {
+<<<<<<< HEAD
 				netdev_dbg(
 					dev->net,
 					"Received expected unknown frame header: %02x:%02x:%02x:%02x:%02x:%02x. Package length: %i\n",
@@ -297,17 +319,34 @@ kalmia_rx_fixup(struct usbnet *dev, struct sk_buff *skb)
 					header_start[0], header_start[1],
 					header_start[2], header_start[3],
 					header_start[4], header_start[5],
+=======
+				netdev_dbg(dev->net,
+					"Received expected unknown frame header: %6phC. Package length: %i\n",
+					header_start,
+					skb->len - KALMIA_HEADER_LENGTH);
+			}
+			else {
+				netdev_err(dev->net,
+					"Received unknown frame header: %6phC. Package length: %i\n",
+					header_start,
+>>>>>>> refs/remotes/origin/master
 					skb->len - KALMIA_HEADER_LENGTH);
 				return 0;
 			}
 		}
 		else
+<<<<<<< HEAD
 			netdev_dbg(
 				dev->net,
 				"Received header: %02x:%02x:%02x:%02x:%02x:%02x. Package length: %i\n",
 				header_start[0], header_start[1], header_start[2],
 				header_start[3], header_start[4], header_start[5],
 				skb->len - KALMIA_HEADER_LENGTH);
+=======
+			netdev_dbg(dev->net,
+				"Received header: %6phC. Package length: %i\n",
+				header_start, skb->len - KALMIA_HEADER_LENGTH);
+>>>>>>> refs/remotes/origin/master
 
 		/* subtract start header and end header */
 		usb_packet_length = skb->len - (2 * KALMIA_HEADER_LENGTH);
@@ -329,12 +368,18 @@ kalmia_rx_fixup(struct usbnet *dev, struct sk_buff *skb)
 				sizeof(HEADER_END_OF_USB_PACKET)) == 0);
 			if (!is_last) {
 				header_start = skb->data + ether_packet_length;
+<<<<<<< HEAD
 				netdev_dbg(
 					dev->net,
 					"End header: %02x:%02x:%02x:%02x:%02x:%02x. Package length: %i\n",
 					header_start[0], header_start[1],
 					header_start[2], header_start[3],
 					header_start[4], header_start[5],
+=======
+				netdev_dbg(dev->net,
+					"End header: %6phC. Package length: %i\n",
+					header_start,
+>>>>>>> refs/remotes/origin/master
 					skb->len - KALMIA_HEADER_LENGTH);
 			}
 		}
@@ -390,6 +435,7 @@ static struct usb_driver kalmia_driver = {
 	.probe = usbnet_probe,
 	.disconnect = usbnet_disconnect,
 	.suspend = usbnet_suspend,
+<<<<<<< HEAD
 	.resume = usbnet_resume
 };
 
@@ -408,6 +454,13 @@ module_exit( kalmia_exit);
 =======
 module_usb_driver(kalmia_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.resume = usbnet_resume,
+	.disable_hub_initiated_lpm = 1,
+};
+
+module_usb_driver(kalmia_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Marius Bjoernstad Kotsbak <marius@kotsbak.com>");
 MODULE_DESCRIPTION("Samsung Kalmia USB network driver");

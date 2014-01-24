@@ -1,7 +1,11 @@
 /*
  * caam descriptor construction helper functions
  *
+<<<<<<< HEAD
  * Copyright 2008-2011 Freescale Semiconductor, Inc.
+=======
+ * Copyright 2008-2012 Freescale Semiconductor, Inc.
+>>>>>>> refs/remotes/origin/master
  */
 
 #include "desc.h"
@@ -10,10 +14,15 @@
 #define CAAM_CMD_SZ sizeof(u32)
 #define CAAM_PTR_SZ sizeof(dma_addr_t)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CAAM_DESC_BYTES_MAX (CAAM_CMD_SZ * 64)
 =======
 #define CAAM_DESC_BYTES_MAX (CAAM_CMD_SZ * MAX_CAAM_DESCSIZE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CAAM_DESC_BYTES_MAX (CAAM_CMD_SZ * MAX_CAAM_DESCSIZE)
+#define DESC_JOB_IO_LEN (CAAM_CMD_SZ * 5 + CAAM_PTR_SZ * 3)
+>>>>>>> refs/remotes/origin/master
 
 #ifdef DEBUG
 #define PRINT_POS do { printk(KERN_DEBUG "%02d: %s\n", desc_len(desc),\
@@ -23,12 +32,18 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SET_OK_NO_PROP_ERRORS (IMMEDIATE | LDST_CLASS_DECO | \
 			       LDST_SRCDST_WORD_DECOCTRL | \
 			       (LDOFF_CHG_SHARE_OK_NO_PROP << \
 				LDST_OFFSET_SHIFT))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DISABLE_AUTO_INFO_FIFO (IMMEDIATE | LDST_CLASS_DECO | \
 				LDST_SRCDST_WORD_DECOCTRL | \
 				(LDOFF_DISABLE_AUTO_NFIFO << LDST_OFFSET_SHIFT))
@@ -58,7 +73,11 @@ static inline void *sh_desc_pdb(u32 *desc)
 
 static inline void init_desc(u32 *desc, u32 options)
 {
+<<<<<<< HEAD
 	*desc = options | HDR_ONE | 1;
+=======
+	*desc = (options | HDR_ONE) + 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void init_sh_desc(u32 *desc, u32 options)
@@ -69,9 +88,15 @@ static inline void init_sh_desc(u32 *desc, u32 options)
 
 static inline void init_sh_desc_pdb(u32 *desc, u32 options, size_t pdb_bytes)
 {
+<<<<<<< HEAD
 	u32 pdb_len = pdb_bytes / CAAM_CMD_SZ + 1;
 
 	init_sh_desc(desc, ((pdb_len << HDR_START_IDX_SHIFT) + pdb_len) |
+=======
+	u32 pdb_len = (pdb_bytes + CAAM_CMD_SZ - 1) / CAAM_CMD_SZ;
+
+	init_sh_desc(desc, (((pdb_len + 1) << HDR_START_IDX_SHIFT) + pdb_len) |
+>>>>>>> refs/remotes/origin/master
 		     options);
 }
 
@@ -117,6 +142,29 @@ static inline void append_cmd(u32 *desc, u32 command)
 	(*desc)++;
 }
 
+<<<<<<< HEAD
+=======
+#define append_u32 append_cmd
+
+static inline void append_u64(u32 *desc, u64 data)
+{
+	u32 *offset = desc_end(desc);
+
+	*offset = upper_32_bits(data);
+	*(++offset) = lower_32_bits(data);
+
+	(*desc) += 2;
+}
+
+/* Write command without affecting header, and return pointer to next word */
+static inline u32 *write_cmd(u32 *desc, u32 command)
+{
+	*desc = command;
+
+	return desc + 1;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void append_cmd_ptr(u32 *desc, dma_addr_t ptr, int len,
 				  u32 command)
 {
@@ -124,6 +172,19 @@ static inline void append_cmd_ptr(u32 *desc, dma_addr_t ptr, int len,
 	append_ptr(desc, ptr);
 }
 
+<<<<<<< HEAD
+=======
+/* Write length after pointer, rather than inside command */
+static inline void append_cmd_ptr_extlen(u32 *desc, dma_addr_t ptr,
+					 unsigned int len, u32 command)
+{
+	append_cmd(desc, command);
+	if (!(command & (SQIN_RTO | SQIN_PRE)))
+		append_ptr(desc, ptr);
+	append_cmd(desc, len);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void append_cmd_data(u32 *desc, void *data, int len,
 				   u32 command)
 {
@@ -173,6 +234,7 @@ static inline void append_##cmd(u32 *desc, dma_addr_t ptr, unsigned int len, \
 	append_cmd_ptr(desc, ptr, len, CMD_##op | options); \
 }
 APPEND_CMD_PTR(key, KEY)
+<<<<<<< HEAD
 APPEND_CMD_PTR(seq_in_ptr, SEQ_IN_PTR)
 APPEND_CMD_PTR(seq_out_ptr, SEQ_OUT_PTR)
 APPEND_CMD_PTR(load, LOAD)
@@ -180,6 +242,43 @@ APPEND_CMD_PTR(store, STORE)
 APPEND_CMD_PTR(fifo_load, FIFO_LOAD)
 APPEND_CMD_PTR(fifo_store, FIFO_STORE)
 
+=======
+APPEND_CMD_PTR(load, LOAD)
+APPEND_CMD_PTR(fifo_load, FIFO_LOAD)
+APPEND_CMD_PTR(fifo_store, FIFO_STORE)
+
+static inline void append_store(u32 *desc, dma_addr_t ptr, unsigned int len,
+				u32 options)
+{
+	u32 cmd_src;
+
+	cmd_src = options & LDST_SRCDST_MASK;
+
+	append_cmd(desc, CMD_STORE | options | len);
+
+	/* The following options do not require pointer */
+	if (!(cmd_src == LDST_SRCDST_WORD_DESCBUF_SHARED ||
+	      cmd_src == LDST_SRCDST_WORD_DESCBUF_JOB    ||
+	      cmd_src == LDST_SRCDST_WORD_DESCBUF_JOB_WE ||
+	      cmd_src == LDST_SRCDST_WORD_DESCBUF_SHARED_WE))
+		append_ptr(desc, ptr);
+}
+
+#define APPEND_SEQ_PTR_INTLEN(cmd, op) \
+static inline void append_seq_##cmd##_ptr_intlen(u32 *desc, dma_addr_t ptr, \
+						 unsigned int len, \
+						 u32 options) \
+{ \
+	PRINT_POS; \
+	if (options & (SQIN_RTO | SQIN_PRE)) \
+		append_cmd(desc, CMD_SEQ_##op##_PTR | len | options); \
+	else \
+		append_cmd_ptr(desc, ptr, len, CMD_SEQ_##op##_PTR | options); \
+}
+APPEND_SEQ_PTR_INTLEN(in, IN)
+APPEND_SEQ_PTR_INTLEN(out, OUT)
+
+>>>>>>> refs/remotes/origin/master
 #define APPEND_CMD_PTR_TO_IMM(cmd, op) \
 static inline void append_##cmd##_as_imm(u32 *desc, void *data, \
 					 unsigned int len, u32 options) \
@@ -190,6 +289,36 @@ static inline void append_##cmd##_as_imm(u32 *desc, void *data, \
 APPEND_CMD_PTR_TO_IMM(load, LOAD);
 APPEND_CMD_PTR_TO_IMM(fifo_load, FIFO_LOAD);
 
+<<<<<<< HEAD
+=======
+#define APPEND_CMD_PTR_EXTLEN(cmd, op) \
+static inline void append_##cmd##_extlen(u32 *desc, dma_addr_t ptr, \
+					 unsigned int len, u32 options) \
+{ \
+	PRINT_POS; \
+	append_cmd_ptr_extlen(desc, ptr, len, CMD_##op | SQIN_EXT | options); \
+}
+APPEND_CMD_PTR_EXTLEN(seq_in_ptr, SEQ_IN_PTR)
+APPEND_CMD_PTR_EXTLEN(seq_out_ptr, SEQ_OUT_PTR)
+
+/*
+ * Determine whether to store length internally or externally depending on
+ * the size of its type
+ */
+#define APPEND_CMD_PTR_LEN(cmd, op, type) \
+static inline void append_##cmd(u32 *desc, dma_addr_t ptr, \
+				type len, u32 options) \
+{ \
+	PRINT_POS; \
+	if (sizeof(type) > sizeof(u16)) \
+		append_##cmd##_extlen(desc, ptr, len, options); \
+	else \
+		append_##cmd##_intlen(desc, ptr, len, options); \
+}
+APPEND_CMD_PTR_LEN(seq_in_ptr, SEQ_IN_PTR, u32)
+APPEND_CMD_PTR_LEN(seq_out_ptr, SEQ_OUT_PTR, u32)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * 2nd variant for commands whose specified immediate length differs
  * from length of immediate data provided, e.g., split keys
@@ -215,7 +344,10 @@ static inline void append_##cmd##_imm_##type(u32 *desc, type immediate, \
 }
 APPEND_CMD_RAW_IMM(load, LOAD, u32);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Append math command. Only the last part of destination and source need to
@@ -223,7 +355,11 @@ APPEND_CMD_RAW_IMM(load, LOAD, u32);
  */
 #define APPEND_MATH(op, desc, dest, src_0, src_1, len) \
 append_cmd(desc, CMD_MATH | MATH_FUN_##op | MATH_DEST_##dest | \
+<<<<<<< HEAD
 	   MATH_SRC0_##src_0 | MATH_SRC1_##src_1 | (u32) (len & MATH_LEN_MASK));
+=======
+	MATH_SRC0_##src_0 | MATH_SRC1_##src_1 | (u32)len);
+>>>>>>> refs/remotes/origin/master
 
 #define append_math_add(desc, dest, src0, src1, len) \
 	APPEND_MATH(ADD, desc, dest, src0, src1, len)
@@ -243,6 +379,11 @@ append_cmd(desc, CMD_MATH | MATH_FUN_##op | MATH_DEST_##dest | \
 	APPEND_MATH(LSHIFT, desc, dest, src0, src1, len)
 #define append_math_rshift(desc, dest, src0, src1, len) \
 	APPEND_MATH(RSHIFT, desc, dest, src0, src1, len)
+<<<<<<< HEAD
+=======
+#define append_math_ldshift(desc, dest, src0, src1, len) \
+	APPEND_MATH(SHLD, desc, dest, src0, src1, len)
+>>>>>>> refs/remotes/origin/master
 
 /* Exactly one source is IMM. Data is passed in as u32 value */
 #define APPEND_MATH_IMM_u32(op, desc, dest, src_0, src_1, data) \
@@ -269,4 +410,38 @@ do { \
 	APPEND_MATH_IMM_u32(LSHIFT, desc, dest, src0, src1, data)
 #define append_math_rshift_imm_u32(desc, dest, src0, src1, data) \
 	APPEND_MATH_IMM_u32(RSHIFT, desc, dest, src0, src1, data)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/* Exactly one source is IMM. Data is passed in as u64 value */
+#define APPEND_MATH_IMM_u64(op, desc, dest, src_0, src_1, data) \
+do { \
+	u32 upper = (data >> 16) >> 16; \
+	APPEND_MATH(op, desc, dest, src_0, src_1, CAAM_CMD_SZ * 2 | \
+		    (upper ? 0 : MATH_IFB)); \
+	if (upper) \
+		append_u64(desc, data); \
+	else \
+		append_u32(desc, data); \
+} while (0)
+
+#define append_math_add_imm_u64(desc, dest, src0, src1, data) \
+	APPEND_MATH_IMM_u64(ADD, desc, dest, src0, src1, data)
+#define append_math_sub_imm_u64(desc, dest, src0, src1, data) \
+	APPEND_MATH_IMM_u64(SUB, desc, dest, src0, src1, data)
+#define append_math_add_c_imm_u64(desc, dest, src0, src1, data) \
+	APPEND_MATH_IMM_u64(ADDC, desc, dest, src0, src1, data)
+#define append_math_sub_b_imm_u64(desc, dest, src0, src1, data) \
+	APPEND_MATH_IMM_u64(SUBB, desc, dest, src0, src1, data)
+#define append_math_and_imm_u64(desc, dest, src0, src1, data) \
+	APPEND_MATH_IMM_u64(AND, desc, dest, src0, src1, data)
+#define append_math_or_imm_u64(desc, dest, src0, src1, data) \
+	APPEND_MATH_IMM_u64(OR, desc, dest, src0, src1, data)
+#define append_math_xor_imm_u64(desc, dest, src0, src1, data) \
+	APPEND_MATH_IMM_u64(XOR, desc, dest, src0, src1, data)
+#define append_math_lshift_imm_u64(desc, dest, src0, src1, data) \
+	APPEND_MATH_IMM_u64(LSHIFT, desc, dest, src0, src1, data)
+#define append_math_rshift_imm_u64(desc, dest, src0, src1, data) \
+	APPEND_MATH_IMM_u64(RSHIFT, desc, dest, src0, src1, data)
+>>>>>>> refs/remotes/origin/master

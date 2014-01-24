@@ -9,6 +9,7 @@
  * of the GNU General Public License, incorporated herein by reference.
  *
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_ISDN_PPP_H
 #define _LINUX_ISDN_PPP_H
@@ -65,12 +66,21 @@ struct isdn_ppp_comp_data {
 };
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_ISDN_PPP_H
+#define _LINUX_ISDN_PPP_H
+
+>>>>>>> refs/remotes/origin/master
 
 
 
 #ifdef CONFIG_IPPP_FILTER
 #include <linux/filter.h>
 #endif
+<<<<<<< HEAD
+=======
+#include <uapi/linux/isdn_ppp.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DECOMP_ERR_NOMEM	(-10)
 
@@ -244,5 +254,8 @@ struct ippp_struct {
   unsigned long compflags;
 };
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_ISDN_PPP_H */

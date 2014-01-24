@@ -17,10 +17,15 @@
 
 #include "testmode.h"
 #include "debug.h"
+<<<<<<< HEAD
 #include "cfg80211.h"
 
 #include <net/netlink.h>
 #include "wmiconfig.h"
+=======
+
+#include <net/netlink.h>
+>>>>>>> refs/remotes/origin/master
 
 enum ath6kl_tm_attr {
 	__ATH6KL_TM_ATTR_INVALID	= 0,
@@ -35,7 +40,10 @@ enum ath6kl_tm_attr {
 enum ath6kl_tm_cmd {
 	ATH6KL_TM_CMD_TCMD		= 0,
 	ATH6KL_TM_CMD_RX_REPORT		= 1,	/* not used anymore */
+<<<<<<< HEAD
 	ATH6KL_TM_CMD_WMI_CMD		= 0xF000,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define ATH6KL_TM_DATA_MAX_LEN		5000
@@ -46,7 +54,10 @@ static const struct nla_policy ath6kl_tm_policy[ATH6KL_TM_ATTR_MAX + 1] = {
 					    .len = ATH6KL_TM_DATA_MAX_LEN },
 };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 void ath6kl_tm_rx_event(struct ath6kl *ar, void *buf, size_t buf_len)
 {
 	struct sk_buff *skb;
@@ -59,8 +70,14 @@ void ath6kl_tm_rx_event(struct ath6kl *ar, void *buf, size_t buf_len)
 		ath6kl_warn("failed to allocate testmode rx skb!\n");
 		return;
 	}
+<<<<<<< HEAD
 	NLA_PUT_U32(skb, ATH6KL_TM_ATTR_CMD, ATH6KL_TM_CMD_TCMD);
 	NLA_PUT(skb, ATH6KL_TM_ATTR_DATA, buf_len, buf);
+=======
+	if (nla_put_u32(skb, ATH6KL_TM_ATTR_CMD, ATH6KL_TM_CMD_TCMD) ||
+	    nla_put(skb, ATH6KL_TM_ATTR_DATA, buf_len, buf))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	cfg80211_testmode_event(skb, GFP_KERNEL);
 	return;
 
@@ -69,6 +86,7 @@ nla_put_failure:
 	ath6kl_warn("nla_put failed on testmode rx skb!\n");
 }
 
+<<<<<<< HEAD
 int ath6kl_tm_cmd(struct wiphy *wiphy, void *data, int len)
 {
 	struct ath6kl *ar = wiphy_priv(wiphy);
@@ -85,6 +103,15 @@ int ath6kl_tm_cmd(struct wiphy *wiphy, void *data, int len)
 
 	if (!ath6kl_cfg80211_ready(vif))
 		return -EIO;
+=======
+int ath6kl_tm_cmd(struct wiphy *wiphy, struct wireless_dev *wdev,
+		  void *data, int len)
+{
+	struct ath6kl *ar = wiphy_priv(wiphy);
+	struct nlattr *tb[ATH6KL_TM_ATTR_MAX + 1];
+	int err, buf_len;
+	void *buf;
+>>>>>>> refs/remotes/origin/master
 
 	err = nla_parse(tb, ATH6KL_TM_ATTR_MAX, data, len,
 			ath6kl_tm_policy);
@@ -95,6 +122,7 @@ int ath6kl_tm_cmd(struct wiphy *wiphy, void *data, int len)
 		return -EINVAL;
 
 	switch (nla_get_u32(tb[ATH6KL_TM_ATTR_CMD])) {
+<<<<<<< HEAD
 	case ATH6KL_TM_CMD_WMI_CMD:
 		if (!tb[ATH6KL_TM_ATTR_DATA])
 			return -EINVAL;
@@ -114,6 +142,8 @@ int ath6kl_tm_cmd(struct wiphy *wiphy, void *data, int len)
 		return 0;
 
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	case ATH6KL_TM_CMD_TCMD:
 		if (!tb[ATH6KL_TM_ATTR_DATA])
 			return -EINVAL;

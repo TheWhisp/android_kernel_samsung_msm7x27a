@@ -46,7 +46,11 @@ static inline int ufs_add_nondir(struct dentry *dentry, struct inode *inode)
 	return err;
 }
 
+<<<<<<< HEAD
 static struct dentry *ufs_lookup(struct inode * dir, struct dentry *dentry, struct nameidata *nd)
+=======
+static struct dentry *ufs_lookup(struct inode * dir, struct dentry *dentry, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode * inode = NULL;
 	ino_t ino;
@@ -60,10 +64,13 @@ static struct dentry *ufs_lookup(struct inode * dir, struct dentry *dentry, stru
 		inode = ufs_iget(dir->i_sb, ino);
 	unlock_ufs(dir->i_sb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (IS_ERR(inode))
 		return ERR_CAST(inode);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return d_splice_alias(inode, dentry);
 }
 
@@ -76,11 +83,16 @@ static struct dentry *ufs_lookup(struct inode * dir, struct dentry *dentry, stru
  * with d_instantiate(). 
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ufs_create (struct inode * dir, struct dentry * dentry, int mode,
 =======
 static int ufs_create (struct inode * dir, struct dentry * dentry, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
 		struct nameidata *nd)
+=======
+static int ufs_create (struct inode * dir, struct dentry * dentry, umode_t mode,
+		bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 	int err;
@@ -104,10 +116,14 @@ static int ufs_create (struct inode * dir, struct dentry * dentry, umode_t mode,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ufs_mknod (struct inode * dir, struct dentry *dentry, int mode, dev_t rdev)
 =======
 static int ufs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t rdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ufs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t rdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 	int err;
@@ -180,12 +196,15 @@ static int ufs_link (struct dentry * old_dentry, struct inode * dir,
 
 	lock_ufs(dir->i_sb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (inode->i_nlink >= UFS_LINK_MAX) {
 		unlock_ufs(dir->i_sb);
 		return -EMLINK;
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	inode->i_ctime = CURRENT_TIME_SEC;
 	inode_inc_link_count(inode);
@@ -197,6 +216,7 @@ static int ufs_link (struct dentry * old_dentry, struct inode * dir,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ufs_mkdir(struct inode * dir, struct dentry * dentry, int mode)
 {
 	struct inode * inode;
@@ -205,11 +225,16 @@ static int ufs_mkdir(struct inode * dir, struct dentry * dentry, int mode)
 	if (dir->i_nlink >= UFS_LINK_MAX)
 		goto out;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int ufs_mkdir(struct inode * dir, struct dentry * dentry, umode_t mode)
 {
 	struct inode * inode;
 	int err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	lock_ufs(dir->i_sb);
 	inode_inc_link_count(dir);
@@ -329,6 +354,7 @@ static int ufs_rename(struct inode *old_dir, struct dentry *old_dentry,
 		inode_dec_link_count(new_inode);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (dir_de) {
 			err = -EMLINK;
 			if (new_dir->i_nlink >= UFS_LINK_MAX)
@@ -336,6 +362,8 @@ static int ufs_rename(struct inode *old_dir, struct dentry *old_dentry,
 		}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		err = ufs_add_link(new_dentry, old_inode);
 		if (err)
 			goto out_dir;

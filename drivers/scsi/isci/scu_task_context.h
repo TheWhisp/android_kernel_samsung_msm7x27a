@@ -867,6 +867,7 @@ struct scu_task_context {
 
 	/* OFFSET 0x5C */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 block_protection_enable:1;
 	u32 block_size:2;
 	u32 block_protection_function:2;
@@ -875,6 +876,11 @@ struct scu_task_context {
 	u32 blk_sz:2;
 	u32 blk_prot_func:2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 blk_prot_en:1;
+	u32 blk_sz:2;
+	u32 blk_prot_func:2;
+>>>>>>> refs/remotes/origin/master
 	u32 reserved_5C_0:9;
 	u32 active_sgl_element:2;  /* read only set to 0 */
 	u32 sgl_exhausted:1;  /* read only set to 0 */
@@ -902,6 +908,7 @@ struct scu_task_context {
 	u32 reserved_C4_CC[3];
 
 	/* OFFSET 0xD0 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32 intermediate_crc_value:16;
 	u32 initial_crc_seed:16;
@@ -931,6 +938,8 @@ struct scu_task_context {
 	/* OFFSET 0xEC */
 	u32 reference_tag_seed_for_verify;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 interm_crc_val:16;
 	u32 init_crc_seed:16;
 
@@ -981,7 +990,10 @@ struct scu_task_context {
 
 	/* OFFSET 0xEC */
 	u32 ref_tag_seed_gen;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* OFFSET 0xF0 */
 	u32 intermediate_crc_valid_snapshot:16;
@@ -997,9 +1009,13 @@ struct scu_task_context {
 	u32 reference_tag_seed_for_generate_function_snapshot;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 =======
 } __packed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _SCU_TASK_CONTEXT_H_ */

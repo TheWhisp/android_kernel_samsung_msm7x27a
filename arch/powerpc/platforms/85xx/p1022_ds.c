@@ -18,7 +18,10 @@
 
 #include <linux/pci.h>
 #include <linux/of_platform.h>
+<<<<<<< HEAD
 #include <linux/memblock.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/div64.h>
 #include <asm/mpic.h>
 #include <asm/swiotlb.h>
@@ -26,11 +29,14 @@
 #include <sysdev/fsl_soc.h>
 #include <sysdev/fsl_pci.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/fsl_guts.h>
 
 #if defined(CONFIG_FB_FSL_DIU) || defined(CONFIG_FB_FSL_DIU_MODULE)
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/udbg.h>
 #include <asm/fsl_guts.h>
 #include <asm/fsl_lbc.h>
@@ -44,7 +50,10 @@
 #define PMUXCR_ELBCDIU_NOR16	0x80000000
 #define PMUXCR_ELBCDIU_DIU	0x40000000
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Board-specific initialization of the DIU.  This code should probably be
  * executed when the DIU is opened, rather than in arch code, but the DIU
@@ -63,7 +72,10 @@
 
 /* Some ngPIXIS register definitions */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define PX_CTL		3
 #define PX_BRDCFG0	8
 #define PX_BRDCFG1	9
@@ -73,17 +85,25 @@
 #define PX_BRDCFG0_ELBC_SPI_NULL	0xc0
 #define PX_BRDCFG0_ELBC_DIU		0x02
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define PX_BRDCFG1_DVIEN	0x80
 #define PX_BRDCFG1_DFPEN	0x40
 #define PX_BRDCFG1_BACKLIGHT	0x20
 #define PX_BRDCFG1_DDCEN	0x10
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PX_CTL_ALTACC		0x80
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PX_CTL_ALTACC		0x80
+
+>>>>>>> refs/remotes/origin/master
 /*
  * DIU Area Descriptor
  *
@@ -120,6 +140,7 @@
 	(c2 << AD_COMP_2_SHIFT) | (c1 << AD_COMP_1_SHIFT) | \
 	(c0 << AD_COMP_0_SHIFT) | (size << AD_PIXEL_S_SHIFT))
 
+<<<<<<< HEAD
 /**
  * p1022ds_get_pixel_format: return the Area Descriptor for a given pixel depth
  *
@@ -203,6 +224,8 @@ static void p1022ds_set_gamma_table(enum fsl_diu_monitor_port port,
 {
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct fsl_law {
 	u32	lawbar;
 	u32	reserved1;
@@ -276,13 +299,21 @@ static void p1022ds_set_monitor_port(enum fsl_diu_monitor_port port)
 	/* Map the global utilities registers. */
 	guts_node = of_find_compatible_node(NULL, NULL, "fsl,p1022-guts");
 	if (!guts_node) {
+<<<<<<< HEAD
 		pr_err("p1022ds: missing global utilties device node\n");
+=======
+		pr_err("p1022ds: missing global utilities device node\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	guts = of_iomap(guts_node, 0);
 	if (!guts) {
+<<<<<<< HEAD
 		pr_err("p1022ds: could not map global utilties device\n");
+=======
+		pr_err("p1022ds: could not map global utilities device\n");
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -310,7 +341,11 @@ static void p1022ds_set_monitor_port(enum fsl_diu_monitor_port port)
 		goto exit;
 	}
 
+<<<<<<< HEAD
 	iprop = of_get_property(law_node, "fsl,num-laws", 0);
+=======
+	iprop = of_get_property(law_node, "fsl,num-laws", NULL);
+>>>>>>> refs/remotes/origin/master
 	if (!iprop) {
 		pr_err("p1022ds: LAW node is missing fsl,num-laws property\n");
 		goto exit;
@@ -363,7 +398,11 @@ static void p1022ds_set_monitor_port(enum fsl_diu_monitor_port port)
 		goto exit;
 	}
 	cs1_addr = lbc_br_to_phys(ecm, num_laws, br1);
+<<<<<<< HEAD
 	if (!cs0_addr) {
+=======
+	if (!cs1_addr) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("p1022ds: could not determine physical address for CS1"
 		       " (BR1=%08x)\n", br1);
 		goto exit;
@@ -459,7 +498,10 @@ exit:
 	of_node_put(law_node);
 	of_node_put(lbc_node);
 	of_node_put(guts_node);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -471,10 +513,14 @@ void p1022ds_set_pixel_clock(unsigned int pixclock)
 {
 	struct device_node *guts_np = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ccsr_guts_85xx __iomem *guts;
 =======
 	struct ccsr_guts __iomem *guts;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ccsr_guts __iomem *guts;
+>>>>>>> refs/remotes/origin/master
 	unsigned long freq;
 	u64 temp;
 	u32 pxclk;
@@ -482,14 +528,22 @@ void p1022ds_set_pixel_clock(unsigned int pixclock)
 	/* Map the global utilities registers. */
 	guts_np = of_find_compatible_node(NULL, NULL, "fsl,p1022-guts");
 	if (!guts_np) {
+<<<<<<< HEAD
 		pr_err("p1022ds: missing global utilties device node\n");
+=======
+		pr_err("p1022ds: missing global utilities device node\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	guts = of_iomap(guts_np, 0);
 	of_node_put(guts_np);
 	if (!guts) {
+<<<<<<< HEAD
 		pr_err("p1022ds: could not map global utilties device\n");
+=======
+		pr_err("p1022ds: could not map global utilities device\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -499,9 +553,12 @@ void p1022ds_set_pixel_clock(unsigned int pixclock)
 	freq = temp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* pixclk is the ratio of the platform clock to the pixel clock */
 	pxclk = DIV_ROUND_CLOSEST(fsl_get_sys_freq(), freq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * 'pxclk' is the ratio of the platform clock to the pixel clock.
 	 * This number is programmed into the CLKDVDR register, and the valid
@@ -509,7 +566,10 @@ void p1022ds_set_pixel_clock(unsigned int pixclock)
 	 */
 	pxclk = DIV_ROUND_CLOSEST(fsl_get_sys_freq(), freq);
 	pxclk = clamp_t(u32, pxclk, 2, 255);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Disable the pixel clock, and set it to non-inverted and no delay */
 	clrbits32(&guts->clkdvdr,
@@ -517,6 +577,7 @@ void p1022ds_set_pixel_clock(unsigned int pixclock)
 
 	/* Enable the clock and set the pxclk */
 	setbits32(&guts->clkdvdr, CLKDVDR_PXCKEN | (pxclk << 16));
+<<<<<<< HEAD
 <<<<<<< HEAD
 }
 
@@ -539,6 +600,8 @@ int p1022ds_set_sysfs_monitor_port(int val)
 {
 	return val < 2 ? val : 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	iounmap(guts);
 }
@@ -556,13 +619,17 @@ p1022ds_valid_monitor_port(enum fsl_diu_monitor_port port)
 	default:
 		return FSL_DIU_PORT_DVI; /* Dual-link LVDS is not supported */
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif
 
 void __init p1022_ds_pic_init(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct mpic *mpic;
 	struct resource r;
@@ -595,6 +662,8 @@ void __init p1022_ds_pic_init(void)
 #ifdef CONFIG_SMP
 void __init mpc85xx_smp_init(void);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN |
 		MPIC_SINGLE_DEST_CPU,
 		0, 256, " OpenPIC  ");
@@ -604,6 +673,7 @@ void __init mpc85xx_smp_init(void);
 
 #if defined(CONFIG_FB_FSL_DIU) || defined(CONFIG_FB_FSL_DIU_MODULE)
 
+<<<<<<< HEAD
 /*
  * Disables a node in the device tree.
  *
@@ -624,6 +694,8 @@ static void __init disable_one_node(struct device_node *np, struct property *new
 	pr_info("p1022ds: disabling %s node\n", np->full_name);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* TRUE if there is a "video=fslfb" command-line parameter. */
 static bool fslfb;
 
@@ -645,7 +717,10 @@ static int __init early_video_setup(char *options)
 }
 early_param("video", early_video_setup);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -653,6 +728,7 @@ early_param("video", early_video_setup);
  */
 static void __init p1022_ds_setup_arch(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	struct device_node *np;
 #endif
@@ -693,6 +769,14 @@ static void __init p1022_ds_setup_arch(void)
 	mpc85xx_smp_init();
 #endif
 =======
+=======
+	if (ppc_md.progress)
+		ppc_md.progress("p1022_ds_setup_arch()", 0);
+
+#if defined(CONFIG_FB_FSL_DIU) || defined(CONFIG_FB_FSL_DIU_MODULE)
+	diu_ops.set_monitor_port	= p1022ds_set_monitor_port;
+	diu_ops.set_pixel_clock		= p1022ds_set_pixel_clock;
+>>>>>>> refs/remotes/origin/master
 	diu_ops.valid_monitor_port	= p1022ds_valid_monitor_port;
 
 	/*
@@ -717,7 +801,21 @@ static void __init p1022_ds_setup_arch(void)
 					.length = sizeof("disabled"),
 				};
 
+<<<<<<< HEAD
 				disable_one_node(np2, &nor_status);
+=======
+				/*
+				 * of_update_property() is called before
+				 * kmalloc() is available, so the 'new' object
+				 * should be allocated in the global area.
+				 * The easiest way is to do that is to
+				 * allocate one static local variable for each
+				 * call to this function.
+				 */
+				pr_info("p1022ds: disabling %s node",
+					np2->full_name);
+				of_update_property(np2, &nor_status);
+>>>>>>> refs/remotes/origin/master
 				of_node_put(np2);
 			}
 
@@ -731,7 +829,13 @@ static void __init p1022_ds_setup_arch(void)
 					.length = sizeof("disabled"),
 				};
 
+<<<<<<< HEAD
 				disable_one_node(np2, &nand_status);
+=======
+				pr_info("p1022ds: disabling %s node",
+					np2->full_name);
+				of_update_property(np2, &nand_status);
+>>>>>>> refs/remotes/origin/master
 				of_node_put(np2);
 			}
 
@@ -743,6 +847,7 @@ static void __init p1022_ds_setup_arch(void)
 #endif
 
 	mpc85xx_smp_init();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_SWIOTLB
@@ -752,10 +857,17 @@ static void __init p1022_ds_setup_arch(void)
 		ppc_md.pci_dma_dev_setup = pci_dma_dev_setup_swiotlb;
 	}
 #endif
+=======
+
+	fsl_pci_assign_primary();
+
+	swiotlb_detect_4g();
+>>>>>>> refs/remotes/origin/master
 
 	pr_info("Freescale P1022 DS reference board\n");
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct of_device_id __initdata p1022_ds_ids[] = {
 	{ .type = "soc", },
@@ -775,6 +887,9 @@ machine_device_initcall(p1022_ds, p1022_ds_publish_devices);
 =======
 machine_device_initcall(p1022_ds, mpc85xx_common_publish_devices);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+machine_arch_initcall(p1022_ds, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/master
 
 machine_arch_initcall(p1022_ds, swiotlb_setup_bus_notifier);
 

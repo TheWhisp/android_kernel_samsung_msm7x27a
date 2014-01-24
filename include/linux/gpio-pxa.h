@@ -14,6 +14,10 @@ extern int pxa_last_gpio;
 extern int pxa_irq_to_gpio(int irq);
 
 struct pxa_gpio_platform_data {
+<<<<<<< HEAD
+=======
+	int irq_base;
+>>>>>>> refs/remotes/origin/master
 	int (*gpio_set_wake)(unsigned int gpio, unsigned int on);
 };
 

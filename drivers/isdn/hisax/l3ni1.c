@@ -5,6 +5,7 @@
  * Author       Matt Henderson & Guy Ellis
  * Copyright    by Traverse Technologies Pty Ltd, www.travers.com.au
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
@@ -14,6 +15,8 @@
  * driver written by Karsten Keil et al.  
  * NI-1 Hall of Fame - Thanks to.... 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
@@ -22,7 +25,10 @@
  * Layer 3 protocol based on the EURO/DSS1 D-channel protocol
  * driver written by Karsten Keil et al.
  * NI-1 Hall of Fame - Thanks to....
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Ragnar Paulson - for some handy code fragments
  * Will Scales - beta tester extraordinaire
  * Brett Whittacre - beta tester and remote devel system in Vegas
@@ -41,6 +47,7 @@ static const char *ni1_revision = "$Revision: 2.8.2.3 $";
 #define EXT_BEARER_CAPS 1
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	MsgHead(ptr, cref, mty) \
 	*ptr++ = 0x8; \
 	if (cref == -1) { \
@@ -50,6 +57,8 @@ static const char *ni1_revision = "$Revision: 2.8.2.3 $";
 		*ptr++ = cref^0x80; \
 	} \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define	MsgHead(ptr, cref, mty)			\
 	*ptr++ = 0x8;				\
 	if (cref == -1) {			\
@@ -58,7 +67,10 @@ static const char *ni1_revision = "$Revision: 2.8.2.3 $";
 		*ptr++ = 0x1;			\
 		*ptr++ = cref^0x80;		\
 	}					\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*ptr++ = mty
 
 
@@ -71,10 +83,14 @@ static unsigned char new_invoke_id(struct PStack *p)
 	unsigned char retval;
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
   
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	i = 32; /* maximum search depth */
 
 	retval = p->prot.ni1.last_invoke_id + 1; /* try new id */
@@ -82,25 +98,35 @@ static unsigned char new_invoke_id(struct PStack *p)
 		p->prot.ni1.last_invoke_id = (retval & 0xF8) + 8;
 		i--;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}  
 	if (i) {
 		while (p->prot.ni1.invoke_used[retval >> 3] & (1 << (retval & 7)))
 		retval++; 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (i) {
 		while (p->prot.ni1.invoke_used[retval >> 3] & (1 << (retval & 7)))
 			retval++;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else
 		retval = 0;
 	p->prot.ni1.last_invoke_id = retval;
 	p->prot.ni1.invoke_used[retval >> 3] |= (1 << (retval & 7));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return(retval);  
 =======
 	return (retval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (retval);
+>>>>>>> refs/remotes/origin/master
 } /* new_invoke_id */
 
 /*************************/
@@ -110,16 +136,22 @@ static void free_invoke_id(struct PStack *p, unsigned char id)
 {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   if (!id) return; /* 0 = invalid value */
 
   p->prot.ni1.invoke_used[id >> 3] &= ~(1 << (id & 7));
 } /* free_invoke_id */  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!id) return; /* 0 = invalid value */
 
 	p->prot.ni1.invoke_used[id >> 3] &= ~(1 << (id & 7));
 } /* free_invoke_id */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /**********************************************************/
@@ -130,6 +162,7 @@ static struct l3_process
 {  struct l3_process *proc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
    if (!(proc = new_l3_process(st, cr))) 
      return(NULL);
 
@@ -139,6 +172,8 @@ static struct l3_process
    
    return(proc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!(proc = new_l3_process(st, cr)))
 		return (NULL);
 
@@ -147,11 +182,15 @@ static struct l3_process
 	proc->prot.ni1.uus1_data[0] = '\0';
 
 	return (proc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } /* ni1_new_l3_process */
 
 /************************************************/
 /* free a l3 process and all ni1 specific data */
+<<<<<<< HEAD
 <<<<<<< HEAD
 /************************************************/ 
 static void
@@ -162,6 +201,8 @@ ni1_release_l3_process(struct l3_process *p)
 } /* ni1_release_l3_process */
  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /************************************************/
 static void
 ni1_release_l3_process(struct l3_process *p)
@@ -170,7 +211,10 @@ ni1_release_l3_process(struct l3_process *p)
 	release_l3_process(p);
 } /* ni1_release_l3_process */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /********************************************************/
 /* search a process with invoke id id and dummy callref */
 /********************************************************/
@@ -178,6 +222,7 @@ static struct l3_process *
 l3ni1_search_dummy_proc(struct PStack *st, int id)
 { struct l3_process *pc = st->l3.proc; /* start of processes */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   if (!id) return(NULL);
 
@@ -188,6 +233,8 @@ l3ni1_search_dummy_proc(struct PStack *st, int id)
    } 
   return(NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!id) return (NULL);
 
 	while (pc)
@@ -196,12 +243,16 @@ l3ni1_search_dummy_proc(struct PStack *st, int id)
 		pc = pc->next;
 	}
 	return (NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } /* l3ni1_search_dummy_proc */
 
 /*******************************************************************/
 /* called when a facility message with a dummy callref is received */
 /* and a return result is delivered. id specifies the invoke id.   */
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*******************************************************************/ 
 static void 
@@ -232,6 +283,8 @@ l3ni1_dummy_return_result(struct PStack *st, int id, u_char *p, u_char nlen)
   else
    l3_debug(st, "dummy return result id=0x%x result len=%d",id,nlen);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************/
 static void
 l3ni1_dummy_return_result(struct PStack *st, int id, u_char *p, u_char nlen)
@@ -260,12 +313,16 @@ l3ni1_dummy_return_result(struct PStack *st, int id, u_char *p, u_char nlen)
 	}
 	else
 		l3_debug(st, "dummy return result id=0x%x result len=%d", id, nlen);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } /* l3ni1_dummy_return_result */
 
 /*******************************************************************/
 /* called when a facility message with a dummy callref is received */
 /* and a return error is delivered. id specifies the invoke id.    */
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*******************************************************************/ 
 static void 
@@ -296,6 +353,8 @@ l3ni1_dummy_error_return(struct PStack *st, int id, ulong error)
   else
    l3_debug(st, "dummy return error id=0x%x error=0x%lx",id,error);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************/
 static void
 l3ni1_dummy_error_return(struct PStack *st, int id, ulong error)
@@ -324,12 +383,16 @@ l3ni1_dummy_error_return(struct PStack *st, int id, ulong error)
 	}
 	else
 		l3_debug(st, "dummy return error id=0x%x error=0x%lx", id, error);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } /* l3ni1_error_return */
 
 /*******************************************************************/
 /* called when a facility message with a dummy callref is received */
 /* and a invoke is delivered. id specifies the invoke id.          */
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*******************************************************************/ 
 static void 
@@ -355,6 +418,8 @@ l3ni1_dummy_invoke(struct PStack *st, int cr, int id,
 
   cs->iif.statcallb(&ic);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************/
 static void
 l3ni1_dummy_invoke(struct PStack *st, int cr, int id,
@@ -378,16 +443,23 @@ l3ni1_dummy_invoke(struct PStack *st, int cr, int id,
 	ic.parm.ni1_io.data = p;
 
 	cs->iif.statcallb(&ic);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } /* l3ni1_dummy_invoke */
 
 static void
 l3ni1_parse_facility(struct PStack *st, struct l3_process *pc,
 <<<<<<< HEAD
+<<<<<<< HEAD
                       int cr, u_char * p)
 =======
 		     int cr, u_char *p)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     int cr, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	int qd_len = 0;
 	unsigned char nlen = 0, ilen, cp_tag;
@@ -395,10 +467,14 @@ l3ni1_parse_facility(struct PStack *st, struct l3_process *pc,
 	ulong err_ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pc) 
 =======
 	if (pc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pc)
+>>>>>>> refs/remotes/origin/master
 		st = pc->st; /* valid Stack */
 	else
 		if ((!st) || (cr >= 0)) return; /* neither pc nor st specified */
@@ -427,6 +503,7 @@ l3ni1_parse_facility(struct PStack *st, struct l3_process *pc,
 		l3_debug(st, "class and form != 0xA0");
 		return;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
        
         cp_tag = *p & 0x1F; /* remember tag value */
@@ -596,6 +673,8 @@ l3ni1_parse_facility(struct PStack *st, struct l3_process *pc,
 			l3_debug(st, "facility default break tag=0x%02x",cp_tag);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cp_tag = *p & 0x1F; /* remember tag value */
 
@@ -763,7 +842,10 @@ l3ni1_parse_facility(struct PStack *st, struct l3_process *pc,
 	default:
 		l3_debug(st, "facility default break tag=0x%02x", cp_tag);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -862,6 +944,7 @@ l3ni1_msg_without_setup(struct l3_process *pc, u_char pr, void *arg)
 
 	switch (pc->para.cause) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case 81:	/* invalid callreference */
 		case 88:	/* incomp destination */
 		case 96:	/* mandory IE missing */
@@ -878,6 +961,8 @@ l3ni1_msg_without_setup(struct l3_process *pc, u_char pr, void *arg)
 				pc->para.cause);
 			return;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case 81:	/* invalid callreference */
 	case 88:	/* incomp destination */
 	case 96:	/* mandory IE missing */
@@ -893,7 +978,10 @@ l3ni1_msg_without_setup(struct l3_process *pc, u_char pr, void *arg)
 		printk(KERN_ERR "HiSax l3ni1_msg_without_setup wrong cause %d\n",
 		       pc->para.cause);
 		return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	l = p - tmp;
 	if (!(skb = l3_alloc_skb(l)))
@@ -904,6 +992,7 @@ l3ni1_msg_without_setup(struct l3_process *pc, u_char pr, void *arg)
 }
 
 static int ie_ALERTING[] = {IE_BEARER, IE_CHANNEL_ID | IE_MANDATORY_1,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		IE_FACILITY, IE_PROGRESS, IE_DISPLAY, IE_SIGNAL, IE_HLC,
 		IE_USER_USER, -1};
@@ -942,6 +1031,8 @@ static int ie_SUSPEND_ACKNOWLEDGE[] = {IE_DISPLAY, IE_FACILITY, -1};
 static int ie_SUSPEND_REJECT[] = {IE_CAUSE | IE_MANDATORY, IE_DISPLAY, -1};
 /* not used 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			    IE_FACILITY, IE_PROGRESS, IE_DISPLAY, IE_SIGNAL, IE_HLC,
 			    IE_USER_USER, -1};
 static int ie_CALL_PROCEEDING[] = {IE_BEARER, IE_CHANNEL_ID | IE_MANDATORY_1,
@@ -978,7 +1069,10 @@ static int ie_STATUS_ENQUIRY[] = {IE_DISPLAY, -1};
 static int ie_SUSPEND_ACKNOWLEDGE[] = {IE_DISPLAY, IE_FACILITY, -1};
 static int ie_SUSPEND_REJECT[] = {IE_CAUSE | IE_MANDATORY, IE_DISPLAY, -1};
 /* not used
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * static int ie_CONGESTION_CONTROL[] = {IE_CONGESTION | IE_MANDATORY,
  *		IE_CAUSE | IE_MANDATORY, IE_DISPLAY, -1};
  * static int ie_USER_INFORMATION[] = {IE_MORE_DATA, IE_USER_USER | IE_MANDATORY, -1};
@@ -987,12 +1081,17 @@ static int ie_SUSPEND_REJECT[] = {IE_CAUSE | IE_MANDATORY, IE_DISPLAY, -1};
  */
 static int ie_FACILITY[] = {IE_FACILITY | IE_MANDATORY, IE_DISPLAY, -1};
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int comp_required[] = {1,2,3,5,6,7,9,10,11,14,15,-1};
 static int l3_valid_states[] = {0,1,2,3,4,6,7,8,9,10,11,12,15,17,19,25,-1};
 =======
 static int comp_required[] = {1, 2, 3, 5, 6, 7, 9, 10, 11, 14, 15, -1};
 static int l3_valid_states[] = {0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 15, 17, 19, 25, -1};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int comp_required[] = {1, 2, 3, 5, 6, 7, 9, 10, 11, 14, 15, -1};
+static int l3_valid_states[] = {0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 15, 17, 19, 25, -1};
+>>>>>>> refs/remotes/origin/master
 
 struct ie_len {
 	int ie;
@@ -1034,10 +1133,14 @@ struct ie_len max_ie_len[] = {
 	{IE_HLC, 5},
 	{IE_USER_USER, 131},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{-1,0},
 =======
 	{-1, 0},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{-1, 0},
+>>>>>>> refs/remotes/origin/master
 };
 
 static int
@@ -1046,16 +1149,22 @@ getmax_ie_len(u_char ie) {
 	while (max_ie_len[i].ie != -1) {
 		if (max_ie_len[i].ie == ie)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return(max_ie_len[i].len);
 		i++;
 	}
 	return(255);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			return (max_ie_len[i].len);
 		i++;
 	}
 	return (255);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -1066,6 +1175,7 @@ ie_in_set(struct l3_process *pc, u_char ie, int *checklist) {
 		if ((*checklist & 0xff) == ie) {
 			if (ie & 0x80)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				return(-ret);
 			else
 				return(ret);
@@ -1074,15 +1184,24 @@ ie_in_set(struct l3_process *pc, u_char ie, int *checklist) {
 			else
 				return (ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				return (-ret);
+			else
+				return (ret);
+>>>>>>> refs/remotes/origin/master
 		}
 		ret++;
 		checklist++;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return(0);
 =======
 	return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -1097,10 +1216,14 @@ check_infoelements(struct l3_process *pc, struct sk_buff *skb, int *checklist)
 	u_char old_codeset = 0;
 	u_char codelock = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	p = skb->data;
 	/* skip cr */
 	p++;
@@ -1119,10 +1242,14 @@ check_infoelements(struct l3_process *pc, struct sk_buff *skb, int *checklist)
 			if (pc->debug & L3_DEB_CHECK)
 				l3_debug(pc->st, "check IE shift%scodeset %d->%d",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					codelock ? " locking ": " ", old_codeset, codeset);
 =======
 					 codelock ? " locking " : " ", old_codeset, codeset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 codelock ? " locking " : " ", old_codeset, codeset);
+>>>>>>> refs/remotes/origin/master
 			p++;
 			continue;
 		}
@@ -1155,10 +1282,14 @@ check_infoelements(struct l3_process *pc, struct sk_buff *skb, int *checklist)
 			if (pc->debug & L3_DEB_CHECK)
 				l3_debug(pc->st, "check IE shift back codeset %d->%d",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					codeset, old_codeset);
 =======
 					 codeset, old_codeset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 codeset, old_codeset);
+>>>>>>> refs/remotes/origin/master
 			codeset = old_codeset;
 			codelock = 1;
 		}
@@ -1166,6 +1297,7 @@ check_infoelements(struct l3_process *pc, struct sk_buff *skb, int *checklist)
 	if (err_compr | err_ureg | err_len | err_seq) {
 		if (pc->debug & L3_DEB_CHECK)
 			l3_debug(pc->st, "check IE MT(%x) %d/%d/%d/%d",
+<<<<<<< HEAD
 <<<<<<< HEAD
 				mt, err_compr, err_ureg, err_len, err_seq);
 		if (err_compr)
@@ -1179,6 +1311,8 @@ check_infoelements(struct l3_process *pc, struct sk_buff *skb, int *checklist)
 	} 
 	return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				 mt, err_compr, err_ureg, err_len, err_seq);
 		if (err_compr)
 			return (ERR_IE_COMPREHENSION);
@@ -1190,7 +1324,10 @@ check_infoelements(struct l3_process *pc, struct sk_buff *skb, int *checklist)
 			return (ERR_IE_SEQUENCE);
 	}
 	return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* verify if a message type exists and contain no IE error */
@@ -1198,6 +1335,7 @@ static int
 l3ni1_check_messagetype_validity(struct l3_process *pc, int mt, void *arg)
 {
 	switch (mt) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case MT_ALERTING:
 		case MT_CALL_PROCEEDING:
@@ -1236,6 +1374,8 @@ l3ni1_check_messagetype_validity(struct l3_process *pc, int mt, void *arg)
 	}
 	return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case MT_ALERTING:
 	case MT_CALL_PROCEEDING:
 	case MT_CONNECT:
@@ -1272,7 +1412,10 @@ l3ni1_check_messagetype_validity(struct l3_process *pc, int mt, void *arg)
 		return (1);
 	}
 	return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -1280,6 +1423,7 @@ l3ni1_std_ie_err(struct l3_process *pc, int ret) {
 
 	if (pc->debug & L3_DEB_CHECK)
 		l3_debug(pc->st, "check_infoelements ret %d", ret);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch(ret) {
 		case 0: 
@@ -1300,6 +1444,8 @@ l3ni1_std_ie_err(struct l3_process *pc, int ret) {
 		default:
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (ret) {
 	case 0:
 		break;
@@ -1318,7 +1464,10 @@ l3ni1_std_ie_err(struct l3_process *pc, int ret) {
 	case ERR_IE_SEQUENCE:
 	default:
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1341,6 +1490,7 @@ l3ni1_get_channel_id(struct l3_process *pc, struct sk_buff *skb) {
 			return (-3);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return(*p & 0x3);
 	} else
 		return(-1);
@@ -1349,15 +1499,24 @@ l3ni1_get_channel_id(struct l3_process *pc, struct sk_buff *skb) {
 	} else
 		return (-1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return (*p & 0x3);
+	} else
+		return (-1);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 l3ni1_get_cause(struct l3_process *pc, struct sk_buff *skb) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u_char l, i=0;
 =======
 	u_char l, i = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u_char l, i = 0;
+>>>>>>> refs/remotes/origin/master
 	u_char *p;
 
 	p = skb->data;
@@ -1367,21 +1526,30 @@ l3ni1_get_cause(struct l3_process *pc, struct sk_buff *skb) {
 		p++;
 		l = *p++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (l>30)
 			return(1);
 =======
 		if (l > 30)
 			return (1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (l > 30)
+			return (1);
+>>>>>>> refs/remotes/origin/master
 		if (l) {
 			pc->para.loc = *p++;
 			l--;
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return(2);
 =======
 			return (2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return (2);
+>>>>>>> refs/remotes/origin/master
 		}
 		if (l && !(pc->para.loc & 0x80)) {
 			l--;
@@ -1392,20 +1560,27 @@ l3ni1_get_cause(struct l3_process *pc, struct sk_buff *skb) {
 			l--;
 			if (!(pc->para.cause & 0x80))
 <<<<<<< HEAD
+<<<<<<< HEAD
 				return(3);
 		} else
 			return(4);
 		while (l && (i<6)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				return (3);
 		} else
 			return (4);
 		while (l && (i < 6)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			pc->para.diag[i++] = *p++;
 			l--;
 		}
 	} else
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return(-1);
 	return(0);
@@ -1413,6 +1588,10 @@ l3ni1_get_cause(struct l3_process *pc, struct sk_buff *skb) {
 		return (-1);
 	return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return (-1);
+	return (0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -1420,15 +1599,20 @@ l3ni1_msg_with_uus(struct l3_process *pc, u_char cmd)
 {
 	struct sk_buff *skb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u_char tmp[16+40];
 =======
 	u_char tmp[16 + 40];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u_char tmp[16 + 40];
+>>>>>>> refs/remotes/origin/master
 	u_char *p = tmp;
 	int l;
 
 	MsgHead(p, pc->callref, cmd);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         if (pc->prot.ni1.uus1_data[0])
 	 { *p++ = IE_USER_USER; /* UUS info element */
@@ -1439,6 +1623,8 @@ l3ni1_msg_with_uus(struct l3_process *pc, u_char cmd)
            pc->prot.ni1.uus1_data[0] = '\0';   
          } 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pc->prot.ni1.uus1_data[0])
 	{ *p++ = IE_USER_USER; /* UUS info element */
 		*p++ = strlen(pc->prot.ni1.uus1_data) + 1;
@@ -1447,7 +1633,10 @@ l3ni1_msg_with_uus(struct l3_process *pc, u_char cmd)
 		p += strlen(pc->prot.ni1.uus1_data);
 		pc->prot.ni1.uus1_data[0] = '\0';
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	l = p - tmp;
 	if (!(skb = l3_alloc_skb(l)))
@@ -1462,10 +1651,14 @@ l3ni1_release_req(struct l3_process *pc, u_char pr, void *arg)
 	StopAllL3Timer(pc);
 	newl3state(pc, 19);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!pc->prot.ni1.uus1_data[0]) 
 =======
 	if (!pc->prot.ni1.uus1_data[0])
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!pc->prot.ni1.uus1_data[0])
+>>>>>>> refs/remotes/origin/master
 		l3ni1_message(pc, MT_RELEASE);
 	else
 		l3ni1_msg_with_uus(pc, MT_RELEASE);
@@ -1479,6 +1672,7 @@ l3ni1_release_cmpl(struct l3_process *pc, u_char pr, void *arg)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ret = l3ni1_get_cause(pc, skb))>0) {
 		if (pc->debug & L3_DEB_WARN)
 			l3_debug(pc->st, "RELCMPL get_cause ret(%d)",ret);
@@ -1487,6 +1681,11 @@ l3ni1_release_cmpl(struct l3_process *pc, u_char pr, void *arg)
 		if (pc->debug & L3_DEB_WARN)
 			l3_debug(pc->st, "RELCMPL get_cause ret(%d)", ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ret = l3ni1_get_cause(pc, skb)) > 0) {
+		if (pc->debug & L3_DEB_WARN)
+			l3_debug(pc->st, "RELCMPL get_cause ret(%d)", ret);
+>>>>>>> refs/remotes/origin/master
 	} else if (ret < 0)
 		pc->para.cause = NO_CAUSE;
 	StopAllL3Timer(pc);
@@ -1499,10 +1698,14 @@ l3ni1_release_cmpl(struct l3_process *pc, u_char pr, void *arg)
 
 static u_char *
 <<<<<<< HEAD
+<<<<<<< HEAD
 EncodeASyncParams(u_char * p, u_char si2)
 =======
 EncodeASyncParams(u_char *p, u_char si2)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EncodeASyncParams(u_char *p, u_char si2)
+>>>>>>> refs/remotes/origin/master
 {				// 7c 06 88  90 21 42 00 bb
 
 	p[0] = 0;
@@ -1530,6 +1733,7 @@ EncodeASyncParams(u_char *p, u_char si2)
 		p[2] += 3;
 
 	switch (si2 & 0x07) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case 0:
 			p[0] = 66;	// 1200 bit/s
@@ -1564,6 +1768,8 @@ EncodeASyncParams(u_char *p, u_char si2)
 
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case 0:
 		p[0] = 66;	// 1200 bit/s
 
@@ -1596,7 +1802,10 @@ EncodeASyncParams(u_char *p, u_char si2)
 		p[0] = 75;	// 19200 bit/s
 
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return p + 3;
 }
@@ -1606,6 +1815,7 @@ EncodeSyncParams(u_char si2, u_char ai)
 {
 
 	switch (si2) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case 0:
 			return ai + 2;	// 1200 bit/s
@@ -1643,6 +1853,8 @@ EncodeSyncParams(u_char si2, u_char ai)
 		default:
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case 0:
 		return ai + 2;	// 1200 bit/s
 
@@ -1678,7 +1890,10 @@ EncodeSyncParams(u_char si2, u_char ai)
 
 	default:
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return ai;
 }
@@ -1686,14 +1901,19 @@ EncodeSyncParams(u_char si2, u_char ai)
 
 static u_char
 <<<<<<< HEAD
+<<<<<<< HEAD
 DecodeASyncParams(u_char si2, u_char * p)
 =======
 DecodeASyncParams(u_char si2, u_char *p)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+DecodeASyncParams(u_char si2, u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	u_char info;
 
 	switch (p[5]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case 66:	// 1200 bit/s
 
@@ -1728,6 +1948,8 @@ DecodeASyncParams(u_char si2, u_char *p)
 			si2 += 7;
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case 66:	// 1200 bit/s
 
 		break;	// si2 don't change
@@ -1760,7 +1982,10 @@ DecodeASyncParams(u_char si2, u_char *p)
 
 		si2 += 7;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	info = p[7] & 0x7f;
@@ -1785,6 +2010,7 @@ DecodeSyncParams(u_char si2, u_char info)
 {
 	info &= 0x7f;
 	switch (info) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case 40:	// bit/s negotiation failed  ai := 165 not 175!
 
@@ -1820,6 +2046,8 @@ DecodeSyncParams(u_char si2, u_char info)
 
 			return si2;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case 40:	// bit/s negotiation failed  ai := 165 not 175!
 
 		return si2 + 15;
@@ -1853,7 +2081,10 @@ DecodeSyncParams(u_char si2, u_char info)
 	default:	// 1200 bit/s
 
 		return si2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1864,6 +2095,7 @@ DecodeSI2(struct sk_buff *skb)
 
 	if ((p = findie(skb->data, skb->len, 0x7c, 0))) {
 		switch (p[4] & 0x0f) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case 0x01:
 				if (p[1] == 0x04)	// sync. Bitratenadaption
@@ -1880,6 +2112,8 @@ DecodeSI2(struct sk_buff *skb)
 					return DecodeSyncParams(176, p[5]);	// V.120
 				break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case 0x01:
 			if (p[1] == 0x04)	// sync. Bitratenadaption
 
@@ -1894,7 +2128,10 @@ DecodeSI2(struct sk_buff *skb)
 			if (p[1] > 3)
 				return DecodeSyncParams(176, p[5]);	// V.120
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return 0;
@@ -1906,10 +2143,14 @@ DecodeSI2(struct sk_buff *skb)
 static void
 l3ni1_setup_req(struct l3_process *pc, u_char pr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 void *arg)
 =======
 		void *arg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		void *arg)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *skb;
 	u_char tmp[128];
@@ -1933,10 +2174,14 @@ l3ni1_setup_req(struct l3_process *pc, u_char pr,
 		*p++ = IE_BEARER;
 		*p++ = 0x3;	  /* Length                                   */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		*p++ = 0x90;	  /* 3.1khz Audio      			      */
 =======
 		*p++ = 0x90;	  /* 3.1khz Audio			      */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*p++ = 0x90;	  /* 3.1khz Audio			      */
+>>>>>>> refs/remotes/origin/master
 		*p++ = 0x90;	  /* Circuit-Mode 64kbps                      */
 		*p++ = 0xa2;	  /* u-Law Audio                              */
 		break;
@@ -1960,10 +2205,14 @@ l3ni1_setup_req(struct l3_process *pc, u_char pr,
 			sp++;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	*p++ = IE_KEYPAD;
 	*p++ = strlen(teln);
 	while (*teln)
@@ -1972,10 +2221,14 @@ l3ni1_setup_req(struct l3_process *pc, u_char pr,
 	if (sub)
 		*sub++ = '.';
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 #if EXT_BEARER_CAPS
 	if ((pc->para.setup.si2 >= 160) && (pc->para.setup.si2 <= 175)) {	// sync. Bitratenadaption, V.110/X.30
 
@@ -2004,10 +2257,14 @@ l3ni1_setup_req(struct l3_process *pc, u_char pr,
 		p = EncodeASyncParams(p, pc->para.setup.si2 - 192);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  switch (pc->para.setup.si1) {
 =======
 		switch (pc->para.setup.si1) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		switch (pc->para.setup.si1) {
+>>>>>>> refs/remotes/origin/master
 		case 1:	                /* Telephony                                */
 			*p++ = IE_LLC;
 			*p++ = 0x3;	/* Length                                   */
@@ -2024,14 +2281,19 @@ l3ni1_setup_req(struct l3_process *pc, u_char pr,
 			*p++ = 0x90;	/* Circuit-Mode 64kbps                      */
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  }
 =======
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 	l = p - tmp;
 	if (!(skb = l3_alloc_skb(l)))
+<<<<<<< HEAD
 <<<<<<< HEAD
 {
 		return;
@@ -2041,6 +2303,11 @@ l3ni1_setup_req(struct l3_process *pc, u_char pr,
 		return;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 	memcpy(skb_put(skb, l), tmp, l);
 	L3DelTimer(&pc->timer);
 	L3AddTimer(&pc->timer, T303, CC_T303);
@@ -2143,10 +2410,14 @@ l3ni1_disconnect(struct l3_process *pc, u_char pr, void *arg)
 		else if (ret > 0)
 			cause = 100;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} 
 =======
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	if ((p = findie(skb->data, skb->len, IE_FACILITY, 0)))
 		l3ni1_parse_facility(pc->st, pc, pc->callref, p);
 	ret = check_infoelements(pc, skb, ie_DISCONNECT);
@@ -2159,16 +2430,22 @@ l3ni1_disconnect(struct l3_process *pc, u_char pr, void *arg)
 	if (cause)
 		newl3state(pc, 19);
 <<<<<<< HEAD
+<<<<<<< HEAD
        	if (11 != ret)
 		pc->st->l3.l3l4(pc->st, CC_DISCONNECT | INDICATION, pc);
        	else if (!cause)
 		   l3ni1_release_req(pc, pr, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (11 != ret)
 		pc->st->l3.l3l4(pc->st, CC_DISCONNECT | INDICATION, pc);
 	else if (!cause)
 		l3ni1_release_req(pc, pr, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cause) {
 		l3ni1_message_cause(pc, MT_RELEASE, cause);
 		L3AddTimer(&pc->timer, T308, CC_T308_1);
@@ -2235,6 +2512,7 @@ l3ni1_setup(struct l3_process *pc, u_char pr, void *arg)
 			pc->para.setup.si2 = 0;
 			switch (p[2] & 0x7f) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				case 0x00: /* Speech */
 				case 0x10: /* 3.1 Khz audio */
 					pc->para.setup.si1 = 1;
@@ -2277,6 +2555,8 @@ l3ni1_setup(struct l3_process *pc, u_char pr, void *arg)
 					err = 3;
 					break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			case 0x00: /* Speech */
 			case 0x10: /* 3.1 Khz audio */
 				pc->para.setup.si1 = 1;
@@ -2318,11 +2598,15 @@ l3ni1_setup(struct l3_process *pc, u_char pr, void *arg)
 			default:
 				err = 3;
 				break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		if (pc->debug & L3_DEB_SI)
 			l3_debug(pc->st, "SI=%d, AI=%d",
+<<<<<<< HEAD
 <<<<<<< HEAD
 				pc->para.setup.si1, pc->para.setup.si2);
 		if (err) {
@@ -2330,12 +2614,17 @@ l3ni1_setup(struct l3_process *pc, u_char pr, void *arg)
 				l3_debug(pc->st, "setup with wrong bearer(l=%d:%x,%x)",
 					p[1], p[2], p[3]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				 pc->para.setup.si1, pc->para.setup.si2);
 		if (err) {
 			if (pc->debug & L3_DEB_WARN)
 				l3_debug(pc->st, "setup with wrong bearer(l=%d:%x,%x)",
 					 p[1], p[2], p[3]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			pc->para.cause = 100;
 			l3ni1_msg_without_setup(pc, pr, NULL);
 			return;
@@ -2357,15 +2646,20 @@ l3ni1_setup(struct l3_process *pc, u_char pr, void *arg)
 				if (pc->debug & L3_DEB_WARN)
 					l3_debug(pc->st, "setup with wrong chid %x",
 <<<<<<< HEAD
+<<<<<<< HEAD
 						id);
 =======
 						 id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						 id);
+>>>>>>> refs/remotes/origin/master
 				pc->para.cause = 100;
 				l3ni1_msg_without_setup(pc, pr, NULL);
 				return;
 			}
 			bcfound++;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		} else 
                    { if (pc->debug & L3_DEB_WARN)
@@ -2373,12 +2667,17 @@ l3ni1_setup(struct l3_process *pc, u_char pr, void *arg)
                      bcfound++;
                    } 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		} else
 		{ if (pc->debug & L3_DEB_WARN)
 				l3_debug(pc->st, "setup without bchannel, call waiting");
 			bcfound++;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (pc->debug & L3_DEB_WARN)
 			l3_debug(pc->st, "setup with wrong chid ret %d", id);
@@ -2454,10 +2753,14 @@ l3ni1_disconnect_req(struct l3_process *pc, u_char pr, void *arg)
 {
 	struct sk_buff *skb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u_char tmp[16+40];
 =======
 	u_char tmp[16 + 40];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u_char tmp[16 + 40];
+>>>>>>> refs/remotes/origin/master
 	u_char *p = tmp;
 	int l;
 	u_char cause = 16;
@@ -2475,6 +2778,7 @@ l3ni1_disconnect_req(struct l3_process *pc, u_char pr, void *arg)
 	*p++ = cause | 0x80;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (pc->prot.ni1.uus1_data[0])
 	 { *p++ = IE_USER_USER; /* UUS info element */
            *p++ = strlen(pc->prot.ni1.uus1_data) + 1;
@@ -2484,6 +2788,8 @@ l3ni1_disconnect_req(struct l3_process *pc, u_char pr, void *arg)
            pc->prot.ni1.uus1_data[0] = '\0';   
          } 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pc->prot.ni1.uus1_data[0])
 	{ *p++ = IE_USER_USER; /* UUS info element */
 		*p++ = strlen(pc->prot.ni1.uus1_data) + 1;
@@ -2492,7 +2798,10 @@ l3ni1_disconnect_req(struct l3_process *pc, u_char pr, void *arg)
 		p += strlen(pc->prot.ni1.uus1_data);
 		pc->prot.ni1.uus1_data[0] = '\0';
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	l = p - tmp;
 	if (!(skb = l3_alloc_skb(l)))
@@ -2505,6 +2814,7 @@ l3ni1_disconnect_req(struct l3_process *pc, u_char pr, void *arg)
 
 static void
 l3ni1_setup_rsp(struct l3_process *pc, u_char pr,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		 void *arg)
 {
@@ -2519,6 +2829,8 @@ l3ni1_setup_rsp(struct l3_process *pc, u_char pr,
 		l3_debug(pc->st, "D-chan connect for waiting call");
 	l3ni1_message_plus_chid(pc, MT_CONNECT); /* GE 05/09/00 */ 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		void *arg)
 {
 	if (!pc->para.bchannel)
@@ -2531,7 +2843,10 @@ l3ni1_setup_rsp(struct l3_process *pc, u_char pr,
 	if (pc->debug & L3_DEB_WARN)
 		l3_debug(pc->st, "D-chan connect for waiting call");
 	l3ni1_message_plus_chid(pc, MT_CONNECT); /* GE 05/09/00 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	L3DelTimer(&pc->timer);
 	L3AddTimer(&pc->timer, T313, CC_T313);
 }
@@ -2589,6 +2904,7 @@ l3ni1_release(struct l3_process *pc, u_char pr, void *arg)
 	struct sk_buff *skb = arg;
 	u_char *p;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret, cause=0;
 
 	StopAllL3Timer(pc);
@@ -2597,6 +2913,8 @@ l3ni1_release(struct l3_process *pc, u_char pr, void *arg)
 			l3_debug(pc->st, "REL get_cause ret(%d)", ret);
 	} else if (ret<0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret, cause = 0;
 
 	StopAllL3Timer(pc);
@@ -2604,11 +2922,15 @@ l3ni1_release(struct l3_process *pc, u_char pr, void *arg)
 		if (pc->debug & L3_DEB_WARN)
 			l3_debug(pc->st, "REL get_cause ret(%d)", ret);
 	} else if (ret < 0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		pc->para.cause = NO_CAUSE;
 	if ((p = findie(skb->data, skb->len, IE_FACILITY, 0))) {
 		l3ni1_parse_facility(pc->st, pc, pc->callref, p);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((ret<0) && (pc->state != 11))
 		cause = 96;
@@ -2618,16 +2940,25 @@ l3ni1_release(struct l3_process *pc, u_char pr, void *arg)
 		cause = 96;
 	else if (ret > 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ret < 0) && (pc->state != 11))
+		cause = 96;
+	else if (ret > 0)
+>>>>>>> refs/remotes/origin/master
 		cause = 100;
 	ret = check_infoelements(pc, skb, ie_RELEASE);
 	if (ERR_IE_COMPREHENSION == ret)
 		cause = 96;
 	else if ((ERR_IE_UNRECOGNIZED == ret) && (!cause))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cause = 99;  
 =======
 		cause = 99;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cause = 99;
+>>>>>>> refs/remotes/origin/master
 	if (cause)
 		l3ni1_message_cause(pc, MT_RELEASE_COMPLETE, cause);
 	else
@@ -2640,6 +2971,7 @@ l3ni1_release(struct l3_process *pc, u_char pr, void *arg)
 static void
 l3ni1_alert_req(struct l3_process *pc, u_char pr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 void *arg)
 {
 	newl3state(pc, 7);
@@ -2648,6 +2980,8 @@ l3ni1_alert_req(struct l3_process *pc, u_char pr,
 	else
 		l3ni1_msg_with_uus(pc, MT_ALERTING); 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		void *arg)
 {
 	newl3state(pc, 7);
@@ -2655,11 +2989,15 @@ l3ni1_alert_req(struct l3_process *pc, u_char pr,
 		l3ni1_message(pc, MT_ALERTING);
 	else
 		l3ni1_msg_with_uus(pc, MT_ALERTING);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 l3ni1_proceed_req(struct l3_process *pc, u_char pr,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		   void *arg)
 {
@@ -2667,21 +3005,30 @@ l3ni1_proceed_req(struct l3_process *pc, u_char pr,
 	l3ni1_message(pc, MT_CALL_PROCEEDING);
 	pc->st->l3.l3l4(pc->st, CC_PROCEED_SEND | INDICATION, pc); 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		  void *arg)
 {
 	newl3state(pc, 9);
 	l3ni1_message(pc, MT_CALL_PROCEEDING);
 	pc->st->l3.l3l4(pc->st, CC_PROCEED_SEND | INDICATION, pc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 l3ni1_setup_ack_req(struct l3_process *pc, u_char pr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		   void *arg)
 =======
 		    void *arg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    void *arg)
+>>>>>>> refs/remotes/origin/master
 {
 	newl3state(pc, 25);
 	L3DelTimer(&pc->timer);
@@ -2696,6 +3043,7 @@ static void
 l3ni1_deliver_display(struct l3_process *pc, int pr, u_char *infp)
 {       u_char len;
 <<<<<<< HEAD
+<<<<<<< HEAD
         isdn_ctrl ic; 
 	struct IsdnCardState *cs;
         char *p; 
@@ -2708,6 +3056,8 @@ l3ni1_deliver_display(struct l3_process *pc, int pr, u_char *infp)
         while (len--)
 	  *p++ = *infp++;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	isdn_ctrl ic;
 	struct IsdnCardState *cs;
 	char *p;
@@ -2719,16 +3069,23 @@ l3ni1_deliver_display(struct l3_process *pc, int pr, u_char *infp)
 	p = ic.parm.display;
 	while (len--)
 		*p++ = *infp++;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*p = '\0';
 	ic.command = ISDN_STAT_DISPLAY;
 	cs = pc->st->l1.hardware;
 	ic.driver = cs->myid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ic.arg = pc->chan->chan; 
 =======
 	ic.arg = pc->chan->chan;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ic.arg = pc->chan->chan;
+>>>>>>> refs/remotes/origin/master
 	cs->iif.statcallb(&ic);
 } /* l3ni1_deliver_display */
 
@@ -2746,6 +3103,7 @@ l3ni1_progress(struct l3_process *pc, u_char pr, void *arg)
 			pc->para.cause = 100;
 		} else if (!(p[2] & 0x70)) {
 			switch (p[2]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				case 0x80:
 				case 0x81:
@@ -2772,6 +3130,8 @@ l3ni1_progress(struct l3_process *pc, u_char pr, void *arg)
 					pc->para.cause = 100;
 					break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			case 0x80:
 			case 0x81:
 			case 0x82:
@@ -2796,7 +3156,10 @@ l3ni1_progress(struct l3_process *pc, u_char pr, void *arg)
 				err = 3;
 				pc->para.cause = 100;
 				break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	} else {
@@ -2804,10 +3167,14 @@ l3ni1_progress(struct l3_process *pc, u_char pr, void *arg)
 		err = 4;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (err) {	
 =======
 	if (err) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (err) {
+>>>>>>> refs/remotes/origin/master
 		if (pc->debug & L3_DEB_WARN)
 			l3_debug(pc->st, "progress error %d", err);
 		l3ni1_status_send(pc, pr, NULL);
@@ -2835,6 +3202,7 @@ l3ni1_notify(struct l3_process *pc, u_char pr, void *arg)
 		} else {
 			switch (p[2]) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				case 0x80:
 				case 0x81:
 				case 0x82:
@@ -2844,6 +3212,8 @@ l3ni1_notify(struct l3_process *pc, u_char pr, void *arg)
 					err = 2;
 					break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			case 0x80:
 			case 0x81:
 			case 0x82:
@@ -2852,7 +3222,10 @@ l3ni1_notify(struct l3_process *pc, u_char pr, void *arg)
 				pc->para.cause = 100;
 				err = 2;
 				break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	} else {
@@ -2860,10 +3233,14 @@ l3ni1_notify(struct l3_process *pc, u_char pr, void *arg)
 		err = 3;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (err) {	
 =======
 	if (err) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (err) {
+>>>>>>> refs/remotes/origin/master
 		if (pc->debug & L3_DEB_WARN)
 			l3_debug(pc->st, "notify error %d", err);
 		l3ni1_status_send(pc, pr, NULL);
@@ -2887,10 +3264,14 @@ l3ni1_status_enq(struct l3_process *pc, u_char pr, void *arg)
 	l3ni1_std_ie_err(pc, ret);
 	pc->para.cause = 30; /* response to STATUS_ENQUIRY */
 <<<<<<< HEAD
+<<<<<<< HEAD
         l3ni1_status_send(pc, pr, NULL);
 =======
 	l3ni1_status_send(pc, pr, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	l3ni1_status_send(pc, pr, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -2924,6 +3305,7 @@ static void l3ni1_redir_req(struct l3_process *pc, u_char pr, void *arg)
 	struct sk_buff *skb;
 	u_char tmp[128];
 	u_char *p = tmp;
+<<<<<<< HEAD
 <<<<<<< HEAD
         u_char *subp;
         u_char len_phone = 0;
@@ -2982,6 +3364,8 @@ static void l3ni1_redir_req(struct l3_process *pc, u_char pr, void *arg)
         *p++ = 0x01;
         *p++ = pc->chan->setup.screen;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u_char *subp;
 	u_char len_phone = 0;
 	u_char len_sub = 0;
@@ -3038,17 +3422,24 @@ static void l3ni1_redir_req(struct l3_process *pc, u_char pr, void *arg)
 	*p++ = 0x01; /* screening identifier */
 	*p++ = 0x01;
 	*p++ = pc->chan->setup.screen;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	l = p - tmp;
 	if (!(skb = l3_alloc_skb(l))) return;
 	memcpy(skb_put(skb, l), tmp, l);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         l3_msg(pc->st, DL_DATA | REQUEST, skb);
 =======
 	l3_msg(pc->st, DL_DATA | REQUEST, skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	l3_msg(pc->st, DL_DATA | REQUEST, skb);
+>>>>>>> refs/remotes/origin/master
 } /* l3ni1_redir_req */
 
 /********************************************/
@@ -3057,12 +3448,17 @@ static void l3ni1_redir_req(struct l3_process *pc, u_char pr, void *arg)
 static void l3ni1_redir_req_early(struct l3_process *pc, u_char pr, void *arg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
   l3ni1_proceed_req(pc,pr,arg);
   l3ni1_redir_req(pc,pr,arg);
 =======
 	l3ni1_proceed_req(pc, pr, arg);
 	l3ni1_redir_req(pc, pr, arg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	l3ni1_proceed_req(pc, pr, arg);
+	l3ni1_redir_req(pc, pr, arg);
+>>>>>>> refs/remotes/origin/master
 } /* l3ni1_redir_req_early */
 
 /***********************************************/
@@ -3072,6 +3468,7 @@ static void l3ni1_redir_req_early(struct l3_process *pc, u_char pr, void *arg)
 /***********************************************/
 static int l3ni1_cmd_global(struct PStack *st, isdn_ctrl *ic)
 { u_char id;
+<<<<<<< HEAD
 <<<<<<< HEAD
   u_char temp[265];
   u_char *p = temp;
@@ -3176,6 +3573,8 @@ l3ni1_io_timer(struct l3_process *pc)
 
   ni1_release_l3_process(pc); 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u_char temp[265];
 	u_char *p = temp;
 	int i, l, proc_len;
@@ -3278,7 +3677,10 @@ l3ni1_io_timer(struct l3_process *pc)
 	cs->iif.statcallb(&ic);
 
 	ni1_release_l3_process(pc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } /* l3ni1_io_timer */
 
 static void
@@ -3449,6 +3851,7 @@ l3ni1_status(struct l3_process *pc, u_char pr, void *arg)
 	u_char *p;
 	struct sk_buff *skb = arg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret; 
 	u_char cause = 0, callState = 0;
 	
@@ -3456,13 +3859,18 @@ l3ni1_status(struct l3_process *pc, u_char pr, void *arg)
 		if (pc->debug & L3_DEB_WARN)
 			l3_debug(pc->st, "STATUS get_cause ret(%d)",ret);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	u_char cause = 0, callState = 0;
 
 	if ((ret = l3ni1_get_cause(pc, skb))) {
 		if (pc->debug & L3_DEB_WARN)
 			l3_debug(pc->st, "STATUS get_cause ret(%d)", ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ret < 0)
 			cause = 96;
 		else if (ret > 0)
@@ -3488,6 +3896,7 @@ l3ni1_status(struct l3_process *pc, u_char pr, void *arg)
 	if (cause) {
 		u_char tmp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		
 		if (pc->debug & L3_DEB_WARN)
 			l3_debug(pc->st, "STATUS error(%d/%d)",ret,cause);
@@ -3496,6 +3905,11 @@ l3ni1_status(struct l3_process *pc, u_char pr, void *arg)
 		if (pc->debug & L3_DEB_WARN)
 			l3_debug(pc->st, "STATUS error(%d/%d)", ret, cause);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		if (pc->debug & L3_DEB_WARN)
+			l3_debug(pc->st, "STATUS error(%d/%d)", ret, cause);
+>>>>>>> refs/remotes/origin/master
 		tmp = pc->para.cause;
 		pc->para.cause = cause;
 		l3ni1_status_send(pc, 0, NULL);
@@ -3522,16 +3936,22 @@ l3ni1_facility(struct l3_process *pc, u_char pr, void *arg)
 	struct sk_buff *skb = arg;
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 	ret = check_infoelements(pc, skb, ie_FACILITY);
 	l3ni1_std_ie_err(pc, ret);
  	  {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = check_infoelements(pc, skb, ie_FACILITY);
 	l3ni1_std_ie_err(pc, ret);
 	{
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		u_char *p;
 		if ((p = findie(skb->data, skb->len, IE_FACILITY, 0)))
 			l3ni1_parse_facility(pc->st, pc, pc->callref, p);
@@ -3581,10 +4001,14 @@ l3ni1_suspend_ack(struct l3_process *pc, u_char pr, void *arg)
 	if ((ret = check_infoelements(pc, skb, ie_SUSPEND_ACKNOWLEDGE)))
 		if (pc->debug & L3_DEB_WARN)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			l3_debug(pc->st, "SUSPACK check ie(%d)",ret);
 =======
 			l3_debug(pc->st, "SUSPACK check ie(%d)", ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			l3_debug(pc->st, "SUSPACK check ie(%d)", ret);
+>>>>>>> refs/remotes/origin/master
 	ni1_release_l3_process(pc);
 }
 
@@ -3597,12 +4021,17 @@ l3ni1_suspend_rej(struct l3_process *pc, u_char pr, void *arg)
 	if ((ret = l3ni1_get_cause(pc, skb))) {
 		if (pc->debug & L3_DEB_WARN)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			l3_debug(pc->st, "SUSP_REJ get_cause ret(%d)",ret);
 		if (ret < 0) 
 =======
 			l3_debug(pc->st, "SUSP_REJ get_cause ret(%d)", ret);
 		if (ret < 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			l3_debug(pc->st, "SUSP_REJ get_cause ret(%d)", ret);
+		if (ret < 0)
+>>>>>>> refs/remotes/origin/master
 			pc->para.cause = 96;
 		else
 			pc->para.cause = 100;
@@ -3694,12 +4123,17 @@ l3ni1_resume_rej(struct l3_process *pc, u_char pr, void *arg)
 	if ((ret = l3ni1_get_cause(pc, skb))) {
 		if (pc->debug & L3_DEB_WARN)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			l3_debug(pc->st, "RES_REJ get_cause ret(%d)",ret);
 		if (ret < 0) 
 =======
 			l3_debug(pc->st, "RES_REJ get_cause ret(%d)", ret);
 		if (ret < 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			l3_debug(pc->st, "RES_REJ get_cause ret(%d)", ret);
+		if (ret < 0)
+>>>>>>> refs/remotes/origin/master
 			pc->para.cause = 96;
 		else
 			pc->para.cause = 100;
@@ -3754,10 +4188,14 @@ l3ni1_global_restart(struct l3_process *pc, u_char pr, void *arg)
 		else if (up->para.bchannel == chan)
 			up->st->lli.l4l3(up->st, CC_RESTART | REQUEST, up);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 		up = up->next;
 	}
 	p = tmp;
@@ -3782,21 +4220,28 @@ static void
 l3ni1_dl_reset(struct l3_process *pc, u_char pr, void *arg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
         pc->para.cause = 0x29;          /* Temporary failure */
         pc->para.loc = 0;
         l3ni1_disconnect_req(pc, pr, NULL);
         pc->st->l3.l3l4(pc->st, CC_SETUP_ERR, pc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pc->para.cause = 0x29;          /* Temporary failure */
 	pc->para.loc = 0;
 	l3ni1_disconnect_req(pc, pr, NULL);
 	pc->st->l3.l3l4(pc->st, CC_SETUP_ERR, pc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 l3ni1_dl_release(struct l3_process *pc, u_char pr, void *arg)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         newl3state(pc, 0);
         pc->para.cause = 0x1b;          /* Destination out of order */
@@ -3804,17 +4249,23 @@ l3ni1_dl_release(struct l3_process *pc, u_char pr, void *arg)
         pc->st->l3.l3l4(pc->st, CC_RELEASE | INDICATION, pc);
         release_l3_process(pc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	newl3state(pc, 0);
 	pc->para.cause = 0x1b;          /* Destination out of order */
 	pc->para.loc = 0;
 	pc->st->l3.l3l4(pc->st, CC_RELEASE | INDICATION, pc);
 	release_l3_process(pc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 l3ni1_dl_reestablish(struct l3_process *pc, u_char pr, void *arg)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         L3DelTimer(&pc->timer);
         L3AddTimer(&pc->timer, T309, CC_T309);
@@ -3822,16 +4273,22 @@ l3ni1_dl_reestablish(struct l3_process *pc, u_char pr, void *arg)
 }
  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	L3DelTimer(&pc->timer);
 	L3AddTimer(&pc->timer, T309, CC_T309);
 	l3_msg(pc->st, DL_ESTABLISH | REQUEST, NULL);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 l3ni1_dl_reest_status(struct l3_process *pc, u_char pr, void *arg)
 {
 	L3DelTimer(&pc->timer);
+<<<<<<< HEAD
 <<<<<<< HEAD
  
  	pc->para.cause = 0x1F; /* normal, unspecified */
@@ -3865,6 +4322,8 @@ static void l3ni1_SendSpid( struct l3_process *pc, u_char pr, struct sk_buff *sk
 
 	p = skb_put( skb, 5 );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pc->para.cause = 0x1F; /* normal, unspecified */
 	l3ni1_status_send(pc, 0, NULL);
@@ -3896,13 +4355,17 @@ static void l3ni1_SendSpid(struct l3_process *pc, u_char pr, struct sk_buff *skb
 	}
 
 	p = skb_put(skb, 5);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*p++ = PROTO_DIS_EURO;
 	*p++ = 0;
 	*p++ = MT_INFORMATION;
 	*p++ = IE_SPID;
 	*p++ = l;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	memcpy( skb_put( skb, l ), pSPID, l );
 
@@ -3946,6 +4409,8 @@ static void l3ni1_spid_tout( struct l3_process *pc, u_char pr, void *arg )
 		newl3state( pc, 0 );
 		pc->st->l3.l3l2( pc->st, DL_RELEASE | REQUEST, NULL );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	memcpy(skb_put(skb, l), pSPID, l);
 
 	newl3state(pc, iNewState);
@@ -3987,7 +4452,10 @@ static void l3ni1_spid_tout(struct l3_process *pc, u_char pr, void *arg)
 		printk(KERN_ERR "SPID not accepted\n");
 		newl3state(pc, 0);
 		pc->st->l3.l3l2(pc->st, DL_RELEASE | REQUEST, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -4021,6 +4489,7 @@ static struct stateentry downstatelist[] =
 	{SBIT(10),
 	 CC_SUSPEND | REQUEST, l3ni1_suspend_req},
 <<<<<<< HEAD
+<<<<<<< HEAD
         {SBIT(7) | SBIT(9) | SBIT(25),
          CC_REDIR | REQUEST, l3ni1_redir_req},
         {SBIT(6),
@@ -4028,13 +4497,18 @@ static struct stateentry downstatelist[] =
         {SBIT(9) | SBIT(25),
          CC_DISCONNECT | REQUEST, l3ni1_disconnect_req},
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{SBIT(7) | SBIT(9) | SBIT(25),
 	 CC_REDIR | REQUEST, l3ni1_redir_req},
 	{SBIT(6),
 	 CC_REDIR | REQUEST, l3ni1_redir_req_early},
 	{SBIT(9) | SBIT(25),
 	 CC_DISCONNECT | REQUEST, l3ni1_disconnect_req},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{SBIT(25),
 	 CC_T302, l3ni1_t302},
 	{SBIT(1),
@@ -4058,12 +4532,17 @@ static struct stateentry downstatelist[] =
 	{SBIT(10),
 	 CC_T309, l3ni1_dl_release},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ SBIT( 20 ) | SBIT( 21 ) | SBIT( 22 ),
 	 CC_TSPID, l3ni1_spid_tout },
 =======
 	{ SBIT(20) | SBIT(21) | SBIT(22),
 	  CC_TSPID, l3ni1_spid_tout },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ SBIT(20) | SBIT(21) | SBIT(22),
+	  CC_TSPID, l3ni1_spid_tout },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct stateentry datastatelist[] =
@@ -4126,20 +4605,27 @@ static struct stateentry globalmes_list[] =
 	 MT_RESTART, l3ni1_global_restart},
 /*	{SBIT(1),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 MT_RESTART_ACKNOWLEDGE, l3ni1_restart_ack},
 */
 	{ SBIT( 0 ), MT_DL_ESTABLISHED, l3ni1_spid_send },
 	{ SBIT( 20 ) | SBIT( 21 ) | SBIT( 22 ), MT_INFORMATION, l3ni1_spid_epid },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	MT_RESTART_ACKNOWLEDGE, l3ni1_restart_ack},
 */
 	{ SBIT(0), MT_DL_ESTABLISHED, l3ni1_spid_send },
 	{ SBIT(20) | SBIT(21) | SBIT(22), MT_INFORMATION, l3ni1_spid_epid },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct stateentry manstatelist[] =
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         {SBIT(2),
          DL_ESTABLISH | INDICATION, l3ni1_dl_reset},
@@ -4150,6 +4636,8 @@ static struct stateentry manstatelist[] =
         {ALL_STATES,
          DL_RELEASE | INDICATION, l3ni1_dl_release},
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{SBIT(2),
 	 DL_ESTABLISH | INDICATION, l3ni1_dl_reset},
 	{SBIT(10),
@@ -4158,7 +4646,10 @@ static struct stateentry manstatelist[] =
 	 DL_RELEASE | INDICATION, l3ni1_dl_reestablish},
 	{ALL_STATES,
 	 DL_RELEASE | INDICATION, l3ni1_dl_release},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* *INDENT-ON* */
@@ -4174,10 +4665,14 @@ global_handler(struct PStack *st, int mt, struct sk_buff *skb)
 	struct l3_process *proc = st->l3.global;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ( skb )	
 =======
 	if (skb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (skb)
+>>>>>>> refs/remotes/origin/master
 		proc->callref = skb->data[2]; /* cr flag */
 	else
 		proc->callref = 0;
@@ -4189,20 +4684,28 @@ global_handler(struct PStack *st, int mt, struct sk_buff *skb)
 		if (st->l3.debug & L3_DEB_STATE) {
 			l3_debug(st, "ni1 global state %d mt %x unhandled",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				proc->state, mt);
 =======
 				 proc->state, mt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 proc->state, mt);
+>>>>>>> refs/remotes/origin/master
 		}
 		MsgHead(p, proc->callref, MT_STATUS);
 		*p++ = IE_CAUSE;
 		*p++ = 0x2;
 		*p++ = 0x80;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		*p++ = 81 |0x80;	/* invalid cr */
 =======
 		*p++ = 81 | 0x80;	/* invalid cr */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*p++ = 81 | 0x80;	/* invalid cr */
+>>>>>>> refs/remotes/origin/master
 		*p++ = 0x14;		/* CallState */
 		*p++ = 0x1;
 		*p++ = proc->state & 0x3f;
@@ -4215,10 +4718,14 @@ global_handler(struct PStack *st, int mt, struct sk_buff *skb)
 		if (st->l3.debug & L3_DEB_STATE) {
 			l3_debug(st, "ni1 global %d mt %x",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				proc->state, mt);
 =======
 				 proc->state, mt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 proc->state, mt);
+>>>>>>> refs/remotes/origin/master
 		}
 		globalmes_list[i].rout(proc, mt, skb);
 	}
@@ -4234,6 +4741,7 @@ ni1up(struct PStack *st, int pr, void *arg)
 	struct l3_process *proc;
 
 	switch (pr) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (DL_DATA | INDICATION):
 		case (DL_UNIT_DATA | INDICATION):
@@ -4253,6 +4761,8 @@ ni1up(struct PStack *st, int pr, void *arg)
 			printk(KERN_ERR "HiSax ni1up unknown pr=%04x\n", pr);
 			return;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (DL_DATA | INDICATION):
 	case (DL_UNIT_DATA | INDICATION):
 		break;
@@ -4270,7 +4780,10 @@ ni1up(struct PStack *st, int pr, void *arg)
 	default:
 		printk(KERN_ERR "HiSax ni1up unknown pr=%04x\n", pr);
 		return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (skb->len < 3) {
 		l3_debug(st, "ni1up frame too short(%d)", skb->len);
@@ -4306,16 +4819,22 @@ ni1up(struct PStack *st, int pr, void *arg)
 		{
 			if ((p = findie(skb->data, skb->len, IE_FACILITY, 0))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				l3ni1_parse_facility(st, NULL, 
 					(pr == (DL_DATA | INDICATION)) ? -1 : -2, p); 
 				dev_kfree_skb(skb);
 				return;  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				l3ni1_parse_facility(st, NULL,
 						     (pr == (DL_DATA | INDICATION)) ? -1 : -2, p);
 				dev_kfree_skb(skb);
 				return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		else
@@ -4324,14 +4843,19 @@ ni1up(struct PStack *st, int pr, void *arg)
 			return;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 				
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 		if (st->l3.debug & L3_DEB_WARN)
 			l3_debug(st, "ni1up dummy Callref (no facility msg or ie)");
 		dev_kfree_skb(skb);
 		return;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	} else if ((((skb->data[1] & 0x0f) == 1) && (0==(cr & 0x7f))) ||
 		(((skb->data[1] & 0x0f) == 2) && (0==(cr & 0x7fff)))) {	/* Global CallRef */
@@ -4339,6 +4863,10 @@ ni1up(struct PStack *st, int pr, void *arg)
 	} else if ((((skb->data[1] & 0x0f) == 1) && (0 == (cr & 0x7f))) ||
 		   (((skb->data[1] & 0x0f) == 2) && (0 == (cr & 0x7fff)))) {	/* Global CallRef */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if ((((skb->data[1] & 0x0f) == 1) && (0 == (cr & 0x7f))) ||
+		   (((skb->data[1] & 0x0f) == 2) && (0 == (cr & 0x7fff)))) {	/* Global CallRef */
+>>>>>>> refs/remotes/origin/master
 		if (st->l3.debug & L3_DEB_STATE)
 			l3_debug(st, "ni1up Global CallRef");
 		global_handler(st, mt, skb);
@@ -4417,12 +4945,17 @@ ni1up(struct PStack *st, int pr, void *arg)
 		return;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((p = findie(skb->data, skb->len, IE_DISPLAY, 0)) != NULL) 
 	  l3ni1_deliver_display(proc, pr, p); /* Display IE included */
 =======
 	if ((p = findie(skb->data, skb->len, IE_DISPLAY, 0)) != NULL)
 		l3ni1_deliver_display(proc, pr, p); /* Display IE included */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((p = findie(skb->data, skb->len, IE_DISPLAY, 0)) != NULL)
+		l3ni1_deliver_display(proc, pr, p); /* Display IE included */
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ARRAY_SIZE(datastatelist); i++)
 		if ((mt == datastatelist[i].primitive) &&
 		    ((1 << proc->state) & datastatelist[i].state))
@@ -4431,12 +4964,17 @@ ni1up(struct PStack *st, int pr, void *arg)
 		if (st->l3.debug & L3_DEB_STATE) {
 			l3_debug(st, "ni1up%sstate %d mt %#x unhandled",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				(pr == (DL_DATA | INDICATION)) ? " " : "(broadcast) ",
 				proc->state, mt);
 =======
 				 (pr == (DL_DATA | INDICATION)) ? " " : "(broadcast) ",
 				 proc->state, mt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 (pr == (DL_DATA | INDICATION)) ? " " : "(broadcast) ",
+				 proc->state, mt);
+>>>>>>> refs/remotes/origin/master
 		}
 		if ((MT_RELEASE_COMPLETE != mt) && (MT_RELEASE != mt)) {
 			proc->para.cause = 101;
@@ -4446,12 +4984,17 @@ ni1up(struct PStack *st, int pr, void *arg)
 		if (st->l3.debug & L3_DEB_STATE) {
 			l3_debug(st, "ni1up%sstate %d mt %x",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				(pr == (DL_DATA | INDICATION)) ? " " : "(broadcast) ",
 				proc->state, mt);
 =======
 				 (pr == (DL_DATA | INDICATION)) ? " " : "(broadcast) ",
 				 proc->state, mt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 (pr == (DL_DATA | INDICATION)) ? " " : "(broadcast) ",
+				 proc->state, mt);
+>>>>>>> refs/remotes/origin/master
 		}
 		datastatelist[i].rout(proc, pr, skb);
 	}
@@ -4488,16 +5031,22 @@ ni1down(struct PStack *st, int pr, void *arg)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ( pr == (CC_TNI1_IO | REQUEST)) {
 		l3ni1_io_timer(proc); /* timer expires */ 
 		return;
 	}  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pr == (CC_TNI1_IO | REQUEST)) {
 		l3ni1_io_timer(proc); /* timer expires */
 		return;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ARRAY_SIZE(downstatelist); i++)
 		if ((pr == downstatelist[i].primitive) &&
@@ -4507,19 +5056,27 @@ ni1down(struct PStack *st, int pr, void *arg)
 		if (st->l3.debug & L3_DEB_STATE) {
 			l3_debug(st, "ni1down state %d prim %#x unhandled",
 <<<<<<< HEAD
-				proc->state, pr);
-=======
-				 proc->state, pr);
->>>>>>> refs/remotes/origin/cm-10.0
-		}
-	} else {
-		if (st->l3.debug & L3_DEB_STATE) {
-			l3_debug(st, "ni1down state %d prim %#x",
 <<<<<<< HEAD
 				proc->state, pr);
 =======
 				 proc->state, pr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 proc->state, pr);
+>>>>>>> refs/remotes/origin/master
+		}
+	} else {
+		if (st->l3.debug & L3_DEB_STATE) {
+			l3_debug(st, "ni1down state %d prim %#x",
+<<<<<<< HEAD
+<<<<<<< HEAD
+				proc->state, pr);
+=======
+				 proc->state, pr);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 proc->state, pr);
+>>>>>>> refs/remotes/origin/master
 		}
 		downstatelist[i].rout(proc, pr, arg);
 	}
@@ -4528,6 +5085,7 @@ ni1down(struct PStack *st, int pr, void *arg)
 static void
 ni1man(struct PStack *st, int pr, void *arg)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         int i;
         struct l3_process *proc = arg;
@@ -4555,6 +5113,8 @@ ni1man(struct PStack *st, int pr, void *arg)
 }
  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 	struct l3_process *proc = arg;
 
@@ -4580,7 +5140,10 @@ ni1man(struct PStack *st, int pr, void *arg)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void
 setstack_ni1(struct PStack *st)
 {
@@ -4596,12 +5159,17 @@ setstack_ni1(struct PStack *st)
 	st->prot.ni1.invoke_used[0] = 1; /* Bit 0 must always be set to 1 */
 	i = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while (i < 32) 
 		st->prot.ni1.invoke_used[i++] = 0;   
 =======
 	while (i < 32)
 		st->prot.ni1.invoke_used[i++] = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (i < 32)
+		st->prot.ni1.invoke_used[i++] = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!(st->l3.global = kmalloc(sizeof(struct l3_process), GFP_ATOMIC))) {
 		printk(KERN_ERR "HiSax can't get memory for ni1 global CR\n");
@@ -4613,10 +5181,14 @@ setstack_ni1(struct PStack *st)
 		st->l3.global->st = st;
 		st->l3.global->N303 = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		st->l3.global->prot.ni1.invoke_id = 0; 
 =======
 		st->l3.global->prot.ni1.invoke_id = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		st->l3.global->prot.ni1.invoke_id = 0;
+>>>>>>> refs/remotes/origin/master
 
 		L3InitTimer(st->l3.global, &st->l3.global->timer);
 	}

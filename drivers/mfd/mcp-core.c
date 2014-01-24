@@ -20,11 +20,14 @@
 #include <linux/mfd/mcp.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/dma.h>
 #include <asm/system.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define to_mcp(d)		container_of(d, struct mcp, attached_device)
 #define to_mcp_driver(d)	container_of(d, struct mcp_driver, drv)
@@ -51,6 +54,7 @@ static int mcp_bus_remove(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int mcp_bus_suspend(struct device *dev, pm_message_t state)
 {
@@ -80,16 +84,21 @@ static int mcp_bus_resume(struct device *dev)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct bus_type mcp_bus_type = {
 	.name		= "mcp",
 	.match		= mcp_bus_match,
 	.probe		= mcp_bus_probe,
 	.remove		= mcp_bus_remove,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.suspend	= mcp_bus_suspend,
 	.resume		= mcp_bus_resume,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -103,16 +112,22 @@ static struct bus_type mcp_bus_type = {
 void mcp_set_telecom_divisor(struct mcp *mcp, unsigned int div)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irq(&mcp->lock);
 	mcp->ops->set_telecom_divisor(mcp, div);
 	spin_unlock_irq(&mcp->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	spin_lock_irqsave(&mcp->lock, flags);
 	mcp->ops->set_telecom_divisor(mcp, div);
 	spin_unlock_irqrestore(&mcp->lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(mcp_set_telecom_divisor);
 
@@ -126,16 +141,22 @@ EXPORT_SYMBOL(mcp_set_telecom_divisor);
 void mcp_set_audio_divisor(struct mcp *mcp, unsigned int div)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irq(&mcp->lock);
 	mcp->ops->set_audio_divisor(mcp, div);
 	spin_unlock_irq(&mcp->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	spin_lock_irqsave(&mcp->lock, flags);
 	mcp->ops->set_audio_divisor(mcp, div);
 	spin_unlock_irqrestore(&mcp->lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(mcp_set_audio_divisor);
 
@@ -189,17 +210,23 @@ EXPORT_SYMBOL(mcp_reg_read);
 void mcp_enable(struct mcp *mcp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irq(&mcp->lock);
 	if (mcp->use_count++ == 0)
 		mcp->ops->enable(mcp);
 	spin_unlock_irq(&mcp->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	spin_lock_irqsave(&mcp->lock, flags);
 	if (mcp->use_count++ == 0)
 		mcp->ops->enable(mcp);
 	spin_unlock_irqrestore(&mcp->lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(mcp_enable);
 
@@ -237,9 +264,13 @@ struct mcp *mcp_host_alloc(struct device *parent, size_t size)
 	if (mcp) {
 		spin_lock_init(&mcp->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		device_initialize(&mcp->attached_device);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		device_initialize(&mcp->attached_device);
+>>>>>>> refs/remotes/origin/master
 		mcp->attached_device.parent = parent;
 		mcp->attached_device.bus = &mcp_bus_type;
 		mcp->attached_device.dma_mask = parent->dma_mask;
@@ -249,6 +280,7 @@ struct mcp *mcp_host_alloc(struct device *parent, size_t size)
 }
 EXPORT_SYMBOL(mcp_host_alloc);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int mcp_host_register(struct mcp *mcp)
 {
@@ -263,6 +295,8 @@ void mcp_host_unregister(struct mcp *mcp)
 }
 EXPORT_SYMBOL(mcp_host_unregister);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int mcp_host_add(struct mcp *mcp, void *pdata)
 {
 	mcp->attached_device.platform_data = pdata;
@@ -282,7 +316,10 @@ void mcp_host_free(struct mcp *mcp)
 	put_device(&mcp->attached_device);
 }
 EXPORT_SYMBOL(mcp_host_free);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int mcp_driver_register(struct mcp_driver *mcpdrv)
 {

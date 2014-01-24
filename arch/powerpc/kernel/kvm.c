@@ -1,9 +1,13 @@
 /*
  * Copyright (C) 2010 SUSE Linux Products GmbH. All rights reserved.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Copyright 2010-2011 Freescale Semiconductor, Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2010-2011 Freescale Semiconductor, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Authors:
  *     Alexander Graf <agraf@suse.de>
@@ -25,9 +29,13 @@
 #include <linux/kvm_host.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kvm_para.h>
 #include <linux/slab.h>
 #include <linux/of.h>
@@ -37,9 +45,14 @@
 #include <asm/cacheflush.h>
 #include <asm/disassemble.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/ppc-opcode.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/ppc-opcode.h>
+#include <asm/epapr_hcalls.h>
+>>>>>>> refs/remotes/origin/master
 
 #define KVM_MAGIC_PAGE		(-4096L)
 #define magic_var(x) KVM_MAGIC_PAGE + offsetof(struct kvm_vcpu_arch_shared, x)
@@ -53,14 +66,19 @@
 #define KVM_INST_B_MASK		0x03ffffff
 #define KVM_INST_B_MAX		0x01ffffff
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define KVM_INST_LI		0x38000000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define KVM_INST_LI		0x38000000
+>>>>>>> refs/remotes/origin/master
 
 #define KVM_MASK_RT		0x03e00000
 #define KVM_RT_30		0x03c00000
 #define KVM_MASK_RB		0x0000f800
 #define KVM_INST_MFMSR		0x7c0000a6
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define KVM_INST_MFSPR_SPRG0	0x7c1042a6
 #define KVM_INST_MFSPR_SPRG1	0x7c1142a6
@@ -80,6 +98,8 @@
 #define KVM_INST_MTSPR_DAR	0x7c1303a6
 #define KVM_INST_MTSPR_DSISR	0x7c1203a6
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define SPR_FROM		0
 #define SPR_TO			0x100
@@ -91,7 +111,10 @@
 
 #define KVM_INST_MFSPR(sprn)	KVM_INST_SPR(sprn, SPR_FROM)
 #define KVM_INST_MTSPR(sprn)	KVM_INST_SPR(sprn, SPR_TO)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define KVM_INST_TLBSYNC	0x7c00046c
 #define KVM_INST_MTMSRD_L0	0x7c000164
@@ -99,9 +122,13 @@
 #define KVM_INST_MTMSR		0x7c000124
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define KVM_INST_WRTEE		0x7c000106
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define KVM_INST_WRTEE		0x7c000106
+>>>>>>> refs/remotes/origin/master
 #define KVM_INST_WRTEEI_0	0x7c000146
 #define KVM_INST_WRTEEI_1	0x7c008146
 
@@ -304,6 +331,7 @@ static void kvm_patch_ins_mtmsr(u32 *inst, u32 rt)
 #ifdef CONFIG_BOOKE
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern u32 kvm_emulate_wrteei_branch_offs;
 extern u32 kvm_emulate_wrteei_ee_offs;
 extern u32 kvm_emulate_wrteei_len;
@@ -311,6 +339,8 @@ extern u32 kvm_emulate_wrteei[];
 
 static void kvm_patch_ins_wrteei(u32 *inst)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern u32 kvm_emulate_wrtee_branch_offs;
 extern u32 kvm_emulate_wrtee_reg_offs;
 extern u32 kvm_emulate_wrtee_orig_ins_offs;
@@ -318,7 +348,10 @@ extern u32 kvm_emulate_wrtee_len;
 extern u32 kvm_emulate_wrtee[];
 
 static void kvm_patch_ins_wrtee(u32 *inst, u32 rt, int imm_one)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	u32 *p;
 	int distance_start;
@@ -326,10 +359,14 @@ static void kvm_patch_ins_wrtee(u32 *inst, u32 rt, int imm_one)
 	ulong next_inst;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	p = kvm_alloc(kvm_emulate_wrteei_len * 4);
 =======
 	p = kvm_alloc(kvm_emulate_wrtee_len * 4);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p = kvm_alloc(kvm_emulate_wrtee_len * 4);
+>>>>>>> refs/remotes/origin/master
 	if (!p)
 		return;
 
@@ -337,10 +374,14 @@ static void kvm_patch_ins_wrtee(u32 *inst, u32 rt, int imm_one)
 	distance_start = (ulong)p - (ulong)inst;
 	next_inst = ((ulong)inst + 4);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	distance_end = next_inst - (ulong)&p[kvm_emulate_wrteei_branch_offs];
 =======
 	distance_end = next_inst - (ulong)&p[kvm_emulate_wrtee_branch_offs];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	distance_end = next_inst - (ulong)&p[kvm_emulate_wrtee_branch_offs];
+>>>>>>> refs/remotes/origin/master
 
 	/* Make sure we only write valid b instructions */
 	if (distance_start > KVM_INST_B_MAX) {
@@ -350,17 +391,24 @@ static void kvm_patch_ins_wrtee(u32 *inst, u32 rt, int imm_one)
 
 	/* Modify the chunk to fit the invocation */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(p, kvm_emulate_wrteei, kvm_emulate_wrteei_len * 4);
 	p[kvm_emulate_wrteei_branch_offs] |= distance_end & KVM_INST_B_MASK;
 	p[kvm_emulate_wrteei_ee_offs] |= (*inst & MSR_EE);
 	flush_icache_range((ulong)p, (ulong)p + kvm_emulate_wrteei_len * 4);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	memcpy(p, kvm_emulate_wrtee, kvm_emulate_wrtee_len * 4);
 	p[kvm_emulate_wrtee_branch_offs] |= distance_end & KVM_INST_B_MASK;
 
 	if (imm_one) {
 		p[kvm_emulate_wrtee_reg_offs] =
+<<<<<<< HEAD
 			KVM_INST_LI | __PPC_RT(30) | MSR_EE;
+=======
+			KVM_INST_LI | __PPC_RT(R30) | MSR_EE;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* Make clobbered registers work too */
 		switch (get_rt(rt)) {
@@ -414,7 +462,10 @@ static void kvm_patch_ins_wrteei_0(u32 *inst)
 	memcpy(p, kvm_emulate_wrteei_0, kvm_emulate_wrteei_0_len * 4);
 	p[kvm_emulate_wrteei_0_branch_offs] |= distance_end & KVM_INST_B_MASK;
 	flush_icache_range((ulong)p, (ulong)p + kvm_emulate_wrteei_0_len * 4);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Patch the invocation */
 	kvm_patch_ins_b(inst, distance_start);
@@ -477,7 +528,11 @@ static void kvm_map_magic_page(void *data)
 	in[0] = KVM_MAGIC_PAGE;
 	in[1] = KVM_MAGIC_PAGE;
 
+<<<<<<< HEAD
 	kvm_hypercall(in, out, HC_VENDOR_KVM | KVM_HC_PPC_MAP_MAGIC_PAGE);
+=======
+	kvm_hypercall(in, out, KVM_HCALL_TOKEN(KVM_HC_PPC_MAP_MAGIC_PAGE));
+>>>>>>> refs/remotes/origin/master
 
 	*features = out[0];
 }
@@ -493,6 +548,7 @@ static void kvm_check_ins(u32 *inst, u32 features)
 	case KVM_INST_MFMSR:
 		kvm_patch_ins_ld(inst, magic_var(msr), inst_rt);
 		break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	case KVM_INST_MFSPR_SPRG0:
 		kvm_patch_ins_ld(inst, magic_var(sprg0), inst_rt);
@@ -545,6 +601,8 @@ static void kvm_check_ins(u32 *inst, u32 features)
 		kvm_patch_ins_stw(inst, magic_var(dsisr), inst_rt);
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case KVM_INST_MFSPR(SPRN_SPRG0):
 		kvm_patch_ins_ld(inst, magic_var(sprg0), inst_rt);
 		break;
@@ -730,7 +788,10 @@ static void kvm_check_ins(u32 *inst, u32 features)
 			kvm_patch_ins_stw(inst, magic_var(esr), inst_rt);
 		break;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Nops */
 	case KVM_INST_TLBSYNC:
@@ -746,13 +807,19 @@ static void kvm_check_ins(u32 *inst, u32 features)
 		kvm_patch_ins_mtmsr(inst, inst_rt);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_BOOKE
 	case KVM_INST_WRTEE:
 		kvm_patch_ins_wrtee(inst, inst_rt, 0);
 		break;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	switch (inst_no_rt & ~KVM_MASK_RB) {
@@ -771,26 +838,38 @@ static void kvm_check_ins(u32 *inst, u32 features)
 #ifdef CONFIG_BOOKE
 	case KVM_INST_WRTEEI_0:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case KVM_INST_WRTEEI_1:
 		kvm_patch_ins_wrteei(inst);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		kvm_patch_ins_wrteei_0(inst);
 		break;
 
 	case KVM_INST_WRTEEI_1:
 		kvm_patch_ins_wrtee(inst, 0, 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 #endif
 	}
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern u32 kvm_template_start[];
 extern u32 kvm_template_end[];
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern u32 kvm_template_start[];
+extern u32 kvm_template_end[];
+
+>>>>>>> refs/remotes/origin/master
 static void kvm_use_magic_page(void)
 {
 	u32 *p;
@@ -812,9 +891,12 @@ static void kvm_use_magic_page(void)
 	end = (void*)_etext;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (p = start; p < end; p++)
 		kvm_check_ins(p, features);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Being interrupted in the middle of patching would
 	 * be bad for SPRG4-7, which KVM can't keep in sync
@@ -832,7 +914,10 @@ static void kvm_use_magic_page(void)
 	}
 
 	local_irq_enable();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	printk(KERN_INFO "KVM: Live patching for a fast VM %s\n",
 			 kvm_patching_worked ? "worked" : "failed");
@@ -854,7 +939,11 @@ unsigned long kvm_hypercall(unsigned long *in,
 	unsigned long register r11 asm("r11") = nr;
 	unsigned long register r12 asm("r12");
 
+<<<<<<< HEAD
 	asm volatile("bl	kvm_hypercall_start"
+=======
+	asm volatile("bl	epapr_hypercall_start"
+>>>>>>> refs/remotes/origin/master
 		     : "=r"(r0), "=r"(r3), "=r"(r4), "=r"(r5), "=r"(r6),
 		       "=r"(r7), "=r"(r8), "=r"(r9), "=r"(r10), "=r"(r11),
 		       "=r"(r12)
@@ -875,6 +964,7 @@ unsigned long kvm_hypercall(unsigned long *in,
 }
 EXPORT_SYMBOL_GPL(kvm_hypercall);
 
+<<<<<<< HEAD
 static int kvm_para_setup(void)
 {
 	extern u32 kvm_hypercall_start;
@@ -912,6 +1002,12 @@ static __init void kvm_free_tmp(void)
 		free_page(start);
 		totalram_pages++;
 	}
+=======
+static __init void kvm_free_tmp(void)
+{
+	free_reserved_area(&kvm_tmp[kvm_tmp_index],
+			   &kvm_tmp[ARRAY_SIZE(kvm_tmp)], -1, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init kvm_guest_init(void)
@@ -919,7 +1015,11 @@ static int __init kvm_guest_init(void)
 	if (!kvm_para_available())
 		goto free_tmp;
 
+<<<<<<< HEAD
 	if (kvm_para_setup())
+=======
+	if (!epapr_paravirt_enabled)
+>>>>>>> refs/remotes/origin/master
 		goto free_tmp;
 
 	if (kvm_para_has_feature(KVM_FEATURE_MAGIC_PAGE))

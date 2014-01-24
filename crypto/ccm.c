@@ -217,19 +217,27 @@ static void get_data_to_compute(struct crypto_cipher *tfm,
 			n = scatterwalk_clamp(&walk, len);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		data_src = scatterwalk_map(&walk, 0);
 =======
 		data_src = scatterwalk_map(&walk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		data_src = scatterwalk_map(&walk);
+>>>>>>> refs/remotes/origin/master
 
 		compute_mac(tfm, data_src, n, pctx);
 		len -= n;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		scatterwalk_unmap(data_src, 0);
 =======
 		scatterwalk_unmap(data_src);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		scatterwalk_unmap(data_src);
+>>>>>>> refs/remotes/origin/master
 		scatterwalk_advance(&walk, n);
 		scatterwalk_done(&walk, 0, len);
 		if (len)
@@ -280,11 +288,16 @@ static int crypto_ccm_auth(struct aead_request *req, struct scatterlist *plain,
 
 	/* compute plaintext into mac */
 <<<<<<< HEAD
+<<<<<<< HEAD
        if (cryptlen)
        get_data_to_compute(cipher, pctx, plain, cryptlen);
 =======
 	get_data_to_compute(cipher, pctx, plain, cryptlen);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cryptlen)
+		get_data_to_compute(cipher, pctx, plain, cryptlen);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	return err;
@@ -376,7 +389,11 @@ static void crypto_ccm_decrypt_done(struct crypto_async_request *areq,
 
 	if (!err) {
 		err = crypto_ccm_auth(req, req->dst, cryptlen);
+<<<<<<< HEAD
 		if (!err && memcmp(pctx->auth_tag, pctx->odata, authsize))
+=======
+		if (!err && crypto_memneq(pctx->auth_tag, pctx->odata, authsize))
+>>>>>>> refs/remotes/origin/master
 			err = -EBADMSG;
 	}
 	aead_request_complete(req, err);
@@ -435,7 +452,11 @@ static int crypto_ccm_decrypt(struct aead_request *req)
 		return err;
 
 	/* verify */
+<<<<<<< HEAD
 	if (memcmp(authtag, odata, authsize))
+=======
+	if (crypto_memneq(authtag, odata, authsize))
+>>>>>>> refs/remotes/origin/master
 		return -EBADMSG;
 
 	return err;
@@ -497,18 +518,28 @@ static struct crypto_instance *crypto_ccm_alloc_common(struct rtattr **tb,
 	int err;
 
 	algt = crypto_get_attr_type(tb);
+<<<<<<< HEAD
 	err = PTR_ERR(algt);
 	if (IS_ERR(algt))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(algt))
+		return ERR_CAST(algt);
+>>>>>>> refs/remotes/origin/master
 
 	if ((algt->type ^ CRYPTO_ALG_TYPE_AEAD) & algt->mask)
 		return ERR_PTR(-EINVAL);
 
 	cipher = crypto_alg_mod_lookup(cipher_name,  CRYPTO_ALG_TYPE_CIPHER,
 				       CRYPTO_ALG_TYPE_MASK);
+<<<<<<< HEAD
 	err = PTR_ERR(cipher);
 	if (IS_ERR(cipher))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(cipher))
+		return ERR_CAST(cipher);
+>>>>>>> refs/remotes/origin/master
 
 	err = -EINVAL;
 	if (cipher->cra_blocksize != 16)
@@ -586,15 +617,23 @@ out_put_cipher:
 
 static struct crypto_instance *crypto_ccm_alloc(struct rtattr **tb)
 {
+<<<<<<< HEAD
 	int err;
+=======
+>>>>>>> refs/remotes/origin/master
 	const char *cipher_name;
 	char ctr_name[CRYPTO_MAX_ALG_NAME];
 	char full_name[CRYPTO_MAX_ALG_NAME];
 
 	cipher_name = crypto_attr_alg_name(tb[1]);
+<<<<<<< HEAD
 	err = PTR_ERR(cipher_name);
 	if (IS_ERR(cipher_name))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(cipher_name))
+		return ERR_CAST(cipher_name);
+>>>>>>> refs/remotes/origin/master
 
 	if (snprintf(ctr_name, CRYPTO_MAX_ALG_NAME, "ctr(%s)",
 		     cipher_name) >= CRYPTO_MAX_ALG_NAME)
@@ -625,12 +664,16 @@ static struct crypto_template crypto_ccm_tmpl = {
 
 static struct crypto_instance *crypto_ccm_base_alloc(struct rtattr **tb)
 {
+<<<<<<< HEAD
 	int err;
+=======
+>>>>>>> refs/remotes/origin/master
 	const char *ctr_name;
 	const char *cipher_name;
 	char full_name[CRYPTO_MAX_ALG_NAME];
 
 	ctr_name = crypto_attr_alg_name(tb[1]);
+<<<<<<< HEAD
 	err = PTR_ERR(ctr_name);
 	if (IS_ERR(ctr_name))
 		return ERR_PTR(err);
@@ -639,6 +682,14 @@ static struct crypto_instance *crypto_ccm_base_alloc(struct rtattr **tb)
 	err = PTR_ERR(cipher_name);
 	if (IS_ERR(cipher_name))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(ctr_name))
+		return ERR_CAST(ctr_name);
+
+	cipher_name = crypto_attr_alg_name(tb[2]);
+	if (IS_ERR(cipher_name))
+		return ERR_CAST(cipher_name);
+>>>>>>> refs/remotes/origin/master
 
 	if (snprintf(full_name, CRYPTO_MAX_ALG_NAME, "ccm_base(%s,%s)",
 		     ctr_name, cipher_name) >= CRYPTO_MAX_ALG_NAME)
@@ -773,17 +824,27 @@ static struct crypto_instance *crypto_rfc4309_alloc(struct rtattr **tb)
 	int err;
 
 	algt = crypto_get_attr_type(tb);
+<<<<<<< HEAD
 	err = PTR_ERR(algt);
 	if (IS_ERR(algt))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(algt))
+		return ERR_CAST(algt);
+>>>>>>> refs/remotes/origin/master
 
 	if ((algt->type ^ CRYPTO_ALG_TYPE_AEAD) & algt->mask)
 		return ERR_PTR(-EINVAL);
 
 	ccm_name = crypto_attr_alg_name(tb[1]);
+<<<<<<< HEAD
 	err = PTR_ERR(ccm_name);
 	if (IS_ERR(ccm_name))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(ccm_name))
+		return ERR_CAST(ccm_name);
+>>>>>>> refs/remotes/origin/master
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
 	if (!inst)

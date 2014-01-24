@@ -25,6 +25,7 @@ typedef union _divas_card_resources {
 
 struct _diva_os_xdi_adapter;
 <<<<<<< HEAD
+<<<<<<< HEAD
 typedef int (*diva_init_card_proc_t) (struct _diva_os_xdi_adapter * a);
 typedef int (*diva_cmd_card_proc_t) (struct _diva_os_xdi_adapter * a,
 				     diva_xdi_um_cfg_cmd_t * data,
@@ -32,13 +33,18 @@ typedef int (*diva_cmd_card_proc_t) (struct _diva_os_xdi_adapter * a,
 typedef void (*diva_xdi_clear_interrupts_proc_t) (struct
 						  _diva_os_xdi_adapter *);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 typedef int (*diva_init_card_proc_t)(struct _diva_os_xdi_adapter *a);
 typedef int (*diva_cmd_card_proc_t)(struct _diva_os_xdi_adapter *a,
 				    diva_xdi_um_cfg_cmd_t *data,
 				    int length);
 typedef void (*diva_xdi_clear_interrupts_proc_t)(struct
 						 _diva_os_xdi_adapter *);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define DIVA_XDI_MBOX_BUSY			1
 #define DIVA_XDI_MBOX_WAIT_XLOG	2

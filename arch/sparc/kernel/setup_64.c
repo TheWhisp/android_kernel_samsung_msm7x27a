@@ -32,9 +32,12 @@
 #include <linux/module.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/processor.h>
 #include <asm/oplib.h>
@@ -53,9 +56,13 @@
 #include <asm/elf.h>
 #include <asm/mdesc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/cacheflush.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cacheflush.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_IP_PNP
 #include <net/ipconfig.h>
@@ -114,10 +121,14 @@ static void __init process_switch(char c)
 		break;
 	case 'p':
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* Just ignore, this behavior is now the default.  */
 =======
 		prom_early_console.flags &= ~CON_BOOT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		prom_early_console.flags &= ~CON_BOOT;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case 'P':
 		/* Force UltraSPARC-III P-Cache on. */
@@ -126,7 +137,11 @@ static void __init process_switch(char c)
 			break;
 		}
 		cheetah_pcache_forced_on = 1;
+<<<<<<< HEAD
 		add_taint(TAINT_MACHINE_CHECK);
+=======
+		add_taint(TAINT_MACHINE_CHECK, LOCKDEP_NOW_UNRELIABLE);
+>>>>>>> refs/remotes/origin/master
 		cheetah_enable_pcache();
 		break;
 
@@ -327,6 +342,28 @@ static void __init popc_patch(void)
 	}
 }
 
+<<<<<<< HEAD
+=======
+static void __init pause_patch(void)
+{
+	struct pause_patch_entry *p;
+
+	p = &__pause_3insn_patch;
+	while (p < &__pause_3insn_patch_end) {
+		unsigned long i, addr = p->addr;
+
+		for (i = 0; i < 3; i++) {
+			*(unsigned int *) (addr +  (i * 4)) = p->insns[i];
+			wmb();
+			__asm__ __volatile__("flush	%0"
+					     : : "r" (addr +  (i * 4)));
+		}
+
+		p++;
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 void __init boot_cpu_id_too_large(int cpu)
 {
@@ -351,7 +388,16 @@ static const char *hwcaps[] = {
 	 */
 	"mul32", "div32", "fsmuld", "v8plus", "popc", "vis", "vis2",
 	"ASIBlkInit", "fmaf", "vis3", "hpc", "random", "trans", "fjfmau",
+<<<<<<< HEAD
 	"ima", "cspare",
+=======
+	"ima", "cspare", "pause", "cbcond",
+};
+
+static const char *crypto_hwcaps[] = {
+	"aes", "des", "kasumi", "camellia", "md5", "sha1", "sha256",
+	"sha512", "mpmul", "montmul", "montsqr", "crc32c",
+>>>>>>> refs/remotes/origin/master
 };
 
 void cpucap_info(struct seq_file *m)
@@ -368,13 +414,59 @@ void cpucap_info(struct seq_file *m)
 			printed++;
 		}
 	}
+<<<<<<< HEAD
 	seq_putc(m, '\n');
 }
 
+=======
+	if (caps & HWCAP_SPARC_CRYPTO) {
+		unsigned long cfr;
+
+		__asm__ __volatile__("rd %%asr26, %0" : "=r" (cfr));
+		for (i = 0; i < ARRAY_SIZE(crypto_hwcaps); i++) {
+			unsigned long bit = 1UL << i;
+			if (cfr & bit) {
+				seq_printf(m, "%s%s",
+					   printed ? "," : "", crypto_hwcaps[i]);
+				printed++;
+			}
+		}
+	}
+	seq_putc(m, '\n');
+}
+
+static void __init report_one_hwcap(int *printed, const char *name)
+{
+	if ((*printed) == 0)
+		printk(KERN_INFO "CPU CAPS: [");
+	printk(KERN_CONT "%s%s",
+	       (*printed) ? "," : "", name);
+	if (++(*printed) == 8) {
+		printk(KERN_CONT "]\n");
+		*printed = 0;
+	}
+}
+
+static void __init report_crypto_hwcaps(int *printed)
+{
+	unsigned long cfr;
+	int i;
+
+	__asm__ __volatile__("rd %%asr26, %0" : "=r" (cfr));
+
+	for (i = 0; i < ARRAY_SIZE(crypto_hwcaps); i++) {
+		unsigned long bit = 1UL << i;
+		if (cfr & bit)
+			report_one_hwcap(printed, crypto_hwcaps[i]);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static void __init report_hwcaps(unsigned long caps)
 {
 	int i, printed = 0;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "CPU CAPS: [");
 	for (i = 0; i < ARRAY_SIZE(hwcaps); i++) {
 		unsigned long bit = 1UL << i;
@@ -389,6 +481,17 @@ static void __init report_hwcaps(unsigned long caps)
 		}
 	}
 	printk(KERN_CONT "]\n");
+=======
+	for (i = 0; i < ARRAY_SIZE(hwcaps); i++) {
+		unsigned long bit = 1UL << i;
+		if (caps & bit)
+			report_one_hwcap(&printed, hwcaps[i]);
+	}
+	if (caps & HWCAP_SPARC_CRYPTO)
+		report_crypto_hwcaps(&printed);
+	if (printed != 0)
+		printk(KERN_CONT "]\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned long __init mdesc_cpu_hwcap_list(void)
@@ -422,6 +525,13 @@ static unsigned long __init mdesc_cpu_hwcap_list(void)
 				break;
 			}
 		}
+<<<<<<< HEAD
+=======
+		for (i = 0; i < ARRAY_SIZE(crypto_hwcaps); i++) {
+			if (!strcmp(prop, crypto_hwcaps[i]))
+				caps |= HWCAP_SPARC_CRYPTO;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		plen = strlen(prop) + 1;
 		prop += plen;
@@ -447,6 +557,7 @@ static void __init init_sparc64_elf_hwcap(void)
 		if (sun4v_chip_type == SUN4V_CHIP_NIAGARA1 ||
 		    sun4v_chip_type == SUN4V_CHIP_NIAGARA2 ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    sun4v_chip_type == SUN4V_CHIP_NIAGARA3)
 			cap |= HWCAP_SPARC_BLKINIT;
 		if (sun4v_chip_type == SUN4V_CHIP_NIAGARA2 ||
@@ -455,12 +566,23 @@ static void __init init_sparc64_elf_hwcap(void)
 		    sun4v_chip_type == SUN4V_CHIP_NIAGARA3 ||
 		    sun4v_chip_type == SUN4V_CHIP_NIAGARA4 ||
 		    sun4v_chip_type == SUN4V_CHIP_NIAGARA5)
+=======
+		    sun4v_chip_type == SUN4V_CHIP_NIAGARA3 ||
+		    sun4v_chip_type == SUN4V_CHIP_NIAGARA4 ||
+		    sun4v_chip_type == SUN4V_CHIP_NIAGARA5 ||
+		    sun4v_chip_type == SUN4V_CHIP_SPARC64X)
+>>>>>>> refs/remotes/origin/master
 			cap |= HWCAP_SPARC_BLKINIT;
 		if (sun4v_chip_type == SUN4V_CHIP_NIAGARA2 ||
 		    sun4v_chip_type == SUN4V_CHIP_NIAGARA3 ||
 		    sun4v_chip_type == SUN4V_CHIP_NIAGARA4 ||
+<<<<<<< HEAD
 		    sun4v_chip_type == SUN4V_CHIP_NIAGARA5)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    sun4v_chip_type == SUN4V_CHIP_NIAGARA5 ||
+		    sun4v_chip_type == SUN4V_CHIP_SPARC64X)
+>>>>>>> refs/remotes/origin/master
 			cap |= HWCAP_SPARC_N2;
 	}
 
@@ -485,6 +607,7 @@ static void __init init_sparc64_elf_hwcap(void)
 				cap |= AV_SPARC_ASI_BLK_INIT;
 			if (sun4v_chip_type == SUN4V_CHIP_NIAGARA2 ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    sun4v_chip_type == SUN4V_CHIP_NIAGARA3)
 				cap |= (AV_SPARC_VIS | AV_SPARC_VIS2 |
 					AV_SPARC_ASI_BLK_INIT |
@@ -494,13 +617,24 @@ static void __init init_sparc64_elf_hwcap(void)
 			    sun4v_chip_type == SUN4V_CHIP_NIAGARA3 ||
 			    sun4v_chip_type == SUN4V_CHIP_NIAGARA4 ||
 			    sun4v_chip_type == SUN4V_CHIP_NIAGARA5)
+=======
+			    sun4v_chip_type == SUN4V_CHIP_NIAGARA3 ||
+			    sun4v_chip_type == SUN4V_CHIP_NIAGARA4 ||
+			    sun4v_chip_type == SUN4V_CHIP_NIAGARA5 ||
+			    sun4v_chip_type == SUN4V_CHIP_SPARC64X)
+>>>>>>> refs/remotes/origin/master
 				cap |= (AV_SPARC_VIS | AV_SPARC_VIS2 |
 					AV_SPARC_ASI_BLK_INIT |
 					AV_SPARC_POPC);
 			if (sun4v_chip_type == SUN4V_CHIP_NIAGARA3 ||
 			    sun4v_chip_type == SUN4V_CHIP_NIAGARA4 ||
+<<<<<<< HEAD
 			    sun4v_chip_type == SUN4V_CHIP_NIAGARA5)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    sun4v_chip_type == SUN4V_CHIP_NIAGARA5 ||
+			    sun4v_chip_type == SUN4V_CHIP_SPARC64X)
+>>>>>>> refs/remotes/origin/master
 				cap |= (AV_SPARC_VIS3 | AV_SPARC_HPC |
 					AV_SPARC_FMAF);
 		}
@@ -511,13 +645,22 @@ static void __init init_sparc64_elf_hwcap(void)
 
 	if (sparc64_elf_hwcap & AV_SPARC_POPC)
 		popc_patch();
+<<<<<<< HEAD
+=======
+	if (sparc64_elf_hwcap & AV_SPARC_PAUSE)
+		pause_patch();
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init setup_arch(char **cmdline_p)
 {
 	/* Initialize PROM console and command line. */
 	*cmdline_p = prom_getbootargs();
+<<<<<<< HEAD
 	strcpy(boot_command_line, *cmdline_p);
+=======
+	strlcpy(boot_command_line, *cmdline_p, COMMAND_LINE_SIZE);
+>>>>>>> refs/remotes/origin/master
 	parse_early_param();
 
 	boot_flags_init(*cmdline_p);

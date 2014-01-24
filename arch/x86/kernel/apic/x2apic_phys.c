@@ -3,7 +3,10 @@
 #include <linux/string.h>
 #include <linux/kernel.h>
 #include <linux/ctype.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/dmar.h>
 
 #include <asm/smp.h>
@@ -77,6 +80,7 @@ static void x2apic_send_IPI_all(int vector)
 	__x2apic_send_IPI_mask(cpu_online_mask, vector, APIC_DEST_ALLINC);
 }
 
+<<<<<<< HEAD
 static unsigned int x2apic_cpu_mask_to_apicid(const struct cpumask *cpumask)
 {
 	/*
@@ -109,6 +113,8 @@ x2apic_cpu_mask_to_apicid_and(const struct cpumask *cpumask,
 	return per_cpu(x86_cpu_to_apicid, cpu);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void init_x2apic_ldr(void)
 {
 }
@@ -127,21 +133,33 @@ static struct apic apic_x2apic_phys = {
 	.probe				= x2apic_phys_probe,
 	.acpi_madt_oem_check		= x2apic_acpi_madt_oem_check,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.apic_id_valid			= x2apic_apic_id_valid,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.apic_id_valid			= x2apic_apic_id_valid,
+>>>>>>> refs/remotes/origin/master
 	.apic_id_registered		= x2apic_apic_id_registered,
 
 	.irq_delivery_mode		= dest_Fixed,
 	.irq_dest_mode			= 0, /* physical */
 
+<<<<<<< HEAD
 	.target_cpus			= x2apic_target_cpus,
+=======
+	.target_cpus			= online_target_cpus,
+>>>>>>> refs/remotes/origin/master
 	.disable_esr			= 0,
 	.dest_logical			= 0,
 	.check_apicid_used		= NULL,
 	.check_apicid_present		= NULL,
 
+<<<<<<< HEAD
 	.vector_allocation_domain	= x2apic_vector_allocation_domain,
+=======
+	.vector_allocation_domain	= default_vector_allocation_domain,
+>>>>>>> refs/remotes/origin/master
 	.init_apic_ldr			= init_x2apic_ldr,
 
 	.ioapic_phys_id_map		= NULL,
@@ -159,8 +177,12 @@ static struct apic apic_x2apic_phys = {
 	.set_apic_id			= x2apic_set_apic_id,
 	.apic_id_mask			= 0xFFFFFFFFu,
 
+<<<<<<< HEAD
 	.cpu_mask_to_apicid		= x2apic_cpu_mask_to_apicid,
 	.cpu_mask_to_apicid_and		= x2apic_cpu_mask_to_apicid_and,
+=======
+	.cpu_mask_to_apicid_and		= default_cpu_mask_to_apicid_and,
+>>>>>>> refs/remotes/origin/master
 
 	.send_IPI_mask			= x2apic_send_IPI_mask,
 	.send_IPI_mask_allbutself	= x2apic_send_IPI_mask_allbutself,
@@ -176,6 +198,10 @@ static struct apic apic_x2apic_phys = {
 
 	.read				= native_apic_msr_read,
 	.write				= native_apic_msr_write,
+<<<<<<< HEAD
+=======
+	.eoi_write			= native_apic_msr_eoi_write,
+>>>>>>> refs/remotes/origin/master
 	.icr_read			= native_x2apic_icr_read,
 	.icr_write			= native_x2apic_icr_write,
 	.wait_icr_idle			= native_x2apic_wait_icr_idle,

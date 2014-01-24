@@ -26,10 +26,14 @@
 #include <linux/slab.h>
 #include <linux/wait.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mutex.h>
 #include <linux/firmware.h>
 
@@ -200,8 +204,13 @@ enum MonitorModeSelector {
 #define K1212_ADAT_BUF_SIZE	(K1212_ADAT_CHANNELS * 2 * kPlayBufferFrames * kNumBuffers)
 #define K1212_MAX_BUF_SIZE	(K1212_ANALOG_BUF_SIZE + K1212_ADAT_BUF_SIZE)
 
+<<<<<<< HEAD
 #define k1212MinADCSens     0x7f
 #define k1212MaxADCSens     0x00
+=======
+#define k1212MinADCSens     0x00
+#define k1212MaxADCSens     0x7f
+>>>>>>> refs/remotes/origin/master
 #define k1212MaxVolume      0x7fff
 #define k1212MaxWaveVolume  0xffff
 #define k1212MinVolume      0x0000
@@ -413,10 +422,14 @@ MODULE_FIRMWARE("korg/k1212.dsp");
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;     /* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	   /* ID for this card */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE; /* Enable this card */
 =======
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE; /* Enable this card */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE; /* Enable this card */
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for Korg 1212 soundcard.");
@@ -2091,7 +2104,11 @@ static void snd_korg1212_proc_read(struct snd_info_entry *entry,
         snd_iprintf(buffer, "    Error count: %ld\n", korg1212->totalerrorcnt);
 }
 
+<<<<<<< HEAD
 static void __devinit snd_korg1212_proc_init(struct snd_korg1212 *korg1212)
+=======
+static void snd_korg1212_proc_init(struct snd_korg1212 *korg1212)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_info_entry *entry;
 
@@ -2162,8 +2179,13 @@ static int snd_korg1212_dev_free(struct snd_device *device)
 	return snd_korg1212_free(korg1212);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_korg1212_create(struct snd_card *card, struct pci_dev *pci,
                                          struct snd_korg1212 ** rchip)
+=======
+static int snd_korg1212_create(struct snd_card *card, struct pci_dev *pci,
+			       struct snd_korg1212 **rchip)
+>>>>>>> refs/remotes/origin/master
 
 {
         int err, rc;
@@ -2250,10 +2272,14 @@ static int __devinit snd_korg1212_create(struct snd_card *card, struct pci_dev *
         err = request_irq(pci->irq, snd_korg1212_interrupt,
                           IRQF_SHARED,
 <<<<<<< HEAD
+<<<<<<< HEAD
                           "korg1212", korg1212);
 =======
                           KBUILD_MODNAME, korg1212);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+                          KBUILD_MODNAME, korg1212);
+>>>>>>> refs/remotes/origin/master
 
         if (err) {
 		snd_printk(KERN_ERR "korg1212: unable to grab IRQ %d\n", pci->irq);
@@ -2441,7 +2467,11 @@ static int __devinit snd_korg1212_create(struct snd_card *card, struct pci_dev *
  * Card initialisation
  */
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 snd_korg1212_probe(struct pci_dev *pci,
 		const struct pci_device_id *pci_id)
 {
@@ -2482,6 +2512,7 @@ snd_korg1212_probe(struct pci_dev *pci,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_korg1212_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
@@ -2511,3 +2542,18 @@ static void __exit alsa_card_korg1212_exit(void)
 
 module_init(alsa_card_korg1212_init)
 module_exit(alsa_card_korg1212_exit)
+=======
+static void snd_korg1212_remove(struct pci_dev *pci)
+{
+	snd_card_free(pci_get_drvdata(pci));
+}
+
+static struct pci_driver korg1212_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = snd_korg1212_ids,
+	.probe = snd_korg1212_probe,
+	.remove = snd_korg1212_remove,
+};
+
+module_pci_driver(korg1212_driver);
+>>>>>>> refs/remotes/origin/master

@@ -2,14 +2,20 @@
 #define MFD_TMIO_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/fb.h>
 #include <linux/io.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/fb.h>
 #include <linux/io.h>
 #include <linux/jiffies.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/pm_runtime.h>
 
@@ -70,6 +76,7 @@
  */
 #define TMIO_MMC_SDIO_IRQ		(1 << 2)
 /*
+<<<<<<< HEAD
  * Some platforms can detect card insertion events with controller powered
 <<<<<<< HEAD
  * down, in which case they have to call tmio_mmc_cd_wakeup() to power up the
@@ -82,6 +89,8 @@
  */
 #define TMIO_MMC_HAS_COLD_CD		(1 << 3)
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Some controllers require waiting for the SD bus to become
  * idle before writing to some registers.
  */
@@ -92,13 +101,17 @@
  * cd_gpio < 0 to disable GPIO hotplug would break backwards compatibility.
  */
 #define TMIO_MMC_USE_GPIO_CD		(1 << 5)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int tmio_core_mmc_enable(void __iomem *cnf, int shift, unsigned long base);
 int tmio_core_mmc_resume(void __iomem *cnf, int shift, unsigned long base);
 void tmio_core_mmc_pwr(void __iomem *cnf, int shift, int state);
 void tmio_core_mmc_clk_div(void __iomem *cnf, int shift, int state);
 
+<<<<<<< HEAD
 struct tmio_mmc_dma {
 	void *chan_priv_tx;
 	void *chan_priv_rx;
@@ -110,16 +123,36 @@ struct tmio_mmc_dma {
 struct tmio_mmc_host;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct dma_chan;
+
+struct tmio_mmc_dma {
+	void *chan_priv_tx;
+	void *chan_priv_rx;
+	int slave_id_tx;
+	int slave_id_rx;
+	int alignment_shift;
+	bool (*filter)(struct dma_chan *chan, void *arg);
+};
+
+struct tmio_mmc_host;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * data for the MMC controller
  */
 struct tmio_mmc_data {
 	unsigned int			hclk;
 	unsigned long			capabilities;
+<<<<<<< HEAD
+=======
+	unsigned long			capabilities2;
+>>>>>>> refs/remotes/origin/master
 	unsigned long			flags;
 	u32				ocr_mask;	/* available voltages */
 	struct tmio_mmc_dma		*dma;
 	struct device			*dev;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	bool				power;
 	void (*set_pwr)(struct platform_device *host, int state);
@@ -155,6 +188,18 @@ static inline void tmio_mmc_cd_wakeup(struct tmio_mmc_data *pdata)
 }
 
 /*
+=======
+	unsigned int			cd_gpio;
+	void (*set_pwr)(struct platform_device *host, int state);
+	void (*set_clk_div)(struct platform_device *host, int state);
+	int (*write16_hook)(struct tmio_mmc_host *host, int addr);
+	/* clock management callbacks */
+	int (*clk_enable)(struct platform_device *pdev, unsigned int *f);
+	void (*clk_disable)(struct platform_device *pdev);
+};
+
+/*
+>>>>>>> refs/remotes/origin/master
  * data for the NAND controller
  */
 struct tmio_nand_data {

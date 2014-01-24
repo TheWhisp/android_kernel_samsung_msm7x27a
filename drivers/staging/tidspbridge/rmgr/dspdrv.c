@@ -24,11 +24,14 @@
 #include <dspbridge/dbdefs.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*  ----------------------------------- Platform Manager */
 #include <dspbridge/drv.h>
 #include <dspbridge/dev.h>
@@ -42,7 +45,11 @@
 
 /*
  *  ======== dsp_init ========
+<<<<<<< HEAD
  *  	Allocates bridge resources. Loads a base image onto DSP, if specified.
+=======
+ *  Allocates bridge resources. Loads a base image onto DSP, if specified.
+>>>>>>> refs/remotes/origin/master
  */
 u32 dsp_init(u32 *init_status)
 {
@@ -78,7 +85,11 @@ u32 dsp_init(u32 *init_status)
 
 	/* Unwind whatever was loaded */
 	if (status) {
+<<<<<<< HEAD
 		/* irrespective of the status of dev_remove_device we conitinue
+=======
+		/* irrespective of the status of dev_remove_device we continue
+>>>>>>> refs/remotes/origin/master
 		 * unloading. Get the Driver Object iterate through and remove.
 		 * Reset the status to E_FAIL to avoid going through
 		 * api_init_complete2. */
@@ -98,7 +109,11 @@ u32 dsp_init(u32 *init_status)
 func_cont:
 	/* Attempt to Start the Board */
 	if (!status) {
+<<<<<<< HEAD
 		/* BRD_AutoStart could fail if the dsp execuetable is not the
+=======
+		/* BRD_AutoStart could fail if the dsp executable is not the
+>>>>>>> refs/remotes/origin/master
 		 * correct one. We should not propagate that error
 		 * into the device loader. */
 		(void)api_init_complete2();
@@ -106,10 +121,13 @@ func_cont:
 		dev_dbg(bridge, "%s: Failed\n", __func__);
 	}			/* End api_init_complete2 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ENSURE((!status && drv_obj != NULL) ||
 		   (status && drv_obj == NULL));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*init_status = status;
 	/* Return the Driver Object */
 	return (u32) drv_obj;
@@ -117,7 +135,11 @@ func_cont:
 
 /*
  *  ======== dsp_deinit ========
+<<<<<<< HEAD
  *  	Frees the resources allocated for bridge.
+=======
+ *  Frees the resources allocated for bridge.
+>>>>>>> refs/remotes/origin/master
  */
 bool dsp_deinit(u32 device_context)
 {

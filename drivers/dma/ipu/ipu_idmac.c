@@ -10,9 +10,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/dma-mapping.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/err.h>
@@ -25,6 +29,7 @@
 #include <linux/interrupt.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <mach/ipu.h>
 
@@ -35,6 +40,12 @@
 
 #include "../dmaengine.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/dma/ipu-dma.h>
+
+#include "../dmaengine.h"
+>>>>>>> refs/remotes/origin/master
 #include "ipu_intern.h"
 
 #define FS_VF_IN_VALID	0x00000002
@@ -323,10 +334,14 @@ static void ipu_ch_param_set_size(union chan_param_mem *params,
 		params->ip.bpp	= 2;
 		params->ip.pfs	= 4;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		params->ip.npb	= 7;
 =======
 		params->ip.npb	= 15;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		params->ip.npb	= 15;
+>>>>>>> refs/remotes/origin/master
 		params->ip.sat	= 2;		/* SAT = 32-bit access */
 		params->ip.ofs0	= 0;		/* Red bit offset */
 		params->ip.ofs1	= 5;		/* Green bit offset */
@@ -437,6 +452,7 @@ static void ipu_ch_param_set_size(union chan_param_mem *params,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ipu_ch_param_set_burst_size(union chan_param_mem *params,
 					uint16_t burst_pixels)
 {
@@ -445,6 +461,8 @@ static void ipu_ch_param_set_burst_size(union chan_param_mem *params,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void ipu_ch_param_set_buffer(union chan_param_mem *params,
 				    dma_addr_t buf0, dma_addr_t buf1)
 {
@@ -708,6 +726,7 @@ static int ipu_init_channel_buffer(struct idmac_channel *ichan,
 	ipu_ch_param_set_buffer(&params, phyaddr_0, phyaddr_1);
 	ipu_ch_param_set_rotation(&params, rot_mode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Some channels (rotation) have restriction on burst length */
 	switch (channel) {
 	case IDMAC_IC_7:	/* Hangs with burst 8, 16, other values
@@ -727,6 +746,8 @@ static int ipu_init_channel_buffer(struct idmac_channel *ichan,
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&ipu->lock, flags);
 
@@ -910,6 +931,7 @@ static dma_cookie_t idmac_tx_submit(struct dma_async_tx_descriptor *tx)
 	dev_dbg(dev, "Submitting sg %p\n", &desc->sg[0]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cookie = ichan->dma_chan.cookie;
 
 	if (++cookie < 0)
@@ -921,6 +943,9 @@ static dma_cookie_t idmac_tx_submit(struct dma_async_tx_descriptor *tx)
 =======
 	cookie = dma_cookie_assign(tx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cookie = dma_cookie_assign(tx);
+>>>>>>> refs/remotes/origin/master
 
 	/* ipu->lock can be taken under ichan->lock, but not v.v. */
 	spin_lock_irqsave(&ichan->lock, flags);
@@ -1286,8 +1311,15 @@ static irqreturn_t idmac_interrupt(int irq, void *dev_id)
 	desc = list_entry(ichan->queue.next, struct idmac_tx_desc, list);
 	descnew = desc;
 
+<<<<<<< HEAD
 	dev_dbg(dev, "IDMAC irq %d, dma 0x%08x, next dma 0x%08x, current %d, curbuf 0x%08x\n",
 		irq, sg_dma_address(*sg), sgnext ? sg_dma_address(sgnext) : 0, ichan->active_buffer, curbuf);
+=======
+	dev_dbg(dev, "IDMAC irq %d, dma %#llx, next dma %#llx, current %d, curbuf %#x\n",
+		irq, (u64)sg_dma_address(*sg),
+		sgnext ? (u64)sg_dma_address(sgnext) : 0,
+		ichan->active_buffer, curbuf);
+>>>>>>> refs/remotes/origin/master
 
 	/* Find the descriptor of sgnext */
 	sgnew = idmac_sg_next(ichan, &descnew, *sg);
@@ -1333,9 +1365,13 @@ static irqreturn_t idmac_interrupt(int irq, void *dev_id)
 		callback = descnew->txd.callback;
 		callback_param = descnew->txd.callback_param;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		list_del_init(&descnew->list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		list_del_init(&descnew->list);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&ichan->lock);
 		if (callback)
 			callback(callback_param);
@@ -1346,10 +1382,14 @@ static irqreturn_t idmac_interrupt(int irq, void *dev_id)
 	ichan->active_buffer = !ichan->active_buffer;
 	if (done)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ichan->completed = desc->txd.cookie;
 =======
 		dma_cookie_complete(&desc->txd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dma_cookie_complete(&desc->txd);
+>>>>>>> refs/remotes/origin/master
 
 	callback = desc->txd.callback;
 	callback_param = desc->txd.callback_param;
@@ -1396,11 +1436,16 @@ static void ipu_gc_tasklet(unsigned long arg)
 static struct dma_async_tx_descriptor *idmac_prep_slave_sg(struct dma_chan *chan,
 		struct scatterlist *sgl, unsigned int sg_len,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		enum dma_data_direction direction, unsigned long tx_flags)
 =======
 		enum dma_transfer_direction direction, unsigned long tx_flags,
 		void *context)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		enum dma_transfer_direction direction, unsigned long tx_flags,
+		void *context)
+>>>>>>> refs/remotes/origin/master
 {
 	struct idmac_channel *ichan = to_idmac_chan(chan);
 	struct idmac_tx_desc *desc = NULL;
@@ -1413,10 +1458,14 @@ static struct dma_async_tx_descriptor *idmac_prep_slave_sg(struct dma_chan *chan
 		return NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (direction != DMA_FROM_DEVICE && direction != DMA_TO_DEVICE) {
 =======
 	if (direction != DMA_DEV_TO_MEM && direction != DMA_MEM_TO_DEV) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!is_slave_direction(direction)) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(chan->device->dev, "Invalid DMA direction %d!\n", direction);
 		return NULL;
 	}
@@ -1471,6 +1520,7 @@ static int __idmac_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 	struct idmac_channel *ichan = to_idmac_chan(chan);
 	struct idmac *idmac = to_idmac(chan->device);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 	int i;
 
@@ -1505,6 +1555,8 @@ static int __idmac_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 
 	ichan->status = IPU_CHANNEL_INITIALIZED;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ipu *ipu = to_ipu(idmac);
 	struct list_head *list, *tmp;
 	unsigned long flags;
@@ -1557,7 +1609,10 @@ static int __idmac_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 	default:
 		return -ENOSYS;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1610,11 +1665,15 @@ static int idmac_alloc_chan_resources(struct dma_chan *chan)
 	WARN_ON(ichan->status != IPU_CHANNEL_FREE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	chan->cookie		= 1;
 	ichan->completed	= -ENXIO;
 =======
 	dma_cookie_init(chan);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_cookie_init(chan);
+>>>>>>> refs/remotes/origin/master
 
 	ret = ipu_irq_map(chan->chan_id);
 	if (ret < 0)
@@ -1704,6 +1763,7 @@ static enum dma_status idmac_tx_status(struct dma_chan *chan,
 		       dma_cookie_t cookie, struct dma_tx_state *txstate)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct idmac_channel *ichan = to_idmac_chan(chan);
 
 	dma_set_tx_state(txstate, ichan->completed, chan->cookie, 0);
@@ -1713,6 +1773,9 @@ static enum dma_status idmac_tx_status(struct dma_chan *chan,
 	if (cookie != chan->cookie)
 		return DMA_ERROR;
 	return DMA_SUCCESS;
+=======
+	return dma_cookie_status(chan, cookie, txstate);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init ipu_idmac_init(struct ipu *ipu)
@@ -1746,17 +1809,23 @@ static int __init ipu_idmac_init(struct ipu *ipu)
 		ichan->status		= IPU_CHANNEL_FREE;
 		ichan->sec_chan_en	= false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ichan->completed	= -ENXIO;
 		snprintf(ichan->eof_name, sizeof(ichan->eof_name), "IDMAC EOF %d", i);
 
 		dma_chan->device	= &idmac->dma;
 		dma_chan->cookie	= 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		snprintf(ichan->eof_name, sizeof(ichan->eof_name), "IDMAC EOF %d", i);
 
 		dma_chan->device	= &idmac->dma;
 		dma_cookie_init(dma_chan);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dma_chan->chan_id	= i;
 		list_add_tail(&dma_chan->device_node, &dma->channels);
 	}
@@ -1766,7 +1835,11 @@ static int __init ipu_idmac_init(struct ipu *ipu)
 	return dma_async_device_register(&idmac->dma);
 }
 
+<<<<<<< HEAD
 static void __exit ipu_idmac_exit(struct ipu *ipu)
+=======
+static void ipu_idmac_exit(struct ipu *ipu)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct idmac *idmac = &ipu->idmac;
@@ -1776,9 +1849,12 @@ static void __exit ipu_idmac_exit(struct ipu *ipu)
 
 		idmac_control(&ichan->dma_chan, DMA_TERMINATE_ALL, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		idmac_prep_slave_sg(&ichan->dma_chan, NULL, 0, DMA_NONE, 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dma_async_device_unregister(&idmac->dma);
@@ -1790,7 +1866,10 @@ static void __exit ipu_idmac_exit(struct ipu *ipu)
 
 static int __init ipu_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct ipu_platform_data *pdata = pdev->dev.platform_data;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct resource *mem_ipu, *mem_ic;
 	int ret;
 
@@ -1798,7 +1877,11 @@ static int __init ipu_probe(struct platform_device *pdev)
 
 	mem_ipu	= platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	mem_ic	= platform_get_resource(pdev, IORESOURCE_MEM, 1);
+<<<<<<< HEAD
 	if (!pdata || !mem_ipu || !mem_ic)
+=======
+	if (!mem_ipu || !mem_ic)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	ipu_data.dev = &pdev->dev;
@@ -1815,6 +1898,7 @@ static int __init ipu_probe(struct platform_device *pdev)
 		goto err_noirq;
 
 	ipu_data.irq_err = ret;
+<<<<<<< HEAD
 	ipu_data.irq_base = pdata->irq_base;
 
 	dev_dbg(&pdev->dev, "fn irq %u, err irq %u, irq-base %u\n",
@@ -1827,6 +1911,14 @@ static int __init ipu_probe(struct platform_device *pdev)
 =======
 	ipu_data.reg_ipu = ioremap(mem_ipu->start, resource_size(mem_ipu));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	dev_dbg(&pdev->dev, "fn irq %u, err irq %u\n",
+		ipu_data.irq_fn, ipu_data.irq_err);
+
+	/* Remap IPU common registers */
+	ipu_data.reg_ipu = ioremap(mem_ipu->start, resource_size(mem_ipu));
+>>>>>>> refs/remotes/origin/master
 	if (!ipu_data.reg_ipu) {
 		ret = -ENOMEM;
 		goto err_ioremap_ipu;
@@ -1834,11 +1926,15 @@ static int __init ipu_probe(struct platform_device *pdev)
 
 	/* Remap Image Converter and Image DMA Controller registers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipu_data.reg_ic = ioremap(mem_ic->start,
 				  mem_ic->end - mem_ic->start + 1);
 =======
 	ipu_data.reg_ic = ioremap(mem_ic->start, resource_size(mem_ic));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ipu_data.reg_ic = ioremap(mem_ic->start, resource_size(mem_ic));
+>>>>>>> refs/remotes/origin/master
 	if (!ipu_data.reg_ic) {
 		ret = -ENOMEM;
 		goto err_ioremap_ic;
@@ -1852,7 +1948,11 @@ static int __init ipu_probe(struct platform_device *pdev)
 	}
 
 	/* Make sure IPU HSP clock is running */
+<<<<<<< HEAD
 	clk_enable(ipu_data.ipu_clk);
+=======
+	clk_prepare_enable(ipu_data.ipu_clk);
+>>>>>>> refs/remotes/origin/master
 
 	/* Disable all interrupts */
 	idmac_write_ipureg(&ipu_data, 0, IPU_INT_CTRL_1);
@@ -1884,7 +1984,11 @@ static int __init ipu_probe(struct platform_device *pdev)
 err_idmac_init:
 err_attach_irq:
 	ipu_irq_detach_irq(&ipu_data, pdev);
+<<<<<<< HEAD
 	clk_disable(ipu_data.ipu_clk);
+=======
+	clk_disable_unprepare(ipu_data.ipu_clk);
+>>>>>>> refs/remotes/origin/master
 	clk_put(ipu_data.ipu_clk);
 err_clk_get:
 	iounmap(ipu_data.reg_ic);
@@ -1896,18 +2000,29 @@ err_noirq:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __exit ipu_remove(struct platform_device *pdev)
+=======
+static int ipu_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipu *ipu = platform_get_drvdata(pdev);
 
 	ipu_idmac_exit(ipu);
 	ipu_irq_detach_irq(ipu, pdev);
+<<<<<<< HEAD
 	clk_disable(ipu->ipu_clk);
+=======
+	clk_disable_unprepare(ipu->ipu_clk);
+>>>>>>> refs/remotes/origin/master
 	clk_put(ipu->ipu_clk);
 	iounmap(ipu->reg_ic);
 	iounmap(ipu->reg_ipu);
 	tasklet_kill(&ipu->tasklet);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1921,7 +2036,11 @@ static struct platform_driver ipu_platform_driver = {
 		.name	= "ipu-core",
 		.owner	= THIS_MODULE,
 	},
+<<<<<<< HEAD
 	.remove		= __exit_p(ipu_remove),
+=======
+	.remove		= ipu_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init ipu_init(void)

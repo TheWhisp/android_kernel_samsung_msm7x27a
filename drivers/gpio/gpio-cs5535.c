@@ -300,7 +300,11 @@ static struct cs5535_gpio_chip cs5535_gpio_chip = {
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit cs5535_gpio_probe(struct platform_device *pdev)
+=======
+static int cs5535_gpio_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res;
 	int err = -EIO;
@@ -355,7 +359,11 @@ done:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit cs5535_gpio_remove(struct platform_device *pdev)
+=======
+static int cs5535_gpio_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *r;
 	int err;
@@ -378,7 +386,11 @@ static struct platform_driver cs5535_gpio_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = cs5535_gpio_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(cs5535_gpio_remove),
+=======
+	.remove = cs5535_gpio_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 module_platform_driver(cs5535_gpio_driver);

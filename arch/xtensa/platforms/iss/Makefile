@@ -4,5 +4,11 @@
 # "prom monitor" library routines under Linux.
 #
 
+<<<<<<< HEAD
 obj-y			= io.o console.o setup.o network.o
 
+=======
+obj-y			= console.o setup.o
+obj-$(CONFIG_NET)	+= network.o
+obj-$(CONFIG_BLK_DEV_SIMDISK) += simdisk.o
+>>>>>>> refs/remotes/origin/master

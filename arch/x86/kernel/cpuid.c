@@ -44,9 +44,12 @@
 #include <asm/processor.h>
 #include <asm/msr.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct class *cpuid_class;
 
@@ -89,7 +92,11 @@ static ssize_t cpuid_read(struct file *file, char __user *buf,
 {
 	char __user *tmp = buf;
 	struct cpuid_regs cmd;
+<<<<<<< HEAD
 	int cpu = iminor(file->f_path.dentry->d_inode);
+=======
+	int cpu = iminor(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	u64 pos = *ppos;
 	ssize_t bytes = 0;
 	int err = 0;
@@ -120,7 +127,11 @@ static int cpuid_open(struct inode *inode, struct file *file)
 	unsigned int cpu;
 	struct cpuinfo_x86 *c;
 
+<<<<<<< HEAD
 	cpu = iminor(file->f_path.dentry->d_inode);
+=======
+	cpu = iminor(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	if (cpu >= nr_cpu_ids || !cpu_online(cpu))
 		return -ENXIO;	/* No such CPU */
 
@@ -141,7 +152,11 @@ static const struct file_operations cpuid_fops = {
 	.open = cpuid_open,
 };
 
+<<<<<<< HEAD
 static __cpuinit int cpuid_device_create(int cpu)
+=======
+static int cpuid_device_create(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev;
 
@@ -155,9 +170,14 @@ static void cpuid_device_destroy(int cpu)
 	device_destroy(cpuid_class, MKDEV(CPUID_MAJOR, cpu));
 }
 
+<<<<<<< HEAD
 static int __cpuinit cpuid_class_cpu_callback(struct notifier_block *nfb,
 					      unsigned long action,
 					      void *hcpu)
+=======
+static int cpuid_class_cpu_callback(struct notifier_block *nfb,
+				    unsigned long action, void *hcpu)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cpu = (unsigned long)hcpu;
 	int err = 0;
@@ -181,10 +201,14 @@ static struct notifier_block __refdata cpuid_class_cpu_notifier =
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static char *cpuid_devnode(struct device *dev, mode_t *mode)
 =======
 static char *cpuid_devnode(struct device *dev, umode_t *mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *cpuid_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return kasprintf(GFP_KERNEL, "cpu/%u/cpuid", MINOR(dev->devt));
 }
@@ -207,12 +231,20 @@ static int __init cpuid_init(void)
 		goto out_chrdev;
 	}
 	cpuid_class->devnode = cpuid_devnode;
+<<<<<<< HEAD
+=======
+	get_online_cpus();
+>>>>>>> refs/remotes/origin/master
 	for_each_online_cpu(i) {
 		err = cpuid_device_create(i);
 		if (err != 0)
 			goto out_class;
 	}
 	register_hotcpu_notifier(&cpuid_class_cpu_notifier);
+<<<<<<< HEAD
+=======
+	put_online_cpus();
+>>>>>>> refs/remotes/origin/master
 
 	err = 0;
 	goto out;
@@ -222,6 +254,10 @@ out_class:
 	for_each_online_cpu(i) {
 		cpuid_device_destroy(i);
 	}
+<<<<<<< HEAD
+=======
+	put_online_cpus();
+>>>>>>> refs/remotes/origin/master
 	class_destroy(cpuid_class);
 out_chrdev:
 	__unregister_chrdev(CPUID_MAJOR, 0, NR_CPUS, "cpu/cpuid");
@@ -233,11 +269,19 @@ static void __exit cpuid_exit(void)
 {
 	int cpu = 0;
 
+<<<<<<< HEAD
+=======
+	get_online_cpus();
+>>>>>>> refs/remotes/origin/master
 	for_each_online_cpu(cpu)
 		cpuid_device_destroy(cpu);
 	class_destroy(cpuid_class);
 	__unregister_chrdev(CPUID_MAJOR, 0, NR_CPUS, "cpu/cpuid");
 	unregister_hotcpu_notifier(&cpuid_class_cpu_notifier);
+<<<<<<< HEAD
+=======
+	put_online_cpus();
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(cpuid_init);

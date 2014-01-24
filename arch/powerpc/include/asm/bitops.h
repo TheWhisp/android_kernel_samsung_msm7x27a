@@ -52,12 +52,17 @@
 #define smp_mb__before_clear_bit()	smp_mb()
 #define smp_mb__after_clear_bit()	smp_mb()
 
+<<<<<<< HEAD
 #define BITOP_MASK(nr)		(1UL << ((nr) % BITS_PER_LONG))
 #define BITOP_WORD(nr)		((nr) / BITS_PER_LONG)
 #define BITOP_LE_SWIZZLE	((BITS_PER_LONG-1) & ~0x7)
 
 /* Macro for generating the ***_bits() functions */
 #define DEFINE_BITOP(fn, op, prefix, postfix)	\
+=======
+/* Macro for generating the ***_bits() functions */
+#define DEFINE_BITOP(fn, op, prefix)		\
+>>>>>>> refs/remotes/origin/master
 static __inline__ void fn(unsigned long mask,	\
 		volatile unsigned long *_p)	\
 {						\
@@ -70,12 +75,16 @@ static __inline__ void fn(unsigned long mask,	\
 	PPC405_ERR77(0,%3)			\
 	PPC_STLCX "%0,0,%3\n"			\
 	"bne- 1b\n"				\
+<<<<<<< HEAD
 	postfix					\
+=======
+>>>>>>> refs/remotes/origin/master
 	: "=&r" (old), "+m" (*p)		\
 	: "r" (mask), "r" (p)			\
 	: "cc", "memory");			\
 }
 
+<<<<<<< HEAD
 DEFINE_BITOP(set_bits, or, "", "")
 DEFINE_BITOP(clear_bits, andc, "", "")
 DEFINE_BITOP(clear_bits_unlock, andc, PPC_RELEASE_BARRIER, "")
@@ -84,21 +93,43 @@ DEFINE_BITOP(change_bits, xor, "", "")
 static __inline__ void set_bit(int nr, volatile unsigned long *addr)
 {
 	set_bits(BITOP_MASK(nr), addr + BITOP_WORD(nr));
+=======
+DEFINE_BITOP(set_bits, or, "")
+DEFINE_BITOP(clear_bits, andc, "")
+DEFINE_BITOP(clear_bits_unlock, andc, PPC_RELEASE_BARRIER)
+DEFINE_BITOP(change_bits, xor, "")
+
+static __inline__ void set_bit(int nr, volatile unsigned long *addr)
+{
+	set_bits(BIT_MASK(nr), addr + BIT_WORD(nr));
+>>>>>>> refs/remotes/origin/master
 }
 
 static __inline__ void clear_bit(int nr, volatile unsigned long *addr)
 {
+<<<<<<< HEAD
 	clear_bits(BITOP_MASK(nr), addr + BITOP_WORD(nr));
+=======
+	clear_bits(BIT_MASK(nr), addr + BIT_WORD(nr));
+>>>>>>> refs/remotes/origin/master
 }
 
 static __inline__ void clear_bit_unlock(int nr, volatile unsigned long *addr)
 {
+<<<<<<< HEAD
 	clear_bits_unlock(BITOP_MASK(nr), addr + BITOP_WORD(nr));
+=======
+	clear_bits_unlock(BIT_MASK(nr), addr + BIT_WORD(nr));
+>>>>>>> refs/remotes/origin/master
 }
 
 static __inline__ void change_bit(int nr, volatile unsigned long *addr)
 {
+<<<<<<< HEAD
 	change_bits(BITOP_MASK(nr), addr + BITOP_WORD(nr));
+=======
+	change_bits(BIT_MASK(nr), addr + BIT_WORD(nr));
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Like DEFINE_BITOP(), with changes to the arguments to 'op' and the output
@@ -125,6 +156,7 @@ static __inline__ unsigned long fn(			\
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 DEFINE_TESTOP(test_and_set_bits, or, PPC_RELEASE_BARRIER,
 	      PPC_ACQUIRE_BARRIER, 0)
 DEFINE_TESTOP(test_and_set_bits_lock, or, "",
@@ -134,6 +166,8 @@ DEFINE_TESTOP(test_and_clear_bits, andc, PPC_RELEASE_BARRIER,
 DEFINE_TESTOP(test_and_change_bits, xor, PPC_RELEASE_BARRIER,
 	      PPC_ACQUIRE_BARRIER, 0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 DEFINE_TESTOP(test_and_set_bits, or, PPC_ATOMIC_ENTRY_BARRIER,
 	      PPC_ATOMIC_EXIT_BARRIER, 0)
 DEFINE_TESTOP(test_and_set_bits_lock, or, "",
@@ -142,31 +176,51 @@ DEFINE_TESTOP(test_and_clear_bits, andc, PPC_ATOMIC_ENTRY_BARRIER,
 	      PPC_ATOMIC_EXIT_BARRIER, 0)
 DEFINE_TESTOP(test_and_change_bits, xor, PPC_ATOMIC_ENTRY_BARRIER,
 	      PPC_ATOMIC_EXIT_BARRIER, 0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static __inline__ int test_and_set_bit(unsigned long nr,
 				       volatile unsigned long *addr)
 {
+<<<<<<< HEAD
 	return test_and_set_bits(BITOP_MASK(nr), addr + BITOP_WORD(nr)) != 0;
+=======
+	return test_and_set_bits(BIT_MASK(nr), addr + BIT_WORD(nr)) != 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static __inline__ int test_and_set_bit_lock(unsigned long nr,
 				       volatile unsigned long *addr)
 {
+<<<<<<< HEAD
 	return test_and_set_bits_lock(BITOP_MASK(nr),
 				addr + BITOP_WORD(nr)) != 0;
+=======
+	return test_and_set_bits_lock(BIT_MASK(nr),
+				addr + BIT_WORD(nr)) != 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static __inline__ int test_and_clear_bit(unsigned long nr,
 					 volatile unsigned long *addr)
 {
+<<<<<<< HEAD
 	return test_and_clear_bits(BITOP_MASK(nr), addr + BITOP_WORD(nr)) != 0;
+=======
+	return test_and_clear_bits(BIT_MASK(nr), addr + BIT_WORD(nr)) != 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static __inline__ int test_and_change_bit(unsigned long nr,
 					  volatile unsigned long *addr)
 {
+<<<<<<< HEAD
 	return test_and_change_bits(BITOP_MASK(nr), addr + BITOP_WORD(nr)) != 0;
+=======
+	return test_and_change_bits(BIT_MASK(nr), addr + BIT_WORD(nr)) != 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 #include <asm-generic/bitops/non-atomic.h>
@@ -291,6 +345,7 @@ unsigned long __arch_hweight64(__u64 w);
 #include <asm-generic/bitops/find.h>
 
 /* Little-endian versions */
+<<<<<<< HEAD
 
 static __inline__ int test_bit_le(unsigned long nr,
 				  __const__ void *addr)
@@ -346,6 +401,13 @@ unsigned long find_next_bit_le(const void *addr,
 =======
 #include <asm-generic/bitops/ext2-atomic-setbit.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm-generic/bitops/le.h>
+
+/* Bitmap functions for the ext2 filesystem */
+
+#include <asm-generic/bitops/ext2-atomic-setbit.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm-generic/bitops/sched.h>
 

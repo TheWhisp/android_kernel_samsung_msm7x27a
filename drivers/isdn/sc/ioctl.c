@@ -31,18 +31,24 @@ int sc_ioctl(int card, scs_ioctl *data)
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch(data->command) {
 	case SCIOCRESET:	/* Perform a hard reset of the adapter */
 	{
 		pr_debug("%s: SCIOCRESET: ioctl received\n",
 			sc_adapter[card]->devicename);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (data->command) {
 	case SCIOCRESET:	/* Perform a hard reset of the adapter */
 	{
 		pr_debug("%s: SCIOCRESET: ioctl received\n",
 			 sc_adapter[card]->devicename);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		sc_adapter[card]->StartOnReset = 0;
 		kfree(rcvmsg);
 		return reset(card);
@@ -59,16 +65,22 @@ int sc_ioctl(int card, scs_ioctl *data)
 		}
 		pr_debug("%s: SCIOLOAD: ioctl received\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sc_adapter[card]->devicename);
 		if(sc_adapter[card]->EngineUp) {
 			pr_debug("%s: SCIOCLOAD: command failed, LoadProc while engine running.\n",
 				sc_adapter[card]->devicename);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			 sc_adapter[card]->devicename);
 		if (sc_adapter[card]->EngineUp) {
 			pr_debug("%s: SCIOCLOAD: command failed, LoadProc while engine running.\n",
 				 sc_adapter[card]->devicename);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			kfree(rcvmsg);
 			kfree(srec);
 			return -1;
@@ -85,6 +97,7 @@ int sc_ioctl(int card, scs_ioctl *data)
 
 		status = send_and_receive(card, CMPID, cmReqType2, cmReqClass0, cmReqLoadProc,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				0, SCIOC_SRECSIZE, srec, rcvmsg, SAR_TIMEOUT);
 		kfree(rcvmsg);
 		kfree(srec);
@@ -93,6 +106,8 @@ int sc_ioctl(int card, scs_ioctl *data)
 			pr_debug("%s: SCIOCLOAD: command failed, status = %d\n", 
 				sc_adapter[card]->devicename, status);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					  0, SCIOC_SRECSIZE, srec, rcvmsg, SAR_TIMEOUT);
 		kfree(rcvmsg);
 		kfree(srec);
@@ -100,16 +115,23 @@ int sc_ioctl(int card, scs_ioctl *data)
 		if (status) {
 			pr_debug("%s: SCIOCLOAD: command failed, status = %d\n",
 				 sc_adapter[card]->devicename, status);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return -1;
 		}
 		else {
 			pr_debug("%s: SCIOCLOAD: command successful\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					sc_adapter[card]->devicename);
 =======
 				 sc_adapter[card]->devicename);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		}
 	}
@@ -119,16 +141,22 @@ int sc_ioctl(int card, scs_ioctl *data)
 		kfree(rcvmsg);
 		pr_debug("%s: SCIOSTART: ioctl received\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sc_adapter[card]->devicename);
 		if(sc_adapter[card]->EngineUp) {
 			pr_debug("%s: SCIOCSTART: command failed, engine already running.\n",
 				sc_adapter[card]->devicename);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			 sc_adapter[card]->devicename);
 		if (sc_adapter[card]->EngineUp) {
 			pr_debug("%s: SCIOCSTART: command failed, engine already running.\n",
 				 sc_adapter[card]->devicename);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return -1;
 		}
 
@@ -141,10 +169,14 @@ int sc_ioctl(int card, scs_ioctl *data)
 	{
 		pr_debug("%s: SCIOSETSWITCH: ioctl received\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sc_adapter[card]->devicename);
 =======
 			 sc_adapter[card]->devicename);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Get the switch type from user space
@@ -156,6 +188,7 @@ int sc_ioctl(int card, scs_ioctl *data)
 
 		pr_debug("%s: SCIOCSETSWITCH: setting switch type to %d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sc_adapter[card]->devicename,
 			switchtype);
 		status = send_and_receive(card, CEPID, ceReqTypeCall, ceReqClass0, ceReqCallSetSwitchType,
@@ -164,6 +197,8 @@ int sc_ioctl(int card, scs_ioctl *data)
 			pr_debug("%s: SCIOCSETSWITCH: command successful\n",
 				sc_adapter[card]->devicename);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			 sc_adapter[card]->devicename,
 			 switchtype);
 		status = send_and_receive(card, CEPID, ceReqTypeCall, ceReqClass0, ceReqCallSetSwitchType,
@@ -171,21 +206,29 @@ int sc_ioctl(int card, scs_ioctl *data)
 		if (!status && !(rcvmsg->rsp_status)) {
 			pr_debug("%s: SCIOCSETSWITCH: command successful\n",
 				 sc_adapter[card]->devicename);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			kfree(rcvmsg);
 			return 0;
 		}
 		else {
 			pr_debug("%s: SCIOCSETSWITCH: command failed (status = %d)\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sc_adapter[card]->devicename, status);
 =======
 				 sc_adapter[card]->devicename, status);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 sc_adapter[card]->devicename, status);
+>>>>>>> refs/remotes/origin/master
 			kfree(rcvmsg);
 			return status;
 		}
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		
 	case SCIOCGETSWITCH:
@@ -193,16 +236,22 @@ int sc_ioctl(int card, scs_ioctl *data)
 		pr_debug("%s: SCIOGETSWITCH: ioctl received\n",
 				sc_adapter[card]->devicename);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	case SCIOCGETSWITCH:
 	{
 		pr_debug("%s: SCIOGETSWITCH: ioctl received\n",
 			 sc_adapter[card]->devicename);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Get the switch type from the board
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		status = send_and_receive(card, CEPID, ceReqTypeCall, ceReqClass0, 
 			ceReqCallGetSwitchType, 0, 0, NULL, rcvmsg, SAR_TIMEOUT);
@@ -214,6 +263,8 @@ int sc_ioctl(int card, scs_ioctl *data)
 			pr_debug("%s: SCIOCGETSWITCH: command failed (status = %d)\n",
 				sc_adapter[card]->devicename, status);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		status = send_and_receive(card, CEPID, ceReqTypeCall, ceReqClass0,
 					  ceReqCallGetSwitchType, 0, 0, NULL, rcvmsg, SAR_TIMEOUT);
 		if (!status && !(rcvmsg->rsp_status)) {
@@ -223,7 +274,10 @@ int sc_ioctl(int card, scs_ioctl *data)
 		else {
 			pr_debug("%s: SCIOCGETSWITCH: command failed (status = %d)\n",
 				 sc_adapter[card]->devicename, status);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			kfree(rcvmsg);
 			return status;
 		}
@@ -247,10 +301,14 @@ int sc_ioctl(int card, scs_ioctl *data)
 	{
 		pr_debug("%s: SCIOGETSPID: ioctl received\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sc_adapter[card]->devicename);
 =======
 			 sc_adapter[card]->devicename);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/master
 
 		spid = kzalloc(SCIOC_SPIDSIZE, GFP_KERNEL);
 		if (!spid) {
@@ -262,6 +320,7 @@ int sc_ioctl(int card, scs_ioctl *data)
 		 */
 		status = send_and_receive(card, CEPID, ceReqTypeCall, ceReqClass0, ceReqCallGetSPID,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					data->channel, 0, NULL, rcvmsg, SAR_TIMEOUT);
 		if (!status) {
 			pr_debug("%s: SCIOCGETSPID: command successful\n",
@@ -270,6 +329,8 @@ int sc_ioctl(int card, scs_ioctl *data)
 			pr_debug("%s: SCIOCGETSPID: command failed (status = %d)\n",
 				sc_adapter[card]->devicename, status);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					  data->channel, 0, NULL, rcvmsg, SAR_TIMEOUT);
 		if (!status) {
 			pr_debug("%s: SCIOCGETSPID: command successful\n",
@@ -277,7 +338,10 @@ int sc_ioctl(int card, scs_ioctl *data)
 		} else {
 			pr_debug("%s: SCIOCGETSPID: command failed (status = %d)\n",
 				 sc_adapter[card]->devicename, status);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			kfree(spid);
 			kfree(rcvmsg);
 			return status;
@@ -297,19 +361,27 @@ int sc_ioctl(int card, scs_ioctl *data)
 		kfree(rcvmsg);
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}	
 =======
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	case SCIOCSETSPID:
 	{
 		pr_debug("%s: DCBIOSETSPID: ioctl received\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sc_adapter[card]->devicename);
 =======
 			 sc_adapter[card]->devicename);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Get the spid from user space
@@ -321,6 +393,7 @@ int sc_ioctl(int card, scs_ioctl *data)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("%s: SCIOCSETSPID: setting channel %d spid to %s\n", 
 			sc_adapter[card]->devicename, data->channel, spid);
 		status = send_and_receive(card, CEPID, ceReqTypeCall, 
@@ -330,6 +403,8 @@ int sc_ioctl(int card, scs_ioctl *data)
 			pr_debug("%s: SCIOCSETSPID: command successful\n", 
 				sc_adapter[card]->devicename);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_debug("%s: SCIOCSETSPID: setting channel %d spid to %s\n",
 			 sc_adapter[card]->devicename, data->channel, spid);
 		status = send_and_receive(card, CEPID, ceReqTypeCall,
@@ -338,7 +413,10 @@ int sc_ioctl(int card, scs_ioctl *data)
 		if (!status && !(rcvmsg->rsp_status)) {
 			pr_debug("%s: SCIOCSETSPID: command successful\n",
 				 sc_adapter[card]->devicename);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			kfree(rcvmsg);
 			kfree(spid);
 			return 0;
@@ -346,10 +424,14 @@ int sc_ioctl(int card, scs_ioctl *data)
 		else {
 			pr_debug("%s: SCIOCSETSPID: command failed (status = %d)\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sc_adapter[card]->devicename, status);
 =======
 				 sc_adapter[card]->devicename, status);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 sc_adapter[card]->devicename, status);
+>>>>>>> refs/remotes/origin/master
 			kfree(rcvmsg);
 			kfree(spid);
 			return status;
@@ -360,15 +442,20 @@ int sc_ioctl(int card, scs_ioctl *data)
 	{
 		pr_debug("%s: SCIOGETDN: ioctl received\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sc_adapter[card]->devicename);
 =======
 			 sc_adapter[card]->devicename);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Get the dn from the board
 		 */
 		status = send_and_receive(card, CEPID, ceReqTypeCall, ceReqClass0, ceReqCallGetMyNumber,
+<<<<<<< HEAD
 <<<<<<< HEAD
 					data->channel, 0, NULL, rcvmsg, SAR_TIMEOUT);
 		if (!status) {
@@ -379,6 +466,8 @@ int sc_ioctl(int card, scs_ioctl *data)
 			pr_debug("%s: SCIOCGETDN: command failed (status = %d)\n",
 				sc_adapter[card]->devicename, status);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					  data->channel, 0, NULL, rcvmsg, SAR_TIMEOUT);
 		if (!status) {
 			pr_debug("%s: SCIOCGETDN: command successful\n",
@@ -387,7 +476,10 @@ int sc_ioctl(int card, scs_ioctl *data)
 		else {
 			pr_debug("%s: SCIOCGETDN: command failed (status = %d)\n",
 				 sc_adapter[card]->devicename, status);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			kfree(rcvmsg);
 			return status;
 		}
@@ -410,19 +502,27 @@ int sc_ioctl(int card, scs_ioctl *data)
 		kfree(dn);
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}	
 =======
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	case SCIOCSETDN:
 	{
 		pr_debug("%s: SCIOSETDN: ioctl received\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sc_adapter[card]->devicename);
 =======
 			 sc_adapter[card]->devicename);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Get the spid from user space
@@ -434,6 +534,7 @@ int sc_ioctl(int card, scs_ioctl *data)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("%s: SCIOCSETDN: setting channel %d dn to %s\n", 
 			sc_adapter[card]->devicename, data->channel, dn);
 		status = send_and_receive(card, CEPID, ceReqTypeCall, 
@@ -443,6 +544,8 @@ int sc_ioctl(int card, scs_ioctl *data)
 			pr_debug("%s: SCIOCSETDN: command successful\n", 
 				sc_adapter[card]->devicename);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_debug("%s: SCIOCSETDN: setting channel %d dn to %s\n",
 			 sc_adapter[card]->devicename, data->channel, dn);
 		status = send_and_receive(card, CEPID, ceReqTypeCall,
@@ -451,7 +554,10 @@ int sc_ioctl(int card, scs_ioctl *data)
 		if (!status && !(rcvmsg->rsp_status)) {
 			pr_debug("%s: SCIOCSETDN: command successful\n",
 				 sc_adapter[card]->devicename);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			kfree(rcvmsg);
 			kfree(dn);
 			return 0;
@@ -459,10 +565,14 @@ int sc_ioctl(int card, scs_ioctl *data)
 		else {
 			pr_debug("%s: SCIOCSETDN: command failed (status = %d)\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sc_adapter[card]->devicename, status);
 =======
 				 sc_adapter[card]->devicename, status);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 sc_adapter[card]->devicename, status);
+>>>>>>> refs/remotes/origin/master
 			kfree(rcvmsg);
 			kfree(dn);
 			return status;
@@ -473,18 +583,24 @@ int sc_ioctl(int card, scs_ioctl *data)
 
 		pr_debug("%s: SCIOTRACE: ioctl received\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sc_adapter[card]->devicename);
 /*		sc_adapter[card]->trace = !sc_adapter[card]->trace;
 		pr_debug("%s: SCIOCTRACE: tracing turned %s\n",
 				sc_adapter[card]->devicename,
 			sc_adapter[card]->trace ? "ON" : "OFF"); */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			 sc_adapter[card]->devicename);
 /*		sc_adapter[card]->trace = !sc_adapter[card]->trace;
 		pr_debug("%s: SCIOCTRACE: tracing turned %s\n",
 		sc_adapter[card]->devicename,
 		sc_adapter[card]->trace ? "ON" : "OFF"); */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case SCIOCSTAT:
@@ -493,10 +609,14 @@ int sc_ioctl(int card, scs_ioctl *data)
 
 		pr_debug("%s: SCIOSTAT: ioctl received\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sc_adapter[card]->devicename);
 =======
 			 sc_adapter[card]->devicename);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/master
 
 		bi = kzalloc(sizeof(boardInfo), GFP_KERNEL);
 		if (!bi) {
@@ -520,14 +640,19 @@ int sc_ioctl(int card, scs_ioctl *data)
 	{
 		pr_debug("%s: SCIOGETSPEED: ioctl received\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sc_adapter[card]->devicename);
 =======
 			 sc_adapter[card]->devicename);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Get the speed from the board
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		status = send_and_receive(card, CEPID, ceReqTypeCall, ceReqClass0, 
 			ceReqCallGetCallType, data->channel, 0, NULL, rcvmsg, SAR_TIMEOUT);
@@ -539,6 +664,8 @@ int sc_ioctl(int card, scs_ioctl *data)
 			pr_debug("%s: SCIOCGETSPEED: command failed (status = %d)\n",
 				sc_adapter[card]->devicename, status);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		status = send_and_receive(card, CEPID, ceReqTypeCall, ceReqClass0,
 					  ceReqCallGetCallType, data->channel, 0, NULL, rcvmsg, SAR_TIMEOUT);
 		if (!status && !(rcvmsg->rsp_status)) {
@@ -548,7 +675,10 @@ int sc_ioctl(int card, scs_ioctl *data)
 		else {
 			pr_debug("%s: SCIOCGETSPEED: command failed (status = %d)\n",
 				 sc_adapter[card]->devicename, status);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			kfree(rcvmsg);
 			return status;
 		}
@@ -570,19 +700,27 @@ int sc_ioctl(int card, scs_ioctl *data)
 	case SCIOCSETSPEED:
 		pr_debug("%s: SCIOCSETSPEED: ioctl received\n",
 <<<<<<< HEAD
-				sc_adapter[card]->devicename);
-=======
-			 sc_adapter[card]->devicename);
->>>>>>> refs/remotes/origin/cm-10.0
-		break;
-
-	case SCIOCLOOPTST:
-		pr_debug("%s: SCIOCLOOPTST: ioctl received\n",
 <<<<<<< HEAD
 				sc_adapter[card]->devicename);
 =======
 			 sc_adapter[card]->devicename);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/master
+		break;
+
+	case SCIOCLOOPTST:
+		pr_debug("%s: SCIOCLOOPTST: ioctl received\n",
+<<<<<<< HEAD
+<<<<<<< HEAD
+				sc_adapter[card]->devicename);
+=======
+			 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -618,24 +756,31 @@ static int GetStatus(int card, boardInfo *bi)
 	 */
 	status = send_and_receive(card, CEPID, ceReqTypePhy, ceReqClass2,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ceReqPhyStatus, 0, 0, NULL, &rcvmsg, SAR_TIMEOUT);
 	if(!status) {
 		if(sc_adapter[card]->model < PRI_BOARD) {
 			bi->l1_status = rcvmsg.msg_data.byte_array[2];
 			for(i = 0 ; i < BRI_CHANNELS ; i++)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				  ceReqPhyStatus, 0, 0, NULL, &rcvmsg, SAR_TIMEOUT);
 	if (!status) {
 		if (sc_adapter[card]->model < PRI_BOARD) {
 			bi->l1_status = rcvmsg.msg_data.byte_array[2];
 			for (i = 0; i < BRI_CHANNELS; i++)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				bi->status.bristats[i].phy_stat =
 					rcvmsg.msg_data.byte_array[i];
 		}
 		else {
 			bi->l1_status = rcvmsg.msg_data.byte_array[0];
 			bi->l2_status = rcvmsg.msg_data.byte_array[1];
+<<<<<<< HEAD
 <<<<<<< HEAD
 			for(i = 0 ; i < PRI_CHANNELS ; i++)
 				bi->status.pristats[i].phy_stat = 
@@ -653,6 +798,8 @@ static int GetStatus(int card, boardInfo *bi)
 			if (sc_adapter[card]->model == PRI_BOARD) {
 				bi->status.pristats[i].call_type = 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			for (i = 0; i < PRI_CHANNELS; i++)
 				bi->status.pristats[i].phy_stat =
 					rcvmsg.msg_data.byte_array[i + 2];
@@ -668,7 +815,10 @@ static int GetStatus(int card, boardInfo *bi)
 		if (!status) {
 			if (sc_adapter[card]->model == PRI_BOARD) {
 				bi->status.pristats[i].call_type =
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					rcvmsg.msg_data.byte_array[0];
 			}
 			else {
@@ -678,10 +828,14 @@ static int GetStatus(int card, boardInfo *bi)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If PRI, get the call states and service states for each channel
 	 */
@@ -691,16 +845,22 @@ static int GetStatus(int card, boardInfo *bi)
 		 */
 		status = send_and_receive(card, CEPID, ceReqTypeStat, ceReqClass2,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ceReqPhyChCallState, 0, 0, NULL, &rcvmsg, SAR_TIMEOUT);
 		if(!status) {
 			for( i = 0 ; i < PRI_CHANNELS ; i++ )
 				bi->status.pristats[i].call_state = 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					  ceReqPhyChCallState, 0, 0, NULL, &rcvmsg, SAR_TIMEOUT);
 		if (!status) {
 			for (i = 0; i < PRI_CHANNELS; i++)
 				bi->status.pristats[i].call_state =
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					rcvmsg.msg_data.byte_array[i];
 		}
 
@@ -709,22 +869,29 @@ static int GetStatus(int card, boardInfo *bi)
 		 */
 		status = send_and_receive(card, CEPID, ceReqTypeStat, ceReqClass2,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ceReqPhyChServState, 0, 0, NULL, &rcvmsg, SAR_TIMEOUT);
 		if(!status) {
 			for( i = 0 ; i < PRI_CHANNELS ; i++ )
 				bi->status.pristats[i].serv_state = 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					  ceReqPhyChServState, 0, 0, NULL, &rcvmsg, SAR_TIMEOUT);
 		if (!status) {
 			for (i = 0; i < PRI_CHANNELS; i++)
 				bi->status.pristats[i].serv_state =
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					rcvmsg.msg_data.byte_array[i];
 		}
 
 		/*
 		 * Get the link stats for the channels
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		for (i = 1 ; i <= PRI_CHANNELS ; i++) {
 			status = send_and_receive(card, CEPID, ceReqTypeLnk, ceReqClass0,
@@ -738,6 +905,8 @@ static int GetStatus(int card, boardInfo *bi)
 					(unsigned long)rcvmsg.msg_data.byte_array[8];
 				bi->status.pristats[i-1].link_stats.rx_bad =
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		for (i = 1; i <= PRI_CHANNELS; i++) {
 			status = send_and_receive(card, CEPID, ceReqTypeLnk, ceReqClass0,
 						  ceReqLnkGetStats, i, 0, NULL, &rcvmsg, SAR_TIMEOUT);
@@ -749,7 +918,10 @@ static int GetStatus(int card, boardInfo *bi)
 				bi->status.pristats[i - 1].link_stats.rx_good =
 					(unsigned long)rcvmsg.msg_data.byte_array[8];
 				bi->status.pristats[i - 1].link_stats.rx_bad =
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					(unsigned long)rcvmsg.msg_data.byte_array[12];
 			}
 		}
@@ -759,10 +931,14 @@ static int GetStatus(int card, boardInfo *bi)
 		 */
 		status = send_and_receive(card, CEPID, ceReqTypeLnk, ceReqClass0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ceReqLnkGetStats, 0, 0, NULL, &rcvmsg, SAR_TIMEOUT);
 =======
 					  ceReqLnkGetStats, 0, 0, NULL, &rcvmsg, SAR_TIMEOUT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  ceReqLnkGetStats, 0, 0, NULL, &rcvmsg, SAR_TIMEOUT);
+>>>>>>> refs/remotes/origin/master
 		if (!status) {
 			bi->dch_stats.tx_good = (unsigned long)rcvmsg.msg_data.byte_array[0];
 			bi->dch_stats.tx_bad = (unsigned long)rcvmsg.msg_data.byte_array[4];
@@ -782,15 +958,20 @@ static int GetStatus(int card, boardInfo *bi)
 	 */
 	status = send_and_receive(card, CEPID, ceReqTypeLnk, ceReqClass0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ceReqLnkGetStats, 0, 0, NULL, &rcvmsg, SAR_TIMEOUT);
 =======
 				  ceReqLnkGetStats, 0, 0, NULL, &rcvmsg, SAR_TIMEOUT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  ceReqLnkGetStats, 0, 0, NULL, &rcvmsg, SAR_TIMEOUT);
+>>>>>>> refs/remotes/origin/master
 	if (!status) {
 		bi->dch_stats.tx_good = (unsigned long)rcvmsg.msg_data.byte_array[0];
 		bi->dch_stats.tx_bad = (unsigned long)rcvmsg.msg_data.byte_array[4];
 		bi->dch_stats.rx_good = (unsigned long)rcvmsg.msg_data.byte_array[8];
 		bi->dch_stats.rx_bad = (unsigned long)rcvmsg.msg_data.byte_array[12];
+<<<<<<< HEAD
 <<<<<<< HEAD
 		bi->status.bristats[0].link_stats.tx_good = 
 			(unsigned long)rcvmsg.msg_data.byte_array[16];
@@ -808,6 +989,8 @@ static int GetStatus(int card, boardInfo *bi)
 			(unsigned long)rcvmsg.msg_data.byte_array[40];
 		bi->status.bristats[1].link_stats.rx_bad = 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		bi->status.bristats[0].link_stats.tx_good =
 			(unsigned long)rcvmsg.msg_data.byte_array[16];
 		bi->status.bristats[0].link_stats.tx_bad =
@@ -823,13 +1006,17 @@ static int GetStatus(int card, boardInfo *bi)
 		bi->status.bristats[1].link_stats.rx_good =
 			(unsigned long)rcvmsg.msg_data.byte_array[40];
 		bi->status.bristats[1].link_stats.rx_bad =
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			(unsigned long)rcvmsg.msg_data.byte_array[44];
 	}
 
 	/*
 	 * Get the SPIDs
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (i = 0 ; i < BRI_CHANNELS ; i++) {
 		status = send_and_receive(card, CEPID, ceReqTypeCall, ceReqClass0,
@@ -849,6 +1036,8 @@ static int GetStatus(int card, boardInfo *bi)
 	}
 		
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < BRI_CHANNELS; i++) {
 		status = send_and_receive(card, CEPID, ceReqTypeCall, ceReqClass0,
 					  ceReqCallGetSPID, i + 1, 0, NULL, &rcvmsg, SAR_TIMEOUT);
@@ -866,6 +1055,9 @@ static int GetStatus(int card, boardInfo *bi)
 			strcpy(bi->status.bristats[i].dn, rcvmsg.msg_data.byte_array);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }

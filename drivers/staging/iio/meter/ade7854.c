@@ -9,9 +9,12 @@
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/mutex.h>
 #include <linux/device.h>
@@ -20,12 +23,19 @@
 #include <linux/sysfs.h>
 #include <linux/list.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include "../iio.h"
 #include "../sysfs.h"
+=======
+#include <linux/module.h>
+
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+>>>>>>> refs/remotes/origin/master
 #include "meter.h"
 #include "ade7854.h"
 
@@ -35,12 +45,17 @@ static ssize_t ade7854_read_8bit(struct device *dev,
 {
 	int ret;
 	u8 val = 0;
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
 =======
 	struct ade7854_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
 
 	ret = st->read_reg_8(dev, this_attr->address, &val);
@@ -56,12 +71,17 @@ static ssize_t ade7854_read_16bit(struct device *dev,
 {
 	int ret;
 	u16 val = 0;
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
 =======
 	struct ade7854_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
 
 	ret = st->read_reg_16(dev, this_attr->address, &val);
@@ -77,12 +97,17 @@ static ssize_t ade7854_read_24bit(struct device *dev,
 {
 	int ret;
 	u32 val;
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
 =======
 	struct ade7854_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
 
 	ret = st->read_reg_24(dev, this_attr->address, &val);
@@ -99,12 +124,17 @@ static ssize_t ade7854_read_32bit(struct device *dev,
 	int ret;
 	u32 val = 0;
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
 =======
 	struct ade7854_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 
 	ret = st->read_reg_32(dev, this_attr->address, &val);
 	if (ret)
@@ -119,6 +149,7 @@ static ssize_t ade7854_write_8bit(struct device *dev,
 		size_t len)
 {
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
@@ -130,6 +161,15 @@ static ssize_t ade7854_write_8bit(struct device *dev,
 	long val;
 
 	ret = strict_strtol(buf, 10, &val);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+
+	int ret;
+	u8 val;
+
+	ret = kstrtou8(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto error_ret;
 	ret = st->write_reg_8(dev, this_attr->address, val);
@@ -144,6 +184,7 @@ static ssize_t ade7854_write_16bit(struct device *dev,
 		size_t len)
 {
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
@@ -155,6 +196,15 @@ static ssize_t ade7854_write_16bit(struct device *dev,
 	long val;
 
 	ret = strict_strtol(buf, 10, &val);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+
+	int ret;
+	u16 val;
+
+	ret = kstrtou16(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto error_ret;
 	ret = st->write_reg_16(dev, this_attr->address, val);
@@ -169,6 +219,7 @@ static ssize_t ade7854_write_24bit(struct device *dev,
 		size_t len)
 {
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
@@ -180,6 +231,15 @@ static ssize_t ade7854_write_24bit(struct device *dev,
 	long val;
 
 	ret = strict_strtol(buf, 10, &val);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+
+	int ret;
+	u32 val;
+
+	ret = kstrtou32(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto error_ret;
 	ret = st->write_reg_24(dev, this_attr->address, val);
@@ -194,6 +254,7 @@ static ssize_t ade7854_write_32bit(struct device *dev,
 		size_t len)
 {
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
@@ -205,6 +266,15 @@ static ssize_t ade7854_write_32bit(struct device *dev,
 	long val;
 
 	ret = strict_strtol(buf, 10, &val);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+
+	int ret;
+	u32 val;
+
+	ret = kstrtou32(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto error_ret;
 	ret = st->write_reg_32(dev, this_attr->address, val);
@@ -215,12 +285,17 @@ error_ret:
 
 static int ade7854_reset(struct device *dev)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
 =======
 	struct ade7854_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	u16 val;
 
 	st->read_reg_16(dev, ADE7854_CONFIG, &val);
@@ -229,6 +304,7 @@ static int ade7854_reset(struct device *dev)
 	return st->write_reg_16(dev, ADE7854_CONFIG, val);
 }
 
+<<<<<<< HEAD
 
 static ssize_t ade7854_write_reset(struct device *dev,
 		struct device_attribute *attr,
@@ -245,6 +321,8 @@ static ssize_t ade7854_write_reset(struct device *dev,
 	return -1;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static IIO_DEV_ATTR_AIGAIN(S_IWUSR | S_IRUGO,
 		ade7854_read_24bit,
 		ade7854_write_24bit,
@@ -468,12 +546,17 @@ static IIO_DEV_ATTR_CVAHR(ade7854_read_32bit,
 
 static int ade7854_set_irq(struct device *dev, bool enable)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct ade7854_state *st = iio_dev_get_devdata(indio_dev);
 =======
 	struct ade7854_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7854_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 
 	int ret;
 	u32 irqen;
@@ -497,16 +580,22 @@ error_ret:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ade7854_initial_setup(struct ade7854_state *st)
 {
 	int ret;
 	struct device *dev = &st->indio_dev->dev;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int ade7854_initial_setup(struct iio_dev *indio_dev)
 {
 	int ret;
 	struct device *dev = &indio_dev->dev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Disable IRQ */
 	ret = ade7854_set_irq(dev, false);
@@ -522,8 +611,11 @@ err_ret:
 	return ret;
 }
 
+<<<<<<< HEAD
 static IIO_DEV_ATTR_RESET(ade7854_write_reset);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static IIO_CONST_ATTR_SAMP_FREQ_AVAIL("8000");
 
 static IIO_CONST_ATTR(name, "ade7854");
@@ -569,7 +661,10 @@ static struct attribute *ade7854_attributes[] = {
 	&iio_dev_attr_bvahr.dev_attr.attr,
 	&iio_dev_attr_cvahr.dev_attr.attr,
 	&iio_const_attr_sampling_frequency_available.dev_attr.attr,
+<<<<<<< HEAD
 	&iio_dev_attr_reset.dev_attr.attr,
+=======
+>>>>>>> refs/remotes/origin/master
 	&iio_const_attr_name.dev_attr.attr,
 	&iio_dev_attr_vpeak.dev_attr.attr,
 	&iio_dev_attr_ipeak.dev_attr.attr,
@@ -611,6 +706,7 @@ static const struct iio_info ade7854_info = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ade7854_probe(struct ade7854_state *st, struct device *dev)
 {
 	int ret;
@@ -641,6 +737,8 @@ int ade7854_probe(struct ade7854_state *st, struct device *dev)
 
 	ret = iio_device_register(st->indio_dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int ade7854_probe(struct iio_dev *indio_dev, struct device *dev)
 {
 	int ret;
@@ -653,6 +751,7 @@ int ade7854_probe(struct iio_dev *indio_dev, struct device *dev)
 	indio_dev->modes = INDIO_DIRECT_MODE;
 
 	ret = iio_device_register(indio_dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		goto error_free_dev;
@@ -663,12 +762,20 @@ int ade7854_probe(struct iio_dev *indio_dev, struct device *dev)
 =======
 	ret = ade7854_initial_setup(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret)
+		return ret;
+
+	/* Get the device into a sane initial state */
+	ret = ade7854_initial_setup(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto error_unreg_dev;
 
 	return 0;
 
 error_unreg_dev:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	iio_device_unregister(st->indio_dev);
 error_free_dev:
@@ -685,10 +792,14 @@ error_free_dev:
 	iio_free_device(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+	iio_device_unregister(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL(ade7854_probe);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int ade7854_remove(struct ade7854_state *st)
 {
@@ -704,6 +815,11 @@ int ade7854_remove(struct iio_dev *indio_dev)
 	iio_device_unregister(indio_dev);
 	iio_free_device(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ade7854_remove(struct iio_dev *indio_dev)
+{
+	iio_device_unregister(indio_dev);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

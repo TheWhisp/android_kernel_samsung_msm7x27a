@@ -13,6 +13,7 @@
 #ifndef __ASM_ARM_UNISTD_H
 #define __ASM_ARM_UNISTD_H
 
+<<<<<<< HEAD
 #define __NR_OABI_SYSCALL_BASE	0x900000
 
 #if defined(__thumb__) || defined(__ARM_EABI__)
@@ -457,6 +458,13 @@
 #ifdef __KERNEL__
 
 #define __ARCH_WANT_IPC_PARSE_VERSION
+=======
+#include <uapi/asm/unistd.h>
+
+#define __NR_syscalls  (384)
+#define __ARM_NR_cmpxchg		(__ARM_NR_BASE+0x00fff0)
+
+>>>>>>> refs/remotes/origin/master
 #define __ARCH_WANT_STAT64
 #define __ARCH_WANT_SYS_GETHOSTNAME
 #define __ARCH_WANT_SYS_PAUSE
@@ -465,8 +473,11 @@
 #define __ARCH_WANT_SYS_NICE
 #define __ARCH_WANT_SYS_SIGPENDING
 #define __ARCH_WANT_SYS_SIGPROCMASK
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGACTION
 #define __ARCH_WANT_SYS_RT_SIGSUSPEND
+=======
+>>>>>>> refs/remotes/origin/master
 #define __ARCH_WANT_SYS_OLD_MMAP
 #define __ARCH_WANT_SYS_OLD_SELECT
 
@@ -480,6 +491,7 @@
 #define __ARCH_WANT_OLD_READDIR
 #define __ARCH_WANT_SYS_SOCKETCALL
 #endif
+<<<<<<< HEAD
 
 /*
  * "Conditional" syscalls
@@ -488,10 +500,16 @@
  * but it doesn't work on all toolchains, so we just do it by hand
  */
 #define cond_syscall(x) asm(".weak\t" #x "\n\t.set\t" #x ",sys_ni_syscall")
+=======
+#define __ARCH_WANT_SYS_FORK
+#define __ARCH_WANT_SYS_VFORK
+#define __ARCH_WANT_SYS_CLONE
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Unimplemented (or alternatively implemented) syscalls
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define __IGNORE_fadvise64_64		1
 #define __IGNORE_migrate_pages		1
@@ -501,4 +519,10 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __KERNEL__ */
+=======
+#define __IGNORE_fadvise64_64
+#define __IGNORE_migrate_pages
+#define __IGNORE_kcmp
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_ARM_UNISTD_H */

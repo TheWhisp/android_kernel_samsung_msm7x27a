@@ -14,6 +14,10 @@
 #include "debugfs.h"
 #include "debugfs_sta.h"
 #include "sta_info.h"
+<<<<<<< HEAD
+=======
+#include "driver-ops.h"
+>>>>>>> refs/remotes/origin/master
 
 /* sta attributtes */
 
@@ -34,10 +38,14 @@ static ssize_t sta_ ##name## _read(struct file *file,			\
 static const struct file_operations sta_ ##name## _ops = {		\
 	.read = sta_##name##_read,					\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = mac80211_open_file_generic,				\
 =======
 	.open = simple_open,						\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open = simple_open,						\
+>>>>>>> refs/remotes/origin/master
 	.llseek = generic_file_llseek,					\
 }
 
@@ -46,10 +54,14 @@ static const struct file_operations sta_ ##name## _ops = {		\
 	.read = sta_##name##_read,					\
 	.write = sta_##name##_write,					\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = mac80211_open_file_generic,				\
 =======
 	.open = simple_open,						\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open = simple_open,						\
+>>>>>>> refs/remotes/origin/master
 	.llseek = generic_file_llseek,					\
 }
 
@@ -60,10 +72,16 @@ static const struct file_operations sta_ ##name## _ops = {		\
 STA_FILE(aid, sta.aid, D);
 STA_FILE(dev, sdata->name, S);
 STA_FILE(last_signal, last_signal, D);
+<<<<<<< HEAD
+=======
+STA_FILE(last_ack_signal, last_ack_signal, D);
+STA_FILE(beacon_loss_count, beacon_loss_count, D);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t sta_flags_read(struct file *file, char __user *userbuf,
 			      size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	char buf[100];
 	struct sta_info *sta = file->private_data;
@@ -79,6 +97,8 @@ static ssize_t sta_flags_read(struct file *file, char __user *userbuf,
 		staflags & WLAN_STA_WDS ? "WDS\n" : "",
 		staflags & WLAN_STA_MFP ? "MFP\n" : "");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	char buf[121];
 	struct sta_info *sta = file->private_data;
 
@@ -86,7 +106,11 @@ static ssize_t sta_flags_read(struct file *file, char __user *userbuf,
 	test_sta_flag(sta, WLAN_STA_##flg) ? #flg "\n" : ""
 
 	int res = scnprintf(buf, sizeof(buf),
+<<<<<<< HEAD
 			    "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+=======
+			    "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+>>>>>>> refs/remotes/origin/master
 			    TEST(AUTH), TEST(ASSOC), TEST(PS_STA),
 			    TEST(PS_DRIVER), TEST(AUTHORIZED),
 			    TEST(SHORT_PREAMBLE),
@@ -94,9 +118,16 @@ static ssize_t sta_flags_read(struct file *file, char __user *userbuf,
 			    TEST(MFP), TEST(BLOCK_BA), TEST(PSPOLL),
 			    TEST(UAPSD), TEST(SP), TEST(TDLS_PEER),
 			    TEST(TDLS_PEER_AUTH), TEST(4ADDR_EVENT),
+<<<<<<< HEAD
 			    TEST(INSERTED), TEST(RATE_CONTROL));
 #undef TEST
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    TEST(INSERTED), TEST(RATE_CONTROL),
+			    TEST(TOFFSET_KNOWN), TEST(MPSP_OWNER),
+			    TEST(MPSP_RECIPIENT));
+#undef TEST
+>>>>>>> refs/remotes/origin/master
 	return simple_read_from_buffer(userbuf, count, ppos, buf, res);
 }
 STA_OPS(flags);
@@ -107,9 +138,12 @@ static ssize_t sta_num_ps_buf_frames_read(struct file *file,
 {
 	struct sta_info *sta = file->private_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return mac80211_format_buffer(userbuf, count, ppos, "%u\n",
 				      skb_queue_len(&sta->ps_tx_buf));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	char buf[17*IEEE80211_NUM_ACS], *p = buf;
 	int ac;
 
@@ -118,7 +152,10 @@ static ssize_t sta_num_ps_buf_frames_read(struct file *file,
 			       skb_queue_len(&sta->ps_tx_buf[ac]) +
 			       skb_queue_len(&sta->tx_filtered[ac]));
 	return simple_read_from_buffer(userbuf, count, ppos, buf, p - buf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 STA_OPS(num_ps_buf_frames);
 
@@ -159,10 +196,17 @@ STA_OPS(connected_time);
 static ssize_t sta_last_seq_ctrl_read(struct file *file, char __user *userbuf,
 				      size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	char buf[15*NUM_RX_DATA_QUEUES], *p = buf;
 	int i;
 	struct sta_info *sta = file->private_data;
 	for (i = 0; i < NUM_RX_DATA_QUEUES; i++)
+=======
+	char buf[15*IEEE80211_NUM_TIDS], *p = buf;
+	int i;
+	struct sta_info *sta = file->private_data;
+	for (i = 0; i < IEEE80211_NUM_TIDS; i++)
+>>>>>>> refs/remotes/origin/master
 		p += scnprintf(p, sizeof(buf)+buf-p, "%x ",
 			       le16_to_cpu(sta->last_seq_ctrl[i]));
 	p += scnprintf(p, sizeof(buf)+buf-p, "\n");
@@ -173,7 +217,11 @@ STA_OPS(last_seq_ctrl);
 static ssize_t sta_agg_status_read(struct file *file, char __user *userbuf,
 					size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	char buf[71 + STA_TID_NUM * 40], *p = buf;
+=======
+	char buf[71 + IEEE80211_NUM_TIDS * 40], *p = buf;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	struct sta_info *sta = file->private_data;
 	struct tid_ampdu_rx *tid_rx;
@@ -186,7 +234,11 @@ static ssize_t sta_agg_status_read(struct file *file, char __user *userbuf,
 	p += scnprintf(p, sizeof(buf) + buf - p,
 		       "TID\t\tRX active\tDTKN\tSSN\t\tTX\tDTKN\tpending\n");
 
+<<<<<<< HEAD
 	for (i = 0; i < STA_TID_NUM; i++) {
+=======
+	for (i = 0; i < IEEE80211_NUM_TIDS; i++) {
+>>>>>>> refs/remotes/origin/master
 		tid_rx = rcu_dereference(sta->ampdu_mlme.tid_rx[i]);
 		tid_tx = rcu_dereference(sta->ampdu_mlme.tid_tx[i]);
 
@@ -246,9 +298,17 @@ static ssize_t sta_agg_status_write(struct file *file, const char __user *userbu
 	} else
 		return -EINVAL;
 
+<<<<<<< HEAD
 	tid = simple_strtoul(buf, NULL, 0);
 
 	if (tid >= STA_TID_NUM)
+=======
+	ret = kstrtoul(buf, 0, &tid);
+	if (ret)
+		return ret;
+
+	if (tid >= IEEE80211_NUM_TIDS)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (tx) {
@@ -305,6 +365,7 @@ static ssize_t sta_ht_capa_read(struct file *file, char __user *userbuf,
 		PRINT_HT_CAP((htc->cap & BIT(10)), "HT Delayed Block Ack");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		PRINT_HT_CAP((htc->cap & BIT(11)), "Max AMSDU length: "
 			     "3839 bytes");
 		PRINT_HT_CAP(!(htc->cap & BIT(11)), "Max AMSDU length: "
@@ -313,6 +374,11 @@ static ssize_t sta_ht_capa_read(struct file *file, char __user *userbuf,
 			     "3839 bytes");
 		PRINT_HT_CAP((htc->cap & BIT(11)), "Max AMSDU length: "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		PRINT_HT_CAP(!(htc->cap & BIT(11)), "Max AMSDU length: "
+			     "3839 bytes");
+		PRINT_HT_CAP((htc->cap & BIT(11)), "Max AMSDU length: "
+>>>>>>> refs/remotes/origin/master
 			     "7935 bytes");
 
 		/*
@@ -354,6 +420,71 @@ static ssize_t sta_ht_capa_read(struct file *file, char __user *userbuf,
 }
 STA_OPS(ht_capa);
 
+<<<<<<< HEAD
+=======
+static ssize_t sta_vht_capa_read(struct file *file, char __user *userbuf,
+				 size_t count, loff_t *ppos)
+{
+	char buf[128], *p = buf;
+	struct sta_info *sta = file->private_data;
+	struct ieee80211_sta_vht_cap *vhtc = &sta->sta.vht_cap;
+
+	p += scnprintf(p, sizeof(buf) + buf - p, "VHT %ssupported\n",
+			vhtc->vht_supported ? "" : "not ");
+	if (vhtc->vht_supported) {
+		p += scnprintf(p, sizeof(buf)+buf-p, "cap: %#.8x\n", vhtc->cap);
+
+		p += scnprintf(p, sizeof(buf)+buf-p, "RX MCS: %.4x\n",
+			       le16_to_cpu(vhtc->vht_mcs.rx_mcs_map));
+		if (vhtc->vht_mcs.rx_highest)
+			p += scnprintf(p, sizeof(buf)+buf-p,
+				       "MCS RX highest: %d Mbps\n",
+				       le16_to_cpu(vhtc->vht_mcs.rx_highest));
+		p += scnprintf(p, sizeof(buf)+buf-p, "TX MCS: %.4x\n",
+			       le16_to_cpu(vhtc->vht_mcs.tx_mcs_map));
+		if (vhtc->vht_mcs.tx_highest)
+			p += scnprintf(p, sizeof(buf)+buf-p,
+				       "MCS TX highest: %d Mbps\n",
+				       le16_to_cpu(vhtc->vht_mcs.tx_highest));
+	}
+
+	return simple_read_from_buffer(userbuf, count, ppos, buf, p - buf);
+}
+STA_OPS(vht_capa);
+
+static ssize_t sta_current_tx_rate_read(struct file *file, char __user *userbuf,
+					size_t count, loff_t *ppos)
+{
+	struct sta_info *sta = file->private_data;
+	struct rate_info rinfo;
+	u16 rate;
+	sta_set_rate_info_tx(sta, &sta->last_tx_rate, &rinfo);
+	rate = cfg80211_calculate_bitrate(&rinfo);
+
+	return mac80211_format_buffer(userbuf, count, ppos,
+				      "%d.%d MBit/s\n",
+				      rate/10, rate%10);
+}
+STA_OPS(current_tx_rate);
+
+static ssize_t sta_last_rx_rate_read(struct file *file, char __user *userbuf,
+				     size_t count, loff_t *ppos)
+{
+	struct sta_info *sta = file->private_data;
+	struct rate_info rinfo;
+	u16 rate;
+
+	sta_set_rate_info_rx(sta, &rinfo);
+
+	rate = cfg80211_calculate_bitrate(&rinfo);
+
+	return mac80211_format_buffer(userbuf, count, ppos,
+				      "%d.%d MBit/s\n",
+				      rate/10, rate%10);
+}
+STA_OPS(last_rx_rate);
+
+>>>>>>> refs/remotes/origin/master
 #define DEBUGFS_ADD(name) \
 	debugfs_create_file(#name, 0400, \
 		sta->debugfs.dir, sta, &sta_ ##name## _ops);
@@ -368,6 +499,11 @@ STA_OPS(ht_capa);
 
 void ieee80211_sta_debugfs_add(struct sta_info *sta)
 {
+<<<<<<< HEAD
+=======
+	struct ieee80211_local *local = sta->local;
+	struct ieee80211_sub_if_data *sdata = sta->sdata;
+>>>>>>> refs/remotes/origin/master
 	struct dentry *stations_dir = sta->sdata->debugfs.subdir_stations;
 	u8 mac[3*ETH_ALEN];
 
@@ -399,7 +535,16 @@ void ieee80211_sta_debugfs_add(struct sta_info *sta)
 	DEBUGFS_ADD(agg_status);
 	DEBUGFS_ADD(dev);
 	DEBUGFS_ADD(last_signal);
+<<<<<<< HEAD
 	DEBUGFS_ADD(ht_capa);
+=======
+	DEBUGFS_ADD(beacon_loss_count);
+	DEBUGFS_ADD(ht_capa);
+	DEBUGFS_ADD(vht_capa);
+	DEBUGFS_ADD(last_ack_signal);
+	DEBUGFS_ADD(current_tx_rate);
+	DEBUGFS_ADD(last_rx_rate);
+>>>>>>> refs/remotes/origin/master
 
 	DEBUGFS_ADD_COUNTER(rx_packets, rx_packets);
 	DEBUGFS_ADD_COUNTER(tx_packets, tx_packets);
@@ -413,10 +558,31 @@ void ieee80211_sta_debugfs_add(struct sta_info *sta)
 	DEBUGFS_ADD_COUNTER(tx_retry_failed, tx_retry_failed);
 	DEBUGFS_ADD_COUNTER(tx_retry_count, tx_retry_count);
 	DEBUGFS_ADD_COUNTER(wep_weak_iv_count, wep_weak_iv_count);
+<<<<<<< HEAD
+=======
+
+	if (sizeof(sta->driver_buffered_tids) == sizeof(u32))
+		debugfs_create_x32("driver_buffered_tids", 0400,
+				   sta->debugfs.dir,
+				   (u32 *)&sta->driver_buffered_tids);
+	else
+		debugfs_create_x64("driver_buffered_tids", 0400,
+				   sta->debugfs.dir,
+				   (u64 *)&sta->driver_buffered_tids);
+
+	drv_sta_add_debugfs(local, sdata, &sta->sta, sta->debugfs.dir);
+>>>>>>> refs/remotes/origin/master
 }
 
 void ieee80211_sta_debugfs_remove(struct sta_info *sta)
 {
+<<<<<<< HEAD
+=======
+	struct ieee80211_local *local = sta->local;
+	struct ieee80211_sub_if_data *sdata = sta->sdata;
+
+	drv_sta_remove_debugfs(local, sdata, &sta->sta, sta->debugfs.dir);
+>>>>>>> refs/remotes/origin/master
 	debugfs_remove_recursive(sta->debugfs.dir);
 	sta->debugfs.dir = NULL;
 }

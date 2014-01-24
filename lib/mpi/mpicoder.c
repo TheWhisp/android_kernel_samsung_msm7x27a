@@ -18,10 +18,71 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/bitops.h>
+#include <asm-generic/bitops/count_zeros.h>
+>>>>>>> refs/remotes/origin/master
 #include "mpi-internal.h"
 
 #define MAX_EXTERN_MPI_BITS 16384
 
+<<<<<<< HEAD
+=======
+/**
+ * mpi_read_raw_data - Read a raw byte stream as a positive integer
+ * @xbuffer: The data to read
+ * @nbytes: The amount of data to read
+ */
+MPI mpi_read_raw_data(const void *xbuffer, size_t nbytes)
+{
+	const uint8_t *buffer = xbuffer;
+	int i, j;
+	unsigned nbits, nlimbs;
+	mpi_limb_t a;
+	MPI val = NULL;
+
+	while (nbytes > 0 && buffer[0] == 0) {
+		buffer++;
+		nbytes--;
+	}
+
+	nbits = nbytes * 8;
+	if (nbits > MAX_EXTERN_MPI_BITS) {
+		pr_info("MPI: mpi too large (%u bits)\n", nbits);
+		return NULL;
+	}
+	if (nbytes > 0)
+		nbits -= count_leading_zeros(buffer[0]);
+	else
+		nbits = 0;
+
+	nlimbs = DIV_ROUND_UP(nbytes, BYTES_PER_MPI_LIMB);
+	val = mpi_alloc(nlimbs);
+	if (!val)
+		return NULL;
+	val->nbits = nbits;
+	val->sign = 0;
+	val->nlimbs = nlimbs;
+
+	if (nbytes > 0) {
+		i = BYTES_PER_MPI_LIMB - nbytes % BYTES_PER_MPI_LIMB;
+		i %= BYTES_PER_MPI_LIMB;
+		for (j = nlimbs; j > 0; j--) {
+			a = 0;
+			for (; i < BYTES_PER_MPI_LIMB; i++) {
+				a <<= 8;
+				a |= *buffer++;
+			}
+			i = 0;
+			val->d[j - 1] = a;
+		}
+	}
+	return val;
+}
+EXPORT_SYMBOL_GPL(mpi_read_raw_data);
+
+>>>>>>> refs/remotes/origin/master
 MPI mpi_read_from_buffer(const void *xbuffer, unsigned *ret_nread)
 {
 	const uint8_t *buffer = xbuffer;
@@ -41,8 +102,13 @@ MPI mpi_read_from_buffer(const void *xbuffer, unsigned *ret_nread)
 	buffer += 2;
 	nread = 2;
 
+<<<<<<< HEAD
 	nbytes = (nbits + 7) / 8;
 	nlimbs = (nbytes + BYTES_PER_MPI_LIMB - 1) / BYTES_PER_MPI_LIMB;
+=======
+	nbytes = DIV_ROUND_UP(nbits, 8);
+	nlimbs = DIV_ROUND_UP(nbytes, BYTES_PER_MPI_LIMB);
+>>>>>>> refs/remotes/origin/master
 	val = mpi_alloc(nlimbs);
 	if (!val)
 		return NULL;
@@ -74,6 +140,7 @@ leave:
 EXPORT_SYMBOL_GPL(mpi_read_from_buffer);
 
 /****************
+<<<<<<< HEAD
  * Make an mpi from a character string.
  */
 int mpi_fromstr(MPI val, const char *str)
@@ -149,6 +216,8 @@ int mpi_fromstr(MPI val, const char *str)
 EXPORT_SYMBOL_GPL(mpi_fromstr);
 
 /****************
+=======
+>>>>>>> refs/remotes/origin/master
  * Return an allocated buffer with the MPI (msb first).
  * NBYTES receives the length of this buffer. Caller must free the
  * return string (This function does return a 0 byte buffer with NBYTES
@@ -213,7 +282,11 @@ int mpi_set_buffer(MPI a, const void *xbuffer, unsigned nbytes, int sign)
 	int nlimbs;
 	int i;
 
+<<<<<<< HEAD
 	nlimbs = (nbytes + BYTES_PER_MPI_LIMB - 1) / BYTES_PER_MPI_LIMB;
+=======
+	nlimbs = DIV_ROUND_UP(nbytes, BYTES_PER_MPI_LIMB);
+>>>>>>> refs/remotes/origin/master
 	if (RESIZE_IF_NEEDED(a, nlimbs) < 0)
 		return -ENOMEM;
 	a->sign = sign;

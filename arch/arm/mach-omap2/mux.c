@@ -33,6 +33,7 @@
 #include <linux/seq_file.h>
 #include <linux/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/system.h>
 =======
@@ -49,6 +50,19 @@
 =======
 #include "prm.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/irq.h>
+#include <linux/interrupt.h>
+
+
+#include "omap_hwmod.h"
+
+#include "soc.h"
+#include "control.h"
+#include "mux.h"
+#include "prm.h"
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 #define OMAP_MUX_BASE_OFFSET		0x30	/* Offset from CTRL_BASE */
 #define OMAP_MUX_BASE_SZ		0x5ca
@@ -141,10 +155,14 @@ static int __init _omap_mux_init_gpio(struct omap_mux_partition *partition,
 
 	old_mode = omap_mux_read(partition, gpio_mux->reg_offset);
 	mux_mode = val & ~(OMAP_MUX_NR_MODES - 1);
+<<<<<<< HEAD
 	if (partition->flags & OMAP_MUX_GPIO_IN_MODE3)
 		mux_mode |= OMAP_MUX_MODE3;
 	else
 		mux_mode |= OMAP_MUX_MODE4;
+=======
+	mux_mode |= partition->gpio;
+>>>>>>> refs/remotes/origin/master
 	pr_debug("%s: Setting signal %s.gpio%i 0x%04x -> 0x%04x\n", __func__,
 		 gpio_mux->muxnames[0], gpio, old_mode, mux_mode);
 	omap_mux_write(partition, mux_mode, gpio_mux->reg_offset);
@@ -220,6 +238,7 @@ static int __init _omap_mux_get_by_name(struct omap_mux_partition *partition,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	pr_err("%s: Could not find signal %s\n", __func__, muxname);
 
 	return -ENODEV;
@@ -227,6 +246,12 @@ static int __init _omap_mux_get_by_name(struct omap_mux_partition *partition,
 
 static int __init
 omap_mux_get_by_name(const char *muxname,
+=======
+	return -ENODEV;
+}
+
+int __init omap_mux_get_by_name(const char *muxname,
+>>>>>>> refs/remotes/origin/master
 			struct omap_mux_partition **found_partition,
 			struct omap_mux **found_mux)
 {
@@ -244,6 +269,11 @@ omap_mux_get_by_name(const char *muxname,
 		return mux_mode;
 	}
 
+<<<<<<< HEAD
+=======
+	pr_err("%s: Could not find signal %s\n", __func__, muxname);
+
+>>>>>>> refs/remotes/origin/master
 	return -ENODEV;
 }
 
@@ -255,7 +285,11 @@ int __init omap_mux_init_signal(const char *muxname, int val)
 	int mux_mode;
 
 	mux_mode = omap_mux_get_by_name(muxname, &partition, &mux);
+<<<<<<< HEAD
 	if (mux_mode < 0)
+=======
+	if (mux_mode < 0 || !mux)
+>>>>>>> refs/remotes/origin/master
 		return mux_mode;
 
 	old_mode = omap_mux_read(partition, mux->reg_offset);
@@ -317,11 +351,16 @@ omap_hwmod_mux_init(struct omap_device_pad *bpads, int nr_pads)
 		pad->off = bpad->off;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (pad->flags & OMAP_DEVICE_PAD_REMUX)
 =======
 		if (pad->flags &
 		    (OMAP_DEVICE_PAD_REMUX | OMAP_DEVICE_PAD_WAKEUP))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pad->flags &
+		    (OMAP_DEVICE_PAD_REMUX | OMAP_DEVICE_PAD_WAKEUP))
+>>>>>>> refs/remotes/origin/master
 			nr_pads_dynamic++;
 
 		pr_debug("%s: Initialized %s\n", __func__, pad->name);
@@ -347,11 +386,16 @@ omap_hwmod_mux_init(struct omap_device_pad *bpads, int nr_pads)
 		struct omap_device_pad *pad = &hmux->pads[i];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (pad->flags & OMAP_DEVICE_PAD_REMUX) {
 =======
 		if (pad->flags &
 		    (OMAP_DEVICE_PAD_REMUX | OMAP_DEVICE_PAD_WAKEUP)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pad->flags &
+		    (OMAP_DEVICE_PAD_REMUX | OMAP_DEVICE_PAD_WAKEUP)) {
+>>>>>>> refs/remotes/origin/master
 			pr_debug("%s: pad %s tagged dynamic\n",
 					__func__, pad->name);
 			hmux->pads_dynamic[nr_pads_dynamic] = pad;
@@ -372,7 +416,10 @@ err1:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * omap_hwmod_mux_scan_wakeups - omap hwmod scan wakeup pads
  * @hmux: Pads for a hwmod
@@ -445,7 +492,10 @@ static irqreturn_t omap_hwmod_mux_handle_irq(int irq, void *unused)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Assumes the calling function takes care of locking */
 void omap_hwmod_mux(struct omap_hwmod_mux_info *hmux, u8 state)
 {
@@ -505,7 +555,11 @@ void omap_hwmod_mux(struct omap_hwmod_mux_info *hmux, u8 state)
 		default:
 			/* Nothing to be done */
 			break;
+<<<<<<< HEAD
 		};
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 
 		if (val >= 0) {
 			omap_mux_write(pad->partition, val,
@@ -760,8 +814,14 @@ static void __init omap_mux_dbg_create_entry(
 	list_for_each_entry(e, &partition->muxmodes, node) {
 		struct omap_mux *m = &e->mux;
 
+<<<<<<< HEAD
 		(void)debugfs_create_file(m->muxnames[0], S_IWUSR, mux_dbg_dir,
 					  m, &omap_mux_dbg_signal_fops);
+=======
+		(void)debugfs_create_file(m->muxnames[0], S_IWUSR | S_IRUGO,
+					  mux_dbg_dir, m,
+					  &omap_mux_dbg_signal_fops);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -807,6 +867,7 @@ static void __init omap_mux_free_names(struct omap_mux *m)
 }
 
 /* Free all data except for GPIO pins unless CONFIG_DEBUG_FS is set */
+<<<<<<< HEAD
 static int __init omap_mux_late_init(void)
 {
 	struct omap_mux_partition *partition;
@@ -814,6 +875,12 @@ static int __init omap_mux_late_init(void)
 =======
 	int ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __init omap_mux_late_init(void)
+{
+	struct omap_mux_partition *partition;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	list_for_each_entry(partition, &mux_partitions, node) {
 		struct omap_mux_entry *e, *tmp;
@@ -821,7 +888,11 @@ static int __init omap_mux_late_init(void)
 			struct omap_mux *m = &e->mux;
 			u16 mode = omap_mux_read(partition, m->reg_offset);
 
+<<<<<<< HEAD
 			if (OMAP_MODE_GPIO(mode))
+=======
+			if (OMAP_MODE_GPIO(partition, mode))
+>>>>>>> refs/remotes/origin/master
 				continue;
 
 #ifndef CONFIG_DEBUG_FS
@@ -835,7 +906,16 @@ static int __init omap_mux_late_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+	omap_mux_dbg_init();
+
+	/* see pinctrl-single-omap for the wake-up interrupt handling */
+	if (of_have_populated_dt())
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	ret = request_irq(omap_prcm_event_to_irq("io"),
 		omap_hwmod_mux_handle_irq, IRQF_SHARED | IRQF_NO_SUSPEND,
 			"hwmod_io", omap_mux_late_init);
@@ -843,12 +923,17 @@ static int __init omap_mux_late_init(void)
 	if (ret)
 		pr_warning("mux: Failed to setup hwmod io irq %d\n", ret);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	omap_mux_dbg_init();
 
 	return 0;
 }
 late_initcall(omap_mux_late_init);
+=======
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 static void __init omap_mux_package_fixup(struct omap_mux *p,
 					struct omap_mux *superset)
@@ -931,17 +1016,23 @@ static void __init omap_mux_set_cmdline_signals(void)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	options = kmalloc(strlen(omap_mux_options) + 1, GFP_KERNEL);
 	if (!options)
 		return;
 
 	strcpy(options, omap_mux_options);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	options = kstrdup(omap_mux_options, GFP_KERNEL);
 	if (!options)
 		return;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	next_opt = options;
 
 	while ((token = strsep(&next_opt, ",")) != NULL) {
@@ -972,6 +1063,7 @@ static int __init omap_mux_copy_names(struct omap_mux *src,
 	for (i = 0; i < OMAP_MUX_NR_MODES; i++) {
 		if (src->muxnames[i]) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dst->muxnames[i] =
 				kmalloc(strlen(src->muxnames[i]) + 1,
 					GFP_KERNEL);
@@ -979,17 +1071,23 @@ static int __init omap_mux_copy_names(struct omap_mux *src,
 				goto free;
 			strcpy(dst->muxnames[i], src->muxnames[i]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			dst->muxnames[i] = kstrdup(src->muxnames[i],
 						   GFP_KERNEL);
 			if (!dst->muxnames[i])
 				goto free;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 #ifdef CONFIG_DEBUG_FS
 	for (i = 0; i < OMAP_MUX_NR_SIDES; i++) {
 		if (src->balls[i]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			dst->balls[i] =
 				kmalloc(strlen(src->balls[i]) + 1,
@@ -1002,6 +1100,11 @@ static int __init omap_mux_copy_names(struct omap_mux *src,
 			if (!dst->balls[i])
 				goto free;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dst->balls[i] = kstrdup(src->balls[i], GFP_KERNEL);
+			if (!dst->balls[i])
+				goto free;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 #endif
@@ -1116,7 +1219,11 @@ static void __init omap_mux_init_list(struct omap_mux_partition *partition,
 		}
 #else
 		/* Skip pins that are not muxed as GPIO by bootloader */
+<<<<<<< HEAD
 		if (!OMAP_MODE_GPIO(omap_mux_read(partition,
+=======
+		if (!OMAP_MODE_GPIO(partition, omap_mux_read(partition,
+>>>>>>> refs/remotes/origin/master
 				    superset->reg_offset))) {
 			superset++;
 			continue;
@@ -1145,12 +1252,17 @@ static void omap_mux_init_package(struct omap_mux *superset,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void omap_mux_init_signals(struct omap_mux_partition *partition,
 				  struct omap_board_mux *board_mux)
 =======
 static void __init omap_mux_init_signals(struct omap_mux_partition *partition,
 					 struct omap_board_mux *board_mux)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init omap_mux_init_signals(struct omap_mux_partition *partition,
+					 struct omap_board_mux *board_mux)
+>>>>>>> refs/remotes/origin/master
 {
 	omap_mux_set_cmdline_signals();
 	omap_mux_write_array(partition, board_mux);
@@ -1165,12 +1277,17 @@ static void omap_mux_init_package(struct omap_mux *superset,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void omap_mux_init_signals(struct omap_mux_partition *partition,
 				  struct omap_board_mux *board_mux)
 =======
 static void __init omap_mux_init_signals(struct omap_mux_partition *partition,
 					 struct omap_board_mux *board_mux)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init omap_mux_init_signals(struct omap_mux_partition *partition,
+					 struct omap_board_mux *board_mux)
+>>>>>>> refs/remotes/origin/master
 {
 }
 
@@ -1193,6 +1310,10 @@ int __init omap_mux_init(const char *name, u32 flags,
 
 	partition->name = name;
 	partition->flags = flags;
+<<<<<<< HEAD
+=======
+	partition->gpio = flags & OMAP_MUX_MODE7;
+>>>>>>> refs/remotes/origin/master
 	partition->size = mux_size;
 	partition->phys = mux_pbase;
 	partition->base = ioremap(mux_pbase, mux_size);

@@ -1,6 +1,7 @@
 /*******************************************************************************
  * Filename:  target_core_stat.c
  *
+<<<<<<< HEAD
  * Copyright (c) 2011 Rising Tide Systems
  * Copyright (c) 2011 Linux-iSCSI.org
  *
@@ -8,6 +9,12 @@
  * target_core_mib.c code
  *
  * Copyright (c) 2006-2007 SBE, Inc.  All Rights Reserved.
+=======
+ * Modern ConfigFS group context specific statistics based on original
+ * target_core_mib.c code
+ *
+ * (c) Copyright 2006-2013 Datera, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Nicholas A. Bellinger <nab@linux-iscsi.org>
  *
@@ -33,6 +40,7 @@
 #include <linux/timer.h>
 #include <linux/string.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -41,12 +49,18 @@
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 #include <linux/blkdev.h>
+=======
+#include <linux/utsname.h>
+#include <linux/proc_fs.h>
+#include <linux/seq_file.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/configfs.h>
 #include <scsi/scsi.h>
 #include <scsi/scsi_device.h>
 #include <scsi/scsi_host.h>
 
 #include <target/target_core_base.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <target/target_core_transport.h>
 #include <target/target_core_fabric_ops.h>
@@ -55,13 +69,18 @@
 
 #include "target_core_hba.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <target/target_core_backend.h>
 #include <target/target_core_fabric.h>
 #include <target/target_core_configfs.h>
 #include <target/configfs_macros.h>
 
 #include "target_core_internal.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef INITIAL_JIFFIES
 #define INITIAL_JIFFIES ((unsigned long)(unsigned int) (-300*HZ))
@@ -94,6 +113,7 @@ static struct target_stat_scsi_dev_attribute				\
 static ssize_t target_stat_scsi_dev_show_attr_inst(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_hba *hba = se_subdev->se_dev_hba;
@@ -101,6 +121,11 @@ static ssize_t target_stat_scsi_dev_show_attr_inst(
 
 	if (!dev)
 		return -ENODEV;
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+	struct se_hba *hba = dev->se_hba;
+>>>>>>> refs/remotes/origin/master
 
 	return snprintf(page, PAGE_SIZE, "%u\n", hba->hba_index);
 }
@@ -109,12 +134,17 @@ DEV_STAT_SCSI_DEV_ATTR_RO(inst);
 static ssize_t target_stat_scsi_dev_show_attr_indx(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
 
 	if (!dev)
 		return -ENODEV;
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+>>>>>>> refs/remotes/origin/master
 
 	return snprintf(page, PAGE_SIZE, "%u\n", dev->dev_index);
 }
@@ -123,6 +153,7 @@ DEV_STAT_SCSI_DEV_ATTR_RO(indx);
 static ssize_t target_stat_scsi_dev_show_attr_role(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -130,6 +161,8 @@ static ssize_t target_stat_scsi_dev_show_attr_role(
 	if (!dev)
 		return -ENODEV;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return snprintf(page, PAGE_SIZE, "Target\n");
 }
 DEV_STAT_SCSI_DEV_ATTR_RO(role);
@@ -137,12 +170,17 @@ DEV_STAT_SCSI_DEV_ATTR_RO(role);
 static ssize_t target_stat_scsi_dev_show_attr_ports(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
 
 	if (!dev)
 		return -ENODEV;
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+>>>>>>> refs/remotes/origin/master
 
 	return snprintf(page, PAGE_SIZE, "%u\n", dev->dev_port_count);
 }
@@ -190,6 +228,7 @@ static struct target_stat_scsi_tgt_dev_attribute			\
 static ssize_t target_stat_scsi_tgt_dev_show_attr_inst(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_hba *hba = se_subdev->se_dev_hba;
@@ -197,6 +236,11 @@ static ssize_t target_stat_scsi_tgt_dev_show_attr_inst(
 
 	if (!dev)
 		return -ENODEV;
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+	struct se_hba *hba = dev->se_hba;
+>>>>>>> refs/remotes/origin/master
 
 	return snprintf(page, PAGE_SIZE, "%u\n", hba->hba_index);
 }
@@ -205,12 +249,17 @@ DEV_STAT_SCSI_TGT_DEV_ATTR_RO(inst);
 static ssize_t target_stat_scsi_tgt_dev_show_attr_indx(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
 
 	if (!dev)
 		return -ENODEV;
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+>>>>>>> refs/remotes/origin/master
 
 	return snprintf(page, PAGE_SIZE, "%u\n", dev->dev_index);
 }
@@ -219,6 +268,7 @@ DEV_STAT_SCSI_TGT_DEV_ATTR_RO(indx);
 static ssize_t target_stat_scsi_tgt_dev_show_attr_num_lus(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -226,6 +276,8 @@ static ssize_t target_stat_scsi_tgt_dev_show_attr_num_lus(
 	if (!dev)
 		return -ENODEV;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return snprintf(page, PAGE_SIZE, "%u\n", LU_COUNT);
 }
 DEV_STAT_SCSI_TGT_DEV_ATTR_RO(num_lus);
@@ -233,6 +285,7 @@ DEV_STAT_SCSI_TGT_DEV_ATTR_RO(num_lus);
 static ssize_t target_stat_scsi_tgt_dev_show_attr_status(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -261,12 +314,22 @@ static ssize_t target_stat_scsi_tgt_dev_show_attr_status(
 	}
 
 	return snprintf(page, PAGE_SIZE, "%s\n", status);
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+
+	if (dev->export_count)
+		return snprintf(page, PAGE_SIZE, "activated");
+	else
+		return snprintf(page, PAGE_SIZE, "deactivated");
+>>>>>>> refs/remotes/origin/master
 }
 DEV_STAT_SCSI_TGT_DEV_ATTR_RO(status);
 
 static ssize_t target_stat_scsi_tgt_dev_show_attr_non_access_lus(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -287,6 +350,16 @@ static ssize_t target_stat_scsi_tgt_dev_show_attr_non_access_lus(
 		non_accessible_lus = 1;
 		break;
 	}
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+	int non_accessible_lus;
+
+	if (dev->export_count)
+		non_accessible_lus = 0;
+	else
+		non_accessible_lus = 1;
+>>>>>>> refs/remotes/origin/master
 
 	return snprintf(page, PAGE_SIZE, "%u\n", non_accessible_lus);
 }
@@ -295,6 +368,7 @@ DEV_STAT_SCSI_TGT_DEV_ATTR_RO(non_access_lus);
 static ssize_t target_stat_scsi_tgt_dev_show_attr_resets(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -303,6 +377,13 @@ static ssize_t target_stat_scsi_tgt_dev_show_attr_resets(
 		return -ENODEV;
 
 	return snprintf(page, PAGE_SIZE, "%u\n", dev->num_resets);
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+
+	return snprintf(page, PAGE_SIZE, "%lu\n",
+			atomic_long_read(&dev->num_resets));
+>>>>>>> refs/remotes/origin/master
 }
 DEV_STAT_SCSI_TGT_DEV_ATTR_RO(resets);
 
@@ -349,6 +430,7 @@ static struct target_stat_scsi_lu_attribute target_stat_scsi_lu_##_name = \
 static ssize_t target_stat_scsi_lu_show_attr_inst(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_hba *hba = se_subdev->se_dev_hba;
@@ -356,6 +438,11 @@ static ssize_t target_stat_scsi_lu_show_attr_inst(
 
 	if (!dev)
 		return -ENODEV;
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+	struct se_hba *hba = dev->se_hba;
+>>>>>>> refs/remotes/origin/master
 
 	return snprintf(page, PAGE_SIZE, "%u\n", hba->hba_index);
 }
@@ -364,12 +451,17 @@ DEV_STAT_SCSI_LU_ATTR_RO(inst);
 static ssize_t target_stat_scsi_lu_show_attr_dev(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
 
 	if (!dev)
 		return -ENODEV;
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+>>>>>>> refs/remotes/origin/master
 
 	return snprintf(page, PAGE_SIZE, "%u\n", dev->dev_index);
 }
@@ -378,6 +470,7 @@ DEV_STAT_SCSI_LU_ATTR_RO(dev);
 static ssize_t target_stat_scsi_lu_show_attr_indx(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -385,6 +478,8 @@ static ssize_t target_stat_scsi_lu_show_attr_indx(
 	if (!dev)
 		return -ENODEV;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return snprintf(page, PAGE_SIZE, "%u\n", SCSI_LU_INDEX);
 }
 DEV_STAT_SCSI_LU_ATTR_RO(indx);
@@ -392,12 +487,15 @@ DEV_STAT_SCSI_LU_ATTR_RO(indx);
 static ssize_t target_stat_scsi_lu_show_attr_lun(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
 
 	if (!dev)
 		return -ENODEV;
+=======
+>>>>>>> refs/remotes/origin/master
 	/* FIXME: scsiLuDefaultLun */
 	return snprintf(page, PAGE_SIZE, "%llu\n", (unsigned long long)0);
 }
@@ -406,6 +504,7 @@ DEV_STAT_SCSI_LU_ATTR_RO(lun);
 static ssize_t target_stat_scsi_lu_show_attr_lu_name(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -421,12 +520,22 @@ static ssize_t target_stat_scsi_lu_show_attr_lu_name(
 			(strlen(dev->se_sub_dev->t10_wwn.unit_serial)) ?
 			dev->se_sub_dev->t10_wwn.unit_serial : "None");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+
+	/* scsiLuWwnName */
+	return snprintf(page, PAGE_SIZE, "%s\n",
+			(strlen(dev->t10_wwn.unit_serial)) ?
+			dev->t10_wwn.unit_serial : "None");
+>>>>>>> refs/remotes/origin/master
 }
 DEV_STAT_SCSI_LU_ATTR_RO(lu_name);
 
 static ssize_t target_stat_scsi_lu_show_attr_vend(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -455,6 +564,18 @@ static ssize_t target_stat_scsi_lu_show_attr_vend(
 			dev->se_sub_dev->t10_wwn.vendor[i] : ' ';
 	str[i] = '\0';
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+	int i;
+	char str[sizeof(dev->t10_wwn.vendor)+1];
+
+	/* scsiLuVendorId */
+	for (i = 0; i < sizeof(dev->t10_wwn.vendor); i++)
+		str[i] = ISPRINT(dev->t10_wwn.vendor[i]) ?
+			dev->t10_wwn.vendor[i] : ' ';
+	str[i] = '\0';
+>>>>>>> refs/remotes/origin/master
 	return snprintf(page, PAGE_SIZE, "%s\n", str);
 }
 DEV_STAT_SCSI_LU_ATTR_RO(vend);
@@ -462,6 +583,7 @@ DEV_STAT_SCSI_LU_ATTR_RO(vend);
 static ssize_t target_stat_scsi_lu_show_attr_prod(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -489,6 +611,18 @@ static ssize_t target_stat_scsi_lu_show_attr_prod(
 			dev->se_sub_dev->t10_wwn.model[i] : ' ';
 	str[i] = '\0';
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+	int i;
+	char str[sizeof(dev->t10_wwn.model)+1];
+
+	/* scsiLuProductId */
+	for (i = 0; i < sizeof(dev->t10_wwn.vendor); i++)
+		str[i] = ISPRINT(dev->t10_wwn.model[i]) ?
+			dev->t10_wwn.model[i] : ' ';
+	str[i] = '\0';
+>>>>>>> refs/remotes/origin/master
 	return snprintf(page, PAGE_SIZE, "%s\n", str);
 }
 DEV_STAT_SCSI_LU_ATTR_RO(prod);
@@ -496,6 +630,7 @@ DEV_STAT_SCSI_LU_ATTR_RO(prod);
 static ssize_t target_stat_scsi_lu_show_attr_rev(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -523,6 +658,18 @@ static ssize_t target_stat_scsi_lu_show_attr_rev(
 			dev->se_sub_dev->t10_wwn.revision[i] : ' ';
 	str[i] = '\0';
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+	int i;
+	char str[sizeof(dev->t10_wwn.revision)+1];
+
+	/* scsiLuRevisionId */
+	for (i = 0; i < sizeof(dev->t10_wwn.revision); i++)
+		str[i] = ISPRINT(dev->t10_wwn.revision[i]) ?
+			dev->t10_wwn.revision[i] : ' ';
+	str[i] = '\0';
+>>>>>>> refs/remotes/origin/master
 	return snprintf(page, PAGE_SIZE, "%s\n", str);
 }
 DEV_STAT_SCSI_LU_ATTR_RO(rev);
@@ -530,6 +677,7 @@ DEV_STAT_SCSI_LU_ATTR_RO(rev);
 static ssize_t target_stat_scsi_lu_show_attr_dev_type(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -544,12 +692,21 @@ static ssize_t target_stat_scsi_lu_show_attr_dev_type(
 =======
 			dev->transport->get_device_type(dev));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+
+	/* scsiLuPeripheralType */
+	return snprintf(page, PAGE_SIZE, "%u\n",
+			dev->transport->get_device_type(dev));
+>>>>>>> refs/remotes/origin/master
 }
 DEV_STAT_SCSI_LU_ATTR_RO(dev_type);
 
 static ssize_t target_stat_scsi_lu_show_attr_status(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -561,12 +718,21 @@ static ssize_t target_stat_scsi_lu_show_attr_status(
 	return snprintf(page, PAGE_SIZE, "%s\n",
 		(dev->dev_status == TRANSPORT_DEVICE_ACTIVATED) ?
 		"available" : "notavailable");
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+
+	/* scsiLuStatus */
+	return snprintf(page, PAGE_SIZE, "%s\n",
+		(dev->export_count) ? "available" : "notavailable");
+>>>>>>> refs/remotes/origin/master
 }
 DEV_STAT_SCSI_LU_ATTR_RO(status);
 
 static ssize_t target_stat_scsi_lu_show_attr_state_bit(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -574,6 +740,8 @@ static ssize_t target_stat_scsi_lu_show_attr_state_bit(
 	if (!dev)
 		return -ENODEV;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* scsiLuState */
 	return snprintf(page, PAGE_SIZE, "exposed\n");
 }
@@ -582,6 +750,7 @@ DEV_STAT_SCSI_LU_ATTR_RO(state_bit);
 static ssize_t target_stat_scsi_lu_show_attr_num_cmds(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -592,12 +761,21 @@ static ssize_t target_stat_scsi_lu_show_attr_num_cmds(
 	/* scsiLuNumCommands */
 	return snprintf(page, PAGE_SIZE, "%llu\n",
 			(unsigned long long)dev->num_cmds);
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+
+	/* scsiLuNumCommands */
+	return snprintf(page, PAGE_SIZE, "%lu\n",
+			atomic_long_read(&dev->num_cmds));
+>>>>>>> refs/remotes/origin/master
 }
 DEV_STAT_SCSI_LU_ATTR_RO(num_cmds);
 
 static ssize_t target_stat_scsi_lu_show_attr_read_mbytes(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -607,12 +785,21 @@ static ssize_t target_stat_scsi_lu_show_attr_read_mbytes(
 
 	/* scsiLuReadMegaBytes */
 	return snprintf(page, PAGE_SIZE, "%u\n", (u32)(dev->read_bytes >> 20));
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+
+	/* scsiLuReadMegaBytes */
+	return snprintf(page, PAGE_SIZE, "%lu\n",
+			atomic_long_read(&dev->read_bytes) >> 20);
+>>>>>>> refs/remotes/origin/master
 }
 DEV_STAT_SCSI_LU_ATTR_RO(read_mbytes);
 
 static ssize_t target_stat_scsi_lu_show_attr_write_mbytes(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -622,12 +809,21 @@ static ssize_t target_stat_scsi_lu_show_attr_write_mbytes(
 
 	/* scsiLuWrittenMegaBytes */
 	return snprintf(page, PAGE_SIZE, "%u\n", (u32)(dev->write_bytes >> 20));
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+
+	/* scsiLuWrittenMegaBytes */
+	return snprintf(page, PAGE_SIZE, "%lu\n",
+			atomic_long_read(&dev->write_bytes) >> 20);
+>>>>>>> refs/remotes/origin/master
 }
 DEV_STAT_SCSI_LU_ATTR_RO(write_mbytes);
 
 static ssize_t target_stat_scsi_lu_show_attr_resets(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -637,12 +833,20 @@ static ssize_t target_stat_scsi_lu_show_attr_resets(
 
 	/* scsiLuInResets */
 	return snprintf(page, PAGE_SIZE, "%u\n", dev->num_resets);
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+
+	/* scsiLuInResets */
+	return snprintf(page, PAGE_SIZE, "%lu\n", atomic_long_read(&dev->num_resets));
+>>>>>>> refs/remotes/origin/master
 }
 DEV_STAT_SCSI_LU_ATTR_RO(resets);
 
 static ssize_t target_stat_scsi_lu_show_attr_full_stat(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -650,6 +854,8 @@ static ssize_t target_stat_scsi_lu_show_attr_full_stat(
 	if (!dev)
 		return -ENODEV;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* FIXME: scsiLuOutTaskSetFullStatus */
 	return snprintf(page, PAGE_SIZE, "%u\n", 0);
 }
@@ -658,6 +864,7 @@ DEV_STAT_SCSI_LU_ATTR_RO(full_stat);
 static ssize_t target_stat_scsi_lu_show_attr_hs_num_cmds(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
@@ -665,6 +872,8 @@ static ssize_t target_stat_scsi_lu_show_attr_hs_num_cmds(
 	if (!dev)
 		return -ENODEV;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* FIXME: scsiLuHSInCommands */
 	return snprintf(page, PAGE_SIZE, "%u\n", 0);
 }
@@ -673,12 +882,17 @@ DEV_STAT_SCSI_LU_ATTR_RO(hs_num_cmds);
 static ssize_t target_stat_scsi_lu_show_attr_creation_time(
 	struct se_dev_stat_grps *sgrps, char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_subdev = container_of(sgrps,
 			struct se_subsystem_dev, dev_stat_grps);
 	struct se_device *dev = se_subdev->se_dev_ptr;
 
 	if (!dev)
 		return -ENODEV;
+=======
+	struct se_device *dev =
+		container_of(sgrps, struct se_device, dev_stat_grps);
+>>>>>>> refs/remotes/origin/master
 
 	/* scsiLuCreationTime */
 	return snprintf(page, PAGE_SIZE, "%u\n", (u32)(((u32)dev->creation_time -
@@ -725,6 +939,7 @@ static struct config_item_type target_stat_scsi_lu_cit = {
  * Called from target_core_configfs.c:target_core_make_subdev() to setup
  * the target statistics groups + configfs CITs located in target_core_stat.c
  */
+<<<<<<< HEAD
 void target_stat_setup_dev_default_groups(struct se_subsystem_dev *se_subdev)
 {
 <<<<<<< HEAD
@@ -754,6 +969,22 @@ void target_stat_setup_dev_default_groups(struct se_subsystem_dev *se_subdev)
 	dev_stat_grp->default_groups[1] = &se_subdev->dev_stat_grps.scsi_tgt_dev_group;
 	dev_stat_grp->default_groups[2] = &se_subdev->dev_stat_grps.scsi_lu_group;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void target_stat_setup_dev_default_groups(struct se_device *dev)
+{
+	struct config_group *dev_stat_grp = &dev->dev_stat_grps.stat_group;
+
+	config_group_init_type_name(&dev->dev_stat_grps.scsi_dev_group,
+			"scsi_dev", &target_stat_scsi_dev_cit);
+	config_group_init_type_name(&dev->dev_stat_grps.scsi_tgt_dev_group,
+			"scsi_tgt_dev", &target_stat_scsi_tgt_dev_cit);
+	config_group_init_type_name(&dev->dev_stat_grps.scsi_lu_group,
+			"scsi_lu", &target_stat_scsi_lu_cit);
+
+	dev_stat_grp->default_groups[0] = &dev->dev_stat_grps.scsi_dev_group;
+	dev_stat_grp->default_groups[1] = &dev->dev_stat_grps.scsi_tgt_dev_group;
+	dev_stat_grp->default_groups[2] = &dev->dev_stat_grps.scsi_lu_group;
+>>>>>>> refs/remotes/origin/master
 	dev_stat_grp->default_groups[3] = NULL;
 }
 
@@ -997,10 +1228,14 @@ static ssize_t target_stat_scsi_tgt_port_show_attr_name(
 
 	ret = snprintf(page, PAGE_SIZE, "%sPort#%u\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		TPG_TFO(tpg)->get_fabric_name(), sep->sep_index);
 =======
 		tpg->se_tpg_tfo->get_fabric_name(), sep->sep_index);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tpg->se_tpg_tfo->get_fabric_name(), sep->sep_index);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&lun->lun_sep_lock);
 	return ret;
 }
@@ -1024,12 +1259,17 @@ static ssize_t target_stat_scsi_tgt_port_show_attr_port_index(
 
 	ret = snprintf(page, PAGE_SIZE, "%s%s%d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		TPG_TFO(tpg)->tpg_get_wwn(tpg), "+t+",
 		TPG_TFO(tpg)->tpg_get_tag(tpg));
 =======
 		tpg->se_tpg_tfo->tpg_get_wwn(tpg), "+t+",
 		tpg->se_tpg_tfo->tpg_get_tag(tpg));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tpg->se_tpg_tfo->tpg_get_wwn(tpg), "+t+",
+		tpg->se_tpg_tfo->tpg_get_tag(tpg));
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&lun->lun_sep_lock);
 	return ret;
 }
@@ -1041,9 +1281,12 @@ static ssize_t target_stat_scsi_tgt_port_show_attr_in_cmds(
 	struct se_lun *lun = container_of(pgrps, struct se_lun, port_stat_grps);
 	struct se_port *sep;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct se_portal_group *tpg;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret;
 
 	spin_lock(&lun->lun_sep_lock);
@@ -1053,9 +1296,12 @@ static ssize_t target_stat_scsi_tgt_port_show_attr_in_cmds(
 		return -ENODEV;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tpg = sep->sep_tpg;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = snprintf(page, PAGE_SIZE, "%llu\n", sep->sep_stats.cmd_pdus);
 	spin_unlock(&lun->lun_sep_lock);
@@ -1069,9 +1315,12 @@ static ssize_t target_stat_scsi_tgt_port_show_attr_write_mbytes(
 	struct se_lun *lun = container_of(pgrps, struct se_lun, port_stat_grps);
 	struct se_port *sep;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct se_portal_group *tpg;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret;
 
 	spin_lock(&lun->lun_sep_lock);
@@ -1081,9 +1330,12 @@ static ssize_t target_stat_scsi_tgt_port_show_attr_write_mbytes(
 		return -ENODEV;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tpg = sep->sep_tpg;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = snprintf(page, PAGE_SIZE, "%u\n",
 			(u32)(sep->sep_stats.rx_data_octets >> 20));
@@ -1098,9 +1350,12 @@ static ssize_t target_stat_scsi_tgt_port_show_attr_read_mbytes(
 	struct se_lun *lun = container_of(pgrps, struct se_lun, port_stat_grps);
 	struct se_port *sep;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct se_portal_group *tpg;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret;
 
 	spin_lock(&lun->lun_sep_lock);
@@ -1110,9 +1365,12 @@ static ssize_t target_stat_scsi_tgt_port_show_attr_read_mbytes(
 		return -ENODEV;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tpg = sep->sep_tpg;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = snprintf(page, PAGE_SIZE, "%u\n",
 			(u32)(sep->sep_stats.tx_data_octets >> 20));
@@ -1127,9 +1385,12 @@ static ssize_t target_stat_scsi_tgt_port_show_attr_hs_in_cmds(
 	struct se_lun *lun = container_of(pgrps, struct se_lun, port_stat_grps);
 	struct se_port *sep;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct se_portal_group *tpg;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret;
 
 	spin_lock(&lun->lun_sep_lock);
@@ -1139,9 +1400,12 @@ static ssize_t target_stat_scsi_tgt_port_show_attr_hs_in_cmds(
 		return -ENODEV;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tpg = sep->sep_tpg;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* FIXME: scsiTgtPortHsInCommands */
 	ret = snprintf(page, PAGE_SIZE, "%u\n", 0);
@@ -1236,10 +1500,14 @@ static ssize_t target_stat_scsi_transport_show_attr_device(
 	/* scsiTransportType */
 	ret = snprintf(page, PAGE_SIZE, "scsiTransport%s\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			TPG_TFO(tpg)->get_fabric_name());
 =======
 			tpg->se_tpg_tfo->get_fabric_name());
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			tpg->se_tpg_tfo->get_fabric_name());
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&lun->lun_sep_lock);
 	return ret;
 }
@@ -1262,10 +1530,14 @@ static ssize_t target_stat_scsi_transport_show_attr_indx(
 	tpg = sep->sep_tpg;
 	ret = snprintf(page, PAGE_SIZE, "%u\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			TPG_TFO(tpg)->tpg_get_inst_index(tpg));
 =======
 			tpg->se_tpg_tfo->tpg_get_inst_index(tpg));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			tpg->se_tpg_tfo->tpg_get_inst_index(tpg));
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&lun->lun_sep_lock);
 	return ret;
 }
@@ -1289,6 +1561,7 @@ static ssize_t target_stat_scsi_transport_show_attr_dev_name(
 	}
 	tpg = sep->sep_tpg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wwn = DEV_T10_WWN(dev);
 	/* scsiTransportDevName */
 	ret = snprintf(page, PAGE_SIZE, "%s+%s\n",
@@ -1299,6 +1572,12 @@ static ssize_t target_stat_scsi_transport_show_attr_dev_name(
 	ret = snprintf(page, PAGE_SIZE, "%s+%s\n",
 			tpg->se_tpg_tfo->tpg_get_wwn(tpg),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wwn = &dev->t10_wwn;
+	/* scsiTransportDevName */
+	ret = snprintf(page, PAGE_SIZE, "%s+%s\n",
+			tpg->se_tpg_tfo->tpg_get_wwn(tpg),
+>>>>>>> refs/remotes/origin/master
 			(strlen(wwn->unit_serial)) ? wwn->unit_serial :
 			wwn->vendor);
 	spin_unlock(&lun->lun_sep_lock);
@@ -1335,6 +1614,7 @@ static struct config_item_type target_stat_scsi_transport_cit = {
 void target_stat_setup_port_default_groups(struct se_lun *lun)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct config_group *port_stat_grp = &PORT_STAT_GRP(lun)->stat_group;
 
 	config_group_init_type_name(&PORT_STAT_GRP(lun)->scsi_port_group,
@@ -1348,6 +1628,8 @@ void target_stat_setup_port_default_groups(struct se_lun *lun)
 	port_stat_grp->default_groups[1] = &PORT_STAT_GRP(lun)->scsi_tgt_port_group;
 	port_stat_grp->default_groups[2] = &PORT_STAT_GRP(lun)->scsi_transport_group;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct config_group *port_stat_grp = &lun->port_stat_grps.stat_group;
 
 	config_group_init_type_name(&lun->port_stat_grps.scsi_port_group,
@@ -1360,7 +1642,10 @@ void target_stat_setup_port_default_groups(struct se_lun *lun)
 	port_stat_grp->default_groups[0] = &lun->port_stat_grps.scsi_port_group;
 	port_stat_grp->default_groups[1] = &lun->port_stat_grps.scsi_tgt_port_group;
 	port_stat_grp->default_groups[2] = &lun->port_stat_grps.scsi_transport_group;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	port_stat_grp->default_groups[3] = NULL;
 }
 
@@ -1394,10 +1679,14 @@ static ssize_t target_stat_scsi_auth_intr_show_attr_inst(
 
 	spin_lock_irq(&nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
@@ -1406,10 +1695,14 @@ static ssize_t target_stat_scsi_auth_intr_show_attr_inst(
 	/* scsiInstIndex */
 	ret = snprintf(page, PAGE_SIZE, "%u\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			TPG_TFO(tpg)->tpg_get_inst_index(tpg));
 =======
 			tpg->se_tpg_tfo->tpg_get_inst_index(tpg));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			tpg->se_tpg_tfo->tpg_get_inst_index(tpg));
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irq(&nacl->device_list_lock);
 	return ret;
 }
@@ -1424,25 +1717,34 @@ static ssize_t target_stat_scsi_auth_intr_show_attr_dev(
 	struct se_dev_entry *deve;
 	struct se_lun *lun;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct se_portal_group *tpg;
 	ssize_t ret;
 
 	spin_lock_irq(&nacl->device_list_lock);
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret;
 
 	spin_lock_irq(&nacl->device_list_lock);
 	deve = nacl->device_list[lacl->mapped_lun];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tpg = nacl->se_tpg;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	lun = deve->se_lun;
 	/* scsiDeviceIndex */
 	ret = snprintf(page, PAGE_SIZE, "%u\n", lun->lun_se_dev->dev_index);
@@ -1463,10 +1765,14 @@ static ssize_t target_stat_scsi_auth_intr_show_attr_port(
 
 	spin_lock_irq(&nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
@@ -1474,10 +1780,14 @@ static ssize_t target_stat_scsi_auth_intr_show_attr_port(
 	tpg = nacl->se_tpg;
 	/* scsiAuthIntrTgtPortIndex */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = snprintf(page, PAGE_SIZE, "%u\n", TPG_TFO(tpg)->tpg_get_tag(tpg));
 =======
 	ret = snprintf(page, PAGE_SIZE, "%u\n", tpg->se_tpg_tfo->tpg_get_tag(tpg));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = snprintf(page, PAGE_SIZE, "%u\n", tpg->se_tpg_tfo->tpg_get_tag(tpg));
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irq(&nacl->device_list_lock);
 	return ret;
 }
@@ -1494,10 +1804,14 @@ static ssize_t target_stat_scsi_auth_intr_show_attr_indx(
 
 	spin_lock_irq(&nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
@@ -1520,10 +1834,14 @@ static ssize_t target_stat_scsi_auth_intr_show_attr_dev_or_port(
 
 	spin_lock_irq(&nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
@@ -1546,10 +1864,14 @@ static ssize_t target_stat_scsi_auth_intr_show_attr_intr_name(
 
 	spin_lock_irq(&nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
@@ -1572,10 +1894,14 @@ static ssize_t target_stat_scsi_auth_intr_show_attr_map_indx(
 
 	spin_lock_irq(&nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
@@ -1598,10 +1924,14 @@ static ssize_t target_stat_scsi_auth_intr_show_attr_att_count(
 
 	spin_lock_irq(&nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
@@ -1624,10 +1954,14 @@ static ssize_t target_stat_scsi_auth_intr_show_attr_num_cmds(
 
 	spin_lock_irq(&nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
@@ -1650,10 +1984,14 @@ static ssize_t target_stat_scsi_auth_intr_show_attr_read_mbytes(
 
 	spin_lock_irq(&nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
@@ -1676,10 +2014,14 @@ static ssize_t target_stat_scsi_auth_intr_show_attr_write_mbytes(
 
 	spin_lock_irq(&nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
@@ -1702,10 +2044,14 @@ static ssize_t target_stat_scsi_auth_intr_show_attr_hs_num_cmds(
 
 	spin_lock_irq(&nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
@@ -1728,10 +2074,14 @@ static ssize_t target_stat_scsi_auth_intr_show_attr_creation_time(
 
 	spin_lock_irq(&nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
@@ -1755,10 +2105,14 @@ static ssize_t target_stat_scsi_auth_intr_show_attr_row_status(
 
 	spin_lock_irq(&nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
@@ -1832,10 +2186,14 @@ static ssize_t target_stat_scsi_att_intr_port_show_attr_inst(
 
 	spin_lock_irq(&nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
@@ -1844,10 +2202,14 @@ static ssize_t target_stat_scsi_att_intr_port_show_attr_inst(
 	/* scsiInstIndex */
 	ret = snprintf(page, PAGE_SIZE, "%u\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			TPG_TFO(tpg)->tpg_get_inst_index(tpg));
 =======
 			tpg->se_tpg_tfo->tpg_get_inst_index(tpg));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			tpg->se_tpg_tfo->tpg_get_inst_index(tpg));
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irq(&nacl->device_list_lock);
 	return ret;
 }
@@ -1862,25 +2224,34 @@ static ssize_t target_stat_scsi_att_intr_port_show_attr_dev(
 	struct se_dev_entry *deve;
 	struct se_lun *lun;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct se_portal_group *tpg;
 	ssize_t ret;
 
 	spin_lock_irq(&nacl->device_list_lock);
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret;
 
 	spin_lock_irq(&nacl->device_list_lock);
 	deve = nacl->device_list[lacl->mapped_lun];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tpg = nacl->se_tpg;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	lun = deve->se_lun;
 	/* scsiDeviceIndex */
 	ret = snprintf(page, PAGE_SIZE, "%u\n", lun->lun_se_dev->dev_index);
@@ -1901,10 +2272,14 @@ static ssize_t target_stat_scsi_att_intr_port_show_attr_port(
 
 	spin_lock_irq(&nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
@@ -1912,10 +2287,14 @@ static ssize_t target_stat_scsi_att_intr_port_show_attr_port(
 	tpg = nacl->se_tpg;
 	/* scsiPortIndex */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = snprintf(page, PAGE_SIZE, "%u\n", TPG_TFO(tpg)->tpg_get_tag(tpg));
 =======
 	ret = snprintf(page, PAGE_SIZE, "%u\n", tpg->se_tpg_tfo->tpg_get_tag(tpg));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = snprintf(page, PAGE_SIZE, "%u\n", tpg->se_tpg_tfo->tpg_get_tag(tpg));
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irq(&nacl->device_list_lock);
 	return ret;
 }
@@ -1942,10 +2321,14 @@ static ssize_t target_stat_scsi_att_intr_port_show_attr_indx(
 	/* scsiAttIntrPortIndex */
 	ret = snprintf(page, PAGE_SIZE, "%u\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			TPG_TFO(tpg)->sess_get_index(se_sess));
 =======
 			tpg->se_tpg_tfo->sess_get_index(se_sess));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			tpg->se_tpg_tfo->sess_get_index(se_sess));
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irq(&nacl->nacl_sess_lock);
 	return ret;
 }
@@ -1962,10 +2345,14 @@ static ssize_t target_stat_scsi_att_intr_port_show_attr_port_auth_indx(
 
 	spin_lock_irq(&nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (!deve->se_lun || !deve->se_lun_acl) {
 		spin_unlock_irq(&nacl->device_list_lock);
 		return -ENODEV;
@@ -1999,6 +2386,7 @@ static ssize_t target_stat_scsi_att_intr_port_show_attr_port_ident(
 	/* scsiAttIntrPortName+scsiAttIntrPortIdentifier */
 	memset(buf, 0, 64);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (TPG_TFO(tpg)->sess_get_initiator_sid != NULL)
 		TPG_TFO(tpg)->sess_get_initiator_sid(se_sess,
 				(unsigned char *)&buf[0], 64);
@@ -2006,6 +2394,10 @@ static ssize_t target_stat_scsi_att_intr_port_show_attr_port_ident(
 	if (tpg->se_tpg_tfo->sess_get_initiator_sid != NULL)
 		tpg->se_tpg_tfo->sess_get_initiator_sid(se_sess, buf, 64);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (tpg->se_tpg_tfo->sess_get_initiator_sid != NULL)
+		tpg->se_tpg_tfo->sess_get_initiator_sid(se_sess, buf, 64);
+>>>>>>> refs/remotes/origin/master
 
 	ret = snprintf(page, PAGE_SIZE, "%s+i+%s\n", nacl->initiatorname, buf);
 	spin_unlock_irq(&nacl->nacl_sess_lock);
@@ -2044,6 +2436,7 @@ static struct config_item_type target_stat_scsi_att_intr_port_cit = {
 void target_stat_setup_mappedlun_default_groups(struct se_lun_acl *lacl)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct config_group *ml_stat_grp = &ML_STAT_GRPS(lacl)->stat_group;
 
 	config_group_init_type_name(&ML_STAT_GRPS(lacl)->scsi_auth_intr_group,
@@ -2054,6 +2447,8 @@ void target_stat_setup_mappedlun_default_groups(struct se_lun_acl *lacl)
 	ml_stat_grp->default_groups[0] = &ML_STAT_GRPS(lacl)->scsi_auth_intr_group;
 	ml_stat_grp->default_groups[1] = &ML_STAT_GRPS(lacl)->scsi_att_intr_port_group;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct config_group *ml_stat_grp = &lacl->ml_stat_grps.stat_group;
 
 	config_group_init_type_name(&lacl->ml_stat_grps.scsi_auth_intr_group,
@@ -2063,6 +2458,9 @@ void target_stat_setup_mappedlun_default_groups(struct se_lun_acl *lacl)
 
 	ml_stat_grp->default_groups[0] = &lacl->ml_stat_grps.scsi_auth_intr_group;
 	ml_stat_grp->default_groups[1] = &lacl->ml_stat_grps.scsi_att_intr_port_group;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ml_stat_grp->default_groups[2] = NULL;
 }

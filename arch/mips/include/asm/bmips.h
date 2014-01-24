@@ -65,6 +65,7 @@ static inline unsigned long bmips_read_zscm_reg(unsigned int offset)
 {
 	unsigned long ret;
 
+<<<<<<< HEAD
 	__asm__ __volatile__(
 		".set push\n"
 		".set noreorder\n"
@@ -83,11 +84,27 @@ static inline unsigned long bmips_read_zscm_reg(unsigned int offset)
 		: "=&r" (ret)
 		: "i" (Index_Load_Tag_S), "r" (ZSCM_REG_BASE + offset)
 		: "memory");
+=======
+	barrier();
+	cache_op(Index_Load_Tag_S, ZSCM_REG_BASE + offset);
+	__sync();
+	_ssnop();
+	_ssnop();
+	_ssnop();
+	_ssnop();
+	_ssnop();
+	_ssnop();
+	_ssnop();
+	ret = read_c0_ddatalo();
+	_ssnop();
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 static inline void bmips_write_zscm_reg(unsigned int offset, unsigned long data)
 {
+<<<<<<< HEAD
 	__asm__ __volatile__(
 		".set push\n"
 		".set noreorder\n"
@@ -103,6 +120,17 @@ static inline void bmips_write_zscm_reg(unsigned int offset, unsigned long data)
 		: "r" (data),
 		  "i" (Index_Store_Tag_S), "r" (ZSCM_REG_BASE + offset)
 		: "memory");
+=======
+	write_c0_ddatalo(data);
+	_ssnop();
+	_ssnop();
+	_ssnop();
+	cache_op(Index_Store_Tag_S, ZSCM_REG_BASE + offset);
+	_ssnop();
+	_ssnop();
+	_ssnop();
+	barrier();
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* !defined(__ASSEMBLY__) */

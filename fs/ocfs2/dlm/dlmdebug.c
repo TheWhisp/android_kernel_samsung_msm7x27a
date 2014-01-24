@@ -31,9 +31,13 @@
 #include <linux/spinlock.h>
 #include <linux/debugfs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "cluster/heartbeat.h"
 #include "cluster/nodemanager.h"
@@ -99,7 +103,10 @@ static void __dlm_print_lock(struct dlm_lock *lock)
 
 void __dlm_print_one_lock_resource(struct dlm_lock_resource *res)
 {
+<<<<<<< HEAD
 	struct list_head *iter2;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dlm_lock *lock;
 	char buf[DLM_LOCKID_NAME_MAX];
 
@@ -121,6 +128,7 @@ void __dlm_print_one_lock_resource(struct dlm_lock_resource *res)
 	       res->inflight_locks, atomic_read(&res->asts_reserved));
 	dlm_print_lockres_refmap(res);
 	printk("  granted queue:\n");
+<<<<<<< HEAD
 	list_for_each(iter2, &res->granted) {
 		lock = list_entry(iter2, struct dlm_lock, list);
 		__dlm_print_lock(lock);
@@ -133,6 +141,17 @@ void __dlm_print_one_lock_resource(struct dlm_lock_resource *res)
 	printk("  blocked queue:\n");
 	list_for_each(iter2, &res->blocked) {
 		lock = list_entry(iter2, struct dlm_lock, list);
+=======
+	list_for_each_entry(lock, &res->granted, list) {
+		__dlm_print_lock(lock);
+	}
+	printk("  converting queue:\n");
+	list_for_each_entry(lock, &res->converting, list) {
+		__dlm_print_lock(lock);
+	}
+	printk("  blocked queue:\n");
+	list_for_each_entry(lock, &res->blocked, list) {
+>>>>>>> refs/remotes/origin/master
 		__dlm_print_lock(lock);
 	}
 }
@@ -449,7 +468,10 @@ static int debug_mle_print(struct dlm_ctxt *dlm, char *buf, int len)
 {
 	struct dlm_master_list_entry *mle;
 	struct hlist_head *bucket;
+<<<<<<< HEAD
 	struct hlist_node *list;
+=======
+>>>>>>> refs/remotes/origin/master
 	int i, out = 0;
 	unsigned long total = 0, longest = 0, bucket_count = 0;
 
@@ -459,9 +481,13 @@ static int debug_mle_print(struct dlm_ctxt *dlm, char *buf, int len)
 	spin_lock(&dlm->master_lock);
 	for (i = 0; i < DLM_HASH_BUCKETS; i++) {
 		bucket = dlm_master_hash(dlm, i);
+<<<<<<< HEAD
 		hlist_for_each(list, bucket) {
 			mle = hlist_entry(list, struct dlm_master_list_entry,
 					  master_hash_node);
+=======
+		hlist_for_each_entry(mle, bucket, master_hash_node) {
+>>>>>>> refs/remotes/origin/master
 			++total;
 			++bucket_count;
 			if (len - out < 200)

@@ -31,7 +31,11 @@
 #include <linux/mm.h>
 #include <linux/mman.h>
 #include <linux/pagemap.h>
+<<<<<<< HEAD
 #include <linux/proc_fs.h>
+=======
+#include <linux/kcore.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/initrd.h>
 
@@ -41,9 +45,13 @@
 unsigned long empty_zero_page;
 EXPORT_SYMBOL_GPL(empty_zero_page);
 
+<<<<<<< HEAD
 static struct kcore_list kcore_mem, kcore_vmalloc;
 
 static unsigned long setup_zero_page(void)
+=======
+static void setup_zero_page(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct page *page;
 
@@ -52,9 +60,13 @@ static unsigned long setup_zero_page(void)
 		panic("Oh boy, that early out of memory?");
 
 	page = virt_to_page((void *) empty_zero_page);
+<<<<<<< HEAD
 	SetPageReserved(page);
 
 	return 1UL;
+=======
+	mark_page_reserved(page);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifndef CONFIG_NEED_MULTIPLE_NODES
@@ -79,6 +91,7 @@ void __init paging_init(void)
 
 void __init mem_init(void)
 {
+<<<<<<< HEAD
 	unsigned long codesize, reservedpages, datasize, initsize;
 	unsigned long tmp, ram = 0;
 
@@ -125,21 +138,39 @@ static void free_init_pages(const char *what, unsigned long begin, unsigned long
 	}
 	printk(KERN_INFO "Freeing %s: %ldk freed\n", what, (end - begin) >> 10);
 }
+=======
+	high_memory = (void *) __va(max_low_pfn << PAGE_SHIFT);
+	free_all_bootmem();
+	setup_zero_page();	/* Setup zeroed pages. */
+
+	mem_init_print_info(NULL);
+}
+#endif /* !CONFIG_NEED_MULTIPLE_NODES */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_BLK_DEV_INITRD
 void free_initrd_mem(unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 	free_init_pages("initrd memory",
 		virt_to_phys((void *) start),
 		virt_to_phys((void *) end));
+=======
+	free_reserved_area((void *)start, (void *)end, POISON_FREE_INITMEM,
+			   "initrd");
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
 void __init_refok free_initmem(void)
 {
+<<<<<<< HEAD
 	free_init_pages("unused kernel memory",
 	__pa(&__init_begin),
 	__pa(&__init_end));
+=======
+	free_initmem_default(POISON_FREE_INITMEM);
+>>>>>>> refs/remotes/origin/master
 }
 
 unsigned long pgd_current;

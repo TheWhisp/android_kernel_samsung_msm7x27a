@@ -8,6 +8,10 @@
 #ifndef __ASM_MACH_GENERIC_CPU_FEATURE_OVERRIDES_H
 #define __ASM_MACH_GENERIC_CPU_FEATURE_OVERRIDES_H
 
+<<<<<<< HEAD
 /* Intentionally empty file ...  */
+=======
+/* Intentionally empty file ...	 */
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_MACH_GENERIC_CPU_FEATURE_OVERRIDES_H */

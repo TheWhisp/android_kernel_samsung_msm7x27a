@@ -4,16 +4,22 @@
  *
  * Copyright (C) 1996 Universidade de Lisboa
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * Written by Pedro Roque Marques (roque@di.fc.ul.pt)
  *
  * This software may be used and distributed according to the terms of 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Written by Pedro Roque Marques (roque@di.fc.ul.pt)
  *
  * This software may be used and distributed according to the terms of
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * the GNU General Public License, incorporated herein by reference.
  */
 
@@ -41,6 +47,7 @@
 
 
 const char * const isdn_state_table[] = {
+<<<<<<< HEAD
 <<<<<<< HEAD
   "Closed",
   "Call initiated",
@@ -71,6 +78,8 @@ const char * const isdn_state_table[] = {
   "Select protocol on B-Channel",
   "Activate B-channel protocol"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	"Closed",
 	"Call initiated",
 	"Overlap sending",
@@ -99,12 +108,16 @@ const char * const isdn_state_table[] = {
 	"Overlap receiving",
 	"Select protocol on B-Channel",
 	"Activate B-channel protocol"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef DEBUG_ERRS
 static
 struct CauseValue {
+<<<<<<< HEAD
 <<<<<<< HEAD
   byte nr;
   char *descr;
@@ -177,6 +190,8 @@ struct CauseValue {
   {0x6f,"Protocol error, unspecified"},
   {0x7f,"Interworking, unspecified"}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	byte nr;
 	char *descr;
 } cvlist[] = {
@@ -247,12 +262,16 @@ struct CauseValue {
 	{0x6e, "Message with unrecognized parameter discarded"},
 	{0x6f, "Protocol error, unspecified"},
 	{0x7f, "Interworking, unspecified"}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif
 
 static struct isdn_event_desc {
+<<<<<<< HEAD
 <<<<<<< HEAD
   unsigned short ev;
   char * desc;
@@ -286,6 +305,8 @@ char * strisdnevent(ushort ev)
 
   return entry->desc;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned short ev;
 	char *desc;
 } isdn_event_table[] = {
@@ -317,7 +338,10 @@ char *strisdnevent(ushort ev)
 			break;
 
 	return entry->desc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -325,6 +349,7 @@ char *strisdnevent(ushort ev)
  */
 
 static struct fsm_timer_entry fsm_timers[] = {
+<<<<<<< HEAD
 <<<<<<< HEAD
   {ST_CALL_PROC, 10},
   {ST_DISC_REQ, 2},
@@ -334,6 +359,8 @@ static struct fsm_timer_entry fsm_timers[] = {
   {ST_CONN_REQ, 2},
   {0xff, 0}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{ST_CALL_PROC, 10},
 	{ST_DISC_REQ, 2},
 	{ST_ACTIVE_SELP, 5},
@@ -341,11 +368,15 @@ static struct fsm_timer_entry fsm_timers[] = {
 	{ST_INCM_PROC, 10},
 	{ST_CONN_REQ, 2},
 	{0xff, 0}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct fsm_entry fsm_table[] = {
 /* Connect Phase */
+<<<<<<< HEAD
 <<<<<<< HEAD
   /* Outgoing */
   {ST_NULL, ST_CALL_INIT, EV_USR_SETUP_REQ, cb_out_1},
@@ -396,6 +427,8 @@ static struct fsm_entry fsm_table[] = {
         
   {0xff, 0, 0, NULL}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Outgoing */
 	{ST_NULL, ST_CALL_INIT, EV_USR_SETUP_REQ, cb_out_1},
 
@@ -444,12 +477,16 @@ static struct fsm_entry fsm_table[] = {
 	{ST_CONN_REQ, ST_CONN_REQ, EV_TIMER, cb_in_2},
 
 	{0xff, 0, 0, NULL}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
 static void pcbit_fsm_timer(unsigned long data)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         struct pcbit_dev *dev;
         struct pcbit_chan *chan;
@@ -468,6 +505,8 @@ static void pcbit_fsm_timer(unsigned long data)
 
         pcbit_fsm_event(dev, chan, EV_TIMER, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct pcbit_dev *dev;
 	struct pcbit_chan *chan;
 
@@ -484,11 +523,15 @@ static void pcbit_fsm_timer(unsigned long data)
 	}
 
 	pcbit_fsm_event(dev, chan, EV_TIMER, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 void pcbit_fsm_event(struct pcbit_dev *dev, struct pcbit_chan *chan,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		   unsigned short event, struct callb_data *data)
 {
@@ -498,11 +541,17 @@ void pcbit_fsm_event(struct pcbit_dev *dev, struct pcbit_chan *chan,
 {
 	struct fsm_entry *action;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     unsigned short event, struct callb_data *data)
+{
+	struct fsm_entry *action;
+>>>>>>> refs/remotes/origin/master
 	struct fsm_timer_entry *tentry;
 	unsigned long flags;
 
 	spin_lock_irqsave(&dev->lock, flags);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         for (action = fsm_table; action->init != 0xff; action++)
                 if (action->init == chan->fsm_state && action->event == event)
@@ -537,6 +586,8 @@ void pcbit_fsm_event(struct pcbit_dev *dev, struct pcbit_chan *chan,
                 add_timer(&chan->fsm_timer);
         }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (action = fsm_table; action->init != 0xff; action++)
 		if (action->init == chan->fsm_state && action->event == event)
 			break;
@@ -569,7 +620,10 @@ void pcbit_fsm_event(struct pcbit_dev *dev, struct pcbit_chan *chan,
 		chan->fsm_timer.expires = jiffies + tentry->timeout * HZ;
 		add_timer(&chan->fsm_timer);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&dev->lock, flags);
 
@@ -578,9 +632,12 @@ void pcbit_fsm_event(struct pcbit_dev *dev, struct pcbit_chan *chan,
 
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

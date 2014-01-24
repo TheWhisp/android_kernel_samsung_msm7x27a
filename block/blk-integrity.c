@@ -25,9 +25,13 @@
 #include <linux/bio.h>
 #include <linux/scatterlist.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 
 #include "blk.h"
@@ -113,7 +117,11 @@ new_segment:
 			if (!sg)
 				sg = sglist;
 			else {
+<<<<<<< HEAD
 				sg->page_link &= ~0x02;
+=======
+				sg_unmark_end(sg);
+>>>>>>> refs/remotes/origin/master
 				sg = sg_next(sg);
 			}
 
@@ -423,6 +431,11 @@ int blk_integrity_register(struct gendisk *disk, struct blk_integrity *template)
 	} else
 		bi->name = bi_unsupported_name;
 
+<<<<<<< HEAD
+=======
+	disk->queue->backing_dev_info.capabilities |= BDI_CAP_STABLE_WRITES;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL(blk_integrity_register);
@@ -441,6 +454,11 @@ void blk_integrity_unregister(struct gendisk *disk)
 	if (!disk || !disk->integrity)
 		return;
 
+<<<<<<< HEAD
+=======
+	disk->queue->backing_dev_info.capabilities &= ~BDI_CAP_STABLE_WRITES;
+
+>>>>>>> refs/remotes/origin/master
 	bi = disk->integrity;
 
 	kobject_uevent(&bi->kobj, KOBJ_REMOVE);

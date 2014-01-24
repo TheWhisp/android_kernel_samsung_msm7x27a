@@ -333,10 +333,14 @@ static int ssi_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 	 SNDRV_PCM_FMTBIT_S32_LE  | SNDRV_PCM_FMTBIT_U32_LE)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops ssi_dai_ops = {
 =======
 static const struct snd_soc_dai_ops ssi_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops ssi_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.startup	= ssi_startup,
 	.shutdown	= ssi_shutdown,
 	.trigger	= ssi_trigger,
@@ -347,10 +351,14 @@ static const struct snd_soc_dai_ops ssi_dai_ops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct snd_soc_dai_driver sh4_ssi_dai[] = {
 =======
 static struct snd_soc_dai_driver sh4_ssi_dai[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct snd_soc_dai_driver sh4_ssi_dai[] = {
+>>>>>>> refs/remotes/origin/master
 {
 	.name			= "ssi-dai.0",
 	.playback = {
@@ -387,6 +395,7 @@ static struct snd_soc_dai_driver sh4_ssi_dai[] = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit sh4_soc_dai_probe(struct platform_device *pdev)
 {
 	return snd_soc_register_dais(&pdev->dev, sh4_ssi_dai,
@@ -396,6 +405,21 @@ static int __devinit sh4_soc_dai_probe(struct platform_device *pdev)
 static int __devexit sh4_soc_dai_remove(struct platform_device *pdev)
 {
 	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(sh4_ssi_dai));
+=======
+static const struct snd_soc_component_driver sh4_ssi_component = {
+	.name		= "sh4-ssi",
+};
+
+static int sh4_soc_dai_probe(struct platform_device *pdev)
+{
+	return snd_soc_register_component(&pdev->dev, &sh4_ssi_component,
+					  sh4_ssi_dai, ARRAY_SIZE(sh4_ssi_dai));
+}
+
+static int sh4_soc_dai_remove(struct platform_device *pdev)
+{
+	snd_soc_unregister_component(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -406,6 +430,7 @@ static struct platform_driver sh4_ssi_driver = {
 	},
 
 	.probe = sh4_soc_dai_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(sh4_soc_dai_remove),
 };
 
@@ -424,6 +449,12 @@ module_exit(snd_sh4_ssi_exit);
 =======
 module_platform_driver(sh4_ssi_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = sh4_soc_dai_remove,
+};
+
+module_platform_driver(sh4_ssi_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("SuperH onchip SSI (I2S) audio driver");

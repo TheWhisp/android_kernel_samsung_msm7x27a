@@ -41,12 +41,20 @@
 #include <asm/ppc_asm.h>
 
 	.file	"crtsavres.S"
+<<<<<<< HEAD
 	.section ".text"
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 
 #ifndef CONFIG_PPC64
 
+<<<<<<< HEAD
+=======
+	.section ".text"
+
+>>>>>>> refs/remotes/origin/master
 /* Routines for saving integer registers, called by the compiler.  */
 /* Called with r11 pointing to the stack header word of the caller of the */
 /* function, just beyond the end of the integer save area.  */
@@ -232,6 +240,11 @@ _GLOBAL(_rest32gpr_31_x)
 
 #else /* CONFIG_PPC64 */
 
+<<<<<<< HEAD
+=======
+	.section ".text.save.restore","ax",@progbits
+
+>>>>>>> refs/remotes/origin/master
 .globl	_savegpr0_14
 _savegpr0_14:
 	std	r14,-144(r1)

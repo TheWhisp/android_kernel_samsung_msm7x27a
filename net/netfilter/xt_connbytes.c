@@ -26,20 +26,33 @@ connbytes_mt(const struct sk_buff *skb, struct xt_action_param *par)
 	u_int64_t what = 0;	/* initialize to make gcc happy */
 	u_int64_t bytes = 0;
 	u_int64_t pkts = 0;
+<<<<<<< HEAD
+=======
+	const struct nf_conn_acct *acct;
+>>>>>>> refs/remotes/origin/master
 	const struct nf_conn_counter *counters;
 
 	ct = nf_ct_get(skb, &ctinfo);
 	if (!ct)
 		return false;
 
+<<<<<<< HEAD
 	counters = nf_conn_acct_find(ct);
 	if (!counters)
 		return false;
 
+=======
+	acct = nf_conn_acct_find(ct);
+	if (!acct)
+		return false;
+
+	counters = acct->counter;
+>>>>>>> refs/remotes/origin/master
 	switch (sinfo->what) {
 	case XT_CONNBYTES_PKTS:
 		switch (sinfo->direction) {
 		case XT_CONNBYTES_DIR_ORIGINAL:
+<<<<<<< HEAD
 <<<<<<< HEAD
 			what = counters[IP_CT_DIR_ORIGINAL].packets;
 			break;
@@ -50,6 +63,8 @@ connbytes_mt(const struct sk_buff *skb, struct xt_action_param *par)
 			what = counters[IP_CT_DIR_ORIGINAL].packets;
 			what += counters[IP_CT_DIR_REPLY].packets;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			what = atomic64_read(&counters[IP_CT_DIR_ORIGINAL].packets);
 			break;
 		case XT_CONNBYTES_DIR_REPLY:
@@ -58,13 +73,17 @@ connbytes_mt(const struct sk_buff *skb, struct xt_action_param *par)
 		case XT_CONNBYTES_DIR_BOTH:
 			what = atomic64_read(&counters[IP_CT_DIR_ORIGINAL].packets);
 			what += atomic64_read(&counters[IP_CT_DIR_REPLY].packets);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		break;
 	case XT_CONNBYTES_BYTES:
 		switch (sinfo->direction) {
 		case XT_CONNBYTES_DIR_ORIGINAL:
+<<<<<<< HEAD
 <<<<<<< HEAD
 			what = counters[IP_CT_DIR_ORIGINAL].bytes;
 			break;
@@ -75,6 +94,8 @@ connbytes_mt(const struct sk_buff *skb, struct xt_action_param *par)
 			what = counters[IP_CT_DIR_ORIGINAL].bytes;
 			what += counters[IP_CT_DIR_REPLY].bytes;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			what = atomic64_read(&counters[IP_CT_DIR_ORIGINAL].bytes);
 			break;
 		case XT_CONNBYTES_DIR_REPLY:
@@ -83,13 +104,17 @@ connbytes_mt(const struct sk_buff *skb, struct xt_action_param *par)
 		case XT_CONNBYTES_DIR_BOTH:
 			what = atomic64_read(&counters[IP_CT_DIR_ORIGINAL].bytes);
 			what += atomic64_read(&counters[IP_CT_DIR_REPLY].bytes);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		break;
 	case XT_CONNBYTES_AVGPKT:
 		switch (sinfo->direction) {
 		case XT_CONNBYTES_DIR_ORIGINAL:
+<<<<<<< HEAD
 <<<<<<< HEAD
 			bytes = counters[IP_CT_DIR_ORIGINAL].bytes;
 			pkts  = counters[IP_CT_DIR_ORIGINAL].packets;
@@ -104,6 +129,8 @@ connbytes_mt(const struct sk_buff *skb, struct xt_action_param *par)
 			pkts  = counters[IP_CT_DIR_ORIGINAL].packets +
 				counters[IP_CT_DIR_REPLY].packets;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			bytes = atomic64_read(&counters[IP_CT_DIR_ORIGINAL].bytes);
 			pkts  = atomic64_read(&counters[IP_CT_DIR_ORIGINAL].packets);
 			break;
@@ -116,7 +143,10 @@ connbytes_mt(const struct sk_buff *skb, struct xt_action_param *par)
 				atomic64_read(&counters[IP_CT_DIR_REPLY].bytes);
 			pkts  = atomic64_read(&counters[IP_CT_DIR_ORIGINAL].packets) +
 				atomic64_read(&counters[IP_CT_DIR_REPLY].packets);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		if (pkts != 0)
@@ -125,16 +155,22 @@ connbytes_mt(const struct sk_buff *skb, struct xt_action_param *par)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (sinfo->count.to)
 		return what <= sinfo->count.to && what >= sinfo->count.from;
 	else
 		return what >= sinfo->count.from;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (sinfo->count.to >= sinfo->count.from)
 		return what <= sinfo->count.to && what >= sinfo->count.from;
 	else /* inverted */
 		return what < sinfo->count.to || what > sinfo->count.from;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int connbytes_mt_check(const struct xt_mtchk_param *par)

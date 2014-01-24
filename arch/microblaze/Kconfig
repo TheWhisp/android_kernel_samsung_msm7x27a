@@ -1,10 +1,16 @@
 config MICROBLAZE
 	def_bool y
+<<<<<<< HEAD
 	select HAVE_MEMBLOCK
 <<<<<<< HEAD
 =======
 	select HAVE_MEMBLOCK_NODE_MAP
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select ARCH_MIGHT_HAVE_PC_PARPORT
+	select HAVE_MEMBLOCK
+	select HAVE_MEMBLOCK_NODE_MAP
+>>>>>>> refs/remotes/origin/master
 	select HAVE_FUNCTION_TRACER
 	select HAVE_FUNCTION_TRACE_MCOUNT_TEST
 	select HAVE_FUNCTION_GRAPH_TRACER
@@ -19,18 +25,33 @@ config MICROBLAZE
 	select OF
 	select OF_EARLY_FLATTREE
 <<<<<<< HEAD
+<<<<<<< HEAD
 	select HAVE_GENERIC_HARDIRQS
 	select GENERIC_IRQ_PROBE
 	select GENERIC_IRQ_SHOW
 =======
 	select IRQ_DOMAIN
 	select HAVE_GENERIC_HARDIRQS
+=======
+	select ARCH_WANT_IPC_PARSE_VERSION
+	select HAVE_DEBUG_KMEMLEAK
+	select IRQ_DOMAIN
+	select VIRT_TO_BUS
+>>>>>>> refs/remotes/origin/master
 	select GENERIC_IRQ_PROBE
 	select GENERIC_IRQ_SHOW
 	select GENERIC_PCI_IOMAP
 	select GENERIC_CPU_DEVICES
 	select GENERIC_ATOMIC64
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select GENERIC_CLOCKEVENTS
+	select GENERIC_IDLE_POLL_SETUP
+	select MODULES_USE_ELF_RELA
+	select CLONE_BACKWARDS3
+	select CLKSRC_OF
+>>>>>>> refs/remotes/origin/master
 
 config SWAP
 	def_bool n
@@ -38,6 +59,7 @@ config SWAP
 config RWSEM_GENERIC_SPINLOCK
 	def_bool y
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 config ZONE_DMA
@@ -47,6 +69,11 @@ config ARCH_POPULATES_NODE_MAP
 	def_bool y
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config ZONE_DMA
+	def_bool y
+
+>>>>>>> refs/remotes/origin/master
 config RWSEM_XCHGADD_ALGORITHM
 	bool
 
@@ -62,6 +89,7 @@ config GENERIC_HWEIGHT
 config GENERIC_CALIBRATE_DELAY
 	def_bool y
 
+<<<<<<< HEAD
 config GENERIC_TIME_VSYSCALL
 	def_bool n
 
@@ -75,6 +103,8 @@ config GENERIC_GPIO
 	bool
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 config GENERIC_CSUM
 	def_bool y
 
@@ -95,8 +125,11 @@ source "arch/microblaze/platform/Kconfig.platform"
 
 menu "Processor type and features"
 
+<<<<<<< HEAD
 source "kernel/time/Kconfig"
 
+=======
+>>>>>>> refs/remotes/origin/master
 source "kernel/Kconfig.preempt"
 
 source "kernel/Kconfig.hz"
@@ -105,11 +138,14 @@ config MMU
 	bool "MMU support"
 	default n
 
+<<<<<<< HEAD
 config NO_MMU
 	bool
 	depends on !MMU
 	default y
 
+=======
+>>>>>>> refs/remotes/origin/master
 comment "Boot options"
 
 config CMDLINE_BOOL
@@ -177,6 +213,7 @@ config XILINX_UNCACHED_SHADOW
 	  window to be twice as large as the actual physical memory.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config HIGHMEM_START_BOOL
 	bool "Set high memory pool address"
 	depends on ADVANCED_OPTIONS && HIGHMEM
@@ -192,6 +229,8 @@ config HIGHMEM_START
 	depends on MMU
 	default "0xfe000000"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config HIGHMEM
 	bool "High memory support"
 	depends on MMU
@@ -204,7 +243,10 @@ config HIGHMEM
 	  memory that is not permanently mapped is called "high memory".
 
 	  If unsure, say n.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config LOWMEM_SIZE_BOOL
 	bool "Set maximum low memory"
@@ -282,6 +324,7 @@ choice
 config MICROBLAZE_4K_PAGES
 	bool "4k page size"
 
+<<<<<<< HEAD
 config MICROBLAZE_8K_PAGES
 	bool "8k page size"
 
@@ -300,6 +343,16 @@ config KERNEL_PAD
 	default "0x80000" if MMU
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config MICROBLAZE_16K_PAGES
+	bool "16k page size"
+
+config MICROBLAZE_64K_PAGES
+	bool "64k page size"
+
+endchoice
+
+>>>>>>> refs/remotes/origin/master
 endmenu
 
 source "mm/Kconfig"

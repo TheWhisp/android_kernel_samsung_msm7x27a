@@ -16,12 +16,15 @@
 #include <asm/io.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void sh2a__flush_wback_region(void *start, int size)
 {
 	unsigned long v;
 	unsigned long begin, end;
 	unsigned long flags;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The maximum number of pages we support up to when doing ranged dcache
  * flushing. Anything exceeding this will simply flush the dcache in its
@@ -61,19 +64,27 @@ static void sh2a__flush_wback_region(void *start, int size)
 	unsigned long begin, end;
 	unsigned long flags;
 	int nr_ways;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	begin = (unsigned long)start & ~(L1_CACHE_BYTES-1);
 	end = ((unsigned long)start + size + L1_CACHE_BYTES-1)
 		& ~(L1_CACHE_BYTES-1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	nr_ways = current_cpu_data.dcache.ways;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nr_ways = current_cpu_data.dcache.ways;
+>>>>>>> refs/remotes/origin/master
 
 	local_irq_save(flags);
 	jump_to_uncached();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (v = begin; v < end; v+=L1_CACHE_BYTES) {
 		unsigned long addr = CACHE_OC_ADDRESS_ARRAY | (v & 0x000007f0);
@@ -85,6 +96,8 @@ static void sh2a__flush_wback_region(void *start, int size)
 				__raw_writel(data, addr | (way << 11));
 			}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* If there are too many pages then flush the entire cache */
 	if (((end - begin) >> PAGE_SHIFT) >= MAX_OCACHE_PAGES) {
 		begin = CACHE_OC_ADDRESS_ARRAY;
@@ -100,23 +113,32 @@ static void sh2a__flush_wback_region(void *start, int size)
 		for (way = 0; way < nr_ways; way++) {
 			for (v = begin; v < end; v += L1_CACHE_BYTES)
 				sh2a_flush_oc_line(v, way);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	back_to_cached();
 	local_irq_restore(flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
 /*
  * Write back the dirty D-caches and invalidate them.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void sh2a__flush_purge_region(void *start, int size)
 {
 	unsigned long v;
@@ -132,10 +154,13 @@ static void sh2a__flush_purge_region(void *start, int size)
 
 	for (v = begin; v < end; v+=L1_CACHE_BYTES) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__raw_writel((v & CACHE_PHYSADDR_MASK),
 			  CACHE_OC_ADDRESS_ARRAY | (v & 0x000007f0) | 0x00000008);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CACHE_WRITEBACK
 		int way;
 		int nr_ways = current_cpu_data.dcache.ways;
@@ -145,17 +170,26 @@ static void sh2a__flush_purge_region(void *start, int size)
 		sh2a_invalidate_line(CACHE_OC_ADDRESS_ARRAY, v);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	back_to_cached();
 	local_irq_restore(flags);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 /*
  * Invalidate the D-caches, but no write back please
  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Invalidate the D-caches, but no write back please
+ */
+>>>>>>> refs/remotes/origin/master
 static void sh2a__flush_invalidate_region(void *start, int size)
 {
 	unsigned long v;
@@ -165,6 +199,7 @@ static void sh2a__flush_invalidate_region(void *start, int size)
 	begin = (unsigned long)start & ~(L1_CACHE_BYTES-1);
 	end = ((unsigned long)start + size + L1_CACHE_BYTES-1)
 		& ~(L1_CACHE_BYTES-1);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	local_irq_save(flags);
 	jump_to_uncached();
@@ -185,6 +220,8 @@ static void sh2a__flush_invalidate_region(void *start, int size)
 	}
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	local_irq_save(flags);
 	jump_to_uncached();
@@ -197,11 +234,15 @@ static void sh2a__flush_invalidate_region(void *start, int size)
 			sh2a_invalidate_line(CACHE_OC_ADDRESS_ARRAY, v);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	back_to_cached();
 	local_irq_restore(flags);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* WBack O-Cache and flush I-Cache */
 =======
@@ -209,6 +250,11 @@ static void sh2a__flush_invalidate_region(void *start, int size)
  * Write back the range of D-cache, and purge the I-cache.
  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Write back the range of D-cache, and purge the I-cache.
+ */
+>>>>>>> refs/remotes/origin/master
 static void sh2a_flush_icache_range(void *args)
 {
 	struct flusher_data *data = args;
@@ -219,6 +265,7 @@ static void sh2a_flush_icache_range(void *args)
 	start = data->addr1 & ~(L1_CACHE_BYTES-1);
 	end = (data->addr2 + L1_CACHE_BYTES-1) & ~(L1_CACHE_BYTES-1);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	local_irq_save(flags);
 	jump_to_uncached();
@@ -238,6 +285,8 @@ static void sh2a_flush_icache_range(void *args)
 		__raw_writel(addr,
 			  CACHE_IC_ADDRESS_ARRAY | addr | 0x00000008);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CACHE_WRITEBACK
 	sh2a__flush_wback_region((void *)start, end-start);
 #endif
@@ -252,7 +301,10 @@ static void sh2a_flush_icache_range(void *args)
 	} else {
 		for (v = start; v < end; v += L1_CACHE_BYTES)
 			sh2a_invalidate_line(CACHE_IC_ADDRESS_ARRAY, v);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	back_to_cached();

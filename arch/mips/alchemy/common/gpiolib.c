@@ -106,6 +106,7 @@ struct gpio_chip alchemy_gpio_chip[] = {
 		.ngpio			= ALCHEMY_GPIO1_NUM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.label                  = "alchemy-gpio2",
 		.direction_input        = gpio2_direction_input,
 		.direction_output       = gpio2_direction_output,
@@ -114,6 +115,16 @@ struct gpio_chip alchemy_gpio_chip[] = {
 		.to_irq			= gpio2_to_irq,
 		.base                   = ALCHEMY_GPIO2_BASE,
 		.ngpio                  = ALCHEMY_GPIO2_NUM,
+=======
+		.label			= "alchemy-gpio2",
+		.direction_input	= gpio2_direction_input,
+		.direction_output	= gpio2_direction_output,
+		.get			= gpio2_get,
+		.set			= gpio2_set,
+		.to_irq			= gpio2_to_irq,
+		.base			= ALCHEMY_GPIO2_BASE,
+		.ngpio			= ALCHEMY_GPIO2_NUM,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

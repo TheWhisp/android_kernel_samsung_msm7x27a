@@ -32,10 +32,14 @@
 static int mpu;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int joystick;
 =======
 static bool joystick;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool joystick;
+>>>>>>> refs/remotes/origin/master
 
 static unsigned char trix_read(int addr)
 {

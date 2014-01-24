@@ -5,10 +5,14 @@
   Copyright (c) 2005 Martin Langer <martin-langer@gmx.de>,
 		     Stefano Brivio <stefano.brivio@polimi.it>
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     Michael Buesch <mbuesch@freenet.de>
 =======
 		     Michael Buesch <m@bues.ch>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
 		     Danny van Dyk <kugelfang@gentoo.org>
 		     Andreas Jaggi <andreas.jaggi@waterwave.ch>
   Copyright (c) 2007 Larry Finger <Larry.Finger@lwfinger.net>
@@ -1072,10 +1076,14 @@ b43legacy_radio_interference_mitigation_enable(struct b43legacy_wldev *dev,
 			break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		phy->aci_enable = 1;
 =======
 		phy->aci_enable = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		phy->aci_enable = true;
+>>>>>>> refs/remotes/origin/master
 
 		phy_stacksave(B43legacy_PHY_RADIO_BITFIELD);
 		phy_stacksave(B43legacy_PHY_G_CRS);
@@ -1288,10 +1296,14 @@ b43legacy_radio_interference_mitigation_disable(struct b43legacy_wldev *dev,
 			break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		phy->aci_enable = 0;
 =======
 		phy->aci_enable = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		phy->aci_enable = false;
+>>>>>>> refs/remotes/origin/master
 
 		phy_stackrestore(B43legacy_PHY_RADIO_BITFIELD);
 		phy_stackrestore(B43legacy_PHY_G_CRS);
@@ -1359,16 +1371,22 @@ int b43legacy_radio_set_interference_mitigation(struct b43legacy_wldev *dev,
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	phy->aci_wlan_automatic = 0;
 	switch (mode) {
 	case B43legacy_RADIO_INTERFMODE_AUTOWLAN:
 		phy->aci_wlan_automatic = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	phy->aci_wlan_automatic = false;
 	switch (mode) {
 	case B43legacy_RADIO_INTERFMODE_AUTOWLAN:
 		phy->aci_wlan_automatic = true;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (phy->aci_enable)
 			mode = B43legacy_RADIO_INTERFMODE_MANUALWLAN;
 		else
@@ -1391,12 +1409,17 @@ int b43legacy_radio_set_interference_mitigation(struct b43legacy_wldev *dev,
 
 	if (mode == B43legacy_RADIO_INTERFMODE_NONE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		phy->aci_enable = 0;
 		phy->aci_hw_rssi = 0;
 =======
 		phy->aci_enable = false;
 		phy->aci_hw_rssi = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		phy->aci_enable = false;
+		phy->aci_hw_rssi = false;
+>>>>>>> refs/remotes/origin/master
 	} else
 		b43legacy_radio_interference_mitigation_enable(dev, mode);
 	phy->interfmode = mode;
@@ -2022,7 +2045,11 @@ u16 b43legacy_default_radio_attenuation(struct b43legacy_wldev *dev)
 			if (phy->type == B43legacy_PHYTYPE_G) {
 				if (is_bcm_board_vendor(dev) &&
 				    dev->dev->bus->boardinfo.type == 0x421 &&
+<<<<<<< HEAD
 				    dev->dev->bus->boardinfo.rev >= 30)
+=======
+				    dev->dev->bus->sprom.board_rev >= 30)
+>>>>>>> refs/remotes/origin/master
 					att = 3;
 				else if (is_bcm_board_vendor(dev) &&
 					 dev->dev->bus->boardinfo.type == 0x416)
@@ -2032,7 +2059,11 @@ u16 b43legacy_default_radio_attenuation(struct b43legacy_wldev *dev)
 			} else {
 				if (is_bcm_board_vendor(dev) &&
 				    dev->dev->bus->boardinfo.type == 0x421 &&
+<<<<<<< HEAD
 				    dev->dev->bus->boardinfo.rev >= 30)
+=======
+				    dev->dev->bus->sprom.board_rev >= 30)
+>>>>>>> refs/remotes/origin/master
 					att = 7;
 				else
 					att = 6;
@@ -2042,7 +2073,11 @@ u16 b43legacy_default_radio_attenuation(struct b43legacy_wldev *dev)
 			if (phy->type == B43legacy_PHYTYPE_G) {
 				if (is_bcm_board_vendor(dev) &&
 				    dev->dev->bus->boardinfo.type == 0x421 &&
+<<<<<<< HEAD
 				    dev->dev->bus->boardinfo.rev >= 30)
+=======
+				    dev->dev->bus->sprom.board_rev >= 30)
+>>>>>>> refs/remotes/origin/master
 					att = 3;
 				else if (is_bcm_board_vendor(dev) &&
 					 dev->dev->bus->boardinfo.type ==
@@ -2076,9 +2111,15 @@ u16 b43legacy_default_radio_attenuation(struct b43legacy_wldev *dev)
 	}
 	if (is_bcm_board_vendor(dev) &&
 	    dev->dev->bus->boardinfo.type == 0x421) {
+<<<<<<< HEAD
 		if (dev->dev->bus->boardinfo.rev < 0x43)
 			att = 2;
 		else if (dev->dev->bus->boardinfo.rev < 0x51)
+=======
+		if (dev->dev->bus->sprom.board_rev < 0x43)
+			att = 2;
+		else if (dev->dev->bus->sprom.board_rev < 0x51)
+>>>>>>> refs/remotes/origin/master
 			att = 3;
 	}
 	if (att == 0xFFFF)
@@ -2127,10 +2168,14 @@ void b43legacy_radio_turn_on(struct b43legacy_wldev *dev)
 			b43legacy_phy_write(dev, B43legacy_PHY_RFOVERVAL,
 					    phy->radio_off_context.rfoverval);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			phy->radio_off_context.valid = 0;
 =======
 			phy->radio_off_context.valid = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			phy->radio_off_context.valid = false;
+>>>>>>> refs/remotes/origin/master
 		}
 		channel = phy->channel;
 		err = b43legacy_radio_selectchannel(dev,
@@ -2142,10 +2187,14 @@ void b43legacy_radio_turn_on(struct b43legacy_wldev *dev)
 		B43legacy_BUG_ON(1);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	phy->radio_on = 1;
 =======
 	phy->radio_on = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	phy->radio_on = true;
+>>>>>>> refs/remotes/origin/master
 }
 
 void b43legacy_radio_turn_off(struct b43legacy_wldev *dev, bool force)
@@ -2164,10 +2213,14 @@ void b43legacy_radio_turn_off(struct b43legacy_wldev *dev, bool force)
 			phy->radio_off_context.rfover = rfover;
 			phy->radio_off_context.rfoverval = rfoverval;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			phy->radio_off_context.valid = 1;
 =======
 			phy->radio_off_context.valid = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			phy->radio_off_context.valid = true;
+>>>>>>> refs/remotes/origin/master
 		}
 		b43legacy_phy_write(dev, B43legacy_PHY_RFOVER, rfover | 0x008C);
 		b43legacy_phy_write(dev, B43legacy_PHY_RFOVERVAL,
@@ -2175,10 +2228,14 @@ void b43legacy_radio_turn_off(struct b43legacy_wldev *dev, bool force)
 	} else
 		b43legacy_phy_write(dev, 0x0015, 0xAA00);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	phy->radio_on = 0;
 =======
 	phy->radio_on = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	phy->radio_on = false;
+>>>>>>> refs/remotes/origin/master
 	b43legacydbg(dev->wl, "Radio initialized\n");
 }
 

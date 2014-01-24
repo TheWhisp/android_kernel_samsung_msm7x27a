@@ -25,9 +25,15 @@
 #include <asm/ppc-opcode.h>
 #include <asm/mmu.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/hw_irq.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/hw_irq.h>
+#include <asm/kvm_asm.h>
+#include <asm/kvm_booke_hv_asm.h>
+>>>>>>> refs/remotes/origin/master
 
 /* XXX This will ultimately add space for a special exception save
  *     structure used to save things like SRR0/SRR1, SPRGs, MAS, etc...
@@ -38,16 +44,30 @@
 #define	SPECIAL_EXC_FRAME_SIZE	INT_FRAME_SIZE
 
 /* Exception prolog code for all exceptions */
+<<<<<<< HEAD
 #define EXCEPTION_PROLOG(n, type, addition)				    \
+=======
+#define EXCEPTION_PROLOG(n, intnum, type, addition)	    		    \
+>>>>>>> refs/remotes/origin/master
 	mtspr	SPRN_SPRG_##type##_SCRATCH,r13;	/* get spare registers */   \
 	mfspr	r13,SPRN_SPRG_PACA;	/* get PACA */			    \
 	std	r10,PACA_EX##type+EX_R10(r13);				    \
 	std	r11,PACA_EX##type+EX_R11(r13);				    \
+<<<<<<< HEAD
 	mfcr	r10;			/* save CR */			    \
 	addition;			/* additional code for that exc. */ \
 	std	r1,PACA_EX##type+EX_R1(r13); /* save old r1 in the PACA */  \
 	stw	r10,PACA_EX##type+EX_CR(r13); /* save old CR in the PACA */ \
 	mfspr	r11,SPRN_##type##_SRR1;/* what are we coming from */	    \
+=======
+	PROLOG_STORE_RESTORE_SCRATCH_##type;				    \
+	mfcr	r10;			/* save CR */			    \
+	mfspr	r11,SPRN_##type##_SRR1;/* what are we coming from */	    \
+	DO_KVM	intnum,SPRN_##type##_SRR1;    /* KVM hook */		    \
+	stw	r10,PACA_EX##type+EX_CR(r13); /* save old CR in the PACA */ \
+	addition;			/* additional code for that exc. */ \
+	std	r1,PACA_EX##type+EX_R1(r13); /* save old r1 in the PACA */  \
+>>>>>>> refs/remotes/origin/master
 	type##_SET_KSTACK;		/* get special stack if necessary */\
 	andi.	r10,r11,MSR_PR;		/* save stack pointer */	    \
 	beq	1f;			/* branch around if supervisor */   \
@@ -62,6 +82,13 @@
 #define SPRN_GEN_SRR0	SPRN_SRR0
 #define SPRN_GEN_SRR1	SPRN_SRR1
 
+<<<<<<< HEAD
+=======
+#define	GDBELL_SET_KSTACK	GEN_SET_KSTACK
+#define SPRN_GDBELL_SRR0	SPRN_GSRR0
+#define SPRN_GDBELL_SRR1	SPRN_GSRR1
+
+>>>>>>> refs/remotes/origin/master
 #define CRIT_SET_KSTACK						            \
 	ld	r1,PACA_CRIT_STACK(r13);				    \
 	subi	r1,r1,SPECIAL_EXC_FRAME_SIZE;
@@ -80,6 +107,7 @@
 #define SPRN_MC_SRR0	SPRN_MCSRR0
 #define SPRN_MC_SRR1	SPRN_MCSRR1
 
+<<<<<<< HEAD
 #define NORMAL_EXCEPTION_PROLOG(n, addition)				    \
 <<<<<<< HEAD
 	EXCEPTION_PROLOG(n, GEN, addition##_GEN)
@@ -140,13 +168,53 @@
 
 =======
 #define PROLOG_ADDITION_NONE_GEN(n)
+=======
+#define NORMAL_EXCEPTION_PROLOG(n, intnum, addition)			    \
+	EXCEPTION_PROLOG(n, intnum, GEN, addition##_GEN(n))
+
+#define CRIT_EXCEPTION_PROLOG(n, intnum, addition)			    \
+	EXCEPTION_PROLOG(n, intnum, CRIT, addition##_CRIT(n))
+
+#define DBG_EXCEPTION_PROLOG(n, intnum, addition)			    \
+	EXCEPTION_PROLOG(n, intnum, DBG, addition##_DBG(n))
+
+#define MC_EXCEPTION_PROLOG(n, intnum, addition)			    \
+	EXCEPTION_PROLOG(n, intnum, MC, addition##_MC(n))
+
+#define GDBELL_EXCEPTION_PROLOG(n, intnum, addition)			    \
+	EXCEPTION_PROLOG(n, intnum, GDBELL, addition##_GDBELL(n))
+
+/*
+ * Store user-visible scratch in PACA exception slots and restore proper value
+ */
+#define PROLOG_STORE_RESTORE_SCRATCH_GEN
+#define PROLOG_STORE_RESTORE_SCRATCH_GDBELL
+#define PROLOG_STORE_RESTORE_SCRATCH_DBG
+#define PROLOG_STORE_RESTORE_SCRATCH_MC
+
+#define PROLOG_STORE_RESTORE_SCRATCH_CRIT				    \
+	mfspr	r10,SPRN_SPRG_CRIT_SCRATCH;	/* get r13 */		    \
+	std	r10,PACA_EXCRIT+EX_R13(r13);				    \
+	ld	r11,PACA_SPRG3(r13);					    \
+	mtspr	SPRN_SPRG_CRIT_SCRATCH,r11;
+
+/* Variants of the "addition" argument for the prolog
+ */
+#define PROLOG_ADDITION_NONE_GEN(n)
+#define PROLOG_ADDITION_NONE_GDBELL(n)
+>>>>>>> refs/remotes/origin/master
 #define PROLOG_ADDITION_NONE_CRIT(n)
 #define PROLOG_ADDITION_NONE_DBG(n)
 #define PROLOG_ADDITION_NONE_MC(n)
 
 #define PROLOG_ADDITION_MASKABLE_GEN(n)					    \
+<<<<<<< HEAD
 	lbz	r11,PACASOFTIRQEN(r13); /* are irqs soft-disabled ? */	    \
 	cmpwi	cr0,r11,0;		/* yes -> go out of line */	    \
+=======
+	lbz	r10,PACASOFTIRQEN(r13); /* are irqs soft-disabled ? */	    \
+	cmpwi	cr0,r10,0;		/* yes -> go out of line */	    \
+>>>>>>> refs/remotes/origin/master
 	beq	masked_interrupt_book3e_##n
 
 #define PROLOG_ADDITION_2REGS_GEN(n)					    \
@@ -169,15 +237,22 @@
 	std	r15,PACA_EXMC+EX_R15(r13)
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Core exception code for all exceptions except TLB misses.
  * XXX: Needs to make SPRN_SPRG_GEN depend on exception type
  */
 #define EXCEPTION_COMMON(n, excf, ints)					    \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 exc_##n##_common:							    \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+exc_##n##_common:							    \
+>>>>>>> refs/remotes/origin/master
 	std	r0,GPR0(r1);		/* save r0 in stackframe */	    \
 	std	r2,GPR2(r1);		/* save r2 in stackframe */	    \
 	SAVE_4GPRS(3, r1);		/* save r3 - r6 in stackframe */    \
@@ -185,8 +260,14 @@ exc_##n##_common:							    \
 	std	r9,GPR9(r1);		/* save r9 in stackframe */	    \
 	std	r10,_NIP(r1);		/* save SRR0 to stackframe */	    \
 	std	r11,_MSR(r1);		/* save SRR1 to stackframe */	    \
+<<<<<<< HEAD
 	ACCOUNT_CPU_USER_ENTRY(r10,r11);/* accounting (uses cr0+eq) */	    \
 	ld	r3,excf+EX_R10(r13);	/* get back r10 */		    \
+=======
+	beq	2f;			/* if from kernel mode */	    \
+	ACCOUNT_CPU_USER_ENTRY(r10,r11);/* accounting (uses cr0+eq) */	    \
+2:	ld	r3,excf+EX_R10(r13);	/* get back r10 */		    \
+>>>>>>> refs/remotes/origin/master
 	ld	r4,excf+EX_R11(r13);	/* get back r11 */		    \
 	mfspr	r5,SPRN_SPRG_GEN_SCRATCH;/* get back r13 */		    \
 	std	r12,GPR12(r1);		/* save r12 in stackframe */	    \
@@ -216,6 +297,7 @@ exc_##n##_common:							    \
 	ints;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Variants for the "ints" argument */
 #define INTS_KEEP
 #define INTS_DISABLE_SOFT						    \
@@ -231,6 +313,8 @@ exc_##n##_common:							    \
  * neither soft nor hard IRQ indicators in the PACA. This will restore MSR:EE
  * to it's previous value
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Variants for the "ints" argument. This one does nothing when we want
  * to keep interrupts in their original state
  */
@@ -239,14 +323,23 @@ exc_##n##_common:							    \
 /* This second version is meant for exceptions that don't immediately
  * hard-enable. We set a bit in paca->irq_happened to ensure that
  * a subsequent call to arch_local_irq_restore() will properly
+<<<<<<< HEAD
  * hard-enable and avoid the fast-path
  */
 #define INTS_DISABLE	SOFT_DISABLE_INTS(r3,r4)
+=======
+ * hard-enable and avoid the fast-path, and then reconcile irq state.
+ */
+#define INTS_DISABLE	RECONCILE_IRQ_STATE(r3,r4)
+>>>>>>> refs/remotes/origin/master
 
 /* This is called by exceptions that used INTS_KEEP (that did not touch
  * irq indicators in the PACA). This will restore MSR:EE to it's previous
  * value
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * XXX In the long run, we may want to open-code it in order to separate the
  *     load from the wrtee, thus limiting the latency caused by the dependency
@@ -290,7 +383,11 @@ exc_##n##_bad_stack:							    \
  * interrupts happen before the wait instruction.
  */
 #define CHECK_NAPPING()							\
+<<<<<<< HEAD
 	clrrdi	r11,r1,THREAD_SHIFT;					\
+=======
+	CURRENT_THREAD_INFO(r11, r1);					\
+>>>>>>> refs/remotes/origin/master
 	ld	r10,TI_LOCAL_FLAGS(r11);				\
 	andi.	r9,r10,_TLF_NAPPING;					\
 	beq+	1f;							\
@@ -301,6 +398,7 @@ exc_##n##_bad_stack:							    \
 1:
 
 
+<<<<<<< HEAD
 #define MASKABLE_EXCEPTION(trapnum, label, hdlr, ack)			\
 	START_EXCEPTION(label);						\
 	NORMAL_EXCEPTION_PROLOG(trapnum, PROLOG_ADDITION_MASKABLE)	\
@@ -309,6 +407,12 @@ exc_##n##_bad_stack:							    \
 =======
 	EXCEPTION_COMMON(trapnum, PACA_EXGEN, INTS_DISABLE)		\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MASKABLE_EXCEPTION(trapnum, intnum, label, hdlr, ack)		\
+	START_EXCEPTION(label);						\
+	NORMAL_EXCEPTION_PROLOG(trapnum, intnum, PROLOG_ADDITION_MASKABLE)\
+	EXCEPTION_COMMON(trapnum, PACA_EXGEN, INTS_DISABLE)		\
+>>>>>>> refs/remotes/origin/master
 	ack(r8);							\
 	CHECK_NAPPING();						\
 	addi	r3,r1,STACK_FRAME_OVERHEAD;				\
@@ -345,6 +449,11 @@ interrupt_base_book3e:					/* fake trap */
 	EXCEPTION_STUB(0x1a0, watchdog)			/* 0x09f0 */
 	EXCEPTION_STUB(0x1c0, data_tlb_miss)
 	EXCEPTION_STUB(0x1e0, instruction_tlb_miss)
+<<<<<<< HEAD
+=======
+	EXCEPTION_STUB(0x200, altivec_unavailable)	/* 0x0f20 */
+	EXCEPTION_STUB(0x220, altivec_assist)		/* 0x1700 */
+>>>>>>> refs/remotes/origin/master
 	EXCEPTION_STUB(0x260, perfmon)
 	EXCEPTION_STUB(0x280, doorbell)
 	EXCEPTION_STUB(0x2a0, doorbell_crit)
@@ -358,12 +467,18 @@ interrupt_end_book3e:
 
 /* Critical Input Interrupt */
 	START_EXCEPTION(critical_input);
+<<<<<<< HEAD
 	CRIT_EXCEPTION_PROLOG(0x100, PROLOG_ADDITION_NONE)
 <<<<<<< HEAD
 //	EXCEPTION_COMMON(0x100, PACA_EXCRIT, INTS_DISABLE_ALL)
 =======
 //	EXCEPTION_COMMON(0x100, PACA_EXCRIT, INTS_DISABLE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CRIT_EXCEPTION_PROLOG(0x100, BOOKE_INTERRUPT_CRITICAL,
+			      PROLOG_ADDITION_NONE)
+//	EXCEPTION_COMMON(0x100, PACA_EXCRIT, INTS_DISABLE)
+>>>>>>> refs/remotes/origin/master
 //	bl	special_reg_save_crit
 //	CHECK_NAPPING();
 //	addi	r3,r1,STACK_FRAME_OVERHEAD
@@ -373,12 +488,18 @@ interrupt_end_book3e:
 
 /* Machine Check Interrupt */
 	START_EXCEPTION(machine_check);
+<<<<<<< HEAD
 	CRIT_EXCEPTION_PROLOG(0x200, PROLOG_ADDITION_NONE)
 <<<<<<< HEAD
 //	EXCEPTION_COMMON(0x200, PACA_EXMC, INTS_DISABLE_ALL)
 =======
 //	EXCEPTION_COMMON(0x200, PACA_EXMC, INTS_DISABLE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MC_EXCEPTION_PROLOG(0x200, BOOKE_INTERRUPT_MACHINE_CHECK,
+			    PROLOG_ADDITION_NONE)
+//	EXCEPTION_COMMON(0x200, PACA_EXMC, INTS_DISABLE)
+>>>>>>> refs/remotes/origin/master
 //	bl	special_reg_save_mc
 //	addi	r3,r1,STACK_FRAME_OVERHEAD
 //	CHECK_NAPPING();
@@ -388,6 +509,7 @@ interrupt_end_book3e:
 
 /* Data Storage Interrupt */
 	START_EXCEPTION(data_storage)
+<<<<<<< HEAD
 	NORMAL_EXCEPTION_PROLOG(0x300, PROLOG_ADDITION_2REGS)
 	mfspr	r14,SPRN_DEAR
 	mfspr	r15,SPRN_ESR
@@ -396,10 +518,18 @@ interrupt_end_book3e:
 =======
 	EXCEPTION_COMMON(0x300, PACA_EXGEN, INTS_DISABLE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	NORMAL_EXCEPTION_PROLOG(0x300, BOOKE_INTERRUPT_DATA_STORAGE,
+				PROLOG_ADDITION_2REGS)
+	mfspr	r14,SPRN_DEAR
+	mfspr	r15,SPRN_ESR
+	EXCEPTION_COMMON(0x300, PACA_EXGEN, INTS_DISABLE)
+>>>>>>> refs/remotes/origin/master
 	b	storage_fault_common
 
 /* Instruction Storage Interrupt */
 	START_EXCEPTION(instruction_storage);
+<<<<<<< HEAD
 	NORMAL_EXCEPTION_PROLOG(0x400, PROLOG_ADDITION_2REGS)
 	li	r15,0
 	mr	r14,r10
@@ -416,6 +546,23 @@ interrupt_end_book3e:
 /* Alignment */
 	START_EXCEPTION(alignment);
 	NORMAL_EXCEPTION_PROLOG(0x600, PROLOG_ADDITION_2REGS)
+=======
+	NORMAL_EXCEPTION_PROLOG(0x400, BOOKE_INTERRUPT_INST_STORAGE,
+				PROLOG_ADDITION_2REGS)
+	li	r15,0
+	mr	r14,r10
+	EXCEPTION_COMMON(0x400, PACA_EXGEN, INTS_DISABLE)
+	b	storage_fault_common
+
+/* External Input Interrupt */
+	MASKABLE_EXCEPTION(0x500, BOOKE_INTERRUPT_EXTERNAL,
+			   external_input, .do_IRQ, ACK_NONE)
+
+/* Alignment */
+	START_EXCEPTION(alignment);
+	NORMAL_EXCEPTION_PROLOG(0x600, BOOKE_INTERRUPT_ALIGNMENT,
+				PROLOG_ADDITION_2REGS)
+>>>>>>> refs/remotes/origin/master
 	mfspr	r14,SPRN_DEAR
 	mfspr	r15,SPRN_ESR
 	EXCEPTION_COMMON(0x600, PACA_EXGEN, INTS_KEEP)
@@ -423,6 +570,7 @@ interrupt_end_book3e:
 
 /* Program Interrupt */
 	START_EXCEPTION(program);
+<<<<<<< HEAD
 	NORMAL_EXCEPTION_PROLOG(0x700, PROLOG_ADDITION_1REG)
 	mfspr	r14,SPRN_ESR
 <<<<<<< HEAD
@@ -430,19 +578,29 @@ interrupt_end_book3e:
 =======
 	EXCEPTION_COMMON(0x700, PACA_EXGEN, INTS_DISABLE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	NORMAL_EXCEPTION_PROLOG(0x700, BOOKE_INTERRUPT_PROGRAM,
+				PROLOG_ADDITION_1REG)
+	mfspr	r14,SPRN_ESR
+	EXCEPTION_COMMON(0x700, PACA_EXGEN, INTS_DISABLE)
+>>>>>>> refs/remotes/origin/master
 	std	r14,_DSISR(r1)
 	addi	r3,r1,STACK_FRAME_OVERHEAD
 	ld	r14,PACA_EXGEN+EX_R14(r13)
 	bl	.save_nvgprs
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INTS_RESTORE_HARD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bl	.program_check_exception
 	b	.ret_from_except
 
 /* Floating Point Unavailable Interrupt */
 	START_EXCEPTION(fp_unavailable);
+<<<<<<< HEAD
 	NORMAL_EXCEPTION_PROLOG(0x800, PROLOG_ADDITION_NONE)
 	/* we can probably do a shorter exception entry for that one... */
 	EXCEPTION_COMMON(0x800, PACA_EXGEN, INTS_KEEP)
@@ -457,6 +615,12 @@ interrupt_end_book3e:
 	bl	.load_up_fpu
 	b	fast_exception_return
 =======
+=======
+	NORMAL_EXCEPTION_PROLOG(0x800, BOOKE_INTERRUPT_FP_UNAVAIL,
+				PROLOG_ADDITION_NONE)
+	/* we can probably do a shorter exception entry for that one... */
+	EXCEPTION_COMMON(0x800, PACA_EXGEN, INTS_KEEP)
+>>>>>>> refs/remotes/origin/master
 	ld	r12,_MSR(r1)
 	andi.	r0,r12,MSR_PR;
 	beq-	1f
@@ -467,6 +631,7 @@ interrupt_end_book3e:
 	addi	r3,r1,STACK_FRAME_OVERHEAD
 	bl	.kernel_fp_unavailable_exception
 	b	.ret_from_except
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 /* Decrementer Interrupt */
@@ -483,6 +648,62 @@ interrupt_end_book3e:
 =======
 //	EXCEPTION_COMMON(0x9f0, PACA_EXCRIT, INTS_DISABLE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/* Altivec Unavailable Interrupt */
+	START_EXCEPTION(altivec_unavailable);
+	NORMAL_EXCEPTION_PROLOG(0x200, BOOKE_INTERRUPT_SPE_ALTIVEC_UNAVAIL,
+				PROLOG_ADDITION_NONE)
+	/* we can probably do a shorter exception entry for that one... */
+	EXCEPTION_COMMON(0x200, PACA_EXGEN, INTS_KEEP)
+#ifdef CONFIG_ALTIVEC
+BEGIN_FTR_SECTION
+	ld	r12,_MSR(r1)
+	andi.	r0,r12,MSR_PR;
+	beq-	1f
+	bl	.load_up_altivec
+	b	fast_exception_return
+1:
+END_FTR_SECTION_IFSET(CPU_FTR_ALTIVEC)
+#endif
+	INTS_DISABLE
+	bl	.save_nvgprs
+	addi	r3,r1,STACK_FRAME_OVERHEAD
+	bl	.altivec_unavailable_exception
+	b	.ret_from_except
+
+/* AltiVec Assist */
+	START_EXCEPTION(altivec_assist);
+	NORMAL_EXCEPTION_PROLOG(0x220,
+				BOOKE_INTERRUPT_SPE_FP_DATA_ALTIVEC_ASSIST,
+				PROLOG_ADDITION_NONE)
+	EXCEPTION_COMMON(0x220, PACA_EXGEN, INTS_DISABLE)
+	bl	.save_nvgprs
+	addi	r3,r1,STACK_FRAME_OVERHEAD
+#ifdef CONFIG_ALTIVEC
+BEGIN_FTR_SECTION
+	bl	.altivec_assist_exception
+END_FTR_SECTION_IFSET(CPU_FTR_ALTIVEC)
+#else
+	bl	.unknown_exception
+#endif
+	b	.ret_from_except
+
+
+/* Decrementer Interrupt */
+	MASKABLE_EXCEPTION(0x900, BOOKE_INTERRUPT_DECREMENTER,
+			   decrementer, .timer_interrupt, ACK_DEC)
+
+/* Fixed Interval Timer Interrupt */
+	MASKABLE_EXCEPTION(0x980, BOOKE_INTERRUPT_FIT,
+			   fixed_interval, .unknown_exception, ACK_FIT)
+
+/* Watchdog Timer Interrupt */
+	START_EXCEPTION(watchdog);
+	CRIT_EXCEPTION_PROLOG(0x9f0, BOOKE_INTERRUPT_WATCHDOG,
+			      PROLOG_ADDITION_NONE)
+//	EXCEPTION_COMMON(0x9f0, PACA_EXCRIT, INTS_DISABLE)
+>>>>>>> refs/remotes/origin/master
 //	bl	special_reg_save_crit
 //	CHECK_NAPPING();
 //	addi	r3,r1,STACK_FRAME_OVERHEAD
@@ -500,6 +721,7 @@ interrupt_end_book3e:
 
 /* Auxiliary Processor Unavailable Interrupt */
 	START_EXCEPTION(ap_unavailable);
+<<<<<<< HEAD
 	NORMAL_EXCEPTION_PROLOG(0xf20, PROLOG_ADDITION_NONE)
 <<<<<<< HEAD
 	EXCEPTION_COMMON(0xf20, PACA_EXGEN, INTS_KEEP)
@@ -511,12 +733,24 @@ interrupt_end_book3e:
 	bl	.save_nvgprs
 	addi	r3,r1,STACK_FRAME_OVERHEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	NORMAL_EXCEPTION_PROLOG(0xf20, BOOKE_INTERRUPT_AP_UNAVAIL,
+				PROLOG_ADDITION_NONE)
+	EXCEPTION_COMMON(0xf20, PACA_EXGEN, INTS_DISABLE)
+	bl	.save_nvgprs
+	addi	r3,r1,STACK_FRAME_OVERHEAD
+>>>>>>> refs/remotes/origin/master
 	bl	.unknown_exception
 	b	.ret_from_except
 
 /* Debug exception as a critical interrupt*/
 	START_EXCEPTION(debug_crit);
+<<<<<<< HEAD
 	CRIT_EXCEPTION_PROLOG(0xd00, PROLOG_ADDITION_2REGS)
+=======
+	CRIT_EXCEPTION_PROLOG(0xd00, BOOKE_INTERRUPT_DEBUG,
+			      PROLOG_ADDITION_2REGS)
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If there is a single step or branch-taken exception in an
@@ -528,7 +762,11 @@ interrupt_end_book3e:
 	 */
 
 	mfspr	r14,SPRN_DBSR		/* check single-step/branch taken */
+<<<<<<< HEAD
 	andis.	r15,r14,DBSR_IC@h
+=======
+	andis.	r15,r14,(DBSR_IC|DBSR_BT)@h
+>>>>>>> refs/remotes/origin/master
 	beq+	1f
 
 	LOAD_REG_IMMEDIATE(r14,interrupt_base_book3e)
@@ -539,7 +777,11 @@ interrupt_end_book3e:
 	bge+	cr1,1f
 
 	/* here it looks like we got an inappropriate debug exception. */
+<<<<<<< HEAD
 	lis	r14,DBSR_IC@h		/* clear the IC event */
+=======
+	lis	r14,(DBSR_IC|DBSR_BT)@h		/* clear the event */
+>>>>>>> refs/remotes/origin/master
 	rlwinm	r11,r11,0,~MSR_DE	/* clear DE in the CSRR1 value */
 	mtspr	SPRN_DBSR,r14
 	mtspr	SPRN_CSRR1,r11
@@ -550,7 +792,11 @@ interrupt_end_book3e:
 	mtcr	r10
 	ld	r10,PACA_EXCRIT+EX_R10(r13)	/* restore registers */
 	ld	r11,PACA_EXCRIT+EX_R11(r13)
+<<<<<<< HEAD
 	mfspr	r13,SPRN_SPRG_CRIT_SCRATCH
+=======
+	ld	r13,PACA_EXCRIT+EX_R13(r13)
+>>>>>>> refs/remotes/origin/master
 	rfci
 
 	/* Normal debug exception */
@@ -563,6 +809,7 @@ interrupt_end_book3e:
 	/* Now we mash up things to make it look like we are coming on a
 	 * normal exception
 	 */
+<<<<<<< HEAD
 	mfspr	r15,SPRN_SPRG_CRIT_SCRATCH
 	mtspr	SPRN_SPRG_GEN_SCRATCH,r15
 	mfspr	r14,SPRN_DBSR
@@ -571,6 +818,12 @@ interrupt_end_book3e:
 =======
 	EXCEPTION_COMMON(0xd00, PACA_EXCRIT, INTS_DISABLE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ld	r15,PACA_EXCRIT+EX_R13(r13)
+	mtspr	SPRN_SPRG_GEN_SCRATCH,r15
+	mfspr	r14,SPRN_DBSR
+	EXCEPTION_COMMON(0xd00, PACA_EXCRIT, INTS_DISABLE)
+>>>>>>> refs/remotes/origin/master
 	std	r14,_DSISR(r1)
 	addi	r3,r1,STACK_FRAME_OVERHEAD
 	mr	r4,r14
@@ -586,10 +839,15 @@ kernel_dbg_exc:
 /* Debug exception as a debug interrupt*/
 	START_EXCEPTION(debug_debug);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG_EXCEPTION_PROLOG(0xd00, PROLOG_ADDITION_2REGS)
 =======
 	DBG_EXCEPTION_PROLOG(0xd08, PROLOG_ADDITION_2REGS)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG_EXCEPTION_PROLOG(0xd00, BOOKE_INTERRUPT_DEBUG,
+						 PROLOG_ADDITION_2REGS)
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If there is a single step or branch-taken exception in an
@@ -601,7 +859,11 @@ kernel_dbg_exc:
 	 */
 
 	mfspr	r14,SPRN_DBSR		/* check single-step/branch taken */
+<<<<<<< HEAD
 	andis.	r15,r14,DBSR_IC@h
+=======
+	andis.	r15,r14,(DBSR_IC|DBSR_BT)@h
+>>>>>>> refs/remotes/origin/master
 	beq+	1f
 
 	LOAD_REG_IMMEDIATE(r14,interrupt_base_book3e)
@@ -612,7 +874,11 @@ kernel_dbg_exc:
 	bge+	cr1,1f
 
 	/* here it looks like we got an inappropriate debug exception. */
+<<<<<<< HEAD
 	lis	r14,DBSR_IC@h		/* clear the IC event */
+=======
+	lis	r14,(DBSR_IC|DBSR_BT)@h		/* clear the event */
+>>>>>>> refs/remotes/origin/master
 	rlwinm	r11,r11,0,~MSR_DE	/* clear DE in the DSRR1 value */
 	mtspr	SPRN_DBSR,r14
 	mtspr	SPRN_DSRR1,r11
@@ -640,10 +906,14 @@ kernel_dbg_exc:
 	mtspr	SPRN_SPRG_GEN_SCRATCH,r15
 	mfspr	r14,SPRN_DBSR
 <<<<<<< HEAD
+<<<<<<< HEAD
 	EXCEPTION_COMMON(0xd00, PACA_EXDBG, INTS_DISABLE_ALL)
 =======
 	EXCEPTION_COMMON(0xd08, PACA_EXDBG, INTS_DISABLE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	EXCEPTION_COMMON(0xd08, PACA_EXDBG, INTS_DISABLE)
+>>>>>>> refs/remotes/origin/master
 	std	r14,_DSISR(r1)
 	addi	r3,r1,STACK_FRAME_OVERHEAD
 	mr	r4,r14
@@ -653,6 +923,7 @@ kernel_dbg_exc:
 	bl	.DebugException
 	b	.ret_from_except
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	MASKABLE_EXCEPTION(0x260, perfmon, .performance_monitor_exception, ACK_NONE)
 
@@ -667,11 +938,19 @@ kernel_dbg_exc:
 	START_EXCEPTION(perfmon);
 	NORMAL_EXCEPTION_PROLOG(0x260, PROLOG_ADDITION_NONE)
 	EXCEPTION_COMMON(0x260, PACA_EXGEN, INTS_DISABLE)
+=======
+	START_EXCEPTION(perfmon);
+	NORMAL_EXCEPTION_PROLOG(0x260, BOOKE_INTERRUPT_PERFORMANCE_MONITOR,
+				PROLOG_ADDITION_NONE)
+	EXCEPTION_COMMON(0x260, PACA_EXGEN, INTS_DISABLE)
+	CHECK_NAPPING()
+>>>>>>> refs/remotes/origin/master
 	addi	r3,r1,STACK_FRAME_OVERHEAD
 	bl	.performance_monitor_exception
 	b	.ret_from_except_lite
 
 /* Doorbell interrupt */
+<<<<<<< HEAD
 	MASKABLE_EXCEPTION(0x280, doorbell, .doorbell_exception, ACK_NONE)
 
 /* Doorbell critical Interrupt */
@@ -679,6 +958,16 @@ kernel_dbg_exc:
 	CRIT_EXCEPTION_PROLOG(0x2a0, PROLOG_ADDITION_NONE)
 //	EXCEPTION_COMMON(0x2a0, PACA_EXCRIT, INTS_DISABLE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MASKABLE_EXCEPTION(0x280, BOOKE_INTERRUPT_DOORBELL,
+			   doorbell, .doorbell_exception, ACK_NONE)
+
+/* Doorbell critical Interrupt */
+	START_EXCEPTION(doorbell_crit);
+	CRIT_EXCEPTION_PROLOG(0x2a0, BOOKE_INTERRUPT_DOORBELL_CRITICAL,
+			      PROLOG_ADDITION_NONE)
+//	EXCEPTION_COMMON(0x2a0, PACA_EXCRIT, INTS_DISABLE)
+>>>>>>> refs/remotes/origin/master
 //	bl	special_reg_save_crit
 //	CHECK_NAPPING();
 //	addi	r3,r1,STACK_FRAME_OVERHEAD
@@ -686,6 +975,7 @@ kernel_dbg_exc:
 //	b	ret_from_crit_except
 	b	.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	MASKABLE_EXCEPTION(0x2c0, guest_doorbell, .unknown_exception, ACK_NONE)
 	MASKABLE_EXCEPTION(0x2e0, guest_doorbell_crit, .unknown_exception, ACK_NONE)
@@ -707,6 +997,26 @@ masked_interrupt_book3e:
 /* Guest Doorbell critical Interrupt */
 	START_EXCEPTION(guest_doorbell_crit);
 	CRIT_EXCEPTION_PROLOG(0x2e0, PROLOG_ADDITION_NONE)
+=======
+/*
+ *	Guest doorbell interrupt
+ *	This general exception use GSRRx save/restore registers
+ */
+	START_EXCEPTION(guest_doorbell);
+	GDBELL_EXCEPTION_PROLOG(0x2c0, BOOKE_INTERRUPT_GUEST_DBELL,
+			        PROLOG_ADDITION_NONE)
+	EXCEPTION_COMMON(0x2c0, PACA_EXGEN, INTS_KEEP)
+	addi	r3,r1,STACK_FRAME_OVERHEAD
+	bl	.save_nvgprs
+	INTS_RESTORE_HARD
+	bl	.unknown_exception
+	b	.ret_from_except
+
+/* Guest Doorbell critical Interrupt */
+	START_EXCEPTION(guest_doorbell_crit);
+	CRIT_EXCEPTION_PROLOG(0x2e0, BOOKE_INTERRUPT_GUEST_DBELL_CRIT,
+			      PROLOG_ADDITION_NONE)
+>>>>>>> refs/remotes/origin/master
 //	EXCEPTION_COMMON(0x2e0, PACA_EXCRIT, INTS_DISABLE)
 //	bl	special_reg_save_crit
 //	CHECK_NAPPING();
@@ -717,7 +1027,12 @@ masked_interrupt_book3e:
 
 /* Hypervisor call */
 	START_EXCEPTION(hypercall);
+<<<<<<< HEAD
 	NORMAL_EXCEPTION_PROLOG(0x310, PROLOG_ADDITION_NONE)
+=======
+	NORMAL_EXCEPTION_PROLOG(0x310, BOOKE_INTERRUPT_HV_SYSCALL,
+			        PROLOG_ADDITION_NONE)
+>>>>>>> refs/remotes/origin/master
 	EXCEPTION_COMMON(0x310, PACA_EXGEN, INTS_KEEP)
 	addi	r3,r1,STACK_FRAME_OVERHEAD
 	bl	.save_nvgprs
@@ -727,7 +1042,12 @@ masked_interrupt_book3e:
 
 /* Embedded Hypervisor priviledged  */
 	START_EXCEPTION(ehpriv);
+<<<<<<< HEAD
 	NORMAL_EXCEPTION_PROLOG(0x320, PROLOG_ADDITION_NONE)
+=======
+	NORMAL_EXCEPTION_PROLOG(0x320, BOOKE_INTERRUPT_HV_PRIV,
+			        PROLOG_ADDITION_NONE)
+>>>>>>> refs/remotes/origin/master
 	EXCEPTION_COMMON(0x320, PACA_EXGEN, INTS_KEEP)
 	addi	r3,r1,STACK_FRAME_OVERHEAD
 	bl	.save_nvgprs
@@ -740,6 +1060,7 @@ masked_interrupt_book3e:
  * accordingly and if the interrupt is level sensitive, we hard disable
  */
 
+<<<<<<< HEAD
 masked_interrupt_book3e_0x500:
 	/* XXX When adding support for EPR, use PACA_IRQ_EE_EDGE */
 	li	r11,PACA_IRQ_EE
@@ -785,6 +1106,44 @@ masked_interrupt_book3e_full_mask:
 	b	.
 <<<<<<< HEAD
 =======
+=======
+.macro masked_interrupt_book3e paca_irq full_mask
+	lbz	r10,PACAIRQHAPPENED(r13)
+	ori	r10,r10,\paca_irq
+	stb	r10,PACAIRQHAPPENED(r13)
+
+	.if \full_mask == 1
+	rldicl	r10,r11,48,1		/* clear MSR_EE */
+	rotldi	r11,r10,16
+	mtspr	SPRN_SRR1,r11
+	.endif
+
+	lwz	r11,PACA_EXGEN+EX_CR(r13)
+	mtcr	r11
+	ld	r10,PACA_EXGEN+EX_R10(r13)
+	ld	r11,PACA_EXGEN+EX_R11(r13)
+	mfspr	r13,SPRN_SPRG_GEN_SCRATCH
+	rfi
+	b	.
+.endm
+
+masked_interrupt_book3e_0x500:
+	// XXX When adding support for EPR, use PACA_IRQ_EE_EDGE
+	masked_interrupt_book3e PACA_IRQ_EE 1
+
+masked_interrupt_book3e_0x900:
+	ACK_DEC(r10);
+	masked_interrupt_book3e PACA_IRQ_DEC 0
+
+masked_interrupt_book3e_0x980:
+	ACK_FIT(r10);
+	masked_interrupt_book3e PACA_IRQ_DEC 0
+
+masked_interrupt_book3e_0x280:
+masked_interrupt_book3e_0x2c0:
+	masked_interrupt_book3e PACA_IRQ_DBELL 0
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Called from arch_local_irq_enable when an interrupt needs
  * to be resent. r3 contains either 0x500,0x900,0x260 or 0x280
@@ -816,7 +1175,10 @@ _GLOBAL(__replay_interrupt)
 	beq	exc_0x280_common
 	blr
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is called from 0x300 and 0x400 handlers after the prologs with
@@ -832,9 +1194,12 @@ storage_fault_common:
 	ld	r14,PACA_EXGEN+EX_R14(r13)
 	ld	r15,PACA_EXGEN+EX_R15(r13)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INTS_RESTORE_HARD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bl	.do_page_fault
 	cmpdi	r3,0
 	bne-	1f
@@ -922,12 +1287,19 @@ fast_exception_return:
 BAD_STACK_TRAMPOLINE(0x000)
 BAD_STACK_TRAMPOLINE(0x100)
 BAD_STACK_TRAMPOLINE(0x200)
+<<<<<<< HEAD
 BAD_STACK_TRAMPOLINE(0x260)
 <<<<<<< HEAD
 =======
 BAD_STACK_TRAMPOLINE(0x280)
 BAD_STACK_TRAMPOLINE(0x2a0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+BAD_STACK_TRAMPOLINE(0x220)
+BAD_STACK_TRAMPOLINE(0x260)
+BAD_STACK_TRAMPOLINE(0x280)
+BAD_STACK_TRAMPOLINE(0x2a0)
+>>>>>>> refs/remotes/origin/master
 BAD_STACK_TRAMPOLINE(0x2c0)
 BAD_STACK_TRAMPOLINE(0x2e0)
 BAD_STACK_TRAMPOLINE(0x300)
@@ -946,17 +1318,23 @@ BAD_STACK_TRAMPOLINE(0xb00)
 BAD_STACK_TRAMPOLINE(0xc00)
 BAD_STACK_TRAMPOLINE(0xd00)
 <<<<<<< HEAD
+<<<<<<< HEAD
 BAD_STACK_TRAMPOLINE(0xe00)
 BAD_STACK_TRAMPOLINE(0xf00)
 BAD_STACK_TRAMPOLINE(0xf20)
 BAD_STACK_TRAMPOLINE(0x2070)
 BAD_STACK_TRAMPOLINE(0x2080)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 BAD_STACK_TRAMPOLINE(0xd08)
 BAD_STACK_TRAMPOLINE(0xe00)
 BAD_STACK_TRAMPOLINE(0xf00)
 BAD_STACK_TRAMPOLINE(0xf20)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.globl	bad_stack_book3e
 bad_stack_book3e:
@@ -1084,7 +1462,11 @@ skpinv:	addi	r6,r6,1				/* Increment */
 	bne	1b				/* If not, repeat */
 
 	/* Invalidate all TLBs */
+<<<<<<< HEAD
 	PPC_TLBILX_ALL(0,0)
+=======
+	PPC_TLBILX_ALL(0,R0)
+>>>>>>> refs/remotes/origin/master
 	sync
 	isync
 
@@ -1142,7 +1524,11 @@ skpinv:	addi	r6,r6,1				/* Increment */
 	tlbwe
 
 	/* Invalidate TLB1 */
+<<<<<<< HEAD
 	PPC_TLBILX_ALL(0,0)
+=======
+	PPC_TLBILX_ALL(0,R0)
+>>>>>>> refs/remotes/origin/master
 	sync
 	isync
 
@@ -1201,7 +1587,11 @@ skpinv:	addi	r6,r6,1				/* Increment */
 	tlbwe
 
 	/* Invalidate TLB1 */
+<<<<<<< HEAD
 	PPC_TLBILX_ALL(0,0)
+=======
+	PPC_TLBILX_ALL(0,R0)
+>>>>>>> refs/remotes/origin/master
 	sync
 	isync
 
@@ -1319,7 +1709,11 @@ a2_tlbinit_after_iprot_flush:
 	tlbwe
 #endif /* CONFIG_PPC_EARLY_DEBUG_WSP */
 
+<<<<<<< HEAD
 	PPC_TLBILX(0,0,0)
+=======
+	PPC_TLBILX(0,0,R0)
+>>>>>>> refs/remotes/origin/master
 	sync
 	isync
 
@@ -1476,6 +1870,14 @@ _GLOBAL(__setup_base_ivors)
 
 	blr
 
+<<<<<<< HEAD
+=======
+_GLOBAL(setup_altivec_ivors)
+	SET_IVOR(32, 0x200) /* AltiVec Unavailable */
+	SET_IVOR(33, 0x220) /* AltiVec Assist */
+	blr
+
+>>>>>>> refs/remotes/origin/master
 _GLOBAL(setup_perfmon_ivor)
 	SET_IVOR(35, 0x260) /* Performance Monitor */
 	blr
@@ -1483,6 +1885,7 @@ _GLOBAL(setup_perfmon_ivor)
 _GLOBAL(setup_doorbell_ivors)
 	SET_IVOR(36, 0x280) /* Processor Doorbell */
 	SET_IVOR(37, 0x2a0) /* Processor Doorbell Crit */
+<<<<<<< HEAD
 
 	/* Check MMUCFG[LPIDSIZE] to determine if we have category E.HV */
 	mfspr	r10,SPRN_MMUCFG
@@ -1504,4 +1907,13 @@ _GLOBAL(setup_ehv_ivors)
 
 	SET_IVOR(40, 0x300) /* Embedded Hypervisor System Call */
 	SET_IVOR(41, 0x320) /* Embedded Hypervisor Privilege */
+=======
+	blr
+
+_GLOBAL(setup_ehv_ivors)
+	SET_IVOR(40, 0x300) /* Embedded Hypervisor System Call */
+	SET_IVOR(41, 0x320) /* Embedded Hypervisor Privilege */
+	SET_IVOR(38, 0x2c0) /* Guest Processor Doorbell */
+	SET_IVOR(39, 0x2e0) /* Guest Processor Doorbell Crit/MC */
+>>>>>>> refs/remotes/origin/master
 	blr

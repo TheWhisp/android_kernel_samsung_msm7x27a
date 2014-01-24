@@ -66,6 +66,10 @@ struct udl_gem_object {
 	struct drm_gem_object base;
 	struct page **pages;
 	void *vmapping;
+<<<<<<< HEAD
+=======
+	struct sg_table *sg;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define to_udl_bo(x) container_of(x, struct udl_gem_object, base)
@@ -113,6 +117,7 @@ int udl_dumb_create(struct drm_file *file_priv,
 		    struct drm_mode_create_dumb *args);
 int udl_gem_mmap(struct drm_file *file_priv, struct drm_device *dev,
 		 uint32_t handle, uint64_t *offset);
+<<<<<<< HEAD
 int udl_dumb_destroy(struct drm_file *file_priv, struct drm_device *dev,
 		     uint32_t handle);
 
@@ -120,6 +125,14 @@ int udl_gem_init_object(struct drm_gem_object *obj);
 void udl_gem_free_object(struct drm_gem_object *gem_obj);
 struct udl_gem_object *udl_gem_alloc_object(struct drm_device *dev,
 					    size_t size);
+=======
+
+void udl_gem_free_object(struct drm_gem_object *gem_obj);
+struct udl_gem_object *udl_gem_alloc_object(struct drm_device *dev,
+					    size_t size);
+struct drm_gem_object *udl_gem_prime_import(struct drm_device *dev,
+				struct dma_buf *dma_buf);
+>>>>>>> refs/remotes/origin/master
 
 int udl_gem_vmap(struct udl_gem_object *obj);
 void udl_gem_vunmap(struct udl_gem_object *obj);

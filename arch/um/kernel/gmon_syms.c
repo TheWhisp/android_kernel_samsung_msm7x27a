@@ -3,6 +3,7 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
 #include "linux/module.h"
 
 extern void __bb_init_func(void *)  __attribute__((weak));
@@ -25,3 +26,9 @@ extern void __gcov_merge_add(void *) __attribute__((weak));
 EXPORT_SYMBOL(__gcov_merge_add);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+
+extern void __bb_init_func(void *)  __attribute__((weak));
+EXPORT_SYMBOL(__bb_init_func);
+>>>>>>> refs/remotes/origin/master

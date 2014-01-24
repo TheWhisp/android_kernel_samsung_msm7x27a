@@ -3,8 +3,14 @@
  * License.  See the file "COPYING" in the main directory of this archive
  * for more details.
  *
+<<<<<<< HEAD
  * Copyright (c) 1996, 1998, 1999, 2004 by Ralf Baechle
  * Copyright (c) 1999 Silicon Graphics, Inc.
+=======
+ * Copyright (C) 1996, 1998, 1999, 2004 by Ralf Baechle
+ * Copyright (C) 1999 Silicon Graphics, Inc.
+ * Copyright (C) 2011 MIPS Technologies, Inc.
+>>>>>>> refs/remotes/origin/master
  */
 #include <asm/asm.h>
 #include <asm/asm-offsets.h>
@@ -28,9 +34,15 @@ LEAF(__strlen_user_asm)
 
 FEXPORT(__strlen_user_nocheck_asm)
 	move		v0, a0
+<<<<<<< HEAD
 1:	EX(lb, t0, (v0), .Lfault)
 	PTR_ADDIU	v0, 1
 	bnez		t0, 1b
+=======
+1:	EX(lbu, v1, (v0), .Lfault)
+	PTR_ADDIU	v0, 1
+	bnez		v1, 1b
+>>>>>>> refs/remotes/origin/master
 	PTR_SUBU	v0, a0
 	jr		ra
 	END(__strlen_user_asm)

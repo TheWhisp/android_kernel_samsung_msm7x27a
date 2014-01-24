@@ -20,7 +20,13 @@ struct clk {
 	const char	*name;		/* unique clock name */
 	struct clk_lookup cl;
 	unsigned long	rate_hz;
+<<<<<<< HEAD
 	struct clk	*parent;
+=======
+	unsigned	div;		/* parent clock divider */
+	struct clk	*parent;
+	unsigned	pid;		/* peripheral ID */
+>>>>>>> refs/remotes/origin/master
 	u32		pmc_mask;
 	void		(*mode)(struct clk *, int);
 	unsigned	id:3;		/* PCK0..4, or 32k/main/a/b */

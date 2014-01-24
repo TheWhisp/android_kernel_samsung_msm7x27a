@@ -20,17 +20,23 @@
 #include <asm/io.h>
 #include <asm/rtc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/segment.h>
 #include <asm/setup.h>
 #include <asm/macintosh.h>
 #include <asm/mac_via.h>
 #include <asm/mac_oss.h>
 
+<<<<<<< HEAD
 #define BOOTINFO_COMPAT_1_0
 #include <asm/bootinfo.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/machdep.h>
 
 /* Offset between Unix time (1970-based) and Mac time (1904-based) */
@@ -308,11 +314,14 @@ static long via_read_time(void)
 {
 	union {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__u8  cdata[4];
 		long  idata;
 	} result, last_result;
 	int	ct;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		__u8 cdata[4];
 		long idata;
 	} result, last_result;
@@ -322,13 +331,17 @@ static long via_read_time(void)
 	via_pram_command(0x85, &last_result.cdata[2]);
 	via_pram_command(0x89, &last_result.cdata[1]);
 	via_pram_command(0x8D, &last_result.cdata[0]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * The NetBSD guys say to loop until you get the same reading
 	 * twice in a row.
 	 */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ct = 0;
 	do {
@@ -345,15 +358,21 @@ static long via_read_time(void)
 =======
 	while (1) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (1) {
+>>>>>>> refs/remotes/origin/master
 		via_pram_command(0x81, &result.cdata[3]);
 		via_pram_command(0x85, &result.cdata[2]);
 		via_pram_command(0x89, &result.cdata[1]);
 		via_pram_command(0x8D, &result.cdata[0]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} while (result.idata != last_result.idata);
 
 	return result.idata - RTC_OFFSET;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (result.idata == last_result.idata)
 			return result.idata - RTC_OFFSET;
@@ -369,7 +388,10 @@ static long via_read_time(void)
 	       last_result.idata, result.idata);
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

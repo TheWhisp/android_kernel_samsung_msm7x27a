@@ -27,10 +27,15 @@
 #define _BC_DTS_DEFS_H_
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/types.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/types.h>
+
+>>>>>>> refs/remotes/origin/master
 /* BIT Mask */
 #define BC_BIT(_x)		(1 << (_x))
 
@@ -90,10 +95,14 @@ enum BC_SW_OPTIONS {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct BC_REG_CONFIG{
 =======
 struct BC_REG_CONFIG {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct BC_REG_CONFIG {
+>>>>>>> refs/remotes/origin/master
 	uint32_t		DbgOptions;
 };
 
@@ -306,6 +315,7 @@ enum {
 	vdecColourPrimariesGenericFilm,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 enum {
 	vdecRESOLUTION_CUSTOM	= 0x00000000, /* custom */
@@ -344,6 +354,8 @@ enum {
 	vdecRESOLUTION_1080p0	= 0x00000020, /* 1080p (1920x1080, 0p) */
 	vdecRESOLUTION_1080i0	= 0x00000021, /* 1080i (1920x1080, 0i) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * @vdecRESOLUTION_CUSTOM: custom
  * @vdecRESOLUTION_480i: 480i
@@ -417,7 +429,10 @@ enum {
 	vdecRESOLUTION_720p0	= 0x0000001F,
 	vdecRESOLUTION_1080p0	= 0x00000020,
 	vdecRESOLUTION_1080i0	= 0x00000021,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Bit definitions for 'flags' field */
@@ -445,6 +460,7 @@ enum _BC_OUTPUT_FORMAT {
 	MODE422_UYVY			= 0x2,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 struct BC_PIC_INFO_BLOCK {
 	/* Common fields. */
@@ -454,6 +470,8 @@ struct BC_PIC_INFO_BLOCK {
 	uint32_t	height;		/* pixels	    */
 	uint32_t	chroma_format;	/* 0x420, 0x422 or 0x444 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * struct BC_PIC_INFO_BLOCK
  * @timeStam;: Timestamp
@@ -471,7 +489,10 @@ struct BC_PIC_INFO_BLOCK {
 	uint32_t	width;
 	uint32_t	height;
 	uint32_t	chroma_format;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	uint32_t	pulldown;
 	uint32_t	flags;
 	uint32_t	frame_rate;
@@ -482,11 +503,16 @@ struct BC_PIC_INFO_BLOCK {
 	uint32_t	ycom;
 	uint32_t	custom_aspect_ratio_width_height;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t	n_drop;	/* number of non-reference frames remaining to be dropped */
 =======
 	uint32_t	n_drop;	/* number of non-reference frames
 					remaining to be dropped */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t	n_drop;	/* number of non-reference frames
+					remaining to be dropped */
+>>>>>>> refs/remotes/origin/master
 
 	/* Protocol-specific extensions. */
 	union {
@@ -500,6 +526,7 @@ struct BC_PIC_INFO_BLOCK {
 /*------------------------------------------------------*
  *    ProcOut Info					*
  *------------------------------------------------------*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Optional flags for ProcOut Interface.*/
 enum POUT_OPTIONAL_IN_FLAGS_{
@@ -519,6 +546,8 @@ enum POUT_OPTIONAL_IN_FLAGS_{
 
 typedef enum BC_STATUS(*dts_pout_callback)(void  *shnd, uint32_t width, uint32_t height, uint32_t stride, void *pOut);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * enum POUT_OPTIONAL_IN_FLAGS - Optional flags for ProcOut Interface.
@@ -549,12 +578,16 @@ enum POUT_OPTIONAL_IN_FLAGS_ {
 
 typedef enum BC_STATUS(*dts_pout_callback)(void  *shnd, uint32_t width,
 			uint32_t height, uint32_t stride, void *pOut);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Line 21 Closed Caption */
 /* User Data */
 #define MAX_UD_SIZE		1792	/* 1920 - 128 */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct BC_DTS_PROC_OUT {
 	uint8_t		*Ybuff;			/* Caller Supplied buffer for Y data */
@@ -572,6 +605,8 @@ struct BC_DTS_PROC_OUT {
 
 	struct BC_PIC_INFO_BLOCK PicInfo;		/* Picture Information Block Data */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * struct BC_DTS_PROC_OUT
  * @Ybuff: Caller Supplied buffer for Y data
@@ -602,7 +637,10 @@ struct BC_DTS_PROC_OUT {
 	uint32_t	discCnt;
 
 	struct BC_PIC_INFO_BLOCK PicInfo;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Line 21 Closed Caption */
 	/* User Data */
@@ -612,6 +650,7 @@ struct BC_DTS_PROC_OUT {
 	void		*hnd;
 	dts_pout_callback AppCallBack;
 	uint8_t		DropFrames;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint8_t		b422Mode;		/* Picture output Mode */
 	uint8_t		bPibEnc;		/* PIB encrypted */
@@ -647,6 +686,8 @@ struct BC_DTS_STATUS {
 	uint8_t		reserved__[16];
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	uint8_t		b422Mode;
 	uint8_t		bPibEnc;
 	uint8_t		bRevertScramble;
@@ -688,7 +729,10 @@ struct BC_DTS_STATUS {
 	uint32_t	cpbEmptySize;
 	uint64_t	NextTimeStamp;
 	uint8_t		reserved__[16];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define BC_SWAP32(_v)			\

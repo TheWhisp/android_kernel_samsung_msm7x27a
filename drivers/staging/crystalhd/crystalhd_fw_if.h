@@ -32,6 +32,7 @@
 /* User Data Header */
 struct user_data {
 <<<<<<< HEAD
+<<<<<<< HEAD
    struct user_data	*next;
    uint32_t		type;
    uint32_t		size;
@@ -40,12 +41,18 @@ struct user_data {
 	uint32_t		type;
 	uint32_t		size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct user_data	*next;
+	uint32_t		type;
+	uint32_t		size;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*------------------------------------------------------*
  *    MPEG Extension to the PPB			 *
  *------------------------------------------------------*/
 struct ppb_mpeg {
+<<<<<<< HEAD
 <<<<<<< HEAD
    uint32_t		to_be_defined;
    uint32_t		valid;
@@ -66,6 +73,8 @@ struct ppb_mpeg {
    int32_t		userDataSize;
    struct user_data	*userData;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	uint32_t		to_be_defined;
 	uint32_t		valid;
 
@@ -84,7 +93,10 @@ struct ppb_mpeg {
 	   User data is in the form of a linked list. */
 	int32_t		userDataSize;
 	struct user_data	*userData;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 };
 
@@ -93,6 +105,7 @@ struct ppb_mpeg {
  *    VC1 Extension to the PPB			  *
  *------------------------------------------------------*/
 struct ppb_vc1 {
+<<<<<<< HEAD
 <<<<<<< HEAD
    uint32_t		to_be_defined;
    uint32_t		valid;
@@ -114,6 +127,8 @@ struct ppb_vc1 {
    int32_t		userDataSize;
    struct user_data	*userData;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	uint32_t		to_be_defined;
 	uint32_t		valid;
 
@@ -133,7 +148,10 @@ struct ppb_vc1 {
 	   User data is in the form of a linked list. */
 	int32_t		userDataSize;
 	struct user_data	*userData;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 };
 
@@ -154,6 +172,7 @@ struct ppb_vc1 {
 #define MAX_FGT_VALUE_INTERVAL	(256)
 
 struct fgt_sei {
+<<<<<<< HEAD
 <<<<<<< HEAD
     struct fgt_sei *next;
     unsigned char model_values[3][MAX_FGT_VALUE_INTERVAL][MAX_FGT_MODEL_VALUE];
@@ -182,6 +201,11 @@ struct fgt_sei {
 =======
 	struct fgt_sei *next;
 	unsigned char model_values[3][MAX_FGT_VALUE_INTERVAL][MAX_FGT_MODEL_VALUE];
+=======
+	struct fgt_sei *next;
+	unsigned char
+		 model_values[3][MAX_FGT_VALUE_INTERVAL][MAX_FGT_MODEL_VALUE];
+>>>>>>> refs/remotes/origin/master
 	unsigned char upper_bound[3][MAX_FGT_VALUE_INTERVAL];
 	unsigned char lower_bound[3][MAX_FGT_VALUE_INTERVAL];
 
@@ -189,7 +213,11 @@ struct fgt_sei {
 	unsigned char model_id;	/* Model id. */
 
 	/* +unused SE based on Thomson spec */
+<<<<<<< HEAD
 	unsigned char color_desc_flag;	/* Separate color descrition flag. */
+=======
+	unsigned char color_desc_flag;	/* Separate color description flag. */
+>>>>>>> refs/remotes/origin/master
 	unsigned char bit_depth_luma;	/* Bit depth luma minus 8. */
 	unsigned char bit_depth_chroma;	/* Bit depth chroma minus 8. */
 	unsigned char full_range_flag;	/* Full range flag. */
@@ -200,15 +228,25 @@ struct fgt_sei {
 
 	unsigned char blending_mode_id;	/* Blending mode. */
 	unsigned char log2_scale_factor;	/* Log2 scale factor (2-7). */
+<<<<<<< HEAD
 	unsigned char comp_flag[3];		/* Components [0,2] parameters present flag. */
 	unsigned char num_intervals_minus1[3]; /* Number of intensity level intervals. */
 	unsigned char num_model_values[3];	/* Number of model values. */
 	uint16_t      repetition_period;	/* Repetition period (0-16384) */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned char comp_flag[3];	/* Components [0,2]
+					 parameters present flag. */
+	unsigned char num_intervals_minus1[3]; /* Number of
+					 intensity level intervals. */
+	unsigned char num_model_values[3];	/* Number of model values. */
+	uint16_t      repetition_period; /* Repetition period (0-16384) */
+>>>>>>> refs/remotes/origin/master
 
 };
 
 struct ppb_h264 {
+<<<<<<< HEAD
 <<<<<<< HEAD
    /* 'valid' specifies which fields (or sets of
     * fields) below are valid.  If the corresponding
@@ -248,6 +286,8 @@ struct ppb_h264 {
    /* H264 VALID FGT */
    struct fgt_sei	*pfgt;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* 'valid' specifies which fields (or sets of
 	 * fields) below are valid.  If the corresponding
 	 * bit in 'valid' is NOT set then that field(s)
@@ -285,11 +325,15 @@ struct ppb_h264 {
 
 	/* H264 VALID FGT */
 	struct fgt_sei	*pfgt;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 };
 
 struct ppb {
+<<<<<<< HEAD
 <<<<<<< HEAD
    /* Common fields. */
    uint32_t	picture_number;	/* Ordinal display number */
@@ -333,6 +377,8 @@ struct ppb {
       struct ppb_vc1	 vc1;
    } other;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Common fields. */
 	uint32_t	picture_number;	/* Ordinal display number */
 	uint32_t	video_buffer;	/* Video (picbuf) number */
@@ -374,11 +420,15 @@ struct ppb {
 		struct ppb_mpeg	mpeg;
 		struct ppb_vc1	 vc1;
 	} other;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 };
 
 struct c011_pib {
+<<<<<<< HEAD
 <<<<<<< HEAD
    uint32_t	bFormatChange;
    uint32_t	resolution;
@@ -390,6 +440,8 @@ struct c011_pib {
    uint32_t	yComponent;
    struct ppb	ppb;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	uint32_t	bFormatChange;
 	uint32_t	resolution;
 	uint32_t	channelId;
@@ -399,11 +451,15 @@ struct c011_pib {
 	uint32_t	dramOutBufAddr;
 	uint32_t	yComponent;
 	struct ppb	ppb;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 };
 
 struct dec_rsp_channel_start_video {
+<<<<<<< HEAD
 <<<<<<< HEAD
     uint32_t	command;
     uint32_t	sequence;
@@ -418,6 +474,8 @@ struct dec_rsp_channel_start_video {
     uint32_t	transportStreamCaptureAddr;
     uint32_t	asyncEventQ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	uint32_t	command;
 	uint32_t	sequence;
 	uint32_t	status;
@@ -430,7 +488,10 @@ struct dec_rsp_channel_start_video {
 	uint32_t	userDataReleaseQ;
 	uint32_t	transportStreamCaptureAddr;
 	uint32_t	asyncEventQ;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 };
 
@@ -438,6 +499,7 @@ struct dec_rsp_channel_start_video {
 
 /* host commands */
 enum  c011_ts_cmd {
+<<<<<<< HEAD
 <<<<<<< HEAD
     eCMD_TS_GET_NEXT_PIC	= 0x7376F100, /* debug get next picture */
     eCMD_TS_GET_LAST_PIC	= 0x7376F102, /* debug get last pic status */
@@ -546,6 +608,8 @@ enum  c011_ts_cmd {
 
     eNOTIFY_C011_ENC_CHAN_EVENT		= eCMD_C011_CMD_BASE + 0x210,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	eCMD_TS_GET_NEXT_PIC	= 0x7376F100, /* debug get next picture */
 	eCMD_TS_GET_LAST_PIC	= 0x7376F102, /* debug get last pic status */
 	eCMD_TS_READ_WRITE_MEM	= 0x7376F104, /* debug read write memory */
@@ -561,6 +625,7 @@ enum  c011_ts_cmd {
 
 	/* Decoding commands */
 	eCMD_C011_DEC_CHAN_OPEN			= eCMD_C011_CMD_BASE + 0x100,
+<<<<<<< HEAD
 	eCMD_C011_DEC_CHAN_CLOSE			= eCMD_C011_CMD_BASE + 0x101,
 	eCMD_C011_DEC_CHAN_ACTIVATE			= eCMD_C011_CMD_BASE + 0x102,
 	eCMD_C011_DEC_CHAN_STATUS			= eCMD_C011_CMD_BASE + 0x103,
@@ -595,6 +660,42 @@ enum  c011_ts_cmd {
 	eCMD_C011_DEC_CHAN_SET_FF_RATE		= eCMD_C011_CMD_BASE + 0x121,
 	eCMD_C011_DEC_CHAN_GET_FF_RATE		= eCMD_C011_CMD_BASE + 0x122,
 	eCMD_C011_DEC_CHAN_FRAME_ADVANCE		= eCMD_C011_CMD_BASE + 0x123,
+=======
+	eCMD_C011_DEC_CHAN_CLOSE		= eCMD_C011_CMD_BASE + 0x101,
+	eCMD_C011_DEC_CHAN_ACTIVATE		= eCMD_C011_CMD_BASE + 0x102,
+	eCMD_C011_DEC_CHAN_STATUS		= eCMD_C011_CMD_BASE + 0x103,
+	eCMD_C011_DEC_CHAN_FLUSH		= eCMD_C011_CMD_BASE + 0x104,
+	eCMD_C011_DEC_CHAN_TRICK_PLAY		= eCMD_C011_CMD_BASE + 0x105,
+	eCMD_C011_DEC_CHAN_TS_PIDS		= eCMD_C011_CMD_BASE + 0x106,
+	eCMD_C011_DEC_CHAN_PS_STREAM_ID		= eCMD_C011_CMD_BASE + 0x107,
+	eCMD_C011_DEC_CHAN_INPUT_PARAMS		= eCMD_C011_CMD_BASE + 0x108,
+	eCMD_C011_DEC_CHAN_VIDEO_OUTPUT		= eCMD_C011_CMD_BASE + 0x109,
+	eCMD_C011_DEC_CHAN_OUTPUT_FORMAT	= eCMD_C011_CMD_BASE + 0x10A,
+	eCMD_C011_DEC_CHAN_SCALING_FILTERS	= eCMD_C011_CMD_BASE + 0x10B,
+	eCMD_C011_DEC_CHAN_OSD_MODE		= eCMD_C011_CMD_BASE + 0x10D,
+	eCMD_C011_DEC_CHAN_DROP			= eCMD_C011_CMD_BASE + 0x10E,
+	eCMD_C011_DEC_CHAN_RELEASE		= eCMD_C011_CMD_BASE + 0x10F,
+	eCMD_C011_DEC_CHAN_STREAM_SETTINGS	= eCMD_C011_CMD_BASE + 0x110,
+	eCMD_C011_DEC_CHAN_PAUSE_OUTPUT		= eCMD_C011_CMD_BASE + 0x111,
+	eCMD_C011_DEC_CHAN_CHANGE		= eCMD_C011_CMD_BASE + 0x112,
+	eCMD_C011_DEC_CHAN_SET_STC		= eCMD_C011_CMD_BASE + 0x113,
+	eCMD_C011_DEC_CHAN_SET_PTS		= eCMD_C011_CMD_BASE + 0x114,
+	eCMD_C011_DEC_CHAN_CC_MODE		= eCMD_C011_CMD_BASE + 0x115,
+	eCMD_C011_DEC_CREATE_AUDIO_CONTEXT	= eCMD_C011_CMD_BASE + 0x116,
+	eCMD_C011_DEC_COPY_AUDIO_CONTEXT	= eCMD_C011_CMD_BASE + 0x117,
+	eCMD_C011_DEC_DELETE_AUDIO_CONTEXT	= eCMD_C011_CMD_BASE + 0x118,
+	eCMD_C011_DEC_CHAN_SET_DECYPTION	= eCMD_C011_CMD_BASE + 0x119,
+	eCMD_C011_DEC_CHAN_START_VIDEO		= eCMD_C011_CMD_BASE + 0x11A,
+	eCMD_C011_DEC_CHAN_STOP_VIDEO		= eCMD_C011_CMD_BASE + 0x11B,
+	eCMD_C011_DEC_CHAN_PIC_CAPTURE		= eCMD_C011_CMD_BASE + 0x11C,
+	eCMD_C011_DEC_CHAN_PAUSE		= eCMD_C011_CMD_BASE + 0x11D,
+	eCMD_C011_DEC_CHAN_PAUSE_STATE		= eCMD_C011_CMD_BASE + 0x11E,
+	eCMD_C011_DEC_CHAN_SET_SLOWM_RATE	= eCMD_C011_CMD_BASE + 0x11F,
+	eCMD_C011_DEC_CHAN_GET_SLOWM_RATE	= eCMD_C011_CMD_BASE + 0x120,
+	eCMD_C011_DEC_CHAN_SET_FF_RATE		= eCMD_C011_CMD_BASE + 0x121,
+	eCMD_C011_DEC_CHAN_GET_FF_RATE		= eCMD_C011_CMD_BASE + 0x122,
+	eCMD_C011_DEC_CHAN_FRAME_ADVANCE	= eCMD_C011_CMD_BASE + 0x123,
+>>>>>>> refs/remotes/origin/master
 	eCMD_C011_DEC_CHAN_SET_SKIP_PIC_MODE	= eCMD_C011_CMD_BASE + 0x124,
 	eCMD_C011_DEC_CHAN_GET_SKIP_PIC_MODE	= eCMD_C011_CMD_BASE + 0x125,
 	eCMD_C011_DEC_CHAN_FILL_PIC_BUF		= eCMD_C011_CMD_BASE + 0x126,
@@ -603,6 +704,7 @@ enum  c011_ts_cmd {
 	eCMD_C011_DEC_CHAN_SET_BRCM_TRICK_MODE	= eCMD_C011_CMD_BASE + 0x129,
 	eCMD_C011_DEC_CHAN_GET_BRCM_TRICK_MODE	= eCMD_C011_CMD_BASE + 0x12A,
 	eCMD_C011_DEC_CHAN_REVERSE_FIELD_STATUS	= eCMD_C011_CMD_BASE + 0x12B,
+<<<<<<< HEAD
 	eCMD_C011_DEC_CHAN_I_PICTURE_FOUND		= eCMD_C011_CMD_BASE + 0x12C,
 	eCMD_C011_DEC_CHAN_SET_PARAMETER		= eCMD_C011_CMD_BASE + 0x12D,
 	eCMD_C011_DEC_CHAN_SET_USER_DATA_MODE	= eCMD_C011_CMD_BASE + 0x12E,
@@ -612,6 +714,18 @@ enum  c011_ts_cmd {
 	eCMD_C011_DEC_CHAN_SET_DISPLAY_TIMING_MODE	= eCMD_C011_CMD_BASE + 0x132,
 	eCMD_C011_DEC_CHAN_SET_DISPLAY_MODE		= eCMD_C011_CMD_BASE + 0x133,
 	eCMD_C011_DEC_CHAN_GET_DISPLAY_MODE		= eCMD_C011_CMD_BASE + 0x134,
+=======
+	eCMD_C011_DEC_CHAN_I_PICTURE_FOUND	= eCMD_C011_CMD_BASE + 0x12C,
+	eCMD_C011_DEC_CHAN_SET_PARAMETER	= eCMD_C011_CMD_BASE + 0x12D,
+	eCMD_C011_DEC_CHAN_SET_USER_DATA_MODE	= eCMD_C011_CMD_BASE + 0x12E,
+	eCMD_C011_DEC_CHAN_SET_PAUSE_DISPLAY_MODE = eCMD_C011_CMD_BASE + 0x12F,
+	eCMD_C011_DEC_CHAN_SET_SLOW_DISPLAY_MODE = eCMD_C011_CMD_BASE + 0x130,
+	eCMD_C011_DEC_CHAN_SET_FF_DISPLAY_MODE	= eCMD_C011_CMD_BASE + 0x131,
+	eCMD_C011_DEC_CHAN_SET_DISPLAY_TIMING_MODE = eCMD_C011_CMD_BASE +
+								 0x132,
+	eCMD_C011_DEC_CHAN_SET_DISPLAY_MODE	= eCMD_C011_CMD_BASE + 0x133,
+	eCMD_C011_DEC_CHAN_GET_DISPLAY_MODE	= eCMD_C011_CMD_BASE + 0x134,
+>>>>>>> refs/remotes/origin/master
 	eCMD_C011_DEC_CHAN_SET_REVERSE_FIELD	= eCMD_C011_CMD_BASE + 0x135,
 	eCMD_C011_DEC_CHAN_STREAM_OPEN		= eCMD_C011_CMD_BASE + 0x136,
 	eCMD_C011_DEC_CHAN_SET_PCR_PID		= eCMD_C011_CMD_BASE + 0x137,
@@ -623,19 +737,35 @@ enum  c011_ts_cmd {
 	eCMD_C011_DEC_CHAN_GET_DISPLAY_ORDER	= eCMD_C011_CMD_BASE + 0x143,
 	eCMD_C011_DEC_CHAN_SET_HOST_TRICK_MODE	= eCMD_C011_CMD_BASE + 0x144,
 	eCMD_C011_DEC_CHAN_SET_OPERATION_MODE	= eCMD_C011_CMD_BASE + 0x145,
+<<<<<<< HEAD
 	eCMD_C011_DEC_CHAN_DISPLAY_PAUSE_UNTO_PTS	= eCMD_C011_CMD_BASE + 0x146,
 	eCMD_C011_DEC_CHAN_SET_PTS_STC_DIFF_THRESHOLD = eCMD_C011_CMD_BASE + 0x147,
+=======
+	eCMD_C011_DEC_CHAN_DISPLAY_PAUSE_UNTO_PTS = eCMD_C011_CMD_BASE + 0x146,
+	eCMD_C011_DEC_CHAN_SET_PTS_STC_DIFF_THRESHOLD = eCMD_C011_CMD_BASE +
+								 0x147,
+>>>>>>> refs/remotes/origin/master
 	eCMD_C011_DEC_CHAN_SEND_COMPRESSED_BUF	= eCMD_C011_CMD_BASE + 0x148,
 	eCMD_C011_DEC_CHAN_SET_CLIPPING		= eCMD_C011_CMD_BASE + 0x149,
 	eCMD_C011_DEC_CHAN_SET_PARAMETERS_FOR_HARD_RESET_INTERRUPT_TO_HOST
 		= eCMD_C011_CMD_BASE + 0x150,
 
 	/* Decoder RevD commands */
+<<<<<<< HEAD
 	eCMD_C011_DEC_CHAN_SET_CSC	= eCMD_C011_CMD_BASE + 0x180, /* color space conversion */
 	eCMD_C011_DEC_CHAN_SET_RANGE_REMAP	= eCMD_C011_CMD_BASE + 0x181,
 	eCMD_C011_DEC_CHAN_SET_FGT		= eCMD_C011_CMD_BASE + 0x182,
 	/* Note: 0x183 not implemented yet in Rev D main */
 	eCMD_C011_DEC_CHAN_SET_LASTPICTURE_PADDING = eCMD_C011_CMD_BASE + 0x183,
+=======
+	eCMD_C011_DEC_CHAN_SET_CSC	= eCMD_C011_CMD_BASE + 0x180, /* color
+							 space conversion */
+	eCMD_C011_DEC_CHAN_SET_RANGE_REMAP	= eCMD_C011_CMD_BASE + 0x181,
+	eCMD_C011_DEC_CHAN_SET_FGT		= eCMD_C011_CMD_BASE + 0x182,
+	/* Note: 0x183 not implemented yet in Rev D main */
+	eCMD_C011_DEC_CHAN_SET_LASTPICTURE_PADDING = eCMD_C011_CMD_BASE +
+								 0x183,
+>>>>>>> refs/remotes/origin/master
 
 	/* Decoder 7412 commands (7412-only) */
 	eCMD_C011_DEC_CHAN_SET_CONTENT_KEY	= eCMD_C011_CMD_BASE + 0x190,
@@ -652,7 +782,10 @@ enum  c011_ts_cmd {
 	eCMD_C011_ENC_CHAN_STATISTICS	= eCMD_C011_CMD_BASE + 0x204,
 
 	eNOTIFY_C011_ENC_CHAN_EVENT		= eCMD_C011_CMD_BASE + 0x210,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 };
 

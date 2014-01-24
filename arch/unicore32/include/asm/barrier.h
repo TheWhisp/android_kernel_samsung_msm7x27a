@@ -14,6 +14,7 @@
 #define dsb() __asm__ __volatile__ ("" : : : "memory")
 #define dmb() __asm__ __volatile__ ("" : : : "memory")
 
+<<<<<<< HEAD
 #define mb()				barrier()
 #define rmb()				barrier()
 #define wmb()				barrier()
@@ -24,5 +25,8 @@
 #define smp_read_barrier_depends()	do { } while (0)
 
 #define set_mb(var, value)		do { var = value; smp_mb(); } while (0)
+=======
+#include <asm-generic/barrier.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __UNICORE_BARRIER_H__ */

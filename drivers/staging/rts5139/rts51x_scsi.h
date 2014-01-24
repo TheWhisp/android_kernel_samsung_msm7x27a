@@ -73,7 +73,11 @@
 #define GET_BATCHRSP		0x44
 
 #ifdef SUPPORT_CPRM
+<<<<<<< HEAD
 /* SD Pass Through Command Extention */
+=======
+/* SD Pass Through Command Extension */
+>>>>>>> refs/remotes/origin/master
 #define SD_PASS_THRU_MODE	0xD0
 #define SD_EXECUTE_NO_DATA	0xD1
 #define SD_EXECUTE_READ		0xD2
@@ -133,9 +137,15 @@ struct rts51x_chip;
 
 #define SCSI                    0x00	/* Interface ID                     */
 
+<<<<<<< HEAD
 void scsi_show_command(struct scsi_cmnd *srb);
 void set_sense_type(struct rts51x_chip *chip, unsigned int lun, int sense_type);
 void set_sense_data(struct rts51x_chip *chip, unsigned int lun, u8 err_code,
+=======
+void rts51x_scsi_show_command(struct scsi_cmnd *srb);
+void rts51x_set_sense_type(struct rts51x_chip *chip, unsigned int lun, int sense_type);
+void rts51x_set_sense_data(struct rts51x_chip *chip, unsigned int lun, u8 err_code,
+>>>>>>> refs/remotes/origin/master
 		    u8 sense_key, u32 info, u8 asc, u8 ascq, u8 sns_key_info0,
 		    u16 sns_key_info1);
 
@@ -145,6 +155,7 @@ struct Scsi_Host;
 struct scsi_device;
 struct scsi_cmnd;
 
+<<<<<<< HEAD
 const char *host_info(struct Scsi_Host *host);
 int slave_alloc(struct scsi_device *sdev);
 int slave_configure(struct scsi_device *sdev);
@@ -157,6 +168,12 @@ int queuecommand(struct Scsi_Host *, struct scsi_cmnd *);
 #endif
 int command_abort(struct scsi_cmnd *srb);
 int device_reset(struct scsi_cmnd *srb);
+=======
+int slave_alloc(struct scsi_device *sdev);
+int slave_configure(struct scsi_device *sdev);
+int queuecommand(struct Scsi_Host *, struct scsi_cmnd *);
+int command_abort(struct scsi_cmnd *srb);
+>>>>>>> refs/remotes/origin/master
 int bus_reset(struct scsi_cmnd *srb);
 
 #endif /* __RTS51X_SCSI_H */

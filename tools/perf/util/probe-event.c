@@ -20,9 +20,12 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define _GNU_SOURCE
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <sys/utsname.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -37,6 +40,7 @@
 #include <elf.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #undef _GNU_SOURCE
 #include "util.h"
 #include "event.h"
@@ -45,12 +49,17 @@
 #include "util.h"
 #include "event.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "util.h"
+#include "event.h"
+>>>>>>> refs/remotes/origin/master
 #include "strlist.h"
 #include "debug.h"
 #include "cache.h"
 #include "color.h"
 #include "symbol.h"
 #include "thread.h"
+<<<<<<< HEAD
 #include "debugfs.h"
 #include "trace-event.h"	/* For __unused */
 #include "probe-event.h"
@@ -58,6 +67,15 @@
 
 #define MAX_CMDLEN 256
 #define MAX_PROBE_ARGS 128
+=======
+#include <api/fs/debugfs.h>
+#include "trace-event.h"	/* For __maybe_unused */
+#include "probe-event.h"
+#include "probe-finder.h"
+#include "session.h"
+
+#define MAX_CMDLEN 256
+>>>>>>> refs/remotes/origin/master
 #define PERFPROBE_GROUP "probe"
 
 bool probe_event_dry_run;	/* Dry run flag */
@@ -81,6 +99,12 @@ static int e_snprintf(char *str, size_t size, const char *format, ...)
 }
 
 static char *synthesize_perf_probe_point(struct perf_probe_point *pp);
+<<<<<<< HEAD
+=======
+static int convert_name_to_addr(struct perf_probe_event *pev,
+				const char *exec);
+static void clear_probe_trace_event(struct probe_trace_event *tev);
+>>>>>>> refs/remotes/origin/master
 static struct machine machine;
 
 /* Initialize symbol maps and path of vmlinux/modules */
@@ -126,12 +150,18 @@ static struct map *kernel_get_module_map(const char *module)
 	struct map_groups *grp = &machine.kmaps;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* A file path -- this is an offline module */
 	if (module && strchr(module, '/'))
 		return machine__new_module(&machine, 0, module);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!module)
 		module = "kernel";
 
@@ -166,7 +196,11 @@ static struct dso *kernel_get_module_dso(const char *module)
 
 	vmlinux_name = symbol_conf.vmlinux_name;
 	if (vmlinux_name) {
+<<<<<<< HEAD
 		if (dso__load_vmlinux(dso, map, vmlinux_name, NULL) <= 0)
+=======
+		if (dso__load_vmlinux(dso, map, vmlinux_name, false, NULL) <= 0)
+>>>>>>> refs/remotes/origin/master
 			return NULL;
 	} else {
 		if (dso__load_vmlinux_path(dso, map, NULL) <= 0) {
@@ -184,6 +218,7 @@ const char *kernel_get_module_path(const char *module)
 	return (dso) ? dso->long_name : NULL;
 }
 
+<<<<<<< HEAD
 #ifdef DWARF_SUPPORT
 <<<<<<< HEAD
 static int open_vmlinux(const char *module)
@@ -197,6 +232,68 @@ static int open_vmlinux(const char *module)
 	pr_debug("Try to open %s\n", path);
 	return open(path, O_RDONLY);
 =======
+=======
+static int init_user_exec(void)
+{
+	int ret = 0;
+
+	symbol_conf.try_vmlinux_path = false;
+	symbol_conf.sort_by_name = true;
+	ret = symbol__init();
+
+	if (ret < 0)
+		pr_debug("Failed to init symbol map.\n");
+
+	return ret;
+}
+
+static int convert_exec_to_group(const char *exec, char **result)
+{
+	char *ptr1, *ptr2, *exec_copy;
+	char buf[64];
+	int ret;
+
+	exec_copy = strdup(exec);
+	if (!exec_copy)
+		return -ENOMEM;
+
+	ptr1 = basename(exec_copy);
+	if (!ptr1) {
+		ret = -EINVAL;
+		goto out;
+	}
+
+	ptr2 = strpbrk(ptr1, "-._");
+	if (ptr2)
+		*ptr2 = '\0';
+	ret = e_snprintf(buf, 64, "%s_%s", PERFPROBE_GROUP, ptr1);
+	if (ret < 0)
+		goto out;
+
+	*result = strdup(buf);
+	ret = *result ? 0 : -ENOMEM;
+
+out:
+	free(exec_copy);
+	return ret;
+}
+
+static int convert_to_perf_probe_point(struct probe_trace_point *tp,
+					struct perf_probe_point *pp)
+{
+	pp->function = strdup(tp->symbol);
+
+	if (pp->function == NULL)
+		return -ENOMEM;
+
+	pp->offset = tp->offset;
+	pp->retprobe = tp->retprobe;
+
+	return 0;
+}
+
+#ifdef HAVE_DWARF_SUPPORT
+>>>>>>> refs/remotes/origin/master
 /* Open new debuginfo of given module */
 static struct debuginfo *open_debuginfo(const char *module)
 {
@@ -215,7 +312,10 @@ static struct debuginfo *open_debuginfo(const char *module)
 		}
 	}
 	return debuginfo__new(path);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -230,9 +330,13 @@ static int kprobe_convert_to_perf_probe(struct probe_trace_point *tp,
 	u64 addr;
 	int ret = -ENOENT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct debuginfo *dinfo;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct debuginfo *dinfo;
+>>>>>>> refs/remotes/origin/master
 
 	sym = __find_kernel_function_by_name(tp->symbol, &map);
 	if (sym) {
@@ -240,8 +344,11 @@ static int kprobe_convert_to_perf_probe(struct probe_trace_point *tp,
 		pr_debug("try to find %s+%ld@%" PRIx64 "\n", tp->symbol,
 			 tp->offset, addr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = find_perf_probe_point((unsigned long)addr, pp);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		dinfo = debuginfo__new_online_kernel(addr);
 		if (dinfo) {
@@ -253,21 +360,29 @@ static int kprobe_convert_to_perf_probe(struct probe_trace_point *tp,
 				 addr);
 			ret = -ENOENT;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (ret <= 0) {
 		pr_debug("Failed to find corresponding probes from "
 			 "debuginfo. Use kprobe event information.\n");
+<<<<<<< HEAD
 		pp->function = strdup(tp->symbol);
 		if (pp->function == NULL)
 			return -ENOMEM;
 		pp->offset = tp->offset;
+=======
+		return convert_to_perf_probe_point(tp, pp);
+>>>>>>> refs/remotes/origin/master
 	}
 	pp->retprobe = tp->retprobe;
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Try to find perf_probe_event with debuginfo */
 static int try_to_find_probe_trace_events(struct perf_probe_event *pev,
@@ -294,6 +409,70 @@ static int try_to_find_probe_trace_events(struct perf_probe_event *pev,
 		pr_debug("find %d probe_trace_events.\n", ntevs);
 		return ntevs;
 =======
+=======
+static int get_text_start_address(const char *exec, unsigned long *address)
+{
+	Elf *elf;
+	GElf_Ehdr ehdr;
+	GElf_Shdr shdr;
+	int fd, ret = -ENOENT;
+
+	fd = open(exec, O_RDONLY);
+	if (fd < 0)
+		return -errno;
+
+	elf = elf_begin(fd, PERF_ELF_C_READ_MMAP, NULL);
+	if (elf == NULL)
+		return -EINVAL;
+
+	if (gelf_getehdr(elf, &ehdr) == NULL)
+		goto out;
+
+	if (!elf_section_by_name(elf, &ehdr, &shdr, ".text", NULL))
+		goto out;
+
+	*address = shdr.sh_addr - shdr.sh_offset;
+	ret = 0;
+out:
+	elf_end(elf);
+	return ret;
+}
+
+static int add_exec_to_probe_trace_events(struct probe_trace_event *tevs,
+					  int ntevs, const char *exec)
+{
+	int i, ret = 0;
+	unsigned long offset, stext = 0;
+	char buf[32];
+
+	if (!exec)
+		return 0;
+
+	ret = get_text_start_address(exec, &stext);
+	if (ret < 0)
+		return ret;
+
+	for (i = 0; i < ntevs && ret >= 0; i++) {
+		offset = tevs[i].point.address - stext;
+		offset += tevs[i].point.offset;
+		tevs[i].point.offset = 0;
+		zfree(&tevs[i].point.symbol);
+		ret = e_snprintf(buf, 32, "0x%lx", offset);
+		if (ret < 0)
+			break;
+		tevs[i].point.module = strdup(exec);
+		tevs[i].point.symbol = strdup(buf);
+		if (!tevs[i].point.symbol || !tevs[i].point.module) {
+			ret = -ENOMEM;
+			break;
+		}
+		tevs[i].uprobes = true;
+	}
+
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int add_module_to_probe_trace_events(struct probe_trace_event *tevs,
 					    int ntevs, const char *module)
 {
@@ -323,21 +502,44 @@ static int add_module_to_probe_trace_events(struct probe_trace_event *tevs,
 		}
 	}
 
+<<<<<<< HEAD
 	if (tmp)
 		free(tmp);
 
 	return ret;
 }
 
+=======
+	free(tmp);
+	return ret;
+}
+
+static void clear_probe_trace_events(struct probe_trace_event *tevs, int ntevs)
+{
+	int i;
+
+	for (i = 0; i < ntevs; i++)
+		clear_probe_trace_event(tevs + i);
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Try to find perf_probe_event with debuginfo */
 static int try_to_find_probe_trace_events(struct perf_probe_event *pev,
 					  struct probe_trace_event **tevs,
 					  int max_tevs, const char *target)
 {
 	bool need_dwarf = perf_probe_event_need_dwarf(pev);
+<<<<<<< HEAD
 	struct debuginfo *dinfo = open_debuginfo(target);
 	int ntevs, ret = 0;
 
+=======
+	struct debuginfo *dinfo;
+	int ntevs, ret = 0;
+
+	dinfo = open_debuginfo(target);
+
+>>>>>>> refs/remotes/origin/master
 	if (!dinfo) {
 		if (need_dwarf) {
 			pr_warning("Failed to open debuginfo file.\n");
@@ -354,11 +556,27 @@ static int try_to_find_probe_trace_events(struct perf_probe_event *pev,
 
 	if (ntevs > 0) {	/* Succeeded to find trace events */
 		pr_debug("find %d probe_trace_events.\n", ntevs);
+<<<<<<< HEAD
 		if (target)
 			ret = add_module_to_probe_trace_events(*tevs, ntevs,
 							       target);
 		return ret < 0 ? ret : ntevs;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (target) {
+			if (pev->uprobes)
+				ret = add_exec_to_probe_trace_events(*tevs,
+						 ntevs, target);
+			else
+				ret = add_module_to_probe_trace_events(*tevs,
+						 ntevs, target);
+		}
+		if (ret < 0) {
+			clear_probe_trace_events(*tevs, ntevs);
+			zfree(tevs);
+		}
+		return ret < 0 ? ret : ntevs;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (ntevs == 0)	{	/* No error but failed to find probe point. */
@@ -424,15 +642,23 @@ static int get_real_path(const char *raw_path, const char *comp_dir,
 		case EFAULT:
 			raw_path = strchr(++raw_path, '/');
 			if (!raw_path) {
+<<<<<<< HEAD
 				free(*new_path);
 				*new_path = NULL;
+=======
+				zfree(new_path);
+>>>>>>> refs/remotes/origin/master
 				return -ENOENT;
 			}
 			continue;
 
 		default:
+<<<<<<< HEAD
 			free(*new_path);
 			*new_path = NULL;
+=======
+			zfree(new_path);
+>>>>>>> refs/remotes/origin/master
 			return -errno;
 		}
 	}
@@ -493,6 +719,7 @@ int show_line_range(struct line_range *lr, const char *module)
 	int l = 1;
 	struct line_node *ln;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	FILE *fp;
 	int fd, ret;
 =======
@@ -500,6 +727,11 @@ int show_line_range(struct line_range *lr, const char *module)
 	FILE *fp;
 	int ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct debuginfo *dinfo;
+	FILE *fp;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 	char *tmp;
 
 	/* Search a line range */
@@ -507,6 +739,7 @@ int show_line_range(struct line_range *lr, const char *module)
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	fd = open_vmlinux(module);
 	if (fd < 0) {
@@ -516,6 +749,8 @@ int show_line_range(struct line_range *lr, const char *module)
 
 	ret = find_line_range(fd, lr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dinfo = open_debuginfo(module);
 	if (!dinfo) {
 		pr_warning("Failed to open debuginfo file.\n");
@@ -524,7 +759,10 @@ int show_line_range(struct line_range *lr, const char *module)
 
 	ret = debuginfo__find_line_range(dinfo, lr);
 	debuginfo__delete(dinfo);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret == 0) {
 		pr_warning("Specified source line is not found.\n");
 		return -ENOENT;
@@ -587,11 +825,16 @@ end:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int show_available_vars_at(int fd, struct perf_probe_event *pev,
 =======
 static int show_available_vars_at(struct debuginfo *dinfo,
 				  struct perf_probe_event *pev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int show_available_vars_at(struct debuginfo *dinfo,
+				  struct perf_probe_event *pev,
+>>>>>>> refs/remotes/origin/master
 				  int max_vls, struct strfilter *_filter,
 				  bool externs)
 {
@@ -607,11 +850,16 @@ static int show_available_vars_at(struct debuginfo *dinfo,
 	pr_debug("Searching variables at %s\n", buf);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = find_available_vars_at(fd, pev, &vls, max_vls, externs);
 =======
 	ret = debuginfo__find_available_vars_at(dinfo, pev, &vls,
 						max_vls, externs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = debuginfo__find_available_vars_at(dinfo, pev, &vls,
+						max_vls, externs);
+>>>>>>> refs/remotes/origin/master
 	if (ret <= 0) {
 		pr_err("Failed to find variables at %s (%d)\n", buf, ret);
 		goto end;
@@ -626,7 +874,11 @@ static int show_available_vars_at(struct debuginfo *dinfo,
 		 */
 		fprintf(stdout, "\t@<%s+%lu>\n", vl->point.symbol,
 			vl->point.offset);
+<<<<<<< HEAD
 		free(vl->point.symbol);
+=======
+		zfree(&vl->point.symbol);
+>>>>>>> refs/remotes/origin/master
 		nvars = 0;
 		if (vl->vars) {
 			strlist__for_each(node, vl->vars) {
@@ -653,16 +905,22 @@ int show_available_vars(struct perf_probe_event *pevs, int npevs,
 			struct strfilter *_filter, bool externs)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i, fd, ret = 0;
 =======
 	int i, ret = 0;
 	struct debuginfo *dinfo;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, ret = 0;
+	struct debuginfo *dinfo;
+>>>>>>> refs/remotes/origin/master
 
 	ret = init_vmlinux();
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	setup_pager();
 
@@ -677,6 +935,8 @@ int show_available_vars(struct perf_probe_event *pevs, int npevs,
 					     externs);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dinfo = open_debuginfo(module);
 	if (!dinfo) {
 		pr_warning("Failed to open debuginfo file.\n");
@@ -690,11 +950,18 @@ int show_available_vars(struct perf_probe_event *pevs, int npevs,
 					     externs);
 
 	debuginfo__delete(dinfo);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 #else	/* !DWARF_SUPPORT */
+=======
+	return ret;
+}
+
+#else	/* !HAVE_DWARF_SUPPORT */
+>>>>>>> refs/remotes/origin/master
 
 static int kprobe_convert_to_perf_probe(struct probe_trace_point *tp,
 					struct perf_probe_point *pp)
@@ -706,6 +973,7 @@ static int kprobe_convert_to_perf_probe(struct probe_trace_point *tp,
 		pr_err("Failed to find symbol %s in kernel.\n", tp->symbol);
 		return -ENOENT;
 	}
+<<<<<<< HEAD
 	pp->function = strdup(tp->symbol);
 	if (pp->function == NULL)
 		return -ENOMEM;
@@ -718,31 +986,83 @@ static int kprobe_convert_to_perf_probe(struct probe_trace_point *tp,
 static int try_to_find_probe_trace_events(struct perf_probe_event *pev,
 				struct probe_trace_event **tevs __unused,
 				int max_tevs __unused, const char *mod __unused)
+=======
+
+	return convert_to_perf_probe_point(tp, pp);
+}
+
+static int try_to_find_probe_trace_events(struct perf_probe_event *pev,
+				struct probe_trace_event **tevs __maybe_unused,
+				int max_tevs __maybe_unused,
+				const char *target __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	if (perf_probe_event_need_dwarf(pev)) {
 		pr_warning("Debuginfo-analysis is not supported.\n");
 		return -ENOSYS;
 	}
+<<<<<<< HEAD
 	return 0;
 }
 
 int show_line_range(struct line_range *lr __unused, const char *module __unused)
+=======
+
+	return 0;
+}
+
+int show_line_range(struct line_range *lr __maybe_unused,
+		    const char *module __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	pr_warning("Debuginfo-analysis is not supported.\n");
 	return -ENOSYS;
 }
 
+<<<<<<< HEAD
 int show_available_vars(struct perf_probe_event *pevs __unused,
 			int npevs __unused, int max_vls __unused,
 			const char *module __unused,
 			struct strfilter *filter __unused,
 			bool externs __unused)
+=======
+int show_available_vars(struct perf_probe_event *pevs __maybe_unused,
+			int npevs __maybe_unused, int max_vls __maybe_unused,
+			const char *module __maybe_unused,
+			struct strfilter *filter __maybe_unused,
+			bool externs __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	pr_warning("Debuginfo-analysis is not supported.\n");
 	return -ENOSYS;
 }
 #endif
 
+<<<<<<< HEAD
+=======
+void line_range__clear(struct line_range *lr)
+{
+	struct line_node *ln;
+
+	free(lr->function);
+	free(lr->file);
+	free(lr->path);
+	free(lr->comp_dir);
+	while (!list_empty(&lr->line_list)) {
+		ln = list_first_entry(&lr->line_list, struct line_node, list);
+		list_del(&ln->list);
+		free(ln);
+	}
+	memset(lr, 0, sizeof(*lr));
+}
+
+void line_range__init(struct line_range *lr)
+{
+	memset(lr, 0, sizeof(*lr));
+	INIT_LIST_HEAD(&lr->line_list);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int parse_line_num(char **ptr, int *val, const char *what)
 {
 	const char *start = *ptr;
@@ -1160,14 +1480,22 @@ bool perf_probe_event_need_dwarf(struct perf_probe_event *pev)
 /* Parse probe_events event into struct probe_point */
 static int parse_probe_trace_command(const char *cmd,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					struct probe_trace_event *tev)
 =======
 				     struct probe_trace_event *tev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     struct probe_trace_event *tev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct probe_trace_point *tp = &tev->point;
 	char pr;
 	char *p;
+<<<<<<< HEAD
+=======
+	char *argv0_str = NULL, *fmt, *fmt1_str, *fmt2_str, *fmt3_str;
+>>>>>>> refs/remotes/origin/master
 	int ret, i, argc;
 	char **argv;
 
@@ -1184,22 +1512,48 @@ static int parse_probe_trace_command(const char *cmd,
 	}
 
 	/* Scan event and group name. */
+<<<<<<< HEAD
 	ret = sscanf(argv[0], "%c:%a[^/ \t]/%a[^ \t]",
 		     &pr, (float *)(void *)&tev->group,
 		     (float *)(void *)&tev->event);
 	if (ret != 3) {
+=======
+	argv0_str = strdup(argv[0]);
+	if (argv0_str == NULL) {
+		ret = -ENOMEM;
+		goto out;
+	}
+	fmt1_str = strtok_r(argv0_str, ":", &fmt);
+	fmt2_str = strtok_r(NULL, "/", &fmt);
+	fmt3_str = strtok_r(NULL, " \t", &fmt);
+	if (fmt1_str == NULL || strlen(fmt1_str) != 1 || fmt2_str == NULL
+	    || fmt3_str == NULL) {
+>>>>>>> refs/remotes/origin/master
 		semantic_error("Failed to parse event name: %s\n", argv[0]);
 		ret = -EINVAL;
 		goto out;
 	}
+<<<<<<< HEAD
+=======
+	pr = fmt1_str[0];
+	tev->group = strdup(fmt2_str);
+	tev->event = strdup(fmt3_str);
+	if (tev->group == NULL || tev->event == NULL) {
+		ret = -ENOMEM;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 	pr_debug("Group:%s Event:%s probe:%c\n", tev->group, tev->event, pr);
 
 	tp->retprobe = (pr == 'r');
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Scan function name and offset */
 	ret = sscanf(argv[1], "%a[^+]+%lu", (float *)(void *)&tp->symbol,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Scan module name(if there), function name and offset */
 	p = strchr(argv[1], ':');
 	if (p) {
@@ -1207,11 +1561,25 @@ static int parse_probe_trace_command(const char *cmd,
 		p++;
 	} else
 		p = argv[1];
+<<<<<<< HEAD
 	ret = sscanf(p, "%a[^+]+%lu", (float *)(void *)&tp->symbol,
 >>>>>>> refs/remotes/origin/cm-10.0
 		     &tp->offset);
 	if (ret == 1)
 		tp->offset = 0;
+=======
+	fmt1_str = strtok_r(p, "+", &fmt);
+	tp->symbol = strdup(fmt1_str);
+	if (tp->symbol == NULL) {
+		ret = -ENOMEM;
+		goto out;
+	}
+	fmt2_str = strtok_r(NULL, "", &fmt);
+	if (fmt2_str == NULL)
+		tp->offset = 0;
+	else
+		tp->offset = strtoul(fmt2_str, NULL, 10);
+>>>>>>> refs/remotes/origin/master
 
 	tev->nargs = argc - 2;
 	tev->args = zalloc(sizeof(struct probe_trace_arg) * tev->nargs);
@@ -1235,6 +1603,10 @@ static int parse_probe_trace_command(const char *cmd,
 	}
 	ret = 0;
 out:
+<<<<<<< HEAD
+=======
+	free(argv0_str);
+>>>>>>> refs/remotes/origin/master
 	argv_free(argv);
 	return ret;
 }
@@ -1330,8 +1702,12 @@ static char *synthesize_perf_probe_point(struct perf_probe_point *pp)
 error:
 	pr_debug("Failed to synthesize perf probe point: %s\n",
 		 strerror(-ret));
+<<<<<<< HEAD
 	if (buf)
 		free(buf);
+=======
+	free(buf);
+>>>>>>> refs/remotes/origin/master
 	return NULL;
 }
 
@@ -1454,6 +1830,7 @@ char *synthesize_probe_trace_command(struct probe_trace_event *tev)
 		return NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	len = e_snprintf(buf, MAX_CMDLEN, "%c:%s/%s %s+%lu",
 			 tp->retprobe ? 'r' : 'p',
 			 tev->group, tev->event,
@@ -1464,6 +1841,20 @@ char *synthesize_probe_trace_command(struct probe_trace_event *tev)
 			 tp->module ?: "", tp->module ? ":" : "",
 >>>>>>> refs/remotes/origin/cm-10.0
 			 tp->symbol, tp->offset);
+=======
+	if (tev->uprobes)
+		len = e_snprintf(buf, MAX_CMDLEN, "%c:%s/%s %s:%s",
+				 tp->retprobe ? 'r' : 'p',
+				 tev->group, tev->event,
+				 tp->module, tp->symbol);
+	else
+		len = e_snprintf(buf, MAX_CMDLEN, "%c:%s/%s %s%s%s+%lu",
+				 tp->retprobe ? 'r' : 'p',
+				 tev->group, tev->event,
+				 tp->module ?: "", tp->module ? ":" : "",
+				 tp->symbol, tp->offset);
+
+>>>>>>> refs/remotes/origin/master
 	if (len <= 0)
 		goto error;
 
@@ -1482,7 +1873,11 @@ error:
 }
 
 static int convert_to_perf_probe_event(struct probe_trace_event *tev,
+<<<<<<< HEAD
 				       struct perf_probe_event *pev)
+=======
+			       struct perf_probe_event *pev, bool is_kprobe)
+>>>>>>> refs/remotes/origin/master
 {
 	char buf[64] = "";
 	int i, ret;
@@ -1494,7 +1889,15 @@ static int convert_to_perf_probe_event(struct probe_trace_event *tev,
 		return -ENOMEM;
 
 	/* Convert trace_point to probe_point */
+<<<<<<< HEAD
 	ret = kprobe_convert_to_perf_probe(&tev->point, &pev->point);
+=======
+	if (is_kprobe)
+		ret = kprobe_convert_to_perf_probe(&tev->point, &pev->point);
+	else
+		ret = convert_to_perf_probe_point(&tev->point, &pev->point);
+
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 
@@ -1527,6 +1930,7 @@ void clear_perf_probe_event(struct perf_probe_event *pev)
 	struct perf_probe_arg_field *field, *next;
 	int i;
 
+<<<<<<< HEAD
 	if (pev->event)
 		free(pev->event);
 	if (pev->group)
@@ -1549,12 +1953,32 @@ void clear_perf_probe_event(struct perf_probe_event *pev)
 			next = field->next;
 			if (field->name)
 				free(field->name);
+=======
+	free(pev->event);
+	free(pev->group);
+	free(pp->file);
+	free(pp->function);
+	free(pp->lazy_line);
+
+	for (i = 0; i < pev->nargs; i++) {
+		free(pev->args[i].name);
+		free(pev->args[i].var);
+		free(pev->args[i].type);
+		field = pev->args[i].field;
+		while (field) {
+			next = field->next;
+			zfree(&field->name);
+>>>>>>> refs/remotes/origin/master
 			free(field);
 			field = next;
 		}
 	}
+<<<<<<< HEAD
 	if (pev->args)
 		free(pev->args);
+=======
+	free(pev->args);
+>>>>>>> refs/remotes/origin/master
 	memset(pev, 0, sizeof(*pev));
 }
 
@@ -1563,6 +1987,7 @@ static void clear_probe_trace_event(struct probe_trace_event *tev)
 	struct probe_trace_arg_ref *ref, *next;
 	int i;
 
+<<<<<<< HEAD
 	if (tev->event)
 		free(tev->event);
 	if (tev->group)
@@ -1581,6 +2006,16 @@ static void clear_probe_trace_event(struct probe_trace_event *tev)
 			free(tev->args[i].value);
 		if (tev->args[i].type)
 			free(tev->args[i].type);
+=======
+	free(tev->event);
+	free(tev->group);
+	free(tev->point.symbol);
+	free(tev->point.module);
+	for (i = 0; i < tev->nargs; i++) {
+		free(tev->args[i].name);
+		free(tev->args[i].value);
+		free(tev->args[i].type);
+>>>>>>> refs/remotes/origin/master
 		ref = tev->args[i].ref;
 		while (ref) {
 			next = ref->next;
@@ -1588,12 +2023,39 @@ static void clear_probe_trace_event(struct probe_trace_event *tev)
 			ref = next;
 		}
 	}
+<<<<<<< HEAD
 	if (tev->args)
 		free(tev->args);
 	memset(tev, 0, sizeof(*tev));
 }
 
 static int open_kprobe_events(bool readwrite)
+=======
+	free(tev->args);
+	memset(tev, 0, sizeof(*tev));
+}
+
+static void print_warn_msg(const char *file, bool is_kprobe)
+{
+
+	if (errno == ENOENT) {
+		const char *config;
+
+		if (!is_kprobe)
+			config = "CONFIG_UPROBE_EVENTS";
+		else
+			config = "CONFIG_KPROBE_EVENTS";
+
+		pr_warning("%s file does not exist - please rebuild kernel"
+				" with %s.\n", file, config);
+	} else
+		pr_warning("Failed to open %s file: %s\n", file,
+				strerror(errno));
+}
+
+static int open_probe_events(const char *trace_file, bool readwrite,
+				bool is_kprobe)
+>>>>>>> refs/remotes/origin/master
 {
 	char buf[PATH_MAX];
 	const char *__debugfs;
@@ -1605,13 +2067,18 @@ static int open_kprobe_events(bool readwrite)
 		return -ENOENT;
 	}
 
+<<<<<<< HEAD
 	ret = e_snprintf(buf, PATH_MAX, "%stracing/kprobe_events", __debugfs);
+=======
+	ret = e_snprintf(buf, PATH_MAX, "%s/%s", __debugfs, trace_file);
+>>>>>>> refs/remotes/origin/master
 	if (ret >= 0) {
 		pr_debug("Opening %s write=%d\n", buf, readwrite);
 		if (readwrite && !probe_event_dry_run)
 			ret = open(buf, O_RDWR, O_APPEND);
 		else
 			ret = open(buf, O_RDONLY, 0);
+<<<<<<< HEAD
 	}
 
 	if (ret < 0) {
@@ -1621,11 +2088,30 @@ static int open_kprobe_events(bool readwrite)
 		else
 			pr_warning("Failed to open kprobe_events file: %s\n",
 				   strerror(errno));
+=======
+
+		if (ret < 0)
+			print_warn_msg(buf, is_kprobe);
+>>>>>>> refs/remotes/origin/master
 	}
 	return ret;
 }
 
+<<<<<<< HEAD
 /* Get raw string list of current kprobe_events */
+=======
+static int open_kprobe_events(bool readwrite)
+{
+	return open_probe_events("tracing/kprobe_events", readwrite, true);
+}
+
+static int open_uprobe_events(bool readwrite)
+{
+	return open_probe_events("tracing/uprobe_events", readwrite, false);
+}
+
+/* Get raw string list of current kprobe_events  or uprobe_events */
+>>>>>>> refs/remotes/origin/master
 static struct strlist *get_probe_trace_command_rawlist(int fd)
 {
 	int ret, idx;
@@ -1690,15 +2176,22 @@ static int show_perf_probe_event(struct perf_probe_event *pev)
 	return ret;
 }
 
+<<<<<<< HEAD
 /* List up current perf-probe events */
 int show_perf_probe_events(void)
 {
 	int fd, ret;
+=======
+static int __show_perf_probe_events(int fd, bool is_kprobe)
+{
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 	struct probe_trace_event tev;
 	struct perf_probe_event pev;
 	struct strlist *rawlist;
 	struct str_node *ent;
 
+<<<<<<< HEAD
 	setup_pager();
 	ret = init_vmlinux();
 	if (ret < 0)
@@ -1713,13 +2206,24 @@ int show_perf_probe_events(void)
 
 	rawlist = get_probe_trace_command_rawlist(fd);
 	close(fd);
+=======
+	memset(&tev, 0, sizeof(tev));
+	memset(&pev, 0, sizeof(pev));
+
+	rawlist = get_probe_trace_command_rawlist(fd);
+>>>>>>> refs/remotes/origin/master
 	if (!rawlist)
 		return -ENOENT;
 
 	strlist__for_each(ent, rawlist) {
 		ret = parse_probe_trace_command(ent->s, &tev);
 		if (ret >= 0) {
+<<<<<<< HEAD
 			ret = convert_to_perf_probe_event(&tev, &pev);
+=======
+			ret = convert_to_perf_probe_event(&tev, &pev,
+								is_kprobe);
+>>>>>>> refs/remotes/origin/master
 			if (ret >= 0)
 				ret = show_perf_probe_event(&pev);
 		}
@@ -1733,6 +2237,36 @@ int show_perf_probe_events(void)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+/* List up current perf-probe events */
+int show_perf_probe_events(void)
+{
+	int fd, ret;
+
+	setup_pager();
+	fd = open_kprobe_events(false);
+
+	if (fd < 0)
+		return fd;
+
+	ret = init_vmlinux();
+	if (ret < 0)
+		return ret;
+
+	ret = __show_perf_probe_events(fd, true);
+	close(fd);
+
+	fd = open_uprobe_events(false);
+	if (fd >= 0) {
+		ret = __show_perf_probe_events(fd, false);
+		close(fd);
+	}
+
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Get current perf-probe event names */
 static struct strlist *get_probe_trace_event_names(int fd, bool include_group)
 {
@@ -1838,7 +2372,15 @@ static int __add_probe_trace_events(struct perf_probe_event *pev,
 	const char *event, *group;
 	struct strlist *namelist;
 
+<<<<<<< HEAD
 	fd = open_kprobe_events(true);
+=======
+	if (pev->uprobes)
+		fd = open_uprobe_events(true);
+	else
+		fd = open_kprobe_events(true);
+
+>>>>>>> refs/remotes/origin/master
 	if (fd < 0)
 		return fd;
 	/* Get current event names */
@@ -1850,10 +2392,14 @@ static int __add_probe_trace_events(struct perf_probe_event *pev,
 
 	ret = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printf("Add new event%s\n", (ntevs > 1) ? "s:" : ":");
 =======
 	printf("Added new event%s\n", (ntevs > 1) ? "s:" : ":");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printf("Added new event%s\n", (ntevs > 1) ? "s:" : ":");
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ntevs; i++) {
 		tev = &tevs[i];
 		if (pev->event)
@@ -1909,10 +2455,14 @@ static int __add_probe_trace_events(struct perf_probe_event *pev,
 	if (ret >= 0) {
 		/* Show how to use the event. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printf("\nYou can now use it on all perf tools, such as:\n\n");
 =======
 		printf("\nYou can now use it in all perf tools, such as:\n\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printf("\nYou can now use it in all perf tools, such as:\n\n");
+>>>>>>> refs/remotes/origin/master
 		printf("\tperf record -e %s:%s -aR sleep 1\n\n", tev->group,
 			 tev->event);
 	}
@@ -1924,6 +2474,7 @@ static int __add_probe_trace_events(struct perf_probe_event *pev,
 
 static int convert_to_probe_trace_events(struct perf_probe_event *pev,
 					  struct probe_trace_event **tevs,
+<<<<<<< HEAD
 <<<<<<< HEAD
 					  int max_tevs, const char *module)
 =======
@@ -1944,6 +2495,33 @@ static int convert_to_probe_trace_events(struct perf_probe_event *pev,
 	if (ret != 0)
 		return ret;	/* Found in debuginfo or got an error */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  int max_tevs, const char *target)
+{
+	struct symbol *sym;
+	int ret, i;
+	struct probe_trace_event *tev;
+
+	if (pev->uprobes && !pev->group) {
+		/* Replace group name if not given */
+		ret = convert_exec_to_group(target, &pev->group);
+		if (ret != 0) {
+			pr_warning("Failed to make a group name.\n");
+			return ret;
+		}
+	}
+
+	/* Convert perf_probe_event with debuginfo */
+	ret = try_to_find_probe_trace_events(pev, tevs, max_tevs, target);
+	if (ret != 0)
+		return ret;	/* Found in debuginfo or got an error */
+
+	if (pev->uprobes) {
+		ret = convert_name_to_addr(pev, target);
+		if (ret < 0)
+			return ret;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Allocate trace event buffer */
 	tev = *tevs = zalloc(sizeof(struct probe_trace_event));
@@ -1957,7 +2535,10 @@ static int convert_to_probe_trace_events(struct perf_probe_event *pev,
 		goto error;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (target) {
 		tev->point.module = strdup(target);
@@ -1967,10 +2548,18 @@ static int convert_to_probe_trace_events(struct perf_probe_event *pev,
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	tev->point.offset = pev->point.offset;
 	tev->point.retprobe = pev->point.retprobe;
 	tev->nargs = pev->nargs;
+=======
+	tev->point.offset = pev->point.offset;
+	tev->point.retprobe = pev->point.retprobe;
+	tev->nargs = pev->nargs;
+	tev->uprobes = pev->uprobes;
+
+>>>>>>> refs/remotes/origin/master
 	if (tev->nargs) {
 		tev->args = zalloc(sizeof(struct probe_trace_arg)
 				   * tev->nargs);
@@ -2001,6 +2590,12 @@ static int convert_to_probe_trace_events(struct perf_probe_event *pev,
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	if (pev->uprobes)
+		return 1;
+
+>>>>>>> refs/remotes/origin/master
 	/* Currently just checking function name from symbol map */
 	sym = __find_kernel_function_by_name(tev->point.symbol, NULL);
 	if (!sym) {
@@ -2009,14 +2604,20 @@ static int convert_to_probe_trace_events(struct perf_probe_event *pev,
 		ret = -ENOENT;
 		goto error;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} else if (tev->point.offset > sym->end - sym->start) {
 		pr_warning("Offset specified is greater than size of %s\n",
 			   tev->point.symbol);
 		ret = -ENOENT;
 		goto error;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 1;
@@ -2035,20 +2636,39 @@ struct __event_package {
 
 int add_perf_probe_events(struct perf_probe_event *pevs, int npevs,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			  int max_tevs, const char *module, bool force_add)
 =======
 			  int max_tevs, const char *target, bool force_add)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  int max_tevs, const char *target, bool force_add)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, j, ret;
 	struct __event_package *pkgs;
 
+<<<<<<< HEAD
 	pkgs = zalloc(sizeof(struct __event_package) * npevs);
 	if (pkgs == NULL)
 		return -ENOMEM;
 
 	/* Init vmlinux path */
 	ret = init_vmlinux();
+=======
+	ret = 0;
+	pkgs = zalloc(sizeof(struct __event_package) * npevs);
+
+	if (pkgs == NULL)
+		return -ENOMEM;
+
+	if (!pevs->uprobes)
+		/* Init vmlinux path */
+		ret = init_vmlinux();
+	else
+		ret = init_user_exec();
+
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		free(pkgs);
 		return ret;
@@ -2062,10 +2682,14 @@ int add_perf_probe_events(struct perf_probe_event *pevs, int npevs,
 						     &pkgs[i].tevs,
 						     max_tevs,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						     module);
 =======
 						     target);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						     target);
+>>>>>>> refs/remotes/origin/master
 		if (ret < 0)
 			goto end;
 		pkgs[i].ntevs = ret;
@@ -2083,7 +2707,11 @@ end:
 	for (i = 0; i < npevs; i++) {
 		for (j = 0; j < pkgs[i].ntevs; j++)
 			clear_probe_trace_event(&pkgs[i].tevs[j]);
+<<<<<<< HEAD
 		free(pkgs[i].tevs);
+=======
+		zfree(&pkgs[i].tevs);
+>>>>>>> refs/remotes/origin/master
 	}
 	free(pkgs);
 
@@ -2118,16 +2746,21 @@ static int __del_trace_probe_event(int fd, struct str_node *ent)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printf("Remove event: %s\n", ent->s);
 =======
 	printf("Removed event: %s\n", ent->s);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printf("Removed event: %s\n", ent->s);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 error:
 	pr_warning("Failed to delete event: %s\n", strerror(-ret));
 	return ret;
 }
 
+<<<<<<< HEAD
 static int del_trace_probe_event(int fd, const char *group,
 				  const char *event, struct strlist *namelist)
 {
@@ -2140,11 +2773,21 @@ static int del_trace_probe_event(int fd, const char *group,
 		pr_err("Failed to copy event.\n");
 		return ret;
 	}
+=======
+static int del_trace_probe_event(int fd, const char *buf,
+						  struct strlist *namelist)
+{
+	struct str_node *ent, *n;
+	int ret = -1;
+>>>>>>> refs/remotes/origin/master
 
 	if (strpbrk(buf, "*?")) { /* Glob-exp */
 		strlist__for_each_safe(ent, n, namelist)
 			if (strglobmatch(ent->s, buf)) {
+<<<<<<< HEAD
 				found++;
+=======
+>>>>>>> refs/remotes/origin/master
 				ret = __del_trace_probe_event(fd, ent);
 				if (ret < 0)
 					break;
@@ -2153,20 +2796,27 @@ static int del_trace_probe_event(int fd, const char *group,
 	} else {
 		ent = strlist__find(namelist, buf);
 		if (ent) {
+<<<<<<< HEAD
 			found++;
+=======
+>>>>>>> refs/remotes/origin/master
 			ret = __del_trace_probe_event(fd, ent);
 			if (ret >= 0)
 				strlist__remove(namelist, ent);
 		}
 	}
+<<<<<<< HEAD
 	if (found == 0 && ret >= 0)
 		pr_info("Info: Event \"%s\" does not exist.\n", buf);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
 int del_perf_probe_events(struct strlist *dellist)
 {
+<<<<<<< HEAD
 	int fd, ret = 0;
 	const char *group, *event;
 	char *p, *str;
@@ -2181,12 +2831,38 @@ int del_perf_probe_events(struct strlist *dellist)
 	namelist = get_probe_trace_event_names(fd, true);
 	if (namelist == NULL)
 		return -EINVAL;
+=======
+	int ret = -1, ufd = -1, kfd = -1;
+	char buf[128];
+	const char *group, *event;
+	char *p, *str;
+	struct str_node *ent;
+	struct strlist *namelist = NULL, *unamelist = NULL;
+
+	/* Get current event names */
+	kfd = open_kprobe_events(true);
+	if (kfd < 0)
+		return kfd;
+
+	namelist = get_probe_trace_event_names(kfd, true);
+	ufd = open_uprobe_events(true);
+
+	if (ufd >= 0)
+		unamelist = get_probe_trace_event_names(ufd, true);
+
+	if (namelist == NULL && unamelist == NULL)
+		goto error;
+>>>>>>> refs/remotes/origin/master
 
 	strlist__for_each(ent, dellist) {
 		str = strdup(ent->s);
 		if (str == NULL) {
 			ret = -ENOMEM;
+<<<<<<< HEAD
 			break;
+=======
+			goto error;
+>>>>>>> refs/remotes/origin/master
 		}
 		pr_debug("Parsing: %s\n", str);
 		p = strchr(str, ':');
@@ -2198,6 +2874,7 @@ int del_perf_probe_events(struct strlist *dellist)
 			group = "*";
 			event = str;
 		}
+<<<<<<< HEAD
 		pr_debug("Group: %s, Event: %s\n", group, event);
 		ret = del_trace_probe_event(fd, group, event, namelist);
 		free(str);
@@ -2209,6 +2886,44 @@ int del_perf_probe_events(struct strlist *dellist)
 
 	return ret;
 }
+=======
+
+		ret = e_snprintf(buf, 128, "%s:%s", group, event);
+		if (ret < 0) {
+			pr_err("Failed to copy event.");
+			free(str);
+			goto error;
+		}
+
+		pr_debug("Group: %s, Event: %s\n", group, event);
+
+		if (namelist)
+			ret = del_trace_probe_event(kfd, buf, namelist);
+
+		if (unamelist && ret != 0)
+			ret = del_trace_probe_event(ufd, buf, unamelist);
+
+		if (ret != 0)
+			pr_info("Info: Event \"%s\" does not exist.\n", buf);
+
+		free(str);
+	}
+
+error:
+	if (kfd >= 0) {
+		strlist__delete(namelist);
+		close(kfd);
+	}
+
+	if (ufd >= 0) {
+		strlist__delete(unamelist);
+		close(ufd);
+	}
+
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* TODO: don't use a global variable for filter ... */
 static struct strfilter *available_func_filter;
 
@@ -2216,7 +2931,11 @@ static struct strfilter *available_func_filter;
  * If a symbol corresponds to a function with global binding and
  * matches filter return 0. For all others return 1.
  */
+<<<<<<< HEAD
 static int filter_available_functions(struct map *map __unused,
+=======
+static int filter_available_functions(struct map *map __maybe_unused,
+>>>>>>> refs/remotes/origin/master
 				      struct symbol *sym)
 {
 	if (sym->binding == STB_GLOBAL &&
@@ -2226,20 +2945,41 @@ static int filter_available_functions(struct map *map __unused,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int show_available_funcs(const char *module, struct strfilter *_filter)
 =======
 int show_available_funcs(const char *target, struct strfilter *_filter)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __show_available_funcs(struct map *map)
+{
+	if (map__load(map, filter_available_functions)) {
+		pr_err("Failed to load map.\n");
+		return -EINVAL;
+	}
+	if (!dso__sorted_by_name(map->dso, map->type))
+		dso__sort_by_name(map->dso, map->type);
+
+	dso__fprintf_symbols_by_name(map->dso, map->type, stdout);
+	return 0;
+}
+
+static int available_kernel_funcs(const char *module)
+>>>>>>> refs/remotes/origin/master
 {
 	struct map *map;
 	int ret;
 
+<<<<<<< HEAD
 	setup_pager();
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = init_vmlinux();
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	map = kernel_get_module_map(module);
 	if (!map) {
@@ -2261,4 +3001,133 @@ int show_available_funcs(const char *target, struct strfilter *_filter)
 
 	dso__fprintf_symbols_by_name(map->dso, map->type, stdout);
 	return 0;
+=======
+	map = kernel_get_module_map(module);
+	if (!map) {
+		pr_err("Failed to find %s map.\n", (module) ? : "kernel");
+		return -EINVAL;
+	}
+	return __show_available_funcs(map);
+}
+
+static int available_user_funcs(const char *target)
+{
+	struct map *map;
+	int ret;
+
+	ret = init_user_exec();
+	if (ret < 0)
+		return ret;
+
+	map = dso__new_map(target);
+	ret = __show_available_funcs(map);
+	dso__delete(map->dso);
+	map__delete(map);
+	return ret;
+}
+
+int show_available_funcs(const char *target, struct strfilter *_filter,
+					bool user)
+{
+	setup_pager();
+	available_func_filter = _filter;
+
+	if (!user)
+		return available_kernel_funcs(target);
+
+	return available_user_funcs(target);
+}
+
+/*
+ * uprobe_events only accepts address:
+ * Convert function and any offset to address
+ */
+static int convert_name_to_addr(struct perf_probe_event *pev, const char *exec)
+{
+	struct perf_probe_point *pp = &pev->point;
+	struct symbol *sym;
+	struct map *map = NULL;
+	char *function = NULL;
+	int ret = -EINVAL;
+	unsigned long long vaddr = 0;
+
+	if (!pp->function) {
+		pr_warning("No function specified for uprobes");
+		goto out;
+	}
+
+	function = strdup(pp->function);
+	if (!function) {
+		pr_warning("Failed to allocate memory by strdup.\n");
+		ret = -ENOMEM;
+		goto out;
+	}
+
+	map = dso__new_map(exec);
+	if (!map) {
+		pr_warning("Cannot find appropriate DSO for %s.\n", exec);
+		goto out;
+	}
+	available_func_filter = strfilter__new(function, NULL);
+	if (map__load(map, filter_available_functions)) {
+		pr_err("Failed to load map.\n");
+		goto out;
+	}
+
+	sym = map__find_symbol_by_name(map, function, NULL);
+	if (!sym) {
+		pr_warning("Cannot find %s in DSO %s\n", function, exec);
+		goto out;
+	}
+
+	if (map->start > sym->start)
+		vaddr = map->start;
+	vaddr += sym->start + pp->offset + map->pgoff;
+	pp->offset = 0;
+
+	if (!pev->event) {
+		pev->event = function;
+		function = NULL;
+	}
+	if (!pev->group) {
+		char *ptr1, *ptr2, *exec_copy;
+
+		pev->group = zalloc(sizeof(char *) * 64);
+		exec_copy = strdup(exec);
+		if (!exec_copy) {
+			ret = -ENOMEM;
+			pr_warning("Failed to copy exec string.\n");
+			goto out;
+		}
+
+		ptr1 = strdup(basename(exec_copy));
+		if (ptr1) {
+			ptr2 = strpbrk(ptr1, "-._");
+			if (ptr2)
+				*ptr2 = '\0';
+			e_snprintf(pev->group, 64, "%s_%s", PERFPROBE_GROUP,
+					ptr1);
+			free(ptr1);
+		}
+		free(exec_copy);
+	}
+	free(pp->function);
+	pp->function = zalloc(sizeof(char *) * MAX_PROBE_ARGS);
+	if (!pp->function) {
+		ret = -ENOMEM;
+		pr_warning("Failed to allocate memory by zalloc.\n");
+		goto out;
+	}
+	e_snprintf(pp->function, MAX_PROBE_ARGS, "0x%llx", vaddr);
+	ret = 0;
+
+out:
+	if (map) {
+		dso__delete(map->dso);
+		map__delete(map);
+	}
+	if (function)
+		free(function);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }

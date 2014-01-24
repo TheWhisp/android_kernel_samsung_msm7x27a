@@ -644,11 +644,16 @@ static inline int mthca_poll_one(struct mthca_dev *dev,
 		checksum = (be32_to_cpu(cqe->rqpn) >> 24) |
 				((be32_to_cpu(cqe->my_ee) >> 16) & 0xff00);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		entry->csum_ok = (cqe->sl_ipok & 1 && checksum == 0xffff);
 =======
 		entry->wc_flags	  |=  (cqe->sl_ipok & 1 && checksum == 0xffff) ?
 							IB_WC_IP_CSUM_OK : 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		entry->wc_flags	  |=  (cqe->sl_ipok & 1 && checksum == 0xffff) ?
+							IB_WC_IP_CSUM_OK : 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	entry->status = IB_WC_SUCCESS;
@@ -785,9 +790,12 @@ int mthca_init_cq(struct mthca_dev *dev, int nent,
 	struct mthca_cq_context *cq_context;
 	int err = -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 status;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cq->ibcq.cqe  = nent - 1;
 	cq->is_kernel = !ctx;
@@ -856,15 +864,20 @@ int mthca_init_cq(struct mthca_dev *dev, int nent,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = mthca_SW2HW_CQ(dev, mailbox, cq->cqn, &status);
 =======
 	err = mthca_SW2HW_CQ(dev, mailbox, cq->cqn);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mthca_SW2HW_CQ(dev, mailbox, cq->cqn);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		mthca_warn(dev, "SW2HW_CQ failed (%d)\n", err);
 		goto err_out_free_mr;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (status) {
 		mthca_warn(dev, "SW2HW_CQ returned status 0x%02x\n",
@@ -875,6 +888,8 @@ int mthca_init_cq(struct mthca_dev *dev, int nent,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&dev->cq_table.lock);
 	if (mthca_array_set(&dev->cq_table.cq,
 			    cq->cqn & (dev->limits.num_cqs - 1),
@@ -931,9 +946,12 @@ void mthca_free_cq(struct mthca_dev *dev,
 	struct mthca_mailbox *mailbox;
 	int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 status;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mailbox = mthca_alloc_mailbox(dev, GFP_KERNEL);
 	if (IS_ERR(mailbox)) {
@@ -941,6 +959,7 @@ void mthca_free_cq(struct mthca_dev *dev,
 		return;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = mthca_HW2SW_CQ(dev, mailbox, cq->cqn, &status);
 	if (err)
@@ -952,6 +971,11 @@ void mthca_free_cq(struct mthca_dev *dev,
 	if (err)
 		mthca_warn(dev, "HW2SW_CQ failed (%d)\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mthca_HW2SW_CQ(dev, mailbox, cq->cqn);
+	if (err)
+		mthca_warn(dev, "HW2SW_CQ failed (%d)\n", err);
+>>>>>>> refs/remotes/origin/master
 
 	if (0) {
 		__be32 *ctx = mailbox->buf;

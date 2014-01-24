@@ -43,6 +43,7 @@ static map_word mtd_pci_read8(struct map_info *_map, unsigned long ofs)
 	struct map_pci_info *map = (struct map_pci_info *)_map;
 	map_word val;
 	val.x[0]= readb(map->base + map->translate(map, ofs));
+<<<<<<< HEAD
 //	printk("read8 : %08lx => %02x\n", ofs, val.x[0]);
 	return val;
 }
@@ -57,12 +58,20 @@ static map_word mtd_pci_read16(struct map_info *_map, unsigned long ofs)
 	return val;
 }
 #endif
+=======
+	return val;
+}
+
+>>>>>>> refs/remotes/origin/master
 static map_word mtd_pci_read32(struct map_info *_map, unsigned long ofs)
 {
 	struct map_pci_info *map = (struct map_pci_info *)_map;
 	map_word val;
 	val.x[0] = readl(map->base + map->translate(map, ofs));
+<<<<<<< HEAD
 //	printk("read32: %08lx => %08x\n", ofs, val.x[0]);
+=======
+>>>>>>> refs/remotes/origin/master
 	return val;
 }
 
@@ -75,6 +84,7 @@ static void mtd_pci_copyfrom(struct map_info *_map, void *to, unsigned long from
 static void mtd_pci_write8(struct map_info *_map, map_word val, unsigned long ofs)
 {
 	struct map_pci_info *map = (struct map_pci_info *)_map;
+<<<<<<< HEAD
 //	printk("write8 : %08lx <= %02x\n", ofs, val.x[0]);
 	writeb(val.x[0], map->base + map->translate(map, ofs));
 }
@@ -91,6 +101,14 @@ static void mtd_pci_write32(struct map_info *_map, map_word val, unsigned long o
 {
 	struct map_pci_info *map = (struct map_pci_info *)_map;
 //	printk("write32: %08lx <= %08x\n", ofs, val.x[0]);
+=======
+	writeb(val.x[0], map->base + map->translate(map, ofs));
+}
+
+static void mtd_pci_write32(struct map_info *_map, map_word val, unsigned long ofs)
+{
+	struct map_pci_info *map = (struct map_pci_info *)_map;
+>>>>>>> refs/remotes/origin/master
 	writel(val.x[0], map->base + map->translate(map, ofs));
 }
 
@@ -275,8 +293,12 @@ static struct pci_device_id mtd_pci_ids[] = {
  * Generic code follows.
  */
 
+<<<<<<< HEAD
 static int __devinit
 mtd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int mtd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mtd_pci_info *info = (struct mtd_pci_info *)id->driver_data;
 	struct map_pci_info *map = NULL;
@@ -306,8 +328,12 @@ mtd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	if (err)
 		goto release;
 
+<<<<<<< HEAD
 	/* tsk - do_map_probe should take const char * */
 	mtd = do_map_probe((char *)info->map_name, &map->map);
+=======
+	mtd = do_map_probe(info->map_name, &map->map);
+>>>>>>> refs/remotes/origin/master
 	err = -ENODEV;
 	if (!mtd)
 		goto release;
@@ -330,8 +356,12 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit
 mtd_pci_remove(struct pci_dev *dev)
+=======
+static void mtd_pci_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mtd_info *mtd = pci_get_drvdata(dev);
 	struct map_pci_info *map = mtd->priv;
@@ -341,13 +371,17 @@ mtd_pci_remove(struct pci_dev *dev)
 	map->exit(dev, map);
 	kfree(map);
 
+<<<<<<< HEAD
 	pci_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_release_regions(dev);
 }
 
 static struct pci_driver mtd_pci_driver = {
 	.name =		"MTD PCI",
 	.probe =	mtd_pci_probe,
+<<<<<<< HEAD
 	.remove =	__devexit_p(mtd_pci_remove),
 	.id_table =	mtd_pci_ids,
 };
@@ -364,9 +398,19 @@ static void __exit mtd_pci_maps_exit(void)
 
 module_init(mtd_pci_maps_init);
 module_exit(mtd_pci_maps_exit);
+=======
+	.remove =	mtd_pci_remove,
+	.id_table =	mtd_pci_ids,
+};
+
+module_pci_driver(mtd_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Russell King <rmk@arm.linux.org.uk>");
 MODULE_DESCRIPTION("Generic PCI map driver");
 MODULE_DEVICE_TABLE(pci, mtd_pci_ids);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

@@ -20,6 +20,7 @@
 #include <linux/mfd/pcf50633/core.h>
 #include <linux/mfd/pcf50633/gpio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 enum pcf50633_regulator_id {
 	PCF50633_REGULATOR_AUTO,
@@ -49,6 +50,9 @@ enum pcf50633_regulator_id {
 =======
 #include <linux/mfd/pcf50633/pmic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mfd/pcf50633/pmic.h>
+>>>>>>> refs/remotes/origin/master
 
 static const u8 pcf50633_regulator_registers[PCF50633_NUM_REGULATORS] = {
 	[PCF50633_REGULATOR_AUTO]	= PCF50633_REG_AUTOOUT,

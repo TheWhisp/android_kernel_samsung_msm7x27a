@@ -557,10 +557,13 @@ static void adi_disconnect(struct gameport *gameport)
 	kfree(port);
 }
 
+<<<<<<< HEAD
 /*
  * The gameport device structure.
  */
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct gameport_driver adi_drv = {
 	.driver		= {
 		.name	= "adi",
@@ -570,6 +573,7 @@ static struct gameport_driver adi_drv = {
 	.disconnect	= adi_disconnect,
 };
 
+<<<<<<< HEAD
 static int __init adi_init(void)
 {
 	return gameport_register_driver(&adi_drv);
@@ -582,3 +586,6 @@ static void __exit adi_exit(void)
 
 module_init(adi_init);
 module_exit(adi_exit);
+=======
+module_gameport_driver(adi_drv);
+>>>>>>> refs/remotes/origin/master

@@ -9,10 +9,13 @@
  * file from the main directory of the linux kernel source.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Send feedback to <socketcan-users@lists.berlios.de>
  *
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Your platform definition file should specify something like:
  *
@@ -32,12 +35,17 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/netdevice.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/rtnetlink.h>
 #include <linux/skbuff.h>
 #include <linux/spinlock.h>
 #include <linux/string.h>
 #include <linux/types.h>
+<<<<<<< HEAD
 
 #include <linux/can/dev.h>
 #include <linux/can/error.h>
@@ -74,6 +82,15 @@
 =======
 #define AT91_MB_MASK(i)		((1 << (i)) - 1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/atmel.h>
+
+#include <linux/can/dev.h>
+#include <linux/can/error.h>
+#include <linux/can/led.h>
+
+#define AT91_MB_MASK(i)		((1 << (i)) - 1)
+>>>>>>> refs/remotes/origin/master
 
 /* Common registers */
 enum at91_reg {
@@ -136,6 +153,7 @@ enum at91_mb_mode {
 
 /* Interrupt mask bits */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AT91_IRQ_MB_RX		((1 << (AT91_MB_RX_LAST + 1)) \
 				 - (1 << AT91_MB_RX_FIRST))
 #define AT91_IRQ_MB_TX		((1 << (AT91_MB_TX_LAST + 1)) \
@@ -144,6 +162,8 @@ enum at91_mb_mode {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define AT91_IRQ_ERRA		(1 << 16)
 #define AT91_IRQ_WARN		(1 << 17)
 #define AT91_IRQ_ERRP		(1 << 18)
@@ -167,6 +187,7 @@ enum at91_mb_mode {
 #define AT91_IRQ_ALL		(0x1fffffff)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct at91_priv {
 	struct can_priv		can;	   /* must be the first member! */
 	struct net_device	*dev;
@@ -184,6 +205,8 @@ struct at91_priv {
 
 	canid_t			mb0_id;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum at91_devtype {
 	AT91_DEVTYPE_SAM9263,
 	AT91_DEVTYPE_SAM9X5,
@@ -216,6 +239,7 @@ struct at91_priv {
 	canid_t mb0_id;
 };
 
+<<<<<<< HEAD
 static const struct at91_devtype_data at91_devtype_data[] __devinitconst = {
 	[AT91_DEVTYPE_SAM9263] = {
 		.rx_first = 1,
@@ -233,6 +257,25 @@ static const struct at91_devtype_data at91_devtype_data[] __devinitconst = {
 };
 
 static struct can_bittiming_const at91_bittiming_const = {
+=======
+static const struct at91_devtype_data at91_at91sam9263_data = {
+	.rx_first = 1,
+	.rx_split = 8,
+	.rx_last = 11,
+	.tx_shift = 2,
+	.type = AT91_DEVTYPE_SAM9263,
+};
+
+static const struct at91_devtype_data at91_at91sam9x5_data = {
+	.rx_first = 0,
+	.rx_split = 4,
+	.rx_last = 5,
+	.tx_shift = 1,
+	.type = AT91_DEVTYPE_SAM9X5,
+};
+
+static const struct can_bittiming_const at91_bittiming_const = {
+>>>>>>> refs/remotes/origin/master
 	.name		= KBUILD_MODNAME,
 	.tseg1_min	= 4,
 	.tseg1_max	= 16,
@@ -244,6 +287,7 @@ static struct can_bittiming_const at91_bittiming_const = {
 	.brp_inc	= 1,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline int get_tx_next_mb(const struct at91_priv *priv)
 {
@@ -259,6 +303,8 @@ static inline int get_tx_echo_mb(const struct at91_priv *priv)
 {
 	return (priv->tx_echo & AT91_NEXT_MB_MASK) + AT91_MB_TX_FIRST;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define AT91_IS(_model) \
 static inline int at91_is_sam##_model(const struct at91_priv *priv) \
 { \
@@ -364,7 +410,10 @@ static inline unsigned int get_tx_next_prio(const struct at91_priv *priv)
 static inline unsigned int get_tx_echo_mb(const struct at91_priv *priv)
 {
 	return (priv->tx_echo & get_next_mb_mask(priv)) + get_mb_tx_first(priv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline u32 at91_read(const struct at91_priv *priv, enum at91_reg reg)
@@ -426,15 +475,20 @@ static void at91_setup_mailboxes(struct net_device *dev)
 	 */
 	reg_mid = at91_can_id_to_reg_mid(priv->mb0_id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < AT91_MB_RX_FIRST; i++) {
 =======
 	for (i = 0; i < get_mb_rx_first(priv); i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < get_mb_rx_first(priv); i++) {
+>>>>>>> refs/remotes/origin/master
 		set_mb_mode(priv, i, AT91_MB_MODE_DISABLED);
 		at91_write(priv, AT91_MID(i), reg_mid);
 		at91_write(priv, AT91_MCR(i), 0x0);	/* clear dlc */
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (i = AT91_MB_RX_FIRST; i < AT91_MB_RX_LAST; i++)
 		set_mb_mode(priv, i, AT91_MB_MODE_RX);
@@ -444,6 +498,8 @@ static void at91_setup_mailboxes(struct net_device *dev)
 	for (i = AT91_MB_RX_FIRST; i <= AT91_MB_RX_LAST; i++) {
 		at91_write(priv, AT91_MAM(i), 0x0 );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = get_mb_rx_first(priv); i < get_mb_rx_last(priv); i++)
 		set_mb_mode(priv, i, AT91_MB_MODE_RX);
 	set_mb_mode(priv, get_mb_rx_last(priv), AT91_MB_MODE_RX_OVRWR);
@@ -451,25 +507,36 @@ static void at91_setup_mailboxes(struct net_device *dev)
 	/* reset acceptance mask and id register */
 	for (i = get_mb_rx_first(priv); i <= get_mb_rx_last(priv); i++) {
 		at91_write(priv, AT91_MAM(i), 0x0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		at91_write(priv, AT91_MID(i), AT91_MID_MIDE);
 	}
 
 	/* The last 4 mailboxes are used for transmitting. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = AT91_MB_TX_FIRST; i <= AT91_MB_TX_LAST; i++)
 =======
 	for (i = get_mb_tx_first(priv); i <= get_mb_tx_last(priv); i++)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = get_mb_tx_first(priv); i <= get_mb_tx_last(priv); i++)
+>>>>>>> refs/remotes/origin/master
 		set_mb_mode_prio(priv, i, AT91_MB_MODE_TX, 0);
 
 	/* Reset tx and rx helper pointers */
 	priv->tx_next = priv->tx_echo = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	priv->rx_next = AT91_MB_RX_FIRST;
 =======
 	priv->rx_next = get_mb_rx_first(priv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	priv->rx_next = get_mb_rx_first(priv);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int at91_set_bittiming(struct net_device *dev)
@@ -525,10 +592,14 @@ static void at91_chip_start(struct net_device *dev)
 
 	/* Enable interrupts */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	reg_ier = AT91_IRQ_MB_RX | AT91_IRQ_ERRP | AT91_IRQ_ERR_FRAME;
 =======
 	reg_ier = get_irq_mb_rx(priv) | AT91_IRQ_ERRP | AT91_IRQ_ERR_FRAME;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	reg_ier = get_irq_mb_rx(priv) | AT91_IRQ_ERRP | AT91_IRQ_ERR_FRAME;
+>>>>>>> refs/remotes/origin/master
 	at91_write(priv, AT91_IDR, AT91_IRQ_ALL);
 	at91_write(priv, AT91_IER, reg_ier);
 }
@@ -568,12 +639,17 @@ static void at91_chip_stop(struct net_device *dev, enum can_state state)
  * encode the mailbox number, the upper 4 bits the mailbox priority:
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * priv->tx_next = (prio << AT91_NEXT_PRIO_SHIFT) ||
  *                 (mb - AT91_MB_TX_FIRST);
 =======
  * priv->tx_next = (prio << get_next_prio_shift(priv)) |
  *                 (mb - get_mb_tx_first(priv));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * priv->tx_next = (prio << get_next_prio_shift(priv)) |
+ *                 (mb - get_mb_tx_first(priv));
+>>>>>>> refs/remotes/origin/master
  *
  */
 static netdev_tx_t at91_start_xmit(struct sk_buff *skb, struct net_device *dev)
@@ -615,10 +691,14 @@ static netdev_tx_t at91_start_xmit(struct sk_buff *skb, struct net_device *dev)
 
 	/* _NOTE_: subtract AT91_MB_TX_FIRST offset from mb! */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	can_put_echo_skb(skb, dev, mb - AT91_MB_TX_FIRST);
 =======
 	can_put_echo_skb(skb, dev, mb - get_mb_tx_first(priv));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	can_put_echo_skb(skb, dev, mb - get_mb_tx_first(priv));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * we have to stop the queue and deliver all messages in case
@@ -632,10 +712,14 @@ static netdev_tx_t at91_start_xmit(struct sk_buff *skb, struct net_device *dev)
 	if (!(at91_read(priv, AT91_MSR(get_tx_next_mb(priv))) &
 	      AT91_MSR_MRDY) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    (priv->tx_next & AT91_NEXT_MASK) == 0)
 =======
 	    (priv->tx_next & get_next_mask(priv)) == 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    (priv->tx_next & get_next_mask(priv)) == 0)
+>>>>>>> refs/remotes/origin/master
 		netif_stop_queue(dev);
 
 	/* Enable interrupt for this mailbox */
@@ -653,10 +737,14 @@ static netdev_tx_t at91_start_xmit(struct sk_buff *skb, struct net_device *dev)
 static inline void at91_activate_rx_low(const struct at91_priv *priv)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 mask = AT91_MB_RX_LOW_MASK;
 =======
 	u32 mask = get_mb_rx_low_mask(priv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 mask = get_mb_rx_low_mask(priv);
+>>>>>>> refs/remotes/origin/master
 	at91_write(priv, AT91_TCR, mask);
 }
 
@@ -723,6 +811,7 @@ static void at91_read_mb(struct net_device *dev, unsigned int mb,
 
 	reg_msr = at91_read(priv, AT91_MSR(mb));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (reg_msr & AT91_MSR_MRTR)
 		cf->can_id |= CAN_RTR_FLAG;
 	cf->can_dlc = get_can_dlc((reg_msr >> 16) & 0xf);
@@ -730,6 +819,8 @@ static void at91_read_mb(struct net_device *dev, unsigned int mb,
 	*(u32 *)(cf->data + 0) = at91_read(priv, AT91_MDL(mb));
 	*(u32 *)(cf->data + 4) = at91_read(priv, AT91_MDH(mb));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	cf->can_dlc = get_can_dlc((reg_msr >> 16) & 0xf);
 
 	if (reg_msr & AT91_MSR_MRTR)
@@ -738,16 +829,23 @@ static void at91_read_mb(struct net_device *dev, unsigned int mb,
 		*(u32 *)(cf->data + 0) = at91_read(priv, AT91_MDL(mb));
 		*(u32 *)(cf->data + 4) = at91_read(priv, AT91_MDH(mb));
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* allow RX of extended frames */
 	at91_write(priv, AT91_MID(mb), AT91_MID_MIDE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(mb == AT91_MB_RX_LAST && reg_msr & AT91_MSR_MMI))
 =======
 	if (unlikely(mb == get_mb_rx_last(priv) && reg_msr & AT91_MSR_MMI))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (unlikely(mb == get_mb_rx_last(priv) && reg_msr & AT91_MSR_MMI))
+>>>>>>> refs/remotes/origin/master
 		at91_rx_overflow_err(dev);
 }
 
@@ -776,6 +874,11 @@ static void at91_read_msg(struct net_device *dev, unsigned int mb)
 
 	stats->rx_packets++;
 	stats->rx_bytes += cf->can_dlc;
+<<<<<<< HEAD
+=======
+
+	can_led_event(dev, CAN_LED_EVENT_RX);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -786,6 +889,7 @@ static void at91_read_msg(struct net_device *dev, unsigned int mb)
  * Theory of Operation:
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 11 of the 16 mailboxes on the chip are reserved for RX. we split
  * them into 2 groups. The lower group holds 7 and upper 4 mailboxes.
 =======
@@ -793,6 +897,11 @@ static void at91_read_msg(struct net_device *dev, unsigned int mb)
  * on the chip are reserved for RX. We split them into 2 groups. The
  * lower group ranges from get_mb_rx_first() to get_mb_rx_low_last().
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * About 3/4 of the mailboxes (get_mb_rx_first()...get_mb_rx_last())
+ * on the chip are reserved for RX. We split them into 2 groups. The
+ * lower group ranges from get_mb_rx_first() to get_mb_rx_low_last().
+>>>>>>> refs/remotes/origin/master
  *
  * Like it or not, but the chip always saves a received CAN message
  * into the first free mailbox it finds (starting with the
@@ -841,16 +950,22 @@ static int at91_poll_rx(struct net_device *dev, int quota)
 	int received = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (priv->rx_next > AT91_MB_RX_LOW_LAST &&
 	    reg_sr & AT91_MB_RX_LOW_MASK)
 =======
 	if (priv->rx_next > get_mb_rx_low_last(priv) &&
 	    reg_sr & get_mb_rx_low_mask(priv))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (priv->rx_next > get_mb_rx_low_last(priv) &&
+	    reg_sr & get_mb_rx_low_mask(priv))
+>>>>>>> refs/remotes/origin/master
 		netdev_info(dev,
 			"order of incoming frames cannot be guaranteed\n");
 
  again:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (mb = find_next_bit(addr, AT91_MB_RX_LAST + 1, priv->rx_next);
 	     mb < AT91_MB_RX_LAST + 1 && quota > 0;
@@ -864,6 +979,8 @@ static int at91_poll_rx(struct net_device *dev, int quota)
 			at91_activate_rx_low(priv);
 		else if (mb > AT91_MB_RX_LOW_LAST)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (mb = find_next_bit(addr, get_mb_tx_first(priv), priv->rx_next);
 	     mb < get_mb_tx_first(priv) && quota > 0;
 	     reg_sr = at91_read(priv, AT91_SR),
@@ -875,7 +992,10 @@ static int at91_poll_rx(struct net_device *dev, int quota)
 			/* all lower mailboxed, if just finished it */
 			at91_activate_rx_low(priv);
 		else if (mb > get_mb_rx_low_last(priv))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/* only the mailbox we read */
 			at91_activate_rx_mb(priv, mb);
 
@@ -885,6 +1005,7 @@ static int at91_poll_rx(struct net_device *dev, int quota)
 
 	/* upper group completed, look again in lower */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (priv->rx_next > AT91_MB_RX_LOW_LAST &&
 	    quota > 0 && mb > AT91_MB_RX_LAST) {
 		priv->rx_next = AT91_MB_RX_FIRST;
@@ -893,6 +1014,11 @@ static int at91_poll_rx(struct net_device *dev, int quota)
 	    quota > 0 && mb > get_mb_rx_last(priv)) {
 		priv->rx_next = get_mb_rx_first(priv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (priv->rx_next > get_mb_rx_low_last(priv) &&
+	    quota > 0 && mb > get_mb_rx_last(priv)) {
+		priv->rx_next = get_mb_rx_first(priv);
+>>>>>>> refs/remotes/origin/master
 		goto again;
 	}
 
@@ -976,10 +1102,14 @@ static int at91_poll(struct napi_struct *napi, int quota)
 	int work_done = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (reg_sr & AT91_IRQ_MB_RX)
 =======
 	if (reg_sr & get_irq_mb_rx(priv))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (reg_sr & get_irq_mb_rx(priv))
+>>>>>>> refs/remotes/origin/master
 		work_done += at91_poll_rx(dev, quota - work_done);
 
 	/*
@@ -994,10 +1124,14 @@ static int at91_poll(struct napi_struct *napi, int quota)
 		/* enable IRQs for frame errors and all mailboxes >= rx_next */
 		u32 reg_ier = AT91_IRQ_ERR_FRAME;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		reg_ier |= AT91_IRQ_MB_RX & ~AT91_MB_RX_MASK(priv->rx_next);
 =======
 		reg_ier |= get_irq_mb_rx(priv) & ~AT91_MB_MASK(priv->rx_next);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		reg_ier |= get_irq_mb_rx(priv) & ~AT91_MB_MASK(priv->rx_next);
+>>>>>>> refs/remotes/origin/master
 
 		napi_complete(napi);
 		at91_write(priv, AT91_IER, reg_ier);
@@ -1047,11 +1181,17 @@ static void at91_irq_tx(struct net_device *dev, u32 reg_sr)
 			   ~reg_msr & AT91_MSR_MABT)) {
 			/* _NOTE_: subtract AT91_MB_TX_FIRST offset from mb! */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			can_get_echo_skb(dev, mb - AT91_MB_TX_FIRST);
 =======
 			can_get_echo_skb(dev, mb - get_mb_tx_first(priv));
 >>>>>>> refs/remotes/origin/cm-10.0
 			dev->stats.tx_packets++;
+=======
+			can_get_echo_skb(dev, mb - get_mb_tx_first(priv));
+			dev->stats.tx_packets++;
+			can_led_event(dev, CAN_LED_EVENT_TX);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1061,12 +1201,17 @@ static void at91_irq_tx(struct net_device *dev, u32 reg_sr)
 	 * wrap around.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((priv->tx_next & AT91_NEXT_MASK) != 0 ||
 	    (priv->tx_echo & AT91_NEXT_MASK) == 0)
 =======
 	if ((priv->tx_next & get_next_mask(priv)) != 0 ||
 	    (priv->tx_echo & get_next_mask(priv)) == 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((priv->tx_next & get_next_mask(priv)) != 0 ||
+	    (priv->tx_echo & get_next_mask(priv)) == 0)
+>>>>>>> refs/remotes/origin/master
 		netif_wake_queue(dev);
 }
 
@@ -1179,7 +1324,10 @@ static void at91_irq_err_state(struct net_device *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int at91_get_state_by_bec(const struct net_device *dev,
 		enum can_state *state)
 {
@@ -1203,7 +1351,10 @@ static int at91_get_state_by_bec(const struct net_device *dev,
 }
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void at91_irq_err(struct net_device *dev)
 {
 	struct at91_priv *priv = netdev_priv(dev);
@@ -1211,6 +1362,7 @@ static void at91_irq_err(struct net_device *dev)
 	struct can_frame *cf;
 	enum can_state new_state;
 	u32 reg_sr;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	reg_sr = at91_read(priv, AT91_SR);
@@ -1228,6 +1380,8 @@ static void at91_irq_err(struct net_device *dev)
 		netdev_err(dev, "BUG! hardware in undefined state\n");
 		return;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	if (at91_is_sam9263(priv)) {
@@ -1250,7 +1404,10 @@ static void at91_irq_err(struct net_device *dev)
 		err = at91_get_state_by_bec(dev, &new_state);
 		if (err)
 			return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* state hasn't changed */
@@ -1292,10 +1449,14 @@ static irqreturn_t at91_irq(int irq, void *dev_id)
 
 	/* Receive or error interrupt? -> napi */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (reg_sr & (AT91_IRQ_MB_RX | AT91_IRQ_ERR_FRAME)) {
 =======
 	if (reg_sr & (get_irq_mb_rx(priv) | AT91_IRQ_ERR_FRAME)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (reg_sr & (get_irq_mb_rx(priv) | AT91_IRQ_ERR_FRAME)) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * The error bits are clear on read,
 		 * save for later use.
@@ -1303,19 +1464,27 @@ static irqreturn_t at91_irq(int irq, void *dev_id)
 		priv->reg_sr = reg_sr;
 		at91_write(priv, AT91_IDR,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			   AT91_IRQ_MB_RX | AT91_IRQ_ERR_FRAME);
 =======
 			   get_irq_mb_rx(priv) | AT91_IRQ_ERR_FRAME);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   get_irq_mb_rx(priv) | AT91_IRQ_ERR_FRAME);
+>>>>>>> refs/remotes/origin/master
 		napi_schedule(&priv->napi);
 	}
 
 	/* Transmission complete interrupt */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (reg_sr & AT91_IRQ_MB_TX)
 =======
 	if (reg_sr & get_irq_mb_tx(priv))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (reg_sr & get_irq_mb_tx(priv))
+>>>>>>> refs/remotes/origin/master
 		at91_irq_tx(dev, reg_sr);
 
 	at91_irq_err(dev);
@@ -1343,6 +1512,11 @@ static int at91_open(struct net_device *dev)
 		goto out_close;
 	}
 
+<<<<<<< HEAD
+=======
+	can_led_event(dev, CAN_LED_EVENT_OPEN);
+
+>>>>>>> refs/remotes/origin/master
 	/* start chip and queuing */
 	at91_chip_start(dev);
 	napi_enable(&priv->napi);
@@ -1374,6 +1548,11 @@ static int at91_close(struct net_device *dev)
 
 	close_candev(dev);
 
+<<<<<<< HEAD
+=======
+	can_led_event(dev, CAN_LED_EVENT_STOP);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1425,7 +1604,11 @@ static ssize_t at91_sysfs_set_mb0_id(struct device *dev,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 0, &can_id);
+=======
+	err = kstrtoul(buf, 0, &can_id);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		ret = err;
 		goto out;
@@ -1456,6 +1639,7 @@ static struct attribute_group at91_sysfs_attr_group = {
 	.attrs = at91_sysfs_attrs,
 };
 
+<<<<<<< HEAD
 static int __devinit at91_can_probe(struct platform_device *pdev)
 {
 <<<<<<< HEAD
@@ -1463,6 +1647,42 @@ static int __devinit at91_can_probe(struct platform_device *pdev)
 	const struct at91_devtype_data *devtype_data;
 	enum at91_devtype devtype;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_OF)
+static const struct of_device_id at91_can_dt_ids[] = {
+	{
+		.compatible = "atmel,at91sam9x5-can",
+		.data = &at91_at91sam9x5_data,
+	}, {
+		.compatible = "atmel,at91sam9263-can",
+		.data = &at91_at91sam9263_data,
+	}, {
+		/* sentinel */
+	}
+};
+MODULE_DEVICE_TABLE(of, at91_can_dt_ids);
+#endif
+
+static const struct at91_devtype_data *at91_can_get_driver_data(struct platform_device *pdev)
+{
+	if (pdev->dev.of_node) {
+		const struct of_device_id *match;
+
+		match = of_match_node(at91_can_dt_ids, pdev->dev.of_node);
+		if (!match) {
+			dev_err(&pdev->dev, "no matching node found in dtb\n");
+			return NULL;
+		}
+		return (const struct at91_devtype_data *)match->data;
+	}
+	return (const struct at91_devtype_data *)
+		platform_get_device_id(pdev)->driver_data;
+}
+
+static int at91_can_probe(struct platform_device *pdev)
+{
+	const struct at91_devtype_data *devtype_data;
+>>>>>>> refs/remotes/origin/master
 	struct net_device *dev;
 	struct at91_priv *priv;
 	struct resource *res;
@@ -1471,11 +1691,21 @@ static int __devinit at91_can_probe(struct platform_device *pdev)
 	int err, irq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	devtype = pdev->id_entry->driver_data;
 	devtype_data = &at91_devtype_data[devtype];
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	devtype_data = at91_can_get_driver_data(pdev);
+	if (!devtype_data) {
+		dev_err(&pdev->dev, "no driver data\n");
+		err = -ENODEV;
+		goto exit;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	clk = clk_get(&pdev->dev, "can_clk");
 	if (IS_ERR(clk)) {
 		dev_err(&pdev->dev, "no clock defined\n");
@@ -1504,11 +1734,16 @@ static int __devinit at91_can_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev = alloc_candev(sizeof(struct at91_priv), AT91_MB_TX_NUM);
 =======
 	dev = alloc_candev(sizeof(struct at91_priv),
 			   1 << devtype_data->tx_shift);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev = alloc_candev(sizeof(struct at91_priv),
+			   1 << devtype_data->tx_shift);
+>>>>>>> refs/remotes/origin/master
 	if (!dev) {
 		err = -ENOMEM;
 		goto exit_iounmap;
@@ -1518,9 +1753,12 @@ static int __devinit at91_can_probe(struct platform_device *pdev)
 	dev->irq = irq;
 	dev->flags |= IFF_ECHO;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->sysfs_groups[0] = &at91_sysfs_attr_group;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	priv = netdev_priv(dev);
 	priv->can.clock.freq = clk_get_rate(clk);
@@ -1528,6 +1766,7 @@ static int __devinit at91_can_probe(struct platform_device *pdev)
 	priv->can.do_set_mode = at91_set_mode;
 	priv->can.do_get_berr_counter = at91_get_berr_counter;
 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	priv->reg_base = addr;
 	priv->dev = dev;
@@ -1544,13 +1783,27 @@ static int __devinit at91_can_probe(struct platform_device *pdev)
 <<<<<<< HEAD
 	netif_napi_add(dev, &priv->napi, at91_poll, AT91_NAPI_WEIGHT);
 =======
+=======
+	priv->dev = dev;
+	priv->reg_base = addr;
+	priv->devtype_data = *devtype_data;
+	priv->clk = clk;
+	priv->pdata = dev_get_platdata(&pdev->dev);
+	priv->mb0_id = 0x7ff;
+
+>>>>>>> refs/remotes/origin/master
 	netif_napi_add(dev, &priv->napi, at91_poll, get_mb_rx_num(priv));
 
 	if (at91_is_sam9263(priv))
 		dev->sysfs_groups[0] = &at91_sysfs_attr_group;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	dev_set_drvdata(&pdev->dev, dev);
+=======
+
+	platform_set_drvdata(pdev, dev);
+>>>>>>> refs/remotes/origin/master
 	SET_NETDEV_DEV(dev, &pdev->dev);
 
 	err = register_candev(dev);
@@ -1559,6 +1812,11 @@ static int __devinit at91_can_probe(struct platform_device *pdev)
 		goto exit_free;
 	}
 
+<<<<<<< HEAD
+=======
+	devm_can_led_init(dev);
+
+>>>>>>> refs/remotes/origin/master
 	dev_info(&pdev->dev, "device registered (reg_base=%p, irq=%d)\n",
 		 priv->reg_base, dev->irq);
 
@@ -1576,7 +1834,11 @@ static int __devinit at91_can_probe(struct platform_device *pdev)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit at91_can_remove(struct platform_device *pdev)
+=======
+static int at91_can_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = platform_get_drvdata(pdev);
 	struct at91_priv *priv = netdev_priv(dev);
@@ -1584,8 +1846,11 @@ static int __devexit at91_can_remove(struct platform_device *pdev)
 
 	unregister_netdev(dev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	iounmap(priv->reg_base);
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -1598,6 +1863,7 @@ static int __devexit at91_can_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct platform_driver at91_can_driver = {
 	.probe		= at91_can_probe,
@@ -1628,10 +1894,20 @@ static const struct platform_device_id at91_can_id_table[] = {
 	}, {
 		.name = "at91sam9x5_can",
 		.driver_data = AT91_DEVTYPE_SAM9X5,
+=======
+static const struct platform_device_id at91_can_id_table[] = {
+	{
+		.name = "at91sam9x5_can",
+		.driver_data = (kernel_ulong_t)&at91_at91sam9x5_data,
+	}, {
+		.name = "at91_can",
+		.driver_data = (kernel_ulong_t)&at91_at91sam9263_data,
+>>>>>>> refs/remotes/origin/master
 	}, {
 		/* sentinel */
 	}
 };
+<<<<<<< HEAD
 
 static struct platform_driver at91_can_driver = {
 	.probe = at91_can_probe,
@@ -1639,12 +1915,26 @@ static struct platform_driver at91_can_driver = {
 	.driver = {
 		.name = KBUILD_MODNAME,
 		.owner = THIS_MODULE,
+=======
+MODULE_DEVICE_TABLE(platform, at91_can_id_table);
+
+static struct platform_driver at91_can_driver = {
+	.probe = at91_can_probe,
+	.remove = at91_can_remove,
+	.driver = {
+		.name = KBUILD_MODNAME,
+		.owner = THIS_MODULE,
+		.of_match_table = of_match_ptr(at91_can_dt_ids),
+>>>>>>> refs/remotes/origin/master
 	},
 	.id_table = at91_can_id_table,
 };
 
 module_platform_driver(at91_can_driver);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Marc Kleine-Budde <mkl@pengutronix.de>");
 MODULE_LICENSE("GPL v2");

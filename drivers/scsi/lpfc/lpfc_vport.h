@@ -90,6 +90,10 @@ int lpfc_vport_getinfo(struct Scsi_Host *, struct vport_info *);
 int lpfc_vport_tgt_remove(struct Scsi_Host *, uint, uint);
 struct lpfc_vport **lpfc_create_vport_work_array(struct lpfc_hba *);
 void lpfc_destroy_vport_work_array(struct lpfc_hba *, struct lpfc_vport **);
+<<<<<<< HEAD
+=======
+int lpfc_alloc_vpi(struct lpfc_hba *phba);
+>>>>>>> refs/remotes/origin/master
 
 /*
  *  queuecommand  VPORT-specific return codes. Specified in  the host byte code.

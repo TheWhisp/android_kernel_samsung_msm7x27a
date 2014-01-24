@@ -27,9 +27,15 @@
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
 #include <linux/remoteproc.h>
+<<<<<<< HEAD
 
 #include <plat/mailbox.h>
 #include <plat/remoteproc.h>
+=======
+#include <linux/omap-mailbox.h>
+
+#include <linux/platform_data/remoteproc-omap.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "omap_remoteproc.h"
 #include "remoteproc_internal.h"
@@ -66,7 +72,11 @@ static int omap_rproc_mbox_callback(struct notifier_block *this,
 {
 	mbox_msg_t msg = (mbox_msg_t) data;
 	struct omap_rproc *oproc = container_of(this, struct omap_rproc, nb);
+<<<<<<< HEAD
 	struct device *dev = oproc->rproc->dev;
+=======
+	struct device *dev = oproc->rproc->dev.parent;
+>>>>>>> refs/remotes/origin/master
 	const char *name = oproc->rproc->name;
 
 	dev_dbg(dev, "mbox msg: 0x%x\n", msg);
@@ -92,12 +102,20 @@ static int omap_rproc_mbox_callback(struct notifier_block *this,
 static void omap_rproc_kick(struct rproc *rproc, int vqid)
 {
 	struct omap_rproc *oproc = rproc->priv;
+<<<<<<< HEAD
+=======
+	struct device *dev = rproc->dev.parent;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	/* send the index of the triggered virtqueue in the mailbox payload */
 	ret = omap_mbox_msg_send(oproc->mbox, vqid);
 	if (ret)
+<<<<<<< HEAD
 		dev_err(rproc->dev, "omap_mbox_msg_send failed: %d\n", ret);
+=======
+		dev_err(dev, "omap_mbox_msg_send failed: %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -110,17 +128,32 @@ static void omap_rproc_kick(struct rproc *rproc, int vqid)
 static int omap_rproc_start(struct rproc *rproc)
 {
 	struct omap_rproc *oproc = rproc->priv;
+<<<<<<< HEAD
 	struct platform_device *pdev = to_platform_device(rproc->dev);
 	struct omap_rproc_pdata *pdata = pdev->dev.platform_data;
 	int ret;
 
+=======
+	struct device *dev = rproc->dev.parent;
+	struct platform_device *pdev = to_platform_device(dev);
+	struct omap_rproc_pdata *pdata = pdev->dev.platform_data;
+	int ret;
+
+	if (pdata->set_bootaddr)
+		pdata->set_bootaddr(rproc->bootaddr);
+
+>>>>>>> refs/remotes/origin/master
 	oproc->nb.notifier_call = omap_rproc_mbox_callback;
 
 	/* every omap rproc is assigned a mailbox instance for messaging */
 	oproc->mbox = omap_mbox_get(pdata->mbox_name, &oproc->nb);
 	if (IS_ERR(oproc->mbox)) {
 		ret = PTR_ERR(oproc->mbox);
+<<<<<<< HEAD
 		dev_err(rproc->dev, "omap_mbox_get failed: %d\n", ret);
+=======
+		dev_err(dev, "omap_mbox_get failed: %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
@@ -133,13 +166,21 @@ static int omap_rproc_start(struct rproc *rproc)
 	 */
 	ret = omap_mbox_msg_send(oproc->mbox, RP_MBOX_ECHO_REQUEST);
 	if (ret) {
+<<<<<<< HEAD
 		dev_err(rproc->dev, "omap_mbox_get failed: %d\n", ret);
+=======
+		dev_err(dev, "omap_mbox_get failed: %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 		goto put_mbox;
 	}
 
 	ret = pdata->device_enable(pdev);
 	if (ret) {
+<<<<<<< HEAD
 		dev_err(rproc->dev, "omap_device_enable failed: %d\n", ret);
+=======
+		dev_err(dev, "omap_device_enable failed: %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 		goto put_mbox;
 	}
 
@@ -153,7 +194,12 @@ put_mbox:
 /* power off the remote processor */
 static int omap_rproc_stop(struct rproc *rproc)
 {
+<<<<<<< HEAD
 	struct platform_device *pdev = to_platform_device(rproc->dev);
+=======
+	struct device *dev = rproc->dev.parent;
+	struct platform_device *pdev = to_platform_device(dev);
+>>>>>>> refs/remotes/origin/master
 	struct omap_rproc_pdata *pdata = pdev->dev.platform_data;
 	struct omap_rproc *oproc = rproc->priv;
 	int ret;
@@ -173,7 +219,11 @@ static struct rproc_ops omap_rproc_ops = {
 	.kick		= omap_rproc_kick,
 };
 
+<<<<<<< HEAD
 static int __devinit omap_rproc_probe(struct platform_device *pdev)
+=======
+static int omap_rproc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct omap_rproc_pdata *pdata = pdev->dev.platform_data;
 	struct omap_rproc *oproc;
@@ -196,13 +246,18 @@ static int __devinit omap_rproc_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, rproc);
 
+<<<<<<< HEAD
 	ret = rproc_register(rproc);
+=======
+	ret = rproc_add(rproc);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto free_rproc;
 
 	return 0;
 
 free_rproc:
+<<<<<<< HEAD
 	rproc_free(rproc);
 	return ret;
 }
@@ -212,11 +267,29 @@ static int __devexit omap_rproc_remove(struct platform_device *pdev)
 	struct rproc *rproc = platform_get_drvdata(pdev);
 
 	return rproc_unregister(rproc);
+=======
+	rproc_put(rproc);
+	return ret;
+}
+
+static int omap_rproc_remove(struct platform_device *pdev)
+{
+	struct rproc *rproc = platform_get_drvdata(pdev);
+
+	rproc_del(rproc);
+	rproc_put(rproc);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct platform_driver omap_rproc_driver = {
 	.probe = omap_rproc_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(omap_rproc_remove),
+=======
+	.remove = omap_rproc_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "omap-rproc",
 		.owner = THIS_MODULE,

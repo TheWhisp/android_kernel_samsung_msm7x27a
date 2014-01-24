@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  * arch/s390/appldata/appldata.h
  *
+=======
+>>>>>>> refs/remotes/origin/master
  * Definitions and interface for Linux - z/VM Monitor Stream.
  *
  * Copyright IBM Corp. 2003, 2008

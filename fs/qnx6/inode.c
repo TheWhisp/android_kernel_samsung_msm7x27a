@@ -285,7 +285,11 @@ static struct buffer_head *qnx6_check_first_superblock(struct super_block *s,
 		if (fs32_to_cpu(sbi, sb->sb_magic) == QNX6_SUPER_MAGIC) {
 			/* we got a big endian fs */
 			QNX6DEBUG((KERN_INFO "qnx6: fs got different"
+<<<<<<< HEAD
 					" endianess.\n"));
+=======
+					" endianness.\n"));
+>>>>>>> refs/remotes/origin/master
 			return bh;
 		} else
 			sbi->s_bytesex = BYTESEX_LE;
@@ -574,8 +578,13 @@ struct inode *qnx6_iget(struct super_block *sb, unsigned ino)
 	raw_inode = ((struct qnx6_inode_entry *)page_address(page)) + offs;
 
 	inode->i_mode    = fs16_to_cpu(sbi, raw_inode->di_mode);
+<<<<<<< HEAD
 	inode->i_uid     = (uid_t)fs32_to_cpu(sbi, raw_inode->di_uid);
 	inode->i_gid     = (gid_t)fs32_to_cpu(sbi, raw_inode->di_gid);
+=======
+	i_uid_write(inode, (uid_t)fs32_to_cpu(sbi, raw_inode->di_uid));
+	i_gid_write(inode, (gid_t)fs32_to_cpu(sbi, raw_inode->di_gid));
+>>>>>>> refs/remotes/origin/master
 	inode->i_size    = fs64_to_cpu(sbi, raw_inode->di_size);
 	inode->i_mtime.tv_sec   = fs32_to_cpu(sbi, raw_inode->di_mtime);
 	inode->i_mtime.tv_nsec = 0;
@@ -622,7 +631,10 @@ static struct inode *qnx6_alloc_inode(struct super_block *sb)
 static void qnx6_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(qnx6_inode_cachep, QNX6_I(inode));
 }
 
@@ -652,6 +664,14 @@ static int init_inodecache(void)
 
 static void destroy_inodecache(void)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(qnx6_inode_cachep);
 }
 
@@ -668,6 +688,10 @@ static struct file_system_type qnx6_fs_type = {
 	.kill_sb	= kill_block_super,
 	.fs_flags	= FS_REQUIRES_DEV,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("qnx6");
+>>>>>>> refs/remotes/origin/master
 
 static int __init init_qnx6_fs(void)
 {

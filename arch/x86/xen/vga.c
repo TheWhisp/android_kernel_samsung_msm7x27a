@@ -35,6 +35,10 @@ void __init xen_init_vga(const struct dom0_vga_console_info *info, size_t size)
 			info->u.text_mode_3.font_height;
 		break;
 
+<<<<<<< HEAD
+=======
+	case XEN_VGATYPE_EFI_LFB:
+>>>>>>> refs/remotes/origin/master
 	case XEN_VGATYPE_VESA_LFB:
 		if (size < offsetof(struct dom0_vga_console_info,
 				    u.vesa_lfb.gbl_caps))
@@ -54,6 +58,15 @@ void __init xen_init_vga(const struct dom0_vga_console_info *info, size_t size)
 		screen_info->blue_pos = info->u.vesa_lfb.blue_pos;
 		screen_info->rsvd_size = info->u.vesa_lfb.rsvd_size;
 		screen_info->rsvd_pos = info->u.vesa_lfb.rsvd_pos;
+<<<<<<< HEAD
+=======
+
+		if (info->video_type == XEN_VGATYPE_EFI_LFB) {
+			screen_info->orig_video_isVGA = VIDEO_TYPE_EFI;
+			break;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		if (size >= offsetof(struct dom0_vga_console_info,
 				     u.vesa_lfb.gbl_caps)
 		    + sizeof(info->u.vesa_lfb.gbl_caps))

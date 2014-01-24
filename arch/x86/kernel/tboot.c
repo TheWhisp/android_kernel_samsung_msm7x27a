@@ -23,9 +23,13 @@
 #include <linux/init_task.h>
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/sched.h>
 #include <linux/init.h>
@@ -34,23 +38,37 @@
 #include <linux/pfn.h>
 #include <linux/mm.h>
 #include <linux/tboot.h>
+<<<<<<< HEAD
 
 #include <asm/trampoline.h>
+=======
+#include <linux/debugfs.h>
+
+#include <asm/realmode.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/processor.h>
 #include <asm/bootparam.h>
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/swiotlb.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/swiotlb.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/fixmap.h>
 #include <asm/proto.h>
 #include <asm/setup.h>
 #include <asm/e820.h>
 #include <asm/io.h>
 
+<<<<<<< HEAD
 #include "acpi/realmode/wakeup.h"
+=======
+#include "../realmode/rm/wakeup.h"
+>>>>>>> refs/remotes/origin/master
 
 /* Global pointer to shared data; NULL means no measured launch. */
 struct tboot *tboot __read_mostly;
@@ -207,7 +225,12 @@ static int tboot_setup_sleep(void)
 		add_mac_region(e820.map[i].addr, e820.map[i].size);
 	}
 
+<<<<<<< HEAD
 	tboot->acpi_sinfo.kernel_s3_resume_vector = acpi_wakeup_address;
+=======
+	tboot->acpi_sinfo.kernel_s3_resume_vector =
+		real_mode_header->wakeup_start;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -279,10 +302,14 @@ static void tboot_copy_fadt(const struct acpi_table_fadt *fadt)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void tboot_sleep(u8 sleep_state, u32 pm1a_control, u32 pm1b_control)
 =======
 static int tboot_sleep(u8 sleep_state, u32 pm1a_control, u32 pm1b_control)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int tboot_sleep(u8 sleep_state, u32 pm1a_control, u32 pm1b_control)
+>>>>>>> refs/remotes/origin/master
 {
 	static u32 acpi_shutdown_map[ACPI_S_STATE_COUNT] = {
 		/* S0,1,2: */ -1, -1, -1,
@@ -292,10 +319,14 @@ static int tboot_sleep(u8 sleep_state, u32 pm1a_control, u32 pm1b_control)
 
 	if (!tboot_enabled())
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return;
 =======
 		return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	tboot_copy_fadt(&acpi_gbl_FADT);
 	tboot->acpi_sinfo.pm1a_cnt_val = pm1a_control;
@@ -307,17 +338,32 @@ static int tboot_sleep(u8 sleep_state, u32 pm1a_control, u32 pm1b_control)
 	    acpi_shutdown_map[sleep_state] == -1) {
 		pr_warning("unsupported sleep state 0x%x\n", sleep_state);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return;
 	}
 
 	tboot_shutdown(acpi_shutdown_map[sleep_state]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
 	tboot_shutdown(acpi_shutdown_map[sleep_state]);
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+static int tboot_extended_sleep(u8 sleep_state, u32 val_a, u32 val_b)
+{
+	if (!tboot_enabled())
+		return 0;
+
+	pr_warning("tboot is not able to suspend on platforms with reduced hardware sleep (ACPIv5)");
+	return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 }
 
 static atomic_t ap_wfs_count;
@@ -339,8 +385,13 @@ static int tboot_wait_for_aps(int num_aps)
 	return !(atomic_read((atomic_t *)&tboot->num_in_wfs) == num_aps);
 }
 
+<<<<<<< HEAD
 static int __cpuinit tboot_cpu_callback(struct notifier_block *nfb,
 			unsigned long action, void *hcpu)
+=======
+static int tboot_cpu_callback(struct notifier_block *nfb, unsigned long action,
+			      void *hcpu)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (action) {
 	case CPU_DYING:
@@ -353,11 +404,85 @@ static int __cpuinit tboot_cpu_callback(struct notifier_block *nfb,
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 static struct notifier_block tboot_cpu_notifier __cpuinitdata =
+=======
+static struct notifier_block tboot_cpu_notifier =
+>>>>>>> refs/remotes/origin/master
 {
 	.notifier_call = tboot_cpu_callback,
 };
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_DEBUG_FS
+
+#define TBOOT_LOG_UUID	{ 0x26, 0x25, 0x19, 0xc0, 0x30, 0x6b, 0xb4, 0x4d, \
+			  0x4c, 0x84, 0xa3, 0xe9, 0x53, 0xb8, 0x81, 0x74 }
+
+#define TBOOT_SERIAL_LOG_ADDR	0x60000
+#define TBOOT_SERIAL_LOG_SIZE	0x08000
+#define LOG_MAX_SIZE_OFF	16
+#define LOG_BUF_OFF		24
+
+static uint8_t tboot_log_uuid[16] = TBOOT_LOG_UUID;
+
+static ssize_t tboot_log_read(struct file *file, char __user *user_buf, size_t count, loff_t *ppos)
+{
+	void __iomem *log_base;
+	u8 log_uuid[16];
+	u32 max_size;
+	void *kbuf;
+	int ret = -EFAULT;
+
+	log_base = ioremap_nocache(TBOOT_SERIAL_LOG_ADDR, TBOOT_SERIAL_LOG_SIZE);
+	if (!log_base)
+		return ret;
+
+	memcpy_fromio(log_uuid, log_base, sizeof(log_uuid));
+	if (memcmp(&tboot_log_uuid, log_uuid, sizeof(log_uuid)))
+		goto err_iounmap;
+
+	max_size = readl(log_base + LOG_MAX_SIZE_OFF);
+	if (*ppos >= max_size) {
+		ret = 0;
+		goto err_iounmap;
+	}
+
+	if (*ppos + count > max_size)
+		count = max_size - *ppos;
+
+	kbuf = kmalloc(count, GFP_KERNEL);
+	if (!kbuf) {
+		ret = -ENOMEM;
+		goto err_iounmap;
+	}
+
+	memcpy_fromio(kbuf, log_base + LOG_BUF_OFF + *ppos, count);
+	if (copy_to_user(user_buf, kbuf, count))
+		goto err_kfree;
+
+	*ppos += count;
+
+	ret = count;
+
+err_kfree:
+	kfree(kbuf);
+
+err_iounmap:
+	iounmap(log_base);
+
+	return ret;
+}
+
+static const struct file_operations tboot_log_fops = {
+	.read	= tboot_log_read,
+	.llseek	= default_llseek,
+};
+
+#endif /* CONFIG_DEBUG_FS */
+
+>>>>>>> refs/remotes/origin/master
 static __init int tboot_late_init(void)
 {
 	if (!tboot_enabled())
@@ -368,10 +493,21 @@ static __init int tboot_late_init(void)
 	atomic_set(&ap_wfs_count, 0);
 	register_hotcpu_notifier(&tboot_cpu_notifier);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	acpi_os_set_prepare_sleep(&tboot_sleep);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#ifdef CONFIG_DEBUG_FS
+	debugfs_create_file("tboot_log", S_IRUSR,
+			arch_debugfs_dir, NULL, &tboot_log_fops);
+#endif
+
+	acpi_os_set_prepare_sleep(&tboot_sleep);
+	acpi_os_set_prepare_extended_sleep(&tboot_extended_sleep);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

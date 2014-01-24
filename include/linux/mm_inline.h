@@ -2,6 +2,10 @@
 #define LINUX_MM_INLINE_H
 
 #include <linux/huge_mm.h>
+<<<<<<< HEAD
+=======
+#include <linux/swap.h>
+>>>>>>> refs/remotes/origin/master
 
 /**
  * page_is_file_cache - should the page be on a file LRU or anon LRU?
@@ -21,6 +25,7 @@ static inline int page_is_file_cache(struct page *page)
 	return !PageSwapBacked(page);
 }
 
+<<<<<<< HEAD
 static inline void
 <<<<<<< HEAD
 __add_page_to_lru_list(struct zone *zone, struct page *page, enum lru_list l,
@@ -60,6 +65,24 @@ del_page_from_lru_list(struct zone *zone, struct page *page, enum lru_list lru)
 	list_del(&page->lru);
 	__mod_zone_page_state(zone, NR_LRU_BASE + lru, -hpage_nr_pages(page));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static __always_inline void add_page_to_lru_list(struct page *page,
+				struct lruvec *lruvec, enum lru_list lru)
+{
+	int nr_pages = hpage_nr_pages(page);
+	mem_cgroup_update_lru_size(lruvec, lru, nr_pages);
+	list_add(&page->lru, &lruvec->lists[lru]);
+	__mod_zone_page_state(lruvec_zone(lruvec), NR_LRU_BASE + lru, nr_pages);
+}
+
+static __always_inline void del_page_from_lru_list(struct page *page,
+				struct lruvec *lruvec, enum lru_list lru)
+{
+	int nr_pages = hpage_nr_pages(page);
+	mem_cgroup_update_lru_size(lruvec, lru, -nr_pages);
+	list_del(&page->lru);
+	__mod_zone_page_state(lruvec_zone(lruvec), NR_LRU_BASE + lru, -nr_pages);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -77,6 +100,7 @@ static inline enum lru_list page_lru_base_type(struct page *page)
 	return LRU_INACTIVE_ANON;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline void
 del_page_from_lru(struct zone *zone, struct page *page)
@@ -97,6 +121,8 @@ del_page_from_lru(struct zone *zone, struct page *page)
 	__mod_zone_page_state(zone, NR_LRU_BASE + l, -hpage_nr_pages(page));
 	mem_cgroup_del_lru_list(page, l);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * page_off_lru - which LRU list was page on? clearing its lru flags.
  * @page: the page to test
@@ -104,7 +130,11 @@ del_page_from_lru(struct zone *zone, struct page *page)
  * Returns the LRU list a page was on, as an index into the array of LRU
  * lists; and clears its Unevictable or Active flags, ready for freeing.
  */
+<<<<<<< HEAD
 static inline enum lru_list page_off_lru(struct page *page)
+=======
+static __always_inline enum lru_list page_off_lru(struct page *page)
+>>>>>>> refs/remotes/origin/master
 {
 	enum lru_list lru;
 
@@ -119,7 +149,10 @@ static inline enum lru_list page_off_lru(struct page *page)
 		}
 	}
 	return lru;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -129,7 +162,11 @@ static inline enum lru_list page_off_lru(struct page *page)
  * Returns the LRU list a page should be on, as an index
  * into the array of LRU lists.
  */
+<<<<<<< HEAD
 static inline enum lru_list page_lru(struct page *page)
+=======
+static __always_inline enum lru_list page_lru(struct page *page)
+>>>>>>> refs/remotes/origin/master
 {
 	enum lru_list lru;
 
@@ -141,9 +178,12 @@ static inline enum lru_list page_lru(struct page *page)
 			lru += LRU_ACTIVE;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return lru;
 }
 

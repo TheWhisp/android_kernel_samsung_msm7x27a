@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -8,6 +12,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+<<<<<<< HEAD
+=======
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
+>>>>>>> refs/remotes/origin/master
  */
 
 #define pr_fmt(fmt)	KBUILD_MODNAME ": " fmt
@@ -22,13 +34,21 @@
 #include <linux/slab.h>
 #include <linux/iommu.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
 #include <linux/scatterlist.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/cacheflush.h>
 #include <asm/sizes.h>
 
+<<<<<<< HEAD
 #include <mach/iommu_hw-8xxx.h>
 #include <mach/iommu.h>
+=======
+#include "msm_iommu_hw-8xxx.h"
+#include "msm_iommu.h"
+>>>>>>> refs/remotes/origin/master
 
 #define MRC(reg, processor, op1, crn, crm, op2)				\
 __asm__ __volatile__ (							\
@@ -38,6 +58,7 @@ __asm__ __volatile__ (							\
 #define RCP15_PRRR(reg)		MRC(reg, p15, 0, c10, c2, 0)
 #define RCP15_NMRR(reg)		MRC(reg, p15, 0, c10, c2, 1)
 
+<<<<<<< HEAD
 /* Sharability attributes of MSM IOMMU mappings */
 #define MSM_IOMMU_ATTR_NON_SH		0x0
 #define MSM_IOMMU_ATTR_SH		0x4
@@ -56,16 +77,25 @@ static inline void clean_pte(unsigned long *start, unsigned long *end,
 		dmac_flush_range(start, end);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* bitmap of the page sizes currently supported */
 #define MSM_IOMMU_PGSIZES	(SZ_4K | SZ_64K | SZ_1M | SZ_16M)
 
 static int msm_iommu_tex_class[4];
 
+<<<<<<< HEAD
 DEFINE_MUTEX(msm_iommu_lock);
 
 struct msm_priv {
 	unsigned long *pgtable;
 	int redirect;
+=======
+DEFINE_SPINLOCK(msm_iommu_lock);
+
+struct msm_priv {
+	unsigned long *pgtable;
+>>>>>>> refs/remotes/origin/master
 	struct list_head list_attached;
 };
 
@@ -73,14 +103,24 @@ static int __enable_clocks(struct msm_iommu_drvdata *drvdata)
 {
 	int ret;
 
+<<<<<<< HEAD
 	ret = clk_prepare_enable(drvdata->pclk);
+=======
+	ret = clk_enable(drvdata->pclk);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto fail;
 
 	if (drvdata->clk) {
+<<<<<<< HEAD
 		ret = clk_prepare_enable(drvdata->clk);
 		if (ret)
 			clk_disable_unprepare(drvdata->pclk);
+=======
+		ret = clk_enable(drvdata->clk);
+		if (ret)
+			clk_disable(drvdata->pclk);
+>>>>>>> refs/remotes/origin/master
 	}
 fail:
 	return ret;
@@ -89,16 +129,25 @@ fail:
 static void __disable_clocks(struct msm_iommu_drvdata *drvdata)
 {
 	if (drvdata->clk)
+<<<<<<< HEAD
 		clk_disable_unprepare(drvdata->clk);
 	clk_disable_unprepare(drvdata->pclk);
 }
 
 static int __flush_iotlb_va(struct iommu_domain *domain, unsigned int va)
+=======
+		clk_disable(drvdata->clk);
+	clk_disable(drvdata->pclk);
+}
+
+static int __flush_iotlb(struct iommu_domain *domain)
+>>>>>>> refs/remotes/origin/master
 {
 	struct msm_priv *priv = domain->priv;
 	struct msm_iommu_drvdata *iommu_drvdata;
 	struct msm_iommu_ctx_drvdata *ctx_drvdata;
 	int ret = 0;
+<<<<<<< HEAD
 	int asid;
 
 	list_for_each_entry(ctx_drvdata, &priv->list_attached, attached_elm) {
@@ -132,24 +181,49 @@ static int __flush_iotlb(struct iommu_domain *domain)
 	struct msm_iommu_ctx_drvdata *ctx_drvdata;
 	int ret = 0;
 	int asid;
+=======
+#ifndef CONFIG_IOMMU_PGTABLES_L2
+	unsigned long *fl_table = priv->pgtable;
+	int i;
+
+	if (!list_empty(&priv->list_attached)) {
+		dmac_flush_range(fl_table, fl_table + SZ_16K);
+
+		for (i = 0; i < NUM_FL_PTE; i++)
+			if ((fl_table[i] & 0x03) == FL_TYPE_TABLE) {
+				void *sl_table = __va(fl_table[i] &
+								FL_BASE_MASK);
+				dmac_flush_range(sl_table, sl_table + SZ_4K);
+			}
+	}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	list_for_each_entry(ctx_drvdata, &priv->list_attached, attached_elm) {
 		if (!ctx_drvdata->pdev || !ctx_drvdata->pdev->dev.parent)
 			BUG();
 
 		iommu_drvdata = dev_get_drvdata(ctx_drvdata->pdev->dev.parent);
+<<<<<<< HEAD
 		if (!iommu_drvdata)
 			BUG();
+=======
+		BUG_ON(!iommu_drvdata);
+>>>>>>> refs/remotes/origin/master
 
 		ret = __enable_clocks(iommu_drvdata);
 		if (ret)
 			goto fail;
 
+<<<<<<< HEAD
 		asid = GET_CONTEXTIDR_ASID(iommu_drvdata->base,
 					   ctx_drvdata->num);
 
 		SET_TLBIASID(iommu_drvdata->base, ctx_drvdata->num, asid);
 		mb();
+=======
+		SET_CTX_TLBIALL(iommu_drvdata->base, ctx_drvdata->num, 0);
+>>>>>>> refs/remotes/origin/master
 		__disable_clocks(iommu_drvdata);
 	}
 fail:
@@ -172,11 +246,16 @@ static void __reset_context(void __iomem *base, int ctx)
 	SET_BFBCR(base, ctx, 0);
 	SET_PAR(base, ctx, 0);
 	SET_FAR(base, ctx, 0);
+<<<<<<< HEAD
+=======
+	SET_CTX_TLBIALL(base, ctx, 0);
+>>>>>>> refs/remotes/origin/master
 	SET_TLBFLPTER(base, ctx, 0);
 	SET_TLBSLPTER(base, ctx, 0);
 	SET_TLBLKCR(base, ctx, 0);
 	SET_PRRR(base, ctx, 0);
 	SET_NMRR(base, ctx, 0);
+<<<<<<< HEAD
 	mb();
 }
 
@@ -186,6 +265,13 @@ static void __program_context(void __iomem *base, int ctx, int ncb,
 {
 	unsigned int prrr, nmrr;
 	int i, j, found;
+=======
+}
+
+static void __program_context(void __iomem *base, int ctx, phys_addr_t pgtable)
+{
+	unsigned int prrr, nmrr;
+>>>>>>> refs/remotes/origin/master
 	__reset_context(base, ctx);
 
 	/* Set up HTW mode */
@@ -195,10 +281,21 @@ static void __program_context(void __iomem *base, int ctx, int ncb,
 	/* V2P configuration: HTW for access */
 	SET_V2PCFG(base, ctx, 0x3);
 
+<<<<<<< HEAD
 	SET_TTBCR(base, ctx, ttbr_split);
 	SET_TTBR0_PA(base, ctx, (pgtable >> TTBR0_PA_SHIFT));
 	if (ttbr_split)
 		SET_TTBR1_PA(base, ctx, (pgtable >> TTBR1_PA_SHIFT));
+=======
+	SET_TTBCR(base, ctx, 0);
+	SET_TTBR0_PA(base, ctx, (pgtable >> 14));
+
+	/* Invalidate the TLB for this context */
+	SET_CTX_TLBIALL(base, ctx, 0);
+
+	/* Set interrupt number to "secure" interrupt */
+	SET_IRPTNDX(base, ctx, 0);
+>>>>>>> refs/remotes/origin/master
 
 	/* Enable context fault interrupt */
 	SET_CFEIE(base, ctx, 1);
@@ -223,6 +320,7 @@ static void __program_context(void __iomem *base, int ctx, int ncb,
 	/* Turn on BFB prefetch */
 	SET_BFBDFE(base, ctx, 1);
 
+<<<<<<< HEAD
 	/* Configure page tables as inner-cacheable and shareable to reduce
 	 * the TLB miss penalty.
 	 */
@@ -278,6 +376,33 @@ static void __program_context(void __iomem *base, int ctx, int ncb,
 }
 
 static int msm_iommu_domain_init(struct iommu_domain *domain, int flags)
+=======
+#ifdef CONFIG_IOMMU_PGTABLES_L2
+	/* Configure page tables as inner-cacheable and shareable to reduce
+	 * the TLB miss penalty.
+	 */
+	SET_TTBR0_SH(base, ctx, 1);
+	SET_TTBR1_SH(base, ctx, 1);
+
+	SET_TTBR0_NOS(base, ctx, 1);
+	SET_TTBR1_NOS(base, ctx, 1);
+
+	SET_TTBR0_IRGNH(base, ctx, 0); /* WB, WA */
+	SET_TTBR0_IRGNL(base, ctx, 1);
+
+	SET_TTBR1_IRGNH(base, ctx, 0); /* WB, WA */
+	SET_TTBR1_IRGNL(base, ctx, 1);
+
+	SET_TTBR0_ORGN(base, ctx, 1); /* WB, WA */
+	SET_TTBR1_ORGN(base, ctx, 1); /* WB, WA */
+#endif
+
+	/* Enable the MMU */
+	SET_M(base, ctx, 1);
+}
+
+static int msm_iommu_domain_init(struct iommu_domain *domain)
+>>>>>>> refs/remotes/origin/master
 {
 	struct msm_priv *priv = kzalloc(sizeof(*priv), GFP_KERNEL);
 
@@ -291,6 +416,7 @@ static int msm_iommu_domain_init(struct iommu_domain *domain, int flags)
 	if (!priv->pgtable)
 		goto fail_nomem;
 
+<<<<<<< HEAD
 #ifdef CONFIG_IOMMU_PGTABLES_L2
 	priv->redirect = flags & MSM_IOMMU_DOMAIN_PT_CACHEABLE;
 #endif
@@ -299,6 +425,14 @@ static int msm_iommu_domain_init(struct iommu_domain *domain, int flags)
 	domain->priv = priv;
 
 	clean_pte(priv->pgtable, priv->pgtable + NUM_FL_PTE, priv->redirect);
+=======
+	memset(priv->pgtable, 0, SZ_16K);
+	domain->priv = priv;
+
+	domain->geometry.aperture_start = 0;
+	domain->geometry.aperture_end   = (1ULL << 32) - 1;
+	domain->geometry.force_aperture = true;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -310,10 +444,18 @@ fail_nomem:
 static void msm_iommu_domain_destroy(struct iommu_domain *domain)
 {
 	struct msm_priv *priv;
+<<<<<<< HEAD
 	unsigned long *fl_table;
 	int i;
 
 	mutex_lock(&msm_iommu_lock);
+=======
+	unsigned long flags;
+	unsigned long *fl_table;
+	int i;
+
+	spin_lock_irqsave(&msm_iommu_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	priv = domain->priv;
 	domain->priv = NULL;
 
@@ -330,7 +472,11 @@ static void msm_iommu_domain_destroy(struct iommu_domain *domain)
 	}
 
 	kfree(priv);
+<<<<<<< HEAD
 	mutex_unlock(&msm_iommu_lock);
+=======
+	spin_unlock_irqrestore(&msm_iommu_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int msm_iommu_attach_dev(struct iommu_domain *domain, struct device *dev)
@@ -341,8 +487,14 @@ static int msm_iommu_attach_dev(struct iommu_domain *domain, struct device *dev)
 	struct msm_iommu_ctx_drvdata *ctx_drvdata;
 	struct msm_iommu_ctx_drvdata *tmp_drvdata;
 	int ret = 0;
+<<<<<<< HEAD
 
 	mutex_lock(&msm_iommu_lock);
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&msm_iommu_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	priv = domain->priv;
 
@@ -375,6 +527,7 @@ static int msm_iommu_attach_dev(struct iommu_domain *domain, struct device *dev)
 	if (ret)
 		goto fail;
 
+<<<<<<< HEAD
 	__program_context(iommu_drvdata->base, ctx_dev->num, iommu_drvdata->ncb,
 			  __pa(priv->pgtable), priv->redirect,
 			  iommu_drvdata->ttbr_split);
@@ -385,6 +538,17 @@ static int msm_iommu_attach_dev(struct iommu_domain *domain, struct device *dev)
 	ctx_drvdata->attached_domain = domain;
 fail:
 	mutex_unlock(&msm_iommu_lock);
+=======
+	__program_context(iommu_drvdata->base, ctx_dev->num,
+			  __pa(priv->pgtable));
+
+	__disable_clocks(iommu_drvdata);
+	list_add(&(ctx_drvdata->attached_elm), &priv->list_attached);
+	ret = __flush_iotlb(domain);
+
+fail:
+	spin_unlock_irqrestore(&msm_iommu_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -395,9 +559,16 @@ static void msm_iommu_detach_dev(struct iommu_domain *domain,
 	struct msm_iommu_ctx_dev *ctx_dev;
 	struct msm_iommu_drvdata *iommu_drvdata;
 	struct msm_iommu_ctx_drvdata *ctx_drvdata;
+<<<<<<< HEAD
 	int ret;
 
 	mutex_lock(&msm_iommu_lock);
+=======
+	unsigned long flags;
+	int ret;
+
+	spin_lock_irqsave(&msm_iommu_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	priv = domain->priv;
 
 	if (!priv || !dev)
@@ -410,16 +581,27 @@ static void msm_iommu_detach_dev(struct iommu_domain *domain,
 	if (!iommu_drvdata || !ctx_drvdata || !ctx_dev)
 		goto fail;
 
+<<<<<<< HEAD
 	ret = __enable_clocks(iommu_drvdata);
 	if (ret)
 		goto fail;
 
 	SET_TLBIASID(iommu_drvdata->base, ctx_dev->num,
 		     GET_CONTEXTIDR_ASID(iommu_drvdata->base, ctx_dev->num));
+=======
+	ret = __flush_iotlb(domain);
+	if (ret)
+		goto fail;
+
+	ret = __enable_clocks(iommu_drvdata);
+	if (ret)
+		goto fail;
+>>>>>>> refs/remotes/origin/master
 
 	__reset_context(iommu_drvdata->base, ctx_dev->num);
 	__disable_clocks(iommu_drvdata);
 	list_del_init(&ctx_drvdata->attached_elm);
+<<<<<<< HEAD
 	ctx_drvdata->attached_domain = NULL;
 fail:
 	mutex_unlock(&msm_iommu_lock);
@@ -465,12 +647,21 @@ static int __get_pgprot(int prot, int len)
 	}
 
 	return pgprot;
+=======
+
+fail:
+	spin_unlock_irqrestore(&msm_iommu_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int msm_iommu_map(struct iommu_domain *domain, unsigned long va,
 			 phys_addr_t pa, size_t len, int prot)
 {
 	struct msm_priv *priv;
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	unsigned long *fl_table;
 	unsigned long *fl_pte;
 	unsigned long fl_offset;
@@ -478,9 +669,23 @@ static int msm_iommu_map(struct iommu_domain *domain, unsigned long va,
 	unsigned long *sl_pte;
 	unsigned long sl_offset;
 	unsigned int pgprot;
+<<<<<<< HEAD
 	int ret = 0;
 
 	mutex_lock(&msm_iommu_lock);
+=======
+	int ret = 0, tex, sh;
+
+	spin_lock_irqsave(&msm_iommu_lock, flags);
+
+	sh = (prot & MSM_IOMMU_ATTR_SH) ? 1 : 0;
+	tex = msm_iommu_tex_class[prot & MSM_IOMMU_CP_MASK];
+
+	if (tex < 0 || tex > NUM_TEX_CLASS - 1) {
+		ret = -EINVAL;
+		goto fail;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	priv = domain->priv;
 	if (!priv) {
@@ -503,11 +708,24 @@ static int msm_iommu_map(struct iommu_domain *domain, unsigned long va,
 		goto fail;
 	}
 
+<<<<<<< HEAD
 	pgprot = __get_pgprot(prot, len);
 
 	if (!pgprot) {
 		ret = -EINVAL;
 		goto fail;
+=======
+	if (len == SZ_16M || len == SZ_1M) {
+		pgprot = sh ? FL_SHARED : 0;
+		pgprot |= tex & 0x01 ? FL_BUFFERABLE : 0;
+		pgprot |= tex & 0x02 ? FL_CACHEABLE : 0;
+		pgprot |= tex & 0x04 ? FL_TEX0 : 0;
+	} else	{
+		pgprot = sh ? SL_SHARED : 0;
+		pgprot |= tex & 0x01 ? SL_BUFFERABLE : 0;
+		pgprot |= tex & 0x02 ? SL_CACHEABLE : 0;
+		pgprot |= tex & 0x04 ? SL_TEX0 : 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	fl_offset = FL_OFFSET(va);	/* Upper 12 bits */
@@ -515,6 +733,7 @@ static int msm_iommu_map(struct iommu_domain *domain, unsigned long va,
 
 	if (len == SZ_16M) {
 		int i = 0;
+<<<<<<< HEAD
 
 		for (i = 0; i < 16; i++)
 			if (*(fl_pte+i)) {
@@ -565,12 +784,39 @@ static int msm_iommu_map(struct iommu_domain *domain, unsigned long va,
 			ret = -EBUSY;
 			goto fail;
 		}
+=======
+		for (i = 0; i < 16; i++)
+			*(fl_pte+i) = (pa & 0xFF000000) | FL_SUPERSECTION |
+				  FL_AP_READ | FL_AP_WRITE | FL_TYPE_SECT |
+				  FL_SHARED | FL_NG | pgprot;
+	}
+
+	if (len == SZ_1M)
+		*fl_pte = (pa & 0xFFF00000) | FL_AP_READ | FL_AP_WRITE | FL_NG |
+					    FL_TYPE_SECT | FL_SHARED | pgprot;
+
+	/* Need a 2nd level table */
+	if ((len == SZ_4K || len == SZ_64K) && (*fl_pte) == 0) {
+		unsigned long *sl;
+		sl = (unsigned long *) __get_free_pages(GFP_ATOMIC,
+							get_order(SZ_4K));
+
+		if (!sl) {
+			pr_debug("Could not allocate second level table\n");
+			ret = -ENOMEM;
+			goto fail;
+		}
+
+		memset(sl, 0, SZ_4K);
+		*fl_pte = ((((int)__pa(sl)) & FL_BASE_MASK) | FL_TYPE_TABLE);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	sl_table = (unsigned long *) __va(((*fl_pte) & FL_BASE_MASK));
 	sl_offset = SL_OFFSET(va);
 	sl_pte = sl_table + sl_offset;
 
+<<<<<<< HEAD
 	if (len == SZ_4K) {
 		if (*sl_pte) {
 			ret = -EBUSY;
@@ -581,11 +827,18 @@ static int msm_iommu_map(struct iommu_domain *domain, unsigned long va,
 						    | SL_TYPE_SMALL | pgprot;
 		clean_pte(sl_pte, sl_pte + 1, priv->redirect);
 	}
+=======
+
+	if (len == SZ_4K)
+		*sl_pte = (pa & SL_BASE_MASK_SMALL) | SL_AP0 | SL_AP1 | SL_NG |
+					  SL_SHARED | SL_TYPE_SMALL | pgprot;
+>>>>>>> refs/remotes/origin/master
 
 	if (len == SZ_64K) {
 		int i;
 
 		for (i = 0; i < 16; i++)
+<<<<<<< HEAD
 			if (*(sl_pte+i)) {
 				ret = -EBUSY;
 				goto fail;
@@ -601,6 +854,15 @@ static int msm_iommu_map(struct iommu_domain *domain, unsigned long va,
 	ret = __flush_iotlb_va(domain, va);
 fail:
 	mutex_unlock(&msm_iommu_lock);
+=======
+			*(sl_pte+i) = (pa & SL_BASE_MASK_LARGE) | SL_AP0 |
+			    SL_NG | SL_AP1 | SL_SHARED | SL_TYPE_LARGE | pgprot;
+	}
+
+	ret = __flush_iotlb(domain);
+fail:
+	spin_unlock_irqrestore(&msm_iommu_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -608,6 +870,10 @@ static size_t msm_iommu_unmap(struct iommu_domain *domain, unsigned long va,
 			    size_t len)
 {
 	struct msm_priv *priv;
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	unsigned long *fl_table;
 	unsigned long *fl_pte;
 	unsigned long fl_offset;
@@ -616,7 +882,11 @@ static size_t msm_iommu_unmap(struct iommu_domain *domain, unsigned long va,
 	unsigned long sl_offset;
 	int i, ret = 0;
 
+<<<<<<< HEAD
 	mutex_lock(&msm_iommu_lock);
+=======
+	spin_lock_irqsave(&msm_iommu_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	priv = domain->priv;
 
@@ -645,6 +915,7 @@ static size_t msm_iommu_unmap(struct iommu_domain *domain, unsigned long va,
 	}
 
 	/* Unmap supersection */
+<<<<<<< HEAD
 	if (len == SZ_16M) {
 		for (i = 0; i < 16; i++)
 			*(fl_pte+i) = 0;
@@ -658,6 +929,15 @@ static size_t msm_iommu_unmap(struct iommu_domain *domain, unsigned long va,
 		clean_pte(fl_pte, fl_pte + 1, priv->redirect);
 	}
 
+=======
+	if (len == SZ_16M)
+		for (i = 0; i < 16; i++)
+			*(fl_pte+i) = 0;
+
+	if (len == SZ_1M)
+		*fl_pte = 0;
+
+>>>>>>> refs/remotes/origin/master
 	sl_table = (unsigned long *) __va(((*fl_pte) & FL_BASE_MASK));
 	sl_offset = SL_OFFSET(va);
 	sl_pte = sl_table + sl_offset;
@@ -665,6 +945,7 @@ static size_t msm_iommu_unmap(struct iommu_domain *domain, unsigned long va,
 	if (len == SZ_64K) {
 		for (i = 0; i < 16; i++)
 			*(sl_pte+i) = 0;
+<<<<<<< HEAD
 
 		clean_pte(sl_pte, sl_pte + 16, priv->redirect);
 	}
@@ -675,6 +956,13 @@ static size_t msm_iommu_unmap(struct iommu_domain *domain, unsigned long va,
 		clean_pte(sl_pte, sl_pte + 1, priv->redirect);
 	}
 
+=======
+	}
+
+	if (len == SZ_4K)
+		*sl_pte = 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (len == SZ_4K || len == SZ_64K) {
 		int used = 0;
 
@@ -684,6 +972,7 @@ static size_t msm_iommu_unmap(struct iommu_domain *domain, unsigned long va,
 		if (!used) {
 			free_page((unsigned long)sl_table);
 			*fl_pte = 0;
+<<<<<<< HEAD
 
 			clean_pte(fl_pte, fl_pte + 1, priv->redirect);
 		}
@@ -693,12 +982,22 @@ static size_t msm_iommu_unmap(struct iommu_domain *domain, unsigned long va,
 
 fail:
 	mutex_unlock(&msm_iommu_lock);
+=======
+		}
+	}
+
+	ret = __flush_iotlb(domain);
+
+fail:
+	spin_unlock_irqrestore(&msm_iommu_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	/* the IOMMU API requires us to return how many bytes were unmapped */
 	len = ret ? 0 : len;
 	return len;
 }
 
+<<<<<<< HEAD
 static unsigned int get_phys_addr(struct scatterlist *sg)
 {
 	/*
@@ -891,16 +1190,28 @@ static int msm_iommu_unmap_range(struct iommu_domain *domain, unsigned int va,
 
 static phys_addr_t msm_iommu_iova_to_phys(struct iommu_domain *domain,
 					  unsigned long va)
+=======
+static phys_addr_t msm_iommu_iova_to_phys(struct iommu_domain *domain,
+					  dma_addr_t va)
+>>>>>>> refs/remotes/origin/master
 {
 	struct msm_priv *priv;
 	struct msm_iommu_drvdata *iommu_drvdata;
 	struct msm_iommu_ctx_drvdata *ctx_drvdata;
 	unsigned int par;
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	void __iomem *base;
 	phys_addr_t ret = 0;
 	int ctx;
 
+<<<<<<< HEAD
 	mutex_lock(&msm_iommu_lock);
+=======
+	spin_lock_irqsave(&msm_iommu_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	priv = domain->priv;
 	if (list_empty(&priv->list_attached))
@@ -917,9 +1228,16 @@ static phys_addr_t msm_iommu_iova_to_phys(struct iommu_domain *domain,
 	if (ret)
 		goto fail;
 
+<<<<<<< HEAD
 	SET_V2PPR(base, ctx, va & V2Pxx_VA);
 
 	mb();
+=======
+	/* Invalidate context TLB */
+	SET_CTX_TLBIALL(base, ctx, 0);
+	SET_V2PPR(base, ctx, va & V2Pxx_VA);
+
+>>>>>>> refs/remotes/origin/master
 	par = GET_PAR(base, ctx);
 
 	/* We are dealing with a supersection */
@@ -933,7 +1251,11 @@ static phys_addr_t msm_iommu_iova_to_phys(struct iommu_domain *domain,
 
 	__disable_clocks(iommu_drvdata);
 fail:
+<<<<<<< HEAD
 	mutex_unlock(&msm_iommu_lock);
+=======
+	spin_unlock_irqrestore(&msm_iommu_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -972,6 +1294,7 @@ static void print_ctx_regs(void __iomem *base, int ctx)
 
 irqreturn_t msm_iommu_fault_handler(int irq, void *dev_id)
 {
+<<<<<<< HEAD
 	struct msm_iommu_ctx_drvdata *ctx_drvdata = dev_id;
 	struct msm_iommu_drvdata *drvdata;
 	void __iomem *base;
@@ -986,11 +1309,30 @@ irqreturn_t msm_iommu_fault_handler(int irq, void *dev_id)
 
 	base = drvdata->base;
 	num = ctx_drvdata->num;
+=======
+	struct msm_iommu_drvdata *drvdata = dev_id;
+	void __iomem *base;
+	unsigned int fsr;
+	int i, ret;
+
+	spin_lock(&msm_iommu_lock);
+
+	if (!drvdata) {
+		pr_err("Invalid device ID in context interrupt handler\n");
+		goto fail;
+	}
+
+	base = drvdata->base;
+
+	pr_err("Unexpected IOMMU page fault!\n");
+	pr_err("base = %08x\n", (unsigned int) base);
+>>>>>>> refs/remotes/origin/master
 
 	ret = __enable_clocks(drvdata);
 	if (ret)
 		goto fail;
 
+<<<<<<< HEAD
 	fsr = GET_FSR(base, num);
 
 	if (fsr) {
@@ -1027,6 +1369,21 @@ static phys_addr_t msm_iommu_get_pt_base_addr(struct iommu_domain *domain)
 {
 	struct msm_priv *priv = domain->priv;
 	return __pa(priv->pgtable);
+=======
+	for (i = 0; i < drvdata->ncb; i++) {
+		fsr = GET_FSR(base, i);
+		if (fsr) {
+			pr_err("Fault occurred in context %d.\n", i);
+			pr_err("Interesting registers:\n");
+			print_ctx_regs(base, i);
+			SET_FSR(base, i, 0x4000000F);
+		}
+	}
+	__disable_clocks(drvdata);
+fail:
+	spin_unlock(&msm_iommu_lock);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct iommu_ops msm_iommu_ops = {
@@ -1036,11 +1393,16 @@ static struct iommu_ops msm_iommu_ops = {
 	.detach_dev = msm_iommu_detach_dev,
 	.map = msm_iommu_map,
 	.unmap = msm_iommu_unmap,
+<<<<<<< HEAD
 	.map_range = msm_iommu_map_range,
 	.unmap_range = msm_iommu_unmap_range,
 	.iova_to_phys = msm_iommu_iova_to_phys,
 	.domain_has_cap = msm_iommu_domain_has_cap,
 	.get_pt_base_addr = msm_iommu_get_pt_base_addr,
+=======
+	.iova_to_phys = msm_iommu_iova_to_phys,
+	.domain_has_cap = msm_iommu_domain_has_cap,
+>>>>>>> refs/remotes/origin/master
 	.pgsize_bitmap = MSM_IOMMU_PGSIZES,
 };
 
@@ -1084,9 +1446,12 @@ static void __init setup_iommu_tex_classes(void)
 
 static int __init msm_iommu_init(void)
 {
+<<<<<<< HEAD
 	if (!msm_soc_version_supports_iommu_v1())
 		return -ENODEV;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	setup_iommu_tex_classes();
 	bus_set_iommu(&platform_bus_type, &msm_iommu_ops);
 	return 0;

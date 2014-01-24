@@ -1,6 +1,7 @@
 #ifndef _SCREEN_INFO_H
 #define _SCREEN_INFO_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 /*
@@ -69,6 +70,10 @@ struct screen_info {
 #define VIDEO_FLAGS_NOCURSOR	(1 << 0) /* The video mode has no cursor set */
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/screen_info.h>
+
+>>>>>>> refs/remotes/origin/master
 extern struct screen_info screen_info;
 
 #define ORIG_X			(screen_info.orig_x)
@@ -79,6 +84,9 @@ extern struct screen_info screen_info;
 #define ORIG_VIDEO_LINES	(screen_info.orig_video_lines)
 #define ORIG_VIDEO_ISVGA	(screen_info.orig_video_isVGA)
 #define ORIG_VIDEO_POINTS       (screen_info.orig_video_points)
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _SCREEN_INFO_H */

@@ -18,12 +18,18 @@
 
 #include <linux/clk.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/completion.h>
 #include <linux/dmaengine.h>
 #include <linux/dma-direction.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/err.h>
 #include <linux/init.h>
 #include <linux/module.h>
@@ -35,9 +41,13 @@
 #include <linux/mtd/nand_ecc.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/of.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mtd/partitions.h>
 #include <linux/io.h>
 #include <linux/slab.h>
@@ -46,10 +56,14 @@
 #include <mtd/mtd-abi.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct nand_ecclayout fsmc_ecc1_layout = {
 =======
 static struct nand_ecclayout fsmc_ecc1_128_layout = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct nand_ecclayout fsmc_ecc1_128_layout = {
+>>>>>>> refs/remotes/origin/master
 	.eccbytes = 24,
 	.eccpos = {2, 3, 4, 18, 19, 20, 34, 35, 36, 50, 51, 52,
 		66, 67, 68, 82, 83, 84, 98, 99, 100, 114, 115, 116},
@@ -66,8 +80,11 @@ static struct nand_ecclayout fsmc_ecc1_128_layout = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct nand_ecclayout fsmc_ecc4_lp_layout = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct nand_ecclayout fsmc_ecc1_64_layout = {
 	.eccbytes = 12,
 	.eccpos = {2, 3, 4, 18, 19, 20, 34, 35, 36, 50, 51, 52},
@@ -189,7 +206,10 @@ static struct nand_ecclayout fsmc_ecc4_224_layout = {
  * bytes are free for use.
  */
 static struct nand_ecclayout fsmc_ecc4_128_layout = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.eccbytes = 104,
 	.eccpos = {  2,   3,   4,   5,   6,   7,   8,
 		9,  10,  11,  12,  13,  14,
@@ -222,7 +242,10 @@ static struct nand_ecclayout fsmc_ecc4_128_layout = {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * ECC4 layout for NAND of pagesize 2048 bytes & OOBsize 64 bytes. 13*4 bytes of
  * OOB size is reserved for ECC, Byte no. 0 & 1 reserved for bad block and 10
  * bytes are free for use.
@@ -262,7 +285,10 @@ static struct nand_ecclayout fsmc_ecc4_16_layout = {
 };
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * ECC placement definitions in oobfree type format.
  * There are 13 bytes of ecc for every 512 byte block and it has to be read
  * consecutively and immediately after the 512 byte data block for hardware to
@@ -285,6 +311,7 @@ static struct fsmc_eccplace fsmc_ecc4_lp_place = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct nand_ecclayout fsmc_ecc4_sp_layout = {
 	.eccbytes = 13,
 	.eccpos = { 0,  1,  2,  3,  6,  7, 8,
@@ -297,6 +324,8 @@ static struct nand_ecclayout fsmc_ecc4_sp_layout = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct fsmc_eccplace fsmc_ecc4_sp_place = {
 	.eccplace = {
 		{.offset = 0, .length = 4},
@@ -304,6 +333,7 @@ static struct fsmc_eccplace fsmc_ecc4_sp_place = {
 	}
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Default partition tables to be used if the partition information not
@@ -368,6 +398,8 @@ const char *part_probes[] = { "cmdlinepart", NULL };
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * struct fsmc_nand_data - structure for FSMC NAND device state
  *
@@ -382,13 +414,19 @@ const char *part_probes[] = { "cmdlinepart", NULL };
  * @clk:		Clock structure for FSMC.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @read_dma_chan:	DMA channel for read access
  * @write_dma_chan:	DMA channel for write access to NAND
  * @dma_access_complete: Completion structure
  *
  * @data_pa:		NAND Physical port for Data.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @data_va:		NAND port for Data.
  * @cmd_va:		NAND port for Command.
  * @addr_va:		NAND port for Address.
@@ -404,6 +442,7 @@ struct fsmc_nand_data {
 	struct fsmc_eccplace	*ecc_place;
 	unsigned int		bank;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct clk		*clk;
 
 	struct resource		*resregs;
@@ -412,6 +451,8 @@ struct fsmc_nand_data {
 	struct resource		*resdata;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct device		*dev;
 	enum access_mode	mode;
 	struct clk		*clk;
@@ -424,7 +465,10 @@ struct fsmc_nand_data {
 	struct fsmc_nand_timings *dev_timings;
 
 	dma_addr_t		data_pa;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	void __iomem		*data_va;
 	void __iomem		*cmd_va;
 	void __iomem		*addr_va;
@@ -469,6 +513,7 @@ static void fsmc_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
 	struct fsmc_nand_data *host = container_of(mtd,
 					struct fsmc_nand_data, mtd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct fsmc_regs *regs = host->regs_va;
 	unsigned int bank = host->bank;
 
@@ -493,6 +538,9 @@ static void fsmc_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
 		}
 =======
 	void *__iomem *regs = host->regs_va;
+=======
+	void __iomem *regs = host->regs_va;
+>>>>>>> refs/remotes/origin/master
 	unsigned int bank = host->bank;
 
 	if (ctrl & NAND_CTRL_CHANGE) {
@@ -514,14 +562,22 @@ static void fsmc_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
 			pc |= FSMC_ENABLE;
 		else
 			pc &= ~FSMC_ENABLE;
+<<<<<<< HEAD
 		writel(pc, FSMC_NAND_REG(regs, bank, PC));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		writel_relaxed(pc, FSMC_NAND_REG(regs, bank, PC));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mb();
 
 	if (cmd != NAND_CMD_NONE)
+<<<<<<< HEAD
 		writeb(cmd, this->IO_ADDR_W);
+=======
+		writeb_relaxed(cmd, this->IO_ADDR_W);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -530,6 +586,7 @@ static void fsmc_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
  * This routine initializes timing parameters related to NAND memory access in
  * FSMC registers
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __init fsmc_nand_setup(struct fsmc_regs *regs, uint32_t bank,
 				   uint32_t busw)
@@ -548,6 +605,8 @@ static void __init fsmc_nand_setup(struct fsmc_regs *regs, uint32_t bank,
 	writel(FSMC_THIZ_1 | FSMC_THOLD_4 | FSMC_TWAIT_6 | FSMC_TSET_0,
 	       &regs->bank_regs[bank].attrib);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void fsmc_nand_setup(void __iomem *regs, uint32_t bank,
 			   uint32_t busw, struct fsmc_nand_timings *timings)
 {
@@ -576,6 +635,7 @@ static void fsmc_nand_setup(void __iomem *regs, uint32_t bank,
 	tset = (tims->tset & FSMC_TSET_MASK) << FSMC_TSET_SHIFT;
 
 	if (busw)
+<<<<<<< HEAD
 		writel(value | FSMC_DEVWID_16, FSMC_NAND_REG(regs, bank, PC));
 	else
 		writel(value | FSMC_DEVWID_8, FSMC_NAND_REG(regs, bank, PC));
@@ -585,6 +645,20 @@ static void fsmc_nand_setup(void __iomem *regs, uint32_t bank,
 	writel(thiz | thold | twait | tset, FSMC_NAND_REG(regs, bank, COMM));
 	writel(thiz | thold | twait | tset, FSMC_NAND_REG(regs, bank, ATTRIB));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		writel_relaxed(value | FSMC_DEVWID_16,
+				FSMC_NAND_REG(regs, bank, PC));
+	else
+		writel_relaxed(value | FSMC_DEVWID_8,
+				FSMC_NAND_REG(regs, bank, PC));
+
+	writel_relaxed(readl(FSMC_NAND_REG(regs, bank, PC)) | tclr | tar,
+			FSMC_NAND_REG(regs, bank, PC));
+	writel_relaxed(thiz | thold | twait | tset,
+			FSMC_NAND_REG(regs, bank, COMM));
+	writel_relaxed(thiz | thold | twait | tset,
+			FSMC_NAND_REG(regs, bank, ATTRIB));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -594,6 +668,7 @@ static void fsmc_enable_hwecc(struct mtd_info *mtd, int mode)
 {
 	struct fsmc_nand_data *host = container_of(mtd,
 					struct fsmc_nand_data, mtd);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct fsmc_regs *regs = host->regs_va;
 	uint32_t bank = host->bank;
@@ -615,6 +690,17 @@ static void fsmc_enable_hwecc(struct mtd_info *mtd, int mode)
 	writel(readl(FSMC_NAND_REG(regs, bank, PC)) | FSMC_ECCEN,
 			FSMC_NAND_REG(regs, bank, PC));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void __iomem *regs = host->regs_va;
+	uint32_t bank = host->bank;
+
+	writel_relaxed(readl(FSMC_NAND_REG(regs, bank, PC)) & ~FSMC_ECCPLEN_256,
+			FSMC_NAND_REG(regs, bank, PC));
+	writel_relaxed(readl(FSMC_NAND_REG(regs, bank, PC)) & ~FSMC_ECCEN,
+			FSMC_NAND_REG(regs, bank, PC));
+	writel_relaxed(readl(FSMC_NAND_REG(regs, bank, PC)) | FSMC_ECCEN,
+			FSMC_NAND_REG(regs, bank, PC));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -628,65 +714,92 @@ static int fsmc_read_hwecc_ecc4(struct mtd_info *mtd, const uint8_t *data,
 	struct fsmc_nand_data *host = container_of(mtd,
 					struct fsmc_nand_data, mtd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct fsmc_regs *regs = host->regs_va;
 =======
 	void __iomem *regs = host->regs_va;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void __iomem *regs = host->regs_va;
+>>>>>>> refs/remotes/origin/master
 	uint32_t bank = host->bank;
 	uint32_t ecc_tmp;
 	unsigned long deadline = jiffies + FSMC_BUSY_WAIT_TIMEOUT;
 
 	do {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (readl(&regs->bank_regs[bank].sts) & FSMC_CODE_RDY)
 =======
 		if (readl(FSMC_NAND_REG(regs, bank, STS)) & FSMC_CODE_RDY)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (readl_relaxed(FSMC_NAND_REG(regs, bank, STS)) & FSMC_CODE_RDY)
+>>>>>>> refs/remotes/origin/master
 			break;
 		else
 			cond_resched();
 	} while (!time_after_eq(jiffies, deadline));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ecc_tmp = readl(&regs->bank_regs[bank].ecc1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (time_after_eq(jiffies, deadline)) {
 		dev_err(host->dev, "calculate ecc timed out\n");
 		return -ETIMEDOUT;
 	}
 
+<<<<<<< HEAD
 	ecc_tmp = readl(FSMC_NAND_REG(regs, bank, ECC1));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ecc_tmp = readl_relaxed(FSMC_NAND_REG(regs, bank, ECC1));
+>>>>>>> refs/remotes/origin/master
 	ecc[0] = (uint8_t) (ecc_tmp >> 0);
 	ecc[1] = (uint8_t) (ecc_tmp >> 8);
 	ecc[2] = (uint8_t) (ecc_tmp >> 16);
 	ecc[3] = (uint8_t) (ecc_tmp >> 24);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ecc_tmp = readl(&regs->bank_regs[bank].ecc2);
 =======
 	ecc_tmp = readl(FSMC_NAND_REG(regs, bank, ECC2));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ecc_tmp = readl_relaxed(FSMC_NAND_REG(regs, bank, ECC2));
+>>>>>>> refs/remotes/origin/master
 	ecc[4] = (uint8_t) (ecc_tmp >> 0);
 	ecc[5] = (uint8_t) (ecc_tmp >> 8);
 	ecc[6] = (uint8_t) (ecc_tmp >> 16);
 	ecc[7] = (uint8_t) (ecc_tmp >> 24);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ecc_tmp = readl(&regs->bank_regs[bank].ecc3);
 =======
 	ecc_tmp = readl(FSMC_NAND_REG(regs, bank, ECC3));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ecc_tmp = readl_relaxed(FSMC_NAND_REG(regs, bank, ECC3));
+>>>>>>> refs/remotes/origin/master
 	ecc[8] = (uint8_t) (ecc_tmp >> 0);
 	ecc[9] = (uint8_t) (ecc_tmp >> 8);
 	ecc[10] = (uint8_t) (ecc_tmp >> 16);
 	ecc[11] = (uint8_t) (ecc_tmp >> 24);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ecc_tmp = readl(&regs->bank_regs[bank].sts);
 =======
 	ecc_tmp = readl(FSMC_NAND_REG(regs, bank, STS));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ecc_tmp = readl_relaxed(FSMC_NAND_REG(regs, bank, STS));
+>>>>>>> refs/remotes/origin/master
 	ecc[12] = (uint8_t) (ecc_tmp >> 16);
 
 	return 0;
@@ -703,18 +816,25 @@ static int fsmc_read_hwecc_ecc1(struct mtd_info *mtd, const uint8_t *data,
 	struct fsmc_nand_data *host = container_of(mtd,
 					struct fsmc_nand_data, mtd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct fsmc_regs *regs = host->regs_va;
 	uint32_t bank = host->bank;
 	uint32_t ecc_tmp;
 
 	ecc_tmp = readl(&regs->bank_regs[bank].ecc1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	void __iomem *regs = host->regs_va;
 	uint32_t bank = host->bank;
 	uint32_t ecc_tmp;
 
+<<<<<<< HEAD
 	ecc_tmp = readl(FSMC_NAND_REG(regs, bank, ECC1));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ecc_tmp = readl_relaxed(FSMC_NAND_REG(regs, bank, ECC1));
+>>>>>>> refs/remotes/origin/master
 	ecc[0] = (uint8_t) (ecc_tmp >> 0);
 	ecc[1] = (uint8_t) (ecc_tmp >> 8);
 	ecc[2] = (uint8_t) (ecc_tmp >> 16);
@@ -723,7 +843,10 @@ static int fsmc_read_hwecc_ecc1(struct mtd_info *mtd, const uint8_t *data,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Count the number of 0's in buff upto a max of max_bits */
 static int count_written_bits(uint8_t *buff, int size, int max_bits)
 {
@@ -769,20 +892,33 @@ static int dma_xfer(struct fsmc_nand_data *host, void *buffer, int len,
 	if (direction == DMA_TO_DEVICE) {
 		dma_src = dma_addr;
 		dma_dst = host->data_pa;
+<<<<<<< HEAD
 		flags |= DMA_COMPL_SRC_UNMAP_SINGLE | DMA_COMPL_SKIP_DEST_UNMAP;
 	} else {
 		dma_src = host->data_pa;
 		dma_dst = dma_addr;
 		flags |= DMA_COMPL_DEST_UNMAP_SINGLE | DMA_COMPL_SKIP_SRC_UNMAP;
+=======
+	} else {
+		dma_src = host->data_pa;
+		dma_dst = dma_addr;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	tx = dma_dev->device_prep_dma_memcpy(chan, dma_dst, dma_src,
 			len, flags);
+<<<<<<< HEAD
 
 	if (!tx) {
 		dev_err(host->dev, "device_prep_dma_memcpy error\n");
 		dma_unmap_single(dma_dev->dev, dma_addr, len, direction);
 		return -EIO;
+=======
+	if (!tx) {
+		dev_err(host->dev, "device_prep_dma_memcpy error\n");
+		ret = -EIO;
+		goto unmap_dma;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	tx->callback = dma_complete;
@@ -792,21 +928,43 @@ static int dma_xfer(struct fsmc_nand_data *host, void *buffer, int len,
 	ret = dma_submit_error(cookie);
 	if (ret) {
 		dev_err(host->dev, "dma_submit_error %d\n", cookie);
+<<<<<<< HEAD
 		return ret;
+=======
+		goto unmap_dma;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dma_async_issue_pending(chan);
 
 	ret =
+<<<<<<< HEAD
 	wait_for_completion_interruptible_timeout(&host->dma_access_complete,
+=======
+	wait_for_completion_timeout(&host->dma_access_complete,
+>>>>>>> refs/remotes/origin/master
 				msecs_to_jiffies(3000));
 	if (ret <= 0) {
 		chan->device->device_control(chan, DMA_TERMINATE_ALL, 0);
 		dev_err(host->dev, "wait_for_completion_timeout\n");
+<<<<<<< HEAD
 		return ret ? ret : -ETIMEDOUT;
 	}
 
 	return 0;
+=======
+		if (!ret)
+			ret = -ETIMEDOUT;
+		goto unmap_dma;
+	}
+
+	ret = 0;
+
+unmap_dma:
+	dma_unmap_single(dma_dev->dev, dma_addr, len, direction);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -825,10 +983,17 @@ static void fsmc_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
 		uint32_t *p = (uint32_t *)buf;
 		len = len >> 2;
 		for (i = 0; i < len; i++)
+<<<<<<< HEAD
 			writel(p[i], chip->IO_ADDR_W);
 	} else {
 		for (i = 0; i < len; i++)
 			writeb(buf[i], chip->IO_ADDR_W);
+=======
+			writel_relaxed(p[i], chip->IO_ADDR_W);
+	} else {
+		for (i = 0; i < len; i++)
+			writeb_relaxed(buf[i], chip->IO_ADDR_W);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -848,10 +1013,17 @@ static void fsmc_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
 		uint32_t *p = (uint32_t *)buf;
 		len = len >> 2;
 		for (i = 0; i < len; i++)
+<<<<<<< HEAD
 			p[i] = readl(chip->IO_ADDR_R);
 	} else {
 		for (i = 0; i < len; i++)
 			buf[i] = readb(chip->IO_ADDR_R);
+=======
+			p[i] = readl_relaxed(chip->IO_ADDR_R);
+	} else {
+		for (i = 0; i < len; i++)
+			buf[i] = readb_relaxed(chip->IO_ADDR_R);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -884,12 +1056,19 @@ static void fsmc_write_buf_dma(struct mtd_info *mtd, const uint8_t *buf,
 	dma_xfer(host, (void *)buf, len, DMA_TO_DEVICE);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * fsmc_read_page_hwecc
  * @mtd:	mtd info structure
  * @chip:	nand chip info structure
  * @buf:	buffer to store read data
+<<<<<<< HEAD
+=======
+ * @oob_required:	caller expects OOB data read to chip->oob_poi
+>>>>>>> refs/remotes/origin/master
  * @page:	page number to read
  *
  * This routine is needed for fsmc version 8 as reading from NAND chip has to be
@@ -899,7 +1078,11 @@ static void fsmc_write_buf_dma(struct mtd_info *mtd, const uint8_t *buf,
  * max of 8 bits)
  */
 static int fsmc_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+<<<<<<< HEAD
 				 uint8_t *buf, int page)
+=======
+				 uint8_t *buf, int oob_required, int page)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fsmc_nand_data *host = container_of(mtd,
 					struct fsmc_nand_data, mtd);
@@ -918,12 +1101,18 @@ static int fsmc_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
 	 */
 	uint16_t ecc_oob[7];
 	uint8_t *oob = (uint8_t *)&ecc_oob[0];
+<<<<<<< HEAD
 
 	for (i = 0, s = 0; s < eccsteps; s++, i += eccbytes, p += eccsize) {
 <<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int max_bitflips = 0;
+
+	for (i = 0, s = 0; s < eccsteps; s++, i += eccbytes, p += eccsize) {
+>>>>>>> refs/remotes/origin/master
 		chip->cmdfunc(mtd, NAND_CMD_READ0, s * eccsize, page);
 		chip->ecc.hwctl(mtd, NAND_ECC_READ);
 		chip->read_buf(mtd, p, eccsize);
@@ -935,12 +1124,15 @@ static int fsmc_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
 
 			/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 			* length is intentionally kept a higher multiple of 2
 			* to read at least 13 bytes even in case of 16 bit NAND
 			* devices
 			*/
 			len = roundup(len, 2);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			 * length is intentionally kept a higher multiple of 2
 			 * to read at least 13 bytes even in case of 16 bit NAND
 			 * devices
@@ -948,12 +1140,16 @@ static int fsmc_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
 			if (chip->options & NAND_BUSWIDTH_16)
 				len = roundup(len, 2);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			chip->cmdfunc(mtd, NAND_CMD_READOOB, off, page);
 			chip->read_buf(mtd, oob + j, len);
 			j += len;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		memcpy(&ecc_code[i], oob, 13);
 =======
@@ -977,6 +1173,25 @@ static int fsmc_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
 =======
  * fsmc_bch8_correct_data
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memcpy(&ecc_code[i], oob, chip->ecc.bytes);
+		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
+
+		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
+		if (stat < 0) {
+			mtd->ecc_stats.failed++;
+		} else {
+			mtd->ecc_stats.corrected += stat;
+			max_bitflips = max_t(unsigned int, max_bitflips, stat);
+		}
+	}
+
+	return max_bitflips;
+}
+
+/*
+ * fsmc_bch8_correct_data
+>>>>>>> refs/remotes/origin/master
  * @mtd:	mtd info structure
  * @dat:	buffer of read data
  * @read_ecc:	ecc read from device spare area
@@ -986,14 +1201,19 @@ static int fsmc_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
  * offset informations of 13 bits each in 512 bytes of read data.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int fsmc_correct_data(struct mtd_info *mtd, uint8_t *dat,
 =======
 static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
+>>>>>>> refs/remotes/origin/master
 			     uint8_t *read_ecc, uint8_t *calc_ecc)
 {
 	struct fsmc_nand_data *host = container_of(mtd,
 					struct fsmc_nand_data, mtd);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct fsmc_regs *regs = host->regs_va;
 	unsigned int bank = host->bank;
@@ -1004,6 +1224,8 @@ static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
 	/* The calculated ecc is actually the correction index in data */
 	memcpy(ecc_data, calc_ecc, 13);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct nand_chip *chip = mtd->priv;
 	void __iomem *regs = host->regs_va;
 	unsigned int bank = host->bank;
@@ -1011,7 +1233,11 @@ static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
 	uint32_t num_err, i;
 	uint32_t ecc1, ecc2, ecc3, ecc4;
 
+<<<<<<< HEAD
 	num_err = (readl(FSMC_NAND_REG(regs, bank, STS)) >> 10) & 0xF;
+=======
+	num_err = (readl_relaxed(FSMC_NAND_REG(regs, bank, STS)) >> 10) & 0xF;
+>>>>>>> refs/remotes/origin/master
 
 	/* no bit flipping */
 	if (likely(num_err == 0))
@@ -1044,7 +1270,10 @@ static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
 
 		return -EBADMSG;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * ------------------- calc_ecc[] bit wise -----------|--13 bits--|
@@ -1055,6 +1284,7 @@ static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
 	 * uint64_t array and error offset indexes are populated in err_idx
 	 * array
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (i = 0; i < 8; i++) {
 		if (i == 4) {
@@ -1075,6 +1305,12 @@ static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
 	ecc2 = readl(FSMC_NAND_REG(regs, bank, ECC2));
 	ecc3 = readl(FSMC_NAND_REG(regs, bank, ECC3));
 	ecc4 = readl(FSMC_NAND_REG(regs, bank, STS));
+=======
+	ecc1 = readl_relaxed(FSMC_NAND_REG(regs, bank, ECC1));
+	ecc2 = readl_relaxed(FSMC_NAND_REG(regs, bank, ECC2));
+	ecc3 = readl_relaxed(FSMC_NAND_REG(regs, bank, ECC3));
+	ecc4 = readl_relaxed(FSMC_NAND_REG(regs, bank, STS));
+>>>>>>> refs/remotes/origin/master
 
 	err_idx[0] = (ecc1 >> 0) & 0x1FFF;
 	err_idx[1] = (ecc1 >> 13) & 0x1FFF;
@@ -1084,7 +1320,10 @@ static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
 	err_idx[5] = (ecc3 >> 1) & 0x1FFF;
 	err_idx[6] = (ecc3 >> 14) & 0x1FFF;
 	err_idx[7] = (((ecc4 >> 16) & 0xFF) << 5) | ((ecc3 >> 27) & 0x1F);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	i = 0;
 	while (num_err--) {
@@ -1092,10 +1331,14 @@ static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
 		change_bit(1, (unsigned long *)&err_idx[i]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (err_idx[i] <= 512 * 8) {
 =======
 		if (err_idx[i] < chip->ecc.size * 8) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (err_idx[i] < chip->ecc.size * 8) {
+>>>>>>> refs/remotes/origin/master
 			change_bit(err_idx[i], (unsigned long *)dat);
 			i++;
 		}
@@ -1104,7 +1347,10 @@ static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool filter(struct dma_chan *chan, void *slave)
 {
 	chan->private = slave;
@@ -1112,8 +1358,13 @@ static bool filter(struct dma_chan *chan, void *slave)
 }
 
 #ifdef CONFIG_OF
+<<<<<<< HEAD
 static int __devinit fsmc_nand_probe_config_dt(struct platform_device *pdev,
 					       struct device_node *np)
+=======
+static int fsmc_nand_probe_config_dt(struct platform_device *pdev,
+				     struct device_node *np)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fsmc_nand_platform_data *pdata = dev_get_platdata(&pdev->dev);
 	u32 val;
@@ -1128,6 +1379,7 @@ static int __devinit fsmc_nand_probe_config_dt(struct platform_device *pdev,
 			return -EINVAL;
 		}
 	}
+<<<<<<< HEAD
 	of_property_read_u32(np, "st,ale-off", &pdata->ale_off);
 	of_property_read_u32(np, "st,cle-off", &pdata->cle_off);
 	if (of_get_property(np, "nand-skip-bbtscan", NULL))
@@ -1138,12 +1390,43 @@ static int __devinit fsmc_nand_probe_config_dt(struct platform_device *pdev,
 #else
 static int __devinit fsmc_nand_probe_config_dt(struct platform_device *pdev,
 					       struct device_node *np)
+=======
+	if (of_get_property(np, "nand-skip-bbtscan", NULL))
+		pdata->options = NAND_SKIP_BBTSCAN;
+
+	pdata->nand_timings = devm_kzalloc(&pdev->dev,
+				sizeof(*pdata->nand_timings), GFP_KERNEL);
+	if (!pdata->nand_timings) {
+		dev_err(&pdev->dev, "no memory for nand_timing\n");
+		return -ENOMEM;
+	}
+	of_property_read_u8_array(np, "timings", (u8 *)pdata->nand_timings,
+						sizeof(*pdata->nand_timings));
+
+	/* Set default NAND bank to 0 */
+	pdata->bank = 0;
+	if (!of_property_read_u32(np, "bank", &val)) {
+		if (val > 3) {
+			dev_err(&pdev->dev, "invalid bank %u\n", val);
+			return -EINVAL;
+		}
+		pdata->bank = val;
+	}
+	return 0;
+}
+#else
+static int fsmc_nand_probe_config_dt(struct platform_device *pdev,
+				     struct device_node *np)
+>>>>>>> refs/remotes/origin/master
 {
 	return -ENOSYS;
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * fsmc_nand_probe - Probe function
  * @pdev:       platform device structure
@@ -1152,12 +1435,15 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 {
 	struct fsmc_nand_platform_data *pdata = dev_get_platdata(&pdev->dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct fsmc_nand_data *host;
 	struct mtd_info *mtd;
 	struct nand_chip *nand;
 	struct fsmc_regs *regs;
 	struct resource *res;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct device_node __maybe_unused *np = pdev->dev.of_node;
 	struct mtd_part_parser_data ppdata = {};
 	struct fsmc_nand_data *host;
@@ -1165,13 +1451,19 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 	struct nand_chip *nand;
 	struct resource *res;
 	dma_cap_mask_t mask;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 	u32 pid;
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (np) {
 		pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
 		pdev->dev.platform_data = pdata;
@@ -1182,7 +1474,10 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!pdata) {
 		dev_err(&pdev->dev, "platform data is NULL\n");
 		return -EINVAL;
@@ -1190,16 +1485,21 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 
 	/* Allocate memory for the device structure (and zero it) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	host = kzalloc(sizeof(*host), GFP_KERNEL);
 =======
 	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!host) {
 		dev_err(&pdev->dev, "failed to allocate device structure\n");
 		return -ENOMEM;
 	}
 
 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_data");
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!res) {
 		ret = -EIO;
@@ -1323,10 +1623,33 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 		return -ENOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+	host->data_va = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(host->data_va))
+		return PTR_ERR(host->data_va);
+	
+	host->data_pa = (dma_addr_t)res->start;
+
+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_addr");
+	host->addr_va = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(host->addr_va))
+		return PTR_ERR(host->addr_va);
+
+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_cmd");
+	host->cmd_va = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(host->cmd_va))
+		return PTR_ERR(host->cmd_va);
+
+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "fsmc_regs");
+	host->regs_va = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(host->regs_va))
+		return PTR_ERR(host->regs_va);
+>>>>>>> refs/remotes/origin/master
 
 	host->clk = clk_get(&pdev->dev, NULL);
 	if (IS_ERR(host->clk)) {
 		dev_err(&pdev->dev, "failed to fetch block clock\n");
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret = PTR_ERR(host->clk);
 		host->clk = NULL;
@@ -1343,6 +1666,14 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 =======
 		goto err_clk_enable;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return PTR_ERR(host->clk);
+	}
+
+	ret = clk_prepare_enable(host->clk);
+	if (ret)
+		goto err_clk_prepare_enable;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * This device ID is actually a common AMBA ID as used on the
@@ -1359,8 +1690,11 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 	host->bank = pdata->bank;
 	host->select_chip = pdata->select_bank;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	regs = host->regs_va;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	host->partitions = pdata->partitions;
 	host->nr_partitions = pdata->nr_partitions;
 	host->dev = &pdev->dev;
@@ -1369,7 +1703,10 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 
 	if (host->mode == USE_DMA_ACCESS)
 		init_completion(&host->dma_access_complete);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Link all private pointers */
 	mtd = &host->mtd;
@@ -1389,16 +1726,23 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 	nand->options = pdata->options;
 	nand->select_chip = fsmc_select_chip;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	nand->badblockbits = 7;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nand->badblockbits = 7;
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata->width == FSMC_NAND_BW16)
 		nand->options |= NAND_BUSWIDTH_16;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fsmc_nand_setup(regs, host->bank, nand->options & NAND_BUSWIDTH_16);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (host->mode) {
 	case USE_DMA_ACCESS:
 		dma_cap_zero(mask);
@@ -1429,11 +1773,15 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 	fsmc_nand_setup(host->regs_va, host->bank,
 			nand->options & NAND_BUSWIDTH_16,
 			host->dev_timings);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (AMBA_REV_BITS(host->pid) >= 8) {
 		nand->ecc.read_page = fsmc_read_page_hwecc;
 		nand->ecc.calculate = fsmc_read_hwecc_ecc4;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		nand->ecc.correct = fsmc_correct_data;
 		nand->ecc.bytes = 13;
@@ -1442,14 +1790,23 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 		nand->ecc.bytes = 13;
 		nand->ecc.strength = 8;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		nand->ecc.correct = fsmc_bch8_correct_data;
+		nand->ecc.bytes = 13;
+		nand->ecc.strength = 8;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		nand->ecc.calculate = fsmc_read_hwecc_ecc1;
 		nand->ecc.correct = nand_correct_data;
 		nand->ecc.bytes = 3;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		nand->ecc.strength = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		nand->ecc.strength = 1;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1458,6 +1815,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 	if (nand_scan_ident(&host->mtd, 1, NULL)) {
 		ret = -ENXIO;
 		dev_err(&pdev->dev, "No NAND Device found!\n");
+<<<<<<< HEAD
 <<<<<<< HEAD
 		goto err_probe;
 	}
@@ -1473,6 +1831,8 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 	} else {
 		nand->ecc.layout = &fsmc_ecc1_layout;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		goto err_scan_ident;
 	}
 
@@ -1519,7 +1879,10 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 			       "oobsize %d\n", mtd->oobsize);
 			BUG();
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Second stage of scan to fill MTD data-structures */
@@ -1535,6 +1898,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 	 * platform data,
 	 * default partition information present in driver.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_MTD_CMDLINE_PARTS
 	/*
@@ -1596,6 +1960,8 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 	ret = mtd_device_register(&host->mtd, host->partitions,
 				  host->nr_partitions);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Check for partition info passed
 	 */
@@ -1603,7 +1969,10 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 	ppdata.of_node = np;
 	ret = mtd_device_parse_register(&host->mtd, NULL, &ppdata,
 					host->partitions, host->nr_partitions);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto err_probe;
 
@@ -1612,6 +1981,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
 	return 0;
 
 err_probe:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	clk_disable(host->clk);
 err_probe1:
@@ -1640,6 +2010,8 @@ err_probe1:
 
 	kfree(host);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 err_scan_ident:
 	if (host->mode == USE_DMA_ACCESS)
 		dma_release_channel(host->write_dma_chan);
@@ -1647,10 +2019,16 @@ err_req_write_chnl:
 	if (host->mode == USE_DMA_ACCESS)
 		dma_release_channel(host->read_dma_chan);
 err_req_read_chnl:
+<<<<<<< HEAD
 	clk_disable(host->clk);
 err_clk_enable:
 	clk_put(host->clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(host->clk);
+err_clk_prepare_enable:
+	clk_put(host->clk);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1661,6 +2039,7 @@ static int fsmc_nand_remove(struct platform_device *pdev)
 {
 	struct fsmc_nand_data *host = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
 	if (host) {
@@ -1685,12 +2064,16 @@ static int fsmc_nand_remove(struct platform_device *pdev)
 		kfree(host);
 	}
 =======
+=======
+	if (host) {
+>>>>>>> refs/remotes/origin/master
 		nand_release(&host->mtd);
 
 		if (host->mode == USE_DMA_ACCESS) {
 			dma_release_channel(host->write_dma_chan);
 			dma_release_channel(host->read_dma_chan);
 		}
+<<<<<<< HEAD
 		clk_disable(host->clk);
 		clk_put(host->clk);
 	}
@@ -1700,17 +2083,32 @@ static int fsmc_nand_remove(struct platform_device *pdev)
 }
 
 #ifdef CONFIG_PM
+=======
+		clk_disable_unprepare(host->clk);
+		clk_put(host->clk);
+	}
+
+	return 0;
+}
+
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int fsmc_nand_suspend(struct device *dev)
 {
 	struct fsmc_nand_data *host = dev_get_drvdata(dev);
 	if (host)
+<<<<<<< HEAD
 		clk_disable(host->clk);
+=======
+		clk_disable_unprepare(host->clk);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int fsmc_nand_resume(struct device *dev)
 {
 	struct fsmc_nand_data *host = dev_get_drvdata(dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (host)
 		clk_enable(host->clk);
@@ -1724,23 +2122,40 @@ static const struct dev_pm_ops fsmc_nand_pm_ops = {
 =======
 	if (host) {
 		clk_enable(host->clk);
+=======
+	if (host) {
+		clk_prepare_enable(host->clk);
+>>>>>>> refs/remotes/origin/master
 		fsmc_nand_setup(host->regs_va, host->bank,
 				host->nand.options & NAND_BUSWIDTH_16,
 				host->dev_timings);
 	}
 	return 0;
 }
+<<<<<<< HEAD
 
 static SIMPLE_DEV_PM_OPS(fsmc_nand_pm_ops, fsmc_nand_suspend, fsmc_nand_resume);
 #endif
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(fsmc_nand_pm_ops, fsmc_nand_suspend, fsmc_nand_resume);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_OF
 static const struct of_device_id fsmc_nand_id_table[] = {
 	{ .compatible = "st,spear600-fsmc-nand" },
+<<<<<<< HEAD
 	{}
 };
 MODULE_DEVICE_TABLE(of, fsmc_nand_id_table);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ .compatible = "stericsson,fsmc-nand" },
+	{}
+};
+MODULE_DEVICE_TABLE(of, fsmc_nand_id_table);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static struct platform_driver fsmc_nand_driver = {
@@ -1748,6 +2163,7 @@ static struct platform_driver fsmc_nand_driver = {
 	.driver = {
 		.owner = THIS_MODULE,
 		.name = "fsmc-nand",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 		.of_match_table = of_match_ptr(fsmc_nand_id_table),
@@ -1770,6 +2186,14 @@ static void __exit fsmc_nand_exit(void)
 	platform_driver_unregister(&fsmc_nand_driver);
 }
 module_exit(fsmc_nand_exit);
+=======
+		.of_match_table = of_match_ptr(fsmc_nand_id_table),
+		.pm = &fsmc_nand_pm_ops,
+	},
+};
+
+module_platform_driver_probe(fsmc_nand_driver, fsmc_nand_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Vipin Kumar <vipin.kumar@st.com>, Ashish Priyadarshi");

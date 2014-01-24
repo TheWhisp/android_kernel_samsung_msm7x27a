@@ -10,6 +10,10 @@
 #include "super.h"
 #include "mds_client.h"
 
+<<<<<<< HEAD
+=======
+#include <linux/ceph/ceph_features.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ceph/messenger.h>
 #include <linux/ceph/decode.h>
 #include <linux/ceph/pagelist.h>
@@ -42,6 +46,10 @@
  */
 
 struct ceph_reconnect_state {
+<<<<<<< HEAD
+=======
+	int nr_caps;
+>>>>>>> refs/remotes/origin/master
 	struct ceph_pagelist *pagelist;
 	bool flock;
 };
@@ -232,6 +240,33 @@ bad:
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * parse create results
+ */
+static int parse_reply_info_create(void **p, void *end,
+				  struct ceph_mds_reply_info_parsed *info,
+				  int features)
+{
+	if (features & CEPH_FEATURE_REPLY_CREATE_INODE) {
+		if (*p == end) {
+			info->has_create_ino = false;
+		} else {
+			info->has_create_ino = true;
+			info->ino = ceph_decode_64(p);
+		}
+	}
+
+	if (unlikely(*p != end))
+		goto bad;
+	return 0;
+
+bad:
+	return -EIO;
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * parse extra results
  */
 static int parse_reply_info_extra(void **p, void *end,
@@ -240,8 +275,18 @@ static int parse_reply_info_extra(void **p, void *end,
 {
 	if (info->head->op == CEPH_MDS_OP_GETFILELOCK)
 		return parse_reply_info_filelock(p, end, info, features);
+<<<<<<< HEAD
 	else
 		return parse_reply_info_dir(p, end, info, features);
+=======
+	else if (info->head->op == CEPH_MDS_OP_READDIR ||
+		 info->head->op == CEPH_MDS_OP_LSSNAP)
+		return parse_reply_info_dir(p, end, info, features);
+	else if (info->head->op == CEPH_MDS_OP_CREATE)
+		return parse_reply_info_create(p, end, info, features);
+	else
+		return -EIO;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -263,9 +308,13 @@ static int parse_reply_info(struct ceph_msg *msg,
 	ceph_decode_32_safe(&p, end, len, bad);
 	if (len > 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		ceph_decode_need(&p, end, len, bad);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ceph_decode_need(&p, end, len, bad);
+>>>>>>> refs/remotes/origin/master
 		err = parse_reply_info_trace(&p, p+len, info, features);
 		if (err < 0)
 			goto out_bad;
@@ -275,9 +324,13 @@ static int parse_reply_info(struct ceph_msg *msg,
 	ceph_decode_32_safe(&p, end, len, bad);
 	if (len > 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		ceph_decode_need(&p, end, len, bad);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ceph_decode_need(&p, end, len, bad);
+>>>>>>> refs/remotes/origin/master
 		err = parse_reply_info_extra(&p, p+len, info, features);
 		if (err < 0)
 			goto out_bad;
@@ -341,16 +394,22 @@ void ceph_put_mds_session(struct ceph_mds_session *s)
 	     atomic_read(&s->s_ref), atomic_read(&s->s_ref)-1);
 	if (atomic_dec_and_test(&s->s_ref)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (s->s_authorizer)
 		     s->s_mdsc->fsc->client->monc.auth->ops->destroy_authorizer(
 			     s->s_mdsc->fsc->client->monc.auth,
 			     s->s_authorizer);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (s->s_auth.authorizer)
 			ceph_auth_destroy_authorizer(
 				s->s_mdsc->fsc->client->monc.auth,
 				s->s_auth.authorizer);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(s);
 	}
 }
@@ -397,6 +456,12 @@ static struct ceph_mds_session *register_session(struct ceph_mds_client *mdsc,
 {
 	struct ceph_mds_session *s;
 
+<<<<<<< HEAD
+=======
+	if (mds >= mdsc->mdsmap->m_max_mds)
+		return ERR_PTR(-EINVAL);
+
+>>>>>>> refs/remotes/origin/master
 	s = kzalloc(sizeof(*s), GFP_NOFS);
 	if (!s)
 		return ERR_PTR(-ENOMEM);
@@ -408,6 +473,7 @@ static struct ceph_mds_session *register_session(struct ceph_mds_client *mdsc,
 	mutex_init(&s->s_mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ceph_con_init(mdsc->fsc->client->msgr, &s->s_con);
 	s->s_con.private = s;
 	s->s_con.ops = &mds_con_ops;
@@ -418,6 +484,8 @@ static struct ceph_mds_session *register_session(struct ceph_mds_client *mdsc,
 	s->s_cap_gen = 0;
 	s->s_cap_ttl = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ceph_con_init(&s->s_con, s, &mds_con_ops, &mdsc->fsc->client->msgr);
 
 	spin_lock_init(&s->s_gen_ttl_lock);
@@ -425,7 +493,10 @@ static struct ceph_mds_session *register_session(struct ceph_mds_client *mdsc,
 	s->s_cap_ttl = jiffies - 1;
 
 	spin_lock_init(&s->s_cap_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	s->s_renew_requested = 0;
 	s->s_renew_seq = 0;
 	INIT_LIST_HEAD(&s->s_caps);
@@ -435,6 +506,10 @@ static struct ceph_mds_session *register_session(struct ceph_mds_client *mdsc,
 	INIT_LIST_HEAD(&s->s_waiting);
 	INIT_LIST_HEAD(&s->s_unsafe);
 	s->s_num_cap_releases = 0;
+<<<<<<< HEAD
+=======
+	s->s_cap_reconnect = 0;
+>>>>>>> refs/remotes/origin/master
 	s->s_cap_iterator = NULL;
 	INIT_LIST_HEAD(&s->s_cap_releases);
 	INIT_LIST_HEAD(&s->s_cap_releases_done);
@@ -462,11 +537,16 @@ static struct ceph_mds_session *register_session(struct ceph_mds_client *mdsc,
 	atomic_inc(&s->s_ref);  /* one ref to sessions[], one to caller */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ceph_con_open(&s->s_con, ceph_mdsmap_get_addr(mdsc->mdsmap, mds));
 =======
 	ceph_con_open(&s->s_con, CEPH_ENTITY_TYPE_MDS, mds,
 		      ceph_mdsmap_get_addr(mdsc->mdsmap, mds));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ceph_con_open(&s->s_con, CEPH_ENTITY_TYPE_MDS, mds,
+		      ceph_mdsmap_get_addr(mdsc->mdsmap, mds));
+>>>>>>> refs/remotes/origin/master
 
 	return s;
 
@@ -514,6 +594,7 @@ void ceph_mdsc_release_request(struct kref *kref)
 	}
 	if (req->r_inode) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ceph_put_cap_refs(ceph_inode(req->r_inode),
 				  CEPH_CAP_PIN);
 		iput(req->r_inode);
@@ -522,23 +603,31 @@ void ceph_mdsc_release_request(struct kref *kref)
 		ceph_put_cap_refs(ceph_inode(req->r_locked_dir),
 				  CEPH_CAP_PIN);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ceph_put_cap_refs(ceph_inode(req->r_inode), CEPH_CAP_PIN);
 		iput(req->r_inode);
 	}
 	if (req->r_locked_dir)
 		ceph_put_cap_refs(ceph_inode(req->r_locked_dir), CEPH_CAP_PIN);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (req->r_target_inode)
 		iput(req->r_target_inode);
 	if (req->r_dentry)
 		dput(req->r_dentry);
 	if (req->r_old_dentry) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ceph_put_cap_refs(
 			ceph_inode(req->r_old_dentry->d_parent->d_inode),
 			CEPH_CAP_PIN);
 		dput(req->r_old_dentry);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * track (and drop pins for) r_old_dentry_dir
 		 * separately, since r_old_dentry's d_parent may have
@@ -549,7 +638,10 @@ void ceph_mdsc_release_request(struct kref *kref)
 				  CEPH_CAP_PIN);
 		dput(req->r_old_dentry);
 		iput(req->r_old_dentry_dir);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	kfree(req->r_path1);
 	kfree(req->r_path2);
@@ -656,10 +748,15 @@ static void __unregister_request(struct ceph_mds_client *mdsc,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	complete_all(&req->r_safe_completion);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	complete_all(&req->r_safe_completion);
+
+>>>>>>> refs/remotes/origin/master
 	ceph_mdsc_put_request(req);
 }
 
@@ -672,9 +769,12 @@ static void __unregister_request(struct ceph_mds_client *mdsc,
  * Called under mdsc->mutex.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dentry *get_nonsnap_parent(struct dentry *dentry)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct dentry *get_nonsnap_parent(struct dentry *dentry)
 {
 	/*
@@ -683,7 +783,10 @@ static struct dentry *get_nonsnap_parent(struct dentry *dentry)
 	 * except to resplice to another snapdir, and either the old or new
 	 * result is a valid result.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	while (!IS_ROOT(dentry) && ceph_snap(dentry->d_inode) != CEPH_NOSNAP)
 		dentry = dentry->d_parent;
 	return dentry;
@@ -720,12 +823,18 @@ static int __choose_mds(struct ceph_mds_client *mdsc,
 		inode = req->r_inode;
 	} else if (req->r_dentry) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct inode *dir = req->r_dentry->d_parent->d_inode;
 =======
 		/* ignore race with rename; old or new d_parent is okay */
 		struct dentry *parent = req->r_dentry->d_parent;
 		struct inode *dir = parent->d_inode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* ignore race with rename; old or new d_parent is okay */
+		struct dentry *parent = req->r_dentry->d_parent;
+		struct inode *dir = parent->d_inode;
+>>>>>>> refs/remotes/origin/master
 
 		if (dir->i_sb != mdsc->fsc->sb) {
 			/* not this fs! */
@@ -734,11 +843,15 @@ static int __choose_mds(struct ceph_mds_client *mdsc,
 			/* direct snapped/virtual snapdir requests
 			 * based on parent dir inode */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			struct dentry *dn =
 				get_nonsnap_parent(req->r_dentry->d_parent);
 =======
 			struct dentry *dn = get_nonsnap_parent(parent);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			struct dentry *dn = get_nonsnap_parent(parent);
+>>>>>>> refs/remotes/origin/master
 			inode = dn->d_inode;
 			dout("__choose_mds using nonsnap parent %p\n", inode);
 		} else if (req->r_dentry->d_inode) {
@@ -748,10 +861,14 @@ static int __choose_mds(struct ceph_mds_client *mdsc,
 			/* dir + name */
 			inode = dir;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			hash = ceph_dentry_hash(req->r_dentry);
 =======
 			hash = ceph_dentry_hash(dir, req->r_dentry);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			hash = ceph_dentry_hash(dir, req->r_dentry);
+>>>>>>> refs/remotes/origin/master
 			is_hash = true;
 		}
 	}
@@ -803,10 +920,14 @@ static int __choose_mds(struct ceph_mds_client *mdsc,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	cap = NULL;
 	if (mode == USE_AUTH_MDS)
 		cap = ci->i_auth_cap;
@@ -814,10 +935,14 @@ static int __choose_mds(struct ceph_mds_client *mdsc,
 		cap = rb_entry(rb_first(&ci->i_caps), struct ceph_cap, ci_node);
 	if (!cap) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock(&inode->i_lock);
 =======
 		spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 		goto random;
 	}
 	mds = cap->session->s_mds;
@@ -825,10 +950,14 @@ static int __choose_mds(struct ceph_mds_client *mdsc,
 	     inode, ceph_vinop(inode), mds,
 	     cap == ci->i_auth_cap ? "auth " : "", cap);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	return mds;
 
 random:
@@ -847,11 +976,16 @@ static struct ceph_msg *create_session_msg(u32 op, u64 seq)
 	struct ceph_mds_session_head *h;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg = ceph_msg_new(CEPH_MSG_CLIENT_SESSION, sizeof(*h), GFP_NOFS);
 =======
 	msg = ceph_msg_new(CEPH_MSG_CLIENT_SESSION, sizeof(*h), GFP_NOFS,
 			   false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msg = ceph_msg_new(CEPH_MSG_CLIENT_SESSION, sizeof(*h), GFP_NOFS,
+			   false);
+>>>>>>> refs/remotes/origin/master
 	if (!msg) {
 		pr_err("create_session_msg ENOMEM creating msg\n");
 		return NULL;
@@ -1038,11 +1172,16 @@ static int remove_session_caps_cb(struct inode *inode, struct ceph_cap *cap,
 	dout("removing cap %p, ci is %p, inode is %p\n",
 	     cap, ci, &ci->vfs_inode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
 	__ceph_remove_cap(cap);
+=======
+	spin_lock(&ci->i_ceph_lock);
+	__ceph_remove_cap(cap, false);
+>>>>>>> refs/remotes/origin/master
 	if (!__ceph_is_any_real_caps(ci)) {
 		struct ceph_mds_client *mdsc =
 			ceph_sb_to_client(inode->i_sb)->mdsc;
@@ -1075,10 +1214,14 @@ static int remove_session_caps_cb(struct inode *inode, struct ceph_cap *cap,
 		spin_unlock(&mdsc->cap_dirty_lock);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	while (drop--)
 		iput(inode);
 	return 0;
@@ -1091,6 +1234,40 @@ static void remove_session_caps(struct ceph_mds_session *session)
 {
 	dout("remove_session_caps on %p\n", session);
 	iterate_session_caps(session, remove_session_caps_cb, NULL);
+<<<<<<< HEAD
+=======
+
+	spin_lock(&session->s_cap_lock);
+	if (session->s_nr_caps > 0) {
+		struct super_block *sb = session->s_mdsc->fsc->sb;
+		struct inode *inode;
+		struct ceph_cap *cap, *prev = NULL;
+		struct ceph_vino vino;
+		/*
+		 * iterate_session_caps() skips inodes that are being
+		 * deleted, we need to wait until deletions are complete.
+		 * __wait_on_freeing_inode() is designed for the job,
+		 * but it is not exported, so use lookup inode function
+		 * to access it.
+		 */
+		while (!list_empty(&session->s_caps)) {
+			cap = list_entry(session->s_caps.next,
+					 struct ceph_cap, session_caps);
+			if (cap == prev)
+				break;
+			prev = cap;
+			vino = cap->ci->i_vino;
+			spin_unlock(&session->s_cap_lock);
+
+			inode = ceph_find_inode(sb, vino);
+			iput(inode);
+
+			spin_lock(&session->s_cap_lock);
+		}
+	}
+	spin_unlock(&session->s_cap_lock);
+
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(session->s_nr_caps > 0);
 	BUG_ON(!list_empty(&session->s_cap_flushing));
 	cleanup_cap_releases(session);
@@ -1110,16 +1287,22 @@ static int wake_up_session_cb(struct inode *inode, struct ceph_cap *cap,
 	wake_up_all(&ci->i_cap_wq);
 	if (arg) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock(&inode->i_lock);
 		ci->i_wanted_max_size = 0;
 		ci->i_requested_max_size = 0;
 		spin_unlock(&inode->i_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_lock(&ci->i_ceph_lock);
 		ci->i_wanted_max_size = 0;
 		ci->i_requested_max_size = 0;
 		spin_unlock(&ci->i_ceph_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -1181,11 +1364,15 @@ static void renewed_caps(struct ceph_mds_client *mdsc,
 
 	spin_lock(&session->s_cap_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	was_stale = is_renew && (session->s_cap_ttl == 0 ||
 				 time_after_eq(jiffies, session->s_cap_ttl));
 =======
 	was_stale = is_renew && time_after_eq(jiffies, session->s_cap_ttl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	was_stale = is_renew && time_after_eq(jiffies, session->s_cap_ttl);
+>>>>>>> refs/remotes/origin/master
 
 	session->s_cap_ttl = session->s_renew_requested +
 		mdsc->mdsmap->m_session_timeout*HZ;
@@ -1257,10 +1444,14 @@ static int trim_caps_cb(struct inode *inode, struct ceph_cap *cap, void *arg)
 		return -1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	mine = cap->issued | cap->implemented;
 	used = __ceph_caps_used(ci);
 	oissued = __ceph_caps_issued_other(ci, cap);
@@ -1276,6 +1467,7 @@ static int trim_caps_cb(struct inode *inode, struct ceph_cap *cap, void *arg)
 	session->s_trim_caps--;
 	if (oissued) {
 		/* we aren't the only cap.. just remove us */
+<<<<<<< HEAD
 		__ceph_remove_cap(cap);
 	} else {
 		/* try to drop referring dentries */
@@ -1284,6 +1476,12 @@ static int trim_caps_cb(struct inode *inode, struct ceph_cap *cap, void *arg)
 =======
 		spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__ceph_remove_cap(cap, true);
+	} else {
+		/* try to drop referring dentries */
+		spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 		d_prune_aliases(inode);
 		dout("trim_caps_cb %p cap %p  pruned, count now %d\n",
 		     inode, cap, atomic_read(&inode->i_count));
@@ -1292,10 +1490,14 @@ static int trim_caps_cb(struct inode *inode, struct ceph_cap *cap, void *arg)
 
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1359,10 +1561,14 @@ int ceph_add_cap_releases(struct ceph_mds_client *mdsc,
 		spin_unlock(&session->s_cap_lock);
 		msg = ceph_msg_new(CEPH_MSG_CLIENT_CAPRELEASE, PAGE_CACHE_SIZE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   GFP_NOFS);
 =======
 				   GFP_NOFS, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   GFP_NOFS, false);
+>>>>>>> refs/remotes/origin/master
 		if (!msg)
 			goto out_unlocked;
 		dout("add_cap_releases %p msg %p now %d\n", session, msg,
@@ -1418,10 +1624,14 @@ static int check_cap_flush(struct ceph_mds_client *mdsc, u64 want_flush_seq)
 			struct inode *inode = &ci->vfs_inode;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			spin_lock(&inode->i_lock);
 =======
 			spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 			if (ci->i_cap_flush_seq <= want_flush_seq) {
 				dout("check_cap_flush still flushing %p "
 				     "seq %lld <= %lld to mds%d\n", inode,
@@ -1430,10 +1640,14 @@ static int check_cap_flush(struct ceph_mds_client *mdsc, u64 want_flush_seq)
 				ret = 0;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			spin_unlock(&inode->i_lock);
 =======
 			spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 		}
 		mutex_unlock(&session->s_mutex);
 		ceph_put_mds_session(session);
@@ -1479,7 +1693,10 @@ static void discard_cap_releases(struct ceph_mds_client *mdsc,
 	unsigned num;
 
 	dout("discard_cap_releases mds%d\n", session->s_mds);
+<<<<<<< HEAD
 	spin_lock(&session->s_cap_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* zero out the in-progress message */
 	msg = list_first_entry(&session->s_cap_releases,
@@ -1488,6 +1705,10 @@ static void discard_cap_releases(struct ceph_mds_client *mdsc,
 	num = le32_to_cpu(head->num);
 	dout("discard_cap_releases mds%d %p %u\n", session->s_mds, msg, num);
 	head->num = cpu_to_le32(0);
+<<<<<<< HEAD
+=======
+	msg->front.iov_len = sizeof(*head);
+>>>>>>> refs/remotes/origin/master
 	session->s_num_cap_releases += num;
 
 	/* requeue completed messages */
@@ -1505,8 +1726,11 @@ static void discard_cap_releases(struct ceph_mds_client *mdsc,
 		msg->front.iov_len = sizeof(*head);
 		list_add(&msg->list_head, &session->s_cap_releases);
 	}
+<<<<<<< HEAD
 
 	spin_unlock(&session->s_cap_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1598,11 +1822,14 @@ retry:
 		else
 			len += 1 + temp->d_name.len;
 		temp = temp->d_parent;
+<<<<<<< HEAD
 		if (temp == NULL) {
 			rcu_read_unlock();
 			pr_err("build_path corrupt dentry %p\n", dentry);
 			return ERR_PTR(-EINVAL);
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	rcu_read_unlock();
 	if (len)
@@ -1625,9 +1852,13 @@ retry:
 		} else if (stop_on_nosnap && inode &&
 			   ceph_snap(inode) == CEPH_NOSNAP) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			spin_unlock(&temp->d_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_unlock(&temp->d_lock);
+>>>>>>> refs/remotes/origin/master
 			break;
 		} else {
 			pos -= temp->d_name.len;
@@ -1642,12 +1873,15 @@ retry:
 		if (pos)
 			path[--pos] = '/';
 		temp = temp->d_parent;
+<<<<<<< HEAD
 		if (temp == NULL) {
 			rcu_read_unlock();
 			pr_err("build_path corrupt dentry\n");
 			kfree(path);
 			return ERR_PTR(-EINVAL);
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	rcu_read_unlock();
 	if (pos != 0 || read_seqretry(&rename_lock, seq)) {
@@ -1664,7 +1898,11 @@ retry:
 	*base = ceph_ino(temp->d_inode);
 	*plen = len;
 	dout("build_path on %p %d built %llx '%.*s'\n",
+<<<<<<< HEAD
 	     dentry, dentry->d_count, *base, len, path);
+=======
+	     dentry, d_count(dentry), *base, len, path);
+>>>>>>> refs/remotes/origin/master
 	return path;
 }
 
@@ -1730,6 +1968,7 @@ static int set_request_path_attr(struct inode *rinode, struct dentry *rdentry,
 		dout(" dentry %p %llx/%.*s\n", rdentry, *ino, *pathlen,
 		     *ppath);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (rpath) {
 =======
 	} else if (rpath || rino) {
@@ -1737,6 +1976,12 @@ static int set_request_path_attr(struct inode *rinode, struct dentry *rdentry,
 		*ino = rino;
 		*ppath = rpath;
 		*pathlen = strlen(rpath);
+=======
+	} else if (rpath || rino) {
+		*ino = rino;
+		*ppath = rpath;
+		*pathlen = rpath ? strlen(rpath) : 0;
+>>>>>>> refs/remotes/origin/master
 		dout(" path %.*s\n", *pathlen, rpath);
 	}
 
@@ -1791,10 +2036,14 @@ static struct ceph_msg *create_request_message(struct ceph_mds_client *mdsc,
 		len += req->r_old_dentry->d_name.len;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg = ceph_msg_new(CEPH_MSG_CLIENT_REQUEST, len, GFP_NOFS);
 =======
 	msg = ceph_msg_new(CEPH_MSG_CLIENT_REQUEST, len, GFP_NOFS, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msg = ceph_msg_new(CEPH_MSG_CLIENT_REQUEST, len, GFP_NOFS, false);
+>>>>>>> refs/remotes/origin/master
 	if (!msg) {
 		msg = ERR_PTR(-ENOMEM);
 		goto out_free2;
@@ -1808,8 +2057,13 @@ static struct ceph_msg *create_request_message(struct ceph_mds_client *mdsc,
 
 	head->mdsmap_epoch = cpu_to_le32(mdsc->mdsmap->m_epoch);
 	head->op = cpu_to_le32(req->r_op);
+<<<<<<< HEAD
 	head->caller_uid = cpu_to_le32(req->r_uid);
 	head->caller_gid = cpu_to_le32(req->r_gid);
+=======
+	head->caller_uid = cpu_to_le32(from_kuid(&init_user_ns, req->r_uid));
+	head->caller_gid = cpu_to_le32(from_kgid(&init_user_ns, req->r_gid));
+>>>>>>> refs/remotes/origin/master
 	head->args = req->r_args;
 
 	ceph_encode_filepath(&p, end, ino1, path1);
@@ -1840,8 +2094,17 @@ static struct ceph_msg *create_request_message(struct ceph_mds_client *mdsc,
 	msg->front.iov_len = p - msg->front.iov_base;
 	msg->hdr.front_len = cpu_to_le32(msg->front.iov_len);
 
+<<<<<<< HEAD
 	msg->pages = req->r_pages;
 	msg->nr_pages = req->r_num_pages;
+=======
+	if (req->r_data_len) {
+		/* outbound data set only by ceph_sync_setxattr() */
+		BUG_ON(!req->r_pages);
+		ceph_msg_data_add_pages(msg, req->r_pages, req->r_data_len, 0);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	msg->hdr.data_len = cpu_to_le32(req->r_data_len);
 	msg->hdr.data_off = cpu_to_le16(0);
 
@@ -1956,15 +2219,21 @@ static int __do_request(struct ceph_mds_client *mdsc,
 	int err = -EAGAIN;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 	if (req->r_err || req->r_got_result) {
 		if (req->r_aborted)
 			__unregister_request(mdsc, req);
 		goto out;
 	}
+<<<<<<< HEAD
 =======
 	if (req->r_err || req->r_got_result)
 		goto out;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (req->r_timeout &&
 	    time_after_eq(jiffies, req->r_started + req->r_timeout)) {
@@ -2035,10 +2304,13 @@ static void __wake_requests(struct ceph_mds_client *mdsc,
 			    struct list_head *head)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ceph_mds_request *req, *nreq;
 
 	list_for_each_entry_safe(req, nreq, head, r_wait) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ceph_mds_request *req;
 	LIST_HEAD(tmp_list);
 
@@ -2047,8 +2319,13 @@ static void __wake_requests(struct ceph_mds_client *mdsc,
 	while (!list_empty(&tmp_list)) {
 		req = list_entry(tmp_list.next,
 				 struct ceph_mds_request, r_wait);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		list_del_init(&req->r_wait);
+=======
+		list_del_init(&req->r_wait);
+		dout(" wake request %p tid %llu\n", req, req->r_tid);
+>>>>>>> refs/remotes/origin/master
 		__do_request(mdsc, req);
 	}
 }
@@ -2104,6 +2381,7 @@ int ceph_mdsc_do_request(struct ceph_mds_client *mdsc,
 		ceph_get_cap_refs(ceph_inode(req->r_locked_dir), CEPH_CAP_PIN);
 	if (req->r_old_dentry)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ceph_get_cap_refs(
 			ceph_inode(req->r_old_dentry->d_parent->d_inode),
 			CEPH_CAP_PIN);
@@ -2111,6 +2389,10 @@ int ceph_mdsc_do_request(struct ceph_mds_client *mdsc,
 		ceph_get_cap_refs(ceph_inode(req->r_old_dentry_dir),
 				  CEPH_CAP_PIN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ceph_get_cap_refs(ceph_inode(req->r_old_dentry_dir),
+				  CEPH_CAP_PIN);
+>>>>>>> refs/remotes/origin/master
 
 	/* issue */
 	mutex_lock(&mdsc->mutex);
@@ -2169,15 +2451,20 @@ out:
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Invalidate dir I_COMPLETE, dentry lease state on an aborted MDS
 =======
  * Invalidate dir D_COMPLETE, dentry lease state on an aborted MDS
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Invalidate dir's completeness, dentry lease state on an aborted MDS
+>>>>>>> refs/remotes/origin/master
  * namespace request.
  */
 void ceph_invalidate_dir_request(struct ceph_mds_request *req)
 {
 	struct inode *inode = req->r_locked_dir;
+<<<<<<< HEAD
 	struct ceph_inode_info *ci = ceph_inode(inode);
 
 <<<<<<< HEAD
@@ -2194,6 +2481,12 @@ void ceph_invalidate_dir_request(struct ceph_mds_request *req)
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+
+	dout("invalidate_dir_request %p (complete, lease(s))\n", inode);
+
+	ceph_dir_clear_complete(inode);
+>>>>>>> refs/remotes/origin/master
 	if (req->r_dentry)
 		ceph_invalidate_dentry_lease(req->r_dentry);
 	if (req->r_old_dentry)
@@ -2302,9 +2595,12 @@ static void handle_reply(struct ceph_mds_session *session, struct ceph_msg *msg)
 		req->r_got_safe = true;
 		__unregister_request(mdsc, req);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		complete_all(&req->r_safe_completion);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (req->r_got_unsafe) {
 			/*
@@ -2355,8 +2651,13 @@ static void handle_reply(struct ceph_mds_session *session, struct ceph_msg *msg)
 	mutex_lock(&req->r_fill_mutex);
 	err = ceph_fill_trace(mdsc->fsc->sb, req, req->r_session);
 	if (err == 0) {
+<<<<<<< HEAD
 		if (result == 0 && req->r_op != CEPH_MDS_OP_GETFILELOCK &&
 		    rinfo->dir_nr)
+=======
+		if (result == 0 && (req->r_op == CEPH_MDS_OP_READDIR ||
+				    req->r_op == CEPH_MDS_OP_LSSNAP))
+>>>>>>> refs/remotes/origin/master
 			ceph_readdir_prepopulate(req, req->r_session);
 		ceph_unreserve_caps(mdsc, &req->r_caps_reservation);
 	}
@@ -2507,16 +2808,22 @@ static void handle_session(struct ceph_mds_session *session,
 		pr_info("mds%d caps went stale, renewing\n",
 			session->s_mds);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock(&session->s_cap_lock);
 		session->s_cap_gen++;
 		session->s_cap_ttl = 0;
 		spin_unlock(&session->s_cap_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_lock(&session->s_gen_ttl_lock);
 		session->s_cap_gen++;
 		session->s_cap_ttl = jiffies - 1;
 		spin_unlock(&session->s_gen_ttl_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		send_renew_caps(mdsc, session);
 		break;
 
@@ -2611,12 +2918,20 @@ static int encode_caps_cb(struct inode *inode, struct ceph_cap *cap,
 		goto out_free;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
 	cap->seq = 0;        /* reset cap seq */
 	cap->issue_seq = 0;  /* and issue_seq */
+=======
+	spin_lock(&ci->i_ceph_lock);
+	cap->seq = 0;        /* reset cap seq */
+	cap->issue_seq = 0;  /* and issue_seq */
+	cap->mseq = 0;       /* and migrate_seq */
+	cap->cap_gen = cap->session->s_cap_gen;
+>>>>>>> refs/remotes/origin/master
 
 	if (recon_state->flock) {
 		rec.v2.cap_id = cpu_to_le64(cap->cap_id);
@@ -2637,6 +2952,7 @@ static int encode_caps_cb(struct inode *inode, struct ceph_cap *cap,
 		rec.v1.pathbase = cpu_to_le64(pathbase);
 		reclen = sizeof(rec.v1);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 
@@ -2676,6 +2992,8 @@ static int encode_caps_cb(struct inode *inode, struct ceph_cap *cap,
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&ci->i_ceph_lock);
 
 	if (recon_state->flock) {
@@ -2683,20 +3001,34 @@ static int encode_caps_cb(struct inode *inode, struct ceph_cap *cap,
 		struct ceph_filelock *flocks;
 
 encode_again:
+<<<<<<< HEAD
 		lock_flocks();
 		ceph_count_locks(inode, &num_fcntl_locks, &num_flock_locks);
 		unlock_flocks();
+=======
+		spin_lock(&inode->i_lock);
+		ceph_count_locks(inode, &num_fcntl_locks, &num_flock_locks);
+		spin_unlock(&inode->i_lock);
+>>>>>>> refs/remotes/origin/master
 		flocks = kmalloc((num_fcntl_locks+num_flock_locks) *
 				 sizeof(struct ceph_filelock), GFP_NOFS);
 		if (!flocks) {
 			err = -ENOMEM;
 			goto out_free;
 		}
+<<<<<<< HEAD
 		lock_flocks();
 		err = ceph_encode_locks_to_buffer(inode, flocks,
 						  num_fcntl_locks,
 						  num_flock_locks);
 		unlock_flocks();
+=======
+		spin_lock(&inode->i_lock);
+		err = ceph_encode_locks_to_buffer(inode, flocks,
+						  num_fcntl_locks,
+						  num_flock_locks);
+		spin_unlock(&inode->i_lock);
+>>>>>>> refs/remotes/origin/master
 		if (err) {
 			kfree(flocks);
 			if (err == -ENOSPC)
@@ -2718,7 +3050,12 @@ encode_again:
 	} else {
 		err = ceph_pagelist_append(pagelist, &rec, reclen);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	recon_state->nr_caps++;
+>>>>>>> refs/remotes/origin/master
 out_free:
 	kfree(path);
 out_dput:
@@ -2746,6 +3083,10 @@ static void send_mds_reconnect(struct ceph_mds_client *mdsc,
 	struct rb_node *p;
 	int mds = session->s_mds;
 	int err = -ENOMEM;
+<<<<<<< HEAD
+=======
+	int s_nr_caps;
+>>>>>>> refs/remotes/origin/master
 	struct ceph_pagelist *pagelist;
 	struct ceph_reconnect_state recon_state;
 
@@ -2757,10 +3098,14 @@ static void send_mds_reconnect(struct ceph_mds_client *mdsc,
 	ceph_pagelist_init(pagelist);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	reply = ceph_msg_new(CEPH_MSG_CLIENT_RECONNECT, 0, GFP_NOFS);
 =======
 	reply = ceph_msg_new(CEPH_MSG_CLIENT_RECONNECT, 0, GFP_NOFS, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	reply = ceph_msg_new(CEPH_MSG_CLIENT_RECONNECT, 0, GFP_NOFS, false);
+>>>>>>> refs/remotes/origin/master
 	if (!reply)
 		goto fail_nomsg;
 
@@ -2769,12 +3114,18 @@ static void send_mds_reconnect(struct ceph_mds_client *mdsc,
 	session->s_seq = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ceph_con_open(&session->s_con,
 =======
 	ceph_con_close(&session->s_con);
 	ceph_con_open(&session->s_con,
 		      CEPH_ENTITY_TYPE_MDS, mds,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ceph_con_close(&session->s_con);
+	ceph_con_open(&session->s_con,
+		      CEPH_ENTITY_TYPE_MDS, mds,
+>>>>>>> refs/remotes/origin/master
 		      ceph_mdsmap_get_addr(mdsc->mdsmap, mds));
 
 	/* replay unsafe requests */
@@ -2785,6 +3136,7 @@ static void send_mds_reconnect(struct ceph_mds_client *mdsc,
 	dout("session %p state %s\n", session,
 	     session_state_name(session->s_state));
 
+<<<<<<< HEAD
 	/* drop old cap expires; we're about to reestablish that state */
 	discard_cap_releases(mdsc, session);
 
@@ -2793,12 +3145,43 @@ static void send_mds_reconnect(struct ceph_mds_client *mdsc,
 	if (err)
 		goto fail;
 
+=======
+	spin_lock(&session->s_gen_ttl_lock);
+	session->s_cap_gen++;
+	spin_unlock(&session->s_gen_ttl_lock);
+
+	spin_lock(&session->s_cap_lock);
+	/*
+	 * notify __ceph_remove_cap() that we are composing cap reconnect.
+	 * If a cap get released before being added to the cap reconnect,
+	 * __ceph_remove_cap() should skip queuing cap release.
+	 */
+	session->s_cap_reconnect = 1;
+	/* drop old cap expires; we're about to reestablish that state */
+	discard_cap_releases(mdsc, session);
+	spin_unlock(&session->s_cap_lock);
+
+	/* traverse this session's caps */
+	s_nr_caps = session->s_nr_caps;
+	err = ceph_pagelist_encode_32(pagelist, s_nr_caps);
+	if (err)
+		goto fail;
+
+	recon_state.nr_caps = 0;
+>>>>>>> refs/remotes/origin/master
 	recon_state.pagelist = pagelist;
 	recon_state.flock = session->s_con.peer_features & CEPH_FEATURE_FLOCK;
 	err = iterate_session_caps(session, encode_caps_cb, &recon_state);
 	if (err < 0)
 		goto fail;
 
+<<<<<<< HEAD
+=======
+	spin_lock(&session->s_cap_lock);
+	session->s_cap_reconnect = 0;
+	spin_unlock(&session->s_cap_lock);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * snaprealms.  we provide mds with the ino, seq (version), and
 	 * parent for all of our realms.  If the mds has any newer info,
@@ -2819,11 +3202,28 @@ static void send_mds_reconnect(struct ceph_mds_client *mdsc,
 			goto fail;
 	}
 
+<<<<<<< HEAD
 	reply->pagelist = pagelist;
 	if (recon_state.flock)
 		reply->hdr.version = cpu_to_le16(2);
 	reply->hdr.data_len = cpu_to_le32(pagelist->length);
 	reply->nr_pages = calc_pages_for(0, pagelist->length);
+=======
+	if (recon_state.flock)
+		reply->hdr.version = cpu_to_le16(2);
+
+	/* raced with cap release? */
+	if (s_nr_caps != recon_state.nr_caps) {
+		struct page *page = list_first_entry(&pagelist->head,
+						     struct page, lru);
+		__le32 *addr = kmap_atomic(page);
+		*addr = cpu_to_le32(recon_state.nr_caps);
+		kunmap_atomic(addr);
+	}
+
+	reply->hdr.data_len = cpu_to_le32(pagelist->length);
+	ceph_msg_data_add_pagelist(reply, pagelist);
+>>>>>>> refs/remotes/origin/master
 	ceph_con_send(&session->s_con, reply);
 
 	mutex_unlock(&session->s_mutex);
@@ -2880,11 +3280,16 @@ static void check_new_map(struct ceph_mds_client *mdsc,
 		     session_state_name(s->s_state));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (memcmp(ceph_mdsmap_get_addr(oldmap, i),
 =======
 		if (i >= newmap->m_max_mds ||
 		    memcmp(ceph_mdsmap_get_addr(oldmap, i),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (i >= newmap->m_max_mds ||
+		    memcmp(ceph_mdsmap_get_addr(oldmap, i),
+>>>>>>> refs/remotes/origin/master
 			   ceph_mdsmap_get_addr(newmap, i),
 			   sizeof(struct ceph_entity_addr))) {
 			if (s->s_state == CEPH_MDS_SESSION_OPENING) {
@@ -2978,9 +3383,12 @@ static void handle_lease(struct ceph_mds_client *mdsc,
 	u32 seq;
 	struct ceph_vino vino;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int mask;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct qstr dname;
 	int release = 0;
 
@@ -2992,9 +3400,12 @@ static void handle_lease(struct ceph_mds_client *mdsc,
 	vino.ino = le64_to_cpu(h->ino);
 	vino.snap = CEPH_NOSNAP;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mask = le16_to_cpu(h->mask);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	seq = le32_to_cpu(h->seq);
 	dname.name = (void *)h + sizeof(*h) + sizeof(u32);
 	dname.len = msg->front.iov_len - sizeof(*h) - sizeof(u32);
@@ -3007,12 +3418,17 @@ static void handle_lease(struct ceph_mds_client *mdsc,
 	/* lookup inode */
 	inode = ceph_find_inode(sb, vino);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dout("handle_lease %s, mask %d, ino %llx %p %.*s\n",
 	     ceph_lease_op_name(h->action), mask, vino.ino, inode,
 =======
 	dout("handle_lease %s, ino %llx %p %.*s\n",
 	     ceph_lease_op_name(h->action), vino.ino, inode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dout("handle_lease %s, ino %llx %p %.*s\n",
+	     ceph_lease_op_name(h->action), vino.ino, inode,
+>>>>>>> refs/remotes/origin/master
 	     dname.len, dname.name);
 	if (inode == NULL) {
 		dout("handle_lease no inode %llx\n", vino.ino);
@@ -3037,10 +3453,14 @@ static void handle_lease(struct ceph_mds_client *mdsc,
 	switch (h->action) {
 	case CEPH_MDS_LEASE_REVOKE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (di && di->lease_session == session) {
 =======
 		if (di->lease_session == session) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (di->lease_session == session) {
+>>>>>>> refs/remotes/origin/master
 			if (ceph_seq_cmp(di->lease_seq, seq) > 0)
 				h->seq = cpu_to_le32(di->lease_seq);
 			__ceph_mdsc_drop_dentry_lease(dentry);
@@ -3050,10 +3470,14 @@ static void handle_lease(struct ceph_mds_client *mdsc,
 
 	case CEPH_MDS_LEASE_RENEW:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (di && di->lease_session == session &&
 =======
 		if (di->lease_session == session &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (di->lease_session == session &&
+>>>>>>> refs/remotes/origin/master
 		    di->lease_gen == session->s_cap_gen &&
 		    di->lease_renew_from &&
 		    di->lease_renew_after == 0) {
@@ -3106,18 +3530,25 @@ void ceph_mdsc_lease_send_msg(struct ceph_mds_session *session,
 	len += dnamelen;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg = ceph_msg_new(CEPH_MSG_CLIENT_LEASE, len, GFP_NOFS);
 =======
 	msg = ceph_msg_new(CEPH_MSG_CLIENT_LEASE, len, GFP_NOFS, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msg = ceph_msg_new(CEPH_MSG_CLIENT_LEASE, len, GFP_NOFS, false);
+>>>>>>> refs/remotes/origin/master
 	if (!msg)
 		return;
 	lease = msg->front.iov_base;
 	lease->action = action;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	lease->mask = cpu_to_le16(1);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	lease->ino = cpu_to_le64(ceph_vino(inode).ino);
 	lease->first = lease->last = cpu_to_le64(ceph_vino(inode).snap);
 	lease->seq = cpu_to_le32(seq);
@@ -3140,10 +3571,14 @@ void ceph_mdsc_lease_send_msg(struct ceph_mds_session *session,
  */
 void ceph_mdsc_lease_release(struct ceph_mds_client *mdsc, struct inode *inode,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     struct dentry *dentry, int mask)
 =======
 			     struct dentry *dentry)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     struct dentry *dentry)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ceph_dentry_info *di;
 	struct ceph_mds_session *session;
@@ -3152,9 +3587,12 @@ void ceph_mdsc_lease_release(struct ceph_mds_client *mdsc, struct inode *inode,
 	BUG_ON(inode == NULL);
 	BUG_ON(dentry == NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(mask == 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* is dentry lease valid? */
 	spin_lock(&dentry->d_lock);
@@ -3165,12 +3603,17 @@ void ceph_mdsc_lease_release(struct ceph_mds_client *mdsc, struct inode *inode,
 	    !time_before(jiffies, dentry->d_time)) {
 		dout("lease_release inode %p dentry %p -- "
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     "no lease on %d\n",
 		     inode, dentry, mask);
 =======
 		     "no lease\n",
 		     inode, dentry);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     "no lease\n",
+		     inode, dentry);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&dentry->d_lock);
 		return;
 	}
@@ -3182,12 +3625,17 @@ void ceph_mdsc_lease_release(struct ceph_mds_client *mdsc, struct inode *inode,
 	spin_unlock(&dentry->d_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dout("lease_release inode %p dentry %p mask %d to mds%d\n",
 	     inode, dentry, mask, session->s_mds);
 =======
 	dout("lease_release inode %p dentry %p to mds%d\n",
 	     inode, dentry, session->s_mds);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dout("lease_release inode %p dentry %p to mds%d\n",
+	     inode, dentry, session->s_mds);
+>>>>>>> refs/remotes/origin/master
 	ceph_mdsc_lease_send_msg(session, inode, dentry,
 				 CEPH_MDS_LEASE_RELEASE, seq);
 	ceph_put_mds_session(session);
@@ -3300,8 +3748,15 @@ int ceph_mdsc_init(struct ceph_fs_client *fsc)
 	fsc->mdsc = mdsc;
 	mutex_init(&mdsc->mutex);
 	mdsc->mdsmap = kzalloc(sizeof(*mdsc->mdsmap), GFP_NOFS);
+<<<<<<< HEAD
 	if (mdsc->mdsmap == NULL)
 		return -ENOMEM;
+=======
+	if (mdsc->mdsmap == NULL) {
+		kfree(mdsc);
+		return -ENOMEM;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	init_completion(&mdsc->safe_umount_waiters);
 	init_waitqueue_head(&mdsc->session_close_wq);
@@ -3454,10 +3909,14 @@ void ceph_mdsc_sync(struct ceph_mds_client *mdsc)
  * true if all sessions are closed, or we force unmount
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 bool done_closing_sessions(struct ceph_mds_client *mdsc)
 =======
 static bool done_closing_sessions(struct ceph_mds_client *mdsc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool done_closing_sessions(struct ceph_mds_client *mdsc)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, n = 0;
 
@@ -3695,10 +4154,13 @@ out:
  * authentication
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int get_authorizer(struct ceph_connection *con,
 			  void **buf, int *len, int *proto,
 			  void **reply_buf, int *reply_len, int force_new)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Note: returned pointer is the address of a structure that's
@@ -3706,11 +4168,15 @@ static int get_authorizer(struct ceph_connection *con,
  */
 static struct ceph_auth_handshake *get_authorizer(struct ceph_connection *con,
 					int *proto, int force_new)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct ceph_mds_session *s = con->private;
 	struct ceph_mds_client *mdsc = s->s_mdsc;
 	struct ceph_auth_client *ac = mdsc->fsc->client->monc.auth;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int ret = 0;
 
@@ -3739,6 +4205,8 @@ static struct ceph_auth_handshake *get_authorizer(struct ceph_connection *con,
 	*reply_len = s->s_authorizer_reply_buf_len;
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ceph_auth_handshake *auth = &s->s_auth;
 
 	if (force_new && auth->authorizer) {
@@ -3759,7 +4227,10 @@ static struct ceph_auth_handshake *get_authorizer(struct ceph_connection *con,
 	*proto = ac->protocol;
 
 	return auth;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -3770,10 +4241,14 @@ static int verify_authorizer_reply(struct ceph_connection *con, int len)
 	struct ceph_auth_client *ac = mdsc->fsc->client->monc.auth;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return ac->ops->verify_authorizer_reply(ac, s->s_authorizer, len);
 =======
 	return ceph_auth_verify_authorizer_reply(ac, s->s_auth.authorizer, len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ceph_auth_verify_authorizer_reply(ac, s->s_auth.authorizer, len);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int invalidate_authorizer(struct ceph_connection *con)
@@ -3783,15 +4258,43 @@ static int invalidate_authorizer(struct ceph_connection *con)
 	struct ceph_auth_client *ac = mdsc->fsc->client->monc.auth;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ac->ops->invalidate_authorizer)
 		ac->ops->invalidate_authorizer(ac, CEPH_ENTITY_TYPE_MDS);
 =======
 	ceph_auth_invalidate_authorizer(ac, CEPH_ENTITY_TYPE_MDS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ceph_auth_invalidate_authorizer(ac, CEPH_ENTITY_TYPE_MDS);
+>>>>>>> refs/remotes/origin/master
 
 	return ceph_monc_validate_auth(&mdsc->fsc->client->monc);
 }
 
+<<<<<<< HEAD
+=======
+static struct ceph_msg *mds_alloc_msg(struct ceph_connection *con,
+				struct ceph_msg_header *hdr, int *skip)
+{
+	struct ceph_msg *msg;
+	int type = (int) le16_to_cpu(hdr->type);
+	int front_len = (int) le32_to_cpu(hdr->front_len);
+
+	if (con->in_msg)
+		return con->in_msg;
+
+	*skip = 0;
+	msg = ceph_msg_new(type, front_len, GFP_NOFS, false);
+	if (!msg) {
+		pr_err("unable to allocate msg type %d len %d\n",
+		       type, front_len);
+		return NULL;
+	}
+
+	return msg;
+}
+
+>>>>>>> refs/remotes/origin/master
 static const struct ceph_connection_operations mds_con_ops = {
 	.get = con_get,
 	.put = con_put,
@@ -3800,6 +4303,10 @@ static const struct ceph_connection_operations mds_con_ops = {
 	.verify_authorizer_reply = verify_authorizer_reply,
 	.invalidate_authorizer = invalidate_authorizer,
 	.peer_reset = peer_reset,
+<<<<<<< HEAD
+=======
+	.alloc_msg = mds_alloc_msg,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* eof */

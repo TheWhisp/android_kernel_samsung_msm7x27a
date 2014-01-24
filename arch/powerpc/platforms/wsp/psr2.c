@@ -15,6 +15,7 @@
 #include <linux/of.h>
 #include <linux/smp.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/machdep.h>
 #include <asm/system.h>
@@ -24,6 +25,12 @@
 
 #include <asm/machdep.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/time.h>
+#include <linux/of_fdt.h>
+
+#include <asm/machdep.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/udbg.h>
 
 #include "ics.h"
@@ -34,11 +41,16 @@ static void psr2_spin(void)
 {
 	hard_irq_disable();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (;;) ;
 =======
 	for (;;)
 		continue;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (;;)
+		continue;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void psr2_restart(char *cmd)
@@ -46,6 +58,7 @@ static void psr2_restart(char *cmd)
 	psr2_spin();
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int psr2_probe_devices(void)
 {
@@ -79,24 +92,33 @@ static void __init psr2_setup_arch(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init psr2_probe(void)
 {
 	unsigned long root = of_get_flat_dt_root();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (of_flat_dt_is_compatible(root, "ibm,wsp-chroma")) {
 		/* chroma systems also claim they are psr2s */
 		return 0;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!of_flat_dt_is_compatible(root, "ibm,psr2"))
 		return 0;
 
 	return 1;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __init psr2_init_irq(void)
 {
@@ -109,25 +131,36 @@ define_machine(psr2_md) {
 	.probe			= psr2_probe,
 	.setup_arch		= psr2_setup_arch,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 define_machine(psr2_md) {
 	.name			= "PSR2 A2",
 	.probe			= psr2_probe,
 	.setup_arch		= wsp_setup_arch,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.restart		= psr2_restart,
 	.power_off		= psr2_spin,
 	.halt			= psr2_spin,
 	.calibrate_decr		= generic_calibrate_decr,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.init_IRQ		= psr2_init_irq,
 	.progress		= udbg_progress,
 	.power_save		= book3e_idle,
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.init_IRQ		= wsp_setup_irq,
 	.progress		= udbg_progress,
 	.power_save		= book3e_idle,
 };
 
 machine_arch_initcall(psr2_md, wsp_probe_devices);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

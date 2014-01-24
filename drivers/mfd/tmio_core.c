@@ -7,9 +7,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mfd/tmio.h>
 
 int tmio_core_mmc_enable(void __iomem *cnf, int shift, unsigned long base)

@@ -31,6 +31,10 @@
 #include <linux/in6.h>
 #include <linux/timer.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/u64_stats_sync.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/checksum.h>
 #include <asm/homecache.h>
 
@@ -88,6 +92,7 @@
 /* ISSUE: This has not been thoroughly tested (except at 1500). */
 #define TILE_NET_MTU 1500
 
+<<<<<<< HEAD
 /* HACK: Define to support GSO. */
 /* ISSUE: This may actually hurt performance of the TCP blaster. */
 /* #define TILE_NET_GSO */
@@ -95,6 +100,8 @@
 /* Define this to collapse "duplicate" acks. */
 /* #define IGNORE_DUP_ACKS */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* HACK: Define this to verify incoming packets. */
 /* #define TILE_NET_VERIFY_INGRESS */
 
@@ -156,10 +163,20 @@ struct tile_netio_queue {
  * Statistics counters for a specific cpu and device.
  */
 struct tile_net_stats_t {
+<<<<<<< HEAD
 	u32 rx_packets;
 	u32 rx_bytes;
 	u32 tx_packets;
 	u32 tx_bytes;
+=======
+	struct u64_stats_sync syncp;
+	u64 rx_packets;		/* total packets received	*/
+	u64 tx_packets;		/* total packets transmitted	*/
+	u64 rx_bytes;		/* total bytes received 	*/
+	u64 tx_bytes;		/* total bytes transmitted	*/
+	u64 rx_errors;		/* packets truncated or marked bad by hw */
+	u64 rx_dropped;		/* packets not for us or intf not up */
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -218,8 +235,11 @@ struct tile_net_priv {
 	int network_cpus_count;
 	/* Credits per network cpu. */
 	int network_cpus_credits;
+<<<<<<< HEAD
 	/* Network stats. */
 	struct net_device_stats stats;
+=======
+>>>>>>> refs/remotes/origin/master
 	/* For NetIO bringup retries. */
 	struct delayed_work retry_work;
 	/* Quick access to per cpu data. */
@@ -627,6 +647,7 @@ static void tile_net_handle_egress_timer(unsigned long arg)
 }
 
 
+<<<<<<< HEAD
 #ifdef IGNORE_DUP_ACKS
 
 /*
@@ -700,6 +721,8 @@ static bool is_dup_ack(char *s1, char *s2, unsigned int len)
 
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void tile_net_discard_aux(struct tile_net_cpu *info, int index)
 {
 	struct tile_netio_queue *queue = &info->queue;
@@ -774,6 +797,10 @@ static bool tile_net_poll_aux(struct tile_net_cpu *info, int index)
 	netio_pkt_t *pkt = (netio_pkt_t *)((unsigned long) &qsp[1] + index);
 
 	netio_pkt_metadata_t *metadata = NETIO_PKT_METADATA(pkt);
+<<<<<<< HEAD
+=======
+	netio_pkt_status_t pkt_status = NETIO_PKT_STATUS_M(metadata, pkt);
+>>>>>>> refs/remotes/origin/master
 
 	/* Extract the packet size.  FIXME: Shouldn't the second line */
 	/* get subtracted?  Mostly moot, since it should be "zero". */
@@ -806,6 +833,7 @@ static bool tile_net_poll_aux(struct tile_net_cpu *info, int index)
 #endif /* TILE_NET_DUMP_PACKETS */
 
 #ifdef TILE_NET_VERIFY_INGRESS
+<<<<<<< HEAD
 	if (!NETIO_PKT_L4_CSUM_CORRECT_M(metadata, pkt) &&
 	    NETIO_PKT_L4_CSUM_CALCULATED_M(metadata, pkt)) {
 		/* Bug 6624: Includes UDP packets with a "zero" checksum. */
@@ -825,11 +853,17 @@ static bool tile_net_poll_aux(struct tile_net_cpu *info, int index)
 		break;
 	case NETIO_PKT_STATUS_BAD:
 		pr_warning("Unexpected BAD %ld byte packet.\n", len);
+=======
+	if (pkt_status == NETIO_PKT_STATUS_OVERSIZE && len >= 64) {
+		dump_packet(buf, len, "rx");
+		panic("Unexpected OVERSIZE.");
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 
 	filter = 0;
 
+<<<<<<< HEAD
 	/* ISSUE: Filter TCP packets with "bad" checksums? */
 
 	if (!(dev->flags & IFF_UP)) {
@@ -850,6 +884,34 @@ static bool tile_net_poll_aux(struct tile_net_cpu *info, int index)
 	if (filter) {
 
 		/* ISSUE: Update "drop" statistics? */
+=======
+	if (pkt_status == NETIO_PKT_STATUS_BAD) {
+		/* Handle CRC error and hardware truncation. */
+		filter = 2;
+	} else if (!(dev->flags & IFF_UP)) {
+		/* Filter packets received before we're up. */
+		filter = 1;
+	} else if (NETIO_PKT_ETHERTYPE_RECOGNIZED_M(metadata, pkt) &&
+		   pkt_status == NETIO_PKT_STATUS_UNDERSIZE) {
+		/* Filter "truncated" packets. */
+		filter = 2;
+	} else if (!(dev->flags & IFF_PROMISC)) {
+		if (!is_multicast_ether_addr(buf)) {
+			/* Filter packets not for our address. */
+			const u8 *mine = dev->dev_addr;
+			filter = !ether_addr_equal(mine, buf);
+		}
+	}
+
+	u64_stats_update_begin(&stats->syncp);
+
+	if (filter != 0) {
+
+		if (filter == 1)
+			stats->rx_dropped++;
+		else
+			stats->rx_errors++;
+>>>>>>> refs/remotes/origin/master
 
 		tile_net_provide_linux_buffer(info, va, small);
 
@@ -881,6 +943,11 @@ static bool tile_net_poll_aux(struct tile_net_cpu *info, int index)
 		stats->rx_bytes += len;
 	}
 
+<<<<<<< HEAD
+=======
+	u64_stats_update_end(&stats->syncp);
+
+>>>>>>> refs/remotes/origin/master
 	/* ISSUE: It would be nice to defer this until the packet has */
 	/* actually been processed. */
 	tile_net_return_credit(info);
@@ -1093,6 +1160,11 @@ static void tile_net_register(void *dev_ptr)
 	info->egress_timer.data = (long)info;
 	info->egress_timer.function = tile_net_handle_egress_timer;
 
+<<<<<<< HEAD
+=======
+	u64_stats_init(&info->stats.syncp);
+
+>>>>>>> refs/remotes/origin/master
 	priv->cpu[my_cpu] = info;
 
 	/*
@@ -1907,8 +1979,15 @@ busy:
 		kfree_skb(olds[i]);
 
 	/* Update stats. */
+<<<<<<< HEAD
 	stats->tx_packets += num_segs;
 	stats->tx_bytes += (num_segs * sh_len) + d_len;
+=======
+	u64_stats_update_begin(&stats->syncp);
+	stats->tx_packets += num_segs;
+	stats->tx_bytes += (num_segs * sh_len) + d_len;
+	u64_stats_update_end(&stats->syncp);
+>>>>>>> refs/remotes/origin/master
 
 	/* Make sure the egress timer is scheduled. */
 	tile_net_schedule_egress_timer(info);
@@ -1936,7 +2015,11 @@ static int tile_net_tx(struct sk_buff *skb, struct net_device *dev)
 
 	unsigned int csum_start = skb_checksum_start_offset(skb);
 
+<<<<<<< HEAD
 	lepp_frag_t frags[LEPP_MAX_FRAGS];
+=======
+	lepp_frag_t frags[1 + MAX_SKB_FRAGS];
+>>>>>>> refs/remotes/origin/master
 
 	unsigned int num_frags;
 
@@ -1951,7 +2034,11 @@ static int tile_net_tx(struct sk_buff *skb, struct net_device *dev)
 	unsigned int cmd_head, cmd_tail, cmd_next;
 	unsigned int comp_tail;
 
+<<<<<<< HEAD
 	lepp_cmd_t cmds[LEPP_MAX_FRAGS];
+=======
+	lepp_cmd_t cmds[1 + MAX_SKB_FRAGS];
+>>>>>>> refs/remotes/origin/master
 
 
 	/*
@@ -2089,8 +2176,15 @@ busy:
 		kfree_skb(olds[i]);
 
 	/* HACK: Track "expanded" size for short packets (e.g. 42 < 60). */
+<<<<<<< HEAD
 	stats->tx_packets++;
 	stats->tx_bytes += ((len >= ETH_ZLEN) ? len : ETH_ZLEN);
+=======
+	u64_stats_update_begin(&stats->syncp);
+	stats->tx_packets++;
+	stats->tx_bytes += ((len >= ETH_ZLEN) ? len : ETH_ZLEN);
+	u64_stats_update_end(&stats->syncp);
+>>>>>>> refs/remotes/origin/master
 
 	/* Make sure the egress timer is scheduled. */
 	tile_net_schedule_egress_timer(info);
@@ -2127,6 +2221,7 @@ static int tile_net_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
  *
  * Returns the address of the device statistics structure.
  */
+<<<<<<< HEAD
 static struct net_device_stats *tile_net_get_stats(struct net_device *dev)
 {
 	struct tile_net_priv *priv = netdev_priv(dev);
@@ -2151,6 +2246,53 @@ static struct net_device_stats *tile_net_get_stats(struct net_device *dev)
 	priv->stats.tx_bytes = tx_bytes;
 
 	return &priv->stats;
+=======
+static struct rtnl_link_stats64 *tile_net_get_stats64(struct net_device *dev,
+		struct rtnl_link_stats64 *stats)
+{
+	struct tile_net_priv *priv = netdev_priv(dev);
+	u64 rx_packets = 0, tx_packets = 0;
+	u64 rx_bytes = 0, tx_bytes = 0;
+	u64 rx_errors = 0, rx_dropped = 0;
+	int i;
+
+	for_each_online_cpu(i) {
+		struct tile_net_stats_t *cpu_stats;
+		u64 trx_packets, ttx_packets, trx_bytes, ttx_bytes;
+		u64 trx_errors, trx_dropped;
+		unsigned int start;
+
+		if (priv->cpu[i] == NULL)
+			continue;
+		cpu_stats = &priv->cpu[i]->stats;
+
+		do {
+			start = u64_stats_fetch_begin_bh(&cpu_stats->syncp);
+			trx_packets = cpu_stats->rx_packets;
+			ttx_packets = cpu_stats->tx_packets;
+			trx_bytes   = cpu_stats->rx_bytes;
+			ttx_bytes   = cpu_stats->tx_bytes;
+			trx_errors  = cpu_stats->rx_errors;
+			trx_dropped = cpu_stats->rx_dropped;
+		} while (u64_stats_fetch_retry_bh(&cpu_stats->syncp, start));
+
+		rx_packets += trx_packets;
+		tx_packets += ttx_packets;
+		rx_bytes   += trx_bytes;
+		tx_bytes   += ttx_bytes;
+		rx_errors  += trx_errors;
+		rx_dropped += trx_dropped;
+	}
+
+	stats->rx_packets = rx_packets;
+	stats->tx_packets = tx_packets;
+	stats->rx_bytes   = rx_bytes;
+	stats->tx_bytes   = tx_bytes;
+	stats->rx_errors  = rx_errors;
+	stats->rx_dropped = rx_dropped;
+
+	return stats;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -2195,7 +2337,10 @@ static int tile_net_set_mac_address(struct net_device *dev, void *p)
 
 	/* ISSUE: Note that "dev_addr" is now a pointer. */
 	memcpy(dev->dev_addr, addr->sa_data, dev->addr_len);
+<<<<<<< HEAD
 	dev->addr_assign_type &= ~NET_ADDR_RANDOM;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -2288,7 +2433,11 @@ static const struct net_device_ops tile_net_ops = {
 	.ndo_stop = tile_net_stop,
 	.ndo_start_xmit = tile_net_tx,
 	.ndo_do_ioctl = tile_net_ioctl,
+<<<<<<< HEAD
 	.ndo_get_stats = tile_net_get_stats,
+=======
+	.ndo_get_stats64 = tile_net_get_stats64,
+>>>>>>> refs/remotes/origin/master
 	.ndo_change_mtu = tile_net_change_mtu,
 	.ndo_tx_timeout = tile_net_tx_timeout,
 	.ndo_set_mac_address = tile_net_set_mac_address,
@@ -2306,6 +2455,7 @@ static const struct net_device_ops tile_net_ops = {
  */
 static void tile_net_setup(struct net_device *dev)
 {
+<<<<<<< HEAD
 	PDEBUG("tile_net_setup()\n");
 
 	ether_setup(dev);
@@ -2339,6 +2489,32 @@ static void tile_net_setup(struct net_device *dev)
 	dev->tx_queue_len = TILE_NET_TX_QUEUE_LEN;
 
 	dev->mtu = TILE_NET_MTU;
+=======
+	netdev_features_t features = 0;
+
+	ether_setup(dev);
+	dev->netdev_ops = &tile_net_ops;
+	dev->watchdog_timeo = TILE_NET_TIMEOUT;
+	dev->tx_queue_len = TILE_NET_TX_QUEUE_LEN;
+	dev->mtu = TILE_NET_MTU;
+
+	features |= NETIF_F_HW_CSUM;
+	features |= NETIF_F_SG;
+
+	/* We support TSO iff the HV supports sufficient frags. */
+	if (LEPP_MAX_FRAGS >= 1 + MAX_SKB_FRAGS)
+		features |= NETIF_F_TSO;
+
+	/* We can't support HIGHDMA without hash_default, since we need
+	 * to be able to finv() with a VA if we don't have hash_default.
+	 */
+	if (hash_default)
+		features |= NETIF_F_HIGHDMA;
+
+	dev->hw_features   |= features;
+	dev->vlan_features |= features;
+	dev->features      |= features;
+>>>>>>> refs/remotes/origin/master
 }
 
 

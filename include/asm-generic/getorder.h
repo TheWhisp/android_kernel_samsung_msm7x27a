@@ -5,6 +5,7 @@
 
 #include <linux/compiler.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /* Pure 2^n version of get_order */
 static inline __attribute_const__ int get_order(unsigned long size)
@@ -21,6 +22,8 @@ static inline __attribute_const__ int get_order(unsigned long size)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/log2.h>
 
 /*
@@ -73,7 +76,10 @@ int __get_order(unsigned long size)
 	__get_order(n)						\
 )
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* __ASSEMBLY__ */
 
 #endif	/* __ASM_GENERIC_GETORDER_H */

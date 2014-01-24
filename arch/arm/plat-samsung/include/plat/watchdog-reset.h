@@ -11,6 +11,7 @@
 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <plat/clock.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -63,3 +64,13 @@ static inline void arch_wdt_reset(void)
 	/* delay to allow the serial port to show the message */
 	mdelay(50);
 }
+=======
+#ifndef __PLAT_SAMSUNG_WATCHDOG_RESET_H
+#define __PLAT_SAMSUNG_WATCHDOG_RESET_H
+
+extern void samsung_wdt_reset(void);
+extern void samsung_wdt_reset_of_init(void);
+extern void samsung_wdt_reset_init(void __iomem *base);
+
+#endif /* __PLAT_SAMSUNG_WATCHDOG_RESET_H */
+>>>>>>> refs/remotes/origin/master

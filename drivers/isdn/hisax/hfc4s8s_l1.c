@@ -94,12 +94,17 @@ static struct pci_device_id hfc4s8s_ids[] = {
 	 .driver_data =
 	 (unsigned long) &((hfc4s8s_param) {CHIP_ID_4S, CLOCKMODE_0, 4,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					    "HFC-4S Evaluation Board"}),
 	 },
 =======
 				 "HFC-4S Evaluation Board"}),
 	},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 "HFC-4S Evaluation Board"}),
+	},
+>>>>>>> refs/remotes/origin/master
 	{.vendor = PCI_VENDOR_ID_CCD,
 	 .device = PCI_DEVICE_ID_8S,
 	 .subvendor = 0x1397,
@@ -107,12 +112,17 @@ static struct pci_device_id hfc4s8s_ids[] = {
 	 .driver_data =
 	 (unsigned long) &((hfc4s8s_param) {CHIP_ID_8S, CLOCKMODE_0, 8,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					    "HFC-8S Evaluation Board"}),
 	 },
 =======
 				 "HFC-8S Evaluation Board"}),
 	},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 "HFC-8S Evaluation Board"}),
+	},
+>>>>>>> refs/remotes/origin/master
 	{.vendor = PCI_VENDOR_ID_CCD,
 	 .device = PCI_DEVICE_ID_4S,
 	 .subvendor = 0x1397,
@@ -120,12 +130,17 @@ static struct pci_device_id hfc4s8s_ids[] = {
 	 .driver_data =
 	 (unsigned long) &((hfc4s8s_param) {CHIP_ID_4S, CLOCKMODE_1, 4,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					    "IOB4ST"}),
 	 },
 =======
 				 "IOB4ST"}),
 	},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 "IOB4ST"}),
+	},
+>>>>>>> refs/remotes/origin/master
 	{.vendor = PCI_VENDOR_ID_CCD,
 	 .device = PCI_DEVICE_ID_8S,
 	 .subvendor = 0x1397,
@@ -133,12 +148,17 @@ static struct pci_device_id hfc4s8s_ids[] = {
 	 .driver_data =
 	 (unsigned long) &((hfc4s8s_param) {CHIP_ID_8S, CLOCKMODE_1, 8,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					    "IOB8ST"}),
 	 },
 =======
 				 "IOB8ST"}),
 	},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 "IOB8ST"}),
+	},
+>>>>>>> refs/remotes/origin/master
 	{}
 };
 
@@ -224,6 +244,7 @@ typedef struct _hfc4s8s_hw {
 
 /* memory write and dummy IO read to avoid PCI byte merge problems */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define Write_hfc8(a,b,c) {(*((volatile u_char *)(a->membase+b)) = c); inb(a->iobase+4);}
 /* memory write without dummy IO access for fifo data access */
 #define fWrite_hfc8(a,b,c) (*((volatile u_char *)(a->membase+b)) = c)
@@ -233,6 +254,8 @@ typedef struct _hfc4s8s_hw {
 #define Write_hfc32(a,b,c) (*((volatile unsigned long *)(a->membase+b)) = c)
 #define Read_hfc32(a,b) (*((volatile unsigned long *)(a->membase+b)))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define Write_hfc8(a, b, c) {(*((volatile u_char *)(a->membase + b)) = c); inb(a->iobase + 4);}
 /* memory write without dummy IO access for fifo data access */
 #define fWrite_hfc8(a, b, c) (*((volatile u_char *)(a->membase + b)) = c)
@@ -241,7 +264,10 @@ typedef struct _hfc4s8s_hw {
 #define Read_hfc16(a, b) (*((volatile unsigned short *)(a->membase + b)))
 #define Write_hfc32(a, b, c) (*((volatile unsigned long *)(a->membase + b)) = c)
 #define Read_hfc32(a, b) (*((volatile unsigned long *)(a->membase + b)))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define wait_busy(a) {while ((Read_hfc8(a, R_STATUS) & M_BUSY));}
 #define PCI_ENA_MEMIO	0x03
 
@@ -250,20 +276,28 @@ typedef struct _hfc4s8s_hw {
 /* inline functions io mapped */
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 SetRegAddr(hfc4s8s_hw * a, u_char b)
 =======
 SetRegAddr(hfc4s8s_hw *a, u_char b)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+SetRegAddr(hfc4s8s_hw *a, u_char b)
+>>>>>>> refs/remotes/origin/master
 {
 	outb(b, (a->iobase) + 4);
 }
 
 static inline u_char
 <<<<<<< HEAD
+<<<<<<< HEAD
 GetRegAddr(hfc4s8s_hw * a)
 =======
 GetRegAddr(hfc4s8s_hw *a)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+GetRegAddr(hfc4s8s_hw *a)
+>>>>>>> refs/remotes/origin/master
 {
 	return (inb((volatile u_int) (a->iobase + 4)));
 }
@@ -271,10 +305,14 @@ GetRegAddr(hfc4s8s_hw *a)
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 Write_hfc8(hfc4s8s_hw * a, u_char b, u_char c)
 =======
 Write_hfc8(hfc4s8s_hw *a, u_char b, u_char c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Write_hfc8(hfc4s8s_hw *a, u_char b, u_char c)
+>>>>>>> refs/remotes/origin/master
 {
 	SetRegAddr(a, b);
 	outb(c, a->iobase);
@@ -282,20 +320,28 @@ Write_hfc8(hfc4s8s_hw *a, u_char b, u_char c)
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 fWrite_hfc8(hfc4s8s_hw * a, u_char c)
 =======
 fWrite_hfc8(hfc4s8s_hw *a, u_char c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+fWrite_hfc8(hfc4s8s_hw *a, u_char c)
+>>>>>>> refs/remotes/origin/master
 {
 	outb(c, a->iobase);
 }
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 Write_hfc16(hfc4s8s_hw * a, u_char b, u_short c)
 =======
 Write_hfc16(hfc4s8s_hw *a, u_char b, u_short c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Write_hfc16(hfc4s8s_hw *a, u_char b, u_short c)
+>>>>>>> refs/remotes/origin/master
 {
 	SetRegAddr(a, b);
 	outw(c, a->iobase);
@@ -303,10 +349,14 @@ Write_hfc16(hfc4s8s_hw *a, u_char b, u_short c)
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 Write_hfc32(hfc4s8s_hw * a, u_char b, u_long c)
 =======
 Write_hfc32(hfc4s8s_hw *a, u_char b, u_long c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Write_hfc32(hfc4s8s_hw *a, u_char b, u_long c)
+>>>>>>> refs/remotes/origin/master
 {
 	SetRegAddr(a, b);
 	outl(c, a->iobase);
@@ -314,20 +364,28 @@ Write_hfc32(hfc4s8s_hw *a, u_char b, u_long c)
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 fWrite_hfc32(hfc4s8s_hw * a, u_long c)
 =======
 fWrite_hfc32(hfc4s8s_hw *a, u_long c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+fWrite_hfc32(hfc4s8s_hw *a, u_long c)
+>>>>>>> refs/remotes/origin/master
 {
 	outl(c, a->iobase);
 }
 
 static inline u_char
 <<<<<<< HEAD
+<<<<<<< HEAD
 Read_hfc8(hfc4s8s_hw * a, u_char b)
 =======
 Read_hfc8(hfc4s8s_hw *a, u_char b)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Read_hfc8(hfc4s8s_hw *a, u_char b)
+>>>>>>> refs/remotes/origin/master
 {
 	SetRegAddr(a, b);
 	return (inb((volatile u_int) a->iobase));
@@ -335,10 +393,14 @@ Read_hfc8(hfc4s8s_hw *a, u_char b)
 
 static inline u_char
 <<<<<<< HEAD
+<<<<<<< HEAD
 fRead_hfc8(hfc4s8s_hw * a)
 =======
 fRead_hfc8(hfc4s8s_hw *a)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+fRead_hfc8(hfc4s8s_hw *a)
+>>>>>>> refs/remotes/origin/master
 {
 	return (inb((volatile u_int) a->iobase));
 }
@@ -346,10 +408,14 @@ fRead_hfc8(hfc4s8s_hw *a)
 
 static inline u_short
 <<<<<<< HEAD
+<<<<<<< HEAD
 Read_hfc16(hfc4s8s_hw * a, u_char b)
 =======
 Read_hfc16(hfc4s8s_hw *a, u_char b)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Read_hfc16(hfc4s8s_hw *a, u_char b)
+>>>>>>> refs/remotes/origin/master
 {
 	SetRegAddr(a, b);
 	return (inw((volatile u_int) a->iobase));
@@ -357,10 +423,14 @@ Read_hfc16(hfc4s8s_hw *a, u_char b)
 
 static inline u_long
 <<<<<<< HEAD
+<<<<<<< HEAD
 Read_hfc32(hfc4s8s_hw * a, u_char b)
 =======
 Read_hfc32(hfc4s8s_hw *a, u_char b)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Read_hfc32(hfc4s8s_hw *a, u_char b)
+>>>>>>> refs/remotes/origin/master
 {
 	SetRegAddr(a, b);
 	return (inl((volatile u_int) a->iobase));
@@ -368,20 +438,28 @@ Read_hfc32(hfc4s8s_hw *a, u_char b)
 
 static inline u_long
 <<<<<<< HEAD
+<<<<<<< HEAD
 fRead_hfc32(hfc4s8s_hw * a)
 =======
 fRead_hfc32(hfc4s8s_hw *a)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+fRead_hfc32(hfc4s8s_hw *a)
+>>>>>>> refs/remotes/origin/master
 {
 	return (inl((volatile u_int) a->iobase));
 }
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 wait_busy(hfc4s8s_hw * a)
 =======
 wait_busy(hfc4s8s_hw *a)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+wait_busy(hfc4s8s_hw *a)
+>>>>>>> refs/remotes/origin/master
 {
 	SetRegAddr(a, R_STATUS);
 	while (inb((volatile u_int) a->iobase) & M_BUSY);
@@ -397,10 +475,14 @@ wait_busy(hfc4s8s_hw *a)
 /******************************************************/
 static u_char
 <<<<<<< HEAD
+<<<<<<< HEAD
 Read_hfc8_stable(hfc4s8s_hw * hw, int reg)
 =======
 Read_hfc8_stable(hfc4s8s_hw *hw, int reg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Read_hfc8_stable(hfc4s8s_hw *hw, int reg)
+>>>>>>> refs/remotes/origin/master
 {
 	u_char ref8;
 	u_char in8;
@@ -413,10 +495,14 @@ Read_hfc8_stable(hfc4s8s_hw *hw, int reg)
 
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 Read_hfc16_stable(hfc4s8s_hw * hw, int reg)
 =======
 Read_hfc16_stable(hfc4s8s_hw *hw, int reg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Read_hfc16_stable(hfc4s8s_hw *hw, int reg)
+>>>>>>> refs/remotes/origin/master
 {
 	int ref16;
 	int in16;
@@ -440,6 +526,7 @@ dch_l2l1(struct hisax_d_if *iface, int pr, void *arg)
 
 	switch (pr) {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (PH_DATA | REQUEST):
 			if (!l1->enabled) {
@@ -503,6 +590,8 @@ dch_l2l1(struct hisax_d_if *iface, int pr, void *arg)
 			       pr);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (PH_DATA | REQUEST):
 		if (!l1->enabled) {
 			dev_kfree_skb(skb);
@@ -564,7 +653,10 @@ dch_l2l1(struct hisax_d_if *iface, int pr, void *arg)
 		       "HFC-4S/8S: Unknown D-chan cmd 0x%x received, ignored\n",
 		       pr);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (!l1->enabled)
 		l1->d_if.ifc.l1l2(&l1->d_if.ifc,
@@ -585,6 +677,7 @@ bch_l2l1(struct hisax_if *ifc, int pr, void *arg)
 
 	switch (pr) {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (PH_DATA | REQUEST):
 			if (!l1->enabled || (bch->mode == L1_MODE_NULL)) {
@@ -780,6 +873,8 @@ bch_l2l1(struct hisax_if *ifc, int pr, void *arg)
 			       pr);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (PH_DATA | REQUEST):
 		if (!l1->enabled || (bch->mode == L1_MODE_NULL)) {
 			dev_kfree_skb(skb);
@@ -973,7 +1068,10 @@ bch_l2l1(struct hisax_if *ifc, int pr, void *arg)
 		       "HFC-4S/8S: Unknown B-chan cmd 0x%x received, ignored\n",
 		       pr);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (!l1->enabled)
 		bch->b_if.ifc.l1l2(&bch->b_if.ifc,
@@ -1094,10 +1192,14 @@ rx_d_frame(struct hfc4s8s_l1 *l1p, int ech)
 					Read_hfc8(l1p->hw, A_FIFO_DATA0);
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 					fRead_hfc8(l1p->hw);
 =======
 				fRead_hfc8(l1p->hw);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				fRead_hfc8(l1p->hw);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 				Write_hfc8(l1p->hw, A_INC_RES_FIFO, 1);
@@ -1116,10 +1218,14 @@ rx_d_frame(struct hfc4s8s_l1 *l1p, int ech)
 #ifdef HISAX_HFC4S8S_PCIMEM
 			*((unsigned long *) cp) =
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    Read_hfc32(l1p->hw, A_FIFO_DATA0);
 =======
 				Read_hfc32(l1p->hw, A_FIFO_DATA0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				Read_hfc32(l1p->hw, A_FIFO_DATA0);
+>>>>>>> refs/remotes/origin/master
 #else
 			*((unsigned long *) cp) = fRead_hfc32(l1p->hw);
 #endif
@@ -1132,10 +1238,14 @@ rx_d_frame(struct hfc4s8s_l1 *l1p, int ech)
 			*cp++ = Read_hfc8(l1p->hw, A_FIFO_DATA0);
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 			*cp++ = fRead_hfc8(l1p->hw);
 =======
 		*cp++ = fRead_hfc8(l1p->hw);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*cp++ = fRead_hfc8(l1p->hw);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 		Write_hfc8(l1p->hw, A_INC_RES_FIFO, 1);	/* increment f counter */
@@ -1230,16 +1340,22 @@ rx_b_frame(struct hfc4s8s_btype *bch)
 #ifdef HISAX_HFC4S8S_PCIMEM
 			*((unsigned long *) bch->rx_ptr) =
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    Read_hfc32(l1->hw, A_FIFO_DATA0);
 #else
 			*((unsigned long *) bch->rx_ptr) =
 			    fRead_hfc32(l1->hw);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				Read_hfc32(l1->hw, A_FIFO_DATA0);
 #else
 			*((unsigned long *) bch->rx_ptr) =
 				fRead_hfc32(l1->hw);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 			bch->rx_ptr += 4;
 			z1 -= 4;
@@ -1250,10 +1366,14 @@ rx_b_frame(struct hfc4s8s_btype *bch)
 			*(bch->rx_ptr++) = Read_hfc8(l1->hw, A_FIFO_DATA0);
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 			*(bch->rx_ptr++) = fRead_hfc8(l1->hw);
 =======
 		*(bch->rx_ptr++) = fRead_hfc8(l1->hw);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*(bch->rx_ptr++) = fRead_hfc8(l1->hw);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 		if (hdlc_complete) {
@@ -1371,10 +1491,14 @@ tx_b_frame(struct hfc4s8s_btype *bch)
 			hdlc_num = Read_hfc8(l1->hw, A_F1) & MAX_F_CNT;
 			hdlc_num -=
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    (Read_hfc8_stable(l1->hw, A_F2) & MAX_F_CNT);
 =======
 				(Read_hfc8_stable(l1->hw, A_F2) & MAX_F_CNT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				(Read_hfc8_stable(l1->hw, A_F2) & MAX_F_CNT);
+>>>>>>> refs/remotes/origin/master
 			if (hdlc_num < 0)
 				hdlc_num += 16;
 			if (hdlc_num >= 15)
@@ -1387,10 +1511,14 @@ tx_b_frame(struct hfc4s8s_btype *bch)
 				l1->hw->mr.fifo_slow_timer_service[l1->
 								   st_num]
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    &= ~((bch->bchan == 1) ? 1 : 4);
 =======
 					&= ~((bch->bchan == 1) ? 1 : 4);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					&= ~((bch->bchan == 1) ? 1 : 4);
+>>>>>>> refs/remotes/origin/master
 				break;	/* list empty */
 			}
 			bch->tx_skb = skb;
@@ -1400,16 +1528,22 @@ tx_b_frame(struct hfc4s8s_btype *bch)
 		if (!hdlc_num)
 			l1->hw->mr.fifo_slow_timer_service[l1->st_num] |=
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    ((bch->bchan == 1) ? 1 : 4);
 		else
 			l1->hw->mr.fifo_slow_timer_service[l1->st_num] &=
 			    ~((bch->bchan == 1) ? 1 : 4);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				((bch->bchan == 1) ? 1 : 4);
 		else
 			l1->hw->mr.fifo_slow_timer_service[l1->st_num] &=
 				~((bch->bchan == 1) ? 1 : 4);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		max = Read_hfc16_stable(l1->hw, A_Z2);
 		max -= Read_hfc16(l1->hw, A_Z1);
@@ -1445,10 +1579,14 @@ tx_b_frame(struct hfc4s8s_btype *bch)
 			fWrite_hfc8(l1->hw, A_FIFO_DATA0, *cp++);
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 			fWrite_hfc8(l1->hw, *cp++);
 =======
 		fWrite_hfc8(l1->hw, *cp++);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		fWrite_hfc8(l1->hw, *cp++);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 		if (bch->tx_cnt >= skb->len) {
@@ -1500,12 +1638,17 @@ hfc4s8s_bh(struct work_struct *work)
 						   l1p->st_num);
 					l1p->l1_state =
 <<<<<<< HEAD
+<<<<<<< HEAD
 					    Read_hfc8(l1p->hw,
 						      A_ST_RD_STA) & 0xf;
 =======
 						Read_hfc8(l1p->hw,
 							  A_ST_RD_STA) & 0xf;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						Read_hfc8(l1p->hw,
+							  A_ST_RD_STA) & 0xf;
+>>>>>>> refs/remotes/origin/master
 
 					if ((oldstate == 3)
 					    && (l1p->l1_state != 3))
@@ -1522,6 +1665,7 @@ hfc4s8s_bh(struct work_struct *work)
 						if (l1p->l1_state == 3) {
 							l1p->d_if.ifc.
 <<<<<<< HEAD
+<<<<<<< HEAD
 							    l1l2(&l1p->
 								 d_if.ifc,
 								 PH_ACTIVATE
@@ -1529,13 +1673,18 @@ hfc4s8s_bh(struct work_struct *work)
 								 INDICATION,
 								 NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 								l1l2(&l1p->
 								     d_if.ifc,
 								     PH_ACTIVATE
 								     |
 								     INDICATION,
 								     NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						}
 					} else {
 						/* allow transition */
@@ -1556,12 +1705,17 @@ hfc4s8s_bh(struct work_struct *work)
 						   l1p->st_num);
 					l1p->l1_state =
 <<<<<<< HEAD
+<<<<<<< HEAD
 					    Read_hfc8(l1p->hw,
 						      A_ST_RD_STA) & 0xf;
 =======
 						Read_hfc8(l1p->hw,
 							  A_ST_RD_STA) & 0xf;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						Read_hfc8(l1p->hw,
+							  A_ST_RD_STA) & 0xf;
+>>>>>>> refs/remotes/origin/master
 
 					if (((l1p->l1_state == 3) &&
 					     ((oldstate == 7) ||
@@ -1578,6 +1732,7 @@ hfc4s8s_bh(struct work_struct *work)
 								  l1_timer);
 							l1p->d_if.ifc.
 <<<<<<< HEAD
+<<<<<<< HEAD
 							    l1l2(&l1p->
 								 d_if.ifc,
 								 PH_ACTIVATE
@@ -1585,18 +1740,24 @@ hfc4s8s_bh(struct work_struct *work)
 								 INDICATION,
 								 NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 								l1l2(&l1p->
 								     d_if.ifc,
 								     PH_ACTIVATE
 								     |
 								     INDICATION,
 								     NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 							tx_d_frame(l1p);
 						}
 						if (l1p->l1_state == 3) {
 							if (oldstate != 3)
 								l1p->d_if.
+<<<<<<< HEAD
 <<<<<<< HEAD
 								    ifc.
 								    l1l2
@@ -1608,6 +1769,8 @@ hfc4s8s_bh(struct work_struct *work)
 								     INDICATION,
 								     NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 									ifc.
 									l1l2
 									(&l1p->
@@ -1617,7 +1780,10 @@ hfc4s8s_bh(struct work_struct *work)
 									 |
 									 INDICATION,
 									 NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						}
 					}
 					printk(KERN_INFO
@@ -1643,12 +1809,17 @@ hfc4s8s_bh(struct work_struct *work)
 			if (hw->fifo_sched_cnt <= 0) {
 				*fifo_stat |=
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    hw->mr.fifo_slow_timer_service[l1p->
 								   st_num];
 =======
 					hw->mr.fifo_slow_timer_service[l1p->
 								       st_num];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					hw->mr.fifo_slow_timer_service[l1p->
+								       st_num];
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		/* ignore fifo 6 (TX E fifo) */
@@ -1727,16 +1898,22 @@ hfc4s8s_interrupt(int intno, void *dev_id)
 	/* Layer 1 State change */
 	hw->mr.r_irq_statech |=
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    (Read_hfc8(hw, R_SCI) & hw->mr.r_irqmsk_statchg);
 	if (!
 	    (b = (Read_hfc8(hw, R_STATUS) & (M_MISC_IRQSTA | M_FR_IRQSTA)))
 && !hw->mr.r_irq_statech) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		(Read_hfc8(hw, R_SCI) & hw->mr.r_irqmsk_statchg);
 	if (!
 	    (b = (Read_hfc8(hw, R_STATUS) & (M_MISC_IRQSTA | M_FR_IRQSTA)))
 	    && !hw->mr.r_irq_statech) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef	HISAX_HFC4S8S_PCIMEM
 		SetRegAddr(hw, old_ioreg);
 #endif
@@ -1778,10 +1955,14 @@ hfc4s8s_interrupt(int intno, void *dev_id)
 /***********************************************************************/
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 chipreset(hfc4s8s_hw * hw)
 =======
 chipreset(hfc4s8s_hw *hw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+chipreset(hfc4s8s_hw *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	u_long flags;
 
@@ -1811,10 +1992,14 @@ chipreset(hfc4s8s_hw *hw)
 /********************************************/
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 hfc_hardware_enable(hfc4s8s_hw * hw, int enable, int nt_mode)
 =======
 hfc_hardware_enable(hfc4s8s_hw *hw, int enable, int nt_mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+hfc_hardware_enable(hfc4s8s_hw *hw, int enable, int nt_mode)
+>>>>>>> refs/remotes/origin/master
 {
 	u_long flags;
 	char if_name[40];
@@ -1922,10 +2107,14 @@ hfc_hardware_enable(hfc4s8s_hw *hw, int enable, int nt_mode)
 /******************************************/
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 release_pci_ports(hfc4s8s_hw * hw)
 =======
 release_pci_ports(hfc4s8s_hw *hw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+release_pci_ports(hfc4s8s_hw *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	pci_write_config_word(hw->pdev, PCI_COMMAND, 0);
 #ifdef HISAX_HFC4S8S_PCIMEM
@@ -1942,10 +2131,14 @@ release_pci_ports(hfc4s8s_hw *hw)
 /*****************************************/
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 enable_pci_ports(hfc4s8s_hw * hw)
 =======
 enable_pci_ports(hfc4s8s_hw *hw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enable_pci_ports(hfc4s8s_hw *hw)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef HISAX_HFC4S8S_PCIMEM
 	pci_write_config_word(hw->pdev, PCI_COMMAND, PCI_ENA_MEMIO);
@@ -1958,12 +2151,17 @@ enable_pci_ports(hfc4s8s_hw *hw)
 /* initialise the HFC-4s/8s hardware */
 /* return 0 on success.              */
 /*************************************/
+<<<<<<< HEAD
 static int __devinit
 <<<<<<< HEAD
 setup_instance(hfc4s8s_hw * hw)
 =======
 setup_instance(hfc4s8s_hw *hw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int
+setup_instance(hfc4s8s_hw *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = -EIO;
 	int i;
@@ -2041,10 +2239,14 @@ setup_instance(hfc4s8s_hw *hw)
 	return (0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       out:
 =======
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	hw->irq = 0;
 	release_pci_ports(hw);
 	kfree(hw);
@@ -2054,7 +2256,11 @@ out:
 /*****************************************/
 /* PCI hotplug interface: probe new card */
 /*****************************************/
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 hfc4s8s_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 	int err = -ENOMEM;
@@ -2102,10 +2308,14 @@ hfc4s8s_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	return (err);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       out:
 =======
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	kfree(hw);
 	return (err);
 }
@@ -2113,7 +2323,11 @@ out:
 /**************************************/
 /* PCI hotplug interface: remove card */
 /**************************************/
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 hfc4s8s_remove(struct pci_dev *pdev)
 {
 	hfc4s8s_hw *hw = pci_get_drvdata(pdev);
@@ -2134,6 +2348,7 @@ hfc4s8s_remove(struct pci_dev *pdev)
 
 static struct pci_driver hfc4s8s_driver = {
 <<<<<<< HEAD
+<<<<<<< HEAD
       .name	= "hfc4s8s_l1",
       .probe	= hfc4s8s_probe,
       .remove	= __devexit_p(hfc4s8s_remove),
@@ -2144,6 +2359,12 @@ static struct pci_driver hfc4s8s_driver = {
 	.remove	= __devexit_p(hfc4s8s_remove),
 	.id_table	= hfc4s8s_ids,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.name	= "hfc4s8s_l1",
+	.probe	= hfc4s8s_probe,
+	.remove	= hfc4s8s_remove,
+	.id_table	= hfc4s8s_ids,
+>>>>>>> refs/remotes/origin/master
 };
 
 /**********************/
@@ -2168,6 +2389,7 @@ hfc4s8s_module_init(void)
 	}
 	printk(KERN_INFO "HFC-4S/8S: found %d cards\n", card_cnt);
 
+<<<<<<< HEAD
 #if !defined(CONFIG_HOTPLUG)
 	if (err == 0) {
 		err = -ENODEV;
@@ -2182,6 +2404,10 @@ hfc4s8s_module_init(void)
 =======
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+out:
+>>>>>>> refs/remotes/origin/master
 	return (err);
 }				/* hfc4s8s_init_hw */
 

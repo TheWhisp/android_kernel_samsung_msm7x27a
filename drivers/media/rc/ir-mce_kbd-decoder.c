@@ -216,7 +216,11 @@ static int ir_mce_kbd_decode(struct rc_dev *dev, struct ir_raw_event ev)
 	u32 scancode;
 	unsigned long delay;
 
+<<<<<<< HEAD
 	if (!(dev->raw->enabled_protocols & RC_TYPE_MCE_KBD))
+=======
+	if (!(dev->enabled_protocols & RC_BIT_MCE_KBD))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	if (!is_timing_event(ev)) {
@@ -422,7 +426,11 @@ static int ir_mce_kbd_unregister(struct rc_dev *dev)
 }
 
 static struct ir_raw_handler mce_kbd_handler = {
+<<<<<<< HEAD
 	.protocols	= RC_TYPE_MCE_KBD,
+=======
+	.protocols	= RC_BIT_MCE_KBD,
+>>>>>>> refs/remotes/origin/master
 	.decode		= ir_mce_kbd_decode,
 	.raw_register	= ir_mce_kbd_register,
 	.raw_unregister	= ir_mce_kbd_unregister,

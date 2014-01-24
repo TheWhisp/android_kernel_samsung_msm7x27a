@@ -18,6 +18,7 @@
 #ifndef	__XFS_EXTFREE_ITEM_H__
 #define	__XFS_EXTFREE_ITEM_H__
 
+<<<<<<< HEAD
 struct xfs_mount;
 struct kmem_zone;
 
@@ -105,6 +106,13 @@ typedef struct xfs_efd_log_format_64 {
 
 #ifdef __KERNEL__
 
+=======
+/* kernel only EFI/EFD definitions */
+
+struct xfs_mount;
+struct kmem_zone;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Max number of extents in fast allocation path.
  */
@@ -114,6 +122,7 @@ typedef struct xfs_efd_log_format_64 {
  * Define EFI flag bits. Manipulated by set/clear/test_bit operators.
  */
 #define	XFS_EFI_RECOVERED	1
+<<<<<<< HEAD
 #define	XFS_EFI_COMMITTED	2
 
 /*
@@ -124,6 +133,22 @@ typedef struct xfs_efd_log_format_64 {
  */
 typedef struct xfs_efi_log_item {
 	xfs_log_item_t		efi_item;
+=======
+
+/*
+ * This is the "extent free intention" log item.  It is used to log the fact
+ * that some extents need to be free.  It is used in conjunction with the
+ * "extent free done" log item described below.
+ *
+ * The EFI is reference counted so that it is not freed prior to both the EFI
+ * and EFD being committed and unpinned. This ensures that when the last
+ * reference goes away the EFI will always be in the AIL as it has been
+ * unpinned, regardless of whether the EFD is processed before or after the EFI.
+ */
+typedef struct xfs_efi_log_item {
+	xfs_log_item_t		efi_item;
+	atomic_t		efi_refcount;
+>>>>>>> refs/remotes/origin/master
 	atomic_t		efi_next_extent;
 	unsigned long		efi_flags;	/* misc flags */
 	xfs_efi_log_format_t	efi_format;
@@ -156,6 +181,9 @@ int			xfs_efi_copy_format(xfs_log_iovec_t *buf,
 					    xfs_efi_log_format_t *dst_efi_fmt);
 void			xfs_efi_item_free(xfs_efi_log_item_t *);
 
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* __XFS_EXTFREE_ITEM_H__ */

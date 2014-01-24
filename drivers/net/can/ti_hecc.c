@@ -47,12 +47,20 @@
 #include <linux/platform_device.h>
 #include <linux/clk.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/io.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/can/dev.h>
 #include <linux/can/error.h>
+=======
+#include <linux/io.h>
+
+#include <linux/can/dev.h>
+#include <linux/can/error.h>
+#include <linux/can/led.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/can/platform/ti_hecc.h>
 
 #define DRV_NAME "ti_hecc"
@@ -199,7 +207,11 @@ MODULE_VERSION(HECC_MODULE_VERSION);
 #define HECC_CANGIM_SIL		BIT(2)	/* system interrupts to int line 1 */
 
 /* CAN Bittiming constants as per HECC specs */
+<<<<<<< HEAD
 static struct can_bittiming_const ti_hecc_bittiming_const = {
+=======
+static const struct can_bittiming_const ti_hecc_bittiming_const = {
+>>>>>>> refs/remotes/origin/master
 	.name = DRV_NAME,
 	.tseg1_min = 1,
 	.tseg1_max = 16,
@@ -288,6 +300,7 @@ static inline u32 hecc_get_bit(struct ti_hecc_priv *priv, int reg, u32 bit_mask)
 	return (hecc_read(priv, reg) & bit_mask) ? 1 : 0;
 }
 
+<<<<<<< HEAD
 static int ti_hecc_get_state(const struct net_device *ndev,
 	enum can_state *state)
 {
@@ -297,6 +310,8 @@ static int ti_hecc_get_state(const struct net_device *ndev,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int ti_hecc_set_btc(struct ti_hecc_priv *priv)
 {
 	struct can_bittiming *bit_timing = &priv->can.bittiming;
@@ -310,10 +325,14 @@ static int ti_hecc_set_btc(struct ti_hecc_priv *priv)
 			can_btc |= HECC_CANBTC_SAM;
 		else
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_warn(priv->ndev->dev.parent, "WARN: Triple" \
 =======
 			netdev_warn(priv->ndev, "WARN: Triple"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_warn(priv->ndev, "WARN: Triple"
+>>>>>>> refs/remotes/origin/master
 				"sampling not set due to h/w limitations");
 	}
 	can_btc |= ((bit_timing->sjw - 1) & 0x3) << 8;
@@ -323,10 +342,14 @@ static int ti_hecc_set_btc(struct ti_hecc_priv *priv)
 
 	hecc_write(priv, HECC_CANBTC, can_btc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_info(priv->ndev->dev.parent, "setting CANBTC=%#x\n", can_btc);
 =======
 	netdev_info(priv->ndev, "setting CANBTC=%#x\n", can_btc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netdev_info(priv->ndev, "setting CANBTC=%#x\n", can_btc);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -344,10 +367,14 @@ static void ti_hecc_reset(struct net_device *ndev)
 	struct ti_hecc_priv *priv = netdev_priv(ndev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(ndev->dev.parent, "resetting hecc ...\n");
 =======
 	netdev_dbg(ndev, "resetting hecc ...\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netdev_dbg(ndev, "resetting hecc ...\n");
+>>>>>>> refs/remotes/origin/master
 	hecc_set_bit(priv, HECC_CANMC, HECC_CANMC_SRES);
 
 	/* Set change control request and wait till enabled */
@@ -474,7 +501,10 @@ static int ti_hecc_do_set_mode(struct net_device *ndev, enum can_mode mode)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int ti_hecc_get_berr_counter(const struct net_device *ndev,
 					struct can_berr_counter *bec)
 {
@@ -486,7 +516,10 @@ static int ti_hecc_get_berr_counter(const struct net_device *ndev,
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * ti_hecc_xmit: HECC Transmit
  *
@@ -526,10 +559,14 @@ static netdev_tx_t ti_hecc_xmit(struct sk_buff *skb, struct net_device *ndev)
 		spin_unlock_irqrestore(&priv->mbx_lock, flags);
 		netif_stop_queue(ndev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(priv->ndev->dev.parent,
 =======
 		netdev_err(priv->ndev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(priv->ndev,
+>>>>>>> refs/remotes/origin/master
 			"BUG: TX mbx not ready tx_head=%08X, tx_tail=%08X\n",
 			priv->tx_head, priv->tx_tail);
 		return NETDEV_TX_BUSY;
@@ -537,6 +574,7 @@ static netdev_tx_t ti_hecc_xmit(struct sk_buff *skb, struct net_device *ndev)
 	spin_unlock_irqrestore(&priv->mbx_lock, flags);
 
 	/* Prepare mailbox for transmission */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (cf->can_id & CAN_RTR_FLAG) /* Remote transmission request */
 		data |= HECC_CANMCF_RTR;
@@ -546,6 +584,11 @@ static netdev_tx_t ti_hecc_xmit(struct sk_buff *skb, struct net_device *ndev)
 	if (cf->can_id & CAN_RTR_FLAG) /* Remote transmission request */
 		data |= HECC_CANMCF_RTR;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data = cf->can_dlc | (get_tx_head_prio(priv) << 8);
+	if (cf->can_id & CAN_RTR_FLAG) /* Remote transmission request */
+		data |= HECC_CANMCF_RTR;
+>>>>>>> refs/remotes/origin/master
 	hecc_write_mbx(priv, mbxno, HECC_CANMCF, data);
 
 	if (cf->can_id & CAN_EFF_FLAG) /* Extended frame format */
@@ -590,10 +633,14 @@ static int ti_hecc_rx_pkt(struct ti_hecc_priv *priv, int mbxno)
 	if (!skb) {
 		if (printk_ratelimit())
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(priv->ndev->dev.parent,
 =======
 			netdev_err(priv->ndev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_err(priv->ndev,
+>>>>>>> refs/remotes/origin/master
 				"ti_hecc_rx_pkt: alloc_can_skb() failed\n");
 		return -ENOMEM;
 	}
@@ -625,6 +672,10 @@ static int ti_hecc_rx_pkt(struct ti_hecc_priv *priv, int mbxno)
 	spin_unlock_irqrestore(&priv->mbx_lock, flags);
 
 	stats->rx_bytes += cf->can_dlc;
+<<<<<<< HEAD
+=======
+	can_led_event(priv->ndev, CAN_LED_EVENT_RX);
+>>>>>>> refs/remotes/origin/master
 	netif_receive_skb(skb);
 	stats->rx_packets++;
 
@@ -712,10 +763,14 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
 	if (!skb) {
 		if (printk_ratelimit())
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(priv->ndev->dev.parent,
 =======
 			netdev_err(priv->ndev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_err(priv->ndev,
+>>>>>>> refs/remotes/origin/master
 				"ti_hecc_error: alloc_can_err_skb() failed\n");
 		return -ENOMEM;
 	}
@@ -732,10 +787,14 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
 		}
 		hecc_set_bit(priv, HECC_CANES, HECC_CANES_EW);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(priv->ndev->dev.parent, "Error Warning interrupt\n");
 =======
 		netdev_dbg(priv->ndev, "Error Warning interrupt\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_dbg(priv->ndev, "Error Warning interrupt\n");
+>>>>>>> refs/remotes/origin/master
 		hecc_clear_bit(priv, HECC_CANMC, HECC_CANMC_CCR);
 	}
 
@@ -751,10 +810,14 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
 		}
 		hecc_set_bit(priv, HECC_CANES, HECC_CANES_EP);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(priv->ndev->dev.parent, "Error passive interrupt\n");
 =======
 		netdev_dbg(priv->ndev, "Error passive interrupt\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_dbg(priv->ndev, "Error passive interrupt\n");
+>>>>>>> refs/remotes/origin/master
 		hecc_clear_bit(priv, HECC_CANMC, HECC_CANMC_CCR);
 	}
 
@@ -801,15 +864,21 @@ static int ti_hecc_error(struct net_device *ndev, int int_status,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	netif_receive_skb(skb);
 	stats->rx_packets++;
 	stats->rx_bytes += cf->can_dlc;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	netif_rx(skb);
 	stats->rx_packets++;
 	stats->rx_bytes += cf->can_dlc;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -846,6 +915,10 @@ static irqreturn_t ti_hecc_interrupt(int irq, void *dev_id)
 			stats->tx_bytes += hecc_read_mbx(priv, mbxno,
 						HECC_CANMCF) & 0xF;
 			stats->tx_packets++;
+<<<<<<< HEAD
+=======
+			can_led_event(ndev, CAN_LED_EVENT_TX);
+>>>>>>> refs/remotes/origin/master
 			can_get_echo_skb(ndev, mbxno);
 			--priv->tx_tail;
 		}
@@ -887,10 +960,14 @@ static int ti_hecc_open(struct net_device *ndev)
 			ndev->name, ndev);
 	if (err) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(ndev->dev.parent, "error requesting interrupt\n");
 =======
 		netdev_err(ndev, "error requesting interrupt\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(ndev, "error requesting interrupt\n");
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 
@@ -900,15 +977,24 @@ static int ti_hecc_open(struct net_device *ndev)
 	err = open_candev(ndev);
 	if (err) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(ndev->dev.parent, "open_candev() failed %d\n", err);
 =======
 		netdev_err(ndev, "open_candev() failed %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(ndev, "open_candev() failed %d\n", err);
+>>>>>>> refs/remotes/origin/master
 		ti_hecc_transceiver_switch(priv, 0);
 		free_irq(ndev->irq, ndev);
 		return err;
 	}
 
+<<<<<<< HEAD
+=======
+	can_led_event(ndev, CAN_LED_EVENT_OPEN);
+
+>>>>>>> refs/remotes/origin/master
 	ti_hecc_start(ndev);
 	napi_enable(&priv->napi);
 	netif_start_queue(ndev);
@@ -927,6 +1013,11 @@ static int ti_hecc_close(struct net_device *ndev)
 	close_candev(ndev);
 	ti_hecc_transceiver_switch(priv, 0);
 
+<<<<<<< HEAD
+=======
+	can_led_event(ndev, CAN_LED_EVENT_STOP);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -945,7 +1036,11 @@ static int ti_hecc_probe(struct platform_device *pdev)
 	void __iomem *addr;
 	int err = -ENODEV;
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!pdata) {
 		dev_err(&pdev->dev, "No platform data\n");
 		goto probe_exit;
@@ -991,16 +1086,22 @@ static int ti_hecc_probe(struct platform_device *pdev)
 
 	priv->can.bittiming_const = &ti_hecc_bittiming_const;
 	priv->can.do_set_mode = ti_hecc_do_set_mode;
+<<<<<<< HEAD
 	priv->can.do_get_state = ti_hecc_get_state;
 <<<<<<< HEAD
 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	priv->can.do_get_berr_counter = ti_hecc_get_berr_counter;
 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
 
 	spin_lock_init(&priv->mbx_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ndev->irq = irq->start;
 	ndev->flags |= IFF_ECHO;
 	platform_set_drvdata(pdev, ndev);
@@ -1024,6 +1125,12 @@ static int ti_hecc_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "register_candev() failed\n");
 		goto probe_exit_clk;
 	}
+<<<<<<< HEAD
+=======
+
+	devm_can_led_init(ndev);
+
+>>>>>>> refs/remotes/origin/master
 	dev_info(&pdev->dev, "device registered (reg_base=%p, irq=%u)\n",
 		priv->base, (u32) ndev->irq);
 
@@ -1041,7 +1148,11 @@ probe_exit:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit ti_hecc_remove(struct platform_device *pdev)
+=======
+static int ti_hecc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res;
 	struct net_device *ndev = platform_get_drvdata(pdev);
@@ -1054,7 +1165,10 @@ static int __devexit ti_hecc_remove(struct platform_device *pdev)
 	iounmap(priv->base);
 	release_mem_region(res->start, resource_size(res));
 	free_candev(ndev);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1108,11 +1222,16 @@ static struct platform_driver ti_hecc_driver = {
 		.owner   = THIS_MODULE,
 	},
 	.probe = ti_hecc_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ti_hecc_remove),
+=======
+	.remove = ti_hecc_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend = ti_hecc_suspend,
 	.resume = ti_hecc_resume,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init ti_hecc_init_driver(void)
 {
@@ -1131,7 +1250,14 @@ module_init(ti_hecc_init_driver);
 =======
 module_platform_driver(ti_hecc_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(ti_hecc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Anant Gole <anantgole@ti.com>");
 MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION(DRV_DESC);
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:" DRV_NAME);
+>>>>>>> refs/remotes/origin/master

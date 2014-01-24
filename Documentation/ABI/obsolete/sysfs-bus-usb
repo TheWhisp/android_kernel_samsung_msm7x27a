@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 What:                /sys/bus/usb/devices/.../power/level
 Date:                March 2007
 KernelVersion:        2.6.21
@@ -32,6 +33,8 @@ Description:
                 same thing.
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 What:		/sys/bus/usb/devices/.../power/level
 Date:		March 2007
 KernelVersion:	2.6.21
@@ -63,4 +66,7 @@ Description:
 		This file is deprecated and will be removed after 2010.
 		Use the power/control file instead; it does exactly the
 		same thing.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -22,9 +22,13 @@
 #include <linux/scatterlist.h>
 #include <linux/crc32.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <scsi/libfc.h>
 #include <scsi/fc_encode.h>
@@ -109,9 +113,12 @@ module_exit(libfc_exit);
  * @nents: pointer to the remaining number of entries in the SG list.
  * @offset: pointer to the current offset in the SG list.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @km_type: dedicated page table slot type for kmap_atomic.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @crc: pointer to the 32-bit crc value.
  *	 If crc is NULL, CRC is not calculated.
  */
@@ -119,10 +126,14 @@ u32 fc_copy_buffer_to_sglist(void *buf, size_t len,
 			     struct scatterlist *sg,
 			     u32 *nents, size_t *offset,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     enum km_type km_type, u32 *crc)
 =======
 			     u32 *crc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     u32 *crc)
+>>>>>>> refs/remotes/origin/master
 {
 	size_t remaining = len;
 	u32 copy_len = 0;
@@ -153,6 +164,7 @@ u32 fc_copy_buffer_to_sglist(void *buf, size_t len,
 		sg_bytes = min(sg_bytes,
 			       (size_t)(PAGE_SIZE - (off & ~PAGE_MASK)));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		page_addr = kmap_atomic(sg_page(sg) + (off >> PAGE_SHIFT),
 					km_type);
 		if (crc)
@@ -160,12 +172,17 @@ u32 fc_copy_buffer_to_sglist(void *buf, size_t len,
 		memcpy((char *)page_addr + (off & ~PAGE_MASK), buf, sg_bytes);
 		kunmap_atomic(page_addr, km_type);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		page_addr = kmap_atomic(sg_page(sg) + (off >> PAGE_SHIFT));
 		if (crc)
 			*crc = crc32(*crc, buf, sg_bytes);
 		memcpy((char *)page_addr + (off & ~PAGE_MASK), buf, sg_bytes);
 		kunmap_atomic(page_addr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		buf += sg_bytes;
 		*offset += sg_bytes;
 		remaining -= sg_bytes;

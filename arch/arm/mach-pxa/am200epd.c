@@ -32,7 +32,11 @@
 
 #include <mach/pxa25x.h>
 #include <mach/gumstix.h>
+<<<<<<< HEAD
 #include <mach/pxafb.h>
+=======
+#include <linux/platform_data/video-pxafb.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "generic.h"
 
@@ -139,10 +143,14 @@ static void am200_cleanup(struct metronomefb_par *par)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	free_irq(IRQ_GPIO(RDY_GPIO_PIN), par);
 =======
 	free_irq(PXA_GPIO_TO_IRQ(RDY_GPIO_PIN), par);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	free_irq(PXA_GPIO_TO_IRQ(RDY_GPIO_PIN), par);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ARRAY_SIZE(gpios); i++)
 		gpio_free(gpios[i]);
@@ -297,10 +305,14 @@ static int am200_setup_irq(struct fb_info *info)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = request_irq(IRQ_GPIO(RDY_GPIO_PIN), am200_handle_irq,
 =======
 	ret = request_irq(PXA_GPIO_TO_IRQ(RDY_GPIO_PIN), am200_handle_irq,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = request_irq(PXA_GPIO_TO_IRQ(RDY_GPIO_PIN), am200_handle_irq,
+>>>>>>> refs/remotes/origin/master
 				IRQF_DISABLED|IRQF_TRIGGER_FALLING,
 				"AM200", info->par);
 	if (ret)

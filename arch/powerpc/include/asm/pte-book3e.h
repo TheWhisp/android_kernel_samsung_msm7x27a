@@ -40,7 +40,11 @@
 #define _PAGE_U1	0x010000
 #define _PAGE_U0	0x020000
 #define _PAGE_ACCESSED	0x040000
+<<<<<<< HEAD
 #define _PAGE_LENDIAN	0x080000
+=======
+#define _PAGE_ENDIAN	0x080000
+>>>>>>> refs/remotes/origin/master
 #define _PAGE_GUARDED	0x100000
 #define _PAGE_COHERENT	0x200000 /* M: enforce memory coherence */
 #define _PAGE_NO_CACHE	0x400000 /* I: cache inhibit */
@@ -73,11 +77,17 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PTE_WIMGE_SHIFT (19)
 #define PTE_BAP_SHIFT	(2)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PTE_WIMGE_SHIFT (19)
+#define PTE_BAP_SHIFT	(2)
+
+>>>>>>> refs/remotes/origin/master
 /* On 32-bit, we never clear the top part of the PTE */
 #ifdef CONFIG_PPC32
 #define _PTE_NONE_MASK	0xffffffff00000000ULL

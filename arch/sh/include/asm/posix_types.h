@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifdef __KERNEL__
 # ifdef CONFIG_SUPERH32
 #  include "posix_types_32.h"
@@ -11,3 +12,10 @@
 #  include "posix_types_32.h"
 # endif
 #endif /* __KERNEL__ */
+=======
+# ifdef CONFIG_SUPERH32
+#  include <asm/posix_types_32.h>
+# else
+#  include <asm/posix_types_64.h>
+# endif
+>>>>>>> refs/remotes/origin/master

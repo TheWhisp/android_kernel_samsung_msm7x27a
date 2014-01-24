@@ -26,9 +26,12 @@ enum jz_gpio_function {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  Usually a driver for a SoC component has to request several gpio pins and
  configure them as funcion pins.
@@ -36,10 +39,14 @@ enum jz_gpio_function {
  Usually one would do something like:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  const static struct jz_gpio_bulk_request i2c_pins[] = {
 =======
  static const struct jz_gpio_bulk_request i2c_pins[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ static const struct jz_gpio_bulk_request i2c_pins[] = {
+>>>>>>> refs/remotes/origin/master
 	JZ_GPIO_BULK_PIN(I2C_SDA),
 	JZ_GPIO_BULK_PIN(I2C_SCK),
  };
@@ -55,12 +62,17 @@ enum jz_gpio_function {
     jz_gpio_bulk_free(i2c_pins, ARRAY_SIZE(i2c_pins));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 */
 =======
 */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+*/
+
+>>>>>>> refs/remotes/origin/master
 struct jz_gpio_bulk_request {
 	int gpio;
 	const char *name;
@@ -211,7 +223,11 @@ uint32_t jz_gpio_port_get_value(int port, uint32_t mask);
 #define JZ_GPIO_FUNC_MEM_ADDR14		JZ_GPIO_FUNC1
 #define JZ_GPIO_FUNC_MEM_ADDR15		JZ_GPIO_FUNC1
 #define JZ_GPIO_FUNC_MEM_ADDR16		JZ_GPIO_FUNC1
+<<<<<<< HEAD
 #define JZ_GPIO_FUNC_LCD_CLS	        JZ_GPIO_FUNC1
+=======
+#define JZ_GPIO_FUNC_LCD_CLS		JZ_GPIO_FUNC1
+>>>>>>> refs/remotes/origin/master
 #define JZ_GPIO_FUNC_LCD_SPL		JZ_GPIO_FUNC1
 #define JZ_GPIO_FUNC_MEM_DCS		JZ_GPIO_FUNC1
 #define JZ_GPIO_FUNC_MEM_RAS		JZ_GPIO_FUNC1

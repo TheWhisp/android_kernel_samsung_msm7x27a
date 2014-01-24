@@ -3,7 +3,12 @@
 static const char *alias_key;
 static char *alias_val;
 
+<<<<<<< HEAD
 static int alias_lookup_cb(const char *k, const char *v, void *cb __used)
+=======
+static int alias_lookup_cb(const char *k, const char *v,
+			   void *cb __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!prefixcmp(k, "alias.") && !strcmp(k+6, alias_key)) {
 		if (!v)
@@ -54,8 +59,12 @@ int split_cmdline(char *cmdline, const char ***argv)
 				src++;
 				c = cmdline[src];
 				if (!c) {
+<<<<<<< HEAD
 					free(*argv);
 					*argv = NULL;
+=======
+					zfree(argv);
+>>>>>>> refs/remotes/origin/master
 					return error("cmdline ends with \\");
 				}
 			}
@@ -67,8 +76,12 @@ int split_cmdline(char *cmdline, const char ***argv)
 	cmdline[dst] = 0;
 
 	if (quoted) {
+<<<<<<< HEAD
 		free(*argv);
 		*argv = NULL;
+=======
+		zfree(argv);
+>>>>>>> refs/remotes/origin/master
 		return error("unclosed quote");
 	}
 

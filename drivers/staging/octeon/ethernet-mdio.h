@@ -27,7 +27,10 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/netdevice.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/etherdevice.h>
 #include <linux/ip.h>
 #include <linux/string.h>

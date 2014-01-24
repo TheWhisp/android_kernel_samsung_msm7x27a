@@ -163,8 +163,13 @@ sha384_init(struct shash_desc *desc)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int
 sha512_update(struct shash_desc *desc, const u8 *data, unsigned int len)
+=======
+int crypto_sha512_update(struct shash_desc *desc, const u8 *data,
+			unsigned int len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sha512_state *sctx = shash_desc_ctx(desc);
 
@@ -197,6 +202,10 @@ sha512_update(struct shash_desc *desc, const u8 *data, unsigned int len)
 
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(crypto_sha512_update);
+>>>>>>> refs/remotes/origin/master
 
 static int
 sha512_final(struct shash_desc *desc, u8 *hash)
@@ -215,10 +224,17 @@ sha512_final(struct shash_desc *desc, u8 *hash)
 	/* Pad out to 112 mod 128. */
 	index = sctx->count[0] & 0x7f;
 	pad_len = (index < 112) ? (112 - index) : ((128+112) - index);
+<<<<<<< HEAD
 	sha512_update(desc, padding, pad_len);
 
 	/* Append length (before padding) */
 	sha512_update(desc, (const u8 *)bits, sizeof(bits));
+=======
+	crypto_sha512_update(desc, padding, pad_len);
+
+	/* Append length (before padding) */
+	crypto_sha512_update(desc, (const u8 *)bits, sizeof(bits));
+>>>>>>> refs/remotes/origin/master
 
 	/* Store state in digest */
 	for (i = 0; i < 8; i++)
@@ -242,32 +258,55 @@ static int sha384_final(struct shash_desc *desc, u8 *hash)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct shash_alg sha512 = {
 	.digestsize	=	SHA512_DIGEST_SIZE,
 	.init		=	sha512_init,
 	.update		=	sha512_update,
+=======
+static struct shash_alg sha512_algs[2] = { {
+	.digestsize	=	SHA512_DIGEST_SIZE,
+	.init		=	sha512_init,
+	.update		=	crypto_sha512_update,
+>>>>>>> refs/remotes/origin/master
 	.final		=	sha512_final,
 	.descsize	=	sizeof(struct sha512_state),
 	.base		=	{
 		.cra_name	=	"sha512",
+<<<<<<< HEAD
+=======
+		.cra_driver_name =	"sha512-generic",
+>>>>>>> refs/remotes/origin/master
 		.cra_flags	=	CRYPTO_ALG_TYPE_SHASH,
 		.cra_blocksize	=	SHA512_BLOCK_SIZE,
 		.cra_module	=	THIS_MODULE,
 	}
+<<<<<<< HEAD
 };
 
 static struct shash_alg sha384 = {
 	.digestsize	=	SHA384_DIGEST_SIZE,
 	.init		=	sha384_init,
 	.update		=	sha512_update,
+=======
+}, {
+	.digestsize	=	SHA384_DIGEST_SIZE,
+	.init		=	sha384_init,
+	.update		=	crypto_sha512_update,
+>>>>>>> refs/remotes/origin/master
 	.final		=	sha384_final,
 	.descsize	=	sizeof(struct sha512_state),
 	.base		=	{
 		.cra_name	=	"sha384",
+<<<<<<< HEAD
+=======
+		.cra_driver_name =	"sha384-generic",
+>>>>>>> refs/remotes/origin/master
 		.cra_flags	=	CRYPTO_ALG_TYPE_SHASH,
 		.cra_blocksize	=	SHA384_BLOCK_SIZE,
 		.cra_module	=	THIS_MODULE,
 	}
+<<<<<<< HEAD
 };
 
 static int __init sha512_generic_mod_init(void)
@@ -280,12 +319,23 @@ static int __init sha512_generic_mod_init(void)
                 crypto_unregister_shash(&sha384);
 out:
         return ret;
+=======
+} };
+
+static int __init sha512_generic_mod_init(void)
+{
+	return crypto_register_shashes(sha512_algs, ARRAY_SIZE(sha512_algs));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit sha512_generic_mod_fini(void)
 {
+<<<<<<< HEAD
         crypto_unregister_shash(&sha384);
         crypto_unregister_shash(&sha512);
+=======
+	crypto_unregister_shashes(sha512_algs, ARRAY_SIZE(sha512_algs));
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(sha512_generic_mod_init);

@@ -26,6 +26,7 @@
 #ifndef TTM_PAGE_ALLOC
 #define TTM_PAGE_ALLOC
 
+<<<<<<< HEAD
 #include "ttm_bo_driver.h"
 #include "ttm_memory.h"
 
@@ -68,6 +69,12 @@ int ttm_page_alloc_init(struct ttm_mem_global *glob, unsigned max_pages);
  */
 void ttm_page_alloc_fini(void);
 =======
+=======
+#include <drm/ttm/ttm_bo_driver.h>
+#include <drm/ttm/ttm_memory.h>
+
+/**
+>>>>>>> refs/remotes/origin/master
  * Initialize pool allocator.
  */
 int ttm_page_alloc_init(struct ttm_mem_global *glob, unsigned max_pages);
@@ -100,7 +107,11 @@ extern void ttm_pool_unpopulate(struct ttm_tt *ttm);
 extern int ttm_page_alloc_debugfs(struct seq_file *m, void *data);
 
 
+<<<<<<< HEAD
 #ifdef CONFIG_SWIOTLB
+=======
+#if defined(CONFIG_SWIOTLB) || defined(CONFIG_INTEL_IOMMU)
+>>>>>>> refs/remotes/origin/master
 /**
  * Initialize pool allocator.
  */
@@ -110,14 +121,20 @@ int ttm_dma_page_alloc_init(struct ttm_mem_global *glob, unsigned max_pages);
  * Free pool allocator.
  */
 void ttm_dma_page_alloc_fini(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * Output the state of pools to debugfs file
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int ttm_page_alloc_debugfs(struct seq_file *m, void *data);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern int ttm_dma_page_alloc_debugfs(struct seq_file *m, void *data);
 
 extern int ttm_dma_populate(struct ttm_dma_tt *ttm_dma, struct device *dev);
@@ -136,7 +153,21 @@ static inline int ttm_dma_page_alloc_debugfs(struct seq_file *m, void *data)
 {
 	return 0;
 }
+<<<<<<< HEAD
 #endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int ttm_dma_populate(struct ttm_dma_tt *ttm_dma,
+				   struct device *dev)
+{
+	return -ENOMEM;
+}
+static inline void ttm_dma_unpopulate(struct ttm_dma_tt *ttm_dma,
+				      struct device *dev)
+{
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif

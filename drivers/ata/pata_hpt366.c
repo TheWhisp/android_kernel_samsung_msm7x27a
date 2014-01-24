@@ -112,7 +112,10 @@ static const struct hpt_clock hpt366_25[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  *	hpt36x_find_mode	-	find the hpt36x timing
  *	@ap: ATA port
@@ -135,7 +138,10 @@ static u32 hpt36x_find_mode(struct ata_port *ap, int speed)
 	return 0xffffffffU;	/* silence compiler warning */
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const char * const bad_ata33[] = {
 	"Maxtor 92720U8", "Maxtor 92040U6", "Maxtor 91360U4", "Maxtor 91020U3",
 	"Maxtor 90845U3", "Maxtor 90650U2",
@@ -236,6 +242,7 @@ static void hpt366_set_mode(struct ata_port *ap, struct ata_device *adev,
 			    u8 mode)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct hpt_clock *clocks = ap->host->private_data;
 	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
 	u32 addr = 0x40 + 4 * adev->devno;
@@ -245,6 +252,11 @@ static void hpt366_set_mode(struct ata_port *ap, struct ata_device *adev,
 	u32 addr = 0x40 + 4 * adev->devno;
 	u32 mask, reg, t;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
+	u32 addr = 0x40 + 4 * adev->devno;
+	u32 mask, reg, t;
+>>>>>>> refs/remotes/origin/master
 
 	/* determine timing mask and find matching clock entry */
 	if (mode < XFER_MW_DMA_0)
@@ -254,6 +266,7 @@ static void hpt366_set_mode(struct ata_port *ap, struct ata_device *adev,
 	else
 		mask = 0x30070000;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while (clocks->xfer_mode) {
 		if (clocks->xfer_mode == mode)
@@ -265,6 +278,9 @@ static void hpt366_set_mode(struct ata_port *ap, struct ata_device *adev,
 =======
 	t = hpt36x_find_mode(ap, mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	t = hpt36x_find_mode(ap, mode);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Combine new mode bits with old config bits and disable
@@ -273,10 +289,14 @@ static void hpt366_set_mode(struct ata_port *ap, struct ata_device *adev,
 	 */
 	pci_read_config_dword(pdev, addr, &reg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	reg = ((reg & ~mask) | (clocks->timing & mask)) & ~0xc0000000;
 =======
 	reg = ((reg & ~mask) | (t & mask)) & ~0xc0000000;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	reg = ((reg & ~mask) | (t & mask)) & ~0xc0000000;
+>>>>>>> refs/remotes/origin/master
 	pci_write_config_dword(pdev, addr, reg);
 }
 
@@ -414,7 +434,11 @@ static int hpt36x_init_one(struct pci_dev *dev, const struct pci_device_id *id)
 #ifdef CONFIG_PM
 static int hpt36x_reinit_one(struct pci_dev *dev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&dev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = ata_pci_device_do_resume(dev);
@@ -442,6 +466,7 @@ static struct pci_driver hpt36x_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init hpt36x_init(void)
 {
 	return pci_register_driver(&hpt36x_pci_driver);
@@ -451,12 +476,18 @@ static void __exit hpt36x_exit(void)
 {
 	pci_unregister_driver(&hpt36x_pci_driver);
 }
+=======
+module_pci_driver(hpt36x_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("low-level driver for the Highpoint HPT366/368");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, hpt36x);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(hpt36x_init);
 module_exit(hpt36x_exit);
+=======
+>>>>>>> refs/remotes/origin/master

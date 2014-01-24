@@ -31,15 +31,21 @@ static inline void free_l1stack(void)
 {
 	nr_l1stack_tasks--;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (nr_l1stack_tasks == 0)
 		l1sram_free(l1_stack_base);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (nr_l1stack_tasks == 0) {
 		l1sram_free(l1_stack_base);
 		l1_stack_base = NULL;
 		l1_stack_len = 0;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline unsigned long

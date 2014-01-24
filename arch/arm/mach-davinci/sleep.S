@@ -23,10 +23,14 @@
 #include <asm/assembler.h>
 #include <mach/psc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/memory.h>
 =======
 #include <mach/ddr2.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/ddr2.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "clock.h"
 

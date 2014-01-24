@@ -12,9 +12,13 @@
 #include <linux/inet.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/netpoll.h>
 #include <linux/sched.h>
 #include <linux/delay.h>
@@ -33,10 +37,15 @@
 #include <trace/events/net.h>
 #include <trace/events/napi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <trace/events/sock.h>
 #include <trace/events/udp.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <trace/events/sock.h>
+#include <trace/events/udp.h>
+>>>>>>> refs/remotes/origin/master
 
 EXPORT_TRACEPOINT_SYMBOL_GPL(kfree_skb);
 

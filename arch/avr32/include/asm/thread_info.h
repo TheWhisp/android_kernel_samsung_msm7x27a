@@ -66,8 +66,11 @@ static inline struct thread_info *current_thread_info(void)
 
 #endif /* !__ASSEMBLY__ */
 
+<<<<<<< HEAD
 #define PREEMPT_ACTIVE		0x40000000
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Thread information flags
  * - these are process state flags that various assembly files may need to access
@@ -77,8 +80,11 @@ static inline struct thread_info *current_thread_info(void)
 #define TIF_SYSCALL_TRACE       0       /* syscall trace active */
 #define TIF_SIGPENDING          1       /* signal pending */
 #define TIF_NEED_RESCHED        2       /* rescheduling necessary */
+<<<<<<< HEAD
 #define TIF_POLLING_NRFLAG      3       /* true if poll_idle() is polling
 					   TIF_NEED_RESCHED */
+=======
+>>>>>>> refs/remotes/origin/master
 #define TIF_BREAKPOINT		4	/* enter monitor mode on return */
 #define TIF_SINGLE_STEP		5	/* single step in progress */
 #define TIF_MEMDIE		6	/* is terminating due to OOM killer */
@@ -86,15 +92,19 @@ static inline struct thread_info *current_thread_info(void)
 #define TIF_CPU_GOING_TO_SLEEP	8	/* CPU is entering sleep 0 mode */
 #define TIF_NOTIFY_RESUME	9	/* callback before returning to user */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TIF_FREEZE		29
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define TIF_DEBUG		30	/* debugging enabled */
 #define TIF_USERSPACE		31      /* true if FS sets userspace */
 
 #define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
 #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
 #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
+<<<<<<< HEAD
 #define _TIF_POLLING_NRFLAG	(1 << TIF_POLLING_NRFLAG)
 #define _TIF_SINGLE_STEP	(1 << TIF_SINGLE_STEP)
 #define _TIF_MEMDIE		(1 << TIF_MEMDIE)
@@ -105,11 +115,19 @@ static inline struct thread_info *current_thread_info(void)
 #define _TIF_FREEZE		(1 << TIF_FREEZE)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define _TIF_BREAKPOINT		(1 << TIF_BREAKPOINT)
+#define _TIF_SINGLE_STEP	(1 << TIF_SINGLE_STEP)
+#define _TIF_MEMDIE		(1 << TIF_MEMDIE)
+#define _TIF_CPU_GOING_TO_SLEEP (1 << TIF_CPU_GOING_TO_SLEEP)
+#define _TIF_NOTIFY_RESUME	(1 << TIF_NOTIFY_RESUME)
+>>>>>>> refs/remotes/origin/master
 
 /* Note: The masks below must never span more than 16 bits! */
 
 /* work to do on interrupt/exception return */
 #define _TIF_WORK_MASK				\
+<<<<<<< HEAD
 	((1 << TIF_SIGPENDING)			\
 	 | _TIF_NOTIFY_RESUME			\
 	 | (1 << TIF_NEED_RESCHED)		\
@@ -122,5 +140,16 @@ static inline struct thread_info *current_thread_info(void)
 				 _TIF_NOTIFY_RESUME)
 /* work to do on return from debug mode */
 #define _TIF_DBGWORK_MASK	(_TIF_WORK_MASK & ~(1 << TIF_BREAKPOINT))
+=======
+	(_TIF_SIGPENDING			\
+	 | _TIF_NOTIFY_RESUME			\
+	 | _TIF_NEED_RESCHED			\
+	 | _TIF_BREAKPOINT)
+
+/* work to do on any return to userspace */
+#define _TIF_ALLWORK_MASK	(_TIF_WORK_MASK | _TIF_SYSCALL_TRACE)
+/* work to do on return from debug mode */
+#define _TIF_DBGWORK_MASK	(_TIF_WORK_MASK & ~_TIF_BREAKPOINT)
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_AVR32_THREAD_INFO_H */

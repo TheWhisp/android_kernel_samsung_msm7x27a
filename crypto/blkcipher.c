@@ -25,10 +25,15 @@
 #include <linux/slab.h>
 #include <linux/string.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/cryptouser.h>
 #include <net/netlink.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/cryptouser.h>
+#include <net/netlink.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "internal.h"
 
@@ -47,37 +52,53 @@ static int blkcipher_walk_first(struct blkcipher_desc *desc,
 static inline void blkcipher_map_src(struct blkcipher_walk *walk)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	walk->src.virt.addr = scatterwalk_map(&walk->in, 0);
 =======
 	walk->src.virt.addr = scatterwalk_map(&walk->in);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	walk->src.virt.addr = scatterwalk_map(&walk->in);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void blkcipher_map_dst(struct blkcipher_walk *walk)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	walk->dst.virt.addr = scatterwalk_map(&walk->out, 1);
 =======
 	walk->dst.virt.addr = scatterwalk_map(&walk->out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	walk->dst.virt.addr = scatterwalk_map(&walk->out);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void blkcipher_unmap_src(struct blkcipher_walk *walk)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	scatterwalk_unmap(walk->src.virt.addr, 0);
 =======
 	scatterwalk_unmap(walk->src.virt.addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	scatterwalk_unmap(walk->src.virt.addr);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void blkcipher_unmap_dst(struct blkcipher_walk *walk)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	scatterwalk_unmap(walk->dst.virt.addr, 1);
 =======
 	scatterwalk_unmap(walk->dst.virt.addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	scatterwalk_unmap(walk->dst.virt.addr);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Get a spot of the specified length that does not straddle a page.
@@ -514,7 +535,10 @@ static int crypto_init_blkcipher_ops(struct crypto_tfm *tfm, u32 type, u32 mask)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_NET
 static int crypto_blkcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
 {
@@ -529,9 +553,15 @@ static int crypto_blkcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
 	rblkcipher.max_keysize = alg->cra_blkcipher.max_keysize;
 	rblkcipher.ivsize = alg->cra_blkcipher.ivsize;
 
+<<<<<<< HEAD
 	NLA_PUT(skb, CRYPTOCFGA_REPORT_BLKCIPHER,
 		sizeof(struct crypto_report_blkcipher), &rblkcipher);
 
+=======
+	if (nla_put(skb, CRYPTOCFGA_REPORT_BLKCIPHER,
+		    sizeof(struct crypto_report_blkcipher), &rblkcipher))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 nla_put_failure:
@@ -544,7 +574,10 @@ static int crypto_blkcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void crypto_blkcipher_show(struct seq_file *m, struct crypto_alg *alg)
 	__attribute__ ((unused));
 static void crypto_blkcipher_show(struct seq_file *m, struct crypto_alg *alg)
@@ -565,9 +598,13 @@ const struct crypto_type crypto_blkcipher_type = {
 	.show = crypto_blkcipher_show,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.report = crypto_blkcipher_report,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.report = crypto_blkcipher_report,
+>>>>>>> refs/remotes/origin/master
 };
 EXPORT_SYMBOL_GPL(crypto_blkcipher_type);
 
@@ -613,18 +650,28 @@ struct crypto_instance *skcipher_geniv_alloc(struct crypto_template *tmpl,
 	int err;
 
 	algt = crypto_get_attr_type(tb);
+<<<<<<< HEAD
 	err = PTR_ERR(algt);
 	if (IS_ERR(algt))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(algt))
+		return ERR_CAST(algt);
+>>>>>>> refs/remotes/origin/master
 
 	if ((algt->type ^ (CRYPTO_ALG_TYPE_GIVCIPHER | CRYPTO_ALG_GENIV)) &
 	    algt->mask)
 		return ERR_PTR(-EINVAL);
 
 	name = crypto_attr_alg_name(tb[1]);
+<<<<<<< HEAD
 	err = PTR_ERR(name);
 	if (IS_ERR(name))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(name))
+		return ERR_CAST(name);
+>>>>>>> refs/remotes/origin/master
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
 	if (!inst)

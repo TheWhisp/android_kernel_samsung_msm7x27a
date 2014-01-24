@@ -3,11 +3,14 @@
 #
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config HAVE_NET_MACB
 	bool
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 menuconfig NETDEVICES
 	default y if UML
 	depends on NET
@@ -32,6 +35,7 @@ menuconfig NETDEVICES
 if NETDEVICES
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config IFB
 	tristate "Intermediate Functional Block support"
 	depends on NET_CLS_ACT
@@ -45,6 +49,11 @@ config IFB
 	  'ifb1' etc.
 	  Look at the iproute2 documentation directory for usage etc
 =======
+=======
+config MII
+	tristate
+
+>>>>>>> refs/remotes/origin/master
 config NET_CORE
 	default y
 	bool "Network core driver support"
@@ -71,7 +80,10 @@ config BONDING
 
 	  To compile this driver as a module, choose M here: the module
 	  will be called bonding.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config DUMMY
 	tristate "Dummy net driver support"
@@ -87,6 +99,7 @@ config DUMMY
 	  <http://www.tldp.org/docs.html#guide>.
 
 	  To compile this driver as a module, choose M here: the module
+<<<<<<< HEAD
 	  will be called dummy.  If you want to use more than one dummy
 	  device at a time, you need to compile this driver as a module.
 	  Instead of 'dummy', the devices will then be called 'dummy0',
@@ -111,6 +124,10 @@ config BONDING
 	  To compile this driver as a module, choose M here: the module
 	  will be called bonding.
 =======
+=======
+	  will be called dummy.
+
+>>>>>>> refs/remotes/origin/master
 config EQUALIZER
 	tristate "EQL (serial line load balancing) support"
 	---help---
@@ -143,6 +160,7 @@ config NET_FC
 	  adaptor below. You also should have said Y to "SCSI support" and
 	  "SCSI generic support".
 
+<<<<<<< HEAD
 config MII
 	tristate "Generic Media Independent Interface device support"
 	help
@@ -152,6 +170,8 @@ config MII
 
 source "drivers/ieee802154/Kconfig"
 
+=======
+>>>>>>> refs/remotes/origin/master
 config IFB
 	tristate "Intermediate Functional Block support"
 	depends on NET_CLS_ACT
@@ -166,11 +186,17 @@ config IFB
 	  Look at the iproute2 documentation directory for usage etc
 
 source "drivers/net/team/Kconfig"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 config MACVLAN
 	tristate "MAC-VLAN support (EXPERIMENTAL)"
 	depends on EXPERIMENTAL
+=======
+
+config MACVLAN
+	tristate "MAC-VLAN support"
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This allows one to create virtual interfaces that map packets to
 	  or from specific MAC addresses to a particular interface.
@@ -184,7 +210,11 @@ config MACVLAN
 	  will be called macvlan.
 
 config MACVTAP
+<<<<<<< HEAD
 	tristate "MAC-VLAN based tap driver (EXPERIMENTAL)"
+=======
+	tristate "MAC-VLAN based tap driver"
+>>>>>>> refs/remotes/origin/master
 	depends on MACVLAN
 	help
 	  This adds a specialized tap character device driver that is based
@@ -195,6 +225,7 @@ config MACVTAP
 	  To compile this driver as a module, choose M here: the module
 	  will be called macvtap.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config EQUALIZER
 	tristate "EQL (serial line load balancing) support"
@@ -215,6 +246,22 @@ config EQUALIZER
 	  To compile this driver as a module, choose M here: the module
 	  will be called eql.  If unsure, say N.
 =======
+=======
+config VXLAN
+       tristate "Virtual eXtensible Local Area Network (VXLAN)"
+       depends on INET
+       select NET_IP_TUNNEL
+       ---help---
+	  This allows one to create vxlan virtual interfaces that provide
+	  Layer 2 Networks over Layer 3 Networks. VXLAN is often used
+	  to tunnel virtual network infrastructure in virtualized environments.
+	  For more information see:
+	    http://tools.ietf.org/html/draft-mahalingam-dutt-dcops-vxlan-02
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called vxlan.
+
+>>>>>>> refs/remotes/origin/master
 config NETCONSOLE
 	tristate "Network console logging support"
 	---help---
@@ -242,6 +289,13 @@ config NETPOLL_TRAP
 config NET_POLL_CONTROLLER
 	def_bool NETPOLL
 
+<<<<<<< HEAD
+=======
+config NTB_NETDEV
+	tristate "Virtual Ethernet over NTB"
+	depends on NTB
+
+>>>>>>> refs/remotes/origin/master
 config RIONET
 	tristate "RapidIO Ethernet over messaging driver support"
 	depends on RAPIDIO
@@ -255,7 +309,10 @@ config RIONET_RX_SIZE
 	int "Number of inbound queue entries"
 	depends on RIONET
 	default "128"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config TUN
 	tristate "Universal TUN/TAP device driver support"
@@ -288,14 +345,33 @@ config VETH
 	  versa.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config VIRTIO_NET
 	tristate "Virtio network driver (EXPERIMENTAL)"
 	depends on EXPERIMENTAL && VIRTIO
+=======
+config VIRTIO_NET
+	tristate "Virtio network driver"
+	depends on VIRTIO
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This is the virtual network driver for virtio.  It can be used with
 	  lguest or QEMU based VMMs (like KVM or Xen).  Say Y or M.
 
+<<<<<<< HEAD
+=======
+config NLMON
+	tristate "Virtual netlink monitoring device"
+	---help---
+	  This option enables a monitoring net device for netlink skbs. The
+	  purpose of this is to analyze netlink messages with packet sockets.
+	  Thus applications like tcpdump will be able to see local netlink
+	  messages if they tap into the netlink device, record pcaps for further
+	  diagnostics, etc. This is mostly intended for developers or support
+	  to debug netlink issues. If unsure, say N.
+
+>>>>>>> refs/remotes/origin/master
 endif # NET_CORE
 
 config SUNGEM_PHY
@@ -315,7 +391,10 @@ source "drivers/net/fddi/Kconfig"
 
 source "drivers/net/hippi/Kconfig"
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config NET_SB1000
 	tristate "General Instruments Surfboard 1000"
 	depends on PNP
@@ -340,6 +419,7 @@ config NET_SB1000
 
 	  If you don't have this card, of course say N.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 source "drivers/net/arcnet/Kconfig"
 
@@ -3693,6 +3773,27 @@ source "drivers/net/wireless/Kconfig"
 source "drivers/net/wimax/Kconfig"
 
 source "drivers/net/wan/Kconfig"
+=======
+source "drivers/net/phy/Kconfig"
+
+source "drivers/net/plip/Kconfig"
+
+source "drivers/net/ppp/Kconfig"
+
+source "drivers/net/slip/Kconfig"
+
+source "drivers/s390/net/Kconfig"
+
+source "drivers/net/usb/Kconfig"
+
+source "drivers/net/wireless/Kconfig"
+
+source "drivers/net/wimax/Kconfig"
+
+source "drivers/net/wan/Kconfig"
+
+source "drivers/net/ieee802154/Kconfig"
+>>>>>>> refs/remotes/origin/master
 
 config XEN_NETDEV_FRONTEND
 	tristate "Xen network device frontend driver"
@@ -3742,6 +3843,9 @@ config VMXNET3
 	  module will be called vmxnet3.
 
 source "drivers/net/hyperv/Kconfig"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 endif # NETDEVICES

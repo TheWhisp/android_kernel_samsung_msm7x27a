@@ -43,9 +43,12 @@
 #include <linux/init.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mtd/mtd.h>
 
@@ -80,10 +83,14 @@ static int slram_erase(struct mtd_info *, struct erase_info *);
 static int slram_point(struct mtd_info *, loff_t, size_t, size_t *, void **,
 		resource_size_t *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void slram_unpoint(struct mtd_info *, loff_t, size_t);
 =======
 static int slram_unpoint(struct mtd_info *, loff_t, size_t);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int slram_unpoint(struct mtd_info *, loff_t, size_t);
+>>>>>>> refs/remotes/origin/master
 static int slram_read(struct mtd_info *, loff_t, size_t, size_t *, u_char *);
 static int slram_write(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
 
@@ -91,6 +98,7 @@ static int slram_erase(struct mtd_info *mtd, struct erase_info *instr)
 {
 	slram_priv_t *priv = mtd->priv;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (instr->addr + instr->len > mtd->size) {
 		return(-EINVAL);
@@ -101,10 +109,14 @@ static int slram_erase(struct mtd_info *mtd, struct erase_info *instr)
 =======
 	memset(priv->start + instr->addr, 0xff, instr->len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memset(priv->start + instr->addr, 0xff, instr->len);
+>>>>>>> refs/remotes/origin/master
 	/* This'll catch a few races. Free the thing before returning :)
 	 * I don't feel at all ashamed. This kind of thing is possible anyway
 	 * with flash, but unlikely.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	instr->state = MTD_ERASE_DONE;
@@ -115,6 +127,10 @@ static int slram_erase(struct mtd_info *mtd, struct erase_info *instr)
 	instr->state = MTD_ERASE_DONE;
 	mtd_erase_callback(instr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	instr->state = MTD_ERASE_DONE;
+	mtd_erase_callback(instr);
+>>>>>>> refs/remotes/origin/master
 	return(0);
 }
 
@@ -123,6 +139,7 @@ static int slram_point(struct mtd_info *mtd, loff_t from, size_t len,
 {
 	slram_priv_t *priv = mtd->priv;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* can we return a physical address with this driver? */
 	if (phys)
@@ -133,11 +150,14 @@ static int slram_point(struct mtd_info *mtd, loff_t from, size_t len,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*virt = priv->start + from;
 	*retlen = len;
 	return(0);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void slram_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
 {
@@ -146,6 +166,11 @@ static int slram_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
 {
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int slram_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
+{
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int slram_read(struct mtd_info *mtd, loff_t from, size_t len,
@@ -153,6 +178,7 @@ static int slram_read(struct mtd_info *mtd, loff_t from, size_t len,
 {
 	slram_priv_t *priv = mtd->priv;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (from > mtd->size)
 		return -EINVAL;
@@ -165,6 +191,9 @@ static int slram_read(struct mtd_info *mtd, loff_t from, size_t len,
 =======
 	memcpy(buf, priv->start + from, len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(buf, priv->start + from, len);
+>>>>>>> refs/remotes/origin/master
 	*retlen = len;
 	return(0);
 }
@@ -175,6 +204,7 @@ static int slram_write(struct mtd_info *mtd, loff_t to, size_t len,
 	slram_priv_t *priv = mtd->priv;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (to + len > mtd->size)
 		return -EINVAL;
 
@@ -183,6 +213,9 @@ static int slram_write(struct mtd_info *mtd, loff_t to, size_t len,
 =======
 	memcpy(priv->start + to, buf, len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(priv->start + to, buf, len);
+>>>>>>> refs/remotes/origin/master
 	*retlen = len;
 	return(0);
 }
@@ -234,18 +267,24 @@ static int register_device(char *name, unsigned long start, unsigned long length
 	(*curmtd)->mtdinfo->size = length;
 	(*curmtd)->mtdinfo->flags = MTD_CAP_RAM;
 <<<<<<< HEAD
+<<<<<<< HEAD
         (*curmtd)->mtdinfo->erase = slram_erase;
 	(*curmtd)->mtdinfo->point = slram_point;
 	(*curmtd)->mtdinfo->unpoint = slram_unpoint;
 	(*curmtd)->mtdinfo->read = slram_read;
 	(*curmtd)->mtdinfo->write = slram_write;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	(*curmtd)->mtdinfo->_erase = slram_erase;
 	(*curmtd)->mtdinfo->_point = slram_point;
 	(*curmtd)->mtdinfo->_unpoint = slram_unpoint;
 	(*curmtd)->mtdinfo->_read = slram_read;
 	(*curmtd)->mtdinfo->_write = slram_write;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	(*curmtd)->mtdinfo->owner = THIS_MODULE;
 	(*curmtd)->mtdinfo->type = MTD_RAM;
 	(*curmtd)->mtdinfo->erasesize = SLRAM_BLK_SZ;

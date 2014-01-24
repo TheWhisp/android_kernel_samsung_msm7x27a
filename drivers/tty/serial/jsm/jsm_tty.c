@@ -43,7 +43,11 @@ static inline int jsm_get_mstat(struct jsm_channel *ch)
 	unsigned char mstat;
 	unsigned result;
 
+<<<<<<< HEAD
 	jsm_printk(IOCTL, INFO, &ch->ch_bd->pci_dev, "start\n");
+=======
+	jsm_dbg(IOCTL, &ch->ch_bd->pci_dev, "start\n");
+>>>>>>> refs/remotes/origin/master
 
 	mstat = (ch->ch_mostat | ch->ch_mistat);
 
@@ -62,7 +66,11 @@ static inline int jsm_get_mstat(struct jsm_channel *ch)
 	if (mstat & UART_MSR_DCD)
 		result |= TIOCM_CD;
 
+<<<<<<< HEAD
 	jsm_printk(IOCTL, INFO, &ch->ch_bd->pci_dev, "finish\n");
+=======
+	jsm_dbg(IOCTL, &ch->ch_bd->pci_dev, "finish\n");
+>>>>>>> refs/remotes/origin/master
 	return result;
 }
 
@@ -79,14 +87,22 @@ static unsigned int jsm_tty_get_mctrl(struct uart_port *port)
 	int result;
 	struct jsm_channel *channel = (struct jsm_channel *)port;
 
+<<<<<<< HEAD
 	jsm_printk(IOCTL, INFO, &channel->ch_bd->pci_dev, "start\n");
+=======
+	jsm_dbg(IOCTL, &channel->ch_bd->pci_dev, "start\n");
+>>>>>>> refs/remotes/origin/master
 
 	result = jsm_get_mstat(channel);
 
 	if (result < 0)
 		return -ENXIO;
 
+<<<<<<< HEAD
 	jsm_printk(IOCTL, INFO, &channel->ch_bd->pci_dev, "finish\n");
+=======
+	jsm_dbg(IOCTL, &channel->ch_bd->pci_dev, "finish\n");
+>>>>>>> refs/remotes/origin/master
 
 	return result;
 }
@@ -100,7 +116,11 @@ static void jsm_tty_set_mctrl(struct uart_port *port, unsigned int mctrl)
 {
 	struct jsm_channel *channel = (struct jsm_channel *)port;
 
+<<<<<<< HEAD
 	jsm_printk(IOCTL, INFO, &channel->ch_bd->pci_dev, "start\n");
+=======
+	jsm_dbg(IOCTL, &channel->ch_bd->pci_dev, "start\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (mctrl & TIOCM_RTS)
 		channel->ch_mostat |= UART_MCR_RTS;
@@ -114,7 +134,11 @@ static void jsm_tty_set_mctrl(struct uart_port *port, unsigned int mctrl)
 
 	channel->ch_bd->bd_ops->assert_modem_signals(channel);
 
+<<<<<<< HEAD
 	jsm_printk(IOCTL, INFO, &channel->ch_bd->pci_dev, "finish\n");
+=======
+	jsm_dbg(IOCTL, &channel->ch_bd->pci_dev, "finish\n");
+>>>>>>> refs/remotes/origin/master
 	udelay(10);
 }
 
@@ -135,23 +159,39 @@ static void jsm_tty_start_tx(struct uart_port *port)
 {
 	struct jsm_channel *channel = (struct jsm_channel *)port;
 
+<<<<<<< HEAD
 	jsm_printk(IOCTL, INFO, &channel->ch_bd->pci_dev, "start\n");
+=======
+	jsm_dbg(IOCTL, &channel->ch_bd->pci_dev, "start\n");
+>>>>>>> refs/remotes/origin/master
 
 	channel->ch_flags &= ~(CH_STOP);
 	jsm_tty_write(port);
 
+<<<<<<< HEAD
 	jsm_printk(IOCTL, INFO, &channel->ch_bd->pci_dev, "finish\n");
+=======
+	jsm_dbg(IOCTL, &channel->ch_bd->pci_dev, "finish\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void jsm_tty_stop_tx(struct uart_port *port)
 {
 	struct jsm_channel *channel = (struct jsm_channel *)port;
 
+<<<<<<< HEAD
 	jsm_printk(IOCTL, INFO, &channel->ch_bd->pci_dev, "start\n");
 
 	channel->ch_flags |= (CH_STOP);
 
 	jsm_printk(IOCTL, INFO, &channel->ch_bd->pci_dev, "finish\n");
+=======
+	jsm_dbg(IOCTL, &channel->ch_bd->pci_dev, "start\n");
+
+	channel->ch_flags |= (CH_STOP);
+
+	jsm_dbg(IOCTL, &channel->ch_bd->pci_dev, "finish\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void jsm_tty_send_xchar(struct uart_port *port, char ch)
@@ -161,7 +201,11 @@ static void jsm_tty_send_xchar(struct uart_port *port, char ch)
 	struct ktermios *termios;
 
 	spin_lock_irqsave(&port->lock, lock_flags);
+<<<<<<< HEAD
 	termios = port->state->port.tty->termios;
+=======
+	termios = &port->state->port.tty->termios;
+>>>>>>> refs/remotes/origin/master
 	if (ch == termios->c_cc[VSTART])
 		channel->ch_bd->bd_ops->send_start_character(channel);
 
@@ -216,16 +260,26 @@ static int jsm_tty_open(struct uart_port *port)
 	if (!channel->ch_rqueue) {
 		channel->ch_rqueue = kzalloc(RQUEUESIZE, GFP_KERNEL);
 		if (!channel->ch_rqueue) {
+<<<<<<< HEAD
 			jsm_printk(INIT, ERR, &channel->ch_bd->pci_dev,
 				"unable to allocate read queue buf");
+=======
+			jsm_dbg(INIT, &channel->ch_bd->pci_dev,
+				"unable to allocate read queue buf\n");
+>>>>>>> refs/remotes/origin/master
 			return -ENOMEM;
 		}
 	}
 	if (!channel->ch_equeue) {
 		channel->ch_equeue = kzalloc(EQUEUESIZE, GFP_KERNEL);
 		if (!channel->ch_equeue) {
+<<<<<<< HEAD
 			jsm_printk(INIT, ERR, &channel->ch_bd->pci_dev,
 				"unable to allocate error queue buf");
+=======
+			jsm_dbg(INIT, &channel->ch_bd->pci_dev,
+				"unable to allocate error queue buf\n");
+>>>>>>> refs/remotes/origin/master
 			return -ENOMEM;
 		}
 	}
@@ -234,7 +288,11 @@ static int jsm_tty_open(struct uart_port *port)
 	/*
 	 * Initialize if neither terminal is open.
 	 */
+<<<<<<< HEAD
 	jsm_printk(OPEN, INFO, &channel->ch_bd->pci_dev,
+=======
+	jsm_dbg(OPEN, &channel->ch_bd->pci_dev,
+>>>>>>> refs/remotes/origin/master
 		"jsm_open: initializing channel in open...\n");
 
 	/*
@@ -250,7 +308,11 @@ static int jsm_tty_open(struct uart_port *port)
 	channel->ch_cached_lsr = 0;
 	channel->ch_stops_sent = 0;
 
+<<<<<<< HEAD
 	termios = port->state->port.tty->termios;
+=======
+	termios = &port->state->port.tty->termios;
+>>>>>>> refs/remotes/origin/master
 	channel->ch_c_cflag	= termios->c_cflag;
 	channel->ch_c_iflag	= termios->c_iflag;
 	channel->ch_c_oflag	= termios->c_oflag;
@@ -270,7 +332,11 @@ static int jsm_tty_open(struct uart_port *port)
 
 	channel->ch_open_count++;
 
+<<<<<<< HEAD
 	jsm_printk(OPEN, INFO, &channel->ch_bd->pci_dev, "finish\n");
+=======
+	jsm_dbg(OPEN, &channel->ch_bd->pci_dev, "finish\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -280,10 +346,17 @@ static void jsm_tty_close(struct uart_port *port)
 	struct ktermios *ts;
 	struct jsm_channel *channel = (struct jsm_channel *)port;
 
+<<<<<<< HEAD
 	jsm_printk(CLOSE, INFO, &channel->ch_bd->pci_dev, "start\n");
 
 	bd = channel->ch_bd;
 	ts = port->state->port.tty->termios;
+=======
+	jsm_dbg(CLOSE, &channel->ch_bd->pci_dev, "start\n");
+
+	bd = channel->ch_bd;
+	ts = &port->state->port.tty->termios;
+>>>>>>> refs/remotes/origin/master
 
 	channel->ch_flags &= ~(CH_STOPI);
 
@@ -293,7 +366,11 @@ static void jsm_tty_close(struct uart_port *port)
 	 * If we have HUPCL set, lower DTR and RTS
 	 */
 	if (channel->ch_c_cflag & HUPCL) {
+<<<<<<< HEAD
 		jsm_printk(CLOSE, INFO, &channel->ch_bd->pci_dev,
+=======
+		jsm_dbg(CLOSE, &channel->ch_bd->pci_dev,
+>>>>>>> refs/remotes/origin/master
 			"Close. HUPCL set, dropping DTR/RTS\n");
 
 		/* Drop RTS/DTR */
@@ -304,7 +381,11 @@ static void jsm_tty_close(struct uart_port *port)
 	/* Turn off UART interrupts for this port */
 	channel->ch_bd->bd_ops->uart_off(channel);
 
+<<<<<<< HEAD
 	jsm_printk(CLOSE, INFO, &channel->ch_bd->pci_dev, "finish\n");
+=======
+	jsm_dbg(CLOSE, &channel->ch_bd->pci_dev, "finish\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void jsm_tty_set_termios(struct uart_port *port,
@@ -371,7 +452,11 @@ static struct uart_ops jsm_ops = {
  * Init the tty subsystem.  Called once per board after board has been
  * downloaded and init'ed.
  */
+<<<<<<< HEAD
 int __devinit jsm_tty_init(struct jsm_board *brd)
+=======
+int jsm_tty_init(struct jsm_board *brd)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	void __iomem *vaddr;
@@ -380,7 +465,11 @@ int __devinit jsm_tty_init(struct jsm_board *brd)
 	if (!brd)
 		return -ENXIO;
 
+<<<<<<< HEAD
 	jsm_printk(INIT, INFO, &brd->pci_dev, "start\n");
+=======
+	jsm_dbg(INIT, &brd->pci_dev, "start\n");
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Initialize board structure elements.
@@ -401,9 +490,15 @@ int __devinit jsm_tty_init(struct jsm_board *brd)
 			 */
 			brd->channels[i] = kzalloc(sizeof(struct jsm_channel), GFP_KERNEL);
 			if (!brd->channels[i]) {
+<<<<<<< HEAD
 				jsm_printk(CORE, ERR, &brd->pci_dev,
 					"%s:%d Unable to allocate memory for channel struct\n",
 							 __FILE__, __LINE__);
+=======
+				jsm_dbg(CORE, &brd->pci_dev,
+					"%s:%d Unable to allocate memory for channel struct\n",
+					__FILE__, __LINE__);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
@@ -431,7 +526,11 @@ int __devinit jsm_tty_init(struct jsm_board *brd)
 		init_waitqueue_head(&ch->ch_flags_wait);
 	}
 
+<<<<<<< HEAD
 	jsm_printk(INIT, INFO, &brd->pci_dev, "finish\n");
+=======
+	jsm_dbg(INIT, &brd->pci_dev, "finish\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -444,7 +543,11 @@ int jsm_uart_port_init(struct jsm_board *brd)
 	if (!brd)
 		return -ENXIO;
 
+<<<<<<< HEAD
 	jsm_printk(INIT, INFO, &brd->pci_dev, "start\n");
+=======
+	jsm_dbg(INIT, &brd->pci_dev, "start\n");
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Initialize board structure elements.
@@ -481,7 +584,11 @@ int jsm_uart_port_init(struct jsm_board *brd)
 			printk(KERN_INFO "jsm: Port %d added\n", i);
 	}
 
+<<<<<<< HEAD
 	jsm_printk(INIT, INFO, &brd->pci_dev, "finish\n");
+=======
+	jsm_dbg(INIT, &brd->pci_dev, "finish\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -493,7 +600,11 @@ int jsm_remove_uart_port(struct jsm_board *brd)
 	if (!brd)
 		return -ENXIO;
 
+<<<<<<< HEAD
 	jsm_printk(INIT, INFO, &brd->pci_dev, "start\n");
+=======
+	jsm_dbg(INIT, &brd->pci_dev, "start\n");
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Initialize board structure elements.
@@ -513,7 +624,11 @@ int jsm_remove_uart_port(struct jsm_board *brd)
 		uart_remove_one_port(&jsm_uart_driver, &brd->channels[i]->uart_port);
 	}
 
+<<<<<<< HEAD
 	jsm_printk(INIT, INFO, &brd->pci_dev, "finish\n");
+=======
+	jsm_dbg(INIT, &brd->pci_dev, "finish\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -521,6 +636,10 @@ void jsm_input(struct jsm_channel *ch)
 {
 	struct jsm_board *bd;
 	struct tty_struct *tp;
+<<<<<<< HEAD
+=======
+	struct tty_port *port;
+>>>>>>> refs/remotes/origin/master
 	u32 rmask;
 	u16 head;
 	u16 tail;
@@ -531,12 +650,21 @@ void jsm_input(struct jsm_channel *ch)
 	int s = 0;
 	int i = 0;
 
+<<<<<<< HEAD
 	jsm_printk(READ, INFO, &ch->ch_bd->pci_dev, "start\n");
+=======
+	jsm_dbg(READ, &ch->ch_bd->pci_dev, "start\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (!ch)
 		return;
 
+<<<<<<< HEAD
 	tp = ch->uart_port.state->port.tty;
+=======
+	port = &ch->uart_port.state->port;
+	tp = port->tty;
+>>>>>>> refs/remotes/origin/master
 
 	bd = ch->ch_bd;
 	if(!bd)
@@ -560,17 +688,29 @@ void jsm_input(struct jsm_channel *ch)
 		return;
 	}
 
+<<<<<<< HEAD
 	jsm_printk(READ, INFO, &ch->ch_bd->pci_dev, "start\n");
+=======
+	jsm_dbg(READ, &ch->ch_bd->pci_dev, "start\n");
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 *If the device is not open, or CREAD is off, flush
 	 *input data and return immediately.
 	 */
 	if (!tp ||
+<<<<<<< HEAD
 		!(tp->termios->c_cflag & CREAD) ) {
 
 		jsm_printk(READ, INFO, &ch->ch_bd->pci_dev,
 			"input. dropping %d bytes on port %d...\n", data_len, ch->ch_portnum);
+=======
+		!(tp->termios.c_cflag & CREAD) ) {
+
+		jsm_dbg(READ, &ch->ch_bd->pci_dev,
+			"input. dropping %d bytes on port %d...\n",
+			data_len, ch->ch_portnum);
+>>>>>>> refs/remotes/origin/master
 		ch->ch_r_head = tail;
 
 		/* Force queue flow control to be released, if needed */
@@ -585,12 +725,17 @@ void jsm_input(struct jsm_channel *ch)
 	 */
 	if (ch->ch_flags & CH_STOPI) {
 		spin_unlock_irqrestore(&ch->ch_lock, lock_flags);
+<<<<<<< HEAD
 		jsm_printk(READ, INFO, &ch->ch_bd->pci_dev,
+=======
+		jsm_dbg(READ, &ch->ch_bd->pci_dev,
+>>>>>>> refs/remotes/origin/master
 			"Port %d throttled, not reading any data. head: %x tail: %x\n",
 			ch->ch_portnum, head, tail);
 		return;
 	}
 
+<<<<<<< HEAD
 	jsm_printk(READ, INFO, &ch->ch_bd->pci_dev, "start 2\n");
 
 	if (data_len <= 0) {
@@ -600,6 +745,11 @@ void jsm_input(struct jsm_channel *ch)
 	}
 
 	len = tty_buffer_request_room(tp, data_len);
+=======
+	jsm_dbg(READ, &ch->ch_bd->pci_dev, "start 2\n");
+
+	len = tty_buffer_request_room(port, data_len);
+>>>>>>> refs/remotes/origin/master
 	n = len;
 
 	/*
@@ -628,6 +778,7 @@ void jsm_input(struct jsm_channel *ch)
 				 * format it likes.
 				 */
 				if (*(ch->ch_equeue +tail +i) & UART_LSR_BI)
+<<<<<<< HEAD
 					tty_insert_flip_char(tp, *(ch->ch_rqueue +tail +i),  TTY_BREAK);
 				else if (*(ch->ch_equeue +tail +i) & UART_LSR_PE)
 					tty_insert_flip_char(tp, *(ch->ch_rqueue +tail +i), TTY_PARITY);
@@ -638,6 +789,18 @@ void jsm_input(struct jsm_channel *ch)
 			}
 		} else {
 			tty_insert_flip_string(tp, ch->ch_rqueue + tail, s) ;
+=======
+					tty_insert_flip_char(port, *(ch->ch_rqueue +tail +i),  TTY_BREAK);
+				else if (*(ch->ch_equeue +tail +i) & UART_LSR_PE)
+					tty_insert_flip_char(port, *(ch->ch_rqueue +tail +i), TTY_PARITY);
+				else if (*(ch->ch_equeue +tail +i) & UART_LSR_FE)
+					tty_insert_flip_char(port, *(ch->ch_rqueue +tail +i), TTY_FRAME);
+				else
+					tty_insert_flip_char(port, *(ch->ch_rqueue +tail +i), TTY_NORMAL);
+			}
+		} else {
+			tty_insert_flip_string(port, ch->ch_rqueue + tail, s);
+>>>>>>> refs/remotes/origin/master
 		}
 		tail += s;
 		n -= s;
@@ -651,9 +814,15 @@ void jsm_input(struct jsm_channel *ch)
 	spin_unlock_irqrestore(&ch->ch_lock, lock_flags);
 
 	/* Tell the tty layer its okay to "eat" the data now */
+<<<<<<< HEAD
 	tty_flip_buffer_push(tp);
 
 	jsm_printk(IOCTL, INFO, &ch->ch_bd->pci_dev, "finish\n");
+=======
+	tty_flip_buffer_push(port);
+
+	jsm_dbg(IOCTL, &ch->ch_bd->pci_dev, "finish\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void jsm_carrier(struct jsm_channel *ch)
@@ -663,7 +832,11 @@ static void jsm_carrier(struct jsm_channel *ch)
 	int virt_carrier = 0;
 	int phys_carrier = 0;
 
+<<<<<<< HEAD
 	jsm_printk(CARR, INFO, &ch->ch_bd->pci_dev, "start\n");
+=======
+	jsm_dbg(CARR, &ch->ch_bd->pci_dev, "start\n");
+>>>>>>> refs/remotes/origin/master
 	if (!ch)
 		return;
 
@@ -673,16 +846,26 @@ static void jsm_carrier(struct jsm_channel *ch)
 		return;
 
 	if (ch->ch_mistat & UART_MSR_DCD) {
+<<<<<<< HEAD
 		jsm_printk(CARR, INFO, &ch->ch_bd->pci_dev,
 			"mistat: %x D_CD: %x\n", ch->ch_mistat, ch->ch_mistat & UART_MSR_DCD);
+=======
+		jsm_dbg(CARR, &ch->ch_bd->pci_dev, "mistat: %x D_CD: %x\n",
+			ch->ch_mistat, ch->ch_mistat & UART_MSR_DCD);
+>>>>>>> refs/remotes/origin/master
 		phys_carrier = 1;
 	}
 
 	if (ch->ch_c_cflag & CLOCAL)
 		virt_carrier = 1;
 
+<<<<<<< HEAD
 	jsm_printk(CARR, INFO, &ch->ch_bd->pci_dev,
 		"DCD: physical: %d virt: %d\n", phys_carrier, virt_carrier);
+=======
+	jsm_dbg(CARR, &ch->ch_bd->pci_dev, "DCD: physical: %d virt: %d\n",
+		phys_carrier, virt_carrier);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Test for a VIRTUAL carrier transition to HIGH.
@@ -694,8 +877,12 @@ static void jsm_carrier(struct jsm_channel *ch)
 		 * for carrier in the open routine.
 		 */
 
+<<<<<<< HEAD
 		jsm_printk(CARR, INFO, &ch->ch_bd->pci_dev,
 			"carrier: virt DCD rose\n");
+=======
+		jsm_dbg(CARR, &ch->ch_bd->pci_dev, "carrier: virt DCD rose\n");
+>>>>>>> refs/remotes/origin/master
 
 		if (waitqueue_active(&(ch->ch_flags_wait)))
 			wake_up_interruptible(&ch->ch_flags_wait);
@@ -711,7 +898,11 @@ static void jsm_carrier(struct jsm_channel *ch)
 		 * for carrier in the open routine.
 		 */
 
+<<<<<<< HEAD
 		jsm_printk(CARR, INFO, &ch->ch_bd->pci_dev,
+=======
+		jsm_dbg(CARR, &ch->ch_bd->pci_dev,
+>>>>>>> refs/remotes/origin/master
 			"carrier: physical DCD rose\n");
 
 		if (waitqueue_active(&(ch->ch_flags_wait)))
@@ -790,8 +981,13 @@ void jsm_check_queue_flow_control(struct jsm_channel *ch)
 			if(!(ch->ch_flags & CH_RECEIVER_OFF)) {
 				bd_ops->disable_receiver(ch);
 				ch->ch_flags |= (CH_RECEIVER_OFF);
+<<<<<<< HEAD
 				jsm_printk(READ, INFO, &ch->ch_bd->pci_dev,
 					"Internal queue hit hilevel mark (%d)! Turning off interrupts.\n",
+=======
+				jsm_dbg(READ, &ch->ch_bd->pci_dev,
+					"Internal queue hit hilevel mark (%d)! Turning off interrupts\n",
+>>>>>>> refs/remotes/origin/master
 					qleft);
 			}
 		}
@@ -800,8 +996,14 @@ void jsm_check_queue_flow_control(struct jsm_channel *ch)
 			if (ch->ch_stops_sent <= MAX_STOPS_SENT) {
 				bd_ops->send_stop_character(ch);
 				ch->ch_stops_sent++;
+<<<<<<< HEAD
 				jsm_printk(READ, INFO, &ch->ch_bd->pci_dev,
 					"Sending stop char! Times sent: %x\n", ch->ch_stops_sent);
+=======
+				jsm_dbg(READ, &ch->ch_bd->pci_dev,
+					"Sending stop char! Times sent: %x\n",
+					ch->ch_stops_sent);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
@@ -827,8 +1029,13 @@ void jsm_check_queue_flow_control(struct jsm_channel *ch)
 			if (ch->ch_flags & CH_RECEIVER_OFF) {
 				bd_ops->enable_receiver(ch);
 				ch->ch_flags &= ~(CH_RECEIVER_OFF);
+<<<<<<< HEAD
 				jsm_printk(READ, INFO, &ch->ch_bd->pci_dev,
 					"Internal queue hit lowlevel mark (%d)! Turning on interrupts.\n",
+=======
+				jsm_dbg(READ, &ch->ch_bd->pci_dev,
+					"Internal queue hit lowlevel mark (%d)! Turning on interrupts\n",
+>>>>>>> refs/remotes/origin/master
 					qleft);
 			}
 		}
@@ -836,7 +1043,12 @@ void jsm_check_queue_flow_control(struct jsm_channel *ch)
 		else if (ch->ch_c_iflag & IXOFF && ch->ch_stops_sent) {
 			ch->ch_stops_sent = 0;
 			bd_ops->send_start_character(ch);
+<<<<<<< HEAD
 			jsm_printk(READ, INFO, &ch->ch_bd->pci_dev, "Sending start char!\n");
+=======
+			jsm_dbg(READ, &ch->ch_bd->pci_dev,
+				"Sending start char!\n");
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }

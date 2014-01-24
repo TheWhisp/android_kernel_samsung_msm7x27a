@@ -137,7 +137,11 @@ struct wb_local_para {
 	u8	iPowerSaveMode; /* 0 indicates on, 1 indicates off */
 	u8	ATIMmode;
 	u8	ExcludeUnencrypted;
+<<<<<<< HEAD
 	/* Unit ime count for the decision to enter PS mode */
+=======
+	/* Unit time count for the decision to enter PS mode */
+>>>>>>> refs/remotes/origin/master
 	u16	CheckCountForPS;
 	u8	boHasTxActivity;/* tx activity has occurred */
 	u8	boMacPsValid;	/* Power save mode obtained from H/W is valid or not */
@@ -187,7 +191,11 @@ struct wb_local_para {
 	u8	reserved7[3];
 
 	struct	chan_info CurrentChan;	/* Current channel no. and channel band. It may be changed by scanning. */
+<<<<<<< HEAD
 	u8	boHandover;		/* Roaming, Hnadover to other AP. */
+=======
+	u8	boHandover;		/* Roaming, Handover to other AP. */
+>>>>>>> refs/remotes/origin/master
 	u8	boCCAbusy;
 
 	u16	CWMax;			/* It may not be the real value that H/W used */

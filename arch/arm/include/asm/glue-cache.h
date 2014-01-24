@@ -19,6 +19,7 @@
 #undef _CACHE
 #undef MULTI_CACHE
 
+<<<<<<< HEAD
 #if defined(CONFIG_CPU_CACHE_V3)
 # ifdef _CACHE
 #  define MULTI_CACHE 1
@@ -27,6 +28,8 @@
 # endif
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_CPU_CACHE_V4)
 # ifdef _CACHE
 #  define MULTI_CACHE 1
@@ -110,6 +113,7 @@
 #endif
 
 #if defined(CONFIG_CPU_V6) || defined(CONFIG_CPU_V6K)
+<<<<<<< HEAD
 //# ifdef _CACHE
 #  define MULTI_CACHE 1
 //# else
@@ -123,15 +127,64 @@
 //# else
 //#  define _CACHE v7
 //# endif
+=======
+# ifdef _CACHE
+#  define MULTI_CACHE 1
+# else
+#  define _CACHE v6
+# endif
+#endif
+
+#if defined(CONFIG_CPU_V7)
+# ifdef _CACHE
+#  define MULTI_CACHE 1
+# else
+#  define _CACHE v7
+# endif
+#endif
+
+#if defined(CONFIG_CPU_V7M)
+# ifdef _CACHE
+#  define MULTI_CACHE 1
+# else
+#  define _CACHE nop
+# endif
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #if !defined(_CACHE) && !defined(MULTI_CACHE)
 #error Unknown cache maintenance model
 #endif
 
+<<<<<<< HEAD
 #ifndef MULTI_CACHE
 #define __cpuc_flush_icache_all		__glue(_CACHE,_flush_icache_all)
 #define __cpuc_flush_kern_all		__glue(_CACHE,_flush_kern_cache_all)
+=======
+#ifndef __ASSEMBLER__
+extern inline void nop_flush_icache_all(void) { }
+extern inline void nop_flush_kern_cache_all(void) { }
+extern inline void nop_flush_kern_cache_louis(void) { }
+extern inline void nop_flush_user_cache_all(void) { }
+extern inline void nop_flush_user_cache_range(unsigned long a,
+		unsigned long b, unsigned int c) { }
+
+extern inline void nop_coherent_kern_range(unsigned long a, unsigned long b) { }
+extern inline int nop_coherent_user_range(unsigned long a,
+		unsigned long b) { return 0; }
+extern inline void nop_flush_kern_dcache_area(void *a, size_t s) { }
+
+extern inline void nop_dma_flush_range(const void *a, const void *b) { }
+
+extern inline void nop_dma_map_area(const void *s, size_t l, int f) { }
+extern inline void nop_dma_unmap_area(const void *s, size_t l, int f) { }
+#endif
+
+#ifndef MULTI_CACHE
+#define __cpuc_flush_icache_all		__glue(_CACHE,_flush_icache_all)
+#define __cpuc_flush_kern_all		__glue(_CACHE,_flush_kern_cache_all)
+#define __cpuc_flush_kern_louis		__glue(_CACHE,_flush_kern_cache_louis)
+>>>>>>> refs/remotes/origin/master
 #define __cpuc_flush_user_all		__glue(_CACHE,_flush_user_cache_all)
 #define __cpuc_flush_user_range		__glue(_CACHE,_flush_user_cache_range)
 #define __cpuc_coherent_kern_range	__glue(_CACHE,_coherent_kern_range)

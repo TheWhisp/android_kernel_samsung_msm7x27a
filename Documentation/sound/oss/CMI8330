@@ -144,18 +144,26 @@ CONFIG_SOUND_MSS=m
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Alma Chao <elysian@ethereal.torsion.org> suggests the following /etc/modprobe.conf:
 =======
 Alma Chao <elysian@ethereal.torsion.org> suggests the following in
 a /etc/modprobe.d/*conf file:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Alma Chao <elysian@ethereal.torsion.org> suggests the following in
+a /etc/modprobe.d/*conf file:
+>>>>>>> refs/remotes/origin/master
 
 alias sound ad1848
 alias synth0 opl3
 options ad1848 io=0x530 irq=7 dma=0 soundpro=1
 options opl3 io=0x388
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

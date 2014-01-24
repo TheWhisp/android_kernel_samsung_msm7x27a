@@ -22,6 +22,7 @@
 #include <mach/hardware.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "pci.h"
 
@@ -52,6 +53,12 @@ void * __iomem __iop13xx_ioremap(unsigned long cookie, size_t size,
 static void __iomem *__iop13xx_ioremap_caller(unsigned long cookie,
 	size_t size, unsigned int mtype, void *caller)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "pci.h"
+
+static void __iomem *__iop13xx_ioremap_caller(phys_addr_t cookie,
+	size_t size, unsigned int mtype, void *caller)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem * retval;
 
@@ -60,14 +67,22 @@ static void __iomem *__iop13xx_ioremap_caller(unsigned long cookie,
 		if (unlikely(!iop13xx_atux_mem_base))
 			retval = NULL;
 		else
+<<<<<<< HEAD
 			retval = (void *)(iop13xx_atux_mem_base +
+=======
+			retval = (iop13xx_atux_mem_base +
+>>>>>>> refs/remotes/origin/master
 			         (cookie - IOP13XX_PCIX_LOWER_MEM_RA));
 		break;
 	case IOP13XX_PCIE_LOWER_MEM_RA ... IOP13XX_PCIE_UPPER_MEM_RA:
 		if (unlikely(!iop13xx_atue_mem_base))
 			retval = NULL;
 		else
+<<<<<<< HEAD
 			retval = (void *)(iop13xx_atue_mem_base +
+=======
+			retval = (iop13xx_atue_mem_base +
+>>>>>>> refs/remotes/origin/master
 			         (cookie - IOP13XX_PCIE_LOWER_MEM_RA));
 		break;
 	case IOP13XX_PBI_LOWER_MEM_RA ... IOP13XX_PBI_UPPER_MEM_RA:
@@ -75,6 +90,7 @@ static void __iomem *__iop13xx_ioremap_caller(unsigned long cookie,
 				       (cookie - IOP13XX_PBI_LOWER_MEM_RA),
 				       size, mtype, __builtin_return_address(0));
 		break;
+<<<<<<< HEAD
 	case IOP13XX_PCIE_LOWER_IO_PA ... IOP13XX_PCIE_UPPER_IO_PA:
 		retval = (void *) IOP13XX_PCIE_IO_PHYS_TO_VIRT(cookie);
 		break;
@@ -91,10 +107,19 @@ static void __iomem *__iop13xx_ioremap_caller(unsigned long cookie,
 =======
 				caller);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case IOP13XX_PMMR_PHYS_MEM_BASE ... IOP13XX_PMMR_UPPER_MEM_PA:
+		retval = IOP13XX_PMMR_PHYS_TO_VIRT(cookie);
+		break;
+	default:
+		retval = __arm_ioremap_caller(cookie, size, mtype,
+				caller);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return retval;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 EXPORT_SYMBOL(__iop13xx_ioremap);
 
@@ -107,6 +132,11 @@ void __iop13xx_iounmap(void __iomem *addr)
 static void __iop13xx_iounmap(volatile void __iomem *addr)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static void __iop13xx_iounmap(volatile void __iomem *addr)
+{
+>>>>>>> refs/remotes/origin/master
 	if (iop13xx_atue_mem_base)
 		if (addr >= (void __iomem *) iop13xx_atue_mem_base &&
 	 	    addr < (void __iomem *) (iop13xx_atue_mem_base +
@@ -120,9 +150,13 @@ static void __iop13xx_iounmap(volatile void __iomem *addr)
 		    goto skip;
 
 	switch ((u32) addr) {
+<<<<<<< HEAD
 	case IOP13XX_PCIE_LOWER_IO_VA ... IOP13XX_PCIE_UPPER_IO_VA:
 	case IOP13XX_PCIX_LOWER_IO_VA ... IOP13XX_PCIX_UPPER_IO_VA:
 	case IOP13XX_PMMR_VIRT_MEM_BASE ... IOP13XX_PMMR_UPPER_MEM_VA:
+=======
+	case (u32)IOP13XX_PMMR_VIRT_MEM_BASE ... (u32)IOP13XX_PMMR_UPPER_MEM_VA:
+>>>>>>> refs/remotes/origin/master
 		goto skip;
 	}
 	__iounmap(addr);
@@ -131,12 +165,18 @@ skip:
 	return;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(__iop13xx_iounmap);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 void __init iop13xx_init_early(void)
 {
 	arch_ioremap_caller = __iop13xx_ioremap_caller;
 	arch_iounmap = __iop13xx_iounmap;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

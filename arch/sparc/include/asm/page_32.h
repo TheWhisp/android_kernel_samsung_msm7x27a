@@ -9,6 +9,7 @@
 #define _SPARC_PAGE_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PAGE_SHIFT   12
 
 #ifndef __ASSEMBLY__
@@ -18,15 +19,22 @@
 #define PAGE_SIZE    (1 << PAGE_SHIFT)
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/const.h>
 
 #define PAGE_SHIFT   12
 #define PAGE_SIZE    (_AC(1, UL) << PAGE_SHIFT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #define PAGE_MASK    (~(PAGE_SIZE-1))
 
 #include <asm/btfixup.h>
 
+=======
+#define PAGE_MASK    (~(PAGE_SIZE-1))
+
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 
 #define clear_page(page)	 memset((void *)(page), 0, PAGE_SIZE)
@@ -56,12 +64,15 @@ struct sparc_phys_banks {
 
 extern struct sparc_phys_banks sp_banks[SPARC_PHYS_BANKS+1];
 
+<<<<<<< HEAD
 /* Cache alias structure.  Entry is valid if context != -1. */
 struct cache_palias {
 	unsigned long vaddr;
 	int context;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* passing structs on the Sparc slow us down tremendously... */
 
 /* #define STRICT_MM_TYPECHECKS */
@@ -126,11 +137,15 @@ typedef unsigned long iopgprot_t;
 
 typedef struct page *pgtable_t;
 
+<<<<<<< HEAD
 extern unsigned long sparc_unmapped_base;
 
 BTFIXUPDEF_SETHI(sparc_unmapped_base)
 
 #define TASK_UNMAPPED_BASE	BTFIXUP_SETHI(sparc_unmapped_base)
+=======
+#define TASK_UNMAPPED_BASE	0x50000000
+>>>>>>> refs/remotes/origin/master
 
 #else /* !(__ASSEMBLY__) */
 

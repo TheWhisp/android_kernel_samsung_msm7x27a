@@ -43,9 +43,13 @@
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/sock.h>
 #include <net/raw.h>
 
@@ -60,10 +64,14 @@ static int sockstat_seq_show(struct seq_file *seq, void *v)
 	local_bh_disable();
 	orphans = percpu_counter_sum_positive(&tcp_orphan_count);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sockets = percpu_counter_sum_positive(&tcp_sockets_allocated);
 =======
 	sockets = proto_sockets_allocated_sum_positive(&tcp_prot);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sockets = proto_sockets_allocated_sum_positive(&tcp_prot);
+>>>>>>> refs/remotes/origin/master
 	local_bh_enable();
 
 	socket_seq_show(seq);
@@ -71,16 +79,22 @@ static int sockstat_seq_show(struct seq_file *seq, void *v)
 		   sock_prot_inuse_get(net, &tcp_prot), orphans,
 		   tcp_death_row.tw_count, sockets,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		   atomic_long_read(&tcp_memory_allocated));
 	seq_printf(seq, "UDP: inuse %d mem %ld\n",
 		   sock_prot_inuse_get(net, &udp_prot),
 		   atomic_long_read(&udp_memory_allocated));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		   proto_memory_allocated(&tcp_prot));
 	seq_printf(seq, "UDP: inuse %d mem %ld\n",
 		   sock_prot_inuse_get(net, &udp_prot),
 		   proto_memory_allocated(&udp_prot));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	seq_printf(seq, "UDPLITE: inuse %d\n",
 		   sock_prot_inuse_get(net, &udplite_prot));
 	seq_printf(seq, "RAW: inuse %d\n",
@@ -125,7 +139,11 @@ static const struct snmp_mib snmp4_ipstats_list[] = {
 	SNMP_MIB_SENTINEL
 };
 
+<<<<<<< HEAD
 /* Following RFC4293 items are displayed in /proc/net/netstat */
+=======
+/* Following items are displayed in /proc/net/netstat */
+>>>>>>> refs/remotes/origin/master
 static const struct snmp_mib snmp4_ipextstats_list[] = {
 	SNMP_MIB_ITEM("InNoRoutes", IPSTATS_MIB_INNOROUTES),
 	SNMP_MIB_ITEM("InTruncatedPkts", IPSTATS_MIB_INTRUNCATEDPKTS),
@@ -139,6 +157,15 @@ static const struct snmp_mib snmp4_ipextstats_list[] = {
 	SNMP_MIB_ITEM("OutMcastOctets", IPSTATS_MIB_OUTMCASTOCTETS),
 	SNMP_MIB_ITEM("InBcastOctets", IPSTATS_MIB_INBCASTOCTETS),
 	SNMP_MIB_ITEM("OutBcastOctets", IPSTATS_MIB_OUTBCASTOCTETS),
+<<<<<<< HEAD
+=======
+	/* Non RFC4293 fields */
+	SNMP_MIB_ITEM("InCsumErrors", IPSTATS_MIB_CSUMERRORS),
+	SNMP_MIB_ITEM("InNoECTPkts", IPSTATS_MIB_NOECTPKTS),
+	SNMP_MIB_ITEM("InECT1Pkts", IPSTATS_MIB_ECT1PKTS),
+	SNMP_MIB_ITEM("InECT0Pkts", IPSTATS_MIB_ECT0PKTS),
+	SNMP_MIB_ITEM("InCEPkts", IPSTATS_MIB_CEPKTS),
+>>>>>>> refs/remotes/origin/master
 	SNMP_MIB_SENTINEL
 };
 
@@ -176,6 +203,10 @@ static const struct snmp_mib snmp4_tcp_list[] = {
 	SNMP_MIB_ITEM("RetransSegs", TCP_MIB_RETRANSSEGS),
 	SNMP_MIB_ITEM("InErrs", TCP_MIB_INERRS),
 	SNMP_MIB_ITEM("OutRsts", TCP_MIB_OUTRSTS),
+<<<<<<< HEAD
+=======
+	SNMP_MIB_ITEM("InCsumErrors", TCP_MIB_CSUMERRORS),
+>>>>>>> refs/remotes/origin/master
 	SNMP_MIB_SENTINEL
 };
 
@@ -186,6 +217,10 @@ static const struct snmp_mib snmp4_udp_list[] = {
 	SNMP_MIB_ITEM("OutDatagrams", UDP_MIB_OUTDATAGRAMS),
 	SNMP_MIB_ITEM("RcvbufErrors", UDP_MIB_RCVBUFERRORS),
 	SNMP_MIB_ITEM("SndbufErrors", UDP_MIB_SNDBUFERRORS),
+<<<<<<< HEAD
+=======
+	SNMP_MIB_ITEM("InCsumErrors", UDP_MIB_CSUMERRORS),
+>>>>>>> refs/remotes/origin/master
 	SNMP_MIB_SENTINEL
 };
 
@@ -231,9 +266,12 @@ static const struct snmp_mib snmp4_net_list[] = {
 	SNMP_MIB_ITEM("TCPDSACKUndo", LINUX_MIB_TCPDSACKUNDO),
 	SNMP_MIB_ITEM("TCPLossUndo", LINUX_MIB_TCPLOSSUNDO),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SNMP_MIB_ITEM("TCPLoss", LINUX_MIB_TCPLOSS),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	SNMP_MIB_ITEM("TCPLostRetransmit", LINUX_MIB_TCPLOSTRETRANSMIT),
 	SNMP_MIB_ITEM("TCPRenoFailures", LINUX_MIB_TCPRENOFAILURES),
 	SNMP_MIB_ITEM("TCPSackFailures", LINUX_MIB_TCPSACKFAILURES),
@@ -242,6 +280,11 @@ static const struct snmp_mib snmp4_net_list[] = {
 	SNMP_MIB_ITEM("TCPForwardRetrans", LINUX_MIB_TCPFORWARDRETRANS),
 	SNMP_MIB_ITEM("TCPSlowStartRetrans", LINUX_MIB_TCPSLOWSTARTRETRANS),
 	SNMP_MIB_ITEM("TCPTimeouts", LINUX_MIB_TCPTIMEOUTS),
+<<<<<<< HEAD
+=======
+	SNMP_MIB_ITEM("TCPLossProbes", LINUX_MIB_TCPLOSSPROBES),
+	SNMP_MIB_ITEM("TCPLossProbeRecovery", LINUX_MIB_TCPLOSSPROBERECOVERY),
+>>>>>>> refs/remotes/origin/master
 	SNMP_MIB_ITEM("TCPRenoRecoveryFail", LINUX_MIB_TCPRENORECOVERYFAIL),
 	SNMP_MIB_ITEM("TCPSackRecoveryFail", LINUX_MIB_TCPSACKRECOVERYFAIL),
 	SNMP_MIB_ITEM("TCPSchedulerFailed", LINUX_MIB_TCPSCHEDULERFAILED),
@@ -272,14 +315,32 @@ static const struct snmp_mib snmp4_net_list[] = {
 	SNMP_MIB_ITEM("IPReversePathFilter", LINUX_MIB_IPRPFILTER),
 	SNMP_MIB_ITEM("TCPTimeWaitOverflow", LINUX_MIB_TCPTIMEWAITOVERFLOW),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	SNMP_MIB_ITEM("TCPReqQFullDoCookies", LINUX_MIB_TCPREQQFULLDOCOOKIES),
 	SNMP_MIB_ITEM("TCPReqQFullDrop", LINUX_MIB_TCPREQQFULLDROP),
 	SNMP_MIB_ITEM("TCPRetransFail", LINUX_MIB_TCPRETRANSFAIL),
 	SNMP_MIB_ITEM("TCPRcvCoalesce", LINUX_MIB_TCPRCVCOALESCE),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	SNMP_MIB_ITEM("TCPChallengeACK", LINUX_MIB_TCPCHALLENGEACK),
 	SNMP_MIB_ITEM("TCPSYNChallenge", LINUX_MIB_TCPSYNCHALLENGE),
+=======
+	SNMP_MIB_ITEM("TCPOFOQueue", LINUX_MIB_TCPOFOQUEUE),
+	SNMP_MIB_ITEM("TCPOFODrop", LINUX_MIB_TCPOFODROP),
+	SNMP_MIB_ITEM("TCPOFOMerge", LINUX_MIB_TCPOFOMERGE),
+	SNMP_MIB_ITEM("TCPChallengeACK", LINUX_MIB_TCPCHALLENGEACK),
+	SNMP_MIB_ITEM("TCPSYNChallenge", LINUX_MIB_TCPSYNCHALLENGE),
+	SNMP_MIB_ITEM("TCPFastOpenActive", LINUX_MIB_TCPFASTOPENACTIVE),
+	SNMP_MIB_ITEM("TCPFastOpenPassive", LINUX_MIB_TCPFASTOPENPASSIVE),
+	SNMP_MIB_ITEM("TCPFastOpenPassiveFail", LINUX_MIB_TCPFASTOPENPASSIVEFAIL),
+	SNMP_MIB_ITEM("TCPFastOpenListenOverflow", LINUX_MIB_TCPFASTOPENLISTENOVERFLOW),
+	SNMP_MIB_ITEM("TCPFastOpenCookieReqd", LINUX_MIB_TCPFASTOPENCOOKIEREQD),
+	SNMP_MIB_ITEM("TCPSpuriousRtxHostQueues", LINUX_MIB_TCPSPURIOUS_RTX_HOSTQUEUES),
+	SNMP_MIB_ITEM("BusyPollRxPackets", LINUX_MIB_BUSYPOLLRXPACKETS),
+>>>>>>> refs/remotes/origin/master
 	SNMP_MIB_SENTINEL
 };
 
@@ -312,10 +373,14 @@ static void icmpmsg_put(struct seq_file *seq)
 	count = 0;
 	for (i = 0; i < ICMPMSG_MIB_MAX; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		val = snmp_fold_field((void __percpu **) net->mib.icmpmsg_statistics, i);
 =======
 		val = atomic_long_read(&net->mib.icmpmsg_statistics->mibs[i]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		val = atomic_long_read(&net->mib.icmpmsg_statistics->mibs[i]);
+>>>>>>> refs/remotes/origin/master
 		if (val) {
 			type[count] = i;
 			vals[count++] = val;
@@ -335,16 +400,23 @@ static void icmp_put(struct seq_file *seq)
 	int i;
 	struct net *net = seq->private;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	atomic_long_t *ptr = net->mib.icmpmsg_statistics->mibs;
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	seq_puts(seq, "\nIcmp: InMsgs InErrors");
+=======
+	atomic_long_t *ptr = net->mib.icmpmsg_statistics->mibs;
+
+	seq_puts(seq, "\nIcmp: InMsgs InErrors InCsumErrors");
+>>>>>>> refs/remotes/origin/master
 	for (i=0; icmpmibmap[i].name != NULL; i++)
 		seq_printf(seq, " In%s", icmpmibmap[i].name);
 	seq_printf(seq, " OutMsgs OutErrors");
 	for (i=0; icmpmibmap[i].name != NULL; i++)
 		seq_printf(seq, " Out%s", icmpmibmap[i].name);
+<<<<<<< HEAD
 	seq_printf(seq, "\nIcmp: %lu %lu",
 		snmp_fold_field((void __percpu **) net->mib.icmp_statistics, ICMP_MIB_INMSGS),
 		snmp_fold_field((void __percpu **) net->mib.icmp_statistics, ICMP_MIB_INERRORS));
@@ -356,17 +428,30 @@ static void icmp_put(struct seq_file *seq)
 =======
 			   atomic_long_read(ptr + icmpmibmap[i].index));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	seq_printf(seq, "\nIcmp: %lu %lu %lu",
+		snmp_fold_field((void __percpu **) net->mib.icmp_statistics, ICMP_MIB_INMSGS),
+		snmp_fold_field((void __percpu **) net->mib.icmp_statistics, ICMP_MIB_INERRORS),
+		snmp_fold_field((void __percpu **) net->mib.icmp_statistics, ICMP_MIB_CSUMERRORS));
+	for (i=0; icmpmibmap[i].name != NULL; i++)
+		seq_printf(seq, " %lu",
+			   atomic_long_read(ptr + icmpmibmap[i].index));
+>>>>>>> refs/remotes/origin/master
 	seq_printf(seq, " %lu %lu",
 		snmp_fold_field((void __percpu **) net->mib.icmp_statistics, ICMP_MIB_OUTMSGS),
 		snmp_fold_field((void __percpu **) net->mib.icmp_statistics, ICMP_MIB_OUTERRORS));
 	for (i=0; icmpmibmap[i].name != NULL; i++)
 		seq_printf(seq, " %lu",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			snmp_fold_field((void __percpu **) net->mib.icmpmsg_statistics,
 				icmpmibmap[i].index | 0x100));
 =======
 			   atomic_long_read(ptr + (icmpmibmap[i].index | 0x100)));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   atomic_long_read(ptr + (icmpmibmap[i].index | 0x100)));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -501,28 +586,49 @@ static const struct file_operations netstat_seq_fops = {
 
 static __net_init int ip_proc_init_net(struct net *net)
 {
+<<<<<<< HEAD
 	if (!proc_net_fops_create(net, "sockstat", S_IRUGO, &sockstat_seq_fops))
 		goto out_sockstat;
 	if (!proc_net_fops_create(net, "netstat", S_IRUGO, &netstat_seq_fops))
 		goto out_netstat;
 	if (!proc_net_fops_create(net, "snmp", S_IRUGO, &snmp_seq_fops))
+=======
+	if (!proc_create("sockstat", S_IRUGO, net->proc_net,
+			 &sockstat_seq_fops))
+		goto out_sockstat;
+	if (!proc_create("netstat", S_IRUGO, net->proc_net, &netstat_seq_fops))
+		goto out_netstat;
+	if (!proc_create("snmp", S_IRUGO, net->proc_net, &snmp_seq_fops))
+>>>>>>> refs/remotes/origin/master
 		goto out_snmp;
 
 	return 0;
 
 out_snmp:
+<<<<<<< HEAD
 	proc_net_remove(net, "netstat");
 out_netstat:
 	proc_net_remove(net, "sockstat");
+=======
+	remove_proc_entry("netstat", net->proc_net);
+out_netstat:
+	remove_proc_entry("sockstat", net->proc_net);
+>>>>>>> refs/remotes/origin/master
 out_sockstat:
 	return -ENOMEM;
 }
 
 static __net_exit void ip_proc_exit_net(struct net *net)
 {
+<<<<<<< HEAD
 	proc_net_remove(net, "snmp");
 	proc_net_remove(net, "netstat");
 	proc_net_remove(net, "sockstat");
+=======
+	remove_proc_entry("snmp", net->proc_net);
+	remove_proc_entry("netstat", net->proc_net);
+	remove_proc_entry("sockstat", net->proc_net);
+>>>>>>> refs/remotes/origin/master
 }
 
 static __net_initdata struct pernet_operations ip_proc_ops = {

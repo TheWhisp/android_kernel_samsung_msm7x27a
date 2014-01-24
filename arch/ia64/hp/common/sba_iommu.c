@@ -44,9 +44,12 @@
 #include <asm/page.h>		/* PAGE_OFFSET */
 #include <asm/dma.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>		/* wmb() */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/acpi-ext.h>
 
@@ -919,10 +922,14 @@ sba_mark_invalid(struct ioc *ioc, dma_addr_t iova, size_t byte_cnt)
  * @attrs: optional dma attributes
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
 =======
  * See Documentation/DMA-API-HOWTO.txt
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/master
  */
 static dma_addr_t sba_map_page(struct device *dev, struct page *page,
 			       unsigned long poff, size_t size,
@@ -1052,10 +1059,14 @@ sba_mark_clean(struct ioc *ioc, dma_addr_t iova, size_t size)
  * @attrs: optional dma attributes
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
 =======
  * See Documentation/DMA-API-HOWTO.txt
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/master
  */
 static void sba_unmap_page(struct device *dev, dma_addr_t iova, size_t size,
 			   enum dma_data_direction dir, struct dma_attrs *attrs)
@@ -1139,17 +1150,23 @@ void sba_unmap_single_attrs(struct device *dev, dma_addr_t iova, size_t size,
  * @dma_handle:  IOVA of new buffer.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
  */
 static void *
 sba_alloc_coherent (struct device *dev, size_t size, dma_addr_t *dma_handle, gfp_t flags)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * See Documentation/DMA-API-HOWTO.txt
  */
 static void *
 sba_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_handle,
 		   gfp_t flags, struct dma_attrs *attrs)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct ioc *ioc;
 	void *addr;
@@ -1210,16 +1227,22 @@ sba_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_handle,
  * @dma_handler:  IO virtual address of "consistent" buffer.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
  */
 static void sba_free_coherent (struct device *dev, size_t size, void *vaddr,
 			       dma_addr_t dma_handle)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * See Documentation/DMA-API-HOWTO.txt
  */
 static void sba_free_coherent(struct device *dev, size_t size, void *vaddr,
 			      dma_addr_t dma_handle, struct dma_attrs *attrs)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	sba_unmap_single_attrs(dev, dma_handle, size, 0, NULL);
 	free_pages((unsigned long) vaddr, get_order(size));
@@ -1480,10 +1503,14 @@ static void sba_unmap_sg_attrs(struct device *dev, struct scatterlist *sglist,
  * @attrs: optional dma attributes
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
 =======
  * See Documentation/DMA-API-HOWTO.txt
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/master
  */
 static int sba_map_sg_attrs(struct device *dev, struct scatterlist *sglist,
 			    int nents, enum dma_data_direction dir,
@@ -1580,10 +1607,14 @@ static int sba_map_sg_attrs(struct device *dev, struct scatterlist *sglist,
  * @attrs: optional dma attributes
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt
 =======
  * See Documentation/DMA-API-HOWTO.txt
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See Documentation/DMA-API-HOWTO.txt
+>>>>>>> refs/remotes/origin/master
  */
 static void sba_unmap_sg_attrs(struct device *dev, struct scatterlist *sglist,
 			       int nents, enum dma_data_direction dir,
@@ -2026,7 +2057,11 @@ sba_connect_bus(struct pci_bus *bus)
 	if (PCI_CONTROLLER(bus)->iommu)
 		return;
 
+<<<<<<< HEAD
 	handle = PCI_CONTROLLER(bus)->acpi_handle;
+=======
+	handle = acpi_device_handle(PCI_CONTROLLER(bus)->companion);
+>>>>>>> refs/remotes/origin/master
 	if (!handle)
 		return;
 
@@ -2076,7 +2111,12 @@ sba_map_ioc_to_node(struct ioc *ioc, acpi_handle handle)
 #endif
 
 static int __init
+<<<<<<< HEAD
 acpi_sba_ioc_add(struct acpi_device *device)
+=======
+acpi_sba_ioc_add(struct acpi_device *device,
+		 const struct acpi_device_id *not_used)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ioc *ioc;
 	acpi_status status;
@@ -2124,6 +2164,7 @@ static const struct acpi_device_id hp_ioc_iommu_device_ids[] = {
 	{"HWP0004", 0},
 	{"", 0},
 };
+<<<<<<< HEAD
 static struct acpi_driver acpi_sba_ioc_driver = {
 	.name		= "IOC IOMMU Driver",
 	.ids		= hp_ioc_iommu_device_ids,
@@ -2132,6 +2173,20 @@ static struct acpi_driver acpi_sba_ioc_driver = {
 	},
 };
 
+=======
+static struct acpi_scan_handler acpi_sba_ioc_handler = {
+	.ids	= hp_ioc_iommu_device_ids,
+	.attach	= acpi_sba_ioc_add,
+};
+
+static int __init acpi_sba_ioc_init_acpi(void)
+{
+	return acpi_scan_add_handler(&acpi_sba_ioc_handler);
+}
+/* This has to run before acpi_scan_init(). */
+arch_initcall(acpi_sba_ioc_init_acpi);
+
+>>>>>>> refs/remotes/origin/master
 extern struct dma_map_ops swiotlb_dma_ops;
 
 static int __init
@@ -2156,7 +2211,14 @@ sba_init(void)
 	}
 #endif
 
+<<<<<<< HEAD
 	acpi_bus_register_driver(&acpi_sba_ioc_driver);
+=======
+	/*
+	 * ioc_list should be populated by the acpi_sba_ioc_handler's .attach()
+	 * routine, but that only happens if acpi_scan_init() has already run.
+	 */
+>>>>>>> refs/remotes/origin/master
 	if (!ioc_list) {
 #ifdef CONFIG_IA64_GENERIC
 		/*
@@ -2248,12 +2310,17 @@ __setup("sbapagesize=",sba_page_override);
 
 struct dma_map_ops sba_dma_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.alloc_coherent		= sba_alloc_coherent,
 	.free_coherent		= sba_free_coherent,
 =======
 	.alloc			= sba_alloc_coherent,
 	.free			= sba_free_coherent,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.alloc			= sba_alloc_coherent,
+	.free			= sba_free_coherent,
+>>>>>>> refs/remotes/origin/master
 	.map_page		= sba_map_page,
 	.unmap_page		= sba_unmap_page,
 	.map_sg			= sba_map_sg_attrs,

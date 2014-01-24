@@ -51,15 +51,21 @@
 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/wireless.h>
 #include <linux/netdevice.h>
@@ -246,7 +252,10 @@ static int prism2sta_close(wlandevice_t *wlandev)
 ----------------------------------------------------------------*/
 static void prism2sta_reset(wlandevice_t *wlandev)
 {
+<<<<<<< HEAD
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -992,7 +1001,10 @@ static void prism2sta_inf_handover(wlandevice_t *wlandev,
 				   hfa384x_InfFrame_t *inf)
 {
 	pr_debug("received infoframe:HANDOVER (unhandled)\n");
+<<<<<<< HEAD
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -1039,8 +1051,11 @@ static void prism2sta_inf_tallies(wlandevice_t *wlandev,
 		for (i = 0; i < cnt; i++, dst++, src16++)
 			*dst += le16_to_cpu(*src16);
 	}
+<<<<<<< HEAD
 
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -1097,8 +1112,11 @@ static void prism2sta_inf_scanresults(wlandevice_t *wlandev,
 		printk(KERN_ERR "setconfig(joinreq) failed, result=%d\n",
 		       result);
 	}
+<<<<<<< HEAD
 
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -1132,8 +1150,12 @@ static void prism2sta_inf_hostscanresults(wlandevice_t *wlandev,
 
 	kfree(hw->scanresults);
 
+<<<<<<< HEAD
 	hw->scanresults = kmalloc(sizeof(hfa384x_InfFrame_t), GFP_ATOMIC);
 	memcpy(hw->scanresults, inf, sizeof(hfa384x_InfFrame_t));
+=======
+	hw->scanresults = kmemdup(inf, sizeof(hfa384x_InfFrame_t), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 
 	if (nbss == 0)
 		nbss = -1;
@@ -1170,6 +1192,7 @@ static void prism2sta_inf_chinforesults(wlandevice_t *wlandev,
 	    le16_to_cpu(inf->info.chinforesult.scanchannels);
 
 	for (i = 0, n = 0; i < HFA384x_CHINFORESULT_MAX; i++) {
+<<<<<<< HEAD
 		if (hw->channel_info.results.scanchannels & (1 << i)) {
 			int channel =
 			    le16_to_cpu(inf->info.chinforesult.result[n].chid) -
@@ -1194,11 +1217,43 @@ static void prism2sta_inf_chinforesults(wlandevice_t *wlandev,
 			     active & HFA384x_CHINFORESULT_PCFACTIVE ? 1 : 0);
 			n++;
 		}
+=======
+		hfa384x_ChInfoResultSub_t *result;
+		hfa384x_ChInfoResultSub_t *chinforesult;
+		int chan;
+
+		if (!(hw->channel_info.results.scanchannels & (1 << i)))
+			continue;
+
+		result = &inf->info.chinforesult.result[n];
+		chan = le16_to_cpu(result->chid) - 1;
+
+		if (chan < 0 || chan >= HFA384x_CHINFORESULT_MAX)
+			continue;
+
+		chinforesult = &hw->channel_info.results.result[chan];
+		chinforesult->chid = chan;
+		chinforesult->anl = le16_to_cpu(result->anl);
+		chinforesult->pnl = le16_to_cpu(result->pnl);
+		chinforesult->active = le16_to_cpu(result->active);
+
+		pr_debug("chinfo: channel %d, %s level (avg/peak)=%d/%d dB, pcf %d\n",
+			 chan + 1,
+			 (chinforesult->active & HFA384x_CHINFORESULT_BSSACTIVE)
+				? "signal" : "noise",
+			 chinforesult->anl, chinforesult->pnl,
+			 (chinforesult->active & HFA384x_CHINFORESULT_PCFACTIVE)
+				? 1 : 0);
+		n++;
+>>>>>>> refs/remotes/origin/master
 	}
 	atomic_set(&hw->channel_info.done, 2);
 
 	hw->channel_info.count = n;
+<<<<<<< HEAD
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void prism2sta_processing_defer(struct work_struct *data)
@@ -1222,7 +1277,11 @@ void prism2sta_processing_defer(struct work_struct *data)
 
 	/* Now let's handle the linkstatus stuff */
 	if (hw->link_status == hw->link_status_new)
+<<<<<<< HEAD
 		goto failed;
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	hw->link_status = hw->link_status_new;
 
@@ -1276,7 +1335,11 @@ void prism2sta_processing_defer(struct work_struct *data)
 				pr_debug
 				    ("getconfig(0x%02x) failed, result = %d\n",
 				     HFA384x_RID_CURRENTBSSID, result);
+<<<<<<< HEAD
 				goto failed;
+=======
+				return;
+>>>>>>> refs/remotes/origin/master
 			}
 
 			result = hfa384x_drvr_getconfig(hw,
@@ -1286,9 +1349,15 @@ void prism2sta_processing_defer(struct work_struct *data)
 				pr_debug
 				    ("getconfig(0x%02x) failed, result = %d\n",
 				     HFA384x_RID_CURRENTSSID, result);
+<<<<<<< HEAD
 				goto failed;
 			}
 			prism2mgmt_bytestr2pstr((hfa384x_bytestr_t *) &ssid,
+=======
+				return;
+			}
+			prism2mgmt_bytestr2pstr((struct hfa384x_bytestr *) &ssid,
+>>>>>>> refs/remotes/origin/master
 						(p80211pstrd_t *) &
 						wlandev->ssid);
 
@@ -1300,7 +1369,11 @@ void prism2sta_processing_defer(struct work_struct *data)
 				pr_debug
 				    ("getconfig(0x%02x) failed, result = %d\n",
 				     HFA384x_RID_PORTSTATUS, result);
+<<<<<<< HEAD
 				goto failed;
+=======
+				return;
+>>>>>>> refs/remotes/origin/master
 			}
 			wlandev->macmode =
 			    (portstatus == HFA384x_PSTATUS_CONN_IBSS) ?
@@ -1359,7 +1432,11 @@ void prism2sta_processing_defer(struct work_struct *data)
 		if (result) {
 			pr_debug("getconfig(0x%02x) failed, result = %d\n",
 				 HFA384x_RID_CURRENTBSSID, result);
+<<<<<<< HEAD
 			goto failed;
+=======
+			return;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		result = hfa384x_drvr_getconfig(hw,
@@ -1368,9 +1445,15 @@ void prism2sta_processing_defer(struct work_struct *data)
 		if (result) {
 			pr_debug("getconfig(0x%02x) failed, result = %d\n",
 				 HFA384x_RID_CURRENTSSID, result);
+<<<<<<< HEAD
 			goto failed;
 		}
 		prism2mgmt_bytestr2pstr((hfa384x_bytestr_t *) &ssid,
+=======
+			return;
+		}
+		prism2mgmt_bytestr2pstr((struct hfa384x_bytestr *) &ssid,
+>>>>>>> refs/remotes/origin/master
 					(p80211pstrd_t *) &wlandev->ssid);
 
 		hw->link_status = HFA384x_LINK_CONNECTED;
@@ -1447,6 +1530,7 @@ void prism2sta_processing_defer(struct work_struct *data)
 		/* This is bad, IO port problems? */
 		printk(KERN_WARNING
 		       "unknown linkstatus=0x%02x\n", hw->link_status);
+<<<<<<< HEAD
 		goto failed;
 		break;
 	}
@@ -1455,6 +1539,12 @@ void prism2sta_processing_defer(struct work_struct *data)
 
 failed:
 	return;
+=======
+		return;
+	}
+
+	wlandev->linkstatus = (hw->link_status == HFA384x_LINK_CONNECTED);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -1482,8 +1572,11 @@ static void prism2sta_inf_linkstatus(wlandevice_t *wlandev,
 	hw->link_status_new = le16_to_cpu(inf->info.linkstatus.linkstatus);
 
 	schedule_work(&hw->link_bh);
+<<<<<<< HEAD
 
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -1544,8 +1637,11 @@ static void prism2sta_inf_assocstatus(wlandevice_t *wlandev,
 			printk(KERN_WARNING
 "authfail assocstatus info frame received for authenticated station.\n");
 	}
+<<<<<<< HEAD
 
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -1735,7 +1831,10 @@ static void prism2sta_inf_authreq_defer(wlandevice_t *wlandev,
 		       "setconfig(authenticatestation) failed, result=%d\n",
 		       result);
 	}
+<<<<<<< HEAD
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -1762,8 +1861,11 @@ static void prism2sta_inf_psusercnt(wlandevice_t *wlandev,
 	hfa384x_t *hw = (hfa384x_t *) wlandev->priv;
 
 	hw->psusercount = le16_to_cpu(inf->info.psusercnt.usercnt);
+<<<<<<< HEAD
 
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -1829,7 +1931,10 @@ void prism2sta_ev_info(wlandevice_t *wlandev, hfa384x_InfFrame_t *inf)
 		       "Unknown info type=0x%02x\n", inf->infotype);
 		break;
 	}
+<<<<<<< HEAD
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -1854,8 +1959,11 @@ void prism2sta_ev_info(wlandevice_t *wlandev, hfa384x_InfFrame_t *inf)
 void prism2sta_ev_txexc(wlandevice_t *wlandev, u16 status)
 {
 	pr_debug("TxExc status=0x%x.\n", status);
+<<<<<<< HEAD
 
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -1879,7 +1987,10 @@ void prism2sta_ev_tx(wlandevice_t *wlandev, u16 status)
 	pr_debug("Tx Complete, status=0x%04x\n", status);
 	/* update linux network stats */
 	wlandev->linux_stats.tx_packets++;
+<<<<<<< HEAD
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -1901,7 +2012,10 @@ void prism2sta_ev_tx(wlandevice_t *wlandev, u16 status)
 void prism2sta_ev_rx(wlandevice_t *wlandev, struct sk_buff *skb)
 {
 	p80211netdev_rx(wlandev, skb);
+<<<<<<< HEAD
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -1923,7 +2037,10 @@ void prism2sta_ev_rx(wlandevice_t *wlandev, struct sk_buff *skb)
 void prism2sta_ev_alloc(wlandevice_t *wlandev)
 {
 	netif_wake_queue(wlandev->netdev);
+<<<<<<< HEAD
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -1951,8 +2068,13 @@ static wlandevice_t *create_wlan(void)
 	hfa384x_t *hw = NULL;
 
 	/* Alloc our structures */
+<<<<<<< HEAD
 	wlandev = kmalloc(sizeof(wlandevice_t), GFP_KERNEL);
 	hw = kmalloc(sizeof(hfa384x_t), GFP_KERNEL);
+=======
+	wlandev = kzalloc(sizeof(wlandevice_t), GFP_KERNEL);
+	hw = kzalloc(sizeof(hfa384x_t), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 
 	if (!wlandev || !hw) {
 		printk(KERN_ERR "%s: Memory allocation failure.\n", dev_info);
@@ -1961,10 +2083,13 @@ static wlandevice_t *create_wlan(void)
 		return NULL;
 	}
 
+<<<<<<< HEAD
 	/* Clear all the structs */
 	memset(wlandev, 0, sizeof(wlandevice_t));
 	memset(hw, 0, sizeof(hfa384x_t));
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Initialize the network device object. */
 	wlandev->nsdname = dev_info;
 	wlandev->msdstate = WLAN_MSD_HWPRESENT_PENDING;
@@ -1996,12 +2121,20 @@ void prism2sta_commsqual_defer(struct work_struct *data)
 	int result = 0;
 
 	if (hw->wlandev->hwremoved)
+<<<<<<< HEAD
 		goto done;
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	/* we don't care if we're in AP mode */
 	if ((wlandev->macmode == WLAN_MACMODE_NONE) ||
 	    (wlandev->macmode == WLAN_MACMODE_ESS_AP)) {
+<<<<<<< HEAD
 		goto done;
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* It only makes sense to poll these in non-IBSS */
@@ -2012,7 +2145,11 @@ void prism2sta_commsqual_defer(struct work_struct *data)
 
 		if (result) {
 			printk(KERN_ERR "error fetching commsqual\n");
+<<<<<<< HEAD
 			goto done;
+=======
+			return;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		pr_debug("commsqual %d %d %d\n",
@@ -2029,7 +2166,11 @@ void prism2sta_commsqual_defer(struct work_struct *data)
 	if (result) {
 		pr_debug("get signal rate failed, result = %d\n",
 			 result);
+<<<<<<< HEAD
 		goto done;
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	switch (mibitem->data) {
@@ -2056,7 +2197,11 @@ void prism2sta_commsqual_defer(struct work_struct *data)
 	if (result) {
 		pr_debug("getconfig(0x%02x) failed, result = %d\n",
 			 HFA384x_RID_CURRENTBSSID, result);
+<<<<<<< HEAD
 		goto done;
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	result = hfa384x_drvr_getconfig(hw,
@@ -2065,16 +2210,25 @@ void prism2sta_commsqual_defer(struct work_struct *data)
 	if (result) {
 		pr_debug("getconfig(0x%02x) failed, result = %d\n",
 			 HFA384x_RID_CURRENTSSID, result);
+<<<<<<< HEAD
 		goto done;
 	}
 	prism2mgmt_bytestr2pstr((hfa384x_bytestr_t *) &ssid,
+=======
+		return;
+	}
+	prism2mgmt_bytestr2pstr((struct hfa384x_bytestr *) &ssid,
+>>>>>>> refs/remotes/origin/master
 				(p80211pstrd_t *) &wlandev->ssid);
 
 	/* Reschedule timer */
 	mod_timer(&hw->commsqual_timer, jiffies + HZ);
+<<<<<<< HEAD
 
 done:
 	;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void prism2sta_commsqual_timer(unsigned long data)

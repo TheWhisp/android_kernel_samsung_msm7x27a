@@ -11,15 +11,21 @@
 #include <linux/pfn.h>
 #include <linux/pci.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/pci-direct.h>
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/export.h>
 
 #include <asm/probe_roms.h>
 #include <asm/pci-direct.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/e820.h>
 #include <asm/mmzone.h>
 #include <asm/setup.h>
@@ -156,7 +162,11 @@ static struct resource *find_oprom(struct pci_dev *pdev)
 	return oprom;
 }
 
+<<<<<<< HEAD
 void *pci_map_biosrom(struct pci_dev *pdev)
+=======
+void __iomem *pci_map_biosrom(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *oprom = find_oprom(pdev);
 
@@ -242,10 +252,14 @@ void __init probe_roms(void)
 	rom = isa_bus_to_virt(extension_rom_resource.start);
 	if (romsignature(rom)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		length = extension_rom_resource.end - extension_rom_resource.start + 1;
 =======
 		length = resource_size(&extension_rom_resource);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		length = resource_size(&extension_rom_resource);
+>>>>>>> refs/remotes/origin/master
 		if (romchecksum(rom, length)) {
 			request_resource(&iomem_resource, &extension_rom_resource);
 			upper = extension_rom_resource.start;

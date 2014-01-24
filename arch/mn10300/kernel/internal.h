@@ -9,10 +9,16 @@
  * 2 of the Licence, or (at your option) any later version.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/irqreturn.h>
+
+>>>>>>> refs/remotes/origin/master
 struct clocksource;
 struct clock_event_device;
 
 /*
+<<<<<<< HEAD
  * kthread.S
  */
 extern int kernel_thread_helper(int);
@@ -21,6 +27,12 @@ extern int kernel_thread_helper(int);
  * entry.S
  */
 extern void ret_from_fork(struct task_struct *) __attribute__((noreturn));
+=======
+ * entry.S
+ */
+extern void ret_from_fork(struct task_struct *) __attribute__((noreturn));
+extern void ret_from_kernel_thread(struct task_struct *) __attribute__((noreturn));
+>>>>>>> refs/remotes/origin/master
 
 /*
  * smp-low.S

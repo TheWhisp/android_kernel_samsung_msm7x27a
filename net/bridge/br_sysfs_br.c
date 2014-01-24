@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  *	Sysfs attributes of bridge ports
+=======
+ *	Sysfs attributes of bridge
+>>>>>>> refs/remotes/origin/master
  *	Linux ethernet bridge
  *
  *	Authors:
@@ -14,6 +18,10 @@
 #include <linux/capability.h>
 #include <linux/kernel.h>
 #include <linux/netdevice.h>
+<<<<<<< HEAD
+=======
+#include <linux/etherdevice.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/if_bridge.h>
 #include <linux/rtnetlink.h>
 #include <linux/spinlock.h>
@@ -36,7 +44,11 @@ static ssize_t store_bridge_parm(struct device *d,
 	unsigned long val;
 	int err;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(dev_net(br->dev)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	val = simple_strtoul(buf, &endp, 0);
@@ -132,7 +144,11 @@ static ssize_t store_stp_state(struct device *d,
 	char *endp;
 	unsigned long val;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(dev_net(br->dev)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	val = simple_strtoul(buf, &endp, 0);
@@ -150,7 +166,10 @@ static DEVICE_ATTR(stp_state, S_IRUGO | S_IWUSR, show_stp_state,
 		   store_stp_state);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_group_fwd_mask(struct device *d,
 			      struct device_attribute *attr, char *buf)
 {
@@ -167,7 +186,11 @@ static ssize_t store_group_fwd_mask(struct device *d,
 	char *endp;
 	unsigned long val;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(dev_net(br->dev)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	val = simple_strtoul(buf, &endp, 0);
@@ -184,7 +207,10 @@ static ssize_t store_group_fwd_mask(struct device *d,
 static DEVICE_ATTR(group_fwd_mask, S_IRUGO | S_IWUSR, show_group_fwd_mask,
 		   store_group_fwd_mask);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_priority(struct device *d, struct device_attribute *attr,
 			     char *buf)
 {
@@ -300,6 +326,7 @@ static ssize_t store_group_addr(struct device *d,
 				const char *buf, size_t len)
 {
 	struct net_bridge *br = to_bridge(d);
+<<<<<<< HEAD
 	unsigned new_addr[6];
 	int i;
 
@@ -307,16 +334,29 @@ static ssize_t store_group_addr(struct device *d,
 		return -EPERM;
 
 	if (sscanf(buf, "%x:%x:%x:%x:%x:%x",
+=======
+	u8 new_addr[6];
+	int i;
+
+	if (!ns_capable(dev_net(br->dev)->user_ns, CAP_NET_ADMIN))
+		return -EPERM;
+
+	if (sscanf(buf, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
+>>>>>>> refs/remotes/origin/master
 		   &new_addr[0], &new_addr[1], &new_addr[2],
 		   &new_addr[3], &new_addr[4], &new_addr[5]) != 6)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	/* Must be 01:80:c2:00:00:0X */
 	for (i = 0; i < 5; i++)
 		if (new_addr[i] != br_group_address[i])
 			return -EINVAL;
 
 	if (new_addr[5] & ~0xf)
+=======
+	if (!is_link_local_ether_addr(new_addr))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (new_addr[5] == 1 ||		/* 802.3x Pause address */
@@ -340,7 +380,11 @@ static ssize_t store_flush(struct device *d,
 {
 	struct net_bridge *br = to_bridge(d);
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(dev_net(br->dev)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	br_fdb_flush(br);
@@ -382,6 +426,51 @@ static ssize_t store_multicast_snooping(struct device *d,
 static DEVICE_ATTR(multicast_snooping, S_IRUGO | S_IWUSR,
 		   show_multicast_snooping, store_multicast_snooping);
 
+<<<<<<< HEAD
+=======
+static ssize_t show_multicast_query_use_ifaddr(struct device *d,
+				      struct device_attribute *attr,
+				      char *buf)
+{
+	struct net_bridge *br = to_bridge(d);
+	return sprintf(buf, "%d\n", br->multicast_query_use_ifaddr);
+}
+
+static int set_query_use_ifaddr(struct net_bridge *br, unsigned long val)
+{
+	br->multicast_query_use_ifaddr = !!val;
+	return 0;
+}
+
+static ssize_t
+store_multicast_query_use_ifaddr(struct device *d,
+				 struct device_attribute *attr,
+				 const char *buf, size_t len)
+{
+	return store_bridge_parm(d, buf, len, set_query_use_ifaddr);
+}
+static DEVICE_ATTR(multicast_query_use_ifaddr, S_IRUGO | S_IWUSR,
+		   show_multicast_query_use_ifaddr,
+		   store_multicast_query_use_ifaddr);
+
+static ssize_t show_multicast_querier(struct device *d,
+				      struct device_attribute *attr,
+				      char *buf)
+{
+	struct net_bridge *br = to_bridge(d);
+	return sprintf(buf, "%d\n", br->multicast_querier);
+}
+
+static ssize_t store_multicast_querier(struct device *d,
+				       struct device_attribute *attr,
+				       const char *buf, size_t len)
+{
+	return store_bridge_parm(d, buf, len, br_multicast_set_querier);
+}
+static DEVICE_ATTR(multicast_querier, S_IRUGO | S_IWUSR,
+		   show_multicast_querier, store_multicast_querier);
+
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_hash_elasticity(struct device *d,
 				    struct device_attribute *attr, char *buf)
 {
@@ -681,6 +770,27 @@ static ssize_t store_nf_call_arptables(
 static DEVICE_ATTR(nf_call_arptables, S_IRUGO | S_IWUSR,
 		   show_nf_call_arptables, store_nf_call_arptables);
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_BRIDGE_VLAN_FILTERING
+static ssize_t show_vlan_filtering(struct device *d,
+				   struct device_attribute *attr,
+				   char *buf)
+{
+	struct net_bridge *br = to_bridge(d);
+	return sprintf(buf, "%d\n", br->vlan_enabled);
+}
+
+static ssize_t store_vlan_filtering(struct device *d,
+				    struct device_attribute *attr,
+				    const char *buf, size_t len)
+{
+	return store_bridge_parm(d, buf, len, br_vlan_filter_toggle);
+}
+static DEVICE_ATTR(vlan_filtering, S_IRUGO | S_IWUSR,
+		   show_vlan_filtering, store_vlan_filtering);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static struct attribute *bridge_attrs[] = {
 	&dev_attr_forward_delay.attr,
@@ -689,9 +799,13 @@ static struct attribute *bridge_attrs[] = {
 	&dev_attr_ageing_time.attr,
 	&dev_attr_stp_state.attr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&dev_attr_group_fwd_mask.attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&dev_attr_group_fwd_mask.attr,
+>>>>>>> refs/remotes/origin/master
 	&dev_attr_priority.attr,
 	&dev_attr_bridge_id.attr,
 	&dev_attr_root_id.attr,
@@ -708,6 +822,11 @@ static struct attribute *bridge_attrs[] = {
 #ifdef CONFIG_BRIDGE_IGMP_SNOOPING
 	&dev_attr_multicast_router.attr,
 	&dev_attr_multicast_snooping.attr,
+<<<<<<< HEAD
+=======
+	&dev_attr_multicast_querier.attr,
+	&dev_attr_multicast_query_use_ifaddr.attr,
+>>>>>>> refs/remotes/origin/master
 	&dev_attr_hash_elasticity.attr,
 	&dev_attr_hash_max.attr,
 	&dev_attr_multicast_last_member_count.attr,
@@ -724,6 +843,12 @@ static struct attribute *bridge_attrs[] = {
 	&dev_attr_nf_call_ip6tables.attr,
 	&dev_attr_nf_call_arptables.attr,
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_BRIDGE_VLAN_FILTERING
+	&dev_attr_vlan_filtering.attr,
+#endif
+>>>>>>> refs/remotes/origin/master
 	NULL
 };
 

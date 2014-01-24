@@ -9,6 +9,7 @@
  *
  * Copyright (C) 2001 - 2005 Tensilica Inc.
  */
+<<<<<<< HEAD
 
 #ifndef _XTENSA_SIGNAL_H
 #define _XTENSA_SIGNAL_H
@@ -169,5 +170,17 @@ typedef struct sigaltstack {
 #define ptrace_signal_deliver(regs, cookie) do { } while (0)
 
 #endif	/* __KERNEL__ */
+=======
+#ifndef _XTENSA_SIGNAL_H
+#define _XTENSA_SIGNAL_H
+
+#include <uapi/asm/signal.h>
+
+#ifndef __ASSEMBLY__
+#define __ARCH_HAS_SA_RESTORER
+
+#include <asm/sigcontext.h>
+
+>>>>>>> refs/remotes/origin/master
 #endif	/* __ASSEMBLY__ */
 #endif	/* _XTENSA_SIGNAL_H */

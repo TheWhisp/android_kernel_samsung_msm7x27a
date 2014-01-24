@@ -7,9 +7,13 @@
 #include <linux/sched.h>
 #include <linux/tracepoint.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/binfmts.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/binfmts.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Tracepoint for calling kthread_stop, performed to end a kthread:
@@ -60,7 +64,11 @@ DECLARE_EVENT_CLASS(sched_wakeup_template,
 
 	TP_PROTO(struct task_struct *p, int success),
 
+<<<<<<< HEAD
 	TP_ARGS(p, success),
+=======
+	TP_ARGS(__perf_task(p), success),
+>>>>>>> refs/remotes/origin/master
 
 	TP_STRUCT__entry(
 		__array(	char,	comm,	TASK_COMM_LEN	)
@@ -103,12 +111,17 @@ static inline long __trace_sched_switch_state(struct task_struct *p)
 	/*
 	 * For all intents and purposes a preempted task is a running task.
 	 */
+<<<<<<< HEAD
 	if (task_thread_info(p)->preempt_count & PREEMPT_ACTIVE)
 <<<<<<< HEAD
 		state = TASK_RUNNING;
 =======
 		state = TASK_RUNNING | TASK_STATE_MAX;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (task_preempt_count(p) & PREEMPT_ACTIVE)
+		state = TASK_RUNNING | TASK_STATE_MAX;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	return state;
@@ -146,6 +159,7 @@ TRACE_EVENT(sched_switch,
 	),
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TP_printk("prev_comm=%s prev_pid=%d prev_prio=%d prev_state=%s ==> next_comm=%s next_pid=%d next_prio=%d",
 		__entry->prev_comm, __entry->prev_pid, __entry->prev_prio,
 		__entry->prev_state ?
@@ -154,15 +168,22 @@ TRACE_EVENT(sched_switch,
 				{ 16, "Z" }, { 32, "X" }, { 64, "x" },
 				{ 128, "W" }) : "R",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	TP_printk("prev_comm=%s prev_pid=%d prev_prio=%d prev_state=%s%s ==> next_comm=%s next_pid=%d next_prio=%d",
 		__entry->prev_comm, __entry->prev_pid, __entry->prev_prio,
 		__entry->prev_state & (TASK_STATE_MAX-1) ?
 		  __print_flags(__entry->prev_state & (TASK_STATE_MAX-1), "|",
 				{ 1, "S"} , { 2, "D" }, { 4, "T" }, { 8, "t" },
 				{ 16, "Z" }, { 32, "X" }, { 64, "x" },
+<<<<<<< HEAD
 				{ 128, "W" }) : "R",
 		__entry->prev_state & TASK_STATE_MAX ? "+" : "",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				{ 128, "K" }, { 256, "W" }, { 512, "P" }) : "R",
+		__entry->prev_state & TASK_STATE_MAX ? "+" : "",
+>>>>>>> refs/remotes/origin/master
 		__entry->next_comm, __entry->next_pid, __entry->next_prio)
 );
 
@@ -295,7 +316,10 @@ TRACE_EVENT(sched_process_fork,
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Tracepoint for exec:
  */
 TRACE_EVENT(sched_process_exec,
@@ -322,7 +346,10 @@ TRACE_EVENT(sched_process_exec,
 );
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * XXX the below sched_stat tracepoints only apply to SCHED_OTHER/BATCH/IDLE
  *     adding sched_stat support to SCHED_FIFO/RR would be welcome.
  */
@@ -330,7 +357,11 @@ DECLARE_EVENT_CLASS(sched_stat_template,
 
 	TP_PROTO(struct task_struct *tsk, u64 delay),
 
+<<<<<<< HEAD
 	TP_ARGS(tsk, delay),
+=======
+	TP_ARGS(__perf_task(tsk), __perf_count(delay)),
+>>>>>>> refs/remotes/origin/master
 
 	TP_STRUCT__entry(
 		__array( char,	comm,	TASK_COMM_LEN	)
@@ -342,9 +373,12 @@ DECLARE_EVENT_CLASS(sched_stat_template,
 		memcpy(__entry->comm, tsk->comm, TASK_COMM_LEN);
 		__entry->pid	= tsk->pid;
 		__entry->delay	= delay;
+<<<<<<< HEAD
 	)
 	TP_perf_assign(
 		__perf_count(delay);
+=======
+>>>>>>> refs/remotes/origin/master
 	),
 
 	TP_printk("comm=%s pid=%d delay=%Lu [ns]",
@@ -379,7 +413,10 @@ DEFINE_EVENT(sched_stat_template, sched_stat_iowait,
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Tracepoint for accounting blocked time (time the task is in uninterruptible).
  */
 DEFINE_EVENT(sched_stat_template, sched_stat_blocked,
@@ -387,6 +424,7 @@ DEFINE_EVENT(sched_stat_template, sched_stat_blocked,
 	     TP_ARGS(tsk, delay));
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
  * Tracepoint for accounting runtime (time the task is executing
  * on a CPU).
@@ -396,6 +434,16 @@ TRACE_EVENT(sched_stat_runtime,
 	TP_PROTO(struct task_struct *tsk, u64 runtime, u64 vruntime),
 
 	TP_ARGS(tsk, runtime, vruntime),
+=======
+ * Tracepoint for accounting runtime (time the task is executing
+ * on a CPU).
+ */
+DECLARE_EVENT_CLASS(sched_stat_runtime,
+
+	TP_PROTO(struct task_struct *tsk, u64 runtime, u64 vruntime),
+
+	TP_ARGS(tsk, __perf_count(runtime), vruntime),
+>>>>>>> refs/remotes/origin/master
 
 	TP_STRUCT__entry(
 		__array( char,	comm,	TASK_COMM_LEN	)
@@ -409,9 +457,12 @@ TRACE_EVENT(sched_stat_runtime,
 		__entry->pid		= tsk->pid;
 		__entry->runtime	= runtime;
 		__entry->vruntime	= vruntime;
+<<<<<<< HEAD
 	)
 	TP_perf_assign(
 		__perf_count(runtime);
+=======
+>>>>>>> refs/remotes/origin/master
 	),
 
 	TP_printk("comm=%s pid=%d runtime=%Lu [ns] vruntime=%Lu [ns]",
@@ -420,6 +471,13 @@ TRACE_EVENT(sched_stat_runtime,
 			(unsigned long long)__entry->vruntime)
 );
 
+<<<<<<< HEAD
+=======
+DEFINE_EVENT(sched_stat_runtime, sched_stat_runtime,
+	     TP_PROTO(struct task_struct *tsk, u64 runtime, u64 vruntime),
+	     TP_ARGS(tsk, runtime, vruntime));
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Tracepoint for showing priority inheritance modifying a tasks
  * priority.
@@ -449,6 +507,115 @@ TRACE_EVENT(sched_pi_setprio,
 			__entry->oldprio, __entry->newprio)
 );
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_DETECT_HUNG_TASK
+TRACE_EVENT(sched_process_hang,
+	TP_PROTO(struct task_struct *tsk),
+	TP_ARGS(tsk),
+
+	TP_STRUCT__entry(
+		__array( char,	comm,	TASK_COMM_LEN	)
+		__field( pid_t,	pid			)
+	),
+
+	TP_fast_assign(
+		memcpy(__entry->comm, tsk->comm, TASK_COMM_LEN);
+		__entry->pid = tsk->pid;
+	),
+
+	TP_printk("comm=%s pid=%d", __entry->comm, __entry->pid)
+);
+#endif /* CONFIG_DETECT_HUNG_TASK */
+
+DECLARE_EVENT_CLASS(sched_move_task_template,
+
+	TP_PROTO(struct task_struct *tsk, int src_cpu, int dst_cpu),
+
+	TP_ARGS(tsk, src_cpu, dst_cpu),
+
+	TP_STRUCT__entry(
+		__field( pid_t,	pid			)
+		__field( pid_t,	tgid			)
+		__field( pid_t,	ngid			)
+		__field( int,	src_cpu			)
+		__field( int,	src_nid			)
+		__field( int,	dst_cpu			)
+		__field( int,	dst_nid			)
+	),
+
+	TP_fast_assign(
+		__entry->pid		= task_pid_nr(tsk);
+		__entry->tgid		= task_tgid_nr(tsk);
+		__entry->ngid		= task_numa_group_id(tsk);
+		__entry->src_cpu	= src_cpu;
+		__entry->src_nid	= cpu_to_node(src_cpu);
+		__entry->dst_cpu	= dst_cpu;
+		__entry->dst_nid	= cpu_to_node(dst_cpu);
+	),
+
+	TP_printk("pid=%d tgid=%d ngid=%d src_cpu=%d src_nid=%d dst_cpu=%d dst_nid=%d",
+			__entry->pid, __entry->tgid, __entry->ngid,
+			__entry->src_cpu, __entry->src_nid,
+			__entry->dst_cpu, __entry->dst_nid)
+);
+
+/*
+ * Tracks migration of tasks from one runqueue to another. Can be used to
+ * detect if automatic NUMA balancing is bouncing between nodes
+ */
+DEFINE_EVENT(sched_move_task_template, sched_move_numa,
+	TP_PROTO(struct task_struct *tsk, int src_cpu, int dst_cpu),
+
+	TP_ARGS(tsk, src_cpu, dst_cpu)
+);
+
+DEFINE_EVENT(sched_move_task_template, sched_stick_numa,
+	TP_PROTO(struct task_struct *tsk, int src_cpu, int dst_cpu),
+
+	TP_ARGS(tsk, src_cpu, dst_cpu)
+);
+
+TRACE_EVENT(sched_swap_numa,
+
+	TP_PROTO(struct task_struct *src_tsk, int src_cpu,
+		 struct task_struct *dst_tsk, int dst_cpu),
+
+	TP_ARGS(src_tsk, src_cpu, dst_tsk, dst_cpu),
+
+	TP_STRUCT__entry(
+		__field( pid_t,	src_pid			)
+		__field( pid_t,	src_tgid		)
+		__field( pid_t,	src_ngid		)
+		__field( int,	src_cpu			)
+		__field( int,	src_nid			)
+		__field( pid_t,	dst_pid			)
+		__field( pid_t,	dst_tgid		)
+		__field( pid_t,	dst_ngid		)
+		__field( int,	dst_cpu			)
+		__field( int,	dst_nid			)
+	),
+
+	TP_fast_assign(
+		__entry->src_pid	= task_pid_nr(src_tsk);
+		__entry->src_tgid	= task_tgid_nr(src_tsk);
+		__entry->src_ngid	= task_numa_group_id(src_tsk);
+		__entry->src_cpu	= src_cpu;
+		__entry->src_nid	= cpu_to_node(src_cpu);
+		__entry->dst_pid	= task_pid_nr(dst_tsk);
+		__entry->dst_tgid	= task_tgid_nr(dst_tsk);
+		__entry->dst_ngid	= task_numa_group_id(dst_tsk);
+		__entry->dst_cpu	= dst_cpu;
+		__entry->dst_nid	= cpu_to_node(dst_cpu);
+	),
+
+	TP_printk("src_pid=%d src_tgid=%d src_ngid=%d src_cpu=%d src_nid=%d dst_pid=%d dst_tgid=%d dst_ngid=%d dst_cpu=%d dst_nid=%d",
+			__entry->src_pid, __entry->src_tgid, __entry->src_ngid,
+			__entry->src_cpu, __entry->src_nid,
+			__entry->dst_pid, __entry->dst_tgid, __entry->dst_ngid,
+			__entry->dst_cpu, __entry->dst_nid)
+);
+>>>>>>> refs/remotes/origin/master
 #endif /* _TRACE_SCHED_H */
 
 /* This part must be outside protection */

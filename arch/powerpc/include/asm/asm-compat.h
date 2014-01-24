@@ -29,6 +29,7 @@
 #define PPC_LLARX(t, a, b, eh)	PPC_LDARX(t, a, b, eh)
 #define PPC_STLCX	stringify_in_c(stdcx.)
 #define PPC_CNTLZL	stringify_in_c(cntlzd)
+<<<<<<< HEAD
 #define PPC_LR_STKOFF	16
 #define PPC_MIN_STKFRM	112
 
@@ -39,6 +40,18 @@
 #define PPC_MTOCRF	stringify_in_c(mtocrf)
 #else
 #define PPC_MTOCRF	stringify_in_c(mtcrf)
+=======
+#define PPC_MTOCRF(FXM, RS) MTOCRF((FXM), RS)
+#define PPC_LR_STKOFF	16
+#define PPC_MIN_STKFRM	112
+
+#ifdef __BIG_ENDIAN__
+#define LDX_BE	stringify_in_c(ldx)
+#define STDX_BE	stringify_in_c(stdx)
+#else
+#define LDX_BE	stringify_in_c(ldbrx)
+#define STDX_BE	stringify_in_c(stdbrx)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #else /* 32-bit */

@@ -55,10 +55,14 @@ static int icn_addcard(int, char *, char *);
  */
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_free_queue(icn_card * card, int channel)
 =======
 icn_free_queue(icn_card *card, int channel)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_free_queue(icn_card *card, int channel)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff_head *queue = &card->spqueue[channel];
 	struct sk_buff *skb;
@@ -98,10 +102,14 @@ icn_shiftout(unsigned short port,
  */
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_disable_ram(icn_card * card)
 =======
 icn_disable_ram(icn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_disable_ram(icn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	OUTB_P(0, ICN_MAPRAM);
 }
@@ -111,10 +119,14 @@ icn_disable_ram(icn_card *card)
  */
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_enable_ram(icn_card * card)
 =======
 icn_enable_ram(icn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_enable_ram(icn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	OUTB_P(0xff, ICN_MAPRAM);
 }
@@ -126,10 +138,14 @@ icn_enable_ram(icn_card *card)
  */
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_map_channel(icn_card * card, int channel)
 =======
 icn_map_channel(icn_card *card, int channel)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_map_channel(icn_card *card, int channel)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef MAP_DEBUG
 	printk(KERN_DEBUG "icn_map_channel %d %d\n", dev.channel, channel);
@@ -156,10 +172,14 @@ icn_map_channel(icn_card *card, int channel)
  */
 static inline int
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_lock_channel(icn_card * card, int channel)
 =======
 icn_lock_channel(icn_card *card, int channel)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_lock_channel(icn_card *card, int channel)
+>>>>>>> refs/remotes/origin/master
 {
 	register int retval;
 
@@ -215,10 +235,14 @@ icn_release_channel(void)
  */
 static inline int
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_trymaplock_channel(icn_card * card, int channel)
 =======
 icn_trymaplock_channel(icn_card *card, int channel)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_trymaplock_channel(icn_card *card, int channel)
+>>>>>>> refs/remotes/origin/master
 {
 	ulong flags;
 
@@ -250,10 +274,14 @@ icn_trymaplock_channel(icn_card *card, int channel)
  */
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_maprelease_channel(icn_card * card, int channel)
 =======
 icn_maprelease_channel(icn_card *card, int channel)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_maprelease_channel(icn_card *card, int channel)
+>>>>>>> refs/remotes/origin/master
 {
 	ulong flags;
 
@@ -275,10 +303,14 @@ icn_maprelease_channel(icn_card *card, int channel)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_pollbchan_receive(int channel, icn_card * card)
 =======
 icn_pollbchan_receive(int channel, icn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_pollbchan_receive(int channel, icn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int mch = channel + ((card->secondhalf) ? 2 : 0);
 	int eflag;
@@ -330,10 +362,14 @@ icn_pollbchan_receive(int channel, icn_card *card)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_pollbchan_send(int channel, icn_card * card)
 =======
 icn_pollbchan_send(int channel, icn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_pollbchan_send(int channel, icn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int mch = channel + ((card->secondhalf) ? 2 : 0);
 	int cnt;
@@ -346,10 +382,14 @@ icn_pollbchan_send(int channel, icn_card *card)
 		return;
 	if (icn_trymaplock_channel(card, mch)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		while (sbfree && 
 =======
 		while (sbfree &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		while (sbfree &&
+>>>>>>> refs/remotes/origin/master
 		       (card->sndcount[channel] ||
 			!skb_queue_empty(&card->spqueue[channel]) ||
 			card->xskb[channel])) {
@@ -368,10 +408,14 @@ icn_pollbchan_send(int channel, icn_card *card)
 					 * Store length to xlen.
 					 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 					if (*(skb_pull(skb,1)))
 =======
 					if (*(skb_pull(skb, 1)))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					if (*(skb_pull(skb, 1)))
+>>>>>>> refs/remotes/origin/master
 						card->xlen[channel] = skb->len;
 					else
 						card->xlen[channel] = 0;
@@ -441,10 +485,14 @@ icn_pollbchan(unsigned long data)
 		/* schedule b-channel polling again */
 		spin_lock_irqsave(&card->lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mod_timer(&card->rb_timer, jiffies+ICN_TIMER_BCREAD);
 =======
 		mod_timer(&card->rb_timer, jiffies + ICN_TIMER_BCREAD);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mod_timer(&card->rb_timer, jiffies + ICN_TIMER_BCREAD);
+>>>>>>> refs/remotes/origin/master
 		card->flags |= ICN_FLAGS_RBTIMER;
 		spin_unlock_irqrestore(&card->lock, flags);
 	} else
@@ -477,10 +525,14 @@ static icn_stat icn_stat_table[] =
 	{"E_L2: DATA LIN", ISDN_STAT_BHUP,  8},	/* Layer-2 data link lost     */
 	{"E_L1: ACTIVATION FAILED",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					   ISDN_STAT_BHUP,  8},	/* Layer-1 activation failed  */
 =======
 	 ISDN_STAT_BHUP,  8},	/* Layer-1 activation failed  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 ISDN_STAT_BHUP,  8},	/* Layer-1 activation failed  */
+>>>>>>> refs/remotes/origin/master
 	{NULL, 0, -1}
 };
 /* *INDENT-ON* */
@@ -498,10 +550,14 @@ static icn_stat icn_stat_table[] =
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_parse_status(u_char * status, int channel, icn_card * card)
 =======
 icn_parse_status(u_char *status, int channel, icn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_parse_status(u_char *status, int channel, icn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	icn_stat *s = icn_stat_table;
 	int action = -1;
@@ -521,6 +577,7 @@ icn_parse_status(u_char *status, int channel, icn_card *card)
 	cmd.driver = card->myid;
 	cmd.arg = channel;
 	switch (action) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case 11:
 			spin_lock_irqsave(&card->lock, flags);
@@ -638,6 +695,8 @@ icn_parse_status(u_char *status, int channel, icn_card *card)
 			cmd.driver = card->myid;
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case 11:
 		spin_lock_irqsave(&card->lock, flags);
 		icn_free_queue(card, channel);
@@ -753,7 +812,10 @@ icn_parse_status(u_char *status, int channel, icn_card *card)
 		cmd.arg = 1;
 		cmd.driver = card->myid;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	card->interface.statcallb(&cmd);
 	return;
@@ -761,10 +823,14 @@ icn_parse_status(u_char *status, int channel, icn_card *card)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_putmsg(icn_card * card, unsigned char c)
 =======
 icn_putmsg(icn_card *card, unsigned char c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_putmsg(icn_card *card, unsigned char c)
+>>>>>>> refs/remotes/origin/master
 {
 	ulong flags;
 
@@ -867,10 +933,14 @@ icn_polldchan(unsigned long data)
 		}
 	/* schedule again */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mod_timer(&card->st_timer, jiffies+ICN_TIMER_DCREAD);
 =======
 	mod_timer(&card->st_timer, jiffies + ICN_TIMER_DCREAD);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mod_timer(&card->st_timer, jiffies + ICN_TIMER_DCREAD);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&card->lock, flags);
 }
 
@@ -885,10 +955,14 @@ icn_polldchan(unsigned long data)
 
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_sendbuf(int channel, int ack, struct sk_buff *skb, icn_card * card)
 =======
 icn_sendbuf(int channel, int ack, struct sk_buff *skb, icn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_sendbuf(int channel, int ack, struct sk_buff *skb, icn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int len = skb->len;
 	unsigned long flags;
@@ -905,20 +979,28 @@ icn_sendbuf(int channel, int ack, struct sk_buff *skb, icn_card *card)
 		if (card->sndcount[channel] > ICN_MAX_SQUEUE)
 			return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		#warning TODO test headroom or use skb->nb to flag ACK
 =======
 #warning TODO test headroom or use skb->nb to flag ACK
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#warning TODO test headroom or use skb->nb to flag ACK
+>>>>>>> refs/remotes/origin/master
 		nskb = skb_clone(skb, GFP_ATOMIC);
 		if (nskb) {
 			/* Push ACK flag as one
 			 * byte in front of data.
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			*(skb_push(nskb, 1)) = ack?1:0;
 =======
 			*(skb_push(nskb, 1)) = ack ? 1 : 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			*(skb_push(nskb, 1)) = ack ? 1 : 0;
+>>>>>>> refs/remotes/origin/master
 			skb_queue_tail(&card->spqueue[channel], nskb);
 			dev_kfree_skb(skb);
 		} else
@@ -980,6 +1062,7 @@ icn_check_loader(int cardnumber)
 
 #ifdef BOOT_DEBUG
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SLEEP(sec) { \
 int slsec = sec; \
   printk(KERN_DEBUG "SLEEP(%d)\n",slsec); \
@@ -989,6 +1072,8 @@ int slsec = sec; \
   } \
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SLEEP(sec) {						\
 		int slsec = sec;				\
 		printk(KERN_DEBUG "SLEEP(%d)\n", slsec);	\
@@ -997,17 +1082,24 @@ int slsec = sec; \
 			slsec--;				\
 		}						\
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 #define SLEEP(sec)
 #endif
 
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_loadboot(u_char __user * buffer, icn_card * card)
 =======
 icn_loadboot(u_char __user *buffer, icn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_loadboot(u_char __user *buffer, icn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	u_char *codebuf;
@@ -1106,6 +1198,7 @@ icn_loadboot(u_char __user *buffer, icn_card *card)
 	ret = (icn_check_loader(1));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  out_kfree:
 	kfree(codebuf);
  out:
@@ -1114,15 +1207,24 @@ out_kfree:
 	kfree(codebuf);
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out_kfree:
+	kfree(codebuf);
+out:
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_loadproto(u_char __user * buffer, icn_card * card)
 =======
 icn_loadproto(u_char __user *buffer, icn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_loadproto(u_char __user *buffer, icn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	register u_char __user *p = buffer;
 	u_char codebuf[256];
@@ -1224,10 +1326,14 @@ icn_loadproto(u_char __user *buffer, icn_card *card)
 /* Read the Status-replies from the Interface */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_readstatus(u_char __user *buf, int len, icn_card * card)
 =======
 icn_readstatus(u_char __user *buf, int len, icn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_readstatus(u_char __user *buf, int len, icn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int count;
 	u_char __user *p;
@@ -1246,10 +1352,14 @@ icn_readstatus(u_char __user *buf, int len, icn_card *card)
 /* Put command-strings into the command-queue of the Interface */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_writecmd(const u_char * buf, int len, int user, icn_card * card)
 =======
 icn_writecmd(const u_char *buf, int len, int user, icn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_writecmd(const u_char *buf, int len, int user, icn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int mch = card->secondhalf ? 2 : 0;
 	int pp;
@@ -1285,6 +1395,7 @@ icn_writecmd(const u_char *buf, int len, int user, icn_card *card)
 		icn_putmsg(card, '>');
 		for (p = msg, pp = readb(&cmd_i), i = count; i > 0; i--, p++, pp
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     ++) {
 			writeb((*p == '\n') ? 0xff : *p,
 			   &dev.shmem->comm_buffers.pcio_buf[pp & 0xff]);
@@ -1293,6 +1404,11 @@ icn_writecmd(const u_char *buf, int len, int user, icn_card *card)
 			writeb((*p == '\n') ? 0xff : *p,
 			       &dev.shmem->comm_buffers.pcio_buf[pp & 0xff]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     ++) {
+			writeb((*p == '\n') ? 0xff : *p,
+			       &dev.shmem->comm_buffers.pcio_buf[pp & 0xff]);
+>>>>>>> refs/remotes/origin/master
 			len--;
 			xcount++;
 			icn_putmsg(card, *p);
@@ -1327,10 +1443,14 @@ icn_writecmd(const u_char *buf, int len, int user, icn_card *card)
  */
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_stopcard(icn_card * card)
 =======
 icn_stopcard(icn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_stopcard(icn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	isdn_ctrl cmd;
@@ -1388,10 +1508,14 @@ icn_disable_cards(void)
 
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 icn_command(isdn_ctrl * c, icn_card * card)
 =======
 icn_command(isdn_ctrl *c, icn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+icn_command(isdn_ctrl *c, icn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	ulong a;
 	ulong flags;
@@ -1402,6 +1526,7 @@ icn_command(isdn_ctrl *c, icn_card *card)
 	char __user *arg;
 
 	switch (c->command) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case ISDN_CMD_IOCTL:
 			memcpy(&a, c->parm.num, sizeof(ulong));
@@ -1673,6 +1798,8 @@ icn_command(isdn_ctrl *c, icn_card *card)
 		default:
 			return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case ISDN_CMD_IOCTL:
 		memcpy(&a, c->parm.num, sizeof(ulong));
 		arg = (char __user *)a;
@@ -1942,7 +2069,10 @@ icn_command(isdn_ctrl *c, icn_card *card)
 		return 0;
 	default:
 		return -EINVAL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -1968,10 +2098,14 @@ icn_findcard(int driverid)
  */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 if_command(isdn_ctrl * c)
 =======
 if_command(isdn_ctrl *c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+if_command(isdn_ctrl *c)
+>>>>>>> refs/remotes/origin/master
 {
 	icn_card *card = icn_findcard(c->driver);
 
@@ -2055,6 +2189,7 @@ icn_initcard(int port, char *id)
 	card->interface.readstat = if_readstatus;
 	card->interface.features = ISDN_FEATURE_L2_X75I |
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    ISDN_FEATURE_L2_HDLC |
 	    ISDN_FEATURE_L3_TRANS |
 	    ISDN_FEATURE_P_UNKNOWN;
@@ -2063,6 +2198,11 @@ icn_initcard(int port, char *id)
 		ISDN_FEATURE_L3_TRANS |
 		ISDN_FEATURE_P_UNKNOWN;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ISDN_FEATURE_L2_HDLC |
+		ISDN_FEATURE_L3_TRANS |
+		ISDN_FEATURE_P_UNKNOWN;
+>>>>>>> refs/remotes/origin/master
 	card->ptype = ISDN_PTYPE_UNKNOWN;
 	strlcpy(card->interface.id, id, sizeof(card->interface.id));
 	card->msg_buf_write = card->msg_buf;
@@ -2103,8 +2243,12 @@ icn_addcard(int port, char *id1, char *id2)
 	}
 	if (!(card2 = icn_initcard(port, id2))) {
 		printk(KERN_INFO
+<<<<<<< HEAD
 		       "icn: (%s) half ICN-4B, port 0x%x added\n",
 		       card2->interface.id, port);
+=======
+		       "icn: (%s) half ICN-4B, port 0x%x added\n", id2, port);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	card->doubleS0 = 1;
@@ -2143,10 +2287,14 @@ icn_setup(char *line)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return(1);
 =======
 	return (1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (1);
+>>>>>>> refs/remotes/origin/master
 }
 __setup("icn=", icn_setup);
 #endif /* MODULE */

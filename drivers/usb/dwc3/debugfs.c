@@ -6,6 +6,7 @@
  * Authors: Felipe Balbi <balbi@ti.com>,
  *	    Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  *
+<<<<<<< HEAD
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -34,6 +35,16 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+=======
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2  of
+ * the License as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/kernel.h>
@@ -56,7 +67,11 @@
 #define dump_register(nm)				\
 {							\
 	.name	= __stringify(nm),			\
+<<<<<<< HEAD
 	.offset	= DWC3_ ##nm,				\
+=======
+	.offset	= DWC3_ ##nm - DWC3_GLOBALS_REGS_START,	\
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct debugfs_reg32 dwc3_regs[] = {
@@ -372,10 +387,15 @@ static const struct debugfs_reg32 dwc3_regs[] = {
 
 	dump_register(OCFG),
 	dump_register(OCTL),
+<<<<<<< HEAD
+=======
+	dump_register(OEVT),
+>>>>>>> refs/remotes/origin/master
 	dump_register(OEVTEN),
 	dump_register(OSTS),
 };
 
+<<<<<<< HEAD
 static int dwc3_regdump_show(struct seq_file *s, void *unused)
 {
 	struct dwc3		*dwc = s->private;
@@ -397,6 +417,8 @@ static const struct file_operations dwc3_regdump_fops = {
 	.release		= single_release,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int dwc3_mode_show(struct seq_file *s, void *unused)
 {
 	struct dwc3		*dwc = s->private;
@@ -598,8 +620,19 @@ static int dwc3_link_state_show(struct seq_file *s, void *unused)
 	case DWC3_LINK_STATE_LPBK:
 		seq_printf(s, "Loopback\n");
 		break;
+<<<<<<< HEAD
 	default:
 		seq_printf(s, "UNKNOWN %d\n", reg);
+=======
+	case DWC3_LINK_STATE_RESET:
+		seq_printf(s, "Reset\n");
+		break;
+	case DWC3_LINK_STATE_RESUME:
+		seq_printf(s, "Resume\n");
+		break;
+	default:
+		seq_printf(s, "UNKNOWN %d\n", state);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -652,7 +685,11 @@ static const struct file_operations dwc3_link_state_fops = {
 	.release		= single_release,
 };
 
+<<<<<<< HEAD
 int __devinit dwc3_debugfs_init(struct dwc3 *dwc)
+=======
+int dwc3_debugfs_init(struct dwc3 *dwc)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dentry		*root;
 	struct dentry		*file;
@@ -666,20 +703,34 @@ int __devinit dwc3_debugfs_init(struct dwc3 *dwc)
 
 	dwc->root = root;
 
+<<<<<<< HEAD
 	file = debugfs_create_file("regdump", S_IRUGO, root, dwc,
 			&dwc3_regdump_fops);
 	if (!file) {
+=======
+	dwc->regset = kzalloc(sizeof(*dwc->regset), GFP_KERNEL);
+	if (!dwc->regset) {
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOMEM;
 		goto err1;
 	}
 
+<<<<<<< HEAD
 	file = debugfs_create_file("mode", S_IRUGO | S_IWUSR, root,
 			dwc, &dwc3_mode_fops);
+=======
+	dwc->regset->regs = dwc3_regs;
+	dwc->regset->nregs = ARRAY_SIZE(dwc3_regs);
+	dwc->regset->base = dwc->regs;
+
+	file = debugfs_create_regset32("regdump", S_IRUGO, root, dwc->regset);
+>>>>>>> refs/remotes/origin/master
 	if (!file) {
 		ret = -ENOMEM;
 		goto err1;
 	}
 
+<<<<<<< HEAD
 	file = debugfs_create_file("testmode", S_IRUGO | S_IWUSR, root,
 			dwc, &dwc3_testmode_fops);
 	if (!file) {
@@ -692,6 +743,32 @@ int __devinit dwc3_debugfs_init(struct dwc3 *dwc)
 	if (!file) {
 		ret = -ENOMEM;
 		goto err1;
+=======
+	if (IS_ENABLED(CONFIG_USB_DWC3_DUAL_ROLE)) {
+		file = debugfs_create_file("mode", S_IRUGO | S_IWUSR, root,
+				dwc, &dwc3_mode_fops);
+		if (!file) {
+			ret = -ENOMEM;
+			goto err1;
+		}
+	}
+
+	if (IS_ENABLED(CONFIG_USB_DWC3_DUAL_ROLE) ||
+			IS_ENABLED(CONFIG_USB_DWC3_GADGET)) {
+		file = debugfs_create_file("testmode", S_IRUGO | S_IWUSR, root,
+				dwc, &dwc3_testmode_fops);
+		if (!file) {
+			ret = -ENOMEM;
+			goto err1;
+		}
+
+		file = debugfs_create_file("link_state", S_IRUGO | S_IWUSR, root,
+				dwc, &dwc3_link_state_fops);
+		if (!file) {
+			ret = -ENOMEM;
+			goto err1;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -703,7 +780,11 @@ err0:
 	return ret;
 }
 
+<<<<<<< HEAD
 void __devexit dwc3_debugfs_exit(struct dwc3 *dwc)
+=======
+void dwc3_debugfs_exit(struct dwc3 *dwc)
+>>>>>>> refs/remotes/origin/master
 {
 	debugfs_remove_recursive(dwc->root);
 	dwc->root = NULL;

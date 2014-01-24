@@ -160,6 +160,7 @@ static inline void mvs_write_port_irq_mask(struct mvs_info *mvi,
 			MVS_P4_INT_MASK, port, val);
 }
 
+<<<<<<< HEAD
 static inline void __devinit mvs_phy_hacks(struct mvs_info *mvi)
 {
 	u32 tmp;
@@ -168,6 +169,12 @@ static inline void __devinit mvs_phy_hacks(struct mvs_info *mvi)
 	/* workaround for SATA R-ERR, to ignore phy glitch */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void mvs_phy_hacks(struct mvs_info *mvi)
+{
+	u32 tmp;
+
+>>>>>>> refs/remotes/origin/master
 	tmp = mvs_cr32(mvi, CMD_PHY_TIMER);
 	tmp &= ~(1 << 9);
 	tmp |= (1 << 10);
@@ -183,13 +190,17 @@ static inline void __devinit mvs_phy_hacks(struct mvs_info *mvi)
 	mvs_cw32(mvi, CMD_SAS_CTL0, tmp);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* workaround for WDTIMEOUT , set to 550 ms */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mvs_cw32(mvi, CMD_WD_TIMER, 0x7a0000);
 
 	/* not to halt for different port op during wideport link change */
 	mvs_cw32(mvi, CMD_APP_ERR_CONFIG, 0xffefbf7d);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	/* workaround for Seagate disk not-found OOB sequence, recv
@@ -205,6 +216,8 @@ static inline void __devinit mvs_phy_hacks(struct mvs_info *mvi)
 	mvs_cw32(mvi, CMD_PHY_TIMER, tmp);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void mvs_int_sata(struct mvs_info *mvi)
@@ -233,11 +246,17 @@ static inline void mvs_int_full(struct mvs_info *mvi)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (stat & CINT_NON_SPEC_NCQ_ERROR)
 		MVS_CHIP_DISP->non_spec_ncq_error(mvi);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (stat & CINT_NON_SPEC_NCQ_ERROR)
+		MVS_CHIP_DISP->non_spec_ncq_error(mvi);
+
+>>>>>>> refs/remotes/origin/master
 	if (stat & CINT_SRS)
 		mvs_int_sata(mvi);
 

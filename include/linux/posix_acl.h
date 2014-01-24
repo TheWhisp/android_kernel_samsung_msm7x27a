@@ -9,12 +9,18 @@
 #define __LINUX_POSIX_ACL_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/slab.h>
 =======
 #include <linux/bug.h>
 #include <linux/slab.h>
 #include <linux/rcupdate.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+#include <linux/slab.h>
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/master
 
 #define ACL_UNDEFINED_ID	(-1)
 
@@ -40,6 +46,7 @@
 struct posix_acl_entry {
 	short			e_tag;
 	unsigned short		e_perm;
+<<<<<<< HEAD
 	unsigned int		e_id;
 };
 
@@ -47,11 +54,26 @@ struct posix_acl {
 <<<<<<< HEAD
 	atomic_t		a_refcount;
 =======
+=======
+	union {
+		kuid_t		e_uid;
+		kgid_t		e_gid;
+#ifndef CONFIG_UIDGID_STRICT_TYPE_CHECKS
+		unsigned int	e_id;
+#endif
+	};
+};
+
+struct posix_acl {
+>>>>>>> refs/remotes/origin/master
 	union {
 		atomic_t		a_refcount;
 		struct rcu_head		a_rcu;
 	};
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int		a_count;
 	struct posix_acl_entry	a_entries[0];
 };
@@ -79,10 +101,14 @@ posix_acl_release(struct posix_acl *acl)
 {
 	if (acl && atomic_dec_and_test(&acl->a_refcount))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kfree(acl);
 =======
 		kfree_rcu(acl, a_rcu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree_rcu(acl, a_rcu);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -90,6 +116,7 @@ posix_acl_release(struct posix_acl *acl)
 
 extern void posix_acl_init(struct posix_acl *, int);
 extern struct posix_acl *posix_acl_alloc(int, gfp_t);
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern struct posix_acl *posix_acl_clone(const struct posix_acl *, gfp_t);
 extern int posix_acl_valid(const struct posix_acl *);
@@ -99,17 +126,23 @@ extern int posix_acl_equiv_mode(const struct posix_acl *, mode_t *);
 extern int posix_acl_create_masq(struct posix_acl *, mode_t *);
 extern int posix_acl_chmod_masq(struct posix_acl *, mode_t);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern int posix_acl_valid(const struct posix_acl *);
 extern int posix_acl_permission(struct inode *, const struct posix_acl *, int);
 extern struct posix_acl *posix_acl_from_mode(umode_t, gfp_t);
 extern int posix_acl_equiv_mode(const struct posix_acl *, umode_t *);
 extern int posix_acl_create(struct posix_acl **, gfp_t, umode_t *);
 extern int posix_acl_chmod(struct posix_acl **, gfp_t, umode_t);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern struct posix_acl *get_posix_acl(struct inode *, int);
 extern int set_posix_acl(struct inode *, int, struct posix_acl *);
 
+<<<<<<< HEAD
 #ifdef CONFIG_FS_POSIX_ACL
 <<<<<<< HEAD
 static inline struct posix_acl *get_cached_acl(struct inode *inode, int type)
@@ -249,6 +282,14 @@ static inline void forget_all_cached_acls(struct inode *inode)
 		posix_acl_release(old_default);
 }
 #endif
+=======
+struct posix_acl **acl_by_type(struct inode *inode, int type);
+struct posix_acl *get_cached_acl(struct inode *inode, int type);
+struct posix_acl *get_cached_acl_rcu(struct inode *inode, int type);
+void set_cached_acl(struct inode *inode, int type, struct posix_acl *acl);
+void forget_cached_acl(struct inode *inode, int type);
+void forget_all_cached_acls(struct inode *inode);
+>>>>>>> refs/remotes/origin/master
 
 static inline void cache_no_acl(struct inode *inode)
 {

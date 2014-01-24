@@ -82,21 +82,29 @@ static int generic_set_mode(struct ata_link *link, struct ata_device **unused)
 			}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_INFO, "configured for %s\n",
 				       name);
 =======
 			ata_dev_info(dev, "configured for %s\n", name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_info(dev, "configured for %s\n", name);
+>>>>>>> refs/remotes/origin/master
 
 			dev->xfer_mode = ata_xfer_mask2mode(xfer_mask);
 			dev->xfer_shift = ata_xfer_mode2shift(dev->xfer_mode);
 			dev->flags &= ~ATA_DFLAG_PIO;
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_INFO, "configured for PIO\n");
 =======
 			ata_dev_info(dev, "configured for PIO\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_info(dev, "configured for PIO\n");
+>>>>>>> refs/remotes/origin/master
 			dev->xfer_mode = XFER_PIO_0;
 			dev->xfer_shift = ATA_SHIFT_PIO;
 			dev->flags |= ATA_DFLAG_PIO;
@@ -186,7 +194,11 @@ static int ata_generic_init_one(struct pci_dev *dev, const struct pci_device_id 
 	if ((id->driver_data & ATA_GEN_CLASS_MATCH) && all_generic_ide == 0)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	if (id->driver_data & ATA_GEN_INTEL_IDER)
+=======
+	if ((id->driver_data & ATA_GEN_INTEL_IDER) && !all_generic_ide)
+>>>>>>> refs/remotes/origin/master
 		if (!is_intel_ider(dev))
 			return -ENODEV;
 
@@ -230,6 +242,7 @@ static struct pci_device_id ata_generic[] = {
 	{ PCI_DEVICE(PCI_VENDOR_ID_OPTI,   PCI_DEVICE_ID_OPTI_82C558), },
 	{ PCI_DEVICE(PCI_VENDOR_ID_CENATEK,PCI_DEVICE_ID_CENATEK_IDE),
 	  .driver_data = ATA_GEN_FORCE_DMA },
+<<<<<<< HEAD
 	/*
 	 * For some reason, MCP89 on MacBook 7,1 doesn't work with
 	 * ahci, use ata_generic instead.
@@ -237,6 +250,8 @@ static struct pci_device_id ata_generic[] = {
 	{ PCI_VENDOR_ID_NVIDIA, PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA,
 	  PCI_VENDOR_ID_APPLE, 0xcb89,
 	  .driver_data = ATA_GEN_FORCE_DMA },
+=======
+>>>>>>> refs/remotes/origin/master
 #if !defined(CONFIG_PATA_TOSHIBA) && !defined(CONFIG_PATA_TOSHIBA_MODULE)
 	{ PCI_DEVICE(PCI_VENDOR_ID_TOSHIBA,PCI_DEVICE_ID_TOSHIBA_PICCOLO_1), },
 	{ PCI_DEVICE(PCI_VENDOR_ID_TOSHIBA,PCI_DEVICE_ID_TOSHIBA_PICCOLO_2),  },
@@ -264,6 +279,7 @@ static struct pci_driver ata_generic_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init ata_generic_init(void)
 {
 	return pci_register_driver(&ata_generic_pci_driver);
@@ -275,6 +291,9 @@ static void __exit ata_generic_exit(void)
 	pci_unregister_driver(&ata_generic_pci_driver);
 }
 
+=======
+module_pci_driver(ata_generic_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("low-level driver for generic ATA");
@@ -282,7 +301,10 @@ MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, ata_generic);
 MODULE_VERSION(DRV_VERSION);
 
+<<<<<<< HEAD
 module_init(ata_generic_init);
 module_exit(ata_generic_exit);
 
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(all_generic_ide, int, 0);

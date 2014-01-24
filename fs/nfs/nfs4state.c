@@ -50,21 +50,39 @@
 #include <linux/workqueue.h>
 #include <linux/bitops.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/jiffies.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/jiffies.h>
+
+#include <linux/sunrpc/clnt.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "nfs4_fs.h"
 #include "callback.h"
 #include "delegation.h"
 #include "internal.h"
+<<<<<<< HEAD
 #include "pnfs.h"
+=======
+#include "nfs4session.h"
+#include "pnfs.h"
+#include "netns.h"
+
+#define NFSDBG_FACILITY		NFSDBG_STATE
+>>>>>>> refs/remotes/origin/master
 
 #define OPENOWNER_POOL_SIZE	8
 
 const nfs4_stateid zero_stateid;
+<<<<<<< HEAD
 
 static LIST_HEAD(nfs4_clientid_list);
+=======
+static DEFINE_MUTEX(nfs_clid_init_mutex);
+>>>>>>> refs/remotes/origin/master
 
 int nfs4_init_clientid(struct nfs_client *clp, struct rpc_cred *cred)
 {
@@ -74,12 +92,22 @@ int nfs4_init_clientid(struct nfs_client *clp, struct rpc_cred *cred)
 	};
 	unsigned short port;
 	int status;
+<<<<<<< HEAD
 
 	if (test_bit(NFS4CLNT_LEASE_CONFIRM, &clp->cl_state))
 		goto do_confirm;
 	port = nfs_callback_tcpport;
 	if (clp->cl_addr.ss_family == AF_INET6)
 		port = nfs_callback_tcpport6;
+=======
+	struct nfs_net *nn = net_generic(clp->cl_net, nfs_net_id);
+
+	if (test_bit(NFS4CLNT_LEASE_CONFIRM, &clp->cl_state))
+		goto do_confirm;
+	port = nn->nfs_callback_tcpport;
+	if (clp->cl_addr.ss_family == AF_INET6)
+		port = nn->nfs_callback_tcpport6;
+>>>>>>> refs/remotes/origin/master
 
 	status = nfs4_proc_setclientid(clp, NFS4_CALLBACK, port, cred, &clid);
 	if (status != 0)
@@ -97,6 +125,54 @@ out:
 	return status;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * nfs40_discover_server_trunking - Detect server IP address trunking (mv0)
+ *
+ * @clp: nfs_client under test
+ * @result: OUT: found nfs_client, or clp
+ * @cred: credential to use for trunking test
+ *
+ * Returns zero, a negative errno, or a negative NFS4ERR status.
+ * If zero is returned, an nfs_client pointer is planted in
+ * "result".
+ *
+ * Note: The returned client may not yet be marked ready.
+ */
+int nfs40_discover_server_trunking(struct nfs_client *clp,
+				   struct nfs_client **result,
+				   struct rpc_cred *cred)
+{
+	struct nfs4_setclientid_res clid = {
+		.clientid = clp->cl_clientid,
+		.confirm = clp->cl_confirm,
+	};
+	struct nfs_net *nn = net_generic(clp->cl_net, nfs_net_id);
+	unsigned short port;
+	int status;
+
+	port = nn->nfs_callback_tcpport;
+	if (clp->cl_addr.ss_family == AF_INET6)
+		port = nn->nfs_callback_tcpport6;
+
+	status = nfs4_proc_setclientid(clp, NFS4_CALLBACK, port, cred, &clid);
+	if (status != 0)
+		goto out;
+	clp->cl_clientid = clid.clientid;
+	clp->cl_confirm = clid.confirm;
+
+	status = nfs40_walk_client_list(clp, result, cred);
+	if (status == 0) {
+		/* Sustain the lease, even if it's empty.  If the clientid4
+		 * goes stale it's of no use for trunking discovery. */
+		nfs4_schedule_state_renewal(*result);
+	}
+out:
+	return status;
+}
+
+>>>>>>> refs/remotes/origin/master
 struct rpc_cred *nfs4_get_machine_cred_locked(struct nfs_client *clp)
 {
 	struct rpc_cred *cred = NULL;
@@ -106,6 +182,7 @@ struct rpc_cred *nfs4_get_machine_cred_locked(struct nfs_client *clp)
 	return cred;
 }
 
+<<<<<<< HEAD
 static void nfs4_clear_machine_cred(struct nfs_client *clp)
 {
 	struct rpc_cred *cred;
@@ -113,6 +190,16 @@ static void nfs4_clear_machine_cred(struct nfs_client *clp)
 	spin_lock(&clp->cl_lock);
 	cred = clp->cl_machine_cred;
 	clp->cl_machine_cred = NULL;
+=======
+static void nfs4_root_machine_cred(struct nfs_client *clp)
+{
+	struct rpc_cred *cred, *new;
+
+	new = rpc_lookup_machine_cred(NULL);
+	spin_lock(&clp->cl_lock);
+	cred = clp->cl_machine_cred;
+	clp->cl_machine_cred = new;
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&clp->cl_lock);
 	if (cred != NULL)
 		put_rpccred(cred);
@@ -150,13 +237,19 @@ struct rpc_cred *nfs4_get_renew_cred_locked(struct nfs_client *clp)
 	struct nfs_server *server;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Use machine credentials if available */
 	cred = nfs4_get_machine_cred_locked(clp);
 	if (cred != NULL)
 		goto out;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rcu_read_lock();
 	list_for_each_entry_rcu(server, &clp->cl_superblocks, client_link) {
 		cred = nfs4_get_renew_cred_server_locked(server);
@@ -164,6 +257,7 @@ struct rpc_cred *nfs4_get_renew_cred_locked(struct nfs_client *clp)
 			break;
 	}
 	rcu_read_unlock();
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 
@@ -253,6 +347,43 @@ static int nfs4_wait_on_slot_tbl(struct nfs4_slot_table *tbl)
 	if (tbl->highest_used_slotid != NFS4_NO_SLOT) {
 >>>>>>> refs/remotes/origin/cm-10.0
 		INIT_COMPLETION(tbl->complete);
+=======
+
+out:
+	return cred;
+}
+
+static void nfs4_end_drain_slot_table(struct nfs4_slot_table *tbl)
+{
+	if (test_and_clear_bit(NFS4_SLOT_TBL_DRAINING, &tbl->slot_tbl_state)) {
+		spin_lock(&tbl->slot_tbl_lock);
+		nfs41_wake_slot_table(tbl);
+		spin_unlock(&tbl->slot_tbl_lock);
+	}
+}
+
+static void nfs4_end_drain_session(struct nfs_client *clp)
+{
+	struct nfs4_session *ses = clp->cl_session;
+
+	if (clp->cl_slot_tbl) {
+		nfs4_end_drain_slot_table(clp->cl_slot_tbl);
+		return;
+	}
+
+	if (ses != NULL) {
+		nfs4_end_drain_slot_table(&ses->bc_slot_table);
+		nfs4_end_drain_slot_table(&ses->fc_slot_table);
+	}
+}
+
+static int nfs4_drain_slot_tbl(struct nfs4_slot_table *tbl)
+{
+	set_bit(NFS4_SLOT_TBL_DRAINING, &tbl->slot_tbl_state);
+	spin_lock(&tbl->slot_tbl_lock);
+	if (tbl->highest_used_slotid != NFS4_NO_SLOT) {
+		reinit_completion(&tbl->complete);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&tbl->slot_tbl_lock);
 		return wait_for_completion_interruptible(&tbl->complete);
 	}
@@ -265,6 +396,7 @@ static int nfs4_begin_drain_session(struct nfs_client *clp)
 	struct nfs4_session *ses = clp->cl_session;
 	int ret = 0;
 
+<<<<<<< HEAD
 	set_bit(NFS4_SESSION_DRAINING, &ses->session_state);
 	/* back channel */
 	ret = nfs4_wait_on_slot_tbl(&ses->bc_slot_table);
@@ -272,6 +404,52 @@ static int nfs4_begin_drain_session(struct nfs_client *clp)
 		return ret;
 	/* fore channel */
 	return nfs4_wait_on_slot_tbl(&ses->fc_slot_table);
+=======
+	if (clp->cl_slot_tbl)
+		return nfs4_drain_slot_tbl(clp->cl_slot_tbl);
+
+	/* back channel */
+	ret = nfs4_drain_slot_tbl(&ses->bc_slot_table);
+	if (ret)
+		return ret;
+	/* fore channel */
+	return nfs4_drain_slot_tbl(&ses->fc_slot_table);
+}
+
+#if defined(CONFIG_NFS_V4_1)
+
+static int nfs41_setup_state_renewal(struct nfs_client *clp)
+{
+	int status;
+	struct nfs_fsinfo fsinfo;
+
+	if (!test_bit(NFS_CS_CHECK_LEASE_TIME, &clp->cl_res_state)) {
+		nfs4_schedule_state_renewal(clp);
+		return 0;
+	}
+
+	status = nfs4_proc_get_lease_time(clp, &fsinfo);
+	if (status == 0) {
+		/* Update lease time and schedule renewal */
+		spin_lock(&clp->cl_lock);
+		clp->cl_lease_time = fsinfo.lease_time * HZ;
+		clp->cl_last_renewal = jiffies;
+		spin_unlock(&clp->cl_lock);
+
+		nfs4_schedule_state_renewal(clp);
+	}
+
+	return status;
+}
+
+static void nfs41_finish_session_reset(struct nfs_client *clp)
+{
+	clear_bit(NFS4CLNT_LEASE_CONFIRM, &clp->cl_state);
+	clear_bit(NFS4CLNT_SESSION_RESET, &clp->cl_state);
+	/* create_session negotiated new slot table */
+	clear_bit(NFS4CLNT_BIND_CONN_TO_SESSION, &clp->cl_state);
+	nfs41_setup_state_renewal(clp);
+>>>>>>> refs/remotes/origin/master
 }
 
 int nfs41_init_clientid(struct nfs_client *clp, struct rpc_cred *cred)
@@ -286,16 +464,24 @@ int nfs41_init_clientid(struct nfs_client *clp, struct rpc_cred *cred)
 		goto out;
 	set_bit(NFS4CLNT_LEASE_CONFIRM, &clp->cl_state);
 do_confirm:
+<<<<<<< HEAD
 	status = nfs4_proc_create_session(clp);
 	if (status != 0)
 		goto out;
 	clear_bit(NFS4CLNT_LEASE_CONFIRM, &clp->cl_state);
 	nfs41_setup_state_renewal(clp);
+=======
+	status = nfs4_proc_create_session(clp, cred);
+	if (status != 0)
+		goto out;
+	nfs41_finish_session_reset(clp);
+>>>>>>> refs/remotes/origin/master
 	nfs_mark_client_ready(clp, NFS_CS_READY);
 out:
 	return status;
 }
 
+<<<<<<< HEAD
 struct rpc_cred *nfs4_get_exchange_id_cred(struct nfs_client *clp)
 {
 	struct rpc_cred *cred;
@@ -304,10 +490,38 @@ struct rpc_cred *nfs4_get_exchange_id_cred(struct nfs_client *clp)
 	cred = nfs4_get_machine_cred_locked(clp);
 	spin_unlock(&clp->cl_lock);
 	return cred;
+=======
+/**
+ * nfs41_discover_server_trunking - Detect server IP address trunking (mv1)
+ *
+ * @clp: nfs_client under test
+ * @result: OUT: found nfs_client, or clp
+ * @cred: credential to use for trunking test
+ *
+ * Returns NFS4_OK, a negative errno, or a negative NFS4ERR status.
+ * If NFS4_OK is returned, an nfs_client pointer is planted in
+ * "result".
+ *
+ * Note: The returned client may not yet be marked ready.
+ */
+int nfs41_discover_server_trunking(struct nfs_client *clp,
+				   struct nfs_client **result,
+				   struct rpc_cred *cred)
+{
+	int status;
+
+	status = nfs4_proc_exchange_id(clp, cred);
+	if (status != NFS4_OK)
+		return status;
+	set_bit(NFS4CLNT_LEASE_CONFIRM, &clp->cl_state);
+
+	return nfs41_walk_client_list(clp, result, cred);
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* CONFIG_NFS_V4_1 */
 
+<<<<<<< HEAD
 static struct rpc_cred *
 nfs4_get_setclientid_cred_server(struct nfs_server *server)
 {
@@ -328,18 +542,28 @@ nfs4_get_setclientid_cred_server(struct nfs_server *server)
 
 /**
  * nfs4_get_setclientid_cred - Acquire credential for a setclientid operation
+=======
+/**
+ * nfs4_get_clid_cred - Acquire credential for a setclientid operation
+>>>>>>> refs/remotes/origin/master
  * @clp: client state handle
  *
  * Returns an rpc_cred with reference count bumped, or NULL.
  */
+<<<<<<< HEAD
 struct rpc_cred *nfs4_get_setclientid_cred(struct nfs_client *clp)
 {
 	struct nfs_server *server;
+=======
+struct rpc_cred *nfs4_get_clid_cred(struct nfs_client *clp)
+{
+>>>>>>> refs/remotes/origin/master
 	struct rpc_cred *cred;
 
 	spin_lock(&clp->cl_lock);
 	cred = nfs4_get_machine_cred_locked(clp);
 	spin_unlock(&clp->cl_lock);
+<<<<<<< HEAD
 	if (cred != NULL)
 		goto out;
 
@@ -414,21 +638,31 @@ static void nfs_free_unique_id(struct rb_root *root, struct nfs_unique_id *id)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return cred;
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct nfs4_state_owner *
 nfs4_find_state_owner_locked(struct nfs_server *server, struct rpc_cred *cred)
 {
 	struct rb_node **p = &server->state_owners.rb_node,
 		       *parent = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nfs4_state_owner *sp, *res = NULL;
 =======
 	struct nfs4_state_owner *sp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nfs4_state_owner *sp;
+>>>>>>> refs/remotes/origin/master
 
 	while (*p != NULL) {
 		parent = *p;
 		sp = rb_entry(parent, struct nfs4_state_owner, so_server_node);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (server < sp->so_server) {
 			p = &parent->rb_left;
@@ -440,11 +674,14 @@ nfs4_find_state_owner_locked(struct nfs_server *server, struct rpc_cred *cred)
 		}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (cred < sp->so_cred)
 			p = &parent->rb_left;
 		else if (cred > sp->so_cred)
 			p = &parent->rb_right;
 		else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			atomic_inc(&sp->so_count);
 			res = sp;
@@ -453,6 +690,8 @@ nfs4_find_state_owner_locked(struct nfs_server *server, struct rpc_cred *cred)
 	}
 	return res;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!list_empty(&sp->so_lru))
 				list_del_init(&sp->so_lru);
 			atomic_inc(&sp->so_count);
@@ -460,7 +699,10 @@ nfs4_find_state_owner_locked(struct nfs_server *server, struct rpc_cred *cred)
 		}
 	}
 	return NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct nfs4_state_owner *
@@ -471,9 +713,13 @@ nfs4_insert_state_owner_locked(struct nfs4_state_owner *new)
 		       *parent = NULL;
 	struct nfs4_state_owner *sp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err;
+>>>>>>> refs/remotes/origin/master
 
 	while (*p != NULL) {
 		parent = *p;
@@ -485,14 +731,20 @@ nfs4_insert_state_owner_locked(struct nfs4_state_owner *new)
 			p = &parent->rb_right;
 		else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (!list_empty(&sp->so_lru))
 				list_del_init(&sp->so_lru);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!list_empty(&sp->so_lru))
+				list_del_init(&sp->so_lru);
+>>>>>>> refs/remotes/origin/master
 			atomic_inc(&sp->so_count);
 			return sp;
 		}
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	nfs_alloc_unique_id_locked(&server->openowner_id,
 					&new->so_owner_id, 1, 64);
@@ -501,6 +753,11 @@ nfs4_insert_state_owner_locked(struct nfs4_state_owner *new)
 	if (err)
 		return ERR_PTR(err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ida_get_new(&server->openowner_id, &new->so_seqid.owner_id);
+	if (err)
+		return ERR_PTR(err);
+>>>>>>> refs/remotes/origin/master
 	rb_link_node(&new->so_server_node, parent, p);
 	rb_insert_color(&new->so_server_node, &server->state_owners);
 	return new;
@@ -514,8 +771,11 @@ nfs4_remove_state_owner_locked(struct nfs4_state_owner *sp)
 	if (!RB_EMPTY_NODE(&sp->so_server_node))
 		rb_erase(&sp->so_server_node, &server->state_owners);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nfs_free_unique_id(&server->openowner_id, &sp->so_owner_id);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ida_remove(&server->openowner_id, sp->so_seqid.owner_id);
 }
 
@@ -534,7 +794,10 @@ static void
 nfs4_destroy_seqid_counter(struct nfs_seqid_counter *sc)
 {
 	rpc_destroy_wait_queue(&sc->wait);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -543,6 +806,7 @@ nfs4_destroy_seqid_counter(struct nfs_seqid_counter *sc)
  *
  */
 static struct nfs4_state_owner *
+<<<<<<< HEAD
 <<<<<<< HEAD
 nfs4_alloc_state_owner(void)
 {
@@ -559,6 +823,8 @@ nfs4_alloc_state_owner(void)
 	INIT_LIST_HEAD(&sp->so_sequence.list);
 	atomic_set(&sp->so_count, 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 nfs4_alloc_state_owner(struct nfs_server *server,
 		struct rpc_cred *cred,
 		gfp_t gfp_flags)
@@ -575,7 +841,12 @@ nfs4_alloc_state_owner(struct nfs_server *server,
 	nfs4_init_seqid_counter(&sp->so_seqid);
 	atomic_set(&sp->so_count, 1);
 	INIT_LIST_HEAD(&sp->so_lru);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	seqcount_init(&sp->so_reclaim_seqcount);
+	mutex_init(&sp->so_delegreturn_mutex);
+>>>>>>> refs/remotes/origin/master
 	return sp;
 }
 
@@ -583,31 +854,46 @@ static void
 nfs4_drop_state_owner(struct nfs4_state_owner *sp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!RB_EMPTY_NODE(&sp->so_server_node)) {
 =======
 	struct rb_node *rb_node = &sp->so_server_node;
 
 	if (!RB_EMPTY_NODE(rb_node)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct rb_node *rb_node = &sp->so_server_node;
+
+	if (!RB_EMPTY_NODE(rb_node)) {
+>>>>>>> refs/remotes/origin/master
 		struct nfs_server *server = sp->so_server;
 		struct nfs_client *clp = server->nfs_client;
 
 		spin_lock(&clp->cl_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rb_erase(&sp->so_server_node, &server->state_owners);
 		RB_CLEAR_NODE(&sp->so_server_node);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!RB_EMPTY_NODE(rb_node)) {
 			rb_erase(rb_node, &server->state_owners);
 			RB_CLEAR_NODE(rb_node);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&clp->cl_lock);
 	}
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void nfs4_free_state_owner(struct nfs4_state_owner *sp)
 {
 	nfs4_destroy_seqid_counter(&sp->so_seqid);
@@ -640,7 +926,10 @@ static void nfs4_gc_state_owners(struct nfs_server *server)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * nfs4_get_state_owner - Look up a state owner given a credential
  * @server: nfs_server to search
@@ -650,11 +939,16 @@ static void nfs4_gc_state_owners(struct nfs_server *server)
  */
 struct nfs4_state_owner *nfs4_get_state_owner(struct nfs_server *server,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					      struct rpc_cred *cred)
 =======
 					      struct rpc_cred *cred,
 					      gfp_t gfp_flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					      struct rpc_cred *cred,
+					      gfp_t gfp_flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nfs_client *clp = server->nfs_client;
 	struct nfs4_state_owner *sp, *new;
@@ -663,6 +957,7 @@ struct nfs4_state_owner *nfs4_get_state_owner(struct nfs_server *server,
 	sp = nfs4_find_state_owner_locked(server, cred);
 	spin_unlock(&clp->cl_lock);
 	if (sp != NULL)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return sp;
 	new = nfs4_alloc_state_owner();
@@ -680,6 +975,8 @@ struct nfs4_state_owner *nfs4_get_state_owner(struct nfs_server *server,
 		kfree(new);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	new = nfs4_alloc_state_owner(server, cred, gfp_flags);
 	if (new == NULL)
@@ -695,7 +992,10 @@ struct nfs4_state_owner *nfs4_get_state_owner(struct nfs_server *server,
 		nfs4_free_state_owner(new);
 out:
 	nfs4_gc_state_owners(server);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return sp;
 }
 
@@ -703,6 +1003,7 @@ out:
  * nfs4_put_state_owner - Release a nfs4_state_owner
  * @sp: state owner data to release
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  */
 void nfs4_put_state_owner(struct nfs4_state_owner *sp)
@@ -718,6 +1019,8 @@ void nfs4_put_state_owner(struct nfs4_state_owner *sp)
 	put_rpccred(cred);
 	kfree(sp);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Note that we keep released state owners on an LRU
  * list.
  * This caches valid state owners so that they can be
@@ -763,7 +1066,10 @@ void nfs4_purge_state_owners(struct nfs_server *server)
 		list_del(&sp->so_lru);
 		nfs4_free_state_owner(sp);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct nfs4_state *
@@ -805,6 +1111,11 @@ __nfs4_find_state_byowner(struct inode *inode, struct nfs4_state_owner *owner)
 	list_for_each_entry(state, &nfsi->open_states, inode_states) {
 		if (state->owner != owner)
 			continue;
+<<<<<<< HEAD
+=======
+		if (!nfs4_valid_open_stateid(state))
+			continue;
+>>>>>>> refs/remotes/origin/master
 		if (atomic_inc_not_zero(&state->count))
 			return state;
 	}
@@ -875,10 +1186,14 @@ void nfs4_put_open_state(struct nfs4_state *state)
  * Close the current file.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __nfs4_close(struct path *path, struct nfs4_state *state,
 =======
 static void __nfs4_close(struct nfs4_state *state,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __nfs4_close(struct nfs4_state *state,
+>>>>>>> refs/remotes/origin/master
 		fmode_t fmode, gfp_t gfp_mask, int wait)
 {
 	struct nfs4_state_owner *owner = state->owner;
@@ -919,6 +1234,7 @@ static void __nfs4_close(struct nfs4_state *state,
 	if (!call_close) {
 		nfs4_put_open_state(state);
 		nfs4_put_state_owner(owner);
+<<<<<<< HEAD
 	} else {
 		bool roc = pnfs_roc(state->inode);
 
@@ -938,6 +1254,10 @@ void nfs4_close_sync(struct path *path, struct nfs4_state *state, fmode_t fmode)
 =======
 		nfs4_do_close(state, gfp_mask, wait, roc);
 	}
+=======
+	} else
+		nfs4_do_close(state, gfp_mask, wait);
+>>>>>>> refs/remotes/origin/master
 }
 
 void nfs4_close_state(struct nfs4_state *state, fmode_t fmode)
@@ -948,7 +1268,10 @@ void nfs4_close_state(struct nfs4_state *state, fmode_t fmode)
 void nfs4_close_sync(struct nfs4_state *state, fmode_t fmode)
 {
 	__nfs4_close(state, fmode, GFP_KERNEL, 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -987,13 +1310,17 @@ static struct nfs4_lock_state *nfs4_alloc_lock_state(struct nfs4_state *state, f
 	struct nfs4_lock_state *lsp;
 	struct nfs_server *server = state->owner->so_server;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nfs_client *clp = server->nfs_client;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	lsp = kzalloc(sizeof(*lsp), GFP_NOFS);
 	if (lsp == NULL)
 		return NULL;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	rpc_init_wait_queue(&lsp->ls_sequence.wait, "lock_seqid_waitqueue");
 	spin_lock_init(&lsp->ls_sequence.lock);
@@ -1002,6 +1329,9 @@ static struct nfs4_lock_state *nfs4_alloc_lock_state(struct nfs4_state *state, f
 =======
 	nfs4_init_seqid_counter(&lsp->ls_seqid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nfs4_init_seqid_counter(&lsp->ls_seqid);
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&lsp->ls_count, 1);
 	lsp->ls_state = state;
 	lsp->ls_owner.lo_type = type;
@@ -1013,6 +1343,7 @@ static struct nfs4_lock_state *nfs4_alloc_lock_state(struct nfs4_state *state, f
 		lsp->ls_owner.lo_u.posix_owner = fl_owner;
 		break;
 	default:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		kfree(lsp);
 		return NULL;
@@ -1034,6 +1365,8 @@ static void nfs4_free_lock_state(struct nfs4_lock_state *lsp)
 	spin_unlock(&clp->cl_lock);
 	rpc_destroy_wait_queue(&lsp->ls_sequence.wait);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out_free;
 	}
 	lsp->ls_seqid.owner_id = ida_simple_get(&server->lockowner_id, 0, 0, GFP_NOFS);
@@ -1050,7 +1383,10 @@ void nfs4_free_lock_state(struct nfs_server *server, struct nfs4_lock_state *lsp
 {
 	ida_simple_remove(&server->lockowner_id, lsp->ls_seqid.owner_id);
 	nfs4_destroy_seqid_counter(&lsp->ls_seqid);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(lsp);
 }
 
@@ -1083,10 +1419,14 @@ static struct nfs4_lock_state *nfs4_get_lock_state(struct nfs4_state *state, fl_
 	spin_unlock(&state->state_lock);
 	if (new != NULL)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		nfs4_free_lock_state(new);
 =======
 		nfs4_free_lock_state(state->owner->so_server, new);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		nfs4_free_lock_state(state->owner->so_server, new);
+>>>>>>> refs/remotes/origin/master
 	return lsp;
 }
 
@@ -1096,6 +1436,10 @@ static struct nfs4_lock_state *nfs4_get_lock_state(struct nfs4_state *state, fl_
  */
 void nfs4_put_lock_state(struct nfs4_lock_state *lsp)
 {
+<<<<<<< HEAD
+=======
+	struct nfs_server *server;
+>>>>>>> refs/remotes/origin/master
 	struct nfs4_state *state;
 
 	if (lsp == NULL)
@@ -1108,6 +1452,7 @@ void nfs4_put_lock_state(struct nfs4_lock_state *lsp)
 		clear_bit(LK_STATE_IN_USE, &state->flags);
 	spin_unlock(&state->state_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (lsp->ls_flags & NFS_LOCK_INITIALIZED)
 		nfs4_release_lockowner(lsp);
 	nfs4_free_lock_state(lsp);
@@ -1118,6 +1463,15 @@ void nfs4_put_lock_state(struct nfs4_lock_state *lsp)
 	}
 	nfs4_free_lock_state(lsp->ls_state->owner->so_server, lsp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	server = state->owner->so_server;
+	if (test_bit(NFS_LOCK_INITIALIZED, &lsp->ls_flags)) {
+		struct nfs_client *clp = server->nfs_client;
+
+		clp->cl_mvops->free_lock_state(server, lsp);
+	} else
+		nfs4_free_lock_state(server, lsp);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void nfs4_fl_copy_lock(struct file_lock *dst, struct file_lock *src)
@@ -1148,11 +1502,16 @@ int nfs4_set_lock_state(struct nfs4_state *state, struct file_lock *fl)
 		lsp = nfs4_get_lock_state(state, fl->fl_owner, 0, NFS4_POSIX_LOCK_TYPE);
 	else if (fl->fl_flags & FL_FLOCK)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		lsp = nfs4_get_lock_state(state, 0, fl->fl_pid, NFS4_FLOCK_LOCK_TYPE);
 =======
 		lsp = nfs4_get_lock_state(state, NULL, fl->fl_pid,
 				NFS4_FLOCK_LOCK_TYPE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		lsp = nfs4_get_lock_state(state, NULL, fl->fl_pid,
+				NFS4_FLOCK_LOCK_TYPE);
+>>>>>>> refs/remotes/origin/master
 	else
 		return -EINVAL;
 	if (lsp == NULL)
@@ -1162,6 +1521,7 @@ int nfs4_set_lock_state(struct nfs4_state *state, struct file_lock *fl)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Byte-range lock aware utility to initialize the stateid of read/write
@@ -1191,15 +1551,44 @@ static bool nfs4_copy_lock_stateid(nfs4_stateid *dst, struct nfs4_state *state,
 {
 	struct nfs4_lock_state *lsp;
 	bool ret = false;
+=======
+static int nfs4_copy_lock_stateid(nfs4_stateid *dst,
+		struct nfs4_state *state,
+		const struct nfs_lockowner *lockowner)
+{
+	struct nfs4_lock_state *lsp;
+	fl_owner_t fl_owner;
+	pid_t fl_pid;
+	int ret = -ENOENT;
+
+
+	if (lockowner == NULL)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	if (test_bit(LK_STATE_IN_USE, &state->flags) == 0)
 		goto out;
 
+<<<<<<< HEAD
 	spin_lock(&state->state_lock);
 	lsp = __nfs4_find_lock_state(state, fl_owner, fl_pid, NFS4_ANY_LOCK_TYPE);
 	if (lsp != NULL && (lsp->ls_flags & NFS_LOCK_INITIALIZED) != 0) {
 		nfs4_stateid_copy(dst, &lsp->ls_stateid);
 		ret = true;
+=======
+	fl_owner = lockowner->l_owner;
+	fl_pid = lockowner->l_pid;
+	spin_lock(&state->state_lock);
+	lsp = __nfs4_find_lock_state(state, fl_owner, fl_pid, NFS4_ANY_LOCK_TYPE);
+	if (lsp && test_bit(NFS_LOCK_LOST, &lsp->ls_flags))
+		ret = -EIO;
+	else if (lsp != NULL && test_bit(NFS_LOCK_INITIALIZED, &lsp->ls_flags) != 0) {
+		nfs4_stateid_copy(dst, &lsp->ls_stateid);
+		ret = 0;
+		smp_rmb();
+		if (!list_empty(&lsp->ls_seqid.list))
+			ret = -EWOULDBLOCK;
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock(&state->state_lock);
 	nfs4_put_lock_state(lsp);
@@ -1207,6 +1596,7 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void nfs4_copy_open_stateid(nfs4_stateid *dst, struct nfs4_state *state)
 {
 	int seq;
@@ -1215,12 +1605,33 @@ static void nfs4_copy_open_stateid(nfs4_stateid *dst, struct nfs4_state *state)
 		seq = read_seqbegin(&state->seqlock);
 		nfs4_stateid_copy(dst, &state->stateid);
 	} while (read_seqretry(&state->seqlock, seq));
+=======
+static int nfs4_copy_open_stateid(nfs4_stateid *dst, struct nfs4_state *state)
+{
+	const nfs4_stateid *src;
+	int ret;
+	int seq;
+
+	do {
+		src = &zero_stateid;
+		seq = read_seqbegin(&state->seqlock);
+		if (test_bit(NFS_OPEN_STATE, &state->flags))
+			src = &state->open_stateid;
+		nfs4_stateid_copy(dst, src);
+		ret = 0;
+		smp_rmb();
+		if (!list_empty(&state->owner->so_seqid.list))
+			ret = -EWOULDBLOCK;
+	} while (read_seqretry(&state->seqlock, seq));
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Byte-range lock aware utility to initialize the stateid of read/write
  * requests.
  */
+<<<<<<< HEAD
 void nfs4_select_rw_stateid(nfs4_stateid *dst, struct nfs4_state *state,
 		fmode_t fmode, fl_owner_t fl_owner, pid_t fl_pid)
 {
@@ -1230,6 +1641,28 @@ void nfs4_select_rw_stateid(nfs4_stateid *dst, struct nfs4_state *state,
 		return;
 	nfs4_copy_open_stateid(dst, state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int nfs4_select_rw_stateid(nfs4_stateid *dst, struct nfs4_state *state,
+		fmode_t fmode, const struct nfs_lockowner *lockowner)
+{
+	int ret = nfs4_copy_lock_stateid(dst, state, lockowner);
+	if (ret == -EIO)
+		/* A lost lock - don't even consider delegations */
+		goto out;
+	if (nfs4_copy_delegation_stateid(dst, state->inode, fmode))
+		goto out;
+	if (ret != -ENOENT)
+		/* nfs4_copy_delegation_stateid() didn't over-write
+		 * dst, so it still has the lock stateid which we now
+		 * choose to use.
+		 */
+		goto out;
+	ret = nfs4_copy_open_stateid(dst, state);
+out:
+	if (nfs_server_capable(state->inode, NFS_CAP_STATEID_NFSV41))
+		dst->seqid = 0;
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 struct nfs_seqid *nfs_alloc_seqid(struct nfs_seqid_counter *counter, gfp_t gfp_mask)
@@ -1241,15 +1674,20 @@ struct nfs_seqid *nfs_alloc_seqid(struct nfs_seqid_counter *counter, gfp_t gfp_m
 		new->sequence = counter;
 		INIT_LIST_HEAD(&new->list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		new->task = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		new->task = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 	return new;
 }
 
 void nfs_release_seqid(struct nfs_seqid *seqid)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!list_empty(&seqid->list)) {
 		struct rpc_sequence *sequence = seqid->sequence->sequence;
@@ -1260,6 +1698,8 @@ void nfs_release_seqid(struct nfs_seqid *seqid)
 		rpc_wake_up(&sequence->wait);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct nfs_seqid_counter *sequence;
 
 	if (list_empty(&seqid->list))
@@ -1275,7 +1715,10 @@ void nfs_release_seqid(struct nfs_seqid *seqid)
 		rpc_wake_up_queued_task(&sequence->wait, next->task);
 	}
 	spin_unlock(&sequence->lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void nfs_free_seqid(struct nfs_seqid *seqid)
@@ -1292,10 +1735,13 @@ void nfs_free_seqid(struct nfs_seqid *seqid)
 static void nfs_increment_seqid(int status, struct nfs_seqid *seqid)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(list_first_entry(&seqid->sequence->sequence->list, struct nfs_seqid, list) != seqid);
 =======
 	BUG_ON(list_first_entry(&seqid->sequence->list, struct nfs_seqid, list) != seqid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (status) {
 		case 0:
 			break;
@@ -1303,10 +1749,14 @@ static void nfs_increment_seqid(int status, struct nfs_seqid *seqid)
 			if (seqid->sequence->flags & NFS_SEQID_CONFIRMED)
 				return;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING "NFS: v4 server returned a bad"
 =======
 			pr_warn_ratelimited("NFS: v4 server returned a bad"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn_ratelimited("NFS: v4 server returned a bad"
+>>>>>>> refs/remotes/origin/master
 					" sequence-id error on an"
 					" unconfirmed sequence %p!\n",
 					seqid->sequence);
@@ -1351,17 +1801,23 @@ void nfs_increment_lock_seqid(int status, struct nfs_seqid *seqid)
 int nfs_wait_on_sequence(struct nfs_seqid *seqid, struct rpc_task *task)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct rpc_sequence *sequence = seqid->sequence->sequence;
 	int status = 0;
 
 	spin_lock(&sequence->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct nfs_seqid_counter *sequence = seqid->sequence;
 	int status = 0;
 
 	spin_lock(&sequence->lock);
 	seqid->task = task;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (list_empty(&seqid->list))
 		list_add_tail(&seqid->list, &sequence->list);
 	if (list_first_entry(&sequence->list, struct nfs_seqid, list) == seqid)
@@ -1391,14 +1847,19 @@ void nfs4_schedule_state_manager(struct nfs_client *clp)
 {
 	struct task_struct *task;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	char buf[INET6_ADDRSTRLEN + sizeof("-manager") + 1];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char buf[INET6_ADDRSTRLEN + sizeof("-manager") + 1];
+>>>>>>> refs/remotes/origin/master
 
 	if (test_and_set_bit(NFS4CLNT_MANAGER_RUNNING, &clp->cl_state) != 0)
 		return;
 	__module_get(THIS_MODULE);
 	atomic_inc(&clp->cl_count);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	task = kthread_run(nfs4_run_state_manager, clp, "%s-manager",
 				rpc_peeraddr2str(clp->cl_rpcclient,
@@ -1409,6 +1870,8 @@ void nfs4_schedule_state_manager(struct nfs_client *clp)
 	nfs_put_client(clp);
 	module_put(THIS_MODULE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* The rcu_read_lock() is not strictly necessary, as the state
 	 * manager is the only thread that ever changes the rpc_xprt
@@ -1417,7 +1880,11 @@ void nfs4_schedule_state_manager(struct nfs_client *clp)
 	snprintf(buf, sizeof(buf), "%s-manager",
 			rpc_peeraddr2str(clp->cl_rpcclient, RPC_DISPLAY_ADDR));
 	rcu_read_unlock();
+<<<<<<< HEAD
 	task = kthread_run(nfs4_run_state_manager, clp, buf);
+=======
+	task = kthread_run(nfs4_run_state_manager, clp, "%s", buf);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(task)) {
 		printk(KERN_ERR "%s: kthread_run: %ld\n",
 			__func__, PTR_ERR(task));
@@ -1425,7 +1892,10 @@ void nfs4_schedule_state_manager(struct nfs_client *clp)
 		nfs_put_client(clp);
 		module_put(THIS_MODULE);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1437,12 +1907,109 @@ void nfs4_schedule_lease_recovery(struct nfs_client *clp)
 		return;
 	if (!test_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state))
 		set_bit(NFS4CLNT_CHECK_LEASE, &clp->cl_state);
+<<<<<<< HEAD
 	nfs4_schedule_state_manager(clp);
 }
 <<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(nfs4_schedule_lease_recovery);
 
+=======
+	dprintk("%s: scheduling lease recovery for server %s\n", __func__,
+			clp->cl_hostname);
+	nfs4_schedule_state_manager(clp);
+}
+EXPORT_SYMBOL_GPL(nfs4_schedule_lease_recovery);
+
+/**
+ * nfs4_schedule_migration_recovery - trigger migration recovery
+ *
+ * @server: FSID that is migrating
+ *
+ * Returns zero if recovery has started, otherwise a negative NFS4ERR
+ * value is returned.
+ */
+int nfs4_schedule_migration_recovery(const struct nfs_server *server)
+{
+	struct nfs_client *clp = server->nfs_client;
+
+	if (server->fh_expire_type != NFS4_FH_PERSISTENT) {
+		pr_err("NFS: volatile file handles not supported (server %s)\n",
+				clp->cl_hostname);
+		return -NFS4ERR_IO;
+	}
+
+	if (test_bit(NFS_MIG_FAILED, &server->mig_status))
+		return -NFS4ERR_IO;
+
+	dprintk("%s: scheduling migration recovery for (%llx:%llx) on %s\n",
+			__func__,
+			(unsigned long long)server->fsid.major,
+			(unsigned long long)server->fsid.minor,
+			clp->cl_hostname);
+
+	set_bit(NFS_MIG_IN_TRANSITION,
+			&((struct nfs_server *)server)->mig_status);
+	set_bit(NFS4CLNT_MOVED, &clp->cl_state);
+
+	nfs4_schedule_state_manager(clp);
+	return 0;
+}
+EXPORT_SYMBOL_GPL(nfs4_schedule_migration_recovery);
+
+/**
+ * nfs4_schedule_lease_moved_recovery - start lease-moved recovery
+ *
+ * @clp: server to check for moved leases
+ *
+ */
+void nfs4_schedule_lease_moved_recovery(struct nfs_client *clp)
+{
+	dprintk("%s: scheduling lease-moved recovery for client ID %llx on %s\n",
+		__func__, clp->cl_clientid, clp->cl_hostname);
+
+	set_bit(NFS4CLNT_LEASE_MOVED, &clp->cl_state);
+	nfs4_schedule_state_manager(clp);
+}
+EXPORT_SYMBOL_GPL(nfs4_schedule_lease_moved_recovery);
+
+int nfs4_wait_clnt_recover(struct nfs_client *clp)
+{
+	int res;
+
+	might_sleep();
+
+	atomic_inc(&clp->cl_count);
+	res = wait_on_bit(&clp->cl_state, NFS4CLNT_MANAGER_RUNNING,
+			nfs_wait_bit_killable, TASK_KILLABLE);
+	if (res)
+		goto out;
+	if (clp->cl_cons_state < 0)
+		res = clp->cl_cons_state;
+out:
+	nfs_put_client(clp);
+	return res;
+}
+
+int nfs4_client_recover_expired_lease(struct nfs_client *clp)
+{
+	unsigned int loop;
+	int ret;
+
+	for (loop = NFS4_MAX_LOOP_ON_RECOVER; loop != 0; loop--) {
+		ret = nfs4_wait_clnt_recover(clp);
+		if (ret != 0)
+			break;
+		if (!test_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state) &&
+		    !test_bit(NFS4CLNT_CHECK_LEASE,&clp->cl_state))
+			break;
+		nfs4_schedule_state_manager(clp);
+		ret = -EIO;
+	}
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * nfs40_handle_cb_pathdown - return all delegations after NFS4ERR_CB_PATH_DOWN
  * @clp: client to process
@@ -1455,6 +2022,11 @@ static void nfs40_handle_cb_pathdown(struct nfs_client *clp)
 {
 	set_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state);
 	nfs_expire_all_delegations(clp);
+<<<<<<< HEAD
+=======
+	dprintk("%s: handling CB_PATHDOWN recovery for server %s\n", __func__,
+			clp->cl_hostname);
+>>>>>>> refs/remotes/origin/master
 }
 
 void nfs4_schedule_path_down_recovery(struct nfs_client *clp)
@@ -1462,7 +2034,10 @@ void nfs4_schedule_path_down_recovery(struct nfs_client *clp)
 	nfs40_handle_cb_pathdown(clp);
 	nfs4_schedule_state_manager(clp);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int nfs4_state_mark_reclaim_reboot(struct nfs_client *clp, struct nfs4_state *state)
 {
@@ -1487,6 +2062,7 @@ static int nfs4_state_mark_reclaim_nograce(struct nfs_client *clp, struct nfs4_s
 	return 1;
 }
 
+<<<<<<< HEAD
 void nfs4_schedule_stateid_recovery(const struct nfs_server *server, struct nfs4_state *state)
 {
 	struct nfs_client *clp = server->nfs_client;
@@ -1498,6 +2074,21 @@ void nfs4_schedule_stateid_recovery(const struct nfs_server *server, struct nfs4
 =======
 EXPORT_SYMBOL_GPL(nfs4_schedule_stateid_recovery);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int nfs4_schedule_stateid_recovery(const struct nfs_server *server, struct nfs4_state *state)
+{
+	struct nfs_client *clp = server->nfs_client;
+
+	if (!nfs4_valid_open_stateid(state))
+		return -EBADF;
+	nfs4_state_mark_reclaim_nograce(clp, state);
+	dprintk("%s: scheduling stateid recovery for server %s\n", __func__,
+			clp->cl_hostname);
+	nfs4_schedule_state_manager(clp);
+	return 0;
+}
+EXPORT_SYMBOL_GPL(nfs4_schedule_stateid_recovery);
+>>>>>>> refs/remotes/origin/master
 
 void nfs_inode_find_state_and_recover(struct inode *inode,
 		const nfs4_stateid *stateid)
@@ -1516,10 +2107,14 @@ void nfs_inode_find_state_and_recover(struct inode *inode,
 		if (!test_bit(NFS_DELEGATED_STATE, &state->flags))
 			continue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (memcmp(state->stateid.data, stateid->data, sizeof(state->stateid.data)) != 0)
 =======
 		if (!nfs4_stateid_match(&state->stateid, stateid))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!nfs4_stateid_match(&state->stateid, stateid))
+>>>>>>> refs/remotes/origin/master
 			continue;
 		nfs4_state_mark_reclaim_nograce(clp, state);
 		found = true;
@@ -1529,6 +2124,30 @@ void nfs_inode_find_state_and_recover(struct inode *inode,
 		nfs4_schedule_state_manager(clp);
 }
 
+<<<<<<< HEAD
+=======
+static void nfs4_state_mark_open_context_bad(struct nfs4_state *state)
+{
+	struct inode *inode = state->inode;
+	struct nfs_inode *nfsi = NFS_I(inode);
+	struct nfs_open_context *ctx;
+
+	spin_lock(&inode->i_lock);
+	list_for_each_entry(ctx, &nfsi->open_files, list) {
+		if (ctx->state != state)
+			continue;
+		set_bit(NFS_CONTEXT_BAD, &ctx->flags);
+	}
+	spin_unlock(&inode->i_lock);
+}
+
+static void nfs4_state_mark_recovery_failed(struct nfs4_state *state, int error)
+{
+	set_bit(NFS_STATE_RECOVERY_FAILED, &state->flags);
+	nfs4_state_mark_open_context_bad(state);
+}
+
+>>>>>>> refs/remotes/origin/master
 
 static int nfs4_reclaim_locks(struct nfs4_state *state, const struct nfs4_state_recovery_ops *ops)
 {
@@ -1543,13 +2162,21 @@ static int nfs4_reclaim_locks(struct nfs4_state *state, const struct nfs4_state_
 	/* Guard against delegation returns and new lock/unlock calls */
 	down_write(&nfsi->rwsem);
 	/* Protect inode->i_flock using the BKL */
+<<<<<<< HEAD
 	lock_flocks();
+=======
+	spin_lock(&inode->i_lock);
+>>>>>>> refs/remotes/origin/master
 	for (fl = inode->i_flock; fl != NULL; fl = fl->fl_next) {
 		if (!(fl->fl_flags & (FL_POSIX|FL_FLOCK)))
 			continue;
 		if (nfs_file_open_context(fl->fl_file)->state != state)
 			continue;
+<<<<<<< HEAD
 		unlock_flocks();
+=======
+		spin_unlock(&inode->i_lock);
+>>>>>>> refs/remotes/origin/master
 		status = ops->recover_lock(state, fl);
 		switch (status) {
 			case 0:
@@ -1568,12 +2195,17 @@ static int nfs4_reclaim_locks(struct nfs4_state *state, const struct nfs4_state_
 				goto out;
 			default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_ERR "%s: unhandled error %d. Zeroing state\n",
 						__func__, status);
 =======
 				printk(KERN_ERR "NFS: %s: unhandled error %d. "
 					"Zeroing state\n", __func__, status);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				printk(KERN_ERR "NFS: %s: unhandled error %d\n",
+					 __func__, status);
+>>>>>>> refs/remotes/origin/master
 			case -ENOMEM:
 			case -NFS4ERR_DENIED:
 			case -NFS4ERR_RECLAIM_BAD:
@@ -1581,9 +2213,15 @@ static int nfs4_reclaim_locks(struct nfs4_state *state, const struct nfs4_state_
 				/* kill_proc(fl->fl_pid, SIGLOST, 1); */
 				status = 0;
 		}
+<<<<<<< HEAD
 		lock_flocks();
 	}
 	unlock_flocks();
+=======
+		spin_lock(&inode->i_lock);
+	}
+	spin_unlock(&inode->i_lock);
+>>>>>>> refs/remotes/origin/master
 out:
 	up_write(&nfsi->rwsem);
 	return status;
@@ -1603,11 +2241,22 @@ static int nfs4_reclaim_open_state(struct nfs4_state_owner *sp, const struct nfs
 	 * recovering after a network partition or a reboot from a
 	 * server that doesn't support a grace period.
 	 */
+<<<<<<< HEAD
 restart:
 	spin_lock(&sp->so_lock);
 	list_for_each_entry(state, &sp->so_states, open_states) {
 		if (!test_and_clear_bit(ops->state_flag_bit, &state->flags))
 			continue;
+=======
+	spin_lock(&sp->so_lock);
+	write_seqcount_begin(&sp->so_reclaim_seqcount);
+restart:
+	list_for_each_entry(state, &sp->so_states, open_states) {
+		if (!test_and_clear_bit(ops->state_flag_bit, &state->flags))
+			continue;
+		if (!nfs4_valid_open_stateid(state))
+			continue;
+>>>>>>> refs/remotes/origin/master
 		if (state->state == 0)
 			continue;
 		atomic_inc(&state->count);
@@ -1616,6 +2265,7 @@ restart:
 		if (status >= 0) {
 			status = nfs4_reclaim_locks(state, ops);
 			if (status >= 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				list_for_each_entry(lock, &state->lock_states, ls_locks) {
 					if (!(lock->ls_flags & NFS_LOCK_INITIALIZED))
@@ -1633,11 +2283,26 @@ restart:
 				spin_unlock(&state->state_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
 				nfs4_put_open_state(state);
+=======
+				if (!test_bit(NFS_DELEGATED_STATE, &state->flags)) {
+					spin_lock(&state->state_lock);
+					list_for_each_entry(lock, &state->lock_states, ls_locks) {
+						if (!test_bit(NFS_LOCK_INITIALIZED, &lock->ls_flags))
+							pr_warn_ratelimited("NFS: "
+									    "%s: Lock reclaim "
+									    "failed!\n", __func__);
+					}
+					spin_unlock(&state->state_lock);
+				}
+				nfs4_put_open_state(state);
+				spin_lock(&sp->so_lock);
+>>>>>>> refs/remotes/origin/master
 				goto restart;
 			}
 		}
 		switch (status) {
 			default:
+<<<<<<< HEAD
 <<<<<<< HEAD
 				printk(KERN_ERR "%s: unhandled error %d. Zeroing state\n",
 						__func__, status);
@@ -1670,6 +2335,18 @@ restart:
 				 * proceed.
 				 */
 				break;
+=======
+				printk(KERN_ERR "NFS: %s: unhandled error %d\n",
+					__func__, status);
+			case -ENOENT:
+			case -ENOMEM:
+			case -ESTALE:
+				/* Open state on this file cannot be recovered */
+				nfs4_state_mark_recovery_failed(state, status);
+				break;
+			case -EAGAIN:
+				ssleep(1);
+>>>>>>> refs/remotes/origin/master
 			case -NFS4ERR_ADMIN_REVOKED:
 			case -NFS4ERR_STALE_STATEID:
 			case -NFS4ERR_BAD_STATEID:
@@ -1688,12 +2365,25 @@ restart:
 				goto out_err;
 		}
 		nfs4_put_open_state(state);
+<<<<<<< HEAD
 		goto restart;
 	}
+=======
+		spin_lock(&sp->so_lock);
+		goto restart;
+	}
+	write_seqcount_end(&sp->so_reclaim_seqcount);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&sp->so_lock);
 	return 0;
 out_err:
 	nfs4_put_open_state(state);
+<<<<<<< HEAD
+=======
+	spin_lock(&sp->so_lock);
+	write_seqcount_end(&sp->so_reclaim_seqcount);
+	spin_unlock(&sp->so_lock);
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -1706,6 +2396,7 @@ static void nfs4_clear_open_state(struct nfs4_state *state)
 	clear_bit(NFS_O_WRONLY_STATE, &state->flags);
 	clear_bit(NFS_O_RDWR_STATE, &state->flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spin_lock(&state->state_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1717,6 +2408,14 @@ static void nfs4_clear_open_state(struct nfs4_state *state)
 =======
 	spin_unlock(&state->state_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&state->state_lock);
+	list_for_each_entry(lock, &state->lock_states, ls_locks) {
+		lock->ls_seqid.flags = 0;
+		clear_bit(NFS_LOCK_INITIALIZED, &lock->ls_flags);
+	}
+	spin_unlock(&state->state_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void nfs4_reset_seqids(struct nfs_server *server,
@@ -1762,11 +2461,20 @@ static void nfs4_state_start_reclaim_reboot(struct nfs_client *clp)
 }
 
 static void nfs4_reclaim_complete(struct nfs_client *clp,
+<<<<<<< HEAD
 				 const struct nfs4_state_recovery_ops *ops)
 {
 	/* Notify the server we're done reclaiming our state */
 	if (ops->reclaim_complete)
 		(void)ops->reclaim_complete(clp);
+=======
+				 const struct nfs4_state_recovery_ops *ops,
+				 struct rpc_cred *cred)
+{
+	/* Notify the server we're done reclaiming our state */
+	if (ops->reclaim_complete)
+		(void)ops->reclaim_complete(clp, cred);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void nfs4_clear_reclaim_server(struct nfs_server *server)
@@ -1811,9 +2519,21 @@ static int nfs4_state_clear_reclaim_reboot(struct nfs_client *clp)
 
 static void nfs4_state_end_reclaim_reboot(struct nfs_client *clp)
 {
+<<<<<<< HEAD
 	if (!nfs4_state_clear_reclaim_reboot(clp))
 		return;
 	nfs4_reclaim_complete(clp, clp->cl_mvops->reboot_recovery_ops);
+=======
+	const struct nfs4_state_recovery_ops *ops;
+	struct rpc_cred *cred;
+
+	if (!nfs4_state_clear_reclaim_reboot(clp))
+		return;
+	ops = clp->cl_mvops->reboot_recovery_ops;
+	cred = nfs4_get_clid_cred(clp);
+	nfs4_reclaim_complete(clp, ops, cred);
+	put_rpccred(cred);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void nfs_delegation_clear_all(struct nfs_client *clp)
@@ -1828,6 +2548,7 @@ static void nfs4_state_start_reclaim_nograce(struct nfs_client *clp)
 	nfs4_state_mark_reclaim_helper(clp, nfs4_state_mark_reclaim_nograce);
 }
 
+<<<<<<< HEAD
 static void nfs4_warn_keyexpired(const char *s)
 {
 	printk_ratelimited(KERN_WARNING "Error: state manager"
@@ -1847,6 +2568,11 @@ static int nfs4_recovery_handle_error(struct nfs_client *clp, int error)
 			nfs4_state_end_reclaim_reboot(clp);
 			return 0;
 =======
+=======
+static int nfs4_recovery_handle_error(struct nfs_client *clp, int error)
+{
+	switch (error) {
+>>>>>>> refs/remotes/origin/master
 		case 0:
 			break;
 		case -NFS4ERR_CB_PATH_DOWN:
@@ -1855,9 +2581,13 @@ static int nfs4_recovery_handle_error(struct nfs_client *clp, int error)
 		case -NFS4ERR_NO_GRACE:
 			nfs4_state_end_reclaim_reboot(clp);
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		case -NFS4ERR_STALE_CLIENTID:
 		case -NFS4ERR_LEASE_MOVED:
+=======
+		case -NFS4ERR_STALE_CLIENTID:
+>>>>>>> refs/remotes/origin/master
 			set_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state);
 			nfs4_state_clear_reclaim_reboot(clp);
 			nfs4_state_start_reclaim_reboot(clp);
@@ -1870,11 +2600,15 @@ static int nfs4_recovery_handle_error(struct nfs_client *clp, int error)
 		case -NFS4ERR_BADSLOT:
 		case -NFS4ERR_BAD_HIGH_SLOT:
 		case -NFS4ERR_DEADSESSION:
+<<<<<<< HEAD
 		case -NFS4ERR_CONN_NOT_BOUND_TO_SESSION:
+=======
+>>>>>>> refs/remotes/origin/master
 		case -NFS4ERR_SEQ_FALSE_RETRY:
 		case -NFS4ERR_SEQ_MISORDERED:
 			set_bit(NFS4CLNT_SESSION_RESET, &clp->cl_state);
 			/* Zero session reset errors */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			return 0;
 		case -EKEYEXPIRED:
@@ -1894,6 +2628,20 @@ static int nfs4_recovery_handle_error(struct nfs_client *clp, int error)
 	}
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			break;
+		case -NFS4ERR_CONN_NOT_BOUND_TO_SESSION:
+			set_bit(NFS4CLNT_BIND_CONN_TO_SESSION, &clp->cl_state);
+			break;
+		default:
+			dprintk("%s: failed to handle error %d for server %s\n",
+					__func__, error, clp->cl_hostname);
+			return error;
+	}
+	dprintk("%s: handled error %d for server %s\n", __func__, error,
+			clp->cl_hostname);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int nfs4_do_reclaim(struct nfs_client *clp, const struct nfs4_state_recovery_ops *ops)
@@ -1907,9 +2655,13 @@ restart:
 	rcu_read_lock();
 	list_for_each_entry_rcu(server, &clp->cl_superblocks, client_link) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		nfs4_purge_state_owners(server);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		nfs4_purge_state_owners(server);
+>>>>>>> refs/remotes/origin/master
 		spin_lock(&clp->cl_lock);
 		for (pos = rb_first(&server->state_owners);
 		     pos != NULL;
@@ -1945,10 +2697,14 @@ static int nfs4_check_lease(struct nfs_client *clp)
 	const struct nfs4_state_maintenance_ops *ops =
 		clp->cl_mvops->state_renewal_ops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int status = -NFS4ERR_EXPIRED;
 =======
 	int status;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int status;
+>>>>>>> refs/remotes/origin/master
 
 	/* Is the client already known to have an expired lease? */
 	if (test_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state))
@@ -1957,25 +2713,92 @@ static int nfs4_check_lease(struct nfs_client *clp)
 	cred = ops->get_state_renewal_cred_locked(clp);
 	spin_unlock(&clp->cl_lock);
 	if (cred == NULL) {
+<<<<<<< HEAD
 		cred = nfs4_get_setclientid_cred(clp);
 <<<<<<< HEAD
 =======
 		status = -ENOKEY;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cred = nfs4_get_clid_cred(clp);
+		status = -ENOKEY;
+>>>>>>> refs/remotes/origin/master
 		if (cred == NULL)
 			goto out;
 	}
 	status = ops->renew_lease(clp, cred);
 	put_rpccred(cred);
+<<<<<<< HEAD
+=======
+	if (status == -ETIMEDOUT) {
+		set_bit(NFS4CLNT_CHECK_LEASE, &clp->cl_state);
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
 out:
 	return nfs4_recovery_handle_error(clp, status);
 }
 
+<<<<<<< HEAD
 static int nfs4_reclaim_lease(struct nfs_client *clp)
+=======
+/* Set NFS4CLNT_LEASE_EXPIRED and reclaim reboot state for all v4.0 errors
+ * and for recoverable errors on EXCHANGE_ID for v4.1
+ */
+static int nfs4_handle_reclaim_lease_error(struct nfs_client *clp, int status)
+{
+	switch (status) {
+	case -NFS4ERR_SEQ_MISORDERED:
+		if (test_and_set_bit(NFS4CLNT_PURGE_STATE, &clp->cl_state))
+			return -ESERVERFAULT;
+		/* Lease confirmation error: retry after purging the lease */
+		ssleep(1);
+		clear_bit(NFS4CLNT_LEASE_CONFIRM, &clp->cl_state);
+		break;
+	case -NFS4ERR_STALE_CLIENTID:
+		clear_bit(NFS4CLNT_LEASE_CONFIRM, &clp->cl_state);
+		nfs4_state_clear_reclaim_reboot(clp);
+		nfs4_state_start_reclaim_reboot(clp);
+		break;
+	case -NFS4ERR_CLID_INUSE:
+		pr_err("NFS: Server %s reports our clientid is in use\n",
+			clp->cl_hostname);
+		nfs_mark_client_ready(clp, -EPERM);
+		clear_bit(NFS4CLNT_LEASE_CONFIRM, &clp->cl_state);
+		return -EPERM;
+	case -EACCES:
+	case -NFS4ERR_DELAY:
+	case -ETIMEDOUT:
+	case -EAGAIN:
+		ssleep(1);
+		break;
+
+	case -NFS4ERR_MINOR_VERS_MISMATCH:
+		if (clp->cl_cons_state == NFS_CS_SESSION_INITING)
+			nfs_mark_client_ready(clp, -EPROTONOSUPPORT);
+		dprintk("%s: exit with error %d for server %s\n",
+				__func__, -EPROTONOSUPPORT, clp->cl_hostname);
+		return -EPROTONOSUPPORT;
+	case -NFS4ERR_NOT_SAME: /* FixMe: implement recovery
+				 * in nfs4_exchange_id */
+	default:
+		dprintk("%s: exit with error %d for server %s\n", __func__,
+				status, clp->cl_hostname);
+		return status;
+	}
+	set_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state);
+	dprintk("%s: handled error %d for server %s\n", __func__, status,
+			clp->cl_hostname);
+	return 0;
+}
+
+static int nfs4_establish_lease(struct nfs_client *clp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rpc_cred *cred;
 	const struct nfs4_state_recovery_ops *ops =
 		clp->cl_mvops->reboot_recovery_ops;
+<<<<<<< HEAD
 	int status = -ENOENT;
 
 	cred = ops->get_clid_cred(clp);
@@ -1990,19 +2813,337 @@ static int nfs4_reclaim_lease(struct nfs_client *clp)
 		if (status == -NFS4ERR_MINOR_VERS_MISMATCH)
 			status = -EPROTONOSUPPORT;
 	}
+=======
+	int status;
+
+	cred = nfs4_get_clid_cred(clp);
+	if (cred == NULL)
+		return -ENOENT;
+	status = ops->establish_clid(clp, cred);
+	put_rpccred(cred);
+	if (status != 0)
+		return status;
+	pnfs_destroy_all_layouts(clp);
+	return 0;
+}
+
+/*
+ * Returns zero or a negative errno.  NFS4ERR values are converted
+ * to local errno values.
+ */
+static int nfs4_reclaim_lease(struct nfs_client *clp)
+{
+	int status;
+
+	status = nfs4_establish_lease(clp);
+	if (status < 0)
+		return nfs4_handle_reclaim_lease_error(clp, status);
+	if (test_and_clear_bit(NFS4CLNT_SERVER_SCOPE_MISMATCH, &clp->cl_state))
+		nfs4_state_start_reclaim_nograce(clp);
+	if (!test_bit(NFS4CLNT_RECLAIM_NOGRACE, &clp->cl_state))
+		set_bit(NFS4CLNT_RECLAIM_REBOOT, &clp->cl_state);
+	clear_bit(NFS4CLNT_CHECK_LEASE, &clp->cl_state);
+	clear_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state);
+	return 0;
+}
+
+static int nfs4_purge_lease(struct nfs_client *clp)
+{
+	int status;
+
+	status = nfs4_establish_lease(clp);
+	if (status < 0)
+		return nfs4_handle_reclaim_lease_error(clp, status);
+	clear_bit(NFS4CLNT_PURGE_STATE, &clp->cl_state);
+	set_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state);
+	nfs4_state_start_reclaim_nograce(clp);
+	return 0;
+}
+
+/*
+ * Try remote migration of one FSID from a source server to a
+ * destination server.  The source server provides a list of
+ * potential destinations.
+ *
+ * Returns zero or a negative NFS4ERR status code.
+ */
+static int nfs4_try_migration(struct nfs_server *server, struct rpc_cred *cred)
+{
+	struct nfs_client *clp = server->nfs_client;
+	struct nfs4_fs_locations *locations = NULL;
+	struct inode *inode;
+	struct page *page;
+	int status, result;
+
+	dprintk("--> %s: FSID %llx:%llx on \"%s\"\n", __func__,
+			(unsigned long long)server->fsid.major,
+			(unsigned long long)server->fsid.minor,
+			clp->cl_hostname);
+
+	result = 0;
+	page = alloc_page(GFP_KERNEL);
+	locations = kmalloc(sizeof(struct nfs4_fs_locations), GFP_KERNEL);
+	if (page == NULL || locations == NULL) {
+		dprintk("<-- %s: no memory\n", __func__);
+		goto out;
+	}
+
+	inode = server->super->s_root->d_inode;
+	result = nfs4_proc_get_locations(inode, locations, page, cred);
+	if (result) {
+		dprintk("<-- %s: failed to retrieve fs_locations: %d\n",
+			__func__, result);
+		goto out;
+	}
+
+	result = -NFS4ERR_NXIO;
+	if (!(locations->fattr.valid & NFS_ATTR_FATTR_V4_LOCATIONS)) {
+		dprintk("<-- %s: No fs_locations data, migration skipped\n",
+			__func__);
+		goto out;
+	}
+
+	nfs4_begin_drain_session(clp);
+
+	status = nfs4_replace_transport(server, locations);
+	if (status != 0) {
+		dprintk("<-- %s: failed to replace transport: %d\n",
+			__func__, status);
+		goto out;
+	}
+
+	result = 0;
+	dprintk("<-- %s: migration succeeded\n", __func__);
+
+out:
+	if (page != NULL)
+		__free_page(page);
+	kfree(locations);
+	if (result) {
+		pr_err("NFS: migration recovery failed (server %s)\n",
+				clp->cl_hostname);
+		set_bit(NFS_MIG_FAILED, &server->mig_status);
+	}
+	return result;
+}
+
+/*
+ * Returns zero or a negative NFS4ERR status code.
+ */
+static int nfs4_handle_migration(struct nfs_client *clp)
+{
+	const struct nfs4_state_maintenance_ops *ops =
+				clp->cl_mvops->state_renewal_ops;
+	struct nfs_server *server;
+	struct rpc_cred *cred;
+
+	dprintk("%s: migration reported on \"%s\"\n", __func__,
+			clp->cl_hostname);
+
+	spin_lock(&clp->cl_lock);
+	cred = ops->get_state_renewal_cred_locked(clp);
+	spin_unlock(&clp->cl_lock);
+	if (cred == NULL)
+		return -NFS4ERR_NOENT;
+
+	clp->cl_mig_gen++;
+restart:
+	rcu_read_lock();
+	list_for_each_entry_rcu(server, &clp->cl_superblocks, client_link) {
+		int status;
+
+		if (server->mig_gen == clp->cl_mig_gen)
+			continue;
+		server->mig_gen = clp->cl_mig_gen;
+
+		if (!test_and_clear_bit(NFS_MIG_IN_TRANSITION,
+						&server->mig_status))
+			continue;
+
+		rcu_read_unlock();
+		status = nfs4_try_migration(server, cred);
+		if (status < 0) {
+			put_rpccred(cred);
+			return status;
+		}
+		goto restart;
+	}
+	rcu_read_unlock();
+	put_rpccred(cred);
+	return 0;
+}
+
+/*
+ * Test each nfs_server on the clp's cl_superblocks list to see
+ * if it's moved to another server.  Stop when the server no longer
+ * returns NFS4ERR_LEASE_MOVED.
+ */
+static int nfs4_handle_lease_moved(struct nfs_client *clp)
+{
+	const struct nfs4_state_maintenance_ops *ops =
+				clp->cl_mvops->state_renewal_ops;
+	struct nfs_server *server;
+	struct rpc_cred *cred;
+
+	dprintk("%s: lease moved reported on \"%s\"\n", __func__,
+			clp->cl_hostname);
+
+	spin_lock(&clp->cl_lock);
+	cred = ops->get_state_renewal_cred_locked(clp);
+	spin_unlock(&clp->cl_lock);
+	if (cred == NULL)
+		return -NFS4ERR_NOENT;
+
+	clp->cl_mig_gen++;
+restart:
+	rcu_read_lock();
+	list_for_each_entry_rcu(server, &clp->cl_superblocks, client_link) {
+		struct inode *inode;
+		int status;
+
+		if (server->mig_gen == clp->cl_mig_gen)
+			continue;
+		server->mig_gen = clp->cl_mig_gen;
+
+		rcu_read_unlock();
+
+		inode = server->super->s_root->d_inode;
+		status = nfs4_proc_fsid_present(inode, cred);
+		if (status != -NFS4ERR_MOVED)
+			goto restart;	/* wasn't this one */
+		if (nfs4_try_migration(server, cred) == -NFS4ERR_LEASE_MOVED)
+			goto restart;	/* there are more */
+		goto out;
+	}
+	rcu_read_unlock();
+
+out:
+	put_rpccred(cred);
+	return 0;
+}
+
+/**
+ * nfs4_discover_server_trunking - Detect server IP address trunking
+ *
+ * @clp: nfs_client under test
+ * @result: OUT: found nfs_client, or clp
+ *
+ * Returns zero or a negative errno.  If zero is returned,
+ * an nfs_client pointer is planted in "result".
+ *
+ * Note: since we are invoked in process context, and
+ * not from inside the state manager, we cannot use
+ * nfs4_handle_reclaim_lease_error().
+ */
+int nfs4_discover_server_trunking(struct nfs_client *clp,
+				  struct nfs_client **result)
+{
+	const struct nfs4_state_recovery_ops *ops =
+				clp->cl_mvops->reboot_recovery_ops;
+	struct rpc_clnt *clnt;
+	struct rpc_cred *cred;
+	int i, status;
+
+	dprintk("NFS: %s: testing '%s'\n", __func__, clp->cl_hostname);
+
+	clnt = clp->cl_rpcclient;
+	i = 0;
+
+	mutex_lock(&nfs_clid_init_mutex);
+again:
+	status  = -ENOENT;
+	cred = nfs4_get_clid_cred(clp);
+	if (cred == NULL)
+		goto out_unlock;
+
+	status = ops->detect_trunking(clp, result, cred);
+	put_rpccred(cred);
+	switch (status) {
+	case 0:
+		break;
+	case -NFS4ERR_DELAY:
+	case -ETIMEDOUT:
+	case -EAGAIN:
+		ssleep(1);
+	case -NFS4ERR_STALE_CLIENTID:
+		dprintk("NFS: %s after status %d, retrying\n",
+			__func__, status);
+		goto again;
+	case -EACCES:
+		if (i++ == 0) {
+			nfs4_root_machine_cred(clp);
+			goto again;
+		}
+		if (clnt->cl_auth->au_flavor == RPC_AUTH_UNIX)
+			break;
+	case -NFS4ERR_CLID_INUSE:
+	case -NFS4ERR_WRONGSEC:
+		/* No point in retrying if we already used RPC_AUTH_UNIX */
+		if (clnt->cl_auth->au_flavor == RPC_AUTH_UNIX) {
+			status = -EPERM;
+			break;
+		}
+		clnt = rpc_clone_client_set_auth(clnt, RPC_AUTH_UNIX);
+		if (IS_ERR(clnt)) {
+			status = PTR_ERR(clnt);
+			break;
+		}
+		/* Note: this is safe because we haven't yet marked the
+		 * client as ready, so we are the only user of
+		 * clp->cl_rpcclient
+		 */
+		clnt = xchg(&clp->cl_rpcclient, clnt);
+		rpc_shutdown_client(clnt);
+		clnt = clp->cl_rpcclient;
+		goto again;
+
+	case -NFS4ERR_MINOR_VERS_MISMATCH:
+		status = -EPROTONOSUPPORT;
+		break;
+
+	case -EKEYEXPIRED:
+	case -NFS4ERR_NOT_SAME: /* FixMe: implement recovery
+				 * in nfs4_exchange_id */
+		status = -EKEYEXPIRED;
+		break;
+	default:
+		pr_warn("NFS: %s unhandled error %d. Exiting with error EIO\n",
+				__func__, status);
+		status = -EIO;
+	}
+
+out_unlock:
+	mutex_unlock(&nfs_clid_init_mutex);
+	dprintk("NFS: %s: status = %d\n", __func__, status);
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
 #ifdef CONFIG_NFS_V4_1
+<<<<<<< HEAD
 void nfs4_schedule_session_recovery(struct nfs4_session *session)
 {
 	struct nfs_client *clp = session->clp;
 
 	set_bit(NFS4CLNT_SESSION_RESET, &clp->cl_state);
+=======
+void nfs4_schedule_session_recovery(struct nfs4_session *session, int err)
+{
+	struct nfs_client *clp = session->clp;
+
+	switch (err) {
+	default:
+		set_bit(NFS4CLNT_SESSION_RESET, &clp->cl_state);
+		break;
+	case -NFS4ERR_CONN_NOT_BOUND_TO_SESSION:
+		set_bit(NFS4CLNT_BIND_CONN_TO_SESSION, &clp->cl_state);
+	}
+>>>>>>> refs/remotes/origin/master
 	nfs4_schedule_lease_recovery(clp);
 }
 EXPORT_SYMBOL_GPL(nfs4_schedule_session_recovery);
 
+<<<<<<< HEAD
 void nfs41_handle_recall_slot(struct nfs_client *clp)
 {
 	set_bit(NFS4CLNT_RECALL_SLOT, &clp->cl_state);
@@ -2014,6 +3155,33 @@ static void nfs4_reset_all_state(struct nfs_client *clp)
 	if (test_and_set_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state) == 0) {
 		clp->cl_boot_time = CURRENT_TIME;
 		nfs4_state_start_reclaim_nograce(clp);
+=======
+static void nfs41_ping_server(struct nfs_client *clp)
+{
+	/* Use CHECK_LEASE to ping the server with a SEQUENCE */
+	set_bit(NFS4CLNT_CHECK_LEASE, &clp->cl_state);
+	nfs4_schedule_state_manager(clp);
+}
+
+void nfs41_server_notify_target_slotid_update(struct nfs_client *clp)
+{
+	nfs41_ping_server(clp);
+}
+
+void nfs41_server_notify_highest_slotid_update(struct nfs_client *clp)
+{
+	nfs41_ping_server(clp);
+}
+
+static void nfs4_reset_all_state(struct nfs_client *clp)
+{
+	if (test_and_set_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state) == 0) {
+		set_bit(NFS4CLNT_PURGE_STATE, &clp->cl_state);
+		clear_bit(NFS4CLNT_LEASE_CONFIRM, &clp->cl_state);
+		nfs4_state_start_reclaim_nograce(clp);
+		dprintk("%s: scheduling reset of all state for server %s!\n",
+				__func__, clp->cl_hostname);
+>>>>>>> refs/remotes/origin/master
 		nfs4_schedule_state_manager(clp);
 	}
 }
@@ -2022,37 +3190,75 @@ static void nfs41_handle_server_reboot(struct nfs_client *clp)
 {
 	if (test_and_set_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state) == 0) {
 		nfs4_state_start_reclaim_reboot(clp);
+<<<<<<< HEAD
+=======
+		dprintk("%s: server %s rebooted!\n", __func__,
+				clp->cl_hostname);
+>>>>>>> refs/remotes/origin/master
 		nfs4_schedule_state_manager(clp);
 	}
 }
 
 static void nfs41_handle_state_revoked(struct nfs_client *clp)
 {
+<<<<<<< HEAD
 	/* Temporary */
 	nfs4_reset_all_state(clp);
+=======
+	nfs4_reset_all_state(clp);
+	dprintk("%s: state revoked on server %s\n", __func__, clp->cl_hostname);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void nfs41_handle_recallable_state_revoked(struct nfs_client *clp)
 {
 	/* This will need to handle layouts too */
 	nfs_expire_all_delegations(clp);
+<<<<<<< HEAD
 }
 
 static void nfs41_handle_cb_path_down(struct nfs_client *clp)
+=======
+	dprintk("%s: Recallable state revoked on server %s!\n", __func__,
+			clp->cl_hostname);
+}
+
+static void nfs41_handle_backchannel_fault(struct nfs_client *clp)
+>>>>>>> refs/remotes/origin/master
 {
 	nfs_expire_all_delegations(clp);
 	if (test_and_set_bit(NFS4CLNT_SESSION_RESET, &clp->cl_state) == 0)
 		nfs4_schedule_state_manager(clp);
+<<<<<<< HEAD
+=======
+	dprintk("%s: server %s declared a backchannel fault\n", __func__,
+			clp->cl_hostname);
+}
+
+static void nfs41_handle_cb_path_down(struct nfs_client *clp)
+{
+	if (test_and_set_bit(NFS4CLNT_BIND_CONN_TO_SESSION,
+		&clp->cl_state) == 0)
+		nfs4_schedule_state_manager(clp);
+>>>>>>> refs/remotes/origin/master
 }
 
 void nfs41_handle_sequence_flag_errors(struct nfs_client *clp, u32 flags)
 {
 	if (!flags)
 		return;
+<<<<<<< HEAD
+=======
+
+	dprintk("%s: \"%s\" (client ID %llx) flags=0x%08x\n",
+		__func__, clp->cl_hostname, clp->cl_clientid, flags);
+
+>>>>>>> refs/remotes/origin/master
 	if (flags & SEQ4_STATUS_RESTART_RECLAIM_NEEDED)
 		nfs41_handle_server_reboot(clp);
 	if (flags & (SEQ4_STATUS_EXPIRED_ALL_STATE_REVOKED |
 			    SEQ4_STATUS_EXPIRED_SOME_STATE_REVOKED |
+<<<<<<< HEAD
 			    SEQ4_STATUS_ADMIN_STATE_REVOKED |
 			    SEQ4_STATUS_LEASE_MOVED))
 		nfs41_handle_state_revoked(clp);
@@ -2061,22 +3267,58 @@ void nfs41_handle_sequence_flag_errors(struct nfs_client *clp, u32 flags)
 	if (flags & (SEQ4_STATUS_CB_PATH_DOWN |
 			    SEQ4_STATUS_BACKCHANNEL_FAULT |
 			    SEQ4_STATUS_CB_PATH_DOWN_SESSION))
+=======
+			    SEQ4_STATUS_ADMIN_STATE_REVOKED))
+		nfs41_handle_state_revoked(clp);
+	if (flags & SEQ4_STATUS_LEASE_MOVED)
+		nfs4_schedule_lease_moved_recovery(clp);
+	if (flags & SEQ4_STATUS_RECALLABLE_STATE_REVOKED)
+		nfs41_handle_recallable_state_revoked(clp);
+	if (flags & SEQ4_STATUS_BACKCHANNEL_FAULT)
+		nfs41_handle_backchannel_fault(clp);
+	else if (flags & (SEQ4_STATUS_CB_PATH_DOWN |
+				SEQ4_STATUS_CB_PATH_DOWN_SESSION))
+>>>>>>> refs/remotes/origin/master
 		nfs41_handle_cb_path_down(clp);
 }
 
 static int nfs4_reset_session(struct nfs_client *clp)
 {
+<<<<<<< HEAD
 	int status;
 
 	nfs4_begin_drain_session(clp);
 	status = nfs4_proc_destroy_session(clp->cl_session);
 	if (status && status != -NFS4ERR_BADSESSION &&
 	    status != -NFS4ERR_DEADSESSION) {
+=======
+	struct rpc_cred *cred;
+	int status;
+
+	if (!nfs4_has_session(clp))
+		return 0;
+	nfs4_begin_drain_session(clp);
+	cred = nfs4_get_clid_cred(clp);
+	status = nfs4_proc_destroy_session(clp->cl_session, cred);
+	switch (status) {
+	case 0:
+	case -NFS4ERR_BADSESSION:
+	case -NFS4ERR_DEADSESSION:
+		break;
+	case -NFS4ERR_BACK_CHAN_BUSY:
+	case -NFS4ERR_DELAY:
+		set_bit(NFS4CLNT_SESSION_RESET, &clp->cl_state);
+		status = 0;
+		ssleep(1);
+		goto out;
+	default:
+>>>>>>> refs/remotes/origin/master
 		status = nfs4_recovery_handle_error(clp, status);
 		goto out;
 	}
 
 	memset(clp->cl_session->sess_id.data, 0, NFS4_MAX_SESSIONID_LEN);
+<<<<<<< HEAD
 	status = nfs4_proc_create_session(clp);
 	if (status) {
 		status = nfs4_recovery_handle_error(clp, status);
@@ -2152,10 +3394,64 @@ static void nfs4_set_lease_expired(struct nfs_client *clp, int status)
 	}
 	set_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state);
 }
+=======
+	status = nfs4_proc_create_session(clp, cred);
+	if (status) {
+		dprintk("%s: session reset failed with status %d for server %s!\n",
+			__func__, status, clp->cl_hostname);
+		status = nfs4_handle_reclaim_lease_error(clp, status);
+		goto out;
+	}
+	nfs41_finish_session_reset(clp);
+	dprintk("%s: session reset was successful for server %s!\n",
+			__func__, clp->cl_hostname);
+out:
+	if (cred)
+		put_rpccred(cred);
+	return status;
+}
+
+static int nfs4_bind_conn_to_session(struct nfs_client *clp)
+{
+	struct rpc_cred *cred;
+	int ret;
+
+	if (!nfs4_has_session(clp))
+		return 0;
+	nfs4_begin_drain_session(clp);
+	cred = nfs4_get_clid_cred(clp);
+	ret = nfs4_proc_bind_conn_to_session(clp, cred);
+	if (cred)
+		put_rpccred(cred);
+	clear_bit(NFS4CLNT_BIND_CONN_TO_SESSION, &clp->cl_state);
+	switch (ret) {
+	case 0:
+		dprintk("%s: bind_conn_to_session was successful for server %s!\n",
+			__func__, clp->cl_hostname);
+		break;
+	case -NFS4ERR_DELAY:
+		ssleep(1);
+		set_bit(NFS4CLNT_BIND_CONN_TO_SESSION, &clp->cl_state);
+		break;
+	default:
+		return nfs4_recovery_handle_error(clp, ret);
+	}
+	return 0;
+}
+#else /* CONFIG_NFS_V4_1 */
+static int nfs4_reset_session(struct nfs_client *clp) { return 0; }
+
+static int nfs4_bind_conn_to_session(struct nfs_client *clp)
+{
+	return 0;
+}
+#endif /* CONFIG_NFS_V4_1 */
+>>>>>>> refs/remotes/origin/master
 
 static void nfs4_state_manager(struct nfs_client *clp)
 {
 	int status = 0;
+<<<<<<< HEAD
 
 	/* Ensure exclusive access to NFSv4 state */
 	do {
@@ -2209,12 +3505,76 @@ static void nfs4_state_manager(struct nfs_client *clp)
 			status = nfs4_reset_session(clp);
 			if (test_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state))
 				continue;
+=======
+	const char *section = "", *section_sep = "";
+
+	/* Ensure exclusive access to NFSv4 state */
+	do {
+		if (test_bit(NFS4CLNT_PURGE_STATE, &clp->cl_state)) {
+			section = "purge state";
+			status = nfs4_purge_lease(clp);
+			if (status < 0)
+				goto out_error;
+			continue;
+		}
+
+		if (test_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state)) {
+			section = "lease expired";
+			/* We're going to have to re-establish a clientid */
+			status = nfs4_reclaim_lease(clp);
+			if (status < 0)
+				goto out_error;
+			continue;
+		}
+
+		/* Initialize or reset the session */
+		if (test_and_clear_bit(NFS4CLNT_SESSION_RESET, &clp->cl_state)) {
+			section = "reset session";
+			status = nfs4_reset_session(clp);
+			if (test_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state))
+				continue;
+			if (status < 0)
+				goto out_error;
+		}
+
+		/* Send BIND_CONN_TO_SESSION */
+		if (test_and_clear_bit(NFS4CLNT_BIND_CONN_TO_SESSION,
+				&clp->cl_state)) {
+			section = "bind conn to session";
+			status = nfs4_bind_conn_to_session(clp);
+			if (status < 0)
+				goto out_error;
+			continue;
+		}
+
+		if (test_and_clear_bit(NFS4CLNT_CHECK_LEASE, &clp->cl_state)) {
+			section = "check lease";
+			status = nfs4_check_lease(clp);
+			if (status < 0)
+				goto out_error;
+		}
+
+		if (test_and_clear_bit(NFS4CLNT_MOVED, &clp->cl_state)) {
+			section = "migration";
+			status = nfs4_handle_migration(clp);
+			if (status < 0)
+				goto out_error;
+		}
+
+		if (test_and_clear_bit(NFS4CLNT_LEASE_MOVED, &clp->cl_state)) {
+			section = "lease moved";
+			status = nfs4_handle_lease_moved(clp);
+>>>>>>> refs/remotes/origin/master
 			if (status < 0)
 				goto out_error;
 		}
 
 		/* First recover reboot state... */
 		if (test_bit(NFS4CLNT_RECLAIM_REBOOT, &clp->cl_state)) {
+<<<<<<< HEAD
+=======
+			section = "reclaim reboot";
+>>>>>>> refs/remotes/origin/master
 			status = nfs4_do_reclaim(clp,
 				clp->cl_mvops->reboot_recovery_ops);
 			if (test_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state) ||
@@ -2229,6 +3589,10 @@ static void nfs4_state_manager(struct nfs_client *clp)
 
 		/* Now recover expired state... */
 		if (test_and_clear_bit(NFS4CLNT_RECLAIM_NOGRACE, &clp->cl_state)) {
+<<<<<<< HEAD
+=======
+			section = "reclaim nograce";
+>>>>>>> refs/remotes/origin/master
 			status = nfs4_do_reclaim(clp,
 				clp->cl_mvops->nograce_recovery_ops);
 			if (test_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state) ||
@@ -2244,6 +3608,7 @@ static void nfs4_state_manager(struct nfs_client *clp)
 			nfs_client_return_marked_delegations(clp);
 			continue;
 		}
+<<<<<<< HEAD
 		/* Recall session slots */
 		if (test_and_clear_bit(NFS4CLNT_RECALL_SLOT, &clp->cl_state)
 		   && nfs4_has_session(clp)) {
@@ -2253,6 +3618,8 @@ static void nfs4_state_manager(struct nfs_client *clp)
 			continue;
 		}
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 		nfs4_clear_state_manager_bit(clp);
 		/* Did we race with an attempt to give us more work? */
@@ -2264,11 +3631,20 @@ static void nfs4_state_manager(struct nfs_client *clp)
 	return;
 out_error:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_WARNING "Error: state manager failed on NFSv4 server %s"
 =======
 	pr_warn_ratelimited("NFS: state manager failed on NFSv4 server %s"
 >>>>>>> refs/remotes/origin/cm-10.0
 			" with error %d\n", clp->cl_hostname, -status);
+=======
+	if (strlen(section))
+		section_sep = ": ";
+	pr_warn_ratelimited("NFS: state manager%s%s failed on NFSv4 server %s"
+			" with error %d\n", section_sep, section,
+			clp->cl_hostname, -status);
+	ssleep(1);
+>>>>>>> refs/remotes/origin/master
 	nfs4_end_drain_session(clp);
 	nfs4_clear_state_manager_bit(clp);
 }

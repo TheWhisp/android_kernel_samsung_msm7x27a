@@ -131,10 +131,14 @@ Linux kernel master tree:
 	?? == your country code, such as "us", "uk", "fr", etc.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git
 =======
 	http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git
+>>>>>>> refs/remotes/origin/master
 
 Linux kernel mailing list:
 	linux-kernel@vger.kernel.org

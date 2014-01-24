@@ -20,6 +20,7 @@
  * fsnotify inode mark locking/lifetime/and refcnting
  *
  * REFCNT:
+<<<<<<< HEAD
  * The mark->refcnt tells how many "things" in the kernel currently are
  * referencing this object.  The object typically will live inside the kernel
  * with a refcnt of 2, one for each list it is on (i_list, g_list).  Any task
@@ -42,6 +43,31 @@
  * and each mark is hooked via the g_list.  It also sorta protects the
  * free_g_list, which when used is anchored by a private list on the stack of the
  * task which held the group->mark_lock.
+=======
+ * The group->recnt and mark->refcnt tell how many "things" in the kernel
+ * currently are referencing the objects. Both kind of objects typically will
+ * live inside the kernel with a refcnt of 2, one for its creation and one for
+ * the reference a group and a mark hold to each other.
+ * If you are holding the appropriate locks, you can take a reference and the
+ * object itself is guaranteed to survive until the reference is dropped.
+ *
+ * LOCKING:
+ * There are 3 locks involved with fsnotify inode marks and they MUST be taken
+ * in order as follows:
+ *
+ * group->mark_mutex
+ * mark->lock
+ * inode->i_lock
+ *
+ * group->mark_mutex protects the marks_list anchored inside a given group and
+ * each mark is hooked via the g_list.  It also protects the groups private
+ * data (i.e group limits).
+
+ * mark->lock protects the marks attributes like its masks and flags.
+ * Furthermore it protects the access to a reference of the group that the mark
+ * is assigned to as well as the access to a reference of the inode/vfsmount
+ * that is being watched by the mark.
+>>>>>>> refs/remotes/origin/master
  *
  * inode->i_lock protects the i_fsnotify_marks list anchored inside a
  * given inode and each mark is hooked via the i_list. (and sorta the
@@ -64,6 +90,7 @@
  * inode.  We take i_lock and walk the i_fsnotify_marks safely.  For each
  * mark on the list we take a reference (so the mark can't disappear under us).
  * We remove that mark form the inode's list of marks and we add this mark to a
+<<<<<<< HEAD
  * private list anchored on the stack using i_free_list;  At this point we no
  * longer fear anything finding the mark using the inode's list of marks.
  *
@@ -76,6 +103,13 @@
  * better be holding a ref.  We drop our reference we took before we unhooked it
  * from the inode.  When the ref hits 0 we can free the mark.
  *
+=======
+ * private list anchored on the stack using i_free_list; we walk i_free_list
+ * and before we destroy the mark we make sure that we dont race with a
+ * concurrent destroy_group by getting a ref to the marks group and taking the
+ * groups mutex.
+
+>>>>>>> refs/remotes/origin/master
  * Very similarly for freeing by group, except we use free_g_list.
  *
  * This has the very interesting property of being able to run concurrently with
@@ -93,10 +127,14 @@
 #include <linux/srcu.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/fsnotify_backend.h>
 #include "fsnotify.h"
@@ -113,8 +151,16 @@ void fsnotify_get_mark(struct fsnotify_mark *mark)
 
 void fsnotify_put_mark(struct fsnotify_mark *mark)
 {
+<<<<<<< HEAD
 	if (atomic_dec_and_test(&mark->refcnt))
 		mark->free_mark(mark);
+=======
+	if (atomic_dec_and_test(&mark->refcnt)) {
+		if (mark->group)
+			fsnotify_put_group(mark->group);
+		mark->free_mark(mark);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -122,6 +168,7 @@ void fsnotify_put_mark(struct fsnotify_mark *mark)
  * The caller had better be holding a reference to this mark so we don't actually
  * do the final put under the mark->lock
  */
+<<<<<<< HEAD
 void fsnotify_destroy_mark(struct fsnotify_mark *mark)
 {
 	struct fsnotify_group *group;
@@ -130,6 +177,16 @@ void fsnotify_destroy_mark(struct fsnotify_mark *mark)
 	spin_lock(&mark->lock);
 
 	group = mark->group;
+=======
+void fsnotify_destroy_mark_locked(struct fsnotify_mark *mark,
+				  struct fsnotify_group *group)
+{
+	struct inode *inode = NULL;
+
+	BUG_ON(!mutex_is_locked(&group->mark_mutex));
+
+	spin_lock(&mark->lock);
+>>>>>>> refs/remotes/origin/master
 
 	/* something else already called this function on this mark */
 	if (!(mark->flags & FSNOTIFY_MARK_FLAG_ALIVE)) {
@@ -139,8 +196,11 @@ void fsnotify_destroy_mark(struct fsnotify_mark *mark)
 
 	mark->flags &= ~FSNOTIFY_MARK_FLAG_ALIVE;
 
+<<<<<<< HEAD
 	spin_lock(&group->mark_lock);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (mark->flags & FSNOTIFY_MARK_FLAG_INODE) {
 		inode = mark->i.inode;
 		fsnotify_destroy_inode_mark(mark);
@@ -151,13 +211,31 @@ void fsnotify_destroy_mark(struct fsnotify_mark *mark)
 
 	list_del_init(&mark->g_list);
 
+<<<<<<< HEAD
 	spin_unlock(&group->mark_lock);
 	spin_unlock(&mark->lock);
 
+=======
+	spin_unlock(&mark->lock);
+
+	if (inode && (mark->flags & FSNOTIFY_MARK_FLAG_OBJECT_PINNED))
+		iput(inode);
+	/* release lock temporarily */
+	mutex_unlock(&group->mark_mutex);
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&destroy_lock);
 	list_add(&mark->destroy_list, &destroy_list);
 	spin_unlock(&destroy_lock);
 	wake_up(&destroy_waitq);
+<<<<<<< HEAD
+=======
+	/*
+	 * We don't necessarily have a ref on mark from caller so the above destroy
+	 * may have actually freed it, unless this group provides a 'freeing_mark'
+	 * function which must be holding a reference.
+	 */
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Some groups like to know that marks are being freed.  This is a
@@ -179,6 +257,7 @@ void fsnotify_destroy_mark(struct fsnotify_mark *mark)
 	 * is just a lazy update (and could be a perf win...)
 	 */
 
+<<<<<<< HEAD
 	if (inode && (mark->flags & FSNOTIFY_MARK_FLAG_OBJECT_PINNED))
 		iput(inode);
 
@@ -194,6 +273,19 @@ void fsnotify_destroy_mark(struct fsnotify_mark *mark)
 	 */
 	if (unlikely(atomic_dec_and_test(&group->num_marks)))
 		fsnotify_final_destroy_group(group);
+=======
+	atomic_dec(&group->num_marks);
+
+	mutex_lock_nested(&group->mark_mutex, SINGLE_DEPTH_NESTING);
+}
+
+void fsnotify_destroy_mark(struct fsnotify_mark *mark,
+			   struct fsnotify_group *group)
+{
+	mutex_lock_nested(&group->mark_mutex, SINGLE_DEPTH_NESTING);
+	fsnotify_destroy_mark_locked(mark, group);
+	mutex_unlock(&group->mark_mutex);
+>>>>>>> refs/remotes/origin/master
 }
 
 void fsnotify_set_mark_mask_locked(struct fsnotify_mark *mark, __u32 mask)
@@ -218,14 +310,21 @@ void fsnotify_set_mark_ignored_mask_locked(struct fsnotify_mark *mark, __u32 mas
  * These marks may be used for the fsnotify backend to determine which
  * event types should be delivered to which group.
  */
+<<<<<<< HEAD
 int fsnotify_add_mark(struct fsnotify_mark *mark,
 		      struct fsnotify_group *group, struct inode *inode,
 		      struct vfsmount *mnt, int allow_dups)
+=======
+int fsnotify_add_mark_locked(struct fsnotify_mark *mark,
+			     struct fsnotify_group *group, struct inode *inode,
+			     struct vfsmount *mnt, int allow_dups)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 
 	BUG_ON(inode && mnt);
 	BUG_ON(!inode && !mnt);
+<<<<<<< HEAD
 
 	/*
 	 * LOCKING ORDER!!!!
@@ -238,6 +337,20 @@ int fsnotify_add_mark(struct fsnotify_mark *mark,
 
 	mark->flags |= FSNOTIFY_MARK_FLAG_ALIVE;
 
+=======
+	BUG_ON(!mutex_is_locked(&group->mark_mutex));
+
+	/*
+	 * LOCKING ORDER!!!!
+	 * group->mark_mutex
+	 * mark->lock
+	 * inode->i_lock
+	 */
+	spin_lock(&mark->lock);
+	mark->flags |= FSNOTIFY_MARK_FLAG_ALIVE;
+
+	fsnotify_get_group(group);
+>>>>>>> refs/remotes/origin/master
 	mark->group = group;
 	list_add(&mark->g_list, &group->marks_list);
 	atomic_inc(&group->num_marks);
@@ -255,11 +368,16 @@ int fsnotify_add_mark(struct fsnotify_mark *mark,
 		BUG();
 	}
 
+<<<<<<< HEAD
 	spin_unlock(&group->mark_lock);
 
 	/* this will pin the object if appropriate */
 	fsnotify_set_mark_mask_locked(mark, mark->mask);
 
+=======
+	/* this will pin the object if appropriate */
+	fsnotify_set_mark_mask_locked(mark, mark->mask);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&mark->lock);
 
 	if (inode)
@@ -269,10 +387,17 @@ int fsnotify_add_mark(struct fsnotify_mark *mark,
 err:
 	mark->flags &= ~FSNOTIFY_MARK_FLAG_ALIVE;
 	list_del_init(&mark->g_list);
+<<<<<<< HEAD
 	mark->group = NULL;
 	atomic_dec(&group->num_marks);
 
 	spin_unlock(&group->mark_lock);
+=======
+	fsnotify_put_group(group);
+	mark->group = NULL;
+	atomic_dec(&group->num_marks);
+
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&mark->lock);
 
 	spin_lock(&destroy_lock);
@@ -283,6 +408,19 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+int fsnotify_add_mark(struct fsnotify_mark *mark, struct fsnotify_group *group,
+		      struct inode *inode, struct vfsmount *mnt, int allow_dups)
+{
+	int ret;
+	mutex_lock(&group->mark_mutex);
+	ret = fsnotify_add_mark_locked(mark, group, inode, mnt, allow_dups);
+	mutex_unlock(&group->mark_mutex);
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * clear any marks in a group in which mark->flags & flags is true
  */
@@ -290,6 +428,7 @@ void fsnotify_clear_marks_by_group_flags(struct fsnotify_group *group,
 					 unsigned int flags)
 {
 	struct fsnotify_mark *lmark, *mark;
+<<<<<<< HEAD
 	LIST_HEAD(free_list);
 
 	spin_lock(&group->mark_lock);
@@ -306,6 +445,18 @@ void fsnotify_clear_marks_by_group_flags(struct fsnotify_group *group,
 		fsnotify_destroy_mark(mark);
 		fsnotify_put_mark(mark);
 	}
+=======
+
+	mutex_lock_nested(&group->mark_mutex, SINGLE_DEPTH_NESTING);
+	list_for_each_entry_safe(mark, lmark, &group->marks_list, g_list) {
+		if (mark->flags & flags) {
+			fsnotify_get_mark(mark);
+			fsnotify_destroy_mark_locked(mark, group);
+			fsnotify_put_mark(mark);
+		}
+	}
+	mutex_unlock(&group->mark_mutex);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -321,6 +472,11 @@ void fsnotify_duplicate_mark(struct fsnotify_mark *new, struct fsnotify_mark *ol
 	assert_spin_locked(&old->lock);
 	new->i.inode = old->i.inode;
 	new->m.mnt = old->m.mnt;
+<<<<<<< HEAD
+=======
+	if (old->group)
+		fsnotify_get_group(old->group);
+>>>>>>> refs/remotes/origin/master
 	new->group = old->group;
 	new->mask = old->mask;
 	new->free_mark = old->free_mark;

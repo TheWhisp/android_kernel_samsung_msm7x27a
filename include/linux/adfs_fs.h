@@ -1,6 +1,7 @@
 #ifndef _ADFS_FS_H
 #define _ADFS_FS_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/magic.h>
 
@@ -42,6 +43,11 @@ struct adfs_discrecord {
 
 #ifdef __KERNEL__
 /*
+=======
+#include <uapi/linux/adfs_fs.h>
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Calculate the boot block checksum on an ADFS drive.  Note that this will
  * appear to be correct if the sector contains all zeros, so also check that
  * the disk size is non-zero!!!
@@ -59,5 +65,8 @@ static inline int adfs_checkbblk(unsigned char *ptr)
 	return (result & 0xff) != ptr[511];
 }
 #endif
+<<<<<<< HEAD
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

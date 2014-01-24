@@ -10,7 +10,10 @@
 #define _OMAP_DMIC_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define OMAP_DMIC_REVISION_REG		0x00
 #define OMAP_DMIC_SYSCONFIG_REG		0x10
 #define OMAP_DMIC_IRQSTATUS_RAW_REG	0x24
@@ -61,11 +64,15 @@
 /* DMIC_FIFO_CTRL bit fields */
 #define OMAP_DMIC_THRES_MAX		0xF
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum omap_dmic_clk {
 	OMAP_DMIC_SYSCLK_PAD_CLKS,		/* PAD_CLKS */
 	OMAP_DMIC_SYSCLK_SLIMBLUS_CLKS,		/* SLIMBUS_CLK */
 	OMAP_DMIC_SYSCLK_SYNC_MUX_CLKS,		/* DMIC_SYNC_MUX_CLK */
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
@@ -75,6 +82,9 @@ enum omap_dmic_div {
 =======
 	OMAP_DMIC_ABE_DMIC_CLK,			/* abe_dmic_clk */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	OMAP_DMIC_ABE_DMIC_CLK,			/* abe_dmic_clk */
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif

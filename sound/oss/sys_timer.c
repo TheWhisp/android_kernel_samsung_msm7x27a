@@ -57,7 +57,11 @@ poll_def_tmr(unsigned long dummy)
 		  {
 			  def_tmr.expires = (1) + jiffies;
 			  add_timer(&def_tmr);
+<<<<<<< HEAD
 		  };
+=======
+		  }
+>>>>>>> refs/remotes/origin/master
 
 		  if (tmr_running)
 		    {
@@ -103,7 +107,11 @@ def_tmr_open(int dev, int mode)
 	{
 		def_tmr.expires = (1) + jiffies;
 		add_timer(&def_tmr);
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

@@ -197,6 +197,7 @@ static int triflex_init_one(struct pci_dev *dev, const struct pci_device_id *id)
 	};
 	const struct ata_port_info *ppi[] = { &info, NULL };
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
 
 	if (!printed_version++)
@@ -205,6 +206,10 @@ static int triflex_init_one(struct pci_dev *dev, const struct pci_device_id *id)
 
 	ata_print_version_once(&dev->dev, DRV_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	ata_print_version_once(&dev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	return ata_pci_bmdma_init_one(dev, ppi, &triflex_sht, NULL, 0);
 }
@@ -218,7 +223,11 @@ static const struct pci_device_id triflex[] = {
 #ifdef CONFIG_PM
 static int triflex_ata_pci_device_suspend(struct pci_dev *pdev, pm_message_t mesg)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int rc = 0;
 
 	rc = ata_host_suspend(host, mesg);
@@ -247,6 +256,7 @@ static struct pci_driver triflex_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init triflex_init(void)
 {
 	return pci_register_driver(&triflex_pci_driver);
@@ -256,12 +266,18 @@ static void __exit triflex_exit(void)
 {
 	pci_unregister_driver(&triflex_pci_driver);
 }
+=======
+module_pci_driver(triflex_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("low-level driver for Compaq Triflex");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, triflex);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(triflex_init);
 module_exit(triflex_exit);
+=======
+>>>>>>> refs/remotes/origin/master

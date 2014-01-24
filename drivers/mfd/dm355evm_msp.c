@@ -14,9 +14,13 @@
 #include <linux/platform_device.h>
 #include <linux/clk.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/err.h>
 #include <linux/gpio.h>
 #include <linux/leds.h>
@@ -312,19 +316,28 @@ static int add_children(struct i2c_client *client)
 		int gpio = dm355evm_msp_gpio.base + config_inputs[i].offset;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		gpio_request(gpio, config_inputs[i].label);
 		gpio_direction_input(gpio);
 =======
 		gpio_request_one(gpio, GPIOF_IN, config_inputs[i].label);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		gpio_request_one(gpio, GPIOF_IN, config_inputs[i].label);
+>>>>>>> refs/remotes/origin/master
 
 		/* make it easy for userspace to see these */
 		gpio_export(gpio, false);
 	}
 
 	/* MMC/SD inputs -- right after the last config input */
+<<<<<<< HEAD
 	if (client->dev.platform_data) {
 		void (*mmcsd_setup)(unsigned) = client->dev.platform_data;
+=======
+	if (dev_get_platdata(&client->dev)) {
+		void (*mmcsd_setup)(unsigned) = dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 
 		mmcsd_setup(dm355evm_msp_gpio.base + 8 + 5);
 	}

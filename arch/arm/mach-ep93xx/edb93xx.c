@@ -35,6 +35,7 @@
 #include <sound/cs4271.h>
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
 #include <mach/fb.h>
 #include <mach/ep93xx_spi.h>
 <<<<<<< HEAD
@@ -46,11 +47,20 @@
 #include <mach/gpio-ep93xx.h>
 
 #include <asm/hardware/vic.h>
+=======
+#include <linux/platform_data/video-ep93xx.h>
+#include <linux/platform_data/spi-ep93xx.h>
+#include <mach/gpio-ep93xx.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
 #include "soc.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void __init edb93xx_register_flash(void)
 {
@@ -98,8 +108,13 @@ static void __init edb93xx_register_i2c(void)
 		ep93xx_register_i2c(&edb93xx_i2c_gpio_data,
 				    edb93xxa_i2c_board_info,
 				    ARRAY_SIZE(edb93xxa_i2c_board_info));
+<<<<<<< HEAD
 	} else if (machine_is_edb9307() || machine_is_edb9312() ||
 		   machine_is_edb9315()) {
+=======
+	} else if (machine_is_edb9302() || machine_is_edb9307()
+		|| machine_is_edb9312() || machine_is_edb9315()) {
+>>>>>>> refs/remotes/origin/master
 		ep93xx_register_i2c(&edb93xx_i2c_gpio_data,
 				    edb93xx_i2c_board_info,
 				    ARRAY_SIZE(edb93xx_i2c_board_info));
@@ -170,13 +185,19 @@ static void __init edb93xx_register_spi(void)
  * EDB93xx I2S
  *************************************************************************/
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device edb93xx_audio_device = {
 	.name		= "edb93xx-audio",
 	.id		= -1,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init edb93xx_has_audio(void)
 {
 	return (machine_is_edb9301() || machine_is_edb9302() ||
@@ -189,9 +210,13 @@ static void __init edb93xx_register_i2s(void)
 	if (edb93xx_has_audio()) {
 		ep93xx_register_i2s();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		platform_device_register(&edb93xx_audio_device);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		platform_device_register(&edb93xx_audio_device);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -246,6 +271,32 @@ static void __init edb93xx_register_fb(void)
 }
 
 
+<<<<<<< HEAD
+=======
+/*************************************************************************
+ * EDB93xx IDE
+ *************************************************************************/
+static int __init edb93xx_has_ide(void)
+{
+	/*
+	 * Although EDB9312 and EDB9315 do have IDE capability, they have
+	 * INTRQ line wired as pull-up, which makes using IDE interface
+	 * problematic.
+	 */
+	return machine_is_edb9312() || machine_is_edb9315() ||
+	       machine_is_edb9315a();
+}
+
+static void __init edb93xx_register_ide(void)
+{
+	if (!edb93xx_has_ide())
+		return;
+
+	ep93xx_register_ide();
+}
+
+
+>>>>>>> refs/remotes/origin/master
 static void __init edb93xx_init_machine(void)
 {
 	ep93xx_init_devices();
@@ -256,6 +307,10 @@ static void __init edb93xx_init_machine(void)
 	edb93xx_register_i2s();
 	edb93xx_register_pwm();
 	edb93xx_register_fb();
+<<<<<<< HEAD
+=======
+	edb93xx_register_ide();
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -263,6 +318,7 @@ static void __init edb93xx_init_machine(void)
 MACHINE_START(EDB9301, "Cirrus Logic EDB9301 Evaluation Board")
 	/* Maintainer: H Hartley Sweeten <hsweeten@visionengravers.com> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= EP93XX_SDCE3_PHYS_BASE_SYNC + 0x100,
 	.map_io		= ep93xx_map_io,
 	.init_irq	= ep93xx_init_irq,
@@ -277,6 +333,15 @@ MACHINE_START(EDB9301, "Cirrus Logic EDB9301 Evaluation Board")
 	.init_machine	= edb93xx_init_machine,
 	.restart	= ep93xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ep93xx_map_io,
+	.init_irq	= ep93xx_init_irq,
+	.init_time	= ep93xx_timer_init,
+	.init_machine	= edb93xx_init_machine,
+	.init_late	= ep93xx_init_late,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
@@ -284,6 +349,7 @@ MACHINE_END
 MACHINE_START(EDB9302, "Cirrus Logic EDB9302 Evaluation Board")
 	/* Maintainer: George Kashperko <george@chas.com.ua> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= EP93XX_SDCE3_PHYS_BASE_SYNC + 0x100,
 	.map_io		= ep93xx_map_io,
 	.init_irq	= ep93xx_init_irq,
@@ -298,6 +364,15 @@ MACHINE_START(EDB9302, "Cirrus Logic EDB9302 Evaluation Board")
 	.init_machine	= edb93xx_init_machine,
 	.restart	= ep93xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ep93xx_map_io,
+	.init_irq	= ep93xx_init_irq,
+	.init_time	= ep93xx_timer_init,
+	.init_machine	= edb93xx_init_machine,
+	.init_late	= ep93xx_init_late,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
@@ -305,6 +380,7 @@ MACHINE_END
 MACHINE_START(EDB9302A, "Cirrus Logic EDB9302A Evaluation Board")
 	/* Maintainer: Lennert Buytenhek <buytenh@wantstofly.org> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= EP93XX_SDCE0_PHYS_BASE + 0x100,
 	.map_io		= ep93xx_map_io,
 	.init_irq	= ep93xx_init_irq,
@@ -319,6 +395,15 @@ MACHINE_START(EDB9302A, "Cirrus Logic EDB9302A Evaluation Board")
 	.init_machine	= edb93xx_init_machine,
 	.restart	= ep93xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ep93xx_map_io,
+	.init_irq	= ep93xx_init_irq,
+	.init_time	= ep93xx_timer_init,
+	.init_machine	= edb93xx_init_machine,
+	.init_late	= ep93xx_init_late,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
@@ -326,6 +411,7 @@ MACHINE_END
 MACHINE_START(EDB9307, "Cirrus Logic EDB9307 Evaluation Board")
 	/* Maintainer: Herbert Valerio Riedel <hvr@gnu.org> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= EP93XX_SDCE3_PHYS_BASE_SYNC + 0x100,
 	.map_io		= ep93xx_map_io,
 	.init_irq	= ep93xx_init_irq,
@@ -340,6 +426,15 @@ MACHINE_START(EDB9307, "Cirrus Logic EDB9307 Evaluation Board")
 	.init_machine	= edb93xx_init_machine,
 	.restart	= ep93xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ep93xx_map_io,
+	.init_irq	= ep93xx_init_irq,
+	.init_time	= ep93xx_timer_init,
+	.init_machine	= edb93xx_init_machine,
+	.init_late	= ep93xx_init_late,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
@@ -347,6 +442,7 @@ MACHINE_END
 MACHINE_START(EDB9307A, "Cirrus Logic EDB9307A Evaluation Board")
 	/* Maintainer: H Hartley Sweeten <hsweeten@visionengravers.com> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= EP93XX_SDCE0_PHYS_BASE + 0x100,
 	.map_io		= ep93xx_map_io,
 	.init_irq	= ep93xx_init_irq,
@@ -361,6 +457,15 @@ MACHINE_START(EDB9307A, "Cirrus Logic EDB9307A Evaluation Board")
 	.init_machine	= edb93xx_init_machine,
 	.restart	= ep93xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ep93xx_map_io,
+	.init_irq	= ep93xx_init_irq,
+	.init_time	= ep93xx_timer_init,
+	.init_machine	= edb93xx_init_machine,
+	.init_late	= ep93xx_init_late,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
@@ -368,26 +473,6 @@ MACHINE_END
 MACHINE_START(EDB9312, "Cirrus Logic EDB9312 Evaluation Board")
 	/* Maintainer: Toufeeq Hussain <toufeeq_hussain@infosys.com> */
 <<<<<<< HEAD
-	.boot_params	= EP93XX_SDCE3_PHYS_BASE_SYNC + 0x100,
-	.map_io		= ep93xx_map_io,
-	.init_irq	= ep93xx_init_irq,
-	.timer		= &ep93xx_timer,
-	.init_machine	= edb93xx_init_machine,
-=======
-	.atag_offset	= 0x100,
-	.map_io		= ep93xx_map_io,
-	.init_irq	= ep93xx_init_irq,
-	.handle_irq	= vic_handle_irq,
-	.timer		= &ep93xx_timer,
-	.init_machine	= edb93xx_init_machine,
-	.restart	= ep93xx_restart,
->>>>>>> refs/remotes/origin/cm-10.0
-MACHINE_END
-#endif
-
-#ifdef CONFIG_MACH_EDB9315
-MACHINE_START(EDB9315, "Cirrus Logic EDB9315 Evaluation Board")
-	/* Maintainer: Lennert Buytenhek <buytenh@wantstofly.org> */
 <<<<<<< HEAD
 	.boot_params	= EP93XX_SDCE3_PHYS_BASE_SYNC + 0x100,
 	.map_io		= ep93xx_map_io,
@@ -403,12 +488,53 @@ MACHINE_START(EDB9315, "Cirrus Logic EDB9315 Evaluation Board")
 	.init_machine	= edb93xx_init_machine,
 	.restart	= ep93xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ep93xx_map_io,
+	.init_irq	= ep93xx_init_irq,
+	.init_time	= ep93xx_timer_init,
+	.init_machine	= edb93xx_init_machine,
+	.init_late	= ep93xx_init_late,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/master
+MACHINE_END
+#endif
+
+#ifdef CONFIG_MACH_EDB9315
+MACHINE_START(EDB9315, "Cirrus Logic EDB9315 Evaluation Board")
+	/* Maintainer: Lennert Buytenhek <buytenh@wantstofly.org> */
+<<<<<<< HEAD
+<<<<<<< HEAD
+	.boot_params	= EP93XX_SDCE3_PHYS_BASE_SYNC + 0x100,
+	.map_io		= ep93xx_map_io,
+	.init_irq	= ep93xx_init_irq,
+	.timer		= &ep93xx_timer,
+	.init_machine	= edb93xx_init_machine,
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ep93xx_map_io,
+	.init_irq	= ep93xx_init_irq,
+	.handle_irq	= vic_handle_irq,
+	.timer		= &ep93xx_timer,
+	.init_machine	= edb93xx_init_machine,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ep93xx_map_io,
+	.init_irq	= ep93xx_init_irq,
+	.init_time	= ep93xx_timer_init,
+	.init_machine	= edb93xx_init_machine,
+	.init_late	= ep93xx_init_late,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
 #ifdef CONFIG_MACH_EDB9315A
 MACHINE_START(EDB9315A, "Cirrus Logic EDB9315A Evaluation Board")
 	/* Maintainer: Lennert Buytenhek <buytenh@wantstofly.org> */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boot_params	= EP93XX_SDCE0_PHYS_BASE + 0x100,
 	.map_io		= ep93xx_map_io,
@@ -424,5 +550,14 @@ MACHINE_START(EDB9315A, "Cirrus Logic EDB9315A Evaluation Board")
 	.init_machine	= edb93xx_init_machine,
 	.restart	= ep93xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ep93xx_map_io,
+	.init_irq	= ep93xx_init_irq,
+	.init_time	= ep93xx_timer_init,
+	.init_machine	= edb93xx_init_machine,
+	.init_late	= ep93xx_init_late,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif

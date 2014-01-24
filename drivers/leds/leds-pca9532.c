@@ -186,7 +186,11 @@ static int pca9532_set_blink(struct led_classdev *led_cdev,
 	int err = 0;
 
 	if (*delay_on == 0 && *delay_off == 0) {
+<<<<<<< HEAD
 	/* led subsystem ask us for a blink rate */
+=======
+		/* led subsystem ask us for a blink rate */
+>>>>>>> refs/remotes/origin/master
 		*delay_on = 1000;
 		*delay_off = 1000;
 	}
@@ -311,7 +315,10 @@ static int pca9532_destroy_devices(struct pca9532_data *data, int n_devs)
 			break;
 		case PCA9532_TYPE_N2100_BEEP:
 			if (data->idev != NULL) {
+<<<<<<< HEAD
 				input_unregister_device(data->idev);
+=======
+>>>>>>> refs/remotes/origin/master
 				cancel_work_sync(&data->work);
 				data->idev = NULL;
 			}
@@ -382,7 +389,11 @@ static int pca9532_configure(struct i2c_client *client,
 			BUG_ON(data->idev);
 			led->state = PCA9532_PWM1;
 			pca9532_setled(led);
+<<<<<<< HEAD
 			data->idev = input_allocate_device();
+=======
+			data->idev = devm_input_allocate_device(&client->dev);
+>>>>>>> refs/remotes/origin/master
 			if (data->idev == NULL) {
 				err = -ENOMEM;
 				goto exit;
@@ -401,7 +412,10 @@ static int pca9532_configure(struct i2c_client *client,
 			INIT_WORK(&data->work, pca9532_input_work);
 			err = input_register_device(data->idev);
 			if (err) {
+<<<<<<< HEAD
 				input_free_device(data->idev);
+=======
+>>>>>>> refs/remotes/origin/master
 				cancel_work_sync(&data->work);
 				data->idev = NULL;
 				goto exit;
@@ -448,8 +462,13 @@ static int pca9532_probe(struct i2c_client *client,
 	const struct i2c_device_id *id)
 {
 	struct pca9532_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
 	struct pca9532_platform_data *pca9532_pdata = client->dev.platform_data;
 	int err;
+=======
+	struct pca9532_platform_data *pca9532_pdata =
+			dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (!pca9532_pdata)
 		return -EIO;
@@ -458,7 +477,11 @@ static int pca9532_probe(struct i2c_client *client,
 		I2C_FUNC_SMBUS_BYTE_DATA))
 		return -EIO;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!data)
 		return -ENOMEM;
 
@@ -469,11 +492,15 @@ static int pca9532_probe(struct i2c_client *client,
 	data->client = client;
 	mutex_init(&data->update_lock);
 
+<<<<<<< HEAD
 	err = pca9532_configure(client, data, pca9532_pdata);
 	if (err)
 		kfree(data);
 
 	return err;
+=======
+	return pca9532_configure(client, data, pca9532_pdata);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int pca9532_remove(struct i2c_client *client)
@@ -485,6 +512,7 @@ static int pca9532_remove(struct i2c_client *client)
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 	kfree(data);
 	return 0;
 }
@@ -502,10 +530,17 @@ static void __exit pca9532_exit(void)
 =======
 module_i2c_driver(pca9532_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+}
+
+module_i2c_driver(pca9532_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Riku Voipio");
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("PCA 9532 LED dimmer");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(pca9532_init);
@@ -513,3 +548,5 @@ module_exit(pca9532_exit);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
  * OMAP2/3 Power/Reset Management (PRM) register definitions
  *
 <<<<<<< HEAD
@@ -6,6 +7,11 @@
 =======
  * Copyright (C) 2007-2009, 2011 Texas Instruments, Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * OMAP2xxx/3xxx-common Power/Reset Management (PRM) register definitions
+ *
+ * Copyright (C) 2007-2009, 2011-2012 Texas Instruments, Inc.
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2008-2010 Nokia Corporation
  * Paul Walmsley
  *
@@ -23,6 +29,7 @@
 #include "prcm-common.h"
 #include "prm.h"
 
+<<<<<<< HEAD
 #define OMAP2420_PRM_REGADDR(module, reg)				\
 		OMAP2_L4_IO_ADDRESS(OMAP2420_PRM_BASE + (module) + (reg))
 #define OMAP2430_PRM_REGADDR(module, reg)				\
@@ -177,6 +184,8 @@
 #define OMAP3_PRM_CLKOUT_CTRL_OFFSET	0x0070
 #define OMAP3430_PRM_CLKOUT_CTRL	OMAP34XX_PRM_REGADDR(OMAP3430_CCR_MOD, 0x0070)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Module specific PRM register offsets from PRM_BASE + domain offset
  *
@@ -204,6 +213,7 @@
 #define PM_EVGENONTIM					0x00d8
 #define PM_EVGENOFFTIM					0x00dc
 
+<<<<<<< HEAD
 /* OMAP2xxx specific register offsets */
 #define OMAP24XX_PM_WKEN2				0x00a4
 #define OMAP24XX_PM_WKST2				0x00b4
@@ -301,12 +311,67 @@ extern u32 omap2_prm_rmw_mod_reg_bits(u32 mask, u32 bits, s16 module, s16 idx);
 extern u32 omap2_prm_set_mod_reg_bits(u32 bits, s16 module, s16 idx);
 extern u32 omap2_prm_clear_mod_reg_bits(u32 bits, s16 module, s16 idx);
 extern u32 omap2_prm_read_mod_bits_shift(s16 domain, s16 idx, u32 mask);
+=======
+
+#ifndef __ASSEMBLER__
+
+#include <linux/io.h>
+#include "powerdomain.h"
+
+/* Power/reset management domain register get/set */
+static inline u32 omap2_prm_read_mod_reg(s16 module, u16 idx)
+{
+	return __raw_readl(prm_base + module + idx);
+}
+
+static inline void omap2_prm_write_mod_reg(u32 val, s16 module, u16 idx)
+{
+	__raw_writel(val, prm_base + module + idx);
+}
+
+/* Read-modify-write a register in a PRM module. Caller must lock */
+static inline u32 omap2_prm_rmw_mod_reg_bits(u32 mask, u32 bits, s16 module,
+					     s16 idx)
+{
+	u32 v;
+
+	v = omap2_prm_read_mod_reg(module, idx);
+	v &= ~mask;
+	v |= bits;
+	omap2_prm_write_mod_reg(v, module, idx);
+
+	return v;
+}
+
+/* Read a PRM register, AND it, and shift the result down to bit 0 */
+static inline u32 omap2_prm_read_mod_bits_shift(s16 domain, s16 idx, u32 mask)
+{
+	u32 v;
+
+	v = omap2_prm_read_mod_reg(domain, idx);
+	v &= mask;
+	v >>= __ffs(mask);
+
+	return v;
+}
+
+static inline u32 omap2_prm_set_mod_reg_bits(u32 bits, s16 module, s16 idx)
+{
+	return omap2_prm_rmw_mod_reg_bits(bits, bits, module, idx);
+}
+
+static inline u32 omap2_prm_clear_mod_reg_bits(u32 bits, s16 module, s16 idx)
+{
+	return omap2_prm_rmw_mod_reg_bits(bits, 0x0, module, idx);
+}
+>>>>>>> refs/remotes/origin/master
 
 /* These omap2_ PRM functions apply to both OMAP2 and 3 */
 extern int omap2_prm_is_hardreset_asserted(s16 prm_mod, u8 shift);
 extern int omap2_prm_assert_hardreset(s16 prm_mod, u8 shift);
 extern int omap2_prm_deassert_hardreset(s16 prm_mod, u8 rst_shift, u8 st_shift);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif	/* CONFIG_ARCH_OMAP4 */
 =======
@@ -332,6 +397,29 @@ extern void omap3xxx_prm_restore_irqen(u32 *saved_mask);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
+=======
+extern int omap2_pwrdm_set_next_pwrst(struct powerdomain *pwrdm, u8 pwrst);
+extern int omap2_pwrdm_read_next_pwrst(struct powerdomain *pwrdm);
+extern int omap2_pwrdm_read_pwrst(struct powerdomain *pwrdm);
+extern int omap2_pwrdm_set_mem_onst(struct powerdomain *pwrdm, u8 bank,
+				    u8 pwrst);
+extern int omap2_pwrdm_set_mem_retst(struct powerdomain *pwrdm, u8 bank,
+				     u8 pwrst);
+extern int omap2_pwrdm_read_mem_pwrst(struct powerdomain *pwrdm, u8 bank);
+extern int omap2_pwrdm_read_mem_retst(struct powerdomain *pwrdm, u8 bank);
+extern int omap2_pwrdm_set_logic_retst(struct powerdomain *pwrdm, u8 pwrst);
+extern int omap2_pwrdm_wait_transition(struct powerdomain *pwrdm);
+
+extern int omap2_clkdm_add_wkdep(struct clockdomain *clkdm1,
+				 struct clockdomain *clkdm2);
+extern int omap2_clkdm_del_wkdep(struct clockdomain *clkdm1,
+				 struct clockdomain *clkdm2);
+extern int omap2_clkdm_read_wkdep(struct clockdomain *clkdm1,
+				  struct clockdomain *clkdm2);
+extern int omap2_clkdm_clear_all_wkdeps(struct clockdomain *clkdm);
+
+#endif /* __ASSEMBLER */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Bits common to specific registers
@@ -359,6 +447,10 @@ extern void omap3xxx_prm_restore_irqen(u32 *saved_mask);
 /* Named PRCM_CLKSRC_CTRL on the 24XX */
 #define OMAP_SYSCLKDIV_SHIFT				6
 #define OMAP_SYSCLKDIV_MASK				(0x3 << 6)
+<<<<<<< HEAD
+=======
+#define OMAP_SYSCLKDIV_WIDTH				2
+>>>>>>> refs/remotes/origin/master
 #define OMAP_AUTOEXTCLKMODE_SHIFT			3
 #define OMAP_AUTOEXTCLKMODE_MASK			(0x3 << 3)
 #define OMAP_SYSCLKSEL_SHIFT				0
@@ -418,7 +510,13 @@ extern void omap3xxx_prm_restore_irqen(u32 *saved_mask);
  *
  * 3430: RM_RSTST_CORE, RM_RSTST_EMU
  */
+<<<<<<< HEAD
 #define OMAP_GLOBALWARM_RST_MASK			(1 << 1)
+=======
+#define OMAP_GLOBALWARM_RST_SHIFT			1
+#define OMAP_GLOBALWARM_RST_MASK			(1 << 1)
+#define OMAP_GLOBALCOLD_RST_SHIFT			0
+>>>>>>> refs/remotes/origin/master
 #define OMAP_GLOBALCOLD_RST_MASK			(1 << 0)
 
 /*
@@ -446,6 +544,7 @@ extern void omap3xxx_prm_restore_irqen(u32 *saved_mask);
 #define OMAP_LOGICRETSTATE_MASK				(1 << 2)
 
 
+<<<<<<< HEAD
 /*
  * MAX_MODULE_HARDRESET_WAIT: Maximum microseconds to wait for an OMAP
  * submodule to exit hardreset
@@ -453,4 +552,6 @@ extern void omap3xxx_prm_restore_irqen(u32 *saved_mask);
 #define MAX_MODULE_HARDRESET_WAIT		10000
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

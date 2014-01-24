@@ -264,7 +264,11 @@ void o2quo_hb_still_up(u8 node)
 /* This is analogous to hb_up.  as a node's connection comes up we delay the
  * quorum decision until we see it heartbeating.  the hold will be droped in
  * hb_up or hb_down.  it might be perpetuated by con_err until hb_down.  if
+<<<<<<< HEAD
  * it's already heartbeating we we might be dropping a hold that conn_up got.
+=======
+ * it's already heartbeating we might be dropping a hold that conn_up got.
+>>>>>>> refs/remotes/origin/master
  * */
 void o2quo_conn_up(u8 node)
 {
@@ -327,5 +331,9 @@ void o2quo_exit(void)
 {
 	struct o2quo_state *qs = &o2quo_state;
 
+<<<<<<< HEAD
 	flush_work_sync(&qs->qs_work);
+=======
+	flush_work(&qs->qs_work);
+>>>>>>> refs/remotes/origin/master
 }

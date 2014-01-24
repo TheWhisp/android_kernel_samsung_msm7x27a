@@ -14,6 +14,10 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
@@ -42,7 +46,11 @@ struct jz4740_rtc {
 
 	struct rtc_device *rtc;
 
+<<<<<<< HEAD
 	unsigned int irq;
+=======
+	int irq;
+>>>>>>> refs/remotes/origin/master
 
 	spinlock_t lock;
 };
@@ -210,25 +218,39 @@ void jz4740_rtc_poweroff(struct device *dev)
 }
 EXPORT_SYMBOL_GPL(jz4740_rtc_poweroff);
 
+<<<<<<< HEAD
 static int __devinit jz4740_rtc_probe(struct platform_device *pdev)
+=======
+static int jz4740_rtc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct jz4740_rtc *rtc;
 	uint32_t scratchpad;
 
+<<<<<<< HEAD
 	rtc = kzalloc(sizeof(*rtc), GFP_KERNEL);
+=======
+	rtc = devm_kzalloc(&pdev->dev, sizeof(*rtc), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!rtc)
 		return -ENOMEM;
 
 	rtc->irq = platform_get_irq(pdev, 0);
 	if (rtc->irq < 0) {
+<<<<<<< HEAD
 		ret = -ENOENT;
 		dev_err(&pdev->dev, "Failed to get platform irq\n");
 		goto err_free;
+=======
+		dev_err(&pdev->dev, "Failed to get platform irq\n");
+		return -ENOENT;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rtc->mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!rtc->mem) {
+<<<<<<< HEAD
 		ret = -ENOENT;
 		dev_err(&pdev->dev, "Failed to get platform mmio memory\n");
 		goto err_free;
@@ -247,6 +269,24 @@ static int __devinit jz4740_rtc_probe(struct platform_device *pdev)
 		ret = -EBUSY;
 		dev_err(&pdev->dev, "Failed to ioremap mmio memory\n");
 		goto err_release_mem_region;
+=======
+		dev_err(&pdev->dev, "Failed to get platform mmio memory\n");
+		return -ENOENT;
+	}
+
+	rtc->mem = devm_request_mem_region(&pdev->dev, rtc->mem->start,
+					resource_size(rtc->mem), pdev->name);
+	if (!rtc->mem) {
+		dev_err(&pdev->dev, "Failed to request mmio memory region\n");
+		return -EBUSY;
+	}
+
+	rtc->base = devm_ioremap_nocache(&pdev->dev, rtc->mem->start,
+					resource_size(rtc->mem));
+	if (!rtc->base) {
+		dev_err(&pdev->dev, "Failed to ioremap mmio memory\n");
+		return -EBUSY;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_lock_init(&rtc->lock);
@@ -255,6 +295,7 @@ static int __devinit jz4740_rtc_probe(struct platform_device *pdev)
 
 	device_init_wakeup(&pdev->dev, 1);
 
+<<<<<<< HEAD
 	rtc->rtc = rtc_device_register(pdev->name, &pdev->dev, &jz4740_rtc_ops,
 					THIS_MODULE);
 	if (IS_ERR(rtc->rtc)) {
@@ -268,6 +309,21 @@ static int __devinit jz4740_rtc_probe(struct platform_device *pdev)
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to request rtc irq: %d\n", ret);
 		goto err_unregister_rtc;
+=======
+	rtc->rtc = devm_rtc_device_register(&pdev->dev, pdev->name,
+					&jz4740_rtc_ops, THIS_MODULE);
+	if (IS_ERR(rtc->rtc)) {
+		ret = PTR_ERR(rtc->rtc);
+		dev_err(&pdev->dev, "Failed to register rtc device: %d\n", ret);
+		return ret;
+	}
+
+	ret = devm_request_irq(&pdev->dev, rtc->irq, jz4740_rtc_irq, 0,
+				pdev->name, rtc);
+	if (ret) {
+		dev_err(&pdev->dev, "Failed to request rtc irq: %d\n", ret);
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	scratchpad = jz4740_rtc_reg_read(rtc, JZ_REG_RTC_SCRATCHPAD);
@@ -276,11 +332,16 @@ static int __devinit jz4740_rtc_probe(struct platform_device *pdev)
 		ret = jz4740_rtc_reg_write(rtc, JZ_REG_RTC_SEC, 0);
 		if (ret) {
 			dev_err(&pdev->dev, "Could not write write to RTC registers\n");
+<<<<<<< HEAD
 			goto err_free_irq;
+=======
+			return ret;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	return 0;
+<<<<<<< HEAD
 
 err_free_irq:
 	free_irq(rtc->irq, rtc);
@@ -316,6 +377,10 @@ static int __devexit jz4740_rtc_remove(struct platform_device *pdev)
 }
 
 
+=======
+}
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 static int jz4740_rtc_suspend(struct device *dev)
 {
@@ -346,12 +411,17 @@ static const struct dev_pm_ops jz4740_pm_ops = {
 #endif  /* CONFIG_PM */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_driver jz4740_rtc_driver = {
 =======
 static struct platform_driver jz4740_rtc_driver = {
 >>>>>>> refs/remotes/origin/cm-10.0
 	.probe	 = jz4740_rtc_probe,
 	.remove	 = __devexit_p(jz4740_rtc_remove),
+=======
+static struct platform_driver jz4740_rtc_driver = {
+	.probe	 = jz4740_rtc_probe,
+>>>>>>> refs/remotes/origin/master
 	.driver	 = {
 		.name  = "jz4740-rtc",
 		.owner = THIS_MODULE,
@@ -359,6 +429,7 @@ static struct platform_driver jz4740_rtc_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init jz4740_rtc_init(void)
 {
@@ -374,6 +445,9 @@ module_exit(jz4740_rtc_exit);
 =======
 module_platform_driver(jz4740_rtc_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(jz4740_rtc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
 MODULE_LICENSE("GPL");

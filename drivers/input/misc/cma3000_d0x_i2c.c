@@ -55,7 +55,11 @@ static const struct cma3000_bus_ops cma3000_i2c_bops = {
 	.write		= cma3000_i2c_set,
 };
 
+<<<<<<< HEAD
 static int __devinit cma3000_i2c_probe(struct i2c_client *client,
+=======
+static int cma3000_i2c_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 					const struct i2c_device_id *id)
 {
 	struct cma3000_accl_data *data;
@@ -69,7 +73,11 @@ static int __devinit cma3000_i2c_probe(struct i2c_client *client,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit cma3000_i2c_remove(struct i2c_client *client)
+=======
+static int cma3000_i2c_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cma3000_accl_data *data = i2c_get_clientdata(client);
 
@@ -114,7 +122,11 @@ MODULE_DEVICE_TABLE(i2c, cma3000_i2c_id);
 
 static struct i2c_driver cma3000_i2c_driver = {
 	.probe		= cma3000_i2c_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(cma3000_i2c_remove),
+=======
+	.remove		= cma3000_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= cma3000_i2c_id,
 	.driver = {
 		.name	= "cma3000_i2c_accl",
@@ -125,6 +137,7 @@ static struct i2c_driver cma3000_i2c_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init cma3000_i2c_init(void)
 {
@@ -141,6 +154,9 @@ module_exit(cma3000_i2c_exit);
 =======
 module_i2c_driver(cma3000_i2c_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(cma3000_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("CMA3000-D0x Accelerometer I2C Driver");
 MODULE_LICENSE("GPL");

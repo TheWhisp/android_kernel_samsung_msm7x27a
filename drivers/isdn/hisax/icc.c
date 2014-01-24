@@ -5,10 +5,14 @@
  * Author       Matt Henderson & Guy Ellis
  * Copyright    by Traverse Technologies Pty Ltd, www.travers.com.au
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -55,6 +59,7 @@ icc_new_ph(struct IsdnCardState *cs)
 {
 	switch (cs->dc.icc.ph_state) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case (ICC_IND_EI1):
 			ph_command(cs, ICC_CMD_DI);
 			l1_msg(cs, HW_RESET | INDICATION, NULL);
@@ -80,6 +85,8 @@ icc_new_ph(struct IsdnCardState *cs)
 		default:
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (ICC_IND_EI1):
 		ph_command(cs, ICC_CMD_DI);
 		l1_msg(cs, HW_RESET | INDICATION, NULL);
@@ -104,7 +111,10 @@ icc_new_ph(struct IsdnCardState *cs)
 		break;
 	default:
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -115,10 +125,14 @@ icc_bh(struct work_struct *work)
 		container_of(work, struct IsdnCardState, tqueue);
 	struct PStack *stptr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (test_and_clear_bit(D_CLEARBUSY, &cs->event)) {
 		if (cs->debug)
 			debugl1(cs, "D-Channel Busy cleared");
@@ -130,10 +144,14 @@ icc_bh(struct work_struct *work)
 	}
 	if (test_and_clear_bit(D_L1STATECHANGE, &cs->event))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		icc_new_ph(cs);		
 =======
 		icc_new_ph(cs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		icc_new_ph(cs);
+>>>>>>> refs/remotes/origin/master
 	if (test_and_clear_bit(D_RCVBUFREADY, &cs->event))
 		DChannel_proc_rcv(cs);
 	if (test_and_clear_bit(D_XMTBUFREADY, &cs->event))
@@ -173,7 +191,11 @@ icc_empty_fifo(struct IsdnCardState *cs, int count)
 
 		t += sprintf(t, "icc_empty_fifo cnt %d", count);
 		QuickHex(t, ptr, count);
+<<<<<<< HEAD
 		debugl1(cs, cs->dlog);
+=======
+		debugl1(cs, "%s", cs->dlog);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -215,7 +237,11 @@ icc_fill_fifo(struct IsdnCardState *cs)
 
 		t += sprintf(t, "icc_fill_fifo cnt %d", count);
 		QuickHex(t, ptr, count);
+<<<<<<< HEAD
 		debugl1(cs, cs->dlog);
+=======
+		debugl1(cs, "%s", cs->dlog);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -294,18 +320,24 @@ icc_interrupt(struct IsdnCardState *cs, u_char val)
 			schedule_event(cs, D_XMTBUFREADY);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
       afterXPR:
 	if (val & 0x04) {	/* CISQ */
 		exval = cs->readisac(cs, ICC_CIR0);
 		if (cs->debug & L1_DEB_ISAC)
 			debugl1(cs, "ICC CIR0 %02X", exval );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 afterXPR:
 	if (val & 0x04) {	/* CISQ */
 		exval = cs->readisac(cs, ICC_CIR0);
 		if (cs->debug & L1_DEB_ISAC)
 			debugl1(cs, "ICC CIR0 %02X", exval);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (exval & 2) {
 			cs->dc.icc.ph_state = (exval >> 2) & 0xf;
 			if (cs->debug & L1_DEB_ISAC)
@@ -316,10 +348,14 @@ afterXPR:
 			exval = cs->readisac(cs, ICC_CIR1);
 			if (cs->debug & L1_DEB_ISAC)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				debugl1(cs, "ICC CIR1 %02X", exval );
 =======
 				debugl1(cs, "ICC CIR1 %02X", exval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				debugl1(cs, "ICC CIR1 %02X", exval);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (val & 0x02) {	/* SIN */
@@ -383,20 +419,28 @@ afterXPR:
 				cs->dc.icc.mon_rx[cs->dc.icc.mon_rxp++] = cs->readisac(cs, ICC_MOR0);
 				if (cs->debug & L1_DEB_MONITOR)
 <<<<<<< HEAD
+<<<<<<< HEAD
 					debugl1(cs, "ICC MOR0 %02x", cs->dc.icc.mon_rx[cs->dc.icc.mon_rxp -1]);
 =======
 					debugl1(cs, "ICC MOR0 %02x", cs->dc.icc.mon_rx[cs->dc.icc.mon_rxp - 1]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					debugl1(cs, "ICC MOR0 %02x", cs->dc.icc.mon_rx[cs->dc.icc.mon_rxp - 1]);
+>>>>>>> refs/remotes/origin/master
 				if (cs->dc.icc.mon_rxp == 1) {
 					cs->dc.icc.mocr |= 0x04;
 					cs->writeisac(cs, ICC_MOCR, cs->dc.icc.mocr);
 				}
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		      afterMONR0:
 =======
 		afterMONR0:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		afterMONR0:
+>>>>>>> refs/remotes/origin/master
 			if (v1 & 0x80) {
 				if (!cs->dc.icc.mon_rx) {
 					if (!(cs->dc.icc.mon_rx = kmalloc(MAX_MON_FRAME, GFP_ATOMIC))) {
@@ -421,18 +465,24 @@ afterXPR:
 				cs->dc.icc.mon_rx[cs->dc.icc.mon_rxp++] = cs->readisac(cs, ICC_MOR1);
 				if (cs->debug & L1_DEB_MONITOR)
 <<<<<<< HEAD
+<<<<<<< HEAD
 					debugl1(cs, "ICC MOR1 %02x", cs->dc.icc.mon_rx[cs->dc.icc.mon_rxp -1]);
 				cs->dc.icc.mocr |= 0x40;
 				cs->writeisac(cs, ICC_MOCR, cs->dc.icc.mocr);
 			}
 		      afterMONR1:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					debugl1(cs, "ICC MOR1 %02x", cs->dc.icc.mon_rx[cs->dc.icc.mon_rxp - 1]);
 				cs->dc.icc.mocr |= 0x40;
 				cs->writeisac(cs, ICC_MOCR, cs->dc.icc.mocr);
 			}
 		afterMONR1:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (v1 & 0x04) {
 				cs->dc.icc.mocr &= 0xf0;
 				cs->writeisac(cs, ICC_MOCR, cs->dc.icc.mocr);
@@ -449,6 +499,7 @@ afterXPR:
 			}
 			if (v1 & 0x02) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if ((!cs->dc.icc.mon_tx) || (cs->dc.icc.mon_txc && 
 					(cs->dc.icc.mon_txp >= cs->dc.icc.mon_txc) && 
 					!(v1 & 0x08))) {
@@ -457,16 +508,25 @@ afterXPR:
 							     (cs->dc.icc.mon_txp >= cs->dc.icc.mon_txc) &&
 							     !(v1 & 0x08))) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if ((!cs->dc.icc.mon_tx) || (cs->dc.icc.mon_txc &&
+							     (cs->dc.icc.mon_txp >= cs->dc.icc.mon_txc) &&
+							     !(v1 & 0x08))) {
+>>>>>>> refs/remotes/origin/master
 					cs->dc.icc.mocr &= 0xf0;
 					cs->writeisac(cs, ICC_MOCR, cs->dc.icc.mocr);
 					cs->dc.icc.mocr |= 0x0a;
 					cs->writeisac(cs, ICC_MOCR, cs->dc.icc.mocr);
 					if (cs->dc.icc.mon_txc &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 						(cs->dc.icc.mon_txp >= cs->dc.icc.mon_txc))
 =======
 					    (cs->dc.icc.mon_txp >= cs->dc.icc.mon_txc))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					    (cs->dc.icc.mon_txp >= cs->dc.icc.mon_txc))
+>>>>>>> refs/remotes/origin/master
 						schedule_event(cs, D_TX_MON0);
 					goto AfterMOX0;
 				}
@@ -475,6 +535,7 @@ afterXPR:
 					goto AfterMOX0;
 				}
 				cs->writeisac(cs, ICC_MOX0,
+<<<<<<< HEAD
 <<<<<<< HEAD
 					cs->dc.icc.mon_tx[cs->dc.icc.mon_txp++]);
 				if (cs->debug & L1_DEB_MONITOR)
@@ -486,6 +547,8 @@ afterXPR:
 					(cs->dc.icc.mon_txp >= cs->dc.icc.mon_txc) && 
 					!(v1 & 0x80))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					      cs->dc.icc.mon_tx[cs->dc.icc.mon_txp++]);
 				if (cs->debug & L1_DEB_MONITOR)
 					debugl1(cs, "ICC %02x -> MOX0", cs->dc.icc.mon_tx[cs->dc.icc.mon_txp - 1]);
@@ -495,17 +558,24 @@ afterXPR:
 				if ((!cs->dc.icc.mon_tx) || (cs->dc.icc.mon_txc &&
 							     (cs->dc.icc.mon_txp >= cs->dc.icc.mon_txc) &&
 							     !(v1 & 0x80))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					cs->dc.icc.mocr &= 0x0f;
 					cs->writeisac(cs, ICC_MOCR, cs->dc.icc.mocr);
 					cs->dc.icc.mocr |= 0xa0;
 					cs->writeisac(cs, ICC_MOCR, cs->dc.icc.mocr);
 					if (cs->dc.icc.mon_txc &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 						(cs->dc.icc.mon_txp >= cs->dc.icc.mon_txc))
 =======
 					    (cs->dc.icc.mon_txp >= cs->dc.icc.mon_txc))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					    (cs->dc.icc.mon_txp >= cs->dc.icc.mon_txc))
+>>>>>>> refs/remotes/origin/master
 						schedule_event(cs, D_TX_MON1);
 					goto AfterMOX1;
 				}
@@ -515,18 +585,24 @@ afterXPR:
 				}
 				cs->writeisac(cs, ICC_MOX1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					cs->dc.icc.mon_tx[cs->dc.icc.mon_txp++]);
 				if (cs->debug & L1_DEB_MONITOR)
 					debugl1(cs, "ICC %02x -> MOX1", cs->dc.icc.mon_tx[cs->dc.icc.mon_txp -1]);
 			}
 		      AfterMOX1:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					      cs->dc.icc.mon_tx[cs->dc.icc.mon_txp++]);
 				if (cs->debug & L1_DEB_MONITOR)
 					debugl1(cs, "ICC %02x -> MOX1", cs->dc.icc.mon_tx[cs->dc.icc.mon_txp - 1]);
 			}
 		AfterMOX1:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 		}
 	}
@@ -541,6 +617,7 @@ ICC_l1hw(struct PStack *st, int pr, void *arg)
 	int  val;
 
 	switch (pr) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (PH_DATA |REQUEST):
 			if (cs->debug & DEB_DLOG_HEX)
@@ -579,6 +656,8 @@ ICC_l1hw(struct PStack *st, int pr, void *arg)
 			if (cs->debug & DEB_DLOG_VERBOSE)
 				dlogframe(cs, skb, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (PH_DATA | REQUEST):
 		if (cs->debug & DEB_DLOG_HEX)
 			LogFrame(cs, skb->data, skb->len);
@@ -592,11 +671,15 @@ ICC_l1hw(struct PStack *st, int pr, void *arg)
 				Logl2Frame(cs, skb, "PH_DATA Queued", 0);
 #endif
 		} else {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			cs->tx_skb = skb;
 			cs->tx_cnt = 0;
 #ifdef L2FRAME_DEBUG		/* psa */
 			if (cs->debug & L1_DEB_LAPD)
+<<<<<<< HEAD
 <<<<<<< HEAD
 				Logl2Frame(cs, skb, "PH_DATA_PULLED", 0);
 #endif
@@ -681,6 +764,8 @@ ICC_l1hw(struct PStack *st, int pr, void *arg)
 				debugl1(cs, "icc_l1hw unknown %04x", pr);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				Logl2Frame(cs, skb, "PH_DATA", 0);
 #endif
 			icc_fill_fifo(cs);
@@ -786,7 +871,10 @@ ICC_l1hw(struct PStack *st, int pr, void *arg)
 		if (cs->debug & L1_DEB_WARN)
 			debugl1(cs, "icc_l1hw unknown %04x", pr);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -814,10 +902,14 @@ dbusy_timer_handler(struct IsdnCardState *cs)
 		rbch = cs->readisac(cs, ICC_RBCH);
 		star = cs->readisac(cs, ICC_STAR);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (cs->debug) 
 =======
 		if (cs->debug)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (cs->debug)
+>>>>>>> refs/remotes/origin/master
 			debugl1(cs, "D-Channel Busy RBCH %02x STAR %02x",
 				rbch, star);
 		if (rbch & ICC_RBCH_XAC) { /* D-Channel Busy */
@@ -852,12 +944,17 @@ initicc(struct IsdnCardState *cs)
 	cs->dc.icc.mon_tx = NULL;
 	cs->dc.icc.mon_rx = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
   	cs->writeisac(cs, ICC_MASK, 0xff);
   	cs->dc.icc.mocr = 0xaa;
 =======
 	cs->writeisac(cs, ICC_MASK, 0xff);
 	cs->dc.icc.mocr = 0xaa;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cs->writeisac(cs, ICC_MASK, 0xff);
+	cs->dc.icc.mocr = 0xaa;
+>>>>>>> refs/remotes/origin/master
 	if (test_bit(HW_IOM1, &cs->HW_Flags)) {
 		/* IOM 1 Mode */
 		cs->writeisac(cs, ICC_ADF2, 0x0);
@@ -907,8 +1004,12 @@ clear_pending_icc_ints(struct IsdnCardState *cs)
 	cs->writeisac(cs, ICC_MASK, 0xFF);
 }
 
+<<<<<<< HEAD
 void __devinit
 setup_icc(struct IsdnCardState *cs)
+=======
+void setup_icc(struct IsdnCardState *cs)
+>>>>>>> refs/remotes/origin/master
 {
 	INIT_WORK(&cs->tqueue, icc_bh);
 	cs->dbusytimer.function = (void *) dbusy_timer_handler;

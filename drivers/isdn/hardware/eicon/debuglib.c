@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,7 +46,10 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -52,6 +58,7 @@
 #ifdef DIVA_NO_DEBUGLIB
 static DIVA_DI_PRINTF dprintf;
 #else /* DIVA_NO_DEBUGLIB */
+<<<<<<< HEAD
 <<<<<<< HEAD
  
 _DbgHandle_ myDriverDebugHandle = { 0 /*!Registered*/, DBG_HANDLE_VERSION };
@@ -68,6 +75,8 @@ myDbgPrint_##name (char *format, ...) \
   va_end (ap) ; \
 } }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 _DbgHandle_ myDriverDebugHandle = { 0 /*!Registered*/, DBG_HANDLE_VERSION };
 DIVA_DI_PRINTF dprintf = no_printf;
@@ -82,13 +91,17 @@ DIVA_DI_PRINTF dprintf = no_printf;
 				(myDriverDebugHandle.id, DLI_##name, format, ap); \
 			va_end(ap);					\
 		} }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 DBG_FUNC(LOG)
 DBG_FUNC(FTL)
 DBG_FUNC(ERR)
 DBG_FUNC(TRC)
 DBG_FUNC(MXLOG)
 DBG_FUNC(FTL_MXLOG)
+<<<<<<< HEAD
 <<<<<<< HEAD
 void 
 myDbgPrint_EVL (long msgID, ...)
@@ -100,6 +113,8 @@ myDbgPrint_EVL (long msgID, ...)
   va_end (ap) ;
 } }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void
 myDbgPrint_EVL(long msgID, ...)
 { va_list ap;
@@ -109,7 +124,10 @@ myDbgPrint_EVL(long msgID, ...)
 			(myDriverDebugHandle.id, (unsigned long)msgID, ap);
 		va_end(ap);
 	} }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 DBG_FUNC(REG)
 DBG_FUNC(MEM)
 DBG_FUNC(SPL)
@@ -128,6 +146,7 @@ DBG_FUNC(PRV2)
 DBG_FUNC(PRV3)
 /*****************************************************************************/
 int
+<<<<<<< HEAD
 <<<<<<< HEAD
 DbgRegister (char *drvName, char *drvTag, unsigned long dbgMask)
 {
@@ -205,6 +224,8 @@ void  xdi_dbg_xlog (char* x, ...) {
  }
  va_end(ap);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 DbgRegister(char *drvName, char *drvTag, unsigned long dbgMask)
 {
 	int len;
@@ -280,7 +301,10 @@ void xdi_dbg_xlog(char *x, ...) {
 		}
 	}
 	va_end(ap);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 /*****************************************************************************/
 #endif /* DIVA_NO_DEBUGLIB */

@@ -293,6 +293,10 @@ rate_control_pid_get_rate(void *priv, struct ieee80211_sta *sta,
 
 static void
 rate_control_pid_rate_init(void *priv, struct ieee80211_supported_band *sband,
+<<<<<<< HEAD
+=======
+			   struct cfg80211_chan_def *chandef,
+>>>>>>> refs/remotes/origin/master
 			   struct ieee80211_sta *sta, void *priv_sta)
 {
 	struct rc_pid_sta_info *spinfo = priv_sta;
@@ -319,10 +323,14 @@ rate_control_pid_rate_init(void *priv, struct ieee80211_supported_band *sband,
 	}
 	for (i = 1; i < sband->n_bitrates; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		s = 0;
 =======
 		s = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		s = false;
+>>>>>>> refs/remotes/origin/master
 		for (j = 0; j < sband->n_bitrates - i; j++)
 			if (unlikely(sband->bitrates[rinfo[j].index].bitrate >
 				     sband->bitrates[rinfo[j + 1].index].bitrate)) {
@@ -332,10 +340,14 @@ rate_control_pid_rate_init(void *priv, struct ieee80211_supported_band *sband,
 				rinfo[rinfo[j].index].rev_index = j;
 				rinfo[rinfo[j + 1].index].rev_index = j + 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				s = 1;
 =======
 				s = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				s = true;
+>>>>>>> refs/remotes/origin/master
 			}
 		if (!s)
 			break;

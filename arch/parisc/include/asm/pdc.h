@@ -1,6 +1,7 @@
 #ifndef _PARISC_PDC_H
 #define _PARISC_PDC_H
 
+<<<<<<< HEAD
 /*
  *	PDC return values ...
  *	All PDC calls return a subset of these errors. 
@@ -348,6 +349,12 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <uapi/asm/pdc.h>
+
+#if !defined(__ASSEMBLY__)
+
+>>>>>>> refs/remotes/origin/master
 extern int pdc_type;
 
 /* Values for pdc_type */
@@ -678,6 +685,7 @@ static inline char * os_id_to_string(u16 os_id) {
 	}
 }
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 <<<<<<< HEAD
@@ -770,4 +778,7 @@ struct zeropage {
 
 #endif /* !defined(__ASSEMBLY__) */
 
+=======
+#endif /* !defined(__ASSEMBLY__) */
+>>>>>>> refs/remotes/origin/master
 #endif /* _PARISC_PDC_H */

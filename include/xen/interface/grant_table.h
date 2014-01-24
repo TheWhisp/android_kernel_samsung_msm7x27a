@@ -86,28 +86,40 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Reference to a grant entry in a specified domain's grant table.
  */
 typedef uint32_t grant_ref_t;
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * A grant table comprises a packed array of grant entries in one or more
  * page frames shared between Xen and a guest.
  * [XEN]: This field is written by Xen and read by the sharing guest.
  * [GST]: This field is written by the guest and read by Xen.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct grant_entry {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Version 1 of the grant table entry structure is maintained purely
  * for backwards compatibility.  New guests should use version 2.
  */
 struct grant_entry_v1 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     /* GTF_xxx: various type and flag information.  [XEN,GST] */
     uint16_t flags;
     /* The domain being granted foreign privileges. [GST] */
@@ -126,18 +138,27 @@ struct grant_entry_v1 {
  *  GTF_accept_transfer: Allow @domid to transfer ownership of one page frame
  *                       to this guest. Xen writes the page number to @frame.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *  GTF_transitive: Allow @domid to transitively access a subrange of
  *                  @trans_grant in @trans_domid.  No mappings are allowed.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  GTF_transitive: Allow @domid to transitively access a subrange of
+ *                  @trans_grant in @trans_domid.  No mappings are allowed.
+>>>>>>> refs/remotes/origin/master
  */
 #define GTF_invalid         (0U<<0)
 #define GTF_permit_access   (1U<<0)
 #define GTF_accept_transfer (2U<<0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define GTF_transitive      (3U<<0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define GTF_transitive      (3U<<0)
+>>>>>>> refs/remotes/origin/master
 #define GTF_type_mask       (3U<<0)
 
 /*
@@ -146,11 +167,17 @@ struct grant_entry_v1 {
  *  GTF_reading: Grant entry is currently mapped for reading by @domid. [XEN]
  *  GTF_writing: Grant entry is currently mapped for writing by @domid. [XEN]
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *  GTF_sub_page: Grant access to only a subrange of the page.  @domid
  *                will only be allowed to copy from the grant, and not
  *                map it. [GST]
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  GTF_sub_page: Grant access to only a subrange of the page.  @domid
+ *                will only be allowed to copy from the grant, and not
+ *                map it. [GST]
+>>>>>>> refs/remotes/origin/master
  */
 #define _GTF_readonly       (2)
 #define GTF_readonly        (1U<<_GTF_readonly)
@@ -159,10 +186,15 @@ struct grant_entry_v1 {
 #define _GTF_writing        (4)
 #define GTF_writing         (1U<<_GTF_writing)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define _GTF_sub_page       (8)
 #define GTF_sub_page        (1U<<_GTF_sub_page)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define _GTF_sub_page       (8)
+#define GTF_sub_page        (1U<<_GTF_sub_page)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Subflags for GTF_accept_transfer:
@@ -180,6 +212,7 @@ struct grant_entry_v1 {
 #define GTF_transfer_completed  (1U<<_GTF_transfer_completed)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /***********************************
  * GRANT TABLE QUERIES AND USES
@@ -190,6 +223,8 @@ struct grant_entry_v1 {
  */
 typedef uint32_t grant_ref_t;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Version 2 grant table entries.  These fulfil the same role as
  * version 1 entries, but can represent more complicated operations.
@@ -265,7 +300,10 @@ typedef uint16_t grant_status_t;
 /***********************************
  * GRANT TABLE QUERIES AND USES
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Handle to track a mapping created via a grant reference.
@@ -341,7 +379,11 @@ struct gnttab_setup_table {
     uint32_t nr_frames;
     /* OUT parameters. */
     int16_t  status;              /* GNTST_* */
+<<<<<<< HEAD
     GUEST_HANDLE(ulong) frame_list;
+=======
+    GUEST_HANDLE(xen_pfn_t) frame_list;
+>>>>>>> refs/remotes/origin/master
 };
 DEFINE_GUEST_HANDLE_STRUCT(gnttab_setup_table);
 
@@ -369,7 +411,11 @@ DEFINE_GUEST_HANDLE_STRUCT(gnttab_dump_table);
 #define GNTTABOP_transfer                4
 struct gnttab_transfer {
     /* IN parameters. */
+<<<<<<< HEAD
     unsigned long mfn;
+=======
+    xen_pfn_t mfn;
+>>>>>>> refs/remotes/origin/master
     domid_t       domid;
     grant_ref_t   ref;
     /* OUT parameters. */
@@ -406,7 +452,11 @@ struct gnttab_copy {
 	struct {
 		union {
 			grant_ref_t ref;
+<<<<<<< HEAD
 			unsigned long   gmfn;
+=======
+			xen_pfn_t   gmfn;
+>>>>>>> refs/remotes/origin/master
 		} u;
 		domid_t  domid;
 		uint16_t offset;
@@ -438,7 +488,10 @@ DEFINE_GUEST_HANDLE_STRUCT(gnttab_query_size);
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * GNTTABOP_unmap_and_replace: Destroy one or more grant-reference mappings
  * tracked by <handle> but atomically replace the page table entry with one
  * pointing to the machine address under <new_addr>.  <new_addr> will be
@@ -512,7 +565,10 @@ struct gnttab_get_version {
 DEFINE_GUEST_HANDLE_STRUCT(gnttab_get_version);
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Bitfield values for update_pin_status.flags.
  */
  /* Map the grant entry for access by I/O devices. */
@@ -553,7 +609,13 @@ DEFINE_GUEST_HANDLE_STRUCT(gnttab_get_version);
 #define GNTST_no_device_space  (-7) /* Out of space in I/O MMU.              */
 #define GNTST_permission_denied (-8) /* Not enough privilege for operation.  */
 #define GNTST_bad_page         (-9) /* Specified page was invalid for op.    */
+<<<<<<< HEAD
 #define GNTST_bad_copy_arg    (-10) /* copy arguments cross page boundary */
+=======
+#define GNTST_bad_copy_arg    (-10) /* copy arguments cross page boundary.   */
+#define GNTST_address_too_big (-11) /* transfer page address too large.      */
+#define GNTST_eagain          (-12) /* Operation not done; try again.        */
+>>>>>>> refs/remotes/origin/master
 
 #define GNTTABOP_error_msgs {                   \
     "okay",                                     \
@@ -566,7 +628,13 @@ DEFINE_GUEST_HANDLE_STRUCT(gnttab_get_version);
     "no spare translation slot in the I/O MMU", \
     "permission denied",                        \
     "bad page",                                 \
+<<<<<<< HEAD
     "copy arguments cross page boundary"        \
+=======
+    "copy arguments cross page boundary",       \
+    "page address size too large",              \
+    "operation not done; try again"             \
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* __XEN_PUBLIC_GRANT_TABLE_H__ */

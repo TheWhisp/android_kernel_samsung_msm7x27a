@@ -109,6 +109,7 @@ config IOMMU_HELPER
 	default y
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #config PCI_EPIC
 #	bool "EPIC/SAGA PCI support"
 #	depends on PCI
@@ -118,6 +119,8 @@ config IOMMU_HELPER
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 source "drivers/pcmcia/Kconfig"
 
 source "drivers/pci/hotplug/Kconfig"
@@ -138,6 +141,10 @@ config SUPERIO
 config CHASSIS_LCD_LED
 	bool "Chassis LCD and LED support"
 	default y
+<<<<<<< HEAD
+=======
+	select VM_EVENT_COUNTERS
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to enable support for the Heartbeat,
 	  Disk/Network activities LEDs on some PA-RISC machines,

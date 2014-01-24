@@ -10,10 +10,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/slab.h>
@@ -28,6 +33,7 @@
 #define DEFAULT_EMPTY_SCAN_SIZE 256
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define noisy_printk(noise, args...) do { \
 	if (*(noise)) { \
 		printk(KERN_NOTICE args); \
@@ -38,6 +44,8 @@
 	} \
 } while(0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define noisy_printk(noise, fmt, ...)					\
 do {									\
 	if (*(noise)) {							\
@@ -47,7 +55,10 @@ do {									\
 			pr_notice("Further such events for this erase block will not be printed\n"); \
 	}								\
 } while (0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static uint32_t pseudo_random;
 
@@ -114,6 +125,7 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
 	size_t pointlen, try_size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (c->mtd->point) {
 		ret = c->mtd->point(c->mtd, 0, c->mtd->size, &pointlen,
 				    (void **)&flashbuf, NULL);
@@ -127,6 +139,8 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
 			D1(printk(KERN_DEBUG "MTD point failed %d\n", ret));
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = mtd_point(c->mtd, 0, c->mtd->size, &pointlen,
 			(void **)&flashbuf, NULL);
 	if (!ret && pointlen < c->mtd->size) {
@@ -138,7 +152,10 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
 	}
 	if (ret && ret != -EOPNOTSUPP)
 		jffs2_dbg(1, "MTD point failed %d\n", ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	if (!flashbuf) {
 		/* For NAND it's quicker to read a whole eraseblock at a time,
@@ -149,17 +166,23 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
 			try_size = PAGE_SIZE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		D1(printk(KERN_DEBUG "Trying to allocate readbuf of %zu "
 			"bytes\n", try_size));
 =======
 		jffs2_dbg(1, "Trying to allocate readbuf of %zu "
 			  "bytes\n", try_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		jffs2_dbg(1, "Trying to allocate readbuf of %zu "
+			  "bytes\n", try_size);
+>>>>>>> refs/remotes/origin/master
 
 		flashbuf = mtd_kmalloc_up_to(c->mtd, &try_size);
 		if (!flashbuf)
 			return -ENOMEM;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		D1(printk(KERN_DEBUG "Allocated readbuf of %zu bytes\n",
 			try_size));
@@ -167,6 +190,10 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
 		jffs2_dbg(1, "Allocated readbuf of %zu bytes\n",
 			  try_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		jffs2_dbg(1, "Allocated readbuf of %zu bytes\n",
+			  try_size);
+>>>>>>> refs/remotes/origin/master
 
 		buf_size = (uint32_t)try_size;
 	}
@@ -220,11 +247,16 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
 			} else {
 				/* Dirt */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				D1(printk(KERN_DEBUG "Adding all-dirty block at 0x%08x to erase_pending_list\n", jeb->offset));
 =======
 				jffs2_dbg(1, "Adding all-dirty block at 0x%08x to erase_pending_list\n",
 					  jeb->offset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				jffs2_dbg(1, "Adding all-dirty block at 0x%08x to erase_pending_list\n",
+					  jeb->offset);
+>>>>>>> refs/remotes/origin/master
 				list_add(&jeb->list, &c->erase_pending_list);
 				c->nr_erasing_blocks++;
 			}
@@ -252,11 +284,16 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
 				/* update collected summary information for the current nextblock */
 				jffs2_sum_move_collected(c, s);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				D1(printk(KERN_DEBUG "jffs2_scan_medium(): new nextblock = 0x%08x\n", jeb->offset));
 =======
 				jffs2_dbg(1, "%s(): new nextblock = 0x%08x\n",
 					  __func__, jeb->offset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				jffs2_dbg(1, "%s(): new nextblock = 0x%08x\n",
+					  __func__, jeb->offset);
+>>>>>>> refs/remotes/origin/master
 				c->nextblock = jeb;
 			} else {
 				ret = file_dirty(c, jeb);
@@ -269,21 +306,30 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
 			/* Nothing valid - not even a clean marker. Needs erasing. */
 			/* For now we just put it on the erasing list. We'll start the erases later */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			D1(printk(KERN_NOTICE "JFFS2: Erase block at 0x%08x is not formatted. It will be erased\n", jeb->offset));
 =======
 			jffs2_dbg(1, "Erase block at 0x%08x is not formatted. It will be erased\n",
 				  jeb->offset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			jffs2_dbg(1, "Erase block at 0x%08x is not formatted. It will be erased\n",
+				  jeb->offset);
+>>>>>>> refs/remotes/origin/master
 			list_add(&jeb->list, &c->erase_pending_list);
 			c->nr_erasing_blocks++;
 			break;
 
 		case BLK_STATE_BADBLOCK:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			D1(printk(KERN_NOTICE "JFFS2: Block at 0x%08x is bad\n", jeb->offset));
 =======
 			jffs2_dbg(1, "Block at 0x%08x is bad\n", jeb->offset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			jffs2_dbg(1, "Block at 0x%08x is bad\n", jeb->offset);
+>>>>>>> refs/remotes/origin/master
 			list_add(&jeb->list, &c->bad_list);
 			c->bad_size += c->sector_size;
 			c->free_size -= c->sector_size;
@@ -291,10 +337,14 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
 			break;
 		default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING "jffs2_scan_medium(): unknown block state\n");
 =======
 			pr_warn("%s(): unknown block state\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn("%s(): unknown block state\n", __func__);
+>>>>>>> refs/remotes/origin/master
 			BUG();
 		}
 	}
@@ -315,18 +365,24 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
 		uint32_t skip = c->nextblock->free_size % c->wbuf_pagesize;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		D1(printk(KERN_DEBUG "jffs2_scan_medium(): Skipping %d bytes in nextblock to ensure page alignment\n",
 			  skip));
 =======
 		jffs2_dbg(1, "%s(): Skipping %d bytes in nextblock to ensure page alignment\n",
 			  __func__, skip);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		jffs2_dbg(1, "%s(): Skipping %d bytes in nextblock to ensure page alignment\n",
+			  __func__, skip);
+>>>>>>> refs/remotes/origin/master
 		jffs2_prealloc_raw_node_refs(c, c->nextblock, 1);
 		jffs2_scan_dirty_space(c, c->nextblock, skip);
 	}
 #endif
 	if (c->nr_erasing_blocks) {
 		if ( !c->used_size && ((c->nr_free_blocks+empty_blocks+bad_blocks)!= c->nr_blocks || bad_blocks == c->nr_blocks) ) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			printk(KERN_NOTICE "Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes\n");
 			printk(KERN_NOTICE "empty_blocks %d, bad_blocks %d, c->nr_blocks %d\n",empty_blocks,bad_blocks,c->nr_blocks);
@@ -335,6 +391,11 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
 			pr_notice("empty_blocks %d, bad_blocks %d, c->nr_blocks %d\n",
 				  empty_blocks, bad_blocks, c->nr_blocks);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_notice("Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes\n");
+			pr_notice("empty_blocks %d, bad_blocks %d, c->nr_blocks %d\n",
+				  empty_blocks, bad_blocks, c->nr_blocks);
+>>>>>>> refs/remotes/origin/master
 			ret = -EIO;
 			goto out;
 		}
@@ -349,6 +410,7 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
 #ifndef __ECOS
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		c->mtd->unpoint(c->mtd, 0, c->mtd->size);
 #endif
 	if (s)
@@ -359,6 +421,11 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
 #endif
 	kfree(s);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mtd_unpoint(c->mtd, 0, c->mtd->size);
+#endif
+	kfree(s);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -371,12 +438,15 @@ static int jffs2_fill_scan_buf(struct jffs2_sb_info *c, void *buf,
 	ret = jffs2_flash_read(c, ofs, len, &retlen, buf);
 	if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		D1(printk(KERN_WARNING "mtd->read(0x%x bytes from 0x%x) returned %d\n", len, ofs, ret));
 		return ret;
 	}
 	if (retlen < len) {
 		D1(printk(KERN_WARNING "Read at 0x%x gave only 0x%zx bytes\n", ofs, retlen));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		jffs2_dbg(1, "mtd->read(0x%x bytes from 0x%x) returned %d\n",
 			  len, ofs, ret);
 		return ret;
@@ -384,7 +454,10 @@ static int jffs2_fill_scan_buf(struct jffs2_sb_info *c, void *buf,
 	if (retlen < len) {
 		jffs2_dbg(1, "Read at 0x%x gave only 0x%zx bytes\n",
 			  ofs, retlen);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 	return 0;
@@ -462,10 +535,14 @@ static int jffs2_scan_xattr_node(struct jffs2_sb_info *c, struct jffs2_erasebloc
 	if (jffs2_sum_active())
 		jffs2_sum_add_xattr_mem(s, rx, ofs - jeb->offset);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_xattr("scaning xdatum at %#08x (xid=%u, version=%u)\n",
 =======
 	dbg_xattr("scanning xdatum at %#08x (xid=%u, version=%u)\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_xattr("scanning xdatum at %#08x (xid=%u, version=%u)\n",
+>>>>>>> refs/remotes/origin/master
 		  ofs, xd->xid, xd->version);
 	return 0;
 }
@@ -547,15 +624,20 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
 	prevofs = jeb->offset - 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "jffs2_scan_eraseblock(): Scanning block at 0x%x\n", ofs));
 =======
 	jffs2_dbg(1, "%s(): Scanning block at 0x%x\n", __func__, ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	jffs2_dbg(1, "%s(): Scanning block at 0x%x\n", __func__, ofs);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_JFFS2_FS_WRITEBUFFER
 	if (jffs2_cleanmarker_oob(c)) {
 		int ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (c->mtd->block_isbad(c->mtd, jeb->offset))
 			return BLK_STATE_BADBLOCK;
@@ -563,12 +645,17 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
 		ret = jffs2_check_nand_cleanmarker(c, jeb);
 		D2(printk(KERN_NOTICE "jffs_check_nand_cleanmarker returned %d\n",ret));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (mtd_block_isbad(c->mtd, jeb->offset))
 			return BLK_STATE_BADBLOCK;
 
 		ret = jffs2_check_nand_cleanmarker(c, jeb);
 		jffs2_dbg(2, "jffs_check_nand_cleanmarker returned %d\n", ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* Even if it's not found, we still scan to see
 		   if the block is empty. We use this information
@@ -671,11 +758,16 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
 			/* scan oob, take care of cleanmarker */
 			int ret = jffs2_check_oob_empty(c, jeb, cleanmarkerfound);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			D2(printk(KERN_NOTICE "jffs2_check_oob_empty returned %d\n",ret));
 =======
 			jffs2_dbg(2, "jffs2_check_oob_empty returned %d\n",
 				  ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			jffs2_dbg(2, "jffs2_check_oob_empty returned %d\n",
+				  ret);
+>>>>>>> refs/remotes/origin/master
 			switch (ret) {
 			case 0:		return cleanmarkerfound ? BLK_STATE_CLEANMARKER : BLK_STATE_ALLFF;
 			case 1: 	return BLK_STATE_ALLDIRTY;
@@ -684,11 +776,16 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
 		}
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 		D1(printk(KERN_DEBUG "Block at 0x%08x is empty (erased)\n", jeb->offset));
 =======
 		jffs2_dbg(1, "Block at 0x%08x is empty (erased)\n",
 			  jeb->offset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		jffs2_dbg(1, "Block at 0x%08x is empty (erased)\n",
+			  jeb->offset);
+>>>>>>> refs/remotes/origin/master
 		if (c->cleanmarker_size == 0)
 			return BLK_STATE_CLEANMARKER;	/* don't bother with re-erase */
 		else
@@ -696,12 +793,17 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
 	}
 	if (ofs) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		D1(printk(KERN_DEBUG "Free space at %08x ends at %08x\n", jeb->offset,
 			  jeb->offset + ofs));
 =======
 		jffs2_dbg(1, "Free space at %08x ends at %08x\n", jeb->offset,
 			  jeb->offset + ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		jffs2_dbg(1, "Free space at %08x ends at %08x\n", jeb->offset,
+			  jeb->offset + ofs);
+>>>>>>> refs/remotes/origin/master
 		if ((err = jffs2_prealloc_raw_node_refs(c, jeb, 1)))
 			return err;
 		if ((err = jffs2_scan_dirty_space(c, jeb, ofs)))
@@ -729,20 +831,29 @@ scan_more:
 
 		if (ofs & 3) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING "Eep. ofs 0x%08x not word-aligned!\n", ofs);
 =======
 			pr_warn("Eep. ofs 0x%08x not word-aligned!\n", ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn("Eep. ofs 0x%08x not word-aligned!\n", ofs);
+>>>>>>> refs/remotes/origin/master
 			ofs = PAD(ofs);
 			continue;
 		}
 		if (ofs == prevofs) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			printk(KERN_WARNING "ofs 0x%08x has already been seen. Skipping\n", ofs);
 =======
 			pr_warn("ofs 0x%08x has already been seen. Skipping\n",
 				ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn("ofs 0x%08x has already been seen. Skipping\n",
+				ofs);
+>>>>>>> refs/remotes/origin/master
 			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
 				return err;
 			ofs += 4;
@@ -752,14 +863,20 @@ scan_more:
 
 		if (jeb->offset + c->sector_size < ofs + sizeof(*node)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			D1(printk(KERN_DEBUG "Fewer than %zd bytes left to end of block. (%x+%x<%x+%zx) Not reading\n", sizeof(struct jffs2_unknown_node),
 				  jeb->offset, c->sector_size, ofs, sizeof(*node)));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			jffs2_dbg(1, "Fewer than %zd bytes left to end of block. (%x+%x<%x+%zx) Not reading\n",
 				  sizeof(struct jffs2_unknown_node),
 				  jeb->offset, c->sector_size, ofs,
 				  sizeof(*node));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if ((err = jffs2_scan_dirty_space(c, jeb, (jeb->offset + c->sector_size)-ofs)))
 				return err;
 			break;
@@ -768,6 +885,7 @@ scan_more:
 		if (buf_ofs + buf_len < ofs + sizeof(*node)) {
 			buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size - ofs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			D1(printk(KERN_DEBUG "Fewer than %zd bytes (node header) left to end of buf. Reading 0x%x at 0x%08x\n",
 				  sizeof(struct jffs2_unknown_node), buf_len, ofs));
 =======
@@ -775,6 +893,11 @@ scan_more:
 				  sizeof(struct jffs2_unknown_node),
 				  buf_len, ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			jffs2_dbg(1, "Fewer than %zd bytes (node header) left to end of buf. Reading 0x%x at 0x%08x\n",
+				  sizeof(struct jffs2_unknown_node),
+				  buf_len, ofs);
+>>>>>>> refs/remotes/origin/master
 			err = jffs2_fill_scan_buf(c, buf, ofs, buf_len);
 			if (err)
 				return err;
@@ -792,14 +915,19 @@ scan_more:
 			scan_end = min_t(uint32_t, EMPTY_SCAN_SIZE(c->sector_size)/8, buf_len);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			D1(printk(KERN_DEBUG "Found empty flash at 0x%08x\n", ofs));
 =======
 			jffs2_dbg(1, "Found empty flash at 0x%08x\n", ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			jffs2_dbg(1, "Found empty flash at 0x%08x\n", ofs);
+>>>>>>> refs/remotes/origin/master
 		more_empty:
 			inbuf_ofs = ofs - buf_ofs;
 			while (inbuf_ofs < scan_end) {
 				if (unlikely(*(uint32_t *)(&buf[inbuf_ofs]) != 0xffffffff)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 					printk(KERN_WARNING "Empty flash at 0x%08x ends at 0x%08x\n",
 					       empty_start, ofs);
@@ -807,6 +935,10 @@ scan_more:
 					pr_warn("Empty flash at 0x%08x ends at 0x%08x\n",
 						empty_start, ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					pr_warn("Empty flash at 0x%08x ends at 0x%08x\n",
+						empty_start, ofs);
+>>>>>>> refs/remotes/origin/master
 					if ((err = jffs2_scan_dirty_space(c, jeb, ofs-empty_start)))
 						return err;
 					goto scan_more;
@@ -817,22 +949,32 @@ scan_more:
 			}
 			/* Ran off end. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			D1(printk(KERN_DEBUG "Empty flash to end of buffer at 0x%08x\n", ofs));
 =======
 			jffs2_dbg(1, "Empty flash to end of buffer at 0x%08x\n",
 				  ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			jffs2_dbg(1, "Empty flash to end of buffer at 0x%08x\n",
+				  ofs);
+>>>>>>> refs/remotes/origin/master
 
 			/* If we're only checking the beginning of a block with a cleanmarker,
 			   bail now */
 			if (buf_ofs == jeb->offset && jeb->used_size == PAD(c->cleanmarker_size) &&
 			    c->cleanmarker_size && !jeb->dirty_size && !ref_next(jeb->first_node)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				D1(printk(KERN_DEBUG "%d bytes at start of block seems clean... assuming all clean\n", EMPTY_SCAN_SIZE(c->sector_size)));
 =======
 				jffs2_dbg(1, "%d bytes at start of block seems clean... assuming all clean\n",
 					  EMPTY_SCAN_SIZE(c->sector_size));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				jffs2_dbg(1, "%d bytes at start of block seems clean... assuming all clean\n",
+					  EMPTY_SCAN_SIZE(c->sector_size));
+>>>>>>> refs/remotes/origin/master
 				return BLK_STATE_CLEANMARKER;
 			}
 			if (!buf_size && (scan_end != buf_len)) {/* XIP/point case */
@@ -846,22 +988,32 @@ scan_more:
 				/* No more to read. Break out of main loop without marking
 				   this range of empty space as dirty (because it's not) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				D1(printk(KERN_DEBUG "Empty flash at %08x runs to end of block. Treating as free_space\n",
 					  empty_start));
 =======
 				jffs2_dbg(1, "Empty flash at %08x runs to end of block. Treating as free_space\n",
 					  empty_start);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				jffs2_dbg(1, "Empty flash at %08x runs to end of block. Treating as free_space\n",
+					  empty_start);
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 			/* point never reaches here */
 			scan_end = buf_len;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			D1(printk(KERN_DEBUG "Reading another 0x%x at 0x%08x\n", buf_len, ofs));
 =======
 			jffs2_dbg(1, "Reading another 0x%x at 0x%08x\n",
 				  buf_len, ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			jffs2_dbg(1, "Reading another 0x%x at 0x%08x\n",
+				  buf_len, ofs);
+>>>>>>> refs/remotes/origin/master
 			err = jffs2_fill_scan_buf(c, buf, ofs, buf_len);
 			if (err)
 				return err;
@@ -871,11 +1023,16 @@ scan_more:
 
 		if (ofs == jeb->offset && je16_to_cpu(node->magic) == KSAMTIB_CIGAM_2SFFJ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING "Magic bitmask is backwards at offset 0x%08x. Wrong endian filesystem?\n", ofs);
 =======
 			pr_warn("Magic bitmask is backwards at offset 0x%08x. Wrong endian filesystem?\n",
 				ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn("Magic bitmask is backwards at offset 0x%08x. Wrong endian filesystem?\n",
+				ofs);
+>>>>>>> refs/remotes/origin/master
 			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
 				return err;
 			ofs += 4;
@@ -883,10 +1040,14 @@ scan_more:
 		}
 		if (je16_to_cpu(node->magic) == JFFS2_DIRTY_BITMASK) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			D1(printk(KERN_DEBUG "Dirty bitmask at 0x%08x\n", ofs));
 =======
 			jffs2_dbg(1, "Dirty bitmask at 0x%08x\n", ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			jffs2_dbg(1, "Dirty bitmask at 0x%08x\n", ofs);
+>>>>>>> refs/remotes/origin/master
 			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
 				return err;
 			ofs += 4;
@@ -894,12 +1055,17 @@ scan_more:
 		}
 		if (je16_to_cpu(node->magic) == JFFS2_OLD_MAGIC_BITMASK) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING "Old JFFS2 bitmask found at 0x%08x\n", ofs);
 			printk(KERN_WARNING "You cannot use older JFFS2 filesystems with newer kernels\n");
 =======
 			pr_warn("Old JFFS2 bitmask found at 0x%08x\n", ofs);
 			pr_warn("You cannot use older JFFS2 filesystems with newer kernels\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn("Old JFFS2 bitmask found at 0x%08x\n", ofs);
+			pr_warn("You cannot use older JFFS2 filesystems with newer kernels\n");
+>>>>>>> refs/remotes/origin/master
 			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
 				return err;
 			ofs += 4;
@@ -908,11 +1074,16 @@ scan_more:
 		if (je16_to_cpu(node->magic) != JFFS2_MAGIC_BITMASK) {
 			/* OK. We're out of possibilities. Whinge and move on */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			noisy_printk(&noise, "jffs2_scan_eraseblock(): Magic bitmask 0x%04x not found at 0x%08x: 0x%04x instead\n",
 =======
 			noisy_printk(&noise, "%s(): Magic bitmask 0x%04x not found at 0x%08x: 0x%04x instead\n",
 				     __func__,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			noisy_printk(&noise, "%s(): Magic bitmask 0x%04x not found at 0x%08x: 0x%04x instead\n",
+				     __func__,
+>>>>>>> refs/remotes/origin/master
 				     JFFS2_MAGIC_BITMASK, ofs,
 				     je16_to_cpu(node->magic));
 			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
@@ -928,11 +1099,16 @@ scan_more:
 
 		if (hdr_crc != je32_to_cpu(node->hdr_crc)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			noisy_printk(&noise, "jffs2_scan_eraseblock(): Node at 0x%08x {0x%04x, 0x%04x, 0x%08x) has invalid CRC 0x%08x (calculated 0x%08x)\n",
 =======
 			noisy_printk(&noise, "%s(): Node at 0x%08x {0x%04x, 0x%04x, 0x%08x) has invalid CRC 0x%08x (calculated 0x%08x)\n",
 				     __func__,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			noisy_printk(&noise, "%s(): Node at 0x%08x {0x%04x, 0x%04x, 0x%08x) has invalid CRC 0x%08x (calculated 0x%08x)\n",
+				     __func__,
+>>>>>>> refs/remotes/origin/master
 				     ofs, je16_to_cpu(node->magic),
 				     je16_to_cpu(node->nodetype),
 				     je32_to_cpu(node->totlen),
@@ -947,6 +1123,7 @@ scan_more:
 		if (ofs + je32_to_cpu(node->totlen) > jeb->offset + c->sector_size) {
 			/* Eep. Node goes over the end of the erase block. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING "Node at 0x%08x with length 0x%08x would run over the end of the erase block\n",
 			       ofs, je32_to_cpu(node->totlen));
 			printk(KERN_WARNING "Perhaps the file system was created with the wrong erase size?\n");
@@ -955,6 +1132,11 @@ scan_more:
 				ofs, je32_to_cpu(node->totlen));
 			pr_warn("Perhaps the file system was created with the wrong erase size?\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn("Node at 0x%08x with length 0x%08x would run over the end of the erase block\n",
+				ofs, je32_to_cpu(node->totlen));
+			pr_warn("Perhaps the file system was created with the wrong erase size?\n");
+>>>>>>> refs/remotes/origin/master
 			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
 				return err;
 			ofs += 4;
@@ -964,11 +1146,16 @@ scan_more:
 		if (!(je16_to_cpu(node->nodetype) & JFFS2_NODE_ACCURATE)) {
 			/* Wheee. This is an obsoleted node */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			D2(printk(KERN_DEBUG "Node at 0x%08x is obsolete. Skipping\n", ofs));
 =======
 			jffs2_dbg(2, "Node at 0x%08x is obsolete. Skipping\n",
 				  ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			jffs2_dbg(2, "Node at 0x%08x is obsolete. Skipping\n",
+				  ofs);
+>>>>>>> refs/remotes/origin/master
 			if ((err = jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(node->totlen)))))
 				return err;
 			ofs += PAD(je32_to_cpu(node->totlen));
@@ -980,6 +1167,7 @@ scan_more:
 			if (buf_ofs + buf_len < ofs + sizeof(struct jffs2_raw_inode)) {
 				buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size - ofs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				D1(printk(KERN_DEBUG "Fewer than %zd bytes (inode node) left to end of buf. Reading 0x%x at 0x%08x\n",
 					  sizeof(struct jffs2_raw_inode), buf_len, ofs));
 =======
@@ -987,6 +1175,11 @@ scan_more:
 					  sizeof(struct jffs2_raw_inode),
 					  buf_len, ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				jffs2_dbg(1, "Fewer than %zd bytes (inode node) left to end of buf. Reading 0x%x at 0x%08x\n",
+					  sizeof(struct jffs2_raw_inode),
+					  buf_len, ofs);
+>>>>>>> refs/remotes/origin/master
 				err = jffs2_fill_scan_buf(c, buf, ofs, buf_len);
 				if (err)
 					return err;
@@ -1002,6 +1195,7 @@ scan_more:
 			if (buf_ofs + buf_len < ofs + je32_to_cpu(node->totlen)) {
 				buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size - ofs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				D1(printk(KERN_DEBUG "Fewer than %d bytes (dirent node) left to end of buf. Reading 0x%x at 0x%08x\n",
 					  je32_to_cpu(node->totlen), buf_len, ofs));
 =======
@@ -1009,6 +1203,11 @@ scan_more:
 					  je32_to_cpu(node->totlen), buf_len,
 					  ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				jffs2_dbg(1, "Fewer than %d bytes (dirent node) left to end of buf. Reading 0x%x at 0x%08x\n",
+					  je32_to_cpu(node->totlen), buf_len,
+					  ofs);
+>>>>>>> refs/remotes/origin/master
 				err = jffs2_fill_scan_buf(c, buf, ofs, buf_len);
 				if (err)
 					return err;
@@ -1025,6 +1224,7 @@ scan_more:
 			if (buf_ofs + buf_len < ofs + je32_to_cpu(node->totlen)) {
 				buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size - ofs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				D1(printk(KERN_DEBUG "Fewer than %d bytes (xattr node)"
 					  " left to end of buf. Reading 0x%x at 0x%08x\n",
 					  je32_to_cpu(node->totlen), buf_len, ofs));
@@ -1033,6 +1233,11 @@ scan_more:
 					  je32_to_cpu(node->totlen), buf_len,
 					  ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				jffs2_dbg(1, "Fewer than %d bytes (xattr node) left to end of buf. Reading 0x%x at 0x%08x\n",
+					  je32_to_cpu(node->totlen), buf_len,
+					  ofs);
+>>>>>>> refs/remotes/origin/master
 				err = jffs2_fill_scan_buf(c, buf, ofs, buf_len);
 				if (err)
 					return err;
@@ -1048,6 +1253,7 @@ scan_more:
 			if (buf_ofs + buf_len < ofs + je32_to_cpu(node->totlen)) {
 				buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size - ofs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				D1(printk(KERN_DEBUG "Fewer than %d bytes (xref node)"
 					  " left to end of buf. Reading 0x%x at 0x%08x\n",
 					  je32_to_cpu(node->totlen), buf_len, ofs));
@@ -1056,6 +1262,11 @@ scan_more:
 					  je32_to_cpu(node->totlen), buf_len,
 					  ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				jffs2_dbg(1, "Fewer than %d bytes (xref node) left to end of buf. Reading 0x%x at 0x%08x\n",
+					  je32_to_cpu(node->totlen), buf_len,
+					  ofs);
+>>>>>>> refs/remotes/origin/master
 				err = jffs2_fill_scan_buf(c, buf, ofs, buf_len);
 				if (err)
 					return err;
@@ -1071,27 +1282,38 @@ scan_more:
 
 		case JFFS2_NODETYPE_CLEANMARKER:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			D1(printk(KERN_DEBUG "CLEANMARKER node found at 0x%08x\n", ofs));
 			if (je32_to_cpu(node->totlen) != c->cleanmarker_size) {
 				printk(KERN_NOTICE "CLEANMARKER node found at 0x%08x has totlen 0x%x != normal 0x%x\n",
 				       ofs, je32_to_cpu(node->totlen), c->cleanmarker_size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			jffs2_dbg(1, "CLEANMARKER node found at 0x%08x\n", ofs);
 			if (je32_to_cpu(node->totlen) != c->cleanmarker_size) {
 				pr_notice("CLEANMARKER node found at 0x%08x has totlen 0x%x != normal 0x%x\n",
 					  ofs, je32_to_cpu(node->totlen),
 					  c->cleanmarker_size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				if ((err = jffs2_scan_dirty_space(c, jeb, PAD(sizeof(struct jffs2_unknown_node)))))
 					return err;
 				ofs += PAD(sizeof(struct jffs2_unknown_node));
 			} else if (jeb->first_node) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				printk(KERN_NOTICE "CLEANMARKER node found at 0x%08x, not first node in block (0x%08x)\n", ofs, jeb->offset);
 =======
 				pr_notice("CLEANMARKER node found at 0x%08x, not first node in block (0x%08x)\n",
 					  ofs, jeb->offset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_notice("CLEANMARKER node found at 0x%08x, not first node in block (0x%08x)\n",
+					  ofs, jeb->offset);
+>>>>>>> refs/remotes/origin/master
 				if ((err = jffs2_scan_dirty_space(c, jeb, PAD(sizeof(struct jffs2_unknown_node)))))
 					return err;
 				ofs += PAD(sizeof(struct jffs2_unknown_node));
@@ -1114,11 +1336,16 @@ scan_more:
 			switch (je16_to_cpu(node->nodetype) & JFFS2_COMPAT_MASK) {
 			case JFFS2_FEATURE_ROCOMPAT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_NOTICE "Read-only compatible feature node (0x%04x) found at offset 0x%08x\n", je16_to_cpu(node->nodetype), ofs);
 =======
 				pr_notice("Read-only compatible feature node (0x%04x) found at offset 0x%08x\n",
 					  je16_to_cpu(node->nodetype), ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_notice("Read-only compatible feature node (0x%04x) found at offset 0x%08x\n",
+					  je16_to_cpu(node->nodetype), ofs);
+>>>>>>> refs/remotes/origin/master
 				c->flags |= JFFS2_SB_FLAG_RO;
 				if (!(jffs2_is_readonly(c)))
 					return -EROFS;
@@ -1129,12 +1356,15 @@ scan_more:
 
 			case JFFS2_FEATURE_INCOMPAT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_NOTICE "Incompatible feature node (0x%04x) found at offset 0x%08x\n", je16_to_cpu(node->nodetype), ofs);
 				return -EINVAL;
 
 			case JFFS2_FEATURE_RWCOMPAT_DELETE:
 				D1(printk(KERN_NOTICE "Unknown but compatible feature node (0x%04x) found at offset 0x%08x\n", je16_to_cpu(node->nodetype), ofs));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				pr_notice("Incompatible feature node (0x%04x) found at offset 0x%08x\n",
 					  je16_to_cpu(node->nodetype), ofs);
 				return -EINVAL;
@@ -1142,7 +1372,10 @@ scan_more:
 			case JFFS2_FEATURE_RWCOMPAT_DELETE:
 				jffs2_dbg(1, "Unknown but compatible feature node (0x%04x) found at offset 0x%08x\n",
 					  je16_to_cpu(node->nodetype), ofs);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				if ((err = jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(node->totlen)))))
 					return err;
 				ofs += PAD(je32_to_cpu(node->totlen));
@@ -1150,11 +1383,16 @@ scan_more:
 
 			case JFFS2_FEATURE_RWCOMPAT_COPY: {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				D1(printk(KERN_NOTICE "Unknown but compatible feature node (0x%04x) found at offset 0x%08x\n", je16_to_cpu(node->nodetype), ofs));
 =======
 				jffs2_dbg(1, "Unknown but compatible feature node (0x%04x) found at offset 0x%08x\n",
 					  je16_to_cpu(node->nodetype), ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				jffs2_dbg(1, "Unknown but compatible feature node (0x%04x) found at offset 0x%08x\n",
+					  je16_to_cpu(node->nodetype), ofs);
+>>>>>>> refs/remotes/origin/master
 
 				jffs2_link_node_ref(c, jeb, ofs | REF_PRISTINE, PAD(je32_to_cpu(node->totlen)), NULL);
 
@@ -1176,6 +1414,7 @@ scan_more:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "Block at 0x%08x: free 0x%08x, dirty 0x%08x, unchecked 0x%08x, used 0x%08x, wasted 0x%08x\n",
 		  jeb->offset,jeb->free_size, jeb->dirty_size, jeb->unchecked_size, jeb->used_size, jeb->wasted_size));
 =======
@@ -1183,6 +1422,11 @@ scan_more:
 		  jeb->offset, jeb->free_size, jeb->dirty_size,
 		  jeb->unchecked_size, jeb->used_size, jeb->wasted_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	jffs2_dbg(1, "Block at 0x%08x: free 0x%08x, dirty 0x%08x, unchecked 0x%08x, used 0x%08x, wasted 0x%08x\n",
+		  jeb->offset, jeb->free_size, jeb->dirty_size,
+		  jeb->unchecked_size, jeb->used_size, jeb->wasted_size);
+>>>>>>> refs/remotes/origin/master
 	
 	/* mark_node_obsolete can add to wasted !! */
 	if (jeb->wasted_size) {
@@ -1209,10 +1453,14 @@ struct jffs2_inode_cache *jffs2_scan_make_ino_cache(struct jffs2_sb_info *c, uin
 	ic = jffs2_alloc_inode_cache();
 	if (!ic) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE "jffs2_scan_make_inode_cache(): allocation of inode cache failed\n");
 =======
 		pr_notice("%s(): allocation of inode cache failed\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_notice("%s(): allocation of inode cache failed\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 	memset(ic, 0, sizeof(*ic));
@@ -1232,10 +1480,14 @@ static int jffs2_scan_inode_node(struct jffs2_sb_info *c, struct jffs2_erasebloc
 	uint32_t crc, ino = je32_to_cpu(ri->ino);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "jffs2_scan_inode_node(): Node at 0x%08x\n", ofs));
 =======
 	jffs2_dbg(1, "%s(): Node at 0x%08x\n", __func__, ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	jffs2_dbg(1, "%s(): Node at 0x%08x\n", __func__, ofs);
+>>>>>>> refs/remotes/origin/master
 
 	/* We do very little here now. Just check the ino# to which we should attribute
 	   this node; we can do all the CRC checking etc. later. There's a tradeoff here --
@@ -1250,6 +1502,7 @@ static int jffs2_scan_inode_node(struct jffs2_sb_info *c, struct jffs2_erasebloc
 	crc = crc32(0, ri, sizeof(*ri)-8);
 	if (crc != je32_to_cpu(ri->node_crc)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE "jffs2_scan_inode_node(): CRC failed on "
 		       "node at 0x%08x: Read 0x%08x, calculated 0x%08x\n",
 		       ofs, je32_to_cpu(ri->node_crc), crc);
@@ -1257,6 +1510,10 @@ static int jffs2_scan_inode_node(struct jffs2_sb_info *c, struct jffs2_erasebloc
 		pr_notice("%s(): CRC failed on node at 0x%08x: Read 0x%08x, calculated 0x%08x\n",
 			  __func__, ofs, je32_to_cpu(ri->node_crc), crc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_notice("%s(): CRC failed on node at 0x%08x: Read 0x%08x, calculated 0x%08x\n",
+			  __func__, ofs, je32_to_cpu(ri->node_crc), crc);
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * We believe totlen because the CRC on the node
 		 * _header_ was OK, just the node itself failed.
@@ -1276,16 +1533,22 @@ static int jffs2_scan_inode_node(struct jffs2_sb_info *c, struct jffs2_erasebloc
 	jffs2_link_node_ref(c, jeb, ofs | REF_UNCHECKED, PAD(je32_to_cpu(ri->totlen)), ic);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "Node is ino #%u, version %d. Range 0x%x-0x%x\n",
 		  je32_to_cpu(ri->ino), je32_to_cpu(ri->version),
 		  je32_to_cpu(ri->offset),
 		  je32_to_cpu(ri->offset)+je32_to_cpu(ri->dsize)));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	jffs2_dbg(1, "Node is ino #%u, version %d. Range 0x%x-0x%x\n",
 		  je32_to_cpu(ri->ino), je32_to_cpu(ri->version),
 		  je32_to_cpu(ri->offset),
 		  je32_to_cpu(ri->offset)+je32_to_cpu(ri->dsize));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pseudo_random += je32_to_cpu(ri->version);
 
@@ -1306,10 +1569,14 @@ static int jffs2_scan_dirent_node(struct jffs2_sb_info *c, struct jffs2_eraseblo
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "jffs2_scan_dirent_node(): Node at 0x%08x\n", ofs));
 =======
 	jffs2_dbg(1, "%s(): Node at 0x%08x\n", __func__, ofs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	jffs2_dbg(1, "%s(): Node at 0x%08x\n", __func__, ofs);
+>>>>>>> refs/remotes/origin/master
 
 	/* We don't get here unless the node is still valid, so we don't have to
 	   mask in the ACCURATE bit any more. */
@@ -1317,12 +1584,17 @@ static int jffs2_scan_dirent_node(struct jffs2_sb_info *c, struct jffs2_eraseblo
 
 	if (crc != je32_to_cpu(rd->node_crc)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE "jffs2_scan_dirent_node(): Node CRC failed on node at 0x%08x: Read 0x%08x, calculated 0x%08x\n",
 		       ofs, je32_to_cpu(rd->node_crc), crc);
 =======
 		pr_notice("%s(): Node CRC failed on node at 0x%08x: Read 0x%08x, calculated 0x%08x\n",
 			  __func__, ofs, je32_to_cpu(rd->node_crc), crc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_notice("%s(): Node CRC failed on node at 0x%08x: Read 0x%08x, calculated 0x%08x\n",
+			  __func__, ofs, je32_to_cpu(rd->node_crc), crc);
+>>>>>>> refs/remotes/origin/master
 		/* We believe totlen because the CRC on the node _header_ was OK, just the node itself failed. */
 		if ((err = jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(rd->totlen)))))
 			return err;
@@ -1335,10 +1607,14 @@ static int jffs2_scan_dirent_node(struct jffs2_sb_info *c, struct jffs2_eraseblo
 	checkedlen = strnlen(rd->name, rd->nsize);
 	if (checkedlen < rd->nsize) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "Dirent at %08x has zeroes in name. Truncating to %d chars\n",
 =======
 		pr_err("Dirent at %08x has zeroes in name. Truncating to %d chars\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Dirent at %08x has zeroes in name. Truncating to %d chars\n",
+>>>>>>> refs/remotes/origin/master
 		       ofs, checkedlen);
 	}
 	fd = jffs2_alloc_full_dirent(checkedlen+1);
@@ -1351,15 +1627,21 @@ static int jffs2_scan_dirent_node(struct jffs2_sb_info *c, struct jffs2_eraseblo
 	crc = crc32(0, fd->name, rd->nsize);
 	if (crc != je32_to_cpu(rd->name_crc)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE "jffs2_scan_dirent_node(): Name CRC failed on node at 0x%08x: Read 0x%08x, calculated 0x%08x\n",
 		       ofs, je32_to_cpu(rd->name_crc), crc);
 		D1(printk(KERN_NOTICE "Name for which CRC failed is (now) '%s', ino #%d\n", fd->name, je32_to_cpu(rd->ino)));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_notice("%s(): Name CRC failed on node at 0x%08x: Read 0x%08x, calculated 0x%08x\n",
 			  __func__, ofs, je32_to_cpu(rd->name_crc), crc);
 		jffs2_dbg(1, "Name for which CRC failed is (now) '%s', ino #%d\n",
 			  fd->name, je32_to_cpu(rd->ino));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		jffs2_free_full_dirent(fd);
 		/* FIXME: Why do we believe totlen? */
 		/* We believe totlen because the CRC on the node _header_ was OK, just the name failed. */

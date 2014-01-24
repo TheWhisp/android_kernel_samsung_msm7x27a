@@ -62,6 +62,7 @@ _ENTRY(_start);
 	 */
 	nop
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Save parameters we are passed
  */
@@ -72,6 +73,8 @@ _ENTRY(_start);
 	mr	r27,r7
 	li	r24,0		/* CPU number */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mr	r31,r3		/* save device tree ptr */
 	li	r24,0		/* CPU number */
 
@@ -103,7 +106,10 @@ _ENTRY(_start);
 
 	bl	relocate
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	bl	init_cpu_state
 
@@ -128,6 +134,7 @@ _ENTRY(_start);
 	bl	early_init
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Decide what sort of machine this is and initialize the MMU.
  */
@@ -137,6 +144,8 @@ _ENTRY(_start);
 	mr	r6,r28
 	mr	r7,r27
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_RELOCATABLE
 	/*
 	 * Relocatable kernel support based on processing of dynamic
@@ -225,7 +234,10 @@ _ENTRY(_start);
  */
 	li	r3,0
 	mr	r4,r31
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bl	machine_init
 	bl	MMU_init
 
@@ -271,10 +283,18 @@ _ENTRY(_start);
 
 interrupt_base:
 	/* Critical Input Interrupt */
+<<<<<<< HEAD
 	CRITICAL_EXCEPTION(0x0100, CriticalInput, unknown_exception)
 
 	/* Machine Check Interrupt */
 	CRITICAL_EXCEPTION(0x0200, MachineCheck, machine_check_exception)
+=======
+	CRITICAL_EXCEPTION(0x0100, CRITICAL, CriticalInput, unknown_exception)
+
+	/* Machine Check Interrupt */
+	CRITICAL_EXCEPTION(0x0200, MACHINE_CHECK, MachineCheck, \
+			   machine_check_exception)
+>>>>>>> refs/remotes/origin/master
 	MCHECK_EXCEPTION(0x0210, MachineCheckA, machine_check_exception)
 
 	/* Data Storage Interrupt */
@@ -284,7 +304,12 @@ interrupt_base:
 	INSTRUCTION_STORAGE_EXCEPTION
 
 	/* External Input Interrupt */
+<<<<<<< HEAD
 	EXCEPTION(0x0500, ExternalInput, do_IRQ, EXC_XFER_LITE)
+=======
+	EXCEPTION(0x0500, BOOKE_INTERRUPT_EXTERNAL, ExternalInput, \
+		  do_IRQ, EXC_XFER_LITE)
+>>>>>>> refs/remotes/origin/master
 
 	/* Alignment Interrupt */
 	ALIGNMENT_EXCEPTION
@@ -296,6 +321,7 @@ interrupt_base:
 #ifdef CONFIG_PPC_FPU
 	FP_UNAVAILABLE_EXCEPTION
 #else
+<<<<<<< HEAD
 	EXCEPTION(0x2010, FloatingPointUnavailable, unknown_exception, EXC_XFER_EE)
 #endif
 	/* System Call Interrupt */
@@ -305,20 +331,44 @@ interrupt_base:
 
 	/* Auxiliary Processor Unavailable Interrupt */
 	EXCEPTION(0x2020, AuxillaryProcessorUnavailable, unknown_exception, EXC_XFER_EE)
+=======
+	EXCEPTION(0x2010, BOOKE_INTERRUPT_FP_UNAVAIL, \
+		  FloatingPointUnavailable, unknown_exception, EXC_XFER_EE)
+#endif
+	/* System Call Interrupt */
+	START_EXCEPTION(SystemCall)
+	NORMAL_EXCEPTION_PROLOG(BOOKE_INTERRUPT_SYSCALL)
+	EXC_XFER_EE_LITE(0x0c00, DoSyscall)
+
+	/* Auxiliary Processor Unavailable Interrupt */
+	EXCEPTION(0x2020, BOOKE_INTERRUPT_AP_UNAVAIL, \
+		  AuxillaryProcessorUnavailable, unknown_exception, EXC_XFER_EE)
+>>>>>>> refs/remotes/origin/master
 
 	/* Decrementer Interrupt */
 	DECREMENTER_EXCEPTION
 
 	/* Fixed Internal Timer Interrupt */
 	/* TODO: Add FIT support */
+<<<<<<< HEAD
 	EXCEPTION(0x1010, FixedIntervalTimer, unknown_exception, EXC_XFER_EE)
+=======
+	EXCEPTION(0x1010, BOOKE_INTERRUPT_FIT, FixedIntervalTimer, \
+		  unknown_exception, EXC_XFER_EE)
+>>>>>>> refs/remotes/origin/master
 
 	/* Watchdog Timer Interrupt */
 	/* TODO: Add watchdog support */
 #ifdef CONFIG_BOOKE_WDT
+<<<<<<< HEAD
 	CRITICAL_EXCEPTION(0x1020, WatchdogTimer, WatchdogException)
 #else
 	CRITICAL_EXCEPTION(0x1020, WatchdogTimer, unknown_exception)
+=======
+	CRITICAL_EXCEPTION(0x1020, WATCHDOG, WatchdogTimer, WatchdogException)
+#else
+	CRITICAL_EXCEPTION(0x1020, WATCHDOG, WatchdogTimer, unknown_exception)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	/* Data TLB Error Interrupt */
@@ -787,6 +837,11 @@ finish_tlb_load_47x:
 	 */
 	DEBUG_CRIT_EXCEPTION
 
+<<<<<<< HEAD
+=======
+interrupt_end:
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Global functions
  */
@@ -800,6 +855,7 @@ _GLOBAL(__fixup_440A_mcheck)
 	sync
 	blr
 
+<<<<<<< HEAD
 /*
  * extern void giveup_altivec(struct task_struct *prev)
  *
@@ -818,6 +874,8 @@ _GLOBAL(giveup_fpu)
 	blr
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 _GLOBAL(set_context)
 
 #ifdef CONFIG_BDI_SWITCH
@@ -844,10 +902,15 @@ _GLOBAL(init_cpu_state)
 	mfspr	r3,SPRN_PVR
 	srwi	r3,r3,16
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	cmplwi	cr0,r3,PVR_476FPE@h
 	beq	head_start_47x
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmplwi	cr0,r3,PVR_476FPE@h
+	beq	head_start_47x
+>>>>>>> refs/remotes/origin/master
 	cmplwi	cr0,r3,PVR_476@h
 	beq	head_start_47x
 	cmplwi	cr0,r3,PVR_476_ISS@h
@@ -917,7 +980,10 @@ skpinv:	addi	r4,r4,1				/* Increment */
  * Configure and load pinned entry into TLB slot 63.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_NONSTATIC_KERNEL
 	/*
 	 * In case of a NONSTATIC_KERNEL we reuse the TLB XLAT
@@ -934,7 +1000,10 @@ skpinv:	addi	r4,r4,1				/* Increment */
 	/* Use our current RPN entry */
 	mr	r4,r25
 #else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	lis	r3,PAGE_OFFSET@h
 	ori	r3,r3,PAGE_OFFSET@l
@@ -942,9 +1011,13 @@ skpinv:	addi	r4,r4,1				/* Increment */
 	/* Kernel is at the base of RAM */
 	li r4, 0			/* Load the kernel physical address */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	/* Load the kernel PID = 0 */
 	li	r0,0
@@ -1155,11 +1228,14 @@ clear_utlb_entry:
 	ori	r3,r3,PAGE_OFFSET@l
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Kernel is at the base of RAM */
 	li r4, 0			/* Load the kernel physical address */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Load the kernel PID = 0 */
 	li	r0,0
 	mtspr	SPRN_PID,r0
@@ -1170,6 +1246,7 @@ clear_utlb_entry:
 	ori	r3,r3,PPC47x_TLB0_VALID | PPC47x_TLB0_256M
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Word 1 */
 	clrrwi	r4,r4,12		/* Mask off the real page number */
 					/* ERPN is 0 for first 4GB page */
@@ -1177,6 +1254,10 @@ clear_utlb_entry:
 	/* Word 1 - use r25.  RPN is the same as the original entry */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Word 1 - use r25.  RPN is the same as the original entry */
+
+>>>>>>> refs/remotes/origin/master
 	/* Word 2 */
 	li	r5,0
 	ori	r5,r5,PPC47x_TLB2_S_RWX
@@ -1188,10 +1269,14 @@ clear_utlb_entry:
 	lis	r0,0x8800
 	tlbwe	r3,r0,0
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tlbwe	r4,r0,1
 =======
 	tlbwe	r25,r0,1
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tlbwe	r25,r0,1
+>>>>>>> refs/remotes/origin/master
 	tlbwe	r5,r0,2
 
 /*
@@ -1290,8 +1375,11 @@ head_start_common:
 	mtspr	SPRN_IVPR,r4
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	addis	r22,r22,KERNELBASE@h
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If the kernel was loaded at a non-zero 256 MB page, we need to
 	 * mask off the most significant 4 bits to get the relative address
@@ -1299,7 +1387,10 @@ head_start_common:
 	 */
 	rlwinm	r22,r22,0,4,31
 	addis	r22,r22,PAGE_OFFSET@h
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mtlr	r22
 	isync
 	blr

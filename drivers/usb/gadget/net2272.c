@@ -58,8 +58,12 @@ static const char * const ep_name[] = {
 	"ep-a", "ep-b", "ep-c",
 };
 
+<<<<<<< HEAD
 #define DMA_ADDR_INVALID	(~(dma_addr_t)0)
 #ifdef CONFIG_USB_GADGET_NET2272_DMA
+=======
+#ifdef CONFIG_USB_NET2272_DMA
+>>>>>>> refs/remotes/origin/master
 /*
  * use_dma: the NET2272 can use an external DMA controller.
  * Note that since there is no generic DMA api, some functions,
@@ -267,7 +271,11 @@ static void net2272_ep_reset(struct net2272_ep *ep)
 	ep->desc = NULL;
 	INIT_LIST_HEAD(&ep->queue);
 
+<<<<<<< HEAD
 	ep->ep.maxpacket = ~0;
+=======
+	usb_ep_set_maxpacket_limit(&ep->ep, ~0);
+>>>>>>> refs/remotes/origin/master
 	ep->ep.ops = &net2272_ep_ops;
 
 	/* disable irqs, endpoint */
@@ -341,7 +349,10 @@ net2272_alloc_request(struct usb_ep *_ep, gfp_t gfp_flags)
 	if (!req)
 		return NULL;
 
+<<<<<<< HEAD
 	req->req.dma = DMA_ADDR_INVALID;
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&req->queue);
 
 	return &req->req;
@@ -913,7 +924,11 @@ net2272_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 			}
 		}
 	}
+<<<<<<< HEAD
 	if (likely(req != 0))
+=======
+	if (likely(req))
+>>>>>>> refs/remotes/origin/master
 		list_add_tail(&req->queue, &ep->queue);
 
 	if (likely(!list_empty(&ep->queue)))
@@ -1186,7 +1201,11 @@ static const struct usb_gadget_ops net2272_ops = {
 /*---------------------------------------------------------------------------*/
 
 static ssize_t
+<<<<<<< HEAD
 net2272_show_registers(struct device *_dev, struct device_attribute *attr, char *buf)
+=======
+registers_show(struct device *_dev, struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net2272 *dev;
 	char *next;
@@ -1310,7 +1329,11 @@ net2272_show_registers(struct device *_dev, struct device_attribute *attr, char 
 
 	return PAGE_SIZE - size;
 }
+<<<<<<< HEAD
 static DEVICE_ATTR(registers, S_IRUGO, net2272_show_registers, NULL);
+=======
+static DEVICE_ATTR_RO(registers);
+>>>>>>> refs/remotes/origin/master
 
 /*---------------------------------------------------------------------------*/
 
@@ -1411,7 +1434,11 @@ net2272_usb_reinit(struct net2272 *dev)
 			ep->fifo_size = 64;
 		net2272_ep_reset(ep);
 	}
+<<<<<<< HEAD
 	dev->ep[0].ep.maxpacket = 64;
+=======
+	usb_ep_set_maxpacket_limit(&dev->ep[0].ep, 64);
+>>>>>>> refs/remotes/origin/master
 
 	dev->gadget.ep0 = &dev->ep[0].ep;
 	dev->ep[0].stopped = 0;
@@ -1467,7 +1494,10 @@ static int net2272_start(struct usb_gadget *_gadget,
 	dev->softconnect = 1;
 	driver->driver.bus = NULL;
 	dev->driver = driver;
+<<<<<<< HEAD
 	dev->gadget.dev.driver = &driver->driver;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* ... then enable host detection and ep0; and we're ready
 	 * for set_configuration as well as eventual disconnect.
@@ -1495,6 +1525,16 @@ stop_activity(struct net2272 *dev, struct usb_gadget_driver *driver)
 	for (i = 0; i < 4; ++i)
 		net2272_dequeue_all(&dev->ep[i]);
 
+<<<<<<< HEAD
+=======
+	/* report disconnect; the driver is already quiesced */
+	if (driver) {
+		spin_unlock(&dev->lock);
+		driver->disconnect(&dev->gadget);
+		spin_lock(&dev->lock);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	net2272_usb_reinit(dev);
 }
 
@@ -1510,7 +1550,10 @@ static int net2272_stop(struct usb_gadget *_gadget,
 	stop_activity(dev, driver);
 	spin_unlock_irqrestore(&dev->lock, flags);
 
+<<<<<<< HEAD
 	dev->gadget.dev.driver = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->driver = NULL;
 
 	dev_dbg(dev->dev, "unregistered driver '%s'\n", driver->driver.name);
@@ -1542,7 +1585,11 @@ net2272_handle_dma(struct net2272_ep *ep)
 	      | (ep->dev->dma_eot_polarity << EOT_POLARITY)
 	      | (ep->dev->dma_dack_polarity << DACK_POLARITY)
 	      | (ep->dev->dma_dreq_polarity << DREQ_POLARITY)
+<<<<<<< HEAD
 	      | ((ep->dma >> 1) << DMA_ENDPOINT_SELECT));
+=======
+	      | (ep->dma << DMA_ENDPOINT_SELECT));
+>>>>>>> refs/remotes/origin/master
 
 	ep->dev->dma_busy = 0;
 
@@ -1615,7 +1662,11 @@ net2272_handle_ep(struct net2272_ep *ep)
 	ep->irqs++;
 
 	dev_vdbg(ep->dev->dev, "%s ack ep_stat0 %02x, ep_stat1 %02x, req %p\n",
+<<<<<<< HEAD
 		ep->ep.name, stat0, stat1, req ? &req->req : 0);
+=======
+		ep->ep.name, stat0, stat1, req ? &req->req : NULL);
+>>>>>>> refs/remotes/origin/master
 
 	net2272_ep_write(ep, EP_STAT0, stat0 &
 		~((1 << NAK_OUT_PACKETS)
@@ -2069,8 +2120,15 @@ static irqreturn_t net2272_irq(int irq, void *_dev)
 #if defined(PLX_PCI_RDK2)
 	/* see if PCI int for us by checking irqstat */
 	intcsr = readl(dev->rdk2.fpga_base_addr + RDK2_IRQSTAT);
+<<<<<<< HEAD
 	if (!intcsr & (1 << NET2272_PCI_IRQ))
 		return IRQ_NONE;
+=======
+	if (!intcsr & (1 << NET2272_PCI_IRQ)) {
+		spin_unlock(&dev->lock);
+		return IRQ_NONE;
+	}
+>>>>>>> refs/remotes/origin/master
 	/* check dma interrupts */
 #endif
 	/* Platform/devcice interrupt handler */
@@ -2191,7 +2249,11 @@ net2272_gadget_release(struct device *_dev)
 
 /*---------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 net2272_remove(struct net2272 *dev)
 {
 	usb_del_gadget_udc(&dev->gadget);
@@ -2207,14 +2269,21 @@ net2272_remove(struct net2272 *dev)
 	free_irq(dev->irq, dev);
 	iounmap(dev->base_addr);
 
+<<<<<<< HEAD
 	device_unregister(&dev->gadget.dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	device_remove_file(dev->dev, &dev_attr_registers);
 
 	dev_info(dev->dev, "unbind\n");
 }
 
+<<<<<<< HEAD
 static struct net2272 * __devinit
 net2272_probe_init(struct device *dev, unsigned int irq)
+=======
+static struct net2272 *net2272_probe_init(struct device *dev, unsigned int irq)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net2272 *ret;
 
@@ -2235,16 +2304,23 @@ net2272_probe_init(struct device *dev, unsigned int irq)
 	ret->gadget.max_speed = USB_SPEED_HIGH;
 
 	/* the "gadget" abstracts/virtualizes the controller */
+<<<<<<< HEAD
 	dev_set_name(&ret->gadget.dev, "gadget");
 	ret->gadget.dev.parent = dev;
 	ret->gadget.dev.dma_mask = dev->dma_mask;
 	ret->gadget.dev.release = net2272_gadget_release;
+=======
+>>>>>>> refs/remotes/origin/master
 	ret->gadget.name = driver_name;
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 net2272_probe_fin(struct net2272 *dev, unsigned int irqflags)
 {
 	int ret;
@@ -2274,6 +2350,7 @@ net2272_probe_fin(struct net2272 *dev, unsigned int irqflags)
 		dma_mode_string());
 	dev_info(dev->dev, "version: %s\n", driver_vers);
 
+<<<<<<< HEAD
 	ret = device_register(&dev->gadget.dev);
 	if (ret)
 		goto err_irq;
@@ -2282,6 +2359,14 @@ net2272_probe_fin(struct net2272 *dev, unsigned int irqflags)
 		goto err_dev_reg;
 
 	ret = usb_add_gadget_udc(dev->dev, &dev->gadget);
+=======
+	ret = device_create_file(dev->dev, &dev_attr_registers);
+	if (ret)
+		goto err_irq;
+
+	ret = usb_add_gadget_udc_release(dev->dev, &dev->gadget,
+			net2272_gadget_release);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto err_add_udc;
 
@@ -2289,8 +2374,11 @@ net2272_probe_fin(struct net2272 *dev, unsigned int irqflags)
 
 err_add_udc:
 	device_remove_file(dev->dev, &dev_attr_registers);
+<<<<<<< HEAD
  err_dev_reg:
 	device_unregister(&dev->gadget.dev);
+=======
+>>>>>>> refs/remotes/origin/master
  err_irq:
 	free_irq(dev->irq, dev);
  err:
@@ -2304,7 +2392,11 @@ err_add_udc:
  * don't respond over USB until a gadget driver binds to us
  */
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 net2272_rdk1_probe(struct pci_dev *pdev, struct net2272 *dev)
 {
 	unsigned long resource, len, tmp;
@@ -2387,7 +2479,11 @@ net2272_rdk1_probe(struct pci_dev *pdev, struct net2272 *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 net2272_rdk2_probe(struct pci_dev *pdev, struct net2272 *dev)
 {
 	unsigned long resource, len;
@@ -2445,7 +2541,11 @@ net2272_rdk2_probe(struct pci_dev *pdev, struct net2272 *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 net2272_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 {
 	struct net2272 *dev;
@@ -2487,7 +2587,11 @@ net2272_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 net2272_rdk1_remove(struct pci_dev *pdev, struct net2272 *dev)
 {
 	int i;
@@ -2509,7 +2613,11 @@ net2272_rdk1_remove(struct pci_dev *pdev, struct net2272 *dev)
 	}
 }
 
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 net2272_rdk2_remove(struct pci_dev *pdev, struct net2272 *dev)
 {
 	int i;
@@ -2528,7 +2636,11 @@ net2272_rdk2_remove(struct pci_dev *pdev, struct net2272 *dev)
 			pci_resource_len(pdev, i));
 }
 
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 net2272_pci_remove(struct pci_dev *pdev)
 {
 	struct net2272 *dev = pci_get_drvdata(pdev);
@@ -2547,7 +2659,11 @@ net2272_pci_remove(struct pci_dev *pdev)
 }
 
 /* Table of matching PCI IDs */
+<<<<<<< HEAD
 static struct pci_device_id __devinitdata pci_ids[] = {
+=======
+static struct pci_device_id pci_ids[] = {
+>>>>>>> refs/remotes/origin/master
 	{	/* RDK 1 card */
 		.class       = ((PCI_CLASS_BRIDGE_OTHER << 8) | 0xfe),
 		.class_mask  = 0,
@@ -2573,7 +2689,11 @@ static struct pci_driver net2272_pci_driver = {
 	.id_table = pci_ids,
 
 	.probe    = net2272_pci_probe,
+<<<<<<< HEAD
 	.remove   = __devexit_p(net2272_pci_remove),
+=======
+	.remove   = net2272_pci_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int net2272_pci_register(void)
@@ -2593,7 +2713,11 @@ static inline void net2272_pci_unregister(void) { }
 
 /*---------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 net2272_plat_probe(struct platform_device *pdev)
 {
 	struct net2272 *dev;
@@ -2659,7 +2783,11 @@ net2272_plat_probe(struct platform_device *pdev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 net2272_plat_remove(struct platform_device *pdev)
 {
 	struct net2272 *dev = platform_get_drvdata(pdev);
@@ -2676,7 +2804,11 @@ net2272_plat_remove(struct platform_device *pdev)
 
 static struct platform_driver net2272_plat_driver = {
 	.probe   = net2272_plat_probe,
+<<<<<<< HEAD
 	.remove  = __devexit_p(net2272_plat_remove),
+=======
+	.remove  = net2272_plat_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver  = {
 		.name  = driver_name,
 		.owner = THIS_MODULE,

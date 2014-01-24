@@ -80,6 +80,7 @@ void __init wii_memory_fixups(void)
 	BUG_ON(!page_aligned(p[0].base) || !page_aligned(p[1].base));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	p[0].size = _ALIGN_DOWN(p[0].size, PAGE_SIZE);
 	p[1].size = _ALIGN_DOWN(p[1].size, PAGE_SIZE);
 
@@ -101,6 +102,8 @@ void __init wii_memory_fixups(void)
 	memblock_reserve(wii_hole_start, wii_hole_size);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* trim unaligned tail */
 	memblock_remove(ALIGN(p[1].base + p[1].size, PAGE_SIZE),
 			(phys_addr_t)ULLONG_MAX);
@@ -114,7 +117,10 @@ void __init wii_memory_fixups(void)
 	BUG_ON(memblock.memory.cnt != 1);
 	__memblock_dump_all();
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* allow ioremapping the address space in the hole */
 	__allow_ioremap_reserved = 1;
 }

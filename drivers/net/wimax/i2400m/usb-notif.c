@@ -199,7 +199,10 @@ int i2400mu_notification_setup(struct i2400mu *i2400mu)
 	d_fnstart(4, dev, "(i2400m %p)\n", i2400mu);
 	buf = kmalloc(I2400MU_MAX_NOTIFICATION_LEN, GFP_KERNEL | GFP_DMA);
 	if (buf == NULL) {
+<<<<<<< HEAD
 		dev_err(dev, "notification: buffer allocation failed\n");
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOMEM;
 		goto error_buf_alloc;
 	}

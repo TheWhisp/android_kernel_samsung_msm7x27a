@@ -42,6 +42,10 @@
 #include <linux/in.h>
 #include <linux/ip.h>
 #include <linux/tcp.h>
+<<<<<<< HEAD
+=======
+#include <linux/sctp.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ipv6.h>
 #include <linux/slab.h>
 #include <net/checksum.h>
@@ -57,7 +61,11 @@ const char ixgbevf_driver_name[] = "ixgbevf";
 static const char ixgbevf_driver_string[] =
 	"Intel(R) 10 Gigabit PCI Express Virtual Function Network Driver";
 
+<<<<<<< HEAD
 #define DRV_VERSION "2.2.0-k"
+=======
+#define DRV_VERSION "2.11.3-k"
+>>>>>>> refs/remotes/origin/master
 const char ixgbevf_driver_version[] = DRV_VERSION;
 static char ixgbevf_copyright[] =
 	"Copyright (c) 2009 - 2012 Intel Corporation.";
@@ -75,12 +83,18 @@ static const struct ixgbevf_info *ixgbevf_info_tbl[] = {
  * { Vendor ID, Device ID, SubVendor ID, SubDevice ID,
  *   Class, Class Mask, private data (not used) }
  */
+<<<<<<< HEAD
 static struct pci_device_id ixgbevf_pci_tbl[] = {
 	{PCI_VDEVICE(INTEL, IXGBE_DEV_ID_82599_VF),
 	board_82599_vf},
 	{PCI_VDEVICE(INTEL, IXGBE_DEV_ID_X540_VF),
 	board_X540_vf},
 
+=======
+static DEFINE_PCI_DEVICE_TABLE(ixgbevf_pci_tbl) = {
+	{PCI_VDEVICE(INTEL, IXGBE_DEV_ID_82599_VF), board_82599_vf },
+	{PCI_VDEVICE(INTEL, IXGBE_DEV_ID_X540_VF), board_X540_vf },
+>>>>>>> refs/remotes/origin/master
 	/* required last entry */
 	{0, }
 };
@@ -97,9 +111,14 @@ module_param(debug, int, 0);
 MODULE_PARM_DESC(debug, "Debug level (0=none,...,16=all)");
 
 /* forward decls */
+<<<<<<< HEAD
 static void ixgbevf_set_itr_msix(struct ixgbevf_q_vector *q_vector);
 static void ixgbevf_write_eitr(struct ixgbevf_adapter *adapter, int v_idx,
 			       u32 itr_reg);
+=======
+static void ixgbevf_set_itr(struct ixgbevf_q_vector *q_vector);
+static void ixgbevf_free_all_rx_resources(struct ixgbevf_adapter *adapter);
+>>>>>>> refs/remotes/origin/master
 
 static inline void ixgbevf_release_rx_desc(struct ixgbe_hw *hw,
 					   struct ixgbevf_ring *rx_ring,
@@ -115,13 +134,20 @@ static inline void ixgbevf_release_rx_desc(struct ixgbe_hw *hw,
 	IXGBE_WRITE_REG(hw, IXGBE_VFRDT(rx_ring->reg_idx), val);
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * ixgbevf_set_ivar - set IVAR registers - maps interrupt causes to vectors
  * @adapter: pointer to adapter struct
  * @direction: 0 for Rx, 1 for Tx, -1 for other causes
  * @queue: queue to map the corresponding interrupt to
  * @msix_vector: the vector to map to the corresponding queue
+<<<<<<< HEAD
  *
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static void ixgbevf_set_ivar(struct ixgbevf_adapter *adapter, s8 direction,
 			     u8 queue, u8 msix_vector)
@@ -146,18 +172,30 @@ static void ixgbevf_set_ivar(struct ixgbevf_adapter *adapter, s8 direction,
 	}
 }
 
+<<<<<<< HEAD
 static void ixgbevf_unmap_and_free_tx_resource(struct ixgbevf_adapter *adapter,
+=======
+static void ixgbevf_unmap_and_free_tx_resource(struct ixgbevf_ring *tx_ring,
+>>>>>>> refs/remotes/origin/master
 					       struct ixgbevf_tx_buffer
 					       *tx_buffer_info)
 {
 	if (tx_buffer_info->dma) {
 		if (tx_buffer_info->mapped_as_page)
+<<<<<<< HEAD
 			dma_unmap_page(&adapter->pdev->dev,
+=======
+			dma_unmap_page(tx_ring->dev,
+>>>>>>> refs/remotes/origin/master
 				       tx_buffer_info->dma,
 				       tx_buffer_info->length,
 				       DMA_TO_DEVICE);
 		else
+<<<<<<< HEAD
 			dma_unmap_single(&adapter->pdev->dev,
+=======
+			dma_unmap_single(tx_ring->dev,
+>>>>>>> refs/remotes/origin/master
 					 tx_buffer_info->dma,
 					 tx_buffer_info->length,
 					 DMA_TO_DEVICE);
@@ -175,6 +213,7 @@ static void ixgbevf_unmap_and_free_tx_resource(struct ixgbevf_adapter *adapter,
 #define IXGBE_MAX_DATA_PER_TXD	(1 << IXGBE_MAX_TXD_PWR)
 
 /* Tx Descriptors needed, worst case */
+<<<<<<< HEAD
 #define TXD_USE_COUNT(S) (((S) >> IXGBE_MAX_TXD_PWR) + \
 			 (((S) & (IXGBE_MAX_DATA_PER_TXD - 1)) ? 1 : 0))
 #ifdef MAX_SKB_FRAGS
@@ -183,11 +222,16 @@ static void ixgbevf_unmap_and_free_tx_resource(struct ixgbevf_adapter *adapter,
 #else
 #define DESC_NEEDED TXD_USE_COUNT(IXGBE_MAX_DATA_PER_TXD)
 #endif
+=======
+#define TXD_USE_COUNT(S) DIV_ROUND_UP((S), IXGBE_MAX_DATA_PER_TXD)
+#define DESC_NEEDED (MAX_SKB_FRAGS + 4)
+>>>>>>> refs/remotes/origin/master
 
 static void ixgbevf_tx_timeout(struct net_device *netdev);
 
 /**
  * ixgbevf_clean_tx_irq - Reclaim resources after transmit completes
+<<<<<<< HEAD
  * @adapter: board private structure
  * @tx_ring: tx ring to clean
  **/
@@ -217,6 +261,48 @@ static bool ixgbevf_clean_tx_irq(struct ixgbevf_adapter *adapter,
 			tx_desc = IXGBE_TX_DESC_ADV(*tx_ring, i);
 			tx_buffer_info = &tx_ring->tx_buffer_info[i];
 			cleaned = (i == eop);
+=======
+ * @q_vector: board private structure
+ * @tx_ring: tx ring to clean
+ **/
+static bool ixgbevf_clean_tx_irq(struct ixgbevf_q_vector *q_vector,
+				 struct ixgbevf_ring *tx_ring)
+{
+	struct ixgbevf_adapter *adapter = q_vector->adapter;
+	union ixgbe_adv_tx_desc *tx_desc, *eop_desc;
+	struct ixgbevf_tx_buffer *tx_buffer_info;
+	unsigned int i, count = 0;
+	unsigned int total_bytes = 0, total_packets = 0;
+
+	if (test_bit(__IXGBEVF_DOWN, &adapter->state))
+		return true;
+
+	i = tx_ring->next_to_clean;
+	tx_buffer_info = &tx_ring->tx_buffer_info[i];
+	eop_desc = tx_buffer_info->next_to_watch;
+
+	do {
+		bool cleaned = false;
+
+		/* if next_to_watch is not set then there is no work pending */
+		if (!eop_desc)
+			break;
+
+		/* prevent any other reads prior to eop_desc */
+		read_barrier_depends();
+
+		/* if DD is not set pending work has not been completed */
+		if (!(eop_desc->wb.status & cpu_to_le32(IXGBE_TXD_STAT_DD)))
+			break;
+
+		/* clear next_to_watch to prevent false hangs */
+		tx_buffer_info->next_to_watch = NULL;
+
+		for ( ; !cleaned; count++) {
+			struct sk_buff *skb;
+			tx_desc = IXGBEVF_TX_DESC(tx_ring, i);
+			cleaned = (tx_desc == eop_desc);
+>>>>>>> refs/remotes/origin/master
 			skb = tx_buffer_info->skb;
 
 			if (cleaned && skb) {
@@ -231,7 +317,11 @@ static bool ixgbevf_clean_tx_irq(struct ixgbevf_adapter *adapter,
 				total_bytes += bytecount;
 			}
 
+<<<<<<< HEAD
 			ixgbevf_unmap_and_free_tx_resource(adapter,
+=======
+			ixgbevf_unmap_and_free_tx_resource(tx_ring,
+>>>>>>> refs/remotes/origin/master
 							   tx_buffer_info);
 
 			tx_desc->wb.status = 0;
@@ -239,22 +329,37 @@ static bool ixgbevf_clean_tx_irq(struct ixgbevf_adapter *adapter,
 			i++;
 			if (i == tx_ring->count)
 				i = 0;
+<<<<<<< HEAD
 		}
 
 cont_loop:
 		eop = tx_ring->tx_buffer_info[i].next_to_watch;
 		eop_desc = IXGBE_TX_DESC_ADV(*tx_ring, eop);
 	}
+=======
+
+			tx_buffer_info = &tx_ring->tx_buffer_info[i];
+		}
+
+		eop_desc = tx_buffer_info->next_to_watch;
+	} while (count < tx_ring->count);
+>>>>>>> refs/remotes/origin/master
 
 	tx_ring->next_to_clean = i;
 
 #define TX_WAKE_THRESHOLD (DESC_NEEDED * 2)
+<<<<<<< HEAD
 	if (unlikely(count && netif_carrier_ok(netdev) &&
 		     (IXGBE_DESC_UNUSED(tx_ring) >= TX_WAKE_THRESHOLD))) {
+=======
+	if (unlikely(count && netif_carrier_ok(tx_ring->netdev) &&
+		     (ixgbevf_desc_unused(tx_ring) >= TX_WAKE_THRESHOLD))) {
+>>>>>>> refs/remotes/origin/master
 		/* Make sure that anybody stopping the queue after this
 		 * sees the new next_to_clean.
 		 */
 		smp_mb();
+<<<<<<< HEAD
 #ifdef HAVE_TX_MQ
 		if (__netif_subqueue_stopped(netdev, tx_ring->queue_index) &&
 		    !test_bit(__IXGBEVF_DOWN, &adapter->state)) {
@@ -274,14 +379,30 @@ cont_loop:
 	if ((count >= tx_ring->work_limit) &&
 	    (!test_bit(__IXGBEVF_DOWN, &adapter->state))) {
 		IXGBE_WRITE_REG(hw, IXGBE_VTEICS, tx_ring->v_idx);
+=======
+		if (__netif_subqueue_stopped(tx_ring->netdev,
+					     tx_ring->queue_index) &&
+		    !test_bit(__IXGBEVF_DOWN, &adapter->state)) {
+			netif_wake_subqueue(tx_ring->netdev,
+					    tx_ring->queue_index);
+			++adapter->restart_queue;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	u64_stats_update_begin(&tx_ring->syncp);
 	tx_ring->total_bytes += total_bytes;
 	tx_ring->total_packets += total_packets;
 	u64_stats_update_end(&tx_ring->syncp);
+<<<<<<< HEAD
 
 	return count < tx_ring->work_limit;
+=======
+	q_vector->tx.total_bytes += total_bytes;
+	q_vector->tx.total_packets += total_packets;
+
+	return count < tx_ring->count;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -289,18 +410,25 @@ cont_loop:
  * @q_vector: structure containing interrupt and ring information
  * @skb: packet to send up
  * @status: hardware indication of status of receive
+<<<<<<< HEAD
  * @rx_ring: rx descriptor ring (for a specific queue) to setup
+=======
+>>>>>>> refs/remotes/origin/master
  * @rx_desc: rx descriptor
  **/
 static void ixgbevf_receive_skb(struct ixgbevf_q_vector *q_vector,
 				struct sk_buff *skb, u8 status,
+<<<<<<< HEAD
 				struct ixgbevf_ring *ring,
+=======
+>>>>>>> refs/remotes/origin/master
 				union ixgbe_adv_rx_desc *rx_desc)
 {
 	struct ixgbevf_adapter *adapter = q_vector->adapter;
 	bool is_vlan = (status & IXGBE_RXD_STAT_VP);
 	u16 tag = le16_to_cpu(rx_desc->wb.upper.vlan);
 
+<<<<<<< HEAD
 	if (is_vlan && test_bit(tag, adapter->active_vlans))
 		__vlan_hwaccel_put_tag(skb, tag);
 
@@ -308,27 +436,76 @@ static void ixgbevf_receive_skb(struct ixgbevf_q_vector *q_vector,
 			napi_gro_receive(&q_vector->napi, skb);
 	else
 			netif_rx(skb);
+=======
+	if (is_vlan && test_bit(tag & VLAN_VID_MASK, adapter->active_vlans))
+		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), tag);
+
+	if (!(adapter->flags & IXGBE_FLAG_IN_NETPOLL))
+		napi_gro_receive(&q_vector->napi, skb);
+	else
+		netif_rx(skb);
+}
+
+/**
+ * ixgbevf_rx_skb - Helper function to determine proper Rx method
+ * @q_vector: structure containing interrupt and ring information
+ * @skb: packet to send up
+ * @status: hardware indication of status of receive
+ * @rx_desc: rx descriptor
+ **/
+static void ixgbevf_rx_skb(struct ixgbevf_q_vector *q_vector,
+			   struct sk_buff *skb, u8 status,
+			   union ixgbe_adv_rx_desc *rx_desc)
+{
+#ifdef CONFIG_NET_RX_BUSY_POLL
+	skb_mark_napi_id(skb, &q_vector->napi);
+
+	if (ixgbevf_qv_busy_polling(q_vector)) {
+		netif_receive_skb(skb);
+		/* exit early if we busy polled */
+		return;
+	}
+#endif /* CONFIG_NET_RX_BUSY_POLL */
+
+	ixgbevf_receive_skb(q_vector, skb, status, rx_desc);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * ixgbevf_rx_checksum - indicate in skb if hw indicated a good cksum
+<<<<<<< HEAD
  * @adapter: address of board private structure
  * @status_err: hardware indication of status of receive
  * @skb: skb currently being received and modified
  **/
 static inline void ixgbevf_rx_checksum(struct ixgbevf_adapter *adapter,
+=======
+ * @ring: pointer to Rx descriptor ring structure
+ * @status_err: hardware indication of status of receive
+ * @skb: skb currently being received and modified
+ **/
+static inline void ixgbevf_rx_checksum(struct ixgbevf_ring *ring,
+>>>>>>> refs/remotes/origin/master
 				       u32 status_err, struct sk_buff *skb)
 {
 	skb_checksum_none_assert(skb);
 
 	/* Rx csum disabled */
+<<<<<<< HEAD
 	if (!(adapter->flags & IXGBE_FLAG_RX_CSUM_ENABLED))
+=======
+	if (!(ring->netdev->features & NETIF_F_RXCSUM))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	/* if IP and error */
 	if ((status_err & IXGBE_RXD_STAT_IPCS) &&
 	    (status_err & IXGBE_RXDADV_ERR_IPE)) {
+<<<<<<< HEAD
 		adapter->hw_csum_rx_error++;
+=======
+		ring->hw_csum_rx_error++;
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -336,13 +513,21 @@ static inline void ixgbevf_rx_checksum(struct ixgbevf_adapter *adapter,
 		return;
 
 	if (status_err & IXGBE_RXDADV_ERR_TCPE) {
+<<<<<<< HEAD
 		adapter->hw_csum_rx_error++;
+=======
+		ring->hw_csum_rx_error++;
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	/* It must be a TCP or UDP packet with a valid checksum */
 	skb->ip_summed = CHECKSUM_UNNECESSARY;
+<<<<<<< HEAD
 	adapter->hw_csum_rx_good++;
+=======
+	ring->hw_csum_rx_good++;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -356,6 +541,7 @@ static void ixgbevf_alloc_rx_buffers(struct ixgbevf_adapter *adapter,
 	struct pci_dev *pdev = adapter->pdev;
 	union ixgbe_adv_rx_desc *rx_desc;
 	struct ixgbevf_rx_buffer *bi;
+<<<<<<< HEAD
 	struct sk_buff *skb;
 	unsigned int i;
 	unsigned int bufsz = rx_ring->rx_buf_len + NET_IP_ALIGN;
@@ -391,10 +577,25 @@ static void ixgbevf_alloc_rx_buffers(struct ixgbevf_adapter *adapter,
 			skb = netdev_alloc_skb(adapter->netdev,
 							       bufsz);
 
+=======
+	unsigned int i = rx_ring->next_to_use;
+
+	bi = &rx_ring->rx_buffer_info[i];
+
+	while (cleaned_count--) {
+		rx_desc = IXGBEVF_RX_DESC(rx_ring, i);
+
+		if (!bi->skb) {
+			struct sk_buff *skb;
+
+			skb = netdev_alloc_skb_ip_align(rx_ring->netdev,
+							rx_ring->rx_buf_len);
+>>>>>>> refs/remotes/origin/master
 			if (!skb) {
 				adapter->alloc_rx_buff_failed++;
 				goto no_buffers;
 			}
+<<<<<<< HEAD
 
 			/*
 			 * Make buffer alignment 2 beyond a 16 byte boundary
@@ -418,6 +619,21 @@ static void ixgbevf_alloc_rx_buffers(struct ixgbevf_adapter *adapter,
 		} else {
 			rx_desc->read.pkt_addr = cpu_to_le64(bi->dma);
 		}
+=======
+			bi->skb = skb;
+
+			bi->dma = dma_map_single(&pdev->dev, skb->data,
+						 rx_ring->rx_buf_len,
+						 DMA_FROM_DEVICE);
+			if (dma_mapping_error(&pdev->dev, bi->dma)) {
+				dev_kfree_skb(skb);
+				bi->skb = NULL;
+				dev_err(&pdev->dev, "RX DMA map failed\n");
+				break;
+			}
+		}
+		rx_desc->read.pkt_addr = cpu_to_le64(bi->dma);
+>>>>>>> refs/remotes/origin/master
 
 		i++;
 		if (i == rx_ring->count)
@@ -428,14 +644,18 @@ static void ixgbevf_alloc_rx_buffers(struct ixgbevf_adapter *adapter,
 no_buffers:
 	if (rx_ring->next_to_use != i) {
 		rx_ring->next_to_use = i;
+<<<<<<< HEAD
 		if (i-- == 0)
 			i = (rx_ring->count - 1);
 
+=======
+>>>>>>> refs/remotes/origin/master
 		ixgbevf_release_rx_desc(&adapter->hw, rx_ring, i);
 	}
 }
 
 static inline void ixgbevf_irq_enable_queues(struct ixgbevf_adapter *adapter,
+<<<<<<< HEAD
 					     u64 qmask)
 {
 	u32 mask;
@@ -458,6 +678,18 @@ static inline u16 ixgbevf_get_pkt_info(union ixgbe_adv_rx_desc *rx_desc)
 static bool ixgbevf_clean_rx_irq(struct ixgbevf_q_vector *q_vector,
 				 struct ixgbevf_ring *rx_ring,
 				 int *work_done, int work_to_do)
+=======
+					     u32 qmask)
+{
+	struct ixgbe_hw *hw = &adapter->hw;
+
+	IXGBE_WRITE_REG(hw, IXGBE_VTEIMS, qmask);
+}
+
+static int ixgbevf_clean_rx_irq(struct ixgbevf_q_vector *q_vector,
+				struct ixgbevf_ring *rx_ring,
+				int budget)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ixgbevf_adapter *adapter = q_vector->adapter;
 	struct pci_dev *pdev = adapter->pdev;
@@ -466,17 +698,25 @@ static bool ixgbevf_clean_rx_irq(struct ixgbevf_q_vector *q_vector,
 	struct sk_buff *skb;
 	unsigned int i;
 	u32 len, staterr;
+<<<<<<< HEAD
 	u16 hdr_info;
 	bool cleaned = false;
+=======
+>>>>>>> refs/remotes/origin/master
 	int cleaned_count = 0;
 	unsigned int total_rx_bytes = 0, total_rx_packets = 0;
 
 	i = rx_ring->next_to_clean;
+<<<<<<< HEAD
 	rx_desc = IXGBE_RX_DESC_ADV(*rx_ring, i);
+=======
+	rx_desc = IXGBEVF_RX_DESC(rx_ring, i);
+>>>>>>> refs/remotes/origin/master
 	staterr = le32_to_cpu(rx_desc->wb.upper.status_error);
 	rx_buffer_info = &rx_ring->rx_buffer_info[i];
 
 	while (staterr & IXGBE_RXD_STAT_DD) {
+<<<<<<< HEAD
 		u32 upper_len = 0;
 		if (*work_done >= work_to_do)
 			break;
@@ -496,6 +736,14 @@ static bool ixgbevf_clean_rx_irq(struct ixgbevf_q_vector *q_vector,
 			len = le16_to_cpu(rx_desc->wb.upper.length);
 		}
 		cleaned = true;
+=======
+		if (!budget)
+			break;
+		budget--;
+
+		rmb(); /* read descriptor and rx_buffer_info after status DD */
+		len = le16_to_cpu(rx_desc->wb.upper.length);
+>>>>>>> refs/remotes/origin/master
 		skb = rx_buffer_info->skb;
 		prefetch(skb->data - NET_IP_ALIGN);
 		rx_buffer_info->skb = NULL;
@@ -508,6 +756,7 @@ static bool ixgbevf_clean_rx_irq(struct ixgbevf_q_vector *q_vector,
 			skb_put(skb, len);
 		}
 
+<<<<<<< HEAD
 		if (upper_len) {
 			dma_unmap_page(&pdev->dev, rx_buffer_info->page_dma,
 				       PAGE_SIZE / 2, DMA_FROM_DEVICE);
@@ -528,17 +777,24 @@ static bool ixgbevf_clean_rx_irq(struct ixgbevf_q_vector *q_vector,
 			skb->truesize += upper_len;
 		}
 
+=======
+>>>>>>> refs/remotes/origin/master
 		i++;
 		if (i == rx_ring->count)
 			i = 0;
 
+<<<<<<< HEAD
 		next_rxd = IXGBE_RX_DESC_ADV(*rx_ring, i);
+=======
+		next_rxd = IXGBEVF_RX_DESC(rx_ring, i);
+>>>>>>> refs/remotes/origin/master
 		prefetch(next_rxd);
 		cleaned_count++;
 
 		next_buffer = &rx_ring->rx_buffer_info[i];
 
 		if (!(staterr & IXGBE_RXD_STAT_EOP)) {
+<<<<<<< HEAD
 			if (adapter->flags & IXGBE_FLAG_RX_PS_ENABLED) {
 				rx_buffer_info->skb = next_buffer->skb;
 				rx_buffer_info->dma = next_buffer->dma;
@@ -548,22 +804,44 @@ static bool ixgbevf_clean_rx_irq(struct ixgbevf_q_vector *q_vector,
 				skb->next = next_buffer->skb;
 				skb->next->prev = skb;
 			}
+=======
+			skb->next = next_buffer->skb;
+			IXGBE_CB(skb->next)->prev = skb;
+>>>>>>> refs/remotes/origin/master
 			adapter->non_eop_descs++;
 			goto next_desc;
 		}
 
+<<<<<<< HEAD
+=======
+		/* we should not be chaining buffers, if we did drop the skb */
+		if (IXGBE_CB(skb)->prev) {
+			do {
+				struct sk_buff *this = skb;
+				skb = IXGBE_CB(skb)->prev;
+				dev_kfree_skb(this);
+			} while (skb);
+			goto next_desc;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		/* ERR_MASK will only have valid bits if EOP set */
 		if (unlikely(staterr & IXGBE_RXDADV_ERR_FRAME_ERR_MASK)) {
 			dev_kfree_skb_irq(skb);
 			goto next_desc;
 		}
 
+<<<<<<< HEAD
 		ixgbevf_rx_checksum(adapter, staterr, skb);
+=======
+		ixgbevf_rx_checksum(rx_ring, staterr, skb);
+>>>>>>> refs/remotes/origin/master
 
 		/* probably a little skewed due to removing CRC */
 		total_rx_bytes += skb->len;
 		total_rx_packets++;
 
+<<<<<<< HEAD
 		/*
 		 * Work around issue of some types of VM to VM loop back
 		 * packets not getting split correctly
@@ -576,6 +854,21 @@ static bool ixgbevf_clean_rx_irq(struct ixgbevf_q_vector *q_vector,
 		skb->protocol = eth_type_trans(skb, adapter->netdev);
 
 		ixgbevf_receive_skb(q_vector, skb, staterr, rx_ring, rx_desc);
+=======
+		skb->protocol = eth_type_trans(skb, rx_ring->netdev);
+
+		/* Workaround hardware that can't do proper VEPA multicast
+		 * source pruning.
+		 */
+		if ((skb->pkt_type & (PACKET_BROADCAST | PACKET_MULTICAST)) &&
+		    ether_addr_equal(adapter->netdev->dev_addr,
+				     eth_hdr(skb)->h_source)) {
+			dev_kfree_skb_irq(skb);
+			goto next_desc;
+		}
+
+		ixgbevf_rx_skb(q_vector, skb, staterr, rx_desc);
+>>>>>>> refs/remotes/origin/master
 
 next_desc:
 		rx_desc->wb.upper.status_error = 0;
@@ -595,7 +888,11 @@ next_desc:
 	}
 
 	rx_ring->next_to_clean = i;
+<<<<<<< HEAD
 	cleaned_count = IXGBE_DESC_UNUSED(rx_ring);
+=======
+	cleaned_count = ixgbevf_desc_unused(rx_ring);
+>>>>>>> refs/remotes/origin/master
 
 	if (cleaned_count)
 		ixgbevf_alloc_rx_buffers(adapter, rx_ring, cleaned_count);
@@ -604,6 +901,7 @@ next_desc:
 	rx_ring->total_packets += total_rx_packets;
 	rx_ring->total_bytes += total_rx_bytes;
 	u64_stats_update_end(&rx_ring->syncp);
+<<<<<<< HEAD
 
 	return cleaned;
 }
@@ -617,10 +915,28 @@ next_desc:
  * q_vector!!!
  **/
 static int ixgbevf_clean_rxonly(struct napi_struct *napi, int budget)
+=======
+	q_vector->rx.total_packets += total_rx_packets;
+	q_vector->rx.total_bytes += total_rx_bytes;
+
+	return total_rx_packets;
+}
+
+/**
+ * ixgbevf_poll - NAPI polling calback
+ * @napi: napi struct with our devices info in it
+ * @budget: amount of work driver is allowed to do this pass, in packets
+ *
+ * This function will clean more than one or more rings associated with a
+ * q_vector.
+ **/
+static int ixgbevf_poll(struct napi_struct *napi, int budget)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ixgbevf_q_vector *q_vector =
 		container_of(napi, struct ixgbevf_q_vector, napi);
 	struct ixgbevf_adapter *adapter = q_vector->adapter;
+<<<<<<< HEAD
 	struct ixgbevf_ring *rx_ring = NULL;
 	int work_done = 0;
 	long r_idx;
@@ -693,6 +1009,105 @@ static int ixgbevf_clean_rxonly_many(struct napi_struct *napi, int budget)
 	return work_done;
 }
 
+=======
+	struct ixgbevf_ring *ring;
+	int per_ring_budget;
+	bool clean_complete = true;
+
+	ixgbevf_for_each_ring(ring, q_vector->tx)
+		clean_complete &= ixgbevf_clean_tx_irq(q_vector, ring);
+
+#ifdef CONFIG_NET_RX_BUSY_POLL
+	if (!ixgbevf_qv_lock_napi(q_vector))
+		return budget;
+#endif
+
+	/* attempt to distribute budget to each queue fairly, but don't allow
+	 * the budget to go below 1 because we'll exit polling */
+	if (q_vector->rx.count > 1)
+		per_ring_budget = max(budget/q_vector->rx.count, 1);
+	else
+		per_ring_budget = budget;
+
+	adapter->flags |= IXGBE_FLAG_IN_NETPOLL;
+	ixgbevf_for_each_ring(ring, q_vector->rx)
+		clean_complete &= (ixgbevf_clean_rx_irq(q_vector, ring,
+							per_ring_budget)
+				   < per_ring_budget);
+	adapter->flags &= ~IXGBE_FLAG_IN_NETPOLL;
+
+#ifdef CONFIG_NET_RX_BUSY_POLL
+	ixgbevf_qv_unlock_napi(q_vector);
+#endif
+
+	/* If all work not completed, return budget and keep polling */
+	if (!clean_complete)
+		return budget;
+	/* all work done, exit the polling mode */
+	napi_complete(napi);
+	if (adapter->rx_itr_setting & 1)
+		ixgbevf_set_itr(q_vector);
+	if (!test_bit(__IXGBEVF_DOWN, &adapter->state))
+		ixgbevf_irq_enable_queues(adapter,
+					  1 << q_vector->v_idx);
+
+	return 0;
+}
+
+/**
+ * ixgbevf_write_eitr - write VTEITR register in hardware specific way
+ * @q_vector: structure containing interrupt and ring information
+ */
+void ixgbevf_write_eitr(struct ixgbevf_q_vector *q_vector)
+{
+	struct ixgbevf_adapter *adapter = q_vector->adapter;
+	struct ixgbe_hw *hw = &adapter->hw;
+	int v_idx = q_vector->v_idx;
+	u32 itr_reg = q_vector->itr & IXGBE_MAX_EITR;
+
+	/*
+	 * set the WDIS bit to not clear the timer bits and cause an
+	 * immediate assertion of the interrupt
+	 */
+	itr_reg |= IXGBE_EITR_CNT_WDIS;
+
+	IXGBE_WRITE_REG(hw, IXGBE_VTEITR(v_idx), itr_reg);
+}
+
+#ifdef CONFIG_NET_RX_BUSY_POLL
+/* must be called with local_bh_disable()d */
+static int ixgbevf_busy_poll_recv(struct napi_struct *napi)
+{
+	struct ixgbevf_q_vector *q_vector =
+			container_of(napi, struct ixgbevf_q_vector, napi);
+	struct ixgbevf_adapter *adapter = q_vector->adapter;
+	struct ixgbevf_ring  *ring;
+	int found = 0;
+
+	if (test_bit(__IXGBEVF_DOWN, &adapter->state))
+		return LL_FLUSH_FAILED;
+
+	if (!ixgbevf_qv_lock_poll(q_vector))
+		return LL_FLUSH_BUSY;
+
+	ixgbevf_for_each_ring(ring, q_vector->rx) {
+		found = ixgbevf_clean_rx_irq(q_vector, ring, 4);
+#ifdef BP_EXTENDED_STATS
+		if (found)
+			ring->bp_cleaned += found;
+		else
+			ring->bp_misses++;
+#endif
+		if (found)
+			break;
+	}
+
+	ixgbevf_qv_unlock_poll(q_vector);
+
+	return found;
+}
+#endif /* CONFIG_NET_RX_BUSY_POLL */
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ixgbevf_configure_msix - Configure MSI-X hardware
@@ -704,17 +1119,25 @@ static int ixgbevf_clean_rxonly_many(struct napi_struct *napi, int budget)
 static void ixgbevf_configure_msix(struct ixgbevf_adapter *adapter)
 {
 	struct ixgbevf_q_vector *q_vector;
+<<<<<<< HEAD
 	struct ixgbe_hw *hw = &adapter->hw;
 	int i, j, q_vectors, v_idx, r_idx;
 	u32 mask;
 
 	q_vectors = adapter->num_msix_vectors - NON_Q_VECTORS;
+=======
+	int q_vectors, v_idx;
+
+	q_vectors = adapter->num_msix_vectors - NON_Q_VECTORS;
+	adapter->eims_enable_mask = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Populate the IVAR table and set the ITR values to the
 	 * corresponding register.
 	 */
 	for (v_idx = 0; v_idx < q_vectors; v_idx++) {
+<<<<<<< HEAD
 		q_vector = adapter->q_vector[v_idx];
 		/* XXX for_each_set_bit(...) */
 		r_idx = find_first_bit(q_vector->rxr_idx,
@@ -754,6 +1177,41 @@ static void ixgbevf_configure_msix(struct ixgbevf_adapter *adapter)
 	mask = IXGBE_EIMS_ENABLE_MASK;
 	mask &= ~IXGBE_EIMS_OTHER;
 	IXGBE_WRITE_REG(hw, IXGBE_VTEIAC, mask);
+=======
+		struct ixgbevf_ring *ring;
+		q_vector = adapter->q_vector[v_idx];
+
+		ixgbevf_for_each_ring(ring, q_vector->rx)
+			ixgbevf_set_ivar(adapter, 0, ring->reg_idx, v_idx);
+
+		ixgbevf_for_each_ring(ring, q_vector->tx)
+			ixgbevf_set_ivar(adapter, 1, ring->reg_idx, v_idx);
+
+		if (q_vector->tx.ring && !q_vector->rx.ring) {
+			/* tx only vector */
+			if (adapter->tx_itr_setting == 1)
+				q_vector->itr = IXGBE_10K_ITR;
+			else
+				q_vector->itr = adapter->tx_itr_setting;
+		} else {
+			/* rx or rx/tx vector */
+			if (adapter->rx_itr_setting == 1)
+				q_vector->itr = IXGBE_20K_ITR;
+			else
+				q_vector->itr = adapter->rx_itr_setting;
+		}
+
+		/* add q_vector eims value to global eims_enable_mask */
+		adapter->eims_enable_mask |= 1 << v_idx;
+
+		ixgbevf_write_eitr(q_vector);
+	}
+
+	ixgbevf_set_ivar(adapter, -1, 1, v_idx);
+	/* setup eims_other and add value to global eims_enable_mask */
+	adapter->eims_other = 1 << v_idx;
+	adapter->eims_enable_mask |= adapter->eims_other;
+>>>>>>> refs/remotes/origin/master
 }
 
 enum latency_range {
@@ -765,11 +1223,16 @@ enum latency_range {
 
 /**
  * ixgbevf_update_itr - update the dynamic ITR value based on statistics
+<<<<<<< HEAD
  * @adapter: pointer to adapter
  * @eitr: eitr setting (ints per sec) to give last timeslice
  * @itr_setting: current throttle rate in ints/second
  * @packets: the number of packets during this measurement interval
  * @bytes: the number of bytes during this measurement interval
+=======
+ * @q_vector: structure containing interrupt and ring information
+ * @ring_container: structure containing ring performance data
+>>>>>>> refs/remotes/origin/master
  *
  *      Stores a new ITR value based on packets and byte
  *      counts during the last interrupt.  The advantage of per interrupt
@@ -779,6 +1242,7 @@ enum latency_range {
  *      on testing data as well as attempting to minimize response time
  *      while increasing bulk throughput.
  **/
+<<<<<<< HEAD
 static u8 ixgbevf_update_itr(struct ixgbevf_adapter *adapter,
 			     u32 eitr, u8 itr_setting,
 			     int packets, int bytes)
@@ -790,6 +1254,19 @@ static u8 ixgbevf_update_itr(struct ixgbevf_adapter *adapter,
 	if (packets == 0)
 		goto update_itr_done;
 
+=======
+static void ixgbevf_update_itr(struct ixgbevf_q_vector *q_vector,
+			       struct ixgbevf_ring_container *ring_container)
+{
+	int bytes = ring_container->total_bytes;
+	int packets = ring_container->total_packets;
+	u32 timepassed_us;
+	u64 bytes_perint;
+	u8 itr_setting = ring_container->itr;
+
+	if (packets == 0)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	/* simple throttlerate management
 	 *    0-20MB/s lowest (100000 ints/s)
@@ -797,11 +1274,16 @@ static u8 ixgbevf_update_itr(struct ixgbevf_adapter *adapter,
 	 *  100-1249MB/s bulk (8000 ints/s)
 	 */
 	/* what was last interrupt timeslice? */
+<<<<<<< HEAD
 	timepassed_us = 1000000/eitr;
+=======
+	timepassed_us = q_vector->itr >> 2;
+>>>>>>> refs/remotes/origin/master
 	bytes_perint = bytes / timepassed_us; /* bytes/usec */
 
 	switch (itr_setting) {
 	case lowest_latency:
+<<<<<<< HEAD
 		if (bytes_perint > adapter->eitr_low)
 			retval = low_latency;
 		break;
@@ -886,10 +1368,45 @@ static void ixgbevf_set_itr_msix(struct ixgbevf_q_vector *q_vector)
 	}
 
 	current_itr = max(q_vector->rx_itr, q_vector->tx_itr);
+=======
+		if (bytes_perint > 10)
+			itr_setting = low_latency;
+		break;
+	case low_latency:
+		if (bytes_perint > 20)
+			itr_setting = bulk_latency;
+		else if (bytes_perint <= 10)
+			itr_setting = lowest_latency;
+		break;
+	case bulk_latency:
+		if (bytes_perint <= 20)
+			itr_setting = low_latency;
+		break;
+	}
+
+	/* clear work counters since we have the values we need */
+	ring_container->total_bytes = 0;
+	ring_container->total_packets = 0;
+
+	/* write updated itr to ring container */
+	ring_container->itr = itr_setting;
+}
+
+static void ixgbevf_set_itr(struct ixgbevf_q_vector *q_vector)
+{
+	u32 new_itr = q_vector->itr;
+	u8 current_itr;
+
+	ixgbevf_update_itr(q_vector, &q_vector->tx);
+	ixgbevf_update_itr(q_vector, &q_vector->rx);
+
+	current_itr = max(q_vector->rx.itr, q_vector->tx.itr);
+>>>>>>> refs/remotes/origin/master
 
 	switch (current_itr) {
 	/* counts and packets in update_itr are dependent on these numbers */
 	case lowest_latency:
+<<<<<<< HEAD
 		new_itr = 100000;
 		break;
 	case low_latency:
@@ -978,11 +1495,48 @@ static irqreturn_t ixgbevf_msix_clean_tx(int irq, void *data)
 
 	if (adapter->itr_setting & 1)
 		ixgbevf_set_itr_msix(q_vector);
+=======
+		new_itr = IXGBE_100K_ITR;
+		break;
+	case low_latency:
+		new_itr = IXGBE_20K_ITR;
+		break;
+	case bulk_latency:
+	default:
+		new_itr = IXGBE_8K_ITR;
+		break;
+	}
+
+	if (new_itr != q_vector->itr) {
+		/* do an exponential smoothing */
+		new_itr = (10 * new_itr * q_vector->itr) /
+			  ((9 * new_itr) + q_vector->itr);
+
+		/* save the algorithm value here */
+		q_vector->itr = new_itr;
+
+		ixgbevf_write_eitr(q_vector);
+	}
+}
+
+static irqreturn_t ixgbevf_msix_other(int irq, void *data)
+{
+	struct ixgbevf_adapter *adapter = data;
+	struct ixgbe_hw *hw = &adapter->hw;
+
+	hw->mac.get_link_status = 1;
+
+	if (!test_bit(__IXGBEVF_DOWN, &adapter->state))
+		mod_timer(&adapter->watchdog_timer, jiffies);
+
+	IXGBE_WRITE_REG(hw, IXGBE_VTEIMS, adapter->eims_other);
+>>>>>>> refs/remotes/origin/master
 
 	return IRQ_HANDLED;
 }
 
 /**
+<<<<<<< HEAD
  * ixgbevf_msix_clean_rx - single unshared vector rx clean (all queues)
  * @irq: unused
  * @data: pointer to our q_vector struct for this interrupt vector
@@ -1022,6 +1576,19 @@ static irqreturn_t ixgbevf_msix_clean_many(int irq, void *data)
 {
 	ixgbevf_msix_clean_rx(irq, data);
 	ixgbevf_msix_clean_tx(irq, data);
+=======
+ * ixgbevf_msix_clean_rings - single unshared vector rx clean (all queues)
+ * @irq: unused
+ * @data: pointer to our q_vector struct for this interrupt vector
+ **/
+static irqreturn_t ixgbevf_msix_clean_rings(int irq, void *data)
+{
+	struct ixgbevf_q_vector *q_vector = data;
+
+	/* EIAM disabled interrupts (on this vector) for us */
+	if (q_vector->rx.ring || q_vector->tx.ring)
+		napi_schedule(&q_vector->napi);
+>>>>>>> refs/remotes/origin/master
 
 	return IRQ_HANDLED;
 }
@@ -1031,9 +1598,15 @@ static inline void map_vector_to_rxq(struct ixgbevf_adapter *a, int v_idx,
 {
 	struct ixgbevf_q_vector *q_vector = a->q_vector[v_idx];
 
+<<<<<<< HEAD
 	set_bit(r_idx, q_vector->rxr_idx);
 	q_vector->rxr_count++;
 	a->rx_ring[r_idx].v_idx = 1 << v_idx;
+=======
+	a->rx_ring[r_idx].next = q_vector->rx.ring;
+	q_vector->rx.ring = &a->rx_ring[r_idx];
+	q_vector->rx.count++;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void map_vector_to_txq(struct ixgbevf_adapter *a, int v_idx,
@@ -1041,9 +1614,15 @@ static inline void map_vector_to_txq(struct ixgbevf_adapter *a, int v_idx,
 {
 	struct ixgbevf_q_vector *q_vector = a->q_vector[v_idx];
 
+<<<<<<< HEAD
 	set_bit(t_idx, q_vector->txr_idx);
 	q_vector->txr_count++;
 	a->tx_ring[t_idx].v_idx = 1 << v_idx;
+=======
+	a->tx_ring[t_idx].next = q_vector->tx.ring;
+	q_vector->tx.ring = &a->tx_ring[t_idx];
+	q_vector->tx.count++;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1119,6 +1698,7 @@ out:
 static int ixgbevf_request_msix_irqs(struct ixgbevf_adapter *adapter)
 {
 	struct net_device *netdev = adapter->netdev;
+<<<<<<< HEAD
 	irqreturn_t (*handler)(int, void *);
 	int i, vector, q_vectors, err;
 	int ri = 0, ti = 0;
@@ -1143,13 +1723,38 @@ static int ixgbevf_request_msix_irqs(struct ixgbevf_adapter *adapter)
 		} else if (handler == &ixgbevf_msix_clean_many) {
 			sprintf(adapter->name[vector], "%s-%s-%d",
 				netdev->name, "TxRx", vector);
+=======
+	int q_vectors = adapter->num_msix_vectors - NON_Q_VECTORS;
+	int vector, err;
+	int ri = 0, ti = 0;
+
+	for (vector = 0; vector < q_vectors; vector++) {
+		struct ixgbevf_q_vector *q_vector = adapter->q_vector[vector];
+		struct msix_entry *entry = &adapter->msix_entries[vector];
+
+		if (q_vector->tx.ring && q_vector->rx.ring) {
+			snprintf(q_vector->name, sizeof(q_vector->name) - 1,
+				 "%s-%s-%d", netdev->name, "TxRx", ri++);
+			ti++;
+		} else if (q_vector->rx.ring) {
+			snprintf(q_vector->name, sizeof(q_vector->name) - 1,
+				 "%s-%s-%d", netdev->name, "rx", ri++);
+		} else if (q_vector->tx.ring) {
+			snprintf(q_vector->name, sizeof(q_vector->name) - 1,
+				 "%s-%s-%d", netdev->name, "tx", ti++);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			/* skip this unused q_vector */
 			continue;
 		}
+<<<<<<< HEAD
 		err = request_irq(adapter->msix_entries[vector].vector,
 				  handler, 0, adapter->name[vector],
 				  adapter->q_vector[vector]);
+=======
+		err = request_irq(entry->vector, &ixgbevf_msix_clean_rings, 0,
+				  q_vector->name, q_vector);
+>>>>>>> refs/remotes/origin/master
 		if (err) {
 			hw_dbg(&adapter->hw,
 			       "request_irq failed for MSIX interrupt "
@@ -1158,24 +1763,51 @@ static int ixgbevf_request_msix_irqs(struct ixgbevf_adapter *adapter)
 		}
 	}
 
+<<<<<<< HEAD
 	sprintf(adapter->name[vector], "%s:mbx", netdev->name);
 	err = request_irq(adapter->msix_entries[vector].vector,
 			  &ixgbevf_msix_mbx, 0, adapter->name[vector], netdev);
 	if (err) {
 		hw_dbg(&adapter->hw,
 		       "request_irq for msix_mbx failed: %d\n", err);
+=======
+	err = request_irq(adapter->msix_entries[vector].vector,
+			  &ixgbevf_msix_other, 0, netdev->name, adapter);
+	if (err) {
+		hw_dbg(&adapter->hw,
+		       "request_irq for msix_other failed: %d\n", err);
+>>>>>>> refs/remotes/origin/master
 		goto free_queue_irqs;
 	}
 
 	return 0;
 
 free_queue_irqs:
+<<<<<<< HEAD
 	for (i = vector - 1; i >= 0; i--)
 		free_irq(adapter->msix_entries[--vector].vector,
 			 &(adapter->q_vector[i]));
 	pci_disable_msix(adapter->pdev);
 	kfree(adapter->msix_entries);
 	adapter->msix_entries = NULL;
+=======
+	while (vector) {
+		vector--;
+		free_irq(adapter->msix_entries[vector].vector,
+			 adapter->q_vector[vector]);
+	}
+	/* This failure is non-recoverable - it indicates the system is
+	 * out of MSIX vector resources and the VF driver cannot run
+	 * without them.  Set the number of msix vectors to zero
+	 * indicating that not enough can be allocated.  The error
+	 * will be returned to the user indicating device open failed.
+	 * Any further attempts to force the driver to open will also
+	 * fail.  The only way to recover is to unload the driver and
+	 * reload it again.  If the system has recovered some MSIX
+	 * vectors then it may succeed.
+	 */
+	adapter->num_msix_vectors = 0;
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -1185,11 +1817,18 @@ static inline void ixgbevf_reset_q_vectors(struct ixgbevf_adapter *adapter)
 
 	for (i = 0; i < q_vectors; i++) {
 		struct ixgbevf_q_vector *q_vector = adapter->q_vector[i];
+<<<<<<< HEAD
 		bitmap_zero(q_vector->rxr_idx, MAX_RX_QUEUES);
 		bitmap_zero(q_vector->txr_idx, MAX_TX_QUEUES);
 		q_vector->rxr_count = 0;
 		q_vector->txr_count = 0;
 		q_vector->eitr = adapter->eitr_param;
+=======
+		q_vector->rx.ring = NULL;
+		q_vector->tx.ring = NULL;
+		q_vector->rx.count = 0;
+		q_vector->tx.count = 0;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1215,6 +1854,7 @@ static int ixgbevf_request_irq(struct ixgbevf_adapter *adapter)
 
 static void ixgbevf_free_irq(struct ixgbevf_adapter *adapter)
 {
+<<<<<<< HEAD
 	struct net_device *netdev = adapter->netdev;
 	int i, q_vectors;
 
@@ -1226,6 +1866,22 @@ static void ixgbevf_free_irq(struct ixgbevf_adapter *adapter)
 	i--;
 
 	for (; i >= 0; i--) {
+=======
+	int i, q_vectors;
+
+	q_vectors = adapter->num_msix_vectors;
+	i = q_vectors - 1;
+
+	free_irq(adapter->msix_entries[i].vector, adapter);
+	i--;
+
+	for (; i >= 0; i--) {
+		/* free only the irqs that were actually requested */
+		if (!adapter->q_vector[i]->rx.ring &&
+		    !adapter->q_vector[i]->tx.ring)
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		free_irq(adapter->msix_entries[i].vector,
 			 adapter->q_vector[i]);
 	}
@@ -1239,10 +1895,19 @@ static void ixgbevf_free_irq(struct ixgbevf_adapter *adapter)
  **/
 static inline void ixgbevf_irq_disable(struct ixgbevf_adapter *adapter)
 {
+<<<<<<< HEAD
 	int i;
 	struct ixgbe_hw *hw = &adapter->hw;
 
 	IXGBE_WRITE_REG(hw, IXGBE_VTEIMC, ~0);
+=======
+	struct ixgbe_hw *hw = &adapter->hw;
+	int i;
+
+	IXGBE_WRITE_REG(hw, IXGBE_VTEIAM, 0);
+	IXGBE_WRITE_REG(hw, IXGBE_VTEIMC, ~0);
+	IXGBE_WRITE_REG(hw, IXGBE_VTEIAC, 0);
+>>>>>>> refs/remotes/origin/master
 
 	IXGBE_WRITE_FLUSH(hw);
 
@@ -1254,6 +1919,7 @@ static inline void ixgbevf_irq_disable(struct ixgbevf_adapter *adapter)
  * ixgbevf_irq_enable - Enable default interrupt generation settings
  * @adapter: board private structure
  **/
+<<<<<<< HEAD
 static inline void ixgbevf_irq_enable(struct ixgbevf_adapter *adapter,
 				      bool queues, bool flush)
 {
@@ -1271,6 +1937,15 @@ static inline void ixgbevf_irq_enable(struct ixgbevf_adapter *adapter,
 
 	if (flush)
 		IXGBE_WRITE_FLUSH(hw);
+=======
+static inline void ixgbevf_irq_enable(struct ixgbevf_adapter *adapter)
+{
+	struct ixgbe_hw *hw = &adapter->hw;
+
+	IXGBE_WRITE_REG(hw, IXGBE_VTEIAM, adapter->eims_enable_mask);
+	IXGBE_WRITE_REG(hw, IXGBE_VTEIAC, adapter->eims_enable_mask);
+	IXGBE_WRITE_REG(hw, IXGBE_VTEIMS, adapter->eims_enable_mask);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1320,6 +1995,7 @@ static void ixgbevf_configure_srrctl(struct ixgbevf_adapter *adapter, int index)
 
 	srrctl = IXGBE_SRRCTL_DROP_EN;
 
+<<<<<<< HEAD
 	if (adapter->flags & IXGBE_FLAG_RX_PS_ENABLED) {
 		u16 bufsz = IXGBEVF_RXBUFFER_2048;
 		/* grow the amount we can receive on large page machines */
@@ -1346,6 +2022,65 @@ static void ixgbevf_configure_srrctl(struct ixgbevf_adapter *adapter, int index)
 	IXGBE_WRITE_REG(hw, IXGBE_VFSRRCTL(index), srrctl);
 }
 
+=======
+	srrctl |= IXGBE_SRRCTL_DESCTYPE_ADV_ONEBUF;
+
+	srrctl |= ALIGN(rx_ring->rx_buf_len, 1024) >>
+		  IXGBE_SRRCTL_BSIZEPKT_SHIFT;
+
+	IXGBE_WRITE_REG(hw, IXGBE_VFSRRCTL(index), srrctl);
+}
+
+static void ixgbevf_setup_psrtype(struct ixgbevf_adapter *adapter)
+{
+	struct ixgbe_hw *hw = &adapter->hw;
+
+	/* PSRTYPE must be initialized in 82599 */
+	u32 psrtype = IXGBE_PSRTYPE_TCPHDR | IXGBE_PSRTYPE_UDPHDR |
+		      IXGBE_PSRTYPE_IPV4HDR | IXGBE_PSRTYPE_IPV6HDR |
+		      IXGBE_PSRTYPE_L2HDR;
+
+	if (adapter->num_rx_queues > 1)
+		psrtype |= 1 << 29;
+
+	IXGBE_WRITE_REG(hw, IXGBE_VFPSRTYPE, psrtype);
+}
+
+static void ixgbevf_set_rx_buffer_len(struct ixgbevf_adapter *adapter)
+{
+	struct ixgbe_hw *hw = &adapter->hw;
+	struct net_device *netdev = adapter->netdev;
+	int max_frame = netdev->mtu + ETH_HLEN + ETH_FCS_LEN;
+	int i;
+	u16 rx_buf_len;
+
+	/* notify the PF of our intent to use this size of frame */
+	ixgbevf_rlpml_set_vf(hw, max_frame);
+
+	/* PF will allow an extra 4 bytes past for vlan tagged frames */
+	max_frame += VLAN_HLEN;
+
+	/*
+	 * Allocate buffer sizes that fit well into 32K and
+	 * take into account max frame size of 9.5K
+	 */
+	if ((hw->mac.type == ixgbe_mac_X540_vf) &&
+	    (max_frame <= MAXIMUM_ETHERNET_VLAN_SIZE))
+		rx_buf_len = MAXIMUM_ETHERNET_VLAN_SIZE;
+	else if (max_frame <= IXGBEVF_RXBUFFER_2K)
+		rx_buf_len = IXGBEVF_RXBUFFER_2K;
+	else if (max_frame <= IXGBEVF_RXBUFFER_4K)
+		rx_buf_len = IXGBEVF_RXBUFFER_4K;
+	else if (max_frame <= IXGBEVF_RXBUFFER_8K)
+		rx_buf_len = IXGBEVF_RXBUFFER_8K;
+	else
+		rx_buf_len = IXGBEVF_RXBUFFER_10K;
+
+	for (i = 0; i < adapter->num_rx_queues; i++)
+		adapter->rx_ring[i].rx_buf_len = rx_buf_len;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * ixgbevf_configure_rx - Configure 82599 VF Receive Unit after Reset
  * @adapter: board private structure
@@ -1356,6 +2091,7 @@ static void ixgbevf_configure_rx(struct ixgbevf_adapter *adapter)
 {
 	u64 rdba;
 	struct ixgbe_hw *hw = &adapter->hw;
+<<<<<<< HEAD
 	struct net_device *netdev = adapter->netdev;
 	int max_frame = netdev->mtu + ETH_HLEN + ETH_FCS_LEN;
 	int i, j;
@@ -1392,6 +2128,15 @@ static void ixgbevf_configure_rx(struct ixgbevf_adapter *adapter)
 		else
 			rx_buf_len = ALIGN(max_frame, 1024);
 	}
+=======
+	int i, j;
+	u32 rdlen;
+
+	ixgbevf_setup_psrtype(adapter);
+
+	/* set_rx_buffer_len must be called before ring initialization */
+	ixgbevf_set_rx_buffer_len(adapter);
+>>>>>>> refs/remotes/origin/master
 
 	rdlen = adapter->rx_ring[0].count * sizeof(union ixgbe_adv_rx_desc);
 	/* Setup the HW Rx Head and Tail Descriptor Pointers and
@@ -1407,12 +2152,16 @@ static void ixgbevf_configure_rx(struct ixgbevf_adapter *adapter)
 		IXGBE_WRITE_REG(hw, IXGBE_VFRDT(j), 0);
 		adapter->rx_ring[i].head = IXGBE_VFRDH(j);
 		adapter->rx_ring[i].tail = IXGBE_VFRDT(j);
+<<<<<<< HEAD
 		adapter->rx_ring[i].rx_buf_len = rx_buf_len;
+=======
+>>>>>>> refs/remotes/origin/master
 
 		ixgbevf_configure_srrctl(adapter, j);
 	}
 }
 
+<<<<<<< HEAD
 static int ixgbevf_vlan_rx_add_vid(struct net_device *netdev, u16 vid)
 {
 	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
@@ -1437,6 +2186,51 @@ static int ixgbevf_vlan_rx_kill_vid(struct net_device *netdev, u16 vid)
 	clear_bit(vid, adapter->active_vlans);
 
 	return 0;
+=======
+static int ixgbevf_vlan_rx_add_vid(struct net_device *netdev,
+				   __be16 proto, u16 vid)
+{
+	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
+	struct ixgbe_hw *hw = &adapter->hw;
+	int err;
+
+	spin_lock_bh(&adapter->mbx_lock);
+
+	/* add VID to filter table */
+	err = hw->mac.ops.set_vfta(hw, vid, 0, true);
+
+	spin_unlock_bh(&adapter->mbx_lock);
+
+	/* translate error return types so error makes sense */
+	if (err == IXGBE_ERR_MBX)
+		return -EIO;
+
+	if (err == IXGBE_ERR_INVALID_ARGUMENT)
+		return -EACCES;
+
+	set_bit(vid, adapter->active_vlans);
+
+	return err;
+}
+
+static int ixgbevf_vlan_rx_kill_vid(struct net_device *netdev,
+				    __be16 proto, u16 vid)
+{
+	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
+	struct ixgbe_hw *hw = &adapter->hw;
+	int err = -EOPNOTSUPP;
+
+	spin_lock_bh(&adapter->mbx_lock);
+
+	/* remove VID from filter table */
+	err = hw->mac.ops.set_vfta(hw, vid, 0, false);
+
+	spin_unlock_bh(&adapter->mbx_lock);
+
+	clear_bit(vid, adapter->active_vlans);
+
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ixgbevf_restore_vlan(struct ixgbevf_adapter *adapter)
@@ -1444,7 +2238,12 @@ static void ixgbevf_restore_vlan(struct ixgbevf_adapter *adapter)
 	u16 vid;
 
 	for_each_set_bit(vid, adapter->active_vlans, VLAN_N_VID)
+<<<<<<< HEAD
 		ixgbevf_vlan_rx_add_vid(adapter->netdev, vid);
+=======
+		ixgbevf_vlan_rx_add_vid(adapter->netdev,
+					htons(ETH_P_8021Q), vid);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ixgbevf_write_uc_addr_list(struct net_device *netdev)
@@ -1476,23 +2275,44 @@ static int ixgbevf_write_uc_addr_list(struct net_device *netdev)
 }
 
 /**
+<<<<<<< HEAD
  * ixgbevf_set_rx_mode - Multicast set
  * @netdev: network interface device structure
  *
  * The set_rx_method entry point is called whenever the multicast address
  * list or the network interface flags are updated.  This routine is
  * responsible for configuring the hardware for proper multicast mode.
+=======
+ * ixgbevf_set_rx_mode - Multicast and unicast set
+ * @netdev: network interface device structure
+ *
+ * The set_rx_method entry point is called whenever the multicast address
+ * list, unicast address list or the network interface flags are updated.
+ * This routine is responsible for configuring the hardware for proper
+ * multicast mode and configuring requested unicast filters.
+>>>>>>> refs/remotes/origin/master
  **/
 static void ixgbevf_set_rx_mode(struct net_device *netdev)
 {
 	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
 	struct ixgbe_hw *hw = &adapter->hw;
 
+<<<<<<< HEAD
 	/* reprogram multicast list */
 	if (hw->mac.ops.update_mc_addr_list)
 		hw->mac.ops.update_mc_addr_list(hw, netdev);
 
 	ixgbevf_write_uc_addr_list(netdev);
+=======
+	spin_lock_bh(&adapter->mbx_lock);
+
+	/* reprogram multicast list */
+	hw->mac.ops.update_mc_addr_list(hw, netdev);
+
+	ixgbevf_write_uc_addr_list(netdev);
+
+	spin_unlock_bh(&adapter->mbx_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ixgbevf_napi_enable_all(struct ixgbevf_adapter *adapter)
@@ -1502,6 +2322,7 @@ static void ixgbevf_napi_enable_all(struct ixgbevf_adapter *adapter)
 	int q_vectors = adapter->num_msix_vectors - NON_Q_VECTORS;
 
 	for (q_idx = 0; q_idx < q_vectors; q_idx++) {
+<<<<<<< HEAD
 		struct napi_struct *napi;
 		q_vector = adapter->q_vector[q_idx];
 		if (!q_vector->rxr_count)
@@ -1511,6 +2332,13 @@ static void ixgbevf_napi_enable_all(struct ixgbevf_adapter *adapter)
 			napi->poll = &ixgbevf_clean_rxonly_many;
 
 		napi_enable(napi);
+=======
+		q_vector = adapter->q_vector[q_idx];
+#ifdef CONFIG_NET_RX_BUSY_POLL
+		ixgbevf_qv_init_lock(adapter->q_vector[q_idx]);
+#endif
+		napi_enable(&q_vector->napi);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1522,9 +2350,19 @@ static void ixgbevf_napi_disable_all(struct ixgbevf_adapter *adapter)
 
 	for (q_idx = 0; q_idx < q_vectors; q_idx++) {
 		q_vector = adapter->q_vector[q_idx];
+<<<<<<< HEAD
 		if (!q_vector->rxr_count)
 			continue;
 		napi_disable(&q_vector->napi);
+=======
+		napi_disable(&q_vector->napi);
+#ifdef CONFIG_NET_RX_BUSY_POLL
+		while (!ixgbevf_qv_disable(adapter->q_vector[q_idx])) {
+			pr_info("QV %d locked\n", q_idx);
+			usleep_range(1000, 20000);
+		}
+#endif /* CONFIG_NET_RX_BUSY_POLL */
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1541,6 +2379,7 @@ static void ixgbevf_configure(struct ixgbevf_adapter *adapter)
 	ixgbevf_configure_rx(adapter);
 	for (i = 0; i < adapter->num_rx_queues; i++) {
 		struct ixgbevf_ring *ring = &adapter->rx_ring[i];
+<<<<<<< HEAD
 		ixgbevf_alloc_rx_buffers(adapter, ring, ring->count);
 		ring->next_to_use = ring->count - 1;
 		writel(ring->next_to_use, adapter->hw.hw_addr + ring->tail);
@@ -1565,11 +2404,63 @@ static inline void ixgbevf_rx_desc_queue_enable(struct ixgbevf_adapter *adapter,
 		hw_dbg(hw, "RXDCTL.ENABLE on Rx queue %d "
 		       "not set within the polling period\n", rxr);
 	}
+=======
+		ixgbevf_alloc_rx_buffers(adapter, ring,
+					 ixgbevf_desc_unused(ring));
+	}
+}
+
+#define IXGBEVF_MAX_RX_DESC_POLL 10
+static void ixgbevf_rx_desc_queue_enable(struct ixgbevf_adapter *adapter,
+					 int rxr)
+{
+	struct ixgbe_hw *hw = &adapter->hw;
+	int wait_loop = IXGBEVF_MAX_RX_DESC_POLL;
+	u32 rxdctl;
+	int j = adapter->rx_ring[rxr].reg_idx;
+
+	do {
+		usleep_range(1000, 2000);
+		rxdctl = IXGBE_READ_REG(hw, IXGBE_VFRXDCTL(j));
+	} while (--wait_loop && !(rxdctl & IXGBE_RXDCTL_ENABLE));
+
+	if (!wait_loop)
+		hw_dbg(hw, "RXDCTL.ENABLE queue %d not set while polling\n",
+		       rxr);
+>>>>>>> refs/remotes/origin/master
 
 	ixgbevf_release_rx_desc(&adapter->hw, &adapter->rx_ring[rxr],
 				(adapter->rx_ring[rxr].count - 1));
 }
 
+<<<<<<< HEAD
+=======
+static void ixgbevf_disable_rx_queue(struct ixgbevf_adapter *adapter,
+				     struct ixgbevf_ring *ring)
+{
+	struct ixgbe_hw *hw = &adapter->hw;
+	int wait_loop = IXGBEVF_MAX_RX_DESC_POLL;
+	u32 rxdctl;
+	u8 reg_idx = ring->reg_idx;
+
+	rxdctl = IXGBE_READ_REG(hw, IXGBE_VFRXDCTL(reg_idx));
+	rxdctl &= ~IXGBE_RXDCTL_ENABLE;
+
+	/* write value back with RXDCTL.ENABLE bit cleared */
+	IXGBE_WRITE_REG(hw, IXGBE_VFRXDCTL(reg_idx), rxdctl);
+
+	/* the hardware may take up to 100us to really disable the rx queue */
+	do {
+		udelay(10);
+		rxdctl = IXGBE_READ_REG(hw, IXGBE_VFRXDCTL(reg_idx));
+	} while (--wait_loop && (rxdctl & IXGBE_RXDCTL_ENABLE));
+
+	if (!wait_loop)
+		hw_dbg(hw, "RXDCTL.ENABLE queue %d not cleared while polling\n",
+		       reg_idx);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void ixgbevf_save_reset_stats(struct ixgbevf_adapter *adapter)
 {
 	/* Only save pre-reset stats if there are some */
@@ -1608,7 +2499,31 @@ static void ixgbevf_init_last_counter_stats(struct ixgbevf_adapter *adapter)
 	adapter->stats.base_vfmprc = adapter->stats.last_vfmprc;
 }
 
+<<<<<<< HEAD
 static int ixgbevf_up_complete(struct ixgbevf_adapter *adapter)
+=======
+static void ixgbevf_negotiate_api(struct ixgbevf_adapter *adapter)
+{
+	struct ixgbe_hw *hw = &adapter->hw;
+	int api[] = { ixgbe_mbox_api_11,
+		      ixgbe_mbox_api_10,
+		      ixgbe_mbox_api_unknown };
+	int err = 0, idx = 0;
+
+	spin_lock_bh(&adapter->mbx_lock);
+
+	while (api[idx] != ixgbe_mbox_api_unknown) {
+		err = ixgbevf_negotiate_api_version(hw, api[idx]);
+		if (!err)
+			break;
+		idx++;
+	}
+
+	spin_unlock_bh(&adapter->mbx_lock);
+}
+
+static void ixgbevf_up_complete(struct ixgbevf_adapter *adapter)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *netdev = adapter->netdev;
 	struct ixgbe_hw *hw = &adapter->hw;
@@ -1646,12 +2561,23 @@ static int ixgbevf_up_complete(struct ixgbevf_adapter *adapter)
 
 	ixgbevf_configure_msix(adapter);
 
+<<<<<<< HEAD
 	if (hw->mac.ops.set_rar) {
 		if (is_valid_ether_addr(hw->mac.addr))
 			hw->mac.ops.set_rar(hw, 0, hw->mac.addr, 0);
 		else
 			hw->mac.ops.set_rar(hw, 0, hw->mac.perm_addr, 0);
 	}
+=======
+	spin_lock_bh(&adapter->mbx_lock);
+
+	if (is_valid_ether_addr(hw->mac.addr))
+		hw->mac.ops.set_rar(hw, 0, hw->mac.addr, 0);
+	else
+		hw->mac.ops.set_rar(hw, 0, hw->mac.perm_addr, 0);
+
+	spin_unlock_bh(&adapter->mbx_lock);
+>>>>>>> refs/remotes/origin/master
 
 	clear_bit(__IXGBEVF_DOWN, &adapter->state);
 	ixgbevf_napi_enable_all(adapter);
@@ -1662,6 +2588,7 @@ static int ixgbevf_up_complete(struct ixgbevf_adapter *adapter)
 	ixgbevf_save_reset_stats(adapter);
 	ixgbevf_init_last_counter_stats(adapter);
 
+<<<<<<< HEAD
 	/* bring the link up in the watchdog, this could race with our first
 	 * link up interrupt but shouldn't be a problem */
 	adapter->flags |= IXGBE_FLAG_NEED_LINK_UPDATE;
@@ -1678,13 +2605,105 @@ int ixgbevf_up(struct ixgbevf_adapter *adapter)
 	ixgbevf_configure(adapter);
 
 	err = ixgbevf_up_complete(adapter);
+=======
+	hw->mac.get_link_status = 1;
+	mod_timer(&adapter->watchdog_timer, jiffies);
+}
+
+static int ixgbevf_reset_queues(struct ixgbevf_adapter *adapter)
+{
+	struct ixgbe_hw *hw = &adapter->hw;
+	struct ixgbevf_ring *rx_ring;
+	unsigned int def_q = 0;
+	unsigned int num_tcs = 0;
+	unsigned int num_rx_queues = 1;
+	int err, i;
+
+	spin_lock_bh(&adapter->mbx_lock);
+
+	/* fetch queue configuration from the PF */
+	err = ixgbevf_get_queues(hw, &num_tcs, &def_q);
+
+	spin_unlock_bh(&adapter->mbx_lock);
+
+	if (err)
+		return err;
+
+	if (num_tcs > 1) {
+		/* update default Tx ring register index */
+		adapter->tx_ring[0].reg_idx = def_q;
+
+		/* we need as many queues as traffic classes */
+		num_rx_queues = num_tcs;
+	}
+
+	/* nothing to do if we have the correct number of queues */
+	if (adapter->num_rx_queues == num_rx_queues)
+		return 0;
+
+	/* allocate new rings */
+	rx_ring = kcalloc(num_rx_queues,
+			  sizeof(struct ixgbevf_ring), GFP_KERNEL);
+	if (!rx_ring)
+		return -ENOMEM;
+
+	/* setup ring fields */
+	for (i = 0; i < num_rx_queues; i++) {
+		rx_ring[i].count = adapter->rx_ring_count;
+		rx_ring[i].queue_index = i;
+		rx_ring[i].reg_idx = i;
+		rx_ring[i].dev = &adapter->pdev->dev;
+		rx_ring[i].netdev = adapter->netdev;
+
+		/* allocate resources on the ring */
+		err = ixgbevf_setup_rx_resources(adapter, &rx_ring[i]);
+		if (err) {
+			while (i) {
+				i--;
+				ixgbevf_free_rx_resources(adapter, &rx_ring[i]);
+			}
+			kfree(rx_ring);
+			return err;
+		}
+	}
+
+	/* free the existing rings and queues */
+	ixgbevf_free_all_rx_resources(adapter);
+	adapter->num_rx_queues = 0;
+	kfree(adapter->rx_ring);
+
+	/* move new rings into position on the adapter struct */
+	adapter->rx_ring = rx_ring;
+	adapter->num_rx_queues = num_rx_queues;
+
+	/* reset ring to vector mapping */
+	ixgbevf_reset_q_vectors(adapter);
+	ixgbevf_map_rings_to_vectors(adapter);
+
+	return 0;
+}
+
+void ixgbevf_up(struct ixgbevf_adapter *adapter)
+{
+	struct ixgbe_hw *hw = &adapter->hw;
+
+	ixgbevf_reset_queues(adapter);
+
+	ixgbevf_configure(adapter);
+
+	ixgbevf_up_complete(adapter);
+>>>>>>> refs/remotes/origin/master
 
 	/* clear any pending interrupts, may auto mask */
 	IXGBE_READ_REG(hw, IXGBE_VTEICR);
 
+<<<<<<< HEAD
 	ixgbevf_irq_enable(adapter, true, true);
 
 	return err;
+=======
+	ixgbevf_irq_enable(adapter);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1718,6 +2737,7 @@ static void ixgbevf_clean_rx_ring(struct ixgbevf_adapter *adapter,
 			rx_buffer_info->skb = NULL;
 			do {
 				struct sk_buff *this = skb;
+<<<<<<< HEAD
 				skb = skb->prev;
 				dev_kfree_skb(this);
 			} while (skb);
@@ -1730,6 +2750,12 @@ static void ixgbevf_clean_rx_ring(struct ixgbevf_adapter *adapter,
 		put_page(rx_buffer_info->page);
 		rx_buffer_info->page = NULL;
 		rx_buffer_info->page_offset = 0;
+=======
+				skb = IXGBE_CB(skb)->prev;
+				dev_kfree_skb(this);
+			} while (skb);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	size = sizeof(struct ixgbevf_rx_buffer) * rx_ring->count;
@@ -1763,10 +2789,16 @@ static void ixgbevf_clean_tx_ring(struct ixgbevf_adapter *adapter,
 		return;
 
 	/* Free all the Tx ring sk_buffs */
+<<<<<<< HEAD
 
 	for (i = 0; i < tx_ring->count; i++) {
 		tx_buffer_info = &tx_ring->tx_buffer_info[i];
 		ixgbevf_unmap_and_free_tx_resource(adapter, tx_buffer_info);
+=======
+	for (i = 0; i < tx_ring->count; i++) {
+		tx_buffer_info = &tx_ring->tx_buffer_info[i];
+		ixgbevf_unmap_and_free_tx_resource(tx_ring, tx_buffer_info);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	size = sizeof(struct ixgbevf_tx_buffer) * tx_ring->count;
@@ -1816,7 +2848,14 @@ void ixgbevf_down(struct ixgbevf_adapter *adapter)
 
 	/* signal that we are down to the interrupt handler */
 	set_bit(__IXGBEVF_DOWN, &adapter->state);
+<<<<<<< HEAD
 	/* disable receives */
+=======
+
+	/* disable all enabled rx queues */
+	for (i = 0; i < adapter->num_rx_queues; i++)
+		ixgbevf_disable_rx_queue(adapter, &adapter->rx_ring[i]);
+>>>>>>> refs/remotes/origin/master
 
 	netif_tx_disable(netdev);
 
@@ -1854,13 +2893,17 @@ void ixgbevf_down(struct ixgbevf_adapter *adapter)
 
 void ixgbevf_reinit_locked(struct ixgbevf_adapter *adapter)
 {
+<<<<<<< HEAD
 	struct ixgbe_hw *hw = &adapter->hw;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	WARN_ON(in_interrupt());
 
 	while (test_and_set_bit(__IXGBEVF_RESETTING, &adapter->state))
 		msleep(1);
 
+<<<<<<< HEAD
 	/*
 	 * Check if PF is up before re-init.  If not then skip until
 	 * later when the PF is up and ready to service requests from
@@ -1872,6 +2915,10 @@ void ixgbevf_reinit_locked(struct ixgbevf_adapter *adapter)
 		ixgbevf_down(adapter);
 		ixgbevf_up(adapter);
 	}
+=======
+	ixgbevf_down(adapter);
+	ixgbevf_up(adapter);
+>>>>>>> refs/remotes/origin/master
 
 	clear_bit(__IXGBEVF_RESETTING, &adapter->state);
 }
@@ -1881,10 +2928,19 @@ void ixgbevf_reset(struct ixgbevf_adapter *adapter)
 	struct ixgbe_hw *hw = &adapter->hw;
 	struct net_device *netdev = adapter->netdev;
 
+<<<<<<< HEAD
 	if (hw->mac.ops.reset_hw(hw))
 		hw_dbg(hw, "PF still resetting\n");
 	else
 		hw->mac.ops.init_hw(hw);
+=======
+	if (hw->mac.ops.reset_hw(hw)) {
+		hw_dbg(hw, "PF still resetting\n");
+	} else {
+		hw->mac.ops.init_hw(hw);
+		ixgbevf_negotiate_api(adapter);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (is_valid_ether_addr(adapter->hw.mac.addr)) {
 		memcpy(netdev->dev_addr, adapter->hw.mac.addr,
@@ -1894,6 +2950,7 @@ void ixgbevf_reset(struct ixgbevf_adapter *adapter)
 	}
 }
 
+<<<<<<< HEAD
 static void ixgbevf_acquire_msix_vectors(struct ixgbevf_adapter *adapter,
 					 int vectors)
 {
@@ -1903,6 +2960,17 @@ static void ixgbevf_acquire_msix_vectors(struct ixgbevf_adapter *adapter,
 	 * 1) TxQ[0] Cleanup
 	 * 2) RxQ[0] Cleanup
 	 * 3) Other (Link Status Change, etc.)
+=======
+static int ixgbevf_acquire_msix_vectors(struct ixgbevf_adapter *adapter,
+					int vectors)
+{
+	int err = 0;
+	int vector_threshold;
+
+	/* We'll want at least 2 (vector_threshold):
+	 * 1) TxQ[0] + RxQ[0] handler
+	 * 2) Other (Link Status Change, etc.)
+>>>>>>> refs/remotes/origin/master
 	 */
 	vector_threshold = MIN_MSIX_COUNT;
 
@@ -1914,14 +2982,20 @@ static void ixgbevf_acquire_msix_vectors(struct ixgbevf_adapter *adapter,
 	while (vectors >= vector_threshold) {
 		err = pci_enable_msix(adapter->pdev, adapter->msix_entries,
 				      vectors);
+<<<<<<< HEAD
 		if (!err) /* Success in acquiring all requested vectors. */
 			break;
 		else if (err < 0)
 			vectors = 0; /* Nasty failure, quit now */
+=======
+		if (!err || err < 0) /* Success or a nasty failure. */
+			break;
+>>>>>>> refs/remotes/origin/master
 		else /* err == number of vectors we should try again with */
 			vectors = err;
 	}
 
+<<<<<<< HEAD
 	if (vectors < vector_threshold) {
 		/* Can't allocate enough MSI-X interrupts?  Oh well.
 		 * This just means we'll go with either a single MSI
@@ -1929,6 +3003,14 @@ static void ixgbevf_acquire_msix_vectors(struct ixgbevf_adapter *adapter,
 		 */
 		hw_dbg(&adapter->hw,
 		       "Unable to allocate MSI-X interrupts\n");
+=======
+	if (vectors < vector_threshold)
+		err = -ENOMEM;
+
+	if (err) {
+		dev_err(&adapter->pdev->dev,
+			"Unable to allocate MSI-X interrupts\n");
+>>>>>>> refs/remotes/origin/master
 		kfree(adapter->msix_entries);
 		adapter->msix_entries = NULL;
 	} else {
@@ -1939,10 +3021,19 @@ static void ixgbevf_acquire_msix_vectors(struct ixgbevf_adapter *adapter,
 		 */
 		adapter->num_msix_vectors = vectors;
 	}
+<<<<<<< HEAD
 }
 
 /*
  * ixgbevf_set_num_queues: Allocate queues for device, feature dependent
+=======
+
+	return err;
+}
+
+/**
+ * ixgbevf_set_num_queues - Allocate queues for device, feature dependent
+>>>>>>> refs/remotes/origin/master
  * @adapter: board private structure to initialize
  *
  * This is the top level queue allocation routine.  The order here is very
@@ -1957,8 +3048,11 @@ static void ixgbevf_set_num_queues(struct ixgbevf_adapter *adapter)
 	/* Start with base case */
 	adapter->num_rx_queues = 1;
 	adapter->num_tx_queues = 1;
+<<<<<<< HEAD
 	adapter->num_rx_pools = adapter->num_rx_queues;
 	adapter->num_rx_queues_per_pool = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1986,13 +3080,25 @@ static int ixgbevf_alloc_queues(struct ixgbevf_adapter *adapter)
 	for (i = 0; i < adapter->num_tx_queues; i++) {
 		adapter->tx_ring[i].count = adapter->tx_ring_count;
 		adapter->tx_ring[i].queue_index = i;
+<<<<<<< HEAD
 		adapter->tx_ring[i].reg_idx = i;
+=======
+		/* reg_idx may be remapped later by DCB config */
+		adapter->tx_ring[i].reg_idx = i;
+		adapter->tx_ring[i].dev = &adapter->pdev->dev;
+		adapter->tx_ring[i].netdev = adapter->netdev;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (i = 0; i < adapter->num_rx_queues; i++) {
 		adapter->rx_ring[i].count = adapter->rx_ring_count;
 		adapter->rx_ring[i].queue_index = i;
 		adapter->rx_ring[i].reg_idx = i;
+<<<<<<< HEAD
+=======
+		adapter->rx_ring[i].dev = &adapter->pdev->dev;
+		adapter->rx_ring[i].netdev = adapter->netdev;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -2012,6 +3118,10 @@ err_tx_ring_allocation:
  **/
 static int ixgbevf_set_interrupt_capability(struct ixgbevf_adapter *adapter)
 {
+<<<<<<< HEAD
+=======
+	struct net_device *netdev = adapter->netdev;
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 	int vector, v_budget;
 
@@ -2019,10 +3129,19 @@ static int ixgbevf_set_interrupt_capability(struct ixgbevf_adapter *adapter)
 	 * It's easy to be greedy for MSI-X vectors, but it really
 	 * doesn't do us much good if we have a lot more vectors
 	 * than CPU's.  So let's be conservative and only ask for
+<<<<<<< HEAD
 	 * (roughly) twice the number of vectors as there are CPU's.
 	 */
 	v_budget = min(adapter->num_rx_queues + adapter->num_tx_queues,
 		       (int)(num_online_cpus() * 2)) + NON_Q_VECTORS;
+=======
+	 * (roughly) the same number of vectors as there are CPU's.
+	 * The default is to use pairs of vectors.
+	 */
+	v_budget = max(adapter->num_rx_queues, adapter->num_tx_queues);
+	v_budget = min_t(int, v_budget, num_online_cpus());
+	v_budget += NON_Q_VECTORS;
+>>>>>>> refs/remotes/origin/master
 
 	/* A failure in MSI-X entry allocation isn't fatal, but it does
 	 * mean we disable MSI-X capabilities of the adapter. */
@@ -2036,7 +3155,19 @@ static int ixgbevf_set_interrupt_capability(struct ixgbevf_adapter *adapter)
 	for (vector = 0; vector < v_budget; vector++)
 		adapter->msix_entries[vector].entry = vector;
 
+<<<<<<< HEAD
 	ixgbevf_acquire_msix_vectors(adapter, v_budget);
+=======
+	err = ixgbevf_acquire_msix_vectors(adapter, v_budget);
+	if (err)
+		goto out;
+
+	err = netif_set_real_num_tx_queues(netdev, adapter->num_tx_queues);
+	if (err)
+		goto out;
+
+	err = netif_set_real_num_rx_queues(netdev, adapter->num_rx_queues);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	return err;
@@ -2053,12 +3184,17 @@ static int ixgbevf_alloc_q_vectors(struct ixgbevf_adapter *adapter)
 {
 	int q_idx, num_q_vectors;
 	struct ixgbevf_q_vector *q_vector;
+<<<<<<< HEAD
 	int napi_vectors;
 	int (*poll)(struct napi_struct *, int);
 
 	num_q_vectors = adapter->num_msix_vectors - NON_Q_VECTORS;
 	napi_vectors = adapter->num_rx_queues;
 	poll = &ixgbevf_clean_rxonly;
+=======
+
+	num_q_vectors = adapter->num_msix_vectors - NON_Q_VECTORS;
+>>>>>>> refs/remotes/origin/master
 
 	for (q_idx = 0; q_idx < num_q_vectors; q_idx++) {
 		q_vector = kzalloc(sizeof(struct ixgbevf_q_vector), GFP_KERNEL);
@@ -2066,10 +3202,18 @@ static int ixgbevf_alloc_q_vectors(struct ixgbevf_adapter *adapter)
 			goto err_out;
 		q_vector->adapter = adapter;
 		q_vector->v_idx = q_idx;
+<<<<<<< HEAD
 		q_vector->eitr = adapter->eitr_param;
 		if (q_idx < napi_vectors)
 			netif_napi_add(adapter->netdev, &q_vector->napi,
 				       (*poll), 64);
+=======
+		netif_napi_add(adapter->netdev, &q_vector->napi,
+			       ixgbevf_poll, 64);
+#ifdef CONFIG_NET_RX_BUSY_POLL
+		napi_hash_add(&q_vector->napi);
+#endif
+>>>>>>> refs/remotes/origin/master
 		adapter->q_vector[q_idx] = q_vector;
 	}
 
@@ -2079,6 +3223,12 @@ err_out:
 	while (q_idx) {
 		q_idx--;
 		q_vector = adapter->q_vector[q_idx];
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_NET_RX_BUSY_POLL
+		napi_hash_del(&q_vector->napi);
+#endif
+>>>>>>> refs/remotes/origin/master
 		netif_napi_del(&q_vector->napi);
 		kfree(q_vector);
 		adapter->q_vector[q_idx] = NULL;
@@ -2096,18 +3246,29 @@ err_out:
  **/
 static void ixgbevf_free_q_vectors(struct ixgbevf_adapter *adapter)
 {
+<<<<<<< HEAD
 	int q_idx, num_q_vectors;
 	int napi_vectors;
 
 	num_q_vectors = adapter->num_msix_vectors - NON_Q_VECTORS;
 	napi_vectors = adapter->num_rx_queues;
+=======
+	int q_idx, num_q_vectors = adapter->num_msix_vectors - NON_Q_VECTORS;
+>>>>>>> refs/remotes/origin/master
 
 	for (q_idx = 0; q_idx < num_q_vectors; q_idx++) {
 		struct ixgbevf_q_vector *q_vector = adapter->q_vector[q_idx];
 
 		adapter->q_vector[q_idx] = NULL;
+<<<<<<< HEAD
 		if (q_idx < napi_vectors)
 			netif_napi_del(&q_vector->napi);
+=======
+#ifdef CONFIG_NET_RX_BUSY_POLL
+		napi_hash_del(&q_vector->napi);
+#endif
+		netif_napi_del(&q_vector->napi);
+>>>>>>> refs/remotes/origin/master
 		kfree(q_vector);
 	}
 }
@@ -2173,6 +3334,25 @@ err_set_interrupt:
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * ixgbevf_clear_interrupt_scheme - Clear the current interrupt scheme settings
+ * @adapter: board private structure to clear interrupt scheme on
+ *
+ * We go through and clear interrupt specific resources and reset the structure
+ * to pre-load conditions
+ **/
+static void ixgbevf_clear_interrupt_scheme(struct ixgbevf_adapter *adapter)
+{
+	adapter->num_tx_queues = 0;
+	adapter->num_rx_queues = 0;
+
+	ixgbevf_free_q_vectors(adapter);
+	ixgbevf_reset_interrupt_capability(adapter);
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  * ixgbevf_sw_init - Initialize general software structures
  * (struct ixgbevf_adapter)
  * @adapter: board private structure to initialize
@@ -2181,10 +3361,18 @@ err_set_interrupt:
  * Fields are initialized based on PCI device information and
  * OS network device settings (MTU size).
  **/
+<<<<<<< HEAD
 static int __devinit ixgbevf_sw_init(struct ixgbevf_adapter *adapter)
 {
 	struct ixgbe_hw *hw = &adapter->hw;
 	struct pci_dev *pdev = adapter->pdev;
+=======
+static int ixgbevf_sw_init(struct ixgbevf_adapter *adapter)
+{
+	struct ixgbe_hw *hw = &adapter->hw;
+	struct pci_dev *pdev = adapter->pdev;
+	struct net_device *netdev = adapter->netdev;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	/* PCI config space info */
@@ -2196,6 +3384,7 @@ static int __devinit ixgbevf_sw_init(struct ixgbevf_adapter *adapter)
 	hw->subsystem_device_id = pdev->subsystem_device;
 
 	hw->mbx.ops.init_params(hw);
+<<<<<<< HEAD
 	hw->mac.max_tx_queues = MAX_TX_QUEUES;
 	hw->mac.max_rx_queues = MAX_RX_QUEUES;
 	err = hw->mac.ops.reset_hw(hw);
@@ -2205,12 +3394,27 @@ static int __devinit ixgbevf_sw_init(struct ixgbevf_adapter *adapter)
 		eth_hw_addr_random(adapter->netdev);
 		memcpy(adapter->hw.mac.addr, adapter->netdev->dev_addr,
 			adapter->netdev->addr_len);
+=======
+
+	/* assume legacy case in which PF would only give VF 2 queues */
+	hw->mac.max_tx_queues = 2;
+	hw->mac.max_rx_queues = 2;
+
+	/* lock to protect mailbox accesses */
+	spin_lock_init(&adapter->mbx_lock);
+
+	err = hw->mac.ops.reset_hw(hw);
+	if (err) {
+		dev_info(&pdev->dev,
+			 "PF still in reset state.  Is the PF interface up?\n");
+>>>>>>> refs/remotes/origin/master
 	} else {
 		err = hw->mac.ops.init_hw(hw);
 		if (err) {
 			pr_err("init_shared_code failed: %d\n", err);
 			goto out;
 		}
+<<<<<<< HEAD
 		memcpy(adapter->netdev->dev_addr, adapter->hw.mac.addr,
 			adapter->netdev->addr_len);
 	}
@@ -2222,14 +3426,38 @@ static int __devinit ixgbevf_sw_init(struct ixgbevf_adapter *adapter)
 	/* set defaults for eitr in MegaBytes */
 	adapter->eitr_low = 10;
 	adapter->eitr_high = 20;
+=======
+		ixgbevf_negotiate_api(adapter);
+		err = hw->mac.ops.get_mac_addr(hw, hw->mac.addr);
+		if (err)
+			dev_info(&pdev->dev, "Error reading MAC address\n");
+		else if (is_zero_ether_addr(adapter->hw.mac.addr))
+			dev_info(&pdev->dev,
+				 "MAC address not assigned by administrator.\n");
+		memcpy(netdev->dev_addr, hw->mac.addr, netdev->addr_len);
+	}
+
+	if (!is_valid_ether_addr(netdev->dev_addr)) {
+		dev_info(&pdev->dev, "Assigning random MAC address\n");
+		eth_hw_addr_random(netdev);
+		memcpy(hw->mac.addr, netdev->dev_addr, netdev->addr_len);
+	}
+
+	/* Enable dynamic interrupt throttling rates */
+	adapter->rx_itr_setting = 1;
+	adapter->tx_itr_setting = 1;
+>>>>>>> refs/remotes/origin/master
 
 	/* set default ring sizes */
 	adapter->tx_ring_count = IXGBEVF_DEFAULT_TXD;
 	adapter->rx_ring_count = IXGBEVF_DEFAULT_RXD;
 
+<<<<<<< HEAD
 	/* enable rx csum by default */
 	adapter->flags |= IXGBE_FLAG_RX_CSUM_ENABLED;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	set_bit(__IXGBEVF_DOWN, &adapter->state);
 	return 0;
 
@@ -2266,6 +3494,13 @@ out:
 void ixgbevf_update_stats(struct ixgbevf_adapter *adapter)
 {
 	struct ixgbe_hw *hw = &adapter->hw;
+<<<<<<< HEAD
+=======
+	int i;
+
+	if (!adapter->link_up)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	UPDATE_VF_COUNTER_32bit(IXGBE_VFGPRC, adapter->stats.last_vfgprc,
 				adapter->stats.vfgprc);
@@ -2279,6 +3514,18 @@ void ixgbevf_update_stats(struct ixgbevf_adapter *adapter)
 				adapter->stats.vfgotc);
 	UPDATE_VF_COUNTER_32bit(IXGBE_VFMPRC, adapter->stats.last_vfmprc,
 				adapter->stats.vfmprc);
+<<<<<<< HEAD
+=======
+
+	for (i = 0;  i  < adapter->num_rx_queues;  i++) {
+		adapter->hw_csum_rx_error +=
+			adapter->rx_ring[i].hw_csum_rx_error;
+		adapter->hw_csum_rx_good +=
+			adapter->rx_ring[i].hw_csum_rx_good;
+		adapter->rx_ring[i].hw_csum_rx_error = 0;
+		adapter->rx_ring[i].hw_csum_rx_good = 0;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -2289,7 +3536,11 @@ static void ixgbevf_watchdog(unsigned long data)
 {
 	struct ixgbevf_adapter *adapter = (struct ixgbevf_adapter *)data;
 	struct ixgbe_hw *hw = &adapter->hw;
+<<<<<<< HEAD
 	u64 eics = 0;
+=======
+	u32 eics = 0;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	/*
@@ -2303,11 +3554,19 @@ static void ixgbevf_watchdog(unsigned long data)
 	/* get one bit for every active tx/rx interrupt vector */
 	for (i = 0; i < adapter->num_msix_vectors - NON_Q_VECTORS; i++) {
 		struct ixgbevf_q_vector *qv = adapter->q_vector[i];
+<<<<<<< HEAD
 		if (qv->rxr_count || qv->txr_count)
 			eics |= (1 << i);
 	}
 
 	IXGBE_WRITE_REG(hw, IXGBE_VTEICS, (u32)eics);
+=======
+		if (qv->rx.ring || qv->tx.ring)
+			eics |= 1 << i;
+	}
+
+	IXGBE_WRITE_REG(hw, IXGBE_VTEICS, eics);
+>>>>>>> refs/remotes/origin/master
 
 watchdog_short_circuit:
 	schedule_work(&adapter->watchdog_task);
@@ -2353,6 +3612,10 @@ static void ixgbevf_watchdog_task(struct work_struct *work)
 	struct ixgbe_hw *hw = &adapter->hw;
 	u32 link_speed = adapter->link_speed;
 	bool link_up = adapter->link_up;
+<<<<<<< HEAD
+=======
+	s32 need_reset;
+>>>>>>> refs/remotes/origin/master
 
 	adapter->flags |= IXGBE_FLAG_IN_WATCHDOG_TASK;
 
@@ -2360,6 +3623,7 @@ static void ixgbevf_watchdog_task(struct work_struct *work)
 	 * Always check the link on the watchdog because we have
 	 * no LSC interrupt
 	 */
+<<<<<<< HEAD
 	if (hw->mac.ops.check_link) {
 		if ((hw->mac.ops.check_link(hw, &link_speed,
 					    &link_up, false)) != 0) {
@@ -2375,15 +3639,50 @@ static void ixgbevf_watchdog_task(struct work_struct *work)
 		 * function */
 		link_speed = IXGBE_LINK_SPEED_10GB_FULL;
 		link_up = true;
+=======
+	spin_lock_bh(&adapter->mbx_lock);
+
+	need_reset = hw->mac.ops.check_link(hw, &link_speed, &link_up, false);
+
+	spin_unlock_bh(&adapter->mbx_lock);
+
+	if (need_reset) {
+		adapter->link_up = link_up;
+		adapter->link_speed = link_speed;
+		netif_carrier_off(netdev);
+		netif_tx_stop_all_queues(netdev);
+		schedule_work(&adapter->reset_task);
+		goto pf_has_reset;
+>>>>>>> refs/remotes/origin/master
 	}
 	adapter->link_up = link_up;
 	adapter->link_speed = link_speed;
 
 	if (link_up) {
 		if (!netif_carrier_ok(netdev)) {
+<<<<<<< HEAD
 			hw_dbg(&adapter->hw, "NIC Link is Up, %u Gbps\n",
 			       (link_speed == IXGBE_LINK_SPEED_10GB_FULL) ?
 			       10 : 1);
+=======
+			char *link_speed_string;
+			switch (link_speed) {
+			case IXGBE_LINK_SPEED_10GB_FULL:
+				link_speed_string = "10 Gbps";
+				break;
+			case IXGBE_LINK_SPEED_1GB_FULL:
+				link_speed_string = "1 Gbps";
+				break;
+			case IXGBE_LINK_SPEED_100_FULL:
+				link_speed_string = "100 Mbps";
+				break;
+			default:
+				link_speed_string = "unknown speed";
+				break;
+			}
+			dev_info(&adapter->pdev->dev,
+				"NIC Link is Up, %s\n", link_speed_string);
+>>>>>>> refs/remotes/origin/master
 			netif_carrier_on(netdev);
 			netif_tx_wake_all_queues(netdev);
 		}
@@ -2391,7 +3690,11 @@ static void ixgbevf_watchdog_task(struct work_struct *work)
 		adapter->link_up = false;
 		adapter->link_speed = 0;
 		if (netif_carrier_ok(netdev)) {
+<<<<<<< HEAD
 			hw_dbg(&adapter->hw, "NIC Link is Down\n");
+=======
+			dev_info(&adapter->pdev->dev, "NIC Link is Down\n");
+>>>>>>> refs/remotes/origin/master
 			netif_carrier_off(netdev);
 			netif_tx_stop_all_queues(netdev);
 		}
@@ -2477,7 +3780,10 @@ int ixgbevf_setup_tx_resources(struct ixgbevf_adapter *adapter,
 
 	tx_ring->next_to_use = 0;
 	tx_ring->next_to_clean = 0;
+<<<<<<< HEAD
 	tx_ring->work_limit = tx_ring->count;
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err:
@@ -2540,9 +3846,12 @@ int ixgbevf_setup_rx_resources(struct ixgbevf_adapter *adapter,
 					   &rx_ring->dma, GFP_KERNEL);
 
 	if (!rx_ring->desc) {
+<<<<<<< HEAD
 		hw_dbg(&adapter->hw,
 		       "Unable to allocate memory for "
 		       "the receive descriptor ring\n");
+=======
+>>>>>>> refs/remotes/origin/master
 		vfree(rx_ring->rx_buffer_info);
 		rx_ring->rx_buffer_info = NULL;
 		goto alloc_failed;
@@ -2620,6 +3929,66 @@ static void ixgbevf_free_all_rx_resources(struct ixgbevf_adapter *adapter)
 						  &adapter->rx_ring[i]);
 }
 
+<<<<<<< HEAD
+=======
+static int ixgbevf_setup_queues(struct ixgbevf_adapter *adapter)
+{
+	struct ixgbe_hw *hw = &adapter->hw;
+	struct ixgbevf_ring *rx_ring;
+	unsigned int def_q = 0;
+	unsigned int num_tcs = 0;
+	unsigned int num_rx_queues = 1;
+	int err, i;
+
+	spin_lock_bh(&adapter->mbx_lock);
+
+	/* fetch queue configuration from the PF */
+	err = ixgbevf_get_queues(hw, &num_tcs, &def_q);
+
+	spin_unlock_bh(&adapter->mbx_lock);
+
+	if (err)
+		return err;
+
+	if (num_tcs > 1) {
+		/* update default Tx ring register index */
+		adapter->tx_ring[0].reg_idx = def_q;
+
+		/* we need as many queues as traffic classes */
+		num_rx_queues = num_tcs;
+	}
+
+	/* nothing to do if we have the correct number of queues */
+	if (adapter->num_rx_queues == num_rx_queues)
+		return 0;
+
+	/* allocate new rings */
+	rx_ring = kcalloc(num_rx_queues,
+			  sizeof(struct ixgbevf_ring), GFP_KERNEL);
+	if (!rx_ring)
+		return -ENOMEM;
+
+	/* setup ring fields */
+	for (i = 0; i < num_rx_queues; i++) {
+		rx_ring[i].count = adapter->rx_ring_count;
+		rx_ring[i].queue_index = i;
+		rx_ring[i].reg_idx = i;
+		rx_ring[i].dev = &adapter->pdev->dev;
+		rx_ring[i].netdev = adapter->netdev;
+	}
+
+	/* free the existing ring and queues */
+	adapter->num_rx_queues = 0;
+	kfree(adapter->rx_ring);
+
+	/* move new rings into position on the adapter struct */
+	adapter->rx_ring = rx_ring;
+	adapter->num_rx_queues = num_rx_queues;
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * ixgbevf_open - Called when a network interface is made active
  * @netdev: network interface device structure
@@ -2638,6 +4007,18 @@ static int ixgbevf_open(struct net_device *netdev)
 	struct ixgbe_hw *hw = &adapter->hw;
 	int err;
 
+<<<<<<< HEAD
+=======
+	/* A previous failure to open the device because of a lack of
+	 * available MSIX vector resources may have reset the number
+	 * of msix vectors variable to zero.  The only way to recover
+	 * is to unload/reload the driver and hope that the system has
+	 * been able to recover some MSIX vector resources.
+	 */
+	if (!adapter->num_msix_vectors)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	/* disallow open during test */
 	if (test_bit(__IXGBEVF_TESTING, &adapter->state))
 		return -EBUSY;
@@ -2654,6 +4035,14 @@ static int ixgbevf_open(struct net_device *netdev)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	/* setup queue reg_idx and Rx queue count */
+	err = ixgbevf_setup_queues(adapter);
+	if (err)
+		goto err_setup_queues;
+
+>>>>>>> refs/remotes/origin/master
 	/* allocate transmit descriptors */
 	err = ixgbevf_setup_all_tx_resources(adapter);
 	if (err)
@@ -2673,9 +4062,13 @@ static int ixgbevf_open(struct net_device *netdev)
 	 */
 	ixgbevf_map_rings_to_vectors(adapter);
 
+<<<<<<< HEAD
 	err = ixgbevf_up_complete(adapter);
 	if (err)
 		goto err_up;
+=======
+	ixgbevf_up_complete(adapter);
+>>>>>>> refs/remotes/origin/master
 
 	/* clear any pending interrupts, may auto mask */
 	IXGBE_READ_REG(hw, IXGBE_VTEICR);
@@ -2683,18 +4076,29 @@ static int ixgbevf_open(struct net_device *netdev)
 	if (err)
 		goto err_req_irq;
 
+<<<<<<< HEAD
 	ixgbevf_irq_enable(adapter, true, true);
+=======
+	ixgbevf_irq_enable(adapter);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 err_req_irq:
 	ixgbevf_down(adapter);
+<<<<<<< HEAD
 err_up:
 	ixgbevf_free_irq(adapter);
+=======
+>>>>>>> refs/remotes/origin/master
 err_setup_rx:
 	ixgbevf_free_all_rx_resources(adapter);
 err_setup_tx:
 	ixgbevf_free_all_tx_resources(adapter);
+<<<<<<< HEAD
+=======
+err_setup_queues:
+>>>>>>> refs/remotes/origin/master
 	ixgbevf_reset(adapter);
 
 err_setup_reset:
@@ -2726,6 +4130,7 @@ static int ixgbevf_close(struct net_device *netdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ixgbevf_tso(struct ixgbevf_adapter *adapter,
 		       struct ixgbevf_ring *tx_ring,
 		       struct sk_buff *skb, u32 tx_flags, u8 *hdr_len)
@@ -2892,6 +4297,151 @@ static int ixgbevf_tx_map(struct ixgbevf_adapter *adapter,
 			  unsigned int first)
 {
 	struct pci_dev *pdev = adapter->pdev;
+=======
+static void ixgbevf_tx_ctxtdesc(struct ixgbevf_ring *tx_ring,
+				u32 vlan_macip_lens, u32 type_tucmd,
+				u32 mss_l4len_idx)
+{
+	struct ixgbe_adv_tx_context_desc *context_desc;
+	u16 i = tx_ring->next_to_use;
+
+	context_desc = IXGBEVF_TX_CTXTDESC(tx_ring, i);
+
+	i++;
+	tx_ring->next_to_use = (i < tx_ring->count) ? i : 0;
+
+	/* set bits to identify this as an advanced context descriptor */
+	type_tucmd |= IXGBE_TXD_CMD_DEXT | IXGBE_ADVTXD_DTYP_CTXT;
+
+	context_desc->vlan_macip_lens	= cpu_to_le32(vlan_macip_lens);
+	context_desc->seqnum_seed	= 0;
+	context_desc->type_tucmd_mlhl	= cpu_to_le32(type_tucmd);
+	context_desc->mss_l4len_idx	= cpu_to_le32(mss_l4len_idx);
+}
+
+static int ixgbevf_tso(struct ixgbevf_ring *tx_ring,
+		       struct sk_buff *skb, u32 tx_flags, u8 *hdr_len)
+{
+	u32 vlan_macip_lens, type_tucmd;
+	u32 mss_l4len_idx, l4len;
+
+	if (!skb_is_gso(skb))
+		return 0;
+
+	if (skb_header_cloned(skb)) {
+		int err = pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
+		if (err)
+			return err;
+	}
+
+	/* ADV DTYP TUCMD MKRLOC/ISCSIHEDLEN */
+	type_tucmd = IXGBE_ADVTXD_TUCMD_L4T_TCP;
+
+	if (skb->protocol == htons(ETH_P_IP)) {
+		struct iphdr *iph = ip_hdr(skb);
+		iph->tot_len = 0;
+		iph->check = 0;
+		tcp_hdr(skb)->check = ~csum_tcpudp_magic(iph->saddr,
+							 iph->daddr, 0,
+							 IPPROTO_TCP,
+							 0);
+		type_tucmd |= IXGBE_ADVTXD_TUCMD_IPV4;
+	} else if (skb_is_gso_v6(skb)) {
+		ipv6_hdr(skb)->payload_len = 0;
+		tcp_hdr(skb)->check =
+		    ~csum_ipv6_magic(&ipv6_hdr(skb)->saddr,
+				     &ipv6_hdr(skb)->daddr,
+				     0, IPPROTO_TCP, 0);
+	}
+
+	/* compute header lengths */
+	l4len = tcp_hdrlen(skb);
+	*hdr_len += l4len;
+	*hdr_len = skb_transport_offset(skb) + l4len;
+
+	/* mss_l4len_id: use 1 as index for TSO */
+	mss_l4len_idx = l4len << IXGBE_ADVTXD_L4LEN_SHIFT;
+	mss_l4len_idx |= skb_shinfo(skb)->gso_size << IXGBE_ADVTXD_MSS_SHIFT;
+	mss_l4len_idx |= 1 << IXGBE_ADVTXD_IDX_SHIFT;
+
+	/* vlan_macip_lens: HEADLEN, MACLEN, VLAN tag */
+	vlan_macip_lens = skb_network_header_len(skb);
+	vlan_macip_lens |= skb_network_offset(skb) << IXGBE_ADVTXD_MACLEN_SHIFT;
+	vlan_macip_lens |= tx_flags & IXGBE_TX_FLAGS_VLAN_MASK;
+
+	ixgbevf_tx_ctxtdesc(tx_ring, vlan_macip_lens,
+			    type_tucmd, mss_l4len_idx);
+
+	return 1;
+}
+
+static bool ixgbevf_tx_csum(struct ixgbevf_ring *tx_ring,
+			    struct sk_buff *skb, u32 tx_flags)
+{
+	u32 vlan_macip_lens = 0;
+	u32 mss_l4len_idx = 0;
+	u32 type_tucmd = 0;
+
+	if (skb->ip_summed == CHECKSUM_PARTIAL) {
+		u8 l4_hdr = 0;
+		switch (skb->protocol) {
+		case __constant_htons(ETH_P_IP):
+			vlan_macip_lens |= skb_network_header_len(skb);
+			type_tucmd |= IXGBE_ADVTXD_TUCMD_IPV4;
+			l4_hdr = ip_hdr(skb)->protocol;
+			break;
+		case __constant_htons(ETH_P_IPV6):
+			vlan_macip_lens |= skb_network_header_len(skb);
+			l4_hdr = ipv6_hdr(skb)->nexthdr;
+			break;
+		default:
+			if (unlikely(net_ratelimit())) {
+				dev_warn(tx_ring->dev,
+				 "partial checksum but proto=%x!\n",
+				 skb->protocol);
+			}
+			break;
+		}
+
+		switch (l4_hdr) {
+		case IPPROTO_TCP:
+			type_tucmd |= IXGBE_ADVTXD_TUCMD_L4T_TCP;
+			mss_l4len_idx = tcp_hdrlen(skb) <<
+					IXGBE_ADVTXD_L4LEN_SHIFT;
+			break;
+		case IPPROTO_SCTP:
+			type_tucmd |= IXGBE_ADVTXD_TUCMD_L4T_SCTP;
+			mss_l4len_idx = sizeof(struct sctphdr) <<
+					IXGBE_ADVTXD_L4LEN_SHIFT;
+			break;
+		case IPPROTO_UDP:
+			mss_l4len_idx = sizeof(struct udphdr) <<
+					IXGBE_ADVTXD_L4LEN_SHIFT;
+			break;
+		default:
+			if (unlikely(net_ratelimit())) {
+				dev_warn(tx_ring->dev,
+				 "partial checksum but l4 proto=%x!\n",
+				 l4_hdr);
+			}
+			break;
+		}
+	}
+
+	/* vlan_macip_lens: MACLEN, VLAN tag */
+	vlan_macip_lens |= skb_network_offset(skb) << IXGBE_ADVTXD_MACLEN_SHIFT;
+	vlan_macip_lens |= tx_flags & IXGBE_TX_FLAGS_VLAN_MASK;
+
+	ixgbevf_tx_ctxtdesc(tx_ring, vlan_macip_lens,
+			    type_tucmd, mss_l4len_idx);
+
+	return (skb->ip_summed == CHECKSUM_PARTIAL);
+}
+
+static int ixgbevf_tx_map(struct ixgbevf_ring *tx_ring,
+			  struct sk_buff *skb, u32 tx_flags)
+{
+>>>>>>> refs/remotes/origin/master
 	struct ixgbevf_tx_buffer *tx_buffer_info;
 	unsigned int len;
 	unsigned int total = skb->len;
@@ -2910,6 +4460,7 @@ static int ixgbevf_tx_map(struct ixgbevf_adapter *adapter,
 
 		tx_buffer_info->length = size;
 		tx_buffer_info->mapped_as_page = false;
+<<<<<<< HEAD
 		tx_buffer_info->dma = dma_map_single(&adapter->pdev->dev,
 						     skb->data + offset,
 						     size, DMA_TO_DEVICE);
@@ -2917,6 +4468,13 @@ static int ixgbevf_tx_map(struct ixgbevf_adapter *adapter,
 			goto dma_error;
 		tx_buffer_info->time_stamp = jiffies;
 		tx_buffer_info->next_to_watch = i;
+=======
+		tx_buffer_info->dma = dma_map_single(tx_ring->dev,
+						     skb->data + offset,
+						     size, DMA_TO_DEVICE);
+		if (dma_mapping_error(tx_ring->dev, tx_buffer_info->dma))
+			goto dma_error;
+>>>>>>> refs/remotes/origin/master
 
 		len -= size;
 		total -= size;
@@ -2940,6 +4498,7 @@ static int ixgbevf_tx_map(struct ixgbevf_adapter *adapter,
 
 			tx_buffer_info->length = size;
 			tx_buffer_info->dma =
+<<<<<<< HEAD
 				skb_frag_dma_map(&adapter->pdev->dev, frag,
 						 offset, size, DMA_TO_DEVICE);
 			tx_buffer_info->mapped_as_page = true;
@@ -2947,6 +4506,14 @@ static int ixgbevf_tx_map(struct ixgbevf_adapter *adapter,
 				goto dma_error;
 			tx_buffer_info->time_stamp = jiffies;
 			tx_buffer_info->next_to_watch = i;
+=======
+				skb_frag_dma_map(tx_ring->dev, frag,
+						 offset, size, DMA_TO_DEVICE);
+			if (dma_mapping_error(tx_ring->dev,
+					      tx_buffer_info->dma))
+				goto dma_error;
+			tx_buffer_info->mapped_as_page = true;
+>>>>>>> refs/remotes/origin/master
 
 			len -= size;
 			total -= size;
@@ -2965,17 +4532,27 @@ static int ixgbevf_tx_map(struct ixgbevf_adapter *adapter,
 	else
 		i = i - 1;
 	tx_ring->tx_buffer_info[i].skb = skb;
+<<<<<<< HEAD
 	tx_ring->tx_buffer_info[first].next_to_watch = i;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return count;
 
 dma_error:
+<<<<<<< HEAD
 	dev_err(&pdev->dev, "TX DMA map failed\n");
 
 	/* clear timestamp and dma mappings for failed tx_buffer_info map */
 	tx_buffer_info->dma = 0;
 	tx_buffer_info->time_stamp = 0;
 	tx_buffer_info->next_to_watch = 0;
+=======
+	dev_err(tx_ring->dev, "TX DMA map failed\n");
+
+	/* clear timestamp and dma mappings for failed tx_buffer_info map */
+	tx_buffer_info->dma = 0;
+>>>>>>> refs/remotes/origin/master
 	count--;
 
 	/* clear timestamp and dma mappings for remaining portion of packet */
@@ -2985,15 +4562,25 @@ dma_error:
 		if (i < 0)
 			i += tx_ring->count;
 		tx_buffer_info = &tx_ring->tx_buffer_info[i];
+<<<<<<< HEAD
 		ixgbevf_unmap_and_free_tx_resource(adapter, tx_buffer_info);
+=======
+		ixgbevf_unmap_and_free_tx_resource(tx_ring, tx_buffer_info);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return count;
 }
 
+<<<<<<< HEAD
 static void ixgbevf_tx_queue(struct ixgbevf_adapter *adapter,
 			     struct ixgbevf_ring *tx_ring, int tx_flags,
 			     int count, u32 paylen, u8 hdr_len)
+=======
+static void ixgbevf_tx_queue(struct ixgbevf_ring *tx_ring, int tx_flags,
+			     int count, unsigned int first, u32 paylen,
+			     u8 hdr_len)
+>>>>>>> refs/remotes/origin/master
 {
 	union ixgbe_adv_tx_desc *tx_desc = NULL;
 	struct ixgbevf_tx_buffer *tx_buffer_info;
@@ -3009,6 +4596,7 @@ static void ixgbevf_tx_queue(struct ixgbevf_adapter *adapter,
 	if (tx_flags & IXGBE_TX_FLAGS_VLAN)
 		cmd_type_len |= IXGBE_ADVTXD_DCMD_VLE;
 
+<<<<<<< HEAD
 	if (tx_flags & IXGBE_TX_FLAGS_TSO) {
 		cmd_type_len |= IXGBE_ADVTXD_DCMD_TSE;
 
@@ -3024,13 +4612,36 @@ static void ixgbevf_tx_queue(struct ixgbevf_adapter *adapter,
 	} else if (tx_flags & IXGBE_TX_FLAGS_CSUM)
 		olinfo_status |= IXGBE_TXD_POPTS_TXSM <<
 			IXGBE_ADVTXD_POPTS_SHIFT;
+=======
+	if (tx_flags & IXGBE_TX_FLAGS_CSUM)
+		olinfo_status |= IXGBE_ADVTXD_POPTS_TXSM;
+
+	if (tx_flags & IXGBE_TX_FLAGS_TSO) {
+		cmd_type_len |= IXGBE_ADVTXD_DCMD_TSE;
+
+		/* use index 1 context for tso */
+		olinfo_status |= (1 << IXGBE_ADVTXD_IDX_SHIFT);
+		if (tx_flags & IXGBE_TX_FLAGS_IPV4)
+			olinfo_status |= IXGBE_ADVTXD_POPTS_IXSM;
+	}
+
+	/*
+	 * Check Context must be set if Tx switch is enabled, which it
+	 * always is for case where virtual functions are running
+	 */
+	olinfo_status |= IXGBE_ADVTXD_CC;
+>>>>>>> refs/remotes/origin/master
 
 	olinfo_status |= ((paylen - hdr_len) << IXGBE_ADVTXD_PAYLEN_SHIFT);
 
 	i = tx_ring->next_to_use;
 	while (count--) {
 		tx_buffer_info = &tx_ring->tx_buffer_info[i];
+<<<<<<< HEAD
 		tx_desc = IXGBE_TX_DESC_ADV(*tx_ring, i);
+=======
+		tx_desc = IXGBEVF_TX_DESC(tx_ring, i);
+>>>>>>> refs/remotes/origin/master
 		tx_desc->read.buffer_addr = cpu_to_le64(tx_buffer_info->dma);
 		tx_desc->read.cmd_type_len =
 			cpu_to_le32(cmd_type_len | tx_buffer_info->length);
@@ -3042,14 +4653,21 @@ static void ixgbevf_tx_queue(struct ixgbevf_adapter *adapter,
 
 	tx_desc->read.cmd_type_len |= cpu_to_le32(txd_cmd);
 
+<<<<<<< HEAD
 	/*
 	 * Force memory writes to complete before letting h/w
+=======
+	tx_ring->tx_buffer_info[first].time_stamp = jiffies;
+
+	/* Force memory writes to complete before letting h/w
+>>>>>>> refs/remotes/origin/master
 	 * know there are new descriptors to fetch.  (Only
 	 * applicable for weak-ordered memory model archs,
 	 * such as IA-64).
 	 */
 	wmb();
 
+<<<<<<< HEAD
 	tx_ring->next_to_use = i;
 	writel(i, adapter->hw.hw_addr + tx_ring->tail);
 }
@@ -3060,6 +4678,17 @@ static int __ixgbevf_maybe_stop_tx(struct net_device *netdev,
 	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
 
 	netif_stop_subqueue(netdev, tx_ring->queue_index);
+=======
+	tx_ring->tx_buffer_info[first].next_to_watch = tx_desc;
+	tx_ring->next_to_use = i;
+}
+
+static int __ixgbevf_maybe_stop_tx(struct ixgbevf_ring *tx_ring, int size)
+{
+	struct ixgbevf_adapter *adapter = netdev_priv(tx_ring->netdev);
+
+	netif_stop_subqueue(tx_ring->netdev, tx_ring->queue_index);
+>>>>>>> refs/remotes/origin/master
 	/* Herbert's original patch had:
 	 *  smp_mb__after_netif_stop_queue();
 	 * but since that doesn't exist yet, just open code it. */
@@ -3067,21 +4696,37 @@ static int __ixgbevf_maybe_stop_tx(struct net_device *netdev,
 
 	/* We need to check again in a case another CPU has just
 	 * made room available. */
+<<<<<<< HEAD
 	if (likely(IXGBE_DESC_UNUSED(tx_ring) < size))
 		return -EBUSY;
 
 	/* A reprieve! - use start_queue because it doesn't call schedule */
 	netif_start_subqueue(netdev, tx_ring->queue_index);
+=======
+	if (likely(ixgbevf_desc_unused(tx_ring) < size))
+		return -EBUSY;
+
+	/* A reprieve! - use start_queue because it doesn't call schedule */
+	netif_start_subqueue(tx_ring->netdev, tx_ring->queue_index);
+>>>>>>> refs/remotes/origin/master
 	++adapter->restart_queue;
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ixgbevf_maybe_stop_tx(struct net_device *netdev,
 				 struct ixgbevf_ring *tx_ring, int size)
 {
 	if (likely(IXGBE_DESC_UNUSED(tx_ring) >= size))
 		return 0;
 	return __ixgbevf_maybe_stop_tx(netdev, tx_ring, size);
+=======
+static int ixgbevf_maybe_stop_tx(struct ixgbevf_ring *tx_ring, int size)
+{
+	if (likely(ixgbevf_desc_unused(tx_ring) >= size))
+		return 0;
+	return __ixgbevf_maybe_stop_tx(tx_ring, size);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ixgbevf_xmit_frame(struct sk_buff *skb, struct net_device *netdev)
@@ -3092,18 +4737,52 @@ static int ixgbevf_xmit_frame(struct sk_buff *skb, struct net_device *netdev)
 	unsigned int tx_flags = 0;
 	u8 hdr_len = 0;
 	int r_idx = 0, tso;
+<<<<<<< HEAD
 	int count = 0;
 
 	unsigned int f;
 
 	tx_ring = &adapter->tx_ring[r_idx];
 
+=======
+	u16 count = TXD_USE_COUNT(skb_headlen(skb));
+#if PAGE_SIZE > IXGBE_MAX_DATA_PER_TXD
+	unsigned short f;
+#endif
+	u8 *dst_mac = skb_header_pointer(skb, 0, 0, NULL);
+	if (!dst_mac || is_link_local_ether_addr(dst_mac)) {
+		dev_kfree_skb(skb);
+		return NETDEV_TX_OK;
+	}
+
+	tx_ring = &adapter->tx_ring[r_idx];
+
+	/*
+	 * need: 1 descriptor per page * PAGE_SIZE/IXGBE_MAX_DATA_PER_TXD,
+	 *       + 1 desc for skb_headlen/IXGBE_MAX_DATA_PER_TXD,
+	 *       + 2 desc gap to keep tail from touching head,
+	 *       + 1 desc for context descriptor,
+	 * otherwise try next time
+	 */
+#if PAGE_SIZE > IXGBE_MAX_DATA_PER_TXD
+	for (f = 0; f < skb_shinfo(skb)->nr_frags; f++)
+		count += TXD_USE_COUNT(skb_shinfo(skb)->frags[f].size);
+#else
+	count += skb_shinfo(skb)->nr_frags;
+#endif
+	if (ixgbevf_maybe_stop_tx(tx_ring, count + 3)) {
+		adapter->tx_busy++;
+		return NETDEV_TX_BUSY;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (vlan_tx_tag_present(skb)) {
 		tx_flags |= vlan_tx_tag_get(skb);
 		tx_flags <<= IXGBE_TX_FLAGS_VLAN_SHIFT;
 		tx_flags |= IXGBE_TX_FLAGS_VLAN;
 	}
 
+<<<<<<< HEAD
 	/* four things can cause us to need a context descriptor */
 	if (skb_is_gso(skb) ||
 	    (skb->ip_summed == CHECKSUM_PARTIAL) ||
@@ -3119,17 +4798,24 @@ static int ixgbevf_xmit_frame(struct sk_buff *skb, struct net_device *netdev)
 		return NETDEV_TX_BUSY;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	first = tx_ring->next_to_use;
 
 	if (skb->protocol == htons(ETH_P_IP))
 		tx_flags |= IXGBE_TX_FLAGS_IPV4;
+<<<<<<< HEAD
 	tso = ixgbevf_tso(adapter, tx_ring, skb, tx_flags, &hdr_len);
+=======
+	tso = ixgbevf_tso(tx_ring, skb, tx_flags, &hdr_len);
+>>>>>>> refs/remotes/origin/master
 	if (tso < 0) {
 		dev_kfree_skb_any(skb);
 		return NETDEV_TX_OK;
 	}
 
 	if (tso)
+<<<<<<< HEAD
 		tx_flags |= IXGBE_TX_FLAGS_TSO;
 	else if (ixgbevf_tx_csum(adapter, tx_ring, skb, tx_flags) &&
 		 (skb->ip_summed == CHECKSUM_PARTIAL))
@@ -3140,6 +4826,19 @@ static int ixgbevf_xmit_frame(struct sk_buff *skb, struct net_device *netdev)
 			 skb->len, hdr_len);
 
 	ixgbevf_maybe_stop_tx(netdev, tx_ring, DESC_NEEDED);
+=======
+		tx_flags |= IXGBE_TX_FLAGS_TSO | IXGBE_TX_FLAGS_CSUM;
+	else if (ixgbevf_tx_csum(tx_ring, skb, tx_flags))
+		tx_flags |= IXGBE_TX_FLAGS_CSUM;
+
+	ixgbevf_tx_queue(tx_ring, tx_flags,
+			 ixgbevf_tx_map(tx_ring, skb, tx_flags),
+			 first, skb->len, hdr_len);
+
+	writel(tx_ring->next_to_use, adapter->hw.hw_addr + tx_ring->tail);
+
+	ixgbevf_maybe_stop_tx(tx_ring, DESC_NEEDED);
+>>>>>>> refs/remotes/origin/master
 
 	return NETDEV_TX_OK;
 }
@@ -3163,8 +4862,16 @@ static int ixgbevf_set_mac(struct net_device *netdev, void *p)
 	memcpy(netdev->dev_addr, addr->sa_data, netdev->addr_len);
 	memcpy(hw->mac.addr, addr->sa_data, netdev->addr_len);
 
+<<<<<<< HEAD
 	if (hw->mac.ops.set_rar)
 		hw->mac.ops.set_rar(hw, 0, hw->mac.addr, 0);
+=======
+	spin_lock_bh(&adapter->mbx_lock);
+
+	hw->mac.ops.set_rar(hw, 0, hw->mac.addr, 0);
+
+	spin_unlock_bh(&adapter->mbx_lock);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -3179,6 +4886,7 @@ static int ixgbevf_set_mac(struct net_device *netdev, void *p)
 static int ixgbevf_change_mtu(struct net_device *netdev, int new_mtu)
 {
 	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
+<<<<<<< HEAD
 	struct ixgbe_hw *hw = &adapter->hw;
 	int max_frame = new_mtu + ETH_HLEN + ETH_FCS_LEN;
 	int max_possible_frame = MAXIMUM_ETHERNET_VLAN_SIZE;
@@ -3186,6 +4894,20 @@ static int ixgbevf_change_mtu(struct net_device *netdev, int new_mtu)
 
 	if (adapter->hw.mac.type == ixgbe_mac_X540_vf)
 		max_possible_frame = IXGBE_MAX_JUMBO_FRAME_SIZE;
+=======
+	int max_frame = new_mtu + ETH_HLEN + ETH_FCS_LEN;
+	int max_possible_frame = MAXIMUM_ETHERNET_VLAN_SIZE;
+
+	switch (adapter->hw.api_version) {
+	case ixgbe_mbox_api_11:
+		max_possible_frame = IXGBE_MAX_JUMBO_FRAME_SIZE;
+		break;
+	default:
+		if (adapter->hw.mac.type == ixgbe_mac_X540_vf)
+			max_possible_frame = IXGBE_MAX_JUMBO_FRAME_SIZE;
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* MTU < 68 is an error and causes problems on some kernels */
 	if ((new_mtu < 68) || (max_frame > max_possible_frame))
@@ -3196,28 +4918,46 @@ static int ixgbevf_change_mtu(struct net_device *netdev, int new_mtu)
 	/* must set new MTU before calling down or up */
 	netdev->mtu = new_mtu;
 
+<<<<<<< HEAD
 	msg[0] = IXGBE_VF_SET_LPE;
 	msg[1] = max_frame;
 	hw->mbx.ops.write_posted(hw, msg, 2);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (netif_running(netdev))
 		ixgbevf_reinit_locked(adapter);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static void ixgbevf_shutdown(struct pci_dev *pdev)
 {
 	struct net_device *netdev = pci_get_drvdata(pdev);
 	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
+=======
+static int ixgbevf_suspend(struct pci_dev *pdev, pm_message_t state)
+{
+	struct net_device *netdev = pci_get_drvdata(pdev);
+	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
+#ifdef CONFIG_PM
+	int retval = 0;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	netif_device_detach(netdev);
 
 	if (netif_running(netdev)) {
+<<<<<<< HEAD
+=======
+		rtnl_lock();
+>>>>>>> refs/remotes/origin/master
 		ixgbevf_down(adapter);
 		ixgbevf_free_irq(adapter);
 		ixgbevf_free_all_tx_resources(adapter);
 		ixgbevf_free_all_rx_resources(adapter);
+<<<<<<< HEAD
 	}
 
 #ifdef CONFIG_PM
@@ -3225,6 +4965,71 @@ static void ixgbevf_shutdown(struct pci_dev *pdev)
 #endif
 
 	pci_disable_device(pdev);
+=======
+		rtnl_unlock();
+	}
+
+	ixgbevf_clear_interrupt_scheme(adapter);
+
+#ifdef CONFIG_PM
+	retval = pci_save_state(pdev);
+	if (retval)
+		return retval;
+
+#endif
+	pci_disable_device(pdev);
+
+	return 0;
+}
+
+#ifdef CONFIG_PM
+static int ixgbevf_resume(struct pci_dev *pdev)
+{
+	struct ixgbevf_adapter *adapter = pci_get_drvdata(pdev);
+	struct net_device *netdev = adapter->netdev;
+	u32 err;
+
+	pci_set_power_state(pdev, PCI_D0);
+	pci_restore_state(pdev);
+	/*
+	 * pci_restore_state clears dev->state_saved so call
+	 * pci_save_state to restore it.
+	 */
+	pci_save_state(pdev);
+
+	err = pci_enable_device_mem(pdev);
+	if (err) {
+		dev_err(&pdev->dev, "Cannot enable PCI device from suspend\n");
+		return err;
+	}
+	pci_set_master(pdev);
+
+	ixgbevf_reset(adapter);
+
+	rtnl_lock();
+	err = ixgbevf_init_interrupt_scheme(adapter);
+	rtnl_unlock();
+	if (err) {
+		dev_err(&pdev->dev, "Cannot initialize interrupts\n");
+		return err;
+	}
+
+	if (netif_running(netdev)) {
+		err = ixgbevf_open(netdev);
+		if (err)
+			return err;
+	}
+
+	netif_device_attach(netdev);
+
+	return err;
+}
+
+#endif /* CONFIG_PM */
+static void ixgbevf_shutdown(struct pci_dev *pdev)
+{
+	ixgbevf_suspend(pdev, PMSG_SUSPEND);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct rtnl_link_stats64 *ixgbevf_get_stats(struct net_device *netdev,
@@ -3265,6 +5070,7 @@ static struct rtnl_link_stats64 *ixgbevf_get_stats(struct net_device *netdev,
 	return stats;
 }
 
+<<<<<<< HEAD
 static int ixgbevf_set_features(struct net_device *netdev,
 	netdev_features_t features)
 {
@@ -3279,6 +5085,9 @@ static int ixgbevf_set_features(struct net_device *netdev,
 }
 
 static const struct net_device_ops ixgbe_netdev_ops = {
+=======
+static const struct net_device_ops ixgbevf_netdev_ops = {
+>>>>>>> refs/remotes/origin/master
 	.ndo_open		= ixgbevf_open,
 	.ndo_stop		= ixgbevf_close,
 	.ndo_start_xmit		= ixgbevf_xmit_frame,
@@ -3290,12 +5099,22 @@ static const struct net_device_ops ixgbe_netdev_ops = {
 	.ndo_tx_timeout		= ixgbevf_tx_timeout,
 	.ndo_vlan_rx_add_vid	= ixgbevf_vlan_rx_add_vid,
 	.ndo_vlan_rx_kill_vid	= ixgbevf_vlan_rx_kill_vid,
+<<<<<<< HEAD
 	.ndo_set_features	= ixgbevf_set_features,
+=======
+#ifdef CONFIG_NET_RX_BUSY_POLL
+	.ndo_busy_poll		= ixgbevf_busy_poll_recv,
+#endif
+>>>>>>> refs/remotes/origin/master
 };
 
 static void ixgbevf_assign_netdev_ops(struct net_device *dev)
 {
+<<<<<<< HEAD
 	dev->netdev_ops = &ixgbe_netdev_ops;
+=======
+	dev->netdev_ops = &ixgbevf_netdev_ops;
+>>>>>>> refs/remotes/origin/master
 	ixgbevf_set_ethtool_ops(dev);
 	dev->watchdog_timeo = 5 * HZ;
 }
@@ -3311,8 +5130,12 @@ static void ixgbevf_assign_netdev_ops(struct net_device *dev)
  * The OS initialization, configuring of the adapter private structure,
  * and a hardware reset occur.
  **/
+<<<<<<< HEAD
 static int __devinit ixgbevf_probe(struct pci_dev *pdev,
 				   const struct pci_device_id *ent)
+=======
+static int ixgbevf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *netdev;
 	struct ixgbevf_adapter *adapter = NULL;
@@ -3325,6 +5148,7 @@ static int __devinit ixgbevf_probe(struct pci_dev *pdev,
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 	if (!dma_set_mask(&pdev->dev, DMA_BIT_MASK(64)) &&
 	    !dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64))) {
 		pci_using_dac = 1;
@@ -3338,6 +5162,16 @@ static int __devinit ixgbevf_probe(struct pci_dev *pdev,
 					"configuration, aborting\n");
 				goto err_dma;
 			}
+=======
+	if (!dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64))) {
+		pci_using_dac = 1;
+	} else {
+		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+		if (err) {
+			dev_err(&pdev->dev, "No usable DMA "
+				"configuration, aborting\n");
+			goto err_dma;
+>>>>>>> refs/remotes/origin/master
 		}
 		pci_using_dac = 0;
 	}
@@ -3350,12 +5184,17 @@ static int __devinit ixgbevf_probe(struct pci_dev *pdev,
 
 	pci_set_master(pdev);
 
+<<<<<<< HEAD
 #ifdef HAVE_TX_MQ
 	netdev = alloc_etherdev_mq(sizeof(struct ixgbevf_adapter),
 				   MAX_TX_QUEUES);
 #else
 	netdev = alloc_etherdev(sizeof(struct ixgbevf_adapter));
 #endif
+=======
+	netdev = alloc_etherdev_mq(sizeof(struct ixgbevf_adapter),
+				   MAX_TX_QUEUES);
+>>>>>>> refs/remotes/origin/master
 	if (!netdev) {
 		err = -ENOMEM;
 		goto err_alloc_etherdev;
@@ -3396,18 +5235,24 @@ static int __devinit ixgbevf_probe(struct pci_dev *pdev,
 	memcpy(&hw->mbx.ops, &ixgbevf_mbx_ops,
 	       sizeof(struct ixgbe_mbx_operations));
 
+<<<<<<< HEAD
 	adapter->flags &= ~IXGBE_FLAG_RX_PS_CAPABLE;
 	adapter->flags &= ~IXGBE_FLAG_RX_PS_ENABLED;
 	adapter->flags |= IXGBE_FLAG_RX_1BUF_CAPABLE;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* setup the private structure */
 	err = ixgbevf_sw_init(adapter);
 	if (err)
 		goto err_sw_init;
 
 	/* The HW MAC address was set and/or determined in sw_init */
+<<<<<<< HEAD
 	memcpy(netdev->perm_addr, adapter->hw.mac.addr, netdev->addr_len);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!is_valid_ether_addr(netdev->dev_addr)) {
 		pr_err("invalid MAC address\n");
 		err = -EIO;
@@ -3422,9 +5267,15 @@ static int __devinit ixgbevf_probe(struct pci_dev *pdev,
 			   NETIF_F_RXCSUM;
 
 	netdev->features = netdev->hw_features |
+<<<<<<< HEAD
 			   NETIF_F_HW_VLAN_TX |
 			   NETIF_F_HW_VLAN_RX |
 			   NETIF_F_HW_VLAN_FILTER;
+=======
+			   NETIF_F_HW_VLAN_CTAG_TX |
+			   NETIF_F_HW_VLAN_CTAG_RX |
+			   NETIF_F_HW_VLAN_CTAG_FILTER;
+>>>>>>> refs/remotes/origin/master
 
 	netdev->vlan_features |= NETIF_F_TSO;
 	netdev->vlan_features |= NETIF_F_TSO6;
@@ -3448,18 +5299,24 @@ static int __devinit ixgbevf_probe(struct pci_dev *pdev,
 	if (err)
 		goto err_sw_init;
 
+<<<<<<< HEAD
 	/* pick up the PCI bus settings for reporting later */
 	if (hw->mac.ops.get_bus_info)
 		hw->mac.ops.get_bus_info(hw);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	strcpy(netdev->name, "eth%d");
 
 	err = register_netdev(netdev);
 	if (err)
 		goto err_register;
 
+<<<<<<< HEAD
 	adapter->netdev_registered = true;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	netif_carrier_off(netdev);
 
 	ixgbevf_init_last_counter_stats(adapter);
@@ -3469,13 +5326,20 @@ static int __devinit ixgbevf_probe(struct pci_dev *pdev,
 
 	hw_dbg(hw, "MAC: %d\n", hw->mac.type);
 
+<<<<<<< HEAD
 	hw_dbg(hw, "LRO is disabled\n");
 
+=======
+>>>>>>> refs/remotes/origin/master
 	hw_dbg(hw, "Intel(R) 82599 Virtual Function\n");
 	cards_found++;
 	return 0;
 
 err_register:
+<<<<<<< HEAD
+=======
+	ixgbevf_clear_interrupt_scheme(adapter);
+>>>>>>> refs/remotes/origin/master
 err_sw_init:
 	ixgbevf_reset_interrupt_capability(adapter);
 	iounmap(hw->hw_addr);
@@ -3498,7 +5362,11 @@ err_dma:
  * Hot-Plug event, or because the driver is going to be removed from
  * memory.
  **/
+<<<<<<< HEAD
 static void __devexit ixgbevf_remove(struct pci_dev *pdev)
+=======
+static void ixgbevf_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *netdev = pci_get_drvdata(pdev);
 	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
@@ -3510,11 +5378,18 @@ static void __devexit ixgbevf_remove(struct pci_dev *pdev)
 	cancel_work_sync(&adapter->reset_task);
 	cancel_work_sync(&adapter->watchdog_task);
 
+<<<<<<< HEAD
 	if (adapter->netdev_registered) {
 		unregister_netdev(netdev);
 		adapter->netdev_registered = false;
 	}
 
+=======
+	if (netdev->reg_state == NETREG_REGISTERED)
+		unregister_netdev(netdev);
+
+	ixgbevf_clear_interrupt_scheme(adapter);
+>>>>>>> refs/remotes/origin/master
 	ixgbevf_reset_interrupt_capability(adapter);
 
 	iounmap(adapter->hw.hw_addr);
@@ -3530,12 +5405,105 @@ static void __devexit ixgbevf_remove(struct pci_dev *pdev)
 	pci_disable_device(pdev);
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * ixgbevf_io_error_detected - called when PCI error is detected
+ * @pdev: Pointer to PCI device
+ * @state: The current pci connection state
+ *
+ * This function is called after a PCI bus error affecting
+ * this device has been detected.
+ */
+static pci_ers_result_t ixgbevf_io_error_detected(struct pci_dev *pdev,
+						  pci_channel_state_t state)
+{
+	struct net_device *netdev = pci_get_drvdata(pdev);
+	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
+
+	netif_device_detach(netdev);
+
+	if (state == pci_channel_io_perm_failure)
+		return PCI_ERS_RESULT_DISCONNECT;
+
+	if (netif_running(netdev))
+		ixgbevf_down(adapter);
+
+	pci_disable_device(pdev);
+
+	/* Request a slot slot reset. */
+	return PCI_ERS_RESULT_NEED_RESET;
+}
+
+/**
+ * ixgbevf_io_slot_reset - called after the pci bus has been reset.
+ * @pdev: Pointer to PCI device
+ *
+ * Restart the card from scratch, as if from a cold-boot. Implementation
+ * resembles the first-half of the ixgbevf_resume routine.
+ */
+static pci_ers_result_t ixgbevf_io_slot_reset(struct pci_dev *pdev)
+{
+	struct net_device *netdev = pci_get_drvdata(pdev);
+	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
+
+	if (pci_enable_device_mem(pdev)) {
+		dev_err(&pdev->dev,
+			"Cannot re-enable PCI device after reset.\n");
+		return PCI_ERS_RESULT_DISCONNECT;
+	}
+
+	pci_set_master(pdev);
+
+	ixgbevf_reset(adapter);
+
+	return PCI_ERS_RESULT_RECOVERED;
+}
+
+/**
+ * ixgbevf_io_resume - called when traffic can start flowing again.
+ * @pdev: Pointer to PCI device
+ *
+ * This callback is called when the error recovery driver tells us that
+ * its OK to resume normal operation. Implementation resembles the
+ * second-half of the ixgbevf_resume routine.
+ */
+static void ixgbevf_io_resume(struct pci_dev *pdev)
+{
+	struct net_device *netdev = pci_get_drvdata(pdev);
+	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
+
+	if (netif_running(netdev))
+		ixgbevf_up(adapter);
+
+	netif_device_attach(netdev);
+}
+
+/* PCI Error Recovery (ERS) */
+static const struct pci_error_handlers ixgbevf_err_handler = {
+	.error_detected = ixgbevf_io_error_detected,
+	.slot_reset = ixgbevf_io_slot_reset,
+	.resume = ixgbevf_io_resume,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct pci_driver ixgbevf_driver = {
 	.name     = ixgbevf_driver_name,
 	.id_table = ixgbevf_pci_tbl,
 	.probe    = ixgbevf_probe,
+<<<<<<< HEAD
 	.remove   = __devexit_p(ixgbevf_remove),
 	.shutdown = ixgbevf_shutdown,
+=======
+	.remove   = ixgbevf_remove,
+#ifdef CONFIG_PM
+	/* Power Management Hooks */
+	.suspend  = ixgbevf_suspend,
+	.resume   = ixgbevf_resume,
+#endif
+	.shutdown = ixgbevf_shutdown,
+	.err_handler = &ixgbevf_err_handler
+>>>>>>> refs/remotes/origin/master
 };
 
 /**

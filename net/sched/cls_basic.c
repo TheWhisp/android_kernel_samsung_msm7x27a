@@ -40,10 +40,14 @@ static const struct tcf_ext_map basic_ext_map = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int basic_classify(struct sk_buff *skb, struct tcf_proto *tp,
 =======
 static int basic_classify(struct sk_buff *skb, const struct tcf_proto *tp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int basic_classify(struct sk_buff *skb, const struct tcf_proto *tp,
+>>>>>>> refs/remotes/origin/master
 			  struct tcf_result *res)
 {
 	int r;
@@ -136,6 +140,7 @@ static const struct nla_policy basic_policy[TCA_BASIC_MAX + 1] = {
 	[TCA_BASIC_EMATCHES]	= { .type = NLA_NESTED },
 };
 
+<<<<<<< HEAD
 static int basic_set_parms(struct tcf_proto *tp, struct basic_filter *f,
 			   unsigned long base, struct nlattr **tb,
 			   struct nlattr *est)
@@ -145,6 +150,18 @@ static int basic_set_parms(struct tcf_proto *tp, struct basic_filter *f,
 	struct tcf_ematch_tree t;
 
 	err = tcf_exts_validate(tp, tb, est, &e, &basic_ext_map);
+=======
+static int basic_set_parms(struct net *net, struct tcf_proto *tp,
+			   struct basic_filter *f, unsigned long base,
+			   struct nlattr **tb,
+			   struct nlattr *est)
+{
+	int err;
+	struct tcf_exts e;
+	struct tcf_ematch_tree t;
+
+	err = tcf_exts_validate(net, tp, tb, est, &e, &basic_ext_map);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -166,7 +183,12 @@ errout:
 	return err;
 }
 
+<<<<<<< HEAD
 static int basic_change(struct tcf_proto *tp, unsigned long base, u32 handle,
+=======
+static int basic_change(struct net *net, struct sk_buff *in_skb,
+			struct tcf_proto *tp, unsigned long base, u32 handle,
+>>>>>>> refs/remotes/origin/master
 			struct nlattr **tca, unsigned long *arg)
 {
 	int err;
@@ -185,7 +207,11 @@ static int basic_change(struct tcf_proto *tp, unsigned long base, u32 handle,
 	if (f != NULL) {
 		if (handle && f->handle != handle)
 			return -EINVAL;
+<<<<<<< HEAD
 		return basic_set_parms(tp, f, base, tb, tca[TCA_RATE]);
+=======
+		return basic_set_parms(net, tp, f, base, tb, tca[TCA_RATE]);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	err = -ENOBUFS;
@@ -211,7 +237,11 @@ static int basic_change(struct tcf_proto *tp, unsigned long base, u32 handle,
 		f->handle = head->hgenerator;
 	}
 
+<<<<<<< HEAD
 	err = basic_set_parms(tp, f, base, tb, tca[TCA_RATE]);
+=======
+	err = basic_set_parms(net, tp, f, base, tb, tca[TCA_RATE]);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		goto errout;
 
@@ -261,8 +291,14 @@ static int basic_dump(struct tcf_proto *tp, unsigned long fh,
 	if (nest == NULL)
 		goto nla_put_failure;
 
+<<<<<<< HEAD
 	if (f->res.classid)
 		NLA_PUT_U32(skb, TCA_BASIC_CLASSID, f->res.classid);
+=======
+	if (f->res.classid &&
+	    nla_put_u32(skb, TCA_BASIC_CLASSID, f->res.classid))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 
 	if (tcf_exts_dump(skb, &f->exts, &basic_ext_map) < 0 ||
 	    tcf_em_tree_dump(skb, &f->ematches, TCA_BASIC_EMATCHES) < 0)

@@ -102,6 +102,10 @@ static const char *bnad_net_stats_strings[BNAD_ETHTOOL_STATS_NUM] = {
 	"rx_unmap_q_alloc_failed",
 	"rxbuf_alloc_failed",
 
+<<<<<<< HEAD
+=======
+	"mac_stats_clr_cnt",
+>>>>>>> refs/remotes/origin/master
 	"mac_frame_64",
 	"mac_frame_65_127",
 	"mac_frame_128_255",
@@ -464,7 +468,11 @@ bnad_set_ringparam(struct net_device *netdev,
 		for (i = 0; i < bnad->num_rx; i++) {
 			if (!bnad->rx_info[i].rx)
 				continue;
+<<<<<<< HEAD
 			bnad_cleanup_rx(bnad, i);
+=======
+			bnad_destroy_rx(bnad, i);
+>>>>>>> refs/remotes/origin/master
 			current_err = bnad_setup_rx(bnad, i);
 			if (current_err && !err)
 				err = current_err;
@@ -492,7 +500,11 @@ bnad_set_ringparam(struct net_device *netdev,
 		for (i = 0; i < bnad->num_tx; i++) {
 			if (!bnad->tx_info[i].tx)
 				continue;
+<<<<<<< HEAD
 			bnad_cleanup_tx(bnad, i);
+=======
+			bnad_destroy_tx(bnad, i);
+>>>>>>> refs/remotes/origin/master
 			current_err = bnad_setup_tx(bnad, i);
 			if (current_err && !err)
 				err = current_err;
@@ -539,7 +551,11 @@ bnad_set_pauseparam(struct net_device *netdev,
 }
 
 static void
+<<<<<<< HEAD
 bnad_get_strings(struct net_device *netdev, u32 stringset, u8 * string)
+=======
+bnad_get_strings(struct net_device *netdev, u32 stringset, u8 *string)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bnad *bnad = netdev_priv(netdev);
 	int i, j, q_num;

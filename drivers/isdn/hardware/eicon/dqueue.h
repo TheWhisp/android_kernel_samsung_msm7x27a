@@ -17,6 +17,7 @@ typedef struct _diva_um_idi_data_queue {
 } diva_um_idi_data_queue_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int diva_data_q_init(diva_um_idi_data_queue_t * q,
 		     int max_length, int max_segments);
 int diva_data_q_finit(diva_um_idi_data_queue_t * q);
@@ -29,6 +30,8 @@ const void *diva_data_q_get_segment4read(const diva_um_idi_data_queue_t *
 int diva_data_q_get_segment_length(const diva_um_idi_data_queue_t * q);
 void diva_data_q_ack_segment4read(diva_um_idi_data_queue_t * q);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int diva_data_q_init(diva_um_idi_data_queue_t *q,
 		     int max_length, int max_segments);
 int diva_data_q_finit(diva_um_idi_data_queue_t *q);
@@ -40,6 +43,9 @@ const void *diva_data_q_get_segment4read(const diva_um_idi_data_queue_t *
 					 q);
 int diva_data_q_get_segment_length(const diva_um_idi_data_queue_t *q);
 void diva_data_q_ack_segment4read(diva_um_idi_data_queue_t *q);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

@@ -58,7 +58,11 @@
 				#size-cells = <1>;
 				compatible = "spansion,s25sl12801";
 				reg = <0>;
+<<<<<<< HEAD
 				spi-max-frequency = <40000000>; /* input clock */
+=======
+				spi-max-frequency = <35000000>; /* input clock */
+>>>>>>> refs/remotes/origin/master
 				partition@u-boot {
 					label = "u-boot";
 					reg = <0x00000000 0x00100000>;
@@ -98,6 +102,13 @@
 				reg = <0x68>;
 				interrupts = <0x1 0x1 0 0>;
 			};
+<<<<<<< HEAD
+=======
+			adt7461@4c {
+				compatible = "adi,adt7461";
+				reg = <0x4c>;
+			};
+>>>>>>> refs/remotes/origin/master
 		};
 	};
 

@@ -335,7 +335,11 @@ tlb_miss:
 	/* If the fast path handler fixed the fault, just drop through quickly
 	   to the restore code right away to return to the excepting context.
 	   */
+<<<<<<< HEAD
 	beqi/u	r2, 0, tr1
+=======
+	bnei/u	r2, 0, tr1
+>>>>>>> refs/remotes/origin/master
 
 fast_tlb_miss_restore:
 	ld.q	SP, SAVED_TR0, r2
@@ -933,7 +937,11 @@ ret_with_reschedule:
 
 	pta	restore_all, tr1
 
+<<<<<<< HEAD
 	movi	_TIF_SIGPENDING, r8
+=======
+	movi	(_TIF_SIGPENDING|_TIF_NOTIFY_RESUME), r8
+>>>>>>> refs/remotes/origin/master
 	and	r8, r7, r8
 	pta	work_notifysig, tr0
 	bne	r8, ZERO, tr0
@@ -1079,9 +1087,14 @@ restore_all:
  *
  * Kernel TLB fault handlers will get a slightly different interface.
  * (r2)   struct pt_regs *, original register's frame pointer
+<<<<<<< HEAD
  * (r3)   writeaccess, whether it's a store fault as opposed to load fault
  * (r4)   execaccess, whether it's a ITLB fault as opposed to DTLB fault
  * (r5)   Effective Address of fault
+=======
+ * (r3)   page fault error code (see asm/thread_info.h)
+ * (r4)   Effective Address of fault
+>>>>>>> refs/remotes/origin/master
  * (LINK) return address
  * (SP)   = r2
  *
@@ -1092,26 +1105,43 @@ restore_all:
 tlb_miss_load:
 	or	SP, ZERO, r2
 	or	ZERO, ZERO, r3		/* Read */
+<<<<<<< HEAD
 	or	ZERO, ZERO, r4		/* Data */
 	getcon	TEA, r5
+=======
+	getcon	TEA, r4
+>>>>>>> refs/remotes/origin/master
 	pta	call_do_page_fault, tr0
 	beq	ZERO, ZERO, tr0
 
 tlb_miss_store:
 	or	SP, ZERO, r2
+<<<<<<< HEAD
 	movi	1, r3			/* Write */
 	or	ZERO, ZERO, r4		/* Data */
 	getcon	TEA, r5
+=======
+	movi	FAULT_CODE_WRITE, r3		/* Write */
+	getcon	TEA, r4
+>>>>>>> refs/remotes/origin/master
 	pta	call_do_page_fault, tr0
 	beq	ZERO, ZERO, tr0
 
 itlb_miss_or_IRQ:
 	pta	its_IRQ, tr0
 	beqi/u	r4, EVENT_INTERRUPT, tr0
+<<<<<<< HEAD
 	or	SP, ZERO, r2
 	or	ZERO, ZERO, r3		/* Read */
 	movi	1, r4			/* Text */
 	getcon	TEA, r5
+=======
+
+	/* ITLB miss */
+	or	SP, ZERO, r2
+	movi	FAULT_CODE_ITLB, r3
+	getcon	TEA, r4
+>>>>>>> refs/remotes/origin/master
 	/* Fall through */
 
 call_do_page_fault:
@@ -1230,6 +1260,28 @@ ret_from_fork:
 	pta	ret_from_syscall, tr0
 	blink	tr0, ZERO
 
+<<<<<<< HEAD
+=======
+.global	ret_from_kernel_thread
+ret_from_kernel_thread:
+
+	movi	schedule_tail,r5
+	ori	r5, 1, r5
+	ptabs	r5, tr0
+	blink	tr0, LINK
+
+	ld.q	SP, FRAME_R(2), r2
+	ld.q	SP, FRAME_R(3), r3
+	ptabs	r3, tr0
+	blink	tr0, LINK
+
+	ld.q	SP, FRAME_S(FSPC), r2
+	addi	r2, 4, r2		/* Move PC, being pre-execution event */
+	st.q	SP, FRAME_S(FSPC), r2
+	pta	ret_from_syscall, tr0
+	blink	tr0, ZERO
+
+>>>>>>> refs/remotes/origin/master
 syscall_allowed:
 	/* Use LINK to deflect the exit point, default is syscall_ret */
 	pta	syscall_ret, tr0
@@ -1571,6 +1623,7 @@ ___clear_user_exit:
 #endif /* CONFIG_MMU */
 
 /*
+<<<<<<< HEAD
  * int __strncpy_from_user(unsigned long __dest, unsigned long __src,
  *			   int __count)
  *
@@ -1651,6 +1704,8 @@ ___strnlen_user_exit:
 	blink	tr0, ZERO
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * extern long __get_user_asm_?(void *val, long addr)
  *
  * Inputs:
@@ -1984,8 +2039,11 @@ asm_uaccess_start:
 	.long	___copy_user2, ___copy_user_exit
 	.long	___clear_user1, ___clear_user_exit
 #endif
+<<<<<<< HEAD
 	.long	___strncpy_from_user1, ___strncpy_from_user_exit
 	.long	___strnlen_user1, ___strnlen_user_exit
+=======
+>>>>>>> refs/remotes/origin/master
 	.long	___get_user_asm_b1, ___get_user_asm_b_exit
 	.long	___get_user_asm_w1, ___get_user_asm_w_exit
 	.long	___get_user_asm_l1, ___get_user_asm_l_exit

@@ -20,6 +20,10 @@
 
 #include <plat/gpio-cfg.h>
 #include <plat/sdhci.h>
+<<<<<<< HEAD
+=======
+#include <mach/gpio-samsung.h>
+>>>>>>> refs/remotes/origin/master
 
 void s3c64xx_setup_sdhci0_cfg_gpio(struct platform_device *dev, int width)
 {

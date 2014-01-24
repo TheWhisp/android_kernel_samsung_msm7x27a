@@ -30,6 +30,7 @@
  * SOFTWARE.
  */
 /* Crude resource management */
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/random.h>
 #include <linux/slab.h>
@@ -123,6 +124,27 @@ static int c4iw_init_qid_fifo(struct c4iw_rdev *rdev)
 		if (!(i & rdev->qpmask))
 			kfifo_in(&rdev->resource.qid_fifo,
 				    (unsigned char *) &i, sizeof(u32));
+=======
+#include <linux/spinlock.h>
+#include <linux/genalloc.h>
+#include <linux/ratelimit.h>
+#include "iw_cxgb4.h"
+
+static int c4iw_init_qid_table(struct c4iw_rdev *rdev)
+{
+	u32 i;
+
+	if (c4iw_id_table_alloc(&rdev->resource.qid_table,
+				rdev->lldi.vr->qp.start,
+				rdev->lldi.vr->qp.size,
+				rdev->lldi.vr->qp.size, 0))
+		return -ENOMEM;
+
+	for (i = rdev->lldi.vr->qp.start;
+		i < rdev->lldi.vr->qp.start + rdev->lldi.vr->qp.size; i++)
+		if (!(i & rdev->qpmask))
+			c4iw_id_free(&rdev->resource.qid_table, i);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -130,6 +152,7 @@ static int c4iw_init_qid_fifo(struct c4iw_rdev *rdev)
 int c4iw_init_resource(struct c4iw_rdev *rdev, u32 nr_tpt, u32 nr_pdid)
 {
 	int err = 0;
+<<<<<<< HEAD
 	err = c4iw_init_resource_fifo_random(&rdev->resource.tpt_fifo,
 					     &rdev->resource.tpt_fifo_lock,
 					     nr_tpt, 1, 0);
@@ -149,12 +172,32 @@ pdid_err:
 qid_err:
 	kfifo_free(&rdev->resource.tpt_fifo);
 tpt_err:
+=======
+	err = c4iw_id_table_alloc(&rdev->resource.tpt_table, 0, nr_tpt, 1,
+					C4IW_ID_TABLE_F_RANDOM);
+	if (err)
+		goto tpt_err;
+	err = c4iw_init_qid_table(rdev);
+	if (err)
+		goto qid_err;
+	err = c4iw_id_table_alloc(&rdev->resource.pdid_table, 0,
+					nr_pdid, 1, 0);
+	if (err)
+		goto pdid_err;
+	return 0;
+ pdid_err:
+	c4iw_id_table_free(&rdev->resource.qid_table);
+ qid_err:
+	c4iw_id_table_free(&rdev->resource.tpt_table);
+ tpt_err:
+>>>>>>> refs/remotes/origin/master
 	return -ENOMEM;
 }
 
 /*
  * returns 0 if no resource available
  */
+<<<<<<< HEAD
 u32 c4iw_get_resource(struct kfifo *fifo, spinlock_t *lock)
 {
 	u32 entry;
@@ -168,6 +211,21 @@ void c4iw_put_resource(struct kfifo *fifo, u32 entry, spinlock_t *lock)
 {
 	PDBG("%s entry 0x%x\n", __func__, entry);
 	kfifo_in_locked(fifo, (unsigned char *) &entry, sizeof(u32), lock);
+=======
+u32 c4iw_get_resource(struct c4iw_id_table *id_table)
+{
+	u32 entry;
+	entry = c4iw_id_alloc(id_table);
+	if (entry == (u32)(-1))
+		return 0;
+	return entry;
+}
+
+void c4iw_put_resource(struct c4iw_id_table *id_table, u32 entry)
+{
+	PDBG("%s entry 0x%x\n", __func__, entry);
+	c4iw_id_free(id_table, entry);
+>>>>>>> refs/remotes/origin/master
 }
 
 u32 c4iw_get_cqid(struct c4iw_rdev *rdev, struct c4iw_dev_ucontext *uctx)
@@ -184,10 +242,19 @@ u32 c4iw_get_cqid(struct c4iw_rdev *rdev, struct c4iw_dev_ucontext *uctx)
 		qid = entry->qid;
 		kfree(entry);
 	} else {
+<<<<<<< HEAD
 		qid = c4iw_get_resource(&rdev->resource.qid_fifo,
 					&rdev->resource.qid_fifo_lock);
 		if (!qid)
 			goto out;
+=======
+		qid = c4iw_get_resource(&rdev->resource.qid_table);
+		if (!qid)
+			goto out;
+		mutex_lock(&rdev->stats.lock);
+		rdev->stats.qid.cur += rdev->qpmask + 1;
+		mutex_unlock(&rdev->stats.lock);
+>>>>>>> refs/remotes/origin/master
 		for (i = qid+1; i & rdev->qpmask; i++) {
 			entry = kmalloc(sizeof *entry, GFP_KERNEL);
 			if (!entry)
@@ -216,6 +283,13 @@ u32 c4iw_get_cqid(struct c4iw_rdev *rdev, struct c4iw_dev_ucontext *uctx)
 out:
 	mutex_unlock(&uctx->lock);
 	PDBG("%s qid 0x%x\n", __func__, qid);
+<<<<<<< HEAD
+=======
+	mutex_lock(&rdev->stats.lock);
+	if (rdev->stats.qid.cur > rdev->stats.qid.max)
+		rdev->stats.qid.max = rdev->stats.qid.cur;
+	mutex_unlock(&rdev->stats.lock);
+>>>>>>> refs/remotes/origin/master
 	return qid;
 }
 
@@ -248,10 +322,19 @@ u32 c4iw_get_qpid(struct c4iw_rdev *rdev, struct c4iw_dev_ucontext *uctx)
 		qid = entry->qid;
 		kfree(entry);
 	} else {
+<<<<<<< HEAD
 		qid = c4iw_get_resource(&rdev->resource.qid_fifo,
 					&rdev->resource.qid_fifo_lock);
 		if (!qid)
 			goto out;
+=======
+		qid = c4iw_get_resource(&rdev->resource.qid_table);
+		if (!qid)
+			goto out;
+		mutex_lock(&rdev->stats.lock);
+		rdev->stats.qid.cur += rdev->qpmask + 1;
+		mutex_unlock(&rdev->stats.lock);
+>>>>>>> refs/remotes/origin/master
 		for (i = qid+1; i & rdev->qpmask; i++) {
 			entry = kmalloc(sizeof *entry, GFP_KERNEL);
 			if (!entry)
@@ -280,6 +363,13 @@ u32 c4iw_get_qpid(struct c4iw_rdev *rdev, struct c4iw_dev_ucontext *uctx)
 out:
 	mutex_unlock(&uctx->lock);
 	PDBG("%s qid 0x%x\n", __func__, qid);
+<<<<<<< HEAD
+=======
+	mutex_lock(&rdev->stats.lock);
+	if (rdev->stats.qid.cur > rdev->stats.qid.max)
+		rdev->stats.qid.max = rdev->stats.qid.cur;
+	mutex_unlock(&rdev->stats.lock);
+>>>>>>> refs/remotes/origin/master
 	return qid;
 }
 
@@ -300,9 +390,15 @@ void c4iw_put_qpid(struct c4iw_rdev *rdev, u32 qid,
 
 void c4iw_destroy_resource(struct c4iw_resource *rscp)
 {
+<<<<<<< HEAD
 	kfifo_free(&rscp->tpt_fifo);
 	kfifo_free(&rscp->qid_fifo);
 	kfifo_free(&rscp->pdid_fifo);
+=======
+	c4iw_id_table_free(&rscp->tpt_table);
+	c4iw_id_table_free(&rscp->qid_table);
+	c4iw_id_table_free(&rscp->pdid_table);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -316,6 +412,7 @@ u32 c4iw_pblpool_alloc(struct c4iw_rdev *rdev, int size)
 	unsigned long addr = gen_pool_alloc(rdev->pbl_pool, size);
 	PDBG("%s addr 0x%x size %d\n", __func__, (u32)addr, size);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!addr && printk_ratelimit())
 		printk(KERN_WARNING MOD "%s: Out of PBL memory\n",
 =======
@@ -323,12 +420,28 @@ u32 c4iw_pblpool_alloc(struct c4iw_rdev *rdev, int size)
 		printk_ratelimited(KERN_WARNING MOD "%s: Out of PBL memory\n",
 >>>>>>> refs/remotes/origin/cm-10.0
 		       pci_name(rdev->lldi.pdev));
+=======
+	mutex_lock(&rdev->stats.lock);
+	if (addr) {
+		rdev->stats.pbl.cur += roundup(size, 1 << MIN_PBL_SHIFT);
+		if (rdev->stats.pbl.cur > rdev->stats.pbl.max)
+			rdev->stats.pbl.max = rdev->stats.pbl.cur;
+	} else
+		rdev->stats.pbl.fail++;
+	mutex_unlock(&rdev->stats.lock);
+>>>>>>> refs/remotes/origin/master
 	return (u32)addr;
 }
 
 void c4iw_pblpool_free(struct c4iw_rdev *rdev, u32 addr, int size)
 {
 	PDBG("%s addr 0x%x size %d\n", __func__, addr, size);
+<<<<<<< HEAD
+=======
+	mutex_lock(&rdev->stats.lock);
+	rdev->stats.pbl.cur -= roundup(size, 1 << MIN_PBL_SHIFT);
+	mutex_unlock(&rdev->stats.lock);
+>>>>>>> refs/remotes/origin/master
 	gen_pool_free(rdev->pbl_pool, (unsigned long)addr, size);
 }
 
@@ -383,6 +496,7 @@ u32 c4iw_rqtpool_alloc(struct c4iw_rdev *rdev, int size)
 	unsigned long addr = gen_pool_alloc(rdev->rqt_pool, size << 6);
 	PDBG("%s addr 0x%x size %d\n", __func__, (u32)addr, size << 6);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!addr && printk_ratelimit())
 		printk(KERN_WARNING MOD "%s: Out of RQT memory\n",
 =======
@@ -390,12 +504,31 @@ u32 c4iw_rqtpool_alloc(struct c4iw_rdev *rdev, int size)
 		printk_ratelimited(KERN_WARNING MOD "%s: Out of RQT memory\n",
 >>>>>>> refs/remotes/origin/cm-10.0
 		       pci_name(rdev->lldi.pdev));
+=======
+	if (!addr)
+		printk_ratelimited(KERN_WARNING MOD "%s: Out of RQT memory\n",
+		       pci_name(rdev->lldi.pdev));
+	mutex_lock(&rdev->stats.lock);
+	if (addr) {
+		rdev->stats.rqt.cur += roundup(size << 6, 1 << MIN_RQT_SHIFT);
+		if (rdev->stats.rqt.cur > rdev->stats.rqt.max)
+			rdev->stats.rqt.max = rdev->stats.rqt.cur;
+	} else
+		rdev->stats.rqt.fail++;
+	mutex_unlock(&rdev->stats.lock);
+>>>>>>> refs/remotes/origin/master
 	return (u32)addr;
 }
 
 void c4iw_rqtpool_free(struct c4iw_rdev *rdev, u32 addr, int size)
 {
 	PDBG("%s addr 0x%x size %d\n", __func__, addr, size << 6);
+<<<<<<< HEAD
+=======
+	mutex_lock(&rdev->stats.lock);
+	rdev->stats.rqt.cur -= roundup(size << 6, 1 << MIN_RQT_SHIFT);
+	mutex_unlock(&rdev->stats.lock);
+>>>>>>> refs/remotes/origin/master
 	gen_pool_free(rdev->rqt_pool, (unsigned long)addr, size << 6);
 }
 
@@ -446,12 +579,28 @@ u32 c4iw_ocqp_pool_alloc(struct c4iw_rdev *rdev, int size)
 {
 	unsigned long addr = gen_pool_alloc(rdev->ocqp_pool, size);
 	PDBG("%s addr 0x%x size %d\n", __func__, (u32)addr, size);
+<<<<<<< HEAD
+=======
+	if (addr) {
+		mutex_lock(&rdev->stats.lock);
+		rdev->stats.ocqp.cur += roundup(size, 1 << MIN_OCQP_SHIFT);
+		if (rdev->stats.ocqp.cur > rdev->stats.ocqp.max)
+			rdev->stats.ocqp.max = rdev->stats.ocqp.cur;
+		mutex_unlock(&rdev->stats.lock);
+	}
+>>>>>>> refs/remotes/origin/master
 	return (u32)addr;
 }
 
 void c4iw_ocqp_pool_free(struct c4iw_rdev *rdev, u32 addr, int size)
 {
 	PDBG("%s addr 0x%x size %d\n", __func__, addr, size);
+<<<<<<< HEAD
+=======
+	mutex_lock(&rdev->stats.lock);
+	rdev->stats.ocqp.cur -= roundup(size, 1 << MIN_OCQP_SHIFT);
+	mutex_unlock(&rdev->stats.lock);
+>>>>>>> refs/remotes/origin/master
 	gen_pool_free(rdev->ocqp_pool, (unsigned long)addr, size);
 }
 

@@ -41,6 +41,12 @@ void gma_power_uninit(struct drm_device *dev);
  */
 int gma_power_suspend(struct device *dev);
 int gma_power_resume(struct device *dev);
+<<<<<<< HEAD
+=======
+int gma_power_thaw(struct device *dev);
+int gma_power_freeze(struct device *dev);
+int gma_power_restore(struct device *_dev);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These are the functions the driver should use to wrap all hw access

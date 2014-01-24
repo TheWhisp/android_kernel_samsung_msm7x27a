@@ -36,12 +36,16 @@ DECLARE_EVENT_CLASS(jbd_commit,
 
 	TP_STRUCT__entry(
 		__field(	dev_t,	dev			)
+<<<<<<< HEAD
 		__field(	char,	sync_commit		)
+=======
+>>>>>>> refs/remotes/origin/master
 		__field(	int,	transaction		)
 	),
 
 	TP_fast_assign(
 		__entry->dev		= journal->j_fs_dev->bd_dev;
+<<<<<<< HEAD
 		__entry->sync_commit = commit_transaction->t_synchronous_commit;
 		__entry->transaction	= commit_transaction->t_tid;
 	),
@@ -49,6 +53,14 @@ DECLARE_EVENT_CLASS(jbd_commit,
 	TP_printk("dev %d,%d transaction %d sync %d",
 		  MAJOR(__entry->dev), MINOR(__entry->dev),
 		  __entry->transaction, __entry->sync_commit)
+=======
+		__entry->transaction	= commit_transaction->t_tid;
+	),
+
+	TP_printk("dev %d,%d transaction %d",
+		  MAJOR(__entry->dev), MINOR(__entry->dev),
+		  __entry->transaction)
+>>>>>>> refs/remotes/origin/master
 );
 
 DEFINE_EVENT(jbd_commit, jbd_start_commit,
@@ -87,12 +99,16 @@ TRACE_EVENT(jbd_drop_transaction,
 
 	TP_STRUCT__entry(
 		__field(	dev_t,	dev			)
+<<<<<<< HEAD
 		__field(	char,	sync_commit		)
+=======
+>>>>>>> refs/remotes/origin/master
 		__field(	int,	transaction		)
 	),
 
 	TP_fast_assign(
 		__entry->dev		= journal->j_fs_dev->bd_dev;
+<<<<<<< HEAD
 		__entry->sync_commit = commit_transaction->t_synchronous_commit;
 		__entry->transaction	= commit_transaction->t_tid;
 	),
@@ -100,6 +116,14 @@ TRACE_EVENT(jbd_drop_transaction,
 	TP_printk("dev %d,%d transaction %d sync %d",
 		  MAJOR(__entry->dev), MINOR(__entry->dev),
 		  __entry->transaction, __entry->sync_commit)
+=======
+		__entry->transaction	= commit_transaction->t_tid;
+	),
+
+	TP_printk("dev %d,%d transaction %d",
+		  MAJOR(__entry->dev), MINOR(__entry->dev),
+		  __entry->transaction)
+>>>>>>> refs/remotes/origin/master
 );
 
 TRACE_EVENT(jbd_end_commit,
@@ -109,21 +133,33 @@ TRACE_EVENT(jbd_end_commit,
 
 	TP_STRUCT__entry(
 		__field(	dev_t,	dev			)
+<<<<<<< HEAD
 		__field(	char,	sync_commit		)
+=======
+>>>>>>> refs/remotes/origin/master
 		__field(	int,	transaction		)
 		__field(	int,	head			)
 	),
 
 	TP_fast_assign(
 		__entry->dev		= journal->j_fs_dev->bd_dev;
+<<<<<<< HEAD
 		__entry->sync_commit = commit_transaction->t_synchronous_commit;
+=======
+>>>>>>> refs/remotes/origin/master
 		__entry->transaction	= commit_transaction->t_tid;
 		__entry->head		= journal->j_tail_sequence;
 	),
 
+<<<<<<< HEAD
 	TP_printk("dev %d,%d transaction %d sync %d head %d",
 		  MAJOR(__entry->dev), MINOR(__entry->dev),
 		  __entry->transaction, __entry->sync_commit, __entry->head)
+=======
+	TP_printk("dev %d,%d transaction %d head %d",
+		  MAJOR(__entry->dev), MINOR(__entry->dev),
+		  __entry->transaction, __entry->head)
+>>>>>>> refs/remotes/origin/master
 );
 
 TRACE_EVENT(jbd_do_submit_data,
@@ -133,12 +169,16 @@ TRACE_EVENT(jbd_do_submit_data,
 
 	TP_STRUCT__entry(
 		__field(	dev_t,	dev			)
+<<<<<<< HEAD
 		__field(	char,	sync_commit		)
+=======
+>>>>>>> refs/remotes/origin/master
 		__field(	int,	transaction		)
 	),
 
 	TP_fast_assign(
 		__entry->dev		= journal->j_fs_dev->bd_dev;
+<<<<<<< HEAD
 		__entry->sync_commit = commit_transaction->t_synchronous_commit;
 		__entry->transaction	= commit_transaction->t_tid;
 	),
@@ -146,6 +186,14 @@ TRACE_EVENT(jbd_do_submit_data,
 	TP_printk("dev %d,%d transaction %d sync %d",
 		  MAJOR(__entry->dev), MINOR(__entry->dev),
 		   __entry->transaction, __entry->sync_commit)
+=======
+		__entry->transaction	= commit_transaction->t_tid;
+	),
+
+	TP_printk("dev %d,%d transaction %d",
+		  MAJOR(__entry->dev), MINOR(__entry->dev),
+		   __entry->transaction)
+>>>>>>> refs/remotes/origin/master
 );
 
 TRACE_EVENT(jbd_cleanup_journal_tail,
@@ -177,6 +225,7 @@ TRACE_EVENT(jbd_cleanup_journal_tail,
 		  __entry->block_nr, __entry->freed)
 );
 
+<<<<<<< HEAD
 TRACE_EVENT(jbd_update_superblock_end,
 	TP_PROTO(journal_t *journal, int wait),
 
@@ -185,16 +234,34 @@ TRACE_EVENT(jbd_update_superblock_end,
 	TP_STRUCT__entry(
 		__field(	dev_t,	dev			)
 		__field(	int,	wait			)
+=======
+TRACE_EVENT(journal_write_superblock,
+	TP_PROTO(journal_t *journal, int write_op),
+
+	TP_ARGS(journal, write_op),
+
+	TP_STRUCT__entry(
+		__field(	dev_t,	dev			)
+		__field(	int,	write_op		)
+>>>>>>> refs/remotes/origin/master
 	),
 
 	TP_fast_assign(
 		__entry->dev		= journal->j_fs_dev->bd_dev;
+<<<<<<< HEAD
 		__entry->wait		= wait;
 	),
 
 	TP_printk("dev %d,%d wait %d",
 		  MAJOR(__entry->dev), MINOR(__entry->dev),
 		   __entry->wait)
+=======
+		__entry->write_op	= write_op;
+	),
+
+	TP_printk("dev %d,%d write_op %x", MAJOR(__entry->dev),
+		  MINOR(__entry->dev), __entry->write_op)
+>>>>>>> refs/remotes/origin/master
 );
 
 #endif /* _TRACE_JBD_H */

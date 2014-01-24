@@ -11,7 +11,10 @@ Contact:	masa-korg@dsn.okisemi.com
 Description:	Write/read Option ROM data.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 What:		/sys/module/ehci_hcd/drivers/.../uframe_periodic_max
 Date:		July 2011
@@ -51,4 +54,7 @@ Description:	Module taint flags:
 			O - out-of-tree module
 			F - force-loaded module
 			C - staging driver module
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

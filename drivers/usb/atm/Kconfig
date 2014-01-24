@@ -4,7 +4,11 @@
 
 menuconfig USB_ATM
 	tristate "USB DSL modem support"
+<<<<<<< HEAD
 	depends on USB && ATM
+=======
+	depends on ATM
+>>>>>>> refs/remotes/origin/master
 	select CRC32
 	default n
 	help

@@ -32,10 +32,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "drmP.h"
+=======
+#include <linux/export.h>
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 
 # define ATI_PCIGART_PAGE_SIZE		4096	/**< PCI GART page size */
 

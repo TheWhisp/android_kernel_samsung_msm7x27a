@@ -195,10 +195,13 @@ void __init init_IRQ(void)
 	int irq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	init_vectors();
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Mask all interrupt sources */
 	__raw_writel(0x1, MCFICM_INTC0 + MCFINTC_IMRL);
 #ifdef MCFICM_INTC1

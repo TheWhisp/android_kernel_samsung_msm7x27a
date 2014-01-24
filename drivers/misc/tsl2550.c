@@ -204,7 +204,11 @@ static ssize_t tsl2550_store_power_state(struct device *dev,
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 	int ret;
 
+<<<<<<< HEAD
 	if (val < 0 || val > 1)
+=======
+	if (val > 1)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->update_lock);
@@ -236,7 +240,11 @@ static ssize_t tsl2550_store_operating_mode(struct device *dev,
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 	int ret;
 
+<<<<<<< HEAD
 	if (val < 0 || val > 1)
+=======
+	if (val > 1)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (data->power_state == 0)
@@ -347,7 +355,11 @@ static int tsl2550_init_client(struct i2c_client *client)
  */
 
 static struct i2c_driver tsl2550_driver;
+<<<<<<< HEAD
 static int __devinit tsl2550_probe(struct i2c_client *client,
+=======
+static int tsl2550_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 				   const struct i2c_device_id *id)
 {
 	struct i2c_adapter *adapter = to_i2c_adapter(client->dev.parent);
@@ -405,7 +417,11 @@ exit:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit tsl2550_remove(struct i2c_client *client)
+=======
+static int tsl2550_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	sysfs_remove_group(&client->dev.kobj, &tsl2550_attr_group);
 
@@ -417,6 +433,7 @@ static int __devexit tsl2550_remove(struct i2c_client *client)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 
 static int tsl2550_suspend(struct i2c_client *client, pm_message_t mesg)
@@ -435,6 +452,28 @@ static int tsl2550_resume(struct i2c_client *client)
 #define tsl2550_resume		NULL
 
 #endif /* CONFIG_PM */
+=======
+#ifdef CONFIG_PM_SLEEP
+
+static int tsl2550_suspend(struct device *dev)
+{
+	return tsl2550_set_power_state(to_i2c_client(dev), 0);
+}
+
+static int tsl2550_resume(struct device *dev)
+{
+	return tsl2550_set_power_state(to_i2c_client(dev), 1);
+}
+
+static SIMPLE_DEV_PM_OPS(tsl2550_pm_ops, tsl2550_suspend, tsl2550_resume);
+#define TSL2550_PM_OPS (&tsl2550_pm_ops)
+
+#else
+
+#define TSL2550_PM_OPS NULL
+
+#endif /* CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/master
 
 static const struct i2c_device_id tsl2550_id[] = {
 	{ "tsl2550", 0 },
@@ -446,6 +485,7 @@ static struct i2c_driver tsl2550_driver = {
 	.driver = {
 		.name	= TSL2550_DRV_NAME,
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.suspend = tsl2550_suspend,
 	.resume	= tsl2550_resume,
@@ -467,14 +507,27 @@ static void __exit tsl2550_exit(void)
 =======
 module_i2c_driver(tsl2550_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm	= TSL2550_PM_OPS,
+	},
+	.probe	= tsl2550_probe,
+	.remove	= tsl2550_remove,
+	.id_table = tsl2550_id,
+};
+
+module_i2c_driver(tsl2550_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Rodolfo Giometti <giometti@linux.it>");
 MODULE_DESCRIPTION("TSL2550 ambient light sensor driver");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRIVER_VERSION);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(tsl2550_init);
 module_exit(tsl2550_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

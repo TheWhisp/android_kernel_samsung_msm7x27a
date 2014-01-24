@@ -116,7 +116,10 @@ static void pl010_enable_ms(struct uart_port *port)
 
 static void pl010_rx_chars(struct uart_amba_port *uap)
 {
+<<<<<<< HEAD
 	struct tty_struct *tty = uap->port.state->port.tty;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int status, ch, flag, rsr, max_count = 256;
 
 	status = readb(uap->port.membase + UART01x_FR);
@@ -165,7 +168,11 @@ static void pl010_rx_chars(struct uart_amba_port *uap)
 		status = readb(uap->port.membase + UART01x_FR);
 	}
 	spin_unlock(&uap->port.lock);
+<<<<<<< HEAD
 	tty_flip_buffer_push(tty);
+=======
+	tty_flip_buffer_push(&uap->port.state->port);
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&uap->port.lock);
 }
 
@@ -313,6 +320,7 @@ static int pl010_startup(struct uart_port *port)
 	int retval;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	retval = clk_prepare(uap->clk);
 	if (retval)
@@ -329,6 +337,14 @@ static int pl010_startup(struct uart_port *port)
 =======
 		goto clk_unprep;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * Try to enable the clock producer.
+	 */
+	retval = clk_prepare_enable(uap->clk);
+	if (retval)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	uap->port.uartclk = clk_get_rate(uap->clk);
 
@@ -353,12 +369,16 @@ static int pl010_startup(struct uart_port *port)
 	return 0;
 
  clk_dis:
+<<<<<<< HEAD
 	clk_disable(uap->clk);
 <<<<<<< HEAD
 =======
  clk_unprep:
 	clk_unprepare(uap->clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(uap->clk);
+>>>>>>> refs/remotes/origin/master
  out:
 	return retval;
 }
@@ -385,11 +405,15 @@ static void pl010_shutdown(struct uart_port *port)
 	/*
 	 * Shut down the clock producer
 	 */
+<<<<<<< HEAD
 	clk_disable(uap->clk);
 <<<<<<< HEAD
 =======
 	clk_unprepare(uap->clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(uap->clk);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -647,9 +671,13 @@ static int __init pl010_console_setup(struct console *co, char *options)
 	int parity = 'n';
 	int flow = 'n';
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Check whether an invalid uart number has been specified, and
@@ -663,12 +691,18 @@ static int __init pl010_console_setup(struct console *co, char *options)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = clk_prepare(uap->clk);
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	uap->port.uartclk = clk_get_rate(uap->clk);
 
 	if (options)
@@ -748,14 +782,21 @@ static int pl010_probe(struct amba_device *dev, const struct amba_id *id)
 	uap->port.flags = UPF_BOOT_AUTOCONF;
 	uap->port.line = i;
 	uap->dev = dev;
+<<<<<<< HEAD
 	uap->data = dev->dev.platform_data;
+=======
+	uap->data = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	amba_ports[i] = uap;
 
 	amba_set_drvdata(dev, uap);
 	ret = uart_add_one_port(&amba_reg, &uap->port);
 	if (ret) {
+<<<<<<< HEAD
 		amba_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 		amba_ports[i] = NULL;
 		clk_put(uap->clk);
  unmap:
@@ -772,8 +813,11 @@ static int pl010_remove(struct amba_device *dev)
 	struct uart_amba_port *uap = amba_get_drvdata(dev);
 	int i;
 
+<<<<<<< HEAD
 	amba_set_drvdata(dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	uart_remove_one_port(&amba_reg, &uap->port);
 
 	for (i = 0; i < ARRAY_SIZE(amba_ports); i++)
@@ -786,9 +830,16 @@ static int pl010_remove(struct amba_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int pl010_suspend(struct amba_device *dev, pm_message_t state)
 {
 	struct uart_amba_port *uap = amba_get_drvdata(dev);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int pl010_suspend(struct device *dev)
+{
+	struct uart_amba_port *uap = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (uap)
 		uart_suspend_port(&amba_reg, &uap->port);
@@ -796,15 +847,27 @@ static int pl010_suspend(struct amba_device *dev, pm_message_t state)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int pl010_resume(struct amba_device *dev)
 {
 	struct uart_amba_port *uap = amba_get_drvdata(dev);
+=======
+static int pl010_resume(struct device *dev)
+{
+	struct uart_amba_port *uap = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (uap)
 		uart_resume_port(&amba_reg, &uap->port);
 
 	return 0;
 }
+<<<<<<< HEAD
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(pl010_dev_pm_ops, pl010_suspend, pl010_resume);
+>>>>>>> refs/remotes/origin/master
 
 static struct amba_id pl010_ids[] = {
 	{
@@ -815,6 +878,7 @@ static struct amba_id pl010_ids[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_DEVICE_TABLE(amba, pl010_ids);
 
@@ -822,12 +886,23 @@ MODULE_DEVICE_TABLE(amba, pl010_ids);
 static struct amba_driver pl010_driver = {
 	.drv = {
 		.name	= "uart-pl010",
+=======
+MODULE_DEVICE_TABLE(amba, pl010_ids);
+
+static struct amba_driver pl010_driver = {
+	.drv = {
+		.name	= "uart-pl010",
+		.pm	= &pl010_dev_pm_ops,
+>>>>>>> refs/remotes/origin/master
 	},
 	.id_table	= pl010_ids,
 	.probe		= pl010_probe,
 	.remove		= pl010_remove,
+<<<<<<< HEAD
 	.suspend	= pl010_suspend,
 	.resume		= pl010_resume,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init pl010_init(void)

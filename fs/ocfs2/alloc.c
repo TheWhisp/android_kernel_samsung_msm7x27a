@@ -1025,7 +1025,11 @@ static int ocfs2_create_new_meta_bhs(handle_t *handle,
 		for(i = count;  i < (num_got + count); i++) {
 			bhs[i] = sb_getblk(osb->sb, first_blkno);
 			if (bhs[i] == NULL) {
+<<<<<<< HEAD
 				status = -EIO;
+=======
+				status = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 				mlog_errno(status);
 				goto bail;
 			}
@@ -5655,7 +5659,11 @@ int ocfs2_remove_btree_range(struct inode *inode,
 					       &ref_tree, NULL);
 		if (ret) {
 			mlog_errno(ret);
+<<<<<<< HEAD
 			goto out;
+=======
+			goto bail;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		ret = ocfs2_prepare_refcount_change_for_del(inode,
@@ -5666,7 +5674,11 @@ int ocfs2_remove_btree_range(struct inode *inode,
 							    &extra_blocks);
 		if (ret < 0) {
 			mlog_errno(ret);
+<<<<<<< HEAD
 			goto out;
+=======
+			goto bail;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -5674,7 +5686,11 @@ int ocfs2_remove_btree_range(struct inode *inode,
 						 extra_blocks);
 	if (ret) {
 		mlog_errno(ret);
+<<<<<<< HEAD
 		return ret;
+=======
+		goto bail;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_lock(&tl_inode->i_mutex);
@@ -5700,10 +5716,14 @@ int ocfs2_remove_btree_range(struct inode *inode,
 	if (ret) {
 		mlog_errno(ret);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto out;
 =======
 		goto out_commit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out_commit;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dquot_free_space_nodirty(inode,
@@ -5738,7 +5758,11 @@ out_commit:
 	ocfs2_commit_trans(osb, handle);
 out:
 	mutex_unlock(&tl_inode->i_mutex);
+<<<<<<< HEAD
 
+=======
+bail:
+>>>>>>> refs/remotes/origin/master
 	if (meta_ac)
 		ocfs2_free_alloc_context(meta_ac);
 
@@ -6755,8 +6779,12 @@ int ocfs2_zero_range_for_truncate(struct inode *inode, handle_t *handle,
 		mlog_errno(ret);
 
 out:
+<<<<<<< HEAD
 	if (pages)
 		kfree(pages);
+=======
+	kfree(pages);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -7265,6 +7293,7 @@ int ocfs2_trim_fs(struct super_block *sb, struct fstrim_range *range)
 	start = range->start >> osb->s_clustersize_bits;
 	len = range->len >> osb->s_clustersize_bits;
 	minlen = range->minlen >> osb->s_clustersize_bits;
+<<<<<<< HEAD
 	trimmed = 0;
 
 	if (!len) {
@@ -7273,6 +7302,10 @@ int ocfs2_trim_fs(struct super_block *sb, struct fstrim_range *range)
 	}
 
 	if (minlen >= osb->bitmap_cpg)
+=======
+
+	if (minlen >= osb->bitmap_cpg || range->len < sb->s_blocksize)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	main_bm_inode = ocfs2_get_system_file_inode(osb,
@@ -7298,6 +7331,10 @@ int ocfs2_trim_fs(struct super_block *sb, struct fstrim_range *range)
 		goto out_unlock;
 	}
 
+<<<<<<< HEAD
+=======
+	len = range->len >> osb->s_clustersize_bits;
+>>>>>>> refs/remotes/origin/master
 	if (start + len > le32_to_cpu(main_bm->i_clusters))
 		len = le32_to_cpu(main_bm->i_clusters) - start;
 
@@ -7312,6 +7349,10 @@ int ocfs2_trim_fs(struct super_block *sb, struct fstrim_range *range)
 	last_group = ocfs2_which_cluster_group(main_bm_inode, start + len - 1);
 	last_bit = osb->bitmap_cpg;
 
+<<<<<<< HEAD
+=======
+	trimmed = 0;
+>>>>>>> refs/remotes/origin/master
 	for (group = first_group; group <= last_group;) {
 		if (first_bit + len >= osb->bitmap_cpg)
 			last_bit = osb->bitmap_cpg;

@@ -50,7 +50,11 @@
 #include <linux/slab.h>
 
 /* Steal the hardware definitions from the bttv driver. */
+<<<<<<< HEAD
 #include "../media/video/bt8xx/bt848.h"
+=======
+#include "../media/pci/bt8xx/bt848.h"
+>>>>>>> refs/remotes/origin/master
 
 
 #define BT8XXGPIO_NR_GPIOS		24 /* We have 24 GPIO pins */
@@ -169,7 +173,11 @@ static void bt8xxgpio_gpio_setup(struct bt8xxgpio *bg)
 	c->dbg_show = NULL;
 	c->base = modparam_gpiobase;
 	c->ngpio = BT8XXGPIO_NR_GPIOS;
+<<<<<<< HEAD
 	c->can_sleep = 0;
+=======
+	c->can_sleep = false;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int bt8xxgpio_probe(struct pci_dev *dev,
@@ -228,7 +236,10 @@ static int bt8xxgpio_probe(struct pci_dev *dev,
 err_release_mem:
 	release_mem_region(pci_resource_start(dev, 0),
 			   pci_resource_len(dev, 0));
+<<<<<<< HEAD
 	pci_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 err_disable:
 	pci_disable_device(dev);
 err_freebg:
@@ -252,7 +263,10 @@ static void bt8xxgpio_remove(struct pci_dev *pdev)
 			   pci_resource_len(pdev, 0));
 	pci_disable_device(pdev);
 
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(bg);
 }
 
@@ -286,7 +300,11 @@ static int bt8xxgpio_resume(struct pci_dev *pdev)
 	unsigned long flags;
 	int err;
 
+<<<<<<< HEAD
 	pci_set_power_state(pdev, 0);
+=======
+	pci_set_power_state(pdev, PCI_D0);
+>>>>>>> refs/remotes/origin/master
 	err = pci_enable_device(pdev);
 	if (err)
 		return err;
@@ -310,7 +328,11 @@ static int bt8xxgpio_resume(struct pci_dev *pdev)
 #define bt8xxgpio_resume NULL
 #endif /* CONFIG_PM */
 
+<<<<<<< HEAD
 static struct pci_device_id bt8xxgpio_pci_tbl[] = {
+=======
+static const struct pci_device_id bt8xxgpio_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_BROOKTREE, PCI_DEVICE_ID_BT848) },
 	{ PCI_DEVICE(PCI_VENDOR_ID_BROOKTREE, PCI_DEVICE_ID_BT849) },
 	{ PCI_DEVICE(PCI_VENDOR_ID_BROOKTREE, PCI_DEVICE_ID_BT878) },
@@ -328,6 +350,7 @@ static struct pci_driver bt8xxgpio_pci_driver = {
 	.resume		= bt8xxgpio_resume,
 };
 
+<<<<<<< HEAD
 static int __init bt8xxgpio_init(void)
 {
 	return pci_register_driver(&bt8xxgpio_pci_driver);
@@ -339,6 +362,9 @@ static void __exit bt8xxgpio_exit(void)
 	pci_unregister_driver(&bt8xxgpio_pci_driver);
 }
 module_exit(bt8xxgpio_exit)
+=======
+module_pci_driver(bt8xxgpio_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Michael Buesch");

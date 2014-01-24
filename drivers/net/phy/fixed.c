@@ -70,7 +70,11 @@ static int fixed_phy_update_regs(struct fixed_phy *fp)
 			lpa |= LPA_10FULL;
 			break;
 		default:
+<<<<<<< HEAD
 			printk(KERN_WARNING "fixed phy: unknown speed\n");
+=======
+			pr_warn("fixed phy: unknown speed\n");
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 	} else {
@@ -90,7 +94,11 @@ static int fixed_phy_update_regs(struct fixed_phy *fp)
 			lpa |= LPA_10HALF;
 			break;
 		default:
+<<<<<<< HEAD
 			printk(KERN_WARNING "fixed phy: unknown speed\n");
+=======
+			pr_warn("fixed phy: unknown speed\n");
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 	}
@@ -221,10 +229,14 @@ static int __init fixed_mdio_bus_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snprintf(fmb->mii_bus->id, MII_BUS_ID_SIZE, "0");
 =======
 	snprintf(fmb->mii_bus->id, MII_BUS_ID_SIZE, "fixed-0");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snprintf(fmb->mii_bus->id, MII_BUS_ID_SIZE, "fixed-0");
+>>>>>>> refs/remotes/origin/master
 	fmb->mii_bus->name = "Fixed MDIO Bus";
 	fmb->mii_bus->priv = fmb;
 	fmb->mii_bus->parent = &pdev->dev;

@@ -15,7 +15,11 @@
 
 #include <linux/device.h>
 #include <linux/notifier.h>
+<<<<<<< HEAD
 #include <linux/opp.h>
+=======
+#include <linux/pm_opp.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DEVFREQ_NAME_LEN 16
 
@@ -25,12 +29,21 @@ struct devfreq;
  * struct devfreq_dev_status - Data given from devfreq user device to
  *			     governors. Represents the performance
  *			     statistics.
+<<<<<<< HEAD
  * @total_time		The total time represented by this instance of
  *			devfreq_dev_status
  * @busy_time		The time that the device was working among the
  *			total_time.
  * @current_frequency	The operating frequency.
  * @private_data	An entry not specified by the devfreq framework.
+=======
+ * @total_time:		The total time represented by this instance of
+ *			devfreq_dev_status
+ * @busy_time:		The time that the device was working among the
+ *			total_time.
+ * @current_frequency:	The operating frequency.
+ * @private_data:	An entry not specified by the devfreq framework.
+>>>>>>> refs/remotes/origin/master
  *			A device and a specific governor may have their
  *			own protocol with private_data. However, because
  *			this is governor-specific, a governor using this
@@ -54,23 +67,43 @@ struct devfreq_dev_status {
 
 /**
  * struct devfreq_dev_profile - Devfreq's user device profile
+<<<<<<< HEAD
  * @initial_freq	The operating frequency when devfreq_add_device() is
  *			called.
  * @polling_ms		The polling interval in ms. 0 disables polling.
  * @target		The device should set its operating frequency at
+=======
+ * @initial_freq:	The operating frequency when devfreq_add_device() is
+ *			called.
+ * @polling_ms:		The polling interval in ms. 0 disables polling.
+ * @target:		The device should set its operating frequency at
+>>>>>>> refs/remotes/origin/master
  *			freq or lowest-upper-than-freq value. If freq is
  *			higher than any operable frequency, set maximum.
  *			Before returning, target function should set
  *			freq at the current frequency.
  *			The "flags" parameter's possible values are
  *			explained above with "DEVFREQ_FLAG_*" macros.
+<<<<<<< HEAD
  * @get_dev_status	The device should provide the current performance
  *			status to devfreq, which is used by governors.
  * @exit		An optional callback that is called when devfreq
+=======
+ * @get_dev_status:	The device should provide the current performance
+ *			status to devfreq, which is used by governors.
+ * @get_cur_freq:	The device should provide the current frequency
+ *			at which it is operating.
+ * @exit:		An optional callback that is called when devfreq
+>>>>>>> refs/remotes/origin/master
  *			is removing the devfreq object due to error or
  *			from devfreq_remove_device() call. If the user
  *			has registered devfreq->nb at a notifier-head,
  *			this is the time to unregister it.
+<<<<<<< HEAD
+=======
+ * @freq_table:	Optional list of frequencies to support statistics.
+ * @max_state:	The size of freq_table.
+>>>>>>> refs/remotes/origin/master
  */
 struct devfreq_dev_profile {
 	unsigned long initial_freq;
@@ -79,18 +112,33 @@ struct devfreq_dev_profile {
 	int (*target)(struct device *dev, unsigned long *freq, u32 flags);
 	int (*get_dev_status)(struct device *dev,
 			      struct devfreq_dev_status *stat);
+<<<<<<< HEAD
 	void (*exit)(struct device *dev);
+=======
+	int (*get_cur_freq)(struct device *dev, unsigned long *freq);
+	void (*exit)(struct device *dev);
+
+	unsigned int *freq_table;
+	unsigned int max_state;
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
  * struct devfreq_governor - Devfreq policy governor
+<<<<<<< HEAD
  * @name		Governor's name
  * @get_target_freq	Returns desired operating frequency for the device.
+=======
+ * @node:		list node - contains registered devfreq governors
+ * @name:		Governor's name
+ * @get_target_freq:	Returns desired operating frequency for the device.
+>>>>>>> refs/remotes/origin/master
  *			Basically, get_target_freq will run
  *			devfreq_dev_profile.get_dev_status() to get the
  *			status of the device (load = busy_time / total_time).
  *			If no_central_polling is set, this callback is called
  *			only with update_devfreq() notified by OPP.
+<<<<<<< HEAD
  * @init		Called when the devfreq is being attached to a device
  * @exit		Called when the devfreq is being removed from a
  *			device. Governor should stop any internal routines
@@ -101,19 +149,35 @@ struct devfreq_dev_profile {
  *			get_target_freq with devfreq_monitor(). However,
  *			devfreq will call get_target_freq with
  *			devfreq_update() notified by OPP framework.
+=======
+ * @event_handler:      Callback for devfreq core framework to notify events
+ *                      to governors. Events include per device governor
+ *                      init and exit, opp changes out of devfreq, suspend
+ *                      and resume of per device devfreq during device idle.
+>>>>>>> refs/remotes/origin/master
  *
  * Note that the callbacks are called with devfreq->lock locked by devfreq.
  */
 struct devfreq_governor {
+<<<<<<< HEAD
 	const char name[DEVFREQ_NAME_LEN];
 	int (*get_target_freq)(struct devfreq *this, unsigned long *freq);
 	int (*init)(struct devfreq *this);
 	void (*exit)(struct devfreq *this);
 	const bool no_central_polling;
+=======
+	struct list_head node;
+
+	const char name[DEVFREQ_NAME_LEN];
+	int (*get_target_freq)(struct devfreq *this, unsigned long *freq);
+	int (*event_handler)(struct devfreq *devfreq,
+				unsigned int event, void *data);
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
  * struct devfreq - Device devfreq structure
+<<<<<<< HEAD
  * @node	list node - contains the devices with devfreq that have been
  *		registered.
  * @lock	a mutex to protect accessing devfreq.
@@ -136,6 +200,30 @@ struct devfreq_governor {
  *			order to prevent trying to remove the object multiple times.
  * @min_freq	Limit minimum frequency requested by user (0: none)
  * @max_freq	Limit maximum frequency requested by user (0: none)
+=======
+ * @node:	list node - contains the devices with devfreq that have been
+ *		registered.
+ * @lock:	a mutex to protect accessing devfreq.
+ * @dev:	device registered by devfreq class. dev.parent is the device
+ *		using devfreq.
+ * @profile:	device-specific devfreq profile
+ * @governor:	method how to choose frequency based on the usage.
+ * @governor_name:	devfreq governor name for use with this devfreq
+ * @nb:		notifier block used to notify devfreq object that it should
+ *		reevaluate operable frequencies. Devfreq users may use
+ *		devfreq.nb to the corresponding register notifier call chain.
+ * @work:	delayed work for load monitoring.
+ * @previous_freq:	previously configured frequency value.
+ * @data:	Private data of the governor. The devfreq framework does not
+ *		touch this.
+ * @min_freq:	Limit minimum frequency requested by user (0: none)
+ * @max_freq:	Limit maximum frequency requested by user (0: none)
+ * @stop_polling:	 devfreq polling status of a device.
+ * @total_trans:	Number of devfreq transitions
+ * @trans_table:	Statistics of devfreq transitions
+ * @time_in_state:	Statistics of devfreq states
+ * @last_stat_updated:	The last time stat updated
+>>>>>>> refs/remotes/origin/master
  *
  * This structure stores the devfreq information for a give device.
  *
@@ -152,6 +240,7 @@ struct devfreq {
 	struct device dev;
 	struct devfreq_dev_profile *profile;
 	const struct devfreq_governor *governor;
+<<<<<<< HEAD
 	struct notifier_block nb;
 
 	unsigned long polling_jiffies;
@@ -164,23 +253,56 @@ struct devfreq {
 
 	unsigned long min_freq;
 	unsigned long max_freq;
+=======
+	char governor_name[DEVFREQ_NAME_LEN];
+	struct notifier_block nb;
+	struct delayed_work work;
+
+	unsigned long previous_freq;
+
+	void *data; /* private data for governors */
+
+	unsigned long min_freq;
+	unsigned long max_freq;
+	bool stop_polling;
+
+	/* information for device frequency transition */
+	unsigned int total_trans;
+	unsigned int *trans_table;
+	unsigned long *time_in_state;
+	unsigned long last_stat_updated;
+>>>>>>> refs/remotes/origin/master
 };
 
 #if defined(CONFIG_PM_DEVFREQ)
 extern struct devfreq *devfreq_add_device(struct device *dev,
 				  struct devfreq_dev_profile *profile,
+<<<<<<< HEAD
 				  const struct devfreq_governor *governor,
 				  void *data);
 extern int devfreq_remove_device(struct devfreq *devfreq);
 
 /* Helper functions for devfreq user device driver with OPP. */
 extern struct opp *devfreq_recommended_opp(struct device *dev,
+=======
+				  const char *governor_name,
+				  void *data);
+extern int devfreq_remove_device(struct devfreq *devfreq);
+
+/* Supposed to be called by PM_SLEEP/PM_RUNTIME callbacks */
+extern int devfreq_suspend_device(struct devfreq *devfreq);
+extern int devfreq_resume_device(struct devfreq *devfreq);
+
+/* Helper functions for devfreq user device driver with OPP. */
+extern struct dev_pm_opp *devfreq_recommended_opp(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 					   unsigned long *freq, u32 flags);
 extern int devfreq_register_opp_notifier(struct device *dev,
 					 struct devfreq *devfreq);
 extern int devfreq_unregister_opp_notifier(struct device *dev,
 					   struct devfreq *devfreq);
 
+<<<<<<< HEAD
 #ifdef CONFIG_DEVFREQ_GOV_POWERSAVE
 extern const struct devfreq_governor devfreq_powersave;
 #endif
@@ -198,6 +320,15 @@ extern const struct devfreq_governor devfreq_simple_ondemand;
  * @ upthreshold	If the load is over this value, the frequency jumps.
  *			Specify 0 to use the default. Valid value = 0 to 100.
  * @ downdifferential	If the load is under upthreshold - downdifferential,
+=======
+#if IS_ENABLED(CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND)
+/**
+ * struct devfreq_simple_ondemand_data - void *data fed to struct devfreq
+ *	and devfreq_add_device
+ * @upthreshold:	If the load is over this value, the frequency jumps.
+ *			Specify 0 to use the default. Valid value = 0 to 100.
+ * @downdifferential:	If the load is under upthreshold - downdifferential,
+>>>>>>> refs/remotes/origin/master
  *			the governor may consider slowing the frequency down.
  *			Specify 0 to use the default. Valid value = 0 to 100.
  *			downdifferential < upthreshold must hold.
@@ -212,19 +343,30 @@ struct devfreq_simple_ondemand_data {
 #endif
 
 #else /* !CONFIG_PM_DEVFREQ */
+<<<<<<< HEAD
 static struct devfreq *devfreq_add_device(struct device *dev,
 					  struct devfreq_dev_profile *profile,
 					  struct devfreq_governor *governor,
+=======
+static inline struct devfreq *devfreq_add_device(struct device *dev,
+					  struct devfreq_dev_profile *profile,
+					  const char *governor_name,
+>>>>>>> refs/remotes/origin/master
 					  void *data)
 {
 	return NULL;
 }
 
+<<<<<<< HEAD
 static int devfreq_remove_device(struct devfreq *devfreq)
+=======
+static inline int devfreq_remove_device(struct devfreq *devfreq)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct opp *devfreq_recommended_opp(struct device *dev,
 					   unsigned long *freq, u32 flags)
 {
@@ -232,22 +374,48 @@ static struct opp *devfreq_recommended_opp(struct device *dev,
 }
 
 static int devfreq_register_opp_notifier(struct device *dev,
+=======
+static inline int devfreq_suspend_device(struct devfreq *devfreq)
+{
+	return 0;
+}
+
+static inline int devfreq_resume_device(struct devfreq *devfreq)
+{
+	return 0;
+}
+
+static inline struct dev_pm_opp *devfreq_recommended_opp(struct device *dev,
+					   unsigned long *freq, u32 flags)
+{
+	return ERR_PTR(-EINVAL);
+}
+
+static inline int devfreq_register_opp_notifier(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 					 struct devfreq *devfreq)
 {
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static int devfreq_unregister_opp_notifier(struct device *dev,
+=======
+static inline int devfreq_unregister_opp_notifier(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 					   struct devfreq *devfreq)
 {
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 #define devfreq_powersave	NULL
 #define devfreq_performance	NULL
 #define devfreq_userspace	NULL
 #define devfreq_simple_ondemand	NULL
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_PM_DEVFREQ */
 
 #endif /* __LINUX_DEVFREQ_H__ */

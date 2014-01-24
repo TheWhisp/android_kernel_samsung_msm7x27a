@@ -35,10 +35,15 @@ int crypto_grab_skcipher(struct crypto_skcipher_spawn *spawn, const char *name,
 			 u32 type, u32 mask);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct crypto_alg *crypto_lookup_skcipher(const char *name, u32 type, u32 mask);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct crypto_alg *crypto_lookup_skcipher(const char *name, u32 type, u32 mask);
+
+>>>>>>> refs/remotes/origin/master
 static inline void crypto_drop_skcipher(struct crypto_skcipher_spawn *spawn)
 {
 	crypto_drop_spawn(&spawn->base);

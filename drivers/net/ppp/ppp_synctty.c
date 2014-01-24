@@ -105,6 +105,7 @@ static const struct ppp_channel_ops sync_ops = {
 };
 
 /*
+<<<<<<< HEAD
  * Utility procedures to print a buffer in hex/ascii
  */
 static void
@@ -163,6 +164,17 @@ ppp_print_buffer (const char *name, const __u8 *buf, int count)
 		ppp_print_char (&line[8 * 3], buf, count);
 		printk(KERN_DEBUG "%s\n", line);
 	}
+=======
+ * Utility procedure to print a buffer in hex/ascii
+ */
+static void
+ppp_print_buffer (const char *name, const __u8 *buf, int count)
+{
+	if (name != NULL)
+		printk(KERN_DEBUG "ppp_synctty: %s, count = %d\n", name, count);
+
+	print_hex_dump_bytes("", DUMP_PREFIX_NONE, buf, count);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -355,7 +367,11 @@ ppp_synctty_ioctl(struct tty_struct *tty, struct file *file,
 		/* flush our buffers and the serial port's buffer */
 		if (arg == TCIOFLUSH || arg == TCOFLUSH)
 			ppp_sync_flush_output(ap);
+<<<<<<< HEAD
 		err = tty_perform_flush(tty, arg);
+=======
+		err = n_tty_ioctl_helper(tty, file, cmd, arg);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case FIONREAD:
@@ -588,7 +604,11 @@ ppp_sync_txmunge(struct syncppp *ap, struct sk_buff *skb)
 			skb_reserve(npkt,2);
 			skb_copy_from_linear_data(skb,
 				      skb_put(npkt, skb->len), skb->len);
+<<<<<<< HEAD
 			kfree_skb(skb);
+=======
+			consume_skb(skb);
+>>>>>>> refs/remotes/origin/master
 			skb = npkt;
 		}
 		skb_push(skb,2);
@@ -656,7 +676,11 @@ ppp_sync_push(struct syncppp *ap)
 			if (sent < ap->tpkt->len) {
 				tty_stuffed = 1;
 			} else {
+<<<<<<< HEAD
 				kfree_skb(ap->tpkt);
+=======
+				consume_skb(ap->tpkt);
+>>>>>>> refs/remotes/origin/master
 				ap->tpkt = NULL;
 				clear_bit(XMIT_FULL, &ap->xmit_flags);
 				done = 1;

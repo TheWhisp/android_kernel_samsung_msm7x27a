@@ -16,9 +16,13 @@
 #include <linux/virtio_ring.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <asm/io.h>
 #include <asm/paravirt.h>
@@ -114,7 +118,10 @@ static u32 lg_get_features(struct virtio_device *vdev)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * To notify on reset or feature finalization, we (ab)use the NOTIFY
  * hypercall, with the descriptor address of the device.
  */
@@ -126,7 +133,10 @@ static void status_notify(struct virtio_device *vdev)
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * The virtio core takes the features the Host offers, and copies the ones
  * supported by the driver into the vdev->features array.  Once that's all
  * sorted out, this routine is called so we can tell the Host which features we
@@ -154,11 +164,17 @@ static void lg_finalize_features(struct virtio_device *vdev)
 			out_features[i / 8] |= (1 << (i % 8));
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	/* Tell Host we've finished with this device's feature negotiation */
 	status_notify(vdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* Tell Host we've finished with this device's feature negotiation */
+	status_notify(vdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Once they've found a field, getting a copy of it is easy. */
@@ -193,6 +209,7 @@ static u8 lg_get_status(struct virtio_device *vdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * To notify on status updates, we (ab)use the NOTIFY hypercall, with the
  * descriptor address of the device.  A zero status means "reset".
@@ -211,6 +228,8 @@ static void lg_set_status(struct virtio_device *vdev, u8 status)
 	BUG_ON(!status);
 	set_status(vdev, status);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void lg_set_status(struct virtio_device *vdev, u8 status)
 {
 	BUG_ON(!status);
@@ -219,11 +238,15 @@ static void lg_set_status(struct virtio_device *vdev, u8 status)
 	/* Tell Host immediately if we failed. */
 	if (status & VIRTIO_CONFIG_S_FAILED)
 		status_notify(vdev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void lg_reset(struct virtio_device *vdev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	set_status(vdev, 0);
 =======
@@ -231,6 +254,11 @@ static void lg_reset(struct virtio_device *vdev)
 	to_lgdev(vdev)->desc->status = 0;
 	status_notify(vdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* 0 status means "reset" */
+	to_lgdev(vdev)->desc->status = 0;
+	status_notify(vdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -262,7 +290,11 @@ struct lguest_vq_info {
  * make a hypercall.  We hand the physical address of the virtqueue so the Host
  * knows which virtqueue we're talking about.
  */
+<<<<<<< HEAD
 static void lg_notify(struct virtqueue *vq)
+=======
+static bool lg_notify(struct virtqueue *vq)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * We store our virtqueue information in the "priv" pointer of the
@@ -271,6 +303,7 @@ static void lg_notify(struct virtqueue *vq)
 	struct lguest_vq_info *lvq = vq->priv;
 
 	hcall(LHCALL_NOTIFY, lvq->config.pfn << PAGE_SHIFT, 0, 0, 0);
+<<<<<<< HEAD
 }
 
 /* An extern declaration inside a C file is bad form.  Don't do it. */
@@ -279,6 +312,13 @@ extern void lguest_setup_irq(unsigned int irq);
 =======
 extern int lguest_setup_irq(unsigned int irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return true;
+}
+
+/* An extern declaration inside a C file is bad form.  Don't do it. */
+extern int lguest_setup_irq(unsigned int irq);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This routine finds the Nth virtqueue described in the configuration of
@@ -300,6 +340,12 @@ static struct virtqueue *lg_find_vq(struct virtio_device *vdev,
 	struct virtqueue *vq;
 	int err;
 
+<<<<<<< HEAD
+=======
+	if (!name)
+		return NULL;
+
+>>>>>>> refs/remotes/origin/master
 	/* We must have this many virtqueues. */
 	if (index >= ldev->desc->num_vq)
 		return ERR_PTR(-ENOENT);
@@ -330,18 +376,26 @@ static struct virtqueue *lg_find_vq(struct virtio_device *vdev,
 	/*
 	 * OK, tell virtio_ring.c to set up a virtqueue now we know its size
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * and we've got a pointer to its pages.
 	 */
 	vq = vring_new_virtqueue(lvq->config.num, LGUEST_VRING_ALIGN,
 				 vdev, lvq->pages, lg_notify, callback, name);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * and we've got a pointer to its pages.  Note that we set weak_barriers
 	 * to 'true': the host just a(nother) SMP CPU, so we only need inter-cpu
 	 * barriers.
 	 */
+<<<<<<< HEAD
 	vq = vring_new_virtqueue(lvq->config.num, LGUEST_VRING_ALIGN, vdev,
 				 true, lvq->pages, lg_notify, callback, name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vq = vring_new_virtqueue(index, lvq->config.num, LGUEST_VRING_ALIGN, vdev,
+				 true, lvq->pages, lg_notify, callback, name);
+>>>>>>> refs/remotes/origin/master
 	if (!vq) {
 		err = -ENOMEM;
 		goto unmap;
@@ -349,12 +403,18 @@ static struct virtqueue *lg_find_vq(struct virtio_device *vdev,
 
 	/* Make sure the interrupt is allocated. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	lguest_setup_irq(lvq->config.irq);
 =======
 	err = lguest_setup_irq(lvq->config.irq);
 	if (err)
 		goto destroy_vring;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = lguest_setup_irq(lvq->config.irq);
+	if (err)
+		goto destroy_vring;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Tell the interrupt for this virtqueue to go to the virtio_ring
@@ -368,10 +428,14 @@ static struct virtqueue *lg_find_vq(struct virtio_device *vdev,
 			  dev_name(&vdev->dev), vq);
 	if (err)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto destroy_vring;
 =======
 		goto free_desc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto free_desc;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Last of all we hook up our 'struct lguest_vq_info" to the
@@ -381,10 +445,15 @@ static struct virtqueue *lg_find_vq(struct virtio_device *vdev,
 	return vq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 free_desc:
 	irq_free_desc(lvq->config.irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+free_desc:
+	irq_free_desc(lvq->config.irq);
+>>>>>>> refs/remotes/origin/master
 destroy_vring:
 	vring_del_virtqueue(vq);
 unmap:
@@ -443,15 +512,23 @@ error:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const char *lg_bus_name(struct virtio_device *vdev)
 {
 	return "";
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /* The ops structure which hooks everything together. */
 static struct virtio_config_ops lguest_config_ops = {
+=======
+/* The ops structure which hooks everything together. */
+static const struct virtio_config_ops lguest_config_ops = {
+>>>>>>> refs/remotes/origin/master
 	.get_features = lg_get_features,
 	.finalize_features = lg_finalize_features,
 	.get = lg_get,
@@ -462,9 +539,13 @@ static struct virtio_config_ops lguest_config_ops = {
 	.find_vqs = lg_find_vqs,
 	.del_vqs = lg_del_vqs,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.bus_name = lg_bus_name,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.bus_name = lg_bus_name,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*

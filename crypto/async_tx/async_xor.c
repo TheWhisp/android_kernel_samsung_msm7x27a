@@ -26,9 +26,13 @@
 #include <linux/kernel.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/dma-mapping.h>
 #include <linux/raid/xor.h>
@@ -36,12 +40,17 @@
 
 /* do_async_xor - dma map the pages and perform the xor with an engine */
 static __async_inline struct dma_async_tx_descriptor *
+<<<<<<< HEAD
 do_async_xor(struct dma_chan *chan, struct page *dest, struct page **src_list,
 	     unsigned int offset, int src_cnt, size_t len, dma_addr_t *dma_src,
+=======
+do_async_xor(struct dma_chan *chan, struct dmaengine_unmap_data *unmap,
+>>>>>>> refs/remotes/origin/master
 	     struct async_submit_ctl *submit)
 {
 	struct dma_device *dma = chan->device;
 	struct dma_async_tx_descriptor *tx = NULL;
+<<<<<<< HEAD
 	int src_off = 0;
 	int i;
 	dma_async_tx_callback cb_fn_orig = submit->cb_fn;
@@ -73,11 +82,32 @@ do_async_xor(struct dma_chan *chan, struct page *dest, struct page **src_list,
 		/* if we are submitting additional xors, leave the chain open,
 		 * clear the callback parameters, and leave the destination
 		 * buffer mapped
+=======
+	dma_async_tx_callback cb_fn_orig = submit->cb_fn;
+	void *cb_param_orig = submit->cb_param;
+	enum async_tx_flags flags_orig = submit->flags;
+	enum dma_ctrl_flags dma_flags = 0;
+	int src_cnt = unmap->to_cnt;
+	int xor_src_cnt;
+	dma_addr_t dma_dest = unmap->addr[unmap->to_cnt];
+	dma_addr_t *src_list = unmap->addr;
+
+	while (src_cnt) {
+		dma_addr_t tmp;
+
+		submit->flags = flags_orig;
+		xor_src_cnt = min(src_cnt, (int)dma->max_xor);
+		/* if we are submitting additional xors, leave the chain open
+		 * and clear the callback parameters
+>>>>>>> refs/remotes/origin/master
 		 */
 		if (src_cnt > xor_src_cnt) {
 			submit->flags &= ~ASYNC_TX_ACK;
 			submit->flags |= ASYNC_TX_FENCE;
+<<<<<<< HEAD
 			dma_flags = DMA_COMPL_SKIP_DEST_UNMAP;
+=======
+>>>>>>> refs/remotes/origin/master
 			submit->cb_fn = NULL;
 			submit->cb_param = NULL;
 		} else {
@@ -88,12 +118,27 @@ do_async_xor(struct dma_chan *chan, struct page *dest, struct page **src_list,
 			dma_flags |= DMA_PREP_INTERRUPT;
 		if (submit->flags & ASYNC_TX_FENCE)
 			dma_flags |= DMA_PREP_FENCE;
+<<<<<<< HEAD
 		/* Since we have clobbered the src_list we are committed
 		 * to doing this asynchronously.  Drivers force forward progress
 		 * in case they can not provide a descriptor
 		 */
 		tx = dma->device_prep_dma_xor(chan, dma_dest, &dma_src[src_off],
 					      xor_src_cnt, len, dma_flags);
+=======
+
+		/* Drivers force forward progress in case they can not provide a
+		 * descriptor
+		 */
+		tmp = src_list[0];
+		if (src_list > unmap->addr)
+			src_list[0] = dma_dest;
+		tx = dma->device_prep_dma_xor(chan, dma_dest, src_list,
+					      xor_src_cnt, unmap->len,
+					      dma_flags);
+		src_list[0] = tmp;
+
+>>>>>>> refs/remotes/origin/master
 
 		if (unlikely(!tx))
 			async_tx_quiesce(&submit->depend_tx);
@@ -102,22 +147,37 @@ do_async_xor(struct dma_chan *chan, struct page *dest, struct page **src_list,
 		while (unlikely(!tx)) {
 			dma_async_issue_pending(chan);
 			tx = dma->device_prep_dma_xor(chan, dma_dest,
+<<<<<<< HEAD
 						      &dma_src[src_off],
 						      xor_src_cnt, len,
 						      dma_flags);
 		}
 
+=======
+						      src_list,
+						      xor_src_cnt, unmap->len,
+						      dma_flags);
+		}
+
+		dma_set_unmap(tx, unmap);
+>>>>>>> refs/remotes/origin/master
 		async_tx_submit(chan, tx, submit);
 		submit->depend_tx = tx;
 
 		if (src_cnt > xor_src_cnt) {
 			/* drop completed sources */
 			src_cnt -= xor_src_cnt;
+<<<<<<< HEAD
 			src_off += xor_src_cnt;
 
 			/* use the intermediate result a source */
 			dma_src[--src_off] = dma_dest;
 			src_cnt++;
+=======
+			/* use the intermediate result a source */
+			src_cnt++;
+			src_list += xor_src_cnt - 1;
+>>>>>>> refs/remotes/origin/master
 		} else
 			break;
 	}
@@ -192,6 +252,7 @@ async_xor(struct page *dest, struct page **src_list, unsigned int offset,
 	struct dma_chan *chan = async_tx_find_channel(submit, DMA_XOR,
 						      &dest, 1, src_list,
 						      src_cnt, len);
+<<<<<<< HEAD
 	dma_addr_t *dma_src = NULL;
 
 	BUG_ON(src_cnt <= 1);
@@ -208,6 +269,42 @@ async_xor(struct page *dest, struct page **src_list, unsigned int offset,
 		return do_async_xor(chan, dest, src_list, offset, src_cnt, len,
 				    dma_src, submit);
 	} else {
+=======
+	struct dma_device *device = chan ? chan->device : NULL;
+	struct dmaengine_unmap_data *unmap = NULL;
+
+	BUG_ON(src_cnt <= 1);
+
+	if (device)
+		unmap = dmaengine_get_unmap_data(device->dev, src_cnt+1, GFP_NOIO);
+
+	if (unmap && is_dma_xor_aligned(device, offset, 0, len)) {
+		struct dma_async_tx_descriptor *tx;
+		int i, j;
+
+		/* run the xor asynchronously */
+		pr_debug("%s (async): len: %zu\n", __func__, len);
+
+		unmap->len = len;
+		for (i = 0, j = 0; i < src_cnt; i++) {
+			if (!src_list[i])
+				continue;
+			unmap->to_cnt++;
+			unmap->addr[j++] = dma_map_page(device->dev, src_list[i],
+							offset, len, DMA_TO_DEVICE);
+		}
+
+		/* map it bidirectional as it may be re-used as a source */
+		unmap->addr[j] = dma_map_page(device->dev, dest, offset, len,
+					      DMA_BIDIRECTIONAL);
+		unmap->bidi_cnt = 1;
+
+		tx = do_async_xor(chan, unmap, submit);
+		dmaengine_unmap_put(unmap);
+		return tx;
+	} else {
+		dmaengine_unmap_put(unmap);
+>>>>>>> refs/remotes/origin/master
 		/* run the xor synchronously */
 		pr_debug("%s (sync): len: %zu\n", __func__, len);
 		WARN_ONCE(chan, "%s: no space for dma address conversion\n",
@@ -233,9 +330,13 @@ EXPORT_SYMBOL_GPL(async_xor);
 
 static int page_is_zero(struct page *p, unsigned int offset, size_t len)
 {
+<<<<<<< HEAD
 	char *a = page_address(p) + offset;
 	return ((*(u32 *) a) == 0 &&
 		memcmp(a, a + 4, len - 4) == 0);
+=======
+	return !memchr_inv(page_address(p) + offset, 0, len);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline struct dma_chan *
@@ -273,6 +374,7 @@ async_xor_val(struct page *dest, struct page **src_list, unsigned int offset,
 	struct dma_chan *chan = xor_val_chan(submit, dest, src_list, src_cnt, len);
 	struct dma_device *device = chan ? chan->device : NULL;
 	struct dma_async_tx_descriptor *tx = NULL;
+<<<<<<< HEAD
 	dma_addr_t *dma_src = NULL;
 
 	BUG_ON(src_cnt <= 1);
@@ -283,6 +385,16 @@ async_xor_val(struct page *dest, struct page **src_list, unsigned int offset,
 		dma_src = (dma_addr_t *) src_list;
 
 	if (dma_src && device && src_cnt <= device->max_xor &&
+=======
+	struct dmaengine_unmap_data *unmap = NULL;
+
+	BUG_ON(src_cnt <= 1);
+
+	if (device)
+		unmap = dmaengine_get_unmap_data(device->dev, src_cnt, GFP_NOIO);
+
+	if (unmap && src_cnt <= device->max_xor &&
+>>>>>>> refs/remotes/origin/master
 	    is_dma_xor_aligned(device, offset, 0, len)) {
 		unsigned long dma_prep_flags = 0;
 		int i;
@@ -293,11 +405,23 @@ async_xor_val(struct page *dest, struct page **src_list, unsigned int offset,
 			dma_prep_flags |= DMA_PREP_INTERRUPT;
 		if (submit->flags & ASYNC_TX_FENCE)
 			dma_prep_flags |= DMA_PREP_FENCE;
+<<<<<<< HEAD
 		for (i = 0; i < src_cnt; i++)
 			dma_src[i] = dma_map_page(device->dev, src_list[i],
 						  offset, len, DMA_TO_DEVICE);
 
 		tx = device->device_prep_dma_xor_val(chan, dma_src, src_cnt,
+=======
+
+		for (i = 0; i < src_cnt; i++) {
+			unmap->addr[i] = dma_map_page(device->dev, src_list[i],
+						      offset, len, DMA_TO_DEVICE);
+			unmap->to_cnt++;
+		}
+		unmap->len = len;
+
+		tx = device->device_prep_dma_xor_val(chan, unmap->addr, src_cnt,
+>>>>>>> refs/remotes/origin/master
 						     len, result,
 						     dma_prep_flags);
 		if (unlikely(!tx)) {
@@ -306,11 +430,19 @@ async_xor_val(struct page *dest, struct page **src_list, unsigned int offset,
 			while (!tx) {
 				dma_async_issue_pending(chan);
 				tx = device->device_prep_dma_xor_val(chan,
+<<<<<<< HEAD
 					dma_src, src_cnt, len, result,
 					dma_prep_flags);
 			}
 		}
 
+=======
+					unmap->addr, src_cnt, len, result,
+					dma_prep_flags);
+			}
+		}
+		dma_set_unmap(tx, unmap);
+>>>>>>> refs/remotes/origin/master
 		async_tx_submit(chan, tx, submit);
 	} else {
 		enum async_tx_flags flags_orig = submit->flags;
@@ -332,6 +464,10 @@ async_xor_val(struct page *dest, struct page **src_list, unsigned int offset,
 		async_tx_sync_epilog(submit);
 		submit->flags = flags_orig;
 	}
+<<<<<<< HEAD
+=======
+	dmaengine_unmap_put(unmap);
+>>>>>>> refs/remotes/origin/master
 
 	return tx;
 }

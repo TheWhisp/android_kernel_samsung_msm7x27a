@@ -1,10 +1,14 @@
 /******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
 =======
  * Copyright(c) 2009-2012  Realtek Corporation.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -45,7 +49,11 @@ void rtl92ce_dm_dynamic_txpower(struct ieee80211_hw *hw)
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 	struct rtl_phy *rtlphy = &(rtlpriv->phy);
 	struct rtl_mac *mac = rtl_mac(rtl_priv(hw));
+<<<<<<< HEAD
 	long undecorated_smoothed_pwdb;
+=======
+	long undec_sm_pwdb;
+>>>>>>> refs/remotes/origin/master
 
 	if (!rtlpriv->dm.dynamic_txpower_enable)
 		return;
@@ -56,6 +64,7 @@ void rtl92ce_dm_dynamic_txpower(struct ieee80211_hw *hw)
 	}
 
 	if ((mac->link_state < MAC80211_LINKED) &&
+<<<<<<< HEAD
 	    (rtlpriv->dm.entry_min_undecoratedsmoothed_pwdb == 0)) {
 		RT_TRACE(rtlpriv, COMP_POWER, DBG_TRACE,
 <<<<<<< HEAD
@@ -63,6 +72,11 @@ void rtl92ce_dm_dynamic_txpower(struct ieee80211_hw *hw)
 =======
 			 "Not connected to any\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    (rtlpriv->dm.entry_min_undec_sm_pwdb == 0)) {
+		RT_TRACE(rtlpriv, COMP_POWER, DBG_TRACE,
+			 "Not connected to any\n");
+>>>>>>> refs/remotes/origin/master
 
 		rtlpriv->dm.dynamic_txhighpower_lvl = TXHIGHPWRLEVEL_NORMAL;
 
@@ -72,6 +86,7 @@ void rtl92ce_dm_dynamic_txpower(struct ieee80211_hw *hw)
 
 	if (mac->link_state >= MAC80211_LINKED) {
 		if (mac->opmode == NL80211_IFTYPE_ADHOC) {
+<<<<<<< HEAD
 			undecorated_smoothed_pwdb =
 			    rtlpriv->dm.entry_min_undecoratedsmoothed_pwdb;
 			RT_TRACE(rtlpriv, COMP_POWER, DBG_LOUD,
@@ -137,10 +152,45 @@ void rtl92ce_dm_dynamic_txpower(struct ieee80211_hw *hw)
 =======
 			 "TXHIGHPWRLEVEL_NORMAL\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			undec_sm_pwdb = rtlpriv->dm.entry_min_undec_sm_pwdb;
+			RT_TRACE(rtlpriv, COMP_POWER, DBG_LOUD,
+				 "AP Client PWDB = 0x%lx\n",
+				 undec_sm_pwdb);
+		} else {
+			undec_sm_pwdb = rtlpriv->dm.undec_sm_pwdb;
+			RT_TRACE(rtlpriv, COMP_POWER, DBG_LOUD,
+				 "STA Default Port PWDB = 0x%lx\n",
+				 undec_sm_pwdb);
+		}
+	} else {
+		undec_sm_pwdb = rtlpriv->dm.entry_min_undec_sm_pwdb;
+
+		RT_TRACE(rtlpriv, COMP_POWER, DBG_LOUD,
+			 "AP Ext Port PWDB = 0x%lx\n",
+			 undec_sm_pwdb);
+	}
+
+	if (undec_sm_pwdb >= TX_POWER_NEAR_FIELD_THRESH_LVL2) {
+		rtlpriv->dm.dynamic_txhighpower_lvl = TXHIGHPWRLEVEL_LEVEL1;
+		RT_TRACE(rtlpriv, COMP_POWER, DBG_LOUD,
+			 "TXHIGHPWRLEVEL_LEVEL1 (TxPwr=0x0)\n");
+	} else if ((undec_sm_pwdb < (TX_POWER_NEAR_FIELD_THRESH_LVL2 - 3)) &&
+		   (undec_sm_pwdb >= TX_POWER_NEAR_FIELD_THRESH_LVL1)) {
+
+		rtlpriv->dm.dynamic_txhighpower_lvl = TXHIGHPWRLEVEL_LEVEL1;
+		RT_TRACE(rtlpriv, COMP_POWER, DBG_LOUD,
+			 "TXHIGHPWRLEVEL_LEVEL1 (TxPwr=0x10)\n");
+	} else if (undec_sm_pwdb < (TX_POWER_NEAR_FIELD_THRESH_LVL1 - 5)) {
+		rtlpriv->dm.dynamic_txhighpower_lvl = TXHIGHPWRLEVEL_NORMAL;
+		RT_TRACE(rtlpriv, COMP_POWER, DBG_LOUD,
+			 "TXHIGHPWRLEVEL_NORMAL\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if ((rtlpriv->dm.dynamic_txhighpower_lvl != rtlpriv->dm.last_dtp_lvl)) {
 		RT_TRACE(rtlpriv, COMP_POWER, DBG_LOUD,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			 ("PHY_SetTxPowerLevel8192S() Channel = %d\n",
 			  rtlphy->current_channel));
@@ -148,6 +198,10 @@ void rtl92ce_dm_dynamic_txpower(struct ieee80211_hw *hw)
 			 "PHY_SetTxPowerLevel8192S() Channel = %d\n",
 			 rtlphy->current_channel);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 "PHY_SetTxPowerLevel8192S() Channel = %d\n",
+			 rtlphy->current_channel);
+>>>>>>> refs/remotes/origin/master
 		rtl92c_phy_set_txpower_level(hw, rtlphy->current_channel);
 	}
 

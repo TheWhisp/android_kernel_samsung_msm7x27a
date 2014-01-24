@@ -4,10 +4,14 @@
  *
  * Copyright 2005, Broadcom Corporation
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2006, 2007, Michael Buesch <mb@bu3sch.de>
 =======
  * Copyright 2006, 2007, Michael Buesch <m@bues.ch>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2006, 2007, Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
  *
  * Licensed under the GNU/GPL. See COPYING for details.
  */
@@ -15,9 +19,13 @@
 #include <linux/ssb/ssb.h>
 #include <linux/pci.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/ssb/ssb_embedded.h>
 
@@ -83,10 +91,14 @@ static u32 get_cfgspace_addr(struct ssb_pcicore *pc,
 
 	/* We do only have one cardbus device behind the bridge. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pc->cardbusmode && (dev >= 1))
 =======
 	if (pc->cardbusmode && (dev > 1))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pc->cardbusmode && (dev > 1))
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	if (bus == 0) {
@@ -274,8 +286,12 @@ int ssb_pcicore_plat_dev_init(struct pci_dev *d)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	ssb_printk(KERN_INFO "PCI: Fixing up device %s\n",
 		   pci_name(d));
+=======
+	ssb_info("PCI: Fixing up device %s\n", pci_name(d));
+>>>>>>> refs/remotes/origin/master
 
 	/* Fix up interrupt lines */
 	d->irq = ssb_mips_irq(extpci_core->dev) + 2;
@@ -296,12 +312,20 @@ static void ssb_pcicore_fixup_pcibridge(struct pci_dev *dev)
 	if (dev->bus->number != 0 || PCI_SLOT(dev->devfn) != 0)
 		return;
 
+<<<<<<< HEAD
 	ssb_printk(KERN_INFO "PCI: Fixing up bridge %s\n", pci_name(dev));
+=======
+	ssb_info("PCI: Fixing up bridge %s\n", pci_name(dev));
+>>>>>>> refs/remotes/origin/master
 
 	/* Enable PCI bridge bus mastering and memory space */
 	pci_set_master(dev);
 	if (pcibios_enable_device(dev, ~0) < 0) {
+<<<<<<< HEAD
 		ssb_printk(KERN_ERR "PCI: SSB bridge enable failed\n");
+=======
+		ssb_err("PCI: SSB bridge enable failed\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -310,8 +334,13 @@ static void ssb_pcicore_fixup_pcibridge(struct pci_dev *dev)
 
 	/* Make sure our latency is high enough to handle the devices behind us */
 	lat = 168;
+<<<<<<< HEAD
 	ssb_printk(KERN_INFO "PCI: Fixing latency timer of device %s to %u\n",
 		   pci_name(dev), lat);
+=======
+	ssb_info("PCI: Fixing latency timer of device %s to %u\n",
+		 pci_name(dev), lat);
+>>>>>>> refs/remotes/origin/master
 	pci_write_config_byte(dev, PCI_LATENCY_TIMER, lat);
 }
 DECLARE_PCI_FIXUP_EARLY(PCI_ANY_ID, PCI_ANY_ID, ssb_pcicore_fixup_pcibridge);
@@ -327,10 +356,14 @@ int ssb_pcicore_pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ssb_pcicore_init_hostmode(struct ssb_pcicore *pc)
 =======
 static void __devinit ssb_pcicore_init_hostmode(struct ssb_pcicore *pc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ssb_pcicore_init_hostmode(struct ssb_pcicore *pc)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 val;
 
@@ -338,7 +371,11 @@ static void __devinit ssb_pcicore_init_hostmode(struct ssb_pcicore *pc)
 		return;
 	extpci_core = pc;
 
+<<<<<<< HEAD
 	ssb_dprintk(KERN_INFO PFX "PCIcore in host mode found\n");
+=======
+	ssb_dbg("PCIcore in host mode found\n");
+>>>>>>> refs/remotes/origin/master
 	/* Reset devices on the external PCI bus */
 	val = SSB_PCICORE_CTL_RST_OE;
 	val |= SSB_PCICORE_CTL_CLK_OE;
@@ -353,7 +390,11 @@ static void __devinit ssb_pcicore_init_hostmode(struct ssb_pcicore *pc)
 	udelay(1); /* Assertion time demanded by the PCI standard */
 
 	if (pc->dev->bus->has_cardbus_slot) {
+<<<<<<< HEAD
 		ssb_dprintk(KERN_INFO PFX "CardBus slot detected\n");
+=======
+		ssb_dbg("CardBus slot detected\n");
+>>>>>>> refs/remotes/origin/master
 		pc->cardbusmode = 1;
 		/* GPIO 1 resets the bridge */
 		ssb_gpio_out(pc->dev->bus, 1, 1);
@@ -396,10 +437,14 @@ static void __devinit ssb_pcicore_init_hostmode(struct ssb_pcicore *pc)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pcicore_is_in_hostmode(struct ssb_pcicore *pc)
 =======
 static int __devinit pcicore_is_in_hostmode(struct ssb_pcicore *pc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pcicore_is_in_hostmode(struct ssb_pcicore *pc)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ssb_bus *bus = pc->dev->bus;
 	u16 chipid_top;
@@ -433,10 +478,14 @@ static int __devinit pcicore_is_in_hostmode(struct ssb_pcicore *pc)
  **************************************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ssb_pcicore_fix_sprom_core_index(struct ssb_pcicore *pc)
 =======
 static void __devinit ssb_pcicore_fix_sprom_core_index(struct ssb_pcicore *pc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ssb_pcicore_fix_sprom_core_index(struct ssb_pcicore *pc)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 tmp = pcicore_read16(pc, SSB_PCICORE_SPROM(0));
 	if (((tmp & 0xF000) >> 12) != pc->dev->core_index) {
@@ -539,10 +588,14 @@ static void ssb_pcicore_pcie_setup_workarounds(struct ssb_pcicore *pc)
  **************************************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ssb_pcicore_init_clientmode(struct ssb_pcicore *pc)
 =======
 static void __devinit ssb_pcicore_init_clientmode(struct ssb_pcicore *pc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ssb_pcicore_init_clientmode(struct ssb_pcicore *pc)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ssb_device *pdev = pc->dev;
 	struct ssb_bus *bus = pdev->bus;
@@ -562,10 +615,14 @@ static void __devinit ssb_pcicore_init_clientmode(struct ssb_pcicore *pc)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void ssb_pcicore_init(struct ssb_pcicore *pc)
 =======
 void __devinit ssb_pcicore_init(struct ssb_pcicore *pc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void ssb_pcicore_init(struct ssb_pcicore *pc)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ssb_device *dev = pc->dev;
 

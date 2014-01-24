@@ -84,7 +84,11 @@ static const char *s1d13xxxfb_prod_names[] = {
 /*
  * here we define the default struct fb_fix_screeninfo
  */
+<<<<<<< HEAD
 static struct fb_fix_screeninfo __devinitdata s1d13xxxfb_fix = {
+=======
+static struct fb_fix_screeninfo s1d13xxxfb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id		= S1D_FBID,
 	.type		= FB_TYPE_PACKED_PIXELS,
 	.visual		= FB_VISUAL_PSEUDOCOLOR,
@@ -622,7 +626,11 @@ static struct fb_ops s1d13xxxfb_fbops = {
 	.fb_imageblit	= cfb_imageblit,
 };
 
+<<<<<<< HEAD
 static int s1d13xxxfb_width_tab[2][4] __devinitdata = {
+=======
+static int s1d13xxxfb_width_tab[2][4] = {
+>>>>>>> refs/remotes/origin/master
 	{4, 8, 16, -1},
 	{9, 12, 18, -1},
 };
@@ -642,8 +650,12 @@ static int s1d13xxxfb_width_tab[2][4] __devinitdata = {
  *	Note: some of the hardcoded values here might need some love to
  *	work on various chips, and might need to no longer be hardcoded.
  */
+<<<<<<< HEAD
 static void __devinit
 s1d13xxxfb_fetch_hw_state(struct fb_info *info)
+=======
+static void s1d13xxxfb_fetch_hw_state(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_var_screeninfo *var = &info->var;
 	struct fb_fix_screeninfo *fix = &info->fix;
@@ -764,8 +776,12 @@ s1d13xxxfb_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit
 s1d13xxxfb_probe(struct platform_device *pdev)
+=======
+static int s1d13xxxfb_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s1d13xxxfb_par *default_par;
 	struct fb_info *info;
@@ -779,8 +795,13 @@ s1d13xxxfb_probe(struct platform_device *pdev)
 	printk(KERN_INFO "Epson S1D13XXX FB Driver\n");
 
 	/* enable platform-dependent hardware glue, if any */
+<<<<<<< HEAD
 	if (pdev->dev.platform_data)
 		pdata = pdev->dev.platform_data;
+=======
+	if (dev_get_platdata(&pdev->dev))
+		pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata && pdata->platform_init_video)
 		pdata->platform_init_video();
@@ -864,7 +885,11 @@ s1d13xxxfb_probe(struct platform_device *pdev)
 		printk(KERN_INFO PFX
 			"unknown chip production id %i, revision %i\n",
 			prod_id, revision);
+<<<<<<< HEAD
 		printk(KERN_INFO PFX "please contant maintainer\n");
+=======
+		printk(KERN_INFO PFX "please contact maintainer\n");
+>>>>>>> refs/remotes/origin/master
 		goto bail;
 	}
 
@@ -903,8 +928,12 @@ s1d13xxxfb_probe(struct platform_device *pdev)
 		goto bail;
 	}
 
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: %s frame buffer device\n",
 	       info->node, info->fix.id);
+=======
+	fb_info(info, "%s frame buffer device\n", info->fix.id);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -925,8 +954,13 @@ static int s1d13xxxfb_suspend(struct platform_device *dev, pm_message_t state)
 	lcd_enable(s1dfb, 0);
 	crt_enable(s1dfb, 0);
 
+<<<<<<< HEAD
 	if (dev->dev.platform_data)
 		pdata = dev->dev.platform_data;
+=======
+	if (dev_get_platdata(&dev->dev))
+		pdata = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 
 #if 0
 	if (!s1dfb->disp_save)
@@ -975,8 +1009,13 @@ static int s1d13xxxfb_resume(struct platform_device *dev)
 	while ((s1d13xxxfb_readreg(s1dfb, S1DREG_PS_STATUS) & 0x01))
 		udelay(10);
 
+<<<<<<< HEAD
 	if (dev->dev.platform_data)
 		pdata = dev->dev.platform_data;
+=======
+	if (dev_get_platdata(&dev->dev))
+		pdata = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (s1dfb->regs_save) {
 		/* will write RO regs, *should* get away with it :) */

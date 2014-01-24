@@ -1,7 +1,11 @@
 /*
  * Copyright 2005-2010 Analog Devices Inc.
  *
+<<<<<<< HEAD
  * Licensed under the ADI BSD license or the GPL-2 (or later)
+=======
+ * Licensed under the Clear BSD license or the GPL-2 (or later)
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _DEF_BF534_H
@@ -1403,6 +1407,7 @@
 #define ERR_DET			0x4000	/* Error Detected Indicator                     */
 #define ERR_NCOR		0x8000	/* Error Not Corrected Indicator        */
 
+<<<<<<< HEAD
 /*  ********************  TWO-WIRE INTERFACE (TWI) MASKS  ***********************/
 /* TWI_CLKDIV Macros (Use: *pTWI_CLKDIV = CLKLOW(x)|CLKHI(y);  )				*/
 #define	CLKLOW(x)	((x) & 0xFF)	/* Periods Clock Is Held Low                    */
@@ -1472,6 +1477,8 @@
 #define	RCV_EMPTY	0x0000	/*              Receive FIFO Empty                                              */
 #define	RCV_HALF	0x0004	/*              Receive FIFO Has 1 Byte To Read                 */
 #define	RCV_FULL	0x000C	/*              Receive FIFO Full (2 Bytes To Read)             */
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*  *******************  PIN CONTROL REGISTER MASKS  ************************/
 /* PORT_MUX Masks															*/

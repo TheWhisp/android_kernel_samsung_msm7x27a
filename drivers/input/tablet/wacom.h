@@ -12,10 +12,14 @@
  *  Copyright (c) 2001 Frederic Lepied		<flepied@mandrakesoft.com>
  *  Copyright (c) 2004 Panagiotis Issaris	<panagiotis.issaris@mech.kuleuven.ac.be>
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  Copyright (c) 2002-2009 Ping Cheng		<pingc@wacom.com>
 =======
  *  Copyright (c) 2002-2011 Ping Cheng		<pingc@wacom.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  Copyright (c) 2002-2011 Ping Cheng		<pingc@wacom.com>
+>>>>>>> refs/remotes/origin/master
  *
  *  ChangeLog:
  *      v0.1 (vp)  - Initial release
@@ -93,19 +97,27 @@
 #include <linux/init.h>
 #include <linux/usb/input.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/power_supply.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/power_supply.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/unaligned.h>
 
 /*
  * Version Information
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DRIVER_VERSION "v1.52"
 =======
 #define DRIVER_VERSION "v1.53"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DRIVER_VERSION "v1.53"
+>>>>>>> refs/remotes/origin/master
 #define DRIVER_AUTHOR "Vojtech Pavlik <vojtech@ucw.cz>"
 #define DRIVER_DESC "USB Wacom tablet driver"
 #define DRIVER_LICENSE "GPL"
@@ -125,11 +137,14 @@ struct wacom {
 	struct wacom_wac wacom_wac;
 	struct mutex lock;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool open;
 	char phys[32];
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct work_struct work;
 	bool open;
 	char phys[32];
@@ -148,11 +163,19 @@ static inline void wacom_schedule_work(struct wacom_wac *wacom_wac)
 	schedule_work(&wacom->work);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern const struct usb_device_id wacom_ids[];
 
 void wacom_wac_irq(struct wacom_wac *wacom_wac, size_t len);
 void wacom_setup_device_quirks(struct wacom_features *features);
+<<<<<<< HEAD
 void wacom_setup_input_capabilities(struct input_dev *input_dev,
 				    struct wacom_wac *wacom_wac);
+=======
+int wacom_setup_input_capabilities(struct input_dev *input_dev,
+				   struct wacom_wac *wacom_wac);
+>>>>>>> refs/remotes/origin/master
 #endif

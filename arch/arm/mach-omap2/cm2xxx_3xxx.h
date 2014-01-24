@@ -16,6 +16,7 @@
 #ifndef __ARCH_ASM_MACH_OMAP2_CM2XXX_3XXX_H
 #define __ARCH_ASM_MACH_OMAP2_CM2XXX_3XXX_H
 
+<<<<<<< HEAD
 #include "prcm-common.h"
 
 #define OMAP2420_CM_REGADDR(module, reg)				\
@@ -38,6 +39,9 @@
 
 #define OMAP3_CM_CLKOUT_CTRL_OFFSET	0x0070
 #define OMAP3430_CM_CLKOUT_CTRL		OMAP_CM_REGADDR(OMAP3430_CCR_MOD, 0x0070)
+=======
+#include "cm.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Module specific CM register offsets from CM_BASE + domain offset
@@ -57,6 +61,10 @@
 #define CM_IDLEST					0x0020
 #define CM_IDLEST1					CM_IDLEST
 #define CM_IDLEST2					0x0024
+<<<<<<< HEAD
+=======
+#define OMAP2430_CM_IDLEST3				0x0028
+>>>>>>> refs/remotes/origin/master
 #define CM_AUTOIDLE					0x0030
 #define CM_AUTOIDLE1					CM_AUTOIDLE
 #define CM_AUTOIDLE2					0x0034
@@ -66,6 +74,7 @@
 #define CM_CLKSEL2					0x0044
 #define OMAP2_CM_CLKSTCTRL				0x0048
 
+<<<<<<< HEAD
 /* OMAP2-specific register offsets */
 
 #define OMAP24XX_CM_FCLKEN2				0x0004
@@ -129,6 +138,62 @@ extern void omap2xxx_cm_set_apll54_disable_autoidle(void);
 extern void omap2xxx_cm_set_apll54_auto_low_power_stop(void);
 extern void omap2xxx_cm_set_apll96_disable_autoidle(void);
 extern void omap2xxx_cm_set_apll96_auto_low_power_stop(void);
+=======
+#ifndef __ASSEMBLER__
+
+#include <linux/io.h>
+
+static inline u32 omap2_cm_read_mod_reg(s16 module, u16 idx)
+{
+	return __raw_readl(cm_base + module + idx);
+}
+
+static inline void omap2_cm_write_mod_reg(u32 val, s16 module, u16 idx)
+{
+	__raw_writel(val, cm_base + module + idx);
+}
+
+/* Read-modify-write a register in a CM module. Caller must lock */
+static inline u32 omap2_cm_rmw_mod_reg_bits(u32 mask, u32 bits, s16 module,
+					    s16 idx)
+{
+	u32 v;
+
+	v = omap2_cm_read_mod_reg(module, idx);
+	v &= ~mask;
+	v |= bits;
+	omap2_cm_write_mod_reg(v, module, idx);
+
+	return v;
+}
+
+/* Read a CM register, AND it, and shift the result down to bit 0 */
+static inline u32 omap2_cm_read_mod_bits_shift(s16 domain, s16 idx, u32 mask)
+{
+	u32 v;
+
+	v = omap2_cm_read_mod_reg(domain, idx);
+	v &= mask;
+	v >>= __ffs(mask);
+
+	return v;
+}
+
+static inline u32 omap2_cm_set_mod_reg_bits(u32 bits, s16 module, s16 idx)
+{
+	return omap2_cm_rmw_mod_reg_bits(bits, bits, module, idx);
+}
+
+static inline u32 omap2_cm_clear_mod_reg_bits(u32 bits, s16 module, s16 idx)
+{
+	return omap2_cm_rmw_mod_reg_bits(bits, 0x0, module, idx);
+}
+
+extern int omap2xxx_cm_apll54_enable(void);
+extern void omap2xxx_cm_apll54_disable(void);
+extern int omap2xxx_cm_apll96_enable(void);
+extern void omap2xxx_cm_apll96_disable(void);
+>>>>>>> refs/remotes/origin/master
 
 #endif
 
@@ -137,6 +202,10 @@ extern void omap2xxx_cm_set_apll96_auto_low_power_stop(void);
 /* CM_CLKSEL_GFX */
 #define OMAP_CLKSEL_GFX_SHIFT				0
 #define OMAP_CLKSEL_GFX_MASK				(0x7 << 0)
+<<<<<<< HEAD
+=======
+#define OMAP_CLKSEL_GFX_WIDTH				3
+>>>>>>> refs/remotes/origin/master
 
 /* CM_ICLKEN_GFX */
 #define OMAP_EN_GFX_SHIFT				0
@@ -145,6 +214,7 @@ extern void omap2xxx_cm_set_apll96_auto_low_power_stop(void);
 /* CM_IDLEST_GFX */
 #define OMAP_ST_GFX_MASK				(1 << 0)
 
+<<<<<<< HEAD
 
 /* Function prototypes */
 # ifndef __ASSEMBLER__
@@ -152,4 +222,6 @@ extern void omap3_cm_save_context(void);
 extern void omap3_cm_restore_context(void);
 # endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

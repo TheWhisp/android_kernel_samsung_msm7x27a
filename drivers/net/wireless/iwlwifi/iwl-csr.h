@@ -6,10 +6,14 @@
  * GPL LICENSE SUMMARY
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2005 - 2011 Intel Corporation. All rights reserved.
 =======
  * Copyright(c) 2005 - 2012 Intel Corporation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2005 - 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of version 2 of the GNU General Public License as
@@ -26,7 +30,11 @@
  * USA
  *
  * The full GNU General Public License is included in this distribution
+<<<<<<< HEAD
  * in the file called LICENSE.GPL.
+=======
+ * in the file called COPYING.
+>>>>>>> refs/remotes/origin/master
  *
  * Contact Information:
  *  Intel Linux Wireless <ilw@linux.intel.com>
@@ -35,10 +43,14 @@
  * BSD LICENSE
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2005 - 2011 Intel Corporation. All rights reserved.
 =======
  * Copyright(c) 2005 - 2012 Intel Corporation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2005 - 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -105,6 +117,7 @@
 /*
  * Hardware revision info
  * Bit fields:
+<<<<<<< HEAD
  * 31-8:  Reserved
  *  7-4:  Type of device:  see CSR_HW_REV_TYPE_xxx definitions
  *  3-2:  Revision step:  0 = A, 1 = B, 2 = C, 3 = D
@@ -112,6 +125,12 @@
  *
  * NOTE:  Revision step affects calculation of CCK txpower for 4965.
  * NOTE:  See also CSR_HW_REV_WA_REG (work-around for bug in 4965).
+=======
+ * 31-16:  Reserved
+ *  15-4:  Type of device:  see CSR_HW_REV_TYPE_xxx definitions
+ *  3-2:  Revision step:  0 = A, 1 = B, 2 = C, 3 = D
+ *  1-0:  "Dash" (-) value, as in A-1, etc.
+>>>>>>> refs/remotes/origin/master
  */
 #define CSR_HW_REV              (CSR_BASE+0x028)
 
@@ -163,9 +182,27 @@
 #define CSR_DBG_LINK_PWR_MGMT_REG	(CSR_BASE+0x250)
 
 /* Bits for CSR_HW_IF_CONFIG_REG */
+<<<<<<< HEAD
 #define CSR_HW_IF_CONFIG_REG_MSK_BOARD_VER	(0x00000C00)
 #define CSR_HW_IF_CONFIG_REG_BIT_MAC_SI 	(0x00000100)
 #define CSR_HW_IF_CONFIG_REG_BIT_RADIO_SI	(0x00000200)
+=======
+#define CSR_HW_IF_CONFIG_REG_MSK_MAC_DASH	(0x00000003)
+#define CSR_HW_IF_CONFIG_REG_MSK_MAC_STEP	(0x0000000C)
+#define CSR_HW_IF_CONFIG_REG_MSK_BOARD_VER	(0x000000C0)
+#define CSR_HW_IF_CONFIG_REG_BIT_MAC_SI		(0x00000100)
+#define CSR_HW_IF_CONFIG_REG_BIT_RADIO_SI	(0x00000200)
+#define CSR_HW_IF_CONFIG_REG_MSK_PHY_TYPE	(0x00000C00)
+#define CSR_HW_IF_CONFIG_REG_MSK_PHY_DASH	(0x00003000)
+#define CSR_HW_IF_CONFIG_REG_MSK_PHY_STEP	(0x0000C000)
+
+#define CSR_HW_IF_CONFIG_REG_POS_MAC_DASH	(0)
+#define CSR_HW_IF_CONFIG_REG_POS_MAC_STEP	(2)
+#define CSR_HW_IF_CONFIG_REG_POS_BOARD_VER	(6)
+#define CSR_HW_IF_CONFIG_REG_POS_PHY_TYPE	(10)
+#define CSR_HW_IF_CONFIG_REG_POS_PHY_DASH	(12)
+#define CSR_HW_IF_CONFIG_REG_POS_PHY_STEP	(14)
+>>>>>>> refs/remotes/origin/master
 
 #define CSR_HW_IF_CONFIG_REG_BIT_HAP_WAKE_L1A	(0x00080000)
 #define CSR_HW_IF_CONFIG_REG_BIT_EEPROM_OWN_SEM	(0x00200000)
@@ -278,7 +315,14 @@
 
 
 /* HW REV */
+<<<<<<< HEAD
 #define CSR_HW_REV_TYPE_MSK            (0x00001F0)
+=======
+#define CSR_HW_REV_DASH(_val)          (((_val) & 0x0000003) >> 0)
+#define CSR_HW_REV_STEP(_val)          (((_val) & 0x000000C) >> 2)
+
+#define CSR_HW_REV_TYPE_MSK            (0x000FFF0)
+>>>>>>> refs/remotes/origin/master
 #define CSR_HW_REV_TYPE_5300           (0x0000020)
 #define CSR_HW_REV_TYPE_5350           (0x0000030)
 #define CSR_HW_REV_TYPE_5100           (0x0000050)
@@ -293,12 +337,17 @@
 #define CSR_HW_REV_TYPE_2x30	       (0x00000C0)
 #define CSR_HW_REV_TYPE_2x00	       (0x0000100)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CSR_HW_REV_TYPE_200	       (0x0000110)
 #define CSR_HW_REV_TYPE_230	       (0x0000120)
 =======
 #define CSR_HW_REV_TYPE_105	       (0x0000110)
 #define CSR_HW_REV_TYPE_135	       (0x0000120)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CSR_HW_REV_TYPE_105	       (0x0000110)
+#define CSR_HW_REV_TYPE_135	       (0x0000120)
+>>>>>>> refs/remotes/origin/master
 #define CSR_HW_REV_TYPE_NONE           (0x00001F0)
 
 /* EEPROM REG */
@@ -365,9 +414,13 @@
 #define CSR_UCODE_DRV_GP1_BIT_CMD_BLOCKED           (0x00000004)
 #define CSR_UCODE_DRV_GP1_REG_BIT_CT_KILL_EXIT      (0x00000008)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define CSR_UCODE_DRV_GP1_BIT_D3_CFG_COMPLETE       (0x00000020)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CSR_UCODE_DRV_GP1_BIT_D3_CFG_COMPLETE       (0x00000020)
+>>>>>>> refs/remotes/origin/master
 
 /* GP Driver */
 #define CSR_GP_DRIVER_REG_BIT_RADIO_SKU_MSK	    (0x00000003)
@@ -385,8 +438,13 @@
 
 /* LED */
 #define CSR_LED_BSM_CTRL_MSK (0xFFFFFFDF)
+<<<<<<< HEAD
 #define CSR_LED_REG_TRUN_ON (0x78)
 #define CSR_LED_REG_TRUN_OFF (0x38)
+=======
+#define CSR_LED_REG_TURN_ON (0x60)
+#define CSR_LED_REG_TURN_OFF (0x20)
+>>>>>>> refs/remotes/origin/master
 
 /* ANA_PLL */
 #define CSR50_ANA_PLL_CFG_VAL        (0x00880300)
@@ -398,6 +456,41 @@
 #define CSR_DRAM_INT_TBL_ENABLE		(1 << 31)
 #define CSR_DRAM_INIT_TBL_WRAP_CHECK	(1 << 27)
 
+<<<<<<< HEAD
+=======
+/* SECURE boot registers */
+#define CSR_SECURE_BOOT_CONFIG_ADDR	(0x100)
+enum secure_boot_config_reg {
+	CSR_SECURE_BOOT_CONFIG_INSPECTOR_BURNED_IN_OTP	= 0x00000001,
+	CSR_SECURE_BOOT_CONFIG_INSPECTOR_NOT_REQ	= 0x00000002,
+};
+
+#define CSR_SECURE_BOOT_CPU1_STATUS_ADDR	(0x100)
+#define CSR_SECURE_BOOT_CPU2_STATUS_ADDR	(0x100)
+enum secure_boot_status_reg {
+	CSR_SECURE_BOOT_CPU_STATUS_VERF_STATUS		= 0x00000003,
+	CSR_SECURE_BOOT_CPU_STATUS_VERF_COMPLETED	= 0x00000002,
+	CSR_SECURE_BOOT_CPU_STATUS_VERF_SUCCESS		= 0x00000004,
+	CSR_SECURE_BOOT_CPU_STATUS_VERF_FAIL		= 0x00000008,
+	CSR_SECURE_BOOT_CPU_STATUS_SIGN_VERF_FAIL	= 0x00000010,
+};
+
+#define CSR_UCODE_LOAD_STATUS_ADDR	(0x100)
+enum secure_load_status_reg {
+	CSR_CPU_STATUS_LOADING_STARTED			= 0x00000001,
+	CSR_CPU_STATUS_LOADING_COMPLETED		= 0x00000002,
+	CSR_CPU_STATUS_NUM_OF_LAST_COMPLETED		= 0x000000F8,
+	CSR_CPU_STATUS_NUM_OF_LAST_LOADED_BLOCK		= 0x0000FF00,
+};
+
+#define CSR_SECURE_INSPECTOR_CODE_ADDR	(0x100)
+#define CSR_SECURE_INSPECTOR_DATA_ADDR	(0x100)
+
+#define CSR_SECURE_TIME_OUT	(100)
+
+#define FH_TCSR_0_REG0 (0x1D00)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * HBUS (Host-side Bus)
  *
@@ -446,6 +539,12 @@
 #define HBUS_TARG_PRPH_WDAT     (HBUS_BASE+0x04c)
 #define HBUS_TARG_PRPH_RDAT     (HBUS_BASE+0x050)
 
+<<<<<<< HEAD
+=======
+/* Used to enable DBGM */
+#define HBUS_TARG_TEST_REG	(HBUS_BASE+0x05c)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Per-Tx-queue write pointer (index, really!)
  * Indicates index to next TFD that driver will fill (1 past latest filled).
@@ -456,7 +555,10 @@
 #define HBUS_TARG_WRPTR         (HBUS_BASE+0x060)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**********************************************************
  * CSR values
  **********************************************************/
@@ -466,14 +568,41 @@
  * the CSR_INT_COALESCING is an 8 bit register in 32-usec unit
  *
  * default interrupt coalescing timer is 64 x 32 = 2048 usecs
+<<<<<<< HEAD
  * default interrupt coalescing calibration timer is 16 x 32 = 512 usecs
+=======
+>>>>>>> refs/remotes/origin/master
  */
 #define IWL_HOST_INT_TIMEOUT_MAX	(0xFF)
 #define IWL_HOST_INT_TIMEOUT_DEF	(0x40)
 #define IWL_HOST_INT_TIMEOUT_MIN	(0x0)
+<<<<<<< HEAD
 #define IWL_HOST_INT_CALIB_TIMEOUT_MAX	(0xFF)
 #define IWL_HOST_INT_CALIB_TIMEOUT_DEF	(0x10)
 #define IWL_HOST_INT_CALIB_TIMEOUT_MIN	(0x0)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IWL_HOST_INT_OPER_MODE		BIT(31)
+
+/*****************************************************************************
+ *                        7000/3000 series SHR DTS addresses                 *
+ *****************************************************************************/
+
+/* Diode Results Register Structure: */
+enum dtd_diode_reg {
+	DTS_DIODE_REG_DIG_VAL			= 0x000000FF, /* bits [7:0] */
+	DTS_DIODE_REG_VREF_LOW			= 0x0000FF00, /* bits [15:8] */
+	DTS_DIODE_REG_VREF_HIGH			= 0x00FF0000, /* bits [23:16] */
+	DTS_DIODE_REG_VREF_ID			= 0x03000000, /* bits [25:24] */
+	DTS_DIODE_REG_PASS_ONCE			= 0x80000000, /* bits [31:31] */
+	DTS_DIODE_REG_FLAGS_MSK			= 0xFF000000, /* bits [31:24] */
+/* Those are the masks INSIDE the flags bit-field: */
+	DTS_DIODE_REG_FLAGS_VREFS_ID_POS	= 0,
+	DTS_DIODE_REG_FLAGS_VREFS_ID		= 0x00000003, /* bits [1:0] */
+	DTS_DIODE_REG_FLAGS_PASS_ONCE_POS	= 7,
+	DTS_DIODE_REG_FLAGS_PASS_ONCE		= 0x00000080, /* bits [7:7] */
+};
+
+>>>>>>> refs/remotes/origin/master
 #endif /* !__iwl_csr_h__ */

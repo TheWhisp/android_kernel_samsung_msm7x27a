@@ -4,18 +4,26 @@
 #include <linux/list.h>
 #include <linux/backing-dev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/idr.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/idr.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/wait.h>
 #include <linux/nfs_xdr.h>
 #include <linux/sunrpc/xprt.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 struct nfs4_session;
 struct nfs_iostats;
@@ -25,16 +33,25 @@ struct nfs4_sequence_res;
 struct nfs_server;
 struct nfs4_minor_version_ops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct server_scope;
 struct nfs41_impl_id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct nfs41_server_scope;
+struct nfs41_impl_id;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The nfs_client identifies our client state to the server.
  */
 struct nfs_client {
 	atomic_t		cl_count;
+<<<<<<< HEAD
+=======
+	atomic_t		cl_mds_count;
+>>>>>>> refs/remotes/origin/master
 	int			cl_cons_state;	/* current construction state (-ve: init error) */
 #define NFS_CS_READY		0		/* ready to be used */
 #define NFS_CS_INITING		1		/* busy initialising */
@@ -45,6 +62,15 @@ struct nfs_client {
 #define NFS_CS_RENEWD		3		/* - renewd started */
 #define NFS_CS_STOP_RENEW	4		/* no more state to renew */
 #define NFS_CS_CHECK_LEASE_TIME	5		/* need to check lease time */
+<<<<<<< HEAD
+=======
+	unsigned long		cl_flags;	/* behavior switches */
+#define NFS_CS_NORESVPORT	0		/* - use ephemeral src port */
+#define NFS_CS_DISCRTRY		1		/* - disconnect on RPC retry */
+#define NFS_CS_MIGRATION	2		/* - transparent state migr */
+#define NFS_CS_INFINITE_SLOTS	3		/* - don't limit TCP slots */
+#define NFS_CS_NO_RETRANS_TIMEOUT	4	/* - Disable retransmit timeouts */
+>>>>>>> refs/remotes/origin/master
 	struct sockaddr_storage	cl_addr;	/* server identifier */
 	size_t			cl_addrlen;
 	char *			cl_hostname;	/* hostname of server */
@@ -54,11 +80,20 @@ struct nfs_client {
 	struct rpc_clnt *	cl_rpcclient;
 	const struct nfs_rpc_ops *rpc_ops;	/* NFS protocol vector */
 	int			cl_proto;	/* Network transport protocol */
+<<<<<<< HEAD
+=======
+	struct nfs_subversion *	cl_nfs_mod;	/* pointer to nfs version module */
+>>>>>>> refs/remotes/origin/master
 
 	u32			cl_minorversion;/* NFSv4 minorversion */
 	struct rpc_cred		*cl_machine_cred;
 
+<<<<<<< HEAD
 #ifdef CONFIG_NFS_V4
+=======
+#if IS_ENABLED(CONFIG_NFS_V4)
+	struct list_head	cl_ds_clients; /* auth flavor data servers */
+>>>>>>> refs/remotes/origin/master
 	u64			cl_clientid;	/* constant */
 	nfs4_verifier		cl_confirm;	/* Clientid verifier */
 	unsigned long		cl_state;
@@ -71,34 +106,67 @@ struct nfs_client {
 
 	struct rpc_wait_queue	cl_rpcwaitq;
 
+<<<<<<< HEAD
 	/* used for the setclientid verifier */
 	struct timespec		cl_boot_time;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* idmapper */
 	struct idmap *		cl_idmap;
 
 	/* Our own IP address, as a null-terminated string.
+<<<<<<< HEAD
 	 * This is used to generate the clientid, and the callback address.
 	 */
 	char			cl_ipaddr[48];
 	unsigned char		cl_id_uniquifier;
 	u32			cl_cb_ident;	/* v4.0 callback identifier */
 	const struct nfs4_minor_version_ops *cl_mvops;
+=======
+	 * This is used to generate the mv0 callback address.
+	 */
+	char			cl_ipaddr[48];
+	u32			cl_cb_ident;	/* v4.0 callback identifier */
+	const struct nfs4_minor_version_ops *cl_mvops;
+	unsigned long		cl_mig_gen;
+
+	/* NFSv4.0 transport blocking */
+	struct nfs4_slot_table	*cl_slot_tbl;
+>>>>>>> refs/remotes/origin/master
 
 	/* The sequence id to use for the next CREATE_SESSION */
 	u32			cl_seqid;
 	/* The flags used for obtaining the clientid during EXCHANGE_ID */
 	u32			cl_exchange_flags;
+<<<<<<< HEAD
 	struct nfs4_session	*cl_session; 	/* sharred session */
 <<<<<<< HEAD
 	struct list_head	cl_layouts;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nfs4_session	*cl_session;	/* shared session */
+	bool			cl_preserve_clid;
+	struct nfs41_server_owner *cl_serverowner;
+	struct nfs41_server_scope *cl_serverscope;
+	struct nfs41_impl_id	*cl_implid;
+	/* nfs 4.1+ state protection modes: */
+	unsigned long		cl_sp4_flags;
+#define NFS_SP4_MACH_CRED_MINIMAL  1	/* Minimal sp4_mach_cred - state ops
+					 * must use machine cred */
+#define NFS_SP4_MACH_CRED_CLEANUP  2	/* CLOSE and LOCKU */
+#define NFS_SP4_MACH_CRED_SECINFO  3	/* SECINFO and SECINFO_NO_NAME */
+#define NFS_SP4_MACH_CRED_STATEID  4	/* TEST_STATEID and FREE_STATEID */
+#define NFS_SP4_MACH_CRED_WRITE    5	/* WRITE */
+#define NFS_SP4_MACH_CRED_COMMIT   6	/* COMMIT */
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_NFS_V4 */
 
 #ifdef CONFIG_NFS_FSCACHE
 	struct fscache_cookie	*fscache;	/* client index cache cookie */
 #endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 
@@ -106,6 +174,10 @@ struct nfs_client {
 	struct nfs41_impl_id	*impl_id;	/* from exchange_id */
 	struct net		*net;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	struct net		*cl_net;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -140,18 +212,29 @@ struct nfs_server {
 	unsigned int		namelen;
 	unsigned int		options;	/* extra options enabled by mount */
 #define NFS_OPTION_FSCACHE	0x00000001	/* - local caching enabled */
+<<<<<<< HEAD
+=======
+#define NFS_OPTION_MIGRATION	0x00000002	/* - NFSv4 migration enabled */
+>>>>>>> refs/remotes/origin/master
 
 	struct nfs_fsid		fsid;
 	__u64			maxfilesize;	/* maximum file size */
 	struct timespec		time_delta;	/* smallest time granularity */
 	unsigned long		mount_time;	/* when this fs was mounted */
+<<<<<<< HEAD
 	dev_t			s_dev;		/* superblock dev numbers */
+=======
+	struct super_block	*super;		/* VFS super block */
+	dev_t			s_dev;		/* superblock dev numbers */
+	struct nfs_auth_info	auth_info;	/* parsed auth flavors */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_NFS_FSCACHE
 	struct nfs_fscache_key	*fscache_key;	/* unique key for superblock */
 	struct fscache_cookie	*fscache;	/* superblock cookie */
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_NFS_V4
 	u32			attr_bitmask[2];/* V4 bitmask representing the set
@@ -163,6 +246,19 @@ struct nfs_server {
 						   of attributes supported on this
 						   filesystem */
 	u32			cache_consistency_bitmask[2];
+=======
+	u32			pnfs_blksize;	/* layout_blksize attr */
+#if IS_ENABLED(CONFIG_NFS_V4)
+	u32			attr_bitmask[3];/* V4 bitmask representing the set
+						   of attributes supported on this
+						   filesystem */
+	u32			attr_bitmask_nl[3];
+						/* V4 bitmask representing the
+						   set of attributes supported
+						   on this filesystem excluding
+						   the label support bit. */
+	u32			cache_consistency_bitmask[3];
+>>>>>>> refs/remotes/origin/master
 						/* V4 bitmask representing the subset
 						   of change attribute, size, ctime
 						   and mtime attributes supported by
@@ -170,6 +266,7 @@ struct nfs_server {
 	u32			acl_bitmask;	/* V4 bitmask representing the ACEs
 						   that are supported on this
 						   filesystem */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct pnfs_layoutdriver_type  *pnfs_curr_ld; /* Active layout driver */
 	struct rpc_wait_queue	roc_rpcwaitq;
@@ -180,6 +277,8 @@ struct nfs_server {
 	struct rb_root		lockowner_id;
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32			fh_expire_type;	/* V4 bitmask representing file
 						   handle volatility type for
 						   this filesystem */
@@ -194,8 +293,18 @@ struct nfs_server {
 	struct ida		lockowner_id;
 	struct list_head	state_owners_lru;
 	struct list_head	layouts;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct list_head	delegations;
+=======
+	struct list_head	delegations;
+
+	unsigned long		mig_gen;
+	unsigned long		mig_status;
+#define NFS_MIG_IN_TRANSITION		(1)
+#define NFS_MIG_FAILED			(2)
+
+>>>>>>> refs/remotes/origin/master
 	void (*destroy)(struct nfs_server *);
 
 	atomic_t active; /* Keep trace of any activity to this server */
@@ -225,6 +334,7 @@ struct nfs_server {
 #define NFS_CAP_MTIME		(1U << 13)
 #define NFS_CAP_POSIX_LOCK	(1U << 14)
 #define NFS_CAP_UIDGID_NOMAP	(1U << 15)
+<<<<<<< HEAD
 
 
 /* maximum number of slots to use */
@@ -288,4 +398,10 @@ struct nfs4_session {
 };
 
 #endif /* CONFIG_NFS_V4 */
+=======
+#define NFS_CAP_STATEID_NFSV41	(1U << 16)
+#define NFS_CAP_ATOMIC_OPEN_V1	(1U << 17)
+#define NFS_CAP_SECURITY_LABEL	(1U << 18)
+
+>>>>>>> refs/remotes/origin/master
 #endif

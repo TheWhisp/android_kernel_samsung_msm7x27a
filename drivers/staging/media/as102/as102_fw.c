@@ -230,11 +230,16 @@ int as102_fw_upload(struct as10x_bus_adapter_t *bus_adap)
 	pr_info("%s: firmware: %s loaded with success\n",
 		DRIVER_NAME, fw2);
 error:
+<<<<<<< HEAD
 	/* free data buffer */
 	kfree(cmd_buf);
 	/* release firmware if needed */
 	if (firmware != NULL)
 		release_firmware(firmware);
+=======
+	kfree(cmd_buf);
+	release_firmware(firmware);
+>>>>>>> refs/remotes/origin/master
 
 	LEAVE();
 	return errno;

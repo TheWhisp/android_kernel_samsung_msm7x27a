@@ -103,10 +103,14 @@ extern char * SVCFH_fmt(struct svc_fh *fhp);
  * Function prototypes
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 __be32	fh_verify(struct svc_rqst *, struct svc_fh *, int, int);
 =======
 __be32	fh_verify(struct svc_rqst *, struct svc_fh *, umode_t, int);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+__be32	fh_verify(struct svc_rqst *, struct svc_fh *, umode_t, int);
+>>>>>>> refs/remotes/origin/master
 __be32	fh_compose(struct svc_fh *, struct svc_export *, struct dentry *, struct svc_fh *);
 __be32	fh_update(struct svc_fh *);
 void	fh_put(struct svc_fh *);
@@ -177,8 +181,13 @@ fh_lock_nested(struct svc_fh *fhp, unsigned int subclass)
 	BUG_ON(!dentry);
 
 	if (fhp->fh_locked) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "fh_lock: %s/%s already locked!\n",
 			dentry->d_parent->d_name.name, dentry->d_name.name);
+=======
+		printk(KERN_WARNING "fh_lock: %pd2 already locked!\n",
+			dentry);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 

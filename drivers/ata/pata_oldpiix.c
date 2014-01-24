@@ -236,9 +236,12 @@ static struct ata_port_operations oldpiix_pata_ops = {
 static int oldpiix_init_one (struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	static const struct ata_port_info info = {
 		.flags		= ATA_FLAG_SLAVE_POSS,
 		.pio_mask	= ATA_PIO4,
@@ -248,12 +251,16 @@ static int oldpiix_init_one (struct pci_dev *pdev, const struct pci_device_id *e
 	const struct ata_port_info *ppi[] = { &info, NULL };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev,
 			   "version " DRV_VERSION "\n");
 =======
 	ata_print_version_once(&pdev->dev, DRV_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	return ata_pci_bmdma_init_one(pdev, ppi, &oldpiix_sht, NULL, 0);
 }
@@ -275,6 +282,7 @@ static struct pci_driver oldpiix_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init oldpiix_init(void)
 {
 	return pci_register_driver(&oldpiix_pci_driver);
@@ -287,10 +295,16 @@ static void __exit oldpiix_exit(void)
 
 module_init(oldpiix_init);
 module_exit(oldpiix_exit);
+=======
+module_pci_driver(oldpiix_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("SCSI low-level driver for early PIIX series controllers");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, oldpiix_pci_tbl);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

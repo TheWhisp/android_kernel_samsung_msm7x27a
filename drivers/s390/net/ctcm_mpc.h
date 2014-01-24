@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  * drivers/s390/net/ctcm_mpc.h
  *
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright IBM Corp. 2007
  * Authors:	Peter Tiedemann (ptiedem@de.ibm.com)
  *
@@ -13,9 +16,13 @@
 #define _CTC_MPC_H_
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/interrupt.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/skbuff.h>
 #include "fsm.h"
 

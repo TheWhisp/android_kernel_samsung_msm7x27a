@@ -13,11 +13,27 @@
 
 /include/ "mpc5200b.dtsi"
 
+<<<<<<< HEAD
+=======
+/* Timer pins that need to be in GPIO mode */
+&gpt0 { gpio-controller; };
+&gpt1 { gpio-controller; };
+&gpt2 { gpio-controller; };
+&gpt3 { gpio-controller; };
+
+/* Disabled timers */
+&gpt4 { status = "disabled"; };
+&gpt5 { status = "disabled"; };
+&gpt6 { status = "disabled"; };
+&gpt7 { status = "disabled"; };
+
+>>>>>>> refs/remotes/origin/master
 / {
 	model = "manroland,mucmc52";
 	compatible = "manroland,mucmc52";
 
 	soc5200@f0000000 {
+<<<<<<< HEAD
 		gpt0: timer@600 {	// GPT 0 in GPIO mode
 			gpio-controller;
 			#gpio-cells = <2>;
@@ -54,6 +70,8 @@
 			status = "disabled";
 		};
 
+=======
+>>>>>>> refs/remotes/origin/master
 		rtc@800 {
 			status = "disabled";
 		};

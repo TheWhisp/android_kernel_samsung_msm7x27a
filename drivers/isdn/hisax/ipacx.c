@@ -1,18 +1,26 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 
 =======
 /*
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  *
  * IPACX specific routines
  *
  * Author       Joerg Petersohn
  * Derived from hisax_isac.c, isac.c, hscx.c and others
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -33,10 +41,14 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // ipacx interrupt mask values    
 =======
 // ipacx interrupt mask values
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+// ipacx interrupt mask values
+>>>>>>> refs/remotes/origin/master
 #define _MASK_IMASK     0x2E  // global mask
 #define _MASKB_IMASK    0x0B
 #define _MASKD_IMASK    0x03  // all on
@@ -68,6 +80,7 @@ static void clear_pending_ints(struct IsdnCardState *cs);
 // Issue Layer 1 command to chip
 //----------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void 
 ph_command(struct IsdnCardState *cs, unsigned int command)
 {
@@ -78,6 +91,8 @@ ph_command(struct IsdnCardState *cs, unsigned int command)
 //	printk(KERN_INFO "ph_command (%#x)\n", command);
 //###################################  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 ph_command(struct IsdnCardState *cs, unsigned int command)
 {
@@ -87,7 +102,10 @@ ph_command(struct IsdnCardState *cs, unsigned int command)
 //###################################
 //	printk(KERN_INFO "ph_command (%#x)\n", command);
 //###################################
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cs->writeisac(cs, IPACX_CIX0, (command << 4) | 0x0E);
 }
 
@@ -95,15 +113,20 @@ ph_command(struct IsdnCardState *cs, unsigned int command)
 // Transceiver interrupt handler
 //----------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void 
 =======
 static inline void
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void
+>>>>>>> refs/remotes/origin/master
 cic_int(struct IsdnCardState *cs)
 {
 	u_char event;
 
 	event = cs->readisac(cs, IPACX_CIR0) >> 4;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (cs->debug &L1_DEB_ISAC) debugl1(cs, "cic_int(event=%#x)", event);
 //#########################################  
@@ -112,13 +135,18 @@ cic_int(struct IsdnCardState *cs)
   cs->dc.isac.ph_state = event;
   schedule_event(cs, D_L1STATECHANGE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cs->debug & L1_DEB_ISAC) debugl1(cs, "cic_int(event=%#x)", event);
 //#########################################
 //	printk(KERN_INFO "cic_int(%x)\n", event);
 //#########################################
 	cs->dc.isac.ph_state = event;
 	schedule_event(cs, D_L1STATECHANGE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 //==========================================================
@@ -136,6 +164,7 @@ dch_l2l1(struct PStack *st, int pr, void *arg)
 	u_char cda1_cr;
 
 	switch (pr) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (PH_DATA |REQUEST):
 			if (cs->debug &DEB_DLOG_HEX)     LogFrame(cs, skb->data, skb->len);
@@ -231,6 +260,8 @@ dch_l2l1(struct PStack *st, int pr, void *arg)
 			if (cs->debug &L1_DEB_WARN) debugl1(cs, "dch_l2l1 unknown %04x", pr);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (PH_DATA | REQUEST):
 		if (cs->debug & DEB_DLOG_HEX) LogFrame(cs, skb->data, skb->len);
 		if (cs->debug & DEB_DLOG_VERBOSE) dlogframe(cs, skb, 0);
@@ -324,7 +355,10 @@ dch_l2l1(struct PStack *st, int pr, void *arg)
 	default:
 		if (cs->debug & L1_DEB_WARN) debugl1(cs, "dch_l2l1 unknown %04x", pr);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -340,18 +374,24 @@ dbusy_timer_handler(struct IsdnCardState *cs)
 		rbchd = cs->readisac(cs, IPACX_RBCHD);
 		stard = cs->readisac(cs, IPACX_STARD);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (cs->debug) 
       debugl1(cs, "D-Channel Busy RBCHD %02x STARD %02x", rbchd, stard);
 		if (!(stard &0x40)) { // D-Channel Busy
 			set_bit(FLG_L1_DBUSY, &cs->HW_Flags);
       for (st = cs->stlist; st; st = st->next) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (cs->debug)
 			debugl1(cs, "D-Channel Busy RBCHD %02x STARD %02x", rbchd, stard);
 		if (!(stard & 0x40)) { // D-Channel Busy
 			set_bit(FLG_L1_DBUSY, &cs->HW_Flags);
 			for (st = cs->stlist; st; st = st->next) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				st->l1.l1l2(st, PH_PAUSE | INDICATION, NULL); // flow control on
 			}
 		} else {
@@ -374,14 +414,19 @@ dbusy_timer_handler(struct IsdnCardState *cs)
 // Fill buffer from receive FIFO
 //----------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void 
 =======
 static void
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 dch_empty_fifo(struct IsdnCardState *cs, int count)
 {
 	u_char *ptr;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((cs->debug &L1_DEB_ISAC) && !(cs->debug &L1_DEB_ISAC_FIFO))
 		debugl1(cs, "dch_empty_fifo()");
@@ -403,6 +448,8 @@ dch_empty_fifo(struct IsdnCardState *cs, int count)
   
 	if (cs->debug &L1_DEB_ISAC_FIFO) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((cs->debug & L1_DEB_ISAC) && !(cs->debug & L1_DEB_ISAC_FIFO))
 		debugl1(cs, "dch_empty_fifo()");
 
@@ -422,12 +469,19 @@ dch_empty_fifo(struct IsdnCardState *cs, int count)
 	cs->writeisac(cs, IPACX_CMDRD, 0x80); // RMC
 
 	if (cs->debug & L1_DEB_ISAC_FIFO) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		char *t = cs->dlog;
 
 		t += sprintf(t, "dch_empty_fifo() cnt %d", count);
 		QuickHex(t, ptr, count);
+<<<<<<< HEAD
 		debugl1(cs, cs->dlog);
+=======
+		debugl1(cs, "%s", cs->dlog);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -435,15 +489,20 @@ dch_empty_fifo(struct IsdnCardState *cs, int count)
 // Fill transmit FIFO
 //----------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void 
 =======
 static void
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 dch_fill_fifo(struct IsdnCardState *cs)
 {
 	int count;
 	u_char cmd, *ptr;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((cs->debug &L1_DEB_ISAC) && !(cs->debug &L1_DEB_ISAC_FIFO))
 		debugl1(cs, "dch_fill_fifo()");
@@ -453,6 +512,11 @@ dch_fill_fifo(struct IsdnCardState *cs)
 		debugl1(cs, "dch_fill_fifo()");
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((cs->debug & L1_DEB_ISAC) && !(cs->debug & L1_DEB_ISAC_FIFO))
+		debugl1(cs, "dch_fill_fifo()");
+
+>>>>>>> refs/remotes/origin/master
 	if (!cs->tx_skb) return;
 	count = cs->tx_skb->len;
 	if (count <= 0) return;
@@ -464,15 +528,20 @@ dch_fill_fifo(struct IsdnCardState *cs)
 		cmd   = 0x0A; // XTF | XME
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
   
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	ptr = cs->tx_skb->data;
 	skb_pull(cs->tx_skb, count);
 	cs->tx_cnt += count;
 	cs->writeisacfifo(cs, ptr, count);
 	cs->writeisac(cs, IPACX_CMDRD, cmd);
+<<<<<<< HEAD
 <<<<<<< HEAD
   
   // set timeout for transmission contol
@@ -480,6 +549,10 @@ dch_fill_fifo(struct IsdnCardState *cs)
 
 	// set timeout for transmission contol
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	// set timeout for transmission contol
+>>>>>>> refs/remotes/origin/master
 	if (test_and_set_bit(FLG_DBUSY_TIMER, &cs->HW_Flags)) {
 		debugl1(cs, "dch_fill_fifo dbusytimer running");
 		del_timer(&cs->dbusytimer);
@@ -488,17 +561,26 @@ dch_fill_fifo(struct IsdnCardState *cs)
 	cs->dbusytimer.expires = jiffies + ((DBUSY_TIMER_VALUE * HZ)/1000);
 	add_timer(&cs->dbusytimer);
 <<<<<<< HEAD
+<<<<<<< HEAD
   
 	if (cs->debug &L1_DEB_ISAC_FIFO) {
 =======
 
 	if (cs->debug & L1_DEB_ISAC_FIFO) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (cs->debug & L1_DEB_ISAC_FIFO) {
+>>>>>>> refs/remotes/origin/master
 		char *t = cs->dlog;
 
 		t += sprintf(t, "dch_fill_fifo() cnt %d", count);
 		QuickHex(t, ptr, count);
+<<<<<<< HEAD
 		debugl1(cs, cs->dlog);
+=======
+		debugl1(cs, "%s", cs->dlog);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -506,10 +588,14 @@ dch_fill_fifo(struct IsdnCardState *cs)
 // D channel interrupt handler
 //----------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void 
 =======
 static inline void
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void
+>>>>>>> refs/remotes/origin/master
 dch_int(struct IsdnCardState *cs)
 {
 	struct sk_buff *skb;
@@ -517,6 +603,7 @@ dch_int(struct IsdnCardState *cs)
 	int count;
 
 	istad = cs->readisac(cs, IPACX_ISTAD);
+<<<<<<< HEAD
 <<<<<<< HEAD
 //##############################################  
 //	printk(KERN_WARNING "dch_int(istad=%02x)\n", istad);
@@ -544,6 +631,8 @@ dch_int(struct IsdnCardState *cs)
 			if ((count = cs->rcvidx) > 0) {
 	      cs->rcvidx = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 //##############################################
 //	printk(KERN_WARNING "dch_int(istad=%02x)\n", istad);
 //##############################################
@@ -569,7 +658,10 @@ dch_int(struct IsdnCardState *cs)
 			dch_empty_fifo(cs, count);
 			if ((count = cs->rcvidx) > 0) {
 				cs->rcvidx = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				if (!(skb = dev_alloc_skb(count)))
 					printk(KERN_WARNING "HiSax dch_int(): receive out of memory\n");
 				else {
@@ -577,6 +669,7 @@ dch_int(struct IsdnCardState *cs)
 					skb_queue_tail(&cs->rq, skb);
 				}
 			}
+<<<<<<< HEAD
 <<<<<<< HEAD
     }
 	  cs->rcvidx = 0;
@@ -594,6 +687,8 @@ dch_int(struct IsdnCardState *cs)
   
   if (istad &0x10) {  // XPR
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		cs->rcvidx = 0;
 		schedule_event(cs, D_RCVBUFREADY);
@@ -609,11 +704,15 @@ dch_int(struct IsdnCardState *cs)
 	}
 
 	if (istad & 0x10) {  // XPR
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (test_and_clear_bit(FLG_DBUSY_TIMER, &cs->HW_Flags))
 			del_timer(&cs->dbusytimer);
 		if (test_and_clear_bit(FLG_L1_DBUSY, &cs->HW_Flags))
 			schedule_event(cs, D_CLEARBUSY);
+<<<<<<< HEAD
 <<<<<<< HEAD
     if (cs->tx_skb) {
       if (cs->tx_skb->len) {
@@ -642,6 +741,8 @@ dch_int(struct IsdnCardState *cs)
 	    skb_push(cs->tx_skb, cs->tx_cnt); // retransmit
 	    cs->tx_cnt = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (cs->tx_skb) {
 			if (cs->tx_skb->len) {
 				dch_fill_fifo(cs);
@@ -668,17 +769,24 @@ afterXPR:
 		if (cs->tx_skb) {
 			skb_push(cs->tx_skb, cs->tx_cnt); // retransmit
 			cs->tx_cnt = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			dch_fill_fifo(cs);
 		} else {
 			printk(KERN_WARNING "HiSax: ISAC XDU no skb\n");
 			debugl1(cs, "ISAC XDU no skb");
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
   }
 =======
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 //----------------------------------------------------------
@@ -698,25 +806,35 @@ dch_init(struct IsdnCardState *cs)
 
 	cs->setstack_d      = dch_setstack;
 <<<<<<< HEAD
+<<<<<<< HEAD
   
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	cs->dbusytimer.function = (void *) dbusy_timer_handler;
 	cs->dbusytimer.data = (long) cs;
 	init_timer(&cs->dbusytimer);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   cs->writeisac(cs, IPACX_TR_CONF0, 0x00);  // clear LDD
   cs->writeisac(cs, IPACX_TR_CONF2, 0x00);  // enable transmitter
   cs->writeisac(cs, IPACX_MODED,    0xC9);  // transparent mode 0, RAC, stop/go
   cs->writeisac(cs, IPACX_MON_CR,   0x00);  // disable monitor channel
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	cs->writeisac(cs, IPACX_TR_CONF0, 0x00);  // clear LDD
 	cs->writeisac(cs, IPACX_TR_CONF2, 0x00);  // enable transmitter
 	cs->writeisac(cs, IPACX_MODED,    0xC9);  // transparent mode 0, RAC, stop/go
 	cs->writeisac(cs, IPACX_MON_CR,   0x00);  // disable monitor channel
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -735,6 +853,7 @@ bch_l2l1(struct PStack *st, int pr, void *arg)
 	u_long flags;
 
 	switch (pr) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (PH_DATA | REQUEST):
 			spin_lock_irqsave(&bcs->cs->lock, flags);
@@ -786,6 +905,8 @@ bch_l2l1(struct PStack *st, int pr, void *arg)
 			st->l1.l1l2(st, PH_DEACTIVATE | CONFIRM, NULL);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (PH_DATA | REQUEST):
 		spin_lock_irqsave(&bcs->cs->lock, flags);
 		if (bcs->tx_skb) {
@@ -835,7 +956,10 @@ bch_l2l1(struct PStack *st, int pr, void *arg)
 		spin_unlock_irqrestore(&bcs->cs->lock, flags);
 		st->l1.l1l2(st, PH_DEACTIVATE | CONFIRM, NULL);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -850,6 +974,7 @@ bch_empty_fifo(struct BCState *bcs, int count)
 	int cnt;
 
 	cs = bcs->cs;
+<<<<<<< HEAD
 <<<<<<< HEAD
   hscx = bcs->hw.hscx.hscx;
 	if ((cs->debug &L1_DEB_HSCX) && !(cs->debug &L1_DEB_HSCX_FIFO))
@@ -874,6 +999,8 @@ bch_empty_fifo(struct BCState *bcs, int count)
   
 	if (cs->debug &L1_DEB_HSCX_FIFO) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	hscx = bcs->hw.hscx.hscx;
 	if ((cs->debug & L1_DEB_HSCX) && !(cs->debug & L1_DEB_HSCX_FIFO))
 		debugl1(cs, "bch_empty_fifo()");
@@ -896,12 +1023,19 @@ bch_empty_fifo(struct BCState *bcs, int count)
 	bcs->hw.hscx.rcvidx += count;
 
 	if (cs->debug & L1_DEB_HSCX_FIFO) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		char *t = bcs->blog;
 
 		t += sprintf(t, "bch_empty_fifo() B-%d cnt %d", hscx, count);
 		QuickHex(t, ptr, count);
+<<<<<<< HEAD
 		debugl1(cs, bcs->blog);
+=======
+		debugl1(cs, "%s", bcs->blog);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -917,10 +1051,14 @@ bch_fill_fifo(struct BCState *bcs)
 
 	cs = bcs->cs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((cs->debug &L1_DEB_HSCX) && !(cs->debug &L1_DEB_HSCX_FIFO))
 =======
 	if ((cs->debug & L1_DEB_HSCX) && !(cs->debug & L1_DEB_HSCX_FIFO))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((cs->debug & L1_DEB_HSCX) && !(cs->debug & L1_DEB_HSCX_FIFO))
+>>>>>>> refs/remotes/origin/master
 		debugl1(cs, "bch_fill_fifo()");
 
 	if (!bcs->tx_skb)           return;
@@ -934,6 +1072,7 @@ bch_fill_fifo(struct BCState *bcs)
 	} else {
 		count = bcs->tx_skb->len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}  
 	cnt = count;
     
@@ -942,26 +1081,41 @@ bch_fill_fifo(struct BCState *bcs)
 	cnt = count;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+	cnt = count;
+
+>>>>>>> refs/remotes/origin/master
 	p = ptr = bcs->tx_skb->data;
 	skb_pull(bcs->tx_skb, count);
 	bcs->tx_cnt -= count;
 	bcs->hw.hscx.count += count;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while (cnt--) cs->BC_Write_Reg(cs, hscx, IPACX_XFIFOB, *p++); 
 	cs->BC_Write_Reg(cs, hscx, IPACX_CMDRB, (more ? 0x08 : 0x0a));
   
 	if (cs->debug &L1_DEB_HSCX_FIFO) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	while (cnt--) cs->BC_Write_Reg(cs, hscx, IPACX_XFIFOB, *p++);
 	cs->BC_Write_Reg(cs, hscx, IPACX_CMDRB, (more ? 0x08 : 0x0a));
 
 	if (cs->debug & L1_DEB_HSCX_FIFO) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		char *t = bcs->blog;
 
 		t += sprintf(t, "chb_fill_fifo() B-%d cnt %d", hscx, count);
 		QuickHex(t, ptr, count);
+<<<<<<< HEAD
 		debugl1(cs, bcs->blog);
+=======
+		debugl1(cs, "%s", bcs->blog);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -979,6 +1133,7 @@ bch_int(struct IsdnCardState *cs, u_char hscx)
 
 	bcs = cs->bcs + hscx;
 	istab = cs->BC_Read_Reg(cs, hscx, IPACX_ISTAB);
+<<<<<<< HEAD
 <<<<<<< HEAD
 //##############################################  
 //	printk(KERN_WARNING "bch_int(istab=%02x)\n", istab);
@@ -1006,6 +1161,8 @@ bch_int(struct IsdnCardState *cs, u_char hscx)
 			if ((count = bcs->hw.hscx.rcvidx - 1) > 0) {
 				if (cs->debug &L1_DEB_HSCX_FIFO)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 //##############################################
 //	printk(KERN_WARNING "bch_int(istab=%02x)\n", istab);
 //##############################################
@@ -1031,7 +1188,10 @@ bch_int(struct IsdnCardState *cs, u_char hscx)
 			bch_empty_fifo(bcs, count);
 			if ((count = bcs->hw.hscx.rcvidx - 1) > 0) {
 				if (cs->debug & L1_DEB_HSCX_FIFO)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					debugl1(cs, "bch_int Frame %d", count);
 				if (!(skb = dev_alloc_skb(count)))
 					printk(KERN_WARNING "HiSax bch_int(): receive frame out of memory\n");
@@ -1045,12 +1205,17 @@ bch_int(struct IsdnCardState *cs, u_char hscx)
 		schedule_event(bcs, B_RCVBUFREADY);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
   
 	if (istab &0x40) {	// RPF
 =======
 
 	if (istab & 0x40) {	// RPF
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (istab & 0x40) {	// RPF
+>>>>>>> refs/remotes/origin/master
 		bch_empty_fifo(bcs, B_FIFO_SIZE);
 
 		if (bcs->mode == L1_MODE_TRANS) { // queue every chunk
@@ -1066,6 +1231,7 @@ bch_int(struct IsdnCardState *cs, u_char hscx)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
   
 	if (istab &0x20) {	// RFO
 		if (cs->debug &L1_DEB_WARN) 
@@ -1074,20 +1240,30 @@ bch_int(struct IsdnCardState *cs, u_char hscx)
 	if (istab & 0x20) {	// RFO
 		if (cs->debug & L1_DEB_WARN)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (istab & 0x20) {	// RFO
+		if (cs->debug & L1_DEB_WARN)
+>>>>>>> refs/remotes/origin/master
 			debugl1(cs, "bch_int() B-%d: RFO error", hscx);
 		cs->BC_Write_Reg(cs, hscx, IPACX_CMDRB, 0x40);  // RRES
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (istab &0x10) {	// XPR
 =======
 	if (istab & 0x10) {	// XPR
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (istab & 0x10) {	// XPR
+>>>>>>> refs/remotes/origin/master
 		if (bcs->tx_skb) {
 			if (bcs->tx_skb->len) {
 				bch_fill_fifo(bcs);
 				goto afterXPR;
 			} else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				if (test_bit(FLG_LLI_L1WAKEUP,&bcs->st->lli.flag) &&
 					(PACKET_NOACK != bcs->tx_skb->pkt_type)) {
@@ -1095,6 +1271,10 @@ bch_int(struct IsdnCardState *cs, u_char hscx)
 				if (test_bit(FLG_LLI_L1WAKEUP, &bcs->st->lli.flag) &&
 				    (PACKET_NOACK != bcs->tx_skb->pkt_type)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (test_bit(FLG_LLI_L1WAKEUP, &bcs->st->lli.flag) &&
+				    (PACKET_NOACK != bcs->tx_skb->pkt_type)) {
+>>>>>>> refs/remotes/origin/master
 					u_long	flags;
 					spin_lock_irqsave(&bcs->aclock, flags);
 					bcs->ackcnt += bcs->hw.hscx.count;
@@ -1106,10 +1286,14 @@ bch_int(struct IsdnCardState *cs, u_char hscx)
 			bcs->hw.hscx.count = 0;
 			bcs->tx_skb = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
     		}
 =======
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 		if ((bcs->tx_skb = skb_dequeue(&bcs->squeue))) {
 			bcs->hw.hscx.count = 0;
 			set_bit(BC_FLG_BUSY, &bcs->Flag);
@@ -1119,6 +1303,7 @@ bch_int(struct IsdnCardState *cs, u_char hscx)
 			schedule_event(bcs, B_XMTBUFREADY);
 		}
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
   afterXPR:
 
@@ -1137,6 +1322,8 @@ bch_int(struct IsdnCardState *cs, u_char hscx)
         debugl1(cs, "bch_int() B-%d XDU error", hscx);
     }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 afterXPR:
 
 	if (istab & 0x04) {	// XDU
@@ -1153,7 +1340,10 @@ afterXPR:
 			if (cs->debug & L1_DEB_WARN)
 				debugl1(cs, "bch_int() B-%d XDU error", hscx);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1166,14 +1356,19 @@ bch_mode(struct BCState *bcs, int mode, int bc)
 	int hscx = bcs->hw.hscx.hscx;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         bc = bc ? 1 : 0;  // in case bc is greater than 1
 =======
 	bc = bc ? 1 : 0;  // in case bc is greater than 1
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bc = bc ? 1 : 0;  // in case bc is greater than 1
+>>>>>>> refs/remotes/origin/master
 	if (cs->debug & L1_DEB_HSCX)
 		debugl1(cs, "mode_bch() switch B-%d mode %d chan %d", hscx, mode, bc);
 	bcs->mode = mode;
 	bcs->channel = bc;
+<<<<<<< HEAD
 <<<<<<< HEAD
   
   // map controller to according timeslot
@@ -1208,6 +1403,8 @@ bch_mode(struct BCState *bcs, int mode, int bc)
 		    cs->BC_Write_Reg(cs, hscx, IPACX_MASKB, _MASKB_IMASK);
 		    break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	// map controller to according timeslot
 	if (!hscx)
@@ -1240,7 +1437,10 @@ bch_mode(struct BCState *bcs, int mode, int bc)
 		cs->BC_Write_Reg(cs, hscx, IPACX_CMDRB, 0x41);  // validate adjustments
 		cs->BC_Write_Reg(cs, hscx, IPACX_MASKB, _MASKB_IMASK);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1274,20 +1474,28 @@ bch_open_state(struct IsdnCardState *cs, struct BCState *bcs)
 		if (!(bcs->hw.hscx.rcvbuf = kmalloc(HSCX_BUFMAX, GFP_ATOMIC))) {
 			printk(KERN_WARNING
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"HiSax open_bchstate(): No memory for hscx.rcvbuf\n");
 =======
 			       "HiSax open_bchstate(): No memory for hscx.rcvbuf\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "HiSax open_bchstate(): No memory for hscx.rcvbuf\n");
+>>>>>>> refs/remotes/origin/master
 			clear_bit(BC_FLG_INIT, &bcs->Flag);
 			return (1);
 		}
 		if (!(bcs->blog = kmalloc(MAX_BLOG_SPACE, GFP_ATOMIC))) {
 			printk(KERN_WARNING
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"HiSax open_bchstate: No memory for bcs->blog\n");
 =======
 			       "HiSax open_bchstate: No memory for bcs->blog\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "HiSax open_bchstate: No memory for bcs->blog\n");
+>>>>>>> refs/remotes/origin/master
 			clear_bit(BC_FLG_INIT, &bcs->Flag);
 			kfree(bcs->hw.hscx.rcvbuf);
 			bcs->hw.hscx.rcvbuf = NULL;
@@ -1340,6 +1548,7 @@ bch_init(struct IsdnCardState *cs, int hscx)
 // Main interrupt handler
 //----------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
 void 
 interrupt_ipacx(struct IsdnCardState *cs)
 {
@@ -1356,6 +1565,8 @@ interrupt_ipacx(struct IsdnCardState *cs)
     if (ista &0x10) cic_int(cs);    // Layer 1 state
   }  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void
 interrupt_ipacx(struct IsdnCardState *cs)
 {
@@ -1371,7 +1582,10 @@ interrupt_ipacx(struct IsdnCardState *cs)
 		if (ista & 0x01) dch_int(cs);    // D channel
 		if (ista & 0x10) cic_int(cs);    // Layer 1 state
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 //----------------------------------------------------------
@@ -1382,6 +1596,7 @@ clear_pending_ints(struct IsdnCardState *cs)
 {
 	int ista;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   // all interrupts off
   cs->writeisac(cs, IPACX_MASK, 0xff);
@@ -1395,6 +1610,8 @@ clear_pending_ints(struct IsdnCardState *cs)
   if (ista &0x10) cs->readisac(cs, IPACX_CIR0);
   if (ista &0x01) cs->readisac(cs, IPACX_ISTAD); 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	// all interrupts off
 	cs->writeisac(cs, IPACX_MASK, 0xff);
 	cs->writeisac(cs, IPACX_MASKD, 0xff);
@@ -1406,7 +1623,10 @@ clear_pending_ints(struct IsdnCardState *cs)
 	if (ista & 0x40) cs->BC_Read_Reg(cs, 1, IPACX_ISTAB);
 	if (ista & 0x10) cs->readisac(cs, IPACX_CIR0);
 	if (ista & 0x01) cs->readisac(cs, IPACX_ISTAD);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 //----------------------------------------------------------
@@ -1417,26 +1637,36 @@ void
 init_ipacx(struct IsdnCardState *cs, int part)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (part &1) {  // initialise chip
 //##################################################  
 //	printk(KERN_INFO "init_ipacx(%x)\n", part);
 //##################################################  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (part & 1) {  // initialise chip
 //##################################################
 //	printk(KERN_INFO "init_ipacx(%x)\n", part);
 //##################################################
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		clear_pending_ints(cs);
 		bch_init(cs, 0);
 		bch_init(cs, 1);
 		dch_init(cs);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (part &2) {  // reenable all interrupts and start chip
 =======
 	if (part & 2) {  // reenable all interrupts and start chip
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (part & 2) {  // reenable all interrupts and start chip
+>>>>>>> refs/remotes/origin/master
 		cs->BC_Write_Reg(cs, 0, IPACX_MASKB, _MASKB_IMASK);
 		cs->BC_Write_Reg(cs, 1, IPACX_MASKB, _MASKB_IMASK);
 		cs->writeisac(cs, IPACX_MASKD, _MASKD_IMASK);
@@ -1444,10 +1674,14 @@ init_ipacx(struct IsdnCardState *cs, int part)
 
 		// reset HDLC Transmitters/receivers
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cs->writeisac(cs, IPACX_CMDRD, 0x41); 
 =======
 		cs->writeisac(cs, IPACX_CMDRD, 0x41);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cs->writeisac(cs, IPACX_CMDRD, 0x41);
+>>>>>>> refs/remotes/origin/master
 		cs->BC_Write_Reg(cs, 0, IPACX_CMDRB, 0x41);
 		cs->BC_Write_Reg(cs, 1, IPACX_CMDRB, 0x41);
 		ph_command(cs, IPACX_CMD_RES);
@@ -1456,6 +1690,9 @@ init_ipacx(struct IsdnCardState *cs, int part)
 
 //----------------- end of file -----------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

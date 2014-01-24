@@ -4,12 +4,18 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <crypto/aes.h>
 =======
 #include <linux/module.h>
 #include <crypto/aes.h>
 #include <asm/aes.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <crypto/aes.h>
+#include <asm/crypto/aes.h>
+>>>>>>> refs/remotes/origin/master
 
 asmlinkage void aes_enc_blk(struct crypto_aes_ctx *ctx, u8 *out, const u8 *in);
 asmlinkage void aes_dec_blk(struct crypto_aes_ctx *ctx, u8 *out, const u8 *in);
@@ -44,7 +50,10 @@ static struct crypto_alg aes_alg = {
 	.cra_blocksize		= AES_BLOCK_SIZE,
 	.cra_ctxsize		= sizeof(struct crypto_aes_ctx),
 	.cra_module		= THIS_MODULE,
+<<<<<<< HEAD
 	.cra_list		= LIST_HEAD_INIT(aes_alg.cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 	.cra_u	= {
 		.cipher	= {
 			.cia_min_keysize	= AES_MIN_KEY_SIZE,

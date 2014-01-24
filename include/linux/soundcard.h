@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 #ifndef SOUNDCARD_H
 #define SOUNDCARD_H
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Copyright by Hannu Savolainen 1993-1997
  *
@@ -23,6 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+<<<<<<< HEAD
 
 
 /*
@@ -191,6 +195,14 @@ typedef struct seq_event_rec {
 #undef _LINUX_PATCHKEY_H_INDIRECT
 
 #if defined(__KERNEL__)
+=======
+#ifndef SOUNDCARD_H
+#define SOUNDCARD_H
+
+#  include <asm/byteorder.h>
+#include <uapi/linux/soundcard.h>
+
+>>>>>>> refs/remotes/origin/master
 #  if defined(__BIG_ENDIAN)
 #    define AFMT_S16_NE AFMT_S16_BE
 #  elif defined(__LITTLE_ENDIAN)
@@ -198,6 +210,7 @@ typedef struct seq_event_rec {
 #  else
 #    error "could not determine byte order"
 #  endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 #elif defined(__BYTE_ORDER)
 =======
@@ -1296,4 +1309,6 @@ void seqbuf_dump(void);	/* This function must be provided by programs */
 		(SEQ_DUMPBUF(), write(seqfd, (char*)(patchx), len))
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -8,12 +8,20 @@ ipv6-objs :=	af_inet6.o anycast.o ip6_output.o ip6_input.o addrconf.o \
 		addrlabel.o \
 		route.o ip6_fib.o ipv6_sockglue.o ndisc.o udp.o udplite.o \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		raw.o protocol.o icmp.o mcast.o reassembly.o tcp_ipv6.o ping.o \
 =======
 		raw.o protocol.o icmp.o mcast.o reassembly.o tcp_ipv6.o \
 >>>>>>> refs/remotes/origin/cm-10.0
 		exthdrs.o datagram.o ip6_flowlabel.o inet6_connection_sock.o
 
+=======
+		raw.o icmp.o mcast.o reassembly.o tcp_ipv6.o ping.o \
+		exthdrs.o datagram.o ip6_flowlabel.o inet6_connection_sock.o
+
+ipv6-offload :=	ip6_offload.o tcpv6_offload.o udp_offload.o exthdrs_offload.o
+
+>>>>>>> refs/remotes/origin/master
 ipv6-$(CONFIG_SYSCTL) = sysctl_net_ipv6.o
 ipv6-$(CONFIG_IPV6_MROUTE) += ip6mr.o
 
@@ -38,9 +46,19 @@ obj-$(CONFIG_INET6_XFRM_MODE_BEET) += xfrm6_mode_beet.o
 obj-$(CONFIG_IPV6_MIP6) += mip6.o
 obj-$(CONFIG_NETFILTER)	+= netfilter/
 
+<<<<<<< HEAD
 obj-$(CONFIG_IPV6_SIT) += sit.o
 obj-$(CONFIG_IPV6_TUNNEL) += ip6_tunnel.o
 
 obj-y += addrconf_core.o exthdrs_core.o
+=======
+obj-$(CONFIG_IPV6_VTI) += ip6_vti.o
+obj-$(CONFIG_IPV6_SIT) += sit.o
+obj-$(CONFIG_IPV6_TUNNEL) += ip6_tunnel.o
+obj-$(CONFIG_IPV6_GRE) += ip6_gre.o
+
+obj-y += addrconf_core.o exthdrs_core.o ip6_checksum.o ip6_icmp.o
+obj-$(CONFIG_INET) += output_core.o protocol.o $(ipv6-offload)
+>>>>>>> refs/remotes/origin/master
 
 obj-$(subst m,y,$(CONFIG_IPV6)) += inet6_hashtables.o

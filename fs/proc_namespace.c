@@ -17,6 +17,7 @@
 
 static unsigned mounts_poll(struct file *file, poll_table *wait)
 {
+<<<<<<< HEAD
 	struct proc_mounts *p = file->private_data;
 	struct mnt_namespace *ns = p->ns;
 	unsigned res = POLLIN | POLLRDNORM;
@@ -29,6 +30,20 @@ static unsigned mounts_poll(struct file *file, poll_table *wait)
 		res |= POLLERR | POLLPRI;
 	}
 	br_read_unlock(vfsmount_lock);
+=======
+	struct proc_mounts *p = proc_mounts(file->private_data);
+	struct mnt_namespace *ns = p->ns;
+	unsigned res = POLLIN | POLLRDNORM;
+	int event;
+
+	poll_wait(file, &p->ns->poll, wait);
+
+	event = ACCESS_ONCE(ns->event);
+	if (p->m.poll_event != event) {
+		p->m.poll_event = event;
+		res |= POLLERR | POLLPRI;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return res;
 }
@@ -121,7 +136,11 @@ out:
 
 static int show_mountinfo(struct seq_file *m, struct vfsmount *mnt)
 {
+<<<<<<< HEAD
 	struct proc_mounts *p = m->private;
+=======
+	struct proc_mounts *p = proc_mounts(m);
+>>>>>>> refs/remotes/origin/master
 	struct mount *r = real_mount(mnt);
 	struct super_block *sb = mnt->mnt_sb;
 	struct path mnt_path = { .dentry = mnt->mnt_root, .mnt = mnt };
@@ -268,7 +287,10 @@ static int mounts_open_common(struct inode *inode, struct file *file,
 	if (ret)
 		goto err_free;
 
+<<<<<<< HEAD
 	p->m.private = p;
+=======
+>>>>>>> refs/remotes/origin/master
 	p->ns = ns;
 	p->root = root;
 	p->m.poll_event = ns->event;
@@ -288,7 +310,11 @@ static int mounts_open_common(struct inode *inode, struct file *file,
 
 static int mounts_release(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	struct proc_mounts *p = file->private_data;
+=======
+	struct proc_mounts *p = proc_mounts(file->private_data);
+>>>>>>> refs/remotes/origin/master
 	path_put(&p->root);
 	put_mnt_ns(p->ns);
 	return seq_release(inode, file);

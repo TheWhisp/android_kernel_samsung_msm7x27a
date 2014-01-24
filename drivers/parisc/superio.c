@@ -274,7 +274,11 @@ superio_init(struct pci_dev *pcidev)
 	else
 		printk(KERN_ERR PFX "USB regulator not initialized!\n");
 
+<<<<<<< HEAD
 	if (request_irq(pdev->irq, superio_interrupt, IRQF_DISABLED,
+=======
+	if (request_irq(pdev->irq, superio_interrupt, 0,
+>>>>>>> refs/remotes/origin/master
 			SUPERIO, (void *)sio)) {
 
 		printk(KERN_ERR PFX "could not get irq\n");
@@ -348,7 +352,11 @@ int superio_fixup_irq(struct pci_dev *pcidev)
 		BUG();
 		return -1;
 	}
+<<<<<<< HEAD
 	printk("superio_fixup_irq(%s) ven 0x%x dev 0x%x from %p\n",
+=======
+	printk("superio_fixup_irq(%s) ven 0x%x dev 0x%x from %pf\n",
+>>>>>>> refs/remotes/origin/master
 		pci_name(pcidev),
 		pcidev->vendor, pcidev->device,
 		__builtin_return_address(0));
@@ -494,6 +502,7 @@ static struct pci_driver superio_driver = {
 	.probe =        superio_probe,
 };
 
+<<<<<<< HEAD
 static int __init superio_modinit(void)
 {
 	return pci_register_driver(&superio_driver);
@@ -506,3 +515,6 @@ static void __exit superio_exit(void)
 
 module_init(superio_modinit);
 module_exit(superio_exit);
+=======
+module_pci_driver(superio_driver);
+>>>>>>> refs/remotes/origin/master

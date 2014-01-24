@@ -18,6 +18,7 @@
 #ifndef __XFS_TYPES_H__
 #define	__XFS_TYPES_H__
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
 
 /*
@@ -57,6 +58,12 @@ typedef __uint64_t __psunsigned_t;
 #endif	/* __KERNEL__ */
 
 typedef __uint32_t	xfs_agblock_t;	/* blockno in alloc. group */
+=======
+typedef __uint32_t	prid_t;		/* project ID */
+
+typedef __uint32_t	xfs_agblock_t;	/* blockno in alloc. group */
+typedef	__uint32_t	xfs_agino_t;	/* inode # within allocation grp */
+>>>>>>> refs/remotes/origin/master
 typedef	__uint32_t	xfs_extlen_t;	/* extent length in blocks */
 typedef	__uint32_t	xfs_agnumber_t;	/* allocation group number */
 typedef __int32_t	xfs_extnum_t;	/* # of extents in a file */
@@ -101,6 +108,10 @@ typedef __uint64_t	xfs_fileoff_t;	/* block number in a file */
 typedef __int64_t	xfs_sfiloff_t;	/* signed block number in a file */
 typedef __uint64_t	xfs_filblks_t;	/* number of blocks in a file */
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Null values for the types.
  */
@@ -120,6 +131,12 @@ typedef __uint64_t	xfs_filblks_t;	/* number of blocks in a file */
 
 #define NULLCOMMITLSN	((xfs_lsn_t)-1)
 
+<<<<<<< HEAD
+=======
+#define	NULLFSINO	((xfs_ino_t)-1)
+#define	NULLAGINO	((xfs_agino_t)-1)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Max values for extlen, extnum, aextnum.
  */
@@ -128,6 +145,29 @@ typedef __uint64_t	xfs_filblks_t;	/* number of blocks in a file */
 #define	MAXAEXTNUM	((xfs_aextnum_t)0x7fff)		/* signed short */
 
 /*
+<<<<<<< HEAD
+=======
+ * Minimum and maximum blocksize and sectorsize.
+ * The blocksize upper limit is pretty much arbitrary.
+ * The sectorsize upper limit is due to sizeof(sb_sectsize).
+ */
+#define XFS_MIN_BLOCKSIZE_LOG	9	/* i.e. 512 bytes */
+#define XFS_MAX_BLOCKSIZE_LOG	16	/* i.e. 65536 bytes */
+#define XFS_MIN_BLOCKSIZE	(1 << XFS_MIN_BLOCKSIZE_LOG)
+#define XFS_MAX_BLOCKSIZE	(1 << XFS_MAX_BLOCKSIZE_LOG)
+#define XFS_MIN_SECTORSIZE_LOG	9	/* i.e. 512 bytes */
+#define XFS_MAX_SECTORSIZE_LOG	15	/* i.e. 32768 bytes */
+#define XFS_MIN_SECTORSIZE	(1 << XFS_MIN_SECTORSIZE_LOG)
+#define XFS_MAX_SECTORSIZE	(1 << XFS_MAX_SECTORSIZE_LOG)
+
+/*
+ * Inode fork identifiers.
+ */
+#define	XFS_DATA_FORK	0
+#define	XFS_ATTR_FORK	1
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Min numbers of data/attr fork btree root pointers.
  */
 #define MINDBTPTRS	3
@@ -151,6 +191,28 @@ typedef enum {
 struct xfs_name {
 	const unsigned char	*name;
 	int			len;
+<<<<<<< HEAD
 };
 
+=======
+	int			type;
+};
+
+/*
+ * uid_t and gid_t are hard-coded to 32 bits in the inode.
+ * Hence, an 'id' in a dquot is 32 bits..
+ */
+typedef __uint32_t	xfs_dqid_t;
+
+/*
+ * Constants for bit manipulations.
+ */
+#define	XFS_NBBYLOG	3		/* log2(NBBY) */
+#define	XFS_WORDLOG	2		/* log2(sizeof(xfs_rtword_t)) */
+#define	XFS_NBWORDLOG	(XFS_NBBYLOG + XFS_WORDLOG)
+#define	XFS_NBWORD	(1 << XFS_NBWORDLOG)
+#define	XFS_WORDMASK	((1 << XFS_WORDLOG) - 1)
+
+
+>>>>>>> refs/remotes/origin/master
 #endif	/* __XFS_TYPES_H__ */

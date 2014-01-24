@@ -8,10 +8,18 @@
  * This file is part of the LinuxDC project (www.linuxdc.org)
  * Released under the terms of the GNU GPL v2.0
  */
+<<<<<<< HEAD
 
 #include <linux/irq.h>
 #include <linux/io.h>
 #include <asm/irq.h>
+=======
+#include <linux/irq.h>
+#include <linux/io.h>
+#include <linux/irq.h>
+#include <linux/export.h>
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/sysasic.h>
 
 /*
@@ -141,6 +149,7 @@ int systemasic_irq_demux(int irq)
 
 void systemasic_irq_init(void)
 {
+<<<<<<< HEAD
 	int i, nid = cpu_to_node(boot_cpu_data);
 
 	/* Assign all virtual IRQs to the System ASIC int. handler */
@@ -163,4 +172,17 @@ void systemasic_irq_init(void)
 
 		irq_set_chip_and_handler(i, &systemasic_int, handle_level_irq);
 	}
+=======
+	int irq_base, i;
+
+	irq_base = irq_alloc_descs(HW_EVENT_IRQ_BASE, HW_EVENT_IRQ_BASE,
+				   HW_EVENT_IRQ_MAX - HW_EVENT_IRQ_BASE, -1);
+	if (IS_ERR_VALUE(irq_base)) {
+		pr_err("%s: failed hooking irqs\n", __func__);
+		return;
+	}
+
+	for (i = HW_EVENT_IRQ_BASE; i < HW_EVENT_IRQ_MAX; i++)
+		irq_set_chip_and_handler(i, &systemasic_int, handle_level_irq);
+>>>>>>> refs/remotes/origin/master
 }

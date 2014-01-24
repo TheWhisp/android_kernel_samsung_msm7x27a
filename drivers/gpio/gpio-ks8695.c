@@ -228,7 +228,11 @@ static struct gpio_chip ks8695_gpio_chip = {
 	.to_irq			= ks8695_gpio_to_irq,
 	.base			= 0,
 	.ngpio			= 16,
+<<<<<<< HEAD
 	.can_sleep		= 0,
+=======
+	.can_sleep		= false,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Register the GPIOs */

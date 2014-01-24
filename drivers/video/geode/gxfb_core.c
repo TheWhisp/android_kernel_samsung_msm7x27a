@@ -40,7 +40,11 @@ static int vram;
 static int vt_switch;
 
 /* Modes relevant to the GX (taken from modedb.c) */
+<<<<<<< HEAD
 static struct fb_videomode gx_modedb[] __devinitdata = {
+=======
+static struct fb_videomode gx_modedb[] = {
+>>>>>>> refs/remotes/origin/master
 	/* 640x480-60 VESA */
 	{ NULL, 60, 640, 480, 39682,  48, 16, 33, 10, 96, 2,
 	  0, FB_VMODE_NONINTERLACED, FB_MODE_IS_VESA },
@@ -110,15 +114,23 @@ static struct fb_videomode gx_modedb[] __devinitdata = {
 #ifdef CONFIG_OLPC
 #include <asm/olpc.h>
 
+<<<<<<< HEAD
 static struct fb_videomode gx_dcon_modedb[] __devinitdata = {
+=======
+static struct fb_videomode gx_dcon_modedb[] = {
+>>>>>>> refs/remotes/origin/master
 	/* The only mode the DCON has is 1200x900 */
 	{ NULL, 50, 1200, 900, 17460, 24, 8, 4, 5, 8, 3,
 	  FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
 	  FB_VMODE_NONINTERLACED, 0 }
 };
 
+<<<<<<< HEAD
 static void __devinit get_modedb(struct fb_videomode **modedb,
 		unsigned int *size)
+=======
+static void get_modedb(struct fb_videomode **modedb, unsigned int *size)
+>>>>>>> refs/remotes/origin/master
 {
 	if (olpc_has_dcon()) {
 		*modedb = (struct fb_videomode *) gx_dcon_modedb;
@@ -130,8 +142,12 @@ static void __devinit get_modedb(struct fb_videomode **modedb,
 }
 
 #else
+<<<<<<< HEAD
 static void __devinit get_modedb(struct fb_videomode **modedb,
 		unsigned int *size)
+=======
+static void get_modedb(struct fb_videomode **modedb, unsigned int *size)
+>>>>>>> refs/remotes/origin/master
 {
 	*modedb = (struct fb_videomode *) gx_modedb;
 	*size = ARRAY_SIZE(gx_modedb);
@@ -228,8 +244,12 @@ static int gxfb_blank(int blank_mode, struct fb_info *info)
 	return gx_blank_display(info, blank_mode);
 }
 
+<<<<<<< HEAD
 static int __devinit gxfb_map_video_memory(struct fb_info *info,
 		struct pci_dev *dev)
+=======
+static int gxfb_map_video_memory(struct fb_info *info, struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gxfb_par *par = info->par;
 	int ret;
@@ -293,7 +313,11 @@ static struct fb_ops gxfb_ops = {
 	.fb_imageblit	= cfb_imageblit,
 };
 
+<<<<<<< HEAD
 static struct fb_info *__devinit gxfb_init_fbinfo(struct device *dev)
+=======
+static struct fb_info *gxfb_init_fbinfo(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gxfb_par *par;
 	struct fb_info *info;
@@ -374,8 +398,12 @@ static int gxfb_resume(struct pci_dev *pdev)
 }
 #endif
 
+<<<<<<< HEAD
 static int __devinit gxfb_probe(struct pci_dev *pdev,
 		const struct pci_device_id *id)
+=======
+static int gxfb_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gxfb_par *par;
 	struct fb_info *info;
@@ -427,7 +455,11 @@ static int __devinit gxfb_probe(struct pci_dev *pdev,
 		goto err;
 	}
 	pci_set_drvdata(pdev, info);
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: %s frame buffer device\n", info->node, info->fix.id);
+=======
+	fb_info(info, "%s frame buffer device\n", info->fix.id);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
   err:
@@ -455,7 +487,11 @@ static int __devinit gxfb_probe(struct pci_dev *pdev,
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit gxfb_remove(struct pci_dev *pdev)
+=======
+static void gxfb_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = pci_get_drvdata(pdev);
 	struct gxfb_par *par = info->par;
@@ -475,7 +511,10 @@ static void __devexit gxfb_remove(struct pci_dev *pdev)
 	pci_release_region(pdev, 1);
 
 	fb_dealloc_cmap(&info->cmap);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	framebuffer_release(info);
 }

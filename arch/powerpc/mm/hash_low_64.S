@@ -34,6 +34,7 @@
  *         |   CR save area			(SP + 8)
  * SP ---> +-- Back chain			(SP + 0)
  */
+<<<<<<< HEAD
 #define STACKFRAMESIZE	256
 
 /* Save parameters offsets */
@@ -42,6 +43,8 @@
 /* Save non-volatile offsets */
 #define STK_REG(i)	(112 + ((i)-14)*8)
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CONFIG_PPC_64K_PAGES
 
@@ -64,13 +67,20 @@ _GLOBAL(__hash_page_4K)
 	std	r0,16(r1)
 	stdu	r1,-STACKFRAMESIZE(r1)
 	/* Save all params that we need after a function call */
+<<<<<<< HEAD
 	std	r6,STK_PARM(r6)(r1)
 	std	r8,STK_PARM(r8)(r1)
 	std	r9,STK_PARM(r9)(r1)
+=======
+	std	r6,STK_PARAM(R6)(r1)
+	std	r8,STK_PARAM(R8)(r1)
+	std	r9,STK_PARAM(R9)(r1)
+>>>>>>> refs/remotes/origin/master
 	
 	/* Save non-volatile registers.
 	 * r31 will hold "old PTE"
 	 * r30 is "new PTE"
+<<<<<<< HEAD
 	 * r29 is "va"
 	 * r28 is a hash value
 	 * r27 is hashtab mask (maybe dynamic patched instead ?)
@@ -80,6 +90,17 @@ _GLOBAL(__hash_page_4K)
 	std	r29,STK_REG(r29)(r1)
 	std	r30,STK_REG(r30)(r1)
 	std	r31,STK_REG(r31)(r1)
+=======
+	 * r29 is vpn
+	 * r28 is a hash value
+	 * r27 is hashtab mask (maybe dynamic patched instead ?)
+	 */
+	std	r27,STK_REG(R27)(r1)
+	std	r28,STK_REG(R28)(r1)
+	std	r29,STK_REG(R29)(r1)
+	std	r30,STK_REG(R30)(r1)
+	std	r31,STK_REG(R31)(r1)
+>>>>>>> refs/remotes/origin/master
 	
 	/* Step 1:
 	 *
@@ -119,6 +140,7 @@ BEGIN_FTR_SECTION
 	cmpdi	r9,0			/* check segment size */
 	bne	3f
 END_MMU_FTR_SECTION_IFSET(MMU_FTR_1T_SEGMENT)
+<<<<<<< HEAD
 	/* Calc va and put it in r29 */
 	rldicr	r29,r5,28,63-28
 	rldicl	r3,r3,0,36
@@ -138,6 +160,35 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_1T_SEGMENT)
 	rldicl	r0,r3,64-12,36		/* (ea >> 12) & 0xfffffff */
 	xor	r28,r28,r5
 	or	r29,r3,r29		/* VA */
+=======
+	/* Calc vpn and put it in r29 */
+	sldi	r29,r5,SID_SHIFT - VPN_SHIFT
+	rldicl  r28,r3,64 - VPN_SHIFT,64 - (SID_SHIFT - VPN_SHIFT)
+	or	r29,r28,r29
+	/*
+	 * Calculate hash value for primary slot and store it in r28
+	 * r3 = va, r5 = vsid
+	 * r0 = (va >> 12) & ((1ul << (28 - 12)) -1)
+	 */
+	rldicl	r0,r3,64-12,48
+	xor	r28,r5,r0		/* hash */
+	b	4f
+
+3:	/* Calc vpn and put it in r29 */
+	sldi	r29,r5,SID_SHIFT_1T - VPN_SHIFT
+	rldicl  r28,r3,64 - VPN_SHIFT,64 - (SID_SHIFT_1T - VPN_SHIFT)
+	or	r29,r28,r29
+
+	/*
+	 * calculate hash value for primary slot and
+	 * store it in r28 for 1T segment
+	 * r3 = va, r5 = vsid
+	 */
+	sldi	r28,r5,25		/* vsid << 25 */
+	/* r0 =  (va >> 12) & ((1ul << (40 - 12)) -1) */
+	rldicl	r0,r3,64-12,36
+	xor	r28,r28,r5		/* vsid ^ ( vsid << 25) */
+>>>>>>> refs/remotes/origin/master
 	xor	r28,r28,r0		/* hash */
 
 	/* Convert linux PTE bits into HW equivalents */
@@ -162,7 +213,11 @@ END_FTR_SECTION(CPU_FTR_NOEXECUTE|CPU_FTR_COHERENT_ICACHE, CPU_FTR_NOEXECUTE)
 	/* At this point, r3 contains new PP bits, save them in
 	 * place of "access" in the param area (sic)
 	 */
+<<<<<<< HEAD
 	std	r3,STK_PARM(r4)(r1)
+=======
+	std	r3,STK_PARAM(R4)(r1)
+>>>>>>> refs/remotes/origin/master
 
 	/* Get htab_hash_mask */
 	ld	r4,htab_hash_mask@got(2)
@@ -192,11 +247,20 @@ htab_insert_pte:
 	rldicr	r3,r0,3,63-3		/* r3 = (hash & mask) << 3 */
 
 	/* Call ppc_md.hpte_insert */
+<<<<<<< HEAD
 	ld	r6,STK_PARM(r4)(r1)	/* Retrieve new pp bits */
 	mr	r4,r29			/* Retrieve va */
 	li	r7,0			/* !bolted, !secondary */
 	li	r8,MMU_PAGE_4K		/* page size */
 	ld	r9,STK_PARM(r9)(r1)	/* segment size */
+=======
+	ld	r6,STK_PARAM(R4)(r1)	/* Retrieve new pp bits */
+	mr	r4,r29			/* Retrieve vpn */
+	li	r7,0			/* !bolted, !secondary */
+	li	r8,MMU_PAGE_4K		/* page size */
+	li	r9,MMU_PAGE_4K		/* actual page size */
+	ld	r10,STK_PARAM(R9)(r1)	/* segment size */
+>>>>>>> refs/remotes/origin/master
 _GLOBAL(htab_call_hpte_insert1)
 	bl	.			/* Patched by htab_finish_init() */
 	cmpdi	0,r3,0
@@ -215,11 +279,20 @@ _GLOBAL(htab_call_hpte_insert1)
 	rldicr	r3,r0,3,63-3	/* r0 = (~hash & mask) << 3 */
 	
 	/* Call ppc_md.hpte_insert */
+<<<<<<< HEAD
 	ld	r6,STK_PARM(r4)(r1)	/* Retrieve new pp bits */
 	mr	r4,r29			/* Retrieve va */
 	li	r7,HPTE_V_SECONDARY	/* !bolted, secondary */
 	li	r8,MMU_PAGE_4K		/* page size */
 	ld	r9,STK_PARM(r9)(r1)	/* segment size */
+=======
+	ld	r6,STK_PARAM(R4)(r1)	/* Retrieve new pp bits */
+	mr	r4,r29			/* Retrieve vpn */
+	li	r7,HPTE_V_SECONDARY	/* !bolted, secondary */
+	li	r8,MMU_PAGE_4K		/* page size */
+	li	r9,MMU_PAGE_4K		/* actual page size */
+	ld	r10,STK_PARAM(R9)(r1)	/* segment size */
+>>>>>>> refs/remotes/origin/master
 _GLOBAL(htab_call_hpte_insert2)
 	bl	.			/* Patched by htab_finish_init() */
 	cmpdi	0,r3,0
@@ -255,6 +328,7 @@ htab_pte_insert_ok:
 	 * (maybe add eieio may be good still ?)
 	 */
 htab_write_out_pte:
+<<<<<<< HEAD
 	ld	r6,STK_PARM(r6)(r1)
 	std	r30,0(r6)
 	li	r3, 0
@@ -264,6 +338,17 @@ htab_bail:
 	ld	r29,STK_REG(r29)(r1)
 	ld      r30,STK_REG(r30)(r1)
 	ld      r31,STK_REG(r31)(r1)
+=======
+	ld	r6,STK_PARAM(R6)(r1)
+	std	r30,0(r6)
+	li	r3, 0
+htab_bail:
+	ld	r27,STK_REG(R27)(r1)
+	ld	r28,STK_REG(R28)(r1)
+	ld	r29,STK_REG(R29)(r1)
+	ld      r30,STK_REG(R30)(r1)
+	ld      r31,STK_REG(R31)(r1)
+>>>>>>> refs/remotes/origin/master
 	addi    r1,r1,STACKFRAMESIZE
 	ld      r0,16(r1)
 	mtlr    r0
@@ -286,10 +371,18 @@ htab_modify_pte:
 	add	r3,r0,r3	/* add slot idx */
 
 	/* Call ppc_md.hpte_updatepp */
+<<<<<<< HEAD
 	mr	r5,r29			/* va */
 	li	r6,MMU_PAGE_4K		/* page size */
 	ld	r7,STK_PARM(r9)(r1)	/* segment size */
 	ld	r8,STK_PARM(r8)(r1)	/* get "local" param */
+=======
+	mr	r5,r29			/* vpn */
+	li	r6,MMU_PAGE_4K		/* base page size */
+	li	r7,MMU_PAGE_4K		/* actual page size */
+	ld	r8,STK_PARAM(R9)(r1)	/* segment size */
+	ld	r9,STK_PARAM(R8)(r1)	/* get "local" param */
+>>>>>>> refs/remotes/origin/master
 _GLOBAL(htab_call_hpte_updatepp)
 	bl	.			/* Patched by htab_finish_init() */
 
@@ -312,7 +405,11 @@ htab_wrong_access:
 
 htab_pte_insert_failure:
 	/* Bail out restoring old PTE */
+<<<<<<< HEAD
 	ld	r6,STK_PARM(r6)(r1)
+=======
+	ld	r6,STK_PARAM(R6)(r1)
+>>>>>>> refs/remotes/origin/master
 	std	r31,0(r6)
 	li	r3,-1
 	b	htab_bail
@@ -340,19 +437,30 @@ _GLOBAL(__hash_page_4K)
 	std	r0,16(r1)
 	stdu	r1,-STACKFRAMESIZE(r1)
 	/* Save all params that we need after a function call */
+<<<<<<< HEAD
 	std	r6,STK_PARM(r6)(r1)
 	std	r8,STK_PARM(r8)(r1)
 	std	r9,STK_PARM(r9)(r1)
+=======
+	std	r6,STK_PARAM(R6)(r1)
+	std	r8,STK_PARAM(R8)(r1)
+	std	r9,STK_PARAM(R9)(r1)
+>>>>>>> refs/remotes/origin/master
 
 	/* Save non-volatile registers.
 	 * r31 will hold "old PTE"
 	 * r30 is "new PTE"
+<<<<<<< HEAD
 	 * r29 is "va"
+=======
+	 * r29 is vpn
+>>>>>>> refs/remotes/origin/master
 	 * r28 is a hash value
 	 * r27 is hashtab mask (maybe dynamic patched instead ?)
 	 * r26 is the hidx mask
 	 * r25 is the index in combo page
 	 */
+<<<<<<< HEAD
 	std	r25,STK_REG(r25)(r1)
 	std	r26,STK_REG(r26)(r1)
 	std	r27,STK_REG(r27)(r1)
@@ -360,6 +468,15 @@ _GLOBAL(__hash_page_4K)
 	std	r29,STK_REG(r29)(r1)
 	std	r30,STK_REG(r30)(r1)
 	std	r31,STK_REG(r31)(r1)
+=======
+	std	r25,STK_REG(R25)(r1)
+	std	r26,STK_REG(R26)(r1)
+	std	r27,STK_REG(R27)(r1)
+	std	r28,STK_REG(R28)(r1)
+	std	r29,STK_REG(R29)(r1)
+	std	r30,STK_REG(R30)(r1)
+	std	r31,STK_REG(R31)(r1)
+>>>>>>> refs/remotes/origin/master
 
 	/* Step 1:
 	 *
@@ -402,6 +519,7 @@ BEGIN_FTR_SECTION
 	cmpdi	r9,0			/* check segment size */
 	bne	3f
 END_MMU_FTR_SECTION_IFSET(MMU_FTR_1T_SEGMENT)
+<<<<<<< HEAD
 	/* Calc va and put it in r29 */
 	rldicr	r29,r5,28,63-28		/* r29 = (vsid << 28) */
 	rldicl	r3,r3,0,36		/* r3 = (ea & 0x0fffffff) */
@@ -421,6 +539,43 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_1T_SEGMENT)
 	rldicl	r0,r3,64-12,36		/* (ea >> 12) & 0xfffffff */
 	xor	r28,r28,r5
 	or	r29,r3,r29		/* VA */
+=======
+	/* Calc vpn and put it in r29 */
+	sldi	r29,r5,SID_SHIFT - VPN_SHIFT
+	/*
+	 * clrldi r3,r3,64 - SID_SHIFT -->  ea & 0xfffffff
+	 * srdi	 r28,r3,VPN_SHIFT
+	 */
+	rldicl  r28,r3,64 - VPN_SHIFT,64 - (SID_SHIFT - VPN_SHIFT)
+	or	r29,r28,r29
+	/*
+	 * Calculate hash value for primary slot and store it in r28
+	 * r3 = va, r5 = vsid
+	 * r0 = (va >> 12) & ((1ul << (28 - 12)) -1)
+	 */
+	rldicl	r0,r3,64-12,48
+	xor	r28,r5,r0		/* hash */
+	b	4f
+
+3:	/* Calc vpn and put it in r29 */
+	sldi	r29,r5,SID_SHIFT_1T - VPN_SHIFT
+	/*
+	 * clrldi r3,r3,64 - SID_SHIFT_1T -->  ea & 0xffffffffff
+	 * srdi	r28,r3,VPN_SHIFT
+	 */
+	rldicl  r28,r3,64 - VPN_SHIFT,64 - (SID_SHIFT_1T - VPN_SHIFT)
+	or	r29,r28,r29
+
+	/*
+	 * Calculate hash value for primary slot and
+	 * store it in r28  for 1T segment
+	 * r3 = va, r5 = vsid
+	 */
+	sldi	r28,r5,25		/* vsid << 25 */
+	/* r0 = (va >> 12) & ((1ul << (40 - 12)) -1) */
+	rldicl	r0,r3,64-12,36
+	xor	r28,r28,r5		/* vsid ^ ( vsid << 25) */
+>>>>>>> refs/remotes/origin/master
 	xor	r28,r28,r0		/* hash */
 
 	/* Convert linux PTE bits into HW equivalents */
@@ -452,7 +607,11 @@ END_FTR_SECTION(CPU_FTR_NOEXECUTE|CPU_FTR_COHERENT_ICACHE, CPU_FTR_NOEXECUTE)
 	/* At this point, r3 contains new PP bits, save them in
 	 * place of "access" in the param area (sic)
 	 */
+<<<<<<< HEAD
 	std	r3,STK_PARM(r4)(r1)
+=======
+	std	r3,STK_PARAM(R4)(r1)
+>>>>>>> refs/remotes/origin/master
 
 	/* Get htab_hash_mask */
 	ld	r4,htab_hash_mask@got(2)
@@ -473,8 +632,13 @@ END_FTR_SECTION(CPU_FTR_NOEXECUTE|CPU_FTR_COHERENT_ICACHE, CPU_FTR_NOEXECUTE)
 	andis.	r0,r31,_PAGE_COMBO@h
 	beq	htab_inval_old_hpte
 
+<<<<<<< HEAD
 	ld	r6,STK_PARM(r6)(r1)
 	ori	r26,r6,0x8000		/* Load the hidx mask */
+=======
+	ld	r6,STK_PARAM(R6)(r1)
+	ori	r26,r6,PTE_PAGE_HIDX_OFFSET /* Load the hidx mask. */
+>>>>>>> refs/remotes/origin/master
 	ld	r26,0(r26)
 	addi	r5,r25,36		/* Check actual HPTE_SUB bit, this */
 	rldcr.	r0,r31,r5,0		/* must match pgtable.h definition */
@@ -495,11 +659,20 @@ htab_special_pfn:
 	rldicr	r3,r0,3,63-3		/* r0 = (hash & mask) << 3 */
 
 	/* Call ppc_md.hpte_insert */
+<<<<<<< HEAD
 	ld	r6,STK_PARM(r4)(r1)	/* Retrieve new pp bits */
 	mr	r4,r29			/* Retrieve va */
 	li	r7,0			/* !bolted, !secondary */
 	li	r8,MMU_PAGE_4K		/* page size */
 	ld	r9,STK_PARM(r9)(r1)	/* segment size */
+=======
+	ld	r6,STK_PARAM(R4)(r1)	/* Retrieve new pp bits */
+	mr	r4,r29			/* Retrieve vpn */
+	li	r7,0			/* !bolted, !secondary */
+	li	r8,MMU_PAGE_4K		/* page size */
+	li	r9,MMU_PAGE_4K		/* actual page size */
+	ld	r10,STK_PARAM(R9)(r1)	/* segment size */
+>>>>>>> refs/remotes/origin/master
 _GLOBAL(htab_call_hpte_insert1)
 	bl	.			/* patched by htab_finish_init() */
 	cmpdi	0,r3,0
@@ -522,11 +695,20 @@ _GLOBAL(htab_call_hpte_insert1)
 	rldicr	r3,r0,3,63-3		/* r0 = (~hash & mask) << 3 */
 
 	/* Call ppc_md.hpte_insert */
+<<<<<<< HEAD
 	ld	r6,STK_PARM(r4)(r1)	/* Retrieve new pp bits */
 	mr	r4,r29			/* Retrieve va */
 	li	r7,HPTE_V_SECONDARY	/* !bolted, secondary */
 	li	r8,MMU_PAGE_4K		/* page size */
 	ld	r9,STK_PARM(r9)(r1)	/* segment size */
+=======
+	ld	r6,STK_PARAM(R4)(r1)	/* Retrieve new pp bits */
+	mr	r4,r29			/* Retrieve vpn */
+	li	r7,HPTE_V_SECONDARY	/* !bolted, secondary */
+	li	r8,MMU_PAGE_4K		/* page size */
+	li	r9,MMU_PAGE_4K		/* actual page size */
+	ld	r10,STK_PARAM(R9)(r1)	/* segment size */
+>>>>>>> refs/remotes/origin/master
 _GLOBAL(htab_call_hpte_insert2)
 	bl	.			/* patched by htab_finish_init() */
 	cmpdi	0,r3,0
@@ -555,12 +737,21 @@ _GLOBAL(htab_call_hpte_remove)
 	 * useless now that the segment has been switched to 4k pages.
 	 */
 htab_inval_old_hpte:
+<<<<<<< HEAD
 	mr	r3,r29			/* virtual addr */
 	mr	r4,r31			/* PTE.pte */
 	li	r5,0			/* PTE.hidx */
 	li	r6,MMU_PAGE_64K		/* psize */
 	ld	r7,STK_PARM(r9)(r1)	/* ssize */
 	ld	r8,STK_PARM(r8)(r1)	/* local */
+=======
+	mr	r3,r29			/* vpn */
+	mr	r4,r31			/* PTE.pte */
+	li	r5,0			/* PTE.hidx */
+	li	r6,MMU_PAGE_64K		/* psize */
+	ld	r7,STK_PARAM(R9)(r1)	/* ssize */
+	ld	r8,STK_PARAM(R8)(r1)	/* local */
+>>>>>>> refs/remotes/origin/master
 	bl	.flush_hash_page
 	/* Clear out _PAGE_HPTE_SUB bits in the new linux PTE */
 	lis	r0,_PAGE_HPTE_SUB@h
@@ -576,7 +767,11 @@ htab_pte_insert_ok:
 	/* Insert slot number & secondary bit in PTE second half,
 	 * clear _PAGE_BUSY and set approriate HPTE slot bit
 	 */
+<<<<<<< HEAD
 	ld	r6,STK_PARM(r6)(r1)
+=======
+	ld	r6,STK_PARAM(R6)(r1)
+>>>>>>> refs/remotes/origin/master
 	li	r0,_PAGE_BUSY
 	andc	r30,r30,r0
 	/* HPTE SUB bit */
@@ -591,12 +786,17 @@ htab_pte_insert_ok:
 	sld	r4,r4,r5
 	andc	r26,r26,r4
 	or	r26,r26,r3
+<<<<<<< HEAD
 	ori	r5,r6,0x8000
+=======
+	ori	r5,r6,PTE_PAGE_HIDX_OFFSET
+>>>>>>> refs/remotes/origin/master
 	std	r26,0(r5)
 	lwsync
 	std	r30,0(r6)
 	li	r3, 0
 htab_bail:
+<<<<<<< HEAD
 	ld	r25,STK_REG(r25)(r1)
 	ld	r26,STK_REG(r26)(r1)
 	ld	r27,STK_REG(r27)(r1)
@@ -604,6 +804,15 @@ htab_bail:
 	ld	r29,STK_REG(r29)(r1)
 	ld      r30,STK_REG(r30)(r1)
 	ld      r31,STK_REG(r31)(r1)
+=======
+	ld	r25,STK_REG(R25)(r1)
+	ld	r26,STK_REG(R26)(r1)
+	ld	r27,STK_REG(R27)(r1)
+	ld	r28,STK_REG(R28)(r1)
+	ld	r29,STK_REG(R29)(r1)
+	ld      r30,STK_REG(R30)(r1)
+	ld      r31,STK_REG(R31)(r1)
+>>>>>>> refs/remotes/origin/master
 	addi    r1,r1,STACKFRAMESIZE
 	ld      r0,16(r1)
 	mtlr    r0
@@ -628,10 +837,18 @@ htab_modify_pte:
 	add	r3,r0,r3	/* add slot idx */
 
 	/* Call ppc_md.hpte_updatepp */
+<<<<<<< HEAD
 	mr	r5,r29			/* va */
 	li	r6,MMU_PAGE_4K		/* page size */
 	ld	r7,STK_PARM(r9)(r1)	/* segment size */
 	ld	r8,STK_PARM(r8)(r1)	/* get "local" param */
+=======
+	mr	r5,r29			/* vpn */
+	li	r6,MMU_PAGE_4K		/* base page size */
+	li	r7,MMU_PAGE_4K		/* actual page size */
+	ld	r8,STK_PARAM(R9)(r1)	/* segment size */
+	ld	r9,STK_PARAM(R8)(r1)	/* get "local" param */
+>>>>>>> refs/remotes/origin/master
 _GLOBAL(htab_call_hpte_updatepp)
 	bl	.			/* patched by htab_finish_init() */
 
@@ -644,7 +861,11 @@ _GLOBAL(htab_call_hpte_updatepp)
 	/* Clear the BUSY bit and Write out the PTE */
 	li	r0,_PAGE_BUSY
 	andc	r30,r30,r0
+<<<<<<< HEAD
 	ld	r6,STK_PARM(r6)(r1)
+=======
+	ld	r6,STK_PARAM(R6)(r1)
+>>>>>>> refs/remotes/origin/master
 	std	r30,0(r6)
 	li	r3,0
 	b	htab_bail
@@ -657,7 +878,11 @@ htab_wrong_access:
 
 htab_pte_insert_failure:
 	/* Bail out restoring old PTE */
+<<<<<<< HEAD
 	ld	r6,STK_PARM(r6)(r1)
+=======
+	ld	r6,STK_PARAM(R6)(r1)
+>>>>>>> refs/remotes/origin/master
 	std	r31,0(r6)
 	li	r3,-1
 	b	htab_bail
@@ -677,13 +902,20 @@ _GLOBAL(__hash_page_64K)
 	std	r0,16(r1)
 	stdu	r1,-STACKFRAMESIZE(r1)
 	/* Save all params that we need after a function call */
+<<<<<<< HEAD
 	std	r6,STK_PARM(r6)(r1)
 	std	r8,STK_PARM(r8)(r1)
 	std	r9,STK_PARM(r9)(r1)
+=======
+	std	r6,STK_PARAM(R6)(r1)
+	std	r8,STK_PARAM(R8)(r1)
+	std	r9,STK_PARAM(R9)(r1)
+>>>>>>> refs/remotes/origin/master
 
 	/* Save non-volatile registers.
 	 * r31 will hold "old PTE"
 	 * r30 is "new PTE"
+<<<<<<< HEAD
 	 * r29 is "va"
 	 * r28 is a hash value
 	 * r27 is hashtab mask (maybe dynamic patched instead ?)
@@ -693,6 +925,17 @@ _GLOBAL(__hash_page_64K)
 	std	r29,STK_REG(r29)(r1)
 	std	r30,STK_REG(r30)(r1)
 	std	r31,STK_REG(r31)(r1)
+=======
+	 * r29 is vpn
+	 * r28 is a hash value
+	 * r27 is hashtab mask (maybe dynamic patched instead ?)
+	 */
+	std	r27,STK_REG(R27)(r1)
+	std	r28,STK_REG(R28)(r1)
+	std	r29,STK_REG(R29)(r1)
+	std	r30,STK_REG(R30)(r1)
+	std	r31,STK_REG(R31)(r1)
+>>>>>>> refs/remotes/origin/master
 
 	/* Step 1:
 	 *
@@ -737,6 +980,7 @@ BEGIN_FTR_SECTION
 	cmpdi	r9,0			/* check segment size */
 	bne	3f
 END_MMU_FTR_SECTION_IFSET(MMU_FTR_1T_SEGMENT)
+<<<<<<< HEAD
 	/* Calc va and put it in r29 */
 	rldicr	r29,r5,28,63-28
 	rldicl	r3,r3,0,36
@@ -756,6 +1000,34 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_1T_SEGMENT)
 	rldicl	r0,r3,64-16,40		/* (ea >> 16) & 0xffffff */
 	xor	r28,r28,r5
 	or	r29,r3,r29		/* VA */
+=======
+	/* Calc vpn and put it in r29 */
+	sldi	r29,r5,SID_SHIFT - VPN_SHIFT
+	rldicl  r28,r3,64 - VPN_SHIFT,64 - (SID_SHIFT - VPN_SHIFT)
+	or	r29,r28,r29
+
+	/* Calculate hash value for primary slot and store it in r28
+	 * r3 = va, r5 = vsid
+	 * r0 = (va >> 16) & ((1ul << (28 - 16)) -1)
+	 */
+	rldicl	r0,r3,64-16,52
+	xor	r28,r5,r0		/* hash */
+	b	4f
+
+3:	/* Calc vpn and put it in r29 */
+	sldi	r29,r5,SID_SHIFT_1T - VPN_SHIFT
+	rldicl  r28,r3,64 - VPN_SHIFT,64 - (SID_SHIFT_1T - VPN_SHIFT)
+	or	r29,r28,r29
+	/*
+	 * calculate hash value for primary slot and
+	 * store it in r28 for 1T segment
+	 * r3 = va, r5 = vsid
+	 */
+	sldi	r28,r5,25		/* vsid << 25 */
+	/* r0 = (va >> 16) & ((1ul << (40 - 16)) -1) */
+	rldicl	r0,r3,64-16,40
+	xor	r28,r28,r5		/* vsid ^ ( vsid << 25) */
+>>>>>>> refs/remotes/origin/master
 	xor	r28,r28,r0		/* hash */
 
 	/* Convert linux PTE bits into HW equivalents */
@@ -780,7 +1052,11 @@ END_FTR_SECTION(CPU_FTR_NOEXECUTE|CPU_FTR_COHERENT_ICACHE, CPU_FTR_NOEXECUTE)
 	/* At this point, r3 contains new PP bits, save them in
 	 * place of "access" in the param area (sic)
 	 */
+<<<<<<< HEAD
 	std	r3,STK_PARM(r4)(r1)
+=======
+	std	r3,STK_PARAM(R4)(r1)
+>>>>>>> refs/remotes/origin/master
 
 	/* Get htab_hash_mask */
 	ld	r4,htab_hash_mask@got(2)
@@ -813,11 +1089,20 @@ ht64_insert_pte:
 	rldicr	r3,r0,3,63-3	/* r0 = (hash & mask) << 3 */
 
 	/* Call ppc_md.hpte_insert */
+<<<<<<< HEAD
 	ld	r6,STK_PARM(r4)(r1)	/* Retrieve new pp bits */
 	mr	r4,r29			/* Retrieve va */
 	li	r7,0			/* !bolted, !secondary */
 	li	r8,MMU_PAGE_64K
 	ld	r9,STK_PARM(r9)(r1)	/* segment size */
+=======
+	ld	r6,STK_PARAM(R4)(r1)	/* Retrieve new pp bits */
+	mr	r4,r29			/* Retrieve vpn */
+	li	r7,0			/* !bolted, !secondary */
+	li	r8,MMU_PAGE_64K
+	li	r9,MMU_PAGE_64K		/* actual page size */
+	ld	r10,STK_PARAM(R9)(r1)	/* segment size */
+>>>>>>> refs/remotes/origin/master
 _GLOBAL(ht64_call_hpte_insert1)
 	bl	.			/* patched by htab_finish_init() */
 	cmpdi	0,r3,0
@@ -836,11 +1121,20 @@ _GLOBAL(ht64_call_hpte_insert1)
 	rldicr	r3,r0,3,63-3	/* r0 = (~hash & mask) << 3 */
 
 	/* Call ppc_md.hpte_insert */
+<<<<<<< HEAD
 	ld	r6,STK_PARM(r4)(r1)	/* Retrieve new pp bits */
 	mr	r4,r29			/* Retrieve va */
 	li	r7,HPTE_V_SECONDARY	/* !bolted, secondary */
 	li	r8,MMU_PAGE_64K
 	ld	r9,STK_PARM(r9)(r1)	/* segment size */
+=======
+	ld	r6,STK_PARAM(R4)(r1)	/* Retrieve new pp bits */
+	mr	r4,r29			/* Retrieve vpn */
+	li	r7,HPTE_V_SECONDARY	/* !bolted, secondary */
+	li	r8,MMU_PAGE_64K
+	li	r9,MMU_PAGE_64K		/* actual page size */
+	ld	r10,STK_PARAM(R9)(r1)	/* segment size */
+>>>>>>> refs/remotes/origin/master
 _GLOBAL(ht64_call_hpte_insert2)
 	bl	.			/* patched by htab_finish_init() */
 	cmpdi	0,r3,0
@@ -876,6 +1170,7 @@ ht64_pte_insert_ok:
 	 * (maybe add eieio may be good still ?)
 	 */
 ht64_write_out_pte:
+<<<<<<< HEAD
 	ld	r6,STK_PARM(r6)(r1)
 	std	r30,0(r6)
 	li	r3, 0
@@ -885,6 +1180,17 @@ ht64_bail:
 	ld	r29,STK_REG(r29)(r1)
 	ld      r30,STK_REG(r30)(r1)
 	ld      r31,STK_REG(r31)(r1)
+=======
+	ld	r6,STK_PARAM(R6)(r1)
+	std	r30,0(r6)
+	li	r3, 0
+ht64_bail:
+	ld	r27,STK_REG(R27)(r1)
+	ld	r28,STK_REG(R28)(r1)
+	ld	r29,STK_REG(R29)(r1)
+	ld      r30,STK_REG(R30)(r1)
+	ld      r31,STK_REG(R31)(r1)
+>>>>>>> refs/remotes/origin/master
 	addi    r1,r1,STACKFRAMESIZE
 	ld      r0,16(r1)
 	mtlr    r0
@@ -907,10 +1213,18 @@ ht64_modify_pte:
 	add	r3,r0,r3	/* add slot idx */
 
 	/* Call ppc_md.hpte_updatepp */
+<<<<<<< HEAD
 	mr	r5,r29			/* va */
 	li	r6,MMU_PAGE_64K
 	ld	r7,STK_PARM(r9)(r1)	/* segment size */
 	ld	r8,STK_PARM(r8)(r1)	/* get "local" param */
+=======
+	mr	r5,r29			/* vpn */
+	li	r6,MMU_PAGE_64K		/* base page size */
+	li	r7,MMU_PAGE_64K		/* actual page size */
+	ld	r8,STK_PARAM(R9)(r1)	/* segment size */
+	ld	r9,STK_PARAM(R8)(r1)	/* get "local" param */
+>>>>>>> refs/remotes/origin/master
 _GLOBAL(ht64_call_hpte_updatepp)
 	bl	.			/* patched by htab_finish_init() */
 
@@ -933,7 +1247,11 @@ ht64_wrong_access:
 
 ht64_pte_insert_failure:
 	/* Bail out restoring old PTE */
+<<<<<<< HEAD
 	ld	r6,STK_PARM(r6)(r1)
+=======
+	ld	r6,STK_PARAM(R6)(r1)
+>>>>>>> refs/remotes/origin/master
 	std	r31,0(r6)
 	li	r3,-1
 	b	ht64_bail

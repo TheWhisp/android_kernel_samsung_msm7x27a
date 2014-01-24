@@ -94,7 +94,11 @@ static int get_counter_set(u64 event)
 		set = CPUMF_CTR_SET_USER;
 	else if (event < 128)
 		set = CPUMF_CTR_SET_CRYPTO;
+<<<<<<< HEAD
 	else if (event < 160)
+=======
+	else if (event < 256)
+>>>>>>> refs/remotes/origin/master
 		set = CPUMF_CTR_SET_EXT;
 
 	return set;
@@ -138,6 +142,13 @@ static int validate_ctr_version(const struct hw_perf_event *hwc)
 	case CPUMF_CTR_SET_EXT:
 		if (cpuhw->info.csvn < 1)
 			err = -EOPNOTSUPP;
+<<<<<<< HEAD
+=======
+		if ((cpuhw->info.csvn == 1 && hwc->config > 159) ||
+		    (cpuhw->info.csvn == 2 && hwc->config > 175) ||
+		    (cpuhw->info.csvn  > 2 && hwc->config > 255))
+			err = -EOPNOTSUPP;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -225,7 +236,11 @@ static void cpumf_measurement_alert(struct ext_code ext_code,
 	if (!(alert & CPU_MF_INT_CF_MASK))
 		return;
 
+<<<<<<< HEAD
 	kstat_cpu(smp_processor_id()).irqs[EXTINT_CPM]++;
+=======
+	inc_irq_stat(IRQEXT_CMC);
+>>>>>>> refs/remotes/origin/master
 	cpuhw = &__get_cpu_var(cpu_hw_events);
 
 	/* Measurement alerts are shared and might happen when the PMU
@@ -270,7 +285,11 @@ static int reserve_pmc_hardware(void)
 	int flags = PMC_INIT;
 
 	on_each_cpu(setup_pmc_cpu, &flags, 1);
+<<<<<<< HEAD
 	measurement_alert_subclass_register();
+=======
+	irq_subclass_register(IRQ_SUBCLASS_MEASUREMENT_ALERT);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -281,7 +300,11 @@ static void release_pmc_hardware(void)
 	int flags = PMC_RELEASE;
 
 	on_each_cpu(setup_pmc_cpu, &flags, 1);
+<<<<<<< HEAD
 	measurement_alert_subclass_unregister();
+=======
+	irq_subclass_unregister(IRQ_SUBCLASS_MEASUREMENT_ALERT);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Release the PMU if event is the last perf event */
@@ -363,6 +386,7 @@ static int __hw_perf_event_init(struct perf_event *event)
 	if (ev >= PERF_CPUM_CF_MAX_CTR)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	/* The CPU measurement counter facility does not have any interrupts
 	 * to do sampling.  Sampling must be provided by external means,
 	 * for example, by timers.
@@ -370,6 +394,8 @@ static int __hw_perf_event_init(struct perf_event *event)
 	if (hwc->sample_period)
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Use the hardware perf event structure to store the counter number
 	 * in 'config' member and the counter set to which the counter belongs
 	 * in the 'config_base'.  The counter set (config_base) is then used
@@ -414,6 +440,15 @@ static int cpumf_pmu_event_init(struct perf_event *event)
 	case PERF_TYPE_HARDWARE:
 	case PERF_TYPE_HW_CACHE:
 	case PERF_TYPE_RAW:
+<<<<<<< HEAD
+=======
+		/* The CPU measurement counter facility does not have overflow
+		 * interrupts to do sampling.  Sampling must be provided by
+		 * external means, for example, by timers.
+		 */
+		if (is_sampling_event(event))
+			return -ENOENT;
+>>>>>>> refs/remotes/origin/master
 		err = __hw_perf_event_init(event);
 		break;
 	default:
@@ -636,8 +671,13 @@ static struct pmu cpumf_pmu = {
 	.cancel_txn   = cpumf_pmu_cancel_txn,
 };
 
+<<<<<<< HEAD
 static int __cpuinit cpumf_pmu_notifier(struct notifier_block *self,
 					unsigned long action, void *hcpu)
+=======
+static int cpumf_pmu_notifier(struct notifier_block *self, unsigned long action,
+			      void *hcpu)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cpu = (long) hcpu;
 	int flags;
@@ -677,6 +717,10 @@ static int __init cpumf_pmu_init(void)
 		goto out;
 	}
 
+<<<<<<< HEAD
+=======
+	cpumf_pmu.attr_groups = cpumf_cf_event_group();
+>>>>>>> refs/remotes/origin/master
 	rc = perf_pmu_register(&cpumf_pmu, "cpum_cf", PERF_TYPE_RAW);
 	if (rc) {
 		pr_err("Registering the cpum_cf PMU failed with rc=%i\n", rc);

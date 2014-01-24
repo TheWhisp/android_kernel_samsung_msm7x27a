@@ -37,9 +37,13 @@
 #include <linux/netdevice.h>
 #include <linux/vmalloc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/moduleparam.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "qib.h"
 
@@ -298,6 +302,10 @@ u32 __iomem *qib_getsendbuf_range(struct qib_devdata *dd, u32 *pbufnum,
 
 	nbufs = last - first + 1; /* number in range to check */
 	if (dd->upd_pio_shadow) {
+<<<<<<< HEAD
+=======
+update_shadow:
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Minor optimization.  If we had no buffers on last call,
 		 * start out by doing the update; continue and do scan even
@@ -307,37 +315,64 @@ u32 __iomem *qib_getsendbuf_range(struct qib_devdata *dd, u32 *pbufnum,
 		updated++;
 	}
 	i = first;
+<<<<<<< HEAD
 rescan:
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * While test_and_set_bit() is atomic, we do that and then the
 	 * change_bit(), and the pair is not.  See if this is the cause
 	 * of the remaining armlaunch errors.
 	 */
 	spin_lock_irqsave(&dd->pioavail_lock, flags);
+<<<<<<< HEAD
 	for (j = 0; j < nbufs; j++, i++) {
 		if (i > last)
 			i = first;
+=======
+	if (dd->last_pio >= first && dd->last_pio <= last)
+		i = dd->last_pio + 1;
+	if (!first)
+		/* adjust to min possible  */
+		nbufs = last - dd->min_kernel_pio + 1;
+	for (j = 0; j < nbufs; j++, i++) {
+		if (i > last)
+			i = !first ? dd->min_kernel_pio : first;
+>>>>>>> refs/remotes/origin/master
 		if (__test_and_set_bit((2 * i) + 1, shadow))
 			continue;
 		/* flip generation bit */
 		__change_bit(2 * i, shadow);
 		/* remember that the buffer can be written to now */
 		__set_bit(i, dd->pio_writing);
+<<<<<<< HEAD
+=======
+		if (!first && first != last) /* first == last on VL15, avoid */
+			dd->last_pio = i;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	spin_unlock_irqrestore(&dd->pioavail_lock, flags);
 
 	if (j == nbufs) {
+<<<<<<< HEAD
 		if (!updated) {
+=======
+		if (!updated)
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * First time through; shadow exhausted, but may be
 			 * buffers available, try an update and then rescan.
 			 */
+<<<<<<< HEAD
 			update_send_bufs(dd);
 			updated++;
 			i = first;
 			goto rescan;
 		}
+=======
+			goto update_shadow;
+>>>>>>> refs/remotes/origin/master
 		no_send_bufs(dd);
 		buf = NULL;
 	} else {
@@ -425,14 +460,29 @@ void qib_chg_pioavailkernel(struct qib_devdata *dd, unsigned start,
 				__clear_bit(QLOGIC_IB_SENDPIOAVAIL_CHECK_SHIFT
 					    + start, dd->pioavailshadow);
 			__set_bit(start, dd->pioavailkernel);
+<<<<<<< HEAD
+=======
+			if ((start >> 1) < dd->min_kernel_pio)
+				dd->min_kernel_pio = start >> 1;
+>>>>>>> refs/remotes/origin/master
 		} else {
 			__set_bit(start + QLOGIC_IB_SENDPIOAVAIL_BUSY_SHIFT,
 				  dd->pioavailshadow);
 			__clear_bit(start, dd->pioavailkernel);
+<<<<<<< HEAD
+=======
+			if ((start >> 1) > dd->min_kernel_pio)
+				dd->min_kernel_pio = start >> 1;
+>>>>>>> refs/remotes/origin/master
 		}
 		start += 2;
 	}
 
+<<<<<<< HEAD
+=======
+	if (dd->min_kernel_pio > 0 && dd->last_pio < dd->min_kernel_pio - 1)
+		dd->last_pio = dd->min_kernel_pio - 1;
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&dd->pioavail_lock, flags);
 
 	dd->f_txchk_change(dd, ostart, len, avail, rcd);

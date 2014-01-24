@@ -1,13 +1,18 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *    Copyright IBM Corp 2000,2009
 =======
  *    Copyright IBM Corp 2000,2011
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *    Copyright IBM Corp 2000, 2011
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Holger Smolinski <Holger.Smolinski@de.ibm.com>,
  *		 Denis Joseph Barrow,
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <asm/asm-offsets.h>
 
@@ -15,6 +20,11 @@
 =======
 #include <linux/linkage.h>
 #include <asm/asm-offsets.h>
+=======
+#include <linux/linkage.h>
+#include <asm/asm-offsets.h>
+#include <asm/sigp.h>
+>>>>>>> refs/remotes/origin/master
 
 #
 # store_status
@@ -78,11 +88,15 @@ ENTRY(store_status)
 	.previous
 
 #
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # do_reipl_asm
 # Parameter: r2 = schid of reipl device
 #
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.globl	do_reipl_asm
 do_reipl_asm:	basr	%r13,0
@@ -104,11 +118,16 @@ do_reipl_asm:	basr	%r13,0
 		stpt	__LC_CPU_TIMER_SAVE_AREA-0x1000(%r1)
 		stg	%r13, __LC_PSW_SAVE_AREA-0x1000+8(%r1)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(do_reipl_asm)
 		basr	%r13,0
 .Lpg0:		lpswe	.Lnewpsw-.Lpg0(%r13)
 .Lpg1:		brasl	%r14,store_status
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		lctlg	%c6,%c6,.Lall-.Lpg0(%r13)
 		lgr	%r1,%r2
@@ -138,13 +157,18 @@ ENTRY(do_reipl_asm)
 .L003:		st	%r1,__LC_SUBCHANNEL_ID
 		lhi	%r1,0		 # mode 0 = esa
 		slr	%r0,%r0 	 # set cpuid to zero
+<<<<<<< HEAD
 		sigp	%r1,%r0,0x12	 # switch to esa mode
+=======
+		sigp	%r1,%r0,SIGP_SET_ARCHITECTURE # switch to esa mode
+>>>>>>> refs/remotes/origin/master
 		lpsw	0
 .Ldisab:	sll	%r14,1
 		srl	%r14,1		 # need to kill hi bit to avoid specification exceptions.
 		st	%r14,.Ldispsw+12-.Lpg0(%r13)
 		lpswe	.Ldispsw-.Lpg0(%r13)
 		.align	8
+<<<<<<< HEAD
 <<<<<<< HEAD
 .Lclkcmp:	.quad	0x0000000000000000
 .Lall:		.quad	0x00000000ff000000
@@ -153,6 +177,9 @@ ENTRY(do_reipl_asm)
 =======
 .Lall:		.quad	0x00000000ff000000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+.Lall:		.quad	0x00000000ff000000
+>>>>>>> refs/remotes/origin/master
 		.align	16
 /*
  * These addresses have to be 31 bit otherwise

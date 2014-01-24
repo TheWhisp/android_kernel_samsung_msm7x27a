@@ -17,10 +17,14 @@
 #include "internal.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef RPC_DEBUG
 =======
 #ifdef NFS_DEBUG
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef NFS_DEBUG
+>>>>>>> refs/remotes/origin/master
 # define NFSDBG_FACILITY	NFSDBG_MOUNT
 #endif
 
@@ -72,10 +76,14 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct rpc_program	mnt_program;
 =======
 static const struct rpc_program mnt_program;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct rpc_program mnt_program;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Defined by OpenGroup XNFS Version 3W, chapter 8
@@ -147,7 +155,14 @@ struct mnt_fhstatus {
  * nfs_mount - Obtain an NFS file handle for the given host and path
  * @info: pointer to mount request arguments
  *
+<<<<<<< HEAD
  * Uses default timeout parameters specified by underlying transport.
+=======
+ * Uses default timeout parameters specified by underlying transport. On
+ * successful return, the auth_flavs list and auth_flav_len will be populated
+ * with the list from the server or a faked-up list if the server didn't
+ * provide one.
+>>>>>>> refs/remotes/origin/master
  */
 int nfs_mount(struct nfs_mount_request *info)
 {
@@ -162,10 +177,14 @@ int nfs_mount(struct nfs_mount_request *info)
 	};
 	struct rpc_create_args args = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.net		= &init_net,
 =======
 		.net		= info->net,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.net		= info->net,
+>>>>>>> refs/remotes/origin/master
 		.protocol	= info->protocol,
 		.address	= info->sap,
 		.addrsize	= info->salen,
@@ -181,6 +200,12 @@ int nfs_mount(struct nfs_mount_request *info)
 		(info->hostname ? info->hostname : "server"),
 			info->dirpath);
 
+<<<<<<< HEAD
+=======
+	if (strlen(info->dirpath) > MNTPATHLEN)
+		return -ENAMETOOLONG;
+
+>>>>>>> refs/remotes/origin/master
 	if (info->noresvport)
 		args.flags |= RPC_CLNT_CREATE_NONPRIVPORT;
 
@@ -204,6 +229,18 @@ int nfs_mount(struct nfs_mount_request *info)
 	dprintk("NFS: MNT request succeeded\n");
 	status = 0;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * If the server didn't provide a flavor list, allow the
+	 * client to try any flavor.
+	 */
+	if (info->version != NFS_MNT3_VERSION || *info->auth_flav_len == 0) {
+		dprintk("NFS: Faking up auth_flavs list\n");
+		info->auth_flavs[0] = RPC_AUTH_NULL;
+		*info->auth_flav_len = 1;
+	}
+>>>>>>> refs/remotes/origin/master
 out:
 	return status;
 
@@ -238,10 +275,14 @@ void nfs_umount(const struct nfs_mount_request *info)
 	};
 	struct rpc_create_args args = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.net		= &init_net,
 =======
 		.net		= info->net,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.net		= info->net,
+>>>>>>> refs/remotes/origin/master
 		.protocol	= IPPROTO_UDP,
 		.address	= info->sap,
 		.addrsize	= info->salen,
@@ -258,6 +299,12 @@ void nfs_umount(const struct nfs_mount_request *info)
 	struct rpc_clnt *clnt;
 	int status;
 
+<<<<<<< HEAD
+=======
+	if (strlen(info->dirpath) > MNTPATHLEN)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	if (info->noresvport)
 		args.flags |= RPC_CLNT_CREATE_NONPRIVPORT;
 
@@ -299,7 +346,10 @@ static void encode_mntdirpath(struct xdr_stream *xdr, const char *pathname)
 	const u32 pathname_len = strlen(pathname);
 	__be32 *p;
 
+<<<<<<< HEAD
 	BUG_ON(pathname_len > MNTPATHLEN);
+=======
+>>>>>>> refs/remotes/origin/master
 	p = xdr_reserve_space(xdr, 4 + pathname_len);
 	xdr_encode_opaque(p, pathname, pathname_len);
 }
@@ -505,30 +555,42 @@ static struct rpc_procinfo mnt3_procedures[] = {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct rpc_version mnt_version1 = {
 =======
 static const struct rpc_version mnt_version1 = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct rpc_version mnt_version1 = {
+>>>>>>> refs/remotes/origin/master
 	.number		= 1,
 	.nrprocs	= ARRAY_SIZE(mnt_procedures),
 	.procs		= mnt_procedures,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct rpc_version mnt_version3 = {
 =======
 static const struct rpc_version mnt_version3 = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct rpc_version mnt_version3 = {
+>>>>>>> refs/remotes/origin/master
 	.number		= 3,
 	.nrprocs	= ARRAY_SIZE(mnt3_procedures),
 	.procs		= mnt3_procedures,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct rpc_version *mnt_version[] = {
 =======
 static const struct rpc_version *mnt_version[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct rpc_version *mnt_version[] = {
+>>>>>>> refs/remotes/origin/master
 	NULL,
 	&mnt_version1,
 	NULL,
@@ -538,10 +600,14 @@ static const struct rpc_version *mnt_version[] = {
 static struct rpc_stat mnt_stats;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct rpc_program mnt_program = {
 =======
 static const struct rpc_program mnt_program = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct rpc_program mnt_program = {
+>>>>>>> refs/remotes/origin/master
 	.name		= "mount",
 	.number		= NFS_MNT_PROGRAM,
 	.nrvers		= ARRAY_SIZE(mnt_version),

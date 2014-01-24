@@ -4,7 +4,11 @@
 #include "entry.h"
 #include "paravirt_inst.h"
 
+<<<<<<< HEAD
 #ifdef CONFIG_VIRT_CPU_ACCOUNTING
+=======
+#ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+>>>>>>> refs/remotes/origin/master
 /* read ar.itc in advance, and use it before leaving bank 0 */
 #define ACCOUNT_GET_STAMP				\
 (pUStk) mov.m r20=ar.itc;

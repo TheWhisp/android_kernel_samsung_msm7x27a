@@ -8,6 +8,7 @@
 #include <poll.h>
 #include <signal.h>
 #include <string.h>
+<<<<<<< HEAD
 #include "irq_user.h"
 <<<<<<< HEAD
 #include "kern_constants.h"
@@ -19,6 +20,11 @@
 #include "os.h"
 #include "um_malloc.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <irq_user.h>
+#include <os.h>
+#include <um_malloc.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Locked by irq_lock in arch/um/kernel/irq.c.  Changed by os_create_pollfd

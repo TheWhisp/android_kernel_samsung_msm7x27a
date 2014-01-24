@@ -9,6 +9,7 @@
 #ifndef _LANTIQ_PLATFORM_H__
 #define _LANTIQ_PLATFORM_H__
 
+<<<<<<< HEAD
 #include <linux/mtd/partitions.h>
 #include <linux/socket.h>
 
@@ -44,6 +45,10 @@ struct ltq_pci_data {
 	int irq[16];
 };
 
+=======
+#include <linux/socket.h>
+
+>>>>>>> refs/remotes/origin/master
 /* struct used to pass info to network drivers */
 struct ltq_eth_data {
 	struct sockaddr mac;

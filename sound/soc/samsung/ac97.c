@@ -5,10 +5,14 @@
  *
  * Copyright (c) 2010 Samsung Electronics Co. Ltd
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 	Author: Jaswinder Singh <jassi.brar@samsung.com>
 =======
  *	Author: Jaswinder Singh <jassisinghbrar@gmail.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	Author: Jaswinder Singh <jassisinghbrar@gmail.com>
+>>>>>>> refs/remotes/origin/master
  * 	Credits: Graeme Gregory, Sean Choi
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,15 +24,24 @@
 #include <linux/delay.h>
 #include <linux/clk.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/soc.h>
 
 #include <mach/dma.h>
+<<<<<<< HEAD
 #include <plat/regs-ac97.h>
 #include <plat/audio.h>
+=======
+#include "regs-ac97.h"
+#include <linux/platform_data/asoc-s3c.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "dma.h"
 
@@ -81,7 +94,11 @@ static void s3c_ac97_activate(struct snd_ac97 *ac97)
 	if (stat == S3C_AC97_GLBSTAT_MAINSTATE_ACTIVE)
 		return; /* Return if already active */
 
+<<<<<<< HEAD
 	INIT_COMPLETION(s3c_ac97.done);
+=======
+	reinit_completion(&s3c_ac97.done);
+>>>>>>> refs/remotes/origin/master
 
 	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
 	ac_glbctrl = S3C_AC97_GLBCTRL_ACLINKON;
@@ -110,7 +127,11 @@ static unsigned short s3c_ac97_read(struct snd_ac97 *ac97,
 
 	s3c_ac97_activate(ac97);
 
+<<<<<<< HEAD
 	INIT_COMPLETION(s3c_ac97.done);
+=======
+	reinit_completion(&s3c_ac97.done);
+>>>>>>> refs/remotes/origin/master
 
 	ac_codec_cmd = readl(s3c_ac97.regs + S3C_AC97_CODEC_CMD);
 	ac_codec_cmd = S3C_AC97_CODEC_CMD_READ | AC_CMD_ADDR(reg);
@@ -147,7 +168,11 @@ static void s3c_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
 
 	s3c_ac97_activate(ac97);
 
+<<<<<<< HEAD
 	INIT_COMPLETION(s3c_ac97.done);
+=======
+	reinit_completion(&s3c_ac97.done);
+>>>>>>> refs/remotes/origin/master
 
 	ac_codec_cmd = readl(s3c_ac97.regs + S3C_AC97_CODEC_CMD);
 	ac_codec_cmd = AC_CMD_ADDR(reg) | AC_CMD_DATA(val);
@@ -221,12 +246,17 @@ static irqreturn_t s3c_ac97_irq(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 struct snd_ac97_bus_ops soc_ac97_ops = {
+=======
+static struct snd_ac97_bus_ops s3c_ac97_ops = {
+>>>>>>> refs/remotes/origin/master
 	.read       = s3c_ac97_read,
 	.write      = s3c_ac97_write,
 	.warm_reset = s3c_ac97_warm_reset,
 	.reset      = s3c_ac97_cold_reset,
 };
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(soc_ac97_ops);
 
 static int s3c_ac97_hw_params(struct snd_pcm_substream *substream,
@@ -246,6 +276,8 @@ static int s3c_ac97_hw_params(struct snd_pcm_substream *substream,
 
 	return 0;
 }
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int s3c_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
 				struct snd_soc_dai *dai)
@@ -280,12 +312,16 @@ static int s3c_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
 	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!dma_data->ops)
 		dma_data->ops = samsung_dma_get_ops();
 
 	dma_data->ops->started(dma_data->channel);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
@@ -302,6 +338,8 @@ static int s3c_ac97_hw_mic_params(struct snd_pcm_substream *substream,
 		return -ENODEV;
 	else
 		snd_soc_dai_set_dma_data(cpu_dai, substream, &s3c_ac97_mic_in);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -333,17 +371,24 @@ static int s3c_ac97_mic_trigger(struct snd_pcm_substream *substream,
 	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!dma_data->ops)
 		dma_data->ops = samsung_dma_get_ops();
 
 	dma_data->ops->started(dma_data->channel);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct snd_soc_dai_ops s3c_ac97_dai_ops = {
 =======
@@ -362,6 +407,30 @@ static const struct snd_soc_dai_ops s3c_ac97_mic_dai_ops = {
 	.trigger	= s3c_ac97_mic_trigger,
 };
 
+=======
+static const struct snd_soc_dai_ops s3c_ac97_dai_ops = {
+	.trigger	= s3c_ac97_trigger,
+};
+
+static const struct snd_soc_dai_ops s3c_ac97_mic_dai_ops = {
+	.trigger	= s3c_ac97_mic_trigger,
+};
+
+static int s3c_ac97_dai_probe(struct snd_soc_dai *dai)
+{
+	samsung_asoc_init_dma_data(dai, &s3c_ac97_pcm_out, &s3c_ac97_pcm_in);
+
+	return 0;
+}
+
+static int s3c_ac97_mic_dai_probe(struct snd_soc_dai *dai)
+{
+	samsung_asoc_init_dma_data(dai, NULL, &s3c_ac97_mic_in);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct snd_soc_dai_driver s3c_ac97_dai[] = {
 	[S3C_AC97_DAI_PCM] = {
 		.name =	"samsung-ac97",
@@ -378,6 +447,10 @@ static struct snd_soc_dai_driver s3c_ac97_dai[] = {
 			.channels_max = 2,
 			.rates = SNDRV_PCM_RATE_8000_48000,
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,},
+<<<<<<< HEAD
+=======
+		.probe = s3c_ac97_dai_probe,
+>>>>>>> refs/remotes/origin/master
 		.ops = &s3c_ac97_dai_ops,
 	},
 	[S3C_AC97_DAI_MIC] = {
@@ -389,11 +462,23 @@ static struct snd_soc_dai_driver s3c_ac97_dai[] = {
 			.channels_max = 1,
 			.rates = SNDRV_PCM_RATE_8000_48000,
 			.formats = SNDRV_PCM_FMTBIT_S16_LE,},
+<<<<<<< HEAD
+=======
+		.probe = s3c_ac97_mic_dai_probe,
+>>>>>>> refs/remotes/origin/master
 		.ops = &s3c_ac97_mic_dai_ops,
 	},
 };
 
+<<<<<<< HEAD
 static __devinit int s3c_ac97_probe(struct platform_device *pdev)
+=======
+static const struct snd_soc_component_driver s3c_ac97_component = {
+	.name		= "s3c-ac97",
+};
+
+static int s3c_ac97_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *mem_res, *dmatx_res, *dmarx_res, *dmamic_res, *irq_res;
 	struct s3c_audio_pdata *ac97_pdata;
@@ -424,23 +509,33 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
 		return -ENXIO;
 	}
 
+<<<<<<< HEAD
 	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!mem_res) {
 		dev_err(&pdev->dev, "Unable to get register resource\n");
 		return -ENXIO;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	irq_res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
 	if (!irq_res) {
 		dev_err(&pdev->dev, "AC97 IRQ not provided!\n");
 		return -ENXIO;
 	}
 
+<<<<<<< HEAD
 	if (!request_mem_region(mem_res->start,
 				resource_size(mem_res), "ac97")) {
 		dev_err(&pdev->dev, "Unable to request register region\n");
 		return -EBUSY;
 	}
+=======
+	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	s3c_ac97.regs = devm_ioremap_resource(&pdev->dev, mem_res);
+	if (IS_ERR(s3c_ac97.regs))
+		return PTR_ERR(s3c_ac97.regs);
+>>>>>>> refs/remotes/origin/master
 
 	s3c_ac97_pcm_out.channel = dmatx_res->start;
 	s3c_ac97_pcm_out.dma_addr = mem_res->start + S3C_AC97_PCM_DATA;
@@ -452,6 +547,7 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
 	init_completion(&s3c_ac97.done);
 	mutex_init(&s3c_ac97.lock);
 
+<<<<<<< HEAD
 	s3c_ac97.regs = ioremap(mem_res->start, resource_size(mem_res));
 	if (s3c_ac97.regs == NULL) {
 		dev_err(&pdev->dev, "Unable to ioremap register region\n");
@@ -460,12 +556,19 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
 	}
 
 	s3c_ac97.ac97_clk = clk_get(&pdev->dev, "ac97");
+=======
+	s3c_ac97.ac97_clk = devm_clk_get(&pdev->dev, "ac97");
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(s3c_ac97.ac97_clk)) {
 		dev_err(&pdev->dev, "ac97 failed to get ac97_clock\n");
 		ret = -ENODEV;
 		goto err2;
 	}
+<<<<<<< HEAD
 	clk_enable(s3c_ac97.ac97_clk);
+=======
+	clk_prepare_enable(s3c_ac97.ac97_clk);
+>>>>>>> refs/remotes/origin/master
 
 	if (ac97_pdata->cfg_gpio(pdev)) {
 		dev_err(&pdev->dev, "Unable to configure gpio\n");
@@ -475,15 +578,20 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
 
 	ret = request_irq(irq_res->start, s3c_ac97_irq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					IRQF_DISABLED, "AC97", NULL);
 =======
 					0, "AC97", NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					0, "AC97", NULL);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(&pdev->dev, "ac97: interrupt request failed.\n");
 		goto err4;
 	}
 
+<<<<<<< HEAD
 	ret = snd_soc_register_dais(&pdev->dev, s3c_ac97_dai,
 			ARRAY_SIZE(s3c_ac97_dai));
 	if (ret)
@@ -491,10 +599,33 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
 
 	return 0;
 
+=======
+	ret = snd_soc_set_ac97_ops(&s3c_ac97_ops);
+	if (ret != 0) {
+		dev_err(&pdev->dev, "Failed to set AC'97 ops: %d\n", ret);
+		goto err4;
+	}
+
+	ret = snd_soc_register_component(&pdev->dev, &s3c_ac97_component,
+					 s3c_ac97_dai, ARRAY_SIZE(s3c_ac97_dai));
+	if (ret)
+		goto err5;
+
+	ret = samsung_asoc_dma_platform_register(&pdev->dev);
+	if (ret) {
+		dev_err(&pdev->dev, "failed to get register DMA: %d\n", ret);
+		goto err6;
+	}
+
+	return 0;
+err6:
+	snd_soc_unregister_component(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 err5:
 	free_irq(irq_res->start, NULL);
 err4:
 err3:
+<<<<<<< HEAD
 	clk_disable(s3c_ac97.ac97_clk);
 	clk_put(s3c_ac97.ac97_clk);
 err2:
@@ -510,11 +641,26 @@ static __devexit int s3c_ac97_remove(struct platform_device *pdev)
 	struct resource *mem_res, *irq_res;
 
 	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(s3c_ac97_dai));
+=======
+	clk_disable_unprepare(s3c_ac97.ac97_clk);
+err2:
+	snd_soc_set_ac97_ops(NULL);
+	return ret;
+}
+
+static int s3c_ac97_remove(struct platform_device *pdev)
+{
+	struct resource *irq_res;
+
+	samsung_asoc_dma_platform_unregister(&pdev->dev);
+	snd_soc_unregister_component(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	irq_res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
 	if (irq_res)
 		free_irq(irq_res->start, NULL);
 
+<<<<<<< HEAD
 	clk_disable(s3c_ac97.ac97_clk);
 	clk_put(s3c_ac97.ac97_clk);
 
@@ -523,6 +669,10 @@ static __devexit int s3c_ac97_remove(struct platform_device *pdev)
 	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (mem_res)
 		release_mem_region(mem_res->start, resource_size(mem_res));
+=======
+	clk_disable_unprepare(s3c_ac97.ac97_clk);
+	snd_soc_set_ac97_ops(NULL);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -530,16 +680,21 @@ static __devexit int s3c_ac97_remove(struct platform_device *pdev)
 static struct platform_driver s3c_ac97_driver = {
 	.probe  = s3c_ac97_probe,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.remove = s3c_ac97_remove,
 =======
 	.remove = __devexit_p(s3c_ac97_remove),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = s3c_ac97_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "samsung-ac97",
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init s3c_ac97_init(void)
 {
@@ -559,6 +714,11 @@ module_platform_driver(s3c_ac97_driver);
 
 MODULE_AUTHOR("Jaswinder Singh, <jassisinghbrar@gmail.com>");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(s3c_ac97_driver);
+
+MODULE_AUTHOR("Jaswinder Singh, <jassisinghbrar@gmail.com>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("AC97 driver for the Samsung SoC");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:samsung-ac97");

@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
 <<<<<<< HEAD
+<<<<<<< HEAD
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -76,4 +77,15 @@ struct i2c_rdwr_ioctl_data {
 #define I2C_MAJOR	89		/* Device major number		*/
 #endif
 
+=======
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+    MA 02110-1301 USA.
+*/
+#ifndef _LINUX_I2C_DEV_H
+#define _LINUX_I2C_DEV_H
+
+#include <uapi/linux/i2c-dev.h>
+
+#define I2C_MAJOR	89		/* Device major number		*/
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_I2C_DEV_H */

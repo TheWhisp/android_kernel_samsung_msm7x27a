@@ -2,9 +2,13 @@
 #include <linux/ide.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/seq_file.h>
 
 #include "ide-disk.h"
@@ -56,7 +60,11 @@ static int idedisk_cache_proc_show(struct seq_file *m, void *v)
 
 static int idedisk_cache_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, idedisk_cache_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, idedisk_cache_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations idedisk_cache_proc_fops = {
@@ -77,7 +85,11 @@ static int idedisk_capacity_proc_show(struct seq_file *m, void *v)
 
 static int idedisk_capacity_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, idedisk_capacity_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, idedisk_capacity_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations idedisk_capacity_proc_fops = {
@@ -118,7 +130,11 @@ static int idedisk_sv_proc_show(struct seq_file *m, void *v)
 
 static int idedisk_sv_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, idedisk_sv_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, idedisk_sv_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations idedisk_sv_proc_fops = {
@@ -136,7 +152,11 @@ static int idedisk_st_proc_show(struct seq_file *m, void *v)
 
 static int idedisk_st_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, idedisk_st_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, idedisk_st_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations idedisk_st_proc_fops = {

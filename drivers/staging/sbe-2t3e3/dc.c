@@ -17,6 +17,11 @@
 #include "2t3e3.h"
 #include "ctrl.h"
 
+<<<<<<< HEAD
+=======
+static int dc_init_descriptor_list(struct channel *sc);
+
+>>>>>>> refs/remotes/origin/master
 void dc_init(struct channel *sc)
 {
 	u32 val;
@@ -63,6 +68,7 @@ void dc_init(struct channel *sc)
 	if (sc->p.loopback == SBE_2T3E3_LOOPBACK_ETHERNET)
 		sc->p.loopback = SBE_2T3E3_LOOPBACK_NONE;
 
+<<<<<<< HEAD
 #if 0 /* No need to clear this register - and it may be in use */
 	/*
 	 * BOOT_ROM_SERIAL_ROM_AND_MII_MANAGEMENT (CSR9)
@@ -71,6 +77,8 @@ void dc_init(struct channel *sc)
 	dc_write(sc->addr, SBE_2T3E3_21143_REG_BOOT_ROM_SERIAL_ROM_AND_MII_MANAGEMENT, val);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * GENERAL_PURPOSE_TIMER_AND_INTERRUPT_MITIGATION_CONTROL (CSR11)
 	 */
@@ -81,7 +89,11 @@ void dc_init(struct channel *sc)
 		SBE_2T3E3_21143_VAL_NUMBER_OF_RECEIVE_PACKETS;
 	dc_write(sc->addr, SBE_2T3E3_21143_REG_GENERAL_PURPOSE_TIMER_AND_INTERRUPT_MITIGATION_CONTROL, val);
 
+<<<<<<< HEAD
 	/* prepare descriptors and data for receive and transmit procecsses */
+=======
+	/* prepare descriptors and data for receive and transmit processes */
+>>>>>>> refs/remotes/origin/master
 	if (dc_init_descriptor_list(sc) != 0)
 		return;
 
@@ -301,6 +313,7 @@ void dc_set_loopback(struct channel *sc, u32 mode)
 		return;
 	}
 
+<<<<<<< HEAD
 #if 0
 	/* restart SIA */
 	dc_clear_bits(sc->addr, SBE_2T3E3_21143_REG_SIA_CONNECTIVITY,
@@ -310,6 +323,8 @@ void dc_set_loopback(struct channel *sc, u32 mode)
 		    SBE_2T3E3_21143_VAL_SIA_RESET);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* select loopback mode */
 	val = dc_read(sc->addr, SBE_2T3E3_21143_REG_OPERATION_MODE) &
 		~SBE_2T3E3_21143_VAL_OPERATING_MODE;
@@ -324,12 +339,17 @@ void dc_set_loopback(struct channel *sc, u32 mode)
 			      SBE_2T3E3_21143_VAL_FULL_DUPLEX_MODE);
 }
 
+<<<<<<< HEAD
 u32 dc_init_descriptor_list(struct channel *sc)
+=======
+static int dc_init_descriptor_list(struct channel *sc)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 i, j;
 	struct sk_buff *m;
 
 	if (sc->ether.rx_ring == NULL)
+<<<<<<< HEAD
 		sc->ether.rx_ring = kzalloc(SBE_2T3E3_RX_DESC_RING_SIZE *
 					    sizeof(t3e3_rx_desc_t), GFP_KERNEL);
 	if (sc->ether.rx_ring == NULL) {
@@ -339,12 +359,25 @@ u32 dc_init_descriptor_list(struct channel *sc)
 
 	if (sc->ether.tx_ring == NULL)
 		sc->ether.tx_ring = kzalloc(SBE_2T3E3_TX_DESC_RING_SIZE *
+=======
+		sc->ether.rx_ring = kcalloc(SBE_2T3E3_RX_DESC_RING_SIZE,
+					    sizeof(t3e3_rx_desc_t), GFP_KERNEL);
+	if (sc->ether.rx_ring == NULL)
+		return -ENOMEM;
+
+	if (sc->ether.tx_ring == NULL)
+		sc->ether.tx_ring = kcalloc(SBE_2T3E3_TX_DESC_RING_SIZE,
+>>>>>>> refs/remotes/origin/master
 					    sizeof(t3e3_tx_desc_t), GFP_KERNEL);
 	if (sc->ether.tx_ring == NULL) {
 		kfree(sc->ether.rx_ring);
 		sc->ether.rx_ring = NULL;
+<<<<<<< HEAD
 		dev_err(&sc->pdev->dev, "SBE 2T3E3: no buffer space for RX ring\n");
 		return ENOMEM;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 
@@ -368,7 +401,11 @@ u32 dc_init_descriptor_list(struct channel *sc)
 				sc->ether.tx_ring = NULL;
 				dev_err(&sc->pdev->dev, "SBE 2T3E3: token_alloc err:"
 					" no buffer space for RX ring\n");
+<<<<<<< HEAD
 				return ENOBUFS;
+=======
+				return -ENOBUFS;
+>>>>>>> refs/remotes/origin/master
 			}
 			sc->ether.rx_data[i] = m;
 		}

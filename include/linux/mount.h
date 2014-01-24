@@ -15,10 +15,14 @@
 #include <linux/spinlock.h>
 #include <linux/seqlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 struct super_block;
 struct vfsmount;
@@ -51,6 +55,7 @@ struct mnt_namespace;
 
 #define MNT_INTERNAL	0x4000
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct mnt_pcp {
 	int mnt_count;
@@ -97,6 +102,17 @@ struct vfsmount {
 	struct super_block *mnt_sb;	/* pointer to superblock */
 	int mnt_flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MNT_LOCK_READONLY	0x400000
+#define MNT_LOCKED		0x800000
+#define MNT_DOOMED		0x1000000
+#define MNT_SYNC_UMOUNT		0x2000000
+
+struct vfsmount {
+	struct dentry *mnt_root;	/* root of the mounted tree */
+	struct super_block *mnt_sb;	/* pointer to superblock */
+	int mnt_flags;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct file; /* forward dec */
@@ -106,9 +122,13 @@ extern int mnt_want_write_file(struct file *file);
 extern int mnt_clone_write(struct vfsmount *mnt);
 extern void mnt_drop_write(struct vfsmount *mnt);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void mnt_drop_write_file(struct file *file);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void mnt_drop_write_file(struct file *file);
+>>>>>>> refs/remotes/origin/master
 extern void mntput(struct vfsmount *mnt);
 extern struct vfsmount *mntget(struct vfsmount *mnt);
 extern void mnt_pin(struct vfsmount *mnt);
@@ -116,11 +136,14 @@ extern void mnt_unpin(struct vfsmount *mnt);
 extern int __mnt_is_readonly(struct vfsmount *mnt);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct vfsmount *do_kern_mount(const char *fstype, int flags,
 				      const char *name, void *data);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct file_system_type;
 extern struct vfsmount *vfs_kern_mount(struct file_system_type *type,
 				      int flags, const char *name,

@@ -471,10 +471,14 @@ static int atp867x_ata_pci_sff_init_host(struct ata_host *host)
 
 	if (!mask) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, gdev, "no available native port\n");
 =======
 		dev_err(gdev, "no available native port\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(gdev, "no available native port\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -492,9 +496,12 @@ static int atp867x_init_one(struct pci_dev *pdev,
 	const struct pci_device_id *id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	static const struct ata_port_info info_867x = {
 		.flags		= ATA_FLAG_SLAVE_POSS,
 		.pio_mask	= ATA_PIO4,
@@ -507,11 +514,15 @@ static int atp867x_init_one(struct pci_dev *pdev,
 	int rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_INFO, &pdev->dev, "version " DRV_VERSION "\n");
 =======
 	ata_print_version_once(&pdev->dev, DRV_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	rc = pcim_enable_device(pdev);
 	if (rc)
@@ -523,11 +534,15 @@ static int atp867x_init_one(struct pci_dev *pdev,
 	host = ata_host_alloc_pinfo(&pdev->dev, ppi, ATP867X_NUM_PORTS);
 	if (!host) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pdev->dev,
 			"failed to allocate ATA host\n");
 =======
 		dev_err(&pdev->dev, "failed to allocate ATA host\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pdev->dev, "failed to allocate ATA host\n");
+>>>>>>> refs/remotes/origin/master
 		rc = -ENOMEM;
 		goto err_out;
 	}
@@ -535,10 +550,14 @@ static int atp867x_init_one(struct pci_dev *pdev,
 	rc = atp867x_ata_pci_sff_init_host(host);
 	if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pdev->dev, "failed to init host\n");
 =======
 		dev_err(&pdev->dev, "failed to init host\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pdev->dev, "failed to init host\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_out;
 	}
 
@@ -548,10 +567,14 @@ static int atp867x_init_one(struct pci_dev *pdev,
 				IRQF_SHARED, &atp867x_sht);
 	if (rc)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pdev->dev, "failed to activate host\n");
 =======
 		dev_err(&pdev->dev, "failed to activate host\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pdev->dev, "failed to activate host\n");
+>>>>>>> refs/remotes/origin/master
 
 err_out:
 	return rc;
@@ -560,7 +583,11 @@ err_out:
 #ifdef CONFIG_PM
 static int atp867x_reinit_one(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = ata_pci_device_do_resume(pdev);
@@ -591,6 +618,7 @@ static struct pci_driver atp867x_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init atp867x_init(void)
 {
 	return pci_register_driver(&atp867x_driver);
@@ -600,12 +628,18 @@ static void __exit atp867x_exit(void)
 {
 	pci_unregister_driver(&atp867x_driver);
 }
+=======
+module_pci_driver(atp867x_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("John(Jung-Ik) Lee, Google Inc.");
 MODULE_DESCRIPTION("low level driver for Artop/Acard 867x ATA controller");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, atp867x_pci_tbl);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(atp867x_init);
 module_exit(atp867x_exit);
+=======
+>>>>>>> refs/remotes/origin/master

@@ -8,10 +8,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_SUP_INTEL
 
 #include <asm/perf_event_p4.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/perf_event.h>
 
 #include <asm/perf_event_p4.h>
@@ -19,7 +22,10 @@
 #include <asm/apic.h>
 
 #include "perf_event.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define P4_CNTR_LIMIT 3
 /*
@@ -565,9 +571,12 @@ static __initconst const u64 p4_hw_cache_event_ids
 	},
  },
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  [ C(NODE) ] = {
 	[ C(OP_READ) ] = {
 		[ C(RESULT_ACCESS) ] = -1,
@@ -658,17 +667,25 @@ static u64 p4_get_alias_event(u64 config)
 	return config_match | (config & P4_CONFIG_EVENT_ALIAS_IMMUTABLE_BITS);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u64 p4_general_events[PERF_COUNT_HW_MAX] = {
   /* non-halted CPU clocks */
   [PERF_COUNT_HW_CPU_CYCLES] =
 	p4_config_pack_escr(P4_ESCR_EVENT(P4_EVENT_GLOBAL_POWER_EVENTS)		|
+<<<<<<< HEAD
 <<<<<<< HEAD
 		P4_ESCR_EMASK_BIT(P4_EVENT_GLOBAL_POWER_EVENTS, RUNNING)),
 =======
 		P4_ESCR_EMASK_BIT(P4_EVENT_GLOBAL_POWER_EVENTS, RUNNING))	|
 		P4_CONFIG_ALIASABLE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		P4_ESCR_EMASK_BIT(P4_EVENT_GLOBAL_POWER_EVENTS, RUNNING))	|
+		P4_CONFIG_ALIASABLE,
+>>>>>>> refs/remotes/origin/master
 
   /*
    * retired instructions
@@ -910,8 +927,13 @@ static void p4_pmu_disable_pebs(void)
 	 * So at moment let leave metrics turned on forever -- it's
 	 * ok for now but need to be revisited!
 	 *
+<<<<<<< HEAD
 	 * (void)checking_wrmsrl(MSR_IA32_PEBS_ENABLE, (u64)0);
 	 * (void)checking_wrmsrl(MSR_P4_PEBS_MATRIX_VERT, (u64)0);
+=======
+	 * (void)wrmsrl_safe(MSR_IA32_PEBS_ENABLE, 0);
+	 * (void)wrmsrl_safe(MSR_P4_PEBS_MATRIX_VERT, 0);
+>>>>>>> refs/remotes/origin/master
 	 */
 }
 
@@ -924,9 +946,14 @@ static inline void p4_pmu_disable_event(struct perf_event *event)
 	 * state we need to clear P4_CCCR_OVF, otherwise interrupt get
 	 * asserted again and again
 	 */
+<<<<<<< HEAD
 	(void)checking_wrmsrl(hwc->config_base,
 		(u64)(p4_config_unpack_cccr(hwc->config)) &
 			~P4_CCCR_ENABLE & ~P4_CCCR_OVF & ~P4_CCCR_RESERVED);
+=======
+	(void)wrmsrl_safe(hwc->config_base,
+		p4_config_unpack_cccr(hwc->config) & ~P4_CCCR_ENABLE & ~P4_CCCR_OVF & ~P4_CCCR_RESERVED);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void p4_pmu_disable_all(void)
@@ -958,8 +985,13 @@ static void p4_pmu_enable_pebs(u64 config)
 
 	bind = &p4_pebs_bind_map[idx];
 
+<<<<<<< HEAD
 	(void)checking_wrmsrl(MSR_IA32_PEBS_ENABLE,	(u64)bind->metric_pebs);
 	(void)checking_wrmsrl(MSR_P4_PEBS_MATRIX_VERT,	(u64)bind->metric_vert);
+=======
+	(void)wrmsrl_safe(MSR_IA32_PEBS_ENABLE,	(u64)bind->metric_pebs);
+	(void)wrmsrl_safe(MSR_P4_PEBS_MATRIX_VERT,	(u64)bind->metric_vert);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void p4_pmu_enable_event(struct perf_event *event)
@@ -972,7 +1004,11 @@ static void p4_pmu_enable_event(struct perf_event *event)
 	u64 escr_addr, cccr;
 
 	bind = &p4_event_bind_map[idx];
+<<<<<<< HEAD
 	escr_addr = (u64)bind->escr_msr[thread];
+=======
+	escr_addr = bind->escr_msr[thread];
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * - we dont support cascaded counters yet
@@ -993,8 +1029,13 @@ static void p4_pmu_enable_event(struct perf_event *event)
 	 */
 	p4_pmu_enable_pebs(hwc->config);
 
+<<<<<<< HEAD
 	(void)checking_wrmsrl(escr_addr, escr_conf);
 	(void)checking_wrmsrl(hwc->config_base,
+=======
+	(void)wrmsrl_safe(escr_addr, escr_conf);
+	(void)wrmsrl_safe(hwc->config_base,
+>>>>>>> refs/remotes/origin/master
 				(cccr & ~P4_CCCR_RESERVED) | P4_CCCR_ENABLE);
 }
 
@@ -1020,8 +1061,11 @@ static int p4_pmu_handle_irq(struct pt_regs *regs)
 	int idx, handled = 0;
 	u64 val;
 
+<<<<<<< HEAD
 	perf_sample_data_init(&data, 0);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	cpuc = &__get_cpu_var(cpu_hw_events);
 
 	for (idx = 0; idx < x86_pmu.num_counters; idx++) {
@@ -1049,6 +1093,7 @@ static int p4_pmu_handle_irq(struct pt_regs *regs)
 		handled += overflow;
 
 		/* event overflow for sure */
+<<<<<<< HEAD
 		data.period = event->hw.last_period;
 
 		if (!x86_perf_event_set_period(event))
@@ -1058,6 +1103,15 @@ static int p4_pmu_handle_irq(struct pt_regs *regs)
 =======
 		if (perf_event_overflow(event, &data, regs))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		perf_sample_data_init(&data, 0, hwc->last_period);
+
+		if (!x86_perf_event_set_period(event))
+			continue;
+
+
+		if (perf_event_overflow(event, &data, regs))
+>>>>>>> refs/remotes/origin/master
 			x86_pmu_stop(event, 0);
 	}
 
@@ -1233,10 +1287,15 @@ static int p4_pmu_schedule_events(struct cpu_hw_events *cpuc, int n, int *assign
 	unsigned int i, thread, num;
 	int cntr_idx, escr_idx;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u64 config_alias;
 	int pass;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 config_alias;
+	int pass;
+>>>>>>> refs/remotes/origin/master
 
 	bitmap_zero(used_mask, X86_PMC_IDX_MAX);
 	bitmap_zero(escr_mask, P4_ESCR_MSR_TABLE_SIZE);
@@ -1246,7 +1305,10 @@ static int p4_pmu_schedule_events(struct cpu_hw_events *cpuc, int n, int *assign
 		hwc = &cpuc->event_list[i]->hw;
 		thread = p4_ht_thread(cpu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pass = 0;
 
 again:
@@ -1258,7 +1320,10 @@ again:
 		if (pass > 2)
 			goto done;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		bind = p4_config_get_bind(hwc->config);
 		escr_idx = p4_get_escr_idx(bind->escr_msr[thread]);
 		if (unlikely(escr_idx == -1))
@@ -1273,9 +1338,12 @@ again:
 
 		cntr_idx = p4_next_cntr(thread, used_mask, bind);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (cntr_idx == -1 || test_bit(escr_idx, escr_mask))
 			goto done;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (cntr_idx == -1 || test_bit(escr_idx, escr_mask)) {
 			/*
 			 * Check whether an event alias is still available.
@@ -1287,7 +1355,10 @@ again:
 			pass++;
 			goto again;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		p4_pmu_swap_config_ts(hwc, cpu);
 		if (assign)
@@ -1299,10 +1370,13 @@ reserve:
 
 done:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return num ? -ENOSPC : 0;
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return num ? -EINVAL : 0;
 }
 
@@ -1317,7 +1391,10 @@ static struct attribute *intel_p4_formats_attr[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static __initconst const struct x86_pmu p4_pmu = {
 	.name			= "Netburst P4/Xeon",
 	.handle_irq		= p4_pmu_handle_irq,
@@ -1353,21 +1430,31 @@ static __initconst const struct x86_pmu p4_pmu = {
 	 */
 	.perfctr_second_write	= 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static __init int p4_pmu_init(void)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.format_attrs		= intel_p4_formats_attr,
 };
 
 __init int p4_pmu_init(void)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int low, high;
 
 	/* If we get stripped -- indexing fails */
+<<<<<<< HEAD
 	BUILD_BUG_ON(ARCH_P4_MAX_CCCR > X86_PMC_MAX_GENERIC);
+=======
+	BUILD_BUG_ON(ARCH_P4_MAX_CCCR > INTEL_PMC_MAX_GENERIC);
+>>>>>>> refs/remotes/origin/master
 
 	rdmsr(MSR_IA32_MISC_ENABLE, low, high);
 	if (!(low & (1 << 7))) {
@@ -1386,7 +1473,10 @@ __init int p4_pmu_init(void)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #endif /* CONFIG_CPU_SUP_INTEL */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

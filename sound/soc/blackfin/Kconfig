@@ -1,7 +1,14 @@
 config SND_BF5XX_I2S
+<<<<<<< HEAD
 	tristate "SoC I2S Audio for the ADI BF5xx chip"
 	depends on BLACKFIN
 	select SND_BF5XX_SOC_SPORT
+=======
+	tristate "SoC I2S Audio for the ADI Blackfin chip"
+	depends on BLACKFIN
+	select SND_BF5XX_SOC_SPORT if !BF60x
+	select SND_BF6XX_SOC_SPORT if BF60x
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y or M if you want to add support for codecs attached to
 	  the Blackfin SPORT (synchronous serial ports) interface in I2S
@@ -9,6 +16,7 @@ config SND_BF5XX_I2S
 	  You will also need to select the audio interfaces to support below.
 
 config SND_BF5XX_SOC_SSM2602
+<<<<<<< HEAD
 	tristate "SoC SSM2602 Audio support for BF52x ezkit"
 <<<<<<< HEAD
 	depends on SND_BF5XX_I2S
@@ -24,6 +32,16 @@ config SND_BF5XX_SOC_SSM2602
 	select SND_SOC_SSM2602
 	help
 	  Say Y if you want to add support for SoC audio on BF527-EZKIT.
+=======
+	tristate "SoC SSM2602 Audio Codec Add-On Card support"
+	depends on SND_BF5XX_I2S && (SPI_MASTER || I2C)
+	select SND_BF5XX_SOC_I2S if !BF60x
+	select SND_BF6XX_SOC_I2S if BF60x
+	select SND_SOC_SSM2602
+	help
+	  Say Y if you want to add support for the Analog Devices
+	  SSM2602 Audio Codec Add-On Card.
+>>>>>>> refs/remotes/origin/master
 
 config SND_SOC_BFIN_EVAL_ADAU1701
 	tristate "Support for the EVAL-ADAU1701MINIZ board on Blackfin eval boards"
@@ -62,7 +80,27 @@ config SND_SOC_BFIN_EVAL_ADAV80X
 	  Note: This driver assumes that the ADAV80X digital record and playback
 	  interfaces are connected to the first SPORT port on the BF5XX board.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config SND_BF5XX_SOC_AD1836
+	tristate "SoC AD1836 Audio support for BF5xx"
+	depends on SND_BF5XX_I2S
+	select SND_BF5XX_SOC_I2S
+	select SND_SOC_AD1836
+	help
+	  Say Y if you want to add support for SoC audio on BF5xx STAMP/EZKIT.
+
+config SND_BF5XX_SOC_AD193X
+	tristate "SoC AD193X Audio support for Blackfin"
+	depends on SND_BF5XX_I2S
+	select SND_BF5XX_SOC_I2S
+	select SND_SOC_AD193X
+	help
+	  Say Y if you want to add support for AD193X codec on Blackfin.
+	  This driver supports AD1936, AD1937, AD1938 and AD1939.
+
+>>>>>>> refs/remotes/origin/master
 config SND_BF5XX_SOC_AD73311
 	tristate "SoC AD73311 Audio support for Blackfin"
 	depends on SND_BF5XX_I2S
@@ -79,6 +117,7 @@ config SND_BFIN_AD73311_SE
 	  Enter the GPIO used to control AD73311's SE pin. Acceptable
 	  values are 0 to 7
 
+<<<<<<< HEAD
 config SND_BF5XX_TDM
 	tristate "SoC I2S(TDM mode) Audio for the ADI BF5xx chip"
 	depends on (BLACKFIN && SND_SOC)
@@ -106,6 +145,8 @@ config SND_BF5XX_SOC_AD193X
 	  Say Y if you want to add support for AD193X codec on Blackfin.
 	  This driver supports AD1936, AD1937, AD1938 and AD1939.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config SND_BF5XX_AC97
 	tristate "SoC AC97 Audio for the ADI BF5xx chip"
 	depends on BLACKFIN
@@ -172,10 +213,20 @@ config SND_BF5XX_SOC_AD1980
 config SND_BF5XX_SOC_SPORT
 	tristate
 
+<<<<<<< HEAD
 config SND_BF5XX_SOC_I2S
 	tristate
 
 config SND_BF5XX_SOC_TDM
+=======
+config SND_BF6XX_SOC_SPORT
+	tristate
+
+config SND_BF5XX_SOC_I2S
+	tristate
+
+config SND_BF6XX_SOC_I2S
+>>>>>>> refs/remotes/origin/master
 	tristate
 
 config SND_BF5XX_SOC_AC97
@@ -183,7 +234,11 @@ config SND_BF5XX_SOC_AC97
 
 config SND_BF5XX_SPORT_NUM
 	int "Set a SPORT for Sound chip"
+<<<<<<< HEAD
 	depends on (SND_BF5XX_I2S || SND_BF5XX_AC97 || SND_BF5XX_TDM)
+=======
+	depends on (SND_BF5XX_SOC_SPORT || SND_BF6XX_SOC_SPORT)
+>>>>>>> refs/remotes/origin/master
 	range 0 3 if BF54x
 	range 0 1 if !BF54x
 	default 0

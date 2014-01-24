@@ -11,6 +11,7 @@
 #ifndef _ASM_INST_H
 #define _ASM_INST_H
 
+<<<<<<< HEAD
 /*
  * Major opcodes; before MIPS IV cop1x was called cop3.
  */
@@ -357,6 +358,9 @@ union mips_instruction {
 	struct ma_format ma_format;
 	struct b_format b_format;
 };
+=======
+#include <uapi/asm/inst.h>
+>>>>>>> refs/remotes/origin/master
 
 /* HACHACHAHCAHC ...  */
 
@@ -418,4 +422,19 @@ union mips_instruction {
 
 typedef unsigned int mips_instruction;
 
+<<<<<<< HEAD
+=======
+/* microMIPS instruction decode structure. Do NOT export!!! */
+struct mm_decoded_insn {
+	mips_instruction insn;
+	mips_instruction next_insn;
+	int pc_inc;
+	int next_pc_inc;
+	int micro_mips_mode;
+};
+
+/* Recode table from 16-bit register notation to 32-bit GPR. Do NOT export!!! */
+extern const int reg16to32[];
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_INST_H */

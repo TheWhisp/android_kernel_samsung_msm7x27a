@@ -36,6 +36,7 @@ struct ir_raw_event_ctrl {
 	struct task_struct		*thread;
 	spinlock_t			lock;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct kfifo			kfifo;		/* fifo for the pulse/space durations */
 =======
 	struct kfifo_rec_ptr_1		kfifo;		/* fifo for the pulse/space durations */
@@ -44,6 +45,12 @@ struct ir_raw_event_ctrl {
 	enum raw_event_type		last_type;	/* last event type */
 	struct rc_dev			*dev;		/* pointer to the parent rc_dev */
 	u64				enabled_protocols; /* enabled raw protocol decoders */
+=======
+	struct kfifo_rec_ptr_1		kfifo;		/* fifo for the pulse/space durations */
+	ktime_t				last_event;	/* when last event occurred */
+	enum raw_event_type		last_type;	/* last event type */
+	struct rc_dev			*dev;		/* pointer to the parent rc_dev */
+>>>>>>> refs/remotes/origin/master
 
 	/* raw decoder state follows */
 	struct ir_raw_event prev_ev;
@@ -89,7 +96,10 @@ struct ir_raw_event_ctrl {
 		unsigned wanted_bits;
 	} rc5_sz;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sanyo_dec {
 		int state;
 		unsigned count;
@@ -106,7 +116,10 @@ struct ir_raw_event_ctrl {
 		unsigned count;
 		unsigned wanted_bits;
 	} mce_kbd;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct lirc_codec {
 		struct rc_dev *dev;
 		struct lirc_driver *drv;
@@ -172,6 +185,7 @@ void ir_raw_init(void);
 
 /* from ir-nec-decoder.c */
 #ifdef CONFIG_IR_NEC_DECODER_MODULE
+<<<<<<< HEAD
 #define load_nec_decode()	request_module("ir-nec-decoder")
 #else
 <<<<<<< HEAD
@@ -179,10 +193,16 @@ void ir_raw_init(void);
 =======
 static inline void load_nec_decode(void) { }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define load_nec_decode()	request_module_nowait("ir-nec-decoder")
+#else
+static inline void load_nec_decode(void) { }
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* from ir-rc5-decoder.c */
 #ifdef CONFIG_IR_RC5_DECODER_MODULE
+<<<<<<< HEAD
 #define load_rc5_decode()	request_module("ir-rc5-decoder")
 #else
 <<<<<<< HEAD
@@ -190,10 +210,16 @@ static inline void load_nec_decode(void) { }
 =======
 static inline void load_rc5_decode(void) { }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define load_rc5_decode()	request_module_nowait("ir-rc5-decoder")
+#else
+static inline void load_rc5_decode(void) { }
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* from ir-rc6-decoder.c */
 #ifdef CONFIG_IR_RC6_DECODER_MODULE
+<<<<<<< HEAD
 #define load_rc6_decode()	request_module("ir-rc6-decoder")
 #else
 <<<<<<< HEAD
@@ -201,10 +227,16 @@ static inline void load_rc5_decode(void) { }
 =======
 static inline void load_rc6_decode(void) { }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define load_rc6_decode()	request_module_nowait("ir-rc6-decoder")
+#else
+static inline void load_rc6_decode(void) { }
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* from ir-jvc-decoder.c */
 #ifdef CONFIG_IR_JVC_DECODER_MODULE
+<<<<<<< HEAD
 #define load_jvc_decode()	request_module("ir-jvc-decoder")
 #else
 <<<<<<< HEAD
@@ -212,35 +244,56 @@ static inline void load_rc6_decode(void) { }
 =======
 static inline void load_jvc_decode(void) { }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define load_jvc_decode()	request_module_nowait("ir-jvc-decoder")
+#else
+static inline void load_jvc_decode(void) { }
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* from ir-sony-decoder.c */
 #ifdef CONFIG_IR_SONY_DECODER_MODULE
+<<<<<<< HEAD
 #define load_sony_decode()	request_module("ir-sony-decoder")
 #else
 <<<<<<< HEAD
 #define load_sony_decode()	0
 =======
+=======
+#define load_sony_decode()	request_module_nowait("ir-sony-decoder")
+#else
+>>>>>>> refs/remotes/origin/master
 static inline void load_sony_decode(void) { }
 #endif
 
 /* from ir-sanyo-decoder.c */
 #ifdef CONFIG_IR_SANYO_DECODER_MODULE
+<<<<<<< HEAD
 #define load_sanyo_decode()	request_module("ir-sanyo-decoder")
+=======
+#define load_sanyo_decode()	request_module_nowait("ir-sanyo-decoder")
+>>>>>>> refs/remotes/origin/master
 #else
 static inline void load_sanyo_decode(void) { }
 #endif
 
 /* from ir-mce_kbd-decoder.c */
 #ifdef CONFIG_IR_MCE_KBD_DECODER_MODULE
+<<<<<<< HEAD
 #define load_mce_kbd_decode()	request_module("ir-mce_kbd-decoder")
 #else
 static inline void load_mce_kbd_decode(void) { }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define load_mce_kbd_decode()	request_module_nowait("ir-mce_kbd-decoder")
+#else
+static inline void load_mce_kbd_decode(void) { }
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* from ir-lirc-codec.c */
 #ifdef CONFIG_IR_LIRC_CODEC_MODULE
+<<<<<<< HEAD
 #define load_lirc_codec()	request_module("ir-lirc-codec")
 #else
 <<<<<<< HEAD
@@ -248,6 +301,11 @@ static inline void load_mce_kbd_decode(void) { }
 =======
 static inline void load_lirc_codec(void) { }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define load_lirc_codec()	request_module_nowait("ir-lirc-codec")
+#else
+static inline void load_lirc_codec(void) { }
+>>>>>>> refs/remotes/origin/master
 #endif
 
 

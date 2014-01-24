@@ -37,8 +37,11 @@
 
 #include <linux/spi/spi.h>
 
+<<<<<<< HEAD
 #include <plat/clock.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define OMAP1_SPI100K_MAX_FREQ          48000000
 
 #define ICR_SPITAS      (OMAP7XX_ICR_BASE + 0x12)
@@ -85,11 +88,14 @@
 #define SPI_SHUTDOWN	1
 
 struct omap1_spi100k {
+<<<<<<< HEAD
 	struct work_struct      work;
 
 	/* lock protects queue and registers */
 	spinlock_t              lock;
 	struct list_head        msg_queue;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct spi_master       *master;
 	struct clk              *ick;
 	struct clk              *fck;
@@ -106,8 +112,11 @@ struct omap1_spi100k_cs {
 	int                     word_len;
 };
 
+<<<<<<< HEAD
 static struct workqueue_struct *omap1_spi100k_wq;
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define MOD_REG_BIT(val, mask, set) do { \
 	if (set) \
 		val |= mask; \
@@ -300,12 +309,15 @@ static int omap1_spi100k_setup(struct spi_device *spi)
 	struct omap1_spi100k    *spi100k;
 	struct omap1_spi100k_cs *cs = spi->controller_state;
 
+<<<<<<< HEAD
 	if (spi->bits_per_word < 4 || spi->bits_per_word > 32) {
 		 dev_dbg(&spi->dev, "setup: unsupported %d bit words\n",
 			spi->bits_per_word);
 		 return -EINVAL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spi100k = spi_master_get_devdata(spi->master);
 
 	if (!cs) {
@@ -318,6 +330,7 @@ static int omap1_spi100k_setup(struct spi_device *spi)
 
 	spi100k_open(spi->master);
 
+<<<<<<< HEAD
 	clk_enable(spi100k->ick);
 	clk_enable(spi100k->fck);
 
@@ -325,10 +338,20 @@ static int omap1_spi100k_setup(struct spi_device *spi)
 
 	clk_disable(spi100k->ick);
 	clk_disable(spi100k->fck);
+=======
+	clk_prepare_enable(spi100k->ick);
+	clk_prepare_enable(spi100k->fck);
+
+	ret = omap1_spi100k_setup_transfer(spi, NULL);
+
+	clk_disable_unprepare(spi100k->ick);
+	clk_disable_unprepare(spi100k->fck);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static void omap1_spi100k_work(struct work_struct *work)
 {
 	struct omap1_spi100k    *spi100k;
@@ -479,16 +502,106 @@ static int omap1_spi100k_transfer(struct spi_device *spi, struct spi_message *m)
 	list_add_tail(&m->queue, &spi100k->msg_queue);
 	queue_work(omap1_spi100k_wq, &spi100k->work);
 	spin_unlock_irqrestore(&spi100k->lock, flags);
+=======
+static int omap1_spi100k_prepare_hardware(struct spi_master *master)
+{
+	struct omap1_spi100k *spi100k = spi_master_get_devdata(master);
+
+	clk_prepare_enable(spi100k->ick);
+	clk_prepare_enable(spi100k->fck);
 
 	return 0;
 }
 
+static int omap1_spi100k_transfer_one_message(struct spi_master *master,
+					      struct spi_message *m)
+{
+	struct omap1_spi100k *spi100k = spi_master_get_devdata(master);
+	struct spi_device *spi = m->spi;
+	struct spi_transfer *t = NULL;
+	int cs_active = 0;
+	int par_override = 0;
+	int status = 0;
+
+	list_for_each_entry(t, &m->transfers, transfer_list) {
+		if (t->tx_buf == NULL && t->rx_buf == NULL && t->len) {
+			status = -EINVAL;
+			break;
+		}
+		if (par_override || t->speed_hz || t->bits_per_word) {
+			par_override = 1;
+			status = omap1_spi100k_setup_transfer(spi, t);
+			if (status < 0)
+				break;
+			if (!t->speed_hz && !t->bits_per_word)
+				par_override = 0;
+		}
+
+		if (!cs_active) {
+			omap1_spi100k_force_cs(spi100k, 1);
+			cs_active = 1;
+		}
+
+		if (t->len) {
+			unsigned count;
+
+			count = omap1_spi100k_txrx_pio(spi, t);
+			m->actual_length += count;
+
+			if (count != t->len) {
+				status = -EIO;
+				break;
+			}
+		}
+
+		if (t->delay_usecs)
+			udelay(t->delay_usecs);
+
+		/* ignore the "leave it on after last xfer" hint */
+
+		if (t->cs_change) {
+			omap1_spi100k_force_cs(spi100k, 0);
+			cs_active = 0;
+		}
+	}
+
+	/* Restore defaults if they were overriden */
+	if (par_override) {
+		par_override = 0;
+		status = omap1_spi100k_setup_transfer(spi, NULL);
+	}
+
+	if (cs_active)
+		omap1_spi100k_force_cs(spi100k, 0);
+
+	m->status = status;
+
+	spi_finalize_current_message(master);
+
+	return status;
+}
+
+static int omap1_spi100k_unprepare_hardware(struct spi_master *master)
+{
+	struct omap1_spi100k *spi100k = spi_master_get_devdata(master);
+
+	clk_disable_unprepare(spi100k->ick);
+	clk_disable_unprepare(spi100k->fck);
+>>>>>>> refs/remotes/origin/master
+
+	return 0;
+}
+
+<<<<<<< HEAD
 static int __init omap1_spi100k_reset(struct omap1_spi100k *spi100k)
 {
 	return 0;
 }
 
 static int __devinit omap1_spi100k_probe(struct platform_device *pdev)
+=======
+static int omap1_spi100k_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct spi_master       *master;
 	struct omap1_spi100k    *spi100k;
@@ -507,12 +620,26 @@ static int __devinit omap1_spi100k_probe(struct platform_device *pdev)
 	       master->bus_num = pdev->id;
 
 	master->setup = omap1_spi100k_setup;
+<<<<<<< HEAD
 	master->transfer = omap1_spi100k_transfer;
 	master->cleanup = NULL;
 	master->num_chipselect = 2;
 	master->mode_bits = MODEBITS;
 
 	dev_set_drvdata(&pdev->dev, master);
+=======
+	master->transfer_one_message = omap1_spi100k_transfer_one_message;
+	master->prepare_transfer_hardware = omap1_spi100k_prepare_hardware;
+	master->unprepare_transfer_hardware = omap1_spi100k_unprepare_hardware;
+	master->cleanup = NULL;
+	master->num_chipselect = 2;
+	master->mode_bits = MODEBITS;
+	master->bits_per_word_mask = SPI_BPW_RANGE_MASK(4, 32);
+	master->min_speed_hz = OMAP1_SPI100K_MAX_FREQ/(1<<16);
+	master->max_speed_hz = OMAP1_SPI100K_MAX_FREQ;
+
+	platform_set_drvdata(pdev, master);
+>>>>>>> refs/remotes/origin/master
 
 	spi100k = spi_master_get_devdata(master);
 	spi100k->master = master;
@@ -522,6 +649,7 @@ static int __devinit omap1_spi100k_probe(struct platform_device *pdev)
 	 * You should allocate this with ioremap() before initializing
 	 * the SPI.
 	 */
+<<<<<<< HEAD
 	spi100k->base = (void __iomem *) pdev->dev.platform_data;
 
 	INIT_WORK(&spi100k->work, omap1_spi100k_work);
@@ -548,25 +676,55 @@ static int __devinit omap1_spi100k_probe(struct platform_device *pdev)
 	status = spi_register_master(master);
 	if (status < 0)
 		goto err3;
+=======
+	spi100k->base = (void __iomem *)dev_get_platdata(&pdev->dev);
+
+	spi100k->ick = devm_clk_get(&pdev->dev, "ick");
+	if (IS_ERR(spi100k->ick)) {
+		dev_dbg(&pdev->dev, "can't get spi100k_ick\n");
+		status = PTR_ERR(spi100k->ick);
+		goto err;
+	}
+
+	spi100k->fck = devm_clk_get(&pdev->dev, "fck");
+	if (IS_ERR(spi100k->fck)) {
+		dev_dbg(&pdev->dev, "can't get spi100k_fck\n");
+		status = PTR_ERR(spi100k->fck);
+		goto err;
+	}
+
+	status = devm_spi_register_master(&pdev->dev, master);
+	if (status < 0)
+		goto err;
+>>>>>>> refs/remotes/origin/master
 
 	spi100k->state = SPI_RUNNING;
 
 	return status;
 
+<<<<<<< HEAD
 err3:
 	clk_put(spi100k->fck);
 err2:
 	clk_put(spi100k->ick);
 err1:
+=======
+err:
+>>>>>>> refs/remotes/origin/master
 	spi_master_put(master);
 	return status;
 }
 
+<<<<<<< HEAD
 static int __exit omap1_spi100k_remove(struct platform_device *pdev)
+=======
+static int omap1_spi100k_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct spi_master       *master;
 	struct omap1_spi100k    *spi100k;
 	struct resource         *r;
+<<<<<<< HEAD
 	unsigned		limit = 500;
 	unsigned long		flags;
 	int			status = 0;
@@ -598,6 +756,18 @@ static int __exit omap1_spi100k_remove(struct platform_device *pdev)
 
 	spi_unregister_master(master);
 
+=======
+	int			status = 0;
+
+	master = platform_get_drvdata(pdev);
+	spi100k = spi_master_get_devdata(master);
+
+	if (status != 0)
+		return status;
+
+	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -606,6 +776,7 @@ static struct platform_driver omap1_spi100k_driver = {
 		.name		= "omap1_spi100k",
 		.owner		= THIS_MODULE,
 	},
+<<<<<<< HEAD
 	.remove		= __exit_p(omap1_spi100k_remove),
 };
 
@@ -630,6 +801,13 @@ static void __exit omap1_spi100k_exit(void)
 
 module_init(omap1_spi100k_init);
 module_exit(omap1_spi100k_exit);
+=======
+	.probe		= omap1_spi100k_probe,
+	.remove		= omap1_spi100k_remove,
+};
+
+module_platform_driver(omap1_spi100k_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("OMAP7xx SPI 100k controller driver");
 MODULE_AUTHOR("Fabrice Crohas <fcrohas@gmail.com>");

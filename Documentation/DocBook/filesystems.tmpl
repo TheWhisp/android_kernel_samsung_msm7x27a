@@ -91,7 +91,10 @@
      <title>The Filesystem for Exporting Kernel Objects</title>
 !Efs/sysfs/file.c
 !Efs/sysfs/symlink.c
+<<<<<<< HEAD
 !Efs/sysfs/bin.c
+=======
+>>>>>>> refs/remotes/origin/master
   </chapter>
 
   <chapter id="debugfs">
@@ -224,8 +227,13 @@ all your transactions.
 </para>
 
 <para>
+<<<<<<< HEAD
 Then at umount time , in your put_super() (2.4) or write_super() (2.5)
 you can then call journal_destroy() to clean up your in-core journal object.
+=======
+Then at umount time , in your put_super() you can then call journal_destroy()
+to clean up your in-core journal object.
+>>>>>>> refs/remotes/origin/master
 </para>
 
 <para>
@@ -388,10 +396,14 @@ an example.
 	<para>
 	  <citation>
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   <ulink url="ftp://ftp.uk.linux.org/pub/linux/sct/fs/jfs/journal-design.ps.gz">
 =======
 	   <ulink url="http://kernel.org/pub/linux/kernel/people/sct/ext3/journal-design.ps.gz">
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	   <ulink url="http://kernel.org/pub/linux/kernel/people/sct/ext3/journal-design.ps.gz">
+>>>>>>> refs/remotes/origin/master
 	   	Journaling the Linux ext2fs Filesystem, LinuxExpo 98, Stephen Tweedie
 	   </ulink>
 	  </citation>

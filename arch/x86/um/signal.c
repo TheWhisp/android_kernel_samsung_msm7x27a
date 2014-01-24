@@ -11,8 +11,13 @@
 #include <asm/unistd.h>
 #include <asm/uaccess.h>
 #include <asm/ucontext.h>
+<<<<<<< HEAD
 #include "frame_kern.h"
 #include "skas.h"
+=======
+#include <frame_kern.h>
+#include <skas.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_X86_32
 
@@ -156,6 +161,12 @@ static int copy_sc_from_user(struct pt_regs *regs,
 	struct sigcontext sc;
 	int err, pid;
 
+<<<<<<< HEAD
+=======
+	/* Always make any pending restarted system calls return -EINTR */
+	current_thread_info()->restart_block.fn = do_no_restart_syscall;
+
+>>>>>>> refs/remotes/origin/master
 	err = copy_from_user(&sc, from, sizeof(sc));
 	if (err)
 		return err;
@@ -339,9 +350,13 @@ static int copy_ucontext_to_user(struct ucontext __user *uc,
 {
 	int err = 0;
 
+<<<<<<< HEAD
 	err |= put_user(current->sas_ss_sp, &uc->uc_stack.ss_sp);
 	err |= put_user(sas_ss_flags(sp), &uc->uc_stack.ss_flags);
 	err |= put_user(current->sas_ss_size, &uc->uc_stack.ss_size);
+=======
+	err |= __save_altstack(&uc->uc_stack, sp);
+>>>>>>> refs/remotes/origin/master
 	err |= copy_sc_to_user(&uc->uc_mcontext, fp, &current->thread.regs, 0);
 	err |= copy_to_user(&uc->uc_sigmask, set, sizeof(*set));
 	return err;
@@ -410,12 +425,18 @@ int setup_signal_stack_sc(unsigned long stack_top, int sig,
 
 	PT_REGS_SP(regs) = (unsigned long) frame;
 	PT_REGS_IP(regs) = (unsigned long) ka->sa.sa_handler;
+<<<<<<< HEAD
 	PT_REGS_EAX(regs) = (unsigned long) sig;
 	PT_REGS_EDX(regs) = (unsigned long) 0;
 	PT_REGS_ECX(regs) = (unsigned long) 0;
 
 	if ((current->ptrace & PT_DTRACE) && (current->ptrace & PT_PTRACED))
 		ptrace_notify(SIGTRAP);
+=======
+	PT_REGS_AX(regs) = (unsigned long) sig;
+	PT_REGS_DX(regs) = (unsigned long) 0;
+	PT_REGS_CX(regs) = (unsigned long) 0;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -460,6 +481,7 @@ int setup_signal_stack_si(unsigned long stack_top, int sig,
 
 	PT_REGS_SP(regs) = (unsigned long) frame;
 	PT_REGS_IP(regs) = (unsigned long) ka->sa.sa_handler;
+<<<<<<< HEAD
 	PT_REGS_EAX(regs) = (unsigned long) sig;
 	PT_REGS_EDX(regs) = (unsigned long) &frame->info;
 	PT_REGS_ECX(regs) = (unsigned long) &frame->uc;
@@ -470,6 +492,15 @@ int setup_signal_stack_si(unsigned long stack_top, int sig,
 }
 
 long sys_sigreturn(struct pt_regs *regs)
+=======
+	PT_REGS_AX(regs) = (unsigned long) sig;
+	PT_REGS_DX(regs) = (unsigned long) &frame->info;
+	PT_REGS_CX(regs) = (unsigned long) &frame->uc;
+	return 0;
+}
+
+long sys_sigreturn(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long sp = PT_REGS_SP(&current->thread.regs);
 	struct sigframe __user *frame = (struct sigframe __user *)(sp - 8);
@@ -483,7 +514,10 @@ long sys_sigreturn(struct pt_regs *regs)
 	    copy_from_user(&set.sig[1], extramask, sig_size))
 		goto segfault;
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
+=======
+>>>>>>> refs/remotes/origin/master
 	set_current_blocked(&set);
 
 	if (copy_sc_from_user(&current->thread.regs, sc))
@@ -514,7 +548,10 @@ int setup_signal_stack_si(unsigned long stack_top, int sig,
 {
 	struct rt_sigframe __user *frame;
 	int err = 0;
+<<<<<<< HEAD
 	struct task_struct *me = current;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	frame = (struct rt_sigframe __user *)
 		round_down(stack_top - sizeof(struct rt_sigframe), 16);
@@ -533,16 +570,25 @@ int setup_signal_stack_si(unsigned long stack_top, int sig,
 	/* Create the ucontext.  */
 	err |= __put_user(0, &frame->uc.uc_flags);
 	err |= __put_user(0, &frame->uc.uc_link);
+<<<<<<< HEAD
 	err |= __put_user(me->sas_ss_sp, &frame->uc.uc_stack.ss_sp);
 	err |= __put_user(sas_ss_flags(PT_REGS_SP(regs)),
 			  &frame->uc.uc_stack.ss_flags);
 	err |= __put_user(me->sas_ss_size, &frame->uc.uc_stack.ss_size);
+=======
+	err |= __save_altstack(&frame->uc.uc_stack, PT_REGS_SP(regs));
+>>>>>>> refs/remotes/origin/master
 	err |= copy_sc_to_user(&frame->uc.uc_mcontext, &frame->fpstate, regs,
 			       set->sig[0]);
 	err |= __put_user(&frame->fpstate, &frame->uc.uc_mcontext.fpstate);
 	if (sizeof(*set) == 16) {
+<<<<<<< HEAD
 		__put_user(set->sig[0], &frame->uc.uc_sigmask.sig[0]);
 		__put_user(set->sig[1], &frame->uc.uc_sigmask.sig[1]);
+=======
+		err |= __put_user(set->sig[0], &frame->uc.uc_sigmask.sig[0]);
+		err |= __put_user(set->sig[1], &frame->uc.uc_sigmask.sig[1]);
+>>>>>>> refs/remotes/origin/master
 	}
 	else
 		err |= __copy_to_user(&frame->uc.uc_sigmask, set,
@@ -570,23 +616,39 @@ int setup_signal_stack_si(unsigned long stack_top, int sig,
 	}
 
 	PT_REGS_SP(regs) = (unsigned long) frame;
+<<<<<<< HEAD
 	PT_REGS_RDI(regs) = sig;
 	/* In case the signal handler was declared without prototypes */
 	PT_REGS_RAX(regs) = 0;
+=======
+	PT_REGS_DI(regs) = sig;
+	/* In case the signal handler was declared without prototypes */
+	PT_REGS_AX(regs) = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * This also works for non SA_SIGINFO handlers because they expect the
 	 * next argument after the signal number on the stack.
 	 */
+<<<<<<< HEAD
 	PT_REGS_RSI(regs) = (unsigned long) &frame->info;
 	PT_REGS_RDX(regs) = (unsigned long) &frame->uc;
 	PT_REGS_RIP(regs) = (unsigned long) ka->sa.sa_handler;
+=======
+	PT_REGS_SI(regs) = (unsigned long) &frame->info;
+	PT_REGS_DX(regs) = (unsigned long) &frame->uc;
+	PT_REGS_IP(regs) = (unsigned long) ka->sa.sa_handler;
+>>>>>>> refs/remotes/origin/master
  out:
 	return err;
 }
 #endif
 
+<<<<<<< HEAD
 long sys_rt_sigreturn(struct pt_regs *regs)
+=======
+long sys_rt_sigreturn(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long sp = PT_REGS_SP(&current->thread.regs);
 	struct rt_sigframe __user *frame =
@@ -597,7 +659,10 @@ long sys_rt_sigreturn(struct pt_regs *regs)
 	if (copy_from_user(&set, &uc->uc_sigmask, sizeof(set)))
 		goto segfault;
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
+=======
+>>>>>>> refs/remotes/origin/master
 	set_current_blocked(&set);
 
 	if (copy_sc_from_user(&current->thread.regs, &uc->uc_mcontext))
@@ -611,6 +676,7 @@ long sys_rt_sigreturn(struct pt_regs *regs)
 	force_sig(SIGSEGV, current);
 	return 0;
 }
+<<<<<<< HEAD
 
 #ifdef CONFIG_X86_32
 long ptregs_sigreturn(void)
@@ -622,3 +688,5 @@ long ptregs_rt_sigreturn(void)
 	return sys_rt_sigreturn(NULL);
 }
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

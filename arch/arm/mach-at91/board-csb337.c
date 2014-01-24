@@ -20,9 +20,13 @@
 
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/mm.h>
 #include <linux/module.h>
@@ -41,18 +45,25 @@
 #include <asm/mach/irq.h>
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
 #include <mach/board.h>
 <<<<<<< HEAD
 #include <mach/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+
+#include "at91_aic.h"
+#include "board.h"
+>>>>>>> refs/remotes/origin/master
 #include "generic.h"
 
 
 static void __init csb337_init_early(void)
 {
 	/* Initialize processor: 3.6864 MHz crystal */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	at91rm9200_initialize(3686400);
 =======
@@ -81,10 +92,21 @@ static struct macb_platform_data __initdata csb337_eth_data = {
 >>>>>>> refs/remotes/origin/cm-10.0
 	.phy_irq_pin	= AT91_PIN_PC2,
 	.is_rmii	= 0,
+=======
+	at91_initialize(3686400);
+}
+
+static struct macb_platform_data __initdata csb337_eth_data = {
+	.phy_irq_pin	= AT91_PIN_PC2,
+	.is_rmii	= 0,
+	/* The CSB337 bootloader stores the MAC the wrong-way around */
+	.rev_eth_addr	= 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct at91_usbh_data __initdata csb337_usbh_data = {
 	.ports		= 2,
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
@@ -92,6 +114,8 @@ static struct at91_udc_data __initdata csb337_udc_data = {
 	// this has no VBUS sensing pin
 	.pullup_pin	= AT91_PIN_PA24,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.vbus_pin	= {-EINVAL, -EINVAL},
 	.overcurrent_pin= {-EINVAL, -EINVAL},
 };
@@ -99,7 +123,10 @@ static struct at91_udc_data __initdata csb337_udc_data = {
 static struct at91_udc_data __initdata csb337_udc_data = {
 	.pullup_pin	= AT91_PIN_PA24,
 	.vbus_pin	= -EINVAL,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct i2c_board_info __initdata csb337_i2c_devices[] = {
@@ -123,6 +150,7 @@ static struct at91_cf_data __initdata csb337_cf_data = {
 	.rst_pin	= AT91_PIN_PD2,
 };
 
+<<<<<<< HEAD
 static struct at91_mmc_data __initdata csb337_mmc_data = {
 	.det_pin	= AT91_PIN_PD5,
 	.slot_b		= 0,
@@ -132,6 +160,14 @@ static struct at91_mmc_data __initdata csb337_mmc_data = {
 =======
 	.vcc_pin	= -EINVAL,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct mci_platform_data __initdata csb337_mci0_data = {
+	.slot[0] = {
+		.bus_width	= 4,
+		.detect_pin	= AT91_PIN_PD5,
+		.wp_pin		= AT91_PIN_PD6,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct spi_board_info csb337_spi_devices[] = {
@@ -260,6 +296,11 @@ static struct gpio_led csb_leds[] = {
 static void __init csb337_board_init(void)
 {
 	/* Serial */
+<<<<<<< HEAD
+=======
+	/* DBGU on ttyS0 */
+	at91_register_uart(0, 0, 0);
+>>>>>>> refs/remotes/origin/master
 	at91_add_device_serial();
 	/* Ethernet */
 	at91_add_device_eth(&csb337_eth_data);
@@ -275,7 +316,11 @@ static void __init csb337_board_init(void)
 	/* SPI */
 	at91_add_device_spi(csb337_spi_devices, ARRAY_SIZE(csb337_spi_devices));
 	/* MMC */
+<<<<<<< HEAD
 	at91_add_device_mmc(0, &csb337_mmc_data);
+=======
+	at91_add_device_mci(0, &csb337_mci0_data);
+>>>>>>> refs/remotes/origin/master
 	/* NOR flash */
 	platform_device_register(&csb_flash);
 	/* LEDs */
@@ -286,6 +331,7 @@ static void __init csb337_board_init(void)
 
 MACHINE_START(CSB337, "Cogent CSB337")
 	/* Maintainer: Bill Gatliff */
+<<<<<<< HEAD
 	.timer		= &at91rm9200_timer,
 <<<<<<< HEAD
 	.map_io		= at91rm9200_map_io,
@@ -296,5 +342,12 @@ MACHINE_START(CSB337, "Cogent CSB337")
 	.init_early	= csb337_init_early,
 	.init_irq	= at91_init_irq_default,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= at91rm9200_timer_init,
+	.map_io		= at91_map_io,
+	.handle_irq	= at91_aic_handle_irq,
+	.init_early	= csb337_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= csb337_board_init,
 MACHINE_END

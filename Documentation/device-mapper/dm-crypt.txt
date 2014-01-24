@@ -5,6 +5,7 @@ Device-Mapper's "crypt" target provides transparent encryption of block devices
 using the kernel crypto API.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Parameters: <cipher> <key> <iv_offset> <device path> <offset>
 =======
 Parameters: <cipher> <key> <iv_offset> <device path> \
@@ -14,6 +15,17 @@ Parameters: <cipher> <key> <iv_offset> <device path> \
 <cipher>
     Encryption cipher and an optional IV generation mode.
     (In format cipher[:keycount]-chainmode-ivopts:ivmode).
+=======
+For a more detailed description of supported parameters see:
+http://code.google.com/p/cryptsetup/wiki/DMCrypt
+
+Parameters: <cipher> <key> <iv_offset> <device path> \
+	      <offset> [<#opt_params> <opt_params>]
+
+<cipher>
+    Encryption cipher and an optional IV generation mode.
+    (In format cipher[:keycount]-chainmode-ivmode[:ivopts]).
+>>>>>>> refs/remotes/origin/master
     Examples:
        des
        aes-cbc-essiv:sha256
@@ -23,7 +35,15 @@ Parameters: <cipher> <key> <iv_offset> <device path> \
 
 <key>
     Key used for encryption. It is encoded as a hexadecimal number.
+<<<<<<< HEAD
     You can only use key sizes that are valid for the selected cipher.
+=======
+    You can only use key sizes that are valid for the selected cipher
+    in combination with the selected iv mode.
+    Note that for some iv modes the key string can contain additional
+    keys (for example IV seed) so the key contains more parts concatenated
+    into a single string.
+>>>>>>> refs/remotes/origin/master
 
 <keycount>
     Multi-key compatibility mode. You can define <keycount> keys and
@@ -43,7 +63,10 @@ Parameters: <cipher> <key> <iv_offset> <device path> \
     Starting sector within the device where the encrypted data begins.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 <#opt_params>
     Number of optional parameters. If there are no optional parameters,
     the optional paramaters section can be skipped or #opt_params can be zero.
@@ -62,7 +85,10 @@ allow_discards
     used space etc.) if the discarded blocks can be located easily on the
     device later.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 Example scripts
 ===============
 LUKS (Linux Unified Key Setup) is now the preferred way to set up disk

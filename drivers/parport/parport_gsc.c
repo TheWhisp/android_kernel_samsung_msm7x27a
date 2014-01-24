@@ -137,7 +137,11 @@ struct parport_operations parport_gsc_ops =
 /*
  * Checks for port existence, all ports support SPP MODE
  */
+<<<<<<< HEAD
 static int __devinit parport_SPP_supported(struct parport *pb)
+=======
+static int parport_SPP_supported(struct parport *pb)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char r, w;
 
@@ -201,7 +205,11 @@ static int __devinit parport_SPP_supported(struct parport *pb)
  * be misdetected here is rather academic. 
  */
 
+<<<<<<< HEAD
 static int __devinit parport_PS2_supported(struct parport *pb)
+=======
+static int parport_PS2_supported(struct parport *pb)
+>>>>>>> refs/remotes/origin/master
 {
 	int ok = 0;
   
@@ -232,10 +240,16 @@ static int __devinit parport_PS2_supported(struct parport *pb)
 
 /* --- Initialisation code -------------------------------- */
 
+<<<<<<< HEAD
 struct parport *__devinit parport_gsc_probe_port (unsigned long base,
 						 unsigned long base_hi,
 						 int irq, int dma,
 						 struct pci_dev *dev)
+=======
+struct parport *parport_gsc_probe_port(unsigned long base,
+				       unsigned long base_hi, int irq,
+				       int dma, struct parisc_device *padev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct parport_gsc_private *priv;
 	struct parport_operations *ops;
@@ -247,19 +261,30 @@ struct parport *__devinit parport_gsc_probe_port (unsigned long base,
 		printk (KERN_DEBUG "parport (0x%lx): no memory!\n", base);
 		return NULL;
 	}
+<<<<<<< HEAD
 	ops = kmalloc (sizeof (struct parport_operations), GFP_KERNEL);
+=======
+	ops = kmemdup(&parport_gsc_ops, sizeof(struct parport_operations),
+		      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!ops) {
 		printk (KERN_DEBUG "parport (0x%lx): no memory for ops!\n",
 			base);
 		kfree (priv);
 		return NULL;
 	}
+<<<<<<< HEAD
 	memcpy (ops, &parport_gsc_ops, sizeof (struct parport_operations));
+=======
+>>>>>>> refs/remotes/origin/master
 	priv->ctr = 0xc;
 	priv->ctr_writable = 0xff;
 	priv->dma_buf = 0;
 	priv->dma_handle = 0;
+<<<<<<< HEAD
 	priv->dev = dev;
+=======
+>>>>>>> refs/remotes/origin/master
 	p->base = base;
 	p->base_hi = base_hi;
 	p->irq = irq;
@@ -271,6 +296,10 @@ struct parport *__devinit parport_gsc_probe_port (unsigned long base,
 	if (!parport_SPP_supported (p)) {
 		/* No port. */
 		kfree (priv);
+<<<<<<< HEAD
+=======
+		kfree(ops);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 	parport_PS2_supported (p);
@@ -282,6 +311,10 @@ struct parport *__devinit parport_gsc_probe_port (unsigned long base,
 		return NULL;
 	}
 
+<<<<<<< HEAD
+=======
+	p->dev = &padev->dev;
+>>>>>>> refs/remotes/origin/master
 	p->base_hi = base_hi;
 	p->modes = tmp.modes;
 	p->size = (p->modes & PARPORT_MODE_EPP)?8:3;
@@ -344,9 +377,15 @@ struct parport *__devinit parport_gsc_probe_port (unsigned long base,
 
 #define PARPORT_GSC_OFFSET 0x800
 
+<<<<<<< HEAD
 static int __devinitdata parport_count;
 
 static int __devinit parport_init_chip(struct parisc_device *dev)
+=======
+static int parport_count;
+
+static int parport_init_chip(struct parisc_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct parport *p;
 	unsigned long port;
@@ -373,7 +412,11 @@ static int __devinit parport_init_chip(struct parisc_device *dev)
 	}
 	
 	p = parport_gsc_probe_port(port, 0, dev->irq,
+<<<<<<< HEAD
 			/* PARPORT_IRQ_NONE */ PARPORT_DMA_NONE, NULL);
+=======
+			/* PARPORT_IRQ_NONE */ PARPORT_DMA_NONE, dev);
+>>>>>>> refs/remotes/origin/master
 	if (p)
 		parport_count++;
 	dev_set_drvdata(&dev->dev, p);
@@ -381,7 +424,11 @@ static int __devinit parport_init_chip(struct parisc_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit parport_remove_chip(struct parisc_device *dev)
+=======
+static int parport_remove_chip(struct parisc_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct parport *p = dev_get_drvdata(&dev->dev);
 	if (p) {
@@ -414,15 +461,26 @@ static struct parisc_driver parport_driver = {
 	.name		= "Parallel",
 	.id_table	= parport_tbl,
 	.probe		= parport_init_chip,
+<<<<<<< HEAD
 	.remove		= __devexit_p(parport_remove_chip),
 };
 
 int __devinit parport_gsc_init(void)
+=======
+	.remove		= parport_remove_chip,
+};
+
+int parport_gsc_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return register_parisc_driver(&parport_driver);
 }
 
+<<<<<<< HEAD
 static void __devexit parport_gsc_exit(void)
+=======
+static void parport_gsc_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unregister_parisc_driver(&parport_driver);
 }

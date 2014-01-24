@@ -5,7 +5,11 @@
  *
  * GPL LICENSE SUMMARY
  *
+<<<<<<< HEAD
  * Copyright(c) 2008 - 2012 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2008 - 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of version 2 of the GNU General Public License as
@@ -22,7 +26,11 @@
  * USA
  *
  * The full GNU General Public License is included in this distribution
+<<<<<<< HEAD
  * in the file called LICENSE.GPL.
+=======
+ * in the file called COPYING.
+>>>>>>> refs/remotes/origin/master
  *
  * Contact Information:
  *  Intel Linux Wireless <ilw@linux.intel.com>
@@ -30,7 +38,11 @@
  *
  * BSD LICENSE
  *
+<<<<<<< HEAD
  * Copyright(c) 2005 - 2012 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2005 - 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,6 +75,10 @@
 #ifndef __iwl_fw_h__
 #define __iwl_fw_h__
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <net/mac80211.h>
+>>>>>>> refs/remotes/origin/master
 
 /**
  * enum iwl_ucode_tlv_flag - ucode API flags
@@ -72,12 +88,56 @@
  *	treats good CRC threshold as a boolean
  * @IWL_UCODE_TLV_FLAGS_MFP: This uCode image supports MFP (802.11w).
  * @IWL_UCODE_TLV_FLAGS_P2P: This uCode image supports P2P.
+<<<<<<< HEAD
  */
 enum iwl_ucode_tlv_flag {
 	IWL_UCODE_TLV_FLAGS_PAN		= BIT(0),
 	IWL_UCODE_TLV_FLAGS_NEWSCAN	= BIT(1),
 	IWL_UCODE_TLV_FLAGS_MFP		= BIT(2),
 	IWL_UCODE_TLV_FLAGS_P2P		= BIT(3),
+=======
+ * @IWL_UCODE_TLV_FLAGS_DW_BC_TABLE: The SCD byte count table is in DWORDS
+ * @IWL_UCODE_TLV_FLAGS_UAPSD: This uCode image supports uAPSD
+ * @IWL_UCODE_TLV_FLAGS_SHORT_BL: 16 entries of black list instead of 64 in scan
+ *	offload profile config command.
+ * @IWL_UCODE_TLV_FLAGS_RX_ENERGY_API: supports rx signal strength api
+ * @IWL_UCODE_TLV_FLAGS_TIME_EVENT_API_V2: using the new time event API.
+ * @IWL_UCODE_TLV_FLAGS_D3_6_IPV6_ADDRS: D3 image supports up to six
+ *	(rather than two) IPv6 addresses
+ * @IWL_UCODE_TLV_FLAGS_BF_UPDATED: new beacon filtering API
+ * @IWL_UCODE_TLV_FLAGS_NO_BASIC_SSID: not sending a probe with the SSID element
+ *	from the probe request template.
+ * @IWL_UCODE_TLV_FLAGS_D3_CONTINUITY_API: modified D3 API to allow keeping
+ *	connection when going back to D0
+ * @IWL_UCODE_TLV_FLAGS_NEW_NSOFFL_SMALL: new NS offload (small version)
+ * @IWL_UCODE_TLV_FLAGS_NEW_NSOFFL_LARGE: new NS offload (large version)
+ * @IWL_UCODE_TLV_FLAGS_SCHED_SCAN: this uCode image supports scheduled scan.
+ * @IWL_UCODE_TLV_FLAGS_STA_KEY_CMD: new ADD_STA and ADD_STA_KEY command API
+ * @IWL_UCODE_TLV_FLAGS_DEVICE_PS_CMD: support device wide power command
+ *	containing CAM (Continuous Active Mode) indication.
+ */
+enum iwl_ucode_tlv_flag {
+	IWL_UCODE_TLV_FLAGS_PAN			= BIT(0),
+	IWL_UCODE_TLV_FLAGS_NEWSCAN		= BIT(1),
+	IWL_UCODE_TLV_FLAGS_MFP			= BIT(2),
+	IWL_UCODE_TLV_FLAGS_P2P			= BIT(3),
+	IWL_UCODE_TLV_FLAGS_DW_BC_TABLE		= BIT(4),
+	IWL_UCODE_TLV_FLAGS_NEWBT_COEX		= BIT(5),
+	IWL_UCODE_TLV_FLAGS_PM_CMD_SUPPORT	= BIT(6),
+	IWL_UCODE_TLV_FLAGS_SHORT_BL		= BIT(7),
+	IWL_UCODE_TLV_FLAGS_RX_ENERGY_API	= BIT(8),
+	IWL_UCODE_TLV_FLAGS_TIME_EVENT_API_V2	= BIT(9),
+	IWL_UCODE_TLV_FLAGS_D3_6_IPV6_ADDRS	= BIT(10),
+	IWL_UCODE_TLV_FLAGS_BF_UPDATED		= BIT(11),
+	IWL_UCODE_TLV_FLAGS_NO_BASIC_SSID	= BIT(12),
+	IWL_UCODE_TLV_FLAGS_D3_CONTINUITY_API	= BIT(14),
+	IWL_UCODE_TLV_FLAGS_NEW_NSOFFL_SMALL	= BIT(15),
+	IWL_UCODE_TLV_FLAGS_NEW_NSOFFL_LARGE	= BIT(16),
+	IWL_UCODE_TLV_FLAGS_SCHED_SCAN		= BIT(17),
+	IWL_UCODE_TLV_FLAGS_STA_KEY_CMD		= BIT(19),
+	IWL_UCODE_TLV_FLAGS_DEVICE_PS_CMD	= BIT(20),
+	IWL_UCODE_TLV_FLAGS_UAPSD_SUPPORT	= BIT(24),
+>>>>>>> refs/remotes/origin/master
 };
 
 /* The default calibrate table size if not specified by firmware file */
@@ -85,6 +145,12 @@ enum iwl_ucode_tlv_flag {
 #define IWL_MAX_STANDARD_PHY_CALIBRATE_TBL_SIZE		19
 #define IWL_MAX_PHY_CALIBRATE_TBL_SIZE			253
 
+<<<<<<< HEAD
+=======
+/* The default max probe length if not specified by the firmware file */
+#define IWL_DEFAULT_MAX_PROBE_LENGTH	200
+
+>>>>>>> refs/remotes/origin/master
 /**
  * enum iwl_ucode_type
  *
@@ -103,17 +169,33 @@ enum iwl_ucode_type {
 
 /*
  * enumeration of ucode section.
+<<<<<<< HEAD
  * This enumeration is used for legacy tlv style (before 16.0 uCode).
  */
 enum iwl_ucode_sec {
 	IWL_UCODE_SECTION_INST,
 	IWL_UCODE_SECTION_DATA,
+=======
+ * This enumeration is used directly for older firmware (before 16.0).
+ * For new firmware, there can be up to 4 sections (see below) but the
+ * first one packaged into the firmware file is the DATA section and
+ * some debugging code accesses that.
+ */
+enum iwl_ucode_sec {
+	IWL_UCODE_SECTION_DATA,
+	IWL_UCODE_SECTION_INST,
+>>>>>>> refs/remotes/origin/master
 };
 /*
  * For 16.0 uCode and above, there is no differentiation between sections,
  * just an offset to the HW address.
  */
+<<<<<<< HEAD
 #define IWL_UCODE_SECTION_MAX 4
+=======
+#define IWL_UCODE_SECTION_MAX 6
+#define IWL_UCODE_FIRST_SECTION_OF_SECOND_CPU	(IWL_UCODE_SECTION_MAX/2)
+>>>>>>> refs/remotes/origin/master
 
 struct iwl_ucode_capabilities {
 	u32 max_probe_length;
@@ -123,14 +205,23 @@ struct iwl_ucode_capabilities {
 
 /* one for each uCode image (inst/data, init/runtime/wowlan) */
 struct fw_desc {
+<<<<<<< HEAD
 	dma_addr_t p_addr;	/* hardware address */
 	void *v_addr;		/* software address */
+=======
+	const void *data;	/* vmalloc'ed data */
+>>>>>>> refs/remotes/origin/master
 	u32 len;		/* size in bytes */
 	u32 offset;		/* offset in the device */
 };
 
 struct fw_img {
 	struct fw_desc sec[IWL_UCODE_SECTION_MAX];
+<<<<<<< HEAD
+=======
+	bool is_secure;
+	bool is_dual_cpus;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* uCode version contains 4 values: Major/Minor/API/Serial */
@@ -139,6 +230,35 @@ struct fw_img {
 #define IWL_UCODE_API(ver)	(((ver) & 0x0000FF00) >> 8)
 #define IWL_UCODE_SERIAL(ver)	((ver) & 0x000000FF)
 
+<<<<<<< HEAD
+=======
+/*
+ * Calibration control struct.
+ * Sent as part of the phy configuration command.
+ * @flow_trigger: bitmap for which calibrations to perform according to
+ *		flow triggers.
+ * @event_trigger: bitmap for which calibrations to perform according to
+ *		event triggers.
+ */
+struct iwl_tlv_calib_ctrl {
+	__le32 flow_trigger;
+	__le32 event_trigger;
+} __packed;
+
+enum iwl_fw_phy_cfg {
+	FW_PHY_CFG_RADIO_TYPE_POS = 0,
+	FW_PHY_CFG_RADIO_TYPE = 0x3 << FW_PHY_CFG_RADIO_TYPE_POS,
+	FW_PHY_CFG_RADIO_STEP_POS = 2,
+	FW_PHY_CFG_RADIO_STEP = 0x3 << FW_PHY_CFG_RADIO_STEP_POS,
+	FW_PHY_CFG_RADIO_DASH_POS = 4,
+	FW_PHY_CFG_RADIO_DASH = 0x3 << FW_PHY_CFG_RADIO_DASH_POS,
+	FW_PHY_CFG_TX_CHAIN_POS = 16,
+	FW_PHY_CFG_TX_CHAIN = 0xf << FW_PHY_CFG_TX_CHAIN_POS,
+	FW_PHY_CFG_RX_CHAIN_POS = 20,
+	FW_PHY_CFG_RX_CHAIN = 0xf << FW_PHY_CFG_RX_CHAIN_POS,
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct iwl_fw - variables associated with the firmware
  *
@@ -153,11 +273,19 @@ struct fw_img {
  * @inst_evtlog_ptr: event log offset for runtime ucode.
  * @inst_evtlog_size: event log size for runtime ucode.
  * @inst_errlog_ptr: error log offfset for runtime ucode.
+<<<<<<< HEAD
+=======
+ * @mvm_fw: indicates this is MVM firmware
+>>>>>>> refs/remotes/origin/master
  */
 struct iwl_fw {
 	u32 ucode_ver;
 
+<<<<<<< HEAD
 	char fw_version[ETHTOOL_BUSINFO_LEN];
+=======
+	char fw_version[ETHTOOL_FWVERS_LEN];
+>>>>>>> refs/remotes/origin/master
 
 	/* ucode images */
 	struct fw_img img[IWL_UCODE_TYPE_MAX];
@@ -168,10 +296,29 @@ struct iwl_fw {
 	u32 init_evtlog_ptr, init_evtlog_size, init_errlog_ptr;
 	u32 inst_evtlog_ptr, inst_evtlog_size, inst_errlog_ptr;
 
+<<<<<<< HEAD
 	u64 default_calib[IWL_UCODE_TYPE_MAX];
+=======
+	struct iwl_tlv_calib_ctrl default_calib[IWL_UCODE_TYPE_MAX];
+>>>>>>> refs/remotes/origin/master
 	u32 phy_config;
 
 	bool mvm_fw;
 };
 
+<<<<<<< HEAD
+=======
+static inline u8 iwl_fw_valid_tx_ant(const struct iwl_fw *fw)
+{
+	return (fw->phy_config & FW_PHY_CFG_TX_CHAIN) >>
+		FW_PHY_CFG_TX_CHAIN_POS;
+}
+
+static inline u8 iwl_fw_valid_rx_ant(const struct iwl_fw *fw)
+{
+	return (fw->phy_config & FW_PHY_CFG_RX_CHAIN) >>
+		FW_PHY_CFG_RX_CHAIN_POS;
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif  /* __iwl_fw_h__ */

@@ -155,6 +155,7 @@
 
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/slab.h>
 
@@ -163,6 +164,11 @@
 
 struct device;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/slab.h>
+
+struct device;
+>>>>>>> refs/remotes/origin/master
 
 /* Backend stuff */
 

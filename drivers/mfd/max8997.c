@@ -21,6 +21,7 @@
  * This driver is based on max8998.c
  */
 
+<<<<<<< HEAD
 #include <linux/slab.h>
 #include <linux/i2c.h>
 <<<<<<< HEAD
@@ -30,6 +31,16 @@
 #include <linux/pm_runtime.h>
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/err.h>
+#include <linux/slab.h>
+#include <linux/i2c.h>
+#include <linux/of.h>
+#include <linux/of_irq.h>
+#include <linux/interrupt.h>
+#include <linux/pm_runtime.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mutex.h>
 #include <linux/mfd/core.h>
 #include <linux/mfd/max8997.h>
@@ -41,12 +52,17 @@
 #define I2C_ADDR_RTC	(0x0C >> 1)
 #define I2C_ADDR_HAPTIC	(0x90 >> 1)
 
+<<<<<<< HEAD
 static struct mfd_cell max8997_devs[] = {
+=======
+static const struct mfd_cell max8997_devs[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .name = "max8997-pmic", },
 	{ .name = "max8997-rtc", },
 	{ .name = "max8997-battery", },
 	{ .name = "max8997-haptic", },
 	{ .name = "max8997-muic", },
+<<<<<<< HEAD
 <<<<<<< HEAD
 	{ .name = "max8997-flash", },
 =======
@@ -55,6 +71,19 @@ static struct mfd_cell max8997_devs[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+	{ .name = "max8997-led", .id = 1 },
+	{ .name = "max8997-led", .id = 2 },
+};
+
+#ifdef CONFIG_OF
+static struct of_device_id max8997_pmic_dt_match[] = {
+	{ .compatible = "maxim,max8997-pmic", .data = (void *)TYPE_MAX8997 },
+	{},
+};
+#endif
+
+>>>>>>> refs/remotes/origin/master
 int max8997_read_reg(struct i2c_client *i2c, u8 reg, u8 *dest)
 {
 	struct max8997_dev *max8997 = i2c_get_clientdata(i2c);
@@ -131,20 +160,74 @@ int max8997_update_reg(struct i2c_client *i2c, u8 reg, u8 val, u8 mask)
 }
 EXPORT_SYMBOL_GPL(max8997_update_reg);
 
+<<<<<<< HEAD
+=======
+/*
+ * Only the common platform data elements for max8997 are parsed here from the
+ * device tree. Other sub-modules of max8997 such as pmic, rtc and others have
+ * to parse their own platform data elements from device tree.
+ *
+ * The max8997 platform data structure is instantiated here and the drivers for
+ * the sub-modules need not instantiate another instance while parsing their
+ * platform data.
+ */
+static struct max8997_platform_data *max8997_i2c_parse_dt_pdata(
+					struct device *dev)
+{
+	struct max8997_platform_data *pd;
+
+	pd = devm_kzalloc(dev, sizeof(*pd), GFP_KERNEL);
+	if (!pd) {
+		dev_err(dev, "could not allocate memory for pdata\n");
+		return ERR_PTR(-ENOMEM);
+	}
+
+	pd->ono = irq_of_parse_and_map(dev->of_node, 1);
+
+	/*
+	 * ToDo: the 'wakeup' member in the platform data is more of a linux
+	 * specfic information. Hence, there is no binding for that yet and
+	 * not parsed here.
+	 */
+
+	return pd;
+}
+
+static inline int max8997_i2c_get_driver_data(struct i2c_client *i2c,
+						const struct i2c_device_id *id)
+{
+	if (IS_ENABLED(CONFIG_OF) && i2c->dev.of_node) {
+		const struct of_device_id *match;
+		match = of_match_node(max8997_pmic_dt_match, i2c->dev.of_node);
+		return (int)match->data;
+	}
+	return (int)id->driver_data;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int max8997_i2c_probe(struct i2c_client *i2c,
 			    const struct i2c_device_id *id)
 {
 	struct max8997_dev *max8997;
+<<<<<<< HEAD
 	struct max8997_platform_data *pdata = i2c->dev.platform_data;
 	int ret = 0;
 
 	max8997 = kzalloc(sizeof(struct max8997_dev), GFP_KERNEL);
+=======
+	struct max8997_platform_data *pdata = dev_get_platdata(&i2c->dev);
+	int ret = 0;
+
+	max8997 = devm_kzalloc(&i2c->dev, sizeof(struct max8997_dev),
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (max8997 == NULL)
 		return -ENOMEM;
 
 	i2c_set_clientdata(i2c, max8997);
 	max8997->dev = &i2c->dev;
 	max8997->i2c = i2c;
+<<<<<<< HEAD
 	max8997->type = id->driver_data;
 <<<<<<< HEAD
 =======
@@ -160,6 +243,22 @@ static int max8997_i2c_probe(struct i2c_client *i2c,
 	max8997->irq_base = pdata->irq_base;
 	max8997->ono = pdata->ono;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	max8997->type = max8997_i2c_get_driver_data(i2c, id);
+	max8997->irq = i2c->irq;
+
+	if (IS_ENABLED(CONFIG_OF) && max8997->dev->of_node) {
+		pdata = max8997_i2c_parse_dt_pdata(max8997->dev);
+		if (IS_ERR(pdata))
+			return PTR_ERR(pdata);
+	}
+
+	if (!pdata)
+		return ret;
+
+	max8997->pdata = pdata;
+	max8997->ono = pdata->ono;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_init(&max8997->iolock);
 
@@ -173,6 +272,7 @@ static int max8997_i2c_probe(struct i2c_client *i2c,
 	pm_runtime_set_active(max8997->dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	max8997_irq_init(max8997);
 
@@ -180,12 +280,24 @@ static int max8997_i2c_probe(struct i2c_client *i2c,
 	mfd_add_devices(max8997->dev, -1, max8997_devs,
 			ARRAY_SIZE(max8997_devs),
 			NULL, 0);
+=======
+	max8997_irq_init(max8997);
+
+	ret = mfd_add_devices(max8997->dev, -1, max8997_devs,
+			ARRAY_SIZE(max8997_devs),
+			NULL, 0, NULL);
+	if (ret < 0) {
+		dev_err(max8997->dev, "failed to add MFD devices %d\n", ret);
+		goto err_mfd;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * TODO: enable others (flash, muic, rtc, battery, ...) and
 	 * check the return value
 	 */
 
+<<<<<<< HEAD
 	if (ret < 0)
 		goto err_mfd;
 
@@ -195,6 +307,11 @@ static int max8997_i2c_probe(struct i2c_client *i2c,
 	device_init_wakeup(max8997->dev, pdata->wakeup);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* MAX8997 has a power button input. */
+	device_init_wakeup(max8997->dev, pdata->wakeup);
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 
 err_mfd:
@@ -202,8 +319,11 @@ err_mfd:
 	i2c_unregister_device(max8997->muic);
 	i2c_unregister_device(max8997->haptic);
 	i2c_unregister_device(max8997->rtc);
+<<<<<<< HEAD
 err:
 	kfree(max8997);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -215,7 +335,10 @@ static int max8997_i2c_remove(struct i2c_client *i2c)
 	i2c_unregister_device(max8997->muic);
 	i2c_unregister_device(max8997->haptic);
 	i2c_unregister_device(max8997->rtc);
+<<<<<<< HEAD
 	kfree(max8997);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -227,7 +350,11 @@ static const struct i2c_device_id max8997_i2c_id[] = {
 };
 MODULE_DEVICE_TABLE(i2c, max8998_i2c_id);
 
+<<<<<<< HEAD
 u8 max8997_dumpaddr_pmic[] = {
+=======
+static u8 max8997_dumpaddr_pmic[] = {
+>>>>>>> refs/remotes/origin/master
 	MAX8997_REG_INT1MSK,
 	MAX8997_REG_INT2MSK,
 	MAX8997_REG_INT3MSK,
@@ -352,7 +479,11 @@ u8 max8997_dumpaddr_pmic[] = {
 	MAX8997_REG_DVSOKTIMER5,
 };
 
+<<<<<<< HEAD
 u8 max8997_dumpaddr_muic[] = {
+=======
+static u8 max8997_dumpaddr_muic[] = {
+>>>>>>> refs/remotes/origin/master
 	MAX8997_MUIC_REG_INTMASK1,
 	MAX8997_MUIC_REG_INTMASK2,
 	MAX8997_MUIC_REG_INTMASK3,
@@ -362,7 +493,11 @@ u8 max8997_dumpaddr_muic[] = {
 	MAX8997_MUIC_REG_CONTROL3,
 };
 
+<<<<<<< HEAD
 u8 max8997_dumpaddr_haptic[] = {
+=======
+static u8 max8997_dumpaddr_haptic[] = {
+>>>>>>> refs/remotes/origin/master
 	MAX8997_HAPTIC_REG_CONF1,
 	MAX8997_HAPTIC_REG_CONF2,
 	MAX8997_HAPTIC_REG_DRVCONF,
@@ -425,8 +560,11 @@ static int max8997_restore(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const struct dev_pm_ops max8997_pm = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int max8997_suspend(struct device *dev)
 {
 	struct i2c_client *i2c = container_of(dev, struct i2c_client, dev);
@@ -447,10 +585,16 @@ static int max8997_resume(struct device *dev)
 	return max8997_irq_resume(max8997);
 }
 
+<<<<<<< HEAD
 const struct dev_pm_ops max8997_pm = {
 	.suspend = max8997_suspend,
 	.resume = max8997_resume,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct dev_pm_ops max8997_pm = {
+	.suspend = max8997_suspend,
+	.resume = max8997_resume,
+>>>>>>> refs/remotes/origin/master
 	.freeze = max8997_freeze,
 	.restore = max8997_restore,
 };
@@ -460,6 +604,10 @@ static struct i2c_driver max8997_i2c_driver = {
 		   .name = "max8997",
 		   .owner = THIS_MODULE,
 		   .pm = &max8997_pm,
+<<<<<<< HEAD
+=======
+		   .of_match_table = of_match_ptr(max8997_pmic_dt_match),
+>>>>>>> refs/remotes/origin/master
 	},
 	.probe = max8997_i2c_probe,
 	.remove = max8997_i2c_remove,

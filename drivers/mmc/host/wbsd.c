@@ -195,10 +195,14 @@ static void wbsd_reset(struct wbsd_host *host)
 	u8 setup;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_ERR "%s: Resetting chip\n", mmc_hostname(host->mmc));
 =======
 	pr_err("%s: Resetting chip\n", mmc_hostname(host->mmc));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_err("%s: Resetting chip\n", mmc_hostname(host->mmc));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Soft reset of chip (SD/MMC part).
@@ -726,10 +730,14 @@ static void wbsd_finish_data(struct wbsd_host *host, struct mmc_data *data)
 		 */
 		if (count) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: Incomplete DMA transfer. "
 =======
 			pr_err("%s: Incomplete DMA transfer. "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s: Incomplete DMA transfer. "
+>>>>>>> refs/remotes/origin/master
 				"%d bytes left.\n",
 				mmc_hostname(host->mmc), count);
 
@@ -812,10 +820,14 @@ static void wbsd_request(struct mmc_host *mmc, struct mmc_request *mrq)
 		default:
 #ifdef CONFIG_MMC_DEBUG
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING "%s: Data command %d is not "
 =======
 			pr_warning("%s: Data command %d is not "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warning("%s: Data command %d is not "
+>>>>>>> refs/remotes/origin/master
 				"supported by this controller.\n",
 				mmc_hostname(host->mmc), cmd->opcode);
 #endif
@@ -1042,10 +1054,14 @@ static void wbsd_tasklet_card(unsigned long param)
 
 		if (host->mrq) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: Card removed during transfer!\n",
 =======
 			pr_err("%s: Card removed during transfer!\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s: Card removed during transfer!\n",
+>>>>>>> refs/remotes/origin/master
 				mmc_hostname(host->mmc));
 			wbsd_reset(host);
 
@@ -1212,7 +1228,11 @@ static irqreturn_t wbsd_irq(int irq, void *dev_id)
  * Allocate/free MMC structure.
  */
 
+<<<<<<< HEAD
 static int __devinit wbsd_alloc_mmc(struct device *dev)
+=======
+static int wbsd_alloc_mmc(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mmc_host *mmc;
 	struct wbsd_host *host;
@@ -1304,7 +1324,11 @@ static void wbsd_free_mmc(struct device *dev)
  * Scan for known chip id:s
  */
 
+<<<<<<< HEAD
 static int __devinit wbsd_scan(struct wbsd_host *host)
+=======
+static int wbsd_scan(struct wbsd_host *host)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, j, k;
 	int id;
@@ -1360,7 +1384,11 @@ static int __devinit wbsd_scan(struct wbsd_host *host)
  * Allocate/free io port ranges
  */
 
+<<<<<<< HEAD
 static int __devinit wbsd_request_region(struct wbsd_host *host, int base)
+=======
+static int wbsd_request_region(struct wbsd_host *host, int base)
+>>>>>>> refs/remotes/origin/master
 {
 	if (base & 0x7)
 		return -EINVAL;
@@ -1390,7 +1418,11 @@ static void wbsd_release_regions(struct wbsd_host *host)
  * Allocate/free DMA port and buffer
  */
 
+<<<<<<< HEAD
 static void __devinit wbsd_request_dma(struct wbsd_host *host, int dma)
+=======
+static void wbsd_request_dma(struct wbsd_host *host, int dma)
+>>>>>>> refs/remotes/origin/master
 {
 	if (dma < 0)
 		return;
@@ -1446,10 +1478,14 @@ free:
 
 err:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_WARNING DRIVER_NAME ": Unable to allocate DMA %d. "
 =======
 	pr_warning(DRIVER_NAME ": Unable to allocate DMA %d. "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_warning(DRIVER_NAME ": Unable to allocate DMA %d. "
+>>>>>>> refs/remotes/origin/master
 		"Falling back on FIFO.\n", dma);
 }
 
@@ -1472,7 +1508,11 @@ static void wbsd_release_dma(struct wbsd_host *host)
  * Allocate/free IRQ.
  */
 
+<<<<<<< HEAD
 static int __devinit wbsd_request_irq(struct wbsd_host *host, int irq)
+=======
+static int wbsd_request_irq(struct wbsd_host *host, int irq)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
@@ -1522,7 +1562,11 @@ static void  wbsd_release_irq(struct wbsd_host *host)
  * Allocate all resources for the host.
  */
 
+<<<<<<< HEAD
 static int __devinit wbsd_request_resources(struct wbsd_host *host,
+=======
+static int wbsd_request_resources(struct wbsd_host *host,
+>>>>>>> refs/remotes/origin/master
 	int base, int irq, int dma)
 {
 	int ret;
@@ -1664,7 +1708,11 @@ static void wbsd_chip_poweroff(struct wbsd_host *host)
  *                                                                           *
 \*****************************************************************************/
 
+<<<<<<< HEAD
 static int __devinit wbsd_init(struct device *dev, int base, int irq, int dma,
+=======
+static int wbsd_init(struct device *dev, int base, int irq, int dma,
+>>>>>>> refs/remotes/origin/master
 	int pnp)
 {
 	struct wbsd_host *host = NULL;
@@ -1685,10 +1733,14 @@ static int __devinit wbsd_init(struct device *dev, int base, int irq, int dma,
 	if (ret) {
 		if (pnp && (ret == -ENODEV)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING DRIVER_NAME
 =======
 			pr_warning(DRIVER_NAME
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warning(DRIVER_NAME
+>>>>>>> refs/remotes/origin/master
 				": Unable to confirm device presence. You may "
 				"experience lock-ups.\n");
 		} else {
@@ -1713,10 +1765,14 @@ static int __devinit wbsd_init(struct device *dev, int base, int irq, int dma,
 	if (pnp) {
 		if ((host->config != 0) && !wbsd_chip_validate(host)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING DRIVER_NAME
 =======
 			pr_warning(DRIVER_NAME
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warning(DRIVER_NAME
+>>>>>>> refs/remotes/origin/master
 				": PnP active but chip not configured! "
 				"You probably have a buggy BIOS. "
 				"Configuring chip manually.\n");
@@ -1749,10 +1805,14 @@ static int __devinit wbsd_init(struct device *dev, int base, int irq, int dma,
 	mmc_add_host(mmc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: W83L51xD", mmc_hostname(mmc));
 =======
 	pr_info("%s: W83L51xD", mmc_hostname(mmc));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("%s: W83L51xD", mmc_hostname(mmc));
+>>>>>>> refs/remotes/origin/master
 	if (host->chip_id != 0)
 		printk(" id %x", (int)host->chip_id);
 	printk(" at 0x%x irq %d", (int)host->base, (int)host->irq);
@@ -1767,7 +1827,11 @@ static int __devinit wbsd_init(struct device *dev, int base, int irq, int dma,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit wbsd_shutdown(struct device *dev, int pnp)
+=======
+static void wbsd_shutdown(struct device *dev, int pnp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mmc_host *mmc = dev_get_drvdata(dev);
 	struct wbsd_host *host;
@@ -1794,13 +1858,21 @@ static void __devexit wbsd_shutdown(struct device *dev, int pnp)
  * Non-PnP
  */
 
+<<<<<<< HEAD
 static int __devinit wbsd_probe(struct platform_device *dev)
+=======
+static int wbsd_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Use the module parameters for resources */
 	return wbsd_init(&dev->dev, param_io, param_irq, param_dma, 0);
 }
 
+<<<<<<< HEAD
 static int __devexit wbsd_remove(struct platform_device *dev)
+=======
+static int wbsd_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	wbsd_shutdown(&dev->dev, 0);
 
@@ -1813,7 +1885,11 @@ static int __devexit wbsd_remove(struct platform_device *dev)
 
 #ifdef CONFIG_PNP
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 wbsd_pnp_probe(struct pnp_dev *pnpdev, const struct pnp_device_id *dev_id)
 {
 	int io, irq, dma;
@@ -1833,7 +1909,11 @@ wbsd_pnp_probe(struct pnp_dev *pnpdev, const struct pnp_device_id *dev_id)
 	return wbsd_init(&pnpdev->dev, io, irq, dma, 1);
 }
 
+<<<<<<< HEAD
 static void __devexit wbsd_pnp_remove(struct pnp_dev *dev)
+=======
+static void wbsd_pnp_remove(struct pnp_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	wbsd_shutdown(&dev->dev, 1);
 }
@@ -1846,6 +1926,7 @@ static void __devexit wbsd_pnp_remove(struct pnp_dev *dev)
 
 #ifdef CONFIG_PM
 
+<<<<<<< HEAD
 static int wbsd_suspend(struct wbsd_host *host, pm_message_t state)
 {
 	BUG_ON(host == NULL);
@@ -1862,12 +1943,17 @@ static int wbsd_resume(struct wbsd_host *host)
 	return mmc_resume_host(host->mmc);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int wbsd_platform_suspend(struct platform_device *dev,
 				 pm_message_t state)
 {
 	struct mmc_host *mmc = platform_get_drvdata(dev);
 	struct wbsd_host *host;
+<<<<<<< HEAD
 	int ret;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (mmc == NULL)
 		return 0;
@@ -1876,12 +1962,16 @@ static int wbsd_platform_suspend(struct platform_device *dev,
 
 	host = mmc_priv(mmc);
 
+<<<<<<< HEAD
 	ret = wbsd_suspend(host, state);
 	if (ret)
 		return ret;
 
 	wbsd_chip_poweroff(host);
 
+=======
+	wbsd_chip_poweroff(host);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1904,7 +1994,12 @@ static int wbsd_platform_resume(struct platform_device *dev)
 	 */
 	mdelay(5);
 
+<<<<<<< HEAD
 	return wbsd_resume(host);
+=======
+	wbsd_init_device(host);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_PNP
@@ -1912,16 +2007,23 @@ static int wbsd_platform_resume(struct platform_device *dev)
 static int wbsd_pnp_suspend(struct pnp_dev *pnp_dev, pm_message_t state)
 {
 	struct mmc_host *mmc = dev_get_drvdata(&pnp_dev->dev);
+<<<<<<< HEAD
 	struct wbsd_host *host;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (mmc == NULL)
 		return 0;
 
 	DBGF("Suspending...\n");
+<<<<<<< HEAD
 
 	host = mmc_priv(mmc);
 
 	return wbsd_suspend(host, state);
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int wbsd_pnp_resume(struct pnp_dev *pnp_dev)
@@ -1942,10 +2044,14 @@ static int wbsd_pnp_resume(struct pnp_dev *pnp_dev)
 	if (host->config != 0) {
 		if (!wbsd_chip_validate(host)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING DRIVER_NAME
 =======
 			pr_warning(DRIVER_NAME
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warning(DRIVER_NAME
+>>>>>>> refs/remotes/origin/master
 				": PnP active but chip not configured! "
 				"You probably have a buggy BIOS. "
 				"Configuring chip manually.\n");
@@ -1958,7 +2064,12 @@ static int wbsd_pnp_resume(struct pnp_dev *pnp_dev)
 	 */
 	mdelay(5);
 
+<<<<<<< HEAD
 	return wbsd_resume(host);
+=======
+	wbsd_init_device(host);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* CONFIG_PNP */
@@ -1977,7 +2088,11 @@ static struct platform_device *wbsd_device;
 
 static struct platform_driver wbsd_driver = {
 	.probe		= wbsd_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(wbsd_remove),
+=======
+	.remove		= wbsd_remove,
+>>>>>>> refs/remotes/origin/master
 
 	.suspend	= wbsd_platform_suspend,
 	.resume		= wbsd_platform_resume,
@@ -1993,7 +2108,11 @@ static struct pnp_driver wbsd_pnp_driver = {
 	.name		= DRIVER_NAME,
 	.id_table	= pnp_dev_table,
 	.probe		= wbsd_pnp_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(wbsd_pnp_remove),
+=======
+	.remove		= wbsd_pnp_remove,
+>>>>>>> refs/remotes/origin/master
 
 	.suspend	= wbsd_pnp_suspend,
 	.resume		= wbsd_pnp_resume,
@@ -2010,6 +2129,7 @@ static int __init wbsd_drv_init(void)
 	int result;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO DRIVER_NAME
 		": Winbond W83L51xD SD/MMC card interface driver\n");
 	printk(KERN_INFO DRIVER_NAME ": Copyright(c) Pierre Ossman\n");
@@ -2018,6 +2138,11 @@ static int __init wbsd_drv_init(void)
 		": Winbond W83L51xD SD/MMC card interface driver\n");
 	pr_info(DRIVER_NAME ": Copyright(c) Pierre Ossman\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info(DRIVER_NAME
+		": Winbond W83L51xD SD/MMC card interface driver\n");
+	pr_info(DRIVER_NAME ": Copyright(c) Pierre Ossman\n");
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PNP
 

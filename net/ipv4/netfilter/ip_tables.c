@@ -3,6 +3,10 @@
  *
  * Copyright (C) 1999 Paul `Rusty' Russell & Michael J. Neuling
  * Copyright (C) 2000-2005 Netfilter Core Team <coreteam@netfilter.org>
+<<<<<<< HEAD
+=======
+ * Copyright (C) 2006-2010 Patrick McHardy <kaber@trash.net>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -153,8 +157,12 @@ ip_checkentry(const struct ipt_ip *ip)
 static unsigned int
 ipt_error(struct sk_buff *skb, const struct xt_action_param *par)
 {
+<<<<<<< HEAD
 	if (net_ratelimit())
 		pr_info("error: `%s'\n", (const char *)par->targinfo);
+=======
+	net_info_ratelimited("error: `%s'\n", (const char *)par->targinfo);
+>>>>>>> refs/remotes/origin/master
 
 	return NF_DROP;
 }
@@ -183,8 +191,12 @@ ipt_get_target_c(const struct ipt_entry *e)
 	return ipt_get_target((struct ipt_entry *)e);
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_NETFILTER_XT_TARGET_TRACE) || \
     defined(CONFIG_NETFILTER_XT_TARGET_TRACE_MODULE)
+=======
+#if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
+>>>>>>> refs/remotes/origin/master
 static const char *const hooknames[] = {
 	[NF_INET_PRE_ROUTING]		= "PREROUTING",
 	[NF_INET_LOCAL_IN]		= "INPUT",
@@ -260,6 +272,10 @@ static void trace_packet(const struct sk_buff *skb,
 	const char *hookname, *chainname, *comment;
 	const struct ipt_entry *iter;
 	unsigned int rulenum = 0;
+<<<<<<< HEAD
+=======
+	struct net *net = dev_net(in ? in : out);
+>>>>>>> refs/remotes/origin/master
 
 	table_base = private->entries[smp_processor_id()];
 	root = get_entry(table_base, private->hook_entry[hook]);
@@ -272,7 +288,11 @@ static void trace_packet(const struct sk_buff *skb,
 		    &chainname, &comment, &rulenum) != 0)
 			break;
 
+<<<<<<< HEAD
 	nf_log_packet(AF_INET, hook, skb, in, out, &trace_loginfo,
+=======
+	nf_log_packet(net, AF_INET, hook, skb, in, out, &trace_loginfo,
+>>>>>>> refs/remotes/origin/master
 		      "TRACE: %s:%s:%s:%u ",
 		      tablename, chainname, comment, rulenum);
 }
@@ -327,6 +347,14 @@ ipt_do_table(struct sk_buff *skb,
 	addend = xt_write_recseq_begin();
 	private = table->private;
 	cpu        = smp_processor_id();
+<<<<<<< HEAD
+=======
+	/*
+	 * Ensure we load private-> members after we've fetched the base
+	 * pointer.
+	 */
+	smp_read_barrier_depends();
+>>>>>>> refs/remotes/origin/master
 	table_base = private->entries[cpu];
 	jumpstack  = (struct ipt_entry **)private->jumpstack[cpu];
 	stackptr   = per_cpu_ptr(private->stackptr, cpu);
@@ -362,8 +390,12 @@ ipt_do_table(struct sk_buff *skb,
 		t = ipt_get_target(e);
 		IP_NF_ASSERT(t->u.kernel.target);
 
+<<<<<<< HEAD
 #if defined(CONFIG_NETFILTER_XT_TARGET_TRACE) || \
     defined(CONFIG_NETFILTER_XT_TARGET_TRACE_MODULE)
+=======
+#if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
+>>>>>>> refs/remotes/origin/master
 		/* The packet is traced: log it */
 		if (unlikely(skb->nf_trace))
 			trace_packet(skb, hook, in, out,
@@ -377,7 +409,11 @@ ipt_do_table(struct sk_buff *skb,
 			if (v < 0) {
 				/* Pop from stack? */
 				if (v != XT_RETURN) {
+<<<<<<< HEAD
 					verdict = (unsigned)(-v) - 1;
+=======
+					verdict = (unsigned int)(-v) - 1;
+>>>>>>> refs/remotes/origin/master
 					break;
 				}
 				if (*stackptr <= origptr) {
@@ -1091,7 +1127,11 @@ static int get_info(struct net *net, void __user *user,
 #endif
 	t = try_then_request_module(xt_find_table_lock(net, AF_INET, name),
 				    "iptable_%s", name);
+<<<<<<< HEAD
 	if (t && !IS_ERR(t)) {
+=======
+	if (!IS_ERR_OR_NULL(t)) {
+>>>>>>> refs/remotes/origin/master
 		struct ipt_getinfo info;
 		const struct xt_table_info *private = t->private;
 #ifdef CONFIG_COMPAT
@@ -1150,7 +1190,11 @@ get_entries(struct net *net, struct ipt_get_entries __user *uptr,
 	}
 
 	t = xt_find_table_lock(net, AF_INET, get.name);
+<<<<<<< HEAD
 	if (t && !IS_ERR(t)) {
+=======
+	if (!IS_ERR_OR_NULL(t)) {
+>>>>>>> refs/remotes/origin/master
 		const struct xt_table_info *private = t->private;
 		duprintf("t->private->number = %u\n", private->number);
 		if (get.size == private->size)
@@ -1190,7 +1234,11 @@ __do_replace(struct net *net, const char *name, unsigned int valid_hooks,
 
 	t = try_then_request_module(xt_find_table_lock(net, AF_INET, name),
 				    "iptable_%s", name);
+<<<<<<< HEAD
 	if (!t || IS_ERR(t)) {
+=======
+	if (IS_ERR_OR_NULL(t)) {
+>>>>>>> refs/remotes/origin/master
 		ret = t ? PTR_ERR(t) : -ENOENT;
 		goto free_newinfo_counters_untrans;
 	}
@@ -1348,7 +1396,11 @@ do_add_counters(struct net *net, const void __user *user,
 	}
 
 	t = xt_find_table_lock(net, AF_INET, name);
+<<<<<<< HEAD
 	if (!t || IS_ERR(t)) {
+=======
+	if (IS_ERR_OR_NULL(t)) {
+>>>>>>> refs/remotes/origin/master
 		ret = t ? PTR_ERR(t) : -ENOENT;
 		goto free;
 	}
@@ -1847,7 +1899,11 @@ compat_do_ipt_set_ctl(struct sock *sk,	int cmd, void __user *user,
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	switch (cmd) {
@@ -1932,7 +1988,11 @@ compat_get_entries(struct net *net, struct compat_ipt_get_entries __user *uptr,
 
 	xt_compat_lock(AF_INET);
 	t = xt_find_table_lock(net, AF_INET, get.name);
+<<<<<<< HEAD
 	if (t && !IS_ERR(t)) {
+=======
+	if (!IS_ERR_OR_NULL(t)) {
+>>>>>>> refs/remotes/origin/master
 		const struct xt_table_info *private = t->private;
 		struct xt_table_info info;
 		duprintf("t->private->number = %u\n", private->number);
@@ -1962,7 +2022,11 @@ compat_do_ipt_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	switch (cmd) {
@@ -1984,7 +2048,11 @@ do_ipt_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	switch (cmd) {
@@ -2009,7 +2077,11 @@ do_ipt_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_ADMIN))
+=======
+	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	switch (cmd) {

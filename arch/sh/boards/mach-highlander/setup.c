@@ -323,10 +323,14 @@ static void ivdr_clk_disable(struct clk *clk)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct clk_ops ivdr_clk_ops = {
 =======
 static struct sh_clk_ops ivdr_clk_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct sh_clk_ops ivdr_clk_ops = {
+>>>>>>> refs/remotes/origin/master
 	.enable		= ivdr_clk_enable,
 	.disable	= ivdr_clk_disable,
 };
@@ -340,10 +344,13 @@ static struct clk *r7780rp_clocks[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CLKDEV_CON_ID(_id, _clk) { .con_id = _id, .clk = _clk }
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct clk_lookup lookups[] = {
 	/* main clocks */
 	CLKDEV_CON_ID("ivdr_clk", &ivdr_clk),

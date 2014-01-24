@@ -52,9 +52,13 @@
  */
 #if CONFIG_JFFS2_FS_DEBUG > 0
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define DEBUG
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DEBUG
+>>>>>>> refs/remotes/origin/master
 #define D1(x) x
 #else
 #define D1(x)
@@ -66,6 +70,7 @@
 #define D2(x)
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* The prefixes of JFFS2 messages */
 #define JFFS2_DBG_PREFIX	"[JFFS2 DBG]"
@@ -112,6 +117,8 @@
 			__func__ , ##__VA_ARGS__);			\
 	} while(0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define jffs2_dbg(level, fmt, ...)		\
 do {						\
 	if (CONFIG_JFFS2_FS_DEBUG >= level)	\
@@ -139,7 +146,10 @@ do {						\
 #define JFFS2_DEBUG(fmt, ...)						\
 	printk(KERN_DEBUG "[JFFS2 DBG] (%d) %s: " fmt,			\
 	       task_pid_nr(current), __func__, ##__VA_ARGS__)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * We split our debugging messages on several parts, depending on the JFFS2

@@ -14,6 +14,7 @@
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
+<<<<<<< HEAD
 
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
@@ -50,6 +51,42 @@ Devices: [JR3] PCI force sensor board (jr3_pci)
 #include <linux/timer.h>
 #include <linux/kernel.h>
 #include "comedi_pci.h"
+=======
+*/
+/*
+ * Driver: jr3_pci
+ * Description: JR3/PCI force sensor board
+ * Author: Anders Blomdell <anders.blomdell@control.lth.se>
+ * Updated: Thu, 01 Nov 2012 17:34:55 +0000
+ * Status: works
+ * Devices: [JR3] PCI force sensor board (jr3_pci)
+ *
+ * Configuration options:
+ *   None
+ *
+ * Manual configuration of comedi devices is not supported by this
+ * driver; supported PCI devices are configured as comedi devices
+ * automatically.
+ *
+ * The DSP on the board requires initialization code, which can be
+ * loaded by placing it in /lib/firmware/comedi.  The initialization
+ * code should be somewhere on the media you got with your card.  One
+ * version is available from http://www.comedi.org in the
+ * comedi_nonfree_firmware tarball.  The file is called "jr3pci.idm".
+ */
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/pci.h>
+#include <linux/delay.h>
+#include <linux/ctype.h>
+#include <linux/jiffies.h>
+#include <linux/slab.h>
+#include <linux/timer.h>
+
+#include "../comedidev.h"
+
+>>>>>>> refs/remotes/origin/master
 #include "jr3_pci.h"
 
 #define PCI_VENDOR_ID_JR3 0x1762
@@ -59,6 +96,7 @@ Devices: [JR3] PCI force sensor board (jr3_pci)
 #define PCI_DEVICE_ID_JR3_3_CHANNEL 0x3113
 #define PCI_DEVICE_ID_JR3_4_CHANNEL 0x3114
 
+<<<<<<< HEAD
 static int jr3_pci_attach(struct comedi_device *dev,
 			  struct comedi_devconfig *it);
 static int jr3_pci_detach(struct comedi_device *dev);
@@ -101,18 +139,29 @@ struct jr3_pci_dev_private {
 	struct pci_dev *pci_dev;
 	int pci_enabled;
 	volatile struct jr3_t *iobase;
+=======
+struct jr3_pci_dev_private {
+	struct jr3_t __iomem *iobase;
+>>>>>>> refs/remotes/origin/master
 	int n_channels;
 	struct timer_list timer;
 };
 
 struct poll_delay_t {
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	int min;
 	int max;
 };
 
 struct jr3_pci_subdev_private {
+<<<<<<< HEAD
 	volatile struct jr3_channel *channel;
+=======
+	struct jr3_channel __iomem *channel;
+>>>>>>> refs/remotes/origin/master
 	unsigned long next_time_min;
 	unsigned long next_time_max;
 	enum { state_jr3_poll,
@@ -135,6 +184,7 @@ struct jr3_pci_subdev_private {
 	int retries;
 };
 
+<<<<<<< HEAD
 /* Hotplug firmware loading stuff */
 static int comedi_load_firmware(struct comedi_device *dev, char *name,
 				int (*cb)(struct comedi_device *dev,
@@ -167,6 +217,8 @@ static int comedi_load_firmware(struct comedi_device *dev, char *name,
 	return result;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct poll_delay_t poll_delay_min_max(int min, int max)
 {
 	struct poll_delay_t result;
@@ -176,7 +228,11 @@ static struct poll_delay_t poll_delay_min_max(int min, int max)
 	return result;
 }
 
+<<<<<<< HEAD
 static int is_complete(volatile struct jr3_channel *channel)
+=======
+static int is_complete(struct jr3_channel __iomem *channel)
+>>>>>>> refs/remotes/origin/master
 {
 	return get_s16(&channel->command_word0) == 0;
 }
@@ -188,14 +244,21 @@ struct transform_t {
 	} link[8];
 };
 
+<<<<<<< HEAD
 static void set_transforms(volatile struct jr3_channel *channel,
+=======
+static void set_transforms(struct jr3_channel __iomem *channel,
+>>>>>>> refs/remotes/origin/master
 			   struct transform_t transf, short num)
 {
 	int i;
 
 	num &= 0x000f;		/*  Make sure that 0 <= num <= 15 */
 	for (i = 0; i < 8; i++) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		set_u16(&channel->transforms[num].link[i].link_type,
 			transf.link[i].link_type);
 		udelay(1);
@@ -207,18 +270,30 @@ static void set_transforms(volatile struct jr3_channel *channel,
 	}
 }
 
+<<<<<<< HEAD
 static void use_transform(volatile struct jr3_channel *channel,
+=======
+static void use_transform(struct jr3_channel __iomem *channel,
+>>>>>>> refs/remotes/origin/master
 			  short transf_num)
 {
 	set_s16(&channel->command_word0, 0x0500 + (transf_num & 0x000f));
 }
 
+<<<<<<< HEAD
 static void use_offset(volatile struct jr3_channel *channel, short offset_num)
+=======
+static void use_offset(struct jr3_channel __iomem *channel, short offset_num)
+>>>>>>> refs/remotes/origin/master
 {
 	set_s16(&channel->command_word0, 0x0600 + (offset_num & 0x000f));
 }
 
+<<<<<<< HEAD
 static void set_offset(volatile struct jr3_channel *channel)
+=======
+static void set_offset(struct jr3_channel __iomem *channel)
+>>>>>>> refs/remotes/origin/master
 {
 	set_s16(&channel->command_word0, 0x0700);
 }
@@ -232,6 +307,7 @@ struct six_axis_t {
 	s16 mz;
 };
 
+<<<<<<< HEAD
 static void set_full_scales(volatile struct jr3_channel *channel,
 			    struct six_axis_t full_scale)
 {
@@ -239,6 +315,11 @@ static void set_full_scales(volatile struct jr3_channel *channel,
 	       full_scale.fx,
 	       full_scale.fy,
 	       full_scale.fz, full_scale.mx, full_scale.my, full_scale.mz);
+=======
+static void set_full_scales(struct jr3_channel __iomem *channel,
+			    struct six_axis_t full_scale)
+{
+>>>>>>> refs/remotes/origin/master
 	set_s16(&channel->full_scale.fx, full_scale.fx);
 	set_s16(&channel->full_scale.fy, full_scale.fy);
 	set_s16(&channel->full_scale.fz, full_scale.fz);
@@ -248,7 +329,11 @@ static void set_full_scales(volatile struct jr3_channel *channel,
 	set_s16(&channel->command_word0, 0x0a00);
 }
 
+<<<<<<< HEAD
 static struct six_axis_t get_min_full_scales(volatile struct jr3_channel
+=======
+static struct six_axis_t get_min_full_scales(struct jr3_channel __iomem
+>>>>>>> refs/remotes/origin/master
 					     *channel)
 {
 	struct six_axis_t result;
@@ -261,7 +346,11 @@ static struct six_axis_t get_min_full_scales(volatile struct jr3_channel
 	return result;
 }
 
+<<<<<<< HEAD
 static struct six_axis_t get_max_full_scales(volatile struct jr3_channel
+=======
+static struct six_axis_t get_max_full_scales(struct jr3_channel __iomem
+>>>>>>> refs/remotes/origin/master
 					     *channel)
 {
 	struct six_axis_t result;
@@ -311,6 +400,7 @@ static int jr3_pci_ai_insn_read(struct comedi_device *dev,
 				} else {
 					int F = 0;
 					switch (axis) {
+<<<<<<< HEAD
 					case 0:{
 							F = get_s16
 							    (&p->channel->filter
@@ -358,11 +448,45 @@ static int jr3_pci_ai_insn_read(struct comedi_device *dev,
 							    (&p->channel->filter
 							     [filter].v2);
 						}
+=======
+					case 0:
+						F = get_s16(&p->channel->
+							    filter[filter].fx);
+						break;
+					case 1:
+						F = get_s16(&p->channel->
+							    filter[filter].fy);
+						break;
+					case 2:
+						F = get_s16(&p->channel->
+							    filter[filter].fz);
+						break;
+					case 3:
+						F = get_s16(&p->channel->
+							    filter[filter].mx);
+						break;
+					case 4:
+						F = get_s16(&p->channel->
+							    filter[filter].my);
+						break;
+					case 5:
+						F = get_s16(&p->channel->
+							    filter[filter].mz);
+						break;
+					case 6:
+						F = get_s16(&p->channel->
+							    filter[filter].v1);
+						break;
+					case 7:
+						F = get_s16(&p->channel->
+							    filter[filter].v2);
+>>>>>>> refs/remotes/origin/master
 						break;
 					}
 					data[i] = F + 0x4000;
 				}
 			} else if (channel == 56) {
+<<<<<<< HEAD
 				if (p->state != state_jr3_done) {
 					data[i] = 0;
 				} else {
@@ -376,6 +500,19 @@ static int jr3_pci_ai_insn_read(struct comedi_device *dev,
 					data[i] =
 					    get_u16(&p->channel->serial_no);
 				}
+=======
+				if (p->state != state_jr3_done)
+					data[i] = 0;
+				else
+					data[i] =
+					get_u16(&p->channel->model_no);
+			} else if (channel == 57) {
+				if (p->state != state_jr3_done)
+					data[i] = 0;
+				else
+					data[i] =
+					get_u16(&p->channel->serial_no);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
@@ -388,15 +525,20 @@ static int jr3_pci_open(struct comedi_device *dev)
 	struct jr3_pci_dev_private *devpriv = dev->private;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk("jr3_pci_open\n");
 =======
 	dev_dbg(dev->hw_dev, "jr3_pci_open\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(dev->class_dev, "jr3_pci_open\n");
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < devpriv->n_channels; i++) {
 		struct jr3_pci_subdev_private *p;
 
 		p = dev->subdevices[i].private;
 		if (p) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			printk("serial: %p %d (%d)\n", p, p->serial_no,
 			       p->channel_no);
@@ -404,11 +546,16 @@ static int jr3_pci_open(struct comedi_device *dev)
 			dev_dbg(dev->hw_dev, "serial: %p %d (%d)\n", p,
 				p->serial_no, p->channel_no);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_dbg(dev->class_dev, "serial: %p %d (%d)\n", p,
+				p->serial_no, p->channel_no);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 int read_idm_word(const u8 * data, size_t size, int *pos, unsigned int *val)
 {
 	int result = 0;
@@ -416,6 +563,16 @@ int read_idm_word(const u8 * data, size_t size, int *pos, unsigned int *val)
 		/*  Skip over non hex */
 		for (; *pos < size && !isxdigit(data[*pos]); (*pos)++) {
 		}
+=======
+static int read_idm_word(const u8 *data, size_t size, int *pos,
+			 unsigned int *val)
+{
+	int result = 0;
+	if (pos && val) {
+		/*  Skip over non hex */
+		for (; *pos < size && !isxdigit(data[*pos]); (*pos)++)
+			;
+>>>>>>> refs/remotes/origin/master
 		/*  Collect value */
 		*val = 0;
 		for (; *pos < size; (*pos)++) {
@@ -424,15 +581,27 @@ int read_idm_word(const u8 * data, size_t size, int *pos, unsigned int *val)
 			if (value >= 0) {
 				result = 1;
 				*val = (*val << 4) + value;
+<<<<<<< HEAD
 			} else
 				break;
+=======
+			} else {
+				break;
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return result;
 }
 
+<<<<<<< HEAD
 static int jr3_download_firmware(struct comedi_device *dev, const u8 * data,
 				 size_t size)
+=======
+static int jr3_download_firmware(struct comedi_device *dev,
+				 const u8 *data, size_t size,
+				 unsigned long context)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * IDM file format is:
@@ -475,6 +644,7 @@ static int jr3_download_firmware(struct comedi_device *dev, const u8 * data,
 			pos = 0;
 			while (more) {
 				unsigned int count, addr;
+<<<<<<< HEAD
 				more = more
 				    && read_idm_word(data, size, &pos, &count);
 				if (more && count == 0xffff)
@@ -500,16 +670,49 @@ static int jr3_download_firmware(struct comedi_device *dev, const u8 * data,
 						count--;
 						/* printk("jr3_data, not tested\n"); */
 						/* jr3[addr + 0x20000 * pnum] = data1; */
+=======
+				more = more &&
+				       read_idm_word(data, size, &pos, &count);
+				if (more && count == 0xffff)
+					break;
+				more = more &&
+				       read_idm_word(data, size, &pos, &addr);
+				dev_dbg(dev->class_dev,
+					"Loading#%d %4.4x bytes at %4.4x\n",
+					i, count, addr);
+				while (more && count > 0) {
+					if (addr & 0x4000) {
+						/*  16 bit data, never seen
+						 *  in real life!! */
+						unsigned int data1;
+
+						more = more &&
+						       read_idm_word(data,
+								     size, &pos,
+								     &data1);
+						count--;
+						/* jr3[addr + 0x20000 * pnum] =
+						   data1; */
+>>>>>>> refs/remotes/origin/master
 					} else {
 						/*   Download 24 bit program */
 						unsigned int data1, data2;
 
+<<<<<<< HEAD
 						more = more
 						    && read_idm_word(data,
 								     size, &pos,
 								     &data1);
 						more = more
 						    && read_idm_word(data, size,
+=======
+						more = more &&
+						       read_idm_word(data,
+								     size, &pos,
+								     &data1);
+						more = more &&
+						       read_idm_word(data, size,
+>>>>>>> refs/remotes/origin/master
 								     &pos,
 								     &data2);
 						count -= 2;
@@ -524,7 +727,10 @@ static int jr3_download_firmware(struct comedi_device *dev, const u8 * data,
 								[i].program_high
 								[addr], data2);
 							udelay(1);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 						}
 					}
 					addr++;
@@ -542,6 +748,7 @@ static struct poll_delay_t jr3_pci_poll_subdevice(struct comedi_subdevice *s)
 	int i;
 
 	if (p) {
+<<<<<<< HEAD
 		volatile struct jr3_channel *channel = p->channel;
 		int errors = get_u16(&channel->errors);
 
@@ -556,23 +763,51 @@ static struct poll_delay_t jr3_pci_poll_subdevice(struct comedi_subdevice *s)
 		}
 		switch (p->state) {
 		case state_jr3_poll:{
+=======
+		struct jr3_channel __iomem *channel = p->channel;
+		int errors = get_u16(&channel->errors);
+
+		if (errors != p->errors)
+			p->errors = errors;
+
+		if (errors & (watch_dog | watch_dog2 | sensor_change))
+			/*  Sensor communication lost, force poll mode */
+			p->state = state_jr3_poll;
+
+		switch (p->state) {
+		case state_jr3_poll: {
+>>>>>>> refs/remotes/origin/master
 				u16 model_no = get_u16(&channel->model_no);
 				u16 serial_no = get_u16(&channel->serial_no);
 				if ((errors & (watch_dog | watch_dog2)) ||
 				    model_no == 0 || serial_no == 0) {
+<<<<<<< HEAD
 /*
  * Still no sensor, keep on polling. Since it takes up to 10 seconds
  * for offsets to stabilize, polling each second should suffice.
  */
+=======
+					/*
+					 * Still no sensor, keep on polling.
+					 * Since it takes up to 10 seconds
+					 * for offsets to stabilize, polling
+					 * each second should suffice.
+					 */
+>>>>>>> refs/remotes/origin/master
 					result = poll_delay_min_max(1000, 2000);
 				} else {
 					p->retries = 0;
 					p->state =
+<<<<<<< HEAD
 					    state_jr3_init_wait_for_offset;
+=======
+						state_jr3_init_wait_for_offset;
+>>>>>>> refs/remotes/origin/master
 					result = poll_delay_min_max(1000, 2000);
 				}
 			}
 			break;
+<<<<<<< HEAD
 		case state_jr3_init_wait_for_offset:{
 				p->retries++;
 				if (p->retries < 10) {
@@ -769,6 +1004,123 @@ static struct poll_delay_t jr3_pci_poll_subdevice(struct comedi_subdevice *s)
 		default:{
 				poll_delay_min_max(1000, 2000);
 			}
+=======
+		case state_jr3_init_wait_for_offset:
+			p->retries++;
+			if (p->retries < 10) {
+				/*  Wait for offeset to stabilize
+				 *  (< 10 s according to manual) */
+				result = poll_delay_min_max(1000, 2000);
+			} else {
+				struct transform_t transf;
+
+				p->model_no = get_u16(&channel->model_no);
+				p->serial_no = get_u16(&channel->serial_no);
+
+				/*  Transformation all zeros */
+				for (i = 0; i < ARRAY_SIZE(transf.link); i++) {
+					transf.link[i].link_type =
+						(enum link_types)0;
+					transf.link[i].link_amount = 0;
+				}
+
+				set_transforms(channel, transf, 0);
+				use_transform(channel, 0);
+				p->state = state_jr3_init_transform_complete;
+				/*  Allow 20 ms for completion */
+				result = poll_delay_min_max(20, 100);
+			}
+			break;
+		case state_jr3_init_transform_complete:
+			if (!is_complete(channel)) {
+				result = poll_delay_min_max(20, 100);
+			} else {
+				/*  Set full scale */
+				struct six_axis_t min_full_scale;
+				struct six_axis_t max_full_scale;
+
+				min_full_scale = get_min_full_scales(channel);
+				max_full_scale = get_max_full_scales(channel);
+				set_full_scales(channel, max_full_scale);
+
+				p->state =
+					state_jr3_init_set_full_scale_complete;
+				/*  Allow 20 ms for completion */
+				result = poll_delay_min_max(20, 100);
+			}
+			break;
+		case state_jr3_init_set_full_scale_complete:
+			if (!is_complete(channel)) {
+				result = poll_delay_min_max(20, 100);
+			} else {
+				struct force_array __iomem *full_scale;
+
+				/*  Use ranges in kN or we will
+				 *  overflow around 2000N! */
+				full_scale = &channel->full_scale;
+				p->range[0].range.min =
+					-get_s16(&full_scale->fx) * 1000;
+				p->range[0].range.max =
+					get_s16(&full_scale->fx) * 1000;
+				p->range[1].range.min =
+					-get_s16(&full_scale->fy) * 1000;
+				p->range[1].range.max =
+					get_s16(&full_scale->fy) * 1000;
+				p->range[2].range.min =
+					-get_s16(&full_scale->fz) * 1000;
+				p->range[2].range.max =
+					get_s16(&full_scale->fz) * 1000;
+				p->range[3].range.min =
+					-get_s16(&full_scale->mx) * 100;
+				p->range[3].range.max =
+					get_s16(&full_scale->mx) * 100;
+				p->range[4].range.min =
+					-get_s16(&full_scale->my) * 100;
+				p->range[4].range.max =
+					get_s16(&full_scale->my) * 100;
+				p->range[5].range.min =
+					-get_s16(&full_scale->mz) * 100;
+				p->range[5].range.max =
+					get_s16(&full_scale->mz) * 100;	/* ?? */
+				p->range[6].range.min =
+					-get_s16(&full_scale->v1) * 100;/* ?? */
+				p->range[6].range.max =
+					get_s16(&full_scale->v1) * 100;	/* ?? */
+				p->range[7].range.min =
+					-get_s16(&full_scale->v2) * 100;/* ?? */
+				p->range[7].range.max =
+					get_s16(&full_scale->v2) * 100;	/* ?? */
+				p->range[8].range.min = 0;
+				p->range[8].range.max = 65535;
+
+				use_offset(channel, 0);
+				p->state = state_jr3_init_use_offset_complete;
+				/*  Allow 40 ms for completion */
+				result = poll_delay_min_max(40, 100);
+			}
+			break;
+		case state_jr3_init_use_offset_complete:
+			if (!is_complete(channel)) {
+				result = poll_delay_min_max(20, 100);
+			} else {
+				set_s16(&channel->offsets.fx, 0);
+				set_s16(&channel->offsets.fy, 0);
+				set_s16(&channel->offsets.fz, 0);
+				set_s16(&channel->offsets.mx, 0);
+				set_s16(&channel->offsets.my, 0);
+				set_s16(&channel->offsets.mz, 0);
+
+				set_offset(channel);
+
+				p->state = state_jr3_done;
+			}
+			break;
+		case state_jr3_done:
+			poll_delay_min_max(10000, 20000);
+			break;
+		default:
+			poll_delay_min_max(1000, 2000);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -790,12 +1142,17 @@ static void jr3_pci_poll_dev(unsigned long data)
 	/*  Poll all channels that are ready to be polled */
 	for (i = 0; i < devpriv->n_channels; i++) {
 		struct jr3_pci_subdev_private *subdevpriv =
+<<<<<<< HEAD
 		    dev->subdevices[i].private;
+=======
+			dev->subdevices[i].private;
+>>>>>>> refs/remotes/origin/master
 		if (now > subdevpriv->next_time_min) {
 			struct poll_delay_t sub_delay;
 
 			sub_delay = jr3_pci_poll_subdevice(&dev->subdevices[i]);
 			subdevpriv->next_time_min =
+<<<<<<< HEAD
 			    jiffies + msecs_to_jiffies(sub_delay.min);
 			subdevpriv->next_time_max =
 			    jiffies + msecs_to_jiffies(sub_delay.max);
@@ -806,6 +1163,17 @@ static void jr3_pci_poll_dev(unsigned long data)
 */
 				delay = sub_delay.max;
 			}
+=======
+				jiffies + msecs_to_jiffies(sub_delay.min);
+			subdevpriv->next_time_max =
+				jiffies + msecs_to_jiffies(sub_delay.max);
+			if (sub_delay.max && sub_delay.max < delay)
+				/*
+				 * Wake up as late as possible ->
+				 * poll as many channels as possible at once.
+				 */
+				delay = sub_delay.max;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	spin_unlock_irqrestore(&dev->spinlock, flags);
@@ -814,6 +1182,7 @@ static void jr3_pci_poll_dev(unsigned long data)
 	add_timer(&devpriv->timer);
 }
 
+<<<<<<< HEAD
 static int jr3_pci_attach(struct comedi_device *dev,
 			  struct comedi_devconfig *it)
 {
@@ -915,6 +1284,60 @@ static int jr3_pci_attach(struct comedi_device *dev,
 	result = alloc_subdevices(dev, devpriv->n_channels);
 	if (result < 0)
 		goto out;
+=======
+static int jr3_pci_auto_attach(struct comedi_device *dev,
+					 unsigned long context_unused)
+{
+	int result;
+	struct pci_dev *pcidev = comedi_to_pci_dev(dev);
+	int i;
+	struct jr3_pci_dev_private *devpriv;
+
+	if (sizeof(struct jr3_channel) != 0xc00) {
+		dev_err(dev->class_dev,
+			"sizeof(struct jr3_channel) = %x [expected %x]\n",
+			(unsigned)sizeof(struct jr3_channel), 0xc00);
+		return -EINVAL;
+	}
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	init_timer(&devpriv->timer);
+	switch (pcidev->device) {
+	case PCI_DEVICE_ID_JR3_1_CHANNEL:
+	case PCI_DEVICE_ID_JR3_1_CHANNEL_NEW:
+		devpriv->n_channels = 1;
+		break;
+	case PCI_DEVICE_ID_JR3_2_CHANNEL:
+		devpriv->n_channels = 2;
+		break;
+	case PCI_DEVICE_ID_JR3_3_CHANNEL:
+		devpriv->n_channels = 3;
+		break;
+	case PCI_DEVICE_ID_JR3_4_CHANNEL:
+		devpriv->n_channels = 4;
+		break;
+	default:
+		dev_err(dev->class_dev, "jr3_pci: pci %s not supported\n",
+			pci_name(pcidev));
+		return -EINVAL;
+		break;
+	}
+
+	result = comedi_pci_enable(dev);
+	if (result)
+		return result;
+
+	devpriv->iobase = pci_ioremap_bar(pcidev, 0);
+	if (!devpriv->iobase)
+		return -ENOMEM;
+
+	result = comedi_alloc_subdevices(dev, devpriv->n_channels);
+	if (result)
+		return result;
+>>>>>>> refs/remotes/origin/master
 
 	dev->open = jr3_pci_open;
 	for (i = 0; i < devpriv->n_channels; i++) {
@@ -923,13 +1346,19 @@ static int jr3_pci_attach(struct comedi_device *dev,
 		dev->subdevices[i].n_chan = 8 * 7 + 2;
 		dev->subdevices[i].insn_read = jr3_pci_ai_insn_read;
 		dev->subdevices[i].private =
+<<<<<<< HEAD
 		    kzalloc(sizeof(struct jr3_pci_subdev_private), GFP_KERNEL);
+=======
+			kzalloc(sizeof(struct jr3_pci_subdev_private),
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		if (dev->subdevices[i].private) {
 			struct jr3_pci_subdev_private *p;
 			int j;
 
 			p = dev->subdevices[i].private;
 			p->channel = &devpriv->iobase->channel[i].data;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			printk("p->channel %p %p (%tx)\n",
 			       p->channel, devpriv->iobase,
@@ -941,6 +1370,12 @@ static int jr3_pci_attach(struct comedi_device *dev,
 				((char *)(p->channel) -
 				 (char *)(devpriv->iobase)));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_dbg(dev->class_dev, "p->channel %p %p (%tx)\n",
+				p->channel, devpriv->iobase,
+				((char __iomem *)p->channel -
+				 (char __iomem *)devpriv->iobase));
+>>>>>>> refs/remotes/origin/master
 			p->channel_no = i;
 			for (j = 0; j < 8; j++) {
 				int k;
@@ -960,6 +1395,7 @@ static int jr3_pci_attach(struct comedi_device *dev,
 			p->range[8].range.max = 65536;
 
 			p->range_table_list[56] =
+<<<<<<< HEAD
 			    (struct comedi_lrange *)&p->range[8];
 			p->range_table_list[57] =
 			    (struct comedi_lrange *)&p->range[8];
@@ -969,6 +1405,17 @@ static int jr3_pci_attach(struct comedi_device *dev,
 			dev->subdevices[i].range_table = 0;
 			dev->subdevices[i].range_table_list =
 			    p->range_table_list;
+=======
+				(struct comedi_lrange *)&p->range[8];
+			p->range_table_list[57] =
+				(struct comedi_lrange *)&p->range[8];
+			p->maxdata_list[56] = 0xffff;
+			p->maxdata_list[57] = 0xffff;
+			/*  Channel specific range and maxdata */
+			dev->subdevices[i].range_table = NULL;
+			dev->subdevices[i].range_table_list =
+				p->range_table_list;
+>>>>>>> refs/remotes/origin/master
 			dev->subdevices[i].maxdata = 0;
 			dev->subdevices[i].maxdata_list = p->maxdata_list;
 		}
@@ -977,6 +1424,7 @@ static int jr3_pci_attach(struct comedi_device *dev,
 	/*  Reset DSP card */
 	writel(0, &devpriv->iobase->channel[0].reset);
 
+<<<<<<< HEAD
 	result = comedi_load_firmware(dev, "jr3pci.idm", jr3_download_firmware);
 <<<<<<< HEAD
 	printk("Firmare load %d\n", result);
@@ -1009,6 +1457,34 @@ static int jr3_pci_attach(struct comedi_device *dev,
 			get_u16(&devpriv->iobase->channel[0].
 				data.copyright[i]) >> 8);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	result = comedi_load_firmware(dev, &comedi_to_pci_dev(dev)->dev,
+				      "comedi/jr3pci.idm",
+				      jr3_download_firmware, 0);
+	dev_dbg(dev->class_dev, "Firmare load %d\n", result);
+
+	if (result < 0)
+		return result;
+	/*
+	 * TODO: use firmware to load preferred offset tables. Suggested
+	 * format:
+	 *     model serial Fx Fy Fz Mx My Mz\n
+	 *
+	 *     comedi_load_firmware(dev, &comedi_to_pci_dev(dev)->dev,
+	 *                          "comedi/jr3_offsets_table",
+	 *                          jr3_download_firmware, 1);
+	 */
+
+	/*
+	 * It takes a few milliseconds for software to settle as much as we
+	 * can read firmware version
+	 */
+	msleep_interruptible(25);
+	for (i = 0; i < 0x18; i++) {
+		dev_dbg(dev->class_dev, "%c\n",
+			get_u16(&devpriv->iobase->channel[0].
+				data.copyright[i]) >> 8);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*  Start card timer */
@@ -1024,6 +1500,7 @@ static int jr3_pci_attach(struct comedi_device *dev,
 	devpriv->timer.expires = jiffies + msecs_to_jiffies(1000);
 	add_timer(&devpriv->timer);
 
+<<<<<<< HEAD
 out:
 	return result;
 }
@@ -1031,14 +1508,23 @@ out:
 MODULE_FIRMWARE("comedi/jr3pci.idm");
 
 static int jr3_pci_detach(struct comedi_device *dev)
+=======
+	return result;
+}
+
+static void jr3_pci_detach(struct comedi_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct jr3_pci_dev_private *devpriv = dev->private;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk("comedi%d: jr3_pci: remove\n", dev->minor);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (devpriv) {
 		del_timer_sync(&devpriv->timer);
 
@@ -1046,6 +1532,7 @@ static int jr3_pci_detach(struct comedi_device *dev)
 			for (i = 0; i < devpriv->n_channels; i++)
 				kfree(dev->subdevices[i].private);
 		}
+<<<<<<< HEAD
 
 		if (devpriv->iobase)
 			iounmap((void *)devpriv->iobase);
@@ -1095,7 +1582,49 @@ static void __exit driver_jr3_pci_cleanup_module(void)
 
 module_init(driver_jr3_pci_init_module);
 module_exit(driver_jr3_pci_cleanup_module);
+=======
+		if (devpriv->iobase)
+			iounmap(devpriv->iobase);
+	}
+	comedi_pci_disable(dev);
+}
+
+static struct comedi_driver jr3_pci_driver = {
+	.driver_name	= "jr3_pci",
+	.module		= THIS_MODULE,
+	.auto_attach	= jr3_pci_auto_attach,
+	.detach		= jr3_pci_detach,
+};
+
+static int jr3_pci_pci_probe(struct pci_dev *dev,
+			     const struct pci_device_id *id)
+{
+	return comedi_pci_auto_config(dev, &jr3_pci_driver, id->driver_data);
+}
+
+static const struct pci_device_id jr3_pci_pci_table[] = {
+	{ PCI_DEVICE(PCI_VENDOR_ID_JR3, PCI_DEVICE_ID_JR3_1_CHANNEL) },
+	{ PCI_DEVICE(PCI_VENDOR_ID_JR3, PCI_DEVICE_ID_JR3_1_CHANNEL_NEW) },
+	{ PCI_DEVICE(PCI_VENDOR_ID_JR3, PCI_DEVICE_ID_JR3_2_CHANNEL) },
+	{ PCI_DEVICE(PCI_VENDOR_ID_JR3, PCI_DEVICE_ID_JR3_3_CHANNEL) },
+	{ PCI_DEVICE(PCI_VENDOR_ID_JR3, PCI_DEVICE_ID_JR3_4_CHANNEL) },
+	{ 0 }
+};
+MODULE_DEVICE_TABLE(pci, jr3_pci_pci_table);
+
+static struct pci_driver jr3_pci_pci_driver = {
+	.name		= "jr3_pci",
+	.id_table	= jr3_pci_pci_table,
+	.probe		= jr3_pci_pci_probe,
+	.remove		= comedi_pci_auto_unconfig,
+};
+module_comedi_pci_driver(jr3_pci_driver, jr3_pci_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_FIRMWARE("comedi/jr3pci.idm");
+>>>>>>> refs/remotes/origin/master

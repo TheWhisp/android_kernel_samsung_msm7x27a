@@ -179,6 +179,10 @@ static void print_SCp(struct scsi_pointer *SCp, const char *prefix, const char *
 		SCp->buffers_residual, suffix);
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CHECK_STRUCTURE
+>>>>>>> refs/remotes/origin/master
 static void fas216_dumpinfo(FAS216_Info *info)
 {
 	static int used = 0;
@@ -223,7 +227,10 @@ static void fas216_dumpinfo(FAS216_Info *info)
 		info->internal_done, info->magic_end);
 }
 
+<<<<<<< HEAD
 #ifdef CHECK_STRUCTURE
+=======
+>>>>>>> refs/remotes/origin/master
 static void __fas216_checkmagic(FAS216_Info *info, const char *func)
 {
 	int corruption = 0;
@@ -2177,10 +2184,14 @@ static void fas216_done(FAS216_Info *info, unsigned int result)
 	fn(info, SCpnt, result);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (info->scsi.irq != NO_IRQ) {
 =======
 	if (info->scsi.irq) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (info->scsi.irq) {
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&info->host_lock, flags);
 		if (info->scsi.phase == PHASE_IDLE)
 			fas216_kick(info);
@@ -2281,10 +2292,14 @@ static int fas216_noqueue_command_lck(struct scsi_cmnd *SCpnt,
 	 * Provide some "incentive" to use the queueing code.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(info->scsi.irq != NO_IRQ);
 =======
 	BUG_ON(info->scsi.irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BUG_ON(info->scsi.irq);
+>>>>>>> refs/remotes/origin/master
 
 	info->internal_done = 0;
 	fas216_queue_command_lck(SCpnt, fas216_internal_done);
@@ -2966,9 +2981,15 @@ void fas216_release(struct Scsi_Host *host)
 	queue_free(&info->queues.issue);
 }
 
+<<<<<<< HEAD
 int fas216_print_host(FAS216_Info *info, char *buffer)
 {
 	return sprintf(buffer,
+=======
+void fas216_print_host(FAS216_Info *info, struct seq_file *m)
+{
+	seq_printf(m,
+>>>>>>> refs/remotes/origin/master
 			"\n"
 			"Chip    : %s\n"
 			" Address: 0x%p\n"
@@ -2978,11 +2999,17 @@ int fas216_print_host(FAS216_Info *info, char *buffer)
 			info->scsi.irq, info->scsi.dma);
 }
 
+<<<<<<< HEAD
 int fas216_print_stats(FAS216_Info *info, char *buffer)
 {
 	char *p = buffer;
 
 	p += sprintf(p, "\n"
+=======
+void fas216_print_stats(FAS216_Info *info, struct seq_file *m)
+{
+	seq_printf(m, "\n"
+>>>>>>> refs/remotes/origin/master
 			"Command Statistics:\n"
 			" Queued     : %u\n"
 			" Issued     : %u\n"
@@ -2999,6 +3026,7 @@ int fas216_print_stats(FAS216_Info *info, char *buffer)
 			info->stats.writes,	 info->stats.miscs,
 			info->stats.disconnects, info->stats.aborts,
 			info->stats.bus_resets,	 info->stats.host_resets);
+<<<<<<< HEAD
 
 	return p - buffer;
 }
@@ -3031,6 +3059,35 @@ int fas216_print_devices(FAS216_Info *info, char *buffer)
 	}
 
 	return p - buffer;
+=======
+}
+
+void fas216_print_devices(FAS216_Info *info, struct seq_file *m)
+{
+	struct fas216_device *dev;
+	struct scsi_device *scd;
+
+	seq_printf(m, "Device/Lun TaggedQ       Parity   Sync\n");
+
+	shost_for_each_device(scd, info->host) {
+		dev = &info->device[scd->id];
+		seq_printf(m, "     %d/%d   ", scd->id, scd->lun);
+		if (scd->tagged_supported)
+			seq_printf(m, "%3sabled(%3d) ",
+				     scd->simple_tags ? "en" : "dis",
+				     scd->current_tag);
+		else
+			seq_printf(m, "unsupported   ");
+
+		seq_printf(m, "%3sabled ", dev->parity_enabled ? "en" : "dis");
+
+		if (dev->sof)
+			seq_printf(m, "offset %d, %d ns\n",
+				     dev->sof, dev->period * 4);
+		else
+			seq_printf(m, "async\n");
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 EXPORT_SYMBOL(fas216_init);

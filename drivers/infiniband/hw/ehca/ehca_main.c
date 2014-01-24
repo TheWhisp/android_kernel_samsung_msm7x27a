@@ -60,6 +60,7 @@ MODULE_DESCRIPTION("IBM eServer HCA InfiniBand Device Driver");
 MODULE_VERSION(HCAD_VERSION);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ehca_open_aqp1     = 0;
 static int ehca_hw_level      = 0;
 static int ehca_poll_all_eqs  = 1;
@@ -71,6 +72,8 @@ int ehca_port_act_time = 30;
 int ehca_static_rate   = -1;
 int ehca_scaling_code  = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool ehca_open_aqp1    = 0;
 static int ehca_hw_level      = 0;
 static bool ehca_poll_all_eqs = 1;
@@ -81,7 +84,10 @@ bool ehca_use_hp_mr    = 0;
 int ehca_port_act_time = 30;
 int ehca_static_rate   = -1;
 bool ehca_scaling_code = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int ehca_lock_hcalls   = -1;
 int ehca_max_cq        = -1;
 int ehca_max_qp        = -1;
@@ -96,10 +102,14 @@ module_param_named(poll_all_eqs,  ehca_poll_all_eqs,  bool, S_IRUGO);
 module_param_named(static_rate,   ehca_static_rate,   int,  S_IRUGO);
 module_param_named(scaling_code,  ehca_scaling_code,  bool, S_IRUGO);
 <<<<<<< HEAD
+<<<<<<< HEAD
 module_param_named(lock_hcalls,   ehca_lock_hcalls,   bool, S_IRUGO);
 =======
 module_param_named(lock_hcalls,   ehca_lock_hcalls,   bint, S_IRUGO);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param_named(lock_hcalls,   ehca_lock_hcalls,   bint, S_IRUGO);
+>>>>>>> refs/remotes/origin/master
 module_param_named(number_of_cqs, ehca_max_cq,        int,  S_IRUGO);
 module_param_named(number_of_qps, ehca_max_qp,        int,  S_IRUGO);
 
@@ -228,6 +238,10 @@ static int ehca_create_slab_caches(void)
 	if (!ctblk_cache) {
 		ehca_gen_err("Cannot create ctblk SLAB cache.");
 		ehca_cleanup_small_qp_cache();
+<<<<<<< HEAD
+=======
+		ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto create_slab_caches6;
 	}
 #endif
@@ -730,8 +744,12 @@ static struct attribute_group ehca_dev_attr_grp = {
 	.attrs = ehca_dev_attrs
 };
 
+<<<<<<< HEAD
 static int __devinit ehca_probe(struct platform_device *dev,
 				const struct of_device_id *id)
+=======
+static int ehca_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ehca_shca *shca;
 	const u64 *handle;
@@ -896,7 +914,11 @@ probe1:
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static int __devexit ehca_remove(struct platform_device *dev)
+=======
+static int ehca_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ehca_shca *shca = dev_get_drvdata(&dev->dev);
 	unsigned long flags;
@@ -954,7 +976,11 @@ static struct of_device_id ehca_device_table[] =
 };
 MODULE_DEVICE_TABLE(of, ehca_device_table);
 
+<<<<<<< HEAD
 static struct of_platform_driver ehca_driver = {
+=======
+static struct platform_driver ehca_driver = {
+>>>>>>> refs/remotes/origin/master
 	.probe       = ehca_probe,
 	.remove      = ehca_remove,
 	.driver = {

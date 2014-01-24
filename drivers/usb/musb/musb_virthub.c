@@ -36,7 +36,10 @@
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/time.h>
 #include <linux/timer.h>
 
@@ -44,6 +47,7 @@
 
 #include "musb_core.h"
 
+<<<<<<< HEAD
 
 static void musb_port_suspend(struct musb *musb, bool do_suspend)
 {
@@ -51,6 +55,42 @@ static void musb_port_suspend(struct musb *musb, bool do_suspend)
 =======
 	struct usb_otg	*otg = musb->xceiv->otg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void musb_host_finish_resume(struct work_struct *work)
+{
+	struct musb *musb;
+	unsigned long flags;
+	u8 power;
+
+	musb = container_of(work, struct musb, finish_resume_work.work);
+
+	spin_lock_irqsave(&musb->lock, flags);
+
+	power = musb_readb(musb->mregs, MUSB_POWER);
+	power &= ~MUSB_POWER_RESUME;
+	dev_dbg(musb->controller, "root port resume stopped, power %02x\n",
+		power);
+	musb_writeb(musb->mregs, MUSB_POWER, power);
+
+	/*
+	 * ISSUE:  DaVinci (RTL 1.300) disconnects after
+	 * resume of high speed peripherals (but not full
+	 * speed ones).
+	 */
+	musb->is_active = 1;
+	musb->port1_status &= ~(USB_PORT_STAT_SUSPEND | MUSB_PORT_STAT_RESUME);
+	musb->port1_status |= USB_PORT_STAT_C_SUSPEND << 16;
+	usb_hcd_poll_rh_status(musb->hcd);
+	/* NOTE: it might really be A_WAIT_BCON ... */
+	musb->xceiv->state = OTG_STATE_A_HOST;
+
+	spin_unlock_irqrestore(&musb->lock, flags);
+}
+
+void musb_port_suspend(struct musb *musb, bool do_suspend)
+{
+	struct usb_otg	*otg = musb->xceiv->otg;
+>>>>>>> refs/remotes/origin/master
 	u8		power;
 	void __iomem	*mbase = musb->mregs;
 
@@ -84,18 +124,23 @@ static void musb_port_suspend(struct musb *musb, bool do_suspend)
 		switch (musb->xceiv->state) {
 		case OTG_STATE_A_HOST:
 			musb->xceiv->state = OTG_STATE_A_SUSPEND;
+<<<<<<< HEAD
 			musb->is_active = is_otg_enabled(musb)
 <<<<<<< HEAD
 					&& musb->xceiv->host->b_hnp_enable;
 =======
 					&& otg->host->b_hnp_enable;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			musb->is_active = otg->host->b_hnp_enable;
+>>>>>>> refs/remotes/origin/master
 			if (musb->is_active)
 				mod_timer(&musb->otg_timer, jiffies
 					+ msecs_to_jiffies(
 						OTG_TIME_A_AIDL_BDIS));
 			musb_platform_try_idle(musb, 0);
 			break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef	CONFIG_USB_MUSB_OTG
 		case OTG_STATE_B_HOST:
@@ -116,6 +161,16 @@ static void musb_port_suspend(struct musb *musb, bool do_suspend)
 		default:
 			dev_dbg(musb->controller, "bogus rh suspend? %s\n",
 				otg_state_string(musb->xceiv->state));
+=======
+		case OTG_STATE_B_HOST:
+			musb->xceiv->state = OTG_STATE_B_WAIT_ACON;
+			musb->is_active = otg->host->b_hnp_enable;
+			musb_platform_try_idle(musb, 0);
+			break;
+		default:
+			dev_dbg(musb->controller, "bogus rh suspend? %s\n",
+				usb_otg_state_string(musb->xceiv->state));
+>>>>>>> refs/remotes/origin/master
 		}
 	} else if (power & MUSB_POWER_SUSPENDM) {
 		power &= ~MUSB_POWER_SUSPENDM;
@@ -126,28 +181,42 @@ static void musb_port_suspend(struct musb *musb, bool do_suspend)
 
 		/* later, GetPortStatus will stop RESUME signaling */
 		musb->port1_status |= MUSB_PORT_STAT_RESUME;
+<<<<<<< HEAD
 		musb->rh_timer = jiffies + msecs_to_jiffies(20);
 	}
 }
 
 static void musb_port_reset(struct musb *musb, bool do_reset)
+=======
+		schedule_delayed_work(&musb->finish_resume_work, 20);
+	}
+}
+
+void musb_port_reset(struct musb *musb, bool do_reset)
+>>>>>>> refs/remotes/origin/master
 {
 	u8		power;
 	void __iomem	*mbase = musb->mregs;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_OTG
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (musb->xceiv->state == OTG_STATE_B_IDLE) {
 		dev_dbg(musb->controller, "HNP: Returning from HNP; no hub reset from b_idle\n");
 		musb->port1_status &= ~USB_PORT_STAT_RESET;
 		return;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!is_host_active(musb))
 		return;
@@ -173,21 +242,31 @@ static void musb_port_reset(struct musb *musb, bool do_reset)
 			msleep(1);
 		}
 
+<<<<<<< HEAD
 		musb->ignore_disconnect = true;
+=======
+>>>>>>> refs/remotes/origin/master
 		power &= 0xf0;
 		musb_writeb(mbase, MUSB_POWER,
 				power | MUSB_POWER_RESET);
 
 		musb->port1_status |= USB_PORT_STAT_RESET;
 		musb->port1_status &= ~USB_PORT_STAT_ENABLE;
+<<<<<<< HEAD
 		musb->rh_timer = jiffies + msecs_to_jiffies(50);
+=======
+		schedule_delayed_work(&musb->deassert_reset_work, 50);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		dev_dbg(musb->controller, "root port reset stopped\n");
 		musb_writeb(mbase, MUSB_POWER,
 				power & ~MUSB_POWER_RESET);
 
+<<<<<<< HEAD
 		musb->ignore_disconnect = false;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		power = musb_readb(mbase, MUSB_POWER);
 		if (power & MUSB_POWER_HSMODE) {
 			dev_dbg(musb->controller, "high-speed device connected\n");
@@ -198,7 +277,11 @@ static void musb_port_reset(struct musb *musb, bool do_reset)
 		musb->port1_status |= USB_PORT_STAT_ENABLE
 					| (USB_PORT_STAT_C_RESET << 16)
 					| (USB_PORT_STAT_C_ENABLE << 16);
+<<<<<<< HEAD
 		usb_hcd_poll_rh_status(musb_to_hcd(musb));
+=======
+		usb_hcd_poll_rh_status(musb->hcd);
+>>>>>>> refs/remotes/origin/master
 
 		musb->vbuserr_retry = VBUSERR_RETRY_COUNT;
 	}
@@ -206,6 +289,7 @@ static void musb_port_reset(struct musb *musb, bool do_reset)
 
 void musb_root_disconnect(struct musb *musb)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	struct usb_otg	*otg = musb->xceiv->otg;
@@ -215,10 +299,19 @@ void musb_root_disconnect(struct musb *musb)
 			| (USB_PORT_STAT_C_CONNECTION << 16);
 
 	usb_hcd_poll_rh_status(musb_to_hcd(musb));
+=======
+	struct usb_otg	*otg = musb->xceiv->otg;
+
+	musb->port1_status = USB_PORT_STAT_POWER
+			| (USB_PORT_STAT_C_CONNECTION << 16);
+
+	usb_hcd_poll_rh_status(musb->hcd);
+>>>>>>> refs/remotes/origin/master
 	musb->is_active = 0;
 
 	switch (musb->xceiv->state) {
 	case OTG_STATE_A_SUSPEND:
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef	CONFIG_USB_MUSB_OTG
 		if (is_otg_enabled(musb)
@@ -227,14 +320,20 @@ void musb_root_disconnect(struct musb *musb)
 		if (is_otg_enabled(musb)
 				&& otg->host->b_hnp_enable) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (otg->host->b_hnp_enable) {
+>>>>>>> refs/remotes/origin/master
 			musb->xceiv->state = OTG_STATE_A_PERIPHERAL;
 			musb->g.is_a_peripheral = 1;
 			break;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* FALLTHROUGH */
 	case OTG_STATE_A_HOST:
 		musb->xceiv->state = OTG_STATE_A_WAIT_BCON;
@@ -245,7 +344,11 @@ void musb_root_disconnect(struct musb *musb)
 		break;
 	default:
 		dev_dbg(musb->controller, "host disconnect (%s)\n",
+<<<<<<< HEAD
 			otg_state_string(musb->xceiv->state));
+=======
+			usb_otg_state_string(musb->xceiv->state));
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -266,6 +369,26 @@ int musb_hub_status_data(struct usb_hcd *hcd, char *buf)
 	return retval;
 }
 
+<<<<<<< HEAD
+=======
+static int musb_has_gadget(struct musb *musb)
+{
+	/*
+	 * In host-only mode we start a connection right away. In OTG mode
+	 * we have to wait until we loaded a gadget. We don't really need a
+	 * gadget if we operate as a host but we should not start a session
+	 * as a device without a gadget or else we explode.
+	 */
+#ifdef CONFIG_USB_MUSB_HOST
+	return 1;
+#else
+	if (musb->port_mode == MUSB_PORT_MODE_HOST)
+		return 1;
+	return musb->g.dev.driver != NULL;
+#endif
+}
+
+>>>>>>> refs/remotes/origin/master
 int musb_hub_control(
 	struct usb_hcd	*hcd,
 	u16		typeReq,
@@ -312,7 +435,11 @@ int musb_hub_control(
 			musb_port_suspend(musb, false);
 			break;
 		case USB_PORT_FEAT_POWER:
+<<<<<<< HEAD
 			if (!(is_otg_enabled(musb) && hcd->self.is_b_host))
+=======
+			if (!hcd->self.is_b_host)
+>>>>>>> refs/remotes/origin/master
 				musb_platform_set_vbus(musb, 0);
 			break;
 		case USB_PORT_FEAT_C_CONNECTION:
@@ -354,6 +481,7 @@ int musb_hub_control(
 		if (wIndex != 1)
 			goto error;
 
+<<<<<<< HEAD
 		/* finish RESET signaling? */
 		if ((musb->port1_status & USB_PORT_STAT_RESET)
 				&& time_after_eq(jiffies, musb->rh_timer))
@@ -384,6 +512,8 @@ int musb_hub_control(
 			musb->xceiv->state = OTG_STATE_A_HOST;
 		}
 
+=======
+>>>>>>> refs/remotes/origin/master
 		put_unaligned(cpu_to_le32(musb->port1_status
 					& ~MUSB_PORT_STAT_RESUME),
 				(__le32 *) buf);
@@ -408,7 +538,11 @@ int musb_hub_control(
 			 * initialization logic, e.g. for OTG, or change any
 			 * logic relating to VBUS power-up.
 			 */
+<<<<<<< HEAD
 			if (!(is_otg_enabled(musb) && hcd->self.is_b_host))
+=======
+			if (!hcd->self.is_b_host && musb_has_gadget(musb))
+>>>>>>> refs/remotes/origin/master
 				musb_start(musb);
 			break;
 		case USB_PORT_FEAT_RESET:

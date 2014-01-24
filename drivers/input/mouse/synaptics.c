@@ -41,22 +41,32 @@
  * coordinates.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 #define XMIN 0
 #define XMAX 6143
 #define YMIN 0
 #define YMAX 6143
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define XMIN_NOMINAL 1472
 #define XMAX_NOMINAL 5472
 #define YMIN_NOMINAL 1408
 #define YMAX_NOMINAL 4448
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 /* Size in bits of absolute position values reported by the hardware */
 #define ABS_POS_BITS 13
 
 /*
+<<<<<<< HEAD
  * Any position values from the hardware above the following limits are
  * treated as "wrapped around negative" values that have been truncated to
  * the 13-bit reporting range of the hardware. These are just reasonable
@@ -77,6 +87,21 @@ static int synaptics_invert_y(int y)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * These values should represent the absolute maximum value that will
+ * be reported for a positive position value. Some Synaptics firmware
+ * uses this value to indicate a finger near the edge of the touchpad
+ * whose precise position cannot be determined.
+ *
+ * At least one touchpad is known to report positions in excess of this
+ * value which are actually negative values truncated to the 13-bit
+ * reporting range. These values have never been observed to be lower
+ * than 8184 (i.e. -8), so we treat all values greater than 8176 as
+ * negative and any other value as positive.
+ */
+#define X_MAX_POSITIVE 8176
+#define Y_MAX_POSITIVE 8176
+>>>>>>> refs/remotes/origin/master
 
 /*****************************************************************************
  *	Stuff we need even when we do not want native Synaptics support
@@ -134,6 +159,19 @@ void synaptics_reset(struct psmouse *psmouse)
  ****************************************************************************/
 
 /*
+<<<<<<< HEAD
+=======
+ * Synaptics touchpads report the y coordinate from bottom to top, which is
+ * opposite from what userspace expects.
+ * This function is used to invert y before reporting.
+ */
+static int synaptics_invert_y(int y)
+{
+	return YMAX_NOMINAL + YMIN_NOMINAL - y;
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Send a command to the synpatics touchpad by special commands
  */
 static int synaptics_send_cmd(struct psmouse *psmouse, unsigned char c, unsigned char *param)
@@ -161,6 +199,38 @@ static int synaptics_model_id(struct psmouse *psmouse)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Read the board id from the touchpad
+ * The board id is encoded in the "QUERY MODES" response
+ */
+static int synaptics_board_id(struct psmouse *psmouse)
+{
+	struct synaptics_data *priv = psmouse->private;
+	unsigned char bid[3];
+
+	if (synaptics_send_cmd(psmouse, SYN_QUE_MODES, bid))
+		return -1;
+	priv->board_id = ((bid[0] & 0xfc) << 6) | bid[1];
+	return 0;
+}
+
+/*
+ * Read the firmware id from the touchpad
+ */
+static int synaptics_firmware_id(struct psmouse *psmouse)
+{
+	struct synaptics_data *priv = psmouse->private;
+	unsigned char fwid[3];
+
+	if (synaptics_send_cmd(psmouse, SYN_QUE_FIRMWARE_ID, fwid))
+		return -1;
+	priv->firmware_id = (fwid[0] << 16) | (fwid[1] << 8) | fwid[2];
+	return 0;
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Read the capability-bits from the touchpad
  * see also the SYN_CAP_* macros
  */
@@ -191,12 +261,17 @@ static int synaptics_capability(struct psmouse *psmouse)
 	if (SYN_EXT_CAP_REQUESTS(priv->capabilities) >= 1) {
 		if (synaptics_send_cmd(psmouse, SYN_QUE_EXT_CAPAB, cap)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "Synaptics claims to have extended capabilities,"
 			       " but I'm not able to read them.\n");
 =======
 			psmouse_warn(psmouse,
 				     "device claims to have extended capabilities, but I'm not able to read them.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			psmouse_warn(psmouse,
+				     "device claims to have extended capabilities, but I'm not able to read them.\n");
+>>>>>>> refs/remotes/origin/master
 		} else {
 			priv->ext_cap = (cap[0] << 16) | (cap[1] << 8) | cap[2];
 
@@ -212,12 +287,17 @@ static int synaptics_capability(struct psmouse *psmouse)
 	if (SYN_EXT_CAP_REQUESTS(priv->capabilities) >= 4) {
 		if (synaptics_send_cmd(psmouse, SYN_QUE_EXT_CAPAB_0C, cap)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "Synaptics claims to have extended capability 0x0c,"
 			       " but I'm not able to read it.\n");
 =======
 			psmouse_warn(psmouse,
 				     "device claims to have extended capability 0x0c, but I'm not able to read it.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			psmouse_warn(psmouse,
+				     "device claims to have extended capability 0x0c, but I'm not able to read it.\n");
+>>>>>>> refs/remotes/origin/master
 		} else {
 			priv->ext_cap_0c = (cap[0] << 16) | (cap[1] << 8) | cap[2];
 		}
@@ -251,31 +331,42 @@ static int synaptics_resolution(struct psmouse *psmouse)
 {
 	struct synaptics_data *priv = psmouse->private;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned char res[3];
 	unsigned char max[3];
 =======
 	unsigned char resp[3];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned char resp[3];
+>>>>>>> refs/remotes/origin/master
 
 	if (SYN_ID_MAJOR(priv->identity) < 4)
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (synaptics_send_cmd(psmouse, SYN_QUE_RESOLUTION, res) == 0) {
 		if (res[0] != 0 && (res[1] & 0x80) && res[2] != 0) {
 			priv->x_res = res[0]; /* x resolution in units/mm */
 			priv->y_res = res[2]; /* y resolution in units/mm */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (synaptics_send_cmd(psmouse, SYN_QUE_RESOLUTION, resp) == 0) {
 		if (resp[0] != 0 && (resp[1] & 0x80) && resp[2] != 0) {
 			priv->x_res = resp[0]; /* x resolution in units/mm */
 			priv->y_res = resp[2]; /* y resolution in units/mm */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	if (SYN_EXT_CAP_REQUESTS(priv->capabilities) >= 5 &&
 	    SYN_CAP_MAX_DIMENSIONS(priv->ext_cap_0c)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (synaptics_send_cmd(psmouse, SYN_QUE_EXT_DIMENSIONS, max)) {
 			printk(KERN_ERR "Synaptics claims to have dimensions query,"
@@ -284,6 +375,8 @@ static int synaptics_resolution(struct psmouse *psmouse)
 			priv->x_max = (max[0] << 5) | ((max[1] & 0x0f) << 1);
 			priv->y_max = (max[2] << 5) | ((max[1] & 0xf0) >> 3);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (synaptics_send_cmd(psmouse, SYN_QUE_EXT_MAX_COORDS, resp)) {
 			psmouse_warn(psmouse,
 				     "device claims to have max coordinates query, but I'm not able to read it.\n");
@@ -301,7 +394,10 @@ static int synaptics_resolution(struct psmouse *psmouse)
 		} else {
 			priv->x_min = (resp[0] << 5) | ((resp[1] & 0x0f) << 1);
 			priv->y_min = (resp[2] << 5) | ((resp[1] & 0xf0) >> 3);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -314,6 +410,13 @@ static int synaptics_query_hardware(struct psmouse *psmouse)
 		return -1;
 	if (synaptics_model_id(psmouse))
 		return -1;
+<<<<<<< HEAD
+=======
+	if (synaptics_firmware_id(psmouse))
+		return -1;
+	if (synaptics_board_id(psmouse))
+		return -1;
+>>>>>>> refs/remotes/origin/master
 	if (synaptics_capability(psmouse))
 		return -1;
 	if (synaptics_resolution(psmouse))
@@ -323,6 +426,7 @@ static int synaptics_query_hardware(struct psmouse *psmouse)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int synaptics_set_absolute_mode(struct psmouse *psmouse)
 {
 	struct synaptics_data *priv = psmouse->private;
@@ -331,6 +435,8 @@ static int synaptics_set_absolute_mode(struct psmouse *psmouse)
 	if (SYN_ID_MAJOR(priv->identity) >= 4)
 		priv->mode |= SYN_BIT_DISABLE_GESTURE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int synaptics_set_advanced_gesture_mode(struct psmouse *psmouse)
 {
 	static unsigned char param = 0xc8;
@@ -363,7 +469,10 @@ static int synaptics_set_mode(struct psmouse *psmouse)
 		priv->mode |= SYN_BIT_DISABLE_GESTURE;
 	if (psmouse->rate >= 80)
 		priv->mode |= SYN_BIT_HIGH_RATE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (SYN_CAP_EXTENDED(priv->capabilities))
 		priv->mode |= SYN_BIT_W_MODE;
 
@@ -371,14 +480,20 @@ static int synaptics_set_mode(struct psmouse *psmouse)
 		return -1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (priv->absolute_mode &&
 	    synaptics_set_advanced_gesture_mode(psmouse)) {
 		psmouse_err(psmouse, "Advanced gesture mode init failed.\n");
 		return -1;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -397,6 +512,7 @@ static void synaptics_set_rate(struct psmouse *psmouse, unsigned int rate)
 	synaptics_mode_cmd(psmouse, priv->mode);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int synaptics_set_advanced_gesture_mode(struct psmouse *psmouse)
 {
@@ -419,6 +535,8 @@ static int synaptics_set_advanced_gesture_mode(struct psmouse *psmouse)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*****************************************************************************
  *	Synaptics pass-through PS/2 port support
  ****************************************************************************/
@@ -489,11 +607,16 @@ static void synaptics_pt_activate(struct psmouse *psmouse)
 
 		if (synaptics_mode_cmd(psmouse, priv->mode))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "synaptics: failed to switch guest protocol\n");
 =======
 			psmouse_warn(psmouse,
 				     "failed to switch guest protocol\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			psmouse_warn(psmouse,
+				     "failed to switch guest protocol\n");
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -504,11 +627,16 @@ static void synaptics_pt_create(struct psmouse *psmouse)
 	serio = kzalloc(sizeof(struct serio), GFP_KERNEL);
 	if (!serio) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "synaptics: not enough memory to allocate pass-through port\n");
 =======
 		psmouse_err(psmouse,
 			    "not enough memory for pass-through port\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		psmouse_err(psmouse,
+			    "not enough memory for pass-through port\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -523,11 +651,16 @@ static void synaptics_pt_create(struct psmouse *psmouse)
 	psmouse->pt_activate = synaptics_pt_activate;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "serio: %s port at %s\n", serio->name, psmouse->phys);
 =======
 	psmouse_info(psmouse, "serio: %s port at %s\n",
 		     serio->name, psmouse->phys);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	psmouse_info(psmouse, "serio: %s port at %s\n",
+		     serio->name, psmouse->phys);
+>>>>>>> refs/remotes/origin/master
 	serio_register_port(serio);
 }
 
@@ -536,7 +669,10 @@ static void synaptics_pt_create(struct psmouse *psmouse)
  ****************************************************************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void synaptics_mt_state_set(struct synaptics_mt_state *state, int count,
 				   int sgm, int agm)
 {
@@ -575,7 +711,10 @@ static void synaptics_parse_agm(const unsigned char buf[],
 	priv->agm_pending = true;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int synaptics_parse_hw_state(const unsigned char buf[],
 				    struct synaptics_data *priv,
 				    struct synaptics_hw_state *hw)
@@ -583,6 +722,7 @@ static int synaptics_parse_hw_state(const unsigned char buf[],
 	memset(hw, 0, sizeof(struct synaptics_hw_state));
 
 	if (SYN_MODEL_NEWABS(priv->model_id)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		hw->x = (((buf[3] & 0x10) << 8) |
 			 ((buf[1] & 0x0f) << 8) |
@@ -594,10 +734,13 @@ static int synaptics_parse_hw_state(const unsigned char buf[],
 		hw->z = buf[2];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		hw->w = (((buf[0] & 0x30) >> 2) |
 			 ((buf[0] & 0x04) >> 1) |
 			 ((buf[3] & 0x04) >> 2));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (SYN_CAP_ADV_GESTURE(priv->ext_cap_0c) && hw->w == 2) {
 			/* Gesture packet: (x, y, z) at half resolution */
@@ -609,6 +752,8 @@ static int synaptics_parse_hw_state(const unsigned char buf[],
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		hw->left  = (buf[0] & 0x01) ? 1 : 0;
 		hw->right = (buf[0] & 0x02) ? 1 : 0;
 
@@ -632,7 +777,10 @@ static int synaptics_parse_hw_state(const unsigned char buf[],
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if ((SYN_CAP_ADV_GESTURE(priv->ext_cap_0c) ||
 			SYN_CAP_IMAGE_SENSOR(priv->ext_cap_0c)) &&
 		    hw->w == 2) {
@@ -648,7 +796,10 @@ static int synaptics_parse_hw_state(const unsigned char buf[],
 			 buf[5]);
 		hw->z = buf[2];
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (SYN_CAP_MULTI_BUTTON_NO(priv->ext_cap) &&
 		    ((buf[0] ^ buf[3]) & 0x02)) {
 			switch (SYN_CAP_MULTI_BUTTON_NO(priv->ext_cap) & ~0x01) {
@@ -684,15 +835,34 @@ static int synaptics_parse_hw_state(const unsigned char buf[],
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Convert wrap-around values to negative */
 	if (hw->x > X_MAX_POSITIVE)
 		hw->x -= 1 << ABS_POS_BITS;
 	if (hw->y > Y_MAX_POSITIVE)
 		hw->y -= 1 << ABS_POS_BITS;
+=======
+	/*
+	 * Convert wrap-around values to negative. (X|Y)_MAX_POSITIVE
+	 * is used by some firmware to indicate a finger at the edge of
+	 * the touchpad whose precise position cannot be determined, so
+	 * convert these values to the maximum axis value.
+	 */
+	if (hw->x > X_MAX_POSITIVE)
+		hw->x -= 1 << ABS_POS_BITS;
+	else if (hw->x == X_MAX_POSITIVE)
+		hw->x = XMAX;
+
+	if (hw->y > Y_MAX_POSITIVE)
+		hw->y -= 1 << ABS_POS_BITS;
+	else if (hw->y == Y_MAX_POSITIVE)
+		hw->y = YMAX;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static void set_slot(struct input_dev *dev, int slot, bool active, int x, int y)
 =======
 	return 0;
@@ -701,17 +871,25 @@ static void set_slot(struct input_dev *dev, int slot, bool active, int x, int y)
 static void synaptics_report_semi_mt_slot(struct input_dev *dev, int slot,
 					  bool active, int x, int y)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void synaptics_report_semi_mt_slot(struct input_dev *dev, int slot,
+					  bool active, int x, int y)
+>>>>>>> refs/remotes/origin/master
 {
 	input_mt_slot(dev, slot);
 	input_mt_report_slot_state(dev, MT_TOOL_FINGER, active);
 	if (active) {
 		input_report_abs(dev, ABS_MT_POSITION_X, x);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		input_report_abs(dev, ABS_MT_POSITION_Y,
 				 YMAX_NOMINAL + YMIN_NOMINAL - y);
 =======
 		input_report_abs(dev, ABS_MT_POSITION_Y, synaptics_invert_y(y));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		input_report_abs(dev, ABS_MT_POSITION_Y, synaptics_invert_y(y));
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -721,6 +899,7 @@ static void synaptics_report_semi_mt_data(struct input_dev *dev,
 					  int num_fingers)
 {
 	if (num_fingers >= 2) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		set_slot(dev, 0, true, min(a->x, b->x), min(a->y, b->y));
 		set_slot(dev, 1, true, max(a->x, b->x), max(a->y, b->y));
@@ -732,6 +911,8 @@ static void synaptics_report_semi_mt_data(struct input_dev *dev,
 		set_slot(dev, 1, false, 0, 0);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		synaptics_report_semi_mt_slot(dev, 0, true, min(a->x, b->x),
 					      min(a->y, b->y));
 		synaptics_report_semi_mt_slot(dev, 1, true, max(a->x, b->x),
@@ -809,11 +990,21 @@ static void synaptics_report_mt_data(struct psmouse *psmouse,
 	default:
 		/*
 		 * If the finger slot contained in SGM is valid, and either
+<<<<<<< HEAD
 		 * hasn't changed, or is new, then report SGM in MTB slot 0.
 		 * Otherwise, empty MTB slot 0.
 		 */
 		if (mt_state->sgm != -1 &&
 		    (mt_state->sgm == old->sgm || old->sgm == -1))
+=======
+		 * hasn't changed, or is new, or the old SGM has now moved to
+		 * AGM, then report SGM in MTB slot 0.
+		 * Otherwise, empty MTB slot 0.
+		 */
+		if (mt_state->sgm != -1 &&
+		    (mt_state->sgm == old->sgm ||
+		     old->sgm == -1 || mt_state->agm == old->sgm))
+>>>>>>> refs/remotes/origin/master
 			synaptics_report_slot(dev, 0, sgm);
 		else
 			synaptics_report_slot(dev, 0, NULL);
@@ -822,9 +1013,37 @@ static void synaptics_report_mt_data(struct psmouse *psmouse,
 		 * If the finger slot contained in AGM is valid, and either
 		 * hasn't changed, or is new, then report AGM in MTB slot 1.
 		 * Otherwise, empty MTB slot 1.
+<<<<<<< HEAD
 		 */
 		if (mt_state->agm != -1 &&
 		    (mt_state->agm == old->agm || old->agm == -1))
+=======
+		 *
+		 * However, in the case where the AGM is new, make sure that
+		 * that it is either the same as the old SGM, or there was no
+		 * SGM.
+		 *
+		 * Otherwise, if the SGM was just 1, and the new AGM is 2, then
+		 * the new AGM will keep the old SGM's tracking ID, which can
+		 * cause apparent drumroll.  This happens if in the following
+		 * valid finger sequence:
+		 *
+		 *  Action                 SGM  AGM (MTB slot:Contact)
+		 *  1. Touch contact 0    (0:0)
+		 *  2. Touch contact 1    (0:0, 1:1)
+		 *  3. Lift  contact 0    (1:1)
+		 *  4. Touch contacts 2,3 (0:2, 1:3)
+		 *
+		 * In step 4, contact 3, in AGM must not be given the same
+		 * tracking ID as contact 1 had in step 3.  To avoid this,
+		 * the first agm with contact 3 is dropped and slot 1 is
+		 * invalidated (tracking ID = -1).
+		 */
+		if (mt_state->agm != -1 &&
+		    (mt_state->agm == old->agm ||
+		     (old->agm == -1 &&
+		      (old->sgm == -1 || mt_state->agm == old->sgm))))
+>>>>>>> refs/remotes/origin/master
 			synaptics_report_slot(dev, 1, agm);
 		else
 			synaptics_report_slot(dev, 1, NULL);
@@ -1125,7 +1344,10 @@ static void synaptics_image_sensor_process(struct psmouse *psmouse,
 	/* Store updated mt_state */
 	priv->mt_state = agm->mt_state = mt_state;
 	priv->agm_pending = false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1139,21 +1361,30 @@ static void synaptics_process_packet(struct psmouse *psmouse)
 	int num_fingers;
 	int finger_width;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (synaptics_parse_hw_state(psmouse->packet, priv, &hw))
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (SYN_CAP_IMAGE_SENSOR(priv->ext_cap_0c)) {
 		synaptics_image_sensor_process(psmouse, &hw);
 		return;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (hw.scroll) {
 		priv->scroll += hw.scroll;
 
@@ -1200,11 +1431,16 @@ static void synaptics_process_packet(struct psmouse *psmouse)
 
 	if (SYN_CAP_ADV_GESTURE(priv->ext_cap_0c))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		synaptics_report_semi_mt_data(dev, &hw, &priv->mt, num_fingers);
 =======
 		synaptics_report_semi_mt_data(dev, &hw, &priv->agm,
 					      num_fingers);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		synaptics_report_semi_mt_data(dev, &hw, &priv->agm,
+					      num_fingers);
+>>>>>>> refs/remotes/origin/master
 
 	/* Post events
 	 * BTN_TOUCH has to be first as mousedev relies on it when doing
@@ -1216,10 +1452,14 @@ static void synaptics_process_packet(struct psmouse *psmouse)
 	if (num_fingers > 0) {
 		input_report_abs(dev, ABS_X, hw.x);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		input_report_abs(dev, ABS_Y, YMAX_NOMINAL + YMIN_NOMINAL - hw.y);
 =======
 		input_report_abs(dev, ABS_Y, synaptics_invert_y(hw.y));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		input_report_abs(dev, ABS_Y, synaptics_invert_y(hw.y));
+>>>>>>> refs/remotes/origin/master
 	}
 	input_report_abs(dev, ABS_PRESSURE, hw.z);
 
@@ -1228,16 +1468,20 @@ static void synaptics_process_packet(struct psmouse *psmouse)
 
 	input_report_key(dev, BTN_TOOL_FINGER, num_fingers == 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	input_report_key(dev, BTN_LEFT, hw.left);
 	input_report_key(dev, BTN_RIGHT, hw.right);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (SYN_CAP_MULTIFINGER(priv->capabilities)) {
 		input_report_key(dev, BTN_TOOL_DOUBLETAP, num_fingers == 2);
 		input_report_key(dev, BTN_TOOL_TRIPLETAP, num_fingers == 3);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (SYN_CAP_MIDDLE_BUTTON(priv->capabilities))
 		input_report_key(dev, BTN_MIDDLE, hw.middle);
@@ -1252,16 +1496,24 @@ static void synaptics_process_packet(struct psmouse *psmouse)
 =======
 	synaptics_report_buttons(psmouse, &hw);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	synaptics_report_buttons(psmouse, &hw);
+>>>>>>> refs/remotes/origin/master
 
 	input_sync(dev);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int synaptics_validate_byte(unsigned char packet[], int idx, unsigned char pkt_type)
 =======
 static int synaptics_validate_byte(struct psmouse *psmouse,
 				   int idx, unsigned char pkt_type)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int synaptics_validate_byte(struct psmouse *psmouse,
+				   int idx, unsigned char pkt_type)
+>>>>>>> refs/remotes/origin/master
 {
 	static const unsigned char newabs_mask[]	= { 0xC8, 0x00, 0x00, 0xC8, 0x00 };
 	static const unsigned char newabs_rel_mask[]	= { 0xC0, 0x00, 0x00, 0xC0, 0x00 };
@@ -1269,9 +1521,13 @@ static int synaptics_validate_byte(struct psmouse *psmouse,
 	static const unsigned char oldabs_mask[]	= { 0xC0, 0x60, 0x00, 0xC0, 0x60 };
 	static const unsigned char oldabs_rslt[]	= { 0xC0, 0x00, 0x00, 0x80, 0x00 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	const char *packet = psmouse->packet;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const char *packet = psmouse->packet;
+>>>>>>> refs/remotes/origin/master
 
 	if (idx < 0 || idx > 4)
 		return 0;
@@ -1290,10 +1546,14 @@ static int synaptics_validate_byte(struct psmouse *psmouse,
 
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "synaptics: unknown packet type %d\n", pkt_type);
 =======
 		psmouse_err(psmouse, "unknown packet type %d\n", pkt_type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		psmouse_err(psmouse, "unknown packet type %d\n", pkt_type);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 }
@@ -1304,12 +1564,17 @@ static unsigned char synaptics_detect_pkt_type(struct psmouse *psmouse)
 
 	for (i = 0; i < 5; i++)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!synaptics_validate_byte(psmouse->packet, i, SYN_NEWABS_STRICT)) {
 			printk(KERN_INFO "synaptics: using relaxed packet validation\n");
 =======
 		if (!synaptics_validate_byte(psmouse, i, SYN_NEWABS_STRICT)) {
 			psmouse_info(psmouse, "using relaxed packet validation\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!synaptics_validate_byte(psmouse, i, SYN_NEWABS_STRICT)) {
+			psmouse_info(psmouse, "using relaxed packet validation\n");
+>>>>>>> refs/remotes/origin/master
 			return SYN_NEWABS_RELAXED;
 		}
 
@@ -1335,10 +1600,14 @@ static psmouse_ret_t synaptics_process_byte(struct psmouse *psmouse)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return synaptics_validate_byte(psmouse->packet, psmouse->pktcnt - 1, priv->pkt_type) ?
 =======
 	return synaptics_validate_byte(psmouse, psmouse->pktcnt - 1, priv->pkt_type) ?
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return synaptics_validate_byte(psmouse, psmouse->pktcnt - 1, priv->pkt_type) ?
+>>>>>>> refs/remotes/origin/master
 		PSMOUSE_GOOD_DATA : PSMOUSE_BAD_DATA;
 }
 
@@ -1346,7 +1615,10 @@ static psmouse_ret_t synaptics_process_byte(struct psmouse *psmouse)
  *	Driver initialization/cleanup functions
  ****************************************************************************/
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void set_abs_position_params(struct input_dev *dev,
 				    struct synaptics_data *priv, int x_code,
 				    int y_code)
@@ -1364,11 +1636,15 @@ static void set_abs_position_params(struct input_dev *dev,
 	input_abs_set_res(dev, y_code, priv->y_res);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void set_input_params(struct input_dev *dev, struct synaptics_data *priv)
 {
 	int i;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	__set_bit(INPUT_PROP_POINTER, dev->propbit);
 
@@ -1387,6 +1663,8 @@ static void set_input_params(struct input_dev *dev, struct synaptics_data *priv)
 		input_set_abs_params(dev, ABS_MT_POSITION_Y, YMIN_NOMINAL,
 				     priv->y_max ?: YMAX_NOMINAL, 0, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Things that apply to both modes */
 	__set_bit(INPUT_PROP_POINTER, dev->propbit);
 	__set_bit(EV_KEY, dev->evbit);
@@ -1410,11 +1688,18 @@ static void set_input_params(struct input_dev *dev, struct synaptics_data *priv)
 	input_set_abs_params(dev, ABS_PRESSURE, 0, 255, 0, 0);
 
 	if (SYN_CAP_IMAGE_SENSOR(priv->ext_cap_0c)) {
+<<<<<<< HEAD
 		input_mt_init_slots(dev, 2);
+=======
+>>>>>>> refs/remotes/origin/master
 		set_abs_position_params(dev, priv, ABS_MT_POSITION_X,
 					ABS_MT_POSITION_Y);
 		/* Image sensors can report per-contact pressure */
 		input_set_abs_params(dev, ABS_MT_PRESSURE, 0, 255, 0, 0);
+<<<<<<< HEAD
+=======
+		input_mt_init_slots(dev, 2, INPUT_MT_POINTER);
+>>>>>>> refs/remotes/origin/master
 
 		/* Image sensors can signal 4 and 5 finger clicks */
 		__set_bit(BTN_TOOL_QUADTAP, dev->keybit);
@@ -1422,15 +1707,22 @@ static void set_input_params(struct input_dev *dev, struct synaptics_data *priv)
 	} else if (SYN_CAP_ADV_GESTURE(priv->ext_cap_0c)) {
 		/* Non-image sensors with AGM use semi-mt */
 		__set_bit(INPUT_PROP_SEMI_MT, dev->propbit);
+<<<<<<< HEAD
 		input_mt_init_slots(dev, 2);
 		set_abs_position_params(dev, priv, ABS_MT_POSITION_X,
 					ABS_MT_POSITION_Y);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		input_mt_init_slots(dev, 2, 0);
+		set_abs_position_params(dev, priv, ABS_MT_POSITION_X,
+					ABS_MT_POSITION_Y);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (SYN_CAP_PALMDETECT(priv->capabilities))
 		input_set_abs_params(dev, ABS_TOOL_WIDTH, 0, 15, 0, 0);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	__set_bit(EV_KEY, dev->evbit);
 	__set_bit(BTN_TOUCH, dev->keybit);
@@ -1441,6 +1733,10 @@ static void set_input_params(struct input_dev *dev, struct synaptics_data *priv)
 	__set_bit(BTN_TOUCH, dev->keybit);
 	__set_bit(BTN_TOOL_FINGER, dev->keybit);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__set_bit(BTN_TOUCH, dev->keybit);
+	__set_bit(BTN_TOOL_FINGER, dev->keybit);
+>>>>>>> refs/remotes/origin/master
 
 	if (SYN_CAP_MULTIFINGER(priv->capabilities)) {
 		__set_bit(BTN_TOOL_DOUBLETAP, dev->keybit);
@@ -1448,11 +1744,14 @@ static void set_input_params(struct input_dev *dev, struct synaptics_data *priv)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (SYN_CAP_MIDDLE_BUTTON(priv->capabilities))
 		__set_bit(BTN_MIDDLE, dev->keybit);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (SYN_CAP_FOUR_BUTTON(priv->capabilities) ||
 	    SYN_CAP_MIDDLE_BUTTON(priv->capabilities)) {
 		__set_bit(BTN_FORWARD, dev->keybit);
@@ -1467,11 +1766,14 @@ static void set_input_params(struct input_dev *dev, struct synaptics_data *priv)
 	__clear_bit(REL_Y, dev->relbit);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	input_abs_set_res(dev, ABS_X, priv->x_res);
 	input_abs_set_res(dev, ABS_Y, priv->y_res);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (SYN_CAP_CLICKPAD(priv->ext_cap_0c)) {
 		__set_bit(INPUT_PROP_BUTTONPAD, dev->propbit);
 		/* Clickpads report only left button */
@@ -1481,11 +1783,14 @@ static void set_input_params(struct input_dev *dev, struct synaptics_data *priv)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void synaptics_disconnect(struct psmouse *psmouse)
 {
 	synaptics_reset(psmouse);
 	kfree(psmouse->private);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t synaptics_show_disable_gesture(struct psmouse *psmouse,
 					      void *data, char *buf)
 {
@@ -1538,7 +1843,10 @@ static void synaptics_disconnect(struct psmouse *psmouse)
 
 	synaptics_reset(psmouse);
 	kfree(priv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	psmouse->private = NULL;
 }
 
@@ -1546,6 +1854,10 @@ static int synaptics_reconnect(struct psmouse *psmouse)
 {
 	struct synaptics_data *priv = psmouse->private;
 	struct synaptics_data old_priv = *priv;
+<<<<<<< HEAD
+=======
+	unsigned char param[2];
+>>>>>>> refs/remotes/origin/master
 	int retry = 0;
 	int error;
 
@@ -1561,6 +1873,10 @@ static int synaptics_reconnect(struct psmouse *psmouse)
 			 */
 			ssleep(1);
 		}
+<<<<<<< HEAD
+=======
+		ps2_command(&psmouse->ps2dev, param, PSMOUSE_CMD_GETID);
+>>>>>>> refs/remotes/origin/master
 		error = synaptics_detect(psmouse, 0);
 	} while (error && ++retry < 3);
 
@@ -1568,6 +1884,7 @@ static int synaptics_reconnect(struct psmouse *psmouse)
 		return -1;
 
 	if (retry > 1)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_DEBUG "Synaptics reconnected after %d tries\n",
 			retry);
@@ -1585,6 +1902,8 @@ static int synaptics_reconnect(struct psmouse *psmouse)
 	if (synaptics_set_advanced_gesture_mode(psmouse)) {
 		printk(KERN_ERR "Advanced gesture mode reconnect failed.\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		psmouse_dbg(psmouse, "reconnected after %d tries\n", retry);
 
 	if (synaptics_query_hardware(psmouse)) {
@@ -1594,7 +1913,10 @@ static int synaptics_reconnect(struct psmouse *psmouse)
 
 	if (synaptics_set_mode(psmouse)) {
 		psmouse_err(psmouse, "Unable to initialize device.\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -1603,6 +1925,7 @@ static int synaptics_reconnect(struct psmouse *psmouse)
 	    old_priv.capabilities != priv->capabilities ||
 	    old_priv.ext_cap != priv->ext_cap) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "Synaptics hardware appears to be different: "
 			"id(%ld-%ld), model(%ld-%ld), caps(%lx-%lx), ext(%lx-%lx).\n",
 			old_priv.identity, priv->identity,
@@ -1610,13 +1933,18 @@ static int synaptics_reconnect(struct psmouse *psmouse)
 			old_priv.capabilities, priv->capabilities,
 			old_priv.ext_cap, priv->ext_cap);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		psmouse_err(psmouse,
 			    "hardware appears to be different: id(%ld-%ld), model(%ld-%ld), caps(%lx-%lx), ext(%lx-%lx).\n",
 			    old_priv.identity, priv->identity,
 			    old_priv.model_id, priv->model_id,
 			    old_priv.capabilities, priv->capabilities,
 			    old_priv.ext_cap, priv->ext_cap);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -1625,7 +1953,11 @@ static int synaptics_reconnect(struct psmouse *psmouse)
 
 static bool impaired_toshiba_kbc;
 
+<<<<<<< HEAD
 static const struct dmi_system_id __initconst toshiba_dmi_table[] = {
+=======
+static const struct dmi_system_id toshiba_dmi_table[] __initconst = {
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_DMI) && defined(CONFIG_X86)
 	{
 		/* Toshiba Satellite */
@@ -1664,7 +1996,11 @@ static const struct dmi_system_id __initconst toshiba_dmi_table[] = {
 
 static bool broken_olpc_ec;
 
+<<<<<<< HEAD
 static const struct dmi_system_id __initconst olpc_dmi_table[] = {
+=======
+static const struct dmi_system_id olpc_dmi_table[] __initconst = {
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_DMI) && defined(CONFIG_OLPC)
 	{
 		/* OLPC XO-1 or XO-1.5 */
@@ -1684,6 +2020,7 @@ void __init synaptics_module_init(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int synaptics_init(struct psmouse *psmouse)
 {
 	struct synaptics_data *priv;
@@ -1700,6 +2037,8 @@ int synaptics_init(struct psmouse *psmouse)
 	if (broken_olpc_ec) {
 		printk(KERN_INFO "synaptics: OLPC XO detected, not enabling Synaptics protocol.\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int __synaptics_init(struct psmouse *psmouse, bool absolute_mode)
 {
 	struct synaptics_data *priv;
@@ -1714,7 +2053,10 @@ static int __synaptics_init(struct psmouse *psmouse, bool absolute_mode)
 	if (absolute_mode && broken_olpc_ec) {
 		psmouse_info(psmouse,
 			     "OLPC XO detected, not enabling Synaptics protocol.\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -1725,6 +2067,7 @@ static int __synaptics_init(struct psmouse *psmouse, bool absolute_mode)
 	psmouse_reset(psmouse);
 
 	if (synaptics_query_hardware(psmouse)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR "Unable to query Synaptics hardware.\n");
 		goto init_fail;
@@ -1738,6 +2081,8 @@ static int __synaptics_init(struct psmouse *psmouse, bool absolute_mode)
 	if (synaptics_set_advanced_gesture_mode(psmouse)) {
 		printk(KERN_ERR "Advanced gesture mode init failed.\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		psmouse_err(psmouse, "Unable to query device.\n");
 		goto init_fail;
 	}
@@ -1748,12 +2093,16 @@ static int __synaptics_init(struct psmouse *psmouse, bool absolute_mode)
 
 	if (synaptics_set_mode(psmouse)) {
 		psmouse_err(psmouse, "Unable to initialize device.\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto init_fail;
 	}
 
 	priv->pkt_type = SYN_MODEL_NEWABS(priv->model_id) ? SYN_NEWABS : SYN_OLDABS;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	printk(KERN_INFO "Synaptics Touchpad, model: %ld, fw: %ld.%ld, id: %#lx, caps: %#lx/%#lx/%#lx\n",
 		SYN_ID_MODEL(priv->identity),
@@ -1767,6 +2116,15 @@ static int __synaptics_init(struct psmouse *psmouse, bool absolute_mode)
 		     priv->model_id,
 		     priv->capabilities, priv->ext_cap, priv->ext_cap_0c);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	psmouse_info(psmouse,
+		     "Touchpad model: %ld, fw: %ld.%ld, id: %#lx, caps: %#lx/%#lx/%#lx, board id: %lu, fw id: %lu\n",
+		     SYN_ID_MODEL(priv->identity),
+		     SYN_ID_MAJOR(priv->identity), SYN_ID_MINOR(priv->identity),
+		     priv->model_id,
+		     priv->capabilities, priv->ext_cap, priv->ext_cap_0c,
+		     priv->board_id, priv->firmware_id);
+>>>>>>> refs/remotes/origin/master
 
 	set_input_params(psmouse->dev, priv);
 
@@ -1781,8 +2139,11 @@ static int __synaptics_init(struct psmouse *psmouse, bool absolute_mode)
 			  (priv->model_id & 0x000000ff);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	psmouse->protocol_handler = synaptics_process_byte;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (absolute_mode) {
 		psmouse->protocol_handler = synaptics_process_byte;
 		psmouse->pktsize = 6;
@@ -1792,15 +2153,21 @@ static int __synaptics_init(struct psmouse *psmouse, bool absolute_mode)
 		psmouse->pktsize = 3;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	psmouse->set_rate = synaptics_set_rate;
 	psmouse->disconnect = synaptics_disconnect;
 	psmouse->reconnect = synaptics_reconnect;
 	psmouse->cleanup = synaptics_reset;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	psmouse->pktsize = 6;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Synaptics can usually stay in sync without extra help */
 	psmouse->resync_time = 0;
 
@@ -1814,12 +2181,15 @@ static int __synaptics_init(struct psmouse *psmouse, bool absolute_mode)
 	 */
 	if (psmouse->rate >= 80 && impaired_toshiba_kbc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "synaptics: Toshiba %s detected, limiting rate to 40pps.\n",
 			dmi_get_system_info(DMI_PRODUCT_NAME));
 		psmouse->rate = 40;
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		psmouse_info(psmouse,
 			     "Toshiba %s detected, limiting rate to 40pps.\n",
 			     dmi_get_system_info(DMI_PRODUCT_NAME));
@@ -1837,14 +2207,20 @@ static int __synaptics_init(struct psmouse *psmouse, bool absolute_mode)
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
  init_fail:
 	kfree(priv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return -1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -1856,7 +2232,10 @@ int synaptics_init(struct psmouse *psmouse)
 int synaptics_init_relative(struct psmouse *psmouse)
 {
 	return __synaptics_init(psmouse, false);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 bool synaptics_supported(void)
@@ -1882,6 +2261,9 @@ bool synaptics_supported(void)
 
 #endif /* CONFIG_MOUSE_PS2_SYNAPTICS */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

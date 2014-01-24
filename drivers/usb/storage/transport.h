@@ -43,6 +43,7 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Bulk only data structures
  */
 
@@ -84,6 +85,8 @@ struct bulk_cs_wrap {
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * usb_stor_bulk_transfer_xxx() return codes, in order of severity
  */
 

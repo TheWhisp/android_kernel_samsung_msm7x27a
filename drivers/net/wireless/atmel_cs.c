@@ -49,9 +49,12 @@
 
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/wireless.h>
 
 #include "atmel.h"
@@ -83,10 +86,16 @@ static int atmel_probe(struct pcmcia_device *p_dev)
 
 	/* Allocate space for private device-specific data */
 	local = kzalloc(sizeof(local_info_t), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!local) {
 		printk(KERN_ERR "atmel_cs: no memory for new device\n");
 		return -ENOMEM;
 	}
+=======
+	if (!local)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	p_dev->priv = local;
 
 	return atmel_config(p_dev);
@@ -250,6 +259,7 @@ static struct pcmcia_driver atmel_driver = {
 	.suspend	= atmel_suspend,
 	.resume		= atmel_resume,
 };
+<<<<<<< HEAD
 
 static int __init atmel_cs_init(void)
 {
@@ -260,6 +270,9 @@ static void __exit atmel_cs_cleanup(void)
 {
         pcmcia_unregister_driver(&atmel_driver);
 }
+=======
+module_pcmcia_driver(atmel_driver);
+>>>>>>> refs/remotes/origin/master
 
 /*
     This program is free software; you can redistribute it and/or
@@ -299,6 +312,9 @@ static void __exit atmel_cs_cleanup(void)
     IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
+<<<<<<< HEAD
 
 module_init(atmel_cs_init);
 module_exit(atmel_cs_cleanup);
+=======
+>>>>>>> refs/remotes/origin/master

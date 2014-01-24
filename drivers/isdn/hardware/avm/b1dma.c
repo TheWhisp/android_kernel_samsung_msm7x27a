@@ -1,17 +1,23 @@
 /* $Id: b1dma.c,v 1.1.2.3 2004/02/10 01:07:12 keil Exp $
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * Common module for AVM B1 cards that support dma with AMCC
  * 
  * Copyright 2000 by Carsten Paeth <calle@calle.de>
  * 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Common module for AVM B1 cards that support dma with AMCC
  *
  * Copyright 2000 by Carsten Paeth <calle@calle.de>
  *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -49,10 +55,14 @@ MODULE_AUTHOR("Carsten Paeth");
 MODULE_LICENSE("GPL");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int suppress_pollack = 0;
 =======
 static bool suppress_pollack = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool suppress_pollack = 0;
+>>>>>>> refs/remotes/origin/master
 module_param(suppress_pollack, bool, 0);
 
 /* ------------------------------------------------------------- */
@@ -123,18 +133,24 @@ static int b1dma_tolink(avmcard *card, void *buf, unsigned int len)
 	unsigned char *s = (unsigned char *)buf;
 	while (len--) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		while (   !b1dma_tx_empty(card->port)
 		       && time_before(jiffies, stop));
 		if (!b1dma_tx_empty(card->port)) 
 			return -1;
 	        t1outp(card->port, 0x01, *s++);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		while (!b1dma_tx_empty(card->port)
 		       && time_before(jiffies, stop));
 		if (!b1dma_tx_empty(card->port))
 			return -1;
 		t1outp(card->port, 0x01, *s++);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -145,18 +161,24 @@ static int b1dma_fromlink(avmcard *card, void *buf, unsigned int len)
 	unsigned char *s = (unsigned char *)buf;
 	while (len--) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		while (   !b1dma_rx_full(card->port)
 		       && time_before(jiffies, stop));
 		if (!b1dma_rx_full(card->port)) 
 			return -1;
 	        *s++ = t1inp(card->port, 0x00);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		while (!b1dma_rx_full(card->port)
 		       && time_before(jiffies, stop));
 		if (!b1dma_rx_full(card->port))
 			return -1;
 		*s++ = t1inp(card->port, 0x00);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -165,10 +187,14 @@ static int WriteReg(avmcard *card, u32 reg, u8 val)
 {
 	u8 cmd = 0x00;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (   b1dma_tolink(card, &cmd, 1) == 0
 =======
 	if (b1dma_tolink(card, &cmd, 1) == 0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (b1dma_tolink(card, &cmd, 1) == 0
+>>>>>>> refs/remotes/origin/master
 	    && b1dma_tolink(card, &reg, 4) == 0) {
 		u32 tmp = val;
 		return b1dma_tolink(card, &tmp, 4);
@@ -180,10 +206,14 @@ static u8 ReadReg(avmcard *card, u32 reg)
 {
 	u8 cmd = 0x01;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (   b1dma_tolink(card, &cmd, 1) == 0
 =======
 	if (b1dma_tolink(card, &cmd, 1) == 0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (b1dma_tolink(card, &cmd, 1) == 0
+>>>>>>> refs/remotes/origin/master
 	    && b1dma_tolink(card, &reg, 4) == 0) {
 		u32 tmp;
 		if (b1dma_fromlink(card, &tmp, 4) == 0)
@@ -295,25 +325,34 @@ static int b1dma_detect(avmcard *card)
 	b1dma_writel(card, 0xffffffff, AMCC_RXPTR);
 	b1dma_writel(card, 0xffffffff, AMCC_TXPTR);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (   b1dma_readl(card, AMCC_RXPTR) != 0xfffffffc
 =======
 	if (b1dma_readl(card, AMCC_RXPTR) != 0xfffffffc
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (b1dma_readl(card, AMCC_RXPTR) != 0xfffffffc
+>>>>>>> refs/remotes/origin/master
 	    || b1dma_readl(card, AMCC_TXPTR) != 0xfffffffc)
 		return 2;
 
 	b1dma_writel(card, 0x0, AMCC_RXPTR);
 	b1dma_writel(card, 0x0, AMCC_TXPTR);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (   b1dma_readl(card, AMCC_RXPTR) != 0x0
 =======
 	if (b1dma_readl(card, AMCC_RXPTR) != 0x0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (b1dma_readl(card, AMCC_RXPTR) != 0x0
+>>>>>>> refs/remotes/origin/master
 	    || b1dma_readl(card, AMCC_TXPTR) != 0x0)
 		return 3;
 
 	t1outp(card->port, 0x10, 0x00);
 	t1outp(card->port, 0x07, 0x00);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
 	t1outp(card->port, 0x02, 0x02);
@@ -321,12 +360,17 @@ static int b1dma_detect(avmcard *card)
 
 	if (   (t1inp(card->port, 0x02) & 0xFE) != 0x02
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	t1outp(card->port, 0x02, 0x02);
 	t1outp(card->port, 0x03, 0x02);
 
 	if ((t1inp(card->port, 0x02) & 0xFE) != 0x02
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	    || t1inp(card->port, 0x3) != 0x03)
 		return 4;
 
@@ -334,10 +378,14 @@ static int b1dma_detect(avmcard *card)
 	t1outp(card->port, 0x03, 0x00);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (   (t1inp(card->port, 0x02) & 0xFE) != 0x00
 =======
 	if ((t1inp(card->port, 0x02) & 0xFE) != 0x00
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((t1inp(card->port, 0x02) & 0xFE) != 0x00
+>>>>>>> refs/remotes/origin/master
 	    || t1inp(card->port, 0x3) != 0x01)
 		return 5;
 
@@ -351,46 +399,64 @@ int t1pci_detect(avmcard *card)
 	if ((ret = b1dma_detect(card)) != 0)
 		return ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 	/* Transputer test */
 	
 	if (   WriteReg(card, 0x80001000, 0x11) != 0
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Transputer test */
 
 	if (WriteReg(card, 0x80001000, 0x11) != 0
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	    || WriteReg(card, 0x80101000, 0x22) != 0
 	    || WriteReg(card, 0x80201000, 0x33) != 0
 	    || WriteReg(card, 0x80301000, 0x44) != 0)
 		return 6;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (   ReadReg(card, 0x80001000) != 0x11
 =======
 	if (ReadReg(card, 0x80001000) != 0x11
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ReadReg(card, 0x80001000) != 0x11
+>>>>>>> refs/remotes/origin/master
 	    || ReadReg(card, 0x80101000) != 0x22
 	    || ReadReg(card, 0x80201000) != 0x33
 	    || ReadReg(card, 0x80301000) != 0x44)
 		return 7;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (   WriteReg(card, 0x80001000, 0x55) != 0
 =======
 	if (WriteReg(card, 0x80001000, 0x55) != 0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (WriteReg(card, 0x80001000, 0x55) != 0
+>>>>>>> refs/remotes/origin/master
 	    || WriteReg(card, 0x80101000, 0x66) != 0
 	    || WriteReg(card, 0x80201000, 0x77) != 0
 	    || WriteReg(card, 0x80301000, 0x88) != 0)
 		return 8;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (   ReadReg(card, 0x80001000) != 0x55
 =======
 	if (ReadReg(card, 0x80001000) != 0x55
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ReadReg(card, 0x80001000) != 0x55
+>>>>>>> refs/remotes/origin/master
 	    || ReadReg(card, 0x80101000) != 0x66
 	    || ReadReg(card, 0x80201000) != 0x77
 	    || ReadReg(card, 0x80301000) != 0x88)
@@ -406,32 +472,45 @@ int b1pciv4_detect(avmcard *card)
 	if ((ret = b1dma_detect(card)) != 0)
 		return ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 	for (i=0; i < 5 ; i++) {
 =======
 
 	for (i = 0; i < 5; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	for (i = 0; i < 5; i++) {
+>>>>>>> refs/remotes/origin/master
 		if (WriteReg(card, 0x80A00000, 0x21) != 0)
 			return 6;
 		if ((ReadReg(card, 0x80A00000) & 0x01) != 0x01)
 			return 7;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i=0; i < 5 ; i++) {
 =======
 	for (i = 0; i < 5; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < 5; i++) {
+>>>>>>> refs/remotes/origin/master
 		if (WriteReg(card, 0x80A00000, 0x20) != 0)
 			return 8;
 		if ((ReadReg(card, 0x80A00000) & 0x01) != 0x00)
 			return 9;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -462,10 +541,14 @@ static void b1dma_dispatch_tx(avmcard *card)
 	u32 txlen;
 	void *p;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	skb = skb_dequeue(&dma->send_queue);
 
 	len = CAPIMSG_LEN(skb->data);
@@ -491,20 +574,28 @@ static void b1dma_dispatch_tx(avmcard *card)
 #endif
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		txlen = skb->len-2;
 =======
 		txlen = skb->len - 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		txlen = skb->len - 2;
+>>>>>>> refs/remotes/origin/master
 #ifdef AVM_B1DMA_POLLDEBUG
 		if (skb->data[2] == SEND_POLLACK)
 			printk(KERN_INFO "%s: send ack\n", card->name);
 #endif
 #ifdef AVM_B1DMA_DEBUG
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG "tx: put 0x%x len=%d\n", 
 =======
 		printk(KERN_DEBUG "tx: put 0x%x len=%d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_DEBUG "tx: put 0x%x len=%d\n",
+>>>>>>> refs/remotes/origin/master
 		       skb->data[2], txlen);
 #endif
 		skb_copy_from_linear_data_offset(skb, 2, dma->sendbuf.dmabuf,
@@ -531,10 +622,14 @@ static void queue_pollack(avmcard *card)
 	if (!skb) {
 		printk(KERN_CRIT "%s: no memory, lost poll ack\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					card->name);
 =======
 		       card->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       card->name);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	p = skb->data;
@@ -555,10 +650,14 @@ static void b1dma_handle_rx(avmcard *card)
 	struct capi_ctr *ctrl = &cinfo->capi_ctrl;
 	struct sk_buff *skb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void *p = dma->recvbuf.dmabuf+4;
 =======
 	void *p = dma->recvbuf.dmabuf + 4;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void *p = dma->recvbuf.dmabuf + 4;
+>>>>>>> refs/remotes/origin/master
 	u32 ApplId, MsgLen, DataB3Len, NCCI, WindowSize;
 	u8 b1cmd =  _get_byte(&p);
 
@@ -566,10 +665,14 @@ static void b1dma_handle_rx(avmcard *card)
 	printk(KERN_DEBUG "rx: 0x%x %lu\n", b1cmd, (unsigned long)dma->recvlen);
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	switch (b1cmd) {
 	case RECEIVE_DATA_B3_IND:
 
@@ -579,6 +682,7 @@ static void b1dma_handle_rx(avmcard *card)
 
 		if (MsgLen < 30) { /* not CAPI 64Bit */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			memset(card->msgbuf+MsgLen, 0, 30-MsgLen);
 			MsgLen = 30;
 			CAPIMSG_SETLEN(card->msgbuf, 30);
@@ -587,6 +691,8 @@ static void b1dma_handle_rx(avmcard *card)
 			printk(KERN_ERR "%s: incoming packet dropped\n",
 					card->name);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			memset(card->msgbuf + MsgLen, 0, 30 - MsgLen);
 			MsgLen = 30;
 			CAPIMSG_SETLEN(card->msgbuf, 30);
@@ -594,7 +700,10 @@ static void b1dma_handle_rx(avmcard *card)
 		if (!(skb = alloc_skb(DataB3Len + MsgLen, GFP_ATOMIC))) {
 			printk(KERN_ERR "%s: incoming packet dropped\n",
 			       card->name);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			memcpy(skb_put(skb, MsgLen), card->msgbuf, MsgLen);
 			memcpy(skb_put(skb, DataB3Len), card->databuf, DataB3Len);
@@ -609,15 +718,20 @@ static void b1dma_handle_rx(avmcard *card)
 		if (!(skb = alloc_skb(MsgLen, GFP_ATOMIC))) {
 			printk(KERN_ERR "%s: incoming packet dropped\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					card->name);
 =======
 			       card->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       card->name);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			memcpy(skb_put(skb, MsgLen), card->msgbuf, MsgLen);
 			if (CAPIMSG_CMD(skb->data) == CAPI_DATA_B3_CONF) {
 				spin_lock(&card->lock);
 				capilib_data_b3_conf(&cinfo->ncci_head, ApplId,
+<<<<<<< HEAD
 <<<<<<< HEAD
 					CAPIMSG_NCCI(skb->data),
 					CAPIMSG_MSGID(skb->data));
@@ -625,6 +739,10 @@ static void b1dma_handle_rx(avmcard *card)
 						     CAPIMSG_NCCI(skb->data),
 						     CAPIMSG_MSGID(skb->data));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						     CAPIMSG_NCCI(skb->data),
+						     CAPIMSG_MSGID(skb->data));
+>>>>>>> refs/remotes/origin/master
 				spin_unlock(&card->lock);
 			}
 			capi_ctr_handle_message(ctrl, ApplId, skb);
@@ -682,6 +800,7 @@ static void b1dma_handle_rx(avmcard *card)
 		MsgLen = _get_slice(&p, card->msgbuf);
 		card->msgbuf[MsgLen] = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		while (    MsgLen > 0
 		       && (   card->msgbuf[MsgLen-1] == '\n'
 			   || card->msgbuf[MsgLen-1] == '\r')) {
@@ -691,6 +810,8 @@ static void b1dma_handle_rx(avmcard *card)
 		printk(KERN_INFO "%s: task %d \"%s\" ready.\n",
 				card->name, ApplId, card->msgbuf);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		while (MsgLen > 0
 		       && (card->msgbuf[MsgLen - 1] == '\n'
 			   || card->msgbuf[MsgLen - 1] == '\r')) {
@@ -699,23 +820,32 @@ static void b1dma_handle_rx(avmcard *card)
 		}
 		printk(KERN_INFO "%s: task %d \"%s\" ready.\n",
 		       card->name, ApplId, card->msgbuf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case RECEIVE_DEBUGMSG:
 		MsgLen = _get_slice(&p, card->msgbuf);
 		card->msgbuf[MsgLen] = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		while (    MsgLen > 0
 		       && (   card->msgbuf[MsgLen-1] == '\n'
 			   || card->msgbuf[MsgLen-1] == '\r')) {
 			card->msgbuf[MsgLen-1] = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		while (MsgLen > 0
 		       && (card->msgbuf[MsgLen - 1] == '\n'
 			   || card->msgbuf[MsgLen - 1] == '\r')) {
 			card->msgbuf[MsgLen - 1] = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			MsgLen--;
 		}
 		printk(KERN_INFO "%s: DEBUG: %s\n", card->name, card->msgbuf);
@@ -724,10 +854,14 @@ static void b1dma_handle_rx(avmcard *card)
 	default:
 		printk(KERN_ERR "%s: b1dma_interrupt: 0x%x ???\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				card->name, b1cmd);
 =======
 		       card->name, b1cmd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       card->name, b1cmd);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 }
@@ -748,10 +882,14 @@ static void b1dma_handle_interrupt(avmcard *card)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         newcsr = card->csr | (status & ALL_INT);
 =======
 	newcsr = card->csr | (status & ALL_INT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	newcsr = card->csr | (status & ALL_INT);
+>>>>>>> refs/remotes/origin/master
 	if (status & TX_TC_INT) newcsr &= ~EN_TX_TC_INT;
 	if (status & RX_TC_INT) newcsr &= ~EN_RX_TC_INT;
 	b1dma_writel(card, newcsr, AMCC_INTCSR);
@@ -760,6 +898,7 @@ static void b1dma_handle_interrupt(avmcard *card)
 		struct avmcard_dmainfo *dma = card->dma;
 		u32 rxlen;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   	if (card->dma->recvlen == 0) {
 	        	rxlen = b1dma_readl(card, AMCC_RXLEN);
 			if (rxlen == 0) {
@@ -767,32 +906,45 @@ static void b1dma_handle_interrupt(avmcard *card)
 				rxlen = (dma->recvlen + 3) & ~3;
 				b1dma_writel(card, dma->recvbuf.dmaaddr+4, AMCC_RXPTR);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (card->dma->recvlen == 0) {
 			rxlen = b1dma_readl(card, AMCC_RXLEN);
 			if (rxlen == 0) {
 				dma->recvlen = *((u32 *)dma->recvbuf.dmabuf);
 				rxlen = (dma->recvlen + 3) & ~3;
 				b1dma_writel(card, dma->recvbuf.dmaaddr + 4, AMCC_RXPTR);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				b1dma_writel(card, rxlen, AMCC_RXLEN);
 #ifdef AVM_B1DMA_DEBUG
 			} else {
 				printk(KERN_ERR "%s: rx not complete (%d).\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					card->name, rxlen);
 =======
 				       card->name, rxlen);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       card->name, rxlen);
+>>>>>>> refs/remotes/origin/master
 #endif
 			}
 		} else {
 			spin_unlock(&card->lock);
 			b1dma_handle_rx(card);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   		dma->recvlen = 0;
 =======
 			dma->recvlen = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dma->recvlen = 0;
+>>>>>>> refs/remotes/origin/master
 			spin_lock(&card->lock);
 			b1dma_writel(card, dma->recvbuf.dmaaddr, AMCC_RXPTR);
 			b1dma_writel(card, 4, AMCC_RXLEN);
@@ -834,10 +986,14 @@ static int b1dma_loaded(avmcard *card)
 	if (!b1_tx_empty(base)) {
 		printk(KERN_ERR "%s: b1dma_loaded: tx err, corrupted t4 file ?\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				card->name);
 =======
 		       card->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       card->name);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	b1_put_byte(base, SEND_POLLACK);
@@ -865,10 +1021,14 @@ static void b1dma_send_init(avmcard *card)
 	if (!skb) {
 		printk(KERN_CRIT "%s: no memory, lost register appl.\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					card->name);
 =======
 		       card->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       card->name);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	p = skb->data;
@@ -877,10 +1037,14 @@ static void b1dma_send_init(avmcard *card)
 	_put_byte(&p, SEND_INIT);
 	_put_word(&p, CAPI_MAXAPPL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_put_word(&p, AVM_NCCI_PER_CHANNEL*30);
 =======
 	_put_word(&p, AVM_NCCI_PER_CHANNEL * 30);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	_put_word(&p, AVM_NCCI_PER_CHANNEL * 30);
+>>>>>>> refs/remotes/origin/master
 	_put_word(&p, card->cardnr - 1);
 	skb_put(skb, (u8 *)p - (u8 *)skb->data);
 
@@ -899,10 +1063,14 @@ int b1dma_load_firmware(struct capi_ctr *ctrl, capiloaddata *data)
 		b1dma_reset(card);
 		printk(KERN_ERR "%s: failed to load t4file!!\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					card->name);
 =======
 		       card->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       card->name);
+>>>>>>> refs/remotes/origin/master
 		return retval;
 	}
 
@@ -911,10 +1079,14 @@ int b1dma_load_firmware(struct capi_ctr *ctrl, capiloaddata *data)
 			b1dma_reset(card);
 			printk(KERN_ERR "%s: failed to load config!!\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					card->name);
 =======
 			       card->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       card->name);
+>>>>>>> refs/remotes/origin/master
 			return retval;
 		}
 	}
@@ -928,12 +1100,17 @@ int b1dma_load_firmware(struct capi_ctr *ctrl, capiloaddata *data)
 	card->csr = AVM_FLAG;
 	b1dma_writel(card, card->csr, AMCC_INTCSR);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	b1dma_writel(card, EN_A2P_TRANSFERS|EN_P2A_TRANSFERS|A2P_HI_PRIORITY|
 		     P2A_HI_PRIORITY|RESET_A2P_FLAGS|RESET_P2A_FLAGS, 
 =======
 	b1dma_writel(card, EN_A2P_TRANSFERS | EN_P2A_TRANSFERS | A2P_HI_PRIORITY |
 		     P2A_HI_PRIORITY | RESET_A2P_FLAGS | RESET_P2A_FLAGS,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	b1dma_writel(card, EN_A2P_TRANSFERS | EN_P2A_TRANSFERS | A2P_HI_PRIORITY |
+		     P2A_HI_PRIORITY | RESET_A2P_FLAGS | RESET_P2A_FLAGS,
+>>>>>>> refs/remotes/origin/master
 		     AMCC_MCSR);
 	t1outp(card->port, 0x07, 0x30);
 	t1outp(card->port, 0x10, 0xF0);
@@ -945,10 +1122,14 @@ int b1dma_load_firmware(struct capi_ctr *ctrl, capiloaddata *data)
 	b1dma_writel(card, card->csr, AMCC_INTCSR);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         b1dma_send_init(card);
 =======
 	b1dma_send_init(card);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	b1dma_send_init(card);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -961,10 +1142,14 @@ void b1dma_reset_ctr(struct capi_ctr *ctrl)
 
 	spin_lock_irqsave(&card->lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
  	b1dma_reset(card);
 =======
 	b1dma_reset(card);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	b1dma_reset(card);
+>>>>>>> refs/remotes/origin/master
 
 	memset(cinfo->version, 0, sizeof(cinfo->version));
 	capilib_release(&cinfo->ncci_head);
@@ -976,12 +1161,17 @@ void b1dma_reset_ctr(struct capi_ctr *ctrl)
 
 void b1dma_register_appl(struct capi_ctr *ctrl,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				u16 appl,
 				capi_register_params *rp)
 =======
 			 u16 appl,
 			 capi_register_params *rp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 u16 appl,
+			 capi_register_params *rp)
+>>>>>>> refs/remotes/origin/master
 {
 	avmctrl_info *cinfo = (avmctrl_info *)(ctrl->driverdata);
 	avmcard *card = cinfo->card;
@@ -998,10 +1188,14 @@ void b1dma_register_appl(struct capi_ctr *ctrl,
 	if (!skb) {
 		printk(KERN_CRIT "%s: no memory, lost register appl.\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					card->name);
 =======
 		       card->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       card->name);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	p = skb->data;
@@ -1010,10 +1204,14 @@ void b1dma_register_appl(struct capi_ctr *ctrl,
 	_put_byte(&p, SEND_REGISTER);
 	_put_word(&p, appl);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_put_word(&p, 1024 * (nconn+1));
 =======
 	_put_word(&p, 1024 * (nconn + 1));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	_put_word(&p, 1024 * (nconn + 1));
+>>>>>>> refs/remotes/origin/master
 	_put_word(&p, nconn);
 	_put_word(&p, rp->datablkcnt);
 	_put_word(&p, rp->datablklen);
@@ -1040,10 +1238,14 @@ void b1dma_release_appl(struct capi_ctr *ctrl, u16 appl)
 	if (!skb) {
 		printk(KERN_CRIT "%s: no memory, lost release appl.\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					card->name);
 =======
 		       card->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       card->name);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	p = skb->data;
@@ -1066,10 +1268,14 @@ u16 b1dma_send_message(struct capi_ctr *ctrl, struct sk_buff *skb)
 	u16 retval = CAPI_NOERROR;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  	if (CAPIMSG_CMD(skb->data) == CAPI_DATA_B3_REQ) {
 =======
 	if (CAPIMSG_CMD(skb->data) == CAPI_DATA_B3_REQ) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (CAPIMSG_CMD(skb->data) == CAPI_DATA_B3_REQ) {
+>>>>>>> refs/remotes/origin/master
 		unsigned long flags;
 		spin_lock_irqsave(&card->lock, flags);
 		retval = capilib_data_b3_req(&cinfo->ncci_head,
@@ -1079,10 +1285,14 @@ u16 b1dma_send_message(struct capi_ctr *ctrl, struct sk_buff *skb)
 		spin_unlock_irqrestore(&card->lock, flags);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (retval == CAPI_NOERROR) 
 =======
 	if (retval == CAPI_NOERROR)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (retval == CAPI_NOERROR)
+>>>>>>> refs/remotes/origin/master
 		b1dma_queue_tx(card, skb);
 
 	return retval;
@@ -1126,6 +1336,7 @@ static int b1dmactl_proc_show(struct seq_file *m, void *v)
 
 	if (card->cardtype != avm_m1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         	flag = ((u8 *)(ctrl->profile.manu))[3];
         	if (flag)
 			seq_printf(m, "%-16s%s%s%s%s%s%s%s\n",
@@ -1150,6 +1361,8 @@ static int b1dmactl_proc_show(struct seq_file *m, void *v)
 			(flag & 0x04) ? " leased line with D-channel" : ""
 			);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		flag = ((u8 *)(ctrl->profile.manu))[3];
 		if (flag)
 			seq_printf(m, "%-16s%s%s%s%s%s%s%s\n",
@@ -1173,7 +1386,10 @@ static int b1dmactl_proc_show(struct seq_file *m, void *v)
 				   (flag & 0x08) ? " leased line without D-channel" : "",
 				   (flag & 0x04) ? " leased line with D-channel" : ""
 				);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	seq_printf(m, "%-16s %s\n", "cardname", cinfo->cardname);
 
@@ -1202,7 +1418,11 @@ static int b1dmactl_proc_show(struct seq_file *m, void *v)
 
 static int b1dmactl_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, b1dmactl_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, b1dmactl_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 const struct file_operations b1dmactl_proc_fops = {
@@ -1236,10 +1456,14 @@ static int __init b1dma_init(void)
 		strlcpy(rev, p + 2, sizeof(rev));
 		if ((p = strchr(rev, '$')) != NULL && p > rev)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		   *(p-1) = 0;
 =======
 			*(p - 1) = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			*(p - 1) = 0;
+>>>>>>> refs/remotes/origin/master
 	} else
 		strcpy(rev, "1.0");
 

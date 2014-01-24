@@ -18,6 +18,10 @@
 #include <linux/irq.h>
 #include <linux/mfd/core.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/irqdomain.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mfd/wm831x/core.h>
 #include <linux/mfd/wm831x/pdata.h>
@@ -326,6 +330,7 @@ static inline int irq_data_to_status_reg(struct wm831x_irq_data *irq_data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int irq_data_to_mask_reg(struct wm831x_irq_data *irq_data)
 {
 	return WM831X_INTERRUPT_STATUS_1_MASK - 1 + irq_data->reg;
@@ -337,6 +342,12 @@ static inline struct wm831x_irq_data *irq_to_wm831x_irq(struct wm831x *wm831x,
 							int irq)
 {
 	return &wm831x_irqs[irq - wm831x->irq_base];
+=======
+static inline struct wm831x_irq_data *irq_to_wm831x_irq(struct wm831x *wm831x,
+							int irq)
+{
+	return &wm831x_irqs[irq];
+>>>>>>> refs/remotes/origin/master
 }
 
 static void wm831x_irq_lock(struct irq_data *data)
@@ -352,7 +363,10 @@ static void wm831x_irq_sync_unlock(struct irq_data *data)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ARRAY_SIZE(wm831x->gpio_update); i++) {
 		if (wm831x->gpio_update[i]) {
 			wm831x_set_bits(wm831x, WM831X_GPIO1_CONTROL + i,
@@ -362,7 +376,10 @@ static void wm831x_irq_sync_unlock(struct irq_data *data)
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ARRAY_SIZE(wm831x->irq_masks_cur); i++) {
 		/* If there's been a change in the mask write it back
 		 * to the hardware. */
@@ -385,7 +402,11 @@ static void wm831x_irq_enable(struct irq_data *data)
 {
 	struct wm831x *wm831x = irq_data_get_irq_chip_data(data);
 	struct wm831x_irq_data *irq_data = irq_to_wm831x_irq(wm831x,
+<<<<<<< HEAD
 							     data->irq);
+=======
+							     data->hwirq);
+>>>>>>> refs/remotes/origin/master
 
 	wm831x->irq_masks_cur[irq_data->reg - 1] &= ~irq_data->mask;
 }
@@ -394,7 +415,11 @@ static void wm831x_irq_disable(struct irq_data *data)
 {
 	struct wm831x *wm831x = irq_data_get_irq_chip_data(data);
 	struct wm831x_irq_data *irq_data = irq_to_wm831x_irq(wm831x,
+<<<<<<< HEAD
 							     data->irq);
+=======
+							     data->hwirq);
+>>>>>>> refs/remotes/origin/master
 
 	wm831x->irq_masks_cur[irq_data->reg - 1] |= irq_data->mask;
 }
@@ -403,12 +428,18 @@ static int wm831x_irq_set_type(struct irq_data *data, unsigned int type)
 {
 	struct wm831x *wm831x = irq_data_get_irq_chip_data(data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val, irq;
 =======
 	int irq;
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	irq = data->irq - wm831x->irq_base;
+=======
+	int irq;
+
+	irq = data->hwirq;
+>>>>>>> refs/remotes/origin/master
 
 	if (irq < WM831X_IRQ_GPIO_1 || irq > WM831X_IRQ_GPIO_11) {
 		/* Ignore internal-only IRQs */
@@ -418,6 +449,7 @@ static int wm831x_irq_set_type(struct irq_data *data, unsigned int type)
 			return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch (type) {
 	case IRQ_TYPE_EDGE_BOTH:
@@ -429,6 +461,8 @@ static int wm831x_irq_set_type(struct irq_data *data, unsigned int type)
 	case IRQ_TYPE_EDGE_FALLING:
 		val = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Rebase the IRQ into the GPIO range so we've got a sensible array
 	 * index.
 	 */
@@ -438,6 +472,7 @@ static int wm831x_irq_set_type(struct irq_data *data, unsigned int type)
 	 * do the update here as we can be called with the bus lock
 	 * held.
 	 */
+<<<<<<< HEAD
 	switch (type) {
 	case IRQ_TYPE_EDGE_BOTH:
 		wm831x->gpio_update[irq] = 0x10000 | WM831X_GPN_INT_MODE;
@@ -455,17 +490,42 @@ static int wm831x_irq_set_type(struct irq_data *data, unsigned int type)
 		wm831x->gpio_update[irq] = 0x10000 | WM831X_GPN_POL;
 		wm831x->gpio_level[irq] = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wm831x->gpio_level_low[irq] = false;
+	wm831x->gpio_level_high[irq] = false;
+	switch (type) {
+	case IRQ_TYPE_EDGE_BOTH:
+		wm831x->gpio_update[irq] = 0x10000 | WM831X_GPN_INT_MODE;
+		break;
+	case IRQ_TYPE_EDGE_RISING:
+		wm831x->gpio_update[irq] = 0x10000 | WM831X_GPN_POL;
+		break;
+	case IRQ_TYPE_EDGE_FALLING:
+		wm831x->gpio_update[irq] = 0x10000;
+		break;
+	case IRQ_TYPE_LEVEL_HIGH:
+		wm831x->gpio_update[irq] = 0x10000 | WM831X_GPN_POL;
+		wm831x->gpio_level_high[irq] = true;
+		break;
+	case IRQ_TYPE_LEVEL_LOW:
+		wm831x->gpio_update[irq] = 0x10000;
+		wm831x->gpio_level_low[irq] = true;
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return -EINVAL;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return wm831x_set_bits(wm831x, WM831X_GPIO1_CONTROL + irq,
 			       WM831X_GPN_INT_MODE | WM831X_GPN_POL, val);
 =======
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct irq_chip wm831x_irq_chip = {
@@ -484,10 +544,14 @@ static irqreturn_t wm831x_irq_thread(int irq, void *data)
 	struct wm831x *wm831x = data;
 	unsigned int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int primary;
 =======
 	int primary, status_addr, ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int primary, status_addr, ret;
+>>>>>>> refs/remotes/origin/master
 	int status_regs[WM831X_NUM_IRQ_REGS] = { 0 };
 	int read[WM831X_NUM_IRQ_REGS] = { 0 };
 	int *status;
@@ -505,6 +569,7 @@ static irqreturn_t wm831x_irq_thread(int irq, void *data)
 	 * descriptors.
 	 */
 	if (primary & WM831X_TCHPD_INT)
+<<<<<<< HEAD
 		handle_nested_irq(wm831x->irq_base + WM831X_IRQ_TCHPD);
 	if (primary & WM831X_TCHDATA_INT)
 		handle_nested_irq(wm831x->irq_base + WM831X_IRQ_TCHDATA);
@@ -514,6 +579,14 @@ static irqreturn_t wm831x_irq_thread(int irq, void *data)
 =======
 	primary &= ~(WM831X_TCHDATA_EINT | WM831X_TCHPD_EINT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		handle_nested_irq(irq_find_mapping(wm831x->irq_domain,
+						   WM831X_IRQ_TCHPD));
+	if (primary & WM831X_TCHDATA_INT)
+		handle_nested_irq(irq_find_mapping(wm831x->irq_domain,
+						   WM831X_IRQ_TCHDATA));
+	primary &= ~(WM831X_TCHDATA_EINT | WM831X_TCHPD_EINT);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ARRAY_SIZE(wm831x_irqs); i++) {
 		int offset = wm831x_irqs[i].reg - 1;
@@ -527,6 +600,7 @@ static irqreturn_t wm831x_irq_thread(int irq, void *data)
 		 * each time otherwise we ought to do a block read. */
 		if (!read[offset]) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			*status = wm831x_reg_read(wm831x,
 				     irq_data_to_status_reg(&wm831x_irqs[i]));
 =======
@@ -534,6 +608,11 @@ static irqreturn_t wm831x_irq_thread(int irq, void *data)
 
 			*status = wm831x_reg_read(wm831x, status_addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			status_addr = irq_data_to_status_reg(&wm831x_irqs[i]);
+
+			*status = wm831x_reg_read(wm831x, status_addr);
+>>>>>>> refs/remotes/origin/master
 			if (*status < 0) {
 				dev_err(wm831x->dev,
 					"Failed to read IRQ status: %d\n",
@@ -542,6 +621,7 @@ static irqreturn_t wm831x_irq_thread(int irq, void *data)
 			}
 
 			read[offset] = 1;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		}
 
@@ -564,6 +644,8 @@ out:
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 			/* Ignore any bits that we don't think are masked */
 			*status &= ~wm831x->irq_masks_cur[offset];
@@ -575,16 +657,40 @@ out:
 		}
 
 		if (*status & wm831x_irqs[i].mask)
+<<<<<<< HEAD
 			handle_nested_irq(wm831x->irq_base + i);
+=======
+			handle_nested_irq(irq_find_mapping(wm831x->irq_domain,
+							   i));
+>>>>>>> refs/remotes/origin/master
 
 		/* Simulate an edge triggered IRQ by polling the input
 		 * status.  This is sucky but improves interoperability.
 		 */
 		if (primary == WM831X_GP_INT &&
+<<<<<<< HEAD
 		    wm831x->gpio_level[i - WM831X_IRQ_GPIO_1]) {
 			ret = wm831x_reg_read(wm831x, WM831X_GPIO_LEVEL);
 			while (ret & 1 << (i - WM831X_IRQ_GPIO_1)) {
 				handle_nested_irq(wm831x->irq_base + i);
+=======
+		    wm831x->gpio_level_high[i - WM831X_IRQ_GPIO_1]) {
+			ret = wm831x_reg_read(wm831x, WM831X_GPIO_LEVEL);
+			while (ret & 1 << (i - WM831X_IRQ_GPIO_1)) {
+				handle_nested_irq(irq_find_mapping(wm831x->irq_domain,
+								   i));
+				ret = wm831x_reg_read(wm831x,
+						      WM831X_GPIO_LEVEL);
+			}
+		}
+
+		if (primary == WM831X_GP_INT &&
+		    wm831x->gpio_level_low[i - WM831X_IRQ_GPIO_1]) {
+			ret = wm831x_reg_read(wm831x, WM831X_GPIO_LEVEL);
+			while (!(ret & 1 << (i - WM831X_IRQ_GPIO_1))) {
+				handle_nested_irq(irq_find_mapping(wm831x->irq_domain,
+								   i));
+>>>>>>> refs/remotes/origin/master
 				ret = wm831x_reg_read(wm831x,
 						      WM831X_GPIO_LEVEL);
 			}
@@ -592,6 +698,7 @@ out:
 	}
 
 out:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return IRQ_HANDLED;
 }
@@ -600,6 +707,39 @@ int wm831x_irq_init(struct wm831x *wm831x, int irq)
 {
 	struct wm831x_pdata *pdata = wm831x->dev->platform_data;
 	int i, cur_irq, ret;
+=======
+	return IRQ_HANDLED;
+}
+
+static int wm831x_irq_map(struct irq_domain *h, unsigned int virq,
+			  irq_hw_number_t hw)
+{
+	irq_set_chip_data(virq, h->host_data);
+	irq_set_chip_and_handler(virq, &wm831x_irq_chip, handle_edge_irq);
+	irq_set_nested_thread(virq, 1);
+
+	/* ARM needs us to explicitly flag the IRQ as valid
+	 * and will set them noprobe when we do so. */
+#ifdef CONFIG_ARM
+	set_irq_flags(virq, IRQF_VALID);
+#else
+	irq_set_noprobe(virq);
+#endif
+
+	return 0;
+}
+
+static struct irq_domain_ops wm831x_irq_domain_ops = {
+	.map	= wm831x_irq_map,
+	.xlate	= irq_domain_xlate_twocell,
+};
+
+int wm831x_irq_init(struct wm831x *wm831x, int irq)
+{
+	struct wm831x_pdata *pdata = dev_get_platdata(wm831x->dev);
+	struct irq_domain *domain;
+	int i, ret, irq_base;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_init(&wm831x->irq_lock);
 
@@ -611,6 +751,7 @@ int wm831x_irq_init(struct wm831x *wm831x, int irq)
 				 0xffff);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!pdata || !pdata->irq_base) {
 		dev_err(wm831x->dev,
@@ -637,6 +778,39 @@ int wm831x_irq_init(struct wm831x *wm831x, int irq)
 
 	if (pdata && pdata->irq_cmos)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Try to dynamically allocate IRQs if no base is specified */
+	if (pdata && pdata->irq_base) {
+		irq_base = irq_alloc_descs(pdata->irq_base, 0,
+					   WM831X_NUM_IRQS, 0);
+		if (irq_base < 0) {
+			dev_warn(wm831x->dev, "Failed to allocate IRQs: %d\n",
+				 irq_base);
+			irq_base = 0;
+		}
+	} else {
+		irq_base = 0;
+	}
+
+	if (irq_base)
+		domain = irq_domain_add_legacy(wm831x->dev->of_node,
+					       ARRAY_SIZE(wm831x_irqs),
+					       irq_base, 0,
+					       &wm831x_irq_domain_ops,
+					       wm831x);
+	else
+		domain = irq_domain_add_linear(wm831x->dev->of_node,
+					       ARRAY_SIZE(wm831x_irqs),
+					       &wm831x_irq_domain_ops,
+					       wm831x);
+
+	if (!domain) {
+		dev_warn(wm831x->dev, "Failed to allocate IRQ domain\n");
+		return -EINVAL;
+	}
+
+	if (pdata && pdata->irq_cmos)
+>>>>>>> refs/remotes/origin/master
 		i = 0;
 	else
 		i = WM831X_IRQ_OD;
@@ -644,6 +818,7 @@ int wm831x_irq_init(struct wm831x *wm831x, int irq)
 	wm831x_set_bits(wm831x, WM831X_IRQ_CONFIG,
 			WM831X_IRQ_OD, i);
 
+<<<<<<< HEAD
 	/* Try to flag /IRQ as a wake source; there are a number of
 	 * unconditional wake sources in the PMIC so this isn't
 	 * conditional but we don't actually care *too* much if it
@@ -680,6 +855,24 @@ int wm831x_irq_init(struct wm831x *wm831x, int irq)
 	}
 
 	if (irq) {
+=======
+	wm831x->irq = irq;
+	wm831x->irq_domain = domain;
+
+	if (irq) {
+		/* Try to flag /IRQ as a wake source; there are a number of
+		 * unconditional wake sources in the PMIC so this isn't
+		 * conditional but we don't actually care *too* much if it
+		 * fails.
+		 */
+		ret = enable_irq_wake(irq);
+		if (ret != 0) {
+			dev_warn(wm831x->dev,
+				 "Can't enable IRQ as wake source: %d\n",
+				 ret);
+		}
+
+>>>>>>> refs/remotes/origin/master
 		ret = request_threaded_irq(irq, NULL, wm831x_irq_thread,
 					   IRQF_TRIGGER_LOW | IRQF_ONESHOT,
 					   "wm831x", wm831x);
@@ -694,10 +887,13 @@ int wm831x_irq_init(struct wm831x *wm831x, int irq)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Enable top level interrupts, we mask at secondary level */
 	wm831x_reg_write(wm831x, WM831X_SYSTEM_INTERRUPTS_MASK, 0);
 

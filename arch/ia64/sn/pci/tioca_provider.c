@@ -12,9 +12,13 @@
 #include <linux/bitmap.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/sn/sn_sal.h>
 #include <asm/sn/addrs.h>
 #include <asm/sn/io.h>
@@ -604,18 +608,24 @@ tioca_bus_fixup(struct pcibus_bussoft *prom_bussoft, struct pci_controller *cont
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tioca_common = kzalloc(sizeof(struct tioca_common), GFP_KERNEL);
 	if (!tioca_common)
 		return NULL;
 
 	memcpy(tioca_common, prom_bussoft, sizeof(struct tioca_common));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	tioca_common = kmemdup(prom_bussoft, sizeof(struct tioca_common),
 			       GFP_KERNEL);
 	if (!tioca_common)
 		return NULL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tioca_common->ca_common.bs_base = (unsigned long)
 		ioremap(REGION_OFFSET(tioca_common->ca_common.bs_base),
 			sizeof(struct tioca_common));
@@ -661,9 +671,13 @@ tioca_bus_fixup(struct pcibus_bussoft *prom_bussoft, struct pci_controller *cont
 		       (int)tioca_common->ca_common.bs_persist_busnum);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	irq_set_handler(SGI_TIOCA_ERROR, handle_level_irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq_set_handler(SGI_TIOCA_ERROR, handle_level_irq);
+>>>>>>> refs/remotes/origin/master
 	sn_set_err_irq_affinity(SGI_TIOCA_ERROR);
 
 	/* Setup locality information */

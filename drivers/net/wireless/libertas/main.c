@@ -7,15 +7,21 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 #include <linux/delay.h>
 #include <linux/etherdevice.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/delay.h>
 #include <linux/etherdevice.h>
 #include <linux/hardirq.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/netdevice.h>
 #include <linux/if_arp.h>
 #include <linux/kthread.h>
@@ -30,9 +36,13 @@
 #include "debugfs.h"
 #include "cmd.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "mesh.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "mesh.h"
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_RELEASE_VERSION "323.p0"
 const char lbs_driver_version[] = "COMM-USB8388-" DRIVER_RELEASE_VERSION
@@ -109,7 +119,10 @@ u8 lbs_data_rate_to_fw_index(u32 rate)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int lbs_set_iface_type(struct lbs_private *priv, enum nl80211_iftype type)
 {
 	int ret = 0;
@@ -163,6 +176,15 @@ int lbs_start_iface(struct lbs_private *priv)
 		goto err;
 	}
 
+<<<<<<< HEAD
+=======
+	ret = lbs_set_11d_domain_info(priv);
+	if (ret) {
+		lbs_deb_net("set 11d domain info failed\n");
+		goto err;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	lbs_update_channel(priv);
 
 	priv->iface_running = true;
@@ -173,7 +195,10 @@ err:
 		priv->power_save(priv);
 	return ret;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  *  lbs_dev_open - open the ethX interface
@@ -188,6 +213,7 @@ static int lbs_dev_open(struct net_device *dev)
 
 	lbs_deb_enter(LBS_DEB_NET);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	spin_lock_irq(&priv->driver_lock);
 	priv->stopping = false;
@@ -197,6 +223,8 @@ static int lbs_dev_open(struct net_device *dev)
 	else
 		netif_carrier_off(dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!priv->iface_running) {
 		ret = lbs_start_iface(priv);
 		if (ret)
@@ -206,23 +234,34 @@ static int lbs_dev_open(struct net_device *dev)
 	spin_lock_irq(&priv->driver_lock);
 
 	netif_carrier_off(dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!priv->tx_pending_len)
 		netif_wake_queue(dev);
 
 	spin_unlock_irq(&priv->driver_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+out:
+>>>>>>> refs/remotes/origin/master
 	lbs_deb_leave_args(LBS_DEB_NET, "ret %d", ret);
 	return ret;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool lbs_command_queue_empty(struct lbs_private *priv)
 {
 	unsigned long flags;
@@ -262,7 +301,10 @@ int lbs_stop_iface(struct lbs_private *priv)
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  *  lbs_eth_stop - close the ethX interface
  *
@@ -276,6 +318,7 @@ static int lbs_eth_stop(struct net_device *dev)
 	lbs_deb_enter(LBS_DEB_NET);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irq(&priv->driver_lock);
 	priv->stopping = true;
 	netif_stop_queue(dev);
@@ -288,6 +331,8 @@ static int lbs_eth_stop(struct net_device *dev)
 		priv->scan_req = NULL;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (priv->connect_status == LBS_CONNECTED)
 		lbs_disconnect(priv, WLAN_REASON_DEAUTH_LEAVING);
 
@@ -304,7 +349,10 @@ static int lbs_eth_stop(struct net_device *dev)
 
 	if (!lbs_iface_active(priv))
 		lbs_stop_iface(priv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	lbs_deb_leave(LBS_DEB_NET);
 	return 0;
@@ -318,9 +366,13 @@ void lbs_host_to_card_done(struct lbs_private *priv)
 
 	spin_lock_irqsave(&priv->driver_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	del_timer(&priv->tx_lockup_timer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	del_timer(&priv->tx_lockup_timer);
+>>>>>>> refs/remotes/origin/master
 
 	priv->dnld_sent = DNLD_RES_RECEIVED;
 
@@ -328,10 +380,14 @@ void lbs_host_to_card_done(struct lbs_private *priv)
 	if (!priv->cur_cmd || priv->tx_pending_len > 0) {
 		if (!priv->wakeup_dev_required)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			wake_up_interruptible(&priv->waitq);
 =======
 			wake_up(&priv->waitq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			wake_up(&priv->waitq);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_unlock_irqrestore(&priv->driver_lock, flags);
@@ -344,6 +400,7 @@ int lbs_set_mac_address(struct net_device *dev, void *addr)
 	int ret = 0;
 	struct lbs_private *priv = dev->ml_priv;
 	struct sockaddr *phwaddr = addr;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cmd_ds_802_11_mac_address cmd;
 
@@ -363,6 +420,8 @@ int lbs_set_mac_address(struct net_device *dev, void *addr)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	lbs_deb_enter(LBS_DEB_NET);
 
@@ -376,16 +435,22 @@ int lbs_set_mac_address(struct net_device *dev, void *addr)
 	/* In case it was called from the mesh device */
 	dev = priv->dev;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memcpy(priv->current_addr, phwaddr->sa_data, ETH_ALEN);
 	memcpy(dev->dev_addr, phwaddr->sa_data, ETH_ALEN);
 	if (priv->mesh_dev)
 		memcpy(priv->mesh_dev->dev_addr, phwaddr->sa_data, ETH_ALEN);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 done:
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	lbs_deb_leave_args(LBS_DEB_NET, "ret %d", ret);
 	return ret;
 }
@@ -440,22 +505,29 @@ static int lbs_add_mcast_addrs(struct cmd_ds_mac_multicast_adr *cmd,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void lbs_set_mcast_worker(struct work_struct *work)
 {
 	struct lbs_private *priv = container_of(work, struct lbs_private, mcast_work);
 	struct cmd_ds_mac_multicast_adr mcast_cmd;
 	int dev_flags;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void lbs_update_mcast(struct lbs_private *priv)
 {
 	struct cmd_ds_mac_multicast_adr mcast_cmd;
 	int dev_flags = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int nr_addrs;
 	int old_mac_control = priv->mac_control;
 
 	lbs_deb_enter(LBS_DEB_NET);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dev_flags = priv->dev->flags;
 	if (priv->mesh_dev)
@@ -464,6 +536,11 @@ void lbs_update_mcast(struct lbs_private *priv)
 		dev_flags |= priv->dev->flags;
 	if (priv->mesh_dev && netif_running(priv->mesh_dev))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (netif_running(priv->dev))
+		dev_flags |= priv->dev->flags;
+	if (priv->mesh_dev && netif_running(priv->mesh_dev))
+>>>>>>> refs/remotes/origin/master
 		dev_flags |= priv->mesh_dev->flags;
 
 	if (dev_flags & IFF_PROMISC) {
@@ -510,14 +587,20 @@ void lbs_update_mcast(struct lbs_private *priv)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void lbs_set_mcast_worker(struct work_struct *work)
 {
 	struct lbs_private *priv = container_of(work, struct lbs_private, mcast_work);
 	lbs_update_mcast(priv);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void lbs_set_multicast_list(struct net_device *dev)
 {
 	struct lbs_private *priv = dev->ml_priv;
@@ -655,7 +738,14 @@ static int lbs_thread(void *data)
 			netdev_info(dev, "Timeout submitting command 0x%04x\n",
 				    le16_to_cpu(cmdnode->cmdbuf->command));
 			lbs_complete_command(priv, cmdnode, -ETIMEDOUT);
+<<<<<<< HEAD
 			if (priv->reset_card)
+=======
+
+			/* Reset card, but only when it isn't in the process
+			 * of being shutdown anyway. */
+			if (!dev->dismantle && priv->reset_card)
+>>>>>>> refs/remotes/origin/master
 				priv->reset_card(priv);
 		}
 		priv->cmd_timed_out = 0;
@@ -708,11 +798,17 @@ static int lbs_thread(void *data)
 				lbs_deb_tx("host_to_card failed %d\n", ret);
 				priv->dnld_sent = DNLD_RES_RECEIVED;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			} else {
 				mod_timer(&priv->tx_lockup_timer,
 					  jiffies + (HZ * 5));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			} else {
+				mod_timer(&priv->tx_lockup_timer,
+					  jiffies + (HZ * 5));
+>>>>>>> refs/remotes/origin/master
 			}
 			priv->tx_pending_len = 0;
 			if (!priv->currenttxskb) {
@@ -722,10 +818,14 @@ static int lbs_thread(void *data)
 					netif_wake_queue(priv->dev);
 				if (priv->mesh_dev &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    lbs_mesh_connected(priv))
 =======
 				    netif_running(priv->mesh_dev))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    netif_running(priv->mesh_dev))
+>>>>>>> refs/remotes/origin/master
 					netif_wake_queue(priv->mesh_dev);
 			}
 		}
@@ -734,9 +834,13 @@ static int lbs_thread(void *data)
 
 	del_timer(&priv->command_timer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	del_timer(&priv->tx_lockup_timer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	del_timer(&priv->tx_lockup_timer);
+>>>>>>> refs/remotes/origin/master
 	del_timer(&priv->auto_deepsleep_timer);
 
 	lbs_deb_leave(LBS_DEB_THREAD);
@@ -773,8 +877,15 @@ static int lbs_setup_firmware(struct lbs_private *priv)
 
 	/* Send cmd to FW to enable 11D function */
 	ret = lbs_set_snmp_mib(priv, SNMP_MIB_OID_11D_ENABLE, 1);
+<<<<<<< HEAD
 
 	lbs_set_mac_control(priv);
+=======
+	if (ret)
+		goto done;
+
+	ret = lbs_set_mac_control_sync(priv);
+>>>>>>> refs/remotes/origin/master
 done:
 	lbs_deb_leave_args(LBS_DEB_FW, "ret %d", ret);
 	return ret;
@@ -857,8 +968,11 @@ static void lbs_cmd_timeout_handler(unsigned long data)
 
 	priv->cmd_timed_out = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wake_up_interruptible(&priv->waitq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If the device didn't even acknowledge the command, reset the state
@@ -868,7 +982,10 @@ static void lbs_cmd_timeout_handler(unsigned long data)
 		priv->dnld_sent = DNLD_RES_RECEIVED;
 
 	wake_up(&priv->waitq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	spin_unlock_irqrestore(&priv->driver_lock, flags);
 	lbs_deb_leave(LBS_DEB_CMD);
@@ -876,7 +993,10 @@ out:
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * lbs_tx_lockup_handler - handles the timeout of the passing of TX frames
  * to the hardware. This is known to frequently happen with SD8686 when
  * waking up after a Wake-on-WLAN-triggered resume.
@@ -903,7 +1023,10 @@ static void lbs_tx_lockup_handler(unsigned long data)
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * auto_deepsleep_timer_fn - put the device back to deep sleep mode when
  * timer expires and no activity (command, event, data etc.) is detected.
  * @data:	&struct lbs_private pointer
@@ -985,15 +1108,24 @@ static int lbs_init_adapter(struct lbs_private *priv)
 	priv->is_host_sleep_configured = 0;
 	priv->is_host_sleep_activated = 0;
 	init_waitqueue_head(&priv->host_sleep_q);
+<<<<<<< HEAD
+=======
+	init_waitqueue_head(&priv->fw_waitq);
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&priv->lock);
 
 	setup_timer(&priv->command_timer, lbs_cmd_timeout_handler,
 		(unsigned long)priv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	setup_timer(&priv->tx_lockup_timer, lbs_tx_lockup_handler,
 		(unsigned long)priv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	setup_timer(&priv->tx_lockup_timer, lbs_tx_lockup_handler,
+		(unsigned long)priv);
+>>>>>>> refs/remotes/origin/master
 	setup_timer(&priv->auto_deepsleep_timer, auto_deepsleep_timer_fn,
 			(unsigned long)priv);
 
@@ -1032,9 +1164,13 @@ static void lbs_free_adapter(struct lbs_private *priv)
 	kfifo_free(&priv->event_fifo);
 	del_timer(&priv->command_timer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	del_timer(&priv->tx_lockup_timer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	del_timer(&priv->tx_lockup_timer);
+>>>>>>> refs/remotes/origin/master
 	del_timer(&priv->auto_deepsleep_timer);
 
 	lbs_deb_leave(LBS_DEB_MAIN);
@@ -1046,10 +1182,14 @@ static const struct net_device_ops lbs_netdev_ops = {
 	.ndo_start_xmit		= lbs_hard_start_xmit,
 	.ndo_set_mac_address	= lbs_set_mac_address,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list = lbs_set_multicast_list,
 =======
 	.ndo_set_rx_mode	= lbs_set_multicast_list,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= lbs_set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 	.ndo_change_mtu		= eth_change_mtu,
 	.ndo_validate_addr	= eth_validate_addr,
 };
@@ -1150,6 +1290,7 @@ void lbs_remove_card(struct lbs_private *priv)
 	lbs_deb_enter(LBS_DEB_MAIN);
 
 	lbs_remove_mesh(priv);
+<<<<<<< HEAD
 	lbs_scan_deinit(priv);
 
 <<<<<<< HEAD
@@ -1159,6 +1300,14 @@ void lbs_remove_card(struct lbs_private *priv)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (priv->wiphy_registered)
+		lbs_scan_deinit(priv);
+
+	lbs_wait_for_firmware_load(priv);
+
+>>>>>>> refs/remotes/origin/master
 	/* worker thread destruction blocks on the in-flight command which
 	 * should have been cleared already in lbs_stop_card().
 	 */
@@ -1217,18 +1366,25 @@ int lbs_start_card(struct lbs_private *priv)
 		goto done;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!lbs_disablemesh)
 		lbs_init_mesh(priv);
 	else
 		pr_info("%s: mesh disabled\n", dev->name);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (lbs_cfg_register(priv)) {
 		pr_err("cannot register device\n");
 		goto done;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	lbs_update_channel(priv);
 
@@ -1240,6 +1396,10 @@ int lbs_start_card(struct lbs_private *priv)
 	if (lbs_mesh_activated(priv))
 		lbs_start_mesh(priv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (lbs_mesh_activated(priv))
+		lbs_start_mesh(priv);
+>>>>>>> refs/remotes/origin/master
 
 	lbs_debugfs_init_one(priv, dev);
 
@@ -1258,10 +1418,13 @@ void lbs_stop_card(struct lbs_private *priv)
 {
 	struct net_device *dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cmd_ctrl_node *cmdnode;
 	unsigned long flags;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	lbs_deb_enter(LBS_DEB_MAIN);
 
@@ -1269,11 +1432,20 @@ void lbs_stop_card(struct lbs_private *priv)
 		goto out;
 	dev = priv->dev;
 
+<<<<<<< HEAD
+=======
+	/* If the netdev isn't registered, it means that lbs_start_card() was
+	 * never called so we have nothing to do here. */
+	if (dev->reg_state != NETREG_REGISTERED)
+		goto out;
+
+>>>>>>> refs/remotes/origin/master
 	netif_stop_queue(dev);
 	netif_carrier_off(dev);
 
 	lbs_debugfs_remove_one(priv);
 	lbs_deinit_mesh(priv);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	/* Delete the timeout of the currently processing command */
@@ -1301,6 +1473,8 @@ void lbs_stop_card(struct lbs_private *priv)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unregister_netdev(dev);
 
 out:
@@ -1322,10 +1496,14 @@ void lbs_queue_event(struct lbs_private *priv, u32 event)
 	kfifo_in(&priv->event_fifo, (unsigned char *) &event, sizeof(u32));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wake_up_interruptible(&priv->waitq);
 =======
 	wake_up(&priv->waitq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wake_up(&priv->waitq);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&priv->driver_lock, flags);
 	lbs_deb_leave(LBS_DEB_THREAD);
@@ -1344,15 +1522,20 @@ void lbs_notify_command_response(struct lbs_private *priv, u8 resp_idx)
 	priv->resp_idx = resp_idx;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wake_up_interruptible(&priv->waitq);
 =======
 	wake_up(&priv->waitq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wake_up(&priv->waitq);
+>>>>>>> refs/remotes/origin/master
 
 	lbs_deb_leave(LBS_DEB_THREAD);
 }
 EXPORT_SYMBOL_GPL(lbs_notify_command_response);
 
+<<<<<<< HEAD
 /**
  *  lbs_get_firmware - Retrieves two-stage firmware
  *
@@ -1458,6 +1641,8 @@ int lbs_get_firmware(struct device *dev, const char *user_helper,
 }
 EXPORT_SYMBOL_GPL(lbs_get_firmware);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init lbs_init_module(void)
 {
 	lbs_deb_enter(LBS_DEB_MAIN);

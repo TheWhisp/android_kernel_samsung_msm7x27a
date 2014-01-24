@@ -26,9 +26,12 @@
 #define __INTEL_SCU_WATCHDOG_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PFX "Intel_SCU: "
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define WDT_VER "0.3"
 
 /* minimum time between interrupts */

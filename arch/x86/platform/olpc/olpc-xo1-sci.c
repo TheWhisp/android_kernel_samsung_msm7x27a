@@ -18,10 +18,18 @@
 #include <linux/interrupt.h>
 #include <linux/platform_device.h>
 #include <linux/pm.h>
+<<<<<<< HEAD
+=======
+#include <linux/pm_wakeup.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mfd/core.h>
 #include <linux/power_supply.h>
 #include <linux/suspend.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
+=======
+#include <linux/olpc-ec.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/io.h>
 #include <asm/msr.h>
@@ -83,8 +91,17 @@ static void send_ebook_state(void)
 		return;
 	}
 
+<<<<<<< HEAD
 	input_report_switch(ebook_switch_idev, SW_TABLET_MODE, state);
 	input_sync(ebook_switch_idev);
+=======
+	if (!!test_bit(SW_TABLET_MODE, ebook_switch_idev->sw) == state)
+		return; /* Nothing new to report. */
+
+	input_report_switch(ebook_switch_idev, SW_TABLET_MODE, state);
+	input_sync(ebook_switch_idev);
+	pm_wakeup_event(&ebook_switch_idev->dev, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void flip_lid_inverter(void)
@@ -123,8 +140,17 @@ static void detect_lid_state(void)
 /* Report current lid switch state through input layer */
 static void send_lid_state(void)
 {
+<<<<<<< HEAD
 	input_report_switch(lid_switch_idev, SW_LID, !lid_open);
 	input_sync(lid_switch_idev);
+=======
+	if (!!test_bit(SW_LID, lid_switch_idev->sw) == !lid_open)
+		return; /* Nothing new to report. */
+
+	input_report_switch(lid_switch_idev, SW_LID, !lid_open);
+	input_sync(lid_switch_idev);
+	pm_wakeup_event(&lid_switch_idev->dev, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t lid_wake_mode_show(struct device *dev,
@@ -213,11 +239,38 @@ static irqreturn_t xo1_sci_intr(int irq, void *dev_id)
 
 	dev_dbg(&pdev->dev, "sts %x gpe %x\n", sts, gpe);
 
+<<<<<<< HEAD
 	if (sts & CS5536_PWRBTN_FLAG && !(sts & CS5536_WAK_FLAG)) {
 		input_report_key(power_button_idev, KEY_POWER, 1);
 		input_sync(power_button_idev);
 		input_report_key(power_button_idev, KEY_POWER, 0);
 		input_sync(power_button_idev);
+=======
+	if (sts & CS5536_PWRBTN_FLAG) {
+		if (!(sts & CS5536_WAK_FLAG)) {
+			/* Only report power button input when it was pressed
+			 * during regular operation (as opposed to when it
+			 * was used to wake the system). */
+			input_report_key(power_button_idev, KEY_POWER, 1);
+			input_sync(power_button_idev);
+			input_report_key(power_button_idev, KEY_POWER, 0);
+			input_sync(power_button_idev);
+		}
+		/* Report the wakeup event in all cases. */
+		pm_wakeup_event(&power_button_idev->dev, 0);
+	}
+
+	if ((sts & (CS5536_RTC_FLAG | CS5536_WAK_FLAG)) ==
+			(CS5536_RTC_FLAG | CS5536_WAK_FLAG)) {
+		/* When the system is woken by the RTC alarm, report the
+		 * event on the rtc device. */
+		struct device *rtc = bus_find_device_by_name(
+			&platform_bus_type, NULL, "rtc_cmos");
+		if (rtc) {
+			pm_wakeup_event(rtc, 0);
+			put_device(rtc);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (gpe & CS5536_GPIOM7_PME_FLAG) { /* EC GPIO */
@@ -280,7 +333,11 @@ static int xo1_sci_resume(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit setup_sci_interrupt(struct platform_device *pdev)
+=======
+static int setup_sci_interrupt(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 lo, hi;
 	u32 sts;
@@ -310,9 +367,16 @@ static int __devinit setup_sci_interrupt(struct platform_device *pdev)
 		outb(lo, CS5536_PIC_INT_SEL2);
 	}
 
+<<<<<<< HEAD
 	/* Enable SCI from power button, and clear pending interrupts */
 	sts = inl(acpi_base + CS5536_PM1_STS);
 	outl((CS5536_PM_PWRBTN << 16) | 0xffff, acpi_base + CS5536_PM1_STS);
+=======
+	/* Enable interesting SCI events, and clear pending interrupts */
+	sts = inl(acpi_base + CS5536_PM1_STS);
+	outl(((CS5536_PM_PWRBTN | CS5536_PM_RTC) << 16) | 0xffff,
+	     acpi_base + CS5536_PM1_STS);
+>>>>>>> refs/remotes/origin/master
 
 	r = request_irq(sci_irq, xo1_sci_intr, 0, DRV_NAME, pdev);
 	if (r)
@@ -321,7 +385,11 @@ static int __devinit setup_sci_interrupt(struct platform_device *pdev)
 	return r;
 }
 
+<<<<<<< HEAD
 static int __devinit setup_ec_sci(void)
+=======
+static int setup_ec_sci(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int r;
 
@@ -365,7 +433,11 @@ static void free_ec_sci(void)
 	gpio_free(OLPC_GPIO_ECSCI);
 }
 
+<<<<<<< HEAD
 static int __devinit setup_lid_events(void)
+=======
+static int setup_lid_events(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int r;
 
@@ -402,7 +474,11 @@ static void free_lid_events(void)
 	gpio_free(OLPC_GPIO_LID);
 }
 
+<<<<<<< HEAD
 static int __devinit setup_power_button(struct platform_device *pdev)
+=======
+static int setup_power_button(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int r;
 
@@ -430,10 +506,16 @@ static int __devinit setup_power_button(struct platform_device *pdev)
 static void free_power_button(void)
 {
 	input_unregister_device(power_button_idev);
+<<<<<<< HEAD
 	input_free_device(power_button_idev);
 }
 
 static int __devinit setup_ebook_switch(struct platform_device *pdev)
+=======
+}
+
+static int setup_ebook_switch(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int r;
 
@@ -461,10 +543,16 @@ static int __devinit setup_ebook_switch(struct platform_device *pdev)
 static void free_ebook_switch(void)
 {
 	input_unregister_device(ebook_switch_idev);
+<<<<<<< HEAD
 	input_free_device(ebook_switch_idev);
 }
 
 static int __devinit setup_lid_switch(struct platform_device *pdev)
+=======
+}
+
+static int setup_lid_switch(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int r;
 
@@ -496,6 +584,10 @@ static int __devinit setup_lid_switch(struct platform_device *pdev)
 
 err_create_attr:
 	input_unregister_device(lid_switch_idev);
+<<<<<<< HEAD
+=======
+	lid_switch_idev = NULL;
+>>>>>>> refs/remotes/origin/master
 err_register:
 	input_free_device(lid_switch_idev);
 	return r;
@@ -505,10 +597,16 @@ static void free_lid_switch(void)
 {
 	device_remove_file(&lid_switch_idev->dev, &dev_attr_lid_wake_mode);
 	input_unregister_device(lid_switch_idev);
+<<<<<<< HEAD
 	input_free_device(lid_switch_idev);
 }
 
 static int __devinit xo1_sci_probe(struct platform_device *pdev)
+=======
+}
+
+static int xo1_sci_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res;
 	int r;
@@ -583,7 +681,11 @@ err_ebook:
 	return r;
 }
 
+<<<<<<< HEAD
 static int __devexit xo1_sci_remove(struct platform_device *pdev)
+=======
+static int xo1_sci_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	mfd_cell_disable(pdev);
 	free_irq(sci_irq, pdev);
@@ -602,7 +704,11 @@ static struct platform_driver xo1_sci_driver = {
 		.name = "olpc-xo1-sci-acpi",
 	},
 	.probe = xo1_sci_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(xo1_sci_remove),
+=======
+	.remove = xo1_sci_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend = xo1_sci_suspend,
 	.resume = xo1_sci_resume,
 };

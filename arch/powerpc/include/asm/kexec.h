@@ -3,10 +3,14 @@
 #ifdef __KERNEL__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_FSL_BOOKE
 =======
 #if defined(CONFIG_FSL_BOOKE) || defined(CONFIG_44x)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_FSL_BOOKE) || defined(CONFIG_44x)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * On FSL-BookE we setup a 1:1 mapping which covers the first 2GiB of memory
@@ -54,9 +58,12 @@
 
 #ifndef __ASSEMBLY__
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/cpumask.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/reg.h>
 
 typedef void (*crash_shutdown_t)(void);
@@ -81,6 +88,7 @@ extern void kexec_smp_wait(void);	/* get and clear naca physid, wait for
 extern int crashing_cpu;
 extern void crash_send_ipi(void (*crash_ipi_callback)(struct pt_regs *));
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern cpumask_t cpus_in_sr;
 static inline int kexec_sr_activated(int cpu)
 {
@@ -88,6 +96,8 @@ static inline int kexec_sr_activated(int cpu)
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct kimage;
 struct pt_regs;
@@ -105,9 +115,12 @@ extern void machine_kexec_mask_interrupts(void);
 
 #else /* !CONFIG_KEXEC */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int kexec_sr_activated(int cpu) { return 0; }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void crash_kexec_secondary(struct pt_regs *regs) { }
 
 static inline int overlaps_crashkernel(unsigned long start, unsigned long size)

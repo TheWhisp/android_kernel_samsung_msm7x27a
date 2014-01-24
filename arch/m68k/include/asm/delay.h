@@ -1,10 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef __uClinux__
 #include "delay_no.h"
 #else
 #include "delay_mm.h"
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef _M68K_DELAY_H
 #define _M68K_DELAY_H
 
@@ -50,7 +53,11 @@ static inline void __delay(unsigned long loops)
 extern void __bad_udelay(void);
 
 
+<<<<<<< HEAD
 #if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
+=======
+#ifdef CONFIG_CPU_HAS_NO_MULDIV64
+>>>>>>> refs/remotes/origin/master
 /*
  * The simpler m68k and ColdFire processors do not have a 32*32->64
  * multiply instruction. So we need to handle them a little differently.
@@ -99,6 +106,34 @@ static inline void __udelay(unsigned long usecs)
 #define udelay(n) (__builtin_constant_p(n) ? \
 	((n) > 20000 ? __bad_udelay() : __const_udelay(n)) : __udelay(n))
 
+<<<<<<< HEAD
 
 #endif /* defined(_M68K_DELAY_H) */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * nanosecond delay:
+ *
+ * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6) is the number of loops
+ * per microsecond
+ *
+ * 1000 / ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6) is the number of
+ * nanoseconds per loop
+ *
+ * So n / ( 1000 / ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6) ) would
+ * be the number of loops for n nanoseconds
+ */
+
+/*
+ * The simpler m68k and ColdFire processors do not have a 32*32->64
+ * multiply instruction. So we need to handle them a little differently.
+ * We use a bit of shifting and a single 32*32->32 multiply to get close.
+ * This is a macro so that the const version can factor out the first
+ * multiply and shift.
+ */
+#define	HZSCALE		(268435456 / (1000000 / HZ))
+
+#define ndelay(n) __delay(DIV_ROUND_UP((n) * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6), 1000));
+
+#endif /* defined(_M68K_DELAY_H) */
+>>>>>>> refs/remotes/origin/master

@@ -40,9 +40,13 @@
 #include <linux/freezer.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/serial_core.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/serial_core.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 
@@ -110,7 +114,11 @@ static struct hvc_struct *hvc_get_by_index(int index)
 	list_for_each_entry(hp, &hvc_structs, next) {
 		spin_lock_irqsave(&hp->lock, flags);
 		if (hp->index == index) {
+<<<<<<< HEAD
 			kref_get(&hp->kref);
+=======
+			tty_port_get(&hp->port);
+>>>>>>> refs/remotes/origin/master
 			spin_unlock_irqrestore(&hp->lock, flags);
 			spin_unlock(&hvc_structs_lock);
 			return hp;
@@ -191,10 +199,14 @@ static struct tty_driver *hvc_console_device(struct console *c, int *index)
 
 static int __init hvc_console_setup(struct console *co, char *options)
 <<<<<<< HEAD
+<<<<<<< HEAD
 {
 =======
 {	
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+{	
+>>>>>>> refs/remotes/origin/master
 	if (co->index < 0 || co->index >= MAX_NR_HVC_CONSOLES)
 		return -ENODEV;
 
@@ -236,9 +248,15 @@ static int __init hvc_console_init(void)
 console_initcall(hvc_console_init);
 
 /* callback when the kboject ref count reaches zero. */
+<<<<<<< HEAD
 static void destroy_hvc_struct(struct kref *kref)
 {
 	struct hvc_struct *hp = container_of(kref, struct hvc_struct, kref);
+=======
+static void hvc_port_destruct(struct tty_port *port)
+{
+	struct hvc_struct *hp = container_of(port, struct hvc_struct, port);
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	spin_lock(&hvc_structs_lock);
@@ -252,6 +270,23 @@ static void destroy_hvc_struct(struct kref *kref)
 	kfree(hp);
 }
 
+<<<<<<< HEAD
+=======
+static void hvc_check_console(int index)
+{
+	/* Already enabled, bail out */
+	if (hvc_console.flags & CON_ENABLED)
+		return;
+
+ 	/* If this index is what the user requested, then register
+	 * now (setup won't fail at this point).  It's ok to just
+	 * call register again if previously .setup failed.
+	 */
+	if (index == hvc_console.index)
+		register_console(&hvc_console);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * hvc_instantiate() is an early console discovery method which locates
  * consoles * prior to the vio subsystem discovering them.  Hotplugged
@@ -271,7 +306,11 @@ int hvc_instantiate(uint32_t vtermno, int index, const struct hv_ops *ops)
 	/* make sure no no tty has been registered in this index */
 	hp = hvc_get_by_index(index);
 	if (hp) {
+<<<<<<< HEAD
 		kref_put(&hp->kref, destroy_hvc_struct);
+=======
+		tty_port_put(&hp->port);
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -282,12 +321,17 @@ int hvc_instantiate(uint32_t vtermno, int index, const struct hv_ops *ops)
 	if (last_hvc < index)
 		last_hvc = index;
 
+<<<<<<< HEAD
 	/* if this index is what the user requested, then register
 	 * now (setup won't fail at this point).  It's ok to just
 	 * call register again if previously .setup failed.
 	 */
 	if (index == hvc_console.index)
 		register_console(&hvc_console);
+=======
+	/* check if we need to re-register the kernel console */
+	hvc_check_console(index);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -306,12 +350,33 @@ static void hvc_unthrottle(struct tty_struct *tty)
 	hvc_kick();
 }
 
+<<<<<<< HEAD
+=======
+static int hvc_install(struct tty_driver *driver, struct tty_struct *tty)
+{
+	struct hvc_struct *hp;
+	int rc;
+
+	/* Auto increments kref reference if found. */
+	if (!(hp = hvc_get_by_index(tty->index)))
+		return -ENODEV;
+
+	tty->driver_data = hp;
+
+	rc = tty_port_install(&hp->port, driver, tty);
+	if (rc)
+		tty_port_put(&hp->port);
+	return rc;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The TTY interface won't be used until after the vio layer has exposed the vty
  * adapter to the kernel.
  */
 static int hvc_open(struct tty_struct *tty, struct file * filp)
 {
+<<<<<<< HEAD
 	struct hvc_struct *hp;
 	unsigned long flags;
 	int rc = 0;
@@ -334,6 +399,22 @@ static int hvc_open(struct tty_struct *tty, struct file * filp)
 	hp->tty = tty_kref_get(tty);
 
 	spin_unlock_irqrestore(&hp->lock, flags);
+=======
+	struct hvc_struct *hp = tty->driver_data;
+	unsigned long flags;
+	int rc = 0;
+
+	spin_lock_irqsave(&hp->port.lock, flags);
+	/* Check and then increment for fast path open. */
+	if (hp->port.count++ > 0) {
+		spin_unlock_irqrestore(&hp->port.lock, flags);
+		hvc_kick();
+		return 0;
+	} /* else count == 0 */
+	spin_unlock_irqrestore(&hp->port.lock, flags);
+
+	tty_port_tty_set(&hp->port, tty);
+>>>>>>> refs/remotes/origin/master
 
 	if (hp->ops->notifier_add)
 		rc = hp->ops->notifier_add(hp, hp->data);
@@ -345,6 +426,7 @@ static int hvc_open(struct tty_struct *tty, struct file * filp)
 	 * tty fields and return the kref reference.
 	 */
 	if (rc) {
+<<<<<<< HEAD
 		spin_lock_irqsave(&hp->lock, flags);
 		hp->tty = NULL;
 		spin_unlock_irqrestore(&hp->lock, flags);
@@ -353,6 +435,18 @@ static int hvc_open(struct tty_struct *tty, struct file * filp)
 		kref_put(&hp->kref, destroy_hvc_struct);
 		printk(KERN_ERR "hvc_open: request_irq failed with rc %d.\n", rc);
 	}
+=======
+		tty_port_tty_set(&hp->port, NULL);
+		tty->driver_data = NULL;
+		tty_port_put(&hp->port);
+		printk(KERN_ERR "hvc_open: request_irq failed with rc %d.\n", rc);
+	} else
+		/* We are ready... raise DTR/RTS */
+		if (C_BAUD(tty))
+			if (hp->ops->dtr_rts)
+				hp->ops->dtr_rts(hp, 1);
+
+>>>>>>> refs/remotes/origin/master
 	/* Force wakeup of the polling thread */
 	hvc_kick();
 
@@ -377,12 +471,25 @@ static void hvc_close(struct tty_struct *tty, struct file * filp)
 
 	hp = tty->driver_data;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&hp->lock, flags);
 
 	if (--hp->count == 0) {
 		/* We are done with the tty pointer now. */
 		hp->tty = NULL;
 		spin_unlock_irqrestore(&hp->lock, flags);
+=======
+	spin_lock_irqsave(&hp->port.lock, flags);
+
+	if (--hp->port.count == 0) {
+		spin_unlock_irqrestore(&hp->port.lock, flags);
+		/* We are done with the tty pointer now. */
+		tty_port_tty_set(&hp->port, NULL);
+
+		if (C_HUPCL(tty))
+			if (hp->ops->dtr_rts)
+				hp->ops->dtr_rts(hp, 0);
+>>>>>>> refs/remotes/origin/master
 
 		if (hp->ops->notifier_del)
 			hp->ops->notifier_del(hp, hp->data);
@@ -395,6 +502,7 @@ static void hvc_close(struct tty_struct *tty, struct file * filp)
 		 * there is no buffered data otherwise sleeps on a wait queue
 		 * waking periodically to check chars_in_buffer().
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		tty_wait_until_sent(tty, HVC_CLOSE_WAIT);
 =======
@@ -409,13 +517,32 @@ static void hvc_close(struct tty_struct *tty, struct file * filp)
 
 	tty_kref_put(tty);
 	kref_put(&hp->kref, destroy_hvc_struct);
+=======
+		tty_wait_until_sent_from_close(tty, HVC_CLOSE_WAIT);
+	} else {
+		if (hp->port.count < 0)
+			printk(KERN_ERR "hvc_close %X: oops, count is %d\n",
+				hp->vtermno, hp->port.count);
+		spin_unlock_irqrestore(&hp->port.lock, flags);
+	}
+}
+
+static void hvc_cleanup(struct tty_struct *tty)
+{
+	struct hvc_struct *hp = tty->driver_data;
+
+	tty_port_put(&hp->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void hvc_hangup(struct tty_struct *tty)
 {
 	struct hvc_struct *hp = tty->driver_data;
 	unsigned long flags;
+<<<<<<< HEAD
 	int temp_open_count;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!hp)
 		return;
@@ -423,13 +550,18 @@ static void hvc_hangup(struct tty_struct *tty)
 	/* cancel pending tty resize work */
 	cancel_work_sync(&hp->tty_resize);
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&hp->lock, flags);
+=======
+	spin_lock_irqsave(&hp->port.lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * The N_TTY line discipline has problems such that in a close vs
 	 * open->hangup case this can be called after the final close so prevent
 	 * that from happening for now.
 	 */
+<<<<<<< HEAD
 	if (hp->count <= 0) {
 		spin_unlock_irqrestore(&hp->lock, flags);
 		return;
@@ -450,6 +582,21 @@ static void hvc_hangup(struct tty_struct *tty)
 		tty_kref_put(tty);
 		kref_put(&hp->kref, destroy_hvc_struct);
 	}
+=======
+	if (hp->port.count <= 0) {
+		spin_unlock_irqrestore(&hp->port.lock, flags);
+		return;
+	}
+
+	hp->port.count = 0;
+	spin_unlock_irqrestore(&hp->port.lock, flags);
+	tty_port_tty_set(&hp->port, NULL);
+
+	hp->n_outbuf = 0;
+
+	if (hp->ops->notifier_hangup)
+		hp->ops->notifier_hangup(hp, hp->data);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -489,7 +636,12 @@ static int hvc_write(struct tty_struct *tty, const unsigned char *buf, int count
 	if (!hp)
 		return -EPIPE;
 
+<<<<<<< HEAD
 	if (hp->count <= 0)
+=======
+	/* FIXME what's this (unprotected) check for? */
+	if (hp->port.count <= 0)
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 
 	spin_lock_irqsave(&hp->lock, flags);
@@ -537,6 +689,7 @@ static void hvc_set_winsz(struct work_struct *work)
 
 	hp = container_of(work, struct hvc_struct, tty_resize);
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&hp->lock, hvc_flags);
 	if (!hp->tty) {
 		spin_unlock_irqrestore(&hp->lock, hvc_flags);
@@ -544,6 +697,14 @@ static void hvc_set_winsz(struct work_struct *work)
 	}
 	ws  = hp->ws;
 	tty = tty_kref_get(hp->tty);
+=======
+	tty = tty_port_tty_get(&hp->port);
+	if (!tty)
+		return;
+
+	spin_lock_irqsave(&hp->lock, hvc_flags);
+	ws = hp->ws;
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&hp->lock, hvc_flags);
 
 	tty_do_resize(tty, &ws);
@@ -560,7 +721,11 @@ static int hvc_write_room(struct tty_struct *tty)
 	struct hvc_struct *hp = tty->driver_data;
 
 	if (!hp)
+<<<<<<< HEAD
 		return -1;
+=======
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	return hp->outbuf_size - hp->n_outbuf;
 }
@@ -612,7 +777,11 @@ int hvc_poll(struct hvc_struct *hp)
 	}
 
 	/* No tty attached, just skip */
+<<<<<<< HEAD
 	tty = tty_kref_get(hp->tty);
+=======
+	tty = tty_port_tty_get(&hp->port);
+>>>>>>> refs/remotes/origin/master
 	if (tty == NULL)
 		goto bail;
 
@@ -628,7 +797,11 @@ int hvc_poll(struct hvc_struct *hp)
 
 	/* Read data if any */
 	for (;;) {
+<<<<<<< HEAD
 		int count = tty_buffer_request_room(tty, N_INBUF);
+=======
+		int count = tty_buffer_request_room(&hp->port, N_INBUF);
+>>>>>>> refs/remotes/origin/master
 
 		/* If flip is full, just reschedule a later read */
 		if (count == 0) {
@@ -671,7 +844,11 @@ int hvc_poll(struct hvc_struct *hp)
 				}
 			}
 #endif /* CONFIG_MAGIC_SYSRQ */
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, buf[i], 0);
+=======
+			tty_insert_flip_char(&hp->port, buf[i], 0);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		read_total += n;
@@ -690,10 +867,16 @@ int hvc_poll(struct hvc_struct *hp)
 		   a minimum for performance. */
 		timeout = MIN_TIMEOUT;
 
+<<<<<<< HEAD
 		tty_flip_buffer_push(tty);
 	}
 	if (tty)
 		tty_kref_put(tty);
+=======
+		tty_flip_buffer_push(&hp->port);
+	}
+	tty_kref_put(tty);
+>>>>>>> refs/remotes/origin/master
 
 	return poll_mask;
 }
@@ -760,7 +943,10 @@ static int khvcd(void *unused)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int hvc_tiocmget(struct tty_struct *tty)
 {
 	struct hvc_struct *hp = tty->driver_data;
@@ -781,7 +967,11 @@ static int hvc_tiocmset(struct tty_struct *tty,
 }
 
 #ifdef CONFIG_CONSOLE_POLL
+<<<<<<< HEAD
 int hvc_poll_init(struct tty_driver *driver, int line, char *options)
+=======
+static int hvc_poll_init(struct tty_driver *driver, int line, char *options)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -813,17 +1003,28 @@ static void hvc_poll_put_char(struct tty_driver *driver, int line, char ch)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static const struct tty_operations hvc_ops = {
 	.open = hvc_open,
 	.close = hvc_close,
+=======
+static const struct tty_operations hvc_ops = {
+	.install = hvc_install,
+	.open = hvc_open,
+	.close = hvc_close,
+	.cleanup = hvc_cleanup,
+>>>>>>> refs/remotes/origin/master
 	.write = hvc_write,
 	.hangup = hvc_hangup,
 	.unthrottle = hvc_unthrottle,
 	.write_room = hvc_write_room,
 	.chars_in_buffer = hvc_chars_in_buffer,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.tiocmget = hvc_tiocmget,
 	.tiocmset = hvc_tiocmset,
 #ifdef CONFIG_CONSOLE_POLL
@@ -831,7 +1032,14 @@ static const struct tty_operations hvc_ops = {
 	.poll_get_char = hvc_poll_get_char,
 	.poll_put_char = hvc_poll_put_char,
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+static const struct tty_port_operations hvc_port_ops = {
+	.destruct = hvc_port_destruct,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
@@ -859,7 +1067,12 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
 	hp->outbuf_size = outbuf_size;
 	hp->outbuf = &((char *)hp)[ALIGN(sizeof(*hp), sizeof(long))];
 
+<<<<<<< HEAD
 	kref_init(&hp->kref);
+=======
+	tty_port_init(&hp->port);
+	hp->port.ops = &hvc_port_ops;
+>>>>>>> refs/remotes/origin/master
 
 	INIT_WORK(&hp->tty_resize, hvc_set_winsz);
 	spin_lock_init(&hp->lock);
@@ -879,10 +1092,21 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
 		i = ++last_hvc;
 
 	hp->index = i;
+<<<<<<< HEAD
+=======
+	cons_ops[i] = ops;
+	vtermnos[i] = vtermno;
+>>>>>>> refs/remotes/origin/master
 
 	list_add_tail(&(hp->next), &hvc_structs);
 	spin_unlock(&hvc_structs_lock);
 
+<<<<<<< HEAD
+=======
+	/* check if we need to re-register the kernel console */
+	hvc_check_console(i);
+
+>>>>>>> refs/remotes/origin/master
 	return hp;
 }
 EXPORT_SYMBOL_GPL(hvc_alloc);
@@ -892,11 +1116,23 @@ int hvc_remove(struct hvc_struct *hp)
 	unsigned long flags;
 	struct tty_struct *tty;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&hp->lock, flags);
 	tty = tty_kref_get(hp->tty);
 
 	if (hp->index < MAX_NR_HVC_CONSOLES)
 		vtermnos[hp->index] = -1;
+=======
+	tty = tty_port_tty_get(&hp->port);
+
+	spin_lock_irqsave(&hp->lock, flags);
+	if (hp->index < MAX_NR_HVC_CONSOLES) {
+		console_lock();
+		vtermnos[hp->index] = -1;
+		cons_ops[hp->index] = NULL;
+		console_unlock();
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Don't whack hp->irq because tty_hangup() will need to free the irq. */
 
@@ -908,7 +1144,11 @@ int hvc_remove(struct hvc_struct *hp)
 	 * kref cause it to be removed, which will probably be the tty_vhangup
 	 * below.
 	 */
+<<<<<<< HEAD
 	kref_put(&hp->kref, destroy_hvc_struct);
+=======
+	tty_port_put(&hp->port);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * This function call will auto chain call hvc_hangup.
@@ -935,9 +1175,12 @@ static int hvc_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	drv->owner = THIS_MODULE;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	drv->driver_name = "hvc";
 	drv->name = "hvc";
 	drv->major = HVC_MAJOR;

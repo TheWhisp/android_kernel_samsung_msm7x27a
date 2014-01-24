@@ -23,9 +23,13 @@
 #include <linux/usb.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "usb.h"
 #include "transport.h"
@@ -53,7 +57,11 @@ static int option_rezero(struct us_data *us)
 	char *buffer;
 	int result;
 
+<<<<<<< HEAD
 	US_DEBUGP("Option MS: %s", "DEVICE MODE SWITCH\n");
+=======
+	usb_stor_dbg(us, "Option MS: %s\n", "DEVICE MODE SWITCH");
+>>>>>>> refs/remotes/origin/master
 
 	buffer = kzalloc(RESPONSE_LEN, GFP_KERNEL);
 	if (buffer == NULL)
@@ -98,7 +106,11 @@ static int option_inquiry(struct us_data *us)
 	char *buffer;
 	int result;
 
+<<<<<<< HEAD
 	US_DEBUGP("Option MS: %s", "device inquiry for vendor name\n");
+=======
+	usb_stor_dbg(us, "Option MS: %s\n", "device inquiry for vendor name");
+>>>>>>> refs/remotes/origin/master
 
 	buffer = kzalloc(0x24, GFP_KERNEL);
 	if (buffer == NULL)
@@ -141,13 +153,18 @@ int option_ms_init(struct us_data *us)
 {
 	int result;
 
+<<<<<<< HEAD
 	US_DEBUGP("Option MS: option_ms_init called\n");
+=======
+	usb_stor_dbg(us, "Option MS: %s\n", "option_ms_init called");
+>>>>>>> refs/remotes/origin/master
 
 	/* Additional test for vendor information via INQUIRY,
 	 * because some vendor/product IDs are ambiguous
 	 */
 	result = option_inquiry(us);
 	if (result != 0) {
+<<<<<<< HEAD
 		US_DEBUGP("Option MS: vendor is not Option or not determinable,"
 			  " no action taken\n");
 		return 0;
@@ -166,6 +183,27 @@ int option_ms_init(struct us_data *us)
 		/* Allow Mass Storage mode (keep CD-Rom) */
 		US_DEBUGP("Option MS: %s", "Allowing Mass Storage Mode if device"
 		          " requests it\n");
+=======
+		usb_stor_dbg(us, "Option MS: %s\n",
+			     "vendor is not Option or not determinable, no action taken");
+		return 0;
+	} else
+		usb_stor_dbg(us, "Option MS: %s\n",
+			     "this is a genuine Option device, proceeding");
+
+	/* Force Modem mode */
+	if (option_zero_cd == ZCD_FORCE_MODEM) {
+		usb_stor_dbg(us, "Option MS: %s\n", "Forcing Modem Mode");
+		result = option_rezero(us);
+		if (result != USB_STOR_XFER_GOOD)
+			usb_stor_dbg(us, "Option MS: %s\n",
+				     "Failed to switch to modem mode");
+		return -EIO;
+	} else if (option_zero_cd == ZCD_ALLOW_MS) {
+		/* Allow Mass Storage mode (keep CD-Rom) */
+		usb_stor_dbg(us, "Option MS: %s\n",
+			     "Allowing Mass Storage Mode if device requests it");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;

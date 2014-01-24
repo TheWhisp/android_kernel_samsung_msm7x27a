@@ -11,6 +11,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/wait.h>
+<<<<<<< HEAD
 #include "net_user.h"
 <<<<<<< HEAD
 #include "kern_constants.h"
@@ -21,6 +22,11 @@
 #include "os.h"
 #include "um_malloc.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net_user.h>
+#include <os.h>
+#include <um_malloc.h>
+>>>>>>> refs/remotes/origin/master
 
 int tap_open_common(void *dev, char *gate_addr)
 {
@@ -234,13 +240,19 @@ static void change(char *dev, char *what, unsigned char *addr,
 
 	pid = change_tramp(argv, output, output_len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pid < 0) return;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pid < 0) {
 		kfree(output);
 		return;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (output != NULL) {
 		printk("%s", output);

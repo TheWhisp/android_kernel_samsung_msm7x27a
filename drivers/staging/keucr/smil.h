@@ -45,7 +45,11 @@ Retry Counter Definition
 Hardware ECC Definition
 ***************************************************************************/
 #define HW_ECC_SUPPORTED    1	   /* Hardware ECC Supported */
+<<<<<<< HEAD
 /* No difinition for Software ECC */
+=======
+/* No definition for Software ECC */
+>>>>>>> refs/remotes/origin/master
 
 /***************************************************************************
 SmartMedia Command & Status Definition
@@ -168,7 +172,11 @@ SmartMedia Model & Attribute
 /***************************************************************************
 Struct Definition
 ***************************************************************************/
+<<<<<<< HEAD
 struct SSFDCTYPE {
+=======
+struct keucr_media_info {
+>>>>>>> refs/remotes/origin/master
 	BYTE Model;
 	BYTE Attribute;
 	BYTE MaxZones;
@@ -177,6 +185,7 @@ struct SSFDCTYPE {
 	WORD MaxLogBlocks;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 typedef struct SSFDCTYPE_T
 {
@@ -192,12 +201,16 @@ typedef struct SSFDCTYPE_T {
 } *SSFDCTYPE_T;
 
 struct ADDRESS {
+=======
+struct keucr_media_address {
+>>>>>>> refs/remotes/origin/master
 	BYTE Zone;	/* Zone Number */
 	BYTE Sector;	/* Sector(512byte) Number on Block */
 	WORD PhyBlock;	/* Physical Block Number on Zone */
 	WORD LogBlock;	/* Logical Block Number of Zone */
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 typedef struct ADDRESS_T
 {
@@ -211,23 +224,35 @@ typedef struct ADDRESS_T {
 } *ADDRESS_T;
 
 struct CIS_AREA {
+=======
+struct keucr_media_area {
+>>>>>>> refs/remotes/origin/master
 	BYTE Sector;	/* Sector(512byte) Number on Block */
 	WORD PhyBlock;	/* Physical Block Number on Zone 0 */
 };
 
+<<<<<<< HEAD
 
 extern BYTE IsSSFDCCompliance;
 extern BYTE IsXDCompliance;
 
 extern DWORD	ErrXDCode;
 extern DWORD	ErrCode;
+=======
+>>>>>>> refs/remotes/origin/master
 extern WORD	ReadBlock;
 extern WORD	WriteBlock;
 extern DWORD	MediaChange;
 
+<<<<<<< HEAD
 extern struct SSFDCTYPE  Ssfdc;
 extern struct ADDRESS    Media;
 extern struct CIS_AREA   CisArea;
+=======
+extern struct keucr_media_info    Ssfdc;
+extern struct keucr_media_address Media;
+extern struct keucr_media_area    CisArea;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * SMILMain.c

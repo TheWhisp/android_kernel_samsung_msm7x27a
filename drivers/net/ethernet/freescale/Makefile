@@ -3,12 +3,20 @@
 #
 
 obj-$(CONFIG_FEC) += fec.o
+<<<<<<< HEAD
+=======
+fec-objs :=fec_main.o fec_ptp.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_FEC_MPC52xx) += fec_mpc52xx.o
 ifeq ($(CONFIG_FEC_MPC52xx_MDIO),y)
 	obj-$(CONFIG_FEC_MPC52xx) += fec_mpc52xx_phy.o
 endif
 obj-$(CONFIG_FS_ENET) += fs_enet/
 obj-$(CONFIG_FSL_PQ_MDIO) += fsl_pq_mdio.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_FSL_XGMAC_MDIO) += xgmac_mdio.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_GIANFAR) += gianfar_driver.o
 obj-$(CONFIG_PTP_1588_CLOCK_GIANFAR) += gianfar_ptp.o
 gianfar_driver-objs := gianfar.o \

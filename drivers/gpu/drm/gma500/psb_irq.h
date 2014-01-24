@@ -21,8 +21,13 @@
  *
  **************************************************************************/
 
+<<<<<<< HEAD
 #ifndef _SYSIRQ_H_
 #define _SYSIRQ_H_
+=======
+#ifndef _PSB_IRQ_H_
+#define _PSB_IRQ_H_
+>>>>>>> refs/remotes/origin/master
 
 #include <drm/drmP.h>
 
@@ -44,4 +49,8 @@ u32  psb_get_vblank_counter(struct drm_device *dev, int pipe);
 
 int mdfld_enable_te(struct drm_device *dev, int pipe);
 void mdfld_disable_te(struct drm_device *dev, int pipe);
+<<<<<<< HEAD
 #endif /* _SYSIRQ_H_ */
+=======
+#endif /* _PSB_IRQ_H_ */
+>>>>>>> refs/remotes/origin/master

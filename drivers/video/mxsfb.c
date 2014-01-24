@@ -40,15 +40,28 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/kernel.h>
+=======
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/clk.h>
 #include <linux/dma-mapping.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <mach/mxsfb.h>
+=======
+#include <linux/fb.h>
+#include <linux/regulator/consumer.h>
+#include <video/of_display_timing.h>
+#include <video/videomode.h>
+>>>>>>> refs/remotes/origin/master
 
 #define REG_SET	4
 #define REG_CLR	8
@@ -107,7 +120,11 @@
 #define VDCTRL0_ENABLE_PRESENT		(1 << 28)
 #define VDCTRL0_VSYNC_ACT_HIGH		(1 << 27)
 #define VDCTRL0_HSYNC_ACT_HIGH		(1 << 26)
+<<<<<<< HEAD
 #define VDCTRL0_DOTCLK_ACT_FAILING	(1 << 25)
+=======
+#define VDCTRL0_DOTCLK_ACT_FALLING	(1 << 25)
+>>>>>>> refs/remotes/origin/master
 #define VDCTRL0_ENABLE_ACT_HIGH		(1 << 24)
 #define VDCTRL0_VSYNC_PERIOD_UNIT	(1 << 21)
 #define VDCTRL0_VSYNC_PULSE_WIDTH_UNIT	(1 << 20)
@@ -142,6 +159,17 @@
 #define BLUE 2
 #define TRANSP 3
 
+<<<<<<< HEAD
+=======
+#define STMLCDIF_8BIT  1 /** pixel data bus to the display is of 8 bit width */
+#define STMLCDIF_16BIT 0 /** pixel data bus to the display is of 16 bit width */
+#define STMLCDIF_18BIT 2 /** pixel data bus to the display is of 18 bit width */
+#define STMLCDIF_24BIT 3 /** pixel data bus to the display is of 24 bit width */
+
+#define MXSFB_SYNC_DATA_ENABLE_HIGH_ACT	(1 << 6)
+#define MXSFB_SYNC_DOTCLK_FALLING_ACT	(1 << 7) /* negtive edge sampling */
+
+>>>>>>> refs/remotes/origin/master
 enum mxsfb_devtype {
 	MXSFB_V3,
 	MXSFB_V4,
@@ -168,7 +196,12 @@ struct mxsfb_info {
 	unsigned ld_intf_width;
 	unsigned dotclk_delay;
 	const struct mxsfb_devdata *devdata;
+<<<<<<< HEAD
 	int mapped;
+=======
+	u32 sync;
+	struct regulator *reg_lcd;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define mxsfb_is_v3(host) (host->devdata->ipversion == 3)
@@ -228,6 +261,7 @@ static const struct fb_bitfield def_rgb565[] = {
 	}
 };
 
+<<<<<<< HEAD
 static const struct fb_bitfield def_rgb666[] = {
 	[RED] = {
 		.offset = 16,
@@ -246,6 +280,8 @@ static const struct fb_bitfield def_rgb666[] = {
 	}
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct fb_bitfield def_rgb888[] = {
 	[RED] = {
 		.offset = 16,
@@ -298,9 +334,12 @@ static int mxsfb_check_var(struct fb_var_screeninfo *var,
 			break;
 		case STMLCDIF_16BIT:
 		case STMLCDIF_18BIT:
+<<<<<<< HEAD
 			/* 24 bit to 18 bit mapping */
 			rgb = def_rgb666;
 			break;
+=======
+>>>>>>> refs/remotes/origin/master
 		case STMLCDIF_24BIT:
 			/* real 24 bit */
 			rgb = def_rgb888;
@@ -328,6 +367,7 @@ static void mxsfb_enable_controller(struct fb_info *fb_info)
 {
 	struct mxsfb_info *host = to_imxfb_host(fb_info);
 	u32 reg;
+<<<<<<< HEAD
 
 	dev_dbg(&host->pdev->dev, "%s\n", __func__);
 
@@ -336,6 +376,22 @@ static void mxsfb_enable_controller(struct fb_info *fb_info)
 =======
 	clk_prepare_enable(host->clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+
+	dev_dbg(&host->pdev->dev, "%s\n", __func__);
+
+	if (host->reg_lcd) {
+		ret = regulator_enable(host->reg_lcd);
+		if (ret) {
+			dev_err(&host->pdev->dev,
+				"lcd regulator enable failed:	%d\n", ret);
+			return;
+		}
+	}
+
+	clk_prepare_enable(host->clk);
+>>>>>>> refs/remotes/origin/master
 	clk_set_rate(host->clk, PICOS2KHZ(fb_info->var.pixclock) * 1000U);
 
 	/* if it was disabled, re-enable the mode again */
@@ -356,6 +412,10 @@ static void mxsfb_disable_controller(struct fb_info *fb_info)
 	struct mxsfb_info *host = to_imxfb_host(fb_info);
 	unsigned loop;
 	u32 reg;
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(&host->pdev->dev, "%s\n", __func__);
 
@@ -377,12 +437,25 @@ static void mxsfb_disable_controller(struct fb_info *fb_info)
 	writel(reg & ~VDCTRL4_SYNC_SIGNALS_ON, host->base + LCDC_VDCTRL4);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(host->clk);
 =======
 	clk_disable_unprepare(host->clk);
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	host->enabled = 0;
+=======
+	clk_disable_unprepare(host->clk);
+
+	host->enabled = 0;
+
+	if (host->reg_lcd) {
+		ret = regulator_disable(host->reg_lcd);
+		if (ret)
+			dev_err(&host->pdev->dev,
+				"lcd regulator disable failed: %d\n", ret);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mxsfb_set_par(struct fb_info *fb_info)
@@ -432,11 +505,14 @@ static int mxsfb_set_par(struct fb_info *fb_info)
 			return -EINVAL;
 		case STMLCDIF_16BIT:
 		case STMLCDIF_18BIT:
+<<<<<<< HEAD
 			/* 24 bit to 18 bit mapping */
 			ctrl |= CTRL_DF24; /* ignore the upper 2 bits in
 					    *  each colour component
 					    */
 			break;
+=======
+>>>>>>> refs/remotes/origin/master
 		case STMLCDIF_24BIT:
 			/* real 24 bit */
 			break;
@@ -464,10 +540,17 @@ static int mxsfb_set_par(struct fb_info *fb_info)
 		vdctrl0 |= VDCTRL0_HSYNC_ACT_HIGH;
 	if (fb_info->var.sync & FB_SYNC_VERT_HIGH_ACT)
 		vdctrl0 |= VDCTRL0_VSYNC_ACT_HIGH;
+<<<<<<< HEAD
 	if (fb_info->var.sync & FB_SYNC_DATA_ENABLE_HIGH_ACT)
 		vdctrl0 |= VDCTRL0_ENABLE_ACT_HIGH;
 	if (fb_info->var.sync & FB_SYNC_DOTCLK_FAILING_ACT)
 		vdctrl0 |= VDCTRL0_DOTCLK_ACT_FAILING;
+=======
+	if (host->sync & MXSFB_SYNC_DATA_ENABLE_HIGH_ACT)
+		vdctrl0 |= VDCTRL0_ENABLE_ACT_HIGH;
+	if (host->sync & MXSFB_SYNC_DOTCLK_FALLING_ACT)
+		vdctrl0 |= VDCTRL0_DOTCLK_ACT_FALLING;
+>>>>>>> refs/remotes/origin/master
 
 	writel(vdctrl0, host->base + LCDC_VDCTRL0);
 
@@ -595,7 +678,11 @@ static struct fb_ops mxsfb_ops = {
 	.fb_imageblit = cfb_imageblit,
 };
 
+<<<<<<< HEAD
 static int __devinit mxsfb_restore_mode(struct mxsfb_info *host)
+=======
+static int mxsfb_restore_mode(struct mxsfb_info *host)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *fb_info = &host->fb_info;
 	unsigned line_count;
@@ -626,6 +713,10 @@ static int __devinit mxsfb_restore_mode(struct mxsfb_info *host)
 		break;
 	case 3:
 		bits_per_pixel = 32;
+<<<<<<< HEAD
+=======
+		break;
+>>>>>>> refs/remotes/origin/master
 	case 1:
 	default:
 		return -EINVAL;
@@ -681,15 +772,20 @@ static int __devinit mxsfb_restore_mode(struct mxsfb_info *host)
 	fb_info->fix.ypanstep = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_enable(host->clk);
 =======
 	clk_prepare_enable(host->clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_prepare_enable(host->clk);
+>>>>>>> refs/remotes/origin/master
 	host->enabled = 1;
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit mxsfb_init_fbinfo(struct mxsfb_info *host)
 {
 	struct fb_info *fb_info = &host->fb_info;
@@ -698,6 +794,107 @@ static int __devinit mxsfb_init_fbinfo(struct mxsfb_info *host)
 	dma_addr_t fb_phys;
 	void *fb_virt;
 	unsigned fb_size = pdata->fb_size;
+=======
+static int mxsfb_init_fbinfo_dt(struct mxsfb_info *host)
+{
+	struct fb_info *fb_info = &host->fb_info;
+	struct fb_var_screeninfo *var = &fb_info->var;
+	struct device *dev = &host->pdev->dev;
+	struct device_node *np = host->pdev->dev.of_node;
+	struct device_node *display_np;
+	struct device_node *timings_np;
+	struct display_timings *timings;
+	u32 width;
+	int i;
+	int ret = 0;
+
+	display_np = of_parse_phandle(np, "display", 0);
+	if (!display_np) {
+		dev_err(dev, "failed to find display phandle\n");
+		return -ENOENT;
+	}
+
+	ret = of_property_read_u32(display_np, "bus-width", &width);
+	if (ret < 0) {
+		dev_err(dev, "failed to get property bus-width\n");
+		goto put_display_node;
+	}
+
+	switch (width) {
+	case 8:
+		host->ld_intf_width = STMLCDIF_8BIT;
+		break;
+	case 16:
+		host->ld_intf_width = STMLCDIF_16BIT;
+		break;
+	case 18:
+		host->ld_intf_width = STMLCDIF_18BIT;
+		break;
+	case 24:
+		host->ld_intf_width = STMLCDIF_24BIT;
+		break;
+	default:
+		dev_err(dev, "invalid bus-width value\n");
+		ret = -EINVAL;
+		goto put_display_node;
+	}
+
+	ret = of_property_read_u32(display_np, "bits-per-pixel",
+				   &var->bits_per_pixel);
+	if (ret < 0) {
+		dev_err(dev, "failed to get property bits-per-pixel\n");
+		goto put_display_node;
+	}
+
+	timings = of_get_display_timings(display_np);
+	if (!timings) {
+		dev_err(dev, "failed to get display timings\n");
+		ret = -ENOENT;
+		goto put_display_node;
+	}
+
+	timings_np = of_find_node_by_name(display_np,
+					  "display-timings");
+	if (!timings_np) {
+		dev_err(dev, "failed to find display-timings node\n");
+		ret = -ENOENT;
+		goto put_display_node;
+	}
+
+	for (i = 0; i < of_get_child_count(timings_np); i++) {
+		struct videomode vm;
+		struct fb_videomode fb_vm;
+
+		ret = videomode_from_timings(timings, &vm, i);
+		if (ret < 0)
+			goto put_timings_node;
+		ret = fb_videomode_from_videomode(&vm, &fb_vm);
+		if (ret < 0)
+			goto put_timings_node;
+
+		if (vm.flags & DISPLAY_FLAGS_DE_HIGH)
+			host->sync |= MXSFB_SYNC_DATA_ENABLE_HIGH_ACT;
+		if (vm.flags & DISPLAY_FLAGS_PIXDATA_NEGEDGE)
+			host->sync |= MXSFB_SYNC_DOTCLK_FALLING_ACT;
+		fb_add_videomode(&fb_vm, &fb_info->modelist);
+	}
+
+put_timings_node:
+	of_node_put(timings_np);
+put_display_node:
+	of_node_put(display_np);
+	return ret;
+}
+
+static int mxsfb_init_fbinfo(struct mxsfb_info *host)
+{
+	struct fb_info *fb_info = &host->fb_info;
+	struct fb_var_screeninfo *var = &fb_info->var;
+	dma_addr_t fb_phys;
+	void *fb_virt;
+	unsigned fb_size;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	fb_info->fbops = &mxsfb_ops;
 	fb_info->flags = FBINFO_FLAG_DEFAULT | FBINFO_READS_FAST;
@@ -707,12 +904,20 @@ static int __devinit mxsfb_init_fbinfo(struct mxsfb_info *host)
 	fb_info->fix.visual = FB_VISUAL_TRUECOLOR,
 	fb_info->fix.accel = FB_ACCEL_NONE;
 
+<<<<<<< HEAD
 	var->bits_per_pixel = pdata->default_bpp ? pdata->default_bpp : 16;
+=======
+	ret = mxsfb_init_fbinfo_dt(host);
+	if (ret)
+		return ret;
+
+>>>>>>> refs/remotes/origin/master
 	var->nonstd = 0;
 	var->activate = FB_ACTIVATE_NOW;
 	var->accel_flags = 0;
 	var->vmode = FB_VMODE_NONINTERLACED;
 
+<<<<<<< HEAD
 	host->dotclk_delay = pdata->dotclk_delay;
 	host->ld_intf_width = pdata->ld_intf_width;
 
@@ -741,6 +946,15 @@ static int __devinit mxsfb_init_fbinfo(struct mxsfb_info *host)
 
 		fb_phys = virt_to_phys(fb_virt);
 	}
+=======
+	/* Memory allocation for framebuffer */
+	fb_size = SZ_2M;
+	fb_virt = alloc_pages_exact(fb_size, GFP_DMA);
+	if (!fb_virt)
+		return -ENOMEM;
+
+	fb_phys = virt_to_phys(fb_virt);
+>>>>>>> refs/remotes/origin/master
 
 	fb_info->fix.smem_start = fb_phys;
 	fb_info->screen_base = fb_virt;
@@ -752,6 +966,7 @@ static int __devinit mxsfb_init_fbinfo(struct mxsfb_info *host)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit mxsfb_free_videomem(struct mxsfb_info *host)
 {
 	struct fb_info *fb_info = &host->fb_info;
@@ -768,10 +983,44 @@ static void __devexit mxsfb_free_videomem(struct mxsfb_info *host)
 static int __devinit mxsfb_probe(struct platform_device *pdev)
 {
 	struct mxsfb_platform_data *pdata = pdev->dev.platform_data;
+=======
+static void mxsfb_free_videomem(struct mxsfb_info *host)
+{
+	struct fb_info *fb_info = &host->fb_info;
+
+	free_pages_exact(fb_info->screen_base, fb_info->fix.smem_len);
+}
+
+static struct platform_device_id mxsfb_devtype[] = {
+	{
+		.name = "imx23-fb",
+		.driver_data = MXSFB_V3,
+	}, {
+		.name = "imx28-fb",
+		.driver_data = MXSFB_V4,
+	}, {
+		/* sentinel */
+	}
+};
+MODULE_DEVICE_TABLE(platform, mxsfb_devtype);
+
+static const struct of_device_id mxsfb_dt_ids[] = {
+	{ .compatible = "fsl,imx23-lcdif", .data = &mxsfb_devtype[0], },
+	{ .compatible = "fsl,imx28-lcdif", .data = &mxsfb_devtype[1], },
+	{ /* sentinel */ }
+};
+MODULE_DEVICE_TABLE(of, mxsfb_dt_ids);
+
+static int mxsfb_probe(struct platform_device *pdev)
+{
+	const struct of_device_id *of_id =
+			of_match_device(mxsfb_dt_ids, &pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct resource *res;
 	struct mxsfb_info *host;
 	struct fb_info *fb_info;
 	struct fb_modelist *modelist;
+<<<<<<< HEAD
 	int i, ret;
 
 	if (!pdata) {
@@ -787,21 +1036,39 @@ static int __devinit mxsfb_probe(struct platform_device *pdev)
 
 	if (!request_mem_region(res->start, resource_size(res), pdev->name))
 		return -EBUSY;
+=======
+	int ret;
+
+	if (of_id)
+		pdev->id_entry = of_id->data;
+>>>>>>> refs/remotes/origin/master
 
 	fb_info = framebuffer_alloc(sizeof(struct mxsfb_info), &pdev->dev);
 	if (!fb_info) {
 		dev_err(&pdev->dev, "Failed to allocate fbdev\n");
+<<<<<<< HEAD
 		ret = -ENOMEM;
 		goto error_alloc_info;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	host = to_imxfb_host(fb_info);
 
+<<<<<<< HEAD
 	host->base = ioremap(res->start, resource_size(res));
 	if (!host->base) {
 		dev_err(&pdev->dev, "ioremap failed\n");
 		ret = -ENOMEM;
 		goto error_ioremap;
+=======
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	host->base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(host->base)) {
+		ret = PTR_ERR(host->base);
+		goto fb_release;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	host->pdev = pdev;
@@ -809,6 +1076,7 @@ static int __devinit mxsfb_probe(struct platform_device *pdev)
 
 	host->devdata = &mxsfb_devdata[pdev->id_entry->driver_data];
 
+<<<<<<< HEAD
 	host->clk = clk_get(&host->pdev->dev, NULL);
 	if (IS_ERR(host->clk)) {
 		ret = PTR_ERR(host->clk);
@@ -819,16 +1087,37 @@ static int __devinit mxsfb_probe(struct platform_device *pdev)
 	if (!fb_info->pseudo_palette) {
 		ret = -ENOMEM;
 		goto error_pseudo_pallette;
+=======
+	host->clk = devm_clk_get(&host->pdev->dev, NULL);
+	if (IS_ERR(host->clk)) {
+		ret = PTR_ERR(host->clk);
+		goto fb_release;
+	}
+
+	host->reg_lcd = devm_regulator_get(&pdev->dev, "lcd");
+	if (IS_ERR(host->reg_lcd))
+		host->reg_lcd = NULL;
+
+	fb_info->pseudo_palette = devm_kzalloc(&pdev->dev, sizeof(u32) * 16,
+					       GFP_KERNEL);
+	if (!fb_info->pseudo_palette) {
+		ret = -ENOMEM;
+		goto fb_release;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	INIT_LIST_HEAD(&fb_info->modelist);
 
 	ret = mxsfb_init_fbinfo(host);
 	if (ret != 0)
+<<<<<<< HEAD
 		goto error_init_fb;
 
 	for (i = 0; i < pdata->mode_count; i++)
 		fb_add_videomode(&pdata->mode_list[i], &fb_info->modelist);
+=======
+		goto fb_release;
+>>>>>>> refs/remotes/origin/master
 
 	modelist = list_first_entry(&fb_info->modelist,
 			struct fb_modelist, list);
@@ -842,7 +1131,11 @@ static int __devinit mxsfb_probe(struct platform_device *pdev)
 	ret = register_framebuffer(fb_info);
 	if (ret != 0) {
 		dev_err(&pdev->dev,"Failed to register framebuffer\n");
+<<<<<<< HEAD
 		goto error_register;
+=======
+		goto fb_destroy;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!host->enabled) {
@@ -855,6 +1148,7 @@ static int __devinit mxsfb_probe(struct platform_device *pdev)
 
 	return 0;
 
+<<<<<<< HEAD
 error_register:
 	if (host->enabled)
 <<<<<<< HEAD
@@ -873,20 +1167,36 @@ error_ioremap:
 	framebuffer_release(fb_info);
 error_alloc_info:
 	release_mem_region(res->start, resource_size(res));
+=======
+fb_destroy:
+	if (host->enabled)
+		clk_disable_unprepare(host->clk);
+	fb_destroy_modelist(&fb_info->modelist);
+fb_release:
+	framebuffer_release(fb_info);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit mxsfb_remove(struct platform_device *pdev)
 {
 	struct fb_info *fb_info = platform_get_drvdata(pdev);
 	struct mxsfb_info *host = to_imxfb_host(fb_info);
 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+=======
+static int mxsfb_remove(struct platform_device *pdev)
+{
+	struct fb_info *fb_info = platform_get_drvdata(pdev);
+	struct mxsfb_info *host = to_imxfb_host(fb_info);
+>>>>>>> refs/remotes/origin/master
 
 	if (host->enabled)
 		mxsfb_disable_controller(fb_info);
 
 	unregister_framebuffer(fb_info);
+<<<<<<< HEAD
 	kfree(fb_info->pseudo_palette);
 	mxsfb_free_videomem(host);
 	iounmap(host->base);
@@ -896,10 +1206,16 @@ static int __devexit mxsfb_remove(struct platform_device *pdev)
 	release_mem_region(res->start, resource_size(res));
 
 	platform_set_drvdata(pdev, NULL);
+=======
+	mxsfb_free_videomem(host);
+
+	framebuffer_release(fb_info);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct platform_device_id mxsfb_devtype[] = {
 	{
 		.name = "imx23-fb",
@@ -938,6 +1254,32 @@ module_exit(mxsfb_exit);
 =======
 module_platform_driver(mxsfb_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void mxsfb_shutdown(struct platform_device *pdev)
+{
+	struct fb_info *fb_info = platform_get_drvdata(pdev);
+	struct mxsfb_info *host = to_imxfb_host(fb_info);
+
+	/*
+	 * Force stop the LCD controller as keeping it running during reboot
+	 * might interfere with the BootROM's boot mode pads sampling.
+	 */
+	writel(CTRL_RUN, host->base + LCDC_CTRL + REG_CLR);
+}
+
+static struct platform_driver mxsfb_driver = {
+	.probe = mxsfb_probe,
+	.remove = mxsfb_remove,
+	.shutdown = mxsfb_shutdown,
+	.id_table = mxsfb_devtype,
+	.driver = {
+		   .name = DRIVER_NAME,
+		   .of_match_table = mxsfb_dt_ids,
+	},
+};
+
+module_platform_driver(mxsfb_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Freescale mxs framebuffer driver");
 MODULE_AUTHOR("Sascha Hauer, Pengutronix");

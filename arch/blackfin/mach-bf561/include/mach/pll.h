@@ -17,9 +17,13 @@
 
 #define SUPPLE_0_WAKEUP ((IRQ_SUPPLE_0 - (IRQ_CORETMR + 1)) % 32)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SUPPLE_1_WAKEUP ((IRQ_SUPPLE_1 - (IRQ_CORETMR + 1)) % 32)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SUPPLE_1_WAKEUP ((IRQ_SUPPLE_1 - (IRQ_CORETMR + 1)) % 32)
+>>>>>>> refs/remotes/origin/master
 
 static inline void
 bfin_iwr_restore(unsigned long iwr0, unsigned long iwr1, unsigned long iwr2)
@@ -47,11 +51,16 @@ static inline void
 bfin_iwr_set_sup0(unsigned long *iwr0, unsigned long *iwr1, unsigned long *iwr2)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfin_iwr_save(0, IWR_ENABLE(SUPPLE_0_WAKEUP), 0, iwr0, iwr1, iwr2);
 =======
 	bfin_iwr_save(0, IWR_ENABLE(SUPPLE_0_WAKEUP) |
 			IWR_ENABLE(SUPPLE_1_WAKEUP), 0, iwr0, iwr1, iwr2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfin_iwr_save(0, IWR_ENABLE(SUPPLE_0_WAKEUP) |
+			IWR_ENABLE(SUPPLE_1_WAKEUP), 0, iwr0, iwr1, iwr2);
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif

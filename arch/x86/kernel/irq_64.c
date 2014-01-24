@@ -27,10 +27,15 @@ DEFINE_PER_CPU(struct pt_regs *, irq_regs);
 EXPORT_PER_CPU_SYMBOL(irq_regs);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 int sysctl_panic_on_stackoverflow;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int sysctl_panic_on_stackoverflow;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Probabilistic stack overflow check:
  *
@@ -42,6 +47,7 @@ static inline void stack_overflow_check(struct pt_regs *regs)
 {
 #ifdef CONFIG_DEBUG_STACKOVERFLOW
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 curbase = (u64)task_stack_page(current);
 
 	WARN_ONCE(regs->sp >= curbase &&
@@ -52,6 +58,8 @@ static inline void stack_overflow_check(struct pt_regs *regs)
 		  "do_IRQ: %s near stack overflow (cur:%Lx,sp:%lx)\n",
 			current->comm, curbase, regs->sp);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define STACK_TOP_MARGIN	128
 	struct orig_ist *oist;
 	u64 irq_stack_top, irq_stack_bottom;
@@ -85,7 +93,10 @@ static inline void stack_overflow_check(struct pt_regs *regs)
 
 	if (sysctl_panic_on_stackoverflow)
 		panic("low stack detected by irq handler - check messages\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
@@ -102,6 +113,7 @@ bool handle_irq(unsigned irq, struct pt_regs *regs)
 	generic_handle_irq_desc(irq, desc);
 	return true;
 }
+<<<<<<< HEAD
 
 
 extern void call_softirq(void);
@@ -123,3 +135,5 @@ asmlinkage void do_softirq(void)
 	}
 	local_irq_restore(flags);
 }
+=======
+>>>>>>> refs/remotes/origin/master

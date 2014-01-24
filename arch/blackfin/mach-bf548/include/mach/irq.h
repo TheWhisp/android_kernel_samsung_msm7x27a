@@ -433,16 +433,24 @@
 #include <linux/types.h>
 
 /*
+<<<<<<< HEAD
  * bfin pint registers layout
+=======
+ * gpio pint registers layout
+>>>>>>> refs/remotes/origin/master
  */
 struct bfin_pint_regs {
 	u32 mask_set;
 	u32 mask_clear;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 irq;
 =======
 	u32 request;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 request;
+>>>>>>> refs/remotes/origin/master
 	u32 assign;
 	u32 edge_set;
 	u32 edge_clear;

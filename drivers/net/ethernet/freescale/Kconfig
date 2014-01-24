@@ -26,6 +26,10 @@ config FEC
 		   ARCH_MXC || SOC_IMX28)
 	default ARCH_MXC || SOC_IMX28 if ARM
 	select PHYLIB
+<<<<<<< HEAD
+=======
+	select PTP_1588_CLOCK
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Say Y here if you want to use the built-in 10/100 Fast ethernet
 	  controller on some Motorola ColdFire and Freescale i.MX processors.
@@ -62,6 +66,16 @@ config FSL_PQ_MDIO
 	---help---
 	  This driver supports the MDIO bus used by the gianfar and UCC drivers.
 
+<<<<<<< HEAD
+=======
+config FSL_XGMAC_MDIO
+	tristate "Freescale XGMAC MDIO"
+	depends on FSL_SOC
+	select PHYLIB
+	---help---
+	  This driver supports the MDIO bus on the Fman 10G Ethernet MACs.
+
+>>>>>>> refs/remotes/origin/master
 config UCC_GETH
 	tristate "Freescale QE Gigabit Ethernet"
 	depends on QUICC_ENGINE

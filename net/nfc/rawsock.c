@@ -95,6 +95,15 @@ static int rawsock_connect(struct socket *sock, struct sockaddr *_addr,
 		goto error;
 	}
 
+<<<<<<< HEAD
+=======
+	if (addr->target_idx > dev->target_next_idx - 1 ||
+	    addr->target_idx < dev->target_next_idx - dev->n_targets) {
+		rc = -EINVAL;
+		goto error;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	rc = nfc_activate_target(dev, addr->target_idx, addr->nfc_protocol);
 	if (rc)
 		goto put_dev;
@@ -136,11 +145,19 @@ static void rawsock_data_exchange_complete(void *context, struct sk_buff *skb,
 
 	err = rawsock_add_header(skb);
 	if (err)
+<<<<<<< HEAD
 		goto error;
 
 	err = sock_queue_rcv_skb(sk, skb);
 	if (err)
 		goto error;
+=======
+		goto error_skb;
+
+	err = sock_queue_rcv_skb(sk, skb);
+	if (err)
+		goto error_skb;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_bh(&sk->sk_write_queue.lock);
 	if (!skb_queue_empty(&sk->sk_write_queue))
@@ -152,6 +169,12 @@ static void rawsock_data_exchange_complete(void *context, struct sk_buff *skb,
 	sock_put(sk);
 	return;
 
+<<<<<<< HEAD
+=======
+error_skb:
+	kfree_skb(skb);
+
+>>>>>>> refs/remotes/origin/master
 error:
 	rawsock_report_error(sk, err);
 	sock_put(sk);
@@ -235,8 +258,11 @@ static int rawsock_recvmsg(struct kiocb *iocb, struct socket *sock,
 	if (!skb)
 		return rc;
 
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	copied = skb->len;
 	if (len < copied) {
 		msg->msg_flags |= MSG_TRUNC;
@@ -250,7 +276,10 @@ static int rawsock_recvmsg(struct kiocb *iocb, struct socket *sock,
 	return rc ? : copied;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct proto_ops rawsock_ops = {
 	.family         = PF_NFC,
 	.owner          = THIS_MODULE,

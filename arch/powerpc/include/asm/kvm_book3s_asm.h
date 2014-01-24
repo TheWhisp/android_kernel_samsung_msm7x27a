@@ -20,6 +20,14 @@
 #ifndef __ASM_KVM_BOOK3S_ASM_H__
 #define __ASM_KVM_BOOK3S_ASM_H__
 
+<<<<<<< HEAD
+=======
+/* XICS ICP register offsets */
+#define XICS_XIRR		4
+#define XICS_MFRR		0xc
+#define XICS_IPI		2	/* interrupt source # for IPIs */
+
+>>>>>>> refs/remotes/origin/master
 #ifdef __ASSEMBLY__
 
 #ifdef CONFIG_KVM_BOOK3S_HANDLER
@@ -61,7 +69,10 @@ kvmppc_resume_\intno:
 #else  /*__ASSEMBLY__ */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This struct goes in the PACA on 64-bit processors.  It is used
  * to store host state that needs to be saved when we enter a guest
@@ -76,14 +87,29 @@ struct kvmppc_host_state {
 	ulong vmhandler;
 	ulong scratch0;
 	ulong scratch1;
+<<<<<<< HEAD
+=======
+	ulong scratch2;
+>>>>>>> refs/remotes/origin/master
 	u8 in_guest;
 	u8 restore_hid5;
 	u8 napping;
 
+<<<<<<< HEAD
 #ifdef CONFIG_KVM_BOOK3S_64_HV
 	struct kvm_vcpu *kvm_vcpu;
 	struct kvmppc_vcore *kvm_vcore;
 	unsigned long xics_phys;
+=======
+#ifdef CONFIG_KVM_BOOK3S_HV_POSSIBLE
+	u8 hwthread_req;
+	u8 hwthread_state;
+	u8 host_ipi;
+	struct kvm_vcpu *kvm_vcpu;
+	struct kvmppc_vcore *kvm_vcore;
+	unsigned long xics_phys;
+	u32 saved_xirr;
+>>>>>>> refs/remotes/origin/master
 	u64 dabr;
 	u64 host_mmcr[3];
 	u32 host_pmc[8];
@@ -92,6 +118,7 @@ struct kvmppc_host_state {
 	u64 host_dscr;
 	u64 dec_expires;
 #endif
+<<<<<<< HEAD
 };
 
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -123,11 +150,38 @@ struct kvmppc_book3s_shadow_vcpu {
 =======
 #ifdef CONFIG_PPC_BOOK3S_32
 	u32     sr[16];			/* Guest SRs */
+=======
+#ifdef CONFIG_PPC_BOOK3S_64
+	u64 cfar;
+	u64 ppr;
+#endif
+};
+
+struct kvmppc_book3s_shadow_vcpu {
+	bool in_use;
+	ulong gpr[14];
+	u32 cr;
+	u32 xer;
+	ulong ctr;
+	ulong lr;
+	ulong pc;
+
+	ulong shadow_srr1;
+	ulong fault_dar;
+	u32 fault_dsisr;
+	u32 last_inst;
+
+#ifdef CONFIG_PPC_BOOK3S_32
+	u32     sr[16];			/* Guest SRs */
+>>>>>>> refs/remotes/origin/master
 
 	struct kvmppc_host_state hstate;
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC_BOOK3S_64
 	u8 slb_max;			/* highest used guest slb entry */
 	struct  {
@@ -139,4 +193,12 @@ struct kvmppc_book3s_shadow_vcpu {
 
 #endif /*__ASSEMBLY__ */
 
+<<<<<<< HEAD
+=======
+/* Values for kvm_state */
+#define KVM_HWTHREAD_IN_KERNEL	0
+#define KVM_HWTHREAD_IN_NAP	1
+#define KVM_HWTHREAD_IN_KVM	2
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_KVM_BOOK3S_ASM_H__ */

@@ -31,9 +31,16 @@
 
 #include <mach/regs-gpio.h>
 #include <mach/regs-clock.h>
+<<<<<<< HEAD
 #include <mach/regs-mem.h>
 #include <plat/regs-serial.h>
 
+=======
+#include <plat/regs-serial.h>
+
+#include "regs-mem.h"
+
+>>>>>>> refs/remotes/origin/master
 	/* s3c2410_cpu_suspend
 	 *
 	 * put the cpu into sleep mode

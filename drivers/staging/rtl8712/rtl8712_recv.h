@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
@@ -25,7 +28,10 @@
  * Larry Finger <Larry.Finger@lwfinger.net>
  *
  ******************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef _RTL8712_RECV_H_
 #define _RTL8712_RECV_H_
 
@@ -33,22 +39,32 @@
 #include "drv_types.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define NR_RECVBUFF (8)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Realtek's v2.6.6 reduced this to 4. However, under heavy network and CPU
  * loads, even 8 receive buffers might not be enough; cutting it to 4 seemed
  * unwise.
  */
 #define NR_RECVBUFF (8)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define NR_PREALLOC_RECV_SKB (8)
 #define RXDESC_SIZE	24
 #define RXDESC_OFFSET RXDESC_SIZE
 #define RECV_BLK_SZ 512
 #define RECV_BLK_CNT 16
 #define RECV_BLK_TH RECV_BLK_CNT
+<<<<<<< HEAD
 #define MAX_RECVBUF_SZ (30720) /* 30K */
+=======
+#define MAX_RECVBUF_SZ 9100
+>>>>>>> refs/remotes/origin/master
 #define RECVBUFF_ALIGN_SZ 512
 #define RSVD_ROOM_SZ (0)
 /*These definition is used for Rx packet reordering.*/
@@ -153,9 +169,12 @@ union recv_frame {
 		struct list_head list;
 		struct recv_frame_hdr hdr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		addr_t mem[RECVFRAME_HDR_ALIGN>>2];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} u;
 };
 

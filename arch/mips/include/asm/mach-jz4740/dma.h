@@ -3,7 +3,11 @@
  *  JZ7420/JZ4740 DMA definitions
  *
  *  This program is free software; you can redistribute it and/or modify it
+<<<<<<< HEAD
  *  under  the terms of the GNU General  Public License as published by the
+=======
+ *  under  the terms of the GNU General	 Public License as published by the
+>>>>>>> refs/remotes/origin/master
  *  Free Software Foundation;  either version 2 of the License, or (at your
  *  option) any later version.
  *
@@ -16,8 +20,11 @@
 #ifndef __ASM_MACH_JZ4740_DMA_H__
 #define __ASM_MACH_JZ4740_DMA_H__
 
+<<<<<<< HEAD
 struct jz4740_dma_chan;
 
+=======
+>>>>>>> refs/remotes/origin/master
 enum jz4740_dma_request_type {
 	JZ4740_DMA_TYPE_AUTO_REQUEST	= 8,
 	JZ4740_DMA_TYPE_UART_TRANSMIT	= 20,
@@ -33,6 +40,7 @@ enum jz4740_dma_request_type {
 	JZ4740_DMA_TYPE_SLCD		= 30,
 };
 
+<<<<<<< HEAD
 enum jz4740_dma_width {
 	JZ4740_DMA_WIDTH_32BIT	= 0,
 	JZ4740_DMA_WIDTH_8BIT	= 1,
@@ -88,3 +96,6 @@ void jz4740_dma_set_complete_cb(struct jz4740_dma_chan *dma,
 	jz4740_dma_complete_callback_t cb);
 
 #endif  /* __ASM_JZ4740_DMA_H__ */
+=======
+#endif	/* __ASM_JZ4740_DMA_H__ */
+>>>>>>> refs/remotes/origin/master

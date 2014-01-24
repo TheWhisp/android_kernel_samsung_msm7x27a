@@ -96,7 +96,11 @@ static void gpio_tilt_polled_close(struct input_polled_dev *dev)
 		pdata->disable(tdev->dev);
 }
 
+<<<<<<< HEAD
 static int __devinit gpio_tilt_polled_probe(struct platform_device *pdev)
+=======
+static int gpio_tilt_polled_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct gpio_tilt_platform_data *pdata = pdev->dev.platform_data;
 	struct device *dev = &pdev->dev;
@@ -179,13 +183,20 @@ err_free_tdev:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit gpio_tilt_polled_remove(struct platform_device *pdev)
+=======
+static int gpio_tilt_polled_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gpio_tilt_polled_dev *tdev = platform_get_drvdata(pdev);
 	const struct gpio_tilt_platform_data *pdata = tdev->pdata;
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	input_unregister_polled_device(tdev->poll_dev);
 	input_free_polled_device(tdev->poll_dev);
 
@@ -198,7 +209,11 @@ static int __devexit gpio_tilt_polled_remove(struct platform_device *pdev)
 
 static struct platform_driver gpio_tilt_polled_driver = {
 	.probe	= gpio_tilt_polled_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(gpio_tilt_polled_remove),
+=======
+	.remove	= gpio_tilt_polled_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver	= {
 		.name	= DRV_NAME,
 		.owner	= THIS_MODULE,

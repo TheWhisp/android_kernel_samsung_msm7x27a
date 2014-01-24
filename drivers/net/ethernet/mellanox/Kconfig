@@ -5,7 +5,11 @@
 config NET_VENDOR_MELLANOX
 	bool "Mellanox devices"
 	default y
+<<<<<<< HEAD
 	depends on PCI && INET
+=======
+	depends on PCI
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  If you have a network (Ethernet) card belonging to this class, say Y
 	  and read the Ethernet-HOWTO, available from
@@ -19,5 +23,9 @@ config NET_VENDOR_MELLANOX
 if NET_VENDOR_MELLANOX
 
 source "drivers/net/ethernet/mellanox/mlx4/Kconfig"
+<<<<<<< HEAD
+=======
+source "drivers/net/ethernet/mellanox/mlx5/core/Kconfig"
+>>>>>>> refs/remotes/origin/master
 
 endif # NET_VENDOR_MELLANOX

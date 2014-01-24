@@ -5,7 +5,11 @@
  *
  * GPL LICENSE SUMMARY
  *
+<<<<<<< HEAD
  * Copyright(c) 2007 - 2012 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2007 - 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of version 2 of the GNU General Public License as
@@ -22,7 +26,11 @@
  * USA
  *
  * The full GNU General Public License is included in this distribution
+<<<<<<< HEAD
  * in the file called LICENSE.GPL.
+=======
+ * in the file called COPYING.
+>>>>>>> refs/remotes/origin/master
  *
  * Contact Information:
  *  Intel Linux Wireless <ilw@linux.intel.com>
@@ -30,7 +38,11 @@
  *
  * BSD LICENSE
  *
+<<<<<<< HEAD
  * Copyright(c) 2005 - 2012 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2005 - 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,38 +76,126 @@
 #include <linux/dma-mapping.h>
 #include <linux/firmware.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 
 #include "iwl-drv.h"
 #include "iwl-trans.h"
 #include "iwl-shared.h"
 #include "iwl-op-mode.h"
 #include "iwl-agn-hw.h"
+=======
+#include <linux/vmalloc.h>
+
+#include "iwl-drv.h"
+#include "iwl-debug.h"
+#include "iwl-trans.h"
+#include "iwl-op-mode.h"
+#include "iwl-agn-hw.h"
+#include "iwl-fw.h"
+#include "iwl-config.h"
+#include "iwl-modparams.h"
+>>>>>>> refs/remotes/origin/master
 
 /* private includes */
 #include "iwl-fw-file.h"
 
+<<<<<<< HEAD
 /**
  * struct iwl_drv - drv common data
  * @fw: the iwl_fw structure
  * @shrd: pointer to common shared structure
  * @op_mode: the running op_mode
+=======
+/******************************************************************************
+ *
+ * module boiler plate
+ *
+ ******************************************************************************/
+
+/*
+ * module name, copyright, version, etc.
+ */
+#define DRV_DESCRIPTION	"Intel(R) Wireless WiFi driver for Linux"
+
+#ifdef CONFIG_IWLWIFI_DEBUG
+#define VD "d"
+#else
+#define VD
+#endif
+
+#define DRV_VERSION     IWLWIFI_VERSION VD
+
+MODULE_DESCRIPTION(DRV_DESCRIPTION);
+MODULE_VERSION(DRV_VERSION);
+MODULE_AUTHOR(DRV_COPYRIGHT " " DRV_AUTHOR);
+MODULE_LICENSE("GPL");
+
+#ifdef CONFIG_IWLWIFI_DEBUGFS
+static struct dentry *iwl_dbgfs_root;
+#endif
+
+/**
+ * struct iwl_drv - drv common data
+ * @list: list of drv structures using this opmode
+ * @fw: the iwl_fw structure
+ * @op_mode: the running op_mode
+ * @trans: transport layer
+ * @dev: for debug prints only
+ * @cfg: configuration struct
+>>>>>>> refs/remotes/origin/master
  * @fw_index: firmware revision to try loading
  * @firmware_name: composite filename of ucode file to load
  * @request_firmware_complete: the firmware has been obtained from user space
  */
 struct iwl_drv {
+<<<<<<< HEAD
 	struct iwl_fw fw;
 
 	struct iwl_shared *shrd;
 	struct iwl_op_mode *op_mode;
+=======
+	struct list_head list;
+	struct iwl_fw fw;
+
+	struct iwl_op_mode *op_mode;
+	struct iwl_trans *trans;
+	struct device *dev;
+	const struct iwl_cfg *cfg;
+>>>>>>> refs/remotes/origin/master
 
 	int fw_index;                   /* firmware we're trying to load */
 	char firmware_name[25];         /* name of firmware file to load */
 
 	struct completion request_firmware_complete;
+<<<<<<< HEAD
 };
 
 
+=======
+
+#ifdef CONFIG_IWLWIFI_DEBUGFS
+	struct dentry *dbgfs_drv;
+	struct dentry *dbgfs_trans;
+	struct dentry *dbgfs_op_mode;
+#endif
+};
+
+enum {
+	DVM_OP_MODE =	0,
+	MVM_OP_MODE =	1,
+};
+
+/* Protects the table contents, i.e. the ops pointer & drv list */
+static struct mutex iwlwifi_opmode_table_mtx;
+static struct iwlwifi_opmode_table {
+	const char *name;			/* name: iwldvm, iwlmvm, etc */
+	const struct iwl_op_mode_ops *ops;	/* pointer to op_mode ops */
+	struct list_head drv;		/* list of devices using this op_mode */
+} iwlwifi_opmode_table[] = {		/* ops set when driver is initialized */
+	[DVM_OP_MODE] = { .name = "iwldvm", .ops = NULL },
+	[MVM_OP_MODE] = { .name = "iwlmvm", .ops = NULL },
+};
+>>>>>>> refs/remotes/origin/master
 
 /*
  * struct fw_sec: Just for the image parsing proccess.
@@ -109,10 +209,15 @@ struct fw_sec {
 
 static void iwl_free_fw_desc(struct iwl_drv *drv, struct fw_desc *desc)
 {
+<<<<<<< HEAD
 	if (desc->v_addr)
 		dma_free_coherent(trans(drv)->dev, desc->len,
 				  desc->v_addr, desc->p_addr);
 	desc->v_addr = NULL;
+=======
+	vfree(desc->data);
+	desc->data = NULL;
+>>>>>>> refs/remotes/origin/master
 	desc->len = 0;
 }
 
@@ -131,6 +236,7 @@ static void iwl_dealloc_ucode(struct iwl_drv *drv)
 }
 
 static int iwl_alloc_fw_desc(struct iwl_drv *drv, struct fw_desc *desc,
+<<<<<<< HEAD
 		      struct fw_sec *sec)
 {
 	if (!sec || !sec->size) {
@@ -141,23 +247,51 @@ static int iwl_alloc_fw_desc(struct iwl_drv *drv, struct fw_desc *desc,
 	desc->v_addr = dma_alloc_coherent(trans(drv)->dev, sec->size,
 					  &desc->p_addr, GFP_KERNEL);
 	if (!desc->v_addr)
+=======
+			     struct fw_sec *sec)
+{
+	void *data;
+
+	desc->data = NULL;
+
+	if (!sec || !sec->size)
+		return -EINVAL;
+
+	data = vmalloc(sec->size);
+	if (!data)
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	desc->len = sec->size;
 	desc->offset = sec->offset;
+<<<<<<< HEAD
 	memcpy(desc->v_addr, sec->data, sec->size);
 	return 0;
 }
 
 static void iwl_ucode_callback(const struct firmware *ucode_raw, void *context);
+=======
+	memcpy(data, sec->data, desc->len);
+	desc->data = data;
+
+	return 0;
+}
+
+static void iwl_req_fw_callback(const struct firmware *ucode_raw,
+				void *context);
+>>>>>>> refs/remotes/origin/master
 
 #define UCODE_EXPERIMENTAL_INDEX	100
 #define UCODE_EXPERIMENTAL_TAG		"exp"
 
 static int iwl_request_firmware(struct iwl_drv *drv, bool first)
 {
+<<<<<<< HEAD
 	const struct iwl_cfg *cfg = cfg(drv);
 	const char *name_pre = cfg->fw_name_pre;
+=======
+	const char *name_pre = drv->cfg->fw_name_pre;
+>>>>>>> refs/remotes/origin/master
 	char tag[8];
 
 	if (first) {
@@ -166,14 +300,22 @@ static int iwl_request_firmware(struct iwl_drv *drv, bool first)
 		strcpy(tag, UCODE_EXPERIMENTAL_TAG);
 	} else if (drv->fw_index == UCODE_EXPERIMENTAL_INDEX) {
 #endif
+<<<<<<< HEAD
 		drv->fw_index = cfg->ucode_api_max;
+=======
+		drv->fw_index = drv->cfg->ucode_api_max;
+>>>>>>> refs/remotes/origin/master
 		sprintf(tag, "%d", drv->fw_index);
 	} else {
 		drv->fw_index--;
 		sprintf(tag, "%d", drv->fw_index);
 	}
 
+<<<<<<< HEAD
 	if (drv->fw_index < cfg->ucode_api_min) {
+=======
+	if (drv->fw_index < drv->cfg->ucode_api_min) {
+>>>>>>> refs/remotes/origin/master
 		IWL_ERR(drv, "no suitable firmware found!\n");
 		return -ENOENT;
 	}
@@ -186,8 +328,13 @@ static int iwl_request_firmware(struct iwl_drv *drv, bool first)
 		       drv->firmware_name);
 
 	return request_firmware_nowait(THIS_MODULE, 1, drv->firmware_name,
+<<<<<<< HEAD
 				       trans(drv)->dev,
 				       GFP_KERNEL, drv, iwl_ucode_callback);
+=======
+				       drv->trans->dev,
+				       GFP_KERNEL, drv, iwl_req_fw_callback);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct fw_img_parsing {
@@ -211,7 +358,11 @@ struct fw_sec_parsing {
  */
 struct iwl_tlv_calib_data {
 	__le32 ucode_type;
+<<<<<<< HEAD
 	__le64 calib;
+=======
+	struct iwl_tlv_calib_ctrl calib;
+>>>>>>> refs/remotes/origin/master
 } __packed;
 
 struct iwl_firmware_pieces {
@@ -284,6 +435,10 @@ static int iwl_store_ucode_sec(struct iwl_firmware_pieces *pieces,
 
 	sec->offset = le32_to_cpu(sec_parse->offset);
 	sec->data = sec_parse->data;
+<<<<<<< HEAD
+=======
+	sec->size = size - sizeof(sec_parse->offset);
+>>>>>>> refs/remotes/origin/master
 
 	++img->sec_counter;
 
@@ -300,7 +455,15 @@ static int iwl_set_default_calib(struct iwl_drv *drv, const u8 *data)
 			ucode_type);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	drv->fw.default_calib[ucode_type] = le64_to_cpu(def_calib->calib);
+=======
+	drv->fw.default_calib[ucode_type].flow_trigger =
+		def_calib->calib.flow_trigger;
+	drv->fw.default_calib[ucode_type].event_trigger =
+		def_calib->calib.event_trigger;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -414,14 +577,21 @@ static int iwl_parse_tlv_firmware(struct iwl_drv *drv,
 	struct iwl_ucode_tlv *tlv;
 	size_t len = ucode_raw->size;
 	const u8 *data;
+<<<<<<< HEAD
 	int wanted_alternative = iwlagn_mod_params.wanted_ucode_alternative;
 	int tmp;
 	u64 alternatives;
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 tlv_len;
 	enum iwl_ucode_tlv_type tlv_type;
 	const u8 *tlv_data;
 	char buildstr[25];
 	u32 build;
+<<<<<<< HEAD
+=======
+	int num_of_cpus;
+>>>>>>> refs/remotes/origin/master
 
 	if (len < sizeof(*ucode)) {
 		IWL_ERR(drv, "uCode has invalid length: %zd\n", len);
@@ -434,6 +604,7 @@ static int iwl_parse_tlv_firmware(struct iwl_drv *drv,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Check which alternatives are present, and "downgrade"
 	 * when the chosen alternative is not present, warning
@@ -451,6 +622,8 @@ static int iwl_parse_tlv_firmware(struct iwl_drv *drv,
 			 "uCode alternative %d not available, choosing %d\n",
 			 tmp, wanted_alternative);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	drv->fw.ucode_ver = le32_to_cpu(ucode->ver);
 	build = le32_to_cpu(ucode->build);
 
@@ -475,14 +648,21 @@ static int iwl_parse_tlv_firmware(struct iwl_drv *drv,
 	len -= sizeof(*ucode);
 
 	while (len >= sizeof(*tlv)) {
+<<<<<<< HEAD
 		u16 tlv_alt;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		len -= sizeof(*tlv);
 		tlv = (void *)data;
 
 		tlv_len = le32_to_cpu(tlv->length);
+<<<<<<< HEAD
 		tlv_type = le16_to_cpu(tlv->type);
 		tlv_alt = le16_to_cpu(tlv->alternative);
+=======
+		tlv_type = le32_to_cpu(tlv->type);
+>>>>>>> refs/remotes/origin/master
 		tlv_data = tlv->data;
 
 		if (len < tlv_len) {
@@ -493,6 +673,7 @@ static int iwl_parse_tlv_firmware(struct iwl_drv *drv,
 		len -= ALIGN(tlv_len, 4);
 		data += sizeof(*tlv) + ALIGN(tlv_len, 4);
 
+<<<<<<< HEAD
 		/*
 		 * Alternative 0 is always valid.
 		 *
@@ -501,6 +682,8 @@ static int iwl_parse_tlv_firmware(struct iwl_drv *drv,
 		if (tlv_alt != 0 && tlv_alt != wanted_alternative)
 			continue;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		switch (tlv_type) {
 		case IWL_UCODE_TLV_INST:
 			set_sec_data(pieces, IWL_UCODE_REGULAR,
@@ -659,6 +842,45 @@ static int iwl_parse_tlv_firmware(struct iwl_drv *drv,
 				goto invalid_tlv_len;
 			drv->fw.phy_config = le32_to_cpup((__le32 *)tlv_data);
 			break;
+<<<<<<< HEAD
+=======
+		 case IWL_UCODE_TLV_SECURE_SEC_RT:
+			iwl_store_ucode_sec(pieces, tlv_data, IWL_UCODE_REGULAR,
+					    tlv_len);
+			drv->fw.mvm_fw = true;
+			drv->fw.img[IWL_UCODE_REGULAR].is_secure = true;
+			break;
+		case IWL_UCODE_TLV_SECURE_SEC_INIT:
+			iwl_store_ucode_sec(pieces, tlv_data, IWL_UCODE_INIT,
+					    tlv_len);
+			drv->fw.mvm_fw = true;
+			drv->fw.img[IWL_UCODE_INIT].is_secure = true;
+			break;
+		case IWL_UCODE_TLV_SECURE_SEC_WOWLAN:
+			iwl_store_ucode_sec(pieces, tlv_data, IWL_UCODE_WOWLAN,
+					    tlv_len);
+			drv->fw.mvm_fw = true;
+			drv->fw.img[IWL_UCODE_WOWLAN].is_secure = true;
+			break;
+		case IWL_UCODE_TLV_NUM_OF_CPU:
+			if (tlv_len != sizeof(u32))
+				goto invalid_tlv_len;
+			num_of_cpus =
+				le32_to_cpup((__le32 *)tlv_data);
+
+			if (num_of_cpus == 2) {
+				drv->fw.img[IWL_UCODE_REGULAR].is_dual_cpus =
+					true;
+				drv->fw.img[IWL_UCODE_INIT].is_dual_cpus =
+					true;
+				drv->fw.img[IWL_UCODE_WOWLAN].is_dual_cpus =
+					true;
+			} else if ((num_of_cpus > 2) || (num_of_cpus < 1)) {
+				IWL_ERR(drv, "Driver support upto 2 CPUs\n");
+				return -EINVAL;
+			}
+			break;
+>>>>>>> refs/remotes/origin/master
 		default:
 			IWL_DEBUG_INFO(drv, "unknown TLV: %d\n", tlv_type);
 			break;
@@ -681,17 +903,28 @@ static int iwl_parse_tlv_firmware(struct iwl_drv *drv,
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static int alloc_pci_desc(struct iwl_drv *drv,
 			  struct iwl_firmware_pieces *pieces,
 			  enum iwl_ucode_type type)
+=======
+static int iwl_alloc_ucode(struct iwl_drv *drv,
+			   struct iwl_firmware_pieces *pieces,
+			   enum iwl_ucode_type type)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	for (i = 0;
 	     i < IWL_UCODE_SECTION_MAX && get_sec_size(pieces, type, i);
 	     i++)
 		if (iwl_alloc_fw_desc(drv, &(drv->fw.img[type].sec[i]),
+<<<<<<< HEAD
 						get_sec(pieces, type, i)))
 			return -1;
+=======
+				      get_sec(pieces, type, i)))
+			return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -745,13 +978,63 @@ static int validate_sec_sizes(struct iwl_drv *drv,
 	return 0;
 }
 
+<<<<<<< HEAD
 
 /**
  * iwl_ucode_callback - callback when firmware was loaded
+=======
+static struct iwl_op_mode *
+_iwl_op_mode_start(struct iwl_drv *drv, struct iwlwifi_opmode_table *op)
+{
+	const struct iwl_op_mode_ops *ops = op->ops;
+	struct dentry *dbgfs_dir = NULL;
+	struct iwl_op_mode *op_mode = NULL;
+
+#ifdef CONFIG_IWLWIFI_DEBUGFS
+	drv->dbgfs_op_mode = debugfs_create_dir(op->name,
+						drv->dbgfs_drv);
+	if (!drv->dbgfs_op_mode) {
+		IWL_ERR(drv,
+			"failed to create opmode debugfs directory\n");
+		return op_mode;
+	}
+	dbgfs_dir = drv->dbgfs_op_mode;
+#endif
+
+	op_mode = ops->start(drv->trans, drv->cfg, &drv->fw, dbgfs_dir);
+
+#ifdef CONFIG_IWLWIFI_DEBUGFS
+	if (!op_mode) {
+		debugfs_remove_recursive(drv->dbgfs_op_mode);
+		drv->dbgfs_op_mode = NULL;
+	}
+#endif
+
+	return op_mode;
+}
+
+static void _iwl_op_mode_stop(struct iwl_drv *drv)
+{
+	/* op_mode can be NULL if its start failed */
+	if (drv->op_mode) {
+		iwl_op_mode_stop(drv->op_mode);
+		drv->op_mode = NULL;
+
+#ifdef CONFIG_IWLWIFI_DEBUGFS
+		debugfs_remove_recursive(drv->dbgfs_op_mode);
+		drv->dbgfs_op_mode = NULL;
+#endif
+	}
+}
+
+/**
+ * iwl_req_fw_callback - callback when firmware was loaded
+>>>>>>> refs/remotes/origin/master
  *
  * If loaded successfully, copies the firmware into buffers
  * for the card to fetch (via DMA).
  */
+<<<<<<< HEAD
 static void iwl_ucode_callback(const struct firmware *ucode_raw, void *context)
 {
 	struct iwl_drv *drv = context;
@@ -767,6 +1050,24 @@ static void iwl_ucode_callback(const struct firmware *ucode_raw, void *context)
 	int i;
 
 	fw->ucode_capa.max_probe_length = 200;
+=======
+static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
+{
+	struct iwl_drv *drv = context;
+	struct iwl_fw *fw = &drv->fw;
+	struct iwl_ucode_header *ucode;
+	struct iwlwifi_opmode_table *op;
+	int err;
+	struct iwl_firmware_pieces pieces;
+	const unsigned int api_max = drv->cfg->ucode_api_max;
+	unsigned int api_ok = drv->cfg->ucode_api_ok;
+	const unsigned int api_min = drv->cfg->ucode_api_min;
+	u32 api_ver;
+	int i;
+	bool load_module = false;
+
+	fw->ucode_capa.max_probe_length = IWL_DEFAULT_MAX_PROBE_LENGTH;
+>>>>>>> refs/remotes/origin/master
 	fw->ucode_capa.standard_phy_calibration_size =
 			IWL_DEFAULT_STANDARD_PHY_CALIBRATE_TBL_SIZE;
 
@@ -835,6 +1136,7 @@ static void iwl_ucode_callback(const struct firmware *ucode_raw, void *context)
 		}
 	}
 
+<<<<<<< HEAD
 	IWL_INFO(drv, "loaded firmware version %s", drv->fw.fw_version);
 
 	/*
@@ -873,11 +1175,17 @@ static void iwl_ucode_callback(const struct firmware *ucode_raw, void *context)
 		goto try_again;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * In mvm uCode there is no difference between data and instructions
 	 * sections.
 	 */
+<<<<<<< HEAD
 	if (!fw->mvm_fw && validate_sec_sizes(drv, &pieces, cfg))
+=======
+	if (!fw->mvm_fw && validate_sec_sizes(drv, &pieces, drv->cfg))
+>>>>>>> refs/remotes/origin/master
 		goto try_again;
 
 	/* Allocate ucode buffers for card's bus-master loading ... */
@@ -886,8 +1194,13 @@ static void iwl_ucode_callback(const struct firmware *ucode_raw, void *context)
 	 * 1) unmodified from disk
 	 * 2) backup cache for save/restore during power-downs */
 	for (i = 0; i < IWL_UCODE_TYPE_MAX; i++)
+<<<<<<< HEAD
 		if (alloc_pci_desc(drv, &pieces, i))
 			goto err_pci_alloc;
+=======
+		if (iwl_alloc_ucode(drv, &pieces, i))
+			goto out_free_fw;
+>>>>>>> refs/remotes/origin/master
 
 	/* Now that we can no longer fail, copy information */
 
@@ -901,14 +1214,22 @@ static void iwl_ucode_callback(const struct firmware *ucode_raw, void *context)
 		fw->init_evtlog_size = (pieces.init_evtlog_size - 16)/12;
 	else
 		fw->init_evtlog_size =
+<<<<<<< HEAD
 			cfg->base_params->max_event_log_size;
+=======
+			drv->cfg->base_params->max_event_log_size;
+>>>>>>> refs/remotes/origin/master
 	fw->init_errlog_ptr = pieces.init_errlog_ptr;
 	fw->inst_evtlog_ptr = pieces.inst_evtlog_ptr;
 	if (pieces.inst_evtlog_size)
 		fw->inst_evtlog_size = (pieces.inst_evtlog_size - 16)/12;
 	else
 		fw->inst_evtlog_size =
+<<<<<<< HEAD
 			cfg->base_params->max_event_log_size;
+=======
+			drv->cfg->base_params->max_event_log_size;
+>>>>>>> refs/remotes/origin/master
 	fw->inst_errlog_ptr = pieces.inst_errlog_ptr;
 
 	/*
@@ -922,6 +1243,7 @@ static void iwl_ucode_callback(const struct firmware *ucode_raw, void *context)
 
 	/* We have our copies now, allow OS release its copies */
 	release_firmware(ucode_raw);
+<<<<<<< HEAD
 	complete(&drv->request_firmware_complete);
 
 	drv->op_mode = iwl_dvm_ops.start(drv->shrd->trans, &drv->fw);
@@ -929,6 +1251,54 @@ static void iwl_ucode_callback(const struct firmware *ucode_raw, void *context)
 	if (!drv->op_mode)
 		goto out_unbind;
 
+=======
+
+	mutex_lock(&iwlwifi_opmode_table_mtx);
+	if (fw->mvm_fw)
+		op = &iwlwifi_opmode_table[MVM_OP_MODE];
+	else
+		op = &iwlwifi_opmode_table[DVM_OP_MODE];
+
+	IWL_INFO(drv, "loaded firmware version %s op_mode %s\n",
+		 drv->fw.fw_version, op->name);
+
+	/* add this device to the list of devices using this op_mode */
+	list_add_tail(&drv->list, &op->drv);
+
+	if (op->ops) {
+		drv->op_mode = _iwl_op_mode_start(drv, op);
+
+		if (!drv->op_mode) {
+			mutex_unlock(&iwlwifi_opmode_table_mtx);
+			goto out_unbind;
+		}
+	} else {
+		load_module = true;
+	}
+	mutex_unlock(&iwlwifi_opmode_table_mtx);
+
+	/*
+	 * Complete the firmware request last so that
+	 * a driver unbind (stop) doesn't run while we
+	 * are doing the start() above.
+	 */
+	complete(&drv->request_firmware_complete);
+
+	/*
+	 * Load the module last so we don't block anything
+	 * else from proceeding if the module fails to load
+	 * or hangs loading.
+	 */
+	if (load_module) {
+		err = request_module("%s", op->name);
+#ifdef CONFIG_IWLWIFI_OPMODE_MODULAR
+		if (err)
+			IWL_ERR(drv,
+				"failed to load module %s (error %d), is dynamic loading enabled?\n",
+				op->name, err);
+#endif
+	}
+>>>>>>> refs/remotes/origin/master
 	return;
 
  try_again:
@@ -938,21 +1308,34 @@ static void iwl_ucode_callback(const struct firmware *ucode_raw, void *context)
 		goto out_unbind;
 	return;
 
+<<<<<<< HEAD
  err_pci_alloc:
+=======
+ out_free_fw:
+>>>>>>> refs/remotes/origin/master
 	IWL_ERR(drv, "failed to allocate pci memory\n");
 	iwl_dealloc_ucode(drv);
 	release_firmware(ucode_raw);
  out_unbind:
 	complete(&drv->request_firmware_complete);
+<<<<<<< HEAD
 	device_release_driver(trans(drv)->dev);
 }
 
 int iwl_drv_start(struct iwl_shared *shrd,
 		  struct iwl_trans *trans, const struct iwl_cfg *cfg)
+=======
+	device_release_driver(drv->trans->dev);
+}
+
+struct iwl_drv *iwl_drv_start(struct iwl_trans *trans,
+			      const struct iwl_cfg *cfg)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iwl_drv *drv;
 	int ret;
 
+<<<<<<< HEAD
 	shrd->cfg = cfg;
 
 	drv = kzalloc(sizeof(*drv), GFP_KERNEL);
@@ -991,3 +1374,237 @@ void iwl_drv_stop(struct iwl_shared *shrd)
 	kfree(drv);
 	shrd->drv = NULL;
 }
+=======
+	drv = kzalloc(sizeof(*drv), GFP_KERNEL);
+	if (!drv) {
+		ret = -ENOMEM;
+		goto err;
+	}
+
+	drv->trans = trans;
+	drv->dev = trans->dev;
+	drv->cfg = cfg;
+
+	init_completion(&drv->request_firmware_complete);
+	INIT_LIST_HEAD(&drv->list);
+
+#ifdef CONFIG_IWLWIFI_DEBUGFS
+	/* Create the device debugfs entries. */
+	drv->dbgfs_drv = debugfs_create_dir(dev_name(trans->dev),
+					    iwl_dbgfs_root);
+
+	if (!drv->dbgfs_drv) {
+		IWL_ERR(drv, "failed to create debugfs directory\n");
+		ret = -ENOMEM;
+		goto err_free_drv;
+	}
+
+	/* Create transport layer debugfs dir */
+	drv->trans->dbgfs_dir = debugfs_create_dir("trans", drv->dbgfs_drv);
+
+	if (!drv->trans->dbgfs_dir) {
+		IWL_ERR(drv, "failed to create transport debugfs directory\n");
+		ret = -ENOMEM;
+		goto err_free_dbgfs;
+	}
+#endif
+
+	ret = iwl_request_firmware(drv, true);
+	if (ret) {
+		IWL_ERR(trans, "Couldn't request the fw\n");
+		goto err_fw;
+	}
+
+	return drv;
+
+err_fw:
+#ifdef CONFIG_IWLWIFI_DEBUGFS
+err_free_dbgfs:
+	debugfs_remove_recursive(drv->dbgfs_drv);
+err_free_drv:
+#endif
+	kfree(drv);
+err:
+	return ERR_PTR(ret);
+}
+
+void iwl_drv_stop(struct iwl_drv *drv)
+{
+	wait_for_completion(&drv->request_firmware_complete);
+
+	_iwl_op_mode_stop(drv);
+
+	iwl_dealloc_ucode(drv);
+
+	mutex_lock(&iwlwifi_opmode_table_mtx);
+	/*
+	 * List is empty (this item wasn't added)
+	 * when firmware loading failed -- in that
+	 * case we can't remove it from any list.
+	 */
+	if (!list_empty(&drv->list))
+		list_del(&drv->list);
+	mutex_unlock(&iwlwifi_opmode_table_mtx);
+
+#ifdef CONFIG_IWLWIFI_DEBUGFS
+	debugfs_remove_recursive(drv->dbgfs_drv);
+#endif
+
+	kfree(drv);
+}
+
+
+/* shared module parameters */
+struct iwl_mod_params iwlwifi_mod_params = {
+	.restart_fw = true,
+	.bt_coex_active = true,
+	.power_level = IWL_POWER_INDEX_1,
+	.wd_disable = true,
+	/* the rest are 0 by default */
+};
+IWL_EXPORT_SYMBOL(iwlwifi_mod_params);
+
+int iwl_opmode_register(const char *name, const struct iwl_op_mode_ops *ops)
+{
+	int i;
+	struct iwl_drv *drv;
+	struct iwlwifi_opmode_table *op;
+
+	mutex_lock(&iwlwifi_opmode_table_mtx);
+	for (i = 0; i < ARRAY_SIZE(iwlwifi_opmode_table); i++) {
+		op = &iwlwifi_opmode_table[i];
+		if (strcmp(op->name, name))
+			continue;
+		op->ops = ops;
+		/* TODO: need to handle exceptional case */
+		list_for_each_entry(drv, &op->drv, list)
+			drv->op_mode = _iwl_op_mode_start(drv, op);
+
+		mutex_unlock(&iwlwifi_opmode_table_mtx);
+		return 0;
+	}
+	mutex_unlock(&iwlwifi_opmode_table_mtx);
+	return -EIO;
+}
+IWL_EXPORT_SYMBOL(iwl_opmode_register);
+
+void iwl_opmode_deregister(const char *name)
+{
+	int i;
+	struct iwl_drv *drv;
+
+	mutex_lock(&iwlwifi_opmode_table_mtx);
+	for (i = 0; i < ARRAY_SIZE(iwlwifi_opmode_table); i++) {
+		if (strcmp(iwlwifi_opmode_table[i].name, name))
+			continue;
+		iwlwifi_opmode_table[i].ops = NULL;
+
+		/* call the stop routine for all devices */
+		list_for_each_entry(drv, &iwlwifi_opmode_table[i].drv, list)
+			_iwl_op_mode_stop(drv);
+
+		mutex_unlock(&iwlwifi_opmode_table_mtx);
+		return;
+	}
+	mutex_unlock(&iwlwifi_opmode_table_mtx);
+}
+IWL_EXPORT_SYMBOL(iwl_opmode_deregister);
+
+static int __init iwl_drv_init(void)
+{
+	int i;
+
+	mutex_init(&iwlwifi_opmode_table_mtx);
+
+	for (i = 0; i < ARRAY_SIZE(iwlwifi_opmode_table); i++)
+		INIT_LIST_HEAD(&iwlwifi_opmode_table[i].drv);
+
+	pr_info(DRV_DESCRIPTION ", " DRV_VERSION "\n");
+	pr_info(DRV_COPYRIGHT "\n");
+
+#ifdef CONFIG_IWLWIFI_DEBUGFS
+	/* Create the root of iwlwifi debugfs subsystem. */
+	iwl_dbgfs_root = debugfs_create_dir(DRV_NAME, NULL);
+
+	if (!iwl_dbgfs_root)
+		return -EFAULT;
+#endif
+
+	return iwl_pci_register_driver();
+}
+module_init(iwl_drv_init);
+
+static void __exit iwl_drv_exit(void)
+{
+	iwl_pci_unregister_driver();
+
+#ifdef CONFIG_IWLWIFI_DEBUGFS
+	debugfs_remove_recursive(iwl_dbgfs_root);
+#endif
+}
+module_exit(iwl_drv_exit);
+
+#ifdef CONFIG_IWLWIFI_DEBUG
+module_param_named(debug, iwlwifi_mod_params.debug_level, uint,
+		   S_IRUGO | S_IWUSR);
+MODULE_PARM_DESC(debug, "debug output mask");
+#endif
+
+module_param_named(swcrypto, iwlwifi_mod_params.sw_crypto, int, S_IRUGO);
+MODULE_PARM_DESC(swcrypto, "using crypto in software (default 0 [hardware])");
+module_param_named(11n_disable, iwlwifi_mod_params.disable_11n, uint, S_IRUGO);
+MODULE_PARM_DESC(11n_disable,
+	"disable 11n functionality, bitmap: 1: full, 2: agg TX, 4: agg RX");
+module_param_named(amsdu_size_8K, iwlwifi_mod_params.amsdu_size_8K,
+		   int, S_IRUGO);
+MODULE_PARM_DESC(amsdu_size_8K, "enable 8K amsdu size (default 0)");
+module_param_named(fw_restart, iwlwifi_mod_params.restart_fw, bool, S_IRUGO);
+MODULE_PARM_DESC(fw_restart, "restart firmware in case of error (default true)");
+
+module_param_named(antenna_coupling, iwlwifi_mod_params.ant_coupling,
+		   int, S_IRUGO);
+MODULE_PARM_DESC(antenna_coupling,
+		 "specify antenna coupling in dB (defualt: 0 dB)");
+
+module_param_named(wd_disable, iwlwifi_mod_params.wd_disable, int, S_IRUGO);
+MODULE_PARM_DESC(wd_disable,
+		"Disable stuck queue watchdog timer 0=system default, "
+		"1=disable, 2=enable (default: 0)");
+
+module_param_named(nvm_file, iwlwifi_mod_params.nvm_file, charp, S_IRUGO);
+MODULE_PARM_DESC(nvm_file, "NVM file name");
+
+/*
+ * set bt_coex_active to true, uCode will do kill/defer
+ * every time the priority line is asserted (BT is sending signals on the
+ * priority line in the PCIx).
+ * set bt_coex_active to false, uCode will ignore the BT activity and
+ * perform the normal operation
+ *
+ * User might experience transmit issue on some platform due to WiFi/BT
+ * co-exist problem. The possible behaviors are:
+ *   Able to scan and finding all the available AP
+ *   Not able to associate with any AP
+ * On those platforms, WiFi communication can be restored by set
+ * "bt_coex_active" module parameter to "false"
+ *
+ * default: bt_coex_active = true (BT_COEX_ENABLE)
+ */
+module_param_named(bt_coex_active, iwlwifi_mod_params.bt_coex_active,
+		bool, S_IRUGO);
+MODULE_PARM_DESC(bt_coex_active, "enable wifi/bt co-exist (default: enable)");
+
+module_param_named(led_mode, iwlwifi_mod_params.led_mode, int, S_IRUGO);
+MODULE_PARM_DESC(led_mode, "0=system default, "
+		"1=On(RF On)/Off(RF Off), 2=blinking, 3=Off (default: 0)");
+
+module_param_named(power_save, iwlwifi_mod_params.power_save,
+		bool, S_IRUGO);
+MODULE_PARM_DESC(power_save,
+		 "enable WiFi power management (default: disable)");
+
+module_param_named(power_level, iwlwifi_mod_params.power_level,
+		int, S_IRUGO);
+MODULE_PARM_DESC(power_level,
+		 "default power save level (range from 1 - 5, default: 1)");
+>>>>>>> refs/remotes/origin/master

@@ -13,10 +13,14 @@ This directory is _NOT_ for adding arbitrary new firmware images. The
 place to add those is the separate linux-firmware repository:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     git://git.kernel.org/pub/scm/linux/kernel/git/dwmw2/linux-firmware.git
 =======
     git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
+>>>>>>> refs/remotes/origin/master
 
 That repository contains all these firmware images which have been
 extracted from older drivers, as well various new firmware images which
@@ -27,9 +31,13 @@ To submit firmware to that repository, please send either a git binary
 diff or preferably a git pull request to:
       David Woodhouse <dwmw2@infradead.org>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
       Ben Hutchings <ben@decadent.org.uk>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+      Ben Hutchings <ben@decadent.org.uk>
+>>>>>>> refs/remotes/origin/master
 
 Your commit should include an update to the WHENCE file clearly
 identifying the licence under which the firmware is available, and

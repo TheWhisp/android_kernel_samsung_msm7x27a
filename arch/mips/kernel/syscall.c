@@ -38,6 +38,7 @@
 #include <asm/sysmips.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/switch_to.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -63,6 +64,25 @@ asmlinkage int sysm_pipe(nabi_no_regargs volatile struct pt_regs regs)
 	res = fd[0];
 out:
 	return res;
+=======
+#include <asm/switch_to.h>
+
+/*
+ * For historic reasons the pipe(2) syscall on MIPS has an unusual calling
+ * convention.	It returns results in registers $v0 / $v1 which means there
+ * is no need for it to do verify the validity of a userspace pointer
+ * argument.  Historically that used to be expensive in Linux.	These days
+ * the performance advantage is negligible.
+ */
+asmlinkage int sysm_pipe(void)
+{
+	int fd[2];
+	int error = do_pipe_flags(fd, 0);
+	if (error)
+		return error;
+	current_pt_regs()->regs[3] = fd[1];
+	return fd[0];
+>>>>>>> refs/remotes/origin/master
 }
 
 SYSCALL_DEFINE6(mips_mmap, unsigned long, addr, unsigned long, len,
@@ -92,6 +112,7 @@ SYSCALL_DEFINE6(mips_mmap2, unsigned long, addr, unsigned long, len,
 }
 
 save_static_function(sys_fork);
+<<<<<<< HEAD
 static int __used noinline
 _sys_fork(nabi_no_regargs struct pt_regs regs)
 {
@@ -151,6 +172,9 @@ asmlinkage int sys_execve(nabi_no_regargs struct pt_regs regs)
 out:
 	return error;
 }
+=======
+save_static_function(sys_clone);
+>>>>>>> refs/remotes/origin/master
 
 SYSCALL_DEFINE1(set_thread_area, unsigned long, addr)
 {
@@ -163,10 +187,17 @@ SYSCALL_DEFINE1(set_thread_area, unsigned long, addr)
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline int mips_atomic_set(struct pt_regs *regs,
 	unsigned long addr, unsigned long new)
 {
 	unsigned long old, tmp;
+=======
+static inline int mips_atomic_set(unsigned long addr, unsigned long new)
+{
+	unsigned long old, tmp;
+	struct pt_regs *regs;
+>>>>>>> refs/remotes/origin/master
 	unsigned int err;
 
 	if (unlikely(addr & 3))
@@ -247,6 +278,10 @@ static inline int mips_atomic_set(struct pt_regs *regs,
 	if (unlikely(err))
 		return err;
 
+<<<<<<< HEAD
+=======
+	regs = current_pt_regs();
+>>>>>>> refs/remotes/origin/master
 	regs->regs[2] = old;
 	regs->regs[7] = 0;	/* No error */
 
@@ -260,6 +295,7 @@ static inline int mips_atomic_set(struct pt_regs *regs,
 	: "r" (regs));
 
 	/* unreached.  Honestly.  */
+<<<<<<< HEAD
 	while (1);
 }
 
@@ -276,6 +312,16 @@ _sys_sysmips(nabi_no_regargs struct pt_regs regs)
 	switch (cmd) {
 	case MIPS_ATOMIC_SET:
 		return mips_atomic_set(&regs, arg1, arg2);
+=======
+	unreachable();
+}
+
+SYSCALL_DEFINE3(sysmips, long, cmd, long, arg1, long, arg2)
+{
+	switch (cmd) {
+	case MIPS_ATOMIC_SET:
+		return mips_atomic_set(arg1, arg2);
+>>>>>>> refs/remotes/origin/master
 
 	case MIPS_FIXADE:
 		if (arg1 & ~3)
@@ -316,6 +362,7 @@ asmlinkage void bad_stack(void)
 {
 	do_exit(SIGSEGV);
 }
+<<<<<<< HEAD
 
 /*
  * Do a system call from kernel instead of calling sys_execve so we
@@ -347,3 +394,5 @@ int kernel_execve(const char *filename,
 
 	return -__v0;
 }
+=======
+>>>>>>> refs/remotes/origin/master

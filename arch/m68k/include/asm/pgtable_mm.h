@@ -41,10 +41,15 @@
 #ifdef CONFIG_SUN3
 #define PGDIR_SHIFT     17
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #elif defined(CONFIG_COLDFIRE)
 #define PGDIR_SHIFT     22
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#elif defined(CONFIG_COLDFIRE)
+#define PGDIR_SHIFT     22
+>>>>>>> refs/remotes/origin/master
 #else
 #define PGDIR_SHIFT	25
 #endif
@@ -60,12 +65,18 @@
 #define PTRS_PER_PMD   1
 #define PTRS_PER_PGD   2048
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #elif defined(CONFIG_COLDFIRE)
 #define PTRS_PER_PTE	512
 #define PTRS_PER_PMD	1
 #define PTRS_PER_PGD	1024
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 #define PTRS_PER_PTE	1024
 #define PTRS_PER_PMD	8
@@ -79,19 +90,28 @@
 #define KMAP_START     0x0DC00000
 #define KMAP_END       0x0E000000
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #elif defined(CONFIG_COLDFIRE)
 #define KMAP_START	0xe0000000
 #define KMAP_END	0xf0000000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#elif defined(CONFIG_COLDFIRE)
+#define KMAP_START	0xe0000000
+#define KMAP_END	0xf0000000
+>>>>>>> refs/remotes/origin/master
 #else
 #define	KMAP_START	0xd0000000
 #define	KMAP_END	0xf0000000
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SUN3
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SUN3
 extern unsigned long m68k_vmalloc_end;
 #define VMALLOC_START 0x0f800000
@@ -100,7 +120,10 @@ extern unsigned long m68k_vmalloc_end;
 #define VMALLOC_START	0xd0000000
 #define VMALLOC_END	0xe0000000
 #else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Just any arbitrary offset to the start of the vmalloc VM area: the
  * current 8MB value just means that there will be a 8MB "hole" after the
  * physical memory until the kernel virtual memory starts.  That means that
@@ -112,6 +135,7 @@ extern unsigned long m68k_vmalloc_end;
 #define VMALLOC_START (((unsigned long) high_memory + VMALLOC_OFFSET) & ~(VMALLOC_OFFSET-1))
 #define VMALLOC_END KMAP_START
 <<<<<<< HEAD
+<<<<<<< HEAD
 #else
 extern unsigned long m68k_vmalloc_end;
 #define VMALLOC_START 0x0f800000
@@ -120,6 +144,9 @@ extern unsigned long m68k_vmalloc_end;
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /* zero page used for uninitialized stuff */
 extern void *empty_zero_page;
@@ -156,18 +183,26 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
 
 #define kern_addr_valid(addr)	(1)
 
+<<<<<<< HEAD
 #define io_remap_pfn_range(vma, vaddr, pfn, size, prot)		\
 		remap_pfn_range(vma, vaddr, pfn, size, prot)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* MMU-specific headers */
 
 #ifdef CONFIG_SUN3
 #include <asm/sun3_pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #elif defined(CONFIG_COLDFIRE)
 #include <asm/mcf_pgtable.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#elif defined(CONFIG_COLDFIRE)
+#include <asm/mcf_pgtable.h>
+>>>>>>> refs/remotes/origin/master
 #else
 #include <asm/motorola_pgtable.h>
 #endif
@@ -177,11 +212,17 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
  * Macro to mark a page protection value as "uncacheable".
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_COLDFIRE
 # define pgprot_noncached(prot) (__pgprot(pgprot_val(prot) | CF_PAGE_NOCACHE))
 #else
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_COLDFIRE
+# define pgprot_noncached(prot) (__pgprot(pgprot_val(prot) | CF_PAGE_NOCACHE))
+#else
+>>>>>>> refs/remotes/origin/master
 #ifdef SUN3_PAGE_NOCACHE
 # define __SUN3_PAGE_NOCACHE	SUN3_PAGE_NOCACHE
 #else
@@ -197,9 +238,13 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
 	    : (prot)))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif /* CONFIG_COLDFIRE */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_COLDFIRE */
+>>>>>>> refs/remotes/origin/master
 #include <asm-generic/pgtable.h>
 #endif /* !__ASSEMBLY__ */
 

@@ -15,20 +15,33 @@
 #include <linux/init.h>
 #include <linux/io.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
  
+=======
+#include <video/vga.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgtable.h>
 #include <asm/page.h>
 #include <asm/irq.h>
 #include <asm/mach-types.h>
 #include <asm/setup.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/system_misc.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/system_misc.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/hardware/dec21285.h>
 
 #include <asm/mach/irq.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
+=======
+#include <asm/mach/pci.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "common.h"
 
@@ -178,11 +191,14 @@ static struct map_desc ebsa285_host_io_desc[] __initdata = {
 		.pfn		= __phys_to_pfn(DC21285_PCI_IACK),
 		.length		= PCIIACK_SIZE,
 		.type		= MT_DEVICE,
+<<<<<<< HEAD
 	}, {
 		.virtual	= PCIO_BASE,
 		.pfn		= __phys_to_pfn(DC21285_PCI_IO),
 		.length		= PCIO_SIZE,
 		.type		= MT_DEVICE,
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 #endif
 };
@@ -199,6 +215,7 @@ void __init footbridge_map_io(void)
 	 * Now, work out what we've got to map in addition on this
 	 * platform.
 	 */
+<<<<<<< HEAD
 	if (footbridge_cfn_mode())
 		iotable_init(ebsa285_host_io_desc, ARRAY_SIZE(ebsa285_host_io_desc));
 }
@@ -208,6 +225,19 @@ void __init footbridge_map_io(void)
 void footbridge_restart(char mode, const char *cmd)
 {
 	if (mode == 's') {
+=======
+	if (footbridge_cfn_mode()) {
+		iotable_init(ebsa285_host_io_desc, ARRAY_SIZE(ebsa285_host_io_desc));
+		pci_map_io_early(__phys_to_pfn(DC21285_PCI_IO));
+	}
+
+	vga_base = PCIMEM_BASE;
+}
+
+void footbridge_restart(enum reboot_mode mode, const char *cmd)
+{
+	if (mode == REBOOT_SOFT) {
+>>>>>>> refs/remotes/origin/master
 		/* Jump into the ROM */
 		soft_restart(0x41000000);
 	} else {
@@ -232,7 +262,10 @@ void footbridge_restart(char mode, const char *cmd)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FOOTBRIDGE_ADDIN
 
 static inline unsigned long fb_bus_sdram_offset(void)

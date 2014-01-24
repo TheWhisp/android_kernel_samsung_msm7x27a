@@ -1,9 +1,15 @@
 /*
+<<<<<<< HEAD
  *  linux/drivers/s390/crypto/zcrypt_pcicc.c
  *
  *  zcrypt 2.1.0
  *
  *  Copyright (C)  2001, 2006 IBM Corporation
+=======
+ *  zcrypt 2.1.0
+ *
+ *  Copyright IBM Corp. 2001, 2006
+>>>>>>> refs/remotes/origin/master
  *  Author(s): Robert Burroughs
  *	       Eric Rossman (edrossma@us.ibm.com)
  *
@@ -26,15 +32,25 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+<<<<<<< HEAD
+=======
+#define KMSG_COMPONENT "zcrypt"
+#define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/gfp.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 #include "ap_bus.h"
@@ -70,6 +86,7 @@ static struct ap_device_id zcrypt_pcicc_ids[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_ZCRYPT_MONOLITHIC
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -82,6 +99,13 @@ MODULE_LICENSE("GPL");
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_DEVICE_TABLE(ap, zcrypt_pcicc_ids);
+MODULE_AUTHOR("IBM Corporation");
+MODULE_DESCRIPTION("PCICC Cryptographic Coprocessor device driver, "
+		   "Copyright IBM Corp. 2001, 2006");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master
 
 static int zcrypt_pcicc_probe(struct ap_device *ap_dev);
 static void zcrypt_pcicc_remove(struct ap_device *ap_dev);
@@ -91,7 +115,10 @@ static void zcrypt_pcicc_receive(struct ap_device *, struct ap_message *,
 static struct ap_driver zcrypt_pcicc_driver = {
 	.probe = zcrypt_pcicc_probe,
 	.remove = zcrypt_pcicc_remove,
+<<<<<<< HEAD
 	.receive = zcrypt_pcicc_receive,
+=======
+>>>>>>> refs/remotes/origin/master
 	.ids = zcrypt_pcicc_ids,
 	.request_timeout = PCICC_CLEANUP_TIME,
 };
@@ -387,6 +414,14 @@ static int convert_type86(struct zcrypt_device *zdev,
 		if (service_rc == 8 && service_rs == 72)
 			return -EINVAL;
 		zdev->online = 0;
+<<<<<<< HEAD
+=======
+		pr_err("Cryptographic device %x failed and was set offline\n",
+		       zdev->ap_dev->qid);
+		ZCRYPT_DBF_DEV(DBF_ERR, zdev, "dev%04xo%drc%d",
+			       zdev->ap_dev->qid, zdev->online,
+			       msg->hdr.reply_code);
+>>>>>>> refs/remotes/origin/master
 		return -EAGAIN;	/* repeat the request on a different device. */
 	}
 	data = msg->text;
@@ -440,6 +475,13 @@ static int convert_response(struct zcrypt_device *zdev,
 		/* no break, incorrect cprb version is an unknown response */
 	default: /* Unknown response type, this should NEVER EVER happen */
 		zdev->online = 0;
+<<<<<<< HEAD
+=======
+		pr_err("Cryptographic device %x failed and was set offline\n",
+		       zdev->ap_dev->qid);
+		ZCRYPT_DBF_DEV(DBF_ERR, zdev, "dev%04xo%dfail",
+			       zdev->ap_dev->qid, zdev->online);
+>>>>>>> refs/remotes/origin/master
 		return -EAGAIN;	/* repeat the request on a different device. */
 	}
 }
@@ -500,6 +542,10 @@ static long zcrypt_pcicc_modexpo(struct zcrypt_device *zdev,
 	ap_msg.message = (void *) get_zeroed_page(GFP_KERNEL);
 	if (!ap_msg.message)
 		return -ENOMEM;
+<<<<<<< HEAD
+=======
+	ap_msg.receive = zcrypt_pcicc_receive;
+>>>>>>> refs/remotes/origin/master
 	ap_msg.length = PAGE_SIZE;
 	ap_msg.psmid = (((unsigned long long) current->pid) << 32) +
 				atomic_inc_return(&zcrypt_step);
@@ -539,6 +585,10 @@ static long zcrypt_pcicc_modexpo_crt(struct zcrypt_device *zdev,
 	ap_msg.message = (void *) get_zeroed_page(GFP_KERNEL);
 	if (!ap_msg.message)
 		return -ENOMEM;
+<<<<<<< HEAD
+=======
+	ap_msg.receive = zcrypt_pcicc_receive;
+>>>>>>> refs/remotes/origin/master
 	ap_msg.length = PAGE_SIZE;
 	ap_msg.psmid = (((unsigned long long) current->pid) << 32) +
 				atomic_inc_return(&zcrypt_step);
@@ -625,6 +675,7 @@ void zcrypt_pcicc_exit(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_ZCRYPT_MONOLITHIC
 module_init(zcrypt_pcicc_init);
 module_exit(zcrypt_pcicc_exit);
@@ -633,3 +684,7 @@ module_exit(zcrypt_pcicc_exit);
 module_init(zcrypt_pcicc_init);
 module_exit(zcrypt_pcicc_exit);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_init(zcrypt_pcicc_init);
+module_exit(zcrypt_pcicc_exit);
+>>>>>>> refs/remotes/origin/master

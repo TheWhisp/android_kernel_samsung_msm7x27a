@@ -4,11 +4,18 @@
  * Copyright (C) 1996, 1997, 1998, 1999 Jakub Jelinek (jj@ultra.linux.cz)
  */
 
+<<<<<<< HEAD
 	.text
 	.align		32
 	.globl		memmove
 	.type		memmove,#function
 memmove:		/* o0=dst o1=src o2=len */
+=======
+#include <linux/linkage.h>
+
+	.text
+ENTRY(memmove) /* o0=dst o1=src o2=len */
+>>>>>>> refs/remotes/origin/master
 	mov		%o0, %g1
 	cmp		%o0, %o1
 	bleu,pt		%xcc, memcpy
@@ -28,4 +35,8 @@ memmove:		/* o0=dst o1=src o2=len */
 
 	retl
 	 mov		%g1, %o0
+<<<<<<< HEAD
 	.size		memmove, .-memmove
+=======
+ENDPROC(memmove)
+>>>>>>> refs/remotes/origin/master

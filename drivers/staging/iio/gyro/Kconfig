@@ -2,10 +2,14 @@
 # IIO Digital Gyroscope Sensor drivers configuration
 #
 <<<<<<< HEAD
+<<<<<<< HEAD
 comment "Digital gyroscope sensors"
 =======
 menu "Digital gyroscope sensors"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+menu "Digital gyroscope sensors"
+>>>>>>> refs/remotes/origin/master
 
 config ADIS16060
 	tristate "Analog Devices ADIS16060 Yaw Rate Gyroscope with SPI driver"
@@ -14,6 +18,7 @@ config ADIS16060
 	  Say yes here to build support for Analog Devices adis16060 wide bandwidth
 	  yaw rate gyroscope with SPI.
 
+<<<<<<< HEAD
 config ADIS16080
 	tristate "Analog Devices ADIS16080/100 Yaw Rate Gyroscope with SPI driver"
 	depends on SPI
@@ -67,3 +72,6 @@ config ADXRS450
 
 endmenu
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+endmenu
+>>>>>>> refs/remotes/origin/master

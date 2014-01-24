@@ -36,6 +36,7 @@
 #include <linux/errno.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
 =======
 #include <asm/gpio.h>
@@ -46,6 +47,11 @@
 #include <mach/hardware.h>
 #include <asm/io.h>
 #include <plat/mux.h>
+=======
+#include <linux/gpio.h>
+#include <linux/platform_data/gpio-omap.h>
+#include <linux/platform_data/keypad-omap.h>
+>>>>>>> refs/remotes/origin/master
 
 #undef NEW_BOARD_LEARNING_MODE
 
@@ -65,6 +71,10 @@ struct omap_kp {
 	unsigned int cols;
 	unsigned long delay;
 	unsigned int debounce;
+<<<<<<< HEAD
+=======
+	unsigned short keymap[];
+>>>>>>> refs/remotes/origin/master
 };
 
 static DECLARE_TASKLET_DISABLED(kp_tasklet, omap_kp_tasklet, 0);
@@ -99,6 +109,7 @@ static u8 get_row_gpio_val(struct omap_kp *omap_kp)
 
 static irqreturn_t omap_kp_interrupt(int irq, void *dev_id)
 {
+<<<<<<< HEAD
 	struct omap_kp *omap_kp = dev_id;
 
 	/* disable keyboard interrupt and schedule for handling */
@@ -121,6 +132,10 @@ static irqreturn_t omap_kp_interrupt(int irq, void *dev_id)
 	} else
 		/* disable keyboard interrupt and schedule for handling */
 		omap_writew(1, OMAP1_MPUIO_BASE + OMAP_MPUIO_KBD_MASKIT);
+=======
+	/* disable keyboard interrupt and schedule for handling */
+	omap_writew(1, OMAP1_MPUIO_BASE + OMAP_MPUIO_KBD_MASKIT);
+>>>>>>> refs/remotes/origin/master
 
 	tasklet_schedule(&kp_tasklet);
 
@@ -136,6 +151,7 @@ static void omap_kp_scan_keypad(struct omap_kp *omap_kp, unsigned char *state)
 {
 	int col = 0;
 
+<<<<<<< HEAD
 	/* read the keypad status */
 	if (cpu_is_omap24xx()) {
 		/* read the keypad status */
@@ -163,6 +179,24 @@ static void omap_kp_scan_keypad(struct omap_kp *omap_kp, unsigned char *state)
 		omap_writew(0x00, OMAP1_MPUIO_BASE + OMAP_MPUIO_KBC);
 		udelay(2);
 	}
+=======
+	/* disable keyboard interrupt and schedule for handling */
+	omap_writew(1, OMAP1_MPUIO_BASE + OMAP_MPUIO_KBD_MASKIT);
+
+	/* read the keypad status */
+	omap_writew(0xff, OMAP1_MPUIO_BASE + OMAP_MPUIO_KBC);
+	for (col = 0; col < omap_kp->cols; col++) {
+		omap_writew(~(1 << col) & 0xff,
+			    OMAP1_MPUIO_BASE + OMAP_MPUIO_KBC);
+
+		udelay(omap_kp->delay);
+
+		state[col] = ~omap_readw(OMAP1_MPUIO_BASE +
+					 OMAP_MPUIO_KBR_LATCH) & 0xff;
+	}
+	omap_writew(0x00, OMAP1_MPUIO_BASE + OMAP_MPUIO_KBC);
+	udelay(2);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void omap_kp_tasklet(unsigned long data)
@@ -217,7 +251,11 @@ static void omap_kp_tasklet(unsigned long data)
 	memcpy(keypad_state, new_state, sizeof(keypad_state));
 
 	if (key_down) {
+<<<<<<< HEAD
                 int delay = HZ / 20;
+=======
+		int delay = HZ / 20;
+>>>>>>> refs/remotes/origin/master
 		/* some key is pressed - keep irq disabled and use timer
 		 * to poll the keypad */
 		if (spurious)
@@ -225,6 +263,7 @@ static void omap_kp_tasklet(unsigned long data)
 		mod_timer(&omap_kp_data->timer, jiffies + delay);
 	} else {
 		/* enable interrupts */
+<<<<<<< HEAD
 		if (cpu_is_omap24xx()) {
 			int i;
 			for (i = 0; i < omap_kp_data->rows; i++)
@@ -233,6 +272,10 @@ static void omap_kp_tasklet(unsigned long data)
 			omap_writew(0, OMAP1_MPUIO_BASE + OMAP_MPUIO_KBD_MASKIT);
 			kp_cur_group = -1;
 		}
+=======
+		omap_writew(0, OMAP1_MPUIO_BASE + OMAP_MPUIO_KBD_MASKIT);
+		kp_cur_group = -1;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -245,6 +288,10 @@ static ssize_t omap_kp_enable_show(struct device *dev,
 static ssize_t omap_kp_enable_store(struct device *dev, struct device_attribute *attr,
 				    const char *buf, size_t count)
 {
+<<<<<<< HEAD
+=======
+	struct omap_kp *omap_kp = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	int state;
 
 	if (sscanf(buf, "%u", &state) != 1)
@@ -256,9 +303,15 @@ static ssize_t omap_kp_enable_store(struct device *dev, struct device_attribute 
 	mutex_lock(&kp_enable_mutex);
 	if (state != kp_enable) {
 		if (state)
+<<<<<<< HEAD
 			enable_irq(INT_KEYBOARD);
 		else
 			disable_irq(INT_KEYBOARD);
+=======
+			enable_irq(omap_kp->irq);
+		else
+			disable_irq(omap_kp->irq);
+>>>>>>> refs/remotes/origin/master
 		kp_enable = state;
 	}
 	mutex_unlock(&kp_enable_mutex);
@@ -287,12 +340,20 @@ static int omap_kp_resume(struct platform_device *dev)
 #define omap_kp_resume	NULL
 #endif
 
+<<<<<<< HEAD
 static int __devinit omap_kp_probe(struct platform_device *pdev)
+=======
+static int omap_kp_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct omap_kp *omap_kp;
 	struct input_dev *input_dev;
 	struct omap_kp_platform_data *pdata =  pdev->dev.platform_data;
+<<<<<<< HEAD
 	int i, col_idx, row_idx, irq_idx, ret;
+=======
+	int i, col_idx, row_idx, ret;
+>>>>>>> refs/remotes/origin/master
 	unsigned int row_shift, keycodemax;
 
 	if (!pdata->rows || !pdata->cols || !pdata->keymap_data) {
@@ -317,6 +378,7 @@ static int __devinit omap_kp_probe(struct platform_device *pdev)
 	omap_kp->input = input_dev;
 
 	/* Disable the interrupt for the MPUIO keyboard */
+<<<<<<< HEAD
 	if (!cpu_is_omap24xx())
 		omap_writew(1, OMAP1_MPUIO_BASE + OMAP_MPUIO_KBD_MASKIT);
 
@@ -326,6 +388,9 @@ static int __devinit omap_kp_probe(struct platform_device *pdev)
 
 	if (pdata->rep)
 		__set_bit(EV_REP, input_dev->evbit);
+=======
+	omap_writew(1, OMAP1_MPUIO_BASE + OMAP_MPUIO_KBD_MASKIT);
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata->delay)
 		omap_kp->delay = pdata->delay;
@@ -338,6 +403,7 @@ static int __devinit omap_kp_probe(struct platform_device *pdev)
 	omap_kp->rows = pdata->rows;
 	omap_kp->cols = pdata->cols;
 
+<<<<<<< HEAD
 	if (cpu_is_omap24xx()) {
 		/* Cols: outputs */
 		for (col_idx = 0; col_idx < omap_kp->cols; col_idx++) {
@@ -363,6 +429,10 @@ static int __devinit omap_kp_probe(struct platform_device *pdev)
 		col_idx = 0;
 		row_idx = 0;
 	}
+=======
+	col_idx = 0;
+	row_idx = 0;
+>>>>>>> refs/remotes/origin/master
 
 	setup_timer(&omap_kp->timer, omap_kp_timer, (unsigned long)omap_kp);
 
@@ -375,9 +445,12 @@ static int __devinit omap_kp_probe(struct platform_device *pdev)
 		goto err2;
 
 	/* setup input device */
+<<<<<<< HEAD
 	__set_bit(EV_KEY, input_dev->evbit);
 	matrix_keypad_build_keymap(pdata->keymap_data, row_shift,
 			input_dev->keycode, input_dev->keybit);
+=======
+>>>>>>> refs/remotes/origin/master
 	input_dev->name = "omap-keypad";
 	input_dev->phys = "omap-keypad/input0";
 	input_dev->dev.parent = &pdev->dev;
@@ -387,6 +460,18 @@ static int __devinit omap_kp_probe(struct platform_device *pdev)
 	input_dev->id.product = 0x0001;
 	input_dev->id.version = 0x0100;
 
+<<<<<<< HEAD
+=======
+	if (pdata->rep)
+		__set_bit(EV_REP, input_dev->evbit);
+
+	ret = matrix_keypad_build_keymap(pdata->keymap_data, NULL,
+					 pdata->rows, pdata->cols,
+					 omap_kp->keymap, input_dev);
+	if (ret < 0)
+		goto err3;
+
+>>>>>>> refs/remotes/origin/master
 	ret = input_register_device(omap_kp->input);
 	if (ret < 0) {
 		printk(KERN_ERR "Unable to register omap-keypad input device\n");
@@ -398,6 +483,7 @@ static int __devinit omap_kp_probe(struct platform_device *pdev)
 
 	/* scan current status and enable interrupt */
 	omap_kp_scan_keypad(omap_kp, keypad_state);
+<<<<<<< HEAD
 	if (!cpu_is_omap24xx()) {
 		omap_kp->irq = platform_get_irq(pdev, 0);
 		if (omap_kp->irq >= 0) {
@@ -419,16 +505,34 @@ static int __devinit omap_kp_probe(struct platform_device *pdev)
 err5:
 	for (i = irq_idx - 1; i >=0; i--)
 		free_irq(row_gpios[i], omap_kp);
+=======
+	omap_kp->irq = platform_get_irq(pdev, 0);
+	if (omap_kp->irq >= 0) {
+		if (request_irq(omap_kp->irq, omap_kp_interrupt, 0,
+				"omap-keypad", omap_kp) < 0)
+			goto err4;
+	}
+	omap_writew(0, OMAP1_MPUIO_BASE + OMAP_MPUIO_KBD_MASKIT);
+
+	return 0;
+
+>>>>>>> refs/remotes/origin/master
 err4:
 	input_unregister_device(omap_kp->input);
 	input_dev = NULL;
 err3:
 	device_remove_file(&pdev->dev, &dev_attr_enable);
 err2:
+<<<<<<< HEAD
 	for (i = row_idx - 1; i >=0; i--)
 		gpio_free(row_gpios[i]);
 err1:
 	for (i = col_idx - 1; i >=0; i--)
+=======
+	for (i = row_idx - 1; i >= 0; i--)
+		gpio_free(row_gpios[i]);
+	for (i = col_idx - 1; i >= 0; i--)
+>>>>>>> refs/remotes/origin/master
 		gpio_free(col_gpios[i]);
 
 	kfree(omap_kp);
@@ -437,12 +541,17 @@ err1:
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static int __devexit omap_kp_remove(struct platform_device *pdev)
+=======
+static int omap_kp_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct omap_kp *omap_kp = platform_get_drvdata(pdev);
 
 	/* disable keypad interrupt handling */
 	tasklet_disable(&kp_tasklet);
+<<<<<<< HEAD
 	if (cpu_is_omap24xx()) {
 		int i;
 		for (i = 0; i < omap_kp->cols; i++)
@@ -455,6 +564,10 @@ static int __devexit omap_kp_remove(struct platform_device *pdev)
 		omap_writew(1, OMAP1_MPUIO_BASE + OMAP_MPUIO_KBD_MASKIT);
 		free_irq(omap_kp->irq, omap_kp);
 	}
+=======
+	omap_writew(1, OMAP1_MPUIO_BASE + OMAP_MPUIO_KBD_MASKIT);
+	free_irq(omap_kp->irq, omap_kp);
+>>>>>>> refs/remotes/origin/master
 
 	del_timer_sync(&omap_kp->timer);
 	tasklet_kill(&kp_tasklet);
@@ -469,7 +582,11 @@ static int __devexit omap_kp_remove(struct platform_device *pdev)
 
 static struct platform_driver omap_kp_driver = {
 	.probe		= omap_kp_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(omap_kp_remove),
+=======
+	.remove		= omap_kp_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= omap_kp_suspend,
 	.resume		= omap_kp_resume,
 	.driver		= {
@@ -477,6 +594,7 @@ static struct platform_driver omap_kp_driver = {
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int __init omap_kp_init(void)
@@ -495,6 +613,9 @@ module_exit(omap_kp_exit);
 =======
 module_platform_driver(omap_kp_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(omap_kp_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Timo Teräs");
 MODULE_DESCRIPTION("OMAP Keypad Driver");

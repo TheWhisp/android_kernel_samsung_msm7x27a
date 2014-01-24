@@ -17,10 +17,19 @@
 #include <linux/module.h>
 #include <linux/sched.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/of_platform.h>
 #include <linux/of_i2c.h>
 #include <linux/slab.h>
 
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+#include <linux/of_platform.h>
+#include <linux/slab.h>
+
+#include <linux/clk.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/fsl_devices.h>
 #include <linux/i2c.h>
@@ -64,6 +73,13 @@ struct mpc_i2c {
 	struct i2c_adapter adap;
 	int irq;
 	u32 real_clk;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_SLEEP
+	u8 fdr, dfsrr;
+#endif
+	struct clk *clk_per;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mpc_i2c_divider {
@@ -172,7 +188,11 @@ static int i2c_wait(struct mpc_i2c *i2c, unsigned timeout, int writing)
 }
 
 #if defined(CONFIG_PPC_MPC52xx) || defined(CONFIG_PPC_MPC512x)
+<<<<<<< HEAD
 static const struct mpc_i2c_divider mpc_i2c_dividers_52xx[] __devinitconst = {
+=======
+static const struct mpc_i2c_divider mpc_i2c_dividers_52xx[] = {
+>>>>>>> refs/remotes/origin/master
 	{20, 0x20}, {22, 0x21}, {24, 0x22}, {26, 0x23},
 	{28, 0x24}, {30, 0x01}, {32, 0x25}, {34, 0x02},
 	{36, 0x26}, {40, 0x27}, {44, 0x04}, {48, 0x28},
@@ -193,7 +213,11 @@ static const struct mpc_i2c_divider mpc_i2c_dividers_52xx[] __devinitconst = {
 	{10240, 0x9d}, {12288, 0x9e}, {15360, 0x9f}
 };
 
+<<<<<<< HEAD
 static int __devinit mpc_i2c_get_fdr_52xx(struct device_node *node, u32 clock,
+=======
+static int mpc_i2c_get_fdr_52xx(struct device_node *node, u32 clock,
+>>>>>>> refs/remotes/origin/master
 					  int prescaler, u32 *real_clk)
 {
 	const struct mpc_i2c_divider *div = NULL;
@@ -227,7 +251,11 @@ static int __devinit mpc_i2c_get_fdr_52xx(struct device_node *node, u32 clock,
 	return (int)div->fdr;
 }
 
+<<<<<<< HEAD
 static void __devinit mpc_i2c_setup_52xx(struct device_node *node,
+=======
+static void mpc_i2c_setup_52xx(struct device_node *node,
+>>>>>>> refs/remotes/origin/master
 					 struct mpc_i2c *i2c,
 					 u32 clock, u32 prescaler)
 {
@@ -249,7 +277,11 @@ static void __devinit mpc_i2c_setup_52xx(struct device_node *node,
 			 fdr);
 }
 #else /* !(CONFIG_PPC_MPC52xx || CONFIG_PPC_MPC512x) */
+<<<<<<< HEAD
 static void __devinit mpc_i2c_setup_52xx(struct device_node *node,
+=======
+static void mpc_i2c_setup_52xx(struct device_node *node,
+>>>>>>> refs/remotes/origin/master
 					 struct mpc_i2c *i2c,
 					 u32 clock, u32 prescaler)
 {
@@ -257,7 +289,11 @@ static void __devinit mpc_i2c_setup_52xx(struct device_node *node,
 #endif /* CONFIG_PPC_MPC52xx || CONFIG_PPC_MPC512x */
 
 #ifdef CONFIG_PPC_MPC512x
+<<<<<<< HEAD
 static void __devinit mpc_i2c_setup_512x(struct device_node *node,
+=======
+static void mpc_i2c_setup_512x(struct device_node *node,
+>>>>>>> refs/remotes/origin/master
 					 struct mpc_i2c *i2c,
 					 u32 clock, u32 prescaler)
 {
@@ -285,7 +321,11 @@ static void __devinit mpc_i2c_setup_512x(struct device_node *node,
 	mpc_i2c_setup_52xx(node, i2c, clock, prescaler);
 }
 #else /* CONFIG_PPC_MPC512x */
+<<<<<<< HEAD
 static void __devinit mpc_i2c_setup_512x(struct device_node *node,
+=======
+static void mpc_i2c_setup_512x(struct device_node *node,
+>>>>>>> refs/remotes/origin/master
 					 struct mpc_i2c *i2c,
 					 u32 clock, u32 prescaler)
 {
@@ -293,7 +333,11 @@ static void __devinit mpc_i2c_setup_512x(struct device_node *node,
 #endif /* CONFIG_PPC_MPC512x */
 
 #ifdef CONFIG_FSL_SOC
+<<<<<<< HEAD
 static const struct mpc_i2c_divider mpc_i2c_dividers_8xxx[] __devinitconst = {
+=======
+static const struct mpc_i2c_divider mpc_i2c_dividers_8xxx[] = {
+>>>>>>> refs/remotes/origin/master
 	{160, 0x0120}, {192, 0x0121}, {224, 0x0122}, {256, 0x0123},
 	{288, 0x0100}, {320, 0x0101}, {352, 0x0601}, {384, 0x0102},
 	{416, 0x0602}, {448, 0x0126}, {480, 0x0103}, {512, 0x0127},
@@ -313,7 +357,11 @@ static const struct mpc_i2c_divider mpc_i2c_dividers_8xxx[] __devinitconst = {
 	{49152, 0x011e}, {61440, 0x011f}
 };
 
+<<<<<<< HEAD
 static u32 __devinit mpc_i2c_get_sec_cfg_8xxx(void)
+=======
+static u32 mpc_i2c_get_sec_cfg_8xxx(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *node = NULL;
 	u32 __iomem *reg;
@@ -342,7 +390,11 @@ static u32 __devinit mpc_i2c_get_sec_cfg_8xxx(void)
 	return val;
 }
 
+<<<<<<< HEAD
 static int __devinit mpc_i2c_get_fdr_8xxx(struct device_node *node, u32 clock,
+=======
+static int mpc_i2c_get_fdr_8xxx(struct device_node *node, u32 clock,
+>>>>>>> refs/remotes/origin/master
 					  u32 prescaler, u32 *real_clk)
 {
 	const struct mpc_i2c_divider *div = NULL;
@@ -380,7 +432,11 @@ static int __devinit mpc_i2c_get_fdr_8xxx(struct device_node *node, u32 clock,
 	return div ? (int)div->fdr : -EINVAL;
 }
 
+<<<<<<< HEAD
 static void __devinit mpc_i2c_setup_8xxx(struct device_node *node,
+=======
+static void mpc_i2c_setup_8xxx(struct device_node *node,
+>>>>>>> refs/remotes/origin/master
 					 struct mpc_i2c *i2c,
 					 u32 clock, u32 prescaler)
 {
@@ -405,7 +461,11 @@ static void __devinit mpc_i2c_setup_8xxx(struct device_node *node,
 }
 
 #else /* !CONFIG_FSL_SOC */
+<<<<<<< HEAD
 static void __devinit mpc_i2c_setup_8xxx(struct device_node *node,
+=======
+static void mpc_i2c_setup_8xxx(struct device_node *node,
+>>>>>>> refs/remotes/origin/master
 					 struct mpc_i2c *i2c,
 					 u32 clock, u32 prescaler)
 {
@@ -455,10 +515,14 @@ static int mpc_write(struct mpc_i2c *i2c, int target,
 
 static int mpc_read(struct mpc_i2c *i2c, int target,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    u8 *data, int length, int restart)
 =======
 		    u8 *data, int length, int restart, bool recv_len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    u8 *data, int length, int restart, bool recv_len)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned timeout = i2c->adap.timeout;
 	int i, result;
@@ -475,10 +539,14 @@ static int mpc_read(struct mpc_i2c *i2c, int target,
 
 	if (length) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (length == 1)
 =======
 		if (length == 1 && !recv_len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (length == 1 && !recv_len)
+>>>>>>> refs/remotes/origin/master
 			writeccr(i2c, CCR_MIEN | CCR_MEN | CCR_MSTA | CCR_TXAK);
 		else
 			writeccr(i2c, CCR_MIEN | CCR_MEN | CCR_MSTA);
@@ -488,14 +556,20 @@ static int mpc_read(struct mpc_i2c *i2c, int target,
 
 	for (i = 0; i < length; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		u8 byte;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		u8 byte;
+
+>>>>>>> refs/remotes/origin/master
 		result = i2c_wait(i2c, timeout, 0);
 		if (result < 0)
 			return result;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* Generate txack on next to last byte */
 		if (i == length - 2)
@@ -505,6 +579,8 @@ static int mpc_read(struct mpc_i2c *i2c, int target,
 			writeccr(i2c, CCR_MIEN | CCR_MEN | CCR_MSTA | CCR_MTX);
 		data[i] = readb(i2c->base + MPC_I2C_DR);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * For block reads, we have to know the total length (1st byte)
 		 * before we can determine if we are done.
@@ -539,7 +615,10 @@ static int mpc_read(struct mpc_i2c *i2c, int target,
 					 | CCR_TXAK);
 		}
 		data[i] = byte;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return length;
@@ -583,6 +662,7 @@ static int mpc_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
 			pmsg->flags & I2C_M_RD ? "read" : "write",
 			pmsg->len, pmsg->addr, i + 1, num);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (pmsg->flags & I2C_M_RD)
 			ret =
 			    mpc_read(i2c, pmsg->addr, pmsg->buf, pmsg->len, i);
@@ -590,6 +670,8 @@ static int mpc_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
 			ret =
 			    mpc_write(i2c, pmsg->addr, pmsg->buf, pmsg->len, i);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (pmsg->flags & I2C_M_RD) {
 			bool recv_len = pmsg->flags & I2C_M_RECV_LEN;
 
@@ -601,20 +683,46 @@ static int mpc_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
 			ret =
 			    mpc_write(i2c, pmsg->addr, pmsg->buf, pmsg->len, i);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 	mpc_i2c_stop(i2c);
+=======
+	}
+	mpc_i2c_stop(i2c); /* Initiate STOP */
+	orig_jiffies = jiffies;
+	/* Wait until STOP is seen, allow up to 1 s */
+	while (readb(i2c->base + MPC_I2C_SR) & CSR_MBB) {
+		if (time_after(jiffies, orig_jiffies + HZ)) {
+			u8 status = readb(i2c->base + MPC_I2C_SR);
+
+			dev_dbg(i2c->dev, "timeout\n");
+			if ((status & (CSR_MCF | CSR_MBB | CSR_RXAK)) != 0) {
+				writeb(status & ~CSR_MAL,
+				       i2c->base + MPC_I2C_SR);
+				mpc_i2c_fixup(i2c);
+			}
+			return -EIO;
+		}
+		cond_resched();
+	}
+>>>>>>> refs/remotes/origin/master
 	return (ret < 0) ? ret : num;
 }
 
 static u32 mpc_functionality(struct i2c_adapter *adap)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
 =======
 	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL
 	  | I2C_FUNC_SMBUS_READ_BLOCK_DATA | I2C_FUNC_SMBUS_BLOCK_PROC_CALL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL
+	  | I2C_FUNC_SMBUS_READ_BLOCK_DATA | I2C_FUNC_SMBUS_BLOCK_PROC_CALL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct i2c_algorithm mpc_algo = {
@@ -624,13 +732,20 @@ static const struct i2c_algorithm mpc_algo = {
 
 static struct i2c_adapter mpc_ops = {
 	.owner = THIS_MODULE,
+<<<<<<< HEAD
 	.name = "MPC adapter",
+=======
+>>>>>>> refs/remotes/origin/master
 	.algo = &mpc_algo,
 	.timeout = HZ,
 };
 
 static const struct of_device_id mpc_i2c_of_match[];
+<<<<<<< HEAD
 static int __devinit fsl_i2c_probe(struct platform_device *op)
+=======
+static int fsl_i2c_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct of_device_id *match;
 	struct mpc_i2c *i2c;
@@ -638,6 +753,12 @@ static int __devinit fsl_i2c_probe(struct platform_device *op)
 	u32 clock = MPC_I2C_CLOCK_LEGACY;
 	int result = 0;
 	int plen;
+<<<<<<< HEAD
+=======
+	struct resource res;
+	struct clk *clk;
+	int err;
+>>>>>>> refs/remotes/origin/master
 
 	match = of_match_device(mpc_i2c_of_match, &op->dev);
 	if (!match)
@@ -668,6 +789,24 @@ static int __devinit fsl_i2c_probe(struct platform_device *op)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * enable clock for the I2C peripheral (non fatal),
+	 * keep a reference upon successful allocation
+	 */
+	clk = devm_clk_get(&op->dev, NULL);
+	if (!IS_ERR(clk)) {
+		err = clk_prepare_enable(clk);
+		if (err) {
+			dev_err(&op->dev, "failed to enable clock\n");
+			goto fail_request;
+		} else {
+			i2c->clk_per = clk;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (of_get_property(op->dev.of_node, "fsl,preserve-clocking", NULL)) {
 		clock = MPC_I2C_CLOCK_PRESERVE;
 	} else {
@@ -678,7 +817,11 @@ static int __devinit fsl_i2c_probe(struct platform_device *op)
 	}
 
 	if (match->data) {
+<<<<<<< HEAD
 		struct mpc_i2c_data *data = match->data;
+=======
+		const struct mpc_i2c_data *data = match->data;
+>>>>>>> refs/remotes/origin/master
 		data->setup(op->dev.of_node, i2c, clock, data->prescaler);
 	} else {
 		/* Backwards compatibility */
@@ -694,9 +837,18 @@ static int __devinit fsl_i2c_probe(struct platform_device *op)
 	}
 	dev_info(i2c->dev, "timeout %u us\n", mpc_ops.timeout * 1000000 / HZ);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, i2c);
 
 	i2c->adap = mpc_ops;
+=======
+	platform_set_drvdata(op, i2c);
+
+	i2c->adap = mpc_ops;
+	of_address_to_resource(op->dev.of_node, 0, &res);
+	scnprintf(i2c->adap.name, sizeof(i2c->adap.name),
+		  "MPC adapter at 0x%llx", (unsigned long long)res.start);
+>>>>>>> refs/remotes/origin/master
 	i2c_set_adapdata(&i2c->adap, i2c);
 	i2c->adap.dev.parent = &op->dev;
 	i2c->adap.dev.of_node = of_node_get(op->dev.of_node);
@@ -706,12 +858,20 @@ static int __devinit fsl_i2c_probe(struct platform_device *op)
 		dev_err(i2c->dev, "failed to add adapter\n");
 		goto fail_add;
 	}
+<<<<<<< HEAD
 	of_i2c_register_devices(&i2c->adap);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return result;
 
  fail_add:
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, NULL);
+=======
+	if (i2c->clk_per)
+		clk_disable_unprepare(i2c->clk_per);
+>>>>>>> refs/remotes/origin/master
 	free_irq(i2c->irq, i2c);
  fail_request:
 	irq_dispose_mapping(i2c->irq);
@@ -721,12 +881,23 @@ static int __devinit fsl_i2c_probe(struct platform_device *op)
 	return result;
 };
 
+<<<<<<< HEAD
 static int __devexit fsl_i2c_remove(struct platform_device *op)
 {
 	struct mpc_i2c *i2c = dev_get_drvdata(&op->dev);
 
 	i2c_del_adapter(&i2c->adap);
 	dev_set_drvdata(&op->dev, NULL);
+=======
+static int fsl_i2c_remove(struct platform_device *op)
+{
+	struct mpc_i2c *i2c = platform_get_drvdata(op);
+
+	i2c_del_adapter(&i2c->adap);
+
+	if (i2c->clk_per)
+		clk_disable_unprepare(i2c->clk_per);
+>>>>>>> refs/remotes/origin/master
 
 	if (i2c->irq)
 		free_irq(i2c->irq, i2c);
@@ -737,6 +908,7 @@ static int __devexit fsl_i2c_remove(struct platform_device *op)
 	return 0;
 };
 
+<<<<<<< HEAD
 static struct mpc_i2c_data mpc_i2c_data_512x __devinitdata = {
 	.setup = mpc_i2c_setup_512x,
 };
@@ -750,11 +922,57 @@ static struct mpc_i2c_data mpc_i2c_data_8313 __devinitdata = {
 };
 
 static struct mpc_i2c_data mpc_i2c_data_8543 __devinitdata = {
+=======
+#ifdef CONFIG_PM_SLEEP
+static int mpc_i2c_suspend(struct device *dev)
+{
+	struct mpc_i2c *i2c = dev_get_drvdata(dev);
+
+	i2c->fdr = readb(i2c->base + MPC_I2C_FDR);
+	i2c->dfsrr = readb(i2c->base + MPC_I2C_DFSRR);
+
+	return 0;
+}
+
+static int mpc_i2c_resume(struct device *dev)
+{
+	struct mpc_i2c *i2c = dev_get_drvdata(dev);
+
+	writeb(i2c->fdr, i2c->base + MPC_I2C_FDR);
+	writeb(i2c->dfsrr, i2c->base + MPC_I2C_DFSRR);
+
+	return 0;
+}
+
+static SIMPLE_DEV_PM_OPS(mpc_i2c_pm_ops, mpc_i2c_suspend, mpc_i2c_resume);
+#define MPC_I2C_PM_OPS	(&mpc_i2c_pm_ops)
+#else
+#define MPC_I2C_PM_OPS	NULL
+#endif
+
+static const struct mpc_i2c_data mpc_i2c_data_512x = {
+	.setup = mpc_i2c_setup_512x,
+};
+
+static const struct mpc_i2c_data mpc_i2c_data_52xx = {
+	.setup = mpc_i2c_setup_52xx,
+};
+
+static const struct mpc_i2c_data mpc_i2c_data_8313 = {
+	.setup = mpc_i2c_setup_8xxx,
+};
+
+static const struct mpc_i2c_data mpc_i2c_data_8543 = {
+>>>>>>> refs/remotes/origin/master
 	.setup = mpc_i2c_setup_8xxx,
 	.prescaler = 2,
 };
 
+<<<<<<< HEAD
 static struct mpc_i2c_data mpc_i2c_data_8544 __devinitdata = {
+=======
+static const struct mpc_i2c_data mpc_i2c_data_8544 = {
+>>>>>>> refs/remotes/origin/master
 	.setup = mpc_i2c_setup_8xxx,
 	.prescaler = 3,
 };
@@ -776,11 +994,16 @@ MODULE_DEVICE_TABLE(of, mpc_i2c_of_match);
 /* Structure for a device driver */
 static struct platform_driver mpc_i2c_driver = {
 	.probe		= fsl_i2c_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(fsl_i2c_remove),
+=======
+	.remove		= fsl_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.owner = THIS_MODULE,
 		.name = DRV_NAME,
 		.of_match_table = mpc_i2c_of_match,
+<<<<<<< HEAD
 	},
 };
 
@@ -800,6 +1023,13 @@ module_exit(fsl_i2c_exit);
 =======
 module_platform_driver(mpc_i2c_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm = MPC_I2C_PM_OPS,
+	},
+};
+
+module_platform_driver(mpc_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Adrian Cox <adrian@humboldt.co.uk>");
 MODULE_DESCRIPTION("I2C-Bus adapter for MPC107 bridge and "

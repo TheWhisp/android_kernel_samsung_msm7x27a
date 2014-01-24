@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2007-2009 ST-Ericsson AB
  * License terms: GNU General Public License (GPL) version 2
+<<<<<<< HEAD
  * AB3100 core access functions
  * Author: Linus Walleij <linus.walleij@stericsson.com>
  *
@@ -11,6 +12,11 @@
 =======
  * ab3100, ab5500, and ab8500.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+ * ABX500 core access functions.
+ * The abx500 interface is used for the Analog Baseband chips.
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Mattias Wallin <mattias.wallin@stericsson.com>
  * Author: Mattias Nilsson <mattias.i.nilsson@stericsson.com>
@@ -19,14 +25,18 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/regulator/machine.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/regulator/machine.h>
 
 struct device;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #ifndef MFD_ABX500_H
 #define MFD_ABX500_H
@@ -196,6 +206,11 @@ enum ab3550_devid {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef MFD_ABX500_H
+#define MFD_ABX500_H
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct abx500_init_setting
  * Initial value of the registers for driver to use during setup.
@@ -206,6 +221,7 @@ struct abx500_init_settings {
 	u8 setting;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /**
  * struct ab3550_platform_data
@@ -218,6 +234,8 @@ struct ab3550_platform_data {
 	struct abx500_init_settings *init_settings;
 	unsigned int init_settings_sz;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Battery driver related data */
 /*
  * ADC for the battery thermistor.
@@ -279,6 +297,14 @@ struct abx500_fg;
  *				points.
  * @maint_thres			This is the threshold where we stop reporting
  *				battery full while in maintenance, in per cent
+<<<<<<< HEAD
+=======
+ * @pcut_enable:			Enable power cut feature in ab8505
+ * @pcut_max_time:		Max time threshold
+ * @pcut_flag_time:		Flagtime threshold
+ * @pcut_max_restart:		Max number of restarts
+ * @pcut_debounce_time:		Sets battery debounce time
+>>>>>>> refs/remotes/origin/master
  */
 struct abx500_fg_parameters {
 	int recovery_sleep_timer;
@@ -296,6 +322,14 @@ struct abx500_fg_parameters {
 	int battok_raising_th_sel1;
 	int user_cap_limit;
 	int maint_thres;
+<<<<<<< HEAD
+=======
+	bool pcut_enable;
+	u8 pcut_max_time;
+	u8 pcut_flag_time;
+	u8 pcut_max_restart;
+	u8 pcut_debounce_time;
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -321,7 +355,11 @@ struct abx500_maxim_parameters {
  * @nominal_voltage:		Nominal voltage of the battery in mV
  * @termination_vol:		max voltage upto which battery can be charged
  * @termination_curr		battery charging termination current in mA
+<<<<<<< HEAD
  * @recharge_vol		battery voltage limit that will trigger a new
+=======
+ * @recharge_cap		battery capacity limit that will trigger a new
+>>>>>>> refs/remotes/origin/master
  *				full charging cycle in the case where maintenan-
  *				-ce charging has been disabled
  * @normal_cur_lvl:		charger current in normal state in mA
@@ -350,7 +388,11 @@ struct abx500_battery_type {
 	int nominal_voltage;
 	int termination_vol;
 	int termination_curr;
+<<<<<<< HEAD
 	int recharge_vol;
+=======
+	int recharge_cap;
+>>>>>>> refs/remotes/origin/master
 	int normal_cur_lvl;
 	int normal_vol_lvl;
 	int maint_a_cur_lvl;
@@ -363,11 +405,19 @@ struct abx500_battery_type {
 	int low_high_vol_lvl;
 	int battery_resistance;
 	int n_temp_tbl_elements;
+<<<<<<< HEAD
 	struct abx500_res_to_temp *r_to_t_tbl;
 	int n_v_cap_tbl_elements;
 	struct abx500_v_to_cap *v_to_cap_tbl;
 	int n_batres_tbl_elements;
 	struct batres_vs_temp *batres_tbl;
+=======
+	const struct abx500_res_to_temp *r_to_t_tbl;
+	int n_v_cap_tbl_elements;
+	const struct abx500_v_to_cap *v_to_cap_tbl;
+	int n_batres_tbl_elements;
+	const struct batres_vs_temp *batres_tbl;
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -414,6 +464,10 @@ struct abx500_bm_charger_parameters {
  * @bkup_bat_v		voltage which we charge the backup battery with
  * @bkup_bat_i		current which we charge the backup battery with
  * @no_maintenance	indicates that maintenance charging is disabled
+<<<<<<< HEAD
+=======
+ * @capacity_scaling    indicates whether capacity scaling is to be used
+>>>>>>> refs/remotes/origin/master
  * @abx500_adc_therm	placement of thermistor, batctrl or battemp adc
  * @chg_unknown_bat	flag to enable charging of unknown batteries
  * @enable_overshoot	flag to enable VBAT overshoot control
@@ -425,7 +479,15 @@ struct abx500_bm_charger_parameters {
  * @interval_not_charging charge alg cycle period time when not charging (sec)
  * @temp_hysteresis	temperature hysteresis
  * @gnd_lift_resistance	Battery ground to phone ground resistance (mOhm)
+<<<<<<< HEAD
  * @maxi:		maximization parameters
+=======
+ * @n_chg_out_curr		number of elements in array chg_output_curr
+ * @n_chg_in_curr		number of elements in array chg_input_curr
+ * @chg_output_curr	charger output current level map
+ * @chg_input_curr		charger input current level map
+ * @maxi		maximization parameters
+>>>>>>> refs/remotes/origin/master
  * @cap_levels		capacity in percent for the different capacity levels
  * @bat_type		table of supported battery types
  * @chg_params		charger parameters
@@ -443,7 +505,16 @@ struct abx500_bm_data {
 	int usb_safety_tmr_h;
 	int bkup_bat_v;
 	int bkup_bat_i;
+<<<<<<< HEAD
 	bool no_maintenance;
+=======
+	bool autopower_cfg;
+	bool ac_enabled;
+	bool usb_enabled;
+	bool usb_power_path;
+	bool no_maintenance;
+	bool capacity_scaling;
+>>>>>>> refs/remotes/origin/master
 	bool chg_unknown_bat;
 	bool enable_overshoot;
 	bool auto_trig;
@@ -455,13 +526,24 @@ struct abx500_bm_data {
 	int interval_not_charging;
 	int temp_hysteresis;
 	int gnd_lift_resistance;
+<<<<<<< HEAD
 	const struct abx500_maxim_parameters *maxi;
 	const struct abx500_bm_capacity_levels *cap_levels;
 	const struct abx500_battery_type *bat_type;
+=======
+	int n_chg_out_curr;
+	int n_chg_in_curr;
+	int *chg_output_curr;
+	int *chg_input_curr;
+	const struct abx500_maxim_parameters *maxi;
+	const struct abx500_bm_capacity_levels *cap_levels;
+	struct abx500_battery_type *bat_type;
+>>>>>>> refs/remotes/origin/master
 	const struct abx500_bm_charger_parameters *chg_params;
 	const struct abx500_fg_parameters *fg_params;
 };
 
+<<<<<<< HEAD
 struct abx500_chargalg_platform_data {
 	char **supplied_to;
 	size_t num_supplicants;
@@ -491,6 +573,16 @@ struct abx500_bm_plat_data {
 	struct abx500_chargalg_platform_data *chargalg;
 >>>>>>> refs/remotes/origin/cm-10.0
 };
+=======
+enum {
+	NTC_EXTERNAL = 0,
+	NTC_INTERNAL,
+};
+
+int ab8500_bm_of_probe(struct device *dev,
+		       struct device_node *np,
+		       struct abx500_bm_data *bm);
+>>>>>>> refs/remotes/origin/master
 
 int abx500_set_register_interruptible(struct device *dev, u8 bank, u8 reg,
 	u8 value);
@@ -517,6 +609,10 @@ int abx500_mask_and_set_register_interruptible(struct device *dev, u8 bank,
 int abx500_get_chip_id(struct device *dev);
 int abx500_event_registers_startup_state_get(struct device *dev, u8 *event);
 int abx500_startup_irq_enabled(struct device *dev, unsigned int irq);
+<<<<<<< HEAD
+=======
+void abx500_dump_all_banks(void);
+>>>>>>> refs/remotes/origin/master
 
 struct abx500_ops {
 	int (*get_chip_id) (struct device *);
@@ -527,6 +623,10 @@ struct abx500_ops {
 	int (*mask_and_set_register) (struct device *, u8, u8, u8, u8);
 	int (*event_registers_startup_state_get) (struct device *, u8 *);
 	int (*startup_irq_enabled) (struct device *, unsigned int);
+<<<<<<< HEAD
+=======
+	void (*dump_all_banks) (struct device *);
+>>>>>>> refs/remotes/origin/master
 };
 
 int abx500_register_ops(struct device *core_dev, struct abx500_ops *ops);

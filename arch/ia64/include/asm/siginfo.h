@@ -1,12 +1,16 @@
+<<<<<<< HEAD
 #ifndef _ASM_IA64_SIGINFO_H
 #define _ASM_IA64_SIGINFO_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Based on <asm-i386/siginfo.h>.
  *
  * Modified 1998-2002
  *	David Mosberger-Tang <davidm@hpl.hp.com>, Hewlett-Packard Co
  */
+<<<<<<< HEAD
 
 #define __ARCH_SI_PREAMBLE_SIZE	(4 * sizeof(int))
 
@@ -119,6 +123,13 @@ typedef struct siginfo {
 
 #ifdef __KERNEL__
 #include <linux/string.h>
+=======
+#ifndef _ASM_IA64_SIGINFO_H
+#define _ASM_IA64_SIGINFO_H
+
+#include <linux/string.h>
+#include <uapi/asm/siginfo.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline void
 copy_siginfo (siginfo_t *to, siginfo_t *from)
@@ -130,6 +141,9 @@ copy_siginfo (siginfo_t *to, siginfo_t *from)
 		memcpy(to, from, 4*sizeof(int) + sizeof(from->_sifields._sigchld));
 }
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_IA64_SIGINFO_H */

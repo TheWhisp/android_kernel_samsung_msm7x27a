@@ -22,9 +22,13 @@
 #include <linux/platform_device.h>
 #include <linux/gpio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/moduleparam.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/smsc911x.h>
 #include <linux/mfd/mc13783.h>
 #include <linux/spi/spi.h>
@@ -33,10 +37,15 @@
 #include <linux/mtd/physmap.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/regulator/machine.h>
 #include <linux/regulator/fixed.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regulator/machine.h>
+#include <linux/regulator/fixed.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
@@ -45,6 +54,7 @@
 #include <asm/page.h>
 #include <asm/setup.h>
 
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/common.h>
 #include <mach/board-mx31lite.h>
@@ -53,6 +63,14 @@
 #include <mach/ulpi.h>
 
 #include "devices-imx31.h"
+=======
+#include "board-mx31lite.h"
+#include "common.h"
+#include "devices-imx31.h"
+#include "hardware.h"
+#include "iomux-mx3.h"
+#include "ulpi.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This file contains the module-specific initialization routines.
@@ -89,8 +107,12 @@ static struct resource smsc911x_resources[] = {
 		.end		= MX31_CS4_BASE_ADDR + 0x100,
 		.flags		= IORESOURCE_MEM,
 	}, {
+<<<<<<< HEAD
 		.start		= IOMUX_TO_IRQ(MX31_PIN_SFS6),
 		.end		= IOMUX_TO_IRQ(MX31_PIN_SFS6),
+=======
+		/* irq number is run-time assigned */
+>>>>>>> refs/remotes/origin/master
 		.flags		= IORESOURCE_IRQ,
 	},
 };
@@ -122,11 +144,15 @@ static const struct spi_imx_master spi1_pdata __initconst = {
 
 static struct mc13xxx_platform_data mc13783_pdata __initdata = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flags  = MC13XXX_USE_RTC |
 		  MC13XXX_USE_REGULATOR,
 =======
 	.flags = MC13XXX_USE_RTC,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags = MC13XXX_USE_RTC,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct spi_board_info mc13783_spi_dev __initdata = {
@@ -135,7 +161,11 @@ static struct spi_board_info mc13783_spi_dev __initdata = {
 	.bus_num	= 1,
 	.chip_select    = 0,
 	.platform_data  = &mc13783_pdata,
+<<<<<<< HEAD
 	.irq		= IOMUX_TO_IRQ(MX31_PIN_GPIO1_3),
+=======
+	/* irq number is run-time assigned */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -220,7 +250,11 @@ static struct platform_device physmap_flash_device = {
  */
 static struct map_desc mx31lite_io_desc[] __initdata = {
 	{
+<<<<<<< HEAD
 		.virtual = MX31_CS4_BASE_ADDR_VIRT,
+=======
+		.virtual = (unsigned long)MX31_CS4_BASE_ADDR_VIRT,
+>>>>>>> refs/remotes/origin/master
 		.pfn = __phys_to_pfn(MX31_CS4_BASE_ADDR),
 		.length = MX31_CS4_SIZE,
 		.type = MT_DEVICE
@@ -240,22 +274,33 @@ static int mx31lite_baseboard;
 core_param(mx31lite_baseboard, mx31lite_baseboard, int, 0444);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct regulator_consumer_supply dummy_supplies[] = {
 	REGULATOR_SUPPLY("vdd33a", "smsc911x"),
 	REGULATOR_SUPPLY("vddvario", "smsc911x"),
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init mx31lite_init(void)
 {
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	imx31_soc_init();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	imx31_soc_init();
+
+>>>>>>> refs/remotes/origin/master
 	switch (mx31lite_baseboard) {
 	case MX31LITE_NOBOARD:
 		break;
@@ -275,6 +320,10 @@ static void __init mx31lite_init(void)
 	imx31_add_mxc_nand(&mx31lite_nand_board_info);
 
 	imx31_add_spi_imx1(&spi1_pdata);
+<<<<<<< HEAD
+=======
+	mc13783_spi_dev.irq = gpio_to_irq(IOMUX_TO_GPIO(MX31_PIN_GPIO1_3));
+>>>>>>> refs/remotes/origin/master
 	spi_register_board_info(&mc13783_spi_dev, 1);
 
 	/* USB */
@@ -284,16 +333,28 @@ static void __init mx31lite_init(void)
 		imx31_add_mxc_ehci_hs(2, &usbh2_pdata);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	regulator_register_fixed(0, dummy_supplies, ARRAY_SIZE(dummy_supplies));
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	regulator_register_fixed(0, dummy_supplies, ARRAY_SIZE(dummy_supplies));
+
+>>>>>>> refs/remotes/origin/master
 	/* SMSC9117 IRQ pin */
 	ret = gpio_request(IOMUX_TO_GPIO(MX31_PIN_SFS6), "sms9117-irq");
 	if (ret)
 		pr_warning("could not get LAN irq gpio\n");
 	else {
 		gpio_direction_input(IOMUX_TO_GPIO(MX31_PIN_SFS6));
+<<<<<<< HEAD
+=======
+		smsc911x_resources[1].start =
+			gpio_to_irq(IOMUX_TO_GPIO(MX31_PIN_SFS6));
+		smsc911x_resources[1].end =
+			gpio_to_irq(IOMUX_TO_GPIO(MX31_PIN_SFS6));
+>>>>>>> refs/remotes/origin/master
 		platform_device_register(&smsc911x_device);
 	}
 }
@@ -303,6 +364,7 @@ static void __init mx31lite_timer_init(void)
 	mx31_clocks_init(26000000);
 }
 
+<<<<<<< HEAD
 struct sys_timer mx31lite_timer = {
 	.init	= mx31lite_timer_init,
 };
@@ -317,13 +379,23 @@ MACHINE_START(MX31LITE, "LogicPD i.MX31 SOM")
 	.timer = &mx31lite_timer,
 	.init_machine = mx31lite_init,
 =======
+=======
+MACHINE_START(MX31LITE, "LogicPD i.MX31 SOM")
+	/* Maintainer: Freescale Semiconductor, Inc. */
+>>>>>>> refs/remotes/origin/master
 	.atag_offset = 0x100,
 	.map_io = mx31lite_map_io,
 	.init_early = imx31_init_early,
 	.init_irq = mx31_init_irq,
 	.handle_irq = imx31_handle_irq,
+<<<<<<< HEAD
 	.timer = &mx31lite_timer,
 	.init_machine = mx31lite_init,
 	.restart	= mxc_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= mx31lite_timer_init,
+	.init_machine = mx31lite_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

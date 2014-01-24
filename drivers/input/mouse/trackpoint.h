@@ -126,6 +126,11 @@
 #define TP_DEF_PTSON		0x00
 #define TP_DEF_SKIPBACK		0x00
 #define TP_DEF_EXT_DEV		0x00	/* 0 means enabled */
+<<<<<<< HEAD
+=======
+#define TP_DEF_TWOHAND		0x00
+#define TP_DEF_SOURCE_TAG	0x00
+>>>>>>> refs/remotes/origin/master
 
 #define MAKE_PS2_CMD(params, results, cmd) ((params<<12) | (results<<8) | (cmd))
 
@@ -136,9 +141,15 @@ struct trackpoint_data
 	unsigned char thresh, upthresh;
 	unsigned char ztime, jenks;
 
+<<<<<<< HEAD
 	unsigned char press_to_select;
 	unsigned char skipback;
 
+=======
+	/* toggles */
+	unsigned char press_to_select;
+	unsigned char skipback;
+>>>>>>> refs/remotes/origin/master
 	unsigned char ext_dev;
 };
 

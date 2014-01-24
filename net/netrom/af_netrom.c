@@ -32,9 +32,12 @@
 #include <net/sock.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/fcntl.h>
 #include <linux/termios.h>	/* For TIOCINQ/OUTQ */
 #include <linux/mm.h>
@@ -108,10 +111,16 @@ static void nr_remove_socket(struct sock *sk)
 static void nr_kill_by_device(struct net_device *dev)
 {
 	struct sock *s;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	spin_lock_bh(&nr_list_lock);
 	sk_for_each(s, node, &nr_list)
+=======
+
+	spin_lock_bh(&nr_list_lock);
+	sk_for_each(s, &nr_list)
+>>>>>>> refs/remotes/origin/master
 		if (nr_sk(s)->device == dev)
 			nr_disconnect(s, ENETUNREACH);
 	spin_unlock_bh(&nr_list_lock);
@@ -122,7 +131,11 @@ static void nr_kill_by_device(struct net_device *dev)
  */
 static int nr_device_event(struct notifier_block *this, unsigned long event, void *ptr)
 {
+<<<<<<< HEAD
 	struct net_device *dev = (struct net_device *)ptr;
+=======
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 
 	if (!net_eq(dev_net(dev), &init_net))
 		return NOTIFY_DONE;
@@ -153,10 +166,16 @@ static void nr_insert_socket(struct sock *sk)
 static struct sock *nr_find_listener(ax25_address *addr)
 {
 	struct sock *s;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	spin_lock_bh(&nr_list_lock);
 	sk_for_each(s, node, &nr_list)
+=======
+
+	spin_lock_bh(&nr_list_lock);
+	sk_for_each(s, &nr_list)
+>>>>>>> refs/remotes/origin/master
 		if (!ax25cmp(&nr_sk(s)->source_addr, addr) &&
 		    s->sk_state == TCP_LISTEN) {
 			bh_lock_sock(s);
@@ -174,10 +193,16 @@ found:
 static struct sock *nr_find_socket(unsigned char index, unsigned char id)
 {
 	struct sock *s;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	spin_lock_bh(&nr_list_lock);
 	sk_for_each(s, node, &nr_list) {
+=======
+
+	spin_lock_bh(&nr_list_lock);
+	sk_for_each(s, &nr_list) {
+>>>>>>> refs/remotes/origin/master
 		struct nr_sock *nr = nr_sk(s);
 
 		if (nr->my_index == index && nr->my_id == id) {
@@ -198,10 +223,16 @@ static struct sock *nr_find_peer(unsigned char index, unsigned char id,
 	ax25_address *dest)
 {
 	struct sock *s;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	spin_lock_bh(&nr_list_lock);
 	sk_for_each(s, node, &nr_list) {
+=======
+
+	spin_lock_bh(&nr_list_lock);
+	sk_for_each(s, &nr_list) {
+>>>>>>> refs/remotes/origin/master
 		struct nr_sock *nr = nr_sk(s);
 
 		if (nr->your_index == index && nr->your_id == id &&
@@ -310,44 +341,62 @@ static int nr_setsockopt(struct socket *sock, int level, int optname,
 	struct sock *sk = sock->sk;
 	struct nr_sock *nr = nr_sk(sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int opt;
 =======
 	unsigned long opt;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long opt;
+>>>>>>> refs/remotes/origin/master
 
 	if (level != SOL_NETROM)
 		return -ENOPROTOOPT;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (optlen < sizeof(int))
 		return -EINVAL;
 
 	if (get_user(opt, (int __user *)optval))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (optlen < sizeof(unsigned int))
 		return -EINVAL;
 
 	if (get_user(opt, (unsigned int __user *)optval))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EFAULT;
 
 	switch (optname) {
 	case NETROM_T1:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (opt < 1)
 =======
 		if (opt < 1 || opt > ULONG_MAX / HZ)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (opt < 1 || opt > ULONG_MAX / HZ)
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		nr->t1 = opt * HZ;
 		return 0;
 
 	case NETROM_T2:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (opt < 1)
 =======
 		if (opt < 1 || opt > ULONG_MAX / HZ)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (opt < 1 || opt > ULONG_MAX / HZ)
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		nr->t2 = opt * HZ;
 		return 0;
@@ -360,20 +409,28 @@ static int nr_setsockopt(struct socket *sock, int level, int optname,
 
 	case NETROM_T4:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (opt < 1)
 =======
 		if (opt < 1 || opt > ULONG_MAX / HZ)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (opt < 1 || opt > ULONG_MAX / HZ)
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		nr->t4 = opt * HZ;
 		return 0;
 
 	case NETROM_IDLE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (opt < 0)
 =======
 		if (opt > ULONG_MAX / (60 * HZ))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (opt > ULONG_MAX / (60 * HZ))
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		nr->idle = opt * 60 * HZ;
 		return 0;
@@ -632,7 +689,11 @@ static int nr_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
 		if (!capable(CAP_NET_BIND_SERVICE)) {
 			dev_put(dev);
 			release_sock(sk);
+<<<<<<< HEAD
 			return -EACCES;
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 		}
 		nr->user_addr   = addr->fsa_digipeater[0];
 		nr->source_addr = addr->fsa_ax25.sax25_call;
@@ -869,6 +930,11 @@ static int nr_getname(struct socket *sock, struct sockaddr *uaddr,
 	struct sock *sk = sock->sk;
 	struct nr_sock *nr = nr_sk(sk);
 
+<<<<<<< HEAD
+=======
+	memset(&sax->fsa_ax25, 0, sizeof(struct sockaddr_ax25));
+
+>>>>>>> refs/remotes/origin/master
 	lock_sock(sk);
 	if (peer != 0) {
 		if (sk->sk_state != TCP_ESTABLISHED) {
@@ -1212,10 +1278,16 @@ static int nr_recvmsg(struct kiocb *iocb, struct socket *sock,
 		sax->sax25_family = AF_NETROM;
 		skb_copy_from_linear_data_offset(skb, 7, sax->sax25_call.ax25_call,
 			      AX25_ADDR_LEN);
+<<<<<<< HEAD
 	}
 
 	msg->msg_namelen = sizeof(*sax);
 
+=======
+		msg->msg_namelen = sizeof(*sax);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	skb_free_datagram(sk, skb);
 
 	release_sock(sk);
@@ -1281,11 +1353,16 @@ static int nr_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 	case SIOCDELRT:
 	case SIOCNRDECOBS:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!capable(CAP_NET_ADMIN)) return -EPERM;
 =======
 		if (!capable(CAP_NET_ADMIN))
 			return -EPERM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!capable(CAP_NET_ADMIN))
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 		return nr_rt_ioctl(cmd, argp);
 
 	default:
@@ -1488,9 +1565,15 @@ static int __init nr_proto_init(void)
 
 	nr_loopback_init();
 
+<<<<<<< HEAD
 	proc_net_fops_create(&init_net, "nr", S_IRUGO, &nr_info_fops);
 	proc_net_fops_create(&init_net, "nr_neigh", S_IRUGO, &nr_neigh_fops);
 	proc_net_fops_create(&init_net, "nr_nodes", S_IRUGO, &nr_nodes_fops);
+=======
+	proc_create("nr", S_IRUGO, init_net.proc_net, &nr_info_fops);
+	proc_create("nr_neigh", S_IRUGO, init_net.proc_net, &nr_neigh_fops);
+	proc_create("nr_nodes", S_IRUGO, init_net.proc_net, &nr_nodes_fops);
+>>>>>>> refs/remotes/origin/master
 out:
 	return rc;
 fail:
@@ -1518,9 +1601,15 @@ static void __exit nr_exit(void)
 {
 	int i;
 
+<<<<<<< HEAD
 	proc_net_remove(&init_net, "nr");
 	proc_net_remove(&init_net, "nr_neigh");
 	proc_net_remove(&init_net, "nr_nodes");
+=======
+	remove_proc_entry("nr", init_net.proc_net);
+	remove_proc_entry("nr_neigh", init_net.proc_net);
+	remove_proc_entry("nr_nodes", init_net.proc_net);
+>>>>>>> refs/remotes/origin/master
 	nr_loopback_clear();
 
 	nr_rt_free();

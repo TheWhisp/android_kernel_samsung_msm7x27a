@@ -6,7 +6,11 @@ extra-y		:= head.o vmlinux.lds
 asflags-y	:= $(KBUILD_CFLAGS)
 ccflags-y	:= -Wno-sign-compare
 
+<<<<<<< HEAD
 obj-y    := entry.o traps.o process.o init_task.o osf_sys.o irq.o \
+=======
+obj-y    := entry.o traps.o process.o osf_sys.o irq.o \
+>>>>>>> refs/remotes/origin/master
 	    irq_alpha.o signal.o setup.o ptrace.o time.o \
 	    alpha_ksyms.o systbls.o err_common.o io.o
 
@@ -16,6 +20,10 @@ obj-$(CONFIG_PCI)	+= pci.o pci_iommu.o pci-sysfs.o
 obj-$(CONFIG_SRM_ENV)	+= srm_env.o
 obj-$(CONFIG_MODULES)	+= module.o
 obj-$(CONFIG_PERF_EVENTS) += perf_event.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_RTC_DRV_ALPHA) += rtc.o
+>>>>>>> refs/remotes/origin/master
 
 ifdef CONFIG_ALPHA_GENERIC
 

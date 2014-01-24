@@ -66,8 +66,11 @@ struct uart_icount {
 
 struct sdio_uart_port {
 	struct tty_port		port;
+<<<<<<< HEAD
 	struct kref		kref;
 	struct tty_struct	*tty;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int		index;
 	struct sdio_func	*func;
 	struct mutex		func_lock;
@@ -93,7 +96,10 @@ static int sdio_uart_add_port(struct sdio_uart_port *port)
 {
 	int index, ret = -EBUSY;
 
+<<<<<<< HEAD
 	kref_init(&port->kref);
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&port->func_lock);
 	spin_lock_init(&port->write_lock);
 	if (kfifo_alloc(&port->xmit_fifo, FIFO_SIZE, GFP_KERNEL))
@@ -123,12 +129,17 @@ static struct sdio_uart_port *sdio_uart_port_get(unsigned index)
 	spin_lock(&sdio_uart_table_lock);
 	port = sdio_uart_table[index];
 	if (port)
+<<<<<<< HEAD
 		kref_get(&port->kref);
+=======
+		tty_port_get(&port->port);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&sdio_uart_table_lock);
 
 	return port;
 }
 
+<<<<<<< HEAD
 static void sdio_uart_port_destroy(struct kref *kref)
 {
 	struct sdio_uart_port *port =
@@ -140,12 +151,20 @@ static void sdio_uart_port_destroy(struct kref *kref)
 static void sdio_uart_port_put(struct sdio_uart_port *port)
 {
 	kref_put(&port->kref, sdio_uart_port_destroy);
+=======
+static void sdio_uart_port_put(struct sdio_uart_port *port)
+{
+	tty_port_put(&port->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sdio_uart_port_remove(struct sdio_uart_port *port)
 {
 	struct sdio_func *func;
+<<<<<<< HEAD
 	struct tty_struct *tty;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(sdio_uart_table[port->index] != port);
 
@@ -166,12 +185,17 @@ static void sdio_uart_port_remove(struct sdio_uart_port *port)
 	sdio_claim_host(func);
 	port->func = NULL;
 	mutex_unlock(&port->func_lock);
+<<<<<<< HEAD
 	tty = tty_port_tty_get(&port->port);
 	/* tty_hangup is async so is this safe as is ?? */
 	if (tty) {
 		tty_hangup(tty);
 		tty_kref_put(tty);
 	}
+=======
+	/* tty_hangup is async so is this safe as is ?? */
+	tty_port_tty_hangup(&port->port, false);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&port->port.mutex);
 	sdio_release_irq(func);
 	sdio_disable_func(func);
@@ -392,7 +416,10 @@ static void sdio_uart_stop_rx(struct sdio_uart_port *port)
 static void sdio_uart_receive_chars(struct sdio_uart_port *port,
 				    unsigned int *status)
 {
+<<<<<<< HEAD
 	struct tty_struct *tty = tty_port_tty_get(&port->port);
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int ch, flag;
 	int max_count = 256;
 
@@ -429,14 +456,19 @@ static void sdio_uart_receive_chars(struct sdio_uart_port *port,
 		}
 
 		if ((*status & port->ignore_status_mask & ~UART_LSR_OE) == 0)
+<<<<<<< HEAD
 			if (tty)
 				tty_insert_flip_char(tty, ch, flag);
+=======
+			tty_insert_flip_char(&port->port, ch, flag);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Overrun is special.  Since it's reported immediately,
 		 * it doesn't affect the current character.
 		 */
 		if (*status & ~port->ignore_status_mask & UART_LSR_OE)
+<<<<<<< HEAD
 			if (tty)
 				tty_insert_flip_char(tty, 0, TTY_OVERRUN);
 
@@ -446,6 +478,14 @@ static void sdio_uart_receive_chars(struct sdio_uart_port *port,
 		tty_flip_buffer_push(tty);
 		tty_kref_put(tty);
 	}
+=======
+			tty_insert_flip_char(&port->port, 0, TTY_OVERRUN);
+
+		*status = sdio_in(port, UART_LSR);
+	} while ((*status & UART_LSR_DR) && (max_count-- > 0));
+
+	tty_flip_buffer_push(&port->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sdio_uart_transmit_chars(struct sdio_uart_port *port)
@@ -508,17 +548,25 @@ static void sdio_uart_check_modem_status(struct sdio_uart_port *port)
 			wake_up_interruptible(&port->port.open_wait);
 		else {
 			/* DCD drop - hang up if tty attached */
+<<<<<<< HEAD
 			tty = tty_port_tty_get(&port->port);
 			if (tty) {
 				tty_hangup(tty);
 				tty_kref_put(tty);
 			}
+=======
+			tty_port_tty_hangup(&port->port, false);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (status & UART_MSR_DCTS) {
 		port->icount.cts++;
 		tty = tty_port_tty_get(&port->port);
+<<<<<<< HEAD
 		if (tty && (tty->termios->c_cflag & CRTSCTS)) {
+=======
+		if (tty && (tty->termios.c_cflag & CRTSCTS)) {
+>>>>>>> refs/remotes/origin/master
 			int cts = (status & UART_MSR_CTS);
 			if (tty->hw_stopped) {
 				if (cts) {
@@ -671,12 +719,21 @@ static int sdio_uart_activate(struct tty_port *tport, struct tty_struct *tty)
 	port->ier = UART_IER_RLSI|UART_IER_RDI|UART_IER_RTOIE|UART_IER_UUE;
 	port->mctrl = TIOCM_OUT2;
 
+<<<<<<< HEAD
 	sdio_uart_change_speed(port, tty->termios, NULL);
 
 	if (tty->termios->c_cflag & CBAUD)
 		sdio_uart_set_mctrl(port, TIOCM_RTS | TIOCM_DTR);
 
 	if (tty->termios->c_cflag & CRTSCTS)
+=======
+	sdio_uart_change_speed(port, &tty->termios, NULL);
+
+	if (tty->termios.c_cflag & CBAUD)
+		sdio_uart_set_mctrl(port, TIOCM_RTS | TIOCM_DTR);
+
+	if (tty->termios.c_cflag & CRTSCTS)
+>>>>>>> refs/remotes/origin/master
 		if (!(sdio_uart_get_mctrl(port) & TIOCM_CTS))
 			tty->hw_stopped = 1;
 
@@ -737,6 +794,17 @@ static void sdio_uart_shutdown(struct tty_port *tport)
 	sdio_uart_release_func(port);
 }
 
+<<<<<<< HEAD
+=======
+static void sdio_uart_port_destroy(struct tty_port *tport)
+{
+	struct sdio_uart_port *port =
+		container_of(tport, struct sdio_uart_port, port);
+	kfifo_free(&port->xmit_fifo);
+	kfree(port);
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  *	sdio_uart_install	-	install method
  *	@driver: the driver in use (sdio_uart in our case)
@@ -751,6 +819,7 @@ static int sdio_uart_install(struct tty_driver *driver, struct tty_struct *tty)
 	int idx = tty->index;
 	struct sdio_uart_port *port = sdio_uart_port_get(idx);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = tty_init_termios(tty);
 
 	if (ret == 0) {
@@ -761,13 +830,18 @@ static int sdio_uart_install(struct tty_driver *driver, struct tty_struct *tty)
 		driver->ttys[idx] = tty;
 	} else
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = tty_standard_install(driver, tty);
 
 	if (ret == 0)
 		/* This is the ref sdio_uart_port get provided */
 		tty->driver_data = port;
 	else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		sdio_uart_port_put(port);
 	return ret;
 }
@@ -862,7 +936,11 @@ static void sdio_uart_throttle(struct tty_struct *tty)
 {
 	struct sdio_uart_port *port = tty->driver_data;
 
+<<<<<<< HEAD
 	if (!I_IXOFF(tty) && !(tty->termios->c_cflag & CRTSCTS))
+=======
+	if (!I_IXOFF(tty) && !(tty->termios.c_cflag & CRTSCTS))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	if (sdio_uart_claim_func(port) != 0)
@@ -873,7 +951,11 @@ static void sdio_uart_throttle(struct tty_struct *tty)
 		sdio_uart_start_tx(port);
 	}
 
+<<<<<<< HEAD
 	if (tty->termios->c_cflag & CRTSCTS)
+=======
+	if (tty->termios.c_cflag & CRTSCTS)
+>>>>>>> refs/remotes/origin/master
 		sdio_uart_clear_mctrl(port, TIOCM_RTS);
 
 	sdio_uart_irq(port->func);
@@ -884,7 +966,11 @@ static void sdio_uart_unthrottle(struct tty_struct *tty)
 {
 	struct sdio_uart_port *port = tty->driver_data;
 
+<<<<<<< HEAD
 	if (!I_IXOFF(tty) && !(tty->termios->c_cflag & CRTSCTS))
+=======
+	if (!I_IXOFF(tty) && !(tty->termios.c_cflag & CRTSCTS))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	if (sdio_uart_claim_func(port) != 0)
@@ -899,7 +985,11 @@ static void sdio_uart_unthrottle(struct tty_struct *tty)
 		}
 	}
 
+<<<<<<< HEAD
 	if (tty->termios->c_cflag & CRTSCTS)
+=======
+	if (tty->termios.c_cflag & CRTSCTS)
+>>>>>>> refs/remotes/origin/master
 		sdio_uart_set_mctrl(port, TIOCM_RTS);
 
 	sdio_uart_irq(port->func);
@@ -910,12 +1000,20 @@ static void sdio_uart_set_termios(struct tty_struct *tty,
 						struct ktermios *old_termios)
 {
 	struct sdio_uart_port *port = tty->driver_data;
+<<<<<<< HEAD
 	unsigned int cflag = tty->termios->c_cflag;
+=======
+	unsigned int cflag = tty->termios.c_cflag;
+>>>>>>> refs/remotes/origin/master
 
 	if (sdio_uart_claim_func(port) != 0)
 		return;
 
+<<<<<<< HEAD
 	sdio_uart_change_speed(port, tty->termios, old_termios);
+=======
+	sdio_uart_change_speed(port, &tty->termios, old_termios);
+>>>>>>> refs/remotes/origin/master
 
 	/* Handle transition to B0 status */
 	if ((old_termios->c_cflag & CBAUD) && !(cflag & CBAUD))
@@ -1057,6 +1155,10 @@ static const struct tty_port_operations sdio_uart_port_ops = {
 	.carrier_raised = uart_carrier_raised,
 	.shutdown = sdio_uart_shutdown,
 	.activate = sdio_uart_activate,
+<<<<<<< HEAD
+=======
+	.destruct = sdio_uart_port_destroy,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct tty_operations sdio_uart_ops = {
@@ -1092,10 +1194,14 @@ static int sdio_uart_probe(struct sdio_func *func,
 
 	if (func->class == SDIO_CLASS_UART) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: need info on UART class basic setup\n",
 =======
 		pr_warning("%s: need info on UART class basic setup\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warning("%s: need info on UART class basic setup\n",
+>>>>>>> refs/remotes/origin/master
 		       sdio_func_id(func));
 		kfree(port);
 		return -ENOSYS;
@@ -1115,38 +1221,54 @@ static int sdio_uart_probe(struct sdio_func *func,
 		}
 		if (!tpl) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING
 =======
 			pr_warning(
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warning(
+>>>>>>> refs/remotes/origin/master
        "%s: can't find tuple 0x91 subtuple 0 (SUBTPL_SIOREG) for GPS class\n",
 			       sdio_func_id(func));
 			kfree(port);
 			return -EINVAL;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG "%s: Register ID = 0x%02x, Exp ID = 0x%02x\n",
 =======
 		pr_debug("%s: Register ID = 0x%02x, Exp ID = 0x%02x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("%s: Register ID = 0x%02x, Exp ID = 0x%02x\n",
+>>>>>>> refs/remotes/origin/master
 		       sdio_func_id(func), tpl->data[2], tpl->data[3]);
 		port->regs_offset = (tpl->data[4] << 0) |
 				    (tpl->data[5] << 8) |
 				    (tpl->data[6] << 16);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG "%s: regs offset = 0x%x\n",
 =======
 		pr_debug("%s: regs offset = 0x%x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("%s: regs offset = 0x%x\n",
+>>>>>>> refs/remotes/origin/master
 		       sdio_func_id(func), port->regs_offset);
 		port->uartclk = tpl->data[7] * 115200;
 		if (port->uartclk == 0)
 			port->uartclk = 115200;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG "%s: clk %d baudcode %u 4800-div %u\n",
 =======
 		pr_debug("%s: clk %d baudcode %u 4800-div %u\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("%s: clk %d baudcode %u 4800-div %u\n",
+>>>>>>> refs/remotes/origin/master
 		       sdio_func_id(func), port->uartclk,
 		       tpl->data[7], tpl->data[8] | (tpl->data[9] << 8));
 	} else {
@@ -1164,8 +1286,13 @@ static int sdio_uart_probe(struct sdio_func *func,
 		kfree(port);
 	} else {
 		struct device *dev;
+<<<<<<< HEAD
 		dev = tty_register_device(sdio_uart_tty_driver,
 						port->index, &func->dev);
+=======
+		dev = tty_port_register_device(&port->port,
+				sdio_uart_tty_driver, port->index, &func->dev);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(dev)) {
 			sdio_uart_port_remove(port);
 			ret = PTR_ERR(dev);
@@ -1208,9 +1335,12 @@ static int __init sdio_uart_init(void)
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tty_drv->owner = THIS_MODULE;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tty_drv->driver_name = "sdio_uart";
 	tty_drv->name =   "ttySDIO";
 	tty_drv->major = 0;  /* dynamically allocated */

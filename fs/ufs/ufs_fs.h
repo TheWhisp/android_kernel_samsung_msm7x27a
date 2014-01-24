@@ -34,6 +34,10 @@
 #include <linux/kernel.h>
 #include <linux/stat.h>
 #include <linux/fs.h>
+<<<<<<< HEAD
+=======
+#include <linux/workqueue.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/div64.h>
 typedef __u64 __bitwise __fs64;

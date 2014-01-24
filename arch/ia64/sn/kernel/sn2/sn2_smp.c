@@ -27,9 +27,12 @@
 #include <asm/irq.h>
 #include <asm/sal.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/delay.h>
 #include <asm/io.h>
 #include <asm/smp.h>

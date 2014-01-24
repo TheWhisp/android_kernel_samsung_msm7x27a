@@ -14,17 +14,29 @@
 #include <asm/stackframe.h>
 
 /*
+<<<<<<< HEAD
  * Game over.  Go to the button.  Press gently.  Swear where allowed by
+=======
+ * Game over.  Go to the button.  Press gently.	 Swear where allowed by
+>>>>>>> refs/remotes/origin/master
  * legislation.
  */
 	LEAF(except_vec2_generic)
 	.set	noreorder
 	.set	noat
+<<<<<<< HEAD
 	.set    mips0
 	/*
 	 * This is a very bad place to be.  Our cache error
 	 * detection has triggered.  If we have write-back data
 	 * in the cache, we may not be able to recover.  As a
+=======
+	.set	mips0
+	/*
+	 * This is a very bad place to be.  Our cache error
+	 * detection has triggered.  If we have write-back data
+	 * in the cache, we may not be able to recover.	 As a
+>>>>>>> refs/remotes/origin/master
 	 * first-order desperate measure, turn off KSEG0 cacheing.
 	 */
 	mfc0	k0,CP0_CONFIG

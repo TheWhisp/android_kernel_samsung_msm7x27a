@@ -214,7 +214,10 @@
 				fsl,cpm-command = <0x16200300>;
 			};
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 			usb@11b60 {
 				compatible = "fsl,mpc8272-cpm-usb";
@@ -224,7 +227,33 @@
 				interrupt-parent = <&PIC>;
 				usb-clock = <5>;
 			};
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spi@11aa0 {
+				cell-index = <0>;
+				compatible = "fsl,spi", "fsl,cpm2-spi";
+				reg = <0x11a80 0x40 0x89fc 0x2>;
+				interrupts = <2 8>;
+				interrupt-parent = <&PIC>;
+				gpios = < &cpm2_pio_d 19 0>;
+				#address-cells = <1>;
+				#size-cells = <0>;
+				ds3106@1 {
+					compatible = "gen,spidev";
+					reg = <0>;
+					spi-max-frequency = <8000000>;
+				};
+			};
+
+		};
+
+		cpm2_pio_d: gpio-controller@10d60 {
+			#gpio-cells = <2>;
+			compatible = "fsl,cpm2-pario-bank";
+			reg = <0x10d60 0x14>;
+			gpio-controller;
+>>>>>>> refs/remotes/origin/master
 		};
 
 		cpm2_pio_c: gpio-controller@10d40 {

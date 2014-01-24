@@ -1,10 +1,14 @@
 /**************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2010 VMware, Inc., Palo Alto, CA., USA
 =======
  * Copyright © 2011 VMware, Inc., Palo Alto, CA., USA
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright © 2011 VMware, Inc., Palo Alto, CA., USA
+>>>>>>> refs/remotes/origin/master
  * All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -29,6 +33,7 @@
  *
  **************************************************************************/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #include "vmwgfx_drv.h"
@@ -178,6 +183,9 @@ int vmw_wait_lag(struct vmw_private *dev_priv,
 
 =======
 #include "drmP.h"
+=======
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 #include "vmwgfx_drv.h"
 
 #define VMW_FENCE_WRAP (1 << 31)
@@ -689,7 +697,11 @@ static void vmw_user_fence_destroy(struct vmw_fence_obj *fence)
 		container_of(fence, struct vmw_user_fence, fence);
 	struct vmw_fence_manager *fman = fence->fman;
 
+<<<<<<< HEAD
 	kfree(ufence);
+=======
+	ttm_base_object_kfree(ufence, base);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Free kernel space accounting.
 	 */
@@ -1304,4 +1316,7 @@ out_no_ref_obj:
 	vmw_fence_obj_unreference(&fence);
 	return ret;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

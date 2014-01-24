@@ -35,9 +35,13 @@
 #include <linux/netdevice.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/interrupt.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/arcdevice.h>
 #include <linux/com20020.h>
@@ -64,7 +68,11 @@ module_param(clockp, int, 0);
 module_param(clockm, int, 0);
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 static int __devinit com20020pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+=======
+static int com20020pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	struct arcnet_local *lp;
@@ -138,7 +146,11 @@ out_dev:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit com20020pci_remove(struct pci_dev *pdev)
+=======
+static void com20020pci_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 	unregister_netdev(dev);
@@ -181,7 +193,11 @@ static struct pci_driver com20020pci_driver = {
 	.name		= "com20020",
 	.id_table	= com20020pci_id_table,
 	.probe		= com20020pci_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(com20020pci_remove),
+=======
+	.remove		= com20020pci_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init com20020pci_init(void)

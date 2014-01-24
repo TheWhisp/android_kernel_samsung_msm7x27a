@@ -27,6 +27,7 @@
 #include "radeon.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void radeon_benchmark_move(struct radeon_device *rdev, unsigned bsize,
 			   unsigned sdomain, unsigned ddomain)
 {
@@ -43,6 +44,8 @@ void radeon_benchmark_move(struct radeon_device *rdev, unsigned bsize,
 	size = bsize;
 	n = 1024;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define RADEON_BENCHMARK_COPY_BLIT 1
 #define RADEON_BENCHMARK_COPY_DMA  0
 
@@ -62,6 +65,7 @@ static int radeon_benchmark_do_move(struct radeon_device *rdev, unsigned size,
 	for (i = 0; i < n; i++) {
 		switch (flag) {
 		case RADEON_BENCHMARK_COPY_DMA:
+<<<<<<< HEAD
 			r = radeon_fence_create(rdev, &fence, radeon_copy_dma_ring_index(rdev));
 			if (r)
 				return r;
@@ -76,6 +80,16 @@ static int radeon_benchmark_do_move(struct radeon_device *rdev, unsigned size,
 			r = radeon_copy_blit(rdev, saddr, daddr,
 					     size / RADEON_GPU_PAGE_SIZE,
 					     fence);
+=======
+			r = radeon_copy_dma(rdev, saddr, daddr,
+					    size / RADEON_GPU_PAGE_SIZE,
+					    &fence);
+			break;
+		case RADEON_BENCHMARK_COPY_BLIT:
+			r = radeon_copy_blit(rdev, saddr, daddr,
+					     size / RADEON_GPU_PAGE_SIZE,
+					     &fence);
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			DRM_ERROR("Unknown copy method\n");
@@ -120,8 +134,12 @@ static void radeon_benchmark_move(struct radeon_device *rdev, unsigned size,
 	int time;
 
 	n = RADEON_BENCHMARK_ITERATIONS;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	r = radeon_bo_create(rdev, size, PAGE_SIZE, true, sdomain, &sobj);
+=======
+	r = radeon_bo_create(rdev, size, PAGE_SIZE, true, sdomain, NULL, &sobj);
+>>>>>>> refs/remotes/origin/master
 	if (r) {
 		goto out_cleanup;
 	}
@@ -133,7 +151,11 @@ static void radeon_benchmark_move(struct radeon_device *rdev, unsigned size,
 	if (r) {
 		goto out_cleanup;
 	}
+<<<<<<< HEAD
 	r = radeon_bo_create(rdev, size, PAGE_SIZE, true, ddomain, &dobj);
+=======
+	r = radeon_bo_create(rdev, size, PAGE_SIZE, true, ddomain, NULL, &dobj);
+>>>>>>> refs/remotes/origin/master
 	if (r) {
 		goto out_cleanup;
 	}
@@ -146,6 +168,7 @@ static void radeon_benchmark_move(struct radeon_device *rdev, unsigned size,
 		goto out_cleanup;
 	}
 
+<<<<<<< HEAD
 	/* r100 doesn't have dma engine so skip the test */
 <<<<<<< HEAD
 	if (rdev->asic->copy_dma) {
@@ -211,6 +234,9 @@ static void radeon_benchmark_move(struct radeon_device *rdev, unsigned size,
 	/* also, VRAM-to-VRAM test doesn't make much sense for DMA */
 	/* skip it as well if domains are the same */
 	if ((rdev->asic->copy.dma) && (sdomain != ddomain)) {
+=======
+	if (rdev->asic->copy.dma) {
+>>>>>>> refs/remotes/origin/master
 		time = radeon_benchmark_do_move(rdev, size, saddr, daddr,
 						RADEON_BENCHMARK_COPY_DMA, n);
 		if (time < 0)
@@ -230,7 +256,10 @@ static void radeon_benchmark_move(struct radeon_device *rdev, unsigned size,
 						     sdomain, ddomain, "blit");
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out_cleanup:
 	if (sobj) {
 		r = radeon_bo_reserve(sobj, false);
@@ -249,6 +278,7 @@ out_cleanup:
 		radeon_bo_unref(&dobj);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (fence) {
 		radeon_fence_unref(&fence);
 	}
@@ -264,6 +294,8 @@ void radeon_benchmark(struct radeon_device *rdev)
 	radeon_benchmark_move(rdev, 1024*1024, RADEON_GEM_DOMAIN_VRAM,
 			      RADEON_GEM_DOMAIN_GTT);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (r) {
 		DRM_ERROR("Error while benchmarking BO move.\n");
@@ -352,5 +384,8 @@ void radeon_benchmark(struct radeon_device *rdev, int test_number)
 	default:
 		DRM_ERROR("Unknown benchmark\n");
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

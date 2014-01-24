@@ -8,9 +8,13 @@
 
 #include <linux/device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
@@ -270,6 +274,7 @@ static struct flash_platform_data bfin_spi_flash_data = {
 static struct bfin5xx_spi_chip spi_flash_chip_info = {
 	.enable_dma = 0,         /* use dma transfer with this chip*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.bits_per_word = 8,
 };
 #endif
@@ -281,12 +286,15 @@ static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
 	.bits_per_word = 16,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 
 #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
 static struct bfin5xx_spi_chip  mmc_spi_chip_info = {
 	.enable_dma = 0,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.bits_per_word = 8,
 };
@@ -298,6 +306,8 @@ static struct bfin5xx_spi_chip spidev_chip_info = {
 	.bits_per_word = 8,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 
@@ -309,6 +319,7 @@ static struct platform_device bfin_i2s = {
 };
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_SND_BF5XX_TDM) || defined(CONFIG_SND_BF5XX_TDM_MODULE)
 static struct platform_device bfin_tdm = {
 	.name = "bfin-tdm",
@@ -317,6 +328,8 @@ static struct platform_device bfin_tdm = {
 };
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct spi_board_info bfin_spi_board_info[] __initdata = {
 #if defined(CONFIG_MTD_M25P80) \
 	|| defined(CONFIG_MTD_M25P80_MODULE)
@@ -339,9 +352,12 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.bus_num = 0,
 		.chip_select = 4,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.controller_data = &ad1836_spi_chip_info,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 #endif
 #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
@@ -361,18 +377,25 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.bus_num = 0,
 		.chip_select = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.controller_data = &spidev_chip_info,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 #endif
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
 =======
 #if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/master
 /* SPI controller data */
 static struct bfin5xx_spi_master bfin_spi0_info = {
 	.num_chipselect = MAX_CTRL_CS + MAX_BLACKFIN_GPIOS,
@@ -420,9 +443,12 @@ static struct resource bfin_uart0_resources[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start = IRQ_UART0_RX,
 		.end = IRQ_UART0_RX+1,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.start = IRQ_UART0_TX,
 		.end = IRQ_UART0_TX,
 		.flags = IORESOURCE_IRQ,
@@ -430,7 +456,10 @@ static struct resource bfin_uart0_resources[] = {
 	{
 		.start = IRQ_UART0_RX,
 		.end = IRQ_UART0_RX,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags = IORESOURCE_IRQ,
 	},
 	{
@@ -473,9 +502,12 @@ static struct resource bfin_uart1_resources[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start = IRQ_UART1_RX,
 		.end = IRQ_UART1_RX+1,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.start = IRQ_UART1_TX,
 		.end = IRQ_UART1_TX,
 		.flags = IORESOURCE_IRQ,
@@ -483,7 +515,10 @@ static struct resource bfin_uart1_resources[] = {
 	{
 		.start = IRQ_UART1_RX,
 		.end = IRQ_UART1_RX,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags = IORESOURCE_IRQ,
 	},
 	{
@@ -617,6 +652,11 @@ static const struct ad7160_platform_data bfin_ad7160_ts_info = {
 #endif
 
 #if defined(CONFIG_I2C_BLACKFIN_TWI) || defined(CONFIG_I2C_BLACKFIN_TWI_MODULE)
+<<<<<<< HEAD
+=======
+static const u16 bfin_twi0_pins[] = {P_TWI0_SCL, P_TWI0_SDA, 0};
+
+>>>>>>> refs/remotes/origin/master
 static struct resource bfin_twi0_resource[] = {
 	[0] = {
 		.start = TWI0_REGBASE,
@@ -635,6 +675,12 @@ static struct platform_device i2c_bfin_twi_device = {
 	.id = 0,
 	.num_resources = ARRAY_SIZE(bfin_twi0_resource),
 	.resource = bfin_twi0_resource,
+<<<<<<< HEAD
+=======
+	.dev = {
+		.platform_data = &bfin_twi0_pins,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 
@@ -729,6 +775,10 @@ static struct bfin_rotary_platform_data bfin_rotary_data = {
 	.rotary_button_key = KEY_ENTER,
 	.debounce	   = 10,	/* 0..17 */
 	.mode		   = ROT_QUAD_ENC | ROT_DEBE,
+<<<<<<< HEAD
+=======
+	.pm_wakeup	   = 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource bfin_rotary_resources[] = {
@@ -793,10 +843,14 @@ static struct platform_device *stamp_devices[] __initdata = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
 =======
 #if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/master
 	&bfin_spi0_device,
 #endif
 
@@ -846,10 +900,13 @@ static struct platform_device *stamp_devices[] __initdata = {
 #if defined(CONFIG_SND_BF5XX_I2S) || defined(CONFIG_SND_BF5XX_I2S_MODULE)
 	&bfin_i2s,
 #endif
+<<<<<<< HEAD
 
 #if defined(CONFIG_SND_BF5XX_TDM) || defined(CONFIG_SND_BF5XX_TDM_MODULE)
 	&bfin_tdm,
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init ad7160eval_init(void)
@@ -899,10 +956,14 @@ void native_machine_restart(char *cmd)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void bfin_get_ether_addr(char *addr)
 =======
 int bfin_get_ether_addr(char *addr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int bfin_get_ether_addr(char *addr)
+>>>>>>> refs/remotes/origin/master
 {
 	/* the MAC is stored in OTP memory page 0xDF */
 	u32 ret;
@@ -916,8 +977,12 @@ int bfin_get_ether_addr(char *addr)
 			addr[ret] = otp_mac_p[5 - ret];
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(bfin_get_ether_addr);

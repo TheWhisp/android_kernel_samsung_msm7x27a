@@ -49,6 +49,12 @@ static void arch_detect_cpu(void)
 		fifo_mask = S3C2410_UFSTAT_TXMASK;
 		fifo_max = 15 << S3C2410_UFSTAT_TXSHIFT;
 	}
+<<<<<<< HEAD
+=======
+
+	uart_base = (volatile u8 *) S3C_PA_UART +
+		(S3C_UART_OFFSET * CONFIG_S3C_LOWLEVEL_UART_PORT);
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* __ASM_ARCH_UNCOMPRESS_H */

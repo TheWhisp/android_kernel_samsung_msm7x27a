@@ -10,7 +10,10 @@
  * option) any later version.
  */
 
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -21,8 +24,13 @@
 #include <linux/ctype.h>
 #include <linux/gpio.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 
 #include "../vme.h"
+=======
+#include <linux/vme.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "vme_pio2.h"
 
 static const char driver_name[] = "pio2_gpio";
@@ -79,7 +87,11 @@ static void pio2_gpio_set(struct gpio_chip *chip, unsigned int offset,
 	if ((card->bank[PIO2_CHANNEL_BANK[offset]].config == INPUT) |
 		(card->bank[PIO2_CHANNEL_BANK[offset]].config == NOFIT)) {
 
+<<<<<<< HEAD
 		dev_err(&card->vdev->dev, "Channel not availabe as output\n");
+=======
+		dev_err(&card->vdev->dev, "Channel not available as output\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -187,16 +199,25 @@ int pio2_gpio_reset(struct pio2_card *card)
 	return 0;
 }
 
+<<<<<<< HEAD
 int __devinit pio2_gpio_init(struct pio2_card *card)
+=======
+int pio2_gpio_init(struct pio2_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval = 0;
 	char *label;
 
 	label = kmalloc(PIO2_NUM_CHANNELS, GFP_KERNEL);
+<<<<<<< HEAD
 	if (label == NULL) {
 		dev_err(&card->vdev->dev, "Unable to allocate GPIO label\n");
 		return -ENOMEM;
 	}
+=======
+	if (label == NULL)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	sprintf(label, "%s@%s", driver_name, dev_name(&card->vdev->dev));
 	card->gc.label = label;

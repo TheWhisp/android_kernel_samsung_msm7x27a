@@ -123,9 +123,15 @@ static void mma8450_poll(struct input_polled_dev *dev)
 	if (ret < 0)
 		return;
 
+<<<<<<< HEAD
 	x = ((buf[1] << 4) & 0xff0) | (buf[0] & 0xf);
 	y = ((buf[3] << 4) & 0xff0) | (buf[2] & 0xf);
 	z = ((buf[5] << 4) & 0xff0) | (buf[4] & 0xf);
+=======
+	x = ((int)(s8)buf[1] << 4) | (buf[0] & 0xf);
+	y = ((int)(s8)buf[3] << 4) | (buf[2] & 0xf);
+	z = ((int)(s8)buf[5] << 4) | (buf[4] & 0xf);
+>>>>>>> refs/remotes/origin/master
 
 	input_report_abs(dev->input, ABS_X, x);
 	input_report_abs(dev->input, ABS_Y, y);
@@ -167,8 +173,13 @@ static void mma8450_close(struct input_polled_dev *dev)
 /*
  * I2C init/probing/exit functions
  */
+<<<<<<< HEAD
 static int __devinit mma8450_probe(struct i2c_client *c,
 				   const struct i2c_device_id *id)
+=======
+static int mma8450_probe(struct i2c_client *c,
+			 const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct input_polled_dev *idev;
 	struct mma8450 *m;
@@ -204,6 +215,11 @@ static int __devinit mma8450_probe(struct i2c_client *c,
 		goto err_free_mem;
 	}
 
+<<<<<<< HEAD
+=======
+	i2c_set_clientdata(c, m);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_free_mem:
@@ -212,7 +228,11 @@ err_free_mem:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit mma8450_remove(struct i2c_client *c)
+=======
+static int mma8450_remove(struct i2c_client *c)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mma8450 *m = i2c_get_clientdata(c);
 	struct input_polled_dev *idev = m->idev;
@@ -243,7 +263,11 @@ static struct i2c_driver mma8450_driver = {
 		.of_match_table = mma8450_dt_ids,
 	},
 	.probe		= mma8450_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(mma8450_remove),
+=======
+	.remove		= mma8450_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= mma8450_id,
 };
 

@@ -14,6 +14,7 @@
 
 #include <linux/errno.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/spinlock.h>
 #include <linux/module.h>
 =======
@@ -21,6 +22,11 @@
 #include <linux/spinlock.h>
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+#include <linux/spinlock.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/processor.h>
 #include <asm/cputable.h>

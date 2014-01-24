@@ -30,6 +30,10 @@
 #include "../wifi.h"
 #include "../core.h"
 #include "../pci.h"
+<<<<<<< HEAD
+=======
+#include "../base.h"
+>>>>>>> refs/remotes/origin/master
 #include "reg.h"
 #include "def.h"
 #include "phy.h"
@@ -166,7 +170,11 @@ static int rtl92d_init_sw_vars(struct ieee80211_hw *hw)
 		rtlpriv->psc.fwctrl_psmode = FW_PS_DTIM_MODE;
 
 	/* for early mode */
+<<<<<<< HEAD
 	rtlpriv->rtlhal.earlymode_enable = true;
+=======
+	rtlpriv->rtlhal.earlymode_enable = false;
+>>>>>>> refs/remotes/origin/master
 	for (tid = 0; tid < 8; tid++)
 		skb_queue_head_init(&rtlpriv->mac80211.skb_waitq[tid]);
 
@@ -236,7 +244,11 @@ static struct rtl_hal_ops rtl8192de_hal_ops = {
 	.set_bw_mode = rtl92d_phy_set_bw_mode,
 	.switch_channel = rtl92d_phy_sw_chnl,
 	.dm_watchdog = rtl92d_dm_watchdog,
+<<<<<<< HEAD
 	.scan_operation_backup = rtl92d_phy_scan_operation_backup,
+=======
+	.scan_operation_backup = rtl_phy_scan_operation_backup,
+>>>>>>> refs/remotes/origin/master
 	.set_rf_power_state = rtl92d_phy_set_rf_power_state,
 	.led_control = rtl92de_led_control,
 	.set_desc = rtl92de_set_desc,
@@ -319,7 +331,11 @@ static struct rtl_hal_cfg rtl92de_hal_cfg = {
 
 	.maps[RTL_IMR_TXFOVW] = IMR_TXFOVW,
 	.maps[RTL_IMR_PSTIMEOUT] = IMR_PSTIMEOUT,
+<<<<<<< HEAD
 	.maps[RTL_IMR_BcnInt] = IMR_BcnInt,
+=======
+	.maps[RTL_IMR_BCNINT] = IMR_BCNINT,
+>>>>>>> refs/remotes/origin/master
 	.maps[RTL_IMR_RXFOVW] = IMR_RXFOVW,
 	.maps[RTL_IMR_RDU] = IMR_RDU,
 	.maps[RTL_IMR_ATIMEND] = IMR_ATIMEND,
@@ -333,7 +349,11 @@ static struct rtl_hal_cfg rtl92de_hal_cfg = {
 	.maps[RTL_IMR_VIDOK] = IMR_VIDOK,
 	.maps[RTL_IMR_VODOK] = IMR_VODOK,
 	.maps[RTL_IMR_ROK] = IMR_ROK,
+<<<<<<< HEAD
 	.maps[RTL_IBSS_INT_MASKS] = (IMR_BcnInt | IMR_TBDOK | IMR_TBDER),
+=======
+	.maps[RTL_IBSS_INT_MASKS] = (IMR_BCNINT | IMR_TBDOK | IMR_TBDER),
+>>>>>>> refs/remotes/origin/master
 
 	.maps[RTL_RC_CCK_RATE1M] = DESC92_RATE1M,
 	.maps[RTL_RC_CCK_RATE2M] = DESC92_RATE2M,
@@ -352,7 +372,11 @@ static struct rtl_hal_cfg rtl92de_hal_cfg = {
 	.maps[RTL_RC_HT_RATEMCS15] = DESC92_RATEMCS15,
 };
 
+<<<<<<< HEAD
 static struct pci_device_id rtl92de_pci_ids[] __devinitdata = {
+=======
+static struct pci_device_id rtl92de_pci_ids[] = {
+>>>>>>> refs/remotes/origin/master
 	{RTL_PCI_DEVICE(PCI_VENDOR_ID_REALTEK, 0x8193, rtl92de_hal_cfg)},
 	{RTL_PCI_DEVICE(PCI_VENDOR_ID_REALTEK, 0x002B, rtl92de_hal_cfg)},
 	{},
@@ -378,6 +402,7 @@ MODULE_PARM_DESC(swlps, "Set to 1 to use SW control power save (default 0)\n");
 MODULE_PARM_DESC(fwlps, "Set to 1 to use FW control power save (default 1)\n");
 MODULE_PARM_DESC(debug, "Set debug level (0-5) (default 0)");
 
+<<<<<<< HEAD
 static const struct dev_pm_ops rtlwifi_pm_ops = {
 	.suspend = rtl_pci_suspend,
 	.resume = rtl_pci_resume,
@@ -386,6 +411,9 @@ static const struct dev_pm_ops rtlwifi_pm_ops = {
 	.poweroff = rtl_pci_suspend,
 	.restore = rtl_pci_resume,
 };
+=======
+static SIMPLE_DEV_PM_OPS(rtlwifi_pm_ops, rtl_pci_suspend, rtl_pci_resume);
+>>>>>>> refs/remotes/origin/master
 
 static struct pci_driver rtl92de_driver = {
 	.name = KBUILD_MODNAME,

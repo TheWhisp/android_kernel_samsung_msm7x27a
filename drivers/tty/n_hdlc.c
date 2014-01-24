@@ -103,9 +103,12 @@
 #include <linux/bitops.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/termios.h>
 #include <asm/uaccess.h>
 
@@ -421,10 +424,14 @@ static void n_hdlc_send_frames(struct n_hdlc *n_hdlc, struct tty_struct *tty)
 			
 		/* Send the next block of data to device */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tty->flags |= (1 << TTY_DO_WRITE_WAKEUP);
 =======
 		set_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
+>>>>>>> refs/remotes/origin/master
 		actual = tty->ops->write(tty, tbuf->buf, tbuf->count);
 
 		/* rollback was possible and has been done */
@@ -467,10 +474,14 @@ static void n_hdlc_send_frames(struct n_hdlc *n_hdlc, struct tty_struct *tty)
 	
 	if (!tbuf)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tty->flags  &= ~(1 << TTY_DO_WRITE_WAKEUP);
 =======
 		clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
+>>>>>>> refs/remotes/origin/master
 	
 	/* Clear the re-entry flag */
 	spin_lock_irqsave(&n_hdlc->tx_buf_list.spinlock, flags);
@@ -503,10 +514,14 @@ static void n_hdlc_tty_wakeup(struct tty_struct *tty)
 
 	if (tty != n_hdlc->tty) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tty->flags &= ~(1 << TTY_DO_WRITE_WAKEUP);
 =======
 		clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 

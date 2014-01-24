@@ -19,7 +19,10 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <linux/pci.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <defs.h>
 #include <chipcommon.h>
@@ -29,8 +32,11 @@
 #include "types.h"
 #include "pub.h"
 #include "pmu.h"
+<<<<<<< HEAD
 #include "srom.h"
 #include "nicpci.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "aiutils.h"
 
 /* slow_clk_ctl */
@@ -321,6 +327,7 @@
 #define	IS_SIM(chippkg)	\
 	((chippkg == HDLSIM_PKG_ID) || (chippkg == HWSIM_PKG_ID))
 
+<<<<<<< HEAD
 #define PCI(sih)	(ai_get_buscoretype(sih) == PCI_CORE_ID)
 #define PCIE(sih)	(ai_get_buscoretype(sih) == PCIE_CORE_ID)
 
@@ -332,6 +339,8 @@
 #define	SI_MSG(fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
 #endif				/* DEBUG */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define	GOODCOREADDR(x, b) \
 	(((x) >= (b)) && ((x) < ((b) + SI_MAXCORES * SI_CORE_SIZE)) && \
 		IS_ALIGNED((x), SI_CORE_SIZE))
@@ -454,6 +463,7 @@ struct aidmp {
 	u32 componentid3;	/* 0xffc */
 };
 
+<<<<<<< HEAD
 /* return true if PCIE capability exists in the pci config space */
 static bool ai_ispcie(struct si_info *sii)
 {
@@ -484,6 +494,11 @@ ai_buscore_setup(struct si_info *sii, struct bcma_device *cc)
 	struct bcma_device *core;
 
 
+=======
+static bool
+ai_buscore_setup(struct si_info *sii, struct bcma_device *cc)
+{
+>>>>>>> refs/remotes/origin/master
 	/* no cores found, bail out */
 	if (cc->bus->nr_cores == 0)
 		return false;
@@ -492,8 +507,12 @@ ai_buscore_setup(struct si_info *sii, struct bcma_device *cc)
 	sii->pub.ccrev = cc->id.rev;
 
 	/* get chipcommon chipstatus */
+<<<<<<< HEAD
 	if (ai_get_ccrev(&sii->pub) >= 11)
 		sii->chipst = bcma_read32(cc, CHIPCREGOFFS(chipstatus));
+=======
+	sii->chipst = bcma_read32(cc, CHIPCREGOFFS(chipstatus));
+>>>>>>> refs/remotes/origin/master
 
 	/* get chipcommon capabilites */
 	sii->pub.cccaps = bcma_read32(cc, CHIPCREGOFFS(capabilities));
@@ -505,6 +524,7 @@ ai_buscore_setup(struct si_info *sii, struct bcma_device *cc)
 		sii->pub.pmurev = sii->pub.pmucaps & PCAP_REV_MASK;
 	}
 
+<<<<<<< HEAD
 	/* figure out buscore */
 	list_for_each_entry(core, &cc->bus->cores, list) {
 		uint cid, crev;
@@ -557,15 +577,24 @@ static __used void ai_nvram_process(struct si_info *sii)
 	sii->pub.boardtype = (w >> 16) & 0xffff;
 }
 
+=======
+	return true;
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct si_info *ai_doattach(struct si_info *sii,
 				   struct bcma_bus *pbus)
 {
 	struct si_pub *sih = &sii->pub;
+<<<<<<< HEAD
 	u32 w, savewin;
 	struct bcma_device *cc;
 	uint socitype;
 
 	savewin = 0;
+=======
+	struct bcma_device *cc;
+>>>>>>> refs/remotes/origin/master
 
 	sii->icbus = pbus;
 	sii->pcibus = pbus->host_pci;
@@ -573,6 +602,7 @@ static struct si_info *ai_doattach(struct si_info *sii,
 	/* switch to Chipcommon core */
 	cc = pbus->drv_cc.core;
 
+<<<<<<< HEAD
 	/* bus/core/clk setup for register access */
 	if (!ai_buscore_prep(sii))
 		return NULL;
@@ -605,12 +635,24 @@ static struct si_info *ai_doattach(struct si_info *sii,
 
 	ai_nvram_process(sii);
 
+=======
+	sih->chip = pbus->chipinfo.id;
+	sih->chiprev = pbus->chipinfo.rev;
+	sih->chippkg = pbus->chipinfo.pkg;
+	sih->boardvendor = pbus->boardinfo.vendor;
+	sih->boardtype = pbus->boardinfo.type;
+
+	if (!ai_buscore_setup(sii, cc))
+		goto exit;
+
+>>>>>>> refs/remotes/origin/master
 	/* === NVRAM, clock is ready === */
 	bcma_write32(cc, CHIPCREGOFFS(gpiopullup), 0);
 	bcma_write32(cc, CHIPCREGOFFS(gpiopulldown), 0);
 
 	/* PMU specific initializations */
 	if (ai_get_cccaps(sih) & CC_CAP_PMU) {
+<<<<<<< HEAD
 		si_pmu_init(sih);
 		(void)si_pmu_measure_alpclk(sih);
 		si_pmu_res_init(sih);
@@ -654,14 +696,20 @@ static struct si_info *ai_doattach(struct si_info *sii,
 		SI_MSG("Applying 4313 WARs\n");
 		si_pmu_chipcontrol(sih, 0, CCTRL_4313_12MA_LED_DRIVE,
 				   CCTRL_4313_12MA_LED_DRIVE);
+=======
+		(void)si_pmu_measure_alpclk(sih);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return sii;
 
  exit:
+<<<<<<< HEAD
 	if (sii->pch)
 		pcicore_deinit(sii->pch);
 	sii->pch = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return NULL;
 }
@@ -692,14 +740,19 @@ void ai_detach(struct si_pub *sih)
 {
 	struct si_info *sii;
 
+<<<<<<< HEAD
 	struct si_pub *si_local = NULL;
 	memcpy(&si_local, &sih, sizeof(struct si_pub **));
 
 	sii = (struct si_info *)sih;
+=======
+	sii = container_of(sih, struct si_info, pub);
+>>>>>>> refs/remotes/origin/master
 
 	if (sii == NULL)
 		return;
 
+<<<<<<< HEAD
 	if (sii->pch)
 		pcicore_deinit(sii->pch);
 	sii->pch = NULL;
@@ -729,6 +782,11 @@ struct bcma_device *ai_findcore(struct si_pub *sih, u16 coreid, u16 coreunit)
 	return NULL;
 }
 
+=======
+	kfree(sii);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * read/modify chipcommon core register.
  */
@@ -738,6 +796,7 @@ uint ai_cc_reg(struct si_pub *sih, uint regoff, u32 mask, u32 val)
 	u32 w;
 	struct si_info *sii;
 
+<<<<<<< HEAD
 	sii = (struct si_info *)sih;
 	cc = sii->icbus->drv_cc.core;
 
@@ -745,6 +804,14 @@ uint ai_cc_reg(struct si_pub *sih, uint regoff, u32 mask, u32 val)
 	if (mask || val) {
 		bcma_maskset32(cc, regoff, ~mask, val);
 	}
+=======
+	sii = container_of(sih, struct si_info, pub);
+	cc = sii->icbus->drv_cc.core;
+
+	/* mask and set */
+	if (mask || val)
+		bcma_maskset32(cc, regoff, ~mask, val);
+>>>>>>> refs/remotes/origin/master
 
 	/* readback */
 	w = bcma_read32(cc, regoff);
@@ -755,6 +822,7 @@ uint ai_cc_reg(struct si_pub *sih, uint regoff, u32 mask, u32 val)
 /* return the slow clock source - LPO, XTAL, or PCI */
 static uint ai_slowclk_src(struct si_pub *sih, struct bcma_device *cc)
 {
+<<<<<<< HEAD
 	struct si_info *sii;
 	u32 val;
 
@@ -770,6 +838,9 @@ static uint ai_slowclk_src(struct si_pub *sih, struct bcma_device *cc)
 		       SCC_SS_MASK;
 	} else			/* Insta-clock */
 		return SCC_SS_XTAL;
+=======
+	return SCC_SS_XTAL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -779,6 +850,7 @@ static uint ai_slowclk_src(struct si_pub *sih, struct bcma_device *cc)
 static uint ai_slowclk_freq(struct si_pub *sih, bool max_freq,
 			    struct bcma_device *cc)
 {
+<<<<<<< HEAD
 	u32 slowclk;
 	uint div;
 
@@ -809,6 +881,14 @@ static uint ai_slowclk_freq(struct si_pub *sih, bool max_freq,
 		return max_freq ? XTALMAXFREQ : (XTALMINFREQ / div);
 	}
 	return 0;
+=======
+	uint div;
+
+	/* Chipc rev 10 is InstaClock */
+	div = bcma_read32(cc, CHIPCREGOFFS(system_clk_ctl));
+	div = 4 * ((div >> SYCC_CD_SHIFT) + 1);
+	return max_freq ? XTALMAXFREQ : (XTALMINFREQ / div);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -831,8 +911,12 @@ ai_clkctl_setdelay(struct si_pub *sih, struct bcma_device *cc)
 
 	/* Starting with 4318 it is ILP that is used for the delays */
 	slowmaxfreq =
+<<<<<<< HEAD
 	    ai_slowclk_freq(sih,
 			    (ai_get_ccrev(sih) >= 10) ? false : true, cc);
+=======
+	    ai_slowclk_freq(sih, false, cc);
+>>>>>>> refs/remotes/origin/master
 
 	pll_on_delay = ((slowmaxfreq * pll_delay) + 999999) / 1000000;
 	fref_sel_delay = ((slowmaxfreq * FREF_DELAY) + 999999) / 1000000;
@@ -844,19 +928,32 @@ ai_clkctl_setdelay(struct si_pub *sih, struct bcma_device *cc)
 /* initialize power control delay registers */
 void ai_clkctl_init(struct si_pub *sih)
 {
+<<<<<<< HEAD
+=======
+	struct si_info *sii = container_of(sih, struct si_info, pub);
+>>>>>>> refs/remotes/origin/master
 	struct bcma_device *cc;
 
 	if (!(ai_get_cccaps(sih) & CC_CAP_PWR_CTL))
 		return;
 
+<<<<<<< HEAD
 	cc = ai_findcore(sih, BCMA_CORE_CHIPCOMMON, 0);
+=======
+	cc = sii->icbus->drv_cc.core;
+>>>>>>> refs/remotes/origin/master
 	if (cc == NULL)
 		return;
 
 	/* set all Instaclk chip ILP to 1 MHz */
+<<<<<<< HEAD
 	if (ai_get_ccrev(sih) >= 10)
 		bcma_maskset32(cc, CHIPCREGOFFS(system_clk_ctl), SYCC_CD_MASK,
 			       (ILP_DIV_1MHZ << SYCC_CD_SHIFT));
+=======
+	bcma_maskset32(cc, CHIPCREGOFFS(system_clk_ctl), SYCC_CD_MASK,
+		       (ILP_DIV_1MHZ << SYCC_CD_SHIFT));
+>>>>>>> refs/remotes/origin/master
 
 	ai_clkctl_setdelay(sih, cc);
 }
@@ -872,7 +969,11 @@ u16 ai_clkctl_fast_pwrup_delay(struct si_pub *sih)
 	uint slowminfreq;
 	u16 fpdelay;
 
+<<<<<<< HEAD
 	sii = (struct si_info *)sih;
+=======
+	sii = container_of(sih, struct si_info, pub);
+>>>>>>> refs/remotes/origin/master
 	if (ai_get_cccaps(sih) & CC_CAP_PMU) {
 		fpdelay = si_pmu_fast_pwrup_delay(sih);
 		return fpdelay;
@@ -882,7 +983,11 @@ u16 ai_clkctl_fast_pwrup_delay(struct si_pub *sih)
 		return 0;
 
 	fpdelay = 0;
+<<<<<<< HEAD
 	cc = ai_findcore(sih, CC_CORE_ID, 0);
+=======
+	cc = sii->icbus->drv_cc.core;
+>>>>>>> refs/remotes/origin/master
 	if (cc) {
 		slowminfreq = ai_slowclk_freq(sih, false, cc);
 		fpdelay = (((bcma_read32(cc, CHIPCREGOFFS(pll_on_delay)) + 2)
@@ -891,6 +996,7 @@ u16 ai_clkctl_fast_pwrup_delay(struct si_pub *sih)
 	return fpdelay;
 }
 
+<<<<<<< HEAD
 /* turn primary xtal and/or pll off/on */
 int ai_clkctl_xtal(struct si_pub *sih, uint what, bool on)
 {
@@ -1025,6 +1131,8 @@ static bool _ai_clkctl_cc(struct si_info *sii, uint mode)
 	return mode == CLK_FAST;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  clock control policy function throught chipcommon
  *
@@ -1033,6 +1141,7 @@ static bool _ai_clkctl_cc(struct si_info *sii, uint mode)
  *    this is a wrapper over the next internal function
  *      to allow flexible policy settings for outside caller
  */
+<<<<<<< HEAD
 bool ai_clkctl_cc(struct si_pub *sih, uint mode)
 {
 	struct si_info *sii;
@@ -1160,14 +1269,33 @@ void ai_chipcontrl_epa4331(struct si_pub *sih, bool on)
 		bcma_mask32(cc, CHIPCREGOFFS(chipcontrol),
 			    ~(CCTRL4331_EXTPA_EN | CCTRL4331_EXTPA_ON_GPIO2_5));
 	}
+=======
+bool ai_clkctl_cc(struct si_pub *sih, enum bcma_clkmode mode)
+{
+	struct si_info *sii;
+	struct bcma_device *cc;
+
+	sii = container_of(sih, struct si_info, pub);
+
+	cc = sii->icbus->drv_cc.core;
+	bcma_core_set_clockmode(cc, mode);
+	return mode == BCMA_CLKMODE_FAST;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Enable BT-COEX & Ex-PA for 4313 */
 void ai_epa_4313war(struct si_pub *sih)
 {
+<<<<<<< HEAD
 	struct bcma_device *cc;
 
 	cc = ai_findcore(sih, CC_CORE_ID, 0);
+=======
+	struct si_info *sii = container_of(sih, struct si_info, pub);
+	struct bcma_device *cc;
+
+	cc = sii->icbus->drv_cc.core;
+>>>>>>> refs/remotes/origin/master
 
 	/* EPA Fix */
 	bcma_set32(cc, CHIPCREGOFFS(gpiocontrol), GPIO_CTRL_EPA_EN_MASK);
@@ -1176,10 +1304,20 @@ void ai_epa_4313war(struct si_pub *sih)
 /* check if the device is removed */
 bool ai_deviceremoved(struct si_pub *sih)
 {
+<<<<<<< HEAD
 	u32 w;
 	struct si_info *sii;
 
 	sii = (struct si_info *)sih;
+=======
+	u32 w = 0;
+	struct si_info *sii;
+
+	sii = container_of(sih, struct si_info, pub);
+
+	if (sii->icbus->hosttype != BCMA_HOSTTYPE_PCI)
+		return false;
+>>>>>>> refs/remotes/origin/master
 
 	pci_read_config_dword(sii->pcibus, PCI_VENDOR_ID, &w);
 	if ((w & 0xFFFF) != PCI_VENDOR_ID_BROADCOM)
@@ -1187,6 +1325,7 @@ bool ai_deviceremoved(struct si_pub *sih)
 
 	return false;
 }
+<<<<<<< HEAD
 
 bool ai_is_sprom_available(struct si_pub *sih)
 {
@@ -1238,3 +1377,5 @@ uint ai_get_buscorerev(struct si_pub *sih)
 	struct si_info *sii = (struct si_info *)sih;
 	return sii->buscore->id.rev;
 }
+=======
+>>>>>>> refs/remotes/origin/master

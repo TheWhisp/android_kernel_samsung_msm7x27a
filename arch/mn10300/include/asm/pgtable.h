@@ -486,9 +486,12 @@ extern void update_mmu_cache(struct vm_area_struct *vma,
 
 #define kern_addr_valid(addr)	(1)
 
+<<<<<<< HEAD
 #define io_remap_pfn_range(vma, vaddr, pfn, size, prot) \
 	remap_pfn_range((vma), (vaddr), (pfn), (size), (prot))
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define MK_IOSPACE_PFN(space, pfn)	(pfn)
 #define GET_IOSPACE(pfn)		0
 #define GET_PFN(pfn)			(pfn)

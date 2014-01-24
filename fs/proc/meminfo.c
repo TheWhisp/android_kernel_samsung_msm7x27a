@@ -1,8 +1,15 @@
 #include <linux/fs.h>
+<<<<<<< HEAD
 #include <linux/hugetlb.h>
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/mm.h>
+=======
+#include <linux/init.h>
+#include <linux/kernel.h>
+#include <linux/mm.h>
+#include <linux/hugetlb.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mman.h>
 #include <linux/mmzone.h>
 #include <linux/proc_fs.h>
@@ -11,10 +18,15 @@
 #include <linux/swap.h>
 #include <linux/vmstat.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+#include <linux/vmalloc.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include "internal.h"
@@ -27,10 +39,20 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
 {
 	struct sysinfo i;
 	unsigned long committed;
+<<<<<<< HEAD
 	unsigned long allowed;
 	struct vmalloc_info vmi;
 	long cached;
 	unsigned long pages[NR_LRU_LISTS];
+=======
+	struct vmalloc_info vmi;
+	long cached;
+	long available;
+	unsigned long pagecache;
+	unsigned long wmark_low = 0;
+	unsigned long pages[NR_LRU_LISTS];
+	struct zone *zone;
+>>>>>>> refs/remotes/origin/master
 	int lru;
 
 /*
@@ -40,11 +62,17 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
 	si_meminfo(&i);
 	si_swapinfo(&i);
 	committed = percpu_counter_read_positive(&vm_committed_as);
+<<<<<<< HEAD
 	allowed = ((totalram_pages - hugetlb_total_pages())
 		* sysctl_overcommit_ratio / 100) + total_swap_pages;
 
 	cached = global_page_state(NR_FILE_PAGES) -
 			total_swapcache_pages - i.bufferram;
+=======
+
+	cached = global_page_state(NR_FILE_PAGES) -
+			total_swapcache_pages() - i.bufferram;
+>>>>>>> refs/remotes/origin/master
 	if (cached < 0)
 		cached = 0;
 
@@ -53,12 +81,50 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
 	for (lru = LRU_BASE; lru < NR_LRU_LISTS; lru++)
 		pages[lru] = global_page_state(NR_LRU_BASE + lru);
 
+<<<<<<< HEAD
+=======
+	for_each_zone(zone)
+		wmark_low += zone->watermark[WMARK_LOW];
+
+	/*
+	 * Estimate the amount of memory available for userspace allocations,
+	 * without causing swapping.
+	 *
+	 * Free memory cannot be taken below the low watermark, before the
+	 * system starts swapping.
+	 */
+	available = i.freeram - wmark_low;
+
+	/*
+	 * Not all the page cache can be freed, otherwise the system will
+	 * start swapping. Assume at least half of the page cache, or the
+	 * low watermark worth of cache, needs to stay.
+	 */
+	pagecache = pages[LRU_ACTIVE_FILE] + pages[LRU_INACTIVE_FILE];
+	pagecache -= min(pagecache / 2, wmark_low);
+	available += pagecache;
+
+	/*
+	 * Part of the reclaimable swap consists of items that are in use,
+	 * and cannot be freed. Cap this estimate at the low watermark.
+	 */
+	available += global_page_state(NR_SLAB_RECLAIMABLE) -
+		     min(global_page_state(NR_SLAB_RECLAIMABLE) / 2, wmark_low);
+
+	if (available < 0)
+		available = 0;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Tagged format, for easy grepping and expansion.
 	 */
 	seq_printf(m,
 		"MemTotal:       %8lu kB\n"
 		"MemFree:        %8lu kB\n"
+<<<<<<< HEAD
+=======
+		"MemAvailable:   %8lu kB\n"
+>>>>>>> refs/remotes/origin/master
 		"Buffers:        %8lu kB\n"
 		"Cached:         %8lu kB\n"
 		"SwapCached:     %8lu kB\n"
@@ -111,9 +177,16 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
 		,
 		K(i.totalram),
 		K(i.freeram),
+<<<<<<< HEAD
 		K(i.bufferram),
 		K(cached),
 		K(total_swapcache_pages),
+=======
+		K(available),
+		K(i.bufferram),
+		K(cached),
+		K(total_swapcache_pages()),
+>>>>>>> refs/remotes/origin/master
 		K(pages[LRU_ACTIVE_ANON]   + pages[LRU_ACTIVE_FILE]),
 		K(pages[LRU_INACTIVE_ANON] + pages[LRU_INACTIVE_FILE]),
 		K(pages[LRU_ACTIVE_ANON]),
@@ -135,6 +208,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
 		K(i.freeswap),
 		K(global_page_state(NR_FILE_DIRTY)),
 		K(global_page_state(NR_WRITEBACK)),
+<<<<<<< HEAD
 #ifdef CONFIG_TRANSPARENT_HUGEPAGE
 		K(global_page_state(NR_ANON_PAGES)
 		  + global_page_state(NR_ANON_TRANSPARENT_HUGEPAGES) *
@@ -142,6 +216,9 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
 #else
 		K(global_page_state(NR_ANON_PAGES)),
 #endif
+=======
+		K(global_page_state(NR_ANON_PAGES)),
+>>>>>>> refs/remotes/origin/master
 		K(global_page_state(NR_FILE_MAPPED)),
 		K(global_page_state(NR_SHMEM)),
 		K(global_page_state(NR_SLAB_RECLAIMABLE) +
@@ -156,13 +233,21 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
 		K(global_page_state(NR_UNSTABLE_NFS)),
 		K(global_page_state(NR_BOUNCE)),
 		K(global_page_state(NR_WRITEBACK_TEMP)),
+<<<<<<< HEAD
 		K(allowed),
+=======
+		K(vm_commit_limit()),
+>>>>>>> refs/remotes/origin/master
 		K(committed),
 		(unsigned long)VMALLOC_TOTAL >> 10,
 		vmi.used >> 10,
 		vmi.largest_chunk >> 10
 #ifdef CONFIG_MEMORY_FAILURE
+<<<<<<< HEAD
 		,atomic_long_read(&mce_bad_pages) << (PAGE_SHIFT - 10)
+=======
+		,atomic_long_read(&num_poisoned_pages) << (PAGE_SHIFT - 10)
+>>>>>>> refs/remotes/origin/master
 #endif
 #ifdef CONFIG_TRANSPARENT_HUGEPAGE
 		,K(global_page_state(NR_ANON_TRANSPARENT_HUGEPAGES) *

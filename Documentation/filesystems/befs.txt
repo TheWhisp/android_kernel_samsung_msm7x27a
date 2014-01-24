@@ -28,10 +28,14 @@ Does anyone know of a more current email address for Makoto? He doesn't
 respond to the address given above...
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Current maintainer: Sergey S. Kostyliov <rathamahata@php4.ru>
 =======
 This filesystem doesn't have a maintainer.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+This filesystem doesn't have a maintainer.
+>>>>>>> refs/remotes/origin/master
 
 WHAT IS THIS DRIVER?
 ==================

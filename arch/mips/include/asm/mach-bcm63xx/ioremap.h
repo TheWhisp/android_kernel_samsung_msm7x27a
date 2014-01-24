@@ -11,6 +11,13 @@ static inline phys_t fixup_bigphys_addr(phys_t phys_addr, phys_t size)
 static inline int is_bcm63xx_internal_registers(phys_t offset)
 {
 	switch (bcm63xx_get_cpu_id()) {
+<<<<<<< HEAD
+=======
+	case BCM3368_CPU_ID:
+		if (offset >= 0xfff80000)
+			return 1;
+		break;
+>>>>>>> refs/remotes/origin/master
 	case BCM6338_CPU_ID:
 	case BCM6345_CPU_ID:
 	case BCM6348_CPU_ID:
@@ -18,6 +25,11 @@ static inline int is_bcm63xx_internal_registers(phys_t offset)
 		if (offset >= 0xfff00000)
 			return 1;
 		break;
+<<<<<<< HEAD
+=======
+	case BCM6328_CPU_ID:
+	case BCM6362_CPU_ID:
+>>>>>>> refs/remotes/origin/master
 	case BCM6368_CPU_ID:
 		if (offset >= 0xb0000000 && offset < 0xb1000000)
 			return 1;

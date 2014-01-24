@@ -4,8 +4,14 @@
 
 menuconfig TIDSPBRIDGE
 	tristate "DSP Bridge driver"
+<<<<<<< HEAD
 	depends on ARCH_OMAP3
 	select OMAP_MBOX_FWK
+=======
+	depends on ARCH_OMAP3 && !ARCH_MULTIPLATFORM && BROKEN
+	select MAILBOX
+	select OMAP2PLUS_MBOX
+>>>>>>> refs/remotes/origin/master
 	help
 	  DSP/BIOS Bridge is designed for platforms that contain a GPP and
 	  one or more attached DSPs.  The GPP is considered the master or
@@ -32,6 +38,7 @@ config TIDSPBRIDGE_MEMPOOL_SIZE
 	  failure under heavy memory fragmentation after some use time.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config TIDSPBRIDGE_DEBUG
 	bool "Debug Support"
 	depends on TIDSPBRIDGE
@@ -40,6 +47,8 @@ config TIDSPBRIDGE_DEBUG
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config TIDSPBRIDGE_RECOVERY
 	bool "Recovery Support"
 	depends on TIDSPBRIDGE
@@ -62,6 +71,7 @@ config TIDSPBRIDGE_CACHE_LINE_CHECK
 	  byte alignment, buffers failing this check will be rejected.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config TIDSPBRIDGE_WDT3
 	bool "Enable watchdog timer"
 	depends on TIDSPBRIDGE
@@ -80,15 +90,21 @@ config TIDSPBRIDGE_WDT_TIMEOUT
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config TIDSPBRIDGE_NTFY_PWRERR
 	bool "Notify power errors"
 	depends on TIDSPBRIDGE
 	help
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  Enable notifications to registered clients on the event of power errror
 =======
 	  Enable notifications to registered clients on the event of power error
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Enable notifications to registered clients on the event of power error
+>>>>>>> refs/remotes/origin/master
 	  trying to suspend bridge driver. Say Y, to signal this event as a fatal
 	  error, this will require a bridge restart to recover.
 

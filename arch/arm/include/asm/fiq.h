@@ -34,14 +34,18 @@ struct fiq_handler {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_FIQ
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern int claim_fiq(struct fiq_handler *f);
 extern void release_fiq(struct fiq_handler *f);
 extern void set_fiq_handler(void *start, unsigned int length);
 extern void enable_fiq(int fiq);
 extern void disable_fiq(int fiq);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 extern void fiq_set_type(int fiq, unsigned int type);
@@ -57,6 +61,8 @@ static inline void disable_fiq(int fiq) { }
 static inline void fiq_set_type(int fiq, unsigned int type) { }
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* helpers defined in fiqasm.S: */
 extern void __set_fiq_regs(unsigned long const *regs);

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef HAVE_CONFIG_H
 #include "../config.h"
@@ -38,6 +39,8 @@ int read_bDeviceClass(char *busid);
 int readline(int sockfd, char *str, int strlen);
 int writeline(int sockfd, char *buff, int bufflen);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Copyright (C) 2011 matt mooney <mfm@muteddisk.com>
  *               2005-2007 Takahiro Hirofuchi
@@ -63,4 +66,7 @@ int modify_match_busid(char *busid, int add);
 
 #endif /* __UTILS_H */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

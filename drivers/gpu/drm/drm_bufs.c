@@ -37,11 +37,17 @@
 #include <linux/slab.h>
 #include <linux/log2.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/shmparam.h>
 #include "drmP.h"
+=======
+#include <linux/export.h>
+#include <asm/shmparam.h>
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 
 static struct drm_map_list *drm_find_matching_map(struct drm_device *dev,
 						  struct drm_local_map *map)
@@ -210,6 +216,7 @@ static int drm_addmap_core(struct drm_device * dev, resource_size_t offset,
 			return 0;
 		}
 
+<<<<<<< HEAD
 		if (drm_core_has_MTRR(dev)) {
 			if (map->type == _DRM_FRAME_BUFFER ||
 			    (map->flags & _DRM_WRITE_COMBINING)) {
@@ -219,6 +226,19 @@ static int drm_addmap_core(struct drm_device * dev, resource_size_t offset,
 		}
 		if (map->type == _DRM_REGISTERS) {
 			map->handle = ioremap(map->offset, map->size);
+=======
+		if (map->type == _DRM_FRAME_BUFFER ||
+		    (map->flags & _DRM_WRITE_COMBINING)) {
+			map->mtrr =
+				arch_phys_wc_add(map->offset, map->size);
+		}
+		if (map->type == _DRM_REGISTERS) {
+			if (map->flags & _DRM_WRITE_COMBINING)
+				map->handle = ioremap_wc(map->offset,
+							 map->size);
+			else
+				map->handle = ioremap(map->offset, map->size);
+>>>>>>> refs/remotes/origin/master
 			if (!map->handle) {
 				kfree(map);
 				return -ENOMEM;
@@ -242,7 +262,11 @@ static int drm_addmap_core(struct drm_device * dev, resource_size_t offset,
 		}
 		map->handle = vmalloc_user(map->size);
 		DRM_DEBUG("%lu %d %p\n",
+<<<<<<< HEAD
 			  map->size, drm_order(map->size), map->handle);
+=======
+			  map->size, order_base_2(map->size), map->handle);
+>>>>>>> refs/remotes/origin/master
 		if (!map->handle) {
 			kfree(map);
 			return -ENOMEM;
@@ -413,6 +437,18 @@ int drm_addmap_ioctl(struct drm_device *dev, void *data,
 
 	/* avoid a warning on 64-bit, this casting isn't very nice, but the API is set so too late */
 	map->handle = (void *)(unsigned long)maplist->user_token;
+<<<<<<< HEAD
+=======
+
+	/*
+	 * It appears that there are no users of this value whatsoever --
+	 * drmAddMap just discards it.  Let's not encourage its use.
+	 * (Keeping drm_addmap_core's returned mtrr value would be wrong --
+	 *  it's not a real mtrr index anymore.)
+	 */
+	map->mtrr = -1;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -454,11 +490,15 @@ int drm_rmmap_locked(struct drm_device *dev, struct drm_local_map *map)
 		iounmap(map->handle);
 		/* FALLTHROUGH */
 	case _DRM_FRAME_BUFFER:
+<<<<<<< HEAD
 		if (drm_core_has_MTRR(dev) && map->mtrr >= 0) {
 			int retcode;
 			retcode = mtrr_del(map->mtrr, map->offset, map->size);
 			DRM_DEBUG("mtrr_del=%d\n", retcode);
 		}
+=======
+		arch_phys_wc_del(map->mtrr);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case _DRM_SHM:
 		vfree(map->handle);
@@ -623,7 +663,11 @@ int drm_addbufs_agp(struct drm_device * dev, struct drm_buf_desc * request)
 		return -EINVAL;
 
 	count = request->count;
+<<<<<<< HEAD
 	order = drm_order(request->size);
+=======
+	order = order_base_2(request->size);
+>>>>>>> refs/remotes/origin/master
 	size = 1 << order;
 
 	alignment = (request->flags & _DRM_PAGE_ALIGN)
@@ -644,8 +688,11 @@ int drm_addbufs_agp(struct drm_device * dev, struct drm_buf_desc * request)
 
 	if (order < DRM_MIN_ORDER || order > DRM_MAX_ORDER)
 		return -EINVAL;
+<<<<<<< HEAD
 	if (dev->queue_count)
 		return -EBUSY;	/* Not while in use */
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Make sure buffers are located in AGP memory that we own */
 	valid = 0;
@@ -707,7 +754,10 @@ int drm_addbufs_agp(struct drm_device * dev, struct drm_buf_desc * request)
 		buf->next = NULL;
 		buf->waiting = 0;
 		buf->pending = 0;
+<<<<<<< HEAD
 		init_waitqueue_head(&buf->dma_wait);
+=======
+>>>>>>> refs/remotes/origin/master
 		buf->file_priv = NULL;
 
 		buf->dev_priv_size = dev->driver->dev_priv_size;
@@ -796,6 +846,7 @@ int drm_addbufs_pci(struct drm_device * dev, struct drm_buf_desc * request)
 		return -EPERM;
 
 	count = request->count;
+<<<<<<< HEAD
 	order = drm_order(request->size);
 	size = 1 << order;
 
@@ -806,6 +857,16 @@ int drm_addbufs_pci(struct drm_device * dev, struct drm_buf_desc * request)
 		return -EINVAL;
 	if (dev->queue_count)
 		return -EBUSY;	/* Not while in use */
+=======
+	order = order_base_2(request->size);
+	size = 1 << order;
+
+	DRM_DEBUG("count=%d, size=%d (%d), order=%d\n",
+		  request->count, request->size, size, order);
+
+	if (order < DRM_MIN_ORDER || order > DRM_MAX_ORDER)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	alignment = (request->flags & _DRM_PAGE_ALIGN)
 	    ? PAGE_ALIGN(size) : size;
@@ -907,7 +968,10 @@ int drm_addbufs_pci(struct drm_device * dev, struct drm_buf_desc * request)
 			buf->next = NULL;
 			buf->waiting = 0;
 			buf->pending = 0;
+<<<<<<< HEAD
 			init_waitqueue_head(&buf->dma_wait);
+=======
+>>>>>>> refs/remotes/origin/master
 			buf->file_priv = NULL;
 
 			buf->dev_priv_size = dev->driver->dev_priv_size;
@@ -1001,7 +1065,11 @@ static int drm_addbufs_sg(struct drm_device * dev, struct drm_buf_desc * request
 		return -EPERM;
 
 	count = request->count;
+<<<<<<< HEAD
 	order = drm_order(request->size);
+=======
+	order = order_base_2(request->size);
+>>>>>>> refs/remotes/origin/master
 	size = 1 << order;
 
 	alignment = (request->flags & _DRM_PAGE_ALIGN)
@@ -1022,8 +1090,11 @@ static int drm_addbufs_sg(struct drm_device * dev, struct drm_buf_desc * request
 
 	if (order < DRM_MIN_ORDER || order > DRM_MAX_ORDER)
 		return -EINVAL;
+<<<<<<< HEAD
 	if (dev->queue_count)
 		return -EBUSY;	/* Not while in use */
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&dev->count_lock);
 	if (dev->buf_use) {
@@ -1074,7 +1145,10 @@ static int drm_addbufs_sg(struct drm_device * dev, struct drm_buf_desc * request
 		buf->next = NULL;
 		buf->waiting = 0;
 		buf->pending = 0;
+<<<<<<< HEAD
 		init_waitqueue_head(&buf->dma_wait);
+=======
+>>>>>>> refs/remotes/origin/master
 		buf->file_priv = NULL;
 
 		buf->dev_priv_size = dev->driver->dev_priv_size;
@@ -1132,6 +1206,7 @@ static int drm_addbufs_sg(struct drm_device * dev, struct drm_buf_desc * request
 	return 0;
 }
 
+<<<<<<< HEAD
 static int drm_addbufs_fb(struct drm_device * dev, struct drm_buf_desc * request)
 {
 	struct drm_device_dma *dma = dev->dma;
@@ -1290,6 +1365,8 @@ static int drm_addbufs_fb(struct drm_device * dev, struct drm_buf_desc * request
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * Add buffers for DMA transfers (ioctl).
  *
@@ -1310,6 +1387,12 @@ int drm_addbufs(struct drm_device *dev, void *data,
 	struct drm_buf_desc *request = data;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	if (drm_core_check_feature(dev, DRIVER_MODESET))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	if (!drm_core_check_feature(dev, DRIVER_HAVE_DMA))
 		return -EINVAL;
 
@@ -1321,7 +1404,11 @@ int drm_addbufs(struct drm_device *dev, void *data,
 	if (request->flags & _DRM_SG_BUFFER)
 		ret = drm_addbufs_sg(dev, request);
 	else if (request->flags & _DRM_FB_BUFFER)
+<<<<<<< HEAD
 		ret = drm_addbufs_fb(dev, request);
+=======
+		ret = -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	else
 		ret = drm_addbufs_pci(dev, request);
 
@@ -1353,6 +1440,12 @@ int drm_infobufs(struct drm_device *dev, void *data,
 	int i;
 	int count;
 
+<<<<<<< HEAD
+=======
+	if (drm_core_check_feature(dev, DRIVER_MODESET))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	if (!drm_core_check_feature(dev, DRIVER_HAVE_DMA))
 		return -EINVAL;
 
@@ -1432,6 +1525,12 @@ int drm_markbufs(struct drm_device *dev, void *data,
 	int order;
 	struct drm_buf_entry *entry;
 
+<<<<<<< HEAD
+=======
+	if (drm_core_check_feature(dev, DRIVER_MODESET))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	if (!drm_core_check_feature(dev, DRIVER_HAVE_DMA))
 		return -EINVAL;
 
@@ -1440,7 +1539,11 @@ int drm_markbufs(struct drm_device *dev, void *data,
 
 	DRM_DEBUG("%d, %d, %d\n",
 		  request->size, request->low_mark, request->high_mark);
+<<<<<<< HEAD
 	order = drm_order(request->size);
+=======
+	order = order_base_2(request->size);
+>>>>>>> refs/remotes/origin/master
 	if (order < DRM_MIN_ORDER || order > DRM_MAX_ORDER)
 		return -EINVAL;
 	entry = &dma->bufs[order];
@@ -1477,6 +1580,12 @@ int drm_freebufs(struct drm_device *dev, void *data,
 	int idx;
 	struct drm_buf *buf;
 
+<<<<<<< HEAD
+=======
+	if (drm_core_check_feature(dev, DRIVER_MODESET))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	if (!drm_core_check_feature(dev, DRIVER_HAVE_DMA))
 		return -EINVAL;
 
@@ -1514,12 +1623,17 @@ int drm_freebufs(struct drm_device *dev, void *data,
  * \return zero on success or a negative number on failure.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Maps the AGP, SG or PCI buffer region with do_mmap(), and copies information
  * about each buffer into user space. For PCI buffers, it calls do_mmap() with
 =======
  * Maps the AGP, SG or PCI buffer region with vm_mmap(), and copies information
  * about each buffer into user space. For PCI buffers, it calls vm_mmap() with
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Maps the AGP, SG or PCI buffer region with vm_mmap(), and copies information
+ * about each buffer into user space. For PCI buffers, it calls vm_mmap() with
+>>>>>>> refs/remotes/origin/master
  * offset equal to 0, which drm_mmap() interpretes as PCI buffers and calls
  * drm_mmap_dma().
  */
@@ -1534,6 +1648,12 @@ int drm_mapbufs(struct drm_device *dev, void *data,
 	struct drm_buf_map *request = data;
 	int i;
 
+<<<<<<< HEAD
+=======
+	if (drm_core_check_feature(dev, DRIVER_MODESET))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	if (!drm_core_check_feature(dev, DRIVER_HAVE_DMA))
 		return -EINVAL;
 
@@ -1551,9 +1671,13 @@ int drm_mapbufs(struct drm_device *dev, void *data,
 	if (request->count >= dma->buf_count) {
 		if ((drm_core_has_AGP(dev) && (dma->flags & _DRM_DMA_USE_AGP))
 		    || (drm_core_check_feature(dev, DRIVER_SG)
+<<<<<<< HEAD
 			&& (dma->flags & _DRM_DMA_USE_SG))
 		    || (drm_core_check_feature(dev, DRIVER_FB_DMA)
 			&& (dma->flags & _DRM_DMA_USE_FB))) {
+=======
+			&& (dma->flags & _DRM_DMA_USE_SG))) {
+>>>>>>> refs/remotes/origin/master
 			struct drm_local_map *map = dev->agp_buffer_map;
 			unsigned long token = dev->agp_buffer_token;
 
@@ -1561,6 +1685,7 @@ int drm_mapbufs(struct drm_device *dev, void *data,
 				retcode = -EINVAL;
 				goto done;
 			}
+<<<<<<< HEAD
 <<<<<<< HEAD
 			down_write(&current->mm->mmap_sem);
 			virtual = do_mmap(file_priv->filp, 0, map->size,
@@ -1575,6 +1700,8 @@ int drm_mapbufs(struct drm_device *dev, void *data,
 					  MAP_SHARED, 0);
 			up_write(&current->mm->mmap_sem);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			virtual = vm_mmap(file_priv->filp, 0, map->size,
 					  PROT_READ | PROT_WRITE,
 					  MAP_SHARED,
@@ -1583,7 +1710,10 @@ int drm_mapbufs(struct drm_device *dev, void *data,
 			virtual = vm_mmap(file_priv->filp, 0, dma->byte_count,
 					  PROT_READ | PROT_WRITE,
 					  MAP_SHARED, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		if (virtual > -1024UL) {
 			/* Real error */
@@ -1625,6 +1755,7 @@ int drm_mapbufs(struct drm_device *dev, void *data,
 	return retcode;
 }
 
+<<<<<<< HEAD
 /**
  * Compute size order.  Returns the exponent of the smaller power of two which
  * is greater or equal to given number.
@@ -1647,3 +1778,30 @@ int drm_order(unsigned long size)
 	return order;
 }
 EXPORT_SYMBOL(drm_order);
+=======
+int drm_dma_ioctl(struct drm_device *dev, void *data,
+		  struct drm_file *file_priv)
+{
+	if (drm_core_check_feature(dev, DRIVER_MODESET))
+		return -EINVAL;
+
+	if (dev->driver->dma_ioctl)
+		return dev->driver->dma_ioctl(dev, data, file_priv);
+	else
+		return -EINVAL;
+}
+
+struct drm_local_map *drm_getsarea(struct drm_device *dev)
+{
+	struct drm_map_list *entry;
+
+	list_for_each_entry(entry, &dev->maplist, head) {
+		if (entry->map && entry->map->type == _DRM_SHM &&
+		    (entry->map->flags & _DRM_CONTAINS_LOCK)) {
+			return entry->map;
+		}
+	}
+	return NULL;
+}
+EXPORT_SYMBOL(drm_getsarea);
+>>>>>>> refs/remotes/origin/master

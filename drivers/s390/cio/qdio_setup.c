@@ -1,17 +1,27 @@
 /*
+<<<<<<< HEAD
  * driver/s390/cio/qdio_setup.c
  *
  * qdio queue initialization
  *
  * Copyright (C) IBM Corp. 2008
+=======
+ * qdio queue initialization
+ *
+ * Copyright IBM Corp. 2008
+>>>>>>> refs/remotes/origin/master
  * Author(s): Jan Glauber <jang@linux.vnet.ibm.com>
  */
 #include <linux/kernel.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/qdio.h>
 
 #include "cio.h"
@@ -24,7 +34,10 @@
 
 static struct kmem_cache *qdio_q_cache;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct kmem_cache *qdio_aob_cache;
 
 struct qaob *qdio_allocate_aob(void)
@@ -38,7 +51,10 @@ void qdio_release_aob(struct qaob *aob)
 	kmem_cache_free(qdio_aob_cache, aob);
 }
 EXPORT_SYMBOL_GPL(qdio_release_aob);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * qebsm is only available under 64bit but the adapter sets the feature
@@ -148,10 +164,15 @@ static void setup_storage_lists(struct qdio_q *q, struct qdio_irq *irq_ptr,
 	q->sl = (struct sl *)((char *)q->slib + PAGE_SIZE / 2);
 
 	/* fill in sbal */
+<<<<<<< HEAD
 	for (j = 0; j < QDIO_MAX_BUFFERS_PER_Q; j++) {
 		q->sbal[j] = *sbals_array++;
 		BUG_ON((unsigned long)q->sbal[j] & 0xff);
 	}
+=======
+	for (j = 0; j < QDIO_MAX_BUFFERS_PER_Q; j++)
+		q->sbal[j] = *sbals_array++;
+>>>>>>> refs/remotes/origin/master
 
 	/* fill in slib */
 	if (i > 0) {
@@ -175,6 +196,7 @@ static void setup_queues(struct qdio_irq *irq_ptr,
 	void **input_sbal_array = qdio_init->input_sbal_addr_array;
 	void **output_sbal_array = qdio_init->output_sbal_addr_array;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 
 	for_each_input_queue(irq_ptr, q, i) {
@@ -193,6 +215,8 @@ static void setup_queues(struct qdio_irq *irq_ptr,
 			tasklet_init(&q->tasklet, qdio_inbound_processing,
 				     (unsigned long) q);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct qdio_outbuf_state *output_sbal_state_array =
 				  qdio_init->output_sbal_state_array;
 	int i;
@@ -215,7 +239,10 @@ static void setup_queues(struct qdio_irq *irq_ptr,
 			tasklet_init(&q->tasklet, qdio_inbound_processing,
 				     (unsigned long) q);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for_each_output_queue(irq_ptr, q, i) {
@@ -223,11 +250,17 @@ static void setup_queues(struct qdio_irq *irq_ptr,
 		setup_queues_misc(q, irq_ptr, qdio_init->output_handler, i);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		q->u.out.sbal_state = output_sbal_state_array;
 		output_sbal_state_array += QDIO_MAX_BUFFERS_PER_Q;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		q->u.out.sbal_state = output_sbal_state_array;
+		output_sbal_state_array += QDIO_MAX_BUFFERS_PER_Q;
+
+>>>>>>> refs/remotes/origin/master
 		q->is_input_q = 0;
 		q->u.out.scan_threshold = qdio_init->scan_threshold;
 		setup_storage_lists(q, irq_ptr, output_sbal_array, i);
@@ -287,6 +320,7 @@ int qdio_setup_get_ssqd(struct qdio_irq *irq_ptr,
 	int rc;
 
 	DBF_EVENT("getssqd:%4x", schid->sch_no);
+<<<<<<< HEAD
 	if (irq_ptr != NULL)
 		ssqd = (struct chsc_ssqd_area *)irq_ptr->chsc_page;
 	else
@@ -306,10 +340,24 @@ int qdio_setup_get_ssqd(struct qdio_irq *irq_ptr,
 	rc = chsc_error_from_response(ssqd->response.code);
 	if (rc)
 		return rc;
+=======
+	if (!irq_ptr) {
+		ssqd = (struct chsc_ssqd_area *)__get_free_page(GFP_KERNEL);
+		if (!ssqd)
+			return -ENOMEM;
+	} else {
+		ssqd = (struct chsc_ssqd_area *)irq_ptr->chsc_page;
+	}
+
+	rc = chsc_ssqd(*schid, ssqd);
+	if (rc)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	if (!(ssqd->qdio_ssqd.flags & CHSC_FLAG_QDIO_CAPABILITY) ||
 	    !(ssqd->qdio_ssqd.flags & CHSC_FLAG_VALIDITY) ||
 	    (ssqd->qdio_ssqd.sch != schid->sch_no))
+<<<<<<< HEAD
 		return -EINVAL;
 
 	if (irq_ptr != NULL)
@@ -321,6 +369,18 @@ int qdio_setup_get_ssqd(struct qdio_irq *irq_ptr,
 		free_page((unsigned long)ssqd);
 	}
 	return 0;
+=======
+		rc = -EINVAL;
+
+	if (!rc)
+		memcpy(data, &ssqd->qdio_ssqd, sizeof(*data));
+
+out:
+	if (!irq_ptr)
+		free_page((unsigned long)ssqd);
+
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 void qdio_setup_ssqd_info(struct qdio_irq *irq_ptr)
@@ -328,7 +388,11 @@ void qdio_setup_ssqd_info(struct qdio_irq *irq_ptr)
 	unsigned char qdioac;
 	int rc;
 
+<<<<<<< HEAD
 	rc = qdio_setup_get_ssqd(irq_ptr, &irq_ptr->schid, NULL);
+=======
+	rc = qdio_setup_get_ssqd(irq_ptr, &irq_ptr->schid, &irq_ptr->ssqd_desc);
+>>>>>>> refs/remotes/origin/master
 	if (rc) {
 		DBF_ERROR("%4x ssqd ERR", irq_ptr->schid.sch_no);
 		DBF_ERROR("rc:%x", rc);
@@ -341,11 +405,16 @@ void qdio_setup_ssqd_info(struct qdio_irq *irq_ptr)
 	check_and_setup_qebsm(irq_ptr, qdioac, irq_ptr->ssqd_desc.sch_token);
 	process_ac_flags(irq_ptr, qdioac);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBF_EVENT("qdioac:%4x", qdioac);
 =======
 	DBF_EVENT("ac 1:%2x 2:%4x", qdioac, irq_ptr->ssqd_desc.qdioac2);
 	DBF_EVENT("3:%4x qib:%4x", irq_ptr->ssqd_desc.qdioac3, irq_ptr->qib.ac);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBF_EVENT("ac 1:%2x 2:%4x", qdioac, irq_ptr->ssqd_desc.qdioac2);
+	DBF_EVENT("3:%4x qib:%4x", irq_ptr->ssqd_desc.qdioac3, irq_ptr->qib.ac);
+>>>>>>> refs/remotes/origin/master
 }
 
 void qdio_release_memory(struct qdio_irq *irq_ptr)
@@ -368,7 +437,10 @@ void qdio_release_memory(struct qdio_irq *irq_ptr)
 		q = irq_ptr->output_qs[i];
 		if (q) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (q->u.out.use_cq) {
 				int n;
 
@@ -382,7 +454,10 @@ void qdio_release_memory(struct qdio_irq *irq_ptr)
 
 				qdio_disable_async_operation(&q->u.out);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			free_page((unsigned long) q->slib);
 			kmem_cache_free(qdio_q_cache, q);
 		}
@@ -418,9 +493,13 @@ static void setup_qdr(struct qdio_irq *irq_ptr,
 
 	irq_ptr->qdr->qfmt = qdio_init->q_format;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	irq_ptr->qdr->ac = qdio_init->qdr_ac;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq_ptr->qdr->ac = qdio_init->qdr_ac;
+>>>>>>> refs/remotes/origin/master
 	irq_ptr->qdr->iqdcnt = qdio_init->no_input_qs;
 	irq_ptr->qdr->oqdcnt = qdio_init->no_output_qs;
 	irq_ptr->qdr->iqdsz = sizeof(struct qdesfmt0) / 4; /* size in words */
@@ -475,9 +554,14 @@ int qdio_setup_irq(struct qdio_initialize *init_data)
 	irq_ptr->int_parm = init_data->int_parm;
 	irq_ptr->nr_input_qs = init_data->no_input_qs;
 	irq_ptr->nr_output_qs = init_data->no_output_qs;
+<<<<<<< HEAD
 
 	irq_ptr->schid = ccw_device_get_subchannel_id(init_data->cdev);
 	irq_ptr->cdev = init_data->cdev;
+=======
+	irq_ptr->cdev = init_data->cdev;
+	ccw_device_get_schid(irq_ptr->cdev, &irq_ptr->schid);
+>>>>>>> refs/remotes/origin/master
 	setup_queues(irq_ptr, init_data);
 
 	setup_qib(irq_ptr, init_data);
@@ -524,7 +608,11 @@ void qdio_print_subchannel_info(struct qdio_irq *irq_ptr,
 	char s[80];
 
 	snprintf(s, 80, "qdio: %s %s on SC %x using "
+<<<<<<< HEAD
 		 "AI:%d QEBSM:%d PCI:%d TDD:%d SIGA:%s%s%s%s%s\n",
+=======
+		 "AI:%d QEBSM:%d PRI:%d TDD:%d SIGA:%s%s%s%s%s\n",
+>>>>>>> refs/remotes/origin/master
 		 dev_name(&cdev->dev),
 		 (irq_ptr->qib.qfmt == QDIO_QETH_QFMT) ? "OSA" :
 			((irq_ptr->qib.qfmt == QDIO_ZFCP_QFMT) ? "ZFCP" : "HS"),
@@ -542,9 +630,12 @@ void qdio_print_subchannel_info(struct qdio_irq *irq_ptr,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __init qdio_setup_init(void)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int qdio_enable_async_operation(struct qdio_output_q *outq)
 {
 	outq->aobs = kzalloc(sizeof(struct qaob *) * QDIO_MAX_BUFFERS_PER_Q,
@@ -568,14 +659,20 @@ int __init qdio_setup_init(void)
 {
 	int rc;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	qdio_q_cache = kmem_cache_create("qdio_q", sizeof(struct qdio_q),
 					 256, 0, NULL);
 	if (!qdio_q_cache)
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	qdio_aob_cache = kmem_cache_create("qdio_aob",
 					sizeof(struct qaob),
 					sizeof(struct qaob),
@@ -586,7 +683,10 @@ int __init qdio_setup_init(void)
 		goto free_qdio_q_cache;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Check for OSA/FCP thin interrupts (bit 67). */
 	DBF_EVENT("thinint:%1d",
 		  (css_general_characteristics.aif_osa) ? 1 : 0);
@@ -594,22 +694,32 @@ int __init qdio_setup_init(void)
 	/* Check for QEBSM support in general (bit 58). */
 	DBF_EVENT("cssQEBSM:%1d", (qebsm_possible()) ? 1 : 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = 0;
 out:
 	return rc;
 free_qdio_q_cache:
 	kmem_cache_destroy(qdio_q_cache);
 	goto out;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void qdio_setup_exit(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kmem_cache_destroy(qdio_aob_cache);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kmem_cache_destroy(qdio_aob_cache);
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(qdio_q_cache);
 }

@@ -72,7 +72,11 @@ static void __dnet_set_hwaddr(struct dnet *bp)
 	dnet_writew_mac(bp, DNET_INTERNAL_MAC_ADDR_2_REG, tmp);
 }
 
+<<<<<<< HEAD
 static void __devinit dnet_get_hwaddr(struct dnet *bp)
+=======
+static void dnet_get_hwaddr(struct dnet *bp)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 tmp;
 	u8 addr[6];
@@ -281,11 +285,19 @@ static int dnet_mii_probe(struct net_device *dev)
 	/* attach the mac to the phy */
 	if (bp->capabilities & DNET_HAS_RMII) {
 		phydev = phy_connect(dev, dev_name(&phydev->dev),
+<<<<<<< HEAD
 				     &dnet_handle_link_change, 0,
 				     PHY_INTERFACE_MODE_RMII);
 	} else {
 		phydev = phy_connect(dev, dev_name(&phydev->dev),
 				     &dnet_handle_link_change, 0,
+=======
+				     &dnet_handle_link_change,
+				     PHY_INTERFACE_MODE_RMII);
+	} else {
+		phydev = phy_connect(dev, dev_name(&phydev->dev),
+				     &dnet_handle_link_change,
+>>>>>>> refs/remotes/origin/master
 				     PHY_INTERFACE_MODE_MII);
 	}
 
@@ -664,9 +676,12 @@ static int dnet_open(struct net_device *dev)
 	if (!bp->phy_dev)
 		return -EAGAIN;
 
+<<<<<<< HEAD
 	if (!is_valid_ether_addr(dev->dev_addr))
 		return -EADDRNOTAVAIL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	napi_enable(&bp->napi);
 	dnet_init_hw(bp);
 
@@ -815,6 +830,10 @@ static const struct ethtool_ops dnet_ethtool_ops = {
 	.set_settings		= dnet_set_settings,
 	.get_drvinfo		= dnet_get_drvinfo,
 	.get_link		= ethtool_op_get_link,
+<<<<<<< HEAD
+=======
+	.get_ts_info		= ethtool_op_get_ts_info,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct net_device_ops dnet_netdev_ops = {
@@ -828,7 +847,11 @@ static const struct net_device_ops dnet_netdev_ops = {
 	.ndo_change_mtu		= eth_change_mtu,
 };
 
+<<<<<<< HEAD
 static int __devinit dnet_probe(struct platform_device *pdev)
+=======
+static int dnet_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res;
 	struct net_device *dev;
@@ -944,7 +967,11 @@ err_out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit dnet_remove(struct platform_device *pdev)
+=======
+static int dnet_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 
 	struct net_device *dev;
@@ -970,7 +997,11 @@ static int __devexit dnet_remove(struct platform_device *pdev)
 
 static struct platform_driver dnet_driver = {
 	.probe		= dnet_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(dnet_remove),
+=======
+	.remove		= dnet_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name		= "dnet",
 	},

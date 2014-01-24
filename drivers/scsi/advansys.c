@@ -42,9 +42,12 @@
 
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/dma.h>
 
 #include <scsi/scsi_cmnd.h>
@@ -2182,6 +2185,7 @@ do { \
 
 #define ASC_INFO_SIZE           128	/* advansys_info() line size */
 
+<<<<<<< HEAD
 #ifdef CONFIG_PROC_FS
 /* /proc/scsi/advansys/[0...] related definitions */
 #define ASC_PRTBUF_SIZE         2048
@@ -2198,6 +2202,8 @@ do { \
     }
 #endif /* CONFIG_PROC_FS */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Asc Library return codes */
 #define ASC_TRUE        1
 #define ASC_FALSE       0
@@ -2388,7 +2394,10 @@ struct asc_board {
 	} eep_config;
 	ulong last_reset;	/* Saved last reset time */
 	/* /proc/scsi/advansys/[0...] */
+<<<<<<< HEAD
 	char *prtbuf;		/* /proc print buffer */
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef ADVANSYS_STATS
 	struct asc_stats asc_stats;	/* Board statistics */
 #endif				/* ADVANSYS_STATS */
@@ -2532,8 +2541,13 @@ static void asc_prt_scsi_host(struct Scsi_Host *s)
 	struct asc_board *boardp = shost_priv(s);
 
 	printk("Scsi_Host at addr 0x%p, device %s\n", s, dev_name(boardp->dev));
+<<<<<<< HEAD
 	printk(" host_busy %u, host_no %d, last_reset %d,\n",
 	       s->host_busy, s->host_no, (unsigned)s->last_reset);
+=======
+	printk(" host_busy %u, host_no %d,\n",
+	       s->host_busy, s->host_no);
+>>>>>>> refs/remotes/origin/master
 
 	printk(" base 0x%lx, io_port 0x%lx, irq %d,\n",
 	       (ulong)s->base, (ulong)s->io_port, boardp->irq);
@@ -2879,6 +2893,7 @@ static const char *advansys_info(struct Scsi_Host *shost)
 }
 
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
 /*
  * asc_prt_line()
  *
@@ -2909,11 +2924,14 @@ static int asc_prt_line(char *buf, int buflen, char *fmt, ...)
 	va_end(args);
 	return ret;
 }
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * asc_prt_board_devices()
  *
  * Print driver information for devices attached to the board.
+<<<<<<< HEAD
  *
  * Note: no single line should be greater than ASC_PRTLINE_SIZE,
  * cf. asc_prt_line().
@@ -2937,6 +2955,18 @@ static int asc_prt_board_devices(struct Scsi_Host *shost, char *cp, int cplen)
 			   "\nDevice Information for AdvanSys SCSI Host %d:\n",
 			   shost->host_no);
 	ASC_PRT_NEXT();
+=======
+ */
+static void asc_prt_board_devices(struct seq_file *m, struct Scsi_Host *shost)
+{
+	struct asc_board *boardp = shost_priv(shost);
+	int chip_scsi_id;
+	int i;
+
+	seq_printf(m,
+		   "\nDevice Information for AdvanSys SCSI Host %d:\n",
+		   shost->host_no);
+>>>>>>> refs/remotes/origin/master
 
 	if (ASC_NARROW_BOARD(boardp)) {
 		chip_scsi_id = boardp->dvc_cfg.asc_dvc_cfg.chip_scsi_id;
@@ -2944,6 +2974,7 @@ static int asc_prt_board_devices(struct Scsi_Host *shost, char *cp, int cplen)
 		chip_scsi_id = boardp->dvc_var.adv_dvc_var.chip_scsi_id;
 	}
 
+<<<<<<< HEAD
 	len = asc_prt_line(cp, leftlen, "Target IDs Detected:");
 	ASC_PRT_NEXT();
 	for (i = 0; i <= ADV_MAX_TID; i++) {
@@ -2956,11 +2987,20 @@ static int asc_prt_board_devices(struct Scsi_Host *shost, char *cp, int cplen)
 	ASC_PRT_NEXT();
 
 	return totlen;
+=======
+	seq_printf(m, "Target IDs Detected:");
+	for (i = 0; i <= ADV_MAX_TID; i++) {
+		if (boardp->init_tidmask & ADV_TID_TO_TIDMASK(i))
+			seq_printf(m, " %X,", i);
+	}
+	seq_printf(m, " (%X=Host Adapter)\n", chip_scsi_id);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Display Wide Board BIOS Information.
  */
+<<<<<<< HEAD
 static int asc_prt_adv_bios(struct Scsi_Host *shost, char *cp, int cplen)
 {
 	struct asc_board *boardp = shost_priv(shost);
@@ -2974,12 +3014,21 @@ static int asc_prt_adv_bios(struct Scsi_Host *shost, char *cp, int cplen)
 
 	len = asc_prt_line(cp, leftlen, "\nROM BIOS Version: ");
 	ASC_PRT_NEXT();
+=======
+static void asc_prt_adv_bios(struct seq_file *m, struct Scsi_Host *shost)
+{
+	struct asc_board *boardp = shost_priv(shost);
+	ushort major, minor, letter;
+
+	seq_printf(m, "\nROM BIOS Version: ");
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If the BIOS saved a valid signature, then fill in
 	 * the BIOS code segment base address.
 	 */
 	if (boardp->bios_signature != 0x55AA) {
+<<<<<<< HEAD
 		len = asc_prt_line(cp, leftlen, "Disabled or Pre-3.1\n");
 		ASC_PRT_NEXT();
 		len = asc_prt_line(cp, leftlen,
@@ -2988,16 +3037,29 @@ static int asc_prt_adv_bios(struct Scsi_Host *shost, char *cp, int cplen)
 		len = asc_prt_line(cp, leftlen,
 				   "can be found at the ConnectCom FTP site: ftp://ftp.connectcom.net/pub\n");
 		ASC_PRT_NEXT();
+=======
+		seq_printf(m, "Disabled or Pre-3.1\n");
+		seq_printf(m,
+			  "BIOS either disabled or Pre-3.1. If it is pre-3.1, then a newer version\n");
+		seq_printf(m,
+			  "can be found at the ConnectCom FTP site: ftp://ftp.connectcom.net/pub\n");
+>>>>>>> refs/remotes/origin/master
 	} else {
 		major = (boardp->bios_version >> 12) & 0xF;
 		minor = (boardp->bios_version >> 8) & 0xF;
 		letter = (boardp->bios_version & 0xFF);
 
+<<<<<<< HEAD
 		len = asc_prt_line(cp, leftlen, "%d.%d%c\n",
 				   major, minor,
 				   letter >= 26 ? '?' : letter + 'A');
 		ASC_PRT_NEXT();
 
+=======
+		seq_printf(m, "%d.%d%c\n",
+				   major, minor,
+				   letter >= 26 ? '?' : letter + 'A');
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Current available ROM BIOS release is 3.1I for UW
 		 * and 3.2I for U2W. This code doesn't differentiate
@@ -3005,6 +3067,7 @@ static int asc_prt_adv_bios(struct Scsi_Host *shost, char *cp, int cplen)
 		 */
 		if (major < 3 || (major <= 3 && minor < 1) ||
 		    (major <= 3 && minor <= 1 && letter < ('I' - 'A'))) {
+<<<<<<< HEAD
 			len = asc_prt_line(cp, leftlen,
 					   "Newer version of ROM BIOS is available at the ConnectCom FTP site:\n");
 			ASC_PRT_NEXT();
@@ -3015,6 +3078,14 @@ static int asc_prt_adv_bios(struct Scsi_Host *shost, char *cp, int cplen)
 	}
 
 	return totlen;
+=======
+			seq_printf(m,
+				   "Newer version of ROM BIOS is available at the ConnectCom FTP site:\n");
+			seq_printf(m,
+				   "ftp://ftp.connectcom.net/pub\n");
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -3119,6 +3190,7 @@ static int asc_get_eeprom_string(ushort *serialnum, uchar *cp)
  * asc_prt_asc_board_eeprom()
  *
  * Print board EEPROM configuration.
+<<<<<<< HEAD
  *
  * Note: no single line should be greater than ASC_PRTLINE_SIZE,
  * cf. asc_prt_line().
@@ -3133,6 +3205,13 @@ static int asc_prt_asc_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 	int leftlen;
 	int totlen;
 	int len;
+=======
+ */
+static void asc_prt_asc_board_eeprom(struct seq_file *m, struct Scsi_Host *shost)
+{
+	struct asc_board *boardp = shost_priv(shost);
+	ASC_DVC_VAR *asc_dvc_varp;
+>>>>>>> refs/remotes/origin/master
 	ASCEEP_CONFIG *ep;
 	int i;
 #ifdef CONFIG_ISA
@@ -3143,6 +3222,7 @@ static int asc_prt_asc_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 	asc_dvc_varp = &boardp->dvc_var.asc_dvc_var;
 	ep = &boardp->eep_config.asc_eep;
 
+<<<<<<< HEAD
 	leftlen = cplen;
 	totlen = len = 0;
 
@@ -3246,12 +3326,73 @@ static int asc_prt_asc_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 #endif /* CONFIG_ISA */
 
 	return totlen;
+=======
+	seq_printf(m,
+		   "\nEEPROM Settings for AdvanSys SCSI Host %d:\n",
+		   shost->host_no);
+
+	if (asc_get_eeprom_string((ushort *)&ep->adapter_info[0], serialstr)
+	    == ASC_TRUE)
+		seq_printf(m, " Serial Number: %s\n", serialstr);
+	else if (ep->adapter_info[5] == 0xBB)
+		seq_printf(m,
+			   " Default Settings Used for EEPROM-less Adapter.\n");
+	else
+		seq_printf(m,
+			   " Serial Number Signature Not Present.\n");
+
+	seq_printf(m,
+		   " Host SCSI ID: %u, Host Queue Size: %u, Device Queue Size: %u\n",
+		   ASC_EEP_GET_CHIP_ID(ep), ep->max_total_qng,
+		   ep->max_tag_qng);
+
+	seq_printf(m,
+		   " cntl 0x%x, no_scam 0x%x\n", ep->cntl, ep->no_scam);
+
+	seq_printf(m, " Target ID:           ");
+	for (i = 0; i <= ASC_MAX_TID; i++)
+		seq_printf(m, " %d", i);
+	seq_printf(m, "\n");
+
+	seq_printf(m, " Disconnects:         ");
+	for (i = 0; i <= ASC_MAX_TID; i++)
+		seq_printf(m, " %c",
+			   (ep->disc_enable & ADV_TID_TO_TIDMASK(i)) ? 'Y' : 'N');
+	seq_printf(m, "\n");
+
+	seq_printf(m, " Command Queuing:     ");
+	for (i = 0; i <= ASC_MAX_TID; i++)
+		seq_printf(m, " %c",
+			   (ep->use_cmd_qng & ADV_TID_TO_TIDMASK(i)) ? 'Y' : 'N');
+	seq_printf(m, "\n");
+
+	seq_printf(m, " Start Motor:         ");
+	for (i = 0; i <= ASC_MAX_TID; i++)
+		seq_printf(m, " %c",
+			   (ep->start_motor & ADV_TID_TO_TIDMASK(i)) ? 'Y' : 'N');
+	seq_printf(m, "\n");
+
+	seq_printf(m, " Synchronous Transfer:");
+	for (i = 0; i <= ASC_MAX_TID; i++)
+		seq_printf(m, " %c",
+			   (ep->init_sdtr & ADV_TID_TO_TIDMASK(i)) ? 'Y' : 'N');
+	seq_printf(m, "\n");
+
+#ifdef CONFIG_ISA
+	if (asc_dvc_varp->bus_type & ASC_IS_ISA) {
+		seq_printf(m,
+			   " Host ISA DMA speed:   %d MB/S\n",
+			   isa_dma_speed[ASC_EEP_GET_DMA_SPD(ep)]);
+	}
+#endif /* CONFIG_ISA */
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * asc_prt_adv_board_eeprom()
  *
  * Print board EEPROM configuration.
+<<<<<<< HEAD
  *
  * Note: no single line should be greater than ASC_PRTLINE_SIZE,
  * cf. asc_prt_line().
@@ -3266,6 +3407,13 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 	int leftlen;
 	int totlen;
 	int len;
+=======
+ */
+static void asc_prt_adv_board_eeprom(struct seq_file *m, struct Scsi_Host *shost)
+{
+	struct asc_board *boardp = shost_priv(shost);
+	ADV_DVC_VAR *adv_dvc_varp;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	char *termstr;
 	uchar serialstr[13];
@@ -3285,6 +3433,7 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 		ep_38C1600 = &boardp->eep_config.adv_38C1600_eep;
 	}
 
+<<<<<<< HEAD
 	leftlen = cplen;
 	totlen = len = 0;
 
@@ -3292,6 +3441,11 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 			   "\nEEPROM Settings for AdvanSys SCSI Host %d:\n",
 			   shost->host_no);
 	ASC_PRT_NEXT();
+=======
+	seq_printf(m,
+		   "\nEEPROM Settings for AdvanSys SCSI Host %d:\n",
+		   shost->host_no);
+>>>>>>> refs/remotes/origin/master
 
 	if (adv_dvc_varp->chip_type == ADV_CHIP_ASC3550) {
 		wordp = &ep_3550->serial_number_word1;
@@ -3301,6 +3455,7 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 		wordp = &ep_38C1600->serial_number_word1;
 	}
 
+<<<<<<< HEAD
 	if (asc_get_eeprom_string(wordp, serialstr) == ASC_TRUE) {
 		len =
 		    asc_prt_line(cp, leftlen, " Serial Number: %s\n",
@@ -3333,6 +3488,30 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 				   ep_38C1600->max_dvc_qng);
 		ASC_PRT_NEXT();
 	}
+=======
+	if (asc_get_eeprom_string(wordp, serialstr) == ASC_TRUE)
+		seq_printf(m, " Serial Number: %s\n", serialstr);
+	else
+		seq_printf(m, " Serial Number Signature Not Present.\n");
+
+	if (adv_dvc_varp->chip_type == ADV_CHIP_ASC3550)
+		seq_printf(m,
+			   " Host SCSI ID: %u, Host Queue Size: %u, Device Queue Size: %u\n",
+			   ep_3550->adapter_scsi_id,
+			   ep_3550->max_host_qng, ep_3550->max_dvc_qng);
+	else if (adv_dvc_varp->chip_type == ADV_CHIP_ASC38C0800)
+		seq_printf(m,
+			   " Host SCSI ID: %u, Host Queue Size: %u, Device Queue Size: %u\n",
+			   ep_38C0800->adapter_scsi_id,
+			   ep_38C0800->max_host_qng,
+			   ep_38C0800->max_dvc_qng);
+	else
+		seq_printf(m,
+			   " Host SCSI ID: %u, Host Queue Size: %u, Device Queue Size: %u\n",
+			   ep_38C1600->adapter_scsi_id,
+			   ep_38C1600->max_host_qng,
+			   ep_38C1600->max_dvc_qng);
+>>>>>>> refs/remotes/origin/master
 	if (adv_dvc_varp->chip_type == ADV_CHIP_ASC3550) {
 		word = ep_3550->termination;
 	} else if (adv_dvc_varp->chip_type == ADV_CHIP_ASC38C0800) {
@@ -3356,6 +3535,7 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 		break;
 	}
 
+<<<<<<< HEAD
 	if (adv_dvc_varp->chip_type == ADV_CHIP_ASC3550) {
 		len = asc_prt_line(cp, leftlen,
 				   " termination: %u (%s), bios_ctrl: 0x%x\n",
@@ -3384,6 +3564,28 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 	}
 	len = asc_prt_line(cp, leftlen, "\n");
 	ASC_PRT_NEXT();
+=======
+	if (adv_dvc_varp->chip_type == ADV_CHIP_ASC3550)
+		seq_printf(m,
+			   " termination: %u (%s), bios_ctrl: 0x%x\n",
+			   ep_3550->termination, termstr,
+			   ep_3550->bios_ctrl);
+	else if (adv_dvc_varp->chip_type == ADV_CHIP_ASC38C0800)
+		seq_printf(m,
+			   " termination: %u (%s), bios_ctrl: 0x%x\n",
+			   ep_38C0800->termination_lvd, termstr,
+			   ep_38C0800->bios_ctrl);
+	else
+		seq_printf(m,
+			   " termination: %u (%s), bios_ctrl: 0x%x\n",
+			   ep_38C1600->termination_lvd, termstr,
+			   ep_38C1600->bios_ctrl);
+
+	seq_printf(m, " Target ID:           ");
+	for (i = 0; i <= ADV_MAX_TID; i++)
+		seq_printf(m, " %X", i);
+	seq_printf(m, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (adv_dvc_varp->chip_type == ADV_CHIP_ASC3550) {
 		word = ep_3550->disc_enable;
@@ -3392,6 +3594,7 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 	} else {
 		word = ep_38C1600->disc_enable;
 	}
+<<<<<<< HEAD
 	len = asc_prt_line(cp, leftlen, " Disconnects:         ");
 	ASC_PRT_NEXT();
 	for (i = 0; i <= ADV_MAX_TID; i++) {
@@ -3401,6 +3604,13 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 	}
 	len = asc_prt_line(cp, leftlen, "\n");
 	ASC_PRT_NEXT();
+=======
+	seq_printf(m, " Disconnects:         ");
+	for (i = 0; i <= ADV_MAX_TID; i++)
+		seq_printf(m, " %c",
+			   (word & ADV_TID_TO_TIDMASK(i)) ? 'Y' : 'N');
+	seq_printf(m, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (adv_dvc_varp->chip_type == ADV_CHIP_ASC3550) {
 		word = ep_3550->tagqng_able;
@@ -3409,6 +3619,7 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 	} else {
 		word = ep_38C1600->tagqng_able;
 	}
+<<<<<<< HEAD
 	len = asc_prt_line(cp, leftlen, " Command Queuing:     ");
 	ASC_PRT_NEXT();
 	for (i = 0; i <= ADV_MAX_TID; i++) {
@@ -3418,6 +3629,13 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 	}
 	len = asc_prt_line(cp, leftlen, "\n");
 	ASC_PRT_NEXT();
+=======
+	seq_printf(m, " Command Queuing:     ");
+	for (i = 0; i <= ADV_MAX_TID; i++)
+		seq_printf(m, " %c",
+			   (word & ADV_TID_TO_TIDMASK(i)) ? 'Y' : 'N');
+	seq_printf(m, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (adv_dvc_varp->chip_type == ADV_CHIP_ASC3550) {
 		word = ep_3550->start_motor;
@@ -3426,6 +3644,7 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 	} else {
 		word = ep_38C1600->start_motor;
 	}
+<<<<<<< HEAD
 	len = asc_prt_line(cp, leftlen, " Start Motor:         ");
 	ASC_PRT_NEXT();
 	for (i = 0; i <= ADV_MAX_TID; i++) {
@@ -3462,6 +3681,30 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 		}
 		len = asc_prt_line(cp, leftlen, "\n");
 		ASC_PRT_NEXT();
+=======
+	seq_printf(m, " Start Motor:         ");
+	for (i = 0; i <= ADV_MAX_TID; i++)
+		seq_printf(m, " %c",
+			   (word & ADV_TID_TO_TIDMASK(i)) ? 'Y' : 'N');
+	seq_printf(m, "\n");
+
+	if (adv_dvc_varp->chip_type == ADV_CHIP_ASC3550) {
+		seq_printf(m, " Synchronous Transfer:");
+		for (i = 0; i <= ADV_MAX_TID; i++)
+			seq_printf(m, " %c",
+				   (ep_3550->sdtr_able & ADV_TID_TO_TIDMASK(i)) ?
+				   'Y' : 'N');
+		seq_printf(m, "\n");
+	}
+
+	if (adv_dvc_varp->chip_type == ADV_CHIP_ASC3550) {
+		seq_printf(m, " Ultra Transfer:      ");
+		for (i = 0; i <= ADV_MAX_TID; i++)
+			seq_printf(m, " %c",
+				   (ep_3550->ultra_able & ADV_TID_TO_TIDMASK(i))
+				   ? 'Y' : 'N');
+		seq_printf(m, "\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (adv_dvc_varp->chip_type == ADV_CHIP_ASC3550) {
@@ -3471,6 +3714,7 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 	} else {
 		word = ep_38C1600->wdtr_able;
 	}
+<<<<<<< HEAD
 	len = asc_prt_line(cp, leftlen, " Wide Transfer:       ");
 	ASC_PRT_NEXT();
 	for (i = 0; i <= ADV_MAX_TID; i++) {
@@ -3486,6 +3730,18 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 		len = asc_prt_line(cp, leftlen,
 				   " Synchronous Transfer Speed (Mhz):\n  ");
 		ASC_PRT_NEXT();
+=======
+	seq_printf(m, " Wide Transfer:       ");
+	for (i = 0; i <= ADV_MAX_TID; i++)
+		seq_printf(m, " %c",
+			   (word & ADV_TID_TO_TIDMASK(i)) ? 'Y' : 'N');
+	seq_printf(m, "\n");
+
+	if (adv_dvc_varp->chip_type == ADV_CHIP_ASC38C0800 ||
+	    adv_dvc_varp->chip_type == ADV_CHIP_ASC38C1600) {
+		seq_printf(m,
+			   " Synchronous Transfer Speed (Mhz):\n  ");
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; i <= ADV_MAX_TID; i++) {
 			char *speed_str;
 
@@ -3521,6 +3777,7 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 				speed_str = "Unk";
 				break;
 			}
+<<<<<<< HEAD
 			len = asc_prt_line(cp, leftlen, "%X:%s ", i, speed_str);
 			ASC_PRT_NEXT();
 			if (i == 7) {
@@ -3534,10 +3791,20 @@ static int asc_prt_adv_board_eeprom(struct Scsi_Host *shost, char *cp, int cplen
 	}
 
 	return totlen;
+=======
+			seq_printf(m, "%X:%s ", i, speed_str);
+			if (i == 7)
+				seq_printf(m, "\n  ");
+			sdtr_speed >>= 4;
+		}
+		seq_printf(m, "\n");
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * asc_prt_driver_conf()
+<<<<<<< HEAD
  *
  * Note: no single line should be greater than ASC_PRTLINE_SIZE,
  * cf. asc_prt_line().
@@ -3586,20 +3853,56 @@ static int asc_prt_driver_conf(struct Scsi_Host *shost, char *cp, int cplen)
 
 	len = asc_prt_line(cp, leftlen, " io_port 0x%x\n", shost->io_port);
 	ASC_PRT_NEXT();
+=======
+ */
+static void asc_prt_driver_conf(struct seq_file *m, struct Scsi_Host *shost)
+{
+	struct asc_board *boardp = shost_priv(shost);
+	int chip_scsi_id;
+
+	seq_printf(m,
+		"\nLinux Driver Configuration and Information for AdvanSys SCSI Host %d:\n",
+		shost->host_no);
+
+	seq_printf(m,
+		   " host_busy %u, max_id %u, max_lun %u, max_channel %u\n",
+		   shost->host_busy, shost->max_id,
+		   shost->max_lun, shost->max_channel);
+
+	seq_printf(m,
+		   " unique_id %d, can_queue %d, this_id %d, sg_tablesize %u, cmd_per_lun %u\n",
+		   shost->unique_id, shost->can_queue, shost->this_id,
+		   shost->sg_tablesize, shost->cmd_per_lun);
+
+	seq_printf(m,
+		   " unchecked_isa_dma %d, use_clustering %d\n",
+		   shost->unchecked_isa_dma, shost->use_clustering);
+
+	seq_printf(m,
+		   " flags 0x%x, last_reset 0x%lx, jiffies 0x%lx, asc_n_io_port 0x%x\n",
+		   boardp->flags, boardp->last_reset, jiffies,
+		   boardp->asc_n_io_port);
+
+	seq_printf(m, " io_port 0x%lx\n", shost->io_port);
+>>>>>>> refs/remotes/origin/master
 
 	if (ASC_NARROW_BOARD(boardp)) {
 		chip_scsi_id = boardp->dvc_cfg.asc_dvc_cfg.chip_scsi_id;
 	} else {
 		chip_scsi_id = boardp->dvc_var.adv_dvc_var.chip_scsi_id;
 	}
+<<<<<<< HEAD
 
 	return totlen;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * asc_prt_asc_board_info()
  *
  * Print dynamic board configuration information.
+<<<<<<< HEAD
  *
  * Note: no single line should be greater than ASC_PRTLINE_SIZE,
  * cf. asc_prt_line().
@@ -3614,6 +3917,13 @@ static int asc_prt_asc_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 	int leftlen;
 	int totlen;
 	int len;
+=======
+ */
+static void asc_prt_asc_board_info(struct seq_file *m, struct Scsi_Host *shost)
+{
+	struct asc_board *boardp = shost_priv(shost);
+	int chip_scsi_id;
+>>>>>>> refs/remotes/origin/master
 	ASC_DVC_VAR *v;
 	ASC_DVC_CFG *c;
 	int i;
@@ -3623,6 +3933,7 @@ static int asc_prt_asc_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 	c = &boardp->dvc_cfg.asc_dvc_cfg;
 	chip_scsi_id = c->chip_scsi_id;
 
+<<<<<<< HEAD
 	leftlen = cplen;
 	totlen = len = 0;
 
@@ -3644,11 +3955,28 @@ static int asc_prt_asc_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 
 	len = asc_prt_line(cp, leftlen, " Command Queuing:");
 	ASC_PRT_NEXT();
+=======
+	seq_printf(m,
+		   "\nAsc Library Configuration and Statistics for AdvanSys SCSI Host %d:\n",
+		   shost->host_no);
+
+	seq_printf(m, " chip_version %u, mcode_date 0x%x, "
+		   "mcode_version 0x%x, err_code %u\n",
+		   c->chip_version, c->mcode_date, c->mcode_version,
+		   v->err_code);
+
+	/* Current number of commands waiting for the host. */
+	seq_printf(m,
+		   " Total Command Pending: %d\n", v->cur_total_qng);
+
+	seq_printf(m, " Command Queuing:");
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i <= ASC_MAX_TID; i++) {
 		if ((chip_scsi_id == i) ||
 		    ((boardp->init_tidmask & ADV_TID_TO_TIDMASK(i)) == 0)) {
 			continue;
 		}
+<<<<<<< HEAD
 		len = asc_prt_line(cp, leftlen, " %X:%c",
 				   i,
 				   (v->
@@ -3662,11 +3990,22 @@ static int asc_prt_asc_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 	/* Current number of commands waiting for a device. */
 	len = asc_prt_line(cp, leftlen, " Command Queue Pending:");
 	ASC_PRT_NEXT();
+=======
+		seq_printf(m, " %X:%c",
+			   i,
+			   (v->use_tagged_qng & ADV_TID_TO_TIDMASK(i)) ? 'Y' : 'N');
+	}
+	seq_printf(m, "\n");
+
+	/* Current number of commands waiting for a device. */
+	seq_printf(m, " Command Queue Pending:");
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i <= ASC_MAX_TID; i++) {
 		if ((chip_scsi_id == i) ||
 		    ((boardp->init_tidmask & ADV_TID_TO_TIDMASK(i)) == 0)) {
 			continue;
 		}
+<<<<<<< HEAD
 		len = asc_prt_line(cp, leftlen, " %X:%u", i, v->cur_dvc_qng[i]);
 		ASC_PRT_NEXT();
 	}
@@ -3676,11 +4015,20 @@ static int asc_prt_asc_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 	/* Current limit on number of commands that can be sent to a device. */
 	len = asc_prt_line(cp, leftlen, " Command Queue Limit:");
 	ASC_PRT_NEXT();
+=======
+		seq_printf(m, " %X:%u", i, v->cur_dvc_qng[i]);
+	}
+	seq_printf(m, "\n");
+
+	/* Current limit on number of commands that can be sent to a device. */
+	seq_printf(m, " Command Queue Limit:");
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i <= ASC_MAX_TID; i++) {
 		if ((chip_scsi_id == i) ||
 		    ((boardp->init_tidmask & ADV_TID_TO_TIDMASK(i)) == 0)) {
 			continue;
 		}
+<<<<<<< HEAD
 		len = asc_prt_line(cp, leftlen, " %X:%u", i, v->max_dvc_qng[i]);
 		ASC_PRT_NEXT();
 	}
@@ -3690,11 +4038,20 @@ static int asc_prt_asc_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 	/* Indicate whether the device has returned queue full status. */
 	len = asc_prt_line(cp, leftlen, " Command Queue Full:");
 	ASC_PRT_NEXT();
+=======
+		seq_printf(m, " %X:%u", i, v->max_dvc_qng[i]);
+	}
+	seq_printf(m, "\n");
+
+	/* Indicate whether the device has returned queue full status. */
+	seq_printf(m, " Command Queue Full:");
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i <= ASC_MAX_TID; i++) {
 		if ((chip_scsi_id == i) ||
 		    ((boardp->init_tidmask & ADV_TID_TO_TIDMASK(i)) == 0)) {
 			continue;
 		}
+<<<<<<< HEAD
 		if (boardp->queue_full & ADV_TID_TO_TIDMASK(i)) {
 			len = asc_prt_line(cp, leftlen, " %X:Y-%d",
 					   i, boardp->queue_full_cnt[i]);
@@ -3708,11 +4065,23 @@ static int asc_prt_asc_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 
 	len = asc_prt_line(cp, leftlen, " Synchronous Transfer:");
 	ASC_PRT_NEXT();
+=======
+		if (boardp->queue_full & ADV_TID_TO_TIDMASK(i))
+			seq_printf(m, " %X:Y-%d",
+				   i, boardp->queue_full_cnt[i]);
+		else
+			seq_printf(m, " %X:N", i);
+	}
+	seq_printf(m, "\n");
+
+	seq_printf(m, " Synchronous Transfer:");
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i <= ASC_MAX_TID; i++) {
 		if ((chip_scsi_id == i) ||
 		    ((boardp->init_tidmask & ADV_TID_TO_TIDMASK(i)) == 0)) {
 			continue;
 		}
+<<<<<<< HEAD
 		len = asc_prt_line(cp, leftlen, " %X:%c",
 				   i,
 				   (v->
@@ -3722,6 +4091,13 @@ static int asc_prt_asc_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 	}
 	len = asc_prt_line(cp, leftlen, "\n");
 	ASC_PRT_NEXT();
+=======
+		seq_printf(m, " %X:%c",
+			   i,
+			   (v->sdtr_done & ADV_TID_TO_TIDMASK(i)) ? 'Y' : 'N');
+	}
+	seq_printf(m, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i <= ASC_MAX_TID; i++) {
 		uchar syn_period_ix;
@@ -3732,17 +4108,25 @@ static int asc_prt_asc_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 			continue;
 		}
 
+<<<<<<< HEAD
 		len = asc_prt_line(cp, leftlen, "  %X:", i);
 		ASC_PRT_NEXT();
 
 		if ((boardp->sdtr_data[i] & ASC_SYN_MAX_OFFSET) == 0) {
 			len = asc_prt_line(cp, leftlen, " Asynchronous");
 			ASC_PRT_NEXT();
+=======
+		seq_printf(m, "  %X:", i);
+
+		if ((boardp->sdtr_data[i] & ASC_SYN_MAX_OFFSET) == 0) {
+			seq_printf(m, " Asynchronous");
+>>>>>>> refs/remotes/origin/master
 		} else {
 			syn_period_ix =
 			    (boardp->sdtr_data[i] >> 4) & (v->max_sdtr_index -
 							   1);
 
+<<<<<<< HEAD
 			len = asc_prt_line(cp, leftlen,
 					   " Transfer Period Factor: %d (%d.%d Mhz),",
 					   v->sdtr_period_tbl[syn_period_ix],
@@ -3776,12 +4160,38 @@ static int asc_prt_asc_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 	}
 
 	return totlen;
+=======
+			seq_printf(m,
+				   " Transfer Period Factor: %d (%d.%d Mhz),",
+				   v->sdtr_period_tbl[syn_period_ix],
+				   250 / v->sdtr_period_tbl[syn_period_ix],
+				   ASC_TENTHS(250,
+					      v->sdtr_period_tbl[syn_period_ix]));
+
+			seq_printf(m, " REQ/ACK Offset: %d",
+				   boardp->sdtr_data[i] & ASC_SYN_MAX_OFFSET);
+		}
+
+		if ((v->sdtr_done & ADV_TID_TO_TIDMASK(i)) == 0) {
+			seq_printf(m, "*\n");
+			renegotiate = 1;
+		} else {
+			seq_printf(m, "\n");
+		}
+	}
+
+	if (renegotiate) {
+		seq_printf(m,
+			   " * = Re-negotiation pending before next command.\n");
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * asc_prt_adv_board_info()
  *
  * Print dynamic board configuration information.
+<<<<<<< HEAD
  *
  * Note: no single line should be greater than ASC_PRTLINE_SIZE,
  * cf. asc_prt_line().
@@ -3795,6 +4205,12 @@ static int asc_prt_adv_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 	int leftlen;
 	int totlen;
 	int len;
+=======
+ */
+static void asc_prt_adv_board_info(struct seq_file *m, struct Scsi_Host *shost)
+{
+	struct asc_board *boardp = shost_priv(shost);
+>>>>>>> refs/remotes/origin/master
 	int i;
 	ADV_DVC_VAR *v;
 	ADV_DVC_CFG *c;
@@ -3813,6 +4229,7 @@ static int asc_prt_adv_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 	iop_base = v->iop_base;
 	chip_scsi_id = v->chip_scsi_id;
 
+<<<<<<< HEAD
 	leftlen = cplen;
 	totlen = len = 0;
 
@@ -3837,12 +4254,31 @@ static int asc_prt_adv_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 	AdvReadWordLram(iop_base, ASC_MC_TAGQNG_ABLE, tagqng_able);
 	len = asc_prt_line(cp, leftlen, " Queuing Enabled:");
 	ASC_PRT_NEXT();
+=======
+	seq_printf(m,
+		   "\nAdv Library Configuration and Statistics for AdvanSys SCSI Host %d:\n",
+		   shost->host_no);
+
+	seq_printf(m,
+		   " iop_base 0x%lx, cable_detect: %X, err_code %u\n",
+		   (unsigned long)v->iop_base,
+		   AdvReadWordRegister(iop_base,IOPW_SCSI_CFG1) & CABLE_DETECT,
+		   v->err_code);
+
+	seq_printf(m, " chip_version %u, mcode_date 0x%x, "
+		   "mcode_version 0x%x\n", c->chip_version,
+		   c->mcode_date, c->mcode_version);
+
+	AdvReadWordLram(iop_base, ASC_MC_TAGQNG_ABLE, tagqng_able);
+	seq_printf(m, " Queuing Enabled:");
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i <= ADV_MAX_TID; i++) {
 		if ((chip_scsi_id == i) ||
 		    ((boardp->init_tidmask & ADV_TID_TO_TIDMASK(i)) == 0)) {
 			continue;
 		}
 
+<<<<<<< HEAD
 		len = asc_prt_line(cp, leftlen, " %X:%c",
 				   i,
 				   (tagqng_able & ADV_TID_TO_TIDMASK(i)) ? 'Y' :
@@ -3854,6 +4290,15 @@ static int asc_prt_adv_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 
 	len = asc_prt_line(cp, leftlen, " Queue Limit:");
 	ASC_PRT_NEXT();
+=======
+		seq_printf(m, " %X:%c",
+			   i,
+			   (tagqng_able & ADV_TID_TO_TIDMASK(i)) ? 'Y' : 'N');
+	}
+	seq_printf(m, "\n");
+
+	seq_printf(m, " Queue Limit:");
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i <= ADV_MAX_TID; i++) {
 		if ((chip_scsi_id == i) ||
 		    ((boardp->init_tidmask & ADV_TID_TO_TIDMASK(i)) == 0)) {
@@ -3863,6 +4308,7 @@ static int asc_prt_adv_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 		AdvReadByteLram(iop_base, ASC_MC_NUMBER_OF_MAX_CMD + i,
 				lrambyte);
 
+<<<<<<< HEAD
 		len = asc_prt_line(cp, leftlen, " %X:%d", i, lrambyte);
 		ASC_PRT_NEXT();
 	}
@@ -3871,6 +4317,13 @@ static int asc_prt_adv_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 
 	len = asc_prt_line(cp, leftlen, " Command Pending:");
 	ASC_PRT_NEXT();
+=======
+		seq_printf(m, " %X:%d", i, lrambyte);
+	}
+	seq_printf(m, "\n");
+
+	seq_printf(m, " Command Pending:");
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i <= ADV_MAX_TID; i++) {
 		if ((chip_scsi_id == i) ||
 		    ((boardp->init_tidmask & ADV_TID_TO_TIDMASK(i)) == 0)) {
@@ -3880,6 +4333,7 @@ static int asc_prt_adv_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 		AdvReadByteLram(iop_base, ASC_MC_NUMBER_OF_QUEUED_CMD + i,
 				lrambyte);
 
+<<<<<<< HEAD
 		len = asc_prt_line(cp, leftlen, " %X:%d", i, lrambyte);
 		ASC_PRT_NEXT();
 	}
@@ -3889,12 +4343,21 @@ static int asc_prt_adv_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 	AdvReadWordLram(iop_base, ASC_MC_WDTR_ABLE, wdtr_able);
 	len = asc_prt_line(cp, leftlen, " Wide Enabled:");
 	ASC_PRT_NEXT();
+=======
+		seq_printf(m, " %X:%d", i, lrambyte);
+	}
+	seq_printf(m, "\n");
+
+	AdvReadWordLram(iop_base, ASC_MC_WDTR_ABLE, wdtr_able);
+	seq_printf(m, " Wide Enabled:");
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i <= ADV_MAX_TID; i++) {
 		if ((chip_scsi_id == i) ||
 		    ((boardp->init_tidmask & ADV_TID_TO_TIDMASK(i)) == 0)) {
 			continue;
 		}
 
+<<<<<<< HEAD
 		len = asc_prt_line(cp, leftlen, " %X:%c",
 				   i,
 				   (wdtr_able & ADV_TID_TO_TIDMASK(i)) ? 'Y' :
@@ -3907,6 +4370,16 @@ static int asc_prt_adv_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 	AdvReadWordLram(iop_base, ASC_MC_WDTR_DONE, wdtr_done);
 	len = asc_prt_line(cp, leftlen, " Transfer Bit Width:");
 	ASC_PRT_NEXT();
+=======
+		seq_printf(m, " %X:%c",
+			   i,
+			   (wdtr_able & ADV_TID_TO_TIDMASK(i)) ? 'Y' : 'N');
+	}
+	seq_printf(m, "\n");
+
+	AdvReadWordLram(iop_base, ASC_MC_WDTR_DONE, wdtr_done);
+	seq_printf(m, " Transfer Bit Width:");
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i <= ADV_MAX_TID; i++) {
 		if ((chip_scsi_id == i) ||
 		    ((boardp->init_tidmask & ADV_TID_TO_TIDMASK(i)) == 0)) {
@@ -3917,6 +4390,7 @@ static int asc_prt_adv_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 				ASC_MC_DEVICE_HSHK_CFG_TABLE + (2 * i),
 				lramword);
 
+<<<<<<< HEAD
 		len = asc_prt_line(cp, leftlen, " %X:%d",
 				   i, (lramword & 0x8000) ? 16 : 8);
 		ASC_PRT_NEXT();
@@ -3934,12 +4408,28 @@ static int asc_prt_adv_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 	AdvReadWordLram(iop_base, ASC_MC_SDTR_ABLE, sdtr_able);
 	len = asc_prt_line(cp, leftlen, " Synchronous Enabled:");
 	ASC_PRT_NEXT();
+=======
+		seq_printf(m, " %X:%d",
+			   i, (lramword & 0x8000) ? 16 : 8);
+
+		if ((wdtr_able & ADV_TID_TO_TIDMASK(i)) &&
+		    (wdtr_done & ADV_TID_TO_TIDMASK(i)) == 0) {
+			seq_printf(m, "*");
+			renegotiate = 1;
+		}
+	}
+	seq_printf(m, "\n");
+
+	AdvReadWordLram(iop_base, ASC_MC_SDTR_ABLE, sdtr_able);
+	seq_printf(m, " Synchronous Enabled:");
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i <= ADV_MAX_TID; i++) {
 		if ((chip_scsi_id == i) ||
 		    ((boardp->init_tidmask & ADV_TID_TO_TIDMASK(i)) == 0)) {
 			continue;
 		}
 
+<<<<<<< HEAD
 		len = asc_prt_line(cp, leftlen, " %X:%c",
 				   i,
 				   (sdtr_able & ADV_TID_TO_TIDMASK(i)) ? 'Y' :
@@ -3948,6 +4438,13 @@ static int asc_prt_adv_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 	}
 	len = asc_prt_line(cp, leftlen, "\n");
 	ASC_PRT_NEXT();
+=======
+		seq_printf(m, " %X:%c",
+			   i,
+			   (sdtr_able & ADV_TID_TO_TIDMASK(i)) ? 'Y' : 'N');
+	}
+	seq_printf(m, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	AdvReadWordLram(iop_base, ASC_MC_SDTR_DONE, sdtr_done);
 	for (i = 0; i <= ADV_MAX_TID; i++) {
@@ -3963,6 +4460,7 @@ static int asc_prt_adv_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 			continue;
 		}
 
+<<<<<<< HEAD
 		len = asc_prt_line(cp, leftlen, "  %X:", i);
 		ASC_PRT_NEXT();
 
@@ -3983,11 +4481,25 @@ static int asc_prt_adv_board_info(struct Scsi_Host *shost, char *cp, int cplen)
 				len =
 				    asc_prt_line(cp, leftlen, "10 (40.0 Mhz),");
 				ASC_PRT_NEXT();
+=======
+		seq_printf(m, "  %X:", i);
+
+		if ((lramword & 0x1F) == 0) {	/* Check for REQ/ACK Offset 0. */
+			seq_printf(m, " Asynchronous");
+		} else {
+			seq_printf(m, " Transfer Period Factor: ");
+
+			if ((lramword & 0x1F00) == 0x1100) {	/* 80 Mhz */
+				seq_printf(m, "9 (80.0 Mhz),");
+			} else if ((lramword & 0x1F00) == 0x1000) {	/* 40 Mhz */
+				seq_printf(m, "10 (40.0 Mhz),");
+>>>>>>> refs/remotes/origin/master
 			} else {	/* 20 Mhz or below. */
 
 				period = (((lramword >> 8) * 25) + 50) / 4;
 
 				if (period == 0) {	/* Should never happen. */
+<<<<<<< HEAD
 					len =
 					    asc_prt_line(cp, leftlen,
 							 "%d (? Mhz), ");
@@ -4055,11 +4567,39 @@ asc_proc_copy(off_t advoffset, off_t offset, char *curbuf, int leftlen,
 		memcpy(curbuf, cp, cnt);
 	}
 	return cnt;
+=======
+					seq_printf(m, "%d (? Mhz), ", period);
+				} else {
+					seq_printf(m,
+						   "%d (%d.%d Mhz),",
+						   period, 250 / period,
+						   ASC_TENTHS(250, period));
+				}
+			}
+
+			seq_printf(m, " REQ/ACK Offset: %d",
+				   lramword & 0x1F);
+		}
+
+		if ((sdtr_done & ADV_TID_TO_TIDMASK(i)) == 0) {
+			seq_printf(m, "*\n");
+			renegotiate = 1;
+		} else {
+			seq_printf(m, "\n");
+		}
+	}
+
+	if (renegotiate) {
+		seq_printf(m,
+			   " * = Re-negotiation pending before next command.\n");
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef ADVANSYS_STATS
 /*
  * asc_prt_board_stats()
+<<<<<<< HEAD
  *
  * Note: no single line should be greater than ASC_PRTLINE_SIZE,
  * cf. asc_prt_line().
@@ -4068,10 +4608,15 @@ asc_proc_copy(off_t advoffset, off_t offset, char *curbuf, int leftlen,
  * 'cplen' characters will be copied to 'cp'.
  */
 static int asc_prt_board_stats(struct Scsi_Host *shost, char *cp, int cplen)
+=======
+ */
+static void asc_prt_board_stats(struct seq_file *m, struct Scsi_Host *shost)
+>>>>>>> refs/remotes/origin/master
 {
 	struct asc_board *boardp = shost_priv(shost);
 	struct asc_stats *s = &boardp->asc_stats;
 
+<<<<<<< HEAD
 	int leftlen = cplen;
 	int len, totlen = 0;
 
@@ -4097,11 +4642,32 @@ static int asc_prt_board_stats(struct Scsi_Host *shost, char *cp, int cplen)
 			   s->exe_noerror, s->exe_busy, s->exe_error,
 			   s->exe_unknown);
 	ASC_PRT_NEXT();
+=======
+	seq_printf(m,
+		   "\nLinux Driver Statistics for AdvanSys SCSI Host %d:\n",
+		   shost->host_no);
+
+	seq_printf(m,
+		   " queuecommand %u, reset %u, biosparam %u, interrupt %u\n",
+		   s->queuecommand, s->reset, s->biosparam,
+		   s->interrupt);
+
+	seq_printf(m,
+		   " callback %u, done %u, build_error %u, build_noreq %u, build_nosg %u\n",
+		   s->callback, s->done, s->build_error,
+		   s->adv_build_noreq, s->adv_build_nosg);
+
+	seq_printf(m,
+		   " exe_noerror %u, exe_busy %u, exe_error %u, exe_unknown %u\n",
+		   s->exe_noerror, s->exe_busy, s->exe_error,
+		   s->exe_unknown);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Display data transfer statistics.
 	 */
 	if (s->xfer_cnt > 0) {
+<<<<<<< HEAD
 		len = asc_prt_line(cp, leftlen, " xfer_cnt %lu, xfer_elem %lu, ",
 				   s->xfer_cnt, s->xfer_elem);
 		ASC_PRT_NEXT();
@@ -4128,10 +4694,32 @@ static int asc_prt_board_stats(struct Scsi_Host *shost, char *cp, int cplen)
 	}
 
 	return totlen;
+=======
+		seq_printf(m, " xfer_cnt %u, xfer_elem %u, ",
+			   s->xfer_cnt, s->xfer_elem);
+
+		seq_printf(m, "xfer_bytes %u.%01u kb\n",
+			   s->xfer_sect / 2, ASC_TENTHS(s->xfer_sect, 2));
+
+		/* Scatter gather transfer statistics */
+		seq_printf(m, " avg_num_elem %u.%01u, ",
+			   s->xfer_elem / s->xfer_cnt,
+			   ASC_TENTHS(s->xfer_elem, s->xfer_cnt));
+
+		seq_printf(m, "avg_elem_size %u.%01u kb, ",
+			   (s->xfer_sect / 2) / s->xfer_elem,
+			   ASC_TENTHS((s->xfer_sect / 2), s->xfer_elem));
+
+		seq_printf(m, "avg_xfer_size %u.%01u kb\n",
+			   (s->xfer_sect / 2) / s->xfer_cnt,
+			   ASC_TENTHS((s->xfer_sect / 2), s->xfer_cnt));
+	}
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* ADVANSYS_STATS */
 
 /*
+<<<<<<< HEAD
  * advansys_proc_info() - /proc/scsi/advansys/{0,1,2,3,...}
  *
  * *buffer: I/O buffer
@@ -4163,10 +4751,25 @@ advansys_proc_info(struct Scsi_Host *shost, char *buffer, char **start,
 	int leftlen;
 	char *curbuf;
 	off_t advoffset;
+=======
+ * advansys_show_info() - /proc/scsi/advansys/{0,1,2,3,...}
+ *
+ * m: seq_file to print into
+ * shost: Scsi_Host
+ *
+ * Return the number of bytes read from or written to a
+ * /proc/scsi/advansys/[0...] file.
+ */
+static int
+advansys_show_info(struct seq_file *m, struct Scsi_Host *shost)
+{
+	struct asc_board *boardp = shost_priv(shost);
+>>>>>>> refs/remotes/origin/master
 
 	ASC_DBG(1, "begin\n");
 
 	/*
+<<<<<<< HEAD
 	 * User write not supported.
 	 */
 	if (inout == TRUE)
@@ -4183,11 +4786,17 @@ advansys_proc_info(struct Scsi_Host *shost, char *buffer, char **start,
 	totcnt = 0;
 	leftlen = length;
 
+=======
+	 * User read of /proc/scsi/advansys/[0...] file.
+	 */
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Get board configuration information.
 	 *
 	 * advansys_info() returns the board string from its own static buffer.
 	 */
+<<<<<<< HEAD
 	cp = (char *)advansys_info(shost);
 	strcat(cp, "\n");
 	cplen = strlen(cp);
@@ -4220,10 +4829,20 @@ advansys_proc_info(struct Scsi_Host *shost, char *buffer, char **start,
 		advoffset += cplen;
 		curbuf += cnt;
 	}
+=======
+	/* Copy board information. */
+	seq_printf(m, "%s\n", (char *)advansys_info(shost));
+	/*
+	 * Display Wide Board BIOS Information.
+	 */
+	if (!ASC_NARROW_BOARD(boardp))
+		asc_prt_adv_bios(m, shost);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Display driver information for each device attached to the board.
 	 */
+<<<<<<< HEAD
 	cp = boardp->prtbuf;
 	cplen = asc_prt_board_devices(shost, cp, ASC_PRTBUF_SIZE);
 	BUG_ON(cplen >= ASC_PRTBUF_SIZE);
@@ -4236,10 +4855,14 @@ advansys_proc_info(struct Scsi_Host *shost, char *buffer, char **start,
 	}
 	advoffset += cplen;
 	curbuf += cnt;
+=======
+	asc_prt_board_devices(m, shost);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Display EEPROM configuration for the board.
 	 */
+<<<<<<< HEAD
 	cp = boardp->prtbuf;
 	if (ASC_NARROW_BOARD(boardp)) {
 		cplen = asc_prt_asc_board_eeprom(shost, cp, ASC_PRTBUF_SIZE);
@@ -4256,10 +4879,17 @@ advansys_proc_info(struct Scsi_Host *shost, char *buffer, char **start,
 	}
 	advoffset += cplen;
 	curbuf += cnt;
+=======
+	if (ASC_NARROW_BOARD(boardp))
+		asc_prt_asc_board_eeprom(m, shost);
+	else
+		asc_prt_adv_board_eeprom(m, shost);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Display driver configuration and information for the board.
 	 */
+<<<<<<< HEAD
 	cp = boardp->prtbuf;
 	cplen = asc_prt_driver_conf(shost, cp, ASC_PRTBUF_SIZE);
 	BUG_ON(cplen >= ASC_PRTBUF_SIZE);
@@ -4272,11 +4902,15 @@ advansys_proc_info(struct Scsi_Host *shost, char *buffer, char **start,
 	}
 	advoffset += cplen;
 	curbuf += cnt;
+=======
+	asc_prt_driver_conf(m, shost);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef ADVANSYS_STATS
 	/*
 	 * Display driver statistics for the board.
 	 */
+<<<<<<< HEAD
 	cp = boardp->prtbuf;
 	cplen = asc_prt_board_stats(shost, cp, ASC_PRTBUF_SIZE);
 	BUG_ON(cplen >= ASC_PRTBUF_SIZE);
@@ -4289,12 +4923,16 @@ advansys_proc_info(struct Scsi_Host *shost, char *buffer, char **start,
 	}
 	advoffset += cplen;
 	curbuf += cnt;
+=======
+	asc_prt_board_stats(m, shost);
+>>>>>>> refs/remotes/origin/master
 #endif /* ADVANSYS_STATS */
 
 	/*
 	 * Display Asc Library dynamic configuration information
 	 * for the board.
 	 */
+<<<<<<< HEAD
 	cp = boardp->prtbuf;
 	if (ASC_NARROW_BOARD(boardp)) {
 		cplen = asc_prt_asc_board_info(shost, cp, ASC_PRTBUF_SIZE);
@@ -4315,6 +4953,13 @@ advansys_proc_info(struct Scsi_Host *shost, char *buffer, char **start,
 	ASC_DBG(1, "totcnt %d\n", totcnt);
 
 	return totcnt;
+=======
+	if (ASC_NARROW_BOARD(boardp))
+		asc_prt_asc_board_info(m, shost);
+	else
+		asc_prt_adv_board_info(m, shost);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* CONFIG_PROC_FS */
 
@@ -9530,7 +10175,11 @@ advansys_queuecommand_lck(struct scsi_cmnd *scp, void (*done)(struct scsi_cmnd *
 
 static DEF_SCSI_QCMD(advansys_queuecommand)
 
+<<<<<<< HEAD
 static ushort __devinit AscGetEisaChipCfg(PortAddr iop_base)
+=======
+static ushort AscGetEisaChipCfg(PortAddr iop_base)
+>>>>>>> refs/remotes/origin/master
 {
 	PortAddr eisa_cfg_iop = (PortAddr) ASC_GET_EISA_SLOT(iop_base) |
 	    (PortAddr) (ASC_EISA_CFG_IOP_MASK);
@@ -9541,8 +10190,13 @@ static ushort __devinit AscGetEisaChipCfg(PortAddr iop_base)
  * Return the BIOS address of the adapter at the specified
  * I/O port and with the specified bus type.
  */
+<<<<<<< HEAD
 static unsigned short __devinit
 AscGetChipBiosAddress(PortAddr iop_base, unsigned short bus_type)
+=======
+static unsigned short AscGetChipBiosAddress(PortAddr iop_base,
+					    unsigned short bus_type)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned short cfg_lsw;
 	unsigned short bios_addr;
@@ -9573,7 +10227,11 @@ AscGetChipBiosAddress(PortAddr iop_base, unsigned short bus_type)
 	return bios_addr;
 }
 
+<<<<<<< HEAD
 static uchar __devinit AscSetChipScsiID(PortAddr iop_base, uchar new_host_id)
+=======
+static uchar AscSetChipScsiID(PortAddr iop_base, uchar new_host_id)
+>>>>>>> refs/remotes/origin/master
 {
 	ushort cfg_lsw;
 
@@ -9587,7 +10245,11 @@ static uchar __devinit AscSetChipScsiID(PortAddr iop_base, uchar new_host_id)
 	return (AscGetChipScsiID(iop_base));
 }
 
+<<<<<<< HEAD
 static unsigned char __devinit AscGetChipScsiCtrl(PortAddr iop_base)
+=======
+static unsigned char AscGetChipScsiCtrl(PortAddr iop_base)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char sc;
 
@@ -9597,8 +10259,13 @@ static unsigned char __devinit AscGetChipScsiCtrl(PortAddr iop_base)
 	return sc;
 }
 
+<<<<<<< HEAD
 static unsigned char __devinit
 AscGetChipVersion(PortAddr iop_base, unsigned short bus_type)
+=======
+static unsigned char AscGetChipVersion(PortAddr iop_base,
+				       unsigned short bus_type)
+>>>>>>> refs/remotes/origin/master
 {
 	if (bus_type & ASC_IS_EISA) {
 		PortAddr eisa_iop;
@@ -9612,7 +10279,11 @@ AscGetChipVersion(PortAddr iop_base, unsigned short bus_type)
 }
 
 #ifdef CONFIG_ISA
+<<<<<<< HEAD
 static void __devinit AscEnableIsaDma(uchar dma_channel)
+=======
+static void AscEnableIsaDma(uchar dma_channel)
+>>>>>>> refs/remotes/origin/master
 {
 	if (dma_channel < 4) {
 		outp(0x000B, (ushort)(0xC0 | dma_channel));
@@ -9642,7 +10313,11 @@ static int AscStopQueueExe(PortAddr iop_base)
 	return (0);
 }
 
+<<<<<<< HEAD
 static ASC_DCNT __devinit AscGetMaxDmaCount(ushort bus_type)
+=======
+static ASC_DCNT AscGetMaxDmaCount(ushort bus_type)
+>>>>>>> refs/remotes/origin/master
 {
 	if (bus_type & ASC_IS_ISA)
 		return ASC_MAX_ISA_DMA_COUNT;
@@ -9652,7 +10327,11 @@ static ASC_DCNT __devinit AscGetMaxDmaCount(ushort bus_type)
 }
 
 #ifdef CONFIG_ISA
+<<<<<<< HEAD
 static ushort __devinit AscGetIsaDmaChannel(PortAddr iop_base)
+=======
+static ushort AscGetIsaDmaChannel(PortAddr iop_base)
+>>>>>>> refs/remotes/origin/master
 {
 	ushort channel;
 
@@ -9664,7 +10343,11 @@ static ushort __devinit AscGetIsaDmaChannel(PortAddr iop_base)
 	return (channel + 4);
 }
 
+<<<<<<< HEAD
 static ushort __devinit AscSetIsaDmaChannel(PortAddr iop_base, ushort dma_channel)
+=======
+static ushort AscSetIsaDmaChannel(PortAddr iop_base, ushort dma_channel)
+>>>>>>> refs/remotes/origin/master
 {
 	ushort cfg_lsw;
 	uchar value;
@@ -9682,7 +10365,11 @@ static ushort __devinit AscSetIsaDmaChannel(PortAddr iop_base, ushort dma_channe
 	return 0;
 }
 
+<<<<<<< HEAD
 static uchar __devinit AscGetIsaDmaSpeed(PortAddr iop_base)
+=======
+static uchar AscGetIsaDmaSpeed(PortAddr iop_base)
+>>>>>>> refs/remotes/origin/master
 {
 	uchar speed_value;
 
@@ -9693,7 +10380,11 @@ static uchar __devinit AscGetIsaDmaSpeed(PortAddr iop_base)
 	return speed_value;
 }
 
+<<<<<<< HEAD
 static uchar __devinit AscSetIsaDmaSpeed(PortAddr iop_base, uchar speed_value)
+=======
+static uchar AscSetIsaDmaSpeed(PortAddr iop_base, uchar speed_value)
+>>>>>>> refs/remotes/origin/master
 {
 	speed_value &= 0x07;
 	AscSetBank(iop_base, 1);
@@ -9703,7 +10394,11 @@ static uchar __devinit AscSetIsaDmaSpeed(PortAddr iop_base, uchar speed_value)
 }
 #endif /* CONFIG_ISA */
 
+<<<<<<< HEAD
 static ushort __devinit AscInitAscDvcVar(ASC_DVC_VAR *asc_dvc)
+=======
+static ushort AscInitAscDvcVar(ASC_DVC_VAR *asc_dvc)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	PortAddr iop_base;
@@ -9790,7 +10485,11 @@ static ushort __devinit AscInitAscDvcVar(ASC_DVC_VAR *asc_dvc)
 	return warn_code;
 }
 
+<<<<<<< HEAD
 static int __devinit AscWriteEEPCmdReg(PortAddr iop_base, uchar cmd_reg)
+=======
+static int AscWriteEEPCmdReg(PortAddr iop_base, uchar cmd_reg)
+>>>>>>> refs/remotes/origin/master
 {
 	int retry;
 
@@ -9805,12 +10504,20 @@ static int __devinit AscWriteEEPCmdReg(PortAddr iop_base, uchar cmd_reg)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devinit AscWaitEEPRead(void)
+=======
+static void AscWaitEEPRead(void)
+>>>>>>> refs/remotes/origin/master
 {
 	mdelay(1);
 }
 
+<<<<<<< HEAD
 static ushort __devinit AscReadEEPWord(PortAddr iop_base, uchar addr)
+=======
+static ushort AscReadEEPWord(PortAddr iop_base, uchar addr)
+>>>>>>> refs/remotes/origin/master
 {
 	ushort read_wval;
 	uchar cmd_reg;
@@ -9825,8 +10532,13 @@ static ushort __devinit AscReadEEPWord(PortAddr iop_base, uchar addr)
 	return read_wval;
 }
 
+<<<<<<< HEAD
 static ushort __devinit
 AscGetEEPConfig(PortAddr iop_base, ASCEEP_CONFIG *cfg_buf, ushort bus_type)
+=======
+static ushort AscGetEEPConfig(PortAddr iop_base, ASCEEP_CONFIG *cfg_buf,
+			      ushort bus_type)
+>>>>>>> refs/remotes/origin/master
 {
 	ushort wval;
 	ushort sum;
@@ -9872,7 +10584,11 @@ AscGetEEPConfig(PortAddr iop_base, ASCEEP_CONFIG *cfg_buf, ushort bus_type)
 	return sum;
 }
 
+<<<<<<< HEAD
 static int __devinit AscTestExternalLram(ASC_DVC_VAR *asc_dvc)
+=======
+static int AscTestExternalLram(ASC_DVC_VAR *asc_dvc)
+>>>>>>> refs/remotes/origin/master
 {
 	PortAddr iop_base;
 	ushort q_addr;
@@ -9894,12 +10610,20 @@ static int __devinit AscTestExternalLram(ASC_DVC_VAR *asc_dvc)
 	return (sta);
 }
 
+<<<<<<< HEAD
 static void __devinit AscWaitEEPWrite(void)
+=======
+static void AscWaitEEPWrite(void)
+>>>>>>> refs/remotes/origin/master
 {
 	mdelay(20);
 }
 
+<<<<<<< HEAD
 static int __devinit AscWriteEEPDataReg(PortAddr iop_base, ushort data_reg)
+=======
+static int AscWriteEEPDataReg(PortAddr iop_base, ushort data_reg)
+>>>>>>> refs/remotes/origin/master
 {
 	ushort read_back;
 	int retry;
@@ -9918,8 +10642,12 @@ static int __devinit AscWriteEEPDataReg(PortAddr iop_base, ushort data_reg)
 	}
 }
 
+<<<<<<< HEAD
 static ushort __devinit
 AscWriteEEPWord(PortAddr iop_base, uchar addr, ushort word_val)
+=======
+static ushort AscWriteEEPWord(PortAddr iop_base, uchar addr, ushort word_val)
+>>>>>>> refs/remotes/origin/master
 {
 	ushort read_wval;
 
@@ -9939,8 +10667,13 @@ AscWriteEEPWord(PortAddr iop_base, uchar addr, ushort word_val)
 	return (read_wval);
 }
 
+<<<<<<< HEAD
 static int __devinit
 AscSetEEPConfigOnce(PortAddr iop_base, ASCEEP_CONFIG *cfg_buf, ushort bus_type)
+=======
+static int AscSetEEPConfigOnce(PortAddr iop_base, ASCEEP_CONFIG *cfg_buf,
+			       ushort bus_type)
+>>>>>>> refs/remotes/origin/master
 {
 	int n_error;
 	ushort *wbuf;
@@ -10035,8 +10768,13 @@ AscSetEEPConfigOnce(PortAddr iop_base, ASCEEP_CONFIG *cfg_buf, ushort bus_type)
 	return n_error;
 }
 
+<<<<<<< HEAD
 static int __devinit
 AscSetEEPConfig(PortAddr iop_base, ASCEEP_CONFIG *cfg_buf, ushort bus_type)
+=======
+static int AscSetEEPConfig(PortAddr iop_base, ASCEEP_CONFIG *cfg_buf,
+			   ushort bus_type)
+>>>>>>> refs/remotes/origin/master
 {
 	int retry;
 	int n_error;
@@ -10054,7 +10792,11 @@ AscSetEEPConfig(PortAddr iop_base, ASCEEP_CONFIG *cfg_buf, ushort bus_type)
 	return n_error;
 }
 
+<<<<<<< HEAD
 static ushort __devinit AscInitFromEEP(ASC_DVC_VAR *asc_dvc)
+=======
+static ushort AscInitFromEEP(ASC_DVC_VAR *asc_dvc)
+>>>>>>> refs/remotes/origin/master
 {
 	ASCEEP_CONFIG eep_config_buf;
 	ASCEEP_CONFIG *eep_config;
@@ -10219,7 +10961,11 @@ static ushort __devinit AscInitFromEEP(ASC_DVC_VAR *asc_dvc)
 	return (warn_code);
 }
 
+<<<<<<< HEAD
 static int __devinit AscInitGetConfig(struct Scsi_Host *shost)
+=======
+static int AscInitGetConfig(struct Scsi_Host *shost)
+>>>>>>> refs/remotes/origin/master
 {
 	struct asc_board *board = shost_priv(shost);
 	ASC_DVC_VAR *asc_dvc = &board->dvc_var.asc_dvc_var;
@@ -10273,7 +11019,11 @@ static int __devinit AscInitGetConfig(struct Scsi_Host *shost)
 	return asc_dvc->err_code;
 }
 
+<<<<<<< HEAD
 static int __devinit AscInitSetConfig(struct pci_dev *pdev, struct Scsi_Host *shost)
+=======
+static int AscInitSetConfig(struct pci_dev *pdev, struct Scsi_Host *shost)
+>>>>>>> refs/remotes/origin/master
 {
 	struct asc_board *board = shost_priv(shost);
 	ASC_DVC_VAR *asc_dvc = &board->dvc_var.asc_dvc_var;
@@ -10387,7 +11137,11 @@ static int __devinit AscInitSetConfig(struct pci_dev *pdev, struct Scsi_Host *sh
  * on big-endian platforms so char fields read as words are actually being
  * unswapped on big-endian platforms.
  */
+<<<<<<< HEAD
 static ADVEEP_3550_CONFIG Default_3550_EEPROM_Config __devinitdata = {
+=======
+static ADVEEP_3550_CONFIG Default_3550_EEPROM_Config = {
+>>>>>>> refs/remotes/origin/master
 	ADV_EEPROM_BIOS_ENABLE,	/* cfg_lsw */
 	0x0000,			/* cfg_msw */
 	0xFFFF,			/* disc_enable */
@@ -10425,7 +11179,11 @@ static ADVEEP_3550_CONFIG Default_3550_EEPROM_Config __devinitdata = {
 	0			/* num_of_err */
 };
 
+<<<<<<< HEAD
 static ADVEEP_3550_CONFIG ADVEEP_3550_Config_Field_IsChar __devinitdata = {
+=======
+static ADVEEP_3550_CONFIG ADVEEP_3550_Config_Field_IsChar = {
+>>>>>>> refs/remotes/origin/master
 	0,			/* cfg_lsw */
 	0,			/* cfg_msw */
 	0,			/* -disc_enable */
@@ -10463,7 +11221,11 @@ static ADVEEP_3550_CONFIG ADVEEP_3550_Config_Field_IsChar __devinitdata = {
 	0			/* num_of_err */
 };
 
+<<<<<<< HEAD
 static ADVEEP_38C0800_CONFIG Default_38C0800_EEPROM_Config __devinitdata = {
+=======
+static ADVEEP_38C0800_CONFIG Default_38C0800_EEPROM_Config = {
+>>>>>>> refs/remotes/origin/master
 	ADV_EEPROM_BIOS_ENABLE,	/* 00 cfg_lsw */
 	0x0000,			/* 01 cfg_msw */
 	0xFFFF,			/* 02 disc_enable */
@@ -10528,7 +11290,11 @@ static ADVEEP_38C0800_CONFIG Default_38C0800_EEPROM_Config __devinitdata = {
 	0			/* 63 reserved */
 };
 
+<<<<<<< HEAD
 static ADVEEP_38C0800_CONFIG ADVEEP_38C0800_Config_Field_IsChar __devinitdata = {
+=======
+static ADVEEP_38C0800_CONFIG ADVEEP_38C0800_Config_Field_IsChar = {
+>>>>>>> refs/remotes/origin/master
 	0,			/* 00 cfg_lsw */
 	0,			/* 01 cfg_msw */
 	0,			/* 02 disc_enable */
@@ -10593,7 +11359,11 @@ static ADVEEP_38C0800_CONFIG ADVEEP_38C0800_Config_Field_IsChar __devinitdata = 
 	0			/* 63 reserved */
 };
 
+<<<<<<< HEAD
 static ADVEEP_38C1600_CONFIG Default_38C1600_EEPROM_Config __devinitdata = {
+=======
+static ADVEEP_38C1600_CONFIG Default_38C1600_EEPROM_Config = {
+>>>>>>> refs/remotes/origin/master
 	ADV_EEPROM_BIOS_ENABLE,	/* 00 cfg_lsw */
 	0x0000,			/* 01 cfg_msw */
 	0xFFFF,			/* 02 disc_enable */
@@ -10658,7 +11428,11 @@ static ADVEEP_38C1600_CONFIG Default_38C1600_EEPROM_Config __devinitdata = {
 	0			/* 63 reserved */
 };
 
+<<<<<<< HEAD
 static ADVEEP_38C1600_CONFIG ADVEEP_38C1600_Config_Field_IsChar __devinitdata = {
+=======
+static ADVEEP_38C1600_CONFIG ADVEEP_38C1600_Config_Field_IsChar = {
+>>>>>>> refs/remotes/origin/master
 	0,			/* 00 cfg_lsw */
 	0,			/* 01 cfg_msw */
 	0,			/* 02 disc_enable */
@@ -10727,7 +11501,11 @@ static ADVEEP_38C1600_CONFIG ADVEEP_38C1600_Config_Field_IsChar __devinitdata = 
 /*
  * Wait for EEPROM command to complete
  */
+<<<<<<< HEAD
 static void __devinit AdvWaitEEPCmd(AdvPortAddr iop_base)
+=======
+static void AdvWaitEEPCmd(AdvPortAddr iop_base)
+>>>>>>> refs/remotes/origin/master
 {
 	int eep_delay_ms;
 
@@ -10746,7 +11524,11 @@ static void __devinit AdvWaitEEPCmd(AdvPortAddr iop_base)
 /*
  * Read the EEPROM from specified location
  */
+<<<<<<< HEAD
 static ushort __devinit AdvReadEEPWord(AdvPortAddr iop_base, int eep_word_addr)
+=======
+static ushort AdvReadEEPWord(AdvPortAddr iop_base, int eep_word_addr)
+>>>>>>> refs/remotes/origin/master
 {
 	AdvWriteWordRegister(iop_base, IOPW_EE_CMD,
 			     ASC_EEP_CMD_READ | eep_word_addr);
@@ -10757,8 +11539,13 @@ static ushort __devinit AdvReadEEPWord(AdvPortAddr iop_base, int eep_word_addr)
 /*
  * Write the EEPROM from 'cfg_buf'.
  */
+<<<<<<< HEAD
 static void __devinit
 AdvSet3550EEPConfig(AdvPortAddr iop_base, ADVEEP_3550_CONFIG *cfg_buf)
+=======
+static void AdvSet3550EEPConfig(AdvPortAddr iop_base,
+				ADVEEP_3550_CONFIG *cfg_buf)
+>>>>>>> refs/remotes/origin/master
 {
 	ushort *wbuf;
 	ushort addr, chksum;
@@ -10824,8 +11611,13 @@ AdvSet3550EEPConfig(AdvPortAddr iop_base, ADVEEP_3550_CONFIG *cfg_buf)
 /*
  * Write the EEPROM from 'cfg_buf'.
  */
+<<<<<<< HEAD
 static void __devinit
 AdvSet38C0800EEPConfig(AdvPortAddr iop_base, ADVEEP_38C0800_CONFIG *cfg_buf)
+=======
+static void AdvSet38C0800EEPConfig(AdvPortAddr iop_base,
+				   ADVEEP_38C0800_CONFIG *cfg_buf)
+>>>>>>> refs/remotes/origin/master
 {
 	ushort *wbuf;
 	ushort *charfields;
@@ -10891,8 +11683,13 @@ AdvSet38C0800EEPConfig(AdvPortAddr iop_base, ADVEEP_38C0800_CONFIG *cfg_buf)
 /*
  * Write the EEPROM from 'cfg_buf'.
  */
+<<<<<<< HEAD
 static void __devinit
 AdvSet38C1600EEPConfig(AdvPortAddr iop_base, ADVEEP_38C1600_CONFIG *cfg_buf)
+=======
+static void AdvSet38C1600EEPConfig(AdvPortAddr iop_base,
+				   ADVEEP_38C1600_CONFIG *cfg_buf)
+>>>>>>> refs/remotes/origin/master
 {
 	ushort *wbuf;
 	ushort *charfields;
@@ -10960,8 +11757,13 @@ AdvSet38C1600EEPConfig(AdvPortAddr iop_base, ADVEEP_38C1600_CONFIG *cfg_buf)
  *
  * Return a checksum based on the EEPROM configuration read.
  */
+<<<<<<< HEAD
 static ushort __devinit
 AdvGet3550EEPConfig(AdvPortAddr iop_base, ADVEEP_3550_CONFIG *cfg_buf)
+=======
+static ushort AdvGet3550EEPConfig(AdvPortAddr iop_base,
+				  ADVEEP_3550_CONFIG *cfg_buf)
+>>>>>>> refs/remotes/origin/master
 {
 	ushort wval, chksum;
 	ushort *wbuf;
@@ -11003,8 +11805,13 @@ AdvGet3550EEPConfig(AdvPortAddr iop_base, ADVEEP_3550_CONFIG *cfg_buf)
  *
  * Return a checksum based on the EEPROM configuration read.
  */
+<<<<<<< HEAD
 static ushort __devinit
 AdvGet38C0800EEPConfig(AdvPortAddr iop_base, ADVEEP_38C0800_CONFIG *cfg_buf)
+=======
+static ushort AdvGet38C0800EEPConfig(AdvPortAddr iop_base,
+				     ADVEEP_38C0800_CONFIG *cfg_buf)
+>>>>>>> refs/remotes/origin/master
 {
 	ushort wval, chksum;
 	ushort *wbuf;
@@ -11046,8 +11853,13 @@ AdvGet38C0800EEPConfig(AdvPortAddr iop_base, ADVEEP_38C0800_CONFIG *cfg_buf)
  *
  * Return a checksum based on the EEPROM configuration read.
  */
+<<<<<<< HEAD
 static ushort __devinit
 AdvGet38C1600EEPConfig(AdvPortAddr iop_base, ADVEEP_38C1600_CONFIG *cfg_buf)
+=======
+static ushort AdvGet38C1600EEPConfig(AdvPortAddr iop_base,
+				     ADVEEP_38C1600_CONFIG *cfg_buf)
+>>>>>>> refs/remotes/origin/master
 {
 	ushort wval, chksum;
 	ushort *wbuf;
@@ -11096,7 +11908,11 @@ AdvGet38C1600EEPConfig(AdvPortAddr iop_base, ADVEEP_38C1600_CONFIG *cfg_buf)
  *
  * Note: Chip is stopped on entry.
  */
+<<<<<<< HEAD
 static int __devinit AdvInitFrom3550EEP(ADV_DVC_VAR *asc_dvc)
+=======
+static int AdvInitFrom3550EEP(ADV_DVC_VAR *asc_dvc)
+>>>>>>> refs/remotes/origin/master
 {
 	AdvPortAddr iop_base;
 	ushort warn_code;
@@ -11246,7 +12062,11 @@ static int __devinit AdvInitFrom3550EEP(ADV_DVC_VAR *asc_dvc)
  *
  * Note: Chip is stopped on entry.
  */
+<<<<<<< HEAD
 static int __devinit AdvInitFrom38C0800EEP(ADV_DVC_VAR *asc_dvc)
+=======
+static int AdvInitFrom38C0800EEP(ADV_DVC_VAR *asc_dvc)
+>>>>>>> refs/remotes/origin/master
 {
 	AdvPortAddr iop_base;
 	ushort warn_code;
@@ -11445,7 +12265,11 @@ static int __devinit AdvInitFrom38C0800EEP(ADV_DVC_VAR *asc_dvc)
  *
  * Note: Chip is stopped on entry.
  */
+<<<<<<< HEAD
 static int __devinit AdvInitFrom38C1600EEP(ADV_DVC_VAR *asc_dvc)
+=======
+static int AdvInitFrom38C1600EEP(ADV_DVC_VAR *asc_dvc)
+>>>>>>> refs/remotes/origin/master
 {
 	AdvPortAddr iop_base;
 	ushort warn_code;
@@ -11665,8 +12489,12 @@ static int __devinit AdvInitFrom38C1600EEP(ADV_DVC_VAR *asc_dvc)
  * For a non-fatal error return a warning code. If there are no warnings
  * then 0 is returned.
  */
+<<<<<<< HEAD
 static int __devinit
 AdvInitGetConfig(struct pci_dev *pdev, struct Scsi_Host *shost)
+=======
+static int AdvInitGetConfig(struct pci_dev *pdev, struct Scsi_Host *shost)
+>>>>>>> refs/remotes/origin/master
 {
 	struct asc_board *board = shost_priv(shost);
 	ADV_DVC_VAR *asc_dvc = &board->dvc_var.adv_dvc_var;
@@ -11749,7 +12577,11 @@ AdvInitGetConfig(struct pci_dev *pdev, struct Scsi_Host *shost)
 static struct scsi_host_template advansys_template = {
 	.proc_name = DRV_NAME,
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
 	.proc_info = advansys_proc_info,
+=======
+	.show_info = advansys_show_info,
+>>>>>>> refs/remotes/origin/master
 #endif
 	.name = DRV_NAME,
 	.info = advansys_info,
@@ -11773,7 +12605,11 @@ static struct scsi_host_template advansys_template = {
 	.use_clustering = ENABLE_CLUSTERING,
 };
 
+<<<<<<< HEAD
 static int __devinit advansys_wide_init_chip(struct Scsi_Host *shost)
+=======
+static int advansys_wide_init_chip(struct Scsi_Host *shost)
+>>>>>>> refs/remotes/origin/master
 {
 	struct asc_board *board = shost_priv(shost);
 	struct adv_dvc_var *adv_dvc = &board->dvc_var.adv_dvc_var;
@@ -11886,8 +12722,13 @@ static void advansys_wide_free_mem(struct asc_board *board)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit advansys_board_found(struct Scsi_Host *shost,
 					  unsigned int iop, int bus_type)
+=======
+static int advansys_board_found(struct Scsi_Host *shost, unsigned int iop,
+				int bus_type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *pdev;
 	struct asc_board *boardp = shost_priv(shost);
@@ -11945,6 +12786,7 @@ static int __devinit advansys_board_found(struct Scsi_Host *shost,
 #endif /* CONFIG_PCI */
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_PROC_FS
 	/*
 	 * Allocate buffer for printing information from
@@ -11959,6 +12801,8 @@ static int __devinit advansys_board_found(struct Scsi_Host *shost,
 	}
 #endif /* CONFIG_PROC_FS */
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ASC_NARROW_BOARD(boardp)) {
 		/*
 		 * Set the board bus type and PCI IRQ before
@@ -12016,7 +12860,11 @@ static int __devinit advansys_board_found(struct Scsi_Host *shost,
 	}
 
 	if (ret)
+<<<<<<< HEAD
 		goto err_free_proc;
+=======
+		goto err_unmap;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Save the EEPROM configuration so that it can be displayed
@@ -12061,7 +12909,11 @@ static int __devinit advansys_board_found(struct Scsi_Host *shost,
 		ASC_DBG(2, "AscInitSetConfig()\n");
 		ret = AscInitSetConfig(pdev, shost) ? -ENODEV : 0;
 		if (ret)
+<<<<<<< HEAD
 			goto err_free_proc;
+=======
+			goto err_unmap;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		ADVEEP_3550_CONFIG *ep_3550;
 		ADVEEP_38C0800_CONFIG *ep_38C0800;
@@ -12296,7 +13148,11 @@ static int __devinit advansys_board_found(struct Scsi_Host *shost,
 				shost_printk(KERN_ERR, shost, "request_dma() "
 						"%d failed %d\n",
 						shost->dma_channel, ret);
+<<<<<<< HEAD
 				goto err_free_proc;
+=======
+				goto err_unmap;
+>>>>>>> refs/remotes/origin/master
 			}
 			AscEnableIsaDma(shost->dma_channel);
 		}
@@ -12377,8 +13233,11 @@ static int __devinit advansys_board_found(struct Scsi_Host *shost,
 	if (shost->dma_channel != NO_ISA_DMA)
 		free_dma(shost->dma_channel);
 #endif
+<<<<<<< HEAD
  err_free_proc:
 	kfree(boardp->prtbuf);
+=======
+>>>>>>> refs/remotes/origin/master
  err_unmap:
 	if (boardp->ioremap_addr)
 		iounmap(boardp->ioremap_addr);
@@ -12412,7 +13271,10 @@ static int advansys_release(struct Scsi_Host *shost)
 		iounmap(board->ioremap_addr);
 		advansys_wide_free_mem(board);
 	}
+<<<<<<< HEAD
 	kfree(board->prtbuf);
+=======
+>>>>>>> refs/remotes/origin/master
 	scsi_host_put(shost);
 	ASC_DBG(1, "end\n");
 	return 0;
@@ -12432,7 +13294,11 @@ static PortAddr _asc_def_iop_base[ASC_IOADR_TABLE_MAX_IX] = {
  * 10: 12
  * 11: 15
  */
+<<<<<<< HEAD
 static unsigned int __devinit advansys_isa_irq_no(PortAddr iop_base)
+=======
+static unsigned int advansys_isa_irq_no(PortAddr iop_base)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned short cfg_lsw = AscGetChipCfgLsw(iop_base);
 	unsigned int chip_irq = ((cfg_lsw >> 2) & 0x03) + 10;
@@ -12441,7 +13307,11 @@ static unsigned int __devinit advansys_isa_irq_no(PortAddr iop_base)
 	return chip_irq;
 }
 
+<<<<<<< HEAD
 static int __devinit advansys_isa_probe(struct device *dev, unsigned int id)
+=======
+static int advansys_isa_probe(struct device *dev, unsigned int id)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = -ENODEV;
 	PortAddr iop_base = _asc_def_iop_base[id];
@@ -12481,7 +13351,11 @@ static int __devinit advansys_isa_probe(struct device *dev, unsigned int id)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit advansys_isa_remove(struct device *dev, unsigned int id)
+=======
+static int advansys_isa_remove(struct device *dev, unsigned int id)
+>>>>>>> refs/remotes/origin/master
 {
 	int ioport = _asc_def_iop_base[id];
 	advansys_release(dev_get_drvdata(dev));
@@ -12491,7 +13365,11 @@ static int __devexit advansys_isa_remove(struct device *dev, unsigned int id)
 
 static struct isa_driver advansys_isa_driver = {
 	.probe		= advansys_isa_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(advansys_isa_remove),
+=======
+	.remove		= advansys_isa_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.owner	= THIS_MODULE,
 		.name	= DRV_NAME,
@@ -12509,7 +13387,11 @@ static struct isa_driver advansys_isa_driver = {
  * 110: 15
  * 111: invalid
  */
+<<<<<<< HEAD
 static unsigned int __devinit advansys_vlb_irq_no(PortAddr iop_base)
+=======
+static unsigned int advansys_vlb_irq_no(PortAddr iop_base)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned short cfg_lsw = AscGetChipCfgLsw(iop_base);
 	unsigned int chip_irq = ((cfg_lsw >> 2) & 0x07) + 9;
@@ -12518,7 +13400,11 @@ static unsigned int __devinit advansys_vlb_irq_no(PortAddr iop_base)
 	return chip_irq;
 }
 
+<<<<<<< HEAD
 static int __devinit advansys_vlb_probe(struct device *dev, unsigned int id)
+=======
+static int advansys_vlb_probe(struct device *dev, unsigned int id)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = -ENODEV;
 	PortAddr iop_base = _asc_def_iop_base[id];
@@ -12565,14 +13451,22 @@ static int __devinit advansys_vlb_probe(struct device *dev, unsigned int id)
 
 static struct isa_driver advansys_vlb_driver = {
 	.probe		= advansys_vlb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(advansys_isa_remove),
+=======
+	.remove		= advansys_isa_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.owner	= THIS_MODULE,
 		.name	= "advansys_vlb",
 	},
 };
 
+<<<<<<< HEAD
 static struct eisa_device_id advansys_eisa_table[] __devinitdata = {
+=======
+static struct eisa_device_id advansys_eisa_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{ "ABP7401" },
 	{ "ABP7501" },
 	{ "" }
@@ -12599,7 +13493,11 @@ struct eisa_scsi_data {
  * 110: invalid
  * 111: invalid
  */
+<<<<<<< HEAD
 static unsigned int __devinit advansys_eisa_irq_no(struct eisa_device *edev)
+=======
+static unsigned int advansys_eisa_irq_no(struct eisa_device *edev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned short cfg_lsw = inw(edev->base_addr + 0xc86);
 	unsigned int chip_irq = ((cfg_lsw >> 8) & 0x07) + 10;
@@ -12608,7 +13506,11 @@ static unsigned int __devinit advansys_eisa_irq_no(struct eisa_device *edev)
 	return chip_irq;
 }
 
+<<<<<<< HEAD
 static int __devinit advansys_eisa_probe(struct device *dev)
+=======
+static int advansys_eisa_probe(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, ioport, irq = 0;
 	int err;
@@ -12681,7 +13583,11 @@ static int __devinit advansys_eisa_probe(struct device *dev)
 	return err;
 }
 
+<<<<<<< HEAD
 static __devexit int advansys_eisa_remove(struct device *dev)
+=======
+static int advansys_eisa_remove(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct eisa_scsi_data *data = dev_get_drvdata(dev);
@@ -12705,12 +13611,20 @@ static struct eisa_driver advansys_eisa_driver = {
 	.driver = {
 		.name =		DRV_NAME,
 		.probe =	advansys_eisa_probe,
+<<<<<<< HEAD
 		.remove =	__devexit_p(advansys_eisa_remove),
+=======
+		.remove =	advansys_eisa_remove,
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
 /* PCI Devices supported by this driver */
+<<<<<<< HEAD
 static struct pci_device_id advansys_pci_tbl[] __devinitdata = {
+=======
+static struct pci_device_id advansys_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{PCI_VENDOR_ID_ASP, PCI_DEVICE_ID_ASP_1200A,
 	 PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
 	{PCI_VENDOR_ID_ASP, PCI_DEVICE_ID_ASP_ABP940,
@@ -12728,7 +13642,11 @@ static struct pci_device_id advansys_pci_tbl[] __devinitdata = {
 
 MODULE_DEVICE_TABLE(pci, advansys_pci_tbl);
 
+<<<<<<< HEAD
 static void __devinit advansys_set_latency(struct pci_dev *pdev)
+=======
+static void advansys_set_latency(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	if ((pdev->device == PCI_DEVICE_ID_ASP_1200A) ||
 	    (pdev->device == PCI_DEVICE_ID_ASP_ABP940)) {
@@ -12741,8 +13659,13 @@ static void __devinit advansys_set_latency(struct pci_dev *pdev)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit
 advansys_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+=======
+static int advansys_pci_probe(struct pci_dev *pdev,
+			      const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	int err, ioport;
 	struct Scsi_Host *shost;
@@ -12795,7 +13718,11 @@ advansys_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit advansys_pci_remove(struct pci_dev *pdev)
+=======
+static void advansys_pci_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	advansys_release(pci_get_drvdata(pdev));
 	pci_release_regions(pdev);
@@ -12806,7 +13733,11 @@ static struct pci_driver advansys_pci_driver = {
 	.name =		DRV_NAME,
 	.id_table =	advansys_pci_tbl,
 	.probe =	advansys_pci_probe,
+<<<<<<< HEAD
 	.remove =	__devexit_p(advansys_pci_remove),
+=======
+	.remove =	advansys_pci_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init advansys_init(void)

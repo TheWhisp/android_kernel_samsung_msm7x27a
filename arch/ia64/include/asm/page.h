@@ -222,7 +222,10 @@ get_order (unsigned long size)
 					  ? VM_EXEC : 0))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define GATE_ADDR		RGN_BASE(RGN_GATE)
 
 /*
@@ -233,5 +236,8 @@ get_order (unsigned long size)
 #define PERCPU_ADDR		(-PERCPU_PAGE_SIZE)
 #define LOAD_OFFSET		(KERNEL_START - KERNEL_TR_PAGE_SIZE)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_IA64_PAGE_H */

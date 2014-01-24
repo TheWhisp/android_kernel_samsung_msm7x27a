@@ -43,12 +43,19 @@
  */
 struct auo_pixcir_ts_platdata {
 	int gpio_int;
+<<<<<<< HEAD
 
 	int int_setting;
 
 	void (*init_hw)(struct i2c_client *);
 	void (*exit_hw)(struct i2c_client *);
 
+=======
+	int gpio_rst;
+
+	int int_setting;
+
+>>>>>>> refs/remotes/origin/master
 	unsigned int x_max;
 	unsigned int y_max;
 };

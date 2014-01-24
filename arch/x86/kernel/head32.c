@@ -14,11 +14,18 @@
 #include <asm/sections.h>
 #include <asm/e820.h>
 #include <asm/page.h>
+<<<<<<< HEAD
 #include <asm/trampoline.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/apic.h>
 #include <asm/io_apic.h>
 #include <asm/bios_ebda.h>
 #include <asm/tlbflush.h>
+<<<<<<< HEAD
+=======
+#include <asm/bootparam_utils.h>
+>>>>>>> refs/remotes/origin/master
 
 static void __init i386_default_early_setup(void)
 {
@@ -29,6 +36,7 @@ static void __init i386_default_early_setup(void)
 	reserve_ebda_region();
 }
 
+<<<<<<< HEAD
 void __init i386_start_kernel(void)
 {
 <<<<<<< HEAD
@@ -59,6 +67,16 @@ void __init i386_start_kernel(void)
 	switch (boot_params.hdr.hardware_subarch) {
 	case X86_SUBARCH_MRST:
 		x86_mrst_early_setup();
+=======
+asmlinkage void __init i386_start_kernel(void)
+{
+	sanitize_boot_params(&boot_params);
+
+	/* Call the subarch specific early setup function */
+	switch (boot_params.hdr.hardware_subarch) {
+	case X86_SUBARCH_INTEL_MID:
+		x86_intel_mid_early_setup();
+>>>>>>> refs/remotes/origin/master
 		break;
 	case X86_SUBARCH_CE4100:
 		x86_ce4100_early_setup();
@@ -68,11 +86,14 @@ void __init i386_start_kernel(void)
 		break;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * At this point everything still needed from the boot loader
 	 * or BIOS or kernel text should be early reserved or marked not
 	 * RAM in e820. All other memory is free game.
 	 */
 
+=======
+>>>>>>> refs/remotes/origin/master
 	start_kernel();
 }

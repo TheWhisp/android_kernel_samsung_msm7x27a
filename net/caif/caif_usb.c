@@ -1,7 +1,11 @@
 /*
  * CAIF USB handler
  * Copyright (C) ST-Ericsson AB 2011
+<<<<<<< HEAD
  * Author:	Sjur Brendeland/sjur.brandeland@stericsson.com
+=======
+ * Author:	Sjur Brendeland
+>>>>>>> refs/remotes/origin/master
  * License terms: GNU General Public License (GPL) version 2
  *
  */
@@ -75,14 +79,23 @@ static int cfusbl_transmit(struct cflayer *layr, struct cfpkt *pkt)
 }
 
 static void cfusbl_ctrlcmd(struct cflayer *layr, enum caif_ctrlcmd ctrl,
+<<<<<<< HEAD
 					int phyid)
+=======
+			   int phyid)
+>>>>>>> refs/remotes/origin/master
 {
 	if (layr->up && layr->up->ctrlcmd)
 		layr->up->ctrlcmd(layr->up, ctrl, layr->id);
 }
 
+<<<<<<< HEAD
 struct cflayer *cfusbl_create(int phyid, u8 ethaddr[ETH_ALEN],
 					u8 braddr[ETH_ALEN])
+=======
+static struct cflayer *cfusbl_create(int phyid, u8 ethaddr[ETH_ALEN],
+				      u8 braddr[ETH_ALEN])
+>>>>>>> refs/remotes/origin/master
 {
 	struct cfusbl *this = kmalloc(sizeof(struct cfusbl), GFP_ATOMIC);
 
@@ -121,6 +134,7 @@ static struct packet_type caif_usb_type __read_mostly = {
 };
 
 static int cfusbl_device_notify(struct notifier_block *me, unsigned long what,
+<<<<<<< HEAD
 			      void *arg)
 {
 	struct net_device *dev = arg;
@@ -140,6 +154,23 @@ static int cfusbl_device_notify(struct notifier_block *me, unsigned long what,
 	dev->ethtool_ops->get_drvinfo(dev, &drvinfo);
 	if (strncmp(drvinfo.driver, "cdc_ncm", 7) != 0)
 		return 0;
+=======
+				void *ptr)
+{
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+	struct caif_dev_common common;
+	struct cflayer *layer, *link_support;
+	struct usbnet *usbnet;
+	struct usb_device *usbdev;
+
+	/* Check whether we have a NCM device, and find its VID/PID. */
+	if (!(dev->dev.parent && dev->dev.parent->driver &&
+	      strcmp(dev->dev.parent->driver->name, "cdc_ncm") == 0))
+		return 0;
+
+	usbnet = netdev_priv(dev);
+	usbdev = usbnet->udev;
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("USB CDC NCM device VID:0x%4x PID:0x%4x\n",
 		le16_to_cpu(usbdev->descriptor.idVendor),

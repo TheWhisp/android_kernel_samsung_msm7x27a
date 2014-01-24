@@ -77,6 +77,7 @@
 #define AT91SAM9260_BASE_TC5		0xfffdc080
 #define AT91SAM9260_BASE_ADC		0xfffe0000
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AT91_BASE_SYS			0xffffe800
 
 /*
@@ -100,6 +101,8 @@
 #define AT91_WDT	(0xfffffd40 - AT91_BASE_SYS)
 #define AT91_GPBR	(0xfffffd50 - AT91_BASE_SYS)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * System Peripherals
@@ -118,6 +121,7 @@
 #define AT91SAM9260_BASE_PIT	0xfffffd30
 #define AT91SAM9260_BASE_WDT	0xfffffd40
 #define AT91SAM9260_BASE_GPBR	0xfffffd50
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #define AT91_USART0	AT91SAM9260_BASE_US0
@@ -126,6 +130,8 @@
 #define AT91_USART3	AT91SAM9260_BASE_US3
 #define AT91_USART4	AT91SAM9260_BASE_US4
 #define AT91_USART5	AT91SAM9260_BASE_US5
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -139,10 +145,15 @@
 #define AT91SAM9260_SRAM1_BASE	0x00300000	/* Internal SRAM 1 base address */
 #define AT91SAM9260_SRAM1_SIZE	SZ_4K		/* Internal SRAM 1 size (4Kb) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define AT91SAM9260_SRAM_BASE	0x002FF000	/* Internal SRAM base address */
 #define AT91SAM9260_SRAM_SIZE	SZ_8K		/* Internal SRAM size (8Kb) */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AT91SAM9260_SRAM_BASE	0x002FF000	/* Internal SRAM base address */
+#define AT91SAM9260_SRAM_SIZE	SZ_8K		/* Internal SRAM size (8Kb) */
+>>>>>>> refs/remotes/origin/master
 
 #define AT91SAM9260_UHP_BASE	0x00500000	/* USB Host controller */
 
@@ -157,10 +168,15 @@
 #define AT91SAM9G20_SRAM1_BASE	0x00300000	/* Internal SRAM 1 base address */
 #define AT91SAM9G20_SRAM1_SIZE	SZ_16K		/* Internal SRAM 1 size (16Kb) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define AT91SAM9G20_SRAM_BASE	0x002FC000	/* Internal SRAM base address */
 #define AT91SAM9G20_SRAM_SIZE	SZ_32K		/* Internal SRAM size (32Kb) */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AT91SAM9G20_SRAM_BASE	0x002FC000	/* Internal SRAM base address */
+#define AT91SAM9G20_SRAM_SIZE	SZ_32K		/* Internal SRAM size (32Kb) */
+>>>>>>> refs/remotes/origin/master
 
 #define AT91SAM9G20_UHP_BASE	0x00500000	/* USB Host controller */
 

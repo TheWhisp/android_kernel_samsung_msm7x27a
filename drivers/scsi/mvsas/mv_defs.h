@@ -44,9 +44,12 @@ enum chip_flavors {
 /* driver compile-time configuration */
 enum driver_configuration {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MVS_SLOTS		= 512,	/* command slots */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	MVS_TX_RING_SZ		= 1024,	/* TX ring size (12-bit) */
 	MVS_RX_RING_SZ		= 1024, /* RX ring size (12-bit) */
 					/* software requires power-of-2
@@ -60,11 +63,15 @@ enum driver_configuration {
 	MVS_ATA_CMD_SZ		= 96,	/* SATA command table buffer size */
 	MVS_OAF_SZ		= 64,	/* Open address frame buffer size */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MVS_QUEUE_SIZE	= 32,	/* Support Queue depth */
 	MVS_CAN_QUEUE		= MVS_SLOTS - 2,	/* SCSI Queue depth */
 =======
 	MVS_QUEUE_SIZE		= 64,	/* Support Queue depth */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MVS_QUEUE_SIZE		= 64,	/* Support Queue depth */
+>>>>>>> refs/remotes/origin/master
 	MVS_SOC_CAN_QUEUE	= MVS_SOC_SLOTS - 2,
 };
 
@@ -152,9 +159,13 @@ enum hw_register_bits {
 	CINT_MEM		= (1U << 26),	/* int mem parity err */
 	CINT_I2C_SLAVE		= (1U << 25),	/* slave I2C event */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	CINT_NON_SPEC_NCQ_ERROR	= (1U << 25),	/* Non specific NCQ error */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CINT_NON_SPEC_NCQ_ERROR	= (1U << 25),	/* Non specific NCQ error */
+>>>>>>> refs/remotes/origin/master
 	CINT_SRS		= (1U << 3),	/* SRS event */
 	CINT_CI_STOP		= (1U << 1),	/* cmd issue stopped */
 	CINT_DONE		= (1U << 0),	/* cmd completion */
@@ -173,10 +184,14 @@ enum hw_register_bits {
 	TXQ_CMD_SMP		= 2,		/* SMP protocol */
 	TXQ_CMD_STP		= 3,		/* STP/SATA protocol */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TXQ_CMD_SSP_FREE_LIST	= 4,		/* add to SSP targ free list */
 =======
 	TXQ_CMD_SSP_FREE_LIST	= 4,		/* add to SSP target free list */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TXQ_CMD_SSP_FREE_LIST	= 4,		/* add to SSP target free list */
+>>>>>>> refs/remotes/origin/master
 	TXQ_CMD_SLOT_RESET	= 7,		/* reset command slot */
 	TXQ_MODE_I		= (1U << 28),	/* mode: 0=target,1=initiator */
 	TXQ_MODE_TARGET 	= 0,
@@ -404,32 +419,44 @@ enum sas_cmd_port_registers {
 	CMD_SL_MODE1		= 0x1C0, /* SL Mode 1 */
 	CMD_PND_FIFO_CTL1	= 0x1C4, /* Pending FIFO Control 1 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 enum mvs_info_flags {
 	MVF_MSI		= (1U << 0),	/* MSI is enabled */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	CMD_PORT_LAYER_TIMER1	= 0x1E0, /* Port Layer Timer 1 */
 	CMD_LINK_TIMER		= 0x1E4, /* Link Timer */
 };
 
 enum mvs_info_flags {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	MVF_PHY_PWR_FIX	= (1U << 1),	/* bug workaround */
 	MVF_FLAG_SOC		= (1U << 2),	/* SoC integrated controllers */
 };
 
 enum mvs_event_flags {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	PHY_PLUG_EVENT	= (3U),
 	PHY_PLUG_IN		= (1U << 0),	/* phy plug in */
 	PHY_PLUG_OUT		= (1U << 1),	/* phy plug out */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	PHY_PLUG_EVENT		= (3U),
 	PHY_PLUG_IN		= (1U << 0),	/* phy plug in */
 	PHY_PLUG_OUT		= (1U << 1),	/* phy plug out */
 	EXP_BRCT_CHG		= (1U << 2),	/* broadcast change */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 enum mvs_port_type {

@@ -29,12 +29,20 @@
 /*---------------------  Export Classes  ----------------------------*/
 
 typedef struct tagSChannelTblElement {
+<<<<<<< HEAD
     unsigned char byChannelNumber;
     unsigned int uFrequency;
     bool bValid;
     unsigned char byMAP;
 }SChannelTblElement, *PSChannelTblElement;
 
+=======
+	unsigned char byChannelNumber;
+	unsigned int uFrequency;
+	bool bValid;
+	unsigned char byMAP;
+} SChannelTblElement, *PSChannelTblElement;
+>>>>>>> refs/remotes/origin/master
 
 /*---------------------  Export Functions  --------------------------*/
 
@@ -48,6 +56,7 @@ void set_country_info(void *pDeviceHandler, CARD_PHY_TYPE ePHYType, void *pIE);
 unsigned char set_support_channels(void *pDeviceHandler, unsigned char *pbyIEs);
 void set_country_IE(void *pDeviceHandler, void *pIE);
 bool get_channel_map_info(void *pDeviceHandler, unsigned int uChannelIndex,
+<<<<<<< HEAD
 		unsigned char *pbyChannelNumber, unsigned char *pbyMap);
 void set_channel_map_info(void *pDeviceHandler, unsigned int uChannelIndex,
 		unsigned char byMap);
@@ -55,4 +64,12 @@ void clear_channel_map_info(void *pDeviceHandler);
 unsigned char auto_channel_select(void *pDeviceHandler, CARD_PHY_TYPE ePHYType);
 
 
+=======
+			  unsigned char *pbyChannelNumber, unsigned char *pbyMap);
+void set_channel_map_info(void *pDeviceHandler, unsigned int uChannelIndex,
+			  unsigned char byMap);
+void clear_channel_map_info(void *pDeviceHandler);
+unsigned char auto_channel_select(void *pDeviceHandler, CARD_PHY_TYPE ePHYType);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _CHANNEL_H_ */

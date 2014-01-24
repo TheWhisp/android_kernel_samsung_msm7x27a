@@ -31,7 +31,10 @@
 #include <linux/if.h>
 #include <linux/if_ether.h>
 #include <linux/if_vlan.h>
+<<<<<<< HEAD
 #include <linux/ethtool.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/in.h>
 #include <linux/ip.h>
 #include <linux/ipv6.h>
@@ -73,6 +76,7 @@ MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_VERSION);
 MODULE_DEVICE_TABLE(pci, enic_id_table);
 
+<<<<<<< HEAD
 struct enic_stat {
 	char name[ETH_GSTRING_LEN];
 	unsigned int offset;
@@ -124,6 +128,8 @@ static const struct enic_stat enic_rx_stats[] = {
 static const unsigned int enic_n_tx_stats = ARRAY_SIZE(enic_tx_stats);
 static const unsigned int enic_n_rx_stats = ARRAY_SIZE(enic_rx_stats);
 
+=======
+>>>>>>> refs/remotes/origin/master
 int enic_is_dynamic(struct enic *enic)
 {
 	return enic->pdev->device == PCI_DEVICE_ID_CISCO_VIC_ENET_DYN;
@@ -148,6 +154,7 @@ int enic_is_valid_vf(struct enic *enic, int vf)
 #endif
 }
 
+<<<<<<< HEAD
 static inline unsigned int enic_cq_rq(struct enic *enic, unsigned int rq)
 {
 	return rq;
@@ -364,6 +371,8 @@ static const struct ethtool_ops enic_ethtool_ops = {
 	.set_coalesce = enic_set_coalesce,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void enic_free_wq_buf(struct vnic_wq *wq, struct vnic_wq_buf *buf)
 {
 	struct enic *enic = vnic_dev_priv(wq->vdev);
@@ -396,10 +405,17 @@ static int enic_wq_service(struct vnic_dev *vdev, struct cq_desc *cq_desc,
 		completed_index, enic_wq_free_buf,
 		opaque);
 
+<<<<<<< HEAD
 	if (netif_queue_stopped(enic->netdev) &&
 	    vnic_wq_desc_avail(&enic->wq[q_number]) >=
 	    (MAX_SKB_FRAGS + ENIC_DESC_MAX_SPLITS))
 		netif_wake_queue(enic->netdev);
+=======
+	if (netif_tx_queue_stopped(netdev_get_tx_queue(enic->netdev, q_number)) &&
+	    vnic_wq_desc_avail(&enic->wq[q_number]) >=
+	    (MAX_SKB_FRAGS + ENIC_DESC_MAX_SPLITS))
+		netif_wake_subqueue(enic->netdev, q_number);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock(&enic->wq_lock[q_number]);
 
@@ -560,10 +576,22 @@ static irqreturn_t enic_isr_msix_rq(int irq, void *data)
 static irqreturn_t enic_isr_msix_wq(int irq, void *data)
 {
 	struct enic *enic = data;
+<<<<<<< HEAD
 	unsigned int cq = enic_cq_wq(enic, 0);
 	unsigned int intr = enic_msix_wq_intr(enic, 0);
 	unsigned int wq_work_to_do = -1; /* no limit */
 	unsigned int wq_work_done;
+=======
+	unsigned int cq;
+	unsigned int intr;
+	unsigned int wq_work_to_do = -1; /* no limit */
+	unsigned int wq_work_done;
+	unsigned int wq_irq;
+
+	wq_irq = (u32)irq - enic->msix_entry[enic_msix_wq_intr(enic, 0)].vector;
+	cq = enic_cq_wq(enic, wq_irq);
+	intr = enic_msix_wq_intr(enic, wq_irq);
+>>>>>>> refs/remotes/origin/master
 
 	wq_work_done = vnic_cq_service(&enic->cq[cq],
 		wq_work_to_do, enic_wq_service, NULL);
@@ -779,14 +807,26 @@ static netdev_tx_t enic_hard_start_xmit(struct sk_buff *skb,
 	struct net_device *netdev)
 {
 	struct enic *enic = netdev_priv(netdev);
+<<<<<<< HEAD
 	struct vnic_wq *wq = &enic->wq[0];
 	unsigned long flags;
+=======
+	struct vnic_wq *wq;
+	unsigned long flags;
+	unsigned int txq_map;
+>>>>>>> refs/remotes/origin/master
 
 	if (skb->len <= 0) {
 		dev_kfree_skb(skb);
 		return NETDEV_TX_OK;
 	}
 
+<<<<<<< HEAD
+=======
+	txq_map = skb_get_queue_mapping(skb) % enic->wq_count;
+	wq = &enic->wq[txq_map];
+
+>>>>>>> refs/remotes/origin/master
 	/* Non-TSO sends must fit within ENIC_NON_TSO_MAX_DESC descs,
 	 * which is very likely.  In the off chance it's going to take
 	 * more than * ENIC_NON_TSO_MAX_DESC, linearize the skb.
@@ -799,6 +839,7 @@ static netdev_tx_t enic_hard_start_xmit(struct sk_buff *skb,
 		return NETDEV_TX_OK;
 	}
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&enic->wq_lock[0], flags);
 
 	if (vnic_wq_desc_avail(wq) <
@@ -807,15 +848,31 @@ static netdev_tx_t enic_hard_start_xmit(struct sk_buff *skb,
 		/* This is a hard error, log it */
 		netdev_err(netdev, "BUG! Tx ring full when queue awake!\n");
 		spin_unlock_irqrestore(&enic->wq_lock[0], flags);
+=======
+	spin_lock_irqsave(&enic->wq_lock[txq_map], flags);
+
+	if (vnic_wq_desc_avail(wq) <
+	    skb_shinfo(skb)->nr_frags + ENIC_DESC_MAX_SPLITS) {
+		netif_tx_stop_queue(netdev_get_tx_queue(netdev, txq_map));
+		/* This is a hard error, log it */
+		netdev_err(netdev, "BUG! Tx ring full when queue awake!\n");
+		spin_unlock_irqrestore(&enic->wq_lock[txq_map], flags);
+>>>>>>> refs/remotes/origin/master
 		return NETDEV_TX_BUSY;
 	}
 
 	enic_queue_wq_skb(enic, wq, skb);
 
 	if (vnic_wq_desc_avail(wq) < MAX_SKB_FRAGS + ENIC_DESC_MAX_SPLITS)
+<<<<<<< HEAD
 		netif_stop_queue(netdev);
 
 	spin_unlock_irqrestore(&enic->wq_lock[0], flags);
+=======
+		netif_tx_stop_queue(netdev_get_tx_queue(netdev, txq_map));
+
+	spin_unlock_irqrestore(&enic->wq_lock[txq_map], flags);
+>>>>>>> refs/remotes/origin/master
 
 	return NETDEV_TX_OK;
 }
@@ -865,7 +922,10 @@ static int enic_set_mac_addr(struct net_device *netdev, char *addr)
 	}
 
 	memcpy(netdev->dev_addr, addr, netdev->addr_len);
+<<<<<<< HEAD
 	netdev->addr_assign_type &= ~NET_ADDR_RANDOM;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -944,8 +1004,12 @@ static void enic_update_multicast_addr_list(struct enic *enic)
 
 	for (i = 0; i < enic->mc_count; i++) {
 		for (j = 0; j < mc_count; j++)
+<<<<<<< HEAD
 			if (compare_ether_addr(enic->mc_addr[i],
 				mc_addr[j]) == 0)
+=======
+			if (ether_addr_equal(enic->mc_addr[i], mc_addr[j]))
+>>>>>>> refs/remotes/origin/master
 				break;
 		if (j == mc_count)
 			enic_dev_del_addr(enic, enic->mc_addr[i]);
@@ -953,8 +1017,12 @@ static void enic_update_multicast_addr_list(struct enic *enic)
 
 	for (i = 0; i < mc_count; i++) {
 		for (j = 0; j < enic->mc_count; j++)
+<<<<<<< HEAD
 			if (compare_ether_addr(mc_addr[i],
 				enic->mc_addr[j]) == 0)
+=======
+			if (ether_addr_equal(mc_addr[i], enic->mc_addr[j]))
+>>>>>>> refs/remotes/origin/master
 				break;
 		if (j == enic->mc_count)
 			enic_dev_add_addr(enic, mc_addr[i]);
@@ -999,8 +1067,12 @@ static void enic_update_unicast_addr_list(struct enic *enic)
 
 	for (i = 0; i < enic->uc_count; i++) {
 		for (j = 0; j < uc_count; j++)
+<<<<<<< HEAD
 			if (compare_ether_addr(enic->uc_addr[i],
 				uc_addr[j]) == 0)
+=======
+			if (ether_addr_equal(enic->uc_addr[i], uc_addr[j]))
+>>>>>>> refs/remotes/origin/master
 				break;
 		if (j == uc_count)
 			enic_dev_del_addr(enic, enic->uc_addr[i]);
@@ -1008,8 +1080,12 @@ static void enic_update_unicast_addr_list(struct enic *enic)
 
 	for (i = 0; i < uc_count; i++) {
 		for (j = 0; j < enic->uc_count; j++)
+<<<<<<< HEAD
 			if (compare_ether_addr(uc_addr[i],
 				enic->uc_addr[j]) == 0)
+=======
+			if (ether_addr_equal(uc_addr[i], enic->uc_addr[j]))
+>>>>>>> refs/remotes/origin/master
 				break;
 		if (j == enic->uc_count)
 			enic_dev_add_addr(enic, uc_addr[i]);
@@ -1193,6 +1269,7 @@ static int enic_get_vf_port(struct net_device *netdev, int vf,
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 	NLA_PUT_U16(skb, IFLA_PORT_REQUEST, pp->request);
 	NLA_PUT_U16(skb, IFLA_PORT_RESPONSE, response);
 	if (pp->set & ENIC_SET_NAME)
@@ -1205,6 +1282,18 @@ static int enic_get_vf_port(struct net_device *netdev, int vf,
 		NLA_PUT(skb, IFLA_PORT_HOST_UUID, PORT_UUID_MAX,
 			pp->host_uuid);
 
+=======
+	if (nla_put_u16(skb, IFLA_PORT_REQUEST, pp->request) ||
+	    nla_put_u16(skb, IFLA_PORT_RESPONSE, response) ||
+	    ((pp->set & ENIC_SET_NAME) &&
+	     nla_put(skb, IFLA_PORT_PROFILE, PORT_PROFILE_MAX, pp->name)) ||
+	    ((pp->set & ENIC_SET_INSTANCE) &&
+	     nla_put(skb, IFLA_PORT_INSTANCE_UUID, PORT_UUID_MAX,
+		     pp->instance_uuid)) ||
+	    ((pp->set & ENIC_SET_HOST) &&
+	     nla_put(skb, IFLA_PORT_HOST_UUID, PORT_UUID_MAX, pp->host_uuid)))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 nla_put_failure:
@@ -1300,16 +1389,32 @@ static void enic_rq_indicate_buf(struct vnic_rq *rq,
 
 		skb_put(skb, bytes_written);
 		skb->protocol = eth_type_trans(skb, netdev);
+<<<<<<< HEAD
+=======
+		skb_record_rx_queue(skb, q_number);
+		if (netdev->features & NETIF_F_RXHASH) {
+			skb->rxhash = rss_hash;
+			if (rss_type & (NIC_CFG_RSS_HASH_TYPE_TCP_IPV6_EX |
+					NIC_CFG_RSS_HASH_TYPE_TCP_IPV6 |
+					NIC_CFG_RSS_HASH_TYPE_TCP_IPV4))
+				skb->l4_rxhash = true;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		if ((netdev->features & NETIF_F_RXCSUM) && !csum_not_calc) {
 			skb->csum = htons(checksum);
 			skb->ip_summed = CHECKSUM_COMPLETE;
 		}
 
+<<<<<<< HEAD
 		skb->dev = netdev;
 
 		if (vlan_stripped)
 			__vlan_hwaccel_put_tag(skb, vlan_tci);
+=======
+		if (vlan_stripped)
+			__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan_tci);
+>>>>>>> refs/remotes/origin/master
 
 		if (netdev->features & NETIF_F_GRO)
 			napi_gro_receive(&enic->napi[q_number], skb);
@@ -1499,7 +1604,12 @@ static int enic_request_intr(struct enic *enic)
 
 		for (i = 0; i < enic->rq_count; i++) {
 			intr = enic_msix_rq_intr(enic, i);
+<<<<<<< HEAD
 			sprintf(enic->msix[intr].devname,
+=======
+			snprintf(enic->msix[intr].devname,
+				sizeof(enic->msix[intr].devname),
+>>>>>>> refs/remotes/origin/master
 				"%.11s-rx-%d", netdev->name, i);
 			enic->msix[intr].isr = enic_isr_msix_rq;
 			enic->msix[intr].devid = &enic->napi[i];
@@ -1507,20 +1617,35 @@ static int enic_request_intr(struct enic *enic)
 
 		for (i = 0; i < enic->wq_count; i++) {
 			intr = enic_msix_wq_intr(enic, i);
+<<<<<<< HEAD
 			sprintf(enic->msix[intr].devname,
+=======
+			snprintf(enic->msix[intr].devname,
+				sizeof(enic->msix[intr].devname),
+>>>>>>> refs/remotes/origin/master
 				"%.11s-tx-%d", netdev->name, i);
 			enic->msix[intr].isr = enic_isr_msix_wq;
 			enic->msix[intr].devid = enic;
 		}
 
 		intr = enic_msix_err_intr(enic);
+<<<<<<< HEAD
 		sprintf(enic->msix[intr].devname,
+=======
+		snprintf(enic->msix[intr].devname,
+			sizeof(enic->msix[intr].devname),
+>>>>>>> refs/remotes/origin/master
 			"%.11s-err", netdev->name);
 		enic->msix[intr].isr = enic_isr_msix_err;
 		enic->msix[intr].devid = enic;
 
 		intr = enic_msix_notify_intr(enic);
+<<<<<<< HEAD
 		sprintf(enic->msix[intr].devname,
+=======
+		snprintf(enic->msix[intr].devname,
+			sizeof(enic->msix[intr].devname),
+>>>>>>> refs/remotes/origin/master
 			"%.11s-notify", netdev->name);
 		enic->msix[intr].isr = enic_isr_msix_notify;
 		enic->msix[intr].devid = enic;
@@ -1642,7 +1767,11 @@ static int enic_open(struct net_device *netdev)
 
 	enic_set_rx_mode(netdev);
 
+<<<<<<< HEAD
 	netif_wake_queue(netdev);
+=======
+	netif_tx_wake_all_queues(netdev);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < enic->rq_count; i++)
 		napi_enable(&enic->napi[i]);
@@ -1766,6 +1895,10 @@ static void enic_change_mtu_work(struct work_struct *work)
 	enic_synchronize_irqs(enic);
 	err = vnic_rq_disable(&enic->rq[0]);
 	if (err) {
+<<<<<<< HEAD
+=======
+		rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
 		netdev_err(netdev, "Unable to disable RQ.\n");
 		return;
 	}
@@ -1778,6 +1911,10 @@ static void enic_change_mtu_work(struct work_struct *work)
 	vnic_rq_fill(&enic->rq[0], enic_rq_alloc_buf);
 	/* Need at least one buffer on ring to get going */
 	if (vnic_rq_desc_used(&enic->rq[0]) == 0) {
+<<<<<<< HEAD
+=======
+		rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
 		netdev_err(netdev, "Unable to alloc receive buffers.\n");
 		return;
 	}
@@ -2004,6 +2141,10 @@ static void enic_reset(struct work_struct *work)
 
 	rtnl_lock();
 
+<<<<<<< HEAD
+=======
+	spin_lock(&enic->enic_api_lock);
+>>>>>>> refs/remotes/origin/master
 	enic_dev_hang_notify(enic);
 	enic_stop(enic->netdev);
 	enic_dev_hang_reset(enic);
@@ -2012,6 +2153,11 @@ static void enic_reset(struct work_struct *work)
 	enic_set_rss_nic_cfg(enic);
 	enic_dev_set_ig_vlan_rewrite_mode(enic);
 	enic_open(enic->netdev);
+<<<<<<< HEAD
+=======
+	spin_unlock(&enic->enic_api_lock);
+	call_netdevice_notifiers(NETDEV_REBOOT, enic->netdev);
+>>>>>>> refs/remotes/origin/master
 
 	rtnl_unlock();
 }
@@ -2283,8 +2429,12 @@ static void enic_iounmap(struct enic *enic)
 			iounmap(enic->bar[i].vaddr);
 }
 
+<<<<<<< HEAD
 static int __devinit enic_probe(struct pci_dev *pdev,
 	const struct pci_device_id *ent)
+=======
+static int enic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = &pdev->dev;
 	struct net_device *netdev;
@@ -2301,7 +2451,12 @@ static int __devinit enic_probe(struct pci_dev *pdev,
 	 * instance data is initialized to zero.
 	 */
 
+<<<<<<< HEAD
 	netdev = alloc_etherdev(sizeof(struct enic));
+=======
+	netdev = alloc_etherdev_mqs(sizeof(struct enic),
+				    ENIC_RQ_MAX, ENIC_WQ_MAX);
+>>>>>>> refs/remotes/origin/master
 	if (!netdev)
 		return -ENOMEM;
 
@@ -2331,11 +2486,19 @@ static int __devinit enic_probe(struct pci_dev *pdev,
 	pci_set_master(pdev);
 
 	/* Query PCI controller on system for DMA addressing
+<<<<<<< HEAD
 	 * limitation for the device.  Try 40-bit first, and
 	 * fail to 32-bit.
 	 */
 
 	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(40));
+=======
+	 * limitation for the device.  Try 64-bit first, and
+	 * fail to 32-bit.
+	 */
+
+	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
 		if (err) {
@@ -2349,10 +2512,17 @@ static int __devinit enic_probe(struct pci_dev *pdev,
 			goto err_out_release_regions;
 		}
 	} else {
+<<<<<<< HEAD
 		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(40));
 		if (err) {
 			dev_err(dev, "Unable to obtain %u-bit DMA "
 				"for consistent allocations, aborting\n", 40);
+=======
+		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+		if (err) {
+			dev_err(dev, "Unable to obtain %u-bit DMA "
+				"for consistent allocations, aborting\n", 64);
+>>>>>>> refs/remotes/origin/master
 			goto err_out_release_regions;
 		}
 		using_dac = 1;
@@ -2425,6 +2595,10 @@ static int __devinit enic_probe(struct pci_dev *pdev,
 	 */
 
 	spin_lock_init(&enic->devcmd_lock);
+<<<<<<< HEAD
+=======
+	spin_lock_init(&enic->enic_api_lock);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Set ingress vlan rewrite mode before vnic initialization
@@ -2466,6 +2640,12 @@ static int __devinit enic_probe(struct pci_dev *pdev,
 		goto err_out_dev_close;
 	}
 
+<<<<<<< HEAD
+=======
+	netif_set_real_num_tx_queues(netdev, enic->wq_count);
+	netif_set_real_num_rx_queues(netdev, enic->rq_count);
+
+>>>>>>> refs/remotes/origin/master
 	/* Setup notification timer, HW reset task, and wq locks
 	 */
 
@@ -2500,11 +2680,19 @@ static int __devinit enic_probe(struct pci_dev *pdev,
 		netdev->netdev_ops = &enic_netdev_ops;
 
 	netdev->watchdog_timeo = 2 * HZ;
+<<<<<<< HEAD
 	netdev->ethtool_ops = &enic_ethtool_ops;
 
 	netdev->features |= NETIF_F_HW_VLAN_TX | NETIF_F_HW_VLAN_RX;
 	if (ENIC_SETTING(enic, LOOP)) {
 		netdev->features &= ~NETIF_F_HW_VLAN_TX;
+=======
+	enic_set_ethtool_ops(netdev);
+
+	netdev->features |= NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_CTAG_RX;
+	if (ENIC_SETTING(enic, LOOP)) {
+		netdev->features &= ~NETIF_F_HW_VLAN_CTAG_TX;
+>>>>>>> refs/remotes/origin/master
 		enic->loop_enable = 1;
 		enic->loop_tag = enic->config.loop_tag;
 		dev_info(dev, "loopback tag=0x%04x\n", enic->loop_tag);
@@ -2514,6 +2702,11 @@ static int __devinit enic_probe(struct pci_dev *pdev,
 	if (ENIC_SETTING(enic, TSO))
 		netdev->hw_features |= NETIF_F_TSO |
 			NETIF_F_TSO6 | NETIF_F_TSO_ECN;
+<<<<<<< HEAD
+=======
+	if (ENIC_SETTING(enic, RSS))
+		netdev->hw_features |= NETIF_F_RXHASH;
+>>>>>>> refs/remotes/origin/master
 	if (ENIC_SETTING(enic, RXCSUM))
 		netdev->hw_features |= NETIF_F_RXCSUM;
 
@@ -2554,13 +2747,20 @@ err_out_release_regions:
 err_out_disable_device:
 	pci_disable_device(pdev);
 err_out_free_netdev:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_netdev(netdev);
 
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit enic_remove(struct pci_dev *pdev)
+=======
+static void enic_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *netdev = pci_get_drvdata(pdev);
 
@@ -2583,7 +2783,10 @@ static void __devexit enic_remove(struct pci_dev *pdev)
 		enic_iounmap(enic);
 		pci_release_regions(pdev);
 		pci_disable_device(pdev);
+<<<<<<< HEAD
 		pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 		free_netdev(netdev);
 	}
 }
@@ -2592,7 +2795,11 @@ static struct pci_driver enic_driver = {
 	.name = DRV_NAME,
 	.id_table = enic_id_table,
 	.probe = enic_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(enic_remove),
+=======
+	.remove = enic_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init enic_init_module(void)

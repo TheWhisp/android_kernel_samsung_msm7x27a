@@ -3,9 +3,13 @@
 #include <linux/delay.h>
 #include <linux/etherdevice.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/hardirq.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/hardirq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/netdevice.h>
 #include <linux/if_ether.h>
 #include <linux/if_arp.h>
@@ -19,7 +23,10 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int lbs_add_mesh(struct lbs_private *priv);
 
 /***************************************************************************
@@ -106,7 +113,11 @@ static int lbs_mesh_config(struct lbs_private *priv, uint16_t action,
 
 	switch (action) {
 	case CMD_ACT_MESH_CONFIG_START:
+<<<<<<< HEAD
 		ie->id = WLAN_EID_GENERIC;
+=======
+		ie->id = WLAN_EID_VENDOR_SPECIFIC;
+>>>>>>> refs/remotes/origin/master
 		ie->val.oui[0] = 0x00;
 		ie->val.oui[1] = 0x50;
 		ie->val.oui[2] = 0x43;
@@ -136,11 +147,16 @@ static int lbs_mesh_config(struct lbs_private *priv, uint16_t action,
 
 int lbs_mesh_set_channel(struct lbs_private *priv, u8 channel)
 {
+<<<<<<< HEAD
+=======
+	priv->mesh_channel = channel;
+>>>>>>> refs/remotes/origin/master
 	return lbs_mesh_config(priv, CMD_ACT_MESH_CONFIG_START, channel);
 }
 
 static uint16_t lbs_mesh_get_channel(struct lbs_private *priv)
 {
+<<<<<<< HEAD
 	struct wireless_dev *mesh_wdev = priv->mesh_dev->ieee80211_ptr;
 	if (mesh_wdev->channel)
 		return mesh_wdev->channel->hw_value;
@@ -149,6 +165,11 @@ static uint16_t lbs_mesh_get_channel(struct lbs_private *priv)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return priv->mesh_channel ?: 1;
+}
+
+>>>>>>> refs/remotes/origin/master
 /***************************************************************************
  * Mesh sysfs support
  */
@@ -249,7 +270,11 @@ static ssize_t lbs_prb_rsp_limit_set(struct device *dev,
 	memset(&mesh_access, 0, sizeof(mesh_access));
 	mesh_access.data[0] = cpu_to_le32(CMD_ACT_SET);
 
+<<<<<<< HEAD
 	if (!strict_strtoul(buf, 10, &retry_limit))
+=======
+	if (!kstrtoul(buf, 10, &retry_limit))
+>>>>>>> refs/remotes/origin/master
 		return -ENOTSUPP;
 	if (retry_limit > 15)
 		return -ENOTSUPP;
@@ -290,14 +315,18 @@ static ssize_t lbs_mesh_set(struct device *dev,
 	struct lbs_private *priv = to_net_dev(dev)->ml_priv;
 	int enable;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret, action = CMD_ACT_MESH_CONFIG_STOP;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	sscanf(buf, "%x", &enable);
 	enable = !!enable;
 	if (enable == !!priv->mesh_dev)
 		return count;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (enable)
 		action = CMD_ACT_MESH_CONFIG_START;
@@ -306,6 +335,8 @@ static ssize_t lbs_mesh_set(struct device *dev,
 		return ret;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (enable)
 		lbs_add_mesh(priv);
@@ -340,6 +371,7 @@ static struct attribute *lbs_mesh_sysfs_entries[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct attribute_group lbs_mesh_attr_group = {
 	.attrs = lbs_mesh_sysfs_entries,
@@ -920,6 +952,11 @@ static const struct attribute_group lbs_mesh_attr_group = {
 	.attrs = lbs_mesh_sysfs_entries,
 };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct attribute_group lbs_mesh_attr_group = {
+	.attrs = lbs_mesh_sysfs_entries,
+};
+>>>>>>> refs/remotes/origin/master
 
 
 /***************************************************************************
@@ -1379,10 +1416,14 @@ static struct attribute *boot_opts_attrs[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct attribute_group boot_opts_group = {
 =======
 static const struct attribute_group boot_opts_group = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct attribute_group boot_opts_group = {
+>>>>>>> refs/remotes/origin/master
 	.name = "boot_options",
 	.attrs = boot_opts_attrs,
 };
@@ -1396,19 +1437,27 @@ static struct attribute *mesh_ie_attrs[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct attribute_group mesh_ie_group = {
 =======
 static const struct attribute_group mesh_ie_group = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct attribute_group mesh_ie_group = {
+>>>>>>> refs/remotes/origin/master
 	.name = "mesh_ie",
 	.attrs = mesh_ie_attrs,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void lbs_persist_config_init(struct net_device *dev)
 =======
 static void lbs_persist_config_init(struct net_device *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void lbs_persist_config_init(struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	ret = sysfs_create_group(&(dev->dev.kobj), &boot_opts_group);
@@ -1416,10 +1465,14 @@ static void lbs_persist_config_init(struct net_device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void lbs_persist_config_remove(struct net_device *dev)
 =======
 static void lbs_persist_config_remove(struct net_device *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void lbs_persist_config_remove(struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	sysfs_remove_group(&(dev->dev.kobj), &boot_opts_group);
 	sysfs_remove_group(&(dev->dev.kobj), &mesh_ie_group);
@@ -1427,7 +1480,10 @@ static void lbs_persist_config_remove(struct net_device *dev)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /***************************************************************************
  * Initializing and starting, stopping mesh
  */
@@ -1633,7 +1689,11 @@ static int lbs_add_mesh(struct lbs_private *priv)
 
 	mesh_dev->netdev_ops = &mesh_netdev_ops;
 	mesh_dev->ethtool_ops = &lbs_ethtool_ops;
+<<<<<<< HEAD
 	memcpy(mesh_dev->dev_addr, priv->dev->dev_addr, ETH_ALEN);
+=======
+	eth_hw_addr_inherit(mesh_dev, priv->dev);
+>>>>>>> refs/remotes/origin/master
 
 	SET_NETDEV_DEV(priv->mesh_dev, priv->dev->dev.parent);
 
@@ -1720,17 +1780,24 @@ void lbs_mesh_set_txpd(struct lbs_private *priv,
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /***************************************************************************
  * Ethtool related
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const char *mesh_stat_strings[] = {
 =======
 static const char * const mesh_stat_strings[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const char * const mesh_stat_strings[] = {
+>>>>>>> refs/remotes/origin/master
 			"drop_duplicate_bcast",
 			"drop_ttl_zero",
 			"drop_no_fwd_route",

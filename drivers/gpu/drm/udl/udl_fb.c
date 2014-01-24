@@ -13,6 +13,7 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/fb.h>
+<<<<<<< HEAD
 
 #include "drmP.h"
 #include "drm.h"
@@ -21,6 +22,16 @@
 #include "udl_drv.h"
 
 #include "drm_fb_helper.h"
+=======
+#include <linux/dma-buf.h>
+
+#include <drm/drmP.h>
+#include <drm/drm_crtc.h>
+#include <drm/drm_crtc_helper.h>
+#include "udl_drv.h"
+
+#include <drm/drm_fb_helper.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DL_DEFIO_WRITE_DELAY    (HZ/20) /* fb_deferred_io.delay in jiffies */
 
@@ -160,8 +171,22 @@ int udl_handle_damage(struct udl_framebuffer *fb, int x, int y,
 	if (!fb->active_16)
 		return 0;
 
+<<<<<<< HEAD
 	if (!fb->obj->vmapping)
 		udl_gem_vmap(fb->obj);
+=======
+	if (!fb->obj->vmapping) {
+		ret = udl_gem_vmap(fb->obj);
+		if (ret == -ENOMEM) {
+			DRM_ERROR("failed to vmap fb\n");
+			return 0;
+		}
+		if (!fb->obj->vmapping) {
+			DRM_ERROR("failed to vmapping\n");
+			return 0;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	aligned_x = DL_ALIGN_DOWN(x, sizeof(unsigned long));
 	width = DL_ALIGN_UP(width + (x-aligned_x), sizeof(unsigned long));
@@ -271,7 +296,11 @@ static int udl_fb_mmap(struct fb_info *info, struct vm_area_struct *vma)
 			size = 0;
 	}
 
+<<<<<<< HEAD
 	vma->vm_flags |= VM_RESERVED;	/* avoid to swap out this VMA */
+=======
+	/* VM_IO | VM_DONTEXPAND | VM_DONTDUMP are set by remap_pfn_range() */
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -384,6 +413,7 @@ static struct fb_ops udlfb_ops = {
 	.fb_release = udl_fb_release,
 };
 
+<<<<<<< HEAD
 void udl_crtc_fb_gamma_set(struct drm_crtc *crtc, u16 red, u16 green,
 			   u16 blue, int regno)
 {
@@ -397,6 +427,8 @@ void udl_crtc_fb_gamma_get(struct drm_crtc *crtc, u16 *red, u16 *green,
 	*blue = 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int udl_user_framebuffer_dirty(struct drm_framebuffer *fb,
 				      struct drm_file *file,
 				      unsigned flags, unsigned color,
@@ -405,16 +437,45 @@ static int udl_user_framebuffer_dirty(struct drm_framebuffer *fb,
 {
 	struct udl_framebuffer *ufb = to_udl_fb(fb);
 	int i;
+<<<<<<< HEAD
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!ufb->active_16)
 		return 0;
 
+<<<<<<< HEAD
 	for (i = 0; i < num_clips; i++) {
 		udl_handle_damage(ufb, clips[i].x1, clips[i].y1,
 				  clips[i].x2 - clips[i].x1,
 				  clips[i].y2 - clips[i].y1);
 	}
 	return 0;
+=======
+	if (ufb->obj->base.import_attach) {
+		ret = dma_buf_begin_cpu_access(ufb->obj->base.import_attach->dmabuf,
+					       0, ufb->obj->base.size,
+					       DMA_FROM_DEVICE);
+		if (ret)
+			return ret;
+	}
+
+	for (i = 0; i < num_clips; i++) {
+		ret = udl_handle_damage(ufb, clips[i].x1, clips[i].y1,
+				  clips[i].x2 - clips[i].x1,
+				  clips[i].y2 - clips[i].y1);
+		if (ret)
+			break;
+	}
+
+	if (ufb->obj->base.import_attach) {
+		dma_buf_end_cpu_access(ufb->obj->base.import_attach->dmabuf,
+				       0, ufb->obj->base.size,
+				       DMA_FROM_DEVICE);
+	}
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void udl_user_framebuffer_destroy(struct drm_framebuffer *fb)
@@ -431,7 +492,10 @@ static void udl_user_framebuffer_destroy(struct drm_framebuffer *fb)
 static const struct drm_framebuffer_funcs udlfb_funcs = {
 	.destroy = udl_user_framebuffer_destroy,
 	.dirty = udl_user_framebuffer_dirty,
+<<<<<<< HEAD
 	.create_handle = NULL,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -445,18 +509,33 @@ udl_framebuffer_init(struct drm_device *dev,
 
 	spin_lock_init(&ufb->dirty_lock);
 	ufb->obj = obj;
+<<<<<<< HEAD
 	ret = drm_framebuffer_init(dev, &ufb->base, &udlfb_funcs);
 	drm_helper_mode_fill_fb_struct(&ufb->base, mode_cmd);
+=======
+	drm_helper_mode_fill_fb_struct(&ufb->base, mode_cmd);
+	ret = drm_framebuffer_init(dev, &ufb->base, &udlfb_funcs);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 
+<<<<<<< HEAD
 static int udlfb_create(struct udl_fbdev *ufbdev,
 			struct drm_fb_helper_surface_size *sizes)
 {
 	struct drm_device *dev = ufbdev->helper.dev;
 	struct fb_info *info;
 	struct device *device = &dev->usbdev->dev;
+=======
+static int udlfb_create(struct drm_fb_helper *helper,
+			struct drm_fb_helper_surface_size *sizes)
+{
+	struct udl_fbdev *ufbdev = (struct udl_fbdev *)helper;
+	struct drm_device *dev = ufbdev->helper.dev;
+	struct fb_info *info;
+	struct device *device = dev->dev;
+>>>>>>> refs/remotes/origin/master
 	struct drm_framebuffer *fb;
 	struct drm_mode_fb_cmd2 mode_cmd;
 	struct udl_gem_object *obj;
@@ -531,6 +610,7 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int udl_fb_find_or_create_single(struct drm_fb_helper *helper,
 					struct drm_fb_helper_surface_size *sizes)
 {
@@ -552,6 +632,10 @@ static struct drm_fb_helper_funcs udl_fb_helper_funcs = {
 	.gamma_set = udl_crtc_fb_gamma_set,
 	.gamma_get = udl_crtc_fb_gamma_get,
 	.fb_probe = udl_fb_find_or_create_single,
+=======
+static struct drm_fb_helper_funcs udl_fb_helper_funcs = {
+	.fb_probe = udlfb_create,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void udl_fbdev_destroy(struct drm_device *dev,
@@ -566,6 +650,10 @@ static void udl_fbdev_destroy(struct drm_device *dev,
 		framebuffer_release(info);
 	}
 	drm_fb_helper_fini(&ufbdev->helper);
+<<<<<<< HEAD
+=======
+	drm_framebuffer_unregister_private(&ufbdev->ufb.base);
+>>>>>>> refs/remotes/origin/master
 	drm_framebuffer_cleanup(&ufbdev->ufb.base);
 	drm_gem_object_unreference_unlocked(&ufbdev->ufb.obj->base);
 }
@@ -593,6 +681,13 @@ int udl_fbdev_init(struct drm_device *dev)
 	}
 
 	drm_fb_helper_single_add_all_connectors(&ufbdev->helper);
+<<<<<<< HEAD
+=======
+
+	/* disable all the possible outputs/crtcs before entering KMS mode */
+	drm_helper_disable_unused_functions(dev);
+
+>>>>>>> refs/remotes/origin/master
 	drm_fb_helper_initial_config(&ufbdev->helper, bpp_sel);
 	return 0;
 }
@@ -631,11 +726,26 @@ udl_fb_user_fb_create(struct drm_device *dev,
 	struct drm_gem_object *obj;
 	struct udl_framebuffer *ufb;
 	int ret;
+<<<<<<< HEAD
+=======
+	uint32_t size;
+>>>>>>> refs/remotes/origin/master
 
 	obj = drm_gem_object_lookup(dev, file, mode_cmd->handles[0]);
 	if (obj == NULL)
 		return ERR_PTR(-ENOENT);
 
+<<<<<<< HEAD
+=======
+	size = mode_cmd->pitches[0] * mode_cmd->height;
+	size = ALIGN(size, PAGE_SIZE);
+
+	if (size > obj->size) {
+		DRM_ERROR("object size not sufficient for fb %d %zu %d %d\n", size, obj->size, mode_cmd->pitches[0], mode_cmd->height);
+		return ERR_PTR(-ENOMEM);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	ufb = kzalloc(sizeof(*ufb), GFP_KERNEL);
 	if (ufb == NULL)
 		return ERR_PTR(-ENOMEM);

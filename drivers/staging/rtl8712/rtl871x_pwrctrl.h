@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
@@ -25,7 +28,10 @@
  * Larry Finger <Larry.Finger@lwfinger.net>
  *
  ******************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __RTL871X_PWRCTRL_H_
 #define __RTL871X_PWRCTRL_H_
 
@@ -33,6 +39,7 @@
 #include "drv_types.h"
 
 
+<<<<<<< HEAD
 #define FW_PWR0	0
 #define FW_PWR1		1
 #define FW_PWR2		2
@@ -53,6 +60,9 @@
 #define CMD_ALIVE	BIT(2)
 #define EVT_ALIVE	BIT(3)
 
+=======
+#define CMD_ALIVE	BIT(2)
+>>>>>>> refs/remotes/origin/master
 
 enum Power_Mgnt {
 	PS_MODE_ACTIVE	= 0	,
@@ -69,7 +79,10 @@ enum Power_Mgnt {
 	PS_MODE_NUM
 };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
 	BIT[2:0] = HW state
 	BIT[3] = Protocol PS state, 0: register active state,
@@ -137,9 +150,12 @@ struct	pwrctrl_priv {
 	uint	bSetPSModeWorkItemInProgress;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct semaphore pnp_pwr_mgnt_sema;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spinlock_t pnp_pwr_mgnt_lock;
 	s32	pnp_current_pwr_state;
 	u8	pnp_bstop_trx;

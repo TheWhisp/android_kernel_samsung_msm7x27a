@@ -17,10 +17,15 @@
  *  - Zytronic capacitive touchscreen
  *  - NEXIO/iNexio
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *  - Elo TouchSystems 2700 IntelliTouch
  *  - EasyTouch USB Dual/Multi touch controller from Data Modul
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  - Elo TouchSystems 2700 IntelliTouch
+ *  - EasyTouch USB Dual/Multi touch controller from Data Modul
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) 2004-2007 by Daniel Ritz <daniel.ritz@gmx.ch>
  * Copyright (C) by Todd E. Johnson (mtouchusb.c)
@@ -65,18 +70,24 @@
 #define DRIVER_DESC		"USB Touchscreen Driver"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int swap_xy;
 module_param(swap_xy, bool, 0644);
 MODULE_PARM_DESC(swap_xy, "If set X and Y axes are swapped.");
 
 static int hwcalib_xy;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool swap_xy;
 module_param(swap_xy, bool, 0644);
 MODULE_PARM_DESC(swap_xy, "If set X and Y axes are swapped.");
 
 static bool hwcalib_xy;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(hwcalib_xy, bool, 0644);
 MODULE_PARM_DESC(hwcalib_xy, "If set hw-calibrated X/Y are used if available");
 
@@ -118,9 +129,13 @@ struct usbtouch_usb {
 	unsigned char *data;
 	dma_addr_t data_dma;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int data_size;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int data_size;
+>>>>>>> refs/remotes/origin/master
 	unsigned char *buffer;
 	int buf_len;
 	struct urb *irq;
@@ -156,20 +171,32 @@ enum {
 	DEVTYPE_TC45USB,
 	DEVTYPE_NEXIO,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	DEVTYPE_ELO,
 	DEVTYPE_ETOUCH,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DEVTYPE_ELO,
+	DEVTYPE_ETOUCH,
+>>>>>>> refs/remotes/origin/master
 };
 
 #define USB_DEVICE_HID_CLASS(vend, prod) \
 	.match_flags = USB_DEVICE_ID_MATCH_INT_CLASS \
+<<<<<<< HEAD
 		| USB_DEVICE_ID_MATCH_INT_PROTOCOL \
 		| USB_DEVICE_ID_MATCH_DEVICE, \
 	.idVendor = (vend), \
 	.idProduct = (prod), \
 	.bInterfaceClass = USB_INTERFACE_CLASS_HID, \
 	.bInterfaceProtocol = USB_INTERFACE_PROTOCOL_MOUSE
+=======
+		| USB_DEVICE_ID_MATCH_DEVICE, \
+	.idVendor = (vend), \
+	.idProduct = (prod), \
+	.bInterfaceClass = USB_INTERFACE_CLASS_HID
+>>>>>>> refs/remotes/origin/master
 
 static const struct usb_device_id usbtouch_devices[] = {
 #ifdef CONFIG_TOUCHSCREEN_USB_EGALAX
@@ -262,7 +289,10 @@ static const struct usb_device_id usbtouch_devices[] = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_TOUCHSCREEN_USB_ELO
 	{USB_DEVICE(0x04e7, 0x0020), .driver_info = DEVTYPE_ELO},
 #endif
@@ -271,7 +301,10 @@ static const struct usb_device_id usbtouch_devices[] = {
 	{USB_DEVICE(0x7374, 0x0001), .driver_info = DEVTYPE_ETOUCH},
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{}
 };
 
@@ -290,8 +323,14 @@ static int e2i_init(struct usbtouch_usb *usbtouch)
 	                      0x01, 0x02, 0x0000, 0x0081,
 	                      NULL, 0, USB_CTRL_SET_TIMEOUT);
 
+<<<<<<< HEAD
 	dbg("%s - usb_control_msg - E2I_RESET - bytes|err: %d",
 	    __func__, ret);
+=======
+	dev_dbg(&usbtouch->interface->dev,
+		"%s - usb_control_msg - E2I_RESET - bytes|err: %d\n",
+		__func__, ret);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -324,6 +363,48 @@ static int e2i_read_data(struct usbtouch_usb *dev, unsigned char *pkt)
 #define EGALAX_PKT_TYPE_REPT		0x80
 #define EGALAX_PKT_TYPE_DIAG		0x0A
 
+<<<<<<< HEAD
+=======
+static int egalax_init(struct usbtouch_usb *usbtouch)
+{
+	int ret, i;
+	unsigned char *buf;
+	struct usb_device *udev = interface_to_usbdev(usbtouch->interface);
+
+	/*
+	 * An eGalax diagnostic packet kicks the device into using the right
+	 * protocol.  We send a "check active" packet.  The response will be
+	 * read later and ignored.
+	 */
+
+	buf = kmalloc(3, GFP_KERNEL);
+	if (!buf)
+		return -ENOMEM;
+
+	buf[0] = EGALAX_PKT_TYPE_DIAG;
+	buf[1] = 1;	/* length */
+	buf[2] = 'A';	/* command - check active */
+
+	for (i = 0; i < 3; i++) {
+		ret = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+				      0,
+				      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+				      0, 0, buf, 3,
+				      USB_CTRL_SET_TIMEOUT);
+		if (ret >= 0) {
+			ret = 0;
+			break;
+		}
+		if (ret != -EPIPE)
+			break;
+	}
+
+	kfree(buf);
+
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int egalax_read_data(struct usbtouch_usb *dev, unsigned char *pkt)
 {
 	if ((pkt[0] & EGALAX_PKT_TYPE_MASK) != EGALAX_PKT_TYPE_REPT)
@@ -354,7 +435,10 @@ static int egalax_get_pkt_len(unsigned char *buf, int len)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*****************************************************************************
  * EasyTouch part
  */
@@ -400,7 +484,10 @@ static int etouch_get_pkt_len(unsigned char *buf, int len)
 	return 0;
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*****************************************************************************
  * PanJit Part
@@ -449,8 +536,14 @@ static int mtouch_init(struct usbtouch_usb *usbtouch)
 	                      MTOUCHUSB_RESET,
 	                      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
 	                      1, 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
+<<<<<<< HEAD
 	dbg("%s - usb_control_msg - MTOUCHUSB_RESET - bytes|err: %d",
 	    __func__, ret);
+=======
+	dev_dbg(&usbtouch->interface->dev,
+		"%s - usb_control_msg - MTOUCHUSB_RESET - bytes|err: %d\n",
+		__func__, ret);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 	msleep(150);
@@ -460,8 +553,14 @@ static int mtouch_init(struct usbtouch_usb *usbtouch)
 				      MTOUCHUSB_ASYNC_REPORT,
 				      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
 				      1, 1, NULL, 0, USB_CTRL_SET_TIMEOUT);
+<<<<<<< HEAD
 		dbg("%s - usb_control_msg - MTOUCHUSB_ASYNC_REPORT - bytes|err: %d",
 		    __func__, ret);
+=======
+		dev_dbg(&usbtouch->interface->dev,
+			"%s - usb_control_msg - MTOUCHUSB_ASYNC_REPORT - bytes|err: %d\n",
+			__func__, ret);
+>>>>>>> refs/remotes/origin/master
 		if (ret >= 0)
 			break;
 		if (ret != -EPIPE)
@@ -761,27 +860,47 @@ static int jastec_read_data(struct usbtouch_usb *dev, unsigned char *pkt)
 #ifdef CONFIG_TOUCHSCREEN_USB_ZYTRONIC
 static int zytronic_read_data(struct usbtouch_usb *dev, unsigned char *pkt)
 {
+<<<<<<< HEAD
 	switch (pkt[0]) {
 	case 0x3A: /* command response */
 		dbg("%s: Command response %d", __func__, pkt[1]);
+=======
+	struct usb_interface *intf = dev->interface;
+
+	switch (pkt[0]) {
+	case 0x3A: /* command response */
+		dev_dbg(&intf->dev, "%s: Command response %d\n", __func__, pkt[1]);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case 0xC0: /* down */
 		dev->x = (pkt[1] & 0x7f) | ((pkt[2] & 0x07) << 7);
 		dev->y = (pkt[3] & 0x7f) | ((pkt[4] & 0x07) << 7);
 		dev->touch = 1;
+<<<<<<< HEAD
 		dbg("%s: down %d,%d", __func__, dev->x, dev->y);
+=======
+		dev_dbg(&intf->dev, "%s: down %d,%d\n", __func__, dev->x, dev->y);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 
 	case 0x80: /* up */
 		dev->x = (pkt[1] & 0x7f) | ((pkt[2] & 0x07) << 7);
 		dev->y = (pkt[3] & 0x7f) | ((pkt[4] & 0x07) << 7);
 		dev->touch = 0;
+<<<<<<< HEAD
 		dbg("%s: up %d,%d", __func__, dev->x, dev->y);
 		return 1;
 
 	default:
 		dbg("%s: Unknown return %d", __func__, pkt[0]);
+=======
+		dev_dbg(&intf->dev, "%s: up %d,%d\n", __func__, dev->x, dev->y);
+		return 1;
+
+	default:
+		dev_dbg(&intf->dev, "%s: Unknown return %d\n", __func__, pkt[0]);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -836,7 +955,12 @@ static int nexio_alloc(struct usbtouch_usb *usbtouch)
 
 	priv->ack = usb_alloc_urb(0, GFP_KERNEL);
 	if (!priv->ack) {
+<<<<<<< HEAD
 		dbg("%s - usb_alloc_urb failed: usbtouch->ack", __func__);
+=======
+		dev_dbg(&usbtouch->interface->dev,
+			"%s - usb_alloc_urb failed: usbtouch->ack\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		goto err_ack_buf;
 	}
 
@@ -1027,7 +1151,10 @@ static int nexio_read_data(struct usbtouch_usb *usbtouch, unsigned char *pkt)
 
 /*****************************************************************************
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * ELO part
  */
 
@@ -1046,7 +1173,10 @@ static int elo_read_data(struct usbtouch_usb *dev, unsigned char *pkt)
 
 
 /*****************************************************************************
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * the different device descriptors
  */
 #ifdef MULTI_PACKET
@@ -1056,7 +1186,10 @@ static void usbtouch_process_multi(struct usbtouch_usb *usbtouch,
 
 static struct usbtouch_device_info usbtouch_dev_info[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_TOUCHSCREEN_USB_ELO
 	[DEVTYPE_ELO] = {
 		.min_xc		= 0x0,
@@ -1069,7 +1202,10 @@ static struct usbtouch_device_info usbtouch_dev_info[] = {
 	},
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_TOUCHSCREEN_USB_EGALAX
 	[DEVTYPE_EGALAX] = {
 		.min_xc		= 0x0,
@@ -1080,6 +1216,10 @@ static struct usbtouch_device_info usbtouch_dev_info[] = {
 		.process_pkt	= usbtouch_process_multi,
 		.get_pkt_len	= egalax_get_pkt_len,
 		.read_data	= egalax_read_data,
+<<<<<<< HEAD
+=======
+		.init		= egalax_init,
+>>>>>>> refs/remotes/origin/master
 	},
 #endif
 
@@ -1257,7 +1397,10 @@ static struct usbtouch_device_info usbtouch_dev_info[] = {
 	},
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_TOUCHSCREEN_USB_EASYTOUCH
 	[DEVTYPE_ETOUCH] = {
 		.min_xc		= 0x0,
@@ -1270,7 +1413,10 @@ static struct usbtouch_device_info usbtouch_dev_info[] = {
 		.read_data	= etouch_read_data,
 	},
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -1382,6 +1528,10 @@ out_flush_buf:
 static void usbtouch_irq(struct urb *urb)
 {
 	struct usbtouch_usb *usbtouch = urb->context;
+<<<<<<< HEAD
+=======
+	struct device *dev = &usbtouch->interface->dev;
+>>>>>>> refs/remotes/origin/master
 	int retval;
 
 	switch (urb->status) {
@@ -1390,20 +1540,35 @@ static void usbtouch_irq(struct urb *urb)
 		break;
 	case -ETIME:
 		/* this urb is timing out */
+<<<<<<< HEAD
 		dbg("%s - urb timed out - was the device unplugged?",
 		    __func__);
+=======
+		dev_dbg(dev,
+			"%s - urb timed out - was the device unplugged?\n",
+			__func__);
+>>>>>>> refs/remotes/origin/master
 		return;
 	case -ECONNRESET:
 	case -ENOENT:
 	case -ESHUTDOWN:
 	case -EPIPE:
 		/* this urb is terminated, clean up */
+<<<<<<< HEAD
 		dbg("%s - urb shutting down with status: %d",
 		    __func__, urb->status);
 		return;
 	default:
 		dbg("%s - nonzero urb status received: %d",
 		    __func__, urb->status);
+=======
+		dev_dbg(dev, "%s - urb shutting down with status: %d\n",
+			__func__, urb->status);
+		return;
+	default:
+		dev_dbg(dev, "%s - nonzero urb status received: %d\n",
+			__func__, urb->status);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -1413,8 +1578,13 @@ exit:
 	usb_mark_last_busy(interface_to_usbdev(usbtouch->interface));
 	retval = usb_submit_urb(urb, GFP_ATOMIC);
 	if (retval)
+<<<<<<< HEAD
 		err("%s - usb_submit_urb failed with result: %d",
 		    __func__, retval);
+=======
+		dev_err(dev, "%s - usb_submit_urb failed with result: %d\n",
+			__func__, retval);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int usbtouch_open(struct input_dev *input)
@@ -1489,8 +1659,14 @@ static int usbtouch_reset_resume(struct usb_interface *intf)
 	if (usbtouch->type->init) {
 		err = usbtouch->type->init(usbtouch);
 		if (err) {
+<<<<<<< HEAD
 			dbg("%s - type->init() failed, err: %d",
 			    __func__, err);
+=======
+			dev_dbg(&intf->dev,
+				"%s - type->init() failed, err: %d\n",
+				__func__, err);
+>>>>>>> refs/remotes/origin/master
 			return err;
 		}
 	}
@@ -1508,10 +1684,14 @@ static void usbtouch_free_buffers(struct usb_device *udev,
 				  struct usbtouch_usb *usbtouch)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	usb_free_coherent(udev, usbtouch->data_size,
 =======
 	usb_free_coherent(udev, usbtouch->type->rept_size,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_free_coherent(udev, usbtouch->data_size,
+>>>>>>> refs/remotes/origin/master
 			  usbtouch->data, usbtouch->data_dma);
 	kfree(usbtouch->buffer);
 }
@@ -1557,6 +1737,9 @@ static int usbtouch_probe(struct usb_interface *intf,
 		type->process_pkt = usbtouch_process_pkt;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 	usbtouch->data_size = type->rept_size;
 	if (type->get_pkt_len) {
 		/*
@@ -1571,9 +1754,12 @@ static int usbtouch_probe(struct usb_interface *intf,
 	}
 
 	usbtouch->data = usb_alloc_coherent(udev, usbtouch->data_size,
+<<<<<<< HEAD
 =======
 	usbtouch->data = usb_alloc_coherent(udev, type->rept_size,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					    GFP_KERNEL, &usbtouch->data_dma);
 	if (!usbtouch->data)
 		goto out_free;
@@ -1586,7 +1772,12 @@ static int usbtouch_probe(struct usb_interface *intf,
 
 	usbtouch->irq = usb_alloc_urb(0, GFP_KERNEL);
 	if (!usbtouch->irq) {
+<<<<<<< HEAD
 		dbg("%s - usb_alloc_urb failed: usbtouch->irq", __func__);
+=======
+		dev_dbg(&intf->dev,
+			"%s - usb_alloc_urb failed: usbtouch->irq\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		goto out_free_buffers;
 	}
 
@@ -1633,19 +1824,27 @@ static int usbtouch_probe(struct usb_interface *intf,
 		usb_fill_int_urb(usbtouch->irq, udev,
 			 usb_rcvintpipe(udev, endpoint->bEndpointAddress),
 <<<<<<< HEAD
-			 usbtouch->data, usbtouch->data_size,
-=======
-			 usbtouch->data, type->rept_size,
->>>>>>> refs/remotes/origin/cm-10.0
-			 usbtouch_irq, usbtouch, endpoint->bInterval);
-	else
-		usb_fill_bulk_urb(usbtouch->irq, udev,
-			 usb_rcvbulkpipe(udev, endpoint->bEndpointAddress),
 <<<<<<< HEAD
 			 usbtouch->data, usbtouch->data_size,
 =======
 			 usbtouch->data, type->rept_size,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 usbtouch->data, usbtouch->data_size,
+>>>>>>> refs/remotes/origin/master
+			 usbtouch_irq, usbtouch, endpoint->bInterval);
+	else
+		usb_fill_bulk_urb(usbtouch->irq, udev,
+			 usb_rcvbulkpipe(udev, endpoint->bEndpointAddress),
+<<<<<<< HEAD
+<<<<<<< HEAD
+			 usbtouch->data, usbtouch->data_size,
+=======
+			 usbtouch->data, type->rept_size,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 usbtouch->data, usbtouch->data_size,
+>>>>>>> refs/remotes/origin/master
 			 usbtouch_irq, usbtouch);
 
 	usbtouch->irq->dev = udev;
@@ -1656,7 +1855,13 @@ static int usbtouch_probe(struct usb_interface *intf,
 	if (type->alloc) {
 		err = type->alloc(usbtouch);
 		if (err) {
+<<<<<<< HEAD
 			dbg("%s - type->alloc() failed, err: %d", __func__, err);
+=======
+			dev_dbg(&intf->dev,
+				"%s - type->alloc() failed, err: %d\n",
+				__func__, err);
+>>>>>>> refs/remotes/origin/master
 			goto out_free_urb;
 		}
 	}
@@ -1665,14 +1870,26 @@ static int usbtouch_probe(struct usb_interface *intf,
 	if (type->init) {
 		err = type->init(usbtouch);
 		if (err) {
+<<<<<<< HEAD
 			dbg("%s - type->init() failed, err: %d", __func__, err);
+=======
+			dev_dbg(&intf->dev,
+				"%s - type->init() failed, err: %d\n",
+				__func__, err);
+>>>>>>> refs/remotes/origin/master
 			goto out_do_exit;
 		}
 	}
 
 	err = input_register_device(usbtouch->input);
 	if (err) {
+<<<<<<< HEAD
 		dbg("%s - input_register_device failed, err: %d", __func__, err);
+=======
+		dev_dbg(&intf->dev,
+			"%s - input_register_device failed, err: %d\n",
+			__func__, err);
+>>>>>>> refs/remotes/origin/master
 		goto out_do_exit;
 	}
 
@@ -1684,8 +1901,14 @@ static int usbtouch_probe(struct usb_interface *intf,
 		err = usb_submit_urb(usbtouch->irq, GFP_KERNEL);
 		if (err) {
 			usb_autopm_put_interface(intf);
+<<<<<<< HEAD
 			err("%s - usb_submit_urb failed with result: %d",
 			    __func__, err);
+=======
+			dev_err(&intf->dev,
+				"%s - usb_submit_urb failed with result: %d\n",
+				__func__, err);
+>>>>>>> refs/remotes/origin/master
 			goto out_unregister_input;
 		}
 	}
@@ -1712,12 +1935,21 @@ static void usbtouch_disconnect(struct usb_interface *intf)
 {
 	struct usbtouch_usb *usbtouch = usb_get_intfdata(intf);
 
+<<<<<<< HEAD
 	dbg("%s - called", __func__);
 
 	if (!usbtouch)
 		return;
 
 	dbg("%s - usbtouch is initialized, cleaning up", __func__);
+=======
+	if (!usbtouch)
+		return;
+
+	dev_dbg(&intf->dev,
+		"%s - usbtouch is initialized, cleaning up\n", __func__);
+
+>>>>>>> refs/remotes/origin/master
 	usb_set_intfdata(intf, NULL);
 	/* this will stop IO via close */
 	input_unregister_device(usbtouch->input);
@@ -1742,6 +1974,7 @@ static struct usb_driver usbtouch_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init usbtouch_init(void)
 {
 	return usb_register(&usbtouch_driver);
@@ -1757,6 +1990,9 @@ module_exit(usbtouch_cleanup);
 =======
 module_usb_driver(usbtouch_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(usbtouch_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

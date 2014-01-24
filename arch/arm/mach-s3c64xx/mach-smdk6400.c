@@ -23,9 +23,12 @@
 #include <asm/mach-types.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/hardware/vic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 #include <asm/mach/irq.h>
@@ -35,6 +38,7 @@
 
 #include <plat/regs-serial.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <mach/s3c6400.h>
 =======
@@ -49,6 +53,17 @@
 #include "common.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <plat/clock.h>
+#include <plat/devs.h>
+#include <plat/cpu.h>
+#include <linux/platform_data/i2c-s3c2410.h>
+#include <mach/gpio-samsung.h>
+#include <plat/samsung-time.h>
+
+#include "common.h"
+
+>>>>>>> refs/remotes/origin/master
 #define UCON S3C2410_UCON_DEFAULT | S3C2410_UCON_UCLK
 #define ULCON S3C2410_LCON_CS8 | S3C2410_LCON_PNONE | S3C2410_LCON_STOPB
 #define UFCON S3C2410_UFCON_RXTRIG8 | S3C2410_UFCON_FIFOMODE
@@ -75,8 +90,14 @@ static struct map_desc smdk6400_iodesc[] = {};
 static void __init smdk6400_map_io(void)
 {
 	s3c64xx_init_io(smdk6400_iodesc, ARRAY_SIZE(smdk6400_iodesc));
+<<<<<<< HEAD
 	s3c24xx_init_clocks(12000000);
 	s3c24xx_init_uarts(smdk6400_uartcfgs, ARRAY_SIZE(smdk6400_uartcfgs));
+=======
+	s3c64xx_set_xtal_freq(12000000);
+	s3c24xx_init_uarts(smdk6400_uartcfgs, ARRAY_SIZE(smdk6400_uartcfgs));
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct platform_device *smdk6400_devices[] __initdata = {
@@ -98,6 +119,7 @@ static void __init smdk6400_machine_init(void)
 MACHINE_START(SMDK6400, "SMDK6400")
 	/* Maintainer: Ben Dooks <ben-linux@fluff.org> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= S3C64XX_PA_SDRAM + 0x100,
 
 	.init_irq	= s3c6400_init_irq,
@@ -114,4 +136,14 @@ MACHINE_START(SMDK6400, "SMDK6400")
 	.timer		= &s3c24xx_timer,
 	.restart	= s3c64xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+
+	.init_irq	= s3c6400_init_irq,
+	.map_io		= smdk6400_map_io,
+	.init_machine	= smdk6400_machine_init,
+	.init_late	= s3c64xx_init_late,
+	.init_time	= samsung_timer_init,
+	.restart	= s3c64xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

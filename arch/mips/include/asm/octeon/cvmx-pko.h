@@ -58,10 +58,17 @@
 #ifndef __CVMX_PKO_H__
 #define __CVMX_PKO_H__
 
+<<<<<<< HEAD
 #include "cvmx-fpa.h"
 #include "cvmx-pow.h"
 #include "cvmx-cmd-queue.h"
 #include "cvmx-pko-defs.h"
+=======
+#include <asm/octeon/cvmx-fpa.h>
+#include <asm/octeon/cvmx-pow.h>
+#include <asm/octeon/cvmx-cmd-queue.h>
+#include <asm/octeon/cvmx-pko-defs.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Adjust the command buffer size by 1 word so that in the case of using only
  * two word PKO commands no command words stradle buffers.  The useful values
@@ -69,16 +76,28 @@
 #define CVMX_PKO_COMMAND_BUFFER_SIZE_ADJUST (1)
 
 #define CVMX_PKO_MAX_OUTPUT_QUEUES_STATIC 256
+<<<<<<< HEAD
 #define CVMX_PKO_MAX_OUTPUT_QUEUES      ((OCTEON_IS_MODEL(OCTEON_CN31XX) || \
+=======
+#define CVMX_PKO_MAX_OUTPUT_QUEUES	((OCTEON_IS_MODEL(OCTEON_CN31XX) || \
+>>>>>>> refs/remotes/origin/master
 	OCTEON_IS_MODEL(OCTEON_CN3010) || OCTEON_IS_MODEL(OCTEON_CN3005) || \
 	OCTEON_IS_MODEL(OCTEON_CN50XX)) ? 32 : \
 		(OCTEON_IS_MODEL(OCTEON_CN58XX) || \
 		OCTEON_IS_MODEL(OCTEON_CN56XX)) ? 256 : 128)
+<<<<<<< HEAD
 #define CVMX_PKO_NUM_OUTPUT_PORTS       40
 /* use this for queues that are not used */
 #define CVMX_PKO_MEM_QUEUE_PTRS_ILLEGAL_PID 63
 #define CVMX_PKO_QUEUE_STATIC_PRIORITY  9
 #define CVMX_PKO_ILLEGAL_QUEUE  0xFFFF
+=======
+#define CVMX_PKO_NUM_OUTPUT_PORTS	40
+/* use this for queues that are not used */
+#define CVMX_PKO_MEM_QUEUE_PTRS_ILLEGAL_PID 63
+#define CVMX_PKO_QUEUE_STATIC_PRIORITY	9
+#define CVMX_PKO_ILLEGAL_QUEUE	0xFFFF
+>>>>>>> refs/remotes/origin/master
 #define CVMX_PKO_MAX_QUEUE_DEPTH 0
 
 typedef enum {
@@ -269,6 +288,7 @@ extern void cvmx_pko_shutdown(void);
 /**
  * Configure a output port and the associated queues for use.
  *
+<<<<<<< HEAD
  * @port:       Port to configure.
  * @base_queue: First queue number to associate with this port.
  * @num_queues: Number of queues t oassociate with this port
@@ -276,6 +296,15 @@ extern void cvmx_pko_shutdown(void);
  *                   allowed to be 1-8. A value of 8 get 8 times the traffic
  *                   of a value of 1. There must be num_queues elements in the
  *                   array.
+=======
+ * @port:	Port to configure.
+ * @base_queue: First queue number to associate with this port.
+ * @num_queues: Number of queues t oassociate with this port
+ * @priority:	Array of priority levels for each queue. Values are
+ *		     allowed to be 1-8. A value of 8 get 8 times the traffic
+ *		     of a value of 1. There must be num_queues elements in the
+ *		     array.
+>>>>>>> refs/remotes/origin/master
  */
 extern cvmx_pko_status_t cvmx_pko_config_port(uint64_t port,
 					      uint64_t base_queue,
@@ -285,7 +314,11 @@ extern cvmx_pko_status_t cvmx_pko_config_port(uint64_t port,
 /**
  * Ring the packet output doorbell. This tells the packet
  * output hardware that "len" command words have been added
+<<<<<<< HEAD
  * to its pending list.  This command includes the required
+=======
+ * to its pending list.	 This command includes the required
+>>>>>>> refs/remotes/origin/master
  * CVMX_SYNCWS before the doorbell ring.
  *
  * @port:   Port the packet is for
@@ -322,6 +355,7 @@ static inline void cvmx_pko_doorbell(uint64_t port, uint64_t queue,
  * The use_locking parameter allows the caller to use three
  * possible locking modes.
  * - CVMX_PKO_LOCK_NONE
+<<<<<<< HEAD
  *      - PKO doesn't do any locking. It is the responsibility
  *          of the application to make sure that no other core
  *          is accessing the same queue at the same time.
@@ -334,6 +368,20 @@ static inline void cvmx_pko_doorbell(uint64_t port, uint64_t queue,
  *          exclusive access to the output queue. This is a
  *          memory based ll/sc. This is the most portable
  *          locking mechanism.
+=======
+ *	- PKO doesn't do any locking. It is the responsibility
+ *	    of the application to make sure that no other core
+ *	    is accessing the same queue at the same time.
+ * - CVMX_PKO_LOCK_ATOMIC_TAG
+ *	- PKO performs an atomic tagswitch to insure exclusive
+ *	    access to the output queue. This will maintain
+ *	    packet ordering on output.
+ * - CVMX_PKO_LOCK_CMD_QUEUE
+ *	- PKO uses the common command queue locks to insure
+ *	    exclusive access to the output queue. This is a
+ *	    memory based ll/sc. This is the most portable
+ *	    locking mechanism.
+>>>>>>> refs/remotes/origin/master
  *
  * NOTE: If atomic locking is used, the POW entry CANNOT be
  * descheduled, as it does not contain a valid WQE pointer.
@@ -341,7 +389,11 @@ static inline void cvmx_pko_doorbell(uint64_t port, uint64_t queue,
  * @port:   Port to send it on
  * @queue:  Queue to use
  * @use_locking: CVMX_PKO_LOCK_NONE, CVMX_PKO_LOCK_ATOMIC_TAG, or
+<<<<<<< HEAD
  *               CVMX_PKO_LOCK_CMD_QUEUE
+=======
+ *		 CVMX_PKO_LOCK_CMD_QUEUE
+>>>>>>> refs/remotes/origin/master
  */
 
 static inline void cvmx_pko_send_packet_prepare(uint64_t port, uint64_t queue,
@@ -351,11 +403,19 @@ static inline void cvmx_pko_send_packet_prepare(uint64_t port, uint64_t queue,
 		/*
 		 * Must do a full switch here to handle all cases.  We
 		 * use a fake WQE pointer, as the POW does not access
+<<<<<<< HEAD
 		 * this memory.  The WQE pointer and group are only
 		 * used if this work is descheduled, which is not
 		 * supported by the
 		 * cvmx_pko_send_packet_prepare/cvmx_pko_send_packet_finish
 		 * combination.  Note that this is a special case in
+=======
+		 * this memory.	 The WQE pointer and group are only
+		 * used if this work is descheduled, which is not
+		 * supported by the
+		 * cvmx_pko_send_packet_prepare/cvmx_pko_send_packet_finish
+		 * combination.	 Note that this is a special case in
+>>>>>>> refs/remotes/origin/master
 		 * which these fake values can be used - this is not a
 		 * general technique.
 		 */
@@ -377,10 +437,17 @@ static inline void cvmx_pko_send_packet_prepare(uint64_t port, uint64_t queue,
  * @port:   Port to send it on
  * @queue:  Queue to use
  * @pko_command:
+<<<<<<< HEAD
  *               PKO HW command word
  * @packet: Packet to send
  * @use_locking: CVMX_PKO_LOCK_NONE, CVMX_PKO_LOCK_ATOMIC_TAG, or
  *               CVMX_PKO_LOCK_CMD_QUEUE
+=======
+ *		 PKO HW command word
+ * @packet: Packet to send
+ * @use_locking: CVMX_PKO_LOCK_NONE, CVMX_PKO_LOCK_ATOMIC_TAG, or
+ *		 CVMX_PKO_LOCK_CMD_QUEUE
+>>>>>>> refs/remotes/origin/master
  *
  * Returns returns CVMX_PKO_SUCCESS on success, or error code on
  * failure of output
@@ -418,12 +485,21 @@ static inline cvmx_pko_status_t cvmx_pko_send_packet_finish(
  * @port:   Port to send it on
  * @queue:  Queue to use
  * @pko_command:
+<<<<<<< HEAD
  *               PKO HW command word
  * @packet: Packet to send
  * @addr: Plysical address of a work queue entry or physical address
  *        to zero on complete.
  * @use_locking: CVMX_PKO_LOCK_NONE, CVMX_PKO_LOCK_ATOMIC_TAG, or
  *               CVMX_PKO_LOCK_CMD_QUEUE
+=======
+ *		 PKO HW command word
+ * @packet: Packet to send
+ * @addr: Plysical address of a work queue entry or physical address
+ *	  to zero on complete.
+ * @use_locking: CVMX_PKO_LOCK_NONE, CVMX_PKO_LOCK_ATOMIC_TAG, or
+ *		 CVMX_PKO_LOCK_CMD_QUEUE
+>>>>>>> refs/remotes/origin/master
  *
  * Returns returns CVMX_PKO_SUCCESS on success, or error code on
  * failure of output
@@ -588,7 +664,11 @@ static inline void cvmx_pko_get_port_status(uint64_t port_num, uint64_t clear,
  * @port:      Port to rate limit
  * @packets_s: Maximum packet/sec
  * @burst:     Maximum number of packets to burst in a row before rate
+<<<<<<< HEAD
  *                  limiting cuts in.
+=======
+ *		    limiting cuts in.
+>>>>>>> refs/remotes/origin/master
  *
  * Returns Zero on success, negative on failure
  */
@@ -601,7 +681,11 @@ extern int cvmx_pko_rate_limit_packets(int port, int packets_s, int burst);
  * @port:   Port to rate limit
  * @bits_s: PKO rate limit in bits/sec
  * @burst:  Maximum number of bits to burst before rate
+<<<<<<< HEAD
  *               limiting cuts in.
+=======
+ *		 limiting cuts in.
+>>>>>>> refs/remotes/origin/master
  *
  * Returns Zero on success, negative on failure
  */

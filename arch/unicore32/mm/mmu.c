@@ -26,9 +26,13 @@
 #include <asm/sizes.h>
 #include <asm/tlb.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/memblock.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/memblock.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/map.h>
 
@@ -448,7 +452,11 @@ void __init paging_init(void)
  * the user-mode pages.  This will then ensure that we have predictable
  * results when turning the mmu off
  */
+<<<<<<< HEAD
 void setup_mm_for_reboot(char mode)
+=======
+void setup_mm_for_reboot(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long base_pmdval;
 	pgd_t *pgd;

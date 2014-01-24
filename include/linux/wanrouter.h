@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*****************************************************************************
 * wanrouter.h	Definitions for the WAN Multiprotocol Router Module.
 *		This module provides API and common services for WAN Link
@@ -533,4 +534,15 @@ extern long wanrouter_ioctl(struct file *file, unsigned int cmd, unsigned long a
 extern struct wan_device *wanrouter_router_devlist;
 
 #endif	/* __KERNEL__ */
+=======
+/*
+ * wanrouter.h	Legacy declarations kept around until X25 is removed
+ */
+
+#ifndef	_ROUTER_H
+#define	_ROUTER_H
+
+#include <uapi/linux/wanrouter.h>
+
+>>>>>>> refs/remotes/origin/master
 #endif	/* _ROUTER_H */

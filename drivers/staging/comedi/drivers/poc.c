@@ -13,30 +13,41 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+=======
+>>>>>>> refs/remotes/origin/master
 */
 /*
 Driver: poc
 Description: Generic driver for very simple devices
 Author: ds
+<<<<<<< HEAD
 Devices: [Keithley Metrabyte] DAC-02 (dac02), [Advantech] PCL-733 (pcl733),
   PCL-734 (pcl734)
+=======
+Devices: [Keithley Metrabyte] DAC-02 (dac02)
+>>>>>>> refs/remotes/origin/master
 Updated: Sat, 16 Mar 2002 17:34:48 -0800
 Status: unknown
 
 This driver is indended to support very simple ISA-based devices,
 including:
   dac02 - Keithley DAC-02 analog output board
+<<<<<<< HEAD
   pcl733 - Advantech PCL-733
   pcl734 - Advantech PCL-734
+=======
+>>>>>>> refs/remotes/origin/master
 
 Configuration options:
   [0] - I/O port base
 */
 
+<<<<<<< HEAD
 #include "../comedidev.h"
 
 #include <linux/ioport.h>
@@ -55,6 +66,11 @@ static int pcl734_insn_bits(struct comedi_device *dev,
 			    struct comedi_subdevice *s,
 			    struct comedi_insn *insn, unsigned int *data);
 
+=======
+#include <linux/module.h>
+#include "../comedidev.h"
+
+>>>>>>> refs/remotes/origin/master
 struct boarddef_struct {
 	const char *name;
 	unsigned int iosize;
@@ -70,6 +86,7 @@ struct boarddef_struct {
 			 struct comedi_insn *, unsigned int *);
 	const struct comedi_lrange *range;
 };
+<<<<<<< HEAD
 static const struct boarddef_struct boards[] = {
 	{
 	 .name = "dac02",
@@ -179,6 +196,21 @@ static int readback_insn(struct comedi_device *dev, struct comedi_subdevice *s,
 
 	chan = CR_CHAN(insn->chanspec);
 	data[0] = ((unsigned int *)dev->private)[chan];
+=======
+
+struct poc_private {
+	unsigned int ao_readback[32];
+};
+
+static int readback_insn(struct comedi_device *dev, struct comedi_subdevice *s,
+			 struct comedi_insn *insn, unsigned int *data)
+{
+	struct poc_private *devpriv = dev->private;
+	int chan;
+
+	chan = CR_CHAN(insn->chanspec);
+	data[0] = devpriv->ao_readback[chan];
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -190,12 +222,20 @@ static int readback_insn(struct comedi_device *dev, struct comedi_subdevice *s,
 static int dac02_ao_winsn(struct comedi_device *dev, struct comedi_subdevice *s,
 			  struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct poc_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int temp;
 	int chan;
 	int output;
 
 	chan = CR_CHAN(insn->chanspec);
+<<<<<<< HEAD
 	((unsigned int *)dev->private)[chan] = data[0];
+=======
+	devpriv->ao_readback[chan] = data[0];
+>>>>>>> refs/remotes/origin/master
 	output = data[0];
 #ifdef wrong
 	/*  convert to complementary binary if range is bipolar */
@@ -210,6 +250,7 @@ static int dac02_ao_winsn(struct comedi_device *dev, struct comedi_subdevice *s,
 	return 1;
 }
 
+<<<<<<< HEAD
 static int pcl733_insn_bits(struct comedi_device *dev,
 			    struct comedi_subdevice *s,
 			    struct comedi_insn *insn, unsigned int *data)
@@ -260,6 +301,66 @@ static void __exit driver_poc_cleanup_module(void)
 
 module_init(driver_poc_init_module);
 module_exit(driver_poc_cleanup_module);
+=======
+static int poc_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+{
+	const struct boarddef_struct *board = comedi_board(dev);
+	struct poc_private *devpriv;
+	struct comedi_subdevice *s;
+	int ret;
+
+	ret = comedi_request_region(dev, it->options[0], board->iosize);
+	if (ret)
+		return ret;
+
+	ret = comedi_alloc_subdevices(dev, 1);
+	if (ret)
+		return ret;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	/* analog output subdevice */
+	s = &dev->subdevices[0];
+	s->type = board->type;
+	s->n_chan = board->n_chan;
+	s->maxdata = (1 << board->n_bits) - 1;
+	s->range_table = board->range;
+	s->insn_write = board->winsn;
+	s->insn_read = board->rinsn;
+	s->insn_bits = board->insnbits;
+	if (s->type == COMEDI_SUBD_AO || s->type == COMEDI_SUBD_DO)
+		s->subdev_flags = SDF_WRITABLE;
+
+	return 0;
+}
+
+static const struct boarddef_struct boards[] = {
+	{
+		.name		= "dac02",
+		.iosize		= 8,
+		/* .setup	= dac02_setup, */
+		.type		= COMEDI_SUBD_AO,
+		.n_chan		= 2,
+		.n_bits		= 12,
+		.winsn		= dac02_ao_winsn,
+		.rinsn		= readback_insn,
+		.range		= &range_unknown,
+	},
+};
+
+static struct comedi_driver poc_driver = {
+	.driver_name	= "poc",
+	.module		= THIS_MODULE,
+	.attach		= poc_attach,
+	.detach		= comedi_legacy_detach,
+	.board_name	= &boards[0].name,
+	.num_names	= ARRAY_SIZE(boards),
+	.offset		= sizeof(boards[0]),
+};
+module_comedi_driver(poc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

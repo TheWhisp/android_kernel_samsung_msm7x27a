@@ -6,7 +6,10 @@
 
 #include <linux/mm_types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/bug.h>
 
 /*
@@ -18,7 +21,10 @@
 #ifndef USER_PGTABLES_CEILING
 #define USER_PGTABLES_CEILING	0UL
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
 extern int ptep_set_access_flags(struct vm_area_struct *vma,
@@ -100,7 +106,11 @@ static inline pmd_t pmdp_get_and_clear(struct mm_struct *mm,
 				       pmd_t *pmdp)
 {
 	pmd_t pmd = *pmdp;
+<<<<<<< HEAD
 	pmd_clear(mm, address, pmdp);
+=======
+	pmd_clear(pmdp);
+>>>>>>> refs/remotes/origin/master
 	return pmd;
 }
 #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
@@ -171,9 +181,28 @@ static inline void pmdp_set_wrprotect(struct mm_struct *mm,
 #endif
 
 #ifndef __HAVE_ARCH_PMDP_SPLITTING_FLUSH
+<<<<<<< HEAD
 extern pmd_t pmdp_splitting_flush(struct vm_area_struct *vma,
 				  unsigned long address,
 				  pmd_t *pmdp);
+=======
+extern void pmdp_splitting_flush(struct vm_area_struct *vma,
+				 unsigned long address, pmd_t *pmdp);
+#endif
+
+#ifndef __HAVE_ARCH_PGTABLE_DEPOSIT
+extern void pgtable_trans_huge_deposit(struct mm_struct *mm, pmd_t *pmdp,
+				       pgtable_t pgtable);
+#endif
+
+#ifndef __HAVE_ARCH_PGTABLE_WITHDRAW
+extern pgtable_t pgtable_trans_huge_withdraw(struct mm_struct *mm, pmd_t *pmdp);
+#endif
+
+#ifndef __HAVE_ARCH_PMDP_INVALIDATE
+extern void pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
+			    pmd_t *pmdp);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifndef __HAVE_ARCH_PTE_SAME
@@ -198,6 +227,7 @@ static inline int pmd_same(pmd_t pmd_a, pmd_t pmd_b)
 #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
 #endif
 
+<<<<<<< HEAD
 #ifndef __HAVE_ARCH_PAGE_TEST_AND_CLEAR_DIRTY
 #define page_test_and_clear_dirty(pfn, mapped)	(0)
 #endif
@@ -212,6 +242,8 @@ static inline int pmd_same(pmd_t pmd_a, pmd_t pmd_b)
 #define page_test_and_clear_young(pfn) (0)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __HAVE_ARCH_PGD_OFFSET_GATE
 #define pgd_offset_gate(mm, addr)	pgd_offset(mm, addr)
 #endif
@@ -220,6 +252,13 @@ static inline int pmd_same(pmd_t pmd_a, pmd_t pmd_b)
 #define move_pte(pte, prot, old_addr, new_addr)	(pte)
 #endif
 
+<<<<<<< HEAD
+=======
+#ifndef pte_accessible
+# define pte_accessible(mm, pte)	((void)(pte), 1)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifndef flush_tlb_fix_spurious_fault
 #define flush_tlb_fix_spurious_fault(vma, address) flush_tlb_page(vma, address)
 #endif
@@ -393,6 +432,7 @@ static inline void ptep_modify_prot_commit(struct mm_struct *mm,
 #define arch_start_context_switch(prev)	do {} while (0)
 #endif
 
+<<<<<<< HEAD
 #ifndef __HAVE_PFNMAP_TRACKING
 /*
  * Interface that can be used by architecture code to keep track of
@@ -403,11 +443,80 @@ static inline void ptep_modify_prot_commit(struct mm_struct *mm,
  */
 static inline int track_pfn_vma_new(struct vm_area_struct *vma, pgprot_t *prot,
 					unsigned long pfn, unsigned long size)
+=======
+#ifndef CONFIG_HAVE_ARCH_SOFT_DIRTY
+static inline int pte_soft_dirty(pte_t pte)
+{
+	return 0;
+}
+
+static inline int pmd_soft_dirty(pmd_t pmd)
+{
+	return 0;
+}
+
+static inline pte_t pte_mksoft_dirty(pte_t pte)
+{
+	return pte;
+}
+
+static inline pmd_t pmd_mksoft_dirty(pmd_t pmd)
+{
+	return pmd;
+}
+
+static inline pte_t pte_swp_mksoft_dirty(pte_t pte)
+{
+	return pte;
+}
+
+static inline int pte_swp_soft_dirty(pte_t pte)
+{
+	return 0;
+}
+
+static inline pte_t pte_swp_clear_soft_dirty(pte_t pte)
+{
+	return pte;
+}
+
+static inline pte_t pte_file_clear_soft_dirty(pte_t pte)
+{
+       return pte;
+}
+
+static inline pte_t pte_file_mksoft_dirty(pte_t pte)
+{
+       return pte;
+}
+
+static inline int pte_file_soft_dirty(pte_t pte)
+{
+       return 0;
+}
+#endif
+
+#ifndef __HAVE_PFNMAP_TRACKING
+/*
+ * Interfaces that can be used by architecture code to keep track of
+ * memory type of pfn mappings specified by the remap_pfn_range,
+ * vm_insert_pfn.
+ */
+
+/*
+ * track_pfn_remap is called when a _new_ pfn mapping is being established
+ * by remap_pfn_range() for physical range indicated by pfn and size.
+ */
+static inline int track_pfn_remap(struct vm_area_struct *vma, pgprot_t *prot,
+				  unsigned long pfn, unsigned long addr,
+				  unsigned long size)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 
 /*
+<<<<<<< HEAD
  * Interface that can be used by architecture code to keep track of
  * memory type of pfn mappings (remap_pfn_range, vm_insert_pfn)
  *
@@ -415,11 +524,28 @@ static inline int track_pfn_vma_new(struct vm_area_struct *vma, pgprot_t *prot,
  * copied through copy_page_range().
  */
 static inline int track_pfn_vma_copy(struct vm_area_struct *vma)
+=======
+ * track_pfn_insert is called when a _new_ single pfn is established
+ * by vm_insert_pfn().
+ */
+static inline int track_pfn_insert(struct vm_area_struct *vma, pgprot_t *prot,
+				   unsigned long pfn)
 {
 	return 0;
 }
 
 /*
+ * track_pfn_copy is called when vma that is covering the pfnmap gets
+ * copied through copy_page_range().
+ */
+static inline int track_pfn_copy(struct vm_area_struct *vma)
+>>>>>>> refs/remotes/origin/master
+{
+	return 0;
+}
+
+/*
+<<<<<<< HEAD
  * Interface that can be used by architecture code to keep track of
  * memory type of pfn mappings (remap_pfn_range, vm_insert_pfn)
  *
@@ -437,6 +563,49 @@ extern int track_pfn_vma_new(struct vm_area_struct *vma, pgprot_t *prot,
 extern int track_pfn_vma_copy(struct vm_area_struct *vma);
 extern void untrack_pfn_vma(struct vm_area_struct *vma, unsigned long pfn,
 				unsigned long size);
+=======
+ * untrack_pfn_vma is called while unmapping a pfnmap for a region.
+ * untrack can be called for a specific region indicated by pfn and size or
+ * can be for the entire vma (in which case pfn, size are zero).
+ */
+static inline void untrack_pfn(struct vm_area_struct *vma,
+			       unsigned long pfn, unsigned long size)
+{
+}
+#else
+extern int track_pfn_remap(struct vm_area_struct *vma, pgprot_t *prot,
+			   unsigned long pfn, unsigned long addr,
+			   unsigned long size);
+extern int track_pfn_insert(struct vm_area_struct *vma, pgprot_t *prot,
+			    unsigned long pfn);
+extern int track_pfn_copy(struct vm_area_struct *vma);
+extern void untrack_pfn(struct vm_area_struct *vma, unsigned long pfn,
+			unsigned long size);
+#endif
+
+#ifdef __HAVE_COLOR_ZERO_PAGE
+static inline int is_zero_pfn(unsigned long pfn)
+{
+	extern unsigned long zero_pfn;
+	unsigned long offset_from_zero_pfn = pfn - zero_pfn;
+	return offset_from_zero_pfn <= (zero_page_mask >> PAGE_SHIFT);
+}
+
+#define my_zero_pfn(addr)	page_to_pfn(ZERO_PAGE(addr))
+
+#else
+static inline int is_zero_pfn(unsigned long pfn)
+{
+	extern unsigned long zero_pfn;
+	return pfn == zero_pfn;
+}
+
+static inline unsigned long my_zero_pfn(unsigned long addr)
+{
+	extern unsigned long zero_pfn;
+	return zero_pfn;
+}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_MMU
@@ -499,7 +668,10 @@ static inline int pmd_none_or_trans_huge_or_clear_bad(pmd_t *pmd)
 	 * The barrier will stabilize the pmdval in a register or on
 	 * the stack so that it will stop changing under the code.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 *
 	 * When CONFIG_TRANSPARENT_HUGEPAGE=y on x86 32bit PAE,
 	 * pmd_read_atomic is allowed to return a not atomic pmdval
@@ -510,16 +682,26 @@ static inline int pmd_none_or_trans_huge_or_clear_bad(pmd_t *pmd)
 	 * the low part of the pmd is found null, the high part will
 	 * be also null or the pmd_none() check below would be
 	 * confused.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 */
 #ifdef CONFIG_TRANSPARENT_HUGEPAGE
 	barrier();
 #endif
+<<<<<<< HEAD
 	if (pmd_none(pmdval))
 		return 1;
 	if (unlikely(pmd_bad(pmdval))) {
 		if (!pmd_trans_huge(pmdval))
 			pmd_clear_bad(pmd);
+=======
+	if (pmd_none(pmdval) || pmd_trans_huge(pmdval))
+		return 1;
+	if (unlikely(pmd_bad(pmdval))) {
+		pmd_clear_bad(pmd);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 	return 0;
@@ -547,8 +729,124 @@ static inline int pmd_trans_unstable(pmd_t *pmd)
 #endif
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_NUMA_BALANCING
+#ifdef CONFIG_ARCH_USES_NUMA_PROT_NONE
+/*
+ * _PAGE_NUMA works identical to _PAGE_PROTNONE (it's actually the
+ * same bit too). It's set only when _PAGE_PRESET is not set and it's
+ * never set if _PAGE_PRESENT is set.
+ *
+ * pte/pmd_present() returns true if pte/pmd_numa returns true. Page
+ * fault triggers on those regions if pte/pmd_numa returns true
+ * (because _PAGE_PRESENT is not set).
+ */
+#ifndef pte_numa
+static inline int pte_numa(pte_t pte)
+{
+	return (pte_flags(pte) &
+		(_PAGE_NUMA|_PAGE_PRESENT)) == _PAGE_NUMA;
+}
+#endif
+
+#ifndef pmd_numa
+static inline int pmd_numa(pmd_t pmd)
+{
+	return (pmd_flags(pmd) &
+		(_PAGE_NUMA|_PAGE_PRESENT)) == _PAGE_NUMA;
+}
+#endif
+
+/*
+ * pte/pmd_mknuma sets the _PAGE_ACCESSED bitflag automatically
+ * because they're called by the NUMA hinting minor page fault. If we
+ * wouldn't set the _PAGE_ACCESSED bitflag here, the TLB miss handler
+ * would be forced to set it later while filling the TLB after we
+ * return to userland. That would trigger a second write to memory
+ * that we optimize away by setting _PAGE_ACCESSED here.
+ */
+#ifndef pte_mknonnuma
+static inline pte_t pte_mknonnuma(pte_t pte)
+{
+	pte = pte_clear_flags(pte, _PAGE_NUMA);
+	return pte_set_flags(pte, _PAGE_PRESENT|_PAGE_ACCESSED);
+}
+#endif
+
+#ifndef pmd_mknonnuma
+static inline pmd_t pmd_mknonnuma(pmd_t pmd)
+{
+	pmd = pmd_clear_flags(pmd, _PAGE_NUMA);
+	return pmd_set_flags(pmd, _PAGE_PRESENT|_PAGE_ACCESSED);
+}
+#endif
+
+#ifndef pte_mknuma
+static inline pte_t pte_mknuma(pte_t pte)
+{
+	pte = pte_set_flags(pte, _PAGE_NUMA);
+	return pte_clear_flags(pte, _PAGE_PRESENT);
+}
+#endif
+
+#ifndef pmd_mknuma
+static inline pmd_t pmd_mknuma(pmd_t pmd)
+{
+	pmd = pmd_set_flags(pmd, _PAGE_NUMA);
+	return pmd_clear_flags(pmd, _PAGE_PRESENT);
+}
+#endif
+#else
+extern int pte_numa(pte_t pte);
+extern int pmd_numa(pmd_t pmd);
+extern pte_t pte_mknonnuma(pte_t pte);
+extern pmd_t pmd_mknonnuma(pmd_t pmd);
+extern pte_t pte_mknuma(pte_t pte);
+extern pmd_t pmd_mknuma(pmd_t pmd);
+#endif /* CONFIG_ARCH_USES_NUMA_PROT_NONE */
+#else
+static inline int pmd_numa(pmd_t pmd)
+{
+	return 0;
+}
+
+static inline int pte_numa(pte_t pte)
+{
+	return 0;
+}
+
+static inline pte_t pte_mknonnuma(pte_t pte)
+{
+	return pte;
+}
+
+static inline pmd_t pmd_mknonnuma(pmd_t pmd)
+{
+	return pmd;
+}
+
+static inline pte_t pte_mknuma(pte_t pte)
+{
+	return pte;
+}
+
+static inline pmd_t pmd_mknuma(pmd_t pmd)
+{
+	return pmd;
+}
+#endif /* CONFIG_NUMA_BALANCING */
+
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_MMU */
 
 #endif /* !__ASSEMBLY__ */
 
+<<<<<<< HEAD
+=======
+#ifndef io_remap_pfn_range
+#define io_remap_pfn_range remap_pfn_range
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_GENERIC_PGTABLE_H */

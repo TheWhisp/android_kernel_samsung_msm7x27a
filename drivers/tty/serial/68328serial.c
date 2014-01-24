@@ -14,9 +14,15 @@
  * 2.4/2.5 port                 David McCullough
  */
 
+<<<<<<< HEAD
 #include <asm/dbg.h>
 #include <linux/module.h>
 #include <linux/errno.h>
+=======
+#include <linux/module.h>
+#include <linux/errno.h>
+#include <linux/serial.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/signal.h>
 #include <linux/sched.h>
 #include <linux/timer.h>
@@ -40,9 +46,12 @@
 #include <asm/io.h>
 #include <asm/irq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/delay.h>
 #include <asm/uaccess.h>
 
@@ -60,8 +69,11 @@
 #endif /* CONFIG_M68VZ328 */
 #endif /* CONFIG_M68EZ328 */
 
+<<<<<<< HEAD
 #include "68328serial.h"
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Turn off usage of real serial interrupt code, to "support" Copilot */
 #ifdef CONFIG_XCOPILOT_BUGS
 #undef USE_INTS
@@ -69,6 +81,7 @@
 #define USE_INTS
 #endif
 
+<<<<<<< HEAD
 static struct m68k_serial m68k_soft[NR_PORTS];
 
 static unsigned int uart_irqs[NR_PORTS] = UART_IRQ_DEFNS;
@@ -96,6 +109,84 @@ struct tty_driver *serial_driver;
 #define RS_ISR_PASS_LIMIT 256
 
 static void change_speed(struct m68k_serial *info);
+=======
+/*
+ * I believe this is the optimal setting that reduces the number of interrupts.
+ * At high speeds the output might become a little "bursted" (use USTCNT_TXHE
+ * if that bothers you), but in most cases it will not, since we try to
+ * transmit characters every time rs_interrupt is called. Thus, quite often
+ * you'll see that a receive interrupt occures before the transmit one.
+ *                                  -- Vladimir Gurevich
+ */
+#define USTCNT_TX_INTR_MASK (USTCNT_TXEE)
+
+/*
+ * 68328 and 68EZ328 UARTS are a little bit different. EZ328 has special
+ * "Old data interrupt" which occures whenever the data stay in the FIFO
+ * longer than 30 bits time. This allows us to use FIFO without compromising
+ * latency. '328 does not have this feature and without the real  328-based
+ * board I would assume that RXRE is the safest setting.
+ *
+ * For EZ328 I use RXHE (Half empty) interrupt to reduce the number of
+ * interrupts. RXFE (receive queue full) causes the system to lose data
+ * at least at 115200 baud
+ *
+ * If your board is busy doing other stuff, you might consider to use
+ * RXRE (data ready intrrupt) instead.
+ *
+ * The other option is to make these INTR masks run-time configurable, so
+ * that people can dynamically adapt them according to the current usage.
+ *                                  -- Vladimir Gurevich
+ */
+
+/* (es) */
+#if defined(CONFIG_M68EZ328) || defined(CONFIG_M68VZ328)
+#define USTCNT_RX_INTR_MASK (USTCNT_RXHE | USTCNT_ODEN)
+#elif defined(CONFIG_M68328)
+#define USTCNT_RX_INTR_MASK (USTCNT_RXRE)
+#else
+#error Please, define the Rx interrupt events for your CPU
+#endif
+/* (/es) */
+
+/*
+ * This is our internal structure for each serial port's state.
+ */
+struct m68k_serial {
+	struct tty_port		tport;
+	char			is_cons;	/* Is this our console. */
+	int			magic;
+	int			baud_base;
+	int			port;
+	int			irq;
+	int			type;		/* UART type */
+	int			custom_divisor;
+	int			x_char;		/* xon/xoff character */
+	int			line;
+	unsigned char		*xmit_buf;
+	int			xmit_head;
+	int			xmit_tail;
+	int			xmit_cnt;
+};
+
+#define SERIAL_MAGIC 0x5301
+
+/*
+ * Define the number of ports supported and their irqs.
+ */
+#define NR_PORTS 1
+
+static struct m68k_serial m68k_soft[NR_PORTS];
+
+static unsigned int uart_irqs[NR_PORTS] = { UART_IRQ_NUM };
+
+/* multiple ports are contiguous in memory */
+m68328_uart *uart_addr = (m68328_uart *)USTCNT_ADDR;
+
+struct tty_driver *serial_driver;
+
+static void change_speed(struct m68k_serial *info, struct tty_struct *tty);
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	Setup for console. Argument comes from the boot command line.
@@ -147,6 +238,7 @@ static int baud_table[] = {
 	0, 50, 75, 110, 134, 150, 200, 300, 600, 1200, 1800, 2400, 4800,
 	9600, 19200, 38400, 57600, 115200, 0 };
 
+<<<<<<< HEAD
 /* Sets or clears DTR/RTS on the requested line */
 static inline void m68k_rtsdtr(struct m68k_serial *ss, int set)
 {
@@ -158,6 +250,8 @@ static inline void m68k_rtsdtr(struct m68k_serial *ss, int set)
 	return;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Utility routines */
 static inline int get_baud(struct m68k_serial *ss)
 {
@@ -193,7 +287,12 @@ static void rs_stop(struct tty_struct *tty)
 
 static int rs_put_char(char ch)
 {
+<<<<<<< HEAD
         int flags, loops = 0;
+=======
+	unsigned long flags;
+	int loops = 0;
+>>>>>>> refs/remotes/origin/master
 
         local_irq_save(flags);
 
@@ -228,6 +327,7 @@ static void rs_start(struct tty_struct *tty)
 	local_irq_restore(flags);
 }
 
+<<<<<<< HEAD
 /* Drop into either the boot monitor or kadb upon receiving a break
  * from keyboard/console input.
  */
@@ -269,6 +369,10 @@ static void status_handle(struct m68k_serial *info, unsigned short status)
 static void receive_chars(struct m68k_serial *info, unsigned short rx)
 {
 	struct tty_struct *tty = info->tty;
+=======
+static void receive_chars(struct m68k_serial *info, unsigned short rx)
+{
+>>>>>>> refs/remotes/origin/master
 	m68328_uart *uart = &uart_addr[info->line];
 	unsigned char ch, flag;
 
@@ -282,7 +386,10 @@ static void receive_chars(struct m68k_serial *info, unsigned short rx)
 	
 		if(info->is_cons) {
 			if(URX_BREAK & rx) { /* whee, break received */
+<<<<<<< HEAD
 				status_handle(info, rx);
+=======
+>>>>>>> refs/remotes/origin/master
 				return;
 #ifdef CONFIG_MAGIC_SYSRQ
 			} else if (ch == 0x10) { /* ^P */
@@ -298,6 +405,7 @@ static void receive_chars(struct m68k_serial *info, unsigned short rx)
 			}
 		}
 
+<<<<<<< HEAD
 		if(!tty)
 			goto clear_and_exit;
 		
@@ -314,10 +422,23 @@ static void receive_chars(struct m68k_serial *info, unsigned short rx)
 			status_handle(info, rx);
 		}
 		tty_insert_flip_char(tty, ch, flag);
+=======
+		flag = TTY_NORMAL;
+
+		if (rx & URX_PARITY_ERROR)
+			flag = TTY_PARITY;
+		else if (rx & URX_OVRUN)
+			flag = TTY_OVERRUN;
+		else if (rx & URX_FRAME_ERROR)
+			flag = TTY_FRAME;
+
+		tty_insert_flip_char(&info->tport, ch, flag);
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_XCOPILOT_BUGS
 	} while((rx = uart->urx.w) & URX_DATA_READY);
 #endif
 
+<<<<<<< HEAD
 	tty_schedule_flip(tty);
 
 clear_and_exit:
@@ -325,6 +446,12 @@ clear_and_exit:
 }
 
 static void transmit_chars(struct m68k_serial *info)
+=======
+	tty_schedule_flip(&info->tport);
+}
+
+static void transmit_chars(struct m68k_serial *info, struct tty_struct *tty)
+>>>>>>> refs/remotes/origin/master
 {
 	m68328_uart *uart = &uart_addr[info->line];
 
@@ -335,7 +462,11 @@ static void transmit_chars(struct m68k_serial *info)
 		goto clear_and_return;
 	}
 
+<<<<<<< HEAD
 	if((info->xmit_cnt <= 0) || info->tty->stopped) {
+=======
+	if ((info->xmit_cnt <= 0) || !tty || tty->stopped) {
+>>>>>>> refs/remotes/origin/master
 		/* That's peculiar... TX ints off */
 		uart->ustcnt &= ~USTCNT_TX_INTR_MASK;
 		goto clear_and_return;
@@ -347,11 +478,14 @@ static void transmit_chars(struct m68k_serial *info)
 	info->xmit_cnt--;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (info->xmit_cnt < WAKEUP_CHARS)
 		schedule_work(&info->tqueue);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if(info->xmit_cnt <= 0) {
 		/* All done for now... TX ints off */
 		uart->ustcnt &= ~USTCNT_TX_INTR_MASK;
@@ -369,6 +503,10 @@ clear_and_return:
 irqreturn_t rs_interrupt(int irq, void *dev_id)
 {
 	struct m68k_serial *info = dev_id;
+<<<<<<< HEAD
+=======
+	struct tty_struct *tty = tty_port_tty_get(&info->tport);
+>>>>>>> refs/remotes/origin/master
 	m68328_uart *uart;
 	unsigned short rx;
 	unsigned short tx;
@@ -379,6 +517,7 @@ irqreturn_t rs_interrupt(int irq, void *dev_id)
 #ifdef USE_INTS
 	tx = uart->utx.w;
 
+<<<<<<< HEAD
 	if (rx & URX_DATA_READY) receive_chars(info, rx);
 	if (tx & UTX_TX_AVAIL)   transmit_chars(info);
 #else
@@ -406,11 +545,30 @@ static void do_softint(struct work_struct *work)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 static int startup(struct m68k_serial * info)
+=======
+	if (rx & URX_DATA_READY)
+		receive_chars(info, rx);
+	if (tx & UTX_TX_AVAIL)
+		transmit_chars(info, tty);
+#else
+	receive_chars(info, rx);
+#endif
+	tty_kref_put(tty);
+
+	return IRQ_HANDLED;
+}
+
+static int startup(struct m68k_serial *info, struct tty_struct *tty)
+>>>>>>> refs/remotes/origin/master
 {
 	m68328_uart *uart = &uart_addr[info->line];
 	unsigned long flags;
 	
+<<<<<<< HEAD
 	if (info->flags & S_INITIALIZED)
+=======
+	if (info->tport.flags & ASYNC_INITIALIZED)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	if (!info->xmit_buf) {
@@ -427,7 +585,10 @@ static int startup(struct m68k_serial * info)
 	 */
 
 	uart->ustcnt = USTCNT_UEN;
+<<<<<<< HEAD
 	info->xmit_fifo_size = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 	uart->ustcnt = USTCNT_UEN | USTCNT_RXEN | USTCNT_TXEN;
 	(void)uart->urx.w;
 
@@ -441,17 +602,28 @@ static int startup(struct m68k_serial * info)
 	uart->ustcnt = USTCNT_UEN | USTCNT_RXEN | USTCNT_RX_INTR_MASK;
 #endif
 
+<<<<<<< HEAD
 	if (info->tty)
 		clear_bit(TTY_IO_ERROR, &info->tty->flags);
+=======
+	if (tty)
+		clear_bit(TTY_IO_ERROR, &tty->flags);
+>>>>>>> refs/remotes/origin/master
 	info->xmit_cnt = info->xmit_head = info->xmit_tail = 0;
 
 	/*
 	 * and set the speed of the serial port
 	 */
 
+<<<<<<< HEAD
 	change_speed(info);
 
 	info->flags |= S_INITIALIZED;
+=======
+	change_speed(info, tty);
+
+	info->tport.flags |= ASYNC_INITIALIZED;
+>>>>>>> refs/remotes/origin/master
 	local_irq_restore(flags);
 	return 0;
 }
@@ -460,13 +632,21 @@ static int startup(struct m68k_serial * info)
  * This routine will shutdown a serial port; interrupts are disabled, and
  * DTR is dropped if the hangup on close termio flag is on.
  */
+<<<<<<< HEAD
 static void shutdown(struct m68k_serial * info)
+=======
+static void shutdown(struct m68k_serial *info, struct tty_struct *tty)
+>>>>>>> refs/remotes/origin/master
 {
 	m68328_uart *uart = &uart_addr[info->line];
 	unsigned long	flags;
 
 	uart->ustcnt = 0; /* All off! */
+<<<<<<< HEAD
 	if (!(info->flags & S_INITIALIZED))
+=======
+	if (!(info->tport.flags & ASYNC_INITIALIZED))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	local_irq_save(flags);
@@ -476,10 +656,17 @@ static void shutdown(struct m68k_serial * info)
 		info->xmit_buf = 0;
 	}
 
+<<<<<<< HEAD
 	if (info->tty)
 		set_bit(TTY_IO_ERROR, &info->tty->flags);
 	
 	info->flags &= ~S_INITIALIZED;
+=======
+	if (tty)
+		set_bit(TTY_IO_ERROR, &tty->flags);
+	
+	info->tport.flags &= ~ASYNC_INITIALIZED;
+>>>>>>> refs/remotes/origin/master
 	local_irq_restore(flags);
 }
 
@@ -535,7 +722,11 @@ struct {
  * This routine is called to set the UART divisor registers to match
  * the specified baud rate for a serial port.
  */
+<<<<<<< HEAD
 static void change_speed(struct m68k_serial *info)
+=======
+static void change_speed(struct m68k_serial *info, struct tty_struct *tty)
+>>>>>>> refs/remotes/origin/master
 {
 	m68328_uart *uart = &uart_addr[info->line];
 	unsigned short port;
@@ -543,9 +734,13 @@ static void change_speed(struct m68k_serial *info)
 	unsigned cflag;
 	int	i;
 
+<<<<<<< HEAD
 	if (!info->tty || !info->tty->termios)
 		return;
 	cflag = info->tty->termios->c_cflag;
+=======
+	cflag = tty->termios.c_cflag;
+>>>>>>> refs/remotes/origin/master
 	if (!(port = info->port))
 		return;
 
@@ -557,7 +752,10 @@ static void change_speed(struct m68k_serial *info)
                 i = (i & ~CBAUDEX) + B38400;
         }
 
+<<<<<<< HEAD
 	info->baud = baud_table[i];
+=======
+>>>>>>> refs/remotes/origin/master
 	uart->ubaud = PUT_FIELD(UBAUD_DIVIDE,    hw_baud_table[i].divisor) | 
 		PUT_FIELD(UBAUD_PRESCALER, hw_baud_table[i].prescale);
 
@@ -648,7 +846,11 @@ static void rs_set_ldisc(struct tty_struct *tty)
 	if (serial_paranoia_check(info, tty->name, "rs_set_ldisc"))
 		return;
 
+<<<<<<< HEAD
 	info->is_cons = (tty->termios->c_line == N_TTY);
+=======
+	info->is_cons = (tty->termios.c_line == N_TTY);
+>>>>>>> refs/remotes/origin/master
 	
 	printk("ttyS%d console mode %s\n", info->line, info->is_cons ? "on" : "off");
 }
@@ -668,8 +870,12 @@ static void rs_flush_chars(struct tty_struct *tty)
 	/* Enable transmitter */
 	local_irq_save(flags);
 
+<<<<<<< HEAD
 	if (info->xmit_cnt <= 0 || tty->stopped || tty->hw_stopped ||
 			!info->xmit_buf) {
+=======
+	if (info->xmit_cnt <= 0 || tty->stopped || !info->xmit_buf) {
+>>>>>>> refs/remotes/origin/master
 		local_irq_restore(flags);
 		return;
 	}
@@ -735,7 +941,11 @@ static int rs_write(struct tty_struct * tty,
 		total += c;
 	}
 
+<<<<<<< HEAD
 	if (info->xmit_cnt && !tty->stopped && !tty->hw_stopped) {
+=======
+	if (info->xmit_cnt && !tty->stopped) {
+>>>>>>> refs/remotes/origin/master
 		/* Enable transmitter */
 		local_irq_disable();		
 #ifndef USE_INTS
@@ -854,10 +1064,17 @@ static int get_serial_info(struct m68k_serial * info,
 	tmp.line = info->line;
 	tmp.port = info->port;
 	tmp.irq = info->irq;
+<<<<<<< HEAD
 	tmp.flags = info->flags;
 	tmp.baud_base = info->baud_base;
 	tmp.close_delay = info->close_delay;
 	tmp.closing_wait = info->closing_wait;
+=======
+	tmp.flags = info->tport.flags;
+	tmp.baud_base = info->baud_base;
+	tmp.close_delay = info->tport.close_delay;
+	tmp.closing_wait = info->tport.closing_wait;
+>>>>>>> refs/remotes/origin/master
 	tmp.custom_divisor = info->custom_divisor;
 	if (copy_to_user(retinfo, &tmp, sizeof(*retinfo)))
 		return -EFAULT;
@@ -865,9 +1082,16 @@ static int get_serial_info(struct m68k_serial * info,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int set_serial_info(struct m68k_serial * info,
 			   struct serial_struct * new_info)
 {
+=======
+static int set_serial_info(struct m68k_serial *info, struct tty_struct *tty,
+			   struct serial_struct * new_info)
+{
+	struct tty_port *port = &info->tport;
+>>>>>>> refs/remotes/origin/master
 	struct serial_struct new_serial;
 	struct m68k_serial old_info;
 	int 			retval = 0;
@@ -881,17 +1105,30 @@ static int set_serial_info(struct m68k_serial * info,
 	if (!capable(CAP_SYS_ADMIN)) {
 		if ((new_serial.baud_base != info->baud_base) ||
 		    (new_serial.type != info->type) ||
+<<<<<<< HEAD
 		    (new_serial.close_delay != info->close_delay) ||
 		    ((new_serial.flags & ~S_USR_MASK) !=
 		     (info->flags & ~S_USR_MASK)))
 			return -EPERM;
 		info->flags = ((info->flags & ~S_USR_MASK) |
 			       (new_serial.flags & S_USR_MASK));
+=======
+		    (new_serial.close_delay != port->close_delay) ||
+		    ((new_serial.flags & ~ASYNC_USR_MASK) !=
+		     (port->flags & ~ASYNC_USR_MASK)))
+			return -EPERM;
+		port->flags = ((port->flags & ~ASYNC_USR_MASK) |
+			       (new_serial.flags & ASYNC_USR_MASK));
+>>>>>>> refs/remotes/origin/master
 		info->custom_divisor = new_serial.custom_divisor;
 		goto check_and_exit;
 	}
 
+<<<<<<< HEAD
 	if (info->count > 1)
+=======
+	if (port->count > 1)
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 
 	/*
@@ -900,6 +1137,7 @@ static int set_serial_info(struct m68k_serial * info,
 	 */
 
 	info->baud_base = new_serial.baud_base;
+<<<<<<< HEAD
 	info->flags = ((info->flags & ~S_FLAGS) |
 			(new_serial.flags & S_FLAGS));
 	info->type = new_serial.type;
@@ -908,6 +1146,16 @@ static int set_serial_info(struct m68k_serial * info,
 
 check_and_exit:
 	retval = startup(info);
+=======
+	port->flags = ((port->flags & ~ASYNC_FLAGS) |
+			(new_serial.flags & ASYNC_FLAGS));
+	info->type = new_serial.type;
+	port->close_delay = new_serial.close_delay;
+	port->closing_wait = new_serial.closing_wait;
+
+check_and_exit:
+	retval = startup(info, tty);
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -993,7 +1241,11 @@ static int rs_ioctl(struct tty_struct *tty,
 			return get_serial_info(info,
 				       (struct serial_struct *) arg);
 		case TIOCSSERIAL:
+<<<<<<< HEAD
 			return set_serial_info(info,
+=======
+			return set_serial_info(info, tty,
+>>>>>>> refs/remotes/origin/master
 					       (struct serial_struct *) arg);
 		case TIOCSERGETLSR: /* Get line status register */
 			return get_lsr_info(info, (unsigned int *) arg);
@@ -1012,6 +1264,7 @@ static void rs_set_termios(struct tty_struct *tty, struct ktermios *old_termios)
 {
 	struct m68k_serial *info = (struct m68k_serial *)tty->driver_data;
 
+<<<<<<< HEAD
 	change_speed(info);
 
 	if ((old_termios->c_cflag & CRTSCTS) &&
@@ -1019,6 +1272,13 @@ static void rs_set_termios(struct tty_struct *tty, struct ktermios *old_termios)
 		tty->hw_stopped = 0;
 		rs_start(tty);
 	}
+=======
+	change_speed(info, tty);
+
+	if ((old_termios->c_cflag & CRTSCTS) &&
+	    !(tty->termios.c_cflag & CRTSCTS))
+		rs_start(tty);
+>>>>>>> refs/remotes/origin/master
 	
 }
 
@@ -1035,10 +1295,18 @@ static void rs_set_termios(struct tty_struct *tty, struct ktermios *old_termios)
 static void rs_close(struct tty_struct *tty, struct file * filp)
 {
 	struct m68k_serial * info = (struct m68k_serial *)tty->driver_data;
+<<<<<<< HEAD
 	m68328_uart *uart = &uart_addr[info->line];
 	unsigned long flags;
 
 	if (!info || serial_paranoia_check(info, tty->name, "rs_close"))
+=======
+	struct tty_port *port = &info->tport;
+	m68328_uart *uart = &uart_addr[info->line];
+	unsigned long flags;
+
+	if (serial_paranoia_check(info, tty->name, "rs_close"))
+>>>>>>> refs/remotes/origin/master
 		return;
 	
 	local_irq_save(flags);
@@ -1048,7 +1316,11 @@ static void rs_close(struct tty_struct *tty, struct file * filp)
 		return;
 	}
 	
+<<<<<<< HEAD
 	if ((tty->count == 1) && (info->count != 1)) {
+=======
+	if ((tty->count == 1) && (port->count != 1)) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Uh, oh.  tty->count is 1, which means that the tty
 		 * structure will be freed.  Info->count should always
@@ -1057,6 +1329,7 @@ static void rs_close(struct tty_struct *tty, struct file * filp)
 		 * serial port won't be shutdown.
 		 */
 		printk("rs_close: bad serial port count; tty->count is 1, "
+<<<<<<< HEAD
 		       "info->count is %d\n", info->count);
 		info->count = 1;
 	}
@@ -1070,13 +1343,33 @@ static void rs_close(struct tty_struct *tty, struct file * filp)
 		return;
 	}
 	info->flags |= S_CLOSING;
+=======
+		       "port->count is %d\n", port->count);
+		port->count = 1;
+	}
+	if (--port->count < 0) {
+		printk("rs_close: bad serial port count for ttyS%d: %d\n",
+		       info->line, port->count);
+		port->count = 0;
+	}
+	if (port->count) {
+		local_irq_restore(flags);
+		return;
+	}
+	port->flags |= ASYNC_CLOSING;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Now we wait for the transmit buffer to clear; and we notify 
 	 * the line discipline to only process XON/XOFF characters.
 	 */
 	tty->closing = 1;
+<<<<<<< HEAD
 	if (info->closing_wait != S_CLOSING_WAIT_NONE)
 		tty_wait_until_sent(tty, info->closing_wait);
+=======
+	if (port->closing_wait != ASYNC_CLOSING_WAIT_NONE)
+		tty_wait_until_sent(tty, port->closing_wait);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * At this point we stop accepting input.  To do this, we
 	 * disable the receive line status interrupts, and tell the
@@ -1087,24 +1380,37 @@ static void rs_close(struct tty_struct *tty, struct file * filp)
 	uart->ustcnt &= ~USTCNT_RXEN;
 	uart->ustcnt &= ~(USTCNT_RXEN | USTCNT_RX_INTR_MASK);
 
+<<<<<<< HEAD
 	shutdown(info);
+=======
+	shutdown(info, tty);
+>>>>>>> refs/remotes/origin/master
 	rs_flush_buffer(tty);
 		
 	tty_ldisc_flush(tty);
 	tty->closing = 0;
+<<<<<<< HEAD
 	info->event = 0;
 	info->tty = NULL;
+=======
+	tty_port_tty_set(&info->tport, NULL);
+>>>>>>> refs/remotes/origin/master
 #warning "This is not and has never been valid so fix it"	
 #if 0
 	if (tty->ldisc.num != ldiscs[N_TTY].num) {
 		if (tty->ldisc.close)
 			(tty->ldisc.close)(tty);
 		tty->ldisc = ldiscs[N_TTY];
+<<<<<<< HEAD
 		tty->termios->c_line = N_TTY;
+=======
+		tty->termios.c_line = N_TTY;
+>>>>>>> refs/remotes/origin/master
 		if (tty->ldisc.open)
 			(tty->ldisc.open)(tty);
 	}
 #endif	
+<<<<<<< HEAD
 	if (info->blocked_open) {
 		if (info->close_delay) {
 			msleep_interruptible(jiffies_to_msecs(info->close_delay));
@@ -1113,6 +1419,15 @@ static void rs_close(struct tty_struct *tty, struct file * filp)
 	}
 	info->flags &= ~(S_NORMAL_ACTIVE|S_CLOSING);
 	wake_up_interruptible(&info->close_wait);
+=======
+	if (port->blocked_open) {
+		if (port->close_delay)
+			msleep_interruptible(jiffies_to_msecs(port->close_delay));
+		wake_up_interruptible(&port->open_wait);
+	}
+	port->flags &= ~(ASYNC_NORMAL_ACTIVE|ASYNC_CLOSING);
+	wake_up_interruptible(&port->close_wait);
+>>>>>>> refs/remotes/origin/master
 	local_irq_restore(flags);
 }
 
@@ -1127,6 +1442,7 @@ void rs_hangup(struct tty_struct *tty)
 		return;
 	
 	rs_flush_buffer(tty);
+<<<<<<< HEAD
 	shutdown(info);
 	info->event = 0;
 	info->count = 0;
@@ -1228,6 +1544,16 @@ static int block_til_ready(struct tty_struct *tty, struct file * filp,
 }	
 
 /*
+=======
+	shutdown(info, tty);
+	info->tport.count = 0;
+	info->tport.flags &= ~ASYNC_NORMAL_ACTIVE;
+	tty_port_tty_set(&info->tport, NULL);
+	wake_up_interruptible(&info->tport.open_wait);
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * This routine is called whenever a serial port is opened.  It
  * enables interrupts for a serial port, linking in its S structure into
  * the IRQ chain.   It also performs the serial-specific
@@ -1236,6 +1562,7 @@ static int block_til_ready(struct tty_struct *tty, struct file * filp,
 int rs_open(struct tty_struct *tty, struct file * filp)
 {
 	struct m68k_serial	*info;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int 			retval, line;
 
@@ -1250,22 +1577,41 @@ int rs_open(struct tty_struct *tty, struct file * filp)
 
 	info = &m68k_soft[tty->index];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int retval;
+
+	info = &m68k_soft[tty->index];
+>>>>>>> refs/remotes/origin/master
 
 	if (serial_paranoia_check(info, tty->name, "rs_open"))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	info->count++;
 	tty->driver_data = info;
 	info->tty = tty;
+=======
+	info->tport.count++;
+	tty->driver_data = info;
+	tty_port_tty_set(&info->tport, tty);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Start up serial port
 	 */
+<<<<<<< HEAD
 	retval = startup(info);
 	if (retval)
 		return retval;
 
 	return block_til_ready(tty, filp, info);
+=======
+	retval = startup(info, tty);
+	if (retval)
+		return retval;
+
+	return tty_port_block_til_ready(&info->tport, tty, filp);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Finally, routines used to initialize the serial driver. */
@@ -1293,11 +1639,22 @@ static const struct tty_operations rs_ops = {
 	.set_ldisc = rs_set_ldisc,
 };
 
+<<<<<<< HEAD
+=======
+static const struct tty_port_operations rs_port_ops = {
+};
+
+>>>>>>> refs/remotes/origin/master
 /* rs_init inits the driver */
 static int __init
 rs68328_init(void)
 {
+<<<<<<< HEAD
 	int flags, i;
+=======
+	unsigned long flags;
+	int i;
+>>>>>>> refs/remotes/origin/master
 	struct m68k_serial *info;
 
 	serial_driver = alloc_tty_driver(NR_PORTS);
@@ -1320,17 +1677,21 @@ rs68328_init(void)
 	serial_driver->flags = TTY_DRIVER_REAL_RAW;
 	tty_set_operations(serial_driver, &rs_ops);
 
+<<<<<<< HEAD
 	if (tty_register_driver(serial_driver)) {
 		put_tty_driver(serial_driver);
 		printk(KERN_ERR "Couldn't register serial driver\n");
 		return -ENOMEM;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	local_irq_save(flags);
 
 	for(i=0;i<NR_PORTS;i++) {
 
 	    info = &m68k_soft[i];
+<<<<<<< HEAD
 	    info->magic = SERIAL_MAGIC;
 	    info->port = (int) &uart_addr[i];
 	    info->tty = NULL;
@@ -1348,6 +1709,15 @@ rs68328_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 	    init_waitqueue_head(&info->open_wait);
 	    init_waitqueue_head(&info->close_wait);
+=======
+	    tty_port_init(&info->tport);
+	    info->tport.ops = &rs_port_ops;
+	    info->magic = SERIAL_MAGIC;
+	    info->port = (int) &uart_addr[i];
+	    info->irq = uart_irqs[i];
+	    info->custom_divisor = 16;
+	    info->x_char = 0;
+>>>>>>> refs/remotes/origin/master
 	    info->line = i;
 	    info->is_cons = 1; /* Means shortcuts work */
 	    
@@ -1363,6 +1733,7 @@ rs68328_init(void)
 	    if (request_irq(uart_irqs[i],
 			    rs_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    IRQF_DISABLED,
 =======
 			    0,
@@ -1371,6 +1742,24 @@ rs68328_init(void)
                 panic("Unable to attach 68328 serial interrupt\n");
 	}
 	local_irq_restore(flags);
+=======
+			    0,
+			    "M68328_UART", info))
+                panic("Unable to attach 68328 serial interrupt\n");
+
+	    tty_port_link_device(&info->tport, serial_driver, i);
+	}
+	local_irq_restore(flags);
+
+	if (tty_register_driver(serial_driver)) {
+		put_tty_driver(serial_driver);
+		for (i = 0; i < NR_PORTS; i++)
+			tty_port_destroy(&m68k_soft[i].tport);
+		printk(KERN_ERR "Couldn't register serial driver\n");
+		return -ENOMEM;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

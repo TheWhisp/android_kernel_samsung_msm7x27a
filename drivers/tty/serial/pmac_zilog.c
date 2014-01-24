@@ -57,6 +57,11 @@
 #include <linux/bitops.h>
 #include <linux/sysrq.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/sections.h>
 #include <asm/io.h>
 #include <asm/irq.h>
@@ -100,11 +105,17 @@ MODULE_LICENSE("GPL");
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pmz_debug(fmt, arg...)	pr_debug("ttyPZ%d: " fmt, uap->port.line, ## arg)
 #define pmz_error(fmt, arg...)	pr_err("ttyPZ%d: " fmt, uap->port.line, ## arg)
 #define pmz_info(fmt, arg...)	pr_info("ttyPZ%d: " fmt, uap->port.line, ## arg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pmz_debug(fmt, arg...)	pr_debug("ttyPZ%d: " fmt, uap->port.line, ## arg)
+#define pmz_error(fmt, arg...)	pr_err("ttyPZ%d: " fmt, uap->port.line, ## arg)
+#define pmz_info(fmt, arg...)	pr_info("ttyPZ%d: " fmt, uap->port.line, ## arg)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * For the sake of early serial console, we can do a pre-probe
@@ -113,9 +124,12 @@ MODULE_LICENSE("GPL");
 static struct uart_pmac_port	pmz_ports[MAX_ZS_PORTS];
 static int			pmz_ports_count;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_MUTEX(pmz_irq_mutex);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct uart_driver pmz_uart_reg = {
 	.owner		=	THIS_MODULE,
@@ -136,11 +150,14 @@ static void pmz_load_zsregs(struct uart_pmac_port *uap, u8 *regs)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ZS_IS_ASLEEP(uap))
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Let pending transmits finish.  */
 	for (i = 0; i < 1000; i++) {
 		unsigned char stat = read_zsreg(uap, R1);
@@ -229,7 +246,10 @@ static void pmz_maybe_update_regs(struct uart_pmac_port *uap)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void pmz_interrupt_control(struct uart_pmac_port *uap, int enable)
 {
 	if (enable) {
@@ -242,6 +262,7 @@ static void pmz_interrupt_control(struct uart_pmac_port *uap, int enable)
 	write_zsreg(uap, R1, uap->curregs[1]);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static struct tty_struct *pmz_receive_chars(struct uart_pmac_port *uap)
 {
@@ -279,6 +300,21 @@ static struct tty_struct *pmz_receive_chars(struct uart_pmac_port *uap)
 		return NULL;
 	}
 	tty = uap->port.state->port.tty;
+=======
+static bool pmz_receive_chars(struct uart_pmac_port *uap)
+{
+	struct tty_port *port;
+	unsigned char ch, r1, drop, error, flag;
+	int loops = 0;
+
+	/* Sanity check, make sure the old bug is no longer happening */
+	if (uap->port.state == NULL) {
+		WARN_ON(1);
+		(void)read_zsdata(uap);
+		return false;
+	}
+	port = &uap->port.state->port;
+>>>>>>> refs/remotes/origin/master
 
 	while (1) {
 		error = 0;
@@ -348,10 +384,17 @@ static struct tty_struct *pmz_receive_chars(struct uart_pmac_port *uap)
 
 		if (uap->port.ignore_status_mask == 0xff ||
 		    (r1 & uap->port.ignore_status_mask) == 0) {
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, ch, flag);
 		}
 		if (r1 & Rx_OVR)
 			tty_insert_flip_char(tty, 0, TTY_OVERRUN);
+=======
+			tty_insert_flip_char(port, ch, flag);
+		}
+		if (r1 & Rx_OVR)
+			tty_insert_flip_char(port, 0, TTY_OVERRUN);
+>>>>>>> refs/remotes/origin/master
 	next_char:
 		/* We can get stuck in an infinite loop getting char 0 when the
 		 * line is in a wrong HW state, we break that here.
@@ -367,6 +410,7 @@ static struct tty_struct *pmz_receive_chars(struct uart_pmac_port *uap)
 			break;
 	}
 
+<<<<<<< HEAD
 	return tty;
  flood:
 <<<<<<< HEAD
@@ -378,6 +422,13 @@ static struct tty_struct *pmz_receive_chars(struct uart_pmac_port *uap)
 >>>>>>> refs/remotes/origin/cm-10.0
 	pmz_error("pmz: rx irq flood !\n");
 	return tty;
+=======
+	return true;
+ flood:
+	pmz_interrupt_control(uap, 0);
+	pmz_error("pmz: rx irq flood !\n");
+	return true;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void pmz_status_handle(struct uart_pmac_port *uap)
@@ -418,10 +469,13 @@ static void pmz_transmit_chars(struct uart_pmac_port *uap)
 	struct circ_buf *xmit;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ZS_IS_ASLEEP(uap))
 		return;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ZS_IS_CONS(uap)) {
 		unsigned char status = read_zsreg(uap, R0);
 
@@ -503,7 +557,11 @@ static irqreturn_t pmz_interrupt(int irq, void *dev_id)
 	struct uart_pmac_port *uap_a;
 	struct uart_pmac_port *uap_b;
 	int rc = IRQ_NONE;
+<<<<<<< HEAD
 	struct tty_struct *tty;
+=======
+	bool push;
+>>>>>>> refs/remotes/origin/master
 	u8 r3;
 
 	uap_a = pmz_get_port_A(uap);
@@ -516,25 +574,38 @@ static irqreturn_t pmz_interrupt(int irq, void *dev_id)
 	pmz_debug("irq, r3: %x\n", r3);
 #endif
 	/* Channel A */
+<<<<<<< HEAD
 	tty = NULL;
 	if (r3 & (CHAEXT | CHATxIP | CHARxIP)) {
 <<<<<<< HEAD
 =======
+=======
+	push = false;
+	if (r3 & (CHAEXT | CHATxIP | CHARxIP)) {
+>>>>>>> refs/remotes/origin/master
 		if (!ZS_IS_OPEN(uap_a)) {
 			pmz_debug("ChanA interrupt while not open !\n");
 			goto skip_a;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		write_zsreg(uap_a, R0, RES_H_IUS);
 		zssync(uap_a);		
 		if (r3 & CHAEXT)
 			pmz_status_handle(uap_a);
 		if (r3 & CHARxIP)
+<<<<<<< HEAD
 			tty = pmz_receive_chars(uap_a);
+=======
+			push = pmz_receive_chars(uap_a);
+>>>>>>> refs/remotes/origin/master
 		if (r3 & CHATxIP)
 			pmz_transmit_chars(uap_a);
 		rc = IRQ_HANDLED;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
  skip_a:
@@ -555,21 +626,42 @@ static irqreturn_t pmz_interrupt(int irq, void *dev_id)
 	if (r3 & (CHBEXT | CHBTxIP | CHBRxIP)) {
 <<<<<<< HEAD
 =======
+=======
+ skip_a:
+	spin_unlock(&uap_a->port.lock);
+	if (push)
+		tty_flip_buffer_push(&uap->port.state->port);
+
+	if (!uap_b)
+		goto out;
+
+	spin_lock(&uap_b->port.lock);
+	push = false;
+	if (r3 & (CHBEXT | CHBTxIP | CHBRxIP)) {
+>>>>>>> refs/remotes/origin/master
 		if (!ZS_IS_OPEN(uap_b)) {
 			pmz_debug("ChanB interrupt while not open !\n");
 			goto skip_b;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		write_zsreg(uap_b, R0, RES_H_IUS);
 		zssync(uap_b);
 		if (r3 & CHBEXT)
 			pmz_status_handle(uap_b);
 		if (r3 & CHBRxIP)
+<<<<<<< HEAD
 			tty = pmz_receive_chars(uap_b);
+=======
+			push = pmz_receive_chars(uap_b);
+>>>>>>> refs/remotes/origin/master
 		if (r3 & CHBTxIP)
 			pmz_transmit_chars(uap_b);
 		rc = IRQ_HANDLED;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
  skip_b:
@@ -585,6 +677,14 @@ static irqreturn_t pmz_interrupt(int irq, void *dev_id)
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ skip_b:
+	spin_unlock(&uap_b->port.lock);
+	if (push)
+		tty_flip_buffer_push(&uap->port.state->port);
+
+ out:
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -610,6 +710,7 @@ static inline u8 pmz_peek_status(struct uart_pmac_port *uap)
 static unsigned int pmz_tx_empty(struct uart_port *port)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct uart_pmac_port *uap = to_pmz(port);
 	unsigned char status;
 
@@ -620,6 +721,10 @@ static unsigned int pmz_tx_empty(struct uart_port *port)
 	unsigned char status;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned char status;
+
+>>>>>>> refs/remotes/origin/master
 	status = pmz_peek_status(to_pmz(port));
 	if (status & Tx_BUF_EMP)
 		return TIOCSER_TEMT;
@@ -642,11 +747,15 @@ static void pmz_set_mctrl(struct uart_port *port, unsigned int mctrl)
 		return;
 	/* We get called during boot with a port not up yet */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ZS_IS_ASLEEP(uap) ||
 	    !(ZS_IS_OPEN(uap) || ZS_IS_CONS(uap)))
 =======
 	if (!(ZS_IS_OPEN(uap) || ZS_IS_CONS(uap)))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(ZS_IS_OPEN(uap) || ZS_IS_CONS(uap)))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	set_bits = clear_bits = 0;
@@ -666,11 +775,15 @@ static void pmz_set_mctrl(struct uart_port *port, unsigned int mctrl)
 	uap->curregs[R5] |= set_bits;
 	uap->curregs[R5] &= ~clear_bits;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ZS_IS_ASLEEP(uap))
 		return;
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	write_zsreg(uap, R5, uap->curregs[R5]);
 	pmz_debug("pmz_set_mctrl: set bits: %x, clear bits: %x -> %x\n",
 		  set_bits, clear_bits, uap->curregs[R5]);
@@ -689,11 +802,14 @@ static unsigned int pmz_get_mctrl(struct uart_port *port)
 	unsigned int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ZS_IS_ASLEEP(uap) || uap->node == NULL)
 		return 0;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	status = read_zsreg(uap, R0);
 
 	ret = 0;
@@ -732,11 +848,14 @@ static void pmz_start_tx(struct uart_port *port)
 	uap->flags &= ~PMACZILOG_FLAG_TX_STOPPED;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ZS_IS_ASLEEP(uap) || uap->node == NULL)
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	status = read_zsreg(uap, R0);
 
 	/* TX busy?  Just wait for the TX done interrupt.  */
@@ -776,11 +895,14 @@ static void pmz_stop_rx(struct uart_port *port)
 	struct uart_pmac_port *uap = to_pmz(port);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ZS_IS_ASLEEP(uap) || uap->node == NULL)
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pmz_debug("pmz: stop_rx()()\n");
 
 	/* Disable all RX interrupts.  */
@@ -800,20 +922,27 @@ static void pmz_enable_ms(struct uart_port *port)
 	unsigned char new_reg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ZS_IS_IRDA(uap) || uap->node == NULL)
 =======
 	if (ZS_IS_IRDA(uap))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ZS_IS_IRDA(uap))
+>>>>>>> refs/remotes/origin/master
 		return;
 	new_reg = uap->curregs[R15] | (DCDIE | SYNCIE | CTSIE);
 	if (new_reg != uap->curregs[R15]) {
 		uap->curregs[R15] = new_reg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ZS_IS_ASLEEP(uap))
 			return;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* NOTE: Not subject to 'transmitter active' rule. */
 		write_zsreg(uap, R15, uap->curregs[R15]);
 	}
@@ -830,10 +959,13 @@ static void pmz_break_ctl(struct uart_port *port, int break_state)
 	unsigned long flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (uap->node == NULL)
 		return;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	set_bits = clear_bits = 0;
 
 	if (break_state)
@@ -847,6 +979,7 @@ static void pmz_break_ctl(struct uart_port *port, int break_state)
 	if (new_reg != uap->curregs[R5]) {
 		uap->curregs[R5] = new_reg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		/* NOTE: Not subject to 'transmitter active' rule. */
 		if (ZS_IS_ASLEEP(uap)) {
@@ -855,6 +988,8 @@ static void pmz_break_ctl(struct uart_port *port, int break_state)
 		}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		write_zsreg(uap, R5, uap->curregs[R5]);
 	}
 
@@ -1029,6 +1164,7 @@ static int __pmz_startup(struct uart_pmac_port *uap)
 static void pmz_irda_reset(struct uart_pmac_port *uap)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uap->curregs[R5] |= DTR;
 	write_zsreg(uap, R5, uap->curregs[R5]);
 	zssync(uap);
@@ -1038,6 +1174,8 @@ static void pmz_irda_reset(struct uart_pmac_port *uap)
 	zssync(uap);
 	mdelay(10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	spin_lock_irqsave(&uap->port.lock, flags);
@@ -1053,7 +1191,10 @@ static void pmz_irda_reset(struct uart_pmac_port *uap)
 	zssync(uap);
 	spin_unlock_irqrestore(&uap->port.lock, flags);
 	msleep(10);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1069,6 +1210,7 @@ static int pmz_startup(struct uart_port *port)
 	pmz_debug("pmz: startup()\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ZS_IS_ASLEEP(uap))
 		return -EAGAIN;
 	if (uap->node == NULL)
@@ -1078,6 +1220,8 @@ static int pmz_startup(struct uart_port *port)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	uap->flags |= PMACZILOG_FLAG_IS_OPEN;
 
 	/* A console is never powered down. Else, power up and
@@ -1088,6 +1232,7 @@ static int pmz_startup(struct uart_port *port)
 		pwr_delay = __pmz_startup(uap);
 		spin_unlock_irqrestore(&port->lock, flags);
 	}	
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	pmz_get_port_A(uap)->flags |= PMACZILOG_FLAG_IS_IRQ_ON;
@@ -1102,6 +1247,8 @@ static int pmz_startup(struct uart_port *port)
 	mutex_unlock(&pmz_irq_mutex);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	sprintf(uap->irq_name, PMACZILOG_NAME"%d", uap->port.line);
 	if (request_irq(uap->port.irq, pmz_interrupt, IRQF_SHARED,
 			uap->irq_name, uap)) {
@@ -1110,7 +1257,10 @@ static int pmz_startup(struct uart_port *port)
 		return -ENXIO;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Right now, we deal with delay by blocking here, I'll be
 	 * smarter later on
 	 */
@@ -1124,6 +1274,7 @@ static int pmz_startup(struct uart_port *port)
 		pmz_irda_reset(uap);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Enable interrupts emission from the chip */
 	spin_lock_irqsave(&port->lock, flags);
 	uap->curregs[R1] |= INT_ALL_Rx | TxINT_ENAB;
@@ -1135,6 +1286,11 @@ static int pmz_startup(struct uart_port *port)
 	spin_lock_irqsave(&port->lock, flags);
 	pmz_interrupt_control(uap, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Enable interrupt requests for the channel */
+	spin_lock_irqsave(&port->lock, flags);
+	pmz_interrupt_control(uap, 1);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&port->lock, flags);
 
 	pmz_debug("pmz: startup() done.\n");
@@ -1149,6 +1305,7 @@ static void pmz_shutdown(struct uart_port *port)
 
 	pmz_debug("pmz: shutdown()\n");
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (uap->node == NULL)
 		return;
@@ -1193,6 +1350,8 @@ static void pmz_shutdown(struct uart_port *port)
 
 	mutex_unlock(&pmz_irq_mutex);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&port->lock, flags);
 
 	/* Disable interrupt requests for the channel */
@@ -1221,7 +1380,10 @@ static void pmz_shutdown(struct uart_port *port)
 		pmz_set_scc_power(uap, 0);	/* Shut the chip down */
 
 	spin_unlock_irqrestore(&port->lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pmz_debug("pmz: shutdown() done.\n");
 }
@@ -1294,7 +1456,11 @@ static void pmz_convert_to_zs(struct uart_pmac_port *uap, unsigned int cflag,
 		uap->curregs[5] |= Tx8;
 		uap->parity_mask = 0xff;
 		break;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	uap->curregs[4] &= ~(SB_MASK);
 	if (cflag & CSTOPB)
 		uap->curregs[4] |= SB2;
@@ -1471,11 +1637,14 @@ static void __pmz_set_termios(struct uart_port *port, struct ktermios *termios,
 	pmz_debug("pmz: set_termios()\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ZS_IS_ASLEEP(uap))
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memcpy(&uap->termios_cache, termios, sizeof(struct ktermios));
 
 	/* XXX Check which revs of machines actually allow 1 and 4Mb speeds
@@ -1526,16 +1695,21 @@ static void pmz_set_termios(struct uart_port *port, struct ktermios *termios,
 
 	/* Disable IRQs on the port */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uap->curregs[R1] &= ~(EXT_INT_ENAB | TxINT_ENAB | RxINT_MASK);
 	write_zsreg(uap, R1, uap->curregs[R1]);
 =======
 	pmz_interrupt_control(uap, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pmz_interrupt_control(uap, 0);
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup new port configuration */
 	__pmz_set_termios(port, termios, old);
 
 	/* Re-enable IRQs on the port */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (ZS_IS_OPEN(uap)) {
 		uap->curregs[R1] |= INT_ALL_Rx | TxINT_ENAB;
@@ -1548,6 +1722,11 @@ static void pmz_set_termios(struct uart_port *port, struct ktermios *termios,
 		pmz_interrupt_control(uap, 1);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ZS_IS_OPEN(uap))
+		pmz_interrupt_control(uap, 1);
+
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&port->lock, flags);
 }
 
@@ -1755,10 +1934,14 @@ no_dma:
 	 * here due to early probing so we need the fixup too.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (uap->port.irq == NO_IRQ &&
 =======
 	if (uap->port.irq == 0 &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (uap->port.irq == 0 &&
+>>>>>>> refs/remotes/origin/master
 	    np->parent && np->parent->parent &&
 	    of_device_is_compatible(np->parent->parent, "gatwick")) {
 		/* IRQs on gatwick are offset by 64 */
@@ -1798,14 +1981,19 @@ static void pmz_dispose_port(struct uart_pmac_port *uap)
 static int pmz_attach(struct macio_dev *mdev, const struct of_device_id *match)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct uart_pmac_port *uap;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct uart_pmac_port *uap;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	
 	/* Iterate the pmz_ports array to find a matching entry
 	 */
 	for (i = 0; i < MAX_ZS_PORTS; i++)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (pmz_ports[i].node == mdev->ofdev.dev.of_node) {
 			struct uart_pmac_port *uap = &pmz_ports[i];
@@ -1822,6 +2010,8 @@ static int pmz_attach(struct macio_dev *mdev, const struct of_device_id *match)
 		}
 	return -ENODEV;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (pmz_ports[i].node == mdev->ofdev.dev.of_node)
 			break;
 	if (i >= MAX_ZS_PORTS)
@@ -1844,7 +2034,10 @@ static int pmz_attach(struct macio_dev *mdev, const struct of_device_id *match)
 		uap->flags |= PMACZILOG_FLAG_RSRC_REQUESTED;
 
 	return uart_add_one_port(&pmz_uart_reg, &uap->port);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1859,10 +2052,15 @@ static int pmz_detach(struct macio_dev *mdev)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	uart_remove_one_port(&pmz_uart_reg, &uap->port);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uart_remove_one_port(&pmz_uart_reg, &uap->port);
+
+>>>>>>> refs/remotes/origin/master
 	if (uap->flags & PMACZILOG_FLAG_RSRC_REQUESTED) {
 		macio_release_resources(uap->dev);
 		uap->flags &= ~PMACZILOG_FLAG_RSRC_REQUESTED;
@@ -1870,9 +2068,13 @@ static int pmz_detach(struct macio_dev *mdev)
 	dev_set_drvdata(&mdev->ofdev.dev, NULL);
 	uap->dev = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	uap->port.dev = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uap->port.dev = NULL;
+>>>>>>> refs/remotes/origin/master
 	
 	return 0;
 }
@@ -1882,16 +2084,20 @@ static int pmz_suspend(struct macio_dev *mdev, pm_message_t pm_state)
 {
 	struct uart_pmac_port *uap = dev_get_drvdata(&mdev->ofdev.dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct uart_state *state;
 	unsigned long flags;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (uap == NULL) {
 		printk("HRM... pmz_suspend with NULL uap\n");
 		return 0;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (pm_state.event == mdev->ofdev.dev.power.power_state.event)
 		return 0;
@@ -1941,6 +2147,9 @@ static int pmz_suspend(struct macio_dev *mdev, pm_message_t pm_state)
 =======
 	uart_suspend_port(&pmz_uart_reg, &uap->port);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uart_suspend_port(&pmz_uart_reg, &uap->port);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1950,15 +2159,19 @@ static int pmz_resume(struct macio_dev *mdev)
 {
 	struct uart_pmac_port *uap = dev_get_drvdata(&mdev->ofdev.dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct uart_state *state;
 	unsigned long flags;
 	int pwr_delay = 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (uap == NULL)
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (mdev->ofdev.dev.power.power_state.event == PM_EVENT_ON)
 		return 0;
@@ -2017,12 +2230,16 @@ static int pmz_resume(struct macio_dev *mdev)
 =======
 	uart_resume_port(&pmz_uart_reg, &uap->port);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uart_resume_port(&pmz_uart_reg, &uap->port);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 /*
  * Probe all ports in the system and build the ports array, we register
+<<<<<<< HEAD
 <<<<<<< HEAD
  * with the serial layer at this point, the macio-type probing is only
  * used later to "attach" to the sysfs tree so we get power management
@@ -2032,6 +2249,11 @@ static int pmz_resume(struct macio_dev *mdev)
  * allows the tty to attach properly. This is later than it used to be
  * but the tty layer really wants it that way.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * with the serial layer later, so we get a proper struct device which
+ * allows the tty to attach properly. This is later than it used to be
+ * but the tty layer really wants it that way.
+>>>>>>> refs/remotes/origin/master
  */
 static int __init pmz_probe(void)
 {
@@ -2068,14 +2290,20 @@ static int __init pmz_probe(void)
 		 * Fill basic fields in the port structures
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pmz_ports[count].mate		= &pmz_ports[count+1];
 		pmz_ports[count+1].mate		= &pmz_ports[count];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (node_b != NULL) {
 			pmz_ports[count].mate		= &pmz_ports[count+1];
 			pmz_ports[count+1].mate		= &pmz_ports[count];
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		pmz_ports[count].flags		= PMACZILOG_FLAG_IS_CHANNEL_A;
 		pmz_ports[count].node		= node_a;
 		pmz_ports[count+1].node		= node_b;
@@ -2114,12 +2342,17 @@ static int __init pmz_init_port(struct uart_pmac_port *uap)
 	int irq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r_ports = platform_get_resource(uap->node, IORESOURCE_MEM, 0);
 	irq = platform_get_irq(uap->node, 0);
 =======
 	r_ports = platform_get_resource(uap->pdev, IORESOURCE_MEM, 0);
 	irq = platform_get_irq(uap->pdev, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	r_ports = platform_get_resource(uap->pdev, IORESOURCE_MEM, 0);
+	irq = platform_get_irq(uap->pdev, 0);
+>>>>>>> refs/remotes/origin/master
 	if (!r_ports || !irq)
 		return -ENODEV;
 
@@ -2149,6 +2382,7 @@ static int __init pmz_probe(void)
 	pmz_ports_count = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pmz_ports[0].mate      = &pmz_ports[1];
 	pmz_ports[0].port.line = 0;
 	pmz_ports[0].flags     = PMACZILOG_FLAG_IS_CHANNEL_A;
@@ -2158,23 +2392,34 @@ static int __init pmz_probe(void)
 	pmz_ports[0].flags     = PMACZILOG_FLAG_IS_CHANNEL_A;
 	pmz_ports[0].pdev      = &scc_a_pdev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pmz_ports[0].port.line = 0;
+	pmz_ports[0].flags     = PMACZILOG_FLAG_IS_CHANNEL_A;
+	pmz_ports[0].pdev      = &scc_a_pdev;
+>>>>>>> refs/remotes/origin/master
 	err = pmz_init_port(&pmz_ports[0]);
 	if (err)
 		return err;
 	pmz_ports_count++;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pmz_ports[1].mate      = &pmz_ports[0];
 	pmz_ports[1].port.line = 1;
 	pmz_ports[1].flags     = 0;
 	pmz_ports[1].node      = &scc_b_pdev;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pmz_ports[0].mate      = &pmz_ports[1];
 	pmz_ports[1].mate      = &pmz_ports[0];
 	pmz_ports[1].port.line = 1;
 	pmz_ports[1].flags     = 0;
 	pmz_ports[1].pdev      = &scc_b_pdev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	err = pmz_init_port(&pmz_ports[1]);
 	if (err)
 		return err;
@@ -2191,6 +2436,7 @@ static void pmz_dispose_port(struct uart_pmac_port *uap)
 static int __init pmz_attach(struct platform_device *pdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 
 	for (i = 0; i < pmz_ports_count; i++)
@@ -2198,6 +2444,8 @@ static int __init pmz_attach(struct platform_device *pdev)
 			return 0;
 	return -ENODEV;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct uart_pmac_port *uap;
 	int i;
 
@@ -2213,13 +2461,19 @@ static int __init pmz_attach(struct platform_device *pdev)
 	platform_set_drvdata(pdev, uap);
 
 	return uart_add_one_port(&pmz_uart_reg, &uap->port);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __exit pmz_detach(struct platform_device *pdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct uart_pmac_port *uap = platform_get_drvdata(pdev);
 
 	if (!uap)
@@ -2227,10 +2481,15 @@ static int __exit pmz_detach(struct platform_device *pdev)
 
 	uart_remove_one_port(&pmz_uart_reg, &uap->port);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 	uap->port.dev = NULL;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uap->port.dev = NULL;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2263,16 +2522,20 @@ static struct console pmz_console = {
 static int __init pmz_register(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i, rc;
 	
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pmz_uart_reg.nr = pmz_ports_count;
 	pmz_uart_reg.cons = PMACZILOG_CONSOLE;
 
 	/*
 	 * Register this driver with the serial core
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	rc = uart_register_driver(&pmz_uart_reg);
 	if (rc)
@@ -2301,6 +2564,9 @@ err_out:
 =======
 	return uart_register_driver(&pmz_uart_reg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return uart_register_driver(&pmz_uart_reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_PPC_PMAC
@@ -2400,11 +2666,14 @@ static void __exit exit_pmz(void)
 	for (i = 0; i < pmz_ports_count; i++) {
 		struct uart_pmac_port *uport = &pmz_ports[i];
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (uport->node != NULL) {
 			uart_remove_one_port(&pmz_uart_reg, &uport->port);
 			pmz_dispose_port(uport);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC_PMAC
 		if (uport->node != NULL)
 			pmz_dispose_port(uport);
@@ -2412,7 +2681,10 @@ static void __exit exit_pmz(void)
 		if (uport->pdev != NULL)
 			pmz_dispose_port(uport);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	/* Unregister UART driver */
 	uart_unregister_driver(&pmz_uart_reg);
@@ -2440,10 +2712,13 @@ static void pmz_console_write(struct console *con, const char *s, unsigned int c
 	unsigned long flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ZS_IS_ASLEEP(uap))
 		return;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&uap->port.lock, flags);
 
 	/* Turn of interrupts and enable the transmitter. */
@@ -2489,9 +2764,12 @@ static int __init pmz_console_setup(struct console *co, char *options)
 		co->index = 0;
 	uap = &pmz_ports[co->index];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (uap->node == NULL)
 		return -ENODEV;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC_PMAC
 	if (uap->node == NULL)
 		return -ENODEV;
@@ -2499,7 +2777,10 @@ static int __init pmz_console_setup(struct console *co, char *options)
 	if (uap->pdev == NULL)
 		return -ENODEV;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	port = &uap->port;
 
 	/*
@@ -2531,11 +2812,17 @@ static int __init pmz_console_init(void)
 	pmz_probe();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pmz_ports_count == 0)
 		return -ENODEV;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pmz_ports_count == 0)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	/* TODO: Autoprobe console based on OF */
 	/* pmz_console.index = i; */
 	register_console(&pmz_console);

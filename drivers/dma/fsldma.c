@@ -33,12 +33,20 @@
 #include <linux/delay.h>
 #include <linux/dma-mapping.h>
 #include <linux/dmapool.h>
+<<<<<<< HEAD
 #include <linux/of_platform.h>
 
 <<<<<<< HEAD
 =======
 #include "dmaengine.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+#include <linux/of_platform.h>
+
+#include "dmaengine.h"
+>>>>>>> refs/remotes/origin/master
 #include "fsldma.h"
 
 #define chan_dbg(chan, fmt, arg...)					\
@@ -87,11 +95,14 @@ static void set_desc_cnt(struct fsldma_chan *chan,
 	hw->count = CPU_TO_DMA(chan, count, 32);
 }
 
+<<<<<<< HEAD
 static u32 get_desc_cnt(struct fsldma_chan *chan, struct fsl_desc_sw *desc)
 {
 	return DMA_TO_CPU(chan, desc->hw.count, 32);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void set_desc_src(struct fsldma_chan *chan,
 			 struct fsl_dma_ld_hw *hw, dma_addr_t src)
 {
@@ -102,6 +113,7 @@ static void set_desc_src(struct fsldma_chan *chan,
 	hw->src_addr = CPU_TO_DMA(chan, snoop_bits | src, 64);
 }
 
+<<<<<<< HEAD
 static dma_addr_t get_desc_src(struct fsldma_chan *chan,
 			       struct fsl_desc_sw *desc)
 {
@@ -112,6 +124,8 @@ static dma_addr_t get_desc_src(struct fsldma_chan *chan,
 	return DMA_TO_CPU(chan, desc->hw.src_addr, 64) & ~snoop_bits;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void set_desc_dst(struct fsldma_chan *chan,
 			 struct fsl_dma_ld_hw *hw, dma_addr_t dst)
 {
@@ -122,6 +136,7 @@ static void set_desc_dst(struct fsldma_chan *chan,
 	hw->dst_addr = CPU_TO_DMA(chan, snoop_bits | dst, 64);
 }
 
+<<<<<<< HEAD
 static dma_addr_t get_desc_dst(struct fsldma_chan *chan,
 			       struct fsl_desc_sw *desc)
 {
@@ -132,6 +147,8 @@ static dma_addr_t get_desc_dst(struct fsldma_chan *chan,
 	return DMA_TO_CPU(chan, desc->hw.dst_addr, 64) & ~snoop_bits;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void set_desc_next(struct fsldma_chan *chan,
 			  struct fsl_dma_ld_hw *hw, dma_addr_t next)
 {
@@ -409,7 +426,11 @@ static dma_cookie_t fsl_dma_tx_submit(struct dma_async_tx_descriptor *tx)
 	struct fsl_desc_sw *desc = tx_to_fsl_desc(tx);
 	struct fsl_desc_sw *child;
 	unsigned long flags;
+<<<<<<< HEAD
 	dma_cookie_t cookie;
+=======
+	dma_cookie_t cookie = -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&chan->desc_lock, flags);
 
@@ -417,6 +438,7 @@ static dma_cookie_t fsl_dma_tx_submit(struct dma_async_tx_descriptor *tx)
 	 * assign cookies to all of the software descriptors
 	 * that make up this transaction
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	cookie = chan->common.cookie;
 	list_for_each_entry(child, &desc->tx_list, node) {
@@ -430,11 +452,16 @@ static dma_cookie_t fsl_dma_tx_submit(struct dma_async_tx_descriptor *tx)
 	chan->common.cookie = cookie;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(child, &desc->tx_list, node) {
 		cookie = dma_cookie_assign(&child->async_tx);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* put this transaction onto the tail of the pending queue */
 	append_ld_queue(chan, desc);
 
@@ -777,9 +804,13 @@ fail:
  * @direction: DMA direction
  * @flags: DMAEngine flags
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @context: transaction context (ignored)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @context: transaction context (ignored)
+>>>>>>> refs/remotes/origin/master
  *
  * Prepare a set of descriptors for a DMA_SLAVE transaction. Following the
  * DMA_SLAVE API, this gets the device-specific information from the
@@ -788,11 +819,16 @@ fail:
 static struct dma_async_tx_descriptor *fsl_dma_prep_slave_sg(
 	struct dma_chan *dchan, struct scatterlist *sgl, unsigned int sg_len,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	enum dma_data_direction direction, unsigned long flags)
 =======
 	enum dma_transfer_direction direction, unsigned long flags,
 	void *context)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum dma_transfer_direction direction, unsigned long flags,
+	void *context)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * This operation is not supported on the Freescale DMA controller
@@ -840,10 +876,14 @@ static int fsl_dma_device_control(struct dma_chan *dchan,
 
 		/* we set the controller burst size depending on direction */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (config->direction == DMA_TO_DEVICE)
 =======
 		if (config->direction == DMA_MEM_TO_DEV)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (config->direction == DMA_MEM_TO_DEV)
+>>>>>>> refs/remotes/origin/master
 			size = config->dst_addr_width * config->dst_maxburst;
 		else
 			size = config->src_addr_width * config->src_maxburst;
@@ -880,10 +920,13 @@ static void fsldma_cleanup_descriptor(struct fsldma_chan *chan,
 				      struct fsl_desc_sw *desc)
 {
 	struct dma_async_tx_descriptor *txd = &desc->async_tx;
+<<<<<<< HEAD
 	struct device *dev = chan->common.device->dev;
 	dma_addr_t src = get_desc_src(chan, desc);
 	dma_addr_t dst = get_desc_dst(chan, desc);
 	u32 len = get_desc_cnt(chan, desc);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Run the link descriptor callback function */
 	if (txd->callback) {
@@ -896,6 +939,7 @@ static void fsldma_cleanup_descriptor(struct fsldma_chan *chan,
 	/* Run any dependencies */
 	dma_run_dependencies(txd);
 
+<<<<<<< HEAD
 	/* Unmap the dst buffer, if requested */
 	if (!(txd->flags & DMA_COMPL_SKIP_DEST_UNMAP)) {
 		if (txd->flags & DMA_COMPL_DEST_UNMAP_SINGLE)
@@ -912,6 +956,9 @@ static void fsldma_cleanup_descriptor(struct fsldma_chan *chan,
 			dma_unmap_page(dev, src, len, DMA_TO_DEVICE);
 	}
 
+=======
+	dma_descriptor_unmap(txd);
+>>>>>>> refs/remotes/origin/master
 #ifdef FSL_DMA_LD_DEBUG
 	chan_dbg(chan, "LD %p free\n", desc);
 #endif
@@ -1007,6 +1054,7 @@ static enum dma_status fsl_tx_status(struct dma_chan *dchan,
 					dma_cookie_t cookie,
 					struct dma_tx_state *txstate)
 {
+<<<<<<< HEAD
 	struct fsldma_chan *chan = to_fsl_chan(dchan);
 <<<<<<< HEAD
 	dma_cookie_t last_complete;
@@ -1032,6 +1080,9 @@ static enum dma_status fsl_tx_status(struct dma_chan *dchan,
 
 	return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return dma_cookie_status(dchan, cookie, txstate);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------------------*/
@@ -1059,7 +1110,11 @@ static irqreturn_t fsldma_chan_irq(int irq, void *data)
 	/*
 	 * Programming Error
 	 * The DMA_INTERRUPT async_tx is a NULL transfer, which will
+<<<<<<< HEAD
 	 * triger a PE interrupt.
+=======
+	 * trigger a PE interrupt.
+>>>>>>> refs/remotes/origin/master
 	 */
 	if (stat & FSL_DMA_SR_PE) {
 		chan_dbg(chan, "irq: Programming Error INT\n");
@@ -1123,12 +1178,17 @@ static void dma_do_tasklet(unsigned long data)
 		desc = to_fsl_desc(chan->ld_running.prev);
 		cookie = desc->async_tx.cookie;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		chan->completed_cookie = cookie;
 =======
 		dma_cookie_complete(&desc->async_tx);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dma_cookie_complete(&desc->async_tx);
+
+>>>>>>> refs/remotes/origin/master
 		chan_dbg(chan, "completed_cookie=%d\n", cookie);
 	}
 
@@ -1270,7 +1330,11 @@ out_unwind:
 /* OpenFirmware Subsystem                                                     */
 /*----------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static int __devinit fsl_dma_chan_probe(struct fsldma_device *fdev,
+=======
+static int fsl_dma_chan_probe(struct fsldma_device *fdev,
+>>>>>>> refs/remotes/origin/master
 	struct device_node *node, u32 feature, const char *compatible)
 {
 	struct fsldma_chan *chan;
@@ -1310,7 +1374,13 @@ static int __devinit fsl_dma_chan_probe(struct fsldma_device *fdev,
 	WARN_ON(fdev->feature != chan->feature);
 
 	chan->dev = fdev->dev;
+<<<<<<< HEAD
 	chan->id = ((res.start - 0x100) & 0xfff) >> 7;
+=======
+	chan->id = (res.start & 0xfff) < 0x300 ?
+		   ((res.start - 0x100) & 0xfff) >> 7 :
+		   ((res.start - 0x200) & 0xfff) >> 7;
+>>>>>>> refs/remotes/origin/master
 	if (chan->id >= FSL_DMA_MAX_CHANS_PER_DEVICE) {
 		dev_err(fdev->dev, "too many channels for device\n");
 		err = -EINVAL;
@@ -1344,9 +1414,13 @@ static int __devinit fsl_dma_chan_probe(struct fsldma_device *fdev,
 
 	chan->common.device = &fdev->common;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dma_cookie_init(&chan->common);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_cookie_init(&chan->common);
+>>>>>>> refs/remotes/origin/master
 
 	/* find the IRQ line, if it exists in the device tree */
 	chan->irq = irq_of_parse_and_map(node, 0);
@@ -1376,7 +1450,11 @@ static void fsl_dma_chan_remove(struct fsldma_chan *chan)
 	kfree(chan);
 }
 
+<<<<<<< HEAD
 static int __devinit fsldma_of_probe(struct platform_device *op)
+=======
+static int fsldma_of_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fsldma_device *fdev;
 	struct device_node *child;
@@ -1420,7 +1498,11 @@ static int __devinit fsldma_of_probe(struct platform_device *op)
 
 	dma_set_mask(&(op->dev), DMA_BIT_MASK(36));
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, fdev);
+=======
+	platform_set_drvdata(op, fdev);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We cannot use of_platform_bus_probe() because there is no
@@ -1469,7 +1551,11 @@ static int fsldma_of_remove(struct platform_device *op)
 	struct fsldma_device *fdev;
 	unsigned int i;
 
+<<<<<<< HEAD
 	fdev = dev_get_drvdata(&op->dev);
+=======
+	fdev = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 	dma_async_device_unregister(&fdev->common);
 
 	fsldma_free_irqs(fdev);
@@ -1480,13 +1566,20 @@ static int fsldma_of_remove(struct platform_device *op)
 	}
 
 	iounmap(fdev->regs);
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(fdev);
 
 	return 0;
 }
 
 static const struct of_device_id fsldma_of_ids[] = {
+<<<<<<< HEAD
+=======
+	{ .compatible = "fsl,elo3-dma", },
+>>>>>>> refs/remotes/origin/master
 	{ .compatible = "fsl,eloplus-dma", },
 	{ .compatible = "fsl,elo-dma", },
 	{}
@@ -1508,7 +1601,11 @@ static struct platform_driver fsldma_of_driver = {
 
 static __init int fsldma_init(void)
 {
+<<<<<<< HEAD
 	pr_info("Freescale Elo / Elo Plus DMA driver\n");
+=======
+	pr_info("Freescale Elo series DMA driver\n");
+>>>>>>> refs/remotes/origin/master
 	return platform_driver_register(&fsldma_of_driver);
 }
 
@@ -1520,5 +1617,9 @@ static void __exit fsldma_exit(void)
 subsys_initcall(fsldma_init);
 module_exit(fsldma_exit);
 
+<<<<<<< HEAD
 MODULE_DESCRIPTION("Freescale Elo / Elo Plus DMA driver");
+=======
+MODULE_DESCRIPTION("Freescale Elo series DMA driver");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

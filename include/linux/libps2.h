@@ -36,7 +36,11 @@ struct ps2dev {
 	wait_queue_head_t wait;
 
 	unsigned long flags;
+<<<<<<< HEAD
 	unsigned char cmdbuf[6];
+=======
+	unsigned char cmdbuf[8];
+>>>>>>> refs/remotes/origin/master
 	unsigned char cmdcnt;
 	unsigned char nak;
 };

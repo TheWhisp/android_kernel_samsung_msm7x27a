@@ -4,28 +4,40 @@
  * Interface to Linux SCSI midlayer.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright IBM Corporation 2002, 2010
 =======
  * Copyright IBM Corp. 2002, 2013
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright IBM Corp. 2002, 2013
+>>>>>>> refs/remotes/origin/master
  */
 
 #define KMSG_COMPONENT "zfcp"
 #define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/slab.h>
 #include <scsi/fc/fc_fcp.h>
 #include <scsi/scsi_eh.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include "zfcp_ext.h"
 #include "zfcp_dbf.h"
 #include "zfcp_fc.h"
@@ -37,6 +49,7 @@ MODULE_PARM_DESC(queue_depth, "Default queue depth for new SCSI devices");
 
 static bool enable_dif;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef CONFIG_ZFCP_DIF
 module_param_named(dif, enable_dif, bool, 0600);
@@ -46,6 +59,10 @@ MODULE_PARM_DESC(dif, "Enable DIF/DIX data integrity support");
 module_param_named(dif, enable_dif, bool, 0400);
 MODULE_PARM_DESC(dif, "Enable DIF/DIX data integrity support");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param_named(dif, enable_dif, bool, 0400);
+MODULE_PARM_DESC(dif, "Enable DIF/DIX data integrity support");
+>>>>>>> refs/remotes/origin/master
 
 static bool allow_lun_scan = 1;
 module_param(allow_lun_scan, bool, 0600);
@@ -331,16 +348,22 @@ static struct scsi_host_template zfcp_scsi_host_template = {
 	.can_queue		 = 4096,
 	.this_id		 = -1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.sg_tablesize		 = ZFCP_QDIO_MAX_SBALES_PER_REQ,
 	.max_sectors		 = (ZFCP_QDIO_MAX_SBALES_PER_REQ * 8),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.sg_tablesize		 = (((QDIO_MAX_ELEMENTS_PER_BUFFER - 1)
 				     * ZFCP_QDIO_MAX_SBALS_PER_REQ) - 2),
 				   /* GCD, adjusted later */
 	.max_sectors		 = (((QDIO_MAX_ELEMENTS_PER_BUFFER - 1)
 				     * ZFCP_QDIO_MAX_SBALS_PER_REQ) - 2) * 8,
 				   /* GCD, adjusted later */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.dma_boundary		 = ZFCP_QDIO_SBALE_LEN - 1,
 	.cmd_per_lun		 = 1,
 	.use_clustering		 = 1,
@@ -699,6 +722,7 @@ void zfcp_scsi_set_prot(struct zfcp_adapter *adapter)
 		mask |= SHOST_DIX_TYPE1_PROTECTION;
 		scsi_host_set_guard(shost, SHOST_DIX_GUARD_IP);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		shost->sg_prot_tablesize = ZFCP_QDIO_MAX_SBALES_PER_REQ / 2;
 		shost->sg_tablesize = ZFCP_QDIO_MAX_SBALES_PER_REQ / 2;
 		shost->max_sectors = ZFCP_QDIO_MAX_SBALES_PER_REQ * 8 / 2;
@@ -707,6 +731,11 @@ void zfcp_scsi_set_prot(struct zfcp_adapter *adapter)
 		shost->sg_tablesize = adapter->qdio->max_sbale_per_req / 2;
 		shost->max_sectors = shost->sg_tablesize * 8;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		shost->sg_prot_tablesize = adapter->qdio->max_sbale_per_req / 2;
+		shost->sg_tablesize = adapter->qdio->max_sbale_per_req / 2;
+		shost->max_sectors = shost->sg_tablesize * 8;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	scsi_host_set_prot(shost, mask);

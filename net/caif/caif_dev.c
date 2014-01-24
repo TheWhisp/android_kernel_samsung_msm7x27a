@@ -1,30 +1,45 @@
 /*
  * CAIF Interface registration.
  * Copyright (C) ST-Ericsson AB 2010
+<<<<<<< HEAD
  * Author:	Sjur Brendeland/sjur.brandeland@stericsson.com
  * License terms: GNU General Public License (GPL) version 2
  *
  * Borrowed heavily from file: pn_dev.c. Thanks to
  *  Remi Denis-Courmont <remi.denis-courmont@nokia.com>
+=======
+ * Author:	Sjur Brendeland
+ * License terms: GNU General Public License (GPL) version 2
+ *
+ * Borrowed heavily from file: pn_dev.c. Thanks to Remi Denis-Courmont
+>>>>>>> refs/remotes/origin/master
  *  and Sakari Ailus <sakari.ailus@nokia.com>
  */
 
 #define pr_fmt(fmt) KBUILD_MODNAME ":%s(): " fmt, __func__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/if_arp.h>
 #include <linux/net.h>
 #include <linux/netdevice.h>
 #include <linux/mutex.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 #include <linux/spinlock.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/spinlock.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/netns/generic.h>
 #include <net/net_namespace.h>
 #include <net/pkt_sched.h>
@@ -33,9 +48,13 @@
 #include <net/caif/cfpkt.h>
 #include <net/caif/cfcnfg.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <net/caif/cfserl.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/caif/cfserl.h>
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 
@@ -46,12 +65,18 @@ struct caif_device_entry {
 	struct net_device *netdev;
 	int __percpu *pcpu_refcnt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spinlock_t flow_lock;
 	struct sk_buff *xoff_skb;
 	void (*xoff_skb_dtor)(struct sk_buff *skb);
 	bool xoff;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct caif_device_entry_list {
@@ -67,17 +92,24 @@ struct caif_net {
 
 static int caif_net_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int q_high = 50; /* Percent */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int q_high = 50; /* Percent */
+>>>>>>> refs/remotes/origin/master
 
 struct cfcnfg *get_cfcnfg(struct net *net)
 {
 	struct caif_net *caifn;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(!net);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	caifn = net_generic(net, caif_net_id);
 	return caifn->cfg;
 }
@@ -87,9 +119,12 @@ static struct caif_device_entry_list *caif_device_list(struct net *net)
 {
 	struct caif_net *caifn;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(!net);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	caifn = net_generic(net, caif_net_id);
 	return &caifn->caifdevs;
 }
@@ -97,19 +132,27 @@ static struct caif_device_entry_list *caif_device_list(struct net *net)
 static void caifd_put(struct caif_device_entry *e)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	irqsafe_cpu_dec(*e->pcpu_refcnt);
 =======
 	this_cpu_dec(*e->pcpu_refcnt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	this_cpu_dec(*e->pcpu_refcnt);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void caifd_hold(struct caif_device_entry *e)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	irqsafe_cpu_inc(*e->pcpu_refcnt);
 =======
 	this_cpu_inc(*e->pcpu_refcnt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	this_cpu_inc(*e->pcpu_refcnt);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int caifd_refcnt_read(struct caif_device_entry *e)
@@ -123,6 +166,7 @@ static int caifd_refcnt_read(struct caif_device_entry *e)
 /* Allocate new CAIF device. */
 static struct caif_device_entry *caif_device_alloc(struct net_device *dev)
 {
+<<<<<<< HEAD
 	struct caif_device_entry_list *caifdevs;
 	struct caif_device_entry *caifd;
 
@@ -134,6 +178,10 @@ static struct caif_device_entry *caif_device_alloc(struct net_device *dev)
 		return NULL;
 	caifd->pcpu_refcnt = alloc_percpu(int);
 =======
+=======
+	struct caif_device_entry *caifd;
+
+>>>>>>> refs/remotes/origin/master
 	caifd = kzalloc(sizeof(*caifd), GFP_KERNEL);
 	if (!caifd)
 		return NULL;
@@ -142,7 +190,10 @@ static struct caif_device_entry *caif_device_alloc(struct net_device *dev)
 		kfree(caifd);
 		return NULL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	caifd->netdev = dev;
 	dev_hold(dev);
 	return caifd;
@@ -162,6 +213,7 @@ static struct caif_device_entry *caif_get(struct net_device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int transmit(struct cflayer *layer, struct cfpkt *pkt)
 {
 	int err;
@@ -173,6 +225,9 @@ static int transmit(struct cflayer *layer, struct cfpkt *pkt)
 	skb->dev = caifd->netdev;
 =======
 void caif_flow_cb(struct sk_buff *skb)
+=======
+static void caif_flow_cb(struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct caif_device_entry *caifd;
 	void (*dtor)(struct sk_buff *skb) = NULL;
@@ -182,6 +237,14 @@ void caif_flow_cb(struct sk_buff *skb)
 
 	rcu_read_lock();
 	caifd = caif_get(skb->dev);
+<<<<<<< HEAD
+=======
+
+	WARN_ON(caifd == NULL);
+	if (caifd == NULL)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	caifd_hold(caifd);
 	rcu_read_unlock();
 
@@ -272,7 +335,10 @@ static int transmit(struct cflayer *layer, struct cfpkt *pkt)
 					caifd->layer.id);
 noxoff:
 	rcu_read_unlock_bh();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	err = dev_queue_xmit(skb);
 	if (err > 0)
@@ -317,13 +383,19 @@ static int receive(struct sk_buff *skb, struct net_device *dev,
 	/* Release reference to stack upwards */
 	caifd_put(caifd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (err != 0)
 		err = NET_RX_DROP;
 	return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct packet_type caif_packet_type __read_mostly = {
@@ -355,12 +427,21 @@ static void dev_flowctrl(struct net_device *dev, int on)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void caif_enroll_dev(struct net_device *dev, struct caif_dev_common *caifdev,
 			struct cflayer *link_support, int head_room,
 			struct cflayer **layer, int (**rcv_func)(
 				struct sk_buff *, struct net_device *,
 				struct packet_type *, struct net_device *))
+=======
+void caif_enroll_dev(struct net_device *dev, struct caif_dev_common *caifdev,
+		     struct cflayer *link_support, int head_room,
+		     struct cflayer **layer,
+		     int (**rcv_func)(struct sk_buff *, struct net_device *,
+				      struct packet_type *,
+				      struct net_device *))
+>>>>>>> refs/remotes/origin/master
 {
 	struct caif_device_entry *caifd;
 	enum cfcnfg_phy_preference pref;
@@ -405,6 +486,7 @@ void caif_enroll_dev(struct net_device *dev, struct caif_dev_common *caifdev,
 }
 EXPORT_SYMBOL(caif_enroll_dev);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /* notify Caif of device events */
 static int caif_device_notify(struct notifier_block *me, unsigned long what,
@@ -471,6 +553,15 @@ static int caif_device_notify(struct notifier_block *me, unsigned long what,
 				     caifdev->use_stx);
 		mutex_unlock(&caifdevs->lock);
 =======
+=======
+/* notify Caif of device events */
+static int caif_device_notify(struct notifier_block *me, unsigned long what,
+			      void *ptr)
+{
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+	struct caif_device_entry *caifd = NULL;
+	struct caif_dev_common *caifdev;
+>>>>>>> refs/remotes/origin/master
 	struct cfcnfg *cfg;
 	struct cflayer *layer, *link_support;
 	int head_room = 0;
@@ -503,7 +594,10 @@ static int caif_device_notify(struct notifier_block *me, unsigned long what,
 		caif_enroll_dev(dev, caifdev, link_support, head_room,
 				&layer, NULL);
 		caifdev->flowctrl = dev_flowctrl;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case NETDEV_UP:
@@ -516,9 +610,13 @@ static int caif_device_notify(struct notifier_block *me, unsigned long what,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		caifd->xoff = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		caifd->xoff = 0;
+>>>>>>> refs/remotes/origin/master
 		cfcnfg_set_phy_state(cfg, &caifd->layer, true);
 		rcu_read_unlock();
 
@@ -541,7 +639,10 @@ static int caif_device_notify(struct notifier_block *me, unsigned long what,
 					 _CAIF_CTRLCMD_PHYIF_DOWN_IND,
 					 caifd->layer.id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		spin_lock_bh(&caifd->flow_lock);
 
@@ -560,7 +661,10 @@ static int caif_device_notify(struct notifier_block *me, unsigned long what,
 		caifd->xoff_skb = NULL;
 
 		spin_unlock_bh(&caifd->flow_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		caifd_put(caifd);
 		break;
 
@@ -617,13 +721,17 @@ static int caif_init_net(struct net *net)
 {
 	struct caif_net *caifn = net_generic(net, caif_net_id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&caifn->caifdevs.list);
 	mutex_init(&caifn->caifdevs.lock);
 
 	caifn->cfg = cfcnfg_create();
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!caifn->cfg) {
 		pr_warn("can't create cfcnfg\n");
@@ -633,6 +741,10 @@ static int caif_init_net(struct net *net)
 	if (!caifn->cfg)
 		return -ENOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!caifn->cfg)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -643,14 +755,19 @@ static void caif_exit_net(struct net *net)
 	struct caif_device_entry_list *caifdevs =
 	    caif_device_list(net);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cfcnfg *cfg;
 =======
 	struct cfcnfg *cfg =  get_cfcnfg(net);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct cfcnfg *cfg =  get_cfcnfg(net);
+>>>>>>> refs/remotes/origin/master
 
 	rtnl_lock();
 	mutex_lock(&caifdevs->lock);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	cfg = get_cfcnfg(net);
 	if (cfg == NULL) {
@@ -660,6 +777,8 @@ static void caif_exit_net(struct net *net)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry_safe(caifd, tmp, &caifdevs->list, list) {
 		int i = 0;
 		list_del_rcu(&caifd->list);

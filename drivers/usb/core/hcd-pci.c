@@ -37,6 +37,7 @@
 
 /* PCI-based HCs are common, but plenty of non-PCI HCs are used too */
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM_SLEEP
 
 /* Coordinate handoffs between EHCI and companion controllers
@@ -44,31 +45,61 @@
  */
 
 static DEFINE_MUTEX(companions_mutex);
+=======
+/*
+ * Coordinate handoffs between EHCI and companion controllers
+ * during EHCI probing and system resume.
+ */
+
+static DECLARE_RWSEM(companions_rwsem);
+>>>>>>> refs/remotes/origin/master
 
 #define CL_UHCI		PCI_CLASS_SERIAL_USB_UHCI
 #define CL_OHCI		PCI_CLASS_SERIAL_USB_OHCI
 #define CL_EHCI		PCI_CLASS_SERIAL_USB_EHCI
 
+<<<<<<< HEAD
 enum companion_action {
 	SET_HS_COMPANION, CLEAR_HS_COMPANION, WAIT_FOR_COMPANIONS
 };
 
 static void companion_common(struct pci_dev *pdev, struct usb_hcd *hcd,
 		enum companion_action action)
+=======
+static inline int is_ohci_or_uhci(struct pci_dev *pdev)
+{
+	return pdev->class == CL_OHCI || pdev->class == CL_UHCI;
+}
+
+typedef void (*companion_fn)(struct pci_dev *pdev, struct usb_hcd *hcd,
+		struct pci_dev *companion, struct usb_hcd *companion_hcd);
+
+/* Iterate over PCI devices in the same slot as pdev and call fn for each */
+static void for_each_companion(struct pci_dev *pdev, struct usb_hcd *hcd,
+		companion_fn fn)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev		*companion;
 	struct usb_hcd		*companion_hcd;
 	unsigned int		slot = PCI_SLOT(pdev->devfn);
 
+<<<<<<< HEAD
 	/* Iterate through other PCI functions in the same slot.
 	 * If pdev is OHCI or UHCI then we are looking for EHCI, and
 	 * vice versa.
+=======
+	/*
+	 * Iterate through other PCI functions in the same slot.
+	 * If the function's drvdata isn't set then it isn't bound to
+	 * a USB host controller driver, so skip it.
+>>>>>>> refs/remotes/origin/master
 	 */
 	companion = NULL;
 	for_each_pci_dev(companion) {
 		if (companion->bus != pdev->bus ||
 				PCI_SLOT(companion->devfn) != slot)
 			continue;
+<<<<<<< HEAD
 
 		companion_hcd = pci_get_drvdata(companion);
 		if (!companion_hcd)
@@ -150,6 +181,88 @@ static inline void clear_hs_companion(struct pci_dev *d, struct usb_hcd *h) {}
 static inline void wait_for_companions(struct pci_dev *d, struct usb_hcd *h) {}
 
 #endif /* !CONFIG_PM_SLEEP */
+=======
+		companion_hcd = pci_get_drvdata(companion);
+		if (!companion_hcd)
+			continue;
+		fn(pdev, hcd, companion, companion_hcd);
+	}
+}
+
+/*
+ * We're about to add an EHCI controller, which will unceremoniously grab
+ * all the port connections away from its companions.  To prevent annoying
+ * error messages, lock the companion's root hub and gracefully unconfigure
+ * it beforehand.  Leave it locked until the EHCI controller is all set.
+ */
+static void ehci_pre_add(struct pci_dev *pdev, struct usb_hcd *hcd,
+		struct pci_dev *companion, struct usb_hcd *companion_hcd)
+{
+	struct usb_device *udev;
+
+	if (is_ohci_or_uhci(companion)) {
+		udev = companion_hcd->self.root_hub;
+		usb_lock_device(udev);
+		usb_set_configuration(udev, 0);
+	}
+}
+
+/*
+ * Adding the EHCI controller has either succeeded or failed.  Set the
+ * companion pointer accordingly, and in either case, reconfigure and
+ * unlock the root hub.
+ */
+static void ehci_post_add(struct pci_dev *pdev, struct usb_hcd *hcd,
+		struct pci_dev *companion, struct usb_hcd *companion_hcd)
+{
+	struct usb_device *udev;
+
+	if (is_ohci_or_uhci(companion)) {
+		if (dev_get_drvdata(&pdev->dev)) {	/* Succeeded */
+			dev_dbg(&pdev->dev, "HS companion for %s\n",
+					dev_name(&companion->dev));
+			companion_hcd->self.hs_companion = &hcd->self;
+		}
+		udev = companion_hcd->self.root_hub;
+		usb_set_configuration(udev, 1);
+		usb_unlock_device(udev);
+	}
+}
+
+/*
+ * We just added a non-EHCI controller.  Find the EHCI controller to
+ * which it is a companion, and store a pointer to the bus structure.
+ */
+static void non_ehci_add(struct pci_dev *pdev, struct usb_hcd *hcd,
+		struct pci_dev *companion, struct usb_hcd *companion_hcd)
+{
+	if (is_ohci_or_uhci(pdev) && companion->class == CL_EHCI) {
+		dev_dbg(&pdev->dev, "FS/LS companion for %s\n",
+				dev_name(&companion->dev));
+		hcd->self.hs_companion = &companion_hcd->self;
+	}
+}
+
+/* We are removing an EHCI controller.  Clear the companions' pointers. */
+static void ehci_remove(struct pci_dev *pdev, struct usb_hcd *hcd,
+		struct pci_dev *companion, struct usb_hcd *companion_hcd)
+{
+	if (is_ohci_or_uhci(companion))
+		companion_hcd->self.hs_companion = NULL;
+}
+
+#ifdef	CONFIG_PM
+
+/* An EHCI controller must wait for its companions before resuming. */
+static void ehci_wait_for_companions(struct pci_dev *pdev, struct usb_hcd *hcd,
+		struct pci_dev *companion, struct usb_hcd *companion_hcd)
+{
+	if (is_ohci_or_uhci(companion))
+		device_pm_wait_for_dev(&pdev->dev, &companion->dev);
+}
+
+#endif	/* CONFIG_PM */
+>>>>>>> refs/remotes/origin/master
 
 /*-------------------------------------------------------------------------*/
 
@@ -167,6 +280,11 @@ static inline void wait_for_companions(struct pci_dev *d, struct usb_hcd *h) {}
  * through the hotplug entry's driver_data.
  *
  * Store this function in the HCD's struct pci_driver as probe().
+<<<<<<< HEAD
+=======
+ *
+ * Return: 0 if successful.
+>>>>>>> refs/remotes/origin/master
  */
 int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 {
@@ -174,9 +292,13 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	struct usb_hcd		*hcd;
 	int			retval;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int			hcd_irq = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			hcd_irq = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (usb_disabled())
 		return -ENODEV;
@@ -192,6 +314,7 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	dev->current_state = PCI_D0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* The xHCI driver supports MSI and MSI-X,
 	 * so don't fail if the BIOS doesn't provide a legacy IRQ.
 	 */
@@ -202,6 +325,8 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 		retval = -ENODEV;
 		goto disable_pci;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The xHCI driver has its own irq management
 	 * make sure irq setup is not touched for xhci in generic hcd code
@@ -215,7 +340,10 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 			goto disable_pci;
 		}
 		hcd_irq = dev->irq;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	hcd = usb_create_hcd(driver, &dev->dev, pci_name(dev));
@@ -224,6 +352,12 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 		goto disable_pci;
 	}
 
+<<<<<<< HEAD
+=======
+	hcd->amd_resume_bug = (usb_hcd_amd_remote_wakeup_quirk(dev) &&
+			driver->flags & (HCD_USB11 | HCD_USB3)) ? 1 : 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (driver->flags & HCD_MEMORY) {
 		/* EHCI, OHCI */
 		hcd->rsrc_start = pci_resource_start(dev, 0);
@@ -232,7 +366,11 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 				driver->description)) {
 			dev_dbg(&dev->dev, "controller already in use\n");
 			retval = -EBUSY;
+<<<<<<< HEAD
 			goto clear_companion;
+=======
+			goto put_hcd;
+>>>>>>> refs/remotes/origin/master
 		}
 		hcd->regs = ioremap_nocache(hcd->rsrc_start, hcd->rsrc_len);
 		if (hcd->regs == NULL) {
@@ -259,12 +397,17 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 		if (region == PCI_ROM_RESOURCE) {
 			dev_dbg(&dev->dev, "no i/o regions available\n");
 			retval = -EBUSY;
+<<<<<<< HEAD
 			goto clear_companion;
+=======
+			goto put_hcd;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	pci_set_master(dev);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	retval = usb_add_hcd(hcd, dev->irq, IRQF_DISABLED | IRQF_SHARED);
 =======
@@ -273,6 +416,32 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	if (retval != 0)
 		goto unmap_registers;
 	set_hs_companion(dev, hcd);
+=======
+	/* Note: dev_set_drvdata must be called while holding the rwsem */
+	if (dev->class == CL_EHCI) {
+		down_write(&companions_rwsem);
+		dev_set_drvdata(&dev->dev, hcd);
+		for_each_companion(dev, hcd, ehci_pre_add);
+		retval = usb_add_hcd(hcd, hcd_irq, IRQF_SHARED);
+		if (retval != 0)
+			dev_set_drvdata(&dev->dev, NULL);
+		for_each_companion(dev, hcd, ehci_post_add);
+		up_write(&companions_rwsem);
+	} else {
+		down_read(&companions_rwsem);
+		dev_set_drvdata(&dev->dev, hcd);
+		retval = usb_add_hcd(hcd, hcd_irq, IRQF_SHARED);
+		if (retval != 0)
+			dev_set_drvdata(&dev->dev, NULL);
+		else
+			for_each_companion(dev, hcd, non_ehci_add);
+		up_read(&companions_rwsem);
+	}
+
+	if (retval != 0)
+		goto unmap_registers;
+	device_wakeup_enable(hcd->self.controller);
+>>>>>>> refs/remotes/origin/master
 
 	if (pci_dev_run_wake(dev))
 		pm_runtime_put_noidle(&dev->dev);
@@ -285,8 +454,12 @@ release_mem_region:
 		release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
 	} else
 		release_region(hcd->rsrc_start, hcd->rsrc_len);
+<<<<<<< HEAD
 clear_companion:
 	clear_hs_companion(dev, hcd);
+=======
+put_hcd:
+>>>>>>> refs/remotes/origin/master
 	usb_put_hcd(hcd);
 disable_pci:
 	pci_disable_device(dev);
@@ -329,14 +502,37 @@ void usb_hcd_pci_remove(struct pci_dev *dev)
 	usb_hcd_irq(0, hcd);
 	local_irq_enable();
 
+<<<<<<< HEAD
 	usb_remove_hcd(hcd);
+=======
+	/* Note: dev_set_drvdata must be called while holding the rwsem */
+	if (dev->class == CL_EHCI) {
+		down_write(&companions_rwsem);
+		for_each_companion(dev, hcd, ehci_remove);
+		usb_remove_hcd(hcd);
+		dev_set_drvdata(&dev->dev, NULL);
+		up_write(&companions_rwsem);
+	} else {
+		/* Not EHCI; just clear the companion pointer */
+		down_read(&companions_rwsem);
+		hcd->self.hs_companion = NULL;
+		usb_remove_hcd(hcd);
+		dev_set_drvdata(&dev->dev, NULL);
+		up_read(&companions_rwsem);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (hcd->driver->flags & HCD_MEMORY) {
 		iounmap(hcd->regs);
 		release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
 	} else {
 		release_region(hcd->rsrc_start, hcd->rsrc_len);
 	}
+<<<<<<< HEAD
 	clear_hs_companion(dev, hcd);
+=======
+
+>>>>>>> refs/remotes/origin/master
 	usb_put_hcd(hcd);
 	pci_disable_device(dev);
 }
@@ -405,9 +601,13 @@ static int check_root_hub_suspended(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if defined(CONFIG_PM_SLEEP) || defined(CONFIG_PM_RUNTIME)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_PM_SLEEP) || defined(CONFIG_PM_RUNTIME)
+>>>>>>> refs/remotes/origin/master
 static int suspend_common(struct device *dev, bool do_wakeup)
 {
 	struct pci_dev		*pci_dev = to_pci_dev(dev);
@@ -485,6 +685,7 @@ static int resume_common(struct device *dev, int event)
 	pci_set_master(pci_dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clear_bit(HCD_FLAG_SAW_IRQ, &hcd->flags);
 	if (hcd->shared_hcd)
 		clear_bit(HCD_FLAG_SAW_IRQ, &hcd->shared_hcd->flags);
@@ -494,6 +695,18 @@ static int resume_common(struct device *dev, int event)
 	if (hcd->driver->pci_resume && !HCD_DEAD(hcd)) {
 		if (event != PM_EVENT_AUTO_RESUME)
 			wait_for_companions(pci_dev, hcd);
+=======
+	if (hcd->driver->pci_resume && !HCD_DEAD(hcd)) {
+
+		/*
+		 * Only EHCI controllers have to wait for their companions.
+		 * No locking is needed because PCI controller drivers do not
+		 * get unbound during system resume.
+		 */
+		if (pci_dev->class == CL_EHCI && event != PM_EVENT_AUTO_RESUME)
+			for_each_companion(pci_dev, hcd,
+					ehci_wait_for_companions);
+>>>>>>> refs/remotes/origin/master
 
 		retval = hcd->driver->pci_resume(hcd,
 				event == PM_EVENT_RESTORE);
@@ -507,9 +720,13 @@ static int resume_common(struct device *dev, int event)
 	return retval;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif	/* SLEEP || RUNTIME */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif	/* SLEEP || RUNTIME */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef	CONFIG_PM_SLEEP
 

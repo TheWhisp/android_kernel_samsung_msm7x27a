@@ -32,8 +32,13 @@ config TCM_PSCSI
 source "drivers/target/loopback/Kconfig"
 source "drivers/target/tcm_fc/Kconfig"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 source "drivers/target/iscsi/Kconfig"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+source "drivers/target/iscsi/Kconfig"
+source "drivers/target/sbp/Kconfig"
+>>>>>>> refs/remotes/origin/master
 
 endif

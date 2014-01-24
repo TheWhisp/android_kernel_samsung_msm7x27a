@@ -2,6 +2,7 @@
  * Common header file for Blackfin family of processors.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2004-2009 Analog Devices Inc.
  *
  * Licensed under the GPL-2 or later.
@@ -10,6 +11,11 @@
  *
  * Licensed under the GPL-2 or later.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2004-2009 Analog Devices Inc.
+ *
+ * Licensed under the GPL-2 or later.
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _BLACKFIN_H_
@@ -24,22 +30,31 @@ static inline void SSYNC(void)
 {
 	int _tmp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ANOMALY_05000312)
 =======
 	if (ANOMALY_05000312 || ANOMALY_05000244)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ANOMALY_05000312 || ANOMALY_05000244)
+>>>>>>> refs/remotes/origin/master
 		__asm__ __volatile__(
 			"cli %0;"
 			"nop;"
 			"nop;"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			"nop;"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			"nop;"
+>>>>>>> refs/remotes/origin/master
 			"ssync;"
 			"sti %0;"
 			: "=d" (_tmp)
 		);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	else if (ANOMALY_05000244)
 		__asm__ __volatile__(
@@ -50,6 +65,8 @@ static inline void SSYNC(void)
 		);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	else
 		__asm__ __volatile__("ssync;");
 }
@@ -59,22 +76,31 @@ static inline void CSYNC(void)
 {
 	int _tmp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ANOMALY_05000312)
 =======
 	if (ANOMALY_05000312 || ANOMALY_05000244)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ANOMALY_05000312 || ANOMALY_05000244)
+>>>>>>> refs/remotes/origin/master
 		__asm__ __volatile__(
 			"cli %0;"
 			"nop;"
 			"nop;"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			"nop;"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			"nop;"
+>>>>>>> refs/remotes/origin/master
 			"csync;"
 			"sti %0;"
 			: "=d" (_tmp)
 		);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	else if (ANOMALY_05000244)
 		__asm__ __volatile__(
@@ -85,6 +111,8 @@ static inline void CSYNC(void)
 		);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	else
 		__asm__ __volatile__("csync;");
 }
@@ -101,6 +129,7 @@ static inline void CSYNC(void)
 #define ssync(x) SSYNC(x)
 #define csync(x) CSYNC(x)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if ANOMALY_05000312
 #define SSYNC(scratch) cli scratch; nop; nop; SSYNC; sti scratch;
@@ -127,14 +156,31 @@ do {			\
 	sti scratch;	\
 } while (0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if ANOMALY_05000312 || ANOMALY_05000244
+#define SSYNC(scratch)	\
+	cli scratch;	\
+	nop; nop; nop;	\
+	SSYNC;		\
+	sti scratch;
+
+#define CSYNC(scratch)	\
+	cli scratch;	\
+	nop; nop; nop;	\
+	CSYNC;		\
+	sti scratch;
+>>>>>>> refs/remotes/origin/master
 
 #else
 #define SSYNC(scratch) SSYNC;
 #define CSYNC(scratch) CSYNC;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* ANOMALY_05000312 & ANOMALY_05000244 handling */
 
 #endif /* __ASSEMBLY__ */

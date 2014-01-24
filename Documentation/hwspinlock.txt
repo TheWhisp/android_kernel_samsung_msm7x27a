@@ -228,6 +228,7 @@ int hwspinlock_example2(void)
 4. API for implementors
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   int hwspin_lock_register(struct hwspinlock *hwlock);
    - to be called from the underlying platform-specific implementation, in
      order to register a new hwspinlock instance. Should be called from
@@ -238,6 +239,8 @@ int hwspinlock_example2(void)
    - to be called from the underlying vendor-specific implementation, in order
      to unregister an existing (and unused) hwspinlock instance.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   int hwspin_lock_register(struct hwspinlock_device *bank, struct device *dev,
 		const struct hwspinlock_ops *ops, int base_id, int num_locks);
    - to be called from the underlying platform-specific implementation, in
@@ -250,6 +253,7 @@ int hwspinlock_example2(void)
    - to be called from the underlying vendor-specific implementation, in order
      to unregister an hwspinlock device (which is usually a bank of numerous
      locks).
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
      Should be called from a process context (this function might sleep).
      Returns the address of hwspinlock on success, or NULL on error (e.g.
@@ -282,6 +286,12 @@ The underlying implementation is responsible to assign the dev, ops, id and
 owner members. The lock member, OTOH, is initialized and used by the hwspinlock
 core.
 =======
+=======
+     Should be called from a process context (this function might sleep).
+     Returns the address of hwspinlock on success, or NULL on error (e.g.
+     if the hwspinlock is still in use).
+
+>>>>>>> refs/remotes/origin/master
 5. Important structs
 
 struct hwspinlock_device is a device which usually contains a bank
@@ -322,7 +332,10 @@ struct hwspinlock {
 When registering a bank of locks, the hwspinlock driver only needs to
 set the priv members of the locks. The rest of the members are set and
 initialized by the hwspinlock core itself.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 6. Implementation callbacks
 

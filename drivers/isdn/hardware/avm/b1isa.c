@@ -1,17 +1,23 @@
 /* $Id: b1isa.c,v 1.1.2.3 2004/02/10 01:07:12 keil Exp $
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * Module for AVM B1 ISA-card.
  * 
  * Copyright 1999 by Carsten Paeth <calle@calle.de>
  * 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Module for AVM B1 ISA-card.
  *
  * Copyright 1999 by Carsten Paeth <calle@calle.de>
  *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -89,10 +95,14 @@ static int b1isa_probe(struct pci_dev *pdev)
 	sprintf(card->name, "b1isa-%x", card->port);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (   card->port != 0x150 && card->port != 0x250
 =======
 	if (card->port != 0x150 && card->port != 0x250
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (card->port != 0x150 && card->port != 0x250
+>>>>>>> refs/remotes/origin/master
 	    && card->port != 0x300 && card->port != 0x340) {
 		printk(KERN_WARNING "b1isa: invalid port 0x%x.\n", card->port);
 		retval = -EINVAL;
@@ -149,6 +159,7 @@ static int b1isa_probe(struct pci_dev *pdev)
 	return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  err_free_irq:
 	free_irq(card->irq, card);
  err_release_region:
@@ -157,6 +168,8 @@ static int b1isa_probe(struct pci_dev *pdev)
 	b1_free_card(card);
  err:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 err_free_irq:
 	free_irq(card->irq, card);
 err_release_region:
@@ -164,7 +177,10 @@ err_release_region:
 err_free:
 	b1_free_card(card);
 err:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -229,10 +245,14 @@ static int __init b1isa_init(void)
 		strlcpy(rev, p + 2, 32);
 		if ((p = strchr(rev, '$')) != NULL && p > rev)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		   *(p-1) = 0;
 =======
 			*(p - 1) = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			*(p - 1) = 0;
+>>>>>>> refs/remotes/origin/master
 	} else
 		strcpy(rev, "1.0");
 

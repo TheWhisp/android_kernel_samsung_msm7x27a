@@ -5,6 +5,7 @@ performance expectations by drivers, subsystems and user space applications on
 one of the parameters.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Currently we have {cpu_dma_latency, network_latency, network_throughput} as the
 initial set of pm_qos parameters.
 =======
@@ -13,6 +14,12 @@ Two different PM QoS frameworks are available:
 2. the per-device PM QoS framework provides the API to manage the per-device latency
 constraints.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Two different PM QoS frameworks are available:
+1. PM QoS classes for cpu_dma_latency, network_latency, network_throughput.
+2. the per-device PM QoS framework provides the API to manage the per-device latency
+constraints and PM QoS flags.
+>>>>>>> refs/remotes/origin/master
 
 Each parameters have defined units:
  * latency: usec
@@ -20,17 +27,24 @@ Each parameters have defined units:
  * throughput: kbs (kilo bit / sec)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 The infrastructure exposes multiple misc device nodes one per implemented
 parameter.  The set of parameters implement is defined by pm_qos_power_init()
 and pm_qos_params.h.  This is done because having the available parameters
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 1. PM QoS framework
 
 The infrastructure exposes multiple misc device nodes one per implemented
 parameter.  The set of parameters implement is defined by pm_qos_power_init()
+<<<<<<< HEAD
 and pm_qos.h.  This is done because having the available parameters
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+and pm_qos_params.h.  This is done because having the available parameters
+>>>>>>> refs/remotes/origin/master
 being runtime configurable or changeable from a driver was seen as too easy to
 abuse.
 
@@ -39,6 +53,7 @@ an aggregated target value.  The aggregated target value is updated with
 changes to the request list or elements of the list.  Typically the
 aggregated target value is simply the max or min of the request values held
 in the parameter list elements.
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 From kernel mode the use of this interface is simple:
@@ -49,6 +64,8 @@ target value.  Upon change to this list the new target is recomputed and any
 registered notifiers are called only if the target value is now different.
 Clients of pm_qos need to save the returned handle.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 Note: the aggregated target value is implemented as an atomic variable so that
 reading the aggregated value does not require any locking mechanism.
 
@@ -61,7 +78,10 @@ target value.  Upon change to this list the new target is recomputed and any
 registered notifiers are called only if the target value is now different.
 Clients of pm_qos need to save the returned handle for future use in other
 pm_qos API functions.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 void pm_qos_update_request(handle, new_target_value):
 Will update the list element pointed to by the handle with the new target value
@@ -74,7 +94,10 @@ call the notification tree if the target was changed as a result of removing
 the request.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int pm_qos_request(param_class):
 Returns the aggregated value for a given PM QoS class.
 
@@ -89,7 +112,10 @@ called when the aggregated value for the PM QoS class is changed.
 int pm_qos_remove_notifier(int param_class, notifier):
 Removes the notification callback function for the PM QoS class.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 From user mode:
 Only processes can register a pm_qos request.  To provide for automatic
@@ -112,6 +138,7 @@ node.
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 2. PM QoS per-device latency framework
 
@@ -120,13 +147,30 @@ an aggregated target value.  The aggregated target value is updated with
 changes to the request list or elements of the list.  Typically the
 aggregated target value is simply the max or min of the request values held
 in the parameter list elements.
+=======
+2. PM QoS per-device latency and flags framework
+
+For each device, there are two lists of PM QoS requests. One is maintained
+along with the aggregated target of latency value and the other is for PM QoS
+flags. Values are updated in response to changes of the request list.
+
+Target latency value is simply the minimum of the request values held in the
+parameter list elements.  The PM QoS flags aggregate value is a gather (bitwise
+OR) of all list elements' values. Two device PM QoS flags are defined currently:
+PM_QOS_FLAG_NO_POWER_OFF and PM_QOS_FLAG_REMOTE_WAKEUP.
+
+>>>>>>> refs/remotes/origin/master
 Note: the aggregated target value is implemented as an atomic variable so that
 reading the aggregated value does not require any locking mechanism.
 
 
 From kernel mode the use of this interface is the following:
 
+<<<<<<< HEAD
 int dev_pm_qos_add_request(device, handle, value):
+=======
+int dev_pm_qos_add_request(device, handle, type, value):
+>>>>>>> refs/remotes/origin/master
 Will insert an element into the list for that identified device with the
 target value.  Upon change to this list the new target is recomputed and any
 registered notifiers are called only if the target value is now different.
@@ -146,6 +190,41 @@ the request.
 s32 dev_pm_qos_read_value(device):
 Returns the aggregated value for a given device's constraints list.
 
+<<<<<<< HEAD
+=======
+enum pm_qos_flags_status dev_pm_qos_flags(device, mask)
+Check PM QoS flags of the given device against the given mask of flags.
+The meaning of the return values is as follows:
+	PM_QOS_FLAGS_ALL: All flags from the mask are set
+	PM_QOS_FLAGS_SOME: Some flags from the mask are set
+	PM_QOS_FLAGS_NONE: No flags from the mask are set
+	PM_QOS_FLAGS_UNDEFINED: The device's PM QoS structure has not been
+			initialized or the list of requests is empty.
+
+int dev_pm_qos_add_ancestor_request(dev, handle, value)
+Add a PM QoS request for the first direct ancestor of the given device whose
+power.ignore_children flag is unset.
+
+int dev_pm_qos_expose_latency_limit(device, value)
+Add a request to the device's PM QoS list of latency constraints and create
+a sysfs attribute pm_qos_resume_latency_us under the device's power directory
+allowing user space to manipulate that request.
+
+void dev_pm_qos_hide_latency_limit(device)
+Drop the request added by dev_pm_qos_expose_latency_limit() from the device's
+PM QoS list of latency constraints and remove sysfs attribute pm_qos_resume_latency_us
+from the device's power directory.
+
+int dev_pm_qos_expose_flags(device, value)
+Add a request to the device's PM QoS list of flags and create sysfs attributes
+pm_qos_no_power_off and pm_qos_remote_wakeup under the device's power directory
+allowing user space to change these flags' value.
+
+void dev_pm_qos_hide_flags(device)
+Drop the request added by dev_pm_qos_expose_flags() from the device's PM QoS list
+of flags and remove sysfs attributes pm_qos_no_power_off and pm_qos_remote_wakeup
+under the device's power directory.
+>>>>>>> refs/remotes/origin/master
 
 Notification mechanisms:
 The per-device PM QoS framework has 2 different and distinct notification trees:
@@ -172,5 +251,8 @@ of the framework.
 From user mode:
 No API for user space access to the per-device latency constraints is provided
 yet - still under discussion.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 

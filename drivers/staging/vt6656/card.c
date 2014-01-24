@@ -28,9 +28,15 @@
  *      CARDbIsOFDMinBasicRate - Check if any OFDM rate is in BasicRateSet
  *      CARDvSetLoopbackMode - Set Loopback mode
  *      CARDbSoftwareReset - Sortware reset NIC
+<<<<<<< HEAD
  *      CARDqGetTSFOffset - Caculate TSFOffset
  *      CARDbGetCurrentTSF - Read Current NIC TSF counter
  *      CARDqGetNextTBTT - Caculate Next Beacon TSF counter
+=======
+ *      CARDqGetTSFOffset - Calculate TSFOffset
+ *      CARDbGetCurrentTSF - Read Current NIC TSF counter
+ *      CARDqGetNextTBTT - Calculate Next Beacon TSF counter
+>>>>>>> refs/remotes/origin/master
  *      CARDvSetFirstNextTBTT - Set NIC Beacon time
  *      CARDvUpdateNextTBTT - Sync. NIC Beacon time
  *      CARDbRadioPowerOff - Turn Off NIC Radio Power
@@ -40,11 +46,19 @@
  *
  * Revision History:
  *      06-10-2003 Bryan YC Fan:  Re-write codes to support VT3253 spec.
+<<<<<<< HEAD
  *      08-26-2003 Kyle Hsu:      Modify the defination type of dwIoBase.
+=======
+ *      08-26-2003 Kyle Hsu:      Modify the definition type of dwIoBase.
+>>>>>>> refs/remotes/origin/master
  *      09-01-2003 Bryan YC Fan:  Add vUpdateIFS().
  *
  */
 
+<<<<<<< HEAD
+=======
+#include "device.h"
+>>>>>>> refs/remotes/origin/master
 #include "tmacro.h"
 #include "card.h"
 #include "baseband.h"
@@ -59,6 +73,7 @@
 #include "rndis.h"
 #include "control.h"
 
+<<<<<<< HEAD
 /*---------------------  Static Definitions -------------------------*/
 
 //static int          msglevel                =MSG_LEVEL_DEBUG;
@@ -82,12 +97,24 @@ const WORD cwRXBCNTSFOff[MAX_RATE] =
 /*---------------------  Export Variables  --------------------------*/
 
 /*---------------------  Export Functions  --------------------------*/
+=======
+//static int          msglevel                =MSG_LEVEL_DEBUG;
+static int          msglevel                =MSG_LEVEL_INFO;
+
+//const u16 cwRXBCNTSFOff[MAX_RATE] =
+//{17, 34, 96, 192, 34, 23, 17, 11, 8, 5, 4, 3};
+
+static const u16 cwRXBCNTSFOff[MAX_RATE] =
+{192, 96, 34, 17, 34, 23, 17, 11, 8, 5, 4, 3};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Description: Set NIC media channel
  *
  * Parameters:
  *  In:
  *      pDevice             - The adapter to be set
+<<<<<<< HEAD
  *      uConnectionChannel  - Channel to be set
  *  Out:
  *      none
@@ -151,6 +178,50 @@ PSDevice            pDevice = (PSDevice) pDeviceHandler;
     return(bResult);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *      connection_channel  - Channel to be set
+ *  Out:
+ *      none
+ */
+void CARDbSetMediaChannel(struct vnt_private *priv, u32 connection_channel)
+{
+
+	if (priv->byBBType == BB_TYPE_11A) {
+		if ((connection_channel < (CB_MAX_CHANNEL_24G + 1)) ||
+					(connection_channel > CB_MAX_CHANNEL))
+			connection_channel = (CB_MAX_CHANNEL_24G + 1);
+	} else {
+		if ((connection_channel > CB_MAX_CHANNEL_24G) ||
+						(connection_channel == 0))
+			connection_channel = 1;
+	}
+
+	/* clear NAV */
+	MACvRegBitsOn(priv, MAC_REG_MACCR, MACCR_CLRNAV);
+
+	/* Set Channel[7] = 0 to tell H/W channel is changing now. */
+	MACvRegBitsOff(priv, MAC_REG_CHANNEL, 0xb0);
+
+	CONTROLnsRequestOut(priv, MESSAGE_TYPE_SELECT_CHANNLE,
+					connection_channel, 0, 0, NULL);
+
+	if (priv->byBBType == BB_TYPE_11A) {
+		priv->byCurPwr = 0xff;
+		RFbRawSetPower(priv,
+			priv->abyOFDMAPwrTbl[connection_channel-15], RATE_54M);
+	} else if (priv->byBBType == BB_TYPE_11G) {
+		priv->byCurPwr = 0xff;
+		RFbRawSetPower(priv,
+			priv->abyOFDMPwrTbl[connection_channel-1], RATE_54M);
+	} else {
+		priv->byCurPwr = 0xff;
+		RFbRawSetPower(priv,
+			priv->abyCCKPwrTbl[connection_channel-1], RATE_1M);
+	}
+
+	ControlvWriteByte(priv, MESSAGE_REQUEST_MACREG, MAC_REG_CHANNEL,
+		(u8)(connection_channel|0x80));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -166,6 +237,7 @@ PSDevice            pDevice = (PSDevice) pDeviceHandler;
  * Return Value: response Control frame rate
  *
  */
+<<<<<<< HEAD
 static WORD swGetCCKControlRate(void *pDeviceHandler, WORD wRateIdx)
 {
     PSDevice    pDevice = (PSDevice) pDeviceHandler;
@@ -177,6 +249,19 @@ static WORD swGetCCKControlRate(void *pDeviceHandler, WORD wRateIdx)
         ui --;
     }
     return (WORD)RATE_1M;
+=======
+static u16 swGetCCKControlRate(struct vnt_private *pDevice, u16 wRateIdx)
+{
+	u16 ui = wRateIdx;
+
+	while (ui > RATE_1M) {
+		if (pDevice->wBasicRate & (1 << ui))
+			return ui;
+		ui--;
+	}
+
+	return RATE_1M;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -192,6 +277,7 @@ static WORD swGetCCKControlRate(void *pDeviceHandler, WORD wRateIdx)
  * Return Value: response Control frame rate
  *
  */
+<<<<<<< HEAD
 static WORD swGetOFDMControlRate(void *pDeviceHandler, WORD wRateIdx)
 {
     PSDevice    pDevice = (PSDevice) pDeviceHandler;
@@ -218,6 +304,39 @@ static WORD swGetOFDMControlRate(void *pDeviceHandler, WORD wRateIdx)
 
 /*
  * Description: Caculate TxRate and RsvTime fields for RSPINF in OFDM mode.
+=======
+static u16 swGetOFDMControlRate(struct vnt_private *pDevice, u16 wRateIdx)
+{
+	u16 ui = wRateIdx;
+
+	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"BASIC RATE: %X\n",
+		pDevice->wBasicRate);
+
+	if (!CARDbIsOFDMinBasicRate(pDevice)) {
+		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO
+			"swGetOFDMControlRate:(NO OFDM) %d\n", wRateIdx);
+		if (wRateIdx > RATE_24M)
+			wRateIdx = RATE_24M;
+		return wRateIdx;
+	}
+
+	while (ui > RATE_11M) {
+		if (pDevice->wBasicRate & (1 << ui)) {
+			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO
+				"swGetOFDMControlRate: %d\n", ui);
+			return ui;
+		}
+		ui--;
+	}
+
+	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"swGetOFDMControlRate: 6M\n");
+
+	return RATE_24M;
+}
+
+/*
+ * Description: Calculate TxRate and RsvTime fields for RSPINF in OFDM mode.
+>>>>>>> refs/remotes/origin/master
  *
  * Parameters:
  *  In:
@@ -230,12 +349,21 @@ static WORD swGetOFDMControlRate(void *pDeviceHandler, WORD wRateIdx)
  * Return Value: none
  *
  */
+<<<<<<< HEAD
 void
 CARDvCaculateOFDMRParameter (
       WORD wRate,
       BYTE byBBType,
      PBYTE pbyTxRate,
      PBYTE pbyRsvTime
+=======
+static void
+CARDvCalculateOFDMRParameter (
+      u16 wRate,
+      u8 byBBType,
+     u8 * pbyTxRate,
+     u8 * pbyRsvTime
+>>>>>>> refs/remotes/origin/master
     )
 {
     switch (wRate) {
@@ -342,6 +470,7 @@ CARDvCaculateOFDMRParameter (
  * Return Value: None.
  *
  */
+<<<<<<< HEAD
 void CARDvSetRSPINF(void *pDeviceHandler, BYTE byBBType)
 {
     PSDevice    pDevice = (PSDevice) pDeviceHandler;
@@ -395,58 +524,119 @@ void CARDvSetRSPINF(void *pDeviceHandler, BYTE byBBType)
 
     //RSPINF_a_6
     CARDvCaculateOFDMRParameter (RATE_6M,
+=======
+void CARDvSetRSPINF(struct vnt_private *pDevice, u8 byBBType)
+{
+	struct vnt_phy_field phy[4];
+	u8 abyTxRate[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; /* For OFDM */
+	u8 abyRsvTime[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+	u8 abyData[34];
+	int i;
+
+    //RSPINF_b_1
+	BBvCalculateParameter(pDevice, 14,
+		swGetCCKControlRate(pDevice, RATE_1M), PK_TYPE_11B, &phy[0]);
+
+    ///RSPINF_b_2
+	BBvCalculateParameter(pDevice, 14,
+		swGetCCKControlRate(pDevice, RATE_2M), PK_TYPE_11B, &phy[1]);
+
+    //RSPINF_b_5
+	BBvCalculateParameter(pDevice, 14,
+		swGetCCKControlRate(pDevice, RATE_5M), PK_TYPE_11B, &phy[2]);
+
+    //RSPINF_b_11
+	BBvCalculateParameter(pDevice, 14,
+		swGetCCKControlRate(pDevice, RATE_11M), PK_TYPE_11B, &phy[3]);
+
+    //RSPINF_a_6
+    CARDvCalculateOFDMRParameter (RATE_6M,
+>>>>>>> refs/remotes/origin/master
                                  byBBType,
                                  &abyTxRate[0],
                                  &abyRsvTime[0]);
 
     //RSPINF_a_9
+<<<<<<< HEAD
     CARDvCaculateOFDMRParameter (RATE_9M,
+=======
+    CARDvCalculateOFDMRParameter (RATE_9M,
+>>>>>>> refs/remotes/origin/master
                                  byBBType,
                                  &abyTxRate[1],
                                  &abyRsvTime[1]);
 
     //RSPINF_a_12
+<<<<<<< HEAD
     CARDvCaculateOFDMRParameter (RATE_12M,
+=======
+    CARDvCalculateOFDMRParameter (RATE_12M,
+>>>>>>> refs/remotes/origin/master
                                  byBBType,
                                  &abyTxRate[2],
                                  &abyRsvTime[2]);
 
     //RSPINF_a_18
+<<<<<<< HEAD
     CARDvCaculateOFDMRParameter (RATE_18M,
+=======
+    CARDvCalculateOFDMRParameter (RATE_18M,
+>>>>>>> refs/remotes/origin/master
                                  byBBType,
                                  &abyTxRate[3],
                                  &abyRsvTime[3]);
 
     //RSPINF_a_24
+<<<<<<< HEAD
     CARDvCaculateOFDMRParameter (RATE_24M,
+=======
+    CARDvCalculateOFDMRParameter (RATE_24M,
+>>>>>>> refs/remotes/origin/master
                                  byBBType,
                                  &abyTxRate[4],
                                  &abyRsvTime[4]);
 
     //RSPINF_a_36
+<<<<<<< HEAD
     CARDvCaculateOFDMRParameter (swGetOFDMControlRate(pDevice, RATE_36M),
+=======
+    CARDvCalculateOFDMRParameter (swGetOFDMControlRate(pDevice, RATE_36M),
+>>>>>>> refs/remotes/origin/master
                                  byBBType,
                                  &abyTxRate[5],
                                  &abyRsvTime[5]);
 
     //RSPINF_a_48
+<<<<<<< HEAD
     CARDvCaculateOFDMRParameter (swGetOFDMControlRate(pDevice, RATE_48M),
+=======
+    CARDvCalculateOFDMRParameter (swGetOFDMControlRate(pDevice, RATE_48M),
+>>>>>>> refs/remotes/origin/master
                                  byBBType,
                                  &abyTxRate[6],
                                  &abyRsvTime[6]);
 
     //RSPINF_a_54
+<<<<<<< HEAD
     CARDvCaculateOFDMRParameter (swGetOFDMControlRate(pDevice, RATE_54M),
+=======
+    CARDvCalculateOFDMRParameter (swGetOFDMControlRate(pDevice, RATE_54M),
+>>>>>>> refs/remotes/origin/master
                                  byBBType,
                                  &abyTxRate[7],
                                  &abyRsvTime[7]);
 
     //RSPINF_a_72
+<<<<<<< HEAD
     CARDvCaculateOFDMRParameter (swGetOFDMControlRate(pDevice, RATE_54M),
+=======
+    CARDvCalculateOFDMRParameter (swGetOFDMControlRate(pDevice, RATE_54M),
+>>>>>>> refs/remotes/origin/master
                                  byBBType,
                                  &abyTxRate[8],
                                  &abyRsvTime[8]);
 
+<<<<<<< HEAD
     abyData[0] = (BYTE)(awLen[0]&0xFF);
     abyData[1] = (BYTE)(awLen[0]>>8);
     abyData[2] = abySignal[0];
@@ -466,6 +656,23 @@ void CARDvSetRSPINF(void *pDeviceHandler, BYTE byBBType)
     abyData[13] = (BYTE)(awLen[3]>>8);
     abyData[14] = abySignal[3];
     abyData[15] = abyServ[3];
+=======
+	put_unaligned(phy[0].len, (u16 *)&abyData[0]);
+	abyData[2] = phy[0].signal;
+	abyData[3] = phy[0].service;
+
+	put_unaligned(phy[1].len, (u16 *)&abyData[4]);
+	abyData[6] = phy[1].signal;
+	abyData[7] = phy[1].service;
+
+	put_unaligned(phy[2].len, (u16 *)&abyData[8]);
+	abyData[10] = phy[2].signal;
+	abyData[11] = phy[2].service;
+
+	put_unaligned(phy[3].len, (u16 *)&abyData[12]);
+	abyData[14] = phy[3].signal;
+	abyData[15] = phy[3].service;
+>>>>>>> refs/remotes/origin/master
 
     for (i = 0; i < 9; i++) {
 	abyData[16+i*2] = abyTxRate[i];
@@ -493,12 +700,19 @@ void CARDvSetRSPINF(void *pDeviceHandler, BYTE byBBType)
  * Return Value: None.
  *
  */
+<<<<<<< HEAD
 void vUpdateIFS(void *pDeviceHandler)
 {
     PSDevice    pDevice = (PSDevice) pDeviceHandler;
     //Set SIFS, DIFS, EIFS, SlotTime, CwMin
     BYTE byMaxMin = 0;
     BYTE byData[4];
+=======
+void vUpdateIFS(struct vnt_private *pDevice)
+{
+	u8 byMaxMin = 0;
+	u8 byData[4];
+>>>>>>> refs/remotes/origin/master
 
     if (pDevice->byPacketType==PK_TYPE_11A) {//0000 0000 0000 0000,11a
         pDevice->uSlot = C_SLOT_SHORT;
@@ -515,8 +729,13 @@ void vUpdateIFS(void *pDeviceHandler)
         byMaxMin = 5;
     }
     else {// PK_TYPE_11GA & PK_TYPE_11GB
+<<<<<<< HEAD
         BYTE byRate = 0;
         BOOL bOFDMRate = FALSE;
+=======
+        u8 byRate = 0;
+        bool bOFDMRate = false;
+>>>>>>> refs/remotes/origin/master
 	unsigned int ii = 0;
         PWLAN_IE_SUPP_RATES pItemRates = NULL;
 
@@ -528,6 +747,7 @@ void vUpdateIFS(void *pDeviceHandler)
         }
         pDevice->uDIFS = C_SIFS_BG + 2*pDevice->uSlot;
 
+<<<<<<< HEAD
         pItemRates = (PWLAN_IE_SUPP_RATES)pDevice->sMgmtObj.abyCurrSuppRates;
         for (ii = 0; ii < pItemRates->len; ii++) {
             byRate = (BYTE)(pItemRates->abyRates[ii]&0x7F);
@@ -542,11 +762,32 @@ void vUpdateIFS(void *pDeviceHandler)
                 byRate = (BYTE)(pItemRates->abyRates[ii]&0x7F);
                 if (RATEwGetRateIdx(byRate) > RATE_11M) {
                     bOFDMRate = TRUE;
+=======
+	pItemRates = (PWLAN_IE_SUPP_RATES)pDevice->vnt_mgmt.abyCurrSuppRates;
+        for (ii = 0; ii < pItemRates->len; ii++) {
+            byRate = (u8)(pItemRates->abyRates[ii]&0x7F);
+            if (RATEwGetRateIdx(byRate) > RATE_11M) {
+                bOFDMRate = true;
+                break;
+            }
+        }
+        if (bOFDMRate == false) {
+		pItemRates = (PWLAN_IE_SUPP_RATES)pDevice->vnt_mgmt
+			.abyCurrExtSuppRates;
+            for (ii = 0; ii < pItemRates->len; ii++) {
+                byRate = (u8)(pItemRates->abyRates[ii]&0x7F);
+                if (RATEwGetRateIdx(byRate) > RATE_11M) {
+                    bOFDMRate = true;
+>>>>>>> refs/remotes/origin/master
                     break;
                 }
             }
         }
+<<<<<<< HEAD
         if (bOFDMRate == TRUE) {
+=======
+        if (bOFDMRate == true) {
+>>>>>>> refs/remotes/origin/master
             pDevice->uCwMin = C_CWMIN_A;
             byMaxMin = 4;
         } else {
@@ -558,10 +799,17 @@ void vUpdateIFS(void *pDeviceHandler)
     pDevice->uCwMax = C_CWMAX;
     pDevice->uEIFS = C_EIFS;
 
+<<<<<<< HEAD
     byData[0] = (BYTE)pDevice->uSIFS;
     byData[1] = (BYTE)pDevice->uDIFS;
     byData[2] = (BYTE)pDevice->uEIFS;
     byData[3] = (BYTE)pDevice->uSlot;
+=======
+    byData[0] = (u8)pDevice->uSIFS;
+    byData[1] = (u8)pDevice->uDIFS;
+    byData[2] = (u8)pDevice->uEIFS;
+    byData[3] = (u8)pDevice->uSlot;
+>>>>>>> refs/remotes/origin/master
     CONTROLnsRequestOut(pDevice,
                         MESSAGE_TYPE_WRITE,
                         MAC_REG_SIFS,
@@ -578,6 +826,7 @@ void vUpdateIFS(void *pDeviceHandler)
                         &byMaxMin);
 }
 
+<<<<<<< HEAD
 void CARDvUpdateBasicTopRate(void *pDeviceHandler)
 {
 PSDevice    pDevice = (PSDevice) pDeviceHandler;
@@ -587,6 +836,16 @@ BYTE ii;
      //Determines the highest basic rate.
      for (ii = RATE_54M; ii >= RATE_6M; ii --) {
          if ( (pDevice->wBasicRate) & ((WORD)(1<<ii)) ) {
+=======
+void CARDvUpdateBasicTopRate(struct vnt_private *pDevice)
+{
+	u8 byTopOFDM = RATE_24M, byTopCCK = RATE_1M;
+	u8 ii;
+
+     //Determines the highest basic rate.
+     for (ii = RATE_54M; ii >= RATE_6M; ii --) {
+         if ( (pDevice->wBasicRate) & ((u16)(1<<ii)) ) {
+>>>>>>> refs/remotes/origin/master
              byTopOFDM = ii;
              break;
          }
@@ -594,7 +853,11 @@ BYTE ii;
      pDevice->byTopOFDMBasicRate = byTopOFDM;
 
      for (ii = RATE_11M;; ii --) {
+<<<<<<< HEAD
          if ( (pDevice->wBasicRate) & ((WORD)(1<<ii)) ) {
+=======
+         if ( (pDevice->wBasicRate) & ((u16)(1<<ii)) ) {
+>>>>>>> refs/remotes/origin/master
              byTopCCK = ii;
              break;
          }
@@ -614,6 +877,7 @@ BYTE ii;
  *  Out:
  *      none
  *
+<<<<<<< HEAD
  * Return Value: TRUE if succeeded; FALSE if failed.
  *
  */
@@ -625,11 +889,20 @@ void CARDbAddBasicRate(void *pDeviceHandler, WORD wRateIdx)
 {
 PSDevice    pDevice = (PSDevice) pDeviceHandler;
 WORD wRate = (WORD)(1<<wRateIdx);
+=======
+ * Return Value: true if succeeded; false if failed.
+ *
+ */
+void CARDbAddBasicRate(struct vnt_private *pDevice, u16 wRateIdx)
+{
+	u16 wRate = (1 << wRateIdx);
+>>>>>>> refs/remotes/origin/master
 
     pDevice->wBasicRate |= wRate;
 
     //Determines the highest basic rate.
     CARDvUpdateBasicTopRate(pDevice);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
     return(TRUE);
@@ -655,6 +928,26 @@ BYTE CARDbyGetPktType(void *pDeviceHandler)
 
     if (pDevice->byBBType == BB_TYPE_11A || pDevice->byBBType == BB_TYPE_11B) {
         return (BYTE)pDevice->byBBType;
+=======
+}
+
+int CARDbIsOFDMinBasicRate(struct vnt_private *pDevice)
+{
+	int ii;
+
+    for (ii = RATE_54M; ii >= RATE_6M; ii --) {
+        if ((pDevice->wBasicRate) & ((u16)(1<<ii)))
+            return true;
+    }
+    return false;
+}
+
+u8 CARDbyGetPktType(struct vnt_private *pDevice)
+{
+
+    if (pDevice->byBBType == BB_TYPE_11A || pDevice->byBBType == BB_TYPE_11B) {
+        return (u8)pDevice->byBBType;
+>>>>>>> refs/remotes/origin/master
     }
     else if (CARDbIsOFDMinBasicRate(pDevice)) {
         return PK_TYPE_11GA;
@@ -664,9 +957,14 @@ BYTE CARDbyGetPktType(void *pDeviceHandler)
     }
 }
 
+<<<<<<< HEAD
 
 /*
  * Description: Caculate TSF offset of two TSF input
+=======
+/*
+ * Description: Calculate TSF offset of two TSF input
+>>>>>>> refs/remotes/origin/master
  *              Get TSF Offset from RxBCN's TSF and local TSF
  *
  * Parameters:
@@ -680,6 +978,7 @@ BYTE CARDbyGetPktType(void *pDeviceHandler)
  * Return Value: TSF Offset value
  *
  */
+<<<<<<< HEAD
 QWORD CARDqGetTSFOffset (BYTE byRxRate, QWORD qwTSF1, QWORD qwTSF2)
 {
     QWORD   qwTSFOffset;
@@ -705,6 +1004,21 @@ QWORD CARDqGetTSFOffset (BYTE byRxRate, QWORD qwTSF1, QWORD qwTSF2)
 }
 
 
+=======
+u64 CARDqGetTSFOffset(u8 byRxRate, u64 qwTSF1, u64 qwTSF2)
+{
+	u64 qwTSFOffset = 0;
+	u16 wRxBcnTSFOffst = 0;
+
+	wRxBcnTSFOffst = cwRXBCNTSFOff[byRxRate % MAX_RATE];
+
+	qwTSF2 += (u64)wRxBcnTSFOffst;
+
+	qwTSFOffset = qwTSF1 - qwTSF2;
+
+	return qwTSFOffset;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Description: Sync. TSF counter to BSS
@@ -721,6 +1035,7 @@ QWORD CARDqGetTSFOffset (BYTE byRxRate, QWORD qwTSF1, QWORD qwTSF2)
  * Return Value: none
  *
  */
+<<<<<<< HEAD
 void CARDvAdjustTSF(void *pDeviceHandler, BYTE byRxRate,
 		    QWORD qwBSSTimestamp, QWORD qwLocalTSF)
 {
@@ -732,10 +1047,18 @@ void CARDvAdjustTSF(void *pDeviceHandler, BYTE byRxRate,
 
     HIDWORD(qwTSFOffset) = 0;
     LODWORD(qwTSFOffset) = 0;
+=======
+void CARDvAdjustTSF(struct vnt_private *pDevice, u8 byRxRate,
+		u64 qwBSSTimestamp, u64 qwLocalTSF)
+{
+	u64 qwTSFOffset = 0;
+	u8 pbyData[8];
+>>>>>>> refs/remotes/origin/master
 
     qwTSFOffset = CARDqGetTSFOffset(byRxRate, qwBSSTimestamp, qwLocalTSF);
     // adjust TSF
     // HW's TSF add TSF Offset reg
+<<<<<<< HEAD
     dwTSFOffset1 = LODWORD(qwTSFOffset);
     dwTSFOffset2 = HIDWORD(qwTSFOffset);
 
@@ -748,6 +1071,17 @@ void CARDvAdjustTSF(void *pDeviceHandler, BYTE byRxRate,
     pbyData[5] = (BYTE)(dwTSFOffset2>>8);
     pbyData[6] = (BYTE)(dwTSFOffset2>>16);
     pbyData[7] = (BYTE)(dwTSFOffset2>>24);
+=======
+
+	pbyData[0] = (u8)qwTSFOffset;
+	pbyData[1] = (u8)(qwTSFOffset >> 8);
+	pbyData[2] = (u8)(qwTSFOffset >> 16);
+	pbyData[3] = (u8)(qwTSFOffset >> 24);
+	pbyData[4] = (u8)(qwTSFOffset >> 32);
+	pbyData[5] = (u8)(qwTSFOffset >> 40);
+	pbyData[6] = (u8)(qwTSFOffset >> 48);
+	pbyData[7] = (u8)(qwTSFOffset >> 56);
+>>>>>>> refs/remotes/origin/master
 
     CONTROLnsRequestOut(pDevice,
                         MESSAGE_TYPE_SET_TSFTBTT,
@@ -768,6 +1102,7 @@ void CARDvAdjustTSF(void *pDeviceHandler, BYTE byRxRate,
  *  Out:
  *      qwCurrTSF       - Current TSF counter
  *
+<<<<<<< HEAD
  * Return Value: TRUE if success; otherwise FALSE
  *
  */
@@ -782,6 +1117,19 @@ BOOL CARDbGetCurrentTSF(void *pDeviceHandler, PQWORD pqwCurrTSF)
 }
 
 
+=======
+ * Return Value: true if success; otherwise false
+ *
+ */
+bool CARDbGetCurrentTSF(struct vnt_private *pDevice, u64 *pqwCurrTSF)
+{
+
+	*pqwCurrTSF = pDevice->qwCurrTSF;
+
+	return true;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Description: Clear NIC TSF counter
  *              Clear local TSF counter
@@ -790,6 +1138,7 @@ BOOL CARDbGetCurrentTSF(void *pDeviceHandler, PQWORD pqwCurrTSF)
  *  In:
  *      pDevice         - The adapter to be read
  *
+<<<<<<< HEAD
  * Return Value: TRUE if success; otherwise FALSE
  *
  */
@@ -803,6 +1152,19 @@ BOOL CARDbClearCurrentTSF(void *pDeviceHandler)
     HIDWORD(pDevice->qwCurrTSF) = 0;
 
     return(TRUE);
+=======
+ * Return Value: true if success; otherwise false
+ *
+ */
+bool CARDbClearCurrentTSF(struct vnt_private *pDevice)
+{
+
+	MACvRegBitsOn(pDevice, MAC_REG_TFTCTL, TFTCTL_TSFCNTRST);
+
+	pDevice->qwCurrTSF = 0;
+
+	return true;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -819,6 +1181,7 @@ BOOL CARDbClearCurrentTSF(void *pDeviceHandler)
  * Return Value: TSF value of next Beacon
  *
  */
+<<<<<<< HEAD
 QWORD CARDqGetNextTBTT (QWORD qwTSF, WORD wBeaconInterval)
 {
 
@@ -845,6 +1208,26 @@ QWORD CARDqGetNextTBTT (QWORD qwTSF, WORD wBeaconInterval)
 }
 
 
+=======
+u64 CARDqGetNextTBTT(u64 qwTSF, u16 wBeaconInterval)
+{
+	u32 uBeaconInterval;
+
+	uBeaconInterval = wBeaconInterval * 1024;
+
+	/* Next TBTT =
+	*	((local_current_TSF / beacon_interval) + 1) * beacon_interval
+	*/
+	if (uBeaconInterval) {
+		do_div(qwTSF, uBeaconInterval);
+		qwTSF += 1;
+		qwTSF *= uBeaconInterval;
+	}
+
+	return qwTSF;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Description: Set NIC TSF counter for first Beacon time
  *              Get NEXTTBTT from adjusted TSF and Beacon Interval
@@ -859,6 +1242,7 @@ QWORD CARDqGetNextTBTT (QWORD qwTSF, WORD wBeaconInterval)
  * Return Value: none
  *
  */
+<<<<<<< HEAD
 void CARDvSetFirstNextTBTT(void *pDeviceHandler, WORD wBeaconInterval)
 {
 
@@ -885,6 +1269,26 @@ void CARDvSetFirstNextTBTT(void *pDeviceHandler, WORD wBeaconInterval)
     pbyData[5] = (BYTE)(dwHiTBTT>>8);
     pbyData[6] = (BYTE)(dwHiTBTT>>16);
     pbyData[7] = (BYTE)(dwHiTBTT>>24);
+=======
+void CARDvSetFirstNextTBTT(struct vnt_private *pDevice, u16 wBeaconInterval)
+{
+	u64 qwNextTBTT = 0;
+	u8 pbyData[8];
+
+	CARDbClearCurrentTSF(pDevice);
+    //CARDbGetCurrentTSF(pDevice, &qwNextTBTT); //Get Local TSF counter
+	qwNextTBTT = CARDqGetNextTBTT(qwNextTBTT, wBeaconInterval);
+    // Set NextTBTT
+
+	pbyData[0] = (u8)qwNextTBTT;
+	pbyData[1] = (u8)(qwNextTBTT >> 8);
+	pbyData[2] = (u8)(qwNextTBTT >> 16);
+	pbyData[3] = (u8)(qwNextTBTT >> 24);
+	pbyData[4] = (u8)(qwNextTBTT >> 32);
+	pbyData[5] = (u8)(qwNextTBTT >> 40);
+	pbyData[6] = (u8)(qwNextTBTT >> 48);
+	pbyData[7] = (u8)(qwNextTBTT >> 56);
+>>>>>>> refs/remotes/origin/master
 
     CONTROLnsRequestOut(pDevice,
                         MESSAGE_TYPE_SET_TSFTBTT,
@@ -897,7 +1301,10 @@ void CARDvSetFirstNextTBTT(void *pDeviceHandler, WORD wBeaconInterval)
     return;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Description: Sync NIC TSF counter for Beacon time
  *              Get NEXTTBTT and write to HW
@@ -913,16 +1320,24 @@ void CARDvSetFirstNextTBTT(void *pDeviceHandler, WORD wBeaconInterval)
  * Return Value: none
  *
  */
+<<<<<<< HEAD
 void CARDvUpdateNextTBTT(void *pDeviceHandler, QWORD qwTSF,
 			 WORD wBeaconInterval)
 {
     PSDevice        pDevice = (PSDevice) pDeviceHandler;
     DWORD           dwLoTBTT,dwHiTBTT;
     BYTE            pbyData[8];
+=======
+void CARDvUpdateNextTBTT(struct vnt_private *pDevice, u64 qwTSF,
+			u16 wBeaconInterval)
+{
+	u8 pbyData[8];
+>>>>>>> refs/remotes/origin/master
 
     qwTSF = CARDqGetNextTBTT(qwTSF, wBeaconInterval);
 
     // Set NextTBTT
+<<<<<<< HEAD
     dwLoTBTT = LODWORD(qwTSF);
     dwHiTBTT = HIDWORD(qwTSF);
 
@@ -934,6 +1349,17 @@ void CARDvUpdateNextTBTT(void *pDeviceHandler, QWORD qwTSF,
     pbyData[5] = (BYTE)(dwHiTBTT>>8);
     pbyData[6] = (BYTE)(dwHiTBTT>>16);
     pbyData[7] = (BYTE)(dwHiTBTT>>24);
+=======
+
+	pbyData[0] = (u8)qwTSF;
+	pbyData[1] = (u8)(qwTSF >> 8);
+	pbyData[2] = (u8)(qwTSF >> 16);
+	pbyData[3] = (u8)(qwTSF >> 24);
+	pbyData[4] = (u8)(qwTSF >> 32);
+	pbyData[5] = (u8)(qwTSF >> 40);
+	pbyData[6] = (u8)(qwTSF >> 48);
+	pbyData[7] = (u8)(qwTSF >> 56);
+>>>>>>> refs/remotes/origin/master
 
     CONTROLnsRequestOut(pDevice,
                         MESSAGE_TYPE_SET_TSFTBTT,
@@ -943,8 +1369,13 @@ void CARDvUpdateNextTBTT(void *pDeviceHandler, QWORD qwTSF,
                         pbyData
                         );
 
+<<<<<<< HEAD
 
     DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Card:Update Next TBTT[%8xh:%8xh] \n",(int)HIDWORD(qwTSF), (int)LODWORD(qwTSF));
+=======
+	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO
+		"Card:Update Next TBTT[%8lx]\n", (unsigned long)qwTSF);
+>>>>>>> refs/remotes/origin/master
 
     return;
 }
@@ -958,6 +1389,7 @@ void CARDvUpdateNextTBTT(void *pDeviceHandler, QWORD qwTSF,
  *  Out:
  *      none
  *
+<<<<<<< HEAD
  * Return Value: TRUE if success; otherwise FALSE
  *
  */
@@ -970,6 +1402,19 @@ BOOL bResult = TRUE;
     //    return TRUE;
 
     pDevice->bRadioOff = TRUE;
+=======
+ * Return Value: true if success; otherwise false
+ *
+ */
+int CARDbRadioPowerOff(struct vnt_private *pDevice)
+{
+	int bResult = true;
+
+    //if (pDevice->bRadioOff == true)
+    //    return true;
+
+    pDevice->bRadioOff = true;
+>>>>>>> refs/remotes/origin/master
 
     switch (pDevice->byRFType) {
         case RF_AL2230:
@@ -989,7 +1434,10 @@ BOOL bResult = TRUE;
     return bResult;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Description: Turn on Radio power
  *
@@ -999,6 +1447,7 @@ BOOL bResult = TRUE;
  *  Out:
  *      none
  *
+<<<<<<< HEAD
  * Return Value: TRUE if success; otherwise FALSE
  *
  */
@@ -1016,6 +1465,23 @@ BOOL bResult = TRUE;
     //    return TRUE;
 
     pDevice->bRadioOff = FALSE;
+=======
+ * Return Value: true if success; otherwise false
+ *
+ */
+int CARDbRadioPowerOn(struct vnt_private *pDevice)
+{
+	int bResult = true;
+
+    if ((pDevice->bHWRadioOff == true) || (pDevice->bRadioControlOff == true)) {
+        return false;
+    }
+
+    //if (pDevice->bRadioOff == false)
+    //    return true;
+
+    pDevice->bRadioOff = false;
+>>>>>>> refs/remotes/origin/master
 
     BBvExitDeepSleep(pDevice);
 
@@ -1035,9 +1501,14 @@ BOOL bResult = TRUE;
     return bResult;
 }
 
+<<<<<<< HEAD
 void CARDvSetBSSMode(void *pDeviceHandler)
 {
     PSDevice    pDevice = (PSDevice) pDeviceHandler;
+=======
+void CARDvSetBSSMode(struct vnt_private *pDevice)
+{
+>>>>>>> refs/remotes/origin/master
     // Set BB and packet type at the same time.//{{RobertYu:20050222, AL7230 have two TX PA output, only connet to b/g now
     // so in 11a mode need to set the MAC Reg0x4C to 11b/g mode to turn on PA
     if( (pDevice->byRFType == RF_AIROHA7230 ) && (pDevice->byBBType == BB_TYPE_11A) )
@@ -1059,7 +1530,11 @@ void CARDvSetBSSMode(void *pDeviceHandler)
     }
 
     vUpdateIFS(pDevice);
+<<<<<<< HEAD
     CARDvSetRSPINF(pDevice, (BYTE)pDevice->byBBType);
+=======
+    CARDvSetRSPINF(pDevice, (u8)pDevice->byBBType);
+>>>>>>> refs/remotes/origin/master
 
     if ( pDevice->byBBType == BB_TYPE_11A ) {
         //request by Jack 2005-04-26
@@ -1079,6 +1554,7 @@ void CARDvSetBSSMode(void *pDeviceHandler)
         pDevice->abyBBVGA[3] = 0x0;
     }
 }
+<<<<<<< HEAD
 
 /*
  *
@@ -1131,3 +1607,5 @@ CARDbChannelSwitch (
 
 
 
+=======
+>>>>>>> refs/remotes/origin/master

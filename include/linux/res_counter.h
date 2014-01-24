@@ -13,7 +13,12 @@
  * info about what this counter is.
  */
 
+<<<<<<< HEAD
 #include <linux/cgroup.h>
+=======
+#include <linux/spinlock.h>
+#include <linux/errno.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The core object. the cgroup that wishes to account for some
@@ -53,7 +58,11 @@ struct res_counter {
 	struct res_counter *parent;
 };
 
+<<<<<<< HEAD
 #define RESOURCE_MAX (unsigned long long)LLONG_MAX
+=======
+#define RES_COUNTER_MAX ULLONG_MAX
+>>>>>>> refs/remotes/origin/master
 
 /**
  * Helpers to interact with userspace
@@ -74,6 +83,7 @@ ssize_t res_counter_read(struct res_counter *counter, int member,
 		const char __user *buf, size_t nbytes, loff_t *pos,
 		int (*read_strategy)(unsigned long long val, char *s));
 
+<<<<<<< HEAD
 typedef int (*write_strategy_fn)(const char *buf, unsigned long long *val);
 
 int res_counter_memparse_write_strategy(const char *buf,
@@ -82,6 +92,11 @@ int res_counter_memparse_write_strategy(const char *buf,
 int res_counter_write(struct res_counter *counter, int member,
 		      const char *buffer, write_strategy_fn write_strategy);
 
+=======
+int res_counter_memparse_write_strategy(const char *buf,
+					unsigned long long *res);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * the field descriptors. one for each member of res_counter
  */
@@ -110,11 +125,15 @@ void res_counter_init(struct res_counter *counter, struct res_counter *parent);
  * returns 0 on success and <0 if the counter->usage will exceed the
  * counter->limit _locked call expects the counter->lock to be taken
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * charge_nofail works the same, except that it charges the resource
  * counter unconditionally, and returns < 0 if the after the current
  * charge we are over limit.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
  */
 
@@ -127,6 +146,16 @@ int __must_check res_counter_charge(struct res_counter *counter,
 int __must_check res_counter_charge_nofail(struct res_counter *counter,
 		unsigned long val, struct res_counter **limit_fail_at);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+
+int __must_check res_counter_charge_locked(struct res_counter *counter,
+					   unsigned long val, bool force);
+int __must_check res_counter_charge(struct res_counter *counter,
+		unsigned long val, struct res_counter **limit_fail_at);
+int res_counter_charge_nofail(struct res_counter *counter,
+		unsigned long val, struct res_counter **limit_fail_at);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * uncharge - tell that some portion of the resource is released
@@ -136,11 +165,24 @@ int __must_check res_counter_charge_nofail(struct res_counter *counter,
  *
  * these calls check for usage underflow and show a warning on the console
  * _locked call expects the counter->lock to be taken
+<<<<<<< HEAD
  */
 
 void res_counter_uncharge_locked(struct res_counter *counter, unsigned long val);
 void res_counter_uncharge(struct res_counter *counter, unsigned long val);
 
+=======
+ *
+ * returns the total charges still present in @counter.
+ */
+
+u64 res_counter_uncharge_locked(struct res_counter *counter, unsigned long val);
+u64 res_counter_uncharge(struct res_counter *counter, unsigned long val);
+
+u64 res_counter_uncharge_until(struct res_counter *counter,
+			       struct res_counter *top,
+			       unsigned long val);
+>>>>>>> refs/remotes/origin/master
 /**
  * res_counter_margin - calculate chargeable space of a counter
  * @cnt: the counter
@@ -155,13 +197,19 @@ static inline unsigned long long res_counter_margin(struct res_counter *cnt)
 
 	spin_lock_irqsave(&cnt->lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	margin = cnt->limit - cnt->usage;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cnt->limit > cnt->usage)
 		margin = cnt->limit - cnt->usage;
 	else
 		margin = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&cnt->lock, flags);
 	return margin;
 }

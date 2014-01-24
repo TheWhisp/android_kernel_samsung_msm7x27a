@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,7 +46,10 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 #ifndef PC_INIT_H_
@@ -81,6 +87,7 @@
   0x0061          RBS Answer Delay
   0x0062          RBS Config Bit 3, 4:
 <<<<<<< HEAD
+<<<<<<< HEAD
                              0  0 -> Wink Start
                              1  0 -> Loop Start
                              0  1 -> Ground Start
@@ -91,6 +98,8 @@
                              0  1 -> MF
                              1  1 -> reserved
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   0  0 -> Wink Start
   1  0 -> Loop Start
   0  1 -> Ground Start
@@ -100,7 +109,10 @@
   1  0 -> DTMF
   0  1 -> MF
   1  1 -> reserved
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   0x0063          RBS RX Digit Timeout
   0x0064          RBS Bearer Capability
   0x0065-0x0069   RBS Debug Mask

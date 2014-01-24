@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -26,6 +27,8 @@
  */
 static char diva_xdi_common_code_build[] = "102-52"; 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -49,4 +52,7 @@ static char diva_xdi_common_code_build[] = "102-52";
  *
  */
 static char diva_xdi_common_code_build[] = "102-52";
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

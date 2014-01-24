@@ -25,9 +25,12 @@
 #include <asm/page.h>
 #include <asm/pgalloc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/machdep.h>
 #include <asm/io.h>
 #include <asm/dma.h>
@@ -237,7 +240,11 @@ void __init paging_init(void)
 			printk("Fix your bootloader or use a memfile to make use of this area!\n");
 			m68k_num_memory--;
 			memmove(m68k_memory + i, m68k_memory + i + 1,
+<<<<<<< HEAD
 				(m68k_num_memory - i) * sizeof(struct mem_info));
+=======
+				(m68k_num_memory - i) * sizeof(struct m68k_mem_info));
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 		addr = m68k_memory[i].addr + m68k_memory[i].size;
@@ -308,6 +315,7 @@ void __init paging_init(void)
 	}
 }
 
+<<<<<<< HEAD
 void free_initmem(void)
 {
 	unsigned long addr;
@@ -322,3 +330,5 @@ void free_initmem(void)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master

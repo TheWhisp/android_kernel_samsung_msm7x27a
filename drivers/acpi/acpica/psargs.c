@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -124,7 +128,11 @@ acpi_ps_get_next_package_length(struct acpi_parse_state *parser_state)
  * RETURN:      Pointer to end-of-package +1
  *
  * DESCRIPTION: Get next package length and return a pointer past the end of
+<<<<<<< HEAD
  *              the package.  Consumes the package length field
+=======
+ *              the package. Consumes the package length field
+>>>>>>> refs/remotes/origin/master
  *
  ******************************************************************************/
 
@@ -151,8 +159,13 @@ u8 *acpi_ps_get_next_package_end(struct acpi_parse_state *parser_state)
  * RETURN:      Pointer to the start of the name string (pointer points into
  *              the AML.
  *
+<<<<<<< HEAD
  * DESCRIPTION: Get next raw namestring within the AML stream.  Handles all name
  *              prefix characters.  Set parser state to point past the string.
+=======
+ * DESCRIPTION: Get next raw namestring within the AML stream. Handles all name
+ *              prefix characters. Set parser state to point past the string.
+>>>>>>> refs/remotes/origin/master
  *              (Name is consumed from the AML.)
  *
  ******************************************************************************/
@@ -166,7 +179,11 @@ char *acpi_ps_get_next_namestring(struct acpi_parse_state *parser_state)
 
 	/* Point past any namestring prefix characters (backslash or carat) */
 
+<<<<<<< HEAD
 	while (acpi_ps_is_prefix_char(*end)) {
+=======
+	while (ACPI_IS_ROOT_PREFIX(*end) || ACPI_IS_PARENT_PREFIX(*end)) {
+>>>>>>> refs/remotes/origin/master
 		end++;
 	}
 
@@ -214,7 +231,11 @@ char *acpi_ps_get_next_namestring(struct acpi_parse_state *parser_state)
  * FUNCTION:    acpi_ps_get_next_namepath
  *
  * PARAMETERS:  parser_state        - Current parser state object
+<<<<<<< HEAD
  *              Arg                 - Where the namepath will be stored
+=======
+ *              arg                 - Where the namepath will be stored
+>>>>>>> refs/remotes/origin/master
  *              arg_count           - If the namepath points to a control method
  *                                    the method's argument is returned here.
  *              possible_method_call - Whether the namepath can possibly be the
@@ -224,7 +245,11 @@ char *acpi_ps_get_next_namestring(struct acpi_parse_state *parser_state)
  *
  * DESCRIPTION: Get next name (if method call, return # of required args).
  *              Names are looked up in the internal namespace to determine
+<<<<<<< HEAD
  *              if the name represents a control method.  If a method
+=======
+ *              if the name represents a control method. If a method
+>>>>>>> refs/remotes/origin/master
  *              is found, the number of arguments to the method is returned.
  *              This information is critical for parsing to continue correctly.
  *
@@ -383,7 +408,11 @@ acpi_ps_get_next_namepath(struct acpi_walk_state *walk_state,
  *
  * PARAMETERS:  parser_state        - Current parser state object
  *              arg_type            - The argument type (AML_*_ARG)
+<<<<<<< HEAD
  *              Arg                 - Where the argument is returned
+=======
+ *              arg                 - Where the argument is returned
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -489,6 +518,7 @@ static union acpi_parse_object *acpi_ps_get_next_field(struct acpi_parse_state
 						       *parser_state)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 aml_offset = (u32)
 	    ACPI_PTR_DIFF(parser_state->aml,
 			  parser_state->aml_start);
@@ -518,6 +548,8 @@ static union acpi_parse_object *acpi_ps_get_next_field(struct acpi_parse_state
 		parser_state->aml++;
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 aml_offset;
 	union acpi_parse_object *field;
 	union acpi_parse_object *arg = NULL;
@@ -566,7 +598,10 @@ static union acpi_parse_object *acpi_ps_get_next_field(struct acpi_parse_state
 
 		opcode = AML_INT_NAMEDFIELD_OP;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Allocate a new field op */
@@ -605,6 +640,7 @@ static union acpi_parse_object *acpi_ps_get_next_field(struct acpi_parse_state
 
 	case AML_INT_ACCESSFIELD_OP:
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		/*
 		 * Get access_type and access_attrib and merge into the field Op
@@ -616,6 +652,8 @@ static union acpi_parse_object *acpi_ps_get_next_field(struct acpi_parse_state
 		field->common.value.integer |= ACPI_GET8(parser_state->aml);
 		parser_state->aml++;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case AML_INT_EXTACCESSFIELD_OP:
 
 		/*
@@ -665,6 +703,10 @@ static union acpi_parse_object *acpi_ps_get_next_field(struct acpi_parse_state
 
 				arg = acpi_ps_alloc_op(AML_INT_BYTELIST_OP);
 				if (!arg) {
+<<<<<<< HEAD
+=======
+					acpi_ps_free_op(field);
+>>>>>>> refs/remotes/origin/master
 					return_PTR(NULL);
 				}
 
@@ -675,24 +717,40 @@ static union acpi_parse_object *acpi_ps_get_next_field(struct acpi_parse_state
 
 				switch (opcode) {
 				case AML_BYTE_OP:	/* AML_BYTEDATA_ARG */
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 					buffer_length =
 					    ACPI_GET8(parser_state->aml);
 					parser_state->aml += 1;
 					break;
 
 				case AML_WORD_OP:	/* AML_WORDDATA_ARG */
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 					buffer_length =
 					    ACPI_GET16(parser_state->aml);
 					parser_state->aml += 2;
 					break;
 
 				case AML_DWORD_OP:	/* AML_DWORDATA_ARG */
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 					buffer_length =
 					    ACPI_GET32(parser_state->aml);
 					parser_state->aml += 4;
 					break;
 
 				default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 					buffer_length = 0;
 					break;
 				}
@@ -709,6 +767,10 @@ static union acpi_parse_object *acpi_ps_get_next_field(struct acpi_parse_state
 		} else {
 			arg = acpi_ps_alloc_op(AML_INT_NAMEPATH_OP);
 			if (!arg) {
+<<<<<<< HEAD
+=======
+				acpi_ps_free_op(field);
+>>>>>>> refs/remotes/origin/master
 				return_PTR(NULL);
 			}
 
@@ -721,7 +783,10 @@ static union acpi_parse_object *acpi_ps_get_next_field(struct acpi_parse_state
 		/* Link the buffer/namestring to parent (CONNECTION_OP) */
 
 		acpi_ps_append_arg(field, arg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -844,7 +909,12 @@ acpi_ps_get_next_arg(struct acpi_walk_state *walk_state,
 		subop = acpi_ps_peek_opcode(parser_state);
 		if (subop == 0 ||
 		    acpi_ps_is_leading_char(subop) ||
+<<<<<<< HEAD
 		    acpi_ps_is_prefix_char(subop)) {
+=======
+		    ACPI_IS_ROOT_PREFIX(subop) ||
+		    ACPI_IS_PARENT_PREFIX(subop)) {
+>>>>>>> refs/remotes/origin/master
 
 			/* null_name or name_string */
 

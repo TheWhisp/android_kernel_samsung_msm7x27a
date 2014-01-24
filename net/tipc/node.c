@@ -1,7 +1,11 @@
 /*
  * net/tipc/node.c: TIPC node management routines
  *
+<<<<<<< HEAD
  * Copyright (c) 2000-2006, Ericsson AB
+=======
+ * Copyright (c) 2000-2006, 2012 Ericsson AB
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2005-2006, 2010-2011, Wind River Systems
  * All rights reserved.
  *
@@ -40,10 +44,15 @@
 #include "name_distr.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define NODE_HTABLE_SIZE 512
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NODE_HTABLE_SIZE 512
+
+>>>>>>> refs/remotes/origin/master
 static void node_lost_contact(struct tipc_node *n_ptr);
 static void node_established_contact(struct tipc_node *n_ptr);
 
@@ -55,10 +64,13 @@ static u32 tipc_num_nodes;
 
 static atomic_t tipc_num_links = ATOMIC_INIT(0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 u32 tipc_own_tag;
 
 /**
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * A trivial power-of-two bitmask technique is used for speed, since this
@@ -66,12 +78,17 @@ u32 tipc_own_tag;
  * entries has been chosen so that no hash chain exceeds 8 nodes and will
  * usually be much smaller (typically only a single node).
  */
+<<<<<<< HEAD
 static inline unsigned int tipc_hashfn(u32 addr)
+=======
+static unsigned int tipc_hashfn(u32 addr)
+>>>>>>> refs/remotes/origin/master
 {
 	return addr & (NODE_HTABLE_SIZE - 1);
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
  * tipc_node_find - locate specified node object, if it exists
  */
@@ -85,6 +102,18 @@ struct tipc_node *tipc_node_find(u32 addr)
 		return NULL;
 
 	hlist_for_each_entry(node, pos, &node_htable[tipc_hashfn(addr)], hash) {
+=======
+ * tipc_node_find - locate specified node object, if it exists
+ */
+struct tipc_node *tipc_node_find(u32 addr)
+{
+	struct tipc_node *node;
+
+	if (unlikely(!in_own_cluster_exact(addr)))
+		return NULL;
+
+	hlist_for_each_entry(node, &node_htable[tipc_hashfn(addr)], hash) {
+>>>>>>> refs/remotes/origin/master
 		if (node->addr == addr)
 			return node;
 	}
@@ -100,7 +129,10 @@ struct tipc_node *tipc_node_find(u32 addr)
  * time.  (It would be preferable to switch to holding net_lock in write mode,
  * but this is a non-trivial change.)
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct tipc_node *tipc_node_create(u32 addr)
 {
 	struct tipc_node *n_ptr, *temp_node;
@@ -116,7 +148,11 @@ struct tipc_node *tipc_node_create(u32 addr)
 	n_ptr = kzalloc(sizeof(*n_ptr), GFP_ATOMIC);
 	if (!n_ptr) {
 		spin_unlock_bh(&node_create_lock);
+<<<<<<< HEAD
 		warn("Node creation failed, no memory\n");
+=======
+		pr_warn("Node creation failed, no memory\n");
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
@@ -134,10 +170,15 @@ struct tipc_node *tipc_node_create(u32 addr)
 	}
 	list_add_tail(&n_ptr->list, &temp_node->list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	n_ptr->block_setup = WAIT_PEER_DOWN;
 	n_ptr->signature = INVALID_NODE_SIG;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	n_ptr->block_setup = WAIT_PEER_DOWN;
+	n_ptr->signature = INVALID_NODE_SIG;
+>>>>>>> refs/remotes/origin/master
 
 	tipc_num_nodes++;
 
@@ -154,12 +195,16 @@ void tipc_node_delete(struct tipc_node *n_ptr)
 	tipc_num_nodes--;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tipc_node_link_up - handle addition of link
  *
  * Link becomes active (alone or shared) or standby, depending on its priority.
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 void tipc_node_link_up(struct tipc_node *n_ptr, struct link *l_ptr)
@@ -175,6 +220,16 @@ void tipc_node_link_up(struct tipc_node *n_ptr, struct tipc_link *l_ptr)
 
 	info("Established link <%s> on network plane %c\n",
 	     l_ptr->name, l_ptr->b_ptr->net_plane);
+=======
+void tipc_node_link_up(struct tipc_node *n_ptr, struct tipc_link *l_ptr)
+{
+	struct tipc_link **active = &n_ptr->active_links[0];
+
+	n_ptr->working_links++;
+
+	pr_info("Established link <%s> on network plane %c\n",
+		l_ptr->name, l_ptr->b_ptr->net_plane);
+>>>>>>> refs/remotes/origin/master
 
 	if (!active[0]) {
 		active[0] = active[1] = l_ptr;
@@ -182,7 +237,11 @@ void tipc_node_link_up(struct tipc_node *n_ptr, struct tipc_link *l_ptr)
 		return;
 	}
 	if (l_ptr->priority < active[0]->priority) {
+<<<<<<< HEAD
 		info("New link <%s> becomes standby\n", l_ptr->name);
+=======
+		pr_info("New link <%s> becomes standby\n", l_ptr->name);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	tipc_link_send_duplicate(active[0], l_ptr);
@@ -190,15 +249,22 @@ void tipc_node_link_up(struct tipc_node *n_ptr, struct tipc_link *l_ptr)
 		active[0] = l_ptr;
 		return;
 	}
+<<<<<<< HEAD
 	info("Old link <%s> becomes standby\n", active[0]->name);
 	if (active[1] != active[0])
 		info("Old link <%s> becomes standby\n", active[1]->name);
+=======
+	pr_info("Old link <%s> becomes standby\n", active[0]->name);
+	if (active[1] != active[0])
+		pr_info("Old link <%s> becomes standby\n", active[1]->name);
+>>>>>>> refs/remotes/origin/master
 	active[0] = active[1] = l_ptr;
 }
 
 /**
  * node_select_active_links - select active link
  */
+<<<<<<< HEAD
 
 static void node_select_active_links(struct tipc_node *n_ptr)
 {
@@ -207,6 +273,11 @@ static void node_select_active_links(struct tipc_node *n_ptr)
 =======
 	struct tipc_link **active = &n_ptr->active_links[0];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void node_select_active_links(struct tipc_node *n_ptr)
+{
+	struct tipc_link **active = &n_ptr->active_links[0];
+>>>>>>> refs/remotes/origin/master
 	u32 i;
 	u32 highest_prio = 0;
 
@@ -214,10 +285,14 @@ static void node_select_active_links(struct tipc_node *n_ptr)
 
 	for (i = 0; i < MAX_BEARERS; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct link *l_ptr = n_ptr->links[i];
 =======
 		struct tipc_link *l_ptr = n_ptr->links[i];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct tipc_link *l_ptr = n_ptr->links[i];
+>>>>>>> refs/remotes/origin/master
 
 		if (!l_ptr || !tipc_link_is_up(l_ptr) ||
 		    (l_ptr->priority < highest_prio))
@@ -235,6 +310,7 @@ static void node_select_active_links(struct tipc_node *n_ptr)
 /**
  * tipc_node_link_down - handle loss of link
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 void tipc_node_link_down(struct tipc_node *n_ptr, struct link *l_ptr)
@@ -245,15 +321,28 @@ void tipc_node_link_down(struct tipc_node *n_ptr, struct tipc_link *l_ptr)
 {
 	struct tipc_link **active;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void tipc_node_link_down(struct tipc_node *n_ptr, struct tipc_link *l_ptr)
+{
+	struct tipc_link **active;
+>>>>>>> refs/remotes/origin/master
 
 	n_ptr->working_links--;
 
 	if (!tipc_link_is_active(l_ptr)) {
+<<<<<<< HEAD
 		info("Lost standby link <%s> on network plane %c\n",
 		     l_ptr->name, l_ptr->b_ptr->net_plane);
 		return;
 	}
 	info("Lost link <%s> on network plane %c\n",
+=======
+		pr_info("Lost standby link <%s> on network plane %c\n",
+			l_ptr->name, l_ptr->b_ptr->net_plane);
+		return;
+	}
+	pr_info("Lost link <%s> on network plane %c\n",
+>>>>>>> refs/remotes/origin/master
 		l_ptr->name, l_ptr->b_ptr->net_plane);
 
 	active = &n_ptr->active_links[0];
@@ -285,10 +374,14 @@ int tipc_node_is_up(struct tipc_node *n_ptr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void tipc_node_attach_link(struct tipc_node *n_ptr, struct link *l_ptr)
 =======
 void tipc_node_attach_link(struct tipc_node *n_ptr, struct tipc_link *l_ptr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void tipc_node_attach_link(struct tipc_node *n_ptr, struct tipc_link *l_ptr)
+>>>>>>> refs/remotes/origin/master
 {
 	n_ptr->links[l_ptr->b_ptr->identity] = l_ptr;
 	atomic_inc(&tipc_num_links);
@@ -296,16 +389,21 @@ void tipc_node_attach_link(struct tipc_node *n_ptr, struct tipc_link *l_ptr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void tipc_node_detach_link(struct tipc_node *n_ptr, struct link *l_ptr)
 =======
 void tipc_node_detach_link(struct tipc_node *n_ptr, struct tipc_link *l_ptr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void tipc_node_detach_link(struct tipc_node *n_ptr, struct tipc_link *l_ptr)
+>>>>>>> refs/remotes/origin/master
 {
 	n_ptr->links[l_ptr->b_ptr->identity] = NULL;
 	atomic_dec(&tipc_num_links);
 	n_ptr->link_cnt--;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Routing table management - five cases to handle:
@@ -381,6 +479,17 @@ static void node_cleanup_finished(unsigned long node_addr)
 
 static void node_name_purge_complete(unsigned long node_addr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void node_established_contact(struct tipc_node *n_ptr)
+{
+	tipc_k_signal((Handler)tipc_named_node_up, n_ptr->addr);
+	n_ptr->bclink.oos_state = 0;
+	n_ptr->bclink.acked = tipc_bclink_get_last_sent();
+	tipc_bclink_add_node(n_ptr->addr);
+}
+
+static void node_name_purge_complete(unsigned long node_addr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tipc_node *n_ptr;
 
@@ -389,10 +498,14 @@ static void node_name_purge_complete(unsigned long node_addr)
 	if (n_ptr) {
 		tipc_node_lock(n_ptr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		n_ptr->cleanup_required = 0;
 =======
 		n_ptr->block_setup &= ~WAIT_NAMES_GONE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		n_ptr->block_setup &= ~WAIT_NAMES_GONE;
+>>>>>>> refs/remotes/origin/master
 		tipc_node_unlock(n_ptr);
 	}
 	read_unlock_bh(&tipc_net_lock);
@@ -403,6 +516,7 @@ static void node_lost_contact(struct tipc_node *n_ptr)
 	char addr_string[16];
 	u32 i;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Clean up broadcast reception remains */
 	n_ptr->bclink.gap_after = n_ptr->bclink.gap_to = 0;
@@ -437,6 +551,13 @@ static void node_lost_contact(struct tipc_node *n_ptr)
 	/* Flush broadcast link info associated with lost node */
 
 	if (n_ptr->bclink.supported) {
+=======
+	pr_info("Lost contact with %s\n",
+		tipc_addr_string_fill(addr_string, n_ptr->addr));
+
+	/* Flush broadcast link info associated with lost node */
+	if (n_ptr->bclink.recv_permitted) {
+>>>>>>> refs/remotes/origin/master
 		while (n_ptr->bclink.deferred_head) {
 			struct sk_buff *buf = n_ptr->bclink.deferred_head;
 			n_ptr->bclink.deferred_head = buf->next;
@@ -444,21 +565,35 @@ static void node_lost_contact(struct tipc_node *n_ptr)
 		}
 		n_ptr->bclink.deferred_size = 0;
 
+<<<<<<< HEAD
 		if (n_ptr->bclink.defragm) {
 			kfree_skb(n_ptr->bclink.defragm);
 			n_ptr->bclink.defragm = NULL;
+=======
+		if (n_ptr->bclink.reasm_head) {
+			kfree_skb(n_ptr->bclink.reasm_head);
+			n_ptr->bclink.reasm_head = NULL;
+			n_ptr->bclink.reasm_tail = NULL;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		tipc_bclink_remove_node(n_ptr->addr);
 		tipc_bclink_acknowledge(n_ptr, INVALID_LINK_SEQ);
 
+<<<<<<< HEAD
 		n_ptr->bclink.supported = 0;
+=======
+		n_ptr->bclink.recv_permitted = false;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Abort link changeover */
 	for (i = 0; i < MAX_BEARERS; i++) {
 		struct tipc_link *l_ptr = n_ptr->links[i];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!l_ptr)
 			continue;
 		l_ptr->reset_checkpoint = l_ptr->next_in_no;
@@ -470,6 +605,7 @@ static void node_lost_contact(struct tipc_node *n_ptr)
 	tipc_nodesub_notify(n_ptr);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Prevent re-contact with node until all cleanup is done */
 
 	n_ptr->cleanup_required = 1;
@@ -480,6 +616,11 @@ static void node_lost_contact(struct tipc_node *n_ptr)
 	n_ptr->block_setup = WAIT_PEER_DOWN | WAIT_NAMES_GONE;
 	tipc_k_signal((Handler)node_name_purge_complete, n_ptr->addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Prevent re-contact with node until cleanup is done */
+	n_ptr->block_setup = WAIT_PEER_DOWN | WAIT_NAMES_GONE;
+	tipc_k_signal((Handler)node_name_purge_complete, n_ptr->addr);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct sk_buff *tipc_node_get_nodes(const void *req_tlv_area, int req_tlv_space)
@@ -505,7 +646,10 @@ struct sk_buff *tipc_node_get_nodes(const void *req_tlv_area, int req_tlv_space)
 	}
 
 	/* For now, get space for all other nodes */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	payload_size = TLV_SPACE(sizeof(node_info)) * tipc_num_nodes;
 	if (payload_size > 32768u) {
 		read_unlock_bh(&tipc_net_lock);
@@ -519,7 +663,10 @@ struct sk_buff *tipc_node_get_nodes(const void *req_tlv_area, int req_tlv_space)
 	}
 
 	/* Add TLVs for all nodes in scope */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(n_ptr, &tipc_node_list, list) {
 		if (!tipc_in_scope(domain, n_ptr->addr))
 			continue;
@@ -550,20 +697,28 @@ struct sk_buff *tipc_node_get_links(const void *req_tlv_area, int req_tlv_space)
 						   " (network address)");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (tipc_mode != TIPC_NET_MODE)
 =======
 	if (!tipc_own_addr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!tipc_own_addr)
+>>>>>>> refs/remotes/origin/master
 		return tipc_cfg_reply_none();
 
 	read_lock_bh(&tipc_net_lock);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Get space for all unicast links + multicast link */
 =======
 	/* Get space for all unicast links + broadcast link */
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+	/* Get space for all unicast links + broadcast link */
+>>>>>>> refs/remotes/origin/master
 	payload_size = TLV_SPACE(sizeof(link_info)) *
 		(atomic_read(&tipc_num_links) + 1);
 	if (payload_size > 32768u) {
@@ -578,14 +733,20 @@ struct sk_buff *tipc_node_get_links(const void *req_tlv_area, int req_tlv_space)
 	}
 
 	/* Add TLV for broadcast link */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	link_info.dest = htonl(tipc_cluster_mask(tipc_own_addr));
 	link_info.up = htonl(1);
 	strlcpy(link_info.str, tipc_bclink_name, TIPC_MAX_LINK_NAME);
 	tipc_cfg_append_tlv(buf, TIPC_TLV_LINK_INFO, &link_info, sizeof(link_info));
 
 	/* Add TLVs for any other links in scope */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(n_ptr, &tipc_node_list, list) {
 		u32 i;
 

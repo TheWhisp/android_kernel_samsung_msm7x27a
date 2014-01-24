@@ -50,6 +50,16 @@ Machine check
 		monarchtimeout:
 		Sets the time in us to wait for other CPUs on machine checks. 0
 		to disable.
+<<<<<<< HEAD
+=======
+   mce=bios_cmci_threshold
+		Don't overwrite the bios-set CMCI threshold. This boot option
+		prevents Linux from overwriting the CMCI threshold set by the
+		bios. Without this option, Linux always sets the CMCI
+		threshold to 1. Enabling this may make memory predictive failure
+		analysis less effective if the bios sets thresholds for memory
+		errors since we will not see details for all errors.
+>>>>>>> refs/remotes/origin/master
 
    nomce (for compatibility with i386): same as mce=off
 
@@ -84,6 +94,7 @@ APICs
 		 apicmaintimer. Useful when your PIT timer is totally
 		 broken.
 
+<<<<<<< HEAD
 Early Console
 
    syntax: earlyprintk=vga
@@ -98,6 +109,8 @@ Early Console
    Interaction with the standard serial driver is not very good.
    The VGA output is eventually overwritten by the real console.
 
+=======
+>>>>>>> refs/remotes/origin/master
 Timing
 
   notsc
@@ -105,10 +118,13 @@ Timing
   This can be used to work around timing problems on multiprocessor systems
   with not properly synchronized CPUs.
 
+<<<<<<< HEAD
   report_lost_ticks
   Report when timer interrupts are lost because some code turned off
   interrupts for too long.
 
+=======
+>>>>>>> refs/remotes/origin/master
   nohpet
   Don't use the HPET timer.
 
@@ -187,6 +203,14 @@ ACPI
 
   acpi=noirq	Don't route interrupts
 
+<<<<<<< HEAD
+=======
+  acpi=nocmcff	Disable firmware first mode for corrected errors. This
+		disables parsing the HEST CMC error source to check if
+		firmware has set the FF flag. This may result in
+		duplicate corrected error reports.
+
+>>>>>>> refs/remotes/origin/master
 PCI
 
   pci=off		Don't use PCI

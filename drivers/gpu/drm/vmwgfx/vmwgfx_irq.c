@@ -25,7 +25,11 @@
  *
  **************************************************************************/
 
+<<<<<<< HEAD
 #include "drmP.h"
+=======
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 #include "vmwgfx_drv.h"
 
 #define VMW_FENCE_WRAP (1 << 24)
@@ -34,6 +38,7 @@ irqreturn_t vmw_irq_handler(DRM_IRQ_ARGS)
 {
 	struct drm_device *dev = (struct drm_device *)arg;
 	struct vmw_private *dev_priv = vmw_priv(dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint32_t status;
 
@@ -56,6 +61,8 @@ irqreturn_t vmw_irq_handler(DRM_IRQ_ARGS)
 
 static bool vmw_fifo_idle(struct vmw_private *dev_priv, uint32_t sequence)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	uint32_t status, masked_status;
 
 	spin_lock(&dev_priv->irq_lock);
@@ -83,7 +90,10 @@ static bool vmw_fifo_idle(struct vmw_private *dev_priv, uint32_t sequence)
 }
 
 static bool vmw_fifo_idle(struct vmw_private *dev_priv, uint32_t seqno)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	uint32_t busy;
 
@@ -94,6 +104,7 @@ static bool vmw_fifo_idle(struct vmw_private *dev_priv, uint32_t seqno)
 	return (busy == 0);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void vmw_update_sequence(struct vmw_private *dev_priv,
 			 struct vmw_fifo_state *fifo_state)
@@ -111,6 +122,8 @@ void vmw_update_sequence(struct vmw_private *dev_priv,
 bool vmw_fence_signaled(struct vmw_private *dev_priv,
 			uint32_t sequence)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void vmw_update_seqno(struct vmw_private *dev_priv,
 			 struct vmw_fifo_state *fifo_state)
 {
@@ -126,11 +139,15 @@ void vmw_update_seqno(struct vmw_private *dev_priv,
 
 bool vmw_seqno_passed(struct vmw_private *dev_priv,
 			 uint32_t seqno)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct vmw_fifo_state *fifo_state;
 	bool ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (likely(dev_priv->last_read_sequence - sequence < VMW_FENCE_WRAP))
 		return true;
@@ -151,6 +168,8 @@ bool vmw_seqno_passed(struct vmw_private *dev_priv,
 
 	ret = ((atomic_read(&dev_priv->fence_seq) - sequence)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (likely(dev_priv->last_read_seqno - seqno < VMW_FENCE_WRAP))
 		return true;
 
@@ -169,7 +188,10 @@ bool vmw_seqno_passed(struct vmw_private *dev_priv,
 	 */
 
 	ret = ((atomic_read(&dev_priv->marker_seq) - seqno)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	       > VMW_FENCE_WRAP);
 
 	return ret;
@@ -179,10 +201,14 @@ int vmw_fallback_wait(struct vmw_private *dev_priv,
 		      bool lazy,
 		      bool fifo_idle,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		      uint32_t sequence,
 =======
 		      uint32_t seqno,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      uint32_t seqno,
+>>>>>>> refs/remotes/origin/master
 		      bool interruptible,
 		      unsigned long timeout)
 {
@@ -197,10 +223,14 @@ int vmw_fallback_wait(struct vmw_private *dev_priv,
 
 	wait_condition = (fifo_idle) ? &vmw_fifo_idle :
 <<<<<<< HEAD
+<<<<<<< HEAD
 		&vmw_fence_signaled;
 =======
 		&vmw_seqno_passed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		&vmw_seqno_passed;
+>>>>>>> refs/remotes/origin/master
 
 	/**
 	 * Block command submission while waiting for idle.
@@ -209,10 +239,14 @@ int vmw_fallback_wait(struct vmw_private *dev_priv,
 	if (fifo_idle)
 		down_read(&fifo_state->rwsem);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	signal_seq = atomic_read(&dev_priv->fence_seq);
 =======
 	signal_seq = atomic_read(&dev_priv->marker_seq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	signal_seq = atomic_read(&dev_priv->marker_seq);
+>>>>>>> refs/remotes/origin/master
 	ret = 0;
 
 	for (;;) {
@@ -220,10 +254,14 @@ int vmw_fallback_wait(struct vmw_private *dev_priv,
 				(interruptible) ?
 				TASK_INTERRUPTIBLE : TASK_UNINTERRUPTIBLE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (wait_condition(dev_priv, sequence))
 =======
 		if (wait_condition(dev_priv, seqno))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (wait_condition(dev_priv, seqno))
+>>>>>>> refs/remotes/origin/master
 			break;
 		if (time_after_eq(jiffies, end_jiffies)) {
 			DRM_ERROR("SVGA device lockup.\n");
@@ -261,6 +299,7 @@ int vmw_fallback_wait(struct vmw_private *dev_priv,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int vmw_wait_fence(struct vmw_private *dev_priv,
 		   bool lazy, uint32_t sequence,
 		   bool interruptible, unsigned long timeout)
@@ -274,6 +313,8 @@ int vmw_wait_fence(struct vmw_private *dev_priv,
 
 	if (likely(vmw_fence_signaled(dev_priv, sequence)))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void vmw_seqno_waiter_add(struct vmw_private *dev_priv)
 {
 	mutex_lock(&dev_priv->hw_mutex);
@@ -346,12 +387,16 @@ int vmw_wait_seqno(struct vmw_private *dev_priv,
 		return 0;
 
 	if (likely(vmw_seqno_passed(dev_priv, seqno)))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	vmw_fifo_ping_host(dev_priv, SVGA_SYNC_GENERIC);
 
 	if (!(fifo->capabilities & SVGA_FIFO_CAP_FENCE))
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return vmw_fallback_wait(dev_priv, lazy, true, sequence,
 					 interruptible, timeout);
@@ -372,6 +417,8 @@ int vmw_wait_seqno(struct vmw_private *dev_priv,
 	}
 	mutex_unlock(&dev_priv->hw_mutex);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return vmw_fallback_wait(dev_priv, lazy, true, seqno,
 					 interruptible, timeout);
 
@@ -380,36 +427,50 @@ int vmw_wait_seqno(struct vmw_private *dev_priv,
 					 interruptible, timeout);
 
 	vmw_seqno_waiter_add(dev_priv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (interruptible)
 		ret = wait_event_interruptible_timeout
 		    (dev_priv->fence_queue,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     vmw_fence_signaled(dev_priv, sequence),
 =======
 		     vmw_seqno_passed(dev_priv, seqno),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     vmw_seqno_passed(dev_priv, seqno),
+>>>>>>> refs/remotes/origin/master
 		     timeout);
 	else
 		ret = wait_event_timeout
 		    (dev_priv->fence_queue,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     vmw_fence_signaled(dev_priv, sequence),
 		     timeout);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		     vmw_seqno_passed(dev_priv, seqno),
 		     timeout);
 
 	vmw_seqno_waiter_remove(dev_priv);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(ret == 0))
 		ret = -EBUSY;
 	else if (likely(ret > 0))
 		ret = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mutex_lock(&dev_priv->hw_mutex);
 	if (atomic_dec_and_test(&dev_priv->fence_queue_waiters)) {
@@ -423,6 +484,8 @@ int vmw_wait_seqno(struct vmw_private *dev_priv,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -460,6 +523,7 @@ void vmw_irq_uninstall(struct drm_device *dev)
 	outl(status, dev_priv->io_start + VMWGFX_IRQSTATUS_PORT);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define VMW_FENCE_WAIT_TIMEOUT 3*HZ;
 
@@ -484,3 +548,5 @@ int vmw_fence_wait_ioctl(struct drm_device *dev, void *data,
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

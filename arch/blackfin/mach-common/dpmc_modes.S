@@ -10,6 +10,7 @@
 #include <asm/dpmc.h>
 
 .section .l1.text
+<<<<<<< HEAD
 
 ENTRY(_sleep_mode)
 <<<<<<< HEAD
@@ -19,6 +20,11 @@ ENTRY(_sleep_mode)
 	[--SP] = (R7:4, P5:3);
 	[--SP] = RETS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENTRY(_sleep_mode)
+	[--SP] = (R7:4, P5:3);
+	[--SP] = RETS;
+>>>>>>> refs/remotes/origin/master
 
 	call _set_sic_iwr;
 
@@ -48,6 +54,7 @@ ENTRY(_sleep_mode)
 	BITCLR (R7, 5);
 	w[p0] = R7.L;
 	IDLE;
+<<<<<<< HEAD
 	call _test_pll_locked;
 
 	RETS = [SP++];
@@ -62,6 +69,14 @@ ENTRY(_hibernate_mode)
 
 	R3 = R0;
 =======
+=======
+
+	bfin_init_pm_bench_cycles;
+
+	call _test_pll_locked;
+
+	RETS = [SP++];
+>>>>>>> refs/remotes/origin/master
 	(R7:4, P5:3) = [SP++];
 	RTS;
 ENDPROC(_sleep_mode)
@@ -74,6 +89,7 @@ ENDPROC(_sleep_mode)
  *
  * We accept just one argument -- the value to write to VR_CTL.
  */
+<<<<<<< HEAD
 ENTRY(_hibernate_mode)
 	/* Save/setup the regs we need early for minor pipeline optimization */
 	R4 = R0;
@@ -82,6 +98,16 @@ ENTRY(_hibernate_mode)
 
 	/* Disable all wakeup sources */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+ENTRY(_hibernate_mode)
+	/* Save/setup the regs we need early for minor pipeline optimization */
+	R4 = R0;
+
+	P3.H = hi(VR_CTL);
+	P3.L = lo(VR_CTL);
+	/* Disable all wakeup sources */
+>>>>>>> refs/remotes/origin/master
 	R0 = IWR_DISABLE_ALL;
 	R1 = IWR_DISABLE_ALL;
 	R2 = IWR_DISABLE_ALL;
@@ -89,6 +115,7 @@ ENTRY(_hibernate_mode)
 	call _set_dram_srfs;
 	SSYNC;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	P0.H = hi(VR_CTL);
 	P0.L = lo(VR_CTL);
@@ -98,6 +125,13 @@ ENTRY(_hibernate_mode)
 	/* Finally, we climb into our cave to hibernate */
 	W[P3] = R4.L;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Finally, we climb into our cave to hibernate */
+	W[P3] = R4.L;
+
+	bfin_init_pm_bench_cycles;
+
+>>>>>>> refs/remotes/origin/master
 	CLI R2;
 	IDLE;
 .Lforever:
@@ -106,12 +140,17 @@ ENDPROC(_hibernate_mode)
 
 ENTRY(_sleep_deeper)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	[--SP] = ( R7:0, P5:0 );
 	[--SP] =  RETS;
 =======
 	[--SP] = (R7:4, P5:3);
 	[--SP] = RETS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[--SP] = (R7:4, P5:3);
+	[--SP] = RETS;
+>>>>>>> refs/remotes/origin/master
 
 	CLI R4;
 
@@ -187,6 +226,11 @@ ENTRY(_sleep_deeper)
 	SSYNC;
 	IDLE;
 
+<<<<<<< HEAD
+=======
+	bfin_init_pm_bench_cycles;
+
+>>>>>>> refs/remotes/origin/master
 	call _test_pll_locked;
 
 	P0.H = hi(PLL_DIV);
@@ -205,10 +249,14 @@ ENTRY(_sleep_deeper)
 
 	RETS = [SP++];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	( R7:0, P5:0 ) = [SP++];
 =======
 	(R7:4, P5:3) = [SP++];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	(R7:4, P5:3) = [SP++];
+>>>>>>> refs/remotes/origin/master
 	RTS;
 ENDPROC(_sleep_deeper)
 
@@ -230,16 +278,23 @@ ENTRY(_set_dram_srfs)
 	P0.L = lo(EBIU_SDGCTL);
 	P0.H = hi(EBIU_SDGCTL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	P1.L = lo(EBIU_SDSTAT);
 	P1.H = hi(EBIU_SDSTAT);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	P1.L = lo(EBIU_SDSTAT);
+	P1.H = hi(EBIU_SDSTAT);
+
+>>>>>>> refs/remotes/origin/master
 	R2 = [P0];
 	BITSET(R2, 24); /* SRFS enter self-refresh mode */
 	[P0] = R2;
 	SSYNC;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	P0.L = lo(EBIU_SDSTAT);
 	P0.H = hi(EBIU_SDSTAT);
@@ -249,15 +304,22 @@ ENTRY(_set_dram_srfs)
 1:
 	R2 = w[P1];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+1:
+	R2 = w[P1];
+>>>>>>> refs/remotes/origin/master
 	SSYNC;
 	cc = BITTST(R2, 1); /* SDSRA poll self-refresh status */
 	if !cc jump 1b;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P0.L = lo(EBIU_SDGCTL);
 	P0.H = hi(EBIU_SDGCTL);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	R2 = [P0];
 	BITCLR(R2, 0); /* SCTLE disable CLKOUT */
 	[P0] = R2;
@@ -268,9 +330,13 @@ ENDPROC(_set_dram_srfs)
 ENTRY(_unset_dram_srfs)
 	/*  set the dram out of self refresh mode */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 #if defined(EBIU_RSTCTL)	/* DDR */
 	P0.H = hi(EBIU_RSTCTL);
 	P0.L = lo(EBIU_RSTCTL);
@@ -279,39 +345,54 @@ ENTRY(_unset_dram_srfs)
 	[P0] = R2;
 #elif defined(EBIU_SDGCTL)	/* SDRAM */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	P0.L = lo(EBIU_SDGCTL); /* release CLKOUT from self-refresh */
 	P0.H = hi(EBIU_SDGCTL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* release CLKOUT from self-refresh */
 	P0.L = lo(EBIU_SDGCTL);
 	P0.H = hi(EBIU_SDGCTL);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	R2 = [P0];
 	BITSET(R2, 0); /* SCTLE enable CLKOUT */
 	[P0] = R2
 	SSYNC;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P0.L = lo(EBIU_SDGCTL); /* release SDRAM from self-refresh */
 	P0.H = hi(EBIU_SDGCTL);
 =======
 	/* release SDRAM from self-refresh */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* release SDRAM from self-refresh */
+>>>>>>> refs/remotes/origin/master
 	R2 = [P0];
 	BITCLR(R2, 24); /* clear SRFS bit */
 	[P0] = R2
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	SSYNC;
 	RTS;
 ENDPROC(_unset_dram_srfs)
 
 ENTRY(_set_sic_iwr)
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if defined(CONFIG_BF54x) || defined(CONFIG_BF52x) || defined(CONFIG_BF561) || \
 	defined(CONFIG_BF538) || defined(CONFIG_BF539) || defined(CONFIG_BF51x)
@@ -331,6 +412,8 @@ ENTRY(_set_sic_iwr)
 #endif
 	[P0] = R0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef SIC_IWR0
 	P0.H = hi(SYSMMR_BASE);
 	P0.L = lo(SYSMMR_BASE);
@@ -344,7 +427,10 @@ ENTRY(_set_sic_iwr)
 	P0.L = lo(SIC_IWR);
 	[P0] = R0;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	SSYNC;
 	RTS;
@@ -361,6 +447,7 @@ ENTRY(_test_pll_locked)
 ENDPROC(_test_pll_locked)
 
 .section .text
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 ENTRY(_do_hibernate)
@@ -928,6 +1015,12 @@ ENTRY(_do_hibernate)
 	PM_CORE_PUSH(1, IMEM_CONTROL);
 	PM_CORE_PUSH(2, TBUFCTL);
 	PM_PUSH_SYNC(2)
+=======
+ENTRY(_do_hibernate)
+	bfin_cpu_reg_save;
+	bfin_sys_mmr_save;
+	bfin_core_mmr_save;
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup args to hibernate mode early for pipeline optimization */
 	R0 = M3;
@@ -949,6 +1042,7 @@ ENTRY(_do_hibernate)
 
 .Lpm_resume_here:
 
+<<<<<<< HEAD
 	/* Restore Core MMRs */
 	I0.H = hi(COREMMR_BASE);
 	I0.L = lo(COREMMR_BASE);
@@ -1414,14 +1508,22 @@ ENTRY(_do_hibernate)
 =======
 	(R7:0, P5:0) = [sp++];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfin_core_mmr_restore;
+	bfin_sys_mmr_restore;
+	bfin_cpu_reg_restore;
+>>>>>>> refs/remotes/origin/master
 
 	[--sp] = RETI;	/* Clear Global Interrupt Disable */
 	SP += 4;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	RETS = [SP++];
 	( R7:0, P5:0 ) = [SP++];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	RTS;
 ENDPROC(_do_hibernate)

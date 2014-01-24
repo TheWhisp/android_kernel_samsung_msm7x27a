@@ -1,11 +1,16 @@
 /*
  * U300 GPIO module.
  *
+<<<<<<< HEAD
  * Copyright (C) 2007-2011 ST-Ericsson AB
  * License terms: GNU General Public License (GPL) version 2
  * This can driver either of the two basic GPIO cores
  * available in the U300 platforms:
  * COH 901 335   - Used in DB3150 (U300 1.0) and DB3200 (U330 1.0)
+=======
+ * Copyright (C) 2007-2012 ST-Ericsson AB
+ * License terms: GNU General Public License (GPL) version 2
+>>>>>>> refs/remotes/origin/master
  * COH 901 571/3 - Used in DB3210 (U365 2.0) and DB3350 (U335 1.0)
  * Author: Linus Walleij <linus.walleij@linaro.org>
  * Author: Jonas Aaberg <jonas.aberg@stericsson.com>
@@ -16,6 +21,10 @@
 #include <linux/delay.h>
 #include <linux/errno.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/irqdomain.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/clk.h>
 #include <linux/err.h>
 #include <linux/platform_device.h>
@@ -24,6 +33,7 @@
 #include <linux/slab.h>
 #include <linux/pinctrl/consumer.h>
 #include <linux/pinctrl/pinconf-generic.h>
+<<<<<<< HEAD
 #include <mach/gpio-u300.h>
 #include "pinctrl-coh901.h"
 
@@ -37,6 +47,23 @@
 /* Port X Pin Config Register 32bit (R/W) */
 #define U300_335_PXPCR					(0x04)
 /* This register layout is the same in both blocks */
+=======
+#include "pinctrl-coh901.h"
+
+#define U300_GPIO_PORT_STRIDE				(0x30)
+/*
+ * Control Register 32bit (R/W)
+ * bit 15-9 (mask 0x0000FE00) contains the number of cores. 8*cores
+ * gives the number of GPIO pins.
+ * bit 8-2  (mask 0x000001FC) contains the core version ID.
+ */
+#define U300_GPIO_CR					(0x00)
+#define U300_GPIO_CR_SYNC_SEL_ENABLE			(0x00000002UL)
+#define U300_GPIO_CR_BLOCK_CLKRQ_ENABLE			(0x00000001UL)
+#define U300_GPIO_PXPDIR				(0x04)
+#define U300_GPIO_PXPDOR				(0x08)
+#define U300_GPIO_PXPCR					(0x0C)
+>>>>>>> refs/remotes/origin/master
 #define U300_GPIO_PXPCR_ALL_PINS_MODE_MASK		(0x0000FFFFUL)
 #define U300_GPIO_PXPCR_PIN_MODE_MASK			(0x00000003UL)
 #define U300_GPIO_PXPCR_PIN_MODE_SHIFT			(0x00000002UL)
@@ -44,6 +71,7 @@
 #define U300_GPIO_PXPCR_PIN_MODE_OUTPUT_PUSH_PULL	(0x00000001UL)
 #define U300_GPIO_PXPCR_PIN_MODE_OUTPUT_OPEN_DRAIN	(0x00000002UL)
 #define U300_GPIO_PXPCR_PIN_MODE_OUTPUT_OPEN_SOURCE	(0x00000003UL)
+<<<<<<< HEAD
 /* Port X Interrupt Event Register 32bit (R/W) */
 #define U300_335_PXIEV					(0x08)
 /* Port X Interrupt Enable Register 32bit (R/W) */
@@ -53,10 +81,20 @@
 /* Port X Interrupt Config Register 32bit (R/W) */
 #define U300_335_PXICR					(0x14)
 /* This register layout is the same in both blocks */
+=======
+#define U300_GPIO_PXPER					(0x10)
+#define U300_GPIO_PXPER_ALL_PULL_UP_DISABLE_MASK	(0x000000FFUL)
+#define U300_GPIO_PXPER_PULL_UP_DISABLE			(0x00000001UL)
+#define U300_GPIO_PXIEV					(0x14)
+#define U300_GPIO_PXIEN					(0x18)
+#define U300_GPIO_PXIFR					(0x1C)
+#define U300_GPIO_PXICR					(0x20)
+>>>>>>> refs/remotes/origin/master
 #define U300_GPIO_PXICR_ALL_IRQ_CONFIG_MASK		(0x000000FFUL)
 #define U300_GPIO_PXICR_IRQ_CONFIG_MASK			(0x00000001UL)
 #define U300_GPIO_PXICR_IRQ_CONFIG_FALLING_EDGE		(0x00000000UL)
 #define U300_GPIO_PXICR_IRQ_CONFIG_RISING_EDGE		(0x00000001UL)
+<<<<<<< HEAD
 /* Port X Pull-up Enable Register 32bit (R/W) */
 #define U300_335_PXPER					(0x18)
 /* This register layout is the same in both blocks */
@@ -95,15 +133,27 @@
 /* 8 bits per port, no version has more than 7 ports */
 #define U300_GPIO_PINS_PER_PORT 8
 #define U300_GPIO_MAX (U300_GPIO_PINS_PER_PORT * 7)
+=======
+
+/* 8 bits per port, no version has more than 7 ports */
+#define U300_GPIO_NUM_PORTS 7
+#define U300_GPIO_PINS_PER_PORT 8
+#define U300_GPIO_MAX (U300_GPIO_PINS_PER_PORT * U300_GPIO_NUM_PORTS)
+>>>>>>> refs/remotes/origin/master
 
 struct u300_gpio {
 	struct gpio_chip chip;
 	struct list_head port_list;
 	struct clk *clk;
+<<<<<<< HEAD
 	struct resource *memres;
 	void __iomem *base;
 	struct device *dev;
 	int irq_base;
+=======
+	void __iomem *base;
+	struct device *dev;
+>>>>>>> refs/remotes/origin/master
 	u32 stride;
 	/* Register offsets */
 	u32 pcr;
@@ -119,6 +169,10 @@ struct u300_gpio_port {
 	struct list_head node;
 	struct u300_gpio *gpio;
 	char name[8];
+<<<<<<< HEAD
+=======
+	struct irq_domain *domain;
+>>>>>>> refs/remotes/origin/master
 	int irq;
 	int number;
 	u8 toggle_edge_mode;
@@ -147,11 +201,14 @@ struct u300_gpio_confdata {
 	int outval;
 };
 
+<<<<<<< HEAD
 /* BS335 has seven ports of 8 bits each = GPIO pins 0..55 */
 #define BS335_GPIO_NUM_PORTS 7
 /* BS365 has five ports of 8 bits each = GPIO pins 0..39 */
 #define BS365_GPIO_NUM_PORTS 5
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define U300_FLOATING_INPUT { \
 	.bias_mode = PIN_CONFIG_BIAS_HIGH_IMPEDANCE, \
 	.output = false, \
@@ -172,10 +229,16 @@ struct u300_gpio_confdata {
 	.outval = 1, \
 }
 
+<<<<<<< HEAD
 
 /* Initial configuration */
 static const struct __initdata u300_gpio_confdata
 bs335_gpio_config[BS335_GPIO_NUM_PORTS][U300_GPIO_PINS_PER_PORT] = {
+=======
+/* Initial configuration */
+static const struct __initconst u300_gpio_confdata
+bs335_gpio_config[U300_GPIO_NUM_PORTS][U300_GPIO_PINS_PER_PORT] = {
+>>>>>>> refs/remotes/origin/master
 	/* Port 0, pins 0-7 */
 	{
 		U300_FLOATING_INPUT,
@@ -255,6 +318,7 @@ bs335_gpio_config[BS335_GPIO_NUM_PORTS][U300_GPIO_PINS_PER_PORT] = {
 	}
 };
 
+<<<<<<< HEAD
 static const struct __initdata u300_gpio_confdata
 bs365_gpio_config[BS365_GPIO_NUM_PORTS][U300_GPIO_PINS_PER_PORT] = {
 	/* Port 0, pins 0-7 */
@@ -315,6 +379,8 @@ bs365_gpio_config[BS365_GPIO_NUM_PORTS][U300_GPIO_PINS_PER_PORT] = {
 	}
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * to_u300_gpio() - get the pointer to u300_gpio
  * @chip: the gpio chip member of the structure u300_gpio
@@ -413,10 +479,40 @@ static int u300_gpio_direction_output(struct gpio_chip *chip, unsigned offset,
 static int u300_gpio_to_irq(struct gpio_chip *chip, unsigned offset)
 {
 	struct u300_gpio *gpio = to_u300_gpio(chip);
+<<<<<<< HEAD
 	int retirq = gpio->irq_base + offset;
 
 	dev_dbg(gpio->dev, "request IRQ for GPIO %d, return %d\n", offset,
 		retirq);
+=======
+	int portno = offset >> 3;
+	struct u300_gpio_port *port = NULL;
+	struct list_head *p;
+	int retirq;
+	bool found = false;
+
+	list_for_each(p, &gpio->port_list) {
+		port = list_entry(p, struct u300_gpio_port, node);
+		if (port->number == portno) {
+			found = true;
+			break;
+		}
+	}
+	if (!found) {
+		dev_err(gpio->dev, "could not locate port for GPIO %d IRQ\n",
+			offset);
+		return -EINVAL;
+	}
+
+	/*
+	 * The local hwirqs on the port are the lower three bits, there
+	 * are exactly 8 IRQs per port since they are 8-bit
+	 */
+	retirq = irq_find_mapping(port->domain, (offset & 0x7));
+
+	dev_dbg(gpio->dev, "request IRQ for GPIO %d, return %d from port %d\n",
+		offset, retirq, port->number);
+>>>>>>> refs/remotes/origin/master
 	return retirq;
 }
 
@@ -438,7 +534,11 @@ int u300_gpio_config_get(struct gpio_chip *chip,
 	drmode &= (U300_GPIO_PXPCR_PIN_MODE_MASK << ((offset & 0x07) << 1));
 	drmode >>= ((offset & 0x07) << 1);
 
+<<<<<<< HEAD
 	switch(param) {
+=======
+	switch (param) {
+>>>>>>> refs/remotes/origin/master
 	case PIN_CONFIG_BIAS_HIGH_IMPEDANCE:
 		*config = 0;
 		if (biasmode)
@@ -566,7 +666,11 @@ static int u300_gpio_irq_type(struct irq_data *d, unsigned trigger)
 {
 	struct u300_gpio_port *port = irq_data_get_irq_chip_data(d);
 	struct u300_gpio *gpio = port->gpio;
+<<<<<<< HEAD
 	int offset = d->irq - gpio->irq_base;
+=======
+	int offset = (port->number << 3) + d->hwirq;
+>>>>>>> refs/remotes/origin/master
 	u32 val;
 
 	if ((trigger & IRQF_TRIGGER_RISING) &&
@@ -602,10 +706,23 @@ static void u300_gpio_irq_enable(struct irq_data *d)
 {
 	struct u300_gpio_port *port = irq_data_get_irq_chip_data(d);
 	struct u300_gpio *gpio = port->gpio;
+<<<<<<< HEAD
 	int offset = d->irq - gpio->irq_base;
 	u32 val;
 	unsigned long flags;
 
+=======
+	int offset = (port->number << 3) + d->hwirq;
+	u32 val;
+	unsigned long flags;
+
+	dev_dbg(gpio->dev, "enable IRQ for hwirq %lu on port %s, offset %d\n",
+		 d->hwirq, port->name, offset);
+	if (gpio_lock_as_irq(&gpio->chip, d->hwirq))
+		dev_err(gpio->dev,
+			"unable to lock HW IRQ %lu for IRQ\n",
+			d->hwirq);
+>>>>>>> refs/remotes/origin/master
 	local_irq_save(flags);
 	val = readl(U300_PIN_REG(offset, ien));
 	writel(val | U300_PIN_BIT(offset), U300_PIN_REG(offset, ien));
@@ -616,7 +733,11 @@ static void u300_gpio_irq_disable(struct irq_data *d)
 {
 	struct u300_gpio_port *port = irq_data_get_irq_chip_data(d);
 	struct u300_gpio *gpio = port->gpio;
+<<<<<<< HEAD
 	int offset = d->irq - gpio->irq_base;
+=======
+	int offset = (port->number << 3) + d->hwirq;
+>>>>>>> refs/remotes/origin/master
 	u32 val;
 	unsigned long flags;
 
@@ -624,6 +745,10 @@ static void u300_gpio_irq_disable(struct irq_data *d)
 	val = readl(U300_PIN_REG(offset, ien));
 	writel(val & ~U300_PIN_BIT(offset), U300_PIN_REG(offset, ien));
 	local_irq_restore(flags);
+<<<<<<< HEAD
+=======
+	gpio_unlock_as_irq(&gpio->chip, d->hwirq);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct irq_chip u300_gpio_irqchip = {
@@ -654,8 +779,12 @@ static void u300_gpio_irq_handler(unsigned irq, struct irq_desc *desc)
 		int irqoffset;
 
 		for_each_set_bit(irqoffset, &val, U300_GPIO_PINS_PER_PORT) {
+<<<<<<< HEAD
 			int pin_irq = gpio->irq_base + (port->number << 3)
 				+ irqoffset;
+=======
+			int pin_irq = irq_find_mapping(port->domain, irqoffset);
+>>>>>>> refs/remotes/origin/master
 			int offset = pinoffset + irqoffset;
 
 			dev_dbg(gpio->dev, "GPIO IRQ %d on pin %d\n",
@@ -705,17 +834,26 @@ static void __init u300_gpio_init_pin(struct u300_gpio *gpio,
 	}
 }
 
+<<<<<<< HEAD
 static void __init u300_gpio_init_coh901571(struct u300_gpio *gpio,
 				     struct u300_gpio_platform *plat)
+=======
+static void __init u300_gpio_init_coh901571(struct u300_gpio *gpio)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, j;
 
 	/* Write default config and values to all pins */
+<<<<<<< HEAD
 	for (i = 0; i < plat->ports; i++) {
+=======
+	for (i = 0; i < U300_GPIO_NUM_PORTS; i++) {
+>>>>>>> refs/remotes/origin/master
 		for (j = 0; j < 8; j++) {
 			const struct u300_gpio_confdata *conf;
 			int offset = (i*8) + j;
 
+<<<<<<< HEAD
 			if (plat->variant == U300_GPIO_COH901571_3_BS335)
 				conf = &bs335_gpio_config[i][j];
 			else if (plat->variant == U300_GPIO_COH901571_3_BS365)
@@ -723,6 +861,9 @@ static void __init u300_gpio_init_coh901571(struct u300_gpio *gpio,
 			else
 				break;
 
+=======
+			conf = &bs335_gpio_config[i][j];
+>>>>>>> refs/remotes/origin/master
 			u300_gpio_init_pin(gpio, offset, conf);
 		}
 	}
@@ -736,20 +877,63 @@ static inline void u300_gpio_free_ports(struct u300_gpio *gpio)
 	list_for_each_safe(p, n, &gpio->port_list) {
 		port = list_entry(p, struct u300_gpio_port, node);
 		list_del(&port->node);
+<<<<<<< HEAD
+=======
+		if (port->domain)
+			irq_domain_remove(port->domain);
+>>>>>>> refs/remotes/origin/master
 		kfree(port);
 	}
 }
 
+<<<<<<< HEAD
 static int __init u300_gpio_probe(struct platform_device *pdev)
 {
 	struct u300_gpio_platform *plat = dev_get_platdata(&pdev->dev);
 	struct u300_gpio *gpio;
+=======
+/*
+ * Here we map a GPIO in the local gpio_chip pin space to a pin in
+ * the local pinctrl pin space. The pin controller used is
+ * pinctrl-u300.
+ */
+struct coh901_pinpair {
+	unsigned int offset;
+	unsigned int pin_base;
+};
+
+#define COH901_PINRANGE(a, b) { .offset = a, .pin_base = b }
+
+static struct coh901_pinpair coh901_pintable[] = {
+	COH901_PINRANGE(10, 426),
+	COH901_PINRANGE(11, 180),
+	COH901_PINRANGE(12, 165), /* MS/MMC card insertion */
+	COH901_PINRANGE(13, 179),
+	COH901_PINRANGE(14, 178),
+	COH901_PINRANGE(16, 194),
+	COH901_PINRANGE(17, 193),
+	COH901_PINRANGE(18, 192),
+	COH901_PINRANGE(19, 191),
+	COH901_PINRANGE(20, 186),
+	COH901_PINRANGE(21, 185),
+	COH901_PINRANGE(22, 184),
+	COH901_PINRANGE(23, 183),
+	COH901_PINRANGE(24, 182),
+	COH901_PINRANGE(25, 181),
+};
+
+static int __init u300_gpio_probe(struct platform_device *pdev)
+{
+	struct u300_gpio *gpio;
+	struct resource *memres;
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 	int portno;
 	u32 val;
 	u32 ifr;
 	int i;
 
+<<<<<<< HEAD
 	gpio = kzalloc(sizeof(struct u300_gpio), GFP_KERNEL);
 	if (gpio == NULL) {
 		dev_err(&pdev->dev, "failed to allocate memory\n");
@@ -844,6 +1028,61 @@ static int __init u300_gpio_probe(struct platform_device *pdev)
 	/* Add each port with its IRQ separately */
 	INIT_LIST_HEAD(&gpio->port_list);
 	for (portno = 0 ; portno < plat->ports; portno++) {
+=======
+	gpio = devm_kzalloc(&pdev->dev, sizeof(struct u300_gpio), GFP_KERNEL);
+	if (gpio == NULL)
+		return -ENOMEM;
+
+	gpio->chip = u300_gpio_chip;
+	gpio->chip.ngpio = U300_GPIO_NUM_PORTS * U300_GPIO_PINS_PER_PORT;
+	gpio->chip.dev = &pdev->dev;
+	gpio->chip.base = 0;
+	gpio->dev = &pdev->dev;
+
+	memres = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	gpio->base = devm_ioremap_resource(&pdev->dev, memres);
+	if (IS_ERR(gpio->base))
+		return PTR_ERR(gpio->base);
+
+	gpio->clk = devm_clk_get(gpio->dev, NULL);
+	if (IS_ERR(gpio->clk)) {
+		err = PTR_ERR(gpio->clk);
+		dev_err(gpio->dev, "could not get GPIO clock\n");
+		return err;
+	}
+
+	err = clk_prepare_enable(gpio->clk);
+	if (err) {
+		dev_err(gpio->dev, "could not enable GPIO clock\n");
+		return err;
+	}
+
+	dev_info(gpio->dev,
+		 "initializing GPIO Controller COH 901 571/3\n");
+	gpio->stride = U300_GPIO_PORT_STRIDE;
+	gpio->pcr = U300_GPIO_PXPCR;
+	gpio->dor = U300_GPIO_PXPDOR;
+	gpio->dir = U300_GPIO_PXPDIR;
+	gpio->per = U300_GPIO_PXPER;
+	gpio->icr = U300_GPIO_PXICR;
+	gpio->ien = U300_GPIO_PXIEN;
+	gpio->iev = U300_GPIO_PXIEV;
+	ifr = U300_GPIO_PXIFR;
+
+	val = readl(gpio->base + U300_GPIO_CR);
+	dev_info(gpio->dev, "COH901571/3 block version: %d, " \
+		 "number of cores: %d totalling %d pins\n",
+		 ((val & 0x000001FC) >> 2),
+		 ((val & 0x0000FE00) >> 9),
+		 ((val & 0x0000FE00) >> 9) * 8);
+	writel(U300_GPIO_CR_BLOCK_CLKRQ_ENABLE,
+	       gpio->base + U300_GPIO_CR);
+	u300_gpio_init_coh901571(gpio);
+
+	/* Add each port with its IRQ separately */
+	INIT_LIST_HEAD(&gpio->port_list);
+	for (portno = 0 ; portno < U300_GPIO_NUM_PORTS; portno++) {
+>>>>>>> refs/remotes/origin/master
 		struct u300_gpio_port *port =
 			kmalloc(sizeof(struct u300_gpio_port), GFP_KERNEL);
 
@@ -857,21 +1096,46 @@ static int __init u300_gpio_probe(struct platform_device *pdev)
 		port->number = portno;
 		port->gpio = gpio;
 
+<<<<<<< HEAD
 		port->irq = platform_get_irq_byname(pdev,
 						    port->name);
 
 		dev_dbg(gpio->dev, "register IRQ %d for %s\n", port->irq,
 			port->name);
 
+=======
+		port->irq = platform_get_irq(pdev, portno);
+
+		dev_dbg(gpio->dev, "register IRQ %d for port %s\n", port->irq,
+			port->name);
+
+		port->domain = irq_domain_add_linear(pdev->dev.of_node,
+						     U300_GPIO_PINS_PER_PORT,
+						     &irq_domain_simple_ops,
+						     port);
+		if (!port->domain) {
+			err = -ENOMEM;
+			goto err_no_domain;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		irq_set_chained_handler(port->irq, u300_gpio_irq_handler);
 		irq_set_handler_data(port->irq, port);
 
 		/* For each GPIO pin set the unique IRQ handler */
 		for (i = 0; i < U300_GPIO_PINS_PER_PORT; i++) {
+<<<<<<< HEAD
 			int irqno = gpio->irq_base + (portno << 3) + i;
 
 			dev_dbg(gpio->dev, "handler for IRQ %d on %s\n",
 				irqno, port->name);
+=======
+			int irqno = irq_create_mapping(port->domain, i);
+
+			dev_dbg(gpio->dev, "GPIO%d on port %s gets IRQ %d\n",
+				gpio->chip.base + (port->number << 3) + i,
+				port->name, irqno);
+>>>>>>> refs/remotes/origin/master
 			irq_set_chip_and_handler(irqno, &u300_gpio_irqchip,
 						 handle_simple_irq);
 			set_irq_flags(irqno, IRQF_VALID);
@@ -885,22 +1149,44 @@ static int __init u300_gpio_probe(struct platform_device *pdev)
 	}
 	dev_dbg(gpio->dev, "initialized %d GPIO ports\n", portno);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_OF_GPIO
+	gpio->chip.of_node = pdev->dev.of_node;
+#endif
+>>>>>>> refs/remotes/origin/master
 	err = gpiochip_add(&gpio->chip);
 	if (err) {
 		dev_err(gpio->dev, "unable to add gpiochip: %d\n", err);
 		goto err_no_chip;
 	}
 
+<<<<<<< HEAD
 	/* Spawn pin controller device as child of the GPIO, pass gpio chip */
 	plat->pinctrl_device->dev.platform_data = &gpio->chip;
 	err = platform_device_register(plat->pinctrl_device);
 	if (err)
 		goto err_no_pinctrl;
+=======
+	/*
+	 * Add pinctrl pin ranges, the pin controller must be registered
+	 * at this point
+	 */
+	for (i = 0; i < ARRAY_SIZE(coh901_pintable); i++) {
+		struct coh901_pinpair *p = &coh901_pintable[i];
+
+		err = gpiochip_add_pin_range(&gpio->chip, "pinctrl-u300",
+					     p->offset, p->pin_base, 1);
+		if (err)
+			goto err_no_range;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	platform_set_drvdata(pdev, gpio);
 
 	return 0;
 
+<<<<<<< HEAD
 err_no_pinctrl:
 	err = gpiochip_remove(&gpio->chip);
 err_no_chip:
@@ -918,21 +1204,39 @@ err_no_clk_enable:
 err_no_clk:
 	kfree(gpio);
 	dev_info(&pdev->dev, "module ERROR:%d\n", err);
+=======
+err_no_range:
+	if (gpiochip_remove(&gpio->chip))
+		dev_err(&pdev->dev, "failed to remove gpio chip\n");
+err_no_chip:
+err_no_domain:
+err_no_port:
+	u300_gpio_free_ports(gpio);
+	clk_disable_unprepare(gpio->clk);
+	dev_err(&pdev->dev, "module ERROR:%d\n", err);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
 static int __exit u300_gpio_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct u300_gpio_platform *plat = dev_get_platdata(&pdev->dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	struct u300_gpio *gpio = platform_get_drvdata(pdev);
 	int err;
 
 	/* Turn off the GPIO block */
+<<<<<<< HEAD
 	if (plat->variant == U300_GPIO_COH901335)
 		writel(0x00000000U, gpio->base + U300_335_CR);
 	if (plat->variant == U300_GPIO_COH901571_3_BS335 ||
 	    plat->variant == U300_GPIO_COH901571_3_BS365)
 		writel(0x00000000U, gpio->base + U300_571_CR);
+=======
+	writel(0x00000000U, gpio->base + U300_GPIO_CR);
+>>>>>>> refs/remotes/origin/master
 
 	err = gpiochip_remove(&gpio->chip);
 	if (err < 0) {
@@ -940,6 +1244,7 @@ static int __exit u300_gpio_remove(struct platform_device *pdev)
 		return err;
 	}
 	u300_gpio_free_ports(gpio);
+<<<<<<< HEAD
 	iounmap(gpio->base);
 	release_mem_region(gpio->memres->start,
 			   resource_size(gpio->memres));
@@ -953,6 +1258,21 @@ static int __exit u300_gpio_remove(struct platform_device *pdev)
 static struct platform_driver u300_gpio_driver = {
 	.driver		= {
 		.name	= "u300-gpio",
+=======
+	clk_disable_unprepare(gpio->clk);
+	return 0;
+}
+
+static const struct of_device_id u300_gpio_match[] = {
+	{ .compatible = "stericsson,gpio-coh901" },
+	{},
+};
+
+static struct platform_driver u300_gpio_driver = {
+	.driver		= {
+		.name	= "u300-gpio",
+		.of_match_table = u300_gpio_match,
+>>>>>>> refs/remotes/origin/master
 	},
 	.remove		= __exit_p(u300_gpio_remove),
 };

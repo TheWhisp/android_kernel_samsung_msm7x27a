@@ -18,9 +18,13 @@
 #include <asm/fixed_code.h>
 #include <asm/pseudo_instructions.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/pda.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/pda.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_KGDB
 # include <linux/kgdb.h>

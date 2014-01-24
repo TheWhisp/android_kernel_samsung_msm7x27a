@@ -14,17 +14,28 @@
 #include <linux/mtd/physmap.h>
 #include <linux/interrupt.h>
 #include <linux/dm9000.h>
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/time.h>
 
+<<<<<<< HEAD
 #include <mach/common.h>
 #include <mach/hardware.h>
 #include <mach/irqs.h>
 #include <mach/iomux-mx1.h>
 
 #include "devices-imx1.h"
+=======
+#include "common.h"
+#include "devices-imx1.h"
+#include "hardware.h"
+#include "iomux-mx1.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This scb9328 has a 32MiB flash
@@ -78,8 +89,12 @@ static struct resource dm9000x_resources[] = {
 		.end	= MX1_CS5_PHYS + 5,
 		.flags	= IORESOURCE_MEM,	/* data access */
 	}, {
+<<<<<<< HEAD
 		.start	= IRQ_GPIOC(3),
 		.end	= IRQ_GPIOC(3),
+=======
+		/* irq number is run-time assigned */
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_LOWLEVEL,
 	},
 };
@@ -102,6 +117,7 @@ static const int mxc_uart1_pins[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int uart1_mxc_init(struct platform_device *pdev)
 {
 	return mxc_gpio_setup_multiple_pins(mxc_uart1_pins,
@@ -120,6 +136,9 @@ static const struct imxuart_platform_data uart_pdata __initconst = {
 =======
 static const struct imxuart_platform_data uart_pdata __initconst = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct imxuart_platform_data uart_pdata __initconst = {
+>>>>>>> refs/remotes/origin/master
 	.flags = IMXUART_HAVE_RTSCTS,
 };
 
@@ -134,16 +153,27 @@ static struct platform_device *devices[] __initdata = {
 static void __init scb9328_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	imx1_soc_init();
 
 	mxc_gpio_setup_multiple_pins(mxc_uart1_pins,
 			ARRAY_SIZE(mxc_uart1_pins), "UART1");
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	imx1_add_imx_uart0(&uart_pdata);
 
 	printk(KERN_INFO"Scb9328: Adding devices\n");
+=======
+	imx1_add_imx_uart0(&uart_pdata);
+
+	printk(KERN_INFO"Scb9328: Adding devices\n");
+	dm9000x_resources[2].start = gpio_to_irq(IMX_GPIO_NR(3, 3));
+	dm9000x_resources[2].end = gpio_to_irq(IMX_GPIO_NR(3, 3));
+>>>>>>> refs/remotes/origin/master
 	platform_add_devices(devices, ARRAY_SIZE(devices));
 }
 
@@ -152,6 +182,7 @@ static void __init scb9328_timer_init(void)
 	mx1_clocks_init(32000);
 }
 
+<<<<<<< HEAD
 static struct sys_timer scb9328_timer = {
 	.init	= scb9328_timer_init,
 };
@@ -166,13 +197,23 @@ MACHINE_START(SCB9328, "Synertronixx scb9328")
 	.timer = &scb9328_timer,
 	.init_machine = scb9328_init,
 =======
+=======
+MACHINE_START(SCB9328, "Synertronixx scb9328")
+	/* Sascha Hauer */
+>>>>>>> refs/remotes/origin/master
 	.atag_offset = 100,
 	.map_io = mx1_map_io,
 	.init_early = imx1_init_early,
 	.init_irq = mx1_init_irq,
 	.handle_irq = imx1_handle_irq,
+<<<<<<< HEAD
 	.timer = &scb9328_timer,
 	.init_machine = scb9328_init,
 	.restart	= mxc_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= scb9328_timer_init,
+	.init_machine = scb9328_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

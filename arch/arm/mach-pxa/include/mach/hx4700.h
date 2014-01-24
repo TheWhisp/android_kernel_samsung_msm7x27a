@@ -16,10 +16,14 @@
 #include <linux/mfd/asic3.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HX4700_ASIC3_GPIO_BASE	NR_BUILTIN_GPIO
 =======
 #define HX4700_ASIC3_GPIO_BASE	PXA_NR_BUILTIN_GPIO
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HX4700_ASIC3_GPIO_BASE	PXA_NR_BUILTIN_GPIO
+>>>>>>> refs/remotes/origin/master
 #define HX4700_EGPIO_BASE	(HX4700_ASIC3_GPIO_BASE + ASIC3_NUM_GPIOS)
 #define HX4700_NR_IRQS		(IRQ_BOARD_START + 70)
 

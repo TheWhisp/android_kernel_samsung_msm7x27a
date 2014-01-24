@@ -46,18 +46,24 @@ extern int			get_mdevice_count(void);
 
 extern int	connect_Bstack(struct mISDNdevice *, struct mISDNchannel *,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			u_int, struct sockaddr_mISDN *);
 extern int	connect_layer1(struct mISDNdevice *, struct mISDNchannel *,
 			u_int, struct sockaddr_mISDN *);
 extern int	create_l2entity(struct mISDNdevice *, struct mISDNchannel *,
 			u_int, struct sockaddr_mISDN *);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			       u_int, struct sockaddr_mISDN *);
 extern int	connect_layer1(struct mISDNdevice *, struct mISDNchannel *,
 			       u_int, struct sockaddr_mISDN *);
 extern int	create_l2entity(struct mISDNdevice *, struct mISDNchannel *,
 				u_int, struct sockaddr_mISDN *);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern int	create_stack(struct mISDNdevice *);
 extern int	create_teimanager(struct mISDNdevice *);
@@ -80,10 +86,14 @@ extern void	mISDN_timer_cleanup(void);
 extern int	l1_init(u_int *);
 extern void	l1_cleanup(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int 	Isdnl2_Init(u_int *);
 =======
 extern int	Isdnl2_Init(u_int *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int	Isdnl2_Init(u_int *);
+>>>>>>> refs/remotes/origin/master
 extern void	Isdnl2_cleanup(void);
 
 extern void	mISDN_init_clock(u_int *);

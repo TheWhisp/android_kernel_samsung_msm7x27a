@@ -3,7 +3,11 @@
  *  JZ4740 IRQ definitions
  *
  *  This program is free software; you can redistribute it and/or modify it
+<<<<<<< HEAD
  *  under  the terms of the GNU General  Public License as published by the
+=======
+ *  under  the terms of the GNU General	 Public License as published by the
+>>>>>>> refs/remotes/origin/master
  *  Free Software Foundation;  either version 2 of the License, or (at your
  *  option) any later version.
  *
@@ -46,10 +50,14 @@
 
 /* 2nd-level interrupts */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define JZ4740_IRQ_DMA(x)	(JZ4740_IRQ(32) + (X))
 =======
 #define JZ4740_IRQ_DMA(x)	(JZ4740_IRQ(32) + (x))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define JZ4740_IRQ_DMA(x)	(JZ4740_IRQ(32) + (x))
+>>>>>>> refs/remotes/origin/master
 
 #define JZ4740_IRQ_INTC_GPIO(x) (JZ4740_IRQ_GPIO0 - (x))
 #define JZ4740_IRQ_GPIO(x)	(JZ4740_IRQ(48) + (x))

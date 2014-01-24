@@ -20,7 +20,11 @@
 #include <net/ip.h>
 #include <net/ipv6.h>
 #include <net/ip6_route.h>
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 #include <net/mip6.h>
 #endif
 
@@ -73,6 +77,16 @@ static int xfrm6_get_tos(const struct flowi *fl)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void xfrm6_init_dst(struct net *net, struct xfrm_dst *xdst)
+{
+	struct rt6_info *rt = (struct rt6_info *)xdst;
+
+	rt6_init_peer(rt, net->ipv6.peers);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int xfrm6_init_path(struct xfrm_dst *path, struct dst_entry *dst,
 			   int nfheader_len)
 {
@@ -101,9 +115,13 @@ static int xfrm6_fill_dst(struct xfrm_dst *xdst, struct net_device *dev,
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	xdst->u.rt6.rt6i_peer = rt->rt6i_peer;
 	if (rt->rt6i_peer)
 		atomic_inc(&rt->rt6i_peer->refcnt);
+=======
+	rt6_transfer_peer(&xdst->u.rt6, rt);
+>>>>>>> refs/remotes/origin/master
 
 	/* Sheit... I remember I did this right. Apparently,
 	 * it was magically lost, so this code needs audit */
@@ -130,6 +148,7 @@ _decode_session6(struct sk_buff *skb, struct flowi *fl, int reverse)
 	struct ipv6_opt_hdr *exthdr;
 	const unsigned char *nh = skb_network_header(skb);
 	u8 nexthdr = nh[IP6CB(skb)->nhoff];
+<<<<<<< HEAD
 
 	memset(fl6, 0, sizeof(struct flowi6));
 	fl6->flowi6_mark = skb->mark;
@@ -141,6 +160,19 @@ _decode_session6(struct sk_buff *skb, struct flowi *fl, int reverse)
 	fl6->daddr = reverse ? hdr->saddr : hdr->daddr;
 	fl6->saddr = reverse ? hdr->daddr : hdr->saddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int oif = 0;
+
+	if (skb_dst(skb))
+		oif = skb_dst(skb)->dev->ifindex;
+
+	memset(fl6, 0, sizeof(struct flowi6));
+	fl6->flowi6_mark = skb->mark;
+	fl6->flowi6_oif = reverse ? skb->skb_iif : oif;
+
+	fl6->daddr = reverse ? hdr->saddr : hdr->daddr;
+	fl6->saddr = reverse ? hdr->daddr : hdr->saddr;
+>>>>>>> refs/remotes/origin/master
 
 	while (nh + offset + 1 < skb->data ||
 	       pskb_may_pull(skb, nh + offset + 1 - skb->data)) {
@@ -183,7 +215,11 @@ _decode_session6(struct sk_buff *skb, struct flowi *fl, int reverse)
 			fl6->flowi6_proto = nexthdr;
 			return;
 
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 		case IPPROTO_MH:
 			if (!onlyproto && pskb_may_pull(skb, nh + offset + 3 - skb->data)) {
 				struct ip6_mh *mh;
@@ -215,12 +251,30 @@ static inline int xfrm6_garbage_collect(struct dst_ops *ops)
 	return dst_entries_get_fast(ops) > ops->gc_thresh * 2;
 }
 
+<<<<<<< HEAD
 static void xfrm6_update_pmtu(struct dst_entry *dst, u32 mtu)
+=======
+static void xfrm6_update_pmtu(struct dst_entry *dst, struct sock *sk,
+			      struct sk_buff *skb, u32 mtu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct xfrm_dst *xdst = (struct xfrm_dst *)dst;
 	struct dst_entry *path = xdst->route;
 
+<<<<<<< HEAD
 	path->ops->update_pmtu(path, mtu);
+=======
+	path->ops->update_pmtu(path, sk, skb, mtu);
+}
+
+static void xfrm6_redirect(struct dst_entry *dst, struct sock *sk,
+			   struct sk_buff *skb)
+{
+	struct xfrm_dst *xdst = (struct xfrm_dst *)dst;
+	struct dst_entry *path = xdst->route;
+
+	path->ops->redirect(path, sk, skb);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void xfrm6_dst_destroy(struct dst_entry *dst)
@@ -230,8 +284,15 @@ static void xfrm6_dst_destroy(struct dst_entry *dst)
 	if (likely(xdst->u.rt6.rt6i_idev))
 		in6_dev_put(xdst->u.rt6.rt6i_idev);
 	dst_destroy_metrics_generic(dst);
+<<<<<<< HEAD
 	if (likely(xdst->u.rt6.rt6i_peer))
 		inet_putpeer(xdst->u.rt6.rt6i_peer);
+=======
+	if (rt6_has_peer(&xdst->u.rt6)) {
+		struct inet_peer *peer = rt6_peer_ptr(&xdst->u.rt6);
+		inet_putpeer(peer);
+	}
+>>>>>>> refs/remotes/origin/master
 	xfrm_dst_destroy(xdst);
 }
 
@@ -267,11 +328,19 @@ static struct dst_ops xfrm6_dst_ops = {
 	.protocol =		cpu_to_be16(ETH_P_IPV6),
 	.gc =			xfrm6_garbage_collect,
 	.update_pmtu =		xfrm6_update_pmtu,
+<<<<<<< HEAD
+=======
+	.redirect =		xfrm6_redirect,
+>>>>>>> refs/remotes/origin/master
 	.cow_metrics =		dst_cow_metrics_generic,
 	.destroy =		xfrm6_dst_destroy,
 	.ifdown =		xfrm6_dst_ifdown,
 	.local_out =		__ip6_local_out,
+<<<<<<< HEAD
 	.gc_thresh =		1024,
+=======
+	.gc_thresh =		32768,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct xfrm_policy_afinfo xfrm6_policy_afinfo = {
@@ -281,6 +350,10 @@ static struct xfrm_policy_afinfo xfrm6_policy_afinfo = {
 	.get_saddr = 		xfrm6_get_saddr,
 	.decode_session =	_decode_session6,
 	.get_tos =		xfrm6_get_tos,
+<<<<<<< HEAD
+=======
+	.init_dst =		xfrm6_init_dst,
+>>>>>>> refs/remotes/origin/master
 	.init_path =		xfrm6_init_path,
 	.fill_dst =		xfrm6_fill_dst,
 	.blackhole_route =	ip6_blackhole_route,
@@ -308,12 +381,61 @@ static struct ctl_table xfrm6_policy_table[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 static struct ctl_table_header *sysctl_hdr;
+=======
+static int __net_init xfrm6_net_init(struct net *net)
+{
+	struct ctl_table *table;
+	struct ctl_table_header *hdr;
+
+	table = xfrm6_policy_table;
+	if (!net_eq(net, &init_net)) {
+		table = kmemdup(table, sizeof(xfrm6_policy_table), GFP_KERNEL);
+		if (!table)
+			goto err_alloc;
+
+		table[0].data = &net->xfrm.xfrm6_dst_ops.gc_thresh;
+	}
+
+	hdr = register_net_sysctl(net, "net/ipv6", table);
+	if (!hdr)
+		goto err_reg;
+
+	net->ipv6.sysctl.xfrm6_hdr = hdr;
+	return 0;
+
+err_reg:
+	if (!net_eq(net, &init_net))
+		kfree(table);
+err_alloc:
+	return -ENOMEM;
+}
+
+static void __net_exit xfrm6_net_exit(struct net *net)
+{
+	struct ctl_table *table;
+
+	if (net->ipv6.sysctl.xfrm6_hdr == NULL)
+		return;
+
+	table = net->ipv6.sysctl.xfrm6_hdr->ctl_table_arg;
+	unregister_net_sysctl_table(net->ipv6.sysctl.xfrm6_hdr);
+	if (!net_eq(net, &init_net))
+		kfree(table);
+}
+
+static struct pernet_operations xfrm6_net_ops = {
+	.init	= xfrm6_net_init,
+	.exit	= xfrm6_net_exit,
+};
+>>>>>>> refs/remotes/origin/master
 #endif
 
 int __init xfrm6_init(void)
 {
 	int ret;
+<<<<<<< HEAD
 	unsigned int gc_thresh;
 
 	/*
@@ -329,6 +451,9 @@ int __init xfrm6_init(void)
 	 */
 	gc_thresh = FIB6_TABLE_HASHSZ * 8;
 	xfrm6_dst_ops.gc_thresh = (gc_thresh < 1024) ? 1024 : gc_thresh;
+=======
+
+>>>>>>> refs/remotes/origin/master
 	dst_entries_init(&xfrm6_dst_ops);
 
 	ret = xfrm6_policy_init();
@@ -341,8 +466,12 @@ int __init xfrm6_init(void)
 		goto out_policy;
 
 #ifdef CONFIG_SYSCTL
+<<<<<<< HEAD
 	sysctl_hdr = register_net_sysctl_table(&init_net, net_ipv6_ctl_path,
 						xfrm6_policy_table);
+=======
+	register_pernet_subsys(&xfrm6_net_ops);
+>>>>>>> refs/remotes/origin/master
 #endif
 out:
 	return ret;
@@ -354,10 +483,15 @@ out_policy:
 void xfrm6_fini(void)
 {
 #ifdef CONFIG_SYSCTL
+<<<<<<< HEAD
 	if (sysctl_hdr)
 		unregister_net_sysctl_table(sysctl_hdr);
 #endif
 	//xfrm6_input_fini();
+=======
+	unregister_pernet_subsys(&xfrm6_net_ops);
+#endif
+>>>>>>> refs/remotes/origin/master
 	xfrm6_policy_fini();
 	xfrm6_state_fini();
 	dst_entries_destroy(&xfrm6_dst_ops);

@@ -13,10 +13,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include "compr.h"
 
 static DEFINE_SPINLOCK(jffs2_compressor_list_lock);
@@ -59,7 +64,10 @@ static int jffs2_is_best_compression(struct jffs2_compressor *this,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * jffs2_selected_compress:
  * @compr: Explicit compression type to use (ie, JFFS2_COMPR_ZLIB).
@@ -132,7 +140,10 @@ static int jffs2_selected_compress(u8 compr, unsigned char *data_in,
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* jffs2_compress:
  * @data_in: Pointer to uncompressed data
  * @cpage_out: Pointer to returned pointer to buffer for compressed data
@@ -157,15 +168,20 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
 {
 	int ret = JFFS2_COMPR_NONE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int compr_ret;
 =======
 	int mode, compr_ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int mode, compr_ret;
+>>>>>>> refs/remotes/origin/master
 	struct jffs2_compressor *this, *best=NULL;
 	unsigned char *output_buf = NULL, *tmp_buf;
 	uint32_t orig_slen, orig_dlen;
 	uint32_t best_slen=0, best_dlen=0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch (jffs2_compression_mode) {
 	case JFFS2_COMPR_MODE_NONE:
@@ -203,6 +219,8 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
 		if (ret == JFFS2_COMPR_NONE)
 			kfree(output_buf);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (c->mount_opts.override_compr)
 		mode = c->mount_opts.compr;
 	else
@@ -214,7 +232,10 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
 	case JFFS2_COMPR_MODE_PRIORITY:
 		ret = jffs2_selected_compress(0, data_in, cpage_out, datalen,
 				cdatalen);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case JFFS2_COMPR_MODE_SIZE:
 	case JFFS2_COMPR_MODE_FAVOURLZO:
@@ -239,11 +260,16 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
 				spin_lock(&jffs2_compressor_list_lock);
 				if (!tmp_buf) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 					printk(KERN_WARNING "JFFS2: No memory for compressor allocation. (%d bytes)\n", orig_slen);
 =======
 					pr_warn("No memory for compressor allocation. (%d bytes)\n",
 						orig_slen);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					pr_warn("No memory for compressor allocation. (%d bytes)\n",
+						orig_slen);
+>>>>>>> refs/remotes/origin/master
 					continue;
 				}
 				else {
@@ -278,6 +304,7 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
 			best->stat_compr_new_size  += best_dlen;
 			ret = best->compr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 		spin_unlock(&jffs2_compressor_list_lock);
 		break;
@@ -286,6 +313,8 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
 	}
  out:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			*cpage_out = output_buf;
 		}
 		spin_unlock(&jffs2_compressor_list_lock);
@@ -302,7 +331,10 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
 		pr_err("unknown compression mode\n");
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret == JFFS2_COMPR_NONE) {
 		*cpage_out = data_in;
 		*datalen = *cdatalen;
@@ -310,11 +342,14 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
 		none_stat_compr_size += *datalen;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else {
 		*cpage_out = output_buf;
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -349,11 +384,16 @@ int jffs2_decompress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
 				spin_lock(&jffs2_compressor_list_lock);
 				if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 					printk(KERN_WARNING "Decompressor \"%s\" returned %d\n", this->name, ret);
 =======
 					pr_warn("Decompressor \"%s\" returned %d\n",
 						this->name, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					pr_warn("Decompressor \"%s\" returned %d\n",
+						this->name, ret);
+>>>>>>> refs/remotes/origin/master
 				}
 				else {
 					this->stat_decompr_blocks++;
@@ -364,10 +404,14 @@ int jffs2_decompress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
 			}
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "JFFS2 compression type 0x%02x not available.\n", comprtype);
 =======
 		pr_warn("compression type 0x%02x not available\n", comprtype);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("compression type 0x%02x not available\n", comprtype);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&jffs2_compressor_list_lock);
 		return -EIO;
 	}
@@ -380,10 +424,14 @@ int jffs2_register_compressor(struct jffs2_compressor *comp)
 
 	if (!comp->name) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "NULL compressor name at registering JFFS2 compressor. Failed.\n");
 =======
 		pr_warn("NULL compressor name at registering JFFS2 compressor. Failed.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("NULL compressor name at registering JFFS2 compressor. Failed.\n");
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 	comp->compr_buf_size=0;
@@ -394,10 +442,14 @@ int jffs2_register_compressor(struct jffs2_compressor *comp)
 	comp->stat_compr_blocks=0;
 	comp->stat_decompr_blocks=0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "Registering JFFS2 compressor \"%s\"\n", comp->name));
 =======
 	jffs2_dbg(1, "Registering JFFS2 compressor \"%s\"\n", comp->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	jffs2_dbg(1, "Registering JFFS2 compressor \"%s\"\n", comp->name);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&jffs2_compressor_list_lock);
 
@@ -421,6 +473,7 @@ out:
 int jffs2_unregister_compressor(struct jffs2_compressor *comp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	D2(struct jffs2_compressor *this;)
 
 	D1(printk(KERN_DEBUG "Unregistering JFFS2 compressor \"%s\"\n", comp->name));
@@ -429,16 +482,25 @@ int jffs2_unregister_compressor(struct jffs2_compressor *comp)
 
 	jffs2_dbg(1, "Unregistering JFFS2 compressor \"%s\"\n", comp->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	D2(struct jffs2_compressor *this);
+
+	jffs2_dbg(1, "Unregistering JFFS2 compressor \"%s\"\n", comp->name);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&jffs2_compressor_list_lock);
 
 	if (comp->usecount) {
 		spin_unlock(&jffs2_compressor_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "JFFS2: Compressor modul is in use. Unregister failed.\n");
 =======
 		pr_warn("Compressor module is in use. Unregister failed.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("Compressor module is in use. Unregister failed.\n");
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 	list_del(&comp->list);
@@ -476,6 +538,7 @@ int __init jffs2_compressors_init(void)
 #ifdef CONFIG_JFFS2_CMODE_NONE
 	jffs2_compression_mode = JFFS2_COMPR_MODE_NONE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	D1(printk(KERN_INFO "JFFS2: default compression mode: none\n");)
 #else
 #ifdef CONFIG_JFFS2_CMODE_SIZE
@@ -488,6 +551,8 @@ int __init jffs2_compressors_init(void)
 #else
 	D1(printk(KERN_INFO "JFFS2: default compression mode: priority\n");)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	jffs2_dbg(1, "default compression mode: none\n");
 #else
 #ifdef CONFIG_JFFS2_CMODE_SIZE
@@ -499,7 +564,10 @@ int __init jffs2_compressors_init(void)
 	jffs2_dbg(1, "default compression mode: favourlzo\n");
 #else
 	jffs2_dbg(1, "default compression mode: priority\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 #endif
 #endif

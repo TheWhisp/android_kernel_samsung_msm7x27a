@@ -10,12 +10,20 @@
 #include <linux/io.h>
 #include <asm/proc-fns.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/system_misc.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/regs-ost.h>
 #include <mach/reset.h>
+=======
+#include <asm/system_misc.h>
+
+#include <mach/regs-ost.h>
+#include <mach/reset.h>
+#include <mach/smemc.h>
+>>>>>>> refs/remotes/origin/master
 
 unsigned int reset_status;
 EXPORT_SYMBOL(reset_status);
@@ -80,6 +88,7 @@ static void do_gpio_reset(void)
 static void do_hw_reset(void)
 {
 	/* Initialize the watchdog and let it fire */
+<<<<<<< HEAD
 	OWER = OWER_WME;
 	OSSR = OSSR_M3;
 	OSMR3 = OSCR + 368640;	/* ... in 100 ms */
@@ -90,10 +99,26 @@ void arch_reset(char mode, const char *cmd)
 {
 =======
 void pxa_restart(char mode, const char *cmd)
+=======
+	writel_relaxed(OWER_WME, OWER);
+	writel_relaxed(OSSR_M3, OSSR);
+	/* ... in 100 ms */
+	writel_relaxed(readl_relaxed(OSCR) + 368640, OSMR3);
+	/*
+	 * SDRAM hangs on watchdog reset on Marvell PXA270 (erratum 71)
+	 * we put SDRAM into self-refresh to prevent that
+	 */
+	while (1)
+		writel_relaxed(MDREFR_SLFRSH, MDREFR);
+}
+
+void pxa_restart(enum reboot_mode mode, const char *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	local_irq_disable();
 	local_fiq_disable();
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	clear_reset_status(RESET_STATUS_ALL);
 
@@ -110,9 +135,25 @@ void pxa_restart(char mode, const char *cmd)
 		do_gpio_reset();
 		break;
 	case 'h':
+=======
+	clear_reset_status(RESET_STATUS_ALL);
+
+	switch (mode) {
+	case REBOOT_SOFT:
+		/* Jump into ROM at address 0 */
+		soft_restart(0);
+		break;
+	case REBOOT_GPIO:
+		do_gpio_reset();
+		break;
+	case REBOOT_HARD:
+>>>>>>> refs/remotes/origin/master
 	default:
 		do_hw_reset();
 		break;
 	}
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

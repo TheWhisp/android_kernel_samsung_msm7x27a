@@ -394,6 +394,7 @@ static int __init celleb_setup_epci(struct device_node *node,
 	if (of_address_to_resource(node, 0, &r))
 		goto error;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hose->cfg_addr = ioremap(r.start, (r.end - r.start + 1));
 	if (!hose->cfg_addr)
 		goto error;
@@ -408,6 +409,8 @@ static int __init celleb_setup_epci(struct device_node *node,
 	pr_debug("EPCI: cfg_data map 0x%016llx->0x%016lx + 0x%016llx\n",
 		 r.start, (unsigned long)hose->cfg_data, (r.end - r.start + 1));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	hose->cfg_addr = ioremap(r.start, resource_size(&r));
 	if (!hose->cfg_addr)
 		goto error;
@@ -421,7 +424,10 @@ static int __init celleb_setup_epci(struct device_node *node,
 		goto error;
 	pr_debug("EPCI: cfg_data map 0x%016llx->0x%016lx + 0x%016llx\n",
 		 r.start, (unsigned long)hose->cfg_data, resource_size(&r));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	hose->ops = &celleb_epci_ops;
 	celleb_epci_init(hose);

@@ -3,9 +3,13 @@
 #include <asm/processor.h>
 #include <asm/fpu.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/traps.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/traps.h>
+>>>>>>> refs/remotes/origin/master
 
 int init_fpu(struct task_struct *tsk)
 {
@@ -47,7 +51,11 @@ void __fpu_state_restore(void)
 	restore_fpu(tsk);
 
 	task_thread_info(tsk)->status |= TS_USEDFPU;
+<<<<<<< HEAD
 	tsk->fpu_counter++;
+=======
+	tsk->thread.fpu_counter++;
+>>>>>>> refs/remotes/origin/master
 }
 
 void fpu_state_restore(struct pt_regs *regs)

@@ -6,10 +6,14 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/delay.h>
 #include <linux/device.h>
@@ -285,11 +289,16 @@ static inline void iommu_free_ctx(struct iommu *iommu, int ctx)
 
 static void *dma_4u_alloc_coherent(struct device *dev, size_t size,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   dma_addr_t *dma_addrp, gfp_t gfp)
 =======
 				   dma_addr_t *dma_addrp, gfp_t gfp,
 				   struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   dma_addr_t *dma_addrp, gfp_t gfp,
+				   struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags, order, first_page;
 	struct iommu *iommu;
@@ -340,11 +349,16 @@ static void *dma_4u_alloc_coherent(struct device *dev, size_t size,
 
 static void dma_4u_free_coherent(struct device *dev, size_t size,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 void *cpu, dma_addr_t dvma)
 =======
 				 void *cpu, dma_addr_t dvma,
 				 struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 void *cpu, dma_addr_t dvma,
+				 struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iommu *iommu;
 	unsigned long flags, order, npages;
@@ -840,12 +854,17 @@ static void dma_4u_sync_sg_for_cpu(struct device *dev,
 
 static struct dma_map_ops sun4u_dma_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.alloc_coherent		= dma_4u_alloc_coherent,
 	.free_coherent		= dma_4u_free_coherent,
 =======
 	.alloc			= dma_4u_alloc_coherent,
 	.free			= dma_4u_free_coherent,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.alloc			= dma_4u_alloc_coherent,
+	.free			= dma_4u_free_coherent,
+>>>>>>> refs/remotes/origin/master
 	.map_page		= dma_4u_map_page,
 	.unmap_page		= dma_4u_unmap_page,
 	.map_sg			= dma_4u_map_sg,
@@ -871,7 +890,11 @@ int dma_supported(struct device *dev, u64 device_mask)
 		return 1;
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
 	if (dev->bus == &pci_bus_type)
+=======
+	if (dev_is_pci(dev))
+>>>>>>> refs/remotes/origin/master
 		return pci64_dma_supported(to_pci_dev(dev), device_mask);
 #endif
 

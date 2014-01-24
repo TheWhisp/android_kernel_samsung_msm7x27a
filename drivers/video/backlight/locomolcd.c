@@ -107,7 +107,10 @@ void locomolcd_power(int on)
 }
 EXPORT_SYMBOL(locomolcd_power);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int current_intensity;
 
 static int locomolcd_set_intensity(struct backlight_device *bd)
@@ -122,6 +125,7 @@ static int locomolcd_set_intensity(struct backlight_device *bd)
 		intensity = 0;
 
 	switch (intensity) {
+<<<<<<< HEAD
 	/* AC and non-AC are handled differently, but produce same results in sharp code? */
 	case 0: locomo_frontlight_set(locomolcd_dev, 0, 0, 161); break;
 	case 1: locomo_frontlight_set(locomolcd_dev, 117, 0, 161); break;
@@ -129,6 +133,27 @@ static int locomolcd_set_intensity(struct backlight_device *bd)
 	case 3: locomo_frontlight_set(locomolcd_dev, 194, 0, 161); break;
 	case 4: locomo_frontlight_set(locomolcd_dev, 194, 1, 161); break;
 
+=======
+	/*
+	 * AC and non-AC are handled differently,
+	 * but produce same results in sharp code?
+	 */
+	case 0:
+		locomo_frontlight_set(locomolcd_dev, 0, 0, 161);
+		break;
+	case 1:
+		locomo_frontlight_set(locomolcd_dev, 117, 0, 161);
+		break;
+	case 2:
+		locomo_frontlight_set(locomolcd_dev, 163, 0, 148);
+		break;
+	case 3:
+		locomo_frontlight_set(locomolcd_dev, 194, 0, 161);
+		break;
+	case 4:
+		locomo_frontlight_set(locomolcd_dev, 194, 1, 161);
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -ENODEV;
 	}
@@ -146,25 +171,41 @@ static const struct backlight_ops locomobl_data = {
 	.update_status  = locomolcd_set_intensity,
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int locomolcd_suspend(struct locomo_dev *dev, pm_message_t state)
+=======
+#ifdef CONFIG_PM_SLEEP
+static int locomolcd_suspend(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	locomolcd_flags |= LOCOMOLCD_SUSPENDED;
 	locomolcd_set_intensity(locomolcd_bl_device);
 	return 0;
 }
 
+<<<<<<< HEAD
 static int locomolcd_resume(struct locomo_dev *dev)
+=======
+static int locomolcd_resume(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	locomolcd_flags &= ~LOCOMOLCD_SUSPENDED;
 	locomolcd_set_intensity(locomolcd_bl_device);
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define locomolcd_suspend	NULL
 #define locomolcd_resume	NULL
 #endif
 
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(locomolcd_pm_ops, locomolcd_suspend, locomolcd_resume);
+
+>>>>>>> refs/remotes/origin/master
 static int locomolcd_probe(struct locomo_dev *ldev)
 {
 	struct backlight_properties props;
@@ -175,9 +216,17 @@ static int locomolcd_probe(struct locomo_dev *ldev)
 
 	locomo_gpio_set_dir(ldev->dev.parent, LOCOMO_GPIO_FL_VR, 0);
 
+<<<<<<< HEAD
 	/* the poodle_lcd_power function is called for the first time
 	 * from fs_initcall, which is before locomo is activated.
 	 * We need to recall poodle_lcd_power here*/
+=======
+	/*
+	 * the poodle_lcd_power function is called for the first time
+	 * from fs_initcall, which is before locomo is activated.
+	 * We need to recall poodle_lcd_power here
+	 */
+>>>>>>> refs/remotes/origin/master
 	if (machine_is_poodle())
 		locomolcd_power(1);
 
@@ -190,8 +239,13 @@ static int locomolcd_probe(struct locomo_dev *ldev)
 							&ldev->dev, NULL,
 							&locomobl_data, &props);
 
+<<<<<<< HEAD
 	if (IS_ERR (locomolcd_bl_device))
 		return PTR_ERR (locomolcd_bl_device);
+=======
+	if (IS_ERR(locomolcd_bl_device))
+		return PTR_ERR(locomolcd_bl_device);
+>>>>>>> refs/remotes/origin/master
 
 	/* Set up frontlight so that screen is readable */
 	locomolcd_bl_device->props.brightness = 2;
@@ -217,11 +271,17 @@ static int locomolcd_remove(struct locomo_dev *dev)
 
 static struct locomo_driver poodle_lcd_driver = {
 	.drv = {
+<<<<<<< HEAD
 		.name = "locomo-backlight",
+=======
+		.name	= "locomo-backlight",
+		.pm	= &locomolcd_pm_ops,
+>>>>>>> refs/remotes/origin/master
 	},
 	.devid	= LOCOMO_DEVID_BACKLIGHT,
 	.probe	= locomolcd_probe,
 	.remove	= locomolcd_remove,
+<<<<<<< HEAD
 	.suspend = locomolcd_suspend,
 	.resume = locomolcd_resume,
 };
@@ -241,6 +301,13 @@ static int __init locomolcd_init(void)
 =======
 	return locomo_driver_register(&poodle_lcd_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+static int __init locomolcd_init(void)
+{
+	return locomo_driver_register(&poodle_lcd_driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit locomolcd_exit(void)

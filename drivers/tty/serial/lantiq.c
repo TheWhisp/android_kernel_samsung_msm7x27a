@@ -31,16 +31,29 @@
 #include <linux/tty_flip.h>
 #include <linux/serial_core.h>
 #include <linux/serial.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/io.h>
 #include <linux/clk.h>
+=======
+#include <linux/of_platform.h>
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+#include <linux/io.h>
+#include <linux/clk.h>
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <lantiq_soc.h>
 
 #define PORT_LTQ_ASC		111
 #define MAXPORTS		2
 #define UART_DUMMY_UER_RX	1
+<<<<<<< HEAD
 #define DRVNAME			"ltq_asc"
+=======
+#define DRVNAME			"lantiq,asc"
+>>>>>>> refs/remotes/origin/master
 #ifdef __BIG_ENDIAN
 #define LTQ_ASC_TBUF		(0x0020 + 3)
 #define LTQ_ASC_RBUF		(0x0024 + 3)
@@ -114,6 +127,12 @@ static DEFINE_SPINLOCK(ltq_asc_lock);
 
 struct ltq_uart_port {
 	struct uart_port	port;
+<<<<<<< HEAD
+=======
+	/* clock used to derive divider */
+	struct clk		*fpiclk;
+	/* clock gating of the ASC core */
+>>>>>>> refs/remotes/origin/master
 	struct clk		*clk;
 	unsigned int		tx_irq;
 	unsigned int		rx_irq;
@@ -156,6 +175,7 @@ lqasc_enable_ms(struct uart_port *port)
 static int
 lqasc_rx_chars(struct uart_port *port)
 {
+<<<<<<< HEAD
 	struct tty_struct *tty = tty_port_tty_get(&port->state->port);
 	unsigned int ch = 0, rsr = 0, fifocnt;
 
@@ -165,12 +185,22 @@ lqasc_rx_chars(struct uart_port *port)
 	}
 	fifocnt =
 		ltq_r32(port->membase + LTQ_ASC_FSTAT) & ASCFSTAT_RXFFLMASK;
+=======
+	struct tty_port *tport = &port->state->port;
+	unsigned int ch = 0, rsr = 0, fifocnt;
+
+	fifocnt = ltq_r32(port->membase + LTQ_ASC_FSTAT) & ASCFSTAT_RXFFLMASK;
+>>>>>>> refs/remotes/origin/master
 	while (fifocnt--) {
 		u8 flag = TTY_NORMAL;
 		ch = ltq_r8(port->membase + LTQ_ASC_RBUF);
 		rsr = (ltq_r32(port->membase + LTQ_ASC_STATE)
 			& ASCSTATE_ANY) | UART_DUMMY_UER_RX;
+<<<<<<< HEAD
 		tty_flip_buffer_push(tty);
+=======
+		tty_flip_buffer_push(tport);
+>>>>>>> refs/remotes/origin/master
 		port->icount.rx++;
 
 		/*
@@ -202,7 +232,11 @@ lqasc_rx_chars(struct uart_port *port)
 		}
 
 		if ((rsr & port->ignore_status_mask) == 0)
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, ch, flag);
+=======
+			tty_insert_flip_char(tport, ch, flag);
+>>>>>>> refs/remotes/origin/master
 
 		if (rsr & ASCSTATE_ROE)
 			/*
@@ -210,11 +244,20 @@ lqasc_rx_chars(struct uart_port *port)
 			 * immediately, and doesn't affect the current
 			 * character
 			 */
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, 0, TTY_OVERRUN);
 	}
 	if (ch != 0)
 		tty_flip_buffer_push(tty);
 	tty_kref_put(tty);
+=======
+			tty_insert_flip_char(tport, 0, TTY_OVERRUN);
+	}
+
+	if (ch != 0)
+		tty_flip_buffer_push(tport);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -316,7 +359,13 @@ lqasc_startup(struct uart_port *port)
 	struct ltq_uart_port *ltq_port = to_ltq_uart_port(port);
 	int retval;
 
+<<<<<<< HEAD
 	port->uartclk = clk_get_rate(ltq_port->clk);
+=======
+	if (!IS_ERR(ltq_port->clk))
+		clk_enable(ltq_port->clk);
+	port->uartclk = clk_get_rate(ltq_port->fpiclk);
+>>>>>>> refs/remotes/origin/master
 
 	ltq_w32_mask(ASCCLC_DISS | ASCCLC_RMCMASK, (1 << ASCCLC_RMCOFFSET),
 		port->membase + LTQ_ASC_CLC);
@@ -339,10 +388,14 @@ lqasc_startup(struct uart_port *port)
 
 	retval = request_irq(ltq_port->tx_irq, lqasc_tx_int,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		IRQF_DISABLED, "asc_tx", port);
 =======
 		0, "asc_tx", port);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		0, "asc_tx", port);
+>>>>>>> refs/remotes/origin/master
 	if (retval) {
 		pr_err("failed to request lqasc_tx_int\n");
 		return retval;
@@ -350,10 +403,14 @@ lqasc_startup(struct uart_port *port)
 
 	retval = request_irq(ltq_port->rx_irq, lqasc_rx_int,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		IRQF_DISABLED, "asc_rx", port);
 =======
 		0, "asc_rx", port);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		0, "asc_rx", port);
+>>>>>>> refs/remotes/origin/master
 	if (retval) {
 		pr_err("failed to request lqasc_rx_int\n");
 		goto err1;
@@ -361,10 +418,14 @@ lqasc_startup(struct uart_port *port)
 
 	retval = request_irq(ltq_port->err_irq, lqasc_err_int,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		IRQF_DISABLED, "asc_err", port);
 =======
 		0, "asc_err", port);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		0, "asc_err", port);
+>>>>>>> refs/remotes/origin/master
 	if (retval) {
 		pr_err("failed to request lqasc_err_int\n");
 		goto err2;
@@ -394,6 +455,11 @@ lqasc_shutdown(struct uart_port *port)
 		port->membase + LTQ_ASC_RXFCON);
 	ltq_w32_mask(ASCTXFCON_TXFEN, ASCTXFCON_TXFFLU,
 		port->membase + LTQ_ASC_TXFCON);
+<<<<<<< HEAD
+=======
+	if (!IS_ERR(ltq_port->clk))
+		clk_disable(ltq_port->clk);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -491,14 +557,20 @@ lqasc_set_termios(struct uart_port *port,
 
 	/* Don't rewrite B0 */
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (tty_termios_baud_rate(new))
 		tty_termios_encode_baud_rate(new, baud, baud);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (tty_termios_baud_rate(new))
 		tty_termios_encode_baud_rate(new, baud, baud);
 
 	uart_update_timeout(port, cflag, baud);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static const char*
@@ -647,7 +719,14 @@ lqasc_console_setup(struct console *co, char *options)
 
 	port = &ltq_port->port;
 
+<<<<<<< HEAD
 	port->uartclk = clk_get_rate(ltq_port->clk);
+=======
+	if (!IS_ERR(ltq_port->clk))
+		clk_enable(ltq_port->clk);
+
+	port->uartclk = clk_get_rate(ltq_port->fpiclk);
+>>>>>>> refs/remotes/origin/master
 
 	if (options)
 		uart_parse_options(options, &baud, &parity, &bits, &flow);
@@ -685,6 +764,7 @@ static struct uart_driver lqasc_reg = {
 static int __init
 lqasc_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct ltq_uart_port *ltq_port;
 	struct uart_port *port;
 	struct resource *mmres, *irqres;
@@ -716,6 +796,34 @@ lqasc_probe(struct platform_device *pdev)
 		return -ENODEV;
 
 	ltq_port = kzalloc(sizeof(struct ltq_uart_port), GFP_KERNEL);
+=======
+	struct device_node *node = pdev->dev.of_node;
+	struct ltq_uart_port *ltq_port;
+	struct uart_port *port;
+	struct resource *mmres, irqres[3];
+	int line = 0;
+	int ret;
+
+	mmres = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	ret = of_irq_to_resource_table(node, irqres, 3);
+	if (!mmres || (ret != 3)) {
+		dev_err(&pdev->dev,
+			"failed to get memory/irq for serial port\n");
+		return -ENODEV;
+	}
+
+	/* check if this is the console port */
+	if (mmres->start != CPHYSADDR(LTQ_EARLY_ASC))
+		line = 1;
+
+	if (lqasc_port[line]) {
+		dev_err(&pdev->dev, "port %d already allocated\n", line);
+		return -EBUSY;
+	}
+
+	ltq_port = devm_kzalloc(&pdev->dev, sizeof(struct ltq_uart_port),
+			GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!ltq_port)
 		return -ENOMEM;
 
@@ -726,6 +834,7 @@ lqasc_probe(struct platform_device *pdev)
 	port->ops	= &lqasc_pops;
 	port->fifosize	= 16;
 	port->type	= PORT_LTQ_ASC,
+<<<<<<< HEAD
 	port->line	= pdev->id;
 	port->dev	= &pdev->dev;
 
@@ -739,6 +848,28 @@ lqasc_probe(struct platform_device *pdev)
 	ltq_port->err_irq = err_irq;
 
 	lqasc_port[pdev->id] = ltq_port;
+=======
+	port->line	= line;
+	port->dev	= &pdev->dev;
+	/* unused, just to be backward-compatible */
+	port->irq	= irqres[0].start;
+	port->mapbase	= mmres->start;
+
+	ltq_port->fpiclk = clk_get_fpi();
+	if (IS_ERR(ltq_port->fpiclk)) {
+		pr_err("failed to get fpi clk\n");
+		return -ENOENT;
+	}
+
+	/* not all asc ports have clock gates, lets ignore the return code */
+	ltq_port->clk = clk_get(&pdev->dev, NULL);
+
+	ltq_port->tx_irq = irqres[0].start;
+	ltq_port->rx_irq = irqres[1].start;
+	ltq_port->err_irq = irqres[2].start;
+
+	lqasc_port[line] = ltq_port;
+>>>>>>> refs/remotes/origin/master
 	platform_set_drvdata(pdev, ltq_port);
 
 	ret = uart_add_one_port(&lqasc_reg, port);
@@ -746,10 +877,23 @@ lqasc_probe(struct platform_device *pdev)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static const struct of_device_id ltq_asc_match[] = {
+	{ .compatible = DRVNAME },
+	{},
+};
+MODULE_DEVICE_TABLE(of, ltq_asc_match);
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver lqasc_driver = {
 	.driver		= {
 		.name	= DRVNAME,
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
+=======
+		.of_match_table = ltq_asc_match,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

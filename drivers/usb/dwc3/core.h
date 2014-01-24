@@ -6,6 +6,7 @@
  * Authors: Felipe Balbi <balbi@ti.com>,
  *	    Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  *
+<<<<<<< HEAD
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -34,6 +35,16 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+=======
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2  of
+ * the License as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef __DRIVERS_USB_DWC3_CORE_H
@@ -49,6 +60,7 @@
 
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
+<<<<<<< HEAD
 
 #include "dwc3_otg.h"
 
@@ -57,6 +69,18 @@
 #define DWC3_XHCI_RESOURCES_NUM	2
 
 #define DWC3_EVENT_BUFFERS_SIZE	(2 * PAGE_SIZE)
+=======
+#include <linux/usb/otg.h>
+
+/* Global constants */
+#define DWC3_EP0_BOUNCE_SIZE	512
+#define DWC3_ENDPOINTS_NUM	32
+#define DWC3_XHCI_RESOURCES_NUM	2
+
+#define DWC3_EVENT_SIZE		4	/* bytes */
+#define DWC3_EVENT_MAX_NUM	64	/* 2 events/endpoint */
+#define DWC3_EVENT_BUFFERS_SIZE	(DWC3_EVENT_SIZE * DWC3_EVENT_MAX_NUM)
+>>>>>>> refs/remotes/origin/master
 #define DWC3_EVENT_TYPE_MASK	0xfe
 
 #define DWC3_EVENT_TYPE_DEV	0
@@ -68,12 +92,19 @@
 #define DWC3_DEVICE_EVENT_CONNECT_DONE		2
 #define DWC3_DEVICE_EVENT_LINK_STATUS_CHANGE	3
 #define DWC3_DEVICE_EVENT_WAKEUP		4
+<<<<<<< HEAD
+=======
+#define DWC3_DEVICE_EVENT_HIBER_REQ		5
+>>>>>>> refs/remotes/origin/master
 #define DWC3_DEVICE_EVENT_EOPF			6
 #define DWC3_DEVICE_EVENT_SOF			7
 #define DWC3_DEVICE_EVENT_ERRATIC_ERROR		9
 #define DWC3_DEVICE_EVENT_CMD_CMPL		10
 #define DWC3_DEVICE_EVENT_OVERFLOW		11
+<<<<<<< HEAD
 #define DWC3_DEVICE_EVENT_VENDOR_DEV_TEST_LMP	12
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define DWC3_GEVNTCOUNT_MASK	0xfffc
 #define DWC3_GSNPSID_MASK	0xffff0000
@@ -154,7 +185,11 @@
 #define DWC3_OCFG		0xcc00
 #define DWC3_OCTL		0xcc04
 #define DWC3_OEVT		0xcc08
+<<<<<<< HEAD
 #define DWC3_OEVTEN		0xcc0c
+=======
+#define DWC3_OEVTEN		0xcc0C
+>>>>>>> refs/remotes/origin/master
 #define DWC3_OSTS		0xcc10
 
 /* Bit fields */
@@ -174,6 +209,7 @@
 #define DWC3_GCTL_PRTCAP_DEVICE	2
 #define DWC3_GCTL_PRTCAP_OTG	3
 
+<<<<<<< HEAD
 #define DWC3_GCTL_CORESOFTRESET	(1 << 11)
 #define DWC3_GCTL_SCALEDOWN(n)	((n) << 4)
 #define DWC3_GCTL_SCALEDOWN_MASK DWC3_GCTL_SCALEDOWN(3)
@@ -192,14 +228,48 @@
 /* Global TX Fifo Size Register */
 #define DWC3_GTXFIFOSIZ_TXFDEF(n) ((n) & 0xffff)
 #define DWC3_GTXFIFOSIZ_TXFSTADDR(n) ((n) & 0xffff0000)
+=======
+#define DWC3_GCTL_CORESOFTRESET		(1 << 11)
+#define DWC3_GCTL_SCALEDOWN(n)		((n) << 4)
+#define DWC3_GCTL_SCALEDOWN_MASK	DWC3_GCTL_SCALEDOWN(3)
+#define DWC3_GCTL_DISSCRAMBLE		(1 << 3)
+#define DWC3_GCTL_GBLHIBERNATIONEN	(1 << 1)
+#define DWC3_GCTL_DSBLCLKGTNG		(1 << 0)
+
+/* Global USB2 PHY Configuration Register */
+#define DWC3_GUSB2PHYCFG_PHYSOFTRST	(1 << 31)
+#define DWC3_GUSB2PHYCFG_SUSPHY		(1 << 6)
+
+/* Global USB3 PIPE Control Register */
+#define DWC3_GUSB3PIPECTL_PHYSOFTRST	(1 << 31)
+#define DWC3_GUSB3PIPECTL_SUSPHY	(1 << 17)
+
+/* Global TX Fifo Size Register */
+#define DWC3_GTXFIFOSIZ_TXFDEF(n)	((n) & 0xffff)
+#define DWC3_GTXFIFOSIZ_TXFSTADDR(n)	((n) & 0xffff0000)
+
+/* Global Event Size Registers */
+#define DWC3_GEVNTSIZ_INTMASK		(1 << 31)
+#define DWC3_GEVNTSIZ_SIZE(n)		((n) & 0xffff)
+>>>>>>> refs/remotes/origin/master
 
 /* Global HWPARAMS1 Register */
 #define DWC3_GHWPARAMS1_EN_PWROPT(n)	(((n) & (3 << 24)) >> 24)
 #define DWC3_GHWPARAMS1_EN_PWROPT_NO	0
 #define DWC3_GHWPARAMS1_EN_PWROPT_CLK	1
+<<<<<<< HEAD
 
 /* Global HWPARAMS6 Register */
 #define DWC3_GHWPARAMS6_SRP_SUPPORT	(1 << 10)
+=======
+#define DWC3_GHWPARAMS1_EN_PWROPT_HIB	2
+#define DWC3_GHWPARAMS1_PWROPT(n)	((n) << 24)
+#define DWC3_GHWPARAMS1_PWROPT_MASK	DWC3_GHWPARAMS1_PWROPT(3)
+
+/* Global HWPARAMS4 Register */
+#define DWC3_GHWPARAMS4_HIBER_SCRATCHBUFS(n)	(((n) & (0x0f << 13)) >> 13)
+#define DWC3_MAX_HIBER_SCRATCHBUFS		15
+>>>>>>> refs/remotes/origin/master
 
 /* Device Configuration Register */
 #define DWC3_DCFG_DEVADDR(addr)	((addr) << 3)
@@ -212,12 +282,18 @@
 #define DWC3_DCFG_LOWSPEED	(2 << 0)
 #define DWC3_DCFG_FULLSPEED1	(3 << 0)
 
+<<<<<<< HEAD
+=======
+#define DWC3_DCFG_LPM_CAP	(1 << 22)
+
+>>>>>>> refs/remotes/origin/master
 /* Device Control Register */
 #define DWC3_DCTL_RUN_STOP	(1 << 31)
 #define DWC3_DCTL_CSFTRST	(1 << 30)
 #define DWC3_DCTL_LSFTRST	(1 << 29)
 
 #define DWC3_DCTL_HIRD_THRES_MASK	(0x1f << 24)
+<<<<<<< HEAD
 #define DWC3_DCTL_HIRD_THRES(n)	(((n) & DWC3_DCTL_HIRD_THRES_MASK) >> 24)
 
 #define DWC3_DCTL_APPL1RES	(1 << 23)
@@ -230,6 +306,26 @@
 #define DWC3_DCTL_TRGTULST_SS_DIS (DWC3_DCTL_TRGTULST(4))
 #define DWC3_DCTL_TRGTULST_RX_DET (DWC3_DCTL_TRGTULST(5))
 #define DWC3_DCTL_TRGTULST_SS_INACT (DWC3_DCTL_TRGTULST(6))
+=======
+#define DWC3_DCTL_HIRD_THRES(n)	((n) << 24)
+
+#define DWC3_DCTL_APPL1RES	(1 << 23)
+
+/* These apply for core versions 1.87a and earlier */
+#define DWC3_DCTL_TRGTULST_MASK		(0x0f << 17)
+#define DWC3_DCTL_TRGTULST(n)		((n) << 17)
+#define DWC3_DCTL_TRGTULST_U2		(DWC3_DCTL_TRGTULST(2))
+#define DWC3_DCTL_TRGTULST_U3		(DWC3_DCTL_TRGTULST(3))
+#define DWC3_DCTL_TRGTULST_SS_DIS	(DWC3_DCTL_TRGTULST(4))
+#define DWC3_DCTL_TRGTULST_RX_DET	(DWC3_DCTL_TRGTULST(5))
+#define DWC3_DCTL_TRGTULST_SS_INACT	(DWC3_DCTL_TRGTULST(6))
+
+/* These apply for core versions 1.94a and later */
+#define DWC3_DCTL_KEEP_CONNECT	(1 << 19)
+#define DWC3_DCTL_L1_HIBER_EN	(1 << 18)
+#define DWC3_DCTL_CRS		(1 << 17)
+#define DWC3_DCTL_CSS		(1 << 16)
+>>>>>>> refs/remotes/origin/master
 
 #define DWC3_DCTL_INITU2ENA	(1 << 12)
 #define DWC3_DCTL_ACCEPTU2ENA	(1 << 11)
@@ -255,6 +351,10 @@
 #define DWC3_DEVTEN_ERRTICERREN		(1 << 9)
 #define DWC3_DEVTEN_SOFEN		(1 << 7)
 #define DWC3_DEVTEN_EOPFEN		(1 << 6)
+<<<<<<< HEAD
+=======
+#define DWC3_DEVTEN_HIBERNATIONREQEVTEN	(1 << 5)
+>>>>>>> refs/remotes/origin/master
 #define DWC3_DEVTEN_WKUPEVTEN		(1 << 4)
 #define DWC3_DEVTEN_ULSTCNGEN		(1 << 3)
 #define DWC3_DEVTEN_CONNECTDONEEN	(1 << 2)
@@ -262,7 +362,19 @@
 #define DWC3_DEVTEN_DISCONNEVTEN	(1 << 0)
 
 /* Device Status Register */
+<<<<<<< HEAD
 #define DWC3_DSTS_PWRUPREQ		(1 << 24)
+=======
+#define DWC3_DSTS_DCNRD			(1 << 29)
+
+/* This applies for core versions 1.87a and earlier */
+#define DWC3_DSTS_PWRUPREQ		(1 << 24)
+
+/* These apply for core versions 1.94a and later */
+#define DWC3_DSTS_RSS			(1 << 25)
+#define DWC3_DSTS_SSS			(1 << 24)
+
+>>>>>>> refs/remotes/origin/master
 #define DWC3_DSTS_COREIDLE		(1 << 23)
 #define DWC3_DSTS_DEVCTRLHLT		(1 << 22)
 
@@ -271,7 +383,11 @@
 
 #define DWC3_DSTS_RXFIFOEMPTY		(1 << 17)
 
+<<<<<<< HEAD
 #define DWC3_DSTS_SOFFN_MASK		(0x3ff << 3)
+=======
+#define DWC3_DSTS_SOFFN_MASK		(0x3fff << 3)
+>>>>>>> refs/remotes/origin/master
 #define DWC3_DSTS_SOFFN(n)		(((n) & DWC3_DSTS_SOFFN_MASK) >> 3)
 
 #define DWC3_DSTS_CONNECTSPD		(7 << 0)
@@ -286,17 +402,44 @@
 #define DWC3_DGCMD_SET_LMP		0x01
 #define DWC3_DGCMD_SET_PERIODIC_PAR	0x02
 #define DWC3_DGCMD_XMIT_FUNCTION	0x03
+<<<<<<< HEAD
+=======
+
+/* These apply for core versions 1.94a and later */
+#define DWC3_DGCMD_SET_SCRATCHPAD_ADDR_LO	0x04
+#define DWC3_DGCMD_SET_SCRATCHPAD_ADDR_HI	0x05
+
+>>>>>>> refs/remotes/origin/master
 #define DWC3_DGCMD_SELECTED_FIFO_FLUSH	0x09
 #define DWC3_DGCMD_ALL_FIFO_FLUSH	0x0a
 #define DWC3_DGCMD_SET_ENDPOINT_NRDY	0x0c
 #define DWC3_DGCMD_RUN_SOC_BUS_LOOPBACK	0x10
 
+<<<<<<< HEAD
+=======
+#define DWC3_DGCMD_STATUS(n)		(((n) >> 15) & 1)
+#define DWC3_DGCMD_CMDACT		(1 << 10)
+#define DWC3_DGCMD_CMDIOC		(1 << 8)
+
+/* Device Generic Command Parameter Register */
+#define DWC3_DGCMDPAR_FORCE_LINKPM_ACCEPT	(1 << 0)
+#define DWC3_DGCMDPAR_FIFO_NUM(n)		((n) << 0)
+#define DWC3_DGCMDPAR_RX_FIFO			(0 << 5)
+#define DWC3_DGCMDPAR_TX_FIFO			(1 << 5)
+#define DWC3_DGCMDPAR_LOOPBACK_DIS		(0 << 0)
+#define DWC3_DGCMDPAR_LOOPBACK_ENA		(1 << 0)
+
+>>>>>>> refs/remotes/origin/master
 /* Device Endpoint Command Register */
 #define DWC3_DEPCMD_PARAM_SHIFT		16
 #define DWC3_DEPCMD_PARAM(x)		((x) << DWC3_DEPCMD_PARAM_SHIFT)
 #define DWC3_DEPCMD_GET_RSC_IDX(x)     (((x) >> DWC3_DEPCMD_PARAM_SHIFT) & 0x7f)
+<<<<<<< HEAD
 #define DWC3_DEPCMD_STATUS_MASK		(0x0f << 12)
 #define DWC3_DEPCMD_STATUS(x)		(((x) & DWC3_DEPCMD_STATUS_MASK) >> 12)
+=======
+#define DWC3_DEPCMD_STATUS(x)		(((x) >> 15) & 1)
+>>>>>>> refs/remotes/origin/master
 #define DWC3_DEPCMD_HIPRI_FORCERM	(1 << 11)
 #define DWC3_DEPCMD_CMDACT		(1 << 10)
 #define DWC3_DEPCMD_CMDIOC		(1 << 8)
@@ -307,7 +450,14 @@
 #define DWC3_DEPCMD_STARTTRANSFER	(0x06 << 0)
 #define DWC3_DEPCMD_CLEARSTALL		(0x05 << 0)
 #define DWC3_DEPCMD_SETSTALL		(0x04 << 0)
+<<<<<<< HEAD
 #define DWC3_DEPCMD_GETSEQNUMBER	(0x03 << 0)
+=======
+/* This applies for core versions 1.90a and earlier */
+#define DWC3_DEPCMD_GETSEQNUMBER	(0x03 << 0)
+/* This applies for core versions 1.94a and later */
+#define DWC3_DEPCMD_GETEPSTATE		(0x03 << 0)
+>>>>>>> refs/remotes/origin/master
 #define DWC3_DEPCMD_SETTRANSFRESOURCE	(0x02 << 0)
 #define DWC3_DEPCMD_SETEPCONFIG		(0x01 << 0)
 
@@ -319,6 +469,7 @@
 #define DWC3_DEPCMD_TYPE_BULK		2
 #define DWC3_DEPCMD_TYPE_INTR		3
 
+<<<<<<< HEAD
 /* OTG Events Register */
 #define DWC3_OEVT_DEVICEMODE			(1 << 31)
 #define DWC3_OEVTEN_OTGCONIDSTSCHNGEVNT		(1 << 24)
@@ -350,15 +501,25 @@
 #define DWC3_OTG_OCTL_DEVSETHNPEN	(1 << 1)
 #define DWC3_OTG_OCTL_HSTSETHNPEN	(1 << 0)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Structures */
 
 struct dwc3_trb;
 
 /**
  * struct dwc3_event_buffer - Software event buffer representation
+<<<<<<< HEAD
  * @list: a list of event buffers
  * @buf: _THE_ buffer
  * @length: size of this buffer
+=======
+ * @buf: _THE_ buffer
+ * @length: size of this buffer
+ * @lpos: event offset
+ * @count: cache of last read event count register
+ * @flags: flags related to this event buffer
+>>>>>>> refs/remotes/origin/master
  * @dma: dma_addr_t
  * @dwc: pointer to DWC controller
  */
@@ -366,6 +527,13 @@ struct dwc3_event_buffer {
 	void			*buf;
 	unsigned		length;
 	unsigned int		lpos;
+<<<<<<< HEAD
+=======
+	unsigned int		count;
+	unsigned int		flags;
+
+#define DWC3_EVENT_PENDING	BIT(0)
+>>>>>>> refs/remotes/origin/master
 
 	dma_addr_t		dma;
 
@@ -396,8 +564,13 @@ struct dwc3_event_buffer {
  * @current_trb: index of current used trb
  * @number: endpoint number (1 - 15)
  * @type: set to bmAttributes & USB_ENDPOINT_XFERTYPE_MASK
+<<<<<<< HEAD
  * @res_trans_idx: Resource transfer index
  * @interval: the intervall on which the ISOC transfer is started
+=======
+ * @resource_index: Resource transfer index
+ * @interval: the interval on which the ISOC transfer is started
+>>>>>>> refs/remotes/origin/master
  * @name: a human readable name e.g. ep1out-bulk
  * @direction: true for TX, false for RX
  * @stream_capable: true when streams are enabled
@@ -411,7 +584,10 @@ struct dwc3_ep {
 	dma_addr_t		trb_pool_dma;
 	u32			free_slot;
 	u32			busy_slot;
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor *desc;
+=======
+>>>>>>> refs/remotes/origin/master
 	const struct usb_ss_ep_comp_descriptor *comp_desc;
 	struct dwc3		*dwc;
 
@@ -421,6 +597,10 @@ struct dwc3_ep {
 #define DWC3_EP_WEDGE		(1 << 2)
 #define DWC3_EP_BUSY		(1 << 4)
 #define DWC3_EP_PENDING_REQUEST	(1 << 5)
+<<<<<<< HEAD
+=======
+#define DWC3_EP_MISSED_ISOC	(1 << 6)
+>>>>>>> refs/remotes/origin/master
 
 	/* This last one is specific to EP0 */
 #define DWC3_EP0_DIR_IN		(1 << 31)
@@ -429,7 +609,11 @@ struct dwc3_ep {
 
 	u8			number;
 	u8			type;
+<<<<<<< HEAD
 	u8			res_trans_idx;
+=======
+	u8			resource_index;
+>>>>>>> refs/remotes/origin/master
 	u32			interval;
 
 	char			name[20];
@@ -447,7 +631,10 @@ enum dwc3_phy {
 enum dwc3_ep0_next {
 	DWC3_EP0_UNKNOWN = 0,
 	DWC3_EP0_COMPLETE,
+<<<<<<< HEAD
 	DWC3_EP0_NRDY_SETUP,
+=======
+>>>>>>> refs/remotes/origin/master
 	DWC3_EP0_NRDY_DATA,
 	DWC3_EP0_NRDY_STATUS,
 };
@@ -473,6 +660,7 @@ enum dwc3_link_state {
 	DWC3_LINK_STATE_HRESET		= 0x09,
 	DWC3_LINK_STATE_CMPLY		= 0x0a,
 	DWC3_LINK_STATE_LPBK		= 0x0b,
+<<<<<<< HEAD
 	DWC3_LINK_STATE_MASK		= 0x0f,
 };
 
@@ -482,15 +670,30 @@ enum dwc3_device_state {
 	DWC3_CONFIGURED_STATE,
 };
 
+=======
+	DWC3_LINK_STATE_RESET		= 0x0e,
+	DWC3_LINK_STATE_RESUME		= 0x0f,
+	DWC3_LINK_STATE_MASK		= 0x0f,
+};
+
+>>>>>>> refs/remotes/origin/master
 /* TRB Length, PCM and Status */
 #define DWC3_TRB_SIZE_MASK	(0x00ffffff)
 #define DWC3_TRB_SIZE_LENGTH(n)	((n) & DWC3_TRB_SIZE_MASK)
 #define DWC3_TRB_SIZE_PCM1(n)	(((n) & 0x03) << 24)
+<<<<<<< HEAD
 #define DWC3_TRB_SIZE_TRBSTS(n)	(((n) & (0x0f << 28) >> 28))
+=======
+#define DWC3_TRB_SIZE_TRBSTS(n)	(((n) & (0x0f << 28)) >> 28)
+>>>>>>> refs/remotes/origin/master
 
 #define DWC3_TRBSTS_OK			0
 #define DWC3_TRBSTS_MISSED_ISOC		1
 #define DWC3_TRBSTS_SETUP_PENDING	2
+<<<<<<< HEAD
+=======
+#define DWC3_TRB_STS_XFER_IN_PROG	4
+>>>>>>> refs/remotes/origin/master
 
 /* TRB Control */
 #define DWC3_TRB_CTRL_HWO		(1 << 0)
@@ -552,16 +755,30 @@ struct dwc3_hwparams {
 /* HWPARAMS0 */
 #define DWC3_MODE(n)		((n) & 0x7)
 
+<<<<<<< HEAD
 #define DWC3_MODE_DEVICE	0
 #define DWC3_MODE_HOST		1
 #define DWC3_MODE_DRD		2
 #define DWC3_MODE_HUB		3
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define DWC3_MDWIDTH(n)		(((n) & 0xff00) >> 8)
 
 /* HWPARAMS1 */
 #define DWC3_NUM_INT(n)		(((n) & (0x3f << 15)) >> 15)
 
+<<<<<<< HEAD
+=======
+/* HWPARAMS3 */
+#define DWC3_NUM_IN_EPS_MASK	(0x1f << 18)
+#define DWC3_NUM_EPS_MASK	(0x3f << 12)
+#define DWC3_NUM_EPS(p)		(((p)->hwparams3 &		\
+			(DWC3_NUM_EPS_MASK)) >> 12)
+#define DWC3_NUM_IN_EPS(p)	(((p)->hwparams3 &		\
+			(DWC3_NUM_IN_EPS_MASK)) >> 18)
+
+>>>>>>> refs/remotes/origin/master
 /* HWPARAMS7 */
 #define DWC3_RAM1_DEPTH(n)	((n) & 0xffff)
 
@@ -569,6 +786,10 @@ struct dwc3_request {
 	struct usb_request	request;
 	struct list_head	list;
 	struct dwc3_ep		*dep;
+<<<<<<< HEAD
+=======
+	u32			start_slot;
+>>>>>>> refs/remotes/origin/master
 
 	u8			epnum;
 	struct dwc3_trb		*trb;
@@ -579,6 +800,17 @@ struct dwc3_request {
 	unsigned		queued:1;
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * struct dwc3_scratchpad_array - hibernation scratchpad array
+ * (format defined by hw)
+ */
+struct dwc3_scratchpad_array {
+	__le64	dma_adr[DWC3_MAX_HIBER_SCRATCHBUFS];
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct dwc3 - representation of our controller
  * @ctrl_req: usb control request which is used for ep0
@@ -597,12 +829,23 @@ struct dwc3_request {
  * @gadget_driver: pointer to the gadget driver
  * @regs: base address for our registers
  * @regs_size: address space size
+<<<<<<< HEAD
  * @irq: IRQ number
+=======
+>>>>>>> refs/remotes/origin/master
  * @num_event_buffers: calculated number of event buffers
  * @u1u2: only used on revisions <1.83a for workaround
  * @maximum_speed: maximum speed requested (mainly for testing purposes)
  * @revision: revision register contents
+<<<<<<< HEAD
  * @mode: mode of operation
+=======
+ * @dr_mode: requested mode of operation
+ * @usb2_phy: pointer to USB2 PHY
+ * @usb3_phy: pointer to USB3 PHY
+ * @dcfg: saved contents of DCFG register
+ * @gctl: saved contents of GCTL register
+>>>>>>> refs/remotes/origin/master
  * @is_selfpowered: true when we are selfpowered
  * @three_stage_setup: set if we perform a three phase setup
  * @ep0_bounced: true when we used bounce buffer
@@ -611,6 +854,16 @@ struct dwc3_request {
  * @setup_packet_pending: true when there's a Setup Packet in FIFO. Workaround
  * @needs_fifo_resize: not all users might want fifo resizing, flag it
  * @resize_fifos: tells us it's ok to reconfigure our TxFIFO sizes.
+<<<<<<< HEAD
+=======
+ * @isoch_delay: wValue from Set Isochronous Delay request;
+ * @u2sel: parameter from Set SEL request.
+ * @u2pel: parameter from Set SEL request.
+ * @u1sel: parameter from Set SEL request.
+ * @u1pel: parameter from Set SEL request.
+ * @num_out_eps: number of out endpoints
+ * @num_in_eps: number of in endpoints
+>>>>>>> refs/remotes/origin/master
  * @ep0_next_event: hold the next expected event
  * @ep0state: state of endpoint zero
  * @link_state: link state
@@ -628,11 +881,20 @@ struct dwc3 {
 	dma_addr_t		ep0_trb_addr;
 	dma_addr_t		ep0_bounce_addr;
 	struct dwc3_request	ep0_usb_req;
+<<<<<<< HEAD
 	/* device lock */
 	spinlock_t		lock;
 	struct device		*dev;
 
 	struct dwc3_otg		*dotg;
+=======
+
+	/* device lock */
+	spinlock_t		lock;
+
+	struct device		*dev;
+
+>>>>>>> refs/remotes/origin/master
 	struct platform_device	*xhci;
 	struct resource		xhci_resources[DWC3_XHCI_RESOURCES_NUM];
 
@@ -642,23 +904,55 @@ struct dwc3 {
 	struct usb_gadget	gadget;
 	struct usb_gadget_driver *gadget_driver;
 
+<<<<<<< HEAD
 	void __iomem		*regs;
 	size_t			regs_size;
 
+=======
+	struct usb_phy		*usb2_phy;
+	struct usb_phy		*usb3_phy;
+
+	void __iomem		*regs;
+	size_t			regs_size;
+
+	enum usb_dr_mode	dr_mode;
+
+	/* used for suspend/resume */
+	u32			dcfg;
+	u32			gctl;
+
+>>>>>>> refs/remotes/origin/master
 	u32			num_event_buffers;
 	u32			u1u2;
 	u32			maximum_speed;
 	u32			revision;
+<<<<<<< HEAD
 	u32			mode;
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define DWC3_REVISION_173A	0x5533173a
 #define DWC3_REVISION_175A	0x5533175a
 #define DWC3_REVISION_180A	0x5533180a
 #define DWC3_REVISION_183A	0x5533183a
 #define DWC3_REVISION_185A	0x5533185a
+<<<<<<< HEAD
 #define DWC3_REVISION_188A	0x5533188a
 #define DWC3_REVISION_190A	0x5533190a
 #define DWC3_REVISION_230A	0x5533230a
+=======
+#define DWC3_REVISION_187A	0x5533187a
+#define DWC3_REVISION_188A	0x5533188a
+#define DWC3_REVISION_190A	0x5533190a
+#define DWC3_REVISION_194A	0x5533194a
+#define DWC3_REVISION_200A	0x5533200a
+#define DWC3_REVISION_202A	0x5533202a
+#define DWC3_REVISION_210A	0x5533210a
+#define DWC3_REVISION_220A	0x5533220a
+#define DWC3_REVISION_230A	0x5533230a
+#define DWC3_REVISION_240A	0x5533240a
+#define DWC3_REVISION_250A	0x5533250a
+>>>>>>> refs/remotes/origin/master
 
 	unsigned		is_selfpowered:1;
 	unsigned		three_stage_setup:1;
@@ -669,17 +963,37 @@ struct dwc3 {
 	unsigned		delayed_status:1;
 	unsigned		needs_fifo_resize:1;
 	unsigned		resize_fifos:1;
+<<<<<<< HEAD
+=======
+	unsigned		pullups_connected:1;
+>>>>>>> refs/remotes/origin/master
 
 	enum dwc3_ep0_next	ep0_next_event;
 	enum dwc3_ep0_state	ep0state;
 	enum dwc3_link_state	link_state;
+<<<<<<< HEAD
 	enum dwc3_device_state	dev_state;
 
 	u8			speed;
+=======
+
+	u16			isoch_delay;
+	u16			u2sel;
+	u16			u2pel;
+	u8			u1sel;
+	u8			u1pel;
+
+	u8			speed;
+
+	u8			num_out_eps;
+	u8			num_in_eps;
+
+>>>>>>> refs/remotes/origin/master
 	void			*mem;
 
 	struct dwc3_hwparams	hwparams;
 	struct dentry		*root;
+<<<<<<< HEAD
 
 	u8			test_mode;
 	u8			test_mode_nr;
@@ -689,6 +1003,12 @@ struct dwc3 {
 
 	/* Indicate if software connect was issued by the usb_gadget_driver */
 	bool			softconnect;
+=======
+	struct debugfs_regset32	*regset;
+
+	u8			test_mode;
+	u8			test_mode_nr;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* -------------------------------------------------------------------------- */
@@ -748,7 +1068,10 @@ struct dwc3_event_depevt {
 #define DEPEVT_STREAMEVT_NOTFOUND	2
 
 /* Control-only Status */
+<<<<<<< HEAD
 #define DEPEVT_STATUS_CONTROL_SETUP	0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DEPEVT_STATUS_CONTROL_DATA	1
 #define DEPEVT_STATUS_CONTROL_STATUS	2
 
@@ -828,6 +1151,7 @@ union dwc3_event {
 void dwc3_set_mode(struct dwc3 *dwc, u32 mode);
 int dwc3_gadget_resize_tx_fifos(struct dwc3 *dwc);
 
+<<<<<<< HEAD
 int dwc3_otg_init(struct dwc3 *dwc);
 void dwc3_otg_exit(struct dwc3 *dwc);
 
@@ -839,5 +1163,53 @@ void dwc3_gadget_exit(struct dwc3 *dwc);
 
 extern int dwc3_get_device_id(void);
 extern void dwc3_put_device_id(int id);
+=======
+#if IS_ENABLED(CONFIG_USB_DWC3_HOST) || IS_ENABLED(CONFIG_USB_DWC3_DUAL_ROLE)
+int dwc3_host_init(struct dwc3 *dwc);
+void dwc3_host_exit(struct dwc3 *dwc);
+#else
+static inline int dwc3_host_init(struct dwc3 *dwc)
+{ return 0; }
+static inline void dwc3_host_exit(struct dwc3 *dwc)
+{ }
+#endif
+
+#if IS_ENABLED(CONFIG_USB_DWC3_GADGET) || IS_ENABLED(CONFIG_USB_DWC3_DUAL_ROLE)
+int dwc3_gadget_init(struct dwc3 *dwc);
+void dwc3_gadget_exit(struct dwc3 *dwc);
+#else
+static inline int dwc3_gadget_init(struct dwc3 *dwc)
+{ return 0; }
+static inline void dwc3_gadget_exit(struct dwc3 *dwc)
+{ }
+#endif
+
+/* power management interface */
+#if !IS_ENABLED(CONFIG_USB_DWC3_HOST)
+int dwc3_gadget_prepare(struct dwc3 *dwc);
+void dwc3_gadget_complete(struct dwc3 *dwc);
+int dwc3_gadget_suspend(struct dwc3 *dwc);
+int dwc3_gadget_resume(struct dwc3 *dwc);
+#else
+static inline int dwc3_gadget_prepare(struct dwc3 *dwc)
+{
+	return 0;
+}
+
+static inline void dwc3_gadget_complete(struct dwc3 *dwc)
+{
+}
+
+static inline int dwc3_gadget_suspend(struct dwc3 *dwc)
+{
+	return 0;
+}
+
+static inline int dwc3_gadget_resume(struct dwc3 *dwc)
+{
+	return 0;
+}
+#endif /* !IS_ENABLED(CONFIG_USB_DWC3_HOST) */
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __DRIVERS_USB_DWC3_CORE_H */

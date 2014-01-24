@@ -433,7 +433,11 @@ static irqreturn_t atkbd_interrupt(struct serio *serio, unsigned char data,
 		if (printk_ratelimit())
 			dev_warn(&serio->dev,
 				 "Spurious %s on %s. "
+<<<<<<< HEAD
 				 "Some program might be trying access hardware directly.\n",
+=======
+				 "Some program might be trying to access hardware directly.\n",
+>>>>>>> refs/remotes/origin/master
 				 data == ATKBD_RET_ACK ? "ACK" : "NAK", serio->phys);
 		goto out;
 	case ATKBD_RET_ERR:
@@ -676,6 +680,42 @@ static inline void atkbd_disable(struct atkbd *atkbd)
 	serio_continue_rx(atkbd->ps2dev.serio);
 }
 
+<<<<<<< HEAD
+=======
+static int atkbd_activate(struct atkbd *atkbd)
+{
+	struct ps2dev *ps2dev = &atkbd->ps2dev;
+
+/*
+ * Enable the keyboard to receive keystrokes.
+ */
+
+	if (ps2_command(ps2dev, NULL, ATKBD_CMD_ENABLE)) {
+		dev_err(&ps2dev->serio->dev,
+			"Failed to enable keyboard on %s\n",
+			ps2dev->serio->phys);
+		return -1;
+	}
+
+	return 0;
+}
+
+/*
+ * atkbd_deactivate() resets and disables the keyboard from sending
+ * keystrokes.
+ */
+
+static void atkbd_deactivate(struct atkbd *atkbd)
+{
+	struct ps2dev *ps2dev = &atkbd->ps2dev;
+
+	if (ps2_command(ps2dev, NULL, ATKBD_CMD_RESET_DIS))
+		dev_err(&ps2dev->serio->dev,
+			"Failed to deactivate keyboard on %s\n",
+			ps2dev->serio->phys);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * atkbd_probe() probes for an AT keyboard on a serio port.
  */
@@ -726,11 +766,24 @@ static int atkbd_probe(struct atkbd *atkbd)
 
 	if (atkbd->id == 0xaca1 && atkbd->translated) {
 		dev_err(&ps2dev->serio->dev,
+<<<<<<< HEAD
 			"NCD terminal keyboards are only supported on non-translating controlelrs. "
+=======
+			"NCD terminal keyboards are only supported on non-translating controllers. "
+>>>>>>> refs/remotes/origin/master
 			"Use i8042.direct=1 to disable translation.\n");
 		return -1;
 	}
 
+<<<<<<< HEAD
+=======
+/*
+ * Make sure nothing is coming from the keyboard and disturbs our
+ * internal state.
+ */
+	atkbd_deactivate(atkbd);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -825,6 +878,7 @@ static int atkbd_reset_state(struct atkbd *atkbd)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int atkbd_activate(struct atkbd *atkbd)
 {
 	struct ps2dev *ps2dev = &atkbd->ps2dev;
@@ -843,6 +897,8 @@ static int atkbd_activate(struct atkbd *atkbd)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * atkbd_cleanup() restores the keyboard state so that BIOS is happy after a
  * reboot.
@@ -1150,7 +1206,10 @@ static int atkbd_connect(struct serio *serio, struct serio_driver *drv)
 
 		atkbd->set = atkbd_select_set(atkbd, atkbd_set, atkbd_extra);
 		atkbd_reset_state(atkbd);
+<<<<<<< HEAD
 		atkbd_activate(atkbd);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	} else {
 		atkbd->set = 2;
@@ -1165,6 +1224,11 @@ static int atkbd_connect(struct serio *serio, struct serio_driver *drv)
 		goto fail3;
 
 	atkbd_enable(atkbd);
+<<<<<<< HEAD
+=======
+	if (serio->write)
+		atkbd_activate(atkbd);
+>>>>>>> refs/remotes/origin/master
 
 	err = input_register_device(atkbd->dev);
 	if (err)
@@ -1208,8 +1272,11 @@ static int atkbd_reconnect(struct serio *serio)
 		if (atkbd->set != atkbd_select_set(atkbd, atkbd->set, atkbd->extra))
 			goto out;
 
+<<<<<<< HEAD
 		atkbd_activate(atkbd);
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Restore LED state and repeat rate. While input core
 		 * will do this for us at resume time reconnect may happen
@@ -1223,7 +1290,21 @@ static int atkbd_reconnect(struct serio *serio)
 
 	}
 
+<<<<<<< HEAD
 	atkbd_enable(atkbd);
+=======
+	/*
+	 * Reset our state machine in case reconnect happened in the middle
+	 * of multi-byte scancode.
+	 */
+	atkbd->xl_bit = 0;
+	atkbd->emul = 0;
+
+	atkbd_enable(atkbd);
+	if (atkbd->write)
+		atkbd_activate(atkbd);
+
+>>>>>>> refs/remotes/origin/master
 	retval = 0;
 
  out:
@@ -1306,10 +1387,14 @@ static ssize_t atkbd_set_extra(struct atkbd *atkbd, const char *buf, size_t coun
 {
 	struct input_dev *old_dev, *new_dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long value;
 =======
 	unsigned int value;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int value;
+>>>>>>> refs/remotes/origin/master
 	int err;
 	bool old_extra;
 	unsigned char old_set;
@@ -1318,14 +1403,20 @@ static ssize_t atkbd_set_extra(struct atkbd *atkbd, const char *buf, size_t coun
 		return -EIO;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 10, &value) || value > 1)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = kstrtouint(buf, 10, &value);
 	if (err)
 		return err;
 
 	if (value > 1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (atkbd->extra != value) {
@@ -1402,12 +1493,15 @@ static ssize_t atkbd_set_scroll(struct atkbd *atkbd, const char *buf, size_t cou
 {
 	struct input_dev *old_dev, *new_dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long value;
 	int err;
 	bool old_scroll;
 
 	if (strict_strtoul(buf, 10, &value) || value > 1)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int value;
 	int err;
 	bool old_scroll;
@@ -1417,7 +1511,10 @@ static ssize_t atkbd_set_scroll(struct atkbd *atkbd, const char *buf, size_t cou
 		return err;
 
 	if (value > 1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (atkbd->scroll != value) {
@@ -1458,10 +1555,14 @@ static ssize_t atkbd_set_set(struct atkbd *atkbd, const char *buf, size_t count)
 {
 	struct input_dev *old_dev, *new_dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long value;
 =======
 	unsigned int value;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int value;
+>>>>>>> refs/remotes/origin/master
 	int err;
 	unsigned char old_set;
 	bool old_extra;
@@ -1470,14 +1571,20 @@ static ssize_t atkbd_set_set(struct atkbd *atkbd, const char *buf, size_t count)
 		return -EIO;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 10, &value) || (value != 2 && value != 3))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = kstrtouint(buf, 10, &value);
 	if (err)
 		return err;
 
 	if (value != 2 && value != 3)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (atkbd->set != value) {
@@ -1521,10 +1628,14 @@ static ssize_t atkbd_set_softrepeat(struct atkbd *atkbd, const char *buf, size_t
 {
 	struct input_dev *old_dev, *new_dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long value;
 =======
 	unsigned int value;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int value;
+>>>>>>> refs/remotes/origin/master
 	int err;
 	bool old_softrepeat, old_softraw;
 
@@ -1532,14 +1643,20 @@ static ssize_t atkbd_set_softrepeat(struct atkbd *atkbd, const char *buf, size_t
 		return -EIO;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 10, &value) || value > 1)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = kstrtouint(buf, 10, &value);
 	if (err)
 		return err;
 
 	if (value > 1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (atkbd->softrepeat != value) {
@@ -1583,12 +1700,15 @@ static ssize_t atkbd_set_softraw(struct atkbd *atkbd, const char *buf, size_t co
 {
 	struct input_dev *old_dev, *new_dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long value;
 	int err;
 	bool old_softraw;
 
 	if (strict_strtoul(buf, 10, &value) || value > 1)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int value;
 	int err;
 	bool old_softraw;
@@ -1598,7 +1718,10 @@ static ssize_t atkbd_set_softraw(struct atkbd *atkbd, const char *buf, size_t co
 		return err;
 
 	if (value > 1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (atkbd->softraw != value) {
@@ -1639,10 +1762,14 @@ static int __init atkbd_setup_forced_release(const struct dmi_system_id *id)
 	atkbd_platform_fixup_data = id->driver_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
 	return 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init atkbd_setup_scancode_fixup(const struct dmi_system_id *id)
@@ -1650,10 +1777,14 @@ static int __init atkbd_setup_scancode_fixup(const struct dmi_system_id *id)
 	atkbd_platform_scancode_fixup = id->driver_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
 	return 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct dmi_system_id atkbd_dmi_quirk_table[] __initconst = {

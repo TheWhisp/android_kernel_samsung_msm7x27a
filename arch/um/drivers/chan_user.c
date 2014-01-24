@@ -12,6 +12,7 @@
 #include <sys/ioctl.h>
 #include "chan_user.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "os.h"
 #include "um_malloc.h"
@@ -20,6 +21,10 @@
 #include "os.h"
 #include "um_malloc.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <os.h>
+#include <um_malloc.h>
+>>>>>>> refs/remotes/origin/master
 
 void generic_close(int fd, void *unused)
 {
@@ -223,7 +228,11 @@ static int winch_thread(void *arg)
 	}
 }
 
+<<<<<<< HEAD
 static int winch_tramp(int fd, struct tty_struct *tty, int *fd_out,
+=======
+static int winch_tramp(int fd, struct tty_port *port, int *fd_out,
+>>>>>>> refs/remotes/origin/master
 		       unsigned long *stack_out)
 {
 	struct winch_data data;
@@ -278,7 +287,11 @@ static int winch_tramp(int fd, struct tty_struct *tty, int *fd_out,
 	return err;
 }
 
+<<<<<<< HEAD
 void register_winch(int fd, struct tty_struct *tty)
+=======
+void register_winch(int fd, struct tty_port *port)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long stack;
 	int pid, thread, count, thread_fd = -1;
@@ -289,20 +302,33 @@ void register_winch(int fd, struct tty_struct *tty)
 
 	pid = tcgetpgrp(fd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!is_skas_winch(pid, fd, tty) && (pid == -1)) {
 =======
 	if (is_skas_winch(pid, fd, tty)) {
 		register_winch_irq(-1, fd, -1, tty, 0);
+=======
+	if (is_skas_winch(pid, fd, port)) {
+		register_winch_irq(-1, fd, -1, port, 0);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	if (pid == -1) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		thread = winch_tramp(fd, tty, &thread_fd, &stack);
 		if (thread < 0)
 			return;
 
 		register_winch_irq(thread_fd, fd, thread, tty, stack);
+=======
+		thread = winch_tramp(fd, port, &thread_fd, &stack);
+		if (thread < 0)
+			return;
+
+		register_winch_irq(thread_fd, fd, thread, port, stack);
+>>>>>>> refs/remotes/origin/master
 
 		count = write(thread_fd, &c, sizeof(c));
 		if (count != sizeof(c))

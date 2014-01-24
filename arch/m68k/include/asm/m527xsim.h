@@ -39,9 +39,12 @@
 #define	MCFINT_UART2		15		/* Interrupt number for UART2 */
 #define	MCFINT_QSPI		18		/* Interrupt number for QSPI */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	MCFINT_PIT1		36		/* Interrupt number for PIT1 */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define	MCFINT_FECRX0		23		/* Interrupt number for FEC0 */
 #define	MCFINT_FECTX0		27		/* Interrupt number for FEC0 */
 #define	MCFINT_FECENTC0		29		/* Interrupt number for FEC0 */
@@ -64,8 +67,13 @@
 #define	MCF_IRQ_FECENTC1	(MCFINT2_VECBASE + MCFINT2_FECENTC1)
 
 #define	MCF_IRQ_QSPI		(MCFINT_VECBASE + MCFINT_QSPI)
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MCF_IRQ_PIT1		(MCFINT_VECBASE + MCFINT_PIT1)
+
+>>>>>>> refs/remotes/origin/master
 /*
  *	SDRAM configuration registers.
  */
@@ -99,6 +107,7 @@
  *	UART module.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MCFUART_BASE1		(MCF_IPSBAR + 0x200)
 #define MCFUART_BASE2		(MCF_IPSBAR + 0x240)
 #define MCFUART_BASE3		(MCF_IPSBAR + 0x280)
@@ -107,6 +116,11 @@
 #define MCFUART_BASE1		(MCF_IPSBAR + 0x240)
 #define MCFUART_BASE2		(MCF_IPSBAR + 0x280)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MCFUART_BASE0		(MCF_IPSBAR + 0x200)
+#define MCFUART_BASE1		(MCF_IPSBAR + 0x240)
+#define MCFUART_BASE2		(MCF_IPSBAR + 0x280)
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	FEC ethernet module.
@@ -117,7 +131,10 @@
 #define	MCFFEC_SIZE1		0x800
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	QSPI module.
  */
@@ -140,7 +157,10 @@
 /*
  *	GPIO module.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_M5271
 #define MCFGPIO_PODR_ADDR	(MCF_IPSBAR + 0x100000)
 #define MCFGPIO_PODR_DATAH	(MCF_IPSBAR + 0x100001)
@@ -197,6 +217,7 @@
 /*
  * Generic GPIO support
  */
+<<<<<<< HEAD
 #define MCFGPIO_PODR			MCFGPIO_PODR_ADDR
 #define MCFGPIO_PDDR			MCFGPIO_PDDR_ADDR
 #define MCFGPIO_PPDR			MCFGPIO_PPDSDR_ADDR
@@ -210,6 +231,35 @@
 #define MCFGPIO_PAR_QSPI	(MCF_IPSBAR + 0x10004A)
 #define MCFGPIO_PAR_TIMER	(MCF_IPSBAR + 0x10004C)
 #endif
+=======
+#define MCFGPIO_PODR		MCFGPIO_PODR_ADDR
+#define MCFGPIO_PDDR		MCFGPIO_PDDR_ADDR
+#define MCFGPIO_PPDR		MCFGPIO_PPDSDR_ADDR
+#define MCFGPIO_SETR		MCFGPIO_PPDSDR_ADDR
+#define MCFGPIO_CLRR		MCFGPIO_PCLRR_ADDR
+
+#define MCFGPIO_PIN_MAX		100
+#define MCFGPIO_IRQ_MAX		8
+#define MCFGPIO_IRQ_VECBASE	MCFINT_VECBASE
+
+/*
+ * Port Pin Assignment registers.
+ */
+#define MCFGPIO_PAR_AD		(MCF_IPSBAR + 0x100040)
+#define MCFGPIO_PAR_BUSCTL	(MCF_IPSBAR + 0x100042)
+#define MCFGPIO_PAR_BS		(MCF_IPSBAR + 0x100044)
+#define MCFGPIO_PAR_CS		(MCF_IPSBAR + 0x100045)
+#define MCFGPIO_PAR_SDRAM	(MCF_IPSBAR + 0x100046)
+#define MCFGPIO_PAR_FECI2C	(MCF_IPSBAR + 0x100047)
+#define MCFGPIO_PAR_UART	(MCF_IPSBAR + 0x100048)
+#define MCFGPIO_PAR_QSPI	(MCF_IPSBAR + 0x10004A)
+#define MCFGPIO_PAR_TIMER	(MCF_IPSBAR + 0x10004C)
+
+#define UART0_ENABLE_MASK	0x000f
+#define UART1_ENABLE_MASK	0x0ff0
+#define UART2_ENABLE_MASK	0x3000
+#endif /* CONFIG_M5271 */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_M5275
 #define MCFGPIO_PODR_BUSCTL	(MCF_IPSBAR + 0x100004)
@@ -292,6 +342,7 @@
 /*
  * Generic GPIO support
  */
+<<<<<<< HEAD
 #define MCFGPIO_PODR			MCFGPIO_PODR_BUSCTL
 #define MCFGPIO_PDDR			MCFGPIO_PDDR_BUSCTL
 #define MCFGPIO_PPDR			MCFGPIO_PPDSDR_BUSCTL
@@ -304,6 +355,38 @@
 
 #define MCFGPIO_PAR_QSPI	(MCF_IPSBAR + 0x10007E)
 #endif
+=======
+#define MCFGPIO_PODR		MCFGPIO_PODR_BUSCTL
+#define MCFGPIO_PDDR		MCFGPIO_PDDR_BUSCTL
+#define MCFGPIO_PPDR		MCFGPIO_PPDSDR_BUSCTL
+#define MCFGPIO_SETR		MCFGPIO_PPDSDR_BUSCTL
+#define MCFGPIO_CLRR		MCFGPIO_PCLRR_BUSCTL
+
+#define MCFGPIO_PIN_MAX		148
+#define MCFGPIO_IRQ_MAX		8
+#define MCFGPIO_IRQ_VECBASE	MCFINT_VECBASE
+
+/*
+ * Port Pin Assignment registers.
+ */
+#define MCFGPIO_PAR_AD		(MCF_IPSBAR + 0x100070)
+#define MCFGPIO_PAR_CS		(MCF_IPSBAR + 0x100071)
+#define MCFGPIO_PAR_BUSCTL	(MCF_IPSBAR + 0x100072)
+#define MCFGPIO_PAR_USB		(MCF_IPSBAR + 0x100076)
+#define MCFGPIO_PAR_FEC0HL	(MCF_IPSBAR + 0x100078)
+#define MCFGPIO_PAR_FEC1HL	(MCF_IPSBAR + 0x100079)
+#define MCFGPIO_PAR_TIMER	(MCF_IPSBAR + 0x10007A)
+#define MCFGPIO_PAR_UART	(MCF_IPSBAR + 0x10007C)
+#define MCFGPIO_PAR_QSPI	(MCF_IPSBAR + 0x10007E)
+#define MCFGPIO_PAR_SDRAM	(MCF_IPSBAR + 0x100080)
+#define MCFGPIO_PAR_FECI2C	(MCF_IPSBAR + 0x100082)
+#define MCFGPIO_PAR_BS		(MCF_IPSBAR + 0x100084)
+
+#define UART0_ENABLE_MASK	0x000f
+#define UART1_ENABLE_MASK	0x00f0
+#define UART2_ENABLE_MASK	0x3f00
+#endif /* CONFIG_M5275 */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * PIT timer base addresses.
@@ -324,6 +407,7 @@
 #define MCFEPORT_EPFR		(MCF_IPSBAR + 0x130006)
 
 /*
+<<<<<<< HEAD
  *	GPIO pins setups to enable the UARTs.
  */
 #ifdef CONFIG_M5271
@@ -349,6 +433,12 @@
 #define	MCF_RCR			(MCF_IPSBAR + 0x110000)
 #define	MCF_RSR			(MCF_IPSBAR + 0x110001)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  Reset Control Unit (relative to IPSBAR).
+ */
+#define	MCF_RCR			(MCF_IPSBAR + 0x110000)
+#define	MCF_RSR			(MCF_IPSBAR + 0x110001)
+>>>>>>> refs/remotes/origin/master
 
 #define	MCF_RCR_SWRESET		0x80		/* Software reset bit */
 #define	MCF_RCR_FRCSTOUT	0x40		/* Force external reset */

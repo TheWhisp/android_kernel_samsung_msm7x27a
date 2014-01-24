@@ -1,10 +1,16 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* linux/drivers/dma/pl330.c
 =======
 /*
  * Copyright (c) 2012 Samsung Electronics Co., Ltd.
  *		http://www.samsung.com
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Copyright (c) 2012 Samsung Electronics Co., Ltd.
+ *		http://www.samsung.com
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) 2010 Samsung Electronics Co. Ltd.
  *	Jaswinder Singh <jassi.brar@samsung.com>
@@ -16,19 +22,27 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/kernel.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 #include <linux/delay.h>
 #include <linux/interrupt.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/dmaengine.h>
 #include <linux/interrupt.h>
@@ -125,6 +139,15 @@ struct dma_pl330_desc {
 #include <linux/pm_runtime.h>
 #include <linux/scatterlist.h>
 #include <linux/of.h>
+=======
+#include <linux/dmaengine.h>
+#include <linux/amba/bus.h>
+#include <linux/amba/pl330.h>
+#include <linux/scatterlist.h>
+#include <linux/of.h>
+#include <linux/of_dma.h>
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "dmaengine.h"
 #define PL330_MAX_CHAN		8
@@ -255,7 +278,10 @@ enum pl330_reqtype {
 #define PERIPH_REV_R0P0		0
 #define PERIPH_REV_R1P0		1
 #define PERIPH_REV_R1P1		2
+<<<<<<< HEAD
 #define PCELL_ID		0xff0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define CR0_PERIPH_REQ_SET	(1 << 0)
 #define CR0_BOOT_EN_SET		(1 << 1)
@@ -291,8 +317,11 @@ enum pl330_reqtype {
 #define INTEG_CFG		0x0
 #define PERIPH_ID_VAL		((PART << 0) | (DESIGNER << 12))
 
+<<<<<<< HEAD
 #define PCELL_ID_VAL		0xb105f00d
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define PL330_STATE_STOPPED		(1 << 0)
 #define PL330_STATE_EXECUTING		(1 << 1)
 #define PL330_STATE_WFE			(1 << 2)
@@ -390,7 +419,10 @@ static unsigned cmd_line;
 /* Populated by the PL330 core driver for DMA API driver's info */
 struct pl330_config {
 	u32	periph_id;
+<<<<<<< HEAD
 	u32	pcell_id;
+=======
+>>>>>>> refs/remotes/origin/master
 #define DMAC_MODE_NS	(1 << 0)
 	unsigned int	mode;
 	unsigned int	data_bus_width:10; /* In number of bits */
@@ -491,6 +523,11 @@ struct pl330_req {
 	struct pl330_reqcfg *cfg;
 	/* Pointer to first xfer in the request. */
 	struct pl330_xfer *x;
+<<<<<<< HEAD
+=======
+	/* Hook to attach to DMAC's list of reqs with due callback */
+	struct list_head rqd;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -560,8 +597,11 @@ struct _pl330_req {
 	/* Number of bytes taken to setup MC for the req */
 	u32 mc_len;
 	struct pl330_req *r;
+<<<<<<< HEAD
 	/* Hook to attach to DMAC's list of reqs with due callback */
 	struct list_head rqd;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ToBeDone for tasklet */
@@ -603,7 +643,11 @@ struct pl330_dmac {
 	/* Maximum possible events/irqs */
 	int			events[32];
 	/* BUS address of MicroCode buffer */
+<<<<<<< HEAD
 	u32			mcode_bus;
+=======
+	dma_addr_t		mcode_bus;
+>>>>>>> refs/remotes/origin/master
 	/* CPU address of MicroCode buffer */
 	void			*mcode_cpu;
 	/* List of all Channel threads */
@@ -621,7 +665,11 @@ enum desc_status {
 	/* In the DMAC pool */
 	FREE,
 	/*
+<<<<<<< HEAD
 	 * Allocted to some channel during prep_xxx
+=======
+	 * Allocated to some channel during prep_xxx
+>>>>>>> refs/remotes/origin/master
 	 * Also may be sitting on the work_list.
 	 */
 	PREP,
@@ -647,6 +695,11 @@ struct dma_pl330_chan {
 
 	/* List of to be xfered descriptors */
 	struct list_head work_list;
+<<<<<<< HEAD
+=======
+	/* List of completed descriptors */
+	struct list_head completed_list;
+>>>>>>> refs/remotes/origin/master
 
 	/* Pointer to the DMAC that manages this channel,
 	 * NULL if the channel is available to be acquired.
@@ -685,8 +738,11 @@ struct dma_pl330_dmac {
 
 	/* Peripheral channels connected to this DMAC */
 	struct dma_pl330_chan *peripherals; /* keep at end */
+<<<<<<< HEAD
 
 	struct clk *clk;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct dma_pl330_desc {
@@ -708,6 +764,14 @@ struct dma_pl330_desc {
 	struct dma_pl330_chan *pchan;
 };
 
+<<<<<<< HEAD
+=======
+struct dma_pl330_filter_args {
+	struct dma_pl330_dmac *pdmac;
+	unsigned int chan_id;
+};
+
+>>>>>>> refs/remotes/origin/master
 static inline void _callback(struct pl330_req *r, enum pl330_op_err err)
 {
 	if (r && r->xfer_cb)
@@ -745,6 +809,7 @@ static inline bool _manager_ns(struct pl330_thread *thrd)
 	return (pl330->pinfo->pcfg.mode & DMAC_MODE_NS) ? true : false;
 }
 
+<<<<<<< HEAD
 static inline u32 get_id(struct pl330_info *pi, u32 off)
 {
 	void __iomem *regs = pi->base;
@@ -758,6 +823,8 @@ static inline u32 get_id(struct pl330_info *pi, u32 off)
 	return id;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 get_revision(u32 periph_id)
 {
 	return (periph_id >> PERIPH_REV_SHIFT) & PERIPH_REV_MASK;
@@ -1784,7 +1851,11 @@ static void pl330_dotask(unsigned long data)
 /* Returns 1 if state was updated, 0 otherwise */
 static int pl330_update(const struct pl330_info *pi)
 {
+<<<<<<< HEAD
 	struct _pl330_req *rqdone;
+=======
+	struct pl330_req *rqdone, *tmp;
+>>>>>>> refs/remotes/origin/master
 	struct pl330_dmac *pl330;
 	unsigned long flags;
 	void __iomem *regs;
@@ -1851,7 +1922,14 @@ static int pl330_update(const struct pl330_info *pi)
 			if (active == -1) /* Aborted */
 				continue;
 
+<<<<<<< HEAD
 			rqdone = &thrd->req[active];
+=======
+			/* Detach the req */
+			rqdone = thrd->req[active].r;
+			thrd->req[active].r = NULL;
+
+>>>>>>> refs/remotes/origin/master
 			mark_free(thrd, active);
 
 			/* Get going again ASAP */
@@ -1863,6 +1941,7 @@ static int pl330_update(const struct pl330_info *pi)
 	}
 
 	/* Now that we are in no hurry, do the callbacks */
+<<<<<<< HEAD
 	while (!list_empty(&pl330->req_done)) {
 		struct pl330_req *r;
 
@@ -1877,6 +1956,13 @@ static int pl330_update(const struct pl330_info *pi)
 
 		spin_unlock_irqrestore(&pl330->lock, flags);
 		_callback(r, PL330_ERR_NONE);
+=======
+	list_for_each_entry_safe(rqdone, tmp, &pl330->req_done, rqd) {
+		list_del(&rqdone->rqd);
+
+		spin_unlock_irqrestore(&pl330->lock, flags);
+		_callback(rqdone, PL330_ERR_NONE);
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&pl330->lock, flags);
 	}
 
@@ -2087,9 +2173,12 @@ static void read_dmac_config(struct pl330_info *pi)
 	pi->pcfg.num_events = val;
 
 	pi->pcfg.irq_ns = readl(regs + CR3);
+<<<<<<< HEAD
 
 	pi->pcfg.periph_id = get_id(pi, PERIPH_ID);
 	pi->pcfg.pcell_id = get_id(pi, PCELL_ID);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void _reset_thread(struct pl330_thread *thrd)
@@ -2199,10 +2288,15 @@ static int pl330_add(struct pl330_info *pi)
 	regs = pi->base;
 
 	/* Check if we can handle this DMAC */
+<<<<<<< HEAD
 	if ((get_id(pi, PERIPH_ID) & 0xfffff) != PERIPH_ID_VAL
 	   || get_id(pi, PCELL_ID) != PCELL_ID_VAL) {
 		dev_err(pi->dev, "PERIPH_ID 0x%x, PCELL_ID 0x%x !\n",
 			get_id(pi, PERIPH_ID), get_id(pi, PCELL_ID));
+=======
+	if ((pi->pcfg.periph_id & 0xfffff) != PERIPH_ID_VAL) {
+		dev_err(pi->dev, "PERIPH_ID 0x%x !\n", pi->pcfg.periph_id);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -2305,7 +2399,10 @@ static void pl330_del(struct pl330_info *pi)
 
 /* forward declaration */
 static struct amba_driver pl330_driver;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline struct dma_pl330_chan *
 to_pchan(struct dma_chan *ch)
@@ -2322,6 +2419,7 @@ to_desc(struct dma_async_tx_descriptor *tx)
 	return container_of(tx, struct dma_pl330_desc, txd);
 }
 
+<<<<<<< HEAD
 static inline void free_desc_list(struct list_head *list)
 {
 	struct dma_pl330_dmac *pdmac;
@@ -2397,6 +2495,8 @@ static inline void handle_cyclic_desc_list(struct list_head *list)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void fill_queue(struct dma_pl330_chan *pch)
 {
 	struct dma_pl330_desc *desc;
@@ -2406,13 +2506,20 @@ static inline void fill_queue(struct dma_pl330_chan *pch)
 
 		/* If already submitted */
 		if (desc->status == BUSY)
+<<<<<<< HEAD
 			break;
+=======
+			continue;
+>>>>>>> refs/remotes/origin/master
 
 		ret = pl330_submit_req(pch->pl330_chid,
 						&desc->req);
 		if (!ret) {
 			desc->status = BUSY;
+<<<<<<< HEAD
 			break;
+=======
+>>>>>>> refs/remotes/origin/master
 		} else if (ret == -EAGAIN) {
 			/* QFull or DMAC Dying */
 			break;
@@ -2431,7 +2538,10 @@ static void pl330_tasklet(unsigned long data)
 	struct dma_pl330_chan *pch = (struct dma_pl330_chan *)data;
 	struct dma_pl330_desc *desc, *_dt;
 	unsigned long flags;
+<<<<<<< HEAD
 	LIST_HEAD(list);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&pch->lock, flags);
 
@@ -2439,12 +2549,18 @@ static void pl330_tasklet(unsigned long data)
 	list_for_each_entry_safe(desc, _dt, &pch->work_list, node)
 		if (desc->status == DONE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pch->completed = desc->txd.cookie;
 =======
 			if (!pch->cyclic)
 				dma_cookie_complete(&desc->txd);
 >>>>>>> refs/remotes/origin/cm-10.0
 			list_move_tail(&desc->node, &list);
+=======
+			if (!pch->cyclic)
+				dma_cookie_complete(&desc->txd);
+			list_move_tail(&desc->node, &pch->completed_list);
+>>>>>>> refs/remotes/origin/master
 		}
 
 	/* Try to submit a req imm. next to the last completed cookie */
@@ -2453,6 +2569,7 @@ static void pl330_tasklet(unsigned long data)
 	/* Make sure the PL330 Channel thread is active */
 	pl330_chan_ctrl(pch->pl330_chid, PL330_OP_START);
 
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&pch->lock, flags);
 
 <<<<<<< HEAD
@@ -2463,6 +2580,35 @@ static void pl330_tasklet(unsigned long data)
 	else
 		free_desc_list(&list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (!list_empty(&pch->completed_list)) {
+		dma_async_tx_callback callback;
+		void *callback_param;
+
+		desc = list_first_entry(&pch->completed_list,
+					struct dma_pl330_desc, node);
+
+		callback = desc->txd.callback;
+		callback_param = desc->txd.callback_param;
+
+		if (pch->cyclic) {
+			desc->status = PREP;
+			list_move_tail(&desc->node, &pch->work_list);
+		} else {
+			desc->status = FREE;
+			list_move_tail(&desc->node, &pch->dmac->desc_pool);
+		}
+
+		dma_descriptor_unmap(&desc->txd);
+
+		if (callback) {
+			spin_unlock_irqrestore(&pch->lock, flags);
+			callback(callback_param);
+			spin_lock_irqsave(&pch->lock, flags);
+		}
+	}
+	spin_unlock_irqrestore(&pch->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void dma_pl330_rqcb(void *token, enum pl330_op_err err)
@@ -2485,7 +2631,20 @@ static void dma_pl330_rqcb(void *token, enum pl330_op_err err)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+static bool pl330_dt_filter(struct dma_chan *chan, void *param)
+{
+	struct dma_pl330_filter_args *fargs = param;
+
+	if (chan->device != &fargs->pdmac->ddma)
+		return false;
+
+	return (chan->chan_id == fargs->chan_id);
+}
+
+>>>>>>> refs/remotes/origin/master
 bool pl330_filter(struct dma_chan *chan, void *param)
 {
 	u8 *peri_id;
@@ -2493,6 +2652,7 @@ bool pl330_filter(struct dma_chan *chan, void *param)
 	if (chan->device->dev->driver != &pl330_driver.drv)
 		return false;
 
+<<<<<<< HEAD
 #ifdef CONFIG_OF
 	if (chan->device->dev->of_node) {
 		const __be32 *prop_value;
@@ -2513,6 +2673,37 @@ bool pl330_filter(struct dma_chan *chan, void *param)
 EXPORT_SYMBOL(pl330_filter);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	peri_id = chan->private;
+	return *peri_id == (unsigned long)param;
+}
+EXPORT_SYMBOL(pl330_filter);
+
+static struct dma_chan *of_dma_pl330_xlate(struct of_phandle_args *dma_spec,
+						struct of_dma *ofdma)
+{
+	int count = dma_spec->args_count;
+	struct dma_pl330_dmac *pdmac = ofdma->of_dma_data;
+	struct dma_pl330_filter_args fargs;
+	dma_cap_mask_t cap;
+
+	if (!pdmac)
+		return NULL;
+
+	if (count != 1)
+		return NULL;
+
+	fargs.pdmac = pdmac;
+	fargs.chan_id = dma_spec->args[0];
+
+	dma_cap_zero(cap);
+	dma_cap_set(DMA_SLAVE, cap);
+	dma_cap_set(DMA_CYCLIC, cap);
+
+	return dma_request_channel(cap, pl330_dt_filter, &fargs);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int pl330_alloc_chan_resources(struct dma_chan *chan)
 {
 	struct dma_pl330_chan *pch = to_pchan(chan);
@@ -2522,16 +2713,25 @@ static int pl330_alloc_chan_resources(struct dma_chan *chan)
 	spin_lock_irqsave(&pch->lock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pch->completed = chan->cookie = 1;
 =======
 	dma_cookie_init(chan);
 	pch->cyclic = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_cookie_init(chan);
+	pch->cyclic = false;
+>>>>>>> refs/remotes/origin/master
 
 	pch->pl330_chid = pl330_request_channel(&pdmac->pif);
 	if (!pch->pl330_chid) {
 		spin_unlock_irqrestore(&pch->lock, flags);
+<<<<<<< HEAD
 		return 0;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	tasklet_init(&pch->task, pl330_tasklet, (unsigned long) pch);
@@ -2544,6 +2744,7 @@ static int pl330_alloc_chan_resources(struct dma_chan *chan)
 static int pl330_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd, unsigned long arg)
 {
 	struct dma_pl330_chan *pch = to_pchan(chan);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct dma_pl330_desc *desc;
 	unsigned long flags;
@@ -2567,6 +2768,10 @@ static int pl330_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd, unsigned 
 =======
 	struct dma_pl330_desc *desc, *_dt;
 	unsigned long flags;
+=======
+	struct dma_pl330_desc *desc;
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	struct dma_pl330_dmac *pdmac = pch->dmac;
 	struct dma_slave_config *slave_config;
 	LIST_HEAD(list);
@@ -2579,12 +2784,27 @@ static int pl330_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd, unsigned 
 		pl330_chan_ctrl(pch->pl330_chid, PL330_OP_FLUSH);
 
 		/* Mark all desc done */
+<<<<<<< HEAD
 		list_for_each_entry_safe(desc, _dt, &pch->work_list , node) {
 			desc->status = DONE;
 			list_move_tail(&desc->node, &list);
 		}
 
 		list_splice_tail_init(&list, &pdmac->desc_pool);
+=======
+		list_for_each_entry(desc, &pch->work_list , node) {
+			desc->status = FREE;
+			dma_cookie_complete(&desc->txd);
+		}
+
+		list_for_each_entry(desc, &pch->completed_list , node) {
+			desc->status = FREE;
+			dma_cookie_complete(&desc->txd);
+		}
+
+		list_splice_tail_init(&pch->work_list, &pdmac->desc_pool);
+		list_splice_tail_init(&pch->completed_list, &pdmac->desc_pool);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&pch->lock, flags);
 		break;
 	case DMA_SLAVE_CONFIG:
@@ -2610,7 +2830,10 @@ static int pl330_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd, unsigned 
 		dev_err(pch->dmac->pif.dev, "Not supported command.\n");
 		return -ENXIO;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -2628,11 +2851,17 @@ static void pl330_free_chan_resources(struct dma_chan *chan)
 	pch->pl330_chid = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (pch->cyclic)
 		list_splice_tail_init(&pch->work_list, &pch->dmac->desc_pool);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pch->cyclic)
+		list_splice_tail_init(&pch->work_list, &pch->dmac->desc_pool);
+
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&pch->lock, flags);
 }
 
@@ -2640,6 +2869,7 @@ static enum dma_status
 pl330_tx_status(struct dma_chan *chan, dma_cookie_t cookie,
 		 struct dma_tx_state *txstate)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct dma_pl330_chan *pch = to_pchan(chan);
 	dma_cookie_t last_done, last_used;
@@ -2656,6 +2886,9 @@ pl330_tx_status(struct dma_chan *chan, dma_cookie_t cookie,
 =======
 	return dma_cookie_status(chan, cookie, txstate);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return dma_cookie_status(chan, cookie, txstate);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void pl330_issue_pending(struct dma_chan *chan)
@@ -2679,6 +2912,7 @@ static dma_cookie_t pl330_tx_submit(struct dma_async_tx_descriptor *tx)
 
 	/* Assign cookies to all nodes */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cookie = tx->chan->cookie;
 
 	while (!list_empty(&last->node)) {
@@ -2693,10 +2927,21 @@ static dma_cookie_t pl330_tx_submit(struct dma_async_tx_descriptor *tx)
 
 		dma_cookie_assign(&desc->txd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (!list_empty(&last->node)) {
+		desc = list_entry(last->node.next, struct dma_pl330_desc, node);
+		if (pch->cyclic) {
+			desc->txd.callback = last->txd.callback;
+			desc->txd.callback_param = last->txd.callback_param;
+		}
+
+		dma_cookie_assign(&desc->txd);
+>>>>>>> refs/remotes/origin/master
 
 		list_move_tail(&desc->node, &pch->work_list);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (++cookie < 0)
 		cookie = 1;
@@ -2710,6 +2955,10 @@ static dma_cookie_t pl330_tx_submit(struct dma_async_tx_descriptor *tx)
 	cookie = dma_cookie_assign(&last->txd);
 	list_add_tail(&last->node, &pch->work_list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cookie = dma_cookie_assign(&last->txd);
+	list_add_tail(&last->node, &pch->work_list);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&pch->lock, flags);
 
 	return cookie;
@@ -2717,12 +2966,18 @@ static dma_cookie_t pl330_tx_submit(struct dma_async_tx_descriptor *tx)
 
 static inline void _init_desc(struct dma_pl330_desc *desc)
 {
+<<<<<<< HEAD
 	desc->pchan = NULL;
 	desc->req.x = &desc->px;
 	desc->req.token = desc;
 	desc->rqcfg.swap = SWAP_NO;
 	desc->rqcfg.privileged = 0;
 	desc->rqcfg.insnaccess = 0;
+=======
+	desc->req.x = &desc->px;
+	desc->req.token = desc;
+	desc->rqcfg.swap = SWAP_NO;
+>>>>>>> refs/remotes/origin/master
 	desc->rqcfg.scctl = SCCTRL0;
 	desc->rqcfg.dcctl = DCCTRL0;
 	desc->req.cfg = &desc->rqcfg;
@@ -2733,7 +2988,11 @@ static inline void _init_desc(struct dma_pl330_desc *desc)
 }
 
 /* Returns the number of descriptors added to the DMAC pool */
+<<<<<<< HEAD
 int add_desc(struct dma_pl330_dmac *pdmac, gfp_t flg, int count)
+=======
+static int add_desc(struct dma_pl330_dmac *pdmac, gfp_t flg, int count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dma_pl330_desc *desc;
 	unsigned long flags;
@@ -2742,7 +3001,11 @@ int add_desc(struct dma_pl330_dmac *pdmac, gfp_t flg, int count)
 	if (!pdmac)
 		return 0;
 
+<<<<<<< HEAD
 	desc = kmalloc(count * sizeof(*desc), flg);
+=======
+	desc = kcalloc(count, sizeof(*desc), flg);
+>>>>>>> refs/remotes/origin/master
 	if (!desc)
 		return 0;
 
@@ -2788,10 +3051,14 @@ static struct dma_pl330_desc *pl330_get_desc(struct dma_pl330_chan *pch)
 {
 	struct dma_pl330_dmac *pdmac = pch->dmac;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dma_pl330_peri *peri = pch->chan.private;
 =======
 	u8 *peri_id = pch->chan.private;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 *peri_id = pch->chan.private;
+>>>>>>> refs/remotes/origin/master
 	struct dma_pl330_desc *desc;
 
 	/* Pluck one desc from the pool of DMAC */
@@ -2817,12 +3084,17 @@ static struct dma_pl330_desc *pl330_get_desc(struct dma_pl330_chan *pch)
 	async_tx_ack(&desc->txd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	desc->req.rqtype = peri->rqtype;
 	desc->req.peri = peri->peri_id;
 =======
 	desc->req.peri = peri_id ? pch->chan.chan_id : 0;
 	desc->rqcfg.pcfg = &pch->dmac->pif.pcfg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	desc->req.peri = peri_id ? pch->chan.chan_id : 0;
+	desc->rqcfg.pcfg = &pch->dmac->pif.pcfg;
+>>>>>>> refs/remotes/origin/master
 
 	dma_async_tx_descriptor_init(&desc->txd, &pch->chan);
 
@@ -2890,6 +3162,7 @@ static inline int get_burst_len(struct dma_pl330_desc *desc, size_t len)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct dma_async_tx_descriptor *pl330_prep_dma_cyclic(
 		struct dma_chan *chan, dma_addr_t dma_addr, size_t len,
@@ -2924,28 +3197,113 @@ static struct dma_async_tx_descriptor *pl330_prep_dma_cyclic(
 		dst = dma_addr;
 		break;
 	default:
+=======
+static struct dma_async_tx_descriptor *pl330_prep_dma_cyclic(
+		struct dma_chan *chan, dma_addr_t dma_addr, size_t len,
+		size_t period_len, enum dma_transfer_direction direction,
+		unsigned long flags, void *context)
+{
+	struct dma_pl330_desc *desc = NULL, *first = NULL;
+	struct dma_pl330_chan *pch = to_pchan(chan);
+	struct dma_pl330_dmac *pdmac = pch->dmac;
+	unsigned int i;
+	dma_addr_t dst;
+	dma_addr_t src;
+
+	if (len % period_len != 0)
+		return NULL;
+
+	if (!is_slave_direction(direction)) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(pch->dmac->pif.dev, "%s:%d Invalid dma direction\n",
 		__func__, __LINE__);
 		return NULL;
 	}
 
+<<<<<<< HEAD
 	desc->rqcfg.brst_size = pch->burst_sz;
 	desc->rqcfg.brst_len = 1;
 
 	pch->cyclic = true;
 
 	fill_px(&desc->px, dst, src, period_len);
+=======
+	for (i = 0; i < len / period_len; i++) {
+		desc = pl330_get_desc(pch);
+		if (!desc) {
+			dev_err(pch->dmac->pif.dev, "%s:%d Unable to fetch desc\n",
+				__func__, __LINE__);
+
+			if (!first)
+				return NULL;
+
+			spin_lock_irqsave(&pdmac->pool_lock, flags);
+
+			while (!list_empty(&first->node)) {
+				desc = list_entry(first->node.next,
+						struct dma_pl330_desc, node);
+				list_move_tail(&desc->node, &pdmac->desc_pool);
+			}
+
+			list_move_tail(&first->node, &pdmac->desc_pool);
+
+			spin_unlock_irqrestore(&pdmac->pool_lock, flags);
+
+			return NULL;
+		}
+
+		switch (direction) {
+		case DMA_MEM_TO_DEV:
+			desc->rqcfg.src_inc = 1;
+			desc->rqcfg.dst_inc = 0;
+			desc->req.rqtype = MEMTODEV;
+			src = dma_addr;
+			dst = pch->fifo_addr;
+			break;
+		case DMA_DEV_TO_MEM:
+			desc->rqcfg.src_inc = 0;
+			desc->rqcfg.dst_inc = 1;
+			desc->req.rqtype = DEVTOMEM;
+			src = pch->fifo_addr;
+			dst = dma_addr;
+			break;
+		default:
+			break;
+		}
+
+		desc->rqcfg.brst_size = pch->burst_sz;
+		desc->rqcfg.brst_len = 1;
+		fill_px(&desc->px, dst, src, period_len);
+
+		if (!first)
+			first = desc;
+		else
+			list_add_tail(&desc->node, &first->node);
+
+		dma_addr += period_len;
+	}
+
+	if (!desc)
+		return NULL;
+
+	pch->cyclic = true;
+	desc->txd.flags = flags;
+>>>>>>> refs/remotes/origin/master
 
 	return &desc->txd;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct dma_async_tx_descriptor *
 pl330_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dst,
 		dma_addr_t src, size_t len, unsigned long flags)
 {
 	struct dma_pl330_desc *desc;
 	struct dma_pl330_chan *pch = to_pchan(chan);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct dma_pl330_peri *peri = chan->private;
 	struct pl330_info *pi;
@@ -2956,11 +3314,16 @@ pl330_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dst,
 
 	if (peri->rqtype != MEMTOMEM)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct pl330_info *pi;
 	int burst;
 
 	if (unlikely(!pch || !len))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	pi = &pch->dmac->pif;
@@ -2972,9 +3335,13 @@ pl330_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dst,
 	desc->rqcfg.src_inc = 1;
 	desc->rqcfg.dst_inc = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	desc->req.rqtype = MEMTOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	desc->req.rqtype = MEMTOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	/* Select max possible burst size */
 	burst = pi->pcfg.data_bus_width / 8;
@@ -2996,6 +3363,7 @@ pl330_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dst,
 	return &desc->txd;
 }
 
+<<<<<<< HEAD
 static struct dma_async_tx_descriptor *
 pl330_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 <<<<<<< HEAD
@@ -3009,20 +3377,51 @@ pl330_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 	unsigned long flags;
 	int i, burst_size;
 =======
+=======
+static void __pl330_giveback_desc(struct dma_pl330_dmac *pdmac,
+				  struct dma_pl330_desc *first)
+{
+	unsigned long flags;
+	struct dma_pl330_desc *desc;
+
+	if (!first)
+		return;
+
+	spin_lock_irqsave(&pdmac->pool_lock, flags);
+
+	while (!list_empty(&first->node)) {
+		desc = list_entry(first->node.next,
+				struct dma_pl330_desc, node);
+		list_move_tail(&desc->node, &pdmac->desc_pool);
+	}
+
+	list_move_tail(&first->node, &pdmac->desc_pool);
+
+	spin_unlock_irqrestore(&pdmac->pool_lock, flags);
+}
+
+static struct dma_async_tx_descriptor *
+pl330_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
+>>>>>>> refs/remotes/origin/master
 		unsigned int sg_len, enum dma_transfer_direction direction,
 		unsigned long flg, void *context)
 {
 	struct dma_pl330_desc *first, *desc = NULL;
 	struct dma_pl330_chan *pch = to_pchan(chan);
 	struct scatterlist *sg;
+<<<<<<< HEAD
 	unsigned long flags;
 	int i;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 	dma_addr_t addr;
 
 	if (unlikely(!pch || !sgl || !sg_len))
 		return NULL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Make sure the direction is consistent */
 	if ((direction == DMA_TO_DEVICE &&
@@ -3039,6 +3438,9 @@ pl330_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 =======
 	addr = pch->fifo_addr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	addr = pch->fifo_addr;
+>>>>>>> refs/remotes/origin/master
 
 	first = NULL;
 
@@ -3051,6 +3453,7 @@ pl330_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 			dev_err(pch->dmac->pif.dev,
 				"%s:%d Unable to fetch desc\n",
 				__func__, __LINE__);
+<<<<<<< HEAD
 			if (!first)
 				return NULL;
 
@@ -3065,6 +3468,9 @@ pl330_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 			list_move_tail(&first->node, &pdmac->desc_pool);
 
 			spin_unlock_irqrestore(&pdmac->pool_lock, flags);
+=======
+			__pl330_giveback_desc(pdmac, first);
+>>>>>>> refs/remotes/origin/master
 
 			return NULL;
 		}
@@ -3075,33 +3481,47 @@ pl330_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 			list_add_tail(&desc->node, &first->node);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (direction == DMA_TO_DEVICE) {
 			desc->rqcfg.src_inc = 1;
 			desc->rqcfg.dst_inc = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (direction == DMA_MEM_TO_DEV) {
 			desc->rqcfg.src_inc = 1;
 			desc->rqcfg.dst_inc = 0;
 			desc->req.rqtype = MEMTODEV;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			fill_px(&desc->px,
 				addr, sg_dma_address(sg), sg_dma_len(sg));
 		} else {
 			desc->rqcfg.src_inc = 0;
 			desc->rqcfg.dst_inc = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			desc->req.rqtype = DEVTOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			desc->req.rqtype = DEVTOMEM;
+>>>>>>> refs/remotes/origin/master
 			fill_px(&desc->px,
 				sg_dma_address(sg), addr, sg_dma_len(sg));
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		desc->rqcfg.brst_size = burst_size;
 =======
 		desc->rqcfg.brst_size = pch->burst_sz;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		desc->rqcfg.brst_size = pch->burst_sz;
+>>>>>>> refs/remotes/origin/master
 		desc->rqcfg.brst_len = 1;
 	}
 
@@ -3118,16 +3538,45 @@ static irqreturn_t pl330_irq_handler(int irq, void *data)
 		return IRQ_NONE;
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+#define PL330_DMA_BUSWIDTHS \
+	BIT(DMA_SLAVE_BUSWIDTH_UNDEFINED) | \
+	BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) | \
+	BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) | \
+	BIT(DMA_SLAVE_BUSWIDTH_4_BYTES) | \
+	BIT(DMA_SLAVE_BUSWIDTH_8_BYTES)
+
+static int pl330_dma_device_slave_caps(struct dma_chan *dchan,
+	struct dma_slave_caps *caps)
+{
+	caps->src_addr_widths = PL330_DMA_BUSWIDTHS;
+	caps->dstn_addr_widths = PL330_DMA_BUSWIDTHS;
+	caps->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+	caps->cmd_pause = false;
+	caps->cmd_terminate = true;
+	caps->residue_granularity = DMA_RESIDUE_GRANULARITY_DESCRIPTOR;
+
+	return 0;
+}
+
+static int
+>>>>>>> refs/remotes/origin/master
 pl330_probe(struct amba_device *adev, const struct amba_id *id)
 {
 	struct dma_pl330_platdata *pdat;
 	struct dma_pl330_dmac *pdmac;
+<<<<<<< HEAD
 	struct dma_pl330_chan *pch;
+=======
+	struct dma_pl330_chan *pch, *_p;
+>>>>>>> refs/remotes/origin/master
 	struct pl330_info *pi;
 	struct dma_device *pd;
 	struct resource *res;
 	int i, ret, irq;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	pdat = adev->dev.platform_data;
@@ -3148,6 +3597,18 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
 	/* Allocate a new DMAC and its Channels */
 	pdmac = kzalloc(sizeof(*pdmac), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int num_chan;
+
+	pdat = dev_get_platdata(&adev->dev);
+
+	ret = dma_set_mask_and_coherent(&adev->dev, DMA_BIT_MASK(32));
+	if (ret)
+		return ret;
+
+	/* Allocate a new DMAC and its Channels */
+	pdmac = devm_kzalloc(&adev->dev, sizeof(*pdmac), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!pdmac) {
 		dev_err(&adev->dev, "unable to allocate mem\n");
 		return -ENOMEM;
@@ -3156,6 +3617,7 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
 	pi = &pdmac->pif;
 	pi->dev = &adev->dev;
 	pi->pl330_data = NULL;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pi->mcbufsz = pdat->mcbuf_sz;
 =======
@@ -3205,6 +3667,34 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
 	if (ret)
 		goto probe_err4;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pi->mcbufsz = pdat ? pdat->mcbuf_sz : 0;
+
+	res = &adev->res;
+	pi->base = devm_ioremap_resource(&adev->dev, res);
+	if (IS_ERR(pi->base))
+		return PTR_ERR(pi->base);
+
+	amba_set_drvdata(adev, pdmac);
+
+	for (i = 0; i < AMBA_NR_IRQS; i++) {
+		irq = adev->irq[i];
+		if (irq) {
+			ret = devm_request_irq(&adev->dev, irq,
+					       pl330_irq_handler, 0,
+					       dev_name(&adev->dev), pi);
+			if (ret)
+				return ret;
+		} else {
+			break;
+		}
+	}
+
+	pi->pcfg.periph_id = adev->periphid;
+	ret = pl330_add(pi);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	INIT_LIST_HEAD(&pdmac->desc_pool);
 	spin_lock_init(&pdmac->pool_lock);
@@ -3217,6 +3707,7 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
 	INIT_LIST_HEAD(&pd->channels);
 
 	/* Initialize channel parameters */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (i = 0; i < pdat->nr_valid_peri; i++) {
 		struct dma_pl330_peri *peri = &pdat->peri[i];
@@ -3235,6 +3726,8 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
 			continue;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pdat)
 		num_chan = max_t(int, pdat->nr_valid_peri, pi->pcfg.num_chan);
 	else
@@ -3244,7 +3737,11 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
 	if (!pdmac->peripherals) {
 		ret = -ENOMEM;
 		dev_err(&adev->dev, "unable to allocate pdmac->peripherals\n");
+<<<<<<< HEAD
 		goto probe_err5;
+=======
+		goto probe_err2;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (i = 0; i < num_chan; i++) {
@@ -3253,6 +3750,7 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
 			pch->chan.private = pdat ? &pdat->peri_id[i] : NULL;
 		else
 			pch->chan.private = adev->dev.of_node;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 		INIT_LIST_HEAD(&pch->work_list);
@@ -3272,12 +3770,26 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
 
 		/* Add the channel to the DMAC list */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		INIT_LIST_HEAD(&pch->work_list);
+		INIT_LIST_HEAD(&pch->completed_list);
+		spin_lock_init(&pch->lock);
+		pch->pl330_chid = NULL;
+		pch->chan.device = pd;
+		pch->dmac = pdmac;
+
+		/* Add the channel to the DMAC list */
+>>>>>>> refs/remotes/origin/master
 		list_add_tail(&pch->chan.device_node, &pd->channels);
 	}
 
 	pd->dev = &adev->dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pdat) {
 		pd->cap_mask = pdat->cap_mask;
 	} else {
@@ -3285,25 +3797,40 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
 		if (pi->pcfg.num_peri) {
 			dma_cap_set(DMA_SLAVE, pd->cap_mask);
 			dma_cap_set(DMA_CYCLIC, pd->cap_mask);
+<<<<<<< HEAD
 		}
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dma_cap_set(DMA_PRIVATE, pd->cap_mask);
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	pd->device_alloc_chan_resources = pl330_alloc_chan_resources;
 	pd->device_free_chan_resources = pl330_free_chan_resources;
 	pd->device_prep_dma_memcpy = pl330_prep_dma_memcpy;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pd->device_prep_dma_cyclic = pl330_prep_dma_cyclic;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pd->device_prep_dma_cyclic = pl330_prep_dma_cyclic;
+>>>>>>> refs/remotes/origin/master
 	pd->device_tx_status = pl330_tx_status;
 	pd->device_prep_slave_sg = pl330_prep_slave_sg;
 	pd->device_control = pl330_control;
 	pd->device_issue_pending = pl330_issue_pending;
+<<<<<<< HEAD
+=======
+	pd->device_slave_caps = pl330_dma_device_slave_caps;
+>>>>>>> refs/remotes/origin/master
 
 	ret = dma_async_device_register(pd);
 	if (ret) {
 		dev_err(&adev->dev, "unable to register DMAC\n");
+<<<<<<< HEAD
 <<<<<<< HEAD
 		goto probe_err4;
 	}
@@ -3315,6 +3842,28 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto probe_err3;
+	}
+
+	if (adev->dev.of_node) {
+		ret = of_dma_controller_register(adev->dev.of_node,
+					 of_dma_pl330_xlate, pdmac);
+		if (ret) {
+			dev_err(&adev->dev,
+			"unable to register DMA to the generic DT DMA helpers\n");
+		}
+	}
+	/*
+	 * This is the limit for transfers with a buswidth of 1, larger
+	 * buswidths will have larger limits.
+	 */
+	ret = dma_set_max_seg_size(&adev->dev, 1900800);
+	if (ret)
+		dev_err(&adev->dev, "unable to set the seg size\n");
+
+
+>>>>>>> refs/remotes/origin/master
 	dev_info(&adev->dev,
 		"Loaded driver for PL330 DMAC-%d\n", adev->periphid);
 	dev_info(&adev->dev,
@@ -3324,6 +3873,7 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
 		pi->pcfg.num_peri, pi->pcfg.num_events);
 
 	return 0;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 probe_err4:
@@ -3346,22 +3896,52 @@ probe_err2:
 probe_err1:
 	release_mem_region(res->start, resource_size(res));
 	kfree(pdmac);
+=======
+probe_err3:
+	/* Idle the DMAC */
+	list_for_each_entry_safe(pch, _p, &pdmac->ddma.channels,
+			chan.device_node) {
+
+		/* Remove the channel */
+		list_del(&pch->chan.device_node);
+
+		/* Flush the channel */
+		pl330_control(&pch->chan, DMA_TERMINATE_ALL, 0);
+		pl330_free_chan_resources(&pch->chan);
+	}
+probe_err2:
+	pl330_del(pi);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit pl330_remove(struct amba_device *adev)
+=======
+static int pl330_remove(struct amba_device *adev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dma_pl330_dmac *pdmac = amba_get_drvdata(adev);
 	struct dma_pl330_chan *pch, *_p;
 	struct pl330_info *pi;
+<<<<<<< HEAD
 	struct resource *res;
 	int irq;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!pdmac)
 		return 0;
 
+<<<<<<< HEAD
 	amba_set_drvdata(adev, NULL);
+=======
+	if (adev->dev.of_node)
+		of_dma_controller_free(adev->dev.of_node);
+
+	dma_async_device_unregister(&pdmac->ddma);
+>>>>>>> refs/remotes/origin/master
 
 	/* Idle the DMAC */
 	list_for_each_entry_safe(pch, _p, &pdmac->ddma.channels,
@@ -3379,6 +3959,7 @@ static int __devexit pl330_remove(struct amba_device *adev)
 
 	pl330_del(pi);
 
+<<<<<<< HEAD
 	irq = adev->irq[0];
 	free_irq(irq, pi);
 
@@ -3396,6 +3977,8 @@ static int __devexit pl330_remove(struct amba_device *adev)
 >>>>>>> refs/remotes/origin/cm-10.0
 	kfree(pdmac);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -3407,6 +3990,7 @@ static struct amba_id pl330_ids[] = {
 	{ 0, 0 },
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 MODULE_DEVICE_TABLE(amba, pl330_ids);
@@ -3450,20 +4034,28 @@ static const struct dev_pm_ops pl330_pm_ops = {
 };
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_DEVICE_TABLE(amba, pl330_ids);
+
+>>>>>>> refs/remotes/origin/master
 static struct amba_driver pl330_driver = {
 	.drv = {
 		.owner = THIS_MODULE,
 		.name = "dma-pl330",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.pm = &pl330_pm_ops,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	.id_table = pl330_ids,
 	.probe = pl330_probe,
 	.remove = pl330_remove,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init pl330_init(void)
 {
@@ -3480,6 +4072,9 @@ module_exit(pl330_exit);
 =======
 module_amba_driver(pl330_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_amba_driver(pl330_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jaswinder Singh <jassi.brar@samsung.com>");
 MODULE_DESCRIPTION("API Driver for PL330 DMAC");

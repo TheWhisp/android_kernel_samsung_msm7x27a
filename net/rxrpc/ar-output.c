@@ -14,9 +14,13 @@
 #include <linux/skbuff.h>
 #include <linux/circ_buf.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/sock.h>
 #include <net/af_rxrpc.h>
 #include "ar-internal.h"
@@ -245,7 +249,11 @@ int rxrpc_kernel_send_data(struct rxrpc_call *call, struct msghdr *msg,
 
 EXPORT_SYMBOL(rxrpc_kernel_send_data);
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * rxrpc_kernel_abort_call - Allow a kernel service to abort a call
  * @call: The call to be aborted
  * @abort_code: The abort code to stick into the ABORT packet
@@ -490,10 +498,14 @@ static void rxrpc_queue_packet(struct rxrpc_call *call, struct sk_buff *skb,
 	       ntohl(sp->hdr.serial), ntohl(sp->hdr.seq));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sp->need_resend = 0;
 =======
 	sp->need_resend = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sp->need_resend = false;
+>>>>>>> refs/remotes/origin/master
 	sp->resend_at = jiffies + rxrpc_resend_timeout * HZ;
 	if (!test_and_set_bit(RXRPC_CALL_RUN_RTIMER, &call->flags)) {
 		_debug("run timer");
@@ -516,10 +528,14 @@ static void rxrpc_queue_packet(struct rxrpc_call *call, struct sk_buff *skb,
 	if (ret < 0) {
 		_debug("need instant resend %d", ret);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sp->need_resend = 1;
 =======
 		sp->need_resend = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sp->need_resend = true;
+>>>>>>> refs/remotes/origin/master
 		rxrpc_instant_resend(call);
 	}
 

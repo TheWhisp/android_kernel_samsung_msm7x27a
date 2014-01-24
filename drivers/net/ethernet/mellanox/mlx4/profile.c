@@ -76,7 +76,11 @@ u64 mlx4_make_profile(struct mlx4_dev *dev,
 		u64 size;
 		u64 start;
 		int type;
+<<<<<<< HEAD
 		int num;
+=======
+		u32 num;
+>>>>>>> refs/remotes/origin/master
 		int log_num;
 	};
 
@@ -105,7 +109,11 @@ u64 mlx4_make_profile(struct mlx4_dev *dev,
 	si_meminfo(&si);
 	request->num_mtt =
 		roundup_pow_of_two(max_t(unsigned, request->num_mtt,
+<<<<<<< HEAD
 					 min(1UL << 31,
+=======
+					 min(1UL << (31 - log_mtts_per_seg),
+>>>>>>> refs/remotes/origin/master
 					     si.totalram >> (log_mtts_per_seg - 1))));
 
 	profile[MLX4_RES_QP].size     = dev_cap->qpc_entry_sz;
@@ -126,7 +134,13 @@ u64 mlx4_make_profile(struct mlx4_dev *dev,
 	profile[MLX4_RES_AUXC].num    = request->num_qp;
 	profile[MLX4_RES_SRQ].num     = request->num_srq;
 	profile[MLX4_RES_CQ].num      = request->num_cq;
+<<<<<<< HEAD
 	profile[MLX4_RES_EQ].num      = min_t(unsigned, dev_cap->max_eqs, MAX_MSIX);
+=======
+	profile[MLX4_RES_EQ].num      = mlx4_is_mfunc(dev) ?
+					dev->phys_caps.num_phys_eqs :
+					min_t(unsigned, dev_cap->max_eqs, MAX_MSIX);
+>>>>>>> refs/remotes/origin/master
 	profile[MLX4_RES_DMPT].num    = request->num_mpt;
 	profile[MLX4_RES_CMPT].num    = MLX4_NUM_CMPTS;
 	profile[MLX4_RES_MTT].num     = request->num_mtt * (1 << log_mtts_per_seg);
@@ -215,9 +229,16 @@ u64 mlx4_make_profile(struct mlx4_dev *dev,
 			init_hca->log_num_cqs = profile[i].log_num;
 			break;
 		case MLX4_RES_EQ:
+<<<<<<< HEAD
 			dev->caps.num_eqs     = profile[i].num;
 			init_hca->eqc_base    = profile[i].start;
 			init_hca->log_num_eqs = profile[i].log_num;
+=======
+			dev->caps.num_eqs     = roundup_pow_of_two(min_t(unsigned, dev_cap->max_eqs,
+									 MAX_MSIX));
+			init_hca->eqc_base    = profile[i].start;
+			init_hca->log_num_eqs = ilog2(dev->caps.num_eqs);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case MLX4_RES_DMPT:
 			dev->caps.num_mpts	= profile[i].num;
@@ -234,13 +255,28 @@ u64 mlx4_make_profile(struct mlx4_dev *dev,
 			init_hca->mtt_base	 = profile[i].start;
 			break;
 		case MLX4_RES_MCG:
+<<<<<<< HEAD
 			dev->caps.num_mgms	  = profile[i].num >> 1;
 			dev->caps.num_amgms	  = profile[i].num >> 1;
+=======
+>>>>>>> refs/remotes/origin/master
 			init_hca->mc_base	  = profile[i].start;
 			init_hca->log_mc_entry_sz =
 					ilog2(mlx4_get_mgm_entry_size(dev));
 			init_hca->log_mc_table_sz = profile[i].log_num;
+<<<<<<< HEAD
 			init_hca->log_mc_hash_sz  = profile[i].log_num - 1;
+=======
+			if (dev->caps.steering_mode ==
+			    MLX4_STEERING_MODE_DEVICE_MANAGED) {
+				dev->caps.num_mgms = profile[i].num;
+			} else {
+				init_hca->log_mc_hash_sz =
+						profile[i].log_num - 1;
+				dev->caps.num_mgms = profile[i].num >> 1;
+				dev->caps.num_amgms = profile[i].num >> 1;
+			}
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			break;

@@ -10,7 +10,11 @@
 #include <bcm63xx_io.h>
 #include <bcm63xx_regs.h>
 
+<<<<<<< HEAD
 static void __init wait_xfered(void)
+=======
+static void wait_xfered(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int val;
 
@@ -22,7 +26,11 @@ static void __init wait_xfered(void)
 	} while (1);
 }
 
+<<<<<<< HEAD
 void __init prom_putchar(char c)
+=======
+void prom_putchar(char c)
+>>>>>>> refs/remotes/origin/master
 {
 	wait_xfered();
 	bcm_uart0_writel(c, UART_FIFO_REG);

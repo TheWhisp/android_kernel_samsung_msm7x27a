@@ -342,7 +342,10 @@ struct radeonfb_info {
 
 	int			mtrr_hdl;
 
+<<<<<<< HEAD
 	int			pm_reg;
+=======
+>>>>>>> refs/remotes/origin/master
 	u32			save_regs[100];
 	int			asleep;
 	int			lock_blank;

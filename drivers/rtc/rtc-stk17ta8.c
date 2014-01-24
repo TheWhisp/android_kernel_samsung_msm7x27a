@@ -22,9 +22,13 @@
 #include <linux/platform_device.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_VERSION "0.1"
 
@@ -288,7 +292,11 @@ static struct bin_attribute stk17ta8_nvram_attr = {
 	.write = stk17ta8_nvram_write,
 };
 
+<<<<<<< HEAD
 static int __devinit stk17ta8_rtc_probe(struct platform_device *pdev)
+=======
+static int stk17ta8_rtc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res;
 	unsigned int cal;
@@ -297,6 +305,7 @@ static int __devinit stk17ta8_rtc_probe(struct platform_device *pdev)
 	void __iomem *ioaddr;
 	int ret = 0;
 
+<<<<<<< HEAD
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res)
 		return -ENODEV;
@@ -310,6 +319,16 @@ static int __devinit stk17ta8_rtc_probe(struct platform_device *pdev)
 	ioaddr = devm_ioremap(&pdev->dev, res->start, RTC_REG_SIZE);
 	if (!ioaddr)
 		return -ENOMEM;
+=======
+	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+	if (!pdata)
+		return -ENOMEM;
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	ioaddr = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(ioaddr))
+		return PTR_ERR(ioaddr);
+>>>>>>> refs/remotes/origin/master
 	pdata->ioaddr = ioaddr;
 	pdata->irq = platform_get_irq(pdev, 0);
 
@@ -333,33 +352,52 @@ static int __devinit stk17ta8_rtc_probe(struct platform_device *pdev)
 		if (devm_request_irq(&pdev->dev, pdata->irq,
 				stk17ta8_rtc_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				IRQF_DISABLED | IRQF_SHARED,
 =======
 				IRQF_SHARED,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				IRQF_SHARED,
+>>>>>>> refs/remotes/origin/master
 				pdev->name, pdev) < 0) {
 			dev_warn(&pdev->dev, "interrupt not available.\n");
 			pdata->irq = 0;
 		}
 	}
 
+<<<<<<< HEAD
 	pdata->rtc = rtc_device_register(pdev->name, &pdev->dev,
+=======
+	pdata->rtc = devm_rtc_device_register(&pdev->dev, pdev->name,
+>>>>>>> refs/remotes/origin/master
 				  &stk17ta8_rtc_ops, THIS_MODULE);
 	if (IS_ERR(pdata->rtc))
 		return PTR_ERR(pdata->rtc);
 
 	ret = sysfs_create_bin_file(&pdev->dev.kobj, &stk17ta8_nvram_attr);
+<<<<<<< HEAD
 	if (ret)
 		rtc_device_unregister(pdata->rtc);
 	return ret;
 }
 
 static int __devexit stk17ta8_rtc_remove(struct platform_device *pdev)
+=======
+
+	return ret;
+}
+
+static int stk17ta8_rtc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtc_plat_data *pdata = platform_get_drvdata(pdev);
 
 	sysfs_remove_bin_file(&pdev->dev.kobj, &stk17ta8_nvram_attr);
+<<<<<<< HEAD
 	rtc_device_unregister(pdata->rtc);
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pdata->irq > 0)
 		writeb(0, pdata->ioaddr + RTC_INTERRUPTS);
 	return 0;
@@ -370,13 +408,18 @@ MODULE_ALIAS("platform:stk17ta8");
 
 static struct platform_driver stk17ta8_rtc_driver = {
 	.probe		= stk17ta8_rtc_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(stk17ta8_rtc_remove),
+=======
+	.remove		= stk17ta8_rtc_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "stk17ta8",
 		.owner	= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static __init int stk17ta8_init(void)
 {
@@ -393,6 +436,9 @@ module_exit(stk17ta8_exit);
 =======
 module_platform_driver(stk17ta8_rtc_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(stk17ta8_rtc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Thomas Hommel <thomas.hommel@ge.com>");
 MODULE_DESCRIPTION("Simtek STK17TA8 RTC driver");

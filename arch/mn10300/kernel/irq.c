@@ -142,6 +142,7 @@ mn10300_cpupic_setaffinity(struct irq_data *d, const struct cpumask *mask,
 			   bool force)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 	int err;
 
 	flags = arch_local_cli_save();
@@ -193,6 +194,13 @@ mn10300_cpupic_setaffinity(struct irq_data *d, const struct cpumask *mask,
 
 	arch_local_irq_restore(flags);
 	return err;
+=======
+
+	flags = arch_local_cli_save();
+	set_bit(d->irq, irq_affinity_request);
+	arch_local_irq_restore(flags);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* CONFIG_SMP */
 
@@ -261,9 +269,12 @@ void set_intr_level(int irq, u16 level)
  * mark an interrupt to be ACK'd after interrupt handlers have been run rather
  * than before
 <<<<<<< HEAD
+<<<<<<< HEAD
  * - see Documentation/mn10300/features.txt
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 void mn10300_set_lateack_irq_type(int irq)
 {

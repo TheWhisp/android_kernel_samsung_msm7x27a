@@ -2,7 +2,11 @@
  * LISL02DQ.h -- support STMicroelectronics LISD02DQ
  *               3d 2g Linear Accelerometers via SPI
  *
+<<<<<<< HEAD
  * Copyright (c) 2007 Jonathan Cameron <jic23@cam.ac.uk>
+=======
+ * Copyright (c) 2007 Jonathan Cameron <jic23@kernel.org>
+>>>>>>> refs/remotes/origin/master
  *
  * Loosely based upon tle62x0.c
  *
@@ -28,7 +32,11 @@
 /* Control Register (1 of 2) */
 #define LIS3L02DQ_REG_CTRL_1_ADDR		0x20
 /* Power ctrl - either bit set corresponds to on*/
+<<<<<<< HEAD
 #define LIS3L02DQ_REG_CTRL_1_PD_ON	0xC0
+=======
+#define LIS3L02DQ_REG_CTRL_1_PD_ON		0xC0
+>>>>>>> refs/remotes/origin/master
 
 /* Decimation Factor  */
 #define LIS3L02DQ_DEC_MASK			0x30
@@ -73,14 +81,22 @@
 /* Interrupt related stuff */
 #define LIS3L02DQ_REG_WAKE_UP_CFG_ADDR			0x23
 
+<<<<<<< HEAD
 /* Switch from or combination fo conditions to and */
+=======
+/* Switch from or combination of conditions to and */
+>>>>>>> refs/remotes/origin/master
 #define LIS3L02DQ_REG_WAKE_UP_CFG_BOOLEAN_AND		0x80
 
 /* Latch interrupt request,
  * if on ack must be given by reading the ack register */
 #define LIS3L02DQ_REG_WAKE_UP_CFG_LATCH_SRC		0x40
 
+<<<<<<< HEAD
 /* Z Interrupt on High (above threshold)*/
+=======
+/* Z Interrupt on High (above threshold) */
+>>>>>>> refs/remotes/origin/master
 #define LIS3L02DQ_REG_WAKE_UP_CFG_INTERRUPT_Z_HIGH	0x20
 /* Z Interrupt on Low */
 #define LIS3L02DQ_REG_WAKE_UP_CFG_INTERRUPT_Z_LOW	0x10
@@ -117,13 +133,21 @@
 #define LIS3L02DQ_REG_STATUS_Y_OVERRUN			0x20
 #define LIS3L02DQ_REG_STATUS_X_OVERRUN			0x10
 /* XYZ new data available - first is all 3 available? */
+<<<<<<< HEAD
 #define LIS3L02DQ_REG_STATUS_XYZ_NEW_DATA 0x08
+=======
+#define LIS3L02DQ_REG_STATUS_XYZ_NEW_DATA		0x08
+>>>>>>> refs/remotes/origin/master
 #define LIS3L02DQ_REG_STATUS_Z_NEW_DATA			0x04
 #define LIS3L02DQ_REG_STATUS_Y_NEW_DATA			0x02
 #define LIS3L02DQ_REG_STATUS_X_NEW_DATA			0x01
 
 /* The accelerometer readings - low and high bytes.
+<<<<<<< HEAD
 Form of high byte dependent on justification set in ctrl reg */
+=======
+ * Form of high byte dependent on justification set in ctrl reg */
+>>>>>>> refs/remotes/origin/master
 #define LIS3L02DQ_REG_OUT_X_L_ADDR			0x28
 #define LIS3L02DQ_REG_OUT_X_H_ADDR			0x29
 #define LIS3L02DQ_REG_OUT_Y_L_ADDR			0x2A
@@ -150,14 +174,24 @@ Form of high byte dependent on justification set in ctrl reg */
  * struct lis3l02dq_state - device instance specific data
  * @us:			actual spi_device
  * @trig:		data ready trigger registered with iio
+<<<<<<< HEAD
  * @tx:			transmit buffer
  * @rx:			receive buffer
  * @buf_lock:		mutex to protect tx and rx
+=======
+ * @buf_lock:		mutex to protect tx and rx
+ * @tx:			transmit buffer
+ * @rx:			receive buffer
+>>>>>>> refs/remotes/origin/master
  **/
 struct lis3l02dq_state {
 	struct spi_device		*us;
 	struct iio_trigger		*trig;
 	struct mutex			buf_lock;
+<<<<<<< HEAD
+=======
+	int				gpio;
+>>>>>>> refs/remotes/origin/master
 	bool				trigger_on;
 
 	u8	tx[LIS3L02DQ_MAX_RX] ____cacheline_aligned;
@@ -175,17 +209,23 @@ int lis3l02dq_spi_write_reg_8(struct iio_dev *indio_dev,
 int lis3l02dq_disable_all_events(struct iio_dev *indio_dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_IIO_RING_BUFFER
 /* At the moment triggers are only used for ring buffer
 =======
 #ifdef CONFIG_IIO_BUFFER
 /* At the moment triggers are only used for buffer
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_IIO_BUFFER
+/* At the moment triggers are only used for buffer
+>>>>>>> refs/remotes/origin/master
  * filling. This may change!
  */
 void lis3l02dq_remove_trigger(struct iio_dev *indio_dev);
 int lis3l02dq_probe_trigger(struct iio_dev *indio_dev);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 ssize_t lis3l02dq_read_accel_from_ring(struct iio_ring_buffer *ring,
 				       int index,
@@ -225,6 +265,16 @@ irqreturn_t lis3l02dq_data_rdy_trig_poll(int irq, void *private);
 #else /* CONFIG_IIO_BUFFER */
 #define lis3l02dq_th lis3l02dq_nobuffer
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int lis3l02dq_configure_buffer(struct iio_dev *indio_dev);
+void lis3l02dq_unconfigure_buffer(struct iio_dev *indio_dev);
+
+irqreturn_t lis3l02dq_data_rdy_trig_poll(int irq, void *private);
+#define lis3l02dq_th lis3l02dq_data_rdy_trig_poll
+
+#else /* CONFIG_IIO_BUFFER */
+#define lis3l02dq_th lis3l02dq_nobuffer
+>>>>>>> refs/remotes/origin/master
 
 static inline void lis3l02dq_remove_trigger(struct iio_dev *indio_dev)
 {
@@ -233,6 +283,7 @@ static inline int lis3l02dq_probe_trigger(struct iio_dev *indio_dev)
 {
 	return 0;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline ssize_t
 lis3l02dq_read_accel_from_ring(struct iio_ring_buffer *ring,
@@ -251,6 +302,8 @@ static inline void lis3l02dq_unconfigure_ring(struct iio_dev *indio_dev)
 }
 #endif /* CONFIG_IIO_RING_BUFFER */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int lis3l02dq_configure_buffer(struct iio_dev *indio_dev)
 {
@@ -260,5 +313,8 @@ static inline void lis3l02dq_unconfigure_buffer(struct iio_dev *indio_dev)
 {
 }
 #endif /* CONFIG_IIO_BUFFER */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* SPI_LIS3L02DQ_H_ */

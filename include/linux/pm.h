@@ -31,10 +31,29 @@
 /*
  * Callbacks for platform drivers to implement.
  */
+<<<<<<< HEAD
 extern void (*pm_idle)(void);
 extern void (*pm_power_off)(void);
 extern void (*pm_power_off_prepare)(void);
 
+=======
+extern void (*pm_power_off)(void);
+extern void (*pm_power_off_prepare)(void);
+
+struct device; /* we have a circular dep with device.h */
+#ifdef CONFIG_VT_CONSOLE_SLEEP
+extern void pm_vt_switch_required(struct device *dev, bool required);
+extern void pm_vt_switch_unregister(struct device *dev);
+#else
+static inline void pm_vt_switch_required(struct device *dev, bool required)
+{
+}
+static inline void pm_vt_switch_unregister(struct device *dev)
+{
+}
+#endif /* CONFIG_VT_CONSOLE_SLEEP */
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Device power management
  */
@@ -54,6 +73,7 @@ typedef struct pm_message {
 /**
  * struct dev_pm_ops - device PM callbacks
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Several driver power state transitions are externally visible, affecting
  * the state of pending I/O queues and (for drivers that touch hardware)
@@ -87,6 +107,8 @@ typedef struct pm_message {
  *	register suspend and hibernation notifiers that are executed before the
  *	freezing of tasks.]
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Several device power state transitions are externally visible, affecting
  * the state of pending I/O queues and (for drivers that touch hardware)
  * interrupts, wakeups, DMA, and other hardware state.  There may also be
@@ -124,11 +146,15 @@ typedef struct pm_message {
  *	substantial amounts of memory from @prepare() in the GFP_KERNEL mode.
  *	[To work around these limitations, drivers may register suspend and
  *	hibernation notifiers to be executed before the freezing of tasks.]
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * @complete: Undo the changes made by @prepare().  This method is executed for
  *	all kinds of resume transitions, following one of the resume callbacks:
  *	@resume(), @thaw(), @restore().  Also called if the state transition
+<<<<<<< HEAD
 <<<<<<< HEAD
  *	fails before the driver's suspend callback (@suspend(), @freeze(),
  *	@poweroff()) can be executed (e.g. if the suspend callback fails for one
@@ -208,6 +234,8 @@ typedef struct pm_message {
  * not cause the PM core to abort the resume transition during which they are
  * returned.  The error codes returned in that cases are only printed by the PM
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *	fails before the driver's suspend callback: @suspend(), @freeze() or
  *	@poweroff(), can be executed (e.g. if the suspend callback fails for one
  *	of the other devices that the PM core has unsuccessfully attempted to
@@ -327,7 +355,10 @@ typedef struct pm_message {
  * @thaw(), @restore(), @resume_noirq(), @thaw_noirq(), and @restore_noirq(), do
  * not cause the PM core to abort the resume transition during which they are
  * returned.  The error codes returned in those cases are only printed by the PM
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * core to the system logs for debugging purposes.  Still, it is recommended
  * that drivers only return error codes from their resume methods in case of an
  * unrecoverable failure (i.e. when the device being handled refuses to resume
@@ -336,6 +367,7 @@ typedef struct pm_message {
  * their children.
  *
  * It is allowed to unregister devices while the above callbacks are being
+<<<<<<< HEAD
 <<<<<<< HEAD
  * executed.  However, it is not allowed to unregister a device from within any
  * of its own callbacks.
@@ -363,6 +395,8 @@ typedef struct pm_message {
  *	these conditions and handle the device as appropriate, possibly queueing
  *	a suspend request for it.  The return value is ignored by the PM core.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * executed.  However, a callback routine must NOT try to unregister the device
  * it was called for, although it may unregister children of that device (for
  * example, if it detects that a child was unplugged while the system was
@@ -400,7 +434,10 @@ typedef struct pm_message {
  * Refer to Documentation/power/runtime_pm.txt for more information about the
  * role of the above callbacks in device runtime power management.
  *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 struct dev_pm_ops {
@@ -413,14 +450,20 @@ struct dev_pm_ops {
 	int (*poweroff)(struct device *dev);
 	int (*restore)(struct device *dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int (*suspend_late)(struct device *dev);
 	int (*resume_early)(struct device *dev);
 	int (*freeze_late)(struct device *dev);
 	int (*thaw_early)(struct device *dev);
 	int (*poweroff_late)(struct device *dev);
 	int (*restore_early)(struct device *dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int (*suspend_noirq)(struct device *dev);
 	int (*resume_noirq)(struct device *dev);
 	int (*freeze_noirq)(struct device *dev);
@@ -466,7 +509,10 @@ const struct dev_pm_ops name = { \
  * Use this for defining a set of PM operations to be used in all situations
  * (sustem suspend, hibernation or runtime PM).
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * NOTE: In general, system suspend callbacks, .suspend() and .resume(), should
  * be different from the corresponding runtime PM callbacks, .runtime_suspend(),
  * and .runtime_resume(), because .runtime_suspend() always works on an already
@@ -476,7 +522,10 @@ const struct dev_pm_ops name = { \
  * suspend and "early" resume callback pointers, .suspend_late() and
  * .resume_early(), to the same routines as .runtime_suspend() and
  * .runtime_resume(), respectively (and analogously for hibernation).
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 #define UNIVERSAL_DEV_PM_OPS(name, suspend_fn, resume_fn, idle_fn) \
 const struct dev_pm_ops name = { \
@@ -484,6 +533,7 @@ const struct dev_pm_ops name = { \
 	SET_RUNTIME_PM_OPS(suspend_fn, resume_fn, idle_fn) \
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Use this for subsystems (bus types, device types, device classes) that don't
@@ -500,6 +550,8 @@ extern struct dev_pm_ops generic_subsys_pm_ops;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * PM_EVENT_ messages
  *
@@ -553,9 +605,13 @@ extern struct dev_pm_ops generic_subsys_pm_ops;
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PM_EVENT_INVALID	(-1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PM_EVENT_INVALID	(-1)
+>>>>>>> refs/remotes/origin/master
 #define PM_EVENT_ON		0x0000
 #define PM_EVENT_FREEZE 	0x0001
 #define PM_EVENT_SUSPEND	0x0002
@@ -577,9 +633,13 @@ extern struct dev_pm_ops generic_subsys_pm_ops;
 #define PM_EVENT_AUTO_RESUME	(PM_EVENT_AUTO | PM_EVENT_RESUME)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PMSG_INVALID	((struct pm_message){ .event = PM_EVENT_INVALID, })
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PMSG_INVALID	((struct pm_message){ .event = PM_EVENT_INVALID, })
+>>>>>>> refs/remotes/origin/master
 #define PMSG_ON		((struct pm_message){ .event = PM_EVENT_ON, })
 #define PMSG_FREEZE	((struct pm_message){ .event = PM_EVENT_FREEZE, })
 #define PMSG_QUIESCE	((struct pm_message){ .event = PM_EVENT_QUIESCE, })
@@ -601,10 +661,15 @@ extern struct dev_pm_ops generic_subsys_pm_ops;
 					{ .event = PM_EVENT_AUTO_RESUME, })
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PMSG_IS_AUTO(msg)	(((msg).event & PM_EVENT_AUTO) != 0)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PMSG_IS_AUTO(msg)	(((msg).event & PM_EVENT_AUTO) != 0)
+
+>>>>>>> refs/remotes/origin/master
 /**
  * Device run-time power management status.
  *
@@ -661,7 +726,10 @@ enum rpm_request {
 struct wakeup_source;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct pm_domain_data {
 	struct list_head list_node;
 	struct device *dev;
@@ -678,7 +746,10 @@ struct pm_subsys_data {
 #endif
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct dev_pm_info {
 	pm_message_t		power_state;
 	unsigned int		can_wakeup:1;
@@ -686,18 +757,28 @@ struct dev_pm_info {
 	bool			is_prepared:1;	/* Owned by the PM core */
 	bool			is_suspended:1;	/* Ditto */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool			ignore_children:1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool			ignore_children:1;
+	bool			early_init:1;	/* Owned by the PM core */
+>>>>>>> refs/remotes/origin/master
 	spinlock_t		lock;
 #ifdef CONFIG_PM_SLEEP
 	struct list_head	entry;
 	struct completion	completion;
 	struct wakeup_source	*wakeup;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool			wakeup_path:1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool			wakeup_path:1;
+	bool			syscore:1;
+>>>>>>> refs/remotes/origin/master
 #else
 	unsigned int		should_wakeup:1;
 #endif
@@ -710,9 +791,12 @@ struct dev_pm_info {
 	atomic_t		child_count;
 	unsigned int		disable_depth:3;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int		ignore_children:1;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int		idle_notification:1;
 	unsigned int		request_pending:1;
 	unsigned int		deferred_resume:1;
@@ -722,6 +806,10 @@ struct dev_pm_info {
 	unsigned int		irq_safe:1;
 	unsigned int		use_autosuspend:1;
 	unsigned int		timer_autosuspends:1;
+<<<<<<< HEAD
+=======
+	unsigned int		memalloc_noio:1;
+>>>>>>> refs/remotes/origin/master
 	enum rpm_request	request;
 	enum rpm_status		runtime_status;
 	int			runtime_error;
@@ -730,6 +818,7 @@ struct dev_pm_info {
 	unsigned long		active_jiffies;
 	unsigned long		suspended_jiffies;
 	unsigned long		accounting_timestamp;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	void			*subsys_data;  /* Owned by the subsystem. */
 #endif
@@ -743,12 +832,20 @@ extern void update_pm_runtime_accounting(struct device *dev);
 #endif
 	struct pm_subsys_data	*subsys_data;  /* Owned by the subsystem. */
 	struct pm_qos_constraints *constraints;
+=======
+#endif
+	struct pm_subsys_data	*subsys_data;  /* Owned by the subsystem. */
+	struct dev_pm_qos	*qos;
+>>>>>>> refs/remotes/origin/master
 };
 
 extern void update_pm_runtime_accounting(struct device *dev);
 extern int dev_pm_get_subsys_data(struct device *dev);
 extern int dev_pm_put_subsys_data(struct device *dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Power domains provide callbacks that are executed during system suspend,
@@ -756,10 +853,14 @@ extern int dev_pm_put_subsys_data(struct device *dev);
  * subsystem-level and driver-level callbacks.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dev_power_domain {
 =======
 struct dev_pm_domain {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct dev_pm_domain {
+>>>>>>> refs/remotes/origin/master
 	struct dev_pm_ops	ops;
 };
 
@@ -820,20 +921,28 @@ struct dev_pm_domain {
 #ifdef CONFIG_PM_SLEEP
 extern void device_pm_lock(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void dpm_resume_noirq(pm_message_t state);
 =======
 extern void dpm_resume_start(pm_message_t state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void dpm_resume_start(pm_message_t state);
+>>>>>>> refs/remotes/origin/master
 extern void dpm_resume_end(pm_message_t state);
 extern void dpm_resume(pm_message_t state);
 extern void dpm_complete(pm_message_t state);
 
 extern void device_pm_unlock(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int dpm_suspend_noirq(pm_message_t state);
 =======
 extern int dpm_suspend_end(pm_message_t state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int dpm_suspend_end(pm_message_t state);
+>>>>>>> refs/remotes/origin/master
 extern int dpm_suspend_start(pm_message_t state);
 extern int dpm_suspend(pm_message_t state);
 extern int dpm_prepare(pm_message_t state);
@@ -846,6 +955,7 @@ extern void __suspend_report_result(const char *function, void *fn, int ret);
 	} while (0)
 
 extern int device_pm_wait_for_dev(struct device *sub, struct device *dev);
+<<<<<<< HEAD
 
 extern int pm_generic_prepare(struct device *dev);
 <<<<<<< HEAD
@@ -855,6 +965,11 @@ extern int pm_generic_freeze(struct device *dev);
 extern int pm_generic_thaw(struct device *dev);
 extern int pm_generic_restore(struct device *dev);
 =======
+=======
+extern void dpm_for_each_dev(void *data, void (*fn)(struct device *, void *));
+
+extern int pm_generic_prepare(struct device *dev);
+>>>>>>> refs/remotes/origin/master
 extern int pm_generic_suspend_late(struct device *dev);
 extern int pm_generic_suspend_noirq(struct device *dev);
 extern int pm_generic_suspend(struct device *dev);
@@ -872,7 +987,10 @@ extern int pm_generic_restore_early(struct device *dev);
 extern int pm_generic_restore(struct device *dev);
 extern int pm_generic_poweroff_noirq(struct device *dev);
 extern int pm_generic_poweroff_late(struct device *dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern int pm_generic_poweroff(struct device *dev);
 extern void pm_generic_complete(struct device *dev);
 
@@ -893,6 +1011,13 @@ static inline int device_pm_wait_for_dev(struct device *a, struct device *b)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static inline void dpm_for_each_dev(void *data, void (*fn)(struct device *, void *))
+{
+}
+
+>>>>>>> refs/remotes/origin/master
 #define pm_generic_prepare	NULL
 #define pm_generic_suspend	NULL
 #define pm_generic_resume	NULL

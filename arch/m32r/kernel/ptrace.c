@@ -30,9 +30,12 @@
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/processor.h>
 #include <asm/mmu_context.h>
 
@@ -595,6 +598,7 @@ void user_enable_single_step(struct task_struct *child)
 
 	if (access_process_vm(child, pc&~3, &insn, sizeof(insn), 0)
 	    != sizeof(insn))
+<<<<<<< HEAD
 		return -EIO;
 
 	compute_next_pc(insn, pc, &next_pc, child);
@@ -606,6 +610,18 @@ void user_enable_single_step(struct task_struct *child)
 
 	invalidate_cache();
 	return 0;
+=======
+		return;
+
+	compute_next_pc(insn, pc, &next_pc, child);
+	if (next_pc & 0x80000000)
+		return;
+
+	if (embed_debug_trap(child, next_pc))
+		return;
+
+	invalidate_cache();
+>>>>>>> refs/remotes/origin/master
 }
 
 void user_disable_single_step(struct task_struct *child)

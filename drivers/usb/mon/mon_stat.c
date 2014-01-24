@@ -10,9 +10,13 @@
 #include <linux/kernel.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/usb.h>
 #include <linux/fs.h>
 #include <asm/uaccess.h>

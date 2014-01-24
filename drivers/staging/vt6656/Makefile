@@ -16,11 +16,17 @@ vt6656_stage-y +=	main_usb.o \
 			dpc.o \
 			power.o \
 			datarate.o \
+<<<<<<< HEAD
 			mib.o \
 			rc4.o \
 			tether.o \
 			tcrc.o \
 			ioctl.o \
+=======
+			rc4.o \
+			tether.o \
+			tcrc.o \
+>>>>>>> refs/remotes/origin/master
 			hostap.o \
 			wpa.o \
 			key.o \

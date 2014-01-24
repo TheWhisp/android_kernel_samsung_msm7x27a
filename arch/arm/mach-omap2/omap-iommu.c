@@ -11,6 +11,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -170,6 +171,64 @@ static void __exit omap_iommu_exit(void)
 
 	for (i = 0; i < num_iommu_devices; i++)
 		platform_device_unregister(omap_iommu_pdev[i]);
+=======
+#include <linux/module.h>
+#include <linux/platform_device.h>
+#include <linux/err.h>
+#include <linux/slab.h>
+
+#include <linux/platform_data/iommu-omap.h>
+#include "soc.h"
+#include "omap_hwmod.h"
+#include "omap_device.h"
+
+static int __init omap_iommu_dev_init(struct omap_hwmod *oh, void *unused)
+{
+	struct platform_device *pdev;
+	struct iommu_platform_data *pdata;
+	struct omap_mmu_dev_attr *a = (struct omap_mmu_dev_attr *)oh->dev_attr;
+	static int i;
+
+	pdata = kzalloc(sizeof(*pdata), GFP_KERNEL);
+	if (!pdata)
+		return -ENOMEM;
+
+	pdata->name = oh->name;
+	pdata->nr_tlb_entries = a->nr_tlb_entries;
+	pdata->da_start = a->da_start;
+	pdata->da_end = a->da_end;
+
+	if (oh->rst_lines_cnt == 1) {
+		pdata->reset_name = oh->rst_lines->name;
+		pdata->assert_reset = omap_device_assert_hardreset;
+		pdata->deassert_reset = omap_device_deassert_hardreset;
+	}
+
+	pdev = omap_device_build("omap-iommu", i, oh, pdata, sizeof(*pdata));
+
+	kfree(pdata);
+
+	if (IS_ERR(pdev)) {
+		pr_err("%s: device build err: %ld\n", __func__, PTR_ERR(pdev));
+		return PTR_ERR(pdev);
+	}
+
+	i++;
+
+	return 0;
+}
+
+static int __init omap_iommu_init(void)
+{
+	return omap_hwmod_for_each_by_class("mmu", omap_iommu_dev_init, NULL);
+}
+/* must be ready before omap3isp is probed */
+omap_subsys_initcall(omap_iommu_init);
+
+static void __exit omap_iommu_exit(void)
+{
+	/* Do nothing */
+>>>>>>> refs/remotes/origin/master
 }
 module_exit(omap_iommu_exit);
 

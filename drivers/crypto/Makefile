@@ -9,6 +9,7 @@ obj-$(CONFIG_CRYPTO_DEV_TALITOS) += talitos.o
 obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM) += caam/
 obj-$(CONFIG_CRYPTO_DEV_IXP4XX) += ixp4xx_crypto.o
 obj-$(CONFIG_CRYPTO_DEV_PPC4XX) += amcc/
+<<<<<<< HEAD
 obj-$(CONFIG_CRYPTO_DEV_QCE) += msm/
 obj-$(CONFIG_CRYPTO_DEV_OMAP_SHAM) += omap-sham.o
 obj-$(CONFIG_CRYPTO_DEV_OMAP_AES) += omap-aes.o
@@ -18,3 +19,18 @@ obj-$(CONFIG_CRYPTO_DEV_S5P) += s5p-sss.o
 =======
 obj-$(CONFIG_CRYPTO_DEV_TEGRA_AES) += tegra-aes.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_CRYPTO_DEV_OMAP_SHAM) += omap-sham.o
+obj-$(CONFIG_CRYPTO_DEV_OMAP_AES) += omap-aes.o
+obj-$(CONFIG_CRYPTO_DEV_PICOXCELL) += picoxcell_crypto.o
+obj-$(CONFIG_CRYPTO_DEV_SAHARA) += sahara.o
+obj-$(CONFIG_CRYPTO_DEV_DCP) += dcp.o
+obj-$(CONFIG_CRYPTO_DEV_S5P) += s5p-sss.o
+obj-$(CONFIG_CRYPTO_DEV_TEGRA_AES) += tegra-aes.o
+obj-$(CONFIG_CRYPTO_DEV_UX500) += ux500/
+obj-$(CONFIG_CRYPTO_DEV_BFIN_CRC) += bfin_crc.o
+obj-$(CONFIG_CRYPTO_DEV_NX) += nx/
+obj-$(CONFIG_CRYPTO_DEV_ATMEL_AES) += atmel-aes.o
+obj-$(CONFIG_CRYPTO_DEV_ATMEL_TDES) += atmel-tdes.o
+obj-$(CONFIG_CRYPTO_DEV_ATMEL_SHA) += atmel-sha.o
+>>>>>>> refs/remotes/origin/master

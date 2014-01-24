@@ -41,7 +41,13 @@ MODULE_DESCRIPTION("Xircom Cardbus ethernet driver");
 MODULE_AUTHOR("Arjan van de Ven <arjanv@redhat.com>");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 
+=======
+#define xw32(reg, val)	iowrite32(val, ioaddr + (reg))
+#define xr32(reg)	ioread32(ioaddr + (reg))
+#define xr8(reg)	ioread8(ioaddr + (reg))
+>>>>>>> refs/remotes/origin/master
 
 /* IO registers on the card, offsets */
 #define CSR0	0x00
@@ -83,7 +89,11 @@ struct xircom_private {
 
 	struct sk_buff *tx_skb[4];
 
+<<<<<<< HEAD
 	unsigned long io_port;
+=======
+	void __iomem *ioaddr;
+>>>>>>> refs/remotes/origin/master
 	int open;
 
 	/* transmit_used is the rotating counter that indicates which transmit
@@ -137,7 +147,11 @@ static int link_status(struct xircom_private *card);
 
 
 static DEFINE_PCI_DEVICE_TABLE(xircom_pci_table) = {
+<<<<<<< HEAD
 	{0x115D, 0x0003, PCI_ANY_ID, PCI_ANY_ID,},
+=======
+	{ PCI_VDEVICE(XIRCOM, 0x0003), },
+>>>>>>> refs/remotes/origin/master
 	{0,},
 };
 MODULE_DEVICE_TABLE(pci, xircom_pci_table);
@@ -147,8 +161,11 @@ static struct pci_driver xircom_ops = {
 	.id_table	= xircom_pci_table,
 	.probe		= xircom_probe,
 	.remove		= xircom_remove,
+<<<<<<< HEAD
 	.suspend =NULL,
 	.resume =NULL
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -190,17 +207,33 @@ static const struct net_device_ops netdev_ops = {
          first two packets that get send, and pump hates that.
 
  */
+<<<<<<< HEAD
 static int __devinit xircom_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 {
+=======
+static int xircom_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+{
+	struct device *d = &pdev->dev;
+>>>>>>> refs/remotes/origin/master
 	struct net_device *dev = NULL;
 	struct xircom_private *private;
 	unsigned long flags;
 	unsigned short tmp16;
+<<<<<<< HEAD
 
 	/* First do the PCI initialisation */
 
 	if (pci_enable_device(pdev))
 		return -ENODEV;
+=======
+	int rc;
+
+	/* First do the PCI initialisation */
+
+	rc = pci_enable_device(pdev);
+	if (rc < 0)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	/* disable all powermanagement */
 	pci_write_config_dword(pdev, PCI_POWERMGMT, 0x0000);
@@ -211,11 +244,21 @@ static int __devinit xircom_probe(struct pci_dev *pdev, const struct pci_device_
 	pci_read_config_word (pdev,PCI_STATUS, &tmp16);
 	pci_write_config_word (pdev, PCI_STATUS,tmp16);
 
+<<<<<<< HEAD
 	if (!request_region(pci_resource_start(pdev, 0), 128, "xircom_cb")) {
 		pr_err("%s: failed to allocate io-region\n", __func__);
 		return -ENODEV;
 	}
 
+=======
+	rc = pci_request_regions(pdev, "xircom_cb");
+	if (rc < 0) {
+		pr_err("%s: failed to allocate io-region\n", __func__);
+		goto err_disable;
+	}
+
+	rc = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	/*
 	   Before changing the hardware, allocate the memory.
 	   This way, we can fail gracefully if not enough memory
@@ -223,11 +266,16 @@ static int __devinit xircom_probe(struct pci_dev *pdev, const struct pci_device_
 	 */
 	dev = alloc_etherdev(sizeof(struct xircom_private));
 	if (!dev)
+<<<<<<< HEAD
 		goto device_fail;
+=======
+		goto err_release;
+>>>>>>> refs/remotes/origin/master
 
 	private = netdev_priv(dev);
 
 	/* Allocate the send/receive buffers */
+<<<<<<< HEAD
 	private->rx_buffer = pci_alloc_consistent(pdev,8192,&private->rx_dma_handle);
 	if (private->rx_buffer == NULL) {
 		pr_err("%s: no memory for rx buffer\n", __func__);
@@ -238,16 +286,39 @@ static int __devinit xircom_probe(struct pci_dev *pdev, const struct pci_device_
 		pr_err("%s: no memory for tx buffer\n", __func__);
 		goto tx_buf_fail;
 	}
+=======
+	private->rx_buffer = dma_alloc_coherent(d, 8192,
+						&private->rx_dma_handle,
+						GFP_KERNEL);
+	if (private->rx_buffer == NULL)
+		goto rx_buf_fail;
+
+	private->tx_buffer = dma_alloc_coherent(d, 8192,
+						&private->tx_dma_handle,
+						GFP_KERNEL);
+	if (private->tx_buffer == NULL)
+		goto tx_buf_fail;
+>>>>>>> refs/remotes/origin/master
 
 	SET_NETDEV_DEV(dev, &pdev->dev);
 
 
 	private->dev = dev;
 	private->pdev = pdev;
+<<<<<<< HEAD
 	private->io_port = pci_resource_start(pdev, 0);
 	spin_lock_init(&private->lock);
 	dev->irq = pdev->irq;
 	dev->base_addr = private->io_port;
+=======
+
+	/* IO range. */
+	private->ioaddr = pci_iomap(pdev, 0, 0);
+	if (!private->ioaddr)
+		goto reg_fail;
+
+	spin_lock_init(&private->lock);
+>>>>>>> refs/remotes/origin/master
 
 	initialize_card(private);
 	read_mac_address(private);
@@ -256,9 +327,16 @@ static int __devinit xircom_probe(struct pci_dev *pdev, const struct pci_device_
 	dev->netdev_ops = &netdev_ops;
 	pci_set_drvdata(pdev, dev);
 
+<<<<<<< HEAD
 	if (register_netdev(dev)) {
 		pr_err("%s: netdevice registration failed\n", __func__);
 		goto reg_fail;
+=======
+	rc = register_netdev(dev);
+	if (rc < 0) {
+		pr_err("%s: netdevice registration failed\n", __func__);
+		goto err_unmap;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	netdev_info(dev, "Xircom cardbus revision %i at irq %i\n",
@@ -273,6 +351,7 @@ static int __devinit xircom_probe(struct pci_dev *pdev, const struct pci_device_
 	spin_unlock_irqrestore(&private->lock,flags);
 
 	trigger_receive(private);
+<<<<<<< HEAD
 
 	return 0;
 
@@ -284,6 +363,24 @@ rx_buf_fail:
 	free_netdev(dev);
 device_fail:
 	return -ENODEV;
+=======
+out:
+	return rc;
+
+err_unmap:
+	pci_iounmap(pdev, private->ioaddr);
+reg_fail:
+	dma_free_coherent(d, 8192, private->tx_buffer, private->tx_dma_handle);
+tx_buf_fail:
+	dma_free_coherent(d, 8192, private->rx_buffer, private->rx_dma_handle);
+rx_buf_fail:
+	free_netdev(dev);
+err_release:
+	pci_release_regions(pdev);
+err_disable:
+	pci_disable_device(pdev);
+	goto out;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -293,6 +390,7 @@ device_fail:
  Interrupts and such are already stopped in the "ifconfig ethX down"
  code.
  */
+<<<<<<< HEAD
 static void __devexit xircom_remove(struct pci_dev *pdev)
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
@@ -305,17 +403,40 @@ static void __devexit xircom_remove(struct pci_dev *pdev)
 	unregister_netdev(dev);
 	free_netdev(dev);
 	pci_set_drvdata(pdev, NULL);
+=======
+static void xircom_remove(struct pci_dev *pdev)
+{
+	struct net_device *dev = pci_get_drvdata(pdev);
+	struct xircom_private *card = netdev_priv(dev);
+	struct device *d = &pdev->dev;
+
+	unregister_netdev(dev);
+	pci_iounmap(pdev, card->ioaddr);
+	dma_free_coherent(d, 8192, card->tx_buffer, card->tx_dma_handle);
+	dma_free_coherent(d, 8192, card->rx_buffer, card->rx_dma_handle);
+	free_netdev(dev);
+	pci_release_regions(pdev);
+	pci_disable_device(pdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t xircom_interrupt(int irq, void *dev_instance)
 {
 	struct net_device *dev = (struct net_device *) dev_instance;
 	struct xircom_private *card = netdev_priv(dev);
+<<<<<<< HEAD
+=======
+	void __iomem *ioaddr = card->ioaddr;
+>>>>>>> refs/remotes/origin/master
 	unsigned int status;
 	int i;
 
 	spin_lock(&card->lock);
+<<<<<<< HEAD
 	status = inl(card->io_port+CSR5);
+=======
+	status = xr32(CSR5);
+>>>>>>> refs/remotes/origin/master
 
 #if defined DEBUG && DEBUG > 1
 	print_binary(status);
@@ -345,7 +466,11 @@ static irqreturn_t xircom_interrupt(int irq, void *dev_instance)
 	/* Clear all remaining interrupts */
 	status |= 0xffffffff; /* FIXME: make this clear only the
 				        real existing bits */
+<<<<<<< HEAD
 	outl(status,card->io_port+CSR5);
+=======
+	xw32(CSR5, status);
+>>>>>>> refs/remotes/origin/master
 
 
 	for (i=0;i<NUMDESCRIPTORS;i++)
@@ -423,11 +548,19 @@ static netdev_tx_t xircom_start_xmit(struct sk_buff *skb,
 static int xircom_open(struct net_device *dev)
 {
 	struct xircom_private *xp = netdev_priv(dev);
+<<<<<<< HEAD
 	int retval;
 
 	netdev_info(dev, "xircom cardbus adaptor found, using irq %i\n",
 		    dev->irq);
 	retval = request_irq(dev->irq, xircom_interrupt, IRQF_SHARED, dev->name, dev);
+=======
+	const int irq = xp->pdev->irq;
+	int retval;
+
+	netdev_info(dev, "xircom cardbus adaptor found, using irq %i\n", irq);
+	retval = request_irq(irq, xircom_interrupt, IRQF_SHARED, dev->name, dev);
+>>>>>>> refs/remotes/origin/master
 	if (retval)
 		return retval;
 
@@ -459,7 +592,11 @@ static int xircom_close(struct net_device *dev)
 	spin_unlock_irqrestore(&card->lock,flags);
 
 	card->open = 0;
+<<<<<<< HEAD
 	free_irq(dev->irq,dev);
+=======
+	free_irq(card->pdev->irq, dev);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -469,21 +606,37 @@ static int xircom_close(struct net_device *dev)
 #ifdef CONFIG_NET_POLL_CONTROLLER
 static void xircom_poll_controller(struct net_device *dev)
 {
+<<<<<<< HEAD
 	disable_irq(dev->irq);
 	xircom_interrupt(dev->irq, dev);
 	enable_irq(dev->irq);
+=======
+	struct xircom_private *xp = netdev_priv(dev);
+	const int irq = xp->pdev->irq;
+
+	disable_irq(irq);
+	xircom_interrupt(irq, dev);
+	enable_irq(irq);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
 
 static void initialize_card(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 	unsigned long flags;
+=======
+	void __iomem *ioaddr = card->ioaddr;
+	unsigned long flags;
+	u32 val;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&card->lock, flags);
 
 	/* First: reset the card */
+<<<<<<< HEAD
 	val = inl(card->io_port + CSR0);
 	val |= 0x01;		/* Software reset */
 	outl(val, card->io_port + CSR0);
@@ -493,11 +646,26 @@ static void initialize_card(struct xircom_private *card)
 	val = inl(card->io_port + CSR0);
 	val &= ~0x01;		/* disable Software reset */
 	outl(val, card->io_port + CSR0);
+=======
+	val = xr32(CSR0);
+	val |= 0x01;		/* Software reset */
+	xw32(CSR0, val);
+
+	udelay(100);		/* give the card some time to reset */
+
+	val = xr32(CSR0);
+	val &= ~0x01;		/* disable Software reset */
+	xw32(CSR0, val);
+>>>>>>> refs/remotes/origin/master
 
 
 	val = 0;		/* Value 0x00 is a safe and conservative value
 				   for the PCI configuration settings */
+<<<<<<< HEAD
 	outl(val, card->io_port + CSR0);
+=======
+	xw32(CSR0, val);
+>>>>>>> refs/remotes/origin/master
 
 
 	disable_all_interrupts(card);
@@ -515,10 +683,16 @@ ignored; I chose zero.
 */
 static void trigger_transmit(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 
 	val = 0;
 	outl(val, card->io_port + CSR1);
+=======
+	void __iomem *ioaddr = card->ioaddr;
+
+	xw32(CSR1, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -530,10 +704,16 @@ ignored; I chose zero.
 */
 static void trigger_receive(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 
 	val = 0;
 	outl(val, card->io_port + CSR2);
+=======
+	void __iomem *ioaddr = card->ioaddr;
+
+	xw32(CSR2, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -542,6 +722,10 @@ descriptors and programs the addresses into the card.
 */
 static void setup_descriptors(struct xircom_private *card)
 {
+<<<<<<< HEAD
+=======
+	void __iomem *ioaddr = card->ioaddr;
+>>>>>>> refs/remotes/origin/master
 	u32 address;
 	int i;
 
@@ -571,7 +755,11 @@ static void setup_descriptors(struct xircom_private *card)
 	wmb();
 	/* Write the receive descriptor ring address to the card */
 	address = card->rx_dma_handle;
+<<<<<<< HEAD
 	outl(address, card->io_port + CSR3);	/* Receive descr list address */
+=======
+	xw32(CSR3, address);	/* Receive descr list address */
+>>>>>>> refs/remotes/origin/master
 
 
 	/* transmit descriptors */
@@ -596,7 +784,11 @@ static void setup_descriptors(struct xircom_private *card)
 	wmb();
 	/* wite the transmit descriptor ring to the card */
 	address = card->tx_dma_handle;
+<<<<<<< HEAD
 	outl(address, card->io_port + CSR4);	/* xmit descr list address */
+=======
+	xw32(CSR4, address);	/* xmit descr list address */
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -605,11 +797,20 @@ valid by setting the address in the card to 0x00.
 */
 static void remove_descriptors(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 
 	val = 0;
 	outl(val, card->io_port + CSR3);	/* Receive descriptor address */
 	outl(val, card->io_port + CSR4);	/* Send descriptor address */
+=======
+	void __iomem *ioaddr = card->ioaddr;
+	unsigned int val;
+
+	val = 0;
+	xw32(CSR3, val);	/* Receive descriptor address */
+	xw32(CSR4, val);	/* Send descriptor address */
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -620,17 +821,29 @@ This function also clears the status-bit.
 */
 static int link_status_changed(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 
 	val = inl(card->io_port + CSR5);	/* Status register */
 
 	if ((val & (1 << 27)) == 0)		/* no change */
+=======
+	void __iomem *ioaddr = card->ioaddr;
+	unsigned int val;
+
+	val = xr32(CSR5);	/* Status register */
+	if (!(val & (1 << 27)))	/* no change */
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	/* clear the event by writing a 1 to the bit in the
 	   status register. */
 	val = (1 << 27);
+<<<<<<< HEAD
 	outl(val, card->io_port + CSR5);
+=======
+	xw32(CSR5, val);
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -642,11 +855,17 @@ in a non-stopped state.
 */
 static int transmit_active(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 
 	val = inl(card->io_port + CSR5);	/* Status register */
 
 	if ((val & (7 << 20)) == 0)		/* transmitter disabled */
+=======
+	void __iomem *ioaddr = card->ioaddr;
+
+	if (!(xr32(CSR5) & (7 << 20)))	/* transmitter disabled */
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	return 1;
@@ -658,11 +877,17 @@ in a non-stopped state.
 */
 static int receive_active(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 
 	val = inl(card->io_port + CSR5);	/* Status register */
 
 	if ((val & (7 << 17)) == 0)		/* receiver disabled */
+=======
+	void __iomem *ioaddr = card->ioaddr;
+
+	if (!(xr32(CSR5) & (7 << 17)))	/* receiver disabled */
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	return 1;
@@ -680,10 +905,18 @@ must be called with the lock held and interrupts disabled.
 */
 static void activate_receiver(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 	int counter;
 
 	val = inl(card->io_port + CSR6);	/* Operation mode */
+=======
+	void __iomem *ioaddr = card->ioaddr;
+	unsigned int val;
+	int counter;
+
+	val = xr32(CSR6);	/* Operation mode */
+>>>>>>> refs/remotes/origin/master
 
 	/* If the "active" bit is set and the receiver is already
 	   active, no need to do the expensive thing */
@@ -692,7 +925,11 @@ static void activate_receiver(struct xircom_private *card)
 
 
 	val = val & ~2;		/* disable the receiver */
+<<<<<<< HEAD
 	outl(val, card->io_port + CSR6);
+=======
+	xw32(CSR6, val);
+>>>>>>> refs/remotes/origin/master
 
 	counter = 10;
 	while (counter > 0) {
@@ -706,9 +943,15 @@ static void activate_receiver(struct xircom_private *card)
 	}
 
 	/* enable the receiver */
+<<<<<<< HEAD
 	val = inl(card->io_port + CSR6);	/* Operation mode */
 	val = val | 2;				/* enable the receiver */
 	outl(val, card->io_port + CSR6);
+=======
+	val = xr32(CSR6);	/* Operation mode */
+	val = val | 2;		/* enable the receiver */
+	xw32(CSR6, val);
+>>>>>>> refs/remotes/origin/master
 
 	/* now wait for the card to activate again */
 	counter = 10;
@@ -733,12 +976,22 @@ must be called with the lock held and interrupts disabled.
 */
 static void deactivate_receiver(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 	int counter;
 
 	val = inl(card->io_port + CSR6);	/* Operation mode */
 	val = val & ~2;				/* disable the receiver */
 	outl(val, card->io_port + CSR6);
+=======
+	void __iomem *ioaddr = card->ioaddr;
+	unsigned int val;
+	int counter;
+
+	val = xr32(CSR6);	/* Operation mode */
+	val = val & ~2;		/* disable the receiver */
+	xw32(CSR6, val);
+>>>>>>> refs/remotes/origin/master
 
 	counter = 10;
 	while (counter > 0) {
@@ -765,10 +1018,18 @@ must be called with the lock held and interrupts disabled.
 */
 static void activate_transmitter(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 	int counter;
 
 	val = inl(card->io_port + CSR6);	/* Operation mode */
+=======
+	void __iomem *ioaddr = card->ioaddr;
+	unsigned int val;
+	int counter;
+
+	val = xr32(CSR6);	/* Operation mode */
+>>>>>>> refs/remotes/origin/master
 
 	/* If the "active" bit is set and the receiver is already
 	   active, no need to do the expensive thing */
@@ -776,7 +1037,11 @@ static void activate_transmitter(struct xircom_private *card)
 		return;
 
 	val = val & ~(1 << 13);	/* disable the transmitter */
+<<<<<<< HEAD
 	outl(val, card->io_port + CSR6);
+=======
+	xw32(CSR6, val);
+>>>>>>> refs/remotes/origin/master
 
 	counter = 10;
 	while (counter > 0) {
@@ -791,9 +1056,15 @@ static void activate_transmitter(struct xircom_private *card)
 	}
 
 	/* enable the transmitter */
+<<<<<<< HEAD
 	val = inl(card->io_port + CSR6);	/* Operation mode */
 	val = val | (1 << 13);	/* enable the transmitter */
 	outl(val, card->io_port + CSR6);
+=======
+	val = xr32(CSR6);	/* Operation mode */
+	val = val | (1 << 13);	/* enable the transmitter */
+	xw32(CSR6, val);
+>>>>>>> refs/remotes/origin/master
 
 	/* now wait for the card to activate again */
 	counter = 10;
@@ -818,12 +1089,22 @@ must be called with the lock held and interrupts disabled.
 */
 static void deactivate_transmitter(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 	int counter;
 
 	val = inl(card->io_port + CSR6);	/* Operation mode */
 	val = val & ~2;		/* disable the transmitter */
 	outl(val, card->io_port + CSR6);
+=======
+	void __iomem *ioaddr = card->ioaddr;
+	unsigned int val;
+	int counter;
+
+	val = xr32(CSR6);	/* Operation mode */
+	val = val & ~2;		/* disable the transmitter */
+	xw32(CSR6, val);
+>>>>>>> refs/remotes/origin/master
 
 	counter = 20;
 	while (counter > 0) {
@@ -846,11 +1127,20 @@ must be called with the lock held and interrupts disabled.
 */
 static void enable_transmit_interrupt(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 
 	val = inl(card->io_port + CSR7);	/* Interrupt enable register */
 	val |= 1;				/* enable the transmit interrupt */
 	outl(val, card->io_port + CSR7);
+=======
+	void __iomem *ioaddr = card->ioaddr;
+	unsigned int val;
+
+	val = xr32(CSR7);	/* Interrupt enable register */
+	val |= 1;		/* enable the transmit interrupt */
+	xw32(CSR7, val);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -861,11 +1151,20 @@ must be called with the lock held and interrupts disabled.
 */
 static void enable_receive_interrupt(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 
 	val = inl(card->io_port + CSR7);	/* Interrupt enable register */
 	val = val | (1 << 6);			/* enable the receive interrupt */
 	outl(val, card->io_port + CSR7);
+=======
+	void __iomem *ioaddr = card->ioaddr;
+	unsigned int val;
+
+	val = xr32(CSR7);	/* Interrupt enable register */
+	val = val | (1 << 6);	/* enable the receive interrupt */
+	xw32(CSR7, val);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -875,11 +1174,20 @@ must be called with the lock held and interrupts disabled.
 */
 static void enable_link_interrupt(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 
 	val = inl(card->io_port + CSR7);	/* Interrupt enable register */
 	val = val | (1 << 27);			/* enable the link status chage interrupt */
 	outl(val, card->io_port + CSR7);
+=======
+	void __iomem *ioaddr = card->ioaddr;
+	unsigned int val;
+
+	val = xr32(CSR7);	/* Interrupt enable register */
+	val = val | (1 << 27);	/* enable the link status chage interrupt */
+	xw32(CSR7, val);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -891,10 +1199,16 @@ must be called with the lock held and interrupts disabled.
 */
 static void disable_all_interrupts(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 
 	val = 0;				/* disable all interrupts */
 	outl(val, card->io_port + CSR7);
+=======
+	void __iomem *ioaddr = card->ioaddr;
+
+	xw32(CSR7, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -904,9 +1218,16 @@ must be called with the lock held and interrupts disabled.
 */
 static void enable_common_interrupts(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 
 	val = inl(card->io_port + CSR7);	/* Interrupt enable register */
+=======
+	void __iomem *ioaddr = card->ioaddr;
+	unsigned int val;
+
+	val = xr32(CSR7);	/* Interrupt enable register */
+>>>>>>> refs/remotes/origin/master
 	val |= (1<<16); /* Normal Interrupt Summary */
 	val |= (1<<15); /* Abnormal Interrupt Summary */
 	val |= (1<<13); /* Fatal bus error */
@@ -915,7 +1236,11 @@ static void enable_common_interrupts(struct xircom_private *card)
 	val |= (1<<5);  /* Transmit Underflow */
 	val |= (1<<2);  /* Transmit Buffer Unavailable */
 	val |= (1<<1);  /* Transmit Process Stopped */
+<<<<<<< HEAD
 	outl(val, card->io_port + CSR7);
+=======
+	xw32(CSR7, val);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -925,11 +1250,20 @@ must be called with the lock held and interrupts disabled.
 */
 static int enable_promisc(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 
 	val = inl(card->io_port + CSR6);
 	val = val | (1 << 6);
 	outl(val, card->io_port + CSR6);
+=======
+	void __iomem *ioaddr = card->ioaddr;
+	unsigned int val;
+
+	val = xr32(CSR6);
+	val = val | (1 << 6);
+	xw32(CSR6, val);
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -944,6 +1278,7 @@ Must be called in locked state with interrupts disabled
 */
 static int link_status(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned int val;
 
 	val = inb(card->io_port + CSR12);
@@ -951,6 +1286,18 @@ static int link_status(struct xircom_private *card)
 	if (!(val&(1<<2)))  /* bit 2 is 0 for 10mbit link, 1 for not an 10mbit link */
 		return 10;
 	if (!(val&(1<<1)))  /* bit 1 is 0 for 100mbit link, 1 for not an 100mbit link */
+=======
+	void __iomem *ioaddr = card->ioaddr;
+	u8 val;
+
+	val = xr8(CSR12);
+
+	/* bit 2 is 0 for 10mbit link, 1 for not an 10mbit link */
+	if (!(val & (1 << 2)))
+		return 10;
+	/* bit 1 is 0 for 100mbit link, 1 for not an 100mbit link */
+	if (!(val & (1 << 1)))
+>>>>>>> refs/remotes/origin/master
 		return 100;
 
 	/* If we get here -> no link at all */
@@ -969,12 +1316,19 @@ static int link_status(struct xircom_private *card)
  */
 static void read_mac_address(struct xircom_private *card)
 {
+<<<<<<< HEAD
 	unsigned char j, tuple, link, data_id, data_count;
 	unsigned long flags;
+=======
+	void __iomem *ioaddr = card->ioaddr;
+	unsigned long flags;
+	u8 link;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	spin_lock_irqsave(&card->lock, flags);
 
+<<<<<<< HEAD
 	outl(1 << 12, card->io_port + CSR9);	/* enable boot rom access */
 	for (i = 0x100; i < 0x1f7; i += link + 2) {
 		outl(i, card->io_port + CSR10);
@@ -992,6 +1346,26 @@ static void read_mac_address(struct xircom_private *card)
 			for (j = 0; j < 6; j++) {
 				outl(i + j + 4, card->io_port + CSR10);
 				card->dev->dev_addr[j] = inl(card->io_port + CSR9) & 0xff;
+=======
+	xw32(CSR9, 1 << 12);	/* enable boot rom access */
+	for (i = 0x100; i < 0x1f7; i += link + 2) {
+		u8 tuple, data_id, data_count;
+
+		xw32(CSR10, i);
+		tuple = xr32(CSR9);
+		xw32(CSR10, i + 1);
+		link = xr32(CSR9);
+		xw32(CSR10, i + 2);
+		data_id = xr32(CSR9);
+		xw32(CSR10, i + 3);
+		data_count = xr32(CSR9);
+		if ((tuple == 0x22) && (data_id == 0x04) && (data_count == 0x06)) {
+			int j;
+
+			for (j = 0; j < 6; j++) {
+				xw32(CSR10, i + j + 4);
+				card->dev->dev_addr[j] = xr32(CSR9) & 0xff;
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		} else if (link == 0) {
@@ -1010,6 +1384,10 @@ static void read_mac_address(struct xircom_private *card)
  */
 static void transceiver_voodoo(struct xircom_private *card)
 {
+<<<<<<< HEAD
+=======
+	void __iomem *ioaddr = card->ioaddr;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	/* disable all powermanagement */
@@ -1019,6 +1397,7 @@ static void transceiver_voodoo(struct xircom_private *card)
 
 	spin_lock_irqsave(&card->lock, flags);
 
+<<<<<<< HEAD
 	outl(0x0008, card->io_port + CSR15);
         udelay(25);
         outl(0xa8050000, card->io_port + CSR15);
@@ -1027,6 +1406,16 @@ static void transceiver_voodoo(struct xircom_private *card)
         udelay(25);
 
         spin_unlock_irqrestore(&card->lock, flags);
+=======
+	xw32(CSR15, 0x0008);
+	udelay(25);
+	xw32(CSR15, 0xa8050000);
+	udelay(25);
+	xw32(CSR15, 0xa00f0000);
+	udelay(25);
+
+	spin_unlock_irqrestore(&card->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	netif_start_queue(card->dev);
 }
@@ -1138,6 +1527,7 @@ investigate_write_descriptor(struct net_device *dev,
 	}
 }
 
+<<<<<<< HEAD
 static int __init xircom_init(void)
 {
 	return pci_register_driver(&xircom_ops);
@@ -1151,3 +1541,6 @@ static void __exit xircom_exit(void)
 module_init(xircom_init)
 module_exit(xircom_exit)
 
+=======
+module_pci_driver(xircom_ops);
+>>>>>>> refs/remotes/origin/master

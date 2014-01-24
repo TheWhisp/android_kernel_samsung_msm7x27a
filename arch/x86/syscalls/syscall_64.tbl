@@ -137,7 +137,11 @@
 128	64	rt_sigtimedwait		sys_rt_sigtimedwait
 129	64	rt_sigqueueinfo		sys_rt_sigqueueinfo
 130	common	rt_sigsuspend		sys_rt_sigsuspend
+<<<<<<< HEAD
 131	64	sigaltstack		stub_sigaltstack
+=======
+131	64	sigaltstack		sys_sigaltstack
+>>>>>>> refs/remotes/origin/master
 132	common	utime			sys_utime
 133	common	mknod			sys_mknod
 134	64	uselib
@@ -318,11 +322,23 @@
 309	common	getcpu			sys_getcpu
 310	64	process_vm_readv	sys_process_vm_readv
 311	64	process_vm_writev	sys_process_vm_writev
+<<<<<<< HEAD
+=======
+312	common	kcmp			sys_kcmp
+313	common	finit_module		sys_finit_module
+314	common	sched_setattr		sys_sched_setattr
+315	common	sched_getattr		sys_sched_getattr
+
+>>>>>>> refs/remotes/origin/master
 #
 # x32-specific system call numbers start at 512 to avoid cache impact
 # for native 64-bit operation.
 #
+<<<<<<< HEAD
 512	x32	rt_sigaction		sys32_rt_sigaction
+=======
+512	x32	rt_sigaction		compat_sys_rt_sigaction
+>>>>>>> refs/remotes/origin/master
 513	x32	rt_sigreturn		stub_x32_rt_sigreturn
 514	x32	ioctl			compat_sys_ioctl
 515	x32	readv			compat_sys_readv
@@ -332,10 +348,17 @@
 519	x32	recvmsg			compat_sys_recvmsg
 520	x32	execve			stub_x32_execve
 521	x32	ptrace			compat_sys_ptrace
+<<<<<<< HEAD
 522	x32	rt_sigpending		sys32_rt_sigpending
 523	x32	rt_sigtimedwait		compat_sys_rt_sigtimedwait
 524	x32	rt_sigqueueinfo		sys32_rt_sigqueueinfo
 525	x32	sigaltstack		stub_x32_sigaltstack
+=======
+522	x32	rt_sigpending		compat_sys_rt_sigpending
+523	x32	rt_sigtimedwait		compat_sys_rt_sigtimedwait
+524	x32	rt_sigqueueinfo		compat_sys_rt_sigqueueinfo
+525	x32	sigaltstack		compat_sys_sigaltstack
+>>>>>>> refs/remotes/origin/master
 526	x32	timer_create		compat_sys_timer_create
 527	x32	mq_notify		compat_sys_mq_notify
 528	x32	kexec_load		compat_sys_kexec_load

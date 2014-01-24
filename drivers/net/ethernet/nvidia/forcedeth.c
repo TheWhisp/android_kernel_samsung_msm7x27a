@@ -1821,6 +1821,14 @@ static int nv_alloc_rx(struct net_device *dev)
 							     skb->data,
 							     skb_tailroom(skb),
 							     PCI_DMA_FROMDEVICE);
+<<<<<<< HEAD
+=======
+			if (pci_dma_mapping_error(np->pci_dev,
+						  np->put_rx_ctx->dma)) {
+				kfree_skb(skb);
+				goto packet_dropped;
+			}
+>>>>>>> refs/remotes/origin/master
 			np->put_rx_ctx->dma_len = skb_tailroom(skb);
 			np->put_rx.orig->buf = cpu_to_le32(np->put_rx_ctx->dma);
 			wmb();
@@ -1830,6 +1838,10 @@ static int nv_alloc_rx(struct net_device *dev)
 			if (unlikely(np->put_rx_ctx++ == np->last_rx_ctx))
 				np->put_rx_ctx = np->first_rx_ctx;
 		} else {
+<<<<<<< HEAD
+=======
+packet_dropped:
+>>>>>>> refs/remotes/origin/master
 			u64_stats_update_begin(&np->swstats_rx_syncp);
 			np->stat_rx_dropped++;
 			u64_stats_update_end(&np->swstats_rx_syncp);
@@ -1856,6 +1868,14 @@ static int nv_alloc_rx_optimized(struct net_device *dev)
 							     skb->data,
 							     skb_tailroom(skb),
 							     PCI_DMA_FROMDEVICE);
+<<<<<<< HEAD
+=======
+			if (pci_dma_mapping_error(np->pci_dev,
+						  np->put_rx_ctx->dma)) {
+				kfree_skb(skb);
+				goto packet_dropped;
+			}
+>>>>>>> refs/remotes/origin/master
 			np->put_rx_ctx->dma_len = skb_tailroom(skb);
 			np->put_rx.ex->bufhigh = cpu_to_le32(dma_high(np->put_rx_ctx->dma));
 			np->put_rx.ex->buflow = cpu_to_le32(dma_low(np->put_rx_ctx->dma));
@@ -1866,6 +1886,10 @@ static int nv_alloc_rx_optimized(struct net_device *dev)
 			if (unlikely(np->put_rx_ctx++ == np->last_rx_ctx))
 				np->put_rx_ctx = np->first_rx_ctx;
 		} else {
+<<<<<<< HEAD
+=======
+packet_dropped:
+>>>>>>> refs/remotes/origin/master
 			u64_stats_update_begin(&np->swstats_rx_syncp);
 			np->stat_rx_dropped++;
 			u64_stats_update_end(&np->swstats_rx_syncp);
@@ -2188,6 +2212,10 @@ static netdev_tx_t nv_start_xmit(struct sk_buff *skb, struct net_device *dev)
 	struct ring_desc *start_tx;
 	struct ring_desc *prev_tx;
 	struct nv_skb_map *prev_tx_ctx;
+<<<<<<< HEAD
+=======
+	struct nv_skb_map *tmp_tx_ctx = NULL, *start_tx_ctx = NULL;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	/* add fragments to entries count */
@@ -2217,6 +2245,18 @@ static netdev_tx_t nv_start_xmit(struct sk_buff *skb, struct net_device *dev)
 		bcnt = (size > NV_TX2_TSO_MAX_SIZE) ? NV_TX2_TSO_MAX_SIZE : size;
 		np->put_tx_ctx->dma = pci_map_single(np->pci_dev, skb->data + offset, bcnt,
 						PCI_DMA_TODEVICE);
+<<<<<<< HEAD
+=======
+		if (pci_dma_mapping_error(np->pci_dev,
+					  np->put_tx_ctx->dma)) {
+			/* on DMA mapping error - drop the packet */
+			kfree_skb(skb);
+			u64_stats_update_begin(&np->swstats_tx_syncp);
+			np->stat_tx_dropped++;
+			u64_stats_update_end(&np->swstats_tx_syncp);
+			return NETDEV_TX_OK;
+		}
+>>>>>>> refs/remotes/origin/master
 		np->put_tx_ctx->dma_len = bcnt;
 		np->put_tx_ctx->dma_single = 1;
 		put_tx->buf = cpu_to_le32(np->put_tx_ctx->dma);
@@ -2240,12 +2280,37 @@ static netdev_tx_t nv_start_xmit(struct sk_buff *skb, struct net_device *dev)
 		do {
 			prev_tx = put_tx;
 			prev_tx_ctx = np->put_tx_ctx;
+<<<<<<< HEAD
+=======
+			if (!start_tx_ctx)
+				start_tx_ctx = tmp_tx_ctx = np->put_tx_ctx;
+
+>>>>>>> refs/remotes/origin/master
 			bcnt = (frag_size > NV_TX2_TSO_MAX_SIZE) ? NV_TX2_TSO_MAX_SIZE : frag_size;
 			np->put_tx_ctx->dma = skb_frag_dma_map(
 							&np->pci_dev->dev,
 							frag, offset,
 							bcnt,
 							DMA_TO_DEVICE);
+<<<<<<< HEAD
+=======
+			if (dma_mapping_error(&np->pci_dev->dev, np->put_tx_ctx->dma)) {
+
+				/* Unwind the mapped fragments */
+				do {
+					nv_unmap_txskb(np, start_tx_ctx);
+					if (unlikely(tmp_tx_ctx++ == np->last_tx_ctx))
+						tmp_tx_ctx = np->first_tx_ctx;
+				} while (tmp_tx_ctx != np->put_tx_ctx);
+				kfree_skb(skb);
+				np->put_tx_ctx = start_tx_ctx;
+				u64_stats_update_begin(&np->swstats_tx_syncp);
+				np->stat_tx_dropped++;
+				u64_stats_update_end(&np->swstats_tx_syncp);
+				return NETDEV_TX_OK;
+			}
+
+>>>>>>> refs/remotes/origin/master
 			np->put_tx_ctx->dma_len = bcnt;
 			np->put_tx_ctx->dma_single = 0;
 			put_tx->buf = cpu_to_le32(np->put_tx_ctx->dma);
@@ -2279,6 +2344,11 @@ static netdev_tx_t nv_start_xmit(struct sk_buff *skb, struct net_device *dev)
 
 	netdev_sent_queue(np->dev, skb->len);
 
+<<<<<<< HEAD
+=======
+	skb_tx_timestamp(skb);
+
+>>>>>>> refs/remotes/origin/master
 	np->put_tx.orig = put_tx;
 
 	spin_unlock_irqrestore(&np->lock, flags);
@@ -2304,7 +2374,12 @@ static netdev_tx_t nv_start_xmit_optimized(struct sk_buff *skb,
 	struct ring_desc_ex *start_tx;
 	struct ring_desc_ex *prev_tx;
 	struct nv_skb_map *prev_tx_ctx;
+<<<<<<< HEAD
 	struct nv_skb_map *start_tx_ctx;
+=======
+	struct nv_skb_map *start_tx_ctx = NULL;
+	struct nv_skb_map *tmp_tx_ctx = NULL;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	/* add fragments to entries count */
@@ -2335,6 +2410,18 @@ static netdev_tx_t nv_start_xmit_optimized(struct sk_buff *skb,
 		bcnt = (size > NV_TX2_TSO_MAX_SIZE) ? NV_TX2_TSO_MAX_SIZE : size;
 		np->put_tx_ctx->dma = pci_map_single(np->pci_dev, skb->data + offset, bcnt,
 						PCI_DMA_TODEVICE);
+<<<<<<< HEAD
+=======
+		if (pci_dma_mapping_error(np->pci_dev,
+					  np->put_tx_ctx->dma)) {
+			/* on DMA mapping error - drop the packet */
+			kfree_skb(skb);
+			u64_stats_update_begin(&np->swstats_tx_syncp);
+			np->stat_tx_dropped++;
+			u64_stats_update_end(&np->swstats_tx_syncp);
+			return NETDEV_TX_OK;
+		}
+>>>>>>> refs/remotes/origin/master
 		np->put_tx_ctx->dma_len = bcnt;
 		np->put_tx_ctx->dma_single = 1;
 		put_tx->bufhigh = cpu_to_le32(dma_high(np->put_tx_ctx->dma));
@@ -2360,11 +2447,35 @@ static netdev_tx_t nv_start_xmit_optimized(struct sk_buff *skb,
 			prev_tx = put_tx;
 			prev_tx_ctx = np->put_tx_ctx;
 			bcnt = (frag_size > NV_TX2_TSO_MAX_SIZE) ? NV_TX2_TSO_MAX_SIZE : frag_size;
+<<<<<<< HEAD
+=======
+			if (!start_tx_ctx)
+				start_tx_ctx = tmp_tx_ctx = np->put_tx_ctx;
+>>>>>>> refs/remotes/origin/master
 			np->put_tx_ctx->dma = skb_frag_dma_map(
 							&np->pci_dev->dev,
 							frag, offset,
 							bcnt,
 							DMA_TO_DEVICE);
+<<<<<<< HEAD
+=======
+
+			if (dma_mapping_error(&np->pci_dev->dev, np->put_tx_ctx->dma)) {
+
+				/* Unwind the mapped fragments */
+				do {
+					nv_unmap_txskb(np, start_tx_ctx);
+					if (unlikely(tmp_tx_ctx++ == np->last_tx_ctx))
+						tmp_tx_ctx = np->first_tx_ctx;
+				} while (tmp_tx_ctx != np->put_tx_ctx);
+				kfree_skb(skb);
+				np->put_tx_ctx = start_tx_ctx;
+				u64_stats_update_begin(&np->swstats_tx_syncp);
+				np->stat_tx_dropped++;
+				u64_stats_update_end(&np->swstats_tx_syncp);
+				return NETDEV_TX_OK;
+			}
+>>>>>>> refs/remotes/origin/master
 			np->put_tx_ctx->dma_len = bcnt;
 			np->put_tx_ctx->dma_single = 0;
 			put_tx->bufhigh = cpu_to_le32(dma_high(np->put_tx_ctx->dma));
@@ -2426,6 +2537,11 @@ static netdev_tx_t nv_start_xmit_optimized(struct sk_buff *skb,
 
 	netdev_sent_queue(np->dev, skb->len);
 
+<<<<<<< HEAD
+=======
+	skb_tx_timestamp(skb);
+
+>>>>>>> refs/remotes/origin/master
 	np->put_tx.ex = put_tx;
 
 	spin_unlock_irqrestore(&np->lock, flags);
@@ -2888,6 +3004,7 @@ static int nv_rx_process_optimized(struct net_device *dev, int limit)
 			vlanflags = le32_to_cpu(np->get_rx.ex->buflow);
 
 			/*
+<<<<<<< HEAD
 			 * There's need to check for NETIF_F_HW_VLAN_RX here.
 			 * Even if vlan rx accel is disabled,
 			 * NV_RX3_VLAN_TAG_PRESENT is pseudo randomly set.
@@ -2897,6 +3014,17 @@ static int nv_rx_process_optimized(struct net_device *dev, int limit)
 				u16 vid = vlanflags & NV_RX3_VLAN_TAG_MASK;
 
 				__vlan_hwaccel_put_tag(skb, vid);
+=======
+			 * There's need to check for NETIF_F_HW_VLAN_CTAG_RX
+			 * here. Even if vlan rx accel is disabled,
+			 * NV_RX3_VLAN_TAG_PRESENT is pseudo randomly set.
+			 */
+			if (dev->features & NETIF_F_HW_VLAN_CTAG_RX &&
+			    vlanflags & NV_RX3_VLAN_TAG_PRESENT) {
+				u16 vid = vlanflags & NV_RX3_VLAN_TAG_MASK;
+
+				__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vid);
+>>>>>>> refs/remotes/origin/master
 			}
 			napi_gro_receive(&np->napi, skb);
 			u64_stats_update_begin(&np->swstats_rx_syncp);
@@ -3021,7 +3149,10 @@ static int nv_set_mac_address(struct net_device *dev, void *addr)
 
 	/* synchronized against open : rtnl_lock() held by caller */
 	memcpy(dev->dev_addr, macaddr->sa_data, ETH_ALEN);
+<<<<<<< HEAD
 	dev->addr_assign_type &= ~NET_ADDR_RANDOM;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (netif_running(dev)) {
 		netif_tx_lock_bh(dev);
@@ -3214,7 +3345,11 @@ static void nv_force_linkspeed(struct net_device *dev, int speed, int duplex)
 }
 
 /**
+<<<<<<< HEAD
  * nv_update_linkspeed: Setup the MAC according to the link partner
+=======
+ * nv_update_linkspeed - Setup the MAC according to the link partner
+>>>>>>> refs/remotes/origin/master
  * @dev: Network device to be configured
  *
  * The function queries the PHY and checks if there is a link partner.
@@ -3405,7 +3540,11 @@ set_speed:
 
 	pause_flags = 0;
 	/* setup pause frame */
+<<<<<<< HEAD
 	if (np->duplex != 0) {
+=======
+	if (netif_running(dev) && (np->duplex != 0)) {
+>>>>>>> refs/remotes/origin/master
 		if (np->autoneg && np->pause_flags & NV_PAUSEFRAME_AUTONEG) {
 			adv_pause = adv & (ADVERTISE_PAUSE_CAP | ADVERTISE_PAUSE_ASYM);
 			lpa_pause = lpa & (LPA_PAUSE_CAP | LPA_PAUSE_ASYM);
@@ -3548,8 +3687,12 @@ static irqreturn_t nv_nic_irq(int foo, void *data)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 /**
  * All _optimized functions are used to help increase performance
+=======
+/* All _optimized functions are used to help increase performance
+>>>>>>> refs/remotes/origin/master
  * (reduce CPU and increase throughput). They use descripter version 3,
  * compiler directives, and reduce memory accesses.
  */
@@ -3772,7 +3915,11 @@ static irqreturn_t nv_nic_irq_other(int foo, void *data)
 			np->link_timeout = jiffies + LINK_TIMEOUT;
 		}
 		if (events & NVREG_IRQ_RECOVER_ERROR) {
+<<<<<<< HEAD
 			spin_lock_irq(&np->lock);
+=======
+			spin_lock_irqsave(&np->lock, flags);
+>>>>>>> refs/remotes/origin/master
 			/* disable interrupts on the nic */
 			writel(NVREG_IRQ_OTHER, base + NvRegIrqMask);
 			pci_push(base);
@@ -3782,7 +3929,11 @@ static irqreturn_t nv_nic_irq_other(int foo, void *data)
 				np->recover_error = 1;
 				mod_timer(&np->nic_poll, jiffies + POLL_WAIT);
 			}
+<<<<<<< HEAD
 			spin_unlock_irq(&np->lock);
+=======
+			spin_unlock_irqrestore(&np->lock, flags);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		if (unlikely(i > max_interrupt_work)) {
@@ -3942,13 +4093,19 @@ static int nv_request_irq(struct net_device *dev, int intr_test)
 		ret = pci_enable_msi(np->pci_dev);
 		if (ret == 0) {
 			np->msi_flags |= NV_MSI_ENABLED;
+<<<<<<< HEAD
 			dev->irq = np->pci_dev->irq;
+=======
+>>>>>>> refs/remotes/origin/master
 			if (request_irq(np->pci_dev->irq, handler, IRQF_SHARED, dev->name, dev) != 0) {
 				netdev_info(dev, "request_irq failed %d\n",
 					    ret);
 				pci_disable_msi(np->pci_dev);
 				np->msi_flags &= ~NV_MSI_ENABLED;
+<<<<<<< HEAD
 				dev->irq = np->pci_dev->irq;
+=======
+>>>>>>> refs/remotes/origin/master
 				goto out_err;
 			}
 
@@ -4434,7 +4591,11 @@ static void nv_get_regs(struct net_device *dev, struct ethtool_regs *regs, void 
 
 	regs->version = FORCEDETH_REGS_VER;
 	spin_lock_irq(&np->lock);
+<<<<<<< HEAD
 	for (i = 0; i <= np->register_size/sizeof(u32); i++)
+=======
+	for (i = 0; i < np->register_size/sizeof(u32); i++)
+>>>>>>> refs/remotes/origin/master
 		rbuf[i] = readl(base + i*sizeof(u32));
 	spin_unlock_irq(&np->lock);
 }
@@ -4747,7 +4908,11 @@ static netdev_features_t nv_fix_features(struct net_device *dev,
 	netdev_features_t features)
 {
 	/* vlan is dependent on rx checksum offload */
+<<<<<<< HEAD
 	if (features & (NETIF_F_HW_VLAN_TX|NETIF_F_HW_VLAN_RX))
+=======
+	if (features & (NETIF_F_HW_VLAN_CTAG_TX|NETIF_F_HW_VLAN_CTAG_RX))
+>>>>>>> refs/remotes/origin/master
 		features |= NETIF_F_RXCSUM;
 
 	return features;
@@ -4759,12 +4924,20 @@ static void nv_vlan_mode(struct net_device *dev, netdev_features_t features)
 
 	spin_lock_irq(&np->lock);
 
+<<<<<<< HEAD
 	if (features & NETIF_F_HW_VLAN_RX)
+=======
+	if (features & NETIF_F_HW_VLAN_CTAG_RX)
+>>>>>>> refs/remotes/origin/master
 		np->txrxctl_bits |= NVREG_TXRXCTL_VLANSTRIP;
 	else
 		np->txrxctl_bits &= ~NVREG_TXRXCTL_VLANSTRIP;
 
+<<<<<<< HEAD
 	if (features & NETIF_F_HW_VLAN_TX)
+=======
+	if (features & NETIF_F_HW_VLAN_CTAG_TX)
+>>>>>>> refs/remotes/origin/master
 		np->txrxctl_bits |= NVREG_TXRXCTL_VLANINS;
 	else
 		np->txrxctl_bits &= ~NVREG_TXRXCTL_VLANINS;
@@ -4801,7 +4974,11 @@ static int nv_set_features(struct net_device *dev, netdev_features_t features)
 		spin_unlock_irq(&np->lock);
 	}
 
+<<<<<<< HEAD
 	if (changed & (NETIF_F_HW_VLAN_TX | NETIF_F_HW_VLAN_RX))
+=======
+	if (changed & (NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_CTAG_RX))
+>>>>>>> refs/remotes/origin/master
 		nv_vlan_mode(dev, features);
 
 	return 0;
@@ -4995,13 +5172,24 @@ static int nv_loopback_test(struct net_device *dev)
 	pkt_len = ETH_DATA_LEN;
 	tx_skb = netdev_alloc_skb(dev, pkt_len);
 	if (!tx_skb) {
+<<<<<<< HEAD
 		netdev_err(dev, "netdev_alloc_skb() failed during loopback test\n");
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = 0;
 		goto out;
 	}
 	test_dma_addr = pci_map_single(np->pci_dev, tx_skb->data,
 				       skb_tailroom(tx_skb),
 				       PCI_DMA_FROMDEVICE);
+<<<<<<< HEAD
+=======
+	if (pci_dma_mapping_error(np->pci_dev,
+				  test_dma_addr)) {
+		dev_kfree_skb_any(tx_skb);
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 	pkt_data = skb_put(tx_skb, pkt_len);
 	for (i = 0; i < pkt_len; i++)
 		pkt_data[i] = (u8)(i & 0xff);
@@ -5077,8 +5265,15 @@ static void nv_self_test(struct net_device *dev, struct ethtool_test *test, u64 
 {
 	struct fe_priv *np = netdev_priv(dev);
 	u8 __iomem *base = get_hwbase(dev);
+<<<<<<< HEAD
 	int result;
 	memset(buffer, 0, nv_get_sset_count(dev, ETH_SS_TEST)*sizeof(u64));
+=======
+	int result, count;
+
+	count = nv_get_sset_count(dev, ETH_SS_TEST);
+	memset(buffer, 0, count * sizeof(u64));
+>>>>>>> refs/remotes/origin/master
 
 	if (!nv_link_test(dev)) {
 		test->flags |= ETH_TEST_FL_FAILED;
@@ -5122,7 +5317,11 @@ static void nv_self_test(struct net_device *dev, struct ethtool_test *test, u64 
 			return;
 		}
 
+<<<<<<< HEAD
 		if (!nv_loopback_test(dev)) {
+=======
+		if (count > NV_TEST_COUNT_BASE && !nv_loopback_test(dev)) {
+>>>>>>> refs/remotes/origin/master
 			test->flags |= ETH_TEST_FL_FAILED;
 			buffer[3] = 1;
 		}
@@ -5181,6 +5380,10 @@ static const struct ethtool_ops ops = {
 	.get_ethtool_stats = nv_get_ethtool_stats,
 	.get_sset_count = nv_get_sset_count,
 	.self_test = nv_self_test,
+<<<<<<< HEAD
+=======
+	.get_ts_info = ethtool_op_get_ts_info,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* The mgmt unit and driver use a semaphore to access the phy during init */
@@ -5453,6 +5656,10 @@ static int nv_close(struct net_device *dev)
 
 	netif_stop_queue(dev);
 	spin_lock_irq(&np->lock);
+<<<<<<< HEAD
+=======
+	nv_update_pause(dev, 0); /* otherwise stop_tx bricks NIC */
+>>>>>>> refs/remotes/origin/master
 	nv_stop_rxtx(dev);
 	nv_txrx_reset(dev);
 
@@ -5517,7 +5724,11 @@ static const struct net_device_ops nv_netdev_ops_optimized = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit nv_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
+=======
+static int nv_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	struct fe_priv *np;
@@ -5544,6 +5755,11 @@ static int __devinit nv_probe(struct pci_dev *pci_dev, const struct pci_device_i
 	spin_lock_init(&np->lock);
 	spin_lock_init(&np->hwstats_lock);
 	SET_NETDEV_DEV(dev, &pci_dev->dev);
+<<<<<<< HEAD
+=======
+	u64_stats_init(&np->swstats_rx_syncp);
+	u64_stats_init(&np->swstats_tx_syncp);
+>>>>>>> refs/remotes/origin/master
 
 	init_timer(&np->oom_kick);
 	np->oom_kick.data = (unsigned long) dev;
@@ -5630,7 +5846,12 @@ static int __devinit nv_probe(struct pci_dev *pci_dev, const struct pci_device_i
 	np->vlanctl_bits = 0;
 	if (id->driver_data & DEV_HAS_VLAN) {
 		np->vlanctl_bits = NVREG_VLANCONTROL_ENABLE;
+<<<<<<< HEAD
 		dev->hw_features |= NETIF_F_HW_VLAN_RX | NETIF_F_HW_VLAN_TX;
+=======
+		dev->hw_features |= NETIF_F_HW_VLAN_CTAG_RX |
+				    NETIF_F_HW_VLAN_CTAG_TX;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dev->features |= dev->hw_features;
@@ -5649,9 +5870,12 @@ static int __devinit nv_probe(struct pci_dev *pci_dev, const struct pci_device_i
 	np->base = ioremap(addr, np->register_size);
 	if (!np->base)
 		goto out_relreg;
+<<<<<<< HEAD
 	dev->base_addr = (unsigned long)np->base;
 
 	dev->irq = pci_dev->irq;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	np->rx_ring_size = RX_RING_DEFAULT;
 	np->tx_ring_size = TX_RING_DEFAULT;
@@ -5731,9 +5955,14 @@ static int __devinit nv_probe(struct pci_dev *pci_dev, const struct pci_device_i
 			"%s: set workaround bit for reversed mac addr\n",
 			__func__);
 	}
+<<<<<<< HEAD
 	memcpy(dev->perm_addr, dev->dev_addr, dev->addr_len);
 
 	if (!is_valid_ether_addr(dev->perm_addr)) {
+=======
+
+	if (!is_valid_ether_addr(dev->dev_addr)) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Bad mac address. At least one bios sets the mac address
 		 * to 01:23:45:67:89:ab
@@ -5905,11 +6134,27 @@ static int __devinit nv_probe(struct pci_dev *pci_dev, const struct pci_device_i
 		goto out_error;
 	}
 
+<<<<<<< HEAD
 	if (id->driver_data & DEV_HAS_VLAN)
 		nv_vlan_mode(dev, dev->features);
 
 	netif_carrier_off(dev);
 
+=======
+	netif_carrier_off(dev);
+
+	/* Some NICs freeze when TX pause is enabled while NIC is
+	 * down, and this stays across warm reboots. The sequence
+	 * below should be enough to recover from that state.
+	 */
+	nv_update_pause(dev, 0);
+	nv_start_tx(dev);
+	nv_stop_tx(dev);
+
+	if (id->driver_data & DEV_HAS_VLAN)
+		nv_vlan_mode(dev, dev->features);
+
+>>>>>>> refs/remotes/origin/master
 	dev_info(&pci_dev->dev, "ifname %s, PHY OUI 0x%x @ %d, addr %pM\n",
 		 dev->name, np->phy_oui, np->phyaddr, dev->dev_addr);
 
@@ -5917,7 +6162,12 @@ static int __devinit nv_probe(struct pci_dev *pci_dev, const struct pci_device_i
 		 dev->features & NETIF_F_HIGHDMA ? "highdma " : "",
 		 dev->features & (NETIF_F_IP_CSUM | NETIF_F_SG) ?
 			"csum " : "",
+<<<<<<< HEAD
 		 dev->features & (NETIF_F_HW_VLAN_RX | NETIF_F_HW_VLAN_TX) ?
+=======
+		 dev->features & (NETIF_F_HW_VLAN_CTAG_RX |
+				  NETIF_F_HW_VLAN_CTAG_TX) ?
+>>>>>>> refs/remotes/origin/master
 			"vlan " : "",
 		 dev->features & (NETIF_F_LOOPBACK) ?
 			"loopback " : "",
@@ -5987,7 +6237,11 @@ static void nv_restore_mac_addr(struct pci_dev *pci_dev)
 	       base + NvRegTransmitPoll);
 }
 
+<<<<<<< HEAD
 static void __devexit nv_remove(struct pci_dev *pci_dev)
+=======
+static void nv_remove(struct pci_dev *pci_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pci_dev);
 
@@ -6259,15 +6513,24 @@ static DEFINE_PCI_DEVICE_TABLE(pci_tbl) = {
 	{0,},
 };
 
+<<<<<<< HEAD
 static struct pci_driver driver = {
 	.name		= DRV_NAME,
 	.id_table	= pci_tbl,
 	.probe		= nv_probe,
 	.remove		= __devexit_p(nv_remove),
+=======
+static struct pci_driver forcedeth_pci_driver = {
+	.name		= DRV_NAME,
+	.id_table	= pci_tbl,
+	.probe		= nv_probe,
+	.remove		= nv_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= nv_shutdown,
 	.driver.pm	= NV_PM_OPS,
 };
 
+<<<<<<< HEAD
 static int __init init_nic(void)
 {
 	return pci_register_driver(&driver);
@@ -6278,6 +6541,8 @@ static void __exit exit_nic(void)
 	pci_unregister_driver(&driver);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(max_interrupt_work, int, 0);
 MODULE_PARM_DESC(max_interrupt_work, "forcedeth maximum events handled per interrupt");
 module_param(optimization_mode, int, 0);
@@ -6298,6 +6563,7 @@ module_param(debug_tx_timeout, bool, 0);
 MODULE_PARM_DESC(debug_tx_timeout,
 		 "Dump tx related registers and ring when tx_timeout happens");
 
+<<<<<<< HEAD
 MODULE_AUTHOR("Manfred Spraul <manfred@colorfullife.com>");
 MODULE_DESCRIPTION("Reverse Engineered nForce ethernet driver");
 MODULE_LICENSE("GPL");
@@ -6306,3 +6572,10 @@ MODULE_DEVICE_TABLE(pci, pci_tbl);
 
 module_init(init_nic);
 module_exit(exit_nic);
+=======
+module_pci_driver(forcedeth_pci_driver);
+MODULE_AUTHOR("Manfred Spraul <manfred@colorfullife.com>");
+MODULE_DESCRIPTION("Reverse Engineered nForce ethernet driver");
+MODULE_LICENSE("GPL");
+MODULE_DEVICE_TABLE(pci, pci_tbl);
+>>>>>>> refs/remotes/origin/master

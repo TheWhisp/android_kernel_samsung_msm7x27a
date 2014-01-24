@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,10 +56,14 @@
 #define _COMPONENT          ACPI_EVENTS
 ACPI_MODULE_NAME("evevent")
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+>>>>>>> refs/remotes/origin/master
 /* Local prototypes */
 static acpi_status acpi_ev_fixed_event_initialize(void);
 
@@ -80,14 +88,20 @@ acpi_status acpi_ev_initialize_events(void)
 	ACPI_FUNCTION_TRACE(ev_initialize_events);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* If Hardware Reduced flag is set, there are no fixed events */
 
 	if (acpi_gbl_reduced_hardware) {
 		return_ACPI_STATUS(AE_OK);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Initialize the Fixed and General Purpose Events. This is done prior to
 	 * enabling SCIs to prevent interrupts from occurring before the handlers
@@ -129,14 +143,20 @@ acpi_status acpi_ev_install_xrupt_handlers(void)
 	ACPI_FUNCTION_TRACE(ev_install_xrupt_handlers);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* If Hardware Reduced flag is set, there is no ACPI h/w */
 
 	if (acpi_gbl_reduced_hardware) {
 		return_ACPI_STATUS(AE_OK);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Install the SCI handler */
 
 	status = acpi_ev_install_sci_handler();
@@ -265,12 +285,21 @@ u32 acpi_ev_fixed_event_detect(void)
  *
  * FUNCTION:    acpi_ev_fixed_event_dispatch
  *
+<<<<<<< HEAD
  * PARAMETERS:  Event               - Event type
+=======
+ * PARAMETERS:  event               - Event type
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      INTERRUPT_HANDLED or INTERRUPT_NOT_HANDLED
  *
  * DESCRIPTION: Clears the status bit for the requested event, calls the
  *              handler that previously registered for the event.
+<<<<<<< HEAD
+=======
+ *              NOTE: If there is no handler for the event, the event is
+ *              disabled to prevent further interrupts.
+>>>>>>> refs/remotes/origin/master
  *
  ******************************************************************************/
 
@@ -285,17 +314,29 @@ static u32 acpi_ev_fixed_event_dispatch(u32 event)
 				      status_register_id, ACPI_CLEAR_STATUS);
 
 	/*
+<<<<<<< HEAD
 	 * Make sure we've got a handler. If not, report an error. The event is
 	 * disabled to prevent further interrupts.
 	 */
 	if (NULL == acpi_gbl_fixed_event_handlers[event].handler) {
+=======
+	 * Make sure that a handler exists. If not, report an error
+	 * and disable the event to prevent further interrupts.
+	 */
+	if (!acpi_gbl_fixed_event_handlers[event].handler) {
+>>>>>>> refs/remotes/origin/master
 		(void)acpi_write_bit_register(acpi_gbl_fixed_event_info[event].
 					      enable_register_id,
 					      ACPI_DISABLE_EVENT);
 
 		ACPI_ERROR((AE_INFO,
+<<<<<<< HEAD
 			    "No installed handler for fixed event [0x%08X]",
 			    event));
+=======
+			    "No installed handler for fixed event - %s (%u), disabling",
+			    acpi_ut_get_event_name(event), event));
+>>>>>>> refs/remotes/origin/master
 
 		return (ACPI_INTERRUPT_NOT_HANDLED);
 	}
@@ -306,7 +347,12 @@ static u32 acpi_ev_fixed_event_dispatch(u32 event)
 		 handler) (acpi_gbl_fixed_event_handlers[event].context));
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 #endif				/* !ACPI_REDUCED_HARDWARE */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/master

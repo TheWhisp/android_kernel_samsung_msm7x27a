@@ -15,9 +15,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/unaligned.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/unaligned.h>
+>>>>>>> refs/remotes/origin/master
 #include "hw.h"
 #include "ar9002_phy.h"
 
@@ -36,12 +40,16 @@ static int ath9k_hw_ar9287_get_eeprom_rev(struct ath_hw *ah)
 static bool __ath9k_hw_ar9287_fill_eeprom(struct ath_hw *ah)
 {
 	struct ar9287_eeprom *eep = &ah->eeprom.map9287;
+<<<<<<< HEAD
 	struct ath_common *common = ath9k_hw_common(ah);
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 *eep_data;
 	int addr, eep_start_loc = AR9287_EEP_START_LOC;
 	eep_data = (u16 *)eep;
 
 	for (addr = 0; addr < SIZE_EEPROM_AR9287; addr++) {
+<<<<<<< HEAD
 		if (!ath9k_hw_nvram_read(common, addr + eep_start_loc,
 					 eep_data)) {
 <<<<<<< HEAD
@@ -52,6 +60,10 @@ static bool __ath9k_hw_ar9287_fill_eeprom(struct ath_hw *ah)
 				"Unable to read eeprom region\n");
 			return false;
 		}
+=======
+		if (!ath9k_hw_nvram_read(ah, addr + eep_start_loc, eep_data))
+			return false;
+>>>>>>> refs/remotes/origin/master
 		eep_data++;
 	}
 
@@ -74,11 +86,15 @@ static bool ath9k_hw_ar9287_fill_eeprom(struct ath_hw *ah)
 
 	if (!ath9k_hw_use_flash(ah)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_EEPROM,
 			"Reading from EEPROM, not flash\n");
 =======
 		ath_dbg(common, EEPROM, "Reading from EEPROM, not flash\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, EEPROM, "Reading from EEPROM, not flash\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (common->bus_ops->ath_bus_type == ATH_USB)
@@ -88,7 +104,10 @@ static bool ath9k_hw_ar9287_fill_eeprom(struct ath_hw *ah)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_ATH9K_DEBUGFS) || defined(CONFIG_ATH9K_HTC_DEBUGFS)
 static u32 ar9287_dump_modal_eeprom(char *buf, u32 len, u32 size,
 				    struct modal_eep_ar9287_header *modal_hdr)
@@ -144,9 +163,15 @@ static u32 ath9k_hw_ar9287_dump_eeprom(struct ath_hw *ah, bool dump_base_hdr,
 	struct base_eep_ar9287_header *pBase = &eep->baseEepHeader;
 
 	if (!dump_base_hdr) {
+<<<<<<< HEAD
 		len += snprintf(buf + len, size - len,
 				"%20s :\n", "2GHz modal Header");
 		len += ar9287_dump_modal_eeprom(buf, len, size,
+=======
+		len += scnprintf(buf + len, size - len,
+				 "%20s :\n", "2GHz modal Header");
+		len = ar9287_dump_modal_eeprom(buf, len, size,
+>>>>>>> refs/remotes/origin/master
 						&eep->modalHeader);
 		goto out;
 	}
@@ -176,8 +201,13 @@ static u32 ath9k_hw_ar9287_dump_eeprom(struct ath_hw *ah, bool dump_base_hdr,
 	PR_EEP("Power Table Offset", pBase->pwrTableOffset);
 	PR_EEP("OpenLoop Power Ctrl", pBase->openLoopPwrCntl);
 
+<<<<<<< HEAD
 	len += snprintf(buf + len, size - len, "%20s : %pM\n", "MacAddress",
 			pBase->macAddr);
+=======
+	len += scnprintf(buf + len, size - len, "%20s : %pM\n", "MacAddress",
+			 pBase->macAddr);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	if (len > size)
@@ -194,7 +224,10 @@ static u32 ath9k_hw_ar9287_dump_eeprom(struct ath_hw *ah, bool dump_base_hdr,
 #endif
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ath9k_hw_ar9287_check_eeprom(struct ath_hw *ah)
 {
 	u32 sum = 0, el, integer;
@@ -205,18 +238,26 @@ static int ath9k_hw_ar9287_check_eeprom(struct ath_hw *ah)
 	struct ath_common *common = ath9k_hw_common(ah);
 
 	if (!ath9k_hw_use_flash(ah)) {
+<<<<<<< HEAD
 		if (!ath9k_hw_nvram_read(common, AR5416_EEPROM_MAGIC_OFFSET,
+=======
+		if (!ath9k_hw_nvram_read(ah, AR5416_EEPROM_MAGIC_OFFSET,
+>>>>>>> refs/remotes/origin/master
 					 &magic)) {
 			ath_err(common, "Reading Magic # failed\n");
 			return false;
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_EEPROM,
 			"Read Magic = 0x%04X\n", magic);
 =======
 		ath_dbg(common, EEPROM, "Read Magic = 0x%04X\n", magic);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, EEPROM, "Read Magic = 0x%04X\n", magic);
+>>>>>>> refs/remotes/origin/master
 
 		if (magic != AR5416_EEPROM_MAGIC) {
 			magic2 = swab16(magic);
@@ -239,10 +280,14 @@ static int ath9k_hw_ar9287_check_eeprom(struct ath_hw *ah)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_EEPROM, "need_swap = %s.\n",
 =======
 	ath_dbg(common, EEPROM, "need_swap = %s\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, EEPROM, "need_swap = %s\n",
+>>>>>>> refs/remotes/origin/master
 		need_swap ? "True" : "False");
 
 	if (need_swap)
@@ -324,6 +369,7 @@ static u32 ath9k_hw_ar9287_get_eeprom(struct ath_hw *ah,
 		return pModal->noiseFloorThreshCh[0];
 	case EEP_MAC_LSW:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return pBase->macAddr[0] << 8 | pBase->macAddr[1];
 	case EEP_MAC_MID:
 		return pBase->macAddr[2] << 8 | pBase->macAddr[3];
@@ -334,6 +380,8 @@ static u32 ath9k_hw_ar9287_get_eeprom(struct ath_hw *ah,
 	case EEP_REG_1:
 		return pBase->regDmn[1];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return get_unaligned_be16(pBase->macAddr);
 	case EEP_MAC_MID:
 		return get_unaligned_be16(pBase->macAddr + 2);
@@ -341,7 +389,10 @@ static u32 ath9k_hw_ar9287_get_eeprom(struct ath_hw *ah,
 		return get_unaligned_be16(pBase->macAddr + 4);
 	case EEP_REG_0:
 		return pBase->regDmn[0];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case EEP_OP_CAP:
 		return pBase->deviceCap;
 	case EEP_OP_MODE:
@@ -369,11 +420,17 @@ static u32 ath9k_hw_ar9287_get_eeprom(struct ath_hw *ah,
 		else
 			return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case EEP_ANTENNA_GAIN_2G:
 		return max_t(u8, pModal->antennaGainCh[0],
 				 pModal->antennaGainCh[1]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case EEP_ANTENNA_GAIN_2G:
+		return max_t(u8, pModal->antennaGainCh[0],
+				 pModal->antennaGainCh[1]);
+>>>>>>> refs/remotes/origin/master
 	default:
 		return 0;
 	}
@@ -451,11 +508,15 @@ static void ar9287_eeprom_olpc_set_pdadcs(struct ath_hw *ah,
 
 static void ath9k_hw_set_ar9287_power_cal_table(struct ath_hw *ah,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						struct ath9k_channel *chan,
 						int16_t *pTxPowerIndexOffset)
 =======
 						struct ath9k_channel *chan)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						struct ath9k_channel *chan)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cal_data_per_freq_ar9287 *pRawDataset;
 	struct cal_data_op_loop_ar9287 *pRawDatasetOpenLoop;
@@ -583,6 +644,7 @@ static void ath9k_hw_set_ar9287_power_cal_table(struct ath_hw *ah,
 
 				for (j = 0; j < 32; j++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 					reg32 = ((pdadcValues[4*j + 0] & 0xFF) << 0)
 						| ((pdadcValues[4*j + 1] & 0xFF) << 8)
 						| ((pdadcValues[4*j + 2] & 0xFF) << 16)
@@ -590,6 +652,9 @@ static void ath9k_hw_set_ar9287_power_cal_table(struct ath_hw *ah,
 =======
 					reg32 = get_unaligned_le32(&pdadcValues[4 * j]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					reg32 = get_unaligned_le32(&pdadcValues[4 * j]);
+>>>>>>> refs/remotes/origin/master
 
 					REG_WRITE(ah, regOffset, reg32);
 					regOffset += 4;
@@ -599,10 +664,13 @@ static void ath9k_hw_set_ar9287_power_cal_table(struct ath_hw *ah,
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	*pTxPowerIndexOffset = 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ath9k_hw_set_ar9287_power_per_rate_table(struct ath_hw *ah,
@@ -610,11 +678,15 @@ static void ath9k_hw_set_ar9287_power_per_rate_table(struct ath_hw *ah,
 						     int16_t *ratesArray,
 						     u16 cfgCtl,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						     u16 AntennaReduction,
 						     u16 twiceMaxRegulatoryPower,
 =======
 						     u16 antenna_reduction,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						     u16 antenna_reduction,
+>>>>>>> refs/remotes/origin/master
 						     u16 powerLimit)
 {
 #define CMP_CTL \
@@ -625,6 +697,7 @@ static void ath9k_hw_set_ar9287_power_per_rate_table(struct ath_hw *ah,
 	(((cfgCtl & ~CTL_MODE_M) | (pCtlMode[ctlMode] & CTL_MODE_M)) == \
 	 ((pEepData->ctlIndex[i] & CTL_MODE_M) | SD_NO_CTL))
 
+<<<<<<< HEAD
 #define REDUCE_SCALED_POWER_BY_TWO_CHAIN     6
 #define REDUCE_SCALED_POWER_BY_THREE_CHAIN   10
 
@@ -639,6 +712,10 @@ static void ath9k_hw_set_ar9287_power_per_rate_table(struct ath_hw *ah,
 	u16 twiceMaxEdgePower;
 	int i;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 twiceMaxEdgePower;
+	int i;
+>>>>>>> refs/remotes/origin/master
 	struct cal_ctl_data_ar9287 *rep;
 	struct cal_target_power_leg targetPowerOfdm = {0, {0, 0, 0, 0} },
 				    targetPowerCck = {0, {0, 0, 0, 0} };
@@ -647,10 +724,14 @@ static void ath9k_hw_set_ar9287_power_per_rate_table(struct ath_hw *ah,
 	struct cal_target_power_ht targetPowerHt20,
 				    targetPowerHt40 = {0, {0, 0, 0, 0} };
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 scaledPower = 0, minCtlPower, maxRegAllowedPower;
 =======
 	u16 scaledPower = 0, minCtlPower;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 scaledPower = 0, minCtlPower;
+>>>>>>> refs/remotes/origin/master
 	static const u16 ctlModesFor11g[] = {
 		CTL_11B, CTL_11G, CTL_2GHT20,
 		CTL_11B_EXT, CTL_11G_EXT, CTL_2GHT40
@@ -665,6 +746,7 @@ static void ath9k_hw_set_ar9287_power_per_rate_table(struct ath_hw *ah,
 	tx_chainmask = ah->txchainmask;
 
 	ath9k_hw_get_channel_centers(ah, chan, &centers);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	/* Compute TxPower reduction due to Antenna Gain */
@@ -709,6 +791,10 @@ static void ath9k_hw_set_ar9287_power_per_rate_table(struct ath_hw *ah,
 		break;
 	}
 	scaledPower = max((u16)0, scaledPower);
+=======
+	scaledPower = ath9k_hw_get_scaled_power(ah, powerLimit,
+						antenna_reduction);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Get TX power from EEPROM.
@@ -763,9 +849,13 @@ static void ath9k_hw_set_ar9287_power_per_rate_table(struct ath_hw *ah,
 			freq = centers.ctl_center;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		twiceMaxEdgePower = MAX_RATE_POWER;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		twiceMaxEdgePower = MAX_RATE_POWER;
+>>>>>>> refs/remotes/origin/master
 		/* Walk through the CTL indices stored in EEPROM */
 		for (i = 0; (i < AR9287_NUM_CTLS) && pEepData->ctlIndex[i]; i++) {
 			struct cal_ctl_edges *pRdEdgesPower;
@@ -884,17 +974,23 @@ static void ath9k_hw_set_ar9287_power_per_rate_table(struct ath_hw *ah,
 
 #undef CMP_CTL
 #undef CMP_NO_CTL
+<<<<<<< HEAD
 #undef REDUCE_SCALED_POWER_BY_TWO_CHAIN
 #undef REDUCE_SCALED_POWER_BY_THREE_CHAIN
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ath9k_hw_ar9287_set_txpower(struct ath_hw *ah,
 					struct ath9k_channel *chan, u16 cfgCtl,
 					u8 twiceAntennaReduction,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					u8 twiceMaxRegulatoryPower,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					u8 powerLimit, bool test)
 {
 	struct ath_regulatory *regulatory = ath9k_hw_regulatory(ah);
@@ -902,9 +998,12 @@ static void ath9k_hw_ar9287_set_txpower(struct ath_hw *ah,
 	struct modal_eep_ar9287_header *pModal = &pEepData->modalHeader;
 	int16_t ratesArray[Ar5416RateSize];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int16_t txPowerIndexOffset = 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 ht40PowerIncForPdadc = 2;
 	int i;
 
@@ -918,6 +1017,7 @@ static void ath9k_hw_ar9287_set_txpower(struct ath_hw *ah,
 						 &ratesArray[0], cfgCtl,
 						 twiceAntennaReduction,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						 twiceMaxRegulatoryPower,
 						 powerLimit);
 
@@ -927,13 +1027,18 @@ static void ath9k_hw_ar9287_set_txpower(struct ath_hw *ah,
 	for (i = 0; i < ARRAY_SIZE(ratesArray); i++) {
 		ratesArray[i] = (int16_t)(txPowerIndexOffset + ratesArray[i]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 						 powerLimit);
 
 	ath9k_hw_set_ar9287_power_cal_table(ah, chan);
 
 	regulatory->max_power_level = 0;
 	for (i = 0; i < ARRAY_SIZE(ratesArray); i++) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ratesArray[i] > MAX_RATE_POWER)
 			ratesArray[i] = MAX_RATE_POWER;
 
@@ -941,6 +1046,7 @@ static void ath9k_hw_ar9287_set_txpower(struct ath_hw *ah,
 			regulatory->max_power_level = ratesArray[i];
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (test)
 		return;
@@ -957,6 +1063,8 @@ static void ath9k_hw_ar9287_set_txpower(struct ath_hw *ah,
 			ratesArray[i] -= AR9287_PWR_TABLE_OFFSET_DB * 2;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ath9k_hw_update_regulatory_maxpower(ah);
 
 	if (test)
@@ -964,7 +1072,10 @@ static void ath9k_hw_ar9287_set_txpower(struct ath_hw *ah,
 
 	for (i = 0; i < Ar5416RateSize; i++)
 		ratesArray[i] -= AR9287_PWR_TABLE_OFFSET_DB * 2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ENABLE_REGWRITE_BUFFER(ah);
 
@@ -1055,6 +1166,7 @@ static void ath9k_hw_ar9287_set_txpower(struct ath_hw *ah,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ath9k_hw_ar9287_set_addac(struct ath_hw *ah,
 				      struct ath9k_channel *chan)
 {
@@ -1062,6 +1174,8 @@ static void ath9k_hw_ar9287_set_addac(struct ath_hw *ah,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void ath9k_hw_ar9287_set_board_values(struct ath_hw *ah,
 					     struct ath9k_channel *chan)
 {
@@ -1184,11 +1298,15 @@ static u16 ath9k_hw_ar9287_get_spur_channel(struct ath_hw *ah,
 	u16 spur_val = AR_NO_SPUR;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_ANI,
 		"Getting spur idx:%d is2Ghz:%d val:%x\n",
 =======
 	ath_dbg(common, ANI, "Getting spur idx:%d is2Ghz:%d val:%x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, ANI, "Getting spur idx:%d is2Ghz:%d val:%x\n",
+>>>>>>> refs/remotes/origin/master
 		i, is2GHz, ah->config.spurchans[i][is2GHz]);
 
 	switch (ah->config.spurmode) {
@@ -1197,12 +1315,17 @@ static u16 ath9k_hw_ar9287_get_spur_channel(struct ath_hw *ah,
 	case SPUR_ENABLE_IOCTL:
 		spur_val = ah->config.spurchans[i][is2GHz];
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_ANI,
 			"Getting spur val from new loc. %d\n", spur_val);
 =======
 		ath_dbg(common, ANI, "Getting spur val from new loc. %d\n",
 			spur_val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, ANI, "Getting spur val from new loc. %d\n",
+			spur_val);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case SPUR_ENABLE_EEPROM:
 		spur_val = EEP_MAP9287_SPURCHAN;
@@ -1219,16 +1342,22 @@ const struct eeprom_ops eep_ar9287_ops = {
 	.get_eeprom		= ath9k_hw_ar9287_get_eeprom,
 	.fill_eeprom		= ath9k_hw_ar9287_fill_eeprom,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.get_eeprom_ver		= ath9k_hw_ar9287_get_eeprom_ver,
 	.get_eeprom_rev		= ath9k_hw_ar9287_get_eeprom_rev,
 	.set_board_values	= ath9k_hw_ar9287_set_board_values,
 	.set_addac		= ath9k_hw_ar9287_set_addac,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.dump_eeprom		= ath9k_hw_ar9287_dump_eeprom,
 	.get_eeprom_ver		= ath9k_hw_ar9287_get_eeprom_ver,
 	.get_eeprom_rev		= ath9k_hw_ar9287_get_eeprom_rev,
 	.set_board_values	= ath9k_hw_ar9287_set_board_values,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.set_txpower		= ath9k_hw_ar9287_set_txpower,
 	.get_spur_channel	= ath9k_hw_ar9287_get_spur_channel
 };

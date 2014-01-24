@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
     lm77.c - Part of lm_sensors, Linux kernel modules for hardware
              monitoring
 
@@ -26,6 +27,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * lm77.c - Part of lm_sensors, Linux kernel modules for hardware
  *	    monitoring
  *
@@ -51,7 +54,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/module.h>
 #include <linux/init.h>
@@ -78,10 +84,14 @@ static const unsigned short normal_i2c[] = { 0x48, 0x49, 0x4a, 0x4b,
 /* Each client has this additional data */
 struct lm77_data {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct device 		*hwmon_dev;
 =======
 	struct device		*hwmon_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device		*hwmon_dev;
+>>>>>>> refs/remotes/origin/master
 	struct mutex		update_lock;
 	char			valid;
 	unsigned long		last_updated;	/* In jiffies */
@@ -128,17 +138,26 @@ static struct i2c_driver lm77_driver = {
 #define LM77_TEMP_MAX 125000
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* In the temperature registers, the low 3 bits are not part of the
    temperature values; they are the status bits. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * In the temperature registers, the low 3 bits are not part of the
  * temperature values; they are the status bits.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static inline s16 LM77_TEMP_TO_REG(int temp)
 {
 	int ntemp = SENSORS_LIMIT(temp, LM77_TEMP_MIN, LM77_TEMP_MAX);
+=======
+static inline s16 LM77_TEMP_TO_REG(int temp)
+{
+	int ntemp = clamp_val(temp, LM77_TEMP_MIN, LM77_TEMP_MAX);
+>>>>>>> refs/remotes/origin/master
 	return (ntemp / 500) * 8;
 }
 
@@ -152,12 +171,18 @@ static inline int LM77_TEMP_FROM_REG(s16 reg)
 /* read routines for temperature limits */
 #define show(value)	\
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_##value(struct device *dev, struct device_attribute *attr, char *buf)	\
 =======
 static ssize_t show_##value(struct device *dev,			\
 			    struct device_attribute *attr,	\
 			    char *buf)				\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_##value(struct device *dev,			\
+			    struct device_attribute *attr,	\
+			    char *buf)				\
+>>>>>>> refs/remotes/origin/master
 {								\
 	struct lm77_data *data = lm77_update_device(dev);	\
 	return sprintf(buf, "%d\n", data->value);		\
@@ -170,31 +195,46 @@ show(temp_max);
 
 /* read routines for hysteresis values */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_temp_crit_hyst(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_temp_crit_hyst(struct device *dev,
 				   struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_temp_crit_hyst(struct device *dev,
+				   struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct lm77_data *data = lm77_update_device(dev);
 	return sprintf(buf, "%d\n", data->temp_crit - data->temp_hyst);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t show_temp_min_hyst(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_temp_min_hyst(struct device *dev,
 				  struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_temp_min_hyst(struct device *dev,
+				  struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct lm77_data *data = lm77_update_device(dev);
 	return sprintf(buf, "%d\n", data->temp_min + data->temp_hyst);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t show_temp_max_hyst(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_temp_max_hyst(struct device *dev,
 				  struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_temp_max_hyst(struct device *dev,
+				  struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct lm77_data *data = lm77_update_device(dev);
 	return sprintf(buf, "%d\n", data->temp_max - data->temp_hyst);
@@ -202,6 +242,7 @@ static ssize_t show_temp_max_hyst(struct device *dev,
 
 /* write routines */
 #define set(value, reg)	\
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t set_##value(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)	\
 {										\
@@ -215,6 +256,8 @@ static ssize_t set_##value(struct device *dev, struct device_attribute *attr, co
 	mutex_unlock(&data->update_lock);					\
 	return count;								\
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t set_##value(struct device *dev, struct device_attribute *attr, \
 			   const char *buf, size_t count)		\
 {									\
@@ -230,12 +273,16 @@ static ssize_t set_##value(struct device *dev, struct device_attribute *attr, \
 	lm77_write_value(client, reg, LM77_TEMP_TO_REG(data->value));	\
 	mutex_unlock(&data->update_lock);				\
 	return count;							\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 set(temp_min, LM77_REG_TEMP_MIN);
 set(temp_max, LM77_REG_TEMP_MAX);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* hysteresis is stored as a relative value on the chip, so it has to be
    converted first */
@@ -245,6 +292,8 @@ static ssize_t set_temp_crit_hyst(struct device *dev, struct device_attribute *a
 	struct lm77_data *data = i2c_get_clientdata(client);
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * hysteresis is stored as a relative value on the chip, so it has to be
  * converted first
@@ -261,7 +310,10 @@ static ssize_t set_temp_crit_hyst(struct device *dev,
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->temp_hyst = data->temp_crit - val;
@@ -273,6 +325,7 @@ static ssize_t set_temp_crit_hyst(struct device *dev,
 
 /* preserve hysteresis when setting T_crit */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t set_temp_crit(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct i2c_client *client = to_i2c_client(dev);
@@ -281,6 +334,8 @@ static ssize_t set_temp_crit(struct device *dev, struct device_attribute *attr, 
 	int oldcrithyst;
 	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t set_temp_crit(struct device *dev, struct device_attribute *attr,
 			     const char *buf, size_t count)
 {
@@ -294,7 +349,10 @@ static ssize_t set_temp_crit(struct device *dev, struct device_attribute *attr,
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&data->update_lock);
 	oldcrithyst = data->temp_crit - data->temp_hyst;
 	data->temp_crit = val;
@@ -354,16 +412,23 @@ static const struct attribute_group lm77_group = {
 };
 
 /* Return 0 if detection is successful, -ENODEV otherwise */
+<<<<<<< HEAD
 static int lm77_detect(struct i2c_client *new_client,
 		       struct i2c_board_info *info)
 {
 	struct i2c_adapter *adapter = new_client->adapter;
+=======
+static int lm77_detect(struct i2c_client *client, struct i2c_board_info *info)
+{
+	struct i2c_adapter *adapter = client->adapter;
+>>>>>>> refs/remotes/origin/master
 	int i, cur, conf, hyst, crit, min, max;
 
 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA |
 				     I2C_FUNC_SMBUS_WORD_DATA))
 		return -ENODEV;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Here comes the remaining detection.  Since the LM77 has no
 	   register dedicated to identification, we have to rely on the
@@ -377,6 +442,8 @@ static int lm77_detect(struct i2c_client *new_client,
 
 	   Word-sized registers are high-byte first. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Here comes the remaining detection.  Since the LM77 has no
 	 * register dedicated to identification, we have to rely on the
@@ -390,6 +457,7 @@ static int lm77_detect(struct i2c_client *new_client,
 	 *
 	 * Word-sized registers are high-byte first.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	/* addresses cycling */
@@ -405,6 +473,22 @@ static int lm77_detect(struct i2c_client *new_client,
 		 || i2c_smbus_read_word_data(new_client, i + 3) != crit
 		 || i2c_smbus_read_word_data(new_client, i + 4) != min
 		 || i2c_smbus_read_word_data(new_client, i + 5) != max)
+=======
+
+	/* addresses cycling */
+	cur = i2c_smbus_read_word_data(client, 0);
+	conf = i2c_smbus_read_byte_data(client, 1);
+	hyst = i2c_smbus_read_word_data(client, 2);
+	crit = i2c_smbus_read_word_data(client, 3);
+	min = i2c_smbus_read_word_data(client, 4);
+	max = i2c_smbus_read_word_data(client, 5);
+	for (i = 8; i <= 0xff; i += 8) {
+		if (i2c_smbus_read_byte_data(client, i + 1) != conf
+		 || i2c_smbus_read_word_data(client, i + 2) != hyst
+		 || i2c_smbus_read_word_data(client, i + 3) != crit
+		 || i2c_smbus_read_word_data(client, i + 4) != min
+		 || i2c_smbus_read_word_data(client, i + 5) != max)
+>>>>>>> refs/remotes/origin/master
 			return -ENODEV;
 	}
 
@@ -421,6 +505,7 @@ static int lm77_detect(struct i2c_client *new_client,
 		return -ENODEV;
 
 	/* 0x06 and 0x07 return the last read value */
+<<<<<<< HEAD
 	cur = i2c_smbus_read_word_data(new_client, 0);
 	if (i2c_smbus_read_word_data(new_client, 6) != cur
 	 || i2c_smbus_read_word_data(new_client, 7) != cur)
@@ -432,6 +517,19 @@ static int lm77_detect(struct i2c_client *new_client,
 	min = i2c_smbus_read_word_data(new_client, 4);
 	if (i2c_smbus_read_word_data(new_client, 6) != min
 	 || i2c_smbus_read_word_data(new_client, 7) != min)
+=======
+	cur = i2c_smbus_read_word_data(client, 0);
+	if (i2c_smbus_read_word_data(client, 6) != cur
+	 || i2c_smbus_read_word_data(client, 7) != cur)
+		return -ENODEV;
+	hyst = i2c_smbus_read_word_data(client, 2);
+	if (i2c_smbus_read_word_data(client, 6) != hyst
+	 || i2c_smbus_read_word_data(client, 7) != hyst)
+		return -ENODEV;
+	min = i2c_smbus_read_word_data(client, 4);
+	if (i2c_smbus_read_word_data(client, 6) != min
+	 || i2c_smbus_read_word_data(client, 7) != min)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	strlcpy(info->type, "lm77", I2C_NAME_SIZE);
@@ -439,6 +537,7 @@ static int lm77_detect(struct i2c_client *new_client,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int lm77_probe(struct i2c_client *new_client,
 		      const struct i2c_device_id *id)
 {
@@ -452,10 +551,24 @@ static int lm77_probe(struct i2c_client *new_client,
 	}
 
 	i2c_set_clientdata(new_client, data);
+=======
+static int lm77_probe(struct i2c_client *client, const struct i2c_device_id *id)
+{
+	struct device *dev = &client->dev;
+	struct lm77_data *data;
+	int err;
+
+	data = devm_kzalloc(dev, sizeof(struct lm77_data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+
+	i2c_set_clientdata(client, data);
+>>>>>>> refs/remotes/origin/master
 	data->valid = 0;
 	mutex_init(&data->update_lock);
 
 	/* Initialize the LM77 chip */
+<<<<<<< HEAD
 	lm77_init_client(new_client);
 
 	/* Register sysfs hooks */
@@ -468,6 +581,16 @@ static int lm77_probe(struct i2c_client *new_client,
 		goto exit_free;
 
 	data->hwmon_dev = hwmon_device_register(&new_client->dev);
+=======
+	lm77_init_client(client);
+
+	/* Register sysfs hooks */
+	err = sysfs_create_group(&dev->kobj, &lm77_group);
+	if (err)
+		return err;
+
+	data->hwmon_dev = hwmon_device_register(dev);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(data->hwmon_dev)) {
 		err = PTR_ERR(data->hwmon_dev);
 		goto exit_remove;
@@ -476,10 +599,14 @@ static int lm77_probe(struct i2c_client *new_client,
 	return 0;
 
 exit_remove:
+<<<<<<< HEAD
 	sysfs_remove_group(&new_client->dev.kobj, &lm77_group);
 exit_free:
 	kfree(data);
 exit:
+=======
+	sysfs_remove_group(&dev->kobj, &lm77_group);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -488,6 +615,7 @@ static int lm77_remove(struct i2c_client *client)
 	struct lm77_data *data = i2c_get_clientdata(client);
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &lm77_group);
+<<<<<<< HEAD
 	kfree(data);
 	return 0;
 }
@@ -496,21 +624,33 @@ static int lm77_remove(struct i2c_client *client)
 /* All registers are word-sized, except for the configuration register.
    The LM77 uses the high-byte first convention. */
 =======
+=======
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * All registers are word-sized, except for the configuration register.
  * The LM77 uses the high-byte first convention.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u16 lm77_read_value(struct i2c_client *client, u8 reg)
 {
 	if (reg == LM77_REG_CONF)
 		return i2c_smbus_read_byte_data(client, reg);
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return swab16(i2c_smbus_read_word_data(client, reg));
 =======
 		return i2c_smbus_read_word_swapped(client, reg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return i2c_smbus_read_word_swapped(client, reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int lm77_write_value(struct i2c_client *client, u8 reg, u16 value)
@@ -519,10 +659,14 @@ static int lm77_write_value(struct i2c_client *client, u8 reg, u16 value)
 		return i2c_smbus_write_byte_data(client, reg, value);
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return i2c_smbus_write_word_data(client, reg, swab16(value));
 =======
 		return i2c_smbus_write_word_swapped(client, reg, value);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return i2c_smbus_write_word_swapped(client, reg, value);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void lm77_init_client(struct i2c_client *client)
@@ -570,6 +714,7 @@ static struct lm77_data *lm77_update_device(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensors_lm77_init(void)
 {
 	return i2c_add_driver(&lm77_driver);
@@ -582,13 +727,19 @@ static void __exit sensors_lm77_exit(void)
 =======
 module_i2c_driver(lm77_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(lm77_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Andras BALI <drewie@freemail.hu>");
 MODULE_DESCRIPTION("LM77 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(sensors_lm77_init);
 module_exit(sensors_lm77_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

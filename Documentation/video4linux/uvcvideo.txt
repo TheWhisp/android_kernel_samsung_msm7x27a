@@ -117,10 +117,14 @@ Description:
 	a UVC pan/tilt control could be mapped to separate pan and tilt V4L2
 	controls. The UVC control is divided into non overlapping fields using
 <<<<<<< HEAD
+<<<<<<< HEAD
 	the 'size' and 'offset' fields and are then independantly mapped to
 =======
 	the 'size' and 'offset' fields and are then independently mapped to
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	the 'size' and 'offset' fields and are then independently mapped to
+>>>>>>> refs/remotes/origin/master
 	V4L2 control.
 
 	For signed integer V4L2 controls the data_type field should be set to

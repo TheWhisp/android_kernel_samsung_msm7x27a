@@ -19,6 +19,10 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/of.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/io.h>
 #include <asm/irq.h>
@@ -81,7 +85,11 @@ int ehv_pic_set_affinity(struct irq_data *d, const struct cpumask *dest,
 	ev_int_set_config(src, config, prio, cpuid);
 	spin_unlock_irqrestore(&ehv_pic_lock, flags);
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return IRQ_SET_MASK_OK;
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned int ehv_pic_type_to_vecpri(unsigned int type)

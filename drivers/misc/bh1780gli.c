@@ -23,9 +23,14 @@
 #include <linux/platform_device.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 
 #define BH1780_REG_CONTROL	0x80
 #define BH1780_REG_PARTID	0x8A
@@ -110,7 +115,11 @@ static ssize_t bh1780_store_power_state(struct device *dev,
 	unsigned long val;
 	int error;
 
+<<<<<<< HEAD
 	error = strict_strtoul(buf, 0, &val);
+=======
+	error = kstrtoul(buf, 0, &val);
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		return error;
 
@@ -147,7 +156,11 @@ static const struct attribute_group bh1780_attr_group = {
 	.attrs = bh1780_attributes,
 };
 
+<<<<<<< HEAD
 static int __devinit bh1780_probe(struct i2c_client *client,
+=======
+static int bh1780_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 						const struct i2c_device_id *id)
 {
 	int ret;
@@ -188,7 +201,11 @@ err_op_failed:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit bh1780_remove(struct i2c_client *client)
+=======
+static int bh1780_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bh1780_data *ddata;
 
@@ -199,7 +216,11 @@ static int __devexit bh1780_remove(struct i2c_client *client)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int bh1780_suspend(struct device *dev)
 {
 	struct bh1780_data *ddata;
@@ -238,23 +259,42 @@ static int bh1780_resume(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 static SIMPLE_DEV_PM_OPS(bh1780_pm, bh1780_suspend, bh1780_resume);
 #define BH1780_PMOPS (&bh1780_pm)
 #else
 #define BH1780_PMOPS NULL
 #endif /* CONFIG_PM */
+=======
+#endif /* CONFIG_PM_SLEEP */
+
+static SIMPLE_DEV_PM_OPS(bh1780_pm, bh1780_suspend, bh1780_resume);
+>>>>>>> refs/remotes/origin/master
 
 static const struct i2c_device_id bh1780_id[] = {
 	{ "bh1780", 0 },
 	{ },
 };
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_OF
+static const struct of_device_id of_bh1780_match[] = {
+	{ .compatible = "rohm,bh1780gli", },
+	{},
+};
+
+MODULE_DEVICE_TABLE(of, of_bh1780_match);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static struct i2c_driver bh1780_driver = {
 	.probe		= bh1780_probe,
 	.remove		= bh1780_remove,
 	.id_table	= bh1780_id,
 	.driver = {
 		.name = "bh1780",
+<<<<<<< HEAD
 		.pm	= BH1780_PMOPS,
 <<<<<<< HEAD
 },
@@ -273,11 +313,18 @@ static void __exit bh1780_exit(void)
 module_init(bh1780_init)
 module_exit(bh1780_exit)
 =======
+=======
+		.pm	= &bh1780_pm,
+		.of_match_table = of_match_ptr(of_bh1780_match),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
 module_i2c_driver(bh1780_driver);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("BH1780GLI Ambient Light Sensor Driver");
 MODULE_LICENSE("GPL");

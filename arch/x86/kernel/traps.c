@@ -9,6 +9,13 @@
 /*
  * Handle hardware traps and faults.
  */
+<<<<<<< HEAD
+=======
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <linux/context_tracking.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/kallsyms.h>
 #include <linux/spinlock.h>
@@ -37,10 +44,13 @@
 #include <linux/eisa.h>
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_MCA
 #include <linux/mca.h>
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_EDAC)
 #include <linux/edac.h>
 #endif
@@ -50,6 +60,7 @@
 #include <asm/processor.h>
 #include <asm/debugreg.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/system.h>
 #include <asm/traps.h>
@@ -57,24 +68,42 @@
 #include <asm/i387.h>
 =======
 #include <linux/atomic.h>
+=======
+#include <linux/atomic.h>
+#include <asm/ftrace.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/traps.h>
 #include <asm/desc.h>
 #include <asm/i387.h>
 #include <asm/fpu-internal.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/mce.h>
 
 #include <asm/mach_traps.h>
+=======
+#include <asm/mce.h>
+#include <asm/fixmap.h>
+#include <asm/mach_traps.h>
+#include <asm/alternative.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_X86_64
 #include <asm/x86_init.h>
 #include <asm/pgalloc.h>
 #include <asm/proto.h>
+<<<<<<< HEAD
+=======
+
+/* No need to be aligned, but done to keep all IDTs defined the same way. */
+gate_desc debug_idt_table[NR_VECTORS] __page_aligned_bss;
+>>>>>>> refs/remotes/origin/master
 #else
 #include <asm/processor-flags.h>
 #include <asm/setup.h>
 
 asmlinkage int system_call(void);
+<<<<<<< HEAD
 
 /* Do we ignore FPU interrupts ? */
 char ignore_fpu_irq;
@@ -101,6 +130,16 @@ static DEFINE_RAW_SPINLOCK(nmi_reason_lock);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+
+/* Must be page-aligned because the real IDT is used in a fixmap. */
+gate_desc idt_table[NR_VECTORS] __page_aligned_bss;
+
+DECLARE_BITMAP(used_vectors, NR_VECTORS);
+EXPORT_SYMBOL_GPL(used_vectors);
+
+>>>>>>> refs/remotes/origin/master
 static inline void conditional_sti(struct pt_regs *regs)
 {
 	if (regs->flags & X86_EFLAGS_IF)
@@ -109,7 +148,11 @@ static inline void conditional_sti(struct pt_regs *regs)
 
 static inline void preempt_conditional_sti(struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	inc_preempt_count();
+=======
+	preempt_count_inc();
+>>>>>>> refs/remotes/origin/master
 	if (regs->flags & X86_EFLAGS_IF)
 		local_irq_enable();
 }
@@ -124,6 +167,7 @@ static inline void preempt_conditional_cli(struct pt_regs *regs)
 {
 	if (regs->flags & X86_EFLAGS_IF)
 		local_irq_disable();
+<<<<<<< HEAD
 	dec_preempt_count();
 }
 
@@ -161,6 +205,52 @@ trap_signal:
 =======
 	 * We want error_code and trap_nr set for userspace faults and
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	preempt_count_dec();
+}
+
+static int __kprobes
+do_trap_no_signal(struct task_struct *tsk, int trapnr, char *str,
+		  struct pt_regs *regs,	long error_code)
+{
+#ifdef CONFIG_X86_32
+	if (regs->flags & X86_VM_MASK) {
+		/*
+		 * Traps 0, 1, 3, 4, and 5 should be forwarded to vm86.
+		 * On nmi (interrupt 2), do_trap should not be called.
+		 */
+		if (trapnr < X86_TRAP_UD) {
+			if (!handle_vm86_trap((struct kernel_vm86_regs *) regs,
+						error_code, trapnr))
+				return 0;
+		}
+		return -1;
+	}
+#endif
+	if (!user_mode(regs)) {
+		if (!fixup_exception(regs)) {
+			tsk->thread.error_code = error_code;
+			tsk->thread.trap_nr = trapnr;
+			die(str, regs, error_code);
+		}
+		return 0;
+	}
+
+	return -1;
+}
+
+static void __kprobes
+do_trap(int trapnr, int signr, char *str, struct pt_regs *regs,
+	long error_code, siginfo_t *info)
+{
+	struct task_struct *tsk = current;
+
+
+	if (!do_trap_no_signal(tsk, trapnr, str, regs, error_code))
+		return;
+	/*
+	 * We want error_code and trap_nr set for userspace faults and
+>>>>>>> refs/remotes/origin/master
 	 * kernelspace faults which result in die(), but not
 	 * kernelspace faults which are fixed up.  die() gives the
 	 * process no chance to handle the signal and notice the
@@ -170,20 +260,32 @@ trap_signal:
 	 */
 	tsk->thread.error_code = error_code;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tsk->thread.trap_no = trapnr;
 =======
 	tsk->thread.trap_nr = trapnr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tsk->thread.trap_nr = trapnr;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_X86_64
 	if (show_unhandled_signals && unhandled_signal(tsk, signr) &&
 	    printk_ratelimit()) {
+<<<<<<< HEAD
 		printk(KERN_INFO
 		       "%s[%d] trap %s ip:%lx sp:%lx error:%lx",
 		       tsk->comm, tsk->pid, str,
 		       regs->ip, regs->sp, error_code);
 		print_vma_addr(" in ", regs->ip);
 		printk("\n");
+=======
+		pr_info("%s[%d] trap %s ip:%lx sp:%lx error:%lx",
+			tsk->comm, tsk->pid, str,
+			regs->ip, regs->sp, error_code);
+		print_vma_addr(" in ", regs->ip);
+		pr_cont("\n");
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 
@@ -191,6 +293,7 @@ trap_signal:
 		force_sig_info(signr, info, tsk);
 	else
 		force_sig(signr, tsk);
+<<<<<<< HEAD
 	return;
 
 kernel_trap:
@@ -212,26 +315,48 @@ vm86_trap:
 		goto trap_signal;
 	return;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #define DO_ERROR(trapnr, signr, str, name)				\
 dotraplinkage void do_##name(struct pt_regs *regs, long error_code)	\
 {									\
+<<<<<<< HEAD
 	if (notify_die(DIE_TRAP, str, regs, error_code, trapnr, signr)	\
 							== NOTIFY_STOP)	\
 		return;							\
 	conditional_sti(regs);						\
 	do_trap(trapnr, signr, str, regs, error_code, NULL);		\
+=======
+	enum ctx_state prev_state;					\
+									\
+	prev_state = exception_enter();					\
+	if (notify_die(DIE_TRAP, str, regs, error_code,			\
+			trapnr, signr) == NOTIFY_STOP) {		\
+		exception_exit(prev_state);				\
+		return;							\
+	}								\
+	conditional_sti(regs);						\
+	do_trap(trapnr, signr, str, regs, error_code, NULL);		\
+	exception_exit(prev_state);					\
+>>>>>>> refs/remotes/origin/master
 }
 
 #define DO_ERROR_INFO(trapnr, signr, str, name, sicode, siaddr)		\
 dotraplinkage void do_##name(struct pt_regs *regs, long error_code)	\
 {									\
 	siginfo_t info;							\
+<<<<<<< HEAD
+=======
+	enum ctx_state prev_state;					\
+									\
+>>>>>>> refs/remotes/origin/master
 	info.si_signo = signr;						\
 	info.si_errno = 0;						\
 	info.si_code = sicode;						\
 	info.si_addr = (void __user *)siaddr;				\
+<<<<<<< HEAD
 	if (notify_die(DIE_TRAP, str, regs, error_code, trapnr, signr)	\
 							== NOTIFY_STOP)	\
 		return;							\
@@ -268,11 +393,36 @@ DO_ERROR(X86_TRAP_SS, SIGBUS, "stack segment", stack_segment)
 DO_ERROR_INFO(X86_TRAP_AC, SIGBUS, "alignment check", alignment_check,
 		BUS_ADRALN, 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	prev_state = exception_enter();					\
+	if (notify_die(DIE_TRAP, str, regs, error_code,			\
+			trapnr, signr) == NOTIFY_STOP) {		\
+		exception_exit(prev_state);				\
+		return;							\
+	}								\
+	conditional_sti(regs);						\
+	do_trap(trapnr, signr, str, regs, error_code, &info);		\
+	exception_exit(prev_state);					\
+}
+
+DO_ERROR_INFO(X86_TRAP_DE,     SIGFPE,  "divide error",			divide_error,		     FPE_INTDIV, regs->ip )
+DO_ERROR     (X86_TRAP_OF,     SIGSEGV, "overflow",			overflow					  )
+DO_ERROR     (X86_TRAP_BR,     SIGSEGV, "bounds",			bounds						  )
+DO_ERROR_INFO(X86_TRAP_UD,     SIGILL,  "invalid opcode",		invalid_op,		     ILL_ILLOPN, regs->ip )
+DO_ERROR     (X86_TRAP_OLD_MF, SIGFPE,  "coprocessor segment overrun",	coprocessor_segment_overrun			  )
+DO_ERROR     (X86_TRAP_TS,     SIGSEGV, "invalid TSS",			invalid_TSS					  )
+DO_ERROR     (X86_TRAP_NP,     SIGBUS,  "segment not present",		segment_not_present				  )
+#ifdef CONFIG_X86_32
+DO_ERROR     (X86_TRAP_SS,     SIGBUS,  "stack segment",		stack_segment					  )
+#endif
+DO_ERROR_INFO(X86_TRAP_AC,     SIGBUS,  "alignment check",		alignment_check,	     BUS_ADRALN, 0	  )
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_X86_64
 /* Runs on IST stack */
 dotraplinkage void do_stack_segment(struct pt_regs *regs, long error_code)
 {
+<<<<<<< HEAD
 	if (notify_die(DIE_TRAP, "stack segment", regs, error_code,
 <<<<<<< HEAD
 			12, SIGBUS) == NOTIFY_STOP)
@@ -286,6 +436,18 @@ dotraplinkage void do_stack_segment(struct pt_regs *regs, long error_code)
 	do_trap(X86_TRAP_SS, SIGBUS, "stack segment", regs, error_code, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
 	preempt_conditional_cli(regs);
+=======
+	enum ctx_state prev_state;
+
+	prev_state = exception_enter();
+	if (notify_die(DIE_TRAP, "stack segment", regs, error_code,
+		       X86_TRAP_SS, SIGBUS) != NOTIFY_STOP) {
+		preempt_conditional_sti(regs);
+		do_trap(X86_TRAP_SS, SIGBUS, "stack segment", regs, error_code, NULL);
+		preempt_conditional_cli(regs);
+	}
+	exception_exit(prev_state);
+>>>>>>> refs/remotes/origin/master
 }
 
 dotraplinkage void do_double_fault(struct pt_regs *regs, long error_code)
@@ -293,6 +455,7 @@ dotraplinkage void do_double_fault(struct pt_regs *regs, long error_code)
 	static const char str[] = "double fault";
 	struct task_struct *tsk = current;
 
+<<<<<<< HEAD
 	/* Return not checked because double check cannot be ignored */
 <<<<<<< HEAD
 	notify_die(DIE_TRAP, str, regs, error_code, 8, SIGSEGV);
@@ -300,12 +463,23 @@ dotraplinkage void do_double_fault(struct pt_regs *regs, long error_code)
 	tsk->thread.error_code = error_code;
 	tsk->thread.trap_no = 8;
 =======
+=======
+	exception_enter();
+	/* Return not checked because double check cannot be ignored */
+>>>>>>> refs/remotes/origin/master
 	notify_die(DIE_TRAP, str, regs, error_code, X86_TRAP_DF, SIGSEGV);
 
 	tsk->thread.error_code = error_code;
 	tsk->thread.trap_nr = X86_TRAP_DF;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+
+#ifdef CONFIG_DOUBLEFAULT
+	df_debug(regs, error_code);
+#endif
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * This is always a kernel trap and never fixable (and thus must
 	 * never return).
@@ -319,6 +493,7 @@ dotraplinkage void __kprobes
 do_general_protection(struct pt_regs *regs, long error_code)
 {
 	struct task_struct *tsk;
+<<<<<<< HEAD
 
 	conditional_sti(regs);
 
@@ -551,11 +726,82 @@ dotraplinkage void __kprobes do_int3(struct pt_regs *regs, long error_code)
 	if (kgdb_ll_trap(DIE_INT3, "int3", regs, error_code, X86_TRAP_BP,
 				SIGTRAP) == NOTIFY_STOP)
 		return;
+=======
+	enum ctx_state prev_state;
+
+	prev_state = exception_enter();
+	conditional_sti(regs);
+
+#ifdef CONFIG_X86_32
+	if (regs->flags & X86_VM_MASK) {
+		local_irq_enable();
+		handle_vm86_fault((struct kernel_vm86_regs *) regs, error_code);
+		goto exit;
+	}
+#endif
+
+	tsk = current;
+	if (!user_mode(regs)) {
+		if (fixup_exception(regs))
+			goto exit;
+
+		tsk->thread.error_code = error_code;
+		tsk->thread.trap_nr = X86_TRAP_GP;
+		if (notify_die(DIE_GPF, "general protection fault", regs, error_code,
+			       X86_TRAP_GP, SIGSEGV) != NOTIFY_STOP)
+			die("general protection fault", regs, error_code);
+		goto exit;
+	}
+
+	tsk->thread.error_code = error_code;
+	tsk->thread.trap_nr = X86_TRAP_GP;
+
+	if (show_unhandled_signals && unhandled_signal(tsk, SIGSEGV) &&
+			printk_ratelimit()) {
+		pr_info("%s[%d] general protection ip:%lx sp:%lx error:%lx",
+			tsk->comm, task_pid_nr(tsk),
+			regs->ip, regs->sp, error_code);
+		print_vma_addr(" in ", regs->ip);
+		pr_cont("\n");
+	}
+
+	force_sig(SIGSEGV, tsk);
+exit:
+	exception_exit(prev_state);
+}
+
+/* May run on IST stack. */
+dotraplinkage void __kprobes notrace do_int3(struct pt_regs *regs, long error_code)
+{
+	enum ctx_state prev_state;
+
+#ifdef CONFIG_DYNAMIC_FTRACE
+	/*
+	 * ftrace must be first, everything else may cause a recursive crash.
+	 * See note by declaration of modifying_ftrace_code in ftrace.c
+	 */
+	if (unlikely(atomic_read(&modifying_ftrace_code)) &&
+	    ftrace_int3_handler(regs))
+		return;
+#endif
+	if (poke_int3_handler(regs))
+		return;
+
+	prev_state = exception_enter();
+#ifdef CONFIG_KGDB_LOW_LEVEL_TRAP
+	if (kgdb_ll_trap(DIE_INT3, "int3", regs, error_code, X86_TRAP_BP,
+				SIGTRAP) == NOTIFY_STOP)
+		goto exit;
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_KGDB_LOW_LEVEL_TRAP */
 
 	if (notify_die(DIE_INT3, "int3", regs, error_code, X86_TRAP_BP,
 			SIGTRAP) == NOTIFY_STOP)
+<<<<<<< HEAD
 		return;
+=======
+		goto exit;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Let others (NMI) know that the debug stack is in use
@@ -566,7 +812,12 @@ dotraplinkage void __kprobes do_int3(struct pt_regs *regs, long error_code)
 	do_trap(X86_TRAP_BP, SIGTRAP, "int3", regs, error_code, NULL);
 	preempt_conditional_cli(regs);
 	debug_stack_usage_dec();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+exit:
+	exception_exit(prev_state);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_X86_64
@@ -623,10 +874,19 @@ asmlinkage __kprobes struct pt_regs *sync_regs(struct pt_regs *eregs)
 dotraplinkage void __kprobes do_debug(struct pt_regs *regs, long error_code)
 {
 	struct task_struct *tsk = current;
+<<<<<<< HEAD
+=======
+	enum ctx_state prev_state;
+>>>>>>> refs/remotes/origin/master
 	int user_icebp = 0;
 	unsigned long dr6;
 	int si_code;
 
+<<<<<<< HEAD
+=======
+	prev_state = exception_enter();
+
+>>>>>>> refs/remotes/origin/master
 	get_debugreg(dr6, 6);
 
 	/* Filter out all the reserved bits which are preset to 1 */
@@ -642,7 +902,11 @@ dotraplinkage void __kprobes do_debug(struct pt_regs *regs, long error_code)
 
 	/* Catch kmemcheck conditions first of all! */
 	if ((dr6 & DR_STEP) && kmemcheck_trap(regs))
+<<<<<<< HEAD
 		return;
+=======
+		goto exit;
+>>>>>>> refs/remotes/origin/master
 
 	/* DR6 may or may not be cleared by the CPU */
 	set_debugreg(0, 6);
@@ -655,34 +919,51 @@ dotraplinkage void __kprobes do_debug(struct pt_regs *regs, long error_code)
 	/* Store the virtualized DR6 value */
 	tsk->thread.debugreg6 = dr6;
 
+<<<<<<< HEAD
 	if (notify_die(DIE_DEBUG, "debug", regs, PTR_ERR(&dr6), error_code,
 							SIGTRAP) == NOTIFY_STOP)
 		return;
 
 <<<<<<< HEAD
 =======
+=======
+	if (notify_die(DIE_DEBUG, "debug", regs, (long)&dr6, error_code,
+							SIGTRAP) == NOTIFY_STOP)
+		goto exit;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Let others (NMI) know that the debug stack is in use
 	 * as we may switch to the interrupt stack.
 	 */
 	debug_stack_usage_inc();
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* It's safe to allow irq's after DR6 has been saved */
 	preempt_conditional_sti(regs);
 
 	if (regs->flags & X86_VM_MASK) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		handle_vm86_trap((struct kernel_vm86_regs *) regs,
 				error_code, 1);
 		preempt_conditional_cli(regs);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		handle_vm86_trap((struct kernel_vm86_regs *) regs, error_code,
 					X86_TRAP_DB);
 		preempt_conditional_cli(regs);
 		debug_stack_usage_dec();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		return;
+=======
+		goto exit;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -702,11 +983,18 @@ dotraplinkage void __kprobes do_debug(struct pt_regs *regs, long error_code)
 		send_sigtrap(tsk, regs, error_code, si_code);
 	preempt_conditional_cli(regs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	debug_stack_usage_dec();
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	return;
+=======
+	debug_stack_usage_dec();
+
+exit:
+	exception_exit(prev_state);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -720,11 +1008,16 @@ void math_error(struct pt_regs *regs, int error_code, int trapnr)
 	siginfo_t info;
 	unsigned short err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char *str = (trapnr == 16) ? "fpu exception" : "simd exception";
 =======
 	char *str = (trapnr == X86_TRAP_MF) ? "fpu exception" :
 						"simd exception";
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char *str = (trapnr == X86_TRAP_MF) ? "fpu exception" :
+						"simd exception";
+>>>>>>> refs/remotes/origin/master
 
 	if (notify_die(DIE_TRAP, str, regs, error_code, trapnr, SIGFPE) == NOTIFY_STOP)
 		return;
@@ -735,10 +1028,14 @@ void math_error(struct pt_regs *regs, int error_code, int trapnr)
 		if (!fixup_exception(regs)) {
 			task->thread.error_code = error_code;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			task->thread.trap_no = trapnr;
 =======
 			task->thread.trap_nr = trapnr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			task->thread.trap_nr = trapnr;
+>>>>>>> refs/remotes/origin/master
 			die(str, regs, error_code);
 		}
 		return;
@@ -749,19 +1046,27 @@ void math_error(struct pt_regs *regs, int error_code, int trapnr)
 	 */
 	save_init_fpu(task);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	task->thread.trap_no = trapnr;
 =======
 	task->thread.trap_nr = trapnr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	task->thread.trap_nr = trapnr;
+>>>>>>> refs/remotes/origin/master
 	task->thread.error_code = error_code;
 	info.si_signo = SIGFPE;
 	info.si_errno = 0;
 	info.si_addr = (void __user *)regs->ip;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (trapnr == 16) {
 =======
 	if (trapnr == X86_TRAP_MF) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (trapnr == X86_TRAP_MF) {
+>>>>>>> refs/remotes/origin/master
 		unsigned short cwd, swd;
 		/*
 		 * (~cwd & swd) will mask out exceptions that are not set to unmasked
@@ -806,23 +1111,30 @@ void math_error(struct pt_regs *regs, int error_code, int trapnr)
 	} else {
 		/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * If we're using IRQ 13, or supposedly even some trap 16
 		 * implementations, it's possible we get a spurious trap...
 		 */
 		return;		/* Spurious trap, no error */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 * If we're using IRQ 13, or supposedly even some trap
 		 * X86_TRAP_MF implementations, it's possible
 		 * we get a spurious trap, which is not an error.
 		 */
 		return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	force_sig_info(SIGFPE, &info, task);
 }
 
 dotraplinkage void do_coprocessor_error(struct pt_regs *regs, long error_code)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_X86_32
 	ignore_fpu_irq = 1;
 #endif
@@ -832,16 +1144,31 @@ dotraplinkage void do_coprocessor_error(struct pt_regs *regs, long error_code)
 =======
 	math_error(regs, error_code, X86_TRAP_MF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum ctx_state prev_state;
+
+	prev_state = exception_enter();
+	math_error(regs, error_code, X86_TRAP_MF);
+	exception_exit(prev_state);
+>>>>>>> refs/remotes/origin/master
 }
 
 dotraplinkage void
 do_simd_coprocessor_error(struct pt_regs *regs, long error_code)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	math_error(regs, error_code, 19);
 =======
 	math_error(regs, error_code, X86_TRAP_XF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum ctx_state prev_state;
+
+	prev_state = exception_enter();
+	math_error(regs, error_code, X86_TRAP_XF);
+	exception_exit(prev_state);
+>>>>>>> refs/remotes/origin/master
 }
 
 dotraplinkage void
@@ -850,7 +1177,11 @@ do_spurious_interrupt_bug(struct pt_regs *regs, long error_code)
 	conditional_sti(regs);
 #if 0
 	/* No need to warn about this any longer. */
+<<<<<<< HEAD
 	printk(KERN_INFO "Ignoring P6 Local APIC Spurious Interrupt Bug...\n");
+=======
+	pr_info("Ignoring P6 Local APIC Spurious Interrupt Bug...\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
@@ -863,6 +1194,7 @@ asmlinkage void __attribute__((weak)) smp_threshold_interrupt(void)
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * This gets called with the process already owning the
  * FPU state, and with CR0.TS cleared. It just needs to
@@ -897,6 +1229,8 @@ void __math_state_restore(struct task_struct *tsk)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * 'math_state_restore()' saves the current math information in the
  * old math state array, and gets the new ones from the current task
  *
@@ -927,12 +1261,17 @@ void math_state_restore(void)
 
 	__thread_fpu_begin(tsk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__math_state_restore(tsk);
 =======
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Paranoid restore. send a SIGSEGV if we fail to restore the state.
 	 */
 	if (unlikely(restore_fpu_checking(tsk))) {
+<<<<<<< HEAD
 		__thread_fpu_end(tsk);
 		force_sig(SIGSEGV, tsk);
 		return;
@@ -940,12 +1279,28 @@ void math_state_restore(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	tsk->fpu_counter++;
+=======
+		drop_init_fpu(tsk);
+		force_sig(SIGSEGV, tsk);
+		return;
+	}
+
+	tsk->thread.fpu_counter++;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(math_state_restore);
 
 dotraplinkage void __kprobes
 do_device_not_available(struct pt_regs *regs, long error_code)
 {
+<<<<<<< HEAD
+=======
+	enum ctx_state prev_state;
+
+	prev_state = exception_enter();
+	BUG_ON(use_eager_fpu());
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MATH_EMULATION
 	if (read_cr0() & X86_CR0_EM) {
 		struct math_emu_info info = { };
@@ -954,6 +1309,10 @@ do_device_not_available(struct pt_regs *regs, long error_code)
 
 		info.regs = regs;
 		math_emulate(&info);
+<<<<<<< HEAD
+=======
+		exception_exit(prev_state);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 #endif
@@ -961,18 +1320,29 @@ do_device_not_available(struct pt_regs *regs, long error_code)
 #ifdef CONFIG_X86_32
 	conditional_sti(regs);
 #endif
+<<<<<<< HEAD
+=======
+	exception_exit(prev_state);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_X86_32
 dotraplinkage void do_iret_error(struct pt_regs *regs, long error_code)
 {
 	siginfo_t info;
+<<<<<<< HEAD
+=======
+	enum ctx_state prev_state;
+
+	prev_state = exception_enter();
+>>>>>>> refs/remotes/origin/master
 	local_irq_enable();
 
 	info.si_signo = SIGILL;
 	info.si_errno = 0;
 	info.si_code = ILL_BADSTK;
 	info.si_addr = NULL;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (notify_die(DIE_TRAP, "iret exception",
 			regs, error_code, 32, SIGILL) == NOTIFY_STOP)
@@ -985,12 +1355,21 @@ dotraplinkage void do_iret_error(struct pt_regs *regs, long error_code)
 	do_trap(X86_TRAP_IRET, SIGILL, "iret exception", regs, error_code,
 		&info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (notify_die(DIE_TRAP, "iret exception", regs, error_code,
+			X86_TRAP_IRET, SIGILL) != NOTIFY_STOP) {
+		do_trap(X86_TRAP_IRET, SIGILL, "iret exception", regs, error_code,
+			&info);
+	}
+	exception_exit(prev_state);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
 /* Set of traps needed for early debugging. */
 void __init early_trap_init(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	set_intr_gate_ist(1, &debug, DEBUG_STACK);
 	/* int3 can be called from all */
@@ -1005,6 +1384,24 @@ void __init early_trap_init(void)
 	load_idt(&idt_descr);
 }
 
+=======
+	set_intr_gate_ist(X86_TRAP_DB, &debug, DEBUG_STACK);
+	/* int3 can be called from all */
+	set_system_intr_gate_ist(X86_TRAP_BP, &int3, DEBUG_STACK);
+#ifdef CONFIG_X86_32
+	set_intr_gate(X86_TRAP_PF, page_fault);
+#endif
+	load_idt(&idt_descr);
+}
+
+void __init early_trap_pf_init(void)
+{
+#ifdef CONFIG_X86_64
+	set_intr_gate(X86_TRAP_PF, page_fault);
+#endif
+}
+
+>>>>>>> refs/remotes/origin/master
 void __init trap_init(void)
 {
 	int i;
@@ -1017,6 +1414,7 @@ void __init trap_init(void)
 	early_iounmap(p, 4);
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	set_intr_gate(0, &divide_error);
 	set_intr_gate_ist(2, &nmi, NMI_STACK);
@@ -1050,11 +1448,21 @@ void __init trap_init(void)
 	set_intr_gate(X86_TRAP_BR, &bounds);
 	set_intr_gate(X86_TRAP_UD, &invalid_op);
 	set_intr_gate(X86_TRAP_NM, &device_not_available);
+=======
+	set_intr_gate(X86_TRAP_DE, divide_error);
+	set_intr_gate_ist(X86_TRAP_NMI, &nmi, NMI_STACK);
+	/* int4 can be called from all */
+	set_system_intr_gate(X86_TRAP_OF, &overflow);
+	set_intr_gate(X86_TRAP_BR, bounds);
+	set_intr_gate(X86_TRAP_UD, invalid_op);
+	set_intr_gate(X86_TRAP_NM, device_not_available);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_32
 	set_task_gate(X86_TRAP_DF, GDT_ENTRY_DOUBLEFAULT_TSS);
 #else
 	set_intr_gate_ist(X86_TRAP_DF, &double_fault, DOUBLEFAULT_STACK);
 #endif
+<<<<<<< HEAD
 	set_intr_gate(X86_TRAP_OLD_MF, &coprocessor_segment_overrun);
 	set_intr_gate(X86_TRAP_TS, &invalid_TSS);
 	set_intr_gate(X86_TRAP_NP, &segment_not_present);
@@ -1068,6 +1476,20 @@ void __init trap_init(void)
 #endif
 	set_intr_gate(X86_TRAP_XF, &simd_coprocessor_error);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_intr_gate(X86_TRAP_OLD_MF, coprocessor_segment_overrun);
+	set_intr_gate(X86_TRAP_TS, invalid_TSS);
+	set_intr_gate(X86_TRAP_NP, segment_not_present);
+	set_intr_gate_ist(X86_TRAP_SS, &stack_segment, STACKFAULT_STACK);
+	set_intr_gate(X86_TRAP_GP, general_protection);
+	set_intr_gate(X86_TRAP_SPURIOUS, spurious_interrupt_bug);
+	set_intr_gate(X86_TRAP_MF, coprocessor_error);
+	set_intr_gate(X86_TRAP_AC, alignment_check);
+#ifdef CONFIG_X86_MCE
+	set_intr_gate_ist(X86_TRAP_MC, &machine_check, MCE_STACK);
+#endif
+	set_intr_gate(X86_TRAP_XF, simd_coprocessor_error);
+>>>>>>> refs/remotes/origin/master
 
 	/* Reserve all the builtin and the syscall vector: */
 	for (i = 0; i < FIRST_EXTERNAL_VECTOR; i++)
@@ -1084,11 +1506,23 @@ void __init trap_init(void)
 #endif
 
 	/*
+<<<<<<< HEAD
+=======
+	 * Set the IDT descriptor to a fixed read-only location, so that the
+	 * "sidt" instruction will not leak the location of the kernel, and
+	 * to defend the IDT against arbitrary memory write vulnerabilities.
+	 * It will be reloaded in cpu_init() */
+	__set_fixmap(FIX_RO_IDT, __pa_symbol(idt_table), PAGE_KERNEL_RO);
+	idt_descr.address = fix_to_virt(FIX_RO_IDT);
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * Should be a barrier for any external CPU state:
 	 */
 	cpu_init();
 
 	x86_init.irqs.trap_init();
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 
@@ -1098,4 +1532,12 @@ void __init trap_init(void)
 	set_nmi_gate(X86_TRAP_BP, &int3);
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#ifdef CONFIG_X86_64
+	memcpy(&debug_idt_table, &idt_table, IDT_ENTRIES * 16);
+	set_nmi_gate(X86_TRAP_DB, &debug);
+	set_nmi_gate(X86_TRAP_BP, &int3);
+#endif
+>>>>>>> refs/remotes/origin/master
 }

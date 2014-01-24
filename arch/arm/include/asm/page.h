@@ -13,13 +13,21 @@
 /* PAGE_SHIFT determines the page size */
 #define PAGE_SHIFT		12
 #define PAGE_SIZE		(_AC(1,UL) << PAGE_SHIFT)
+<<<<<<< HEAD
 #define PAGE_MASK		(~(PAGE_SIZE-1))
+=======
+#define PAGE_MASK		(~((1 << PAGE_SHIFT) - 1))
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 
 #ifndef CONFIG_MMU
 
+<<<<<<< HEAD
 #include "page-nommu.h"
+=======
+#include <asm/page-nommu.h>
+>>>>>>> refs/remotes/origin/master
 
 #else
 
@@ -34,7 +42,10 @@
  *	processor(s) we're building for.
  *
  *	We have the following to choose from:
+<<<<<<< HEAD
  *	  v3		- ARMv3
+=======
+>>>>>>> refs/remotes/origin/master
  *	  v4wt		- ARMv4 with writethrough cache, without minicache
  *	  v4wb		- ARMv4 with writeback cache, without minicache
  *	  v4_mc		- ARMv4 with minicache
@@ -44,6 +55,7 @@
 #undef _USER
 #undef MULTI_USER
 
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_COPY_V3
 # ifdef _USER
 #  define MULTI_USER 1
@@ -52,6 +64,8 @@
 # endif
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CPU_COPY_V4WT
 # ifdef _USER
 #  define MULTI_USER 1
@@ -152,6 +166,7 @@ extern void __cpu_copy_user_highpage(struct page *to, struct page *from,
 extern void copy_page(void *to, const void *from);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 typedef unsigned long pteval_t;
 
 #undef STRICT_MM_TYPECHECKS
@@ -195,13 +210,21 @@ typedef unsigned long pgprot_t;
 #endif /* STRICT_MM_TYPECHECKS */
 =======
 #define __HAVE_ARCH_GATE_AREA 1
+=======
+#ifdef CONFIG_KUSER_HELPERS
+#define __HAVE_ARCH_GATE_AREA 1
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_ARM_LPAE
 #include <asm/pgtable-3level-types.h>
 #else
 #include <asm/pgtable-2level-types.h>
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* CONFIG_MMU */
 
@@ -211,11 +234,14 @@ typedef struct page *pgtable_t;
 extern int pfn_valid(unsigned long);
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_MEMORY_HOTPLUG_SPARSE
 extern int _early_pfn_valid(unsigned long);
 #define early_pfn_valid(pfn) (_early_pfn_valid(pfn))
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/memory.h>
 
 #endif /* !__ASSEMBLY__ */

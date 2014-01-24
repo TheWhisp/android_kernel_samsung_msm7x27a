@@ -3,6 +3,7 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
 #include "linux/mm.h"
 #include "linux/sched.h"
 #include "linux/slab.h"
@@ -11,6 +12,16 @@
 #include "as-layout.h"
 #include "os.h"
 #include "skas.h"
+=======
+#include <linux/mm.h>
+#include <linux/sched.h>
+#include <linux/slab.h>
+#include <asm/pgalloc.h>
+#include <asm/pgtable.h>
+#include <as-layout.h>
+#include <os.h>
+#include <skas.h>
+>>>>>>> refs/remotes/origin/master
 
 extern int __syscall_stub_start;
 
@@ -93,10 +104,13 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	to_mm->stub_pages = NULL;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
  out_free:
@@ -107,6 +121,7 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm)
 {
 	struct page **pages;
@@ -114,6 +129,10 @@ void arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm)
 void uml_setup_stubs(struct mm_struct *mm)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void uml_setup_stubs(struct mm_struct *mm)
+{
+>>>>>>> refs/remotes/origin/master
 	int err, ret;
 
 	if (!skas_needs_stub)
@@ -129,6 +148,7 @@ void uml_setup_stubs(struct mm_struct *mm)
 		goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pages = kmalloc(2 * sizeof(struct page *), GFP_KERNEL);
 	if (pages == NULL) {
 		printk(KERN_ERR "arch_dup_mmap failed to allocate 2 page "
@@ -143,10 +163,15 @@ void uml_setup_stubs(struct mm_struct *mm)
 	mm->context.stub_pages[0] = virt_to_page(&__syscall_stub_start);
 	mm->context.stub_pages[1] = virt_to_page(mm->context.id.stack);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mm->context.stub_pages[0] = virt_to_page(&__syscall_stub_start);
+	mm->context.stub_pages[1] = virt_to_page(mm->context.id.stack);
+>>>>>>> refs/remotes/origin/master
 
 	/* dup_mmap already holds mmap_sem */
 	err = install_special_mapping(mm, STUB_START, STUB_END - STUB_START,
 				      VM_READ | VM_MAYREAD | VM_EXEC |
+<<<<<<< HEAD
 <<<<<<< HEAD
 				      VM_MAYEXEC | VM_DONTCOPY, pages);
 	if (err) {
@@ -159,6 +184,9 @@ out_free:
 	kfree(pages);
 =======
 				      VM_MAYEXEC | VM_DONTCOPY,
+=======
+				      VM_MAYEXEC | VM_DONTCOPY | VM_PFNMAP,
+>>>>>>> refs/remotes/origin/master
 				      mm->context.stub_pages);
 	if (err) {
 		printk(KERN_ERR "install_special_mapping returned %d\n", err);
@@ -166,7 +194,10 @@ out_free:
 	}
 	return;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	force_sigsegv(SIGSEGV, current);
 }
@@ -176,10 +207,13 @@ void arch_exit_mmap(struct mm_struct *mm)
 	pte_t *pte;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mm->context.stub_pages != NULL)
 		kfree(mm->context.stub_pages);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pte = virt_to_pte(mm, STUB_CODE);
 	if (pte != NULL)
 		pte_clear(mm, STUB_CODE, pte);

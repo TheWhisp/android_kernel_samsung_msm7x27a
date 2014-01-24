@@ -76,6 +76,7 @@
  */
 #define SCIC_SDS_SATA_LINK_TRAINING_TIMEOUT  250
 
+<<<<<<< HEAD
 enum sci_phy_protocol {
 	SCIC_SDS_PHY_PROTOCOL_UNKNOWN,
 	SCIC_SDS_PHY_PROTOCOL_SAS,
@@ -83,6 +84,8 @@ enum sci_phy_protocol {
 	SCIC_SDS_MAX_PHY_PROTOCOLS
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * isci_phy - hba local phy infrastructure
  * @sm:
@@ -95,7 +98,11 @@ struct isci_phy {
 	struct sci_base_state_machine sm;
 	struct isci_port *owning_port;
 	enum sas_linkrate max_negotiated_speed;
+<<<<<<< HEAD
 	enum sci_phy_protocol protocol;
+=======
+	enum sas_protocol protocol;
+>>>>>>> refs/remotes/origin/master
 	u8 phy_index;
 	bool bcn_received_while_port_unassigned;
 	bool is_in_link_training;
@@ -104,9 +111,12 @@ struct isci_phy {
 	struct scu_link_layer_registers __iomem *link_layer_registers;
 	struct asd_sas_phy sas_phy;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct isci_port *isci_port;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 sas_addr[SAS_ADDR_SIZE];
 	union {
 		struct sas_identify_frame iaf;
@@ -348,6 +358,7 @@ enum sci_phy_counter_id {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum sci_phy_states {
 	/**
 	 * Simply the initial state for the base domain state machine.
@@ -444,6 +455,8 @@ enum sci_phy_states {
 	SCI_PHY_FINAL,
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * enum sci_phy_states - phy state machine states
  * @SCI_PHY_INITIAL: Simply the initial state for the base domain state
@@ -503,7 +516,10 @@ enum sci_phy_states {
 #define C(a) SCI_##a
 enum sci_phy_states PHY_STATES;
 #undef C
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 void sci_phy_construct(
 	struct isci_phy *iphy,

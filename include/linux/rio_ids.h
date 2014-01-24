@@ -13,8 +13,11 @@
 #ifndef LINUX_RIO_IDS_H
 #define LINUX_RIO_IDS_H
 
+<<<<<<< HEAD
 #define RIO_ANY_ID			0xffff
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define RIO_VID_FREESCALE		0x0002
 #define RIO_DID_MPC8560			0x0003
 
@@ -40,8 +43,12 @@
 #define RIO_DID_IDTVPS1616		0x0377
 #define RIO_DID_IDTSPS1616		0x0378
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define RIO_DID_TSI721			0x80ab
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define RIO_DID_TSI721			0x80ab
+>>>>>>> refs/remotes/origin/master
 
 #endif				/* LINUX_RIO_IDS_H */

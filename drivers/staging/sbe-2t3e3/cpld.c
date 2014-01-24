@@ -41,6 +41,7 @@ static inline void cpld_clear_bit(struct channel *channel, unsigned reg, u32 bit
 void cpld_init(struct channel *sc)
 {
 	u32 val;
+<<<<<<< HEAD
 #if 0
 	/* reset LIU and Framer */
 	val = cpld_val_map[SBE_2T3E3_CPLD_VAL_LIU_FRAMER_RESET][sc->h.slot];
@@ -49,6 +50,8 @@ void cpld_init(struct channel *sc)
 	val = 0;
 	cpld_write(sc, SBE_2T3E3_CPLD_REG_STATIC_RESET, val);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* PCRA */
 	val = SBE_2T3E3_CPLD_VAL_CRC32 |
@@ -109,6 +112,7 @@ void cpld_start_intr(struct channel *sc)
 	val = SBE_2T3E3_CPLD_VAL_INTERRUPT_FROM_ETHERNET_ENABLE |
 		SBE_2T3E3_CPLD_VAL_INTERRUPT_FROM_FRAMER_ENABLE;
 	cpld_write(sc, SBE_2T3E3_CPLD_REG_PIER, val);
+<<<<<<< HEAD
 #if 0
 	/*
 	  do you want to hang up your computer?
@@ -116,6 +120,8 @@ void cpld_start_intr(struct channel *sc)
 	  you have been warned :).
 	*/
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void cpld_stop_intr(struct channel *sc)
@@ -255,7 +261,11 @@ void cpld_select_panel(struct channel *sc, u32 panel)
 }
 
 
+<<<<<<< HEAD
 extern void cpld_set_clock(struct channel *sc, u32 mode)
+=======
+void cpld_set_clock(struct channel *sc, u32 mode)
+>>>>>>> refs/remotes/origin/master
 {
 	if (sc->p.clock_source == mode)
 		return;
@@ -353,7 +363,11 @@ void cpld_set_fractional_mode(struct channel *sc, u32 mode,
 			   SBE_2T3E3_CPLD_VAL_FRACTIONAL_MODE_2);
 		break;
 	default:
+<<<<<<< HEAD
 		printk(KERN_ERR "wrong mode in set_fractional_mode\n");
+=======
+		netdev_err(sc->dev, "wrong mode in set_fractional_mode\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 

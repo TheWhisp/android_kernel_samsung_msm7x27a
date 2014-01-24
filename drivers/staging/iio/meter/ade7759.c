@@ -9,9 +9,12 @@
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/mutex.h>
 #include <linux/device.h>
@@ -21,12 +24,19 @@
 #include <linux/sysfs.h>
 #include <linux/list.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include "../iio.h"
 #include "../sysfs.h"
+=======
+#include <linux/module.h>
+
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+>>>>>>> refs/remotes/origin/master
 #include "meter.h"
 #include "ade7759.h"
 
@@ -35,12 +45,17 @@ static int ade7759_spi_write_reg_8(struct device *dev,
 		u8 val)
 {
 	int ret;
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct ade7759_state *st = iio_dev_get_devdata(indio_dev);
 =======
 	struct ade7759_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7759_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&st->buf_lock);
 	st->tx[0] = ADE7759_WRITE_REG(reg_address);
@@ -57,12 +72,17 @@ static int ade7759_spi_write_reg_16(struct device *dev,
 		u16 value)
 {
 	int ret;
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct ade7759_state *st = iio_dev_get_devdata(indio_dev);
 =======
 	struct ade7759_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7759_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&st->buf_lock);
 	st->tx[0] = ADE7759_WRITE_REG(reg_address);
@@ -78,12 +98,17 @@ static int ade7759_spi_read_reg_8(struct device *dev,
 		u8 reg_address,
 		u8 *val)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct ade7759_state *st = iio_dev_get_devdata(indio_dev);
 =======
 	struct ade7759_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7759_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = spi_w8r8(st->us, ADE7759_READ_REG(reg_address));
@@ -101,6 +126,7 @@ static int ade7759_spi_read_reg_16(struct device *dev,
 		u8 reg_address,
 		u16 *val)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct ade7759_state *st = iio_dev_get_devdata(indio_dev);
@@ -110,6 +136,13 @@ static int ade7759_spi_read_reg_16(struct device *dev,
 	int ret;
 
 	ret = spi_w8r16(st->us, ADE7759_READ_REG(reg_address));
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7759_state *st = iio_priv(indio_dev);
+	int ret;
+
+	ret = spi_w8r16be(st->us, ADE7759_READ_REG(reg_address));
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(&st->us->dev, "problem when reading 16 bit register 0x%02X",
 			reg_address);
@@ -117,7 +150,10 @@ static int ade7759_spi_read_reg_16(struct device *dev,
 	}
 
 	*val = ret;
+<<<<<<< HEAD
 	*val = be16_to_cpup(val);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -126,6 +162,7 @@ static int ade7759_spi_read_reg_40(struct device *dev,
 		u8 reg_address,
 		u64 *val)
 {
+<<<<<<< HEAD
 	struct spi_message msg;
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
@@ -133,6 +170,10 @@ static int ade7759_spi_read_reg_40(struct device *dev,
 =======
 	struct ade7759_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7759_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	struct spi_transfer xfers[] = {
 		{
@@ -147,9 +188,13 @@ static int ade7759_spi_read_reg_40(struct device *dev,
 	st->tx[0] = ADE7759_READ_REG(reg_address);
 	memset(&st->tx[1], 0 , 5);
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(xfers, &msg);
 	ret = spi_sync(st->us, &msg);
+=======
+	ret = spi_sync_transfer(st->us, xfers, ARRAY_SIZE(xfers));
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&st->us->dev, "problem when reading 40 bit register 0x%02X",
 				reg_address);
@@ -215,9 +260,15 @@ static ssize_t ade7759_write_8bit(struct device *dev,
 {
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
 	int ret;
+<<<<<<< HEAD
 	long val;
 
 	ret = strict_strtol(buf, 10, &val);
+=======
+	u8 val;
+
+	ret = kstrtou8(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto error_ret;
 	ret = ade7759_spi_write_reg_8(dev, this_attr->address, val);
@@ -233,9 +284,15 @@ static ssize_t ade7759_write_16bit(struct device *dev,
 {
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
 	int ret;
+<<<<<<< HEAD
 	long val;
 
 	ret = strict_strtol(buf, 10, &val);
+=======
+	u16 val;
+
+	ret = kstrtou16(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto error_ret;
 	ret = ade7759_spi_write_reg_16(dev, this_attr->address, val);
@@ -259,6 +316,7 @@ static int ade7759_reset(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static ssize_t ade7759_write_reset(struct device *dev,
 		struct device_attribute *attr,
 		const char *buf, size_t len)
@@ -274,6 +332,8 @@ static ssize_t ade7759_write_reset(struct device *dev,
 	return -1;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static IIO_DEV_ATTR_AENERGY(ade7759_read_40bit, ADE7759_AENERGY);
 static IIO_DEV_ATTR_CFDEN(S_IWUSR | S_IRUGO,
 		ade7759_read_16bit,
@@ -356,17 +416,23 @@ static int ade7759_stop_device(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ade7759_initial_setup(struct ade7759_state *st)
 {
 	int ret;
 	struct device *dev = &st->indio_dev->dev;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int ade7759_initial_setup(struct iio_dev *indio_dev)
 {
 	int ret;
 	struct ade7759_state *st = iio_priv(indio_dev);
 	struct device *dev = &indio_dev->dev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* use low spi speed for init */
 	st->us->mode = SPI_MODE_3;
@@ -410,6 +476,7 @@ static ssize_t ade7759_write_frequency(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct ade7759_state *st = iio_dev_get_devdata(indio_dev);
@@ -423,6 +490,19 @@ static ssize_t ade7759_write_frequency(struct device *dev,
 	ret = strict_strtol(buf, 10, &val);
 	if (ret)
 		return ret;
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ade7759_state *st = iio_priv(indio_dev);
+	u16 val;
+	int ret;
+	u16 reg, t;
+
+	ret = kstrtou16(buf, 10, &val);
+	if (ret)
+		return ret;
+	if (val == 0)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&indio_dev->mlock);
 
@@ -451,17 +531,23 @@ out:
 }
 static IIO_DEV_ATTR_TEMP_RAW(ade7759_read_8bit);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static IIO_CONST_ATTR(temp_offset, "70 C");
 static IIO_CONST_ATTR(temp_scale, "1 C");
 =======
 static IIO_CONST_ATTR(in_temp_offset, "70 C");
 static IIO_CONST_ATTR(in_temp_scale, "1 C");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static IIO_CONST_ATTR(in_temp_offset, "70 C");
+static IIO_CONST_ATTR(in_temp_scale, "1 C");
+>>>>>>> refs/remotes/origin/master
 
 static IIO_DEV_ATTR_SAMP_FREQ(S_IWUSR | S_IRUGO,
 		ade7759_read_frequency,
 		ade7759_write_frequency);
 
+<<<<<<< HEAD
 static IIO_DEV_ATTR_RESET(ade7759_write_reset);
 
 static IIO_CONST_ATTR_SAMP_FREQ_AVAIL("27900 14000 7000 3500");
@@ -479,6 +565,16 @@ static struct attribute *ade7759_attributes[] = {
 	&iio_dev_attr_sampling_frequency.dev_attr.attr,
 	&iio_const_attr_sampling_frequency_available.dev_attr.attr,
 	&iio_dev_attr_reset.dev_attr.attr,
+=======
+static IIO_CONST_ATTR_SAMP_FREQ_AVAIL("27900 14000 7000 3500");
+
+static struct attribute *ade7759_attributes[] = {
+	&iio_dev_attr_in_temp_raw.dev_attr.attr,
+	&iio_const_attr_in_temp_offset.dev_attr.attr,
+	&iio_const_attr_in_temp_scale.dev_attr.attr,
+	&iio_dev_attr_sampling_frequency.dev_attr.attr,
+	&iio_const_attr_sampling_frequency_available.dev_attr.attr,
+>>>>>>> refs/remotes/origin/master
 	&iio_dev_attr_phcal.dev_attr.attr,
 	&iio_dev_attr_cfden.dev_attr.attr,
 	&iio_dev_attr_aenergy.dev_attr.attr,
@@ -505,6 +601,7 @@ static const struct iio_info ade7759_info = {
 	.driver_module = THIS_MODULE,
 };
 
+<<<<<<< HEAD
 static int __devinit ade7759_probe(struct spi_device *spi)
 {
 	int ret;
@@ -566,15 +663,26 @@ error_free_rx:
 error_free_st:
 	kfree(st);
 =======
+=======
+static int ade7759_probe(struct spi_device *spi)
+{
+	int ret;
+>>>>>>> refs/remotes/origin/master
 	struct ade7759_state *st;
 	struct iio_dev *indio_dev;
 
 	/* setup the industrialio driver allocated elements */
+<<<<<<< HEAD
 	indio_dev = iio_allocate_device(sizeof(*st));
 	if (indio_dev == NULL) {
 		ret = -ENOMEM;
 		goto error_ret;
 	}
+=======
+	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+	if (!indio_dev)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	/* this is only used for removal purposes */
 	spi_set_drvdata(spi, indio_dev);
 
@@ -589,6 +697,7 @@ error_free_st:
 	/* Get the device into a sane initial state */
 	ret = ade7759_initial_setup(indio_dev);
 	if (ret)
+<<<<<<< HEAD
 		goto error_free_dev;
 
 	ret = iio_device_register(indio_dev);
@@ -602,11 +711,21 @@ error_free_dev:
 >>>>>>> refs/remotes/origin/cm-10.0
 error_ret:
 	return ret;
+=======
+		return ret;
+
+	ret = iio_device_register(indio_dev);
+	if (ret)
+		return ret;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* fixme, confirm ordering in this function */
 static int ade7759_remove(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	int ret;
 <<<<<<< HEAD
 	struct ade7759_state *st = spi_get_drvdata(spi);
@@ -634,6 +753,14 @@ static int ade7759_remove(struct spi_device *spi)
 
 err_ret:
 	return ret;
+=======
+	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+
+	iio_device_unregister(indio_dev);
+	ade7759_stop_device(&indio_dev->dev);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct spi_driver ade7759_driver = {
@@ -642,6 +769,7 @@ static struct spi_driver ade7759_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = ade7759_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ade7759_remove),
 };
 <<<<<<< HEAD
@@ -660,11 +788,20 @@ module_exit(ade7759_exit);
 =======
 module_spi_driver(ade7759_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = ade7759_remove,
+};
+module_spi_driver(ade7759_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Barry Song <21cnbao@gmail.com>");
 MODULE_DESCRIPTION("Analog Devices ADE7759 Active Energy Metering IC Driver");
 MODULE_LICENSE("GPL v2");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_ALIAS("spi:ad7759");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("spi:ad7759");
+>>>>>>> refs/remotes/origin/master

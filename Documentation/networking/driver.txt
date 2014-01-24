@@ -3,12 +3,17 @@ Document about softnet driver issues
 Transmit path guidelines:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 1) The hard_start_xmit method must never return '1' under any
    normal circumstances.  It is considered a hard error unless
 =======
 1) The ndo_start_xmit method must not return NETDEV_TX_BUSY under
    any normal circumstances.  It is considered a hard error unless
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+1) The ndo_start_xmit method must not return NETDEV_TX_BUSY under
+   any normal circumstances.  It is considered a hard error unless
+>>>>>>> refs/remotes/origin/master
    there is no way your device can tell ahead of time when it's
    transmit function will become busy.
 
@@ -16,12 +21,17 @@ Transmit path guidelines:
    for a driver implementing scatter-gather this means:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int drv_hard_start_xmit(struct sk_buff *skb,
 		   		       struct net_device *dev)
 =======
 	static netdev_tx_t drv_hard_start_xmit(struct sk_buff *skb,
 					       struct net_device *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static netdev_tx_t drv_hard_start_xmit(struct sk_buff *skb,
+					       struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 	{
 		struct drv *dp = netdev_priv(dev);
 
@@ -34,10 +44,14 @@ Transmit path guidelines:
 			printk(KERN_ERR PFX "%s: BUG! Tx Ring full when queue awake!\n",
 			       dev->name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return 1;
 =======
 			return NETDEV_TX_BUSY;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return NETDEV_TX_BUSY;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		... queue packet to card ...
@@ -50,9 +64,13 @@ Transmit path guidelines:
 		unlock_tx(dp);
 		...
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		return NETDEV_TX_OK;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return NETDEV_TX_OK;
+>>>>>>> refs/remotes/origin/master
 	}
 
    And then at the end of your TX reclamation event handling:
@@ -77,6 +95,7 @@ Transmit path guidelines:
 		netif_wake_queue(dp->dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 2) Do not forget to update netdev->trans_start to jiffies after
    each new tx packet is given to the hardware.
 
@@ -87,13 +106,18 @@ Transmit path guidelines:
    method, it is your driver's responsibility to free up the SKB
    and in some finite amount of time.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 2) An ndo_start_xmit method must not modify the shared parts of a
    cloned SKB.
 
 3) Do not forget that once you return NETDEV_TX_OK from your
    ndo_start_xmit method, it is your driver's responsibility to free
    up the SKB and in some finite amount of time.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
    For example, this means that it is not allowed for your TX
    mitigation scheme to let TX packets "hang out" in the TX
@@ -102,6 +126,7 @@ Transmit path guidelines:
    to be freed up.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
    If you return 1 from the hard_start_xmit method, you must not keep
    any reference to that SKB and you must not attempt to free it up.
 =======
@@ -109,6 +134,11 @@ Transmit path guidelines:
    must not keep any reference to that SKB and you must not attempt
    to free it up.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   If you return NETDEV_TX_BUSY from the ndo_start_xmit method, you
+   must not keep any reference to that SKB and you must not attempt
+   to free it up.
+>>>>>>> refs/remotes/origin/master
 
 Probing guidelines:
 
@@ -119,17 +149,25 @@ Probing guidelines:
 Close/stop guidelines:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 1) After the dev->stop routine has been called, the hardware must
 =======
 1) After the ndo_stop routine has been called, the hardware must
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+1) After the ndo_stop routine has been called, the hardware must
+>>>>>>> refs/remotes/origin/master
    not receive or transmit any data.  All in flight packets must
    be aborted. If necessary, poll or wait for completion of 
    any reset commands.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 2) The dev->stop routine will be called by unregister_netdevice
 =======
 2) The ndo_stop routine will be called by unregister_netdevice
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+2) The ndo_stop routine will be called by unregister_netdevice
+>>>>>>> refs/remotes/origin/master
    if device is still UP.

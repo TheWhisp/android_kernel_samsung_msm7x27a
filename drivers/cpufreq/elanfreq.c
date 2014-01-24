@@ -24,9 +24,13 @@
 #include <linux/cpufreq.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/cpu_device_id.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cpu_device_id.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/msr.h>
 #include <linux/timex.h>
 #include <linux/io.h>
@@ -108,6 +112,7 @@ static unsigned int elanfreq_get_cpu_frequency(unsigned int cpu)
 }
 
 
+<<<<<<< HEAD
 /**
  *	elanfreq_set_cpu_frequency: Change the CPU core frequency
  *	@cpu: cpu number
@@ -134,6 +139,11 @@ static void elanfreq_set_cpu_state(unsigned int state)
 			elan_multiplier[state].clock);
 
 
+=======
+static int elanfreq_target(struct cpufreq_policy *policy,
+			    unsigned int state)
+{
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Access to the Elan's internal registers is indexed via
 	 * 0x22: Chip Setup & Control Register Index Register (CSCI)
@@ -164,6 +174,7 @@ static void elanfreq_set_cpu_state(unsigned int state)
 	udelay(10000);
 	local_irq_enable();
 
+<<<<<<< HEAD
 	cpufreq_notify_transition(&freqs, CPUFREQ_POSTCHANGE);
 };
 
@@ -197,6 +208,10 @@ static int elanfreq_target(struct cpufreq_policy *policy,
 }
 
 
+=======
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 /*
  *	Module init and exit code
  */
@@ -205,7 +220,10 @@ static int elanfreq_cpu_init(struct cpufreq_policy *policy)
 {
 	struct cpuinfo_x86 *c = &cpu_data(0);
 	unsigned int i;
+<<<<<<< HEAD
 	int result;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* capability check */
 	if ((c->x86_vendor != X86_VENDOR_AMD) ||
@@ -224,6 +242,7 @@ static int elanfreq_cpu_init(struct cpufreq_policy *policy)
 
 	/* cpuinfo and default policy values */
 	policy->cpuinfo.transition_latency = CPUFREQ_ETERNAL;
+<<<<<<< HEAD
 	policy->cur = elanfreq_get_cpu_frequency(0);
 
 	result = cpufreq_frequency_table_cpuinfo(policy, elanfreq_table);
@@ -239,6 +258,10 @@ static int elanfreq_cpu_exit(struct cpufreq_policy *policy)
 {
 	cpufreq_frequency_table_put_attr(policy->cpu);
 	return 0;
+=======
+
+	return cpufreq_table_validate_and_show(policy, elanfreq_table);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -264,6 +287,7 @@ __setup("elanfreq=", elanfreq_setup);
 #endif
 
 
+<<<<<<< HEAD
 static struct freq_attr *elanfreq_attr[] = {
 	&cpufreq_freq_attr_scaling_available_freqs,
 	NULL,
@@ -294,6 +318,18 @@ static int __init elanfreq_init(void)
 		return -ENODEV;
 	}
 =======
+=======
+static struct cpufreq_driver elanfreq_driver = {
+	.get		= elanfreq_get_cpu_frequency,
+	.verify		= cpufreq_generic_frequency_table_verify,
+	.target_index	= elanfreq_target,
+	.init		= elanfreq_cpu_init,
+	.exit		= cpufreq_generic_exit,
+	.name		= "elanfreq",
+	.attr		= cpufreq_generic_attr,
+};
+
+>>>>>>> refs/remotes/origin/master
 static const struct x86_cpu_id elan_id[] = {
 	{ X86_VENDOR_AMD, 4, 10, },
 	{}
@@ -304,7 +340,10 @@ static int __init elanfreq_init(void)
 {
 	if (!x86_match_cpu(elan_id))
 		return -ENODEV;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return cpufreq_register_driver(&elanfreq_driver);
 }
 

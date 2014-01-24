@@ -25,6 +25,7 @@
 #define MAX_STACK_SIZE			64	/* 32 would probably be OK */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * This undefined instruction must be unique and
  * reserved solely for kprobes' use.
@@ -34,6 +35,8 @@
 #define regs_return_value(regs)		((regs)->ARM_r0)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define flush_insn_slot(p)		do { } while (0)
 #define kretprobe_blacklist_size	0
 
@@ -41,6 +44,7 @@ typedef u32 kprobe_opcode_t;
 
 struct kprobe;
 typedef void (kprobe_insn_handler_t)(struct kprobe *, struct pt_regs *);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 typedef unsigned long (kprobe_check_cc)(unsigned long);
@@ -51,6 +55,8 @@ struct arch_specific_insn {
 	kprobe_insn_handler_t	*insn_handler;
 	kprobe_check_cc		*insn_check_cc;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 typedef unsigned long (kprobe_check_cc)(unsigned long);
 typedef void (kprobe_insn_singlestep_t)(struct kprobe *, struct pt_regs *);
 typedef void (kprobe_insn_fn_t)(void);
@@ -62,7 +68,10 @@ struct arch_specific_insn {
 	kprobe_check_cc			*insn_check_cc;
 	kprobe_insn_singlestep_t	*insn_singlestep;
 	kprobe_insn_fn_t		*insn_fn;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct prev_kprobe {
@@ -80,14 +89,18 @@ struct kprobe_ctlblk {
 
 void arch_remove_kprobe(struct kprobe *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void kretprobe_trampoline(void);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int kprobe_fault_handler(struct pt_regs *regs, unsigned int fsr);
 int kprobe_exceptions_notify(struct notifier_block *self,
 			     unsigned long val, void *data);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 enum kprobe_insn {
 	INSN_REJECTED,
@@ -100,5 +113,7 @@ enum kprobe_insn arm_kprobe_decode_insn(kprobe_opcode_t,
 void __init arm_kprobe_decode_init(void);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ARM_KPROBES_H */

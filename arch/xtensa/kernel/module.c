@@ -25,6 +25,7 @@
 #undef DEBUG_RELOCATE
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void *module_alloc(unsigned long size)
 {
 	if (size == 0)
@@ -47,6 +48,8 @@ int module_frob_arch_sections(Elf32_Ehdr *hdr,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 decode_calln_opcode (unsigned char *location)
 {
@@ -70,6 +73,7 @@ decode_l32r_opcode (unsigned char *location)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int apply_relocate(Elf32_Shdr *sechdrs,
     		   const char *strtab,
 		   unsigned int symindex,
@@ -84,6 +88,8 @@ int apply_relocate(Elf32_Shdr *sechdrs,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int apply_relocate_add(Elf32_Shdr *sechdrs,
 		       const char *strtab,
 		       unsigned int symindex,
@@ -91,7 +97,11 @@ int apply_relocate_add(Elf32_Shdr *sechdrs,
 		       struct module *mod)
 {
 	unsigned int i;
+<<<<<<< HEAD
         Elf32_Rela *rela = (void *)sechdrs[relsec].sh_addr;
+=======
+	Elf32_Rela *rela = (void *)sechdrs[relsec].sh_addr;
+>>>>>>> refs/remotes/origin/master
 	Elf32_Sym *sym;
 	unsigned char *location;
 	uint32_t value;
@@ -229,6 +239,7 @@ int apply_relocate_add(Elf32_Shdr *sechdrs,
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 int module_finalize(const Elf_Ehdr *hdr,
     		    const Elf_Shdr *sechdrs,
@@ -242,3 +253,5 @@ void module_arch_cleanup(struct module *mod)
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

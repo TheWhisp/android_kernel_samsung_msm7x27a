@@ -25,7 +25,11 @@
 
 
 #include "hcfcfg.h"				// to get hcf_16 etc defined as well as
+<<<<<<< HEAD
                                 // possible settings which inluence mdd.h or dhf.h
+=======
+                                // possible settings which influence mdd.h or dhf.h
+>>>>>>> refs/remotes/origin/master
 #include "mdd.h"   				//to get COMP_ID_STA etc defined
 #include "dhf.h"   				//used to be "fhfmem.h", to get memblock,plugrecord,
 
@@ -5211,7 +5215,11 @@ static const CFG_PROG_STRCT fw_image_code[] = {
 		0000,
  	0x000F429B,					// Start execution address
 	},
+<<<<<<< HEAD
 	{ 0000, 0000, 0000, 0000, 00000000, 0000, 00000000}
+=======
+	{ 0000, 0000, 0000, 0000, 00000000, 0000, NULL}
+>>>>>>> refs/remotes/origin/master
 };
 
 static const CFG_RANGE20_STRCT fw_image_infocompat[] = {
@@ -5247,8 +5255,13 @@ memimage fw_image = {
 	"FUPU7D37dhfwci\001C",			//signature, <format number>, C/Bin type
 	(CFG_PROG_STRCT *) fw_image_code,
 	0x000F429B,
+<<<<<<< HEAD
 	00000000,					//(dummy) pdaplug
 	00000000,					//(dummy) priplug
+=======
+	NULL,					//(dummy) pdaplug
+	NULL,					//(dummy) priplug
+>>>>>>> refs/remotes/origin/master
 	(CFG_RANGE20_STRCT *) fw_image_infocompat,
 	(CFG_IDENTITY_STRCT *) fw_image_infoidentity,
 };

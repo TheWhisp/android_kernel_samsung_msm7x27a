@@ -160,8 +160,13 @@ extern void iop_download_code(uint, __u8 *, uint, __u16);
 extern __u8 *iop_compare_code(uint, __u8 *, uint, __u16);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void iop_register_interrupts(void);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void iop_register_interrupts(void);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASSEMBLY__ */

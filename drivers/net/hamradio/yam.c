@@ -53,9 +53,12 @@
 #include <linux/random.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/ioport.h>
 #include <linux/firmware.h>
@@ -80,7 +83,11 @@
 /* --------------------------------------------------------------------- */
 
 static const char yam_drvname[] = "yam";
+<<<<<<< HEAD
 static const char yam_drvinfo[] __initdata = KERN_INFO \
+=======
+static const char yam_drvinfo[] __initconst = KERN_INFO \
+>>>>>>> refs/remotes/origin/master
 	"YAM driver version 0.8 by F1OAT/F6FBB\n";
 
 /* --------------------------------------------------------------------- */
@@ -407,9 +414,12 @@ static unsigned char *add_mcs(unsigned char *bits, int bitrate,
 	/* Allocate a new mcs */
 	if ((p = kmalloc(sizeof(struct yam_mcs), GFP_KERNEL)) == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "YAM: no memory to allocate mcs\n");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		release_firmware(fw);
 		return NULL;
 	}
@@ -646,7 +656,11 @@ static void yam_arbitrate(struct net_device *dev)
 	yp->slotcnt = yp->slot / 10;
 
 	/* is random > persist ? */
+<<<<<<< HEAD
 	if ((random32() % 256) > yp->pers)
+=======
+	if ((prandom_u32() % 256) > yp->pers)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	yam_start_tx(dev, yp);
@@ -874,7 +888,11 @@ static int yam_open(struct net_device *dev)
 
 	printk(KERN_INFO "Trying %s at iobase 0x%lx irq %u\n", dev->name, dev->base_addr, dev->irq);
 
+<<<<<<< HEAD
 	if (!dev || !yp->bitrate)
+=======
+	if (!yp->bitrate)
+>>>>>>> refs/remotes/origin/master
 		return -ENXIO;
 	if (!dev->base_addr || dev->base_addr > 0x1000 - YAM_EXTENT ||
 		dev->irq < 2 || dev->irq > 15) {
@@ -896,7 +914,11 @@ static int yam_open(struct net_device *dev)
 		goto out_release_base;
 	}
 	outb(0, IER(dev->base_addr));
+<<<<<<< HEAD
 	if (request_irq(dev->irq, yam_interrupt, IRQF_DISABLED | IRQF_SHARED, dev->name, dev)) {
+=======
+	if (request_irq(dev->irq, yam_interrupt, IRQF_SHARED, dev->name, dev)) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "%s: irq %d busy\n", dev->name, dev->irq);
 		ret = -EBUSY;
 		goto out_release_base;
@@ -983,7 +1005,10 @@ static int yam_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 			return -EINVAL;		/* Cannot change this parameter when up */
 		if ((ym = kmalloc(sizeof(struct yamdrv_ioctl_mcs), GFP_KERNEL)) == NULL)
 			return -ENOBUFS;
+<<<<<<< HEAD
 		ym->bitrate = 9600;
+=======
+>>>>>>> refs/remotes/origin/master
 		if (copy_from_user(ym, ifr->ifr_data, sizeof(struct yamdrv_ioctl_mcs))) {
 			kfree(ym);
 			return -EFAULT;
@@ -1066,6 +1091,10 @@ static int yam_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 		break;
 
 	case SIOCYAMGCFG:
+<<<<<<< HEAD
+=======
+		memset(&yi, 0, sizeof(yi));
+>>>>>>> refs/remotes/origin/master
 		yi.cfg.mask = 0xffffffff;
 		yi.cfg.iobase = yp->iobase;
 		yi.cfg.irq = yp->irq;
@@ -1175,7 +1204,11 @@ static int __init yam_init_driver(void)
 	yam_timer.expires = jiffies + HZ / 100;
 	add_timer(&yam_timer);
 
+<<<<<<< HEAD
 	proc_net_fops_create(&init_net, "yam", S_IRUGO, &yam_info_fops);
+=======
+	proc_create("yam", S_IRUGO, init_net.proc_net, &yam_info_fops);
+>>>>>>> refs/remotes/origin/master
 	return 0;
  error:
 	while (--i >= 0) {
@@ -1207,7 +1240,11 @@ static void __exit yam_cleanup_driver(void)
 		kfree(p);
 	}
 
+<<<<<<< HEAD
 	proc_net_remove(&init_net, "yam");
+=======
+	remove_proc_entry("yam", init_net.proc_net);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* --------------------------------------------------------------------- */

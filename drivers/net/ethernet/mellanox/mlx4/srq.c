@@ -34,6 +34,10 @@
 #include <linux/init.h>
 
 #include <linux/mlx4/cmd.h>
+<<<<<<< HEAD
+=======
+#include <linux/mlx4/srq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/export.h>
 #include <linux/gfp.h>
 
@@ -149,7 +153,11 @@ void __mlx4_srq_free_icm(struct mlx4_dev *dev, int srqn)
 
 static void mlx4_srq_free_icm(struct mlx4_dev *dev, int srqn)
 {
+<<<<<<< HEAD
 	u64 in_param;
+=======
+	u64 in_param = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (mlx4_is_mfunc(dev)) {
 		set_param_l(&in_param, srqn);
@@ -188,8 +196,11 @@ int mlx4_srq_alloc(struct mlx4_dev *dev, u32 pdn, u32 cqn, u16 xrcd,
 	}
 
 	srq_context = mailbox->buf;
+<<<<<<< HEAD
 	memset(srq_context, 0, sizeof *srq_context);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	srq_context->state_logsize_srqn = cpu_to_be32((ilog2(srq->max) << 24) |
 						      srq->srqn);
 	srq_context->logstride          = srq->wqe_shift - 4;
@@ -298,3 +309,21 @@ void mlx4_cleanup_srq_table(struct mlx4_dev *dev)
 		return;
 	mlx4_bitmap_cleanup(&mlx4_priv(dev)->srq_table.bitmap);
 }
+<<<<<<< HEAD
+=======
+
+struct mlx4_srq *mlx4_srq_lookup(struct mlx4_dev *dev, u32 srqn)
+{
+	struct mlx4_srq_table *srq_table = &mlx4_priv(dev)->srq_table;
+	struct mlx4_srq *srq;
+	unsigned long flags;
+
+	spin_lock_irqsave(&srq_table->lock, flags);
+	srq = radix_tree_lookup(&srq_table->tree,
+				srqn & (dev->caps.num_srqs - 1));
+	spin_unlock_irqrestore(&srq_table->lock, flags);
+
+	return srq;
+}
+EXPORT_SYMBOL_GPL(mlx4_srq_lookup);
+>>>>>>> refs/remotes/origin/master

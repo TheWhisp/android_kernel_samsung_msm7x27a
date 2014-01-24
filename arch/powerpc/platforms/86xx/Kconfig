@@ -5,9 +5,13 @@ menuconfig PPC_86xx
 	select FSL_SOC
 	select ALTIVEC
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	select ARCH_WANT_OPTIONAL_GPIOLIB
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select ARCH_WANT_OPTIONAL_GPIOLIB
+>>>>>>> refs/remotes/origin/master
 	help
 	  The Freescale E600 SoCs have 74xx cores.
 
@@ -40,12 +44,17 @@ config GEF_PPC9A
 	bool "GE PPC9A"
 	select DEFAULT_UIMAGE
 	select MMIO_NVRAM
+<<<<<<< HEAD
 	select GENERIC_GPIO
 	select ARCH_REQUIRE_GPIOLIB
 <<<<<<< HEAD
 =======
 	select GE_FPGA
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select ARCH_REQUIRE_GPIOLIB
+	select GE_FPGA
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option enables support for the GE PPC9A.
 
@@ -53,12 +62,17 @@ config GEF_SBC310
 	bool "GE SBC310"
 	select DEFAULT_UIMAGE
 	select MMIO_NVRAM
+<<<<<<< HEAD
 	select GENERIC_GPIO
 	select ARCH_REQUIRE_GPIOLIB
 <<<<<<< HEAD
 =======
 	select GE_FPGA
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select ARCH_REQUIRE_GPIOLIB
+	select GE_FPGA
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option enables support for the GE SBC310.
 
@@ -66,12 +80,17 @@ config GEF_SBC610
 	bool "GE SBC610"
 	select DEFAULT_UIMAGE
 	select MMIO_NVRAM
+<<<<<<< HEAD
 	select GENERIC_GPIO
 	select ARCH_REQUIRE_GPIOLIB
 <<<<<<< HEAD
 =======
 	select GE_FPGA
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select ARCH_REQUIRE_GPIOLIB
+	select GE_FPGA
+>>>>>>> refs/remotes/origin/master
 	select HAS_RAPIDIO
 	help
 	  This option enables support for the GE SBC610.

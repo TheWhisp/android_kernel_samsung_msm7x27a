@@ -19,9 +19,14 @@
 #include <linux/errno.h>
 #include <linux/gpio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/of.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of.h>
+#include <linux/gpio/consumer.h>
+>>>>>>> refs/remotes/origin/master
 
 struct device_node;
 
@@ -51,6 +56,7 @@ static inline struct of_mm_gpio_chip *to_of_mm_gpio_chip(struct gpio_chip *gc)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int of_get_gpio_flags(struct device_node *np, int index,
 			     enum of_gpio_flags *flags);
 extern unsigned int of_gpio_count(struct device_node *np);
@@ -62,11 +68,17 @@ extern unsigned int of_gpio_named_count(struct device_node *np,
 					const char* propname);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+extern struct gpio_desc *of_get_named_gpiod_flags(struct device_node *np,
+		const char *list_name, int index, enum of_gpio_flags *flags);
+
+>>>>>>> refs/remotes/origin/master
 extern int of_mm_gpiochip_add(struct device_node *np,
 			      struct of_mm_gpio_chip *mm_gc);
 
 extern void of_gpiochip_add(struct gpio_chip *gc);
 extern void of_gpiochip_remove(struct gpio_chip *gc);
+<<<<<<< HEAD
 extern struct gpio_chip *of_node_to_gpiochip(struct device_node *np);
 <<<<<<< HEAD
 =======
@@ -74,10 +86,16 @@ extern int of_gpio_simple_xlate(struct gpio_chip *gc,
 				const struct of_phandle_args *gpiospec,
 				u32 *flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int of_gpio_simple_xlate(struct gpio_chip *gc,
+				const struct of_phandle_args *gpiospec,
+				u32 *flags);
+>>>>>>> refs/remotes/origin/master
 
 #else /* CONFIG_OF_GPIO */
 
 /* Drivers may not strictly depend on the GPIO support, so let them link. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline int of_get_gpio_flags(struct device_node *np, int index,
 				    enum of_gpio_flags *flags)
@@ -101,6 +119,14 @@ static inline unsigned int of_gpio_named_count(struct device_node *np,
 
 <<<<<<< HEAD
 =======
+=======
+static inline struct gpio_desc *of_get_named_gpiod_flags(struct device_node *np,
+		const char *list_name, int index, enum of_gpio_flags *flags)
+{
+	return ERR_PTR(-ENOSYS);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline int of_gpio_simple_xlate(struct gpio_chip *gc,
 				       const struct of_phandle_args *gpiospec,
 				       u32 *flags)
@@ -108,12 +134,16 @@ static inline int of_gpio_simple_xlate(struct gpio_chip *gc,
 	return -ENOSYS;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void of_gpiochip_add(struct gpio_chip *gc) { }
 static inline void of_gpiochip_remove(struct gpio_chip *gc) { }
 
 #endif /* CONFIG_OF_GPIO */
 
+<<<<<<< HEAD
 /**
 <<<<<<< HEAD
  * of_get_gpio - Get a GPIO number to use with GPIO API
@@ -134,20 +164,83 @@ static inline void of_gpiochip_remove(struct gpio_chip *gc) { }
  * are not specified.
  */
 static inline unsigned int of_gpio_count(struct device_node *np)
+=======
+static inline int of_get_named_gpio_flags(struct device_node *np,
+		const char *list_name, int index, enum of_gpio_flags *flags)
+{
+	struct gpio_desc *desc;
+	desc = of_get_named_gpiod_flags(np, list_name, index, flags);
+
+	if (IS_ERR(desc))
+		return PTR_ERR(desc);
+	else
+		return desc_to_gpio(desc);
+}
+
+/**
+ * of_gpio_named_count() - Count GPIOs for a device
+ * @np:		device node to count GPIOs for
+ * @propname:	property name containing gpio specifier(s)
+ *
+ * The function returns the count of GPIOs specified for a node.
+ * Note that the empty GPIO specifiers count too. Returns either
+ *   Number of gpios defined in property,
+ *   -EINVAL for an incorrectly formed gpios property, or
+ *   -ENOENT for a missing gpios property
+ *
+ * Example:
+ * gpios = <0
+ *          &gpio1 1 2
+ *          0
+ *          &gpio2 3 4>;
+ *
+ * The above example defines four GPIOs, two of which are not specified.
+ * This function will return '4'
+ */
+static inline int of_gpio_named_count(struct device_node *np, const char* propname)
+{
+	return of_count_phandle_with_args(np, propname, "#gpio-cells");
+}
+
+/**
+ * of_gpio_count() - Count GPIOs for a device
+ * @np:		device node to count GPIOs for
+ *
+ * Same as of_gpio_named_count, but hard coded to use the 'gpios' property
+ */
+static inline int of_gpio_count(struct device_node *np)
+>>>>>>> refs/remotes/origin/master
 {
 	return of_gpio_named_count(np, "gpios");
 }
 
 /**
+<<<<<<< HEAD
  * of_get_gpio_flags() - Get a GPIO number and flags to use with GPIO API
+=======
+ * of_get_gpiod_flags() - Get a GPIO descriptor and flags to use with GPIO API
+>>>>>>> refs/remotes/origin/master
  * @np:		device node to get GPIO from
  * @index:	index of the GPIO
  * @flags:	a flags pointer to fill in
  *
+<<<<<<< HEAD
  * Returns GPIO number to use with Linux generic GPIO API, or one of the errno
  * value on the error condition. If @flags is not NULL the function also fills
  * in flags for the GPIO.
  */
+=======
+ * Returns GPIO descriptor to use with Linux generic GPIO API, or a errno
+ * value on the error condition. If @flags is not NULL the function also fills
+ * in flags for the GPIO.
+ */
+static inline struct gpio_desc *of_get_gpiod_flags(struct device_node *np,
+					int index, enum of_gpio_flags *flags)
+{
+	return of_get_named_gpiod_flags(np, "gpios", index, flags);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline int of_get_gpio_flags(struct device_node *np, int index,
 		      enum of_gpio_flags *flags)
 {
@@ -171,7 +264,10 @@ static inline int of_get_named_gpio(struct device_node *np,
 
 /**
  * of_get_gpio() - Get a GPIO number to use with GPIO API
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @np:		device node to get GPIO from
  * @index:	index of the GPIO
  *

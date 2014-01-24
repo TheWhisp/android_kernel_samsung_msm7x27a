@@ -114,9 +114,12 @@
 #include <linux/module.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/signal.h>
 #include <linux/proc_fs.h>
 #include <asm/io.h>
@@ -392,7 +395,12 @@ int __init pas16_detect(struct scsi_host_template * tpnt)
     int  count;
 
     tpnt->proc_name = "pas16";
+<<<<<<< HEAD
     tpnt->proc_info = &pas16_proc_info;
+=======
+    tpnt->show_info = pas16_show_info;
+    tpnt->write_info = pas16_write_info;
+>>>>>>> refs/remotes/origin/master
 
     if (pas16_addr != 0) {
 	overrides[0].io_port = pas16_addr;

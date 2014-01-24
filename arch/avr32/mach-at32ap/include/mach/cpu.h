@@ -31,11 +31,14 @@
 #define cpu_is_at91sam9263()	(0)
 #define cpu_is_at91sam9rl()	(0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define cpu_is_at91cap9()	(0)
 #define cpu_is_at91cap9_revB()	(0)
 #define cpu_is_at91cap9_revC()	(0)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define cpu_is_at91sam9g10()	(0)
 #define cpu_is_at91sam9g20()	(0)
 #define cpu_is_at91sam9g45()	(0)

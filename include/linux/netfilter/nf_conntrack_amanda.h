@@ -4,6 +4,10 @@
 
 extern unsigned int (*nf_nat_amanda_hook)(struct sk_buff *skb,
 					  enum ip_conntrack_info ctinfo,
+<<<<<<< HEAD
+=======
+					  unsigned int protoff,
+>>>>>>> refs/remotes/origin/master
 					  unsigned int matchoff,
 					  unsigned int matchlen,
 					  struct nf_conntrack_expect *exp);

@@ -16,15 +16,20 @@
  * www.brocade.com
  */
 
+<<<<<<< HEAD
 /**
  * @file bfa_cs.h BFA common services
  */
+=======
+/* BFA common services */
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __BFA_CS_H__
 #define __BFA_CS_H__
 
 #include "cna.h"
 
+<<<<<<< HEAD
 /**
  * @ BFA state machine interfaces
  */
@@ -33,6 +38,13 @@ typedef void (*bfa_sm_t)(void *sm, int event);
 
 /**
  * oc - object class eg. bfa_ioc
+=======
+/* BFA state machine interfaces */
+
+typedef void (*bfa_sm_t)(void *sm, int event);
+
+/* oc - object class eg. bfa_ioc
+>>>>>>> refs/remotes/origin/master
  * st - state, eg. reset
  * otype - object type, eg. struct bfa_ioc
  * etype - object type, eg. enum ioc_event
@@ -45,9 +57,13 @@ typedef void (*bfa_sm_t)(void *sm, int event);
 #define bfa_sm_get_state(_sm)		((_sm)->sm)
 #define bfa_sm_cmp_state(_sm, _state)	((_sm)->sm == (bfa_sm_t)(_state))
 
+<<<<<<< HEAD
 /**
  * For converting from state machine function to state encoding.
  */
+=======
+/* For converting from state machine function to state encoding. */
+>>>>>>> refs/remotes/origin/master
 struct bfa_sm_table {
 	bfa_sm_t	sm;	/*!< state machine function	*/
 	int		state;	/*!< state machine encoding	*/
@@ -55,6 +71,7 @@ struct bfa_sm_table {
 };
 #define BFA_SM(_sm)		((bfa_sm_t)(_sm))
 
+<<<<<<< HEAD
 /**
  * State machine with entry actions.
  */
@@ -62,6 +79,12 @@ typedef void (*bfa_fsm_t)(void *fsm, int event);
 
 /**
  * oc - object class eg. bfa_ioc
+=======
+/* State machine with entry actions. */
+typedef void (*bfa_fsm_t)(void *fsm, int event);
+
+/* oc - object class eg. bfa_ioc
+>>>>>>> refs/remotes/origin/master
  * st - state, eg. reset
  * otype - object type, eg. struct bfa_ioc
  * etype - object type, eg. enum ioc_event
@@ -90,9 +113,13 @@ bfa_sm_to_state(const struct bfa_sm_table *smt, bfa_sm_t sm)
 	return smt[i].state;
 }
 
+<<<<<<< HEAD
 /**
  * @ Generic wait counter.
  */
+=======
+/* Generic wait counter. */
+>>>>>>> refs/remotes/origin/master
 
 typedef void (*bfa_wc_resume_t) (void *cbarg);
 
@@ -116,9 +143,13 @@ bfa_wc_down(struct bfa_wc *wc)
 		wc->wc_resume(wc->wc_cbarg);
 }
 
+<<<<<<< HEAD
 /**
  * Initialize a waiting counter.
  */
+=======
+/* Initialize a waiting counter. */
+>>>>>>> refs/remotes/origin/master
 static inline void
 bfa_wc_init(struct bfa_wc *wc, bfa_wc_resume_t wc_resume, void *wc_cbarg)
 {
@@ -128,9 +159,13 @@ bfa_wc_init(struct bfa_wc *wc, bfa_wc_resume_t wc_resume, void *wc_cbarg)
 	bfa_wc_up(wc);
 }
 
+<<<<<<< HEAD
 /**
  * Wait for counter to reach zero
  */
+=======
+/* Wait for counter to reach zero */
+>>>>>>> refs/remotes/origin/master
 static inline void
 bfa_wc_wait(struct bfa_wc *wc)
 {

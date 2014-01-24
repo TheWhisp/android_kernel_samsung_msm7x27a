@@ -47,6 +47,7 @@ struct hgpk_data {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define hgpk_dbg(psmouse, format, arg...)		\
 	dev_dbg(&(psmouse)->ps2dev.serio->dev, format, ## arg)
 #define hgpk_err(psmouse, format, arg...)		\
@@ -60,6 +61,8 @@ struct hgpk_data {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MOUSE_PS2_OLPC
 void hgpk_module_init(void);
 int hgpk_detect(struct psmouse *psmouse, bool set_properties);

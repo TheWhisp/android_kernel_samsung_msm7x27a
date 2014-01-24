@@ -35,17 +35,24 @@
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/processor.h>
 #include <asm/mmu_context.h>
 #include <asm/syscalls.h>
 #include <asm/fpu.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/traps.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/traps.h>
+>>>>>>> refs/remotes/origin/master
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/syscalls.h>
@@ -529,7 +536,11 @@ asmlinkage long long do_syscall_trace_enter(struct pt_regs *regs)
 {
 	long long ret = 0;
 
+<<<<<<< HEAD
 	secure_computing(regs->regs[9]);
+=======
+	secure_computing_strict(regs->regs[9]);
+>>>>>>> refs/remotes/origin/master
 
 	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
 	    tracehook_report_syscall_entry(regs))
@@ -544,6 +555,7 @@ asmlinkage long long do_syscall_trace_enter(struct pt_regs *regs)
 		trace_sys_enter(regs, regs->regs[9]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(current->audit_context))
 		audit_syscall_entry(audit_arch(), regs->regs[1],
 				    regs->regs[2], regs->regs[3],
@@ -553,6 +565,11 @@ asmlinkage long long do_syscall_trace_enter(struct pt_regs *regs)
 			    regs->regs[2], regs->regs[3],
 			    regs->regs[4], regs->regs[5]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	audit_syscall_entry(audit_arch(), regs->regs[1],
+			    regs->regs[2], regs->regs[3],
+			    regs->regs[4], regs->regs[5]);
+>>>>>>> refs/remotes/origin/master
 
 	return ret ?: regs->regs[9];
 }
@@ -562,12 +579,16 @@ asmlinkage void do_syscall_trace_leave(struct pt_regs *regs)
 	int step;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(current->audit_context))
 		audit_syscall_exit(AUDITSC_RESULT(regs->regs[9]),
 				   regs->regs[9]);
 =======
 	audit_syscall_exit(regs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	audit_syscall_exit(regs);
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
 		trace_sys_exit(regs, regs->regs[9]);

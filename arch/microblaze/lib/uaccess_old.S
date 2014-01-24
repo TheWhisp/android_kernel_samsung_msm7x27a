@@ -11,9 +11,13 @@
 #include <linux/errno.h>
 #include <linux/linkage.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/page.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/page.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * int __strncpy_user(char *to, char *from, int len);
@@ -38,6 +42,7 @@ __strncpy_user:
 	 * r4 - temp val
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	addik	r3,r7,0		/* temp_count = len */
 	beqi	r3,3f
 =======
@@ -55,6 +60,20 @@ __strncpy_user:
 	bneid	r4,1b
 	addik	r6,r6,1		/* delay slot */
 	addik	r3,r3,1		/* undo "temp_count--" */
+=======
+	beqid	r7,3f
+	addik	r3,r7,0		/* temp_count = len */
+1:
+	lbu	r4,r6,r0
+	beqid	r4,2f
+	sb	r4,r5,r0
+
+	addik	r5,r5,1
+	addik	r6,r6,1		/* delay slot */
+
+	addik	r3,r3,-1
+	bnei	r3,1b		/* break on len */
+>>>>>>> refs/remotes/origin/master
 2:
 	rsubk	r3,r3,r7	/* temp_count = len - temp_count */
 3:
@@ -86,12 +105,17 @@ __strncpy_user:
 .align 4;
 __strnlen_user:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	addik	r3,r6,0
 	beqi	r3,3f
 =======
 	beqid	r6,3f
 	addik	r3,r6,0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	beqid	r6,3f
+	addik	r3,r6,0
+>>>>>>> refs/remotes/origin/master
 1:
 	lbu	r4,r5,r0
 	beqid	r4,2f		/* break on NUL */
@@ -117,7 +141,10 @@ __strnlen_user:
 	.word	1b,4b
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Loop unrolling for __copy_tofrom_user */
 #define COPY(offset)	\
 1:	lwi	r4 , r6, 0x0000 + offset;	\
@@ -161,7 +188,10 @@ __strnlen_user:
 	COPY(0x40 + offset);\
 	COPY(0x60 + offset);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * int __copy_tofrom_user(char *to, char *from, int len)
  * Return:
@@ -180,6 +210,7 @@ __copy_tofrom_user:
 	 * r4 - tempval
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	beqid	r7, 3f /* zero size is not likely */
 	andi	r3, r7, 0x3 /* filter add count */
 	bneid	r3, 4f /* if is odd value then byte copying */
@@ -194,6 +225,8 @@ __copy_tofrom_user:
 	addik	r7, r7, -4
 	bneid	r7, 5b
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	beqid	r7, 0f /* zero size is not likely */
 	or	r3, r5, r6 /* find if is any to/from unaligned */
 	or	r3, r3, r7 /* find if count is unaligned */
@@ -209,11 +242,15 @@ w1:	lw	r4, r6, r3 /* at least one 4 byte copy */
 w2:	sw	r4, r5, r3
 	addik	r7, r7, -4
 	bneid	r7, w1
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	addik	r3, r3, 4
 	addik	r3, r7, 0
 	rtsd	r15, 8
 	nop
+<<<<<<< HEAD
 <<<<<<< HEAD
 4:	or	r3, r0, r0
 1:	lbu	r4,r6,r3
@@ -223,6 +260,8 @@ w2:	sw	r4, r5, r3
 	addik	r3,r3,1		/* delay slot */
 3:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.section	__ex_table,"a"
 	.word	w1, 0f;
@@ -297,7 +336,10 @@ bu2:	sb	r4,r5,r3
 	bneid	r7,bu1
 	addik	r3,r3,1		/* delay slot */
 0:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	addik	r3,r7,0
 	rtsd	r15,8
 	nop
@@ -305,9 +347,15 @@ bu2:	sb	r4,r5,r3
 
 	.section	__ex_table,"a"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.word	1b,3b,2b,3b,5b,3b,6b,3b
 =======
 	.word	bu1, 0b;
 	.word	bu2, 0b;
 	.text
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.word	bu1, 0b;
+	.word	bu2, 0b;
+	.text
+>>>>>>> refs/remotes/origin/master

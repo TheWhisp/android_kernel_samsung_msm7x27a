@@ -11,9 +11,13 @@
 #include <linux/irqnr.h>
 #include <asm/cputime.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/tick.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/tick.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifndef arch_irq_stat_cpu
 #define arch_irq_stat_cpu(cpu) 0
@@ -22,9 +26,12 @@
 #define arch_irq_stat() 0
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef arch_idle_time
 #define arch_idle_time(cpu) 0
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef arch_idle_time
 
@@ -82,7 +89,10 @@ static u64 get_iowait_time(int cpu)
 	return iowait;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static int show_stat(struct seq_file *p, void *v)
@@ -90,12 +100,17 @@ static int show_stat(struct seq_file *p, void *v)
 	int i, j;
 	unsigned long jif;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cputime64_t user, nice, system, idle, iowait, irq, softirq, steal;
 	cputime64_t guest, guest_nice;
 =======
 	u64 user, nice, system, idle, iowait, irq, softirq, steal;
 	u64 guest, guest_nice;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 user, nice, system, idle, iowait, irq, softirq, steal;
+	u64 guest, guest_nice;
+>>>>>>> refs/remotes/origin/master
 	u64 sum = 0;
 	u64 sum_softirq = 0;
 	unsigned int per_softirq_sums[NR_SOFTIRQS] = {0};
@@ -103,16 +118,22 @@ static int show_stat(struct seq_file *p, void *v)
 
 	user = nice = system = idle = iowait =
 <<<<<<< HEAD
+<<<<<<< HEAD
 		irq = softirq = steal = cputime64_zero;
 	guest = guest_nice = cputime64_zero;
 =======
 		irq = softirq = steal = 0;
 	guest = guest_nice = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		irq = softirq = steal = 0;
+	guest = guest_nice = 0;
+>>>>>>> refs/remotes/origin/master
 	getboottime(&boottime);
 	jif = boottime.tv_sec;
 
 	for_each_possible_cpu(i) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		user = cputime64_add(user, kstat_cpu(i).cpustat.user);
 		nice = cputime64_add(nice, kstat_cpu(i).cpustat.nice);
@@ -127,6 +148,8 @@ static int show_stat(struct seq_file *p, void *v)
 		guest_nice = cputime64_add(guest_nice,
 			kstat_cpu(i).cpustat.guest_nice);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		user += kcpustat_cpu(i).cpustat[CPUTIME_USER];
 		nice += kcpustat_cpu(i).cpustat[CPUTIME_NICE];
 		system += kcpustat_cpu(i).cpustat[CPUTIME_SYSTEM];
@@ -137,7 +160,10 @@ static int show_stat(struct seq_file *p, void *v)
 		steal += kcpustat_cpu(i).cpustat[CPUTIME_STEAL];
 		guest += kcpustat_cpu(i).cpustat[CPUTIME_GUEST];
 		guest_nice += kcpustat_cpu(i).cpustat[CPUTIME_GUEST_NICE];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		sum += kstat_cpu_irqs_sum(i);
 		sum += arch_irq_stat_cpu(i);
 
@@ -150,6 +176,7 @@ static int show_stat(struct seq_file *p, void *v)
 	}
 	sum += arch_irq_stat();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	seq_printf(p, "cpu  %llu %llu %llu %llu %llu %llu %llu %llu %llu "
 		"%llu\n",
@@ -192,6 +219,8 @@ static int show_stat(struct seq_file *p, void *v)
 			(unsigned long long)cputime64_to_clock_t(guest),
 			(unsigned long long)cputime64_to_clock_t(guest_nice));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	seq_puts(p, "cpu ");
 	seq_put_decimal_ull(p, ' ', cputime64_to_clock_t(user));
 	seq_put_decimal_ull(p, ' ', cputime64_to_clock_t(nice));
@@ -229,17 +258,24 @@ static int show_stat(struct seq_file *p, void *v)
 		seq_put_decimal_ull(p, ' ', cputime64_to_clock_t(guest));
 		seq_put_decimal_ull(p, ' ', cputime64_to_clock_t(guest_nice));
 		seq_putc(p, '\n');
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	seq_printf(p, "intr %llu", (unsigned long long)sum);
 
 	/* sum again ? it could be updated? */
 	for_each_irq_nr(j)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		seq_printf(p, " %u", kstat_irqs(j));
 =======
 		seq_put_decimal_ull(p, ' ', kstat_irqs(j));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		seq_put_decimal_ull(p, ' ', kstat_irqs(j));
+>>>>>>> refs/remotes/origin/master
 
 	seq_printf(p,
 		"\nctxt %llu\n"
@@ -257,10 +293,14 @@ static int show_stat(struct seq_file *p, void *v)
 
 	for (i = 0; i < NR_SOFTIRQS; i++)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		seq_printf(p, " %u", per_softirq_sums[i]);
 =======
 		seq_put_decimal_ull(p, ' ', per_softirq_sums[i]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		seq_put_decimal_ull(p, ' ', per_softirq_sums[i]);
+>>>>>>> refs/remotes/origin/master
 	seq_putc(p, '\n');
 
 	return 0;
@@ -269,20 +309,30 @@ static int show_stat(struct seq_file *p, void *v)
 static int stat_open(struct inode *inode, struct file *file)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned size = 4096 * (1 + num_possible_cpus() / 32);
 =======
 	unsigned size = 1024 + 128 * num_possible_cpus();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	size_t size = 1024 + 128 * num_possible_cpus();
+>>>>>>> refs/remotes/origin/master
 	char *buf;
 	struct seq_file *m;
 	int res;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	/* minimum size to display an interrupt count : 2 bytes */
 	size += 2 * nr_irqs;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* minimum size to display an interrupt count : 2 bytes */
+	size += 2 * nr_irqs;
+
+>>>>>>> refs/remotes/origin/master
 	/* don't ask for more than the kmalloc() max size */
 	if (size > KMALLOC_MAX_SIZE)
 		size = KMALLOC_MAX_SIZE;
@@ -295,10 +345,14 @@ static int stat_open(struct inode *inode, struct file *file)
 		m = file->private_data;
 		m->buf = buf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		m->size = size;
 =======
 		m->size = ksize(buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		m->size = ksize(buf);
+>>>>>>> refs/remotes/origin/master
 	} else
 		kfree(buf);
 	return res;

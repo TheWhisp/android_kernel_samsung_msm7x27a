@@ -14,6 +14,7 @@
 #include <linux/bitops.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/intrinsics.h>
 #include <asm/system.h>
@@ -21,6 +22,10 @@
 #include <linux/atomic.h>
 #include <asm/intrinsics.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+#include <asm/intrinsics.h>
+>>>>>>> refs/remotes/origin/master
 
 #define arch_spin_lock_init(x)			((x)->lock = 0)
 
@@ -108,6 +113,14 @@ static inline int __ticket_spin_is_contended(arch_spinlock_t *lock)
 	return ((tmp - (tmp >> TICKET_SHIFT)) & TICKET_MASK) > 1;
 }
 
+<<<<<<< HEAD
+=======
+static __always_inline int arch_spin_value_unlocked(arch_spinlock_t lock)
+{
+	return !(((lock.lock >> TICKET_SHIFT) ^ lock.lock) & TICKET_MASK);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline int arch_spin_is_locked(arch_spinlock_t *lock)
 {
 	return __ticket_spin_is_locked(lock);

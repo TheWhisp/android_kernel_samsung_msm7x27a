@@ -21,10 +21,15 @@
 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/opcodes.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/opcodes.h>
+
+>>>>>>> refs/remotes/origin/master
 /* This is the kernel's entry point into the floating point emulator.
 It is called from the kernel with code similar to this:
 
@@ -87,18 +92,24 @@ nwfpe_enter:
 emulate:
 	ldr	r1, [sp, #S_PSR]	@ fetch the PSR
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bl	checkCondition		@ check the condition
 	cmp	r0, #0			@ r0 = 0 ==> condition failed
 
 	@ if condition code failed to match, next insn
 	beq	next			@ get the next instruction;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bl	arm_check_condition	@ check the condition
 	cmp	r0, #ARM_OPCODE_CONDTEST_PASS	@ condition passed?
 
 	@ if condition code failed to match, next insn
 	bne	next			@ get the next instruction;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mov	r0, r6			@ prepare for EmulateAll()
 	bl	EmulateAll		@ emulate the instruction

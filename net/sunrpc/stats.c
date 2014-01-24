@@ -23,9 +23,13 @@
 #include <linux/sunrpc/svcsock.h>
 #include <linux/sunrpc/metrics.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/rcupdate.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "netns.h"
 
@@ -67,7 +71,11 @@ static int rpc_proc_show(struct seq_file *seq, void *v) {
 
 static int rpc_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, rpc_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, rpc_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations rpc_proc_fops = {
@@ -138,6 +146,7 @@ EXPORT_SYMBOL_GPL(rpc_free_iostats);
  * rpc_count_iostats - tally up per-task stats
  * @task: completed rpc_task
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * Relies on the caller for serialization.
  */
@@ -153,6 +162,8 @@ void rpc_count_iostats(struct rpc_task *task)
 
 	stats = task->tk_client->cl_metrics;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @stats: array of stat structures
  *
  * Relies on the caller for serialization.
@@ -166,7 +177,10 @@ void rpc_count_iostats(const struct rpc_task *task, struct rpc_iostats *stats)
 	if (!stats || !req)
 		return;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	op_metrics = &stats[task->tk_msg.rpc_proc->p_statidx];
 
 	op_metrics->om_ops++;
@@ -185,9 +199,13 @@ void rpc_count_iostats(const struct rpc_task *task, struct rpc_iostats *stats)
 	op_metrics->om_execute = ktime_add(op_metrics->om_execute, delta);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(rpc_count_iostats);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(rpc_count_iostats);
+>>>>>>> refs/remotes/origin/master
 
 static void _print_name(struct seq_file *seq, unsigned int op,
 			struct rpc_procinfo *procs)
@@ -204,10 +222,14 @@ void rpc_print_iostats(struct seq_file *seq, struct rpc_clnt *clnt)
 {
 	struct rpc_iostats *stats = clnt->cl_metrics;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct rpc_xprt *xprt = clnt->cl_xprt;
 =======
 	struct rpc_xprt *xprt;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct rpc_xprt *xprt;
+>>>>>>> refs/remotes/origin/master
 	unsigned int op, maxproc = clnt->cl_maxproc;
 
 	if (!stats)
@@ -215,18 +237,26 @@ void rpc_print_iostats(struct seq_file *seq, struct rpc_clnt *clnt)
 
 	seq_printf(seq, "\tRPC iostats version: %s  ", RPC_IOSTATS_VERS);
 	seq_printf(seq, "p/v: %u/%u (%s)\n",
+<<<<<<< HEAD
 			clnt->cl_prog, clnt->cl_vers, clnt->cl_protname);
 
 <<<<<<< HEAD
 	if (xprt)
 		xprt->ops->print_stats(xprt, seq);
 =======
+=======
+			clnt->cl_prog, clnt->cl_vers, clnt->cl_program->name);
+
+>>>>>>> refs/remotes/origin/master
 	rcu_read_lock();
 	xprt = rcu_dereference(clnt->cl_xprt);
 	if (xprt)
 		xprt->ops->print_stats(xprt, seq);
 	rcu_read_unlock();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	seq_printf(seq, "\tper-op statistics\n");
 	for (op = 0; op < maxproc; op++) {
@@ -250,24 +280,34 @@ EXPORT_SYMBOL_GPL(rpc_print_iostats);
  */
 static inline struct proc_dir_entry *
 <<<<<<< HEAD
+<<<<<<< HEAD
 do_register(const char *name, void *data, const struct file_operations *fops)
 =======
 do_register(struct net *net, const char *name, void *data,
 	    const struct file_operations *fops)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+do_register(struct net *net, const char *name, void *data,
+	    const struct file_operations *fops)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sunrpc_net *sn;
 
 	dprintk("RPC:       registering /proc/net/rpc/%s\n", name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sn = net_generic(&init_net, sunrpc_net_id);
 =======
 	sn = net_generic(net, sunrpc_net_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sn = net_generic(net, sunrpc_net_id);
+>>>>>>> refs/remotes/origin/master
 	return proc_create_data(name, 0, sn->proc_net_rpc, fops, data);
 }
 
 struct proc_dir_entry *
+<<<<<<< HEAD
 <<<<<<< HEAD
 rpc_proc_register(struct rpc_stat *statp)
 {
@@ -277,10 +317,16 @@ rpc_proc_register(struct net *net, struct rpc_stat *statp)
 {
 	return do_register(net, statp->program->name, statp, &rpc_proc_fops);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+rpc_proc_register(struct net *net, struct rpc_stat *statp)
+{
+	return do_register(net, statp->program->name, statp, &rpc_proc_fops);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(rpc_proc_register);
 
 void
+<<<<<<< HEAD
 <<<<<<< HEAD
 rpc_proc_unregister(const char *name)
 {
@@ -288,17 +334,23 @@ rpc_proc_unregister(const char *name)
 
 	sn = net_generic(&init_net, sunrpc_net_id);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 rpc_proc_unregister(struct net *net, const char *name)
 {
 	struct sunrpc_net *sn;
 
 	sn = net_generic(net, sunrpc_net_id);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	remove_proc_entry(name, sn->proc_net_rpc);
 }
 EXPORT_SYMBOL_GPL(rpc_proc_unregister);
 
 struct proc_dir_entry *
+<<<<<<< HEAD
 <<<<<<< HEAD
 svc_proc_register(struct svc_stat *statp, const struct file_operations *fops)
 {
@@ -308,10 +360,16 @@ svc_proc_register(struct net *net, struct svc_stat *statp, const struct file_ope
 {
 	return do_register(net, statp->program->pg_name, statp, fops);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+svc_proc_register(struct net *net, struct svc_stat *statp, const struct file_operations *fops)
+{
+	return do_register(net, statp->program->pg_name, statp, fops);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(svc_proc_register);
 
 void
+<<<<<<< HEAD
 <<<<<<< HEAD
 svc_proc_unregister(const char *name)
 {
@@ -319,12 +377,17 @@ svc_proc_unregister(const char *name)
 
 	sn = net_generic(&init_net, sunrpc_net_id);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 svc_proc_unregister(struct net *net, const char *name)
 {
 	struct sunrpc_net *sn;
 
 	sn = net_generic(net, sunrpc_net_id);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	remove_proc_entry(name, sn->proc_net_rpc);
 }
 EXPORT_SYMBOL_GPL(svc_proc_unregister);

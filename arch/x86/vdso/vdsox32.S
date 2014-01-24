@@ -1,6 +1,9 @@
 #include <asm/page_types.h>
 #include <linux/linkage.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 __PAGE_ALIGNED_DATA
 

@@ -1,6 +1,11 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2006, 2007, 2008, 2009, 2010 QLogic Corporation.
  * All rights reserved.
+=======
+ * Copyright (c) 2012 Intel Corporation.  All rights reserved.
+ * Copyright (c) 2006 - 2012 QLogic Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2005, 2006 PathScale, Inc. All rights reserved.
  *
  * This software is available to you under a choice of one of two
@@ -49,6 +54,21 @@ static int reply(struct ib_smp *smp)
 	return IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_REPLY;
 }
 
+<<<<<<< HEAD
+=======
+static int reply_failure(struct ib_smp *smp)
+{
+	/*
+	 * The verbs framework will handle the directed/LID route
+	 * packet changes.
+	 */
+	smp->method = IB_MGMT_METHOD_GET_RESP;
+	if (smp->mgmt_class == IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE)
+		smp->status |= IB_SMP_DIRECTION;
+	return IB_MAD_RESULT_FAILURE | IB_MAD_RESULT_REPLY;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void qib_send_trap(struct qib_ibport *ibp, void *data, unsigned len)
 {
 	struct ib_mad_send_buf *send_buf;
@@ -90,6 +110,7 @@ static void qib_send_trap(struct qib_ibport *ibp, void *data, unsigned len)
 	if (!ibp->sm_ah) {
 		if (ibp->sm_lid != be16_to_cpu(IB_LID_PERMISSIVE)) {
 			struct ib_ah *ah;
+<<<<<<< HEAD
 			struct ib_ah_attr attr;
 
 			memset(&attr, 0, sizeof attr);
@@ -98,6 +119,12 @@ static void qib_send_trap(struct qib_ibport *ibp, void *data, unsigned len)
 			ah = ib_create_ah(ibp->qp0->ibqp.pd, &attr);
 			if (IS_ERR(ah))
 				ret = -EINVAL;
+=======
+
+			ah = qib_create_qp0_ah(ibp, ibp->sm_lid);
+			if (IS_ERR(ah))
+				ret = PTR_ERR(ah);
+>>>>>>> refs/remotes/origin/master
 			else {
 				send_buf->ah = ah;
 				ibp->sm_ah = to_iah(ah);
@@ -396,6 +423,10 @@ static int get_linkdowndefaultstate(struct qib_pportdata *ppd)
 
 static int check_mkey(struct qib_ibport *ibp, struct ib_smp *smp, int mad_flags)
 {
+<<<<<<< HEAD
+=======
+	int valid_mkey = 0;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	/* Is the mkey in the process of expiring? */
@@ -406,6 +437,7 @@ static int check_mkey(struct qib_ibport *ibp, struct ib_smp *smp, int mad_flags)
 		ibp->mkeyprot = 0;
 	}
 
+<<<<<<< HEAD
 	/* M_Key checking depends on Portinfo:M_Key_protect_bits */
 	if ((mad_flags & IB_MAD_IGNORE_MKEY) == 0 && ibp->mkey != 0 &&
 	    ibp->mkey != smp->mkey &&
@@ -423,6 +455,38 @@ static int check_mkey(struct qib_ibport *ibp, struct ib_smp *smp, int mad_flags)
 	} else if (ibp->mkey_lease_timeout)
 		ibp->mkey_lease_timeout = 0;
 
+=======
+	if ((mad_flags & IB_MAD_IGNORE_MKEY) ||  ibp->mkey == 0 ||
+	    ibp->mkey == smp->mkey)
+		valid_mkey = 1;
+
+	/* Unset lease timeout on any valid Get/Set/TrapRepress */
+	if (valid_mkey && ibp->mkey_lease_timeout &&
+	    (smp->method == IB_MGMT_METHOD_GET ||
+	     smp->method == IB_MGMT_METHOD_SET ||
+	     smp->method == IB_MGMT_METHOD_TRAP_REPRESS))
+		ibp->mkey_lease_timeout = 0;
+
+	if (!valid_mkey) {
+		switch (smp->method) {
+		case IB_MGMT_METHOD_GET:
+			/* Bad mkey not a violation below level 2 */
+			if (ibp->mkeyprot < 2)
+				break;
+		case IB_MGMT_METHOD_SET:
+		case IB_MGMT_METHOD_TRAP_REPRESS:
+			if (ibp->mkey_violations != 0xFFFF)
+				++ibp->mkey_violations;
+			if (!ibp->mkey_lease_timeout && ibp->mkey_lease_period)
+				ibp->mkey_lease_timeout = jiffies +
+					ibp->mkey_lease_period * HZ;
+			/* Generate a trap notice. */
+			qib_bad_mkey(ibp, smp);
+			ret = 1;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -434,9 +498,12 @@ static int subn_get_portinfo(struct ib_smp *smp, struct ib_device *ibdev,
 	struct qib_ibport *ibp;
 	struct ib_port_info *pip = (struct ib_port_info *)smp->data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 lid;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 mtu;
 	int ret;
 	u32 state;
@@ -453,8 +520,15 @@ static int subn_get_portinfo(struct ib_smp *smp, struct ib_device *ibdev,
 		if (port_num != port) {
 			ibp = to_iport(ibdev, port_num);
 			ret = check_mkey(ibp, smp, 0);
+<<<<<<< HEAD
 			if (ret)
 				goto bail;
+=======
+			if (ret) {
+				ret = IB_MAD_RESULT_FAILURE;
+				goto bail;
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -473,11 +547,15 @@ static int subn_get_portinfo(struct ib_smp *smp, struct ib_device *ibdev,
 		pip->mkey = ibp->mkey;
 	pip->gid_prefix = ibp->gid_prefix;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	lid = ppd->lid;
 	pip->lid = lid ? cpu_to_be16(lid) : IB_LID_PERMISSIVE;
 =======
 	pip->lid = cpu_to_be16(ppd->lid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pip->lid = cpu_to_be16(ppd->lid);
+>>>>>>> refs/remotes/origin/master
 	pip->sm_lid = cpu_to_be16(ibp->sm_lid);
 	pip->cap_mask = cpu_to_be32(ibp->port_cap_flags);
 	/* pip->diag_code; */
@@ -640,7 +718,11 @@ static int subn_set_portinfo(struct ib_smp *smp, struct ib_device *ibdev,
 	struct qib_devdata *dd;
 	struct qib_pportdata *ppd;
 	struct qib_ibport *ibp;
+<<<<<<< HEAD
 	char clientrereg = 0;
+=======
+	u8 clientrereg = (pip->clientrereg_resv_subnetto & 0x80);
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	u16 lid, smlid;
 	u8 lwe;
@@ -790,12 +872,15 @@ static int subn_set_portinfo(struct ib_smp *smp, struct ib_device *ibdev,
 
 	ibp->subnet_timeout = pip->clientrereg_resv_subnetto & 0x1F;
 
+<<<<<<< HEAD
 	if (pip->clientrereg_resv_subnetto & 0x80) {
 		clientrereg = 1;
 		event.event = IB_EVENT_CLIENT_REREGISTER;
 		ib_dispatch_event(&event);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Do the port state change now that the other link parameters
 	 * have been set.
@@ -853,10 +938,22 @@ static int subn_set_portinfo(struct ib_smp *smp, struct ib_device *ibdev,
 		smp->status |= IB_SMP_INVALID_FIELD;
 	}
 
+<<<<<<< HEAD
 	ret = subn_get_portinfo(smp, ibdev, port);
 
 	if (clientrereg)
 		pip->clientrereg_resv_subnetto |= 0x80;
+=======
+	if (clientrereg) {
+		event.event = IB_EVENT_CLIENT_REREGISTER;
+		ib_dispatch_event(&event);
+	}
+
+	ret = subn_get_portinfo(smp, ibdev, port);
+
+	/* restore re-reg bit per o14-12.2.1 */
+	pip->clientrereg_resv_subnetto |= clientrereg;
+>>>>>>> refs/remotes/origin/master
 
 	goto get_only;
 
@@ -1133,22 +1230,29 @@ static int subn_trap_repress(struct ib_smp *smp, struct ib_device *ibdev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pma_get_classportinfo(struct ib_perf *pmp,
 				 struct ib_device *ibdev)
 {
 	struct ib_pma_classportinfo *p =
 		(struct ib_pma_classportinfo *)pmp->data;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int pma_get_classportinfo(struct ib_pma_mad *pmp,
 				 struct ib_device *ibdev)
 {
 	struct ib_class_port_info *p =
 		(struct ib_class_port_info *)pmp->data;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct qib_devdata *dd = dd_from_ibdev(ibdev);
 
 	memset(pmp->data, 0, sizeof(pmp->data));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (pmp->attr_mod != 0)
 		pmp->status |= IB_SMP_INVALID_FIELD;
@@ -1156,15 +1260,23 @@ static int pma_get_classportinfo(struct ib_pma_mad *pmp,
 	if (pmp->mad_hdr.attr_mod != 0)
 		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pmp->mad_hdr.attr_mod != 0)
+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
+>>>>>>> refs/remotes/origin/master
 
 	/* Note that AllPortSelect is not valid */
 	p->base_version = 1;
 	p->class_version = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	p->cap_mask = IB_PMA_CLASS_CAP_EXT_WIDTH;
 =======
 	p->capability_mask = IB_PMA_CLASS_CAP_EXT_WIDTH;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p->capability_mask = IB_PMA_CLASS_CAP_EXT_WIDTH;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Set the most significant bit of CM2 to indicate support for
 	 * congestion statistics
@@ -1179,10 +1291,14 @@ static int pma_get_classportinfo(struct ib_pma_mad *pmp,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pma_get_portsamplescontrol(struct ib_perf *pmp,
 =======
 static int pma_get_portsamplescontrol(struct ib_pma_mad *pmp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pma_get_portsamplescontrol(struct ib_pma_mad *pmp,
+>>>>>>> refs/remotes/origin/master
 				      struct ib_device *ibdev, u8 port)
 {
 	struct ib_pma_portsamplescontrol *p =
@@ -1198,12 +1314,17 @@ static int pma_get_portsamplescontrol(struct ib_pma_mad *pmp,
 
 	p->port_select = port_select;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pmp->attr_mod != 0 || port_select != port) {
 		pmp->status |= IB_SMP_INVALID_FIELD;
 =======
 	if (pmp->mad_hdr.attr_mod != 0 || port_select != port) {
 		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pmp->mad_hdr.attr_mod != 0 || port_select != port) {
+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
+>>>>>>> refs/remotes/origin/master
 		goto bail;
 	}
 	spin_lock_irqsave(&ibp->lock, flags);
@@ -1226,10 +1347,14 @@ bail:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pma_set_portsamplescontrol(struct ib_perf *pmp,
 =======
 static int pma_set_portsamplescontrol(struct ib_pma_mad *pmp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pma_set_portsamplescontrol(struct ib_pma_mad *pmp,
+>>>>>>> refs/remotes/origin/master
 				      struct ib_device *ibdev, u8 port)
 {
 	struct ib_pma_portsamplescontrol *p =
@@ -1243,12 +1368,17 @@ static int pma_set_portsamplescontrol(struct ib_pma_mad *pmp,
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pmp->attr_mod != 0 || p->port_select != port) {
 		pmp->status |= IB_SMP_INVALID_FIELD;
 =======
 	if (pmp->mad_hdr.attr_mod != 0 || p->port_select != port) {
 		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pmp->mad_hdr.attr_mod != 0 || p->port_select != port) {
+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
+>>>>>>> refs/remotes/origin/master
 		ret = reply((struct ib_smp *) pmp);
 		goto bail;
 	}
@@ -1364,10 +1494,14 @@ static u64 get_cache_hw_sample_counters(struct qib_pportdata *ppd,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pma_get_portsamplesresult(struct ib_perf *pmp,
 =======
 static int pma_get_portsamplesresult(struct ib_pma_mad *pmp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pma_get_portsamplesresult(struct ib_pma_mad *pmp,
+>>>>>>> refs/remotes/origin/master
 				     struct ib_device *ibdev, u8 port)
 {
 	struct ib_pma_portsamplesresult *p =
@@ -1407,10 +1541,14 @@ static int pma_get_portsamplesresult(struct ib_pma_mad *pmp,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pma_get_portsamplesresult_ext(struct ib_perf *pmp,
 =======
 static int pma_get_portsamplesresult_ext(struct ib_pma_mad *pmp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pma_get_portsamplesresult_ext(struct ib_pma_mad *pmp,
+>>>>>>> refs/remotes/origin/master
 					 struct ib_device *ibdev, u8 port)
 {
 	struct ib_pma_portsamplesresult_ext *p =
@@ -1453,10 +1591,14 @@ static int pma_get_portsamplesresult_ext(struct ib_pma_mad *pmp,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pma_get_portcounters(struct ib_perf *pmp,
 =======
 static int pma_get_portcounters(struct ib_pma_mad *pmp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pma_get_portcounters(struct ib_pma_mad *pmp,
+>>>>>>> refs/remotes/origin/master
 				struct ib_device *ibdev, u8 port)
 {
 	struct ib_pma_portcounters *p = (struct ib_pma_portcounters *)
@@ -1491,12 +1633,17 @@ static int pma_get_portcounters(struct ib_pma_mad *pmp,
 
 	p->port_select = port_select;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pmp->attr_mod != 0 || port_select != port)
 		pmp->status |= IB_SMP_INVALID_FIELD;
 =======
 	if (pmp->mad_hdr.attr_mod != 0 || port_select != port)
 		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pmp->mad_hdr.attr_mod != 0 || port_select != port)
+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
+>>>>>>> refs/remotes/origin/master
 
 	if (cntrs.symbol_error_counter > 0xFFFFUL)
 		p->symbol_error_counter = cpu_to_be16(0xFFFF);
@@ -1532,10 +1679,14 @@ static int pma_get_portcounters(struct ib_pma_mad *pmp,
 	if (cntrs.excessive_buffer_overrun_errors > 0xFUL)
 		cntrs.excessive_buffer_overrun_errors = 0xFUL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	p->lli_ebor_errors = (cntrs.local_link_integrity_errors << 4) |
 =======
 	p->link_overrun_errors = (cntrs.local_link_integrity_errors << 4) |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p->link_overrun_errors = (cntrs.local_link_integrity_errors << 4) |
+>>>>>>> refs/remotes/origin/master
 		cntrs.excessive_buffer_overrun_errors;
 	if (cntrs.vl15_dropped > 0xFFFFUL)
 		p->vl15_dropped = cpu_to_be16(0xFFFF);
@@ -1564,10 +1715,14 @@ static int pma_get_portcounters(struct ib_pma_mad *pmp,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pma_get_portcounters_cong(struct ib_perf *pmp,
 =======
 static int pma_get_portcounters_cong(struct ib_pma_mad *pmp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pma_get_portcounters_cong(struct ib_pma_mad *pmp,
+>>>>>>> refs/remotes/origin/master
 				     struct ib_device *ibdev, u8 port)
 {
 	/* Congestion PMA packets start at offset 24 not 64 */
@@ -1578,10 +1733,14 @@ static int pma_get_portcounters_cong(struct ib_pma_mad *pmp,
 	struct qib_pportdata *ppd = ppd_from_ibp(ibp);
 	struct qib_devdata *dd = dd_from_ppd(ppd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 port_select = be32_to_cpu(pmp->attr_mod) & 0xFF;
 =======
 	u32 port_select = be32_to_cpu(pmp->mad_hdr.attr_mod) & 0xFF;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 port_select = be32_to_cpu(pmp->mad_hdr.attr_mod) & 0xFF;
+>>>>>>> refs/remotes/origin/master
 	u64 xmit_wait_counter;
 	unsigned long flags;
 
@@ -1591,6 +1750,7 @@ static int pma_get_portcounters_cong(struct ib_pma_mad *pmp,
 	 */
 	if (!dd->psxmitwait_supported)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pmp->status |= IB_SMP_UNSUP_METH_ATTR;
 	if (port_select != port)
 		pmp->status |= IB_SMP_INVALID_FIELD;
@@ -1599,6 +1759,11 @@ static int pma_get_portcounters_cong(struct ib_pma_mad *pmp,
 	if (port_select != port)
 		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pmp->mad_hdr.status |= IB_SMP_UNSUP_METH_ATTR;
+	if (port_select != port)
+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
+>>>>>>> refs/remotes/origin/master
 
 	qib_get_counters(ppd, &cntrs);
 	spin_lock_irqsave(&ppd->ibport_data.lock, flags);
@@ -1681,10 +1846,14 @@ static int pma_get_portcounters_cong(struct ib_pma_mad *pmp,
 	if (cntrs.excessive_buffer_overrun_errors > 0xFUL)
 		cntrs.excessive_buffer_overrun_errors = 0xFUL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	p->lli_ebor_errors = (cntrs.local_link_integrity_errors << 4) |
 =======
 	p->link_overrun_errors = (cntrs.local_link_integrity_errors << 4) |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p->link_overrun_errors = (cntrs.local_link_integrity_errors << 4) |
+>>>>>>> refs/remotes/origin/master
 		cntrs.excessive_buffer_overrun_errors;
 	if (cntrs.vl15_dropped > 0xFFFFUL)
 		p->vl15_dropped = cpu_to_be16(0xFFFF);
@@ -1695,10 +1864,14 @@ static int pma_get_portcounters_cong(struct ib_pma_mad *pmp,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pma_get_portcounters_ext(struct ib_perf *pmp,
 =======
 static int pma_get_portcounters_ext(struct ib_pma_mad *pmp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pma_get_portcounters_ext(struct ib_pma_mad *pmp,
+>>>>>>> refs/remotes/origin/master
 				    struct ib_device *ibdev, u8 port)
 {
 	struct ib_pma_portcounters_ext *p =
@@ -1712,12 +1885,17 @@ static int pma_get_portcounters_ext(struct ib_pma_mad *pmp,
 
 	p->port_select = port_select;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pmp->attr_mod != 0 || port_select != port) {
 		pmp->status |= IB_SMP_INVALID_FIELD;
 =======
 	if (pmp->mad_hdr.attr_mod != 0 || port_select != port) {
 		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pmp->mad_hdr.attr_mod != 0 || port_select != port) {
+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
+>>>>>>> refs/remotes/origin/master
 		goto bail;
 	}
 
@@ -1743,10 +1921,14 @@ bail:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pma_set_portcounters(struct ib_perf *pmp,
 =======
 static int pma_set_portcounters(struct ib_pma_mad *pmp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pma_set_portcounters(struct ib_pma_mad *pmp,
+>>>>>>> refs/remotes/origin/master
 				struct ib_device *ibdev, u8 port)
 {
 	struct ib_pma_portcounters *p = (struct ib_pma_portcounters *)
@@ -1810,10 +1992,14 @@ static int pma_set_portcounters(struct ib_pma_mad *pmp,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pma_set_portcounters_cong(struct ib_perf *pmp,
 =======
 static int pma_set_portcounters_cong(struct ib_pma_mad *pmp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pma_set_portcounters_cong(struct ib_pma_mad *pmp,
+>>>>>>> refs/remotes/origin/master
 				     struct ib_device *ibdev, u8 port)
 {
 	struct qib_ibport *ibp = to_iport(ibdev, port);
@@ -1821,10 +2007,14 @@ static int pma_set_portcounters_cong(struct ib_pma_mad *pmp,
 	struct qib_devdata *dd = dd_from_ppd(ppd);
 	struct qib_verbs_counters cntrs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 counter_select = (be32_to_cpu(pmp->attr_mod) >> 24) & 0xFF;
 =======
 	u32 counter_select = (be32_to_cpu(pmp->mad_hdr.attr_mod) >> 24) & 0xFF;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 counter_select = (be32_to_cpu(pmp->mad_hdr.attr_mod) >> 24) & 0xFF;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 	unsigned long flags;
 
@@ -1869,10 +2059,14 @@ static int pma_set_portcounters_cong(struct ib_pma_mad *pmp,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pma_set_portcounters_ext(struct ib_perf *pmp,
 =======
 static int pma_set_portcounters_ext(struct ib_pma_mad *pmp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pma_set_portcounters_ext(struct ib_pma_mad *pmp,
+>>>>>>> refs/remotes/origin/master
 				    struct ib_device *ibdev, u8 port)
 {
 	struct ib_pma_portcounters *p = (struct ib_pma_portcounters *)
@@ -1943,6 +2137,10 @@ static int process_subn(struct ib_device *ibdev, int mad_flags,
 		    port_num && port_num <= ibdev->phys_port_cnt &&
 		    port != port_num)
 			(void) check_mkey(to_iport(ibdev, port_num), smp, 0);
+<<<<<<< HEAD
+=======
+		ret = IB_MAD_RESULT_FAILURE;
+>>>>>>> refs/remotes/origin/master
 		goto bail;
 	}
 
@@ -2066,6 +2264,7 @@ static int process_perf(struct ib_device *ibdev, u8 port,
 			struct ib_mad *out_mad)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ib_perf *pmp = (struct ib_perf *)out_mad;
 	int ret;
 
@@ -2073,17 +2272,23 @@ static int process_perf(struct ib_device *ibdev, u8 port,
 	if (pmp->class_version != 1) {
 		pmp->status |= IB_SMP_UNSUP_VERSION;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ib_pma_mad *pmp = (struct ib_pma_mad *)out_mad;
 	int ret;
 
 	*out_mad = *in_mad;
 	if (pmp->mad_hdr.class_version != 1) {
 		pmp->mad_hdr.status |= IB_SMP_UNSUP_VERSION;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = reply((struct ib_smp *) pmp);
 		goto bail;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch (pmp->method) {
 	case IB_MGMT_METHOD_GET:
@@ -2093,6 +2298,11 @@ static int process_perf(struct ib_device *ibdev, u8 port,
 	case IB_MGMT_METHOD_GET:
 		switch (pmp->mad_hdr.attr_id) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	switch (pmp->mad_hdr.method) {
+	case IB_MGMT_METHOD_GET:
+		switch (pmp->mad_hdr.attr_id) {
+>>>>>>> refs/remotes/origin/master
 		case IB_PMA_CLASS_PORT_INFO:
 			ret = pma_get_classportinfo(pmp, ibdev);
 			goto bail;
@@ -2116,20 +2326,28 @@ static int process_perf(struct ib_device *ibdev, u8 port,
 			goto bail;
 		default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pmp->status |= IB_SMP_UNSUP_METH_ATTR;
 =======
 			pmp->mad_hdr.status |= IB_SMP_UNSUP_METH_ATTR;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pmp->mad_hdr.status |= IB_SMP_UNSUP_METH_ATTR;
+>>>>>>> refs/remotes/origin/master
 			ret = reply((struct ib_smp *) pmp);
 			goto bail;
 		}
 
 	case IB_MGMT_METHOD_SET:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		switch (pmp->attr_id) {
 =======
 		switch (pmp->mad_hdr.attr_id) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		switch (pmp->mad_hdr.attr_id) {
+>>>>>>> refs/remotes/origin/master
 		case IB_PMA_PORT_SAMPLES_CONTROL:
 			ret = pma_set_portsamplescontrol(pmp, ibdev, port);
 			goto bail;
@@ -2144,10 +2362,14 @@ static int process_perf(struct ib_device *ibdev, u8 port,
 			goto bail;
 		default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pmp->status |= IB_SMP_UNSUP_METH_ATTR;
 =======
 			pmp->mad_hdr.status |= IB_SMP_UNSUP_METH_ATTR;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pmp->mad_hdr.status |= IB_SMP_UNSUP_METH_ATTR;
+>>>>>>> refs/remotes/origin/master
 			ret = reply((struct ib_smp *) pmp);
 			goto bail;
 		}
@@ -2164,10 +2386,14 @@ static int process_perf(struct ib_device *ibdev, u8 port,
 
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pmp->status |= IB_SMP_UNSUP_METHOD;
 =======
 		pmp->mad_hdr.status |= IB_SMP_UNSUP_METHOD;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pmp->mad_hdr.status |= IB_SMP_UNSUP_METHOD;
+>>>>>>> refs/remotes/origin/master
 		ret = reply((struct ib_smp *) pmp);
 	}
 
@@ -2175,6 +2401,301 @@ bail:
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static int cc_get_classportinfo(struct ib_cc_mad *ccp,
+				struct ib_device *ibdev)
+{
+	struct ib_cc_classportinfo_attr *p =
+		(struct ib_cc_classportinfo_attr *)ccp->mgmt_data;
+
+	memset(ccp->mgmt_data, 0, sizeof(ccp->mgmt_data));
+
+	p->base_version = 1;
+	p->class_version = 1;
+	p->cap_mask = 0;
+
+	/*
+	 * Expected response time is 4.096 usec. * 2^18 == 1.073741824 sec.
+	 */
+	p->resp_time_value = 18;
+
+	return reply((struct ib_smp *) ccp);
+}
+
+static int cc_get_congestion_info(struct ib_cc_mad *ccp,
+				struct ib_device *ibdev, u8 port)
+{
+	struct ib_cc_info_attr *p =
+		(struct ib_cc_info_attr *)ccp->mgmt_data;
+	struct qib_ibport *ibp = to_iport(ibdev, port);
+	struct qib_pportdata *ppd = ppd_from_ibp(ibp);
+
+	memset(ccp->mgmt_data, 0, sizeof(ccp->mgmt_data));
+
+	p->congestion_info = 0;
+	p->control_table_cap = ppd->cc_max_table_entries;
+
+	return reply((struct ib_smp *) ccp);
+}
+
+static int cc_get_congestion_setting(struct ib_cc_mad *ccp,
+				struct ib_device *ibdev, u8 port)
+{
+	int i;
+	struct ib_cc_congestion_setting_attr *p =
+		(struct ib_cc_congestion_setting_attr *)ccp->mgmt_data;
+	struct qib_ibport *ibp = to_iport(ibdev, port);
+	struct qib_pportdata *ppd = ppd_from_ibp(ibp);
+	struct ib_cc_congestion_entry_shadow *entries;
+
+	memset(ccp->mgmt_data, 0, sizeof(ccp->mgmt_data));
+
+	spin_lock(&ppd->cc_shadow_lock);
+
+	entries = ppd->congestion_entries_shadow->entries;
+	p->port_control = cpu_to_be16(
+		ppd->congestion_entries_shadow->port_control);
+	p->control_map = cpu_to_be16(
+		ppd->congestion_entries_shadow->control_map);
+	for (i = 0; i < IB_CC_CCS_ENTRIES; i++) {
+		p->entries[i].ccti_increase = entries[i].ccti_increase;
+		p->entries[i].ccti_timer = cpu_to_be16(entries[i].ccti_timer);
+		p->entries[i].trigger_threshold = entries[i].trigger_threshold;
+		p->entries[i].ccti_min = entries[i].ccti_min;
+	}
+
+	spin_unlock(&ppd->cc_shadow_lock);
+
+	return reply((struct ib_smp *) ccp);
+}
+
+static int cc_get_congestion_control_table(struct ib_cc_mad *ccp,
+				struct ib_device *ibdev, u8 port)
+{
+	struct ib_cc_table_attr *p =
+		(struct ib_cc_table_attr *)ccp->mgmt_data;
+	struct qib_ibport *ibp = to_iport(ibdev, port);
+	struct qib_pportdata *ppd = ppd_from_ibp(ibp);
+	u32 cct_block_index = be32_to_cpu(ccp->attr_mod);
+	u32 max_cct_block;
+	u32 cct_entry;
+	struct ib_cc_table_entry_shadow *entries;
+	int i;
+
+	/* Is the table index more than what is supported? */
+	if (cct_block_index > IB_CC_TABLE_CAP_DEFAULT - 1)
+		goto bail;
+
+	memset(ccp->mgmt_data, 0, sizeof(ccp->mgmt_data));
+
+	spin_lock(&ppd->cc_shadow_lock);
+
+	max_cct_block =
+		(ppd->ccti_entries_shadow->ccti_last_entry + 1)/IB_CCT_ENTRIES;
+	max_cct_block = max_cct_block ? max_cct_block - 1 : 0;
+
+	if (cct_block_index > max_cct_block) {
+		spin_unlock(&ppd->cc_shadow_lock);
+		goto bail;
+	}
+
+	ccp->attr_mod = cpu_to_be32(cct_block_index);
+
+	cct_entry = IB_CCT_ENTRIES * (cct_block_index + 1);
+
+	cct_entry--;
+
+	p->ccti_limit = cpu_to_be16(cct_entry);
+
+	entries = &ppd->ccti_entries_shadow->
+			entries[IB_CCT_ENTRIES * cct_block_index];
+	cct_entry %= IB_CCT_ENTRIES;
+
+	for (i = 0; i <= cct_entry; i++)
+		p->ccti_entries[i].entry = cpu_to_be16(entries[i].entry);
+
+	spin_unlock(&ppd->cc_shadow_lock);
+
+	return reply((struct ib_smp *) ccp);
+
+bail:
+	return reply_failure((struct ib_smp *) ccp);
+}
+
+static int cc_set_congestion_setting(struct ib_cc_mad *ccp,
+				struct ib_device *ibdev, u8 port)
+{
+	struct ib_cc_congestion_setting_attr *p =
+		(struct ib_cc_congestion_setting_attr *)ccp->mgmt_data;
+	struct qib_ibport *ibp = to_iport(ibdev, port);
+	struct qib_pportdata *ppd = ppd_from_ibp(ibp);
+	int i;
+
+	ppd->cc_sl_control_map = be16_to_cpu(p->control_map);
+
+	for (i = 0; i < IB_CC_CCS_ENTRIES; i++) {
+		ppd->congestion_entries[i].ccti_increase =
+			p->entries[i].ccti_increase;
+
+		ppd->congestion_entries[i].ccti_timer =
+			be16_to_cpu(p->entries[i].ccti_timer);
+
+		ppd->congestion_entries[i].trigger_threshold =
+			p->entries[i].trigger_threshold;
+
+		ppd->congestion_entries[i].ccti_min =
+			p->entries[i].ccti_min;
+	}
+
+	return reply((struct ib_smp *) ccp);
+}
+
+static int cc_set_congestion_control_table(struct ib_cc_mad *ccp,
+				struct ib_device *ibdev, u8 port)
+{
+	struct ib_cc_table_attr *p =
+		(struct ib_cc_table_attr *)ccp->mgmt_data;
+	struct qib_ibport *ibp = to_iport(ibdev, port);
+	struct qib_pportdata *ppd = ppd_from_ibp(ibp);
+	u32 cct_block_index = be32_to_cpu(ccp->attr_mod);
+	u32 cct_entry;
+	struct ib_cc_table_entry_shadow *entries;
+	int i;
+
+	/* Is the table index more than what is supported? */
+	if (cct_block_index > IB_CC_TABLE_CAP_DEFAULT - 1)
+		goto bail;
+
+	/* If this packet is the first in the sequence then
+	 * zero the total table entry count.
+	 */
+	if (be16_to_cpu(p->ccti_limit) < IB_CCT_ENTRIES)
+		ppd->total_cct_entry = 0;
+
+	cct_entry = (be16_to_cpu(p->ccti_limit))%IB_CCT_ENTRIES;
+
+	/* ccti_limit is 0 to 63 */
+	ppd->total_cct_entry += (cct_entry + 1);
+
+	if (ppd->total_cct_entry > ppd->cc_supported_table_entries)
+		goto bail;
+
+	ppd->ccti_limit = be16_to_cpu(p->ccti_limit);
+
+	entries = ppd->ccti_entries + (IB_CCT_ENTRIES * cct_block_index);
+
+	for (i = 0; i <= cct_entry; i++)
+		entries[i].entry = be16_to_cpu(p->ccti_entries[i].entry);
+
+	spin_lock(&ppd->cc_shadow_lock);
+
+	ppd->ccti_entries_shadow->ccti_last_entry = ppd->total_cct_entry - 1;
+	memcpy(ppd->ccti_entries_shadow->entries, ppd->ccti_entries,
+		(ppd->total_cct_entry * sizeof(struct ib_cc_table_entry)));
+
+	ppd->congestion_entries_shadow->port_control = IB_CC_CCS_PC_SL_BASED;
+	ppd->congestion_entries_shadow->control_map = ppd->cc_sl_control_map;
+	memcpy(ppd->congestion_entries_shadow->entries, ppd->congestion_entries,
+		IB_CC_CCS_ENTRIES * sizeof(struct ib_cc_congestion_entry));
+
+	spin_unlock(&ppd->cc_shadow_lock);
+
+	return reply((struct ib_smp *) ccp);
+
+bail:
+	return reply_failure((struct ib_smp *) ccp);
+}
+
+static int check_cc_key(struct qib_ibport *ibp,
+			struct ib_cc_mad *ccp, int mad_flags)
+{
+	return 0;
+}
+
+static int process_cc(struct ib_device *ibdev, int mad_flags,
+			u8 port, struct ib_mad *in_mad,
+			struct ib_mad *out_mad)
+{
+	struct ib_cc_mad *ccp = (struct ib_cc_mad *)out_mad;
+	struct qib_ibport *ibp = to_iport(ibdev, port);
+	int ret;
+
+	*out_mad = *in_mad;
+
+	if (ccp->class_version != 2) {
+		ccp->status |= IB_SMP_UNSUP_VERSION;
+		ret = reply((struct ib_smp *)ccp);
+		goto bail;
+	}
+
+	ret = check_cc_key(ibp, ccp, mad_flags);
+	if (ret)
+		goto bail;
+
+	switch (ccp->method) {
+	case IB_MGMT_METHOD_GET:
+		switch (ccp->attr_id) {
+		case IB_CC_ATTR_CLASSPORTINFO:
+			ret = cc_get_classportinfo(ccp, ibdev);
+			goto bail;
+
+		case IB_CC_ATTR_CONGESTION_INFO:
+			ret = cc_get_congestion_info(ccp, ibdev, port);
+			goto bail;
+
+		case IB_CC_ATTR_CA_CONGESTION_SETTING:
+			ret = cc_get_congestion_setting(ccp, ibdev, port);
+			goto bail;
+
+		case IB_CC_ATTR_CONGESTION_CONTROL_TABLE:
+			ret = cc_get_congestion_control_table(ccp, ibdev, port);
+			goto bail;
+
+			/* FALLTHROUGH */
+		default:
+			ccp->status |= IB_SMP_UNSUP_METH_ATTR;
+			ret = reply((struct ib_smp *) ccp);
+			goto bail;
+		}
+
+	case IB_MGMT_METHOD_SET:
+		switch (ccp->attr_id) {
+		case IB_CC_ATTR_CA_CONGESTION_SETTING:
+			ret = cc_set_congestion_setting(ccp, ibdev, port);
+			goto bail;
+
+		case IB_CC_ATTR_CONGESTION_CONTROL_TABLE:
+			ret = cc_set_congestion_control_table(ccp, ibdev, port);
+			goto bail;
+
+			/* FALLTHROUGH */
+		default:
+			ccp->status |= IB_SMP_UNSUP_METH_ATTR;
+			ret = reply((struct ib_smp *) ccp);
+			goto bail;
+		}
+
+	case IB_MGMT_METHOD_GET_RESP:
+		/*
+		 * The ib_mad module will call us to process responses
+		 * before checking for other consumers.
+		 * Just tell the caller to process it normally.
+		 */
+		ret = IB_MAD_RESULT_SUCCESS;
+		goto bail;
+
+	case IB_MGMT_METHOD_TRAP:
+	default:
+		ccp->status |= IB_SMP_UNSUP_METHOD;
+		ret = reply((struct ib_smp *) ccp);
+	}
+
+bail:
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * qib_process_mad - process an incoming MAD packet
  * @ibdev: the infiniband device this packet came in on
@@ -2199,6 +2720,11 @@ int qib_process_mad(struct ib_device *ibdev, int mad_flags, u8 port,
 		    struct ib_mad *in_mad, struct ib_mad *out_mad)
 {
 	int ret;
+<<<<<<< HEAD
+=======
+	struct qib_ibport *ibp = to_iport(ibdev, port);
+	struct qib_pportdata *ppd = ppd_from_ibp(ibp);
+>>>>>>> refs/remotes/origin/master
 
 	switch (in_mad->mad_hdr.mgmt_class) {
 	case IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE:
@@ -2210,6 +2736,18 @@ int qib_process_mad(struct ib_device *ibdev, int mad_flags, u8 port,
 		ret = process_perf(ibdev, port, in_mad, out_mad);
 		goto bail;
 
+<<<<<<< HEAD
+=======
+	case IB_MGMT_CLASS_CONG_MGMT:
+		if (!ppd->congestion_entries_shadow ||
+			 !qib_cc_table_size) {
+			ret = IB_MAD_RESULT_SUCCESS;
+			goto bail;
+		}
+		ret = process_cc(ibdev, mad_flags, port, in_mad, out_mad);
+		goto bail;
+
+>>>>>>> refs/remotes/origin/master
 	default:
 		ret = IB_MAD_RESULT_SUCCESS;
 	}

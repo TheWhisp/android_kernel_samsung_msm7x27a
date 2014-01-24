@@ -60,6 +60,18 @@
  * @adapter: i2c subsystem adapter node
  * @tx_fifo_depth: depth of the hardware tx fifo
  * @rx_fifo_depth: depth of the hardware rx fifo
+<<<<<<< HEAD
+=======
+ * @rx_outstanding: current master-rx elements in tx fifo
+ * @ss_hcnt: standard speed HCNT value
+ * @ss_lcnt: standard speed LCNT value
+ * @fs_hcnt: fast speed HCNT value
+ * @fs_lcnt: fast speed LCNT value
+ *
+ * HCNT and LCNT parameters can be used if the platform knows more accurate
+ * values than the one computed based only on the input clock frequency.
+ * Leave them to be %0 if not used.
+>>>>>>> refs/remotes/origin/master
  */
 struct dw_i2c_dev {
 	struct device		*dev;
@@ -82,14 +94,32 @@ struct dw_i2c_dev {
 	unsigned int		status;
 	u32			abort_source;
 	int			irq;
+<<<<<<< HEAD
 	int			swab;
+=======
+	u32			accessor_flags;
+>>>>>>> refs/remotes/origin/master
 	struct i2c_adapter	adapter;
 	u32			functionality;
 	u32			master_cfg;
 	unsigned int		tx_fifo_depth;
 	unsigned int		rx_fifo_depth;
+<<<<<<< HEAD
 };
 
+=======
+	int			rx_outstanding;
+	u32			sda_hold_time;
+	u16			ss_hcnt;
+	u16			ss_lcnt;
+	u16			fs_hcnt;
+	u16			fs_lcnt;
+};
+
+#define ACCESS_SWAP		0x00000001
+#define ACCESS_16BIT		0x00000002
+
+>>>>>>> refs/remotes/origin/master
 extern u32 dw_readl(struct dw_i2c_dev *dev, int offset);
 extern void dw_writel(struct dw_i2c_dev *dev, u32 b, int offset);
 extern int i2c_dw_init(struct dw_i2c_dev *dev);

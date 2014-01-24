@@ -1,13 +1,18 @@
 #include <stdio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "../include/generated/autoconf.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "../include/generated/autoconf.h"
+>>>>>>> refs/remotes/origin/master
 #include "crc32defs.h"
 #include <inttypes.h>
 
 #define ENTRIES_PER_LINE 4
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define LE_TABLE_SIZE (1 << CRC_LE_BITS)
 #define BE_TABLE_SIZE (1 << CRC_BE_BITS)
@@ -15,6 +20,8 @@
 static uint32_t crc32table_le[4][LE_TABLE_SIZE];
 static uint32_t crc32table_be[4][BE_TABLE_SIZE];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if CRC_LE_BITS > 8
 # define LE_TABLE_ROWS (CRC_LE_BITS/8)
 # define LE_TABLE_SIZE 256
@@ -34,7 +41,10 @@ static uint32_t crc32table_be[4][BE_TABLE_SIZE];
 static uint32_t crc32table_le[LE_TABLE_ROWS][256];
 static uint32_t crc32table_be[BE_TABLE_ROWS][256];
 static uint32_t crc32ctable_le[LE_TABLE_ROWS][256];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * crc32init_le() - allocate and initialize LE table data
@@ -44,15 +54,21 @@ static uint32_t crc32ctable_le[LE_TABLE_ROWS][256];
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void crc32init_le(void)
 =======
 static void crc32init_le_generic(const uint32_t polynomial,
 				 uint32_t (*tab)[256])
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void crc32init_le_generic(const uint32_t polynomial,
+				 uint32_t (*tab)[256])
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned i, j;
 	uint32_t crc = 1;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	crc32table_le[0][0] = 0;
 
@@ -67,6 +83,8 @@ static void crc32init_le_generic(const uint32_t polynomial,
 			crc = crc32table_le[0][crc & 0xff] ^ (crc >> 8);
 			crc32table_le[j][i] = crc;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	tab[0][0] = 0;
 
 	for (i = LE_TABLE_SIZE >> 1; i; i >>= 1) {
@@ -79,13 +97,19 @@ static void crc32init_le_generic(const uint32_t polynomial,
 		for (j = 1; j < LE_TABLE_ROWS; j++) {
 			crc = tab[0][crc & 0xff] ^ (crc >> 8);
 			tab[j][i] = crc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void crc32init_le(void)
 {
 	crc32init_le_generic(CRCPOLY_LE, crc32table_le);
@@ -96,7 +120,10 @@ static void crc32cinit_le(void)
 	crc32init_le_generic(CRC32C_POLY_LE, crc32ctable_le);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * crc32init_be() - allocate and initialize BE table data
  */
@@ -115,10 +142,14 @@ static void crc32init_be(void)
 	for (i = 0; i < BE_TABLE_SIZE; i++) {
 		crc = crc32table_be[0][i];
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (j = 1; j < 4; j++) {
 =======
 		for (j = 1; j < BE_TABLE_ROWS; j++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (j = 1; j < BE_TABLE_ROWS; j++) {
+>>>>>>> refs/remotes/origin/master
 			crc = crc32table_be[0][(crc >> 24) & 0xff] ^ (crc << 8);
 			crc32table_be[j][i] = crc;
 		}
@@ -126,18 +157,24 @@ static void crc32init_be(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void output_table(uint32_t table[4][256], int len, char *trans)
 {
 	int i, j;
 
 	for (j = 0 ; j < 4; j++) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void output_table(uint32_t (*table)[256], int rows, int len, char *trans)
 {
 	int i, j;
 
 	for (j = 0 ; j < rows; j++) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printf("{");
 		for (i = 0; i < len - 1; i++) {
 			if (i % ENTRIES_PER_LINE == 0)
@@ -155,25 +192,36 @@ int main(int argc, char** argv)
 	if (CRC_LE_BITS > 1) {
 		crc32init_le();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printf("static const u32 crc32table_le[4][256] = {");
 		output_table(crc32table_le, LE_TABLE_SIZE, "tole");
 =======
 		printf("static const u32 __cacheline_aligned "
+=======
+		printf("static u32 __cacheline_aligned "
+>>>>>>> refs/remotes/origin/master
 		       "crc32table_le[%d][%d] = {",
 		       LE_TABLE_ROWS, LE_TABLE_SIZE);
 		output_table(crc32table_le, LE_TABLE_ROWS,
 			     LE_TABLE_SIZE, "tole");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printf("};\n");
 	}
 
 	if (CRC_BE_BITS > 1) {
 		crc32init_be();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printf("static const u32 crc32table_be[4][256] = {");
 		output_table(crc32table_be, BE_TABLE_SIZE, "tobe");
 =======
 		printf("static const u32 __cacheline_aligned "
+=======
+		printf("static u32 __cacheline_aligned "
+>>>>>>> refs/remotes/origin/master
 		       "crc32table_be[%d][%d] = {",
 		       BE_TABLE_ROWS, BE_TABLE_SIZE);
 		output_table(crc32table_be, LE_TABLE_ROWS,
@@ -182,12 +230,19 @@ int main(int argc, char** argv)
 	}
 	if (CRC_LE_BITS > 1) {
 		crc32cinit_le();
+<<<<<<< HEAD
 		printf("static const u32 __cacheline_aligned "
+=======
+		printf("static u32 __cacheline_aligned "
+>>>>>>> refs/remotes/origin/master
 		       "crc32ctable_le[%d][%d] = {",
 		       LE_TABLE_ROWS, LE_TABLE_SIZE);
 		output_table(crc32ctable_le, LE_TABLE_ROWS,
 			     LE_TABLE_SIZE, "tole");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printf("};\n");
 	}
 

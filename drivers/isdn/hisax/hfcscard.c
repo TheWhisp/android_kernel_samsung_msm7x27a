@@ -5,10 +5,14 @@
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -31,12 +35,17 @@ hfcs_interrupt(int intno, void *dev_id)
 
 	spin_lock_irqsave(&cs->lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((HFCD_ANYINT | HFCD_BUSY_NBUSY) & 
 		(stat = cs->BC_Read_Reg(cs, HFCD_DATA, HFCD_STAT))) {
 =======
 	if ((HFCD_ANYINT | HFCD_BUSY_NBUSY) &
 	    (stat = cs->BC_Read_Reg(cs, HFCD_DATA, HFCD_STAT))) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((HFCD_ANYINT | HFCD_BUSY_NBUSY) &
+	    (stat = cs->BC_Read_Reg(cs, HFCD_DATA, HFCD_STAT))) {
+>>>>>>> refs/remotes/origin/master
 		val = cs->BC_Read_Reg(cs, HFCD_DATA, HFCD_INT_S1);
 		if (cs->debug & L1_DEB_ISAC)
 			debugl1(cs, "HFCS: stat(%02x) s1(%02x)", stat, val);
@@ -116,6 +125,7 @@ hfcs_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 		debugl1(cs, "HFCS: card_msg %x", mt);
 	switch (mt) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case CARD_RESET:
 			spin_lock_irqsave(&cs->lock, flags);
 			reset_hfcs(cs);
@@ -144,6 +154,8 @@ hfcs_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 	}
 	return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case CARD_RESET:
 		spin_lock_irqsave(&cs->lock, flags);
 		reset_hfcs(cs);
@@ -171,6 +183,7 @@ hfcs_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 		return (0);
 	}
 	return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -198,6 +211,13 @@ static struct isapnp_device_id hfc_ids[] __devinitdata = {
 	{ ISAPNP_VENDOR('K', 'Y', 'E'), ISAPNP_FUNCTION(0x0001),
 	  ISAPNP_VENDOR('K', 'Y', 'E'), ISAPNP_FUNCTION(0x0001), 
 =======
+=======
+}
+
+#ifdef __ISAPNP__
+static struct isapnp_device_id hfc_ids[] = {
+	{ ISAPNP_VENDOR('A', 'N', 'X'), ISAPNP_FUNCTION(0x1114),
+>>>>>>> refs/remotes/origin/master
 	  ISAPNP_VENDOR('A', 'N', 'X'), ISAPNP_FUNCTION(0x1114),
 	  (unsigned long) "Acer P10" },
 	{ ISAPNP_VENDOR('B', 'I', 'L'), ISAPNP_FUNCTION(0x0002),
@@ -217,17 +237,28 @@ static struct isapnp_device_id hfc_ids[] __devinitdata = {
 	  (unsigned long) "Tornado Tipa C" },
 	{ ISAPNP_VENDOR('K', 'Y', 'E'), ISAPNP_FUNCTION(0x0001),
 	  ISAPNP_VENDOR('K', 'Y', 'E'), ISAPNP_FUNCTION(0x0001),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	  (unsigned long) "Genius Speed Surfer" },
 	{ 0, }
 };
 
+<<<<<<< HEAD
 static struct isapnp_device_id *ipid __devinitdata = &hfc_ids[0];
 static struct pnp_card *pnp_c __devinitdata = NULL;
 #endif
 
 int __devinit
 setup_hfcs(struct IsdnCard *card)
+=======
+static struct isapnp_device_id *ipid = &hfc_ids[0];
+static struct pnp_card *pnp_c = NULL;
+#endif
+
+int setup_hfcs(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct IsdnCardState *cs = card->cs;
 	char tmp[64];
@@ -238,6 +269,7 @@ setup_hfcs(struct IsdnCard *card)
 #ifdef __ISAPNP__
 	if (!card->para[1] && isapnp_present()) {
 		struct pnp_dev *pnp_d;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		while(ipid->card_vendor) {
 			if ((pnp_c = pnp_find_card(ipid->card_vendor,
@@ -256,6 +288,8 @@ setup_hfcs(struct IsdnCard *card)
 							__func__, err);
 						return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		while (ipid->card_vendor) {
 			if ((pnp_c = pnp_find_card(ipid->card_vendor,
 						   ipid->card_device, pnp_c))) {
@@ -272,12 +306,16 @@ setup_hfcs(struct IsdnCard *card)
 						printk(KERN_WARNING "%s: pnp_activate_dev ret(%d)\n",
 						       __func__, err);
 						return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					}
 					card->para[1] = pnp_port_start(pnp_d, 0);
 					card->para[0] = pnp_irq(pnp_d, 0);
 					if (!card->para[0] || !card->para[1]) {
 						printk(KERN_ERR "HFC PnP:some resources are missing %ld/%lx\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 							card->para[0], card->para[1]);
 						pnp_disable_dev(pnp_d);
@@ -287,6 +325,11 @@ setup_hfcs(struct IsdnCard *card)
 						pnp_disable_dev(pnp_d);
 						return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						       card->para[0], card->para[1]);
+						pnp_disable_dev(pnp_d);
+						return (0);
+>>>>>>> refs/remotes/origin/master
 					}
 					break;
 				} else {
@@ -296,16 +339,22 @@ setup_hfcs(struct IsdnCard *card)
 			ipid++;
 			pnp_c = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} 
 		if (!ipid->card_vendor) {
 			printk(KERN_INFO "HFC PnP: no ISAPnP card found\n");
 			return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		if (!ipid->card_vendor) {
 			printk(KERN_INFO "HFC PnP: no ISAPnP card found\n");
 			return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 #endif
@@ -323,10 +372,14 @@ setup_hfcs(struct IsdnCard *card)
 		cs->hw.hfcD.bfifosize = 1024 + 512;
 	} else if (cs->typ == ISDN_CTYPE_ACERP10) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cs->hw.hfcD.bfifosize = 7*1024 + 512;
 =======
 		cs->hw.hfcD.bfifosize = 7 * 1024 + 512;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cs->hw.hfcD.bfifosize = 7 * 1024 + 512;
+>>>>>>> refs/remotes/origin/master
 	} else
 		return (0);
 	if (!request_region(cs->hw.hfcD.addr, 2, "HFCS isdn")) {

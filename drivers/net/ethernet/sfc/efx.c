@@ -1,7 +1,13 @@
 /****************************************************************************
+<<<<<<< HEAD
  * Driver for Solarflare Solarstorm network controllers and boards
  * Copyright 2005-2006 Fen Systems Ltd.
  * Copyright 2005-2011 Solarflare Communications Inc.
+=======
+ * Driver for Solarflare network controllers and boards
+ * Copyright 2005-2006 Fen Systems Ltd.
+ * Copyright 2005-2013 Solarflare Communications Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published
@@ -17,11 +23,19 @@
 #include <linux/ip.h>
 #include <linux/tcp.h>
 #include <linux/in.h>
+<<<<<<< HEAD
 #include <linux/crc32.h>
 #include <linux/ethtool.h>
 #include <linux/topology.h>
 #include <linux/gfp.h>
 #include <linux/cpu_rmap.h>
+=======
+#include <linux/ethtool.h>
+#include <linux/topology.h>
+#include <linux/gfp.h>
+#include <linux/aer.h>
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include "net_driver.h"
 #include "efx.h"
 #include "nic.h"
@@ -71,6 +85,7 @@ const char *const efx_loopback_mode_names[] = {
 
 const unsigned int efx_reset_type_max = RESET_TYPE_MAX;
 const char *const efx_reset_type_names[] = {
+<<<<<<< HEAD
 	[RESET_TYPE_INVISIBLE]     = "INVISIBLE",
 	[RESET_TYPE_ALL]           = "ALL",
 	[RESET_TYPE_WORLD]         = "WORLD",
@@ -86,6 +101,22 @@ const char *const efx_reset_type_names[] = {
 
 #define EFX_MAX_MTU (9 * 1024)
 
+=======
+	[RESET_TYPE_INVISIBLE]          = "INVISIBLE",
+	[RESET_TYPE_ALL]                = "ALL",
+	[RESET_TYPE_RECOVER_OR_ALL]     = "RECOVER_OR_ALL",
+	[RESET_TYPE_WORLD]              = "WORLD",
+	[RESET_TYPE_RECOVER_OR_DISABLE] = "RECOVER_OR_DISABLE",
+	[RESET_TYPE_DISABLE]            = "DISABLE",
+	[RESET_TYPE_TX_WATCHDOG]        = "TX_WATCHDOG",
+	[RESET_TYPE_INT_ERROR]          = "INT_ERROR",
+	[RESET_TYPE_RX_RECOVERY]        = "RX_RECOVERY",
+	[RESET_TYPE_DMA_ERROR]          = "DMA_ERROR",
+	[RESET_TYPE_TX_SKIP]            = "TX_SKIP",
+	[RESET_TYPE_MC_FAILURE]         = "MC_FAILURE",
+};
+
+>>>>>>> refs/remotes/origin/master
 /* Reset workqueue. If any NIC has a hardware failure then a reset will be
  * queued onto this work queue. This is not a per-nic work queue, because
  * efx_reset_work() acquires the rtnl lock, so resets are naturally serialised.
@@ -106,8 +137,13 @@ static struct workqueue_struct *reset_workqueue;
  *
  * This is only used in MSI-X interrupt mode
  */
+<<<<<<< HEAD
 static unsigned int separate_tx_channels;
 module_param(separate_tx_channels, uint, 0444);
+=======
+static bool separate_tx_channels;
+module_param(separate_tx_channels, bool, 0444);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(separate_tx_channels,
 		 "Use separate channels for TX and RX");
 
@@ -117,9 +153,18 @@ MODULE_PARM_DESC(separate_tx_channels,
 static int napi_weight = 64;
 
 /* This is the time (in jiffies) between invocations of the hardware
+<<<<<<< HEAD
  * monitor.  On Falcon-based NICs, this will:
  * - Check the on-board hardware monitor;
  * - Poll the link state and reconfigure the hardware as necessary.
+=======
+ * monitor.
+ * On Falcon-based NICs, this will:
+ * - Check the on-board hardware monitor;
+ * - Poll the link state and reconfigure the hardware as necessary.
+ * On Siena-based NICs for power systems with EEH support, this will give EEH a
+ * chance to start.
+>>>>>>> refs/remotes/origin/master
  */
 static unsigned int efx_monitor_interval = 1 * HZ;
 
@@ -160,8 +205,13 @@ static unsigned int rss_cpus;
 module_param(rss_cpus, uint, 0444);
 MODULE_PARM_DESC(rss_cpus, "Number of CPUs to use for Receive-Side Scaling");
 
+<<<<<<< HEAD
 static int phy_flash_cfg;
 module_param(phy_flash_cfg, int, 0644);
+=======
+static bool phy_flash_cfg;
+module_param(phy_flash_cfg, bool, 0644);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(phy_flash_cfg, "Set PHYs into reflash mode initially");
 
 static unsigned irq_adapt_low_thresh = 8000;
@@ -187,8 +237,13 @@ MODULE_PARM_DESC(debug, "Bitmapped debugging message enable value");
  *
  *************************************************************************/
 
+<<<<<<< HEAD
 static void efx_start_interrupts(struct efx_nic *efx, bool may_keep_eventq);
 static void efx_stop_interrupts(struct efx_nic *efx, bool may_keep_eventq);
+=======
+static int efx_soft_enable_interrupts(struct efx_nic *efx);
+static void efx_soft_disable_interrupts(struct efx_nic *efx);
+>>>>>>> refs/remotes/origin/master
 static void efx_remove_channel(struct efx_channel *channel);
 static void efx_remove_channels(struct efx_nic *efx);
 static const struct efx_channel_type efx_default_channel_type;
@@ -202,11 +257,29 @@ static void efx_stop_all(struct efx_nic *efx);
 
 #define EFX_ASSERT_RESET_SERIALISED(efx)		\
 	do {						\
+<<<<<<< HEAD
 		if ((efx->state == STATE_RUNNING) ||	\
+=======
+		if ((efx->state == STATE_READY) ||	\
+		    (efx->state == STATE_RECOVERY) ||	\
+>>>>>>> refs/remotes/origin/master
 		    (efx->state == STATE_DISABLED))	\
 			ASSERT_RTNL();			\
 	} while (0)
 
+<<<<<<< HEAD
+=======
+static int efx_check_disabled(struct efx_nic *efx)
+{
+	if (efx->state == STATE_DISABLED || efx->state == STATE_RECOVERY) {
+		netif_err(efx, drv, efx->net_dev,
+			  "device is disabled due to earlier errors\n");
+		return -EIO;
+	}
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**************************************************************************
  *
  * Event queue processing
@@ -232,6 +305,7 @@ static int efx_process_channel(struct efx_channel *channel, int budget)
 		struct efx_rx_queue *rx_queue =
 			efx_channel_get_rx_queue(channel);
 
+<<<<<<< HEAD
 		/* Deliver last RX packet. */
 		if (channel->rx_pkt) {
 			__efx_rx_packet(channel, channel->rx_pkt);
@@ -241,11 +315,16 @@ static int efx_process_channel(struct efx_channel *channel, int budget)
 			efx_rx_strategy(channel);
 			efx_fast_push_rx_descriptors(rx_queue);
 		}
+=======
+		efx_rx_flush_packet(channel);
+		efx_fast_push_rx_descriptors(rx_queue);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return spent;
 }
 
+<<<<<<< HEAD
 /* Mark channel as finished processing
  *
  * Note that since we will not receive further interrupts for this
@@ -263,6 +342,8 @@ static inline void efx_channel_processed(struct efx_channel *channel)
 	efx_nic_eventq_read_ack(channel);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* NAPI poll handler
  *
  * NAPI guarantees serialisation of polls of the same device, which
@@ -307,16 +388,25 @@ static int efx_poll(struct napi_struct *napi, int budget)
 
 		/* There is no race here; although napi_disable() will
 		 * only wait for napi_complete(), this isn't a problem
+<<<<<<< HEAD
 		 * since efx_channel_processed() will have no effect if
 		 * interrupts have already been disabled.
 		 */
 		napi_complete(napi);
 		efx_channel_processed(channel);
+=======
+		 * since efx_nic_eventq_read_ack() will have no effect if
+		 * interrupts have already been disabled.
+		 */
+		napi_complete(napi);
+		efx_nic_eventq_read_ack(channel);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return spent;
 }
 
+<<<<<<< HEAD
 /* Process the eventq of the specified channel immediately on this CPU
  *
  * Disable hardware generated interrupts, wait for any existing
@@ -359,6 +449,8 @@ void efx_process_channel_now(struct efx_channel *channel)
 	efx_nic_enable_interrupts(efx);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Create event queue
  * Event queue memory allocations are done only once.  If the channel
  * is reset, the memory buffer will be reused; this guards against
@@ -382,6 +474,7 @@ static int efx_probe_eventq(struct efx_channel *channel)
 }
 
 /* Prepare channel's event queue */
+<<<<<<< HEAD
 static void efx_init_eventq(struct efx_channel *channel)
 {
 	netif_dbg(channel->efx, drv, channel->efx->net_dev,
@@ -390,6 +483,25 @@ static void efx_init_eventq(struct efx_channel *channel)
 	channel->eventq_read_ptr = 0;
 
 	efx_nic_init_eventq(channel);
+=======
+static int efx_init_eventq(struct efx_channel *channel)
+{
+	struct efx_nic *efx = channel->efx;
+	int rc;
+
+	EFX_WARN_ON_PARANOID(channel->eventq_init);
+
+	netif_dbg(efx, drv, efx->net_dev,
+		  "chan %d init event queue\n", channel->channel);
+
+	rc = efx_nic_init_eventq(channel);
+	if (rc == 0) {
+		efx->type->push_irq_moderation(channel);
+		channel->eventq_read_ptr = 0;
+		channel->eventq_init = true;
+	}
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Enable event queue processing and NAPI */
@@ -398,11 +510,15 @@ static void efx_start_eventq(struct efx_channel *channel)
 	netif_dbg(channel->efx, ifup, channel->efx->net_dev,
 		  "chan %d start event queue\n", channel->channel);
 
+<<<<<<< HEAD
 	/* The interrupt handler for this channel may set work_pending
 	 * as soon as we enable it.  Make sure it's cleared before
 	 * then.  Similarly, make sure it sees the enabled flag set.
 	 */
 	channel->work_pending = false;
+=======
+	/* Make sure the NAPI handler sees the enabled flag set */
+>>>>>>> refs/remotes/origin/master
 	channel->enabled = true;
 	smp_wmb();
 
@@ -422,10 +538,20 @@ static void efx_stop_eventq(struct efx_channel *channel)
 
 static void efx_fini_eventq(struct efx_channel *channel)
 {
+<<<<<<< HEAD
+=======
+	if (!channel->eventq_init)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	netif_dbg(channel->efx, drv, channel->efx->net_dev,
 		  "chan %d fini event queue\n", channel->channel);
 
 	efx_nic_fini_eventq(channel);
+<<<<<<< HEAD
+=======
+	channel->eventq_init = false;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void efx_remove_eventq(struct efx_channel *channel)
@@ -574,8 +700,13 @@ static void efx_set_channel_names(struct efx_nic *efx)
 
 	efx_for_each_channel(channel, efx)
 		channel->type->get_name(channel,
+<<<<<<< HEAD
 					efx->channel_name[channel->channel],
 					sizeof(efx->channel_name[0]));
+=======
+					efx->msi_context[channel->channel].name,
+					sizeof(efx->msi_context[0].name));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int efx_probe_channels(struct efx_nic *efx)
@@ -615,14 +746,23 @@ fail:
  */
 static void efx_start_datapath(struct efx_nic *efx)
 {
+<<<<<<< HEAD
 	struct efx_tx_queue *tx_queue;
 	struct efx_rx_queue *rx_queue;
 	struct efx_channel *channel;
+=======
+	bool old_rx_scatter = efx->rx_scatter;
+	struct efx_tx_queue *tx_queue;
+	struct efx_rx_queue *rx_queue;
+	struct efx_channel *channel;
+	size_t rx_buf_len;
+>>>>>>> refs/remotes/origin/master
 
 	/* Calculate the rx buffer allocation parameters required to
 	 * support the current MTU, including padding for header
 	 * alignment and overruns.
 	 */
+<<<<<<< HEAD
 	efx->rx_buffer_len = (max(EFX_PAGE_IP_ALIGN, NET_IP_ALIGN) +
 			      EFX_MAX_FRAME_LEN(efx->net_dev->mtu) +
 			      efx->type->rx_buffer_hash_size +
@@ -647,6 +787,74 @@ static void efx_start_datapath(struct efx_nic *efx)
 		efx_rx_strategy(channel);
 	}
 
+=======
+	efx->rx_dma_len = (efx->rx_prefix_size +
+			   EFX_MAX_FRAME_LEN(efx->net_dev->mtu) +
+			   efx->type->rx_buffer_padding);
+	rx_buf_len = (sizeof(struct efx_rx_page_state) +
+		      efx->rx_ip_align + efx->rx_dma_len);
+	if (rx_buf_len <= PAGE_SIZE) {
+		efx->rx_scatter = efx->type->always_rx_scatter;
+		efx->rx_buffer_order = 0;
+	} else if (efx->type->can_rx_scatter) {
+		BUILD_BUG_ON(EFX_RX_USR_BUF_SIZE % L1_CACHE_BYTES);
+		BUILD_BUG_ON(sizeof(struct efx_rx_page_state) +
+			     2 * ALIGN(NET_IP_ALIGN + EFX_RX_USR_BUF_SIZE,
+				       EFX_RX_BUF_ALIGNMENT) >
+			     PAGE_SIZE);
+		efx->rx_scatter = true;
+		efx->rx_dma_len = EFX_RX_USR_BUF_SIZE;
+		efx->rx_buffer_order = 0;
+	} else {
+		efx->rx_scatter = false;
+		efx->rx_buffer_order = get_order(rx_buf_len);
+	}
+
+	efx_rx_config_page_split(efx);
+	if (efx->rx_buffer_order)
+		netif_dbg(efx, drv, efx->net_dev,
+			  "RX buf len=%u; page order=%u batch=%u\n",
+			  efx->rx_dma_len, efx->rx_buffer_order,
+			  efx->rx_pages_per_batch);
+	else
+		netif_dbg(efx, drv, efx->net_dev,
+			  "RX buf len=%u step=%u bpp=%u; page batch=%u\n",
+			  efx->rx_dma_len, efx->rx_page_buf_step,
+			  efx->rx_bufs_per_page, efx->rx_pages_per_batch);
+
+	/* RX filters may also have scatter-enabled flags */
+	if (efx->rx_scatter != old_rx_scatter)
+		efx->type->filter_update_rx_scatter(efx);
+
+	/* We must keep at least one descriptor in a TX ring empty.
+	 * We could avoid this when the queue size does not exactly
+	 * match the hardware ring size, but it's not that important.
+	 * Therefore we stop the queue when one more skb might fill
+	 * the ring completely.  We wake it when half way back to
+	 * empty.
+	 */
+	efx->txq_stop_thresh = efx->txq_entries - efx_tx_max_skb_descs(efx);
+	efx->txq_wake_thresh = efx->txq_stop_thresh / 2;
+
+	/* Initialise the channels */
+	efx_for_each_channel(channel, efx) {
+		efx_for_each_channel_tx_queue(tx_queue, channel) {
+			efx_init_tx_queue(tx_queue);
+			atomic_inc(&efx->active_queues);
+		}
+
+		efx_for_each_channel_rx_queue(rx_queue, channel) {
+			efx_init_rx_queue(rx_queue);
+			atomic_inc(&efx->active_queues);
+			efx_nic_generate_fill_event(rx_queue);
+		}
+
+		WARN_ON(channel->rx_pkt_n_frags);
+	}
+
+	efx_ptp_start_datapath(efx);
+
+>>>>>>> refs/remotes/origin/master
 	if (netif_device_present(efx->net_dev))
 		netif_tx_wake_all_queues(efx->net_dev);
 }
@@ -656,12 +864,16 @@ static void efx_stop_datapath(struct efx_nic *efx)
 	struct efx_channel *channel;
 	struct efx_tx_queue *tx_queue;
 	struct efx_rx_queue *rx_queue;
+<<<<<<< HEAD
 	struct pci_dev *dev = efx->pci_dev;
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	EFX_ASSERT_RESET_SERIALISED(efx);
 	BUG_ON(efx->port_enabled);
 
+<<<<<<< HEAD
 	/* Only perform flush if dma is enabled */
 	if (dev->is_busmaster) {
 		rc = efx_nic_flush_queues(efx);
@@ -680,6 +892,14 @@ static void efx_stop_datapath(struct efx_nic *efx)
 			netif_dbg(efx, drv, efx->net_dev,
 				  "successfully flushed all queues\n");
 		}
+=======
+	efx_ptp_stop_datapath(efx);
+
+	/* Stop RX refill */
+	efx_for_each_channel(channel, efx) {
+		efx_for_each_channel_rx_queue(rx_queue, channel)
+			rx_queue->refill_enabled = false;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	efx_for_each_channel(channel, efx) {
@@ -693,7 +913,30 @@ static void efx_stop_datapath(struct efx_nic *efx)
 			efx_stop_eventq(channel);
 			efx_start_eventq(channel);
 		}
+<<<<<<< HEAD
 
+=======
+	}
+
+	rc = efx->type->fini_dmaq(efx);
+	if (rc && EFX_WORKAROUND_7803(efx)) {
+		/* Schedule a reset to recover from the flush failure. The
+		 * descriptor caches reference memory we're about to free,
+		 * but falcon_reconfigure_mac_wrapper() won't reconnect
+		 * the MACs because of the pending reset.
+		 */
+		netif_err(efx, drv, efx->net_dev,
+			  "Resetting to recover from flush failure\n");
+		efx_schedule_reset(efx, RESET_TYPE_ALL);
+	} else if (rc) {
+		netif_err(efx, drv, efx->net_dev, "failed to flush queues\n");
+	} else {
+		netif_dbg(efx, drv, efx->net_dev,
+			  "successfully flushed all queues\n");
+	}
+
+	efx_for_each_channel(channel, efx) {
+>>>>>>> refs/remotes/origin/master
 		efx_for_each_channel_rx_queue(rx_queue, channel)
 			efx_fini_rx_queue(rx_queue);
 		efx_for_each_possible_channel_tx_queue(tx_queue, channel)
@@ -714,6 +957,10 @@ static void efx_remove_channel(struct efx_channel *channel)
 	efx_for_each_possible_channel_tx_queue(tx_queue, channel)
 		efx_remove_tx_queue(tx_queue);
 	efx_remove_eventq(channel);
+<<<<<<< HEAD
+=======
+	channel->type->post_remove(channel);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void efx_remove_channels(struct efx_nic *efx)
@@ -730,7 +977,15 @@ efx_realloc_channels(struct efx_nic *efx, u32 rxq_entries, u32 txq_entries)
 	struct efx_channel *other_channel[EFX_MAX_CHANNELS], *channel;
 	u32 old_rxq_entries, old_txq_entries;
 	unsigned i, next_buffer_table = 0;
+<<<<<<< HEAD
 	int rc = 0;
+=======
+	int rc, rc2;
+
+	rc = efx_check_disabled(efx);
+	if (rc)
+		return rc;
+>>>>>>> refs/remotes/origin/master
 
 	/* Not all channels should be reallocated. We must avoid
 	 * reallocating their buffer table entries.
@@ -756,7 +1011,11 @@ efx_realloc_channels(struct efx_nic *efx, u32 rxq_entries, u32 txq_entries)
 
 	efx_device_detach_sync(efx);
 	efx_stop_all(efx);
+<<<<<<< HEAD
 	efx_stop_interrupts(efx, true);
+=======
+	efx_soft_disable_interrupts(efx);
+>>>>>>> refs/remotes/origin/master
 
 	/* Clone channels (where possible) */
 	memset(other_channel, 0, sizeof(other_channel));
@@ -806,9 +1065,22 @@ out:
 		}
 	}
 
+<<<<<<< HEAD
 	efx_start_interrupts(efx, true);
 	efx_start_all(efx);
 	netif_device_attach(efx->net_dev);
+=======
+	rc2 = efx_soft_enable_interrupts(efx);
+	if (rc2) {
+		rc = rc ? rc : rc2;
+		netif_err(efx, drv, efx->net_dev,
+			  "unable to restart interrupts on channel reallocation\n");
+		efx_schedule_reset(efx, RESET_TYPE_DISABLE);
+	} else {
+		efx_start_all(efx);
+		netif_device_attach(efx->net_dev);
+	}
+>>>>>>> refs/remotes/origin/master
 	return rc;
 
 rollback:
@@ -830,6 +1102,10 @@ void efx_schedule_slow_fill(struct efx_rx_queue *rx_queue)
 
 static const struct efx_channel_type efx_default_channel_type = {
 	.pre_probe		= efx_channel_dummy_op_int,
+<<<<<<< HEAD
+=======
+	.post_remove		= efx_channel_dummy_op_void,
+>>>>>>> refs/remotes/origin/master
 	.get_name		= efx_get_channel_name,
 	.copy			= efx_copy_channel,
 	.keep_eventq		= false,
@@ -840,6 +1116,13 @@ int efx_channel_dummy_op_int(struct efx_channel *channel)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+void efx_channel_dummy_op_void(struct efx_channel *channel)
+{
+}
+
+>>>>>>> refs/remotes/origin/master
 /**************************************************************************
  *
  * Port handling
@@ -873,10 +1156,16 @@ void efx_link_status_changed(struct efx_nic *efx)
 	/* Status message for kernel log */
 	if (link_state->up)
 		netif_info(efx, link, efx->net_dev,
+<<<<<<< HEAD
 			   "link up at %uMbps %s-duplex (MTU %d)%s\n",
 			   link_state->speed, link_state->fd ? "full" : "half",
 			   efx->net_dev->mtu,
 			   (efx->promiscuous ? " [PROMISC]" : ""));
+=======
+			   "link up at %uMbps %s-duplex (MTU %d)\n",
+			   link_state->speed, link_state->fd ? "full" : "half",
+			   efx->net_dev->mtu);
+>>>>>>> refs/remotes/origin/master
 	else
 		netif_info(efx, link, efx->net_dev, "link down\n");
 }
@@ -925,10 +1214,13 @@ int __efx_reconfigure_port(struct efx_nic *efx)
 
 	WARN_ON(!mutex_is_locked(&efx->mac_lock));
 
+<<<<<<< HEAD
 	/* Serialise the promiscuous flag with efx_set_rx_mode. */
 	netif_addr_lock_bh(efx->net_dev);
 	netif_addr_unlock_bh(efx->net_dev);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Disable PHY transmit in mac level loopbacks */
 	phy_mode = efx->phy_mode;
 	if (LOOPBACK_INTERNAL(efx))
@@ -1086,6 +1378,10 @@ static int efx_init_io(struct efx_nic *efx)
 {
 	struct pci_dev *pci_dev = efx->pci_dev;
 	dma_addr_t dma_mask = efx->type->max_dma_mask;
+<<<<<<< HEAD
+=======
+	unsigned int mem_map_size = efx->type->mem_map_size(efx);
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	netif_dbg(efx, probe, efx->net_dev, "initialising I/O\n");
@@ -1105,8 +1401,13 @@ static int efx_init_io(struct efx_nic *efx)
 	 * masks event though they reject 46 bit masks.
 	 */
 	while (dma_mask > 0x7fffffffUL) {
+<<<<<<< HEAD
 		if (pci_dma_supported(pci_dev, dma_mask)) {
 			rc = pci_set_dma_mask(pci_dev, dma_mask);
+=======
+		if (dma_supported(&pci_dev->dev, dma_mask)) {
+			rc = dma_set_mask_and_coherent(&pci_dev->dev, dma_mask);
+>>>>>>> refs/remotes/origin/master
 			if (rc == 0)
 				break;
 		}
@@ -1119,6 +1420,7 @@ static int efx_init_io(struct efx_nic *efx)
 	}
 	netif_dbg(efx, probe, efx->net_dev,
 		  "using DMA mask %llx\n", (unsigned long long) dma_mask);
+<<<<<<< HEAD
 	rc = pci_set_consistent_dma_mask(pci_dev, dma_mask);
 	if (rc) {
 		/* pci_set_consistent_dma_mask() is not *allowed* to
@@ -1129,6 +1431,8 @@ static int efx_init_io(struct efx_nic *efx)
 			  "failed to set consistent DMA mask\n");
 		goto fail2;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 
 	efx->membase_phys = pci_resource_start(efx->pci_dev, EFX_MEM_BAR);
 	rc = pci_request_region(pci_dev, EFX_MEM_BAR, "sfc");
@@ -1138,6 +1442,7 @@ static int efx_init_io(struct efx_nic *efx)
 		rc = -EIO;
 		goto fail3;
 	}
+<<<<<<< HEAD
 	efx->membase = ioremap_nocache(efx->membase_phys,
 				       efx->type->mem_map_size);
 	if (!efx->membase) {
@@ -1145,13 +1450,25 @@ static int efx_init_io(struct efx_nic *efx)
 			  "could not map memory BAR at %llx+%x\n",
 			  (unsigned long long)efx->membase_phys,
 			  efx->type->mem_map_size);
+=======
+	efx->membase = ioremap_nocache(efx->membase_phys, mem_map_size);
+	if (!efx->membase) {
+		netif_err(efx, probe, efx->net_dev,
+			  "could not map memory BAR at %llx+%x\n",
+			  (unsigned long long)efx->membase_phys, mem_map_size);
+>>>>>>> refs/remotes/origin/master
 		rc = -ENOMEM;
 		goto fail4;
 	}
 	netif_dbg(efx, probe, efx->net_dev,
 		  "memory BAR at %llx+%x (virtual %p)\n",
+<<<<<<< HEAD
 		  (unsigned long long)efx->membase_phys,
 		  efx->type->mem_map_size, efx->membase);
+=======
+		  (unsigned long long)efx->membase_phys, mem_map_size,
+		  efx->membase);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -1225,6 +1542,7 @@ static unsigned int efx_wanted_parallelism(struct efx_nic *efx)
 	return count;
 }
 
+<<<<<<< HEAD
 static int
 efx_init_rx_cpu_rmap(struct efx_nic *efx, struct msix_entry *xentries)
 {
@@ -1248,13 +1566,18 @@ efx_init_rx_cpu_rmap(struct efx_nic *efx, struct msix_entry *xentries)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Probe the number and type of interrupts we are able to obtain, and
  * the resulting numbers of channels and RX queues.
  */
 static int efx_probe_interrupts(struct efx_nic *efx)
 {
+<<<<<<< HEAD
 	unsigned int max_channels =
 		min(efx->type->phys_addr_channels, EFX_MAX_CHANNELS);
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int extra_channels = 0;
 	unsigned int i, j;
 	int rc;
@@ -1271,7 +1594,11 @@ static int efx_probe_interrupts(struct efx_nic *efx)
 		if (separate_tx_channels)
 			n_channels *= 2;
 		n_channels += extra_channels;
+<<<<<<< HEAD
 		n_channels = min(n_channels, max_channels);
+=======
+		n_channels = min(n_channels, efx->max_channels);
+>>>>>>> refs/remotes/origin/master
 
 		for (i = 0; i < n_channels; i++)
 			xentries[i].entry = i;
@@ -1301,11 +1628,14 @@ static int efx_probe_interrupts(struct efx_nic *efx)
 				efx->n_tx_channels = n_channels;
 				efx->n_rx_channels = n_channels;
 			}
+<<<<<<< HEAD
 			rc = efx_init_rx_cpu_rmap(efx, xentries);
 			if (rc) {
 				pci_disable_msix(efx->pci_dev);
 				return rc;
 			}
+=======
+>>>>>>> refs/remotes/origin/master
 			for (i = 0; i < efx->n_channels; i++)
 				efx_get_channel(efx, i)->irq =
 					xentries[i].vector;
@@ -1362,6 +1692,7 @@ static int efx_probe_interrupts(struct efx_nic *efx)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Enable interrupts, then probe and start the event queues */
 static void efx_start_interrupts(struct efx_nic *efx, bool may_keep_eventq)
 {
@@ -1374,10 +1705,29 @@ static void efx_start_interrupts(struct efx_nic *efx, bool may_keep_eventq)
 	efx_for_each_channel(channel, efx) {
 		if (!channel->type->keep_eventq || !may_keep_eventq)
 			efx_init_eventq(channel);
+=======
+static int efx_soft_enable_interrupts(struct efx_nic *efx)
+{
+	struct efx_channel *channel, *end_channel;
+	int rc;
+
+	BUG_ON(efx->state == STATE_DISABLED);
+
+	efx->irq_soft_enabled = true;
+	smp_wmb();
+
+	efx_for_each_channel(channel, efx) {
+		if (!channel->type->keep_eventq) {
+			rc = efx_init_eventq(channel);
+			if (rc)
+				goto fail;
+		}
+>>>>>>> refs/remotes/origin/master
 		efx_start_eventq(channel);
 	}
 
 	efx_mcdi_mode_event(efx);
+<<<<<<< HEAD
 }
 
 static void efx_stop_interrupts(struct efx_nic *efx, bool may_keep_eventq)
@@ -1391,15 +1741,111 @@ static void efx_stop_interrupts(struct efx_nic *efx, bool may_keep_eventq)
 		synchronize_irq(efx->legacy_irq);
 		efx->legacy_irq_enabled = false;
 	}
+=======
+
+	return 0;
+fail:
+	end_channel = channel;
+	efx_for_each_channel(channel, efx) {
+		if (channel == end_channel)
+			break;
+		efx_stop_eventq(channel);
+		if (!channel->type->keep_eventq)
+			efx_fini_eventq(channel);
+	}
+
+	return rc;
+}
+
+static void efx_soft_disable_interrupts(struct efx_nic *efx)
+{
+	struct efx_channel *channel;
+
+	if (efx->state == STATE_DISABLED)
+		return;
+
+	efx_mcdi_mode_poll(efx);
+
+	efx->irq_soft_enabled = false;
+	smp_wmb();
+
+	if (efx->legacy_irq)
+		synchronize_irq(efx->legacy_irq);
+>>>>>>> refs/remotes/origin/master
 
 	efx_for_each_channel(channel, efx) {
 		if (channel->irq)
 			synchronize_irq(channel->irq);
 
 		efx_stop_eventq(channel);
+<<<<<<< HEAD
 		if (!channel->type->keep_eventq || !may_keep_eventq)
 			efx_fini_eventq(channel);
 	}
+=======
+		if (!channel->type->keep_eventq)
+			efx_fini_eventq(channel);
+	}
+
+	/* Flush the asynchronous MCDI request queue */
+	efx_mcdi_flush_async(efx);
+}
+
+static int efx_enable_interrupts(struct efx_nic *efx)
+{
+	struct efx_channel *channel, *end_channel;
+	int rc;
+
+	BUG_ON(efx->state == STATE_DISABLED);
+
+	if (efx->eeh_disabled_legacy_irq) {
+		enable_irq(efx->legacy_irq);
+		efx->eeh_disabled_legacy_irq = false;
+	}
+
+	efx->type->irq_enable_master(efx);
+
+	efx_for_each_channel(channel, efx) {
+		if (channel->type->keep_eventq) {
+			rc = efx_init_eventq(channel);
+			if (rc)
+				goto fail;
+		}
+	}
+
+	rc = efx_soft_enable_interrupts(efx);
+	if (rc)
+		goto fail;
+
+	return 0;
+
+fail:
+	end_channel = channel;
+	efx_for_each_channel(channel, efx) {
+		if (channel == end_channel)
+			break;
+		if (channel->type->keep_eventq)
+			efx_fini_eventq(channel);
+	}
+
+	efx->type->irq_disable_non_ev(efx);
+
+	return rc;
+}
+
+static void efx_disable_interrupts(struct efx_nic *efx)
+{
+	struct efx_channel *channel;
+
+	efx_soft_disable_interrupts(efx);
+
+	efx_for_each_channel(channel, efx) {
+		if (channel->type->keep_eventq)
+			efx_fini_eventq(channel);
+	}
+
+	efx->type->irq_disable_non_ev(efx);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void efx_remove_interrupts(struct efx_nic *efx)
@@ -1424,10 +1870,23 @@ static void efx_set_channels(struct efx_nic *efx)
 	efx->tx_channel_offset =
 		separate_tx_channels ? efx->n_channels - efx->n_tx_channels : 0;
 
+<<<<<<< HEAD
 	/* We need to adjust the TX queue numbers if we have separate
 	 * RX-only and TX-only channels.
 	 */
 	efx_for_each_channel(channel, efx) {
+=======
+	/* We need to mark which channels really have RX and TX
+	 * queues, and adjust the TX queue numbers if we have separate
+	 * RX-only and TX-only channels.
+	 */
+	efx_for_each_channel(channel, efx) {
+		if (channel->channel < efx->n_rx_channels)
+			channel->rx_queue.core_index = channel->channel;
+		else
+			channel->rx_queue.core_index = -1;
+
+>>>>>>> refs/remotes/origin/master
 		efx_for_each_channel_tx_queue(tx_queue, channel)
 			tx_queue->queue -= (efx->tx_channel_offset *
 					    EFX_TXQ_TYPES);
@@ -1450,9 +1909,17 @@ static int efx_probe_nic(struct efx_nic *efx)
 	 * in MSI-X interrupts. */
 	rc = efx_probe_interrupts(efx);
 	if (rc)
+<<<<<<< HEAD
 		goto fail;
 
 	efx->type->dimension_resources(efx);
+=======
+		goto fail1;
+
+	rc = efx->type->dimension_resources(efx);
+	if (rc)
+		goto fail2;
+>>>>>>> refs/remotes/origin/master
 
 	if (efx->n_channels > 1)
 		get_random_bytes(&efx->rx_hash_key, sizeof(efx->rx_hash_key));
@@ -1470,7 +1937,13 @@ static int efx_probe_nic(struct efx_nic *efx)
 
 	return 0;
 
+<<<<<<< HEAD
 fail:
+=======
+fail2:
+	efx_remove_interrupts(efx);
+fail1:
+>>>>>>> refs/remotes/origin/master
 	efx->type->remove(efx);
 	return rc;
 }
@@ -1483,6 +1956,47 @@ static void efx_remove_nic(struct efx_nic *efx)
 	efx->type->remove(efx);
 }
 
+<<<<<<< HEAD
+=======
+static int efx_probe_filters(struct efx_nic *efx)
+{
+	int rc;
+
+	spin_lock_init(&efx->filter_lock);
+
+	rc = efx->type->filter_table_probe(efx);
+	if (rc)
+		return rc;
+
+#ifdef CONFIG_RFS_ACCEL
+	if (efx->type->offload_features & NETIF_F_NTUPLE) {
+		efx->rps_flow_id = kcalloc(efx->type->max_rx_ip_filters,
+					   sizeof(*efx->rps_flow_id),
+					   GFP_KERNEL);
+		if (!efx->rps_flow_id) {
+			efx->type->filter_table_remove(efx);
+			return -ENOMEM;
+		}
+	}
+#endif
+
+	return 0;
+}
+
+static void efx_remove_filters(struct efx_nic *efx)
+{
+#ifdef CONFIG_RFS_ACCEL
+	kfree(efx->rps_flow_id);
+#endif
+	efx->type->filter_table_remove(efx);
+}
+
+static void efx_restore_filters(struct efx_nic *efx)
+{
+	efx->type->filter_table_restore(efx);
+}
+
+>>>>>>> refs/remotes/origin/master
 /**************************************************************************
  *
  * NIC startup/shutdown
@@ -1535,14 +2049,24 @@ static int efx_probe_all(struct efx_nic *efx)
 	return rc;
 }
 
+<<<<<<< HEAD
 /* Called after previous invocation(s) of efx_stop_all, restarts the port,
  * kernel transmit queues and NAPI processing, and ensures that the port is
  * scheduled to be reconfigured. This function is safe to call multiple
  * times when the NIC is in any state.
+=======
+/* If the interface is supposed to be running but is not, start
+ * the hardware and software data path, regular activity for the port
+ * (MAC statistics, link polling, etc.) and schedule the port to be
+ * reconfigured.  Interrupts must already be enabled.  This function
+ * is safe to call multiple times, so long as the NIC is not disabled.
+ * Requires the RTNL lock.
+>>>>>>> refs/remotes/origin/master
  */
 static void efx_start_all(struct efx_nic *efx)
 {
 	EFX_ASSERT_RESET_SERIALISED(efx);
+<<<<<<< HEAD
 
 	/* Check that it is appropriate to restart the interface. All
 	 * of these flags are safe to read under just the rtnl lock */
@@ -1551,11 +2075,19 @@ static void efx_start_all(struct efx_nic *efx)
 	if ((efx->state != STATE_RUNNING) && (efx->state != STATE_INIT))
 		return;
 	if (!netif_running(efx->net_dev))
+=======
+	BUG_ON(efx->state == STATE_DISABLED);
+
+	/* Check that it is appropriate to restart the interface. All
+	 * of these flags are safe to read under just the rtnl lock */
+	if (efx->port_enabled || !netif_running(efx->net_dev))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	efx_start_port(efx);
 	efx_start_datapath(efx);
 
+<<<<<<< HEAD
 	/* Start the hardware monitor if there is one. Otherwise (we're link
 	 * event driven), we have to poll the PHY because after an event queue
 	 * flush, we could have a missed a link state change */
@@ -1563,6 +2095,17 @@ static void efx_start_all(struct efx_nic *efx)
 		queue_delayed_work(efx->workqueue, &efx->monitor_work,
 				   efx_monitor_interval);
 	} else {
+=======
+	/* Start the hardware monitor if there is one */
+	if (efx->type->monitor != NULL)
+		queue_delayed_work(efx->workqueue, &efx->monitor_work,
+				   efx_monitor_interval);
+
+	/* If link state detection is normally event-driven, we have
+	 * to poll now because we could have missed a change
+	 */
+	if (efx_nic_rev(efx) >= EFX_REV_SIENA_A0) {
+>>>>>>> refs/remotes/origin/master
 		mutex_lock(&efx->mac_lock);
 		if (efx->phy_op->poll(efx))
 			efx_link_status_changed(efx);
@@ -1584,11 +2127,19 @@ static void efx_flush_all(struct efx_nic *efx)
 	cancel_work_sync(&efx->mac_work);
 }
 
+<<<<<<< HEAD
 /* Quiesce hardware and software without bringing the link down.
  * Safe to call multiple times, when the nic and interface is in any
  * state. The caller is guaranteed to subsequently be in a position
  * to modify any hardware and software state they see fit without
  * taking locks. */
+=======
+/* Quiesce the hardware and software data path, and regular activity
+ * for the port without bringing the link down.  Safe to call multiple
+ * times with the NIC in almost any state, but interrupts should be
+ * enabled.  Requires the RTNL lock.
+ */
+>>>>>>> refs/remotes/origin/master
 static void efx_stop_all(struct efx_nic *efx)
 {
 	EFX_ASSERT_RESET_SERIALISED(efx);
@@ -1745,7 +2296,12 @@ static int efx_ioctl(struct net_device *net_dev, struct ifreq *ifr, int cmd)
 	struct efx_nic *efx = netdev_priv(net_dev);
 	struct mii_ioctl_data *data = if_mii(ifr);
 
+<<<<<<< HEAD
 	EFX_ASSERT_RESET_SERIALISED(efx);
+=======
+	if (cmd == SIOCSHWTSTAMP)
+		return efx_ptp_ioctl(efx, ifr, cmd);
+>>>>>>> refs/remotes/origin/master
 
 	/* Convert phy_id from older PRTAD/DEVAD format */
 	if ((cmd == SIOCGMIIREG || cmd == SIOCSMIIREG) &&
@@ -1826,13 +2382,23 @@ static void efx_netpoll(struct net_device *net_dev)
 static int efx_net_open(struct net_device *net_dev)
 {
 	struct efx_nic *efx = netdev_priv(net_dev);
+<<<<<<< HEAD
 	EFX_ASSERT_RESET_SERIALISED(efx);
+=======
+	int rc;
+>>>>>>> refs/remotes/origin/master
 
 	netif_dbg(efx, ifup, efx->net_dev, "opening device on CPU %d\n",
 		  raw_smp_processor_id());
 
+<<<<<<< HEAD
 	if (efx->state == STATE_DISABLED)
 		return -EIO;
+=======
+	rc = efx_check_disabled(efx);
+	if (rc)
+		return rc;
+>>>>>>> refs/remotes/origin/master
 	if (efx->phy_mode & PHY_MODE_SPECIAL)
 		return -EBUSY;
 	if (efx_mcdi_poll_reboot(efx) && efx_reset(efx, RESET_TYPE_ALL))
@@ -1858,10 +2424,15 @@ static int efx_net_stop(struct net_device *net_dev)
 	netif_dbg(efx, ifdown, efx->net_dev, "closing on CPU %d\n",
 		  raw_smp_processor_id());
 
+<<<<<<< HEAD
 	if (efx->state != STATE_DISABLED) {
 		/* Stop the device and flush all the channels */
 		efx_stop_all(efx);
 	}
+=======
+	/* Stop the device and flush all the channels */
+	efx_stop_all(efx);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1871,6 +2442,7 @@ static struct rtnl_link_stats64 *efx_net_stats(struct net_device *net_dev,
 					       struct rtnl_link_stats64 *stats)
 {
 	struct efx_nic *efx = netdev_priv(net_dev);
+<<<<<<< HEAD
 	struct efx_mac_stats *mac_stats = &efx->mac_stats;
 
 	spin_lock_bh(&efx->stats_lock);
@@ -1899,6 +2471,11 @@ static struct rtnl_link_stats64 *efx_net_stats(struct net_device *net_dev,
 	stats->tx_errors = (stats->tx_window_errors +
 			    mac_stats->tx_bad);
 
+=======
+
+	spin_lock_bh(&efx->stats_lock);
+	efx->type->update_stats(efx, NULL, stats);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_bh(&efx->stats_lock);
 
 	return stats;
@@ -1921,9 +2498,17 @@ static void efx_watchdog(struct net_device *net_dev)
 static int efx_change_mtu(struct net_device *net_dev, int new_mtu)
 {
 	struct efx_nic *efx = netdev_priv(net_dev);
+<<<<<<< HEAD
 
 	EFX_ASSERT_RESET_SERIALISED(efx);
 
+=======
+	int rc;
+
+	rc = efx_check_disabled(efx);
+	if (rc)
+		return rc;
+>>>>>>> refs/remotes/origin/master
 	if (new_mtu > EFX_MAX_MTU)
 		return -EINVAL;
 
@@ -1933,8 +2518,11 @@ static int efx_change_mtu(struct net_device *net_dev, int new_mtu)
 	efx_stop_all(efx);
 
 	mutex_lock(&efx->mac_lock);
+<<<<<<< HEAD
 	/* Reconfigure the MAC before enabling the dma queues so that
 	 * the RX buffers don't overflow */
+=======
+>>>>>>> refs/remotes/origin/master
 	net_dev->mtu = new_mtu;
 	efx->type->reconfigure_mac(efx);
 	mutex_unlock(&efx->mac_lock);
@@ -1950,8 +2538,11 @@ static int efx_set_mac_address(struct net_device *net_dev, void *data)
 	struct sockaddr *addr = data;
 	char *new_addr = addr->sa_data;
 
+<<<<<<< HEAD
 	EFX_ASSERT_RESET_SERIALISED(efx);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!is_valid_ether_addr(new_addr)) {
 		netif_err(efx, drv, efx->net_dev,
 			  "invalid ethernet MAC address requested: %pM\n",
@@ -1974,6 +2565,7 @@ static int efx_set_mac_address(struct net_device *net_dev, void *data)
 static void efx_set_rx_mode(struct net_device *net_dev)
 {
 	struct efx_nic *efx = netdev_priv(net_dev);
+<<<<<<< HEAD
 	struct netdev_hw_addr *ha;
 	union efx_multicast_hash *mc_hash = &efx->multicast_hash;
 	u32 crc;
@@ -1998,6 +2590,8 @@ static void efx_set_rx_mode(struct net_device *net_dev)
 		 */
 		set_bit_le(0xff, mc_hash->byte);
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (efx->port_enabled)
 		queue_work(efx->workqueue, &efx->mac_work);
@@ -2015,7 +2609,11 @@ static int efx_set_features(struct net_device *net_dev, netdev_features_t data)
 	return 0;
 }
 
+<<<<<<< HEAD
 static const struct net_device_ops efx_netdev_ops = {
+=======
+static const struct net_device_ops efx_farch_netdev_ops = {
+>>>>>>> refs/remotes/origin/master
 	.ndo_open		= efx_net_open,
 	.ndo_stop		= efx_net_stop,
 	.ndo_get_stats64	= efx_net_stats,
@@ -2042,6 +2640,29 @@ static const struct net_device_ops efx_netdev_ops = {
 #endif
 };
 
+<<<<<<< HEAD
+=======
+static const struct net_device_ops efx_ef10_netdev_ops = {
+	.ndo_open		= efx_net_open,
+	.ndo_stop		= efx_net_stop,
+	.ndo_get_stats64	= efx_net_stats,
+	.ndo_tx_timeout		= efx_watchdog,
+	.ndo_start_xmit		= efx_hard_start_xmit,
+	.ndo_validate_addr	= eth_validate_addr,
+	.ndo_do_ioctl		= efx_ioctl,
+	.ndo_change_mtu		= efx_change_mtu,
+	.ndo_set_mac_address	= efx_set_mac_address,
+	.ndo_set_rx_mode	= efx_set_rx_mode,
+	.ndo_set_features	= efx_set_features,
+#ifdef CONFIG_NET_POLL_CONTROLLER
+	.ndo_poll_controller	= efx_netpoll,
+#endif
+#ifdef CONFIG_RFS_ACCEL
+	.ndo_rx_flow_steer	= efx_filter_rfs,
+#endif
+};
+
+>>>>>>> refs/remotes/origin/master
 static void efx_update_name(struct efx_nic *efx)
 {
 	strcpy(efx->name, efx->net_dev->name);
@@ -2052,9 +2673,16 @@ static void efx_update_name(struct efx_nic *efx)
 static int efx_netdev_event(struct notifier_block *this,
 			    unsigned long event, void *ptr)
 {
+<<<<<<< HEAD
 	struct net_device *net_dev = ptr;
 
 	if (net_dev->netdev_ops == &efx_netdev_ops &&
+=======
+	struct net_device *net_dev = netdev_notifier_info_to_dev(ptr);
+
+	if ((net_dev->netdev_ops == &efx_farch_netdev_ops ||
+	     net_dev->netdev_ops == &efx_ef10_netdev_ops) &&
+>>>>>>> refs/remotes/origin/master
 	    event == NETDEV_CHANGENAME)
 		efx_update_name(netdev_priv(net_dev));
 
@@ -2071,7 +2699,11 @@ show_phy_type(struct device *dev, struct device_attribute *attr, char *buf)
 	struct efx_nic *efx = pci_get_drvdata(to_pci_dev(dev));
 	return sprintf(buf, "%d\n", efx->phy_type);
 }
+<<<<<<< HEAD
 static DEVICE_ATTR(phy_type, 0644, show_phy_type, NULL);
+=======
+static DEVICE_ATTR(phy_type, 0444, show_phy_type, NULL);
+>>>>>>> refs/remotes/origin/master
 
 static int efx_register_netdev(struct efx_nic *efx)
 {
@@ -2081,17 +2713,48 @@ static int efx_register_netdev(struct efx_nic *efx)
 
 	net_dev->watchdog_timeo = 5 * HZ;
 	net_dev->irq = efx->pci_dev->irq;
+<<<<<<< HEAD
 	net_dev->netdev_ops = &efx_netdev_ops;
+=======
+	if (efx_nic_rev(efx) >= EFX_REV_HUNT_A0) {
+		net_dev->netdev_ops = &efx_ef10_netdev_ops;
+		net_dev->priv_flags |= IFF_UNICAST_FLT;
+	} else {
+		net_dev->netdev_ops = &efx_farch_netdev_ops;
+	}
+>>>>>>> refs/remotes/origin/master
 	SET_ETHTOOL_OPS(net_dev, &efx_ethtool_ops);
 	net_dev->gso_max_segs = EFX_TSO_MAX_SEGS;
 
 	rtnl_lock();
 
+<<<<<<< HEAD
+=======
+	/* Enable resets to be scheduled and check whether any were
+	 * already requested.  If so, the NIC is probably hosed so we
+	 * abort.
+	 */
+	efx->state = STATE_READY;
+	smp_mb(); /* ensure we change state before checking reset_pending */
+	if (efx->reset_pending) {
+		netif_err(efx, probe, efx->net_dev,
+			  "aborting probe due to scheduled reset\n");
+		rc = -EIO;
+		goto fail_locked;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	rc = dev_alloc_name(net_dev, net_dev->name);
 	if (rc < 0)
 		goto fail_locked;
 	efx_update_name(efx);
 
+<<<<<<< HEAD
+=======
+	/* Always start with carrier off; PHY events will detect the link */
+	netif_carrier_off(net_dev);
+
+>>>>>>> refs/remotes/origin/master
 	rc = register_netdevice(net_dev);
 	if (rc)
 		goto fail_locked;
@@ -2102,9 +2765,12 @@ static int efx_register_netdev(struct efx_nic *efx)
 			efx_init_tx_queue_core_txq(tx_queue);
 	}
 
+<<<<<<< HEAD
 	/* Always start with carrier off; PHY events will detect the link */
 	netif_carrier_off(net_dev);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	rtnl_unlock();
 
 	rc = device_create_file(&efx->pci_dev->dev, &dev_attr_phy_type);
@@ -2116,6 +2782,7 @@ static int efx_register_netdev(struct efx_nic *efx)
 
 	return 0;
 
+<<<<<<< HEAD
 fail_locked:
 	rtnl_unlock();
 	netif_err(efx, drv, efx->net_dev, "could not register net dev\n");
@@ -2124,18 +2791,32 @@ fail_locked:
 fail_registered:
 	unregister_netdev(net_dev);
 	return rc;
+=======
+fail_registered:
+	rtnl_lock();
+	unregister_netdevice(net_dev);
+fail_locked:
+	efx->state = STATE_UNINIT;
+	rtnl_unlock();
+	netif_err(efx, drv, efx->net_dev, "could not register net dev\n");
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void efx_unregister_netdev(struct efx_nic *efx)
 {
+<<<<<<< HEAD
 	struct efx_channel *channel;
 	struct efx_tx_queue *tx_queue;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!efx->net_dev)
 		return;
 
 	BUG_ON(netdev_priv(efx->net_dev) != efx);
 
+<<<<<<< HEAD
 	/* Free up any skbs still remaining. This has to happen before
 	 * we try to unregister the netdev as running their destructors
 	 * may be needed to get the device ref. count to 0. */
@@ -2147,6 +2828,15 @@ static void efx_unregister_netdev(struct efx_nic *efx)
 	strlcpy(efx->name, pci_name(efx->pci_dev), sizeof(efx->name));
 	device_remove_file(&efx->pci_dev->dev, &dev_attr_phy_type);
 	unregister_netdev(efx->net_dev);
+=======
+	strlcpy(efx->name, pci_name(efx->pci_dev), sizeof(efx->name));
+	device_remove_file(&efx->pci_dev->dev, &dev_attr_phy_type);
+
+	rtnl_lock();
+	unregister_netdevice(efx->net_dev);
+	efx->state = STATE_UNINIT;
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
 }
 
 /**************************************************************************
@@ -2162,9 +2852,15 @@ void efx_reset_down(struct efx_nic *efx, enum reset_type method)
 	EFX_ASSERT_RESET_SERIALISED(efx);
 
 	efx_stop_all(efx);
+<<<<<<< HEAD
 	mutex_lock(&efx->mac_lock);
 
 	efx_stop_interrupts(efx, false);
+=======
+	efx_disable_interrupts(efx);
+
+	mutex_lock(&efx->mac_lock);
+>>>>>>> refs/remotes/origin/master
 	if (efx->port_initialized && method != RESET_TYPE_INVISIBLE)
 		efx->phy_op->fini(efx);
 	efx->type->fini(efx);
@@ -2199,9 +2895,15 @@ int efx_reset_up(struct efx_nic *efx, enum reset_type method, bool ok)
 				  "could not restore PHY settings\n");
 	}
 
+<<<<<<< HEAD
 	efx->type->reconfigure_mac(efx);
 
 	efx_start_interrupts(efx, false);
+=======
+	rc = efx_enable_interrupts(efx);
+	if (rc)
+		goto fail;
+>>>>>>> refs/remotes/origin/master
 	efx_restore_filters(efx);
 	efx_sriov_reset(efx);
 
@@ -2254,7 +2956,13 @@ int efx_reset(struct efx_nic *efx, enum reset_type method)
 
 out:
 	/* Leave device stopped if necessary */
+<<<<<<< HEAD
 	disabled = rc || method == RESET_TYPE_DISABLE;
+=======
+	disabled = rc ||
+		method == RESET_TYPE_DISABLE ||
+		method == RESET_TYPE_RECOVER_OR_DISABLE;
+>>>>>>> refs/remotes/origin/master
 	rc2 = efx_reset_up(efx, method, !disabled);
 	if (rc2) {
 		disabled = true;
@@ -2273,12 +2981,42 @@ out:
 	return rc;
 }
 
+<<<<<<< HEAD
+=======
+/* Try recovery mechanisms.
+ * For now only EEH is supported.
+ * Returns 0 if the recovery mechanisms are unsuccessful.
+ * Returns a non-zero value otherwise.
+ */
+int efx_try_recovery(struct efx_nic *efx)
+{
+#ifdef CONFIG_EEH
+	/* A PCI error can occur and not be seen by EEH because nothing
+	 * happens on the PCI bus. In this case the driver may fail and
+	 * schedule a 'recover or reset', leading to this recovery handler.
+	 * Manually call the eeh failure check function.
+	 */
+	struct eeh_dev *eehdev =
+		of_node_to_eeh_dev(pci_device_to_OF_node(efx->pci_dev));
+
+	if (eeh_dev_check_failure(eehdev)) {
+		/* The EEH mechanisms will handle the error and reset the
+		 * device if necessary.
+		 */
+		return 1;
+	}
+#endif
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* The worker thread exists so that code that cannot sleep can
  * schedule a reset for later.
  */
 static void efx_reset_work(struct work_struct *data)
 {
 	struct efx_nic *efx = container_of(data, struct efx_nic, reset_work);
+<<<<<<< HEAD
 	unsigned long pending = ACCESS_ONCE(efx->reset_pending);
 
 	if (!pending)
@@ -2294,6 +3032,31 @@ static void efx_reset_work(struct work_struct *data)
 
 	rtnl_lock();
 	(void)efx_reset(efx, fls(pending) - 1);
+=======
+	unsigned long pending;
+	enum reset_type method;
+
+	pending = ACCESS_ONCE(efx->reset_pending);
+	method = fls(pending) - 1;
+
+	if ((method == RESET_TYPE_RECOVER_OR_DISABLE ||
+	     method == RESET_TYPE_RECOVER_OR_ALL) &&
+	    efx_try_recovery(efx))
+		return;
+
+	if (!pending)
+		return;
+
+	rtnl_lock();
+
+	/* We checked the state in efx_schedule_reset() but it may
+	 * have changed by now.  Now that we have the RTNL lock,
+	 * it cannot change again.
+	 */
+	if (efx->state == STATE_READY)
+		(void)efx_reset(efx, method);
+
+>>>>>>> refs/remotes/origin/master
 	rtnl_unlock();
 }
 
@@ -2301,11 +3064,28 @@ void efx_schedule_reset(struct efx_nic *efx, enum reset_type type)
 {
 	enum reset_type method;
 
+<<<<<<< HEAD
 	switch (type) {
 	case RESET_TYPE_INVISIBLE:
 	case RESET_TYPE_ALL:
 	case RESET_TYPE_WORLD:
 	case RESET_TYPE_DISABLE:
+=======
+	if (efx->state == STATE_RECOVERY) {
+		netif_dbg(efx, drv, efx->net_dev,
+			  "recovering: skip scheduling %s reset\n",
+			  RESET_TYPE(type));
+		return;
+	}
+
+	switch (type) {
+	case RESET_TYPE_INVISIBLE:
+	case RESET_TYPE_ALL:
+	case RESET_TYPE_RECOVER_OR_ALL:
+	case RESET_TYPE_WORLD:
+	case RESET_TYPE_DISABLE:
+	case RESET_TYPE_RECOVER_OR_DISABLE:
+>>>>>>> refs/remotes/origin/master
 		method = type;
 		netif_dbg(efx, drv, efx->net_dev, "scheduling %s reset\n",
 			  RESET_TYPE(method));
@@ -2319,6 +3099,16 @@ void efx_schedule_reset(struct efx_nic *efx, enum reset_type type)
 	}
 
 	set_bit(method, &efx->reset_pending);
+<<<<<<< HEAD
+=======
+	smp_mb(); /* ensure we change reset_pending before checking state */
+
+	/* If we're not READY then just leave the flags set as the cue
+	 * to abort probing or reschedule the reset later.
+	 */
+	if (ACCESS_ONCE(efx->state) != STATE_READY)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	/* efx_process_channel() will no longer read events once a
 	 * reset is scheduled. So switch back to poll'd MCDI completions. */
@@ -2345,6 +3135,11 @@ static DEFINE_PCI_DEVICE_TABLE(efx_pci_table) = {
 	 .driver_data = (unsigned long) &siena_a0_nic_type},
 	{PCI_DEVICE(PCI_VENDOR_ID_SOLARFLARE, 0x0813),	/* SFL9021 */
 	 .driver_data = (unsigned long) &siena_a0_nic_type},
+<<<<<<< HEAD
+=======
+	{PCI_DEVICE(PCI_VENDOR_ID_SOLARFLARE, 0x0903),  /* SFC9120 PF */
+	 .driver_data = (unsigned long) &efx_hunt_a0_nic_type},
+>>>>>>> refs/remotes/origin/master
 	{0}			/* end of list */
 };
 
@@ -2384,13 +3179,20 @@ static const struct efx_phy_operations efx_dummy_phy_operations = {
 /* This zeroes out and then fills in the invariants in a struct
  * efx_nic (including all sub-structures).
  */
+<<<<<<< HEAD
 static int efx_init_struct(struct efx_nic *efx, const struct efx_nic_type *type,
+=======
+static int efx_init_struct(struct efx_nic *efx,
+>>>>>>> refs/remotes/origin/master
 			   struct pci_dev *pci_dev, struct net_device *net_dev)
 {
 	int i;
 
 	/* Initialise common structures */
+<<<<<<< HEAD
 	memset(efx, 0, sizeof(*efx));
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&efx->biu_lock);
 #ifdef CONFIG_SFC_MTD
 	INIT_LIST_HEAD(&efx->mtd_list);
@@ -2400,10 +3202,22 @@ static int efx_init_struct(struct efx_nic *efx, const struct efx_nic_type *type,
 	INIT_DELAYED_WORK(&efx->selftest_work, efx_selftest_async_work);
 	efx->pci_dev = pci_dev;
 	efx->msg_enable = debug;
+<<<<<<< HEAD
 	efx->state = STATE_INIT;
 	strlcpy(efx->name, pci_name(pci_dev), sizeof(efx->name));
 
 	efx->net_dev = net_dev;
+=======
+	efx->state = STATE_UNINIT;
+	strlcpy(efx->name, pci_name(pci_dev), sizeof(efx->name));
+
+	efx->net_dev = net_dev;
+	efx->rx_prefix_size = efx->type->rx_prefix_size;
+	efx->rx_ip_align =
+		NET_IP_ALIGN ? (efx->rx_prefix_size + NET_IP_ALIGN) % 4 : 0;
+	efx->rx_packet_hash_offset =
+		efx->type->rx_hash_offset - efx->type->rx_prefix_size;
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&efx->stats_lock);
 	mutex_init(&efx->mac_lock);
 	efx->phy_op = &efx_dummy_phy_operations;
@@ -2415,12 +3229,19 @@ static int efx_init_struct(struct efx_nic *efx, const struct efx_nic_type *type,
 		efx->channel[i] = efx_alloc_channel(efx, i, NULL);
 		if (!efx->channel[i])
 			goto fail;
+<<<<<<< HEAD
 	}
 
 	efx->type = type;
 
 	EFX_BUG_ON_PARANOID(efx->type->phys_addr_channels > EFX_MAX_CHANNELS);
 
+=======
+		efx->msi_context[i].efx = efx;
+		efx->msi_context[i].index = i;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* Higher numbered interrupt modes are less capable! */
 	efx->interrupt_mode = max(efx->type->max_interrupt_mode,
 				  interrupt_mode);
@@ -2463,11 +3284,21 @@ static void efx_fini_struct(struct efx_nic *efx)
  */
 static void efx_pci_remove_main(struct efx_nic *efx)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_RFS_ACCEL
 	free_irq_cpu_rmap(efx->net_dev->rx_cpu_rmap);
 	efx->net_dev->rx_cpu_rmap = NULL;
 #endif
 	efx_stop_interrupts(efx, false);
+=======
+	/* Flush reset_work. It can no longer be scheduled since we
+	 * are not READY.
+	 */
+	BUG_ON(efx->state == STATE_READY);
+	cancel_work_sync(&efx->reset_work);
+
+	efx_disable_interrupts(efx);
+>>>>>>> refs/remotes/origin/master
 	efx_nic_fini_interrupt(efx);
 	efx_fini_port(efx);
 	efx->type->fini(efx);
@@ -2488,6 +3319,7 @@ static void efx_pci_remove(struct pci_dev *pci_dev)
 
 	/* Mark the NIC as fini, then stop the interface */
 	rtnl_lock();
+<<<<<<< HEAD
 	efx->state = STATE_FINI;
 	dev_close(efx->net_dev);
 
@@ -2495,25 +3327,42 @@ static void efx_pci_remove(struct pci_dev *pci_dev)
 	rtnl_unlock();
 
 	efx_stop_interrupts(efx, false);
+=======
+	dev_close(efx->net_dev);
+	efx_disable_interrupts(efx);
+	rtnl_unlock();
+
+>>>>>>> refs/remotes/origin/master
 	efx_sriov_fini(efx);
 	efx_unregister_netdev(efx);
 
 	efx_mtd_remove(efx);
 
+<<<<<<< HEAD
 	/* Wait for any scheduled resets to complete. No more will be
 	 * scheduled from this point because efx_stop_all() has been
 	 * called, we are no longer registered with driverlink, and
 	 * the net_device's have been removed. */
 	cancel_work_sync(&efx->reset_work);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	efx_pci_remove_main(efx);
 
 	efx_fini_io(efx);
 	netif_dbg(efx, drv, efx->net_dev, "shutdown successful\n");
 
+<<<<<<< HEAD
 	pci_set_drvdata(pci_dev, NULL);
 	efx_fini_struct(efx);
 	free_netdev(efx->net_dev);
+=======
+	efx_fini_struct(efx);
+	pci_set_drvdata(pci_dev, NULL);
+	free_netdev(efx->net_dev);
+
+	pci_disable_pcie_error_reporting(pci_dev);
+>>>>>>> refs/remotes/origin/master
 };
 
 /* NIC VPD information
@@ -2598,10 +3447,21 @@ static int efx_pci_probe_main(struct efx_nic *efx)
 	rc = efx_nic_init_interrupt(efx);
 	if (rc)
 		goto fail5;
+<<<<<<< HEAD
 	efx_start_interrupts(efx, false);
 
 	return 0;
 
+=======
+	rc = efx_enable_interrupts(efx);
+	if (rc)
+		goto fail6;
+
+	return 0;
+
+ fail6:
+	efx_nic_fini_interrupt(efx);
+>>>>>>> refs/remotes/origin/master
  fail5:
 	efx_fini_port(efx);
  fail4:
@@ -2622,10 +3482,16 @@ static int efx_pci_probe_main(struct efx_nic *efx)
  * transmission; this is left to the first time one of the network
  * interfaces is brought up (i.e. efx_net_open).
  */
+<<<<<<< HEAD
 static int __devinit efx_pci_probe(struct pci_dev *pci_dev,
 				   const struct pci_device_id *entry)
 {
 	const struct efx_nic_type *type = (const struct efx_nic_type *) entry->driver_data;
+=======
+static int efx_pci_probe(struct pci_dev *pci_dev,
+			 const struct pci_device_id *entry)
+{
+>>>>>>> refs/remotes/origin/master
 	struct net_device *net_dev;
 	struct efx_nic *efx;
 	int rc;
@@ -2635,10 +3501,19 @@ static int __devinit efx_pci_probe(struct pci_dev *pci_dev,
 				     EFX_MAX_RX_QUEUES);
 	if (!net_dev)
 		return -ENOMEM;
+<<<<<<< HEAD
 	net_dev->features |= (type->offload_features | NETIF_F_SG |
 			      NETIF_F_HIGHDMA | NETIF_F_TSO |
 			      NETIF_F_RXCSUM);
 	if (type->offload_features & NETIF_F_V6_CSUM)
+=======
+	efx = netdev_priv(net_dev);
+	efx->type = (const struct efx_nic_type *) entry->driver_data;
+	net_dev->features |= (efx->type->offload_features | NETIF_F_SG |
+			      NETIF_F_HIGHDMA | NETIF_F_TSO |
+			      NETIF_F_RXCSUM);
+	if (efx->type->offload_features & NETIF_F_V6_CSUM)
+>>>>>>> refs/remotes/origin/master
 		net_dev->features |= NETIF_F_TSO6;
 	/* Mask for features that also apply to VLAN devices */
 	net_dev->vlan_features |= (NETIF_F_ALL_CSUM | NETIF_F_SG |
@@ -2646,10 +3521,16 @@ static int __devinit efx_pci_probe(struct pci_dev *pci_dev,
 				   NETIF_F_RXCSUM);
 	/* All offloads can be toggled */
 	net_dev->hw_features = net_dev->features & ~NETIF_F_HIGHDMA;
+<<<<<<< HEAD
 	efx = netdev_priv(net_dev);
 	pci_set_drvdata(pci_dev, efx);
 	SET_NETDEV_DEV(net_dev, &pci_dev->dev);
 	rc = efx_init_struct(efx, type, pci_dev, net_dev);
+=======
+	pci_set_drvdata(pci_dev, efx);
+	SET_NETDEV_DEV(net_dev, &pci_dev->dev);
+	rc = efx_init_struct(efx, pci_dev, net_dev);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		goto fail1;
 
@@ -2664,6 +3545,7 @@ static int __devinit efx_pci_probe(struct pci_dev *pci_dev,
 		goto fail2;
 
 	rc = efx_pci_probe_main(efx);
+<<<<<<< HEAD
 
 	/* Serialise against efx_reset(). No more resets will be
 	 * scheduled since efx_stop_all() has been called, and we have
@@ -2686,6 +3568,11 @@ static int __devinit efx_pci_probe(struct pci_dev *pci_dev,
 	 * so that dev_open()|efx_start_all() will actually start the device */
 	efx->state = STATE_RUNNING;
 
+=======
+	if (rc)
+		goto fail3;
+
+>>>>>>> refs/remotes/origin/master
 	rc = efx_register_netdev(efx);
 	if (rc)
 		goto fail4;
@@ -2705,6 +3592,14 @@ static int __devinit efx_pci_probe(struct pci_dev *pci_dev,
 		netif_warn(efx, probe, efx->net_dev,
 			   "failed to create MTDs (%d)\n", rc);
 
+<<<<<<< HEAD
+=======
+	rc = pci_enable_pcie_error_reporting(pci_dev);
+	if (rc && rc != -EINVAL)
+		netif_warn(efx, probe, efx->net_dev,
+			   "pci_enable_pcie_error_reporting failed (%d)\n", rc);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
  fail4:
@@ -2714,6 +3609,10 @@ static int __devinit efx_pci_probe(struct pci_dev *pci_dev,
  fail2:
 	efx_fini_struct(efx);
  fail1:
+<<<<<<< HEAD
+=======
+	pci_set_drvdata(pci_dev, NULL);
+>>>>>>> refs/remotes/origin/master
 	WARN_ON(rc > 0);
 	netif_dbg(efx, drv, efx->net_dev, "initialisation failed. rc=%d\n", rc);
 	free_netdev(net_dev);
@@ -2724,18 +3623,34 @@ static int efx_pm_freeze(struct device *dev)
 {
 	struct efx_nic *efx = pci_get_drvdata(to_pci_dev(dev));
 
+<<<<<<< HEAD
 	efx->state = STATE_FINI;
 
 	efx_device_detach_sync(efx);
 
 	efx_stop_all(efx);
 	efx_stop_interrupts(efx, false);
+=======
+	rtnl_lock();
+
+	if (efx->state != STATE_DISABLED) {
+		efx->state = STATE_UNINIT;
+
+		efx_device_detach_sync(efx);
+
+		efx_stop_all(efx);
+		efx_disable_interrupts(efx);
+	}
+
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static int efx_pm_thaw(struct device *dev)
 {
+<<<<<<< HEAD
 	struct efx_nic *efx = pci_get_drvdata(to_pci_dev(dev));
 
 	efx->state = STATE_INIT;
@@ -2753,11 +3668,45 @@ static int efx_pm_thaw(struct device *dev)
 	efx->state = STATE_RUNNING;
 
 	efx->type->resume_wol(efx);
+=======
+	int rc;
+	struct efx_nic *efx = pci_get_drvdata(to_pci_dev(dev));
+
+	rtnl_lock();
+
+	if (efx->state != STATE_DISABLED) {
+		rc = efx_enable_interrupts(efx);
+		if (rc)
+			goto fail;
+
+		mutex_lock(&efx->mac_lock);
+		efx->phy_op->reconfigure(efx);
+		mutex_unlock(&efx->mac_lock);
+
+		efx_start_all(efx);
+
+		netif_device_attach(efx->net_dev);
+
+		efx->state = STATE_READY;
+
+		efx->type->resume_wol(efx);
+	}
+
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	/* Reschedule any quenched resets scheduled during efx_pm_freeze() */
 	queue_work(reset_workqueue, &efx->reset_work);
 
 	return 0;
+<<<<<<< HEAD
+=======
+
+fail:
+	rtnl_unlock();
+
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int efx_pm_poweroff(struct device *dev)
@@ -2794,8 +3743,13 @@ static int efx_pm_resume(struct device *dev)
 	rc = efx->type->init(efx);
 	if (rc)
 		return rc;
+<<<<<<< HEAD
 	efx_pm_thaw(dev);
 	return 0;
+=======
+	rc = efx_pm_thaw(dev);
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int efx_pm_suspend(struct device *dev)
@@ -2818,12 +3772,118 @@ static const struct dev_pm_ops efx_pm_ops = {
 	.restore	= efx_pm_resume,
 };
 
+<<<<<<< HEAD
+=======
+/* A PCI error affecting this device was detected.
+ * At this point MMIO and DMA may be disabled.
+ * Stop the software path and request a slot reset.
+ */
+static pci_ers_result_t efx_io_error_detected(struct pci_dev *pdev,
+					      enum pci_channel_state state)
+{
+	pci_ers_result_t status = PCI_ERS_RESULT_RECOVERED;
+	struct efx_nic *efx = pci_get_drvdata(pdev);
+
+	if (state == pci_channel_io_perm_failure)
+		return PCI_ERS_RESULT_DISCONNECT;
+
+	rtnl_lock();
+
+	if (efx->state != STATE_DISABLED) {
+		efx->state = STATE_RECOVERY;
+		efx->reset_pending = 0;
+
+		efx_device_detach_sync(efx);
+
+		efx_stop_all(efx);
+		efx_disable_interrupts(efx);
+
+		status = PCI_ERS_RESULT_NEED_RESET;
+	} else {
+		/* If the interface is disabled we don't want to do anything
+		 * with it.
+		 */
+		status = PCI_ERS_RESULT_RECOVERED;
+	}
+
+	rtnl_unlock();
+
+	pci_disable_device(pdev);
+
+	return status;
+}
+
+/* Fake a successfull reset, which will be performed later in efx_io_resume. */
+static pci_ers_result_t efx_io_slot_reset(struct pci_dev *pdev)
+{
+	struct efx_nic *efx = pci_get_drvdata(pdev);
+	pci_ers_result_t status = PCI_ERS_RESULT_RECOVERED;
+	int rc;
+
+	if (pci_enable_device(pdev)) {
+		netif_err(efx, hw, efx->net_dev,
+			  "Cannot re-enable PCI device after reset.\n");
+		status =  PCI_ERS_RESULT_DISCONNECT;
+	}
+
+	rc = pci_cleanup_aer_uncorrect_error_status(pdev);
+	if (rc) {
+		netif_err(efx, hw, efx->net_dev,
+		"pci_cleanup_aer_uncorrect_error_status failed (%d)\n", rc);
+		/* Non-fatal error. Continue. */
+	}
+
+	return status;
+}
+
+/* Perform the actual reset and resume I/O operations. */
+static void efx_io_resume(struct pci_dev *pdev)
+{
+	struct efx_nic *efx = pci_get_drvdata(pdev);
+	int rc;
+
+	rtnl_lock();
+
+	if (efx->state == STATE_DISABLED)
+		goto out;
+
+	rc = efx_reset(efx, RESET_TYPE_ALL);
+	if (rc) {
+		netif_err(efx, hw, efx->net_dev,
+			  "efx_reset failed after PCI error (%d)\n", rc);
+	} else {
+		efx->state = STATE_READY;
+		netif_dbg(efx, hw, efx->net_dev,
+			  "Done resetting and resuming IO after PCI error.\n");
+	}
+
+out:
+	rtnl_unlock();
+}
+
+/* For simplicity and reliability, we always require a slot reset and try to
+ * reset the hardware when a pci error affecting the device is detected.
+ * We leave both the link_reset and mmio_enabled callback unimplemented:
+ * with our request for slot reset the mmio_enabled callback will never be
+ * called, and the link_reset callback is not used by AER or EEH mechanisms.
+ */
+static struct pci_error_handlers efx_err_handlers = {
+	.error_detected = efx_io_error_detected,
+	.slot_reset	= efx_io_slot_reset,
+	.resume		= efx_io_resume,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct pci_driver efx_pci_driver = {
 	.name		= KBUILD_MODNAME,
 	.id_table	= efx_pci_table,
 	.probe		= efx_pci_probe,
 	.remove		= efx_pci_remove,
 	.driver.pm	= &efx_pm_ops,
+<<<<<<< HEAD
+=======
+	.err_handler	= &efx_err_handlers,
+>>>>>>> refs/remotes/origin/master
 };
 
 /**************************************************************************

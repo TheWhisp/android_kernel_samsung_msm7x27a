@@ -71,8 +71,12 @@ static int pandora_backlight_update_status(struct backlight_device *bl)
 		 * set PWM duty cycle to max. TPS61161 seems to use this
 		 * to calibrate it's PWM sensitivity when it starts.
 		 */
+<<<<<<< HEAD
 		twl_i2c_write_u8(TWL4030_MODULE_PWM0, MAX_VALUE,
 					TWL_PWM0_OFF);
+=======
+		twl_i2c_write_u8(TWL_MODULE_PWM, MAX_VALUE, TWL_PWM0_OFF);
+>>>>>>> refs/remotes/origin/master
 
 		/* first enable clock, then PWM0 out */
 		twl_i2c_read_u8(TWL4030_MODULE_INTBR, &r, TWL_INTBR_GPBR1);
@@ -90,8 +94,12 @@ static int pandora_backlight_update_status(struct backlight_device *bl)
 		usleep_range(2000, 10000);
 	}
 
+<<<<<<< HEAD
 	twl_i2c_write_u8(TWL4030_MODULE_PWM0, MIN_VALUE + brightness,
 				TWL_PWM0_OFF);
+=======
+	twl_i2c_write_u8(TWL_MODULE_PWM, MIN_VALUE + brightness, TWL_PWM0_OFF);
+>>>>>>> refs/remotes/origin/master
 
 done:
 	if (brightness != 0)
@@ -122,8 +130,13 @@ static int pandora_backlight_probe(struct platform_device *pdev)
 	memset(&props, 0, sizeof(props));
 	props.max_brightness = MAX_USER_VALUE;
 	props.type = BACKLIGHT_RAW;
+<<<<<<< HEAD
 	bl = backlight_device_register(pdev->name, &pdev->dev,
 			NULL, &pandora_backlight_ops, &props);
+=======
+	bl = devm_backlight_device_register(&pdev->dev, pdev->name, &pdev->dev,
+					NULL, &pandora_backlight_ops, &props);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(bl)) {
 		dev_err(&pdev->dev, "failed to register backlight\n");
 		return PTR_ERR(bl);
@@ -132,7 +145,11 @@ static int pandora_backlight_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, bl);
 
 	/* 64 cycle period, ON position 0 */
+<<<<<<< HEAD
 	twl_i2c_write_u8(TWL4030_MODULE_PWM0, 0x80, TWL_PWM0_ON);
+=======
+	twl_i2c_write_u8(TWL_MODULE_PWM, 0x80, TWL_PWM0_ON);
+>>>>>>> refs/remotes/origin/master
 
 	bl->props.state |= PANDORABL_WAS_OFF;
 	bl->props.brightness = MAX_USER_VALUE;
@@ -147,6 +164,7 @@ static int pandora_backlight_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int pandora_backlight_remove(struct platform_device *pdev)
 {
 	struct backlight_device *bl = platform_get_drvdata(pdev);
@@ -154,13 +172,18 @@ static int pandora_backlight_remove(struct platform_device *pdev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver pandora_backlight_driver = {
 	.driver		= {
 		.name	= "pandora-backlight",
 		.owner	= THIS_MODULE,
 	},
 	.probe		= pandora_backlight_probe,
+<<<<<<< HEAD
 	.remove		= pandora_backlight_remove,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 module_platform_driver(pandora_backlight_driver);

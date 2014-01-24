@@ -30,10 +30,14 @@
 #include <linux/pci.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/ac97_codec.h>
@@ -73,10 +77,14 @@ MODULE_PARM_DESC(ac97_clock, "AC'97 codec clock (0 = auto-detect).");
 
 /* just for backward compatibility */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable;
 =======
 static bool enable;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable;
+>>>>>>> refs/remotes/origin/master
 module_param(enable, bool, 0444);
 
 /*
@@ -718,8 +726,13 @@ struct ich_pcm_table {
 	int ac97_idx;
 };
 
+<<<<<<< HEAD
 static int __devinit snd_intel8x0m_pcm1(struct intel8x0m *chip, int device,
 				       struct ich_pcm_table *rec)
+=======
+static int snd_intel8x0m_pcm1(struct intel8x0m *chip, int device,
+			      struct ich_pcm_table *rec)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	int err;
@@ -757,7 +770,11 @@ static int __devinit snd_intel8x0m_pcm1(struct intel8x0m *chip, int device,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct ich_pcm_table intel_pcms[] __devinitdata = {
+=======
+static struct ich_pcm_table intel_pcms[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.suffix = "Modem",
 		.playback_ops = &snd_intel8x0m_playback_ops,
@@ -767,7 +784,11 @@ static struct ich_pcm_table intel_pcms[] __devinitdata = {
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit snd_intel8x0m_pcm(struct intel8x0m *chip)
+=======
+static int snd_intel8x0m_pcm(struct intel8x0m *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, tblsize, device, err;
 	struct ich_pcm_table *tbl, *rec;
@@ -827,7 +848,11 @@ static void snd_intel8x0m_mixer_free_ac97(struct snd_ac97 *ac97)
 }
 
 
+<<<<<<< HEAD
 static int __devinit snd_intel8x0m_mixer(struct intel8x0m *chip, int ac97_clock)
+=======
+static int snd_intel8x0m_mixer(struct intel8x0m *chip, int ac97_clock)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_ac97_bus *pbus;
 	struct snd_ac97_template ac97;
@@ -1016,6 +1041,7 @@ static int snd_intel8x0m_free(struct intel8x0m *chip)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 /*
  * power management
@@ -1023,6 +1049,16 @@ static int snd_intel8x0m_free(struct intel8x0m *chip)
 static int intel8x0m_suspend(struct pci_dev *pci, pm_message_t state)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+#ifdef CONFIG_PM_SLEEP
+/*
+ * power management
+ */
+static int intel8x0m_suspend(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct intel8x0m *chip = card->private_data;
 	int i;
 
@@ -1036,6 +1072,7 @@ static int intel8x0m_suspend(struct pci_dev *pci, pm_message_t state)
 	}
 	pci_disable_device(pci);
 	pci_save_state(pci);
+<<<<<<< HEAD
 	pci_set_power_state(pci, pci_choose_state(pci, state));
 	return 0;
 }
@@ -1043,6 +1080,16 @@ static int intel8x0m_suspend(struct pci_dev *pci, pm_message_t state)
 static int intel8x0m_resume(struct pci_dev *pci)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+	pci_set_power_state(pci, PCI_D3hot);
+	return 0;
+}
+
+static int intel8x0m_resume(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct intel8x0m *chip = card->private_data;
 
 	pci_set_power_state(pci, PCI_D0);
@@ -1056,10 +1103,14 @@ static int intel8x0m_resume(struct pci_dev *pci)
 	pci_set_master(pci);
 	if (request_irq(pci->irq, snd_intel8x0m_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_SHARED, card->shortname, chip)) {
 =======
 			IRQF_SHARED, KBUILD_MODNAME, chip)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			IRQF_SHARED, KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "intel8x0m: unable to grab IRQ %d, "
 		       "disabling device\n", pci->irq);
 		snd_card_disconnect(card);
@@ -1072,7 +1123,16 @@ static int intel8x0m_resume(struct pci_dev *pci)
 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
 	return 0;
 }
+<<<<<<< HEAD
 #endif /* CONFIG_PM */
+=======
+
+static SIMPLE_DEV_PM_OPS(intel8x0m_pm, intel8x0m_suspend, intel8x0m_resume);
+#define INTEL8X0M_PM_OPS	&intel8x0m_pm
+#else
+#define INTEL8X0M_PM_OPS	NULL
+#endif /* CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PROC_FS
 static void snd_intel8x0m_proc_read(struct snd_info_entry * entry,
@@ -1095,7 +1155,11 @@ static void snd_intel8x0m_proc_read(struct snd_info_entry * entry,
 			(tmp & (ICH_PCR | ICH_SCR | ICH_TCR)) == 0 ? " none" : "");
 }
 
+<<<<<<< HEAD
 static void __devinit snd_intel8x0m_proc_init(struct intel8x0m * chip)
+=======
+static void snd_intel8x0m_proc_init(struct intel8x0m *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_info_entry *entry;
 
@@ -1118,10 +1182,17 @@ struct ich_reg_info {
 	unsigned int offset;
 };
 
+<<<<<<< HEAD
 static int __devinit snd_intel8x0m_create(struct snd_card *card,
 					 struct pci_dev *pci,
 					 unsigned long device_type,
 					 struct intel8x0m **r_intel8x0m)
+=======
+static int snd_intel8x0m_create(struct snd_card *card,
+				struct pci_dev *pci,
+				unsigned long device_type,
+				struct intel8x0m **r_intel8x0m)
+>>>>>>> refs/remotes/origin/master
 {
 	struct intel8x0m *chip;
 	int err;
@@ -1187,10 +1258,14 @@ static int __devinit snd_intel8x0m_create(struct snd_card *card,
  port_inited:
 	if (request_irq(pci->irq, snd_intel8x0m_interrupt, IRQF_SHARED,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			card->shortname, chip)) {
 =======
 			KBUILD_MODNAME, chip)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/master
 		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
 		snd_intel8x0m_free(chip);
 		return -EBUSY;
@@ -1261,7 +1336,11 @@ static int __devinit snd_intel8x0m_create(struct snd_card *card,
 static struct shortname_table {
 	unsigned int id;
 	const char *s;
+<<<<<<< HEAD
 } shortnames[] __devinitdata = {
+=======
+} shortnames[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE_ID_INTEL_82801AA_6, "Intel 82801AA-ICH" },
 	{ PCI_DEVICE_ID_INTEL_82801AB_6, "Intel 82901AB-ICH0" },
 	{ PCI_DEVICE_ID_INTEL_82801BA_6, "Intel 82801BA-ICH2" },
@@ -1284,8 +1363,13 @@ static struct shortname_table {
 	{ 0 },
 };
 
+<<<<<<< HEAD
 static int __devinit snd_intel8x0m_probe(struct pci_dev *pci,
 					const struct pci_device_id *pci_id)
+=======
+static int snd_intel8x0m_probe(struct pci_dev *pci,
+			       const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	struct intel8x0m *chip;
@@ -1334,6 +1418,7 @@ static int __devinit snd_intel8x0m_probe(struct pci_dev *pci,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_intel8x0m_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
@@ -1368,3 +1453,21 @@ static void __exit alsa_card_intel8x0m_exit(void)
 
 module_init(alsa_card_intel8x0m_init)
 module_exit(alsa_card_intel8x0m_exit)
+=======
+static void snd_intel8x0m_remove(struct pci_dev *pci)
+{
+	snd_card_free(pci_get_drvdata(pci));
+}
+
+static struct pci_driver intel8x0m_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = snd_intel8x0m_ids,
+	.probe = snd_intel8x0m_probe,
+	.remove = snd_intel8x0m_remove,
+	.driver = {
+		.pm = INTEL8X0M_PM_OPS,
+	},
+};
+
+module_pci_driver(intel8x0m_driver);
+>>>>>>> refs/remotes/origin/master

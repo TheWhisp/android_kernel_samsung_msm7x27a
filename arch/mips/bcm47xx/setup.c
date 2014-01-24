@@ -2,6 +2,7 @@
  *  Copyright (C) 2004 Florian Schirmer <jolt@tuxbox.org>
  *  Copyright (C) 2006 Felix Fietkau <nbd@openwrt.org>
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  Copyright (C) 2006 Michael Buesch <mb@bu3sch.de>
  *  Copyright (C) 2010 Waldemar Brodkorb <wbx@openadk.org>
  *  Copyright (C) 2010-2011 Hauke Mehrtens <hauke@hauke-m.de>
@@ -10,6 +11,11 @@
  *  Copyright (C) 2010 Waldemar Brodkorb <wbx@openadk.org>
  *  Copyright (C) 2010-2012 Hauke Mehrtens <hauke@hauke-m.de>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  Copyright (C) 2006 Michael Buesch <m@bues.ch>
+ *  Copyright (C) 2010 Waldemar Brodkorb <wbx@openadk.org>
+ *  Copyright (C) 2010-2012 Hauke Mehrtens <hauke@hauke-m.de>
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute  it and/or modify it
  *  under  the terms of  the GNU General  Public License as published by the
@@ -33,32 +39,47 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/ssb/ssb.h>
 #include <linux/ssb/ssb_embedded.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/export.h>
 #include <linux/types.h>
 #include <linux/ssb/ssb.h>
 #include <linux/ssb/ssb_embedded.h>
 #include <linux/bcma/bcma_soc.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/bootinfo.h>
 #include <asm/reboot.h>
 #include <asm/time.h>
 #include <bcm47xx.h>
+<<<<<<< HEAD
 #include <asm/mach-bcm47xx/nvram.h>
 
 <<<<<<< HEAD
 struct ssb_bus ssb_bcm47xx;
 EXPORT_SYMBOL(ssb_bcm47xx);
 =======
+=======
+#include <bcm47xx_nvram.h>
+#include <bcm47xx_board.h>
+
+>>>>>>> refs/remotes/origin/master
 union bcm47xx_bus bcm47xx_bus;
 EXPORT_SYMBOL(bcm47xx_bus);
 
 enum bcm47xx_bus_type bcm47xx_bus_type;
 EXPORT_SYMBOL(bcm47xx_bus_type);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void bcm47xx_machine_restart(char *command)
 {
@@ -66,8 +87,11 @@ static void bcm47xx_machine_restart(char *command)
 	local_irq_disable();
 	/* Set the watchdog timer to reset immediately */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ssb_watchdog_timer_set(&ssb_bcm47xx, 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (bcm47xx_bus_type) {
 #ifdef CONFIG_BCM47XX_SSB
 	case BCM47XX_BUS_TYPE_SSB:
@@ -80,7 +104,10 @@ static void bcm47xx_machine_restart(char *command)
 		break;
 #endif
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	while (1)
 		cpu_relax();
 }
@@ -90,8 +117,11 @@ static void bcm47xx_machine_halt(void)
 	/* Disable interrupts and watchdog and spin forever */
 	local_irq_disable();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ssb_watchdog_timer_set(&ssb_bcm47xx, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (bcm47xx_bus_type) {
 #ifdef CONFIG_BCM47XX_SSB
 	case BCM47XX_BUS_TYPE_SSB:
@@ -104,11 +134,15 @@ static void bcm47xx_machine_halt(void)
 		break;
 #endif
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	while (1)
 		cpu_relax();
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define READ_FROM_NVRAM(_outvar, name, buf) \
 	if (nvram_getprefix(prefix, name, buf, sizeof(buf)) >= 0)\
@@ -264,14 +298,26 @@ int bcm47xx_get_sprom(struct ssb_bus *bus, struct ssb_sprom *out)
 #ifdef CONFIG_BCM47XX_SSB
 static int bcm47xx_get_sprom_ssb(struct ssb_bus *bus, struct ssb_sprom *out)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_BCM47XX_SSB
+static int bcm47xx_get_sprom_ssb(struct ssb_bus *bus, struct ssb_sprom *out)
+>>>>>>> refs/remotes/origin/master
 {
 	char prefix[10];
 
 	if (bus->bustype == SSB_BUSTYPE_PCI) {
+<<<<<<< HEAD
 		snprintf(prefix, sizeof(prefix), "pci/%u/%u/",
 			 bus->host_pci->bus->number + 1,
 			 PCI_SLOT(bus->host_pci->devfn));
 		bcm47xx_fill_sprom(out, prefix);
+=======
+		memset(out, 0, sizeof(struct ssb_sprom));
+		snprintf(prefix, sizeof(prefix), "pci/%u/%u/",
+			 bus->host_pci->bus->number + 1,
+			 PCI_SLOT(bus->host_pci->devfn));
+		bcm47xx_fill_sprom(out, prefix, false);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	} else {
 		printk(KERN_WARNING "bcm47xx: unable to fill SPROM for given bustype.\n");
@@ -281,16 +327,21 @@ static int bcm47xx_get_sprom_ssb(struct ssb_bus *bus, struct ssb_sprom *out)
 
 static int bcm47xx_get_invariants(struct ssb_bus *bus,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   struct ssb_init_invariants *iv)
 =======
 				  struct ssb_init_invariants *iv)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  struct ssb_init_invariants *iv)
+>>>>>>> refs/remotes/origin/master
 {
 	char buf[20];
 
 	/* Fill boardinfo structure */
 	memset(&(iv->boardinfo), 0 , sizeof(struct ssb_boardinfo));
 
+<<<<<<< HEAD
 	if (nvram_getenv("boardvendor", buf, sizeof(buf)) >= 0)
 		iv->boardinfo.vendor = (u16)simple_strtoul(buf, NULL, 0);
 	else
@@ -303,30 +354,47 @@ static int bcm47xx_get_invariants(struct ssb_bus *bus,
 	bcm47xx_fill_sprom(&iv->sprom, NULL);
 
 	if (nvram_getenv("cardbus", buf, sizeof(buf)) >= 0)
+=======
+	bcm47xx_fill_ssb_boardinfo(&iv->boardinfo, NULL);
+
+	memset(&iv->sprom, 0, sizeof(struct ssb_sprom));
+	bcm47xx_fill_sprom(&iv->sprom, NULL, false);
+
+	if (bcm47xx_nvram_getenv("cardbus", buf, sizeof(buf)) >= 0)
+>>>>>>> refs/remotes/origin/master
 		iv->has_cardbus_slot = !!simple_strtoul(buf, NULL, 10);
 
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __init plat_mem_setup(void)
 =======
 static void __init bcm47xx_register_ssb(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init bcm47xx_register_ssb(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	char buf[100];
 	struct ssb_mipscore *mcore;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ssb_arch_register_fallback_sprom(&bcm47xx_get_sprom);
 =======
 	err = ssb_arch_register_fallback_sprom(&bcm47xx_get_sprom_ssb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ssb_arch_register_fallback_sprom(&bcm47xx_get_sprom_ssb);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		printk(KERN_WARNING "bcm47xx: someone else already registered"
 			" a ssb SPROM callback handler (err %d)\n", err);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = ssb_bus_ssbbus_register(&ssb_bcm47xx, SSB_ENUM_BASE,
 				      bcm47xx_get_invariants);
@@ -335,14 +403,20 @@ static void __init bcm47xx_register_ssb(void)
 
 	mcore = &ssb_bcm47xx.mipscore;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = ssb_bus_ssbbus_register(&(bcm47xx_bus.ssb), SSB_ENUM_BASE,
 				      bcm47xx_get_invariants);
 	if (err)
 		panic("Failed to initialize SSB bus (err %d)", err);
 
 	mcore = &bcm47xx_bus.ssb.mipscore;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (nvram_getenv("kernel_args", buf, sizeof(buf)) >= 0) {
+=======
+	if (bcm47xx_nvram_getenv("kernel_args", buf, sizeof(buf)) >= 0) {
+>>>>>>> refs/remotes/origin/master
 		if (strstr(buf, "console=ttyS1")) {
 			struct ssb_serial_port port;
 
@@ -355,7 +429,10 @@ static void __init bcm47xx_register_ssb(void)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -367,6 +444,7 @@ static int bcm47xx_get_sprom_bcma(struct bcma_bus *bus, struct ssb_sprom *out)
 
 	switch (bus->hosttype) {
 	case BCMA_HOSTTYPE_PCI:
+<<<<<<< HEAD
 		snprintf(prefix, sizeof(prefix), "pci/%u/%u/",
 			 bus->host_pci->bus->number + 1,
 			 PCI_SLOT(bus->host_pci->devfn));
@@ -374,11 +452,27 @@ static int bcm47xx_get_sprom_bcma(struct bcma_bus *bus, struct ssb_sprom *out)
 		return 0;
 	case BCMA_HOSTTYPE_SOC:
 		bcm47xx_fill_sprom_ethernet(out, NULL);
+=======
+		memset(out, 0, sizeof(struct ssb_sprom));
+		snprintf(prefix, sizeof(prefix), "pci/%u/%u/",
+			 bus->host_pci->bus->number + 1,
+			 PCI_SLOT(bus->host_pci->devfn));
+		bcm47xx_fill_sprom(out, prefix, false);
+		return 0;
+	case BCMA_HOSTTYPE_SOC:
+		memset(out, 0, sizeof(struct ssb_sprom));
+>>>>>>> refs/remotes/origin/master
 		core = bcma_find_core(bus, BCMA_CORE_80211);
 		if (core) {
 			snprintf(prefix, sizeof(prefix), "sb/%u/",
 				 core->core_index);
+<<<<<<< HEAD
 			bcm47xx_fill_sprom(out, prefix);
+=======
+			bcm47xx_fill_sprom(out, prefix, true);
+		} else {
+			bcm47xx_fill_sprom(out, NULL, false);
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	default:
@@ -398,6 +492,11 @@ static void __init bcm47xx_register_bcma(void)
 	err = bcma_host_soc_register(&bcm47xx_bus.bcma);
 	if (err)
 		panic("Failed to initialize BCMA bus (err %d)", err);
+<<<<<<< HEAD
+=======
+
+	bcm47xx_fill_bcma_boardinfo(&bcm47xx_bus.bcma.bus.boardinfo, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -418,14 +517,22 @@ void __init plat_mem_setup(void)
 		bcm47xx_register_ssb();
 #endif
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	_machine_restart = bcm47xx_machine_restart;
 	_machine_halt = bcm47xx_machine_halt;
 	pm_power_off = bcm47xx_machine_halt;
+<<<<<<< HEAD
 }
 <<<<<<< HEAD
 =======
+=======
+	bcm47xx_board_detect();
+}
+>>>>>>> refs/remotes/origin/master
 
 static int __init bcm47xx_register_bus_complete(void)
 {
@@ -444,4 +551,7 @@ static int __init bcm47xx_register_bus_complete(void)
 	return 0;
 }
 device_initcall(bcm47xx_register_bus_complete);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

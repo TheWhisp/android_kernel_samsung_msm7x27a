@@ -14,6 +14,11 @@
 
 #ifdef CONFIG_PINCONF
 
+<<<<<<< HEAD
+=======
+#include <linux/pinctrl/machine.h>
+
+>>>>>>> refs/remotes/origin/master
 struct pinctrl_dev;
 struct seq_file;
 
@@ -25,14 +30,26 @@ struct seq_file;
  * @pin_config_get: get the config of a certain pin, if the requested config
  *	is not available on this controller this should return -ENOTSUPP
  *	and if it is available but disabled it should return -EINVAL
+<<<<<<< HEAD
  * @pin_config_get: get the config of a certain pin
  * @pin_config_set: configure an individual pin
  * @pin_config_group_get: get configurations for an entire pin group
  * @pin_config_group_set: configure all pins in a group
+=======
+ * @pin_config_set: configure an individual pin
+ * @pin_config_group_get: get configurations for an entire pin group
+ * @pin_config_group_set: configure all pins in a group
+ * @pin_config_dbg_parse_modify: optional debugfs to modify a pin configuration
+>>>>>>> refs/remotes/origin/master
  * @pin_config_dbg_show: optional debugfs display hook that will provide
  *	per-device info for a certain pin in debugfs
  * @pin_config_group_dbg_show: optional debugfs display hook that will provide
  *	per-device info for a certain group in debugfs
+<<<<<<< HEAD
+=======
+ * @pin_config_config_dbg_show: optional debugfs display hook that will decode
+ *	and display a driver's pin configuration parameter
+>>>>>>> refs/remotes/origin/master
  */
 struct pinconf_ops {
 #ifdef CONFIG_GENERIC_PINCONF
@@ -43,19 +60,38 @@ struct pinconf_ops {
 			       unsigned long *config);
 	int (*pin_config_set) (struct pinctrl_dev *pctldev,
 			       unsigned pin,
+<<<<<<< HEAD
 			       unsigned long config);
+=======
+			       unsigned long *configs,
+			       unsigned num_configs);
+>>>>>>> refs/remotes/origin/master
 	int (*pin_config_group_get) (struct pinctrl_dev *pctldev,
 				     unsigned selector,
 				     unsigned long *config);
 	int (*pin_config_group_set) (struct pinctrl_dev *pctldev,
 				     unsigned selector,
+<<<<<<< HEAD
 				     unsigned long config);
+=======
+				     unsigned long *configs,
+				     unsigned num_configs);
+	int (*pin_config_dbg_parse_modify) (struct pinctrl_dev *pctldev,
+					   const char *arg,
+					   unsigned long *config);
+>>>>>>> refs/remotes/origin/master
 	void (*pin_config_dbg_show) (struct pinctrl_dev *pctldev,
 				     struct seq_file *s,
 				     unsigned offset);
 	void (*pin_config_group_dbg_show) (struct pinctrl_dev *pctldev,
 					   struct seq_file *s,
 					   unsigned selector);
+<<<<<<< HEAD
+=======
+	void (*pin_config_config_dbg_show) (struct pinctrl_dev *pctldev,
+					    struct seq_file *s,
+					    unsigned long config);
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif

@@ -17,7 +17,10 @@
 
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/tty.h>
 #include <linux/tty_driver.h>
@@ -29,6 +32,7 @@
 #include <linux/usb/serial.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int debug;
 =======
 static bool debug;
@@ -38,6 +42,8 @@ static bool debug;
  * Version Information
  */
 #define DRIVER_VERSION "v1.3"
+=======
+>>>>>>> refs/remotes/origin/master
 #define DRIVER_AUTHOR "Greg Kroah-Hartman <greg@kroah.com>, Gary Brubaker <xavyer@ix.netcom.com>"
 #define DRIVER_DESC "USB Empeg Mark I/II Driver"
 
@@ -55,6 +61,7 @@ static const struct usb_device_id id_table[] = {
 
 MODULE_DEVICE_TABLE(usb, id_table);
 
+<<<<<<< HEAD
 static struct usb_driver empeg_driver = {
 	.name =		"empeg",
 	.probe =	usb_serial_probe,
@@ -66,6 +73,8 @@ static struct usb_driver empeg_driver = {
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct usb_serial_driver empeg_device = {
 	.driver = {
 		.owner =	THIS_MODULE,
@@ -73,9 +82,12 @@ static struct usb_serial_driver empeg_device = {
 	},
 	.id_table =		id_table,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver =		&empeg_driver,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.num_ports =		1,
 	.bulk_out_size =	256,
 	.throttle =		usb_serial_generic_throttle,
@@ -85,24 +97,37 @@ static struct usb_serial_driver empeg_device = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct usb_serial_driver * const serial_drivers[] = {
 	&empeg_device, NULL
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int empeg_startup(struct usb_serial *serial)
 {
 	int r;
 
+<<<<<<< HEAD
 	dbg("%s", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (serial->dev->actconfig->desc.bConfigurationValue != 1) {
 		dev_err(&serial->dev->dev, "active config #%d != 1 ??\n",
 			serial->dev->actconfig->desc.bConfigurationValue);
 		return -ENODEV;
 	}
+<<<<<<< HEAD
 	dbg("%s - reset config", __func__);
+=======
+
+>>>>>>> refs/remotes/origin/master
 	r = usb_reset_configuration(serial->dev);
 
 	/* continue on with initialization */
@@ -111,7 +136,11 @@ static int empeg_startup(struct usb_serial *serial)
 
 static void empeg_init_termios(struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	struct ktermios *termios = tty->termios;
+=======
+	struct ktermios *termios = &tty->termios;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * The empeg-car player wants these particular tty settings.
@@ -154,6 +183,7 @@ static void empeg_init_termios(struct tty_struct *tty)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init empeg_init(void)
 {
 	int retval;
@@ -184,10 +214,16 @@ module_exit(empeg_exit);
 =======
 module_usb_serial_driver(empeg_driver, serial_drivers);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_serial_driver(serial_drivers, id_table);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_param(debug, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Debug enabled or not");
+=======
+>>>>>>> refs/remotes/origin/master

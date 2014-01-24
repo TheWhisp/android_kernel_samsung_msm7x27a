@@ -27,6 +27,10 @@
 #include <linux/types.h>
 #include <linux/init.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/vmalloc.h>
 #include <linux/fs.h>
 #include <linux/errno.h>
@@ -54,9 +58,12 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 #define SBPROF_TB_MAJOR 240
@@ -156,7 +163,11 @@ static u64 tb_period;
 
 static void arm_tb(void)
 {
+<<<<<<< HEAD
         u64 scdperfcnt;
+=======
+	u64 scdperfcnt;
+>>>>>>> refs/remotes/origin/master
 	u64 next = (1ULL << 40) - tb_period;
 	u64 tb_options = M_SCD_TRACE_CFG_FREEZE_FULL;
 
@@ -261,8 +272,13 @@ static irqreturn_t sbprof_pc_intr(int irq, void *dev_id)
 
 /*
  * Requires: Already called zclk_timer_init with a value that won't
+<<<<<<< HEAD
  *           saturate 40 bits.  No subsequent use of SCD performance counters
  *           or trace buffer.
+=======
+ *	     saturate 40 bits.	No subsequent use of SCD performance counters
+ *	     or trace buffer.
+>>>>>>> refs/remotes/origin/master
  */
 
 static int sbprof_zbprof_start(struct file *filp)
@@ -292,8 +308,13 @@ static int sbprof_zbprof_start(struct file *filp)
 
 	/*
 	 * We grab this interrupt to prevent others from trying to use
+<<<<<<< HEAD
          * it, even though we don't want to service the interrupts
          * (they only feed into the trace-on-interrupt mechanism)
+=======
+	 * it, even though we don't want to service the interrupts
+	 * (they only feed into the trace-on-interrupt mechanism)
+>>>>>>> refs/remotes/origin/master
 	 */
 	if (request_irq(K_INT_PERF_CNT, sbprof_pc_intr, 0, DEVNAME " scd perfcnt", &sbp)) {
 		free_irq(K_INT_TRACE_FREEZE, &sbp);
@@ -302,7 +323,11 @@ static int sbprof_zbprof_start(struct file *filp)
 
 	/*
 	 * I need the core to mask these, but the interrupt mapper to
+<<<<<<< HEAD
 	 *  pass them through.  I am exploiting my knowledge that
+=======
+	 *  pass them through.	I am exploiting my knowledge that
+>>>>>>> refs/remotes/origin/master
 	 *  cp0_status masks out IP[5]. krw
 	 */
 #if defined(CONFIG_SIBYTE_BCM1x55) || defined(CONFIG_SIBYTE_BCM1x80)
@@ -332,7 +357,11 @@ static int sbprof_zbprof_start(struct file *filp)
 	__raw_writeq(0, IOADDR(A_ADDR_TRAP_CFG_3));
 
 	/* Initialize Trace Event 0-7 */
+<<<<<<< HEAD
 	/*				when interrupt  */
+=======
+	/*				when interrupt	*/
+>>>>>>> refs/remotes/origin/master
 	__raw_writeq(M_SCD_TREVT_INTERRUPT, IOADDR(A_SCD_TRACE_EVENT_0));
 	__raw_writeq(0, IOADDR(A_SCD_TRACE_EVENT_1));
 	__raw_writeq(0, IOADDR(A_SCD_TRACE_EVENT_2));
@@ -483,7 +512,11 @@ static ssize_t sbprof_tb_read(struct file *filp, char *buf,
 			return err;
 		}
 		pr_debug(DEVNAME ": read from sample %d, %d bytes\n",
+<<<<<<< HEAD
 		         cur_sample, cur_count);
+=======
+			 cur_sample, cur_count);
+>>>>>>> refs/remotes/origin/master
 		size -= cur_count;
 		sample_left -= cur_count;
 		if (!sample_left) {
@@ -544,7 +577,11 @@ static const struct file_operations sbprof_tb_fops = {
 	.open		= sbprof_tb_open,
 	.release	= sbprof_tb_release,
 	.read		= sbprof_tb_read,
+<<<<<<< HEAD
 	.unlocked_ioctl	= sbprof_tb_ioctl,
+=======
+	.unlocked_ioctl = sbprof_tb_ioctl,
+>>>>>>> refs/remotes/origin/master
 	.compat_ioctl	= sbprof_tb_ioctl,
 	.mmap		= NULL,
 	.llseek		= default_llseek,

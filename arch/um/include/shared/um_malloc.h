@@ -7,10 +7,14 @@
 #define __UM_MALLOC_H__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "kern_constants.h"
 =======
 #include <generated/asm-offsets.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <generated/asm-offsets.h>
+>>>>>>> refs/remotes/origin/master
 
 extern void *uml_kmalloc(int size, int flags);
 extern void kfree(const void *ptr);

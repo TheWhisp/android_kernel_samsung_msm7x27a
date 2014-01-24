@@ -1228,8 +1228,12 @@ static int asd_seq_start_lseq(struct asd_ha_struct *asd_ha, int lseq)
 
 int asd_release_firmware(void)
 {
+<<<<<<< HEAD
 	if (sequencer_fw)
 		release_firmware(sequencer_fw);
+=======
+	release_firmware(sequencer_fw);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

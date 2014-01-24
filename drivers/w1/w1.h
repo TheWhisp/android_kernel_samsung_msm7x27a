@@ -2,10 +2,14 @@
  *	w1.h
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2004 Evgeniy Polyakov <johnpol@2ka.mipt.ru>
 =======
  * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
+>>>>>>> refs/remotes/origin/master
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -71,8 +75,13 @@ struct w1_slave
 	struct w1_reg_num	reg_num;
 	atomic_t		refcnt;
 	u8			rom[9];
+<<<<<<< HEAD
 	u32			flags;
 	int			ttl;
+=======
+	int			ttl;
+	unsigned long		flags;
+>>>>>>> refs/remotes/origin/master
 
 	struct w1_master	*master;
 	struct w1_family	*family;
@@ -184,6 +193,10 @@ struct w1_master
 
 	struct task_struct	*thread;
 	struct mutex		mutex;
+<<<<<<< HEAD
+=======
+	struct mutex		bus_mutex;
+>>>>>>> refs/remotes/origin/master
 
 	struct device_driver	*driver;
 	struct device		dev;

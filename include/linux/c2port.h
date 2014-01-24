@@ -10,18 +10,26 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kmemcheck.h>
 
 #define C2PORT_NAME_LEN			32
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct device;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct device;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * C2 port basic structs
  */

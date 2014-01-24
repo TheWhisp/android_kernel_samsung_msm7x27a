@@ -21,9 +21,13 @@
 #include <asm/mach/map.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 
 #include <mach/irqs.h>
@@ -185,6 +189,7 @@ static void __init ks8695_add_device_watchdog(void)
 }
 
 
+<<<<<<< HEAD
 /* --------------------------------------------------------------------
  *  LEDs
  * -------------------------------------------------------------------- */
@@ -206,6 +211,8 @@ void __init ks8695_init_leds(u8 cpu_led, u8 timer_led)
 void __init ks8695_init_leds(u8 cpu_led, u8 timer_led) {}
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* -------------------------------------------------------------------- */
 
 /*

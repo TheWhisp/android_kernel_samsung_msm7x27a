@@ -1,10 +1,14 @@
 menuconfig MTD
 	tristate "Memory Technology Device (MTD) support"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on HAS_IOMEM
 =======
 	depends on GENERIC_IO
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on GENERIC_IO
+>>>>>>> refs/remotes/origin/master
 	help
 	  Memory Technology Devices are flash, RAM and similar chips, often
 	  used for solid state file systems on embedded devices. This option
@@ -16,6 +20,7 @@ menuconfig MTD
 
 if MTD
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config MTD_DEBUG
 	bool "Debugging"
@@ -36,6 +41,10 @@ config MTD_TESTS
 config MTD_TESTS
 	tristate "MTD tests support (DANGEROUS)"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config MTD_TESTS
+	tristate "MTD tests support (DANGEROUS)"
+>>>>>>> refs/remotes/origin/master
 	depends on m
 	help
 	  This option includes various MTD tests into compilation. The tests
@@ -43,11 +52,17 @@ config MTD_TESTS
 	  various checks and verifications when loaded.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	  WARNING: some of the tests will ERASE entire MTD device which they
 	  test. Do not use these tests unless you really know what you do.
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  WARNING: some of the tests will ERASE entire MTD device which they
+	  test. Do not use these tests unless you really know what you do.
+
+>>>>>>> refs/remotes/origin/master
 config MTD_REDBOOT_PARTS
 	tristate "RedBoot partition table parsing"
 	---help---
@@ -99,8 +114,13 @@ config MTD_REDBOOT_PARTS_READONLY
 endif # MTD_REDBOOT_PARTS
 
 config MTD_CMDLINE_PARTS
+<<<<<<< HEAD
 	bool "Command line partition table parsing"
 	depends on MTD = "y"
+=======
+	tristate "Command line partition table parsing"
+	depends on MTD
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Allow generic configuration of the MTD partition tables via the kernel
 	  command line. Multiple flash resources are supported for hardware where
@@ -153,20 +173,29 @@ config MTD_AFS_PARTS
 
 config MTD_OF_PARTS
 <<<<<<< HEAD
+<<<<<<< HEAD
 	def_bool y
 =======
 	tristate "OpenFirmware partitioning information support"
 	default y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tristate "OpenFirmware partitioning information support"
+	default y
+>>>>>>> refs/remotes/origin/master
 	depends on OF
 	help
 	  This provides a partition parsing function which derives
 	  the partition map from the children of the flash node,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  as described in Documentation/powerpc/booting-without-of.txt.
 =======
 	  as described in Documentation/devicetree/booting-without-of.txt.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  as described in Documentation/devicetree/booting-without-of.txt.
+>>>>>>> refs/remotes/origin/master
 
 config MTD_AR7_PARTS
 	tristate "TI AR7 partitioning support"
@@ -174,7 +203,10 @@ config MTD_AR7_PARTS
 	  TI AR7 partitioning support
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config MTD_BCM63XX_PARTS
 	tristate "BCM63XX CFE partitioning support"
 	depends on BCM63XX
@@ -183,6 +215,7 @@ config MTD_BCM63XX_PARTS
 	  This provides partions parsing for BCM63xx devices with CFE
 	  bootloaders.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 comment "User Modules And Translation Layers"
 
@@ -198,6 +231,16 @@ config HAVE_MTD_OTP
 	bool
 	help
 	  Enable access to OTP regions using MTD_CHAR.
+=======
+config MTD_BCM47XX_PARTS
+	tristate "BCM47XX partitioning support"
+	depends on BCM47XX
+	help
+	  This provides partitions parser for devices based on BCM47xx
+	  boards.
+
+comment "User Modules And Translation Layers"
+>>>>>>> refs/remotes/origin/master
 
 config MTD_BLKDEVS
 	tristate "Common interface to block layer for MTD 'translation layers'"
@@ -320,7 +363,11 @@ config SSFDC
 
 config SM_FTL
 	tristate "SmartMedia/xD new translation layer"
+<<<<<<< HEAD
 	depends on EXPERIMENTAL && BLOCK
+=======
+	depends on BLOCK
+>>>>>>> refs/remotes/origin/master
 	select MTD_BLKDEVS
 	select MTD_NAND_ECC
 	help
@@ -341,11 +388,14 @@ config MTD_OOPS
 	  later point.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  To use, add console=ttyMTDx to the kernel command line,
 	  where x is the MTD device number to use.
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config MTD_SWAP
 	tristate "Swap on MTD device support"
 	depends on MTD && SWAP
@@ -356,6 +406,7 @@ config MTD_SWAP
 	  The driver provides wear leveling by storing erase counter into the
 	  OOB.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 config MTD_LAZYECCSTATS
@@ -370,6 +421,8 @@ config MTD_LAZYECCSTATS
 	  the partition.  If unsure, say 'N'.
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 source "drivers/mtd/chips/Kconfig"
 
 source "drivers/mtd/maps/Kconfig"

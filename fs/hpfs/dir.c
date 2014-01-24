@@ -25,28 +25,43 @@ static loff_t hpfs_dir_lseek(struct file *filp, loff_t off, int whence)
 	loff_t new_off = off + (whence == 1 ? filp->f_pos : 0);
 	loff_t pos;
 	struct quad_buffer_head qbh;
+<<<<<<< HEAD
 	struct inode *i = filp->f_path.dentry->d_inode;
 	struct hpfs_inode_info *hpfs_inode = hpfs_i(i);
 	struct super_block *s = i->i_sb;
 
 <<<<<<< HEAD
 =======
+=======
+	struct inode *i = file_inode(filp);
+	struct hpfs_inode_info *hpfs_inode = hpfs_i(i);
+	struct super_block *s = i->i_sb;
+
+>>>>>>> refs/remotes/origin/master
 	/* Somebody else will have to figure out what to do here */
 	if (whence == SEEK_DATA || whence == SEEK_HOLE)
 		return -EINVAL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&i->i_mutex);
+>>>>>>> refs/remotes/origin/master
 	hpfs_lock(s);
 
 	/*printk("dir lseek\n");*/
 	if (new_off == 0 || new_off == 1 || new_off == 11 || new_off == 12 || new_off == 13) goto ok;
+<<<<<<< HEAD
 	mutex_lock(&i->i_mutex);
+=======
+>>>>>>> refs/remotes/origin/master
 	pos = ((loff_t) hpfs_de_as_down_as_possible(s, hpfs_inode->i_dno) << 4) + 1;
 	while (pos != new_off) {
 		if (map_pos_dirent(i, &pos, &qbh)) hpfs_brelse4(&qbh);
 		else goto fail;
 		if (pos == 12) goto fail;
 	}
+<<<<<<< HEAD
 	mutex_unlock(&i->i_mutex);
 ok:
 	hpfs_unlock(s);
@@ -61,11 +76,33 @@ fail:
 static int hpfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 {
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+	hpfs_add_pos(i, &filp->f_pos);
+ok:
+	filp->f_pos = new_off;
+	hpfs_unlock(s);
+	mutex_unlock(&i->i_mutex);
+	return new_off;
+fail:
+	/*printk("illegal lseek: %016llx\n", new_off);*/
+	hpfs_unlock(s);
+	mutex_unlock(&i->i_mutex);
+	return -ESPIPE;
+}
+
+static int hpfs_readdir(struct file *file, struct dir_context *ctx)
+{
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct hpfs_inode_info *hpfs_inode = hpfs_i(inode);
 	struct quad_buffer_head qbh;
 	struct hpfs_dirent *de;
 	int lc;
+<<<<<<< HEAD
 	long old_pos;
+=======
+	loff_t next_pos;
+>>>>>>> refs/remotes/origin/master
 	unsigned char *tempname;
 	int c1, c2 = 0;
 	int ret = 0;
@@ -90,7 +127,11 @@ static int hpfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 			ret = -EIOERROR;
 			goto out;
 		}
+<<<<<<< HEAD
 		if (!fno->dirflag) {
+=======
+		if (!fnode_is_dir(fno)) {
+>>>>>>> refs/remotes/origin/master
 			e = 1;
 			hpfs_error(inode->i_sb, "not a directory, fnode %08lx",
 					(unsigned long)inode->i_ino);
@@ -106,11 +147,19 @@ static int hpfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 		}
 	}
 	lc = hpfs_sb(inode->i_sb)->sb_lowercase;
+<<<<<<< HEAD
 	if (filp->f_pos == 12) { /* diff -r requires this (note, that diff -r */
 		filp->f_pos = 13; /* also fails on msdos filesystem in 2.0) */
 		goto out;
 	}
 	if (filp->f_pos == 13) {
+=======
+	if (ctx->pos == 12) { /* diff -r requires this (note, that diff -r */
+		ctx->pos = 13; /* also fails on msdos filesystem in 2.0) */
+		goto out;
+	}
+	if (ctx->pos == 13) {
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOENT;
 		goto out;
 	}
@@ -121,6 +170,7 @@ static int hpfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 		   accepted by filldir, but what can I do?
 		   maybe killall -9 ls helps */
 		if (hpfs_sb(inode->i_sb)->sb_chk)
+<<<<<<< HEAD
 			if (hpfs_stop_cycles(inode->i_sb, filp->f_pos, &c1, &c2, "hpfs_readdir")) {
 				ret = -EFSERROR;
 				goto out;
@@ -148,6 +198,36 @@ static int hpfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 		}
 		old_pos = filp->f_pos;
 		if (!(de = map_pos_dirent(inode, &filp->f_pos, &qbh))) {
+=======
+			if (hpfs_stop_cycles(inode->i_sb, ctx->pos, &c1, &c2, "hpfs_readdir")) {
+				ret = -EFSERROR;
+				goto out;
+			}
+		if (ctx->pos == 12)
+			goto out;
+		if (ctx->pos == 3 || ctx->pos == 4 || ctx->pos == 5) {
+			printk("HPFS: warning: pos==%d\n",(int)ctx->pos);
+			goto out;
+		}
+		if (ctx->pos == 0) {
+			if (!dir_emit_dot(file, ctx))
+				goto out;
+			ctx->pos = 11;
+		}
+		if (ctx->pos == 11) {
+			if (!dir_emit(ctx, "..", 2, hpfs_inode->i_parent_dir, DT_DIR))
+				goto out;
+			ctx->pos = 1;
+		}
+		if (ctx->pos == 1) {
+			ctx->pos = ((loff_t) hpfs_de_as_down_as_possible(inode->i_sb, hpfs_inode->i_dno) << 4) + 1;
+			hpfs_add_pos(inode, &file->f_pos);
+			file->f_version = inode->i_version;
+		}
+		next_pos = ctx->pos;
+		if (!(de = map_pos_dirent(inode, &next_pos, &qbh))) {
+			ctx->pos = next_pos;
+>>>>>>> refs/remotes/origin/master
 			ret = -EIOERROR;
 			goto out;
 		}
@@ -155,6 +235,7 @@ static int hpfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 			if (hpfs_sb(inode->i_sb)->sb_chk) {
 				if (de->first && !de->last && (de->namelen != 2
 				    || de ->name[0] != 1 || de->name[1] != 1))
+<<<<<<< HEAD
 					hpfs_error(inode->i_sb, "hpfs_readdir: bad ^A^A entry; pos = %08lx", old_pos);
 				if (de->last && (de->namelen != 1 || de ->name[0] != 255))
 					hpfs_error(inode->i_sb, "hpfs_readdir: bad \\377 entry; pos = %08lx", old_pos);
@@ -165,10 +246,26 @@ static int hpfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 		tempname = hpfs_translate_name(inode->i_sb, de->name, de->namelen, lc, de->not_8x3);
 		if (filldir(dirent, tempname, de->namelen, old_pos, le32_to_cpu(de->fnode), DT_UNKNOWN) < 0) {
 			filp->f_pos = old_pos;
+=======
+					hpfs_error(inode->i_sb, "hpfs_readdir: bad ^A^A entry; pos = %08lx", (unsigned long)ctx->pos);
+				if (de->last && (de->namelen != 1 || de ->name[0] != 255))
+					hpfs_error(inode->i_sb, "hpfs_readdir: bad \\377 entry; pos = %08lx", (unsigned long)ctx->pos);
+			}
+			hpfs_brelse4(&qbh);
+			ctx->pos = next_pos;
+			goto again;
+		}
+		tempname = hpfs_translate_name(inode->i_sb, de->name, de->namelen, lc, de->not_8x3);
+		if (!dir_emit(ctx, tempname, de->namelen, le32_to_cpu(de->fnode), DT_UNKNOWN)) {
+>>>>>>> refs/remotes/origin/master
 			if (tempname != de->name) kfree(tempname);
 			hpfs_brelse4(&qbh);
 			goto out;
 		}
+<<<<<<< HEAD
+=======
+		ctx->pos = next_pos;
+>>>>>>> refs/remotes/origin/master
 		if (tempname != de->name) kfree(tempname);
 		hpfs_brelse4(&qbh);
 	}
@@ -192,7 +289,11 @@ out:
  *	      to tell read_inode to read fnode or not.
  */
 
+<<<<<<< HEAD
 struct dentry *hpfs_lookup(struct inode *dir, struct dentry *dentry, struct nameidata *nd)
+=======
+struct dentry *hpfs_lookup(struct inode *dir, struct dentry *dentry, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	const unsigned char *name = dentry->d_name.name;
 	unsigned len = dentry->d_name.len;
@@ -251,10 +352,14 @@ struct dentry *hpfs_lookup(struct inode *dir, struct dentry *dentry, struct name
 			result->i_op = &hpfs_file_iops;
 			result->i_fop = &hpfs_file_ops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			result->i_nlink = 1;
 =======
 			set_nlink(result, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			set_nlink(result, 1);
+>>>>>>> refs/remotes/origin/master
 		}
 		unlock_new_inode(result);
 	}
@@ -327,7 +432,11 @@ const struct file_operations hpfs_dir_ops =
 {
 	.llseek		= hpfs_dir_lseek,
 	.read		= generic_read_dir,
+<<<<<<< HEAD
 	.readdir	= hpfs_readdir,
+=======
+	.iterate	= hpfs_readdir,
+>>>>>>> refs/remotes/origin/master
 	.release	= hpfs_dir_release,
 	.fsync		= hpfs_file_fsync,
 };

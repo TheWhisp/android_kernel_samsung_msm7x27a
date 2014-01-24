@@ -1,14 +1,18 @@
 #ifndef __SPARC_SIGNAL_H
 #define __SPARC_SIGNAL_H
 
+<<<<<<< HEAD
 #include <asm/sigcontext.h>
 #include <linux/compiler.h>
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 #include <linux/personality.h>
 #include <linux/types.h>
 #endif
+<<<<<<< HEAD
 #endif
 
 /* On the Sparc the signal handlers get passed a 'sub-signal' code
@@ -170,6 +174,11 @@ struct sigstack {
 #define SIGSTKSZ	16384
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/signal.h>
+
+#ifndef __ASSEMBLY__
+>>>>>>> refs/remotes/origin/master
 /*
  * DJHR
  * SA_STATIC_ALLOC is used for the sparc32 system to indicate that this
@@ -182,6 +191,7 @@ struct sigstack {
  *
  */
 #define SA_STATIC_ALLOC         0x8000
+<<<<<<< HEAD
 #endif
 
 #include <asm-generic/signal-defs.h>
@@ -220,4 +230,11 @@ struct k_sigaction {
 
 #endif /* !(__ASSEMBLY__) */
 
+=======
+
+#define __ARCH_HAS_KA_RESTORER
+#define __ARCH_HAS_SA_RESTORER
+
+#endif /* !(__ASSEMBLY__) */
+>>>>>>> refs/remotes/origin/master
 #endif /* !(__SPARC_SIGNAL_H) */

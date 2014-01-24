@@ -4,9 +4,13 @@
  *			  Alan Cox <alan@lxorguk.ukuu.org.uk>
  *			  (C) 2009-2010 Bartlomiej Zolnierkiewicz
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *			  (C) 2012 MontaVista Software, LLC <source@mvista.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *			  (C) 2012 MontaVista Software, LLC <source@mvista.com>
+>>>>>>> refs/remotes/origin/master
  *
  * Based upon
  * linux/drivers/ide/pci/cmd64x.c		Version 1.30	Sept 10, 2002
@@ -37,10 +41,14 @@
 
 #define DRV_NAME "pata_cmd64x"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DRV_VERSION "0.2.5"
 =======
 #define DRV_VERSION "0.2.18"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DRV_VERSION "0.2.18"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * CMD64x specific registers definition.
@@ -91,10 +99,14 @@ static int cmd648_cable_detect(struct ata_port *ap)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	cmd64x_set_piomode	-	set PIO and MWDMA timing
 =======
  *	cmd64x_set_timing	-	set PIO and MWDMA timing
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	cmd64x_set_timing	-	set PIO and MWDMA timing
+>>>>>>> refs/remotes/origin/master
  *	@ap: ATA interface
  *	@adev: ATA device
  *	@mode: mode
@@ -242,6 +254,7 @@ static void cmd64x_set_dmamode(struct ata_port *ap, struct ata_device *adev)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	cmd648_dma_stop	-	DMA stop callback
  *	@qc: Command in progress
  *
@@ -265,6 +278,8 @@ static void cmd648_bmdma_stop(struct ata_queued_cmd *qc)
 /**
  *	cmd646r1_dma_stop	-	DMA stop callback
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *	cmd64x_sff_irq_check	-	check IDE interrupt
  *	@ap: ATA interface
  *
@@ -344,7 +359,10 @@ static void cmd648_sff_irq_clear(struct ata_port *ap)
 
 /**
  *	cmd646r1_bmdma_stop	-	DMA stop callback
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *	@qc: Command in progress
  *
  *	Stub for now while investigating the r1 quirk in the old driver.
@@ -368,24 +386,35 @@ static const struct ata_port_operations cmd64x_base_ops = {
 static struct ata_port_operations cmd64x_port_ops = {
 	.inherits	= &cmd64x_base_ops,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.sff_irq_check	= cmd64x_sff_irq_check,
 	.sff_irq_clear	= cmd64x_sff_irq_clear,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.sff_irq_check	= cmd64x_sff_irq_check,
+	.sff_irq_clear	= cmd64x_sff_irq_clear,
+>>>>>>> refs/remotes/origin/master
 	.cable_detect	= ata_cable_40wire,
 };
 
 static struct ata_port_operations cmd646r1_port_ops = {
 	.inherits	= &cmd64x_base_ops,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.sff_irq_check	= cmd64x_sff_irq_check,
 	.sff_irq_clear	= cmd64x_sff_irq_clear,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.sff_irq_check	= cmd64x_sff_irq_check,
+	.sff_irq_clear	= cmd64x_sff_irq_clear,
+>>>>>>> refs/remotes/origin/master
 	.bmdma_stop	= cmd646r1_bmdma_stop,
 	.cable_detect	= ata_cable_40wire,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct ata_port_operations cmd648_port_ops = {
 	.inherits	= &cmd64x_base_ops,
@@ -397,6 +426,8 @@ static int cmd64x_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 {
 	static const struct ata_port_info cmd_info[6] = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct ata_port_operations cmd646r3_port_ops = {
 	.inherits	= &cmd64x_base_ops,
 	.sff_irq_check	= cmd648_sff_irq_check,
@@ -430,7 +461,10 @@ static void cmd64x_fixup(struct pci_dev *pdev)
 static int cmd64x_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 {
 	static const struct ata_port_info cmd_info[7] = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		{	/* CMD 643 - no UDMA */
 			.flags = ATA_FLAG_SLAVE_POSS,
 			.pio_mask = ATA_PIO4,
@@ -444,8 +478,11 @@ static int cmd64x_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 			.port_ops = &cmd64x_port_ops
 		},
 <<<<<<< HEAD
+<<<<<<< HEAD
 		{	/* CMD 646 with working UDMA */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		{	/* CMD 646U with broken UDMA */
 			.flags = ATA_FLAG_SLAVE_POSS,
 			.pio_mask = ATA_PIO4,
@@ -453,16 +490,23 @@ static int cmd64x_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 			.port_ops = &cmd646r3_port_ops
 		},
 		{	/* CMD 646U2 with working UDMA */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.flags = ATA_FLAG_SLAVE_POSS,
 			.pio_mask = ATA_PIO4,
 			.mwdma_mask = ATA_MWDMA2,
 			.udma_mask = ATA_UDMA2,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.port_ops = &cmd64x_port_ops
 =======
 			.port_ops = &cmd646r3_port_ops
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.port_ops = &cmd646r3_port_ops
+>>>>>>> refs/remotes/origin/master
 		},
 		{	/* CMD 646 rev 1  */
 			.flags = ATA_FLAG_SLAVE_POSS,
@@ -485,16 +529,24 @@ static int cmd64x_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 			.port_ops = &cmd648_port_ops
 		}
 	};
+<<<<<<< HEAD
 	const struct ata_port_info *ppi[] = { 
+=======
+	const struct ata_port_info *ppi[] = {
+>>>>>>> refs/remotes/origin/master
 		&cmd_info[id->driver_data],
 		&cmd_info[id->driver_data],
 		NULL
 	};
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 mrdmode, reg;
 =======
 	u8 reg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 reg;
+>>>>>>> refs/remotes/origin/master
 	int rc;
 	struct pci_dev *bridge = pdev->bus->self;
 	/* mobility split bridges don't report enabled ports correctly */
@@ -510,6 +562,7 @@ static int cmd64x_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 	if (id->driver_data == 0)	/* 643 */
 		ata_pci_bmdma_clear_simplex(pdev);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (pdev->device == PCI_DEVICE_ID_CMD_646) {
 		/* Does UDMA work ? */
@@ -533,6 +586,8 @@ static int cmd64x_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 	mrdmode |= 0x02;	/* Memory read line enable */
 	pci_write_config_byte(pdev, MRDMODE, mrdmode);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pdev->device == PCI_DEVICE_ID_CMD_646)
 		switch (pdev->revision) {
 		/* UDMA works since rev 5 */
@@ -559,11 +614,15 @@ static int cmd64x_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 		}
 
 	cmd64x_fixup(pdev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* check for enabled ports */
 	pci_read_config_byte(pdev, CNTRL, &reg);
 	if (!port_ok)
+<<<<<<< HEAD
 		dev_printk(KERN_NOTICE, &pdev->dev, "Mobility Bridge detected, ignoring CNTRL port enable/disable\n");
 	if (port_ok && cntrl_ch0_ok && !(reg & CNTRL_CH0)) {
 		dev_printk(KERN_NOTICE, &pdev->dev, "Primary port is disabled\n");
@@ -585,23 +644,41 @@ static int cmd64x_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_notice(&pdev->dev, "Mobility Bridge detected, ignoring CNTRL port enable/disable\n");
+	if (port_ok && cntrl_ch0_ok && !(reg & CNTRL_CH0)) {
+		dev_notice(&pdev->dev, "Primary port is disabled\n");
+		ppi[0] = &ata_dummy_port_info;
+
+	}
+	if (port_ok && !(reg & CNTRL_CH1)) {
+		dev_notice(&pdev->dev, "Secondary port is disabled\n");
+		ppi[1] = &ata_dummy_port_info;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return ata_pci_bmdma_init_one(pdev, ppi, &cmd64x_sht, NULL, 0);
 }
 
 #ifdef CONFIG_PM
 static int cmd64x_reinit_one(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
 <<<<<<< HEAD
 	u8 mrdmode;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = ata_pci_device_do_resume(pdev);
 	if (rc)
 		return rc;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pci_write_config_byte(pdev, PCI_LATENCY_TIMER, 64);
 	pci_read_config_byte(pdev, MRDMODE, &mrdmode);
@@ -615,6 +692,10 @@ static int cmd64x_reinit_one(struct pci_dev *pdev)
 	cmd64x_fixup(pdev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmd64x_fixup(pdev);
+
+>>>>>>> refs/remotes/origin/master
 	ata_host_resume(host);
 	return 0;
 }
@@ -624,12 +705,17 @@ static const struct pci_device_id cmd64x[] = {
 	{ PCI_VDEVICE(CMD, PCI_DEVICE_ID_CMD_643), 0 },
 	{ PCI_VDEVICE(CMD, PCI_DEVICE_ID_CMD_646), 1 },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ PCI_VDEVICE(CMD, PCI_DEVICE_ID_CMD_648), 4 },
 	{ PCI_VDEVICE(CMD, PCI_DEVICE_ID_CMD_649), 5 },
 =======
 	{ PCI_VDEVICE(CMD, PCI_DEVICE_ID_CMD_648), 5 },
 	{ PCI_VDEVICE(CMD, PCI_DEVICE_ID_CMD_649), 6 },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ PCI_VDEVICE(CMD, PCI_DEVICE_ID_CMD_648), 5 },
+	{ PCI_VDEVICE(CMD, PCI_DEVICE_ID_CMD_649), 6 },
+>>>>>>> refs/remotes/origin/master
 
 	{ },
 };
@@ -645,6 +731,7 @@ static struct pci_driver cmd64x_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init cmd64x_init(void)
 {
 	return pci_register_driver(&cmd64x_pci_driver);
@@ -654,12 +741,18 @@ static void __exit cmd64x_exit(void)
 {
 	pci_unregister_driver(&cmd64x_pci_driver);
 }
+=======
+module_pci_driver(cmd64x_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("low-level driver for CMD64x series PATA controllers");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, cmd64x);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(cmd64x_init);
 module_exit(cmd64x_exit);
+=======
+>>>>>>> refs/remotes/origin/master

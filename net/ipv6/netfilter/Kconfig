@@ -25,6 +25,7 @@ config NF_CONNTRACK_IPV6
 
 	  To compile it as a module, choose M here.  If unsure, say N.
 
+<<<<<<< HEAD
 config IP6_NF_QUEUE
 	tristate "IP6 Userspace queueing via NETLINK (OBSOLETE)"
 	depends on INET && IPV6 && NETFILTER
@@ -46,6 +47,20 @@ config IP6_NF_QUEUE
 	  email: <fanton@it.uc3m.es>.
 
 	  To compile it as a module, choose M here.  If unsure, say N.
+=======
+config NF_TABLES_IPV6
+	depends on NF_TABLES
+	tristate "IPv6 nf_tables support"
+
+config NFT_CHAIN_ROUTE_IPV6
+	depends on NF_TABLES_IPV6
+	tristate "IPv6 nf_tables route chain support"
+
+config NFT_CHAIN_NAT_IPV6
+	depends on NF_TABLES_IPV6
+	depends on NF_NAT_IPV6 && NFT_NAT
+	tristate "IPv6 nf_tables nat chain support"
+>>>>>>> refs/remotes/origin/master
 
 config IP6_NF_IPTABLES
 	tristate "IP6 tables support (required for filtering)"
@@ -126,10 +141,16 @@ config IP6_NF_MATCH_MH
 	  To compile it as a module, choose M here.  If unsure, say N.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config IP6_NF_MATCH_RPFILTER
 	tristate '"rpfilter" reverse path filter match support'
 	depends on NETFILTER_ADVANCED
+=======
+config IP6_NF_MATCH_RPFILTER
+	tristate '"rpfilter" reverse path filter match support'
+	depends on NETFILTER_ADVANCED && (IP6_NF_MANGLE || IP6_NF_RAW)
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This option allows you to match packets whose replies would
 	  go out via the interface the packet came in.
@@ -137,7 +158,10 @@ config IP6_NF_MATCH_RPFILTER
 	  To compile it as a module, choose M here.  If unsure, say N.
 	  The module will be called ip6t_rpfilter.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config IP6_NF_MATCH_RT
 	tristate '"rt" Routing header match support'
 	depends on NETFILTER_ADVANCED
@@ -158,6 +182,7 @@ config IP6_NF_TARGET_HL
 	CONFIG_NETFILTER_XT_TARGET_HL.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config IP6_NF_TARGET_LOG
 	tristate "LOG target support"
 	default m if NETFILTER_ADVANCED=n
@@ -169,6 +194,8 @@ config IP6_NF_TARGET_LOG
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config IP6_NF_FILTER
 	tristate "Packet filtering"
 	default m if NETFILTER_ADVANCED=n
@@ -190,6 +217,7 @@ config IP6_NF_TARGET_REJECT
 
 	  To compile it as a module, choose M here.  If unsure, say N.
 
+<<<<<<< HEAD
 config IP6_NF_TARGET_REJECT_SKERR
 	bool "Force socket error when rejecting with icmp*"
 	depends on IP6_NF_TARGET_REJECT
@@ -201,6 +229,20 @@ config IP6_NF_TARGET_REJECT_SKERR
           leaves the local socket unaware of any ingress rejects.
 
 	  If unsure, say N.
+=======
+config IP6_NF_TARGET_SYNPROXY
+	tristate "SYNPROXY target support"
+	depends on NF_CONNTRACK && NETFILTER_ADVANCED
+	select NETFILTER_SYNPROXY
+	select SYN_COOKIES
+	help
+	  The SYNPROXY target allows you to intercept TCP connections and
+	  establish them using syncookies before they are passed on to the
+	  server. This allows to avoid conntrack and server resource usage
+	  during SYN-flood attacks.
+
+	  To compile it as a module, choose M here. If unsure, say N.
+>>>>>>> refs/remotes/origin/master
 
 config IP6_NF_MANGLE
 	tristate "Packet mangling"
@@ -215,9 +257,12 @@ config IP6_NF_MANGLE
 config IP6_NF_RAW
 	tristate  'raw table support (required for TRACE)'
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on NETFILTER_ADVANCED
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option adds a `raw' table to ip6tables. This table is the very
 	  first in the netfilter framework and hooks in at the PREROUTING
@@ -234,9 +279,50 @@ config IP6_NF_SECURITY
        help
          This option adds a `security' table to iptables, for use
          with Mandatory Access Control (MAC) policy.
+<<<<<<< HEAD
         
          If unsure, say N.
 
+=======
+
+         If unsure, say N.
+
+config NF_NAT_IPV6
+	tristate "IPv6 NAT"
+	depends on NF_CONNTRACK_IPV6
+	depends on NETFILTER_ADVANCED
+	select NF_NAT
+	help
+	  The IPv6 NAT option allows masquerading, port forwarding and other
+	  forms of full Network Address Port Translation. It is controlled by
+	  the `nat' table in ip6tables, see the man page for ip6tables(8).
+
+	  To compile it as a module, choose M here.  If unsure, say N.
+
+if NF_NAT_IPV6
+
+config IP6_NF_TARGET_MASQUERADE
+	tristate "MASQUERADE target support"
+	help
+	  Masquerading is a special case of NAT: all outgoing connections are
+	  changed to seem to come from a particular interface's address, and
+	  if the interface goes down, those connections are lost.  This is
+	  only useful for dialup accounts with dynamic IP address (ie. your IP
+	  address will be different on next dialup).
+
+	  To compile it as a module, choose M here.  If unsure, say N.
+
+config IP6_NF_TARGET_NPT
+	tristate "NPT (Network Prefix translation) target support"
+	help
+	  This option adds the `SNPT' and `DNPT' target, which perform
+	  stateless IPv6-to-IPv6 Network Prefix Translation per RFC 6296.
+
+	  To compile it as a module, choose M here.  If unsure, say N.
+
+endif # NF_NAT_IPV6
+
+>>>>>>> refs/remotes/origin/master
 endif # IP6_NF_IPTABLES
 
 endmenu

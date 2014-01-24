@@ -4,12 +4,17 @@
 #include <linux/cpu.h>
 #include <linux/cpumask.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/list.h>
 #include <asm/system.h>
 =======
 #include <linux/smp.h>
 #include <linux/list.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/smp.h>
+#include <linux/list.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * stop_cpu[s]() is simplistic per-cpu maximum priority cpu
@@ -32,9 +37,14 @@ struct cpu_stop_work {
 	struct cpu_stop_done	*done;
 };
 
+<<<<<<< HEAD
 extern struct mutex stop_cpus_mutex;
 
 int stop_one_cpu(unsigned int cpu, cpu_stop_fn_t fn, void *arg);
+=======
+int stop_one_cpu(unsigned int cpu, cpu_stop_fn_t fn, void *arg);
+int stop_two_cpus(unsigned int cpu1, unsigned int cpu2, cpu_stop_fn_t fn, void *arg);
+>>>>>>> refs/remotes/origin/master
 void stop_one_cpu_nowait(unsigned int cpu, cpu_stop_fn_t fn, void *arg,
 			 struct cpu_stop_work *work_buf);
 int stop_cpus(const struct cpumask *cpumask, cpu_stop_fn_t fn, void *arg);
@@ -102,10 +112,14 @@ static inline int try_stop_cpus(const struct cpumask *cpumask,
  * interrupts.  This is a very heavy lock, which is equivalent to
  * grabbing every spinlock (and more).  So the "read" side to such a
 <<<<<<< HEAD
+<<<<<<< HEAD
  * lock is anything which disables preeempt.
 =======
  * lock is anything which disables preemption.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * lock is anything which disables preemption.
+>>>>>>> refs/remotes/origin/master
  */
 #if defined(CONFIG_STOP_MACHINE) && defined(CONFIG_SMP)
 
@@ -136,28 +150,40 @@ int stop_machine(int (*fn)(void *), void *data, const struct cpumask *cpus);
 int __stop_machine(int (*fn)(void *), void *data, const struct cpumask *cpus);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 int stop_machine_from_inactive_cpu(int (*fn)(void *), void *data,
 				   const struct cpumask *cpus);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int stop_machine_from_inactive_cpu(int (*fn)(void *), void *data,
+				   const struct cpumask *cpus);
+
+>>>>>>> refs/remotes/origin/master
 #else	 /* CONFIG_STOP_MACHINE && CONFIG_SMP */
 
 static inline int __stop_machine(int (*fn)(void *), void *data,
 				 const struct cpumask *cpus)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 	local_irq_disable();
 	ret = fn(data);
 	local_irq_enable();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	int ret;
 	local_irq_save(flags);
 	ret = fn(data);
 	local_irq_restore(flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -168,13 +194,19 @@ static inline int stop_machine(int (*fn)(void *), void *data,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int stop_machine_from_inactive_cpu(int (*fn)(void *), void *data,
 						 const struct cpumask *cpus)
 {
 	return __stop_machine(fn, data, cpus);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* CONFIG_STOP_MACHINE && CONFIG_SMP */
 #endif	/* _LINUX_STOP_MACHINE */

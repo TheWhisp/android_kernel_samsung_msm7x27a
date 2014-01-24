@@ -3,10 +3,14 @@
  *
  * Copyright (C) 2005-2007 Asia Vital Components Co., Ltd.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2005-2010 Tai-hwa Liang, Sentelic Corporation.
 =======
  * Copyright (C) 2005-2012 Tai-hwa Liang, Sentelic Corporation.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2005-2012 Tai-hwa Liang, Sentelic Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  *   This program is free software; you can redistribute it and/or
  *   modify it under the terms of the GNU General Public License
@@ -25,12 +29,17 @@
 
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 #include <linux/input.h>
 =======
 #include <linux/input.h>
 #include <linux/input/mt.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/input.h>
+#include <linux/input/mt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ctype.h>
 #include <linux/libps2.h>
 #include <linux/serio.h>
@@ -47,6 +56,7 @@
 #define	FSP_CMD_TIMEOUT2	30
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define	GET_ABS_X(packet)	((packet[1] << 2) | ((packet[3] >> 2) & 0x03))
 #define	GET_ABS_Y(packet)	((packet[2] << 2) | (packet[3] & 0x03))
@@ -54,6 +64,13 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 /** Driver version. */
 static const char fsp_drv_ver[] = "1.0.0-K";
+=======
+#define	GET_ABS_X(packet)	((packet[1] << 2) | ((packet[3] >> 2) & 0x03))
+#define	GET_ABS_Y(packet)	((packet[2] << 2) | (packet[3] & 0x03))
+
+/** Driver version. */
+static const char fsp_drv_ver[] = "1.1.0-K";
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Make sure that the value being sent to FSP will not conflict with
@@ -107,11 +124,15 @@ static int fsp_reg_read(struct psmouse *psmouse, int reg_addr, int *reg_val)
 	 * us.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ps2_command(ps2dev, NULL, PSMOUSE_CMD_DISABLE);
 	psmouse_set_state(psmouse, PSMOUSE_CMD_MODE);
 =======
 	psmouse_deactivate(psmouse);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	psmouse_deactivate(psmouse);
+>>>>>>> refs/remotes/origin/master
 
 	ps2_begin_command(ps2dev);
 
@@ -149,16 +170,22 @@ static int fsp_reg_read(struct psmouse *psmouse, int reg_addr, int *reg_val)
  out:
 	ps2_end_command(ps2dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ps2_command(ps2dev, NULL, PSMOUSE_CMD_ENABLE);
 	psmouse_set_state(psmouse, PSMOUSE_ACTIVATED);
 	dev_dbg(&ps2dev->serio->dev, "READ REG: 0x%02x is 0x%02x (rc = %d)\n",
 		reg_addr, *reg_val, rc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	psmouse_activate(psmouse);
 	psmouse_dbg(psmouse,
 		    "READ REG: 0x%02x is 0x%02x (rc = %d)\n",
 		    reg_addr, *reg_val, rc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -190,10 +217,14 @@ static int fsp_reg_write(struct psmouse *psmouse, int reg_addr, int reg_val)
 
 	if (ps2_sendbyte(ps2dev, 0xf3, FSP_CMD_TIMEOUT) < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return -1;
 =======
 		goto out;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	if ((v = fsp_test_invert_cmd(reg_val)) != reg_val) {
 		/* inversion is required */
@@ -213,6 +244,7 @@ static int fsp_reg_write(struct psmouse *psmouse, int reg_addr, int reg_val)
  out:
 	ps2_end_command(ps2dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(&ps2dev->serio->dev, "WRITE REG: 0x%02x to 0x%02x (rc = %d)\n",
 		reg_addr, reg_val, rc);
 =======
@@ -220,6 +252,11 @@ static int fsp_reg_write(struct psmouse *psmouse, int reg_addr, int reg_val)
 		    "WRITE REG: 0x%02x to 0x%02x (rc = %d)\n",
 		    reg_addr, reg_val, rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	psmouse_dbg(psmouse,
+		    "WRITE REG: 0x%02x to 0x%02x (rc = %d)\n",
+		    reg_addr, reg_val, rc);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -251,11 +288,15 @@ static int fsp_page_reg_read(struct psmouse *psmouse, int *reg_val)
 	int rc = -1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ps2_command(ps2dev, NULL, PSMOUSE_CMD_DISABLE);
 	psmouse_set_state(psmouse, PSMOUSE_CMD_MODE);
 =======
 	psmouse_deactivate(psmouse);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	psmouse_deactivate(psmouse);
+>>>>>>> refs/remotes/origin/master
 
 	ps2_begin_command(ps2dev);
 
@@ -281,16 +322,22 @@ static int fsp_page_reg_read(struct psmouse *psmouse, int *reg_val)
  out:
 	ps2_end_command(ps2dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ps2_command(ps2dev, NULL, PSMOUSE_CMD_ENABLE);
 	psmouse_set_state(psmouse, PSMOUSE_ACTIVATED);
 	dev_dbg(&ps2dev->serio->dev, "READ PAGE REG: 0x%02x (rc = %d)\n",
 		*reg_val, rc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	psmouse_activate(psmouse);
 	psmouse_dbg(psmouse,
 		    "READ PAGE REG: 0x%02x (rc = %d)\n",
 		    *reg_val, rc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -310,10 +357,14 @@ static int fsp_page_reg_write(struct psmouse *psmouse, int reg_val)
 
 	if (ps2_sendbyte(ps2dev, 0xf3, FSP_CMD_TIMEOUT) < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return -1;
 =======
 		goto out;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	if ((v = fsp_test_invert_cmd(reg_val)) != reg_val) {
 		ps2_sendbyte(ps2dev, 0x47, FSP_CMD_TIMEOUT2);
@@ -331,6 +382,7 @@ static int fsp_page_reg_write(struct psmouse *psmouse, int reg_val)
  out:
 	ps2_end_command(ps2dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(&ps2dev->serio->dev, "WRITE PAGE REG: to 0x%02x (rc = %d)\n",
 		reg_val, rc);
 =======
@@ -338,6 +390,11 @@ static int fsp_page_reg_write(struct psmouse *psmouse, int reg_val)
 		    "WRITE PAGE REG: to 0x%02x (rc = %d)\n",
 		    reg_val, rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	psmouse_dbg(psmouse,
+		    "WRITE PAGE REG: to 0x%02x (rc = %d)\n",
+		    reg_val, rc);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -357,6 +414,30 @@ static int fsp_get_revision(struct psmouse *psmouse, int *rev)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int fsp_get_sn(struct psmouse *psmouse, int *sn)
+{
+	int v0, v1, v2;
+	int rc = -EIO;
+
+	/* production number since Cx is available at: 0x0b40 ~ 0x0b42 */
+	if (fsp_page_reg_write(psmouse, FSP_PAGE_0B))
+		goto out;
+	if (fsp_reg_read(psmouse, FSP_REG_SN0, &v0))
+		goto out;
+	if (fsp_reg_read(psmouse, FSP_REG_SN1, &v1))
+		goto out;
+	if (fsp_reg_read(psmouse, FSP_REG_SN2, &v2))
+		goto out;
+	*sn = (v0 << 16) | (v1 << 8) | v2;
+	rc = 0;
+out:
+	fsp_page_reg_write(psmouse, FSP_PAGE_DEFAULT);
+	return rc;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int fsp_get_buttons(struct psmouse *psmouse, int *btn)
 {
 	static const int buttons[] = {
@@ -368,10 +449,14 @@ static int fsp_get_buttons(struct psmouse *psmouse, int *btn)
 	int val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (fsp_reg_read(psmouse, FSP_REG_TMOD_STATUS1, &val) == -1)
 =======
 	if (fsp_reg_read(psmouse, FSP_REG_TMOD_STATUS, &val) == -1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (fsp_reg_read(psmouse, FSP_REG_TMOD_STATUS, &val) == -1)
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 
 	*btn = buttons[(val & 0x30) >> 4];
@@ -386,10 +471,14 @@ static int fsp_opc_tag_enable(struct psmouse *psmouse, bool enable)
 
 	if (fsp_reg_read(psmouse, FSP_REG_OPC_QDOWN, &v) == -1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&psmouse->ps2dev.serio->dev, "Unable get OPC state.\n");
 =======
 		psmouse_err(psmouse, "Unable get OPC state.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		psmouse_err(psmouse, "Unable get OPC state.\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -407,11 +496,15 @@ static int fsp_opc_tag_enable(struct psmouse *psmouse, bool enable)
 
 	if (res != 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&psmouse->ps2dev.serio->dev,
 			"Unable to enable OPC tag.\n");
 =======
 		psmouse_err(psmouse, "Unable to enable OPC tag.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		psmouse_err(psmouse, "Unable to enable OPC tag.\n");
+>>>>>>> refs/remotes/origin/master
 		res = -EIO;
 	}
 
@@ -479,10 +572,14 @@ static ssize_t fsp_attr_set_setreg(struct psmouse *psmouse, void *data,
 				   const char *buf, size_t count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long reg, val;
 =======
 	int reg, val;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int reg, val;
+>>>>>>> refs/remotes/origin/master
 	char *rest;
 	ssize_t retval;
 
@@ -491,14 +588,20 @@ static ssize_t fsp_attr_set_setreg(struct psmouse *psmouse, void *data,
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtoul(rest + 1, 16, &val) || val > 0xff)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	retval = kstrtoint(rest + 1, 16, &val);
 	if (retval)
 		return retval;
 
 	if (val > 0xff)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (fsp_reg_write_enable(psmouse, true))
@@ -531,11 +634,14 @@ static ssize_t fsp_attr_set_getreg(struct psmouse *psmouse, void *data,
 {
 	struct fsp_data *pad = psmouse->private;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long reg;
 	int val;
 
 	if (strict_strtoul(buf, 16, &reg) || reg > 0xff)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int reg, val, err;
 
 	err = kstrtoint(buf, 16, &reg);
@@ -543,7 +649,10 @@ static ssize_t fsp_attr_set_getreg(struct psmouse *psmouse, void *data,
 		return err;
 
 	if (reg > 0xff)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (fsp_reg_read(psmouse, reg, &val))
@@ -573,10 +682,13 @@ static ssize_t fsp_attr_set_pagereg(struct psmouse *psmouse, void *data,
 					const char *buf, size_t count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val;
 
 	if (strict_strtoul(buf, 16, &val) || val > 0xff)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int val, err;
 
 	err = kstrtoint(buf, 16, &val);
@@ -584,7 +696,10 @@ static ssize_t fsp_attr_set_pagereg(struct psmouse *psmouse, void *data,
 		return err;
 
 	if (val > 0xff)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (fsp_page_reg_write(psmouse, val))
@@ -608,10 +723,13 @@ static ssize_t fsp_attr_set_vscroll(struct psmouse *psmouse, void *data,
 					const char *buf, size_t count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val;
 
 	if (strict_strtoul(buf, 10, &val) || val > 1)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int val;
 	int err;
 
@@ -620,7 +738,10 @@ static ssize_t fsp_attr_set_vscroll(struct psmouse *psmouse, void *data,
 		return err;
 
 	if (val > 1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	fsp_onpad_vscr(psmouse, val);
@@ -643,10 +764,13 @@ static ssize_t fsp_attr_set_hscroll(struct psmouse *psmouse, void *data,
 					const char *buf, size_t count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val;
 
 	if (strict_strtoul(buf, 10, &val) || val > 1)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int val;
 	int err;
 
@@ -655,7 +779,10 @@ static ssize_t fsp_attr_set_hscroll(struct psmouse *psmouse, void *data,
 		return err;
 
 	if (val > 1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	fsp_onpad_hscr(psmouse, val);
@@ -723,16 +850,22 @@ static struct attribute_group fsp_attribute_group = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef FSP_DEBUG
 static void fsp_packet_debug(unsigned char packet[])
 =======
 #ifdef	FSP_DEBUG
 static void fsp_packet_debug(struct psmouse *psmouse, unsigned char packet[])
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef	FSP_DEBUG
+static void fsp_packet_debug(struct psmouse *psmouse, unsigned char packet[])
+>>>>>>> refs/remotes/origin/master
 {
 	static unsigned int ps2_packet_cnt;
 	static unsigned int ps2_last_second;
 	unsigned int jiffies_msec;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	ps2_packet_cnt++;
@@ -743,6 +876,8 @@ static void fsp_packet_debug(struct psmouse *psmouse, unsigned char packet[])
 	if (jiffies_msec - ps2_last_second > 1000) {
 		printk(KERN_DEBUG "PS/2 packets/sec = %d\n", ps2_packet_cnt);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	const char *packet_type = "UNKNOWN";
 	unsigned short abs_x = 0, abs_y = 0;
 
@@ -774,23 +909,33 @@ static void fsp_packet_debug(struct psmouse *psmouse, unsigned char packet[])
 
 	if (jiffies_msec - ps2_last_second > 1000) {
 		psmouse_dbg(psmouse, "PS/2 packets/sec = %d\n", ps2_packet_cnt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ps2_packet_cnt = 0;
 		ps2_last_second = jiffies_msec;
 	}
 }
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void fsp_packet_debug(unsigned char packet[])
 =======
 static void fsp_packet_debug(struct psmouse *psmouse, unsigned char packet[])
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void fsp_packet_debug(struct psmouse *psmouse, unsigned char packet[])
+>>>>>>> refs/remotes/origin/master
 {
 }
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void fsp_set_slot(struct input_dev *dev, int slot, bool active,
 			 unsigned int x, unsigned int y)
 {
@@ -802,7 +947,10 @@ static void fsp_set_slot(struct input_dev *dev, int slot, bool active,
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static psmouse_ret_t fsp_process_byte(struct psmouse *psmouse)
 {
 	struct input_dev *dev = psmouse->dev;
@@ -810,9 +958,13 @@ static psmouse_ret_t fsp_process_byte(struct psmouse *psmouse)
 	unsigned char *packet = psmouse->packet;
 	unsigned char button_status = 0, lscroll = 0, rscroll = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned short abs_x, abs_y, fgrs = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned short abs_x, abs_y, fgrs = 0;
+>>>>>>> refs/remotes/origin/master
 	int rel_x, rel_y;
 
 	if (psmouse->pktcnt < 4)
@@ -823,15 +975,32 @@ static psmouse_ret_t fsp_process_byte(struct psmouse *psmouse)
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch (psmouse->packet[0] >> FSP_PKT_TYPE_SHIFT) {
 	case FSP_PKT_TYPE_ABS:
 		dev_warn(&psmouse->ps2dev.serio->dev,
 			 "Unexpected absolute mode packet, ignored.\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	fsp_packet_debug(psmouse, packet);
 
 	switch (psmouse->packet[0] >> FSP_PKT_TYPE_SHIFT) {
 	case FSP_PKT_TYPE_ABS:
+<<<<<<< HEAD
+=======
+
+		if ((packet[0] == 0x48 || packet[0] == 0x49) &&
+		    packet[1] == 0 && packet[2] == 0) {
+			/*
+			 * Ignore coordinate noise when finger leaving the
+			 * surface, otherwise cursor may jump to upper-left
+			 * corner.
+			 */
+			packet[3] &= 0xf0;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		abs_x = GET_ABS_X(packet);
 		abs_y = GET_ABS_Y(packet);
 
@@ -900,17 +1069,24 @@ static psmouse_ret_t fsp_process_byte(struct psmouse *psmouse)
 		input_report_key(dev, BTN_TOUCH, fgrs);
 		input_report_key(dev, BTN_TOOL_FINGER, fgrs == 1);
 		input_report_key(dev, BTN_TOOL_DOUBLETAP, fgrs == 2);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case FSP_PKT_TYPE_NORMAL_OPC:
 		/* on-pad click, filter it if necessary */
 		if ((ad->flags & FSPDRV_FLAG_EN_OPC) != FSPDRV_FLAG_EN_OPC)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			packet[0] &= ~BIT(0);
 =======
 			packet[0] &= ~FSP_PB0_LBTN;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			packet[0] &= ~FSP_PB0_LBTN;
+>>>>>>> refs/remotes/origin/master
 		/* fall through */
 
 	case FSP_PKT_TYPE_NORMAL:
@@ -958,10 +1134,13 @@ static psmouse_ret_t fsp_process_byte(struct psmouse *psmouse)
 	input_sync(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fsp_packet_debug(packet);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return PSMOUSE_FULL_PACKET;
 }
 
@@ -985,6 +1164,7 @@ static int fsp_activate_protocol(struct psmouse *psmouse)
 
 	ps2_command(ps2dev, param, PSMOUSE_CMD_GETID);
 	if (param[0] != 0x04) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		dev_err(&psmouse->ps2dev.serio->dev,
 			"Unable to enable 4 bytes packet format.\n");
@@ -1023,6 +1203,8 @@ static int fsp_activate_protocol(struct psmouse *psmouse)
 	fsp_onpad_vscr(psmouse, true);
 	fsp_onpad_hscr(psmouse, true);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		psmouse_err(psmouse,
 			    "Unable to enable 4 bytes packet format.\n");
 		return -EIO;
@@ -1119,11 +1301,18 @@ static int fsp_set_input_params(struct psmouse *psmouse)
 
 		input_set_abs_params(dev, ABS_X, 0, abs_x, 0, 0);
 		input_set_abs_params(dev, ABS_Y, 0, abs_y, 0, 0);
+<<<<<<< HEAD
 		input_mt_init_slots(dev, 2);
 		input_set_abs_params(dev, ABS_MT_POSITION_X, 0, abs_x, 0, 0);
 		input_set_abs_params(dev, ABS_MT_POSITION_Y, 0, abs_y, 0, 0);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		input_mt_init_slots(dev, 2, 0);
+		input_set_abs_params(dev, ABS_MT_POSITION_X, 0, abs_x, 0, 0);
+		input_set_abs_params(dev, ABS_MT_POSITION_Y, 0, abs_y, 0, 0);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1182,6 +1371,7 @@ int fsp_init(struct psmouse *psmouse)
 {
 	struct fsp_data *priv;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ver, rev, buttons;
 	int error;
 
@@ -1196,16 +1386,30 @@ int fsp_init(struct psmouse *psmouse)
 		ver >> 4, ver & 0x0F, rev, fsp_drv_ver, buttons & 7);
 =======
 	int ver, rev;
+=======
+	int ver, rev, sn = 0;
+>>>>>>> refs/remotes/origin/master
 	int error;
 
 	if (fsp_get_version(psmouse, &ver) ||
 	    fsp_get_revision(psmouse, &rev)) {
 		return -ENODEV;
 	}
+<<<<<<< HEAD
 
 	psmouse_info(psmouse, "Finger Sensing Pad, hw: %d.%d.%d, sw: %s\n",
 		     ver >> 4, ver & 0x0F, rev, fsp_drv_ver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ver >= FSP_VER_STL3888_C0) {
+		/* firmware information is only available since C0 */
+		fsp_get_sn(psmouse, &sn);
+	}
+
+	psmouse_info(psmouse,
+		     "Finger Sensing Pad, hw: %d.%d.%d, sn: %x, sw: %s\n",
+		     ver >> 4, ver & 0x0F, rev, sn, fsp_drv_ver);
+>>>>>>> refs/remotes/origin/master
 
 	psmouse->private = priv = kzalloc(sizeof(struct fsp_data), GFP_KERNEL);
 	if (!priv)
@@ -1213,6 +1417,7 @@ int fsp_init(struct psmouse *psmouse)
 
 	priv->ver = ver;
 	priv->rev = rev;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	priv->buttons = buttons;
 
@@ -1227,6 +1432,8 @@ int fsp_init(struct psmouse *psmouse)
 	__set_bit(REL_HWHEEL, psmouse->dev->relbit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	psmouse->protocol_handler = fsp_process_byte;
 	psmouse->disconnect = fsp_disconnect;
@@ -1235,13 +1442,17 @@ int fsp_init(struct psmouse *psmouse)
 	psmouse->pktsize = 4;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* set default packet output based on number of buttons we found */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	error = fsp_activate_protocol(psmouse);
 	if (error)
 		goto err_out;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	error = sysfs_create_group(&psmouse->ps2dev.serio->dev.kobj,
 				   &fsp_attribute_group);
@@ -1249,6 +1460,8 @@ int fsp_init(struct psmouse *psmouse)
 		dev_err(&psmouse->ps2dev.serio->dev,
 			"Failed to create sysfs attributes (%d)", error);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Set up various supported input event bits */
 	error = fsp_set_input_params(psmouse);
 	if (error)
@@ -1259,7 +1472,10 @@ int fsp_init(struct psmouse *psmouse)
 	if (error) {
 		psmouse_err(psmouse,
 			    "Failed to create sysfs attributes (%d)", error);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto err_out;
 	}
 

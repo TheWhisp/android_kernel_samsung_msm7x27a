@@ -11,8 +11,12 @@ obj-$(CONFIG_CAIF) += caif.o
 obj-$(CONFIG_CAIF_NETDEV) += chnl_net.o
 obj-$(CONFIG_CAIF) += caif_socket.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_CAIF_USB) += caif_usb.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_CAIF_USB) += caif_usb.o
+>>>>>>> refs/remotes/origin/master
 
 export-y := caif.o

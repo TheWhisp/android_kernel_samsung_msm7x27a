@@ -103,10 +103,14 @@
  *		ftp://ftp.multitech.com/ISI-Cards/
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	Having installed the cards the module options (/etc/modprobe.conf)
 =======
  *	Having installed the cards the module options (/etc/modprobe.d/)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	Having installed the cards the module options (/etc/modprobe.d/)
+>>>>>>> refs/remotes/origin/master
  *
  *	options isicom   io=card1,card2,card3,card4 irq=card1,card2,card3,card4
  *
@@ -138,9 +142,12 @@
 #include <linux/uaccess.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/pci.h>
 
@@ -156,7 +163,11 @@
 #endif
 
 static int isicom_probe(struct pci_dev *, const struct pci_device_id *);
+<<<<<<< HEAD
 static void __devexit isicom_remove(struct pci_dev *);
+=======
+static void isicom_remove(struct pci_dev *);
+>>>>>>> refs/remotes/origin/master
 
 static struct pci_device_id isicom_pci_tbl[] = {
 	{ PCI_DEVICE(VENDOR_ID, 0x2028) },
@@ -176,7 +187,11 @@ static struct pci_driver isicom_driver = {
 	.name		= "isicom",
 	.id_table	= isicom_pci_tbl,
 	.probe		= isicom_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(isicom_remove)
+=======
+	.remove		= isicom_remove
+>>>>>>> refs/remotes/origin/master
 };
 
 static int prev_card = 3;	/*	start servicing isi_card[0]	*/
@@ -608,10 +623,17 @@ static irqreturn_t isicom_interrupt(int irq, void *dev_id)
 					port->status &= ~ISI_DCD;
 			}
 
+<<<<<<< HEAD
 			if (port->port.flags & ASYNC_CTS_FLOW) {
 				if (tty->hw_stopped) {
 					if (header & ISI_CTS) {
 						port->port.tty->hw_stopped = 0;
+=======
+			if (tty_port_cts_enabled(&port->port)) {
+				if (tty->hw_stopped) {
+					if (header & ISI_CTS) {
+						tty->hw_stopped = 0;
+>>>>>>> refs/remotes/origin/master
 						/* start tx ing */
 						port->status |= (ISI_TXOK
 							| ISI_CTS);
@@ -642,10 +664,17 @@ static irqreturn_t isicom_interrupt(int irq, void *dev_id)
 			break;
 
 		case 1:	/* Received Break !!! */
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, 0, TTY_BREAK);
 			if (port->port.flags & ASYNC_SAK)
 				do_SAK(tty);
 			tty_flip_buffer_push(tty);
+=======
+			tty_insert_flip_char(&port->port, 0, TTY_BREAK);
+			if (port->port.flags & ASYNC_SAK)
+				do_SAK(tty);
+			tty_flip_buffer_push(&port->port);
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		case 2:	/* Statistics		 */
@@ -658,15 +687,24 @@ static irqreturn_t isicom_interrupt(int irq, void *dev_id)
 			break;
 		}
 	} else {				/* Data   Packet */
+<<<<<<< HEAD
 
 		count = tty_prepare_flip_string(tty, &rp, byte_count & ~1);
+=======
+		count = tty_prepare_flip_string(&port->port, &rp,
+				byte_count & ~1);
+>>>>>>> refs/remotes/origin/master
 		pr_debug("%s: Can rx %d of %d bytes.\n",
 			 __func__, count, byte_count);
 		word_count = count >> 1;
 		insw(base, rp, word_count);
 		byte_count -= (word_count << 1);
 		if (count & 0x0001) {
+<<<<<<< HEAD
 			tty_insert_flip_char(tty,  inw(base) & 0xff,
+=======
+			tty_insert_flip_char(&port->port, inw(base) & 0xff,
+>>>>>>> refs/remotes/origin/master
 				TTY_NORMAL);
 			byte_count -= 2;
 		}
@@ -679,7 +717,11 @@ static irqreturn_t isicom_interrupt(int irq, void *dev_id)
 				byte_count -= 2;
 			}
 		}
+<<<<<<< HEAD
 		tty_flip_buffer_push(tty);
+=======
+		tty_flip_buffer_push(&port->port);
+>>>>>>> refs/remotes/origin/master
 	}
 	outw(0x0000, base+0x04); /* enable interrupts */
 	spin_unlock(&card->card_lock);
@@ -710,7 +752,11 @@ static void isicom_config_port(struct tty_struct *tty)
 
 		/* 1,2,3,4 => 57.6, 115.2, 230, 460 kbps resp. */
 		if (baud < 1 || baud > 4)
+<<<<<<< HEAD
 			tty->termios->c_cflag &= ~CBAUDEX;
+=======
+			tty->termios.c_cflag &= ~CBAUDEX;
+>>>>>>> refs/remotes/origin/master
 		else
 			baud += 15;
 	}
@@ -857,10 +903,13 @@ static struct tty_port *isicom_find_port(struct tty_struct *tty)
 	int line = tty->index;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (line < 0 || line > PORT_COUNT-1)
 		return NULL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	board = BOARD(line);
 	card = &isi_card[board];
 
@@ -1209,8 +1258,13 @@ static void isicom_set_termios(struct tty_struct *tty,
 	if (isicom_paranoia_check(port, tty->name, "isicom_set_termios"))
 		return;
 
+<<<<<<< HEAD
 	if (tty->termios->c_cflag == old_termios->c_cflag &&
 			tty->termios->c_iflag == old_termios->c_iflag)
+=======
+	if (tty->termios.c_cflag == old_termios->c_cflag &&
+			tty->termios.c_iflag == old_termios->c_iflag)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	spin_lock_irqsave(&port->card->card_lock, flags);
@@ -1218,7 +1272,11 @@ static void isicom_set_termios(struct tty_struct *tty,
 	spin_unlock_irqrestore(&port->card->card_lock, flags);
 
 	if ((old_termios->c_cflag & CRTSCTS) &&
+<<<<<<< HEAD
 			!(tty->termios->c_cflag & CRTSCTS)) {
+=======
+			!(tty->termios.c_cflag & CRTSCTS)) {
+>>>>>>> refs/remotes/origin/master
 		tty->hw_stopped = 0;
 		isicom_start(tty);
 	}
@@ -1320,7 +1378,11 @@ static const struct tty_port_operations isicom_port_ops = {
 	.shutdown		= isicom_shutdown,
 };
 
+<<<<<<< HEAD
 static int __devinit reset_card(struct pci_dev *pdev,
+=======
+static int reset_card(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 	const unsigned int card, unsigned int *signature)
 {
 	struct isi_board *board = pci_get_drvdata(pdev);
@@ -1381,7 +1443,11 @@ end:
 	return retval;
 }
 
+<<<<<<< HEAD
 static int __devinit load_firmware(struct pci_dev *pdev,
+=======
+static int load_firmware(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 	const unsigned int index, const unsigned int signature)
 {
 	struct isi_board *board = pci_get_drvdata(pdev);
@@ -1561,7 +1627,11 @@ end:
  */
 static unsigned int card_count;
 
+<<<<<<< HEAD
 static int __devinit isicom_probe(struct pci_dev *pdev,
+=======
+static int isicom_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 	const struct pci_device_id *ent)
 {
 	unsigned int uninitialized_var(signature), index;
@@ -1609,10 +1679,14 @@ static int __devinit isicom_probe(struct pci_dev *pdev,
 
 	retval = request_irq(board->irq, isicom_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_SHARED | IRQF_DISABLED, ISICOM_NAME, board);
 =======
 			IRQF_SHARED, ISICOM_NAME, board);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			IRQF_SHARED, ISICOM_NAME, board);
+>>>>>>> refs/remotes/origin/master
 	if (retval < 0) {
 		dev_err(&pdev->dev, "Could not install handler at Irq %d. "
 			"Card%d will be disabled.\n", board->irq, index + 1);
@@ -1627,9 +1701,21 @@ static int __devinit isicom_probe(struct pci_dev *pdev,
 	if (retval < 0)
 		goto errunri;
 
+<<<<<<< HEAD
 	for (index = 0; index < board->port_count; index++)
 		tty_register_device(isicom_normal, board->index * 16 + index,
 				&pdev->dev);
+=======
+	for (index = 0; index < board->port_count; index++) {
+		struct tty_port *tport = &board->ports[index].port;
+		tty_port_init(tport);
+		tport->ops = &isicom_port_ops;
+		tport->close_delay = 50 * HZ/100;
+		tport->closing_wait = 3000 * HZ/100;
+		tty_port_register_device(tport, isicom_normal,
+				board->index * 16 + index, &pdev->dev);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -1646,13 +1732,24 @@ err:
 	return retval;
 }
 
+<<<<<<< HEAD
 static void __devexit isicom_remove(struct pci_dev *pdev)
+=======
+static void isicom_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct isi_board *board = pci_get_drvdata(pdev);
 	unsigned int i;
 
+<<<<<<< HEAD
 	for (i = 0; i < board->port_count; i++)
 		tty_unregister_device(isicom_normal, board->index * 16 + i);
+=======
+	for (i = 0; i < board->port_count; i++) {
+		tty_unregister_device(isicom_normal, board->index * 16 + i);
+		tty_port_destroy(&board->ports[i].port);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	free_irq(board->irq, board);
 	pci_release_region(pdev, 3);
@@ -1671,6 +1768,7 @@ static int __init isicom_init(void)
 		isi_card[idx].ports = port;
 		spin_lock_init(&isi_card[idx].card_lock);
 		for (channel = 0; channel < 16; channel++, port++) {
+<<<<<<< HEAD
 			tty_port_init(&port->port);
 			port->port.ops = &isicom_port_ops;
 			port->magic = ISICOM_MAGIC;
@@ -1678,6 +1776,11 @@ static int __init isicom_init(void)
 			port->channel = channel;
 			port->port.close_delay = 50 * HZ/100;
 			port->port.closing_wait = 3000 * HZ/100;
+=======
+			port->magic = ISICOM_MAGIC;
+			port->card = &isi_card[idx];
+			port->channel = channel;
+>>>>>>> refs/remotes/origin/master
 			port->status = 0;
 			/*  . . .  */
 		}
@@ -1693,9 +1796,12 @@ static int __init isicom_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	isicom_normal->owner			= THIS_MODULE;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	isicom_normal->name 			= "ttyM";
 	isicom_normal->major			= ISICOM_NMAJOR;
 	isicom_normal->minor_start		= 0;

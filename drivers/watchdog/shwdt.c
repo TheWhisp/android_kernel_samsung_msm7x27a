@@ -3,7 +3,11 @@
  *
  * Watchdog driver for integrated watchdog in the SuperH processors.
  *
+<<<<<<< HEAD
  * Copyright (C) 2001 - 2010  Paul Mundt <lethal@linux-sh.org>
+=======
+ * Copyright (C) 2001 - 2012  Paul Mundt <lethal@linux-sh.org>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -18,26 +22,43 @@
  *     general cleanups, add some ioctls
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/platform_device.h>
 #include <linux/init.h>
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <linux/miscdevice.h>
 #include <linux/watchdog.h>
 #include <linux/reboot.h>
 #include <linux/notifier.h>
 #include <linux/ioport.h>
+=======
+#include <linux/spinlock.h>
+#include <linux/watchdog.h>
+#include <linux/pm_runtime.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/mm.h>
 #include <linux/slab.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/uaccess.h>
+=======
+#include <linux/clk.h>
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/watchdog.h>
 
 #define DRV_NAME "sh-wdt"
@@ -72,6 +93,7 @@
 static int clock_division_ratio = WTCSR_CKS_4096;
 #define next_ping_period(cks)	(jiffies + msecs_to_jiffies(cks - 4))
 
+<<<<<<< HEAD
 static const struct watchdog_info sh_wdt_info;
 static struct platform_device *sh_wdt_dev;
 static DEFINE_SPINLOCK(shwdt_lock);
@@ -83,11 +105,17 @@ static int nowayout = WATCHDOG_NOWAYOUT;
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WATCHDOG_HEARTBEAT 30			/* 30 sec default heartbeat */
+static int heartbeat = WATCHDOG_HEARTBEAT;	/* in seconds */
+static bool nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/master
 static unsigned long next_heartbeat;
 
 struct sh_wdt {
 	void __iomem		*base;
 	struct device		*dev;
+<<<<<<< HEAD
 
 	struct timer_list	timer;
 
@@ -101,6 +129,24 @@ static void sh_wdt_start(struct sh_wdt *wdt)
 	u8 csr;
 
 	spin_lock_irqsave(&shwdt_lock, flags);
+=======
+	struct clk		*clk;
+	spinlock_t		lock;
+
+	struct timer_list	timer;
+};
+
+static int sh_wdt_start(struct watchdog_device *wdt_dev)
+{
+	struct sh_wdt *wdt = watchdog_get_drvdata(wdt_dev);
+	unsigned long flags;
+	u8 csr;
+
+	pm_runtime_get_sync(wdt->dev);
+	clk_enable(wdt->clk);
+
+	spin_lock_irqsave(&wdt->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	next_heartbeat = jiffies + (heartbeat * HZ);
 	mod_timer(&wdt->timer, next_ping_period(clock_division_ratio));
@@ -129,6 +175,7 @@ static void sh_wdt_start(struct sh_wdt *wdt)
 	csr &= ~RSTCSR_RSTS;
 	sh_wdt_write_rstcsr(csr);
 #endif
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&shwdt_lock, flags);
 }
 
@@ -138,6 +185,20 @@ static void sh_wdt_stop(struct sh_wdt *wdt)
 	u8 csr;
 
 	spin_lock_irqsave(&shwdt_lock, flags);
+=======
+	spin_unlock_irqrestore(&wdt->lock, flags);
+
+	return 0;
+}
+
+static int sh_wdt_stop(struct watchdog_device *wdt_dev)
+{
+	struct sh_wdt *wdt = watchdog_get_drvdata(wdt_dev);
+	unsigned long flags;
+	u8 csr;
+
+	spin_lock_irqsave(&wdt->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	del_timer(&wdt->timer);
 
@@ -145,6 +206,7 @@ static void sh_wdt_stop(struct sh_wdt *wdt)
 	csr &= ~WTCSR_TME;
 	sh_wdt_write_csr(csr);
 
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&shwdt_lock, flags);
 }
 
@@ -159,14 +221,47 @@ static inline void sh_wdt_keepalive(struct sh_wdt *wdt)
 
 static int sh_wdt_set_heartbeat(int t)
 {
+=======
+	spin_unlock_irqrestore(&wdt->lock, flags);
+
+	clk_disable(wdt->clk);
+	pm_runtime_put_sync(wdt->dev);
+
+	return 0;
+}
+
+static int sh_wdt_keepalive(struct watchdog_device *wdt_dev)
+{
+	struct sh_wdt *wdt = watchdog_get_drvdata(wdt_dev);
+	unsigned long flags;
+
+	spin_lock_irqsave(&wdt->lock, flags);
+	next_heartbeat = jiffies + (heartbeat * HZ);
+	spin_unlock_irqrestore(&wdt->lock, flags);
+
+	return 0;
+}
+
+static int sh_wdt_set_heartbeat(struct watchdog_device *wdt_dev, unsigned t)
+{
+	struct sh_wdt *wdt = watchdog_get_drvdata(wdt_dev);
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	if (unlikely(t < 1 || t > 3600)) /* arbitrary upper limit */
 		return -EINVAL;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&shwdt_lock, flags);
 	heartbeat = t;
 	spin_unlock_irqrestore(&shwdt_lock, flags);
+=======
+	spin_lock_irqsave(&wdt->lock, flags);
+	heartbeat = t;
+	wdt_dev->timeout = t;
+	spin_unlock_irqrestore(&wdt->lock, flags);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -175,7 +270,11 @@ static void sh_wdt_ping(unsigned long data)
 	struct sh_wdt *wdt = (struct sh_wdt *)data;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&shwdt_lock, flags);
+=======
+	spin_lock_irqsave(&wdt->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	if (time_before(jiffies, next_heartbeat)) {
 		u8 csr;
 
@@ -189,6 +288,7 @@ static void sh_wdt_ping(unsigned long data)
 	} else
 		dev_warn(wdt->dev, "Heartbeat lost! Will not ping "
 		         "the watchdog\n");
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&shwdt_lock, flags);
 }
 
@@ -320,6 +420,11 @@ static const struct file_operations sh_wdt_fops = {
 	.release	= sh_wdt_close,
 };
 
+=======
+	spin_unlock_irqrestore(&wdt->lock, flags);
+}
+
+>>>>>>> refs/remotes/origin/master
 static const struct watchdog_info sh_wdt_info = {
 	.options		= WDIOF_KEEPALIVEPING | WDIOF_SETTIMEOUT |
 				  WDIOF_MAGICCLOSE,
@@ -327,6 +432,7 @@ static const struct watchdog_info sh_wdt_info = {
 	.identity		= "SH WDT",
 };
 
+<<<<<<< HEAD
 static struct notifier_block sh_wdt_notifier = {
 	.notifier_call		= sh_wdt_notify_sys,
 };
@@ -338,6 +444,22 @@ static struct miscdevice sh_wdt_miscdev = {
 };
 
 static int __devinit sh_wdt_probe(struct platform_device *pdev)
+=======
+static const struct watchdog_ops sh_wdt_ops = {
+	.owner		= THIS_MODULE,
+	.start		= sh_wdt_start,
+	.stop		= sh_wdt_stop,
+	.ping		= sh_wdt_keepalive,
+	.set_timeout	= sh_wdt_set_heartbeat,
+};
+
+static struct watchdog_device sh_wdt_dev = {
+	.info	= &sh_wdt_info,
+	.ops	= &sh_wdt_ops,
+};
+
+static int sh_wdt_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sh_wdt *wdt;
 	struct resource *res;
@@ -354,6 +476,7 @@ static int __devinit sh_wdt_probe(struct platform_device *pdev)
 	if (unlikely(!res))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (!devm_request_mem_region(&pdev->dev, res->start,
 				     resource_size(res), DRV_NAME))
 		return -EBUSY;
@@ -387,6 +510,49 @@ static int __devinit sh_wdt_probe(struct platform_device *pdev)
 			"Can't register miscdev on minor=%d (err=%d)\n",
 						sh_wdt_miscdev.minor, rc);
 		goto out_unreg;
+=======
+	wdt = devm_kzalloc(&pdev->dev, sizeof(struct sh_wdt), GFP_KERNEL);
+	if (unlikely(!wdt))
+		return -ENOMEM;
+
+	wdt->dev = &pdev->dev;
+
+	wdt->clk = devm_clk_get(&pdev->dev, NULL);
+	if (IS_ERR(wdt->clk)) {
+		/*
+		 * Clock framework support is optional, continue on
+		 * anyways if we don't find a matching clock.
+		 */
+		wdt->clk = NULL;
+	}
+
+	wdt->base = devm_ioremap_resource(wdt->dev, res);
+	if (IS_ERR(wdt->base))
+		return PTR_ERR(wdt->base);
+
+	watchdog_set_nowayout(&sh_wdt_dev, nowayout);
+	watchdog_set_drvdata(&sh_wdt_dev, wdt);
+
+	spin_lock_init(&wdt->lock);
+
+	rc = sh_wdt_set_heartbeat(&sh_wdt_dev, heartbeat);
+	if (unlikely(rc)) {
+		/* Default timeout if invalid */
+		sh_wdt_set_heartbeat(&sh_wdt_dev, WATCHDOG_HEARTBEAT);
+
+		dev_warn(&pdev->dev,
+			 "heartbeat value must be 1<=x<=3600, using %d\n",
+			 sh_wdt_dev.timeout);
+	}
+
+	dev_info(&pdev->dev, "configured with heartbeat=%d sec (nowayout=%d)\n",
+		 sh_wdt_dev.timeout, nowayout);
+
+	rc = watchdog_register_device(&sh_wdt_dev);
+	if (unlikely(rc)) {
+		dev_err(&pdev->dev, "Can't register watchdog (err=%d)\n", rc);
+		return rc;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	init_timer(&wdt->timer);
@@ -395,6 +561,7 @@ static int __devinit sh_wdt_probe(struct platform_device *pdev)
 	wdt->timer.expires	= next_ping_period(clock_division_ratio);
 
 	platform_set_drvdata(pdev, wdt);
+<<<<<<< HEAD
 	sh_wdt_dev = pdev;
 
 	dev_info(&pdev->dev, "initialized.\n");
@@ -428,28 +595,63 @@ static int __devexit sh_wdt_remove(struct platform_device *pdev)
 	devm_release_mem_region(&pdev->dev, res->start, resource_size(res));
 	devm_iounmap(&pdev->dev, wdt->base);
 	devm_kfree(&pdev->dev, wdt);
+=======
+
+	dev_info(&pdev->dev, "initialized.\n");
+
+	pm_runtime_enable(&pdev->dev);
 
 	return 0;
 }
 
+static int sh_wdt_remove(struct platform_device *pdev)
+{
+	struct sh_wdt *wdt = platform_get_drvdata(pdev);
+
+	watchdog_unregister_device(&sh_wdt_dev);
+
+	pm_runtime_disable(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
+
+	return 0;
+}
+
+<<<<<<< HEAD
+=======
+static void sh_wdt_shutdown(struct platform_device *pdev)
+{
+	sh_wdt_stop(&sh_wdt_dev);
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver sh_wdt_driver = {
 	.driver		= {
 		.name	= DRV_NAME,
 		.owner	= THIS_MODULE,
 	},
 
+<<<<<<< HEAD
 	.probe	= sh_wdt_probe,
 	.remove	= __devexit_p(sh_wdt_remove),
+=======
+	.probe		= sh_wdt_probe,
+	.remove		= sh_wdt_remove,
+	.shutdown	= sh_wdt_shutdown,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init sh_wdt_init(void)
 {
+<<<<<<< HEAD
 	int rc;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(clock_division_ratio < 0x5 ||
 		     clock_division_ratio > 0x7)) {
 		clock_division_ratio = WTCSR_CKS_4096;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		pr_info("%s: divisor must be 0x5<=x<=0x7, using %d\n",
 			 DRV_NAME, clock_division_ratio);
@@ -479,6 +681,12 @@ static int __init sh_wdt_init(void)
 		heartbeat, nowayout);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+		pr_info("divisor must be 0x5<=x<=0x7, using %d\n",
+			clock_division_ratio);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return platform_driver_register(&sh_wdt_driver);
 }
 
@@ -493,7 +701,10 @@ MODULE_AUTHOR("Paul Mundt <lethal@linux-sh.org>");
 MODULE_DESCRIPTION("SuperH watchdog driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:" DRV_NAME);
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 
 module_param(clock_division_ratio, int, 0);
 MODULE_PARM_DESC(clock_division_ratio,
@@ -506,10 +717,14 @@ MODULE_PARM_DESC(heartbeat,
 				__MODULE_STRING(WATCHDOG_HEARTBEAT) ")");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 module_param(nowayout, int, 0);
 =======
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 	"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");

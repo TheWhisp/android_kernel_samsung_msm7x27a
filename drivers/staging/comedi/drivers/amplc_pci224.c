@@ -16,11 +16,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 /*
 Driver: amplc_pci224
@@ -103,13 +106,21 @@ Caveats:
      correctly.
 */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+#include <linux/pci.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/slab.h>
 
 #include "../comedidev.h"
 
+<<<<<<< HEAD
 #include "comedi_pci.h"
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include "comedi_fc.h"
 #include "8253.h"
 
@@ -118,7 +129,10 @@ Caveats:
 /*
  * PCI IDs.
  */
+<<<<<<< HEAD
 #define PCI_VENDOR_ID_AMPLICON 0x14dc
+=======
+>>>>>>> refs/remotes/origin/master
 #define PCI_DEVICE_ID_AMPLICON_PCI224 0x0007
 #define PCI_DEVICE_ID_AMPLICON_PCI234 0x0008
 #define PCI_DEVICE_ID_INVALID 0xffff
@@ -221,12 +235,15 @@ Caveats:
 #define CLK_EXT		7	/* external clock */
 /* Macro to construct clock input configuration register value. */
 #define CLK_CONFIG(chan, src)	((((chan) & 3) << 3) | ((src) & 7))
+<<<<<<< HEAD
 /* Timebases in ns. */
 #define TIMEBASE_10MHZ		100
 #define TIMEBASE_1MHZ		1000
 #define TIMEBASE_100KHZ		10000
 #define TIMEBASE_10KHZ		100000
 #define TIMEBASE_1KHZ		1000000
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Counter/timer gate input configuration sources.
@@ -267,9 +284,12 @@ Caveats:
 /* Combine old and new bits. */
 #define COMBINE(old, new, mask)	(((old) & ~(mask)) | ((new) & (mask)))
 
+<<<<<<< HEAD
 /* A generic null function pointer value.  */
 #define NULLFUNC	0
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Current CPU.  XXX should this be hard_smp_processor_id()? */
 #define THISCPU		smp_processor_id()
 
@@ -282,6 +302,7 @@ Caveats:
 
 /* The software selectable internal ranges for PCI224 (option[2] == 0). */
 static const struct comedi_lrange range_pci224_internal = {
+<<<<<<< HEAD
 	8,
 	{
 	 BIP_RANGE(10),
@@ -293,6 +314,18 @@ static const struct comedi_lrange range_pci224_internal = {
 	 UNI_RANGE(2.5),
 	 UNI_RANGE(1.25),
 	 }
+=======
+	8, {
+		BIP_RANGE(10),
+		BIP_RANGE(5),
+		BIP_RANGE(2.5),
+		BIP_RANGE(1.25),
+		UNI_RANGE(10),
+		UNI_RANGE(5),
+		UNI_RANGE(2.5),
+		UNI_RANGE(1.25)
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 static const unsigned short hwrange_pci224_internal[8] = {
@@ -308,11 +341,18 @@ static const unsigned short hwrange_pci224_internal[8] = {
 
 /* The software selectable external ranges for PCI224 (option[2] == 1). */
 static const struct comedi_lrange range_pci224_external = {
+<<<<<<< HEAD
 	2,
 	{
 	 RANGE_ext(-1, 1),	/* bipolar [-Vref,+Vref] */
 	 RANGE_ext(0, 1),	/* unipolar [0,+Vref] */
 	 }
+=======
+	2, {
+		RANGE_ext(-1, 1),	/* bipolar [-Vref,+Vref] */
+		RANGE_ext(0, 1)		/* unipolar [0,+Vref] */
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 static const unsigned short hwrange_pci224_external[2] = {
@@ -323,19 +363,31 @@ static const unsigned short hwrange_pci224_external[2] = {
 /* The hardware selectable Vref*2 external range for PCI234
  * (option[2] == 1, option[3+n] == 0). */
 static const struct comedi_lrange range_pci234_ext2 = {
+<<<<<<< HEAD
 	1,
 	{
 	 RANGE_ext(-2, 2),
 	 }
+=======
+	1, {
+		RANGE_ext(-2, 2)
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 /* The hardware selectable Vref external range for PCI234
  * (option[2] == 1, option[3+n] == 1). */
 static const struct comedi_lrange range_pci234_ext = {
+<<<<<<< HEAD
 	1,
 	{
 	 RANGE_ext(-1, 1),
 	 }
+=======
+	1, {
+		RANGE_ext(-1, 1)
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 /* This serves for all the PCI234 ranges. */
@@ -379,6 +431,7 @@ static const struct pci224_board pci224_boards[] = {
 	 },
 };
 
+<<<<<<< HEAD
 /*
  * PCI driver table.
  */
@@ -405,17 +458,26 @@ MODULE_DEVICE_TABLE(pci, pci224_pci_table);
  */
 #define thisboard ((struct pci224_board *)dev->board_ptr)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* this structure is for data unique to this hardware driver.  If
    several hardware drivers keep similar information in this structure,
    feel free to suggest moving the variable to the struct comedi_device struct.  */
 struct pci224_private {
+<<<<<<< HEAD
 	struct pci_dev *pci_dev;	/* PCI device */
+=======
+>>>>>>> refs/remotes/origin/master
 	const unsigned short *hwrange;
 	unsigned long iobase1;
 	unsigned long state;
 	spinlock_t ao_spinlock;
 	unsigned int *ao_readback;
+<<<<<<< HEAD
 	short *ao_scan_vals;
+=======
+	unsigned short *ao_scan_vals;
+>>>>>>> refs/remotes/origin/master
 	unsigned char *ao_scan_order;
 	int intr_cpuid;
 	short intr_running;
@@ -428,6 +490,7 @@ struct pci224_private {
 	unsigned char intsce;
 };
 
+<<<<<<< HEAD
 #define devpriv ((struct pci224_private *)dev->private)
 
 /*
@@ -489,6 +552,8 @@ static void __exit driver_amplc_pci224_cleanup_module(void)
 module_init(driver_amplc_pci224_init_module);
 module_exit(driver_amplc_pci224_cleanup_module);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Called from the 'insn_write' function to perform a single write.
  */
@@ -496,6 +561,11 @@ static void
 pci224_ao_set_data(struct comedi_device *dev, int chan, int range,
 		   unsigned int data)
 {
+<<<<<<< HEAD
+=======
+	const struct pci224_board *thisboard = comedi_board(dev);
+	struct pci224_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	unsigned short mangled;
 
 	/* Store unmangled data for readback. */
@@ -558,6 +628,10 @@ static int
 pci224_ao_insn_read(struct comedi_device *dev, struct comedi_subdevice *s,
 		    struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct pci224_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int chan;
 
@@ -586,6 +660,10 @@ pci224_cascade_ns_to_timer(int osc_base, unsigned int *d1, unsigned int *d2,
 static void pci224_ao_stop(struct comedi_device *dev,
 			   struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
+=======
+	struct pci224_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	if (!test_and_clear_bit(AO_CMD_STARTED, &devpriv->state))
@@ -629,6 +707,10 @@ static void pci224_ao_stop(struct comedi_device *dev,
 static void pci224_ao_start(struct comedi_device *dev,
 			    struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
+=======
+	struct pci224_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	struct comedi_cmd *cmd = &s->async->cmd;
 	unsigned long flags;
 
@@ -657,6 +739,10 @@ static void pci224_ao_start(struct comedi_device *dev,
 static void pci224_ao_handle_fifo(struct comedi_device *dev,
 				  struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
+=======
+	struct pci224_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	struct comedi_cmd *cmd = &s->async->cmd;
 	unsigned int num_scans;
 	unsigned int room;
@@ -708,8 +794,12 @@ static void pci224_ao_handle_fifo(struct comedi_device *dev,
 			/* Nothing left to put in the FIFO. */
 			pci224_ao_stop(dev, s);
 			s->async->events |= COMEDI_CB_OVERFLOW;
+<<<<<<< HEAD
 			printk(KERN_ERR "comedi%d: "
 			       "AO buffer underrun\n", dev->minor);
+=======
+			dev_err(dev->class_dev, "AO buffer underrun\n");
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	/* Determine how many new scans can be put in the FIFO. */
@@ -787,7 +877,11 @@ pci224_ao_inttrig_start(struct comedi_device *dev, struct comedi_subdevice *s,
 	if (trignum != 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	s->async->inttrig = NULLFUNC;
+=======
+	s->async->inttrig = NULL;
+>>>>>>> refs/remotes/origin/master
 	pci224_ao_start(dev, s);
 
 	return 1;
@@ -804,6 +898,7 @@ static int
 pci224_ao_cmdtest(struct comedi_device *dev, struct comedi_subdevice *s,
 		  struct comedi_cmd *cmd)
 {
+<<<<<<< HEAD
 	int err = 0;
 	unsigned int tmp;
 
@@ -854,6 +949,37 @@ pci224_ao_cmdtest(struct comedi_device *dev, struct comedi_subdevice *s,
 
 	/* There's only one external trigger signal (which makes these
 	 * tests easier).  Only one thing can use it. */
+=======
+	struct pci224_private *devpriv = dev->private;
+	int err = 0;
+	unsigned int tmp;
+
+	/* Step 1 : check if triggers are trivially valid */
+
+	err |= cfc_check_trigger_src(&cmd->start_src, TRIG_INT | TRIG_EXT);
+	err |= cfc_check_trigger_src(&cmd->scan_begin_src,
+					TRIG_EXT | TRIG_TIMER);
+	err |= cfc_check_trigger_src(&cmd->convert_src, TRIG_NOW);
+	err |= cfc_check_trigger_src(&cmd->scan_end_src, TRIG_COUNT);
+	err |= cfc_check_trigger_src(&cmd->stop_src,
+					TRIG_COUNT | TRIG_EXT | TRIG_NONE);
+
+	if (err)
+		return 1;
+
+	/* Step 2a : make sure trigger sources are unique */
+
+	err |= cfc_check_trigger_is_unique(cmd->start_src);
+	err |= cfc_check_trigger_is_unique(cmd->scan_begin_src);
+	err |= cfc_check_trigger_is_unique(cmd->stop_src);
+
+	/* Step 2b : and mutually compatible */
+
+	/*
+	 * There's only one external trigger signal (which makes these
+	 * tests easier).  Only one thing can use it.
+	 */
+>>>>>>> refs/remotes/origin/master
 	tmp = 0;
 	if (cmd->start_src & TRIG_EXT)
 		tmp++;
@@ -862,11 +988,16 @@ pci224_ao_cmdtest(struct comedi_device *dev, struct comedi_subdevice *s,
 	if (cmd->stop_src & TRIG_EXT)
 		tmp++;
 	if (tmp > 1)
+<<<<<<< HEAD
 		err++;
+=======
+		err |= -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 2;
 
+<<<<<<< HEAD
 	/* Step 3: make sure arguments are trivially compatible. */
 
 	switch (cmd->start_src) {
@@ -875,25 +1006,41 @@ pci224_ao_cmdtest(struct comedi_device *dev, struct comedi_subdevice *s,
 			cmd->start_arg = 0;
 			err++;
 		}
+=======
+	/* Step 3: check if arguments are trivially valid */
+
+	switch (cmd->start_src) {
+	case TRIG_INT:
+		err |= cfc_check_trigger_arg_is(&cmd->start_arg, 0);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case TRIG_EXT:
 		/* Force to external trigger 0. */
 		if ((cmd->start_arg & ~CR_FLAGS_MASK) != 0) {
 			cmd->start_arg = COMBINE(cmd->start_arg, 0,
 						 ~CR_FLAGS_MASK);
+<<<<<<< HEAD
 			err++;
+=======
+			err |= -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		}
 		/* The only flag allowed is CR_EDGE, which is ignored. */
 		if ((cmd->start_arg & CR_FLAGS_MASK & ~CR_EDGE) != 0) {
 			cmd->start_arg = COMBINE(cmd->start_arg, 0,
 						 CR_FLAGS_MASK & ~CR_EDGE);
+<<<<<<< HEAD
 			err++;
+=======
+			err |= -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	}
 
 	switch (cmd->scan_begin_src) {
 	case TRIG_TIMER:
+<<<<<<< HEAD
 		if (cmd->scan_begin_arg > MAX_SCAN_PERIOD) {
 			cmd->scan_begin_arg = MAX_SCAN_PERIOD;
 			err++;
@@ -906,26 +1053,46 @@ pci224_ao_cmdtest(struct comedi_device *dev, struct comedi_subdevice *s,
 			cmd->scan_begin_arg = tmp;
 			err++;
 		}
+=======
+		err |= cfc_check_trigger_arg_max(&cmd->scan_begin_arg,
+						 MAX_SCAN_PERIOD);
+
+		tmp = cmd->chanlist_len * CONVERT_PERIOD;
+		if (tmp < MIN_SCAN_PERIOD)
+			tmp = MIN_SCAN_PERIOD;
+		err |= cfc_check_trigger_arg_min(&cmd->scan_begin_arg, tmp);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case TRIG_EXT:
 		/* Force to external trigger 0. */
 		if ((cmd->scan_begin_arg & ~CR_FLAGS_MASK) != 0) {
 			cmd->scan_begin_arg = COMBINE(cmd->scan_begin_arg, 0,
 						      ~CR_FLAGS_MASK);
+<<<<<<< HEAD
 			err++;
+=======
+			err |= -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		}
 		/* Only allow flags CR_EDGE and CR_INVERT.  Ignore CR_EDGE. */
 		if ((cmd->scan_begin_arg & CR_FLAGS_MASK &
 		     ~(CR_EDGE | CR_INVERT)) != 0) {
 			cmd->scan_begin_arg = COMBINE(cmd->scan_begin_arg, 0,
+<<<<<<< HEAD
 						      CR_FLAGS_MASK & ~(CR_EDGE
 									|
 									CR_INVERT));
 			err++;
+=======
+						      CR_FLAGS_MASK &
+						      ~(CR_EDGE | CR_INVERT));
+			err |= -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	}
 
+<<<<<<< HEAD
 	/* cmd->convert_src == TRIG_NOW */
 	if (cmd->convert_arg != 0) {
 		cmd->convert_arg = 0;
@@ -937,6 +1104,10 @@ pci224_ao_cmdtest(struct comedi_device *dev, struct comedi_subdevice *s,
 		cmd->scan_end_arg = cmd->chanlist_len;
 		err++;
 	}
+=======
+	err |= cfc_check_trigger_arg_is(&cmd->convert_arg, 0);
+	err |= cfc_check_trigger_arg_is(&cmd->scan_end_arg, cmd->chanlist_len);
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd->stop_src) {
 	case TRIG_COUNT:
@@ -947,7 +1118,11 @@ pci224_ao_cmdtest(struct comedi_device *dev, struct comedi_subdevice *s,
 		if ((cmd->stop_arg & ~CR_FLAGS_MASK) != 0) {
 			cmd->stop_arg = COMBINE(cmd->stop_arg, 0,
 						~CR_FLAGS_MASK);
+<<<<<<< HEAD
 			err++;
+=======
+			err |= -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		}
 		/* The only flag allowed is CR_EDGE, which is ignored. */
 		if ((cmd->stop_arg & CR_FLAGS_MASK & ~CR_EDGE) != 0) {
@@ -956,10 +1131,14 @@ pci224_ao_cmdtest(struct comedi_device *dev, struct comedi_subdevice *s,
 		}
 		break;
 	case TRIG_NONE:
+<<<<<<< HEAD
 		if (cmd->stop_arg != 0) {
 			cmd->stop_arg = 0;
 			err++;
 		}
+=======
+		err |= cfc_check_trigger_arg_is(&cmd->stop_arg, 0);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -977,12 +1156,17 @@ pci224_ao_cmdtest(struct comedi_device *dev, struct comedi_subdevice *s,
 		switch (round_mode) {
 		case TRIG_ROUND_NEAREST:
 		default:
+<<<<<<< HEAD
 			round = TIMEBASE_10MHZ / 2;
+=======
+			round = I8254_OSC_BASE_10MHZ / 2;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case TRIG_ROUND_DOWN:
 			round = 0;
 			break;
 		case TRIG_ROUND_UP:
+<<<<<<< HEAD
 			round = TIMEBASE_10MHZ - 1;
 			break;
 		}
@@ -990,13 +1174,28 @@ pci224_ao_cmdtest(struct comedi_device *dev, struct comedi_subdevice *s,
 		div2 = cmd->scan_begin_arg / TIMEBASE_10MHZ;
 		div2 += (round + cmd->scan_begin_arg % TIMEBASE_10MHZ) /
 		    TIMEBASE_10MHZ;
+=======
+			round = I8254_OSC_BASE_10MHZ - 1;
+			break;
+		}
+		/* Be careful to avoid overflow! */
+		div2 = cmd->scan_begin_arg / I8254_OSC_BASE_10MHZ;
+		div2 += (round + cmd->scan_begin_arg % I8254_OSC_BASE_10MHZ) /
+			I8254_OSC_BASE_10MHZ;
+>>>>>>> refs/remotes/origin/master
 		if (div2 <= 0x10000) {
 			/* A single timer will suffice. */
 			if (div2 < 2)
 				div2 = 2;
+<<<<<<< HEAD
 			cmd->scan_begin_arg = div2 * TIMEBASE_10MHZ;
 			if (cmd->scan_begin_arg < div2 ||
 			    cmd->scan_begin_arg < TIMEBASE_10MHZ) {
+=======
+			cmd->scan_begin_arg = div2 * I8254_OSC_BASE_10MHZ;
+			if (cmd->scan_begin_arg < div2 ||
+			    cmd->scan_begin_arg < I8254_OSC_BASE_10MHZ) {
+>>>>>>> refs/remotes/origin/master
 				/* Overflow! */
 				cmd->scan_begin_arg = MAX_SCAN_PERIOD;
 			}
@@ -1004,7 +1203,12 @@ pci224_ao_cmdtest(struct comedi_device *dev, struct comedi_subdevice *s,
 			/* Use two timers. */
 			div1 = devpriv->cached_div1;
 			div2 = devpriv->cached_div2;
+<<<<<<< HEAD
 			pci224_cascade_ns_to_timer(TIMEBASE_10MHZ, &div1, &div2,
+=======
+			pci224_cascade_ns_to_timer(I8254_OSC_BASE_10MHZ,
+						   &div1, &div2,
+>>>>>>> refs/remotes/origin/master
 						   &cmd->scan_begin_arg,
 						   round_mode);
 			devpriv->cached_div1 = div1;
@@ -1048,6 +1252,7 @@ pci224_ao_cmdtest(struct comedi_device *dev, struct comedi_subdevice *s,
 		}
 		if (errors) {
 			if (errors & dupchan_err) {
+<<<<<<< HEAD
 				DPRINTK("comedi%d: " DRIVER_NAME
 					": ao_cmdtest: "
 					"entries in chanlist must contain no "
@@ -1058,6 +1263,16 @@ pci224_ao_cmdtest(struct comedi_device *dev, struct comedi_subdevice *s,
 					": ao_cmdtest: "
 					"entries in chanlist must all have "
 					"the same range index\n", dev->minor);
+=======
+				dev_dbg(dev->class_dev,
+					"%s: entries in chanlist must contain no duplicate channels\n",
+					__func__);
+			}
+			if (errors & range_err) {
+				dev_dbg(dev->class_dev,
+					"%s: entries in chanlist must all have the same range index\n",
+					__func__);
+>>>>>>> refs/remotes/origin/master
 			}
 			err++;
 		}
@@ -1074,6 +1289,10 @@ pci224_ao_cmdtest(struct comedi_device *dev, struct comedi_subdevice *s,
  */
 static int pci224_ao_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
+=======
+	struct pci224_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	struct comedi_cmd *cmd = &s->async->cmd;
 	int range;
 	unsigned int i, j;
@@ -1135,12 +1354,17 @@ static int pci224_ao_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 		switch (round_mode) {
 		case TRIG_ROUND_NEAREST:
 		default:
+<<<<<<< HEAD
 			round = TIMEBASE_10MHZ / 2;
+=======
+			round = I8254_OSC_BASE_10MHZ / 2;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case TRIG_ROUND_DOWN:
 			round = 0;
 			break;
 		case TRIG_ROUND_UP:
+<<<<<<< HEAD
 			round = TIMEBASE_10MHZ - 1;
 			break;
 		}
@@ -1148,6 +1372,15 @@ static int pci224_ao_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 		div2 = cmd->scan_begin_arg / TIMEBASE_10MHZ;
 		div2 += (round + cmd->scan_begin_arg % TIMEBASE_10MHZ) /
 		    TIMEBASE_10MHZ;
+=======
+			round = I8254_OSC_BASE_10MHZ - 1;
+			break;
+		}
+		/* Be careful to avoid overflow! */
+		div2 = cmd->scan_begin_arg / I8254_OSC_BASE_10MHZ;
+		div2 += (round + cmd->scan_begin_arg % I8254_OSC_BASE_10MHZ) /
+			I8254_OSC_BASE_10MHZ;
+>>>>>>> refs/remotes/origin/master
 		if (div2 <= 0x10000) {
 			/* A single timer will suffice. */
 			if (div2 < 2)
@@ -1158,7 +1391,12 @@ static int pci224_ao_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 			/* Use two timers. */
 			div1 = devpriv->cached_div1;
 			div2 = devpriv->cached_div2;
+<<<<<<< HEAD
 			pci224_cascade_ns_to_timer(TIMEBASE_10MHZ, &div1, &div2,
+=======
+			pci224_cascade_ns_to_timer(I8254_OSC_BASE_10MHZ,
+						   &div1, &div2,
+>>>>>>> refs/remotes/origin/master
 						   &ns, round_mode);
 		}
 
@@ -1246,8 +1484,15 @@ static void
 pci224_ao_munge(struct comedi_device *dev, struct comedi_subdevice *s,
 		void *data, unsigned int num_bytes, unsigned int chan_index)
 {
+<<<<<<< HEAD
 	struct comedi_async *async = s->async;
 	short *array = data;
+=======
+	const struct pci224_board *thisboard = comedi_board(dev);
+	struct pci224_private *devpriv = dev->private;
+	struct comedi_async *async = s->async;
+	unsigned short *array = data;
+>>>>>>> refs/remotes/origin/master
 	unsigned int length = num_bytes / sizeof(*array);
 	unsigned int offset;
 	unsigned int shift;
@@ -1276,7 +1521,12 @@ pci224_ao_munge(struct comedi_device *dev, struct comedi_subdevice *s,
 static irqreturn_t pci224_interrupt(int irq, void *d)
 {
 	struct comedi_device *dev = d;
+<<<<<<< HEAD
 	struct comedi_subdevice *s = &dev->subdevices[0];
+=======
+	struct pci224_private *devpriv = dev->private;
+	struct comedi_subdevice *s = dev->write_subdev;
+>>>>>>> refs/remotes/origin/master
 	struct comedi_cmd *cmd;
 	unsigned char intstat, valid_intstat;
 	unsigned char curenab;
@@ -1321,6 +1571,7 @@ static irqreturn_t pci224_interrupt(int irq, void *d)
 }
 
 /*
+<<<<<<< HEAD
  * This function looks for a PCI device matching the requested board name,
  * bus and slot.
  */
@@ -1356,11 +1607,57 @@ pci224_find_pci(struct comedi_device *dev, int bus, int slot,
 			}
 			if (i == ARRAY_SIZE(pci224_boards))
 				continue;
+=======
+ * This function looks for a board matching the supplied PCI device.
+ */
+static const struct pci224_board
+*pci224_find_pci_board(struct pci_dev *pci_dev)
+{
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(pci224_boards); i++)
+		if (pci_dev->device == pci224_boards[i].devid)
+			return &pci224_boards[i];
+	return NULL;
+}
+
+/*
+ * This function looks for a PCI device matching the requested board name,
+ * bus and slot.
+ */
+static struct pci_dev *pci224_find_pci_dev(struct comedi_device *dev,
+					   struct comedi_devconfig *it)
+{
+	const struct pci224_board *thisboard = comedi_board(dev);
+	struct pci_dev *pci_dev = NULL;
+	int bus = it->options[0];
+	int slot = it->options[1];
+
+	for_each_pci_dev(pci_dev) {
+		if (bus || slot) {
+			if (bus != pci_dev->bus->number ||
+			    slot != PCI_SLOT(pci_dev->devfn))
+				continue;
+		}
+		if (pci_dev->vendor != PCI_VENDOR_ID_AMPLICON)
+			continue;
+
+		if (thisboard->model == any_model) {
+			/* Match any supported model. */
+			const struct pci224_board *board_ptr;
+
+			board_ptr = pci224_find_pci_board(pci_dev);
+			if (board_ptr == NULL)
+				continue;
+			/* Change board_ptr to matched board. */
+			dev->board_ptr = board_ptr;
+>>>>>>> refs/remotes/origin/master
 		} else {
 			/* Match specific model name. */
 			if (thisboard->devid != pci_dev->device)
 				continue;
 		}
+<<<<<<< HEAD
 
 		/* Found a match. */
 		*pci_dev_p = pci_dev;
@@ -1416,6 +1713,49 @@ static int pci224_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 		       "and request regions!\n", dev->minor);
 		return ret;
 	}
+=======
+		return pci_dev;
+	}
+	dev_err(dev->class_dev,
+		"No supported board found! (req. bus %d, slot %d)\n",
+		bus, slot);
+	return NULL;
+}
+
+static void pci224_report_attach(struct comedi_device *dev, unsigned int irq)
+{
+	struct pci_dev *pcidev = comedi_to_pci_dev(dev);
+	char tmpbuf[30];
+
+	if (irq)
+		snprintf(tmpbuf, sizeof(tmpbuf), "irq %u%s", irq,
+			 (dev->irq ? "" : " UNAVAILABLE"));
+	else
+		snprintf(tmpbuf, sizeof(tmpbuf), "no irq");
+	dev_info(dev->class_dev, "%s (pci %s) (%s) attached\n",
+		 dev->board_name, pci_name(pcidev), tmpbuf);
+}
+
+/*
+ * Common part of attach and auto_attach.
+ */
+static int pci224_attach_common(struct comedi_device *dev,
+				struct pci_dev *pci_dev, int *options)
+{
+	const struct pci224_board *thisboard = comedi_board(dev);
+	struct pci224_private *devpriv = dev->private;
+	struct comedi_subdevice *s;
+	unsigned int irq;
+	unsigned n;
+	int ret;
+
+	comedi_set_hw_dev(dev, &pci_dev->dev);
+
+	ret = comedi_pci_enable(dev);
+	if (ret)
+		return ret;
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&devpriv->ao_spinlock);
 
 	devpriv->iobase1 = pci_resource_start(pci_dev, 2);
@@ -1457,6 +1797,7 @@ static int pci224_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	outw(devpriv->daccon | PCI224_DACCON_FIFORESET,
 	     dev->iobase + PCI224_DACCON);
 
+<<<<<<< HEAD
 	/* Allocate subdevices.  There is only one!  */
 	ret = alloc_subdevices(dev, 1);
 	if (ret < 0) {
@@ -1466,6 +1807,13 @@ static int pci224_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	}
 
 	s = dev->subdevices + 0;
+=======
+	ret = comedi_alloc_subdevices(dev, 1);
+	if (ret)
+		return ret;
+
+	s = &dev->subdevices[0];
+>>>>>>> refs/remotes/origin/master
 	/* Analog output subdevice. */
 	s->type = COMEDI_SUBD_AO;
 	s->subdev_flags = SDF_WRITABLE | SDF_GROUND | SDF_CMD_WRITE;
@@ -1492,6 +1840,7 @@ static int pci224_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 		if (!s->range_table_list)
 			return -ENOMEM;
 
+<<<<<<< HEAD
 		for (n = 2; n < 3 + s->n_chan; n++) {
 			if (it->options[n] < 0 || it->options[n] > 1) {
 				printk(KERN_WARNING "comedi%d: %s: warning! "
@@ -1504,12 +1853,31 @@ static int pci224_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 			if (n < COMEDI_NDEVCONFOPTS - 3 &&
 			    it->options[3 + n] == 1) {
 				if (it->options[2] == 1)
+=======
+		if (options) {
+			for (n = 2; n < 3 + s->n_chan; n++) {
+				if (options[n] < 0 || options[n] > 1) {
+					dev_warn(dev->class_dev, DRIVER_NAME
+						 ": warning! bad options[%u]=%d\n",
+						 n, options[n]);
+				}
+			}
+		}
+		for (n = 0; n < s->n_chan; n++) {
+			if (n < COMEDI_NDEVCONFOPTS - 3 && options &&
+			    options[3 + n] == 1) {
+				if (options[2] == 1)
+>>>>>>> refs/remotes/origin/master
 					range_table_list[n] = &range_pci234_ext;
 				else
 					range_table_list[n] = &range_bipolar5;
 
 			} else {
+<<<<<<< HEAD
 				if (it->options[2] == 1) {
+=======
+				if (options && options[2] == 1) {
+>>>>>>> refs/remotes/origin/master
 					range_table_list[n] =
 					    &range_pci234_ext2;
 				} else {
@@ -1520,6 +1888,7 @@ static int pci224_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 		devpriv->hwrange = hwrange_pci234;
 	} else {
 		/* PCI224 range options. */
+<<<<<<< HEAD
 		if (it->options[2] == 1) {
 			s->range_table = &range_pci224_external;
 			devpriv->hwrange = hwrange_pci224_external;
@@ -1528,6 +1897,16 @@ static int pci224_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 				printk(KERN_WARNING "comedi%d: %s: warning! "
 				       "bad options[2]=%d\n",
 				       dev->minor, DRIVER_NAME, it->options[2]);
+=======
+		if (options && options[2] == 1) {
+			s->range_table = &range_pci224_external;
+			devpriv->hwrange = hwrange_pci224_external;
+		} else {
+			if (options && options[2] != 0) {
+				dev_warn(dev->class_dev, DRIVER_NAME
+					 ": warning! bad options[2]=%d\n",
+					 options[2]);
+>>>>>>> refs/remotes/origin/master
 			}
 			s->range_table = &range_pci224_internal;
 			devpriv->hwrange = hwrange_pci224_internal;
@@ -1540,14 +1919,20 @@ static int pci224_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 		ret = request_irq(irq, pci224_interrupt, IRQF_SHARED,
 				  DRIVER_NAME, dev);
 		if (ret < 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR "comedi%d: error! "
 			       "unable to allocate irq %u\n", dev->minor, irq);
+=======
+			dev_err(dev->class_dev,
+				"error! unable to allocate irq %u\n", irq);
+>>>>>>> refs/remotes/origin/master
 			return ret;
 		} else {
 			dev->irq = irq;
 		}
 	}
 
+<<<<<<< HEAD
 	printk(KERN_INFO "comedi%d: %s ", dev->minor, dev->board_name);
 	printk("(pci %s) ", pci_name(pci_dev));
 	if (irq)
@@ -1580,6 +1965,70 @@ static int pci224_detach(struct comedi_device *dev)
 		struct comedi_subdevice *s;
 
 		s = dev->subdevices + 0;
+=======
+	pci224_report_attach(dev, irq);
+	return 1;
+}
+
+static int pci224_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+{
+	struct pci224_private *devpriv;
+	struct pci_dev *pci_dev;
+
+	dev_info(dev->class_dev, DRIVER_NAME ": attach\n");
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	pci_dev = pci224_find_pci_dev(dev, it);
+	if (!pci_dev)
+		return -EIO;
+
+	return pci224_attach_common(dev, pci_dev, it->options);
+}
+
+static int
+pci224_auto_attach(struct comedi_device *dev, unsigned long context_unused)
+{
+	struct pci_dev *pci_dev = comedi_to_pci_dev(dev);
+	struct pci224_private *devpriv;
+
+	dev_info(dev->class_dev, DRIVER_NAME ": attach pci %s\n",
+		 pci_name(pci_dev));
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	dev->board_ptr = pci224_find_pci_board(pci_dev);
+	if (dev->board_ptr == NULL) {
+		dev_err(dev->class_dev,
+			DRIVER_NAME ": BUG! cannot determine board type!\n");
+		return -EINVAL;
+	}
+	/*
+	 * Need to 'get' the PCI device to match the 'put' in pci224_detach().
+	 * TODO: Remove the pci_dev_get() and matching pci_dev_put() once
+	 * support for manual attachment of PCI devices via pci224_attach()
+	 * has been removed.
+	 */
+	pci_dev_get(pci_dev);
+	return pci224_attach_common(dev, pci_dev, NULL);
+}
+
+static void pci224_detach(struct comedi_device *dev)
+{
+	struct pci224_private *devpriv = dev->private;
+	struct pci_dev *pcidev = comedi_to_pci_dev(dev);
+
+	if (dev->irq)
+		free_irq(dev->irq, dev);
+	if (dev->subdevices) {
+		struct comedi_subdevice *s;
+
+		s = &dev->subdevices[0];
+>>>>>>> refs/remotes/origin/master
 		/* AO subdevice */
 		kfree(s->range_table_list);
 	}
@@ -1587,6 +2036,7 @@ static int pci224_detach(struct comedi_device *dev)
 		kfree(devpriv->ao_readback);
 		kfree(devpriv->ao_scan_vals);
 		kfree(devpriv->ao_scan_order);
+<<<<<<< HEAD
 		if (devpriv->pci_dev) {
 			if (dev->iobase)
 				comedi_pci_disable(devpriv->pci_dev);
@@ -1602,6 +2052,47 @@ static int pci224_detach(struct comedi_device *dev)
 	return 0;
 }
 
+=======
+	}
+	comedi_pci_disable(dev);
+	if (pcidev)
+		pci_dev_put(pcidev);
+}
+
+static struct comedi_driver amplc_pci224_driver = {
+	.driver_name	= "amplc_pci224",
+	.module		= THIS_MODULE,
+	.attach		= pci224_attach,
+	.detach		= pci224_detach,
+	.auto_attach	= pci224_auto_attach,
+	.board_name	= &pci224_boards[0].name,
+	.offset		= sizeof(struct pci224_board),
+	.num_names	= ARRAY_SIZE(pci224_boards),
+};
+
+static int amplc_pci224_pci_probe(struct pci_dev *dev,
+				  const struct pci_device_id *id)
+{
+	return comedi_pci_auto_config(dev, &amplc_pci224_driver,
+				      id->driver_data);
+}
+
+static const struct pci_device_id amplc_pci224_pci_table[] = {
+	{ PCI_DEVICE(PCI_VENDOR_ID_AMPLICON, PCI_DEVICE_ID_AMPLICON_PCI224) },
+	{ PCI_DEVICE(PCI_VENDOR_ID_AMPLICON, PCI_DEVICE_ID_AMPLICON_PCI234) },
+	{ 0 }
+};
+MODULE_DEVICE_TABLE(pci, amplc_pci224_pci_table);
+
+static struct pci_driver amplc_pci224_pci_driver = {
+	.name		= "amplc_pci224",
+	.id_table	= amplc_pci224_pci_table,
+	.probe		= amplc_pci224_pci_probe,
+	.remove		= comedi_pci_auto_unconfig,
+};
+module_comedi_pci_driver(amplc_pci224_driver, amplc_pci224_pci_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");
 MODULE_LICENSE("GPL");

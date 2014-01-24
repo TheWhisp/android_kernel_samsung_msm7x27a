@@ -13,10 +13,14 @@
  * 19991203 - Fernando Carvalho - takion@superbofh.org
  * Hacked to compile with egcs and run with current version of isdn modules
 <<<<<<< HEAD
+<<<<<<< HEAD
 */
 =======
  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+>>>>>>> refs/remotes/origin/master
 
 /*
  *        Based on documentation provided by Inesc:
@@ -41,9 +45,12 @@
 #include <linux/isdnif.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 
@@ -85,10 +92,14 @@ pcbit_l2_write(struct pcbit_dev *dev, ulong msg, ushort refnum,
 {
 	struct frame_buf *frame,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*ptr;
 =======
 		*ptr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*ptr;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	if (dev->l2_state != L2_RUNNING && dev->l2_state != L2_LOADING) {
@@ -97,10 +108,14 @@ pcbit_l2_write(struct pcbit_dev *dev, ulong msg, ushort refnum,
 	}
 	if ((frame = kmalloc(sizeof(struct frame_buf),
 <<<<<<< HEAD
+<<<<<<< HEAD
 						  GFP_ATOMIC)) == NULL) {
 =======
 			     GFP_ATOMIC)) == NULL) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     GFP_ATOMIC)) == NULL) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "pcbit_2_write: kmalloc failed\n");
 		dev_kfree_skb(skb);
 		return -1;
@@ -163,10 +178,14 @@ pcbit_transmit(struct pcbit_dev *dev)
 	int free;
 	int count,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 cp_len;
 =======
 		cp_len;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cp_len;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	unsigned short tt;
 
@@ -197,10 +216,14 @@ pcbit_transmit(struct pcbit_dev *dev)
 			/* Type 0 frame */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ulong 	msg;
 =======
 			ulong	msg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ulong	msg;
+>>>>>>> refs/remotes/origin/master
 
 			if (frame->skb)
 				flen = FRAME_HDR_LEN + PREHDR_LEN + frame->skb->len;
@@ -294,10 +317,14 @@ pcbit_transmit(struct pcbit_dev *dev)
 #ifdef DEBUG
 		printk(KERN_DEBUG "unacked %d free %d write_queue %s\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     unacked, dev->free, dev->write_queue ? "not empty" :
 =======
 		       unacked, dev->free, dev->write_queue ? "not empty" :
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       unacked, dev->free, dev->write_queue ? "not empty" :
+>>>>>>> refs/remotes/origin/master
 		       "empty");
 #endif
 	}
@@ -329,12 +356,17 @@ pcbit_deliver(struct work_struct *work)
 		SET_MSG_SCMD(msg, frame->skb->data[3]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		frame->refnum = *((ushort *) frame->skb->data + 4);
 		frame->msg = *((ulong *) & msg);
 =======
 		frame->refnum = *((ushort *)frame->skb->data + 4);
 		frame->msg = *((ulong *)&msg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		frame->refnum = *((ushort *)frame->skb->data + 4);
+		frame->msg = *((ulong *)&msg);
+>>>>>>> refs/remotes/origin/master
 
 		skb_pull(frame->skb, 6);
 
@@ -359,10 +391,14 @@ pcbit_receive(struct pcbit_dev *dev)
 	unsigned short tt;
 	u_char cpu,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 proc;
 =======
 		proc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		proc;
+>>>>>>> refs/remotes/origin/master
 	struct frame_buf *frame = NULL;
 	unsigned long flags;
 	u_char type1;
@@ -415,16 +451,22 @@ pcbit_receive(struct pcbit_dev *dev)
 
 		/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 		   * 0 sized packet
 		   * I don't know if they are an error or not...
 		   * But they are very frequent
 		   * Not documented
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 * 0 sized packet
 		 * I don't know if they are an error or not...
 		 * But they are very frequent
 		 * Not documented
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		 */
 
 		if (frame->hdr_len == 0) {
@@ -543,12 +585,17 @@ pcbit_irq_handler(int interrupt, void *devptr)
 	struct pcbit_dev *dev;
 	u_char info,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 ack_seq,
 	 read_seq;
 =======
 		ack_seq,
 		read_seq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ack_seq,
+		read_seq;
+>>>>>>> refs/remotes/origin/master
 
 	dev = (struct pcbit_dev *) devptr;
 
@@ -557,7 +604,11 @@ pcbit_irq_handler(int interrupt, void *devptr)
 		return IRQ_NONE;
 	}
 	if (dev->interrupt) {
+<<<<<<< HEAD
 		printk(KERN_DEBUG "pcbit: reentering interrupt hander\n");
+=======
+		printk(KERN_DEBUG "pcbit: reentering interrupt handler\n");
+>>>>>>> refs/remotes/origin/master
 		return IRQ_HANDLED;
 	}
 	dev->interrupt = 1;
@@ -715,10 +766,14 @@ pcbit_recv_ack(struct pcbit_dev *dev, unsigned char ack)
 {
 	int i,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 count;
 =======
 		count;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		count;
+>>>>>>> refs/remotes/origin/master
 	int unacked;
 
 	unacked = (dev->send_seq + (8 - dev->unack_seq)) & 0x07;
@@ -731,20 +786,28 @@ pcbit_recv_ack(struct pcbit_dev *dev, unsigned char ack)
 			if (ack <= dev->unack_seq || ack > dev->send_seq) {
 				printk(KERN_DEBUG
 <<<<<<< HEAD
+<<<<<<< HEAD
 				     "layer 2 ack unacceptable - dev %d",
 =======
 				       "layer 2 ack unacceptable - dev %d",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       "layer 2 ack unacceptable - dev %d",
+>>>>>>> refs/remotes/origin/master
 				       dev->id);
 
 				pcbit_l2_error(dev);
 			} else if (ack > dev->send_seq && ack <= dev->unack_seq) {
 				printk(KERN_DEBUG
 <<<<<<< HEAD
+<<<<<<< HEAD
 				     "layer 2 ack unacceptable - dev %d",
 =======
 				       "layer 2 ack unacceptable - dev %d",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       "layer 2 ack unacceptable - dev %d",
+>>>>>>> refs/remotes/origin/master
 				       dev->id);
 				pcbit_l2_error(dev);
 			}

@@ -29,7 +29,11 @@ static int  crt_option = 1;
 static char panel_option[32] = "";
 
 /* Modes relevant to the GX1 (taken from modedb.c) */
+<<<<<<< HEAD
 static const struct fb_videomode __devinitdata gx1_modedb[] = {
+=======
+static const struct fb_videomode gx1_modedb[] = {
+>>>>>>> refs/remotes/origin/master
 	/* 640x480-60 VESA */
 	{ NULL, 60, 640, 480, 39682,  48, 16, 33, 10, 96, 2,
 	  0, FB_VMODE_NONINTERLACED, FB_MODE_IS_VESA },
@@ -195,7 +199,11 @@ static int gx1fb_blank(int blank_mode, struct fb_info *info)
 	return par->vid_ops->blank_display(info, blank_mode);
 }
 
+<<<<<<< HEAD
 static int __devinit gx1fb_map_video_memory(struct fb_info *info, struct pci_dev *dev)
+=======
+static int gx1fb_map_video_memory(struct fb_info *info, struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct geodefb_par *par = info->par;
 	unsigned gx_base;
@@ -268,7 +276,11 @@ static struct fb_ops gx1fb_ops = {
 	.fb_imageblit	= cfb_imageblit,
 };
 
+<<<<<<< HEAD
 static struct fb_info * __devinit gx1fb_init_fbinfo(struct device *dev)
+=======
+static struct fb_info *gx1fb_init_fbinfo(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct geodefb_par *par;
 	struct fb_info *info;
@@ -318,7 +330,11 @@ static struct fb_info * __devinit gx1fb_init_fbinfo(struct device *dev)
 	return info;
 }
 
+<<<<<<< HEAD
 static int __devinit gx1fb_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+=======
+static int gx1fb_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct geodefb_par *par;
 	struct fb_info *info;
@@ -357,7 +373,11 @@ static int __devinit gx1fb_probe(struct pci_dev *pdev, const struct pci_device_i
 		goto err;
 	}
 	pci_set_drvdata(pdev, info);
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: %s frame buffer device\n", info->node, info->fix.id);
+=======
+	fb_info(info, "%s frame buffer device\n", info->fix.id);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
   err:
@@ -382,7 +402,11 @@ static int __devinit gx1fb_probe(struct pci_dev *pdev, const struct pci_device_i
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit gx1fb_remove(struct pci_dev *pdev)
+=======
+static void gx1fb_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = pci_get_drvdata(pdev);
 	struct geodefb_par *par = info->par;
@@ -399,7 +423,10 @@ static void __devexit gx1fb_remove(struct pci_dev *pdev)
 	release_mem_region(gx1_gx_base() + 0x8300, 0x100);
 
 	fb_dealloc_cmap(&info->cmap);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	framebuffer_release(info);
 }
@@ -441,7 +468,11 @@ static struct pci_driver gx1fb_driver = {
 	.name		= "gx1fb",
 	.id_table	= gx1fb_id_table,
 	.probe		= gx1fb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(gx1fb_remove),
+=======
+	.remove		= gx1fb_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init gx1fb_init(void)
@@ -456,7 +487,11 @@ static int __init gx1fb_init(void)
 	return pci_register_driver(&gx1fb_driver);
 }
 
+<<<<<<< HEAD
 static void __devexit gx1fb_cleanup(void)
+=======
+static void gx1fb_cleanup(void)
+>>>>>>> refs/remotes/origin/master
 {
 	pci_unregister_driver(&gx1fb_driver);
 }

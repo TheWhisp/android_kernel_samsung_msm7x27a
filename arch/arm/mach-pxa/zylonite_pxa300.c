@@ -18,7 +18,11 @@
 #include <linux/init.h>
 #include <linux/i2c.h>
 #include <linux/i2c/pxa-i2c.h>
+<<<<<<< HEAD
 #include <linux/i2c/pca953x.h>
+=======
+#include <linux/platform_data/pca953x.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/gpio.h>
 
 #include <mach/pxa300.h>
@@ -232,19 +236,27 @@ static struct i2c_board_info zylonite_i2c_board_info[] = {
 		.addr		= 0x74,
 		.platform_data	= &gpio_exp[0],
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= IRQ_GPIO(18),
 =======
 		.irq		= PXA_GPIO_TO_IRQ(18),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq		= PXA_GPIO_TO_IRQ(18),
+>>>>>>> refs/remotes/origin/master
 	}, {
 		.type		= "pca9539",
 		.addr		= 0x75,
 		.platform_data	= &gpio_exp[1],
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= IRQ_GPIO(19),
 =======
 		.irq		= PXA_GPIO_TO_IRQ(19),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq		= PXA_GPIO_TO_IRQ(19),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

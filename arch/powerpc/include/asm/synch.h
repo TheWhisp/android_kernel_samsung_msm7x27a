@@ -43,12 +43,15 @@ static inline void isync(void)
 	isync;						\
 	MAKE_LWSYNC_SECTION_ENTRY(97, __lwsync_fixup);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PPC_ACQUIRE_BARRIER	"\n" stringify_in_c(__PPC_ACQUIRE_BARRIER)
 #define PPC_RELEASE_BARRIER	stringify_in_c(LWSYNC) "\n"
 #else
 #define PPC_ACQUIRE_BARRIER
 #define PPC_RELEASE_BARRIER
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define PPC_ACQUIRE_BARRIER	 "\n" stringify_in_c(__PPC_ACQUIRE_BARRIER)
 #define PPC_RELEASE_BARRIER	 stringify_in_c(LWSYNC) "\n"
 #define PPC_ATOMIC_ENTRY_BARRIER "\n" stringify_in_c(LWSYNC) "\n"
@@ -58,7 +61,10 @@ static inline void isync(void)
 #define PPC_RELEASE_BARRIER
 #define PPC_ATOMIC_ENTRY_BARRIER
 #define PPC_ATOMIC_EXIT_BARRIER
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif /* __KERNEL__ */

@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (C) 2006 Freescale Semicondutor, Inc. All rights reserved.
+=======
+ * Copyright (C) 2006 Freescale Semiconductor, Inc. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * Authors: 	Shlomi Gridish <gridish@freescale.com>
  * 		Li Yang <leoli@freescale.com>
@@ -197,10 +201,14 @@ static inline int qe_alive_during_sleep(void)
 /* Structure that defines QE firmware binary files.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/powerpc/qe-firmware.txt for a description of these
 =======
  * See Documentation/powerpc/qe_firmware.txt for a description of these
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See Documentation/powerpc/qe_firmware.txt for a description of these
+>>>>>>> refs/remotes/origin/master
  * fields.
  */
 struct qe_firmware {
@@ -503,6 +511,10 @@ enum comm_dir {
 /* I-RAM */
 #define QE_IRAM_IADD_AIE	0x80000000	/* Auto Increment Enable */
 #define QE_IRAM_IADD_BADDR	0x00080000	/* Base Address */
+<<<<<<< HEAD
+=======
+#define QE_IRAM_READY           0x80000000      /* Ready */
+>>>>>>> refs/remotes/origin/master
 
 /* UPC */
 #define UPGCR_PROTOCOL	0x80000000	/* protocol ul2 or pl2 */

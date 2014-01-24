@@ -4,10 +4,14 @@
  * Copyright (c) 2006 Rik Snel <rsnel@cube.dyndns.org>
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Based om ecb.c
 =======
  * Based on ecb.c
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Based on ecb.c
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2006 Herbert Xu <herbert@gondor.apana.org.au>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -21,9 +25,13 @@
  *
  * The test vectors are included in the testing module tcrypt.[ch] */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 #include <crypto/algapi.h>
 #include <linux/err.h>
 #include <linux/init.h>
@@ -34,6 +42,7 @@
 
 #include <crypto/b128ops.h>
 #include <crypto/gf128mul.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 struct priv {
@@ -51,12 +60,17 @@ struct priv {
 	 * with key2 */
 	be128 mulinc[128];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <crypto/lrw.h>
 
 struct priv {
 	struct crypto_cipher *child;
 	struct lrw_table_ctx table;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline void setbit128_bbe(void *b, int bit)
@@ -70,6 +84,7 @@ static inline void setbit128_bbe(void *b, int bit)
 			), b);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int setkey(struct crypto_tfm *parent, const u8 *key,
 		  unsigned int keylen)
@@ -88,21 +103,30 @@ static int setkey(struct crypto_tfm *parent, const u8 *key,
 	crypto_tfm_set_flags(parent, crypto_cipher_get_flags(child) &
 				     CRYPTO_TFM_RES_MASK);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int lrw_init_table(struct lrw_table_ctx *ctx, const u8 *tweak)
 {
 	be128 tmp = { 0 };
 	int i;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (ctx->table)
 		gf128mul_free_64k(ctx->table);
 
 	/* initialize multiplication table for Key2 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ctx->table = gf128mul_init_64k_bbe((be128 *)(key + keylen - bsize));
 =======
 	ctx->table = gf128mul_init_64k_bbe((be128 *)tweak);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctx->table = gf128mul_init_64k_bbe((be128 *)tweak);
+>>>>>>> refs/remotes/origin/master
 	if (!ctx->table)
 		return -ENOMEM;
 
@@ -116,7 +140,10 @@ int lrw_init_table(struct lrw_table_ctx *ctx, const u8 *tweak)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(lrw_init_table);
 
 void lrw_free_table(struct lrw_table_ctx *ctx)
@@ -145,7 +172,10 @@ static int setkey(struct crypto_tfm *parent, const u8 *key,
 
 	return lrw_init_table(&ctx->table, tweak);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct sinfo {
 	be128 t;
@@ -193,10 +223,14 @@ static int crypt(struct blkcipher_desc *d,
 	int err;
 	unsigned int avail;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const int bs = crypto_cipher_blocksize(ctx->child);
 =======
 	const int bs = LRW_BLOCK_SIZE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const int bs = LRW_BLOCK_SIZE;
+>>>>>>> refs/remotes/origin/master
 	struct sinfo s = {
 		.tfm = crypto_cipher_tfm(ctx->child),
 		.fn = fn
@@ -218,10 +252,14 @@ static int crypt(struct blkcipher_desc *d,
 
 	/* T <- I*Key2 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gf128mul_64k_bbe(&s.t, ctx->table);
 =======
 	gf128mul_64k_bbe(&s.t, ctx->table.table);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gf128mul_64k_bbe(&s.t, ctx->table.table);
+>>>>>>> refs/remotes/origin/master
 
 	goto first;
 
@@ -230,11 +268,16 @@ static int crypt(struct blkcipher_desc *d,
 			/* T <- I*Key2, using the optimization
 			 * discussed in the specification */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			be128_xor(&s.t, &s.t, &ctx->mulinc[get_index128(iv)]);
 =======
 			be128_xor(&s.t, &s.t,
 				  &ctx->table.mulinc[get_index128(iv)]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			be128_xor(&s.t, &s.t,
+				  &ctx->table.mulinc[get_index128(iv)]);
+>>>>>>> refs/remotes/origin/master
 			inc(iv);
 
 first:
@@ -278,7 +321,10 @@ static int decrypt(struct blkcipher_desc *desc, struct scatterlist *dst,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int lrw_crypt(struct blkcipher_desc *desc, struct scatterlist *sdst,
 	      struct scatterlist *ssrc, unsigned int nbytes,
 	      struct lrw_crypt_req *req)
@@ -358,7 +404,10 @@ first:
 }
 EXPORT_SYMBOL_GPL(lrw_crypt);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int init_tfm(struct crypto_tfm *tfm)
 {
 	struct crypto_cipher *cipher;
@@ -372,6 +421,7 @@ static int init_tfm(struct crypto_tfm *tfm)
 		return PTR_ERR(cipher);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (crypto_cipher_blocksize(cipher) != 16) {
 		*flags |= CRYPTO_TFM_RES_BAD_BLOCK_LEN;
 =======
@@ -379,6 +429,11 @@ static int init_tfm(struct crypto_tfm *tfm)
 		*flags |= CRYPTO_TFM_RES_BAD_BLOCK_LEN;
 		crypto_free_cipher(cipher);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (crypto_cipher_blocksize(cipher) != LRW_BLOCK_SIZE) {
+		*flags |= CRYPTO_TFM_RES_BAD_BLOCK_LEN;
+		crypto_free_cipher(cipher);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -390,12 +445,17 @@ static void exit_tfm(struct crypto_tfm *tfm)
 {
 	struct priv *ctx = crypto_tfm_ctx(tfm);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ctx->table)
 		gf128mul_free_64k(ctx->table);
 =======
 
 	lrw_free_table(&ctx->table);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	lrw_free_table(&ctx->table);
+>>>>>>> refs/remotes/origin/master
 	crypto_free_cipher(ctx->child);
 }
 

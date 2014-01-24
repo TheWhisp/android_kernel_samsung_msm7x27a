@@ -20,6 +20,7 @@
 #include <linux/err.h>
 #include <linux/slab.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 
 #include <plat/omap_hwmod.h>
 #include <plat/omap_device.h>
@@ -38,21 +39,37 @@ static int omap2_gpio_dev_init(struct omap_hwmod *oh, void *unused)
 	struct omap_device *od;
 =======
 #include <plat/omap-pm.h>
+=======
+#include <linux/of.h>
+#include <linux/platform_data/gpio-omap.h>
+
+#include "soc.h"
+#include "omap_hwmod.h"
+#include "omap_device.h"
+#include "omap-pm.h"
+>>>>>>> refs/remotes/origin/master
 
 #include "powerdomain.h"
 
 static int __init omap2_gpio_dev_init(struct omap_hwmod *oh, void *unused)
 {
 	struct platform_device *pdev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct omap_gpio_platform_data *pdata;
 	struct omap_gpio_dev_attr *dev_attr;
 	char *name = "omap_gpio";
 	int id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct powerdomain *pwrdm;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct powerdomain *pwrdm;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * extract the device id from name field available in the
@@ -73,6 +90,7 @@ static int __init omap2_gpio_dev_init(struct omap_hwmod *oh, void *unused)
 	dev_attr = (struct omap_gpio_dev_attr *)oh->dev_attr;
 	pdata->bank_width = dev_attr->bank_width;
 	pdata->dbck_flag = dev_attr->dbck_flag;
+<<<<<<< HEAD
 	pdata->virtual_irq_start = IH_GPIO_BASE + 32 * (id - 1);
 <<<<<<< HEAD
 
@@ -88,6 +106,13 @@ static int __init omap2_gpio_dev_init(struct omap_hwmod *oh, void *unused)
 	pdata->regs = kzalloc(sizeof(struct omap_gpio_reg_offs), GFP_KERNEL);
 	if (!pdata) {
 		pr_err("gpio%d: Memory allocation failed\n", id);
+=======
+	pdata->get_context_loss_count = omap_pm_get_dev_context_loss_count;
+	pdata->regs = kzalloc(sizeof(struct omap_gpio_reg_offs), GFP_KERNEL);
+	if (!pdata->regs) {
+		pr_err("gpio%d: Memory allocation failed\n", id);
+		kfree(pdata);
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
@@ -130,6 +155,11 @@ static int __init omap2_gpio_dev_init(struct omap_hwmod *oh, void *unused)
 		pdata->regs->dataout = OMAP4_GPIO_DATAOUT;
 		pdata->regs->set_dataout = OMAP4_GPIO_SETDATAOUT;
 		pdata->regs->clr_dataout = OMAP4_GPIO_CLEARDATAOUT;
+<<<<<<< HEAD
+=======
+		pdata->regs->irqstatus_raw0 = OMAP4_GPIO_IRQSTATUSRAW0;
+		pdata->regs->irqstatus_raw1 = OMAP4_GPIO_IRQSTATUSRAW1;
+>>>>>>> refs/remotes/origin/master
 		pdata->regs->irqstatus = OMAP4_GPIO_IRQSTATUS0;
 		pdata->regs->irqstatus2 = OMAP4_GPIO_IRQSTATUS1;
 		pdata->regs->irqenable = OMAP4_GPIO_IRQSTATUSSET0;
@@ -144,14 +174,22 @@ static int __init omap2_gpio_dev_init(struct omap_hwmod *oh, void *unused)
 		pdata->regs->leveldetect1 = OMAP4_GPIO_LEVELDETECT1;
 		pdata->regs->risingdetect = OMAP4_GPIO_RISINGDETECT;
 		pdata->regs->fallingdetect = OMAP4_GPIO_FALLINGDETECT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
 		WARN(1, "Invalid gpio bank_type\n");
+=======
+		break;
+	default:
+		WARN(1, "Invalid gpio bank_type\n");
+		kfree(pdata->regs);
+>>>>>>> refs/remotes/origin/master
 		kfree(pdata);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	od = omap_device_build(name, id - 1, oh, pdata,
 				sizeof(*pdata),	omap_gpio_latency,
@@ -172,6 +210,12 @@ static int __init omap2_gpio_dev_init(struct omap_hwmod *oh, void *unused)
 
 	pdev = omap_device_build(name, id - 1, oh, pdata,
 				sizeof(*pdata),	NULL, 0, false);
+=======
+	pwrdm = omap_hwmod_get_pwrdm(oh);
+	pdata->loses_context = pwrdm_can_ever_lose_context(pwrdm);
+
+	pdev = omap_device_build(name, id - 1, oh, pdata, sizeof(*pdata));
+>>>>>>> refs/remotes/origin/master
 	kfree(pdata);
 
 	if (IS_ERR(pdev)) {
@@ -180,13 +224,17 @@ static int __init omap2_gpio_dev_init(struct omap_hwmod *oh, void *unused)
 		return PTR_ERR(pdev);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 /*
  * gpio_init needs to be done before
  * machine_init functions access gpio APIs.
+<<<<<<< HEAD
  * Hence gpio_init is a postcore_initcall.
  */
 static int __init omap2_gpio_init(void)
@@ -195,3 +243,16 @@ static int __init omap2_gpio_init(void)
 						NULL);
 }
 postcore_initcall(omap2_gpio_init);
+=======
+ * Hence gpio_init is a omap_postcore_initcall.
+ */
+static int __init omap2_gpio_init(void)
+{
+	/* If dtb is there, the devices will be created dynamically */
+	if (of_have_populated_dt())
+		return -ENODEV;
+
+	return omap_hwmod_for_each_by_class("gpio", omap2_gpio_dev_init, NULL);
+}
+omap_postcore_initcall(omap2_gpio_init);
+>>>>>>> refs/remotes/origin/master

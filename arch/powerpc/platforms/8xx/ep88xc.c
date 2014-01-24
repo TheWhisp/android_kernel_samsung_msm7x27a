@@ -10,6 +10,11 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+#include <linux/of_fdt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 
 #include <asm/machdep.h>

@@ -22,9 +22,13 @@
 
 #include "rc-core-priv.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define RC5_NBITS		14
 #define RC5X_NBITS		20
@@ -55,8 +59,13 @@ static int ir_rc5_decode(struct rc_dev *dev, struct ir_raw_event ev)
 	u8 toggle;
 	u32 scancode;
 
+<<<<<<< HEAD
         if (!(dev->raw->enabled_protocols & RC_TYPE_RC5))
                 return 0;
+=======
+	if (!(dev->enabled_protocols & (RC_BIT_RC5 | RC_BIT_RC5X)))
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!is_timing_event(ev)) {
 		if (ev.reset)
@@ -131,6 +140,13 @@ again:
 		if (data->wanted_bits == RC5X_NBITS) {
 			/* RC5X */
 			u8 xdata, command, system;
+<<<<<<< HEAD
+=======
+			if (!(dev->enabled_protocols & RC_BIT_RC5X)) {
+				data->state = STATE_INACTIVE;
+				return 0;
+			}
+>>>>>>> refs/remotes/origin/master
 			xdata    = (data->bits & 0x0003F) >> 0;
 			command  = (data->bits & 0x00FC0) >> 6;
 			system   = (data->bits & 0x1F000) >> 12;
@@ -144,6 +160,13 @@ again:
 		} else {
 			/* RC5 */
 			u8 command, system;
+<<<<<<< HEAD
+=======
+			if (!(dev->enabled_protocols & RC_BIT_RC5)) {
+				data->state = STATE_INACTIVE;
+				return 0;
+			}
+>>>>>>> refs/remotes/origin/master
 			command  = (data->bits & 0x0003F) >> 0;
 			system   = (data->bits & 0x007C0) >> 6;
 			toggle   = (data->bits & 0x00800) ? 1 : 0;
@@ -167,7 +190,11 @@ out:
 }
 
 static struct ir_raw_handler rc5_handler = {
+<<<<<<< HEAD
 	.protocols	= RC_TYPE_RC5,
+=======
+	.protocols	= RC_BIT_RC5 | RC_BIT_RC5X,
+>>>>>>> refs/remotes/origin/master
 	.decode		= ir_rc5_decode,
 };
 

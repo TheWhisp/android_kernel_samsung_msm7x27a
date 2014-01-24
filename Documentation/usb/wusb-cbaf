@@ -36,7 +36,11 @@ COMMAND/ARGS are
 
  get-cdid DEVICE
 
+<<<<<<< HEAD
    Get the device ID associated to the HOST-CHDI we sent with
+=======
+   Get the device ID associated to the HOST-CHID we sent with
+>>>>>>> refs/remotes/origin/master
    'set-chid'. We might not know about it.
 
  set-cc DEVICE

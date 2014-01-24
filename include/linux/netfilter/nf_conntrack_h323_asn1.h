@@ -40,7 +40,11 @@
 /*****************************************************************************
  * H.323 Types
  ****************************************************************************/
+<<<<<<< HEAD
 #include "nf_conntrack_h323_types.h"
+=======
+#include <linux/netfilter/nf_conntrack_h323_types.h>
+>>>>>>> refs/remotes/origin/master
 
 typedef struct {
 	enum {

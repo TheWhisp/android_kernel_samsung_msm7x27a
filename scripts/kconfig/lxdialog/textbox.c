@@ -22,23 +22,41 @@
 #include "dialog.h"
 
 static void back_lines(int n);
+<<<<<<< HEAD
 static void print_page(WINDOW * win, int height, int width);
 static void print_line(WINDOW * win, int row, int width);
+=======
+static void print_page(WINDOW *win, int height, int width, update_text_fn
+		       update_text, void *data);
+static void print_line(WINDOW *win, int row, int width);
+>>>>>>> refs/remotes/origin/master
 static char *get_line(void);
 static void print_position(WINDOW * win);
 
 static int hscroll;
 static int begin_reached, end_reached, page_length;
+<<<<<<< HEAD
 static const char *buf;
 static const char *page;
+=======
+static char *buf;
+static char *page;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * refresh window content
  */
 static void refresh_text_box(WINDOW *dialog, WINDOW *box, int boxh, int boxw,
+<<<<<<< HEAD
 							  int cur_y, int cur_x)
 {
 	print_page(box, boxh, boxw);
+=======
+			     int cur_y, int cur_x, update_text_fn update_text,
+			     void *data)
+{
+	print_page(box, boxh, boxw, update_text, data);
+>>>>>>> refs/remotes/origin/master
 	print_position(dialog);
 	wmove(dialog, cur_y, cur_x);	/* Restore cursor position */
 	wrefresh(dialog);
@@ -47,6 +65,7 @@ static void refresh_text_box(WINDOW *dialog, WINDOW *box, int boxh, int boxw,
 
 /*
  * Display text from a file in a dialog box.
+<<<<<<< HEAD
  */
 int dialog_textbox(const char *title, const char *tbuf,
 		   int initial_height, int initial_width)
@@ -55,6 +74,20 @@ int dialog_textbox(const char *title, const char *tbuf,
 	int height, width, boxh, boxw;
 	int passed_end;
 	WINDOW *dialog, *box;
+=======
+ *
+ * keys is a null-terminated array
+ * update_text() may not add or remove any '\n' or '\0' in tbuf
+ */
+int dialog_textbox(const char *title, char *tbuf, int initial_height,
+		   int initial_width, int *keys, int *_vscroll, int *_hscroll,
+		   update_text_fn update_text, void *data)
+{
+	int i, x, y, cur_x, cur_y, key = 0;
+	int height, width, boxh, boxw;
+	WINDOW *dialog, *box;
+	bool done = false;
+>>>>>>> refs/remotes/origin/master
 
 	begin_reached = 1;
 	end_reached = 0;
@@ -63,9 +96,24 @@ int dialog_textbox(const char *title, const char *tbuf,
 	buf = tbuf;
 	page = buf;	/* page is pointer to start of page to be displayed */
 
+<<<<<<< HEAD
 do_resize:
 	getmaxyx(stdscr, height, width);
 	if (height < 8 || width < 8)
+=======
+	if (_vscroll && *_vscroll) {
+		begin_reached = 0;
+
+		for (i = 0; i < *_vscroll; i++)
+			get_line();
+	}
+	if (_hscroll)
+		hscroll = *_hscroll;
+
+do_resize:
+	getmaxyx(stdscr, height, width);
+	if (height < TEXTBOX_HEIGTH_MIN || width < TEXTBOX_WIDTH_MIN)
+>>>>>>> refs/remotes/origin/master
 		return -ERRDISPLAYTOOSMALL;
 	if (initial_height != 0)
 		height = initial_height;
@@ -83,8 +131,13 @@ do_resize:
 			width = 0;
 
 	/* center dialog box on screen */
+<<<<<<< HEAD
 	x = (COLS - width) / 2;
 	y = (LINES - height) / 2;
+=======
+	x = (getmaxx(stdscr) - width) / 2;
+	y = (getmaxy(stdscr) - height) / 2;
+>>>>>>> refs/remotes/origin/master
 
 	draw_shadow(stdscr, y, x, height, width);
 
@@ -120,25 +173,44 @@ do_resize:
 
 	/* Print first page of text */
 	attr_clear(box, boxh, boxw, dlg.dialog.atr);
+<<<<<<< HEAD
 	refresh_text_box(dialog, box, boxh, boxw, cur_y, cur_x);
 
 	while ((key != KEY_ESC) && (key != '\n')) {
+=======
+	refresh_text_box(dialog, box, boxh, boxw, cur_y, cur_x, update_text,
+			 data);
+
+	while (!done) {
+>>>>>>> refs/remotes/origin/master
 		key = wgetch(dialog);
 		switch (key) {
 		case 'E':	/* Exit */
 		case 'e':
 		case 'X':
 		case 'x':
+<<<<<<< HEAD
 			delwin(box);
 			delwin(dialog);
 			return 0;
+=======
+		case 'q':
+		case '\n':
+			done = true;
+			break;
+>>>>>>> refs/remotes/origin/master
 		case 'g':	/* First page */
 		case KEY_HOME:
 			if (!begin_reached) {
 				begin_reached = 1;
 				page = buf;
 				refresh_text_box(dialog, box, boxh, boxw,
+<<<<<<< HEAD
 						 cur_y, cur_x);
+=======
+						 cur_y, cur_x, update_text,
+						 data);
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		case 'G':	/* Last page */
@@ -148,12 +220,18 @@ do_resize:
 			/* point to last char in buf */
 			page = buf + strlen(buf);
 			back_lines(boxh);
+<<<<<<< HEAD
 			refresh_text_box(dialog, box, boxh, boxw,
 					 cur_y, cur_x);
+=======
+			refresh_text_box(dialog, box, boxh, boxw, cur_y,
+					 cur_x, update_text, data);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 'K':	/* Previous line */
 		case 'k':
 		case KEY_UP:
+<<<<<<< HEAD
 			if (!begin_reached) {
 				back_lines(page_length + 1);
 
@@ -190,16 +268,34 @@ do_resize:
 			break;
 		case 'B':	/* Previous page */
 		case 'b':
+=======
+			if (begin_reached)
+				break;
+
+			back_lines(page_length + 1);
+			refresh_text_box(dialog, box, boxh, boxw, cur_y,
+					 cur_x, update_text, data);
+			break;
+		case 'B':	/* Previous page */
+		case 'b':
+		case 'u':
+>>>>>>> refs/remotes/origin/master
 		case KEY_PPAGE:
 			if (begin_reached)
 				break;
 			back_lines(page_length + boxh);
+<<<<<<< HEAD
 			refresh_text_box(dialog, box, boxh, boxw,
 					 cur_y, cur_x);
+=======
+			refresh_text_box(dialog, box, boxh, boxw, cur_y,
+					 cur_x, update_text, data);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 'J':	/* Next line */
 		case 'j':
 		case KEY_DOWN:
+<<<<<<< HEAD
 			if (!end_reached) {
 				begin_reached = 0;
 				scrollok(box, TRUE);
@@ -214,12 +310,29 @@ do_resize:
 			break;
 		case KEY_NPAGE:	/* Next page */
 		case ' ':
+=======
+			if (end_reached)
+				break;
+
+			back_lines(page_length - 1);
+			refresh_text_box(dialog, box, boxh, boxw, cur_y,
+					 cur_x, update_text, data);
+			break;
+		case KEY_NPAGE:	/* Next page */
+		case ' ':
+		case 'd':
+>>>>>>> refs/remotes/origin/master
 			if (end_reached)
 				break;
 
 			begin_reached = 0;
+<<<<<<< HEAD
 			refresh_text_box(dialog, box, boxh, boxw,
 					 cur_y, cur_x);
+=======
+			refresh_text_box(dialog, box, boxh, boxw, cur_y,
+					 cur_x, update_text, data);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case '0':	/* Beginning of line */
 		case 'H':	/* Scroll left */
@@ -234,8 +347,13 @@ do_resize:
 				hscroll--;
 			/* Reprint current page to scroll horizontally */
 			back_lines(page_length);
+<<<<<<< HEAD
 			refresh_text_box(dialog, box, boxh, boxw,
 					 cur_y, cur_x);
+=======
+			refresh_text_box(dialog, box, boxh, boxw, cur_y,
+					 cur_x, update_text, data);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 'L':	/* Scroll right */
 		case 'l':
@@ -245,11 +363,20 @@ do_resize:
 			hscroll++;
 			/* Reprint current page to scroll horizontally */
 			back_lines(page_length);
+<<<<<<< HEAD
 			refresh_text_box(dialog, box, boxh, boxw,
 					 cur_y, cur_x);
 			break;
 		case KEY_ESC:
 			key = on_key_esc(dialog);
+=======
+			refresh_text_box(dialog, box, boxh, boxw, cur_y,
+					 cur_x, update_text, data);
+			break;
+		case KEY_ESC:
+			if (on_key_esc(dialog) == KEY_ESC)
+				done = true;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case KEY_RESIZE:
 			back_lines(height);
@@ -257,11 +384,38 @@ do_resize:
 			delwin(dialog);
 			on_key_resize();
 			goto do_resize;
+<<<<<<< HEAD
+=======
+		default:
+			for (i = 0; keys[i]; i++) {
+				if (key == keys[i]) {
+					done = true;
+					break;
+				}
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	delwin(box);
 	delwin(dialog);
+<<<<<<< HEAD
 	return key;		/* ESC pressed */
+=======
+	if (_vscroll) {
+		const char *s;
+
+		s = buf;
+		*_vscroll = 0;
+		back_lines(page_length);
+		while (s < page && (s = strchr(s, '\n'))) {
+			(*_vscroll)++;
+			s++;
+		}
+	}
+	if (_hscroll)
+		*_hscroll = hscroll;
+	return key;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -298,12 +452,32 @@ static void back_lines(int n)
 }
 
 /*
+<<<<<<< HEAD
  * Print a new page of text. Called by dialog_textbox().
  */
 static void print_page(WINDOW * win, int height, int width)
 {
 	int i, passed_end = 0;
 
+=======
+ * Print a new page of text.
+ */
+static void print_page(WINDOW *win, int height, int width, update_text_fn
+		       update_text, void *data)
+{
+	int i, passed_end = 0;
+
+	if (update_text) {
+		char *end;
+
+		for (i = 0; i < height; i++)
+			get_line();
+		end = page;
+		back_lines(height);
+		update_text(buf, page - buf, end - buf, data);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	page_length = 0;
 	for (i = 0; i < height; i++) {
 		print_line(win, i, width);
@@ -316,6 +490,7 @@ static void print_page(WINDOW * win, int height, int width)
 }
 
 /*
+<<<<<<< HEAD
  * Print a new line of text. Called by dialog_textbox() and print_page().
  */
 static void print_line(WINDOW * win, int row, int width)
@@ -324,6 +499,12 @@ static void print_line(WINDOW * win, int row, int width)
 	int y, x;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Print a new line of text.
+ */
+static void print_line(WINDOW * win, int row, int width)
+{
+>>>>>>> refs/remotes/origin/master
 	char *line;
 
 	line = get_line();
@@ -333,16 +514,22 @@ static void print_line(WINDOW * win, int row, int width)
 	waddnstr(win, line, MIN(strlen(line), width - 2));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	getyx(win, y, x);
 	/* Clear 'residue' of previous line */
 #if OLD_NCURSES
 	{
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Clear 'residue' of previous line */
 #if OLD_NCURSES
 	{
 		int x = getcurx(win);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		int i;
 		for (i = 0; i < width - x; i++)
 			waddch(win, ' ');
@@ -365,10 +552,15 @@ static char *get_line(void)
 	end_reached = 0;
 	while (*page != '\n') {
 		if (*page == '\0') {
+<<<<<<< HEAD
 			if (!end_reached) {
 				end_reached = 1;
 				break;
 			}
+=======
+			end_reached = 1;
+			break;
+>>>>>>> refs/remotes/origin/master
 		} else if (i < MAX_LEN)
 			line[i++] = *(page++);
 		else {
@@ -381,7 +573,11 @@ static char *get_line(void)
 	if (i <= MAX_LEN)
 		line[i] = '\0';
 	if (!end_reached)
+<<<<<<< HEAD
 		page++;		/* move pass '\n' */
+=======
+		page++;		/* move past '\n' */
+>>>>>>> refs/remotes/origin/master
 
 	return line;
 }

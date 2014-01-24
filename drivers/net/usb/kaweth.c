@@ -179,6 +179,10 @@ static struct usb_driver kaweth_driver = {
 	.resume =	kaweth_resume,
 	.id_table =     usb_klsi_table,
 	.supports_autosuspend =	1,
+<<<<<<< HEAD
+=======
+	.disable_hub_initiated_lpm = 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 typedef __u8 eth_addr_t[6];
@@ -266,19 +270,31 @@ static int kaweth_control(struct kaweth_device *kaweth,
 	struct usb_ctrlrequest *dr;
 	int retval;
 
+<<<<<<< HEAD
 	dbg("kaweth_control()");
 
 	if(in_interrupt()) {
 		dbg("in_interrupt()");
+=======
+	netdev_dbg(kaweth->net, "kaweth_control()\n");
+
+	if(in_interrupt()) {
+		netdev_dbg(kaweth->net, "in_interrupt()\n");
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 	}
 
 	dr = kmalloc(sizeof(struct usb_ctrlrequest), GFP_ATOMIC);
+<<<<<<< HEAD
 
 	if (!dr) {
 		dbg("kmalloc() failed");
 		return -ENOMEM;
 	}
+=======
+	if (!dr)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	dr->bRequestType = requesttype;
 	dr->bRequest = request;
@@ -304,7 +320,11 @@ static int kaweth_read_configuration(struct kaweth_device *kaweth)
 {
 	int retval;
 
+<<<<<<< HEAD
 	dbg("Reading kaweth configuration");
+=======
+	netdev_dbg(kaweth->net, "Reading kaweth configuration\n");
+>>>>>>> refs/remotes/origin/master
 
 	retval = kaweth_control(kaweth,
 				usb_rcvctrlpipe(kaweth->dev, 0),
@@ -326,7 +346,11 @@ static int kaweth_set_urb_size(struct kaweth_device *kaweth, __u16 urb_size)
 {
 	int retval;
 
+<<<<<<< HEAD
 	dbg("Setting URB size to %d", (unsigned)urb_size);
+=======
+	netdev_dbg(kaweth->net, "Setting URB size to %d\n", (unsigned)urb_size);
+>>>>>>> refs/remotes/origin/master
 
 	retval = kaweth_control(kaweth,
 				usb_sndctrlpipe(kaweth->dev, 0),
@@ -348,7 +372,11 @@ static int kaweth_set_sofs_wait(struct kaweth_device *kaweth, __u16 sofs_wait)
 {
 	int retval;
 
+<<<<<<< HEAD
 	dbg("Set SOFS wait to %d", (unsigned)sofs_wait);
+=======
+	netdev_dbg(kaweth->net, "Set SOFS wait to %d\n", (unsigned)sofs_wait);
+>>>>>>> refs/remotes/origin/master
 
 	retval = kaweth_control(kaweth,
 				usb_sndctrlpipe(kaweth->dev, 0),
@@ -371,7 +399,12 @@ static int kaweth_set_receive_filter(struct kaweth_device *kaweth,
 {
 	int retval;
 
+<<<<<<< HEAD
 	dbg("Set receive filter to %d", (unsigned)receive_filter);
+=======
+	netdev_dbg(kaweth->net, "Set receive filter to %d\n",
+		   (unsigned)receive_filter);
+>>>>>>> refs/remotes/origin/master
 
 	retval = kaweth_control(kaweth,
 				usb_sndctrlpipe(kaweth->dev, 0),
@@ -400,12 +433,21 @@ static int kaweth_download_firmware(struct kaweth_device *kaweth,
 
 	ret = request_firmware(&fw, fwname, &kaweth->dev->dev);
 	if (ret) {
+<<<<<<< HEAD
 		err("Firmware request failed\n");
+=======
+		dev_err(&kaweth->intf->dev, "Firmware request failed\n");
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
 	if (fw->size > KAWETH_FIRMWARE_BUF_SIZE) {
+<<<<<<< HEAD
 		err("Firmware too big: %zu", fw->size);
+=======
+		dev_err(&kaweth->intf->dev, "Firmware too big: %zu\n",
+			fw->size);
+>>>>>>> refs/remotes/origin/master
 		release_firmware(fw);
 		return -ENOSPC;
 	}
@@ -419,12 +461,22 @@ static int kaweth_download_firmware(struct kaweth_device *kaweth,
 	kaweth->firmware_buf[4] = type;
 	kaweth->firmware_buf[5] = interrupt;
 
+<<<<<<< HEAD
 	dbg("High: %i, Low:%i", kaweth->firmware_buf[3],
 		   kaweth->firmware_buf[2]);
 
 	dbg("Downloading firmware at %p to kaweth device at %p",
 	    fw->data, kaweth);
 	dbg("Firmware length: %d", data_len);
+=======
+	netdev_dbg(kaweth->net, "High: %i, Low:%i\n", kaweth->firmware_buf[3],
+		   kaweth->firmware_buf[2]);
+
+	netdev_dbg(kaweth->net,
+		   "Downloading firmware at %p to kaweth device at %p\n",
+		   kaweth->firmware_buf, kaweth);
+	netdev_dbg(kaweth->net, "Firmware length: %d\n", data_len);
+>>>>>>> refs/remotes/origin/master
 
 	return kaweth_control(kaweth,
 		              usb_sndctrlpipe(kaweth->dev, 0),
@@ -452,7 +504,11 @@ static int kaweth_trigger_firmware(struct kaweth_device *kaweth,
 	kaweth->firmware_buf[6] = 0x00;
 	kaweth->firmware_buf[7] = 0x00;
 
+<<<<<<< HEAD
 	dbg("Triggering firmware");
+=======
+	netdev_dbg(kaweth->net, "Triggering firmware\n");
+>>>>>>> refs/remotes/origin/master
 
 	return kaweth_control(kaweth,
 			      usb_sndctrlpipe(kaweth->dev, 0),
@@ -472,11 +528,19 @@ static int kaweth_reset(struct kaweth_device *kaweth)
 {
 	int result;
 
+<<<<<<< HEAD
 	dbg("kaweth_reset(%p)", kaweth);
 	result = usb_reset_configuration(kaweth->dev);
 	mdelay(10);
 
 	dbg("kaweth_reset() returns %d.",result);
+=======
+	netdev_dbg(kaweth->net, "kaweth_reset(%p)\n", kaweth);
+	result = usb_reset_configuration(kaweth->dev);
+	mdelay(10);
+
+	netdev_dbg(kaweth->net, "kaweth_reset() returns %d.\n", result);
+>>>>>>> refs/remotes/origin/master
 
 	return result;
 }
@@ -501,9 +565,16 @@ static void kaweth_resubmit_int_urb(struct kaweth_device *kaweth, gfp_t mf)
 	}
 
 	if (status)
+<<<<<<< HEAD
 		err ("can't resubmit intr, %s-%s, status %d",
 				kaweth->dev->bus->bus_name,
 				kaweth->dev->devpath, status);
+=======
+		dev_err(&kaweth->intf->dev,
+			"can't resubmit intr, %s-%s, status %d\n",
+			kaweth->dev->bus->bus_name,
+			kaweth->dev->devpath, status);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void int_callback(struct urb *u)
@@ -576,7 +647,12 @@ static int kaweth_resubmit_rx_urb(struct kaweth_device *kaweth,
 			kaweth->suspend_lowmem_rx = 1;
 			schedule_delayed_work(&kaweth->lowmem_work, HZ/4);
 		}
+<<<<<<< HEAD
 		err("resubmitting rx_urb %d failed", result);
+=======
+		dev_err(&kaweth->intf->dev, "resubmitting rx_urb %d failed\n",
+			result);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		kaweth->suspend_lowmem_rx = 0;
 	}
@@ -591,6 +667,10 @@ static void kaweth_async_set_rx_mode(struct kaweth_device *kaweth);
  ****************************************************************/
 static void kaweth_usb_receive(struct urb *urb)
 {
+<<<<<<< HEAD
+=======
+	struct device *dev = &urb->dev->dev;
+>>>>>>> refs/remotes/origin/master
 	struct kaweth_device *kaweth = urb->context;
 	struct net_device *net = kaweth->net;
 	int status = urb->status;
@@ -606,25 +686,41 @@ static void kaweth_usb_receive(struct urb *urb)
 		kaweth->stats.rx_errors++;
 		kaweth->end = 1;
 		wake_up(&kaweth->term_wait);
+<<<<<<< HEAD
 		dbg("Status was -EPIPE.");
+=======
+		dev_dbg(dev, "Status was -EPIPE.\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	if (unlikely(status == -ECONNRESET || status == -ESHUTDOWN)) {
 		/* we are killed - set a flag and wake the disconnect handler */
 		kaweth->end = 1;
 		wake_up(&kaweth->term_wait);
+<<<<<<< HEAD
 		dbg("Status was -ECONNRESET or -ESHUTDOWN.");
+=======
+		dev_dbg(dev, "Status was -ECONNRESET or -ESHUTDOWN.\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	if (unlikely(status == -EPROTO || status == -ETIME ||
 		     status == -EILSEQ)) {
 		kaweth->stats.rx_errors++;
+<<<<<<< HEAD
 		dbg("Status was -EPROTO, -ETIME, or -EILSEQ.");
+=======
+		dev_dbg(dev, "Status was -EPROTO, -ETIME, or -EILSEQ.\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	if (unlikely(status == -EOVERFLOW)) {
 		kaweth->stats.rx_errors++;
+<<<<<<< HEAD
 		dbg("Status was -EOVERFLOW.");
+=======
+		dev_dbg(dev, "Status was -EOVERFLOW.\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_lock(&kaweth->device_lock);
 	if (IS_BLOCKED(kaweth->status)) {
@@ -634,20 +730,35 @@ static void kaweth_usb_receive(struct urb *urb)
 	spin_unlock(&kaweth->device_lock);
 
 	if(status && status != -EREMOTEIO && count != 1) {
+<<<<<<< HEAD
 		err("%s RX status: %d count: %d packet_len: %d",
                            net->name,
 			   status,
 			   count,
 			   (int)pkt_len);
+=======
+		dev_err(&kaweth->intf->dev,
+			"%s RX status: %d count: %d packet_len: %d\n",
+			net->name, status, count, (int)pkt_len);
+>>>>>>> refs/remotes/origin/master
 		kaweth_resubmit_rx_urb(kaweth, GFP_ATOMIC);
                 return;
 	}
 
 	if(kaweth->net && (count > 2)) {
 		if(pkt_len > (count - 2)) {
+<<<<<<< HEAD
 			err("Packet length too long for USB frame (pkt_len: %x, count: %x)",pkt_len, count);
 			err("Packet len & 2047: %x", pkt_len & 2047);
 			err("Count 2: %x", count2);
+=======
+			dev_err(&kaweth->intf->dev,
+				"Packet length too long for USB frame (pkt_len: %x, count: %x)\n",
+				pkt_len, count);
+			dev_err(&kaweth->intf->dev, "Packet len & 2047: %x\n",
+				pkt_len & 2047);
+			dev_err(&kaweth->intf->dev, "Count 2: %x\n", count2);
+>>>>>>> refs/remotes/origin/master
 		        kaweth_resubmit_rx_urb(kaweth, GFP_ATOMIC);
                         return;
                 }
@@ -682,11 +793,19 @@ static int kaweth_open(struct net_device *net)
 	struct kaweth_device *kaweth = netdev_priv(net);
 	int res;
 
+<<<<<<< HEAD
 	dbg("Opening network device.");
 
 	res = usb_autopm_get_interface(kaweth->intf);
 	if (res) {
 		err("Interface cannot be resumed.");
+=======
+	netdev_dbg(kaweth->net, "Opening network device.\n");
+
+	res = usb_autopm_get_interface(kaweth->intf);
+	if (res) {
+		dev_err(&kaweth->intf->dev, "Interface cannot be resumed.\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 	res = kaweth_resubmit_rx_urb(kaweth, GFP_KERNEL);
@@ -782,7 +901,12 @@ static void kaweth_usb_transmit_complete(struct urb *urb)
 
 	if (unlikely(status != 0))
 		if (status != -ENOENT)
+<<<<<<< HEAD
 			dbg("%s: TX status %d.", kaweth->net->name, status);
+=======
+			dev_dbg(&urb->dev->dev, "%s: TX status %d.\n",
+				kaweth->net->name, status);
+>>>>>>> refs/remotes/origin/master
 
 	netif_wake_queue(kaweth->net);
 	dev_kfree_skb_irq(skb);
@@ -866,7 +990,11 @@ static void kaweth_set_rx_mode(struct net_device *net)
                                      KAWETH_PACKET_FILTER_BROADCAST |
 		                     KAWETH_PACKET_FILTER_MULTICAST;
 
+<<<<<<< HEAD
 	dbg("Setting Rx mode to %d", packet_filter_bitmap);
+=======
+	netdev_dbg(net, "Setting Rx mode to %d\n", packet_filter_bitmap);
+>>>>>>> refs/remotes/origin/master
 
 	netif_stop_queue(net);
 
@@ -907,10 +1035,19 @@ static void kaweth_async_set_rx_mode(struct kaweth_device *kaweth)
 				KAWETH_CONTROL_TIMEOUT);
 
 	if(result < 0) {
+<<<<<<< HEAD
 		err("Failed to set Rx mode: %d", result);
 	}
 	else {
 		dbg("Set Rx mode to %d", packet_filter_bitmap);
+=======
+		dev_err(&kaweth->intf->dev, "Failed to set Rx mode: %d\n",
+			result);
+	}
+	else {
+		netdev_dbg(kaweth->net, "Set Rx mode to %d\n",
+			   packet_filter_bitmap);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -945,7 +1082,11 @@ static int kaweth_suspend(struct usb_interface *intf, pm_message_t message)
 	struct kaweth_device *kaweth = usb_get_intfdata(intf);
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("Suspending device");
+=======
+	dev_dbg(&intf->dev, "Suspending device\n");
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&kaweth->device_lock, flags);
 	kaweth->status |= KAWETH_STATUS_SUSPENDING;
 	spin_unlock_irqrestore(&kaweth->device_lock, flags);
@@ -962,7 +1103,11 @@ static int kaweth_resume(struct usb_interface *intf)
 	struct kaweth_device *kaweth = usb_get_intfdata(intf);
 	unsigned long flags;
 
+<<<<<<< HEAD
 	dbg("Resuming device");
+=======
+	dev_dbg(&intf->dev, "Resuming device\n");
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&kaweth->device_lock, flags);
 	kaweth->status &= ~KAWETH_STATUS_SUSPENDING;
 	spin_unlock_irqrestore(&kaweth->device_lock, flags);
@@ -986,10 +1131,14 @@ static const struct net_device_ops kaweth_netdev_ops = {
 	.ndo_start_xmit =		kaweth_start_xmit,
 	.ndo_tx_timeout =		kaweth_tx_timeout,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list =	kaweth_set_rx_mode,
 =======
 	.ndo_set_rx_mode =		kaweth_set_rx_mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode =		kaweth_set_rx_mode,
+>>>>>>> refs/remotes/origin/master
 	.ndo_get_stats =		kaweth_netdev_stats,
 	.ndo_change_mtu =		eth_change_mtu,
 	.ndo_set_mac_address =		eth_mac_addr,
@@ -1001,12 +1150,18 @@ static int kaweth_probe(
 		const struct usb_device_id *id      /* from id_table */
 	)
 {
+<<<<<<< HEAD
 	struct usb_device *dev = interface_to_usbdev(intf);
+=======
+	struct device *dev = &intf->dev;
+	struct usb_device *udev = interface_to_usbdev(intf);
+>>>>>>> refs/remotes/origin/master
 	struct kaweth_device *kaweth;
 	struct net_device *netdev;
 	const eth_addr_t bcast_addr = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 	int result = 0;
 
+<<<<<<< HEAD
 	dbg("Kawasaki Device Probe (Device number:%d): 0x%4.4x:0x%4.4x:0x%4.4x",
 		 dev->devnum,
 		 le16_to_cpu(dev->descriptor.idVendor),
@@ -1018,19 +1173,40 @@ static int kaweth_probe(
 	dbg("Descriptor length: %x type: %x",
 		 (int)dev->descriptor.bLength,
 		 (int)dev->descriptor.bDescriptorType);
+=======
+	dev_dbg(dev,
+		"Kawasaki Device Probe (Device number:%d): 0x%4.4x:0x%4.4x:0x%4.4x\n",
+		udev->devnum, le16_to_cpu(udev->descriptor.idVendor),
+		le16_to_cpu(udev->descriptor.idProduct),
+		le16_to_cpu(udev->descriptor.bcdDevice));
+
+	dev_dbg(dev, "Device at %p\n", udev);
+
+	dev_dbg(dev, "Descriptor length: %x type: %x\n",
+		(int)udev->descriptor.bLength,
+		(int)udev->descriptor.bDescriptorType);
+>>>>>>> refs/remotes/origin/master
 
 	netdev = alloc_etherdev(sizeof(*kaweth));
 	if (!netdev)
 		return -ENOMEM;
 
 	kaweth = netdev_priv(netdev);
+<<<<<<< HEAD
 	kaweth->dev = dev;
+=======
+	kaweth->dev = udev;
+>>>>>>> refs/remotes/origin/master
 	kaweth->net = netdev;
 
 	spin_lock_init(&kaweth->device_lock);
 	init_waitqueue_head(&kaweth->term_wait);
 
+<<<<<<< HEAD
 	dbg("Resetting.");
+=======
+	dev_dbg(dev, "Resetting.\n");
+>>>>>>> refs/remotes/origin/master
 
 	kaweth_reset(kaweth);
 
@@ -1039,17 +1215,30 @@ static int kaweth_probe(
 	 * downloaded. Don't try to do it again, or we'll hang the device.
 	 */
 
+<<<<<<< HEAD
 	if (le16_to_cpu(dev->descriptor.bcdDevice) >> 8) {
 		dev_info(&intf->dev, "Firmware present in device.\n");
 	} else {
 		/* Download the firmware */
 		dev_info(&intf->dev, "Downloading firmware...\n");
+=======
+	if (le16_to_cpu(udev->descriptor.bcdDevice) >> 8) {
+		dev_info(dev, "Firmware present in device.\n");
+	} else {
+		/* Download the firmware */
+		dev_info(dev, "Downloading firmware...\n");
+>>>>>>> refs/remotes/origin/master
 		kaweth->firmware_buf = (__u8 *)__get_free_page(GFP_KERNEL);
 		if ((result = kaweth_download_firmware(kaweth,
 						      "kaweth/new_code.bin",
 						      100,
 						      2)) < 0) {
+<<<<<<< HEAD
 			err("Error downloading firmware (%d)", result);
+=======
+			dev_err(dev, "Error downloading firmware (%d)\n",
+				result);
+>>>>>>> refs/remotes/origin/master
 			goto err_fw;
 		}
 
@@ -1057,7 +1246,12 @@ static int kaweth_probe(
 						      "kaweth/new_code_fix.bin",
 						      100,
 						      3)) < 0) {
+<<<<<<< HEAD
 			err("Error downloading firmware fix (%d)", result);
+=======
+			dev_err(dev, "Error downloading firmware fix (%d)\n",
+				result);
+>>>>>>> refs/remotes/origin/master
 			goto err_fw;
 		}
 
@@ -1065,7 +1259,12 @@ static int kaweth_probe(
 						      "kaweth/trigger_code.bin",
 						      126,
 						      2)) < 0) {
+<<<<<<< HEAD
 			err("Error downloading trigger code (%d)", result);
+=======
+			dev_err(dev, "Error downloading trigger code (%d)\n",
+				result);
+>>>>>>> refs/remotes/origin/master
 			goto err_fw;
 
 		}
@@ -1074,18 +1273,30 @@ static int kaweth_probe(
 						      "kaweth/trigger_code_fix.bin",
 						      126,
 						      3)) < 0) {
+<<<<<<< HEAD
 			err("Error downloading trigger code fix (%d)", result);
+=======
+			dev_err(dev, "Error downloading trigger code fix (%d)\n", result);
+>>>>>>> refs/remotes/origin/master
 			goto err_fw;
 		}
 
 
 		if ((result = kaweth_trigger_firmware(kaweth, 126)) < 0) {
+<<<<<<< HEAD
 			err("Error triggering firmware (%d)", result);
+=======
+			dev_err(dev, "Error triggering firmware (%d)\n", result);
+>>>>>>> refs/remotes/origin/master
 			goto err_fw;
 		}
 
 		/* Device will now disappear for a moment...  */
+<<<<<<< HEAD
 		dev_info(&intf->dev, "Firmware loaded.  I'll be back...\n");
+=======
+		dev_info(dev, "Firmware loaded.  I'll be back...\n");
+>>>>>>> refs/remotes/origin/master
 err_fw:
 		free_page((unsigned long)kaweth->firmware_buf);
 		free_netdev(netdev);
@@ -1095,6 +1306,7 @@ err_fw:
 	result = kaweth_read_configuration(kaweth);
 
 	if(result < 0) {
+<<<<<<< HEAD
 		err("Error reading configuration (%d), no net device created", result);
 		goto err_free_netdev;
 	}
@@ -1113,21 +1325,43 @@ err_fw:
 =======
 	dev_info(&intf->dev, "Read MAC address %pM\n", kaweth->configuration.hw_addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(dev, "Error reading configuration (%d), no net device created\n", result);
+		goto err_free_netdev;
+	}
+
+	dev_info(dev, "Statistics collection: %x\n", kaweth->configuration.statistics_mask);
+	dev_info(dev, "Multicast filter limit: %x\n", kaweth->configuration.max_multicast_filters & ((1 << 15) - 1));
+	dev_info(dev, "MTU: %d\n", le16_to_cpu(kaweth->configuration.segment_size));
+	dev_info(dev, "Read MAC address %pM\n", kaweth->configuration.hw_addr);
+>>>>>>> refs/remotes/origin/master
 
 	if(!memcmp(&kaweth->configuration.hw_addr,
                    &bcast_addr,
 		   sizeof(bcast_addr))) {
+<<<<<<< HEAD
 		err("Firmware not functioning properly, no net device created");
+=======
+		dev_err(dev, "Firmware not functioning properly, no net device created\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_free_netdev;
 	}
 
 	if(kaweth_set_urb_size(kaweth, KAWETH_BUF_SIZE) < 0) {
+<<<<<<< HEAD
 		dbg("Error setting URB size");
+=======
+		dev_dbg(dev, "Error setting URB size\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_free_netdev;
 	}
 
 	if(kaweth_set_sofs_wait(kaweth, KAWETH_SOFS_TO_WAIT) < 0) {
+<<<<<<< HEAD
 		err("Error setting SOFS wait");
+=======
+		dev_err(dev, "Error setting SOFS wait\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_free_netdev;
 	}
 
@@ -1137,11 +1371,19 @@ err_fw:
                                            KAWETH_PACKET_FILTER_MULTICAST);
 
 	if(result < 0) {
+<<<<<<< HEAD
 		err("Error setting receive filter");
 		goto err_free_netdev;
 	}
 
 	dbg("Initializing net device.");
+=======
+		dev_err(dev, "Error setting receive filter\n");
+		goto err_free_netdev;
+	}
+
+	dev_dbg(dev, "Initializing net device.\n");
+>>>>>>> refs/remotes/origin/master
 
 	kaweth->intf = intf;
 
@@ -1183,6 +1425,7 @@ err_fw:
 
 #if 0
 // dma_supported() is deeply broken on almost all architectures
+<<<<<<< HEAD
 	if (dma_supported (&intf->dev, 0xffffffffffffffffULL))
 		kaweth->net->features |= NETIF_F_HIGHDMA;
 #endif
@@ -1197,6 +1440,22 @@ err_fw:
 		 kaweth->net->name);
 
 	dbg("Kaweth probe returning.");
+=======
+	if (dma_supported (dev, 0xffffffffffffffffULL))
+		kaweth->net->features |= NETIF_F_HIGHDMA;
+#endif
+
+	SET_NETDEV_DEV(netdev, dev);
+	if (register_netdev(netdev) != 0) {
+		dev_err(dev, "Error registering netdev.\n");
+		goto err_intfdata;
+	}
+
+	dev_info(dev, "kaweth interface created at %s\n",
+		 kaweth->net->name);
+
+	dev_dbg(dev, "Kaweth probe returning.\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -1234,7 +1493,11 @@ static void kaweth_disconnect(struct usb_interface *intf)
 	}
 	netdev = kaweth->net;
 
+<<<<<<< HEAD
 	dbg("Unregistering net device");
+=======
+	netdev_dbg(kaweth->net, "Unregistering net device\n");
+>>>>>>> refs/remotes/origin/master
 	unregister_netdev(netdev);
 
 	usb_free_urb(kaweth->rx_urb);
@@ -1333,6 +1596,7 @@ static int kaweth_internal_control_msg(struct usb_device *usb_dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /****************************************************************
  *     kaweth_init
@@ -1365,3 +1629,6 @@ module_exit(kaweth_exit);
 =======
 module_usb_driver(kaweth_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(kaweth_driver);
+>>>>>>> refs/remotes/origin/master

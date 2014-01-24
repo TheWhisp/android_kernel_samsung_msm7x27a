@@ -4,7 +4,10 @@
 
 config USB_MON
 	tristate "USB Monitor"
+<<<<<<< HEAD
 	depends on USB
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you select this option, a component which captures the USB traffic
 	  between peripheral-specific drivers and HC drivers will be built.

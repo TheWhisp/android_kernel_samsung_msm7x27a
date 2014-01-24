@@ -4,10 +4,14 @@
  * Header file for TOMOYO.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2005-2010  NTT DATA CORPORATION
 =======
  * Copyright (C) 2005-2011  NTT DATA CORPORATION
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2005-2011  NTT DATA CORPORATION
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _SECURITY_TOMOYO_COMMON_H
@@ -26,8 +30,11 @@
 #include <linux/cred.h>
 #include <linux/poll.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct linux_binprm;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/binfmts.h>
 #include <linux/highmem.h>
 #include <linux/net.h>
@@ -40,7 +47,10 @@ struct linux_binprm;
 #include <net/ip.h>
 #include <net/ipv6.h>
 #include <net/udp.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /********** Constants definitions. **********/
 
@@ -53,12 +63,15 @@ struct linux_binprm;
 #define TOMOYO_MAX_HASH (1u<<TOMOYO_HASH_BITS)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TOMOYO_EXEC_TMPSIZE     4096
 
 /* Profile number is an integer between 0 and 255. */
 #define TOMOYO_MAX_PROFILES 256
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * TOMOYO checks only SOCK_STREAM, SOCK_DGRAM, SOCK_RAW, SOCK_SEQPACKET.
  * Therefore, we don't need SOCK_MAX.
@@ -156,12 +169,16 @@ enum tomoyo_path_stat_index {
 };
 
 /* Index numbers for operation mode. */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum tomoyo_mode_index {
 	TOMOYO_CONFIG_DISABLED,
 	TOMOYO_CONFIG_LEARNING,
 	TOMOYO_CONFIG_PERMISSIVE,
 	TOMOYO_CONFIG_ENFORCING,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	TOMOYO_CONFIG_USE_DEFAULT = 255
 };
@@ -169,6 +186,8 @@ enum tomoyo_mode_index {
 enum tomoyo_policy_id {
 	TOMOYO_ID_GROUP,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	TOMOYO_CONFIG_MAX_MODE,
 	TOMOYO_CONFIG_WANT_REJECT_LOG =  64,
 	TOMOYO_CONFIG_WANT_GRANT_LOG  = 128,
@@ -179,11 +198,15 @@ enum tomoyo_policy_id {
 enum tomoyo_policy_id {
 	TOMOYO_ID_GROUP,
 	TOMOYO_ID_ADDRESS_GROUP,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	TOMOYO_ID_PATH_GROUP,
 	TOMOYO_ID_NUMBER_GROUP,
 	TOMOYO_ID_TRANSITION_CONTROL,
 	TOMOYO_ID_AGGREGATOR,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	TOMOYO_ID_GLOBALLY_READABLE,
 	TOMOYO_ID_PATTERN,
@@ -193,12 +216,17 @@ enum tomoyo_policy_id {
 	TOMOYO_ID_MANAGER,
 	TOMOYO_ID_CONDITION,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TOMOYO_ID_MANAGER,
+	TOMOYO_ID_CONDITION,
+>>>>>>> refs/remotes/origin/master
 	TOMOYO_ID_NAME,
 	TOMOYO_ID_ACL,
 	TOMOYO_ID_DOMAIN,
 	TOMOYO_MAX_POLICY
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 enum tomoyo_group_id {
 	TOMOYO_PATH_GROUP,
@@ -237,6 +265,8 @@ enum tomoyo_group_id {
 enum tomoyo_transition_type {
 	/* Do not change this order, */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Index numbers for domain's attributes. */
 enum tomoyo_domain_info_flags_index {
 	/* Quota warnning flag.   */
@@ -282,7 +312,10 @@ enum tomoyo_transition_type {
 	/* Do not change this order, */
 	TOMOYO_TRANSITION_CONTROL_NO_RESET,
 	TOMOYO_TRANSITION_CONTROL_RESET,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	TOMOYO_TRANSITION_CONTROL_NO_INITIALIZE,
 	TOMOYO_TRANSITION_CONTROL_INITIALIZE,
 	TOMOYO_TRANSITION_CONTROL_NO_KEEP,
@@ -297,6 +330,7 @@ enum tomoyo_acl_entry_type_index {
 	TOMOYO_TYPE_PATH_NUMBER_ACL,
 	TOMOYO_TYPE_MKDEV_ACL,
 	TOMOYO_TYPE_MOUNT_ACL,
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
@@ -324,6 +358,8 @@ enum tomoyo_path_acl_index {
 	TOMOYO_TYPE_SYMLINK,
 	TOMOYO_TYPE_REWRITE,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	TOMOYO_TYPE_INET_ACL,
 	TOMOYO_TYPE_UNIX_ACL,
 	TOMOYO_TYPE_ENV_ACL,
@@ -341,15 +377,21 @@ enum tomoyo_path_acl_index {
 	TOMOYO_TYPE_RMDIR,
 	TOMOYO_TYPE_TRUNCATE,
 	TOMOYO_TYPE_SYMLINK,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	TOMOYO_TYPE_CHROOT,
 	TOMOYO_TYPE_UMOUNT,
 	TOMOYO_MAX_PATH_OPERATION
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TOMOYO_RW_MASK ((1 << TOMOYO_TYPE_READ) | (1 << TOMOYO_TYPE_WRITE))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Index numbers for /sys/kernel/security/tomoyo/stat interface. */
 enum tomoyo_memory_stat_type {
 	TOMOYO_MEMORY_POLICY,
@@ -357,7 +399,10 @@ enum tomoyo_memory_stat_type {
 	TOMOYO_MEMORY_QUERY,
 	TOMOYO_MAX_MEMORY_STAT
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 enum tomoyo_mkdev_acl_index {
 	TOMOYO_TYPE_MKBLOCK,
@@ -366,7 +411,10 @@ enum tomoyo_mkdev_acl_index {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Index numbers for socket operations. */
 enum tomoyo_network_acl_index {
 	TOMOYO_NETWORK_BIND,    /* bind() operation. */
@@ -377,7 +425,10 @@ enum tomoyo_network_acl_index {
 };
 
 /* Index numbers for access controls with two pathnames. */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum tomoyo_path2_acl_index {
 	TOMOYO_TYPE_LINK,
 	TOMOYO_TYPE_RENAME,
@@ -386,9 +437,13 @@ enum tomoyo_path2_acl_index {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* Index numbers for access controls with one pathname and one number. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Index numbers for access controls with one pathname and one number. */
+>>>>>>> refs/remotes/origin/master
 enum tomoyo_path_number_acl_index {
 	TOMOYO_TYPE_CREATE,
 	TOMOYO_TYPE_MKDIR,
@@ -402,6 +457,7 @@ enum tomoyo_path_number_acl_index {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum tomoyo_securityfs_interface_index {
 	TOMOYO_DOMAINPOLICY,
 	TOMOYO_EXCEPTIONPOLICY,
@@ -410,6 +466,8 @@ enum tomoyo_securityfs_interface_index {
 	TOMOYO_MEMINFO,
 	TOMOYO_SELFDOMAIN,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Index numbers for /sys/kernel/security/tomoyo/ interfaces. */
 enum tomoyo_securityfs_interface_index {
 	TOMOYO_DOMAINPOLICY,
@@ -417,7 +475,10 @@ enum tomoyo_securityfs_interface_index {
 	TOMOYO_PROCESS_STATUS,
 	TOMOYO_STAT,
 	TOMOYO_AUDIT,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	TOMOYO_VERSION,
 	TOMOYO_PROFILE,
 	TOMOYO_QUERY,
@@ -425,7 +486,10 @@ enum tomoyo_securityfs_interface_index {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Index numbers for special mount operations. */
 enum tomoyo_special_mount {
 	TOMOYO_MOUNT_BIND,            /* mount --bind /source /dest   */
@@ -439,16 +503,23 @@ enum tomoyo_special_mount {
 };
 
 /* Index numbers for functionality. */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum tomoyo_mac_index {
 	TOMOYO_MAC_FILE_EXECUTE,
 	TOMOYO_MAC_FILE_OPEN,
 	TOMOYO_MAC_FILE_CREATE,
 	TOMOYO_MAC_FILE_UNLINK,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	TOMOYO_MAC_FILE_GETATTR,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TOMOYO_MAC_FILE_GETATTR,
+>>>>>>> refs/remotes/origin/master
 	TOMOYO_MAC_FILE_MKDIR,
 	TOMOYO_MAC_FILE_RMDIR,
 	TOMOYO_MAC_FILE_MKFIFO,
@@ -456,9 +527,12 @@ enum tomoyo_mac_index {
 	TOMOYO_MAC_FILE_TRUNCATE,
 	TOMOYO_MAC_FILE_SYMLINK,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TOMOYO_MAC_FILE_REWRITE,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	TOMOYO_MAC_FILE_MKBLOCK,
 	TOMOYO_MAC_FILE_MKCHAR,
 	TOMOYO_MAC_FILE_LINK,
@@ -471,6 +545,7 @@ enum tomoyo_mac_index {
 	TOMOYO_MAC_FILE_MOUNT,
 	TOMOYO_MAC_FILE_UMOUNT,
 	TOMOYO_MAC_FILE_PIVOT_ROOT,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	TOMOYO_MAX_MAC_INDEX
 };
@@ -508,6 +583,8 @@ struct tomoyo_acl_head {
  */
 struct tomoyo_request_info {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	TOMOYO_MAC_NETWORK_INET_STREAM_BIND,
 	TOMOYO_MAC_NETWORK_INET_STREAM_LISTEN,
 	TOMOYO_MAC_NETWORK_INET_STREAM_CONNECT,
@@ -589,7 +666,10 @@ struct tomoyo_request_info {
 	 * NULL if not dealing do_execve().
 	 */
 	struct tomoyo_execve *ee;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct tomoyo_domain_info *domain;
 	/* For holding parameters. */
 	union {
@@ -598,18 +678,26 @@ struct tomoyo_request_info {
 			/* For using wildcards at tomoyo_find_next_domain(). */
 			const struct tomoyo_path_info *matched_path;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			/* One of values in "enum tomoyo_path_acl_index". */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* One of values in "enum tomoyo_path_acl_index". */
+>>>>>>> refs/remotes/origin/master
 			u8 operation;
 		} path;
 		struct {
 			const struct tomoyo_path_info *filename1;
 			const struct tomoyo_path_info *filename2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			/* One of values in "enum tomoyo_path2_acl_index". */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* One of values in "enum tomoyo_path2_acl_index". */
+>>>>>>> refs/remotes/origin/master
 			u8 operation;
 		} path2;
 		struct {
@@ -618,19 +706,26 @@ struct tomoyo_request_info {
 			unsigned int major;
 			unsigned int minor;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			/* One of values in "enum tomoyo_mkdev_acl_index". */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* One of values in "enum tomoyo_mkdev_acl_index". */
+>>>>>>> refs/remotes/origin/master
 			u8 operation;
 		} mkdev;
 		struct {
 			const struct tomoyo_path_info *filename;
 			unsigned long number;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			u8 operation;
 		} path_number;
 		struct {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * One of values in
 			 * "enum tomoyo_path_number_acl_index".
@@ -657,7 +752,10 @@ struct tomoyo_request_info {
 			u8 operation;
 		} unix_network;
 		struct {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			const struct tomoyo_path_info *type;
 			const struct tomoyo_path_info *dir;
 			const struct tomoyo_path_info *dev;
@@ -665,14 +763,20 @@ struct tomoyo_request_info {
 			int need_dev;
 		} mount;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} param;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		struct {
 			const struct tomoyo_path_info *domainname;
 		} task;
 	} param;
 	struct tomoyo_acl_info *matched_acl;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 param_type;
 	bool granted;
 	u8 retry;
@@ -681,6 +785,7 @@ struct tomoyo_request_info {
 	u8 type;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * tomoyo_path_info is a structure which is used for holding a string data
@@ -705,6 +810,9 @@ struct tomoyo_request_info {
 =======
 /* Structure for holding a token. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Structure for holding a token. */
+>>>>>>> refs/remotes/origin/master
 struct tomoyo_path_info {
 	const char *name;
 	u32 hash;          /* = full_name_hash(name, strlen(name)) */
@@ -713,6 +821,7 @@ struct tomoyo_path_info {
 	bool is_patterned; /* = tomoyo_path_contains_pattern(name) */
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * tomoyo_name is a structure which is used for linking
@@ -745,6 +854,8 @@ struct tomoyo_group {
 	struct list_head member_list;
 	atomic_t users;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Structure for holding string data. */
 struct tomoyo_name {
 	struct tomoyo_shared_acl_head head;
@@ -778,7 +889,10 @@ struct tomoyo_group {
 	struct tomoyo_shared_acl_head head;
 	const struct tomoyo_path_info *group_name;
 	struct list_head member_list;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Structure for "path_group" directive. */
@@ -793,6 +907,7 @@ struct tomoyo_number_group {
 	struct tomoyo_number_union number;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * tomoyo_acl_info is a structure which is used for holding
@@ -847,6 +962,8 @@ struct tomoyo_acl_info {
  * open()ed file after that file was unlink()ed).
  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Structure for "address_group" directive. */
 struct tomoyo_address_group {
 	struct tomoyo_acl_head head;
@@ -856,8 +973,13 @@ struct tomoyo_address_group {
 
 /* Subset of "struct stat". Used by conditional ACL and audit logs. */
 struct tomoyo_mini_stat {
+<<<<<<< HEAD
 	uid_t uid;
 	gid_t gid;
+=======
+	kuid_t uid;
+	kgid_t gid;
+>>>>>>> refs/remotes/origin/master
 	ino_t ino;
 	umode_t mode;
 	dev_t dev;
@@ -968,12 +1090,16 @@ struct tomoyo_acl_info {
 } __packed;
 
 /* Structure for domain information. */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct tomoyo_domain_info {
 	struct list_head list;
 	struct list_head acl_info_list;
 	/* Name of this domain. Never NULL.          */
 	const struct tomoyo_path_info *domainname;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u8 profile;        /* Profile number to use. */
 	bool is_deleted;   /* Delete flag.           */
@@ -981,17 +1107,23 @@ struct tomoyo_domain_info {
 	bool ignore_global_allow_read; /* Ignore "allow_read" flag. */
 	bool transition_failed; /* Domain transition failed flag. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Namespace for this domain. Never NULL. */
 	struct tomoyo_policy_namespace *ns;
 	u8 profile;        /* Profile number to use. */
 	u8 group;          /* Group number to use.   */
 	bool is_deleted;   /* Delete flag.           */
 	bool flags[TOMOYO_MAX_DOMAIN_INFO_FLAGS];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	atomic_t users; /* Number of referring credentials. */
 };
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * tomoyo_path_acl is a structure which is used for holding an
  * entry with one pathname operation (e.g. open(), mkdir()).
@@ -1010,6 +1142,8 @@ struct tomoyo_path_acl {
 	struct tomoyo_acl_info head; /* type = TOMOYO_TYPE_PATH_ACL */
 	u16 perm;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Structure for "task manual_domain_transition" directive.
  */
 struct tomoyo_task_acl {
@@ -1026,11 +1160,15 @@ struct tomoyo_task_acl {
 struct tomoyo_path_acl {
 	struct tomoyo_acl_info head; /* type = TOMOYO_TYPE_PATH_ACL */
 	u16 perm; /* Bitmask of values in "enum tomoyo_path_acl_index". */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct tomoyo_name_union name;
 };
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * tomoyo_path_number_acl is a structure which is used for holding an
  * entry with one pathname and one number operation.
@@ -1049,18 +1187,24 @@ struct tomoyo_path_acl {
 struct tomoyo_path_number_acl {
 	struct tomoyo_acl_info head; /* type = TOMOYO_TYPE_PATH_NUMBER_ACL */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Structure for "file create", "file mkdir", "file mkfifo", "file mksock",
  * "file ioctl", "file chmod", "file chown" and "file chgrp" directive.
  */
 struct tomoyo_path_number_acl {
 	struct tomoyo_acl_info head; /* type = TOMOYO_TYPE_PATH_NUMBER_ACL */
 	/* Bitmask of values in "enum tomoyo_path_number_acl_index". */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 perm;
 	struct tomoyo_name_union name;
 	struct tomoyo_number_union number;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * tomoyo_mkdev_acl is a structure which is used for holding an
@@ -1080,11 +1224,16 @@ struct tomoyo_mkdev_acl {
 	struct tomoyo_acl_info head; /* type = TOMOYO_TYPE_MKDEV_ACL */
 	u8 perm;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Structure for "file mkblock" and "file mkchar" directive. */
 struct tomoyo_mkdev_acl {
 	struct tomoyo_acl_info head; /* type = TOMOYO_TYPE_MKDEV_ACL */
 	u8 perm; /* Bitmask of values in "enum tomoyo_mkdev_acl_index". */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct tomoyo_name_union name;
 	struct tomoyo_number_union mode;
 	struct tomoyo_number_union major;
@@ -1092,6 +1241,7 @@ struct tomoyo_mkdev_acl {
 };
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * tomoyo_path2_acl is a structure which is used for holding an
  * entry with two pathnames operation (i.e. link(), rename() and pivot_root()).
@@ -1109,16 +1259,22 @@ struct tomoyo_path2_acl {
 	struct tomoyo_acl_info head; /* type = TOMOYO_TYPE_PATH2_ACL */
 	u8 perm;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Structure for "file rename", "file link" and "file pivot_root" directive.
  */
 struct tomoyo_path2_acl {
 	struct tomoyo_acl_info head; /* type = TOMOYO_TYPE_PATH2_ACL */
 	u8 perm; /* Bitmask of values in "enum tomoyo_path2_acl_index". */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct tomoyo_name_union name1;
 	struct tomoyo_name_union name2;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * tomoyo_mount_acl is a structure which is used for holding an
@@ -1136,6 +1292,9 @@ struct tomoyo_path2_acl {
 =======
 /* Structure for "file mount" directive. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Structure for "file mount" directive. */
+>>>>>>> refs/remotes/origin/master
 struct tomoyo_mount_acl {
 	struct tomoyo_acl_info head; /* type = TOMOYO_TYPE_MOUNT_ACL */
 	struct tomoyo_name_union dev_name;
@@ -1145,8 +1304,11 @@ struct tomoyo_mount_acl {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TOMOYO_MAX_IO_READ_QUEUE 32
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Structure for "misc env" directive in domain policy. */
 struct tomoyo_env_acl {
 	struct tomoyo_acl_info head;        /* type = TOMOYO_TYPE_ENV_ACL  */
@@ -1179,7 +1341,10 @@ struct tomoyo_acl_param {
 };
 
 #define TOMOYO_MAX_IO_READ_QUEUE 64
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Structure for reading/writing policy via /sys/kernel/security/tomoyo
@@ -1188,6 +1353,7 @@ struct tomoyo_acl_param {
 struct tomoyo_io_buffer {
 	void (*read) (struct tomoyo_io_buffer *);
 	int (*write) (struct tomoyo_io_buffer *);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int (*poll) (struct file *file, poll_table *wait);
 	/* Exclusive lock for this structure.   */
@@ -1205,6 +1371,8 @@ struct tomoyo_io_buffer {
 		int query_index;
 		u16 index;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int (*poll) (struct file *file, poll_table *wait);
 	/* Exclusive lock for this structure.   */
 	struct mutex io_sem;
@@ -1222,11 +1390,15 @@ struct tomoyo_io_buffer {
 		u16 cond_index;
 		u8 acl_group_index;
 		u8 cond_step;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		u8 bit;
 		u8 w_pos;
 		bool eof;
 		bool print_this_domain_only;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		bool print_execute_only;
 		const char *w[TOMOYO_MAX_IO_READ_QUEUE];
@@ -1302,6 +1474,8 @@ struct tomoyo_no_rewrite {
  *      domainname".
  *  (5) "program" which is a program's pathname.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		bool print_transition_related_only;
 		bool print_cond_part;
 		const char *w[TOMOYO_MAX_IO_READ_QUEUE];
@@ -1333,7 +1507,10 @@ struct tomoyo_no_rewrite {
 /*
  * Structure for "initialize_domain"/"no_initialize_domain"/"keep_domain"/
  * "no_keep_domain" keyword.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 struct tomoyo_transition_control {
 	struct tomoyo_acl_head head;
@@ -1344,6 +1521,7 @@ struct tomoyo_transition_control {
 	const struct tomoyo_path_info *program;    /* Maybe NULL */
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * tomoyo_aggregator is a structure which is used for holding
@@ -1357,12 +1535,16 @@ struct tomoyo_transition_control {
 =======
 /* Structure for "aggregator" keyword. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Structure for "aggregator" keyword. */
+>>>>>>> refs/remotes/origin/master
 struct tomoyo_aggregator {
 	struct tomoyo_acl_head head;
 	const struct tomoyo_path_info *original_name;
 	const struct tomoyo_path_info *aggregated_name;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * tomoyo_manager is a structure which is used for holding list of
@@ -1381,6 +1563,11 @@ struct tomoyo_aggregator {
 struct tomoyo_manager {
 	struct tomoyo_acl_head head;
 	bool is_domain;  /* True if manager is a domainname. */
+=======
+/* Structure for policy manager. */
+struct tomoyo_manager {
+	struct tomoyo_acl_head head;
+>>>>>>> refs/remotes/origin/master
 	/* A path to program or a domainname. */
 	const struct tomoyo_path_info *manager;
 };
@@ -1393,9 +1580,13 @@ struct tomoyo_preference {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* Structure for /sys/kernel/security/tomnoyo/profile interface. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Structure for /sys/kernel/security/tomnoyo/profile interface. */
+>>>>>>> refs/remotes/origin/master
 struct tomoyo_profile {
 	const struct tomoyo_path_info *comment;
 	struct tomoyo_preference *learning;
@@ -1405,7 +1596,10 @@ struct tomoyo_profile {
 	u8 default_config;
 	u8 config[TOMOYO_MAX_MAC_INDEX + TOMOYO_MAX_MAC_CATEGORY_INDEX];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int pref[TOMOYO_MAX_PREF];
 };
 
@@ -1435,11 +1629,15 @@ struct tomoyo_policy_namespace {
 	unsigned int profile_version;
 	/* Name of this namespace (e.g. "<kernel>", "</usr/sbin/httpd>" ). */
 	const char *name;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /********** Function prototypes. **********/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Check whether the given string starts with the given keyword. */
 bool tomoyo_str_starts(char **src, const char *find);
@@ -1667,6 +1865,8 @@ extern unsigned int tomoyo_query_memory_size;
 /********** Inlined functions. **********/
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 bool tomoyo_address_matches_group(const bool is_ipv6, const __be32 *address,
 				  const struct tomoyo_group *group);
 bool tomoyo_compare_number_union(const unsigned long value,
@@ -1712,7 +1912,11 @@ const struct tomoyo_path_info *tomoyo_path_matches_group
 (const struct tomoyo_path_info *pathname, const struct tomoyo_group *group);
 int tomoyo_check_open_permission(struct tomoyo_domain_info *domain,
 				 struct path *path, const int flag);
+<<<<<<< HEAD
 int tomoyo_close_control(struct tomoyo_io_buffer *head);
+=======
+void tomoyo_close_control(struct tomoyo_io_buffer *head);
+>>>>>>> refs/remotes/origin/master
 int tomoyo_env_perm(struct tomoyo_request_info *r, const char *env);
 int tomoyo_execute_permission(struct tomoyo_request_info *r,
 			      const struct tomoyo_path_info *filename);
@@ -1724,7 +1928,11 @@ int tomoyo_init_request_info(struct tomoyo_request_info *r,
 			     const u8 index);
 int tomoyo_mkdev_perm(const u8 operation, struct path *path,
 		      const unsigned int mode, unsigned int dev);
+<<<<<<< HEAD
 int tomoyo_mount_permission(char *dev_name, struct path *path,
+=======
+int tomoyo_mount_permission(const char *dev_name, struct path *path,
+>>>>>>> refs/remotes/origin/master
 			    const char *type, unsigned long flags,
 			    void *data_page);
 int tomoyo_open_control(const u8 type, struct file *file);
@@ -1846,14 +2054,20 @@ extern unsigned int tomoyo_memory_used[TOMOYO_MAX_MEMORY_STAT];
  *
  * Returns index number for tomoyo_read_unlock().
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int tomoyo_read_lock(void)
 {
 	return srcu_read_lock(&tomoyo_ss);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_read_unlock - Release lock for protecting policy.
  *
@@ -1861,12 +2075,16 @@ static inline int tomoyo_read_lock(void)
  *
  * Returns nothing.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void tomoyo_read_unlock(int idx)
 {
 	srcu_read_unlock(&tomoyo_ss, idx);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* strcmp() for "struct tomoyo_path_info" structure. */
 static inline bool tomoyo_pathcmp(const struct tomoyo_path_info *a,
@@ -1900,6 +2118,8 @@ static inline bool tomoyo_invalid(const unsigned char c)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_sys_getppid - Copy of getppid().
  *
@@ -1951,12 +2171,16 @@ static inline bool tomoyo_pathcmp(const struct tomoyo_path_info *a,
  *
  * Returns nothing.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void tomoyo_put_name(const struct tomoyo_path_info *name)
 {
 	if (name) {
 		struct tomoyo_name *ptr =
 			container_of(name, typeof(*ptr), entry);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		atomic_dec(&ptr->users);
 	}
@@ -1969,6 +2193,8 @@ static inline void tomoyo_put_group(struct tomoyo_group *group)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		atomic_dec(&ptr->head.users);
 	}
 }
@@ -2004,14 +2230,20 @@ static inline void tomoyo_put_group(struct tomoyo_group *group)
  *
  * Returns pointer to "struct tomoyo_domain_info" for current thread.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct tomoyo_domain_info *tomoyo_domain(void)
 {
 	return current_cred()->security;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_real_domain - Get "struct tomoyo_domain_info" for specified thread.
  *
@@ -2019,13 +2251,17 @@ static inline struct tomoyo_domain_info *tomoyo_domain(void)
  *
  * Returns pointer to "struct tomoyo_security" for specified thread.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct tomoyo_domain_info *tomoyo_real_domain(struct task_struct
 							    *task)
 {
 	return task_cred_xxx(task, security);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline bool tomoyo_same_acl_head(const struct tomoyo_acl_info *p1,
 					   const struct tomoyo_acl_info *p2)
@@ -2049,6 +2285,8 @@ static inline bool tomoyo_same_number_union
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_same_name_union - Check for duplicated "struct tomoyo_name_union" entry.
  *
@@ -2148,7 +2386,10 @@ static inline int tomoyo_round2(size_t size)
 
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * list_for_each_cookie - iterate over a list with cookie.
  * @pos:        the &struct list_head to use as a loop cursor.

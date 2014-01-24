@@ -166,7 +166,10 @@ static struct of_pdt_ops prom_olpc_ops __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static phandle __init olpc_dt_finddevice(const char *path)
 {
 	phandle node;
@@ -268,7 +271,10 @@ void __init olpc_dt_fixup(void)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void __init olpc_dt_build_devicetree(void)
 {
 	phandle root;
@@ -277,10 +283,15 @@ void __init olpc_dt_build_devicetree(void)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	olpc_dt_fixup();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	olpc_dt_fixup();
+
+>>>>>>> refs/remotes/origin/master
 	root = olpc_dt_getsibling(0);
 	if (!root) {
 		pr_err("PROM: unable to get root node from OFW!\n");

@@ -62,11 +62,16 @@ static int __ocfs2_page_mkwrite(struct file *file, struct buffer_head *di_bh,
 				struct page *page)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 =======
 	int ret = VM_FAULT_NOPAGE;
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	int ret = VM_FAULT_NOPAGE;
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct address_space *mapping = inode->i_mapping;
 	loff_t pos = page_offset(page);
 	unsigned int len = PAGE_CACHE_SIZE;
@@ -75,6 +80,7 @@ static int __ocfs2_page_mkwrite(struct file *file, struct buffer_head *di_bh,
 	void *fsdata;
 	loff_t size = i_size_read(inode);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*
 	 * Another node might have truncated while we were waiting on
@@ -103,6 +109,8 @@ static int __ocfs2_page_mkwrite(struct file *file, struct buffer_head *di_bh,
 		goto out;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	last_index = (size - 1) >> PAGE_CACHE_SHIFT;
 
 	/*
@@ -122,7 +130,10 @@ static int __ocfs2_page_mkwrite(struct file *file, struct buffer_head *di_bh,
 	    (!PageUptodate(page)) ||
 	    (page_offset(page) >= size))
 		goto out;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Call ocfs2_write_begin() and ocfs2_write_end() to take
@@ -143,6 +154,7 @@ static int __ocfs2_page_mkwrite(struct file *file, struct buffer_head *di_bh,
 		if (ret != -ENOSPC)
 			mlog_errno(ret);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto out;
 	}
 
@@ -155,6 +167,8 @@ static int __ocfs2_page_mkwrite(struct file *file, struct buffer_head *di_bh,
 	BUG_ON(ret != len);
 	ret = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ret == -ENOMEM)
 			ret = VM_FAULT_OOM;
 		else
@@ -170,7 +184,10 @@ static int __ocfs2_page_mkwrite(struct file *file, struct buffer_head *di_bh,
 				     fsdata);
 	BUG_ON(ret != len);
 	ret = VM_FAULT_LOCKED;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	return ret;
 }
@@ -178,11 +195,19 @@ out:
 static int ocfs2_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf)
 {
 	struct page *page = vmf->page;
+<<<<<<< HEAD
 	struct inode *inode = vma->vm_file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(vma->vm_file);
+>>>>>>> refs/remotes/origin/master
 	struct buffer_head *di_bh = NULL;
 	sigset_t oldset;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	sb_start_pagefault(inode->i_sb);
+>>>>>>> refs/remotes/origin/master
 	ocfs2_block_signals(&oldset);
 
 	/*
@@ -213,32 +238,51 @@ static int ocfs2_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf)
 out:
 	ocfs2_unblock_signals(&oldset);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret)
 		ret = VM_FAULT_SIGBUS;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sb_end_pagefault(inode->i_sb);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 static const struct vm_operations_struct ocfs2_file_vm_ops = {
 	.fault		= ocfs2_fault,
 	.page_mkwrite	= ocfs2_page_mkwrite,
+<<<<<<< HEAD
+=======
+	.remap_pages	= generic_file_remap_pages,
+>>>>>>> refs/remotes/origin/master
 };
 
 int ocfs2_mmap(struct file *file, struct vm_area_struct *vma)
 {
 	int ret = 0, lock_level = 0;
 
+<<<<<<< HEAD
 	ret = ocfs2_inode_lock_atime(file->f_dentry->d_inode,
 				    file->f_vfsmnt, &lock_level);
+=======
+	ret = ocfs2_inode_lock_atime(file_inode(file),
+				    file->f_path.mnt, &lock_level);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		mlog_errno(ret);
 		goto out;
 	}
+<<<<<<< HEAD
 	ocfs2_inode_unlock(file->f_dentry->d_inode, lock_level);
 out:
 	vma->vm_ops = &ocfs2_file_vm_ops;
 	vma->vm_flags |= VM_CAN_NONLINEAR;
+=======
+	ocfs2_inode_unlock(file_inode(file), lock_level);
+out:
+	vma->vm_ops = &ocfs2_file_vm_ops;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

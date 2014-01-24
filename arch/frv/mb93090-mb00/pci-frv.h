@@ -27,16 +27,22 @@ extern unsigned int __nongpreldata pci_probe;
 /* pci-frv.c */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern unsigned int pcibios_max_latency;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void pcibios_resource_survey(void);
 
 /* pci-vdk.c */
 
+<<<<<<< HEAD
 extern int __nongpreldata pcibios_last_bus;
 extern struct pci_bus *__nongpreldata pci_root_bus;
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct pci_ops *__nongpreldata pci_root_ops;
 
 /* pci-irq.c */

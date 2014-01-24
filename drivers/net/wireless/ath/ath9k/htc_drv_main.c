@@ -24,6 +24,7 @@
 static enum htc_phymode ath9k_htc_get_curmode(struct ath9k_htc_priv *priv,
 					      struct ath9k_channel *ichan)
 {
+<<<<<<< HEAD
 	enum htc_phymode mode;
 
 	mode = -EINVAL;
@@ -48,6 +49,12 @@ static enum htc_phymode ath9k_htc_get_curmode(struct ath9k_htc_priv *priv,
 	WARN_ON(mode < 0);
 
 	return mode;
+=======
+	if (IS_CHAN_5GHZ(ichan))
+		return HTC_MODE_11NA;
+
+	return HTC_MODE_11NG;
+>>>>>>> refs/remotes/origin/master
 }
 
 bool ath9k_htc_setpower(struct ath9k_htc_priv *priv,
@@ -75,14 +82,29 @@ unlock:
 
 void ath9k_htc_ps_restore(struct ath9k_htc_priv *priv)
 {
+<<<<<<< HEAD
+=======
+	bool reset;
+
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&priv->htc_pm_lock);
 	if (--priv->ps_usecount != 0)
 		goto unlock;
 
+<<<<<<< HEAD
 	if (priv->ps_idle)
 		ath9k_hw_setpower(priv->ah, ATH9K_PM_FULL_SLEEP);
 	else if (priv->ps_enabled)
 		ath9k_hw_setpower(priv->ah, ATH9K_PM_NETWORK_SLEEP);
+=======
+	if (priv->ps_idle) {
+		ath9k_hw_setrxabort(priv->ah, true);
+		ath9k_hw_stopdmarecv(priv->ah, &reset);
+		ath9k_hw_setpower(priv->ah, ATH9K_PM_FULL_SLEEP);
+	} else if (priv->ps_enabled) {
+		ath9k_hw_setpower(priv->ah, ATH9K_PM_NETWORK_SLEEP);
+	}
+>>>>>>> refs/remotes/origin/master
 
 unlock:
 	mutex_unlock(&priv->htc_pm_lock);
@@ -108,7 +130,13 @@ static void ath9k_htc_vif_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
 	struct ath9k_htc_priv *priv = data;
 	struct ieee80211_bss_conf *bss_conf = &vif->bss_conf;
 
+<<<<<<< HEAD
 	if ((vif->type == NL80211_IFTYPE_AP) && bss_conf->enable_beacon)
+=======
+	if ((vif->type == NL80211_IFTYPE_AP ||
+	     vif->type == NL80211_IFTYPE_MESH_POINT) &&
+	    bss_conf->enable_beacon)
+>>>>>>> refs/remotes/origin/master
 		priv->reconfig_beacon = true;
 
 	if (bss_conf->assoc) {
@@ -122,8 +150,14 @@ static void ath9k_htc_vif_reconfig(struct ath9k_htc_priv *priv)
 	priv->rearm_ani = false;
 	priv->reconfig_beacon = false;
 
+<<<<<<< HEAD
 	ieee80211_iterate_active_interfaces_atomic(priv->hw,
 						   ath9k_htc_vif_iter, priv);
+=======
+	ieee80211_iterate_active_interfaces_atomic(
+		priv->hw, IEEE80211_IFACE_ITER_RESUME_ALL,
+		ath9k_htc_vif_iter, priv);
+>>>>>>> refs/remotes/origin/master
 	if (priv->rearm_ani)
 		ath9k_htc_start_ani(priv);
 
@@ -140,6 +174,9 @@ static void ath9k_htc_bssid_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 	if (iter_data->hw_macaddr != NULL) {
 		for (i = 0; i < ETH_ALEN; i++)
 			iter_data->mask[i] &= ~(iter_data->hw_macaddr[i] ^ mac[i]);
@@ -149,6 +186,7 @@ static void ath9k_htc_bssid_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
 }
 
 static void ath9k_htc_set_mac_bssid_mask(struct ath9k_htc_priv *priv,
+<<<<<<< HEAD
 =======
 	for (i = 0; i < ETH_ALEN; i++)
 		iter_data->mask[i] &= ~(iter_data->hw_macaddr[i] ^ mac[i]);
@@ -156,6 +194,8 @@ static void ath9k_htc_set_mac_bssid_mask(struct ath9k_htc_priv *priv,
 
 static void ath9k_htc_set_bssid_mask(struct ath9k_htc_priv *priv,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				     struct ieee80211_vif *vif)
 {
 	struct ath_common *common = ath9k_hw_common(priv->ah);
@@ -163,34 +203,51 @@ static void ath9k_htc_set_bssid_mask(struct ath9k_htc_priv *priv,
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Pick the MAC address of the first interface as the new hardware
 	 * MAC address. The hardware will use it together with the BSSID mask
 	 * when matching addresses.
 	 */
 	iter_data.hw_macaddr = NULL;
+<<<<<<< HEAD
 =======
 	 * Use the hardware MAC address as reference, the hardware uses it
 	 * together with the BSSID mask when matching addresses.
 	 */
 	iter_data.hw_macaddr = common->macaddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(&iter_data.mask, 0xff, ETH_ALEN);
 
 	if (vif)
 		ath9k_htc_bssid_iter(&iter_data, vif->addr, vif);
 
 	/* Get list of all active MAC addresses */
+<<<<<<< HEAD
 	ieee80211_iterate_active_interfaces_atomic(priv->hw, ath9k_htc_bssid_iter,
 						   &iter_data);
 
 	memcpy(common->bssidmask, iter_data.mask, ETH_ALEN);
 <<<<<<< HEAD
+=======
+	ieee80211_iterate_active_interfaces_atomic(
+		priv->hw, IEEE80211_IFACE_ITER_RESUME_ALL,
+		ath9k_htc_bssid_iter, &iter_data);
+
+	memcpy(common->bssidmask, iter_data.mask, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	if (iter_data.hw_macaddr)
 		memcpy(common->macaddr, iter_data.hw_macaddr, ETH_ALEN);
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ath_hw_setbssidmask(common);
 }
 
@@ -200,6 +257,11 @@ static void ath9k_htc_set_opmode(struct ath9k_htc_priv *priv)
 		priv->ah->opmode = NL80211_IFTYPE_ADHOC;
 	else if (priv->num_ap_vif)
 		priv->ah->opmode = NL80211_IFTYPE_AP;
+<<<<<<< HEAD
+=======
+	else if (priv->num_mbss_vif)
+		priv->ah->opmode = NL80211_IFTYPE_MESH_POINT;
+>>>>>>> refs/remotes/origin/master
 	else
 		priv->ah->opmode = NL80211_IFTYPE_STATION;
 
@@ -210,7 +272,11 @@ void ath9k_htc_reset(struct ath9k_htc_priv *priv)
 {
 	struct ath_hw *ah = priv->ah;
 	struct ath_common *common = ath9k_hw_common(ah);
+<<<<<<< HEAD
 	struct ieee80211_channel *channel = priv->hw->conf.channel;
+=======
+	struct ieee80211_channel *channel = priv->hw->conf.chandef.chan;
+>>>>>>> refs/remotes/origin/master
 	struct ath9k_hw_cal_data *caldata = NULL;
 	enum htc_phymode mode;
 	__be16 htc_mode;
@@ -270,14 +336,22 @@ static int ath9k_htc_set_channel(struct ath9k_htc_priv *priv,
 	struct ath_common *common = ath9k_hw_common(ah);
 	struct ieee80211_conf *conf = &common->hw->conf;
 	bool fastcc;
+<<<<<<< HEAD
 	struct ieee80211_channel *channel = hw->conf.channel;
+=======
+	struct ieee80211_channel *channel = hw->conf.chandef.chan;
+>>>>>>> refs/remotes/origin/master
 	struct ath9k_hw_cal_data *caldata = NULL;
 	enum htc_phymode mode;
 	__be16 htc_mode;
 	u8 cmd_rsp;
 	int ret;
 
+<<<<<<< HEAD
 	if (priv->op_flags & OP_INVALID)
+=======
+	if (test_bit(OP_INVALID, &priv->op_flags))
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 
 	fastcc = !!(hw->conf.flags & IEEE80211_CONF_OFFCHANNEL);
@@ -294,10 +368,14 @@ static int ath9k_htc_set_channel(struct ath9k_htc_priv *priv,
 	ath9k_wmi_event_drain(priv);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CONFIG,
 =======
 	ath_dbg(common, CONFIG,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CONFIG,
+>>>>>>> refs/remotes/origin/master
 		"(%u MHz) -> (%u MHz), HT: %d, HT40: %d fastcc: %d\n",
 		priv->ah->curchan->channel,
 		channel->center_freq, conf_is_ht(conf), conf_is_ht40(conf),
@@ -335,7 +413,11 @@ static int ath9k_htc_set_channel(struct ath9k_htc_priv *priv,
 
 	htc_start(priv->htc);
 
+<<<<<<< HEAD
 	if (!(priv->op_flags & OP_SCANNING) &&
+=======
+	if (!test_bit(OP_SCANNING, &priv->op_flags) &&
+>>>>>>> refs/remotes/origin/master
 	    !(hw->conf.flags & IEEE80211_CONF_OFFCHANNEL))
 		ath9k_htc_vif_reconfig(priv);
 
@@ -447,10 +529,14 @@ static int ath9k_htc_add_monitor_interface(struct ath9k_htc_priv *priv)
 	priv->ah->is_monitoring = true;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CONFIG,
 =======
 	ath_dbg(common, CONFIG,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CONFIG,
+>>>>>>> refs/remotes/origin/master
 		"Attached a monitor interface at idx: %d, sta idx: %d\n",
 		priv->mon_vif_idx, sta_idx);
 
@@ -463,10 +549,14 @@ err_sta:
 	__ath9k_htc_remove_monitor_interface(priv);
 err_vif:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_FATAL, "Unable to attach a monitor interface\n");
 =======
 	ath_dbg(common, FATAL, "Unable to attach a monitor interface\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, FATAL, "Unable to attach a monitor interface\n");
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -492,10 +582,14 @@ static int ath9k_htc_remove_monitor_interface(struct ath9k_htc_priv *priv)
 	priv->ah->is_monitoring = false;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CONFIG,
 =======
 	ath_dbg(common, CONFIG,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CONFIG,
+>>>>>>> refs/remotes/origin/master
 		"Removed a monitor interface at idx: %d, sta idx: %d\n",
 		priv->mon_vif_idx, sta_idx);
 
@@ -527,16 +621,29 @@ static int ath9k_htc_add_station(struct ath9k_htc_priv *priv,
 		ista = (struct ath9k_htc_sta *) sta->drv_priv;
 		memcpy(&tsta.macaddr, sta->addr, ETH_ALEN);
 		memcpy(&tsta.bssid, common->curbssid, ETH_ALEN);
+<<<<<<< HEAD
 		tsta.is_vif_sta = 0;
 		ista->index = sta_idx;
 	} else {
 		memcpy(&tsta.macaddr, vif->addr, ETH_ALEN);
 		tsta.is_vif_sta = 1;
+=======
+		ista->index = sta_idx;
+		tsta.is_vif_sta = 0;
+		maxampdu = 1 << (IEEE80211_HT_MAX_AMPDU_FACTOR +
+				 sta->ht_cap.ampdu_factor);
+		tsta.maxampdu = cpu_to_be16(maxampdu);
+	} else {
+		memcpy(&tsta.macaddr, vif->addr, ETH_ALEN);
+		tsta.is_vif_sta = 1;
+		tsta.maxampdu = cpu_to_be16(0xffff);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	tsta.sta_index = sta_idx;
 	tsta.vif_index = avp->index;
 
+<<<<<<< HEAD
 	if (!sta) {
 		tsta.maxampdu = cpu_to_be16(0xffff);
 	} else {
@@ -545,6 +652,8 @@ static int ath9k_htc_add_station(struct ath9k_htc_priv *priv,
 		tsta.maxampdu = cpu_to_be16(maxampdu);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	WMI_CMD_BUF(WMI_NODE_CREATE_CMDID, &tsta);
 	if (ret) {
 		if (sta)
@@ -556,18 +665,24 @@ static int ath9k_htc_add_station(struct ath9k_htc_priv *priv,
 
 	if (sta) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CONFIG,
 			"Added a station entry for: %pM (idx: %d)\n",
 			sta->addr, tsta.sta_index);
 	} else {
 		ath_dbg(common, ATH_DBG_CONFIG,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ath_dbg(common, CONFIG,
 			"Added a station entry for: %pM (idx: %d)\n",
 			sta->addr, tsta.sta_index);
 	} else {
 		ath_dbg(common, CONFIG,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			"Added a station entry for VIF %d (idx: %d)\n",
 			avp->index, tsta.sta_index);
 	}
@@ -608,18 +723,24 @@ static int ath9k_htc_remove_station(struct ath9k_htc_priv *priv,
 
 	if (sta) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CONFIG,
 			"Removed a station entry for: %pM (idx: %d)\n",
 			sta->addr, sta_idx);
 	} else {
 		ath_dbg(common, ATH_DBG_CONFIG,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ath_dbg(common, CONFIG,
 			"Removed a station entry for: %pM (idx: %d)\n",
 			sta->addr, sta_idx);
 	} else {
 		ath_dbg(common, CONFIG,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			"Removed a station entry for VIF %d (idx: %d)\n",
 			avp->index, sta_idx);
 	}
@@ -658,7 +779,11 @@ static void ath9k_htc_setup_rate(struct ath9k_htc_priv *priv,
 	u32 caps = 0;
 	int i, j;
 
+<<<<<<< HEAD
 	sband = priv->hw->wiphy->bands[priv->hw->conf.channel->band];
+=======
+	sband = priv->hw->wiphy->bands[priv->hw->conf.chandef.chan->band];
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0, j = 0; i < sband->n_bitrates; i++) {
 		if (sta->supp_rates[sband->band] & BIT(i)) {
@@ -679,6 +804,11 @@ static void ath9k_htc_setup_rate(struct ath9k_htc_priv *priv,
 		trate->rates.ht_rates.rs_nrates = j;
 
 		caps = WLAN_RC_HT_FLAG;
+<<<<<<< HEAD
+=======
+		if (sta->ht_cap.cap & IEEE80211_HT_CAP_RX_STBC)
+			caps |= ATH_RC_TX_STBC_FLAG;
+>>>>>>> refs/remotes/origin/master
 		if (sta->ht_cap.mcs.rx_mask[1])
 			caps |= WLAN_RC_DS_FLAG;
 		if ((sta->ht_cap.cap & IEEE80211_HT_CAP_SUP_WIDTH_20_40) &&
@@ -725,10 +855,14 @@ static void ath9k_htc_init_rate(struct ath9k_htc_priv *priv,
 	ret = ath9k_htc_send_rate_cmd(priv, &trate);
 	if (!ret)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CONFIG,
 =======
 		ath_dbg(common, CONFIG,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, CONFIG,
+>>>>>>> refs/remotes/origin/master
 			"Updated target sta: %pM, rate caps: 0x%X\n",
 			sta->addr, be32_to_cpu(trate.capflags));
 }
@@ -756,10 +890,14 @@ static void ath9k_htc_update_rate(struct ath9k_htc_priv *priv,
 	ret = ath9k_htc_send_rate_cmd(priv, &trate);
 	if (!ret)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CONFIG,
 =======
 		ath_dbg(common, CONFIG,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, CONFIG,
+>>>>>>> refs/remotes/origin/master
 			"Updated target sta: %pM, rate caps: 0x%X\n",
 			bss_conf->bssid, be32_to_cpu(trate.capflags));
 }
@@ -789,18 +927,24 @@ static int ath9k_htc_tx_aggr_oper(struct ath9k_htc_priv *priv,
 	WMI_CMD_BUF(WMI_TX_AGGR_ENABLE_CMDID, &aggr);
 	if (ret)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CONFIG,
 			"Unable to %s TX aggregation for (%pM, %d)\n",
 			(aggr.aggr_enable) ? "start" : "stop", sta->addr, tid);
 	else
 		ath_dbg(common, ATH_DBG_CONFIG,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ath_dbg(common, CONFIG,
 			"Unable to %s TX aggregation for (%pM, %d)\n",
 			(aggr.aggr_enable) ? "start" : "stop", sta->addr, tid);
 	else
 		ath_dbg(common, CONFIG,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			"%s TX aggregation for (%pM, %d)\n",
 			(aggr.aggr_enable) ? "Starting" : "Stopping",
 			sta->addr, tid);
@@ -825,7 +969,11 @@ void ath9k_htc_start_ani(struct ath9k_htc_priv *priv)
 	common->ani.shortcal_timer = timestamp;
 	common->ani.checkani_timer = timestamp;
 
+<<<<<<< HEAD
 	priv->op_flags |= OP_ANI_RUNNING;
+=======
+	set_bit(OP_ANI_RUNNING, &priv->op_flags);
+>>>>>>> refs/remotes/origin/master
 
 	ieee80211_queue_delayed_work(common->hw, &priv->ani_work,
 				     msecs_to_jiffies(ATH_ANI_POLLINTERVAL));
@@ -834,7 +982,11 @@ void ath9k_htc_start_ani(struct ath9k_htc_priv *priv)
 void ath9k_htc_stop_ani(struct ath9k_htc_priv *priv)
 {
 	cancel_delayed_work_sync(&priv->ani_work);
+<<<<<<< HEAD
 	priv->op_flags &= ~OP_ANI_RUNNING;
+=======
+	clear_bit(OP_ANI_RUNNING, &priv->op_flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 void ath9k_htc_ani_work(struct work_struct *work)
@@ -860,10 +1012,14 @@ void ath9k_htc_ani_work(struct work_struct *work)
 	if ((timestamp - common->ani.longcal_timer) >= ATH_LONG_CALINTERVAL) {
 		longcal = true;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_ANI, "longcal @%lu\n", jiffies);
 =======
 		ath_dbg(common, ANI, "longcal @%lu\n", jiffies);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, ANI, "longcal @%lu\n", jiffies);
+>>>>>>> refs/remotes/origin/master
 		common->ani.longcal_timer = timestamp;
 	}
 
@@ -873,11 +1029,15 @@ void ath9k_htc_ani_work(struct work_struct *work)
 		    short_cal_interval) {
 			shortcal = true;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_ANI,
 				"shortcal @%lu\n", jiffies);
 =======
 			ath_dbg(common, ANI, "shortcal @%lu\n", jiffies);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath_dbg(common, ANI, "shortcal @%lu\n", jiffies);
+>>>>>>> refs/remotes/origin/master
 			common->ani.shortcal_timer = timestamp;
 			common->ani.resetcal_timer = timestamp;
 		}
@@ -892,11 +1052,15 @@ void ath9k_htc_ani_work(struct work_struct *work)
 
 	/* Verify whether we must check ANI */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((timestamp - common->ani.checkani_timer) >= ATH_ANI_POLLINTERVAL) {
 =======
 	if (ah->config.enable_ani &&
 	    (timestamp - common->ani.checkani_timer) >= ATH_ANI_POLLINTERVAL) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((timestamp - common->ani.checkani_timer) >= ATH_ANI_POLLINTERVAL) {
+>>>>>>> refs/remotes/origin/master
 		aniflag = true;
 		common->ani.checkani_timer = timestamp;
 	}
@@ -915,11 +1079,15 @@ void ath9k_htc_ani_work(struct work_struct *work)
 			common->ani.caldone =
 				ath9k_hw_calibrate(ah, ah->curchan,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						   common->rx_chainmask,
 						   longcal);
 =======
 						   ah->rxchainmask, longcal);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						   ah->rxchainmask, longcal);
+>>>>>>> refs/remotes/origin/master
 
 		ath9k_htc_ps_restore(priv);
 	}
@@ -932,11 +1100,15 @@ set_timer:
 	*/
 	cal_interval = ATH_LONG_CALINTERVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (priv->ah->config.enable_ani)
 =======
 	if (ah->config.enable_ani)
 >>>>>>> refs/remotes/origin/cm-10.0
 		cal_interval = min(cal_interval, (u32)ATH_ANI_POLLINTERVAL);
+=======
+	cal_interval = min(cal_interval, (u32)ATH_ANI_POLLINTERVAL);
+>>>>>>> refs/remotes/origin/master
 	if (!common->ani.caldone)
 		cal_interval = min(cal_interval, (u32)short_cal_interval);
 
@@ -948,7 +1120,13 @@ set_timer:
 /* mac80211 Callbacks */
 /**********************/
 
+<<<<<<< HEAD
 static void ath9k_htc_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
+=======
+static void ath9k_htc_tx(struct ieee80211_hw *hw,
+			 struct ieee80211_tx_control *control,
+			 struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_hdr *hdr;
 	struct ath9k_htc_priv *priv = hw->priv;
@@ -958,6 +1136,7 @@ static void ath9k_htc_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
 	hdr = (struct ieee80211_hdr *) skb->data;
 
 	/* Add the padding after the header if this is not already done */
+<<<<<<< HEAD
 	padpos = ath9k_cmn_padpos(hdr->frame_control);
 	padsize = padpos & 3;
 	if (padsize && skb->len > padpos) {
@@ -967,6 +1146,13 @@ static void ath9k_htc_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
 =======
 			ath_dbg(common, XMIT, "No room for padding\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	padpos = ieee80211_hdrlen(hdr->frame_control);
+	padsize = padpos & 3;
+	if (padsize && skb->len > padpos) {
+		if (skb_headroom(skb) < padsize) {
+			ath_dbg(common, XMIT, "No room for padding\n");
+>>>>>>> refs/remotes/origin/master
 			goto fail_tx;
 		}
 		skb_push(skb, padsize);
@@ -975,6 +1161,7 @@ static void ath9k_htc_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
 
 	slot = ath9k_htc_tx_get_slot(priv);
 	if (slot < 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_XMIT, "No free TX slot\n");
 =======
@@ -990,6 +1177,15 @@ static void ath9k_htc_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
 =======
 		ath_dbg(common, XMIT, "Tx failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, XMIT, "No free TX slot\n");
+		goto fail_tx;
+	}
+
+	ret = ath9k_htc_tx_start(priv, control->sta, skb, slot, false);
+	if (ret != 0) {
+		ath_dbg(common, XMIT, "Tx failed\n");
+>>>>>>> refs/remotes/origin/master
 		goto clear_slot;
 	}
 
@@ -1008,7 +1204,11 @@ static int ath9k_htc_start(struct ieee80211_hw *hw)
 	struct ath9k_htc_priv *priv = hw->priv;
 	struct ath_hw *ah = priv->ah;
 	struct ath_common *common = ath9k_hw_common(ah);
+<<<<<<< HEAD
 	struct ieee80211_channel *curchan = hw->conf.channel;
+=======
+	struct ieee80211_channel *curchan = hw->conf.chandef.chan;
+>>>>>>> refs/remotes/origin/master
 	struct ath9k_channel *init_channel;
 	int ret = 0;
 	enum htc_phymode mode;
@@ -1018,10 +1218,14 @@ static int ath9k_htc_start(struct ieee80211_hw *hw)
 	mutex_lock(&priv->mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CONFIG,
 =======
 	ath_dbg(common, CONFIG,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CONFIG,
+>>>>>>> refs/remotes/origin/master
 		"Starting driver with initial channel: %d MHz\n",
 		curchan->center_freq);
 
@@ -1030,12 +1234,17 @@ static int ath9k_htc_start(struct ieee80211_hw *hw)
 	WMI_CMD(WMI_FLUSH_RECV_CMDID);
 
 	/* setup initial channel */
+<<<<<<< HEAD
 	init_channel = ath9k_cmn_get_curchannel(hw, ah);
 
 <<<<<<< HEAD
 	ath9k_hw_htc_resetinit(ah);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_channel = ath9k_cmn_get_channel(hw, ah, &hw->conf.chandef);
+
+>>>>>>> refs/remotes/origin/master
 	ret = ath9k_hw_reset(ah, init_channel, ah->caldata, false);
 	if (ret) {
 		ath_err(common,
@@ -1059,6 +1268,7 @@ static int ath9k_htc_start(struct ieee80211_hw *hw)
 	ret = ath9k_htc_update_cap_target(priv, 0);
 	if (ret)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CONFIG,
 =======
 		ath_dbg(common, CONFIG,
@@ -1066,6 +1276,12 @@ static int ath9k_htc_start(struct ieee80211_hw *hw)
 			"Failed to update capability in target\n");
 
 	priv->op_flags &= ~OP_INVALID;
+=======
+		ath_dbg(common, CONFIG,
+			"Failed to update capability in target\n");
+
+	clear_bit(OP_INVALID, &priv->op_flags);
+>>>>>>> refs/remotes/origin/master
 	htc_start(priv->htc);
 
 	spin_lock_bh(&priv->tx.tx_lock);
@@ -1078,6 +1294,7 @@ static int ath9k_htc_start(struct ieee80211_hw *hw)
 		  jiffies + msecs_to_jiffies(ATH9K_HTC_TX_CLEANUP_INTERVAL));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ah->btcoex_hw.scheme == ATH_BTCOEX_CFG_3WIRE) {
 		ath9k_hw_btcoex_set_weight(ah, AR_BT_COEX_WGHT,
 					   AR_STOMP_LOW_WLAN_WGHT);
@@ -1088,6 +1305,10 @@ static int ath9k_htc_start(struct ieee80211_hw *hw)
 	ath9k_htc_start_btcoex(priv);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath9k_htc_start_btcoex(priv);
+
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&priv->mutex);
 
 	return ret;
@@ -1103,12 +1324,17 @@ static void ath9k_htc_stop(struct ieee80211_hw *hw)
 
 	mutex_lock(&priv->mutex);
 
+<<<<<<< HEAD
 	if (priv->op_flags & OP_INVALID) {
 <<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_ANY, "Device not present\n");
 =======
 		ath_dbg(common, ANY, "Device not present\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_bit(OP_INVALID, &priv->op_flags)) {
+		ath_dbg(common, ANY, "Device not present\n");
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&priv->mutex);
 		return;
 	}
@@ -1139,6 +1365,7 @@ static void ath9k_htc_stop(struct ieee80211_hw *hw)
 	mutex_lock(&priv->mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ah->btcoex_hw.enabled) {
 		ath9k_hw_btcoex_disable(ah);
 		if (ah->btcoex_hw.scheme == ATH_BTCOEX_CFG_3WIRE)
@@ -1147,6 +1374,9 @@ static void ath9k_htc_stop(struct ieee80211_hw *hw)
 =======
 	ath9k_htc_stop_btcoex(priv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath9k_htc_stop_btcoex(priv);
+>>>>>>> refs/remotes/origin/master
 
 	/* Remove a monitor interface if it's present. */
 	if (priv->ah->is_monitoring)
@@ -1157,6 +1387,7 @@ static void ath9k_htc_stop(struct ieee80211_hw *hw)
 	ath9k_htc_ps_restore(priv);
 	ath9k_htc_setpower(priv, ATH9K_PM_FULL_SLEEP);
 
+<<<<<<< HEAD
 	priv->op_flags |= OP_INVALID;
 
 <<<<<<< HEAD
@@ -1164,6 +1395,11 @@ static void ath9k_htc_stop(struct ieee80211_hw *hw)
 =======
 	ath_dbg(common, CONFIG, "Driver halt\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_bit(OP_INVALID, &priv->op_flags);
+
+	ath_dbg(common, CONFIG, "Driver halt\n");
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&priv->mutex);
 }
 
@@ -1179,6 +1415,7 @@ static int ath9k_htc_add_interface(struct ieee80211_hw *hw,
 
 	mutex_lock(&priv->mutex);
 
+<<<<<<< HEAD
 	if (priv->nvifs >= ATH9K_HTC_MAX_VIF) {
 		mutex_unlock(&priv->mutex);
 		return -ENOBUFS;
@@ -1199,6 +1436,8 @@ static int ath9k_htc_add_interface(struct ieee80211_hw *hw,
 		return -ENOBUFS;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ath9k_htc_ps_wakeup(priv);
 	memset(&hvif, 0, sizeof(struct ath9k_htc_target_vif));
 	memcpy(&hvif.myaddr, vif->addr, ETH_ALEN);
@@ -1213,6 +1452,12 @@ static int ath9k_htc_add_interface(struct ieee80211_hw *hw,
 	case NL80211_IFTYPE_AP:
 		hvif.opmode = HTC_M_HOSTAP;
 		break;
+<<<<<<< HEAD
+=======
+	case NL80211_IFTYPE_MESH_POINT:
+		hvif.opmode = HTC_M_WDS;	/* close enough */
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		ath_err(common,
 			"Interface type %d not yet supported\n", vif->type);
@@ -1238,10 +1483,14 @@ static int ath9k_htc_add_interface(struct ieee80211_hw *hw,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath9k_htc_set_mac_bssid_mask(priv, vif);
 =======
 	ath9k_htc_set_bssid_mask(priv, vif);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath9k_htc_set_mac_bssid_mask(priv, vif);
+>>>>>>> refs/remotes/origin/master
 
 	priv->vif_slot |= (1 << avp->index);
 	priv->nvifs++;
@@ -1249,12 +1498,17 @@ static int ath9k_htc_add_interface(struct ieee80211_hw *hw,
 	INC_VIF(priv, vif->type);
 
 	if ((vif->type == NL80211_IFTYPE_AP) ||
+<<<<<<< HEAD
+=======
+	    (vif->type == NL80211_IFTYPE_MESH_POINT) ||
+>>>>>>> refs/remotes/origin/master
 	    (vif->type == NL80211_IFTYPE_ADHOC))
 		ath9k_htc_assign_bslot(priv, vif);
 
 	ath9k_htc_set_opmode(priv);
 
 	if ((priv->ah->opmode == NL80211_IFTYPE_AP) &&
+<<<<<<< HEAD
 	    !(priv->op_flags & OP_ANI_RUNNING)) {
 		ath9k_hw_set_tsfadjust(priv->ah, 1);
 		ath9k_htc_start_ani(priv);
@@ -1267,6 +1521,15 @@ static int ath9k_htc_add_interface(struct ieee80211_hw *hw,
 	ath_dbg(common, CONFIG, "Attach a VIF of type: %d at idx: %d\n",
 		vif->type, avp->index);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    !test_bit(OP_ANI_RUNNING, &priv->op_flags)) {
+		ath9k_hw_set_tsfadjust(priv->ah, true);
+		ath9k_htc_start_ani(priv);
+	}
+
+	ath_dbg(common, CONFIG, "Attach a VIF of type: %d at idx: %d\n",
+		vif->type, avp->index);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	ath9k_htc_ps_restore(priv);
@@ -1304,33 +1567,51 @@ static void ath9k_htc_remove_interface(struct ieee80211_hw *hw,
 	DEC_VIF(priv, vif->type);
 
 	if ((vif->type == NL80211_IFTYPE_AP) ||
+<<<<<<< HEAD
+=======
+	     vif->type == NL80211_IFTYPE_MESH_POINT ||
+>>>>>>> refs/remotes/origin/master
 	    (vif->type == NL80211_IFTYPE_ADHOC))
 		ath9k_htc_remove_bslot(priv, vif);
 
 	ath9k_htc_set_opmode(priv);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath9k_htc_set_mac_bssid_mask(priv, vif);
 =======
 	ath9k_htc_set_bssid_mask(priv, vif);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath9k_htc_set_mac_bssid_mask(priv, vif);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Stop ANI only if there are no associated station interfaces.
 	 */
 	if ((vif->type == NL80211_IFTYPE_AP) && (priv->num_ap_vif == 0)) {
 		priv->rearm_ani = false;
+<<<<<<< HEAD
 		ieee80211_iterate_active_interfaces_atomic(priv->hw,
 						   ath9k_htc_vif_iter, priv);
+=======
+		ieee80211_iterate_active_interfaces_atomic(
+			priv->hw, IEEE80211_IFACE_ITER_RESUME_ALL,
+			ath9k_htc_vif_iter, priv);
+>>>>>>> refs/remotes/origin/master
 		if (!priv->rearm_ani)
 			ath9k_htc_stop_ani(priv);
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CONFIG, "Detach Interface at idx: %d\n", avp->index);
 =======
 	ath_dbg(common, CONFIG, "Detach Interface at idx: %d\n", avp->index);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CONFIG, "Detach Interface at idx: %d\n", avp->index);
+>>>>>>> refs/remotes/origin/master
 
 	ath9k_htc_ps_restore(priv);
 	mutex_unlock(&priv->mutex);
@@ -1341,6 +1622,7 @@ static int ath9k_htc_config(struct ieee80211_hw *hw, u32 changed)
 	struct ath9k_htc_priv *priv = hw->priv;
 	struct ath_common *common = ath9k_hw_common(priv->ah);
 	struct ieee80211_conf *conf = &hw->conf;
+<<<<<<< HEAD
 
 	mutex_lock(&priv->mutex);
 
@@ -1364,6 +1646,22 @@ static int ath9k_htc_config(struct ieee80211_hw *hw, u32 changed)
 			ath9k_htc_setpower(priv, ATH9K_PM_AWAKE);
 			ath9k_htc_radio_enable(hw);
 		}
+=======
+	bool chip_reset = false;
+	int ret = 0;
+
+	mutex_lock(&priv->mutex);
+	ath9k_htc_ps_wakeup(priv);
+
+	if (changed & IEEE80211_CONF_CHANGE_IDLE) {
+		mutex_lock(&priv->htc_pm_lock);
+
+		priv->ps_idle = !!(conf->flags & IEEE80211_CONF_IDLE);
+		if (!priv->ps_idle)
+			chip_reset = true;
+
+		mutex_unlock(&priv->htc_pm_lock);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1378,6 +1676,7 @@ static int ath9k_htc_config(struct ieee80211_hw *hw, u32 changed)
 			ath9k_htc_remove_monitor_interface(priv);
 	}
 
+<<<<<<< HEAD
 	if (changed & IEEE80211_CONF_CHANGE_CHANNEL) {
 		struct ieee80211_channel *curchan = hw->conf.channel;
 		int pos = curchan->hw_value;
@@ -1397,6 +1696,20 @@ static int ath9k_htc_config(struct ieee80211_hw *hw, u32 changed)
 			ath_err(common, "Unable to set channel\n");
 			mutex_unlock(&priv->mutex);
 			return -EINVAL;
+=======
+	if ((changed & IEEE80211_CONF_CHANGE_CHANNEL) || chip_reset) {
+		struct ieee80211_channel *curchan = hw->conf.chandef.chan;
+		int pos = curchan->hw_value;
+
+		ath_dbg(common, CONFIG, "Set channel: %d MHz\n",
+			curchan->center_freq);
+
+		ath9k_cmn_get_channel(hw, priv->ah, &hw->conf.chandef);
+		if (ath9k_htc_set_channel(priv, hw, &priv->ah->channels[pos]) < 0) {
+			ath_err(common, "Unable to set channel\n");
+			ret = -EINVAL;
+			goto out;
+>>>>>>> refs/remotes/origin/master
 		}
 
 	}
@@ -1418,6 +1731,7 @@ static int ath9k_htc_config(struct ieee80211_hw *hw, u32 changed)
 				       priv->txpowlimit, &priv->curtxpow);
 	}
 
+<<<<<<< HEAD
 	if (changed & IEEE80211_CONF_CHANGE_IDLE) {
 		mutex_lock(&priv->htc_pm_lock);
 		if (!priv->ps_idle) {
@@ -1438,6 +1752,12 @@ static int ath9k_htc_config(struct ieee80211_hw *hw, u32 changed)
 out:
 	mutex_unlock(&priv->mutex);
 	return 0;
+=======
+out:
+	ath9k_htc_ps_restore(priv);
+	mutex_unlock(&priv->mutex);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 #define SUPPORTED_FILTERS			\
@@ -1460,6 +1780,7 @@ static void ath9k_htc_configure_filter(struct ieee80211_hw *hw,
 
 	mutex_lock(&priv->mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath9k_htc_ps_wakeup(priv);
 
 	changed_flags &= SUPPORTED_FILTERS;
@@ -1470,6 +1791,12 @@ static void ath9k_htc_configure_filter(struct ieee80211_hw *hw,
 	*total_flags &= SUPPORTED_FILTERS;
 
 	if (priv->op_flags & OP_INVALID) {
+=======
+	changed_flags &= SUPPORTED_FILTERS;
+	*total_flags &= SUPPORTED_FILTERS;
+
+	if (test_bit(OP_INVALID, &priv->op_flags)) {
+>>>>>>> refs/remotes/origin/master
 		ath_dbg(ath9k_hw_common(priv->ah), ANY,
 			"Unable to configure filter on invalid state\n");
 		mutex_unlock(&priv->mutex);
@@ -1477,11 +1804,15 @@ static void ath9k_htc_configure_filter(struct ieee80211_hw *hw,
 	}
 	ath9k_htc_ps_wakeup(priv);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	priv->rxfilter = *total_flags;
 	rfilt = ath9k_htc_calcrxfilter(priv);
 	ath9k_hw_setrxfilter(priv->ah, rfilt);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ath_dbg(ath9k_hw_common(priv->ah), ATH_DBG_CONFIG,
 		"Set HW RX filter: 0x%x\n", rfilt);
@@ -1489,6 +1820,10 @@ static void ath9k_htc_configure_filter(struct ieee80211_hw *hw,
 	ath_dbg(ath9k_hw_common(priv->ah), CONFIG, "Set HW RX filter: 0x%x\n",
 		rfilt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(ath9k_hw_common(priv->ah), CONFIG, "Set HW RX filter: 0x%x\n",
+		rfilt);
+>>>>>>> refs/remotes/origin/master
 
 	ath9k_htc_ps_restore(priv);
 	mutex_unlock(&priv->mutex);
@@ -1532,11 +1867,44 @@ static int ath9k_htc_sta_remove(struct ieee80211_hw *hw,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ath9k_htc_conf_tx(struct ieee80211_hw *hw, u16 queue,
 =======
 static int ath9k_htc_conf_tx(struct ieee80211_hw *hw,
 			     struct ieee80211_vif *vif, u16 queue,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ath9k_htc_sta_rc_update(struct ieee80211_hw *hw,
+				    struct ieee80211_vif *vif,
+				    struct ieee80211_sta *sta, u32 changed)
+{
+	struct ath9k_htc_priv *priv = hw->priv;
+	struct ath_common *common = ath9k_hw_common(priv->ah);
+	struct ath9k_htc_target_rate trate;
+
+	mutex_lock(&priv->mutex);
+	ath9k_htc_ps_wakeup(priv);
+
+	if (changed & IEEE80211_RC_SUPP_RATES_CHANGED) {
+		memset(&trate, 0, sizeof(struct ath9k_htc_target_rate));
+		ath9k_htc_setup_rate(priv, sta, &trate);
+		if (!ath9k_htc_send_rate_cmd(priv, &trate))
+			ath_dbg(common, CONFIG,
+				"Supported rates for sta: %pM updated, rate caps: 0x%X\n",
+				sta->addr, be32_to_cpu(trate.capflags));
+		else
+			ath_dbg(common, CONFIG,
+				"Unable to update supported rates for sta: %pM\n",
+				sta->addr);
+	}
+
+	ath9k_htc_ps_restore(priv);
+	mutex_unlock(&priv->mutex);
+}
+
+static int ath9k_htc_conf_tx(struct ieee80211_hw *hw,
+			     struct ieee80211_vif *vif, u16 queue,
+>>>>>>> refs/remotes/origin/master
 			     const struct ieee80211_tx_queue_params *params)
 {
 	struct ath9k_htc_priv *priv = hw->priv;
@@ -1544,7 +1912,11 @@ static int ath9k_htc_conf_tx(struct ieee80211_hw *hw,
 	struct ath9k_tx_queue_info qi;
 	int ret = 0, qnum;
 
+<<<<<<< HEAD
 	if (queue >= WME_NUM_AC)
+=======
+	if (queue >= IEEE80211_NUM_ACS)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	mutex_lock(&priv->mutex);
@@ -1555,6 +1927,7 @@ static int ath9k_htc_conf_tx(struct ieee80211_hw *hw,
 	qi.tqi_aifs = params->aifs;
 	qi.tqi_cwmin = params->cw_min;
 	qi.tqi_cwmax = params->cw_max;
+<<<<<<< HEAD
 	qi.tqi_burstTime = params->txop;
 
 	qnum = get_hw_qnum(queue, priv->hwq_map);
@@ -1564,6 +1937,13 @@ static int ath9k_htc_conf_tx(struct ieee80211_hw *hw,
 =======
 	ath_dbg(common, CONFIG,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	qi.tqi_burstTime = params->txop * 32;
+
+	qnum = get_hw_qnum(queue, priv->hwq_map);
+
+	ath_dbg(common, CONFIG,
+>>>>>>> refs/remotes/origin/master
 		"Configure tx [queue/hwq] [%d/%d],  aifs: %d, cw_min: %d, cw_max: %d, txop: %d\n",
 		queue, qnum, params->aifs, params->cw_min,
 		params->cw_max, params->txop);
@@ -1575,7 +1955,11 @@ static int ath9k_htc_conf_tx(struct ieee80211_hw *hw,
 	}
 
 	if ((priv->ah->opmode == NL80211_IFTYPE_ADHOC) &&
+<<<<<<< HEAD
 	    (qnum == priv->hwq_map[WME_AC_BE]))
+=======
+	    (qnum == priv->hwq_map[IEEE80211_AC_BE]))
+>>>>>>> refs/remotes/origin/master
 		    ath9k_htc_beaconq_config(priv);
 out:
 	ath9k_htc_ps_restore(priv);
@@ -1598,9 +1982,12 @@ static int ath9k_htc_set_key(struct ieee80211_hw *hw,
 		return -ENOSPC;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&priv->mutex);
 	ath_dbg(common, ATH_DBG_CONFIG, "Set HW Key\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((vif->type == NL80211_IFTYPE_ADHOC ||
 	     vif->type == NL80211_IFTYPE_MESH_POINT) &&
 	    (key->cipher == WLAN_CIPHER_SUITE_TKIP ||
@@ -1618,7 +2005,10 @@ static int ath9k_htc_set_key(struct ieee80211_hw *hw,
 
 	mutex_lock(&priv->mutex);
 	ath_dbg(common, CONFIG, "Set HW Key\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ath9k_htc_ps_wakeup(priv);
 
 	switch (cmd) {
@@ -1632,7 +2022,11 @@ static int ath9k_htc_set_key(struct ieee80211_hw *hw,
 				key->flags |= IEEE80211_KEY_FLAG_GENERATE_MMIC;
 			if (priv->ah->sw_mgmt_crypto &&
 			    key->cipher == WLAN_CIPHER_SUITE_CCMP)
+<<<<<<< HEAD
 				key->flags |= IEEE80211_KEY_FLAG_SW_MGMT;
+=======
+				key->flags |= IEEE80211_KEY_FLAG_SW_MGMT_TX;
+>>>>>>> refs/remotes/origin/master
 			ret = 0;
 		}
 		break;
@@ -1655,11 +2049,15 @@ static void ath9k_htc_set_bssid(struct ath9k_htc_priv *priv)
 
 	ath9k_hw_write_associd(priv->ah);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CONFIG,
 		"BSSID: %pM aid: 0x%x\n",
 =======
 	ath_dbg(common, CONFIG, "BSSID: %pM aid: 0x%x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CONFIG, "BSSID: %pM aid: 0x%x\n",
+>>>>>>> refs/remotes/origin/master
 		common->curbssid, common->curaid);
 }
 
@@ -1678,8 +2076,14 @@ static void ath9k_htc_bss_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
 static void ath9k_htc_choose_set_bssid(struct ath9k_htc_priv *priv)
 {
 	if (priv->num_sta_assoc_vif == 1) {
+<<<<<<< HEAD
 		ieee80211_iterate_active_interfaces_atomic(priv->hw,
 							   ath9k_htc_bss_iter, priv);
+=======
+		ieee80211_iterate_active_interfaces_atomic(
+			priv->hw, IEEE80211_IFACE_ITER_RESUME_ALL,
+			ath9k_htc_bss_iter, priv);
+>>>>>>> refs/remotes/origin/master
 		ath9k_htc_set_bssid(priv);
 	}
 }
@@ -1698,10 +2102,14 @@ static void ath9k_htc_bss_info_changed(struct ieee80211_hw *hw,
 
 	if (changed & BSS_CHANGED_ASSOC) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CONFIG, "BSS Changed ASSOC %d\n",
 =======
 		ath_dbg(common, CONFIG, "BSS Changed ASSOC %d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, CONFIG, "BSS Changed ASSOC %d\n",
+>>>>>>> refs/remotes/origin/master
 			bss_conf->assoc);
 
 		bss_conf->assoc ?
@@ -1709,9 +2117,13 @@ static void ath9k_htc_bss_info_changed(struct ieee80211_hw *hw,
 
 		if (priv->ah->opmode == NL80211_IFTYPE_STATION) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			ath9k_htc_choose_set_bssid(priv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath9k_htc_choose_set_bssid(priv);
+>>>>>>> refs/remotes/origin/master
 			if (bss_conf->assoc && (priv->num_sta_assoc_vif == 1))
 				ath9k_htc_start_ani(priv);
 			else if (priv->num_sta_assoc_vif == 0)
@@ -1720,23 +2132,31 @@ static void ath9k_htc_bss_info_changed(struct ieee80211_hw *hw,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (changed & BSS_CHANGED_BSSID) {
 =======
 	if (changed & BSS_CHANGED_IBSS) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (changed & BSS_CHANGED_IBSS) {
+>>>>>>> refs/remotes/origin/master
 		if (priv->ah->opmode == NL80211_IFTYPE_ADHOC) {
 			common->curaid = bss_conf->aid;
 			memcpy(common->curbssid, bss_conf->bssid, ETH_ALEN);
 			ath9k_htc_set_bssid(priv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else if (priv->ah->opmode == NL80211_IFTYPE_STATION) {
 			ath9k_htc_choose_set_bssid(priv);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	if ((changed & BSS_CHANGED_BEACON_ENABLED) && bss_conf->enable_beacon) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CONFIG,
 			"Beacon enabled for BSS: %pM\n", bss_conf->bssid);
@@ -1746,12 +2166,19 @@ static void ath9k_htc_bss_info_changed(struct ieee80211_hw *hw,
 >>>>>>> refs/remotes/origin/cm-10.0
 		ath9k_htc_set_tsfadjust(priv, vif);
 		priv->op_flags |= OP_ENABLE_BEACON;
+=======
+		ath_dbg(common, CONFIG, "Beacon enabled for BSS: %pM\n",
+			bss_conf->bssid);
+		ath9k_htc_set_tsfadjust(priv, vif);
+		set_bit(OP_ENABLE_BEACON, &priv->op_flags);
+>>>>>>> refs/remotes/origin/master
 		ath9k_htc_beacon_config(priv, vif);
 	}
 
 	if ((changed & BSS_CHANGED_BEACON_ENABLED) && !bss_conf->enable_beacon) {
 		/*
 		 * Disable SWBA interrupt only if there are no
+<<<<<<< HEAD
 		 * AP/IBSS interfaces.
 		 */
 		if ((priv->num_ap_vif <= 1) || priv->num_ibss_vif) {
@@ -1763,12 +2190,23 @@ static void ath9k_htc_bss_info_changed(struct ieee80211_hw *hw,
 				"Beacon disabled for BSS: %pM\n",
 				bss_conf->bssid);
 			priv->op_flags &= ~OP_ENABLE_BEACON;
+=======
+		 * concurrent AP/mesh or IBSS interfaces.
+		 */
+		if ((priv->num_ap_vif + priv->num_mbss_vif <= 1) ||
+		     priv->num_ibss_vif) {
+			ath_dbg(common, CONFIG,
+				"Beacon disabled for BSS: %pM\n",
+				bss_conf->bssid);
+			clear_bit(OP_ENABLE_BEACON, &priv->op_flags);
+>>>>>>> refs/remotes/origin/master
 			ath9k_htc_beacon_config(priv, vif);
 		}
 	}
 
 	if (changed & BSS_CHANGED_BEACON_INT) {
 		/*
+<<<<<<< HEAD
 		 * Reset the HW TSF for the first AP interface.
 		 */
 		if ((priv->ah->opmode == NL80211_IFTYPE_AP) &&
@@ -1782,6 +2220,20 @@ static void ath9k_htc_bss_info_changed(struct ieee80211_hw *hw,
 =======
 		ath_dbg(common, CONFIG,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * Reset the HW TSF for the first AP or mesh interface.
+		 */
+		if (priv->nvifs == 1 &&
+		    ((priv->ah->opmode == NL80211_IFTYPE_AP &&
+		      vif->type == NL80211_IFTYPE_AP &&
+		      priv->num_ap_vif == 1) ||
+		    (priv->ah->opmode == NL80211_IFTYPE_MESH_POINT &&
+		      vif->type == NL80211_IFTYPE_MESH_POINT &&
+		      priv->num_mbss_vif == 1))) {
+			set_bit(OP_TSF_RESET, &priv->op_flags);
+		}
+		ath_dbg(common, CONFIG,
+>>>>>>> refs/remotes/origin/master
 			"Beacon interval changed for BSS: %pM\n",
 			bss_conf->bssid);
 		ath9k_htc_beacon_config(priv, vif);
@@ -1804,11 +2256,16 @@ static void ath9k_htc_bss_info_changed(struct ieee80211_hw *hw,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u64 ath9k_htc_get_tsf(struct ieee80211_hw *hw)
 =======
 static u64 ath9k_htc_get_tsf(struct ieee80211_hw *hw,
 			     struct ieee80211_vif *vif)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u64 ath9k_htc_get_tsf(struct ieee80211_hw *hw,
+			     struct ieee80211_vif *vif)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ath9k_htc_priv *priv = hw->priv;
 	u64 tsf;
@@ -1823,11 +2280,16 @@ static u64 ath9k_htc_get_tsf(struct ieee80211_hw *hw,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ath9k_htc_set_tsf(struct ieee80211_hw *hw, u64 tsf)
 =======
 static void ath9k_htc_set_tsf(struct ieee80211_hw *hw,
 			      struct ieee80211_vif *vif, u64 tsf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ath9k_htc_set_tsf(struct ieee80211_hw *hw,
+			      struct ieee80211_vif *vif, u64 tsf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ath9k_htc_priv *priv = hw->priv;
 
@@ -1839,11 +2301,16 @@ static void ath9k_htc_set_tsf(struct ieee80211_hw *hw,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ath9k_htc_reset_tsf(struct ieee80211_hw *hw)
 =======
 static void ath9k_htc_reset_tsf(struct ieee80211_hw *hw,
 				struct ieee80211_vif *vif)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ath9k_htc_reset_tsf(struct ieee80211_hw *hw,
+				struct ieee80211_vif *vif)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ath9k_htc_priv *priv = hw->priv;
 
@@ -1877,7 +2344,13 @@ static int ath9k_htc_ampdu_action(struct ieee80211_hw *hw,
 		if (!ret)
 			ieee80211_start_tx_ba_cb_irqsafe(vif, sta->addr, tid);
 		break;
+<<<<<<< HEAD
 	case IEEE80211_AMPDU_TX_STOP:
+=======
+	case IEEE80211_AMPDU_TX_STOP_CONT:
+	case IEEE80211_AMPDU_TX_STOP_FLUSH:
+	case IEEE80211_AMPDU_TX_STOP_FLUSH_CONT:
+>>>>>>> refs/remotes/origin/master
 		ath9k_htc_tx_aggr_oper(priv, vif, sta, action, tid);
 		ieee80211_stop_tx_ba_cb_irqsafe(vif, sta->addr, tid);
 		break;
@@ -1903,7 +2376,11 @@ static void ath9k_htc_sw_scan_start(struct ieee80211_hw *hw)
 
 	mutex_lock(&priv->mutex);
 	spin_lock_bh(&priv->beacon_lock);
+<<<<<<< HEAD
 	priv->op_flags |= OP_SCANNING;
+=======
+	set_bit(OP_SCANNING, &priv->op_flags);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_bh(&priv->beacon_lock);
 	cancel_work_sync(&priv->ps_work);
 	ath9k_htc_stop_ani(priv);
@@ -1916,7 +2393,11 @@ static void ath9k_htc_sw_scan_complete(struct ieee80211_hw *hw)
 
 	mutex_lock(&priv->mutex);
 	spin_lock_bh(&priv->beacon_lock);
+<<<<<<< HEAD
 	priv->op_flags &= ~OP_SCANNING;
+=======
+	clear_bit(OP_SCANNING, &priv->op_flags);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_bh(&priv->beacon_lock);
 	ath9k_htc_ps_wakeup(priv);
 	ath9k_htc_vif_reconfig(priv);
@@ -1984,11 +2465,15 @@ static int ath9k_htc_set_bitrate_mask(struct ieee80211_hw *hw,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CONFIG,
 		"Set bitrate masks: 0x%x, 0x%x\n",
 =======
 	ath_dbg(common, CONFIG, "Set bitrate masks: 0x%x, 0x%x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CONFIG, "Set bitrate masks: 0x%x, 0x%x\n",
+>>>>>>> refs/remotes/origin/master
 		mask->control[IEEE80211_BAND_2GHZ].legacy,
 		mask->control[IEEE80211_BAND_5GHZ].legacy);
 out:
@@ -1996,7 +2481,10 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int ath9k_htc_get_stats(struct ieee80211_hw *hw,
 			       struct ieee80211_low_level_stats *stats)
@@ -2013,7 +2501,47 @@ static int ath9k_htc_get_stats(struct ieee80211_hw *hw,
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct base_eep_header *ath9k_htc_get_eeprom_base(struct ath9k_htc_priv *priv)
+{
+	struct base_eep_header *pBase = NULL;
+	/*
+	 * This can be done since all the 3 EEPROM families have the
+	 * same base header upto a certain point, and we are interested in
+	 * the data only upto that point.
+	 */
+
+	if (AR_SREV_9271(priv->ah))
+		pBase = (struct base_eep_header *)
+			&priv->ah->eeprom.map4k.baseEepHeader;
+	else if (priv->ah->hw_version.usbdev == AR9280_USB)
+		pBase = (struct base_eep_header *)
+			&priv->ah->eeprom.def.baseEepHeader;
+	else if (priv->ah->hw_version.usbdev == AR9287_USB)
+		pBase = (struct base_eep_header *)
+			&priv->ah->eeprom.map9287.baseEepHeader;
+	return pBase;
+}
+
+
+static int ath9k_htc_get_antenna(struct ieee80211_hw *hw, u32 *tx_ant,
+				 u32 *rx_ant)
+{
+	struct ath9k_htc_priv *priv = hw->priv;
+	struct base_eep_header *pBase = ath9k_htc_get_eeprom_base(priv);
+	if (pBase) {
+		*tx_ant = pBase->txMask;
+		*rx_ant = pBase->rxMask;
+	} else {
+		*tx_ant = 0;
+		*rx_ant = 0;
+	}
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 struct ieee80211_ops ath9k_htc_ops = {
 	.tx                 = ath9k_htc_tx,
 	.start              = ath9k_htc_start,
@@ -2025,6 +2553,10 @@ struct ieee80211_ops ath9k_htc_ops = {
 	.sta_add            = ath9k_htc_sta_add,
 	.sta_remove         = ath9k_htc_sta_remove,
 	.conf_tx            = ath9k_htc_conf_tx,
+<<<<<<< HEAD
+=======
+	.sta_rc_update      = ath9k_htc_sta_rc_update,
+>>>>>>> refs/remotes/origin/master
 	.bss_info_changed   = ath9k_htc_bss_info_changed,
 	.set_key            = ath9k_htc_set_key,
 	.get_tsf            = ath9k_htc_get_tsf,
@@ -2038,7 +2570,18 @@ struct ieee80211_ops ath9k_htc_ops = {
 	.set_coverage_class = ath9k_htc_set_coverage_class,
 	.set_bitrate_mask   = ath9k_htc_set_bitrate_mask,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.get_stats	    = ath9k_htc_get_stats,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.get_stats	    = ath9k_htc_get_stats,
+	.get_antenna	    = ath9k_htc_get_antenna,
+
+#ifdef CONFIG_ATH9K_HTC_DEBUGFS
+	.get_et_sset_count  = ath9k_htc_get_et_sset_count,
+	.get_et_stats       = ath9k_htc_get_et_stats,
+	.get_et_strings     = ath9k_htc_get_et_strings,
+#endif
+>>>>>>> refs/remotes/origin/master
 };

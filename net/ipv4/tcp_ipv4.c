@@ -51,9 +51,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) "TCP: " fmt
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) "TCP: " fmt
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/bottom_half.h>
 #include <linux/types.h>
@@ -78,9 +82,14 @@
 #include <net/netdma.h>
 #include <net/secure_seq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <net/tcp_memcontrol.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/tcp_memcontrol.h>
+#include <net/busy_poll.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/inet.h>
 #include <linux/ipv6.h>
@@ -98,6 +107,7 @@ EXPORT_SYMBOL(sysctl_tcp_low_latency);
 
 #ifdef CONFIG_TCP_MD5SIG
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct tcp_md5sig_key *tcp_v4_md5_do_lookup(struct sock *sk,
 						   __be32 addr);
 static int tcp_v4_md5_hash_hdr(char *md5_hash, struct tcp_md5sig_key *key,
@@ -112,16 +122,24 @@ struct tcp_md5sig_key *tcp_v4_md5_do_lookup(struct sock *sk, __be32 addr)
 static int tcp_v4_md5_hash_hdr(char *md5_hash, const struct tcp_md5sig_key *key,
 			       __be32 daddr, __be32 saddr, const struct tcphdr *th);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int tcp_v4_md5_hash_hdr(char *md5_hash, const struct tcp_md5sig_key *key,
+			       __be32 daddr, __be32 saddr, const struct tcphdr *th);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 struct inet_hashinfo tcp_hashinfo;
 EXPORT_SYMBOL(tcp_hashinfo);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline __u32 tcp_v4_init_sequence(struct sk_buff *skb)
 =======
 static inline __u32 tcp_v4_init_sequence(const struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline __u32 tcp_v4_init_sequence(const struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	return secure_tcp_sequence_number(ip_hdr(skb)->daddr,
 					  ip_hdr(skb)->saddr,
@@ -199,7 +217,11 @@ int tcp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 	if (IS_ERR(rt)) {
 		err = PTR_ERR(rt);
 		if (err == -ENETUNREACH)
+<<<<<<< HEAD
 			IP_INC_STATS_BH(sock_net(sk), IPSTATS_MIB_OUTNOROUTES);
+=======
+			IP_INC_STATS(sock_net(sk), IPSTATS_MIB_OUTNOROUTES);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 
@@ -219,6 +241,7 @@ int tcp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 		/* Reset inherited state */
 		tp->rx_opt.ts_recent	   = 0;
 		tp->rx_opt.ts_recent_stamp = 0;
+<<<<<<< HEAD
 		tp->write_seq		   = 0;
 	}
 
@@ -239,6 +262,15 @@ int tcp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 			}
 		}
 	}
+=======
+		if (likely(!tp->repair))
+			tp->write_seq	   = 0;
+	}
+
+	if (tcp_death_row.sysctl_tw_recycle &&
+	    !tp->rx_opt.ts_recent_stamp && fl4->daddr == daddr)
+		tcp_fetch_timewait_stamp(sk, &rt->dst);
+>>>>>>> refs/remotes/origin/master
 
 	inet->inet_dport = usin->sin_port;
 	inet->inet_daddr = daddr;
@@ -270,7 +302,11 @@ int tcp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 	sk->sk_gso_type = SKB_GSO_TCPV4;
 	sk_setup_caps(sk, &rt->dst);
 
+<<<<<<< HEAD
 	if (!tp->write_seq)
+=======
+	if (!tp->write_seq && likely(!tp->repair))
+>>>>>>> refs/remotes/origin/master
 		tp->write_seq = secure_tcp_sequence_number(inet->inet_saddr,
 							   inet->inet_daddr,
 							   inet->inet_sport,
@@ -279,6 +315,10 @@ int tcp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 	inet->inet_id = tp->write_seq ^ jiffies;
 
 	err = tcp_connect(sk);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	rt = NULL;
 	if (err)
 		goto failure;
@@ -299,6 +339,7 @@ failure:
 EXPORT_SYMBOL(tcp_v4_connect);
 
 /*
+<<<<<<< HEAD
  * This routine does path mtu discovery as defined in RFC1191.
  */
 static void do_pmtu_discovery(struct sock *sk, const struct iphdr *iph, u32 mtu)
@@ -324,6 +365,22 @@ static void do_pmtu_discovery(struct sock *sk, const struct iphdr *iph, u32 mtu)
 
 	dst->ops->update_pmtu(dst, mtu);
 
+=======
+ * This routine reacts to ICMP_FRAG_NEEDED mtu indications as defined in RFC1191.
+ * It can be called through tcp_release_cb() if socket was owned by user
+ * at the time tcp_v4_err() was called to handle ICMP message.
+ */
+static void tcp_v4_mtu_reduced(struct sock *sk)
+{
+	struct dst_entry *dst;
+	struct inet_sock *inet = inet_sk(sk);
+	u32 mtu = tcp_sk(sk)->mtu_info;
+
+	dst = inet_csk_update_pmtu(sk, mtu);
+	if (!dst)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	/* Something is about to be wrong... Remember soft error
 	 * for the case, if this connection will not able to recover.
 	 */
@@ -333,6 +390,10 @@ static void do_pmtu_discovery(struct sock *sk, const struct iphdr *iph, u32 mtu)
 	mtu = dst_mtu(dst);
 
 	if (inet->pmtudisc != IP_PMTUDISC_DONT &&
+<<<<<<< HEAD
+=======
+	    ip_sk_accept_pmtu(sk) &&
+>>>>>>> refs/remotes/origin/master
 	    inet_csk(sk)->icsk_pmtu_cookie > mtu) {
 		tcp_sync_mss(sk, mtu);
 
@@ -345,6 +406,17 @@ static void do_pmtu_discovery(struct sock *sk, const struct iphdr *iph, u32 mtu)
 	} /* else let the usual retransmit timer handle it */
 }
 
+<<<<<<< HEAD
+=======
+static void do_redirect(struct sk_buff *skb, struct sock *sk)
+{
+	struct dst_entry *dst = __sk_dst_check(sk, 0);
+
+	if (dst)
+		dst->ops->redirect(dst, sk, skb);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This routine is called by the ICMP module when it gets some
  * sort of error condition.  If err < 0 then the socket should
@@ -372,6 +444,10 @@ void tcp_v4_err(struct sk_buff *icmp_skb, u32 info)
 	const int code = icmp_hdr(icmp_skb)->code;
 	struct sock *sk;
 	struct sk_buff *skb;
+<<<<<<< HEAD
+=======
+	struct request_sock *req;
+>>>>>>> refs/remotes/origin/master
 	__u32 seq;
 	__u32 remaining;
 	int err;
@@ -396,10 +472,20 @@ void tcp_v4_err(struct sk_buff *icmp_skb, u32 info)
 	bh_lock_sock(sk);
 	/* If too many ICMPs get dropped on busy
 	 * servers this needs to be solved differently.
+<<<<<<< HEAD
 	 */
 	if (sock_owned_by_user(sk))
 		NET_INC_STATS_BH(net, LINUX_MIB_LOCKDROPPEDICMPS);
 
+=======
+	 * We do take care of PMTU discovery (RFC1191) special case :
+	 * we can receive locally generated ICMP messages while socket is held.
+	 */
+	if (sock_owned_by_user(sk)) {
+		if (!(type == ICMP_DEST_UNREACH && code == ICMP_FRAG_NEEDED))
+			NET_INC_STATS_BH(net, LINUX_MIB_LOCKDROPPEDICMPS);
+	}
+>>>>>>> refs/remotes/origin/master
 	if (sk->sk_state == TCP_CLOSE)
 		goto out;
 
@@ -410,14 +496,29 @@ void tcp_v4_err(struct sk_buff *icmp_skb, u32 info)
 
 	icsk = inet_csk(sk);
 	tp = tcp_sk(sk);
+<<<<<<< HEAD
 	seq = ntohl(th->seq);
 	if (sk->sk_state != TCP_LISTEN &&
 	    !between(seq, tp->snd_una, tp->snd_nxt)) {
+=======
+	req = tp->fastopen_rsk;
+	seq = ntohl(th->seq);
+	if (sk->sk_state != TCP_LISTEN &&
+	    !between(seq, tp->snd_una, tp->snd_nxt) &&
+	    (req == NULL || seq != tcp_rsk(req)->snt_isn)) {
+		/* For a Fast Open socket, allow seq to be snt_isn. */
+>>>>>>> refs/remotes/origin/master
 		NET_INC_STATS_BH(net, LINUX_MIB_OUTOFWINDOWICMPS);
 		goto out;
 	}
 
 	switch (type) {
+<<<<<<< HEAD
+=======
+	case ICMP_REDIRECT:
+		do_redirect(icmp_skb, sk);
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	case ICMP_SOURCE_QUENCH:
 		/* Just silently ignore these. */
 		goto out;
@@ -429,8 +530,25 @@ void tcp_v4_err(struct sk_buff *icmp_skb, u32 info)
 			goto out;
 
 		if (code == ICMP_FRAG_NEEDED) { /* PMTU discovery (RFC1191) */
+<<<<<<< HEAD
 			if (!sock_owned_by_user(sk))
 				do_pmtu_discovery(sk, iph, info);
+=======
+			/* We are not interested in TCP_LISTEN and open_requests
+			 * (SYN-ACKs send out by Linux are always <576bytes so
+			 * they should go through unfragmented).
+			 */
+			if (sk->sk_state == TCP_LISTEN)
+				goto out;
+
+			tp->mtu_info = info;
+			if (!sock_owned_by_user(sk)) {
+				tcp_v4_mtu_reduced(sk);
+			} else {
+				if (!test_and_set_bit(TCP_MTU_REDUCED_DEFERRED, &tp->tsq_flags))
+					sock_hold(sk);
+			}
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 
@@ -443,10 +561,16 @@ void tcp_v4_err(struct sk_buff *icmp_skb, u32 info)
 		    !icsk->icsk_backoff)
 			break;
 
+<<<<<<< HEAD
+=======
+		/* XXX (TFO) - revisit the following logic for TFO */
+
+>>>>>>> refs/remotes/origin/master
 		if (sock_owned_by_user(sk))
 			break;
 
 		icsk->icsk_backoff--;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		inet_csk(sk)->icsk_rto = __tcp_set_rto(tp) <<
 					 icsk->icsk_backoff;
@@ -454,6 +578,10 @@ void tcp_v4_err(struct sk_buff *icmp_skb, u32 info)
 		inet_csk(sk)->icsk_rto = (tp->srtt ? __tcp_set_rto(tp) :
 			TCP_TIMEOUT_INIT) << icsk->icsk_backoff;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		inet_csk(sk)->icsk_rto = (tp->srtt ? __tcp_set_rto(tp) :
+			TCP_TIMEOUT_INIT) << icsk->icsk_backoff;
+>>>>>>> refs/remotes/origin/master
 		tcp_bound_rto(sk);
 
 		skb = tcp_write_queue_head(sk);
@@ -479,6 +607,17 @@ void tcp_v4_err(struct sk_buff *icmp_skb, u32 info)
 		goto out;
 	}
 
+<<<<<<< HEAD
+=======
+	/* XXX (TFO) - if it's a TFO socket and has been accepted, rather
+	 * than following the TCP_SYN_RECV case and closing the socket,
+	 * we ignore the ICMP error and keep trying like a fully established
+	 * socket. Is this the right thing to do?
+	 */
+	if (req && req->sk == NULL)
+		goto out;
+
+>>>>>>> refs/remotes/origin/master
 	switch (sk->sk_state) {
 		struct request_sock *req, **prev;
 	case TCP_LISTEN:
@@ -507,11 +646,20 @@ void tcp_v4_err(struct sk_buff *icmp_skb, u32 info)
 		 * errors returned from accept().
 		 */
 		inet_csk_reqsk_queue_drop(sk, req, prev);
+<<<<<<< HEAD
+=======
+		NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_LISTENDROPS);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	case TCP_SYN_SENT:
 	case TCP_SYN_RECV:  /* Cannot happen.
+<<<<<<< HEAD
 			       It can f.e. if SYNs crossed.
+=======
+			       It can f.e. if SYNs crossed,
+			       or Fast Open.
+>>>>>>> refs/remotes/origin/master
 			     */
 		if (!sock_owned_by_user(sk)) {
 			sk->sk_err = err;
@@ -554,8 +702,12 @@ out:
 	sock_put(sk);
 }
 
+<<<<<<< HEAD
 static void __tcp_v4_send_check(struct sk_buff *skb,
 				__be32 saddr, __be32 daddr)
+=======
+void __tcp_v4_send_check(struct sk_buff *skb, __be32 saddr, __be32 daddr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tcphdr *th = tcp_hdr(skb);
 
@@ -575,15 +727,20 @@ static void __tcp_v4_send_check(struct sk_buff *skb,
 void tcp_v4_send_check(struct sock *sk, struct sk_buff *skb)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct inet_sock *inet = inet_sk(sk);
 =======
 	const struct inet_sock *inet = inet_sk(sk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct inet_sock *inet = inet_sk(sk);
+>>>>>>> refs/remotes/origin/master
 
 	__tcp_v4_send_check(skb, inet->inet_saddr, inet->inet_daddr);
 }
 EXPORT_SYMBOL(tcp_v4_send_check);
 
+<<<<<<< HEAD
 int tcp_v4_gso_send_check(struct sk_buff *skb)
 {
 	const struct iphdr *iph;
@@ -601,6 +758,8 @@ int tcp_v4_gso_send_check(struct sk_buff *skb)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	This routine will send an RST to the other tcp.
  *
@@ -617,10 +776,14 @@ int tcp_v4_gso_send_check(struct sk_buff *skb)
 static void tcp_v4_send_reset(struct sock *sk, struct sk_buff *skb)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tcphdr *th = tcp_hdr(skb);
 =======
 	const struct tcphdr *th = tcp_hdr(skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct tcphdr *th = tcp_hdr(skb);
+>>>>>>> refs/remotes/origin/master
 	struct {
 		struct tcphdr th;
 #ifdef CONFIG_TCP_MD5SIG
@@ -631,12 +794,18 @@ static void tcp_v4_send_reset(struct sock *sk, struct sk_buff *skb)
 #ifdef CONFIG_TCP_MD5SIG
 	struct tcp_md5sig_key *key;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	const __u8 *hash_location = NULL;
 	unsigned char newhash[16];
 	int genhash;
 	struct sock *sk1 = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	struct net *net;
 
@@ -668,8 +837,11 @@ static void tcp_v4_send_reset(struct sock *sk, struct sk_buff *skb)
 
 #ifdef CONFIG_TCP_MD5SIG
 <<<<<<< HEAD
+<<<<<<< HEAD
 	key = sk ? tcp_v4_md5_do_lookup(sk, ip_hdr(skb)->saddr) : NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	hash_location = tcp_parse_md5sig_option(th);
 	if (!sk && hash_location) {
 		/*
@@ -680,7 +852,12 @@ static void tcp_v4_send_reset(struct sock *sk, struct sk_buff *skb)
 		 * no RST generated if md5 hash doesn't match.
 		 */
 		sk1 = __inet_lookup_listener(dev_net(skb_dst(skb)->dev),
+<<<<<<< HEAD
 					     &tcp_hashinfo, ip_hdr(skb)->daddr,
+=======
+					     &tcp_hashinfo, ip_hdr(skb)->saddr,
+					     th->source, ip_hdr(skb)->daddr,
+>>>>>>> refs/remotes/origin/master
 					     ntohs(th->source), inet_iif(skb));
 		/* don't send rst if it can't find key */
 		if (!sk1)
@@ -700,7 +877,10 @@ static void tcp_v4_send_reset(struct sock *sk, struct sk_buff *skb)
 					     AF_INET) : NULL;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (key) {
 		rep.opt[0] = htonl((TCPOPT_NOP << 24) |
 				   (TCPOPT_NOP << 16) |
@@ -729,6 +909,7 @@ static void tcp_v4_send_reset(struct sock *sk, struct sk_buff *skb)
 
 	net = dev_net(skb_dst(skb)->dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	arg.tos = ip_hdr(skb)->tos;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -739,6 +920,14 @@ static void tcp_v4_send_reset(struct sock *sk, struct sk_buff *skb)
 	TCP_INC_STATS_BH(net, TCP_MIB_OUTRSTS);
 <<<<<<< HEAD
 =======
+=======
+	arg.tos = ip_hdr(skb)->tos;
+	ip_send_unicast_reply(net, skb, ip_hdr(skb)->saddr,
+			      ip_hdr(skb)->daddr, &arg, arg.iov[0].iov_len);
+
+	TCP_INC_STATS_BH(net, TCP_MIB_OUTSEGS);
+	TCP_INC_STATS_BH(net, TCP_MIB_OUTRSTS);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_TCP_MD5SIG
 release_sk1:
@@ -747,7 +936,10 @@ release_sk1:
 		sock_put(sk1);
 	}
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* The code following below sending ACKs in SYN-RECV and TIME-WAIT states
@@ -755,6 +947,7 @@ release_sk1:
  */
 
 static void tcp_v4_send_ack(struct sk_buff *skb, u32 seq, u32 ack,
+<<<<<<< HEAD
 			    u32 win, u32 ts, int oif,
 			    struct tcp_md5sig_key *key,
 <<<<<<< HEAD
@@ -766,6 +959,13 @@ static void tcp_v4_send_ack(struct sk_buff *skb, u32 seq, u32 ack,
 {
 	const struct tcphdr *th = tcp_hdr(skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    u32 win, u32 tsval, u32 tsecr, int oif,
+			    struct tcp_md5sig_key *key,
+			    int reply_flags, u8 tos)
+{
+	const struct tcphdr *th = tcp_hdr(skb);
+>>>>>>> refs/remotes/origin/master
 	struct {
 		struct tcphdr th;
 		__be32 opt[(TCPOLEN_TSTAMP_ALIGNED >> 2)
@@ -782,12 +982,21 @@ static void tcp_v4_send_ack(struct sk_buff *skb, u32 seq, u32 ack,
 
 	arg.iov[0].iov_base = (unsigned char *)&rep;
 	arg.iov[0].iov_len  = sizeof(rep.th);
+<<<<<<< HEAD
 	if (ts) {
 		rep.opt[0] = htonl((TCPOPT_NOP << 24) | (TCPOPT_NOP << 16) |
 				   (TCPOPT_TIMESTAMP << 8) |
 				   TCPOLEN_TIMESTAMP);
 		rep.opt[1] = htonl(tcp_time_stamp);
 		rep.opt[2] = htonl(ts);
+=======
+	if (tsecr) {
+		rep.opt[0] = htonl((TCPOPT_NOP << 24) | (TCPOPT_NOP << 16) |
+				   (TCPOPT_TIMESTAMP << 8) |
+				   TCPOLEN_TIMESTAMP);
+		rep.opt[1] = htonl(tsval);
+		rep.opt[2] = htonl(tsecr);
+>>>>>>> refs/remotes/origin/master
 		arg.iov[0].iov_len += TCPOLEN_TSTAMP_ALIGNED;
 	}
 
@@ -802,7 +1011,11 @@ static void tcp_v4_send_ack(struct sk_buff *skb, u32 seq, u32 ack,
 
 #ifdef CONFIG_TCP_MD5SIG
 	if (key) {
+<<<<<<< HEAD
 		int offset = (ts) ? 3 : 0;
+=======
+		int offset = (tsecr) ? 3 : 0;
+>>>>>>> refs/remotes/origin/master
 
 		rep.opt[offset++] = htonl((TCPOPT_NOP << 24) |
 					  (TCPOPT_NOP << 16) |
@@ -824,12 +1037,18 @@ static void tcp_v4_send_ack(struct sk_buff *skb, u32 seq, u32 ack,
 	if (oif)
 		arg.bound_dev_if = oif;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	arg.tos = tos;
 >>>>>>> refs/remotes/origin/cm-10.0
 	ip_send_reply(net->ipv4.tcp_sock, skb, ip_hdr(skb)->saddr,
 		      &arg, arg.iov[0].iov_len);
+=======
+	arg.tos = tos;
+	ip_send_unicast_reply(net, skb, ip_hdr(skb)->saddr,
+			      ip_hdr(skb)->daddr, &arg, arg.iov[0].iov_len);
+>>>>>>> refs/remotes/origin/master
 
 	TCP_INC_STATS_BH(net, TCP_MIB_OUTSEGS);
 }
@@ -841,6 +1060,7 @@ static void tcp_v4_timewait_ack(struct sock *sk, struct sk_buff *skb)
 
 	tcp_v4_send_ack(skb, tcptw->tw_snd_nxt, tcptw->tw_rcv_nxt,
 			tcptw->tw_rcv_wnd >> tw->tw_rcv_wscale,
+<<<<<<< HEAD
 			tcptw->tw_ts_recent,
 			tw->tw_bound_dev_if,
 			tcp_twsk_md5_key(tcptw),
@@ -850,6 +1070,14 @@ static void tcp_v4_timewait_ack(struct sock *sk, struct sk_buff *skb)
 			tw->tw_transparent ? IP_REPLY_ARG_NOSRCCHECK : 0,
 			tw->tw_tos
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			tcp_time_stamp + tcptw->tw_ts_offset,
+			tcptw->tw_ts_recent,
+			tw->tw_bound_dev_if,
+			tcp_twsk_md5_key(tcptw),
+			tw->tw_transparent ? IP_REPLY_ARG_NOSRCCHECK : 0,
+			tw->tw_tos
+>>>>>>> refs/remotes/origin/master
 			);
 
 	inet_twsk_put(tw);
@@ -858,6 +1086,7 @@ static void tcp_v4_timewait_ack(struct sock *sk, struct sk_buff *skb)
 static void tcp_v4_reqsk_send_ack(struct sock *sk, struct sk_buff *skb,
 				  struct request_sock *req)
 {
+<<<<<<< HEAD
 	tcp_v4_send_ack(skb, tcp_rsk(req)->snt_isn + 1,
 			tcp_rsk(req)->rcv_isn + 1, req->rcv_wnd,
 			req->ts_recent,
@@ -866,11 +1095,25 @@ static void tcp_v4_reqsk_send_ack(struct sock *sk, struct sk_buff *skb,
 			tcp_v4_md5_do_lookup(sk, ip_hdr(skb)->daddr),
 			inet_rsk(req)->no_srccheck ? IP_REPLY_ARG_NOSRCCHECK : 0);
 =======
+=======
+	/* sk->sk_state == TCP_LISTEN -> for regular TCP_SYN_RECV
+	 * sk->sk_state == TCP_SYN_RECV -> for Fast Open.
+	 */
+	tcp_v4_send_ack(skb, (sk->sk_state == TCP_LISTEN) ?
+			tcp_rsk(req)->snt_isn + 1 : tcp_sk(sk)->snd_nxt,
+			tcp_rsk(req)->rcv_nxt, req->rcv_wnd,
+			tcp_time_stamp,
+			req->ts_recent,
+			0,
+>>>>>>> refs/remotes/origin/master
 			tcp_md5_do_lookup(sk, (union tcp_md5_addr *)&ip_hdr(skb)->daddr,
 					  AF_INET),
 			inet_rsk(req)->no_srccheck ? IP_REPLY_ARG_NOSRCCHECK : 0,
 			ip_hdr(skb)->tos);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -880,7 +1123,11 @@ static void tcp_v4_reqsk_send_ack(struct sock *sk, struct sk_buff *skb,
  */
 static int tcp_v4_send_synack(struct sock *sk, struct dst_entry *dst,
 			      struct request_sock *req,
+<<<<<<< HEAD
 			      struct request_values *rvp)
+=======
+			      u16 queue_mapping)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct inet_request_sock *ireq = inet_rsk(req);
 	struct flowi4 fl4;
@@ -891,6 +1138,7 @@ static int tcp_v4_send_synack(struct sock *sk, struct dst_entry *dst,
 	if (!dst && (dst = inet_csk_route_req(sk, &fl4, req)) == NULL)
 		return -1;
 
+<<<<<<< HEAD
 	skb = tcp_make_synack(sk, dst, req, rvp);
 
 	if (skb) {
@@ -911,6 +1159,32 @@ static int tcp_v4_rtx_synack(struct sock *sk, struct request_sock *req,
 {
 	TCP_INC_STATS_BH(sock_net(sk), TCP_MIB_RETRANSSEGS);
 	return tcp_v4_send_synack(sk, NULL, req, rvp);
+=======
+	skb = tcp_make_synack(sk, dst, req, NULL);
+
+	if (skb) {
+		__tcp_v4_send_check(skb, ireq->ir_loc_addr, ireq->ir_rmt_addr);
+
+		skb_set_queue_mapping(skb, queue_mapping);
+		err = ip_build_and_send_pkt(skb, sk, ireq->ir_loc_addr,
+					    ireq->ir_rmt_addr,
+					    ireq->opt);
+		err = net_xmit_eval(err);
+		if (!tcp_rsk(req)->snt_synack && !err)
+			tcp_rsk(req)->snt_synack = tcp_time_stamp;
+	}
+
+	return err;
+}
+
+static int tcp_v4_rtx_synack(struct sock *sk, struct request_sock *req)
+{
+	int res = tcp_v4_send_synack(sk, NULL, req, 0);
+
+	if (!res)
+		TCP_INC_STATS_BH(sock_net(sk), TCP_MIB_RETRANSSEGS);
+	return res;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -921,6 +1195,7 @@ static void tcp_v4_reqsk_destructor(struct request_sock *req)
 	kfree(inet_rsk(req)->opt);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void syn_flood_warning(const struct sk_buff *skb)
 {
@@ -941,11 +1216,21 @@ static void syn_flood_warning(const struct sk_buff *skb)
  * Return 1 if a syncookie should be sent
  */
 int tcp_syn_flood_action(struct sock *sk,
+=======
+/*
+ * Return true if a syncookie should be sent
+ */
+bool tcp_syn_flood_action(struct sock *sk,
+>>>>>>> refs/remotes/origin/master
 			 const struct sk_buff *skb,
 			 const char *proto)
 {
 	const char *msg = "Dropping request";
+<<<<<<< HEAD
 	int want_cookie = 0;
+=======
+	bool want_cookie = false;
+>>>>>>> refs/remotes/origin/master
 	struct listen_sock *lopt;
 
 
@@ -953,14 +1238,22 @@ int tcp_syn_flood_action(struct sock *sk,
 #ifdef CONFIG_SYN_COOKIES
 	if (sysctl_tcp_syncookies) {
 		msg = "Sending cookies";
+<<<<<<< HEAD
 		want_cookie = 1;
+=======
+		want_cookie = true;
+>>>>>>> refs/remotes/origin/master
 		NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_TCPREQQFULLDOCOOKIES);
 	} else
 #endif
 		NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_TCPREQQFULLDROP);
 
 	lopt = inet_csk(sk)->icsk_accept_queue.listen_opt;
+<<<<<<< HEAD
 	if (!lopt->synflood_warned) {
+=======
+	if (!lopt->synflood_warned && sysctl_tcp_syncookies != 2) {
+>>>>>>> refs/remotes/origin/master
 		lopt->synflood_warned = 1;
 		pr_info("%s: Possible SYN flooding on port %d. %s.  Check SNMP counters.\n",
 			proto, ntohs(tcp_hdr(skb)->dest), msg);
@@ -968,13 +1261,20 @@ int tcp_syn_flood_action(struct sock *sk,
 	return want_cookie;
 }
 EXPORT_SYMBOL(tcp_syn_flood_action);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Save and compile IPv4 options into the request_sock if needed.
  */
+<<<<<<< HEAD
 static struct ip_options_rcu *tcp_v4_save_options(struct sock *sk,
 						  struct sk_buff *skb)
+=======
+static struct ip_options_rcu *tcp_v4_save_options(struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct ip_options *opt = &(IPCB(skb)->opt);
 	struct ip_options_rcu *dopt = NULL;
@@ -1002,6 +1302,7 @@ static struct ip_options_rcu *tcp_v4_save_options(struct sock *sk,
 
 /* Find the Key structure for an address.  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct tcp_md5sig_key *
 			tcp_v4_md5_do_lookup(struct sock *sk, __be32 addr)
 {
@@ -1017,13 +1318,18 @@ static struct tcp_md5sig_key *
 	return NULL;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct tcp_md5sig_key *tcp_md5_do_lookup(struct sock *sk,
 					 const union tcp_md5_addr *addr,
 					 int family)
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct tcp_md5sig_key *key;
+<<<<<<< HEAD
 	struct hlist_node *pos;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int size = sizeof(struct in_addr);
 	struct tcp_md5sig_info *md5sig;
 
@@ -1037,7 +1343,11 @@ struct tcp_md5sig_key *tcp_md5_do_lookup(struct sock *sk,
 	if (family == AF_INET6)
 		size = sizeof(struct in6_addr);
 #endif
+<<<<<<< HEAD
 	hlist_for_each_entry_rcu(key, pos, &md5sig->head, node) {
+=======
+	hlist_for_each_entry_rcu(key, &md5sig->head, node) {
+>>>>>>> refs/remotes/origin/master
 		if (key->family != family)
 			continue;
 		if (!memcmp(&key->addr, addr, size))
@@ -1046,25 +1356,35 @@ struct tcp_md5sig_key *tcp_md5_do_lookup(struct sock *sk,
 	return NULL;
 }
 EXPORT_SYMBOL(tcp_md5_do_lookup);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct tcp_md5sig_key *tcp_v4_md5_lookup(struct sock *sk,
 					 struct sock *addr_sk)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return tcp_v4_md5_do_lookup(sk, inet_sk(addr_sk)->inet_daddr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	union tcp_md5_addr *addr;
 
 	addr = (union tcp_md5_addr *)&inet_sk(addr_sk)->inet_daddr;
 	return tcp_md5_do_lookup(sk, addr, AF_INET);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(tcp_v4_md5_lookup);
 
 static struct tcp_md5sig_key *tcp_v4_reqsk_md5_lookup(struct sock *sk,
 						      struct request_sock *req)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return tcp_v4_md5_do_lookup(sk, inet_rsk(req)->rmt_addr);
 }
@@ -1076,17 +1396,26 @@ int tcp_v4_md5_do_add(struct sock *sk, __be32 addr,
 	union tcp_md5_addr *addr;
 
 	addr = (union tcp_md5_addr *)&inet_rsk(req)->rmt_addr;
+=======
+	union tcp_md5_addr *addr;
+
+	addr = (union tcp_md5_addr *)&inet_rsk(req)->ir_rmt_addr;
+>>>>>>> refs/remotes/origin/master
 	return tcp_md5_do_lookup(sk, addr, AF_INET);
 }
 
 /* This can be called on a newly created socket, from other files */
 int tcp_md5_do_add(struct sock *sk, const union tcp_md5_addr *addr,
 		   int family, const u8 *newkey, u8 newkeylen, gfp_t gfp)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	/* Add Key to the list */
 	struct tcp_md5sig_key *key;
 	struct tcp_sock *tp = tcp_sk(sk);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct tcp4_md5sig_key *keys;
 
@@ -1201,6 +1530,8 @@ static void tcp_v4_clear_md5_list(struct sock *sk)
 		tp->md5sig_info->keys4 = NULL;
 		tp->md5sig_info->alloced4  = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct tcp_md5sig_info *md5sig;
 
 	key = tcp_md5_do_lookup(sk, addr, family);
@@ -1226,7 +1557,11 @@ static void tcp_v4_clear_md5_list(struct sock *sk)
 	key = sock_kmalloc(sk, sizeof(*key), gfp);
 	if (!key)
 		return -ENOMEM;
+<<<<<<< HEAD
 	if (hlist_empty(&md5sig->head) && !tcp_alloc_md5sig_pool(sk)) {
+=======
+	if (!tcp_alloc_md5sig_pool()) {
+>>>>>>> refs/remotes/origin/master
 		sock_kfree_s(sk, key, sizeof(*key));
 		return -ENOMEM;
 	}
@@ -1244,9 +1579,13 @@ EXPORT_SYMBOL(tcp_md5_do_add);
 
 int tcp_md5_do_del(struct sock *sk, const union tcp_md5_addr *addr, int family)
 {
+<<<<<<< HEAD
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct tcp_md5sig_key *key;
 	struct tcp_md5sig_info *md5sig;
+=======
+	struct tcp_md5sig_key *key;
+>>>>>>> refs/remotes/origin/master
 
 	key = tcp_md5_do_lookup(sk, addr, family);
 	if (!key)
@@ -1254,23 +1593,35 @@ int tcp_md5_do_del(struct sock *sk, const union tcp_md5_addr *addr, int family)
 	hlist_del_rcu(&key->node);
 	atomic_sub(sizeof(*key), &sk->sk_omem_alloc);
 	kfree_rcu(key, rcu);
+<<<<<<< HEAD
 	md5sig = rcu_dereference_protected(tp->md5sig_info,
 					   sock_owned_by_user(sk));
 	if (hlist_empty(&md5sig->head))
 		tcp_free_md5sig_pool();
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL(tcp_md5_do_del);
 
+<<<<<<< HEAD
 void tcp_clear_md5_list(struct sock *sk)
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct tcp_md5sig_key *key;
 	struct hlist_node *pos, *n;
+=======
+static void tcp_clear_md5_list(struct sock *sk)
+{
+	struct tcp_sock *tp = tcp_sk(sk);
+	struct tcp_md5sig_key *key;
+	struct hlist_node *n;
+>>>>>>> refs/remotes/origin/master
 	struct tcp_md5sig_info *md5sig;
 
 	md5sig = rcu_dereference_protected(tp->md5sig_info, 1);
 
+<<<<<<< HEAD
 	if (!hlist_empty(&md5sig->head))
 		tcp_free_md5sig_pool();
 	hlist_for_each_entry_safe(key, pos, n, &md5sig->head, node) {
@@ -1278,6 +1629,12 @@ void tcp_clear_md5_list(struct sock *sk)
 		atomic_sub(sizeof(*key), &sk->sk_omem_alloc);
 		kfree_rcu(key, rcu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hlist_for_each_entry_safe(key, n, &md5sig->head, node) {
+		hlist_del_rcu(&key->node);
+		atomic_sub(sizeof(*key), &sk->sk_omem_alloc);
+		kfree_rcu(key, rcu);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1287,9 +1644,12 @@ static int tcp_v4_parse_md5_keys(struct sock *sk, char __user *optval,
 	struct tcp_md5sig cmd;
 	struct sockaddr_in *sin = (struct sockaddr_in *)&cmd.tcpm_addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 *newkey;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (optlen < sizeof(cmd))
 		return -EINVAL;
@@ -1301,6 +1661,7 @@ static int tcp_v4_parse_md5_keys(struct sock *sk, char __user *optval,
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cmd.tcpm_key || !cmd.tcpm_keylen) {
 		if (!tcp_sk(sk)->md5sig_info)
 			return -ENOENT;
@@ -1311,10 +1672,16 @@ static int tcp_v4_parse_md5_keys(struct sock *sk, char __user *optval,
 		return tcp_md5_do_del(sk, (union tcp_md5_addr *)&sin->sin_addr.s_addr,
 				      AF_INET);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!cmd.tcpm_key || !cmd.tcpm_keylen)
+		return tcp_md5_do_del(sk, (union tcp_md5_addr *)&sin->sin_addr.s_addr,
+				      AF_INET);
+>>>>>>> refs/remotes/origin/master
 
 	if (cmd.tcpm_keylen > TCP_MD5SIG_MAXKEYLEN)
 		return -EINVAL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!tcp_sk(sk)->md5sig_info) {
 		struct tcp_sock *tp = tcp_sk(sk);
@@ -1338,6 +1705,11 @@ static int tcp_v4_parse_md5_keys(struct sock *sk, char __user *optval,
 			      AF_INET, cmd.tcpm_key, cmd.tcpm_keylen,
 			      GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return tcp_md5_do_add(sk, (union tcp_md5_addr *)&sin->sin_addr.s_addr,
+			      AF_INET, cmd.tcpm_key, cmd.tcpm_keylen,
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int tcp_v4_md5_hash_pseudoheader(struct tcp_md5sig_pool *hp,
@@ -1364,12 +1736,17 @@ static int tcp_v4_md5_hash_pseudoheader(struct tcp_md5sig_pool *hp,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int tcp_v4_md5_hash_hdr(char *md5_hash, struct tcp_md5sig_key *key,
 			       __be32 daddr, __be32 saddr, struct tcphdr *th)
 =======
 static int tcp_v4_md5_hash_hdr(char *md5_hash, const struct tcp_md5sig_key *key,
 			       __be32 daddr, __be32 saddr, const struct tcphdr *th)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int tcp_v4_md5_hash_hdr(char *md5_hash, const struct tcp_md5sig_key *key,
+			       __be32 daddr, __be32 saddr, const struct tcphdr *th)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tcp_md5sig_pool *hp;
 	struct hash_desc *desc;
@@ -1402,6 +1779,7 @@ clear_hash_noput:
 
 int tcp_v4_md5_hash_skb(char *md5_hash, struct tcp_md5sig_key *key,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			struct sock *sk, struct request_sock *req,
 			struct sk_buff *skb)
 {
@@ -1409,21 +1787,31 @@ int tcp_v4_md5_hash_skb(char *md5_hash, struct tcp_md5sig_key *key,
 	struct hash_desc *desc;
 	struct tcphdr *th = tcp_hdr(skb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			const struct sock *sk, const struct request_sock *req,
 			const struct sk_buff *skb)
 {
 	struct tcp_md5sig_pool *hp;
 	struct hash_desc *desc;
 	const struct tcphdr *th = tcp_hdr(skb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	__be32 saddr, daddr;
 
 	if (sk) {
 		saddr = inet_sk(sk)->inet_saddr;
 		daddr = inet_sk(sk)->inet_daddr;
 	} else if (req) {
+<<<<<<< HEAD
 		saddr = inet_rsk(req)->loc_addr;
 		daddr = inet_rsk(req)->rmt_addr;
+=======
+		saddr = inet_rsk(req)->ir_loc_addr;
+		daddr = inet_rsk(req)->ir_rmt_addr;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		const struct iphdr *iph = ip_hdr(skb);
 		saddr = iph->saddr;
@@ -1461,10 +1849,14 @@ clear_hash_noput:
 EXPORT_SYMBOL(tcp_v4_md5_hash_skb);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int tcp_v4_inbound_md5_hash(struct sock *sk, struct sk_buff *skb)
 =======
 static int tcp_v4_inbound_md5_hash(struct sock *sk, const struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool tcp_v4_inbound_md5_hash(struct sock *sk, const struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * This gets called for each TCP segment that arrives
@@ -1475,6 +1867,7 @@ static int tcp_v4_inbound_md5_hash(struct sock *sk, const struct sk_buff *skb)
 	 * o MD5 hash and its wrong.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__u8 *hash_location = NULL;
 	struct tcp_md5sig_key *hash_expected;
 	const struct iphdr *iph = ip_hdr(skb);
@@ -1484,6 +1877,8 @@ static int tcp_v4_inbound_md5_hash(struct sock *sk, const struct sk_buff *skb)
 
 	hash_expected = tcp_v4_md5_do_lookup(sk, iph->saddr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	const __u8 *hash_location = NULL;
 	struct tcp_md5sig_key *hash_expected;
 	const struct iphdr *iph = ip_hdr(skb);
@@ -1493,21 +1888,36 @@ static int tcp_v4_inbound_md5_hash(struct sock *sk, const struct sk_buff *skb)
 
 	hash_expected = tcp_md5_do_lookup(sk, (union tcp_md5_addr *)&iph->saddr,
 					  AF_INET);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	hash_location = tcp_parse_md5sig_option(th);
 
 	/* We've parsed the options - do we have a hash? */
 	if (!hash_expected && !hash_location)
+<<<<<<< HEAD
 		return 0;
 
 	if (hash_expected && !hash_location) {
 		NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_TCPMD5NOTFOUND);
 		return 1;
+=======
+		return false;
+
+	if (hash_expected && !hash_location) {
+		NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_TCPMD5NOTFOUND);
+		return true;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!hash_expected && hash_location) {
 		NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_TCPMD5UNEXPECTED);
+<<<<<<< HEAD
 		return 1;
+=======
+		return true;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Okay, so this is hash_expected and hash_location -
@@ -1518,6 +1928,7 @@ static int tcp_v4_inbound_md5_hash(struct sock *sk, const struct sk_buff *skb)
 				      NULL, NULL, skb);
 
 	if (genhash || memcmp(hash_location, newhash, 16) != 0) {
+<<<<<<< HEAD
 		if (net_ratelimit()) {
 <<<<<<< HEAD
 			printk(KERN_INFO "MD5 Hash failed for (%pI4, %d)->(%pI4, %d)%s\n",
@@ -1534,6 +1945,16 @@ static int tcp_v4_inbound_md5_hash(struct sock *sk, const struct sk_buff *skb)
 		return 1;
 	}
 	return 0;
+=======
+		net_info_ratelimited("MD5 Hash failed for (%pI4, %d)->(%pI4, %d)%s\n",
+				     &iph->saddr, ntohs(th->source),
+				     &iph->daddr, ntohs(th->dest),
+				     genhash ? " tcp_v4_calc_md5_hash failed"
+				     : "");
+		return true;
+	}
+	return false;
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif
@@ -1555,6 +1976,7 @@ static const struct tcp_request_sock_ops tcp_request_sock_ipv4_ops = {
 };
 #endif
 
+<<<<<<< HEAD
 int tcp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
 {
 	struct tcp_extend_values tmp_ext;
@@ -1564,6 +1986,192 @@ int tcp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
 =======
 	const u8 *hash_location;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool tcp_fastopen_check(struct sock *sk, struct sk_buff *skb,
+			       struct request_sock *req,
+			       struct tcp_fastopen_cookie *foc,
+			       struct tcp_fastopen_cookie *valid_foc)
+{
+	bool skip_cookie = false;
+	struct fastopen_queue *fastopenq;
+
+	if (likely(!fastopen_cookie_present(foc))) {
+		/* See include/net/tcp.h for the meaning of these knobs */
+		if ((sysctl_tcp_fastopen & TFO_SERVER_ALWAYS) ||
+		    ((sysctl_tcp_fastopen & TFO_SERVER_COOKIE_NOT_REQD) &&
+		    (TCP_SKB_CB(skb)->end_seq != TCP_SKB_CB(skb)->seq + 1)))
+			skip_cookie = true; /* no cookie to validate */
+		else
+			return false;
+	}
+	fastopenq = inet_csk(sk)->icsk_accept_queue.fastopenq;
+	/* A FO option is present; bump the counter. */
+	NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_TCPFASTOPENPASSIVE);
+
+	/* Make sure the listener has enabled fastopen, and we don't
+	 * exceed the max # of pending TFO requests allowed before trying
+	 * to validating the cookie in order to avoid burning CPU cycles
+	 * unnecessarily.
+	 *
+	 * XXX (TFO) - The implication of checking the max_qlen before
+	 * processing a cookie request is that clients can't differentiate
+	 * between qlen overflow causing Fast Open to be disabled
+	 * temporarily vs a server not supporting Fast Open at all.
+	 */
+	if ((sysctl_tcp_fastopen & TFO_SERVER_ENABLE) == 0 ||
+	    fastopenq == NULL || fastopenq->max_qlen == 0)
+		return false;
+
+	if (fastopenq->qlen >= fastopenq->max_qlen) {
+		struct request_sock *req1;
+		spin_lock(&fastopenq->lock);
+		req1 = fastopenq->rskq_rst_head;
+		if ((req1 == NULL) || time_after(req1->expires, jiffies)) {
+			spin_unlock(&fastopenq->lock);
+			NET_INC_STATS_BH(sock_net(sk),
+			    LINUX_MIB_TCPFASTOPENLISTENOVERFLOW);
+			/* Avoid bumping LINUX_MIB_TCPFASTOPENPASSIVEFAIL*/
+			foc->len = -1;
+			return false;
+		}
+		fastopenq->rskq_rst_head = req1->dl_next;
+		fastopenq->qlen--;
+		spin_unlock(&fastopenq->lock);
+		reqsk_free(req1);
+	}
+	if (skip_cookie) {
+		tcp_rsk(req)->rcv_nxt = TCP_SKB_CB(skb)->end_seq;
+		return true;
+	}
+
+	if (foc->len == TCP_FASTOPEN_COOKIE_SIZE) {
+		if ((sysctl_tcp_fastopen & TFO_SERVER_COOKIE_NOT_CHKED) == 0) {
+			tcp_fastopen_cookie_gen(ip_hdr(skb)->saddr,
+						ip_hdr(skb)->daddr, valid_foc);
+			if ((valid_foc->len != TCP_FASTOPEN_COOKIE_SIZE) ||
+			    memcmp(&foc->val[0], &valid_foc->val[0],
+			    TCP_FASTOPEN_COOKIE_SIZE) != 0)
+				return false;
+			valid_foc->len = -1;
+		}
+		/* Acknowledge the data received from the peer. */
+		tcp_rsk(req)->rcv_nxt = TCP_SKB_CB(skb)->end_seq;
+		return true;
+	} else if (foc->len == 0) { /* Client requesting a cookie */
+		tcp_fastopen_cookie_gen(ip_hdr(skb)->saddr,
+					ip_hdr(skb)->daddr, valid_foc);
+		NET_INC_STATS_BH(sock_net(sk),
+		    LINUX_MIB_TCPFASTOPENCOOKIEREQD);
+	} else {
+		/* Client sent a cookie with wrong size. Treat it
+		 * the same as invalid and return a valid one.
+		 */
+		tcp_fastopen_cookie_gen(ip_hdr(skb)->saddr,
+					ip_hdr(skb)->daddr, valid_foc);
+	}
+	return false;
+}
+
+static int tcp_v4_conn_req_fastopen(struct sock *sk,
+				    struct sk_buff *skb,
+				    struct sk_buff *skb_synack,
+				    struct request_sock *req)
+{
+	struct tcp_sock *tp = tcp_sk(sk);
+	struct request_sock_queue *queue = &inet_csk(sk)->icsk_accept_queue;
+	const struct inet_request_sock *ireq = inet_rsk(req);
+	struct sock *child;
+	int err;
+
+	req->num_retrans = 0;
+	req->num_timeout = 0;
+	req->sk = NULL;
+
+	child = inet_csk(sk)->icsk_af_ops->syn_recv_sock(sk, skb, req, NULL);
+	if (child == NULL) {
+		NET_INC_STATS_BH(sock_net(sk),
+				 LINUX_MIB_TCPFASTOPENPASSIVEFAIL);
+		kfree_skb(skb_synack);
+		return -1;
+	}
+	err = ip_build_and_send_pkt(skb_synack, sk, ireq->ir_loc_addr,
+				    ireq->ir_rmt_addr, ireq->opt);
+	err = net_xmit_eval(err);
+	if (!err)
+		tcp_rsk(req)->snt_synack = tcp_time_stamp;
+	/* XXX (TFO) - is it ok to ignore error and continue? */
+
+	spin_lock(&queue->fastopenq->lock);
+	queue->fastopenq->qlen++;
+	spin_unlock(&queue->fastopenq->lock);
+
+	/* Initialize the child socket. Have to fix some values to take
+	 * into account the child is a Fast Open socket and is created
+	 * only out of the bits carried in the SYN packet.
+	 */
+	tp = tcp_sk(child);
+
+	tp->fastopen_rsk = req;
+	/* Do a hold on the listner sk so that if the listener is being
+	 * closed, the child that has been accepted can live on and still
+	 * access listen_lock.
+	 */
+	sock_hold(sk);
+	tcp_rsk(req)->listener = sk;
+
+	/* RFC1323: The window in SYN & SYN/ACK segments is never
+	 * scaled. So correct it appropriately.
+	 */
+	tp->snd_wnd = ntohs(tcp_hdr(skb)->window);
+
+	/* Activate the retrans timer so that SYNACK can be retransmitted.
+	 * The request socket is not added to the SYN table of the parent
+	 * because it's been added to the accept queue directly.
+	 */
+	inet_csk_reset_xmit_timer(child, ICSK_TIME_RETRANS,
+	    TCP_TIMEOUT_INIT, TCP_RTO_MAX);
+
+	/* Add the child socket directly into the accept queue */
+	inet_csk_reqsk_queue_add(sk, req, child);
+
+	/* Now finish processing the fastopen child socket. */
+	inet_csk(child)->icsk_af_ops->rebuild_header(child);
+	tcp_init_congestion_control(child);
+	tcp_mtup_init(child);
+	tcp_init_metrics(child);
+	tcp_init_buffer_space(child);
+
+	/* Queue the data carried in the SYN packet. We need to first
+	 * bump skb's refcnt because the caller will attempt to free it.
+	 *
+	 * XXX (TFO) - we honor a zero-payload TFO request for now.
+	 * (Any reason not to?)
+	 */
+	if (TCP_SKB_CB(skb)->end_seq == TCP_SKB_CB(skb)->seq + 1) {
+		/* Don't queue the skb if there is no payload in SYN.
+		 * XXX (TFO) - How about SYN+FIN?
+		 */
+		tp->rcv_nxt = TCP_SKB_CB(skb)->end_seq;
+	} else {
+		skb = skb_get(skb);
+		skb_dst_drop(skb);
+		__skb_pull(skb, tcp_hdr(skb)->doff * 4);
+		skb_set_owner_r(skb, child);
+		__skb_queue_tail(&child->sk_receive_queue, skb);
+		tp->rcv_nxt = TCP_SKB_CB(skb)->end_seq;
+		tp->syn_data_acked = 1;
+	}
+	sk->sk_data_ready(sk, 0);
+	bh_unlock_sock(child);
+	sock_put(child);
+	WARN_ON(req->sk == NULL);
+	return 0;
+}
+
+int tcp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
+{
+	struct tcp_options_received tmp_opt;
+>>>>>>> refs/remotes/origin/master
 	struct request_sock *req;
 	struct inet_request_sock *ireq;
 	struct tcp_sock *tp = tcp_sk(sk);
@@ -1571,6 +2179,7 @@ int tcp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
 	__be32 saddr = ip_hdr(skb)->saddr;
 	__be32 daddr = ip_hdr(skb)->daddr;
 	__u32 isn = TCP_SKB_CB(skb)->when;
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_SYN_COOKIES
 	int want_cookie = 0;
@@ -1580,6 +2189,14 @@ int tcp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
 =======
 	int want_cookie = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool want_cookie = false;
+	struct flowi4 fl4;
+	struct tcp_fastopen_cookie foc = { .len = -1 };
+	struct tcp_fastopen_cookie valid_foc = { .len = -1 };
+	struct sk_buff *skb_synack;
+	int do_fastopen;
+>>>>>>> refs/remotes/origin/master
 
 	/* Never answer to SYNs send to broadcast or multicast */
 	if (skb_rtable(skb)->rt_flags & (RTCF_BROADCAST | RTCF_MULTICAST))
@@ -1589,6 +2206,7 @@ int tcp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
 	 * limitations, they conserve resources and peer is
 	 * evidently real one.
 	 */
+<<<<<<< HEAD
 	if (inet_csk_reqsk_queue_is_full(sk) && !isn) {
 <<<<<<< HEAD
 		if (net_ratelimit())
@@ -1604,6 +2222,13 @@ int tcp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
 		if (!want_cookie)
 			goto drop;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((sysctl_tcp_syncookies == 2 ||
+	     inet_csk_reqsk_queue_is_full(sk)) && !isn) {
+		want_cookie = tcp_syn_flood_action(sk, skb, "TCP");
+		if (!want_cookie)
+			goto drop;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Accept backlog is full. If we have already queued enough
@@ -1611,8 +2236,15 @@ int tcp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
 	 * clogging syn queue with openreqs with exponentially increasing
 	 * timeout.
 	 */
+<<<<<<< HEAD
 	if (sk_acceptq_is_full(sk) && inet_csk_reqsk_queue_young(sk) > 1)
 		goto drop;
+=======
+	if (sk_acceptq_is_full(sk) && inet_csk_reqsk_queue_young(sk) > 1) {
+		NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_LISTENOVERFLOWS);
+		goto drop;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	req = inet_reqsk_alloc(&tcp_request_sock_ops);
 	if (!req)
@@ -1625,6 +2257,7 @@ int tcp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
 	tcp_clear_options(&tmp_opt);
 	tmp_opt.mss_clamp = TCP_MSS_DEFAULT;
 	tmp_opt.user_mss  = tp->rx_opt.user_mss;
+<<<<<<< HEAD
 	tcp_parse_options(skb, &tmp_opt, &hash_location, 0);
 
 	if (tmp_opt.cookie_plus > 0 &&
@@ -1666,6 +2299,9 @@ int tcp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
 		goto drop_and_release;
 	}
 	tmp_ext.cookie_in_always = tp->rx_opt.cookie_in_always;
+=======
+	tcp_parse_options(skb, &tmp_opt, 0, want_cookie ? NULL : &foc);
+>>>>>>> refs/remotes/origin/master
 
 	if (want_cookie && !tmp_opt.saw_tstamp)
 		tcp_clear_options(&tmp_opt);
@@ -1674,24 +2310,38 @@ int tcp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
 	tcp_openreq_init(req, &tmp_opt, skb);
 
 	ireq = inet_rsk(req);
+<<<<<<< HEAD
 	ireq->loc_addr = daddr;
 	ireq->rmt_addr = saddr;
 	ireq->no_srccheck = inet_sk(sk)->transparent;
 	ireq->opt = tcp_v4_save_options(sk, skb);
+=======
+	ireq->ir_loc_addr = daddr;
+	ireq->ir_rmt_addr = saddr;
+	ireq->no_srccheck = inet_sk(sk)->transparent;
+	ireq->opt = tcp_v4_save_options(skb);
+>>>>>>> refs/remotes/origin/master
 
 	if (security_inet_conn_request(sk, skb, req))
 		goto drop_and_free;
 
 	if (!want_cookie || tmp_opt.tstamp_ok)
+<<<<<<< HEAD
 		TCP_ECN_create_request(req, tcp_hdr(skb));
+=======
+		TCP_ECN_create_request(req, skb, sock_net(sk));
+>>>>>>> refs/remotes/origin/master
 
 	if (want_cookie) {
 		isn = cookie_v4_init_sequence(sk, skb, &req->mss);
 		req->cookie_ts = tmp_opt.tstamp_ok;
 	} else if (!isn) {
+<<<<<<< HEAD
 		struct inet_peer *peer = NULL;
 		struct flowi4 fl4;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/* VJ's idea. We save last timestamp seen
 		 * from the destination in peer table, when entering
 		 * state TIME-WAIT, and check against it before
@@ -1704,12 +2354,17 @@ int tcp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
 		if (tmp_opt.saw_tstamp &&
 		    tcp_death_row.sysctl_tw_recycle &&
 		    (dst = inet_csk_route_req(sk, &fl4, req)) != NULL &&
+<<<<<<< HEAD
 		    fl4.daddr == saddr &&
 		    (peer = rt_get_peer((struct rtable *)dst, fl4.daddr)) != NULL) {
 			inet_peer_refcheck(peer);
 			if ((u32)get_seconds() - peer->tcp_ts_stamp < TCP_PAWS_MSL &&
 			    (s32)(peer->tcp_ts - req->ts_recent) >
 							TCP_PAWS_WINDOW) {
+=======
+		    fl4.daddr == saddr) {
+			if (!tcp_peer_is_proven(req, dst, true)) {
+>>>>>>> refs/remotes/origin/master
 				NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_PAWSPASSIVEREJECTED);
 				goto drop_and_release;
 			}
@@ -1718,8 +2373,12 @@ int tcp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
 		else if (!sysctl_tcp_syncookies &&
 			 (sysctl_max_syn_backlog - inet_csk_reqsk_queue_len(sk) <
 			  (sysctl_max_syn_backlog >> 2)) &&
+<<<<<<< HEAD
 			 (!peer || !peer->tcp_ts_stamp) &&
 			 (!dst || !dst_metric(dst, RTAX_RTT))) {
+=======
+			 !tcp_peer_is_proven(req, dst, false)) {
+>>>>>>> refs/remotes/origin/master
 			/* Without syncookies last quarter of
 			 * backlog is filled with destinations,
 			 * proven to be alive.
@@ -1728,10 +2387,14 @@ int tcp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
 			 * to the moment of synflood.
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			LIMIT_NETDEBUG(KERN_DEBUG "TCP: drop open request from %pI4/%u\n",
 =======
 			LIMIT_NETDEBUG(KERN_DEBUG pr_fmt("drop open request from %pI4/%u\n"),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			LIMIT_NETDEBUG(KERN_DEBUG pr_fmt("drop open request from %pI4/%u\n"),
+>>>>>>> refs/remotes/origin/master
 				       &saddr, ntohs(tcp_hdr(skb)->source));
 			goto drop_and_release;
 		}
@@ -1739,6 +2402,7 @@ int tcp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
 		isn = tcp_v4_init_sequence(skb);
 	}
 	tcp_rsk(req)->snt_isn = isn;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	tcp_rsk(req)->snt_synack = tcp_time_stamp;
@@ -1750,6 +2414,54 @@ int tcp_v4_conn_request(struct sock *sk, struct sk_buff *skb)
 		goto drop_and_free;
 
 	inet_csk_reqsk_queue_hash_add(sk, req, TCP_TIMEOUT_INIT);
+=======
+
+	if (dst == NULL) {
+		dst = inet_csk_route_req(sk, &fl4, req);
+		if (dst == NULL)
+			goto drop_and_free;
+	}
+	do_fastopen = tcp_fastopen_check(sk, skb, req, &foc, &valid_foc);
+
+	/* We don't call tcp_v4_send_synack() directly because we need
+	 * to make sure a child socket can be created successfully before
+	 * sending back synack!
+	 *
+	 * XXX (TFO) - Ideally one would simply call tcp_v4_send_synack()
+	 * (or better yet, call tcp_send_synack() in the child context
+	 * directly, but will have to fix bunch of other code first)
+	 * after syn_recv_sock() except one will need to first fix the
+	 * latter to remove its dependency on the current implementation
+	 * of tcp_v4_send_synack()->tcp_select_initial_window().
+	 */
+	skb_synack = tcp_make_synack(sk, dst, req,
+	    fastopen_cookie_present(&valid_foc) ? &valid_foc : NULL);
+
+	if (skb_synack) {
+		__tcp_v4_send_check(skb_synack, ireq->ir_loc_addr, ireq->ir_rmt_addr);
+		skb_set_queue_mapping(skb_synack, skb_get_queue_mapping(skb));
+	} else
+		goto drop_and_free;
+
+	if (likely(!do_fastopen)) {
+		int err;
+		err = ip_build_and_send_pkt(skb_synack, sk, ireq->ir_loc_addr,
+		     ireq->ir_rmt_addr, ireq->opt);
+		err = net_xmit_eval(err);
+		if (err || want_cookie)
+			goto drop_and_free;
+
+		tcp_rsk(req)->snt_synack = tcp_time_stamp;
+		tcp_rsk(req)->listener = NULL;
+		/* Add the request_sock to the SYN table */
+		inet_csk_reqsk_queue_hash_add(sk, req, TCP_TIMEOUT_INIT);
+		if (fastopen_cookie_present(&foc) && foc.len != 0)
+			NET_INC_STATS_BH(sock_net(sk),
+			    LINUX_MIB_TCPFASTOPENPASSIVEFAIL);
+	} else if (tcp_v4_conn_req_fastopen(sk, skb, skb_synack, req))
+		goto drop_and_free;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 drop_and_release:
@@ -1757,6 +2469,10 @@ drop_and_release:
 drop_and_free:
 	reqsk_free(req);
 drop:
+<<<<<<< HEAD
+=======
+	NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_LISTENDROPS);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL(tcp_v4_conn_request);
@@ -1787,22 +2503,36 @@ struct sock *tcp_v4_syn_recv_sock(struct sock *sk, struct sk_buff *skb,
 		goto exit_nonewsk;
 
 	newsk->sk_gso_type = SKB_GSO_TCPV4;
+<<<<<<< HEAD
+=======
+	inet_sk_rx_dst_set(newsk, skb);
+>>>>>>> refs/remotes/origin/master
 
 	newtp		      = tcp_sk(newsk);
 	newinet		      = inet_sk(newsk);
 	ireq		      = inet_rsk(req);
+<<<<<<< HEAD
 	newinet->inet_daddr   = ireq->rmt_addr;
 	newinet->inet_rcv_saddr = ireq->loc_addr;
 	newinet->inet_saddr	      = ireq->loc_addr;
+=======
+	newinet->inet_daddr   = ireq->ir_rmt_addr;
+	newinet->inet_rcv_saddr = ireq->ir_loc_addr;
+	newinet->inet_saddr	      = ireq->ir_loc_addr;
+>>>>>>> refs/remotes/origin/master
 	inet_opt	      = ireq->opt;
 	rcu_assign_pointer(newinet->inet_opt, inet_opt);
 	ireq->opt	      = NULL;
 	newinet->mc_index     = inet_iif(skb);
 	newinet->mc_ttl	      = ip_hdr(skb)->ttl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	newinet->rcv_tos      = ip_hdr(skb)->tos;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	newinet->rcv_tos      = ip_hdr(skb)->tos;
+>>>>>>> refs/remotes/origin/master
 	inet_csk(newsk)->icsk_ext_hdr_len = 0;
 	if (inet_opt)
 		inet_csk(newsk)->icsk_ext_hdr_len = inet_opt->opt.optlen;
@@ -1826,6 +2556,7 @@ struct sock *tcp_v4_syn_recv_sock(struct sock *sk, struct sk_buff *skb,
 
 	tcp_initialize_rcv_mss(newsk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef CONFIG_TCP_MD5SIG
 	/* Copy over the MD5 key from the original socket */
@@ -1835,12 +2566,17 @@ struct sock *tcp_v4_syn_recv_sock(struct sock *sk, struct sk_buff *skb,
 		tcp_valid_rtt_meas(newsk,
 		    tcp_time_stamp - tcp_rsk(req)->snt_synack);
 	newtp->total_retrans = req->retrans;
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_TCP_MD5SIG
 	/* Copy over the MD5 key from the original socket */
 	key = tcp_md5_do_lookup(sk, (union tcp_md5_addr *)&newinet->inet_daddr,
 				AF_INET);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (key != NULL) {
 		/*
 		 * We're using one, so create a matching key
@@ -1848,6 +2584,7 @@ struct sock *tcp_v4_syn_recv_sock(struct sock *sk, struct sk_buff *skb,
 		 * memory, then we end up not copying the key
 		 * across. Shucks.
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		char *newkey = kmemdup(key->key, key->keylen, GFP_ATOMIC);
 		if (newkey != NULL)
@@ -1857,6 +2594,10 @@ struct sock *tcp_v4_syn_recv_sock(struct sock *sk, struct sk_buff *skb,
 		tcp_md5_do_add(newsk, (union tcp_md5_addr *)&newinet->inet_daddr,
 			       AF_INET, key->key, key->keylen, GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tcp_md5_do_add(newsk, (union tcp_md5_addr *)&newinet->inet_daddr,
+			       AF_INET, key->key, key->keylen, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 		sk_nocaps_add(newsk, NETIF_F_GSO_MASK);
 	}
 #endif
@@ -1876,11 +2617,16 @@ exit:
 	return NULL;
 put_and_exit:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sock_put(newsk);
 =======
 	inet_csk_prepare_forced_close(newsk);
 	tcp_done(newsk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	inet_csk_prepare_forced_close(newsk);
+	tcp_done(newsk);
+>>>>>>> refs/remotes/origin/master
 	goto exit;
 }
 EXPORT_SYMBOL(tcp_v4_syn_recv_sock);
@@ -1895,7 +2641,11 @@ static struct sock *tcp_v4_hnd_req(struct sock *sk, struct sk_buff *skb)
 	struct request_sock *req = inet_csk_search_req(sk, &prev, th->source,
 						       iph->saddr, iph->daddr);
 	if (req)
+<<<<<<< HEAD
 		return tcp_check_req(sk, skb, req, prev);
+=======
+		return tcp_check_req(sk, skb, req, prev, false);
+>>>>>>> refs/remotes/origin/master
 
 	nsk = inet_lookup_established(sock_net(sk), &tcp_hashinfo, iph->saddr,
 			th->source, iph->daddr, th->dest, inet_iif(skb));
@@ -1962,6 +2712,7 @@ int tcp_v4_do_rcv(struct sock *sk, struct sk_buff *skb)
 
 	if (sk->sk_state == TCP_ESTABLISHED) { /* Fast path */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sock_rps_save_rxhash(sk, skb->rxhash);
 =======
 		sock_rps_save_rxhash(sk, skb);
@@ -1970,6 +2721,19 @@ int tcp_v4_do_rcv(struct sock *sk, struct sk_buff *skb)
 			rsk = sk;
 			goto reset;
 		}
+=======
+		struct dst_entry *dst = sk->sk_rx_dst;
+
+		sock_rps_save_rxhash(sk, skb);
+		if (dst) {
+			if (inet_sk(sk)->rx_dst_ifindex != skb->skb_iif ||
+			    dst->ops->check(dst, 0) == NULL) {
+				dst_release(dst);
+				sk->sk_rx_dst = NULL;
+			}
+		}
+		tcp_rcv_established(sk, skb, tcp_hdr(skb), skb->len);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -1983,10 +2747,14 @@ int tcp_v4_do_rcv(struct sock *sk, struct sk_buff *skb)
 
 		if (nsk != sk) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sock_rps_save_rxhash(nsk, skb->rxhash);
 =======
 			sock_rps_save_rxhash(nsk, skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			sock_rps_save_rxhash(nsk, skb);
+>>>>>>> refs/remotes/origin/master
 			if (tcp_child_process(sk, nsk, skb)) {
 				rsk = nsk;
 				goto reset;
@@ -1995,10 +2763,14 @@ int tcp_v4_do_rcv(struct sock *sk, struct sk_buff *skb)
 		}
 	} else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sock_rps_save_rxhash(sk, skb->rxhash);
 =======
 		sock_rps_save_rxhash(sk, skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sock_rps_save_rxhash(sk, skb);
+>>>>>>> refs/remotes/origin/master
 
 	if (tcp_rcv_state_process(sk, skb, tcp_hdr(skb), skb->len)) {
 		rsk = sk;
@@ -2018,11 +2790,100 @@ discard:
 	return 0;
 
 csum_err:
+<<<<<<< HEAD
+=======
+	TCP_INC_STATS_BH(sock_net(sk), TCP_MIB_CSUMERRORS);
+>>>>>>> refs/remotes/origin/master
 	TCP_INC_STATS_BH(sock_net(sk), TCP_MIB_INERRS);
 	goto discard;
 }
 EXPORT_SYMBOL(tcp_v4_do_rcv);
 
+<<<<<<< HEAD
+=======
+void tcp_v4_early_demux(struct sk_buff *skb)
+{
+	const struct iphdr *iph;
+	const struct tcphdr *th;
+	struct sock *sk;
+
+	if (skb->pkt_type != PACKET_HOST)
+		return;
+
+	if (!pskb_may_pull(skb, skb_transport_offset(skb) + sizeof(struct tcphdr)))
+		return;
+
+	iph = ip_hdr(skb);
+	th = tcp_hdr(skb);
+
+	if (th->doff < sizeof(struct tcphdr) / 4)
+		return;
+
+	sk = __inet_lookup_established(dev_net(skb->dev), &tcp_hashinfo,
+				       iph->saddr, th->source,
+				       iph->daddr, ntohs(th->dest),
+				       skb->skb_iif);
+	if (sk) {
+		skb->sk = sk;
+		skb->destructor = sock_edemux;
+		if (sk->sk_state != TCP_TIME_WAIT) {
+			struct dst_entry *dst = sk->sk_rx_dst;
+
+			if (dst)
+				dst = dst_check(dst, 0);
+			if (dst &&
+			    inet_sk(sk)->rx_dst_ifindex == skb->skb_iif)
+				skb_dst_set_noref(skb, dst);
+		}
+	}
+}
+
+/* Packet is added to VJ-style prequeue for processing in process
+ * context, if a reader task is waiting. Apparently, this exciting
+ * idea (VJ's mail "Re: query about TCP header on tcp-ip" of 07 Sep 93)
+ * failed somewhere. Latency? Burstiness? Well, at least now we will
+ * see, why it failed. 8)8)				  --ANK
+ *
+ */
+bool tcp_prequeue(struct sock *sk, struct sk_buff *skb)
+{
+	struct tcp_sock *tp = tcp_sk(sk);
+
+	if (sysctl_tcp_low_latency || !tp->ucopy.task)
+		return false;
+
+	if (skb->len <= tcp_hdrlen(skb) &&
+	    skb_queue_len(&tp->ucopy.prequeue) == 0)
+		return false;
+
+	skb_dst_force(skb);
+	__skb_queue_tail(&tp->ucopy.prequeue, skb);
+	tp->ucopy.memory += skb->truesize;
+	if (tp->ucopy.memory > sk->sk_rcvbuf) {
+		struct sk_buff *skb1;
+
+		BUG_ON(sock_owned_by_user(sk));
+
+		while ((skb1 = __skb_dequeue(&tp->ucopy.prequeue)) != NULL) {
+			sk_backlog_rcv(sk, skb1);
+			NET_INC_STATS_BH(sock_net(sk),
+					 LINUX_MIB_TCPPREQUEUEDROPPED);
+		}
+
+		tp->ucopy.memory = 0;
+	} else if (skb_queue_len(&tp->ucopy.prequeue) == 1) {
+		wake_up_interruptible_sync_poll(sk_sleep(sk),
+					   POLLIN | POLLRDNORM | POLLRDBAND);
+		if (!inet_csk_ack_scheduled(sk))
+			inet_csk_reset_xmit_timer(sk, ICSK_TIME_DACK,
+						  (3 * tcp_rto_min(sk)) / 4,
+						  TCP_RTO_MAX);
+	}
+	return true;
+}
+EXPORT_SYMBOL(tcp_prequeue);
+
+>>>>>>> refs/remotes/origin/master
 /*
  *	From tcp_input.c
  */
@@ -2031,10 +2892,14 @@ int tcp_v4_rcv(struct sk_buff *skb)
 {
 	const struct iphdr *iph;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tcphdr *th;
 =======
 	const struct tcphdr *th;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct tcphdr *th;
+>>>>>>> refs/remotes/origin/master
 	struct sock *sk;
 	int ret;
 	struct net *net = dev_net(skb->dev);
@@ -2060,7 +2925,11 @@ int tcp_v4_rcv(struct sk_buff *skb)
 	 * provided case of th->doff==0 is eliminated.
 	 * So, we defer the checks. */
 	if (!skb_csum_unnecessary(skb) && tcp_v4_checksum_init(skb))
+<<<<<<< HEAD
 		goto bad_packet;
+=======
+		goto csum_error;
+>>>>>>> refs/remotes/origin/master
 
 	th = tcp_hdr(skb);
 	iph = ip_hdr(skb);
@@ -2070,10 +2939,14 @@ int tcp_v4_rcv(struct sk_buff *skb)
 	TCP_SKB_CB(skb)->ack_seq = ntohl(th->ack_seq);
 	TCP_SKB_CB(skb)->when	 = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TCP_SKB_CB(skb)->flags	 = iph->tos;
 =======
 	TCP_SKB_CB(skb)->ip_dsfield = ipv4_get_dsfield(iph);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TCP_SKB_CB(skb)->ip_dsfield = ipv4_get_dsfield(iph);
+>>>>>>> refs/remotes/origin/master
 	TCP_SKB_CB(skb)->sacked	 = 0;
 
 	sk = __inet_lookup_skb(&tcp_hashinfo, skb, th->source, th->dest);
@@ -2096,6 +2969,10 @@ process:
 	if (sk_filter(sk, skb))
 		goto discard_and_relse;
 
+<<<<<<< HEAD
+=======
+	sk_mark_napi_id(sk, skb);
+>>>>>>> refs/remotes/origin/master
 	skb->dev = NULL;
 
 	bh_lock_sock_nested(sk);
@@ -2105,10 +2982,14 @@ process:
 		struct tcp_sock *tp = tcp_sk(sk);
 		if (!tp->ucopy.dma_chan && tp->ucopy.pinned_list)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			tp->ucopy.dma_chan = dma_find_channel(DMA_MEMCPY);
 =======
 			tp->ucopy.dma_chan = net_dma_find_channel();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			tp->ucopy.dma_chan = net_dma_find_channel();
+>>>>>>> refs/remotes/origin/master
 		if (tp->ucopy.dma_chan)
 			ret = tcp_v4_do_rcv(sk, skb);
 		else
@@ -2117,7 +2998,12 @@ process:
 			if (!tcp_prequeue(sk, skb))
 				ret = tcp_v4_do_rcv(sk, skb);
 		}
+<<<<<<< HEAD
 	} else if (unlikely(sk_add_backlog(sk, skb))) {
+=======
+	} else if (unlikely(sk_add_backlog(sk, skb,
+					   sk->sk_rcvbuf + sk->sk_sndbuf))) {
+>>>>>>> refs/remotes/origin/master
 		bh_unlock_sock(sk);
 		NET_INC_STATS_BH(net, LINUX_MIB_TCPBACKLOGDROP);
 		goto discard_and_relse;
@@ -2133,6 +3019,11 @@ no_tcp_socket:
 		goto discard_it;
 
 	if (skb->len < (th->doff << 2) || tcp_checksum_complete(skb)) {
+<<<<<<< HEAD
+=======
+csum_error:
+		TCP_INC_STATS_BH(net, TCP_MIB_CSUMERRORS);
+>>>>>>> refs/remotes/origin/master
 bad_packet:
 		TCP_INC_STATS_BH(net, TCP_MIB_INERRS);
 	} else {
@@ -2154,15 +3045,29 @@ do_time_wait:
 		goto discard_it;
 	}
 
+<<<<<<< HEAD
 	if (skb->len < (th->doff << 2) || tcp_checksum_complete(skb)) {
 		TCP_INC_STATS_BH(net, TCP_MIB_INERRS);
 		inet_twsk_put(inet_twsk(sk));
 		goto discard_it;
+=======
+	if (skb->len < (th->doff << 2)) {
+		inet_twsk_put(inet_twsk(sk));
+		goto bad_packet;
+	}
+	if (tcp_checksum_complete(skb)) {
+		inet_twsk_put(inet_twsk(sk));
+		goto csum_error;
+>>>>>>> refs/remotes/origin/master
 	}
 	switch (tcp_timewait_state_process(inet_twsk(sk), skb, th)) {
 	case TCP_TW_SYN: {
 		struct sock *sk2 = inet_lookup_listener(dev_net(skb->dev),
 							&tcp_hashinfo,
+<<<<<<< HEAD
+=======
+							iph->saddr, th->source,
+>>>>>>> refs/remotes/origin/master
 							iph->daddr, th->dest,
 							inet_iif(skb));
 		if (sk2) {
@@ -2183,6 +3088,7 @@ do_time_wait:
 	goto discard_it;
 }
 
+<<<<<<< HEAD
 struct inet_peer *tcp_v4_get_peer(struct sock *sk, bool *release_it)
 {
 	struct rtable *rt = (struct rtable *) __sk_dst_get(sk);
@@ -2216,20 +3122,43 @@ void *tcp_v4_tw_get_peer(struct sock *sk)
 }
 EXPORT_SYMBOL(tcp_v4_tw_get_peer);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct timewait_sock_ops tcp_timewait_sock_ops = {
 	.twsk_obj_size	= sizeof(struct tcp_timewait_sock),
 	.twsk_unique	= tcp_twsk_unique,
 	.twsk_destructor= tcp_twsk_destructor,
+<<<<<<< HEAD
 	.twsk_getpeer	= tcp_v4_tw_get_peer,
 };
 
+=======
+};
+
+void inet_sk_rx_dst_set(struct sock *sk, const struct sk_buff *skb)
+{
+	struct dst_entry *dst = skb_dst(skb);
+
+	dst_hold(dst);
+	sk->sk_rx_dst = dst;
+	inet_sk(sk)->rx_dst_ifindex = skb->skb_iif;
+}
+EXPORT_SYMBOL(inet_sk_rx_dst_set);
+
+>>>>>>> refs/remotes/origin/master
 const struct inet_connection_sock_af_ops ipv4_specific = {
 	.queue_xmit	   = ip_queue_xmit,
 	.send_check	   = tcp_v4_send_check,
 	.rebuild_header	   = inet_sk_rebuild_header,
+<<<<<<< HEAD
 	.conn_request	   = tcp_v4_conn_request,
 	.syn_recv_sock	   = tcp_v4_syn_recv_sock,
 	.get_peer	   = tcp_v4_get_peer,
+=======
+	.sk_rx_dst_set	   = inet_sk_rx_dst_set,
+	.conn_request	   = tcp_v4_conn_request,
+	.syn_recv_sock	   = tcp_v4_syn_recv_sock,
+>>>>>>> refs/remotes/origin/master
 	.net_header_len	   = sizeof(struct iphdr),
 	.setsockopt	   = ip_setsockopt,
 	.getsockopt	   = ip_getsockopt,
@@ -2248,9 +3177,12 @@ static const struct tcp_sock_af_ops tcp_sock_ipv4_specific = {
 	.md5_lookup		= tcp_v4_md5_lookup,
 	.calc_md5_hash		= tcp_v4_md5_hash_skb,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.md5_add		= tcp_v4_md5_add_func,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.md5_parse		= tcp_v4_parse_md5_keys,
 };
 #endif
@@ -2261,6 +3193,7 @@ static const struct tcp_sock_af_ops tcp_sock_ipv4_specific = {
 static int tcp_v4_init_sock(struct sock *sk)
 {
 	struct inet_connection_sock *icsk = inet_csk(sk);
+<<<<<<< HEAD
 	struct tcp_sock *tp = tcp_sk(sk);
 
 	skb_queue_head_init(&tp->out_of_order_queue);
@@ -2327,6 +3260,17 @@ static int tcp_v4_init_sock(struct sock *sk)
 >>>>>>> refs/remotes/origin/cm-10.0
 	local_bh_enable();
 
+=======
+
+	tcp_init_sock(sk);
+
+	icsk->icsk_af_ops = &ipv4_specific;
+
+#ifdef CONFIG_TCP_MD5SIG
+	tcp_sk(sk)->af_specific = &tcp_sock_ipv4_specific;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2348,12 +3292,17 @@ void tcp_v4_destroy_sock(struct sock *sk)
 	/* Clean up the MD5 key list, if any */
 	if (tp->md5sig_info) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tcp_v4_clear_md5_list(sk);
 		kfree(tp->md5sig_info);
 =======
 		tcp_clear_md5_list(sk);
 		kfree_rcu(tp->md5sig_info, rcu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tcp_clear_md5_list(sk);
+		kfree_rcu(tp->md5sig_info, rcu);
+>>>>>>> refs/remotes/origin/master
 		tp->md5sig_info = NULL;
 	}
 #endif
@@ -2370,6 +3319,7 @@ void tcp_v4_destroy_sock(struct sock *sk)
 	if (inet_csk(sk)->icsk_bind_hash)
 		inet_put_port(sk);
 
+<<<<<<< HEAD
 	/*
 	 * If sendmsg cached page exists, toss it.
 	 */
@@ -2452,6 +3402,21 @@ static inline struct inet_timewait_sock *tw_next(struct inet_timewait_sock *tw)
 		hlist_nulls_entry(tw->tw_node.next, typeof(*tw), tw_node) : NULL;
 }
 
+=======
+	BUG_ON(tp->fastopen_rsk != NULL);
+
+	/* If socket is aborted during connect operation */
+	tcp_free_fastopen_req(tp);
+
+	sk_sockets_allocated_dec(sk);
+	sock_release_memcg(sk);
+}
+EXPORT_SYMBOL(tcp_v4_destroy_sock);
+
+#ifdef CONFIG_PROC_FS
+/* Proc filesystem TCP sock list dumping. */
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Get next listener socket follow cur.  If cur is NULL, get first socket
  * starting from bucket given in st->bucket; when st->bucket is zero the
@@ -2555,10 +3520,16 @@ static void *listening_get_idx(struct seq_file *seq, loff_t *pos)
 	return rc;
 }
 
+<<<<<<< HEAD
 static inline int empty_bucket(struct tcp_iter_state *st)
 {
 	return hlist_nulls_empty(&tcp_hashinfo.ehash[st->bucket].chain) &&
 		hlist_nulls_empty(&tcp_hashinfo.ehash[st->bucket].twchain);
+=======
+static inline bool empty_bucket(const struct tcp_iter_state *st)
+{
+	return hlist_nulls_empty(&tcp_hashinfo.ehash[st->bucket].chain);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2575,7 +3546,10 @@ static void *established_get_first(struct seq_file *seq)
 	for (; st->bucket <= tcp_hashinfo.ehash_mask; ++st->bucket) {
 		struct sock *sk;
 		struct hlist_nulls_node *node;
+<<<<<<< HEAD
 		struct inet_timewait_sock *tw;
+=======
+>>>>>>> refs/remotes/origin/master
 		spinlock_t *lock = inet_ehash_lockp(&tcp_hashinfo, st->bucket);
 
 		/* Lockless fast path for the common case of empty buckets */
@@ -2591,6 +3565,7 @@ static void *established_get_first(struct seq_file *seq)
 			rc = sk;
 			goto out;
 		}
+<<<<<<< HEAD
 		st->state = TCP_SEQ_STATE_TIME_WAIT;
 		inet_twsk_for_each(tw, node,
 				   &tcp_hashinfo.ehash[st->bucket].twchain) {
@@ -2603,6 +3578,9 @@ static void *established_get_first(struct seq_file *seq)
 		}
 		spin_unlock_bh(lock);
 		st->state = TCP_SEQ_STATE_ESTABLISHED;
+=======
+		spin_unlock_bh(lock);
+>>>>>>> refs/remotes/origin/master
 	}
 out:
 	return rc;
@@ -2611,7 +3589,10 @@ out:
 static void *established_get_next(struct seq_file *seq, void *cur)
 {
 	struct sock *sk = cur;
+<<<<<<< HEAD
 	struct inet_timewait_sock *tw;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct hlist_nulls_node *node;
 	struct tcp_iter_state *st = seq->private;
 	struct net *net = seq_file_net(seq);
@@ -2619,6 +3600,7 @@ static void *established_get_next(struct seq_file *seq, void *cur)
 	++st->num;
 	++st->offset;
 
+<<<<<<< HEAD
 	if (st->state == TCP_SEQ_STATE_TIME_WAIT) {
 		tw = cur;
 		tw = tw_next(tw);
@@ -2658,6 +3640,18 @@ found:
 	cur = sk;
 out:
 	return cur;
+=======
+	sk = sk_nulls_next(sk);
+
+	sk_nulls_for_each_from(sk, node) {
+		if (sk->sk_family == st->family && net_eq(sock_net(sk), net))
+			return sk;
+	}
+
+	spin_unlock_bh(inet_ehash_lockp(&tcp_hashinfo, st->bucket));
+	++st->bucket;
+	return established_get_first(seq);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void *established_get_idx(struct seq_file *seq, loff_t pos)
@@ -2710,10 +3704,16 @@ static void *tcp_seek_last_pos(struct seq_file *seq)
 		if (rc)
 			break;
 		st->bucket = 0;
+<<<<<<< HEAD
 		/* Fallthrough */
 	case TCP_SEQ_STATE_ESTABLISHED:
 	case TCP_SEQ_STATE_TIME_WAIT:
 		st->state = TCP_SEQ_STATE_ESTABLISHED;
+=======
+		st->state = TCP_SEQ_STATE_ESTABLISHED;
+		/* Fallthrough */
+	case TCP_SEQ_STATE_ESTABLISHED:
+>>>>>>> refs/remotes/origin/master
 		if (st->bucket > tcp_hashinfo.ehash_mask)
 			break;
 		rc = established_get_first(seq);
@@ -2770,7 +3770,10 @@ static void *tcp_seq_next(struct seq_file *seq, void *v, loff_t *pos)
 		}
 		break;
 	case TCP_SEQ_STATE_ESTABLISHED:
+<<<<<<< HEAD
 	case TCP_SEQ_STATE_TIME_WAIT:
+=======
+>>>>>>> refs/remotes/origin/master
 		rc = established_get_next(seq, v);
 		break;
 	}
@@ -2794,7 +3797,10 @@ static void tcp_seq_stop(struct seq_file *seq, void *v)
 		if (v != SEQ_START_TOKEN)
 			spin_unlock_bh(&tcp_hashinfo.listening_hash[st->bucket].lock);
 		break;
+<<<<<<< HEAD
 	case TCP_SEQ_STATE_TIME_WAIT:
+=======
+>>>>>>> refs/remotes/origin/master
 	case TCP_SEQ_STATE_ESTABLISHED:
 		if (v)
 			spin_unlock_bh(inet_ehash_lockp(&tcp_hashinfo, st->bucket));
@@ -2803,12 +3809,18 @@ static void tcp_seq_stop(struct seq_file *seq, void *v)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int tcp_seq_open(struct inode *inode, struct file *file)
 =======
 int tcp_seq_open(struct inode *inode, struct file *file)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct tcp_seq_afinfo *afinfo = PDE(inode)->data;
+=======
+int tcp_seq_open(struct inode *inode, struct file *file)
+{
+	struct tcp_seq_afinfo *afinfo = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	struct tcp_iter_state *s;
 	int err;
 
@@ -2823,15 +3835,20 @@ int tcp_seq_open(struct inode *inode, struct file *file)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(tcp_seq_open);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(tcp_seq_open);
+>>>>>>> refs/remotes/origin/master
 
 int tcp_proc_register(struct net *net, struct tcp_seq_afinfo *afinfo)
 {
 	int rc = 0;
 	struct proc_dir_entry *p;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	afinfo->seq_fops.open		= tcp_seq_open;
 	afinfo->seq_fops.read		= seq_read;
@@ -2840,16 +3857,22 @@ int tcp_proc_register(struct net *net, struct tcp_seq_afinfo *afinfo)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	afinfo->seq_ops.start		= tcp_seq_start;
 	afinfo->seq_ops.next		= tcp_seq_next;
 	afinfo->seq_ops.stop		= tcp_seq_stop;
 
 	p = proc_create_data(afinfo->name, S_IRUGO, net->proc_net,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     &afinfo->seq_fops, afinfo);
 =======
 			     afinfo->seq_fops, afinfo);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     afinfo->seq_fops, afinfo);
+>>>>>>> refs/remotes/origin/master
 	if (!p)
 		rc = -ENOMEM;
 	return rc;
@@ -2858,6 +3881,7 @@ EXPORT_SYMBOL(tcp_proc_register);
 
 void tcp_proc_unregister(struct net *net, struct tcp_seq_afinfo *afinfo)
 {
+<<<<<<< HEAD
 	proc_net_remove(net, afinfo->name);
 }
 EXPORT_SYMBOL(tcp_proc_unregister);
@@ -2905,13 +3929,58 @@ static void get_tcp4_sock(struct sock *sk, struct seq_file *f, int i, int *len)
 	const struct inet_connection_sock *icsk = inet_csk(sk);
 	const struct inet_sock *inet = inet_sk(sk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	remove_proc_entry(afinfo->name, net->proc_net);
+}
+EXPORT_SYMBOL(tcp_proc_unregister);
+
+static void get_openreq4(const struct sock *sk, const struct request_sock *req,
+			 struct seq_file *f, int i, kuid_t uid)
+{
+	const struct inet_request_sock *ireq = inet_rsk(req);
+	long delta = req->expires - jiffies;
+
+	seq_printf(f, "%4d: %08X:%04X %08X:%04X"
+		" %02X %08X:%08X %02X:%08lX %08X %5u %8d %u %d %pK",
+		i,
+		ireq->ir_loc_addr,
+		ntohs(inet_sk(sk)->inet_sport),
+		ireq->ir_rmt_addr,
+		ntohs(ireq->ir_rmt_port),
+		TCP_SYN_RECV,
+		0, 0, /* could print option size, but that is af dependent. */
+		1,    /* timers active (only the expire timer) */
+		jiffies_delta_to_clock_t(delta),
+		req->num_timeout,
+		from_kuid_munged(seq_user_ns(f), uid),
+		0,  /* non standard timer */
+		0, /* open_requests have no inode */
+		atomic_read(&sk->sk_refcnt),
+		req);
+}
+
+static void get_tcp4_sock(struct sock *sk, struct seq_file *f, int i)
+{
+	int timer_active;
+	unsigned long timer_expires;
+	const struct tcp_sock *tp = tcp_sk(sk);
+	const struct inet_connection_sock *icsk = inet_csk(sk);
+	const struct inet_sock *inet = inet_sk(sk);
+	struct fastopen_queue *fastopenq = icsk->icsk_accept_queue.fastopenq;
+>>>>>>> refs/remotes/origin/master
 	__be32 dest = inet->inet_daddr;
 	__be32 src = inet->inet_rcv_saddr;
 	__u16 destp = ntohs(inet->inet_dport);
 	__u16 srcp = ntohs(inet->inet_sport);
 	int rx_queue;
 
+<<<<<<< HEAD
 	if (icsk->icsk_pending == ICSK_TIME_RETRANS) {
+=======
+	if (icsk->icsk_pending == ICSK_TIME_RETRANS ||
+	    icsk->icsk_pending == ICSK_TIME_EARLY_RETRANS ||
+	    icsk->icsk_pending == ICSK_TIME_LOSS_PROBE) {
+>>>>>>> refs/remotes/origin/master
 		timer_active	= 1;
 		timer_expires	= icsk->icsk_timeout;
 	} else if (icsk->icsk_pending == ICSK_TIME_PROBE0) {
@@ -2934,14 +4003,24 @@ static void get_tcp4_sock(struct sock *sk, struct seq_file *f, int i, int *len)
 		rx_queue = max_t(int, tp->rcv_nxt - tp->copied_seq, 0);
 
 	seq_printf(f, "%4d: %08X:%04X %08X:%04X %02X %08X:%08X %02X:%08lX "
+<<<<<<< HEAD
 			"%08X %5d %8d %lu %d %pK %lu %lu %u %u %d%n",
+=======
+			"%08X %5u %8d %lu %d %pK %lu %lu %u %u %d",
+>>>>>>> refs/remotes/origin/master
 		i, src, srcp, dest, destp, sk->sk_state,
 		tp->write_seq - tp->snd_una,
 		rx_queue,
 		timer_active,
+<<<<<<< HEAD
 		jiffies_to_clock_t(timer_expires - jiffies),
 		icsk->icsk_retransmits,
 		sock_i_uid(sk),
+=======
+		jiffies_delta_to_clock_t(timer_expires - jiffies),
+		icsk->icsk_retransmits,
+		from_kuid_munged(seq_user_ns(f), sock_i_uid(sk)),
+>>>>>>> refs/remotes/origin/master
 		icsk->icsk_probes_out,
 		sock_i_ino(sk),
 		atomic_read(&sk->sk_refcnt), sk,
@@ -2949,6 +4028,7 @@ static void get_tcp4_sock(struct sock *sk, struct seq_file *f, int i, int *len)
 		jiffies_to_clock_t(icsk->icsk_ack.ato),
 		(icsk->icsk_ack.quick << 1) | icsk->icsk_ack.pingpong,
 		tp->snd_cwnd,
+<<<<<<< HEAD
 		tcp_in_initial_slowstart(tp) ? -1 : tp->snd_ssthresh,
 		len);
 }
@@ -2966,6 +4046,19 @@ static void get_timewait4_sock(const struct inet_timewait_sock *tw,
 
 	if (ttd < 0)
 		ttd = 0;
+=======
+		sk->sk_state == TCP_LISTEN ?
+		    (fastopenq ? fastopenq->max_qlen : 0) :
+		    (tcp_in_initial_slowstart(tp) ? -1 : tp->snd_ssthresh));
+}
+
+static void get_timewait4_sock(const struct inet_timewait_sock *tw,
+			       struct seq_file *f, int i)
+{
+	__be32 dest, src;
+	__u16 destp, srcp;
+	long delta = tw->tw_ttd - jiffies;
+>>>>>>> refs/remotes/origin/master
 
 	dest  = tw->tw_daddr;
 	src   = tw->tw_rcv_saddr;
@@ -2973,10 +4066,17 @@ static void get_timewait4_sock(const struct inet_timewait_sock *tw,
 	srcp  = ntohs(tw->tw_sport);
 
 	seq_printf(f, "%4d: %08X:%04X %08X:%04X"
+<<<<<<< HEAD
 		" %02X %08X:%08X %02X:%08lX %08X %5d %8d %d %d %pK%n",
 		i, src, srcp, dest, destp, tw->tw_substate, 0, 0,
 		3, jiffies_to_clock_t(ttd), 0, 0, 0, 0,
 		atomic_read(&tw->tw_refcnt), tw, len);
+=======
+		" %02X %08X:%08X %02X:%08lX %08X %5d %8d %d %d %pK",
+		i, src, srcp, dest, destp, tw->tw_substate, 0, 0,
+		3, jiffies_delta_to_clock_t(delta), 0, 0, 0, 0,
+		atomic_read(&tw->tw_refcnt), tw);
+>>>>>>> refs/remotes/origin/master
 }
 
 #define TMPSZ 150
@@ -2984,11 +4084,19 @@ static void get_timewait4_sock(const struct inet_timewait_sock *tw,
 static int tcp4_seq_show(struct seq_file *seq, void *v)
 {
 	struct tcp_iter_state *st;
+<<<<<<< HEAD
 	int len;
 
 	if (v == SEQ_START_TOKEN) {
 		seq_printf(seq, "%-*s\n", TMPSZ - 1,
 			   "  sl  local_address rem_address   st tx_queue "
+=======
+	struct sock *sk = v;
+
+	seq_setwidth(seq, TMPSZ - 1);
+	if (v == SEQ_START_TOKEN) {
+		seq_puts(seq, "  sl  local_address rem_address   st tx_queue "
+>>>>>>> refs/remotes/origin/master
 			   "rx_queue tr tm->when retrnsmt   uid  timeout "
 			   "inode");
 		goto out;
@@ -2998,6 +4106,7 @@ static int tcp4_seq_show(struct seq_file *seq, void *v)
 	switch (st->state) {
 	case TCP_SEQ_STATE_LISTENING:
 	case TCP_SEQ_STATE_ESTABLISHED:
+<<<<<<< HEAD
 		get_tcp4_sock(v, seq, st->num, &len);
 		break;
 	case TCP_SEQ_STATE_OPENREQ:
@@ -3020,6 +4129,22 @@ static struct tcp_seq_afinfo tcp4_seq_afinfo = {
 		.owner		= THIS_MODULE,
 	},
 =======
+=======
+		if (sk->sk_state == TCP_TIME_WAIT)
+			get_timewait4_sock(v, seq, st->num);
+		else
+			get_tcp4_sock(v, seq, st->num);
+		break;
+	case TCP_SEQ_STATE_OPENREQ:
+		get_openreq4(st->syn_wait_sk, v, seq, st->num, st->uid);
+		break;
+	}
+out:
+	seq_pad(seq, '\n');
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static const struct file_operations tcp_afinfo_seq_fops = {
 	.owner   = THIS_MODULE,
 	.open    = tcp_seq_open,
@@ -3032,7 +4157,10 @@ static struct tcp_seq_afinfo tcp4_seq_afinfo = {
 	.name		= "tcp",
 	.family		= AF_INET,
 	.seq_fops	= &tcp_afinfo_seq_fops,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.seq_ops	= {
 		.show		= tcp4_seq_show,
 	},
@@ -3064,6 +4192,7 @@ void tcp4_proc_exit(void)
 }
 #endif /* CONFIG_PROC_FS */
 
+<<<<<<< HEAD
 struct sk_buff **tcp4_gro_receive(struct sk_buff **head, struct sk_buff *skb)
 {
 	const struct iphdr *iph = skb_gro_network_header(skb);
@@ -3097,6 +4226,8 @@ int tcp4_gro_complete(struct sk_buff *skb)
 	return tcp_gro_complete(skb);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct proto tcp_prot = {
 	.name			= "TCP",
 	.owner			= THIS_MODULE,
@@ -3114,18 +4245,31 @@ struct proto tcp_prot = {
 	.sendmsg		= tcp_sendmsg,
 	.sendpage		= tcp_sendpage,
 	.backlog_rcv		= tcp_v4_do_rcv,
+<<<<<<< HEAD
+=======
+	.release_cb		= tcp_release_cb,
+	.mtu_reduced		= tcp_v4_mtu_reduced,
+>>>>>>> refs/remotes/origin/master
 	.hash			= inet_hash,
 	.unhash			= inet_unhash,
 	.get_port		= inet_csk_get_port,
 	.enter_memory_pressure	= tcp_enter_memory_pressure,
+<<<<<<< HEAD
+=======
+	.stream_memory_free	= tcp_stream_memory_free,
+>>>>>>> refs/remotes/origin/master
 	.sockets_allocated	= &tcp_sockets_allocated,
 	.orphan_count		= &tcp_orphan_count,
 	.memory_allocated	= &tcp_memory_allocated,
 	.memory_pressure	= &tcp_memory_pressure,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.sysctl_mem		= sysctl_tcp_mem,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.sysctl_mem		= sysctl_tcp_mem,
+>>>>>>> refs/remotes/origin/master
 	.sysctl_wmem		= sysctl_tcp_wmem,
 	.sysctl_rmem		= sysctl_tcp_rmem,
 	.max_header		= MAX_TCP_HEADER,
@@ -3140,12 +4284,16 @@ struct proto tcp_prot = {
 	.compat_getsockopt	= compat_tcp_getsockopt,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 EXPORT_SYMBOL(tcp_prot);
 
 
 =======
 #ifdef CONFIG_CGROUP_MEM_RES_CTLR_KMEM
+=======
+#ifdef CONFIG_MEMCG_KMEM
+>>>>>>> refs/remotes/origin/master
 	.init_cgroup		= tcp_init_cgroup,
 	.destroy_cgroup		= tcp_destroy_cgroup,
 	.proto_cgroup		= tcp_proto_cgroup,
@@ -3153,16 +4301,26 @@ EXPORT_SYMBOL(tcp_prot);
 };
 EXPORT_SYMBOL(tcp_prot);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int __net_init tcp_sk_init(struct net *net)
 {
 	return inet_ctl_sock_create(&net->ipv4.tcp_sock,
 				    PF_INET, SOCK_RAW, IPPROTO_TCP, net);
+=======
+static int __net_init tcp_sk_init(struct net *net)
+{
+	net->ipv4.sysctl_tcp_ecn = 2;
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __net_exit tcp_sk_exit(struct net *net)
 {
+<<<<<<< HEAD
 	inet_ctl_sock_destroy(net->ipv4.tcp_sock);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __net_exit tcp_sk_exit_batch(struct list_head *net_exit_list)

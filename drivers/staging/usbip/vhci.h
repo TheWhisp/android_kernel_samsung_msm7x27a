@@ -7,6 +7,7 @@
  * (at your option) any later version.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * This is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,12 +20,17 @@
  */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef __USBIP_VHCI_H
 #define __USBIP_VHCI_H
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/list.h>
 #include <linux/spinlock.h>
@@ -85,12 +91,16 @@ struct vhci_unlink {
 	unsigned long unlink_seqnum;
 };
 
+<<<<<<< HEAD
 /*
  * The number of ports is less than 16 ?
  * USB_MAXCHILDREN is statically defined to 16 in usb.h.  Its maximum value
  * would be 31 because the event_bits[1] of struct usb_hub is defined as
  * unsigned long in hub.h
  */
+=======
+/* Number of supported ports. Value has an upperbound of USB_MAXCHILDREN */
+>>>>>>> refs/remotes/origin/master
 #define VHCI_NPORTS 8
 
 /* for usb_bus.hcpriv */
@@ -114,6 +124,7 @@ struct vhci_hcd {
 
 extern struct vhci_hcd *the_controller;
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct attribute_group dev_attr_group;
 =======
 extern const struct attribute_group dev_attr_group;
@@ -123,6 +134,12 @@ extern const struct attribute_group dev_attr_group;
 /* vhci_hcd.c */
 void rh_port_connect(int rhport, enum usb_device_speed speed);
 void rh_port_disconnect(int rhport);
+=======
+extern const struct attribute_group dev_attr_group;
+
+/* vhci_hcd.c */
+void rh_port_connect(int rhport, enum usb_device_speed speed);
+>>>>>>> refs/remotes/origin/master
 
 /* vhci_rx.c */
 struct urb *pickup_urb_and_free_priv(struct vhci_device *vdev, __u32 seqnum);
@@ -151,7 +168,12 @@ static inline struct device *vhci_dev(struct vhci_hcd *vhci)
 	return vhci_to_hcd(vhci)->self.controller;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 #endif /* __USBIP_VHCI_H */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#endif /* __USBIP_VHCI_H */
+>>>>>>> refs/remotes/origin/master

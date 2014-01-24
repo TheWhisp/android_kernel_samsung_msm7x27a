@@ -20,11 +20,16 @@
 #include <linux/signal.h>
 #include <linux/rcupdate.h>
 #include <linux/pid_namespace.h>
+<<<<<<< HEAD
+=======
+#include <linux/user_namespace.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/poll.h>
 #include <asm/siginfo.h>
 #include <asm/uaccess.h>
 
+<<<<<<< HEAD
 void set_close_on_exec(unsigned int fd, int flag)
 {
 	struct files_struct *files = current->files;
@@ -172,11 +177,17 @@ SYSCALL_DEFINE1(dup, unsigned int, fildes)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define SETFL_MASK (O_APPEND | O_NONBLOCK | O_NDELAY | O_DIRECT | O_NOATIME)
 
 static int setfl(int fd, struct file * filp, unsigned long arg)
 {
+<<<<<<< HEAD
 	struct inode * inode = filp->f_path.dentry->d_inode;
+=======
+	struct inode * inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 	int error = 0;
 
 	/*
@@ -202,7 +213,11 @@ static int setfl(int fd, struct file * filp, unsigned long arg)
 				return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (filp->f_op && filp->f_op->check_flags)
+=======
+	if (filp->f_op->check_flags)
+>>>>>>> refs/remotes/origin/master
 		error = filp->f_op->check_flags(arg);
 	if (error)
 		return error;
@@ -210,8 +225,12 @@ static int setfl(int fd, struct file * filp, unsigned long arg)
 	/*
 	 * ->fasync() is responsible for setting the FASYNC bit.
 	 */
+<<<<<<< HEAD
 	if (((arg ^ filp->f_flags) & FASYNC) && filp->f_op &&
 			filp->f_op->fasync) {
+=======
+	if (((arg ^ filp->f_flags) & FASYNC) && filp->f_op->fasync) {
+>>>>>>> refs/remotes/origin/master
 		error = filp->f_op->fasync(fd, filp, (arg & FASYNC) != 0);
 		if (error < 0)
 			goto out;
@@ -295,7 +314,11 @@ pid_t f_getown(struct file *filp)
 
 static int f_setown_ex(struct file *filp, unsigned long arg)
 {
+<<<<<<< HEAD
 	struct f_owner_ex * __user owner_p = (void * __user)arg;
+=======
+	struct f_owner_ex __user *owner_p = (void __user *)arg;
+>>>>>>> refs/remotes/origin/master
 	struct f_owner_ex owner;
 	struct pid *pid;
 	int type;
@@ -335,7 +358,11 @@ static int f_setown_ex(struct file *filp, unsigned long arg)
 
 static int f_getown_ex(struct file *filp, unsigned long arg)
 {
+<<<<<<< HEAD
 	struct f_owner_ex * __user owner_p = (void * __user)arg;
+=======
+	struct f_owner_ex __user *owner_p = (void __user *)arg;
+>>>>>>> refs/remotes/origin/master
 	struct f_owner_ex owner;
 	int ret = 0;
 
@@ -369,6 +396,34 @@ static int f_getown_ex(struct file *filp, unsigned long arg)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CHECKPOINT_RESTORE
+static int f_getowner_uids(struct file *filp, unsigned long arg)
+{
+	struct user_namespace *user_ns = current_user_ns();
+	uid_t __user *dst = (void __user *)arg;
+	uid_t src[2];
+	int err;
+
+	read_lock(&filp->f_owner.lock);
+	src[0] = from_kuid(user_ns, filp->f_owner.uid);
+	src[1] = from_kuid(user_ns, filp->f_owner.euid);
+	read_unlock(&filp->f_owner.lock);
+
+	err  = put_user(src[0], &dst[0]);
+	err |= put_user(src[1], &dst[1]);
+
+	return err;
+}
+#else
+static int f_getowner_uids(struct file *filp, unsigned long arg)
+{
+	return -EINVAL;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
 		struct file *filp)
 {
@@ -376,6 +431,7 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
 
 	switch (cmd) {
 	case F_DUPFD:
+<<<<<<< HEAD
 	case F_DUPFD_CLOEXEC:
 		if (arg >= rlimit(RLIMIT_NOFILE))
 			break;
@@ -384,6 +440,12 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
 			get_file(filp);
 			fd_install(err, filp);
 		}
+=======
+		err = f_dupfd(arg, filp, 0);
+		break;
+	case F_DUPFD_CLOEXEC:
+		err = f_dupfd(arg, filp, O_CLOEXEC);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case F_GETFD:
 		err = get_close_on_exec(fd) ? FD_CLOEXEC : 0;
@@ -425,6 +487,12 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
 	case F_SETOWN_EX:
 		err = f_setown_ex(filp, arg);
 		break;
+<<<<<<< HEAD
+=======
+	case F_GETOWNER_UIDS:
+		err = f_getowner_uids(filp, arg);
+		break;
+>>>>>>> refs/remotes/origin/master
 	case F_GETSIG:
 		err = filp->f_owner.signum;
 		break;
@@ -470,6 +538,7 @@ static int check_fcntl_cmd(unsigned cmd)
 
 SYSCALL_DEFINE3(fcntl, unsigned int, fd, unsigned int, cmd, unsigned long, arg)
 {	
+<<<<<<< HEAD
 	struct file *filp;
 	long err = -EBADF;
 
@@ -493,6 +562,25 @@ SYSCALL_DEFINE3(fcntl, unsigned int, fd, unsigned int, cmd, unsigned long, arg)
 	err = do_fcntl(fd, cmd, arg, filp);
 
  	fput(filp);
+=======
+	struct fd f = fdget_raw(fd);
+	long err = -EBADF;
+
+	if (!f.file)
+		goto out;
+
+	if (unlikely(f.file->f_mode & FMODE_PATH)) {
+		if (!check_fcntl_cmd(cmd))
+			goto out1;
+	}
+
+	err = security_file_fcntl(f.file, cmd, arg);
+	if (!err)
+		err = do_fcntl(fd, cmd, arg, f.file);
+
+out1:
+ 	fdput(f);
+>>>>>>> refs/remotes/origin/master
 out:
 	return err;
 }
@@ -501,6 +589,7 @@ out:
 SYSCALL_DEFINE3(fcntl64, unsigned int, fd, unsigned int, cmd,
 		unsigned long, arg)
 {	
+<<<<<<< HEAD
 	struct file * filp;
 	long err;
 
@@ -537,6 +626,38 @@ SYSCALL_DEFINE3(fcntl64, unsigned int, fd, unsigned int, cmd,
 			break;
 	}
 	fput(filp);
+=======
+	struct fd f = fdget_raw(fd);
+	long err = -EBADF;
+
+	if (!f.file)
+		goto out;
+
+	if (unlikely(f.file->f_mode & FMODE_PATH)) {
+		if (!check_fcntl_cmd(cmd))
+			goto out1;
+	}
+
+	err = security_file_fcntl(f.file, cmd, arg);
+	if (err)
+		goto out1;
+	
+	switch (cmd) {
+		case F_GETLK64:
+			err = fcntl_getlk64(f.file, (struct flock64 __user *) arg);
+			break;
+		case F_SETLK64:
+		case F_SETLKW64:
+			err = fcntl_setlk64(fd, f.file, cmd,
+					(struct flock64 __user *) arg);
+			break;
+		default:
+			err = do_fcntl(fd, cmd, arg, f.file);
+			break;
+	}
+out1:
+	fdput(f);
+>>>>>>> refs/remotes/origin/master
 out:
 	return err;
 }
@@ -561,9 +682,15 @@ static inline int sigio_perm(struct task_struct *p,
 
 	rcu_read_lock();
 	cred = __task_cred(p);
+<<<<<<< HEAD
 	ret = ((fown->euid == 0 ||
 		fown->euid == cred->suid || fown->euid == cred->uid ||
 		fown->uid  == cred->suid || fown->uid  == cred->uid) &&
+=======
+	ret = ((uid_eq(fown->euid, GLOBAL_ROOT_UID) ||
+		uid_eq(fown->euid, cred->suid) || uid_eq(fown->euid, cred->uid) ||
+		uid_eq(fown->uid,  cred->suid) || uid_eq(fown->uid,  cred->uid)) &&
+>>>>>>> refs/remotes/origin/master
 	       !security_file_send_sigiotask(p, fown, sig));
 	rcu_read_unlock();
 	return ret;
@@ -864,14 +991,22 @@ static int __init fcntl_init(void)
 	 * Exceptions: O_NONBLOCK is a two bit define on parisc; O_NDELAY
 	 * is defined as O_NONBLOCK on some platforms and not on others.
 	 */
+<<<<<<< HEAD
 	BUILD_BUG_ON(19 - 1 /* for O_RDONLY being 0 */ != HWEIGHT32(
+=======
+	BUILD_BUG_ON(20 - 1 /* for O_RDONLY being 0 */ != HWEIGHT32(
+>>>>>>> refs/remotes/origin/master
 		O_RDONLY	| O_WRONLY	| O_RDWR	|
 		O_CREAT		| O_EXCL	| O_NOCTTY	|
 		O_TRUNC		| O_APPEND	| /* O_NONBLOCK	| */
 		__O_SYNC	| O_DSYNC	| FASYNC	|
 		O_DIRECT	| O_LARGEFILE	| O_DIRECTORY	|
 		O_NOFOLLOW	| O_NOATIME	| O_CLOEXEC	|
+<<<<<<< HEAD
 		__FMODE_EXEC	| O_PATH
+=======
+		__FMODE_EXEC	| O_PATH	| __O_TMPFILE
+>>>>>>> refs/remotes/origin/master
 		));
 
 	fasync_cache = kmem_cache_create("fasync_cache",

@@ -13,6 +13,7 @@
 #ifdef CONFIG_KVM_MMIO
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define KVM_COALESCED_MMIO_ZONE_MAX 100
 
 struct kvm_coalesced_mmio_dev {
@@ -22,6 +23,8 @@ struct kvm_coalesced_mmio_dev {
 	int nb_zones;
 	struct kvm_coalesced_mmio_zone zone[KVM_COALESCED_MMIO_ZONE_MAX];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/list.h>
 
 struct kvm_coalesced_mmio_dev {
@@ -29,7 +32,10 @@ struct kvm_coalesced_mmio_dev {
 	struct kvm_io_device dev;
 	struct kvm *kvm;
 	struct kvm_coalesced_mmio_zone zone;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 int kvm_coalesced_mmio_init(struct kvm *kvm);

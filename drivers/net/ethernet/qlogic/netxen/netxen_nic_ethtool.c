@@ -218,7 +218,11 @@ skip:
 			check_sfp_module = netif_running(dev) &&
 				adapter->has_link_events;
 		} else {
+<<<<<<< HEAD
 			ecmd->supported |= (SUPPORTED_TP |SUPPORTED_Autoneg);
+=======
+			ecmd->supported |= (SUPPORTED_TP | SUPPORTED_Autoneg);
+>>>>>>> refs/remotes/origin/master
 			ecmd->advertising |=
 				(ADVERTISED_TP | ADVERTISED_Autoneg);
 			ecmd->port = PORT_TP;
@@ -381,7 +385,11 @@ static u32 netxen_nic_test_link(struct net_device *dev)
 
 static int
 netxen_nic_get_eeprom(struct net_device *dev, struct ethtool_eeprom *eeprom,
+<<<<<<< HEAD
 		      u8 * bytes)
+=======
+		      u8 *bytes)
+>>>>>>> refs/remotes/origin/master
 {
 	struct netxen_adapter *adapter = netdev_priv(dev);
 	int offset;
@@ -488,14 +496,22 @@ netxen_nic_get_pauseparam(struct net_device *dev,
 	__u32 val;
 	int port = adapter->physical_port;
 
+<<<<<<< HEAD
 	if (adapter->ahw.port_type == NETXEN_NIC_GBE) {
 		if ((port < 0) || (port > NETXEN_NIU_MAX_GBE_PORTS))
+=======
+	pause->autoneg = 0;
+
+	if (adapter->ahw.port_type == NETXEN_NIC_GBE) {
+		if ((port < 0) || (port >= NETXEN_NIU_MAX_GBE_PORTS))
+>>>>>>> refs/remotes/origin/master
 			return;
 		/* get flow control settings */
 		val = NXRD32(adapter, NETXEN_NIU_GB_MAC_CONFIG_0(port));
 		pause->rx_pause = netxen_gb_get_rx_flowctl(val);
 		val = NXRD32(adapter, NETXEN_NIU_GB_PAUSE_CTL);
 		switch (port) {
+<<<<<<< HEAD
 			case 0:
 				pause->tx_pause = !(netxen_gb_get_gb0_mask(val));
 				break;
@@ -512,6 +528,24 @@ netxen_nic_get_pauseparam(struct net_device *dev,
 		}
 	} else if (adapter->ahw.port_type == NETXEN_NIC_XGBE) {
 		if ((port < 0) || (port > NETXEN_NIU_MAX_XG_PORTS))
+=======
+		case 0:
+			pause->tx_pause = !(netxen_gb_get_gb0_mask(val));
+			break;
+		case 1:
+			pause->tx_pause = !(netxen_gb_get_gb1_mask(val));
+			break;
+		case 2:
+			pause->tx_pause = !(netxen_gb_get_gb2_mask(val));
+			break;
+		case 3:
+		default:
+			pause->tx_pause = !(netxen_gb_get_gb3_mask(val));
+			break;
+		}
+	} else if (adapter->ahw.port_type == NETXEN_NIC_XGBE) {
+		if ((port < 0) || (port >= NETXEN_NIU_MAX_XG_PORTS))
+>>>>>>> refs/remotes/origin/master
 			return;
 		pause->rx_pause = 1;
 		val = NXRD32(adapter, NETXEN_NIU_XG_PAUSE_CTL);
@@ -532,9 +566,20 @@ netxen_nic_set_pauseparam(struct net_device *dev,
 	struct netxen_adapter *adapter = netdev_priv(dev);
 	__u32 val;
 	int port = adapter->physical_port;
+<<<<<<< HEAD
 	/* read mode */
 	if (adapter->ahw.port_type == NETXEN_NIC_GBE) {
 		if ((port < 0) || (port > NETXEN_NIU_MAX_GBE_PORTS))
+=======
+
+	/* not supported */
+	if (pause->autoneg)
+		return -EINVAL;
+
+	/* read mode */
+	if (adapter->ahw.port_type == NETXEN_NIC_GBE) {
+		if ((port < 0) || (port >= NETXEN_NIU_MAX_GBE_PORTS))
+>>>>>>> refs/remotes/origin/master
 			return -EIO;
 		/* set flow control */
 		val = NXRD32(adapter, NETXEN_NIU_GB_MAC_CONFIG_0(port));
@@ -549,6 +594,7 @@ netxen_nic_set_pauseparam(struct net_device *dev,
 		/* set autoneg */
 		val = NXRD32(adapter, NETXEN_NIU_GB_PAUSE_CTL);
 		switch (port) {
+<<<<<<< HEAD
 			case 0:
 				if (pause->tx_pause)
 					netxen_gb_unset_gb0_mask(val);
@@ -578,6 +624,37 @@ netxen_nic_set_pauseparam(struct net_device *dev,
 		NXWR32(adapter, NETXEN_NIU_GB_PAUSE_CTL, val);
 	} else if (adapter->ahw.port_type == NETXEN_NIC_XGBE) {
 		if ((port < 0) || (port > NETXEN_NIU_MAX_XG_PORTS))
+=======
+		case 0:
+			if (pause->tx_pause)
+				netxen_gb_unset_gb0_mask(val);
+			else
+				netxen_gb_set_gb0_mask(val);
+			break;
+		case 1:
+			if (pause->tx_pause)
+				netxen_gb_unset_gb1_mask(val);
+			else
+				netxen_gb_set_gb1_mask(val);
+			break;
+		case 2:
+			if (pause->tx_pause)
+				netxen_gb_unset_gb2_mask(val);
+			else
+				netxen_gb_set_gb2_mask(val);
+			break;
+		case 3:
+		default:
+			if (pause->tx_pause)
+				netxen_gb_unset_gb3_mask(val);
+			else
+				netxen_gb_set_gb3_mask(val);
+			break;
+		}
+		NXWR32(adapter, NETXEN_NIU_GB_PAUSE_CTL, val);
+	} else if (adapter->ahw.port_type == NETXEN_NIC_XGBE) {
+		if ((port < 0) || (port >= NETXEN_NIU_MAX_XG_PORTS))
+>>>>>>> refs/remotes/origin/master
 			return -EIO;
 		val = NXRD32(adapter, NETXEN_NIU_XG_PAUSE_CTL);
 		if (port == 0) {
@@ -636,7 +713,11 @@ static int netxen_get_sset_count(struct net_device *dev, int sset)
 
 static void
 netxen_nic_diag_test(struct net_device *dev, struct ethtool_test *eth_test,
+<<<<<<< HEAD
 		     u64 * data)
+=======
+		     u64 *data)
+>>>>>>> refs/remotes/origin/master
 {
 	memset(data, 0, sizeof(uint64_t) * NETXEN_NIC_TEST_LEN);
 	if ((data[0] = netxen_nic_reg_test(dev)))
@@ -647,7 +728,11 @@ netxen_nic_diag_test(struct net_device *dev, struct ethtool_test *eth_test,
 }
 
 static void
+<<<<<<< HEAD
 netxen_nic_get_strings(struct net_device *dev, u32 stringset, u8 * data)
+=======
+netxen_nic_get_strings(struct net_device *dev, u32 stringset, u8 *data)
+>>>>>>> refs/remotes/origin/master
 {
 	int index;
 
@@ -668,7 +753,11 @@ netxen_nic_get_strings(struct net_device *dev, u32 stringset, u8 * data)
 
 static void
 netxen_nic_get_ethtool_stats(struct net_device *dev,
+<<<<<<< HEAD
 			     struct ethtool_stats *stats, u64 * data)
+=======
+			     struct ethtool_stats *stats, u64 *data)
+>>>>>>> refs/remotes/origin/master
 {
 	struct netxen_adapter *adapter = netdev_priv(dev);
 	int index;
@@ -826,7 +915,16 @@ netxen_get_dump_flag(struct net_device *netdev, struct ethtool_dump *dump)
 		dump->len = mdump->md_dump_size;
 	else
 		dump->len = 0;
+<<<<<<< HEAD
 	dump->flag = mdump->md_capture_mask;
+=======
+
+	if (!mdump->md_enabled)
+		dump->flag = ETH_FW_DUMP_DISABLE;
+	else
+		dump->flag = mdump->md_capture_mask;
+
+>>>>>>> refs/remotes/origin/master
 	dump->version = adapter->fw_version;
 	return 0;
 }
@@ -834,17 +932,31 @@ netxen_get_dump_flag(struct net_device *netdev, struct ethtool_dump *dump)
 static int
 netxen_set_dump(struct net_device *netdev, struct ethtool_dump *val)
 {
+<<<<<<< HEAD
 	int ret = 0;
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 	struct netxen_adapter *adapter = netdev_priv(netdev);
 	struct netxen_minidump *mdump = &adapter->mdump;
 
 	switch (val->flag) {
 	case NX_FORCE_FW_DUMP_KEY:
+<<<<<<< HEAD
 		if (!mdump->md_enabled)
 			mdump->md_enabled = 1;
 		if (adapter->fw_mdump_rdy) {
 			netdev_info(netdev, "Previous dump not cleared, not forcing dump\n");
 			return ret;
+=======
+		if (!mdump->md_enabled) {
+			netdev_info(netdev, "FW dump not enabled\n");
+			return 0;
+		}
+		if (adapter->fw_mdump_rdy) {
+			netdev_info(netdev, "Previous dump not cleared, not forcing dump\n");
+			return 0;
+>>>>>>> refs/remotes/origin/master
 		}
 		netdev_info(netdev, "Forcing a fw dump\n");
 		nx_dev_request_reset(adapter);
@@ -867,19 +979,34 @@ netxen_set_dump(struct net_device *netdev, struct ethtool_dump *val)
 		adapter->flags &= ~NETXEN_FW_RESET_OWNER;
 		break;
 	default:
+<<<<<<< HEAD
 		if (val->flag <= NX_DUMP_MASK_MAX &&
 			val->flag >= NX_DUMP_MASK_MIN) {
 			mdump->md_capture_mask = val->flag & 0xff;
 			netdev_info(netdev, "Driver mask changed to: 0x%x\n",
 					mdump->md_capture_mask);
 			break;
+=======
+		for (i = 0; i < ARRAY_SIZE(FW_DUMP_LEVELS); i++) {
+			if (val->flag == FW_DUMP_LEVELS[i]) {
+				mdump->md_capture_mask = val->flag;
+				netdev_info(netdev,
+					"Driver mask changed to: 0x%x\n",
+					mdump->md_capture_mask);
+				return 0;
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 		netdev_info(netdev,
 			"Invalid dump level: 0x%x\n", val->flag);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	return ret;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int

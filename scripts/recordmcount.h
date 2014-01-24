@@ -261,11 +261,20 @@ static unsigned get_mcountsym(Elf_Sym const *const sym0,
 		&sym0[Elf_r_sym(relp)];
 	char const *symname = &str0[w(symp->st_name)];
 	char const *mcount = gpfx == '_' ? "_mcount" : "mcount";
+<<<<<<< HEAD
+=======
+	char const *fentry = "__fentry__";
+>>>>>>> refs/remotes/origin/master
 
 	if (symname[0] == '.')
 		++symname;  /* ppc64 hack */
 	if (strcmp(mcount, symname) == 0 ||
+<<<<<<< HEAD
 	    (altmcount && strcmp(altmcount, symname) == 0))
+=======
+	    (altmcount && strcmp(altmcount, symname) == 0) ||
+	    (strcmp(fentry, symname) == 0))
+>>>>>>> refs/remotes/origin/master
 		mcountsym = Elf_r_sym(relp);
 
 	return mcountsym;

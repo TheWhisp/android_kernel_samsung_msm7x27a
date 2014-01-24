@@ -78,7 +78,11 @@ char *cachefiles_cook_key(const u8 *raw, int keylen, uint8_t type)
 
 	_debug("max: %d", max);
 
+<<<<<<< HEAD
 	key = kmalloc(max, GFP_KERNEL);
+=======
+	key = kmalloc(max, cachefiles_gfp);
+>>>>>>> refs/remotes/origin/master
 	if (!key)
 		return NULL;
 

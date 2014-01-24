@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/uaccess.h
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *    Copyright IBM Corp. 2007
  *
  */

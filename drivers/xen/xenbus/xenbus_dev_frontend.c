@@ -35,6 +35,11 @@
  *                              Turned xenfs into a loadable module.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/uio.h>
@@ -458,7 +463,11 @@ static ssize_t xenbus_file_write(struct file *filp,
 		goto out;
 
 	/* Can't write a xenbus message larger we can buffer */
+<<<<<<< HEAD
 	if ((len + u->len) > sizeof(u->u.buffer)) {
+=======
+	if (len > sizeof(u->u.buffer) - u->len) {
+>>>>>>> refs/remotes/origin/master
 		/* On error, dump existing buffer */
 		u->len = 0;
 		rc = -EINVAL;
@@ -616,7 +625,11 @@ static int __init xenbus_init(void)
 
 	err = misc_register(&xenbus_dev);
 	if (err)
+<<<<<<< HEAD
 		printk(KERN_ERR "Could not register xenbus frontend device\n");
+=======
+		pr_err("Could not register xenbus frontend device\n");
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 

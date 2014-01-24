@@ -651,8 +651,14 @@ static ssize_t bh1770_power_state_store(struct device *dev,
 	unsigned long value;
 	ssize_t ret;
 
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 0, &value))
 		return -EINVAL;
+=======
+	ret = kstrtoul(buf, 0, &value);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&chip->mutex);
 	if (value) {
@@ -726,9 +732,17 @@ static ssize_t bh1770_prox_enable_store(struct device *dev,
 {
 	struct bh1770_chip *chip =  dev_get_drvdata(dev);
 	unsigned long value;
+<<<<<<< HEAD
 
 	if (strict_strtoul(buf, 0, &value))
 		return -EINVAL;
+=======
+	int ret;
+
+	ret = kstrtoul(buf, 0, &value);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&chip->mutex);
 	/* Assume no proximity. Sensor will tell real state soon */
@@ -824,9 +838,17 @@ static ssize_t bh1770_set_prox_rate_above(struct device *dev,
 {
 	struct bh1770_chip *chip =  dev_get_drvdata(dev);
 	unsigned long value;
+<<<<<<< HEAD
 
 	if (strict_strtoul(buf, 0, &value))
 		return -EINVAL;
+=======
+	int ret;
+
+	ret = kstrtoul(buf, 0, &value);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&chip->mutex);
 	chip->prox_rate_threshold = bh1770_prox_rate_validate(value);
@@ -840,9 +862,17 @@ static ssize_t bh1770_set_prox_rate_below(struct device *dev,
 {
 	struct bh1770_chip *chip =  dev_get_drvdata(dev);
 	unsigned long value;
+<<<<<<< HEAD
 
 	if (strict_strtoul(buf, 0, &value))
 		return -EINVAL;
+=======
+	int ret;
+
+	ret = kstrtoul(buf, 0, &value);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&chip->mutex);
 	chip->prox_rate = bh1770_prox_rate_validate(value);
@@ -865,8 +895,15 @@ static ssize_t bh1770_set_prox_thres(struct device *dev,
 	unsigned long value;
 	int ret;
 
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 0, &value))
 		return -EINVAL;
+=======
+	ret = kstrtoul(buf, 0, &value);
+	if (ret)
+		return ret;
+
+>>>>>>> refs/remotes/origin/master
 	if (value > BH1770_PROX_RANGE)
 		return -EINVAL;
 
@@ -893,9 +930,17 @@ static ssize_t bh1770_prox_persistence_store(struct device *dev,
 {
 	struct bh1770_chip *chip = dev_get_drvdata(dev);
 	unsigned long value;
+<<<<<<< HEAD
 
 	if (strict_strtoul(buf, 0, &value))
 		return -EINVAL;
+=======
+	int ret;
+
+	ret = kstrtoul(buf, 0, &value);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (value > BH1770_PROX_MAX_PERSISTENCE)
 		return -EINVAL;
@@ -918,9 +963,17 @@ static ssize_t bh1770_prox_abs_thres_store(struct device *dev,
 {
 	struct bh1770_chip *chip = dev_get_drvdata(dev);
 	unsigned long value;
+<<<<<<< HEAD
 
 	if (strict_strtoul(buf, 0, &value))
 		return -EINVAL;
+=======
+	int ret;
+
+	ret = kstrtoul(buf, 0, &value);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (value > BH1770_PROX_RANGE)
 		return -EINVAL;
@@ -963,9 +1016,17 @@ static ssize_t bh1770_lux_calib_store(struct device *dev,
 	unsigned long value;
 	u32 old_calib;
 	u32 new_corr;
+<<<<<<< HEAD
 
 	if (strict_strtoul(buf, 0, &value))
 		return -EINVAL;
+=======
+	int ret;
+
+	ret = kstrtoul(buf, 0, &value);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&chip->mutex);
 	old_calib = chip->lux_calib;
@@ -1012,8 +1073,14 @@ static ssize_t bh1770_set_lux_rate(struct device *dev,
 	unsigned long rate_hz;
 	int ret, i;
 
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 0, &rate_hz))
 		return -EINVAL;
+=======
+	ret = kstrtoul(buf, 0, &rate_hz);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ARRAY_SIZE(lux_rates_hz) - 1; i++)
 		if (rate_hz >= lux_rates_hz[i])
@@ -1047,11 +1114,20 @@ static ssize_t bh1770_get_lux_thresh_below(struct device *dev,
 static ssize_t bh1770_set_lux_thresh(struct bh1770_chip *chip, u16 *target,
 				const char *buf)
 {
+<<<<<<< HEAD
 	int ret = 0;
 	unsigned long thresh;
 
 	if (strict_strtoul(buf, 0, &thresh))
 		return -EINVAL;
+=======
+	unsigned long thresh;
+	int ret;
+
+	ret = kstrtoul(buf, 0, &thresh);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (thresh > BH1770_LUX_RANGE)
 		return -EINVAL;
@@ -1162,7 +1238,11 @@ static struct attribute_group bh1770_attribute_group = {
 	.attrs = sysfs_attrs
 };
 
+<<<<<<< HEAD
 static int __devinit bh1770_probe(struct i2c_client *client,
+=======
+static int bh1770_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 				const struct i2c_device_id *id)
 {
 	struct bh1770_chip *chip;
@@ -1285,7 +1365,11 @@ fail1:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit bh1770_remove(struct i2c_client *client)
+=======
+static int bh1770_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bh1770_chip *chip = i2c_get_clientdata(client);
 
@@ -1310,7 +1394,11 @@ static int __devexit bh1770_remove(struct i2c_client *client)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int bh1770_suspend(struct device *dev)
 {
 	struct i2c_client *client = container_of(dev, struct i2c_client, dev);
@@ -1346,11 +1434,14 @@ static int bh1770_resume(struct device *dev)
 	}
 	return ret;
 }
+<<<<<<< HEAD
 
 #else
 #define bh1770_suspend	NULL
 #define bh1770_shutdown NULL
 #define bh1770_resume	NULL
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_PM_RUNTIME
@@ -1395,6 +1486,7 @@ static struct i2c_driver bh1770_driver = {
 		.pm	= &bh1770_pm_ops,
 	},
 	.probe	  = bh1770_probe,
+<<<<<<< HEAD
 	.remove	  = __devexit_p(bh1770_remove),
 	.id_table = bh1770_id,
 };
@@ -1412,13 +1504,23 @@ static void __exit bh1770_exit(void)
 =======
 module_i2c_driver(bh1770_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove	  = bh1770_remove,
+	.id_table = bh1770_id,
+};
+
+module_i2c_driver(bh1770_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("BH1770GLC / SFH7770 combined ALS and proximity sensor");
 MODULE_AUTHOR("Samu Onkalo, Nokia Corporation");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(bh1770_init);
 module_exit(bh1770_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

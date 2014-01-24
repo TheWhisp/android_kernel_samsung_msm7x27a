@@ -456,7 +456,11 @@ static void cardu_interrupt(int irq, void *dev_id)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit vrc4173_cardu_probe(struct pci_dev *dev,
+=======
+static int vrc4173_cardu_probe(struct pci_dev *dev,
+>>>>>>> refs/remotes/origin/master
                                          const struct pci_device_id *ent)
 {
 	vrc4173_socket_t *socket;
@@ -533,7 +537,11 @@ disable:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit vrc4173_cardu_setup(char *options)
+=======
+static int vrc4173_cardu_setup(char *options)
+>>>>>>> refs/remotes/origin/master
 {
 	if (options == NULL || *options == '\0')
 		return 1;
@@ -564,6 +572,7 @@ static int __devinit vrc4173_cardu_setup(char *options)
 __setup("vrc4173_cardu=", vrc4173_cardu_setup);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pci_device_id vrc4173_cardu_id_table[] __devinitdata = {
 	{	.vendor		= PCI_VENDOR_ID_NEC,
 		.device		= PCI_DEVICE_ID_NEC_NAPCCARD,
@@ -573,6 +582,10 @@ static struct pci_device_id vrc4173_cardu_id_table[] __devinitdata = {
 static DEFINE_PCI_DEVICE_TABLE(vrc4173_cardu_id_table) = {
 	{ PCI_DEVICE(PCI_VENDOR_ID_NEC, PCI_DEVICE_ID_NEC_NAPCCARD) },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_PCI_DEVICE_TABLE(vrc4173_cardu_id_table) = {
+	{ PCI_DEVICE(PCI_VENDOR_ID_NEC, PCI_DEVICE_ID_NEC_NAPCCARD) },
+>>>>>>> refs/remotes/origin/master
         {0, }
 };
 
@@ -582,14 +595,22 @@ static struct pci_driver vrc4173_cardu_driver = {
 	.id_table	= vrc4173_cardu_id_table,
 };
 
+<<<<<<< HEAD
 static int __devinit vrc4173_cardu_init(void)
+=======
+static int vrc4173_cardu_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	vrc4173_cardu_slots = 0;
 
 	return pci_register_driver(&vrc4173_cardu_driver);
 }
 
+<<<<<<< HEAD
 static void __devexit vrc4173_cardu_exit(void)
+=======
+static void vrc4173_cardu_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	pci_unregister_driver(&vrc4173_cardu_driver);
 }

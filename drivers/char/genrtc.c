@@ -52,14 +52,21 @@
 #include <linux/init.h>
 #include <linux/poll.h>
 #include <linux/proc_fs.h>
+<<<<<<< HEAD
+=======
+#include <linux/seq_file.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mutex.h>
 #include <linux/workqueue.h>
 
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/rtc.h>
 
 /*
@@ -390,18 +397,29 @@ static int gen_rtc_release(struct inode *inode, struct file *file)
  *	Info exported via "/proc/driver/rtc".
  */
 
+<<<<<<< HEAD
 static int gen_rtc_proc_output(char *buf)
 {
 	char *p;
+=======
+static int gen_rtc_proc_show(struct seq_file *m, void *v)
+{
+>>>>>>> refs/remotes/origin/master
 	struct rtc_time tm;
 	unsigned int flags;
 	struct rtc_pll_info pll;
 
+<<<<<<< HEAD
 	p = buf;
 
 	flags = get_rtc_time(&tm);
 
 	p += sprintf(p,
+=======
+	flags = get_rtc_time(&tm);
+
+	seq_printf(m,
+>>>>>>> refs/remotes/origin/master
 		     "rtc_time\t: %02d:%02d:%02d\n"
 		     "rtc_date\t: %04d-%02d-%02d\n"
 		     "rtc_epoch\t: %04u\n",
@@ -410,6 +428,7 @@ static int gen_rtc_proc_output(char *buf)
 
 	tm.tm_hour = tm.tm_min = tm.tm_sec = 0;
 
+<<<<<<< HEAD
 	p += sprintf(p, "alarm\t\t: ");
 	if (tm.tm_hour <= 24)
 		p += sprintf(p, "%02d:", tm.tm_hour);
@@ -427,6 +446,25 @@ static int gen_rtc_proc_output(char *buf)
 		p += sprintf(p, "**\n");
 
 	p += sprintf(p,
+=======
+	seq_puts(m, "alarm\t\t: ");
+	if (tm.tm_hour <= 24)
+		seq_printf(m, "%02d:", tm.tm_hour);
+	else
+		seq_puts(m, "**:");
+
+	if (tm.tm_min <= 59)
+		seq_printf(m, "%02d:", tm.tm_min);
+	else
+		seq_puts(m, "**:");
+
+	if (tm.tm_sec <= 59)
+		seq_printf(m, "%02d\n", tm.tm_sec);
+	else
+		seq_puts(m, "**\n");
+
+	seq_printf(m,
+>>>>>>> refs/remotes/origin/master
 		     "DST_enable\t: %s\n"
 		     "BCD\t\t: %s\n"
 		     "24hr\t\t: %s\n"
@@ -446,7 +484,11 @@ static int gen_rtc_proc_output(char *buf)
 		     0L /* freq */,
 		     (flags & RTC_BATT_BAD) ? "bad" : "okay");
 	if (!get_rtc_pll(&pll))
+<<<<<<< HEAD
 	    p += sprintf(p,
+=======
+	    seq_printf(m,
+>>>>>>> refs/remotes/origin/master
 			 "PLL adjustment\t: %d\n"
 			 "PLL max +ve adjustment\t: %d\n"
 			 "PLL max -ve adjustment\t: %d\n"
@@ -459,6 +501,7 @@ static int gen_rtc_proc_output(char *buf)
 			 pll.pll_posmult,
 			 pll.pll_negmult,
 			 pll.pll_clock);
+<<<<<<< HEAD
 	return p - buf;
 }
 
@@ -474,11 +517,32 @@ static int gen_rtc_read_proc(char *page, char **start, off_t off,
 	return len;
 }
 
+=======
+	return 0;
+}
+
+static int gen_rtc_proc_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, gen_rtc_proc_show, NULL);
+}
+
+static const struct file_operations gen_rtc_proc_fops = {
+	.open		= gen_rtc_proc_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+>>>>>>> refs/remotes/origin/master
 static int __init gen_rtc_proc_init(void)
 {
 	struct proc_dir_entry *r;
 
+<<<<<<< HEAD
 	r = create_proc_read_entry("driver/rtc", 0, NULL, gen_rtc_read_proc, NULL);
+=======
+	r = proc_create("driver/rtc", 0, NULL, &gen_rtc_proc_fops);
+>>>>>>> refs/remotes/origin/master
 	if (!r)
 		return -ENOMEM;
 	return 0;

@@ -1,8 +1,12 @@
 #include "headers.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/sort.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sort.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * File Name: sort.c
@@ -14,6 +18,7 @@
  * Copyright (c) 2007 Beceem Communications Pvt. Ltd
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 VOID SortPackInfo(PMINI_ADAPTER Adapter)
 {
@@ -44,6 +49,12 @@ static int compare_packet_info(void const *a, void const *b)
 {
 	PacketInfo const *pa = a;
 	PacketInfo const *pb = b;
+=======
+static int compare_packet_info(void const *a, void const *b)
+{
+	struct bcm_packet_info const *pa = a;
+	struct bcm_packet_info const *pb = b;
+>>>>>>> refs/remotes/origin/master
 
 	if (!pa->bValid || !pb->bValid)
 		return 0;
@@ -51,24 +62,38 @@ static int compare_packet_info(void const *a, void const *b)
 	return pa->u8TrafficPriority - pb->u8TrafficPriority;
 }
 
+<<<<<<< HEAD
 VOID SortPackInfo(PMINI_ADAPTER Adapter)
+=======
+VOID SortPackInfo(struct bcm_mini_adapter *Adapter)
+>>>>>>> refs/remotes/origin/master
 {
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, CONN_MSG,
 			DBG_LVL_ALL, "<=======");
 
+<<<<<<< HEAD
 	sort(Adapter->PackInfo, NO_OF_QUEUES, sizeof(PacketInfo),
+=======
+	sort(Adapter->PackInfo, NO_OF_QUEUES, sizeof(struct bcm_packet_info),
+>>>>>>> refs/remotes/origin/master
 		compare_packet_info, NULL);
 }
 
 static int compare_classifiers(void const *a, void const *b)
 {
+<<<<<<< HEAD
 	S_CLASSIFIER_RULE const *pa = a;
 	S_CLASSIFIER_RULE const *pb = b;
+=======
+	struct bcm_classifier_rule const *pa = a;
+	struct bcm_classifier_rule const *pb = b;
+>>>>>>> refs/remotes/origin/master
 
 	if (!pa->bUsed || !pb->bUsed)
 		return 0;
 
 	return pa->u8ClassifierRulePriority - pb->u8ClassifierRulePriority;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -98,10 +123,20 @@ VOID SortClassifiers(PMINI_ADAPTER Adapter)
 		}
 	}
 =======
+=======
+}
+
+VOID SortClassifiers(struct bcm_mini_adapter *Adapter)
+{
+>>>>>>> refs/remotes/origin/master
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, CONN_MSG,
 			DBG_LVL_ALL, "<=======");
 
 	sort(Adapter->astClassifierTable, MAX_CLASSIFIERS,
+<<<<<<< HEAD
 		sizeof(S_CLASSIFIER_RULE), compare_classifiers, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sizeof(struct bcm_classifier_rule), compare_classifiers, NULL);
+>>>>>>> refs/remotes/origin/master
 }

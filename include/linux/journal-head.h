@@ -30,6 +30,13 @@ struct journal_head {
 
 	/*
 	 * Journalling list for this buffer [jbd_lock_bh_state()]
+<<<<<<< HEAD
+=======
+	 * NOTE: We *cannot* combine this with b_modified into a bitfield
+	 * as gcc would then (which the C standard allows but which is
+	 * very unuseful) make 64-bit accesses to the bitfield and clobber
+	 * b_jcount if its update races with bitfield modification.
+>>>>>>> refs/remotes/origin/master
 	 */
 	unsigned b_jlist;
 
@@ -41,6 +48,7 @@ struct journal_head {
 	unsigned b_modified;
 
 	/*
+<<<<<<< HEAD
 	 * This feild tracks the last transaction id in which this buffer
 	 * has been cowed
 	 * [jbd_lock_bh_state()]
@@ -52,6 +60,8 @@ struct journal_head {
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Copy of the buffer data frozen for writing to the log.
 	 * [jbd_lock_bh_state()]
 	 */
@@ -71,10 +81,15 @@ struct journal_head {
 	 * transaction's data or metadata journaling list.
 	 * [j_list_lock] [jbd_lock_bh_state()]
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	 * Either of these locks is enough for reading, both are needed for
 	 * changes.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * Either of these locks is enough for reading, both are needed for
+	 * changes.
+>>>>>>> refs/remotes/origin/master
 	 */
 	transaction_t *b_transaction;
 

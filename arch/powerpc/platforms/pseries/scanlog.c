@@ -41,21 +41,32 @@
 
 
 static unsigned int ibm_scan_log_dump;			/* RTAS token */
+<<<<<<< HEAD
 static struct proc_dir_entry *proc_ppc64_scan_log_dump;	/* The proc file */
+=======
+static unsigned int *scanlog_buffer;			/* The data buffer */
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t scanlog_read(struct file *file, char __user *buf,
 			    size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
         struct inode * inode = file->f_path.dentry->d_inode;
 	struct proc_dir_entry *dp;
 	unsigned int *data;
+=======
+	unsigned int *data = scanlog_buffer;
+>>>>>>> refs/remotes/origin/master
 	int status;
 	unsigned long len, off;
 	unsigned int wait_time;
 
+<<<<<<< HEAD
         dp = PDE(inode);
  	data = (unsigned int *)dp->data;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (count > RTAS_DATA_BUF_SIZE)
 		count = RTAS_DATA_BUF_SIZE;
 
@@ -139,8 +150,12 @@ static ssize_t scanlog_write(struct file * file, const char __user * buf,
 
 static int scanlog_open(struct inode * inode, struct file * file)
 {
+<<<<<<< HEAD
 	struct proc_dir_entry *dp = PDE(inode);
 	unsigned int *data = (unsigned int *)dp->data;
+=======
+	unsigned int *data = scanlog_buffer;
+>>>>>>> refs/remotes/origin/master
 
 	if (data[0] != 0) {
 		/* This imperfect test stops a second copy of the
@@ -156,11 +171,17 @@ static int scanlog_open(struct inode * inode, struct file * file)
 
 static int scanlog_release(struct inode * inode, struct file * file)
 {
+<<<<<<< HEAD
 	struct proc_dir_entry *dp = PDE(inode);
 	unsigned int *data = (unsigned int *)dp->data;
 
 	data[0] = 0;
 
+=======
+	unsigned int *data = scanlog_buffer;
+
+	data[0] = 0;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -176,7 +197,10 @@ const struct file_operations scanlog_fops = {
 static int __init scanlog_init(void)
 {
 	struct proc_dir_entry *ent;
+<<<<<<< HEAD
 	void *data;
+=======
+>>>>>>> refs/remotes/origin/master
 	int err = -ENOMEM;
 
 	ibm_scan_log_dump = rtas_token("ibm,scan-log-dump");
@@ -184,6 +208,7 @@ static int __init scanlog_init(void)
 		return -ENODEV;
 
 	/* Ideally we could allocate a buffer < 4G */
+<<<<<<< HEAD
 	data = kzalloc(RTAS_DATA_BUF_SIZE, GFP_KERNEL);
 	if (!data)
 		goto err;
@@ -198,15 +223,33 @@ static int __init scanlog_init(void)
 	return 0;
 err:
 	kfree(data);
+=======
+	scanlog_buffer = kzalloc(RTAS_DATA_BUF_SIZE, GFP_KERNEL);
+	if (!scanlog_buffer)
+		goto err;
+
+	ent = proc_create("powerpc/rtas/scan-log-dump", S_IRUSR, NULL,
+			  &scanlog_fops);
+	if (!ent)
+		goto err;
+	return 0;
+err:
+	kfree(scanlog_buffer);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
 static void __exit scanlog_cleanup(void)
 {
+<<<<<<< HEAD
 	if (proc_ppc64_scan_log_dump) {
 		kfree(proc_ppc64_scan_log_dump->data);
 		remove_proc_entry("scan-log-dump", proc_ppc64_scan_log_dump->parent);
 	}
+=======
+	remove_proc_entry("powerpc/rtas/scan-log-dump", NULL);
+	kfree(scanlog_buffer);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(scanlog_init);

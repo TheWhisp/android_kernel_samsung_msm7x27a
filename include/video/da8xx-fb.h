@@ -12,10 +12,13 @@
 #ifndef DA8XX_FB_H
 #define DA8XX_FB_H
 
+<<<<<<< HEAD
 enum panel_type {
 	QVGA = 0
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 enum panel_shade {
 	MONOCHROME = 0,
 	COLOR_ACTIVE,
@@ -27,11 +30,17 @@ enum raster_load_mode {
 	LOAD_PALETTE,
 };
 
+<<<<<<< HEAD
 struct display_panel {
 	enum panel_type panel_type; /* QVGA */
 	int max_bpp;
 	int min_bpp;
 	enum panel_shade panel_shade;
+=======
+enum da8xx_frame_complete {
+	DA8XX_FRAME_WAIT,
+	DA8XX_FRAME_NOWAIT,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct da8xx_lcdc_platform_data {
@@ -42,7 +51,11 @@ struct da8xx_lcdc_platform_data {
 };
 
 struct lcd_ctrl_config {
+<<<<<<< HEAD
 	const struct display_panel *p_disp_panel;
+=======
+	enum panel_shade panel_shade;
+>>>>>>> refs/remotes/origin/master
 
 	/* AC Bias Pin Frequency */
 	int ac_bias;
@@ -68,6 +81,7 @@ struct lcd_ctrl_config {
 	/* Mono 8-bit Mode: 1=D0-D7 or 0=D0-D3 */
 	unsigned char mono_8bit_mode;
 
+<<<<<<< HEAD
 	/* Invert line clock */
 	unsigned char invert_line_clock;
 
@@ -82,6 +96,16 @@ struct lcd_ctrl_config {
 
 	/* Raster Data Order Select: 1=Most-to-least 0=Least-to-most */
 	unsigned char raster_order;
+=======
+	/* Horizontal and Vertical Sync Edge: 0=rising 1=falling */
+	unsigned char sync_edge;
+
+	/* Raster Data Order Select: 1=Most-to-least 0=Least-to-most */
+	unsigned char raster_order;
+
+	/* DMA FIFO threshold */
+	int fifo_th;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct lcd_sync_arg {
@@ -100,5 +124,11 @@ struct lcd_sync_arg {
 #define FBIPUT_HSYNC		_IOW('F', 9, int)
 #define FBIPUT_VSYNC		_IOW('F', 10, int)
 
+<<<<<<< HEAD
+=======
+/* Proprietary FB_SYNC_ flags */
+#define FB_SYNC_CLK_INVERT 0x40000000
+
+>>>>>>> refs/remotes/origin/master
 #endif  /* ifndef DA8XX_FB_H */
 

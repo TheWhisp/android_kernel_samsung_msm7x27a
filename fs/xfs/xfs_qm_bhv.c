@@ -17,6 +17,7 @@
  */
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_bit.h"
 #include "xfs_log.h"
 #include "xfs_inum.h"
@@ -34,6 +35,18 @@
 #include "xfs_error.h"
 #include "xfs_attr.h"
 #include "xfs_buf_item.h"
+=======
+#include "xfs_format.h"
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+#include "xfs_sb.h"
+#include "xfs_ag.h"
+#include "xfs_quota.h"
+#include "xfs_mount.h"
+#include "xfs_inode.h"
+#include "xfs_error.h"
+#include "xfs_trans.h"
+>>>>>>> refs/remotes/origin/master
 #include "xfs_qm.h"
 
 
@@ -114,16 +127,28 @@ xfs_qm_newmount(
 
 	if (((uquotaondisk && !XFS_IS_UQUOTA_ON(mp)) ||
 	    (!uquotaondisk &&  XFS_IS_UQUOTA_ON(mp)) ||
+<<<<<<< HEAD
 	     (pquotaondisk && !XFS_IS_PQUOTA_ON(mp)) ||
 	    (!pquotaondisk &&  XFS_IS_PQUOTA_ON(mp)) ||
 	     (gquotaondisk && !XFS_IS_GQUOTA_ON(mp)) ||
 	    (!gquotaondisk &&  XFS_IS_OQUOTA_ON(mp)))  &&
+=======
+	     (gquotaondisk && !XFS_IS_GQUOTA_ON(mp)) ||
+	    (!gquotaondisk &&  XFS_IS_GQUOTA_ON(mp)) ||
+	     (pquotaondisk && !XFS_IS_PQUOTA_ON(mp)) ||
+	    (!pquotaondisk &&  XFS_IS_PQUOTA_ON(mp)))  &&
+>>>>>>> refs/remotes/origin/master
 	    xfs_dev_is_read_only(mp, "changing quota state")) {
 		xfs_warn(mp, "please mount with%s%s%s%s.",
 			(!quotaondisk ? "out quota" : ""),
 			(uquotaondisk ? " usrquota" : ""),
+<<<<<<< HEAD
 			(pquotaondisk ? " prjquota" : ""),
 			(gquotaondisk ? " grpquota" : ""));
+=======
+			(gquotaondisk ? " grpquota" : ""),
+			(pquotaondisk ? " prjquota" : ""));
+>>>>>>> refs/remotes/origin/master
 		return XFS_ERROR(EPERM);
 	}
 
@@ -148,7 +173,11 @@ xfs_qm_newmount(
 			 * inode goes inactive and wants to free blocks,
 			 * or via xfs_log_mount_finish.
 			 */
+<<<<<<< HEAD
 			*needquotamount = B_TRUE;
+=======
+			*needquotamount = true;
+>>>>>>> refs/remotes/origin/master
 			*quotaflags = mp->m_qflags;
 			mp->m_qflags = 0;
 		}

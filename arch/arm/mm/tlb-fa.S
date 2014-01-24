@@ -47,9 +47,12 @@ ENTRY(fa_flush_user_tlb_range)
 	cmp	r0, r1
 	blo	1b
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mcr	p15, 0, r3, c7, c5, 6		@ invalidate BTB
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mcr	p15, 0, r3, c7, c10, 4		@ data write barrier
 	mov	pc, lr
 
@@ -64,6 +67,7 @@ ENTRY(fa_flush_kern_tlb_range)
 	cmp	r0, r1
 	blo	1b
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mcr	p15, 0, r3, c7, c5, 6		@ invalidate BTB
 	mcr	p15, 0, r3, c7, c10, 4		@ data write barrier
 	mcr	p15, 0, r3, c7, c5, 4		@ prefetch flush
@@ -71,10 +75,15 @@ ENTRY(fa_flush_kern_tlb_range)
 	mcr	p15, 0, r3, c7, c10, 4		@ data write barrier
 	mcr	p15, 0, r3, c7, c5, 4		@ prefetch flush (isb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mcr	p15, 0, r3, c7, c10, 4		@ data write barrier
+	mcr	p15, 0, r3, c7, c5, 4		@ prefetch flush (isb)
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 
 	__INITDATA
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.type	fa_tlb_fns, #object
 ENTRY(fa_tlb_fns)
@@ -86,3 +95,7 @@ ENTRY(fa_tlb_fns)
 	/* define struct cpu_tlb_fns (see <asm/tlbflush.h> and proc-macros.S) */
 	define_tlb_functions fa, fa_tlb_flags
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* define struct cpu_tlb_fns (see <asm/tlbflush.h> and proc-macros.S) */
+	define_tlb_functions fa, fa_tlb_flags
+>>>>>>> refs/remotes/origin/master

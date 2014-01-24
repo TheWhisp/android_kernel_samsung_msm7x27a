@@ -15,11 +15,18 @@
 #include <linux/mtd/super.h>
 #include <linux/namei.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/ctype.h>
 #include <linux/slab.h>
+=======
+#include <linux/export.h>
+#include <linux/ctype.h>
+#include <linux/slab.h>
+#include <linux/major.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * compare superblocks to see if they're equivalent
@@ -31,19 +38,27 @@ static int get_sb_mtd_compare(struct super_block *sb, void *_mtd)
 
 	if (sb->s_mtd == mtd) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG(2, "MTDSB: Match on device %d (\"%s\")\n",
 =======
 		pr_debug("MTDSB: Match on device %d (\"%s\")\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("MTDSB: Match on device %d (\"%s\")\n",
+>>>>>>> refs/remotes/origin/master
 		      mtd->index, mtd->name);
 		return 1;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(2, "MTDSB: No match, device %d (\"%s\"), device %d (\"%s\")\n",
 =======
 	pr_debug("MTDSB: No match, device %d (\"%s\"), device %d (\"%s\")\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("MTDSB: No match, device %d (\"%s\"), device %d (\"%s\")\n",
+>>>>>>> refs/remotes/origin/master
 	      sb->s_mtd->index, sb->s_mtd->name, mtd->index, mtd->name);
 	return 0;
 }
@@ -74,7 +89,11 @@ static struct dentry *mount_mtd_aux(struct file_system_type *fs_type, int flags,
 	struct super_block *sb;
 	int ret;
 
+<<<<<<< HEAD
 	sb = sget(fs_type, get_sb_mtd_compare, get_sb_mtd_set, mtd);
+=======
+	sb = sget(fs_type, get_sb_mtd_compare, get_sb_mtd_set, flags, mtd);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(sb))
 		goto out_error;
 
@@ -82,6 +101,7 @@ static struct dentry *mount_mtd_aux(struct file_system_type *fs_type, int flags,
 		goto already_mounted;
 
 	/* fresh new superblock */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	DEBUG(1, "MTDSB: New superblock for device %d (\"%s\")\n",
 =======
@@ -91,6 +111,11 @@ static struct dentry *mount_mtd_aux(struct file_system_type *fs_type, int flags,
 
 	sb->s_flags = flags;
 
+=======
+	pr_debug("MTDSB: New superblock for device %d (\"%s\")\n",
+	      mtd->index, mtd->name);
+
+>>>>>>> refs/remotes/origin/master
 	ret = fill_super(sb, data, flags & MS_SILENT ? 1 : 0);
 	if (ret < 0) {
 		deactivate_locked_super(sb);
@@ -104,10 +129,14 @@ static struct dentry *mount_mtd_aux(struct file_system_type *fs_type, int flags,
 	/* new mountpoint for an already mounted superblock */
 already_mounted:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(1, "MTDSB: Device %d (\"%s\") is already mounted\n",
 =======
 	pr_debug("MTDSB: Device %d (\"%s\") is already mounted\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("MTDSB: Device %d (\"%s\") is already mounted\n",
+>>>>>>> refs/remotes/origin/master
 	      mtd->index, mtd->name);
 	put_mtd_device(mtd);
 	return dget(sb->s_root);
@@ -129,10 +158,14 @@ static struct dentry *mount_mtd_nr(struct file_system_type *fs_type, int flags,
 	mtd = get_mtd_device(NULL, mtdnr);
 	if (IS_ERR(mtd)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG(0, "MTDSB: Device #%u doesn't appear to exist\n", mtdnr);
 =======
 		pr_debug("MTDSB: Device #%u doesn't appear to exist\n", mtdnr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("MTDSB: Device #%u doesn't appear to exist\n", mtdnr);
+>>>>>>> refs/remotes/origin/master
 		return ERR_CAST(mtd);
 	}
 
@@ -156,10 +189,14 @@ struct dentry *mount_mtd(struct file_system_type *fs_type, int flags,
 		return ERR_PTR(-EINVAL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(2, "MTDSB: dev_name \"%s\"\n", dev_name);
 =======
 	pr_debug("MTDSB: dev_name \"%s\"\n", dev_name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("MTDSB: dev_name \"%s\"\n", dev_name);
+>>>>>>> refs/remotes/origin/master
 
 	/* the preferred way of mounting in future; especially when
 	 * CONFIG_BLOCK=n - we specify the underlying MTD device by number or
@@ -171,10 +208,14 @@ struct dentry *mount_mtd(struct file_system_type *fs_type, int flags,
 
 			/* mount by MTD device name */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DEBUG(1, "MTDSB: mtd:%%s, name \"%s\"\n",
 =======
 			pr_debug("MTDSB: mtd:%%s, name \"%s\"\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("MTDSB: mtd:%%s, name \"%s\"\n",
+>>>>>>> refs/remotes/origin/master
 			      dev_name + 4);
 
 			mtd = get_mtd_device_nm(dev_name + 4);
@@ -196,10 +237,14 @@ struct dentry *mount_mtd(struct file_system_type *fs_type, int flags,
 			if (!*endptr) {
 				/* It was a valid number */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				DEBUG(1, "MTDSB: mtd%%d, mtdnr %d\n",
 =======
 				pr_debug("MTDSB: mtd%%d, mtdnr %d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_debug("MTDSB: mtd%%d, mtdnr %d\n",
+>>>>>>> refs/remotes/origin/master
 				      mtdnr);
 				return mount_mtd_nr(fs_type, flags,
 						     dev_name, data,
@@ -216,16 +261,22 @@ struct dentry *mount_mtd(struct file_system_type *fs_type, int flags,
 	if (IS_ERR(bdev)) {
 		ret = PTR_ERR(bdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG(1, "MTDSB: lookup_bdev() returned %d\n", ret);
 		return ERR_PTR(ret);
 	}
 	DEBUG(1, "MTDSB: lookup_bdev() returned 0\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_debug("MTDSB: lookup_bdev() returned %d\n", ret);
 		return ERR_PTR(ret);
 	}
 	pr_debug("MTDSB: lookup_bdev() returned 0\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = -EINVAL;
 

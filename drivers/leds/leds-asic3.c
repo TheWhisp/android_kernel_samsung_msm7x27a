@@ -15,9 +15,13 @@
 #include <linux/mfd/asic3.h>
 #include <linux/mfd/core.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	The HTC ASIC3 LED GPIOs are inputs, not outputs.
@@ -95,13 +99,20 @@ static int blink_set(struct led_classdev *cdev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit asic3_led_probe(struct platform_device *pdev)
 {
 	struct asic3_led *led = pdev->dev.platform_data;
+=======
+static int asic3_led_probe(struct platform_device *pdev)
+{
+	struct asic3_led *led = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = mfd_cell_enable(pdev);
 	if (ret < 0)
+<<<<<<< HEAD
 		goto ret0;
 
 	led->cdev = kzalloc(sizeof(struct led_classdev), GFP_KERNEL);
@@ -116,10 +127,23 @@ static int __devinit asic3_led_probe(struct platform_device *pdev)
 	led->cdev->brightness_set = brightness_set;
 	led->cdev->blink_set = blink_set;
 =======
+=======
+		return ret;
+
+	led->cdev = devm_kzalloc(&pdev->dev, sizeof(struct led_classdev),
+				GFP_KERNEL);
+	if (!led->cdev) {
+		ret = -ENOMEM;
+		goto out;
+	}
+
+	led->cdev->name = led->name;
+>>>>>>> refs/remotes/origin/master
 	led->cdev->flags = LED_CORE_SUSPENDRESUME;
 	led->cdev->brightness_set = brightness_set;
 	led->cdev->blink_set = blink_set;
 	led->cdev->default_trigger = led->default_trigger;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = led_classdev_register(&pdev->dev, led->cdev);
@@ -149,6 +173,30 @@ static int __devexit asic3_led_remove(struct platform_device *pdev)
 
 <<<<<<< HEAD
 =======
+=======
+
+	ret = led_classdev_register(&pdev->dev, led->cdev);
+	if (ret < 0)
+		goto out;
+
+	return 0;
+
+out:
+	(void) mfd_cell_disable(pdev);
+	return ret;
+}
+
+static int asic3_led_remove(struct platform_device *pdev)
+{
+	struct asic3_led *led = dev_get_platdata(&pdev->dev);
+
+	led_classdev_unregister(led->cdev);
+
+	return mfd_cell_disable(pdev);
+}
+
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int asic3_led_suspend(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
@@ -174,6 +222,7 @@ static int asic3_led_resume(struct device *dev)
 
 	return ret;
 }
+<<<<<<< HEAD
 
 static const struct dev_pm_ops asic3_led_pm_ops = {
 	.suspend	= asic3_led_suspend,
@@ -206,17 +255,36 @@ static void __exit asic3_led_exit(void)
 module_init(asic3_led_init);
 module_exit(asic3_led_exit);
 =======
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(asic3_led_pm_ops, asic3_led_suspend, asic3_led_resume);
+
+static struct platform_driver asic3_led_driver = {
+	.probe		= asic3_led_probe,
+	.remove		= asic3_led_remove,
+	.driver		= {
+		.name	= "leds-asic3",
+		.owner	= THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 		.pm	= &asic3_led_pm_ops,
 	},
 };
 
 module_platform_driver(asic3_led_driver);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Paul Parsons <lost.distance@yahoo.com>");
 MODULE_DESCRIPTION("HTC ASIC3 LED driver");
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_ALIAS("platform:leds-asic3");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:leds-asic3");
+>>>>>>> refs/remotes/origin/master

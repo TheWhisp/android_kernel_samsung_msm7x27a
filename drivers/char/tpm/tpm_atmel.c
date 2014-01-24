@@ -116,6 +116,7 @@ static u8 tpm_atml_status(struct tpm_chip *chip)
 	return ioread8(chip->vendor.iobase + 1);
 }
 
+<<<<<<< HEAD
 static const struct file_operations atmel_ops = {
 	.owner = THIS_MODULE,
 	.llseek = no_llseek,
@@ -141,15 +142,27 @@ static struct attribute* atmel_attrs[] = {
 static struct attribute_group atmel_attr_grp = { .attrs = atmel_attrs };
 
 static const struct tpm_vendor_specific tpm_atmel = {
+=======
+static bool tpm_atml_req_canceled(struct tpm_chip *chip, u8 status)
+{
+	return (status == ATML_STATUS_READY);
+}
+
+static const struct tpm_class_ops tpm_atmel = {
+>>>>>>> refs/remotes/origin/master
 	.recv = tpm_atml_recv,
 	.send = tpm_atml_send,
 	.cancel = tpm_atml_cancel,
 	.status = tpm_atml_status,
 	.req_complete_mask = ATML_STATUS_BUSY | ATML_STATUS_DATA_AVAIL,
 	.req_complete_val = ATML_STATUS_DATA_AVAIL,
+<<<<<<< HEAD
 	.req_canceled = ATML_STATUS_READY,
 	.attr_group = &atmel_attr_grp,
 	.miscdev = { .fops = &atmel_ops, },
+=======
+	.req_canceled = tpm_atml_req_canceled,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *pdev;
@@ -168,6 +181,7 @@ static void atml_plat_remove(void)
 	}
 }
 
+<<<<<<< HEAD
 static int tpm_atml_suspend(struct platform_device *dev, pm_message_t msg)
 {
 	return tpm_pm_suspend(&dev->dev, msg);
@@ -177,13 +191,22 @@ static int tpm_atml_resume(struct platform_device *dev)
 {
 	return tpm_pm_resume(&dev->dev);
 }
+=======
+static SIMPLE_DEV_PM_OPS(tpm_atml_pm, tpm_pm_suspend, tpm_pm_resume);
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver atml_drv = {
 	.driver = {
 		.name = "tpm_atmel",
 		.owner		= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.suspend = tpm_atml_suspend,
 	.resume = tpm_atml_resume,
+=======
+		.pm		= &tpm_atml_pm,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init init_atmel(void)
@@ -205,7 +228,11 @@ static int __init init_atmel(void)
 
 	have_region =
 	    (atmel_request_region
+<<<<<<< HEAD
 	     (tpm_atmel.base, region_size, "tpm_atmel0") == NULL) ? 0 : 1;
+=======
+	     (base, region_size, "tpm_atmel0") == NULL) ? 0 : 1;
+>>>>>>> refs/remotes/origin/master
 
 	pdev = platform_device_register_simple("tpm_atmel", -1, NULL, 0);
 	if (IS_ERR(pdev)) {

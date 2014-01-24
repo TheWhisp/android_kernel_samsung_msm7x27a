@@ -20,6 +20,10 @@ struct i2c_board_info;
  * @hdmiphy_info: template for HDMIPHY I2C device
  * @mhl_bus: controller id for MHL control bus
  * @mhl_info: template for MHL I2C device
+<<<<<<< HEAD
+=======
+ * @hpd_gpio: GPIO for Hot-Plug-Detect pin
+>>>>>>> refs/remotes/origin/master
  *
  * NULL pointer for *_info fields indicates that
  * the corresponding chip is not present
@@ -29,6 +33,10 @@ struct s5p_hdmi_platform_data {
 	struct i2c_board_info *hdmiphy_info;
 	int mhl_bus;
 	struct i2c_board_info *mhl_info;
+<<<<<<< HEAD
+=======
+	int hpd_gpio;
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* S5P_HDMI_H */

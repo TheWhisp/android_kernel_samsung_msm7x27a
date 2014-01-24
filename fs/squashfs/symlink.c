@@ -91,10 +91,14 @@ static int squashfs_symlink_readpage(struct file *file, struct page *page)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pageaddr = kmap_atomic(page, KM_USER0);
 =======
 		pageaddr = kmap_atomic(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pageaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/master
 		copied = squashfs_copy_data(pageaddr + bytes, entry, offset,
 								length - bytes);
 		if (copied == length - bytes)
@@ -102,10 +106,14 @@ static int squashfs_symlink_readpage(struct file *file, struct page *page)
 		else
 			block = entry->next_index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kunmap_atomic(pageaddr, KM_USER0);
 =======
 		kunmap_atomic(pageaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kunmap_atomic(pageaddr);
+>>>>>>> refs/remotes/origin/master
 		squashfs_cache_put(entry);
 	}
 

@@ -17,9 +17,13 @@
 
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "ath9k.h"
 
@@ -28,6 +32,7 @@ static const struct ath_rate_table ar5416_11na_ratetable = {
 	8, /* MCS start */
 	{
 		[0] = { RC_L_SDT, WLAN_RC_PHY_OFDM, 6000,
+<<<<<<< HEAD
 			5400, 0, 12, 0, 0, 0, 0 }, /* 6 Mb */
 		[1] = { RC_L_SDT, WLAN_RC_PHY_OFDM, 9000,
 			7800,  1, 18, 0, 1, 1, 1 }, /* 9 Mb */
@@ -163,6 +168,143 @@ static const struct ath_rate_table ar5416_11na_ratetable = {
 			317200, 23, 23, 4, 66, 67, 67 }, /* 405 Mb */
 		[67] = {  RC_HT_T_40, WLAN_RC_PHY_HT_40_TS_HGI, 450000,
 			346400, 23, 23, 4, 66, 67, 67 }, /* 450 Mb */
+=======
+			5400, 0, 12 }, /* 6 Mb */
+		[1] = { RC_L_SDT, WLAN_RC_PHY_OFDM, 9000,
+			7800,  1, 18 }, /* 9 Mb */
+		[2] = { RC_L_SDT, WLAN_RC_PHY_OFDM, 12000,
+			10000, 2, 24 }, /* 12 Mb */
+		[3] = { RC_L_SDT, WLAN_RC_PHY_OFDM, 18000,
+			13900, 3, 36 }, /* 18 Mb */
+		[4] = { RC_L_SDT, WLAN_RC_PHY_OFDM, 24000,
+			17300, 4, 48 }, /* 24 Mb */
+		[5] = { RC_L_SDT, WLAN_RC_PHY_OFDM, 36000,
+			23000, 5, 72 }, /* 36 Mb */
+		[6] = { RC_L_SDT, WLAN_RC_PHY_OFDM, 48000,
+			27400, 6, 96 }, /* 48 Mb */
+		[7] = { RC_L_SDT, WLAN_RC_PHY_OFDM, 54000,
+			29300, 7, 108 }, /* 54 Mb */
+		[8] = { RC_HT_SDT_2040, WLAN_RC_PHY_HT_20_SS, 6500,
+			6400, 0, 0 }, /* 6.5 Mb */
+		[9] = { RC_HT_SDT_20, WLAN_RC_PHY_HT_20_SS, 13000,
+			12700, 1, 1 }, /* 13 Mb */
+		[10] = { RC_HT_SDT_20, WLAN_RC_PHY_HT_20_SS, 19500,
+			18800, 2, 2 }, /* 19.5 Mb */
+		[11] = { RC_HT_SD_20, WLAN_RC_PHY_HT_20_SS, 26000,
+			25000, 3, 3 }, /* 26 Mb */
+		[12] = { RC_HT_SD_20, WLAN_RC_PHY_HT_20_SS, 39000,
+			36700, 4, 4 }, /* 39 Mb */
+		[13] = { RC_HT_S_20, WLAN_RC_PHY_HT_20_SS, 52000,
+			48100, 5, 5 }, /* 52 Mb */
+		[14] = { RC_HT_S_20, WLAN_RC_PHY_HT_20_SS, 58500,
+			53500, 6, 6 }, /* 58.5 Mb */
+		[15] = { RC_HT_S_20, WLAN_RC_PHY_HT_20_SS, 65000,
+			59000, 7, 7 }, /* 65 Mb */
+		[16] = { RC_HT_S_20, WLAN_RC_PHY_HT_20_SS_HGI, 72200,
+			65400, 7, 7 }, /* 75 Mb */
+		[17] = { RC_INVALID, WLAN_RC_PHY_HT_20_DS, 13000,
+			12700, 8, 8 }, /* 13 Mb */
+		[18] = { RC_HT_T_20, WLAN_RC_PHY_HT_20_DS, 26000,
+			24800, 9, 9 }, /* 26 Mb */
+		[19] = { RC_HT_T_20, WLAN_RC_PHY_HT_20_DS, 39000,
+			36600, 10, 10 }, /* 39 Mb */
+		[20] = { RC_HT_DT_20, WLAN_RC_PHY_HT_20_DS, 52000,
+			48100, 11, 11 }, /* 52 Mb */
+		[21] = { RC_HT_DT_20, WLAN_RC_PHY_HT_20_DS, 78000,
+			69500, 12, 12 }, /* 78 Mb */
+		[22] = { RC_HT_DT_20, WLAN_RC_PHY_HT_20_DS, 104000,
+			89500, 13, 13 }, /* 104 Mb */
+		[23] = { RC_HT_DT_20, WLAN_RC_PHY_HT_20_DS, 117000,
+			98900, 14, 14 }, /* 117 Mb */
+		[24] = { RC_HT_DT_20, WLAN_RC_PHY_HT_20_DS, 130000,
+			108300, 15, 15 }, /* 130 Mb */
+		[25] = { RC_HT_DT_20, WLAN_RC_PHY_HT_20_DS_HGI, 144400,
+			120000, 15, 15 }, /* 144.4 Mb */
+		[26] = {  RC_INVALID, WLAN_RC_PHY_HT_20_TS, 19500,
+			17400, 16, 16 }, /* 19.5 Mb */
+		[27] = {  RC_INVALID, WLAN_RC_PHY_HT_20_TS, 39000,
+			35100, 17, 17 }, /* 39 Mb */
+		[28] = {  RC_INVALID, WLAN_RC_PHY_HT_20_TS, 58500,
+			52600, 18, 18 }, /* 58.5 Mb */
+		[29] = {  RC_INVALID, WLAN_RC_PHY_HT_20_TS, 78000,
+			70400, 19, 19 }, /* 78 Mb */
+		[30] = {  RC_INVALID, WLAN_RC_PHY_HT_20_TS, 117000,
+			104900, 20, 20 }, /* 117 Mb */
+		[31] = {  RC_INVALID, WLAN_RC_PHY_HT_20_TS_HGI, 130000,
+			115800, 20, 20 }, /* 130 Mb*/
+		[32] = {  RC_HT_T_20, WLAN_RC_PHY_HT_20_TS, 156000,
+			137200, 21, 21 }, /* 156 Mb */
+		[33] = {  RC_HT_T_20, WLAN_RC_PHY_HT_20_TS_HGI, 173300,
+			151100, 21, 21 }, /* 173.3 Mb */
+		[34] = {  RC_HT_T_20, WLAN_RC_PHY_HT_20_TS, 175500,
+			152800, 22, 22 }, /* 175.5 Mb */
+		[35] = {  RC_HT_T_20, WLAN_RC_PHY_HT_20_TS_HGI, 195000,
+			168400, 22, 22 }, /* 195 Mb*/
+		[36] = {  RC_HT_T_20, WLAN_RC_PHY_HT_20_TS, 195000,
+			168400, 23, 23 }, /* 195 Mb */
+		[37] = {  RC_HT_T_20, WLAN_RC_PHY_HT_20_TS_HGI, 216700,
+			185000, 23, 23 }, /* 216.7 Mb */
+		[38] = { RC_HT_SDT_40, WLAN_RC_PHY_HT_40_SS, 13500,
+			13200, 0, 0 }, /* 13.5 Mb*/
+		[39] = { RC_HT_SDT_40, WLAN_RC_PHY_HT_40_SS, 27500,
+			25900, 1, 1 }, /* 27.0 Mb*/
+		[40] = { RC_HT_SDT_40, WLAN_RC_PHY_HT_40_SS, 40500,
+			38600, 2, 2 }, /* 40.5 Mb*/
+		[41] = { RC_HT_SD_40, WLAN_RC_PHY_HT_40_SS, 54000,
+			49800, 3, 3 }, /* 54 Mb */
+		[42] = { RC_HT_SD_40, WLAN_RC_PHY_HT_40_SS, 81500,
+			72200, 4, 4 }, /* 81 Mb */
+		[43] = { RC_HT_S_40, WLAN_RC_PHY_HT_40_SS, 108000,
+			92900, 5, 5 }, /* 108 Mb */
+		[44] = { RC_HT_S_40, WLAN_RC_PHY_HT_40_SS, 121500,
+			102700, 6, 6 }, /* 121.5 Mb*/
+		[45] = { RC_HT_S_40, WLAN_RC_PHY_HT_40_SS, 135000,
+			112000, 7, 7 }, /* 135 Mb */
+		[46] = { RC_HT_S_40, WLAN_RC_PHY_HT_40_SS_HGI, 150000,
+			122000, 7, 7 }, /* 150 Mb */
+		[47] = { RC_INVALID, WLAN_RC_PHY_HT_40_DS, 27000,
+			25800, 8, 8 }, /* 27 Mb */
+		[48] = { RC_HT_T_40, WLAN_RC_PHY_HT_40_DS, 54000,
+			49800, 9, 9 }, /* 54 Mb */
+		[49] = { RC_HT_T_40, WLAN_RC_PHY_HT_40_DS, 81000,
+			71900, 10, 10 }, /* 81 Mb */
+		[50] = { RC_HT_DT_40, WLAN_RC_PHY_HT_40_DS, 108000,
+			92500, 11, 11 }, /* 108 Mb */
+		[51] = { RC_HT_DT_40, WLAN_RC_PHY_HT_40_DS, 162000,
+			130300, 12, 12 }, /* 162 Mb */
+		[52] = { RC_HT_DT_40, WLAN_RC_PHY_HT_40_DS, 216000,
+			162800, 13, 13 }, /* 216 Mb */
+		[53] = { RC_HT_DT_40, WLAN_RC_PHY_HT_40_DS, 243000,
+			178200, 14, 14 }, /* 243 Mb */
+		[54] = { RC_HT_DT_40, WLAN_RC_PHY_HT_40_DS, 270000,
+			192100, 15, 15 }, /* 270 Mb */
+		[55] = { RC_HT_DT_40, WLAN_RC_PHY_HT_40_DS_HGI, 300000,
+			207000, 15, 15 }, /* 300 Mb */
+		[56] = {  RC_INVALID, WLAN_RC_PHY_HT_40_TS, 40500,
+			36100, 16, 16 }, /* 40.5 Mb */
+		[57] = {  RC_INVALID, WLAN_RC_PHY_HT_40_TS, 81000,
+			72900, 17, 17 }, /* 81 Mb */
+		[58] = {  RC_INVALID, WLAN_RC_PHY_HT_40_TS, 121500,
+			108300, 18, 18 }, /* 121.5 Mb */
+		[59] = {  RC_INVALID, WLAN_RC_PHY_HT_40_TS, 162000,
+			142000, 19, 19 }, /*  162 Mb */
+		[60] = {  RC_INVALID, WLAN_RC_PHY_HT_40_TS, 243000,
+			205100, 20, 20 }, /*  243 Mb */
+		[61] = {  RC_INVALID, WLAN_RC_PHY_HT_40_TS_HGI, 270000,
+			224700, 20, 20 }, /*  270 Mb */
+		[62] = {  RC_HT_T_40, WLAN_RC_PHY_HT_40_TS, 324000,
+			263100, 21, 21 }, /*  324 Mb */
+		[63] = {  RC_HT_T_40, WLAN_RC_PHY_HT_40_TS_HGI, 360000,
+			288000, 21, 21 }, /*  360 Mb */
+		[64] = {  RC_HT_T_40, WLAN_RC_PHY_HT_40_TS, 364500,
+			290700, 22, 22 }, /* 364.5 Mb */
+		[65] = {  RC_HT_T_40, WLAN_RC_PHY_HT_40_TS_HGI, 405000,
+			317200, 22, 22 }, /* 405 Mb */
+		[66] = {  RC_HT_T_40, WLAN_RC_PHY_HT_40_TS, 405000,
+			317200, 23, 23 }, /* 405 Mb */
+		[67] = {  RC_HT_T_40, WLAN_RC_PHY_HT_40_TS_HGI, 450000,
+			346400, 23, 23 }, /* 450 Mb */
+>>>>>>> refs/remotes/origin/master
 	},
 	50,  /* probe interval */
 	WLAN_RC_HT_FLAG,  /* Phy rates allowed initially */
@@ -176,6 +318,7 @@ static const struct ath_rate_table ar5416_11ng_ratetable = {
 	12, /* MCS start */
 	{
 		[0] = { RC_ALL, WLAN_RC_PHY_CCK, 1000,
+<<<<<<< HEAD
 			900, 0, 2, 0, 0, 0, 0 }, /* 1 Mb */
 		[1] = { RC_ALL, WLAN_RC_PHY_CCK, 2000,
 			1900, 1, 4, 1, 1, 1, 1 }, /* 2 Mb */
@@ -319,6 +462,151 @@ static const struct ath_rate_table ar5416_11ng_ratetable = {
 			317200, 23, 23, 8, 70, 71, 71 }, /* 405 Mb */
 		[71] = {  RC_HT_T_40, WLAN_RC_PHY_HT_40_TS_HGI, 450000,
 			346400, 23, 23, 8, 70, 71, 71 }, /* 450 Mb */
+=======
+			900, 0, 2 }, /* 1 Mb */
+		[1] = { RC_ALL, WLAN_RC_PHY_CCK, 2000,
+			1900, 1, 4 }, /* 2 Mb */
+		[2] = { RC_ALL, WLAN_RC_PHY_CCK, 5500,
+			4900, 2, 11 }, /* 5.5 Mb */
+		[3] = { RC_ALL, WLAN_RC_PHY_CCK, 11000,
+			8100, 3, 22 }, /* 11 Mb */
+		[4] = { RC_INVALID, WLAN_RC_PHY_OFDM, 6000,
+			5400, 4, 12 }, /* 6 Mb */
+		[5] = { RC_INVALID, WLAN_RC_PHY_OFDM, 9000,
+			7800, 5, 18 }, /* 9 Mb */
+		[6] = { RC_L_SDT, WLAN_RC_PHY_OFDM, 12000,
+			10100, 6, 24 }, /* 12 Mb */
+		[7] = { RC_L_SDT, WLAN_RC_PHY_OFDM, 18000,
+			14100, 7, 36 }, /* 18 Mb */
+		[8] = { RC_L_SDT, WLAN_RC_PHY_OFDM, 24000,
+			17700, 8, 48 }, /* 24 Mb */
+		[9] = { RC_L_SDT, WLAN_RC_PHY_OFDM, 36000,
+			23700, 9, 72 }, /* 36 Mb */
+		[10] = { RC_L_SDT, WLAN_RC_PHY_OFDM, 48000,
+			27400, 10, 96 }, /* 48 Mb */
+		[11] = { RC_L_SDT, WLAN_RC_PHY_OFDM, 54000,
+			30900, 11, 108 }, /* 54 Mb */
+		[12] = { RC_INVALID, WLAN_RC_PHY_HT_20_SS, 6500,
+			6400, 0, 0 }, /* 6.5 Mb */
+		[13] = { RC_HT_SDT_20, WLAN_RC_PHY_HT_20_SS, 13000,
+			12700, 1, 1 }, /* 13 Mb */
+		[14] = { RC_HT_SDT_20, WLAN_RC_PHY_HT_20_SS, 19500,
+			18800, 2, 2 }, /* 19.5 Mb*/
+		[15] = { RC_HT_SD_20, WLAN_RC_PHY_HT_20_SS, 26000,
+			25000, 3, 3 }, /* 26 Mb */
+		[16] = { RC_HT_SD_20, WLAN_RC_PHY_HT_20_SS, 39000,
+			36700, 4, 4 }, /* 39 Mb */
+		[17] = { RC_HT_S_20, WLAN_RC_PHY_HT_20_SS, 52000,
+			48100, 5, 5 }, /* 52 Mb */
+		[18] = { RC_HT_S_20, WLAN_RC_PHY_HT_20_SS, 58500,
+			53500, 6, 6 }, /* 58.5 Mb */
+		[19] = { RC_HT_S_20, WLAN_RC_PHY_HT_20_SS, 65000,
+			59000, 7, 7 }, /* 65 Mb */
+		[20] = { RC_HT_S_20, WLAN_RC_PHY_HT_20_SS_HGI, 72200,
+			65400, 7, 7 }, /* 65 Mb*/
+		[21] = { RC_INVALID, WLAN_RC_PHY_HT_20_DS, 13000,
+			12700, 8, 8 }, /* 13 Mb */
+		[22] = { RC_HT_T_20, WLAN_RC_PHY_HT_20_DS, 26000,
+			24800, 9, 9 }, /* 26 Mb */
+		[23] = { RC_HT_T_20, WLAN_RC_PHY_HT_20_DS, 39000,
+			36600, 10, 10 }, /* 39 Mb */
+		[24] = { RC_HT_DT_20, WLAN_RC_PHY_HT_20_DS, 52000,
+			48100, 11, 11 }, /* 52 Mb */
+		[25] = { RC_HT_DT_20, WLAN_RC_PHY_HT_20_DS, 78000,
+			69500, 12, 12 }, /* 78 Mb */
+		[26] = { RC_HT_DT_20, WLAN_RC_PHY_HT_20_DS, 104000,
+			89500, 13, 13 }, /* 104 Mb */
+		[27] = { RC_HT_DT_20, WLAN_RC_PHY_HT_20_DS, 117000,
+			98900, 14, 14 }, /* 117 Mb */
+		[28] = { RC_HT_DT_20, WLAN_RC_PHY_HT_20_DS, 130000,
+			108300, 15, 15 }, /* 130 Mb */
+		[29] = { RC_HT_DT_20, WLAN_RC_PHY_HT_20_DS_HGI, 144400,
+			120000, 15, 15 }, /* 144.4 Mb */
+		[30] = {  RC_INVALID, WLAN_RC_PHY_HT_20_TS, 19500,
+			17400, 16, 16 }, /* 19.5 Mb */
+		[31] = {  RC_INVALID, WLAN_RC_PHY_HT_20_TS, 39000,
+			35100, 17, 17 }, /* 39 Mb */
+		[32] = {  RC_INVALID, WLAN_RC_PHY_HT_20_TS, 58500,
+			52600, 18, 18 }, /* 58.5 Mb */
+		[33] = {  RC_INVALID, WLAN_RC_PHY_HT_20_TS, 78000,
+			70400, 19, 19 }, /* 78 Mb */
+		[34] = {  RC_INVALID, WLAN_RC_PHY_HT_20_TS, 117000,
+			104900, 20, 20 }, /* 117 Mb */
+		[35] = {  RC_INVALID, WLAN_RC_PHY_HT_20_TS_HGI, 130000,
+			115800, 20, 20 }, /* 130 Mb */
+		[36] = {  RC_HT_T_20, WLAN_RC_PHY_HT_20_TS, 156000,
+			137200, 21, 21 }, /* 156 Mb */
+		[37] = {  RC_HT_T_20, WLAN_RC_PHY_HT_20_TS_HGI, 173300,
+			151100, 21, 21 }, /* 173.3 Mb */
+		[38] = {  RC_HT_T_20, WLAN_RC_PHY_HT_20_TS, 175500,
+			152800, 22, 22 }, /* 175.5 Mb */
+		[39] = {  RC_HT_T_20, WLAN_RC_PHY_HT_20_TS_HGI, 195000,
+			168400, 22, 22 }, /* 195 Mb */
+		[40] = {  RC_HT_T_20, WLAN_RC_PHY_HT_20_TS, 195000,
+			168400, 23, 23 }, /* 195 Mb */
+		[41] = {  RC_HT_T_20, WLAN_RC_PHY_HT_20_TS_HGI, 216700,
+			185000, 23, 23 }, /* 216.7 Mb */
+		[42] = { RC_HT_SDT_40, WLAN_RC_PHY_HT_40_SS, 13500,
+			13200, 0, 0 }, /* 13.5 Mb */
+		[43] = { RC_HT_SDT_40, WLAN_RC_PHY_HT_40_SS, 27500,
+			25900, 1, 1 }, /* 27.0 Mb */
+		[44] = { RC_HT_SDT_40, WLAN_RC_PHY_HT_40_SS, 40500,
+			38600, 2, 2 }, /* 40.5 Mb */
+		[45] = { RC_HT_SD_40, WLAN_RC_PHY_HT_40_SS, 54000,
+			49800, 3, 3 }, /* 54 Mb */
+		[46] = { RC_HT_SD_40, WLAN_RC_PHY_HT_40_SS, 81500,
+			72200, 4, 4 }, /* 81 Mb */
+		[47] = { RC_HT_S_40 , WLAN_RC_PHY_HT_40_SS, 108000,
+			92900, 5, 5 }, /* 108 Mb */
+		[48] = { RC_HT_S_40, WLAN_RC_PHY_HT_40_SS, 121500,
+			102700, 6, 6 }, /* 121.5 Mb */
+		[49] = { RC_HT_S_40, WLAN_RC_PHY_HT_40_SS, 135000,
+			112000, 7, 7 }, /* 135 Mb */
+		[50] = { RC_HT_S_40, WLAN_RC_PHY_HT_40_SS_HGI, 150000,
+			122000, 7, 7 }, /* 150 Mb */
+		[51] = { RC_INVALID, WLAN_RC_PHY_HT_40_DS, 27000,
+			25800, 8, 8 }, /* 27 Mb */
+		[52] = { RC_HT_T_40, WLAN_RC_PHY_HT_40_DS, 54000,
+			49800, 9, 9 }, /* 54 Mb */
+		[53] = { RC_HT_T_40, WLAN_RC_PHY_HT_40_DS, 81000,
+			71900, 10, 10 }, /* 81 Mb */
+		[54] = { RC_HT_DT_40, WLAN_RC_PHY_HT_40_DS, 108000,
+			92500, 11, 11 }, /* 108 Mb */
+		[55] = { RC_HT_DT_40, WLAN_RC_PHY_HT_40_DS, 162000,
+			130300, 12, 12 }, /* 162 Mb */
+		[56] = { RC_HT_DT_40, WLAN_RC_PHY_HT_40_DS, 216000,
+			162800, 13, 13 }, /* 216 Mb */
+		[57] = { RC_HT_DT_40, WLAN_RC_PHY_HT_40_DS, 243000,
+			178200, 14, 14 }, /* 243 Mb */
+		[58] = { RC_HT_DT_40, WLAN_RC_PHY_HT_40_DS, 270000,
+			192100, 15, 15 }, /* 270 Mb */
+		[59] = { RC_HT_DT_40, WLAN_RC_PHY_HT_40_DS_HGI, 300000,
+			207000, 15, 15 }, /* 300 Mb */
+		[60] = {  RC_INVALID, WLAN_RC_PHY_HT_40_TS, 40500,
+			36100, 16, 16 }, /* 40.5 Mb */
+		[61] = {  RC_INVALID, WLAN_RC_PHY_HT_40_TS, 81000,
+			72900, 17, 17 }, /* 81 Mb */
+		[62] = {  RC_INVALID, WLAN_RC_PHY_HT_40_TS, 121500,
+			108300, 18, 18 }, /* 121.5 Mb */
+		[63] = {  RC_INVALID, WLAN_RC_PHY_HT_40_TS, 162000,
+			142000, 19, 19 }, /* 162 Mb */
+		[64] = {  RC_INVALID, WLAN_RC_PHY_HT_40_TS, 243000,
+			205100, 20, 20 }, /* 243 Mb */
+		[65] = {  RC_INVALID, WLAN_RC_PHY_HT_40_TS_HGI, 270000,
+			224700, 20, 20 }, /* 270 Mb */
+		[66] = {  RC_HT_T_40, WLAN_RC_PHY_HT_40_TS, 324000,
+			263100, 21, 21 }, /* 324 Mb */
+		[67] = {  RC_HT_T_40, WLAN_RC_PHY_HT_40_TS_HGI, 360000,
+			288000, 21, 21 }, /* 360 Mb */
+		[68] = {  RC_HT_T_40, WLAN_RC_PHY_HT_40_TS, 364500,
+			290700, 22, 22 }, /* 364.5 Mb */
+		[69] = {  RC_HT_T_40, WLAN_RC_PHY_HT_40_TS_HGI, 405000,
+			317200, 22, 22 }, /* 405 Mb */
+		[70] = {  RC_HT_T_40, WLAN_RC_PHY_HT_40_TS, 405000,
+			317200, 23, 23 }, /* 405 Mb */
+		[71] = {  RC_HT_T_40, WLAN_RC_PHY_HT_40_TS_HGI, 450000,
+			346400, 23, 23 }, /* 450 Mb */
+>>>>>>> refs/remotes/origin/master
 	},
 	50,  /* probe interval */
 	WLAN_RC_HT_FLAG,  /* Phy rates allowed initially */
@@ -329,6 +617,7 @@ static const struct ath_rate_table ar5416_11a_ratetable = {
 	0,
 	{
 		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 6000, /* 6 Mb */
+<<<<<<< HEAD
 			5400, 0, 12, 0},
 		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 9000, /* 9 Mb */
 			7800,  1, 18, 0},
@@ -344,6 +633,23 @@ static const struct ath_rate_table ar5416_11a_ratetable = {
 			27400, 6, 96, 4},
 		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 54000, /* 54 Mb */
 			29300, 7, 108, 4},
+=======
+			5400, 0, 12},
+		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 9000, /* 9 Mb */
+			7800,  1, 18},
+		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 12000, /* 12 Mb */
+			10000, 2, 24},
+		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 18000, /* 18 Mb */
+			13900, 3, 36},
+		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 24000, /* 24 Mb */
+			17300, 4, 48},
+		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 36000, /* 36 Mb */
+			23000, 5, 72},
+		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 48000, /* 48 Mb */
+			27400, 6, 96},
+		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 54000, /* 54 Mb */
+			29300, 7, 108},
+>>>>>>> refs/remotes/origin/master
 	},
 	50,  /* probe interval */
 	0,   /* Phy rates allowed initially */
@@ -354,6 +660,7 @@ static const struct ath_rate_table ar5416_11g_ratetable = {
 	0,
 	{
 		{ RC_L_SDT, WLAN_RC_PHY_CCK, 1000, /* 1 Mb */
+<<<<<<< HEAD
 			900, 0, 2, 0},
 		{ RC_L_SDT, WLAN_RC_PHY_CCK, 2000, /* 2 Mb */
 			1900, 1, 4, 1},
@@ -377,11 +684,37 @@ static const struct ath_rate_table ar5416_11g_ratetable = {
 			27400, 10, 96, 8},
 		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 54000, /* 54 Mb */
 			29300, 11, 108, 8},
+=======
+			900, 0, 2},
+		{ RC_L_SDT, WLAN_RC_PHY_CCK, 2000, /* 2 Mb */
+			1900, 1, 4},
+		{ RC_L_SDT, WLAN_RC_PHY_CCK, 5500, /* 5.5 Mb */
+			4900, 2, 11},
+		{ RC_L_SDT, WLAN_RC_PHY_CCK, 11000, /* 11 Mb */
+			8100, 3, 22},
+		{ RC_INVALID, WLAN_RC_PHY_OFDM, 6000, /* 6 Mb */
+			5400, 4, 12},
+		{ RC_INVALID, WLAN_RC_PHY_OFDM, 9000, /* 9 Mb */
+			7800, 5, 18},
+		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 12000, /* 12 Mb */
+			10000, 6, 24},
+		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 18000, /* 18 Mb */
+			13900, 7, 36},
+		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 24000, /* 24 Mb */
+			17300, 8, 48},
+		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 36000, /* 36 Mb */
+			23000, 9, 72},
+		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 48000, /* 48 Mb */
+			27400, 10, 96},
+		{ RC_L_SDT, WLAN_RC_PHY_OFDM, 54000, /* 54 Mb */
+			29300, 11, 108},
+>>>>>>> refs/remotes/origin/master
 	},
 	50,  /* probe interval */
 	0,   /* Phy rates allowed initially */
 };
 
+<<<<<<< HEAD
 static int ath_rc_get_rateindex(const struct ath_rate_table *rate_table,
 <<<<<<< HEAD
 				struct ieee80211_tx_rate *rate);
@@ -390,10 +723,18 @@ static int ath_rc_get_rateindex(const struct ath_rate_table *rate_table,
 {
 	int rix = 0, i = 0;
 	static const int mcs_rix_off[] = { 7, 15, 20, 21, 22, 23 };
+=======
+static int ath_rc_get_rateindex(struct ath_rate_priv *ath_rc_priv,
+				struct ieee80211_tx_rate *rate)
+{
+	const struct ath_rate_table *rate_table = ath_rc_priv->rate_table;
+	int rix, i, idx = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!(rate->flags & IEEE80211_TX_RC_MCS))
 		return rate->idx;
 
+<<<<<<< HEAD
 	while (i < ARRAY_SIZE(mcs_rix_off) && rate->idx > mcs_rix_off[i]) {
 		rix++; i++;
 	}
@@ -415,6 +756,27 @@ static int ath_rc_get_rateindex(const struct ath_rate_table *rate_table,
 static void ath_rc_sort_validrates(const struct ath_rate_table *rate_table,
 				   struct ath_rate_priv *ath_rc_priv)
 {
+=======
+	for (i = 0; i < ath_rc_priv->max_valid_rate; i++) {
+		idx = ath_rc_priv->valid_rate_index[i];
+
+		if (WLAN_RC_PHY_HT(rate_table->info[idx].phy) &&
+		    rate_table->info[idx].ratecode == rate->idx)
+			break;
+	}
+
+	rix = idx;
+
+	if (rate->flags & IEEE80211_TX_RC_SHORT_GI)
+		rix++;
+
+	return rix;
+}
+
+static void ath_rc_sort_validrates(struct ath_rate_priv *ath_rc_priv)
+{
+	const struct ath_rate_table *rate_table = ath_rc_priv->rate_table;
+>>>>>>> refs/remotes/origin/master
 	u8 i, j, idx, idx_next;
 
 	for (i = ath_rc_priv->max_valid_rate - 1; i > 0; i--) {
@@ -431,6 +793,7 @@ static void ath_rc_sort_validrates(const struct ath_rate_table *rate_table,
 	}
 }
 
+<<<<<<< HEAD
 static void ath_rc_init_valid_rate_idx(struct ath_rate_priv *ath_rc_priv)
 {
 	u8 i;
@@ -446,6 +809,8 @@ static inline void ath_rc_set_valid_rate_idx(struct ath_rate_priv *ath_rc_priv,
 	ath_rc_priv->valid_rate_index[index] = !!valid_tx_rate;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline
 int ath_rc_get_nextvalid_txrate(const struct ath_rate_table *rate_table,
 				struct ath_rate_priv *ath_rc_priv,
@@ -486,8 +851,12 @@ static int ath_rc_valid_phyrate(u32 phy, u32 capflag, int ignore_cw)
 }
 
 static inline int
+<<<<<<< HEAD
 ath_rc_get_lower_rix(const struct ath_rate_table *rate_table,
 		     struct ath_rate_priv *ath_rc_priv,
+=======
+ath_rc_get_lower_rix(struct ath_rate_priv *ath_rc_priv,
+>>>>>>> refs/remotes/origin/master
 		     u8 cur_valid_txrate, u8 *next_idx)
 {
 	int8_t i;
@@ -502,10 +871,16 @@ ath_rc_get_lower_rix(const struct ath_rate_table *rate_table,
 	return 0;
 }
 
+<<<<<<< HEAD
 static u8 ath_rc_init_validrates(struct ath_rate_priv *ath_rc_priv,
 				 const struct ath_rate_table *rate_table,
 				 u32 capflag)
 {
+=======
+static u8 ath_rc_init_validrates(struct ath_rate_priv *ath_rc_priv)
+{
+	const struct ath_rate_table *rate_table = ath_rc_priv->rate_table;
+>>>>>>> refs/remotes/origin/master
 	u8 i, hi = 0;
 
 	for (i = 0; i < rate_table->rate_cnt; i++) {
@@ -513,14 +888,22 @@ static u8 ath_rc_init_validrates(struct ath_rate_priv *ath_rc_priv,
 			u32 phy = rate_table->info[i].phy;
 			u8 valid_rate_count = 0;
 
+<<<<<<< HEAD
 			if (!ath_rc_valid_phyrate(phy, capflag, 0))
+=======
+			if (!ath_rc_valid_phyrate(phy, ath_rc_priv->ht_cap, 0))
+>>>>>>> refs/remotes/origin/master
 				continue;
 
 			valid_rate_count = ath_rc_priv->valid_phy_ratecnt[phy];
 
 			ath_rc_priv->valid_phy_rateidx[phy][valid_rate_count] = i;
 			ath_rc_priv->valid_phy_ratecnt[phy] += 1;
+<<<<<<< HEAD
 			ath_rc_set_valid_rate_idx(ath_rc_priv, i, 1);
+=======
+			ath_rc_priv->valid_rate_index[i] = true;
+>>>>>>> refs/remotes/origin/master
 			hi = i;
 		}
 	}
@@ -528,6 +911,7 @@ static u8 ath_rc_init_validrates(struct ath_rate_priv *ath_rc_priv,
 	return hi;
 }
 
+<<<<<<< HEAD
 static u8 ath_rc_setvalid_rates(struct ath_rate_priv *ath_rc_priv,
 				const struct ath_rate_table *rate_table,
 				struct ath_rateset *rateset,
@@ -600,11 +984,72 @@ static u8 ath_rc_setvalid_htrates(struct ath_rate_priv *ath_rc_priv,
 			if ((rate != dot11rate) || !WLAN_RC_PHY_HT(phy) ||
 			    !(rate_flags & WLAN_RC_CAP_STREAM(capflag)) ||
 			    !WLAN_RC_PHY_HT_VALID(rate_flags, capflag))
+=======
+static inline bool ath_rc_check_legacy(u8 rate, u8 dot11rate, u16 rate_flags,
+				       u32 phy, u32 capflag)
+{
+	if (rate != dot11rate || WLAN_RC_PHY_HT(phy))
+		return false;
+
+	if ((rate_flags & WLAN_RC_CAP_MODE(capflag)) != WLAN_RC_CAP_MODE(capflag))
+		return false;
+
+	if (!(rate_flags & WLAN_RC_CAP_STREAM(capflag)))
+		return false;
+
+	return true;
+}
+
+static inline bool ath_rc_check_ht(u8 rate, u8 dot11rate, u16 rate_flags,
+				   u32 phy, u32 capflag)
+{
+	if (rate != dot11rate || !WLAN_RC_PHY_HT(phy))
+		return false;
+
+	if (!WLAN_RC_PHY_HT_VALID(rate_flags, capflag))
+		return false;
+
+	if (!(rate_flags & WLAN_RC_CAP_STREAM(capflag)))
+		return false;
+
+	return true;
+}
+
+static u8 ath_rc_setvalid_rates(struct ath_rate_priv *ath_rc_priv, bool legacy)
+{
+	const struct ath_rate_table *rate_table = ath_rc_priv->rate_table;
+	struct ath_rateset *rateset;
+	u32 phy, capflag = ath_rc_priv->ht_cap;
+	u16 rate_flags;
+	u8 i, j, hi = 0, rate, dot11rate, valid_rate_count;
+
+	if (legacy)
+		rateset = &ath_rc_priv->neg_rates;
+	else
+		rateset = &ath_rc_priv->neg_ht_rates;
+
+	for (i = 0; i < rateset->rs_nrates; i++) {
+		for (j = 0; j < rate_table->rate_cnt; j++) {
+			phy = rate_table->info[j].phy;
+			rate_flags = rate_table->info[j].rate_flags;
+			rate = rateset->rs_rates[i];
+			dot11rate = rate_table->info[j].dot11rate;
+
+			if (legacy &&
+			    !ath_rc_check_legacy(rate, dot11rate,
+						 rate_flags, phy, capflag))
+				continue;
+
+			if (!legacy &&
+			    !ath_rc_check_ht(rate, dot11rate,
+					     rate_flags, phy, capflag))
+>>>>>>> refs/remotes/origin/master
 				continue;
 
 			if (!ath_rc_valid_phyrate(phy, capflag, 0))
 				continue;
 
+<<<<<<< HEAD
 			ath_rc_priv->valid_phy_rateidx[phy]
 				[ath_rc_priv->valid_phy_ratecnt[phy]] = j;
 			ath_rc_priv->valid_phy_ratecnt[phy] += 1;
@@ -614,12 +1059,20 @@ static u8 ath_rc_setvalid_htrates(struct ath_rate_priv *ath_rc_priv,
 =======
 			hi = max(hi, j);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			valid_rate_count = ath_rc_priv->valid_phy_ratecnt[phy];
+			ath_rc_priv->valid_phy_rateidx[phy][valid_rate_count] = j;
+			ath_rc_priv->valid_phy_ratecnt[phy] += 1;
+			ath_rc_priv->valid_rate_index[j] = true;
+			hi = max(hi, j);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	return hi;
 }
 
+<<<<<<< HEAD
 /* Finds the highest rate index we can use */
 static u8 ath_rc_get_highest_rix(struct ath_softc *sc,
 			         struct ath_rate_priv *ath_rc_priv,
@@ -631,6 +1084,12 @@ static u8 ath_rc_get_highest_rix(struct ath_softc *sc,
 				 bool legacy)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
+=======
+static u8 ath_rc_get_highest_rix(struct ath_rate_priv *ath_rc_priv,
+				 int *is_probing)
+{
+	const struct ath_rate_table *rate_table = ath_rc_priv->rate_table;
+>>>>>>> refs/remotes/origin/master
 	u32 best_thruput, this_thruput, now_msec;
 	u8 rate, next_rate, best_rate, maxindex, minindex;
 	int8_t index = 0;
@@ -651,10 +1110,13 @@ static u8 ath_rc_get_highest_rix(struct ath_softc *sc,
 
 		rate = ath_rc_priv->valid_rate_index[index];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (legacy && !(rate_table->info[rate].rate_flags & RC_LEGACY))
 			continue;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (rate > ath_rc_priv->rate_max_phy)
 			continue;
 
@@ -722,10 +1184,14 @@ static u8 ath_rc_get_highest_rix(struct ath_softc *sc,
 
 	/* This should not happen */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WARN_ON(1);
 =======
 	WARN_ON_ONCE(1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON_ONCE(1);
+>>>>>>> refs/remotes/origin/master
 
 	rate = ath_rc_priv->valid_rate_index[0];
 
@@ -740,8 +1206,11 @@ static void ath_rc_rate_set_series(const struct ath_rate_table *rate_table,
 	rate->count = tries;
 	rate->idx = rate_table->info[rix].ratecode;
 
+<<<<<<< HEAD
 	if (txrc->short_preamble)
 		rate->flags |= IEEE80211_TX_RC_USE_SHORT_PREAMBLE;
+=======
+>>>>>>> refs/remotes/origin/master
 	if (txrc->rts || rtsctsenable)
 		rate->flags |= IEEE80211_TX_RC_USE_RTS_CTS;
 
@@ -759,6 +1228,7 @@ static void ath_rc_rate_set_rtscts(struct ath_softc *sc,
 				   const struct ath_rate_table *rate_table,
 				   struct ieee80211_tx_info *tx_info)
 {
+<<<<<<< HEAD
 	struct ieee80211_tx_rate *rates = tx_info->control.rates;
 	int i = 0, rix = 0, cix, enable_g_protection = 0;
 
@@ -794,6 +1264,27 @@ static void ath_rc_rate_set_rtscts(struct ath_softc *sc,
 	}
 
 	tx_info->control.rts_cts_rate_idx = cix;
+=======
+	struct ieee80211_bss_conf *bss_conf;
+
+	if (!tx_info->control.vif)
+		return;
+	/*
+	 * For legacy frames, mac80211 takes care of CTS protection.
+	 */
+	if (!(tx_info->control.rates[0].flags & IEEE80211_TX_RC_MCS))
+		return;
+
+	bss_conf = &tx_info->control.vif->bss_conf;
+
+	if (!bss_conf->basic_rates)
+		return;
+
+	/*
+	 * For now, use the lowest allowed basic rate for HT frames.
+	 */
+	tx_info->control.rts_cts_rate_idx = __ffs(bss_conf->basic_rates);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ath_get_rate(void *priv, struct ieee80211_sta *sta, void *priv_sta,
@@ -808,10 +1299,14 @@ static void ath_get_rate(void *priv, struct ieee80211_sta *sta, void *priv_sta,
 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
 	__le16 fc = hdr->frame_control;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 try_per_rate, i = 0, rix;
 =======
 	u8 try_per_rate, i = 0, rix, high_rix;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 try_per_rate, i = 0, rix;
+>>>>>>> refs/remotes/origin/master
 	int is_probe = 0;
 
 	if (rate_control_send_low(sta, priv_sta, txrc))
@@ -831,6 +1326,7 @@ static void ath_get_rate(void *priv, struct ieee80211_sta *sta, void *priv_sta,
 
 	rate_table = ath_rc_priv->rate_table;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rix = ath_rc_get_highest_rix(sc, ath_rc_priv, rate_table, &is_probe);
 =======
 	rix = ath_rc_get_highest_rix(sc, ath_rc_priv, rate_table,
@@ -843,6 +1339,10 @@ static void ath_get_rate(void *priv, struct ieee80211_sta *sta, void *priv_sta,
 	 * We don't need to check our own device's capabilities as our own
 	 * ht capabilities would have already been intersected with our peer's.
 	 */
+=======
+	rix = ath_rc_get_highest_rix(ath_rc_priv, &is_probe);
+
+>>>>>>> refs/remotes/origin/master
 	if (conf_is_ht(&sc->hw->conf) &&
 	    (sta->ht_cap.cap & IEEE80211_HT_CAP_LDPC_CODING))
 		tx_info->flags |= IEEE80211_TX_CTL_LDPC;
@@ -852,6 +1352,7 @@ static void ath_get_rate(void *priv, struct ieee80211_sta *sta, void *priv_sta,
 		tx_info->flags |= (1 << IEEE80211_TX_CTL_STBC_SHIFT);
 
 	if (is_probe) {
+<<<<<<< HEAD
 		/* set one try for probe rates. For the
 		 * probes don't enable rts */
 		ath_rc_rate_set_series(rate_table, &rates[i++], txrc,
@@ -861,16 +1362,36 @@ static void ath_get_rate(void *priv, struct ieee80211_sta *sta, void *priv_sta,
 		 * after the probe rate
 		 */
 		ath_rc_get_lower_rix(rate_table, ath_rc_priv, rix, &rix);
+=======
+		/*
+		 * Set one try for probe rates. For the
+		 * probes don't enable RTS.
+		 */
+		ath_rc_rate_set_series(rate_table, &rates[i++], txrc,
+				       1, rix, 0);
+		/*
+		 * Get the next tried/allowed rate.
+		 * No RTS for the next series after the probe rate.
+		 */
+		ath_rc_get_lower_rix(ath_rc_priv, rix, &rix);
+>>>>>>> refs/remotes/origin/master
 		ath_rc_rate_set_series(rate_table, &rates[i++], txrc,
 				       try_per_rate, rix, 0);
 
 		tx_info->flags |= IEEE80211_TX_CTL_RATE_CTRL_PROBE;
 	} else {
+<<<<<<< HEAD
 		/* Set the chosen rate. No RTS for first series entry. */
+=======
+		/*
+		 * Set the chosen rate. No RTS for first series entry.
+		 */
+>>>>>>> refs/remotes/origin/master
 		ath_rc_rate_set_series(rate_table, &rates[i++], txrc,
 				       try_per_rate, rix, 0);
 	}
 
+<<<<<<< HEAD
 	/* Fill in the other rates for multirate retry */
 <<<<<<< HEAD
 	for ( ; i < 4; i++) {
@@ -883,10 +1404,25 @@ static void ath_get_rate(void *priv, struct ieee80211_sta *sta, void *priv_sta,
 
 		ath_rc_get_lower_rix(rate_table, ath_rc_priv, rix, &rix);
 		/* All other rates in the series have RTS enabled */
+=======
+	for ( ; i < 4; i++) {
+		/*
+		 * Use twice the number of tries for the last MRR segment.
+		 */
+		if (i + 1 == 4)
+			try_per_rate = 8;
+
+		ath_rc_get_lower_rix(ath_rc_priv, rix, &rix);
+
+		/*
+		 * All other rates in the series have RTS enabled.
+		 */
+>>>>>>> refs/remotes/origin/master
 		ath_rc_rate_set_series(rate_table, &rates[i], txrc,
 				       try_per_rate, rix, 1);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	/* Use twice the number of tries for the last MRR segment. */
@@ -908,6 +1444,8 @@ static void ath_get_rate(void *priv, struct ieee80211_sta *sta, void *priv_sta,
 	ath_rc_rate_set_series(rate_table, &rates[i], txrc,
 			       try_per_rate, rix, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * NB:Change rate series to enable aggregation when operating
 	 * at lower MCS rates. When first rate in series is MCS2
@@ -923,7 +1461,11 @@ static void ath_get_rate(void *priv, struct ieee80211_sta *sta, void *priv_sta,
 	 * So, set fourth rate in series to be same as third one for
 	 * above conditions.
 	 */
+<<<<<<< HEAD
 	if ((sc->hw->conf.channel->band == IEEE80211_BAND_2GHZ) &&
+=======
+	if ((sc->hw->conf.chandef.chan->band == IEEE80211_BAND_2GHZ) &&
+>>>>>>> refs/remotes/origin/master
 	    (conf_is_ht(&sc->hw->conf))) {
 		u8 dot11rate = rate_table->info[rix].dot11rate;
 		u8 phy = rate_table->info[rix].phy;
@@ -949,7 +1491,10 @@ static void ath_get_rate(void *priv, struct ieee80211_sta *sta, void *priv_sta,
 		rates[0].count = ATH_TXMAXTRY;
 	}
 
+<<<<<<< HEAD
 	/* Setup RTS/CTS */
+=======
+>>>>>>> refs/remotes/origin/master
 	ath_rc_rate_set_rtscts(sc, rate_table, tx_info);
 }
 
@@ -1092,6 +1637,7 @@ static void ath_rc_update_per(struct ath_softc *sc,
 	}
 }
 
+<<<<<<< HEAD
 static void ath_debug_stat_retries(struct ath_rate_priv *rc, int rix,
 				   int xretries, int retries, u8 per)
 {
@@ -1105,6 +1651,8 @@ static void ath_debug_stat_retries(struct ath_rate_priv *rc, int rix,
 /* Update PER, RSSI and whatever else that the code thinks it is doing.
    If you can make sense of all this, you really need to go out more. */
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void ath_rc_update_ht(struct ath_softc *sc,
 			     struct ath_rate_priv *ath_rc_priv,
 			     struct ieee80211_tx_info *tx_info,
@@ -1133,8 +1681,13 @@ static void ath_rc_update_ht(struct ath_softc *sc,
 	if (ath_rc_priv->per[tx_rate] >= 55 && tx_rate > 0 &&
 	    rate_table->info[tx_rate].ratekbps <=
 	    rate_table->info[ath_rc_priv->rate_max_phy].ratekbps) {
+<<<<<<< HEAD
 		ath_rc_get_lower_rix(rate_table, ath_rc_priv,
 				     (u8)tx_rate, &ath_rc_priv->rate_max_phy);
+=======
+		ath_rc_get_lower_rix(ath_rc_priv, (u8)tx_rate,
+				     &ath_rc_priv->rate_max_phy);
+>>>>>>> refs/remotes/origin/master
 
 		/* Don't probe for a little while. */
 		ath_rc_priv->probe_time = now_msec;
@@ -1179,6 +1732,7 @@ static void ath_rc_update_ht(struct ath_softc *sc,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ath_rc_get_rateindex(const struct ath_rate_table *rate_table,
 				struct ieee80211_tx_rate *rate)
 {
@@ -1218,13 +1772,40 @@ static void ath_rc_tx_status(struct ath_softc *sc,
 	u32 i = 0, rix;
 
 	rate_table = ath_rc_priv->rate_table;
+=======
+static void ath_rc_tx_status(struct ath_softc *sc,
+			     struct ath_rate_priv *ath_rc_priv,
+			     struct sk_buff *skb)
+{
+	struct ieee80211_tx_info *tx_info = IEEE80211_SKB_CB(skb);
+	struct ieee80211_tx_rate *rates = tx_info->status.rates;
+	struct ieee80211_tx_rate *rate;
+	int final_ts_idx = 0, xretries = 0, long_retry = 0;
+	u8 flags;
+	u32 i = 0, rix;
+
+	for (i = 0; i < sc->hw->max_rates; i++) {
+		rate = &tx_info->status.rates[i];
+		if (rate->idx < 0 || !rate->count)
+			break;
+
+		final_ts_idx = i;
+		long_retry = rate->count - 1;
+	}
+
+	if (!(tx_info->flags & IEEE80211_TX_STAT_ACK))
+		xretries = 1;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If the first rate is not the final index, there
 	 * are intermediate rate failures to be processed.
 	 */
 	if (final_ts_idx != 0) {
+<<<<<<< HEAD
 		/* Process intermediate rates that failed.*/
+=======
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; i < final_ts_idx ; i++) {
 			if (rates[i].count != 0 && (rates[i].idx >= 0)) {
 				flags = rates[i].flags;
@@ -1236,6 +1817,7 @@ static void ath_rc_tx_status(struct ath_softc *sc,
 				    !(ath_rc_priv->ht_cap & WLAN_RC_40_FLAG))
 					return;
 
+<<<<<<< HEAD
 				rix = ath_rc_get_rateindex(rate_table, &rates[i]);
 				ath_rc_update_ht(sc, ath_rc_priv, tx_info,
 						rix, xretries ? 1 : 2,
@@ -1254,14 +1836,31 @@ static void ath_rc_tx_status(struct ath_softc *sc,
 	}
 
 	flags = rates[i].flags;
+=======
+				rix = ath_rc_get_rateindex(ath_rc_priv, &rates[i]);
+				ath_rc_update_ht(sc, ath_rc_priv, tx_info,
+						 rix, xretries ? 1 : 2,
+						 rates[i].count);
+			}
+		}
+	}
+
+	flags = rates[final_ts_idx].flags;
+>>>>>>> refs/remotes/origin/master
 
 	/* If HT40 and we have switched mode from 40 to 20 => don't update */
 	if ((flags & IEEE80211_TX_RC_40_MHZ_WIDTH) &&
 	    !(ath_rc_priv->ht_cap & WLAN_RC_40_FLAG))
 		return;
 
+<<<<<<< HEAD
 	rix = ath_rc_get_rateindex(rate_table, &rates[i]);
 	ath_rc_update_ht(sc, ath_rc_priv, tx_info, rix, xretries, long_retry);
+=======
+	rix = ath_rc_get_rateindex(ath_rc_priv, &rates[final_ts_idx]);
+	ath_rc_update_ht(sc, ath_rc_priv, tx_info, rix, xretries, long_retry);
+	ath_debug_stat_rc(ath_rc_priv, rix);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const
@@ -1269,8 +1868,11 @@ struct ath_rate_table *ath_choose_rate_table(struct ath_softc *sc,
 					     enum ieee80211_band band,
 					     bool is_ht)
 {
+<<<<<<< HEAD
 	struct ath_common *common = ath9k_hw_common(sc->sc_ah);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	switch(band) {
 	case IEEE80211_BAND_2GHZ:
 		if (is_ht)
@@ -1282,15 +1884,19 @@ struct ath_rate_table *ath_choose_rate_table(struct ath_softc *sc,
 		return &ar5416_11a_ratetable;
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CONFIG, "Invalid band\n");
 =======
 		ath_dbg(common, CONFIG, "Invalid band\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 }
 
 static void ath_rc_init(struct ath_softc *sc,
+<<<<<<< HEAD
 			struct ath_rate_priv *ath_rc_priv,
 			struct ieee80211_supported_band *sband,
 			struct ieee80211_sta *sta,
@@ -1323,11 +1929,30 @@ static void ath_rc_init(struct ath_softc *sc,
 =======
 		for (j = 0; j < RATE_TABLE_SIZE; j++)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			struct ath_rate_priv *ath_rc_priv)
+{
+	const struct ath_rate_table *rate_table = ath_rc_priv->rate_table;
+	struct ath_rateset *rateset = &ath_rc_priv->neg_rates;
+	struct ath_common *common = ath9k_hw_common(sc->sc_ah);
+	u8 i, j, k, hi = 0, hthi = 0;
+
+	ath_rc_priv->rate_table_size = RATE_TABLE_SIZE;
+
+	for (i = 0 ; i < ath_rc_priv->rate_table_size; i++) {
+		ath_rc_priv->per[i] = 0;
+		ath_rc_priv->valid_rate_index[i] = 0;
+	}
+
+	for (i = 0; i < WLAN_RC_PHY_MAX; i++) {
+		for (j = 0; j < RATE_TABLE_SIZE; j++)
+>>>>>>> refs/remotes/origin/master
 			ath_rc_priv->valid_phy_rateidx[i][j] = 0;
 		ath_rc_priv->valid_phy_ratecnt[i] = 0;
 	}
 
 	if (!rateset->rs_nrates) {
+<<<<<<< HEAD
 		/* No working rate, just initialize valid rates */
 		hi = ath_rc_init_validrates(ath_rc_priv, rate_table,
 					    ath_rc_priv->ht_cap);
@@ -1346,11 +1971,25 @@ static void ath_rc_init(struct ath_softc *sc,
 =======
 		hi = max(hi, hthi);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		hi = ath_rc_init_validrates(ath_rc_priv);
+	} else {
+		hi = ath_rc_setvalid_rates(ath_rc_priv, true);
+
+		if (ath_rc_priv->ht_cap & WLAN_RC_HT_FLAG)
+			hthi = ath_rc_setvalid_rates(ath_rc_priv, false);
+
+		hi = max(hi, hthi);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ath_rc_priv->rate_table_size = hi + 1;
 	ath_rc_priv->rate_max_phy = 0;
+<<<<<<< HEAD
 	BUG_ON(ath_rc_priv->rate_table_size > RATE_TABLE_SIZE);
+=======
+	WARN_ON(ath_rc_priv->rate_table_size > RATE_TABLE_SIZE);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0, k = 0; i < WLAN_RC_PHY_MAX; i++) {
 		for (j = 0; j < ath_rc_priv->valid_phy_ratecnt[i]; j++) {
@@ -1358,12 +1997,18 @@ static void ath_rc_init(struct ath_softc *sc,
 				ath_rc_priv->valid_phy_rateidx[i][j];
 		}
 
+<<<<<<< HEAD
 		if (!ath_rc_valid_phyrate(i, rate_table->initial_ratemax, 1)
 		    || !ath_rc_priv->valid_phy_ratecnt[i])
+=======
+		if (!ath_rc_valid_phyrate(i, rate_table->initial_ratemax, 1) ||
+		    !ath_rc_priv->valid_phy_ratecnt[i])
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		ath_rc_priv->rate_max_phy = ath_rc_priv->valid_phy_rateidx[i][j-1];
 	}
+<<<<<<< HEAD
 	BUG_ON(ath_rc_priv->rate_table_size > RATE_TABLE_SIZE);
 	BUG_ON(k > RATE_TABLE_SIZE);
 
@@ -1385,6 +2030,22 @@ static void ath_rc_init(struct ath_softc *sc,
 
 static u8 ath_rc_build_ht_caps(struct ath_softc *sc, struct ieee80211_sta *sta,
 			       bool is_cw40, bool is_sgi)
+=======
+	WARN_ON(ath_rc_priv->rate_table_size > RATE_TABLE_SIZE);
+	WARN_ON(k > RATE_TABLE_SIZE);
+
+	ath_rc_priv->max_valid_rate = k;
+	ath_rc_sort_validrates(ath_rc_priv);
+	ath_rc_priv->rate_max_phy = (k > 4) ?
+		ath_rc_priv->valid_rate_index[k-4] :
+		ath_rc_priv->valid_rate_index[k-1];
+
+	ath_dbg(common, CONFIG, "RC Initialized with capabilities: 0x%x\n",
+		ath_rc_priv->ht_cap);
+}
+
+static u8 ath_rc_build_ht_caps(struct ath_softc *sc, struct ieee80211_sta *sta)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 caps = 0;
 
@@ -1394,15 +2055,27 @@ static u8 ath_rc_build_ht_caps(struct ath_softc *sc, struct ieee80211_sta *sta,
 			caps |= WLAN_RC_TS_FLAG | WLAN_RC_DS_FLAG;
 		else if (sta->ht_cap.mcs.rx_mask[1])
 			caps |= WLAN_RC_DS_FLAG;
+<<<<<<< HEAD
 		if (is_cw40)
 			caps |= WLAN_RC_40_FLAG;
 		if (is_sgi)
 			caps |= WLAN_RC_SGI_FLAG;
+=======
+		if (sta->bandwidth >= IEEE80211_STA_RX_BW_40) {
+			caps |= WLAN_RC_40_FLAG;
+			if (sta->ht_cap.cap & IEEE80211_HT_CAP_SGI_40)
+				caps |= WLAN_RC_SGI_FLAG;
+		} else {
+			if (sta->ht_cap.cap & IEEE80211_HT_CAP_SGI_20)
+				caps |= WLAN_RC_SGI_FLAG;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return caps;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static bool ath_tx_aggr_check(struct ath_softc *sc, struct ath_node *an,
 			      u8 tidno)
@@ -1411,6 +2084,8 @@ static bool ath_tx_aggr_check(struct ath_softc *sc, struct ath_node *an,
 
 	if (!(sc->sc_flags & SC_OP_TXAGGR))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool ath_tx_aggr_check(struct ath_softc *sc, struct ieee80211_sta *sta,
 			      u8 tidno)
 {
@@ -1418,6 +2093,7 @@ static bool ath_tx_aggr_check(struct ath_softc *sc, struct ieee80211_sta *sta,
 	struct ath_atx_tid *txtid;
 
 	if (!sta->ht_cap.ht_supported)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		return false;
 
@@ -1426,6 +2102,12 @@ static bool ath_tx_aggr_check(struct ath_softc *sc, struct ieee80211_sta *sta,
 	if (!(txtid->state & (AGGR_ADDBA_COMPLETE | AGGR_ADDBA_PROGRESS)))
 			return true;
 	return false;
+=======
+		return false;
+
+	txtid = ATH_AN_2_TID(an, tidno);
+	return !txtid->active;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1433,6 +2115,7 @@ static bool ath_tx_aggr_check(struct ath_softc *sc, struct ieee80211_sta *sta,
 /* mac80211 Rate Control callbacks */
 /***********************************/
 
+<<<<<<< HEAD
 static void ath_debug_stat_rc(struct ath_rate_priv *rc, int final_rate)
 {
 	struct ath_rc_stats *stats;
@@ -1442,6 +2125,8 @@ static void ath_debug_stat_rc(struct ath_rate_priv *rc, int final_rate)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void ath_tx_status(void *priv, struct ieee80211_supported_band *sband,
 			  struct ieee80211_sta *sta, void *priv_sta,
 			  struct sk_buff *skb)
@@ -1449,6 +2134,7 @@ static void ath_tx_status(void *priv, struct ieee80211_supported_band *sband,
 	struct ath_softc *sc = priv;
 	struct ath_rate_priv *ath_rc_priv = priv_sta;
 	struct ieee80211_tx_info *tx_info = IEEE80211_SKB_CB(skb);
+<<<<<<< HEAD
 	struct ieee80211_hdr *hdr;
 	int final_ts_idx = 0, tx_status = 0;
 	int long_retry = 0;
@@ -1465,6 +2151,10 @@ static void ath_tx_status(void *priv, struct ieee80211_supported_band *sband,
 		final_ts_idx = i;
 		long_retry = rate->count - 1;
 	}
+=======
+	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+	__le16 fc = hdr->frame_control;
+>>>>>>> refs/remotes/origin/master
 
 	if (!priv_sta || !ieee80211_is_data(fc))
 		return;
@@ -1477,6 +2167,7 @@ static void ath_tx_status(void *priv, struct ieee80211_supported_band *sband,
 	if (tx_info->flags & IEEE80211_TX_STAT_TX_FILTERED)
 		return;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!(tx_info->flags & IEEE80211_TX_STAT_AMPDU)) {
 		tx_info->status.ampdu_ack_len =
@@ -1491,6 +2182,9 @@ static void ath_tx_status(void *priv, struct ieee80211_supported_band *sband,
 
 	ath_rc_tx_status(sc, ath_rc_priv, tx_info, final_ts_idx, tx_status,
 			 long_retry);
+=======
+	ath_rc_tx_status(sc, ath_rc_priv, skb);
+>>>>>>> refs/remotes/origin/master
 
 	/* Check if aggregation has to be enabled for this tid */
 	if (conf_is_ht(&sc->hw->conf) &&
@@ -1498,6 +2192,7 @@ static void ath_tx_status(void *priv, struct ieee80211_supported_band *sband,
 		if (ieee80211_is_data_qos(fc) &&
 		    skb_get_queue_mapping(skb) != IEEE80211_AC_VO) {
 			u8 *qc, tid;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			struct ath_node *an;
 
@@ -1507,11 +2202,14 @@ static void ath_tx_status(void *priv, struct ieee80211_supported_band *sband,
 
 			if(ath_tx_aggr_check(sc, an, tid))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 			qc = ieee80211_get_qos_ctl(hdr);
 			tid = qc[0] & 0xf;
 
 			if(ath_tx_aggr_check(sc, sta, tid))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 				ieee80211_start_tx_ba_session(sta, tid, 0);
 		}
@@ -1533,6 +2231,29 @@ static void ath_rate_init(void *priv, struct ieee80211_supported_band *sband,
 
 	for (i = 0; i < sband->n_bitrates; i++) {
 		if (sta->supp_rates[sband->band] & BIT(i)) {
+=======
+				ieee80211_start_tx_ba_session(sta, tid, 0);
+		}
+	}
+}
+
+static void ath_rate_init(void *priv, struct ieee80211_supported_band *sband,
+			  struct cfg80211_chan_def *chandef,
+                          struct ieee80211_sta *sta, void *priv_sta)
+{
+	struct ath_softc *sc = priv;
+	struct ath_common *common = ath9k_hw_common(sc->sc_ah);
+	struct ath_rate_priv *ath_rc_priv = priv_sta;
+	int i, j = 0;
+	u32 rate_flags = ieee80211_chandef_rate_flags(&sc->hw->conf.chandef);
+
+	for (i = 0; i < sband->n_bitrates; i++) {
+		if (sta->supp_rates[sband->band] & BIT(i)) {
+			if ((rate_flags & sband->bitrates[i].flags)
+			    != rate_flags)
+				continue;
+
+>>>>>>> refs/remotes/origin/master
 			ath_rc_priv->neg_rates.rs_rates[j]
 				= (sband->bitrates[i].bitrate * 2) / 10;
 			j++;
@@ -1550,6 +2271,7 @@ static void ath_rate_init(void *priv, struct ieee80211_supported_band *sband,
 		ath_rc_priv->neg_ht_rates.rs_nrates = j;
 	}
 
+<<<<<<< HEAD
 	is_cw40 = !!(sta->ht_cap.cap & IEEE80211_HT_CAP_SUP_WIDTH_20_40);
 
 	if (is_cw40)
@@ -1625,23 +2347,82 @@ static int ath9k_debugfs_open(struct inode *inode, struct file *file)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_rc_priv->rate_table = ath_choose_rate_table(sc, sband->band,
+							sta->ht_cap.ht_supported);
+	if (!ath_rc_priv->rate_table) {
+		ath_err(common, "No rate table chosen\n");
+		return;
+	}
+
+	ath_rc_priv->ht_cap = ath_rc_build_ht_caps(sc, sta);
+	ath_rc_init(sc, priv_sta);
+}
+
+static void ath_rate_update(void *priv, struct ieee80211_supported_band *sband,
+			    struct cfg80211_chan_def *chandef,
+			    struct ieee80211_sta *sta, void *priv_sta,
+			    u32 changed)
+{
+	struct ath_softc *sc = priv;
+	struct ath_rate_priv *ath_rc_priv = priv_sta;
+
+	if (changed & IEEE80211_RC_BW_CHANGED) {
+		ath_rc_priv->ht_cap = ath_rc_build_ht_caps(sc, sta);
+		ath_rc_init(sc, priv_sta);
+
+		ath_dbg(ath9k_hw_common(sc->sc_ah), CONFIG,
+			"Operating Bandwidth changed to: %d\n",
+			sc->hw->conf.chandef.width);
+	}
+}
+
+#if defined(CONFIG_MAC80211_DEBUGFS) && defined(CONFIG_ATH9K_DEBUGFS)
+
+void ath_debug_stat_rc(struct ath_rate_priv *rc, int final_rate)
+{
+	struct ath_rc_stats *stats;
+
+	stats = &rc->rcstats[final_rate];
+	stats->success++;
+}
+
+void ath_debug_stat_retries(struct ath_rate_priv *rc, int rix,
+			    int xretries, int retries, u8 per)
+{
+	struct ath_rc_stats *stats = &rc->rcstats[rix];
+
+	stats->xretries += xretries;
+	stats->retries += retries;
+	stats->per = per;
+}
+
+>>>>>>> refs/remotes/origin/master
 static ssize_t read_file_rcstat(struct file *file, char __user *user_buf,
 				size_t count, loff_t *ppos)
 {
 	struct ath_rate_priv *rc = file->private_data;
 	char *buf;
 	unsigned int len = 0, max;
+<<<<<<< HEAD
 	int i = 0;
+=======
+	int rix;
+>>>>>>> refs/remotes/origin/master
 	ssize_t retval;
 
 	if (rc->rate_table == NULL)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	max = 80 + rc->rate_table->rate_cnt * 1024 + 1;
 =======
 	max = 80 + rc->rate_table_size * 1024 + 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	max = 80 + rc->rate_table_size * 1024 + 1;
+>>>>>>> refs/remotes/origin/master
 	buf = kmalloc(max, GFP_KERNEL);
 	if (buf == NULL)
 		return -ENOMEM;
@@ -1652,10 +2433,15 @@ static ssize_t read_file_rcstat(struct file *file, char __user *user_buf,
 		       "Success", "Retries", "XRetries", "PER");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < rc->rate_table->rate_cnt; i++) {
 =======
 	for (i = 0; i < rc->rate_table_size; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (rix = 0; rix < rc->max_valid_rate; rix++) {
+		u8 i = rc->valid_rate_index[rix];
+>>>>>>> refs/remotes/origin/master
 		u32 ratekbps = rc->rate_table->info[i].ratekbps;
 		struct ath_rc_stats *stats = &rc->rcstats[i];
 		char mcs[5];
@@ -1663,6 +2449,7 @@ static ssize_t read_file_rcstat(struct file *file, char __user *user_buf,
 		int used_mcs = 0, used_htmode = 0;
 
 		if (WLAN_RC_PHY_HT(rc->rate_table->info[i].phy)) {
+<<<<<<< HEAD
 			used_mcs = snprintf(mcs, 5, "%d",
 				rc->rate_table->info[i].ratecode);
 
@@ -1672,11 +2459,23 @@ static ssize_t read_file_rcstat(struct file *file, char __user *user_buf,
 				used_htmode = snprintf(htmode, 5, "HT20");
 			else
 				used_htmode = snprintf(htmode, 5, "????");
+=======
+			used_mcs = scnprintf(mcs, 5, "%d",
+					     rc->rate_table->info[i].ratecode);
+
+			if (WLAN_RC_PHY_40(rc->rate_table->info[i].phy))
+				used_htmode = scnprintf(htmode, 5, "HT40");
+			else if (WLAN_RC_PHY_20(rc->rate_table->info[i].phy))
+				used_htmode = scnprintf(htmode, 5, "HT20");
+			else
+				used_htmode = scnprintf(htmode, 5, "????");
+>>>>>>> refs/remotes/origin/master
 		}
 
 		mcs[used_mcs] = '\0';
 		htmode[used_htmode] = '\0';
 
+<<<<<<< HEAD
 		len += snprintf(buf + len, max - len,
 			"%6s %6s %3u.%d: "
 			"%10u %10u %10u %10u\n",
@@ -1688,6 +2487,19 @@ static ssize_t read_file_rcstat(struct file *file, char __user *user_buf,
 			stats->retries,
 			stats->xretries,
 			stats->per);
+=======
+		len += scnprintf(buf + len, max - len,
+				 "%6s %6s %3u.%d: "
+				 "%10u %10u %10u %10u\n",
+				 htmode,
+				 mcs,
+				 ratekbps / 1000,
+				 (ratekbps % 1000) / 100,
+				 stats->success,
+				 stats->retries,
+				 stats->xretries,
+				 stats->per);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (len > max)
@@ -1701,10 +2513,14 @@ static ssize_t read_file_rcstat(struct file *file, char __user *user_buf,
 static const struct file_operations fops_rcstat = {
 	.read = read_file_rcstat,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = ath9k_debugfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open = simple_open,
+>>>>>>> refs/remotes/origin/master
 	.owner = THIS_MODULE
 };
 
@@ -1712,10 +2528,24 @@ static void ath_rate_add_sta_debugfs(void *priv, void *priv_sta,
 				     struct dentry *dir)
 {
 	struct ath_rate_priv *rc = priv_sta;
+<<<<<<< HEAD
 	debugfs_create_file("rc_stats", S_IRUGO, dir, rc, &fops_rcstat);
 }
 
 #endif /* CONFIG_ATH9K_DEBUGFS */
+=======
+	rc->debugfs_rcstats = debugfs_create_file("rc_stats", S_IRUGO,
+						  dir, rc, &fops_rcstat);
+}
+
+static void ath_rate_remove_sta_debugfs(void *priv, void *priv_sta)
+{
+	struct ath_rate_priv *rc = priv_sta;
+	debugfs_remove(rc->debugfs_rcstats);
+}
+
+#endif /* CONFIG_MAC80211_DEBUGFS && CONFIG_ATH9K_DEBUGFS */
+>>>>>>> refs/remotes/origin/master
 
 static void *ath_rate_alloc(struct ieee80211_hw *hw, struct dentry *debugfsdir)
 {
@@ -1729,6 +2559,7 @@ static void ath_rate_free(void *priv)
 
 static void *ath_rate_alloc_sta(void *priv, struct ieee80211_sta *sta, gfp_t gfp)
 {
+<<<<<<< HEAD
 	struct ath_softc *sc = priv;
 	struct ath_rate_priv *rate_priv;
 
@@ -1740,6 +2571,9 @@ static void *ath_rate_alloc_sta(void *priv, struct ieee80211_sta *sta, gfp_t gfp
 	}
 
 	return rate_priv;
+=======
+	return kzalloc(sizeof(struct ath_rate_priv), gfp);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ath_rate_free_sta(void *priv, struct ieee80211_sta *sta,
@@ -1760,8 +2594,15 @@ static struct rate_control_ops ath_rate_ops = {
 	.free = ath_rate_free,
 	.alloc_sta = ath_rate_alloc_sta,
 	.free_sta = ath_rate_free_sta,
+<<<<<<< HEAD
 #ifdef CONFIG_ATH9K_DEBUGFS
 	.add_sta_debugfs = ath_rate_add_sta_debugfs,
+=======
+
+#if defined(CONFIG_MAC80211_DEBUGFS) && defined(CONFIG_ATH9K_DEBUGFS)
+	.add_sta_debugfs = ath_rate_add_sta_debugfs,
+	.remove_sta_debugfs = ath_rate_remove_sta_debugfs,
+>>>>>>> refs/remotes/origin/master
 #endif
 };
 

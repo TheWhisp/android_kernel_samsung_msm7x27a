@@ -113,14 +113,22 @@ static int prism2sta_probe_usb(struct usb_interface *interface,
 	dev = interface_to_usbdev(interface);
 	wlandev = create_wlan();
 	if (wlandev == NULL) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Memory allocation failure.\n", dev_info);
+=======
+		dev_err(&interface->dev, "Memory allocation failure.\n");
+>>>>>>> refs/remotes/origin/master
 		result = -EIO;
 		goto failed;
 	}
 	hw = wlandev->priv;
 
 	if (wlan_setup(wlandev, &(interface->dev)) != 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: wlan_setup() failed.\n", dev_info);
+=======
+		dev_err(&interface->dev, "wlan_setup() failed.\n");
+>>>>>>> refs/remotes/origin/master
 		result = -EIO;
 		goto failed;
 	}
@@ -140,12 +148,18 @@ static int prism2sta_probe_usb(struct usb_interface *interface,
 					   prism2_reset_holdtime,
 					   prism2_reset_settletime, 0);
 		if (result != 0) {
+<<<<<<< HEAD
 			unregister_wlandev(wlandev);
 			hfa384x_destroy(hw);
 			result = -EIO;
 			printk(KERN_ERR
 			       "%s: hfa384x_corereset() failed.\n", dev_info);
 			goto failed;
+=======
+			result = -EIO;
+			dev_err(&interface->dev, "hfa384x_corereset() failed.\n");
+			goto failed_reset;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -158,13 +172,26 @@ static int prism2sta_probe_usb(struct usb_interface *interface,
 	prism2sta_ifstate(wlandev, P80211ENUM_ifstate_enable);
 
 	if (register_wlandev(wlandev) != 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: register_wlandev() failed.\n", dev_info);
 		result = -EIO;
 		goto failed;
+=======
+		dev_err(&interface->dev, "register_wlandev() failed.\n");
+		result = -EIO;
+		goto failed_register;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	goto done;
 
+<<<<<<< HEAD
+=======
+failed_register:
+	usb_put_dev(dev);
+failed_reset:
+	wlan_unsetup(wlandev);
+>>>>>>> refs/remotes/origin/master
 failed:
 	kfree(wlandev);
 	kfree(hw);
@@ -329,8 +356,12 @@ static int prism2sta_resume(struct usb_interface *interface)
 		if (result != 0) {
 			unregister_wlandev(wlandev);
 			hfa384x_destroy(hw);
+<<<<<<< HEAD
 			printk(KERN_ERR
 			       "%s: hfa384x_corereset() failed.\n", dev_info);
+=======
+			dev_err(&interface->dev, "hfa384x_corereset() failed.\n");
+>>>>>>> refs/remotes/origin/master
 			kfree(wlandev);
 			kfree(hw);
 			wlandev = NULL;
@@ -359,6 +390,7 @@ static struct usb_driver prism2_usb_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init prism2usb_init(void)
 {
 	/* This call will result in calls to prism2sta_probe_usb. */
@@ -375,3 +407,6 @@ module_exit(prism2usb_cleanup);
 =======
 module_usb_driver(prism2_usb_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(prism2_usb_driver);
+>>>>>>> refs/remotes/origin/master

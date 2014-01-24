@@ -2,11 +2,14 @@
 #define __ASM_GENERIC_DELAY_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void __udelay(unsigned long usecs);
 extern void __delay(unsigned long loops);
 
 #define udelay(n) __udelay(n)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Undefined functions to get compile-time errors */
 extern void __bad_udelay(void);
 extern void __bad_ndelay(void);
@@ -46,6 +49,9 @@ extern void __delay(unsigned long loops);
 			__ndelay(n);					\
 		}							\
 	})
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_GENERIC_DELAY_H */

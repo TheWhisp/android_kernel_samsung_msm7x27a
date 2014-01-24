@@ -11,10 +11,14 @@
 /* enable to disorder received bchannels by sequence 2143658798... */
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define REORDER_DEBUG
 =======
   #define REORDER_DEBUG
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  #define REORDER_DEBUG
+>>>>>>> refs/remotes/origin/master
 */
 
 /* frames */
@@ -34,12 +38,17 @@
 /* channel structure */
 struct l1oip_chan {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dchannel       	*dch;
 	struct bchannel       	*bch;
 =======
 	struct dchannel		*dch;
 	struct bchannel		*bch;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dchannel		*dch;
+	struct bchannel		*bch;
+>>>>>>> refs/remotes/origin/master
 	u32			tx_counter;	/* counts xmit bytes/packets */
 	u32			rx_counter;	/* counts recv bytes/packets */
 	u32			codecstate;	/* used by codec to save data */
@@ -70,16 +79,22 @@ struct l1oip {
 
 	/* timer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct timer_list 	keep_tl;
 	struct timer_list 	timeout_tl;
 =======
 	struct timer_list	keep_tl;
 	struct timer_list	timeout_tl;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct timer_list	keep_tl;
+	struct timer_list	timeout_tl;
+>>>>>>> refs/remotes/origin/master
 	int			timeout_on;
 	struct work_struct	workq;
 
 	/* socket */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct socket 		*socket;	/* if set, socket is created */
 	struct completion 	socket_complete;/* completion of sock thread */
@@ -89,6 +104,8 @@ struct l1oip {
 	u16	 		localport;	/* must always be set */
 	u16	 		remoteport;	/* must always be set */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct socket		*socket;	/* if set, socket is created */
 	struct completion	socket_complete;/* completion of sock thread */
 	struct task_struct	*socket_thread;
@@ -96,7 +113,10 @@ struct l1oip {
 	u32			remoteip;	/* if all set, ip is assigned */
 	u16			localport;	/* must always be set */
 	u16			remoteport;	/* must always be set */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sockaddr_in	sin_local;	/* local socket name */
 	struct sockaddr_in	sin_remote;	/* remote socket name */
 	struct msghdr		sendmsg;	/* ip message to send */
@@ -113,6 +133,9 @@ extern int l1oip_ulaw_to_alaw(u8 *data, int len, u8 *result);
 extern void l1oip_4bit_free(void);
 extern int l1oip_4bit_alloc(int ulaw);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -567,6 +567,7 @@ struct phy_header {
     UCHAR hdr_4;
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct rx_msg {
     struct mac_header mac;
     UCHAR  var[1];
@@ -575,6 +576,11 @@ struct ray_rx_msg {
     struct mac_header mac;
     UCHAR  var[0];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct ray_rx_msg {
+    struct mac_header mac;
+    UCHAR  var[0];
+>>>>>>> refs/remotes/origin/master
 };
 
 struct tx_msg {

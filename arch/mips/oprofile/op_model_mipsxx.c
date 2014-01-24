@@ -14,6 +14,7 @@
 
 #include "op_impl.h"
 
+<<<<<<< HEAD
 #define M_PERFCTL_EXL			(1UL      <<  0)
 #define M_PERFCTL_KERNEL		(1UL      <<  1)
 #define M_PERFCTL_SUPERVISOR		(1UL      <<  2)
@@ -33,6 +34,41 @@
 
 static int (*save_perf_irq)(void);
 
+=======
+#define M_PERFCTL_EXL			(1UL	  <<  0)
+#define M_PERFCTL_KERNEL		(1UL	  <<  1)
+#define M_PERFCTL_SUPERVISOR		(1UL	  <<  2)
+#define M_PERFCTL_USER			(1UL	  <<  3)
+#define M_PERFCTL_INTERRUPT_ENABLE	(1UL	  <<  4)
+#define M_PERFCTL_EVENT(event)		(((event) & 0x3ff)  << 5)
+#define M_PERFCTL_VPEID(vpe)		((vpe)	  << 16)
+#define M_PERFCTL_MT_EN(filter)		((filter) << 20)
+#define	   M_TC_EN_ALL			M_PERFCTL_MT_EN(0)
+#define	   M_TC_EN_VPE			M_PERFCTL_MT_EN(1)
+#define	   M_TC_EN_TC			M_PERFCTL_MT_EN(2)
+#define M_PERFCTL_TCID(tcid)		((tcid)	  << 22)
+#define M_PERFCTL_WIDE			(1UL	  << 30)
+#define M_PERFCTL_MORE			(1UL	  << 31)
+
+#define M_COUNTER_OVERFLOW		(1UL	  << 31)
+
+/* Netlogic XLR specific, count events in all threads in a core */
+#define M_PERFCTL_COUNT_ALL_THREADS	(1UL	  << 13)
+
+static int (*save_perf_irq)(void);
+
+/*
+ * XLR has only one set of counters per core. Designate the
+ * first hardware thread in the core for setup and init.
+ * Skip CPUs with non-zero hardware thread id (4 hwt per core)
+ */
+#if defined(CONFIG_CPU_XLR) && defined(CONFIG_SMP)
+#define oprofile_skip_cpu(c)	((cpu_logical_map(c) & 0x3) != 0)
+#else
+#define oprofile_skip_cpu(c)	0
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MIPS_MT_SMP
 static int cpu_has_mipsmt_pertccounters;
 #define WHAT		(M_TC_EN_VPE | \
@@ -129,7 +165,11 @@ static struct mipsxx_register_config {
 	unsigned int counter[4];
 } reg;
 
+<<<<<<< HEAD
 /* Compute all of the registers in preparation for enabling profiling.  */
+=======
+/* Compute all of the registers in preparation for enabling profiling.	*/
+>>>>>>> refs/remotes/origin/master
 
 static void mipsxx_reg_setup(struct op_counter_config *ctr)
 {
@@ -145,23 +185,42 @@ static void mipsxx_reg_setup(struct op_counter_config *ctr)
 			continue;
 
 		reg.control[i] = M_PERFCTL_EVENT(ctr[i].event) |
+<<<<<<< HEAD
 		                 M_PERFCTL_INTERRUPT_ENABLE;
+=======
+				 M_PERFCTL_INTERRUPT_ENABLE;
+>>>>>>> refs/remotes/origin/master
 		if (ctr[i].kernel)
 			reg.control[i] |= M_PERFCTL_KERNEL;
 		if (ctr[i].user)
 			reg.control[i] |= M_PERFCTL_USER;
 		if (ctr[i].exl)
 			reg.control[i] |= M_PERFCTL_EXL;
+<<<<<<< HEAD
+=======
+		if (boot_cpu_type() == CPU_XLR)
+			reg.control[i] |= M_PERFCTL_COUNT_ALL_THREADS;
+>>>>>>> refs/remotes/origin/master
 		reg.counter[i] = 0x80000000 - ctr[i].count;
 	}
 }
 
+<<<<<<< HEAD
 /* Program all of the registers in preparation for enabling profiling.  */
+=======
+/* Program all of the registers in preparation for enabling profiling.	*/
+>>>>>>> refs/remotes/origin/master
 
 static void mipsxx_cpu_setup(void *args)
 {
 	unsigned int counters = op_model_mipsxx_ops.num_counters;
 
+<<<<<<< HEAD
+=======
+	if (oprofile_skip_cpu(smp_processor_id()))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	switch (counters) {
 	case 4:
 		w_c0_perfctrl3(0);
@@ -183,6 +242,12 @@ static void mipsxx_cpu_start(void *args)
 {
 	unsigned int counters = op_model_mipsxx_ops.num_counters;
 
+<<<<<<< HEAD
+=======
+	if (oprofile_skip_cpu(smp_processor_id()))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	switch (counters) {
 	case 4:
 		w_c0_perfctrl3(WHAT | reg.control[3]);
@@ -200,6 +265,12 @@ static void mipsxx_cpu_stop(void *args)
 {
 	unsigned int counters = op_model_mipsxx_ops.num_counters;
 
+<<<<<<< HEAD
+=======
+	if (oprofile_skip_cpu(smp_processor_id()))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	switch (counters) {
 	case 4:
 		w_c0_perfctrl3(0);
@@ -298,6 +369,14 @@ static void reset_counters(void *arg)
 	}
 }
 
+<<<<<<< HEAD
+=======
+static irqreturn_t mipsxx_perfcount_int(int irq, void *dev_id)
+{
+	return mipsxx_perfcount_handler();
+}
+
+>>>>>>> refs/remotes/origin/master
 static int __init mipsxx_init(void)
 {
 	int counters;
@@ -317,6 +396,17 @@ static int __init mipsxx_init(void)
 
 	op_model_mipsxx_ops.num_counters = counters;
 	switch (current_cpu_type()) {
+<<<<<<< HEAD
+=======
+	case CPU_M14KC:
+		op_model_mipsxx_ops.cpu_type = "mips/M14Kc";
+		break;
+
+	case CPU_M14KEC:
+		op_model_mipsxx_ops.cpu_type = "mips/M14KEc";
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	case CPU_20KC:
 		op_model_mipsxx_ops.cpu_type = "mips/20K";
 		break;
@@ -330,12 +420,15 @@ static int __init mipsxx_init(void)
 		break;
 
 	case CPU_1004K:
+<<<<<<< HEAD
 #if 0
 		/* FIXME: report as 34K for now */
 		op_model_mipsxx_ops.cpu_type = "mips/1004K";
 		break;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	case CPU_34K:
 		op_model_mipsxx_ops.cpu_type = "mips/34K";
 		break;
@@ -365,6 +458,17 @@ static int __init mipsxx_init(void)
 		op_model_mipsxx_ops.cpu_type = "mips/sb1";
 		break;
 
+<<<<<<< HEAD
+=======
+	case CPU_LOONGSON1:
+		op_model_mipsxx_ops.cpu_type = "mips/loongson1";
+		break;
+
+	case CPU_XLR:
+		op_model_mipsxx_ops.cpu_type = "mips/xlr";
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	default:
 		printk(KERN_ERR "Profiling unsupported for this CPU\n");
 
@@ -374,6 +478,13 @@ static int __init mipsxx_init(void)
 	save_perf_irq = perf_irq;
 	perf_irq = mipsxx_perfcount_handler;
 
+<<<<<<< HEAD
+=======
+	if ((cp0_perfcount_irq >= 0) && (cp0_compare_irq != cp0_perfcount_irq))
+		return request_irq(cp0_perfcount_irq, mipsxx_perfcount_int,
+			0, "Perfcounter", save_perf_irq);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -381,6 +492,12 @@ static void mipsxx_exit(void)
 {
 	int counters = op_model_mipsxx_ops.num_counters;
 
+<<<<<<< HEAD
+=======
+	if ((cp0_perfcount_irq >= 0) && (cp0_compare_irq != cp0_perfcount_irq))
+		free_irq(cp0_perfcount_irq, save_perf_irq);
+
+>>>>>>> refs/remotes/origin/master
 	counters = counters_per_cpu_to_total(counters);
 	on_each_cpu(reset_counters, (void *)(long)counters, 1);
 

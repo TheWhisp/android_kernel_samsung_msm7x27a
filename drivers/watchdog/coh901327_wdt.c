@@ -9,16 +9,20 @@
 #include <linux/module.h>
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/fs.h>
 #include <linux/miscdevice.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/watchdog.h>
 #include <linux/interrupt.h>
 #include <linux/pm.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>
 #include <linux/bitops.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/uaccess.h>
 #include <linux/clk.h>
@@ -28,6 +32,11 @@
 #include <linux/delay.h>
 #include <linux/err.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/clk.h>
+#include <linux/delay.h>
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_NAME "WDOG COH 901 327"
 
@@ -79,14 +88,19 @@
 
 /* Default timeout in seconds = 1 minute */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int margin = 60;
 =======
 static unsigned int margin = 60;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int margin = 60;
+>>>>>>> refs/remotes/origin/master
 static resource_size_t phybase;
 static resource_size_t physize;
 static int irq;
 static void __iomem *virtbase;
+<<<<<<< HEAD
 <<<<<<< HEAD
 static unsigned long coh901327_users;
 static unsigned long boot_status;
@@ -94,6 +108,8 @@ static u16 wdogenablestore;
 static u16 irqmaskstore;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct device *parent;
 
 /*
@@ -174,6 +190,7 @@ static void coh901327_disable(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void coh901327_start(void)
 {
 	coh901327_enable(margin * 100);
@@ -181,6 +198,8 @@ static void coh901327_start(void)
 
 static void coh901327_keepalive(void)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int coh901327_start(struct watchdog_device *wdt_dev)
 {
 	coh901327_enable(wdt_dev->timeout * 100);
@@ -194,13 +213,17 @@ static int coh901327_stop(struct watchdog_device *wdt_dev)
 }
 
 static int coh901327_ping(struct watchdog_device *wdd)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	clk_enable(clk);
 	/* Feed the watchdog */
 	writew(U300_WDOG_FR_FEED_RESTART_TIMER,
 	       virtbase + U300_WDOG_FR);
 	clk_disable(clk);
+<<<<<<< HEAD
 <<<<<<< HEAD
 }
 
@@ -219,6 +242,8 @@ static int coh901327_settimeout(int time)
 	/* Set new timeout value */
 	writew(margin * 100, virtbase + U300_WDOG_TR);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -229,7 +254,10 @@ static int coh901327_settimeout(struct watchdog_device *wdt_dev,
 	clk_enable(clk);
 	/* Set new timeout value */
 	writew(time * 100, virtbase + U300_WDOG_TR);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Feed the dog */
 	writew(U300_WDOG_FR_FEED_RESTART_TIMER,
 	       virtbase + U300_WDOG_FR);
@@ -238,7 +266,10 @@ static int coh901327_settimeout(struct watchdog_device *wdt_dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned int coh901327_gettimeleft(struct watchdog_device *wdt_dev)
 {
 	u16 val;
@@ -256,7 +287,10 @@ static unsigned int coh901327_gettimeleft(struct watchdog_device *wdt_dev)
 	return val;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This interrupt occurs 10 ms before the watchdog WILL bark.
  */
@@ -285,6 +319,7 @@ static irqreturn_t coh901327_interrupt(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Allow only one user (daemon) to open the watchdog
@@ -406,6 +441,8 @@ static struct miscdevice coh901327_miscdev = {
 	.name		= "watchdog",
 	.fops		= &coh901327_fops,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct watchdog_info coh901327_ident = {
 	.options = WDIOF_CARDRESET | WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING,
 	.identity = DRV_NAME,
@@ -430,11 +467,15 @@ static struct watchdog_device coh901327_wdt = {
 	 */
 	.min_timeout = 0,
 	.max_timeout = 327,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __exit coh901327_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	misc_deregister(&coh901327_miscdev);
 =======
@@ -442,6 +483,12 @@ static int __exit coh901327_remove(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 	coh901327_disable();
 	free_irq(irq, pdev);
+=======
+	watchdog_unregister_device(&coh901327_wdt);
+	coh901327_disable();
+	free_irq(irq, pdev);
+	clk_unprepare(clk);
+>>>>>>> refs/remotes/origin/master
 	clk_put(clk);
 	iounmap(virtbase);
 	release_mem_region(phybase, physize);
@@ -449,9 +496,12 @@ static int __exit coh901327_remove(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init coh901327_probe(struct platform_device *pdev)
 {
 	int ret;
@@ -483,9 +533,15 @@ static int __init coh901327_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "could not get clock\n");
 		goto out_no_clk;
 	}
+<<<<<<< HEAD
 	ret = clk_enable(clk);
 	if (ret) {
 		dev_err(&pdev->dev, "could not enable clock\n");
+=======
+	ret = clk_prepare_enable(clk);
+	if (ret) {
+		dev_err(&pdev->dev, "could not prepare and enable clock\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_no_clk_enable;
 	}
 
@@ -495,10 +551,14 @@ static int __init coh901327_probe(struct platform_device *pdev)
 		dev_info(&pdev->dev,
 			"watchdog timed out since last chip reset!\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		boot_status = WDIOF_CARDRESET;
 =======
 		coh901327_wdt.bootstatus |= WDIOF_CARDRESET;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		coh901327_wdt.bootstatus |= WDIOF_CARDRESET;
+>>>>>>> refs/remotes/origin/master
 		/* Status will be cleared below */
 		break;
 	case U300_WDOG_SR_STATUS_NORMAL:
@@ -533,10 +593,14 @@ static int __init coh901327_probe(struct platform_device *pdev)
 
 	irq = platform_get_irq(pdev, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (request_irq(irq, coh901327_interrupt, IRQF_DISABLED,
 =======
 	if (request_irq(irq, coh901327_interrupt, 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (request_irq(irq, coh901327_interrupt, 0,
+>>>>>>> refs/remotes/origin/master
 			DRV_NAME " Bark", pdev)) {
 		ret = -EIO;
 		goto out_no_irq;
@@ -544,6 +608,7 @@ static int __init coh901327_probe(struct platform_device *pdev)
 
 	clk_disable(clk);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = misc_register(&coh901327_miscdev);
 =======
@@ -553,6 +618,13 @@ static int __init coh901327_probe(struct platform_device *pdev)
 
 	ret = watchdog_register_device(&coh901327_wdt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = watchdog_init_timeout(&coh901327_wdt, margin, &pdev->dev);
+	if (ret < 0)
+		coh901327_wdt.timeout = 60;
+
+	ret = watchdog_register_device(&coh901327_wdt);
+>>>>>>> refs/remotes/origin/master
 	if (ret == 0)
 		dev_info(&pdev->dev,
 			 "initialized. timer margin=%d sec\n", margin);
@@ -564,7 +636,11 @@ static int __init coh901327_probe(struct platform_device *pdev)
 out_no_wdog:
 	free_irq(irq, pdev);
 out_no_irq:
+<<<<<<< HEAD
 	clk_disable(clk);
+=======
+	clk_disable_unprepare(clk);
+>>>>>>> refs/remotes/origin/master
 out_no_clk_enable:
 	clk_put(clk);
 out_no_clk:
@@ -577,12 +653,18 @@ out:
 
 #ifdef CONFIG_PM
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static u16 wdogenablestore;
 static u16 irqmaskstore;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int coh901327_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	irqmaskstore = readw(virtbase + U300_WDOG_IMR) & 0x0001U;
@@ -638,16 +720,29 @@ void coh901327_watchdog_reset(void)
 	/* Return and await doom */
 }
 
+<<<<<<< HEAD
+=======
+static const struct of_device_id coh901327_dt_match[] = {
+	{ .compatible = "stericsson,coh901327" },
+	{},
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver coh901327_driver = {
 	.driver = {
 		.owner	= THIS_MODULE,
 		.name	= "coh901327_wdog",
+<<<<<<< HEAD
+=======
+		.of_match_table = coh901327_dt_match,
+>>>>>>> refs/remotes/origin/master
 	},
 	.remove		= __exit_p(coh901327_remove),
 	.suspend	= coh901327_suspend,
 	.resume		= coh901327_resume,
 };
 
+<<<<<<< HEAD
 static int __init coh901327_init(void)
 {
 	return platform_driver_probe(&coh901327_driver, coh901327_probe);
@@ -659,10 +754,14 @@ static void __exit coh901327_exit(void)
 	platform_driver_unregister(&coh901327_driver);
 }
 module_exit(coh901327_exit);
+=======
+module_platform_driver_probe(coh901327_driver, coh901327_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Linus Walleij <linus.walleij@stericsson.com>");
 MODULE_DESCRIPTION("COH 901 327 Watchdog");
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 module_param(margin, int, 0);
 MODULE_PARM_DESC(margin, "Watchdog margin in seconds (default 60s)");
@@ -670,9 +769,14 @@ MODULE_PARM_DESC(margin, "Watchdog margin in seconds (default 60s)");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(margin, uint, 0);
 MODULE_PARM_DESC(margin, "Watchdog margin in seconds (default 60s)");
 
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:coh901327-watchdog");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

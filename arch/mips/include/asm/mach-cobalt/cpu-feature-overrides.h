@@ -32,9 +32,15 @@
 #define cpu_scache_line_size()	0
 
 #ifdef CONFIG_64BIT
+<<<<<<< HEAD
 #define cpu_has_llsc            0
 #else
 #define cpu_has_llsc            1
+=======
+#define cpu_has_llsc		0
+#else
+#define cpu_has_llsc		1
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define cpu_has_mips16		0
@@ -45,6 +51,10 @@
 #define cpu_has_ic_fills_f_dc	0
 #define cpu_icache_snoops_remote_store	0
 #define cpu_has_dsp		0
+<<<<<<< HEAD
+=======
+#define cpu_has_dsp2		0
+>>>>>>> refs/remotes/origin/master
 #define cpu_has_mipsmt		0
 #define cpu_has_userlocal	0
 

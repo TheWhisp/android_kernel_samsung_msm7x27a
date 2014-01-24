@@ -71,10 +71,14 @@ static inline void kunmap(struct page *page)
  * it.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned long __kmap_atomic(struct page *page)
 =======
 static inline unsigned long kmap_atomic(struct page *page)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline unsigned long kmap_atomic(struct page *page)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long vaddr;
 	int idx, type;

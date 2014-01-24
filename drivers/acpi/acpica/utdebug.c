@@ -1,15 +1,23 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Module Name: utdebug - Debug print routines
+=======
+ * Module Name: utdebug - Debug print/trace routines
+>>>>>>> refs/remotes/origin/master
  *
  *****************************************************************************/
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,16 +54,27 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define EXPORT_ACPI_INTERFACES
+
+>>>>>>> refs/remotes/origin/master
 #include <acpi/acpi.h>
 #include "accommon.h"
 
 #define _COMPONENT          ACPI_UTILITIES
 ACPI_MODULE_NAME("utdebug")
+<<<<<<< HEAD
 #ifdef ACPI_DEBUG_OUTPUT
 static acpi_thread_id acpi_gbl_prev_thread_id;
+=======
+
+#ifdef ACPI_DEBUG_OUTPUT
+static acpi_thread_id acpi_gbl_prev_thread_id = (acpi_thread_id) 0xFFFFFFFF;
+>>>>>>> refs/remotes/origin/master
 static char *acpi_gbl_fn_entry_str = "----Entry";
 static char *acpi_gbl_fn_exit_str = "----Exit-";
 
@@ -116,7 +135,11 @@ void acpi_ut_track_stack_ptr(void)
  * RETURN:      Updated pointer to the function name
  *
  * DESCRIPTION: Remove the "Acpi" prefix from the function name, if present.
+<<<<<<< HEAD
  *              This allows compiler macros such as __func__ to be used
+=======
+ *              This allows compiler macros such as __FUNCTION__ to be used
+>>>>>>> refs/remotes/origin/master
  *              with no change to the debug output.
  *
  ******************************************************************************/
@@ -152,7 +175,11 @@ static const char *acpi_ut_trim_function_name(const char *function_name)
  *              function_name       - Caller's procedure name
  *              module_name         - Caller's module name
  *              component_id        - Caller's component ID
+<<<<<<< HEAD
  *              Format              - Printf format field
+=======
+ *              format              - Printf format field
+>>>>>>> refs/remotes/origin/master
  *              ...                 - Optional printf arguments
  *
  * RETURN:      None
@@ -172,11 +199,17 @@ acpi_debug_print(u32 requested_debug_level,
 	acpi_thread_id thread_id;
 	va_list args;
 
+<<<<<<< HEAD
 	/*
 	 * Stay silent if the debug level or component ID is disabled
 	 */
 	if (!(requested_debug_level & acpi_dbg_level) ||
 	    !(component_id & acpi_dbg_layer)) {
+=======
+	/* Check if debug output enabled */
+
+	if (!ACPI_IS_DEBUG_ENABLED(requested_debug_level, component_id)) {
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -192,21 +225,44 @@ acpi_debug_print(u32 requested_debug_level,
 		}
 
 		acpi_gbl_prev_thread_id = thread_id;
+<<<<<<< HEAD
+=======
+		acpi_gbl_nesting_level = 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
 	 * Display the module name, current line number, thread ID (if requested),
 	 * current procedure nesting level, and the current procedure name
 	 */
+<<<<<<< HEAD
 	acpi_os_printf("%8s-%04ld ", module_name, line_number);
 
+=======
+	acpi_os_printf("%9s-%04ld ", module_name, line_number);
+
+#ifdef ACPI_EXEC_APP
+	/*
+	 * For acpi_exec only, emit the thread ID and nesting level.
+	 * Note: nesting level is really only useful during a single-thread
+	 * execution. Otherwise, multiple threads will keep resetting the
+	 * level.
+	 */
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_LV_THREADS & acpi_dbg_level) {
 		acpi_os_printf("[%u] ", (u32)thread_id);
 	}
 
+<<<<<<< HEAD
 	acpi_os_printf("[%02ld] %-22.22s: ",
 		       acpi_gbl_nesting_level,
 		       acpi_ut_trim_function_name(function_name));
+=======
+	acpi_os_printf("[%02ld] ", acpi_gbl_nesting_level);
+#endif
+
+	acpi_os_printf("%-22.22s: ", acpi_ut_trim_function_name(function_name));
+>>>>>>> refs/remotes/origin/master
 
 	va_start(args, format);
 	acpi_os_vprintf(format, args);
@@ -224,12 +280,20 @@ ACPI_EXPORT_SYMBOL(acpi_debug_print)
  *              function_name       - Caller's procedure name
  *              module_name         - Caller's module name
  *              component_id        - Caller's component ID
+<<<<<<< HEAD
  *              Format              - Printf format field
+=======
+ *              format              - Printf format field
+>>>>>>> refs/remotes/origin/master
  *              ...                 - Optional printf arguments
  *
  * RETURN:      None
  *
+<<<<<<< HEAD
  * DESCRIPTION: Print message with no headers.  Has same interface as
+=======
+ * DESCRIPTION: Print message with no headers. Has same interface as
+>>>>>>> refs/remotes/origin/master
  *              debug_print so that the same macros can be used.
  *
  ******************************************************************************/
@@ -242,8 +306,14 @@ acpi_debug_print_raw(u32 requested_debug_level,
 {
 	va_list args;
 
+<<<<<<< HEAD
 	if (!(requested_debug_level & acpi_dbg_level) ||
 	    !(component_id & acpi_dbg_layer)) {
+=======
+	/* Check if debug output enabled */
+
+	if (!ACPI_IS_DEBUG_ENABLED(requested_debug_level, component_id)) {
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -265,7 +335,11 @@ ACPI_EXPORT_SYMBOL(acpi_debug_print_raw)
  *
  * RETURN:      None
  *
+<<<<<<< HEAD
  * DESCRIPTION: Function entry trace.  Prints only if TRACE_FUNCTIONS bit is
+=======
+ * DESCRIPTION: Function entry trace. Prints only if TRACE_FUNCTIONS bit is
+>>>>>>> refs/remotes/origin/master
  *              set in debug_level
  *
  ******************************************************************************/
@@ -278,9 +352,19 @@ acpi_ut_trace(u32 line_number,
 	acpi_gbl_nesting_level++;
 	acpi_ut_track_stack_ptr();
 
+<<<<<<< HEAD
 	acpi_debug_print(ACPI_LV_FUNCTIONS,
 			 line_number, function_name, module_name, component_id,
 			 "%s\n", acpi_gbl_fn_entry_str);
+=======
+	/* Check if enabled up-front for performance */
+
+	if (ACPI_IS_DEBUG_ENABLED(ACPI_LV_FUNCTIONS, component_id)) {
+		acpi_debug_print(ACPI_LV_FUNCTIONS,
+				 line_number, function_name, module_name,
+				 component_id, "%s\n", acpi_gbl_fn_entry_str);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 ACPI_EXPORT_SYMBOL(acpi_ut_trace)
@@ -293,11 +377,19 @@ ACPI_EXPORT_SYMBOL(acpi_ut_trace)
  *              function_name       - Caller's procedure name
  *              module_name         - Caller's module name
  *              component_id        - Caller's component ID
+<<<<<<< HEAD
  *              Pointer             - Pointer to display
  *
  * RETURN:      None
  *
  * DESCRIPTION: Function entry trace.  Prints only if TRACE_FUNCTIONS bit is
+=======
+ *              pointer             - Pointer to display
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Function entry trace. Prints only if TRACE_FUNCTIONS bit is
+>>>>>>> refs/remotes/origin/master
  *              set in debug_level
  *
  ******************************************************************************/
@@ -306,12 +398,27 @@ acpi_ut_trace_ptr(u32 line_number,
 		  const char *function_name,
 		  const char *module_name, u32 component_id, void *pointer)
 {
+<<<<<<< HEAD
 	acpi_gbl_nesting_level++;
 	acpi_ut_track_stack_ptr();
 
 	acpi_debug_print(ACPI_LV_FUNCTIONS,
 			 line_number, function_name, module_name, component_id,
 			 "%s %p\n", acpi_gbl_fn_entry_str, pointer);
+=======
+
+	acpi_gbl_nesting_level++;
+	acpi_ut_track_stack_ptr();
+
+	/* Check if enabled up-front for performance */
+
+	if (ACPI_IS_DEBUG_ENABLED(ACPI_LV_FUNCTIONS, component_id)) {
+		acpi_debug_print(ACPI_LV_FUNCTIONS,
+				 line_number, function_name, module_name,
+				 component_id, "%s %p\n", acpi_gbl_fn_entry_str,
+				 pointer);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*******************************************************************************
@@ -322,11 +429,19 @@ acpi_ut_trace_ptr(u32 line_number,
  *              function_name       - Caller's procedure name
  *              module_name         - Caller's module name
  *              component_id        - Caller's component ID
+<<<<<<< HEAD
  *              String              - Additional string to display
  *
  * RETURN:      None
  *
  * DESCRIPTION: Function entry trace.  Prints only if TRACE_FUNCTIONS bit is
+=======
+ *              string              - Additional string to display
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Function entry trace. Prints only if TRACE_FUNCTIONS bit is
+>>>>>>> refs/remotes/origin/master
  *              set in debug_level
  *
  ******************************************************************************/
@@ -340,9 +455,20 @@ acpi_ut_trace_str(u32 line_number,
 	acpi_gbl_nesting_level++;
 	acpi_ut_track_stack_ptr();
 
+<<<<<<< HEAD
 	acpi_debug_print(ACPI_LV_FUNCTIONS,
 			 line_number, function_name, module_name, component_id,
 			 "%s %s\n", acpi_gbl_fn_entry_str, string);
+=======
+	/* Check if enabled up-front for performance */
+
+	if (ACPI_IS_DEBUG_ENABLED(ACPI_LV_FUNCTIONS, component_id)) {
+		acpi_debug_print(ACPI_LV_FUNCTIONS,
+				 line_number, function_name, module_name,
+				 component_id, "%s %s\n", acpi_gbl_fn_entry_str,
+				 string);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*******************************************************************************
@@ -353,11 +479,19 @@ acpi_ut_trace_str(u32 line_number,
  *              function_name       - Caller's procedure name
  *              module_name         - Caller's module name
  *              component_id        - Caller's component ID
+<<<<<<< HEAD
  *              Integer             - Integer to display
  *
  * RETURN:      None
  *
  * DESCRIPTION: Function entry trace.  Prints only if TRACE_FUNCTIONS bit is
+=======
+ *              integer             - Integer to display
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Function entry trace. Prints only if TRACE_FUNCTIONS bit is
+>>>>>>> refs/remotes/origin/master
  *              set in debug_level
  *
  ******************************************************************************/
@@ -371,9 +505,20 @@ acpi_ut_trace_u32(u32 line_number,
 	acpi_gbl_nesting_level++;
 	acpi_ut_track_stack_ptr();
 
+<<<<<<< HEAD
 	acpi_debug_print(ACPI_LV_FUNCTIONS,
 			 line_number, function_name, module_name, component_id,
 			 "%s %08X\n", acpi_gbl_fn_entry_str, integer);
+=======
+	/* Check if enabled up-front for performance */
+
+	if (ACPI_IS_DEBUG_ENABLED(ACPI_LV_FUNCTIONS, component_id)) {
+		acpi_debug_print(ACPI_LV_FUNCTIONS,
+				 line_number, function_name, module_name,
+				 component_id, "%s %08X\n",
+				 acpi_gbl_fn_entry_str, integer);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*******************************************************************************
@@ -387,7 +532,11 @@ acpi_ut_trace_u32(u32 line_number,
  *
  * RETURN:      None
  *
+<<<<<<< HEAD
  * DESCRIPTION: Function exit trace.  Prints only if TRACE_FUNCTIONS bit is
+=======
+ * DESCRIPTION: Function exit trace. Prints only if TRACE_FUNCTIONS bit is
+>>>>>>> refs/remotes/origin/master
  *              set in debug_level
  *
  ******************************************************************************/
@@ -398,11 +547,25 @@ acpi_ut_exit(u32 line_number,
 	     const char *module_name, u32 component_id)
 {
 
+<<<<<<< HEAD
 	acpi_debug_print(ACPI_LV_FUNCTIONS,
 			 line_number, function_name, module_name, component_id,
 			 "%s\n", acpi_gbl_fn_exit_str);
 
 	acpi_gbl_nesting_level--;
+=======
+	/* Check if enabled up-front for performance */
+
+	if (ACPI_IS_DEBUG_ENABLED(ACPI_LV_FUNCTIONS, component_id)) {
+		acpi_debug_print(ACPI_LV_FUNCTIONS,
+				 line_number, function_name, module_name,
+				 component_id, "%s\n", acpi_gbl_fn_exit_str);
+	}
+
+	if (acpi_gbl_nesting_level) {
+		acpi_gbl_nesting_level--;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 ACPI_EXPORT_SYMBOL(acpi_ut_exit)
@@ -415,11 +578,19 @@ ACPI_EXPORT_SYMBOL(acpi_ut_exit)
  *              function_name       - Caller's procedure name
  *              module_name         - Caller's module name
  *              component_id        - Caller's component ID
+<<<<<<< HEAD
  *              Status              - Exit status code
  *
  * RETURN:      None
  *
  * DESCRIPTION: Function exit trace.  Prints only if TRACE_FUNCTIONS bit is
+=======
+ *              status              - Exit status code
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Function exit trace. Prints only if TRACE_FUNCTIONS bit is
+>>>>>>> refs/remotes/origin/master
  *              set in debug_level. Prints exit status also.
  *
  ******************************************************************************/
@@ -430,6 +601,7 @@ acpi_ut_status_exit(u32 line_number,
 		    u32 component_id, acpi_status status)
 {
 
+<<<<<<< HEAD
 	if (ACPI_SUCCESS(status)) {
 		acpi_debug_print(ACPI_LV_FUNCTIONS,
 				 line_number, function_name, module_name,
@@ -444,6 +616,30 @@ acpi_ut_status_exit(u32 line_number,
 	}
 
 	acpi_gbl_nesting_level--;
+=======
+	/* Check if enabled up-front for performance */
+
+	if (ACPI_IS_DEBUG_ENABLED(ACPI_LV_FUNCTIONS, component_id)) {
+		if (ACPI_SUCCESS(status)) {
+			acpi_debug_print(ACPI_LV_FUNCTIONS,
+					 line_number, function_name,
+					 module_name, component_id, "%s %s\n",
+					 acpi_gbl_fn_exit_str,
+					 acpi_format_exception(status));
+		} else {
+			acpi_debug_print(ACPI_LV_FUNCTIONS,
+					 line_number, function_name,
+					 module_name, component_id,
+					 "%s ****Exception****: %s\n",
+					 acpi_gbl_fn_exit_str,
+					 acpi_format_exception(status));
+		}
+	}
+
+	if (acpi_gbl_nesting_level) {
+		acpi_gbl_nesting_level--;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 ACPI_EXPORT_SYMBOL(acpi_ut_status_exit)
@@ -456,11 +652,19 @@ ACPI_EXPORT_SYMBOL(acpi_ut_status_exit)
  *              function_name       - Caller's procedure name
  *              module_name         - Caller's module name
  *              component_id        - Caller's component ID
+<<<<<<< HEAD
  *              Value               - Value to be printed with exit msg
  *
  * RETURN:      None
  *
  * DESCRIPTION: Function exit trace.  Prints only if TRACE_FUNCTIONS bit is
+=======
+ *              value               - Value to be printed with exit msg
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Function exit trace. Prints only if TRACE_FUNCTIONS bit is
+>>>>>>> refs/remotes/origin/master
  *              set in debug_level. Prints exit value also.
  *
  ******************************************************************************/
@@ -470,12 +674,28 @@ acpi_ut_value_exit(u32 line_number,
 		   const char *module_name, u32 component_id, u64 value)
 {
 
+<<<<<<< HEAD
 	acpi_debug_print(ACPI_LV_FUNCTIONS,
 			 line_number, function_name, module_name, component_id,
 			 "%s %8.8X%8.8X\n", acpi_gbl_fn_exit_str,
 			 ACPI_FORMAT_UINT64(value));
 
 	acpi_gbl_nesting_level--;
+=======
+	/* Check if enabled up-front for performance */
+
+	if (ACPI_IS_DEBUG_ENABLED(ACPI_LV_FUNCTIONS, component_id)) {
+		acpi_debug_print(ACPI_LV_FUNCTIONS,
+				 line_number, function_name, module_name,
+				 component_id, "%s %8.8X%8.8X\n",
+				 acpi_gbl_fn_exit_str,
+				 ACPI_FORMAT_UINT64(value));
+	}
+
+	if (acpi_gbl_nesting_level) {
+		acpi_gbl_nesting_level--;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 ACPI_EXPORT_SYMBOL(acpi_ut_value_exit)
@@ -488,11 +708,19 @@ ACPI_EXPORT_SYMBOL(acpi_ut_value_exit)
  *              function_name       - Caller's procedure name
  *              module_name         - Caller's module name
  *              component_id        - Caller's component ID
+<<<<<<< HEAD
  *              Ptr                 - Pointer to display
  *
  * RETURN:      None
  *
  * DESCRIPTION: Function exit trace.  Prints only if TRACE_FUNCTIONS bit is
+=======
+ *              ptr                 - Pointer to display
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Function exit trace. Prints only if TRACE_FUNCTIONS bit is
+>>>>>>> refs/remotes/origin/master
  *              set in debug_level. Prints exit value also.
  *
  ******************************************************************************/
@@ -502,6 +730,7 @@ acpi_ut_ptr_exit(u32 line_number,
 		 const char *module_name, u32 component_id, u8 *ptr)
 {
 
+<<<<<<< HEAD
 	acpi_debug_print(ACPI_LV_FUNCTIONS,
 			 line_number, function_name, module_name, component_id,
 			 "%s %p\n", acpi_gbl_fn_exit_str, ptr);
@@ -655,3 +884,20 @@ void acpi_ut_dump_buffer(u8 * buffer, u32 count, u32 display, u32 component_id)
 
 	acpi_ut_dump_buffer2(buffer, count, display);
 }
+=======
+	/* Check if enabled up-front for performance */
+
+	if (ACPI_IS_DEBUG_ENABLED(ACPI_LV_FUNCTIONS, component_id)) {
+		acpi_debug_print(ACPI_LV_FUNCTIONS,
+				 line_number, function_name, module_name,
+				 component_id, "%s %p\n", acpi_gbl_fn_exit_str,
+				 ptr);
+	}
+
+	if (acpi_gbl_nesting_level) {
+		acpi_gbl_nesting_level--;
+	}
+}
+
+#endif
+>>>>>>> refs/remotes/origin/master

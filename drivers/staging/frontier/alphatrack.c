@@ -24,17 +24,29 @@
  * raw interrupt reports.
  */
 
+<<<<<<< HEAD
 /* Note: this currently uses a dumb ringbuffer for reads and writes.
+=======
+/*
+ * Note: this currently uses a dumb ringbuffer for reads and writes.
+>>>>>>> refs/remotes/origin/master
  * A more optimal driver would cache and kill off outstanding urbs that are
  * now invalid, and ignore ones that already were in the queue but valid
  * as we only have 30 commands for the alphatrack. In particular this is
  * key for getting lights to flash in time as otherwise many commands
  * can be buffered up before the light change makes it to the interface.
+<<<<<<< HEAD
 */
 
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/init.h>
+=======
+ */
+
+#include <linux/kernel.h>
+#include <linux/errno.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/kobject.h>
@@ -100,7 +112,12 @@ static int debug = ALPHATRACK_DEBUG;
 module_param(debug, int, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Debug enabled or not");
 
+<<<<<<< HEAD
 /* All interrupt in transfers are collected in a ring buffer to
+=======
+/*
+ * All interrupt in transfers are collected in a ring buffer to
+>>>>>>> refs/remotes/origin/master
  * avoid racing conditions and get better performance of the driver.
  */
 
@@ -109,8 +126,12 @@ static int ring_buffer_size = RING_BUFFER_SIZE;
 module_param(ring_buffer_size, int, S_IRUGO);
 MODULE_PARM_DESC(ring_buffer_size, "Read ring buffer size");
 
+<<<<<<< HEAD
 /* The write_buffer can one day contain more than one interrupt out transfer.
  */
+=======
+/* The write_buffer can one day contain more than one interrupt out transfer.*/
+>>>>>>> refs/remotes/origin/master
 
 static int write_buffer_size = WRITE_BUFFER_SIZE;
 module_param(write_buffer_size, int, S_IRUGO);
@@ -199,9 +220,13 @@ static void usb_alphatrack_abort_transfers(struct usb_alphatrack *dev)
 			usb_kill_urb(dev->interrupt_out_urb);
 }
 
+<<<<<<< HEAD
 /**
  *	usb_alphatrack_delete
  */
+=======
+/** usb_alphatrack_delete */
+>>>>>>> refs/remotes/origin/master
 static void usb_alphatrack_delete(struct usb_alphatrack *dev)
 {
 	usb_alphatrack_abort_transfers(dev);
@@ -213,9 +238,13 @@ static void usb_alphatrack_delete(struct usb_alphatrack *dev)
 	kfree(dev);		/* fixme oldi_buffer */
 }
 
+<<<<<<< HEAD
 /**
  *	usb_alphatrack_interrupt_in_callback
  */
+=======
+/** usb_alphatrack_interrupt_in_callback */
+>>>>>>> refs/remotes/origin/master
 
 static void usb_alphatrack_interrupt_in_callback(struct urb *urb)
 {
@@ -296,9 +325,13 @@ exit:
 	wake_up_interruptible(&dev->read_wait);
 }
 
+<<<<<<< HEAD
 /**
  *	usb_alphatrack_interrupt_out_callback
  */
+=======
+/** usb_alphatrack_interrupt_out_callback */
+>>>>>>> refs/remotes/origin/master
 static void usb_alphatrack_interrupt_out_callback(struct urb *urb)
 {
 	struct usb_alphatrack *dev = urb->context;
@@ -315,9 +348,13 @@ static void usb_alphatrack_interrupt_out_callback(struct urb *urb)
 	wake_up_interruptible(&dev->write_wait);
 }
 
+<<<<<<< HEAD
 /**
  *	usb_alphatrack_open
  */
+=======
+/** usb_alphatrack_open */
+>>>>>>> refs/remotes/origin/master
 static int usb_alphatrack_open(struct inode *inode, struct file *file)
 {
 	struct usb_alphatrack *dev;
@@ -333,8 +370,13 @@ static int usb_alphatrack_open(struct inode *inode, struct file *file)
 	interface = usb_find_interface(&usb_alphatrack_driver, subminor);
 
 	if (!interface) {
+<<<<<<< HEAD
 		err("%s - error, can't find device for minor %d\n",
 		    __func__, subminor);
+=======
+		pr_err("%s - error, can't find device for minor %d\n",
+		       __func__, subminor);
+>>>>>>> refs/remotes/origin/master
 		retval = -ENODEV;
 		goto unlock_disconnect_exit;
 	}
@@ -398,9 +440,13 @@ unlock_disconnect_exit:
 	return retval;
 }
 
+<<<<<<< HEAD
 /**
  *	usb_alphatrack_release
  */
+=======
+/** usb_alphatrack_release */
+>>>>>>> refs/remotes/origin/master
 static int usb_alphatrack_release(struct inode *inode, struct file *file)
 {
 	struct usb_alphatrack *dev;
@@ -447,6 +493,7 @@ exit:
 	return retval;
 }
 
+<<<<<<< HEAD
 /**
  *	usb_alphatrack_poll
  */
@@ -455,6 +502,10 @@ static unsigned int usb_alphatrack_poll(struct file *file, poll_table * wait)
 =======
 static unsigned int usb_alphatrack_poll(struct file *file, poll_table *wait)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/** usb_alphatrack_poll */
+static unsigned int usb_alphatrack_poll(struct file *file, poll_table *wait)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_alphatrack *dev;
 	unsigned int mask = 0;
@@ -472,9 +523,13 @@ static unsigned int usb_alphatrack_poll(struct file *file, poll_table *wait)
 	return mask;
 }
 
+<<<<<<< HEAD
 /**
  *	usb_alphatrack_read
  */
+=======
+/** usb_alphatrack_read */
+>>>>>>> refs/remotes/origin/master
 static ssize_t usb_alphatrack_read(struct file *file, char __user *buffer,
 				   size_t count, loff_t *ppos)
 {
@@ -498,7 +553,12 @@ static ssize_t usb_alphatrack_read(struct file *file, char __user *buffer,
 	/* verify that the device wasn't unplugged */
 	if (dev->intf == NULL) {
 		retval = -ENODEV;
+<<<<<<< HEAD
 		err("No device or device unplugged %d\n", retval);
+=======
+		pr_err("%s: No device or device unplugged %d\n",
+		       __func__, retval);
+>>>>>>> refs/remotes/origin/master
 		goto unlock_exit;
 	}
 
@@ -542,9 +602,13 @@ exit:
 	return retval;
 }
 
+<<<<<<< HEAD
 /**
  *	usb_alphatrack_write
  */
+=======
+/** usb_alphatrack_write */
+>>>>>>> refs/remotes/origin/master
 static ssize_t usb_alphatrack_write(struct file *file,
 				    const char __user *buffer, size_t count,
 				    loff_t *ppos)
@@ -568,7 +632,12 @@ static ssize_t usb_alphatrack_write(struct file *file,
 	/* verify that the device wasn't unplugged */
 	if (dev->intf == NULL) {
 		retval = -ENODEV;
+<<<<<<< HEAD
 		err("No device or device unplugged %d\n", retval);
+=======
+		pr_err("%s: No device or device unplugged %d\n",
+		       __func__, retval);
+>>>>>>> refs/remotes/origin/master
 		goto unlock_exit;
 	}
 
@@ -603,7 +672,11 @@ static ssize_t usb_alphatrack_write(struct file *file,
 	}
 
 	if (dev->interrupt_out_endpoint == NULL) {
+<<<<<<< HEAD
 		err("Endpoint should not be be null!\n");
+=======
+		dev_err(&dev->intf->dev, "Endpoint should not be null!\n");
+>>>>>>> refs/remotes/origin/master
 		goto unlock_exit;
 	}
 
@@ -623,7 +696,12 @@ static ssize_t usb_alphatrack_write(struct file *file,
 	retval = usb_submit_urb(dev->interrupt_out_urb, GFP_KERNEL);
 	if (retval) {
 		dev->interrupt_out_busy = 0;
+<<<<<<< HEAD
 		err("Couldn't submit interrupt_out_urb %d\n", retval);
+=======
+		dev_err(&dev->intf->dev,
+			"Couldn't submit interrupt_out_urb %d\n", retval);
+>>>>>>> refs/remotes/origin/master
 		atomic_dec(&dev->writes_pending);
 		goto unlock_exit;
 	}
@@ -679,10 +757,16 @@ static int usb_alphatrack_probe(struct usb_interface *intf,
 	/* allocate memory for our device state and initialize it */
 
 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+<<<<<<< HEAD
 	if (dev == NULL) {
 		dev_err(&intf->dev, "Out of memory\n");
 		goto exit;
 	}
+=======
+	if (dev == NULL)
+		goto exit;
+
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&dev->mtx);
 	dev->intf = intf;
 	init_waitqueue_head(&dev->read_wait);
@@ -720,6 +804,7 @@ static int usb_alphatrack_probe(struct usb_interface *intf,
 
 	true_size = min(ring_buffer_size, RING_BUFFER_SIZE);
 
+<<<<<<< HEAD
 	/* FIXME - there are more usb_alloc routines for dma correctness.
 	   Needed? */
 	dev->ring_buffer =
@@ -744,6 +829,27 @@ static int usb_alphatrack_probe(struct usb_interface *intf,
 		dev_err(&intf->dev, "Couldn't allocate old buffer\n");
 		goto error;
 	}
+=======
+	/*
+	 * FIXME - there are more usb_alloc routines for dma correctness.
+	 * Needed?
+	 */
+	dev->ring_buffer = kmalloc_array(true_size,
+					 sizeof(struct alphatrack_icmd),
+					 GFP_KERNEL);
+	if (!dev->ring_buffer)
+		goto error;
+
+	dev->interrupt_in_buffer = kmalloc(dev->interrupt_in_endpoint_size,
+					   GFP_KERNEL);
+	if (!dev->interrupt_in_buffer)
+		goto error;
+
+	dev->oldi_buffer = kmalloc(dev->interrupt_in_endpoint_size, GFP_KERNEL);
+	if (!dev->oldi_buffer)
+		goto error;
+
+>>>>>>> refs/remotes/origin/master
 	dev->interrupt_in_urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!dev->interrupt_in_urb) {
 		dev_err(&intf->dev, "Couldn't allocate interrupt_in_urb\n");
@@ -765,6 +871,7 @@ static int usb_alphatrack_probe(struct usb_interface *intf,
 	true_size = min(write_buffer_size, WRITE_BUFFER_SIZE);
 
 	dev->interrupt_out_buffer =
+<<<<<<< HEAD
 	    kmalloc(true_size * dev->interrupt_out_endpoint_size, GFP_KERNEL);
 
 	if (!dev->interrupt_out_buffer) {
@@ -779,6 +886,19 @@ static int usb_alphatrack_probe(struct usb_interface *intf,
 		dev_err(&intf->dev, "Couldn't allocate write_buffer\n");
 		goto error;
 	}
+=======
+		kmalloc_array(true_size,
+			      dev->interrupt_out_endpoint_size,
+			      GFP_KERNEL);
+	if (!dev->interrupt_out_buffer)
+		goto error;
+
+	dev->write_buffer = kmalloc_array(true_size,
+					  sizeof(struct alphatrack_ocmd),
+					  GFP_KERNEL);
+	if (!dev->write_buffer)
+		goto error;
+>>>>>>> refs/remotes/origin/master
 
 	dev->interrupt_out_urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!dev->interrupt_out_urb) {
@@ -852,11 +972,18 @@ static void usb_alphatrack_disconnect(struct usb_interface *intf)
 		mutex_unlock(&dev->mtx);
 		usb_alphatrack_delete(dev);
 	} else {
+<<<<<<< HEAD
+=======
+		atomic_set(&dev->writes_pending, 0);
+>>>>>>> refs/remotes/origin/master
 		dev->intf = NULL;
 		mutex_unlock(&dev->mtx);
 	}
 
+<<<<<<< HEAD
 	atomic_set(&dev->writes_pending, 0);
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&disconnect_mutex);
 
 	dev_info(&intf->dev, "Alphatrack Surface #%d now disconnected\n",
@@ -871,6 +998,7 @@ static struct usb_driver usb_alphatrack_driver = {
 	.id_table = usb_alphatrack_table,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /**
  *	usb_alphatrack_init
@@ -902,3 +1030,6 @@ module_exit(usb_alphatrack_exit);
 =======
 module_usb_driver(usb_alphatrack_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(usb_alphatrack_driver);
+>>>>>>> refs/remotes/origin/master

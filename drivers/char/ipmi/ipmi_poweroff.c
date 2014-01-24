@@ -659,7 +659,11 @@ static struct ipmi_smi_watcher smi_watcher = {
 #ifdef CONFIG_PROC_FS
 #include <linux/sysctl.h>
 
+<<<<<<< HEAD
 static ctl_table ipmi_table[] = {
+=======
+static struct ctl_table ipmi_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .procname	= "poweroff_powercycle",
 	  .data		= &poweroff_powercycle,
 	  .maxlen	= sizeof(poweroff_powercycle),
@@ -668,14 +672,22 @@ static ctl_table ipmi_table[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 static ctl_table ipmi_dir_table[] = {
+=======
+static struct ctl_table ipmi_dir_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .procname	= "ipmi",
 	  .mode		= 0555,
 	  .child	= ipmi_table },
 	{ }
 };
 
+<<<<<<< HEAD
 static ctl_table ipmi_root_table[] = {
+=======
+static struct ctl_table ipmi_root_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .procname	= "dev",
 	  .mode		= 0555,
 	  .child	= ipmi_dir_table },

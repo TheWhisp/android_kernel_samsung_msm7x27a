@@ -25,9 +25,13 @@
 #include <linux/debugfs.h>
 #include <linux/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/types.h>
 #include <linux/sched.h>
@@ -48,18 +52,52 @@ enum {
 	dma_debug_coherent,
 };
 
+<<<<<<< HEAD
 #define DMA_DEBUG_STACKTRACE_ENTRIES 5
 
+=======
+enum map_err_types {
+	MAP_ERR_CHECK_NOT_APPLICABLE,
+	MAP_ERR_NOT_CHECKED,
+	MAP_ERR_CHECKED,
+};
+
+#define DMA_DEBUG_STACKTRACE_ENTRIES 5
+
+/**
+ * struct dma_debug_entry - track a dma_map* or dma_alloc_coherent mapping
+ * @list: node on pre-allocated free_entries list
+ * @dev: 'dev' argument to dma_map_{page|single|sg} or dma_alloc_coherent
+ * @type: single, page, sg, coherent
+ * @pfn: page frame of the start address
+ * @offset: offset of mapping relative to pfn
+ * @size: length of the mapping
+ * @direction: enum dma_data_direction
+ * @sg_call_ents: 'nents' from dma_map_sg
+ * @sg_mapped_ents: 'mapped_ents' from dma_map_sg
+ * @map_err_type: track whether dma_mapping_error() was checked
+ * @stacktrace: support backtraces when a violation is detected
+ */
+>>>>>>> refs/remotes/origin/master
 struct dma_debug_entry {
 	struct list_head list;
 	struct device    *dev;
 	int              type;
+<<<<<<< HEAD
 	phys_addr_t      paddr;
+=======
+	unsigned long	 pfn;
+	size_t		 offset;
+>>>>>>> refs/remotes/origin/master
 	u64              dev_addr;
 	u64              size;
 	int              direction;
 	int		 sg_call_ents;
 	int		 sg_mapped_ents;
+<<<<<<< HEAD
+=======
+	enum map_err_types  map_err_type;
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_STACKTRACE
 	struct		 stack_trace stacktrace;
 	unsigned long	 st_entries[DMA_DEBUG_STACKTRACE_ENTRIES];
@@ -67,10 +105,15 @@ struct dma_debug_entry {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 typedef bool (*match_fn)(struct dma_debug_entry *, struct dma_debug_entry *);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+typedef bool (*match_fn)(struct dma_debug_entry *, struct dma_debug_entry *);
+
+>>>>>>> refs/remotes/origin/master
 struct hash_bucket {
 	struct list_head list;
 	spinlock_t lock;
@@ -84,7 +127,11 @@ static LIST_HEAD(free_entries);
 static DEFINE_SPINLOCK(free_entries_lock);
 
 /* Global disable flag - will be set in case of an error */
+<<<<<<< HEAD
 static bool global_disable __read_mostly;
+=======
+static u32 global_disable __read_mostly;
+>>>>>>> refs/remotes/origin/master
 
 /* Global error count */
 static u32 error_count;
@@ -120,17 +167,29 @@ static struct device_driver *current_driver                    __read_mostly;
 
 static DEFINE_RWLOCK(driver_name_lock);
 
+<<<<<<< HEAD
+=======
+static const char *const maperr2str[] = {
+	[MAP_ERR_CHECK_NOT_APPLICABLE] = "dma map error check not applicable",
+	[MAP_ERR_NOT_CHECKED] = "dma map error not checked",
+	[MAP_ERR_CHECKED] = "dma map error checked",
+};
+
+>>>>>>> refs/remotes/origin/master
 static const char *type2name[4] = { "single", "page",
 				    "scather-gather", "coherent" };
 
 static const char *dir2name[4] = { "DMA_BIDIRECTIONAL", "DMA_TO_DEVICE",
 				   "DMA_FROM_DEVICE", "DMA_NONE" };
 
+<<<<<<< HEAD
 /* little merge helper - remove it after the merge window */
 #ifndef BUS_NOTIFY_UNBOUND_DRIVER
 #define BUS_NOTIFY_UNBOUND_DRIVER 0x0005
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The access to some variables in this macro is racy. We can't use atomic_t
  * here because all these variables are exported to debugfs. Some of them even
@@ -177,10 +236,14 @@ static bool driver_filter(struct device *dev)
 
 	/* driver filter on but not yet initialized */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	drv = get_driver(dev->driver);
 =======
 	drv = dev->driver;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	drv = dev->driver;
+>>>>>>> refs/remotes/origin/master
 	if (!drv)
 		return false;
 
@@ -196,9 +259,12 @@ static bool driver_filter(struct device *dev)
 
 	read_unlock_irqrestore(&driver_name_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	put_driver(drv);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -257,12 +323,15 @@ static void put_hash_bucket(struct hash_bucket *bucket,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Search a given entry in the hash bucket list
  */
 static struct dma_debug_entry *hash_bucket_find(struct hash_bucket *bucket,
 						struct dma_debug_entry *ref)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool exact_match(struct dma_debug_entry *a, struct dma_debug_entry *b)
 {
 	return ((a->dev_addr == b->dev_addr) &&
@@ -288,6 +357,7 @@ static bool containing_match(struct dma_debug_entry *a,
 static struct dma_debug_entry *__hash_bucket_find(struct hash_bucket *bucket,
 						  struct dma_debug_entry *ref,
 						  match_fn match)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct dma_debug_entry *entry, *ret = NULL;
@@ -300,6 +370,14 @@ static struct dma_debug_entry *__hash_bucket_find(struct hash_bucket *bucket,
 =======
 		if (!match(ref, entry))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+{
+	struct dma_debug_entry *entry, *ret = NULL;
+	int matches = 0, match_lvl, last_lvl = -1;
+
+	list_for_each_entry(entry, &bucket->list, list) {
+		if (!match(ref, entry))
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		/*
@@ -325,7 +403,11 @@ static struct dma_debug_entry *__hash_bucket_find(struct hash_bucket *bucket,
 		} else if (match_lvl > last_lvl) {
 			/*
 			 * We found an entry that fits better then the
+<<<<<<< HEAD
 			 * previous one
+=======
+			 * previous one or it is the 1st match.
+>>>>>>> refs/remotes/origin/master
 			 */
 			last_lvl = match_lvl;
 			ret      = entry;
@@ -342,7 +424,10 @@ static struct dma_debug_entry *__hash_bucket_find(struct hash_bucket *bucket,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct dma_debug_entry *bucket_find_exact(struct hash_bucket *bucket,
 						 struct dma_debug_entry *ref)
 {
@@ -376,7 +461,10 @@ static struct dma_debug_entry *bucket_find_contain(struct hash_bucket **bucket,
 	return NULL;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Add an entry to a hash bucket
  */
@@ -394,6 +482,14 @@ static void hash_bucket_del(struct dma_debug_entry *entry)
 	list_del(&entry->list);
 }
 
+<<<<<<< HEAD
+=======
+static unsigned long long phys_addr(struct dma_debug_entry *entry)
+{
+	return page_to_phys(pfn_to_page(entry->pfn)) + entry->offset;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Dump mapping entries for debugging purposes
  */
@@ -411,11 +507,20 @@ void debug_dma_dump_mappings(struct device *dev)
 		list_for_each_entry(entry, &bucket->list, list) {
 			if (!dev || dev == entry->dev) {
 				dev_info(entry->dev,
+<<<<<<< HEAD
 					 "%s idx %d P=%Lx D=%Lx L=%Lx %s\n",
 					 type2name[entry->type], idx,
 					 (unsigned long long)entry->paddr,
 					 entry->dev_addr, entry->size,
 					 dir2name[entry->direction]);
+=======
+					 "%s idx %d P=%Lx N=%lx D=%Lx L=%Lx %s %s\n",
+					 type2name[entry->type], idx,
+					 phys_addr(entry), entry->pfn,
+					 entry->dev_addr, entry->size,
+					 dir2name[entry->direction],
+					 maperr2str[entry->map_err_type]);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 
@@ -425,6 +530,136 @@ void debug_dma_dump_mappings(struct device *dev)
 EXPORT_SYMBOL(debug_dma_dump_mappings);
 
 /*
+<<<<<<< HEAD
+=======
+ * For each page mapped (initial page in the case of
+ * dma_alloc_coherent/dma_map_{single|page}, or each page in a
+ * scatterlist) insert into this tree using the pfn as the key. At
+ * dma_unmap_{single|sg|page} or dma_free_coherent delete the entry.  If
+ * the pfn already exists at insertion time add a tag as a reference
+ * count for the overlapping mappings.  For now, the overlap tracking
+ * just ensures that 'unmaps' balance 'maps' before marking the pfn
+ * idle, but we should also be flagging overlaps as an API violation.
+ *
+ * Memory usage is mostly constrained by the maximum number of available
+ * dma-debug entries in that we need a free dma_debug_entry before
+ * inserting into the tree.  In the case of dma_map_{single|page} and
+ * dma_alloc_coherent there is only one dma_debug_entry and one pfn to
+ * track per event.  dma_map_sg(), on the other hand,
+ * consumes a single dma_debug_entry, but inserts 'nents' entries into
+ * the tree.
+ *
+ * At any time debug_dma_assert_idle() can be called to trigger a
+ * warning if the given page is in the active set.
+ */
+static RADIX_TREE(dma_active_pfn, GFP_NOWAIT);
+static DEFINE_SPINLOCK(radix_lock);
+#define ACTIVE_PFN_MAX_OVERLAP ((1 << RADIX_TREE_MAX_TAGS) - 1)
+
+static int active_pfn_read_overlap(unsigned long pfn)
+{
+	int overlap = 0, i;
+
+	for (i = RADIX_TREE_MAX_TAGS - 1; i >= 0; i--)
+		if (radix_tree_tag_get(&dma_active_pfn, pfn, i))
+			overlap |= 1 << i;
+	return overlap;
+}
+
+static int active_pfn_set_overlap(unsigned long pfn, int overlap)
+{
+	int i;
+
+	if (overlap > ACTIVE_PFN_MAX_OVERLAP || overlap < 0)
+		return 0;
+
+	for (i = RADIX_TREE_MAX_TAGS - 1; i >= 0; i--)
+		if (overlap & 1 << i)
+			radix_tree_tag_set(&dma_active_pfn, pfn, i);
+		else
+			radix_tree_tag_clear(&dma_active_pfn, pfn, i);
+
+	return overlap;
+}
+
+static void active_pfn_inc_overlap(unsigned long pfn)
+{
+	int overlap = active_pfn_read_overlap(pfn);
+
+	overlap = active_pfn_set_overlap(pfn, ++overlap);
+
+	/* If we overflowed the overlap counter then we're potentially
+	 * leaking dma-mappings.  Otherwise, if maps and unmaps are
+	 * balanced then this overflow may cause false negatives in
+	 * debug_dma_assert_idle() as the pfn may be marked idle
+	 * prematurely.
+	 */
+	WARN_ONCE(overlap == 0,
+		  "DMA-API: exceeded %d overlapping mappings of pfn %lx\n",
+		  ACTIVE_PFN_MAX_OVERLAP, pfn);
+}
+
+static int active_pfn_dec_overlap(unsigned long pfn)
+{
+	int overlap = active_pfn_read_overlap(pfn);
+
+	return active_pfn_set_overlap(pfn, --overlap);
+}
+
+static int active_pfn_insert(struct dma_debug_entry *entry)
+{
+	unsigned long flags;
+	int rc;
+
+	spin_lock_irqsave(&radix_lock, flags);
+	rc = radix_tree_insert(&dma_active_pfn, entry->pfn, entry);
+	if (rc == -EEXIST)
+		active_pfn_inc_overlap(entry->pfn);
+	spin_unlock_irqrestore(&radix_lock, flags);
+
+	return rc;
+}
+
+static void active_pfn_remove(struct dma_debug_entry *entry)
+{
+	unsigned long flags;
+
+	spin_lock_irqsave(&radix_lock, flags);
+	if (active_pfn_dec_overlap(entry->pfn) == 0)
+		radix_tree_delete(&dma_active_pfn, entry->pfn);
+	spin_unlock_irqrestore(&radix_lock, flags);
+}
+
+/**
+ * debug_dma_assert_idle() - assert that a page is not undergoing dma
+ * @page: page to lookup in the dma_active_pfn tree
+ *
+ * Place a call to this routine in cases where the cpu touching the page
+ * before the dma completes (page is dma_unmapped) will lead to data
+ * corruption.
+ */
+void debug_dma_assert_idle(struct page *page)
+{
+	unsigned long flags;
+	struct dma_debug_entry *entry;
+
+	if (!page)
+		return;
+
+	spin_lock_irqsave(&radix_lock, flags);
+	entry = radix_tree_lookup(&dma_active_pfn, page_to_pfn(page));
+	spin_unlock_irqrestore(&radix_lock, flags);
+
+	if (!entry)
+		return;
+
+	err_printk(entry->dev, entry,
+		   "DMA-API: cpu touching an active dma mapped page "
+		   "[pfn=0x%lx]\n", entry->pfn);
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Wrapper function for adding an entry to the hash.
  * This function takes care of locking itself.
  */
@@ -432,10 +667,27 @@ static void add_dma_entry(struct dma_debug_entry *entry)
 {
 	struct hash_bucket *bucket;
 	unsigned long flags;
+<<<<<<< HEAD
+=======
+	int rc;
+>>>>>>> refs/remotes/origin/master
 
 	bucket = get_hash_bucket(entry, &flags);
 	hash_bucket_add(bucket, entry);
 	put_hash_bucket(bucket, &flags);
+<<<<<<< HEAD
+=======
+
+	rc = active_pfn_insert(entry);
+	if (rc == -ENOMEM) {
+		pr_err("DMA-API: pfn tracking ENOMEM, dma-debug disabled\n");
+		global_disable = true;
+	}
+
+	/* TODO: report -EEXIST errors here as overlapping mappings are
+	 * not supported by the DMA API
+	 */
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct dma_debug_entry *__dma_entry_alloc(void)
@@ -460,7 +712,11 @@ static struct dma_debug_entry *__dma_entry_alloc(void)
  */
 static struct dma_debug_entry *dma_entry_alloc(void)
 {
+<<<<<<< HEAD
 	struct dma_debug_entry *entry = NULL;
+=======
+	struct dma_debug_entry *entry;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	spin_lock_irqsave(&free_entries_lock, flags);
@@ -468,11 +724,21 @@ static struct dma_debug_entry *dma_entry_alloc(void)
 	if (list_empty(&free_entries)) {
 		pr_err("DMA-API: debugging out of memory - disabling\n");
 		global_disable = true;
+<<<<<<< HEAD
 		goto out;
+=======
+		spin_unlock_irqrestore(&free_entries_lock, flags);
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	entry = __dma_entry_alloc();
 
+<<<<<<< HEAD
+=======
+	spin_unlock_irqrestore(&free_entries_lock, flags);
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_STACKTRACE
 	entry->stacktrace.max_entries = DMA_DEBUG_STACKTRACE_ENTRIES;
 	entry->stacktrace.entries = entry->st_entries;
@@ -480,9 +746,12 @@ static struct dma_debug_entry *dma_entry_alloc(void)
 	save_stack_trace(&entry->stacktrace);
 #endif
 
+<<<<<<< HEAD
 out:
 	spin_unlock_irqrestore(&free_entries_lock, flags);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return entry;
 }
 
@@ -490,6 +759,11 @@ static void dma_entry_free(struct dma_debug_entry *entry)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
+=======
+	active_pfn_remove(entry);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * add to beginning of the list - this way the entries are
 	 * more likely cache hot when they are reallocated.
@@ -687,7 +961,11 @@ static int dma_debug_fs_init(void)
 
 	global_disable_dent = debugfs_create_bool("disabled", 0444,
 			dma_debug_dent,
+<<<<<<< HEAD
 			(u32 *)&global_disable);
+=======
+			&global_disable);
+>>>>>>> refs/remotes/origin/master
 	if (!global_disable_dent)
 		goto out_err;
 
@@ -879,6 +1157,7 @@ static void check_unmap(struct dma_debug_entry *ref)
 	struct hash_bucket *bucket;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	if (dma_mapping_error(ref->dev, ref->dev_addr)) {
 		err_printk(ref->dev, NULL, "DMA-API: device driver tries "
 			   "to free an invalid DMA memory address\n");
@@ -898,6 +1177,27 @@ static void check_unmap(struct dma_debug_entry *ref)
 			   "[device address=0x%016llx] [size=%llu bytes]\n",
 			   ref->dev_addr, ref->size);
 		goto out;
+=======
+	bucket = get_hash_bucket(ref, &flags);
+	entry = bucket_find_exact(bucket, ref);
+
+	if (!entry) {
+		/* must drop lock before calling dma_mapping_error */
+		put_hash_bucket(bucket, &flags);
+
+		if (dma_mapping_error(ref->dev, ref->dev_addr)) {
+			err_printk(ref->dev, NULL,
+				   "DMA-API: device driver tries to free an "
+				   "invalid DMA memory address\n");
+		} else {
+			err_printk(ref->dev, NULL,
+				   "DMA-API: device driver tries to free DMA "
+				   "memory it has not allocated [device "
+				   "address=0x%016llx] [size=%llu bytes]\n",
+				   ref->dev_addr, ref->size);
+		}
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (ref->size != entry->size) {
@@ -916,15 +1216,24 @@ static void check_unmap(struct dma_debug_entry *ref)
 			   ref->dev_addr, ref->size,
 			   type2name[entry->type], type2name[ref->type]);
 	} else if ((entry->type == dma_debug_coherent) &&
+<<<<<<< HEAD
 		   (ref->paddr != entry->paddr)) {
+=======
+		   (phys_addr(ref) != phys_addr(entry))) {
+>>>>>>> refs/remotes/origin/master
 		err_printk(ref->dev, entry, "DMA-API: device driver frees "
 			   "DMA memory with different CPU address "
 			   "[device address=0x%016llx] [size=%llu bytes] "
 			   "[cpu alloc address=0x%016llx] "
 			   "[cpu free address=0x%016llx]",
 			   ref->dev_addr, ref->size,
+<<<<<<< HEAD
 			   (unsigned long long)entry->paddr,
 			   (unsigned long long)ref->paddr);
+=======
+			   phys_addr(entry),
+			   phys_addr(ref));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (ref->sg_call_ents && ref->type == dma_debug_sg &&
@@ -949,10 +1258,25 @@ static void check_unmap(struct dma_debug_entry *ref)
 			   dir2name[ref->direction]);
 	}
 
+<<<<<<< HEAD
 	hash_bucket_del(entry);
 	dma_entry_free(entry);
 
 out:
+=======
+	if (entry->map_err_type == MAP_ERR_NOT_CHECKED) {
+		err_printk(ref->dev, entry,
+			   "DMA-API: device driver failed to check map error"
+			   "[device address=0x%016llx] [size=%llu bytes] "
+			   "[mapped as %s]",
+			   ref->dev_addr, ref->size,
+			   type2name[entry->type]);
+	}
+
+	hash_bucket_del(entry);
+	dma_entry_free(entry);
+
+>>>>>>> refs/remotes/origin/master
 	put_hash_bucket(bucket, &flags);
 }
 
@@ -991,10 +1315,14 @@ static void check_sync(struct device *dev,
 	bucket = get_hash_bucket(ref, &flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	entry = hash_bucket_find(bucket, ref);
 =======
 	entry = bucket_find_contain(&bucket, ref, &flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	entry = bucket_find_contain(&bucket, ref, &flags);
+>>>>>>> refs/remotes/origin/master
 
 	if (!entry) {
 		err_printk(dev, NULL, "DMA-API: device driver tries "
@@ -1060,7 +1388,11 @@ void debug_dma_map_page(struct device *dev, struct page *page, size_t offset,
 	if (unlikely(global_disable))
 		return;
 
+<<<<<<< HEAD
 	if (unlikely(dma_mapping_error(dev, dma_addr)))
+=======
+	if (dma_mapping_error(dev, dma_addr))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	entry = dma_entry_alloc();
@@ -1069,10 +1401,19 @@ void debug_dma_map_page(struct device *dev, struct page *page, size_t offset,
 
 	entry->dev       = dev;
 	entry->type      = dma_debug_page;
+<<<<<<< HEAD
 	entry->paddr     = page_to_phys(page) + offset;
 	entry->dev_addr  = dma_addr;
 	entry->size      = size;
 	entry->direction = direction;
+=======
+	entry->pfn	 = page_to_pfn(page);
+	entry->offset	 = offset,
+	entry->dev_addr  = dma_addr;
+	entry->size      = size;
+	entry->direction = direction;
+	entry->map_err_type = MAP_ERR_NOT_CHECKED;
+>>>>>>> refs/remotes/origin/master
 
 	if (map_single)
 		entry->type = dma_debug_single;
@@ -1088,6 +1429,47 @@ void debug_dma_map_page(struct device *dev, struct page *page, size_t offset,
 }
 EXPORT_SYMBOL(debug_dma_map_page);
 
+<<<<<<< HEAD
+=======
+void debug_dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
+{
+	struct dma_debug_entry ref;
+	struct dma_debug_entry *entry;
+	struct hash_bucket *bucket;
+	unsigned long flags;
+
+	if (unlikely(global_disable))
+		return;
+
+	ref.dev = dev;
+	ref.dev_addr = dma_addr;
+	bucket = get_hash_bucket(&ref, &flags);
+
+	list_for_each_entry(entry, &bucket->list, list) {
+		if (!exact_match(&ref, entry))
+			continue;
+
+		/*
+		 * The same physical address can be mapped multiple
+		 * times. Without a hardware IOMMU this results in the
+		 * same device addresses being put into the dma-debug
+		 * hash multiple times too. This can result in false
+		 * positives being reported. Therefore we implement a
+		 * best-fit algorithm here which updates the first entry
+		 * from the hash which fits the reference value and is
+		 * not currently listed as being checked.
+		 */
+		if (entry->map_err_type == MAP_ERR_NOT_CHECKED) {
+			entry->map_err_type = MAP_ERR_CHECKED;
+			break;
+		}
+	}
+
+	put_hash_bucket(bucket, &flags);
+}
+EXPORT_SYMBOL(debug_dma_mapping_error);
+
+>>>>>>> refs/remotes/origin/master
 void debug_dma_unmap_page(struct device *dev, dma_addr_t addr,
 			  size_t size, int direction, bool map_single)
 {
@@ -1126,7 +1508,12 @@ void debug_dma_map_sg(struct device *dev, struct scatterlist *sg,
 
 		entry->type           = dma_debug_sg;
 		entry->dev            = dev;
+<<<<<<< HEAD
 		entry->paddr          = sg_phys(s);
+=======
+		entry->pfn	      = page_to_pfn(sg_page(s));
+		entry->offset	      = s->offset,
+>>>>>>> refs/remotes/origin/master
 		entry->size           = sg_dma_len(s);
 		entry->dev_addr       = sg_dma_address(s);
 		entry->direction      = direction;
@@ -1153,10 +1540,14 @@ static int get_nr_mapped_entries(struct device *dev,
 
 	bucket       = get_hash_bucket(ref, &flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	entry        = hash_bucket_find(bucket, ref);
 =======
 	entry        = bucket_find_exact(bucket, ref);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	entry        = bucket_find_exact(bucket, ref);
+>>>>>>> refs/remotes/origin/master
 	mapped_ents  = 0;
 
 	if (entry)
@@ -1180,7 +1571,12 @@ void debug_dma_unmap_sg(struct device *dev, struct scatterlist *sglist,
 		struct dma_debug_entry ref = {
 			.type           = dma_debug_sg,
 			.dev            = dev,
+<<<<<<< HEAD
 			.paddr          = sg_phys(s),
+=======
+			.pfn		= page_to_pfn(sg_page(s)),
+			.offset		= s->offset,
+>>>>>>> refs/remotes/origin/master
 			.dev_addr       = sg_dma_address(s),
 			.size           = sg_dma_len(s),
 			.direction      = dir,
@@ -1215,7 +1611,12 @@ void debug_dma_alloc_coherent(struct device *dev, size_t size,
 
 	entry->type      = dma_debug_coherent;
 	entry->dev       = dev;
+<<<<<<< HEAD
 	entry->paddr     = virt_to_phys(virt);
+=======
+	entry->pfn	 = page_to_pfn(virt_to_page(virt));
+	entry->offset	 = (size_t) virt & PAGE_MASK;
+>>>>>>> refs/remotes/origin/master
 	entry->size      = size;
 	entry->dev_addr  = dma_addr;
 	entry->direction = DMA_BIDIRECTIONAL;
@@ -1230,7 +1631,12 @@ void debug_dma_free_coherent(struct device *dev, size_t size,
 	struct dma_debug_entry ref = {
 		.type           = dma_debug_coherent,
 		.dev            = dev,
+<<<<<<< HEAD
 		.paddr          = virt_to_phys(virt),
+=======
+		.pfn		= page_to_pfn(virt_to_page(virt)),
+		.offset		= (size_t) virt & PAGE_MASK,
+>>>>>>> refs/remotes/origin/master
 		.dev_addr       = addr,
 		.size           = size,
 		.direction      = DMA_BIDIRECTIONAL,
@@ -1338,7 +1744,12 @@ void debug_dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sg,
 		struct dma_debug_entry ref = {
 			.type           = dma_debug_sg,
 			.dev            = dev,
+<<<<<<< HEAD
 			.paddr          = sg_phys(s),
+=======
+			.pfn		= page_to_pfn(sg_page(s)),
+			.offset		= s->offset,
+>>>>>>> refs/remotes/origin/master
 			.dev_addr       = sg_dma_address(s),
 			.size           = sg_dma_len(s),
 			.direction      = direction,
@@ -1370,7 +1781,12 @@ void debug_dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg,
 		struct dma_debug_entry ref = {
 			.type           = dma_debug_sg,
 			.dev            = dev,
+<<<<<<< HEAD
 			.paddr          = sg_phys(s),
+=======
+			.pfn		= page_to_pfn(sg_page(s)),
+			.offset		= s->offset,
+>>>>>>> refs/remotes/origin/master
 			.dev_addr       = sg_dma_address(s),
 			.size           = sg_dma_len(s),
 			.direction      = direction,

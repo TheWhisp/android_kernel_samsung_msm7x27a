@@ -8,6 +8,7 @@
 #include <linux/rcupdate.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
@@ -99,6 +100,35 @@ struct kiocb {
 	int			(*ki_cancel)(struct kiocb *, struct io_event *);
 	ssize_t			(*ki_retry)(struct kiocb *);
 	void			(*ki_dtor)(struct kiocb *);
+=======
+#include <linux/atomic.h>
+
+struct kioctx;
+struct kiocb;
+
+#define KIOCB_KEY		0
+
+/*
+ * We use ki_cancel == KIOCB_CANCELLED to indicate that a kiocb has been either
+ * cancelled or completed (this makes a certain amount of sense because
+ * successful cancellation - io_cancel() - does deliver the completion to
+ * userspace).
+ *
+ * And since most things don't implement kiocb cancellation and we'd really like
+ * kiocb completion to be lockless when possible, we use ki_cancel to
+ * synchronize cancellation and completion - we only set it to KIOCB_CANCELLED
+ * with xchg() or cmpxchg(), see batch_complete_aio() and kiocb_cancel().
+ */
+#define KIOCB_CANCELLED		((void *) (~0ULL))
+
+typedef int (kiocb_cancel_fn)(struct kiocb *);
+
+struct kiocb {
+	struct file		*ki_filp;
+	struct kioctx		*ki_ctx;	/* NULL for sync ops */
+	kiocb_cancel_fn		*ki_cancel;
+	void			*private;
+>>>>>>> refs/remotes/origin/master
 
 	union {
 		void __user		*user;
@@ -107,6 +137,7 @@ struct kiocb {
 
 	__u64			ki_user_data;	/* user's data for completion */
 	loff_t			ki_pos;
+<<<<<<< HEAD
 
 	void			*private;
 	/* State that we remember to be able to restart/retry  */
@@ -125,6 +156,12 @@ struct kiocb {
 =======
 	struct list_head	ki_batch;	/* batch allocation */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	size_t			ki_nbytes;	/* copy of iocb->aio_nbytes */
+
+	struct list_head	ki_list;	/* the aio core uses this
+						 * for cancellation */
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If the aio_resfd field of the userspace iocb is not zero,
@@ -133,6 +170,7 @@ struct kiocb {
 	struct eventfd_ctx	*ki_eventfd;
 };
 
+<<<<<<< HEAD
 #define is_sync_kiocb(iocb)	((iocb)->ki_key == KIOCB_SYNC_KEY)
 #define init_sync_kiocb(x, filp)			\
 	do {						\
@@ -222,20 +260,52 @@ extern ssize_t wait_on_sync_kiocb(struct kiocb *iocb);
 extern int aio_put_req(struct kiocb *iocb);
 extern void kick_iocb(struct kiocb *iocb);
 extern int aio_complete(struct kiocb *iocb, long res, long res2);
+=======
+static inline bool is_sync_kiocb(struct kiocb *kiocb)
+{
+	return kiocb->ki_ctx == NULL;
+}
+
+static inline void init_sync_kiocb(struct kiocb *kiocb, struct file *filp)
+{
+	*kiocb = (struct kiocb) {
+			.ki_ctx = NULL,
+			.ki_filp = filp,
+			.ki_obj.tsk = current,
+		};
+}
+
+/* prototypes */
+#ifdef CONFIG_AIO
+extern ssize_t wait_on_sync_kiocb(struct kiocb *iocb);
+extern void aio_complete(struct kiocb *iocb, long res, long res2);
+>>>>>>> refs/remotes/origin/master
 struct mm_struct;
 extern void exit_aio(struct mm_struct *mm);
 extern long do_io_submit(aio_context_t ctx_id, long nr,
 			 struct iocb __user *__user *iocbpp, bool compat);
+<<<<<<< HEAD
 #else
 static inline ssize_t wait_on_sync_kiocb(struct kiocb *iocb) { return 0; }
 static inline int aio_put_req(struct kiocb *iocb) { return 0; }
 static inline void kick_iocb(struct kiocb *iocb) { }
 static inline int aio_complete(struct kiocb *iocb, long res, long res2) { return 0; }
+=======
+void kiocb_set_cancel_fn(struct kiocb *req, kiocb_cancel_fn *cancel);
+#else
+static inline ssize_t wait_on_sync_kiocb(struct kiocb *iocb) { return 0; }
+static inline void aio_complete(struct kiocb *iocb, long res, long res2) { }
+>>>>>>> refs/remotes/origin/master
 struct mm_struct;
 static inline void exit_aio(struct mm_struct *mm) { }
 static inline long do_io_submit(aio_context_t ctx_id, long nr,
 				struct iocb __user * __user *iocbpp,
 				bool compat) { return 0; }
+<<<<<<< HEAD
+=======
+static inline void kiocb_set_cancel_fn(struct kiocb *req,
+				       kiocb_cancel_fn *cancel) { }
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_AIO */
 
 static inline struct kiocb *list_kiocb(struct list_head *h)

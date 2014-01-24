@@ -100,10 +100,14 @@ unsigned long __init find_ibft_region(unsigned long *sizep)
 	 * only use ACPI for this */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!efi_enabled)
 =======
 	if (!efi_enabled(EFI_BOOT))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!efi_enabled(EFI_BOOT))
+>>>>>>> refs/remotes/origin/master
 		find_ibft_in_mem();
 
 	if (ibft_addr) {

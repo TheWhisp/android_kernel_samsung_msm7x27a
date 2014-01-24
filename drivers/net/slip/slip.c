@@ -390,10 +390,17 @@ static void sl_encaps(struct slip *sl, unsigned char *icp, int len)
 #endif
 #ifdef CONFIG_SLIP_MODE_SLIP6
 	if (sl->mode & SL_MODE_SLIP6)
+<<<<<<< HEAD
 		count = slip_esc6(p, (unsigned char *) sl->xbuff, len);
 	else
 #endif
 		count = slip_esc(p, (unsigned char *) sl->xbuff, len);
+=======
+		count = slip_esc6(p, sl->xbuff, len);
+	else
+#endif
+		count = slip_esc(p, sl->xbuff, len);
+>>>>>>> refs/remotes/origin/master
 
 	/* Order of next two lines is *very* important.
 	 * When we are sending a little amount of data,
@@ -429,11 +436,19 @@ static void slip_write_wakeup(struct tty_struct *tty)
 	if (!sl || sl->magic != SLIP_MAGIC || !netif_running(sl->dev))
 		return;
 
+<<<<<<< HEAD
+=======
+	spin_lock(&sl->lock);
+>>>>>>> refs/remotes/origin/master
 	if (sl->xleft <= 0)  {
 		/* Now serial buffer is almost free & we can start
 		 * transmission of another packet */
 		sl->dev->stats.tx_packets++;
 		clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
+<<<<<<< HEAD
+=======
+		spin_unlock(&sl->lock);
+>>>>>>> refs/remotes/origin/master
 		sl_unlock(sl);
 		return;
 	}
@@ -441,6 +456,10 @@ static void slip_write_wakeup(struct tty_struct *tty)
 	actual = tty->ops->write(tty, sl->xhead, sl->xleft);
 	sl->xleft -= actual;
 	sl->xhead += actual;
+<<<<<<< HEAD
+=======
+	spin_unlock(&sl->lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sl_tx_timeout(struct net_device *dev)

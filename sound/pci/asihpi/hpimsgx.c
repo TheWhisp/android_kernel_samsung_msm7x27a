@@ -2,10 +2,14 @@
 
     AudioScience HPI driver
 <<<<<<< HEAD
+<<<<<<< HEAD
     Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
 =======
     Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/master
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of version 2 of the GNU General Public License as
@@ -21,19 +25,27 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Extended Message Function With Response Cacheing
 =======
 Extended Message Function With Response Caching
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Extended Message Function With Response Caching
+>>>>>>> refs/remotes/origin/master
 
 (C) Copyright AudioScience Inc. 2002
 *****************************************************************************/
 #define SOURCEFILE_NAME "hpimsgx.c"
 #include "hpi_internal.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "hpi_version.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "hpi_version.h"
+>>>>>>> refs/remotes/origin/master
 #include "hpimsginit.h"
 #include "hpicmn.h"
 #include "hpimsgx.h"
@@ -199,9 +211,12 @@ static void subsys_message(struct hpi_message *phm, struct hpi_response *phr,
 		hpios_msgxlock_init(&msgx_lock);
 		memset(&hpi_entry_points, 0, sizeof(hpi_entry_points));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		hpios_locked_mem_init();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Init subsys_findadapters response to no-adapters */
 		HPIMSGX__reset(HPIMSGX_ALLADAPTERS);
 		hpi_init_response(phr, HPI_OBJ_SUBSYSTEM,
@@ -213,9 +228,12 @@ static void subsys_message(struct hpi_message *phm, struct hpi_response *phr,
 		HPI_COMMON(phm, phr);
 		HPIMSGX__cleanup(HPIMSGX_ALLADAPTERS, h_owner);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		hpios_locked_mem_free_all();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		hpi_init_response(phr, HPI_OBJ_SUBSYSTEM,
 			HPI_SUBSYS_DRIVER_UNLOAD, 0);
 		return;
@@ -334,10 +352,14 @@ void hpi_send_recv_ex(struct hpi_message *phm, struct hpi_response *phr,
 	HPI_DEBUG_MESSAGE(DEBUG, phm);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (phm->type != HPI_TYPE_MESSAGE) {
 =======
 	if (phm->type != HPI_TYPE_REQUEST) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (phm->type != HPI_TYPE_REQUEST) {
+>>>>>>> refs/remotes/origin/master
 		hpi_init_response(phr, phm->object, phm->function,
 			HPI_ERROR_INVALID_TYPE);
 		return;

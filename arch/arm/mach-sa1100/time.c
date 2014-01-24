@@ -13,6 +13,7 @@
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sched.h>	/* just for sched_clock() - funny that */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -48,12 +49,24 @@ static void notrace sa1100_update_sched_clock(void)
 	u32 cyc = OSCR;
 	update_sched_clock(&cd, cyc, (u32)~0);
 =======
+=======
+#include <linux/timex.h>
+#include <linux/clockchips.h>
+#include <linux/sched_clock.h>
+
+#include <asm/mach/time.h>
+#include <mach/hardware.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/irqs.h>
 
 static u32 notrace sa1100_read_sched_clock(void)
 {
+<<<<<<< HEAD
 	return OSCR;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return readl_relaxed(OSCR);
+>>>>>>> refs/remotes/origin/master
 }
 
 #define MIN_OSCR_DELTA 2
@@ -63,8 +76,13 @@ static irqreturn_t sa1100_ost0_interrupt(int irq, void *dev_id)
 	struct clock_event_device *c = dev_id;
 
 	/* Disarm the compare/match, signal the event. */
+<<<<<<< HEAD
 	OIER &= ~OIER_E0;
 	OSSR = OSSR_M0;
+=======
+	writel_relaxed(readl_relaxed(OIER) & ~OIER_E0, OIER);
+	writel_relaxed(OSSR_M0, OSSR);
+>>>>>>> refs/remotes/origin/master
 	c->event_handler(c);
 
 	return IRQ_HANDLED;
@@ -75,10 +93,17 @@ sa1100_osmr0_set_next_event(unsigned long delta, struct clock_event_device *c)
 {
 	unsigned long next, oscr;
 
+<<<<<<< HEAD
 	OIER |= OIER_E0;
 	next = OSCR + delta;
 	OSMR0 = next;
 	oscr = OSCR;
+=======
+	writel_relaxed(readl_relaxed(OIER) | OIER_E0, OIER);
+	next = readl_relaxed(OSCR) + delta;
+	writel_relaxed(next, OSMR0);
+	oscr = readl_relaxed(OSCR);
+>>>>>>> refs/remotes/origin/master
 
 	return (signed)(next - oscr) <= MIN_OSCR_DELTA ? -ETIME : 0;
 }
@@ -90,8 +115,13 @@ sa1100_osmr0_set_mode(enum clock_event_mode mode, struct clock_event_device *c)
 	case CLOCK_EVT_MODE_ONESHOT:
 	case CLOCK_EVT_MODE_UNUSED:
 	case CLOCK_EVT_MODE_SHUTDOWN:
+<<<<<<< HEAD
 		OIER &= ~OIER_E0;
 		OSSR = OSSR_M0;
+=======
+		writel_relaxed(readl_relaxed(OIER) & ~OIER_E0, OIER);
+		writel_relaxed(OSSR_M0, OSSR);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case CLOCK_EVT_MODE_RESUME:
@@ -100,12 +130,51 @@ sa1100_osmr0_set_mode(enum clock_event_mode mode, struct clock_event_device *c)
 	}
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM
+unsigned long osmr[4], oier;
+
+static void sa1100_timer_suspend(struct clock_event_device *cedev)
+{
+	osmr[0] = readl_relaxed(OSMR0);
+	osmr[1] = readl_relaxed(OSMR1);
+	osmr[2] = readl_relaxed(OSMR2);
+	osmr[3] = readl_relaxed(OSMR3);
+	oier = readl_relaxed(OIER);
+}
+
+static void sa1100_timer_resume(struct clock_event_device *cedev)
+{
+	writel_relaxed(0x0f, OSSR);
+	writel_relaxed(osmr[0], OSMR0);
+	writel_relaxed(osmr[1], OSMR1);
+	writel_relaxed(osmr[2], OSMR2);
+	writel_relaxed(osmr[3], OSMR3);
+	writel_relaxed(oier, OIER);
+
+	/*
+	 * OSMR0 is the system timer: make sure OSCR is sufficiently behind
+	 */
+	writel_relaxed(OSMR0 - LATCH, OSCR);
+}
+#else
+#define sa1100_timer_suspend NULL
+#define sa1100_timer_resume NULL
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static struct clock_event_device ckevt_sa1100_osmr0 = {
 	.name		= "osmr0",
 	.features	= CLOCK_EVT_FEAT_ONESHOT,
 	.rating		= 200,
 	.set_next_event	= sa1100_osmr0_set_next_event,
 	.set_mode	= sa1100_osmr0_set_mode,
+<<<<<<< HEAD
+=======
+	.suspend	= sa1100_timer_suspend,
+	.resume		= sa1100_timer_resume,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct irqaction sa1100_timer_irq = {
@@ -115,6 +184,7 @@ static struct irqaction sa1100_timer_irq = {
 	.dev_id		= &ckevt_sa1100_osmr0,
 };
 
+<<<<<<< HEAD
 static void __init sa1100_timer_init(void)
 {
 	OIER = 0;
@@ -132,10 +202,20 @@ static void __init sa1100_timer_init(void)
 		clockevent_delta2ns(0x7fffffff, &ckevt_sa1100_osmr0);
 	ckevt_sa1100_osmr0.min_delta_ns =
 		clockevent_delta2ns(MIN_OSCR_DELTA * 2, &ckevt_sa1100_osmr0) + 1;
+=======
+void __init sa1100_timer_init(void)
+{
+	writel_relaxed(0, OIER);
+	writel_relaxed(OSSR_M0 | OSSR_M1 | OSSR_M2 | OSSR_M3, OSSR);
+
+	setup_sched_clock(sa1100_read_sched_clock, 32, 3686400);
+
+>>>>>>> refs/remotes/origin/master
 	ckevt_sa1100_osmr0.cpumask = cpumask_of(0);
 
 	setup_irq(IRQ_OST0, &sa1100_timer_irq);
 
+<<<<<<< HEAD
 	clocksource_mmio_init(&OSCR, "oscr", CLOCK_TICK_RATE, 200, 32,
 		clocksource_mmio_readl_up);
 	clockevents_register_device(&ckevt_sa1100_osmr0);
@@ -177,3 +257,10 @@ struct sys_timer sa1100_timer = {
 	.suspend	= sa1100_timer_suspend,
 	.resume		= sa1100_timer_resume,
 };
+=======
+	clocksource_mmio_init(OSCR, "oscr", CLOCK_TICK_RATE, 200, 32,
+		clocksource_mmio_readl_up);
+	clockevents_config_and_register(&ckevt_sa1100_osmr0, 3686400,
+					MIN_OSCR_DELTA * 2, 0x7fffffff);
+}
+>>>>>>> refs/remotes/origin/master

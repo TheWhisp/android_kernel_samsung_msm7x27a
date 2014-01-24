@@ -10,6 +10,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,6 +23,8 @@
  * Boston, MA  02111-1307, USA.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #undef	VERBOSE_DEBUG
@@ -34,6 +37,7 @@
 #include <linux/ioport.h>
 #include <linux/slab.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/list.h>
 #include <linux/interrupt.h>
@@ -44,18 +48,28 @@
 #include <linux/usb/gadget.h>
 #include <linux/prefetch.h>
 =======
+=======
+#include <linux/list.h>
+#include <linux/interrupt.h>
+#include <linux/proc_fs.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/prefetch.h>
 #include <linux/clk.h>
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
 #include <linux/of.h>
 #include <linux/of_gpio.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/atmel.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/byteorder.h>
 #include <mach/hardware.h>
 #include <asm/io.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <asm/system.h>
 =======
@@ -69,6 +83,13 @@
 =======
 #include <mach/at91_matrix.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/gpio.h>
+
+#include <mach/cpu.h>
+#include <mach/at91sam9261_matrix.h>
+#include <mach/at91_matrix.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "at91_udc.h"
 
@@ -78,7 +99,11 @@
  * full speed USB controllers, including the at91rm9200 (arm920T, with MMU),
  * at91sam926x (arm926ejs, with MMU), and several no-mmu versions.
  *
+<<<<<<< HEAD
  * This driver expects the board has been wired with two GPIOs suppporting
+=======
+ * This driver expects the board has been wired with two GPIOs supporting
+>>>>>>> refs/remotes/origin/master
  * a VBUS sensing IRQ, and a D+ pullup.  (They may be omitted, but the
  * testing hasn't covered such cases.)
  *
@@ -239,7 +264,11 @@ static int proc_udc_show(struct seq_file *s, void *unused)
 	if (udc->enabled && udc->vbus) {
 		proc_ep_show(s, &udc->ep[0]);
 		list_for_each_entry (ep, &udc->gadget.ep_list, ep.ep_list) {
+<<<<<<< HEAD
 			if (ep->desc)
+=======
+			if (ep->ep.desc)
+>>>>>>> refs/remotes/origin/master
 				proc_ep_show(s, ep);
 		}
 	}
@@ -248,7 +277,11 @@ static int proc_udc_show(struct seq_file *s, void *unused)
 
 static int proc_udc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, proc_udc_show, PDE(inode)->data);
+=======
+	return single_open(file, proc_udc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations proc_ops = {
@@ -479,10 +512,14 @@ static void nuke(struct at91_ep *ep, int status)
 	struct at91_request *req;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	// terminer chaque requete dans la queue
 =======
 	/* terminate any request in the queue */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* terminate any request in the queue */
+>>>>>>> refs/remotes/origin/master
 	ep->stopped = 1;
 	if (list_empty(&ep->queue))
 		return;
@@ -500,12 +537,17 @@ static int at91_ep_enable(struct usb_ep *_ep,
 				const struct usb_endpoint_descriptor *desc)
 {
 	struct at91_ep	*ep = container_of(_ep, struct at91_ep, ep);
+<<<<<<< HEAD
 	struct at91_udc	*udc = ep->udc;
+=======
+	struct at91_udc *udc;
+>>>>>>> refs/remotes/origin/master
 	u16		maxpacket;
 	u32		tmp;
 	unsigned long	flags;
 
 	if (!_ep || !ep
+<<<<<<< HEAD
 			|| !desc || ep->desc
 			|| _ep->name == ep0name
 			|| desc->bDescriptorType != USB_DT_ENDPOINT
@@ -514,11 +556,20 @@ static int at91_ep_enable(struct usb_ep *_ep,
 =======
 			|| (maxpacket = usb_endpoint_maxp(desc)) == 0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			|| !desc || _ep->name == ep0name
+			|| desc->bDescriptorType != USB_DT_ENDPOINT
+			|| (maxpacket = usb_endpoint_maxp(desc)) == 0
+>>>>>>> refs/remotes/origin/master
 			|| maxpacket > ep->maxpacket) {
 		DBG("bad ep or descriptor\n");
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+=======
+	udc = ep->udc;
+>>>>>>> refs/remotes/origin/master
 	if (!udc->driver || udc->gadget.speed == USB_SPEED_UNKNOWN) {
 		DBG("bogus device state\n");
 		return -ESHUTDOWN;
@@ -565,7 +616,10 @@ ok:
 	tmp |= AT91_UDP_EPEDS;
 	__raw_writel(tmp, ep->creg);
 
+<<<<<<< HEAD
 	ep->desc = desc;
+=======
+>>>>>>> refs/remotes/origin/master
 	ep->ep.maxpacket = maxpacket;
 
 	/*
@@ -593,11 +647,15 @@ static int at91_ep_disable (struct usb_ep * _ep)
 	nuke(ep, -ESHUTDOWN);
 
 	/* restore the endpoint's pristine config */
+<<<<<<< HEAD
 	ep->desc = NULL;
 <<<<<<< HEAD
 =======
 	ep->ep.desc = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ep->ep.desc = NULL;
+>>>>>>> refs/remotes/origin/master
 	ep->ep.maxpacket = ep->maxpacket;
 
 	/* reset fifos and endpoint */
@@ -656,7 +714,11 @@ static int at91_ep_queue(struct usb_ep *_ep,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (!_ep || (!ep->desc && ep->ep.name != ep0name)) {
+=======
+	if (!_ep || (!ep->ep.desc && ep->ep.name != ep0name)) {
+>>>>>>> refs/remotes/origin/master
 		DBG("invalid ep\n");
 		return -EINVAL;
 	}
@@ -819,10 +881,14 @@ static const struct usb_ep_ops at91_ep_ops = {
 	.dequeue	= at91_ep_dequeue,
 	.set_halt	= at91_ep_set_halt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	// there's only imprecise fifo status reporting
 =======
 	/* there's only imprecise fifo status reporting */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* there's only imprecise fifo status reporting */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*-------------------------------------------------------------------------*/
@@ -875,6 +941,7 @@ static void udc_reinit(struct at91_udc *udc)
 
 		if (i != 0)
 			list_add_tail(&ep->ep.ep_list, &udc->gadget.ep_list);
+<<<<<<< HEAD
 		ep->desc = NULL;
 		ep->stopped = 0;
 		ep->fifo_bank = 0;
@@ -885,6 +952,14 @@ static void udc_reinit(struct at91_udc *udc)
 =======
 		/* initialize one queue per endpoint */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ep->ep.desc = NULL;
+		ep->stopped = 0;
+		ep->fifo_bank = 0;
+		usb_ep_set_maxpacket_limit(&ep->ep, ep->maxpacket);
+		ep->creg = (void __iomem *) udc->udp_baseaddr + AT91_UDP_CSR(i);
+		/* initialize one queue per endpoint */
+>>>>>>> refs/remotes/origin/master
 		INIT_LIST_HEAD(&ep->queue);
 	}
 }
@@ -918,8 +993,18 @@ static void clk_on(struct at91_udc *udc)
 	if (udc->clocked)
 		return;
 	udc->clocked = 1;
+<<<<<<< HEAD
 	clk_enable(udc->iclk);
 	clk_enable(udc->fclk);
+=======
+
+	if (IS_ENABLED(CONFIG_COMMON_CLK)) {
+		clk_set_rate(udc->uclk, 48000000);
+		clk_prepare_enable(udc->uclk);
+	}
+	clk_prepare_enable(udc->iclk);
+	clk_prepare_enable(udc->fclk);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void clk_off(struct at91_udc *udc)
@@ -928,8 +1013,15 @@ static void clk_off(struct at91_udc *udc)
 		return;
 	udc->clocked = 0;
 	udc->gadget.speed = USB_SPEED_UNKNOWN;
+<<<<<<< HEAD
 	clk_disable(udc->fclk);
 	clk_disable(udc->iclk);
+=======
+	clk_disable_unprepare(udc->fclk);
+	clk_disable_unprepare(udc->iclk);
+	if (IS_ENABLED(CONFIG_COMMON_CLK))
+		clk_disable_unprepare(udc->uclk);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -959,6 +1051,7 @@ static void pullup(struct at91_udc *udc, int is_on)
 			u32	usbpucr;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			usbpucr = at91_sys_read(AT91_MATRIX_USBPUCR);
 			usbpucr |= AT91_MATRIX_USBPUCR_PUON;
 			at91_sys_write(AT91_MATRIX_USBPUCR, usbpucr);
@@ -967,6 +1060,11 @@ static void pullup(struct at91_udc *udc, int is_on)
 			usbpucr |= AT91_MATRIX_USBPUCR_PUON;
 			at91_matrix_write(AT91_MATRIX_USBPUCR, usbpucr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			usbpucr = at91_matrix_read(AT91_MATRIX_USBPUCR);
+			usbpucr |= AT91_MATRIX_USBPUCR_PUON;
+			at91_matrix_write(AT91_MATRIX_USBPUCR, usbpucr);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		stop_activity(udc);
@@ -983,6 +1081,7 @@ static void pullup(struct at91_udc *udc, int is_on)
 			u32	usbpucr;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			usbpucr = at91_sys_read(AT91_MATRIX_USBPUCR);
 			usbpucr &= ~AT91_MATRIX_USBPUCR_PUON;
 			at91_sys_write(AT91_MATRIX_USBPUCR, usbpucr);
@@ -991,6 +1090,11 @@ static void pullup(struct at91_udc *udc, int is_on)
 			usbpucr &= ~AT91_MATRIX_USBPUCR_PUON;
 			at91_matrix_write(AT91_MATRIX_USBPUCR, usbpucr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			usbpucr = at91_matrix_read(AT91_MATRIX_USBPUCR);
+			usbpucr &= ~AT91_MATRIX_USBPUCR_PUON;
+			at91_matrix_write(AT91_MATRIX_USBPUCR, usbpucr);
+>>>>>>> refs/remotes/origin/master
 		}
 		clk_off(udc);
 	}
@@ -1003,10 +1107,14 @@ static int at91_vbus_session(struct usb_gadget *gadget, int is_active)
 	unsigned long	flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	// VDBG("vbus %s\n", is_active ? "on" : "off");
 =======
 	/* VDBG("vbus %s\n", is_active ? "on" : "off"); */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* VDBG("vbus %s\n", is_active ? "on" : "off"); */
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&udc->lock, flags);
 	udc->vbus = (is_active != 0);
 	if (udc->driver)
@@ -1041,12 +1149,19 @@ static int at91_set_selfpowered(struct usb_gadget *gadget, int is_on)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int at91_start(struct usb_gadget_driver *driver,
 		int (*bind)(struct usb_gadget *));
 static int at91_stop(struct usb_gadget_driver *driver);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int at91_start(struct usb_gadget *gadget,
+		struct usb_gadget_driver *driver);
+static int at91_stop(struct usb_gadget *gadget,
+		struct usb_gadget_driver *driver);
+>>>>>>> refs/remotes/origin/master
 static const struct usb_gadget_ops at91_udc_ops = {
 	.get_frame		= at91_get_frame,
 	.wakeup			= at91_wakeup,
@@ -1054,20 +1169,29 @@ static const struct usb_gadget_ops at91_udc_ops = {
 	.vbus_session		= at91_vbus_session,
 	.pullup			= at91_pullup,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.start			= at91_start,
 	.stop			= at91_stop,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.udc_start		= at91_start,
+	.udc_stop		= at91_stop,
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * VBUS-powered devices may also also want to support bigger
 	 * power budgets after an appropriate SET_CONFIGURATION.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	// .vbus_power		= at91_vbus_power,
 =======
 	/* .vbus_power		= at91_vbus_power, */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* .vbus_power		= at91_vbus_power, */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*-------------------------------------------------------------------------*/
@@ -1137,10 +1261,14 @@ static void handle_setup(struct at91_udc *udc, struct at91_ep *ep, u32 csr)
 		}
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		// REVISIT this happens sometimes under load; why??
 =======
 		/* REVISIT this happens sometimes under load; why?? */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* REVISIT this happens sometimes under load; why?? */
+>>>>>>> refs/remotes/origin/master
 		ERR("SETUP len %d, csr %08x\n", rxcount, csr);
 		status = -EINVAL;
 	}
@@ -1248,7 +1376,11 @@ static void handle_setup(struct at91_udc *udc, struct at91_ep *ep, u32 csr)
 			| USB_REQ_GET_STATUS:
 		tmp = w_index & USB_ENDPOINT_NUMBER_MASK;
 		ep = &udc->ep[tmp];
+<<<<<<< HEAD
 		if (tmp >= NUM_ENDPOINTS || (tmp && !ep->desc))
+=======
+		if (tmp >= NUM_ENDPOINTS || (tmp && !ep->ep.desc))
+>>>>>>> refs/remotes/origin/master
 			goto stall;
 
 		if (tmp) {
@@ -1273,7 +1405,11 @@ static void handle_setup(struct at91_udc *udc, struct at91_ep *ep, u32 csr)
 		ep = &udc->ep[tmp];
 		if (w_value != USB_ENDPOINT_HALT || tmp >= NUM_ENDPOINTS)
 			goto stall;
+<<<<<<< HEAD
 		if (!ep->desc || ep->is_iso)
+=======
+		if (!ep->ep.desc || ep->is_iso)
+>>>>>>> refs/remotes/origin/master
 			goto stall;
 		if ((w_index & USB_DIR_IN)) {
 			if (!ep->is_in)
@@ -1294,7 +1430,11 @@ static void handle_setup(struct at91_udc *udc, struct at91_ep *ep, u32 csr)
 			goto stall;
 		if (tmp == 0)
 			goto succeed;
+<<<<<<< HEAD
 		if (!ep->desc || ep->is_iso)
+=======
+		if (!ep->ep.desc || ep->is_iso)
+>>>>>>> refs/remotes/origin/master
 			goto stall;
 		if ((w_index & USB_DIR_IN)) {
 			if (!ep->is_in)
@@ -1520,10 +1660,14 @@ static irqreturn_t at91_udc_irq (int irq, void *_udc)
 			at91_udp_write(udc, AT91_UDP_IER, AT91_UDP_RXRSM);
 			at91_udp_write(udc, AT91_UDP_ICR, AT91_UDP_RXSUSP);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			// VDBG("bus suspend\n");
 =======
 			/* VDBG("bus suspend\n"); */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* VDBG("bus suspend\n"); */
+>>>>>>> refs/remotes/origin/master
 			if (udc->suspended)
 				continue;
 			udc->suspended = 1;
@@ -1546,10 +1690,14 @@ static irqreturn_t at91_udc_irq (int irq, void *_udc)
 			at91_udp_write(udc, AT91_UDP_IER, AT91_UDP_RXSUSP);
 			at91_udp_write(udc, AT91_UDP_ICR, AT91_UDP_RXRSM);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			// VDBG("bus resume\n");
 =======
 			/* VDBG("bus resume\n"); */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* VDBG("bus resume\n"); */
+>>>>>>> refs/remotes/origin/master
 			if (!udc->suspended)
 				continue;
 			udc->suspended = 0;
@@ -1707,6 +1855,7 @@ static void at91_vbus_timer(unsigned long data)
 	 * bus such as i2c or spi which may sleep, so schedule some work
 	 * to read the vbus gpio
 	 */
+<<<<<<< HEAD
 	if (!work_pending(&udc->vbus_timer_work))
 		schedule_work(&udc->vbus_timer_work);
 }
@@ -1787,15 +1936,50 @@ static int at91_stop(struct usb_gadget_driver *driver)
 	driver->unbind(&udc->gadget);
 	udc->gadget.dev.driver = NULL;
 	dev_set_drvdata(&udc->gadget.dev, NULL);
+=======
+	schedule_work(&udc->vbus_timer_work);
+}
+
+static int at91_start(struct usb_gadget *gadget,
+		struct usb_gadget_driver *driver)
+{
+	struct at91_udc	*udc;
+
+	udc = container_of(gadget, struct at91_udc, gadget);
+	udc->driver = driver;
+	udc->gadget.dev.of_node = udc->pdev->dev.of_node;
+	udc->enabled = 1;
+	udc->selfpowered = 1;
+
+	DBG("bound to %s\n", driver->driver.name);
+	return 0;
+}
+
+static int at91_stop(struct usb_gadget *gadget,
+		struct usb_gadget_driver *driver)
+{
+	struct at91_udc *udc;
+	unsigned long	flags;
+
+	udc = container_of(gadget, struct at91_udc, gadget);
+	spin_lock_irqsave(&udc->lock, flags);
+	udc->enabled = 0;
+	at91_udp_write(udc, AT91_UDP_IDR, ~0);
+	spin_unlock_irqrestore(&udc->lock, flags);
+
+>>>>>>> refs/remotes/origin/master
 	udc->driver = NULL;
 
 	DBG("unbound from %s\n", driver->driver.name);
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL (usb_gadget_unregister_driver);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*-------------------------------------------------------------------------*/
 
@@ -1811,9 +1995,13 @@ static void at91udc_shutdown(struct platform_device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init at91udc_probe(struct platform_device *pdev)
 =======
 static void __devinit at91udc_of_init(struct at91_udc *udc,
+=======
+static void at91udc_of_init(struct at91_udc *udc,
+>>>>>>> refs/remotes/origin/master
 				     struct device_node *np)
 {
 	struct at91_udc_data *board = &udc->board;
@@ -1833,8 +2021,12 @@ static void __devinit at91udc_of_init(struct at91_udc *udc,
 	board->pullup_active_low = (flags & OF_GPIO_ACTIVE_LOW) ? 1 : 0;
 }
 
+<<<<<<< HEAD
 static int __devinit at91udc_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int at91udc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device	*dev = &pdev->dev;
 	struct at91_udc	*udc;
@@ -1842,10 +2034,14 @@ static int __devinit at91udc_probe(struct platform_device *pdev)
 	struct resource	*res;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!dev->platform_data) {
 =======
 	if (!dev->platform_data && !pdev->dev.of_node) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dev_get_platdata(dev) && !pdev->dev.of_node) {
+>>>>>>> refs/remotes/origin/master
 		/* small (so we copy it) but critical! */
 		DBG("missing platform_data\n");
 		return -ENODEV;
@@ -1874,6 +2070,7 @@ static int __devinit at91udc_probe(struct platform_device *pdev)
 	udc = &controller;
 	udc->gadget.dev.parent = dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	udc->board = *(struct at91_udc_data *) dev->platform_data;
 =======
 	if (pdev->dev.of_node)
@@ -1882,6 +2079,13 @@ static int __devinit at91udc_probe(struct platform_device *pdev)
 		memcpy(&udc->board, dev->platform_data,
 		       sizeof(struct at91_udc_data));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node)
+		at91udc_of_init(udc, pdev->dev.of_node);
+	else
+		memcpy(&udc->board, dev_get_platdata(dev),
+		       sizeof(struct at91_udc_data));
+>>>>>>> refs/remotes/origin/master
 	udc->pdev = pdev;
 	udc->enabled = 0;
 	spin_lock_init(&udc->lock);
@@ -1889,10 +2093,14 @@ static int __devinit at91udc_probe(struct platform_device *pdev)
 	/* rm9200 needs manual D+ pullup; off by default */
 	if (cpu_is_at91rm9200()) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (udc->board.pullup_pin <= 0) {
 =======
 		if (gpio_is_valid(udc->board.pullup_pin)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!gpio_is_valid(udc->board.pullup_pin)) {
+>>>>>>> refs/remotes/origin/master
 			DBG("no D+ pullup?\n");
 			retval = -ENODEV;
 			goto fail0;
@@ -1908,6 +2116,7 @@ static int __devinit at91udc_probe(struct platform_device *pdev)
 
 	/* newer chips have more FIFO memory than rm9200 */
 	if (cpu_is_at91sam9260() || cpu_is_at91sam9g20()) {
+<<<<<<< HEAD
 		udc->ep[0].maxpacket = 64;
 		udc->ep[3].maxpacket = 64;
 		udc->ep[4].maxpacket = 512;
@@ -1917,6 +2126,17 @@ static int __devinit at91udc_probe(struct platform_device *pdev)
 	} else if (cpu_is_at91sam9263()) {
 		udc->ep[0].maxpacket = 64;
 		udc->ep[3].maxpacket = 64;
+=======
+		usb_ep_set_maxpacket_limit(&udc->ep[0].ep, 64);
+		usb_ep_set_maxpacket_limit(&udc->ep[3].ep, 64);
+		usb_ep_set_maxpacket_limit(&udc->ep[4].ep, 512);
+		usb_ep_set_maxpacket_limit(&udc->ep[5].ep, 512);
+	} else if (cpu_is_at91sam9261() || cpu_is_at91sam9g10()) {
+		usb_ep_set_maxpacket_limit(&udc->ep[3].ep, 64);
+	} else if (cpu_is_at91sam9263()) {
+		usb_ep_set_maxpacket_limit(&udc->ep[0].ep, 64);
+		usb_ep_set_maxpacket_limit(&udc->ep[3].ep, 64);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	udc->udp_baseaddr = ioremap(res->start, resource_size(res));
@@ -1930,6 +2150,7 @@ static int __devinit at91udc_probe(struct platform_device *pdev)
 	/* get interface and function clocks */
 	udc->iclk = clk_get(dev, "udc_clk");
 	udc->fclk = clk_get(dev, "udpck");
+<<<<<<< HEAD
 	if (IS_ERR(udc->iclk) || IS_ERR(udc->fclk)) {
 		DBG("clocks missing\n");
 		retval = -ENODEV;
@@ -1945,29 +2166,56 @@ static int __devinit at91udc_probe(struct platform_device *pdev)
 
 	/* don't do anything until we have both gadget driver and VBUS */
 	clk_enable(udc->iclk);
+=======
+	if (IS_ENABLED(CONFIG_COMMON_CLK))
+		udc->uclk = clk_get(dev, "usb_clk");
+	if (IS_ERR(udc->iclk) || IS_ERR(udc->fclk) ||
+	    (IS_ENABLED(CONFIG_COMMON_CLK) && IS_ERR(udc->uclk))) {
+		DBG("clocks missing\n");
+		retval = -ENODEV;
+		goto fail1;
+	}
+
+	/* don't do anything until we have both gadget driver and VBUS */
+	retval = clk_prepare_enable(udc->iclk);
+	if (retval)
+		goto fail1;
+>>>>>>> refs/remotes/origin/master
 	at91_udp_write(udc, AT91_UDP_TXVC, AT91_UDP_TXVC_TXVDIS);
 	at91_udp_write(udc, AT91_UDP_IDR, 0xffffffff);
 	/* Clear all pending interrupts - UDP may be used by bootloader. */
 	at91_udp_write(udc, AT91_UDP_ICR, 0xffffffff);
+<<<<<<< HEAD
 	clk_disable(udc->iclk);
+=======
+	clk_disable_unprepare(udc->iclk);
+>>>>>>> refs/remotes/origin/master
 
 	/* request UDC and maybe VBUS irqs */
 	udc->udp_irq = platform_get_irq(pdev, 0);
 	retval = request_irq(udc->udp_irq, at91_udc_irq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_DISABLED, driver_name, udc);
 =======
 			0, driver_name, udc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			0, driver_name, udc);
+>>>>>>> refs/remotes/origin/master
 	if (retval < 0) {
 		DBG("request irq %d failed\n", udc->udp_irq);
 		goto fail1;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (udc->board.vbus_pin > 0) {
 =======
 	if (gpio_is_valid(udc->board.vbus_pin)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (gpio_is_valid(udc->board.vbus_pin)) {
+>>>>>>> refs/remotes/origin/master
 		retval = gpio_request(udc->board.vbus_pin, "udc_vbus");
 		if (retval < 0) {
 			DBG("request vbus pin failed\n");
@@ -1990,12 +2238,17 @@ static int __devinit at91udc_probe(struct platform_device *pdev)
 				  jiffies + VBUS_POLL_TIMEOUT);
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (request_irq(udc->board.vbus_pin, at91_vbus_irq,
 					IRQF_DISABLED, driver_name, udc)) {
 =======
 			if (request_irq(gpio_to_irq(udc->board.vbus_pin),
 					at91_vbus_irq, 0, driver_name, udc)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (request_irq(gpio_to_irq(udc->board.vbus_pin),
+					at91_vbus_irq, 0, driver_name, udc)) {
+>>>>>>> refs/remotes/origin/master
 				DBG("request vbus irq %d failed\n",
 				    udc->board.vbus_pin);
 				retval = -EBUSY;
@@ -2007,11 +2260,17 @@ static int __devinit at91udc_probe(struct platform_device *pdev)
 		udc->vbus = 1;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	retval = usb_add_gadget_udc(dev, &udc->gadget);
 	if (retval)
 		goto fail4;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = usb_add_gadget_udc(dev, &udc->gadget);
+	if (retval)
+		goto fail4;
+>>>>>>> refs/remotes/origin/master
 	dev_set_drvdata(dev, udc);
 	device_init_wakeup(dev, 1);
 	create_debug_file(udc);
@@ -2019,22 +2278,37 @@ static int __devinit at91udc_probe(struct platform_device *pdev)
 	INFO("%s version %s\n", driver_name, DRIVER_VERSION);
 	return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 fail3:
 	if (udc->board.vbus_pin > 0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 fail4:
 	if (gpio_is_valid(udc->board.vbus_pin) && !udc->board.vbus_polled)
 		free_irq(gpio_to_irq(udc->board.vbus_pin), udc);
 fail3:
 	if (gpio_is_valid(udc->board.vbus_pin))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		gpio_free(udc->board.vbus_pin);
 fail2:
 	free_irq(udc->udp_irq, udc);
 fail1:
+<<<<<<< HEAD
 	device_unregister(&udc->gadget.dev);
 fail0b:
+=======
+	if (IS_ENABLED(CONFIG_COMMON_CLK) && !IS_ERR(udc->uclk))
+		clk_put(udc->uclk);
+	if (!IS_ERR(udc->fclk))
+		clk_put(udc->fclk);
+	if (!IS_ERR(udc->iclk))
+		clk_put(udc->iclk);
+>>>>>>> refs/remotes/origin/master
 	iounmap(udc->udp_baseaddr);
 fail0a:
 	if (cpu_is_at91rm9200())
@@ -2054,9 +2328,13 @@ static int __exit at91udc_remove(struct platform_device *pdev)
 	DBG("remove\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	usb_del_gadget_udc(&udc->gadget);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_del_gadget_udc(&udc->gadget);
+>>>>>>> refs/remotes/origin/master
 	if (udc->driver)
 		return -EBUSY;
 
@@ -2066,6 +2344,7 @@ static int __exit at91udc_remove(struct platform_device *pdev)
 
 	device_init_wakeup(&pdev->dev, 0);
 	remove_debug_file(udc);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (udc->board.vbus_pin > 0) {
 		free_irq(udc->board.vbus_pin, udc);
@@ -2078,6 +2357,13 @@ static int __exit at91udc_remove(struct platform_device *pdev)
 	free_irq(udc->udp_irq, udc);
 	device_unregister(&udc->gadget.dev);
 
+=======
+	if (gpio_is_valid(udc->board.vbus_pin)) {
+		free_irq(gpio_to_irq(udc->board.vbus_pin), udc);
+		gpio_free(udc->board.vbus_pin);
+	}
+	free_irq(udc->udp_irq, udc);
+>>>>>>> refs/remotes/origin/master
 	iounmap(udc->udp_baseaddr);
 
 	if (cpu_is_at91rm9200())
@@ -2088,6 +2374,11 @@ static int __exit at91udc_remove(struct platform_device *pdev)
 
 	clk_put(udc->iclk);
 	clk_put(udc->fclk);
+<<<<<<< HEAD
+=======
+	if (IS_ENABLED(CONFIG_COMMON_CLK))
+		clk_put(udc->uclk);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -2116,10 +2407,14 @@ static int at91udc_suspend(struct platform_device *pdev, pm_message_t mesg)
 
 	udc->active_suspend = wake;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (udc->board.vbus_pin > 0 && !udc->board.vbus_polled && wake)
 =======
 	if (gpio_is_valid(udc->board.vbus_pin) && !udc->board.vbus_polled && wake)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (gpio_is_valid(udc->board.vbus_pin) && !udc->board.vbus_polled && wake)
+>>>>>>> refs/remotes/origin/master
 		enable_irq_wake(udc->board.vbus_pin);
 	return 0;
 }
@@ -2130,10 +2425,14 @@ static int at91udc_resume(struct platform_device *pdev)
 	unsigned long	flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (udc->board.vbus_pin > 0 && !udc->board.vbus_polled &&
 =======
 	if (gpio_is_valid(udc->board.vbus_pin) && !udc->board.vbus_polled &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (gpio_is_valid(udc->board.vbus_pin) && !udc->board.vbus_polled &&
+>>>>>>> refs/remotes/origin/master
 	    udc->active_suspend)
 		disable_irq_wake(udc->board.vbus_pin);
 
@@ -2153,7 +2452,10 @@ static int at91udc_resume(struct platform_device *pdev)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_OF)
 static const struct of_device_id at91_udc_dt_ids[] = {
 	{ .compatible = "atmel,at91rm9200-udc" },
@@ -2163,7 +2465,10 @@ static const struct of_device_id at91_udc_dt_ids[] = {
 MODULE_DEVICE_TABLE(of, at91_udc_dt_ids);
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver at91_udc_driver = {
 	.remove		= __exit_p(at91udc_remove),
 	.shutdown	= at91udc_shutdown,
@@ -2172,6 +2477,7 @@ static struct platform_driver at91_udc_driver = {
 	.driver		= {
 		.name	= (char *) driver_name,
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 		.of_match_table	= of_match_ptr(at91_udc_dt_ids),
@@ -2190,6 +2496,13 @@ static void __exit udc_exit_module(void)
 	platform_driver_unregister(&at91_udc_driver);
 }
 module_exit(udc_exit_module);
+=======
+		.of_match_table	= of_match_ptr(at91_udc_dt_ids),
+	},
+};
+
+module_platform_driver_probe(at91_udc_driver, at91udc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("AT91 udc driver");
 MODULE_AUTHOR("Thomas Rathbone, David Brownell");

@@ -35,18 +35,24 @@ struct bfa_iocfc_intr_attr_s {
 	u8		coalesce;	/*  enable/disable coalescing */
 	u8		rsvd[3];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__be16	latency;	/*  latency in microseconds   */
 	__be16	delay;		/*  delay in microseconds     */
 =======
 	__be16		latency;	/*  latency in microseconds   */
 	__be16		delay;		/*  delay in microseconds     */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__be16		latency;	/*  latency in microseconds   */
+	__be16		delay;		/*  delay in microseconds     */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
  * IOC firmware configuraton
  */
 struct bfa_iocfc_fwcfg_s {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u16        num_fabrics;	/*  number of fabrics		*/
 	u16        num_lports;	/*  number of local lports	*/
@@ -61,6 +67,8 @@ struct bfa_iocfc_fwcfg_s {
 	u8		fw_tick_res;	/*  FW clock resolution in ms */
 	u8		rsvd[4];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u16		num_fabrics;	/*  number of fabrics		*/
 	u16		num_lports;	/*  number of local lports	*/
 	u16		num_rports;	/*  number of remote ports	*/
@@ -72,11 +80,15 @@ struct bfa_iocfc_fwcfg_s {
 	u8		num_cqs;
 	u8		fw_tick_res;	/*  FW clock resolution in ms */
 	u8		rsvd[6];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #pragma pack()
 
 struct bfa_iocfc_drvcfg_s {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u16        num_reqq_elems;	/*  number of req queue elements */
 	u16        num_rspq_elems;	/*  number of rsp queue elements */
@@ -89,6 +101,8 @@ struct bfa_iocfc_drvcfg_s {
 	bfa_boolean_t   delay_comp; /*  delay completion of
 							failed inflight IOs */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u16		num_reqq_elems;	/*  number of req queue elements */
 	u16		num_rspq_elems;	/*  number of rsp queue elements */
 	u16		num_sgpgs;	/*  number of total SG pages	 */
@@ -103,7 +117,10 @@ struct bfa_iocfc_drvcfg_s {
 	bfa_boolean_t	delay_comp;	/* delay completion of failed
 					 * inflight IOs */
 	u16		num_ttsk_reqs;	 /* TM task management requests */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32		rsvd;
 };
 
@@ -119,10 +136,14 @@ struct bfa_iocfc_cfg_s {
  * IOC firmware IO stats
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct bfa_fw_io_stats_s {
 =======
 struct bfa_fw_ioim_stats_s {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct bfa_fw_ioim_stats_s {
+>>>>>>> refs/remotes/origin/master
 	u32	host_abort;		/*  IO aborted by host driver*/
 	u32	host_cleanup;		/*  IO clean up by host driver */
 
@@ -139,6 +160,7 @@ struct bfa_fw_ioim_stats_s {
 
 	u32	rec_timeout;		/*  FW rec timed out */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32	error_rec;			/*  FW sending rec on
 							* an error condition*/
 =======
@@ -147,6 +169,15 @@ struct bfa_fw_ioim_stats_s {
 >>>>>>> refs/remotes/origin/cm-10.0
 	u32	wait_for_si;		/*  FW wait for SI */
 	u32	rec_rsp_inval;		/*  REC rsp invalid */
+=======
+	u32	error_rec;		/*  FW sending rec on
+					 *  an error condition*/
+	u32	wait_for_si;		/*  FW wait for SI */
+	u32	rec_rsp_inval;		/*  REC rsp invalid */
+	u32     rec_rsp_xchg_comp;	/*  REC rsp xchg complete */
+	u32     rec_rsp_rd_si_ownd;	/*  REC rsp read si owned */
+
+>>>>>>> refs/remotes/origin/master
 	u32	seqr_io_abort;		/*  target does not know cmd so abort */
 	u32	seqr_io_retry;		/*  SEQR failed so retry IO */
 
@@ -167,6 +198,7 @@ struct bfa_fw_ioim_stats_s {
 
 	u32	fcp_rsp_under_run;	/*  fcp rsp IO underrun */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32        fcp_rsp_under_run_wr;   /*  fcp rsp IO underrun for write */
 	u32	fcp_rsp_under_run_err;	/*  fcp rsp IO underrun error */
 	u32        fcp_rsp_resid_inval;    /*  invalid residue */
@@ -175,6 +207,11 @@ struct bfa_fw_ioim_stats_s {
 	u32	fcp_rsp_under_run_err;	/*  fcp rsp IO underrun error */
 	u32     fcp_rsp_resid_inval;    /*  invalid residue */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32     fcp_rsp_under_run_wr;   /*  fcp rsp IO underrun for write */
+	u32	fcp_rsp_under_run_err;	/*  fcp rsp IO underrun error */
+	u32     fcp_rsp_resid_inval;    /*  invalid residue */
+>>>>>>> refs/remotes/origin/master
 	u32	fcp_rsp_over_run;	/*  fcp rsp IO overrun */
 	u32	fcp_rsp_over_run_err;	/*  fcp rsp IO overrun error */
 	u32	fcp_rsp_proto_err;	/*  protocol error in fcp rsp */
@@ -191,23 +228,31 @@ struct bfa_fw_ioim_stats_s {
 	u32	ioh_miss_other_event;	/*  IOH miss other */
 	u32	ioh_seq_cnt_err_event;	/*  IOH seq cnt error */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32	ioh_len_err_event;		/*  IOH len error - fcp_dl !=
 							* bytes xfered */
 =======
 	u32	ioh_len_err_event;	/*  IOH len error - fcp_dl !=
 					 *  bytes xfered */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32	ioh_len_err_event;	/*  IOH len error - fcp_dl !=
+					 *  bytes xfered */
+>>>>>>> refs/remotes/origin/master
 	u32	ioh_seq_len_err_event;	/*  IOH seq len error */
 	u32	ioh_data_oor_event;	/*  Data out of range */
 	u32	ioh_ro_ooo_event;	/*  Relative offset out of range */
 	u32	ioh_cpu_owned_event;	/*  IOH hit -iost owned by f/w */
 	u32	ioh_unexp_frame_event;	/*  unexpected frame received
 <<<<<<< HEAD
+<<<<<<< HEAD
 						 *   count */
 	u32	ioh_err_int;		/*  IOH error int during data-phase
 						 *   for scsi write
 						 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					 *  count */
 	u32	ioh_err_int;		/*  IOH error int during data-phase
 					 *  for scsi write */
@@ -261,7 +306,10 @@ struct bfa_fw_tio_stats_s {
 struct bfa_fw_io_stats_s {
 	struct bfa_fw_ioim_stats_s	ioim_stats;
 	struct bfa_fw_tio_stats_s	tio_stats;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -269,6 +317,7 @@ struct bfa_fw_io_stats_s {
  */
 
 struct bfa_fw_port_fpg_stats_s {
+<<<<<<< HEAD
 <<<<<<< HEAD
     u32    intr_evt;
     u32    intr;
@@ -297,6 +346,8 @@ struct bfa_fw_port_fpg_stats_s {
     u32    const_mrk_rx;
     u32    prim_unknown;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32    intr_evt;
 	u32    intr;
 	u32    intr_excess;
@@ -323,11 +374,15 @@ struct bfa_fw_port_fpg_stats_s {
 	u32    mrk_rx;
 	u32    const_mrk_rx;
 	u32    prim_unknown;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
 struct bfa_fw_port_lksm_stats_s {
+<<<<<<< HEAD
 <<<<<<< HEAD
     u32    hwsm_success;       /*  hwsm state machine success          */
     u32    hwsm_fails;         /*  hwsm fails                          */
@@ -403,6 +458,8 @@ struct bfa_fw_fcoe_stats_s {
     u32    fip_fails;          /*  FIP fail count                      */
     u32    mac_invalids;       /*  Invalid mac assigned                */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32    hwsm_success;       /*  hwsm state machine success          */
 	u32    hwsm_fails;         /*  hwsm fails                          */
 	u32    hwsm_wdtov;         /*  hwsm timed out                      */
@@ -421,7 +478,10 @@ struct bfa_fw_fcoe_stats_s {
 	u32    nos_tx;             /*  No. of times NOS tx started         */
 	u32    hwsm_lrr_rx;        /*  No. of times LRR rx-ed by HWSM      */
 	u32    hwsm_lr_rx;         /*  No. of times LR rx-ed by HWSM       */
+<<<<<<< HEAD
 	u32    bbsc_lr;		   /* LKSM LR tx for credit recovery       */
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct bfa_fw_port_snsm_stats_s {
@@ -434,6 +494,12 @@ struct bfa_fw_port_snsm_stats_s {
 	u32    sync_lost;          /*  Sync loss count                     */
 	u32    sig_lost;           /*  Signal loss count                   */
 	u32    asn8g_attempts;	   /* SNSM HWSM at 8Gbps attempts	   */
+<<<<<<< HEAD
+=======
+	u32    adapt_success;	   /* SNSM adaptation success	*/
+	u32    adapt_fails;	   /* SNSM adaptation failures */
+	u32    adapt_ign_fails;	   /* SNSM adaptation failures ignored */
+>>>>>>> refs/remotes/origin/master
 };
 
 struct bfa_fw_port_physm_stats_s {
@@ -478,7 +544,10 @@ struct bfa_fw_fcoe_stats_s {
 	u32    fip_linkdns;        /*  FIP link up count                   */
 	u32    fip_fails;          /*  FIP fail count                      */
 	u32    mac_invalids;       /*  Invalid mac assigned                */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -486,12 +555,50 @@ struct bfa_fw_fcoe_stats_s {
  */
 struct bfa_fw_fcoe_port_stats_s {
 <<<<<<< HEAD
+<<<<<<< HEAD
     struct bfa_fw_fcoe_stats_s  fcoe_stats;
     struct bfa_fw_fip_stats_s   fip_stats;
 =======
 	struct bfa_fw_fcoe_stats_s		fcoe_stats;
 	struct bfa_fw_fip_stats_s		fip_stats;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfa_fw_fcoe_stats_s		fcoe_stats;
+	struct bfa_fw_fip_stats_s		fip_stats;
+};
+
+/**
+ * @brief LPSM statistics
+ */
+struct bfa_fw_lpsm_stats_s {
+	u32	cls_rx;		/* LPSM cls_rx			*/
+	u32	cls_tx;		/* LPSM cls_tx			*/
+	u32	arbf0_rx;	/* LPSM abrf0 rcvd		*/
+	u32	arbf0_tx;	/* LPSM abrf0 xmit		*/
+	u32	init_rx;	/* LPSM loop init start		*/
+	u32	unexp_hwst;	/* LPSM unknown hw state	*/
+	u32	unexp_frame;	/* LPSM unknown_frame		*/
+	u32	unexp_prim;	/* LPSM unexpected primitive	*/
+	u32	prev_alpa_unavail; /* LPSM prev alpa unavailable */
+	u32	alpa_unavail;	/* LPSM alpa not available	*/
+	u32	lip_rx;		/* LPSM lip rcvd		*/
+	u32	lip_f7f7_rx;	/* LPSM lip f7f7 rcvd		*/
+	u32	lip_f8_rx;	/* LPSM lip f8 rcvd		*/
+	u32	lip_f8f7_rx;	/* LPSM lip f8f7 rcvd		*/
+	u32	lip_other_rx;	/* LPSM lip other rcvd		*/
+	u32	lip_tx;		/* LPSM lip xmit		*/
+	u32	retry_tov;	/* LPSM retry TOV		*/
+	u32	lip_tov;	/* LPSM LIP wait TOV		*/
+	u32	idle_tov;	/* LPSM idle wait TOV		*/
+	u32	arbf0_tov;	/* LPSM arbfo wait TOV		*/
+	u32	stop_loop_tov;	/* LPSM stop loop wait TOV	*/
+	u32	lixa_tov;	/* LPSM lisa wait TOV		*/
+	u32	lixx_tov;	/* LPSM lilp/lirp wait TOV	*/
+	u32	cls_tov;	/* LPSM cls wait TOV		*/
+	u32	sler;		/* LPSM SLER recvd		*/
+	u32	failed;		/* LPSM failed			*/
+	u32	success;	/* LPSM online			*/
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -500,6 +607,10 @@ struct bfa_fw_fcoe_port_stats_s {
 struct bfa_fw_fc_uport_stats_s {
 	struct bfa_fw_port_snsm_stats_s		snsm_stats;
 	struct bfa_fw_port_lksm_stats_s		lksm_stats;
+<<<<<<< HEAD
+=======
+	struct bfa_fw_lpsm_stats_s		lpsm_stats;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -507,12 +618,17 @@ struct bfa_fw_fc_uport_stats_s {
  */
 union bfa_fw_fc_port_stats_s {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct bfa_fw_fc_uport_stats_s	fc_stats;
 	struct bfa_fw_fcoe_port_stats_s	fcoe_stats;
 =======
 	struct bfa_fw_fc_uport_stats_s		fc_stats;
 	struct bfa_fw_fcoe_port_stats_s		fcoe_stats;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfa_fw_fc_uport_stats_s		fc_stats;
+	struct bfa_fw_fcoe_port_stats_s		fcoe_stats;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -532,16 +648,20 @@ struct bfa_fw_fcxchg_stats_s {
 	u32	ua_state_inv;
 };
 
+<<<<<<< HEAD
 struct bfa_fw_lpsm_stats_s {
 	u32	cls_rx;
 	u32	cls_tx;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  Trunk statistics
  */
 struct bfa_fw_trunk_stats_s {
 	u32 emt_recvd;		/*  Trunk EMT received		*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32 emt_accepted;		/*  Trunk EMT Accepted		*/
 	u32 emt_rejected;		/*  Trunk EMT rejected		*/
@@ -551,6 +671,8 @@ struct bfa_fw_trunk_stats_s {
 	u32 lr_recvd;		/*  Trunk LR received		*/
 	u32 rsvd;			/*  padding for 64 bit alignment */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 emt_accepted;	/*  Trunk EMT Accepted		*/
 	u32 emt_rejected;	/*  Trunk EMT rejected		*/
 	u32 etp_recvd;		/*  Trunk ETP received		*/
@@ -558,6 +680,7 @@ struct bfa_fw_trunk_stats_s {
 	u32 etp_rejected;	/*  Trunk ETP rejected		*/
 	u32 lr_recvd;		/*  Trunk LR received		*/
 	u32 rsvd;		/*  padding for 64 bit alignment */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
@@ -573,13 +696,30 @@ struct bfa_fw_advsm_stats_s {
 	u32 elp_rejected;		/*  ELP rejected		*/
 	u32 elp_dropped;		/*  ELP dropped		*/
 =======
+=======
+};
+
+struct bfa_fw_aport_stats_s {
+	u32 flogi_sent;		/*  Flogi sent			*/
+	u32 flogi_acc_recvd;	/*  Flogi Acc received		*/
+	u32 flogi_rjt_recvd;	/*  Flogi rejects received	*/
+>>>>>>> refs/remotes/origin/master
 	u32 flogi_retries;	/*  Flogi retries		*/
 
 	u32 elp_recvd;		/*  ELP received		*/
 	u32 elp_accepted;	/*  ELP Accepted		*/
 	u32 elp_rejected;	/*  ELP rejected		*/
 	u32 elp_dropped;	/*  ELP dropped			*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	u32 bbcr_lr_count;	/*!< BBCR Link Resets		*/
+	u32 frame_lost_intrs;	/*!< BBCR Frame loss intrs	*/
+	u32 rrdy_lost_intrs;	/*!< BBCR Rrdy loss intrs	*/
+
+	u32 rsvd;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -640,6 +780,17 @@ struct bfa_fw_ct_mod_stats_s {
 };
 
 /*
+<<<<<<< HEAD
+=======
+ * RDS mod stats
+ */
+struct bfa_fw_rds_stats_s {
+	u32	no_fid_drop_err; /* RDS no fid drop error */
+	u32	rsvd;		 /* 64bit align */
+};
+
+/*
+>>>>>>> refs/remotes/origin/master
  * IOC firmware stats
  */
 struct bfa_fw_stats_s {
@@ -648,6 +799,7 @@ struct bfa_fw_stats_s {
 	struct bfa_fw_io_stats_s	io_stats;
 	struct bfa_fw_port_stats_s	port_stats;
 	struct bfa_fw_fcxchg_stats_s	fcxchg_stats;
+<<<<<<< HEAD
 	struct bfa_fw_lpsm_stats_s	lpsm_stats;
 	struct bfa_fw_lps_stats_s	lps_stats;
 	struct bfa_fw_trunk_stats_s	trunk_stats;
@@ -655,6 +807,15 @@ struct bfa_fw_stats_s {
 	struct bfa_fw_mac_mod_stats_s	macmod_stats;
 	struct bfa_fw_ct_mod_stats_s	ctmod_stats;
 	struct bfa_fw_eth_sndrcv_stats_s	ethsndrcv_stats;
+=======
+	struct bfa_fw_lps_stats_s	lps_stats;
+	struct bfa_fw_trunk_stats_s	trunk_stats;
+	struct bfa_fw_aport_stats_s	aport_stats;
+	struct bfa_fw_mac_mod_stats_s	macmod_stats;
+	struct bfa_fw_ct_mod_stats_s	ctmod_stats;
+	struct bfa_fw_eth_sndrcv_stats_s	ethsndrcv_stats;
+	struct bfa_fw_rds_stats_s	rds_stats;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define BFA_IOCFC_PATHTOV_MAX	60
@@ -665,9 +826,13 @@ struct bfa_fw_stats_s {
  */
 enum bfa_qos_state {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BFA_QOS_DISABLED = 0,		/* QoS is disabled */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BFA_QOS_DISABLED = 0,		/* QoS is disabled */
+>>>>>>> refs/remotes/origin/master
 	BFA_QOS_ONLINE = 1,		/*  QoS is online */
 	BFA_QOS_OFFLINE = 2,		/*  QoS is offline */
 };
@@ -691,13 +856,53 @@ enum bfa_qos_bw_alloc {
 	BFA_QOS_BW_LOW  =  10,	/*  bandwidth allocation for Low */
 };
 #pragma pack(1)
+<<<<<<< HEAD
+=======
+
+struct bfa_qos_bw_s {
+	u8	qos_bw_set;
+	u8	high;
+	u8	med;
+	u8	low;
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * QoS attribute returned in QoS Query
  */
 struct bfa_qos_attr_s {
+<<<<<<< HEAD
 	u8		state;		/*  QoS current state */
 	u8		rsvd[3];
 	u32  total_bb_cr;		/*  Total BB Credits */
+=======
+	u8	state;		/*  QoS current state */
+	u8	rsvd1[3];
+	u32	total_bb_cr;	/*  Total BB Credits */
+	struct bfa_qos_bw_s qos_bw;	/* QOS bw cfg */
+	struct bfa_qos_bw_s qos_bw_op;	/* QOS bw operational */
+};
+
+enum bfa_bbcr_state {
+	BFA_BBCR_DISABLED,	/*!< BBCR is disable */
+	BFA_BBCR_ONLINE,	/*!< BBCR is online  */
+	BFA_BBCR_OFFLINE,	/*!< BBCR is offline */
+};
+
+enum bfa_bbcr_err_reason {
+	BFA_BBCR_ERR_REASON_NONE, /*!< Unknown */
+	BFA_BBCR_ERR_REASON_SPEED_UNSUP, /*!< Port speed < max sup_speed */
+	BFA_BBCR_ERR_REASON_PEER_UNSUP,	/*!< BBCR is disable on peer port */
+	BFA_BBCR_ERR_REASON_NON_BRCD_SW, /*!< Connected to non BRCD switch */
+	BFA_BBCR_ERR_REASON_FLOGI_RJT, /*!< Login rejected by the switch */
+};
+
+struct bfa_bbcr_attr_s {
+	u8	state;
+	u8	peer_bb_scn;
+	u8	reason;
+	u8	rsvd;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -720,10 +925,14 @@ struct bfa_qos_vc_attr_s {
 	u16  shared_credit;
 	u32  elp_opmode_flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct bfa_qos_vc_info_s vc_info[BFA_QOS_MAX_VC];  /*   as many as
 =======
 	struct bfa_qos_vc_info_s vc_info[BFA_QOS_MAX_VC];  /* as many as
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfa_qos_vc_info_s vc_info[BFA_QOS_MAX_VC];  /* as many as
+>>>>>>> refs/remotes/origin/master
 							    * total_vc_count */
 };
 
@@ -734,14 +943,19 @@ struct bfa_qos_stats_s {
 	u32	flogi_sent;		/*  QoS Flogi sent */
 	u32	flogi_acc_recvd;	/*  QoS Flogi Acc received */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32	flogi_rjt_recvd; /*  QoS Flogi rejects received */
 =======
 	u32	flogi_rjt_recvd;	/*  QoS Flogi rejects received */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32	flogi_rjt_recvd;	/*  QoS Flogi rejects received */
+>>>>>>> refs/remotes/origin/master
 	u32	flogi_retries;		/*  QoS Flogi retries */
 
 	u32	elp_recvd;		/*  QoS ELP received */
 	u32	elp_accepted;		/*  QoS ELP Accepted */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32	elp_rejected;       /*  QoS ELP rejected */
 	u32	elp_dropped;        /*  QoS ELP dropped  */
@@ -749,12 +963,17 @@ struct bfa_qos_stats_s {
 	u32	qos_rscn_recvd;     /*  QoS RSCN received */
 	u32	rsvd;		    /* padding for 64 bit alignment */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32	elp_rejected;		/*  QoS ELP rejected */
 	u32	elp_dropped;		/*  QoS ELP dropped  */
 
 	u32	qos_rscn_recvd;		/*  QoS RSCN received */
 	u32	rsvd;			/* padding for 64 bit alignment */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -762,6 +981,7 @@ struct bfa_qos_stats_s {
  */
 struct bfa_fcoe_stats_s {
 	u64	secs_reset;	/*  Seconds since stats reset	     */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u64	cee_linkups;	/*  CEE link up		     */
 	u64	cee_linkdns;	/*  CEE link down		     */
@@ -771,6 +991,11 @@ struct bfa_fcoe_stats_s {
 	u64	cee_linkdns;	/*  CEE link down		     */
 	u64	fip_linkups;	/*  FIP link up			     */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64	cee_linkups;	/*  CEE link up			     */
+	u64	cee_linkdns;	/*  CEE link down		     */
+	u64	fip_linkups;	/*  FIP link up			     */
+>>>>>>> refs/remotes/origin/master
 	u64	fip_linkdns;	/*  FIP link down		     */
 	u64	fip_fails;	/*  FIP failures		     */
 	u64	mac_invalids;	/*  Invalid mac assignments	     */
@@ -781,14 +1006,19 @@ struct bfa_fcoe_stats_s {
 	u64	vlan_invalids;	/*  Vlan invalids		     */
 	u64	disc_req;	/*  Discovery requests		     */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64	disc_rsp;	/*  Discovery responses	     */
 =======
 	u64	disc_rsp;	/*  Discovery responses		     */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64	disc_rsp;	/*  Discovery responses		     */
+>>>>>>> refs/remotes/origin/master
 	u64	disc_err;	/*  Discovery error frames	     */
 	u64	disc_unsol;	/*  Discovery unsolicited	     */
 	u64	disc_timeouts;	/*  Discovery timeouts		     */
 	u64	disc_fcf_unavail; /*  Discovery FCF not avail	     */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u64	linksvc_unsupp;	/*  FIP link service req unsupp.    */
 	u64	linksvc_err;	/*  FIP link service req errors     */
@@ -818,6 +1048,8 @@ struct bfa_fcoe_stats_s {
 	u64	rxf_bcast;	/*  Rx FCoE broadcast frames	     */
 	u64	rxf_bcast_vlan;	/*  Rx FCoE broadcast vlan frames   */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u64	linksvc_unsupp;	/*  FIP link service req unsupp	     */
 	u64	linksvc_err;	/*  FIP link service req errors	     */
 	u64	logo_req;	/*  FIP logos received		     */
@@ -845,7 +1077,10 @@ struct bfa_fcoe_stats_s {
 	u64	rxf_bcast_octets; /*  Rx FCoE broadcast octets	     */
 	u64	rxf_bcast;	/*  Rx FCoE broadcast frames	     */
 	u64	rxf_bcast_vlan;	/*  Rx FCoE broadcast vlan frames    */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -927,9 +1162,13 @@ struct bfa_itnim_iostats_s {
 	u32	tm_cleanups;		/*  TM cleanup requests	*/
 	u32	tm_cleanup_comps;	/*  TM cleanup completions	*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32	rsvd[6];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32	rsvd[6];
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Modify char* port_stt[] in bfal_port.c if a new state was added */
@@ -949,9 +1188,15 @@ enum bfa_port_states {
 	BFA_PORT_ST_PREBOOT_DISABLED	= 13,
 	BFA_PORT_ST_TOGGLING_QWAIT	= 14,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BFA_PORT_ST_ACQ_ADDR		= 15,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BFA_PORT_ST_FAA_MISCONFIG	= 15,
+	BFA_PORT_ST_DPORT		= 16,
+	BFA_PORT_ST_DDPORT		= 17,
+>>>>>>> refs/remotes/origin/master
 	BFA_PORT_ST_MAX_STATE,
 };
 
@@ -973,9 +1218,17 @@ enum bfa_port_type {
  */
 enum bfa_port_topology {
 	BFA_PORT_TOPOLOGY_NONE = 0,	/*  No valid topology */
+<<<<<<< HEAD
 	BFA_PORT_TOPOLOGY_P2P  = 1,	/*  P2P only */
 	BFA_PORT_TOPOLOGY_LOOP = 2,	/*  LOOP topology */
 	BFA_PORT_TOPOLOGY_AUTO = 3,	/*  auto topology selection */
+=======
+	BFA_PORT_TOPOLOGY_P2P_OLD_VER = 1, /* P2P def for older ver */
+	BFA_PORT_TOPOLOGY_LOOP = 2,	/* LOOP topology */
+	BFA_PORT_TOPOLOGY_AUTO_OLD_VER = 3, /* auto def for older ver */
+	BFA_PORT_TOPOLOGY_AUTO = 4,	/* auto topology selection */
+	BFA_PORT_TOPOLOGY_P2P = 5,	/* P2P only */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -1019,6 +1272,10 @@ enum bfa_port_linkstate_rsn {
 	BFA_PORT_LINKSTATE_RSN_LOCAL_FAULT	= 9,
 	BFA_PORT_LINKSTATE_RSN_REMOTE_FAULT	= 10,
 	BFA_PORT_LINKSTATE_RSN_TIMEOUT		= 11,
+<<<<<<< HEAD
+=======
+	BFA_PORT_LINKSTATE_RSN_FAA_MISCONFIG	= 12,
+>>>>>>> refs/remotes/origin/master
 
 
 
@@ -1049,9 +1306,12 @@ enum bfa_port_linkstate_rsn {
 	CEE_ISCSI_PRI_OVERLAP_FCOE_PRI		= 43
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 #pragma pack(1)
 /*
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define MAX_LUN_MASK_CFG 16
 
@@ -1074,6 +1334,18 @@ enum bfa_lunmask_state_s {
 	BFA_LUNMASK_UNINITIALIZED = 0xff,
 };
 
+<<<<<<< HEAD
+=======
+/**
+ * FEC states
+ */
+enum bfa_fec_state_s {
+	BFA_FEC_ONLINE = 1,		/*!< FEC is online */
+	BFA_FEC_OFFLINE = 2,		/*!< FEC is offline */
+	BFA_FEC_OFFLINE_NOT_16G = 3,	/*!< FEC is offline (speed not 16Gig) */
+};
+
+>>>>>>> refs/remotes/origin/master
 #pragma pack(1)
 /*
  * LUN mask configuration
@@ -1096,8 +1368,28 @@ struct bfa_lunmask_cfg_s {
 	struct bfa_lun_mask_s	lun_list[MAX_LUN_MASK_CFG];
 };
 
+<<<<<<< HEAD
 /*
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct bfa_throttle_cfg_s {
+	u16	is_valid;
+	u16	value;
+	u32	rsvd;
+};
+
+struct bfa_defs_fcpim_throttle_s {
+	u16	max_value;
+	u16	cur_value;
+	u16	cfg_value;
+	u16	rsvd;
+};
+
+#define BFA_BB_SCN_DEF 3
+#define BFA_BB_SCN_MAX 0x0F
+
+/*
+>>>>>>> refs/remotes/origin/master
  *      Physical port configuration
  */
 struct bfa_port_cfg_s {
@@ -1113,6 +1405,7 @@ struct bfa_port_cfg_s {
 	u8	 ratelimit;	/*  ratelimit enabled or not	*/
 	u8	 trl_def_speed;	/*  ratelimit default speed	*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 path_tov;	/*  device path timeout	*/
 	u16 q_depth;	/*  SCSI Queue depth		*/
 =======
@@ -1123,6 +1416,15 @@ struct bfa_port_cfg_s {
 	u16	 path_tov;	/*  device path timeout	*/
 	u16	 q_depth;	/*  SCSI Queue depth		*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8	 bb_cr_enabled; /*!< Config state of BB_SCN	*/
+	u8	 bb_scn;	/*!< BB_SCN value for FLOGI Exchg */
+	u8	 faa_state;	/*  FAA enabled/disabled        */
+	u8	 rsvd1;
+	u16	 path_tov;	/*  device path timeout	*/
+	u16	 q_depth;	/*  SCSI Queue depth		*/
+	struct bfa_qos_bw_s qos_bw;	/* QOS bandwidth	*/
+>>>>>>> refs/remotes/origin/master
 };
 #pragma pack()
 
@@ -1134,6 +1436,7 @@ struct bfa_port_attr_s {
 	 * Static fields
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wwn_t	   nwwn;		/*  node wwn */
 	wwn_t	   pwwn;		/*  port wwn */
 	wwn_t	   factorynwwn;	/*  factory node wwn */
@@ -1144,6 +1447,8 @@ struct bfa_port_attr_s {
 	enum bfa_port_speed speed_supported; /*  supported speeds */
 	bfa_boolean_t   pbind_enabled;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	wwn_t			nwwn;		/*  node wwn */
 	wwn_t			pwwn;		/*  port wwn */
 	wwn_t			factorynwwn;	/*  factory node wwn */
@@ -1154,16 +1459,23 @@ struct bfa_port_attr_s {
 	struct fc_symname_s	port_symname;	/*  port symbolic name */
 	enum bfa_port_speed	speed_supported; /* supported speeds */
 	bfa_boolean_t		pbind_enabled;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Configured values
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct bfa_port_cfg_s pport_cfg;	/*  pport cfg */
 =======
 	struct bfa_port_cfg_s	pport_cfg;	/*  pport cfg */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfa_port_cfg_s	pport_cfg;	/*  pport cfg */
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Dynamic field - info from BFA
@@ -1173,6 +1485,7 @@ struct bfa_port_attr_s {
 	enum bfa_port_topology	topology;	/*  current topology */
 	bfa_boolean_t		beacon;		/*  current beacon status */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfa_boolean_t		link_e2e_beacon; /*  link beacon is on */
 	bfa_boolean_t		plog_enabled;	/*  portlog is enabled */
 =======
@@ -1180,10 +1493,17 @@ struct bfa_port_attr_s {
 	bfa_boolean_t		bbsc_op_status;	/* fc credit recovery oper
 						 * state */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa_boolean_t		link_e2e_beacon; /* link beacon is on */
+	bfa_boolean_t		bbsc_op_status;	/* fc credit recovery oper
+						 * state */
+	enum bfa_fec_state_s	fec_state;	/*!< current FEC state */
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Dynamic field - info from FCS
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32		pid;		/*  port ID */
 	enum bfa_port_type	port_type;	/*  current topology */
@@ -1196,6 +1516,8 @@ struct bfa_port_attr_s {
 	u16		fcoe_vlan;
 	u8			rsvd1[6];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32			pid;		/*  port ID */
 	enum bfa_port_type	port_type;	/*  current topology */
 	u32			loopback;	/*  external loopback */
@@ -1204,7 +1526,10 @@ struct bfa_port_attr_s {
 	/* FCoE specific  */
 	u16			fcoe_vlan;
 	u8			rsvd1[2];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -1212,25 +1537,35 @@ struct bfa_port_attr_s {
  */
 struct bfa_port_fcpmap_s {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char		osdevname[256];
 =======
 	char	osdevname[256];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char	osdevname[256];
+>>>>>>> refs/remotes/origin/master
 	u32	bus;
 	u32	target;
 	u32	oslun;
 	u32	fcid;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	wwn_t	   nwwn;
 	wwn_t	   pwwn;
 	u64	fcplun;
 	char		luid[256];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	wwn_t	nwwn;
 	wwn_t	pwwn;
 	u64	fcplun;
 	char	luid[256];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -1238,26 +1573,35 @@ struct bfa_port_fcpmap_s {
  */
 struct bfa_port_rnid_s {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wwn_t	     wwn;
 =======
 	wwn_t	  wwn;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wwn_t	  wwn;
+>>>>>>> refs/remotes/origin/master
 	u32	  unittype;
 	u32	  portid;
 	u32	  attached_nodes_num;
 	u16	  ip_version;
 	u16	  udp_port;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8	   ipaddr[16];
 =======
 	u8	  ipaddr[16];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8	  ipaddr[16];
+>>>>>>> refs/remotes/origin/master
 	u16	  rsvd;
 	u16	  topologydiscoveryflags;
 };
 
 #pragma pack(1)
 struct bfa_fcport_fcf_s {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	wwn_t	   name;	   /*  FCF name		 */
 	wwn_t	   fabric_name;    /*  Fabric Name	      */
@@ -1274,6 +1618,8 @@ struct bfa_fcport_fcf_s {
 	u32	fka_adv_per;    /*  FIP  ka advert. period   */
 	mac_t	   mac;	    /*  FCF mac		  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	wwn_t	name;		/*  FCF name		   */
 	wwn_t	fabric_name;    /*  Fabric Name		   */
 	u8	fipenabled;	/*  FIP enabled or not	   */
@@ -1288,7 +1634,10 @@ struct bfa_fcport_fcf_s {
 	__be16	vlan;		/*  FCoE vlan tag/priority */
 	u32	fka_adv_per;    /*  FIP  ka advert. period */
 	mac_t	mac;		/*  FCF mac		   */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -1310,6 +1659,16 @@ struct bfa_trunk_vc_attr_s {
 	u16 vc_credits[8];
 };
 
+<<<<<<< HEAD
+=======
+struct bfa_fcport_loop_info_s {
+	u8	myalpa;		/* alpa claimed */
+	u8	alpabm_val;	/* alpa bitmap valid or not (1 or 0) */
+	u8	resvd[6];
+	struct fc_alpabm_s alpabm;	/* alpa bitmap */
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  *	Link state information
  */
@@ -1318,6 +1677,7 @@ struct bfa_port_link_s {
 	u8	 linkstate_rsn;	/*  bfa_port_linkstate_rsn_t */
 	u8	 topology;	/*  P2P/LOOP bfa_port_topology */
 	u8	 speed;		/*  Link speed (1/2/4/8 G) */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32	linkstate_opt;  /*  Linkstate optional data (debug) */
 =======
@@ -1331,6 +1691,24 @@ struct bfa_port_link_s {
 		struct bfa_trunk_vc_attr_s trunk_vc_attr;
 		struct bfa_fcport_fcf_s fcf; /*  FCF information (for FCoE) */
 	} vc_fcf;
+=======
+	u32	 linkstate_opt; /*  Linkstate optional data (debug) */
+	u8	 trunked;	/*  Trunked or not (1 or 0) */
+	u8	 fec_state;	/*!< State of FEC */
+	u8	 resvd[6];
+	struct bfa_qos_attr_s  qos_attr;   /* QoS Attributes */
+	union {
+		struct bfa_fcport_loop_info_s loop_info;
+		struct bfa_bbcr_attr_s bbcr_attr;
+		union {
+			struct bfa_qos_vc_attr_s qos_vc_attr;
+					/*  VC info from ELP */
+			struct bfa_trunk_vc_attr_s trunk_vc_attr;
+			struct bfa_fcport_fcf_s fcf;
+					/*  FCF information (for FCoE) */
+		} vc_fcf;
+	} attr;
+>>>>>>> refs/remotes/origin/master
 };
 #pragma pack()
 
@@ -1377,10 +1755,14 @@ struct bfa_rport_hal_stats_s {
 	u32        sm_fwc_off;	    /*  fw create: offline events  */
 	u32        sm_fwc_hwf;	    /*  fw create: IOC down        */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32        sm_fwc_unexp;	    /*  fw create: exception events*/
 =======
 	u32        sm_fwc_unexp;    /*  fw create: exception events*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32        sm_fwc_unexp;    /*  fw create: exception events*/
+>>>>>>> refs/remotes/origin/master
 	u32        sm_on_off;	    /*  online: offline events     */
 	u32        sm_on_del;	    /*  online: delete events      */
 	u32        sm_on_hwf;	    /*  online: IOC down events    */
@@ -1388,6 +1770,7 @@ struct bfa_rport_hal_stats_s {
 	u32        sm_fwd_rsp;	    /*  fw delete: fw responses    */
 	u32        sm_fwd_del;	    /*  fw delete: delete events   */
 	u32        sm_fwd_hwf;	    /*  fw delete: IOC down events */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32        sm_fwd_unexp;	    /*  fw delete: exception events*/
 	u32        sm_off_del;	    /*  offline: delete events     */
@@ -1409,6 +1792,8 @@ struct bfa_rport_hal_stats_s {
 	u32        sm_iocd_on;	    /*  IOC down: online events    */
 	u32        sm_iocd_unexp;	    /*  IOC down: exceptions       */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32        sm_fwd_unexp;    /*  fw delete: exception events*/
 	u32        sm_off_del;	    /*  offline: delete events     */
 	u32        sm_off_on;	    /*  offline: online events     */
@@ -1428,7 +1813,10 @@ struct bfa_rport_hal_stats_s {
 	u32        sm_iocd_del;	    /*  IOC down: delete events    */
 	u32        sm_iocd_on;	    /*  IOC down: online events    */
 	u32        sm_iocd_unexp;   /*  IOC down: exceptions       */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32        rsvd;
 };
 #pragma pack(1)
@@ -1436,6 +1824,7 @@ struct bfa_rport_hal_stats_s {
  *  Rport's QoS attributes
  */
 struct bfa_rport_qos_attr_s {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u8			qos_priority;  /*  rport's QoS priority   */
 	u8			rsvd[3];
@@ -1445,6 +1834,11 @@ struct bfa_rport_qos_attr_s {
 	u8		rsvd[3];
 	u32		qos_flow_id;	/*  QoS flow Id	 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8		qos_priority;	/*  rport's QoS priority   */
+	u8		rsvd[3];
+	u32		qos_flow_id;	/*  QoS flow Id	 */
+>>>>>>> refs/remotes/origin/master
 };
 #pragma pack()
 
@@ -1468,7 +1862,10 @@ struct bfa_itnim_ioprofile_s {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *	vHBA port attribute values.
  */
 struct bfa_vhba_attr_s {
@@ -1482,7 +1879,10 @@ struct bfa_vhba_attr_s {
 };
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * FC physical port statistics.
  */
 struct bfa_port_fc_stats_s {
@@ -1490,6 +1890,12 @@ struct bfa_port_fc_stats_s {
 	u64     tx_frames;      /*  Tx frames                   */
 	u64     tx_words;       /*  Tx words                    */
 	u64     tx_lip;         /*  Tx LIP                      */
+<<<<<<< HEAD
+=======
+	u64	tx_lip_f7f7;	/*  Tx LIP_F7F7		*/
+	u64	tx_lip_f8f7;	/*  Tx LIP_F8F7		*/
+	u64	tx_arbf0;	/*  Tx ARB F0			*/
+>>>>>>> refs/remotes/origin/master
 	u64     tx_nos;         /*  Tx NOS                      */
 	u64     tx_ols;         /*  Tx OLS                      */
 	u64     tx_lr;          /*  Tx LR                       */
@@ -1497,6 +1903,12 @@ struct bfa_port_fc_stats_s {
 	u64     rx_frames;      /*  Rx frames                   */
 	u64     rx_words;       /*  Rx words                    */
 	u64     lip_count;      /*  Rx LIP                      */
+<<<<<<< HEAD
+=======
+	u64	rx_lip_f7f7;	/*  Rx LIP_F7F7		*/
+	u64	rx_lip_f8f7;	/*  Rx LIP_F8F7		*/
+	u64	rx_arbf0;	/*  Rx ARB F0			*/
+>>>>>>> refs/remotes/origin/master
 	u64     nos_count;      /*  Rx NOS                      */
 	u64     ols_count;      /*  Rx OLS                      */
 	u64     lr_count;       /*  Rx LR                       */
@@ -1516,11 +1928,20 @@ struct bfa_port_fc_stats_s {
 	u64     err_enc_out;    /*  Encoding err nonframe_8b10b */
 	u64     err_enc;        /*  Encoding err frame_8b10b    */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u64	bbsc_frames_lost; /* Credit Recovery-Frames Lost  */
 	u64	bbsc_credits_lost; /* Credit Recovery-Credits Lost */
 	u64	bbsc_link_resets; /* Credit Recovery-Link Resets   */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64	bbcr_frames_lost; /*!< BBCR Frames Lost */
+	u64	bbcr_rrdys_lost; /*!< BBCR RRDYs Lost */
+	u64	bbcr_link_resets; /*!< BBCR Link Resets */
+	u64	bbcr_frame_lost_intrs; /*!< BBCR Frame loss intrs */
+	u64	bbcr_rrdy_lost_intrs; /*!< BBCR Rrdy loss intrs */
+	u64	loop_timeouts;	/*  Loop timeouts		*/
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -1580,7 +2001,10 @@ union bfa_port_stats_u {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct bfa_port_cfg_mode_s {
 	u16		max_pf;
 	u16		max_vf;
@@ -1708,5 +2132,8 @@ struct bfa_aen_entry_s {
 	u32                     bfad_num;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __BFA_DEFS_SVC_H__ */

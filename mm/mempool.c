@@ -11,10 +11,14 @@
 #include <linux/mm.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mempool.h>
 #include <linux/blkdev.h>
 #include <linux/writeback.h>
@@ -32,8 +36,11 @@ static void *remove_element(mempool_t *pool)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void free_pool(mempool_t *pool)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * mempool_destroy - deallocate a memory pool
  * @pool:      pointer to the memory pool which was allocated via
@@ -43,7 +50,10 @@ static void free_pool(mempool_t *pool)
  * only sleeps if the free_fn() function sleeps.
  */
 void mempool_destroy(mempool_t *pool)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	while (pool->curr_nr) {
 		void *element = remove_element(pool);
@@ -53,9 +63,13 @@ void mempool_destroy(mempool_t *pool)
 	kfree(pool);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(mempool_destroy);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(mempool_destroy);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * mempool_create - create a memory pool
@@ -74,11 +88,17 @@ EXPORT_SYMBOL(mempool_destroy);
 mempool_t *mempool_create(int min_nr, mempool_alloc_t *alloc_fn,
 				mempool_free_t *free_fn, void *pool_data)
 {
+<<<<<<< HEAD
 	return  mempool_create_node(min_nr,alloc_fn,free_fn, pool_data,-1);
+=======
+	return mempool_create_node(min_nr,alloc_fn,free_fn, pool_data,
+				   GFP_KERNEL, NUMA_NO_NODE);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(mempool_create);
 
 mempool_t *mempool_create_node(int min_nr, mempool_alloc_t *alloc_fn,
+<<<<<<< HEAD
 			mempool_free_t *free_fn, void *pool_data, int node_id)
 {
 	mempool_t *pool;
@@ -87,6 +107,17 @@ mempool_t *mempool_create_node(int min_nr, mempool_alloc_t *alloc_fn,
 		return NULL;
 	pool->elements = kmalloc_node(min_nr * sizeof(void *),
 					GFP_KERNEL, node_id);
+=======
+			       mempool_free_t *free_fn, void *pool_data,
+			       gfp_t gfp_mask, int node_id)
+{
+	mempool_t *pool;
+	pool = kzalloc_node(sizeof(*pool), gfp_mask, node_id);
+	if (!pool)
+		return NULL;
+	pool->elements = kmalloc_node(min_nr * sizeof(void *),
+				      gfp_mask, node_id);
+>>>>>>> refs/remotes/origin/master
 	if (!pool->elements) {
 		kfree(pool);
 		return NULL;
@@ -104,6 +135,7 @@ mempool_t *mempool_create_node(int min_nr, mempool_alloc_t *alloc_fn,
 	while (pool->curr_nr < pool->min_nr) {
 		void *element;
 
+<<<<<<< HEAD
 		element = pool->alloc(GFP_KERNEL, pool->pool_data);
 		if (unlikely(!element)) {
 <<<<<<< HEAD
@@ -111,6 +143,11 @@ mempool_t *mempool_create_node(int min_nr, mempool_alloc_t *alloc_fn,
 =======
 			mempool_destroy(pool);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		element = pool->alloc(gfp_mask, pool->pool_data);
+		if (unlikely(!element)) {
+			mempool_destroy(pool);
+>>>>>>> refs/remotes/origin/master
 			return NULL;
 		}
 		add_element(pool, element);
@@ -197,6 +234,7 @@ EXPORT_SYMBOL(mempool_resize);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * mempool_destroy - deallocate a memory pool
  * @pool:      pointer to the memory pool which was allocated via
  *             mempool_create().
@@ -216,6 +254,8 @@ EXPORT_SYMBOL(mempool_destroy);
 /**
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * mempool_alloc - allocate an element from a specific memory pool
  * @pool:      pointer to the memory pool which was allocated via
  *             mempool_create().
@@ -252,6 +292,7 @@ repeat_alloc:
 		element = remove_element(pool);
 		spin_unlock_irqrestore(&pool->lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return element;
 	}
 	spin_unlock_irqrestore(&pool->lock, flags);
@@ -275,6 +316,8 @@ repeat_alloc:
 	finish_wait(&pool->wait, &wait);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* paired with rmb in mempool_free(), read comment there */
 		smp_wmb();
 		return element;
@@ -309,7 +352,10 @@ repeat_alloc:
 	io_schedule_timeout(5*HZ);
 
 	finish_wait(&pool->wait, &wait);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	goto repeat_alloc;
 }
 EXPORT_SYMBOL(mempool_alloc);
@@ -330,8 +376,11 @@ void mempool_free(void *element, mempool_t *pool)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	smp_mb();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Paired with the wmb in mempool_alloc().  The preceding read is
 	 * for @element and the following @pool->curr_nr.  This ensures
@@ -365,7 +414,10 @@ void mempool_free(void *element, mempool_t *pool)
 	 * ensures that there will be frees which return elements to the
 	 * pool waking up the waiters.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pool->curr_nr < pool->min_nr) {
 		spin_lock_irqsave(&pool->lock, flags);
 		if (pool->curr_nr < pool->min_nr) {

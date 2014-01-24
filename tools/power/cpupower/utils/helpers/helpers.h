@@ -92,6 +92,17 @@ extern int get_cpu_info(unsigned int cpu, struct cpupower_cpu_info *cpu_info);
 extern struct cpupower_cpu_info cpupower_cpu_info;
 /* cpuid and cpuinfo helpers  **************************/
 
+<<<<<<< HEAD
+=======
+struct cpuid_core_info {
+	int pkg;
+	int core;
+	int cpu;
+
+	/* flags */
+	unsigned int is_online:1;
+};
+>>>>>>> refs/remotes/origin/master
 
 /* CPU topology/hierarchy parsing ******************/
 struct cpupower_topology {
@@ -101,6 +112,7 @@ struct cpupower_topology {
 	unsigned int threads; /* per core */
 
 	/* Array gets mallocated with cores entries, holding per core info */
+<<<<<<< HEAD
 	struct {
 		int pkg;
 		int core;
@@ -109,10 +121,17 @@ struct cpupower_topology {
 		/* flags */
 		unsigned int is_online:1;
 	} *core_info;
+=======
+	struct cpuid_core_info *core_info;
+>>>>>>> refs/remotes/origin/master
 };
 
 extern int get_cpu_topology(struct cpupower_topology *cpu_top);
 extern void cpu_topology_release(struct cpupower_topology cpu_top);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 /* CPU topology/hierarchy parsing ******************/
 
 /* X86 ONLY ****************************************/

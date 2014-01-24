@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -78,6 +82,7 @@ typedef const struct acpi_rsconvert_info {
 /* Resource conversion opcodes */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ACPI_RSC_INITGET                0
 #define ACPI_RSC_INITSET                1
 #define ACPI_RSC_FLAGINIT               2
@@ -101,6 +106,8 @@ typedef const struct acpi_rsconvert_info {
 #define ACPI_RSC_EXIT_LE                20
 #define ACPI_RSC_EXIT_EQ                21
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 typedef enum {
 	ACPI_RSC_INITGET = 0,
 	ACPI_RSC_INITSET,
@@ -135,7 +142,10 @@ typedef enum {
 	ACPI_RSC_SOURCE,
 	ACPI_RSC_SOURCEX
 } ACPI_RSCONVERT_OPCODES;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Resource Conversion sub-opcodes */
 
@@ -148,11 +158,17 @@ typedef enum {
 #define AML_OFFSET(f)                   (u8) ACPI_OFFSET (union aml_resource,f)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /*
  * Individual entry for the resource dump tables
  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Individual entry for the resource dump tables
+ */
+>>>>>>> refs/remotes/origin/master
 typedef const struct acpi_rsdump_info {
 	u8 opcode;
 	u8 offset;
@@ -163,6 +179,7 @@ typedef const struct acpi_rsdump_info {
 
 /* Values for the Opcode field above */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define ACPI_RSD_TITLE                  0
 #define ACPI_RSD_LITERAL                1
@@ -179,6 +196,8 @@ typedef const struct acpi_rsdump_info {
 #define ACPI_RSD_ADDRESS                12
 #define ACPI_RSD_SOURCE                 13
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 typedef enum {
 	ACPI_RSD_TITLE = 0,
 	ACPI_RSD_1BITFLAG,
@@ -198,7 +217,10 @@ typedef enum {
 	ACPI_RSD_UINT64,
 	ACPI_RSD_WORDLIST
 } ACPI_RSDUMP_OPCODES;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* restore default alignment */
 
@@ -208,25 +230,35 @@ typedef enum {
 
 extern const u8 acpi_gbl_aml_resource_sizes[];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern const u8 acpi_gbl_aml_resource_serial_bus_sizes[];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern const u8 acpi_gbl_aml_resource_serial_bus_sizes[];
+>>>>>>> refs/remotes/origin/master
 extern struct acpi_rsconvert_info *acpi_gbl_set_resource_dispatch[];
 
 /* Resource tables indexed by raw AML resource descriptor type */
 
 extern const u8 acpi_gbl_resource_struct_sizes[];
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct acpi_rsconvert_info *acpi_gbl_get_resource_dispatch[];
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern const u8 acpi_gbl_resource_struct_serial_bus_sizes[];
 extern struct acpi_rsconvert_info *acpi_gbl_get_resource_dispatch[];
 
 extern struct acpi_rsconvert_info
     *acpi_gbl_convert_resource_serial_bus_dispatch[];
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct acpi_vendor_walk_info {
 	struct acpi_vendor_uuid *uuid;
 	struct acpi_buffer *buffer;
@@ -241,7 +273,11 @@ acpi_rs_create_resource_list(union acpi_operand_object *aml_buffer,
 			     struct acpi_buffer *output_buffer);
 
 acpi_status
+<<<<<<< HEAD
 acpi_rs_create_aml_resources(struct acpi_resource *linked_list_buffer,
+=======
+acpi_rs_create_aml_resources(struct acpi_buffer *resource_list,
+>>>>>>> refs/remotes/origin/master
 			     struct acpi_buffer *output_buffer);
 
 acpi_status
@@ -273,12 +309,18 @@ acpi_rs_set_srs_method_data(struct acpi_namespace_node *node,
 			    struct acpi_buffer *ret_buffer);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 acpi_status
 acpi_rs_get_aei_method_data(struct acpi_namespace_node *node,
 			    struct acpi_buffer *ret_buffer);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * rscalc
  */
@@ -287,8 +329,13 @@ acpi_rs_get_list_length(u8 * aml_buffer,
 			u32 aml_buffer_length, acpi_size * size_needed);
 
 acpi_status
+<<<<<<< HEAD
 acpi_rs_get_aml_length(struct acpi_resource *linked_list_buffer,
 		       acpi_size * size_needed);
+=======
+acpi_rs_get_aml_length(struct acpi_resource *resource_list,
+		       acpi_size resource_list_size, acpi_size * size_needed);
+>>>>>>> refs/remotes/origin/master
 
 acpi_status
 acpi_rs_get_pci_routing_table_length(union acpi_operand_object *package_object,
@@ -383,13 +430,19 @@ extern struct acpi_rsconvert_info acpi_rs_convert_ext_irq[];
 extern struct acpi_rsconvert_info acpi_rs_convert_address64[];
 extern struct acpi_rsconvert_info acpi_rs_convert_ext_address64[];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct acpi_rsconvert_info acpi_rs_convert_gpio[];
 extern struct acpi_rsconvert_info acpi_rs_convert_fixed_dma[];
 extern struct acpi_rsconvert_info acpi_rs_convert_i2c_serial_bus[];
 extern struct acpi_rsconvert_info acpi_rs_convert_spi_serial_bus[];
 extern struct acpi_rsconvert_info acpi_rs_convert_uart_serial_bus[];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* These resources require separate get/set tables */
 
@@ -408,6 +461,7 @@ extern struct acpi_rsconvert_info acpi_rs_set_vendor[];
  */
 extern struct acpi_rsdump_info *acpi_gbl_dump_resource_dispatch[];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern struct acpi_rsdump_info *acpi_gbl_dump_serial_bus_dispatch[];
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -416,15 +470,32 @@ extern struct acpi_rsdump_info *acpi_gbl_dump_serial_bus_dispatch[];
  * rsdump
  */
 extern struct acpi_rsdump_info acpi_rs_dump_irq[];
+=======
+extern struct acpi_rsdump_info *acpi_gbl_dump_serial_bus_dispatch[];
+
+/*
+ * rsdumpinfo
+ */
+extern struct acpi_rsdump_info acpi_rs_dump_irq[];
+extern struct acpi_rsdump_info acpi_rs_dump_prt[];
+>>>>>>> refs/remotes/origin/master
 extern struct acpi_rsdump_info acpi_rs_dump_dma[];
 extern struct acpi_rsdump_info acpi_rs_dump_start_dpf[];
 extern struct acpi_rsdump_info acpi_rs_dump_end_dpf[];
 extern struct acpi_rsdump_info acpi_rs_dump_io[];
+<<<<<<< HEAD
+=======
+extern struct acpi_rsdump_info acpi_rs_dump_io_flags[];
+>>>>>>> refs/remotes/origin/master
 extern struct acpi_rsdump_info acpi_rs_dump_fixed_io[];
 extern struct acpi_rsdump_info acpi_rs_dump_vendor[];
 extern struct acpi_rsdump_info acpi_rs_dump_end_tag[];
 extern struct acpi_rsdump_info acpi_rs_dump_memory24[];
 extern struct acpi_rsdump_info acpi_rs_dump_memory32[];
+<<<<<<< HEAD
+=======
+extern struct acpi_rsdump_info acpi_rs_dump_memory_flags[];
+>>>>>>> refs/remotes/origin/master
 extern struct acpi_rsdump_info acpi_rs_dump_fixed_memory32[];
 extern struct acpi_rsdump_info acpi_rs_dump_address16[];
 extern struct acpi_rsdump_info acpi_rs_dump_address32[];
@@ -433,14 +504,21 @@ extern struct acpi_rsdump_info acpi_rs_dump_ext_address64[];
 extern struct acpi_rsdump_info acpi_rs_dump_ext_irq[];
 extern struct acpi_rsdump_info acpi_rs_dump_generic_reg[];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct acpi_rsdump_info acpi_rs_dump_gpio[];
 extern struct acpi_rsdump_info acpi_rs_dump_fixed_dma[];
 extern struct acpi_rsdump_info acpi_rs_dump_common_serial_bus[];
 extern struct acpi_rsdump_info acpi_rs_dump_i2c_serial_bus[];
 extern struct acpi_rsdump_info acpi_rs_dump_spi_serial_bus[];
 extern struct acpi_rsdump_info acpi_rs_dump_uart_serial_bus[];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct acpi_rsdump_info acpi_rs_dump_general_flags[];
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif				/* __ACRESRC_H__ */

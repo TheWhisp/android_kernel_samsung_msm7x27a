@@ -20,7 +20,11 @@
 #include <linux/interrupt.h>
 #include <linux/ptrace.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
 #include <mach/cns3xxx.h>
+=======
+#include "cns3xxx.h"
+>>>>>>> refs/remotes/origin/master
 #include "core.h"
 
 enum cns3xxx_access_type {
@@ -50,10 +54,14 @@ static struct cns3xxx_pcie *sysdata_to_cnspci(void *sysdata)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct cns3xxx_pcie *pdev_to_cnspci(struct pci_dev *dev)
 =======
 static struct cns3xxx_pcie *pdev_to_cnspci(const struct pci_dev *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct cns3xxx_pcie *pdev_to_cnspci(const struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return sysdata_to_cnspci(dev->sysdata);
 }
@@ -156,13 +164,17 @@ static int cns3xxx_pci_setup(int nr, struct pci_sys_data *sys)
 	struct resource *res_io = &cnspci->res_io;
 	struct resource *res_mem = &cnspci->res_mem;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct resource **sysres = sys->resource;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(request_resource(&iomem_resource, res_io) ||
 	       request_resource(&iomem_resource, res_mem));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sysres[0] = res_io;
 	sysres[1] = res_mem;
@@ -170,6 +182,10 @@ static int cns3xxx_pci_setup(int nr, struct pci_sys_data *sys)
 	pci_add_resource_offset(&sys->resources, res_io, sys->io_offset);
 	pci_add_resource_offset(&sys->resources, res_mem, sys->mem_offset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_add_resource_offset(&sys->resources, res_io, sys->io_offset);
+	pci_add_resource_offset(&sys->resources, res_mem, sys->mem_offset);
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -179,6 +195,7 @@ static struct pci_ops cns3xxx_pcie_ops = {
 	.write = cns3xxx_pci_write_config,
 };
 
+<<<<<<< HEAD
 static struct pci_bus *cns3xxx_pci_scan_bus(int nr, struct pci_sys_data *sys)
 {
 <<<<<<< HEAD
@@ -193,6 +210,9 @@ static int cns3xxx_pcie_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 
 static int cns3xxx_pcie_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cns3xxx_pcie_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cns3xxx_pcie *cnspci = pdev_to_cnspci(dev);
 	int irq = cnspci->irqs[slot];
@@ -241,10 +261,16 @@ static struct cns3xxx_pcie cns3xxx_pcie[] = {
 		.irqs = { IRQ_CNS3XXX_PCIE0_RC, IRQ_CNS3XXX_PCIE0_DEVICE, },
 		.hw_pci = {
 			.domain = 0,
+<<<<<<< HEAD
 			.swizzle = pci_std_swizzle,
 			.nr_controllers = 1,
 			.setup = cns3xxx_pci_setup,
 			.scan = cns3xxx_pci_scan_bus,
+=======
+			.nr_controllers = 1,
+			.ops = &cns3xxx_pcie_ops,
+			.setup = cns3xxx_pci_setup,
+>>>>>>> refs/remotes/origin/master
 			.map_irq = cns3xxx_pcie_map_irq,
 		},
 	},
@@ -284,10 +310,16 @@ static struct cns3xxx_pcie cns3xxx_pcie[] = {
 		.irqs = { IRQ_CNS3XXX_PCIE1_RC, IRQ_CNS3XXX_PCIE1_DEVICE, },
 		.hw_pci = {
 			.domain = 1,
+<<<<<<< HEAD
 			.swizzle = pci_std_swizzle,
 			.nr_controllers = 1,
 			.setup = cns3xxx_pci_setup,
 			.scan = cns3xxx_pci_scan_bus,
+=======
+			.nr_controllers = 1,
+			.ops = &cns3xxx_pcie_ops,
+			.setup = cns3xxx_pci_setup,
+>>>>>>> refs/remotes/origin/master
 			.map_irq = cns3xxx_pcie_map_irq,
 		},
 	},
@@ -390,11 +422,17 @@ static int __init cns3xxx_pcie_init(void)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pcibios_min_io = 0;
 	pcibios_min_mem = 0;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pcibios_min_io = 0;
+	pcibios_min_mem = 0;
+
+>>>>>>> refs/remotes/origin/master
 	hook_fault_code(16 + 6, cns3xxx_pcie_abort_handler, SIGBUS, 0,
 			"imprecise external abort");
 

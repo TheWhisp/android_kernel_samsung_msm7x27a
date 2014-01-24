@@ -9,6 +9,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,15 +22,21 @@
  *
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 #include <linux/dma-mapping.h>
 #include <linux/err.h>
 #include <linux/interrupt.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
@@ -38,7 +45,11 @@
 
 MODULE_DESCRIPTION("FUSB300  USB gadget driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_AUTHOR("Yuan Hsin Chen <yhchen@faraday-tech.com>");
+=======
+MODULE_AUTHOR("Yuan-Hsin Chen, Feng-Hsin Chiang <john453@faraday-tech.com>");
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS("platform:fusb300_udc");
 
 #define DRIVER_VERSION	"20 October 2010"
@@ -219,7 +230,11 @@ static int config_ep(struct fusb300_ep *ep,
 	struct fusb300 *fusb300 = ep->fusb300;
 	struct fusb300_ep_info info;
 
+<<<<<<< HEAD
 	ep->desc = desc;
+=======
+	ep->ep.desc = desc;
+>>>>>>> refs/remotes/origin/master
 
 	info.interval = 0;
 	info.addrofs = 0;
@@ -228,10 +243,14 @@ static int config_ep(struct fusb300_ep *ep,
 	info.type = desc->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK;
 	info.dir_in = (desc->bEndpointAddress & USB_ENDPOINT_DIR_MASK) ? 1 : 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	info.maxpacket = le16_to_cpu(desc->wMaxPacketSize);
 =======
 	info.maxpacket = usb_endpoint_maxp(desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	info.maxpacket = usb_endpoint_maxp(desc);
+>>>>>>> refs/remotes/origin/master
 	info.epnum = desc->bEndpointAddress & USB_ENDPOINT_NUMBER_MASK;
 
 	if ((info.type == USB_ENDPOINT_XFER_INT) ||
@@ -414,7 +433,11 @@ static void fusb300_clear_epnstall(struct fusb300 *fusb300, u8 ep)
 
 	if (reg & FUSB300_EPSET0_STL) {
 		printk(KERN_DEBUG "EP%d stall... Clear!!\n", ep);
+<<<<<<< HEAD
 		reg &= ~FUSB300_EPSET0_STL;
+=======
+		reg |= FUSB300_EPSET0_STL_CLR;
+>>>>>>> refs/remotes/origin/master
 		iowrite32(reg, fusb300->reg + FUSB300_OFFSET_EPSET0(ep));
 	}
 }
@@ -463,7 +486,11 @@ static int fusb300_queue(struct usb_ep *_ep, struct usb_request *_req,
 	req->req.actual = 0;
 	req->req.status = -EINPROGRESS;
 
+<<<<<<< HEAD
 	if (ep->desc == NULL) /* ep0 */
+=======
+	if (ep->ep.desc == NULL) /* ep0 */
+>>>>>>> refs/remotes/origin/master
 		ep0_queue(ep, req);
 	else if (request && !ep->stall)
 		enable_fifo_int(ep);
@@ -577,7 +604,11 @@ static void fusb300_set_cxdone(struct fusb300 *fusb300)
 }
 
 /* read data from cx fifo */
+<<<<<<< HEAD
 void fusb300_rdcxf(struct fusb300 *fusb300,
+=======
+static void fusb300_rdcxf(struct fusb300 *fusb300,
+>>>>>>> refs/remotes/origin/master
 		   u8 *buffer, u32 length)
 {
 	int i = 0;
@@ -620,6 +651,7 @@ void fusb300_rdcxf(struct fusb300 *fusb300,
 	}
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if 0
 static void fusb300_dbg_fifo(struct fusb300_ep *ep,
@@ -724,6 +756,8 @@ static void fusb300_cmp_dbg_fifo(struct fusb300_ep *ep,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void fusb300_rdfifo(struct fusb300_ep *ep,
 			  struct fusb300_request *req,
 			  u32 length)
@@ -782,6 +816,7 @@ static void fusb300_rdfifo(struct fusb300_ep *ep,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* write data to fifo */
 static void fusb300_wrfifo(struct fusb300_ep *ep,
 			   struct fusb300_request *req)
@@ -834,6 +869,8 @@ static void fusb300_wrfifo(struct fusb300_ep *ep,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u8 fusb300_get_epnstall(struct fusb300 *fusb300, u8 ep)
 {
 	u8 value;
@@ -998,6 +1035,7 @@ static void set_address(struct fusb300 *fusb300, struct usb_ctrlrequest *ctrl)
 	} while (0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void fusb300_ep0_complete(struct usb_ep *ep,
 				struct usb_request *req)
 {
@@ -1005,6 +1043,8 @@ static void fusb300_ep0_complete(struct usb_ep *ep,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int setup_packet(struct fusb300 *fusb300, struct usb_ctrlrequest *ctrl)
 {
 	u8 *p = (u8 *)ctrl;
@@ -1050,6 +1090,7 @@ static int setup_packet(struct fusb300 *fusb300, struct usb_ctrlrequest *ctrl)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void fusb300_set_ep_bycnt(struct fusb300_ep *ep, u32 bycnt)
 {
 	struct fusb300 *fusb300 = ep->fusb300;
@@ -1063,6 +1104,8 @@ static void fusb300_set_ep_bycnt(struct fusb300_ep *ep, u32 bycnt)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void done(struct fusb300_ep *ep, struct fusb300_request *req,
 		 int status)
 {
@@ -1087,12 +1130,17 @@ static void done(struct fusb300_ep *ep, struct fusb300_request *req,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void fusb300_fill_idma_prdtbl(struct fusb300_ep *ep,
 			struct fusb300_request *req)
 =======
 static void fusb300_fill_idma_prdtbl(struct fusb300_ep *ep, dma_addr_t d,
 		u32 len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void fusb300_fill_idma_prdtbl(struct fusb300_ep *ep, dma_addr_t d,
+		u32 len)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 value;
 	u32 reg;
@@ -1105,6 +1153,7 @@ static void fusb300_fill_idma_prdtbl(struct fusb300_ep *ep, dma_addr_t d,
 	} while (reg);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iowrite32((u32) req->req.buf, ep->fusb300->reg +
 		FUSB300_OFFSET_EPPRD_W1(ep->epnum));
 
@@ -1114,6 +1163,11 @@ static void fusb300_fill_idma_prdtbl(struct fusb300_ep *ep, dma_addr_t d,
 
 	value = FUSB300_EPPRD0_BTC(len) | FUSB300_EPPRD0_H |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iowrite32(d, ep->fusb300->reg + FUSB300_OFFSET_EPPRD_W1(ep->epnum));
+
+	value = FUSB300_EPPRD0_BTC(len) | FUSB300_EPPRD0_H |
+>>>>>>> refs/remotes/origin/master
 		FUSB300_EPPRD0_F | FUSB300_EPPRD0_L | FUSB300_EPPRD0_I;
 	iowrite32(value, ep->fusb300->reg + FUSB300_OFFSET_EPPRD_W0(ep->epnum));
 
@@ -1141,6 +1195,7 @@ static void fusb300_wait_idma_finished(struct fusb300_ep *ep)
 
 	fusb300_clear_int(ep->fusb300, FUSB300_OFFSET_IGR0,
 		FUSB300_IGR0_EPn_PRD_INT(ep->epnum));
+<<<<<<< HEAD
 IDMA_RESET:
 	fusb300_clear_int(ep->fusb300, FUSB300_OFFSET_IGER0,
 		FUSB300_IGER0_EEPn_PRD_INT(ep->epnum));
@@ -1168,10 +1223,30 @@ static void  fusb300_set_idma(struct fusb300_ep *ep,
 	}
 
 	dma_sync_single_for_device(NULL, d, req->req.length, DMA_TO_DEVICE);
+=======
+	return;
+
+IDMA_RESET:
+	reg = ioread32(ep->fusb300->reg + FUSB300_OFFSET_IGER0);
+	reg &= ~FUSB300_IGER0_EEPn_PRD_INT(ep->epnum);
+	iowrite32(reg, ep->fusb300->reg + FUSB300_OFFSET_IGER0);
+}
+
+static void fusb300_set_idma(struct fusb300_ep *ep,
+			struct fusb300_request *req)
+{
+	int ret;
+
+	ret = usb_gadget_map_request(&ep->fusb300->gadget,
+			&req->req, DMA_TO_DEVICE);
+	if (ret)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	fusb300_enable_bit(ep->fusb300, FUSB300_OFFSET_IGER0,
 		FUSB300_IGER0_EEPn_PRD_INT(ep->epnum));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tmp = req->req.buf;
 	req->req.buf = (u8 *)d;
@@ -1191,6 +1266,14 @@ static void  fusb300_set_idma(struct fusb300_ep *ep,
 
 	dma_unmap_single(NULL, d, req->req.length, DMA_TO_DEVICE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fusb300_fill_idma_prdtbl(ep, req->req.dma, req->req.length);
+	/* check idma is done */
+	fusb300_wait_idma_finished(ep);
+
+	usb_gadget_unmap_request(&ep->fusb300->gadget,
+			&req->req, DMA_TO_DEVICE);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void in_ep_fifo_handler(struct fusb300_ep *ep)
@@ -1198,6 +1281,7 @@ static void in_ep_fifo_handler(struct fusb300_ep *ep)
 	struct fusb300_request *req = list_entry(ep->queue.next,
 					struct fusb300_request, queue);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (req->req.length) {
 #if 0
@@ -1211,6 +1295,10 @@ static void in_ep_fifo_handler(struct fusb300_ep *ep)
 	if (req->req.length)
 		fusb300_set_idma(ep, req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (req->req.length)
+		fusb300_set_idma(ep, req);
+>>>>>>> refs/remotes/origin/master
 	done(ep, req, 0);
 }
 
@@ -1553,6 +1641,7 @@ static void init_controller(struct fusb300 *fusb300)
 	iowrite32(0xcfffff9f, fusb300->reg + FUSB300_OFFSET_IGER1);
 }
 /*------------------------------------------------------------------------*/
+<<<<<<< HEAD
 static struct fusb300 *the_controller;
 
 <<<<<<< HEAD
@@ -1580,10 +1669,17 @@ static int fusb300_udc_start(struct usb_gadget_driver *driver,
 
 	if (fusb300->driver)
 		return -EBUSY;
+=======
+static int fusb300_udc_start(struct usb_gadget *g,
+		struct usb_gadget_driver *driver)
+{
+	struct fusb300 *fusb300 = to_fusb300(g);
+>>>>>>> refs/remotes/origin/master
 
 	/* hook up the driver */
 	driver->driver.bus = NULL;
 	fusb300->driver = driver;
+<<<<<<< HEAD
 	fusb300->gadget.dev.driver = &driver->driver;
 
 	retval = device_add(&fusb300->gadget.dev);
@@ -1626,14 +1722,31 @@ static int fusb300_udc_stop(struct usb_gadget_driver *driver)
 
 	init_controller(fusb300);
 	device_del(&fusb300->gadget.dev);
+=======
+
+	return 0;
+}
+
+static int fusb300_udc_stop(struct usb_gadget *g,
+		struct usb_gadget_driver *driver)
+{
+	struct fusb300 *fusb300 = to_fusb300(g);
+
+	driver->unbind(&fusb300->gadget);
+
+	init_controller(fusb300);
+>>>>>>> refs/remotes/origin/master
 	fusb300->driver = NULL;
 
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(usb_gadget_unregister_driver);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*--------------------------------------------------------------------------*/
 
 static int fusb300_udc_pullup(struct usb_gadget *_gadget, int is_active)
@@ -1641,6 +1754,7 @@ static int fusb300_udc_pullup(struct usb_gadget *_gadget, int is_active)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct usb_gadget_ops fusb300_gadget_ops = {
 	.pullup		= fusb300_udc_pullup,
 <<<<<<< HEAD
@@ -1648,16 +1762,28 @@ static struct usb_gadget_ops fusb300_gadget_ops = {
 	.start		= fusb300_udc_start,
 	.stop		= fusb300_udc_stop,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct usb_gadget_ops fusb300_gadget_ops = {
+	.pullup		= fusb300_udc_pullup,
+	.udc_start	= fusb300_udc_start,
+	.udc_stop	= fusb300_udc_stop,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __exit fusb300_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct fusb300 *fusb300 = dev_get_drvdata(&pdev->dev);
 
 <<<<<<< HEAD
 =======
 	usb_del_gadget_udc(&fusb300->gadget);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fusb300 *fusb300 = platform_get_drvdata(pdev);
+
+	usb_del_gadget_udc(&fusb300->gadget);
+>>>>>>> refs/remotes/origin/master
 	iounmap(fusb300->reg);
 	free_irq(platform_get_irq(pdev, 0), fusb300);
 
@@ -1724,6 +1850,7 @@ static int __init fusb300_probe(struct platform_device *pdev)
 
 	spin_lock_init(&fusb300->lock);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&pdev->dev, fusb300);
 
 	fusb300->gadget.ops = &fusb300_gadget_ops;
@@ -1748,6 +1875,17 @@ static int __init fusb300_probe(struct platform_device *pdev)
 =======
 	ret = request_irq(ires->start, fusb300_irq, IRQF_SHARED,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	platform_set_drvdata(pdev, fusb300);
+
+	fusb300->gadget.ops = &fusb300_gadget_ops;
+
+	fusb300->gadget.max_speed = USB_SPEED_HIGH;
+	fusb300->gadget.name = udc_name;
+	fusb300->reg = reg;
+
+	ret = request_irq(ires->start, fusb300_irq, IRQF_SHARED,
+>>>>>>> refs/remotes/origin/master
 			  udc_name, fusb300);
 	if (ret < 0) {
 		pr_err("request_irq error (%d)\n", ret);
@@ -1756,10 +1894,14 @@ static int __init fusb300_probe(struct platform_device *pdev)
 
 	ret = request_irq(ires1->start, fusb300_irq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_DISABLED | IRQF_SHARED, udc_name, fusb300);
 =======
 			IRQF_SHARED, udc_name, fusb300);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			IRQF_SHARED, udc_name, fusb300);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		pr_err("request_irq1 error (%d)\n", ret);
 		goto clean_up;
@@ -1779,13 +1921,20 @@ static int __init fusb300_probe(struct platform_device *pdev)
 		INIT_LIST_HEAD(&ep->queue);
 		ep->ep.name = fusb300_ep_name[i];
 		ep->ep.ops = &fusb300_ep_ops;
+<<<<<<< HEAD
 		ep->ep.maxpacket = HS_BULK_MAX_PACKET_SIZE;
 	}
 	fusb300->ep[0]->ep.maxpacket = HS_CTL_MAX_PACKET_SIZE;
+=======
+		usb_ep_set_maxpacket_limit(&ep->ep, HS_BULK_MAX_PACKET_SIZE);
+	}
+	usb_ep_set_maxpacket_limit(&fusb300->ep[0]->ep, HS_CTL_MAX_PACKET_SIZE);
+>>>>>>> refs/remotes/origin/master
 	fusb300->ep[0]->epnum = 0;
 	fusb300->gadget.ep0 = &fusb300->ep[0]->ep;
 	INIT_LIST_HEAD(&fusb300->gadget.ep0->ep_list);
 
+<<<<<<< HEAD
 	the_controller = fusb300;
 
 	fusb300->ep0_req = fusb300_alloc_request(&fusb300->ep[0]->ep,
@@ -1799,6 +1948,16 @@ static int __init fusb300_probe(struct platform_device *pdev)
 
 	return 0;
 =======
+=======
+	fusb300->ep0_req = fusb300_alloc_request(&fusb300->ep[0]->ep,
+				GFP_KERNEL);
+	if (fusb300->ep0_req == NULL) {
+		ret = -ENOMEM;
+		goto clean_up3;
+	}
+
+	init_controller(fusb300);
+>>>>>>> refs/remotes/origin/master
 	ret = usb_add_gadget_udc(&pdev->dev, &fusb300->gadget);
 	if (ret)
 		goto err_add_udc;
@@ -1806,9 +1965,15 @@ static int __init fusb300_probe(struct platform_device *pdev)
 	dev_info(&pdev->dev, "version %s\n", DRIVER_VERSION);
 
 	return 0;
+<<<<<<< HEAD
 err_add_udc:
 	fusb300_free_request(&fusb300->ep[0]->ep, fusb300->ep0_req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+err_add_udc:
+	fusb300_free_request(&fusb300->ep[0]->ep, fusb300->ep0_req);
+>>>>>>> refs/remotes/origin/master
 
 clean_up3:
 	free_irq(ires->start, fusb300);
@@ -1834,6 +1999,7 @@ static struct platform_driver fusb300_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init fusb300_udc_init(void)
 {
 	return platform_driver_probe(&fusb300_driver, fusb300_probe);
@@ -1846,3 +2012,6 @@ static void __exit fusb300_udc_cleanup(void)
 	platform_driver_unregister(&fusb300_driver);
 }
 module_exit(fusb300_udc_cleanup);
+=======
+module_platform_driver_probe(fusb300_driver, fusb300_probe);
+>>>>>>> refs/remotes/origin/master

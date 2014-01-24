@@ -5,19 +5,27 @@
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
  
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 #define ISAR_IRQMSK	0x04
 #define ISAR_IRQSTA	0x04
 #define ISAR_IRQBIT	0x75
@@ -30,10 +38,14 @@
 #define ISAR_MBOX	0x4c
 #define ISAR_WADR	0x4a
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ISAR_RADR	0x48 
 =======
 #define ISAR_RADR	0x48
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ISAR_RADR	0x48
+>>>>>>> refs/remotes/origin/master
 
 #define ISAR_HIS_VNR		0x14
 #define ISAR_HIS_DKEY		0x02
@@ -45,6 +57,7 @@
 #define ISAR_HIS_P0CFG		0x3c
 #define ISAR_HIS_P12CFG		0x24
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ISAR_HIS_SARTCFG	0x25	
 #define ISAR_HIS_PUMPCFG	0x26	
 #define ISAR_HIS_PUMPCTRL	0x2a	
@@ -53,6 +66,11 @@
 #define ISAR_HIS_PUMPCFG	0x26
 #define ISAR_HIS_PUMPCTRL	0x2a
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ISAR_HIS_SARTCFG	0x25
+#define ISAR_HIS_PUMPCFG	0x26
+#define ISAR_HIS_PUMPCTRL	0x2a
+>>>>>>> refs/remotes/origin/master
 #define ISAR_HIS_IOM2CFG	0x27
 #define ISAR_HIS_IOM2REQ	0x07
 #define ISAR_HIS_IOM2CTRL	0x2b
@@ -62,10 +80,14 @@
 #define ISAR_HIS_DPS1		0x40
 #define ISAR_HIS_DPS2		0x80
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SET_DPS(x)		((x<<6) & 0xc0)
 =======
 #define SET_DPS(x)		((x << 6) & 0xc0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SET_DPS(x)		((x << 6) & 0xc0)
+>>>>>>> refs/remotes/origin/master
 
 #define ISAR_CMD_TIMERIRQ_OFF	0x20
 #define ISAR_CMD_TIMERIRQ_ON	0x21

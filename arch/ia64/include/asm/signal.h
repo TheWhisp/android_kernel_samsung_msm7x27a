@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 #ifndef _ASM_IA64_SIGNAL_H
 #define _ASM_IA64_SIGNAL_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Modified 1998-2001, 2003
  *	David Mosberger-Tang <davidm@hpl.hp.com>, Hewlett-Packard Co
@@ -8,6 +11,7 @@
  * Unfortunately, this file is being included by bits/signal.h in
  * glibc-2.x.  Hence the #ifdef __KERNEL__ ugliness.
  */
+<<<<<<< HEAD
 
 #define SIGHUP		 1
 #define SIGINT		 2
@@ -107,11 +111,19 @@
 #define SIGSTKSZ	262144	/* default stack size for sigaltstack() */
 
 #ifdef __KERNEL__
+=======
+#ifndef _ASM_IA64_SIGNAL_H
+#define _ASM_IA64_SIGNAL_H
+
+#include <uapi/asm/signal.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #define _NSIG		64
 #define _NSIG_BPW	64
 #define _NSIG_WORDS	(_NSIG / _NSIG_BPW)
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 #include <asm-generic/signal-defs.h>
@@ -131,6 +143,10 @@ typedef struct sigaltstack {
 
 #ifdef __KERNEL__
 
+=======
+# ifndef __ASSEMBLY__
+
+>>>>>>> refs/remotes/origin/master
 /* Most things should be clean enough to redefine this at will, if care
    is taken to make libc match.  */
 
@@ -140,6 +156,7 @@ typedef struct {
 	unsigned long sig[_NSIG_WORDS];
 } sigset_t;
 
+<<<<<<< HEAD
 struct sigaction {
 	__sighandler_t sa_handler;
 	unsigned long sa_flags;
@@ -156,5 +173,9 @@ struct k_sigaction {
 
 #endif /* __KERNEL__ */
 
+=======
+#  include <asm/sigcontext.h>
+
+>>>>>>> refs/remotes/origin/master
 # endif /* !__ASSEMBLY__ */
 #endif /* _ASM_IA64_SIGNAL_H */

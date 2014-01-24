@@ -9,6 +9,7 @@
  *
  * ftp://www.kernel.org/pub/linux/libs/security/linux-privs/kernel-2.6/
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_CAPABILITY_H
 #define _LINUX_CAPABILITY_H
@@ -85,6 +86,13 @@ struct vfs_cap_data {
 #define _LINUX_CAPABILITY_U32S     _LINUX_CAPABILITY_U32S_1
 
 #else
+=======
+#ifndef _LINUX_CAPABILITY_H
+#define _LINUX_CAPABILITY_H
+
+#include <uapi/linux/capability.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #define _KERNEL_CAPABILITY_VERSION _LINUX_CAPABILITY_VERSION_3
 #define _KERNEL_CAPABILITY_U32S    _LINUX_CAPABILITY_U32S_3
@@ -105,6 +113,7 @@ struct cpu_vfs_cap_data {
 #define _USER_CAP_HEADER_SIZE  (sizeof(struct __user_cap_header_struct))
 #define _KERNEL_CAP_T_SIZE     (sizeof(kernel_cap_t))
 
+<<<<<<< HEAD
 #endif
 
 
@@ -381,6 +390,11 @@ struct cpu_vfs_cap_data {
 
 #ifdef __KERNEL__
 
+=======
+
+struct file;
+struct inode;
+>>>>>>> refs/remotes/origin/master
 struct dentry;
 struct user_namespace;
 
@@ -388,9 +402,12 @@ struct user_namespace *current_user_ns(void);
 
 extern const kernel_cap_t __cap_empty_set;
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern const kernel_cap_t __cap_full_set;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern const kernel_cap_t __cap_init_eff_set;
 
 /*
@@ -555,20 +572,31 @@ extern bool has_ns_capability(struct task_struct *t,
 			      struct user_namespace *ns, int cap);
 extern bool has_capability_noaudit(struct task_struct *t, int cap);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern bool capable(int cap);
 extern bool ns_capable(struct user_namespace *ns, int cap);
 extern bool task_ns_capable(struct task_struct *t, int cap);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern bool has_ns_capability_noaudit(struct task_struct *t,
 				      struct user_namespace *ns, int cap);
 extern bool capable(int cap);
 extern bool ns_capable(struct user_namespace *ns, int cap);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 extern bool nsown_capable(int cap);
+=======
+extern bool inode_capable(const struct inode *inode, int cap);
+extern bool file_ns_capable(const struct file *file, struct user_namespace *ns, int cap);
+>>>>>>> refs/remotes/origin/master
 
 /* audit system wants to get cap info from files as well */
 extern int get_vfs_caps_from_disk(const struct dentry *dentry, struct cpu_vfs_cap_data *cpu_caps);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !_LINUX_CAPABILITY_H */

@@ -27,14 +27,18 @@
 #include <linux/pagemap.h>
 #include <linux/quotaops.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/writeback.h>
 #include <linux/buffer_head.h>
 #include <linux/mpage.h>
 #include <linux/fiemap.h>
 #include <linux/namei.h>
+<<<<<<< HEAD
 #include "ext2.h"
 #include "acl.h"
 #include "xip.h"
@@ -46,6 +50,14 @@ MODULE_LICENSE("GPL");
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/aio.h>
+#include "ext2.h"
+#include "acl.h"
+#include "xip.h"
+#include "xattr.h"
+
+>>>>>>> refs/remotes/origin/master
 static int __ext2_write_inode(struct inode *inode, int do_sync);
 
 /*
@@ -67,7 +79,11 @@ static void ext2_write_failed(struct address_space *mapping, loff_t to)
 	struct inode *inode = mapping->host;
 
 	if (to > inode->i_size) {
+<<<<<<< HEAD
 		truncate_pagecache(inode, to, inode->i_size);
+=======
+		truncate_pagecache(inode, inode->i_size);
+>>>>>>> refs/remotes/origin/master
 		ext2_truncate_blocks(inode, inode->i_size);
 	}
 }
@@ -90,6 +106,10 @@ void ext2_evict_inode(struct inode * inode)
 	truncate_inode_pages(&inode->i_data, 0);
 
 	if (want_delete) {
+<<<<<<< HEAD
+=======
+		sb_start_intwrite(inode->i_sb);
+>>>>>>> refs/remotes/origin/master
 		/* set dtime */
 		EXT2_I(inode)->i_dtime	= get_seconds();
 		mark_inode_dirty(inode);
@@ -98,10 +118,18 @@ void ext2_evict_inode(struct inode * inode)
 		inode->i_size = 0;
 		if (inode->i_blocks)
 			ext2_truncate_blocks(inode, 0);
+<<<<<<< HEAD
 	}
 
 	invalidate_inode_buffers(inode);
 	end_writeback(inode);
+=======
+		ext2_xattr_delete_inode(inode);
+	}
+
+	invalidate_inode_buffers(inode);
+	clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 
 	ext2_discard_reservation(inode);
 	rsv = EXT2_I(inode)->i_block_alloc_info;
@@ -109,8 +137,15 @@ void ext2_evict_inode(struct inode * inode)
 	if (unlikely(rsv))
 		kfree(rsv);
 
+<<<<<<< HEAD
 	if (want_delete)
 		ext2_free_inode(inode);
+=======
+	if (want_delete) {
+		ext2_free_inode(inode);
+		sb_end_intwrite(inode->i_sb);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 typedef struct {
@@ -503,6 +538,13 @@ static int ext2_alloc_branch(struct inode *inode,
 		 * parent to disk.
 		 */
 		bh = sb_getblk(inode->i_sb, new_blocks[n-1]);
+<<<<<<< HEAD
+=======
+		if (unlikely(!bh)) {
+			err = -ENOMEM;
+			goto failed;
+		}
+>>>>>>> refs/remotes/origin/master
 		branch[n].bh = bh;
 		lock_buffer(bh);
 		memset(bh->b_data, 0, blocksize);
@@ -531,6 +573,17 @@ static int ext2_alloc_branch(struct inode *inode,
 	}
 	*blks = num;
 	return err;
+<<<<<<< HEAD
+=======
+
+failed:
+	for (i = 1; i < n; i++)
+		bforget(branch[i].bh);
+	for (i = 0; i < indirect_blks; i++)
+		ext2_free_blocks(inode, new_blocks[i], 1);
+	ext2_free_blocks(inode, new_blocks[i], num);
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -625,6 +678,11 @@ static int ext2_get_blocks(struct inode *inode,
 	int count = 0;
 	ext2_fsblk_t first_block = 0;
 
+<<<<<<< HEAD
+=======
+	BUG_ON(maxblocks == 0);
+
+>>>>>>> refs/remotes/origin/master
 	depth = ext2_block_to_path(inode,iblock,offsets,&blocks_to_boundary);
 
 	if (depth == 0)
@@ -850,12 +908,17 @@ ext2_direct_IO(int rw, struct kiocb *iocb, const struct iovec *iov,
 	ssize_t ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = blockdev_direct_IO(rw, iocb, inode, inode->i_sb->s_bdev,
 				iov, offset, nr_segs, ext2_get_block, NULL);
 =======
 	ret = blockdev_direct_IO(rw, iocb, inode, iov, offset, nr_segs,
 				 ext2_get_block);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = blockdev_direct_IO(rw, iocb, inode, iov, offset, nr_segs,
+				 ext2_get_block);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0 && (rw & WRITE))
 		ext2_write_failed(mapping, offset + iov_length(iov, nr_segs));
 	return ret;
@@ -1196,10 +1259,15 @@ static int ext2_setsize(struct inode *inode, loff_t newsize)
 		return -EPERM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	inode_dio_wait(inode);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	inode_dio_wait(inode);
+
+>>>>>>> refs/remotes/origin/master
 	if (mapping_is_xip(inode->i_mapping))
 		error = xip_truncate_page(inode->i_mapping, newsize);
 	else if (test_opt(inode->i_sb, NOBH))
@@ -1312,6 +1380,11 @@ struct inode *ext2_iget (struct super_block *sb, unsigned long ino)
 	struct inode *inode;
 	long ret = -EIO;
 	int n;
+<<<<<<< HEAD
+=======
+	uid_t i_uid;
+	gid_t i_gid;
+>>>>>>> refs/remotes/origin/master
 
 	inode = iget_locked(sb, ino);
 	if (!inode)
@@ -1329,6 +1402,7 @@ struct inode *ext2_iget (struct super_block *sb, unsigned long ino)
 	}
 
 	inode->i_mode = le16_to_cpu(raw_inode->i_mode);
+<<<<<<< HEAD
 	inode->i_uid = (uid_t)le16_to_cpu(raw_inode->i_uid_low);
 	inode->i_gid = (gid_t)le16_to_cpu(raw_inode->i_gid_low);
 	if (!(test_opt (inode->i_sb, NO_UID32))) {
@@ -1340,6 +1414,17 @@ struct inode *ext2_iget (struct super_block *sb, unsigned long ino)
 =======
 	set_nlink(inode, le16_to_cpu(raw_inode->i_links_count));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i_uid = (uid_t)le16_to_cpu(raw_inode->i_uid_low);
+	i_gid = (gid_t)le16_to_cpu(raw_inode->i_gid_low);
+	if (!(test_opt (inode->i_sb, NO_UID32))) {
+		i_uid |= le16_to_cpu(raw_inode->i_uid_high) << 16;
+		i_gid |= le16_to_cpu(raw_inode->i_gid_high) << 16;
+	}
+	i_uid_write(inode, i_uid);
+	i_gid_write(inode, i_gid);
+	set_nlink(inode, le16_to_cpu(raw_inode->i_links_count));
+>>>>>>> refs/remotes/origin/master
 	inode->i_size = le32_to_cpu(raw_inode->i_size);
 	inode->i_atime.tv_sec = (signed)le32_to_cpu(raw_inode->i_atime);
 	inode->i_ctime.tv_sec = (signed)le32_to_cpu(raw_inode->i_ctime);
@@ -1436,8 +1521,13 @@ static int __ext2_write_inode(struct inode *inode, int do_sync)
 	struct ext2_inode_info *ei = EXT2_I(inode);
 	struct super_block *sb = inode->i_sb;
 	ino_t ino = inode->i_ino;
+<<<<<<< HEAD
 	uid_t uid = inode->i_uid;
 	gid_t gid = inode->i_gid;
+=======
+	uid_t uid = i_uid_read(inode);
+	gid_t gid = i_gid_read(inode);
+>>>>>>> refs/remotes/origin/master
 	struct buffer_head * bh;
 	struct ext2_inode * raw_inode = ext2_get_inode(sb, ino, &bh);
 	int n;
@@ -1552,8 +1642,13 @@ int ext2_setattr(struct dentry *dentry, struct iattr *iattr)
 
 	if (is_quota_modification(inode, iattr))
 		dquot_initialize(inode);
+<<<<<<< HEAD
 	if ((iattr->ia_valid & ATTR_UID && iattr->ia_uid != inode->i_uid) ||
 	    (iattr->ia_valid & ATTR_GID && iattr->ia_gid != inode->i_gid)) {
+=======
+	if ((iattr->ia_valid & ATTR_UID && !uid_eq(iattr->ia_uid, inode->i_uid)) ||
+	    (iattr->ia_valid & ATTR_GID && !gid_eq(iattr->ia_gid, inode->i_gid))) {
+>>>>>>> refs/remotes/origin/master
 		error = dquot_transfer(inode, iattr);
 		if (error)
 			return error;

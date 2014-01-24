@@ -227,6 +227,7 @@ static u8 tpm_nsc_status(struct tpm_chip *chip)
 	return inb(chip->vendor.base + NSC_STATUS);
 }
 
+<<<<<<< HEAD
 static const struct file_operations nsc_ops = {
 	.owner = THIS_MODULE,
 	.llseek = no_llseek,
@@ -252,15 +253,27 @@ static struct attribute * nsc_attrs[] = {
 static struct attribute_group nsc_attr_grp = { .attrs = nsc_attrs };
 
 static const struct tpm_vendor_specific tpm_nsc = {
+=======
+static bool tpm_nsc_req_canceled(struct tpm_chip *chip, u8 status)
+{
+	return (status == NSC_STATUS_RDY);
+}
+
+static const struct tpm_class_ops tpm_nsc = {
+>>>>>>> refs/remotes/origin/master
 	.recv = tpm_nsc_recv,
 	.send = tpm_nsc_send,
 	.cancel = tpm_nsc_cancel,
 	.status = tpm_nsc_status,
 	.req_complete_mask = NSC_STATUS_OBF,
 	.req_complete_val = NSC_STATUS_OBF,
+<<<<<<< HEAD
 	.req_canceled = NSC_STATUS_RDY,
 	.attr_group = &nsc_attr_grp,
 	.miscdev = { .fops = &nsc_ops, },
+=======
+	.req_canceled = tpm_nsc_req_canceled,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *pdev = NULL;
@@ -274,6 +287,7 @@ static void tpm_nsc_remove(struct device *dev)
 	}
 }
 
+<<<<<<< HEAD
 static int tpm_nsc_suspend(struct platform_device *dev, pm_message_t msg)
 {
 	return tpm_pm_suspend(&dev->dev, msg);
@@ -290,6 +304,15 @@ static struct platform_driver nsc_drv = {
 	.driver          = {
 		.name    = "tpm_nsc",
 		.owner   = THIS_MODULE,
+=======
+static SIMPLE_DEV_PM_OPS(tpm_nsc_pm, tpm_pm_suspend, tpm_pm_resume);
+
+static struct platform_driver nsc_drv = {
+	.driver          = {
+		.name    = "tpm_nsc",
+		.owner   = THIS_MODULE,
+		.pm      = &tpm_nsc_pm,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -331,6 +354,7 @@ static int __init init_nsc(void)
 	pdev->dev.release = tpm_nsc_remove;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((rc = platform_device_register(pdev)) < 0)
 		goto err_free_dev;
 
@@ -338,13 +362,18 @@ static int __init init_nsc(void)
 		rc = -EBUSY;
 		goto err_unreg_dev;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((rc = platform_device_add(pdev)) < 0)
 		goto err_put_dev;
 
 	if (request_region(base, 2, "tpm_nsc0") == NULL ) {
 		rc = -EBUSY;
 		goto err_del_dev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!(chip = tpm_register_hardware(&pdev->dev, &tpm_nsc))) {
@@ -392,16 +421,22 @@ static int __init init_nsc(void)
 err_rel_reg:
 	release_region(base, 2);
 <<<<<<< HEAD
+<<<<<<< HEAD
 err_unreg_dev:
 	platform_device_unregister(pdev);
 err_free_dev:
 	kfree(pdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 err_del_dev:
 	platform_device_del(pdev);
 err_put_dev:
 	platform_device_put(pdev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 err_unreg_drv:
 	platform_driver_unregister(&nsc_drv);
 	return rc;
@@ -413,10 +448,13 @@ static void __exit cleanup_nsc(void)
 		tpm_nsc_remove(&pdev->dev);
 		platform_device_unregister(pdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kfree(pdev);
 		pdev = NULL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_driver_unregister(&nsc_drv);

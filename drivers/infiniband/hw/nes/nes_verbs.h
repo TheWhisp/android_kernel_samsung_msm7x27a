@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2006 - 2009 Intel Corporation.  All rights reserved.
 =======
  * Copyright (c) 2006 - 2011 Intel Corporation.  All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2006 - 2011 Intel Corporation.  All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2005 Open Grid Computing, Inc. All rights reserved.
  *
  * This software is available to you under a choice of one of two
@@ -144,11 +148,16 @@ struct nes_qp {
 	struct nes_pd         *nespd;
 	void *cm_node; /* handle of the node this QP is associated with */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ietf_mpa_frame *ietf_frame;
 =======
 	void                  *ietf_frame;
 	u8                    ietf_frame_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void                  *ietf_frame;
+	u8                    ietf_frame_size;
+>>>>>>> refs/remotes/origin/master
 	dma_addr_t            ietf_frame_pbase;
 	struct ib_mr          *lsmm_mr;
 	struct nes_hw_qp      hwqp;
@@ -164,9 +173,13 @@ struct nes_qp {
 	u32                   mmap_rq_db_index;
 	spinlock_t            lock;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spinlock_t            pau_lock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spinlock_t            pau_lock;
+>>>>>>> refs/remotes/origin/master
 	struct nes_qp_context *nesqp_context;
 	dma_addr_t            nesqp_context_pbase;
 	void	              *pbl_vbase;
@@ -175,10 +188,15 @@ struct nes_qp {
 	struct timer_list     terminate_timer;
 	enum ib_event_type    terminate_eventtype;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct sk_buff_head   pau_list;
 	u32                   pau_rcv_nxt;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sk_buff_head   pau_list;
+	u32                   pau_rcv_nxt;
+>>>>>>> refs/remotes/origin/master
 	u16                   active_conn:1;
 	u16                   skip_lsmm:1;
 	u16                   user_mode:1;
@@ -187,11 +205,16 @@ struct nes_qp {
 	u16                   destroyed:1;
 	u16                   sig_all:1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16                   rsvd:9;
 =======
 	u16                   pau_mode:1;
 	u16                   rsvd:8;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16                   pau_mode:1;
+	u16                   rsvd:8;
+>>>>>>> refs/remotes/origin/master
 	u16                   private_data_len;
 	u16                   term_sq_flush_code;
 	u16                   term_rq_flush_code;
@@ -200,10 +223,16 @@ struct nes_qp {
 	u8                    term_flags;
 	u8                    sq_kmapped;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u8                    pau_busy;
 	u8                    pau_pending;
 	u8                    pau_state;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8                    pau_busy;
+	u8                    pau_pending;
+	u8                    pau_state;
+>>>>>>> refs/remotes/origin/master
 };
 #endif			/* NES_VERBS_H */

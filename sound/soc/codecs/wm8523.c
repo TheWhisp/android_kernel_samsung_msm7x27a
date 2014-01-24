@@ -18,6 +18,7 @@
 #include <linux/pm.h>
 #include <linux/i2c.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/regulator/consumer.h>
 #include <linux/slab.h>
@@ -26,6 +27,12 @@
 #include <linux/slab.h>
 #include <linux/of_device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regmap.h>
+#include <linux/regulator/consumer.h>
+#include <linux/slab.h>
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -45,13 +52,18 @@ static const char *wm8523_supply_names[WM8523_NUM_SUPPLIES] = {
 
 /* codec private data */
 struct wm8523_priv {
+<<<<<<< HEAD
 	enum snd_soc_control_type control_type;
+=======
+	struct regmap *regmap;
+>>>>>>> refs/remotes/origin/master
 	struct regulator_bulk_data supplies[WM8523_NUM_SUPPLIES];
 	unsigned int sysclk;
 	unsigned int rate_constraint_list[WM8523_NUM_RATES];
 	struct snd_pcm_hw_constraint_list rate_constraint;
 };
 
+<<<<<<< HEAD
 static const u16 wm8523_reg[WM8523_REGISTER_COUNT] = {
 	0x8523,     /* R0 - DEVICE_ID */
 	0x0001,     /* R1 - REVISION */
@@ -65,10 +77,24 @@ static const u16 wm8523_reg[WM8523_REGISTER_COUNT] = {
 };
 
 static int wm8523_volatile_register(struct snd_soc_codec *codec, unsigned int reg)
+=======
+static const struct reg_default wm8523_reg_defaults[] = {
+	{ 2, 0x0000 },     /* R2 - PSCTRL1 */
+	{ 3, 0x1812 },     /* R3 - AIF_CTRL1 */
+	{ 4, 0x0000 },     /* R4 - AIF_CTRL2 */
+	{ 5, 0x0001 },     /* R5 - DAC_CTRL3 */
+	{ 6, 0x0190 },     /* R6 - DAC_GAINL */
+	{ 7, 0x0190 },     /* R7 - DAC_GAINR */
+	{ 8, 0x0000 },     /* R8 - ZERO_DETECT */
+};
+
+static bool wm8523_volatile_register(struct device *dev, unsigned int reg)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (reg) {
 	case WM8523_DEVICE_ID:
 	case WM8523_REVISION:
+<<<<<<< HEAD
 		return 1;
 	default:
 		return 0;
@@ -80,6 +106,14 @@ static int wm8523_reset(struct snd_soc_codec *codec)
 	return snd_soc_write(codec, WM8523_DEVICE_ID, 0);
 }
 
+=======
+		return true;
+	default:
+		return false;
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static const DECLARE_TLV_DB_SCALE(dac_tlv, -10000, 25, 0);
 
 static const char *wm8523_zd_count_text[] = {
@@ -91,10 +125,14 @@ static const struct soc_enum wm8523_zc_count =
 	SOC_ENUM_SINGLE(WM8523_ZERO_DETECT, 0, 2, wm8523_zd_count_text);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct snd_kcontrol_new wm8523_snd_controls[] = {
 =======
 static const struct snd_kcontrol_new wm8523_controls[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_kcontrol_new wm8523_controls[] = {
+>>>>>>> refs/remotes/origin/master
 SOC_DOUBLE_R_TLV("Playback Volume", WM8523_DAC_GAINL, WM8523_DAC_GAINR,
 		 0, 448, 0, dac_tlv),
 SOC_SINGLE("ZC Switch", WM8523_DAC_CTRL3, 4, 1, 0),
@@ -112,14 +150,19 @@ SND_SOC_DAPM_OUTPUT("LINEVOUTR"),
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route intercon[] = {
 =======
 static const struct snd_soc_dapm_route wm8523_dapm_routes[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dapm_route wm8523_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/master
 	{ "LINEVOUTL", NULL, "DAC" },
 	{ "LINEVOUTR", NULL, "DAC" },
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int wm8523_add_widgets(struct snd_soc_codec *codec)
 {
@@ -134,6 +177,8 @@ static int wm8523_add_widgets(struct snd_soc_codec *codec)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct {
 	int value;
 	int ratio;
@@ -173,8 +218,12 @@ static int wm8523_hw_params(struct snd_pcm_substream *substream,
 			    struct snd_pcm_hw_params *params,
 			    struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct wm8523_priv *wm8523 = snd_soc_codec_get_drvdata(codec);
 	int i;
 	u16 aifctrl1 = snd_soc_read(codec, WM8523_AIF_CTRL1);
@@ -330,8 +379,12 @@ static int wm8523_set_bias_level(struct snd_soc_codec *codec,
 				 enum snd_soc_bias_level level)
 {
 	struct wm8523_priv *wm8523 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	u16 *reg_cache = codec->reg_cache;
 	int ret, i;
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	switch (level) {
 	case SND_SOC_BIAS_ON:
@@ -354,16 +407,25 @@ static int wm8523_set_bias_level(struct snd_soc_codec *codec,
 				return ret;
 			}
 
+<<<<<<< HEAD
+=======
+			/* Sync back default/cached values */
+			regcache_sync(wm8523->regmap);
+
+>>>>>>> refs/remotes/origin/master
 			/* Initial power up */
 			snd_soc_update_bits(codec, WM8523_PSCTRL1,
 					    WM8523_SYS_ENA_MASK, 1);
 
+<<<<<<< HEAD
 			/* Sync back default/cached values */
 			for (i = WM8523_AIF_CTRL1;
 			     i < WM8523_MAX_REGISTER; i++)
 				snd_soc_write(codec, i, reg_cache[i]);
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 			msleep(100);
 		}
 
@@ -393,10 +455,14 @@ static int wm8523_set_bias_level(struct snd_soc_codec *codec,
 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8523_dai_ops = {
 =======
 static const struct snd_soc_dai_ops wm8523_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8523_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.startup	= wm8523_startup,
 	.hw_params	= wm8523_hw_params,
 	.set_sysclk	= wm8523_set_dai_sysclk,
@@ -417,10 +483,14 @@ static struct snd_soc_dai_driver wm8523_dai = {
 
 #ifdef CONFIG_PM
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8523_suspend(struct snd_soc_codec *codec, pm_message_t state)
 =======
 static int wm8523_suspend(struct snd_soc_codec *codec)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wm8523_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	wm8523_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -439,22 +509,32 @@ static int wm8523_resume(struct snd_soc_codec *codec)
 static int wm8523_probe(struct snd_soc_codec *codec)
 {
 	struct wm8523_priv *wm8523 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	int ret, i;
 
 <<<<<<< HEAD
 	codec->hw_write = (hw_write_t)i2c_master_send;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
 	wm8523->rate_constraint.list = &wm8523->rate_constraint_list[0];
 	wm8523->rate_constraint.count =
 		ARRAY_SIZE(wm8523->rate_constraint_list);
 
+<<<<<<< HEAD
 	ret = snd_soc_codec_set_cache_io(codec, 8, 16, wm8523->control_type);
+=======
+	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 		return ret;
 	}
 
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(wm8523->supplies); i++)
 		wm8523->supplies[i].supply = wm8523_supply_names[i];
 
@@ -497,6 +577,8 @@ static int wm8523_probe(struct snd_soc_codec *codec)
 		goto err_enable;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Change some default settings - latch VU and enable ZC */
 	snd_soc_update_bits(codec, WM8523_DAC_GAINR,
 			    WM8523_DACR_VU, WM8523_DACR_VU);
@@ -504,6 +586,7 @@ static int wm8523_probe(struct snd_soc_codec *codec)
 
 	wm8523_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
+<<<<<<< HEAD
 	/* Bias level configuration will have done an extra enable */
 	regulator_bulk_disable(ARRAY_SIZE(wm8523->supplies), wm8523->supplies);
 
@@ -522,14 +605,21 @@ err_get:
 	regulator_bulk_free(ARRAY_SIZE(wm8523->supplies), wm8523->supplies);
 
 	return ret;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int wm8523_remove(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	struct wm8523_priv *wm8523 = snd_soc_codec_get_drvdata(codec);
 
 	wm8523_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	regulator_bulk_free(ARRAY_SIZE(wm8523->supplies), wm8523->supplies);
+=======
+	wm8523_set_bias_level(codec, SND_SOC_BIAS_OFF);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -539,12 +629,15 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8523 = {
 	.suspend =	wm8523_suspend,
 	.resume =	wm8523_resume,
 	.set_bias_level = wm8523_set_bias_level,
+<<<<<<< HEAD
 	.reg_cache_size = WM8523_REGISTER_COUNT,
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm8523_reg,
 	.volatile_register = wm8523_volatile_register,
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.controls = wm8523_controls,
 	.num_controls = ARRAY_SIZE(wm8523_controls),
@@ -557,6 +650,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8523 = {
 static const struct of_device_id wm8523_of_match[] = {
 	{ .compatible = "wlf,wm8523" },
 	{ },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
@@ -586,6 +680,101 @@ static __devexit int wm8523_i2c_remove(struct i2c_client *client)
 {
 	snd_soc_unregister_codec(&client->dev);
 	kfree(i2c_get_clientdata(client));
+=======
+};
+
+static const struct regmap_config wm8523_regmap = {
+	.reg_bits = 8,
+	.val_bits = 16,
+	.max_register = WM8523_ZERO_DETECT,
+
+	.reg_defaults = wm8523_reg_defaults,
+	.num_reg_defaults = ARRAY_SIZE(wm8523_reg_defaults),
+	.cache_type = REGCACHE_RBTREE,
+
+	.volatile_reg = wm8523_volatile_register,
+};
+
+#if IS_ENABLED(CONFIG_I2C)
+static int wm8523_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+{
+	struct wm8523_priv *wm8523;
+	unsigned int val;
+	int ret, i;
+
+	wm8523 = devm_kzalloc(&i2c->dev, sizeof(struct wm8523_priv),
+			      GFP_KERNEL);
+	if (wm8523 == NULL)
+		return -ENOMEM;
+
+	wm8523->regmap = devm_regmap_init_i2c(i2c, &wm8523_regmap);
+	if (IS_ERR(wm8523->regmap)) {
+		ret = PTR_ERR(wm8523->regmap);
+		dev_err(&i2c->dev, "Failed to create regmap: %d\n", ret);
+		return ret;
+	}
+
+	for (i = 0; i < ARRAY_SIZE(wm8523->supplies); i++)
+		wm8523->supplies[i].supply = wm8523_supply_names[i];
+
+	ret = devm_regulator_bulk_get(&i2c->dev, ARRAY_SIZE(wm8523->supplies),
+				      wm8523->supplies);
+	if (ret != 0) {
+		dev_err(&i2c->dev, "Failed to request supplies: %d\n", ret);
+		return ret;
+	}
+
+	ret = regulator_bulk_enable(ARRAY_SIZE(wm8523->supplies),
+				    wm8523->supplies);
+	if (ret != 0) {
+		dev_err(&i2c->dev, "Failed to enable supplies: %d\n", ret);
+		return ret;
+	}
+
+	ret = regmap_read(wm8523->regmap, WM8523_DEVICE_ID, &val);
+	if (ret < 0) {
+		dev_err(&i2c->dev, "Failed to read ID register\n");
+		goto err_enable;
+	}
+	if (val != 0x8523) {
+		dev_err(&i2c->dev, "Device is not a WM8523, ID is %x\n", ret);
+		ret = -EINVAL;
+		goto err_enable;
+	}
+
+	ret = regmap_read(wm8523->regmap, WM8523_REVISION, &val);
+	if (ret < 0) {
+		dev_err(&i2c->dev, "Failed to read revision register\n");
+		goto err_enable;
+	}
+	dev_info(&i2c->dev, "revision %c\n",
+		 (val & WM8523_CHIP_REV_MASK) + 'A');
+
+	ret = regmap_write(wm8523->regmap, WM8523_DEVICE_ID, 0x8523);
+	if (ret != 0) {
+		dev_err(&i2c->dev, "Failed to reset device: %d\n", ret);
+		goto err_enable;
+	}
+
+	regulator_bulk_disable(ARRAY_SIZE(wm8523->supplies), wm8523->supplies);
+
+	i2c_set_clientdata(i2c, wm8523);
+
+	ret =  snd_soc_register_codec(&i2c->dev,
+			&soc_codec_dev_wm8523, &wm8523_dai, 1);
+
+	return ret;
+
+err_enable:
+	regulator_bulk_disable(ARRAY_SIZE(wm8523->supplies), wm8523->supplies);
+	return ret;
+}
+
+static int wm8523_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -598,6 +787,7 @@ MODULE_DEVICE_TABLE(i2c, wm8523_i2c_id);
 static struct i2c_driver wm8523_i2c_driver = {
 	.driver = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm8523-codec",
 		.owner = THIS_MODULE,
 =======
@@ -608,6 +798,14 @@ static struct i2c_driver wm8523_i2c_driver = {
 	},
 	.probe =    wm8523_i2c_probe,
 	.remove =   __devexit_p(wm8523_i2c_remove),
+=======
+		.name = "wm8523",
+		.owner = THIS_MODULE,
+		.of_match_table = wm8523_of_match,
+	},
+	.probe =    wm8523_i2c_probe,
+	.remove =   wm8523_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = wm8523_i2c_id,
 };
 #endif
@@ -615,7 +813,11 @@ static struct i2c_driver wm8523_i2c_driver = {
 static int __init wm8523_modinit(void)
 {
 	int ret;
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	ret = i2c_add_driver(&wm8523_i2c_driver);
 	if (ret != 0) {
 		printk(KERN_ERR "Failed to register WM8523 I2C driver: %d\n",
@@ -628,7 +830,11 @@ module_init(wm8523_modinit);
 
 static void __exit wm8523_exit(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	i2c_del_driver(&wm8523_i2c_driver);
 #endif
 }

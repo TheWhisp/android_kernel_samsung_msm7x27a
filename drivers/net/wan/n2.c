@@ -17,10 +17,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/capability.h>
@@ -347,32 +352,45 @@ static int __init n2_run(unsigned long io, unsigned long irq,
 
 	if (io < 0x200 || io > 0x3FF || (io % N2_IOPORTS) != 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "n2: invalid I/O port value\n");
 =======
 		pr_err("invalid I/O port value\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("invalid I/O port value\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
 	if (irq < 3 || irq > 15 || irq == 6) /* FIXME */ {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "n2: invalid IRQ value\n");
 =======
 		pr_err("invalid IRQ value\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("invalid IRQ value\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
 	if (winbase < 0xA0000 || winbase > 0xFFFFF || (winbase & 0xFFF) != 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "n2: invalid RAM value\n");
 =======
 		pr_err("invalid RAM value\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("invalid RAM value\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
 	card = kzalloc(sizeof(card_t), GFP_KERNEL);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (card == NULL) {
 		printk(KERN_ERR "n2: unable to allocate memory\n");
@@ -382,25 +400,37 @@ static int __init n2_run(unsigned long io, unsigned long irq,
 	if (card == NULL)
 		return -ENOBUFS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (card == NULL)
+		return -ENOBUFS;
+>>>>>>> refs/remotes/origin/master
 
 	card->ports[0].dev = alloc_hdlcdev(&card->ports[0]);
 	card->ports[1].dev = alloc_hdlcdev(&card->ports[1]);
 	if (!card->ports[0].dev || !card->ports[1].dev) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "n2: unable to allocate memory\n");
 =======
 		pr_err("unable to allocate memory\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("unable to allocate memory\n");
+>>>>>>> refs/remotes/origin/master
 		n2_destroy_card(card);
 		return -ENOMEM;
 	}
 
 	if (!request_region(io, N2_IOPORTS, devname)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "n2: I/O port region in use\n");
 =======
 		pr_err("I/O port region in use\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("I/O port region in use\n");
+>>>>>>> refs/remotes/origin/master
 		n2_destroy_card(card);
 		return -EBUSY;
 	}
@@ -408,10 +438,14 @@ static int __init n2_run(unsigned long io, unsigned long irq,
 
 	if (request_irq(irq, sca_intr, 0, devname, card)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "n2: could not allocate IRQ\n");
 =======
 		pr_err("could not allocate IRQ\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("could not allocate IRQ\n");
+>>>>>>> refs/remotes/origin/master
 		n2_destroy_card(card);
 		return -EBUSY;
 	}
@@ -419,10 +453,14 @@ static int __init n2_run(unsigned long io, unsigned long irq,
 
 	if (!request_mem_region(winbase, USE_WINDOWSIZE, devname)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "n2: could not request RAM window\n");
 =======
 		pr_err("could not request RAM window\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("could not request RAM window\n");
+>>>>>>> refs/remotes/origin/master
 		n2_destroy_card(card);
 		return -EBUSY;
 	}
@@ -430,10 +468,14 @@ static int __init n2_run(unsigned long io, unsigned long irq,
 	card->winbase = ioremap(winbase, USE_WINDOWSIZE);
 	if (!card->winbase) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "n2: ioremap() failed\n");
 =======
 		pr_err("ioremap() failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("ioremap() failed\n");
+>>>>>>> refs/remotes/origin/master
 		n2_destroy_card(card);
 		return -EFAULT;
 	}
@@ -456,10 +498,14 @@ static int __init n2_run(unsigned long io, unsigned long irq,
 
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "n2: invalid window size\n");
 =======
 		pr_err("invalid window size\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("invalid window size\n");
+>>>>>>> refs/remotes/origin/master
 		n2_destroy_card(card);
 		return -ENODEV;
 	}
@@ -480,6 +526,7 @@ static int __init n2_run(unsigned long io, unsigned long irq,
 		(card->tx_ring_buffers + card->rx_ring_buffers);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "n2: RISCom/N2 %u KB RAM, IRQ%u, "
 	       "using %u TX + %u RX packets rings\n", card->ram_size / 1024,
 	       card->irq, card->tx_ring_buffers, card->rx_ring_buffers);
@@ -487,13 +534,18 @@ static int __init n2_run(unsigned long io, unsigned long irq,
 	if (card->tx_ring_buffers < 1) {
 		printk(KERN_ERR "n2: RAM test failed\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_info("RISCom/N2 %u KB RAM, IRQ%u, using %u TX + %u RX packets rings\n",
 		card->ram_size / 1024, card->irq,
 		card->tx_ring_buffers, card->rx_ring_buffers);
 
 	if (card->tx_ring_buffers < 1) {
 		pr_err("RAM test failed\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		n2_destroy_card(card);
 		return -EIO;
 	}
@@ -530,11 +582,15 @@ static int __init n2_run(unsigned long io, unsigned long irq,
 
 		if (register_hdlc_device(dev)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING "n2: unable to register hdlc "
 			       "device\n");
 =======
 			pr_warn("unable to register hdlc device\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn("unable to register hdlc device\n");
+>>>>>>> refs/remotes/origin/master
 			port->card = NULL;
 			n2_destroy_card(card);
 			return -ENOBUFS;
@@ -542,11 +598,15 @@ static int __init n2_run(unsigned long io, unsigned long irq,
 		sca_init_port(port); /* Set up SCA memory */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: RISCom/N2 node %d\n",
 		       dev->name, port->phy_node);
 =======
 		netdev_info(dev, "RISCom/N2 node %d\n", port->phy_node);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(dev, "RISCom/N2 node %d\n", port->phy_node);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	*new_card = card;
@@ -562,19 +622,27 @@ static int __init n2_init(void)
 	if (hw==NULL) {
 #ifdef MODULE
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "n2: no card initialized\n");
 =======
 		pr_info("no card initialized\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("no card initialized\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 		return -EINVAL;	/* no parameters specified, abort */
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "%s\n", version);
 =======
 	pr_info("%s\n", version);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("%s\n", version);
+>>>>>>> refs/remotes/origin/master
 
 	do {
 		unsigned long io, irq, ram;
@@ -613,10 +681,14 @@ static int __init n2_init(void)
 	}while(*hw++ == ':');
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_ERR "n2: invalid hardware parameters\n");
 =======
 	pr_err("invalid hardware parameters\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_err("invalid hardware parameters\n");
+>>>>>>> refs/remotes/origin/master
 	return first_card ? 0 : -EINVAL;
 }
 

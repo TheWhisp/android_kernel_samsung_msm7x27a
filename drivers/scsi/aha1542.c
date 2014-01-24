@@ -22,7 +22,11 @@
  *        Added module command-line options
  *        19-Jul-99
  *  Modified by Adam Fritzler
+<<<<<<< HEAD
  *        Added proper detection of the AHA-1640 (MCA version of AHA-1540)
+=======
+ *        Added proper detection of the AHA-1640 (MCA, now deleted)
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/module.h>
@@ -37,6 +41,7 @@
 #include <linux/spinlock.h>
 #include <linux/isapnp.h>
 #include <linux/blkdev.h>
+<<<<<<< HEAD
 #include <linux/mca.h>
 #include <linux/mca-legacy.h>
 #include <linux/slab.h>
@@ -46,6 +51,11 @@
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/slab.h>
+
+#include <asm/dma.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 #include "scsi.h"
@@ -55,7 +65,11 @@
 #define SCSI_BUF_PA(address)	isa_virt_to_bus(address)
 #define SCSI_SG_PA(sgent)	(isa_page_to_bus(sg_page((sgent))) + (sgent)->offset)
 
+<<<<<<< HEAD
 #include<linux/stat.h>
+=======
+#include <linux/stat.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef DEBUG
 #define DEB(x) x
@@ -75,7 +89,11 @@
 #define MAXBOARDS 4		/* Increase this and the sizes of the
 				   arrays below, if you need more.. */
 
+<<<<<<< HEAD
 /* Boards 3,4 slots are reserved for ISAPnP/MCA scans */
+=======
+/* Boards 3,4 slots are reserved for ISAPnP scans */
+>>>>>>> refs/remotes/origin/master
 
 static unsigned int bases[MAXBOARDS] __initdata = {0x330, 0x334, 0, 0};
 
@@ -106,10 +124,14 @@ static int setup_dmaspeed[MAXBOARDS] __initdata = { -1, -1, -1, -1 };
 
 #if defined(MODULE)
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int isapnp = 0;
 =======
 static bool isapnp = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool isapnp = 0;
+>>>>>>> refs/remotes/origin/master
 static int aha1542[] = {0x330, 11, 4, -1};
 module_param_array(aha1542, int, NULL, 0);
 module_param(isapnp, bool, 0);
@@ -1017,6 +1039,7 @@ static int __init aha1542_detect(struct scsi_host_template * tpnt)
 #endif
 
 	/*
+<<<<<<< HEAD
 	 *	Find MicroChannel cards (AHA1640)
 	 */
 #ifdef CONFIG_MCA_LEGACY
@@ -1077,6 +1100,8 @@ static int __init aha1542_detect(struct scsi_host_template * tpnt)
 #endif
 
 	/*
+=======
+>>>>>>> refs/remotes/origin/master
 	 *	Hunt for ISA Plug'n'Pray Adaptecs (AHA1535)
 	 */
 

@@ -3,6 +3,7 @@ rfkill - radio frequency (RF) connector kill switch support
 For details to this subsystem look at Documentation/rfkill.txt.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 What:                /sys/class/rfkill/rfkill[0-9]+/state
 Date:                09-Jul-2007
 KernelVersion        v2.6.22
@@ -29,6 +30,8 @@ Description:        This file is deprecated because there no longer is a way to
                 This file is scheduled to be removed in 2012.
 Values:         0: Kernel handles events
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 What:		/sys/class/rfkill/rfkill[0-9]+/state
 Date:		09-Jul-2007
 KernelVersion	v2.6.22
@@ -54,4 +57,7 @@ Description:	This file is deprecated because there no longer is a way to
 		claim just control over a single rfkill instance.
 		This file is scheduled to be removed in 2012.
 Values: 	0: Kernel handles events
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

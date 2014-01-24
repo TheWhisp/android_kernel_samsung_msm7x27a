@@ -19,6 +19,10 @@
 
 struct rq_entry {
 	struct list_head list;
+<<<<<<< HEAD
+=======
+	uint32_t recover_seq;
+>>>>>>> refs/remotes/origin/master
 	int nodeid;
 	struct dlm_message request;
 };
@@ -41,6 +45,10 @@ void dlm_add_requestqueue(struct dlm_ls *ls, int nodeid, struct dlm_message *ms)
 		return;
 	}
 
+<<<<<<< HEAD
+=======
+	e->recover_seq = ls->ls_recover_seq & 0xFFFFFFFF;
+>>>>>>> refs/remotes/origin/master
 	e->nodeid = nodeid;
 	memcpy(&e->request, ms, ms->m_header.h_length);
 
@@ -63,6 +71,10 @@ void dlm_add_requestqueue(struct dlm_ls *ls, int nodeid, struct dlm_message *ms)
 int dlm_process_requestqueue(struct dlm_ls *ls)
 {
 	struct rq_entry *e;
+<<<<<<< HEAD
+=======
+	struct dlm_message *ms;
+>>>>>>> refs/remotes/origin/master
 	int error = 0;
 
 	mutex_lock(&ls->ls_requestqueue_mutex);
@@ -76,7 +88,19 @@ int dlm_process_requestqueue(struct dlm_ls *ls)
 		e = list_entry(ls->ls_requestqueue.next, struct rq_entry, list);
 		mutex_unlock(&ls->ls_requestqueue_mutex);
 
+<<<<<<< HEAD
 		dlm_receive_message_saved(ls, &e->request);
+=======
+		ms = &e->request;
+
+		log_limit(ls, "dlm_process_requestqueue msg %d from %d "
+			  "lkid %x remid %x result %d seq %u",
+			  ms->m_type, ms->m_header.h_nodeid,
+			  ms->m_lkid, ms->m_remid, ms->m_result,
+			  e->recover_seq);
+
+		dlm_receive_message_saved(ls, &e->request, e->recover_seq);
+>>>>>>> refs/remotes/origin/master
 
 		mutex_lock(&ls->ls_requestqueue_mutex);
 		list_del(&e->list);
@@ -138,6 +162,7 @@ static int purge_request(struct dlm_ls *ls, struct dlm_message *ms, int nodeid)
 	if (!dlm_no_directory(ls))
 		return 0;
 
+<<<<<<< HEAD
 	/* with no directory, the master is likely to change as a part of
 	   recovery; requests to/from the defunct master need to be purged */
 
@@ -167,6 +192,9 @@ static int purge_request(struct dlm_ls *ls, struct dlm_message *ms, int nodeid)
 	}
 
 	return 0;
+=======
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 void dlm_purge_requestqueue(struct dlm_ls *ls)

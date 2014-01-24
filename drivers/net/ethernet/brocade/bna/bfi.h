@@ -22,6 +22,7 @@
 
 #pragma pack(1)
 
+<<<<<<< HEAD
 /**
  * BFI FW image type
  */
@@ -31,6 +32,13 @@
 /**
  * Msg header common to all msgs
  */
+=======
+/* BFI FW image type */
+#define	BFI_FLASH_CHUNK_SZ			256	/*!< Flash chunk size */
+#define	BFI_FLASH_CHUNK_SZ_WORDS	(BFI_FLASH_CHUNK_SZ/sizeof(u32))
+
+/* Msg header common to all msgs */
+>>>>>>> refs/remotes/origin/master
 struct bfi_mhdr {
 	u8		msg_class;	/*!< @ref enum bfi_mclass	    */
 	u8		msg_id;		/*!< msg opcode with in the class   */
@@ -65,17 +73,25 @@ struct bfi_mhdr {
 #define BFI_I2H_OPCODE_BASE	128
 #define BFA_I2HM(_x)			((_x) + BFI_I2H_OPCODE_BASE)
 
+<<<<<<< HEAD
 /**
  ****************************************************************************
+=======
+/****************************************************************************
+>>>>>>> refs/remotes/origin/master
  *
  * Scatter Gather Element and Page definition
  *
  ****************************************************************************
  */
 
+<<<<<<< HEAD
 /**
  * DMA addresses
  */
+=======
+/* DMA addresses */
+>>>>>>> refs/remotes/origin/master
 union bfi_addr_u {
 	struct {
 		u32	addr_lo;
@@ -83,9 +99,13 @@ union bfi_addr_u {
 	} a32;
 };
 
+<<<<<<< HEAD
 /**
  * Generic DMA addr-len pair.
  */
+=======
+/* Generic DMA addr-len pair. */
+>>>>>>> refs/remotes/origin/master
 struct bfi_alen {
 	union bfi_addr_u	al_addr;	/* DMA addr of buffer	*/
 	u32			al_len;		/* length of buffer */
@@ -98,26 +118,38 @@ struct bfi_alen {
 #define BFI_LMSG_PL_WSZ	\
 			((BFI_LMSG_SZ - sizeof(struct bfi_mhdr)) / 4)
 
+<<<<<<< HEAD
 /**
  * Mailbox message structure
  */
+=======
+/* Mailbox message structure */
+>>>>>>> refs/remotes/origin/master
 #define BFI_MBMSG_SZ		7
 struct bfi_mbmsg {
 	struct bfi_mhdr mh;
 	u32		pl[BFI_MBMSG_SZ];
 };
 
+<<<<<<< HEAD
 /**
  * Supported PCI function class codes (personality)
  */
+=======
+/* Supported PCI function class codes (personality) */
+>>>>>>> refs/remotes/origin/master
 enum bfi_pcifn_class {
 	BFI_PCIFN_CLASS_FC	= 0x0c04,
 	BFI_PCIFN_CLASS_ETH	= 0x0200,
 };
 
+<<<<<<< HEAD
 /**
  * Message Classes
  */
+=======
+/* Message Classes */
+>>>>>>> refs/remotes/origin/master
 enum bfi_mclass {
 	BFI_MC_IOC		= 1,	/*!< IO Controller (IOC)	    */
 	BFI_MC_DIAG		= 2,	/*!< Diagnostic Msgs		    */
@@ -159,15 +191,23 @@ enum bfi_mclass {
 
 #define BFI_FWBOOT_ENV_OS		0
 
+<<<<<<< HEAD
 /**
  *----------------------------------------------------------------------
+=======
+/*----------------------------------------------------------------------
+>>>>>>> refs/remotes/origin/master
  *				IOC
  *----------------------------------------------------------------------
  */
 
+<<<<<<< HEAD
 /**
  * Different asic generations
  */
+=======
+/* Different asic generations */
+>>>>>>> refs/remotes/origin/master
 enum bfi_asic_gen {
 	BFI_ASIC_GEN_CB		= 1,
 	BFI_ASIC_GEN_CT		= 2,
@@ -196,9 +236,13 @@ enum bfi_ioc_i2h_msgs {
 	BFI_IOC_I2H_HBEAT		= BFA_I2HM(4),
 };
 
+<<<<<<< HEAD
 /**
  * BFI_IOC_H2I_GETATTR_REQ message
  */
+=======
+/* BFI_IOC_H2I_GETATTR_REQ message */
+>>>>>>> refs/remotes/origin/master
 struct bfi_ioc_getattr_req {
 	struct bfi_mhdr mh;
 	union bfi_addr_u	attr_addr;
@@ -231,15 +275,20 @@ struct bfi_ioc_attr {
 	u32	card_type;	/*!< card type			*/
 };
 
+<<<<<<< HEAD
 /**
  * BFI_IOC_I2H_GETATTR_REPLY message
  */
+=======
+/* BFI_IOC_I2H_GETATTR_REPLY message */
+>>>>>>> refs/remotes/origin/master
 struct bfi_ioc_getattr_reply {
 	struct bfi_mhdr mh;	/*!< Common msg header		*/
 	u8			status;	/*!< cfg reply status		*/
 	u8			rsvd[3];
 };
 
+<<<<<<< HEAD
 /**
  * Firmware memory page offsets
  */
@@ -255,6 +304,17 @@ struct bfi_ioc_getattr_reply {
 /**
  * Firmware trace offset
  */
+=======
+/* Firmware memory page offsets */
+#define BFI_IOC_SMEM_PG0_CB	(0x40)
+#define BFI_IOC_SMEM_PG0_CT	(0x180)
+
+/* Firmware statistic offset */
+#define BFI_IOC_FWSTATS_OFF	(0x6B40)
+#define BFI_IOC_FWSTATS_SZ	(4096)
+
+/* Firmware trace offset */
+>>>>>>> refs/remotes/origin/master
 #define BFI_IOC_TRC_OFF		(0x4b00)
 #define BFI_IOC_TRC_ENTS	256
 #define BFI_IOC_TRC_ENT_SZ	16
@@ -299,9 +359,13 @@ struct bfi_ioc_hbeat {
 	u32	   hb_count;	/*!< current heart beat count	*/
 };
 
+<<<<<<< HEAD
 /**
  * IOC hardware/firmware state
  */
+=======
+/* IOC hardware/firmware state */
+>>>>>>> refs/remotes/origin/master
 enum bfi_ioc_state {
 	BFI_IOC_UNINIT		= 0,	/*!< not initialized		     */
 	BFI_IOC_INITING		= 1,	/*!< h/w is being initialized	     */
@@ -345,9 +409,13 @@ enum {
 	((__adap_type) & (BFI_ADAPTER_TTV | BFI_ADAPTER_PROTO |	\
 			BFI_ADAPTER_UNSUPP))
 
+<<<<<<< HEAD
 /**
  * BFI_IOC_H2I_ENABLE_REQ & BFI_IOC_H2I_DISABLE_REQ messages
  */
+=======
+/* BFI_IOC_H2I_ENABLE_REQ & BFI_IOC_H2I_DISABLE_REQ messages */
+>>>>>>> refs/remotes/origin/master
 struct bfi_ioc_ctrl_req {
 	struct bfi_mhdr mh;
 	u16			clscode;
@@ -355,9 +423,13 @@ struct bfi_ioc_ctrl_req {
 	u32		tv_sec;
 };
 
+<<<<<<< HEAD
 /**
  * BFI_IOC_I2H_ENABLE_REPLY & BFI_IOC_I2H_DISABLE_REPLY messages
  */
+=======
+/* BFI_IOC_I2H_ENABLE_REPLY & BFI_IOC_I2H_DISABLE_REPLY messages */
+>>>>>>> refs/remotes/origin/master
 struct bfi_ioc_ctrl_reply {
 	struct bfi_mhdr mh;			/*!< Common msg header     */
 	u8			status;		/*!< enable/disable status */
@@ -367,9 +439,13 @@ struct bfi_ioc_ctrl_reply {
 };
 
 #define BFI_IOC_MSGSZ   8
+<<<<<<< HEAD
 /**
  * H2I Messages
  */
+=======
+/* H2I Messages */
+>>>>>>> refs/remotes/origin/master
 union bfi_ioc_h2i_msg_u {
 	struct bfi_mhdr mh;
 	struct bfi_ioc_ctrl_req enable_req;
@@ -378,17 +454,25 @@ union bfi_ioc_h2i_msg_u {
 	u32			mboxmsg[BFI_IOC_MSGSZ];
 };
 
+<<<<<<< HEAD
 /**
  * I2H Messages
  */
+=======
+/* I2H Messages */
+>>>>>>> refs/remotes/origin/master
 union bfi_ioc_i2h_msg_u {
 	struct bfi_mhdr mh;
 	struct bfi_ioc_ctrl_reply fw_event;
 	u32			mboxmsg[BFI_IOC_MSGSZ];
 };
 
+<<<<<<< HEAD
 /**
  *----------------------------------------------------------------------
+=======
+/*----------------------------------------------------------------------
+>>>>>>> refs/remotes/origin/master
  *				MSGQ
  *----------------------------------------------------------------------
  */

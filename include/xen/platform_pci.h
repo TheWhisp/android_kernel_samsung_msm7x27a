@@ -30,11 +30,15 @@ static inline int xen_must_unplug_nics(void) {
 #if (defined(CONFIG_XEN_NETDEV_FRONTEND) || \
 		defined(CONFIG_XEN_NETDEV_FRONTEND_MODULE)) && \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		(defined(CONFIG_XEN_PLATFORM_PCI) || \
 		 defined(CONFIG_XEN_PLATFORM_PCI_MODULE))
 =======
 		defined(CONFIG_XEN_PVHVM)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		defined(CONFIG_XEN_PVHVM)
+>>>>>>> refs/remotes/origin/master
         return 1;
 #else
         return 0;
@@ -45,11 +49,15 @@ static inline int xen_must_unplug_disks(void) {
 #if (defined(CONFIG_XEN_BLKDEV_FRONTEND) || \
 		defined(CONFIG_XEN_BLKDEV_FRONTEND_MODULE)) && \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		(defined(CONFIG_XEN_PLATFORM_PCI) || \
 		 defined(CONFIG_XEN_PLATFORM_PCI_MODULE))
 =======
 		defined(CONFIG_XEN_PVHVM)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		defined(CONFIG_XEN_PVHVM)
+>>>>>>> refs/remotes/origin/master
         return 1;
 #else
         return 0;

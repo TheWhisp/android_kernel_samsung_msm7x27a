@@ -594,9 +594,12 @@ static struct fb_var_screeninfo matroxfb_dh_defined = {
 		96L,2,0,	/* no sync info */
 		FB_VMODE_NONINTERLACED,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		0, {0,0,0,0,0}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int matroxfb_dh_regit(const struct matrox_fb_info *minfo,

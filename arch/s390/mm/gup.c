@@ -24,7 +24,11 @@ static inline int gup_pte_range(pmd_t *pmdp, pmd_t pmd, unsigned long addr,
 	pte_t *ptep, pte;
 	struct page *page;
 
+<<<<<<< HEAD
 	mask = (write ? _PAGE_RO : 0) | _PAGE_INVALID | _PAGE_SPECIAL;
+=======
+	mask = (write ? _PAGE_PROTECT : 0) | _PAGE_INVALID | _PAGE_SPECIAL;
+>>>>>>> refs/remotes/origin/master
 
 	ptep = ((pte_t *) pmd_deref(pmd)) + pte_index(addr);
 	do {
@@ -55,8 +59,13 @@ static inline int gup_huge_pmd(pmd_t *pmdp, pmd_t pmd, unsigned long addr,
 	struct page *head, *page, *tail;
 	int refs;
 
+<<<<<<< HEAD
 	result = write ? 0 : _SEGMENT_ENTRY_RO;
 	mask = result | _SEGMENT_ENTRY_INV;
+=======
+	result = write ? 0 : _SEGMENT_ENTRY_PROTECT;
+	mask = result | _SEGMENT_ENTRY_INVALID;
+>>>>>>> refs/remotes/origin/master
 	if ((pmd_val(pmd) & mask) != result)
 		return 0;
 	VM_BUG_ON(!pfn_valid(pmd_val(pmd) >> PAGE_SHIFT));
@@ -115,9 +124,24 @@ static inline int gup_pmd_range(pud_t *pudp, pud_t pud, unsigned long addr,
 		pmd = *pmdp;
 		barrier();
 		next = pmd_addr_end(addr, end);
+<<<<<<< HEAD
 		if (pmd_none(pmd))
 			return 0;
 		if (unlikely(pmd_huge(pmd))) {
+=======
+		/*
+		 * The pmd_trans_splitting() check below explains why
+		 * pmdp_splitting_flush() has to serialize with
+		 * smp_call_function() against our disabled IRQs, to stop
+		 * this gup-fast code from running while we set the
+		 * splitting bit in the pmd. Returning zero will take
+		 * the slow path that will call wait_split_huge_page()
+		 * if the pmd is still in splitting state.
+		 */
+		if (pmd_none(pmd) || pmd_trans_splitting(pmd))
+			return 0;
+		if (unlikely(pmd_large(pmd))) {
+>>>>>>> refs/remotes/origin/master
 			if (!gup_huge_pmd(pmdp, pmd, addr, next,
 					  write, pages, nr))
 				return 0;
@@ -154,6 +178,7 @@ static inline int gup_pud_range(pgd_t *pgdp, pgd_t pgd, unsigned long addr,
 	return 1;
 }
 
+<<<<<<< HEAD
 /**
  * get_user_pages_fast() - pin user pages in memory
  * @start:	starting user address
@@ -176,6 +201,18 @@ int get_user_pages_fast(unsigned long start, int nr_pages, int write,
 	struct mm_struct *mm = current->mm;
 	unsigned long addr, len, end;
 	unsigned long next;
+=======
+/*
+ * Like get_user_pages_fast() except its IRQ-safe in that it won't fall
+ * back to the regular GUP.
+ */
+int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
+			  struct page **pages)
+{
+	struct mm_struct *mm = current->mm;
+	unsigned long addr, len, end;
+	unsigned long next, flags;
+>>>>>>> refs/remotes/origin/master
 	pgd_t *pgdp, pgd;
 	int nr = 0;
 
@@ -183,23 +220,35 @@ int get_user_pages_fast(unsigned long start, int nr_pages, int write,
 	addr = start;
 	len = (unsigned long) nr_pages << PAGE_SHIFT;
 	end = start + len;
+<<<<<<< HEAD
 	if ((end < start) || (end > TASK_SIZE))
 		goto slow_irqon;
 
 	/*
 	 * local_irq_disable() doesn't prevent pagetable teardown, but does
+=======
+	if ((end <= start) || (end > TASK_SIZE))
+		return 0;
+	/*
+	 * local_irq_save() doesn't prevent pagetable teardown, but does
+>>>>>>> refs/remotes/origin/master
 	 * prevent the pagetables from being freed on s390.
 	 *
 	 * So long as we atomically load page table pointers versus teardown,
 	 * we can follow the address down to the the page and take a ref on it.
 	 */
+<<<<<<< HEAD
 	local_irq_disable();
+=======
+	local_irq_save(flags);
+>>>>>>> refs/remotes/origin/master
 	pgdp = pgd_offset(mm, addr);
 	do {
 		pgd = *pgdp;
 		barrier();
 		next = pgd_addr_end(addr, end);
 		if (pgd_none(pgd))
+<<<<<<< HEAD
 			goto slow;
 		if (!gup_pud_range(pgdp, pgd, addr, next, write, pages, &nr))
 			goto slow;
@@ -233,4 +282,53 @@ slow_irqon:
 
 		return ret;
 	}
+=======
+			break;
+		if (!gup_pud_range(pgdp, pgd, addr, next, write, pages, &nr))
+			break;
+	} while (pgdp++, addr = next, addr != end);
+	local_irq_restore(flags);
+
+	return nr;
+}
+
+/**
+ * get_user_pages_fast() - pin user pages in memory
+ * @start:	starting user address
+ * @nr_pages:	number of pages from start to pin
+ * @write:	whether pages will be written to
+ * @pages:	array that receives pointers to the pages pinned.
+ *		Should be at least nr_pages long.
+ *
+ * Attempt to pin user pages in memory without taking mm->mmap_sem.
+ * If not successful, it will fall back to taking the lock and
+ * calling get_user_pages().
+ *
+ * Returns number of pages pinned. This may be fewer than the number
+ * requested. If nr_pages is 0 or negative, returns 0. If no pages
+ * were pinned, returns -errno.
+ */
+int get_user_pages_fast(unsigned long start, int nr_pages, int write,
+			struct page **pages)
+{
+	struct mm_struct *mm = current->mm;
+	int nr, ret;
+
+	start &= PAGE_MASK;
+	nr = __get_user_pages_fast(start, nr_pages, write, pages);
+	if (nr == nr_pages)
+		return nr;
+
+	/* Try to get the remaining pages with get_user_pages */
+	start += nr << PAGE_SHIFT;
+	pages += nr;
+	down_read(&mm->mmap_sem);
+	ret = get_user_pages(current, mm, start,
+			     nr_pages - nr, write, 0, pages, NULL);
+	up_read(&mm->mmap_sem);
+	/* Have to be a bit careful with return values */
+	if (nr > 0)
+		ret = (ret < 0) ? nr : ret + nr;
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }

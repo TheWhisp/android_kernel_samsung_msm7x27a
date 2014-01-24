@@ -11,9 +11,13 @@
 #include <linux/slab.h>
 #include <linux/pci.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/sn/addrs.h>
 #include <asm/sn/geo.h>
 #include <asm/sn/pcibr_provider.h>
@@ -131,18 +135,25 @@ pcibr_bus_fixup(struct pcibus_bussoft *prom_bussoft, struct pci_controller *cont
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	soft = kmalloc(sizeof(struct pcibus_info), GFP_KERNEL);
 =======
 	soft = kmemdup(prom_bussoft, sizeof(struct pcibus_info), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	soft = kmemdup(prom_bussoft, sizeof(struct pcibus_info), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!soft) {
 		return NULL;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(soft, prom_bussoft, sizeof(struct pcibus_info));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	soft->pbi_buscommon.bs_base = (unsigned long)
 		ioremap(REGION_OFFSET(soft->pbi_buscommon.bs_base),
 			sizeof(struct pic));
@@ -158,9 +169,13 @@ pcibr_bus_fixup(struct pcibus_bussoft *prom_bussoft, struct pci_controller *cont
 		       "pcibr cannot allocate interrupt for error handler\n");
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	irq_set_handler(SGI_PCIASIC_ERROR, handle_level_irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq_set_handler(SGI_PCIASIC_ERROR, handle_level_irq);
+>>>>>>> refs/remotes/origin/master
 	sn_set_err_irq_affinity(SGI_PCIASIC_ERROR);
 
 	/* 

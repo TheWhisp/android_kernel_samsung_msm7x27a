@@ -93,8 +93,13 @@ extern struct ccid_operations ccid2_ops;
 extern struct ccid_operations ccid3_ops;
 #endif
 
+<<<<<<< HEAD
 extern int  ccid_initialize_builtins(void);
 extern void ccid_cleanup_builtins(void);
+=======
+int ccid_initialize_builtins(void);
+void ccid_cleanup_builtins(void);
+>>>>>>> refs/remotes/origin/master
 
 struct ccid {
 	struct ccid_operations *ccid_ops;
@@ -106,12 +111,21 @@ static inline void *ccid_priv(const struct ccid *ccid)
 	return (void *)ccid->ccid_priv;
 }
 
+<<<<<<< HEAD
 extern bool ccid_support_check(u8 const *ccid_array, u8 array_len);
 extern int  ccid_get_builtin_ccids(u8 **ccid_array, u8 *array_len);
 extern int  ccid_getsockopt_builtin_ccids(struct sock *sk, int len,
 					  char __user *, int __user *);
 
 extern struct ccid *ccid_new(const u8 id, struct sock *sk, bool rx);
+=======
+bool ccid_support_check(u8 const *ccid_array, u8 array_len);
+int ccid_get_builtin_ccids(u8 **ccid_array, u8 *array_len);
+int ccid_getsockopt_builtin_ccids(struct sock *sk, int len,
+				  char __user *, int __user *);
+
+struct ccid *ccid_new(const u8 id, struct sock *sk, bool rx);
+>>>>>>> refs/remotes/origin/master
 
 static inline int ccid_get_current_rx_ccid(struct dccp_sock *dp)
 {
@@ -131,8 +145,13 @@ static inline int ccid_get_current_tx_ccid(struct dccp_sock *dp)
 	return ccid->ccid_ops->ccid_id;
 }
 
+<<<<<<< HEAD
 extern void ccid_hc_rx_delete(struct ccid *ccid, struct sock *sk);
 extern void ccid_hc_tx_delete(struct ccid *ccid, struct sock *sk);
+=======
+void ccid_hc_rx_delete(struct ccid *ccid, struct sock *sk);
+void ccid_hc_tx_delete(struct ccid *ccid, struct sock *sk);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Congestion control of queued data packets via CCID decision.

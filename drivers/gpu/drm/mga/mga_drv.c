@@ -30,6 +30,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 
@@ -40,6 +41,15 @@
 #include "mga_drv.h"
 
 #include "drm_pciids.h"
+=======
+#include <linux/module.h>
+
+#include <drm/drmP.h>
+#include <drm/mga_drm.h>
+#include "mga_drv.h"
+
+#include <drm/drm_pciids.h>
+>>>>>>> refs/remotes/origin/master
 
 static int mga_driver_device_is_agp(struct drm_device *dev);
 
@@ -48,7 +58,10 @@ static struct pci_device_id pciidlist[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct file_operations mga_driver_fops = {
 	.owner = THIS_MODULE,
 	.open = drm_open,
@@ -56,17 +69,26 @@ static const struct file_operations mga_driver_fops = {
 	.unlocked_ioctl = drm_ioctl,
 	.mmap = drm_mmap,
 	.poll = drm_poll,
+<<<<<<< HEAD
 	.fasync = drm_fasync,
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_COMPAT
 	.compat_ioctl = mga_compat_ioctl,
 #endif
 	.llseek = noop_llseek,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static struct drm_driver driver = {
 	.driver_features =
 	    DRIVER_USE_AGP | DRIVER_USE_MTRR | DRIVER_PCI_DMA |
+=======
+static struct drm_driver driver = {
+	.driver_features =
+	    DRIVER_USE_AGP | DRIVER_PCI_DMA |
+>>>>>>> refs/remotes/origin/master
 	    DRIVER_HAVE_DMA | DRIVER_HAVE_IRQ | DRIVER_IRQ_SHARED,
 	.dev_priv_size = sizeof(drm_mga_buf_priv_t),
 	.load = mga_driver_load,
@@ -81,6 +103,7 @@ static struct drm_driver driver = {
 	.irq_postinstall = mga_driver_irq_postinstall,
 	.irq_uninstall = mga_driver_irq_uninstall,
 	.irq_handler = mga_driver_irq_handler,
+<<<<<<< HEAD
 	.reclaim_buffers = drm_core_reclaim_buffers,
 	.ioctls = mga_ioctls,
 	.dma_ioctl = mga_dma_buffers,
@@ -102,6 +125,11 @@ static struct drm_driver driver = {
 =======
 	.fops = &mga_driver_fops,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ioctls = mga_ioctls,
+	.dma_ioctl = mga_dma_buffers,
+	.fops = &mga_driver_fops,
+>>>>>>> refs/remotes/origin/master
 	.name = DRIVER_NAME,
 	.desc = DRIVER_DESC,
 	.date = DRIVER_DATE,

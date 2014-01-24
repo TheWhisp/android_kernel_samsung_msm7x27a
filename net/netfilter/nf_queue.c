@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+=======
+/*
+ * Rusty Russell (C)2000 -- This code is GPL.
+ * Patrick McHardy (c) 2006-2012
+ */
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/init.h>
@@ -14,6 +22,7 @@
 #include "nf_internals.h"
 
 /*
+<<<<<<< HEAD
  * A queue handler may be registered for each protocol.  Each is protected by
  * long term mutex.  The handler must provide an an outfn() to accept packets
  * for queueing and must reinject all packets it receives, no matter what.
@@ -46,10 +55,28 @@ int nf_register_queue_handler(u_int8_t pf, const struct nf_queue_handler *qh)
 	mutex_unlock(&queue_handler_mutex);
 
 	return ret;
+=======
+ * Hook for nfnetlink_queue to register its queue handler.
+ * We do this so that most of the NFQUEUE code can be modular.
+ *
+ * Once the queue is registered it must reinject all packets it
+ * receives, no matter what.
+ */
+static const struct nf_queue_handler __rcu *queue_handler __read_mostly;
+
+/* return EBUSY when somebody else is registered, return EEXIST if the
+ * same handler is registered, return 0 in case of success. */
+void nf_register_queue_handler(const struct nf_queue_handler *qh)
+{
+	/* should never happen, we only have one queueing backend in kernel */
+	WARN_ON(rcu_access_pointer(queue_handler));
+	rcu_assign_pointer(queue_handler, qh);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(nf_register_queue_handler);
 
 /* The caller must flush their queue before this */
+<<<<<<< HEAD
 int nf_unregister_queue_handler(u_int8_t pf, const struct nf_queue_handler *qh)
 {
 	const struct nf_queue_handler *old;
@@ -101,6 +128,16 @@ void nf_unregister_queue_handlers(const struct nf_queue_handler *qh)
 EXPORT_SYMBOL_GPL(nf_unregister_queue_handlers);
 
 static void nf_queue_entry_release_refs(struct nf_queue_entry *entry)
+=======
+void nf_unregister_queue_handler(void)
+{
+	RCU_INIT_POINTER(queue_handler, NULL);
+	synchronize_rcu();
+}
+EXPORT_SYMBOL(nf_unregister_queue_handler);
+
+void nf_queue_entry_release_refs(struct nf_queue_entry *entry)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Release those devices we held, or Alexey will kill me. */
 	if (entry->indev)
@@ -120,13 +157,50 @@ static void nf_queue_entry_release_refs(struct nf_queue_entry *entry)
 	/* Drop reference to owner of hook which queued us. */
 	module_put(entry->elem->owner);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(nf_queue_entry_release_refs);
+
+/* Bump dev refs so they don't vanish while packet is out */
+bool nf_queue_entry_get_refs(struct nf_queue_entry *entry)
+{
+	if (!try_module_get(entry->elem->owner))
+		return false;
+
+	if (entry->indev)
+		dev_hold(entry->indev);
+	if (entry->outdev)
+		dev_hold(entry->outdev);
+#ifdef CONFIG_BRIDGE_NETFILTER
+	if (entry->skb->nf_bridge) {
+		struct nf_bridge_info *nf_bridge = entry->skb->nf_bridge;
+		struct net_device *physdev;
+
+		physdev = nf_bridge->physindev;
+		if (physdev)
+			dev_hold(physdev);
+		physdev = nf_bridge->physoutdev;
+		if (physdev)
+			dev_hold(physdev);
+	}
+#endif
+
+	return true;
+}
+EXPORT_SYMBOL_GPL(nf_queue_entry_get_refs);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Any packet that leaves via this function must come back
  * through nf_reinject().
  */
+<<<<<<< HEAD
 static int __nf_queue(struct sk_buff *skb,
 		      struct list_head *elem,
+=======
+int nf_queue(struct sk_buff *skb,
+		      struct nf_hook_ops *elem,
+>>>>>>> refs/remotes/origin/master
 		      u_int8_t pf, unsigned int hook,
 		      struct net_device *indev,
 		      struct net_device *outdev,
@@ -135,17 +209,24 @@ static int __nf_queue(struct sk_buff *skb,
 {
 	int status = -ENOENT;
 	struct nf_queue_entry *entry = NULL;
+<<<<<<< HEAD
 #ifdef CONFIG_BRIDGE_NETFILTER
 	struct net_device *physindev;
 	struct net_device *physoutdev;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	const struct nf_afinfo *afinfo;
 	const struct nf_queue_handler *qh;
 
 	/* QUEUE == DROP if no one is waiting, to be safe. */
 	rcu_read_lock();
 
+<<<<<<< HEAD
 	qh = rcu_dereference(queue_handler[pf]);
+=======
+	qh = rcu_dereference(queue_handler);
+>>>>>>> refs/remotes/origin/master
 	if (!qh) {
 		status = -ESRCH;
 		goto err_unlock;
@@ -163,12 +244,17 @@ static int __nf_queue(struct sk_buff *skb,
 
 	*entry = (struct nf_queue_entry) {
 		.skb	= skb,
+<<<<<<< HEAD
 		.elem	= list_entry(elem, struct nf_hook_ops, list),
+=======
+		.elem	= elem,
+>>>>>>> refs/remotes/origin/master
 		.pf	= pf,
 		.hook	= hook,
 		.indev	= indev,
 		.outdev	= outdev,
 		.okfn	= okfn,
+<<<<<<< HEAD
 	};
 
 	/* If it's going away, ignore hook. */
@@ -191,6 +277,15 @@ static int __nf_queue(struct sk_buff *skb,
 			dev_hold(physoutdev);
 	}
 #endif
+=======
+		.size	= sizeof(*entry) + afinfo->route_key_size,
+	};
+
+	if (!nf_queue_entry_get_refs(entry)) {
+		status = -ECANCELED;
+		goto err_unlock;
+	}
+>>>>>>> refs/remotes/origin/master
 	skb_dst_force(skb);
 	afinfo->saveroute(skb, entry);
 	status = qh->outfn(entry, queuenum);
@@ -211,6 +306,7 @@ err:
 	return status;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #ifdef CONFIG_BRIDGE_NETFILTER
@@ -325,6 +421,12 @@ void nf_reinject(struct nf_queue_entry *entry, unsigned int verdict)
 {
 	struct sk_buff *skb = entry->skb;
 	struct list_head *elem = &entry->elem->list;
+=======
+void nf_reinject(struct nf_queue_entry *entry, unsigned int verdict)
+{
+	struct sk_buff *skb = entry->skb;
+	struct nf_hook_ops *elem = entry->elem;
+>>>>>>> refs/remotes/origin/master
 	const struct nf_afinfo *afinfo;
 	int err;
 
@@ -334,7 +436,11 @@ void nf_reinject(struct nf_queue_entry *entry, unsigned int verdict)
 
 	/* Continue traversal iff userspace said ok... */
 	if (verdict == NF_REPEAT) {
+<<<<<<< HEAD
 		elem = elem->prev;
+=======
+		elem = list_entry(elem->list.prev, struct nf_hook_ops, list);
+>>>>>>> refs/remotes/origin/master
 		verdict = NF_ACCEPT;
 	}
 
@@ -360,9 +466,15 @@ void nf_reinject(struct nf_queue_entry *entry, unsigned int verdict)
 		local_bh_enable();
 		break;
 	case NF_QUEUE:
+<<<<<<< HEAD
 		err = __nf_queue(skb, elem, entry->pf, entry->hook,
 				 entry->indev, entry->outdev, entry->okfn,
 				 verdict >> NF_VERDICT_QBITS);
+=======
+		err = nf_queue(skb, elem, entry->pf, entry->hook,
+				entry->indev, entry->outdev, entry->okfn,
+				verdict >> NF_VERDICT_QBITS);
+>>>>>>> refs/remotes/origin/master
 		if (err < 0) {
 			if (err == -ECANCELED)
 				goto next_hook;
@@ -374,9 +486,13 @@ void nf_reinject(struct nf_queue_entry *entry, unsigned int verdict)
 		break;
 	case NF_STOLEN:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		kfree_skb(skb);
 	}
@@ -384,6 +500,7 @@ void nf_reinject(struct nf_queue_entry *entry, unsigned int verdict)
 	kfree(entry);
 }
 EXPORT_SYMBOL(nf_reinject);
+<<<<<<< HEAD
 
 #ifdef CONFIG_PROC_FS
 static void *seq_start(struct seq_file *seq, loff_t *pos)
@@ -458,3 +575,5 @@ int __init netfilter_queue_init(void)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master

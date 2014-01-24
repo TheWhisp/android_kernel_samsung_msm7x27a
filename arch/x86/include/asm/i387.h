@@ -14,6 +14,7 @@
 
 #include <linux/sched.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/kernel_stat.h>
 #include <linux/regset.h>
 #include <linux/hardirq.h>
@@ -454,10 +455,43 @@ static inline void kernel_fpu_begin(void)
 		/* We do 'stts()' in kernel_fpu_end() */
 	} else
 		clts();
+=======
+#include <linux/hardirq.h>
+
+struct pt_regs;
+struct user_i387_struct;
+
+extern int init_fpu(struct task_struct *child);
+extern void fpu_finit(struct fpu *fpu);
+extern int dump_fpu(struct pt_regs *, struct user_i387_struct *);
+extern void math_state_restore(void);
+
+extern bool irq_fpu_usable(void);
+
+/*
+ * Careful: __kernel_fpu_begin/end() must be called with preempt disabled
+ * and they don't touch the preempt state on their own.
+ * If you enable preemption after __kernel_fpu_begin(), preempt notifier
+ * should call the __kernel_fpu_end() to prevent the kernel/user FPU
+ * state from getting corrupted. KVM for example uses this model.
+ *
+ * All other cases use kernel_fpu_begin/end() which disable preemption
+ * during kernel FPU usage.
+ */
+extern void __kernel_fpu_begin(void);
+extern void __kernel_fpu_end(void);
+
+static inline void kernel_fpu_begin(void)
+{
+	WARN_ON_ONCE(!irq_fpu_usable());
+	preempt_disable();
+	__kernel_fpu_begin();
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void kernel_fpu_end(void)
 {
+<<<<<<< HEAD
 	stts();
 	preempt_enable();
 }
@@ -475,6 +509,11 @@ extern bool irq_fpu_usable(void);
 extern void kernel_fpu_begin(void);
 extern void kernel_fpu_end(void);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__kernel_fpu_end();
+	preempt_enable();
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Some instructions like VIA's padlock instructions generate a spurious
@@ -516,6 +555,7 @@ static inline void irq_ts_restore(int TS_state)
  * we can just assume we have FPU access - typically
  * to save the FP state - we'll just take a #NM
  * fault and get the FPU access back.
+<<<<<<< HEAD
 <<<<<<< HEAD
  *
  * The actual user_fpu_begin/end() functions
@@ -638,6 +678,8 @@ static inline void fpu_copy(struct fpu *dst, struct fpu *src)
 
 extern void fpu_finit(struct fpu *fpu);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static inline int user_has_fpu(void)
 {
@@ -645,7 +687,10 @@ static inline int user_has_fpu(void)
 }
 
 extern void unlazy_fpu(struct task_struct *tsk);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASSEMBLY__ */
 

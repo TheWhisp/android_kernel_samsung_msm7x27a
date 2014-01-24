@@ -28,9 +28,13 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/initval.h>
 #include <sound/pcm.h>
@@ -264,7 +268,11 @@ static struct snd_pcm_ops snd_sh_dac_pcm_ops = {
 	.mmap		= snd_pcm_lib_mmap_iomem,
 };
 
+<<<<<<< HEAD
 static int __devinit snd_sh_dac_pcm(struct snd_sh_dac *chip, int device)
+=======
+static int snd_sh_dac_pcm(struct snd_sh_dac *chip, int device)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct snd_pcm *pcm;
@@ -293,8 +301,11 @@ static int __devinit snd_sh_dac_pcm(struct snd_sh_dac *chip, int device)
 static int snd_sh_dac_remove(struct platform_device *devptr)
 {
 	snd_card_free(platform_get_drvdata(devptr));
+<<<<<<< HEAD
 	platform_set_drvdata(devptr, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -349,9 +360,15 @@ static enum hrtimer_restart sh_dac_audio_timer(struct hrtimer *handle)
 }
 
 /* create  --  chip-specific constructor for the cards components */
+<<<<<<< HEAD
 static int __devinit snd_sh_dac_create(struct snd_card *card,
 				       struct platform_device *devptr,
 				       struct snd_sh_dac **rchip)
+=======
+static int snd_sh_dac_create(struct snd_card *card,
+			     struct platform_device *devptr,
+			     struct snd_sh_dac **rchip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_sh_dac *chip;
 	int err;
@@ -395,7 +412,11 @@ static int __devinit snd_sh_dac_create(struct snd_card *card,
 }
 
 /* driver .probe  --  constructor */
+<<<<<<< HEAD
 static int __devinit snd_sh_dac_probe(struct platform_device *devptr)
+=======
+static int snd_sh_dac_probe(struct platform_device *devptr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_sh_dac *chip;
 	struct snd_card *card;
@@ -436,11 +457,16 @@ probe_error:
 /*
  * "driver" definition
  */
+<<<<<<< HEAD
 static struct platform_driver driver = {
+=======
+static struct platform_driver sh_dac_driver = {
+>>>>>>> refs/remotes/origin/master
 	.probe	= snd_sh_dac_probe,
 	.remove = snd_sh_dac_remove,
 	.driver = {
 		.name = "dac_audio",
+<<<<<<< HEAD
 	},
 };
 
@@ -460,3 +486,10 @@ module_exit(sh_dac_exit);
 =======
 module_platform_driver(driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.owner	= THIS_MODULE,
+	},
+};
+
+module_platform_driver(sh_dac_driver);
+>>>>>>> refs/remotes/origin/master

@@ -2,6 +2,7 @@
 #define __PMAC_ZILOG_H__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_PMAC
 #define pmz_debug(fmt, arg...)	dev_dbg(&uap->dev->ofdev.dev, fmt, ## arg)
 #define pmz_error(fmt, arg...)	dev_err(&uap->dev->ofdev.dev, fmt, ## arg)
@@ -14,6 +15,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * At most 2 ESCCs with 2 ports each
  */
@@ -39,10 +42,14 @@ struct uart_pmac_port {
 	struct device_node		*node;
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct platform_device		*node;
 =======
 	struct platform_device		*pdev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct platform_device		*pdev;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	/* Port type as obtained from device tree (IRDA, modem, ...) */
@@ -58,13 +65,17 @@ struct uart_pmac_port {
 #define PMACZILOG_FLAG_TX_STOPPED	0x00000020
 #define PMACZILOG_FLAG_TX_ACTIVE	0x00000040
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PMACZILOG_FLAG_ENABLED          0x00000080
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define PMACZILOG_FLAG_IS_IRDA		0x00000100
 #define PMACZILOG_FLAG_IS_INTMODEM	0x00000200
 #define PMACZILOG_FLAG_HAS_DMA		0x00000400
 #define PMACZILOG_FLAG_RSRC_REQUESTED	0x00000800
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define PMACZILOG_FLAG_IS_ASLEEP	0x00001000
 #define PMACZILOG_FLAG_IS_OPEN		0x00002000
@@ -72,6 +83,9 @@ struct uart_pmac_port {
 =======
 #define PMACZILOG_FLAG_IS_OPEN		0x00002000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PMACZILOG_FLAG_IS_OPEN		0x00002000
+>>>>>>> refs/remotes/origin/master
 #define PMACZILOG_FLAG_IS_EXTCLK	0x00008000
 #define PMACZILOG_FLAG_BREAK		0x00010000
 
@@ -89,10 +103,15 @@ struct uart_pmac_port {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned char			irq_name[8];
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned char			irq_name[8];
+
+>>>>>>> refs/remotes/origin/master
 	struct ktermios			termios_cache;
 };
 
@@ -408,12 +427,16 @@ static inline void zssync(struct uart_pmac_port *port)
 #define ZS_IS_INTMODEM(UP)		((UP)->flags & PMACZILOG_FLAG_IS_INTMODEM)
 #define ZS_HAS_DMA(UP)			((UP)->flags & PMACZILOG_FLAG_HAS_DMA)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ZS_IS_ASLEEP(UP)		((UP)->flags & PMACZILOG_FLAG_IS_ASLEEP)
 #define ZS_IS_OPEN(UP)			((UP)->flags & PMACZILOG_FLAG_IS_OPEN)
 #define ZS_IS_IRQ_ON(UP)		((UP)->flags & PMACZILOG_FLAG_IS_IRQ_ON)
 =======
 #define ZS_IS_OPEN(UP)			((UP)->flags & PMACZILOG_FLAG_IS_OPEN)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ZS_IS_OPEN(UP)			((UP)->flags & PMACZILOG_FLAG_IS_OPEN)
+>>>>>>> refs/remotes/origin/master
 #define ZS_IS_EXTCLK(UP)		((UP)->flags & PMACZILOG_FLAG_IS_EXTCLK)
 
 #endif /* __PMAC_ZILOG_H__ */

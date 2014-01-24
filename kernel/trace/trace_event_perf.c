@@ -25,6 +25,7 @@ static int perf_trace_event_perm(struct ftrace_event_call *tp_event,
 				 struct perf_event *p_event)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* The ftrace function trace is allowed only for root. */
 	if (ftrace_event_is_function(tp_event) &&
@@ -32,6 +33,19 @@ static int perf_trace_event_perm(struct ftrace_event_call *tp_event,
 		return -EPERM;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (tp_event->perf_perm) {
+		int ret = tp_event->perf_perm(tp_event, p_event);
+		if (ret)
+			return ret;
+	}
+
+	/* The ftrace function trace is allowed only for root. */
+	if (ftrace_event_is_function(tp_event) &&
+	    perf_paranoid_tracepoint_raw() && !capable(CAP_SYS_ADMIN))
+		return -EPERM;
+
+>>>>>>> refs/remotes/origin/master
 	/* No tracing, just counting, so no obvious leak */
 	if (!(p_event->attr.sample_type & PERF_SAMPLE_RAW))
 		return 0;
@@ -53,6 +67,7 @@ static int perf_trace_event_perm(struct ftrace_event_call *tp_event,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int perf_trace_event_init(struct ftrace_event_call *tp_event,
 				 struct perf_event *p_event)
 {
@@ -65,6 +80,8 @@ static int perf_trace_event_init(struct ftrace_event_call *tp_event,
 		return ret;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int perf_trace_event_reg(struct ftrace_event_call *tp_event,
 				struct perf_event *p_event)
 {
@@ -72,16 +89,22 @@ static int perf_trace_event_reg(struct ftrace_event_call *tp_event,
 	int ret = -ENOMEM;
 	int cpu;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	p_event->tp_event = tp_event;
 	if (tp_event->perf_refcount++ > 0)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = -ENOMEM;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	list = alloc_percpu(struct hlist_head);
 	if (!list)
 		goto fail;
@@ -105,10 +128,14 @@ static int perf_trace_event_reg(struct ftrace_event_call *tp_event,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = tp_event->class->reg(tp_event, TRACE_REG_PERF_REGISTER);
 =======
 	ret = tp_event->class->reg(tp_event, TRACE_REG_PERF_REGISTER, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = tp_event->class->reg(tp_event, TRACE_REG_PERF_REGISTER, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto fail;
 
@@ -134,7 +161,10 @@ fail:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void perf_trace_event_unreg(struct perf_event *p_event)
 {
 	struct ftrace_event_call *tp_event = p_event->tp_event;
@@ -198,11 +228,18 @@ static int perf_trace_event_init(struct ftrace_event_call *tp_event,
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 int perf_trace_init(struct perf_event *p_event)
 {
 	struct ftrace_event_call *tp_event;
 	int event_id = p_event->attr.config;
+=======
+int perf_trace_init(struct perf_event *p_event)
+{
+	struct ftrace_event_call *tp_event;
+	u64 event_id = p_event->attr.config;
+>>>>>>> refs/remotes/origin/master
 	int ret = -EINVAL;
 
 	mutex_lock(&event_mutex);
@@ -222,7 +259,10 @@ int perf_trace_init(struct perf_event *p_event)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void perf_trace_destroy(struct perf_event *p_event)
 {
 	mutex_lock(&event_mutex);
@@ -231,7 +271,10 @@ void perf_trace_destroy(struct perf_event *p_event)
 	mutex_unlock(&event_mutex);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int perf_trace_add(struct perf_event *p_event, int flags)
 {
 	struct ftrace_event_call *tp_event = p_event->tp_event;
@@ -249,14 +292,19 @@ int perf_trace_add(struct perf_event *p_event, int flags)
 	hlist_add_head_rcu(&p_event->hlist_entry, list);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
 	return tp_event->class->reg(tp_event, TRACE_REG_PERF_ADD, p_event);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return tp_event->class->reg(tp_event, TRACE_REG_PERF_ADD, p_event);
+>>>>>>> refs/remotes/origin/master
 }
 
 void perf_trace_del(struct perf_event *p_event, int flags)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	hlist_del_rcu(&p_event->hlist_entry);
 }
@@ -295,6 +343,11 @@ out:
 	hlist_del_rcu(&p_event->hlist_entry);
 	tp_event->class->reg(tp_event, TRACE_REG_PERF_DEL, p_event);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ftrace_event_call *tp_event = p_event->tp_event;
+	hlist_del_rcu(&p_event->hlist_entry);
+	tp_event->class->reg(tp_event, TRACE_REG_PERF_DEL, p_event);
+>>>>>>> refs/remotes/origin/master
 }
 
 __kprobes void *perf_trace_buf_prepare(int size, unsigned short type,
@@ -307,6 +360,13 @@ __kprobes void *perf_trace_buf_prepare(int size, unsigned short type,
 
 	BUILD_BUG_ON(PERF_MAX_TRACE_SIZE % sizeof(unsigned long));
 
+<<<<<<< HEAD
+=======
+	if (WARN_ONCE(size > PERF_MAX_TRACE_SIZE,
+			"perf buffer not large enough"))
+		return NULL;
+
+>>>>>>> refs/remotes/origin/master
 	pc = preempt_count();
 
 	*rctxp = perf_swevent_get_recursion_context();
@@ -327,17 +387,32 @@ __kprobes void *perf_trace_buf_prepare(int size, unsigned short type,
 }
 EXPORT_SYMBOL_GPL(perf_trace_buf_prepare);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 #ifdef CONFIG_FUNCTION_TRACER
 static void
 perf_ftrace_function_call(unsigned long ip, unsigned long parent_ip)
+=======
+
+#ifdef CONFIG_FUNCTION_TRACER
+static void
+perf_ftrace_function_call(unsigned long ip, unsigned long parent_ip,
+			  struct ftrace_ops *ops, struct pt_regs *pt_regs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ftrace_entry *entry;
 	struct hlist_head *head;
 	struct pt_regs regs;
 	int rctx;
 
+<<<<<<< HEAD
+=======
+	head = this_cpu_ptr(event_function.perf_events);
+	if (hlist_empty(head))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 #define ENTRY_SIZE (ALIGN(sizeof(struct ftrace_entry) + sizeof(u32), \
 		    sizeof(u64)) - sizeof(u32))
 
@@ -351,10 +426,15 @@ perf_ftrace_function_call(unsigned long ip, unsigned long parent_ip)
 
 	entry->ip = ip;
 	entry->parent_ip = parent_ip;
+<<<<<<< HEAD
 
 	head = this_cpu_ptr(event_function.perf_events);
 	perf_trace_buf_submit(entry, ENTRY_SIZE, rctx, 0,
 			      1, &regs, head);
+=======
+	perf_trace_buf_submit(entry, ENTRY_SIZE, rctx, 0,
+			      1, &regs, head, NULL);
+>>>>>>> refs/remotes/origin/master
 
 #undef ENTRY_SIZE
 }
@@ -411,4 +491,7 @@ int perf_ftrace_event_register(struct ftrace_event_call *call,
 	return -EINVAL;
 }
 #endif /* CONFIG_FUNCTION_TRACER */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

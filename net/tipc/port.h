@@ -2,7 +2,11 @@
  * net/tipc/port.h: Include file for TIPC port code
  *
  * Copyright (c) 1994-2007, Ericsson AB
+<<<<<<< HEAD
  * Copyright (c) 2004-2007, 2010-2011, Wind River Systems
+=======
+ * Copyright (c) 2004-2007, 2010-2013, Wind River Systems
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,6 +47,7 @@
 #include "node_subscr.h"
 
 #define TIPC_FLOW_CONTROL_WIN 512
+<<<<<<< HEAD
 
 typedef void (*tipc_msg_err_event) (void *usr_handle, u32 portref,
 		struct sk_buff **buf, unsigned char const *data,
@@ -97,6 +102,14 @@ struct user_port {
 /**
  * struct tipc_port - TIPC port structure
  * @usr_handle: pointer to additional user-defined information about port
+=======
+#define CONN_OVERLOAD_LIMIT	((TIPC_FLOW_CONTROL_WIN * 2 + 1) * \
+				SKB_TRUESIZE(TIPC_MAX_USER_MSG_SIZE))
+
+/**
+ * struct tipc_port - TIPC port structure
+ * @sk: pointer to socket handle
+>>>>>>> refs/remotes/origin/master
  * @lock: pointer to spinlock for controlling access to port
  * @connected: non-zero if port is currently connected to a peer port
  * @conn_type: TIPC type used when connection was established
@@ -110,7 +123,10 @@ struct user_port {
  * @port_list: adjacent ports in TIPC's global list of ports
  * @dispatcher: ptr to routine which handles received messages
  * @wakeup: ptr to routine to call when port is no longer congested
+<<<<<<< HEAD
  * @user_port: ptr to user port associated with port (if any)
+=======
+>>>>>>> refs/remotes/origin/master
  * @wait_list: adjacent ports in list of ports waiting on link congestion
  * @waiting_pkts:
  * @sent: # of non-empty messages sent by port
@@ -123,7 +139,11 @@ struct user_port {
  * @subscription: "node down" subscription used to terminate failed connections
  */
 struct tipc_port {
+<<<<<<< HEAD
 	void *usr_handle;
+=======
+	struct sock *sk;
+>>>>>>> refs/remotes/origin/master
 	spinlock_t *lock;
 	int connected;
 	u32 conn_type;
@@ -137,7 +157,10 @@ struct tipc_port {
 	struct list_head port_list;
 	u32 (*dispatcher)(struct tipc_port *, struct sk_buff *);
 	void (*wakeup)(struct tipc_port *);
+<<<<<<< HEAD
 	struct user_port *user_port;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head wait_list;
 	u32 waiting_pkts;
 	u32 sent;
@@ -152,14 +175,19 @@ struct tipc_port {
 
 extern spinlock_t tipc_port_list_lock;
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct port_list;
 =======
 struct tipc_port_list;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct tipc_port_list;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * TIPC port manipulation routines
  */
+<<<<<<< HEAD
 struct tipc_port *tipc_createport_raw(void *usr_handle,
 		u32 (*dispatcher)(struct tipc_port *, struct sk_buff *),
 		void (*wakeup)(struct tipc_port *), const u32 importance);
@@ -179,6 +207,19 @@ int tipc_createport(void *usr_handle,
 		tipc_continue_event continue_event_cb, u32 *portref);
 
 int tipc_deleteport(u32 portref);
+=======
+struct tipc_port *tipc_createport(struct sock *sk,
+				  u32 (*dispatcher)(struct tipc_port *,
+				  struct sk_buff *),
+				  void (*wakeup)(struct tipc_port *),
+				  const u32 importance);
+
+int tipc_reject_msg(struct sk_buff *buf, u32 err);
+
+void tipc_acknowledge(u32 port_ref, u32 ack);
+
+int tipc_deleteport(struct tipc_port *p_ptr);
+>>>>>>> refs/remotes/origin/master
 
 int tipc_portimportance(u32 portref, unsigned int *importance);
 int tipc_set_portimportance(u32 portref, unsigned int importance);
@@ -189,12 +230,21 @@ int tipc_set_portunreliable(u32 portref, unsigned int isunreliable);
 int tipc_portunreturnable(u32 portref, unsigned int *isunreturnable);
 int tipc_set_portunreturnable(u32 portref, unsigned int isunreturnable);
 
+<<<<<<< HEAD
 int tipc_publish(u32 portref, unsigned int scope,
 		struct tipc_name_seq const *name_seq);
 int tipc_withdraw(u32 portref, unsigned int scope,
 		struct tipc_name_seq const *name_seq);
 
 int tipc_connect2port(u32 portref, struct tipc_portid const *port);
+=======
+int tipc_publish(struct tipc_port *p_ptr, unsigned int scope,
+		 struct tipc_name_seq const *name_seq);
+int tipc_withdraw(struct tipc_port *p_ptr, unsigned int scope,
+		  struct tipc_name_seq const *name_seq);
+
+int tipc_connect(u32 portref, struct tipc_portid const *port);
+>>>>>>> refs/remotes/origin/master
 
 int tipc_disconnect(u32 portref);
 
@@ -204,11 +254,19 @@ int tipc_shutdown(u32 ref);
 /*
  * The following routines require that the port be locked on entry
  */
+<<<<<<< HEAD
 int tipc_disconnect_port(struct tipc_port *tp_ptr);
+=======
+int __tipc_disconnect(struct tipc_port *tp_ptr);
+int __tipc_connect(u32 ref, struct tipc_port *p_ptr,
+		   struct tipc_portid const *peer);
+int tipc_port_peer_msg(struct tipc_port *p_ptr, struct tipc_msg *msg);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * TIPC messaging routines
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 int tipc_port_recv_msg(struct sk_buff *buf);
@@ -241,12 +299,35 @@ void tipc_port_recv_mcast(struct sk_buff *buf, struct port_list *dp);
 =======
 void tipc_port_recv_mcast(struct sk_buff *buf, struct tipc_port_list *dp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int tipc_port_recv_msg(struct sk_buff *buf);
+int tipc_send(u32 portref, struct iovec const *msg_sect, unsigned int len);
+
+int tipc_send2name(u32 portref, struct tipc_name const *name, u32 domain,
+		   struct iovec const *msg_sect, unsigned int len);
+
+int tipc_send2port(u32 portref, struct tipc_portid const *dest,
+		   struct iovec const *msg_sect, unsigned int len);
+
+int tipc_multicast(u32 portref, struct tipc_name_seq const *seq,
+		   struct iovec const *msg, unsigned int len);
+
+int tipc_port_reject_sections(struct tipc_port *p_ptr, struct tipc_msg *hdr,
+			      struct iovec const *msg_sect, unsigned int len,
+			      int err);
+struct sk_buff *tipc_port_get_ports(void);
+void tipc_port_recv_proto_msg(struct sk_buff *buf);
+void tipc_port_recv_mcast(struct sk_buff *buf, struct tipc_port_list *dp);
+>>>>>>> refs/remotes/origin/master
 void tipc_port_reinit(void);
 
 /**
  * tipc_port_lock - lock port instance referred to and return its pointer
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct tipc_port *tipc_port_lock(u32 ref)
 {
 	return (struct tipc_port *)tipc_ref_lock(ref);
@@ -257,7 +338,10 @@ static inline struct tipc_port *tipc_port_lock(u32 ref)
  *
  * Can use pointer instead of tipc_ref_unlock() since port is already locked.
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void tipc_port_unlock(struct tipc_port *p_ptr)
 {
 	spin_unlock_bh(p_ptr->lock);
@@ -268,6 +352,7 @@ static inline struct tipc_port *tipc_port_deref(u32 ref)
 	return (struct tipc_port *)tipc_ref_deref(ref);
 }
 
+<<<<<<< HEAD
 static inline u32 tipc_peer_port(struct tipc_port *p_ptr)
 {
 	return msg_destport(&p_ptr->phdr);
@@ -278,11 +363,14 @@ static inline u32 tipc_peer_node(struct tipc_port *p_ptr)
 	return msg_destnode(&p_ptr->phdr);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int tipc_port_congested(struct tipc_port *p_ptr)
 {
 	return (p_ptr->sent - p_ptr->acked) >= (TIPC_FLOW_CONTROL_WIN * 2);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /**
  * tipc_port_recv_msg - receive message from lower layer and deliver to port user
@@ -327,4 +415,6 @@ reject:
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

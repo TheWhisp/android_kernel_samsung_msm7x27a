@@ -21,9 +21,13 @@
 #include <linux/errno.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <plat/adc.h>
 
@@ -51,7 +55,10 @@ static void s3c_adc_bat_ext_power_changed(struct power_supply *psy)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int gather_samples(struct s3c_adc_client *client, int num, int channel)
 {
 	int value, i;
@@ -68,7 +75,10 @@ static int gather_samples(struct s3c_adc_client *client, int num, int channel)
 	return value;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static enum power_supply_property s3c_adc_backup_bat_props[] = {
 	POWER_SUPPLY_PROP_VOLTAGE_NOW,
 	POWER_SUPPLY_PROP_VOLTAGE_MIN,
@@ -90,11 +100,16 @@ static int s3c_adc_backup_bat_get_property(struct power_supply *psy,
 		jiffies_to_msecs(jiffies - bat->timestamp) >
 			BAT_POLL_INTERVAL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bat->volt_value = s3c_adc_read(bat->client,
 =======
 		bat->volt_value = gather_samples(bat->client,
 			bat->pdata->backup_volt_samples,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bat->volt_value = gather_samples(bat->client,
+			bat->pdata->backup_volt_samples,
+>>>>>>> refs/remotes/origin/master
 			bat->pdata->backup_volt_channel);
 		bat->volt_value *= bat->pdata->backup_volt_mult;
 		bat->timestamp = jiffies;
@@ -155,14 +170,20 @@ static int s3c_adc_bat_get_property(struct power_supply *psy,
 
 	int new_level;
 	int full_volt;
+<<<<<<< HEAD
 	const struct s3c_adc_bat_thresh *lut = bat->pdata->lut_noac;
 	unsigned int lut_size = bat->pdata->lut_noac_cnt;
+=======
+	const struct s3c_adc_bat_thresh *lut;
+	unsigned int lut_size;
+>>>>>>> refs/remotes/origin/master
 
 	if (!bat) {
 		dev_err(psy->dev, "no battery infos ?!\n");
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (bat->volt_value < 0 || bat->cur_value < 0 ||
 		jiffies_to_msecs(jiffies - bat->timestamp) >
 			BAT_POLL_INTERVAL) {
@@ -171,12 +192,23 @@ static int s3c_adc_bat_get_property(struct power_supply *psy,
 			bat->pdata->volt_channel) * bat->pdata->volt_mult;
 		bat->cur_value = s3c_adc_read(bat->client,
 =======
+=======
+	lut = bat->pdata->lut_noac;
+	lut_size = bat->pdata->lut_noac_cnt;
+
+	if (bat->volt_value < 0 || bat->cur_value < 0 ||
+		jiffies_to_msecs(jiffies - bat->timestamp) >
+			BAT_POLL_INTERVAL) {
+>>>>>>> refs/remotes/origin/master
 		bat->volt_value = gather_samples(bat->client,
 			bat->pdata->volt_samples,
 			bat->pdata->volt_channel) * bat->pdata->volt_mult;
 		bat->cur_value = gather_samples(bat->client,
 			bat->pdata->current_samples,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			bat->pdata->current_channel) * bat->pdata->current_mult;
 		bat->timestamp = jiffies;
 	}
@@ -303,10 +335,14 @@ static irqreturn_t s3c_adc_bat_charged(int irq, void *dev_id)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init s3c_adc_bat_probe(struct platform_device *pdev)
 =======
 static int __devinit s3c_adc_bat_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int s3c_adc_bat_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s3c_adc_client	*client;
 	struct s3c_adc_bat_pdata *pdata = pdev->dev.platform_data;
@@ -461,6 +497,7 @@ static struct platform_driver s3c_adc_bat_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init s3c_adc_bat_init(void)
 {
 	return platform_driver_register(&s3c_adc_bat_driver);
@@ -475,6 +512,9 @@ module_exit(s3c_adc_bat_exit);
 =======
 module_platform_driver(s3c_adc_bat_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(s3c_adc_bat_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Vasily Khoruzhick <anarsoul@gmail.com>");
 MODULE_DESCRIPTION("iPAQ H1930/H1940/RX1950 battery controller driver");

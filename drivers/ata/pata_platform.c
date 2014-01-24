@@ -40,10 +40,14 @@ static int pata_platform_set_mode(struct ata_link *link, struct ata_device **unu
 		dev->xfer_shift = ATA_SHIFT_PIO;
 		dev->flags |= ATA_DFLAG_PIO;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_INFO, "configured for PIO\n");
 =======
 		ata_dev_info(dev, "configured for PIO\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_info(dev, "configured for PIO\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -102,12 +106,18 @@ static void pata_platform_setup_port(struct ata_ioports *ioaddr,
  *
  *	If no IRQ resource is present, PIO polling mode is used instead.
  */
+<<<<<<< HEAD
 int __devinit __pata_platform_probe(struct device *dev,
 				    struct resource *io_res,
 				    struct resource *ctl_res,
 				    struct resource *irq_res,
 				    unsigned int ioport_shift,
 				    int __pio_mask)
+=======
+int __pata_platform_probe(struct device *dev, struct resource *io_res,
+			  struct resource *ctl_res, struct resource *irq_res,
+			  unsigned int ioport_shift, int __pio_mask)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ata_host *host;
 	struct ata_port *ap;
@@ -182,6 +192,7 @@ int __devinit __pata_platform_probe(struct device *dev,
 }
 EXPORT_SYMBOL_GPL(__pata_platform_probe);
 
+<<<<<<< HEAD
 /**
  *	__pata_platform_remove		-	unplug a platform interface
  *	@dev: device
@@ -200,11 +211,18 @@ int __pata_platform_remove(struct device *dev)
 EXPORT_SYMBOL_GPL(__pata_platform_remove);
 
 static int __devinit pata_platform_probe(struct platform_device *pdev)
+=======
+static int pata_platform_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *io_res;
 	struct resource *ctl_res;
 	struct resource *irq_res;
+<<<<<<< HEAD
 	struct pata_platform_info *pp_info = pdev->dev.platform_data;
+=======
+	struct pata_platform_info *pp_info = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Simple resource validation ..
@@ -246,6 +264,7 @@ static int __devinit pata_platform_probe(struct platform_device *pdev)
 				     pio_mask);
 }
 
+<<<<<<< HEAD
 static int __devexit pata_platform_remove(struct platform_device *pdev)
 {
 	return __pata_platform_remove(&pdev->dev);
@@ -254,12 +273,18 @@ static int __devexit pata_platform_remove(struct platform_device *pdev)
 static struct platform_driver pata_platform_driver = {
 	.probe		= pata_platform_probe,
 	.remove		= __devexit_p(pata_platform_remove),
+=======
+static struct platform_driver pata_platform_driver = {
+	.probe		= pata_platform_probe,
+	.remove		= ata_platform_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name		= DRV_NAME,
 		.owner		= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init pata_platform_init(void)
 {
@@ -275,6 +300,9 @@ module_exit(pata_platform_exit);
 =======
 module_platform_driver(pata_platform_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(pata_platform_driver);
+>>>>>>> refs/remotes/origin/master
 
 module_param(pio_mask, int, 0);
 

@@ -19,9 +19,13 @@
 #include <linux/spinlock.h>
 #include <linux/mutex.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/freezer.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/freezer.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/sunrpc/clnt.h>
 
@@ -32,11 +36,17 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define CREATE_TRACE_POINTS
 #include <trace/events/sunrpc.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CREATE_TRACE_POINTS
+#include <trace/events/sunrpc.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * RPC slabs and memory pools
  */
@@ -104,6 +114,7 @@ __rpc_add_timer(struct rpc_wait_queue *queue, struct rpc_task *task)
 	list_add(&task->u.tk_wait.timer_list, &queue->timer_list.list);
 }
 
+<<<<<<< HEAD
 /*
  * Add new request to a priority queue.
  */
@@ -114,11 +125,53 @@ static void __rpc_add_wait_queue_priority(struct rpc_wait_queue *queue,
 		struct rpc_task *task,
 		unsigned char queue_priority)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void rpc_rotate_queue_owner(struct rpc_wait_queue *queue)
+{
+	struct list_head *q = &queue->tasks[queue->priority];
+	struct rpc_task *task;
+
+	if (!list_empty(q)) {
+		task = list_first_entry(q, struct rpc_task, u.tk_wait.list);
+		if (task->tk_owner == queue->owner)
+			list_move_tail(&task->u.tk_wait.list, q);
+	}
+}
+
+static void rpc_set_waitqueue_priority(struct rpc_wait_queue *queue, int priority)
+{
+	if (queue->priority != priority) {
+		/* Fairness: rotate the list when changing priority */
+		rpc_rotate_queue_owner(queue);
+		queue->priority = priority;
+	}
+}
+
+static void rpc_set_waitqueue_owner(struct rpc_wait_queue *queue, pid_t pid)
+{
+	queue->owner = pid;
+	queue->nr = RPC_BATCH_COUNT;
+}
+
+static void rpc_reset_waitqueue_priority(struct rpc_wait_queue *queue)
+{
+	rpc_set_waitqueue_priority(queue, queue->maxpriority);
+	rpc_set_waitqueue_owner(queue, 0);
+}
+
+/*
+ * Add new request to a priority queue.
+ */
+static void __rpc_add_wait_queue_priority(struct rpc_wait_queue *queue,
+		struct rpc_task *task,
+		unsigned char queue_priority)
+>>>>>>> refs/remotes/origin/master
 {
 	struct list_head *q;
 	struct rpc_task *t;
 
 	INIT_LIST_HEAD(&task->u.tk_wait.links);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	q = &queue->tasks[task->tk_priority];
 	if (unlikely(task->tk_priority > queue->maxpriority))
@@ -127,6 +180,13 @@ static void __rpc_add_wait_queue_priority(struct rpc_wait_queue *queue,
 	if (unlikely(queue_priority > queue->maxpriority))
 >>>>>>> refs/remotes/origin/cm-10.0
 		q = &queue->tasks[queue->maxpriority];
+=======
+	if (unlikely(queue_priority > queue->maxpriority))
+		queue_priority = queue->maxpriority;
+	if (queue_priority > queue->priority)
+		rpc_set_waitqueue_priority(queue, queue_priority);
+	q = &queue->tasks[queue_priority];
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(t, q, u.tk_wait.list) {
 		if (t->tk_owner == task->tk_owner) {
 			list_add_tail(&task->u.tk_wait.list, &t->u.tk_wait.links);
@@ -145,6 +205,7 @@ static void __rpc_add_wait_queue_priority(struct rpc_wait_queue *queue,
  * Everyone else gets appended to the queue to ensure proper FIFO behavior.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __rpc_add_wait_queue(struct rpc_wait_queue *queue, struct rpc_task *task)
 =======
 static void __rpc_add_wait_queue(struct rpc_wait_queue *queue,
@@ -160,6 +221,18 @@ static void __rpc_add_wait_queue(struct rpc_wait_queue *queue,
 =======
 		__rpc_add_wait_queue_priority(queue, task, queue_priority);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __rpc_add_wait_queue(struct rpc_wait_queue *queue,
+		struct rpc_task *task,
+		unsigned char queue_priority)
+{
+	WARN_ON_ONCE(RPC_IS_QUEUED(task));
+	if (RPC_IS_QUEUED(task))
+		return;
+
+	if (RPC_IS_PRIORITY(queue))
+		__rpc_add_wait_queue_priority(queue, task, queue_priority);
+>>>>>>> refs/remotes/origin/master
 	else if (RPC_IS_SWAPPER(task))
 		list_add(&task->u.tk_wait.list, &queue->tasks[0]);
 	else
@@ -203,6 +276,7 @@ static void __rpc_remove_wait_queue(struct rpc_wait_queue *queue, struct rpc_tas
 			task->tk_pid, queue, rpc_qname(queue));
 }
 
+<<<<<<< HEAD
 static inline void rpc_set_waitqueue_priority(struct rpc_wait_queue *queue, int priority)
 {
 	queue->priority = priority;
@@ -221,6 +295,8 @@ static inline void rpc_reset_waitqueue_priority(struct rpc_wait_queue *queue)
 	rpc_set_waitqueue_owner(queue, 0);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void __rpc_init_priority_wait_queue(struct rpc_wait_queue *queue, const char *qname, unsigned char nr_queues)
 {
 	int i;
@@ -234,12 +310,16 @@ static void __rpc_init_priority_wait_queue(struct rpc_wait_queue *queue, const c
 	setup_timer(&queue->timer_list.timer, __rpc_queue_timer_fn, (unsigned long)queue);
 	INIT_LIST_HEAD(&queue->timer_list.list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef RPC_DEBUG
 	queue->name = qname;
 #endif
 =======
 	rpc_assign_waitqueue_name(queue, qname);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rpc_assign_waitqueue_name(queue, qname);
+>>>>>>> refs/remotes/origin/master
 }
 
 void rpc_init_priority_wait_queue(struct rpc_wait_queue *queue, const char *qname)
@@ -265,6 +345,7 @@ static int rpc_wait_bit_killable(void *word)
 	if (fatal_signal_pending(current))
 		return -ERESTARTSYS;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	schedule();
 =======
 	freezable_schedule();
@@ -273,6 +354,13 @@ static int rpc_wait_bit_killable(void *word)
 }
 
 #ifdef RPC_DEBUG
+=======
+	freezable_schedule_unsafe();
+	return 0;
+}
+
+#if defined(RPC_DEBUG) || defined(RPC_TRACEPOINTS)
+>>>>>>> refs/remotes/origin/master
 static void rpc_task_set_debuginfo(struct rpc_task *task)
 {
 	static atomic_t rpc_pid;
@@ -288,10 +376,15 @@ static inline void rpc_task_set_debuginfo(struct rpc_task *task)
 static void rpc_set_active(struct rpc_task *task)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	trace_rpc_task_begin(task->tk_client, task, NULL);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_rpc_task_begin(task->tk_client, task, NULL);
+
+>>>>>>> refs/remotes/origin/master
 	rpc_task_set_debuginfo(task);
 	set_bit(RPC_TASK_ACTIVE, &task->tk_runstate);
 }
@@ -309,10 +402,15 @@ static int rpc_complete_task(struct rpc_task *task)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	trace_rpc_task_complete(task->tk_client, task, NULL);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_rpc_task_complete(task->tk_client, task, NULL);
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&wq->lock, flags);
 	clear_bit(RPC_TASK_ACTIVE, &task->tk_runstate);
 	ret = atomic_dec_and_test(&task->tk_count);
@@ -341,6 +439,7 @@ EXPORT_SYMBOL_GPL(__rpc_wait_for_completion_task);
 /*
  * Make an RPC task runnable.
  *
+<<<<<<< HEAD
  * Note: If the task is ASYNC, this must be called with
  * the spinlock held to protect the wait queue operation.
  */
@@ -348,6 +447,22 @@ static void rpc_make_runnable(struct rpc_task *task)
 {
 	rpc_clear_queued(task);
 	if (rpc_test_and_set_running(task))
+=======
+ * Note: If the task is ASYNC, and is being made runnable after sitting on an
+ * rpc_wait_queue, this must be called with the queue spinlock held to protect
+ * the wait queue operation.
+ * Note the ordering of rpc_test_and_set_running() and rpc_clear_queued(),
+ * which is needed to ensure that __rpc_execute() doesn't loop (due to the
+ * lockless RPC_IS_QUEUED() test) before we've had a chance to test
+ * the RPC_TASK_RUNNING flag.
+ */
+static void rpc_make_runnable(struct rpc_task *task)
+{
+	bool need_wakeup = !rpc_test_and_set_running(task);
+
+	rpc_clear_queued(task);
+	if (!need_wakeup)
+>>>>>>> refs/remotes/origin/master
 		return;
 	if (RPC_IS_ASYNC(task)) {
 		INIT_WORK(&task->u.tk_work, rpc_async_schedule);
@@ -363,18 +478,25 @@ static void rpc_make_runnable(struct rpc_task *task)
  * as it's on a wait queue.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __rpc_sleep_on(struct rpc_wait_queue *q, struct rpc_task *task,
 			rpc_action action)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void __rpc_sleep_on_priority(struct rpc_wait_queue *q,
 		struct rpc_task *task,
 		rpc_action action,
 		unsigned char queue_priority)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	dprintk("RPC: %5u sleep_on(queue \"%s\" time %lu)\n",
 			task->tk_pid, rpc_qname(q), jiffies);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	__rpc_add_wait_queue(q, task);
 =======
@@ -384,6 +506,13 @@ static void __rpc_sleep_on_priority(struct rpc_wait_queue *q,
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	BUG_ON(task->tk_callback != NULL);
+=======
+	trace_rpc_task_sleep(task->tk_client, task, q);
+
+	__rpc_add_wait_queue(q, task, queue_priority);
+
+	WARN_ON_ONCE(task->tk_callback != NULL);
+>>>>>>> refs/remotes/origin/master
 	task->tk_callback = action;
 	__rpc_add_timer(q, task);
 }
@@ -392,28 +521,53 @@ void rpc_sleep_on(struct rpc_wait_queue *q, struct rpc_task *task,
 				rpc_action action)
 {
 	/* We shouldn't ever put an inactive task to sleep */
+<<<<<<< HEAD
 	BUG_ON(!RPC_IS_ACTIVATED(task));
+=======
+	WARN_ON_ONCE(!RPC_IS_ACTIVATED(task));
+	if (!RPC_IS_ACTIVATED(task)) {
+		task->tk_status = -EIO;
+		rpc_put_task_async(task);
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Protect the queue operations.
 	 */
 	spin_lock_bh(&q->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__rpc_sleep_on(q, task, action);
 =======
 	__rpc_sleep_on_priority(q, task, action, task->tk_priority);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__rpc_sleep_on_priority(q, task, action, task->tk_priority);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_bh(&q->lock);
 }
 EXPORT_SYMBOL_GPL(rpc_sleep_on);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void rpc_sleep_on_priority(struct rpc_wait_queue *q, struct rpc_task *task,
 		rpc_action action, int priority)
 {
 	/* We shouldn't ever put an inactive task to sleep */
+<<<<<<< HEAD
 	BUG_ON(!RPC_IS_ACTIVATED(task));
+=======
+	WARN_ON_ONCE(!RPC_IS_ACTIVATED(task));
+	if (!RPC_IS_ACTIVATED(task)) {
+		task->tk_status = -EIO;
+		rpc_put_task_async(task);
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Protect the queue operations.
@@ -422,8 +576,13 @@ void rpc_sleep_on_priority(struct rpc_wait_queue *q, struct rpc_task *task,
 	__rpc_sleep_on_priority(q, task, action, priority - RPC_PRIORITY_LOW);
 	spin_unlock_bh(&q->lock);
 }
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(rpc_sleep_on_priority);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * __rpc_do_wake_up_task - wake up a single rpc_task
  * @queue: wait queue
@@ -443,10 +602,15 @@ static void __rpc_do_wake_up_task(struct rpc_wait_queue *queue, struct rpc_task 
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	trace_rpc_task_wakeup(task->tk_client, task, queue);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_rpc_task_wakeup(task->tk_client, task, queue);
+
+>>>>>>> refs/remotes/origin/master
 	__rpc_remove_wait_queue(queue, task);
 
 	rpc_make_runnable(task);
@@ -467,6 +631,7 @@ static void rpc_wake_up_task_queue_locked(struct rpc_wait_queue *queue, struct r
 }
 
 /*
+<<<<<<< HEAD
  * Tests whether rpc queue is empty
  */
 int rpc_queue_empty(struct rpc_wait_queue *queue)
@@ -481,6 +646,8 @@ int rpc_queue_empty(struct rpc_wait_queue *queue)
 EXPORT_SYMBOL_GPL(rpc_queue_empty);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Wake up a task on a specific queue
  */
 void rpc_wake_up_queued_task(struct rpc_wait_queue *queue, struct rpc_task *task)
@@ -495,10 +662,14 @@ EXPORT_SYMBOL_GPL(rpc_wake_up_queued_task);
  * Wake up the next task on a priority queue.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct rpc_task * __rpc_wake_up_next_priority(struct rpc_wait_queue *queue)
 =======
 static struct rpc_task *__rpc_find_next_queued_priority(struct rpc_wait_queue *queue)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct rpc_task *__rpc_find_next_queued_priority(struct rpc_wait_queue *queue)
+>>>>>>> refs/remotes/origin/master
 {
 	struct list_head *q;
 	struct rpc_task *task;
@@ -517,8 +688,12 @@ static struct rpc_task *__rpc_find_next_queued_priority(struct rpc_wait_queue *q
 		/*
 		 * Check if we need to switch queues.
 		 */
+<<<<<<< HEAD
 		if (--queue->count)
 			goto new_owner;
+=======
+		goto new_owner;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -544,6 +719,7 @@ new_owner:
 	rpc_set_waitqueue_owner(queue, task->tk_owner);
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rpc_wake_up_task_queue_locked(queue, task);
 	return task;
 }
@@ -564,6 +740,8 @@ struct rpc_task * rpc_wake_up_next(struct rpc_wait_queue *queue)
 		task_for_first(task, &queue->tasks[0])
 			rpc_wake_up_task_queue_locked(queue, task);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return task;
 }
 
@@ -593,14 +771,20 @@ struct rpc_task *rpc_wake_up_first(struct rpc_wait_queue *queue,
 			rpc_wake_up_task_queue_locked(queue, task);
 		else
 			task = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_bh(&queue->lock);
 
 	return task;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(rpc_wake_up_first);
 
 static bool rpc_wake_up_next_func(struct rpc_task *task, void *data)
@@ -615,7 +799,10 @@ struct rpc_task *rpc_wake_up_next(struct rpc_wait_queue *queue)
 {
 	return rpc_wake_up_first(queue, rpc_wake_up_next_func, NULL);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(rpc_wake_up_next);
 
 /**
@@ -724,7 +911,10 @@ void rpc_prepare_task(struct rpc_task *task)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 rpc_init_task_statistics(struct rpc_task *task)
 {
@@ -746,7 +936,10 @@ rpc_reset_task_statistics(struct rpc_task *task)
 	rpc_init_task_statistics(task);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Helper that calls task->tk_ops->rpc_call_done if it exists
  */
@@ -760,9 +953,13 @@ void rpc_exit_task(struct rpc_task *task)
 			/* Always release the RPC slot and buffer memory */
 			xprt_release(task);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			rpc_reset_task_statistics(task);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			rpc_reset_task_statistics(task);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
@@ -794,7 +991,13 @@ static void __rpc_execute(struct rpc_task *task)
 	dprintk("RPC: %5u __rpc_execute flags=0x%x\n",
 			task->tk_pid, task->tk_flags);
 
+<<<<<<< HEAD
 	BUG_ON(RPC_IS_QUEUED(task));
+=======
+	WARN_ON_ONCE(RPC_IS_QUEUED(task));
+	if (RPC_IS_QUEUED(task))
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	for (;;) {
 		void (*do_action)(struct rpc_task *);
@@ -816,9 +1019,13 @@ static void __rpc_execute(struct rpc_task *task)
 				break;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		trace_rpc_task_run_action(task->tk_client, task, task->tk_action);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		trace_rpc_task_run_action(task->tk_client, task, task->tk_action);
+>>>>>>> refs/remotes/origin/master
 		do_action(task);
 
 		/*
@@ -862,7 +1069,10 @@ static void __rpc_execute(struct rpc_task *task)
 			task->tk_flags |= RPC_TASK_KILLED;
 			rpc_exit(task, -ERESTARTSYS);
 		}
+<<<<<<< HEAD
 		rpc_set_running(task);
+=======
+>>>>>>> refs/remotes/origin/master
 		dprintk("RPC: %5u sync task resuming\n", task->tk_pid);
 	}
 
@@ -883,9 +1093,17 @@ static void __rpc_execute(struct rpc_task *task)
  */
 void rpc_execute(struct rpc_task *task)
 {
+<<<<<<< HEAD
 	rpc_set_active(task);
 	rpc_make_runnable(task);
 	if (!RPC_IS_ASYNC(task))
+=======
+	bool is_async = RPC_IS_ASYNC(task);
+
+	rpc_set_active(task);
+	rpc_make_runnable(task);
+	if (!is_async)
+>>>>>>> refs/remotes/origin/master
 		__rpc_execute(task);
 }
 
@@ -915,7 +1133,14 @@ static void rpc_async_schedule(struct work_struct *work)
 void *rpc_malloc(struct rpc_task *task, size_t size)
 {
 	struct rpc_buffer *buf;
+<<<<<<< HEAD
 	gfp_t gfp = RPC_IS_SWAPPER(task) ? GFP_ATOMIC : GFP_NOWAIT;
+=======
+	gfp_t gfp = GFP_NOWAIT;
+
+	if (RPC_IS_SWAPPER(task))
+		gfp |= __GFP_MEMALLOC;
+>>>>>>> refs/remotes/origin/master
 
 	size += sizeof(struct rpc_buffer);
 	if (size <= RPC_BUFFER_MAXSIZE)
@@ -972,6 +1197,7 @@ static void rpc_init_task(struct rpc_task *task, const struct rpc_task_setup *ta
 	INIT_LIST_HEAD(&task->tk_task);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Initialize retry counters */
 	task->tk_garb_retry = 2;
 	task->tk_cred_retry = 2;
@@ -979,6 +1205,8 @@ static void rpc_init_task(struct rpc_task *task, const struct rpc_task_setup *ta
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	task->tk_priority = task_setup_data->priority - RPC_PRIORITY_LOW;
 	task->tk_owner = current->tgid;
 
@@ -989,11 +1217,15 @@ static void rpc_init_task(struct rpc_task *task, const struct rpc_task_setup *ta
 		task->tk_action = rpc_prepare_task;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* starting timestamp */
 	task->tk_start = ktime_get();
 =======
 	rpc_init_task_statistics(task);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rpc_init_task_statistics(task);
+>>>>>>> refs/remotes/origin/master
 
 	dprintk("RPC:       new task initialized, procpid %u\n",
 				task_pid_nr(current));
@@ -1002,7 +1234,11 @@ static void rpc_init_task(struct rpc_task *task, const struct rpc_task_setup *ta
 static struct rpc_task *
 rpc_alloc_task(void)
 {
+<<<<<<< HEAD
 	return (struct rpc_task *)mempool_alloc(rpc_task_mempool, GFP_NOFS);
+=======
+	return (struct rpc_task *)mempool_alloc(rpc_task_mempool, GFP_NOIO);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1068,11 +1304,15 @@ static void rpc_async_release(struct work_struct *work)
 static void rpc_release_resources_task(struct rpc_task *task)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (task->tk_rqstp)
 		xprt_release(task);
 =======
 	xprt_release(task);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xprt_release(task);
+>>>>>>> refs/remotes/origin/master
 	if (task->tk_msg.rpc_cred) {
 		put_rpccred(task->tk_msg.rpc_cred);
 		task->tk_msg.rpc_cred = NULL;
@@ -1114,7 +1354,11 @@ static void rpc_release_task(struct rpc_task *task)
 {
 	dprintk("RPC: %5u release task\n", task->tk_pid);
 
+<<<<<<< HEAD
 	BUG_ON (RPC_IS_QUEUED(task));
+=======
+	WARN_ON_ONCE(RPC_IS_QUEUED(task));
+>>>>>>> refs/remotes/origin/master
 
 	rpc_release_resources_task(task);
 
@@ -1155,7 +1399,11 @@ static int rpciod_start(void)
 	 * Create the rpciod thread and wait for it to start.
 	 */
 	dprintk("RPC:       creating workqueue rpciod\n");
+<<<<<<< HEAD
 	wq = alloc_workqueue("rpciod", WQ_MEM_RECLAIM, 0);
+=======
+	wq = alloc_workqueue("rpciod", WQ_MEM_RECLAIM, 1);
+>>>>>>> refs/remotes/origin/master
 	rpciod_workqueue = wq;
 	return rpciod_workqueue != NULL;
 }

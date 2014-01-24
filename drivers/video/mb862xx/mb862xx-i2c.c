@@ -14,9 +14,13 @@
 #include <linux/io.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "mb862xxfb.h"
 #include "mb862xx_reg.h"
@@ -28,10 +32,14 @@ static int mb862xx_i2c_wait_event(struct i2c_adapter *adap)
 
 	do {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		udelay(1);
 =======
 		udelay(10);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		udelay(10);
+>>>>>>> refs/remotes/origin/master
 		reg = inreg(i2c, GC_I2C_BCR);
 		if (reg & (I2C_INT | I2C_BER))
 			break;
@@ -75,7 +83,11 @@ static int mb862xx_i2c_read_byte(struct i2c_adapter *adap, u8 *byte, int last)
 	return 1;
 }
 
+<<<<<<< HEAD
 void mb862xx_i2c_stop(struct i2c_adapter *adap)
+=======
+static void mb862xx_i2c_stop(struct i2c_adapter *adap)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mb862xxfb_par *par = adap->algo_data;
 

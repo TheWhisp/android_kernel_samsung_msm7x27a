@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 * algif_hash: User-space interface for hash algorithms
 *
 * This file provides the user-space API for hash algorithms.
@@ -13,6 +14,8 @@
 *
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * algif_hash: User-space interface for hash algorithms
  *
  * This file provides the user-space API for hash algorithms.
@@ -25,7 +28,10 @@
  * any later version.
  *
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <crypto/hash.h>
 #include <crypto/if_alg.h>
@@ -37,6 +43,7 @@
 #include <net/sock.h>
 
 struct hash_ctx {
+<<<<<<< HEAD
 <<<<<<< HEAD
         struct af_alg_sgl sgl;
 
@@ -206,6 +213,8 @@ unlock:
 
         return err ?: len;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct af_alg_sgl sgl;
 
 	u8 *result;
@@ -298,6 +307,12 @@ static ssize_t hash_sendpage(struct socket *sock, struct page *page,
 	struct hash_ctx *ctx = ask->private;
 	int err;
 
+<<<<<<< HEAD
+=======
+	if (flags & MSG_SENDPAGE_NOTLAST)
+		flags |= MSG_MORE;
+
+>>>>>>> refs/remotes/origin/master
 	lock_sock(sk);
 	sg_init_table(ctx->sgl.sg, 1);
 	sg_set_page(ctx->sgl.sg, page, size, offset);
@@ -345,8 +360,11 @@ static int hash_recvmsg(struct kiocb *unused, struct socket *sock,
 	else if (len < ds)
 		msg->msg_flags |= MSG_TRUNC;
 
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	lock_sock(sk);
 	if (ctx->more) {
 		ctx->more = 0;
@@ -363,11 +381,15 @@ unlock:
 	release_sock(sk);
 
 	return err ?: len;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int hash_accept(struct socket *sock, struct socket *newsock, int flags)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         struct sock *sk = sock->sk;
         struct alg_sock *ask = alg_sk(sk);
@@ -422,6 +444,8 @@ static struct proto_ops algif_hash_ops = {
         .recvmsg        =        hash_recvmsg,
         .accept                =        hash_accept,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sock *sk = sock->sk;
 	struct alg_sock *ask = alg_sk(sk);
 	struct hash_ctx *ctx = ask->private;
@@ -474,38 +498,54 @@ static struct proto_ops algif_hash_ops = {
 	.sendpage	=	hash_sendpage,
 	.recvmsg	=	hash_recvmsg,
 	.accept		=	hash_accept,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void *hash_bind(const char *name, u32 type, u32 mask)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return crypto_alloc_ahash(name, type, mask);
 =======
 	return crypto_alloc_ahash(name, type, mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return crypto_alloc_ahash(name, type, mask);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void hash_release(void *private)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
         crypto_free_ahash(private);
 =======
 	crypto_free_ahash(private);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	crypto_free_ahash(private);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int hash_setkey(void *private, const u8 *key, unsigned int keylen)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return crypto_ahash_setkey(private, key, keylen);
 =======
 	return crypto_ahash_setkey(private, key, keylen);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return crypto_ahash_setkey(private, key, keylen);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void hash_sock_destruct(struct sock *sk)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         struct alg_sock *ask = alg_sk(sk);
         struct hash_ctx *ctx = ask->private;
@@ -515,6 +555,8 @@ static void hash_sock_destruct(struct sock *sk)
         sock_kfree_s(sk, ctx, ctx->len);
         af_alg_release_parent(sk);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct alg_sock *ask = alg_sk(sk);
 	struct hash_ctx *ctx = ask->private;
 
@@ -522,11 +564,15 @@ static void hash_sock_destruct(struct sock *sk)
 		     crypto_ahash_digestsize(crypto_ahash_reqtfm(&ctx->req)));
 	sock_kfree_s(sk, ctx, ctx->len);
 	af_alg_release_parent(sk);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int hash_accept_parent(void *private, struct sock *sk)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         struct hash_ctx *ctx;
         struct alg_sock *ask = alg_sk(sk);
@@ -569,6 +615,8 @@ static const struct af_alg_type algif_type_hash = {
         .name                =        "hash",
         .owner                =        THIS_MODULE
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct hash_ctx *ctx;
 	struct alg_sock *ask = alg_sk(sk);
 	unsigned len = sizeof(*ctx) + crypto_ahash_reqsize(private);
@@ -609,20 +657,28 @@ static const struct af_alg_type algif_type_hash = {
 	.ops		=	&algif_hash_ops,
 	.name		=	"hash",
 	.owner		=	THIS_MODULE
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init algif_hash_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return af_alg_register_type(&algif_type_hash);
 =======
 	return af_alg_register_type(&algif_type_hash);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return af_alg_register_type(&algif_type_hash);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit algif_hash_exit(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         int err = af_alg_unregister_type(&algif_type_hash);
         BUG_ON(err);
@@ -630,12 +686,19 @@ static void __exit algif_hash_exit(void)
 	int err = af_alg_unregister_type(&algif_type_hash);
 	BUG_ON(err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err = af_alg_unregister_type(&algif_type_hash);
+	BUG_ON(err);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(algif_hash_init);
 module_exit(algif_hash_exit);
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

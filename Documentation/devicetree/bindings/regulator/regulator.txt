@@ -9,12 +9,32 @@ Optional properties:
 - regulator-max-microamp: largest current consumers may set
 - regulator-always-on: boolean, regulator should never be disabled
 - regulator-boot-on: bootloader/firmware enabled regulator
+<<<<<<< HEAD
 - <name>-supply: phandle to the parent supply/regulator node
 - qcom,consumer-supplies: flattened list of supply and dev_name pairs
 	This property is used to support regulator consumers that have no device
 	tree node.  An empty string, "", can be used to specify a null device
 	name.  A null device name is used to allow calls such as:
 	regulator_get(NULL, "pll_vdd").
+=======
+- regulator-allow-bypass: allow the regulator to go into bypass mode
+- <name>-supply: phandle to the parent supply/regulator node
+- regulator-ramp-delay: ramp delay for regulator(in uV/uS)
+  For hardwares which support disabling ramp rate, it should be explicitly
+  intialised to zero (regulator-ramp-delay = <0>) for disabling ramp delay.
+- regulator-enable-ramp-delay: The time taken, in microseconds, for the supply
+  rail to reach the target voltage, plus/minus whatever tolerance the board
+  design requires. This property describes the total system ramp time
+  required due to the combination of internal ramping of the regulator itself,
+  and board design issues such as trace capacitance and load on the supply.
+
+Deprecated properties:
+- regulator-compatible: If a regulator chip contains multiple
+  regulators, and if the chip's binding contains a child node that
+  describes each regulator, then this property indicates which regulator
+  this child node is intended to configure. If this property is missing,
+  the node's name will be used instead.
+>>>>>>> refs/remotes/origin/master
 
 Example:
 
@@ -23,7 +43,10 @@ Example:
 		regulator-max-microvolt = <2500000>;
 		regulator-always-on;
 		vin-supply = <&vin>;
+<<<<<<< HEAD
 		qcom,consumer-supplies = "pll_vdd", "", "lcd_vcc", "foo.1";
+=======
+>>>>>>> refs/remotes/origin/master
 	};
 
 Regulator Consumers:

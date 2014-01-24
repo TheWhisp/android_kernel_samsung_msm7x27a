@@ -6,17 +6,25 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/etherdevice.h>
 #include <linux/if_arp.h>
 #include <linux/slab.h>
 #include <net/cfg80211.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <net/cfg80211-wext.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/cfg80211-wext.h>
+>>>>>>> refs/remotes/origin/master
 #include "wext-compat.h"
 #include "nl80211.h"
 
@@ -37,11 +45,17 @@ int cfg80211_mgd_wext_connect(struct cfg80211_registered_device *rdev,
 	wdev->wext.connect.ie_len = wdev->wext.ie_len;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Use default background scan period */
 	wdev->wext.connect.bg_scan_period = -1;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Use default background scan period */
+	wdev->wext.connect.bg_scan_period = -1;
+
+>>>>>>> refs/remotes/origin/master
 	if (wdev->wext.keys) {
 		wdev->wext.keys->def = wdev->wext.default_key;
 		wdev->wext.keys->defmgmt = wdev->wext.default_mgmt_key;
@@ -63,8 +77,13 @@ int cfg80211_mgd_wext_connect(struct cfg80211_registered_device *rdev,
 	if (wdev->wext.prev_bssid_valid)
 		prev_bssid = wdev->wext.prev_bssid;
 
+<<<<<<< HEAD
 	err = __cfg80211_connect(rdev, wdev->netdev,
 				 &wdev->wext.connect, ck, prev_bssid);
+=======
+	err = cfg80211_connect(rdev, wdev->netdev,
+			       &wdev->wext.connect, ck, prev_bssid);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		kfree(ck);
 
@@ -96,11 +115,17 @@ int cfg80211_mgd_wext_siwfreq(struct net_device *dev,
 			return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	cfg80211_lock_rdev(rdev);
 	mutex_lock(&rdev->devlist_mtx);
 	wdev_lock(wdev);
 
 	if (wdev->sme_state != CFG80211_SME_IDLE) {
+=======
+	wdev_lock(wdev);
+
+	if (wdev->conn) {
+>>>>>>> refs/remotes/origin/master
 		bool event = true;
 
 		if (wdev->wext.connect.channel == chan) {
@@ -111,8 +136,13 @@ int cfg80211_mgd_wext_siwfreq(struct net_device *dev,
 		/* if SSID set, we'll try right again, avoid event */
 		if (wdev->wext.connect.ssid_len)
 			event = false;
+<<<<<<< HEAD
 		err = __cfg80211_disconnect(rdev, dev,
 					    WLAN_REASON_DEAUTH_LEAVING, event);
+=======
+		err = cfg80211_disconnect(rdev, dev,
+					  WLAN_REASON_DEAUTH_LEAVING, event);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out;
 	}
@@ -120,17 +150,41 @@ int cfg80211_mgd_wext_siwfreq(struct net_device *dev,
 
 	wdev->wext.connect.channel = chan;
 
+<<<<<<< HEAD
 	/* SSID is not set, we just want to switch channel */
 	if (chan && !wdev->wext.connect.ssid_len) {
 		err = cfg80211_set_freq(rdev, wdev, freq, NL80211_CHAN_NO_HT);
+=======
+	/*
+	 * SSID is not set, we just want to switch monitor channel,
+	 * this is really just backward compatibility, if the SSID
+	 * is set then we use the channel to select the BSS to use
+	 * to connect to instead. If we were connected on another
+	 * channel we disconnected above and reconnect below.
+	 */
+	if (chan && !wdev->wext.connect.ssid_len) {
+		struct cfg80211_chan_def chandef = {
+			.width = NL80211_CHAN_WIDTH_20_NOHT,
+			.center_freq1 = freq,
+		};
+
+		chandef.chan = ieee80211_get_channel(&rdev->wiphy, freq);
+		if (chandef.chan)
+			err = cfg80211_set_monitor_channel(rdev, &chandef);
+		else
+			err = -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 	err = cfg80211_mgd_wext_connect(rdev, wdev);
  out:
 	wdev_unlock(wdev);
+<<<<<<< HEAD
 	mutex_unlock(&rdev->devlist_mtx);
 	cfg80211_unlock_rdev(rdev);
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -182,13 +236,20 @@ int cfg80211_mgd_wext_siwessid(struct net_device *dev,
 	if (len > 0 && ssid[len - 1] == '\0')
 		len--;
 
+<<<<<<< HEAD
 	cfg80211_lock_rdev(rdev);
 	mutex_lock(&rdev->devlist_mtx);
+=======
+>>>>>>> refs/remotes/origin/master
 	wdev_lock(wdev);
 
 	err = 0;
 
+<<<<<<< HEAD
 	if (wdev->sme_state != CFG80211_SME_IDLE) {
+=======
+	if (wdev->conn) {
+>>>>>>> refs/remotes/origin/master
 		bool event = true;
 
 		if (wdev->wext.connect.ssid && len &&
@@ -199,8 +260,13 @@ int cfg80211_mgd_wext_siwessid(struct net_device *dev,
 		/* if SSID set now, we'll try to connect, avoid event */
 		if (len)
 			event = false;
+<<<<<<< HEAD
 		err = __cfg80211_disconnect(rdev, dev,
 					    WLAN_REASON_DEAUTH_LEAVING, event);
+=======
+		err = cfg80211_disconnect(rdev, dev,
+					  WLAN_REASON_DEAUTH_LEAVING, event);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out;
 	}
@@ -217,8 +283,11 @@ int cfg80211_mgd_wext_siwessid(struct net_device *dev,
 	err = cfg80211_mgd_wext_connect(rdev, wdev);
  out:
 	wdev_unlock(wdev);
+<<<<<<< HEAD
 	mutex_unlock(&rdev->devlist_mtx);
 	cfg80211_unlock_rdev(rdev);
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -236,13 +305,25 @@ int cfg80211_mgd_wext_giwessid(struct net_device *dev,
 
 	wdev_lock(wdev);
 	if (wdev->current_bss) {
+<<<<<<< HEAD
 		const u8 *ie = ieee80211_bss_get_ie(&wdev->current_bss->pub,
 						    WLAN_EID_SSID);
+=======
+		const u8 *ie;
+
+		rcu_read_lock();
+		ie = ieee80211_bss_get_ie(&wdev->current_bss->pub,
+					  WLAN_EID_SSID);
+>>>>>>> refs/remotes/origin/master
 		if (ie) {
 			data->flags = 1;
 			data->length = ie[1];
 			memcpy(ssid, ie + 2, data->length);
 		}
+<<<<<<< HEAD
+=======
+		rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 	} else if (wdev->wext.connect.ssid && wdev->wext.connect.ssid_len) {
 		data->flags = 1;
 		data->length = wdev->wext.connect.ssid_len;
@@ -273,11 +354,17 @@ int cfg80211_mgd_wext_siwap(struct net_device *dev,
 	if (is_zero_ether_addr(bssid) || is_broadcast_ether_addr(bssid))
 		bssid = NULL;
 
+<<<<<<< HEAD
 	cfg80211_lock_rdev(rdev);
 	mutex_lock(&rdev->devlist_mtx);
 	wdev_lock(wdev);
 
 	if (wdev->sme_state != CFG80211_SME_IDLE) {
+=======
+	wdev_lock(wdev);
+
+	if (wdev->conn) {
+>>>>>>> refs/remotes/origin/master
 		err = 0;
 		/* both automatic */
 		if (!bssid && !wdev->wext.connect.bssid)
@@ -285,11 +372,19 @@ int cfg80211_mgd_wext_siwap(struct net_device *dev,
 
 		/* fixed already - and no change */
 		if (wdev->wext.connect.bssid && bssid &&
+<<<<<<< HEAD
 		    compare_ether_addr(bssid, wdev->wext.connect.bssid) == 0)
 			goto out;
 
 		err = __cfg80211_disconnect(rdev, dev,
 					    WLAN_REASON_DEAUTH_LEAVING, false);
+=======
+		    ether_addr_equal(bssid, wdev->wext.connect.bssid))
+			goto out;
+
+		err = cfg80211_disconnect(rdev, dev,
+					  WLAN_REASON_DEAUTH_LEAVING, false);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out;
 	}
@@ -303,8 +398,11 @@ int cfg80211_mgd_wext_siwap(struct net_device *dev,
 	err = cfg80211_mgd_wext_connect(rdev, wdev);
  out:
 	wdev_unlock(wdev);
+<<<<<<< HEAD
 	mutex_unlock(&rdev->devlist_mtx);
 	cfg80211_unlock_rdev(rdev);
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -366,9 +464,15 @@ int cfg80211_wext_siwgenie(struct net_device *dev,
 	wdev->wext.ie = ie;
 	wdev->wext.ie_len = ie_len;
 
+<<<<<<< HEAD
 	if (wdev->sme_state != CFG80211_SME_IDLE) {
 		err = __cfg80211_disconnect(rdev, dev,
 					    WLAN_REASON_DEAUTH_LEAVING, false);
+=======
+	if (wdev->conn) {
+		err = cfg80211_disconnect(rdev, dev,
+					  WLAN_REASON_DEAUTH_LEAVING, false);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out;
 	}
@@ -380,9 +484,12 @@ int cfg80211_wext_siwgenie(struct net_device *dev,
 	return err;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(cfg80211_wext_siwgenie);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int cfg80211_wext_siwmlme(struct net_device *dev,
 			  struct iw_request_info *info,
@@ -408,8 +515,12 @@ int cfg80211_wext_siwmlme(struct net_device *dev,
 	switch (mlme->cmd) {
 	case IW_MLME_DEAUTH:
 	case IW_MLME_DISASSOC:
+<<<<<<< HEAD
 		err = __cfg80211_disconnect(rdev, dev, mlme->reason_code,
 					    true);
+=======
+		err = cfg80211_disconnect(rdev, dev, mlme->reason_code, true);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		err = -EOPNOTSUPP;
@@ -420,6 +531,9 @@ int cfg80211_wext_siwmlme(struct net_device *dev,
 	return err;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(cfg80211_wext_siwmlme);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

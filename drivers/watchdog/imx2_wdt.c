@@ -33,7 +33,10 @@
 #include <linux/uaccess.h>
 #include <linux/timer.h>
 #include <linux/jiffies.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_NAME "imx2-wdt"
 
@@ -47,11 +50,17 @@
 #define IMX2_WDT_SEQ2		0xAAAA		/* -> service sequence 2 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define IMX2_WDT_WRSR		0x04		/* Reset Status Register */
 #define IMX2_WDT_WRSR_TOUT	(1 << 1)	/* -> Reset due to Timeout */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IMX2_WDT_WRSR		0x04		/* Reset Status Register */
+#define IMX2_WDT_WRSR_TOUT	(1 << 1)	/* -> Reset due to Timeout */
+
+>>>>>>> refs/remotes/origin/master
 #define IMX2_WDT_MAX_TIME	128
 #define IMX2_WDT_DEFAULT_TIME	60		/* in seconds */
 
@@ -72,12 +81,17 @@ static struct {
 static struct miscdevice imx2_wdt_miscdev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
@@ -129,7 +143,11 @@ static void imx2_wdt_start(void)
 {
 	if (!test_and_set_bit(IMX2_WDT_STATUS_STARTED, &imx2_wdt.status)) {
 		/* at our first start we enable clock and do initialisations */
+<<<<<<< HEAD
 		clk_enable(imx2_wdt.clk);
+=======
+		clk_prepare_enable(imx2_wdt.clk);
+>>>>>>> refs/remotes/origin/master
 
 		imx2_wdt_setup();
 	} else	/* delete the timer that pings the watchdog after close */
@@ -187,9 +205,13 @@ static long imx2_wdt_ioctl(struct file *file, unsigned int cmd,
 	int __user *p = argp;
 	int new_value;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u16 val;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 val;
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd) {
 	case WDIOC_GETSUPPORT:
@@ -198,10 +220,13 @@ static long imx2_wdt_ioctl(struct file *file, unsigned int cmd,
 
 	case WDIOC_GETSTATUS:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case WDIOC_GETBOOTSTATUS:
 		return put_user(0, p);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return put_user(0, p);
 
 	case WDIOC_GETBOOTSTATUS:
@@ -209,7 +234,10 @@ static long imx2_wdt_ioctl(struct file *file, unsigned int cmd,
 		new_value = val & IMX2_WDT_WRSR_TOUT ? WDIOF_CARDRESET : 0;
 		return put_user(new_value, p);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case WDIOC_KEEPALIVE:
 		imx2_wdt_ping();
 		return 0;
@@ -273,6 +301,7 @@ static int __init imx2_wdt_probe(struct platform_device *pdev)
 {
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int res_size;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -303,6 +332,16 @@ static int __init imx2_wdt_probe(struct platform_device *pdev)
 	}
 
 	imx2_wdt.clk = clk_get(&pdev->dev, NULL);
+=======
+	struct resource *res;
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	imx2_wdt.base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(imx2_wdt.base))
+		return PTR_ERR(imx2_wdt.base);
+
+	imx2_wdt.clk = devm_clk_get(&pdev->dev, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(imx2_wdt.clk)) {
 		dev_err(&pdev->dev, "can't get Watchdog clock\n");
 		return PTR_ERR(imx2_wdt.clk);
@@ -327,7 +366,10 @@ static int __init imx2_wdt_probe(struct platform_device *pdev)
 
 fail:
 	imx2_wdt_miscdev.parent = NULL;
+<<<<<<< HEAD
 	clk_put(imx2_wdt.clk);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -340,8 +382,12 @@ static int __exit imx2_wdt_remove(struct platform_device *pdev)
 
 		dev_crit(imx2_wdt_miscdev.parent,
 			"Device removed: Expect reboot!\n");
+<<<<<<< HEAD
 	} else
 		clk_put(imx2_wdt.clk);
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	imx2_wdt_miscdev.parent = NULL;
 	return 0;
@@ -362,19 +408,28 @@ static void imx2_wdt_shutdown(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct of_device_id imx2_wdt_dt_ids[] = {
 	{ .compatible = "fsl,imx21-wdt", },
 	{ /* sentinel */ }
 };
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_DEVICE_TABLE(of, imx2_wdt_dt_ids);
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver imx2_wdt_driver = {
 	.remove		= __exit_p(imx2_wdt_remove),
 	.shutdown	= imx2_wdt_shutdown,
 	.driver		= {
 		.name	= DRIVER_NAME,
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 		.of_match_table = imx2_wdt_dt_ids,
@@ -393,9 +448,19 @@ static void __exit imx2_wdt_exit(void)
 	platform_driver_unregister(&imx2_wdt_driver);
 }
 module_exit(imx2_wdt_exit);
+=======
+		.of_match_table = imx2_wdt_dt_ids,
+	},
+};
+
+module_platform_driver_probe(imx2_wdt_driver, imx2_wdt_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Wolfram Sang");
 MODULE_DESCRIPTION("Watchdog driver for IMX2 and later");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS("platform:" DRIVER_NAME);

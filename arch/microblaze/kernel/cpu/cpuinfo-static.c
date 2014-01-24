@@ -120,9 +120,13 @@ void __init set_cpuinfo_static(struct cpuinfo *ci, struct device_node *cpu)
 
 	ci->mmu = fcpu(cpu, "xlnx,use-mmu");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ci->mmu_privins = fcpu(cpu, "xlnx,mmu-privileged-instr");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ci->mmu_privins = fcpu(cpu, "xlnx,mmu-privileged-instr");
+>>>>>>> refs/remotes/origin/master
 	ci->endian = fcpu(cpu, "xlnx,endianness");
 
 	ci->ver_code = 0;

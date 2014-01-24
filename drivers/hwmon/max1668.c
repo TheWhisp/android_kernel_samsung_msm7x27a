@@ -215,7 +215,11 @@ static ssize_t set_temp_max(struct device *dev,
 		return ret;
 
 	mutex_lock(&data->update_lock);
+<<<<<<< HEAD
 	data->temp_max[index] = SENSORS_LIMIT(temp/1000, -128, 127);
+=======
+	data->temp_max[index] = clamp_val(temp/1000, -128, 127);
+>>>>>>> refs/remotes/origin/master
 	if (i2c_smbus_write_byte_data(client,
 					MAX1668_REG_LIMH_WR(index),
 					data->temp_max[index]))
@@ -240,7 +244,11 @@ static ssize_t set_temp_min(struct device *dev,
 		return ret;
 
 	mutex_lock(&data->update_lock);
+<<<<<<< HEAD
 	data->temp_min[index] = SENSORS_LIMIT(temp/1000, -128, 127);
+=======
+	data->temp_min[index] = clamp_val(temp/1000, -128, 127);
+>>>>>>> refs/remotes/origin/master
 	if (i2c_smbus_write_byte_data(client,
 					MAX1668_REG_LIML_WR(index),
 					data->temp_max[index]))
@@ -411,7 +419,12 @@ static int max1668_probe(struct i2c_client *client,
 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct max1668_data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct max1668_data),
+			    GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!data)
 		return -ENOMEM;
 
@@ -422,7 +435,11 @@ static int max1668_probe(struct i2c_client *client,
 	/* Register sysfs hooks */
 	err = sysfs_create_group(&client->dev.kobj, &max1668_group_common);
 	if (err)
+<<<<<<< HEAD
 		goto error_free;
+=======
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	if (data->type == max1668 || data->type == max1989) {
 		err = sysfs_create_group(&client->dev.kobj,
@@ -444,8 +461,11 @@ error_sysrem1:
 		sysfs_remove_group(&client->dev.kobj, &max1668_group_unique);
 error_sysrem0:
 	sysfs_remove_group(&client->dev.kobj, &max1668_group_common);
+<<<<<<< HEAD
 error_free:
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -459,7 +479,10 @@ static int max1668_remove(struct i2c_client *client)
 
 	sysfs_remove_group(&client->dev.kobj, &max1668_group_common);
 
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

@@ -252,11 +252,15 @@ static void display_on(void *sohandle,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int kfr2r09_lcd_setup(void *board_data, void *sohandle,
 		      struct sh_mobile_lcdc_sys_bus_ops *so)
 =======
 int kfr2r09_lcd_setup(void *sohandle, struct sh_mobile_lcdc_sys_bus_ops *so)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int kfr2r09_lcd_setup(void *sohandle, struct sh_mobile_lcdc_sys_bus_ops *so)
+>>>>>>> refs/remotes/origin/master
 {
 	/* power on */
 	gpio_set_value(GPIO_PTF4, 0);  /* PROTECT/ -> L */
@@ -277,6 +281,7 @@ int kfr2r09_lcd_setup(void *sohandle, struct sh_mobile_lcdc_sys_bus_ops *so)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void kfr2r09_lcd_start(void *board_data, void *sohandle,
 		       struct sh_mobile_lcdc_sys_bus_ops *so)
@@ -352,3 +357,9 @@ void kfr2r09_lcd_off(void)
 {
 	kfr2r09_lcd_backlight(0);
 }
+=======
+void kfr2r09_lcd_start(void *sohandle, struct sh_mobile_lcdc_sys_bus_ops *so)
+{
+	write_memory_start(sohandle, so);
+}
+>>>>>>> refs/remotes/origin/master

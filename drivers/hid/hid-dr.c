@@ -29,17 +29,25 @@
 
 #include <linux/input.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/usb.h>
 #include <linux/hid.h>
 <<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/hid.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "hid-ids.h"
 
 #ifdef CONFIG_DRAGONRISE_FF
+<<<<<<< HEAD
 #include "usbhid/usbhid.h"
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct drff_device {
 	struct hid_report *report;
@@ -71,7 +79,11 @@ static int drff_play(struct input_dev *dev, void *data,
 		drff->report->field[0]->value[1] = 0x00;
 		drff->report->field[0]->value[2] = weak;
 		drff->report->field[0]->value[4] = strong;
+<<<<<<< HEAD
 		usbhid_submit_report(hid, drff->report, USB_DIR_OUT);
+=======
+		hid_hw_request(hid, drff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 
 		drff->report->field[0]->value[0] = 0xfa;
 		drff->report->field[0]->value[1] = 0xfe;
@@ -83,7 +95,11 @@ static int drff_play(struct input_dev *dev, void *data,
 	drff->report->field[0]->value[2] = 0x00;
 	drff->report->field[0]->value[4] = 0x00;
 	dbg_hid("running with 0x%02x 0x%02x", strong, weak);
+<<<<<<< HEAD
 	usbhid_submit_report(hid, drff->report, USB_DIR_OUT);
+=======
+	hid_hw_request(hid, drff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -135,7 +151,11 @@ static int drff_init(struct hid_device *hid)
 	drff->report->field[0]->value[4] = 0x00;
 	drff->report->field[0]->value[5] = 0x00;
 	drff->report->field[0]->value[6] = 0x00;
+<<<<<<< HEAD
 	usbhid_submit_report(hid, drff->report, USB_DIR_OUT);
+=======
+	hid_hw_request(hid, drff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 
 	hid_info(hid, "Force Feedback for DragonRise Inc. "
 		 "game controllers by Richard Walmsley <richwalm@gmail.com>\n");
@@ -300,6 +320,7 @@ static struct hid_driver dr_driver = {
 	.report_fixup = dr_report_fixup,
 	.probe = dr_probe,
 };
+<<<<<<< HEAD
 
 static int __init dr_init(void)
 {
@@ -313,4 +334,8 @@ static void __exit dr_exit(void)
 
 module_init(dr_init);
 module_exit(dr_exit);
+=======
+module_hid_driver(dr_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

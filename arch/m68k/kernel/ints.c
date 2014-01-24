@@ -5,6 +5,7 @@
  * License.  See the file COPYING in the main directory of this archive
  * for more details.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * 07/03/96: Timer initialization, and thus mach_sched_init(),
  *           removed from request_irq() and moved to init_time().
@@ -26,6 +27,8 @@
  *           which must be served                               /Roman Zippel
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/module.h>
@@ -38,9 +41,12 @@
 
 #include <asm/setup.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 #include <asm/traps.h>
 #include <asm/page.h>
@@ -53,6 +59,7 @@
 #endif
 
 extern u32 auto_irqhandler_fixup[];
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern u32 user_irqhandler_fixup[];
 extern u16 user_irqvec_fixup[];
@@ -82,6 +89,8 @@ static struct irq_controller user_irq_controller = {
 static irq_node_t nodes[NUM_IRQ_NODES];
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern u16 user_irqvec_fixup[];
 
 static int m68k_first_user_vec;
@@ -98,7 +107,10 @@ static struct irq_chip user_irq_chip = {
 	.irq_shutdown	= m68k_irq_shutdown,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * void init_IRQ(void)
  *
@@ -114,6 +126,7 @@ void __init init_IRQ(void)
 {
 	int i;
 
+<<<<<<< HEAD
 	/* assembly irq entry code relies on this... */
 	if (HARDIRQ_MASK != 0x00ff0000) {
 		extern void hardirq_mask_is_broken(void);
@@ -126,6 +139,10 @@ void __init init_IRQ(void)
 =======
 		irq_set_chip_and_handler(i, &auto_irq_chip, handle_simple_irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = IRQ_AUTO_1; i <= IRQ_AUTO_7; i++)
+		irq_set_chip_and_handler(i, &auto_irq_chip, handle_simple_irq);
+>>>>>>> refs/remotes/origin/master
 
 	mach_init_IRQ();
 }
@@ -136,10 +153,14 @@ void __init init_IRQ(void)
  *
  * setup the handler to be called from auto vector interrupts instead of the
 <<<<<<< HEAD
+<<<<<<< HEAD
  * standard __m68k_handle_int(), it will be called with irq numbers in the range
 =======
  * standard do_IRQ(), it will be called with irq numbers in the range
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * standard do_IRQ(), it will be called with irq numbers in the range
+>>>>>>> refs/remotes/origin/master
  * from IRQ_AUTO_1 - IRQ_AUTO_7.
  */
 void __init m68k_setup_auto_interrupt(void (*handler)(unsigned int, struct pt_regs *))
@@ -154,6 +175,7 @@ void __init m68k_setup_auto_interrupt(void (*handler)(unsigned int, struct pt_re
  * @vec: first user vector interrupt to handle
  * @cnt: number of active user vector interrupts
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @handler: called from user vector interrupts
  *
  * setup user vector interrupts, this includes activating the specified range
@@ -165,19 +187,25 @@ void __init m68k_setup_auto_interrupt(void (*handler)(unsigned int, struct pt_re
 void __init m68k_setup_user_interrupt(unsigned int vec, unsigned int cnt,
 				      void (*handler)(unsigned int, struct pt_regs *))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * setup user vector interrupts, this includes activating the specified range
  * of interrupts, only then these interrupts can be requested (note: this is
  * different from auto vector interrupts).
  */
 void __init m68k_setup_user_interrupt(unsigned int vec, unsigned int cnt)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
 	BUG_ON(IRQ_USER + cnt > NR_IRQS);
 	m68k_first_user_vec = vec;
 	for (i = 0; i < cnt; i++)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		irq_controller[IRQ_USER + i] = &user_irq_controller;
 	*user_irqvec_fixup = vec - IRQ_USER;
@@ -187,20 +215,30 @@ void __init m68k_setup_user_interrupt(unsigned int vec, unsigned int cnt)
 		irq_set_chip(IRQ_USER + i, &user_irq_chip);
 	*user_irqvec_fixup = vec - IRQ_USER;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		irq_set_chip_and_handler(i, &user_irq_chip, handle_simple_irq);
+	*user_irqvec_fixup = vec - IRQ_USER;
+>>>>>>> refs/remotes/origin/master
 	flush_icache();
 }
 
 /**
  * m68k_setup_irq_controller
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @contr: irq controller which controls specified irq
  * @irq: first irq to be managed by the controller
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @chip: irq chip which controls specified irq
  * @handle: flow handler which handles specified irq
  * @irq: first irq to be managed by the controller
  * @cnt: number of irqs to be managed by the controller
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Change the controller for the specified range of irq, which will be used to
  * manage these irq. auto/user irq already have a default controller, which can
@@ -208,15 +246,21 @@ void __init m68k_setup_user_interrupt(unsigned int vec, unsigned int cnt)
  * m68k_irq_shutdown.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void m68k_setup_irq_controller(struct irq_controller *contr, unsigned int irq,
 =======
 void m68k_setup_irq_controller(struct irq_chip *chip,
 			       irq_flow_handler_t handle, unsigned int irq,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void m68k_setup_irq_controller(struct irq_chip *chip,
+			       irq_flow_handler_t handle, unsigned int irq,
+>>>>>>> refs/remotes/origin/master
 			       unsigned int cnt)
 {
 	int i;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (i = 0; i < cnt; i++)
 		irq_controller[irq + i] = contr;
@@ -392,6 +436,8 @@ EXPORT_SYMBOL(disable_irq_nosync);
 
 int m68k_irq_startup(unsigned int irq)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < cnt; i++) {
 		irq_set_chip(irq + i, chip);
 		if (handle)
@@ -400,7 +446,10 @@ int m68k_irq_startup(unsigned int irq)
 }
 
 unsigned int m68k_irq_startup_irq(unsigned int irq)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	if (irq <= IRQ_AUTO_7)
 		vectors[VEC_SPUR + irq] = auto_inthandler;
@@ -409,6 +458,7 @@ unsigned int m68k_irq_startup_irq(unsigned int irq)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void m68k_irq_shutdown(unsigned int irq)
 {
@@ -446,6 +496,8 @@ int probe_irq_off (unsigned long irqs)
 
 EXPORT_SYMBOL(probe_irq_off);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned int m68k_irq_startup(struct irq_data *data)
 {
 	return m68k_irq_startup_irq(data->irq);
@@ -461,7 +513,10 @@ void m68k_irq_shutdown(struct irq_data *data)
 		vectors[m68k_first_user_vec + irq - IRQ_USER] = bad_inthandler;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 unsigned int irq_canonicalize(unsigned int irq)
 {
@@ -474,6 +529,7 @@ unsigned int irq_canonicalize(unsigned int irq)
 
 EXPORT_SYMBOL(irq_canonicalize);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 asmlinkage void m68k_handle_int(unsigned int irq)
 {
@@ -525,10 +581,15 @@ void init_irq_proc(void)
 }
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 asmlinkage void handle_badint(struct pt_regs *regs)
 {
 	atomic_inc(&irq_err_count);
 	pr_warn("unexpected interrupt from %u\n", regs->vector);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

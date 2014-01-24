@@ -11,6 +11,7 @@
 
 #include <linux/sched.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/current.h>
 #include <asm/mmu_context.h>
@@ -19,6 +20,11 @@
 #include <asm/mmu_context.h>
 #include <asm/switch_to.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/current.h>
+#include <asm/mmu_context.h>
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/master
 
 void save_processor_state(void)
 {
@@ -40,9 +46,13 @@ void restore_processor_state(void)
 {
 #ifdef CONFIG_PPC32
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch_mmu_context(NULL, current->active_mm);
 =======
 	switch_mmu_context(current->active_mm, current->active_mm);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	switch_mmu_context(current->active_mm, current->active_mm);
+>>>>>>> refs/remotes/origin/master
 #endif
 }

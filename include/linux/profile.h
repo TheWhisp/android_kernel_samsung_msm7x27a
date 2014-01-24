@@ -18,10 +18,17 @@ struct pt_regs;
 struct notifier_block;
 
 #if defined(CONFIG_PROFILING) && defined(CONFIG_PROC_FS)
+<<<<<<< HEAD
 void create_prof_cpu_mask(struct proc_dir_entry *de);
 int create_proc_profile(void);
 #else
 static inline void create_prof_cpu_mask(struct proc_dir_entry *de)
+=======
+void create_prof_cpu_mask(void);
+int create_proc_profile(void);
+#else
+static inline void create_prof_cpu_mask(void)
+>>>>>>> refs/remotes/origin/master
 {
 }
 
@@ -82,9 +89,12 @@ int task_handoff_unregister(struct notifier_block * n);
 int profile_event_register(enum profile_type, struct notifier_block * n);
 int profile_event_unregister(enum profile_type, struct notifier_block * n);
 
+<<<<<<< HEAD
 int register_timer_hook(int (*hook)(struct pt_regs *));
 void unregister_timer_hook(int (*hook)(struct pt_regs *));
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct pt_regs;
 
 #else
@@ -135,6 +145,7 @@ static inline int profile_event_unregister(enum profile_type t, struct notifier_
 #define profile_handoff_task(a) (0)
 #define profile_munmap(a) do { } while (0)
 
+<<<<<<< HEAD
 static inline int register_timer_hook(int (*hook)(struct pt_regs *))
 {
 	return -ENOSYS;
@@ -145,6 +156,8 @@ static inline void unregister_timer_hook(int (*hook)(struct pt_regs *))
 	return;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_PROFILING */
 
 #endif /* _LINUX_PROFILE_H */

@@ -754,7 +754,11 @@ lance_open(struct net_device *dev)
 	int i;
 
 	if (dev->irq == 0 ||
+<<<<<<< HEAD
 		request_irq(dev->irq, lance_interrupt, 0, lp->name, dev)) {
+=======
+		request_irq(dev->irq, lance_interrupt, 0, dev->name, dev)) {
+>>>>>>> refs/remotes/origin/master
 		return -EAGAIN;
 	}
 
@@ -873,10 +877,16 @@ lance_init_ring(struct net_device *dev, gfp_t gfp)
 
 		skb = alloc_skb(PKT_BUF_SZ, GFP_DMA | gfp);
 		lp->rx_skbuff[i] = skb;
+<<<<<<< HEAD
 		if (skb) {
 			skb->dev = dev;
 			rx_buff = skb->data;
 		} else
+=======
+		if (skb)
+			rx_buff = skb->data;
+		else
+>>>>>>> refs/remotes/origin/master
 			rx_buff = kmalloc(PKT_BUF_SZ, GFP_DMA | gfp);
 		if (rx_buff == NULL)
 			lp->rx_ring[i].base = 0;

@@ -5,7 +5,10 @@
  * Defines for thread sets.
  */
 extern int iscsi_thread_set_force_reinstatement(struct iscsi_conn *);
+<<<<<<< HEAD
 extern void iscsi_add_ts_to_inactive_list(struct iscsi_thread_set *);
+=======
+>>>>>>> refs/remotes/origin/master
 extern int iscsi_allocate_thread_sets(u32);
 extern void iscsi_deallocate_thread_sets(void);
 extern void iscsi_activate_thread_set(struct iscsi_conn *, struct iscsi_thread_set *);
@@ -65,10 +68,13 @@ struct iscsi_thread_set {
 	struct iscsi_conn	*conn;
 	/* used for controlling ts state accesses */
 	spinlock_t	ts_state_lock;
+<<<<<<< HEAD
 	/* Used for rx side post startup */
 	struct completion	rx_post_start_comp;
 	/* Used for tx side post startup */
 	struct completion	tx_post_start_comp;
+=======
+>>>>>>> refs/remotes/origin/master
 	/* used for restarting thread queue */
 	struct completion	rx_restart_comp;
 	/* used for restarting thread queue */
@@ -83,6 +89,10 @@ struct iscsi_thread_set {
 	struct task_struct	*tx_thread;
 	/* struct iscsi_thread_set in list list head*/
 	struct list_head	ts_list;
+<<<<<<< HEAD
+=======
+	struct semaphore	ts_activate_sem;
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif   /*** ISCSI_THREAD_QUEUE_H ***/

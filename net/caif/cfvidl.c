@@ -1,6 +1,10 @@
 /*
  * Copyright (C) ST-Ericsson AB 2010
+<<<<<<< HEAD
  * Author:	Sjur Brendeland/sjur.brandeland@stericsson.com
+=======
+ * Author:	Sjur Brendeland
+>>>>>>> refs/remotes/origin/master
  * License terms: GNU General Public License (GPL) version 2
  */
 
@@ -22,6 +26,7 @@ static int cfvidl_transmit(struct cflayer *layr, struct cfpkt *pkt);
 struct cflayer *cfvidl_create(u8 channel_id, struct dev_info *dev_info)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cfsrvl *vid = kmalloc(sizeof(struct cfsrvl), GFP_ATOMIC);
 	if (!vid) {
 		pr_warn("Out of memory\n");
@@ -31,12 +36,17 @@ struct cflayer *cfvidl_create(u8 channel_id, struct dev_info *dev_info)
 
 	memset(vid, 0, sizeof(struct cfsrvl));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct cfsrvl *vid = kzalloc(sizeof(struct cfsrvl), GFP_ATOMIC);
 	if (!vid)
 		return NULL;
 	caif_assert(offsetof(struct cfsrvl, layer) == 0);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cfsrvl_init(vid, channel_id, dev_info, false);
 	vid->layer.receive = cfvidl_receive;
 	vid->layer.transmit = cfvidl_transmit;
@@ -62,16 +72,22 @@ static int cfvidl_transmit(struct cflayer *layr, struct cfpkt *pkt)
 	u32 videoheader = 0;
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cfsrvl_ready(service, &ret))
 		return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!cfsrvl_ready(service, &ret)) {
 		cfpkt_destroy(pkt);
 		return ret;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cfpkt_add_head(pkt, &videoheader, 4);
 	/* Add info for MUX-layer to route the packet out */
 	info = cfpkt_info(pkt);

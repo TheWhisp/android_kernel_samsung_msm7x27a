@@ -19,10 +19,17 @@
 #include <linux/module.h>
 #include <asm/div64.h>
 
+<<<<<<< HEAD
 #include "../iio.h"
 #include "../sysfs.h"
 #include "../buffer.h"
 #include "../ring_sw.h"
+=======
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+#include <linux/iio/buffer.h>
+#include <linux/iio/kfifo_buf.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "ad5933.h"
 
@@ -108,6 +115,7 @@ static struct ad5933_platform_data ad5933_default_pdata  = {
 	.vref_mv = 3300,
 };
 
+<<<<<<< HEAD
 static struct iio_chan_spec ad5933_channels[] = {
 	IIO_CHAN(IIO_TEMP, 0, 1, 1, NULL, 0, 0, 0,
 		 0, AD5933_REG_TEMP_DATA, IIO_ST('s', 14, 16, 0), 0),
@@ -118,6 +126,49 @@ static struct iio_chan_spec ad5933_channels[] = {
 	IIO_CHAN(IIO_VOLTAGE, 0, 1, 0, "imag_raw", 0, 0,
 		 IIO_CHAN_INFO_SCALE_SEPARATE_BIT,
 		 AD5933_REG_IMAG_DATA, 1, IIO_ST('s', 16, 16, 0), 0),
+=======
+static const struct iio_chan_spec ad5933_channels[] = {
+	{
+		.type = IIO_TEMP,
+		.indexed = 1,
+		.channel = 0,
+		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED),
+		.address = AD5933_REG_TEMP_DATA,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 14,
+			.storagebits = 16,
+		},
+	}, { /* Ring Channels */
+		.type = IIO_VOLTAGE,
+		.indexed = 1,
+		.channel = 0,
+		.extend_name = "real_raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+		BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD5933_REG_REAL_DATA,
+		.scan_index = 0,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 16,
+			.storagebits = 16,
+		},
+	}, {
+		.type = IIO_VOLTAGE,
+		.indexed = 1,
+		.channel = 0,
+		.extend_name = "imag_raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+		BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD5933_REG_IMAG_DATA,
+		.scan_index = 1,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 16,
+			.storagebits = 16,
+		},
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 static int ad5933_i2c_write(struct i2c_client *client,
@@ -260,7 +311,11 @@ static ssize_t ad5933_show_frequency(struct device *dev,
 					struct device_attribute *attr,
 					char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ad5933_state *st = iio_priv(indio_dev);
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
 	int ret;
@@ -289,6 +344,7 @@ static ssize_t ad5933_store_frequency(struct device *dev,
 					 const char *buf,
 					 size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 	struct ad5933_state *st = iio_priv(indio_dev);
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
@@ -296,6 +352,15 @@ static ssize_t ad5933_store_frequency(struct device *dev,
 	int ret;
 
 	ret = strict_strtoul(buf, 10, &val);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ad5933_state *st = iio_priv(indio_dev);
+	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+	unsigned long val;
+	int ret;
+
+	ret = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -323,7 +388,11 @@ static ssize_t ad5933_show(struct device *dev,
 					struct device_attribute *attr,
 					char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ad5933_state *st = iio_priv(indio_dev);
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
 	int ret = 0, len = 0;
@@ -366,15 +435,26 @@ static ssize_t ad5933_store(struct device *dev,
 					 const char *buf,
 					 size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 	struct ad5933_state *st = iio_priv(indio_dev);
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
 	long val;
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ad5933_state *st = iio_priv(indio_dev);
+	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+	u16 val;
+>>>>>>> refs/remotes/origin/master
 	int i, ret = 0;
 	unsigned short dat;
 
 	if (this_attr->address != AD5933_IN_PGA_GAIN) {
+<<<<<<< HEAD
 		ret = strict_strtol(buf, 10, &val);
+=======
+		ret = kstrtou16(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			return ret;
 	}
@@ -403,7 +483,11 @@ static ssize_t ad5933_store(struct device *dev,
 		ret = ad5933_cmd(st, 0);
 		break;
 	case AD5933_OUT_SETTLING_CYCLES:
+<<<<<<< HEAD
 		val = clamp(val, 0L, 0x7FFL);
+=======
+		val = clamp(val, (u16)0, (u16)0x7FF);
+>>>>>>> refs/remotes/origin/master
 		st->settling_cycles = val;
 
 		/* 2x, 4x handling, see datasheet */
@@ -417,7 +501,11 @@ static ssize_t ad5933_store(struct device *dev,
 				AD5933_REG_SETTLING_CYCLES, 2, (u8 *)&dat);
 		break;
 	case AD5933_FREQ_POINTS:
+<<<<<<< HEAD
 		val = clamp(val, 0L, 511L);
+=======
+		val = clamp(val, (u16)0, (u16)511);
+>>>>>>> refs/remotes/origin/master
 		st->freq_points = val;
 
 		dat = cpu_to_be16(val);
@@ -495,7 +583,12 @@ static int ad5933_read_raw(struct iio_dev *indio_dev,
 
 	mutex_lock(&indio_dev->mlock);
 	switch (m) {
+<<<<<<< HEAD
 	case 0:
+=======
+	case IIO_CHAN_INFO_RAW:
+	case IIO_CHAN_INFO_PROCESSED:
+>>>>>>> refs/remotes/origin/master
 		if (iio_buffer_enabled(indio_dev)) {
 			ret = -EBUSY;
 			goto out;
@@ -537,12 +630,16 @@ static const struct iio_info ad5933_info = {
 static int ad5933_ring_preenable(struct iio_dev *indio_dev)
 {
 	struct ad5933_state *st = iio_priv(indio_dev);
+<<<<<<< HEAD
 	size_t d_size;
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (bitmap_empty(indio_dev->active_scan_mask, indio_dev->masklength))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	d_size = bitmap_weight(indio_dev->active_scan_mask,
 			       indio_dev->masklength) *
 		 ad5933_channels[1].scan_type.storagebits / 8;
@@ -551,6 +648,8 @@ static int ad5933_ring_preenable(struct iio_dev *indio_dev)
 		indio_dev->buffer->access->
 			set_bytes_per_datum(indio_dev->buffer, d_size);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = ad5933_reset(st);
 	if (ret < 0)
 		return ret;
@@ -603,10 +702,21 @@ static const struct iio_buffer_setup_ops ad5933_ring_setup_ops = {
 
 static int ad5933_register_ring_funcs_and_init(struct iio_dev *indio_dev)
 {
+<<<<<<< HEAD
 	indio_dev->buffer = iio_sw_rb_allocate(indio_dev);
 	if (!indio_dev->buffer)
 		return -ENOMEM;
 
+=======
+	struct iio_buffer *buffer;
+
+	buffer = iio_kfifo_allocate(indio_dev);
+	if (buffer)
+		return -ENOMEM;
+
+	iio_device_attach_buffer(indio_dev, buffer);
+
+>>>>>>> refs/remotes/origin/master
 	/* Ring buffer functions - here trigger setup related */
 	indio_dev->setup_ops = &ad5933_ring_setup_ops;
 
@@ -620,7 +730,10 @@ static void ad5933_work(struct work_struct *work)
 	struct ad5933_state *st = container_of(work,
 		struct ad5933_state, work.work);
 	struct iio_dev *indio_dev = i2c_get_clientdata(st->client);
+<<<<<<< HEAD
 	struct iio_buffer *ring = indio_dev->buffer;
+=======
+>>>>>>> refs/remotes/origin/master
 	signed short buf[2];
 	unsigned char status;
 
@@ -650,8 +763,12 @@ static void ad5933_work(struct work_struct *work)
 		} else {
 			buf[0] = be16_to_cpu(buf[0]);
 		}
+<<<<<<< HEAD
 		/* save datum to the ring */
 		ring->access->store_to(ring, (u8 *)buf, iio_get_time_ns());
+=======
+		iio_push_to_buffers(indio_dev, buf);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* no data available - try again later */
 		schedule_delayed_work(&st->work, st->poll_time_jiffies);
@@ -672,13 +789,23 @@ static void ad5933_work(struct work_struct *work)
 	mutex_unlock(&indio_dev->mlock);
 }
 
+<<<<<<< HEAD
 static int __devinit ad5933_probe(struct i2c_client *client,
+=======
+static int ad5933_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 				   const struct i2c_device_id *id)
 {
 	int ret, voltage_uv = 0;
 	struct ad5933_platform_data *pdata = client->dev.platform_data;
 	struct ad5933_state *st;
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = iio_allocate_device(sizeof(*st));
+=======
+	struct iio_dev *indio_dev;
+
+	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*st));
+>>>>>>> refs/remotes/origin/master
 	if (indio_dev == NULL)
 		return -ENOMEM;
 
@@ -691,11 +818,19 @@ static int __devinit ad5933_probe(struct i2c_client *client,
 	else
 		st->pdata = pdata;
 
+<<<<<<< HEAD
 	st->reg = regulator_get(&client->dev, "vcc");
 	if (!IS_ERR(st->reg)) {
 		ret = regulator_enable(st->reg);
 		if (ret)
 			goto error_put_reg;
+=======
+	st->reg = devm_regulator_get(&client->dev, "vcc");
+	if (!IS_ERR(st->reg)) {
+		ret = regulator_enable(st->reg);
+		if (ret)
+			return ret;
+>>>>>>> refs/remotes/origin/master
 		voltage_uv = regulator_get_voltage(st->reg);
 	}
 
@@ -749,6 +884,7 @@ static int __devinit ad5933_probe(struct i2c_client *client,
 error_uninitialize_ring:
 	iio_buffer_unregister(indio_dev);
 error_unreg_ring:
+<<<<<<< HEAD
 	iio_sw_rb_free(indio_dev->buffer);
 error_disable_reg:
 	if (!IS_ERR(st->reg))
@@ -758,23 +894,39 @@ error_put_reg:
 		regulator_put(st->reg);
 
 	iio_free_device(indio_dev);
+=======
+	iio_kfifo_free(indio_dev->buffer);
+error_disable_reg:
+	if (!IS_ERR(st->reg))
+		regulator_disable(st->reg);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static __devexit int ad5933_remove(struct i2c_client *client)
+=======
+static int ad5933_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
 	struct ad5933_state *st = iio_priv(indio_dev);
 
 	iio_device_unregister(indio_dev);
 	iio_buffer_unregister(indio_dev);
+<<<<<<< HEAD
 	iio_sw_rb_free(indio_dev->buffer);
 	if (!IS_ERR(st->reg)) {
 		regulator_disable(st->reg);
 		regulator_put(st->reg);
 	}
 	iio_free_device(indio_dev);
+=======
+	iio_kfifo_free(indio_dev->buffer);
+	if (!IS_ERR(st->reg))
+		regulator_disable(st->reg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -792,7 +944,11 @@ static struct i2c_driver ad5933_driver = {
 		.name = "ad5933",
 	},
 	.probe = ad5933_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ad5933_remove),
+=======
+	.remove = ad5933_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = ad5933_id,
 };
 module_i2c_driver(ad5933_driver);

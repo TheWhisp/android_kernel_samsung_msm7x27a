@@ -18,17 +18,24 @@
 #include <linux/string.h>
 #include <linux/serial_core.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/sunserialcore.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sunserialcore.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 
 #include <asm/prom.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "suncore.h"
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int sunserial_current_minor = 64;
 

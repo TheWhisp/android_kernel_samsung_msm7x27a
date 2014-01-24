@@ -25,6 +25,11 @@
 #ifndef TI_WILINK_ST_H
 #define TI_WILINK_ST_H
 
+<<<<<<< HEAD
+=======
+#include <linux/skbuff.h>
+
+>>>>>>> refs/remotes/origin/master
 /**
  * enum proto-type - The protocol on WiLink chips which share a
  *	common physical interface like UART.
@@ -279,9 +284,16 @@ struct kim_data_s {
 long st_kim_start(void *);
 long st_kim_stop(void *);
 
+<<<<<<< HEAD
 void st_kim_recv(void *, const unsigned char *, long count);
 void st_kim_complete(void *);
 void kim_st_list_protocols(struct st_data_s *, void *);
+=======
+void st_kim_complete(void *);
+void kim_st_list_protocols(struct st_data_s *, void *);
+void st_kim_recv(void *, const unsigned char *, long);
+
+>>>>>>> refs/remotes/origin/master
 
 /*
  * BTS headers
@@ -411,8 +423,11 @@ struct gps_event_hdr {
 } __attribute__ ((packed));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* platform data */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * struct ti_st_plat_data - platform data shared between ST driver and
  *	platform specific board file which adds the ST device.
@@ -435,7 +450,10 @@ struct gps_event_hdr {
  *	asleep or run host faster when chip awake etc..
  *
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct ti_st_plat_data {
 	long nshutdown_gpio;
 	unsigned char dev_name[UART_DEV_NAME_LEN]; /* uart name */
@@ -444,12 +462,18 @@ struct ti_st_plat_data {
 	int (*suspend)(struct platform_device *, pm_message_t);
 	int (*resume)(struct platform_device *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int (*chip_enable) (struct kim_data_s *);
 	int (*chip_disable) (struct kim_data_s *);
 	int (*chip_asleep) (struct kim_data_s *);
 	int (*chip_awake) (struct kim_data_s *);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* TI_WILINK_ST_H */

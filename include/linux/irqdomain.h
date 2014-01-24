@@ -10,6 +10,7 @@
  * Linux irq number without any extra platform support code.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * irq_domain is expected to be embedded in an interrupt controller's private
  * data structure.
  */
@@ -40,6 +41,8 @@ struct irq_domain_ops {
 			    unsigned long *out_hwirq, unsigned int *out_type);
 #endif /* CONFIG_OF */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Interrupt controller "domain" data structure. This could be defined as a
  * irq domain controller. That is, it handles the mapping between hardware
  * and virtual interrupt numbers for a given interrupt domain. The domain
@@ -95,6 +98,7 @@ struct irq_domain_ops {
 	int (*xlate)(struct irq_domain *d, struct device_node *node,
 		     const u32 *intspec, unsigned int intsize,
 		     unsigned long *out_hwirq, unsigned int *out_type);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
@@ -224,6 +228,94 @@ struct irq_domain *irq_domain_add_tree(struct device_node *of_node,
 extern struct irq_domain *irq_find_host(struct device_node *node);
 extern void irq_set_default_host(struct irq_domain *host);
 
+=======
+};
+
+extern struct irq_domain_ops irq_generic_chip_ops;
+
+struct irq_domain_chip_generic;
+
+/**
+ * struct irq_domain - Hardware interrupt number translation object
+ * @link: Element in global irq_domain list.
+ * @name: Name of interrupt domain
+ * @ops: pointer to irq_domain methods
+ * @host_data: private data pointer for use by owner.  Not touched by irq_domain
+ *             core code.
+ *
+ * Optional elements
+ * @of_node: Pointer to device tree nodes associated with the irq_domain. Used
+ *           when decoding device tree interrupt specifiers.
+ * @gc: Pointer to a list of generic chips. There is a helper function for
+ *      setting up one or more generic chips for interrupt controllers
+ *      drivers using the generic chip library which uses this pointer.
+ *
+ * Revmap data, used internally by irq_domain
+ * @revmap_direct_max_irq: The largest hwirq that can be set for controllers that
+ *                         support direct mapping
+ * @revmap_size: Size of the linear map table @linear_revmap[]
+ * @revmap_tree: Radix map tree for hwirqs that don't fit in the linear map
+ * @linear_revmap: Linear table of hwirq->virq reverse mappings
+ */
+struct irq_domain {
+	struct list_head link;
+	const char *name;
+	const struct irq_domain_ops *ops;
+	void *host_data;
+
+	/* Optional data */
+	struct device_node *of_node;
+	struct irq_domain_chip_generic *gc;
+
+	/* reverse map data. The linear map gets appended to the irq_domain */
+	irq_hw_number_t hwirq_max;
+	unsigned int revmap_direct_max_irq;
+	unsigned int revmap_size;
+	struct radix_tree_root revmap_tree;
+	unsigned int linear_revmap[];
+};
+
+#ifdef CONFIG_IRQ_DOMAIN
+struct irq_domain *__irq_domain_add(struct device_node *of_node, int size,
+				    irq_hw_number_t hwirq_max, int direct_max,
+				    const struct irq_domain_ops *ops,
+				    void *host_data);
+struct irq_domain *irq_domain_add_simple(struct device_node *of_node,
+					 unsigned int size,
+					 unsigned int first_irq,
+					 const struct irq_domain_ops *ops,
+					 void *host_data);
+struct irq_domain *irq_domain_add_legacy(struct device_node *of_node,
+					 unsigned int size,
+					 unsigned int first_irq,
+					 irq_hw_number_t first_hwirq,
+					 const struct irq_domain_ops *ops,
+					 void *host_data);
+extern struct irq_domain *irq_find_host(struct device_node *node);
+extern void irq_set_default_host(struct irq_domain *host);
+
+/**
+ * irq_domain_add_linear() - Allocate and register a linear revmap irq_domain.
+ * @of_node: pointer to interrupt controller's device tree node.
+ * @size: Number of interrupts in the domain.
+ * @ops: map/unmap domain callbacks
+ * @host_data: Controller private data pointer
+ */
+static inline struct irq_domain *irq_domain_add_linear(struct device_node *of_node,
+					 unsigned int size,
+					 const struct irq_domain_ops *ops,
+					 void *host_data)
+{
+	return __irq_domain_add(of_node, size, size, 0, ops, host_data);
+}
+static inline struct irq_domain *irq_domain_add_nomap(struct device_node *of_node,
+					 unsigned int max_irq,
+					 const struct irq_domain_ops *ops,
+					 void *host_data)
+{
+	return __irq_domain_add(of_node, 0, max_irq, max_irq, ops, host_data);
+}
+>>>>>>> refs/remotes/origin/master
 static inline struct irq_domain *irq_domain_add_legacy_isa(
 				struct device_node *of_node,
 				const struct irq_domain_ops *ops,
@@ -232,13 +324,31 @@ static inline struct irq_domain *irq_domain_add_legacy_isa(
 	return irq_domain_add_legacy(of_node, NUM_ISA_INTERRUPTS, 0, 0, ops,
 				     host_data);
 }
+<<<<<<< HEAD
 extern struct irq_domain *irq_find_host(struct device_node *node);
 extern void irq_set_default_host(struct irq_domain *host);
 
+=======
+static inline struct irq_domain *irq_domain_add_tree(struct device_node *of_node,
+					 const struct irq_domain_ops *ops,
+					 void *host_data)
+{
+	return __irq_domain_add(of_node, 0, ~0, 0, ops, host_data);
+}
+
+extern void irq_domain_remove(struct irq_domain *host);
+
+extern int irq_domain_associate(struct irq_domain *domain, unsigned int irq,
+					irq_hw_number_t hwirq);
+extern void irq_domain_associate_many(struct irq_domain *domain,
+				      unsigned int irq_base,
+				      irq_hw_number_t hwirq_base, int count);
+>>>>>>> refs/remotes/origin/master
 
 extern unsigned int irq_create_mapping(struct irq_domain *host,
 				       irq_hw_number_t hwirq);
 extern void irq_dispose_mapping(unsigned int virq);
+<<<<<<< HEAD
 extern unsigned int irq_find_mapping(struct irq_domain *host,
 				     irq_hw_number_t hwirq);
 extern unsigned int irq_create_direct_mapping(struct irq_domain *host);
@@ -248,6 +358,36 @@ extern unsigned int irq_radix_revmap_lookup(struct irq_domain *host,
 					    irq_hw_number_t hwirq);
 extern unsigned int irq_linear_revmap(struct irq_domain *host,
 				      irq_hw_number_t hwirq);
+=======
+
+/**
+ * irq_linear_revmap() - Find a linux irq from a hw irq number.
+ * @domain: domain owning this hardware interrupt
+ * @hwirq: hardware irq number in that domain space
+ *
+ * This is a fast path alternative to irq_find_mapping() that can be
+ * called directly by irq controller code to save a handful of
+ * instructions. It is always safe to call, but won't find irqs mapped
+ * using the radix tree.
+ */
+static inline unsigned int irq_linear_revmap(struct irq_domain *domain,
+					     irq_hw_number_t hwirq)
+{
+	return hwirq < domain->revmap_size ? domain->linear_revmap[hwirq] : 0;
+}
+extern unsigned int irq_find_mapping(struct irq_domain *host,
+				     irq_hw_number_t hwirq);
+extern unsigned int irq_create_direct_mapping(struct irq_domain *host);
+extern int irq_create_strict_mappings(struct irq_domain *domain,
+				      unsigned int irq_base,
+				      irq_hw_number_t hwirq_base, int count);
+
+static inline int irq_create_identity_mapping(struct irq_domain *host,
+					      irq_hw_number_t hwirq)
+{
+	return irq_create_strict_mappings(host, hwirq, hwirq, 1);
+}
+>>>>>>> refs/remotes/origin/master
 
 extern const struct irq_domain_ops irq_domain_simple_ops;
 
@@ -262,6 +402,7 @@ int irq_domain_xlate_onetwocell(struct irq_domain *d, struct device_node *ctrlr,
 			const u32 *intspec, unsigned int intsize,
 			irq_hw_number_t *out_hwirq, unsigned int *out_type);
 
+<<<<<<< HEAD
 #if defined(CONFIG_OF_IRQ)
 extern void irq_domain_generate_simple(const struct of_device_id *match,
 					u64 phys_base, unsigned int irq_start);
@@ -274,5 +415,10 @@ static inline void irq_domain_generate_simple(const struct of_device_id *match,
 static inline void irq_dispose_mapping(unsigned int virq) { }
 #endif /* !CONFIG_IRQ_DOMAIN */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else /* CONFIG_IRQ_DOMAIN */
+static inline void irq_dispose_mapping(unsigned int virq) { }
+#endif /* !CONFIG_IRQ_DOMAIN */
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _LINUX_IRQDOMAIN_H */

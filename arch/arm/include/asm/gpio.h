@@ -2,16 +2,25 @@
 #define _ARCH_ARM_GPIO_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* not all ARM platforms necessarily support this API ... */
 #include <mach/gpio.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if CONFIG_ARCH_NR_GPIO > 0
 #define ARCH_NR_GPIOS CONFIG_ARCH_NR_GPIO
 #endif
 
 /* not all ARM platforms necessarily support this API ... */
+<<<<<<< HEAD
 #include <mach/gpio.h>
+=======
+#ifdef CONFIG_NEED_MACH_GPIO_H
+#include <mach/gpio.h>
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ARM_GPIOLIB_COMPLEX
 /* Note: this may rely upon the value of ARCH_NR_GPIOS set in mach/gpio.h */
@@ -32,5 +41,8 @@
 #define gpio_to_irq	__gpio_to_irq
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ARCH_ARM_GPIO_H */

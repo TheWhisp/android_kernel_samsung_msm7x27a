@@ -118,10 +118,14 @@ int __hwspin_trylock(struct hwspinlock *hwlock, int mode, unsigned long *flags)
 
 	/* try to take the hwspinlock device */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = hwlock->ops->trylock(hwlock);
 =======
 	ret = hwlock->bank->ops->trylock(hwlock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = hwlock->bank->ops->trylock(hwlock);
+>>>>>>> refs/remotes/origin/master
 
 	/* if hwlock is already taken, undo spin_trylock_* and exit */
 	if (!ret) {
@@ -204,12 +208,17 @@ int __hwspin_lock_timeout(struct hwspinlock *hwlock, unsigned int to,
 		 * hogging the interconnect (no sleeping, though)
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (hwlock->ops->relax)
 			hwlock->ops->relax(hwlock);
 =======
 		if (hwlock->bank->ops->relax)
 			hwlock->bank->ops->relax(hwlock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (hwlock->bank->ops->relax)
+			hwlock->bank->ops->relax(hwlock);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -255,10 +264,14 @@ void __hwspin_unlock(struct hwspinlock *hwlock, int mode, unsigned long *flags)
 	mb();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hwlock->ops->unlock(hwlock);
 =======
 	hwlock->bank->ops->unlock(hwlock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hwlock->bank->ops->unlock(hwlock);
+>>>>>>> refs/remotes/origin/master
 
 	/* Undo the spin_trylock{_irq, _irqsave} called while locking */
 	if (mode == HWLOCK_IRQSTATE)
@@ -270,6 +283,7 @@ void __hwspin_unlock(struct hwspinlock *hwlock, int mode, unsigned long *flags)
 }
 EXPORT_SYMBOL_GPL(__hwspin_unlock);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /**
  * hwspin_lock_register() - register a new hw spinlock
@@ -286,10 +300,14 @@ int hwspin_lock_register(struct hwspinlock *hwlock)
 =======
 static int hwspin_lock_register_single(struct hwspinlock *hwlock, int id)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hwspin_lock_register_single(struct hwspinlock *hwlock, int id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hwspinlock *tmp;
 	int ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!hwlock || !hwlock->ops ||
 		!hwlock->ops->trylock || !hwlock->ops->unlock) {
@@ -309,6 +327,8 @@ static int hwspin_lock_register_single(struct hwspinlock *hwlock, int id)
 	tmp = radix_tree_tag_set(&hwspinlock_tree, hwlock->id,
 							HWSPINLOCK_UNUSED);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&hwspinlock_tree_lock);
 
 	ret = radix_tree_insert(&hwspinlock_tree, id, hwlock);
@@ -320,13 +340,17 @@ static int hwspin_lock_register_single(struct hwspinlock *hwlock, int id)
 
 	/* mark this hwspinlock as available */
 	tmp = radix_tree_tag_set(&hwspinlock_tree, id, HWSPINLOCK_UNUSED);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* self-sanity check which should never fail */
 	WARN_ON(tmp != hwlock);
 
 out:
 	mutex_unlock(&hwspinlock_tree_lock);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return ret;
 }
@@ -345,11 +369,16 @@ EXPORT_SYMBOL_GPL(hwspin_lock_register);
  */
 struct hwspinlock *hwspin_lock_unregister(unsigned int id)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct hwspinlock *hwspin_lock_unregister_single(unsigned int id)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct hwspinlock *hwlock = NULL;
 	int ret;
@@ -374,7 +403,10 @@ out:
 	return hwlock;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * hwspin_lock_register() - register a new hw spinlock device
@@ -457,7 +489,10 @@ int hwspin_lock_unregister(struct hwspinlock_device *bank)
 
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(hwspin_lock_unregister);
 
 /**
@@ -473,13 +508,18 @@ EXPORT_SYMBOL_GPL(hwspin_lock_unregister);
 static int __hwspin_lock_request(struct hwspinlock *hwlock)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct device *dev = hwlock->bank->dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device *dev = hwlock->bank->dev;
+>>>>>>> refs/remotes/origin/master
 	struct hwspinlock *tmp;
 	int ret;
 
 	/* prevent underlying implementation from being removed */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!try_module_get(hwlock->owner)) {
 		dev_err(hwlock->dev, "%s: can't get owner\n", __func__);
@@ -487,30 +527,44 @@ static int __hwspin_lock_request(struct hwspinlock *hwlock)
 	if (!try_module_get(dev->driver->owner)) {
 		dev_err(dev, "%s: can't get owner\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!try_module_get(dev->driver->owner)) {
+		dev_err(dev, "%s: can't get owner\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	/* notify PM core that power is now needed */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = pm_runtime_get_sync(hwlock->dev);
 	if (ret < 0) {
 		dev_err(hwlock->dev, "%s: can't power on device\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = pm_runtime_get_sync(dev);
 	if (ret < 0) {
 		dev_err(dev, "%s: can't power on device\n", __func__);
 		pm_runtime_put_noidle(dev);
 		module_put(dev->driver->owner);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
 	/* mark hwspinlock as used, should not fail */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tmp = radix_tree_tag_clear(&hwspinlock_tree, hwlock->id,
 =======
 	tmp = radix_tree_tag_clear(&hwspinlock_tree, hwlock_to_id(hwlock),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tmp = radix_tree_tag_clear(&hwspinlock_tree, hwlock_to_id(hwlock),
+>>>>>>> refs/remotes/origin/master
 							HWSPINLOCK_UNUSED);
 
 	/* self-sanity check that should never fail */
@@ -533,10 +587,14 @@ int hwspin_lock_get_id(struct hwspinlock *hwlock)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return hwlock->id;
 =======
 	return hwlock_to_id(hwlock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return hwlock_to_id(hwlock);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(hwspin_lock_get_id);
 
@@ -612,10 +670,14 @@ struct hwspinlock *hwspin_lock_request_specific(unsigned int id)
 
 	/* sanity check (this shouldn't happen) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WARN_ON(hwlock->id != id);
 =======
 	WARN_ON(hwlock_to_id(hwlock) != id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON(hwlock_to_id(hwlock) != id);
+>>>>>>> refs/remotes/origin/master
 
 	/* make sure this hwspinlock is unused */
 	ret = radix_tree_tag_get(&hwspinlock_tree, id, HWSPINLOCK_UNUSED);
@@ -651,9 +713,13 @@ EXPORT_SYMBOL_GPL(hwspin_lock_request_specific);
 int hwspin_lock_free(struct hwspinlock *hwlock)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct device *dev = hwlock->bank->dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device *dev;
+>>>>>>> refs/remotes/origin/master
 	struct hwspinlock *tmp;
 	int ret;
 
@@ -662,6 +728,7 @@ int hwspin_lock_free(struct hwspinlock *hwlock)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	mutex_lock(&hwspinlock_tree_lock);
 
 	/* make sure the hwspinlock is used */
@@ -671,11 +738,20 @@ int hwspin_lock_free(struct hwspinlock *hwlock)
 	if (ret == 1) {
 		dev_err(hwlock->dev, "%s: hwlock is already free\n", __func__);
 =======
+=======
+	dev = hwlock->bank->dev;
+	mutex_lock(&hwspinlock_tree_lock);
+
+	/* make sure the hwspinlock is used */
+>>>>>>> refs/remotes/origin/master
 	ret = radix_tree_tag_get(&hwspinlock_tree, hwlock_to_id(hwlock),
 							HWSPINLOCK_UNUSED);
 	if (ret == 1) {
 		dev_err(dev, "%s: hwlock is already free\n", __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dump_stack();
 		ret = -EINVAL;
 		goto out;
@@ -683,29 +759,41 @@ int hwspin_lock_free(struct hwspinlock *hwlock)
 
 	/* notify the underlying device that power is not needed */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = pm_runtime_put(hwlock->dev);
 =======
 	ret = pm_runtime_put(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = pm_runtime_put(dev);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto out;
 
 	/* mark this hwspinlock as available */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tmp = radix_tree_tag_set(&hwspinlock_tree, hwlock->id,
 =======
 	tmp = radix_tree_tag_set(&hwspinlock_tree, hwlock_to_id(hwlock),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tmp = radix_tree_tag_set(&hwspinlock_tree, hwlock_to_id(hwlock),
+>>>>>>> refs/remotes/origin/master
 							HWSPINLOCK_UNUSED);
 
 	/* sanity check (this shouldn't happen) */
 	WARN_ON(tmp != hwlock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	module_put(hwlock->owner);
 =======
 	module_put(dev->driver->owner);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	module_put(dev->driver->owner);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	mutex_unlock(&hwspinlock_tree_lock);

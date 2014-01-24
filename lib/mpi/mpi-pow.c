@@ -77,7 +77,11 @@ int mpi_powm(MPI res, MPI base, MPI exp, MPI mod)
 	mp = mp_marker = mpi_alloc_limb_space(msize);
 	if (!mp)
 		goto enomem;
+<<<<<<< HEAD
 	count_leading_zeros(mod_shift_cnt, mod->d[msize - 1]);
+=======
+	mod_shift_cnt = count_leading_zeros(mod->d[msize - 1]);
+>>>>>>> refs/remotes/origin/master
 	if (mod_shift_cnt)
 		mpihelp_lshift(mp, mod->d, msize, mod_shift_cnt);
 	else
@@ -169,7 +173,11 @@ int mpi_powm(MPI res, MPI base, MPI exp, MPI mod)
 
 		i = esize - 1;
 		e = ep[i];
+<<<<<<< HEAD
 		count_leading_zeros(c, e);
+=======
+		c = count_leading_zeros(e);
+>>>>>>> refs/remotes/origin/master
 		e = (e << c) << 1;	/* shift the exp bits to the left, lose msb */
 		c = BITS_PER_MPI_LIMB - 1 - c;
 

@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 config IWLWIFI_LEGACY
 =======
 config IWLEGACY
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config IWLEGACY
+>>>>>>> refs/remotes/origin/master
 	tristate
 	select FW_LOADER
 	select NEW_LEDS
@@ -10,6 +14,7 @@ config IWLEGACY
 	select LEDS_TRIGGERS
 	select MAC80211_LEDS
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 menu "Debugging Options"
 	depends on IWLWIFI_LEGACY
@@ -72,11 +77,16 @@ config IWL4965
 	depends on PCI && MAC80211
 	select IWLWIFI_LEGACY
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config IWL4965
 	tristate "Intel Wireless WiFi 4965AGN (iwl4965)"
 	depends on PCI && MAC80211
 	select IWLEGACY
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This option enables support for
 
@@ -105,10 +115,14 @@ config IWL3945
 	tristate "Intel PRO/Wireless 3945ABG/BG Network Connection (iwl3945)"
 	depends on PCI && MAC80211
 <<<<<<< HEAD
+<<<<<<< HEAD
 	select IWLWIFI_LEGACY
 =======
 	select IWLEGACY
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select IWLEGACY
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Select to build the driver supporting the:
 
@@ -131,7 +145,10 @@ config IWL3945
 	  say M here and read <file:Documentation/kbuild/modules.txt>.  The
 	  module will be called iwl3945.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 menu "iwl3945 / iwl4965 Debugging Options"
 	depends on IWLEGACY
@@ -171,4 +188,7 @@ config IWLEGACY_DEBUGFS
 	  driver's state at runtime.
 
 endmenu
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

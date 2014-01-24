@@ -1,19 +1,31 @@
+<<<<<<< HEAD
 include include/asm-generic/Kbuild.asm
+=======
+>>>>>>> refs/remotes/origin/master
 
 generic-y += atomic.h
 generic-y += auxvec.h
 generic-y += bitsperlong.h
 <<<<<<< HEAD
+<<<<<<< HEAD
 generic-y += bug.h
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 generic-y += bugs.h
+=======
+generic-y += bugs.h
+generic-y += clkdev.h
+>>>>>>> refs/remotes/origin/master
 generic-y += cputime.h
 generic-y += current.h
 generic-y += device.h
 generic-y += div64.h
 generic-y += emergency-restart.h
 generic-y += errno.h
+<<<<<<< HEAD
+=======
+generic-y += exec.h
+>>>>>>> refs/remotes/origin/master
 generic-y += fb.h
 generic-y += fcntl.h
 generic-y += ftrace.h
@@ -56,9 +68,17 @@ generic-y += syscalls.h
 generic-y += termbits.h
 generic-y += termios.h
 generic-y += topology.h
+<<<<<<< HEAD
+=======
+generic-y += trace_clock.h
+>>>>>>> refs/remotes/origin/master
 generic-y += types.h
 generic-y += ucontext.h
 generic-y += unaligned.h
 generic-y += user.h
 generic-y += vga.h
 generic-y += xor.h
+<<<<<<< HEAD
+=======
+generic-y += preempt.h
+>>>>>>> refs/remotes/origin/master

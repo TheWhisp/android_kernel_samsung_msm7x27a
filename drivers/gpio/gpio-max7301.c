@@ -50,7 +50,11 @@ static int max7301_spi_read(struct device *dev, unsigned int reg)
 	return word & 0xff;
 }
 
+<<<<<<< HEAD
 static int __devinit max7301_probe(struct spi_device *spi)
+=======
+static int max7301_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct max7301 *ts;
 	int ret;
@@ -61,7 +65,11 @@ static int __devinit max7301_probe(struct spi_device *spi)
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	ts = kzalloc(sizeof(struct max7301), GFP_KERNEL);
+=======
+	ts = devm_kzalloc(&spi->dev, sizeof(struct max7301), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!ts)
 		return -ENOMEM;
 
@@ -70,12 +78,19 @@ static int __devinit max7301_probe(struct spi_device *spi)
 	ts->dev = &spi->dev;
 
 	ret = __max730x_probe(ts);
+<<<<<<< HEAD
 	if (ret)
 		kfree(ts);
 	return ret;
 }
 
 static int __devexit max7301_remove(struct spi_device *spi)
+=======
+	return ret;
+}
+
+static int max7301_remove(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	return __max730x_remove(&spi->dev);
 }
@@ -92,7 +107,11 @@ static struct spi_driver max7301_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = max7301_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(max7301_remove),
+=======
+	.remove = max7301_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = max7301_id,
 };
 

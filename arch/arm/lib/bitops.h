@@ -1,20 +1,34 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if __LINUX_ARM_ARCH__ >= 6
 	.macro	bitop, instr
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/unwind.h>
 
 #if __LINUX_ARM_ARCH__ >= 6
 	.macro	bitop, name, instr
 ENTRY(	\name		)
 UNWIND(	.fnstart	)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ands	ip, r1, #3
 	strneb	r1, [ip]		@ assert word-aligned
 	mov	r2, #1
 	and	r3, r0, #31		@ Get bit offset
 	mov	r0, r0, lsr #5
 	add	r1, r1, r0, lsl #2	@ Get word offset
+<<<<<<< HEAD
+=======
+#if __LINUX_ARM_ARCH__ >= 7 && defined(CONFIG_SMP)
+	.arch_extension	mp
+	ALT_SMP(W(pldw)	[r1])
+	ALT_UP(W(nop))
+#endif
+>>>>>>> refs/remotes/origin/master
 	mov	r3, r2, lsl r3
 1:	ldrex	r2, [r1]
 	\instr	r2, r2, r3
@@ -23,10 +37,13 @@ UNWIND(	.fnstart	)
 	bne	1b
 	bx	lr
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.endm
 
 	.macro	testop, instr, store
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 UNWIND(	.fnend		)
 ENDPROC(\name		)
 	.endm
@@ -34,7 +51,10 @@ ENDPROC(\name		)
 	.macro	testop, name, instr, store
 ENTRY(	\name		)
 UNWIND(	.fnstart	)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ands	ip, r1, #3
 	strneb	r1, [ip]		@ assert word-aligned
 	mov	r2, #1
@@ -54,10 +74,13 @@ UNWIND(	.fnstart	)
 	movne	r0, #1
 2:	bx	lr
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.endm
 #else
 	.macro	bitop, instr
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 UNWIND(	.fnend		)
 ENDPROC(\name		)
 	.endm
@@ -65,7 +88,10 @@ ENDPROC(\name		)
 	.macro	bitop, name, instr
 ENTRY(	\name		)
 UNWIND(	.fnstart	)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ands	ip, r1, #3
 	strneb	r1, [ip]		@ assert word-aligned
 	and	r2, r0, #31
@@ -79,10 +105,15 @@ UNWIND(	.fnstart	)
 	restore_irqs ip
 	mov	pc, lr
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 UNWIND(	.fnend		)
 ENDPROC(\name		)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+UNWIND(	.fnend		)
+ENDPROC(\name		)
+>>>>>>> refs/remotes/origin/master
 	.endm
 
 /**
@@ -94,12 +125,18 @@ ENDPROC(\name		)
  * to avoid dirtying the data cache.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.macro	testop, instr, store
 =======
 	.macro	testop, name, instr, store
 ENTRY(	\name		)
 UNWIND(	.fnstart	)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.macro	testop, name, instr, store
+ENTRY(	\name		)
+UNWIND(	.fnstart	)
+>>>>>>> refs/remotes/origin/master
 	ands	ip, r1, #3
 	strneb	r1, [ip]		@ assert word-aligned
 	and	r3, r0, #31
@@ -114,9 +151,14 @@ UNWIND(	.fnstart	)
 	restore_irqs ip
 	mov	pc, lr
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 UNWIND(	.fnend		)
 ENDPROC(\name		)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+UNWIND(	.fnend		)
+ENDPROC(\name		)
+>>>>>>> refs/remotes/origin/master
 	.endm
 #endif

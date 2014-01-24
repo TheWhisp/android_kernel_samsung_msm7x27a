@@ -10,9 +10,12 @@
 
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
@@ -149,7 +152,11 @@ static int adp5588_gpio_direction_output(struct gpio_chip *chip,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit adp5588_build_gpiomap(struct adp5588_kpad *kpad,
+=======
+static int adp5588_build_gpiomap(struct adp5588_kpad *kpad,
+>>>>>>> refs/remotes/origin/master
 				const struct adp5588_kpad_platform_data *pdata)
 {
 	bool pin_used[ADP5588_MAXGPIO];
@@ -174,7 +181,11 @@ static int __devinit adp5588_build_gpiomap(struct adp5588_kpad *kpad,
 	return n_unused;
 }
 
+<<<<<<< HEAD
 static int __devinit adp5588_gpio_add(struct adp5588_kpad *kpad)
+=======
+static int adp5588_gpio_add(struct adp5588_kpad *kpad)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = &kpad->client->dev;
 	const struct adp5588_kpad_platform_data *pdata = dev->platform_data;
@@ -201,6 +212,10 @@ static int __devinit adp5588_gpio_add(struct adp5588_kpad *kpad)
 	kpad->gc.base = gpio_data->gpio_start;
 	kpad->gc.label = kpad->client->name;
 	kpad->gc.owner = THIS_MODULE;
+<<<<<<< HEAD
+=======
+	kpad->gc.names = gpio_data->names;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_init(&kpad->gpio_lock);
 
@@ -227,7 +242,11 @@ static int __devinit adp5588_gpio_add(struct adp5588_kpad *kpad)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit adp5588_gpio_remove(struct adp5588_kpad *kpad)
+=======
+static void adp5588_gpio_remove(struct adp5588_kpad *kpad)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = &kpad->client->dev;
 	const struct adp5588_kpad_platform_data *pdata = dev->platform_data;
@@ -322,7 +341,11 @@ static irqreturn_t adp5588_irq(int irq, void *handle)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit adp5588_setup(struct i2c_client *client)
+=======
+static int adp5588_setup(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct adp5588_kpad_platform_data *pdata = client->dev.platform_data;
 	const struct adp5588_gpio_platform_data *gpio_data = pdata->gpio_data;
@@ -385,7 +408,11 @@ static int __devinit adp5588_setup(struct i2c_client *client)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devinit adp5588_report_switch_state(struct adp5588_kpad *kpad)
+=======
+static void adp5588_report_switch_state(struct adp5588_kpad *kpad)
+>>>>>>> refs/remotes/origin/master
 {
 	int gpi_stat1 = adp5588_read(kpad->client, GPIO_DAT_STAT1);
 	int gpi_stat2 = adp5588_read(kpad->client, GPIO_DAT_STAT2);
@@ -423,8 +450,13 @@ static void __devinit adp5588_report_switch_state(struct adp5588_kpad *kpad)
 }
 
 
+<<<<<<< HEAD
 static int __devinit adp5588_probe(struct i2c_client *client,
 					const struct i2c_device_id *id)
+=======
+static int adp5588_probe(struct i2c_client *client,
+			 const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adp5588_kpad *kpad;
 	const struct adp5588_kpad_platform_data *pdata = client->dev.platform_data;
@@ -539,7 +571,12 @@ static int __devinit adp5588_probe(struct i2c_client *client,
 		__set_bit(EV_REP, input->evbit);
 
 	for (i = 0; i < input->keycodemax; i++)
+<<<<<<< HEAD
 		__set_bit(kpad->keycode[i] & KEY_MAX, input->keybit);
+=======
+		if (kpad->keycode[i] <= KEY_MAX)
+			__set_bit(kpad->keycode[i], input->keybit);
+>>>>>>> refs/remotes/origin/master
 	__clear_bit(KEY_RESERVED, input->keybit);
 
 	if (kpad->gpimapsize)
@@ -555,10 +592,14 @@ static int __devinit adp5588_probe(struct i2c_client *client,
 
 	error = request_irq(client->irq, adp5588_irq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    IRQF_TRIGGER_FALLING | IRQF_DISABLED,
 =======
 			    IRQF_TRIGGER_FALLING,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    IRQF_TRIGGER_FALLING,
+>>>>>>> refs/remotes/origin/master
 			    client->dev.driver->name, kpad);
 	if (error) {
 		dev_err(&client->dev, "irq %d busy?\n", client->irq);
@@ -594,7 +635,11 @@ static int __devinit adp5588_probe(struct i2c_client *client,
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit adp5588_remove(struct i2c_client *client)
+=======
+static int adp5588_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adp5588_kpad *kpad = i2c_get_clientdata(client);
 
@@ -657,6 +702,7 @@ static struct i2c_driver adp5588_driver = {
 #endif
 	},
 	.probe    = adp5588_probe,
+<<<<<<< HEAD
 	.remove   = __devexit_p(adp5588_remove),
 	.id_table = adp5588_id,
 };
@@ -676,11 +722,21 @@ module_exit(adp5588_exit);
 =======
 module_i2c_driver(adp5588_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove   = adp5588_remove,
+	.id_table = adp5588_id,
+};
+
+module_i2c_driver(adp5588_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("ADP5588/87 Keypad driver");
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_ALIAS("platform:adp5588-keys");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

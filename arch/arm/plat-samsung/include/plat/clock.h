@@ -10,14 +10,20 @@
 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/spinlock.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASM_PLAT_CLOCK_H
 #define __ASM_PLAT_CLOCK_H __FILE__
 
 #include <linux/spinlock.h>
 #include <linux/clkdev.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct clk;
 
@@ -49,9 +55,13 @@ struct clk {
 	struct clk           *parent;
 	const char           *name;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	const char		*devname;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const char		*devname;
+>>>>>>> refs/remotes/origin/master
 	int		      id;
 	int		      usage;
 	unsigned long         rate;
@@ -60,9 +70,13 @@ struct clk {
 	struct clk_ops		*ops;
 	int		    (*enable)(struct clk *, int enable);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct clk_lookup	lookup;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct clk_lookup	lookup;
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_PM_DEBUG) && defined(CONFIG_DEBUG_FS)
 	struct dentry		*dent;	/* For visible tree hierarchy */
 #endif
@@ -90,12 +104,23 @@ extern struct clk clk_xtal;
 extern struct clk clk_ext;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* S3C2443/S3C2416 specific clocks */
 extern struct clksrc_clk clk_epllref;
 extern struct clksrc_clk clk_esysclk;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* S3C24XX UART clocks */
+extern struct clk s3c24xx_clk_uart0;
+extern struct clk s3c24xx_clk_uart1;
+extern struct clk s3c24xx_clk_uart2;
+
+>>>>>>> refs/remotes/origin/master
 /* S3C64XX specific clocks */
 extern struct clk clk_h2;
 extern struct clk clk_27m;
@@ -132,8 +157,11 @@ extern void s3c2410_setup_clocks(void);
 extern void s3c2412_setup_clocks(void);
 extern void s3c244x_setup_clocks(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void s3c2443_setup_clocks(void);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* S3C2410 specific clock functions */
 
@@ -151,21 +179,30 @@ extern void s3c2443_common_init_clocks(int xtal, pll_fn get_mpll,
 extern int s3c2443_clkcon_enable_h(struct clk *clk, int enable);
 extern int s3c2443_clkcon_enable_p(struct clk *clk, int enable);
 extern int s3c2443_clkcon_enable_s(struct clk *clk, int enable);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* S3C64XX specific functions and clocks */
 
 extern int s3c64xx_sclk_ctrl(struct clk *clk, int enable);
 
+<<<<<<< HEAD
 /* Init for pwm clock code */
 
 extern void s3c_pwmclk_init(void);
 
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Global watchdog clock used by arch_wtd_reset() callback */
 
 extern struct clk *s3c2410_wdtclk;
 
 #endif /* __ASM_PLAT_CLOCK_H */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -21,9 +21,13 @@
 #include <linux/gpio.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/qe.h>
 
 struct qe_gpio_chip {
@@ -143,19 +147,25 @@ struct qe_pin *qe_pin_request(struct device_node *np, int index)
 {
 	struct qe_pin *qe_pin;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct device_node *gpio_np;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct gpio_chip *gc;
 	struct of_mm_gpio_chip *mm_gc;
 	struct qe_gpio_chip *qe_gc;
 	int err;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int size;
 	const void *gpio_spec;
 	const u32 *gpio_cells;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	qe_pin = kzalloc(sizeof(*qe_pin), GFP_KERNEL);
@@ -164,6 +174,7 @@ struct qe_pin *qe_pin_request(struct device_node *np, int index)
 		return ERR_PTR(-ENOMEM);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = of_parse_phandles_with_args(np, "gpios", "#gpio-cells", index,
 					  &gpio_np, &gpio_spec);
@@ -200,6 +211,8 @@ struct qe_pin *qe_pin_request(struct device_node *np, int index)
 		goto err1;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = of_get_gpio(np, index);
 	if (err < 0)
 		goto err0;
@@ -213,16 +226,23 @@ struct qe_pin *qe_pin_request(struct device_node *np, int index)
 		goto err0;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mm_gc = to_of_mm_gpio_chip(gc);
 	qe_gc = to_qe_gpio_chip(mm_gc);
 
 	spin_lock_irqsave(&qe_gc->lock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	err -= gc->base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err -= gc->base;
+>>>>>>> refs/remotes/origin/master
 	if (test_and_set_bit(QE_PIN_REQUESTED, &qe_gc->pin_flags[err]) == 0) {
 		qe_pin->controller = qe_gc;
 		qe_pin->num = err;
@@ -236,10 +256,13 @@ struct qe_pin *qe_pin_request(struct device_node *np, int index)
 	if (!err)
 		return qe_pin;
 <<<<<<< HEAD
+<<<<<<< HEAD
 err1:
 	of_node_put(gpio_np);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 err0:
 	kfree(qe_pin);
 	pr_debug("%s failed with status %d\n", __func__, err);

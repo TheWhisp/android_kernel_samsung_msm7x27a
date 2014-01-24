@@ -11,11 +11,15 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/usb.h>
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <plat/dma.h>
 #include <plat/mux.h>
 
@@ -24,11 +28,27 @@
 =======
 #include "tusb6010.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/omap-dma.h>
+
+#include "musb_core.h"
+#include "tusb6010.h"
+>>>>>>> refs/remotes/origin/master
 
 #define to_chdat(c)		((struct tusb_omap_dma_ch *)(c)->private_data)
 
 #define MAX_DMAREQ		5	/* REVISIT: Really 6, but req5 not OK */
 
+<<<<<<< HEAD
+=======
+#define OMAP24XX_DMA_EXT_DMAREQ0	2
+#define OMAP24XX_DMA_EXT_DMAREQ1	3
+#define OMAP242X_DMA_EXT_DMAREQ2	14
+#define OMAP242X_DMA_EXT_DMAREQ3	15
+#define OMAP242X_DMA_EXT_DMAREQ4	16
+#define OMAP242X_DMA_EXT_DMAREQ5	64
+
+>>>>>>> refs/remotes/origin/master
 struct tusb_omap_dma_ch {
 	struct musb		*musb;
 	void __iomem		*tbase;
@@ -63,6 +83,7 @@ struct tusb_omap_dma {
 	unsigned			multichannel:1;
 };
 
+<<<<<<< HEAD
 static int tusb_omap_dma_start(struct dma_controller *c)
 {
 	struct tusb_omap_dma	*tusb_dma;
@@ -85,6 +106,8 @@ static int tusb_omap_dma_stop(struct dma_controller *c)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Allocate dmareq0 to the current channel unless it's already taken
  */
@@ -94,10 +117,14 @@ static inline int tusb_omap_use_shared_dmareq(struct tusb_omap_dma_ch *chdat)
 
 	if (reg != 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(musb->controller, "ep%i dmareq0 is busy for ep%i\n",
 =======
 		dev_dbg(chdat->musb->controller, "ep%i dmareq0 is busy for ep%i\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_dbg(chdat->musb->controller, "ep%i dmareq0 is busy for ep%i\n",
+>>>>>>> refs/remotes/origin/master
 			chdat->epnum, reg & 0xf);
 		return -EAGAIN;
 	}
@@ -669,8 +696,12 @@ void dma_controller_destroy(struct dma_controller *c)
 	kfree(tusb_dma);
 }
 
+<<<<<<< HEAD
 struct dma_controller *__init
 dma_controller_create(struct musb *musb, void __iomem *base)
+=======
+struct dma_controller *dma_controller_create(struct musb *musb, void __iomem *base)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem		*tbase = musb->ctrl_base;
 	struct tusb_omap_dma	*tusb_dma;
@@ -697,8 +728,11 @@ dma_controller_create(struct musb *musb, void __iomem *base)
 	tusb_dma->dmareq = -1;
 	tusb_dma->sync_dev = -1;
 
+<<<<<<< HEAD
 	tusb_dma->controller.start = tusb_omap_dma_start;
 	tusb_dma->controller.stop = tusb_omap_dma_stop;
+=======
+>>>>>>> refs/remotes/origin/master
 	tusb_dma->controller.channel_alloc = tusb_omap_dma_allocate;
 	tusb_dma->controller.channel_release = tusb_omap_dma_release;
 	tusb_dma->controller.channel_program = tusb_omap_dma_program;

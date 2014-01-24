@@ -74,12 +74,21 @@
  *
  * Experiment with v_offset to find out which works best for you.
  */
+<<<<<<< HEAD
 static u32 v_offset_default __devinitdata; /* For 32 MiB Aper size, 8 should be the default */
 static u32 voffset          __devinitdata;
 
 static int i810fb_cursor(struct fb_info *info, struct fb_cursor *cursor);
 static int  __devinit i810fb_init_pci (struct pci_dev *dev,
 				       const struct pci_device_id *entry);
+=======
+static u32 v_offset_default; /* For 32 MiB Aper size, 8 should be the default */
+static u32 voffset;
+
+static int i810fb_cursor(struct fb_info *info, struct fb_cursor *cursor);
+static int i810fb_init_pci(struct pci_dev *dev,
+			   const struct pci_device_id *entry);
+>>>>>>> refs/remotes/origin/master
 static void __exit i810fb_remove_pci(struct pci_dev *dev);
 static int i810fb_resume(struct pci_dev *dev);
 static int i810fb_suspend(struct pci_dev *dev, pm_message_t state);
@@ -97,7 +106,11 @@ static int i810fb_blank      (int blank_mode, struct fb_info *info);
 static void i810fb_release_resource       (struct fb_info *info, struct i810fb_par *par);
 
 /* PCI */
+<<<<<<< HEAD
 static const char *i810_pci_list[] __devinitdata = {
+=======
+static const char * const i810_pci_list[] = {
+>>>>>>> refs/remotes/origin/master
 	"Intel(R) 810 Framebuffer Device"                                 ,
 	"Intel(R) 810-DC100 Framebuffer Device"                           ,
 	"Intel(R) 810E Framebuffer Device"                                ,
@@ -132,6 +145,7 @@ static struct pci_driver i810fb_driver = {
 	.resume   =     i810fb_resume,
 };
 
+<<<<<<< HEAD
 static char *mode_option __devinitdata = NULL;
 static int vram       __devinitdata = 4;
 static int bpp        __devinitdata = 8;
@@ -160,6 +174,24 @@ static bool extvga    __devinitdata;
 static bool dcolor    __devinitdata;
 static bool ddc3      __devinitdata;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *mode_option = NULL;
+static int vram = 4;
+static int bpp = 8;
+static bool mtrr;
+static bool accel;
+static int hsync1;
+static int hsync2;
+static int vsync1;
+static int vsync2;
+static int xres;
+static int yres;
+static int vyres;
+static bool sync;
+static bool extvga;
+static bool dcolor;
+static bool ddc3;
+>>>>>>> refs/remotes/origin/master
 
 /*------------------------------------------------------------*/
 
@@ -1553,7 +1585,11 @@ static int i810fb_cursor(struct fb_info *info, struct fb_cursor *cursor)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct fb_ops i810fb_ops __devinitdata = {
+=======
+static struct fb_ops i810fb_ops = {
+>>>>>>> refs/remotes/origin/master
 	.owner =             THIS_MODULE,
 	.fb_open =           i810fb_open,
 	.fb_release =        i810fb_release,
@@ -1640,7 +1676,11 @@ fail:
  *                  AGP resource allocation                            *
  ***********************************************************************/
   
+<<<<<<< HEAD
 static void __devinit i810_fix_pointers(struct i810fb_par *par)
+=======
+static void i810_fix_pointers(struct i810fb_par *par)
+>>>>>>> refs/remotes/origin/master
 {
       	par->fb.physical = par->aperture.physical+(par->fb.offset << 12);
 	par->fb.virtual = par->aperture.virtual+(par->fb.offset << 12);
@@ -1652,7 +1692,11 @@ static void __devinit i810_fix_pointers(struct i810fb_par *par)
 		(par->cursor_heap.offset << 12);
 }
 
+<<<<<<< HEAD
 static void __devinit i810_fix_offsets(struct i810fb_par *par)
+=======
+static void i810_fix_offsets(struct i810fb_par *par)
+>>>>>>> refs/remotes/origin/master
 {
 	if (vram + 1 > par->aperture.size >> 20)
 		vram = (par->aperture.size >> 20) - 1;
@@ -1672,7 +1716,11 @@ static void __devinit i810_fix_offsets(struct i810fb_par *par)
 	par->cursor_heap.size = 4096;
 }
 
+<<<<<<< HEAD
 static int __devinit i810_alloc_agp_mem(struct fb_info *info)
+=======
+static int i810_alloc_agp_mem(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct i810fb_par *par = info->par;
 	int size;
@@ -1735,7 +1783,11 @@ static int __devinit i810_alloc_agp_mem(struct fb_info *info)
  * Sets the user monitor's horizontal and vertical
  * frequency limits
  */
+<<<<<<< HEAD
 static void __devinit i810_init_monspecs(struct fb_info *info)
+=======
+static void i810_init_monspecs(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!hsync1)
 		hsync1 = HFMIN;
@@ -1767,8 +1819,12 @@ static void __devinit i810_init_monspecs(struct fb_info *info)
  * @par: pointer to i810fb_par structure
  * @info: pointer to current fb_info structure
  */
+<<<<<<< HEAD
 static void __devinit i810_init_defaults(struct i810fb_par *par, 
 				      struct fb_info *info)
+=======
+static void i810_init_defaults(struct i810fb_par *par, struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	mutex_init(&par->open_lock);
 
@@ -1789,10 +1845,14 @@ static void __devinit i810_init_defaults(struct i810fb_par *par,
 		par->dev_flags |= ALWAYS_SYNC;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	par->ddc_num = ddc3;
 =======
 	par->ddc_num = (ddc3 ? 3 : 2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	par->ddc_num = (ddc3 ? 3 : 2);
+>>>>>>> refs/remotes/origin/master
 
 	if (bpp < 8)
 		bpp = 8;
@@ -1828,7 +1888,11 @@ static void __devinit i810_init_defaults(struct i810fb_par *par,
  * i810_init_device - initialize device
  * @par: pointer to i810fb_par structure
  */
+<<<<<<< HEAD
 static void __devinit i810_init_device(struct i810fb_par *par)
+=======
+static void i810_init_device(struct i810fb_par *par)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 reg;
 	u8 __iomem *mmio = par->mmio_start_virtual;
@@ -1849,9 +1913,14 @@ static void __devinit i810_init_device(struct i810fb_par *par)
 
 }
 
+<<<<<<< HEAD
 static int __devinit 
 i810_allocate_pci_resource(struct i810fb_par *par, 
 			   const struct pci_device_id *entry)
+=======
+static int i810_allocate_pci_resource(struct i810fb_par *par,
+				      const struct pci_device_id *entry)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -1908,7 +1977,11 @@ i810_allocate_pci_resource(struct i810fb_par *par,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devinit i810fb_find_init_mode(struct fb_info *info)
+=======
+static void i810fb_find_init_mode(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_videomode mode;
 	struct fb_var_screeninfo var;
@@ -1972,7 +2045,11 @@ static void __devinit i810fb_find_init_mode(struct fb_info *info)
 }
 
 #ifndef MODULE
+<<<<<<< HEAD
 static int __devinit i810fb_setup(char *options)
+=======
+static int i810fb_setup(char *options)
+>>>>>>> refs/remotes/origin/master
 {
 	char *this_opt, *suffix = NULL;
 
@@ -2016,10 +2093,14 @@ static int __devinit i810fb_setup(char *options)
 			dcolor = 1;
 		else if (!strncmp(this_opt, "ddc3", 4))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ddc3 = 3;
 =======
 			ddc3 = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ddc3 = true;
+>>>>>>> refs/remotes/origin/master
 		else
 			mode_option = this_opt;
 	}
@@ -2027,8 +2108,13 @@ static int __devinit i810fb_setup(char *options)
 }
 #endif
 
+<<<<<<< HEAD
 static int __devinit i810fb_init_pci (struct pci_dev *dev, 
 				   const struct pci_device_id *entry)
+=======
+static int i810fb_init_pci(struct pci_dev *dev,
+			   const struct pci_device_id *entry)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info    *info;
 	struct i810fb_par *par = NULL;
@@ -2151,12 +2237,19 @@ static void __exit i810fb_remove_pci(struct pci_dev *dev)
 
 	unregister_framebuffer(info);  
 	i810fb_release_resource(info, par);
+<<<<<<< HEAD
 	pci_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	printk("cleanup_module:  unloaded i810 framebuffer device\n");
 }                                                	
 
 #ifndef MODULE
+<<<<<<< HEAD
 static int __devinit i810fb_init(void)
+=======
+static int i810fb_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	char *option = NULL;
 
@@ -2174,7 +2267,11 @@ static int __devinit i810fb_init(void)
 
 #ifdef MODULE
 
+<<<<<<< HEAD
 static int __devinit i810fb_init(void)
+=======
+static int i810fb_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	hsync1 *= 1000;
 	hsync2 *= 1000;

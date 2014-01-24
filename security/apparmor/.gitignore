@@ -1,6 +1,9 @@
 #
 # Generated include files
 #
+<<<<<<< HEAD
 af_names.h
+=======
+>>>>>>> refs/remotes/origin/master
 capability_names.h
 rlim_names.h

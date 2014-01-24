@@ -86,10 +86,15 @@ void rtc_time_to_tm(unsigned long time, struct rtc_time *tm)
 	tm->tm_min = time / 60;
 	tm->tm_sec = time - tm->tm_min * 60;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	tm->tm_isdst = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	tm->tm_isdst = 0;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(rtc_time_to_tm);
 

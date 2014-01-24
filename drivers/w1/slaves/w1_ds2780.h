@@ -124,8 +124,11 @@
 
 extern int w1_ds2780_io(struct device *dev, char *buf, int addr, size_t count,
 			int io);
+<<<<<<< HEAD
 extern int w1_ds2780_io_nolock(struct device *dev, char *buf, int addr,
 			size_t count, int io);
+=======
+>>>>>>> refs/remotes/origin/master
 extern int w1_ds2780_eeprom_cmd(struct device *dev, int addr, int cmd);
 
 #endif /* !_W1_DS2780_H */

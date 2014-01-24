@@ -231,6 +231,7 @@
 	(((retval) != STATUS_SUCCESS) || \
 	(chip->rsp_buf[0] & MS_TRANSFER_ERR))
 
+<<<<<<< HEAD
 void mspro_polling_format_status(struct rts51x_chip *chip);
 void mspro_format_sense(struct rts51x_chip *chip, unsigned int lun);
 
@@ -245,6 +246,20 @@ void ms_cleanup_work(struct rts51x_chip *chip);
 int ms_power_off_card3v3(struct rts51x_chip *chip);
 int release_ms_card(struct rts51x_chip *chip);
 int ms_delay_write(struct rts51x_chip *chip);
+=======
+void rts51x_mspro_polling_format_status(struct rts51x_chip *chip);
+void rts51x_mspro_format_sense(struct rts51x_chip *chip, unsigned int lun);
+
+int rts51x_reset_ms_card(struct rts51x_chip *chip);
+int rts51x_ms_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
+	  u16 sector_cnt);
+int rts51x_mspro_format(struct scsi_cmnd *srb, struct rts51x_chip *chip,
+		 int short_data_len, int quick_format);
+void rts51x_ms_free_l2p_tbl(struct rts51x_chip *chip);
+void rts51x_ms_cleanup_work(struct rts51x_chip *chip);
+int rts51x_release_ms_card(struct rts51x_chip *chip);
+int rts51x_ms_delay_write(struct rts51x_chip *chip);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef SUPPORT_MAGIC_GATE
 

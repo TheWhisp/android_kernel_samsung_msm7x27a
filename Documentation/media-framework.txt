@@ -10,12 +10,17 @@ Introduction
 
 The media controller API is documented in DocBook format in
 <<<<<<< HEAD
+<<<<<<< HEAD
 Documentation/DocBook/v4l/media-controller.xml. This document will focus on
 the kernel-side implementation of the media framework.
 =======
 Documentation/DocBook/media/v4l/media-controller.xml. This document will focus
 on the kernel-side implementation of the media framework.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Documentation/DocBook/media/v4l/media-controller.xml. This document will focus
+on the kernel-side implementation of the media framework.
+>>>>>>> refs/remotes/origin/master
 
 
 Abstract media device model
@@ -23,7 +28,11 @@ Abstract media device model
 
 Discovering a device internal topology, and configuring it at runtime, is one
 of the goals of the media framework. To achieve this, hardware devices are
+<<<<<<< HEAD
 modeled as an oriented graph of building blocks called entities connected
+=======
+modelled as an oriented graph of building blocks called entities connected
+>>>>>>> refs/remotes/origin/master
 through pads.
 
 An entity is a basic media hardware building block. It can correspond to
@@ -270,7 +279,11 @@ connected to another pad through an enabled link
 	media_entity_find_link(struct media_pad *source,
 			       struct media_pad *sink);
 
+<<<<<<< HEAD
 	media_entity_remote_source(struct media_pad *pad);
+=======
+	media_entity_remote_pad(struct media_pad *pad);
+>>>>>>> refs/remotes/origin/master
 
 Refer to the kerneldoc documentation for more information.
 
@@ -316,10 +329,14 @@ the configuration information to be applied later.
 
 Link configuration must not have any side effect on other links. If an enabled
 <<<<<<< HEAD
+<<<<<<< HEAD
 link at a sink pad prevents another link at the same pad from being disabled,
 =======
 link at a sink pad prevents another link at the same pad from being enabled,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+link at a sink pad prevents another link at the same pad from being enabled,
+>>>>>>> refs/remotes/origin/master
 the link_setup operation must return -EBUSY and can't implicitly disable the
 first enabled link.
 
@@ -344,6 +361,12 @@ the media_entity pipe field.
 Calls to media_entity_pipeline_start() can be nested. The pipeline pointer must
 be identical for all nested calls to the function.
 
+<<<<<<< HEAD
+=======
+media_entity_pipeline_start() may return an error. In that case, it will
+clean up any of the changes it did by itself.
+
+>>>>>>> refs/remotes/origin/master
 When stopping the stream, drivers must notify the entities with
 
 	media_entity_pipeline_stop(struct media_entity *entity);
@@ -360,3 +383,22 @@ If other operations need to be disallowed on streaming entities (such as
 changing entities configuration parameters) drivers can explicitly check the
 media_entity stream_count field to find out if an entity is streaming. This
 operation must be done with the media_device graph_mutex held.
+<<<<<<< HEAD
+=======
+
+
+Link validation
+---------------
+
+Link validation is performed by media_entity_pipeline_start() for any
+entity which has sink pads in the pipeline. The
+media_entity::link_validate() callback is used for that purpose. In
+link_validate() callback, entity driver should check that the properties of
+the source pad of the connected entity and its own sink pad match. It is up
+to the type of the entity (and in the end, the properties of the hardware)
+what matching actually means.
+
+Subsystems should facilitate link validation by providing subsystem specific
+helper functions to provide easy access for commonly needed information, and
+in the end provide a way to use driver-specific callbacks.
+>>>>>>> refs/remotes/origin/master

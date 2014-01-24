@@ -28,10 +28,14 @@
 #include <linux/slab.h>
 #include <linux/gameport.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mutex.h>
 #include <sound/core.h>
 #include <sound/info.h>
@@ -59,16 +63,22 @@ MODULE_SUPPORTED_DEVICE("{{C-Media,CMI8738},"
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable switches */
 static long mpu_port[SNDRV_CARDS];
 static long fm_port[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)]=1};
 static int soft_ac3[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)]=1};
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable switches */
 static long mpu_port[SNDRV_CARDS];
 static long fm_port[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)]=1};
 static bool soft_ac3[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)]=1};
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef SUPPORT_JOYSTICK
 static int joystick_port[SNDRV_CARDS];
 #endif
@@ -515,7 +525,11 @@ struct cmipci {
 
 	spinlock_t reg_lock;
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	unsigned int saved_regs[0x20];
 	unsigned char saved_mixers[0x20];
 #endif
@@ -1056,7 +1070,11 @@ static int snd_cmipci_spdif_default_put(struct snd_kcontrol *kcontrol,
 	return change;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_cmipci_spdif_default __devinitdata =
+=======
+static struct snd_kcontrol_new snd_cmipci_spdif_default =
+>>>>>>> refs/remotes/origin/master
 {
 	.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
 	.name =		SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT),
@@ -1083,7 +1101,11 @@ static int snd_cmipci_spdif_mask_get(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_cmipci_spdif_mask __devinitdata =
+=======
+static struct snd_kcontrol_new snd_cmipci_spdif_mask =
+>>>>>>> refs/remotes/origin/master
 {
 	.access =	SNDRV_CTL_ELEM_ACCESS_READ,
 	.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
@@ -1130,7 +1152,11 @@ static int snd_cmipci_spdif_stream_put(struct snd_kcontrol *kcontrol,
 	return change;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_cmipci_spdif_stream __devinitdata =
+=======
+static struct snd_kcontrol_new snd_cmipci_spdif_stream =
+>>>>>>> refs/remotes/origin/master
 {
 	.access =	SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_INACTIVE,
 	.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
@@ -1908,7 +1934,11 @@ static struct snd_pcm_ops snd_cmipci_capture_spdif_ops = {
 /*
  */
 
+<<<<<<< HEAD
 static int __devinit snd_cmipci_pcm_new(struct cmipci *cm, int device)
+=======
+static int snd_cmipci_pcm_new(struct cmipci *cm, int device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	int err;
@@ -1931,7 +1961,11 @@ static int __devinit snd_cmipci_pcm_new(struct cmipci *cm, int device)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_cmipci_pcm2_new(struct cmipci *cm, int device)
+=======
+static int snd_cmipci_pcm2_new(struct cmipci *cm, int device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	int err;
@@ -1953,7 +1987,11 @@ static int __devinit snd_cmipci_pcm2_new(struct cmipci *cm, int device)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_cmipci_pcm_spdif_new(struct cmipci *cm, int device)
+=======
+static int snd_cmipci_pcm_spdif_new(struct cmipci *cm, int device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	int err;
@@ -1973,6 +2011,15 @@ static int __devinit snd_cmipci_pcm_spdif_new(struct cmipci *cm, int device)
 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
 					      snd_dma_pci_data(cm->pci), 64*1024, 128*1024);
 
+<<<<<<< HEAD
+=======
+	err = snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+				     snd_pcm_alt_chmaps, cm->max_channels, 0,
+				     NULL);
+	if (err < 0)
+		return err;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2295,7 +2342,11 @@ static int snd_cmipci_put_native_mixer_sensitive(struct snd_kcontrol *kcontrol,
 }
 
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_cmipci_mixers[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_cmipci_mixers[] = {
+>>>>>>> refs/remotes/origin/master
 	CMIPCI_SB_VOL_STEREO("Master Playback Volume", SB_DSP4_MASTER_DEV, 3, 31),
 	CMIPCI_MIXER_SW_MONO("3D Control - Switch", CM_REG_MIXER1, CM_X3DEN_SHIFT, 0),
 	CMIPCI_SB_VOL_STEREO("PCM Playback Volume", SB_DSP4_PCM_DEV, 3, 31),
@@ -2606,7 +2657,11 @@ static int snd_cmipci_mic_in_mode_put(struct snd_kcontrol *kcontrol,
 }
 
 /* both for CM8338/8738 */
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_cmipci_mixer_switches[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_cmipci_mixer_switches[] = {
+>>>>>>> refs/remotes/origin/master
 	DEFINE_MIXER_SWITCH("Four Channel Mode", fourch),
 	{
 		.name = "Line-In Mode",
@@ -2618,11 +2673,19 @@ static struct snd_kcontrol_new snd_cmipci_mixer_switches[] __devinitdata = {
 };
 
 /* for non-multichannel chips */
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_cmipci_nomulti_switch __devinitdata =
 DEFINE_MIXER_SWITCH("Exchange DAC", exchange_dac);
 
 /* only for CM8738 */
 static struct snd_kcontrol_new snd_cmipci_8738_mixer_switches[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_cmipci_nomulti_switch =
+DEFINE_MIXER_SWITCH("Exchange DAC", exchange_dac);
+
+/* only for CM8738 */
+static struct snd_kcontrol_new snd_cmipci_8738_mixer_switches[] = {
+>>>>>>> refs/remotes/origin/master
 #if 0 /* controlled in pcm device */
 	DEFINE_MIXER_SWITCH("IEC958 In Record", spdif_in),
 	DEFINE_MIXER_SWITCH("IEC958 Out", spdif_out),
@@ -2644,14 +2707,22 @@ static struct snd_kcontrol_new snd_cmipci_8738_mixer_switches[] __devinitdata = 
 };
 
 /* only for model 033/037 */
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_cmipci_old_mixer_switches[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_cmipci_old_mixer_switches[] = {
+>>>>>>> refs/remotes/origin/master
 	DEFINE_MIXER_SWITCH("IEC958 Mix Analog", spdif_dac_out),
 	DEFINE_MIXER_SWITCH("IEC958 In Phase Inverse", spdi_phase),
 	DEFINE_MIXER_SWITCH("IEC958 In Select", spdif_in_sel1),
 };
 
 /* only for model 039 or later */
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_cmipci_extra_mixer_switches[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_cmipci_extra_mixer_switches[] = {
+>>>>>>> refs/remotes/origin/master
 	DEFINE_MIXER_SWITCH("IEC958 In Select", spdif_in_sel2),
 	DEFINE_MIXER_SWITCH("IEC958 In Phase Inverse", spdi_phase2),
 	{
@@ -2664,11 +2735,19 @@ static struct snd_kcontrol_new snd_cmipci_extra_mixer_switches[] __devinitdata =
 };
 
 /* card control switches */
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_cmipci_modem_switch __devinitdata =
 DEFINE_CARD_SWITCH("Modem", modem);
 
 
 static int __devinit snd_cmipci_mixer_new(struct cmipci *cm, int pcm_spdif_device)
+=======
+static struct snd_kcontrol_new snd_cmipci_modem_switch =
+DEFINE_CARD_SWITCH("Modem", modem);
+
+
+static int snd_cmipci_mixer_new(struct cmipci *cm, int pcm_spdif_device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	struct snd_kcontrol_new *sw;
@@ -2796,7 +2875,11 @@ static void snd_cmipci_proc_read(struct snd_info_entry *entry,
 	snd_iprintf(buffer, "\n");
 }
 
+<<<<<<< HEAD
 static void __devinit snd_cmipci_proc_init(struct cmipci *cm)
+=======
+static void snd_cmipci_proc_init(struct cmipci *cm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_info_entry *entry;
 
@@ -2822,7 +2905,11 @@ static DEFINE_PCI_DEVICE_TABLE(snd_cmipci_ids) = {
  * check chip version and capabilities
  * driver name is modified according to the chip model
  */
+<<<<<<< HEAD
 static void __devinit query_chip(struct cmipci *cm)
+=======
+static void query_chip(struct cmipci *cm)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int detect;
 
@@ -2871,7 +2958,11 @@ static void __devinit query_chip(struct cmipci *cm)
 }
 
 #ifdef SUPPORT_JOYSTICK
+<<<<<<< HEAD
 static int __devinit snd_cmipci_create_gameport(struct cmipci *cm, int dev)
+=======
+static int snd_cmipci_create_gameport(struct cmipci *cm, int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	static int ports[] = { 0x201, 0x200, 0 }; /* FIXME: majority is 0x201? */
 	struct gameport *gp;
@@ -2964,7 +3055,11 @@ static int snd_cmipci_dev_free(struct snd_device *device)
 	return snd_cmipci_free(cm);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_cmipci_create_fm(struct cmipci *cm, long fm_port)
+=======
+static int snd_cmipci_create_fm(struct cmipci *cm, long fm_port)
+>>>>>>> refs/remotes/origin/master
 {
 	long iosynth;
 	unsigned int val;
@@ -3017,8 +3112,13 @@ static int __devinit snd_cmipci_create_fm(struct cmipci *cm, long fm_port)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_cmipci_create(struct snd_card *card, struct pci_dev *pci,
 				       int dev, struct cmipci **rcmipci)
+=======
+static int snd_cmipci_create(struct snd_card *card, struct pci_dev *pci,
+			     int dev, struct cmipci **rcmipci)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cmipci *cm;
 	int err;
@@ -3065,10 +3165,14 @@ static int __devinit snd_cmipci_create(struct snd_card *card, struct pci_dev *pc
 
 	if (request_irq(pci->irq, snd_cmipci_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_SHARED, card->driver, cm)) {
 =======
 			IRQF_SHARED, KBUILD_MODNAME, cm)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			IRQF_SHARED, KBUILD_MODNAME, cm)) {
+>>>>>>> refs/remotes/origin/master
 		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
 		snd_cmipci_free(cm);
 		return -EBUSY;
@@ -3244,6 +3348,7 @@ static int __devinit snd_cmipci_create(struct snd_card *card, struct pci_dev *pc
 					       iomidi,
 					       (integrated_midi ?
 <<<<<<< HEAD
+<<<<<<< HEAD
 						MPU401_INFO_INTEGRATED : 0),
 					       cm->irq, 0, &cm->rmidi)) < 0) {
 =======
@@ -3251,6 +3356,11 @@ static int __devinit snd_cmipci_create(struct snd_card *card, struct pci_dev *pc
 					       MPU401_INFO_IRQ_HOOK,
 					       -1, &cm->rmidi)) < 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						MPU401_INFO_INTEGRATED : 0) |
+					       MPU401_INFO_IRQ_HOOK,
+					       -1, &cm->rmidi)) < 0) {
+>>>>>>> refs/remotes/origin/master
 			printk(KERN_ERR "cmipci: no UART401 device at 0x%lx\n", iomidi);
 		}
 	}
@@ -3279,8 +3389,13 @@ static int __devinit snd_cmipci_create(struct snd_card *card, struct pci_dev *pc
 
 MODULE_DEVICE_TABLE(pci, snd_cmipci_ids);
 
+<<<<<<< HEAD
 static int __devinit snd_cmipci_probe(struct pci_dev *pci,
 				      const struct pci_device_id *pci_id)
+=======
+static int snd_cmipci_probe(struct pci_dev *pci,
+			    const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	struct snd_card *card;
@@ -3328,6 +3443,7 @@ static int __devinit snd_cmipci_probe(struct pci_dev *pci,
 
 }
 
+<<<<<<< HEAD
 static void __devexit snd_cmipci_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
@@ -3336,6 +3452,15 @@ static void __devexit snd_cmipci_remove(struct pci_dev *pci)
 
 
 #ifdef CONFIG_PM
+=======
+static void snd_cmipci_remove(struct pci_dev *pci)
+{
+	snd_card_free(pci_get_drvdata(pci));
+}
+
+
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 /*
  * power management
  */
@@ -3358,9 +3483,16 @@ static unsigned char saved_mixers[] = {
 	SB_DSP4_INPUT_LEFT, SB_DSP4_INPUT_RIGHT,
 };
 
+<<<<<<< HEAD
 static int snd_cmipci_suspend(struct pci_dev *pci, pm_message_t state)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+static int snd_cmipci_suspend(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct cmipci *cm = card->private_data;
 	int i;
 
@@ -3381,6 +3513,7 @@ static int snd_cmipci_suspend(struct pci_dev *pci, pm_message_t state)
 
 	pci_disable_device(pci);
 	pci_save_state(pci);
+<<<<<<< HEAD
 	pci_set_power_state(pci, pci_choose_state(pci, state));
 	return 0;
 }
@@ -3388,6 +3521,16 @@ static int snd_cmipci_suspend(struct pci_dev *pci, pm_message_t state)
 static int snd_cmipci_resume(struct pci_dev *pci)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+	pci_set_power_state(pci, PCI_D3hot);
+	return 0;
+}
+
+static int snd_cmipci_resume(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct cmipci *cm = card->private_data;
 	int i;
 
@@ -3416,6 +3559,7 @@ static int snd_cmipci_resume(struct pci_dev *pci)
 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
 	return 0;
 }
+<<<<<<< HEAD
 #endif /* CONFIG_PM */
 
 static struct pci_driver driver = {
@@ -3445,3 +3589,23 @@ static void __exit alsa_card_cmipci_exit(void)
 
 module_init(alsa_card_cmipci_init)
 module_exit(alsa_card_cmipci_exit)
+=======
+
+static SIMPLE_DEV_PM_OPS(snd_cmipci_pm, snd_cmipci_suspend, snd_cmipci_resume);
+#define SND_CMIPCI_PM_OPS	&snd_cmipci_pm
+#else
+#define SND_CMIPCI_PM_OPS	NULL
+#endif /* CONFIG_PM_SLEEP */
+
+static struct pci_driver cmipci_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = snd_cmipci_ids,
+	.probe = snd_cmipci_probe,
+	.remove = snd_cmipci_remove,
+	.driver = {
+		.pm = SND_CMIPCI_PM_OPS,
+	},
+};
+	
+module_pci_driver(cmipci_driver);
+>>>>>>> refs/remotes/origin/master

@@ -17,6 +17,7 @@
  */
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_types.h"
 #include "xfs_log.h"
 #include "xfs_inum.h"
@@ -26,6 +27,16 @@
 #include "xfs_ag.h"
 #include "xfs_mount.h"
 #include "xfs_trans_priv.h"
+=======
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+#include "xfs_sb.h"
+#include "xfs_ag.h"
+#include "xfs_mount.h"
+#include "xfs_trans.h"
+#include "xfs_trans_priv.h"
+#include "xfs_buf_item.h"
+>>>>>>> refs/remotes/origin/master
 #include "xfs_extfree_item.h"
 
 
@@ -51,9 +62,14 @@ xfs_efi_item_free(
  * Freeing the efi requires that we remove it from the AIL if it has already
  * been placed there. However, the EFI may not yet have been placed in the AIL
  * when called by xfs_efi_release() from EFD processing due to the ordering of
+<<<<<<< HEAD
  * committed vs unpin operations in bulk insert operations. Hence the
  * test_and_clear_bit(XFS_EFI_COMMITTED) to ensure only the last caller frees
  * the EFI.
+=======
+ * committed vs unpin operations in bulk insert operations. Hence the reference
+ * count to ensure only the last caller frees the EFI.
+>>>>>>> refs/remotes/origin/master
  */
 STATIC void
 __xfs_efi_release(
@@ -61,10 +77,18 @@ __xfs_efi_release(
 {
 	struct xfs_ail		*ailp = efip->efi_item.li_ailp;
 
+<<<<<<< HEAD
 	if (!test_and_clear_bit(XFS_EFI_COMMITTED, &efip->efi_flags)) {
 		spin_lock(&ailp->xa_lock);
 		/* xfs_trans_ail_delete() drops the AIL lock. */
 		xfs_trans_ail_delete(ailp, &efip->efi_item);
+=======
+	if (atomic_dec_and_test(&efip->efi_refcount)) {
+		spin_lock(&ailp->xa_lock);
+		/* xfs_trans_ail_delete() drops the AIL lock. */
+		xfs_trans_ail_delete(ailp, &efip->efi_item,
+				     SHUTDOWN_LOG_IO_ERROR);
+>>>>>>> refs/remotes/origin/master
 		xfs_efi_item_free(efip);
 	}
 }
@@ -74,11 +98,30 @@ __xfs_efi_release(
  * We only need 1 iovec for an efi item.  It just logs the efi_log_format
  * structure.
  */
+<<<<<<< HEAD
 STATIC uint
 xfs_efi_item_size(
 	struct xfs_log_item	*lip)
 {
 	return 1;
+=======
+static inline int
+xfs_efi_item_sizeof(
+	struct xfs_efi_log_item *efip)
+{
+	return sizeof(struct xfs_efi_log_format) +
+	       (efip->efi_format.efi_nextents - 1) * sizeof(xfs_extent_t);
+}
+
+STATIC void
+xfs_efi_item_size(
+	struct xfs_log_item	*lip,
+	int			*nvecs,
+	int			*nbytes)
+{
+	*nvecs += 1;
+	*nbytes += xfs_efi_item_sizeof(EFI_ITEM(lip));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -94,12 +137,16 @@ xfs_efi_item_format(
 	struct xfs_log_iovec	*log_vector)
 {
 	struct xfs_efi_log_item	*efip = EFI_ITEM(lip);
+<<<<<<< HEAD
 	uint			size;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ASSERT(atomic_read(&efip->efi_next_extent) ==
 				efip->efi_format.efi_nextents);
 
 	efip->efi_format.efi_type = XFS_LI_EFI;
+<<<<<<< HEAD
 
 	size = sizeof(xfs_efi_log_format_t);
 	size += (efip->efi_format.efi_nextents - 1) * sizeof(xfs_extent_t);
@@ -109,6 +156,14 @@ xfs_efi_item_format(
 	log_vector->i_len = size;
 	log_vector->i_type = XLOG_REG_TYPE_EFI_FORMAT;
 	ASSERT(size >= sizeof(xfs_efi_log_format_t));
+=======
+	efip->efi_format.efi_size = 1;
+
+	log_vector->i_addr = &efip->efi_format;
+	log_vector->i_len = xfs_efi_item_sizeof(efip);
+	log_vector->i_type = XLOG_REG_TYPE_EFI_FORMAT;
+	ASSERT(log_vector->i_len >= sizeof(xfs_efi_log_format_t));
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -126,8 +181,13 @@ xfs_efi_item_pin(
  * which the EFI is manipulated during a transaction.  If we are being asked to
  * remove the EFI it's because the transaction has been cancelled and by
  * definition that means the EFI cannot be in the AIL so remove it from the
+<<<<<<< HEAD
  * transaction and free it.  Otherwise coordinate with xfs_efi_release() (via
  * XFS_EFI_COMMITTED) to determine who gets to free the EFI.
+=======
+ * transaction and free it.  Otherwise coordinate with xfs_efi_release()
+ * to determine who gets to free the EFI.
+>>>>>>> refs/remotes/origin/master
  */
 STATIC void
 xfs_efi_item_unpin(
@@ -147,6 +207,7 @@ xfs_efi_item_unpin(
 }
 
 /*
+<<<<<<< HEAD
  * Efi items have no locking or pushing.  However, since EFIs are
  * pulled from the AIL when their corresponding EFDs are committed
  * to disk, their situation is very similar to being pinned.  Return
@@ -156,13 +217,28 @@ xfs_efi_item_unpin(
 STATIC uint
 xfs_efi_item_trylock(
 	struct xfs_log_item	*lip)
+=======
+ * Efi items have no locking or pushing.  However, since EFIs are pulled from
+ * the AIL when their corresponding EFDs are committed to disk, their situation
+ * is very similar to being pinned.  Return XFS_ITEM_PINNED so that the caller
+ * will eventually flush the log.  This should help in getting the EFI out of
+ * the AIL.
+ */
+STATIC uint
+xfs_efi_item_push(
+	struct xfs_log_item	*lip,
+	struct list_head	*buffer_list)
+>>>>>>> refs/remotes/origin/master
 {
 	return XFS_ITEM_PINNED;
 }
 
+<<<<<<< HEAD
 /*
  * Efi items have no locking, so just return.
  */
+=======
+>>>>>>> refs/remotes/origin/master
 STATIC void
 xfs_efi_item_unlock(
 	struct xfs_log_item	*lip)
@@ -173,23 +249,31 @@ xfs_efi_item_unlock(
 
 /*
  * The EFI is logged only once and cannot be moved in the log, so simply return
+<<<<<<< HEAD
  * the lsn at which it's been logged.  For bulk transaction committed
  * processing, the EFI may be processed but not yet unpinned prior to the EFD
  * being processed. Set the XFS_EFI_COMMITTED flag so this case can be detected
  * when processing the EFD.
+=======
+ * the lsn at which it's been logged.
+>>>>>>> refs/remotes/origin/master
  */
 STATIC xfs_lsn_t
 xfs_efi_item_committed(
 	struct xfs_log_item	*lip,
 	xfs_lsn_t		lsn)
 {
+<<<<<<< HEAD
 	struct xfs_efi_log_item	*efip = EFI_ITEM(lip);
 
 	set_bit(XFS_EFI_COMMITTED, &efip->efi_flags);
+=======
+>>>>>>> refs/remotes/origin/master
 	return lsn;
 }
 
 /*
+<<<<<<< HEAD
  * There isn't much you can do to push on an efi item.  It is simply
  * stuck waiting for all of its corresponding efd items to be
  * committed to disk.
@@ -201,6 +285,8 @@ xfs_efi_item_push(
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * The EFI dependency tracking op doesn't do squat.  It can't because
  * it doesn't know where the free extent is coming from.  The dependency
  * tracking has to be handled by the "enclosing" metadata object.  For
@@ -218,15 +304,22 @@ xfs_efi_item_committing(
  * This is the ops vector shared by all efi log items.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct xfs_item_ops xfs_efi_item_ops = {
 =======
 static const struct xfs_item_ops xfs_efi_item_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct xfs_item_ops xfs_efi_item_ops = {
+>>>>>>> refs/remotes/origin/master
 	.iop_size	= xfs_efi_item_size,
 	.iop_format	= xfs_efi_item_format,
 	.iop_pin	= xfs_efi_item_pin,
 	.iop_unpin	= xfs_efi_item_unpin,
+<<<<<<< HEAD
 	.iop_trylock	= xfs_efi_item_trylock,
+=======
+>>>>>>> refs/remotes/origin/master
 	.iop_unlock	= xfs_efi_item_unlock,
 	.iop_committed	= xfs_efi_item_committed,
 	.iop_push	= xfs_efi_item_push,
@@ -259,6 +352,10 @@ xfs_efi_init(
 	efip->efi_format.efi_nextents = nextents;
 	efip->efi_format.efi_id = (__psint_t)(void*)efip;
 	atomic_set(&efip->efi_next_extent, 0);
+<<<<<<< HEAD
+=======
+	atomic_set(&efip->efi_refcount, 2);
+>>>>>>> refs/remotes/origin/master
 
 	return efip;
 }
@@ -328,8 +425,19 @@ xfs_efi_release(xfs_efi_log_item_t	*efip,
 		uint			nextents)
 {
 	ASSERT(atomic_read(&efip->efi_next_extent) >= nextents);
+<<<<<<< HEAD
 	if (atomic_sub_and_test(nextents, &efip->efi_next_extent))
 		__xfs_efi_release(efip);
+=======
+	if (atomic_sub_and_test(nextents, &efip->efi_next_extent)) {
+		/* recovery needs us to drop the EFI reference, too */
+		if (test_bit(XFS_EFI_RECOVERED, &efip->efi_flags))
+			__xfs_efi_release(efip);
+
+		__xfs_efi_release(efip);
+		/* efip may now have been freed, do not reference it again. */
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline struct xfs_efd_log_item *EFD_ITEM(struct xfs_log_item *lip)
@@ -351,11 +459,30 @@ xfs_efd_item_free(struct xfs_efd_log_item *efdp)
  * We only need 1 iovec for an efd item.  It just logs the efd_log_format
  * structure.
  */
+<<<<<<< HEAD
 STATIC uint
 xfs_efd_item_size(
 	struct xfs_log_item	*lip)
 {
 	return 1;
+=======
+static inline int
+xfs_efd_item_sizeof(
+	struct xfs_efd_log_item *efdp)
+{
+	return sizeof(xfs_efd_log_format_t) +
+	       (efdp->efd_format.efd_nextents - 1) * sizeof(xfs_extent_t);
+}
+
+STATIC void
+xfs_efd_item_size(
+	struct xfs_log_item	*lip,
+	int			*nvecs,
+	int			*nbytes)
+{
+	*nvecs += 1;
+	*nbytes += xfs_efd_item_sizeof(EFD_ITEM(lip));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -371,11 +498,15 @@ xfs_efd_item_format(
 	struct xfs_log_iovec	*log_vector)
 {
 	struct xfs_efd_log_item	*efdp = EFD_ITEM(lip);
+<<<<<<< HEAD
 	uint			size;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ASSERT(efdp->efd_next_extent == efdp->efd_format.efd_nextents);
 
 	efdp->efd_format.efd_type = XFS_LI_EFD;
+<<<<<<< HEAD
 
 	size = sizeof(xfs_efd_log_format_t);
 	size += (efdp->efd_format.efd_nextents - 1) * sizeof(xfs_extent_t);
@@ -385,6 +516,14 @@ xfs_efd_item_format(
 	log_vector->i_len = size;
 	log_vector->i_type = XLOG_REG_TYPE_EFD_FORMAT;
 	ASSERT(size >= sizeof(xfs_efd_log_format_t));
+=======
+	efdp->efd_format.efd_size = 1;
+
+	log_vector->i_addr = &efdp->efd_format;
+	log_vector->i_len = xfs_efd_item_sizeof(efdp);
+	log_vector->i_type = XLOG_REG_TYPE_EFD_FORMAT;
+	ASSERT(log_vector->i_len >= sizeof(xfs_efd_log_format_t));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -408,6 +547,7 @@ xfs_efd_item_unpin(
 }
 
 /*
+<<<<<<< HEAD
  * Efd items have no locking, so just return success.
  */
 STATIC uint
@@ -421,6 +561,19 @@ xfs_efd_item_trylock(
  * Efd items have no locking or pushing, so return failure
  * so that the caller doesn't bother with us.
  */
+=======
+ * There isn't much you can do to push on an efd item.  It is simply stuck
+ * waiting for the log to be flushed to disk.
+ */
+STATIC uint
+xfs_efd_item_push(
+	struct xfs_log_item	*lip,
+	struct list_head	*buffer_list)
+{
+	return XFS_ITEM_PINNED;
+}
+
+>>>>>>> refs/remotes/origin/master
 STATIC void
 xfs_efd_item_unlock(
 	struct xfs_log_item	*lip)
@@ -455,6 +608,7 @@ xfs_efd_item_committed(
 }
 
 /*
+<<<<<<< HEAD
  * There isn't much you can do to push on an efd item.  It is simply
  * stuck waiting for the log to be flushed to disk.
  */
@@ -465,6 +619,8 @@ xfs_efd_item_push(
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * The EFD dependency tracking op doesn't do squat.  It can't because
  * it doesn't know where the free extent is coming from.  The dependency
  * tracking has to be handled by the "enclosing" metadata object.  For
@@ -482,15 +638,22 @@ xfs_efd_item_committing(
  * This is the ops vector shared by all efd log items.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct xfs_item_ops xfs_efd_item_ops = {
 =======
 static const struct xfs_item_ops xfs_efd_item_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct xfs_item_ops xfs_efd_item_ops = {
+>>>>>>> refs/remotes/origin/master
 	.iop_size	= xfs_efd_item_size,
 	.iop_format	= xfs_efd_item_format,
 	.iop_pin	= xfs_efd_item_pin,
 	.iop_unpin	= xfs_efd_item_unpin,
+<<<<<<< HEAD
 	.iop_trylock	= xfs_efd_item_trylock,
+=======
+>>>>>>> refs/remotes/origin/master
 	.iop_unlock	= xfs_efd_item_unlock,
 	.iop_committed	= xfs_efd_item_committed,
 	.iop_push	= xfs_efd_item_push,

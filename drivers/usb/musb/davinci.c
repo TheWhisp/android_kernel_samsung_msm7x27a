@@ -24,14 +24,22 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/list.h>
 #include <linux/delay.h>
 #include <linux/clk.h>
+=======
+#include <linux/list.h>
+#include <linux/delay.h>
+#include <linux/clk.h>
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/gpio.h>
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 #include <mach/hardware.h>
@@ -42,6 +50,12 @@
 #include <mach/cputype.h>
 #include <mach/hardware.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/usb/usb_phy_gen_xceiv.h>
+
+#include <mach/cputype.h>
+#include <mach/hardware.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 
@@ -121,8 +135,12 @@ static void davinci_musb_enable(struct musb *musb)
 		dma_off = 0;
 
 	/* force a DRVVBUS irq so we can start polling for ID change */
+<<<<<<< HEAD
 	if (is_otg_enabled(musb))
 		musb_writel(musb->ctrl_base, DAVINCI_USB_INT_SET_REG,
+=======
+	musb_writel(musb->ctrl_base, DAVINCI_USB_INT_SET_REG,
+>>>>>>> refs/remotes/origin/master
 			DAVINCI_INTR_DRVVBUS << DAVINCI_USB_USBINT_SHIFT);
 }
 
@@ -149,6 +167,7 @@ static void davinci_musb_disable(struct musb *musb)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_HDRC_HCD
 #define	portstate(stmt)		stmt
 #else
@@ -158,6 +177,9 @@ static void davinci_musb_disable(struct musb *musb)
 =======
 #define	portstate(stmt)		stmt
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	portstate(stmt)		stmt
+>>>>>>> refs/remotes/origin/master
 
 /*
  * VBUS SWITCHING IS BOARD-SPECIFIC ... at least for the DM6446 EVM,
@@ -230,7 +252,11 @@ static void otg_timer(unsigned long _musb)
 	 */
 	devctl = musb_readb(mregs, MUSB_DEVCTL);
 	dev_dbg(musb->controller, "poll devctl %02x (%s)\n", devctl,
+<<<<<<< HEAD
 		otg_state_string(musb->xceiv->state));
+=======
+		usb_otg_state_string(musb->xceiv->state));
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&musb->lock, flags);
 	switch (musb->xceiv->state) {
@@ -249,10 +275,15 @@ static void otg_timer(unsigned long _musb)
 			MUSB_INTR_VBUSERROR << DAVINCI_USB_USBINT_SHIFT);
 		break;
 	case OTG_STATE_B_IDLE:
+<<<<<<< HEAD
 		if (!is_peripheral_enabled(musb))
 			break;
 
 		/* There's no ID-changed IRQ, so we have no good way to tell
+=======
+		/*
+		 * There's no ID-changed IRQ, so we have no good way to tell
+>>>>>>> refs/remotes/origin/master
 		 * when to switch to the A-Default state machine (by setting
 		 * the DEVCTL.SESSION flag).
 		 *
@@ -283,9 +314,13 @@ static irqreturn_t davinci_musb_interrupt(int irq, void *__hci)
 	irqreturn_t	retval = IRQ_NONE;
 	struct musb	*musb = __hci;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct usb_otg	*otg = musb->xceiv->otg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_otg	*otg = musb->xceiv->otg;
+>>>>>>> refs/remotes/origin/master
 	void __iomem	*tibase = musb->ctrl_base;
 	struct cppi	*cppi;
 	u32		tmp;
@@ -333,8 +368,12 @@ static irqreturn_t davinci_musb_interrupt(int irq, void *__hci)
 		u8	devctl = musb_readb(mregs, MUSB_DEVCTL);
 		int	err = musb->int_usb & MUSB_INTR_VBUSERROR;
 
+<<<<<<< HEAD
 		err = is_host_enabled(musb)
 				&& (musb->int_usb & MUSB_INTR_VBUSERROR);
+=======
+		err = musb->int_usb & MUSB_INTR_VBUSERROR;
+>>>>>>> refs/remotes/origin/master
 		if (err) {
 			/* The Mentor core doesn't debounce VBUS as needed
 			 * to cope with device connect current spikes. This
@@ -350,6 +389,7 @@ static irqreturn_t davinci_musb_interrupt(int irq, void *__hci)
 			musb->xceiv->state = OTG_STATE_A_WAIT_VFALL;
 			mod_timer(&otg_workaround, jiffies + POLL_SECONDS * HZ);
 			WARNING("VBUS error workaround (delay coming)\n");
+<<<<<<< HEAD
 		} else if (is_host_enabled(musb) && drvvbus) {
 			MUSB_HST_MODE(musb);
 <<<<<<< HEAD
@@ -357,6 +397,11 @@ static irqreturn_t davinci_musb_interrupt(int irq, void *__hci)
 =======
 			otg->default_a = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else if (drvvbus) {
+			MUSB_HST_MODE(musb);
+			otg->default_a = 1;
+>>>>>>> refs/remotes/origin/master
 			musb->xceiv->state = OTG_STATE_A_WAIT_VRISE;
 			portstate(musb->port1_status |= USB_PORT_STAT_POWER);
 			del_timer(&otg_workaround);
@@ -364,10 +409,14 @@ static irqreturn_t davinci_musb_interrupt(int irq, void *__hci)
 			musb->is_active = 0;
 			MUSB_DEV_MODE(musb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			musb->xceiv->default_a = 0;
 =======
 			otg->default_a = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			otg->default_a = 0;
+>>>>>>> refs/remotes/origin/master
 			musb->xceiv->state = OTG_STATE_B_IDLE;
 			portstate(musb->port1_status &= ~USB_PORT_STAT_POWER);
 		}
@@ -378,7 +427,11 @@ static irqreturn_t davinci_musb_interrupt(int irq, void *__hci)
 		davinci_musb_source_power(musb, drvvbus, 0);
 		dev_dbg(musb->controller, "VBUS %s (%s)%s, devctl %02x\n",
 				drvvbus ? "on" : "off",
+<<<<<<< HEAD
 				otg_state_string(musb->xceiv->state),
+=======
+				usb_otg_state_string(musb->xceiv->state),
+>>>>>>> refs/remotes/origin/master
 				err ? " ERROR" : "",
 				devctl);
 		retval = IRQ_HANDLED;
@@ -391,8 +444,12 @@ static irqreturn_t davinci_musb_interrupt(int irq, void *__hci)
 	musb_writel(tibase, DAVINCI_USB_EOI_REG, 0);
 
 	/* poll for ID change */
+<<<<<<< HEAD
 	if (is_otg_enabled(musb)
 			&& musb->xceiv->state == OTG_STATE_B_IDLE)
+=======
+	if (musb->xceiv->state == OTG_STATE_B_IDLE)
+>>>>>>> refs/remotes/origin/master
 		mod_timer(&otg_workaround, jiffies + POLL_SECONDS * HZ);
 
 	spin_unlock_irqrestore(&musb->lock, flags);
@@ -410,6 +467,7 @@ static int davinci_musb_init(struct musb *musb)
 {
 	void __iomem	*tibase = musb->ctrl_base;
 	u32		revision;
+<<<<<<< HEAD
 
 	usb_nop_xceiv_register();
 <<<<<<< HEAD
@@ -421,6 +479,16 @@ static int davinci_musb_init(struct musb *musb)
 	if (!musb->xceiv)
 		goto unregister;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int 		ret = -ENODEV;
+
+	usb_nop_xceiv_register();
+	musb->xceiv = usb_get_phy(USB_PHY_TYPE_USB2);
+	if (IS_ERR_OR_NULL(musb->xceiv)) {
+		ret = -EPROBE_DEFER;
+		goto unregister;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	musb->mregs += DAVINCI_BASE_OFFSET;
 
@@ -429,8 +497,12 @@ static int davinci_musb_init(struct musb *musb)
 	if (revision == 0)
 		goto fail;
 
+<<<<<<< HEAD
 	if (is_host_enabled(musb))
 		setup_timer(&otg_workaround, otg_timer, (unsigned long) musb);
+=======
+	setup_timer(&otg_workaround, otg_timer, (unsigned long) musb);
+>>>>>>> refs/remotes/origin/master
 
 	davinci_musb_source_power(musb, 0, 1);
 
@@ -451,12 +523,16 @@ static int davinci_musb_init(struct musb *musb)
 	if (cpu_is_davinci_dm355()) {
 		u32	deepsleep = __raw_readl(DM355_DEEPSLEEP);
 
+<<<<<<< HEAD
 		if (is_host_enabled(musb)) {
 			deepsleep &= ~DRVVBUS_OVERRIDE;
 		} else {
 			deepsleep &= ~DRVVBUS_FORCE;
 			deepsleep |= DRVVBUS_OVERRIDE;
 		}
+=======
+		deepsleep &= ~DRVVBUS_FORCE;
+>>>>>>> refs/remotes/origin/master
 		__raw_writel(deepsleep, DM355_DEEPSLEEP);
 	}
 
@@ -478,6 +554,7 @@ static int davinci_musb_init(struct musb *musb)
 
 fail:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	otg_put_transceiver(musb->xceiv);
 =======
 	usb_put_transceiver(musb->xceiv);
@@ -485,12 +562,22 @@ unregister:
 >>>>>>> refs/remotes/origin/cm-10.0
 	usb_nop_xceiv_unregister();
 	return -ENODEV;
+=======
+	usb_put_phy(musb->xceiv);
+unregister:
+	usb_nop_xceiv_unregister();
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int davinci_musb_exit(struct musb *musb)
 {
+<<<<<<< HEAD
 	if (is_host_enabled(musb))
 		del_timer_sync(&otg_workaround);
+=======
+	del_timer_sync(&otg_workaround);
+>>>>>>> refs/remotes/origin/master
 
 	/* force VBUS off */
 	if (cpu_is_davinci_dm355()) {
@@ -505,10 +592,14 @@ static int davinci_musb_exit(struct musb *musb)
 
 	/* delay, to avoid problems with module reload */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (is_host_enabled(musb) && musb->xceiv->default_a) {
 =======
 	if (is_host_enabled(musb) && musb->xceiv->otg->default_a) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (musb->xceiv->otg->default_a) {
+>>>>>>> refs/remotes/origin/master
 		int	maxdelay = 30;
 		u8	devctl, warn = 0;
 
@@ -536,10 +627,14 @@ static int davinci_musb_exit(struct musb *musb)
 	phy_off();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	otg_put_transceiver(musb->xceiv);
 =======
 	usb_put_transceiver(musb->xceiv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_put_phy(musb->xceiv);
+>>>>>>> refs/remotes/origin/master
 	usb_nop_xceiv_unregister();
 
 	return 0;
@@ -557,6 +652,7 @@ static const struct musb_platform_ops davinci_ops = {
 	.set_vbus	= davinci_musb_set_vbus,
 };
 
+<<<<<<< HEAD
 static u64 davinci_dmamask = DMA_BIT_MASK(32);
 
 <<<<<<< HEAD
@@ -568,6 +664,21 @@ static int __devinit davinci_probe(struct platform_device *pdev)
 	struct musb_hdrc_platform_data	*pdata = pdev->dev.platform_data;
 	struct platform_device		*musb;
 	struct davinci_glue		*glue;
+=======
+static const struct platform_device_info davinci_dev_info = {
+	.name		= "musb-hdrc",
+	.id		= PLATFORM_DEVID_AUTO,
+	.dma_mask	= DMA_BIT_MASK(32),
+};
+
+static int davinci_probe(struct platform_device *pdev)
+{
+	struct resource			musb_resources[3];
+	struct musb_hdrc_platform_data	*pdata = dev_get_platdata(&pdev->dev);
+	struct platform_device		*musb;
+	struct davinci_glue		*glue;
+	struct platform_device_info	pinfo;
+>>>>>>> refs/remotes/origin/master
 	struct clk			*clk;
 
 	int				ret = -ENOMEM;
@@ -578,22 +689,30 @@ static int __devinit davinci_probe(struct platform_device *pdev)
 		goto err0;
 	}
 
+<<<<<<< HEAD
 	musb = platform_device_alloc("musb-hdrc", -1);
 	if (!musb) {
 		dev_err(&pdev->dev, "failed to allocate musb device\n");
 		goto err1;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	clk = clk_get(&pdev->dev, "usb");
 	if (IS_ERR(clk)) {
 		dev_err(&pdev->dev, "failed to get clock\n");
 		ret = PTR_ERR(clk);
+<<<<<<< HEAD
 		goto err2;
+=======
+		goto err3;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = clk_enable(clk);
 	if (ret) {
 		dev_err(&pdev->dev, "failed to enable clock\n");
+<<<<<<< HEAD
 		goto err3;
 	}
 
@@ -603,12 +722,19 @@ static int __devinit davinci_probe(struct platform_device *pdev)
 
 	glue->dev			= &pdev->dev;
 	glue->musb			= musb;
+=======
+		goto err4;
+	}
+
+	glue->dev			= &pdev->dev;
+>>>>>>> refs/remotes/origin/master
 	glue->clk			= clk;
 
 	pdata->platform_ops		= &davinci_ops;
 
 	platform_set_drvdata(pdev, glue);
 
+<<<<<<< HEAD
 	ret = platform_device_add_resources(musb, pdev->resource,
 			pdev->num_resources);
 	if (ret) {
@@ -626,10 +752,47 @@ static int __devinit davinci_probe(struct platform_device *pdev)
 	if (ret) {
 		dev_err(&pdev->dev, "failed to register musb device\n");
 		goto err4;
+=======
+	memset(musb_resources, 0x00, sizeof(*musb_resources) *
+			ARRAY_SIZE(musb_resources));
+
+	musb_resources[0].name = pdev->resource[0].name;
+	musb_resources[0].start = pdev->resource[0].start;
+	musb_resources[0].end = pdev->resource[0].end;
+	musb_resources[0].flags = pdev->resource[0].flags;
+
+	musb_resources[1].name = pdev->resource[1].name;
+	musb_resources[1].start = pdev->resource[1].start;
+	musb_resources[1].end = pdev->resource[1].end;
+	musb_resources[1].flags = pdev->resource[1].flags;
+
+	/*
+	 * For DM6467 3 resources are passed. A placeholder for the 3rd
+	 * resource is always there, so it's safe to always copy it...
+	 */
+	musb_resources[2].name = pdev->resource[2].name;
+	musb_resources[2].start = pdev->resource[2].start;
+	musb_resources[2].end = pdev->resource[2].end;
+	musb_resources[2].flags = pdev->resource[2].flags;
+
+	pinfo = davinci_dev_info;
+	pinfo.parent = &pdev->dev;
+	pinfo.res = musb_resources;
+	pinfo.num_res = ARRAY_SIZE(musb_resources);
+	pinfo.data = pdata;
+	pinfo.size_data = sizeof(*pdata);
+
+	glue->musb = musb = platform_device_register_full(&pinfo);
+	if (IS_ERR(musb)) {
+		ret = PTR_ERR(musb);
+		dev_err(&pdev->dev, "failed to register musb device: %d\n", ret);
+		goto err5;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 
+<<<<<<< HEAD
 err4:
 	clk_disable(clk);
 
@@ -640,12 +803,22 @@ err2:
 	platform_device_put(musb);
 
 err1:
+=======
+err5:
+	clk_disable(clk);
+
+err4:
+	clk_put(clk);
+
+err3:
+>>>>>>> refs/remotes/origin/master
 	kfree(glue);
 
 err0:
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __exit davinci_remove(struct platform_device *pdev)
 =======
@@ -656,6 +829,13 @@ static int __devexit davinci_remove(struct platform_device *pdev)
 
 	platform_device_del(glue->musb);
 	platform_device_put(glue->musb);
+=======
+static int davinci_remove(struct platform_device *pdev)
+{
+	struct davinci_glue		*glue = platform_get_drvdata(pdev);
+
+	platform_device_unregister(glue->musb);
+>>>>>>> refs/remotes/origin/master
 	clk_disable(glue->clk);
 	clk_put(glue->clk);
 	kfree(glue);
@@ -665,11 +845,16 @@ static int __devexit davinci_remove(struct platform_device *pdev)
 
 static struct platform_driver davinci_driver = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.remove		= __exit_p(davinci_remove),
 =======
 	.probe		= davinci_probe,
 	.remove		= __devexit_p(davinci_remove),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.probe		= davinci_probe,
+	.remove		= davinci_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "musb-davinci",
 	},
@@ -678,6 +863,7 @@ static struct platform_driver davinci_driver = {
 MODULE_DESCRIPTION("DaVinci MUSB Glue Layer");
 MODULE_AUTHOR("Felipe Balbi <balbi@ti.com>");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 
 static int __init davinci_init(void)
 {
@@ -696,3 +882,6 @@ static void __exit davinci_exit(void)
 	platform_driver_unregister(&davinci_driver);
 }
 module_exit(davinci_exit);
+=======
+module_platform_driver(davinci_driver);
+>>>>>>> refs/remotes/origin/master

@@ -27,9 +27,12 @@
 #include <asm/sections.h>
 #include <asm/prom.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/pgtable.h>
 #include <asm/machdep.h>
@@ -278,10 +281,14 @@ int __init via_calibrate_decr(void)
 	}
 	of_node_put(vias);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	via = ioremap(rsrc.start, rsrc.end - rsrc.start + 1);
 =======
 	via = ioremap(rsrc.start, resource_size(&rsrc));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	via = ioremap(rsrc.start, resource_size(&rsrc));
+>>>>>>> refs/remotes/origin/master
 	if (via == NULL) {
 		printk(KERN_ERR "Failed to map VIA for timer calibration !\n");
 		return 0;

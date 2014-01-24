@@ -17,29 +17,41 @@
   */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/delay.h>
 #include <linux/suspend.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/cpu.h>
 #include <linux/delay.h>
 #include <linux/suspend.h>
 #include <linux/stat.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/firmware.h>
 #include <asm/hvcall.h>
 #include <asm/machdep.h>
 #include <asm/mmu.h>
 #include <asm/rtas.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static u64 stream_id;
 static struct sys_device suspend_sysdev;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/topology.h>
 
 static u64 stream_id;
 static struct device suspend_dev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static DECLARE_COMPLETION(suspend_work);
 static struct rtas_suspend_me_data suspend_data;
 static atomic_t suspending;
@@ -117,12 +129,17 @@ static int pseries_prepare_late(void)
 	atomic_set(&suspend_data.done, 0);
 	atomic_set(&suspend_data.error, 0);
 	suspend_data.complete = &suspend_work;
+<<<<<<< HEAD
 	INIT_COMPLETION(suspend_work);
+=======
+	reinit_completion(&suspend_work);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 /**
  * store_hibernate - Initiate partition hibernation
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @classdev:	sysdev class struct
  * @attr:		class device attribute struct
@@ -130,6 +147,10 @@ static int pseries_prepare_late(void)
  * @dev:		subsys root device
  * @attr:		device attribute struct
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @dev:		subsys root device
+ * @attr:		device attribute struct
+>>>>>>> refs/remotes/origin/master
  * @buf:		buffer
  * @count:		buffer size
  *
@@ -140,28 +161,40 @@ static int pseries_prepare_late(void)
  * 	number of bytes printed to buffer / other on failure
  **/
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t store_hibernate(struct sysdev_class *classdev,
 			       struct sysdev_class_attribute *attr,
 			       const char *buf, size_t count)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t store_hibernate(struct device *dev,
 			       struct device_attribute *attr,
 			       const char *buf, size_t count)
 {
 	cpumask_var_t offline_mask;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!alloc_cpumask_var(&offline_mask, GFP_TEMPORARY))
 		return -ENOMEM;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!alloc_cpumask_var(&offline_mask, GFP_TEMPORARY))
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	stream_id = simple_strtoul(buf, NULL, 16);
 
 	do {
@@ -171,9 +204,12 @@ static ssize_t store_hibernate(struct device *dev,
 	} while (rc == -EAGAIN);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!rc)
 		rc = pm_suspend(PM_SUSPEND_MEM);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!rc) {
 		/* All present CPUs must be online */
 		cpumask_andnot(offline_mask, cpu_present_mask,
@@ -194,12 +230,16 @@ static ssize_t store_hibernate(struct device *dev,
 			pr_warn("%s: Could not restore CPUs to offline "
 					"state.\n", __func__);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	stream_id = 0;
 
 	if (!rc)
 		rc = count;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return rc;
 }
@@ -209,6 +249,8 @@ static SYSDEV_CLASS_ATTR(hibernate, S_IWUSR, NULL, store_hibernate);
 static struct sysdev_class suspend_sysdev_class = {
 	.name = "power",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	free_cpumask_var(offline_mask);
 	return rc;
@@ -219,7 +261,10 @@ static DEVICE_ATTR(hibernate, S_IWUSR, NULL, store_hibernate);
 static struct bus_type suspend_subsys = {
 	.name = "power",
 	.dev_name = "power",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct platform_suspend_ops pseries_suspend_ops = {
@@ -235,6 +280,7 @@ static const struct platform_suspend_ops pseries_suspend_ops = {
  * Return value:
  * 	0 on success / other on failure
  **/
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int pseries_suspend_sysfs_register(struct sys_device *sysdev)
 {
@@ -254,6 +300,8 @@ static int pseries_suspend_sysfs_register(struct sys_device *sysdev)
 class_unregister:
 	sysdev_class_unregister(&suspend_sysdev_class);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int pseries_suspend_sysfs_register(struct device *dev)
 {
 	int rc;
@@ -271,7 +319,10 @@ static int pseries_suspend_sysfs_register(struct device *dev)
 
 subsys_unregister:
 	bus_unregister(&suspend_subsys);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -293,10 +344,14 @@ static int __init pseries_suspend_init(void)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((rc = pseries_suspend_sysfs_register(&suspend_sysdev)))
 =======
 	if ((rc = pseries_suspend_sysfs_register(&suspend_dev)))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((rc = pseries_suspend_sysfs_register(&suspend_dev)))
+>>>>>>> refs/remotes/origin/master
 		return rc;
 
 	ppc_md.suspend_disable_cpu = pseries_suspend_cpu;

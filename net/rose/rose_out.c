@@ -22,9 +22,12 @@
 #include <linux/skbuff.h>
 #include <net/sock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/fcntl.h>
 #include <linux/mm.h>
 #include <linux/interrupt.h>

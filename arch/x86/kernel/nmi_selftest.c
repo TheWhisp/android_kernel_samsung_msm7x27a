@@ -13,6 +13,10 @@
 #include <linux/cpumask.h>
 #include <linux/delay.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/percpu.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/apic.h>
 #include <asm/nmi.h>
@@ -41,7 +45,12 @@ static int __init nmi_unk_cb(unsigned int val, struct pt_regs *regs)
 static void __init init_nmi_testsuite(void)
 {
 	/* trap all the unknown NMIs we may generate */
+<<<<<<< HEAD
 	register_nmi_handler(NMI_UNKNOWN, nmi_unk_cb, 0, "nmi_selftest_unk");
+=======
+	register_nmi_handler(NMI_UNKNOWN, nmi_unk_cb, 0, "nmi_selftest_unk",
+			__initdata);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init cleanup_nmi_testsuite(void)
@@ -64,7 +73,11 @@ static void __init test_nmi_ipi(struct cpumask *mask)
 	unsigned long timeout;
 
 	if (register_nmi_handler(NMI_LOCAL, test_nmi_ipi_callback,
+<<<<<<< HEAD
 				 NMI_FLAG_FIRST, "nmi_selftest")) {
+=======
+				 NMI_FLAG_FIRST, "nmi_selftest", __initdata)) {
+>>>>>>> refs/remotes/origin/master
 		nmi_fail = FAILURE;
 		return;
 	}
@@ -117,6 +130,7 @@ static void __init dotest(void (*testcase_fn)(void), int expected)
 		unexpected_testcase_failures++;
 
 		if (nmi_fail == FAILURE)
+<<<<<<< HEAD
 			printk("FAILED |");
 		else if (nmi_fail == TIMEOUT)
 			printk("TIMEOUT|");
@@ -126,6 +140,17 @@ static void __init dotest(void (*testcase_fn)(void), int expected)
 	} else {
 		testcase_successes++;
 		printk("  ok  |");
+=======
+			printk(KERN_CONT "FAILED |");
+		else if (nmi_fail == TIMEOUT)
+			printk(KERN_CONT "TIMEOUT|");
+		else
+			printk(KERN_CONT "ERROR  |");
+		dump_stack();
+	} else {
+		testcase_successes++;
+		printk(KERN_CONT "  ok  |");
+>>>>>>> refs/remotes/origin/master
 	}
 	testcase_total++;
 
@@ -150,10 +175,17 @@ void __init nmi_selftest(void)
 
 	print_testname("remote IPI");
 	dotest(remote_ipi, SUCCESS);
+<<<<<<< HEAD
 	printk("\n");
 	print_testname("local IPI");
 	dotest(local_ipi, SUCCESS);
 	printk("\n");
+=======
+	printk(KERN_CONT "\n");
+	print_testname("local IPI");
+	dotest(local_ipi, SUCCESS);
+	printk(KERN_CONT "\n");
+>>>>>>> refs/remotes/origin/master
 
 	cleanup_nmi_testsuite();
 

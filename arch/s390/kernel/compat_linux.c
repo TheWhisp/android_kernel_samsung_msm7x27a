@@ -1,8 +1,13 @@
 /*
+<<<<<<< HEAD
  *  arch/s390x/kernel/linux32.c
  *
  *  S390 version
  *    Copyright (C) 2000 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+ *  S390 version
+ *    Copyright IBM Corp. 2000
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Martin Schwidefsky (schwidefsky@de.ibm.com),
  *               Gerhard Tonn (ton@de.ibm.com)   
  *               Thomas Spatzier (tspat@de.ibm.com)
@@ -61,6 +66,7 @@
 #include "compat_linux.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 long psw_user32_bits	= (PSW_BASE32_BITS | PSW_MASK_DAT | PSW_ASC_HOME |
 			   PSW_MASK_IO | PSW_MASK_EXT | PSW_MASK_MCHECK |
 			   PSW_MASK_PSTATE | PSW_DEFAULT_KEY);
@@ -73,6 +79,8 @@ u32 psw32_user_bits = PSW32_MASK_DAT | PSW32_MASK_IO | PSW32_MASK_EXT |
 		      PSW32_MASK_PSTATE | PSW32_ASC_HOME;
 >>>>>>> refs/remotes/origin/cm-10.0
  
+=======
+>>>>>>> refs/remotes/origin/master
 /* For this source file, we want overflow handling. */
 
 #undef high2lowuid
@@ -142,6 +150,7 @@ asmlinkage long sys32_setresuid16(u16 ruid, u16 euid, u16 suid)
 		low2highuid(suid));
 }
 
+<<<<<<< HEAD
 asmlinkage long sys32_getresuid16(u16 __user *ruid, u16 __user *euid, u16 __user *suid)
 {
 	int retval;
@@ -149,6 +158,21 @@ asmlinkage long sys32_getresuid16(u16 __user *ruid, u16 __user *euid, u16 __user
 	if (!(retval = put_user(high2lowuid(current->cred->uid), ruid)) &&
 	    !(retval = put_user(high2lowuid(current->cred->euid), euid)))
 		retval = put_user(high2lowuid(current->cred->suid), suid);
+=======
+asmlinkage long sys32_getresuid16(u16 __user *ruidp, u16 __user *euidp, u16 __user *suidp)
+{
+	const struct cred *cred = current_cred();
+	int retval;
+	u16 ruid, euid, suid;
+
+	ruid = high2lowuid(from_kuid_munged(cred->user_ns, cred->uid));
+	euid = high2lowuid(from_kuid_munged(cred->user_ns, cred->euid));
+	suid = high2lowuid(from_kuid_munged(cred->user_ns, cred->suid));
+
+	if (!(retval   = put_user(ruid, ruidp)) &&
+	    !(retval   = put_user(euid, euidp)))
+		retval = put_user(suid, suidp);
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }
@@ -159,6 +183,7 @@ asmlinkage long sys32_setresgid16(u16 rgid, u16 egid, u16 sgid)
 		low2highgid(sgid));
 }
 
+<<<<<<< HEAD
 asmlinkage long sys32_getresgid16(u16 __user *rgid, u16 __user *egid, u16 __user *sgid)
 {
 	int retval;
@@ -166,6 +191,21 @@ asmlinkage long sys32_getresgid16(u16 __user *rgid, u16 __user *egid, u16 __user
 	if (!(retval = put_user(high2lowgid(current->cred->gid), rgid)) &&
 	    !(retval = put_user(high2lowgid(current->cred->egid), egid)))
 		retval = put_user(high2lowgid(current->cred->sgid), sgid);
+=======
+asmlinkage long sys32_getresgid16(u16 __user *rgidp, u16 __user *egidp, u16 __user *sgidp)
+{
+	const struct cred *cred = current_cred();
+	int retval;
+	u16 rgid, egid, sgid;
+
+	rgid = high2lowgid(from_kgid_munged(cred->user_ns, cred->gid));
+	egid = high2lowgid(from_kgid_munged(cred->user_ns, cred->egid));
+	sgid = high2lowgid(from_kgid_munged(cred->user_ns, cred->sgid));
+
+	if (!(retval   = put_user(rgid, rgidp)) &&
+	    !(retval   = put_user(egid, egidp)))
+		retval = put_user(sgid, sgidp);
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }
@@ -182,11 +222,22 @@ asmlinkage long sys32_setfsgid16(u16 gid)
 
 static int groups16_to_user(u16 __user *grouplist, struct group_info *group_info)
 {
+<<<<<<< HEAD
 	int i;
 	u16 group;
 
 	for (i = 0; i < group_info->ngroups; i++) {
 		group = (u16)GROUP_AT(group_info, i);
+=======
+	struct user_namespace *user_ns = current_user_ns();
+	int i;
+	u16 group;
+	kgid_t kgid;
+
+	for (i = 0; i < group_info->ngroups; i++) {
+		kgid = GROUP_AT(group_info, i);
+		group = (u16)from_kgid_munged(user_ns, kgid);
+>>>>>>> refs/remotes/origin/master
 		if (put_user(group, grouplist+i))
 			return -EFAULT;
 	}
@@ -196,13 +247,29 @@ static int groups16_to_user(u16 __user *grouplist, struct group_info *group_info
 
 static int groups16_from_user(struct group_info *group_info, u16 __user *grouplist)
 {
+<<<<<<< HEAD
 	int i;
 	u16 group;
+=======
+	struct user_namespace *user_ns = current_user_ns();
+	int i;
+	u16 group;
+	kgid_t kgid;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < group_info->ngroups; i++) {
 		if (get_user(group, grouplist+i))
 			return  -EFAULT;
+<<<<<<< HEAD
 		GROUP_AT(group_info, i) = (gid_t)group;
+=======
+
+		kgid = make_kgid(user_ns, (gid_t)group);
+		if (!gid_valid(kgid))
+			return -EINVAL;
+
+		GROUP_AT(group_info, i) = kgid;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -210,25 +277,42 @@ static int groups16_from_user(struct group_info *group_info, u16 __user *groupli
 
 asmlinkage long sys32_getgroups16(int gidsetsize, u16 __user *grouplist)
 {
+<<<<<<< HEAD
+=======
+	const struct cred *cred = current_cred();
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	if (gidsetsize < 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	get_group_info(current->cred->group_info);
 	i = current->cred->group_info->ngroups;
+=======
+	get_group_info(cred->group_info);
+	i = cred->group_info->ngroups;
+>>>>>>> refs/remotes/origin/master
 	if (gidsetsize) {
 		if (i > gidsetsize) {
 			i = -EINVAL;
 			goto out;
 		}
+<<<<<<< HEAD
 		if (groups16_to_user(grouplist, current->cred->group_info)) {
+=======
+		if (groups16_to_user(grouplist, cred->group_info)) {
+>>>>>>> refs/remotes/origin/master
 			i = -EFAULT;
 			goto out;
 		}
 	}
 out:
+<<<<<<< HEAD
 	put_group_info(current->cred->group_info);
+=======
+	put_group_info(cred->group_info);
+>>>>>>> refs/remotes/origin/master
 	return i;
 }
 
@@ -259,21 +343,34 @@ asmlinkage long sys32_setgroups16(int gidsetsize, u16 __user *grouplist)
 
 asmlinkage long sys32_getuid16(void)
 {
+<<<<<<< HEAD
 	return high2lowuid(current->cred->uid);
+=======
+	return high2lowuid(from_kuid_munged(current_user_ns(), current_uid()));
+>>>>>>> refs/remotes/origin/master
 }
 
 asmlinkage long sys32_geteuid16(void)
 {
+<<<<<<< HEAD
 	return high2lowuid(current->cred->euid);
+=======
+	return high2lowuid(from_kuid_munged(current_user_ns(), current_euid()));
+>>>>>>> refs/remotes/origin/master
 }
 
 asmlinkage long sys32_getgid16(void)
 {
+<<<<<<< HEAD
 	return high2lowgid(current->cred->gid);
+=======
+	return high2lowgid(from_kgid_munged(current_user_ns(), current_gid()));
+>>>>>>> refs/remotes/origin/master
 }
 
 asmlinkage long sys32_getegid16(void)
 {
+<<<<<<< HEAD
 	return high2lowgid(current->cred->egid);
 }
 
@@ -328,6 +425,18 @@ asmlinkage long sys32_ipc(u32 call, int first, int second, int third, u32 ptr)
 	}
 
 	return -ENOSYS;
+=======
+	return high2lowgid(from_kgid_munged(current_user_ns(), current_egid()));
+}
+
+#ifdef CONFIG_SYSVIPC
+COMPAT_SYSCALL_DEFINE5(s390_ipc, uint, call, int, first, unsigned long, second,
+		unsigned long, third, compat_uptr_t, ptr)
+{
+	if (call >> 16)		/* hack for backward compatibility */
+		return -EINVAL;
+	return compat_sys_ipc(call, first, second, third, ptr, third);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -347,6 +456,7 @@ asmlinkage long sys32_ftruncate64(unsigned int fd, unsigned long high, unsigned 
 		return sys_ftruncate(fd, (high << 32) | low);
 }
 
+<<<<<<< HEAD
 asmlinkage long sys32_sched_rr_get_interval(compat_pid_t pid,
 				struct compat_timespec __user *interval)
 {
@@ -480,6 +590,8 @@ out:
 	return rc;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage long sys32_pread64(unsigned int fd, char __user *ubuf,
 				size_t count, u32 poshi, u32 poslo)
 {
@@ -501,6 +613,7 @@ asmlinkage compat_ssize_t sys32_readahead(int fd, u32 offhi, u32 offlo, s32 coun
 	return sys_readahead(fd, ((loff_t)AA(offhi) << 32) | AA(offlo), count);
 }
 
+<<<<<<< HEAD
 asmlinkage long sys32_sendfile(int out_fd, int in_fd, compat_off_t __user *offset, size_t count)
 {
 	mm_segment_t old_fs = get_fs();
@@ -543,6 +656,8 @@ asmlinkage long sys32_sendfile64(int out_fd, int in_fd,
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct stat64_emu31 {
 	unsigned long long  st_dev;
 	unsigned int    __pad1;
@@ -579,8 +694,13 @@ static int cp_stat64(struct stat64_emu31 __user *ubuf, struct kstat *stat)
 	tmp.__st_ino = (u32)stat->ino;
 	tmp.st_mode = stat->mode;
 	tmp.st_nlink = (unsigned int)stat->nlink;
+<<<<<<< HEAD
 	tmp.st_uid = stat->uid;
 	tmp.st_gid = stat->gid;
+=======
+	tmp.st_uid = from_kuid_munged(current_user_ns(), stat->uid);
+	tmp.st_gid = from_kgid_munged(current_user_ns(), stat->gid);
+>>>>>>> refs/remotes/origin/master
 	tmp.st_rdev = huge_encode_dev(stat->rdev);
 	tmp.st_size = stat->size;
 	tmp.st_blksize = (u32)stat->blksize;

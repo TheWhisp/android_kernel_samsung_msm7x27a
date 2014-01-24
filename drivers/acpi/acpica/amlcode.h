@@ -8,10 +8,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -186,7 +190,11 @@
 
 /*
  * Combination opcodes (actually two one-byte opcodes)
+<<<<<<< HEAD
  * Used by the disassembler and i_aSL compiler
+=======
+ * Used by the disassembler and iASL compiler
+>>>>>>> refs/remotes/origin/master
  */
 #define AML_LGREATEREQUAL_OP        (u16) 0x9295
 #define AML_LLESSEQUAL_OP           (u16) 0x9294
@@ -194,7 +202,10 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Opcodes for "Field" operators
  */
 #define AML_FIELD_OFFSET_OP         (u8) 0x00
@@ -203,7 +214,10 @@
 #define AML_FIELD_EXT_ACCESS_OP     (u8) 0x03	/* ACPI 5.0 */
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Internal opcodes
  * Use only "Unknown" AML opcodes, don't attempt to use
  * any valid ACPI ASCII values (A-Z, 0-9, '-')
@@ -218,10 +232,15 @@
 #define AML_INT_RETURN_VALUE_OP     (u16) 0x0036
 #define AML_INT_EVAL_SUBTREE_OP     (u16) 0x0037
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define AML_INT_CONNECTION_OP       (u16) 0x0038
 #define AML_INT_EXTACCESSFIELD_OP   (u16) 0x0039
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AML_INT_CONNECTION_OP       (u16) 0x0038
+#define AML_INT_EXTACCESSFIELD_OP   (u16) 0x0039
+>>>>>>> refs/remotes/origin/master
 
 #define ARG_NONE                    0x0
 
@@ -290,7 +309,11 @@
 
 /* Multiple/complex types */
 
+<<<<<<< HEAD
 #define ARGI_DATAOBJECT             0x12	/* Buffer, String, package or reference to a Node - Used only by size_of operator */
+=======
+#define ARGI_DATAOBJECT             0x12	/* Buffer, String, package or reference to a node - Used only by size_of operator */
+>>>>>>> refs/remotes/origin/master
 #define ARGI_COMPLEXOBJ             0x13	/* Buffer, String, or package (Used by INDEX op only) */
 #define ARGI_REF_OR_STRING          0x14	/* Reference or String (Used by DEREFOF op only) */
 #define ARGI_REGION_OR_BUFFER       0x15	/* Used by LOAD op only */
@@ -477,6 +500,7 @@ typedef enum {
  */
 typedef enum {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	AML_FIELD_ATTRIB_SMB_QUICK = 0x02,
 	AML_FIELD_ATTRIB_SMB_SEND_RCV = 0x04,
 	AML_FIELD_ATTRIB_SMB_BYTE = 0x06,
@@ -485,6 +509,8 @@ typedef enum {
 	AML_FIELD_ATTRIB_SMB_WORD_CALL = 0x0C,
 	AML_FIELD_ATTRIB_SMB_BLOCK_CALL = 0x0D
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	AML_FIELD_ATTRIB_QUICK = 0x02,
 	AML_FIELD_ATTRIB_SEND_RCV = 0x04,
 	AML_FIELD_ATTRIB_BYTE = 0x06,
@@ -495,7 +521,10 @@ typedef enum {
 	AML_FIELD_ATTRIB_BLOCK_CALL = 0x0D,
 	AML_FIELD_ATTRIB_RAW_BYTES = 0x0E,
 	AML_FIELD_ATTRIB_RAW_PROCESS = 0x0F
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } AML_ACCESS_ATTRIBUTE;
 
 /* Bit fields in the AML method_flags byte */

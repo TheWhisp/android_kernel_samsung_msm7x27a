@@ -4,11 +4,17 @@
 #include <linux/list.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct pt_regs;
 struct task_struct;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct pt_regs;
+struct task_struct;
+
+>>>>>>> refs/remotes/origin/master
 struct undef_hook {
 	struct list_head node;
 	u32 instr_mask;
@@ -50,10 +56,14 @@ static inline int in_exception_text(unsigned long ptr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void __init early_trap_init(void);
 =======
 extern void __init early_trap_init(void *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void __init early_trap_init(void *);
+>>>>>>> refs/remotes/origin/master
 extern void dump_backtrace_entry(unsigned long where, unsigned long from, unsigned long frame);
 extern void ptrace_break(struct task_struct *tsk, struct pt_regs *regs);
 

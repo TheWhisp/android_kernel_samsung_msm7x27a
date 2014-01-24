@@ -84,6 +84,7 @@ static ssize_t dev_nvram_read(struct file *file, char __user *buf,
 	char *tmp = NULL;
 	ssize_t size;
 
+<<<<<<< HEAD
 	ret = -ENODEV;
 	if (!ppc_md.nvram_size)
 		goto out;
@@ -92,14 +93,39 @@ static ssize_t dev_nvram_read(struct file *file, char __user *buf,
 	size = ppc_md.nvram_size();
 	if (*ppos >= size || size < 0)
 		goto out;
+=======
+	if (!ppc_md.nvram_size) {
+		ret = -ENODEV;
+		goto out;
+	}
+
+	size = ppc_md.nvram_size();
+	if (size < 0) {
+		ret = size;
+		goto out;
+	}
+
+	if (*ppos >= size) {
+		ret = 0;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	count = min_t(size_t, count, size - *ppos);
 	count = min(count, PAGE_SIZE);
 
+<<<<<<< HEAD
 	ret = -ENOMEM;
 	tmp = kmalloc(count, GFP_KERNEL);
 	if (!tmp)
 		goto out;
+=======
+	tmp = kmalloc(count, GFP_KERNEL);
+	if (!tmp) {
+		ret = -ENOMEM;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	ret = ppc_md.nvram_read(tmp, count, ppos);
 	if (ret <= 0)
@@ -202,7 +228,11 @@ static void __init nvram_print_partitions(char * label)
 	printk(KERN_WARNING "--------%s---------\n", label);
 	printk(KERN_WARNING "indx\t\tsig\tchks\tlen\tname\n");
 	list_for_each_entry(tmp_part, &nvram_partitions, partition) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "%4d    \t%02x\t%02x\t%d\t%12s\n",
+=======
+		printk(KERN_WARNING "%4d    \t%02x\t%02x\t%d\t%12.12s\n",
+>>>>>>> refs/remotes/origin/master
 		       tmp_part->index, tmp_part->header.signature,
 		       tmp_part->header.checksum, tmp_part->header.length,
 		       tmp_part->header.name);
@@ -215,9 +245,19 @@ static int __init nvram_write_header(struct nvram_partition * part)
 {
 	loff_t tmp_index;
 	int rc;
+<<<<<<< HEAD
 	
 	tmp_index = part->index;
 	rc = ppc_md.nvram_write((char *)&part->header, NVRAM_HEADER_LEN, &tmp_index); 
+=======
+	struct nvram_header phead;
+
+	memcpy(&phead, &part->header, NVRAM_HEADER_LEN);
+	phead.length = cpu_to_be16(phead.length);
+
+	tmp_index = part->index;
+	rc = ppc_md.nvram_write((char *)&phead, NVRAM_HEADER_LEN, &tmp_index);
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
@@ -497,6 +537,11 @@ int __init nvram_scan_partitions(void)
 
 		memcpy(&phead, header, NVRAM_HEADER_LEN);
 
+<<<<<<< HEAD
+=======
+		phead.length = be16_to_cpu(phead.length);
+
+>>>>>>> refs/remotes/origin/master
 		err = 0;
 		c_sum = nvram_checksum(&phead);
 		if (c_sum != phead.checksum) {
@@ -511,8 +556,12 @@ int __init nvram_scan_partitions(void)
 			       "detected: 0-length partition\n");
 			goto out;
 		}
+<<<<<<< HEAD
 		tmp_part = (struct nvram_partition *)
 			kmalloc(sizeof(struct nvram_partition), GFP_KERNEL);
+=======
+		tmp_part = kmalloc(sizeof(struct nvram_partition), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		err = -ENOMEM;
 		if (!tmp_part) {
 			printk(KERN_ERR "nvram_scan_partitions: kmalloc failed\n");

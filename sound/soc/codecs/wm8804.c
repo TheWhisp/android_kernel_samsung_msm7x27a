@@ -1,7 +1,11 @@
 /*
  * wm8804.c  --  WM8804 S/PDIF transceiver driver
  *
+<<<<<<< HEAD
  * Copyright 2010 Wolfson Microelectronics plc
+=======
+ * Copyright 2010-11 Wolfson Microelectronics plc
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
  *
@@ -17,12 +21,18 @@
 #include <linux/pm.h>
 #include <linux/i2c.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/spi/spi.h>
 =======
 #include <linux/of_device.h>
 #include <linux/spi/spi.h>
 #include <linux/regmap.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of_device.h>
+#include <linux/spi/spi.h>
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/regulator/consumer.h>
 #include <linux/slab.h>
 #include <sound/core.h>
@@ -40,6 +50,7 @@ static const char *wm8804_supply_names[WM8804_NUM_SUPPLIES] = {
 	"DVDD"
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const u8 wm8804_reg_defs[] = {
 	0x05,     /* R0  - RST/DEVID1 */
@@ -81,6 +92,8 @@ struct wm8804_priv {
 	struct notifier_block disable_nb[WM8804_NUM_SUPPLIES];
 	struct snd_soc_codec *codec;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct reg_default wm8804_reg_defaults[] = {
 	{ 3,  0x21 },     /* R3  - PLL1 */
 	{ 4,  0xFD },     /* R4  - PLL2 */
@@ -108,7 +121,10 @@ struct wm8804_priv {
 	struct regmap *regmap;
 	struct regulator_bulk_data supplies[WM8804_NUM_SUPPLIES];
 	struct notifier_block disable_nb[WM8804_NUM_SUPPLIES];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int txsrc_get(struct snd_kcontrol *kcontrol,
@@ -130,10 +146,14 @@ static int wm8804_regulator_event_##n(struct notifier_block *nb, \
 						  disable_nb[n]); \
 	if (event & REGULATOR_EVENT_DISABLE) { \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wm8804->codec->cache_sync = 1; \
 =======
 		regcache_mark_dirty(wm8804->regmap);	\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		regcache_mark_dirty(wm8804->regmap);	\
+>>>>>>> refs/remotes/origin/master
 	} \
 	return 0; \
 }
@@ -216,10 +236,14 @@ static int txsrc_put(struct snd_kcontrol *kcontrol,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8804_volatile(struct snd_soc_codec *codec, unsigned int reg)
 =======
 static bool wm8804_volatile(struct device *dev, unsigned int reg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool wm8804_volatile(struct device *dev, unsigned int reg)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (reg) {
 	case WM8804_RST_DEVID1:
@@ -233,6 +257,7 @@ static bool wm8804_volatile(struct device *dev, unsigned int reg)
 	case WM8804_RXCHAN4:
 	case WM8804_RXCHAN5:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return 1;
 	default:
 		break;
@@ -240,11 +265,16 @@ static bool wm8804_volatile(struct device *dev, unsigned int reg)
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return true;
 	default:
 		return false;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int wm8804_reset(struct snd_soc_codec *codec)
@@ -458,9 +488,12 @@ static int wm8804_set_pll(struct snd_soc_dai *dai, int pll_id,
 		/* power down the PLL before reprogramming it */
 		snd_soc_update_bits(codec, WM8804_PWRDN, 0x1, 0x1);
 
+<<<<<<< HEAD
 		if (!freq_in || !freq_out)
 			return 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/* set PLLN and PRESCALE */
 		snd_soc_update_bits(codec, WM8804_PLL4, 0xf | 0x10,
 				    pll_div.n | (pll_div.prescale << 4));
@@ -533,6 +566,7 @@ static int wm8804_set_clkdiv(struct snd_soc_dai *dai,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void wm8804_sync_cache(struct snd_soc_codec *codec)
 {
 	short i;
@@ -553,6 +587,8 @@ static void wm8804_sync_cache(struct snd_soc_codec *codec)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int wm8804_set_bias_level(struct snd_soc_codec *codec,
 				 enum snd_soc_bias_level level)
 {
@@ -578,10 +614,14 @@ static int wm8804_set_bias_level(struct snd_soc_codec *codec,
 				return ret;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			wm8804_sync_cache(codec);
 =======
 			regcache_sync(wm8804->regmap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			regcache_sync(wm8804->regmap);
+>>>>>>> refs/remotes/origin/master
 		}
 		/* power down the OSC and the PLL */
 		snd_soc_update_bits(codec, WM8804_PWRDN, 0x9, 0x9);
@@ -600,10 +640,14 @@ static int wm8804_set_bias_level(struct snd_soc_codec *codec,
 
 #ifdef CONFIG_PM
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8804_suspend(struct snd_soc_codec *codec, pm_message_t state)
 =======
 static int wm8804_suspend(struct snd_soc_codec *codec)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wm8804_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	wm8804_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -641,17 +685,23 @@ static int wm8804_probe(struct snd_soc_codec *codec)
 
 	wm8804 = snd_soc_codec_get_drvdata(codec);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wm8804->codec = codec;
 
 	codec->dapm.idle_bias_off = 1;
 
 	ret = snd_soc_codec_set_cache_io(codec, 8, 8, wm8804->control_type);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	codec->control_data = wm8804->regmap;
 
 	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_REGMAP);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(codec->dev, "Failed to set cache i/o: %d\n", ret);
 		return ret;
@@ -705,11 +755,15 @@ static int wm8804_probe(struct snd_soc_codec *codec)
 	id2 = (id2 << 8) | id1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (id2 != ((wm8804_reg_defs[WM8804_DEVID2] << 8)
 			| wm8804_reg_defs[WM8804_RST_DEVID1])) {
 =======
 	if (id2 != 0x8805) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (id2 != 0x8805) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(codec->dev, "Invalid device ID: %#x\n", id2);
 		ret = -EINVAL;
 		goto err_reg_enable;
@@ -732,10 +786,13 @@ static int wm8804_probe(struct snd_soc_codec *codec)
 	wm8804_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, wm8804_snd_controls,
 			     ARRAY_SIZE(wm8804_snd_controls));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_reg_enable:
@@ -746,10 +803,14 @@ err_reg_get:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8804_dai_ops = {
 =======
 static const struct snd_soc_dai_ops wm8804_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8804_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params = wm8804_hw_params,
 	.set_fmt = wm8804_set_fmt,
 	.set_sysclk = wm8804_set_sysclk,
@@ -792,11 +853,14 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8804 = {
 	.resume = wm8804_resume,
 	.set_bias_level = wm8804_set_bias_level,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.reg_cache_size = ARRAY_SIZE(wm8804_reg_defs),
 	.reg_word_size = sizeof(u8),
 	.reg_cache_default = wm8804_reg_defs,
 	.volatile_register = wm8804_volatile
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.idle_bias_off = true,
 
 	.controls = wm8804_snd_controls,
@@ -819,15 +883,23 @@ static struct regmap_config wm8804_regmap_config = {
 	.cache_type = REGCACHE_RBTREE,
 	.reg_defaults = wm8804_reg_defaults,
 	.num_reg_defaults = ARRAY_SIZE(wm8804_reg_defaults),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #if defined(CONFIG_SPI_MASTER)
 static int __devinit wm8804_spi_probe(struct spi_device *spi)
+=======
+};
+
+#if defined(CONFIG_SPI_MASTER)
+static int wm8804_spi_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8804_priv *wm8804;
 	int ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	wm8804 = kzalloc(sizeof *wm8804, GFP_KERNEL);
 	if (!wm8804)
@@ -835,21 +907,31 @@ static int __devinit wm8804_spi_probe(struct spi_device *spi)
 
 	wm8804->control_type = SND_SOC_SPI;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	wm8804 = devm_kzalloc(&spi->dev, sizeof *wm8804, GFP_KERNEL);
 	if (!wm8804)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	wm8804->regmap = regmap_init_spi(spi, &wm8804_regmap_config);
+=======
+	wm8804->regmap = devm_regmap_init_spi(spi, &wm8804_regmap_config);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(wm8804->regmap)) {
 		ret = PTR_ERR(wm8804->regmap);
 		return ret;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spi_set_drvdata(spi, wm8804);
 
 	ret = snd_soc_register_codec(&spi->dev,
 				     &soc_codec_dev_wm8804, &wm8804_dai, 1);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (ret < 0)
 		kfree(wm8804);
@@ -869,6 +951,15 @@ static int __devexit wm8804_spi_remove(struct spi_device *spi)
 	snd_soc_unregister_codec(&spi->dev);
 	regmap_exit(wm8804->regmap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return ret;
+}
+
+static int wm8804_spi_remove(struct spi_device *spi)
+{
+	snd_soc_unregister_codec(&spi->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -876,6 +967,7 @@ static struct spi_driver wm8804_spi_driver = {
 	.driver = {
 		.name = "wm8804",
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 		.of_match_table = wm8804_of_match,
@@ -889,10 +981,23 @@ static struct spi_driver wm8804_spi_driver = {
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 static __devinit int wm8804_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
+=======
+		.of_match_table = wm8804_of_match,
+	},
+	.probe = wm8804_spi_probe,
+	.remove = wm8804_spi_remove
+};
+#endif
+
+#if IS_ENABLED(CONFIG_I2C)
+static int wm8804_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8804_priv *wm8804;
 	int ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	wm8804 = kzalloc(sizeof *wm8804, GFP_KERNEL);
 	if (!wm8804)
@@ -900,21 +1005,31 @@ static __devinit int wm8804_i2c_probe(struct i2c_client *i2c,
 
 	wm8804->control_type = SND_SOC_I2C;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	wm8804 = devm_kzalloc(&i2c->dev, sizeof *wm8804, GFP_KERNEL);
 	if (!wm8804)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	wm8804->regmap = regmap_init_i2c(i2c, &wm8804_regmap_config);
+=======
+	wm8804->regmap = devm_regmap_init_i2c(i2c, &wm8804_regmap_config);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(wm8804->regmap)) {
 		ret = PTR_ERR(wm8804->regmap);
 		return ret;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	i2c_set_clientdata(i2c, wm8804);
 
 	ret = snd_soc_register_codec(&i2c->dev,
 				     &soc_codec_dev_wm8804, &wm8804_dai, 1);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (ret < 0)
 		kfree(wm8804);
@@ -944,6 +1059,14 @@ static __devexit int wm8804_i2c_remove(struct i2c_client *i2c)
 	regmap_exit(wm8804->regmap);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+}
+
+static int wm8804_i2c_remove(struct i2c_client *i2c)
+{
+	snd_soc_unregister_codec(&i2c->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -958,12 +1081,19 @@ static struct i2c_driver wm8804_i2c_driver = {
 		.name = "wm8804",
 		.owner = THIS_MODULE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.of_match_table = wm8804_of_match,
 >>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe = wm8804_i2c_probe,
 	.remove = __devexit_p(wm8804_i2c_remove),
+=======
+		.of_match_table = wm8804_of_match,
+	},
+	.probe = wm8804_i2c_probe,
+	.remove = wm8804_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = wm8804_i2c_id
 };
 #endif
@@ -972,7 +1102,11 @@ static int __init wm8804_modinit(void)
 {
 	int ret = 0;
 
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	ret = i2c_add_driver(&wm8804_i2c_driver);
 	if (ret) {
 		printk(KERN_ERR "Failed to register wm8804 I2C driver: %d\n",
@@ -992,7 +1126,11 @@ module_init(wm8804_modinit);
 
 static void __exit wm8804_exit(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	i2c_del_driver(&wm8804_i2c_driver);
 #endif
 #if defined(CONFIG_SPI_MASTER)

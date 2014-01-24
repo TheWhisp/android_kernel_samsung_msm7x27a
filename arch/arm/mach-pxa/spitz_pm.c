@@ -16,9 +16,13 @@
 #include <linux/delay.h>
 #include <linux/gpio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio-pxa.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio-pxa.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/platform_device.h>
 #include <linux/apm-emulation.h>
@@ -46,9 +50,13 @@ static struct gpio spitz_charger_gpios[] = {
 	{ SPITZ_GPIO_KEY_INT,	GPIOF_IN, "Keyboard Interrupt" },
 	{ SPITZ_GPIO_SYNC,	GPIOF_IN, "Sync" },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ SPITZ_GPIO_AC_IN,     GPIOF_IN, "Charger Detection" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ SPITZ_GPIO_AC_IN,     GPIOF_IN, "Charger Detection" },
+>>>>>>> refs/remotes/origin/master
 	{ SPITZ_GPIO_ADC_TEMP_ON, GPIOF_OUT_INIT_LOW, "ADC Temp On" },
 	{ SPITZ_GPIO_JK_B,	  GPIOF_OUT_INIT_LOW, "JK B" },
 	{ SPITZ_GPIO_CHRG_ON,	  GPIOF_OUT_INIT_LOW, "Charger On" },
@@ -92,10 +100,14 @@ static void spitz_discharge1(int on)
 	gpio_set_value(SPITZ_GPIO_LED_GREEN, on);
 }
 
+<<<<<<< HEAD
 static unsigned long gpio18_config[] = {
 	GPIO18_RDY,
 	GPIO18_GPIO,
 };
+=======
+static unsigned long gpio18_config = GPIO18_GPIO;
+>>>>>>> refs/remotes/origin/master
 
 static void spitz_presuspend(void)
 {
@@ -118,7 +130,11 @@ static void spitz_presuspend(void)
 	PGSR3 &= ~SPITZ_GPIO_G3_STROBE_BIT;
 	PGSR2 |= GPIO_bit(SPITZ_GPIO_KEY_STROBE0);
 
+<<<<<<< HEAD
 	pxa2xx_mfp_config(&gpio18_config[0], 1);
+=======
+	pxa2xx_mfp_config(&gpio18_config, 1);
+>>>>>>> refs/remotes/origin/master
 	gpio_request_one(18, GPIOF_OUT_INIT_HIGH, "Unknown");
 	gpio_free(18);
 
@@ -137,7 +153,10 @@ static void spitz_presuspend(void)
 
 static void spitz_postsuspend(void)
 {
+<<<<<<< HEAD
 	pxa2xx_mfp_config(&gpio18_config[1], 1);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int spitz_should_wakeup(unsigned int resume_on_alarm)
@@ -178,14 +197,20 @@ static int spitz_should_wakeup(unsigned int resume_on_alarm)
 static unsigned long spitz_charger_wakeup(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (~GPLR0 & GPIO_bit(SPITZ_GPIO_KEY_INT)) | (GPLR0 & GPIO_bit(SPITZ_GPIO_SYNC));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long ret;
 	ret = ((!gpio_get_value(SPITZ_GPIO_KEY_INT)
 		<< GPIO_bit(SPITZ_GPIO_KEY_INT))
 		| gpio_get_value(SPITZ_GPIO_SYNC));
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 unsigned long spitzpm_read_devdata(int type)
@@ -193,10 +218,14 @@ unsigned long spitzpm_read_devdata(int type)
 	switch (type) {
 	case SHARPSL_STATUS_ACIN:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return (((~GPLR(SPITZ_GPIO_AC_IN)) & GPIO_bit(SPITZ_GPIO_AC_IN)) != 0);
 =======
 		return !gpio_get_value(SPITZ_GPIO_AC_IN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return !gpio_get_value(SPITZ_GPIO_AC_IN);
+>>>>>>> refs/remotes/origin/master
 	case SHARPSL_STATUS_LOCK:
 		return gpio_get_value(sharpsl_pm.machinfo->gpio_batlock);
 	case SHARPSL_STATUS_CHRGFULL:
@@ -250,7 +279,11 @@ struct sharpsl_charger_machinfo spitz_pm_machinfo = {
 
 static struct platform_device *spitzpm_device;
 
+<<<<<<< HEAD
 static int __devinit spitzpm_init(void)
+=======
+static int spitzpm_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 

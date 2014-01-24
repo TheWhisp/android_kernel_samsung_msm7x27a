@@ -1,7 +1,11 @@
 /*******************************************************************************
 
   Intel(R) Gigabit Ethernet Linux driver
+<<<<<<< HEAD
   Copyright(c) 2007-2012 Intel Corporation.
+=======
+  Copyright(c) 2007-2013 Intel Corporation.
+>>>>>>> refs/remotes/origin/master
 
   This program is free software; you can redistribute it and/or modify it
   under the terms and conditions of the GNU General Public License,
@@ -214,7 +218,11 @@ s32 igb_vfta_set(struct e1000_hw *hw, u32 vid, bool add)
 		else
 			vfta &= ~mask;
 	}
+<<<<<<< HEAD
 	if (hw->mac.type == e1000_i350)
+=======
+	if ((hw->mac.type == e1000_i350) || (hw->mac.type == e1000_i354))
+>>>>>>> refs/remotes/origin/master
 		igb_write_vfta_i350(hw, index, vfta);
 	else
 		igb_write_vfta(hw, index, vfta);
@@ -230,8 +238,13 @@ s32 igb_vfta_set(struct e1000_hw *hw, u32 vid, bool add)
  *  Checks the nvm for an alternate MAC address.  An alternate MAC address
  *  can be setup by pre-boot software and must be treated like a permanent
  *  address and must override the actual permanent MAC address.  If an
+<<<<<<< HEAD
  *  alternate MAC address is fopund it is saved in the hw struct and
  *  prgrammed into RAR0 and the cuntion returns success, otherwise the
+=======
+ *  alternate MAC address is found it is saved in the hw struct and
+ *  programmed into RAR0 and the function returns success, otherwise the
+>>>>>>> refs/remotes/origin/master
  *  function returns an error.
  **/
 s32 igb_check_alt_mac_addr(struct e1000_hw *hw)
@@ -241,8 +254,12 @@ s32 igb_check_alt_mac_addr(struct e1000_hw *hw)
 	u16 offset, nvm_alt_mac_addr_offset, nvm_data;
 	u8 alt_mac_addr[ETH_ALEN];
 
+<<<<<<< HEAD
 	/*
 	 * Alternate MAC address is handled by the option ROM for 82580
+=======
+	/* Alternate MAC address is handled by the option ROM for 82580
+>>>>>>> refs/remotes/origin/master
 	 * and newer. SW support not required.
 	 */
 	if (hw->mac.type >= e1000_82580)
@@ -285,8 +302,12 @@ s32 igb_check_alt_mac_addr(struct e1000_hw *hw)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * We have a valid alternate MAC address, and we want to treat it the
+=======
+	/* We have a valid alternate MAC address, and we want to treat it the
+>>>>>>> refs/remotes/origin/master
 	 * same as the normal permanent MAC address stored by the HW into the
 	 * RAR. Do this by mapping this address into RAR0.
 	 */
@@ -309,8 +330,12 @@ void igb_rar_set(struct e1000_hw *hw, u8 *addr, u32 index)
 {
 	u32 rar_low, rar_high;
 
+<<<<<<< HEAD
 	/*
 	 * HW expects these in little endian so we reverse the byte order
+=======
+	/* HW expects these in little endian so we reverse the byte order
+>>>>>>> refs/remotes/origin/master
 	 * from network order (big endian) to little endian
 	 */
 	rar_low = ((u32) addr[0] |
@@ -323,8 +348,12 @@ void igb_rar_set(struct e1000_hw *hw, u8 *addr, u32 index)
 	if (rar_low || rar_high)
 		rar_high |= E1000_RAH_AV;
 
+<<<<<<< HEAD
 	/*
 	 * Some bridges will combine consecutive 32-bit writes into
+=======
+	/* Some bridges will combine consecutive 32-bit writes into
+>>>>>>> refs/remotes/origin/master
 	 * a single burst write, which will malfunction on some parts.
 	 * The flushes avoid this.
 	 */
@@ -348,8 +377,12 @@ void igb_mta_set(struct e1000_hw *hw, u32 hash_value)
 {
 	u32 hash_bit, hash_reg, mta;
 
+<<<<<<< HEAD
 	/*
 	 * The MTA is a register array of 32-bit registers. It is
+=======
+	/* The MTA is a register array of 32-bit registers. It is
+>>>>>>> refs/remotes/origin/master
 	 * treated like an array of (32*mta_reg_count) bits.  We want to
 	 * set bit BitArray[hash_value]. So we figure out what register
 	 * the bit is in, read it, OR in the new bit, then write
@@ -386,15 +419,23 @@ static u32 igb_hash_mc_addr(struct e1000_hw *hw, u8 *mc_addr)
 	/* Register count multiplied by bits per register */
 	hash_mask = (hw->mac.mta_reg_count * 32) - 1;
 
+<<<<<<< HEAD
 	/*
 	 * For a mc_filter_type of 0, bit_shift is the number of left-shifts
+=======
+	/* For a mc_filter_type of 0, bit_shift is the number of left-shifts
+>>>>>>> refs/remotes/origin/master
 	 * where 0xFF would still fall within the hash mask.
 	 */
 	while (hash_mask >> bit_shift != 0xFF)
 		bit_shift++;
 
+<<<<<<< HEAD
 	/*
 	 * The portion of the address that is used for the hash table
+=======
+	/* The portion of the address that is used for the hash table
+>>>>>>> refs/remotes/origin/master
 	 * is determined by the mc_filter_type setting.
 	 * The algorithm is such that there is a total of 8 bits of shifting.
 	 * The bit_shift for a mc_filter_type of 0 represents the number of
@@ -536,8 +577,12 @@ s32 igb_check_for_copper_link(struct e1000_hw *hw)
 	s32 ret_val;
 	bool link;
 
+<<<<<<< HEAD
 	/*
 	 * We only want to go out to the PHY registers to see if Auto-Neg
+=======
+	/* We only want to go out to the PHY registers to see if Auto-Neg
+>>>>>>> refs/remotes/origin/master
 	 * has completed and/or if our link status has changed.  The
 	 * get_link_status flag is set upon receiving a Link Status
 	 * Change or Rx Sequence Error interrupt.
@@ -547,8 +592,12 @@ s32 igb_check_for_copper_link(struct e1000_hw *hw)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * First we want to see if the MII Status Register reports
+=======
+	/* First we want to see if the MII Status Register reports
+>>>>>>> refs/remotes/origin/master
 	 * link.  If so, then we want to get the current speed/duplex
 	 * of the PHY.
 	 */
@@ -561,14 +610,22 @@ s32 igb_check_for_copper_link(struct e1000_hw *hw)
 
 	mac->get_link_status = false;
 
+<<<<<<< HEAD
 	/*
 	 * Check if there was DownShift, must be checked
+=======
+	/* Check if there was DownShift, must be checked
+>>>>>>> refs/remotes/origin/master
 	 * immediately after link-up
 	 */
 	igb_check_downshift(hw);
 
+<<<<<<< HEAD
 	/*
 	 * If we are forcing speed/duplex, then we simply return since
+=======
+	/* If we are forcing speed/duplex, then we simply return since
+>>>>>>> refs/remotes/origin/master
 	 * we have already determined whether we have link or not.
 	 */
 	if (!mac->autoneg) {
@@ -576,15 +633,23 @@ s32 igb_check_for_copper_link(struct e1000_hw *hw)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Auto-Neg is enabled.  Auto Speed Detection takes care
+=======
+	/* Auto-Neg is enabled.  Auto Speed Detection takes care
+>>>>>>> refs/remotes/origin/master
 	 * of MAC speed/duplex configuration.  So we only need to
 	 * configure Collision Distance in the MAC.
 	 */
 	igb_config_collision_dist(hw);
 
+<<<<<<< HEAD
 	/*
 	 * Configure Flow Control now that Auto-Neg has completed.
+=======
+	/* Configure Flow Control now that Auto-Neg has completed.
+>>>>>>> refs/remotes/origin/master
 	 * First, we need to restore the desired flow control
 	 * settings because we may have had to re-autoneg with a
 	 * different link partner.
@@ -611,15 +676,23 @@ s32 igb_setup_link(struct e1000_hw *hw)
 {
 	s32 ret_val = 0;
 
+<<<<<<< HEAD
 	/*
 	 * In the case of the phy reset being blocked, we already have a link.
+=======
+	/* In the case of the phy reset being blocked, we already have a link.
+>>>>>>> refs/remotes/origin/master
 	 * We do not need to set it up again.
 	 */
 	if (igb_check_reset_block(hw))
 		goto out;
 
+<<<<<<< HEAD
 	/*
 	 * If requested flow control is set to default, set flow control
+=======
+	/* If requested flow control is set to default, set flow control
+>>>>>>> refs/remotes/origin/master
 	 * based on the EEPROM flow control settings.
 	 */
 	if (hw->fc.requested_mode == e1000_fc_default) {
@@ -628,8 +701,12 @@ s32 igb_setup_link(struct e1000_hw *hw)
 			goto out;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * We want to save off the original Flow Control configuration just
+=======
+	/* We want to save off the original Flow Control configuration just
+>>>>>>> refs/remotes/origin/master
 	 * in case we get disconnected and then reconnected into a different
 	 * hub or switch with different Flow Control capabilities.
 	 */
@@ -642,8 +719,12 @@ s32 igb_setup_link(struct e1000_hw *hw)
 	if (ret_val)
 		goto out;
 
+<<<<<<< HEAD
 	/*
 	 * Initialize the flow control address, type, and PAUSE timer
+=======
+	/* Initialize the flow control address, type, and PAUSE timer
+>>>>>>> refs/remotes/origin/master
 	 * registers to their default values.  This is done even if flow
 	 * control is disabled, because it does not hurt anything to
 	 * initialize these registers.
@@ -658,6 +739,10 @@ s32 igb_setup_link(struct e1000_hw *hw)
 	ret_val = igb_set_fc_watermarks(hw);
 
 out:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return ret_val;
 }
 
@@ -695,16 +780,24 @@ static s32 igb_set_fc_watermarks(struct e1000_hw *hw)
 	s32 ret_val = 0;
 	u32 fcrtl = 0, fcrth = 0;
 
+<<<<<<< HEAD
 	/*
 	 * Set the flow control receive threshold registers.  Normally,
+=======
+	/* Set the flow control receive threshold registers.  Normally,
+>>>>>>> refs/remotes/origin/master
 	 * these registers will be set to a default threshold that may be
 	 * adjusted later by the driver's runtime code.  However, if the
 	 * ability to transmit pause frames is not enabled, then these
 	 * registers will be set to 0.
 	 */
 	if (hw->fc.current_mode & e1000_fc_tx_pause) {
+<<<<<<< HEAD
 		/*
 		 * We need to set up the Receive Threshold high and low water
+=======
+		/* We need to set up the Receive Threshold high and low water
+>>>>>>> refs/remotes/origin/master
 		 * marks as well as (optionally) enabling the transmission of
 		 * XON frames.
 		 */
@@ -730,10 +823,17 @@ static s32 igb_set_fc_watermarks(struct e1000_hw *hw)
 static s32 igb_set_default_fc(struct e1000_hw *hw)
 {
 	s32 ret_val = 0;
+<<<<<<< HEAD
 	u16 nvm_data;
 
 	/*
 	 * Read and store word 0x0F of the EEPROM. This word contains bits
+=======
+	u16 lan_offset;
+	u16 nvm_data;
+
+	/* Read and store word 0x0F of the EEPROM. This word contains bits
+>>>>>>> refs/remotes/origin/master
 	 * that determine the hardware's default PAUSE (flow control) mode,
 	 * a bit that determines whether the HW defaults to enabling or
 	 * disabling auto-negotiation, and the direction of the
@@ -741,7 +841,18 @@ static s32 igb_set_default_fc(struct e1000_hw *hw)
 	 * control setting, then the variable hw->fc will
 	 * be initialized based on a value in the EEPROM.
 	 */
+<<<<<<< HEAD
 	ret_val = hw->nvm.ops.read(hw, NVM_INIT_CONTROL2_REG, 1, &nvm_data);
+=======
+	if (hw->mac.type == e1000_i350) {
+		lan_offset = NVM_82580_LAN_FUNC_OFFSET(hw->bus.func);
+		ret_val = hw->nvm.ops.read(hw, NVM_INIT_CONTROL2_REG
+					   + lan_offset, 1, &nvm_data);
+	 } else {
+		ret_val = hw->nvm.ops.read(hw, NVM_INIT_CONTROL2_REG,
+					   1, &nvm_data);
+	 }
+>>>>>>> refs/remotes/origin/master
 
 	if (ret_val) {
 		hw_dbg("NVM Read Error\n");
@@ -777,8 +888,12 @@ s32 igb_force_mac_fc(struct e1000_hw *hw)
 
 	ctrl = rd32(E1000_CTRL);
 
+<<<<<<< HEAD
 	/*
 	 * Because we didn't get link via the internal auto-negotiation
+=======
+	/* Because we didn't get link via the internal auto-negotiation
+>>>>>>> refs/remotes/origin/master
 	 * mechanism (we either forced link or we got link via PHY
 	 * auto-neg), we have to manually enable/disable transmit an
 	 * receive flow control.
@@ -838,11 +953,19 @@ s32 igb_config_fc_after_link_up(struct e1000_hw *hw)
 {
 	struct e1000_mac_info *mac = &hw->mac;
 	s32 ret_val = 0;
+<<<<<<< HEAD
 	u16 mii_status_reg, mii_nway_adv_reg, mii_nway_lp_ability_reg;
 	u16 speed, duplex;
 
 	/*
 	 * Check for the case where we have fiber media and auto-neg failed
+=======
+	u32 pcs_status_reg, pcs_adv_reg, pcs_lp_ability_reg, pcs_ctrl_reg;
+	u16 mii_status_reg, mii_nway_adv_reg, mii_nway_lp_ability_reg;
+	u16 speed, duplex;
+
+	/* Check for the case where we have fiber media and auto-neg failed
+>>>>>>> refs/remotes/origin/master
 	 * so we had to force link.  In this case, we need to force the
 	 * configuration of the MAC to match the "fc" parameter.
 	 */
@@ -859,15 +982,23 @@ s32 igb_config_fc_after_link_up(struct e1000_hw *hw)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Check for the case where we have copper media and auto-neg is
+=======
+	/* Check for the case where we have copper media and auto-neg is
+>>>>>>> refs/remotes/origin/master
 	 * enabled.  In this case, we need to check and see if Auto-Neg
 	 * has completed, and if so, how the PHY and link partner has
 	 * flow control configured.
 	 */
 	if ((hw->phy.media_type == e1000_media_type_copper) && mac->autoneg) {
+<<<<<<< HEAD
 		/*
 		 * Read the MII Status Register and check to see if AutoNeg
+=======
+		/* Read the MII Status Register and check to see if AutoNeg
+>>>>>>> refs/remotes/origin/master
 		 * has completed.  We read this twice because this reg has
 		 * some "sticky" (latched) bits.
 		 */
@@ -886,8 +1017,12 @@ s32 igb_config_fc_after_link_up(struct e1000_hw *hw)
 			goto out;
 		}
 
+<<<<<<< HEAD
 		/*
 		 * The AutoNeg process has completed, so we now need to
+=======
+		/* The AutoNeg process has completed, so we now need to
+>>>>>>> refs/remotes/origin/master
 		 * read both the Auto Negotiation Advertisement
 		 * Register (Address 4) and the Auto_Negotiation Base
 		 * Page Ability Register (Address 5) to determine how
@@ -902,8 +1037,12 @@ s32 igb_config_fc_after_link_up(struct e1000_hw *hw)
 		if (ret_val)
 			goto out;
 
+<<<<<<< HEAD
 		/*
 		 * Two bits in the Auto Negotiation Advertisement Register
+=======
+		/* Two bits in the Auto Negotiation Advertisement Register
+>>>>>>> refs/remotes/origin/master
 		 * (Address 4) and two bits in the Auto Negotiation Base
 		 * Page Ability Register (Address 5) determine flow control
 		 * for both the PHY and the link partner.  The following
@@ -938,8 +1077,12 @@ s32 igb_config_fc_after_link_up(struct e1000_hw *hw)
 		 */
 		if ((mii_nway_adv_reg & NWAY_AR_PAUSE) &&
 		    (mii_nway_lp_ability_reg & NWAY_LPAR_PAUSE)) {
+<<<<<<< HEAD
 			/*
 			 * Now we need to check if the user selected RX ONLY
+=======
+			/* Now we need to check if the user selected RX ONLY
+>>>>>>> refs/remotes/origin/master
 			 * of pause frames.  In this case, we had to advertise
 			 * FULL flow control because we could not advertise RX
 			 * ONLY. Hence, we must now check to see if we need to
@@ -954,8 +1097,12 @@ s32 igb_config_fc_after_link_up(struct e1000_hw *hw)
 				       "RX PAUSE frames only.\r\n");
 			}
 		}
+<<<<<<< HEAD
 		/*
 		 * For receiving PAUSE frames ONLY.
+=======
+		/* For receiving PAUSE frames ONLY.
+>>>>>>> refs/remotes/origin/master
 		 *
 		 *   LOCAL DEVICE  |   LINK PARTNER
 		 * PAUSE | ASM_DIR | PAUSE | ASM_DIR | Result
@@ -969,8 +1116,12 @@ s32 igb_config_fc_after_link_up(struct e1000_hw *hw)
 			hw->fc.current_mode = e1000_fc_tx_pause;
 			hw_dbg("Flow Control = TX PAUSE frames only.\r\n");
 		}
+<<<<<<< HEAD
 		/*
 		 * For transmitting PAUSE frames ONLY.
+=======
+		/* For transmitting PAUSE frames ONLY.
+>>>>>>> refs/remotes/origin/master
 		 *
 		 *   LOCAL DEVICE  |   LINK PARTNER
 		 * PAUSE | ASM_DIR | PAUSE | ASM_DIR | Result
@@ -984,8 +1135,12 @@ s32 igb_config_fc_after_link_up(struct e1000_hw *hw)
 			hw->fc.current_mode = e1000_fc_rx_pause;
 			hw_dbg("Flow Control = RX PAUSE frames only.\r\n");
 		}
+<<<<<<< HEAD
 		/*
 		 * Per the IEEE spec, at this point flow control should be
+=======
+		/* Per the IEEE spec, at this point flow control should be
+>>>>>>> refs/remotes/origin/master
 		 * disabled.  However, we want to consider that we could
 		 * be connected to a legacy switch that doesn't advertise
 		 * desired flow control, but can be forced on the link
@@ -1005,9 +1160,15 @@ s32 igb_config_fc_after_link_up(struct e1000_hw *hw)
 		 * be asked to delay transmission of packets than asking
 		 * our link partner to pause transmission of frames.
 		 */
+<<<<<<< HEAD
 		else if ((hw->fc.requested_mode == e1000_fc_none ||
 			  hw->fc.requested_mode == e1000_fc_tx_pause) ||
 			 hw->fc.strict_ieee) {
+=======
+		else if ((hw->fc.requested_mode == e1000_fc_none) ||
+			 (hw->fc.requested_mode == e1000_fc_tx_pause) ||
+			 (hw->fc.strict_ieee)) {
+>>>>>>> refs/remotes/origin/master
 			hw->fc.current_mode = e1000_fc_none;
 			hw_dbg("Flow Control = NONE.\r\n");
 		} else {
@@ -1015,8 +1176,12 @@ s32 igb_config_fc_after_link_up(struct e1000_hw *hw)
 			hw_dbg("Flow Control = RX PAUSE frames only.\r\n");
 		}
 
+<<<<<<< HEAD
 		/*
 		 * Now we need to do one last check...  If we auto-
+=======
+		/* Now we need to do one last check...  If we auto-
+>>>>>>> refs/remotes/origin/master
 		 * negotiated to HALF DUPLEX, flow control should not be
 		 * enabled per IEEE 802.3 spec.
 		 */
@@ -1029,8 +1194,12 @@ s32 igb_config_fc_after_link_up(struct e1000_hw *hw)
 		if (duplex == HALF_DUPLEX)
 			hw->fc.current_mode = e1000_fc_none;
 
+<<<<<<< HEAD
 		/*
 		 * Now we call a subroutine to actually force the MAC
+=======
+		/* Now we call a subroutine to actually force the MAC
+>>>>>>> refs/remotes/origin/master
 		 * controller to use the correct flow control settings.
 		 */
 		ret_val = igb_force_mac_fc(hw);
@@ -1039,6 +1208,132 @@ s32 igb_config_fc_after_link_up(struct e1000_hw *hw)
 			goto out;
 		}
 	}
+<<<<<<< HEAD
+=======
+	/* Check for the case where we have SerDes media and auto-neg is
+	 * enabled.  In this case, we need to check and see if Auto-Neg
+	 * has completed, and if so, how the PHY and link partner has
+	 * flow control configured.
+	 */
+	if ((hw->phy.media_type == e1000_media_type_internal_serdes)
+		&& mac->autoneg) {
+		/* Read the PCS_LSTS and check to see if AutoNeg
+		 * has completed.
+		 */
+		pcs_status_reg = rd32(E1000_PCS_LSTAT);
+
+		if (!(pcs_status_reg & E1000_PCS_LSTS_AN_COMPLETE)) {
+			hw_dbg("PCS Auto Neg has not completed.\n");
+			return ret_val;
+		}
+
+		/* The AutoNeg process has completed, so we now need to
+		 * read both the Auto Negotiation Advertisement
+		 * Register (PCS_ANADV) and the Auto_Negotiation Base
+		 * Page Ability Register (PCS_LPAB) to determine how
+		 * flow control was negotiated.
+		 */
+		pcs_adv_reg = rd32(E1000_PCS_ANADV);
+		pcs_lp_ability_reg = rd32(E1000_PCS_LPAB);
+
+		/* Two bits in the Auto Negotiation Advertisement Register
+		 * (PCS_ANADV) and two bits in the Auto Negotiation Base
+		 * Page Ability Register (PCS_LPAB) determine flow control
+		 * for both the PHY and the link partner.  The following
+		 * table, taken out of the IEEE 802.3ab/D6.0 dated March 25,
+		 * 1999, describes these PAUSE resolution bits and how flow
+		 * control is determined based upon these settings.
+		 * NOTE:  DC = Don't Care
+		 *
+		 *   LOCAL DEVICE  |   LINK PARTNER
+		 * PAUSE | ASM_DIR | PAUSE | ASM_DIR | NIC Resolution
+		 *-------|---------|-------|---------|--------------------
+		 *   0   |    0    |  DC   |   DC    | e1000_fc_none
+		 *   0   |    1    |   0   |   DC    | e1000_fc_none
+		 *   0   |    1    |   1   |    0    | e1000_fc_none
+		 *   0   |    1    |   1   |    1    | e1000_fc_tx_pause
+		 *   1   |    0    |   0   |   DC    | e1000_fc_none
+		 *   1   |   DC    |   1   |   DC    | e1000_fc_full
+		 *   1   |    1    |   0   |    0    | e1000_fc_none
+		 *   1   |    1    |   0   |    1    | e1000_fc_rx_pause
+		 *
+		 * Are both PAUSE bits set to 1?  If so, this implies
+		 * Symmetric Flow Control is enabled at both ends.  The
+		 * ASM_DIR bits are irrelevant per the spec.
+		 *
+		 * For Symmetric Flow Control:
+		 *
+		 *   LOCAL DEVICE  |   LINK PARTNER
+		 * PAUSE | ASM_DIR | PAUSE | ASM_DIR | Result
+		 *-------|---------|-------|---------|--------------------
+		 *   1   |   DC    |   1   |   DC    | e1000_fc_full
+		 *
+		 */
+		if ((pcs_adv_reg & E1000_TXCW_PAUSE) &&
+		    (pcs_lp_ability_reg & E1000_TXCW_PAUSE)) {
+			/* Now we need to check if the user selected Rx ONLY
+			 * of pause frames.  In this case, we had to advertise
+			 * FULL flow control because we could not advertise Rx
+			 * ONLY. Hence, we must now check to see if we need to
+			 * turn OFF the TRANSMISSION of PAUSE frames.
+			 */
+			if (hw->fc.requested_mode == e1000_fc_full) {
+				hw->fc.current_mode = e1000_fc_full;
+				hw_dbg("Flow Control = FULL.\n");
+			} else {
+				hw->fc.current_mode = e1000_fc_rx_pause;
+				hw_dbg("Flow Control = Rx PAUSE frames only.\n");
+			}
+		}
+		/* For receiving PAUSE frames ONLY.
+		 *
+		 *   LOCAL DEVICE  |   LINK PARTNER
+		 * PAUSE | ASM_DIR | PAUSE | ASM_DIR | Result
+		 *-------|---------|-------|---------|--------------------
+		 *   0   |    1    |   1   |    1    | e1000_fc_tx_pause
+		 */
+		else if (!(pcs_adv_reg & E1000_TXCW_PAUSE) &&
+			  (pcs_adv_reg & E1000_TXCW_ASM_DIR) &&
+			  (pcs_lp_ability_reg & E1000_TXCW_PAUSE) &&
+			  (pcs_lp_ability_reg & E1000_TXCW_ASM_DIR)) {
+			hw->fc.current_mode = e1000_fc_tx_pause;
+			hw_dbg("Flow Control = Tx PAUSE frames only.\n");
+		}
+		/* For transmitting PAUSE frames ONLY.
+		 *
+		 *   LOCAL DEVICE  |   LINK PARTNER
+		 * PAUSE | ASM_DIR | PAUSE | ASM_DIR | Result
+		 *-------|---------|-------|---------|--------------------
+		 *   1   |    1    |   0   |    1    | e1000_fc_rx_pause
+		 */
+		else if ((pcs_adv_reg & E1000_TXCW_PAUSE) &&
+			 (pcs_adv_reg & E1000_TXCW_ASM_DIR) &&
+			 !(pcs_lp_ability_reg & E1000_TXCW_PAUSE) &&
+			 (pcs_lp_ability_reg & E1000_TXCW_ASM_DIR)) {
+			hw->fc.current_mode = e1000_fc_rx_pause;
+			hw_dbg("Flow Control = Rx PAUSE frames only.\n");
+		} else {
+			/* Per the IEEE spec, at this point flow control
+			 * should be disabled.
+			 */
+			hw->fc.current_mode = e1000_fc_none;
+			hw_dbg("Flow Control = NONE.\n");
+		}
+
+		/* Now we call a subroutine to actually force the MAC
+		 * controller to use the correct flow control settings.
+		 */
+		pcs_ctrl_reg = rd32(E1000_PCS_LCTL);
+		pcs_ctrl_reg |= E1000_PCS_LCTL_FORCE_FCTRL;
+		wr32(E1000_PCS_LCTL, pcs_ctrl_reg);
+
+		ret_val = igb_force_mac_fc(hw);
+		if (ret_val) {
+			hw_dbg("Error forcing flow control settings\n");
+			return ret_val;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 out:
 	return ret_val;
@@ -1228,7 +1523,17 @@ s32 igb_id_led_init(struct e1000_hw *hw)
 	u16 data, i, temp;
 	const u16 led_mask = 0x0F;
 
+<<<<<<< HEAD
 	ret_val = igb_valid_led_default(hw, &data);
+=======
+	/* i210 and i211 devices have different LED mechanism */
+	if ((hw->mac.type == e1000_i210) ||
+	    (hw->mac.type == e1000_i211))
+		ret_val = igb_valid_led_default_i210(hw, &data);
+	else
+		ret_val = igb_valid_led_default(hw, &data);
+
+>>>>>>> refs/remotes/origin/master
 	if (ret_val)
 		goto out;
 
@@ -1302,6 +1607,7 @@ s32 igb_blink_led(struct e1000_hw *hw)
 	u32 ledctl_blink = 0;
 	u32 i;
 
+<<<<<<< HEAD
 	/*
 	 * set the blink bit for each LED that's "on" (0x0E)
 	 * in ledctl_mode2
@@ -1312,6 +1618,36 @@ s32 igb_blink_led(struct e1000_hw *hw)
 		    E1000_LEDCTL_MODE_LED_ON)
 			ledctl_blink |= (E1000_LEDCTL_LED0_BLINK <<
 					 (i * 8));
+=======
+	if (hw->phy.media_type == e1000_media_type_fiber) {
+		/* always blink LED0 for PCI-E fiber */
+		ledctl_blink = E1000_LEDCTL_LED0_BLINK |
+		     (E1000_LEDCTL_MODE_LED_ON << E1000_LEDCTL_LED0_MODE_SHIFT);
+	} else {
+		/* Set the blink bit for each LED that's "on" (0x0E)
+		 * (or "off" if inverted) in ledctl_mode2.  The blink
+		 * logic in hardware only works when mode is set to "on"
+		 * so it must be changed accordingly when the mode is
+		 * "off" and inverted.
+		 */
+		ledctl_blink = hw->mac.ledctl_mode2;
+		for (i = 0; i < 32; i += 8) {
+			u32 mode = (hw->mac.ledctl_mode2 >> i) &
+			    E1000_LEDCTL_LED0_MODE_MASK;
+			u32 led_default = hw->mac.ledctl_default >> i;
+
+			if ((!(led_default & E1000_LEDCTL_LED0_IVRT) &&
+			     (mode == E1000_LEDCTL_MODE_LED_ON)) ||
+			    ((led_default & E1000_LEDCTL_LED0_IVRT) &&
+			     (mode == E1000_LEDCTL_MODE_LED_OFF))) {
+				ledctl_blink &=
+				    ~(E1000_LEDCTL_LED0_MODE_MASK << i);
+				ledctl_blink |= (E1000_LEDCTL_LED0_BLINK |
+						 E1000_LEDCTL_MODE_LED_ON) << i;
+			}
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	wr32(E1000_LEDCTL, ledctl_blink);
 
@@ -1342,7 +1678,11 @@ s32 igb_led_off(struct e1000_hw *hw)
  *  @hw: pointer to the HW structure
  *
  *  Returns 0 (0) if successful, else returns -10
+<<<<<<< HEAD
  *  (-E1000_ERR_MASTER_REQUESTS_PENDING) if master disable bit has not casued
+=======
+ *  (-E1000_ERR_MASTER_REQUESTS_PENDING) if master disable bit has not caused
+>>>>>>> refs/remotes/origin/master
  *  the master requests to be disabled.
  *
  *  Disables PCI-Express master access and verifies there are no pending
@@ -1390,6 +1730,13 @@ s32 igb_validate_mdi_setting(struct e1000_hw *hw)
 {
 	s32 ret_val = 0;
 
+<<<<<<< HEAD
+=======
+	/* All MDI settings are supported on 82580 and newer. */
+	if (hw->mac.type >= e1000_82580)
+		goto out;
+
+>>>>>>> refs/remotes/origin/master
 	if (!hw->mac.autoneg && (hw->phy.mdix == 0 || hw->phy.mdix == 3)) {
 		hw_dbg("Invalid MDI setting detected\n");
 		hw->phy.mdix = 1;

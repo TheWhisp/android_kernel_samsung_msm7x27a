@@ -21,7 +21,10 @@
 
 #include <linux/kernel.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/utsname.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 
 #include <sound/core.h>
@@ -33,6 +36,11 @@
 #include <linux/usb/audio.h>
 #include <linux/usb/midi.h>
 
+<<<<<<< HEAD
+=======
+#include "u_f.h"
+
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Ben Williamson");
 MODULE_LICENSE("GPL v2");
 
@@ -192,6 +200,7 @@ static struct usb_gadget_strings *midi_strings[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 static struct usb_request *alloc_ep_req(struct usb_ep *ep, unsigned length)
 {
 	struct usb_request *req;
@@ -206,6 +215,12 @@ static struct usb_request *alloc_ep_req(struct usb_ep *ep, unsigned length)
 		}
 	}
 	return req;
+=======
+static inline struct usb_request *midi_alloc_ep_req(struct usb_ep *ep,
+						    unsigned length)
+{
+	return alloc_ep_req(ep, length, length);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void free_ep_req(struct usb_ep *ep, struct usb_request *req)
@@ -366,7 +381,11 @@ static int f_midi_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 	/* allocate a bunch of read buffers and queue them all at once. */
 	for (i = 0; i < midi->qlen && err == 0; i++) {
 		struct usb_request *req =
+<<<<<<< HEAD
 			alloc_ep_req(midi->out_ep, midi->buflen);
+=======
+			midi_alloc_ep_req(midi->out_ep, midi->buflen);
+>>>>>>> refs/remotes/origin/master
 		if (req == NULL)
 			return -ENOMEM;
 
@@ -415,8 +434,12 @@ static void f_midi_unbind(struct usb_configuration *c, struct usb_function *f)
 	kfree(midi->id);
 	midi->id = NULL;
 
+<<<<<<< HEAD
 	usb_free_descriptors(f->descriptors);
 	usb_free_descriptors(f->hs_descriptors);
+=======
+	usb_free_all_descriptors(f);
+>>>>>>> refs/remotes/origin/master
 	kfree(midi);
 }
 
@@ -548,7 +571,11 @@ static void f_midi_transmit(struct f_midi *midi, struct usb_request *req)
 		return;
 
 	if (!req)
+<<<<<<< HEAD
 		req = alloc_ep_req(ep, midi->buflen);
+=======
+		req = midi_alloc_ep_req(ep, midi->buflen);
+>>>>>>> refs/remotes/origin/master
 
 	if (!req) {
 		ERROR(midi, "gmidi_transmit: alloc_ep_request failed\n");
@@ -883,6 +910,7 @@ f_midi_bind(struct usb_configuration *c, struct usb_function *f)
 	 * both speeds
 	 */
 	/* copy descriptors, and track endpoint copies */
+<<<<<<< HEAD
 	if (gadget_is_dualspeed(c->cdev->gadget)) {
 		c->highspeed = true;
 		bulk_in_desc.wMaxPacketSize = cpu_to_le16(512);
@@ -890,12 +918,30 @@ f_midi_bind(struct usb_configuration *c, struct usb_function *f)
 		f->hs_descriptors = usb_copy_descriptors(midi_function);
 	} else {
 		f->descriptors = usb_copy_descriptors(midi_function);
+=======
+	f->fs_descriptors = usb_copy_descriptors(midi_function);
+	if (!f->fs_descriptors)
+		goto fail_f_midi;
+
+	if (gadget_is_dualspeed(c->cdev->gadget)) {
+		bulk_in_desc.wMaxPacketSize = cpu_to_le16(512);
+		bulk_out_desc.wMaxPacketSize = cpu_to_le16(512);
+		f->hs_descriptors = usb_copy_descriptors(midi_function);
+		if (!f->hs_descriptors)
+			goto fail_f_midi;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	kfree(midi_function);
 
 	return 0;
 
+<<<<<<< HEAD
+=======
+fail_f_midi:
+	kfree(midi_function);
+	usb_free_descriptors(f->hs_descriptors);
+>>>>>>> refs/remotes/origin/master
 fail:
 	/* we might as well release our claims on endpoints */
 	if (midi->out_ep)

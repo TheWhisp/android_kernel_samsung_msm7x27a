@@ -14,6 +14,11 @@
 #include <linux/pm.h>
 #include <linux/err.h>
 #include <linux/of.h>
+<<<<<<< HEAD
+=======
+#include <linux/notifier.h>
+#include <linux/cpuidle.h>
+>>>>>>> refs/remotes/origin/master
 
 enum gpd_status {
 	GPD_STATE_ACTIVE = 0,	/* PM domain is active */
@@ -44,6 +49,14 @@ struct gpd_dev_ops {
 	bool (*active_wakeup)(struct device *dev);
 };
 
+<<<<<<< HEAD
+=======
+struct gpd_cpu_data {
+	unsigned int saved_exit_latency;
+	struct cpuidle_state *idle_state;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct generic_pm_domain {
 	struct dev_pm_domain domain;	/* PM domain operations */
 	struct list_head gpd_list_node;	/* Node in the global PM domains list */
@@ -70,10 +83,18 @@ struct generic_pm_domain {
 	int (*power_on)(struct generic_pm_domain *domain);
 	s64 power_on_latency_ns;
 	struct gpd_dev_ops dev_ops;
+<<<<<<< HEAD
 	s64 break_even_ns;	/* Power break even for the entire domain. */
 	s64 max_off_time_ns;	/* Maximum allowed "suspended" time. */
 	ktime_t power_off_time;
 	struct device_node *of_node; /* Node in device tree */
+=======
+	s64 max_off_time_ns;	/* Maximum allowed "suspended" time. */
+	bool max_off_time_changed;
+	bool cached_power_down_ok;
+	struct device_node *of_node; /* Node in device tree */
+	struct gpd_cpu_data *cpu_data;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct generic_pm_domain *pd_to_genpd(struct dev_pm_domain *pd)
@@ -93,15 +114,28 @@ struct gpd_timing_data {
 	s64 start_latency_ns;
 	s64 save_state_latency_ns;
 	s64 restore_state_latency_ns;
+<<<<<<< HEAD
 	s64 break_even_ns;
+=======
+	s64 effective_constraint_ns;
+	bool constraint_changed;
+	bool cached_stop_ok;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct generic_pm_domain_data {
 	struct pm_domain_data base;
 	struct gpd_dev_ops ops;
 	struct gpd_timing_data td;
+<<<<<<< HEAD
 	bool need_restore;
 	bool always_on;
+=======
+	struct notifier_block nb;
+	struct mutex lock;
+	unsigned int refcount;
+	bool need_restore;
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_PM_GENERIC_DOMAINS
@@ -126,6 +160,7 @@ extern int __pm_genpd_of_add_device(struct device_node *genpd_node,
 				    struct device *dev,
 				    struct gpd_timing_data *td);
 
+<<<<<<< HEAD
 static inline int pm_genpd_add_device(struct generic_pm_domain *genpd,
 				      struct device *dev)
 {
@@ -143,16 +178,40 @@ extern int pm_genpd_remove_device(struct generic_pm_domain *genpd,
 extern void pm_genpd_dev_always_on(struct device *dev, bool val);
 extern int pm_genpd_add_subdomain(struct generic_pm_domain *genpd,
 				  struct generic_pm_domain *new_subdomain);
+=======
+extern int __pm_genpd_name_add_device(const char *domain_name,
+				      struct device *dev,
+				      struct gpd_timing_data *td);
+
+extern int pm_genpd_remove_device(struct generic_pm_domain *genpd,
+				  struct device *dev);
+extern void pm_genpd_dev_need_restore(struct device *dev, bool val);
+extern int pm_genpd_add_subdomain(struct generic_pm_domain *genpd,
+				  struct generic_pm_domain *new_subdomain);
+extern int pm_genpd_add_subdomain_names(const char *master_name,
+					const char *subdomain_name);
+>>>>>>> refs/remotes/origin/master
 extern int pm_genpd_remove_subdomain(struct generic_pm_domain *genpd,
 				     struct generic_pm_domain *target);
 extern int pm_genpd_add_callbacks(struct device *dev,
 				  struct gpd_dev_ops *ops,
 				  struct gpd_timing_data *td);
 extern int __pm_genpd_remove_callbacks(struct device *dev, bool clear_td);
+<<<<<<< HEAD
+=======
+extern int pm_genpd_attach_cpuidle(struct generic_pm_domain *genpd, int state);
+extern int pm_genpd_name_attach_cpuidle(const char *name, int state);
+extern int pm_genpd_detach_cpuidle(struct generic_pm_domain *genpd);
+extern int pm_genpd_name_detach_cpuidle(const char *name);
+>>>>>>> refs/remotes/origin/master
 extern void pm_genpd_init(struct generic_pm_domain *genpd,
 			  struct dev_power_governor *gov, bool is_off);
 
 extern int pm_genpd_poweron(struct generic_pm_domain *genpd);
+<<<<<<< HEAD
+=======
+extern int pm_genpd_name_poweron(const char *domain_name);
+>>>>>>> refs/remotes/origin/master
 
 extern bool default_stop_ok(struct device *dev);
 
@@ -173,8 +232,20 @@ static inline int __pm_genpd_add_device(struct generic_pm_domain *genpd,
 {
 	return -ENOSYS;
 }
+<<<<<<< HEAD
 static inline int pm_genpd_add_device(struct generic_pm_domain *genpd,
 				      struct device *dev)
+=======
+static inline int __pm_genpd_of_add_device(struct device_node *genpd_node,
+					   struct device *dev,
+					   struct gpd_timing_data *td)
+{
+	return -ENOSYS;
+}
+static inline int __pm_genpd_name_add_device(const char *domain_name,
+					     struct device *dev,
+					     struct gpd_timing_data *td)
+>>>>>>> refs/remotes/origin/master
 {
 	return -ENOSYS;
 }
@@ -183,12 +254,24 @@ static inline int pm_genpd_remove_device(struct generic_pm_domain *genpd,
 {
 	return -ENOSYS;
 }
+<<<<<<< HEAD
 static inline void pm_genpd_dev_always_on(struct device *dev, bool val) {}
+=======
+static inline void pm_genpd_dev_need_restore(struct device *dev, bool val) {}
+>>>>>>> refs/remotes/origin/master
 static inline int pm_genpd_add_subdomain(struct generic_pm_domain *genpd,
 					 struct generic_pm_domain *new_sd)
 {
 	return -ENOSYS;
 }
+<<<<<<< HEAD
+=======
+static inline int pm_genpd_add_subdomain_names(const char *master_name,
+					       const char *subdomain_name)
+{
+	return -ENOSYS;
+}
+>>>>>>> refs/remotes/origin/master
 static inline int pm_genpd_remove_subdomain(struct generic_pm_domain *genpd,
 					    struct generic_pm_domain *target)
 {
@@ -204,6 +287,25 @@ static inline int __pm_genpd_remove_callbacks(struct device *dev, bool clear_td)
 {
 	return -ENOSYS;
 }
+<<<<<<< HEAD
+=======
+static inline int pm_genpd_attach_cpuidle(struct generic_pm_domain *genpd, int st)
+{
+	return -ENOSYS;
+}
+static inline int pm_genpd_name_attach_cpuidle(const char *name, int state)
+{
+	return -ENOSYS;
+}
+static inline int pm_genpd_detach_cpuidle(struct generic_pm_domain *genpd)
+{
+	return -ENOSYS;
+}
+static inline int pm_genpd_name_detach_cpuidle(const char *name)
+{
+	return -ENOSYS;
+}
+>>>>>>> refs/remotes/origin/master
 static inline void pm_genpd_init(struct generic_pm_domain *genpd,
 				 struct dev_power_governor *gov, bool is_off)
 {
@@ -212,6 +314,13 @@ static inline int pm_genpd_poweron(struct generic_pm_domain *genpd)
 {
 	return -ENOSYS;
 }
+<<<<<<< HEAD
+=======
+static inline int pm_genpd_name_poweron(const char *domain_name)
+{
+	return -ENOSYS;
+}
+>>>>>>> refs/remotes/origin/master
 static inline bool default_stop_ok(struct device *dev)
 {
 	return false;
@@ -220,6 +329,27 @@ static inline bool default_stop_ok(struct device *dev)
 #define pm_domain_always_on_gov NULL
 #endif
 
+<<<<<<< HEAD
+=======
+static inline int pm_genpd_add_device(struct generic_pm_domain *genpd,
+				      struct device *dev)
+{
+	return __pm_genpd_add_device(genpd, dev, NULL);
+}
+
+static inline int pm_genpd_of_add_device(struct device_node *genpd_node,
+					 struct device *dev)
+{
+	return __pm_genpd_of_add_device(genpd_node, dev, NULL);
+}
+
+static inline int pm_genpd_name_add_device(const char *domain_name,
+					   struct device *dev)
+{
+	return __pm_genpd_name_add_device(domain_name, dev, NULL);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline int pm_genpd_remove_callbacks(struct device *dev)
 {
 	return __pm_genpd_remove_callbacks(dev, true);
@@ -233,4 +363,23 @@ static inline void genpd_queue_power_off_work(struct generic_pm_domain *gpd) {}
 static inline void pm_genpd_poweroff_unused(void) {}
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_GENERIC_DOMAINS_SLEEP
+extern void pm_genpd_syscore_switch(struct device *dev, bool suspend);
+#else
+static inline void pm_genpd_syscore_switch(struct device *dev, bool suspend) {}
+#endif
+
+static inline void pm_genpd_syscore_poweroff(struct device *dev)
+{
+	pm_genpd_syscore_switch(dev, true);
+}
+
+static inline void pm_genpd_syscore_poweron(struct device *dev)
+{
+	pm_genpd_syscore_switch(dev, false);
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_PM_DOMAIN_H */

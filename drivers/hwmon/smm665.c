@@ -24,6 +24,10 @@
 #include <linux/hwmon.h>
 #include <linux/hwmon-sysfs.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/jiffies.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Internal reference voltage (VREF, x 1000 */
 #define SMM665_VREF_ADC_X1000	1250
@@ -125,6 +129,7 @@ enum chips { smm465, smm665, smm665c, smm764, smm766 };
 
 /* Temp Sensor */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SMM665_TEMP_ADC_TO_CELSIUS(adc) ((adc) <= 511) ?		   \
 					 ((int)(adc) * 1000 / 4) :	   \
 					 (((int)(adc) - 0x400) * 1000 / 4)
@@ -133,6 +138,11 @@ enum chips { smm465, smm665, smm665c, smm764, smm766 };
 					 ((int)(adc) * 1000 / 4) :	   \
 					 (((int)(adc) - 0x400) * 1000 / 4))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SMM665_TEMP_ADC_TO_CELSIUS(adc) (((adc) <= 511) ?		   \
+					 ((int)(adc) * 1000 / 4) :	   \
+					 (((int)(adc) - 0x400) * 1000 / 4))
+>>>>>>> refs/remotes/origin/master
 
 #define SMM665_NUM_ADC		11
 
@@ -221,24 +231,31 @@ static int smm665_read_adc(struct smm665_data *data, int adc)
 	 * Neither i2c_smbus_read_byte() nor
 	 * i2c_smbus_read_block_data() worked here,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * so use i2c_smbus_read_word_data() instead.
 	 * We could also try to use i2c_master_recv(),
 	 * but that is not always supported.
 	 */
 	rv = i2c_smbus_read_word_data(client, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * so use i2c_smbus_read_word_swapped() instead.
 	 * We could also try to use i2c_master_recv(),
 	 * but that is not always supported.
 	 */
 	rv = i2c_smbus_read_word_swapped(client, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (rv < 0) {
 		dev_dbg(&client->dev, "Failed to read ADC value: error %d", rv);
 		return -1;
 	}
 	/*
 	 * Validate/verify readback adc channel (in bit 11..14).
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * High byte is in lower 8 bit of rv, so only shift by 3.
 	 */
@@ -247,11 +264,16 @@ static int smm665_read_adc(struct smm665_data *data, int adc)
 	 */
 	radc = (rv >> 11) & 0x0f;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 */
+	radc = (rv >> 11) & 0x0f;
+>>>>>>> refs/remotes/origin/master
 	if (radc != adc) {
 		dev_dbg(&client->dev, "Unexpected RADC: Expected %d got %d",
 			adc, radc);
 		return -EIO;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*
 	 * Chip replies with H/L, while SMBus expects L/H.
@@ -265,6 +287,10 @@ static int smm665_read_adc(struct smm665_data *data, int adc)
 
 	return rv & SMM665_ADC_MASK;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return rv & SMM665_ADC_MASK;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct smm665_data *smm665_update_device(struct device *dev)
@@ -408,10 +434,14 @@ static ssize_t smm665_show_input(struct device *dev,
 
 #define SMM665_SHOW(what) \
 <<<<<<< HEAD
+<<<<<<< HEAD
   static ssize_t smm665_show_##what(struct device *dev, \
 =======
 static ssize_t smm665_show_##what(struct device *dev, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t smm665_show_##what(struct device *dev, \
+>>>>>>> refs/remotes/origin/master
 				    struct device_attribute *da, char *buf) \
 { \
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(da); \
@@ -425,11 +455,16 @@ SMM665_SHOW(lcrit);
 SMM665_SHOW(crit);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* These macros are used below in constructing device attribute objects
 =======
 /*
  * These macros are used below in constructing device attribute objects
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * These macros are used below in constructing device attribute objects
+>>>>>>> refs/remotes/origin/master
  * for use with sysfs_create_group() to make a sysfs device file
  * for each register.
  */
@@ -624,6 +659,7 @@ static int smm665_probe(struct i2c_client *client,
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = -ENOMEM;
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
 	if (!data)
@@ -633,6 +669,11 @@ static int smm665_probe(struct i2c_client *client,
 	if (!data)
 		return -ENOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(client, data);
 	mutex_init(&data->update_lock);
@@ -642,10 +683,14 @@ static int smm665_probe(struct i2c_client *client,
 				     | SMM665_CMDREG_BASE);
 	if (!data->cmdreg)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto out_kfree;
 =======
 		return -ENOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	switch (data->type) {
 	case smm465:
@@ -729,11 +774,14 @@ out_remove_group:
 out_unregister:
 	i2c_unregister_device(data->cmdreg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 out_kfree:
 	kfree(data);
 out_return:
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -746,10 +794,13 @@ static int smm665_remove(struct i2c_client *client)
 	sysfs_remove_group(&client->dev.kobj, &smm665_group);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(data);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -775,6 +826,7 @@ static struct i2c_driver smm665_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init smm665_init(void)
 {
 	return i2c_add_driver(&smm665_driver);
@@ -787,13 +839,19 @@ static void __exit smm665_exit(void)
 =======
 module_i2c_driver(smm665_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(smm665_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Guenter Roeck");
 MODULE_DESCRIPTION("SMM665 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(smm665_init);
 module_exit(smm665_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

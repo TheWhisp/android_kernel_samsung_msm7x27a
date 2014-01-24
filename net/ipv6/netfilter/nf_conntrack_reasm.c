@@ -41,6 +41,10 @@
 #include <net/rawv6.h>
 #include <net/ndisc.h>
 #include <net/addrconf.h>
+<<<<<<< HEAD
+=======
+#include <net/inet_ecn.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/netfilter/ipv6/nf_conntrack_ipv6.h>
 #include <linux/sysctl.h>
 #include <linux/netfilter.h>
@@ -59,6 +63,7 @@ struct nf_ct_frag6_skb_cb
 
 #define NFCT_FRAG6_CB(skb)	((struct nf_ct_frag6_skb_cb*)((skb)->cb))
 
+<<<<<<< HEAD
 struct nf_ct_frag6_queue
 {
 	struct inet_frag_queue	q;
@@ -74,26 +79,41 @@ struct nf_ct_frag6_queue
 
 static struct inet_frags nf_frags;
 static struct netns_frags nf_init_frags;
+=======
+static struct inet_frags nf_frags;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SYSCTL
 static struct ctl_table nf_ct_frag6_sysctl_table[] = {
 	{
 		.procname	= "nf_conntrack_frag6_timeout",
+<<<<<<< HEAD
 		.data		= &nf_init_frags.timeout,
+=======
+		.data		= &init_net.nf_frag.frags.timeout,
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "nf_conntrack_frag6_low_thresh",
+<<<<<<< HEAD
 		.data		= &nf_init_frags.low_thresh,
+=======
+		.data		= &init_net.nf_frag.frags.low_thresh,
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec,
 	},
 	{
 		.procname	= "nf_conntrack_frag6_high_thresh",
+<<<<<<< HEAD
 		.data		= &nf_init_frags.high_thresh,
+=======
+		.data		= &init_net.nf_frag.frags.high_thresh,
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec,
@@ -101,6 +121,7 @@ static struct ctl_table nf_ct_frag6_sysctl_table[] = {
 	{ }
 };
 
+<<<<<<< HEAD
 static struct ctl_table_header *nf_ct_frag6_sysctl_header;
 #endif
 
@@ -163,6 +184,105 @@ out:
 
 static __inline__ struct nf_ct_frag6_queue *
 fq_find(__be32 id, u32 user, struct in6_addr *src, struct in6_addr *dst)
+=======
+static int nf_ct_frag6_sysctl_register(struct net *net)
+{
+	struct ctl_table *table;
+	struct ctl_table_header *hdr;
+
+	table = nf_ct_frag6_sysctl_table;
+	if (!net_eq(net, &init_net)) {
+		table = kmemdup(table, sizeof(nf_ct_frag6_sysctl_table),
+				GFP_KERNEL);
+		if (table == NULL)
+			goto err_alloc;
+
+		table[0].data = &net->nf_frag.frags.timeout;
+		table[1].data = &net->nf_frag.frags.low_thresh;
+		table[2].data = &net->nf_frag.frags.high_thresh;
+	}
+
+	hdr = register_net_sysctl(net, "net/netfilter", table);
+	if (hdr == NULL)
+		goto err_reg;
+
+	net->nf_frag.sysctl.frags_hdr = hdr;
+	return 0;
+
+err_reg:
+	if (!net_eq(net, &init_net))
+		kfree(table);
+err_alloc:
+	return -ENOMEM;
+}
+
+static void __net_exit nf_ct_frags6_sysctl_unregister(struct net *net)
+{
+	struct ctl_table *table;
+
+	table = net->nf_frag.sysctl.frags_hdr->ctl_table_arg;
+	unregister_net_sysctl_table(net->nf_frag.sysctl.frags_hdr);
+	if (!net_eq(net, &init_net))
+		kfree(table);
+}
+
+#else
+static int nf_ct_frag6_sysctl_register(struct net *net)
+{
+	return 0;
+}
+static void __net_exit nf_ct_frags6_sysctl_unregister(struct net *net)
+{
+}
+#endif
+
+static inline u8 ip6_frag_ecn(const struct ipv6hdr *ipv6h)
+{
+	return 1 << (ipv6_get_dsfield(ipv6h) & INET_ECN_MASK);
+}
+
+static unsigned int nf_hash_frag(__be32 id, const struct in6_addr *saddr,
+				 const struct in6_addr *daddr)
+{
+	u32 c;
+
+	net_get_random_once(&nf_frags.rnd, sizeof(nf_frags.rnd));
+	c = jhash_3words(ipv6_addr_hash(saddr), ipv6_addr_hash(daddr),
+			 (__force u32)id, nf_frags.rnd);
+	return c & (INETFRAGS_HASHSZ - 1);
+}
+
+
+static unsigned int nf_hashfn(struct inet_frag_queue *q)
+{
+	const struct frag_queue *nq;
+
+	nq = container_of(q, struct frag_queue, q);
+	return nf_hash_frag(nq->id, &nq->saddr, &nq->daddr);
+}
+
+static void nf_skb_free(struct sk_buff *skb)
+{
+	if (NFCT_FRAG6_CB(skb)->orig)
+		kfree_skb(NFCT_FRAG6_CB(skb)->orig);
+}
+
+static void nf_ct_frag6_expire(unsigned long data)
+{
+	struct frag_queue *fq;
+	struct net *net;
+
+	fq = container_of((struct inet_frag_queue *)data, struct frag_queue, q);
+	net = container_of(fq->q.net, struct net, nf_frag.frags);
+
+	ip6_expire_frag_queue(net, fq, &nf_frags);
+}
+
+/* Creation primitives. */
+static inline struct frag_queue *fq_find(struct net *net, __be32 id,
+					 u32 user, struct in6_addr *src,
+					 struct in6_addr *dst, u8 ecn)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inet_frag_queue *q;
 	struct ip6_create_arg arg;
@@ -172,16 +292,26 @@ fq_find(__be32 id, u32 user, struct in6_addr *src, struct in6_addr *dst)
 	arg.user = user;
 	arg.src = src;
 	arg.dst = dst;
+<<<<<<< HEAD
 
 	read_lock_bh(&nf_frags.lock);
 	hash = inet6_hash_frag(id, src, dst, nf_frags.rnd);
 
 	q = inet_frag_find(&nf_init_frags, &nf_frags, &arg, hash);
+=======
+	arg.ecn = ecn;
+
+	read_lock_bh(&nf_frags.lock);
+	hash = nf_hash_frag(id, src, dst);
+
+	q = inet_frag_find(&net->nf_frag.frags, &nf_frags, &arg, hash);
+>>>>>>> refs/remotes/origin/master
 	local_bh_enable();
 	if (IS_ERR_OR_NULL(q)) {
 		inet_frag_maybe_warn_overflow(q, pr_fmt());
 		return NULL;
 	}
+<<<<<<< HEAD
 
 	return container_of(q, struct nf_ct_frag6_queue, q);
 }
@@ -192,14 +322,34 @@ static int nf_ct_frag6_queue(struct nf_ct_frag6_queue *fq, struct sk_buff *skb,
 {
 	struct sk_buff *prev, *next;
 	int offset, end;
+=======
+	return container_of(q, struct frag_queue, q);
+}
+
+
+static int nf_ct_frag6_queue(struct frag_queue *fq, struct sk_buff *skb,
+			     const struct frag_hdr *fhdr, int nhoff)
+{
+	struct sk_buff *prev, *next;
+	unsigned int payload_len;
+	int offset, end;
+	u8 ecn;
+>>>>>>> refs/remotes/origin/master
 
 	if (fq->q.last_in & INET_FRAG_COMPLETE) {
 		pr_debug("Already completed\n");
 		goto err;
 	}
 
+<<<<<<< HEAD
 	offset = ntohs(fhdr->frag_off) & ~0x7;
 	end = offset + (ntohs(ipv6_hdr(skb)->payload_len) -
+=======
+	payload_len = ntohs(ipv6_hdr(skb)->payload_len);
+
+	offset = ntohs(fhdr->frag_off) & ~0x7;
+	end = offset + (payload_len -
+>>>>>>> refs/remotes/origin/master
 			((u8 *)(fhdr + 1) - (u8 *)(ipv6_hdr(skb) + 1)));
 
 	if ((unsigned int)end > IPV6_MAXPLEN) {
@@ -207,6 +357,11 @@ static int nf_ct_frag6_queue(struct nf_ct_frag6_queue *fq, struct sk_buff *skb,
 		return -1;
 	}
 
+<<<<<<< HEAD
+=======
+	ecn = ip6_frag_ecn(ipv6_hdr(skb));
+
+>>>>>>> refs/remotes/origin/master
 	if (skb->ip_summed == CHECKSUM_COMPLETE) {
 		const unsigned char *nh = skb_network_header(skb);
 		skb->csum = csum_sub(skb->csum,
@@ -305,10 +460,23 @@ found:
 	else
 		fq->q.fragments = skb;
 
+<<<<<<< HEAD
 	skb->dev = NULL;
 	fq->q.stamp = skb->tstamp;
 	fq->q.meat += skb->len;
 	atomic_add(skb->truesize, &nf_init_frags.mem);
+=======
+	if (skb->dev) {
+		fq->iif = skb->dev->ifindex;
+		skb->dev = NULL;
+	}
+	fq->q.stamp = skb->tstamp;
+	fq->q.meat += skb->len;
+	fq->ecn |= ecn;
+	if (payload_len > fq->q.max_size)
+		fq->q.max_size = payload_len;
+	add_frag_mem_limit(&fq->q, skb->truesize);
+>>>>>>> refs/remotes/origin/master
 
 	/* The first fragment.
 	 * nhoffset is obtained from the first fragment, of course.
@@ -317,6 +485,7 @@ found:
 		fq->nhoffset = nhoff;
 		fq->q.last_in |= INET_FRAG_FIRST_IN;
 	}
+<<<<<<< HEAD
 	write_lock(&nf_frags.lock);
 	list_move_tail(&fq->q.lru_list, &nf_init_frags.lru_list);
 	write_unlock(&nf_frags.lock);
@@ -324,6 +493,14 @@ found:
 
 discard_fq:
 	fq_kill(fq);
+=======
+
+	inet_frag_lru_move(&fq->q);
+	return 0;
+
+discard_fq:
+	inet_frag_kill(&fq->q, &nf_frags);
+>>>>>>> refs/remotes/origin/master
 err:
 	return -1;
 }
@@ -338,16 +515,33 @@ err:
  *	the last and the first frames arrived and all the bits are here.
  */
 static struct sk_buff *
+<<<<<<< HEAD
 nf_ct_frag6_reasm(struct nf_ct_frag6_queue *fq, struct net_device *dev)
 {
 	struct sk_buff *fp, *op, *head = fq->q.fragments;
 	int    payload_len;
 
 	fq_kill(fq);
+=======
+nf_ct_frag6_reasm(struct frag_queue *fq, struct net_device *dev)
+{
+	struct sk_buff *fp, *op, *head = fq->q.fragments;
+	int    payload_len;
+	u8 ecn;
+
+	inet_frag_kill(&fq->q, &nf_frags);
+>>>>>>> refs/remotes/origin/master
 
 	WARN_ON(head == NULL);
 	WARN_ON(NFCT_FRAG6_CB(head)->offset != 0);
 
+<<<<<<< HEAD
+=======
+	ecn = ip_frag_ecn_table[fq->ecn];
+	if (unlikely(ecn == 0xff))
+		goto out_fail;
+
+>>>>>>> refs/remotes/origin/master
 	/* Unfragmented part is taken from the first segment. */
 	payload_len = ((head->data - skb_network_header(head)) -
 		       sizeof(struct ipv6hdr) + fq->q.len -
@@ -358,7 +552,11 @@ nf_ct_frag6_reasm(struct nf_ct_frag6_queue *fq, struct net_device *dev)
 	}
 
 	/* Head of list must not be cloned. */
+<<<<<<< HEAD
 	if (skb_cloned(head) && pskb_expand_head(head, 0, 0, GFP_ATOMIC)) {
+=======
+	if (skb_unclone(head, GFP_ATOMIC)) {
+>>>>>>> refs/remotes/origin/master
 		pr_debug("skb is cloned but can't expand head");
 		goto out_oom;
 	}
@@ -371,20 +569,27 @@ nf_ct_frag6_reasm(struct nf_ct_frag6_queue *fq, struct net_device *dev)
 		int i, plen = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ((clone = alloc_skb(0, GFP_ATOMIC)) == NULL) {
 			pr_debug("Can't alloc skb\n");
 			goto out_oom;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		clone = alloc_skb(0, GFP_ATOMIC);
 		if (clone == NULL)
 			goto out_oom;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		clone->next = head->next;
 		head->next = clone;
 		skb_shinfo(clone)->frag_list = skb_shinfo(head)->frag_list;
 		skb_frag_list_init(head);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		for (i=0; i<skb_shinfo(head)->nr_frags; i++)
 			plen += skb_shinfo(head)->frags[i].size;
@@ -392,6 +597,10 @@ nf_ct_frag6_reasm(struct nf_ct_frag6_queue *fq, struct net_device *dev)
 		for (i = 0; i < skb_shinfo(head)->nr_frags; i++)
 			plen += skb_frag_size(&skb_shinfo(head)->frags[i]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i < skb_shinfo(head)->nr_frags; i++)
+			plen += skb_frag_size(&skb_shinfo(head)->frags[i]);
+>>>>>>> refs/remotes/origin/master
 		clone->len = clone->data_len = head->data_len - plen;
 		head->data_len -= clone->len;
 		head->len -= clone->len;
@@ -399,7 +608,11 @@ nf_ct_frag6_reasm(struct nf_ct_frag6_queue *fq, struct net_device *dev)
 		clone->ip_summed = head->ip_summed;
 
 		NFCT_FRAG6_CB(clone)->orig = NULL;
+<<<<<<< HEAD
 		atomic_add(clone->truesize, &nf_init_frags.mem);
+=======
+		add_frag_mem_limit(&fq->q, clone->truesize);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* We have to remove fragment header from datagram and to relocate
@@ -423,12 +636,23 @@ nf_ct_frag6_reasm(struct nf_ct_frag6_queue *fq, struct net_device *dev)
 			head->csum = csum_add(head->csum, fp->csum);
 		head->truesize += fp->truesize;
 	}
+<<<<<<< HEAD
 	atomic_sub(head->truesize, &nf_init_frags.mem);
 
+=======
+	sub_frag_mem_limit(&fq->q, head->truesize);
+
+	head->local_df = 1;
+>>>>>>> refs/remotes/origin/master
 	head->next = NULL;
 	head->dev = dev;
 	head->tstamp = fq->q.stamp;
 	ipv6_hdr(head)->payload_len = htons(payload_len);
+<<<<<<< HEAD
+=======
+	ipv6_change_dsfield(ipv6_hdr(head), 0xff, ecn);
+	IP6CB(head)->frag_max_size = sizeof(struct ipv6hdr) + fq->q.max_size;
+>>>>>>> refs/remotes/origin/master
 
 	/* Yes, and fold redundant checksum back. 8) */
 	if (head->ip_summed == CHECKSUM_COMPLETE)
@@ -457,12 +681,20 @@ nf_ct_frag6_reasm(struct nf_ct_frag6_queue *fq, struct net_device *dev)
 	return head;
 
 out_oversize:
+<<<<<<< HEAD
 	if (net_ratelimit())
 		printk(KERN_DEBUG "nf_ct_frag6_reasm: payload len = %d\n", payload_len);
 	goto out_fail;
 out_oom:
 	if (net_ratelimit())
 		printk(KERN_DEBUG "nf_ct_frag6_reasm: no memory for reassembly\n");
+=======
+	net_dbg_ratelimited("nf_ct_frag6_reasm: payload len = %d\n",
+			    payload_len);
+	goto out_fail;
+out_oom:
+	net_dbg_ratelimited("nf_ct_frag6_reasm: no memory for reassembly\n");
+>>>>>>> refs/remotes/origin/master
 out_fail:
 	return NULL;
 }
@@ -534,8 +766,15 @@ struct sk_buff *nf_ct_frag6_gather(struct sk_buff *skb, u32 user)
 {
 	struct sk_buff *clone;
 	struct net_device *dev = skb->dev;
+<<<<<<< HEAD
 	struct frag_hdr *fhdr;
 	struct nf_ct_frag6_queue *fq;
+=======
+	struct net *net = skb_dst(skb) ? dev_net(skb_dst(skb)->dev)
+				       : dev_net(skb->dev);
+	struct frag_hdr *fhdr;
+	struct frag_queue *fq;
+>>>>>>> refs/remotes/origin/master
 	struct ipv6hdr *hdr;
 	int fhoff, nhoff;
 	u8 prevhdr;
@@ -567,10 +806,19 @@ struct sk_buff *nf_ct_frag6_gather(struct sk_buff *skb, u32 user)
 	hdr = ipv6_hdr(clone);
 	fhdr = (struct frag_hdr *)skb_transport_header(clone);
 
+<<<<<<< HEAD
 	if (atomic_read(&nf_init_frags.mem) > nf_init_frags.high_thresh)
 		nf_ct_frag6_evictor();
 
 	fq = fq_find(fhdr->identification, user, &hdr->saddr, &hdr->daddr);
+=======
+	local_bh_disable();
+	inet_frag_evictor(&net->nf_frag.frags, &nf_frags, false);
+	local_bh_enable();
+
+	fq = fq_find(net, fhdr->identification, user, &hdr->saddr, &hdr->daddr,
+		     ip6_frag_ecn(hdr));
+>>>>>>> refs/remotes/origin/master
 	if (fq == NULL) {
 		pr_debug("Can't find and can't create new queue\n");
 		goto ret_orig;
@@ -581,7 +829,11 @@ struct sk_buff *nf_ct_frag6_gather(struct sk_buff *skb, u32 user)
 	if (nf_ct_frag6_queue(fq, clone, fhdr, nhoff) < 0) {
 		spin_unlock_bh(&fq->q.lock);
 		pr_debug("Can't insert skb to queue\n");
+<<<<<<< HEAD
 		fq_put(fq);
+=======
+		inet_frag_put(&fq->q, &nf_frags);
+>>>>>>> refs/remotes/origin/master
 		goto ret_orig;
 	}
 
@@ -593,7 +845,11 @@ struct sk_buff *nf_ct_frag6_gather(struct sk_buff *skb, u32 user)
 	}
 	spin_unlock_bh(&fq->q.lock);
 
+<<<<<<< HEAD
 	fq_put(fq);
+=======
+	inet_frag_put(&fq->q, &nf_frags);
+>>>>>>> refs/remotes/origin/master
 	return ret_skb;
 
 ret_orig:
@@ -601,13 +857,18 @@ ret_orig:
 	return skb;
 }
 
+<<<<<<< HEAD
 void nf_ct_frag6_output(unsigned int hooknum, struct sk_buff *skb,
 			struct net_device *in, struct net_device *out,
 			int (*okfn)(struct sk_buff *))
+=======
+void nf_ct_frag6_consume_orig(struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *s, *s2;
 
 	for (s = NFCT_FRAG6_CB(skb)->orig; s;) {
+<<<<<<< HEAD
 		nf_conntrack_put_reasm(s->nfct_reasm);
 		nf_conntrack_get_reasm(skb);
 		s->nfct_reasm = skb;
@@ -624,10 +885,45 @@ void nf_ct_frag6_output(unsigned int hooknum, struct sk_buff *skb,
 
 int nf_ct_frag6_init(void)
 {
+=======
+		s2 = s->next;
+		s->next = NULL;
+		consume_skb(s);
+		s = s2;
+	}
+}
+
+static int nf_ct_net_init(struct net *net)
+{
+	net->nf_frag.frags.high_thresh = IPV6_FRAG_HIGH_THRESH;
+	net->nf_frag.frags.low_thresh = IPV6_FRAG_LOW_THRESH;
+	net->nf_frag.frags.timeout = IPV6_FRAG_TIMEOUT;
+	inet_frags_init_net(&net->nf_frag.frags);
+
+	return nf_ct_frag6_sysctl_register(net);
+}
+
+static void nf_ct_net_exit(struct net *net)
+{
+	nf_ct_frags6_sysctl_unregister(net);
+	inet_frags_exit_net(&net->nf_frag.frags, &nf_frags);
+}
+
+static struct pernet_operations nf_ct_net_ops = {
+	.init = nf_ct_net_init,
+	.exit = nf_ct_net_exit,
+};
+
+int nf_ct_frag6_init(void)
+{
+	int ret = 0;
+
+>>>>>>> refs/remotes/origin/master
 	nf_frags.hashfn = nf_hashfn;
 	nf_frags.constructor = ip6_frag_init;
 	nf_frags.destructor = NULL;
 	nf_frags.skb_free = nf_skb_free;
+<<<<<<< HEAD
 	nf_frags.qsize = sizeof(struct nf_ct_frag6_queue);
 	nf_frags.match = ip6_frag_match;
 	nf_frags.frag_expire = nf_ct_frag6_expire;
@@ -648,10 +944,24 @@ int nf_ct_frag6_init(void)
 #endif
 
 	return 0;
+=======
+	nf_frags.qsize = sizeof(struct frag_queue);
+	nf_frags.match = ip6_frag_match;
+	nf_frags.frag_expire = nf_ct_frag6_expire;
+	nf_frags.secret_interval = 10 * 60 * HZ;
+	inet_frags_init(&nf_frags);
+
+	ret = register_pernet_subsys(&nf_ct_net_ops);
+	if (ret)
+		inet_frags_fini(&nf_frags);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 void nf_ct_frag6_cleanup(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_SYSCTL
 	unregister_sysctl_table(nf_ct_frag6_sysctl_header);
 	nf_ct_frag6_sysctl_header = NULL;
@@ -660,4 +970,8 @@ void nf_ct_frag6_cleanup(void)
 
 	nf_init_frags.low_thresh = 0;
 	nf_ct_frag6_evictor();
+=======
+	unregister_pernet_subsys(&nf_ct_net_ops);
+	inet_frags_fini(&nf_frags);
+>>>>>>> refs/remotes/origin/master
 }

@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/io.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -29,6 +30,9 @@
 
 #define __raw_readl(p)		(*(unsigned long *)(p))
 #define __raw_writel(v,p)	(*(unsigned long *)(p) = (v))
+=======
+#include <mach/clps711x.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_DEBUG_CLPS711X_UART2
 #define SYSFLGx	SYSFLG2
@@ -38,19 +42,39 @@
 #define UARTDRx	UARTDR1
 #endif
 
+<<<<<<< HEAD
 /*
+=======
+#define phys_reg(x)	(*(volatile u32 *)(CLPS711X_PHYS_BASE + (x)))
+
+/*
+ * The following code assumes the serial port has already been
+ * initialized by the bootloader.  If you didn't setup a port in
+ * your bootloader then nothing will appear (which might be desired).
+ *
+>>>>>>> refs/remotes/origin/master
  * This does not append a newline
  */
 static inline void putc(int c)
 {
+<<<<<<< HEAD
 	while (clps_readl(SYSFLGx) & SYSFLG_UTXFF)
 		barrier();
 	clps_writel(c, UARTDRx);
+=======
+	while (phys_reg(SYSFLGx) & SYSFLG_UTXFF)
+		barrier();
+	phys_reg(UARTDRx) = c;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void flush(void)
 {
+<<<<<<< HEAD
 	while (clps_readl(SYSFLGx) & SYSFLG_UBUSY)
+=======
+	while (phys_reg(SYSFLGx) & SYSFLG_UBUSY)
+>>>>>>> refs/remotes/origin/master
 		barrier();
 }
 
@@ -58,5 +82,8 @@ static inline void flush(void)
  * nothing to do
  */
 #define arch_decomp_setup()
+<<<<<<< HEAD
 
 #define arch_decomp_wdog()
+=======
+>>>>>>> refs/remotes/origin/master

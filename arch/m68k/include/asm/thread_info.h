@@ -4,9 +4,13 @@
 #include <asm/types.h>
 #include <asm/page.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/segment.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/segment.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * On machines with 4k pages we default to an 8k thread size, though we
@@ -31,9 +35,13 @@ struct thread_info {
 	unsigned long		flags;
 	struct exec_domain	*exec_domain;	/* execution domain */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mm_segment_t		addr_limit;	/* thread address space */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mm_segment_t		addr_limit;	/* thread address space */
+>>>>>>> refs/remotes/origin/master
 	int			preempt_count;	/* 0 => preemptable, <0 => BUG */
 	__u32			cpu;		/* should always be 0 on m68k */
 	unsigned long		tp_value;	/* thread pointer */
@@ -41,16 +49,23 @@ struct thread_info {
 };
 #endif /* __ASSEMBLY__ */
 
+<<<<<<< HEAD
 #define PREEMPT_ACTIVE		0x4000000
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define INIT_THREAD_INFO(tsk)			\
 {						\
 	.task		= &tsk,			\
 	.exec_domain	= &default_exec_domain,	\
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.addr_limit	= KERNEL_DS,		\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.addr_limit	= KERNEL_DS,		\
+>>>>>>> refs/remotes/origin/master
 	.preempt_count	= INIT_PREEMPT_COUNT,	\
 	.restart_block = {			\
 		.fn = do_no_restart_syscall,	\
@@ -59,6 +74,7 @@ struct thread_info {
 
 #define init_stack		(init_thread_union.stack)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_MMU
 
@@ -90,6 +106,8 @@ struct thread_info {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 /* how to get the thread information struct from C */
 static inline struct thread_info *current_thread_info(void)
@@ -108,23 +126,33 @@ static inline struct thread_info *current_thread_info(void)
 #define init_thread_info	(init_thread_union.thread_info)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* CONFIG_MMU */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* entry.S relies on these definitions!
  * bits 0-7 are tested at every exception exit
  * bits 8-15 are also tested at syscall exit
  */
+<<<<<<< HEAD
+=======
+#define TIF_NOTIFY_RESUME	5	/* callback before returning to user */
+>>>>>>> refs/remotes/origin/master
 #define TIF_SIGPENDING		6	/* signal pending */
 #define TIF_NEED_RESCHED	7	/* rescheduling necessary */
 #define TIF_DELAYED_TRACE	14	/* single step a syscall */
 #define TIF_SYSCALL_TRACE	15	/* syscall trace active */
 #define TIF_MEMDIE		16	/* is terminating due to OOM killer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TIF_FREEZE		17	/* thread is freezing for suspend */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define TIF_RESTORE_SIGMASK	18	/* restore signal mask in do_signal */
 
 #endif	/* _ASM_M68K_THREAD_INFO_H */

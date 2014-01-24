@@ -14,13 +14,17 @@
 
 #include <linux/linkage.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/ptrace.h>
 #include <asm/asm-offsets.h>
 #include <arch/spr_def.h>
 #include <asm/processor.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #include <asm/switch_to.h>
@@ -28,6 +32,12 @@
 
 /*
  * See <asm/system.h>; called with prev and next task_struct pointers.
+=======
+#include <asm/switch_to.h>
+
+/*
+ * See <asm/switch_to.h>; called with prev and next task_struct pointers.
+>>>>>>> refs/remotes/origin/master
  * "prev" is returned in r0 for _switch_to and also for ret_from_fork.
  *
  * We want to save pc/sp in "prev", and get the new pc/sp from "next".
@@ -46,7 +56,11 @@
  */
 
 #if CALLEE_SAVED_REGS_COUNT != 24
+<<<<<<< HEAD
 # error Mismatch between <asm/system.h> and kernel/entry.S
+=======
+# error Mismatch between <asm/switch_to.h> and kernel/entry.S
+>>>>>>> refs/remotes/origin/master
 #endif
 #define FRAME_SIZE ((2 + CALLEE_SAVED_REGS_COUNT) * 8)
 

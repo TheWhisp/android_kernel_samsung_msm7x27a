@@ -10,10 +10,14 @@
 #include "internals.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned long dist_handle[NR_IRQS];
 =======
 static unsigned long dist_handle[INTC_NR_IRQS];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned long dist_handle[INTC_NR_IRQS];
+>>>>>>> refs/remotes/origin/master
 
 void intc_balancing_enable(unsigned int irq)
 {

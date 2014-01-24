@@ -1,7 +1,11 @@
 /*******************************************************************************
 
   Intel 10 Gigabit PCI Express Linux driver
+<<<<<<< HEAD
   Copyright(c) 1999 - 2012 Intel Corporation.
+=======
+  Copyright(c) 1999 - 2013 Intel Corporation.
+>>>>>>> refs/remotes/origin/master
 
   This program is free software; you can redistribute it and/or modify it
   under the terms and conditions of the GNU General Public License,
@@ -180,16 +184,27 @@ out:
 
 void ixgbe_dcb_unpack_pfc(struct ixgbe_dcb_config *cfg, u8 *pfc_en)
 {
+<<<<<<< HEAD
 	int i;
 
 	*pfc_en = 0;
 	for (i = 0; i < MAX_TRAFFIC_CLASS; i++)
 		*pfc_en |= !!(cfg->tc_config[i].dcb_pfc & 0xF) << i;
+=======
+	struct tc_configuration *tc_config = &cfg->tc_config[0];
+	int tc;
+
+	for (*pfc_en = 0, tc = 0; tc < MAX_TRAFFIC_CLASS; tc++) {
+		if (tc_config[tc].dcb_pfc != pfc_disabled)
+			*pfc_en |= 1 << tc;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 void ixgbe_dcb_unpack_refill(struct ixgbe_dcb_config *cfg, int direction,
 			     u16 *refill)
 {
+<<<<<<< HEAD
 	struct tc_bw_alloc *p;
 	int i;
 
@@ -197,19 +212,35 @@ void ixgbe_dcb_unpack_refill(struct ixgbe_dcb_config *cfg, int direction,
 		p = &cfg->tc_config[i].path[direction];
 		refill[i] = p->data_credits_refill;
 	}
+=======
+	struct tc_configuration *tc_config = &cfg->tc_config[0];
+	int tc;
+
+	for (tc = 0; tc < MAX_TRAFFIC_CLASS; tc++)
+		refill[tc] = tc_config[tc].path[direction].data_credits_refill;
+>>>>>>> refs/remotes/origin/master
 }
 
 void ixgbe_dcb_unpack_max(struct ixgbe_dcb_config *cfg, u16 *max)
 {
+<<<<<<< HEAD
 	int i;
 
 	for (i = 0; i < MAX_TRAFFIC_CLASS; i++)
 		max[i] = cfg->tc_config[i].desc_credits_max;
+=======
+	struct tc_configuration *tc_config = &cfg->tc_config[0];
+	int tc;
+
+	for (tc = 0; tc < MAX_TRAFFIC_CLASS; tc++)
+		max[tc] = tc_config[tc].desc_credits_max;
+>>>>>>> refs/remotes/origin/master
 }
 
 void ixgbe_dcb_unpack_bwgid(struct ixgbe_dcb_config *cfg, int direction,
 			    u8 *bwgid)
 {
+<<<<<<< HEAD
 	struct tc_bw_alloc *p;
 	int i;
 
@@ -217,11 +248,19 @@ void ixgbe_dcb_unpack_bwgid(struct ixgbe_dcb_config *cfg, int direction,
 		p = &cfg->tc_config[i].path[direction];
 		bwgid[i] = p->bwg_id;
 	}
+=======
+	struct tc_configuration *tc_config = &cfg->tc_config[0];
+	int tc;
+
+	for (tc = 0; tc < MAX_TRAFFIC_CLASS; tc++)
+		bwgid[tc] = tc_config[tc].path[direction].bwg_id;
+>>>>>>> refs/remotes/origin/master
 }
 
 void ixgbe_dcb_unpack_prio(struct ixgbe_dcb_config *cfg, int direction,
 			    u8 *ptype)
 {
+<<<<<<< HEAD
 	struct tc_bw_alloc *p;
 	int i;
 
@@ -229,10 +268,41 @@ void ixgbe_dcb_unpack_prio(struct ixgbe_dcb_config *cfg, int direction,
 		p = &cfg->tc_config[i].path[direction];
 		ptype[i] = p->prio_type;
 	}
+=======
+	struct tc_configuration *tc_config = &cfg->tc_config[0];
+	int tc;
+
+	for (tc = 0; tc < MAX_TRAFFIC_CLASS; tc++)
+		ptype[tc] = tc_config[tc].path[direction].prio_type;
+}
+
+u8 ixgbe_dcb_get_tc_from_up(struct ixgbe_dcb_config *cfg, int direction, u8 up)
+{
+	struct tc_configuration *tc_config = &cfg->tc_config[0];
+	u8 prio_mask = 1 << up;
+	u8 tc = cfg->num_tcs.pg_tcs;
+
+	/* If tc is 0 then DCB is likely not enabled or supported */
+	if (!tc)
+		goto out;
+
+	/*
+	 * Test from maximum TC to 1 and report the first match we find.  If
+	 * we find no match we can assume that the TC is 0 since the TC must
+	 * be set for all user priorities
+	 */
+	for (tc--; tc; tc--) {
+		if (prio_mask & tc_config[tc].path[direction].up_to_tc_bitmap)
+			break;
+	}
+out:
+	return tc;
+>>>>>>> refs/remotes/origin/master
 }
 
 void ixgbe_dcb_unpack_map(struct ixgbe_dcb_config *cfg, int direction, u8 *map)
 {
+<<<<<<< HEAD
 	int i, up;
 	unsigned long bitmap;
 
@@ -241,6 +311,12 @@ void ixgbe_dcb_unpack_map(struct ixgbe_dcb_config *cfg, int direction, u8 *map)
 		for_each_set_bit(up, &bitmap, MAX_USER_PRIORITY)
 			map[up] = i;
 	}
+=======
+	u8 up;
+
+	for (up = 0; up < MAX_USER_PRIORITY; up++)
+		map[up] = ixgbe_dcb_get_tc_from_up(cfg, direction, up);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -364,3 +440,29 @@ s32 ixgbe_dcb_hw_ets_config(struct ixgbe_hw *hw,
 	}
 	return 0;
 }
+<<<<<<< HEAD
+=======
+
+static void ixgbe_dcb_read_rtrup2tc_82599(struct ixgbe_hw *hw, u8 *map)
+{
+	u32 reg, i;
+
+	reg = IXGBE_READ_REG(hw, IXGBE_RTRUP2TC);
+	for (i = 0; i < MAX_USER_PRIORITY; i++)
+		map[i] = IXGBE_RTRUP2TC_UP_MASK &
+			(reg >> (i * IXGBE_RTRUP2TC_UP_SHIFT));
+	return;
+}
+
+void ixgbe_dcb_read_rtrup2tc(struct ixgbe_hw *hw, u8 *map)
+{
+	switch (hw->mac.type) {
+	case ixgbe_mac_82599EB:
+	case ixgbe_mac_X540:
+		ixgbe_dcb_read_rtrup2tc_82599(hw, map);
+		break;
+	default:
+		break;
+	}
+}
+>>>>>>> refs/remotes/origin/master

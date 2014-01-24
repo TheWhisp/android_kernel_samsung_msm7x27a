@@ -6,6 +6,11 @@
  * Contains common routines for sun3/sun3x DVMA management.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/bootmem.h>
+#include <linux/init.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/gfp.h>
@@ -30,7 +35,11 @@ static inline void dvma_unmap_iommu(unsigned long a, int b)
 extern void sun3_dvma_init(void);
 #endif
 
+<<<<<<< HEAD
 static unsigned long iommu_use[IOMMU_TOTAL_ENTRIES];
+=======
+static unsigned long *iommu_use;
+>>>>>>> refs/remotes/origin/master
 
 #define dvma_index(baddr) ((baddr - DVMA_START) >> DVMA_PAGE_SHIFT)
 
@@ -245,7 +254,11 @@ static inline int free_baddr(unsigned long baddr)
 
 }
 
+<<<<<<< HEAD
 void dvma_init(void)
+=======
+void __init dvma_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 
 	struct hole *hole;
@@ -265,7 +278,11 @@ void dvma_init(void)
 
 	list_add(&(hole->list), &hole_list);
 
+<<<<<<< HEAD
 	memset(iommu_use, 0, sizeof(iommu_use));
+=======
+	iommu_use = alloc_bootmem(IOMMU_TOTAL_ENTRIES * sizeof(unsigned long));
+>>>>>>> refs/remotes/origin/master
 
 	dvma_unmap_iommu(DVMA_START, DVMA_SIZE);
 
@@ -275,7 +292,11 @@ void dvma_init(void)
 
 }
 
+<<<<<<< HEAD
 inline unsigned long dvma_map_align(unsigned long kaddr, int len, int align)
+=======
+unsigned long dvma_map_align(unsigned long kaddr, int len, int align)
+>>>>>>> refs/remotes/origin/master
 {
 
 	unsigned long baddr;

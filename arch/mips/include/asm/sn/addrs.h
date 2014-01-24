@@ -88,8 +88,13 @@
 
 #define SWIN_SIZE_BITS		24
 #define SWIN_SIZE		(UINT64_CAST 1 << 24)
+<<<<<<< HEAD
 #define	SWIN_SIZEMASK		(SWIN_SIZE - 1)
 #define	SWIN_WIDGET_MASK	0xF
+=======
+#define SWIN_SIZEMASK		(SWIN_SIZE - 1)
+#define SWIN_WIDGET_MASK	0xF
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Convert smallwindow address to xtalk address.
@@ -97,8 +102,13 @@
  * 'addr' can be physical or virtual address, but will be converted
  * to Xtalk address in the range 0 -> SWINZ_SIZEMASK
  */
+<<<<<<< HEAD
 #define	SWIN_WIDGETADDR(addr)	((addr) & SWIN_SIZEMASK)
 #define	SWIN_WIDGETNUM(addr)	(((addr)  >> SWIN_SIZE_BITS) & SWIN_WIDGET_MASK)
+=======
+#define SWIN_WIDGETADDR(addr)	((addr) & SWIN_SIZEMASK)
+#define SWIN_WIDGETNUM(addr)	(((addr)  >> SWIN_SIZE_BITS) & SWIN_WIDGET_MASK)
+>>>>>>> refs/remotes/origin/master
 /*
  * Verify if addr belongs to small window address on node with "nasid"
  *
@@ -108,7 +118,11 @@
  *
  *
  */
+<<<<<<< HEAD
 #define	NODE_SWIN_ADDR(nasid, addr)	\
+=======
+#define NODE_SWIN_ADDR(nasid, addr)	\
+>>>>>>> refs/remotes/origin/master
 		(((addr) >= NODE_SWIN_BASE(nasid, 0))  && \
 		 ((addr) <  (NODE_SWIN_BASE(nasid, HUB_NUM_WIDGET) + SWIN_SIZE)\
 		 ))
@@ -150,7 +164,11 @@
 
 #endif
 
+<<<<<<< HEAD
 #define	HUB_REGISTER_WIDGET	1
+=======
+#define HUB_REGISTER_WIDGET	1
+>>>>>>> refs/remotes/origin/master
 #define IALIAS_BASE		NODE_SWIN_BASE(0, HUB_REGISTER_WIDGET)
 #define IALIAS_SIZE		0x800000	/* 8 Megabytes */
 #define IS_IALIAS(_a)		(((_a) >= IALIAS_BASE) &&		\
@@ -174,6 +192,7 @@
  *   WARNING: They won't work in assembler.
  *
  *   BDDIR_ENTRY_LO returns the address of the low double-word of the dir
+<<<<<<< HEAD
  *                  entry corresponding to a physical (Cac or Uncac) address.
  *   BDDIR_ENTRY_HI returns the address of the high double-word of the entry.
  *   BDPRT_ENTRY    returns the address of the double-word protection entry
@@ -184,6 +203,18 @@
  *                  double-word at a specified physical address.
  *   BDECC_ENTRY_H  returns the address of the two ECC bytes corresponding to a
  *                  quad-word at a specified physical address.
+=======
+ *		    entry corresponding to a physical (Cac or Uncac) address.
+ *   BDDIR_ENTRY_HI returns the address of the high double-word of the entry.
+ *   BDPRT_ENTRY    returns the address of the double-word protection entry
+ *		    corresponding to the page containing the physical address.
+ *   BDPRT_ENTRY_S  Stores the value into the protection entry.
+ *   BDPRT_ENTRY_L  Load the value from the protection entry.
+ *   BDECC_ENTRY    returns the address of the ECC byte corresponding to a
+ *		    double-word at a specified physical address.
+ *   BDECC_ENTRY_H  returns the address of the two ECC bytes corresponding to a
+ *		    quad-word at a specified physical address.
+>>>>>>> refs/remotes/origin/master
  */
 #define NODE_BDOOR_BASE(_n)	(NODE_HSPEC_BASE(_n) + (NODE_ADDRSPACE_SIZE/2))
 
@@ -226,11 +257,19 @@
 #define BDADDR_IS_DIR(_ba)	((UINT64_CAST  (_ba) & 0x200) != 0)
 #define BDADDR_IS_PRT(_ba)	((UINT64_CAST  (_ba) & 0x200) == 0)
 
+<<<<<<< HEAD
 #define BDDIR_TO_MEM(_ba)	(UINT64_CAST (_ba) & NASID_MASK            | \
 				 (UINT64_CAST(_ba) & BDDIR_UPPER_MASK)<<2  | \
 				 (UINT64_CAST(_ba) & 0x1f << 4) << 3)
 
 #define BDPRT_TO_MEM(_ba) 	(UINT64_CAST (_ba) & NASID_MASK	    | \
+=======
+#define BDDIR_TO_MEM(_ba)	(UINT64_CAST (_ba) & NASID_MASK		   | \
+				 (UINT64_CAST(_ba) & BDDIR_UPPER_MASK)<<2  | \
+				 (UINT64_CAST(_ba) & 0x1f << 4) << 3)
+
+#define BDPRT_TO_MEM(_ba)	(UINT64_CAST (_ba) & NASID_MASK	    | \
+>>>>>>> refs/remotes/origin/master
 				 (UINT64_CAST(_ba) & BDDIR_UPPER_MASK)<<2)
 
 #define BDECC_TO_MEM(_ba)	(UINT64_CAST (_ba) & NASID_MASK	    | \
@@ -251,23 +290,38 @@
 /*
  * WARNING:
  *	When certain Hub chip workaround are defined, it's not sufficient
+<<<<<<< HEAD
  *	to dereference the *_HUB_ADDR() macros.  You should instead use
+=======
+ *	to dereference the *_HUB_ADDR() macros.	 You should instead use
+>>>>>>> refs/remotes/origin/master
  *	HUB_L() and HUB_S() if you must deal with pointers to hub registers.
  *	Otherwise, the recommended approach is to use *_HUB_L() and *_HUB_S().
  *	They're always safe.
  */
 #define LOCAL_HUB_ADDR(_x)	(HUBREG_CAST (IALIAS_BASE + (_x)))
+<<<<<<< HEAD
 #define REMOTE_HUB_ADDR(_n, _x)	(HUBREG_CAST (NODE_SWIN_BASE(_n, 1) +	\
 					      0x800000 + (_x)))
 #ifdef CONFIG_SGI_IP27
 #define REMOTE_HUB_PI_ADDR(_n, _sn, _x)	(HUBREG_CAST (NODE_SWIN_BASE(_n, 1) +	\
+=======
+#define REMOTE_HUB_ADDR(_n, _x) (HUBREG_CAST (NODE_SWIN_BASE(_n, 1) +	\
+					      0x800000 + (_x)))
+#ifdef CONFIG_SGI_IP27
+#define REMOTE_HUB_PI_ADDR(_n, _sn, _x) (HUBREG_CAST (NODE_SWIN_BASE(_n, 1) +	\
+>>>>>>> refs/remotes/origin/master
 					      0x800000 + (_x)))
 #endif /* CONFIG_SGI_IP27 */
 
 #ifndef __ASSEMBLY__
 
 #define HUB_L(_a)			*(_a)
+<<<<<<< HEAD
 #define	HUB_S(_a, _d)			*(_a) = (_d)
+=======
+#define HUB_S(_a, _d)			*(_a) = (_d)
+>>>>>>> refs/remotes/origin/master
 
 #define LOCAL_HUB_L(_r)			HUB_L(LOCAL_HUB_ADDR(_r))
 #define LOCAL_HUB_S(_r, _d)		HUB_S(LOCAL_HUB_ADDR(_r), (_d))
@@ -330,6 +384,7 @@
 
 #define KLI_LAUNCH		0		/* Dir. entries */
 #define KLI_KLCONFIG		1
+<<<<<<< HEAD
 #define	KLI_NMI			2
 #define KLI_GDA			3
 #define KLI_FREEMEM		4
@@ -338,6 +393,16 @@
 #define KLI_KERN_VARS		7
 #define	KLI_KERN_XP		8
 #define	KLI_KERN_PARTID		9
+=======
+#define KLI_NMI			2
+#define KLI_GDA			3
+#define KLI_FREEMEM		4
+#define KLI_SYMMON_STK		5
+#define KLI_PI_ERROR		6
+#define KLI_KERN_VARS		7
+#define KLI_KERN_XP		8
+#define KLI_KERN_PARTID		9
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 
@@ -350,8 +415,13 @@
 #define KLD_SYMMON_STK(nasid)	(KLD_BASE(nasid) + KLI_SYMMON_STK)
 #define KLD_FREEMEM(nasid)	(KLD_BASE(nasid) + KLI_FREEMEM)
 #define KLD_KERN_VARS(nasid)	(KLD_BASE(nasid) + KLI_KERN_VARS)
+<<<<<<< HEAD
 #define	KLD_KERN_XP(nasid)	(KLD_BASE(nasid) + KLI_KERN_XP)
 #define	KLD_KERN_PARTID(nasid)	(KLD_BASE(nasid) + KLI_KERN_PARTID)
+=======
+#define KLD_KERN_XP(nasid)	(KLD_BASE(nasid) + KLI_KERN_XP)
+#define KLD_KERN_PARTID(nasid)	(KLD_BASE(nasid) + KLI_KERN_PARTID)
+>>>>>>> refs/remotes/origin/master
 
 #define LAUNCH_OFFSET(nasid, slice)					\
 	(KLD_LAUNCH(nasid)->offset +					\
@@ -365,7 +435,11 @@
 	 KLD_NMI(nasid)->stride * (slice))
 #define NMI_ADDR(nasid, slice)						\
 	TO_NODE_UNCAC((nasid), SN_NMI_OFFSET(nasid, slice))
+<<<<<<< HEAD
 #define NMI_SIZE(nasid)	KLD_NMI(nasid)->size
+=======
+#define NMI_SIZE(nasid) KLD_NMI(nasid)->size
+>>>>>>> refs/remotes/origin/master
 
 #define KLCONFIG_OFFSET(nasid)	KLD_KLCONFIG(nasid)->offset
 #define KLCONFIG_ADDR(nasid)						\
@@ -390,8 +464,13 @@
 /* loading symmon 4k below UNIX. the arcs loader needs the topaddr for a
  * relocatable program
  */
+<<<<<<< HEAD
 #define	UNIX_DEBUG_LOADADDR	0x300000
 #define	SYMMON_LOADADDR(nasid)						\
+=======
+#define UNIX_DEBUG_LOADADDR	0x300000
+#define SYMMON_LOADADDR(nasid)						\
+>>>>>>> refs/remotes/origin/master
 	TO_NODE(nasid, PHYS_TO_K0(UNIX_DEBUG_LOADADDR - 0x1000))
 
 #define FREEMEM_OFFSET(nasid)	KLD_FREEMEM(nasid)->offset
@@ -420,8 +499,13 @@
 #define KERN_VARS_ADDR(nasid)	KLD_KERN_VARS(nasid)->pointer
 #define KERN_VARS_SIZE(nasid)	KLD_KERN_VARS(nasid)->size
 
+<<<<<<< HEAD
 #define	KERN_XP_ADDR(nasid)	KLD_KERN_XP(nasid)->pointer
 #define	KERN_XP_SIZE(nasid)	KLD_KERN_XP(nasid)->size
+=======
+#define KERN_XP_ADDR(nasid)	KLD_KERN_XP(nasid)->pointer
+#define KERN_XP_SIZE(nasid)	KLD_KERN_XP(nasid)->size
+>>>>>>> refs/remotes/origin/master
 
 #define GPDA_ADDR(nasid)	TO_NODE_CAC(nasid, GPDA_OFFSET)
 

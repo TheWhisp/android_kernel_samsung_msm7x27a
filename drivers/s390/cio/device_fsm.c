@@ -1,8 +1,14 @@
 /*
+<<<<<<< HEAD
  * drivers/s390/cio/device_fsm.c
  * finite state machine for device handling
  *
  *    Copyright IBM Corp. 2002,2008
+=======
+ * finite state machine for device handling
+ *
+ *    Copyright IBM Corp. 2002, 2008
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Cornelia Huck (cornelia.huck@de.ibm.com)
  *		 Martin Schwidefsky (schwidefsky@de.ibm.com)
  */
@@ -48,7 +54,11 @@ static void ccw_timeout_log(struct ccw_device *cdev)
 	cc = stsch_err(sch->schid, &schib);
 
 	printk(KERN_WARNING "cio: ccw device timeout occurred at %llx, "
+<<<<<<< HEAD
 	       "device information:\n", get_clock());
+=======
+	       "device information:\n", get_tod_clock());
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_WARNING "cio: orb:\n");
 	print_hex_dump(KERN_WARNING, "cio:  ", DUMP_PREFIX_NONE, 16, 1,
 		       orb, sizeof(*orb), 0);
@@ -497,9 +507,12 @@ static void ccw_device_reset_path_events(struct ccw_device *cdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void
 ccw_device_verify_done(struct ccw_device *cdev, int err)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void create_fake_irb(struct irb *irb, int type)
 {
 	memset(irb, 0, sizeof(*irb));
@@ -520,7 +533,10 @@ static void create_fake_irb(struct irb *irb, int type)
 }
 
 void ccw_device_verify_done(struct ccw_device *cdev, int err)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct subchannel *sch;
 
@@ -544,6 +560,7 @@ callback:
 		/* Deliver fake irb to device driver, if needed. */
 		if (cdev->private->flags.fake_irb) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			memset(&cdev->private->irb, 0, sizeof(struct irb));
 			cdev->private->irb.scsw.cmd.cc = 1;
 			cdev->private->irb.scsw.cmd.fctl = SCSW_FCTL_START_FUNC;
@@ -554,6 +571,10 @@ callback:
 			create_fake_irb(&cdev->private->irb,
 					cdev->private->flags.fake_irb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			create_fake_irb(&cdev->private->irb,
+					cdev->private->flags.fake_irb);
+>>>>>>> refs/remotes/origin/master
 			cdev->private->flags.fake_irb = 0;
 			if (cdev->handler)
 				cdev->handler(cdev, cdev->private->intparm,

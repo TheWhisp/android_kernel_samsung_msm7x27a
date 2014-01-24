@@ -2,10 +2,14 @@
  * SDRC register values for Nokia boards
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2008, 2010 Nokia Corporation
 =======
  * Copyright (C) 2008, 2010-2011 Nokia Corporation
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2008, 2010-2011 Nokia Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * Lauri Leukkunen <lauri.leukkunen@nokia.com>
  *
@@ -22,6 +26,7 @@
 #include <linux/io.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/io.h>
 #include <plat/common.h>
 =======
@@ -31,6 +36,11 @@
 #include <plat/sdrc.h>
 
 #include "sdram-nokia.h"
+=======
+#include "common.h"
+#include "sdram-nokia.h"
+#include "sdrc.h"
+>>>>>>> refs/remotes/origin/master
 
 /* In picoseconds, except for tREF (ns), tXP, tCKE, tWTR (clks) */
 struct sdram_timings {
@@ -116,7 +126,10 @@ static const struct sdram_timings nokia_195dot2mhz_timings[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct sdram_timings nokia_200mhz_timings[] = {
 	{
 		.casl = 3,
@@ -138,7 +151,10 @@ static const struct sdram_timings nokia_200mhz_timings[] = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct {
 	long rate;
 	struct sdram_timings const *data;
@@ -146,14 +162,20 @@ static const struct {
 	{ 83000000, nokia_166mhz_timings },
 	{ 97600000, nokia_97dot6mhz_timings },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ 166000000, nokia_166mhz_timings },
 	{ 195200000, nokia_195dot2mhz_timings },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{ 100000000, nokia_200mhz_timings },
 	{ 166000000, nokia_166mhz_timings },
 	{ 195200000, nokia_195dot2mhz_timings },
 	{ 200000000, nokia_200mhz_timings },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 static struct omap_sdrc_params nokia_sdrc_params[ARRAY_SIZE(nokia_timings) + 1];
 

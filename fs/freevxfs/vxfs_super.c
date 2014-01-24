@@ -52,7 +52,10 @@ MODULE_AUTHOR("Christoph Hellwig");
 MODULE_DESCRIPTION("Veritas Filesystem (VxFS) driver");
 MODULE_LICENSE("Dual BSD/GPL");
 
+<<<<<<< HEAD
 MODULE_ALIAS("vxfs"); /* makes mount -t vxfs autoload the module */
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 static void		vxfs_put_super(struct super_block *);
@@ -225,6 +228,7 @@ static int vxfs_fill_super(struct super_block *sbp, void *dp, int silent)
 		goto out;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sbp->s_root = d_alloc_root(root);
 	if (!sbp->s_root) {
 		iput(root);
@@ -232,6 +236,10 @@ static int vxfs_fill_super(struct super_block *sbp, void *dp, int silent)
 	sbp->s_root = d_make_root(root);
 	if (!sbp->s_root) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sbp->s_root = d_make_root(root);
+	if (!sbp->s_root) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "vxfs: unable to get root dentry.\n");
 		goto out_free_ilist;
 	}
@@ -264,6 +272,11 @@ static struct file_system_type vxfs_fs_type = {
 	.kill_sb	= kill_block_super,
 	.fs_flags	= FS_REQUIRES_DEV,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("vxfs"); /* makes mount -t vxfs autoload the module */
+MODULE_ALIAS("vxfs");
+>>>>>>> refs/remotes/origin/master
 
 static int __init
 vxfs_init(void)
@@ -285,6 +298,14 @@ static void __exit
 vxfs_cleanup(void)
 {
 	unregister_filesystem(&vxfs_fs_type);
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(vxfs_inode_cachep);
 }
 

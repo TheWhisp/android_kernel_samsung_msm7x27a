@@ -33,6 +33,7 @@ static struct console early_ocd_console = {
 	.index =	-1,
 };
 
+<<<<<<< HEAD
 /* Direct interface for emergencies */
 static struct console *early_console = &early_ocd_console;
 
@@ -41,13 +42,24 @@ static int __initdata keep_early;
 static int __init setup_early_printk(char *buf)
 {
 	if (!buf)
+=======
+static int __init setup_early_printk(char *buf)
+{
+	int keep_early;
+
+	if (!buf || early_console)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	if (strstr(buf, "keep"))
 		keep_early = 1;
 
+<<<<<<< HEAD
 	if (!strncmp(buf, "ocd", 3))
 		early_console = &early_ocd_console;
+=======
+	early_console = &early_ocd_console;
+>>>>>>> refs/remotes/origin/master
 
 	if (keep_early)
 		early_console->flags &= ~CON_BOOT;

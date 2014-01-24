@@ -23,6 +23,10 @@
 #include <linux/mutex.h>
 #include <linux/kref.h>
 #include <linux/sysfs.h>
+<<<<<<< HEAD
+=======
+#include <linux/workqueue.h>
+>>>>>>> refs/remotes/origin/master
 
 struct hd_geometry;
 struct mtd_info;
@@ -43,6 +47,7 @@ struct mtd_blktrans_dev {
 	struct kref ref;
 	struct gendisk *disk;
 	struct attribute_group *disk_attributes;
+<<<<<<< HEAD
 	struct task_struct *thread;
 	struct request_queue *rq;
 	spinlock_t queue_lock;
@@ -51,6 +56,14 @@ struct mtd_blktrans_dev {
 =======
 	fmode_t file_mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct workqueue_struct *wq;
+	struct work_struct work;
+	struct request_queue *rq;
+	spinlock_t queue_lock;
+	void *priv;
+	fmode_t file_mode;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mtd_blktrans_ops {
@@ -75,7 +88,11 @@ struct mtd_blktrans_ops {
 
 	/* Called with mtd_table_mutex held; no race with add/remove */
 	int (*open)(struct mtd_blktrans_dev *dev);
+<<<<<<< HEAD
 	int (*release)(struct mtd_blktrans_dev *dev);
+=======
+	void (*release)(struct mtd_blktrans_dev *dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* Called on {de,}registration and on subsequent addition/removal
 	   of devices, with mtd_table_mutex held. */

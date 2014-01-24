@@ -22,6 +22,7 @@
 #include <arch/spr_def.h>
 #include <asm/timex.h>
 
+<<<<<<< HEAD
 /*
  * read_barrier_depends - Flush all pending reads that subsequents reads
  * depend on.
@@ -78,6 +79,10 @@
 #define __sync()	__insn_mf()
 
 #if !CHIP_HAS_MF_WAITS_FOR_VICTIMS()
+=======
+#define __sync()	__insn_mf()
+
+>>>>>>> refs/remotes/origin/master
 #include <hv/syscall_public.h>
 /*
  * Issue an uncacheable load to each memory controller, then
@@ -96,7 +101,10 @@ static inline void __mb_incoherent(void)
 		       "r20", "r21", "r22", "r23", "r24",
 		       "r25", "r26", "r27", "r28", "r29");
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Fence to guarantee visibility of stores to incoherent memory. */
 static inline void
@@ -104,7 +112,10 @@ mb_incoherent(void)
 {
 	__insn_mf();
 
+<<<<<<< HEAD
 #if !CHIP_HAS_MF_WAITS_FOR_VICTIMS()
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 #if CHIP_HAS_TILE_WRITE_PENDING()
 		const unsigned long WRITE_TIMEOUT_CYCLES = 400;
@@ -116,7 +127,10 @@ mb_incoherent(void)
 #endif /* CHIP_HAS_TILE_WRITE_PENDING() */
 		(void) __mb_incoherent();
 	}
+<<<<<<< HEAD
 #endif /* CHIP_HAS_MF_WAITS_FOR_VICTIMS() */
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #define fast_wmb()	__sync()
@@ -129,6 +143,7 @@ mb_incoherent(void)
 #define mb()		fast_mb()
 #define iob()		fast_iob()
 
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 #define smp_mb()	mb()
 #define smp_rmb()	rmb()
@@ -143,6 +158,9 @@ mb_incoherent(void)
 
 #define set_mb(var, value) \
 	do { var = value; mb(); } while (0)
+=======
+#include <asm-generic/barrier.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif /* !__ASSEMBLY__ */
 #endif /* _ASM_TILE_BARRIER_H */

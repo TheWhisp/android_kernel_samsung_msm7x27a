@@ -28,12 +28,19 @@
 #include <linux/wait.h>
 #include <linux/mutex.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/workqueue.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #if defined(CONFIG_SND_SEQUENCER) || defined(CONFIG_SND_SEQUENCER_MODULE)
 #include "seq_device.h"
+=======
+#include <linux/workqueue.h>
+
+#if defined(CONFIG_SND_SEQUENCER) || defined(CONFIG_SND_SEQUENCER_MODULE)
+#include <sound/seq_device.h>
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -68,9 +75,13 @@ struct snd_rawmidi_global_ops {
 
 struct snd_rawmidi_runtime {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct snd_rawmidi_substream *substream;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_rawmidi_substream *substream;
+>>>>>>> refs/remotes/origin/master
 	unsigned int drain: 1,	/* drain stage */
 		     oss: 1;	/* OSS compatible mode */
 	/* midi stream buffer */
@@ -88,10 +99,14 @@ struct snd_rawmidi_runtime {
 	void (*event)(struct snd_rawmidi_substream *substream);
 	/* defers calls to event [input] or ops->trigger [output] */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tasklet_struct tasklet;
 =======
 	struct work_struct event_work;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct work_struct event_work;
+>>>>>>> refs/remotes/origin/master
 	/* private data */
 	void *private_data;
 	void (*private_free)(struct snd_rawmidi_substream *substream);

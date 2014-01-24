@@ -1,16 +1,23 @@
 /******************************************************************************
  *
  * Module Name: nspredef - Validation of ACPI predefined methods and objects
+<<<<<<< HEAD
  *              $Revision: 1.1 $
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *****************************************************************************/
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,18 +73,28 @@ ACPI_MODULE_NAME("nspredef")
  * There are several areas that are validated:
  *
  *  1) The number of input arguments as defined by the method/object in the
+<<<<<<< HEAD
  *      ASL is validated against the ACPI specification.
  *  2) The type of the return object (if any) is validated against the ACPI
  *      specification.
  *  3) For returned package objects, the count of package elements is
  *      validated, as well as the type of each package element. Nested
  *      packages are supported.
+=======
+ *     ASL is validated against the ACPI specification.
+ *  2) The type of the return object (if any) is validated against the ACPI
+ *     specification.
+ *  3) For returned package objects, the count of package elements is
+ *     validated, as well as the type of each package element. Nested
+ *     packages are supported.
+>>>>>>> refs/remotes/origin/master
  *
  * For any problems found, a warning message is issued.
  *
  ******************************************************************************/
 /* Local prototypes */
 static acpi_status
+<<<<<<< HEAD
 acpi_ns_check_package(struct acpi_predefined_data *data,
 		      union acpi_operand_object **return_object_ptr);
 
@@ -121,6 +138,19 @@ static const char *acpi_rtype_names[] = {
  * FUNCTION:    acpi_ns_check_predefined_names
  *
  * PARAMETERS:  Node            - Namespace node for the method/object
+=======
+acpi_ns_check_reference(struct acpi_evaluate_info *info,
+			union acpi_operand_object *return_object);
+
+static u32 acpi_ns_get_bitmapped_type(union acpi_operand_object *return_object);
+
+/*******************************************************************************
+ *
+ * FUNCTION:    acpi_ns_check_return_value
+ *
+ * PARAMETERS:  node            - Namespace node for the method/object
+ *              info            - Method execution information block
+>>>>>>> refs/remotes/origin/master
  *              user_param_count - Number of parameters actually passed
  *              return_status   - Status from the object evaluation
  *              return_object_ptr - Pointer to the object returned from the
@@ -128,11 +158,16 @@ static const char *acpi_rtype_names[] = {
  *
  * RETURN:      Status
  *
+<<<<<<< HEAD
  * DESCRIPTION: Check an ACPI name for a match in the predefined name list.
+=======
+ * DESCRIPTION: Check the value returned from a predefined name.
+>>>>>>> refs/remotes/origin/master
  *
  ******************************************************************************/
 
 acpi_status
+<<<<<<< HEAD
 acpi_ns_check_predefined_names(struct acpi_namespace_node *node,
 			       u32 user_param_count,
 			       acpi_status return_status,
@@ -167,6 +202,22 @@ acpi_ns_check_predefined_names(struct acpi_namespace_node *node,
 
 	if (!predefined) {
 		goto cleanup;
+=======
+acpi_ns_check_return_value(struct acpi_namespace_node *node,
+			   struct acpi_evaluate_info *info,
+			   u32 user_param_count,
+			   acpi_status return_status,
+			   union acpi_operand_object **return_object_ptr)
+{
+	acpi_status status;
+	const union acpi_predefined_info *predefined;
+
+	/* If not a predefined name, we cannot validate the return object */
+
+	predefined = info->predefined;
+	if (!predefined) {
+		return (AE_OK);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -174,6 +225,7 @@ acpi_ns_check_predefined_names(struct acpi_namespace_node *node,
 	 * validate the return object
 	 */
 	if ((return_status != AE_OK) && (return_status != AE_CTRL_RETURN_VALUE)) {
+<<<<<<< HEAD
 		goto cleanup;
 	}
 
@@ -207,6 +259,12 @@ acpi_ns_check_predefined_names(struct acpi_namespace_node *node,
 	 */
 	if ((!predefined->info.expected_btypes) ||
 =======
+=======
+		return (AE_OK);
+	}
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * Return value validation and possible repair.
 	 *
 	 * 1) Don't perform return value validation/repair if this feature
@@ -221,6 +279,7 @@ acpi_ns_check_predefined_names(struct acpi_namespace_node *node,
 	 */
 	if (acpi_gbl_disable_auto_repair ||
 	    (!predefined->info.expected_btypes) ||
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	    (predefined->info.expected_btypes == ACPI_RTYPE_ALL)) {
 		goto cleanup;
@@ -236,12 +295,21 @@ acpi_ns_check_predefined_names(struct acpi_namespace_node *node,
 	data->node = node;
 	data->node_flags = node->flags;
 	data->pathname = pathname;
+=======
+	    (predefined->info.expected_btypes == ACPI_RTYPE_ALL)) {
+		return (AE_OK);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Check that the type of the main return object is what is expected
 	 * for this predefined name
 	 */
+<<<<<<< HEAD
 	status = acpi_ns_check_object_type(data, return_object_ptr,
+=======
+	status = acpi_ns_check_object_type(info, return_object_ptr,
+>>>>>>> refs/remotes/origin/master
 					   predefined->info.expected_btypes,
 					   ACPI_NOT_PACKAGE_ELEMENT);
 	if (ACPI_FAILURE(status)) {
@@ -249,14 +317,39 @@ acpi_ns_check_predefined_names(struct acpi_namespace_node *node,
 	}
 
 	/*
+<<<<<<< HEAD
+=======
+	 *
+	 * 4) If there is no return value and it is optional, just return
+	 * AE_OK (_WAK).
+	 */
+	if (!(*return_object_ptr)) {
+		goto exit;
+	}
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * For returned Package objects, check the type of all sub-objects.
 	 * Note: Package may have been newly created by call above.
 	 */
 	if ((*return_object_ptr)->common.type == ACPI_TYPE_PACKAGE) {
+<<<<<<< HEAD
 		data->parent_package = *return_object_ptr;
 		status = acpi_ns_check_package(data, return_object_ptr);
 		if (ACPI_FAILURE(status)) {
 			goto exit;
+=======
+		info->parent_package = *return_object_ptr;
+		status = acpi_ns_check_package(info, return_object_ptr);
+		if (ACPI_FAILURE(status)) {
+
+			/* We might be able to fix some errors */
+
+			if ((status != AE_AML_OPERAND_TYPE) &&
+			    (status != AE_AML_OPERAND_VALUE)) {
+				goto exit;
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -268,7 +361,11 @@ acpi_ns_check_predefined_names(struct acpi_namespace_node *node,
 	 * performed on a per-name basis, i.e., the code is specific to
 	 * particular predefined names.
 	 */
+<<<<<<< HEAD
 	status = acpi_ns_complex_repairs(data, node, status, return_object_ptr);
+=======
+	status = acpi_ns_complex_repairs(info, node, status, return_object_ptr);
+>>>>>>> refs/remotes/origin/master
 
 exit:
 	/*
@@ -276,6 +373,7 @@ exit:
 	 * or more objects, mark the parent node to suppress further warning
 	 * messages during the next evaluation of the same method/object.
 	 */
+<<<<<<< HEAD
 	if (ACPI_FAILURE(status) || (data->flags & ACPI_OBJECT_REPAIRED)) {
 		node->flags |= ANOBJ_EVALUATED;
 	}
@@ -283,11 +381,18 @@ exit:
 
 cleanup:
 	ACPI_FREE(pathname);
+=======
+	if (ACPI_FAILURE(status) || (info->return_flags & ACPI_OBJECT_REPAIRED)) {
+		node->flags |= ANOBJ_EVALUATED;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return (status);
 }
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
  * FUNCTION:    acpi_ns_check_parameter_count
  *
  * PARAMETERS:  Pathname        - Full pathname to the node (for error msgs)
@@ -995,6 +1100,11 @@ acpi_ns_check_package_elements(struct acpi_predefined_data *data,
  * FUNCTION:    acpi_ns_check_object_type
  *
  * PARAMETERS:  Data            - Pointer to validation data structure
+=======
+ * FUNCTION:    acpi_ns_check_object_type
+ *
+ * PARAMETERS:  info            - Method execution information block
+>>>>>>> refs/remotes/origin/master
  *              return_object_ptr - Pointer to the object returned from the
  *                                evaluation of a method or object
  *              expected_btypes - Bitmap of expected return type(s)
@@ -1009,13 +1119,19 @@ acpi_ns_check_package_elements(struct acpi_predefined_data *data,
  *
  ******************************************************************************/
 
+<<<<<<< HEAD
 static acpi_status
 acpi_ns_check_object_type(struct acpi_predefined_data *data,
+=======
+acpi_status
+acpi_ns_check_object_type(struct acpi_evaluate_info *info,
+>>>>>>> refs/remotes/origin/master
 			  union acpi_operand_object **return_object_ptr,
 			  u32 expected_btypes, u32 package_index)
 {
 	union acpi_operand_object *return_object = *return_object_ptr;
 	acpi_status status = AE_OK;
+<<<<<<< HEAD
 	u32 return_btype;
 	char type_buffer[48];	/* Room for 5 types */
 
@@ -1039,6 +1155,16 @@ acpi_ns_check_object_type(struct acpi_predefined_data *data,
 
 	if (ACPI_GET_DESCRIPTOR_TYPE(return_object) == ACPI_DESC_TYPE_NAMED) {
 		ACPI_WARN_PREDEFINED((AE_INFO, data->pathname, data->node_flags,
+=======
+	char type_buffer[48];	/* Room for 5 types */
+
+	/* A Namespace node should not get here, but make sure */
+
+	if (return_object &&
+	    ACPI_GET_DESCRIPTOR_TYPE(return_object) == ACPI_DESC_TYPE_NAMED) {
+		ACPI_WARN_PREDEFINED((AE_INFO, info->full_pathname,
+				      info->node_flags,
+>>>>>>> refs/remotes/origin/master
 				      "Invalid return type - Found a Namespace node [%4.4s] type %s",
 				      return_object->node.name.ascii,
 				      acpi_ut_get_type_name(return_object->node.
@@ -1054,6 +1180,7 @@ acpi_ns_check_object_type(struct acpi_predefined_data *data,
 	 * from all of the predefined names (including elements of returned
 	 * packages)
 	 */
+<<<<<<< HEAD
 	switch (return_object->common.type) {
 	case ACPI_TYPE_INTEGER:
 		return_btype = ACPI_RTYPE_INTEGER;
@@ -1110,11 +1237,54 @@ acpi_ns_check_object_type(struct acpi_predefined_data *data,
 
 	if (package_index == ACPI_NOT_PACKAGE_ELEMENT) {
 		ACPI_WARN_PREDEFINED((AE_INFO, data->pathname, data->node_flags,
+=======
+	info->return_btype = acpi_ns_get_bitmapped_type(return_object);
+	if (info->return_btype == ACPI_RTYPE_ANY) {
+
+		/* Not one of the supported objects, must be incorrect */
+		goto type_error_exit;
+	}
+
+	/* For reference objects, check that the reference type is correct */
+
+	if ((info->return_btype & expected_btypes) == ACPI_RTYPE_REFERENCE) {
+		status = acpi_ns_check_reference(info, return_object);
+		return (status);
+	}
+
+	/* Attempt simple repair of the returned object if necessary */
+
+	status = acpi_ns_simple_repair(info, expected_btypes,
+				       package_index, return_object_ptr);
+	if (ACPI_SUCCESS(status)) {
+		return (AE_OK);	/* Successful repair */
+	}
+
+type_error_exit:
+
+	/* Create a string with all expected types for this predefined object */
+
+	acpi_ut_get_expected_return_types(type_buffer, expected_btypes);
+
+	if (!return_object) {
+		ACPI_WARN_PREDEFINED((AE_INFO, info->full_pathname,
+				      info->node_flags,
+				      "Expected return object of type %s",
+				      type_buffer));
+	} else if (package_index == ACPI_NOT_PACKAGE_ELEMENT) {
+		ACPI_WARN_PREDEFINED((AE_INFO, info->full_pathname,
+				      info->node_flags,
+>>>>>>> refs/remotes/origin/master
 				      "Return type mismatch - found %s, expected %s",
 				      acpi_ut_get_object_type_name
 				      (return_object), type_buffer));
 	} else {
+<<<<<<< HEAD
 		ACPI_WARN_PREDEFINED((AE_INFO, data->pathname, data->node_flags,
+=======
+		ACPI_WARN_PREDEFINED((AE_INFO, info->full_pathname,
+				      info->node_flags,
+>>>>>>> refs/remotes/origin/master
 				      "Return Package type mismatch at index %u - "
 				      "found %s, expected %s", package_index,
 				      acpi_ut_get_object_type_name
@@ -1128,7 +1298,11 @@ acpi_ns_check_object_type(struct acpi_predefined_data *data,
  *
  * FUNCTION:    acpi_ns_check_reference
  *
+<<<<<<< HEAD
  * PARAMETERS:  Data            - Pointer to validation data structure
+=======
+ * PARAMETERS:  info            - Method execution information block
+>>>>>>> refs/remotes/origin/master
  *              return_object   - Object returned from the evaluation of a
  *                                method or object
  *
@@ -1141,7 +1315,11 @@ acpi_ns_check_object_type(struct acpi_predefined_data *data,
  ******************************************************************************/
 
 static acpi_status
+<<<<<<< HEAD
 acpi_ns_check_reference(struct acpi_predefined_data *data,
+=======
+acpi_ns_check_reference(struct acpi_evaluate_info *info,
+>>>>>>> refs/remotes/origin/master
 			union acpi_operand_object *return_object)
 {
 
@@ -1154,7 +1332,11 @@ acpi_ns_check_reference(struct acpi_predefined_data *data,
 		return (AE_OK);
 	}
 
+<<<<<<< HEAD
 	ACPI_WARN_PREDEFINED((AE_INFO, data->pathname, data->node_flags,
+=======
+	ACPI_WARN_PREDEFINED((AE_INFO, info->full_pathname, info->node_flags,
+>>>>>>> refs/remotes/origin/master
 			      "Return type mismatch - unexpected reference object type [%s] %2.2X",
 			      acpi_ut_get_reference_name(return_object),
 			      return_object->reference.class));
@@ -1164,6 +1346,7 @@ acpi_ns_check_reference(struct acpi_predefined_data *data,
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
  * FUNCTION:    acpi_ns_get_expected_types
  *
  * PARAMETERS:  Buffer          - Pointer to where the string is returned
@@ -1196,4 +1379,63 @@ static void acpi_ns_get_expected_types(char *buffer, u32 expected_btypes)
 		}
 		this_rtype <<= 1;	/* Next Rtype */
 	}
+=======
+ * FUNCTION:    acpi_ns_get_bitmapped_type
+ *
+ * PARAMETERS:  return_object   - Object returned from method/obj evaluation
+ *
+ * RETURN:      Object return type. ACPI_RTYPE_ANY indicates that the object
+ *              type is not supported. ACPI_RTYPE_NONE indicates that no
+ *              object was returned (return_object is NULL).
+ *
+ * DESCRIPTION: Convert object type into a bitmapped object return type.
+ *
+ ******************************************************************************/
+
+static u32 acpi_ns_get_bitmapped_type(union acpi_operand_object *return_object)
+{
+	u32 return_btype;
+
+	if (!return_object) {
+		return (ACPI_RTYPE_NONE);
+	}
+
+	/* Map acpi_object_type to internal bitmapped type */
+
+	switch (return_object->common.type) {
+	case ACPI_TYPE_INTEGER:
+
+		return_btype = ACPI_RTYPE_INTEGER;
+		break;
+
+	case ACPI_TYPE_BUFFER:
+
+		return_btype = ACPI_RTYPE_BUFFER;
+		break;
+
+	case ACPI_TYPE_STRING:
+
+		return_btype = ACPI_RTYPE_STRING;
+		break;
+
+	case ACPI_TYPE_PACKAGE:
+
+		return_btype = ACPI_RTYPE_PACKAGE;
+		break;
+
+	case ACPI_TYPE_LOCAL_REFERENCE:
+
+		return_btype = ACPI_RTYPE_REFERENCE;
+		break;
+
+	default:
+
+		/* Not one of the supported objects, must be incorrect */
+
+		return_btype = ACPI_RTYPE_ANY;
+		break;
+	}
+
+	return (return_btype);
+>>>>>>> refs/remotes/origin/master
 }

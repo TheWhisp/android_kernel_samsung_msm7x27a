@@ -50,6 +50,10 @@ struct svc_pool {
 	unsigned int		sp_nrthreads;	/* # of threads in pool */
 	struct list_head	sp_all_threads;	/* all server threads */
 	struct svc_pool_stats	sp_stats;	/* statistics on pool operation */
+<<<<<<< HEAD
+=======
+	int			sp_task_pending;/* has pending task */
+>>>>>>> refs/remotes/origin/master
 } ____cacheline_aligned_in_smp;
 
 /*
@@ -85,11 +89,16 @@ struct svc_serv {
 	struct svc_pool *	sv_pools;	/* array of thread pools */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void			(*sv_shutdown)(struct svc_serv *serv);
 =======
 	void			(*sv_shutdown)(struct svc_serv *serv,
 					       struct net *net);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void			(*sv_shutdown)(struct svc_serv *serv,
+					       struct net *net);
+>>>>>>> refs/remotes/origin/master
 						/* Callback to use when last thread
 						 * exits.
 						 */
@@ -98,10 +107,14 @@ struct svc_serv {
 						 * adding threads */
 	svc_thread_fn		sv_function;	/* main function for threads */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_NFS_V4_1)
 =======
 #if defined(CONFIG_SUNRPC_BACKCHANNEL)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SUNRPC_BACKCHANNEL)
+>>>>>>> refs/remotes/origin/master
 	struct list_head	sv_cb_list;	/* queue for callback requests
 						 * that arrive over the same
 						 * connection */
@@ -110,10 +123,14 @@ struct svc_serv {
 						 * entries in the svc_cb_list */
 	struct svc_xprt		*sv_bc_xprt;	/* callback on fore channel */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* CONFIG_NFS_V4_1 */
 =======
 #endif /* CONFIG_SUNRPC_BACKCHANNEL */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_SUNRPC_BACKCHANNEL */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -226,6 +243,7 @@ static inline void svc_putu32(struct kvec *iov, __be32 val)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 union svc_addr_u {
     struct in_addr	addr;
     struct in6_addr	addr6;
@@ -233,6 +251,8 @@ union svc_addr_u {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The context of a single thread, including the request currently being
  * processed.
@@ -242,22 +262,31 @@ struct svc_rqst {
 	struct list_head	rq_all;		/* all threads list */
 	struct svc_xprt *	rq_xprt;	/* transport ptr */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sockaddr_storage	rq_addr;	/* peer address */
 	size_t			rq_addrlen;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	struct sockaddr_storage	rq_addr;	/* peer address */
 	size_t			rq_addrlen;
 	struct sockaddr_storage	rq_daddr;	/* dest addr of request
 						 *  - reply from here */
 	size_t			rq_daddrlen;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	struct svc_serv *	rq_server;	/* RPC service definition */
 	struct svc_pool *	rq_pool;	/* thread pool */
 	struct svc_procedure *	rq_procinfo;	/* procedure info */
 	struct auth_ops *	rq_authop;	/* authentication flavour */
+<<<<<<< HEAD
 	u32			rq_flavor;	/* pseudoflavor */
+=======
+>>>>>>> refs/remotes/origin/master
 	struct svc_cred		rq_cred;	/* auth info */
 	void *			rq_xprt_ctxt;	/* transport specific context ptr */
 	struct svc_deferred_req*rq_deferred;	/* deferred request we are replaying */
@@ -268,7 +297,11 @@ struct svc_rqst {
 	struct xdr_buf		rq_res;
 	struct page *		rq_pages[RPCSVC_MAXPAGES];
 	struct page *		*rq_respages;	/* points into rq_pages */
+<<<<<<< HEAD
 	int			rq_resused;	/* number of pages used for result */
+=======
+	struct page *		*rq_next_page; /* next reply page to use */
+>>>>>>> refs/remotes/origin/master
 
 	struct kvec		rq_vec[RPCSVC_MAXPAGES]; /* generally useful.. */
 
@@ -281,11 +314,14 @@ struct svc_rqst {
 				rq_secure  : 1;	/* secure port */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	union svc_addr_u	rq_daddr;	/* dest addr of request
 						 *  - reply from here */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	void *			rq_argp;	/* decoded arguments */
 	void *			rq_resp;	/* xdr'd results */
 	void *			rq_auth_data;	/* flavor-specific data */
@@ -302,9 +338,13 @@ struct svc_rqst {
 	struct auth_domain *	rq_client;	/* RPC peer info */
 	struct auth_domain *	rq_gssclient;	/* "gss/"-style peer info */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int			rq_cachetype;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			rq_cachetype;
+>>>>>>> refs/remotes/origin/master
 	struct svc_cacherep *	rq_cacherep;	/* cache info */
 	int			rq_splice_ok;   /* turned off in gss privacy
 						 * to prevent encrypting page
@@ -313,6 +353,11 @@ struct svc_rqst {
 	struct task_struct	*rq_task;	/* service thread */
 };
 
+<<<<<<< HEAD
+=======
+#define SVC_NET(svc_rqst)	(svc_rqst->rq_xprt->xpt_net)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Rigorous type checking on sockaddr type conversions
  */
@@ -332,7 +377,10 @@ static inline struct sockaddr *svc_addr(const struct svc_rqst *rqst)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct sockaddr_in *svc_daddr_in(const struct svc_rqst *rqst)
 {
 	return (struct sockaddr_in *) &rqst->rq_daddr;
@@ -348,7 +396,10 @@ static inline struct sockaddr *svc_daddr(const struct svc_rqst *rqst)
 	return (struct sockaddr *) &rqst->rq_daddr;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Check buffer bounds after decoding arguments
  */
@@ -374,9 +425,14 @@ xdr_ressize_check(struct svc_rqst *rqstp, __be32 *p)
 
 static inline void svc_free_res_pages(struct svc_rqst *rqstp)
 {
+<<<<<<< HEAD
 	while (rqstp->rq_resused) {
 		struct page **pp = (rqstp->rq_respages +
 				    --rqstp->rq_resused);
+=======
+	while (rqstp->rq_next_page != rqstp->rq_respages) {
+		struct page **pp = --rqstp->rq_next_page;
+>>>>>>> refs/remotes/origin/master
 		if (*pp) {
 			put_page(*pp);
 			*pp = NULL;
@@ -390,11 +446,16 @@ struct svc_deferred_req {
 	struct sockaddr_storage	addr;	/* where reply must go */
 	size_t			addrlen;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	union svc_addr_u	daddr;	/* where reply must come from */
 =======
 	struct sockaddr_storage	daddr;	/* where reply must come from */
 	size_t			daddrlen;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sockaddr_storage	daddr;	/* where reply must come from */
+	size_t			daddrlen;
+>>>>>>> refs/remotes/origin/master
 	struct cache_deferred_req handle;
 	size_t			xprt_hlen;
 	int			argslen;
@@ -456,6 +517,7 @@ struct svc_procedure {
  * Function prototypes.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct svc_serv *svc_create(struct svc_program *, unsigned int,
 			    void (*shutdown)(struct svc_serv *));
 struct svc_rqst *svc_prepare_thread(struct svc_serv *serv,
@@ -464,6 +526,8 @@ void		   svc_exit_thread(struct svc_rqst *);
 struct svc_serv *  svc_create_pooled(struct svc_program *, unsigned int,
 			void (*shutdown)(struct svc_serv *),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int svc_rpcb_setup(struct svc_serv *serv, struct net *net);
 void svc_rpcb_cleanup(struct svc_serv *serv, struct net *net);
 int svc_bind(struct svc_serv *serv, struct net *net);
@@ -474,23 +538,32 @@ struct svc_rqst *svc_prepare_thread(struct svc_serv *serv,
 void		   svc_exit_thread(struct svc_rqst *);
 struct svc_serv *  svc_create_pooled(struct svc_program *, unsigned int,
 			void (*shutdown)(struct svc_serv *, struct net *net),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			svc_thread_fn, struct module *);
 int		   svc_set_num_threads(struct svc_serv *, struct svc_pool *, int);
 int		   svc_pool_stats_open(struct svc_serv *serv, struct file *file);
 void		   svc_destroy(struct svc_serv *);
+<<<<<<< HEAD
 <<<<<<< HEAD
 int		   svc_process(struct svc_rqst *);
 int		   bc_svc_process(struct svc_serv *, struct rpc_rqst *,
 			struct svc_rqst *);
 int		   svc_register(const struct svc_serv *, const int,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void		   svc_shutdown_net(struct svc_serv *, struct net *);
 int		   svc_process(struct svc_rqst *);
 int		   bc_svc_process(struct svc_serv *, struct rpc_rqst *,
 			struct svc_rqst *);
 int		   svc_register(const struct svc_serv *, struct net *, const int,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				const unsigned short, const unsigned short);
 
 void		   svc_wake_up(struct svc_serv *);

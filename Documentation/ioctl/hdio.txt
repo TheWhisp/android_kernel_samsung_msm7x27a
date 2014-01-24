@@ -597,10 +597,14 @@ HDIO_DRIVE_TASKFILE		execute raw taskfile
 
 	  The association between in_flags.all and each enable
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  bitfield flips depending on endianess; fortunately, TASKFILE
 =======
 	  bitfield flips depending on endianness; fortunately, TASKFILE
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  bitfield flips depending on endianness; fortunately, TASKFILE
+>>>>>>> refs/remotes/origin/master
 	  only uses inflags.b.data bit and ignores all other bits.
 	  The end result is that, on any endian machines, it has no
 	  effect other than modifying in_flags on completion.
@@ -725,10 +729,14 @@ HDIO_DRIVE_TASKFILE		execute raw taskfile
 	  [6] Do not access {in|out}_flags->all except for resetting
 	  all the bits.  Always access individual bit fields.  ->all
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  value will flip depending on endianess.  For the same
 =======
 	  value will flip depending on endianness.  For the same
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  value will flip depending on endianness.  For the same
+>>>>>>> refs/remotes/origin/master
 	  reason, do not use IDE_{TASKFILE|HOB}_STD_{OUT|IN}_FLAGS
 	  constants defined in hdreg.h.
 

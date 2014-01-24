@@ -31,7 +31,11 @@
 #include <linux/mutex.h>
 #include <linux/slab.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include "drm_global.h"
+=======
+#include <drm/drm_global.h>
+>>>>>>> refs/remotes/origin/master
 
 struct drm_global_item {
 	struct mutex mutex;
@@ -67,7 +71,10 @@ int drm_global_item_ref(struct drm_global_reference *ref)
 {
 	int ret;
 	struct drm_global_item *item = &glob[ref->global_type];
+<<<<<<< HEAD
 	void *object;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&item->mutex);
 	if (item->refcount == 0) {
@@ -85,7 +92,10 @@ int drm_global_item_ref(struct drm_global_reference *ref)
 	}
 	++item->refcount;
 	ref->object = item->object;
+<<<<<<< HEAD
 	object = item->object;
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&item->mutex);
 	return 0;
 out_err:

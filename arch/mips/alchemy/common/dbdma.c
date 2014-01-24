@@ -41,10 +41,13 @@
 #include <asm/mach-au1x00/au1xxx_dbdma.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_SOC_AU1550) || defined(CONFIG_SOC_AU1200)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The Descriptor Based DMA supports up to 16 channels.
  *
@@ -65,6 +68,7 @@ static dbdma_global_t *dbdma_gptr =
 			(dbdma_global_t *)KSEG1ADDR(AU1550_DBDMA_CONF_PHYS_ADDR);
 static int dbdma_initialized;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static dbdev_tab_t dbdev_tab[] = {
 #ifdef CONFIG_SOC_AU1550
@@ -181,6 +185,8 @@ static dbdev_tab_t dbdev_tab[] = {
 #define DBDEV_TAB_SIZE	ARRAY_SIZE(dbdev_tab)
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static dbdev_tab_t *dbdev_tab;
 
 static dbdev_tab_t au1550_dbdev_tab[] __initdata = {
@@ -315,7 +321,10 @@ static dbdev_tab_t au1300_dbdev_tab[] __initdata = {
 
 /* 32 predefined plus 32 custom */
 #define DBDEV_TAB_SIZE		64
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static chan_tab_t *chan_tab_ptr[NUM_DBDMA_CHANS];
 
@@ -374,7 +383,11 @@ EXPORT_SYMBOL(au1xxx_ddma_del_device);
 u32 au1xxx_dbdma_chan_alloc(u32 srcid, u32 destid,
        void (*callback)(int, void *), void *callparam)
 {
+<<<<<<< HEAD
 	unsigned long   flags;
+=======
+	unsigned long	flags;
+>>>>>>> refs/remotes/origin/master
 	u32		used, chan;
 	u32		dcp;
 	int		i;
@@ -634,7 +647,11 @@ u32 au1xxx_dbdma_ring_alloc(u32 chanid, int entries)
 		break;
 	}
 
+<<<<<<< HEAD
 	/* If source input is FIFO, set static address.	*/
+=======
+	/* If source input is FIFO, set static address. */
+>>>>>>> refs/remotes/origin/master
 	if (stp->dev_flags & DEV_FLAGS_IN) {
 		if (stp->dev_flags & DEV_FLAGS_BURSTABLE)
 			src1 |= DSCR_SRC1_SAM(DSCR_xAM_BURST);
@@ -757,7 +774,11 @@ u32 au1xxx_dbdma_put_source(u32 chanid, dma_addr_t buf, int nbytes, u32 flags)
 	dma_cache_wback_inv((unsigned long)dp, sizeof(*dp));
 	ctp->chan_ptr->ddma_dbell = 0;
 
+<<<<<<< HEAD
 	/* Get next descriptor pointer.	*/
+=======
+	/* Get next descriptor pointer. */
+>>>>>>> refs/remotes/origin/master
 	ctp->put_ptr = phys_to_virt(DSCR_GET_NXTPTR(dp->dscr_nxtptr));
 
 	/* Return something non-zero. */
@@ -819,7 +840,11 @@ u32 au1xxx_dbdma_put_dest(u32 chanid, dma_addr_t buf, int nbytes, u32 flags)
 	dma_cache_wback_inv((unsigned long)dp, sizeof(*dp));
 	ctp->chan_ptr->ddma_dbell = 0;
 
+<<<<<<< HEAD
 	/* Get next descriptor pointer.	*/
+=======
+	/* Get next descriptor pointer. */
+>>>>>>> refs/remotes/origin/master
 	ctp->put_ptr = phys_to_virt(DSCR_GET_NXTPTR(dp->dscr_nxtptr));
 
 	/* Return something non-zero. */
@@ -864,7 +889,11 @@ u32 au1xxx_dbdma_get_dest(u32 chanid, void **buf, int *nbytes)
 	*nbytes = dp->dscr_cmd1;
 	rv = dp->dscr_stat;
 
+<<<<<<< HEAD
 	/* Get next descriptor pointer.	*/
+=======
+	/* Get next descriptor pointer. */
+>>>>>>> refs/remotes/origin/master
 	ctp->get_ptr = phys_to_virt(DSCR_GET_NXTPTR(dp->dscr_nxtptr));
 
 	/* Return something non-zero. */
@@ -1013,7 +1042,11 @@ void au1xxx_dbdma_dump(u32 chanid)
 	chan_tab_t	 *ctp;
 	au1x_ddma_desc_t *dp;
 	dbdev_tab_t	 *stp, *dtp;
+<<<<<<< HEAD
 	au1x_dma_chan_t  *cp;
+=======
+	au1x_dma_chan_t	 *cp;
+>>>>>>> refs/remotes/origin/master
 	u32 i		 = 0;
 
 	ctp = *((chan_tab_t **)chanid);
@@ -1091,7 +1124,11 @@ u32 au1xxx_dbdma_put_dscr(u32 chanid, au1x_ddma_desc_t *dscr)
 	dp->dscr_cmd0 |= dscr->dscr_cmd0 | DSCR_CMD0_V;
 	ctp->chan_ptr->ddma_dbell = 0;
 
+<<<<<<< HEAD
 	/* Get next descriptor pointer.	*/
+=======
+	/* Get next descriptor pointer. */
+>>>>>>> refs/remotes/origin/master
 	ctp->put_ptr = phys_to_virt(DSCR_GET_NXTPTR(dp->dscr_nxtptr));
 
 	/* Return something non-zero. */
@@ -1169,10 +1206,13 @@ static struct syscore_ops alchemy_dbdma_syscore_ops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init au1xxx_dbdma_init(void)
 {
 	int irq_nr, ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init dbdma_setup(unsigned int irq, dbdev_tab_t *idtable)
 {
 	int ret;
@@ -1184,13 +1224,17 @@ static int __init dbdma_setup(unsigned int irq, dbdev_tab_t *idtable)
 	memcpy(dbdev_tab, idtable, 32 * sizeof(dbdev_tab_t));
 	for (ret = 32; ret < DBDEV_TAB_SIZE; ret++)
 		dbdev_tab[ret].dev_id = ~0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dbdma_gptr->ddma_config = 0;
 	dbdma_gptr->ddma_throttle = 0;
 	dbdma_gptr->ddma_inten = 0xffff;
 	au_sync();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch (alchemy_get_cputype()) {
 	case ALCHEMY_CPU_AU1550:
@@ -1208,24 +1252,33 @@ static int __init dbdma_setup(unsigned int irq, dbdev_tab_t *idtable)
 =======
 	ret = request_irq(irq, dbdma_interrupt, 0, "dbdma", (void *)dbdma_gptr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = request_irq(irq, dbdma_interrupt, 0, "dbdma", (void *)dbdma_gptr);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		printk(KERN_ERR "Cannot grab DBDMA interrupt!\n");
 	else {
 		dbdma_initialized = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "Alchemy DBDMA initialized\n");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		register_syscore_ops(&alchemy_dbdma_syscore_ops);
 	}
 
 	return ret;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 subsys_initcall(au1xxx_dbdma_init);
 
 #endif /* defined(CONFIG_SOC_AU1550) || defined(CONFIG_SOC_AU1200) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int __init alchemy_dbdma_init(void)
 {
@@ -1240,4 +1293,7 @@ static int __init alchemy_dbdma_init(void)
 	return 0;
 }
 subsys_initcall(alchemy_dbdma_init);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

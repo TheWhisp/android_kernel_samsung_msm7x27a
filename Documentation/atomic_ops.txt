@@ -85,7 +85,10 @@ compiler optimizes the section accessing atomic_t variables.
 *** YOU HAVE BEEN WARNED! ***
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 Properly aligned pointers, longs, ints, and chars (and unsigned
 equivalents) may be atomically loaded from and stored to in the same
 sense as described for atomic_read() and atomic_set().  The ACCESS_ONCE()
@@ -173,7 +176,10 @@ locks, or atomic operations if variable a can change at runtime!
 
 *** WARNING: ACCESS_ONCE() DOES NOT IMPLY A BARRIER! ***
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 Now, we move onto the atomic operation interfaces typically implemented with
 the help of assembly code.
 
@@ -256,6 +262,11 @@ This performs an atomic exchange operation on the atomic variable v, setting
 the given new value.  It returns the old value that the atomic variable v had
 just before the operation.
 
+<<<<<<< HEAD
+=======
+atomic_xchg requires explicit memory barriers around the operation.
+
+>>>>>>> refs/remotes/origin/master
 	int atomic_cmpxchg(atomic_t *v, int old, int new);
 
 This performs an atomic compare exchange operation on the atomic value v,

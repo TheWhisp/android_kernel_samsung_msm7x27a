@@ -25,6 +25,7 @@
 #include <linux/interrupt.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/i2c-tegra.h>
 <<<<<<< HEAD
 =======
@@ -36,6 +37,14 @@
 
 #include <mach/clk.h>
 
+=======
+#include <linux/of_device.h>
+#include <linux/module.h>
+#include <linux/clk/tegra.h>
+
+#include <asm/unaligned.h>
+
+>>>>>>> refs/remotes/origin/master
 #define TEGRA_I2C_TIMEOUT (msecs_to_jiffies(1000))
 #define BYTES_PER_FIFO_WORD 4
 
@@ -73,6 +82,11 @@
 #define I2C_INT_TX_FIFO_DATA_REQ		(1<<1)
 #define I2C_INT_RX_FIFO_DATA_REQ		(1<<0)
 #define I2C_CLK_DIVISOR				0x06c
+<<<<<<< HEAD
+=======
+#define I2C_CLK_DIVISOR_STD_FAST_MODE_SHIFT	16
+#define I2C_CLK_MULTIPLIER_STD_FAST_MODE	8
+>>>>>>> refs/remotes/origin/master
 
 #define DVC_CTRL_REG1				0x000
 #define DVC_CTRL_REG1_INTR_EN			(1<<10)
@@ -100,16 +114,63 @@
 #define I2C_HEADER_10BIT_ADDR			(1<<18)
 #define I2C_HEADER_IE_ENABLE			(1<<17)
 #define I2C_HEADER_REPEAT_START			(1<<16)
+<<<<<<< HEAD
 #define I2C_HEADER_MASTER_ADDR_SHIFT		12
 #define I2C_HEADER_SLAVE_ADDR_SHIFT		1
+=======
+#define I2C_HEADER_CONTINUE_XFER		(1<<15)
+#define I2C_HEADER_MASTER_ADDR_SHIFT		12
+#define I2C_HEADER_SLAVE_ADDR_SHIFT		1
+/*
+ * msg_end_type: The bus control which need to be send at end of transfer.
+ * @MSG_END_STOP: Send stop pulse at end of transfer.
+ * @MSG_END_REPEAT_START: Send repeat start at end of transfer.
+ * @MSG_END_CONTINUE: The following on message is coming and so do not send
+ *		stop or repeat start.
+ */
+enum msg_end_type {
+	MSG_END_STOP,
+	MSG_END_REPEAT_START,
+	MSG_END_CONTINUE,
+};
+
+/**
+ * struct tegra_i2c_hw_feature : Different HW support on Tegra
+ * @has_continue_xfer_support: Continue transfer supports.
+ * @has_per_pkt_xfer_complete_irq: Has enable/disable capability for transfer
+ *		complete interrupt per packet basis.
+ * @has_single_clk_source: The i2c controller has single clock source. Tegra30
+ *		and earlier Socs has two clock sources i.e. div-clk and
+ *		fast-clk.
+ * @clk_divisor_hs_mode: Clock divisor in HS mode.
+ * @clk_divisor_std_fast_mode: Clock divisor in standard/fast mode. It is
+ *		applicable if there is no fast clock source i.e. single clock
+ *		source.
+ */
+
+struct tegra_i2c_hw_feature {
+	bool has_continue_xfer_support;
+	bool has_per_pkt_xfer_complete_irq;
+	bool has_single_clk_source;
+	int clk_divisor_hs_mode;
+	int clk_divisor_std_fast_mode;
+};
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct tegra_i2c_dev	- per device i2c context
  * @dev: device reference for power management
+<<<<<<< HEAD
  * @adapter: core i2c layer adapter information
  * @clk: clock reference for i2c controller
  * @i2c_clk: clock reference for i2c bus
  * @iomem: memory resource for registers
+=======
+ * @hw: Tegra i2c hw feature.
+ * @adapter: core i2c layer adapter information
+ * @div_clk: clock reference for div clock of i2c controller.
+ * @fast_clk: clock reference for fast clock of i2c controller.
+>>>>>>> refs/remotes/origin/master
  * @base: ioremapped registers cookie
  * @cont_id: i2c controller id, used for for packet header
  * @irq: irq number of transfer complete interrupt
@@ -124,10 +185,17 @@
  */
 struct tegra_i2c_dev {
 	struct device *dev;
+<<<<<<< HEAD
 	struct i2c_adapter adapter;
 	struct clk *clk;
 	struct clk *i2c_clk;
 	struct resource *iomem;
+=======
+	const struct tegra_i2c_hw_feature *hw;
+	struct i2c_adapter adapter;
+	struct clk *div_clk;
+	struct clk *fast_clk;
+>>>>>>> refs/remotes/origin/master
 	void __iomem *base;
 	int cont_id;
 	int irq;
@@ -138,7 +206,11 @@ struct tegra_i2c_dev {
 	u8 *msg_buf;
 	size_t msg_buf_remaining;
 	int msg_read;
+<<<<<<< HEAD
 	unsigned long bus_clk_rate;
+=======
+	u32 bus_clk_rate;
+>>>>>>> refs/remotes/origin/master
 	bool is_suspended;
 };
 
@@ -168,6 +240,13 @@ static void i2c_writel(struct tegra_i2c_dev *i2c_dev, u32 val,
 	unsigned long reg)
 {
 	writel(val, i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg));
+<<<<<<< HEAD
+=======
+
+	/* Read back register to make sure that register writes completed */
+	if (reg != I2C_TX_FIFO)
+		readl(i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg));
+>>>>>>> refs/remotes/origin/master
 }
 
 static u32 i2c_readl(struct tegra_i2c_dev *i2c_dev, unsigned long reg)
@@ -275,6 +354,7 @@ static int tegra_i2c_fill_tx_fifo(struct tegra_i2c_dev *i2c_dev)
 	/* Rounds down to not include partial word at the end of buf */
 	words_to_transfer = buf_remaining / BYTES_PER_FIFO_WORD;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (words_to_transfer > tx_fifo_avail)
 		words_to_transfer = tx_fifo_avail;
 
@@ -284,6 +364,8 @@ static int tegra_i2c_fill_tx_fifo(struct tegra_i2c_dev *i2c_dev)
 	buf_remaining -= words_to_transfer * BYTES_PER_FIFO_WORD;
 	tx_fifo_avail -= words_to_transfer;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* It's very common to have < 4 bytes, so optimize that case. */
 	if (words_to_transfer) {
@@ -308,7 +390,10 @@ static int tegra_i2c_fill_tx_fifo(struct tegra_i2c_dev *i2c_dev)
 
 		buf += words_to_transfer * BYTES_PER_FIFO_WORD;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If there is a partial word at the end of buf, handle it manually to
@@ -319,6 +404,7 @@ static int tegra_i2c_fill_tx_fifo(struct tegra_i2c_dev *i2c_dev)
 		BUG_ON(buf_remaining > 3);
 		memcpy(&val, buf, buf_remaining);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		i2c_writel(i2c_dev, val, I2C_TX_FIFO);
 		buf_remaining = 0;
 		tx_fifo_avail--;
@@ -328,6 +414,8 @@ static int tegra_i2c_fill_tx_fifo(struct tegra_i2c_dev *i2c_dev)
 	i2c_dev->msg_buf_remaining = buf_remaining;
 	i2c_dev->msg_buf = buf;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* Again update before writing to FIFO to make sure isr sees. */
 		i2c_dev->msg_buf_remaining = 0;
@@ -337,7 +425,10 @@ static int tegra_i2c_fill_tx_fifo(struct tegra_i2c_dev *i2c_dev)
 		i2c_writel(i2c_dev, val, I2C_TX_FIFO);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -361,16 +452,61 @@ static void tegra_dvc_init(struct tegra_i2c_dev *i2c_dev)
 	dvc_writel(i2c_dev, val, DVC_CTRL_REG1);
 }
 
+<<<<<<< HEAD
+=======
+static inline int tegra_i2c_clock_enable(struct tegra_i2c_dev *i2c_dev)
+{
+	int ret;
+	if (!i2c_dev->hw->has_single_clk_source) {
+		ret = clk_prepare_enable(i2c_dev->fast_clk);
+		if (ret < 0) {
+			dev_err(i2c_dev->dev,
+				"Enabling fast clk failed, err %d\n", ret);
+			return ret;
+		}
+	}
+	ret = clk_prepare_enable(i2c_dev->div_clk);
+	if (ret < 0) {
+		dev_err(i2c_dev->dev,
+			"Enabling div clk failed, err %d\n", ret);
+		clk_disable_unprepare(i2c_dev->fast_clk);
+	}
+	return ret;
+}
+
+static inline void tegra_i2c_clock_disable(struct tegra_i2c_dev *i2c_dev)
+{
+	clk_disable_unprepare(i2c_dev->div_clk);
+	if (!i2c_dev->hw->has_single_clk_source)
+		clk_disable_unprepare(i2c_dev->fast_clk);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int tegra_i2c_init(struct tegra_i2c_dev *i2c_dev)
 {
 	u32 val;
 	int err = 0;
+<<<<<<< HEAD
 
 	clk_enable(i2c_dev->clk);
 
 	tegra_periph_reset_assert(i2c_dev->clk);
 	udelay(2);
 	tegra_periph_reset_deassert(i2c_dev->clk);
+=======
+	int clk_multiplier = I2C_CLK_MULTIPLIER_STD_FAST_MODE;
+	u32 clk_divisor;
+
+	err = tegra_i2c_clock_enable(i2c_dev);
+	if (err < 0) {
+		dev_err(i2c_dev->dev, "Clock enable failed %d\n", err);
+		return err;
+	}
+
+	tegra_periph_reset_assert(i2c_dev->div_clk);
+	udelay(2);
+	tegra_periph_reset_deassert(i2c_dev->div_clk);
+>>>>>>> refs/remotes/origin/master
 
 	if (i2c_dev->is_dvc)
 		tegra_dvc_init(i2c_dev);
@@ -379,7 +515,19 @@ static int tegra_i2c_init(struct tegra_i2c_dev *i2c_dev)
 		(0x2 << I2C_CNFG_DEBOUNCE_CNT_SHIFT);
 	i2c_writel(i2c_dev, val, I2C_CNFG);
 	i2c_writel(i2c_dev, 0, I2C_INT_MASK);
+<<<<<<< HEAD
 	clk_set_rate(i2c_dev->clk, i2c_dev->bus_clk_rate * 8);
+=======
+
+	clk_multiplier *= (i2c_dev->hw->clk_divisor_std_fast_mode + 1);
+	clk_set_rate(i2c_dev->div_clk, i2c_dev->bus_clk_rate * clk_multiplier);
+
+	/* Make sure clock divisor programmed correctly */
+	clk_divisor = i2c_dev->hw->clk_divisor_hs_mode;
+	clk_divisor |= i2c_dev->hw->clk_divisor_std_fast_mode <<
+					I2C_CLK_DIVISOR_STD_FAST_MODE_SHIFT;
+	i2c_writel(i2c_dev, clk_divisor, I2C_CLK_DIVISOR);
+>>>>>>> refs/remotes/origin/master
 
 	if (!i2c_dev->is_dvc) {
 		u32 sl_cfg = i2c_readl(i2c_dev, I2C_SL_CNFG);
@@ -397,7 +545,11 @@ static int tegra_i2c_init(struct tegra_i2c_dev *i2c_dev)
 	if (tegra_i2c_flush_fifos(i2c_dev))
 		err = -ETIMEDOUT;
 
+<<<<<<< HEAD
 	clk_disable(i2c_dev->clk);
+=======
+	tegra_i2c_clock_disable(i2c_dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (i2c_dev->irq_disabled) {
 		i2c_dev->irq_disabled = 0;
@@ -426,8 +578,11 @@ static irqreturn_t tegra_i2c_isr(int irq, void *dev_id)
 			disable_irq_nosync(i2c_dev->irq);
 			i2c_dev->irq_disabled = 1;
 		}
+<<<<<<< HEAD
 
 		complete(&i2c_dev->msg_complete);
+=======
+>>>>>>> refs/remotes/origin/master
 		goto err;
 	}
 
@@ -436,7 +591,10 @@ static irqreturn_t tegra_i2c_isr(int irq, void *dev_id)
 			i2c_dev->msg_err |= I2C_ERR_NO_ACK;
 		if (status & I2C_INT_ARBITRATION_LOST)
 			i2c_dev->msg_err |= I2C_ERR_ARBITRATION_LOST;
+<<<<<<< HEAD
 		complete(&i2c_dev->msg_complete);
+=======
+>>>>>>> refs/remotes/origin/master
 		goto err;
 	}
 
@@ -455,19 +613,29 @@ static irqreturn_t tegra_i2c_isr(int irq, void *dev_id)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((status & I2C_INT_PACKET_XFER_COMPLETE) &&
 			!i2c_dev->msg_buf_remaining)
 		complete(&i2c_dev->msg_complete);
 =======
+=======
+	i2c_writel(i2c_dev, status, I2C_INT_STATUS);
+	if (i2c_dev->is_dvc)
+		dvc_writel(i2c_dev, DVC_STATUS_I2C_DONE_INTR, DVC_STATUS);
+
+>>>>>>> refs/remotes/origin/master
 	if (status & I2C_INT_PACKET_XFER_COMPLETE) {
 		BUG_ON(i2c_dev->msg_buf_remaining);
 		complete(&i2c_dev->msg_complete);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	i2c_writel(i2c_dev, status, I2C_INT_STATUS);
 	if (i2c_dev->is_dvc)
 		dvc_writel(i2c_dev, DVC_STATUS_I2C_DONE_INTR, DVC_STATUS);
+=======
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 err:
 	/* An error occurred, mask all interrupts */
@@ -477,11 +645,20 @@ err:
 	i2c_writel(i2c_dev, status, I2C_INT_STATUS);
 	if (i2c_dev->is_dvc)
 		dvc_writel(i2c_dev, DVC_STATUS_I2C_DONE_INTR, DVC_STATUS);
+<<<<<<< HEAD
+=======
+
+	complete(&i2c_dev->msg_complete);
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
 static int tegra_i2c_xfer_msg(struct tegra_i2c_dev *i2c_dev,
+<<<<<<< HEAD
 	struct i2c_msg *msg, int stop)
+=======
+	struct i2c_msg *msg, enum msg_end_type end_state)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 packet_header;
 	u32 int_mask;
@@ -489,9 +666,12 @@ static int tegra_i2c_xfer_msg(struct tegra_i2c_dev *i2c_dev,
 
 	tegra_i2c_flush_fifos(i2c_dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	i2c_writel(i2c_dev, 0xFF, I2C_INT_STATUS);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (msg->len == 0)
 		return -EINVAL;
@@ -500,7 +680,11 @@ static int tegra_i2c_xfer_msg(struct tegra_i2c_dev *i2c_dev,
 	i2c_dev->msg_buf_remaining = msg->len;
 	i2c_dev->msg_err = I2C_ERR_NONE;
 	i2c_dev->msg_read = (msg->flags & I2C_M_RD);
+<<<<<<< HEAD
 	INIT_COMPLETION(i2c_dev->msg_complete);
+=======
+	reinit_completion(&i2c_dev->msg_complete);
+>>>>>>> refs/remotes/origin/master
 
 	packet_header = (0 << PACKET_HEADER0_HEADER_SIZE_SHIFT) |
 			PACKET_HEADER0_PROTOCOL_I2C |
@@ -511,12 +695,26 @@ static int tegra_i2c_xfer_msg(struct tegra_i2c_dev *i2c_dev,
 	packet_header = msg->len - 1;
 	i2c_writel(i2c_dev, packet_header, I2C_TX_FIFO);
 
+<<<<<<< HEAD
 	packet_header = msg->addr << I2C_HEADER_SLAVE_ADDR_SHIFT;
 	packet_header |= I2C_HEADER_IE_ENABLE;
 	if (!stop)
 		packet_header |= I2C_HEADER_REPEAT_START;
 	if (msg->flags & I2C_M_TEN)
 		packet_header |= I2C_HEADER_10BIT_ADDR;
+=======
+	packet_header = I2C_HEADER_IE_ENABLE;
+	if (end_state == MSG_END_CONTINUE)
+		packet_header |= I2C_HEADER_CONTINUE_XFER;
+	else if (end_state == MSG_END_REPEAT_START)
+		packet_header |= I2C_HEADER_REPEAT_START;
+	if (msg->flags & I2C_M_TEN) {
+		packet_header |= msg->addr;
+		packet_header |= I2C_HEADER_10BIT_ADDR;
+	} else {
+		packet_header |= msg->addr << I2C_HEADER_SLAVE_ADDR_SHIFT;
+	}
+>>>>>>> refs/remotes/origin/master
 	if (msg->flags & I2C_M_IGNORE_NAK)
 		packet_header |= I2C_HEADER_CONT_ON_NAK;
 	if (msg->flags & I2C_M_RD)
@@ -527,6 +725,11 @@ static int tegra_i2c_xfer_msg(struct tegra_i2c_dev *i2c_dev,
 		tegra_i2c_fill_tx_fifo(i2c_dev);
 
 	int_mask = I2C_INT_NO_ACK | I2C_INT_ARBITRATION_LOST;
+<<<<<<< HEAD
+=======
+	if (i2c_dev->hw->has_per_pkt_xfer_complete_irq)
+		int_mask |= I2C_INT_PACKET_XFER_COMPLETE;
+>>>>>>> refs/remotes/origin/master
 	if (msg->flags & I2C_M_RD)
 		int_mask |= I2C_INT_RX_FIFO_DATA_REQ;
 	else if (i2c_dev->msg_buf_remaining)
@@ -538,7 +741,11 @@ static int tegra_i2c_xfer_msg(struct tegra_i2c_dev *i2c_dev,
 	ret = wait_for_completion_timeout(&i2c_dev->msg_complete, TEGRA_I2C_TIMEOUT);
 	tegra_i2c_mask_irq(i2c_dev, int_mask);
 
+<<<<<<< HEAD
 	if (WARN_ON(ret == 0)) {
+=======
+	if (ret == 0) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(i2c_dev->dev, "i2c transfer timed out\n");
 
 		tegra_i2c_init(i2c_dev);
@@ -552,7 +759,10 @@ static int tegra_i2c_xfer_msg(struct tegra_i2c_dev *i2c_dev,
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * NACK interrupt is generated before the I2C controller generates the
 	 * STOP condition on the bus. So wait for 2 clock periods before resetting
@@ -561,7 +771,10 @@ static int tegra_i2c_xfer_msg(struct tegra_i2c_dev *i2c_dev,
 	if (i2c_dev->msg_err == I2C_ERR_NO_ACK)
 		udelay(DIV_ROUND_UP(2 * 1000000, i2c_dev->bus_clk_rate));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tegra_i2c_init(i2c_dev);
 	if (i2c_dev->msg_err == I2C_ERR_NO_ACK) {
 		if (msg->flags & I2C_M_IGNORE_NAK)
@@ -582,6 +795,7 @@ static int tegra_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[],
 	if (i2c_dev->is_suspended)
 		return -EBUSY;
 
+<<<<<<< HEAD
 	clk_enable(i2c_dev->clk);
 	for (i = 0; i < num; i++) {
 		int stop = (i == (num - 1)) ? 1  : 0;
@@ -590,16 +804,47 @@ static int tegra_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[],
 			break;
 	}
 	clk_disable(i2c_dev->clk);
+=======
+	ret = tegra_i2c_clock_enable(i2c_dev);
+	if (ret < 0) {
+		dev_err(i2c_dev->dev, "Clock enable failed %d\n", ret);
+		return ret;
+	}
+
+	for (i = 0; i < num; i++) {
+		enum msg_end_type end_type = MSG_END_STOP;
+		if (i < (num - 1)) {
+			if (msgs[i + 1].flags & I2C_M_NOSTART)
+				end_type = MSG_END_CONTINUE;
+			else
+				end_type = MSG_END_REPEAT_START;
+		}
+		ret = tegra_i2c_xfer_msg(i2c_dev, &msgs[i], end_type);
+		if (ret)
+			break;
+	}
+	tegra_i2c_clock_disable(i2c_dev);
+>>>>>>> refs/remotes/origin/master
 	return ret ?: i;
 }
 
 static u32 tegra_i2c_func(struct i2c_adapter *adap)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return I2C_FUNC_I2C;
 =======
 	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct tegra_i2c_dev *i2c_dev = i2c_get_adapdata(adap);
+	u32 ret = I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL | I2C_FUNC_10BIT_ADDR |
+				I2C_FUNC_PROTOCOL_MANGLING;
+
+	if (i2c_dev->hw->has_continue_xfer_support)
+		ret |= I2C_FUNC_NOSTART;
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct i2c_algorithm tegra_i2c_algo = {
@@ -607,6 +852,7 @@ static const struct i2c_algorithm tegra_i2c_algo = {
 	.functionality	= tegra_i2c_func,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int tegra_i2c_probe(struct platform_device *pdev)
 =======
@@ -625,10 +871,54 @@ static int __devinit tegra_i2c_probe(struct platform_device *pdev)
 	const unsigned int *prop;
 	void __iomem *base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct tegra_i2c_hw_feature tegra20_i2c_hw = {
+	.has_continue_xfer_support = false,
+	.has_per_pkt_xfer_complete_irq = false,
+	.has_single_clk_source = false,
+	.clk_divisor_hs_mode = 3,
+	.clk_divisor_std_fast_mode = 0,
+};
+
+static const struct tegra_i2c_hw_feature tegra30_i2c_hw = {
+	.has_continue_xfer_support = true,
+	.has_per_pkt_xfer_complete_irq = false,
+	.has_single_clk_source = false,
+	.clk_divisor_hs_mode = 3,
+	.clk_divisor_std_fast_mode = 0,
+};
+
+static const struct tegra_i2c_hw_feature tegra114_i2c_hw = {
+	.has_continue_xfer_support = true,
+	.has_per_pkt_xfer_complete_irq = true,
+	.has_single_clk_source = true,
+	.clk_divisor_hs_mode = 1,
+	.clk_divisor_std_fast_mode = 0x19,
+};
+
+/* Match table for of_platform binding */
+static const struct of_device_id tegra_i2c_of_match[] = {
+	{ .compatible = "nvidia,tegra114-i2c", .data = &tegra114_i2c_hw, },
+	{ .compatible = "nvidia,tegra30-i2c", .data = &tegra30_i2c_hw, },
+	{ .compatible = "nvidia,tegra20-i2c", .data = &tegra20_i2c_hw, },
+	{ .compatible = "nvidia,tegra20-i2c-dvc", .data = &tegra20_i2c_hw, },
+	{},
+};
+MODULE_DEVICE_TABLE(of, tegra_i2c_of_match);
+
+static int tegra_i2c_probe(struct platform_device *pdev)
+{
+	struct tegra_i2c_dev *i2c_dev;
+	struct resource *res;
+	struct clk *div_clk;
+	struct clk *fast_clk;
+	void __iomem *base;
+>>>>>>> refs/remotes/origin/master
 	int irq;
 	int ret = 0;
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (!res) {
 		dev_err(&pdev->dev, "no mem resource\n");
 		return -EINVAL;
@@ -644,10 +934,16 @@ static int __devinit tegra_i2c_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Cannot ioremap I2C region\n");
 		return -ENOMEM;
 	}
+=======
+	base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(base))
+		return PTR_ERR(base);
+>>>>>>> refs/remotes/origin/master
 
 	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
 	if (!res) {
 		dev_err(&pdev->dev, "no irq resource\n");
+<<<<<<< HEAD
 		ret = -EINVAL;
 		goto err_iounmap;
 	}
@@ -677,10 +973,31 @@ static int __devinit tegra_i2c_probe(struct platform_device *pdev)
 	i2c_dev->clk = clk;
 	i2c_dev->i2c_clk = i2c_clk;
 	i2c_dev->iomem = iomem;
+=======
+		return -EINVAL;
+	}
+	irq = res->start;
+
+	div_clk = devm_clk_get(&pdev->dev, "div-clk");
+	if (IS_ERR(div_clk)) {
+		dev_err(&pdev->dev, "missing controller clock");
+		return PTR_ERR(div_clk);
+	}
+
+	i2c_dev = devm_kzalloc(&pdev->dev, sizeof(*i2c_dev), GFP_KERNEL);
+	if (!i2c_dev) {
+		dev_err(&pdev->dev, "Could not allocate struct tegra_i2c_dev");
+		return -ENOMEM;
+	}
+
+	i2c_dev->base = base;
+	i2c_dev->div_clk = div_clk;
+>>>>>>> refs/remotes/origin/master
 	i2c_dev->adapter.algo = &tegra_i2c_algo;
 	i2c_dev->irq = irq;
 	i2c_dev->cont_id = pdev->id;
 	i2c_dev->dev = &pdev->dev;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	i2c_dev->bus_clk_rate = pdata ? pdata->bus_clk_rate : 100000;
 
@@ -706,11 +1023,42 @@ static int __devinit tegra_i2c_probe(struct platform_device *pdev)
 		i2c_dev->is_dvc = 1;
 	init_completion(&i2c_dev->msg_complete);
 
+=======
+
+	ret = of_property_read_u32(i2c_dev->dev->of_node, "clock-frequency",
+					&i2c_dev->bus_clk_rate);
+	if (ret)
+		i2c_dev->bus_clk_rate = 100000; /* default clock rate */
+
+	i2c_dev->hw = &tegra20_i2c_hw;
+
+	if (pdev->dev.of_node) {
+		const struct of_device_id *match;
+		match = of_match_device(tegra_i2c_of_match, &pdev->dev);
+		i2c_dev->hw = match->data;
+		i2c_dev->is_dvc = of_device_is_compatible(pdev->dev.of_node,
+						"nvidia,tegra20-i2c-dvc");
+	} else if (pdev->id == 3) {
+		i2c_dev->is_dvc = 1;
+	}
+	init_completion(&i2c_dev->msg_complete);
+
+	if (!i2c_dev->hw->has_single_clk_source) {
+		fast_clk = devm_clk_get(&pdev->dev, "fast-clk");
+		if (IS_ERR(fast_clk)) {
+			dev_err(&pdev->dev, "missing fast clock");
+			return PTR_ERR(fast_clk);
+		}
+		i2c_dev->fast_clk = fast_clk;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	platform_set_drvdata(pdev, i2c_dev);
 
 	ret = tegra_i2c_init(i2c_dev);
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to initialize i2c controller");
+<<<<<<< HEAD
 		goto err_free;
 	}
 
@@ -722,6 +1070,18 @@ static int __devinit tegra_i2c_probe(struct platform_device *pdev)
 
 	clk_enable(i2c_dev->i2c_clk);
 
+=======
+		return ret;
+	}
+
+	ret = devm_request_irq(&pdev->dev, i2c_dev->irq,
+			tegra_i2c_isr, 0, dev_name(&pdev->dev), i2c_dev);
+	if (ret) {
+		dev_err(&pdev->dev, "Failed to request irq %i\n", i2c_dev->irq);
+		return ret;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	i2c_set_adapdata(&i2c_dev->adapter, i2c_dev);
 	i2c_dev->adapter.owner = THIS_MODULE;
 	i2c_dev->adapter.class = I2C_CLASS_HWMON;
@@ -731,13 +1091,18 @@ static int __devinit tegra_i2c_probe(struct platform_device *pdev)
 	i2c_dev->adapter.dev.parent = &pdev->dev;
 	i2c_dev->adapter.nr = pdev->id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	i2c_dev->adapter.dev.of_node = pdev->dev.of_node;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i2c_dev->adapter.dev.of_node = pdev->dev.of_node;
+>>>>>>> refs/remotes/origin/master
 
 	ret = i2c_add_numbered_adapter(&i2c_dev->adapter);
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to add I2C adapter\n");
+<<<<<<< HEAD
 		goto err_free_irq;
 	}
 
@@ -784,6 +1149,25 @@ static int __devexit tegra_i2c_remove(struct platform_device *pdev)
 static int tegra_i2c_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	struct tegra_i2c_dev *i2c_dev = platform_get_drvdata(pdev);
+=======
+		return ret;
+	}
+
+	return 0;
+}
+
+static int tegra_i2c_remove(struct platform_device *pdev)
+{
+	struct tegra_i2c_dev *i2c_dev = platform_get_drvdata(pdev);
+	i2c_del_adapter(&i2c_dev->adapter);
+	return 0;
+}
+
+#ifdef CONFIG_PM_SLEEP
+static int tegra_i2c_suspend(struct device *dev)
+{
+	struct tegra_i2c_dev *i2c_dev = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	i2c_lock_adapter(&i2c_dev->adapter);
 	i2c_dev->is_suspended = true;
@@ -792,9 +1176,15 @@ static int tegra_i2c_suspend(struct platform_device *pdev, pm_message_t state)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int tegra_i2c_resume(struct platform_device *pdev)
 {
 	struct tegra_i2c_dev *i2c_dev = platform_get_drvdata(pdev);
+=======
+static int tegra_i2c_resume(struct device *dev)
+{
+	struct tegra_i2c_dev *i2c_dev = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	i2c_lock_adapter(&i2c_dev->adapter);
@@ -812,6 +1202,7 @@ static int tegra_i2c_resume(struct platform_device *pdev)
 
 	return 0;
 }
+<<<<<<< HEAD
 #endif
 
 <<<<<<< HEAD
@@ -829,10 +1220,18 @@ static const struct of_device_id tegra_i2c_of_match[] __devinitconst = {
 MODULE_DEVICE_TABLE(of, tegra_i2c_of_match);
 #else
 #define tegra_i2c_of_match NULL
+=======
+
+static SIMPLE_DEV_PM_OPS(tegra_i2c_pm, tegra_i2c_suspend, tegra_i2c_resume);
+#define TEGRA_I2C_PM	(&tegra_i2c_pm)
+#else
+#define TEGRA_I2C_PM	NULL
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static struct platform_driver tegra_i2c_driver = {
 	.probe   = tegra_i2c_probe,
+<<<<<<< HEAD
 	.remove  = __devexit_p(tegra_i2c_remove),
 >>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PM
@@ -846,6 +1245,14 @@ static struct platform_driver tegra_i2c_driver = {
 =======
 		.of_match_table = tegra_i2c_of_match,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove  = tegra_i2c_remove,
+	.driver  = {
+		.name  = "tegra-i2c",
+		.owner = THIS_MODULE,
+		.of_match_table = tegra_i2c_of_match,
+		.pm    = TEGRA_I2C_PM,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

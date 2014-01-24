@@ -37,8 +37,13 @@ struct op_mips_model {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void op_mips_backtrace(struct pt_regs * const regs, unsigned int depth);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void op_mips_backtrace(struct pt_regs * const regs, unsigned int depth);
+
+>>>>>>> refs/remotes/origin/master
 #endif

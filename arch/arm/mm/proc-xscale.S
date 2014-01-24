@@ -143,9 +143,13 @@ ENTRY(cpu_xscale_proc_fin)
  */
 	.align	5
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.pushsection	.idmap.text, "ax"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/master
 ENTRY(cpu_xscale_reset)
 	mov	r1, #PSR_F_BIT|PSR_I_BIT|SVC_MODE
 	msr	cpsr_c, r1			@ reset CPSR
@@ -165,10 +169,15 @@ ENTRY(cpu_xscale_reset)
 	mcr	p15, 0, ip, c8, c7, 0		@ invalidate I & D TLBs
 	mov	pc, r0
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 ENDPROC(cpu_xscale_reset)
 	.popsection
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENDPROC(cpu_xscale_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/master
 
 /*
  * cpu_xscale_do_idle()
@@ -400,19 +409,27 @@ ENDPROC(xscale_dma_map_area)
  *	- dir	- DMA direction
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(xscale_dma_a0_map_area)
 =======
 ENTRY(xscale_80200_A0_A1_dma_map_area)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENTRY(xscale_80200_A0_A1_dma_map_area)
+>>>>>>> refs/remotes/origin/master
 	add	r1, r1, r0
 	teq	r2, #DMA_TO_DEVICE
 	beq	xscale_dma_clean_range
 	b	xscale_dma_flush_range
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENDPROC(xscale_dma_a0_map_area)
 =======
 ENDPROC(xscale_80200_A0_A1_dma_map_area)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENDPROC(xscale_80200_A0_A1_dma_map_area)
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	dma_unmap_area(start, size, dir)
@@ -424,6 +441,7 @@ ENTRY(xscale_dma_unmap_area)
 	mov	pc, lr
 ENDPROC(xscale_dma_unmap_area)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 ENTRY(xscale_cache_fns)
 	.long	xscale_flush_icache_all
@@ -440,6 +458,13 @@ ENTRY(xscale_cache_fns)
 	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
 	define_cache_functions xscale
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.globl	xscale_flush_kern_cache_louis
+	.equ	xscale_flush_kern_cache_louis, xscale_flush_kern_cache_all
+
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions xscale
+>>>>>>> refs/remotes/origin/master
 
 /*
  * On stepping A0/A1 of the 80200, invalidating D-cache by line doesn't
@@ -455,6 +480,7 @@ ENTRY(xscale_cache_fns)
  *     http://www.intel.com/design/iio/specupdt/273415.htm
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(xscale_80200_A0_A1_cache_fns)
 	.long	xscale_flush_kern_cache_all
 	.long	xscale_flush_user_cache_all
@@ -466,6 +492,8 @@ ENTRY(xscale_80200_A0_A1_cache_fns)
 	.long	xscale_dma_unmap_area
 	.long	xscale_dma_flush_range
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 .macro a0_alias basename
 	.globl xscale_80200_A0_A1_\basename
 	.type xscale_80200_A0_A1_\basename , %function
@@ -479,6 +507,10 @@ ENTRY(xscale_80200_A0_A1_cache_fns)
 	a0_alias flush_icache_all
 	a0_alias flush_user_cache_all
 	a0_alias flush_kern_cache_all
+<<<<<<< HEAD
+=======
+	a0_alias flush_kern_cache_louis
+>>>>>>> refs/remotes/origin/master
 	a0_alias flush_user_cache_range
 	a0_alias coherent_kern_range
 	a0_alias coherent_user_range
@@ -488,7 +520,10 @@ ENTRY(xscale_80200_A0_A1_cache_fns)
 
 	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
 	define_cache_functions xscale_80200_A0_A1
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 ENTRY(cpu_xscale_dcache_clean_area)
 1:	mcr	p15, 0, r0, c7, c10, 1		@ clean D entry
@@ -565,20 +600,27 @@ ENTRY(cpu_xscale_set_pte_ext)
 
 .globl	cpu_xscale_suspend_size
 <<<<<<< HEAD
+<<<<<<< HEAD
 .equ	cpu_xscale_suspend_size, 4 * 7
 #ifdef CONFIG_PM_SLEEP
 ENTRY(cpu_xscale_do_suspend)
 	stmfd	sp!, {r4 - r10, lr}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 .equ	cpu_xscale_suspend_size, 4 * 6
 #ifdef CONFIG_ARM_CPU_SUSPEND
 ENTRY(cpu_xscale_do_suspend)
 	stmfd	sp!, {r4 - r9, lr}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mrc	p14, 0, r4, c6, c0, 0	@ clock configuration, for turbo mode
 	mrc	p15, 0, r5, c15, c1, 0	@ CP access reg
 	mrc	p15, 0, r6, c13, c0, 0	@ PID
 	mrc	p15, 0, r7, c3, c0, 0	@ domain ID
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mrc	p15, 0, r8, c2, c0, 0	@ translation table base addr
 	mrc	p15, 0, r9, c1, c1, 0	@ auxiliary control reg
@@ -591,6 +633,8 @@ ENDPROC(cpu_xscale_do_suspend)
 ENTRY(cpu_xscale_do_resume)
 	ldmia	r0, {r4 - r10}		@ load cp regs
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mrc	p15, 0, r8, c1, c1, 0	@ auxiliary control reg
 	mrc	p15, 0, r9, c1, c0, 0	@ control reg
 	bic	r4, r4, #2		@ clear frequency change bit
@@ -600,7 +644,10 @@ ENDPROC(cpu_xscale_do_suspend)
 
 ENTRY(cpu_xscale_do_resume)
 	ldmia	r0, {r4 - r9}		@ load cp regs
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mov	ip, #0
 	mcr	p15, 0, ip, c8, c7, 0	@ invalidate I & D TLBs
 	mcr	p15, 0, ip, c7, c7, 0	@ invalidate I & D caches, BTB
@@ -608,6 +655,7 @@ ENTRY(cpu_xscale_do_resume)
 	mcr	p15, 0, r5, c15, c1, 0	@ CP access reg
 	mcr	p15, 0, r6, c13, c0, 0	@ PID
 	mcr	p15, 0, r7, c3, c0, 0	@ domain ID
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mcr	p15, 0, r8, c2, c0, 0	@ translation table base addr
 	mcr	p15, 0, r9, c1, c1, 0	@ auxiliary control reg
@@ -622,16 +670,23 @@ ENDPROC(cpu_xscale_do_resume)
 #define cpu_xscale_do_suspend	0
 #define cpu_xscale_do_resume	0
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mcr	p15, 0, r1, c2, c0, 0	@ translation table base addr
 	mcr	p15, 0, r8, c1, c1, 0	@ auxiliary control reg
 	mov	r0, r9			@ control register
 	b	cpu_resume_mmu
 ENDPROC(cpu_xscale_do_resume)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	__CPUINIT
 
+=======
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	.type	__xscale_setup, #function
 __xscale_setup:
 	mcr	p15, 0, ip, c7, c7, 0		@ invalidate I, D caches & BTB
@@ -661,6 +716,7 @@ xscale_crval:
 
 	__INITDATA
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Purpose : Function pointers used to access above functions - all calls
@@ -765,6 +821,8 @@ cpu_pxa270_name:
 	.asciz	"XScale-PXA270"
 	.size	cpu_pxa270_name, . - cpu_pxa270_name
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
 	define_processor_functions xscale, dabort=v5t_early_abort, pabort=legacy_pabort, suspend=1
 
@@ -787,12 +845,16 @@ cpu_pxa270_name:
 	string	cpu_ixp2800_name, "XScale-IXP2800"
 	string	cpu_pxa255_name, "XScale-PXA255"
 	string	cpu_pxa270_name, "XScale-PXA270"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.align
 
 	.section ".proc.info.init", #alloc, #execinstr
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.type	__80200_A0_A1_proc_info,#object
 __80200_A0_A1_proc_info:
@@ -823,28 +885,38 @@ __80200_proc_info:
 	.long	0xfffffff0
 	.long   PMD_TYPE_SECT | \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 .macro xscale_proc_info name:req, cpu_val:req, cpu_mask:req, cpu_name:req, cache
 	.type	__\name\()_proc_info,#object
 __\name\()_proc_info:
 	.long	\cpu_val
 	.long	\cpu_mask
 	.long	PMD_TYPE_SECT | \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		PMD_SECT_BUFFERABLE | \
 		PMD_SECT_CACHEABLE | \
 		PMD_SECT_AP_WRITE | \
 		PMD_SECT_AP_READ
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.long   PMD_TYPE_SECT | \
 =======
 	.long	PMD_TYPE_SECT | \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.long	PMD_TYPE_SECT | \
+>>>>>>> refs/remotes/origin/master
 		PMD_SECT_AP_WRITE | \
 		PMD_SECT_AP_READ
 	b	__xscale_setup
 	.long	cpu_arch_name
 	.long	cpu_elf_name
 	.long	HWCAP_SWP|HWCAP_HALF|HWCAP_THUMB|HWCAP_FAST_MULT|HWCAP_EDSP
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.long	cpu_80200_name
 	.long	xscale_processor_functions
@@ -1130,6 +1202,8 @@ __pxa270_proc_info:
 	.size	__pxa270_proc_info, . - __pxa270_proc_info
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.long	\cpu_name
 	.long	xscale_processor_functions
 	.long	v4wbi_tlb_fns
@@ -1157,4 +1231,7 @@ __pxa270_proc_info:
 	xscale_proc_info ixp46x, 0x69054200, 0xffffff00, cpu_ixp46x_name
 	xscale_proc_info pxa255, 0x69052d00, 0xfffffff0, cpu_pxa255_name
 	xscale_proc_info pxa270, 0x69054110, 0xfffffff0, cpu_pxa270_name
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

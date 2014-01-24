@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifdef __KERNEL__
 # ifdef CONFIG_SUPERH32
 <<<<<<< HEAD
@@ -15,6 +16,14 @@
 # endif
 
 # define __ARCH_WANT_IPC_PARSE_VERSION
+=======
+# ifdef CONFIG_SUPERH32
+#  include <asm/unistd_32.h>
+# else
+#  include <asm/unistd_64.h>
+# endif
+
+>>>>>>> refs/remotes/origin/master
 # define __ARCH_WANT_OLD_READDIR
 # define __ARCH_WANT_OLD_STAT
 # define __ARCH_WANT_STAT64
@@ -37,6 +46,7 @@
 # define __ARCH_WANT_SYS_OLDUMOUNT
 # define __ARCH_WANT_SYS_SIGPENDING
 # define __ARCH_WANT_SYS_SIGPROCMASK
+<<<<<<< HEAD
 # define __ARCH_WANT_SYS_RT_SIGACTION
 
 /*
@@ -55,3 +65,10 @@
 #  include "unistd_32.h"
 # endif
 #endif
+=======
+# define __ARCH_WANT_SYS_FORK
+# define __ARCH_WANT_SYS_VFORK
+# define __ARCH_WANT_SYS_CLONE
+
+#include <uapi/asm/unistd.h>
+>>>>>>> refs/remotes/origin/master

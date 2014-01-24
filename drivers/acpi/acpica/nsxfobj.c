@@ -7,10 +7,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,9 +51,14 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define EXPORT_ACPI_INTERFACES
+
+>>>>>>> refs/remotes/origin/master
 #include <acpi/acpi.h>
 #include "accommon.h"
 #include "acnamesp.h"
@@ -105,7 +114,11 @@ ACPI_EXPORT_SYMBOL(acpi_get_id)
  *
  * FUNCTION:    acpi_get_type
  *
+<<<<<<< HEAD
  * PARAMETERS:  Handle          - Handle of object whose type is desired
+=======
+ * PARAMETERS:  handle          - Handle of object whose type is desired
+>>>>>>> refs/remotes/origin/master
  *              ret_type        - Where the type will be placed
  *
  * RETURN:      Status
@@ -158,7 +171,11 @@ ACPI_EXPORT_SYMBOL(acpi_get_type)
  *
  * FUNCTION:    acpi_get_parent
  *
+<<<<<<< HEAD
  * PARAMETERS:  Handle          - Handle of object whose parent is desired
+=======
+ * PARAMETERS:  handle          - Handle of object whose parent is desired
+>>>>>>> refs/remotes/origin/master
  *              ret_handle      - Where the parent handle will be placed
  *
  * RETURN:      Status
@@ -207,7 +224,11 @@ acpi_status acpi_get_parent(acpi_handle handle, acpi_handle * ret_handle)
 		status = AE_NULL_ENTRY;
 	}
 
+<<<<<<< HEAD
       unlock_and_exit:
+=======
+unlock_and_exit:
+>>>>>>> refs/remotes/origin/master
 
 	(void)acpi_ut_release_mutex(ACPI_MTX_NAMESPACE);
 	return (status);
@@ -219,16 +240,26 @@ ACPI_EXPORT_SYMBOL(acpi_get_parent)
  *
  * FUNCTION:    acpi_get_next_object
  *
+<<<<<<< HEAD
  * PARAMETERS:  Type            - Type of object to be searched for
  *              Parent          - Parent object whose children we are getting
+=======
+ * PARAMETERS:  type            - Type of object to be searched for
+ *              parent          - Parent object whose children we are getting
+>>>>>>> refs/remotes/origin/master
  *              last_child      - Previous child that was found.
  *                                The NEXT child will be returned
  *              ret_handle      - Where handle to the next object is placed
  *
  * RETURN:      Status
  *
+<<<<<<< HEAD
  * DESCRIPTION: Return the next peer object within the namespace.  If Handle is
  *              valid, Scope is ignored.  Otherwise, the first object within
+=======
+ * DESCRIPTION: Return the next peer object within the namespace. If Handle is
+ *              valid, Scope is ignored. Otherwise, the first object within
+>>>>>>> refs/remotes/origin/master
  *              Scope is returned.
  *
  ******************************************************************************/
@@ -287,7 +318,11 @@ acpi_get_next_object(acpi_object_type type,
 		*ret_handle = ACPI_CAST_PTR(acpi_handle, node);
 	}
 
+<<<<<<< HEAD
       unlock_and_exit:
+=======
+unlock_and_exit:
+>>>>>>> refs/remotes/origin/master
 
 	(void)acpi_ut_release_mutex(ACPI_MTX_NAMESPACE);
 	return (status);

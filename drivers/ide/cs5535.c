@@ -170,7 +170,11 @@ static const struct ide_port_ops cs5535_port_ops = {
 	.cable_detect		= cs5535_cable_detect,
 };
 
+<<<<<<< HEAD
 static const struct ide_port_info cs5535_chipset __devinitdata = {
+=======
+static const struct ide_port_info cs5535_chipset = {
+>>>>>>> refs/remotes/origin/master
 	.name		= DRV_NAME,
 	.port_ops	= &cs5535_port_ops,
 	.host_flags	= IDE_HFLAG_SINGLE | IDE_HFLAG_POST_SET_MODE,
@@ -179,8 +183,12 @@ static const struct ide_port_info cs5535_chipset __devinitdata = {
 	.udma_mask	= ATA_UDMA4,
 };
 
+<<<<<<< HEAD
 static int __devinit cs5535_init_one(struct pci_dev *dev,
 					const struct pci_device_id *id)
+=======
+static int cs5535_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	return ide_pci_init_one(dev, &cs5535_chipset, NULL);
 }

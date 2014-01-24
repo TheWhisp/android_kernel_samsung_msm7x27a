@@ -48,6 +48,7 @@ scm_version()
 		# If we are at a tagged commit (like "v2.6.30-rc6"), we ignore
 		# it, because this version is defined in the top level Makefile.
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if [ -z "`git describe --exact-match 2>/dev/null`" ]; then
 =======
 		if atag="`git describe --exact-match --abbrev=0 2>/dev/null`"; then
@@ -65,19 +66,30 @@ scm_version()
 			fi
 		else
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if [ -z "`git describe --exact-match 2>/dev/null`" ]; then
+>>>>>>> refs/remotes/origin/master
 
 			# If only the short version is requested, don't bother
 			# running further git commands
 			if $short; then
+<<<<<<< HEAD
 				echo ""
 				return
 			fi
 			# If we are past a tagged commit (like
 <<<<<<< HEAD
+=======
+				echo "+"
+				return
+			fi
+			# If we are past a tagged commit (like
+>>>>>>> refs/remotes/origin/master
 			# "v2.6.30-rc5-302-g72357d5"), we pretty print it.
 			if atag="`git describe 2>/dev/null`"; then
 				echo "$atag" | awk -F- '{printf("-%05d-%s", $(NF-1),$(NF))}'
 
+<<<<<<< HEAD
 =======
 			# "v2.6.30-rc5-302-g72357d5"), we pretty print it and
 			# include the hash of any new tag on top.
@@ -86,6 +98,8 @@ scm_version()
 				commit="`echo "$atag" | awk -F- '{printf("-%05d-%s", $(NF-1),$(NF))}'`"
 				printf '%s%s%s' -g "`git show-ref -s --abbrev --tags $tag 2>/dev/null`" $commit
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			# If we don't have a tag at all we print -g{commitish}.
 			else
 				printf '%s%s' -g $head
@@ -97,6 +111,7 @@ scm_version()
 			printf -- '-svn%s' "`git svn find-rev $head`"
 		fi
 
+<<<<<<< HEAD
 		# Update index only on r/w media
 		[ -w . ] && git update-index --refresh --unmerged > /dev/null
 
@@ -107,6 +122,10 @@ scm_version()
 =======
 		if git diff-index --name-only HEAD | grep -qv "^scripts/package"; then
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		# Check for uncommitted changes
+		if git diff-index --name-only HEAD | grep -qv "^scripts/package"; then
+>>>>>>> refs/remotes/origin/master
 			printf '%s' -dirty
 		fi
 
@@ -139,7 +158,11 @@ scm_version()
 	fi
 
 	# Check for svn and a svn repo.
+<<<<<<< HEAD
 	if rev=`svn info 2>/dev/null | grep '^Last Changed Rev'`; then
+=======
+	if rev=`LANG= LC_ALL= LC_MESSAGES=C svn info 2>/dev/null | grep '^Last Changed Rev'`; then
+>>>>>>> refs/remotes/origin/master
 		rev=`echo $rev | awk '{print $NF}'`
 		printf -- '-svn%s' "$rev"
 

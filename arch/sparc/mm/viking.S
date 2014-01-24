@@ -14,7 +14,10 @@
 #include <asm/page.h>
 #include <asm/pgtsrmmu.h>
 #include <asm/viking.h>
+<<<<<<< HEAD
 #include <asm/btfixup.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SMP
 	.data

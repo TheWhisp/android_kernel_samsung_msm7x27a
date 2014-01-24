@@ -14,6 +14,10 @@
 #include <linux/types.h>
 #include <linux/spinlock.h>
 #include <asm/smp.h>
+<<<<<<< HEAD
+=======
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/master
 
 struct mpic_msgr {
 	u32 __iomem *base;

@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
@@ -25,7 +28,10 @@
  * Larry Finger <Larry.Finger@lwfinger.net>
  *
  ******************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __RTL871X_MLME_H_
 #define __RTL871X_MLME_H_
 
@@ -72,8 +78,13 @@ since mlme_priv is a shared resource between many threads,
 like ISR/Call-Back functions, the OID handlers, and even timer functions.
 Each _queue has its own locks, already.
 Other items are protected by mlme_priv.lock.
+<<<<<<< HEAD
 To avoid possible dead lock, any thread trying to modifiying mlme_priv
 SHALL not lock up more than one locks at a time!
+=======
+To avoid possible dead lock, any thread trying to modify mlme_priv
+SHALL not lock up more than one lock at a time!
+>>>>>>> refs/remotes/origin/master
 */
 
 #define traffic_threshold	10
@@ -99,9 +110,13 @@ struct mlme_priv {
 	u8 *free_bss_buf;
 	unsigned long num_of_scanned;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u8 passive_mode; /*add for Android's SCAN-ACTIVE/SCAN-PASSIVE */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 passive_mode; /*add for Android's SCAN-ACTIVE/SCAN-PASSIVE */
+>>>>>>> refs/remotes/origin/master
 	struct ndis_802_11_ssid	assoc_ssid;
 	u8 assoc_bssid[6];
 	struct wlan_network cur_network;
@@ -138,7 +153,11 @@ static inline sint get_fwstate(struct mlme_priv *pmlmepriv)
  * therefore set it to be the critical section...
  *
  * ### NOTE:#### (!!!!)
+<<<<<<< HEAD
  * TAKE CARE THAT BEFORE CALLING THIS FUNC, LOCK pmlmepriv->lock
+=======
+ * TAKE CARE BEFORE CALLING THIS FUNC, LOCK pmlmepriv->lock
+>>>>>>> refs/remotes/origin/master
  */
 static inline void set_fwstate(struct mlme_priv *pmlmepriv, sint state)
 {
@@ -234,10 +253,13 @@ unsigned int r8712_restructure_ht_ie(struct _adapter *padapter, u8 *in_ie,
 				     u8 *out_ie, uint in_len, uint *pout_len);
 void r8712_issue_addbareq_cmd(struct _adapter *padapter, int priority);
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned int r8712_add_ht_addt_info(struct _adapter *padapter, u8 *in_ie,
 				    u8 *out_ie, uint in_len, uint *pout_len);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int r8712_is_same_ibss(struct _adapter *adapter, struct wlan_network *pnetwork);
 
 #endif /*__RTL871X_MLME_H_*/

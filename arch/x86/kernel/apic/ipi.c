@@ -1,6 +1,9 @@
 #include <linux/cpumask.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mm.h>
 #include <linux/delay.h>
@@ -106,7 +109,11 @@ void default_send_IPI_mask_logical(const struct cpumask *cpumask, int vector)
 	unsigned long mask = cpumask_bits(cpumask)[0];
 	unsigned long flags;
 
+<<<<<<< HEAD
 	if (WARN_ONCE(!mask, "empty IPI mask"))
+=======
+	if (!mask)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	local_irq_save(flags);

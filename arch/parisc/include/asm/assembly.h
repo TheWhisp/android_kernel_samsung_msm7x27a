@@ -438,7 +438,10 @@
 	SAVE_SP  (%sr4, PT_SR4 (\regs))
 	SAVE_SP  (%sr5, PT_SR5 (\regs))
 	SAVE_SP  (%sr6, PT_SR6 (\regs))
+<<<<<<< HEAD
 	SAVE_SP  (%sr7, PT_SR7 (\regs))
+=======
+>>>>>>> refs/remotes/origin/master
 
 	SAVE_CR  (%cr17, PT_IASQ0(\regs))
 	mtctl	 %r0,	%cr17
@@ -516,5 +519,20 @@
 	nop	/* 7 */
 	.endm
 
+<<<<<<< HEAD
+=======
+	/*
+	 * ASM_EXCEPTIONTABLE_ENTRY
+	 *
+	 * Creates an exception table entry.
+	 * Do not convert to a assembler macro. This won't work.
+	 */
+#define ASM_EXCEPTIONTABLE_ENTRY(fault_addr, except_addr)	\
+	.section __ex_table,"aw"			!	\
+	ASM_ULONG_INSN	fault_addr, except_addr		!	\
+	.previous
+
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASSEMBLY__ */
 #endif

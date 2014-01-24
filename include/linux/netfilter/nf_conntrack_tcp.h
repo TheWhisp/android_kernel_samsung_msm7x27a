@@ -1,5 +1,6 @@
 #ifndef _NF_CONNTRACK_TCP_H
 #define _NF_CONNTRACK_TCP_H
+<<<<<<< HEAD
 /* TCP tracking. */
 
 #include <linux/types.h>
@@ -52,6 +53,11 @@ struct nf_ct_tcp_flags {
 };
 
 #ifdef __KERNEL__
+=======
+
+#include <uapi/linux/netfilter/nf_conntrack_tcp.h>
+
+>>>>>>> refs/remotes/origin/master
 
 struct ip_ct_tcp_state {
 	u_int32_t	td_end;		/* max of seq + len */
@@ -78,6 +84,9 @@ struct ip_ct_tcp {
 	u_int8_t	last_flags;	/* Last flags set */
 };
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _NF_CONNTRACK_TCP_H */

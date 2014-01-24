@@ -23,9 +23,12 @@
 #include <asm/page.h>
 #include <asm/ptrace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "proc-macros.S"
 
@@ -61,9 +64,13 @@ ENTRY(cpu_fa526_proc_fin)
  */
 	.align	4
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.pushsection	.idmap.text, "ax"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/master
 ENTRY(cpu_fa526_reset)
 /* TODO: Use CP8 if possible... */
 	mov	ip, #0
@@ -81,17 +88,25 @@ ENTRY(cpu_fa526_reset)
 	nop
 	mov	pc, r0
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 ENDPROC(cpu_fa526_reset)
 	.popsection
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENDPROC(cpu_fa526_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/master
 
 /*
  * cpu_fa526_do_idle()
  */
 	.align	4
 ENTRY(cpu_fa526_do_idle)
+<<<<<<< HEAD
 	mcr	p15, 0, r0, c7, c0, 4		@ Wait for interrupt
+=======
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 
 
@@ -146,8 +161,11 @@ ENTRY(cpu_fa526_set_pte_ext)
 #endif
 	mov	pc, lr
 
+<<<<<<< HEAD
 	__CPUINIT
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.type	__fa526_setup, #function
 __fa526_setup:
 	/* On return of this routine, r0 must carry correct flags for CFG register */
@@ -193,6 +211,7 @@ fa526_cr1_set:
 	__INITDATA
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Purpose : Function pointers used to access above functions - all calls
  *	     come through these
@@ -230,6 +249,8 @@ cpu_fa526_name:
 	.asciz	"FA526"
 	.size	cpu_fa526_name, . - cpu_fa526_name
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
 	define_processor_functions fa526, dabort=v4_early_abort, pabort=legacy_pabort
 
@@ -238,7 +259,10 @@ cpu_fa526_name:
 	string	cpu_arch_name, "armv4"
 	string	cpu_elf_name, "v4"
 	string	cpu_fa526_name, "FA526"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.align
 

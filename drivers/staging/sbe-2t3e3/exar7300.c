@@ -43,6 +43,7 @@ void exar7300_set_loopback(struct channel *sc, u32 mode)
 	val &= ~(SBE_2T3E3_LIU_VAL_LOCAL_LOOPBACK | SBE_2T3E3_LIU_VAL_REMOTE_LOOPBACK);
 	val |= mode;
 	exar7300_write(sc, SBE_2T3E3_LIU_REG_REG4, val);
+<<<<<<< HEAD
 
 #if 0
 	/* TODO - is it necessary? idea from 2T3E3_HW_Test_code */
@@ -60,6 +61,8 @@ void exar7300_set_loopback(struct channel *sc, u32 mode)
 		break;
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void exar7300_set_frame_type(struct channel *sc, u32 type)

@@ -118,10 +118,14 @@ static void net_route_named_msg(struct sk_buff *buf)
 
 	if (!msg_named(msg)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf_discard(buf);
 =======
 		kfree_skb(buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree_skb(buf);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -146,6 +150,7 @@ void tipc_net_route_msg(struct sk_buff *buf)
 	msg = buf_msg(buf);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg_incr_reroute_cnt(msg);
 	if (msg_reroute_cnt(msg) > 6) {
 		if (msg_errcode(msg)) {
@@ -159,6 +164,8 @@ void tipc_net_route_msg(struct sk_buff *buf)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Handle message for this node */
 	dnode = msg_short(msg) ? tipc_own_addr : msg_destnode(msg);
 	if (tipc_in_scope(dnode, tipc_own_addr)) {
@@ -180,10 +187,14 @@ void tipc_net_route_msg(struct sk_buff *buf)
 			break;
 		default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			buf_discard(buf);
 =======
 			kfree_skb(buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kfree_skb(buf);
+>>>>>>> refs/remotes/origin/master
 		}
 		return;
 	}
@@ -193,6 +204,7 @@ void tipc_net_route_msg(struct sk_buff *buf)
 	tipc_link_send(buf, dnode, msg_link_selector(msg));
 }
 
+<<<<<<< HEAD
 int tipc_net_start(u32 addr)
 {
 	char addr_string[16];
@@ -230,6 +242,24 @@ int tipc_net_start(u32 addr)
 	info("Own node address %s, network identity %u\n",
 	     tipc_addr_string_fill(addr_string, tipc_own_addr), tipc_net_id);
 	return 0;
+=======
+void tipc_net_start(u32 addr)
+{
+	char addr_string[16];
+
+	write_lock_bh(&tipc_net_lock);
+	tipc_own_addr = addr;
+	tipc_named_reinit();
+	tipc_port_reinit();
+	tipc_bclink_init();
+	write_unlock_bh(&tipc_net_lock);
+
+	tipc_cfg_reinit();
+
+	pr_info("Started in network mode\n");
+	pr_info("Own node address %s, network identity %u\n",
+		tipc_addr_string_fill(addr_string, tipc_own_addr), tipc_net_id);
+>>>>>>> refs/remotes/origin/master
 }
 
 void tipc_net_stop(void)
@@ -237,20 +267,30 @@ void tipc_net_stop(void)
 	struct tipc_node *node, *t_node;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (tipc_mode != TIPC_NET_MODE)
 		return;
 	write_lock_bh(&tipc_net_lock);
 	tipc_bearer_stop();
 	tipc_mode = TIPC_NODE_MODE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!tipc_own_addr)
 		return;
 	write_lock_bh(&tipc_net_lock);
 	tipc_bearer_stop();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tipc_bclink_stop();
 	list_for_each_entry_safe(node, t_node, &tipc_node_list, list)
 		tipc_node_delete(node);
 	write_unlock_bh(&tipc_net_lock);
+<<<<<<< HEAD
 	info("Left network mode\n");
+=======
+	pr_info("Left network mode\n");
+>>>>>>> refs/remotes/origin/master
 }

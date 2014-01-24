@@ -26,6 +26,7 @@
 
 #include <linux/in6.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined (CONFIG_IPV6_MODULE)
 =======
 #if IS_ENABLED(CONFIG_IPV6)
@@ -50,22 +51,49 @@ struct net_protocol {
 	struct sk_buff	      **(*gro_receive)(struct sk_buff **head,
 					       struct sk_buff *skb);
 	int			(*gro_complete)(struct sk_buff *skb);
+=======
+#include <linux/skbuff.h>
+#if IS_ENABLED(CONFIG_IPV6)
+#include <linux/ipv6.h>
+#endif
+#include <linux/netdevice.h>
+
+/* This is one larger than the largest protocol value that can be
+ * found in an ipv4 or ipv6 header.  Since in both cases the protocol
+ * value is presented in a __u8, this is defined to be 256.
+ */
+#define MAX_INET_PROTOS		256
+
+/* This is used to register protocols. */
+struct net_protocol {
+	void			(*early_demux)(struct sk_buff *skb);
+	int			(*handler)(struct sk_buff *skb);
+	void			(*err_handler)(struct sk_buff *skb, u32 info);
+>>>>>>> refs/remotes/origin/master
 	unsigned int		no_policy:1,
 				netns_ok:1;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined (CONFIG_IPV6_MODULE)
 =======
 #if IS_ENABLED(CONFIG_IPV6)
 >>>>>>> refs/remotes/origin/cm-10.0
 struct inet6_protocol {
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+struct inet6_protocol {
+	void	(*early_demux)(struct sk_buff *skb);
+
+>>>>>>> refs/remotes/origin/master
 	int	(*handler)(struct sk_buff *skb);
 
 	void	(*err_handler)(struct sk_buff *skb,
 			       struct inet6_skb_parm *opt,
 			       u8 type, u8 code, int offset,
 			       __be32 info);
+<<<<<<< HEAD
 
 	int	(*gso_send_check)(struct sk_buff *skb);
 	struct sk_buff *(*gso_segment)(struct sk_buff *skb,
@@ -78,15 +106,29 @@ struct inet6_protocol {
 					struct sk_buff *skb);
 	int	(*gro_complete)(struct sk_buff *skb);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int	flags;	/* INET6_PROTO_xxx */
 };
 
 #define INET6_PROTO_NOPOLICY	0x1
 #define INET6_PROTO_FINAL	0x2
+<<<<<<< HEAD
 /* This should be set for any extension header which is compatible with GSO. */
 #define INET6_PROTO_GSO_EXTHDR	0x4
 #endif
 
+=======
+#endif
+
+struct net_offload {
+	struct offload_callbacks callbacks;
+	unsigned int		 flags;	/* Flags used by IPv6 for now */
+};
+/* This should be set for any extension header which is compatible with GSO. */
+#define INET6_PROTO_GSO_EXTHDR	0x1
+
+>>>>>>> refs/remotes/origin/master
 /* This is used to register socket interfaces for IP protocols.  */
 struct inet_protosw {
 	struct list_head list;
@@ -106,6 +148,7 @@ struct inet_protosw {
 #define INET_PROTOSW_ICSK      0x04  /* Is this an inet_connection_sock? */
 
 extern const struct net_protocol __rcu *inet_protos[MAX_INET_PROTOS];
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined (CONFIG_IPV6_MODULE)
@@ -130,5 +173,29 @@ extern int	inet6_del_protocol(const struct inet6_protocol *prot, unsigned char n
 extern int	inet6_register_protosw(struct inet_protosw *p);
 extern void	inet6_unregister_protosw(struct inet_protosw *p);
 #endif
+=======
+extern const struct net_offload __rcu *inet_offloads[MAX_INET_PROTOS];
+extern const struct net_offload __rcu *inet6_offloads[MAX_INET_PROTOS];
+
+#if IS_ENABLED(CONFIG_IPV6)
+extern const struct inet6_protocol __rcu *inet6_protos[MAX_INET_PROTOS];
+#endif
+
+int inet_add_protocol(const struct net_protocol *prot, unsigned char num);
+int inet_del_protocol(const struct net_protocol *prot, unsigned char num);
+int inet_add_offload(const struct net_offload *prot, unsigned char num);
+int inet_del_offload(const struct net_offload *prot, unsigned char num);
+void inet_register_protosw(struct inet_protosw *p);
+void inet_unregister_protosw(struct inet_protosw *p);
+
+#if IS_ENABLED(CONFIG_IPV6)
+int inet6_add_protocol(const struct inet6_protocol *prot, unsigned char num);
+int inet6_del_protocol(const struct inet6_protocol *prot, unsigned char num);
+int inet6_register_protosw(struct inet_protosw *p);
+void inet6_unregister_protosw(struct inet_protosw *p);
+#endif
+int inet6_add_offload(const struct net_offload *prot, unsigned char num);
+int inet6_del_offload(const struct net_offload *prot, unsigned char num);
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* _PROTOCOL_H */

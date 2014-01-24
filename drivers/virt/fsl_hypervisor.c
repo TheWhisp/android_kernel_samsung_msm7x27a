@@ -34,6 +34,10 @@
 #include <linux/slab.h>
 #include <linux/poll.h>
 #include <linux/of.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/reboot.h>
 #include <linux/uaccess.h>
 #include <linux/notifier.h>
@@ -796,9 +800,12 @@ static int has_fsl_hypervisor(void)
 	struct device_node *node;
 	int ret;
 
+<<<<<<< HEAD
 	if (!(mfmsr() & MSR_GS))
 		return 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	node = of_find_node_by_path("/hypervisor");
 	if (!node)
 		return 0;

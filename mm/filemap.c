@@ -10,10 +10,14 @@
  * the NFS filesystem used to do this differently, for example)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/compiler.h>
 #include <linux/fs.h>
 #include <linux/uaccess.h>
@@ -33,6 +37,7 @@
 #include <linux/pagevec.h>
 #include <linux/blkdev.h>
 #include <linux/security.h>
+<<<<<<< HEAD
 #include <linux/syscalls.h>
 #include <linux/cpuset.h>
 #include <linux/hardirq.h> /* for BUG_ON(!in_atomic()) only */
@@ -44,6 +49,17 @@
 #include <linux/cleancache.h>
 #include "internal.h"
 
+=======
+#include <linux/cpuset.h>
+#include <linux/hardirq.h> /* for BUG_ON(!in_atomic()) only */
+#include <linux/memcontrol.h>
+#include <linux/cleancache.h>
+#include "internal.h"
+
+#define CREATE_TRACE_POINTS
+#include <trace/events/filemap.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * FIXME: remove all knowledge of the buffer layer from the core VM
  */
@@ -86,6 +102,7 @@
  *    ->mmap_sem		(fault_in_pages_readable->do_page_fault)
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  ->i_mutex
  *    ->i_alloc_sem             (various)
  *
@@ -93,6 +110,9 @@
 =======
  *  bdi->wb.list_lock
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  bdi->wb.list_lock
+>>>>>>> refs/remotes/origin/master
  *    sb_lock			(fs/fs-writeback.c)
  *    ->mapping->tree_lock	(__sync_single_inode)
  *
@@ -111,6 +131,7 @@
  *    ->private_lock		(page_remove_rmap->set_page_dirty)
  *    ->tree_lock		(page_remove_rmap->set_page_dirty)
 <<<<<<< HEAD
+<<<<<<< HEAD
  *    inode_wb_list_lock	(page_remove_rmap->set_page_dirty)
  *    ->inode->i_lock		(page_remove_rmap->set_page_dirty)
  *    inode_wb_list_lock	(zap_pte_range->set_page_dirty)
@@ -121,6 +142,8 @@
  *  ->tasklist_lock             (memory_failure, collect_procs_ao)
  *    ->i_mmap_mutex
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *    bdi.wb->list_lock		(page_remove_rmap->set_page_dirty)
  *    ->inode->i_lock		(page_remove_rmap->set_page_dirty)
  *    bdi.wb->list_lock		(zap_pte_range->set_page_dirty)
@@ -129,7 +152,10 @@
  *
  * ->i_mmap_mutex
  *   ->tasklist_lock            (memory_failure, collect_procs_ao)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 /*
@@ -141,6 +167,10 @@ void __delete_from_page_cache(struct page *page)
 {
 	struct address_space *mapping = page->mapping;
 
+<<<<<<< HEAD
+=======
+	trace_mm_filemap_delete_from_page_cache(page);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * if we're uptodate, flush out into the cleancache, otherwise
 	 * invalidate any existing cleancache entries.  We can't leave
@@ -150,17 +180,23 @@ void __delete_from_page_cache(struct page *page)
 		cleancache_put_page(page);
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cleancache_flush_page(mapping, page);
 
 	radix_tree_delete(&mapping->page_tree, page->index);
 	page->mapping = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		cleancache_invalidate_page(mapping, page);
 
 	radix_tree_delete(&mapping->page_tree, page->index);
 	page->mapping = NULL;
 	/* Leave page->index set: truncation lookup relies upon it */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mapping->nrpages--;
 	__dec_zone_page_state(page, NR_FILE_PAGES);
 	if (PageSwapBacked(page))
@@ -219,6 +255,20 @@ static int sleep_on_page_killable(void *word)
 	return fatal_signal_pending(current) ? -EINTR : 0;
 }
 
+<<<<<<< HEAD
+=======
+static int filemap_check_errors(struct address_space *mapping)
+{
+	int ret = 0;
+	/* Check for outstanding write errors */
+	if (test_and_clear_bit(AS_ENOSPC, &mapping->flags))
+		ret = -ENOSPC;
+	if (test_and_clear_bit(AS_EIO, &mapping->flags))
+		ret = -EIO;
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * __filemap_fdatawrite_range - start writeback on mapping dirty pages in range
  * @mapping:	address space structure to write
@@ -300,10 +350,17 @@ int filemap_fdatawait_range(struct address_space *mapping, loff_t start_byte,
 	pgoff_t end = end_byte >> PAGE_CACHE_SHIFT;
 	struct pagevec pvec;
 	int nr_pages;
+<<<<<<< HEAD
 	int ret = 0;
 
 	if (end_byte < start_byte)
 		return 0;
+=======
+	int ret2, ret = 0;
+
+	if (end_byte < start_byte)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	pagevec_init(&pvec, 0);
 	while ((index <= end) &&
@@ -326,12 +383,19 @@ int filemap_fdatawait_range(struct address_space *mapping, loff_t start_byte,
 		pagevec_release(&pvec);
 		cond_resched();
 	}
+<<<<<<< HEAD
 
 	/* Check for outstanding write errors */
 	if (test_and_clear_bit(AS_ENOSPC, &mapping->flags))
 		ret = -ENOSPC;
 	if (test_and_clear_bit(AS_EIO, &mapping->flags))
 		ret = -EIO;
+=======
+out:
+	ret2 = filemap_check_errors(mapping);
+	if (!ret)
+		ret = ret2;
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -372,6 +436,11 @@ int filemap_write_and_wait(struct address_space *mapping)
 			if (!err)
 				err = err2;
 		}
+<<<<<<< HEAD
+=======
+	} else {
+		err = filemap_check_errors(mapping);
+>>>>>>> refs/remotes/origin/master
 	}
 	return err;
 }
@@ -403,6 +472,11 @@ int filemap_write_and_wait_range(struct address_space *mapping,
 			if (!err)
 				err = err2;
 		}
+<<<<<<< HEAD
+=======
+	} else {
+		err = filemap_check_errors(mapping);
+>>>>>>> refs/remotes/origin/master
 	}
 	return err;
 }
@@ -481,13 +555,18 @@ int add_to_page_cache_locked(struct page *page, struct address_space *mapping,
 
 	VM_BUG_ON(!PageLocked(page));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	VM_BUG_ON(PageSwapBacked(page));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	VM_BUG_ON(PageSwapBacked(page));
+>>>>>>> refs/remotes/origin/master
 
 	error = mem_cgroup_cache_charge(page, current->mm,
 					gfp_mask & GFP_RECLAIM_MASK);
 	if (error)
+<<<<<<< HEAD
 		goto out;
 
 	error = radix_tree_preload(gfp_mask & ~__GFP_HIGHMEM);
@@ -521,6 +600,36 @@ int add_to_page_cache_locked(struct page *page, struct address_space *mapping,
 	} else
 		mem_cgroup_uncharge_cache_page(page);
 out:
+=======
+		return error;
+
+	error = radix_tree_maybe_preload(gfp_mask & ~__GFP_HIGHMEM);
+	if (error) {
+		mem_cgroup_uncharge_cache_page(page);
+		return error;
+	}
+
+	page_cache_get(page);
+	page->mapping = mapping;
+	page->index = offset;
+
+	spin_lock_irq(&mapping->tree_lock);
+	error = radix_tree_insert(&mapping->page_tree, offset, page);
+	radix_tree_preload_end();
+	if (unlikely(error))
+		goto err_insert;
+	mapping->nrpages++;
+	__inc_zone_page_state(page, NR_FILE_PAGES);
+	spin_unlock_irq(&mapping->tree_lock);
+	trace_mm_filemap_add_to_page_cache(page);
+	return 0;
+err_insert:
+	page->mapping = NULL;
+	/* Leave page->index set: truncation relies upon it */
+	spin_unlock_irq(&mapping->tree_lock);
+	mem_cgroup_uncharge_cache_page(page);
+	page_cache_release(page);
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 EXPORT_SYMBOL(add_to_page_cache_locked);
@@ -530,6 +639,7 @@ int add_to_page_cache_lru(struct page *page, struct address_space *mapping,
 {
 	int ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*
 	 * Splice_read and readahead add shmem/tmpfs pages into the page cache
@@ -552,6 +662,11 @@ int add_to_page_cache_lru(struct page *page, struct address_space *mapping,
 	if (ret == 0)
 		lru_cache_add_file(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = add_to_page_cache(page, mapping, offset, gfp_mask);
+	if (ret == 0)
+		lru_cache_add_file(page);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL_GPL(add_to_page_cache_lru);
@@ -752,10 +867,13 @@ repeat:
 		if (unlikely(!page))
 			goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (radix_tree_deref_retry(page))
 			goto repeat;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (radix_tree_exception(page)) {
 			if (radix_tree_deref_retry(page))
 				goto repeat;
@@ -766,7 +884,10 @@ repeat:
 			 */
 			goto out;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!page_cache_get_speculative(page))
 			goto repeat;
 
@@ -804,10 +925,14 @@ struct page *find_lock_page(struct address_space *mapping, pgoff_t offset)
 repeat:
 	page = find_get_page(mapping, offset);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (page) {
 =======
 	if (page && !radix_tree_exception(page)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (page && !radix_tree_exception(page)) {
+>>>>>>> refs/remotes/origin/master
 		lock_page(page);
 		/* Has the page been truncated? */
 		if (unlikely(page->mapping != mapping)) {
@@ -888,6 +1013,7 @@ unsigned find_get_pages(struct address_space *mapping, pgoff_t start,
 			    unsigned int nr_pages, struct page **pages)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int i;
 	unsigned int ret;
 	unsigned int nr_found;
@@ -912,6 +1038,8 @@ repeat:
 			WARN_ON(start | i);
 			goto restart;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct radix_tree_iter iter;
 	void **slot;
 	unsigned ret = 0;
@@ -944,7 +1072,10 @@ repeat:
 			 * we only reach this from invalidate_mapping_pages().
 			 */
 			continue;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (!page_cache_get_speculative(page))
@@ -952,15 +1083,20 @@ repeat:
 
 		/* Has the page moved? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (unlikely(page != *((void **)pages[i]))) {
 =======
 		if (unlikely(page != *slot)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (unlikely(page != *slot)) {
+>>>>>>> refs/remotes/origin/master
 			page_cache_release(page);
 			goto repeat;
 		}
 
 		pages[ret] = page;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret++;
 	}
@@ -972,11 +1108,16 @@ repeat:
 	if (unlikely(!ret && nr_found))
 		goto restart;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (++ret == nr_pages)
 			break;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rcu_read_unlock();
 	return ret;
 }
@@ -996,6 +1137,7 @@ repeat:
 unsigned find_get_pages_contig(struct address_space *mapping, pgoff_t index,
 			       unsigned int nr_pages, struct page **pages)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned int i;
 	unsigned int ret;
@@ -1020,6 +1162,8 @@ repeat:
 		if (radix_tree_deref_retry(page))
 			goto restart;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct radix_tree_iter iter;
 	void **slot;
 	unsigned int ret = 0;
@@ -1053,17 +1197,24 @@ repeat:
 			 */
 			break;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (!page_cache_get_speculative(page))
 			goto repeat;
 
 		/* Has the page moved? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (unlikely(page != *((void **)pages[i]))) {
 =======
 		if (unlikely(page != *slot)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (unlikely(page != *slot)) {
+>>>>>>> refs/remotes/origin/master
 			page_cache_release(page);
 			goto repeat;
 		}
@@ -1074,15 +1225,20 @@ repeat:
 		 * negatives, which is just confusing to the caller.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (page->mapping == NULL || page->index != index) {
 =======
 		if (page->mapping == NULL || page->index != iter.index) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (page->mapping == NULL || page->index != iter.index) {
+>>>>>>> refs/remotes/origin/master
 			page_cache_release(page);
 			break;
 		}
 
 		pages[ret] = page;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret++;
 		index++;
@@ -1090,6 +1246,10 @@ repeat:
 		if (++ret == nr_pages)
 			break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (++ret == nr_pages)
+			break;
+>>>>>>> refs/remotes/origin/master
 	}
 	rcu_read_unlock();
 	return ret;
@@ -1110,6 +1270,7 @@ EXPORT_SYMBOL(find_get_pages_contig);
 unsigned find_get_pages_tag(struct address_space *mapping, pgoff_t *index,
 			int tag, unsigned int nr_pages, struct page **pages)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned int i;
 	unsigned int ret;
@@ -1134,6 +1295,8 @@ repeat:
 		if (radix_tree_deref_retry(page))
 			goto restart;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct radix_tree_iter iter;
 	void **slot;
 	unsigned ret = 0;
@@ -1166,22 +1329,30 @@ repeat:
 			 */
 			BUG();
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (!page_cache_get_speculative(page))
 			goto repeat;
 
 		/* Has the page moved? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (unlikely(page != *((void **)pages[i]))) {
 =======
 		if (unlikely(page != *slot)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (unlikely(page != *slot)) {
+>>>>>>> refs/remotes/origin/master
 			page_cache_release(page);
 			goto repeat;
 		}
 
 		pages[ret] = page;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret++;
 	}
@@ -1193,11 +1364,16 @@ repeat:
 	if (unlikely(!ret && nr_found))
 		goto restart;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (++ret == nr_pages)
 			break;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rcu_read_unlock();
 
 	if (ret)
@@ -1266,7 +1442,10 @@ static void shrink_readahead_size_eio(struct file *filp,
  * @filp:	the file to read
  * @ppos:	current file position
  * @desc:	read_descriptor
+<<<<<<< HEAD
  * @actor:	read method
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This is a generic file read routine, and uses the
  * mapping->a_ops->readpage() function for the actual low-level stuff.
@@ -1275,7 +1454,11 @@ static void shrink_readahead_size_eio(struct file *filp,
  * of the logic when it comes to error handling etc.
  */
 static void do_generic_file_read(struct file *filp, loff_t *ppos,
+<<<<<<< HEAD
 		read_descriptor_t *desc, read_actor_t actor)
+=======
+		read_descriptor_t *desc)
+>>>>>>> refs/remotes/origin/master
 {
 	struct address_space *mapping = filp->f_mapping;
 	struct inode *inode = mapping->host;
@@ -1376,13 +1559,22 @@ page_ok:
 		 * Ok, we have the page, and it's up-to-date, so
 		 * now we can copy it to user space...
 		 *
+<<<<<<< HEAD
 		 * The actor routine returns how many bytes were actually used..
+=======
+		 * The file_read_actor routine returns how many bytes were
+		 * actually used..
+>>>>>>> refs/remotes/origin/master
 		 * NOTE! This may not be the same as how much of a user buffer
 		 * we filled up (we may be padding etc), so we can only update
 		 * "pos" here (the actor routine has to update the user buffer
 		 * pointers and the remaining count).
 		 */
+<<<<<<< HEAD
 		ret = actor(desc, page, offset, nr);
+=======
+		ret = file_read_actor(desc, page, offset, nr);
+>>>>>>> refs/remotes/origin/master
 		offset += ret;
 		index += offset >> PAGE_CACHE_SHIFT;
 		offset &= ~PAGE_CACHE_MASK;
@@ -1506,16 +1698,22 @@ int file_read_actor(read_descriptor_t *desc, struct page *page,
 	 */
 	if (!fault_in_pages_writeable(desc->arg.buf, size)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kaddr = kmap_atomic(page, KM_USER0);
 		left = __copy_to_user_inatomic(desc->arg.buf,
 						kaddr + offset, size);
 		kunmap_atomic(kaddr, KM_USER0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		kaddr = kmap_atomic(page);
 		left = __copy_to_user_inatomic(desc->arg.buf,
 						kaddr + offset, size);
 		kunmap_atomic(kaddr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (left == 0)
 			goto success;
 	}
@@ -1615,12 +1813,17 @@ generic_file_aio_read(struct kiocb *iocb, const struct iovec *iov,
 			retval = filemap_write_and_wait_range(mapping, pos,
 					pos + iov_length(iov, nr_segs) - 1);
 			if (!retval) {
+<<<<<<< HEAD
 				struct blk_plug plug;
 
 				blk_start_plug(&plug);
 				retval = mapping->a_ops->direct_IO(READ, iocb,
 							iov, pos, nr_segs);
 				blk_finish_plug(&plug);
+=======
+				retval = mapping->a_ops->direct_IO(READ, iocb,
+							iov, pos, nr_segs);
+>>>>>>> refs/remotes/origin/master
 			}
 			if (retval > 0) {
 				*ppos = pos + retval;
@@ -1666,7 +1869,11 @@ generic_file_aio_read(struct kiocb *iocb, const struct iovec *iov,
 		if (desc.count == 0)
 			continue;
 		desc.error = 0;
+<<<<<<< HEAD
 		do_generic_file_read(filp, ppos, &desc, file_read_actor);
+=======
+		do_generic_file_read(filp, ppos, &desc);
+>>>>>>> refs/remotes/origin/master
 		retval += desc.written;
 		if (desc.error) {
 			retval = retval ?: desc.error;
@@ -1680,6 +1887,7 @@ out:
 }
 EXPORT_SYMBOL(generic_file_aio_read);
 
+<<<<<<< HEAD
 static ssize_t
 do_readahead(struct address_space *mapping, struct file *filp,
 	     pgoff_t index, unsigned long nr)
@@ -1718,6 +1926,8 @@ asmlinkage long SyS_readahead(long fd, loff_t offset, long count)
 SYSCALL_ALIAS(sys_readahead, SyS_readahead);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MMU
 /**
  * page_cache_read - adds requested page to the page cache if not already there
@@ -1766,12 +1976,20 @@ static void do_sync_mmap_readahead(struct vm_area_struct *vma,
 	struct address_space *mapping = file->f_mapping;
 
 	/* If we don't want any read-ahead, don't bother */
+<<<<<<< HEAD
 	if (VM_RandomReadHint(vma))
+=======
+	if (vma->vm_flags & VM_RAND_READ)
+>>>>>>> refs/remotes/origin/master
 		return;
 	if (!ra->ra_pages)
 		return;
 
+<<<<<<< HEAD
 	if (VM_SequentialReadHint(vma)) {
+=======
+	if (vma->vm_flags & VM_SEQ_READ) {
+>>>>>>> refs/remotes/origin/master
 		page_cache_sync_readahead(mapping, ra, file, offset,
 					  ra->ra_pages);
 		return;
@@ -1811,7 +2029,11 @@ static void do_async_mmap_readahead(struct vm_area_struct *vma,
 	struct address_space *mapping = file->f_mapping;
 
 	/* If we don't want any read-ahead, don't bother */
+<<<<<<< HEAD
 	if (VM_RandomReadHint(vma))
+=======
+	if (vma->vm_flags & VM_RAND_READ)
+>>>>>>> refs/remotes/origin/master
 		return;
 	if (ra->mmap_miss > 0)
 		ra->mmap_miss--;
@@ -1852,13 +2074,21 @@ int filemap_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 	 * Do we have something in the page cache already?
 	 */
 	page = find_get_page(mapping, offset);
+<<<<<<< HEAD
 	if (likely(page)) {
+=======
+	if (likely(page) && !(vmf->flags & FAULT_FLAG_TRIED)) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * We found the page, so try async readahead before
 		 * waiting for the lock.
 		 */
 		do_async_mmap_readahead(vma, ra, file, page, offset);
+<<<<<<< HEAD
 	} else {
+=======
+	} else if (!page) {
+>>>>>>> refs/remotes/origin/master
 		/* No page in the page cache at all */
 		do_sync_mmap_readahead(vma, ra, file, offset);
 		count_vm_event(PGMAJFAULT);
@@ -1953,8 +2183,42 @@ page_not_uptodate:
 }
 EXPORT_SYMBOL(filemap_fault);
 
+<<<<<<< HEAD
 const struct vm_operations_struct generic_file_vm_ops = {
 	.fault		= filemap_fault,
+=======
+int filemap_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf)
+{
+	struct page *page = vmf->page;
+	struct inode *inode = file_inode(vma->vm_file);
+	int ret = VM_FAULT_LOCKED;
+
+	sb_start_pagefault(inode->i_sb);
+	file_update_time(vma->vm_file);
+	lock_page(page);
+	if (page->mapping != inode->i_mapping) {
+		unlock_page(page);
+		ret = VM_FAULT_NOPAGE;
+		goto out;
+	}
+	/*
+	 * We mark the page dirty already here so that when freeze is in
+	 * progress, we are guaranteed that writeback during freezing will
+	 * see the dirty page and writeprotect it again.
+	 */
+	set_page_dirty(page);
+	wait_for_stable_page(page);
+out:
+	sb_end_pagefault(inode->i_sb);
+	return ret;
+}
+EXPORT_SYMBOL(filemap_page_mkwrite);
+
+const struct vm_operations_struct generic_file_vm_ops = {
+	.fault		= filemap_fault,
+	.page_mkwrite	= filemap_page_mkwrite,
+	.remap_pages	= generic_file_remap_pages,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* This is used for a general mmap of a disk file */
@@ -1967,7 +2231,10 @@ int generic_file_mmap(struct file * file, struct vm_area_struct * vma)
 		return -ENOEXEC;
 	file_accessed(file);
 	vma->vm_ops = &generic_file_vm_ops;
+<<<<<<< HEAD
 	vma->vm_flags |= VM_CAN_NONLINEAR;
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1997,10 +2264,14 @@ EXPORT_SYMBOL(generic_file_readonly_mmap);
 static struct page *__read_cache_page(struct address_space *mapping,
 				pgoff_t index,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				int (*filler)(void *,struct page*),
 =======
 				int (*filler)(void *, struct page *),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				int (*filler)(void *, struct page *),
+>>>>>>> refs/remotes/origin/master
 				void *data,
 				gfp_t gfp)
 {
@@ -2032,10 +2303,14 @@ repeat:
 static struct page *do_read_cache_page(struct address_space *mapping,
 				pgoff_t index,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				int (*filler)(void *,struct page*),
 =======
 				int (*filler)(void *, struct page *),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				int (*filler)(void *, struct page *),
+>>>>>>> refs/remotes/origin/master
 				void *data,
 				gfp_t gfp)
 
@@ -2076,10 +2351,14 @@ out:
  * @index:	the page index
  * @filler:	function to perform the read
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @data:	destination for read data
 =======
  * @data:	first arg to filler(data, page) function, often left as NULL
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @data:	first arg to filler(data, page) function, often left as NULL
+>>>>>>> refs/remotes/origin/master
  *
  * Same as read_cache_page, but don't wait for page to become unlocked
  * after submitting it to the filler.
@@ -2092,10 +2371,14 @@ out:
 struct page *read_cache_page_async(struct address_space *mapping,
 				pgoff_t index,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				int (*filler)(void *,struct page*),
 =======
 				int (*filler)(void *, struct page *),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				int (*filler)(void *, struct page *),
+>>>>>>> refs/remotes/origin/master
 				void *data)
 {
 	return do_read_cache_page(mapping, index, filler, data, mapping_gfp_mask(mapping));
@@ -2141,10 +2424,14 @@ EXPORT_SYMBOL(read_cache_page_gfp);
  * @index:	the page index
  * @filler:	function to perform the read
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @data:	destination for read data
 =======
  * @data:	first arg to filler(data, page) function, often left as NULL
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @data:	first arg to filler(data, page) function, often left as NULL
+>>>>>>> refs/remotes/origin/master
  *
  * Read into the page cache. If a page already exists, and PageUptodate() is
  * not set, try to fill the page then wait for it to become unlocked.
@@ -2154,16 +2441,21 @@ EXPORT_SYMBOL(read_cache_page_gfp);
 struct page *read_cache_page(struct address_space *mapping,
 				pgoff_t index,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				int (*filler)(void *,struct page*),
 =======
 				int (*filler)(void *, struct page *),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				int (*filler)(void *, struct page *),
+>>>>>>> refs/remotes/origin/master
 				void *data)
 {
 	return wait_on_page_read(read_cache_page_async(mapping, index, filler, data));
 }
 EXPORT_SYMBOL(read_cache_page);
 
+<<<<<<< HEAD
 /*
  * The logic we want is
  *
@@ -2233,6 +2525,8 @@ int file_remove_suid(struct file *file)
 }
 EXPORT_SYMBOL(file_remove_suid);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static size_t __iovec_copy_from_user_inatomic(char *vaddr,
 			const struct iovec *iov, size_t base, size_t bytes)
 {
@@ -2268,10 +2562,14 @@ size_t iov_iter_copy_from_user_atomic(struct page *page,
 
 	BUG_ON(!in_atomic());
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(page, KM_USER0);
 =======
 	kaddr = kmap_atomic(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/master
 	if (likely(i->nr_segs == 1)) {
 		int left;
 		char __user *buf = i->iov->iov_base + i->iov_offset;
@@ -2282,10 +2580,14 @@ size_t iov_iter_copy_from_user_atomic(struct page *page,
 						i->iov, i->iov_offset, bytes);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
 =======
 	kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 
 	return copied;
 }
@@ -2329,9 +2631,13 @@ void iov_iter_advance(struct iov_iter *i, size_t bytes)
 		const struct iovec *iov = i->iov;
 		size_t base = i->iov_offset;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		unsigned long nr_segs = i->nr_segs;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		unsigned long nr_segs = i->nr_segs;
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * The !iov->iov_len check ensures we skip over unlikely
@@ -2348,18 +2654,26 @@ void iov_iter_advance(struct iov_iter *i, size_t bytes)
 			if (iov->iov_len == base) {
 				iov++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 				nr_segs--;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				nr_segs--;
+>>>>>>> refs/remotes/origin/master
 				base = 0;
 			}
 		}
 		i->iov = iov;
 		i->iov_offset = base;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		i->nr_segs = nr_segs;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		i->nr_segs = nr_segs;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 EXPORT_SYMBOL(iov_iter_advance);
@@ -2384,7 +2698,11 @@ EXPORT_SYMBOL(iov_iter_fault_in_readable);
 /*
  * Return the count of just the current iov_iter segment.
  */
+<<<<<<< HEAD
 size_t iov_iter_single_seg_count(struct iov_iter *i)
+=======
+size_t iov_iter_single_seg_count(const struct iov_iter *i)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct iovec *iov = i->iov;
 	if (i->nr_segs == 1)
@@ -2577,9 +2895,12 @@ struct page *grab_cache_page_write_begin(struct address_space *mapping,
 {
 	int status;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct page *page;
 	gfp_t gfp_notmask = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	gfp_t gfp_mask;
 	struct page *page;
 	gfp_t gfp_notmask = 0;
@@ -2587,7 +2908,10 @@ struct page *grab_cache_page_write_begin(struct address_space *mapping,
 	gfp_mask = mapping_gfp_mask(mapping);
 	if (mapping_cap_account_dirty(mapping))
 		gfp_mask |= __GFP_WRITE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (flags & AOP_FLAG_NOFS)
 		gfp_notmask = __GFP_FS;
 repeat:
@@ -2595,6 +2919,7 @@ repeat:
 	if (page)
 		goto found;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	page = __page_cache_alloc(mapping_gfp_mask(mapping) & ~gfp_notmask);
 	if (!page)
@@ -2612,6 +2937,11 @@ retry:
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	page = __page_cache_alloc(gfp_mask & ~gfp_notmask);
+	if (!page)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 	status = add_to_page_cache_lru(page, mapping, index,
 						GFP_KERNEL & ~gfp_notmask);
 	if (unlikely(status)) {
@@ -2621,7 +2951,11 @@ retry:
 		return NULL;
 	}
 found:
+<<<<<<< HEAD
 	wait_on_page_writeback(page);
+=======
+	wait_for_stable_page(page);
+>>>>>>> refs/remotes/origin/master
 	return page;
 }
 EXPORT_SYMBOL(grab_cache_page_write_begin);
@@ -2654,9 +2988,12 @@ static ssize_t generic_perform_write(struct file *file,
 
 again:
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Bring in the user page that we will copy from _first_.
 		 * Otherwise there's a nasty deadlock on copying from the
@@ -2713,13 +3050,19 @@ again:
 
 		balance_dirty_pages_ratelimited(mapping);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (fatal_signal_pending(current)) {
 			status = -EINTR;
 			break;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} while (iov_iter_count(i));
 
 	return written ? written : status;
@@ -2785,8 +3128,11 @@ ssize_t __generic_file_aio_write(struct kiocb *iocb, const struct iovec *iov,
 	count = ocount;
 	pos = *ppos;
 
+<<<<<<< HEAD
 	vfs_check_frozen(inode->i_sb, SB_FREEZE_WRITE);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* We can write back this queue in page reclaim */
 	current->backing_dev_info = mapping->backing_dev_info;
 	written = 0;
@@ -2802,7 +3148,13 @@ ssize_t __generic_file_aio_write(struct kiocb *iocb, const struct iovec *iov,
 	if (err)
 		goto out;
 
+<<<<<<< HEAD
 	file_update_time(file);
+=======
+	err = file_update_time(file);
+	if (err)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	/* coalesce the iovecs and go direct-to-BIO for O_DIRECT */
 	if (unlikely(file->f_flags & O_DIRECT)) {
@@ -2878,24 +3230,37 @@ ssize_t generic_file_aio_write(struct kiocb *iocb, const struct iovec *iov,
 {
 	struct file *file = iocb->ki_filp;
 	struct inode *inode = file->f_mapping->host;
+<<<<<<< HEAD
 	struct blk_plug plug;
+=======
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret;
 
 	BUG_ON(iocb->ki_pos != pos);
 
 	mutex_lock(&inode->i_mutex);
+<<<<<<< HEAD
 	blk_start_plug(&plug);
 	ret = __generic_file_aio_write(iocb, iov, nr_segs, &iocb->ki_pos);
 	mutex_unlock(&inode->i_mutex);
 
 	if (ret > 0 || ret == -EIOCBQUEUED) {
+=======
+	ret = __generic_file_aio_write(iocb, iov, nr_segs, &iocb->ki_pos);
+	mutex_unlock(&inode->i_mutex);
+
+	if (ret > 0) {
+>>>>>>> refs/remotes/origin/master
 		ssize_t err;
 
 		err = generic_write_sync(file, pos, ret);
 		if (err < 0 && ret > 0)
 			ret = err;
 	}
+<<<<<<< HEAD
 	blk_finish_plug(&plug);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL(generic_file_aio_write);

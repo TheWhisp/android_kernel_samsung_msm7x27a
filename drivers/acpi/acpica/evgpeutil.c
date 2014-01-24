@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,15 +57,23 @@
 ACPI_MODULE_NAME("evgpeutil")
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_ev_walk_gpe_list
  *
  * PARAMETERS:  gpe_walk_callback   - Routine called for each GPE block
+<<<<<<< HEAD
  *              Context             - Value passed to callback
+=======
+ *              context             - Value passed to callback
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -108,7 +120,11 @@ acpi_ev_walk_gpe_list(acpi_gpe_callback gpe_walk_callback, void *context)
 		gpe_xrupt_info = gpe_xrupt_info->next;
 	}
 
+<<<<<<< HEAD
       unlock_and_exit:
+=======
+unlock_and_exit:
+>>>>>>> refs/remotes/origin/master
 	acpi_os_release_lock(acpi_gbl_gpe_lock, flags);
 	return_ACPI_STATUS(status);
 }
@@ -203,7 +219,11 @@ acpi_ev_get_gpe_device(struct acpi_gpe_xrupt_info *gpe_xrupt_info,
  *
  * FUNCTION:    acpi_ev_get_gpe_xrupt_block
  *
+<<<<<<< HEAD
  * PARAMETERS:  interrupt_number     - Interrupt for a GPE block
+=======
+ * PARAMETERS:  interrupt_number            - Interrupt for a GPE block
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      A GPE interrupt block
  *
@@ -354,6 +374,11 @@ acpi_ev_delete_gpe_handlers(struct acpi_gpe_xrupt_info *gpe_xrupt_info,
 			    void *context)
 {
 	struct acpi_gpe_event_info *gpe_event_info;
+<<<<<<< HEAD
+=======
+	struct acpi_gpe_notify_info *notify;
+	struct acpi_gpe_notify_info *next;
+>>>>>>> refs/remotes/origin/master
 	u32 i;
 	u32 j;
 
@@ -372,10 +397,35 @@ acpi_ev_delete_gpe_handlers(struct acpi_gpe_xrupt_info *gpe_xrupt_info,
 
 			if ((gpe_event_info->flags & ACPI_GPE_DISPATCH_MASK) ==
 			    ACPI_GPE_DISPATCH_HANDLER) {
+<<<<<<< HEAD
+=======
+
+				/* Delete an installed handler block */
+
+>>>>>>> refs/remotes/origin/master
 				ACPI_FREE(gpe_event_info->dispatch.handler);
 				gpe_event_info->dispatch.handler = NULL;
 				gpe_event_info->flags &=
 				    ~ACPI_GPE_DISPATCH_MASK;
+<<<<<<< HEAD
+=======
+			} else
+			    if ((gpe_event_info->
+				 flags & ACPI_GPE_DISPATCH_MASK) ==
+				ACPI_GPE_DISPATCH_NOTIFY) {
+
+				/* Delete the implicit notification device list */
+
+				notify = gpe_event_info->dispatch.notify_list;
+				while (notify) {
+					next = notify->next;
+					ACPI_FREE(notify);
+					notify = next;
+				}
+				gpe_event_info->dispatch.notify_list = NULL;
+				gpe_event_info->flags &=
+				    ~ACPI_GPE_DISPATCH_MASK;
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
@@ -383,7 +433,12 @@ acpi_ev_delete_gpe_handlers(struct acpi_gpe_xrupt_info *gpe_xrupt_info,
 	return_ACPI_STATUS(AE_OK);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 #endif				/* !ACPI_REDUCED_HARDWARE */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/master

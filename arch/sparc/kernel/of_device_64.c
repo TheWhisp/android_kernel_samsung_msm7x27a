@@ -3,10 +3,14 @@
 #include <linux/of.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mod_devicetable.h>
 #include <linux/slab.h>
 #include <linux/errno.h>
@@ -14,9 +18,13 @@
 #include <linux/of_device.h>
 #include <linux/of_platform.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/spitfire.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/spitfire.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "of_device_common.h"
 
@@ -587,7 +595,11 @@ static unsigned int __init build_one_device_irq(struct platform_device *op,
 				printk("%s: Apply [%s:%x] imap --> [%s:%x]\n",
 				       op->dev.of_node->full_name,
 				       pp->full_name, this_orig_irq,
+<<<<<<< HEAD
 				       (iret ? iret->full_name : "NULL"), irq);
+=======
+				       of_node_full_name(iret), irq);
+>>>>>>> refs/remotes/origin/master
 
 			if (!iret)
 				break;

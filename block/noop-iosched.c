@@ -59,6 +59,7 @@ noop_latter_request(struct request_queue *q, struct request *rq)
 	return list_entry(rq->queuelist.next, struct request, queuelist);
 }
 
+<<<<<<< HEAD
 static void *noop_init_queue(struct request_queue *q)
 {
 	struct noop_data *nd;
@@ -68,6 +69,30 @@ static void *noop_init_queue(struct request_queue *q)
 		return NULL;
 	INIT_LIST_HEAD(&nd->queue);
 	return nd;
+=======
+static int noop_init_queue(struct request_queue *q, struct elevator_type *e)
+{
+	struct noop_data *nd;
+	struct elevator_queue *eq;
+
+	eq = elevator_alloc(q, e);
+	if (!eq)
+		return -ENOMEM;
+
+	nd = kmalloc_node(sizeof(*nd), GFP_KERNEL, q->node);
+	if (!nd) {
+		kobject_put(&eq->kobj);
+		return -ENOMEM;
+	}
+	eq->elevator_data = nd;
+
+	INIT_LIST_HEAD(&nd->queue);
+
+	spin_lock_irq(q->queue_lock);
+	q->elevator = eq;
+	spin_unlock_irq(q->queue_lock);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void noop_exit_queue(struct elevator_queue *e)
@@ -95,12 +120,16 @@ static struct elevator_type elevator_noop = {
 static int __init noop_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	elv_register(&elevator_noop);
 
 	return 0;
 =======
 	return elv_register(&elevator_noop);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return elv_register(&elevator_noop);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit noop_exit(void)

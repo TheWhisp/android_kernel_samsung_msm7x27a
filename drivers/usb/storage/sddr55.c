@@ -46,6 +46,7 @@ MODULE_LICENSE("GPL");
 		    vendorName, productName, useProtocol, useTransport, \
 		    initFunction, flags) \
 { USB_DEVICE_VER(id_vendor, id_product, bcdDeviceMin, bcdDeviceMax), \
+<<<<<<< HEAD
   .driver_info = (flags)|(USB_US_TYPE_STOR<<24) }
 
 <<<<<<< HEAD
@@ -53,6 +54,11 @@ struct usb_device_id sddr55_usb_ids[] = {
 =======
 static struct usb_device_id sddr55_usb_ids[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  .driver_info = (flags) }
+
+static struct usb_device_id sddr55_usb_ids[] = {
+>>>>>>> refs/remotes/origin/master
 #	include "unusual_sddr55.h"
 	{ }		/* Terminating entry */
 };
@@ -149,8 +155,12 @@ static int sddr55_status(struct us_data *us)
 	result = sddr55_bulk_transport(us,
 		DMA_TO_DEVICE, command, 8);
 
+<<<<<<< HEAD
 	US_DEBUGP("Result for send_command in status %d\n",
 		result);
+=======
+	usb_stor_dbg(us, "Result for send_command in status %d\n", result);
+>>>>>>> refs/remotes/origin/master
 
 	if (result != USB_STOR_XFER_GOOD) {
 		set_sense_info (4, 0, 0);	/* hardware error */
@@ -240,9 +250,14 @@ static int sddr55_read_data(struct us_data *us,
 				info->blocksize - page);
 		len = pages << info->pageshift;
 
+<<<<<<< HEAD
 		US_DEBUGP("Read %02X pages, from PBA %04X"
 			" (LBA %04X) page %02X\n",
 			pages, pba, lba, page);
+=======
+		usb_stor_dbg(us, "Read %02X pages, from PBA %04X (LBA %04X) page %02X\n",
+			     pages, pba, lba, page);
+>>>>>>> refs/remotes/origin/master
 
 		if (pba == NOT_ALLOCATED) {
 			/* no pba for this lba, fill with zeroes */
@@ -265,8 +280,13 @@ static int sddr55_read_data(struct us_data *us,
 			result = sddr55_bulk_transport(us,
 				DMA_TO_DEVICE, command, 8);
 
+<<<<<<< HEAD
 			US_DEBUGP("Result for send_command in read_data %d\n",
 				result);
+=======
+			usb_stor_dbg(us, "Result for send_command in read_data %d\n",
+				     result);
+>>>>>>> refs/remotes/origin/master
 
 			if (result != USB_STOR_XFER_GOOD) {
 				result = USB_STOR_TRANSPORT_ERROR;
@@ -372,9 +392,14 @@ static int sddr55_write_data(struct us_data *us,
 		usb_stor_access_xfer_buf(buffer, len, us->srb,
 				&sg, &offset, FROM_XFER_BUF);
 
+<<<<<<< HEAD
 		US_DEBUGP("Write %02X pages, to PBA %04X"
 			" (LBA %04X) page %02X\n",
 			pages, pba, lba, page);
+=======
+		usb_stor_dbg(us, "Write %02X pages, to PBA %04X (LBA %04X) page %02X\n",
+			     pages, pba, lba, page);
+>>>>>>> refs/remotes/origin/master
 			
 		command[4] = 0;
 
@@ -388,7 +413,11 @@ static int sddr55_write_data(struct us_data *us,
 			/* set pba to first block in zone lba is in */
 			pba = (lba / 1000) * 1024;
 
+<<<<<<< HEAD
 			US_DEBUGP("No PBA for LBA %04X\n",lba);
+=======
+			usb_stor_dbg(us, "No PBA for LBA %04X\n", lba);
+>>>>>>> refs/remotes/origin/master
 
 			if (max_pba > 1024)
 				max_pba = 1024;
@@ -411,14 +440,23 @@ static int sddr55_write_data(struct us_data *us,
 
 			if (pba == -1) {
 				/* oh dear */
+<<<<<<< HEAD
 				US_DEBUGP("Couldn't find unallocated block\n");
+=======
+				usb_stor_dbg(us, "Couldn't find unallocated block\n");
+>>>>>>> refs/remotes/origin/master
 
 				set_sense_info (3, 0x31, 0);	/* medium error */
 				result = USB_STOR_TRANSPORT_FAILED;
 				goto leave;
 			}
 
+<<<<<<< HEAD
 			US_DEBUGP("Allocating PBA %04X for LBA %04X\n", pba, lba);
+=======
+			usb_stor_dbg(us, "Allocating PBA %04X for LBA %04X\n",
+				     pba, lba);
+>>>>>>> refs/remotes/origin/master
 
 			/* set writing to unallocated block flag */
 			command[4] = 0x40;
@@ -443,8 +481,13 @@ static int sddr55_write_data(struct us_data *us,
 			DMA_TO_DEVICE, command, 8);
 
 		if (result != USB_STOR_XFER_GOOD) {
+<<<<<<< HEAD
 			US_DEBUGP("Result for send_command in write_data %d\n",
 			result);
+=======
+			usb_stor_dbg(us, "Result for send_command in write_data %d\n",
+				     result);
+>>>>>>> refs/remotes/origin/master
 
 			/* set_sense_info is superfluous here? */
 			set_sense_info (3, 0x3, 0);/* peripheral write error */
@@ -457,8 +500,13 @@ static int sddr55_write_data(struct us_data *us,
 			DMA_TO_DEVICE, buffer, len);
 
 		if (result != USB_STOR_XFER_GOOD) {
+<<<<<<< HEAD
 			US_DEBUGP("Result for send_data in write_data %d\n",
 				  result);
+=======
+			usb_stor_dbg(us, "Result for send_data in write_data %d\n",
+				     result);
+>>>>>>> refs/remotes/origin/master
 
 			/* set_sense_info is superfluous here? */
 			set_sense_info (3, 0x3, 0);/* peripheral write error */
@@ -470,8 +518,13 @@ static int sddr55_write_data(struct us_data *us,
 		result = sddr55_bulk_transport(us, DMA_FROM_DEVICE, status, 6);
 
 		if (result != USB_STOR_XFER_GOOD) {
+<<<<<<< HEAD
 			US_DEBUGP("Result for get_status in write_data %d\n",
 				  result);
+=======
+			usb_stor_dbg(us, "Result for get_status in write_data %d\n",
+				     result);
+>>>>>>> refs/remotes/origin/master
 
 			/* set_sense_info is superfluous here? */
 			set_sense_info (3, 0x3, 0);/* peripheral write error */
@@ -491,8 +544,13 @@ static int sddr55_write_data(struct us_data *us,
 			goto leave;
 		}
 
+<<<<<<< HEAD
 		US_DEBUGP("Updating maps for LBA %04X: old PBA %04X, new PBA %04X\n",
 			lba, pba, new_pba);
+=======
+		usb_stor_dbg(us, "Updating maps for LBA %04X: old PBA %04X, new PBA %04X\n",
+			     lba, pba, new_pba);
+>>>>>>> refs/remotes/origin/master
 
 		/* update the lba<->pba maps, note new_pba might be the same as pba */
 		info->lba_to_pba[lba] = new_pba;
@@ -535,8 +593,13 @@ static int sddr55_read_deviceID(struct us_data *us,
 	command[7] = 0x84;
 	result = sddr55_bulk_transport(us, DMA_TO_DEVICE, command, 8);
 
+<<<<<<< HEAD
 	US_DEBUGP("Result of send_control for device ID is %d\n",
 		result);
+=======
+	usb_stor_dbg(us, "Result of send_control for device ID is %d\n",
+		     result);
+>>>>>>> refs/remotes/origin/master
 
 	if (result != USB_STOR_XFER_GOOD)
 		return USB_STOR_TRANSPORT_ERROR;
@@ -572,20 +635,33 @@ static unsigned long sddr55_get_capacity(struct us_data *us) {
 	int result;
 	struct sddr55_card_info *info = (struct sddr55_card_info *)us->extra;
 
+<<<<<<< HEAD
 	US_DEBUGP("Reading capacity...\n");
+=======
+	usb_stor_dbg(us, "Reading capacity...\n");
+>>>>>>> refs/remotes/origin/master
 
 	result = sddr55_read_deviceID(us,
 		&manufacturerID,
 		&deviceID);
 
+<<<<<<< HEAD
 	US_DEBUGP("Result of read_deviceID is %d\n",
 		result);
+=======
+	usb_stor_dbg(us, "Result of read_deviceID is %d\n", result);
+>>>>>>> refs/remotes/origin/master
 
 	if (result != USB_STOR_XFER_GOOD)
 		return 0;
 
+<<<<<<< HEAD
 	US_DEBUGP("Device ID = %02X\n", deviceID);
 	US_DEBUGP("Manuf  ID = %02X\n", manufacturerID);
+=======
+	usb_stor_dbg(us, "Device ID = %02X\n", deviceID);
+	usb_stor_dbg(us, "Manuf  ID = %02X\n", manufacturerID);
+>>>>>>> refs/remotes/origin/master
 
 	info->pageshift = 9;
 	info->smallpageshift = 0;
@@ -757,7 +833,11 @@ static int sddr55_read_map(struct us_data *us) {
 		}
 
 		if (lba<0x10 || (lba>=0x3E0 && lba<0x3EF))
+<<<<<<< HEAD
 			US_DEBUGP("LBA %04X <-> PBA %04X\n", lba, i);
+=======
+			usb_stor_dbg(us, "LBA %04X <-> PBA %04X\n", lba, i);
+>>>>>>> refs/remotes/origin/master
 
 		info->lba_to_pba[lba + zone * 1000] = i;
 	}
@@ -812,7 +892,14 @@ static int sddr55_transport(struct scsi_cmnd *srb, struct us_data *us)
 	info = (struct sddr55_card_info *)(us->extra);
 
 	if (srb->cmnd[0] == REQUEST_SENSE) {
+<<<<<<< HEAD
 		US_DEBUGP("SDDR55: request sense %02x/%02x/%02x\n", info->sense_data[2], info->sense_data[12], info->sense_data[13]);
+=======
+		usb_stor_dbg(us, "request sense %02x/%02x/%02x\n",
+			     info->sense_data[2],
+			     info->sense_data[12],
+			     info->sense_data[13]);
+>>>>>>> refs/remotes/origin/master
 
 		memcpy (ptr, info->sense_data, sizeof info->sense_data);
 		ptr[0] = 0x70;
@@ -896,6 +983,7 @@ static int sddr55_transport(struct scsi_cmnd *srb, struct us_data *us)
 		usb_stor_set_xfer_buf(ptr, sizeof(mode_page_01), srb);
 
 		if ( (srb->cmnd[2] & 0x3F) == 0x01 ) {
+<<<<<<< HEAD
 			US_DEBUGP(
 			  "SDDR55: Dummy up request for mode page 1\n");
 			return USB_STOR_TRANSPORT_GOOD;
@@ -903,6 +991,13 @@ static int sddr55_transport(struct scsi_cmnd *srb, struct us_data *us)
 		} else if ( (srb->cmnd[2] & 0x3F) == 0x3F ) {
 			US_DEBUGP(
 			  "SDDR55: Dummy up request for all mode pages\n");
+=======
+			usb_stor_dbg(us, "Dummy up request for mode page 1\n");
+			return USB_STOR_TRANSPORT_GOOD;
+
+		} else if ( (srb->cmnd[2] & 0x3F) == 0x3F ) {
+			usb_stor_dbg(us, "Dummy up request for all mode pages\n");
+>>>>>>> refs/remotes/origin/master
 			return USB_STOR_TRANSPORT_GOOD;
 		}
 
@@ -912,10 +1007,15 @@ static int sddr55_transport(struct scsi_cmnd *srb, struct us_data *us)
 
 	if (srb->cmnd[0] == ALLOW_MEDIUM_REMOVAL) {
 
+<<<<<<< HEAD
 		US_DEBUGP(
 		  "SDDR55: %s medium removal. Not that I can do"
 		  " anything about it...\n",
 		  (srb->cmnd[4]&0x03) ? "Prevent" : "Allow");
+=======
+		usb_stor_dbg(us, "%s medium removal. Not that I can do anything about it...\n",
+			     (srb->cmnd[4]&0x03) ? "Prevent" : "Allow");
+>>>>>>> refs/remotes/origin/master
 
 		return USB_STOR_TRANSPORT_GOOD;
 
@@ -939,8 +1039,13 @@ static int sddr55_transport(struct scsi_cmnd *srb, struct us_data *us)
 
 		if (lba >= info->max_log_blks) {
 
+<<<<<<< HEAD
 			US_DEBUGP("Error: Requested LBA %04X exceeds maximum "
 			  "block %04X\n", lba, info->max_log_blks-1);
+=======
+			usb_stor_dbg(us, "Error: Requested LBA %04X exceeds maximum block %04X\n",
+				     lba, info->max_log_blks - 1);
+>>>>>>> refs/remotes/origin/master
 
 			set_sense_info (5, 0x24, 0);	/* invalid field in command */
 
@@ -950,6 +1055,7 @@ static int sddr55_transport(struct scsi_cmnd *srb, struct us_data *us)
 		pba = info->lba_to_pba[lba];
 
 		if (srb->cmnd[0] == WRITE_10) {
+<<<<<<< HEAD
 			US_DEBUGP("WRITE_10: write block %04X (LBA %04X) page %01X"
 				" pages %d\n",
 				pba, lba, page, pages);
@@ -959,6 +1065,15 @@ static int sddr55_transport(struct scsi_cmnd *srb, struct us_data *us)
 			US_DEBUGP("READ_10: read block %04X (LBA %04X) page %01X"
 				" pages %d\n",
 				pba, lba, page, pages);
+=======
+			usb_stor_dbg(us, "WRITE_10: write block %04X (LBA %04X) page %01X pages %d\n",
+				     pba, lba, page, pages);
+
+			return sddr55_write_data(us, lba, page, pages);
+		} else {
+			usb_stor_dbg(us, "READ_10: read block %04X (LBA %04X) page %01X pages %d\n",
+				     pba, lba, page, pages);
+>>>>>>> refs/remotes/origin/master
 
 			return sddr55_read_data(us, lba, page, pages);
 		}
@@ -1011,6 +1126,7 @@ static struct usb_driver sddr55_driver = {
 	.id_table =	sddr55_usb_ids,
 	.soft_unbind =	1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static int __init sddr55_init(void)
@@ -1026,8 +1142,13 @@ static void __exit sddr55_exit(void)
 module_init(sddr55_init);
 module_exit(sddr55_exit);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.no_dynamic_id = 1,
 };
 
 module_usb_driver(sddr55_driver);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

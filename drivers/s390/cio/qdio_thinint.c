@@ -1,7 +1,11 @@
 /*
+<<<<<<< HEAD
  * linux/drivers/s390/cio/thinint_qdio.c
  *
  * Copyright 2000,2009 IBM Corp.
+=======
+ * Copyright IBM Corp. 2000, 2009
+>>>>>>> refs/remotes/origin/master
  * Author(s): Utz Bacher <utz.bacher@de.ibm.com>
  *	      Cornelia Huck <cornelia.huck@de.ibm.com>
  *	      Jan Glauber <jang@linux.vnet.ibm.com>
@@ -10,10 +14,14 @@
 #include <linux/slab.h>
 #include <linux/kernel_stat.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/debug.h>
 #include <asm/qdio.h>
 #include <asm/airq.h>
@@ -31,11 +39,14 @@
 #define TIQDIO_NR_NONSHARED_IND		63
 #define TIQDIO_NR_INDICATORS		(TIQDIO_NR_NONSHARED_IND + 1)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /* list of thin interrupt input queues */
 static LIST_HEAD(tiq_list);
 DEFINE_MUTEX(tiq_list_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define TIQDIO_SHARED_IND		63
 
 /* device state change indicators */
@@ -47,6 +58,7 @@ struct indicator_t {
 /* list of thin interrupt input queues */
 static LIST_HEAD(tiq_list);
 static DEFINE_MUTEX(tiq_list_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 /* adapter local summary indicator */
@@ -61,6 +73,20 @@ static struct indicator_t *q_indicators;
 
 u64 last_ai_time;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/* Adapter interrupt definitions */
+static void tiqdio_thinint_handler(struct airq_struct *airq);
+
+static struct airq_struct tiqdio_airq = {
+	.handler = tiqdio_thinint_handler,
+	.isc = QDIO_AIRQ_ISC,
+};
+
+static struct indicator_t *q_indicators;
+
+u64 last_ai_time;
+>>>>>>> refs/remotes/origin/master
 
 /* returns addr for the device state change indicator */
 static u32 *get_indicator(void)
@@ -92,6 +118,7 @@ static void put_indicator(u32 *addr)
 void tiqdio_add_input_queues(struct qdio_irq *irq_ptr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct qdio_q *q;
 	int i;
 
@@ -103,6 +130,10 @@ void tiqdio_add_input_queues(struct qdio_irq *irq_ptr)
 	BUG_ON(irq_ptr->nr_input_qs < 1);
 	list_add_rcu(&irq_ptr->input_qs[0]->entry, &tiq_list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&tiq_list_lock);
+	list_add_rcu(&irq_ptr->input_qs[0]->entry, &tiq_list);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&tiq_list_lock);
 	xchg(irq_ptr->dsci, 1 << 7);
 }
@@ -110,6 +141,7 @@ void tiqdio_add_input_queues(struct qdio_irq *irq_ptr)
 void tiqdio_remove_input_queues(struct qdio_irq *irq_ptr)
 {
 	struct qdio_q *q;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i;
 
@@ -127,6 +159,9 @@ void tiqdio_remove_input_queues(struct qdio_irq *irq_ptr)
 =======
 
 	BUG_ON(irq_ptr->nr_input_qs < 1);
+=======
+
+>>>>>>> refs/remotes/origin/master
 	q = irq_ptr->input_qs[0];
 	/* if establish triggered an error */
 	if (!q || !q->entry.prev || !q->entry.next)
@@ -173,7 +208,10 @@ int test_nonshared_ind(struct qdio_irq *irq_ptr)
 		return 1;
 	else
 		return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline u32 clear_shared_ind(void)
@@ -184,7 +222,10 @@ static inline u32 clear_shared_ind(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void tiqdio_call_inq_handlers(struct qdio_irq *irq)
 {
 	struct qdio_q *q;
@@ -219,25 +260,37 @@ static inline void tiqdio_call_inq_handlers(struct qdio_irq *irq)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tiqdio_thinint_handler - thin interrupt handler for qdio
  * @alsi: pointer to adapter local summary indicator
  * @data: NULL
  */
+<<<<<<< HEAD
 static void tiqdio_thinint_handler(void *alsi, void *data)
+=======
+static void tiqdio_thinint_handler(struct airq_struct *airq)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 si_used = clear_shared_ind();
 	struct qdio_q *q;
 
 	last_ai_time = S390_lowcore.int_clock;
+<<<<<<< HEAD
 	kstat_cpu(smp_processor_id()).irqs[IOINT_QAI]++;
+=======
+	inc_irq_stat(IRQIO_QAI);
+>>>>>>> refs/remotes/origin/master
 
 	/* protect tiq_list entries, only changed in activate or shutdown */
 	rcu_read_lock();
 
 	/* check for work on all inbound thinint queues */
 	list_for_each_entry_rcu(q, &tiq_list, entry) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 		/* only process queues from changed sets */
@@ -269,6 +322,8 @@ static void tiqdio_thinint_handler(void *alsi, void *data)
 			tasklet_schedule(&q->tasklet);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		struct qdio_irq *irq;
 
 		/* only process queues from changed sets */
@@ -281,7 +336,10 @@ static void tiqdio_thinint_handler(void *alsi, void *data)
 
 		tiqdio_call_inq_handlers(irq);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		qperf_inc(q, adapter_int);
 	}
 	rcu_read_unlock();
@@ -289,6 +347,7 @@ static void tiqdio_thinint_handler(void *alsi, void *data)
 
 static int set_subchannel_ind(struct qdio_irq *irq_ptr, int reset)
 {
+<<<<<<< HEAD
 	struct scssc_area *scssc_area;
 	int rc;
 
@@ -334,6 +393,33 @@ static int set_subchannel_ind(struct qdio_irq *irq_ptr, int reset)
 	DBF_HEX(&scssc_area->summary_indicator_addr, sizeof(unsigned long));
 	DBF_HEX(&scssc_area->subchannel_indicator_addr,	sizeof(unsigned long));
 	return 0;
+=======
+	struct chsc_scssc_area *scssc = (void *)irq_ptr->chsc_page;
+	u64 summary_indicator_addr, subchannel_indicator_addr;
+	int rc;
+
+	if (reset) {
+		summary_indicator_addr = 0;
+		subchannel_indicator_addr = 0;
+	} else {
+		summary_indicator_addr = virt_to_phys(tiqdio_airq.lsi_ptr);
+		subchannel_indicator_addr = virt_to_phys(irq_ptr->dsci);
+	}
+
+	rc = chsc_sadc(irq_ptr->schid, scssc, summary_indicator_addr,
+		       subchannel_indicator_addr);
+	if (rc) {
+		DBF_ERROR("%4x SSI r:%4x", irq_ptr->schid.sch_no,
+			  scssc->response.code);
+		goto out;
+	}
+
+	DBF_EVENT("setscind");
+	DBF_HEX(&summary_indicator_addr, sizeof(summary_indicator_addr));
+	DBF_HEX(&subchannel_indicator_addr, sizeof(subchannel_indicator_addr));
+out:
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* allocate non-shared indicators and shared indicator */
@@ -353,6 +439,7 @@ void tiqdio_free_memory(void)
 
 int __init tiqdio_register_thinints(void)
 {
+<<<<<<< HEAD
 	isc_register(QDIO_AIRQ_ISC);
 	tiqdio_alsi = s390_register_adapter_interrupt(&tiqdio_thinint_handler,
 						      NULL, QDIO_AIRQ_ISC);
@@ -361,6 +448,14 @@ int __init tiqdio_register_thinints(void)
 		tiqdio_alsi = NULL;
 		isc_unregister(QDIO_AIRQ_ISC);
 		return -ENOMEM;
+=======
+	int rc;
+
+	rc = register_adapter_interrupt(&tiqdio_airq);
+	if (rc) {
+		DBF_EVENT("RTI:%x", rc);
+		return rc;
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -393,9 +488,13 @@ void qdio_shutdown_thinint(struct qdio_irq *irq_ptr)
 void __exit tiqdio_unregister_thinints(void)
 {
 	WARN_ON(!list_empty(&tiq_list));
+<<<<<<< HEAD
 
 	if (tiqdio_alsi) {
 		s390_unregister_adapter_interrupt(tiqdio_alsi, QDIO_AIRQ_ISC);
 		isc_unregister(QDIO_AIRQ_ISC);
 	}
+=======
+	unregister_adapter_interrupt(&tiqdio_airq);
+>>>>>>> refs/remotes/origin/master
 }

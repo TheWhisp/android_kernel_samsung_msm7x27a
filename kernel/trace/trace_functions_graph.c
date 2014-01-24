@@ -47,6 +47,11 @@ struct fgraph_data {
 #define TRACE_GRAPH_PRINT_ABS_TIME	0x20
 #define TRACE_GRAPH_PRINT_IRQS		0x40
 
+<<<<<<< HEAD
+=======
+static unsigned int max_depth;
+
+>>>>>>> refs/remotes/origin/master
 static struct tracer_opt trace_opts[] = {
 	/* Display overruns? (for self-debug purpose) */
 	{ TRACER_OPT(funcgraph-overrun, TRACE_GRAPH_PRINT_OVERRUN) },
@@ -75,22 +80,34 @@ static struct tracer_flags tracer_flags = {
 static struct trace_array *graph_array;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * DURATION column is being also used to display IRQ signs,
  * following values are used by print_graph_irq and others
  * to fill in space into DURATION column.
  */
 enum {
+<<<<<<< HEAD
 	DURATION_FILL_FULL  = -1,
 	DURATION_FILL_START = -2,
 	DURATION_FILL_END   = -3,
+=======
+	FLAGS_FILL_FULL  = 1 << TRACE_GRAPH_PRINT_FILL_SHIFT,
+	FLAGS_FILL_START = 2 << TRACE_GRAPH_PRINT_FILL_SHIFT,
+	FLAGS_FILL_END   = 3 << TRACE_GRAPH_PRINT_FILL_SHIFT,
+>>>>>>> refs/remotes/origin/master
 };
 
 static enum print_line_t
 print_graph_duration(unsigned long long duration, struct trace_seq *s,
 		     u32 flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Add a function return address to the trace stack on thread info.*/
 int
@@ -115,16 +132,47 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func, int *depth,
 		return -EBUSY;
 	}
 
+<<<<<<< HEAD
 	calltime = trace_clock_local();
 
 	index = ++current->curr_ret_stack;
+=======
+	/*
+	 * The curr_ret_stack is an index to ftrace return stack of
+	 * current task.  Its value should be in [0, FTRACE_RETFUNC_
+	 * DEPTH) when the function graph tracer is used.  To support
+	 * filtering out specific functions, it makes the index
+	 * negative by subtracting huge value (FTRACE_NOTRACE_DEPTH)
+	 * so when it sees a negative index the ftrace will ignore
+	 * the record.  And the index gets recovered when returning
+	 * from the filtered function by adding the FTRACE_NOTRACE_
+	 * DEPTH and then it'll continue to record functions normally.
+	 *
+	 * The curr_ret_stack is initialized to -1 and get increased
+	 * in this function.  So it can be less than -1 only if it was
+	 * filtered out via ftrace_graph_notrace_addr() which can be
+	 * set from set_graph_notrace file in debugfs by user.
+	 */
+	if (current->curr_ret_stack < -1)
+		return -EBUSY;
+
+	calltime = trace_clock_local();
+
+	index = ++current->curr_ret_stack;
+	if (ftrace_graph_notrace_addr(func))
+		current->curr_ret_stack -= FTRACE_NOTRACE_DEPTH;
+>>>>>>> refs/remotes/origin/master
 	barrier();
 	current->ret_stack[index].ret = ret;
 	current->ret_stack[index].func = func;
 	current->ret_stack[index].calltime = calltime;
 	current->ret_stack[index].subtime = 0;
 	current->ret_stack[index].fp = frame_pointer;
+<<<<<<< HEAD
 	*depth = index;
+=======
+	*depth = current->curr_ret_stack;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -138,7 +186,21 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
 
 	index = current->curr_ret_stack;
 
+<<<<<<< HEAD
 	if (unlikely(index < 0)) {
+=======
+	/*
+	 * A negative index here means that it's just returned from a
+	 * notrace'd function.  Recover index to get an original
+	 * return address.  See ftrace_push_return_trace().
+	 *
+	 * TODO: Need to check whether the stack gets corrupted.
+	 */
+	if (index < 0)
+		index += FTRACE_NOTRACE_DEPTH;
+
+	if (unlikely(index < 0 || index >= FTRACE_RETFUNC_DEPTH)) {
+>>>>>>> refs/remotes/origin/master
 		ftrace_graph_stop();
 		WARN_ON(1);
 		/* Might as well panic, otherwise we have no where to go */
@@ -146,7 +208,11 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
 		return;
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_FUNCTION_GRAPH_FP_TEST
+=======
+#if defined(CONFIG_HAVE_FUNCTION_GRAPH_FP_TEST) && !defined(CC_USING_FENTRY)
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The arch may choose to record the frame pointer used
 	 * and check it here to make sure that it is what we expect it
@@ -157,6 +223,12 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
 	 *
 	 * Currently, x86_32 with optimize for size (-Os) makes the latest
 	 * gcc do the above.
+<<<<<<< HEAD
+=======
+	 *
+	 * Note, -mfentry does not use frame pointers, and this test
+	 *  is not needed if CC_USING_FENTRY is set.
+>>>>>>> refs/remotes/origin/master
 	 */
 	if (unlikely(current->ret_stack[index].fp != frame_pointer)) {
 		ftrace_graph_stop();
@@ -189,9 +261,30 @@ unsigned long ftrace_return_to_handler(unsigned long frame_pointer)
 
 	ftrace_pop_return_trace(&trace, &ret, frame_pointer);
 	trace.rettime = trace_clock_local();
+<<<<<<< HEAD
 	ftrace_graph_return(&trace);
 	barrier();
 	current->curr_ret_stack--;
+=======
+	barrier();
+	current->curr_ret_stack--;
+	/*
+	 * The curr_ret_stack can be less than -1 only if it was
+	 * filtered out and it's about to return from the function.
+	 * Recover the index and continue to trace normal functions.
+	 */
+	if (current->curr_ret_stack < -1) {
+		current->curr_ret_stack += FTRACE_NOTRACE_DEPTH;
+		return ret;
+	}
+
+	/*
+	 * The trace should run after decrementing the ret counter
+	 * in case an interrupt were to come in. We don't want to
+	 * lose the interrupt if max_depth is set.
+	 */
+	ftrace_graph_return(&trace);
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(!ret)) {
 		ftrace_graph_stop();
@@ -210,7 +303,11 @@ int __trace_graph_entry(struct trace_array *tr,
 {
 	struct ftrace_event_call *call = &event_funcgraph_entry;
 	struct ring_buffer_event *event;
+<<<<<<< HEAD
 	struct ring_buffer *buffer = tr->buffer;
+=======
+	struct ring_buffer *buffer = tr->trace_buffer.buffer;
+>>>>>>> refs/remotes/origin/master
 	struct ftrace_graph_ent_entry *entry;
 
 	if (unlikely(__this_cpu_read(ftrace_cpu_disabled)))
@@ -222,8 +319,13 @@ int __trace_graph_entry(struct trace_array *tr,
 		return 0;
 	entry	= ring_buffer_event_data(event);
 	entry->graph_ent			= *trace;
+<<<<<<< HEAD
 	if (!filter_current_check_discard(buffer, call, entry, event))
 		ring_buffer_unlock_commit(buffer, event);
+=======
+	if (!call_filter_check_discard(call, entry, buffer, event))
+		__buffer_unlock_commit(buffer, event);
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -231,10 +333,14 @@ int __trace_graph_entry(struct trace_array *tr,
 static inline int ftrace_graph_ignore_irqs(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ftrace_graph_skip_irqs)
 =======
 	if (!ftrace_graph_skip_irqs || trace_recursion_test(TRACE_IRQ_BIT))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ftrace_graph_skip_irqs || trace_recursion_test(TRACE_IRQ_BIT))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	return in_irq();
@@ -254,6 +360,7 @@ int trace_graph_entry(struct ftrace_graph_ent *trace)
 		return 0;
 
 	/* trace it when it is-nested-in or is a function enabled. */
+<<<<<<< HEAD
 	if (!(trace->depth || ftrace_graph_addr(trace->func)) ||
 	      ftrace_graph_ignore_irqs())
 		return 0;
@@ -261,6 +368,26 @@ int trace_graph_entry(struct ftrace_graph_ent *trace)
 	local_irq_save(flags);
 	cpu = raw_smp_processor_id();
 	data = tr->data[cpu];
+=======
+	if ((!(trace->depth || ftrace_graph_addr(trace->func)) ||
+	     ftrace_graph_ignore_irqs()) || (trace->depth < 0) ||
+	    (max_depth && trace->depth >= max_depth))
+		return 0;
+
+	/*
+	 * Do not trace a function if it's filtered by set_graph_notrace.
+	 * Make the index of ret stack negative to indicate that it should
+	 * ignore further functions.  But it needs its own ret stack entry
+	 * to recover the original index in order to continue tracing after
+	 * returning from the function.
+	 */
+	if (ftrace_graph_notrace_addr(trace->func))
+		return 1;
+
+	local_irq_save(flags);
+	cpu = raw_smp_processor_id();
+	data = per_cpu_ptr(tr->trace_buffer.data, cpu);
+>>>>>>> refs/remotes/origin/master
 	disabled = atomic_inc_return(&data->disabled);
 	if (likely(disabled == 1)) {
 		pc = preempt_count();
@@ -318,7 +445,11 @@ void __trace_graph_return(struct trace_array *tr,
 {
 	struct ftrace_event_call *call = &event_funcgraph_exit;
 	struct ring_buffer_event *event;
+<<<<<<< HEAD
 	struct ring_buffer *buffer = tr->buffer;
+=======
+	struct ring_buffer *buffer = tr->trace_buffer.buffer;
+>>>>>>> refs/remotes/origin/master
 	struct ftrace_graph_ret_entry *entry;
 
 	if (unlikely(__this_cpu_read(ftrace_cpu_disabled)))
@@ -330,8 +461,13 @@ void __trace_graph_return(struct trace_array *tr,
 		return;
 	entry	= ring_buffer_event_data(event);
 	entry->ret				= *trace;
+<<<<<<< HEAD
 	if (!filter_current_check_discard(buffer, call, entry, event))
 		ring_buffer_unlock_commit(buffer, event);
+=======
+	if (!call_filter_check_discard(call, entry, buffer, event))
+		__buffer_unlock_commit(buffer, event);
+>>>>>>> refs/remotes/origin/master
 }
 
 void trace_graph_return(struct ftrace_graph_ret *trace)
@@ -345,7 +481,11 @@ void trace_graph_return(struct ftrace_graph_ret *trace)
 
 	local_irq_save(flags);
 	cpu = raw_smp_processor_id();
+<<<<<<< HEAD
 	data = tr->data[cpu];
+=======
+	data = per_cpu_ptr(tr->trace_buffer.data, cpu);
+>>>>>>> refs/remotes/origin/master
 	disabled = atomic_inc_return(&data->disabled);
 	if (likely(disabled == 1)) {
 		pc = preempt_count();
@@ -441,7 +581,11 @@ print_graph_proc(struct trace_seq *s, pid_t pid)
 
 	/* First spaces to align center */
 	for (i = 0; i < spaces / 2; i++) {
+<<<<<<< HEAD
 		ret = trace_seq_printf(s, " ");
+=======
+		ret = trace_seq_putc(s, ' ');
+>>>>>>> refs/remotes/origin/master
 		if (!ret)
 			return TRACE_TYPE_PARTIAL_LINE;
 	}
@@ -452,7 +596,11 @@ print_graph_proc(struct trace_seq *s, pid_t pid)
 
 	/* Last spaces to align center */
 	for (i = 0; i < spaces - (spaces / 2); i++) {
+<<<<<<< HEAD
 		ret = trace_seq_printf(s, " ");
+=======
+		ret = trace_seq_putc(s, ' ');
+>>>>>>> refs/remotes/origin/master
 		if (!ret)
 			return TRACE_TYPE_PARTIAL_LINE;
 	}
@@ -498,7 +646,11 @@ verif_pid(struct trace_seq *s, pid_t pid, int cpu, struct fgraph_data *data)
  ------------------------------------------
 
  */
+<<<<<<< HEAD
 	ret = trace_seq_printf(s,
+=======
+	ret = trace_seq_puts(s,
+>>>>>>> refs/remotes/origin/master
 		" ------------------------------------------\n");
 	if (!ret)
 		return TRACE_TYPE_PARTIAL_LINE;
@@ -511,7 +663,11 @@ verif_pid(struct trace_seq *s, pid_t pid, int cpu, struct fgraph_data *data)
 	if (ret == TRACE_TYPE_PARTIAL_LINE)
 		return TRACE_TYPE_PARTIAL_LINE;
 
+<<<<<<< HEAD
 	ret = trace_seq_printf(s, " => ");
+=======
+	ret = trace_seq_puts(s, " => ");
+>>>>>>> refs/remotes/origin/master
 	if (!ret)
 		return TRACE_TYPE_PARTIAL_LINE;
 
@@ -519,7 +675,11 @@ verif_pid(struct trace_seq *s, pid_t pid, int cpu, struct fgraph_data *data)
 	if (ret == TRACE_TYPE_PARTIAL_LINE)
 		return TRACE_TYPE_PARTIAL_LINE;
 
+<<<<<<< HEAD
 	ret = trace_seq_printf(s,
+=======
+	ret = trace_seq_puts(s,
+>>>>>>> refs/remotes/origin/master
 		"\n ------------------------------------------\n\n");
 	if (!ret)
 		return TRACE_TYPE_PARTIAL_LINE;
@@ -545,7 +705,11 @@ get_return_for_leaf(struct trace_iterator *iter,
 		next = &data->ret;
 	} else {
 
+<<<<<<< HEAD
 		ring_iter = iter->buffer_iter[iter->cpu];
+=======
+		ring_iter = trace_buffer_iter(iter, iter->cpu);
+>>>>>>> refs/remotes/origin/master
 
 		/* First peek to compare current entry and the next one */
 		if (ring_iter)
@@ -555,9 +719,15 @@ get_return_for_leaf(struct trace_iterator *iter,
 			 * We need to consume the current entry to see
 			 * the next one.
 			 */
+<<<<<<< HEAD
 			ring_buffer_consume(iter->tr->buffer, iter->cpu,
 					    NULL, NULL);
 			event = ring_buffer_peek(iter->tr->buffer, iter->cpu,
+=======
+			ring_buffer_consume(iter->trace_buffer->buffer, iter->cpu,
+					    NULL, NULL);
+			event = ring_buffer_peek(iter->trace_buffer->buffer, iter->cpu,
+>>>>>>> refs/remotes/origin/master
 						 NULL, NULL);
 		}
 
@@ -599,6 +769,7 @@ get_return_for_leaf(struct trace_iterator *iter,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Signal a overhead of time execution to the output */
 static int
 print_graph_overhead(unsigned long long duration, struct trace_seq *s,
@@ -627,6 +798,8 @@ print_graph_overhead(unsigned long long duration, struct trace_seq *s,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int print_graph_abs_time(u64 t, struct trace_seq *s)
 {
 	unsigned long usecs_rem;
@@ -649,6 +822,7 @@ print_graph_irq(struct trace_iterator *iter, unsigned long addr,
 		addr >= (unsigned long)__irqentry_text_end)
 		return TRACE_TYPE_UNHANDLED;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Absolute time */
 	if (flags & TRACE_GRAPH_PRINT_ABS_TIME) {
@@ -679,6 +853,8 @@ print_graph_irq(struct trace_iterator *iter, unsigned long addr,
 	if (!ret)
 		return TRACE_TYPE_PARTIAL_LINE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (trace_flags & TRACE_ITER_CONTEXT_INFO) {
 		/* Absolute time */
 		if (flags & TRACE_GRAPH_PRINT_ABS_TIME) {
@@ -699,13 +875,18 @@ print_graph_irq(struct trace_iterator *iter, unsigned long addr,
 			ret = print_graph_proc(s, pid);
 			if (ret == TRACE_TYPE_PARTIAL_LINE)
 				return TRACE_TYPE_PARTIAL_LINE;
+<<<<<<< HEAD
 			ret = trace_seq_printf(s, " | ");
+=======
+			ret = trace_seq_puts(s, " | ");
+>>>>>>> refs/remotes/origin/master
 			if (!ret)
 				return TRACE_TYPE_PARTIAL_LINE;
 		}
 	}
 
 	/* No overhead */
+<<<<<<< HEAD
 	ret = print_graph_duration(DURATION_FILL_START, s, flags);
 	if (ret != TRACE_TYPE_HANDLED)
 		return ret;
@@ -715,10 +896,21 @@ print_graph_irq(struct trace_iterator *iter, unsigned long addr,
 		ret = trace_seq_printf(s, "==========>");
 	else
 		ret = trace_seq_printf(s, "<==========");
+=======
+	ret = print_graph_duration(0, s, flags | FLAGS_FILL_START);
+	if (ret != TRACE_TYPE_HANDLED)
+		return ret;
+
+	if (type == TRACE_GRAPH_ENT)
+		ret = trace_seq_puts(s, "==========>");
+	else
+		ret = trace_seq_puts(s, "<==========");
+>>>>>>> refs/remotes/origin/master
 
 	if (!ret)
 		return TRACE_TYPE_PARTIAL_LINE;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Don't close the duration column if haven't one */
 	if (flags & TRACE_GRAPH_PRINT_DURATION)
@@ -730,6 +922,13 @@ print_graph_irq(struct trace_iterator *iter, unsigned long addr,
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	ret = trace_seq_printf(s, "\n");
+=======
+	ret = print_graph_duration(0, s, flags | FLAGS_FILL_END);
+	if (ret != TRACE_TYPE_HANDLED)
+		return ret;
+
+	ret = trace_seq_putc(s, '\n');
+>>>>>>> refs/remotes/origin/master
 
 	if (!ret)
 		return TRACE_TYPE_PARTIAL_LINE;
@@ -766,13 +965,21 @@ trace_print_graph_duration(unsigned long long duration, struct trace_seq *s)
 		len += strlen(nsecs_str);
 	}
 
+<<<<<<< HEAD
 	ret = trace_seq_printf(s, " us ");
+=======
+	ret = trace_seq_puts(s, " us ");
+>>>>>>> refs/remotes/origin/master
 	if (!ret)
 		return TRACE_TYPE_PARTIAL_LINE;
 
 	/* Print remaining spaces to fit the row's width */
 	for (i = len; i < 7; i++) {
+<<<<<<< HEAD
 		ret = trace_seq_printf(s, " ");
+=======
+		ret = trace_seq_putc(s, ' ');
+>>>>>>> refs/remotes/origin/master
 		if (!ret)
 			return TRACE_TYPE_PARTIAL_LINE;
 	}
@@ -781,10 +988,13 @@ trace_print_graph_duration(unsigned long long duration, struct trace_seq *s)
 
 static enum print_line_t
 <<<<<<< HEAD
+<<<<<<< HEAD
 print_graph_duration(unsigned long long duration, struct trace_seq *s)
 {
 	int ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 print_graph_duration(unsigned long long duration, struct trace_seq *s,
 		     u32 flags)
 {
@@ -795,6 +1005,7 @@ print_graph_duration(unsigned long long duration, struct trace_seq *s,
 			return TRACE_TYPE_HANDLED;
 
 	/* No real adata, just filling the column with spaces */
+<<<<<<< HEAD
 	switch (duration) {
 	case DURATION_FILL_FULL:
 		ret = trace_seq_printf(s, "              |  ");
@@ -804,6 +1015,17 @@ print_graph_duration(unsigned long long duration, struct trace_seq *s,
 		return ret ? TRACE_TYPE_HANDLED : TRACE_TYPE_PARTIAL_LINE;
 	case DURATION_FILL_END:
 		ret = trace_seq_printf(s, " |");
+=======
+	switch (flags & TRACE_GRAPH_PRINT_FILL_MASK) {
+	case FLAGS_FILL_FULL:
+		ret = trace_seq_puts(s, "              |  ");
+		return ret ? TRACE_TYPE_HANDLED : TRACE_TYPE_PARTIAL_LINE;
+	case FLAGS_FILL_START:
+		ret = trace_seq_puts(s, "  ");
+		return ret ? TRACE_TYPE_HANDLED : TRACE_TYPE_PARTIAL_LINE;
+	case FLAGS_FILL_END:
+		ret = trace_seq_puts(s, " |");
+>>>>>>> refs/remotes/origin/master
 		return ret ? TRACE_TYPE_HANDLED : TRACE_TYPE_PARTIAL_LINE;
 	}
 
@@ -811,10 +1033,17 @@ print_graph_duration(unsigned long long duration, struct trace_seq *s,
 	if (flags & TRACE_GRAPH_PRINT_OVERHEAD) {
 		/* Duration exceeded 100 msecs */
 		if (duration > 100000ULL)
+<<<<<<< HEAD
 			ret = trace_seq_printf(s, "! ");
 		/* Duration exceeded 10 msecs */
 		else if (duration > 10000ULL)
 			ret = trace_seq_printf(s, "+ ");
+=======
+			ret = trace_seq_puts(s, "! ");
+		/* Duration exceeded 10 msecs */
+		else if (duration > 10000ULL)
+			ret = trace_seq_puts(s, "+ ");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -823,18 +1052,29 @@ print_graph_duration(unsigned long long duration, struct trace_seq *s,
 	 * to fill out the space.
 	 */
 	if (ret == -1)
+<<<<<<< HEAD
 		ret = trace_seq_printf(s, "  ");
+=======
+		ret = trace_seq_puts(s, "  ");
+>>>>>>> refs/remotes/origin/master
 
 	/* Catching here any failure happenned above */
 	if (!ret)
 		return TRACE_TYPE_PARTIAL_LINE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = trace_print_graph_duration(duration, s);
 	if (ret != TRACE_TYPE_HANDLED)
 		return ret;
 
+<<<<<<< HEAD
 	ret = trace_seq_printf(s, "|  ");
+=======
+	ret = trace_seq_puts(s, "|  ");
+>>>>>>> refs/remotes/origin/master
 	if (!ret)
 		return TRACE_TYPE_PARTIAL_LINE;
 
@@ -878,6 +1118,7 @@ print_graph_entry_leaf(struct trace_iterator *iter,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Overhead */
 	ret = print_graph_overhead(duration, s, flags);
 	if (!ret)
@@ -891,15 +1132,23 @@ print_graph_entry_leaf(struct trace_iterator *iter,
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Overhead and duration */
 	ret = print_graph_duration(duration, s, flags);
 	if (ret == TRACE_TYPE_PARTIAL_LINE)
 		return TRACE_TYPE_PARTIAL_LINE;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* Function */
 	for (i = 0; i < call->depth * TRACE_GRAPH_INDENT; i++) {
 		ret = trace_seq_printf(s, " ");
+=======
+	/* Function */
+	for (i = 0; i < call->depth * TRACE_GRAPH_INDENT; i++) {
+		ret = trace_seq_putc(s, ' ');
+>>>>>>> refs/remotes/origin/master
 		if (!ret)
 			return TRACE_TYPE_PARTIAL_LINE;
 	}
@@ -934,6 +1183,7 @@ print_graph_entry_nested(struct trace_iterator *iter,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* No overhead */
 	ret = print_graph_overhead(-1, s, flags);
 	if (!ret)
@@ -955,6 +1205,16 @@ print_graph_entry_nested(struct trace_iterator *iter,
 	/* Function */
 	for (i = 0; i < call->depth * TRACE_GRAPH_INDENT; i++) {
 		ret = trace_seq_printf(s, " ");
+=======
+	/* No time */
+	ret = print_graph_duration(0, s, flags | FLAGS_FILL_FULL);
+	if (ret != TRACE_TYPE_HANDLED)
+		return ret;
+
+	/* Function */
+	for (i = 0; i < call->depth * TRACE_GRAPH_INDENT; i++) {
+		ret = trace_seq_putc(s, ' ');
+>>>>>>> refs/remotes/origin/master
 		if (!ret)
 			return TRACE_TYPE_PARTIAL_LINE;
 	}
@@ -991,11 +1251,17 @@ print_graph_prologue(struct trace_iterator *iter, struct trace_seq *s,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!(trace_flags & TRACE_ITER_CONTEXT_INFO))
 		return 0;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(trace_flags & TRACE_ITER_CONTEXT_INFO))
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	/* Absolute time */
 	if (flags & TRACE_GRAPH_PRINT_ABS_TIME) {
 		ret = print_graph_abs_time(iter->ts, s);
@@ -1016,7 +1282,11 @@ print_graph_prologue(struct trace_iterator *iter, struct trace_seq *s,
 		if (ret == TRACE_TYPE_PARTIAL_LINE)
 			return TRACE_TYPE_PARTIAL_LINE;
 
+<<<<<<< HEAD
 		ret = trace_seq_printf(s, " | ");
+=======
+		ret = trace_seq_puts(s, " | ");
+>>>>>>> refs/remotes/origin/master
 		if (!ret)
 			return TRACE_TYPE_PARTIAL_LINE;
 	}
@@ -1210,6 +1480,7 @@ print_graph_return(struct ftrace_graph_ret *trace, struct trace_seq *s,
 		return TRACE_TYPE_PARTIAL_LINE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Overhead */
 	ret = print_graph_overhead(duration, s, flags);
 	if (!ret)
@@ -1223,15 +1494,23 @@ print_graph_return(struct ftrace_graph_ret *trace, struct trace_seq *s,
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Overhead and duration */
 	ret = print_graph_duration(duration, s, flags);
 	if (ret == TRACE_TYPE_PARTIAL_LINE)
 		return TRACE_TYPE_PARTIAL_LINE;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* Closing brace */
 	for (i = 0; i < trace->depth * TRACE_GRAPH_INDENT; i++) {
 		ret = trace_seq_printf(s, " ");
+=======
+	/* Closing brace */
+	for (i = 0; i < trace->depth * TRACE_GRAPH_INDENT; i++) {
+		ret = trace_seq_putc(s, ' ');
+>>>>>>> refs/remotes/origin/master
 		if (!ret)
 			return TRACE_TYPE_PARTIAL_LINE;
 	}
@@ -1243,7 +1522,11 @@ print_graph_return(struct ftrace_graph_ret *trace, struct trace_seq *s,
 	 * belongs to, write out the function name.
 	 */
 	if (func_match) {
+<<<<<<< HEAD
 		ret = trace_seq_printf(s, "}\n");
+=======
+		ret = trace_seq_puts(s, "}\n");
+>>>>>>> refs/remotes/origin/master
 		if (!ret)
 			return TRACE_TYPE_PARTIAL_LINE;
 	} else {
@@ -1286,6 +1569,7 @@ print_graph_comment(struct trace_seq *s, struct trace_entry *ent,
 		return TRACE_TYPE_PARTIAL_LINE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* No overhead */
 	ret = print_graph_overhead(-1, s, flags);
 	if (!ret)
@@ -1303,17 +1587,31 @@ print_graph_comment(struct trace_seq *s, struct trace_entry *ent,
 	if (ret != TRACE_TYPE_HANDLED)
 		return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* No time */
+	ret = print_graph_duration(0, s, flags | FLAGS_FILL_FULL);
+	if (ret != TRACE_TYPE_HANDLED)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	/* Indentation */
 	if (depth > 0)
 		for (i = 0; i < (depth + 1) * TRACE_GRAPH_INDENT; i++) {
+<<<<<<< HEAD
 			ret = trace_seq_printf(s, " ");
+=======
+			ret = trace_seq_putc(s, ' ');
+>>>>>>> refs/remotes/origin/master
 			if (!ret)
 				return TRACE_TYPE_PARTIAL_LINE;
 		}
 
 	/* The comment */
+<<<<<<< HEAD
 	ret = trace_seq_printf(s, "/* ");
+=======
+	ret = trace_seq_puts(s, "/* ");
+>>>>>>> refs/remotes/origin/master
 	if (!ret)
 		return TRACE_TYPE_PARTIAL_LINE;
 
@@ -1344,7 +1642,11 @@ print_graph_comment(struct trace_seq *s, struct trace_entry *ent,
 		s->len--;
 	}
 
+<<<<<<< HEAD
 	ret = trace_seq_printf(s, " */\n");
+=======
+	ret = trace_seq_puts(s, " */\n");
+>>>>>>> refs/remotes/origin/master
 	if (!ret)
 		return TRACE_TYPE_PARTIAL_LINE;
 
@@ -1354,10 +1656,14 @@ print_graph_comment(struct trace_seq *s, struct trace_entry *ent,
 
 enum print_line_t
 <<<<<<< HEAD
+<<<<<<< HEAD
 __print_graph_function_flags(struct trace_iterator *iter, u32 flags)
 =======
 print_graph_function_flags(struct trace_iterator *iter, u32 flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+print_graph_function_flags(struct trace_iterator *iter, u32 flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ftrace_graph_ent_entry *field;
 	struct fgraph_data *data = iter->private;
@@ -1421,6 +1727,7 @@ static enum print_line_t
 print_graph_function(struct trace_iterator *iter)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return __print_graph_function_flags(iter, tracer_flags.val);
 }
 
@@ -1436,6 +1743,9 @@ enum print_line_t print_graph_function_flags(struct trace_iterator *iter,
 =======
 	return print_graph_function_flags(iter, tracer_flags.val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return print_graph_function_flags(iter, tracer_flags.val);
+>>>>>>> refs/remotes/origin/master
 }
 
 static enum print_line_t
@@ -1464,11 +1774,15 @@ static void print_lat_header(struct seq_file *s, u32 flags)
 	seq_printf(s, "#%.*s| / _---=> hardirq/softirq \n", size, spaces);
 	seq_printf(s, "#%.*s|| / _--=> preempt-depth   \n", size, spaces);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	seq_printf(s, "#%.*s||| / _-=> lock-depth      \n", size, spaces);
 	seq_printf(s, "#%.*s|||| /                     \n", size, spaces);
 =======
 	seq_printf(s, "#%.*s||| /                      \n", size, spaces);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	seq_printf(s, "#%.*s||| /                      \n", size, spaces);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __print_graph_headers_flags(struct seq_file *s, u32 flags)
@@ -1488,10 +1802,14 @@ static void __print_graph_headers_flags(struct seq_file *s, u32 flags)
 		seq_printf(s, "  TASK/PID       ");
 	if (lat)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		seq_printf(s, "|||||");
 =======
 		seq_printf(s, "||||");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		seq_printf(s, "||||");
+>>>>>>> refs/remotes/origin/master
 	if (flags & TRACE_GRAPH_PRINT_DURATION)
 		seq_printf(s, "  DURATION   ");
 	seq_printf(s, "               FUNCTION CALLS\n");
@@ -1506,10 +1824,14 @@ static void __print_graph_headers_flags(struct seq_file *s, u32 flags)
 		seq_printf(s, "   |    |        ");
 	if (lat)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		seq_printf(s, "|||||");
 =======
 		seq_printf(s, "||||");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		seq_printf(s, "||||");
+>>>>>>> refs/remotes/origin/master
 	if (flags & TRACE_GRAPH_PRINT_DURATION)
 		seq_printf(s, "   |   |      ");
 	seq_printf(s, "               |   |   |   |\n");
@@ -1525,11 +1847,17 @@ void print_graph_headers_flags(struct seq_file *s, u32 flags)
 	struct trace_iterator *iter = s->private;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!(trace_flags & TRACE_ITER_CONTEXT_INFO))
 		return;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(trace_flags & TRACE_ITER_CONTEXT_INFO))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	if (trace_flags & TRACE_ITER_LATENCY_FMT) {
 		/* print nothing if the buffers are empty */
 		if (trace_empty(iter))
@@ -1537,12 +1865,16 @@ void print_graph_headers_flags(struct seq_file *s, u32 flags)
 
 		print_trace_header(s, iter);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		flags |= TRACE_GRAPH_PRINT_DURATION;
 	} else
 		flags |= TRACE_GRAPH_PRINT_ABS_TIME;
 =======
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	__print_graph_headers_flags(s, flags);
 }
@@ -1617,7 +1949,11 @@ static struct trace_event graph_trace_ret_event = {
 	.funcs		= &graph_functions
 };
 
+<<<<<<< HEAD
 static struct tracer graph_trace __read_mostly = {
+=======
+static struct tracer graph_trace __tracer_data = {
+>>>>>>> refs/remotes/origin/master
 	.name		= "function_graph",
 	.open		= graph_trace_open,
 	.pipe_open	= graph_trace_open,
@@ -1635,6 +1971,62 @@ static struct tracer graph_trace __read_mostly = {
 #endif
 };
 
+<<<<<<< HEAD
+=======
+
+static ssize_t
+graph_depth_write(struct file *filp, const char __user *ubuf, size_t cnt,
+		  loff_t *ppos)
+{
+	unsigned long val;
+	int ret;
+
+	ret = kstrtoul_from_user(ubuf, cnt, 10, &val);
+	if (ret)
+		return ret;
+
+	max_depth = val;
+
+	*ppos += cnt;
+
+	return cnt;
+}
+
+static ssize_t
+graph_depth_read(struct file *filp, char __user *ubuf, size_t cnt,
+		 loff_t *ppos)
+{
+	char buf[15]; /* More than enough to hold UINT_MAX + "\n"*/
+	int n;
+
+	n = sprintf(buf, "%d\n", max_depth);
+
+	return simple_read_from_buffer(ubuf, cnt, ppos, buf, n);
+}
+
+static const struct file_operations graph_depth_fops = {
+	.open		= tracing_open_generic,
+	.write		= graph_depth_write,
+	.read		= graph_depth_read,
+	.llseek		= generic_file_llseek,
+};
+
+static __init int init_graph_debugfs(void)
+{
+	struct dentry *d_tracer;
+
+	d_tracer = tracing_init_dentry();
+	if (!d_tracer)
+		return 0;
+
+	trace_create_file("max_graph_depth", 0644, d_tracer,
+			  NULL, &graph_depth_fops);
+
+	return 0;
+}
+fs_initcall(init_graph_debugfs);
+
+>>>>>>> refs/remotes/origin/master
 static __init int init_graph_trace(void)
 {
 	max_bytes_for_cpu = snprintf(NULL, 0, "%d", nr_cpu_ids - 1);
@@ -1652,4 +2044,8 @@ static __init int init_graph_trace(void)
 	return register_tracer(&graph_trace);
 }
 
+<<<<<<< HEAD
 device_initcall(init_graph_trace);
+=======
+core_initcall(init_graph_trace);
+>>>>>>> refs/remotes/origin/master

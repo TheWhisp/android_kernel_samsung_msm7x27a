@@ -3,10 +3,14 @@
 **
 **  Copyright (C) Sistina Software, Inc.  1997-2003  All rights reserved.
 <<<<<<< HEAD
+<<<<<<< HEAD
 **  Copyright (C) 2004-2010 Red Hat, Inc.  All rights reserved.
 =======
 **  Copyright (C) 2004-2011 Red Hat, Inc.  All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+**  Copyright (C) 2004-2011 Red Hat, Inc.  All rights reserved.
+>>>>>>> refs/remotes/origin/master
 **
 **  This copyrighted material is made available to anyone wishing to use,
 **  modify, copy, or redistribute it subject to the terms and conditions
@@ -42,9 +46,14 @@
 #include <linux/miscdevice.h>
 #include <linux/mutex.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/idr.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/idr.h>
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 #include <linux/dlm.h>
@@ -61,12 +70,16 @@ struct dlm_lkb;
 struct dlm_rsb;
 struct dlm_member;
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dlm_lkbtable;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 struct dlm_rsbtable;
 struct dlm_dirtable;
 struct dlm_direntry;
+=======
+struct dlm_rsbtable;
+>>>>>>> refs/remotes/origin/master
 struct dlm_recover;
 struct dlm_header;
 struct dlm_message;
@@ -85,6 +98,16 @@ do { \
 		       (ls)->ls_name , ##args); \
 } while (0)
 
+<<<<<<< HEAD
+=======
+#define log_limit(ls, fmt, args...) \
+do { \
+	if (dlm_config.ci_log_debug) \
+		printk_ratelimited(KERN_DEBUG "dlm: %s: " fmt "\n", \
+			(ls)->ls_name , ##args); \
+} while (0)
+
+>>>>>>> refs/remotes/origin/master
 #define DLM_ASSERT(x, do) \
 { \
   if (!(x)) \
@@ -101,6 +124,7 @@ do { \
 }
 
 
+<<<<<<< HEAD
 struct dlm_direntry {
 	struct list_head	list;
 	uint32_t		master_nodeid;
@@ -132,6 +156,17 @@ struct dlm_lkbtable {
 };
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DLM_RTF_SHRINK		0x00000001
+
+struct dlm_rsbtable {
+	struct rb_root		keep;
+	struct rb_root		toss;
+	spinlock_t		lock;
+	uint32_t		flags;
+};
+
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Lockspace member (per node in a ls)
@@ -142,12 +177,18 @@ struct dlm_member {
 	int			nodeid;
 	int			weight;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int			slot;
 	int			slot_prev;
 	int			comm_seq;
 	uint32_t		generation;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -157,6 +198,7 @@ struct dlm_member {
 struct dlm_recover {
 	struct list_head	list;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int			*nodeids;   /* nodeids of all members */
 	int			node_count;
 	int			*new;       /* nodeids of new members */
@@ -165,6 +207,10 @@ struct dlm_recover {
 	struct dlm_config_node	*nodes;
 	int			nodes_count;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dlm_config_node	*nodes;
+	int			nodes_count;
+>>>>>>> refs/remotes/origin/master
 	uint64_t		seq;
 };
 
@@ -280,6 +326,7 @@ struct dlm_lkb {
 	int			lkb_wait_nodeid; /* for debugging */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head	lkb_idtbl_list;	/* lockspace lkbtbl */
 	struct list_head	lkb_statequeue;	/* rsb g/c/w list */
 	struct list_head	lkb_rsb_lookup;	/* waiting for rsb lookup */
@@ -290,6 +337,11 @@ struct dlm_lkb {
 	struct list_head	lkb_rsb_lookup;	/* waiting for rsb lookup */
 	struct list_head	lkb_wait_reply;	/* waiting for remote reply */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct list_head	lkb_statequeue;	/* rsb g/c/w list */
+	struct list_head	lkb_rsb_lookup;	/* waiting for rsb lookup */
+	struct list_head	lkb_wait_reply;	/* waiting for remote reply */
+>>>>>>> refs/remotes/origin/master
 	struct list_head	lkb_ownqueue;	/* list of locks for a process */
 	struct list_head	lkb_time_list;
 	ktime_t			lkb_timestamp;
@@ -297,17 +349,28 @@ struct dlm_lkb {
 	unsigned long		lkb_timeout_cs;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct mutex		lkb_cb_mutex;
 	struct work_struct	lkb_cb_work;
 	struct list_head	lkb_cb_list; /* for ls_cb_delay or proc->asts */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mutex		lkb_cb_mutex;
+	struct work_struct	lkb_cb_work;
+	struct list_head	lkb_cb_list; /* for ls_cb_delay or proc->asts */
+>>>>>>> refs/remotes/origin/master
 	struct dlm_callback	lkb_callbacks[DLM_CALLBACKS_SIZE];
 	struct dlm_callback	lkb_last_cast;
 	struct dlm_callback	lkb_last_bast;
 	ktime_t			lkb_last_cast_time;	/* for debugging */
 	ktime_t			lkb_last_bast_time;	/* for debugging */
 
+<<<<<<< HEAD
+=======
+	uint64_t		lkb_recover_seq; /* from ls_recover_seq */
+
+>>>>>>> refs/remotes/origin/master
 	char			*lkb_lvbptr;
 	struct dlm_lksb		*lkb_lksb;      /* caller's status block */
 	void			(*lkb_astfn) (void *astparam);
@@ -318,6 +381,18 @@ struct dlm_lkb {
 	};
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * res_master_nodeid is "normal": 0 is unset/invalid, non-zero is the real
+ * nodeid, even when nodeid is our_nodeid.
+ *
+ * res_nodeid is "odd": -1 is unset/invalid, zero means our_nodeid,
+ * greater than zero when another nodeid.
+ *
+ * (TODO: remove res_nodeid and only use res_master_nodeid)
+ */
+>>>>>>> refs/remotes/origin/master
 
 struct dlm_rsb {
 	struct dlm_ls		*res_ls;	/* the lockspace */
@@ -326,6 +401,12 @@ struct dlm_rsb {
 	unsigned long		res_flags;
 	int			res_length;	/* length of rsb name */
 	int			res_nodeid;
+<<<<<<< HEAD
+=======
+	int			res_master_nodeid;
+	int			res_dir_nodeid;
+	int			res_id;		/* for ls_recover_idr */
+>>>>>>> refs/remotes/origin/master
 	uint32_t                res_lvbseq;
 	uint32_t		res_hash;
 	uint32_t		res_bucket;	/* rsbtbl */
@@ -333,13 +414,19 @@ struct dlm_rsb {
 	uint32_t		res_first_lkid;
 	struct list_head	res_lookup;	/* lkbs waiting on first */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head	res_hashchain;	/* rsbtbl */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	union {
 		struct list_head	res_hashchain;
 		struct rb_node		res_hashnode;	/* rsbtbl */
 	};
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head	res_grantqueue;
 	struct list_head	res_convertqueue;
 	struct list_head	res_waitqueue;
@@ -349,6 +436,7 @@ struct dlm_rsb {
 	int			res_recover_locks_count;
 
 	char			*res_lvbptr;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	char			res_name[1];
 =======
@@ -360,6 +448,26 @@ struct dlm_rsb {
 
 #define R_MASTER		1	/* only return rsb if it's a master */
 #define R_CREATE		2	/* create/add rsb if not found */
+=======
+	char			res_name[DLM_RESNAME_MAXLEN+1];
+};
+
+/* dlm_master_lookup() flags */
+
+#define DLM_LU_RECOVER_DIR	1
+#define DLM_LU_RECOVER_MASTER	2
+
+/* dlm_master_lookup() results */
+
+#define DLM_LU_MATCH		1
+#define DLM_LU_ADD		2
+
+/* find_rsb() flags */
+
+#define R_REQUEST		0x00000001
+#define R_RECEIVE_REQUEST	0x00000002
+#define R_RECEIVE_RECOVER	0x00000004
+>>>>>>> refs/remotes/origin/master
 
 /* rsb_flags */
 
@@ -370,7 +478,12 @@ enum rsb_flags {
 	RSB_NEW_MASTER,
 	RSB_NEW_MASTER2,
 	RSB_RECOVER_CONVERT,
+<<<<<<< HEAD
 	RSB_LOCKS_PURGED,
+=======
+	RSB_RECOVER_GRANT,
+	RSB_RECOVER_LVB_INVAL,
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline void rsb_set_flag(struct dlm_rsb *r, enum rsb_flags flag)
@@ -393,12 +506,18 @@ static inline int rsb_flag(struct dlm_rsb *r, enum rsb_flags flag)
 
 #define DLM_HEADER_MAJOR	0x00030000
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DLM_HEADER_MINOR	0x00000000
 =======
 #define DLM_HEADER_MINOR	0x00000001
 
 #define DLM_HEADER_SLOTS	0x00000001
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DLM_HEADER_MINOR	0x00000001
+
+#define DLM_HEADER_SLOTS	0x00000001
+>>>>>>> refs/remotes/origin/master
 
 #define DLM_MSG			1
 #define DLM_RCOM		2
@@ -487,11 +606,14 @@ union dlm_packet {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct rcom_config {
 	__le32			rf_lvblen;
 	__le32			rf_lsflags;
 	__le64			rf_unused;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define DLM_RSF_NEED_SLOTS	0x00000001
 
 /* RCOM_STATUS data */
@@ -520,7 +642,10 @@ struct rcom_slot {
 	__le16			ro_slot;
 	__le16			ro_unused1;
 	__le64			ro_unused2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct rcom_lock {
@@ -543,14 +668,28 @@ struct rcom_lock {
 	char			rl_lvb[0];
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * The max number of resources per rsbtbl bucket that shrink will attempt
+ * to remove in each iteration.
+ */
+
+#define DLM_REMOVE_NAMES_MAX 8
+
+>>>>>>> refs/remotes/origin/master
 struct dlm_ls {
 	struct list_head	ls_list;	/* list of lockspaces */
 	dlm_lockspace_t		*ls_local_handle;
 	uint32_t		ls_global_id;	/* global unique lockspace ID */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	uint32_t		ls_generation;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t		ls_generation;
+>>>>>>> refs/remotes/origin/master
 	uint32_t		ls_exflags;
 	int			ls_lvblen;
 	int			ls_count;	/* refcount of processes in
@@ -561,6 +700,7 @@ struct dlm_ls {
 	struct kobject		ls_kobj;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dlm_rsbtable	*ls_rsbtbl;
 	uint32_t		ls_rsbtbl_size;
 
@@ -568,16 +708,21 @@ struct dlm_ls {
 	uint32_t		ls_lkbtbl_size;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct idr		ls_lkbidr;
 	spinlock_t		ls_lkbidr_spin;
 
 	struct dlm_rsbtable	*ls_rsbtbl;
 	uint32_t		ls_rsbtbl_size;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct dlm_dirtable	*ls_dirtbl;
 	uint32_t		ls_dirtbl_size;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mutex		ls_waiters_mutex;
 	struct list_head	ls_waiters;	/* lkbs needing a reply */
 
@@ -588,12 +733,24 @@ struct dlm_ls {
 	struct list_head	ls_timeout;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spinlock_t		ls_new_rsb_spin;
 	int			ls_new_rsb_count;
 	struct list_head	ls_new_rsb;	/* new rsb structs */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spinlock_t		ls_remove_spin;
+	char			ls_remove_name[DLM_RESNAME_MAXLEN+1];
+	char			*ls_remove_names[DLM_REMOVE_NAMES_MAX];
+	int			ls_remove_len;
+	int			ls_remove_lens[DLM_REMOVE_NAMES_MAX];
+
+>>>>>>> refs/remotes/origin/master
 	struct list_head	ls_nodes;	/* current nodes in ls */
 	struct list_head	ls_nodes_gone;	/* dead node list, recovery */
 	int			ls_num_nodes;	/* number of nodes in ls */
@@ -602,13 +759,19 @@ struct dlm_ls {
 	int			*ls_node_array;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int			ls_slot;
 	int			ls_num_slots;
 	int			ls_slots_size;
 	struct dlm_slot		*ls_slots;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dlm_rsb		ls_stub_rsb;	/* for returning errors */
 	struct dlm_lkb		ls_stub_lkb;	/* for returning errors */
 	struct dlm_message	ls_stub_ms;	/* for faking a reply */
@@ -617,6 +780,10 @@ struct dlm_ls {
 	struct dentry		*ls_debug_waiters_dentry; /* debugfs */
 	struct dentry		*ls_debug_locks_dentry; /* debugfs */
 	struct dentry		*ls_debug_all_dentry; /* debugfs */
+<<<<<<< HEAD
+=======
+	struct dentry		*ls_debug_toss_dentry; /* debugfs */
+>>>>>>> refs/remotes/origin/master
 
 	wait_queue_head_t	ls_uevent_wait;	/* user part of join/leave */
 	int			ls_uevent_result;
@@ -626,16 +793,22 @@ struct dlm_ls {
 	struct miscdevice       ls_device;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* recovery related */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct workqueue_struct	*ls_callback_wq;
 
 	/* recovery related */
 
 	struct mutex		ls_cb_mutex;
 	struct list_head	ls_cb_delay; /* save for queue_work later */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct timer_list	ls_timer;
 	struct task_struct	*ls_recoverd_task;
 	struct mutex		ls_recoverd_active;
@@ -650,27 +823,47 @@ struct dlm_ls {
 	struct mutex		ls_requestqueue_mutex;
 	struct dlm_rcom		*ls_recover_buf;
 	int			ls_recover_nodeid; /* for debugging */
+<<<<<<< HEAD
+=======
+	unsigned int		ls_recover_dir_sent_res; /* for log info */
+	unsigned int		ls_recover_dir_sent_msg; /* for log info */
+	unsigned int		ls_recover_locks_in; /* for log info */
+>>>>>>> refs/remotes/origin/master
 	uint64_t		ls_rcom_seq;
 	spinlock_t		ls_rcom_spin;
 	struct list_head	ls_recover_list;
 	spinlock_t		ls_recover_list_lock;
 	int			ls_recover_list_count;
+<<<<<<< HEAD
 	wait_queue_head_t	ls_wait_general;
+=======
+	struct idr		ls_recover_idr;
+	spinlock_t		ls_recover_idr_lock;
+	wait_queue_head_t	ls_wait_general;
+	wait_queue_head_t	ls_recover_lock_wait;
+>>>>>>> refs/remotes/origin/master
 	struct mutex		ls_clear_proc_locks;
 
 	struct list_head	ls_root_list;	/* root resources */
 	struct rw_semaphore	ls_root_sem;	/* protect root_list */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	const struct dlm_lockspace_ops *ls_ops;
 	void			*ls_ops_arg;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct dlm_lockspace_ops *ls_ops;
+	void			*ls_ops_arg;
+
+>>>>>>> refs/remotes/origin/master
 	int			ls_namelen;
 	char			ls_name[1];
 };
 
+<<<<<<< HEAD
 #define LSFL_WORK		0
 #define LSFL_RUNNING		1
 #define LSFL_RECOVERY_STOP	2
@@ -682,6 +875,42 @@ struct dlm_ls {
 =======
 #define LSFL_CB_DELAY		7
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * LSFL_RECOVER_STOP - dlm_ls_stop() sets this to tell dlm recovery routines
+ * that they should abort what they're doing so new recovery can be started.
+ *
+ * LSFL_RECOVER_DOWN - dlm_ls_stop() sets this to tell dlm_recoverd that it
+ * should do down_write() on the in_recovery rw_semaphore. (doing down_write
+ * within dlm_ls_stop causes complaints about the lock acquired/released
+ * in different contexts.)
+ *
+ * LSFL_RECOVER_LOCK - dlm_recoverd holds the in_recovery rw_semaphore.
+ * It sets this after it is done with down_write() on the in_recovery
+ * rw_semaphore and clears it after it has released the rw_semaphore.
+ *
+ * LSFL_RECOVER_WORK - dlm_ls_start() sets this to tell dlm_recoverd that it
+ * should begin recovery of the lockspace.
+ *
+ * LSFL_RUNNING - set when normal locking activity is enabled.
+ * dlm_ls_stop() clears this to tell dlm locking routines that they should
+ * quit what they are doing so recovery can run.  dlm_recoverd sets
+ * this after recovery is finished.
+ */
+
+#define LSFL_RECOVER_STOP	0
+#define LSFL_RECOVER_DOWN	1
+#define LSFL_RECOVER_LOCK	2
+#define LSFL_RECOVER_WORK	3
+#define LSFL_RUNNING		4
+
+#define LSFL_RCOM_READY		5
+#define LSFL_RCOM_WAIT		6
+#define LSFL_UEVENT_WAIT	7
+#define LSFL_TIMEWARN		8
+#define LSFL_CB_DELAY		9
+#define LSFL_NODIR		10
+>>>>>>> refs/remotes/origin/master
 
 /* much of this is just saving user space pointers associated with the
    lock that we pass back to the user lib with an ast */
@@ -724,12 +953,20 @@ static inline int dlm_locking_stopped(struct dlm_ls *ls)
 
 static inline int dlm_recovery_stopped(struct dlm_ls *ls)
 {
+<<<<<<< HEAD
 	return test_bit(LSFL_RECOVERY_STOP, &ls->ls_flags);
+=======
+	return test_bit(LSFL_RECOVER_STOP, &ls->ls_flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int dlm_no_directory(struct dlm_ls *ls)
 {
+<<<<<<< HEAD
 	return (ls->ls_exflags & DLM_LSFL_NODIR) ? 1 : 0;
+=======
+	return test_bit(LSFL_NODIR, &ls->ls_flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 int dlm_netlink_init(void);

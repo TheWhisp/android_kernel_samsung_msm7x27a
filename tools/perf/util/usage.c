@@ -1,20 +1,30 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * GIT - The information manager from hell
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * usage.c
  *
  * Various reporting routines.
  * Originally copied from GIT source.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) Linus Torvalds, 2005
  */
 #include "util.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "debug.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "debug.h"
+>>>>>>> refs/remotes/origin/master
 
 static void report(const char *prefix, const char *err, va_list params)
 {
@@ -90,6 +100,7 @@ void warning(const char *warn, ...)
 	va_end(params);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 uid_t parse_target_uid(const char *str, const char *tid, const char *pid)
@@ -130,3 +141,5 @@ uid_t parse_target_uid(const char *str, const char *tid, const char *pid)
 	return result->pw_uid;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

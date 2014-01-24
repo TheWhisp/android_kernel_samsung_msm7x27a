@@ -24,6 +24,7 @@
 #include <linux/ata_platform.h>
 #include <linux/i2c.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 
 #include <net/ax88796.h>
 
@@ -66,6 +67,45 @@
 
 #include "simtec.h"
 #include "common.h"
+=======
+#include <linux/serial_8250.h>
+
+#include <linux/mtd/mtd.h>
+#include <linux/mtd/nand.h>
+#include <linux/mtd/nand_ecc.h>
+#include <linux/mtd/partitions.h>
+
+#include <linux/platform_data/asoc-s3c24xx_simtec.h>
+#include <linux/platform_data/hwmon-s3c.h>
+#include <linux/platform_data/i2c-s3c2410.h>
+#include <linux/platform_data/mtd-nand-s3c2410.h>
+
+#include <net/ax88796.h>
+
+#include <asm/irq.h>
+#include <asm/mach/arch.h>
+#include <asm/mach/map.h>
+#include <asm/mach/irq.h>
+#include <asm/mach-types.h>
+
+#include <mach/fb.h>
+#include <mach/hardware.h>
+#include <mach/regs-gpio.h>
+#include <mach/regs-lcd.h>
+#include <mach/gpio-samsung.h>
+
+#include <plat/clock.h>
+#include <plat/cpu.h>
+#include <plat/cpu-freq.h>
+#include <plat/devs.h>
+#include <plat/gpio-cfg.h>
+#include <plat/regs-serial.h>
+#include <plat/samsung-time.h>
+
+#include "bast.h"
+#include "common.h"
+#include "simtec.h"
+>>>>>>> refs/remotes/origin/master
 
 #define COPYRIGHT ", Copyright 2004-2008 Simtec Electronics"
 
@@ -310,6 +350,7 @@ static struct s3c2410_platform_nand __initdata bast_nand_info = {
 /* DM9000 */
 
 static struct resource bast_dm9k_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S3C2410_CS5 + BAST_PA_DM9000,
 		.end   = S3C2410_CS5 + BAST_PA_DM9000 + 3,
@@ -326,6 +367,12 @@ static struct resource bast_dm9k_resource[] = {
 		.flags = IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHLEVEL,
 	}
 
+=======
+	[0] = DEFINE_RES_MEM(S3C2410_CS5 + BAST_PA_DM9000, 4),
+	[1] = DEFINE_RES_MEM(S3C2410_CS5 + BAST_PA_DM9000 + 0x40, 0x40),
+	[2] = DEFINE_RES_NAMED(BAST_IRQ_DM9000 , 1, NULL, IORESOURCE_IRQ \
+					| IORESOURCE_IRQ_HIGHLEVEL),
+>>>>>>> refs/remotes/origin/master
 };
 
 /* for the moment we limit ourselves to 16bit IO until some
@@ -355,7 +402,11 @@ static struct platform_device bast_device_dm9k = {
 static struct plat_serial8250_port bast_sio_data[] = {
 	[0] = {
 		.mapbase	= SERIAL_BASE + 0x2f8,
+<<<<<<< HEAD
 		.irq		= IRQ_PCSERIAL1,
+=======
+		.irq		= BAST_IRQ_PCSERIAL1,
+>>>>>>> refs/remotes/origin/master
 		.flags		= SERIAL_FLAGS,
 		.iotype		= UPIO_MEM,
 		.regshift	= 0,
@@ -363,7 +414,11 @@ static struct plat_serial8250_port bast_sio_data[] = {
 	},
 	[1] = {
 		.mapbase	= SERIAL_BASE + 0x3f8,
+<<<<<<< HEAD
 		.irq		= IRQ_PCSERIAL2,
+=======
+		.irq		= BAST_IRQ_PCSERIAL2,
+>>>>>>> refs/remotes/origin/master
 		.flags		= SERIAL_FLAGS,
 		.iotype		= UPIO_MEM,
 		.regshift	= 0,
@@ -400,6 +455,7 @@ static struct ax_plat_data bast_asix_platdata = {
 };
 
 static struct resource bast_asix_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S3C2410_CS5 + BAST_PA_ASIXNET,
 		.end   = S3C2410_CS5 + BAST_PA_ASIXNET + (0x18 * 0x20) - 1,
@@ -415,6 +471,11 @@ static struct resource bast_asix_resource[] = {
 		.end   = IRQ_ASIX,
 		.flags = IORESOURCE_IRQ
 	}
+=======
+	[0] = DEFINE_RES_MEM(S3C2410_CS5 + BAST_PA_ASIXNET, 0x18 * 0x20),
+	[1] = DEFINE_RES_MEM(S3C2410_CS5 + BAST_PA_ASIXNET + (0x1f * 0x20), 1),
+	[2] = DEFINE_RES_IRQ(BAST_IRQ_ASIX),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device bast_device_asix = {
@@ -430,11 +491,16 @@ static struct platform_device bast_device_asix = {
 /* Asix AX88796 10/100 ethernet controller parallel port */
 
 static struct resource bast_asixpp_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S3C2410_CS5 + BAST_PA_ASIXNET + (0x18 * 0x20),
 		.end   = S3C2410_CS5 + BAST_PA_ASIXNET + (0x1b * 0x20) - 1,
 		.flags = IORESOURCE_MEM,
 	}
+=======
+	[0] = DEFINE_RES_MEM(S3C2410_CS5 + BAST_PA_ASIXNET + (0x18 * 0x20), \
+					0x30 * 0x20),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device bast_device_axpp = {
@@ -610,6 +676,10 @@ static void __init bast_map_io(void)
 	s3c24xx_init_io(bast_iodesc, ARRAY_SIZE(bast_iodesc));
 	s3c24xx_init_clocks(0);
 	s3c24xx_init_uarts(bast_uartcfgs, ARRAY_SIZE(bast_uartcfgs));
+<<<<<<< HEAD
+=======
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init bast_init(void)
@@ -637,8 +707,14 @@ MACHINE_START(BAST, "Simtec-BAST")
 	/* Maintainer: Ben Dooks <ben@simtec.co.uk> */
 	.atag_offset	= 0x100,
 	.map_io		= bast_map_io,
+<<<<<<< HEAD
 	.init_irq	= s3c24xx_init_irq,
 	.init_machine	= bast_init,
 	.timer		= &s3c24xx_timer,
+=======
+	.init_irq	= s3c2410_init_irq,
+	.init_machine	= bast_init,
+	.init_time	= samsung_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.restart	= s3c2410_restart,
 MACHINE_END

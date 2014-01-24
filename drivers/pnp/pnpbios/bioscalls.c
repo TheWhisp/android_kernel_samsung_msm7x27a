@@ -18,9 +18,12 @@
 #include <asm/page.h>
 #include <asm/desc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/byteorder.h>
 
 #include "pnpbios.h"

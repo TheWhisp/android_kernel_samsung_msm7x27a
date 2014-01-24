@@ -14,6 +14,10 @@
  */
 
 #include <linux/mmc/host.h>
+<<<<<<< HEAD
+=======
+#include <linux/mmc/slot-gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/err.h>
 #include <linux/io.h>
 #include <linux/irq.h>
@@ -120,7 +124,10 @@ struct jz4740_mmc_host {
 	int irq;
 	int card_detect_irq;
 
+<<<<<<< HEAD
 	struct resource *mem;
+=======
+>>>>>>> refs/remotes/origin/master
 	void __iomem *base;
 	struct mmc_request *req;
 	struct mmc_command *cmd;
@@ -231,6 +238,17 @@ static void jz4740_mmc_transfer_check_state(struct jz4740_mmc_host *host,
 			host->req->cmd->error = -EIO;
 			data->error = -EIO;
 		}
+<<<<<<< HEAD
+=======
+	} else if (status & JZ_MMC_STATUS_READ_ERROR_MASK) {
+		if (status & (JZ_MMC_STATUS_TIMEOUT_READ)) {
+			host->req->cmd->error = -ETIMEDOUT;
+			data->error = -ETIMEDOUT;
+		} else {
+			host->req->cmd->error = -EIO;
+			data->error = -EIO;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -560,11 +578,14 @@ static irqreturn_t jz_mmc_irq(int irq, void *devid)
 					if (cmd->data)
 							cmd->data->error = -EIO;
 					cmd->error = -EIO;
+<<<<<<< HEAD
 			} else if (status & (JZ_MMC_STATUS_CRC_READ_ERROR |
 					JZ_MMC_STATUS_CRC_WRITE_ERROR)) {
 					if (cmd->data)
 							cmd->data->error = -EIO;
 					cmd->error = -EIO;
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 
 			jz4740_mmc_set_irq_enabled(host, irq_reg, false);
@@ -626,7 +647,11 @@ static void jz4740_mmc_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 			gpio_set_value(host->pdata->gpio_power,
 					!host->pdata->power_active_low);
 		host->cmdat |= JZ_MMC_CMDAT_INIT;
+<<<<<<< HEAD
 		clk_enable(host->clk);
+=======
+		clk_prepare_enable(host->clk);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MMC_POWER_ON:
 		break;
@@ -634,7 +659,11 @@ static void jz4740_mmc_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 		if (gpio_is_valid(host->pdata->gpio_power))
 			gpio_set_value(host->pdata->gpio_power,
 					host->pdata->power_active_low);
+<<<<<<< HEAD
 		clk_disable(host->clk);
+=======
+		clk_disable_unprepare(host->clk);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -650,6 +679,7 @@ static void jz4740_mmc_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	}
 }
 
+<<<<<<< HEAD
 static int jz4740_mmc_get_ro(struct mmc_host *mmc)
 {
 	struct jz4740_mmc_host *host = mmc_priv(mmc);
@@ -679,6 +709,8 @@ static irqreturn_t jz4740_mmc_card_detect_irq(int irq, void *devid)
 	return IRQ_HANDLED;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void jz4740_mmc_enable_sdio_irq(struct mmc_host *mmc, int enable)
 {
 	struct jz4740_mmc_host *host = mmc_priv(mmc);
@@ -688,8 +720,13 @@ static void jz4740_mmc_enable_sdio_irq(struct mmc_host *mmc, int enable)
 static const struct mmc_host_ops jz4740_mmc_ops = {
 	.request	= jz4740_mmc_request,
 	.set_ios	= jz4740_mmc_set_ios,
+<<<<<<< HEAD
 	.get_ro		= jz4740_mmc_get_ro,
 	.get_cd		= jz4740_mmc_get_cd,
+=======
+	.get_ro		= mmc_gpio_get_ro,
+	.get_cd		= mmc_gpio_get_cd,
+>>>>>>> refs/remotes/origin/master
 	.enable_sdio_irq = jz4740_mmc_enable_sdio_irq,
 };
 
@@ -702,7 +739,11 @@ static const struct jz_gpio_bulk_request jz4740_mmc_pins[] = {
 	JZ_GPIO_BULK_PIN(MSC_DATA3),
 };
 
+<<<<<<< HEAD
 static int __devinit jz4740_mmc_request_gpio(struct device *dev, int gpio,
+=======
+static int jz4740_mmc_request_gpio(struct device *dev, int gpio,
+>>>>>>> refs/remotes/origin/master
 	const char *name, bool output, int value)
 {
 	int ret;
@@ -724,14 +765,23 @@ static int __devinit jz4740_mmc_request_gpio(struct device *dev, int gpio,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit jz4740_mmc_request_gpios(struct platform_device *pdev)
 {
 	int ret;
 	struct jz4740_mmc_platform_data *pdata = pdev->dev.platform_data;
+=======
+static int jz4740_mmc_request_gpios(struct mmc_host *mmc,
+	struct platform_device *pdev)
+{
+	struct jz4740_mmc_platform_data *pdata = pdev->dev.platform_data;
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!pdata)
 		return 0;
 
+<<<<<<< HEAD
 	ret = jz4740_mmc_request_gpio(&pdev->dev, pdata->gpio_card_detect,
 			"MMC detect change", false, 0);
 	if (ret)
@@ -776,6 +826,27 @@ static int __devinit jz4740_mmc_request_cd_irq(struct platform_device *pdev,
 	return request_irq(host->card_detect_irq, jz4740_mmc_card_detect_irq,
 			IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
 			"MMC card detect", host);
+=======
+	if (!pdata->card_detect_active_low)
+		mmc->caps2 |= MMC_CAP2_CD_ACTIVE_HIGH;
+	if (!pdata->read_only_active_low)
+		mmc->caps2 |= MMC_CAP2_RO_ACTIVE_HIGH;
+
+	if (gpio_is_valid(pdata->gpio_card_detect)) {
+		ret = mmc_gpio_request_cd(mmc, pdata->gpio_card_detect, 0);
+		if (ret)
+			return ret;
+	}
+
+	if (gpio_is_valid(pdata->gpio_read_only)) {
+		ret = mmc_gpio_request_ro(mmc, pdata->gpio_read_only);
+		if (ret)
+			return ret;
+	}
+
+	return jz4740_mmc_request_gpio(&pdev->dev, pdata->gpio_power,
+			"MMC read only", true, pdata->power_active_low);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void jz4740_mmc_free_gpios(struct platform_device *pdev)
@@ -787,10 +858,13 @@ static void jz4740_mmc_free_gpios(struct platform_device *pdev)
 
 	if (gpio_is_valid(pdata->gpio_power))
 		gpio_free(pdata->gpio_power);
+<<<<<<< HEAD
 	if (gpio_is_valid(pdata->gpio_read_only))
 		gpio_free(pdata->gpio_read_only);
 	if (gpio_is_valid(pdata->gpio_card_detect))
 		gpio_free(pdata->gpio_card_detect);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline size_t jz4740_mmc_num_pins(struct jz4740_mmc_host *host)
@@ -802,12 +876,20 @@ static inline size_t jz4740_mmc_num_pins(struct jz4740_mmc_host *host)
 	return num_pins;
 }
 
+<<<<<<< HEAD
 static int __devinit jz4740_mmc_probe(struct platform_device* pdev)
+=======
+static int jz4740_mmc_probe(struct platform_device* pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct mmc_host *mmc;
 	struct jz4740_mmc_host *host;
 	struct jz4740_mmc_platform_data *pdata;
+<<<<<<< HEAD
+=======
+	struct resource *res;
+>>>>>>> refs/remotes/origin/master
 
 	pdata = pdev->dev.platform_data;
 
@@ -827,13 +909,18 @@ static int __devinit jz4740_mmc_probe(struct platform_device* pdev)
 		goto err_free_host;
 	}
 
+<<<<<<< HEAD
 	host->clk = clk_get(&pdev->dev, "mmc");
+=======
+	host->clk = devm_clk_get(&pdev->dev, "mmc");
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(host->clk)) {
 		ret = PTR_ERR(host->clk);
 		dev_err(&pdev->dev, "Failed to get mmc clock\n");
 		goto err_free_host;
 	}
 
+<<<<<<< HEAD
 	host->mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!host->mem) {
 		ret = -ENOENT;
@@ -854,15 +941,29 @@ static int __devinit jz4740_mmc_probe(struct platform_device* pdev)
 		ret = -EBUSY;
 		dev_err(&pdev->dev, "Failed to ioremap base memory\n");
 		goto err_release_mem_region;
+=======
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	host->base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(host->base)) {
+		ret = PTR_ERR(host->base);
+		goto err_free_host;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = jz_gpio_bulk_request(jz4740_mmc_pins, jz4740_mmc_num_pins(host));
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to request mmc pins: %d\n", ret);
+<<<<<<< HEAD
 		goto err_iounmap;
 	}
 
 	ret = jz4740_mmc_request_gpios(pdev);
+=======
+		goto err_free_host;
+	}
+
+	ret = jz4740_mmc_request_gpios(mmc, pdev);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto err_gpio_bulk_free;
 
@@ -885,17 +986,24 @@ static int __devinit jz4740_mmc_probe(struct platform_device* pdev)
 	spin_lock_init(&host->lock);
 	host->irq_mask = 0xffff;
 
+<<<<<<< HEAD
 	ret = jz4740_mmc_request_cd_irq(pdev, host);
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to request card detect irq\n");
 		goto err_free_gpios;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = request_threaded_irq(host->irq, jz_mmc_irq, jz_mmc_irq_worker, 0,
 			dev_name(&pdev->dev), host);
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to request irq: %d\n", ret);
+<<<<<<< HEAD
 		goto err_free_card_detect_irq;
+=======
+		goto err_free_gpios;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	jz4740_mmc_reset(host);
@@ -918,13 +1026,17 @@ static int __devinit jz4740_mmc_probe(struct platform_device* pdev)
 
 err_free_irq:
 	free_irq(host->irq, host);
+<<<<<<< HEAD
 err_free_card_detect_irq:
 	if (host->card_detect_irq >= 0)
 		free_irq(host->card_detect_irq, host);
+=======
+>>>>>>> refs/remotes/origin/master
 err_free_gpios:
 	jz4740_mmc_free_gpios(pdev);
 err_gpio_bulk_free:
 	jz_gpio_bulk_free(jz4740_mmc_pins, jz4740_mmc_num_pins(host));
+<<<<<<< HEAD
 err_iounmap:
 	iounmap(host->base);
 err_release_mem_region:
@@ -933,12 +1045,19 @@ err_clk_put:
 	clk_put(host->clk);
 err_free_host:
 	platform_set_drvdata(pdev, NULL);
+=======
+err_free_host:
+>>>>>>> refs/remotes/origin/master
 	mmc_free_host(mmc);
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit jz4740_mmc_remove(struct platform_device *pdev)
+=======
+static int jz4740_mmc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct jz4740_mmc_host *host = platform_get_drvdata(pdev);
 
@@ -949,31 +1068,44 @@ static int __devexit jz4740_mmc_remove(struct platform_device *pdev)
 	mmc_remove_host(host->mmc);
 
 	free_irq(host->irq, host);
+<<<<<<< HEAD
 	if (host->card_detect_irq >= 0)
 		free_irq(host->card_detect_irq, host);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	jz4740_mmc_free_gpios(pdev);
 	jz_gpio_bulk_free(jz4740_mmc_pins, jz4740_mmc_num_pins(host));
 
+<<<<<<< HEAD
 	iounmap(host->base);
 	release_mem_region(host->mem->start, resource_size(host->mem));
 
 	clk_put(host->clk);
 
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	mmc_free_host(host->mmc);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 
 static int jz4740_mmc_suspend(struct device *dev)
 {
 	struct jz4740_mmc_host *host = dev_get_drvdata(dev);
 
+<<<<<<< HEAD
 	mmc_suspend_host(host->mmc);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	jz_gpio_bulk_suspend(jz4740_mmc_pins, jz4740_mmc_num_pins(host));
 
 	return 0;
@@ -985,6 +1117,7 @@ static int jz4740_mmc_resume(struct device *dev)
 
 	jz_gpio_bulk_resume(jz4740_mmc_pins, jz4740_mmc_num_pins(host));
 
+<<<<<<< HEAD
 	mmc_resume_host(host->mmc);
 
 	return 0;
@@ -997,6 +1130,13 @@ const struct dev_pm_ops jz4740_mmc_pm_ops = {
 	.restore	= jz4740_mmc_resume,
 };
 
+=======
+	return 0;
+}
+
+static SIMPLE_DEV_PM_OPS(jz4740_mmc_pm_ops, jz4740_mmc_suspend,
+	jz4740_mmc_resume);
+>>>>>>> refs/remotes/origin/master
 #define JZ4740_MMC_PM_OPS (&jz4740_mmc_pm_ops)
 #else
 #define JZ4740_MMC_PM_OPS NULL
@@ -1004,7 +1144,11 @@ const struct dev_pm_ops jz4740_mmc_pm_ops = {
 
 static struct platform_driver jz4740_mmc_driver = {
 	.probe = jz4740_mmc_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(jz4740_mmc_remove),
+=======
+	.remove = jz4740_mmc_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "jz4740-mmc",
 		.owner = THIS_MODULE,
@@ -1012,6 +1156,7 @@ static struct platform_driver jz4740_mmc_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init jz4740_mmc_init(void)
 {
@@ -1027,6 +1172,9 @@ module_exit(jz4740_mmc_exit);
 =======
 module_platform_driver(jz4740_mmc_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(jz4740_mmc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("JZ4740 SD/MMC controller driver");
 MODULE_LICENSE("GPL");

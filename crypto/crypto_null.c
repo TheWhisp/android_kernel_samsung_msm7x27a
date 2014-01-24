@@ -94,6 +94,7 @@ static int skcipher_null_crypt(struct blkcipher_desc *desc,
 	return err;
 }
 
+<<<<<<< HEAD
 static struct crypto_alg compress_null = {
 	.cra_name		=	"compress_null",
 	.cra_flags		=	CRYPTO_ALG_TYPE_COMPRESS,
@@ -106,6 +107,8 @@ static struct crypto_alg compress_null = {
 	.coa_decompress		=	null_compress } }
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct shash_alg digest_null = {
 	.digestsize		=	NULL_DIGEST_SIZE,
 	.setkey   		=	null_hash_setkey,
@@ -122,22 +125,33 @@ static struct shash_alg digest_null = {
 	}
 };
 
+<<<<<<< HEAD
 static struct crypto_alg cipher_null = {
+=======
+static struct crypto_alg null_algs[3] = { {
+>>>>>>> refs/remotes/origin/master
 	.cra_name		=	"cipher_null",
 	.cra_flags		=	CRYPTO_ALG_TYPE_CIPHER,
 	.cra_blocksize		=	NULL_BLOCK_SIZE,
 	.cra_ctxsize		=	0,
 	.cra_module		=	THIS_MODULE,
+<<<<<<< HEAD
 	.cra_list		=	LIST_HEAD_INIT(cipher_null.cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 	.cra_u			=	{ .cipher = {
 	.cia_min_keysize	=	NULL_KEY_SIZE,
 	.cia_max_keysize	=	NULL_KEY_SIZE,
 	.cia_setkey		= 	null_setkey,
 	.cia_encrypt		=	null_crypt,
 	.cia_decrypt		=	null_crypt } }
+<<<<<<< HEAD
 };
 
 static struct crypto_alg skcipher_null = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.cra_name		=	"ecb(cipher_null)",
 	.cra_driver_name	=	"ecb-cipher_null",
 	.cra_priority		=	100,
@@ -146,7 +160,10 @@ static struct crypto_alg skcipher_null = {
 	.cra_type		=	&crypto_blkcipher_type,
 	.cra_ctxsize		=	0,
 	.cra_module		=	THIS_MODULE,
+<<<<<<< HEAD
 	.cra_list		=	LIST_HEAD_INIT(skcipher_null.cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 	.cra_u			=	{ .blkcipher = {
 	.min_keysize		=	NULL_KEY_SIZE,
 	.max_keysize		=	NULL_KEY_SIZE,
@@ -154,7 +171,20 @@ static struct crypto_alg skcipher_null = {
 	.setkey			= 	null_setkey,
 	.encrypt		=	skcipher_null_crypt,
 	.decrypt		=	skcipher_null_crypt } }
+<<<<<<< HEAD
 };
+=======
+}, {
+	.cra_name		=	"compress_null",
+	.cra_flags		=	CRYPTO_ALG_TYPE_COMPRESS,
+	.cra_blocksize		=	NULL_BLOCK_SIZE,
+	.cra_ctxsize		=	0,
+	.cra_module		=	THIS_MODULE,
+	.cra_u			=	{ .compress = {
+	.coa_compress		=	null_compress,
+	.coa_decompress		=	null_compress } }
+} };
+>>>>>>> refs/remotes/origin/master
 
 MODULE_ALIAS("compress_null");
 MODULE_ALIAS("digest_null");
@@ -164,6 +194,7 @@ static int __init crypto_null_mod_init(void)
 {
 	int ret = 0;
 
+<<<<<<< HEAD
 	ret = crypto_register_alg(&cipher_null);
 	if (ret < 0)
 		goto out;
@@ -190,14 +221,35 @@ out_unregister_skcipher:
 out_unregister_cipher:
 	crypto_unregister_alg(&cipher_null);
 	goto out;
+=======
+	ret = crypto_register_algs(null_algs, ARRAY_SIZE(null_algs));
+	if (ret < 0)
+		goto out;
+
+	ret = crypto_register_shash(&digest_null);
+	if (ret < 0)
+		goto out_unregister_algs;
+
+	return 0;
+
+out_unregister_algs:
+	crypto_unregister_algs(null_algs, ARRAY_SIZE(null_algs));
+out:
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit crypto_null_mod_fini(void)
 {
+<<<<<<< HEAD
 	crypto_unregister_alg(&compress_null);
 	crypto_unregister_shash(&digest_null);
 	crypto_unregister_alg(&skcipher_null);
 	crypto_unregister_alg(&cipher_null);
+=======
+	crypto_unregister_shash(&digest_null);
+	crypto_unregister_algs(null_algs, ARRAY_SIZE(null_algs));
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(crypto_null_mod_init);

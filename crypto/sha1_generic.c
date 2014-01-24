@@ -37,10 +37,14 @@ static int sha1_init(struct shash_desc *desc)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int sha1_update(struct shash_desc *desc, const u8 *data,
 =======
 int crypto_sha1_update(struct shash_desc *desc, const u8 *data,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int crypto_sha1_update(struct shash_desc *desc, const u8 *data,
+>>>>>>> refs/remotes/origin/master
 			unsigned int len)
 {
 	struct sha1_state *sctx = shash_desc_ctx(desc);
@@ -48,34 +52,48 @@ int crypto_sha1_update(struct shash_desc *desc, const u8 *data,
 	const u8 *src;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	partial = sctx->count & 0x3f;
 =======
 	partial = sctx->count % SHA1_BLOCK_SIZE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	partial = sctx->count % SHA1_BLOCK_SIZE;
+>>>>>>> refs/remotes/origin/master
 	sctx->count += len;
 	done = 0;
 	src = data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((partial + len) > 63) {
 =======
 	if ((partial + len) >= SHA1_BLOCK_SIZE) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((partial + len) >= SHA1_BLOCK_SIZE) {
+>>>>>>> refs/remotes/origin/master
 		u32 temp[SHA_WORKSPACE_WORDS];
 
 		if (partial) {
 			done = -partial;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			memcpy(sctx->buffer + partial, data, done + 64);
 =======
 			memcpy(sctx->buffer + partial, data,
 			       done + SHA1_BLOCK_SIZE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			memcpy(sctx->buffer + partial, data,
+			       done + SHA1_BLOCK_SIZE);
+>>>>>>> refs/remotes/origin/master
 			src = sctx->buffer;
 		}
 
 		do {
 			sha_transform(sctx->state, src, temp);
+<<<<<<< HEAD
 <<<<<<< HEAD
 			done += 64;
 			src = data + done;
@@ -85,6 +103,11 @@ int crypto_sha1_update(struct shash_desc *desc, const u8 *data,
 			src = data + done;
 		} while (done + SHA1_BLOCK_SIZE <= len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			done += SHA1_BLOCK_SIZE;
+			src = data + done;
+		} while (done + SHA1_BLOCK_SIZE <= len);
+>>>>>>> refs/remotes/origin/master
 
 		memset(temp, 0, sizeof(temp));
 		partial = 0;
@@ -94,9 +117,13 @@ int crypto_sha1_update(struct shash_desc *desc, const u8 *data,
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(crypto_sha1_update);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(crypto_sha1_update);
+>>>>>>> refs/remotes/origin/master
 
 
 /* Add padding and return the message digest. */
@@ -114,16 +141,22 @@ static int sha1_final(struct shash_desc *desc, u8 *out)
 	index = sctx->count & 0x3f;
 	padlen = (index < 56) ? (56 - index) : ((64+56) - index);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sha1_update(desc, padding, padlen);
 
 	/* Append length */
 	sha1_update(desc, (const u8 *)&bits, sizeof(bits));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	crypto_sha1_update(desc, padding, padlen);
 
 	/* Append length */
 	crypto_sha1_update(desc, (const u8 *)&bits, sizeof(bits));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Store state in digest */
 	for (i = 0; i < 5; i++)
@@ -155,10 +188,14 @@ static struct shash_alg alg = {
 	.digestsize	=	SHA1_DIGEST_SIZE,
 	.init		=	sha1_init,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.update		=	sha1_update,
 =======
 	.update		=	crypto_sha1_update,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.update		=	crypto_sha1_update,
+>>>>>>> refs/remotes/origin/master
 	.final		=	sha1_final,
 	.export		=	sha1_export,
 	.import		=	sha1_import,

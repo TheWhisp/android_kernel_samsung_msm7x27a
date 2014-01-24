@@ -51,10 +51,17 @@ static void __init mpc5200_simple_setup_arch(void)
 /* list of the supported boards */
 static const char *board[] __initdata = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	"anonymous,a4m072",
 	"anon,charon",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"anonymous,a3m071",
+	"anonymous,a4m072",
+	"anon,charon",
+	"ifm,o2d",
+>>>>>>> refs/remotes/origin/master
 	"intercontrol,digsy-mtc",
 	"manroland,mucmc52",
 	"manroland,uc101",

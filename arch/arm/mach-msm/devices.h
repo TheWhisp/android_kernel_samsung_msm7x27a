@@ -1,7 +1,10 @@
 /* linux/arch/arm/mach-msm/devices.h
  *
  * Copyright (C) 2008 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -17,6 +20,7 @@
 #ifndef __ARCH_ARM_MACH_MSM_DEVICES_H
 #define __ARCH_ARM_MACH_MSM_DEVICES_H
 
+<<<<<<< HEAD
 #include <linux/clkdev.h>
 #include <linux/platform_device.h>
 #include "clock.h"
@@ -132,12 +136,25 @@ extern struct platform_device msm9615_device_ssbi_pmic1;
 extern struct platform_device msm9615_device_tsens;
 extern struct platform_device msm_bus_9615_sys_fabric;
 extern struct platform_device msm_bus_def_fab;
+=======
+extern struct platform_device msm_device_gpio_7201;
+extern struct platform_device msm_device_gpio_7x30;
+extern struct platform_device msm_device_gpio_8x50;
+
+extern struct platform_device msm_device_uart1;
+extern struct platform_device msm_device_uart2;
+extern struct platform_device msm_device_uart3;
+
+extern struct platform_device msm8960_device_uart_gsbi2;
+extern struct platform_device msm8960_device_uart_gsbi5;
+>>>>>>> refs/remotes/origin/master
 
 extern struct platform_device msm_device_sdc1;
 extern struct platform_device msm_device_sdc2;
 extern struct platform_device msm_device_sdc3;
 extern struct platform_device msm_device_sdc4;
 
+<<<<<<< HEAD
 extern struct platform_device msm_device_gadget_peripheral;
 extern struct platform_device msm_device_hsusb_host;
 extern struct platform_device msm_device_hsusb_host2;
@@ -541,3 +558,24 @@ extern struct platform_device ram_console_device;
 #endif
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct platform_device msm_device_hsusb;
+extern struct platform_device msm_device_otg;
+extern struct platform_device msm_device_hsusb_host;
+
+extern struct platform_device msm_device_i2c;
+
+extern struct platform_device msm_device_smd;
+
+extern struct platform_device msm_device_nand;
+
+extern struct platform_device msm_device_mddi0;
+extern struct platform_device msm_device_mddi1;
+extern struct platform_device msm_device_mdp;
+
+extern struct platform_device msm_clock_7x01a;
+extern struct platform_device msm_clock_7x30;
+extern struct platform_device msm_clock_8x50;
+
+#endif
+>>>>>>> refs/remotes/origin/master

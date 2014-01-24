@@ -77,8 +77,13 @@ static struct libipw_frag_entry *libipw_frag_cache_find(struct
 
 		if (entry->skb != NULL && entry->seq == seq &&
 		    (entry->last_frag + 1 == frag || frag == -1) &&
+<<<<<<< HEAD
 		    !compare_ether_addr(entry->src_addr, src) &&
 		    !compare_ether_addr(entry->dst_addr, dst))
+=======
+		    ether_addr_equal(entry->src_addr, src) &&
+		    ether_addr_equal(entry->dst_addr, dst))
+>>>>>>> refs/remotes/origin/master
 			return entry;
 	}
 
@@ -173,10 +178,14 @@ libipw_rx_frame_mgmt(struct libipw_device *ieee, struct sk_buff *skb,
 {
 	if (ieee->iw_mode == IW_MODE_MASTER) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG "%s: Master mode not yet suppported.\n",
 =======
 		printk(KERN_DEBUG "%s: Master mode not yet supported.\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_DEBUG "%s: Master mode not yet supported.\n",
+>>>>>>> refs/remotes/origin/master
 		       ieee->dev->name);
 		return 0;
 /*
@@ -249,12 +258,21 @@ static int libipw_is_eapol_frame(struct libipw_device *ieee,
 	/* check that the frame is unicast frame to us */
 	if ((fc & (IEEE80211_FCTL_TODS | IEEE80211_FCTL_FROMDS)) ==
 	    IEEE80211_FCTL_TODS &&
+<<<<<<< HEAD
 	    !compare_ether_addr(hdr->addr1, dev->dev_addr) &&
 	    !compare_ether_addr(hdr->addr3, dev->dev_addr)) {
 		/* ToDS frame with own addr BSSID and DA */
 	} else if ((fc & (IEEE80211_FCTL_TODS | IEEE80211_FCTL_FROMDS)) ==
 		   IEEE80211_FCTL_FROMDS &&
 		   !compare_ether_addr(hdr->addr1, dev->dev_addr)) {
+=======
+	    ether_addr_equal(hdr->addr1, dev->dev_addr) &&
+	    ether_addr_equal(hdr->addr3, dev->dev_addr)) {
+		/* ToDS frame with own addr BSSID and DA */
+	} else if ((fc & (IEEE80211_FCTL_TODS | IEEE80211_FCTL_FROMDS)) ==
+		   IEEE80211_FCTL_FROMDS &&
+		   ether_addr_equal(hdr->addr1, dev->dev_addr)) {
+>>>>>>> refs/remotes/origin/master
 		/* FromDS frame with own addr as DA */
 	} else
 		return 0;
@@ -447,10 +465,14 @@ int libipw_rx(struct libipw_device *ieee, struct sk_buff *skb,
 		 * stations that do not support WEP key mapping). */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!(hdr->addr1[0] & 0x01) || local->bcrx_sta_key)
 =======
 		if (is_unicast_ether_addr(hdr->addr1) || local->bcrx_sta_key)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (is_unicast_ether_addr(hdr->addr1) || local->bcrx_sta_key)
+>>>>>>> refs/remotes/origin/master
 			(void)hostap_handle_sta_crypto(local, hdr, &crypt,
 						       &sta);
 #endif
@@ -531,8 +553,13 @@ int libipw_rx(struct libipw_device *ieee, struct sk_buff *skb,
 
 	if (ieee->iw_mode == IW_MODE_MASTER && !wds &&
 	    (fc & (IEEE80211_FCTL_TODS | IEEE80211_FCTL_FROMDS)) ==
+<<<<<<< HEAD
 	    IEEE80211_FCTL_FROMDS && ieee->stadev
 	    && !compare_ether_addr(hdr->addr2, ieee->assoc_ap_addr)) {
+=======
+	    IEEE80211_FCTL_FROMDS && ieee->stadev &&
+	    ether_addr_equal(hdr->addr2, ieee->assoc_ap_addr)) {
+>>>>>>> refs/remotes/origin/master
 		/* Frame from BSSID of the AP for which we are a client */
 		skb->dev = dev = ieee->stadev;
 		stats = hostap_get_stats(dev);
@@ -781,10 +808,14 @@ int libipw_rx(struct libipw_device *ieee, struct sk_buff *skb,
 #ifdef NOT_YET
 	if (ieee->iw_mode == IW_MODE_MASTER && !wds && ieee->ap->bridge_packets) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (dst[0] & 0x01) {
 =======
 		if (is_multicast_ether_addr(dst)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (is_multicast_ether_addr(dst)) {
+>>>>>>> refs/remotes/origin/master
 			/* copy multicast frame both to the higher layers and
 			 * to the wireless media */
 			ieee->ap->bridged_multicast++;
@@ -1120,7 +1151,11 @@ static const char *get_info_element_string(u16 id)
 		MFIE_STRING(ERP_INFO);
 		MFIE_STRING(RSN);
 		MFIE_STRING(EXT_SUPP_RATES);
+<<<<<<< HEAD
 		MFIE_STRING(GENERIC);
+=======
+		MFIE_STRING(VENDOR_SPECIFIC);
+>>>>>>> refs/remotes/origin/master
 		MFIE_STRING(QOS_PARAMETER);
 	default:
 		return "UNKNOWN";
@@ -1207,7 +1242,11 @@ static int libipw_parse_info_param(struct libipw_info_element
 #ifdef CONFIG_LIBIPW_DEBUG
 				p += snprintf(p, sizeof(rates_str) -
 					      (p - rates_str), "%02X ",
+<<<<<<< HEAD
 					      network->rates[i]);
+=======
+					      network->rates_ex[i]);
+>>>>>>> refs/remotes/origin/master
 #endif
 				if (libipw_is_ofdm_rate
 				    (info_element->data[i])) {
@@ -1260,8 +1299,13 @@ static int libipw_parse_info_param(struct libipw_info_element
 			LIBIPW_DEBUG_MGMT("WLAN_EID_CHALLENGE: ignored\n");
 			break;
 
+<<<<<<< HEAD
 		case WLAN_EID_GENERIC:
 			LIBIPW_DEBUG_MGMT("WLAN_EID_GENERIC: %d bytes\n",
+=======
+		case WLAN_EID_VENDOR_SPECIFIC:
+			LIBIPW_DEBUG_MGMT("WLAN_EID_VENDOR_SPECIFIC: %d bytes\n",
+>>>>>>> refs/remotes/origin/master
 					     info_element->len);
 			if (!libipw_parse_qos_info_param_IE(info_element,
 							       network))
@@ -1480,7 +1524,11 @@ static inline int is_same_network(struct libipw_network *src,
 	 * as one network */
 	return ((src->ssid_len == dst->ssid_len) &&
 		(src->channel == dst->channel) &&
+<<<<<<< HEAD
 		!compare_ether_addr(src->bssid, dst->bssid) &&
+=======
+		ether_addr_equal(src->bssid, dst->bssid) &&
+>>>>>>> refs/remotes/origin/master
 		!memcmp(src->ssid, dst->ssid, src->ssid_len));
 }
 

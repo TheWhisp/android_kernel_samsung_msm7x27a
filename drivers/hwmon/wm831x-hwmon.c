@@ -41,10 +41,14 @@ static ssize_t show_name(struct device *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const char *input_names[] = {
 =======
 static const char * const input_names[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const char * const input_names[] = {
+>>>>>>> refs/remotes/origin/master
 	[WM831X_AUX_SYSVDD]    = "SYSVDD",
 	[WM831X_AUX_USB]       = "USB",
 	[WM831X_AUX_BKUP_BATT] = "Backup battery",
@@ -122,14 +126,20 @@ static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO, show_chip_temp, NULL,
 static SENSOR_DEVICE_ATTR(temp1_label, S_IRUGO, show_label, NULL,
 			  WM831X_AUX_CHIP_TEMP);
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Report as a voltage since conversion depends on external components
  * and that's what the ABI wants. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Report as a voltage since conversion depends on external components
  * and that's what the ABI wants.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static SENSOR_DEVICE_ATTR(temp2_input, S_IRUGO, show_voltage, NULL,
 			  WM831X_AUX_BATT_TEMP);
 static SENSOR_DEVICE_ATTR(temp2_label, S_IRUGO, show_label, NULL,
@@ -166,13 +176,22 @@ static const struct attribute_group wm831x_attr_group = {
 	.attrs	= wm831x_attributes,
 };
 
+<<<<<<< HEAD
 static int __devinit wm831x_hwmon_probe(struct platform_device *pdev)
+=======
+static int wm831x_hwmon_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
 	struct wm831x_hwmon *hwmon;
 	int ret;
 
+<<<<<<< HEAD
 	hwmon = kzalloc(sizeof(struct wm831x_hwmon), GFP_KERNEL);
+=======
+	hwmon = devm_kzalloc(&pdev->dev, sizeof(struct wm831x_hwmon),
+			     GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!hwmon)
 		return -ENOMEM;
 
@@ -180,7 +199,11 @@ static int __devinit wm831x_hwmon_probe(struct platform_device *pdev)
 
 	ret = sysfs_create_group(&pdev->dev.kobj, &wm831x_attr_group);
 	if (ret)
+<<<<<<< HEAD
 		goto err;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	hwmon->classdev = hwmon_device_register(&pdev->dev);
 	if (IS_ERR(hwmon->classdev)) {
@@ -194,32 +217,47 @@ static int __devinit wm831x_hwmon_probe(struct platform_device *pdev)
 
 err_sysfs:
 	sysfs_remove_group(&pdev->dev.kobj, &wm831x_attr_group);
+<<<<<<< HEAD
 err:
 	kfree(hwmon);
 	return ret;
 }
 
 static int __devexit wm831x_hwmon_remove(struct platform_device *pdev)
+=======
+	return ret;
+}
+
+static int wm831x_hwmon_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm831x_hwmon *hwmon = platform_get_drvdata(pdev);
 
 	hwmon_device_unregister(hwmon->classdev);
 	sysfs_remove_group(&pdev->dev.kobj, &wm831x_attr_group);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 	kfree(hwmon);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static struct platform_driver wm831x_hwmon_driver = {
 	.probe = wm831x_hwmon_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(wm831x_hwmon_remove),
+=======
+	.remove = wm831x_hwmon_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "wm831x-hwmon",
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init wm831x_hwmon_init(void)
 {
@@ -235,6 +273,9 @@ module_exit(wm831x_hwmon_exit);
 =======
 module_platform_driver(wm831x_hwmon_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(wm831x_hwmon_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
 MODULE_DESCRIPTION("WM831x Hardware Monitoring");

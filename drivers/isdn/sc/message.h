@@ -22,10 +22,14 @@
  * Board message macros, defines and structures
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
  
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
@@ -41,6 +45,7 @@
  */
 #define IS_CM_MESSAGE(mesg, tx, cx, dx)		\
 <<<<<<< HEAD
+<<<<<<< HEAD
 		((mesg.type == cmRspType##tx)		\
 		&&(mesg.class == cmRspClass##cx)	\
 		&&(mesg.code == cmRsp##dx))
@@ -49,11 +54,17 @@
 	 && (mesg.class == cmRspClass##cx)	\
 	 && (mesg.code == cmRsp##dx))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	((mesg.type == cmRspType##tx)		\
+	 && (mesg.class == cmRspClass##cx)	\
+	 && (mesg.code == cmRsp##dx))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Macro to determine if a message is a firmware message
  */
 #define IS_CE_MESSAGE(mesg, tx, cx, dx)		\
+<<<<<<< HEAD
 <<<<<<< HEAD
 		((mesg.type == ceRspType##tx)		\
 		&&(mesg.class == ceRspClass##cx)	\
@@ -61,12 +72,17 @@
 
 /* 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	((mesg.type == ceRspType##tx)		\
 	 && (mesg.class == ceRspClass##cx)	\
 	 && (mesg.code == ceRsp##tx##dx))
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Loader Request and Response Messages
  */
 
@@ -205,10 +221,14 @@ typedef struct {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 
 =======
 /*
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * Message payload template for an HWConfig message
  */
 typedef struct {

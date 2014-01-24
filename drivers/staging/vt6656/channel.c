@@ -39,6 +39,7 @@
 #include "channel.h"
 #include "rf.h"
 
+<<<<<<< HEAD
 /*---------------------  Static Definitions -------------------------*/
 static int          msglevel                = MSG_LEVEL_INFO;
 //static int          msglevel                =MSG_LEVEL_DEBUG;
@@ -111,15 +112,88 @@ static SChannelTblElement sChannelTbl[CB_MAX_CHANNEL+1] =
 
 
 
+=======
+static int          msglevel                = MSG_LEVEL_INFO;
+//static int          msglevel                =MSG_LEVEL_DEBUG;
+
+static SChannelTblElement sChannelTbl[CB_MAX_CHANNEL+1] =
+{
+  {0,   0,    false},
+  {1,   2412, true},
+  {2,   2417, true},
+  {3,   2422, true},
+  {4,   2427, true},
+  {5,   2432, true},
+  {6,   2437, true},
+  {7,   2442, true},
+  {8,   2447, true},
+  {9,   2452, true},
+  {10,  2457, true},
+  {11,  2462, true},
+  {12,  2467, true},
+  {13,  2472, true},
+  {14,  2484, true},
+  {183, 4915, true}, //15
+  {184, 4920, true}, //16
+  {185, 4925, true}, //17
+  {187, 4935, true}, //18
+  {188, 4940, true}, //19
+  {189, 4945, true}, //20
+  {192, 4960, true}, //21
+  {196, 4980, true}, //22
+  {7,   5035, true}, //23
+  {8,   5040, true}, //24
+  {9,   5045, true}, //25
+  {11,  5055, true}, //26
+  {12,  5060, true}, //27
+  {16,  5080, true}, //28
+  {34,  5170, true}, //29
+  {36,  5180, true}, //30
+  {38,  5190, true}, //31
+  {40,  5200, true}, //32
+  {42,  5210, true}, //33
+  {44,  5220, true}, //34
+  {46,  5230, true}, //35
+  {48,  5240, true}, //36
+  {52,  5260, true}, //37
+  {56,  5280, true}, //38
+  {60,  5300, true}, //39
+  {64,  5320, true}, //40
+  {100, 5500, true}, //41
+  {104, 5520, true}, //42
+  {108, 5540, true}, //43
+  {112, 5560, true}, //44
+  {116, 5580, true}, //45
+  {120, 5600, true}, //46
+  {124, 5620, true}, //47
+  {128, 5640, true}, //48
+  {132, 5660, true}, //49
+  {136, 5680, true}, //50
+  {140, 5700, true}, //51
+  {149, 5745, true}, //52
+  {153, 5765, true}, //53
+  {157, 5785, true}, //54
+  {161, 5805, true}, //55
+  {165, 5825, true}  //56
+};
+
+>>>>>>> refs/remotes/origin/master
 /************************************************************************
  * The Radar regulation rules for each country
  ************************************************************************/
 static  struct
 {
+<<<<<<< HEAD
     BYTE    byChannelCountryCode;             /* The country code         */
     char    chCountryCode[2];
     BYTE    bChannelIdxList[CB_MAX_CHANNEL];  /* Available channels Index */
     BYTE    byPower[CB_MAX_CHANNEL];
+=======
+    u8    byChannelCountryCode;             /* The country code         */
+    char    chCountryCode[2];
+    u8    bChannelIdxList[CB_MAX_CHANNEL];  /* Available channels Index */
+    u8    byPower[CB_MAX_CHANNEL];
+>>>>>>> refs/remotes/origin/master
 }   ChannelRuleTab[] =
 {
 /************************************************************************
@@ -368,9 +442,12 @@ static  struct
 /*                                           1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34  35  36  37  38  39  40  41  42  43  44  45  46  47  48  49  50  51  52  53  54  55  56  */
 };
 
+<<<<<<< HEAD
 #define NUM_RULES	ARRAY_SIZE(ChannelRuleTab)
 
 /*---------------------  Export function  -------------------------*/
+=======
+>>>>>>> refs/remotes/origin/master
 /************************************************************************
  * Country Channel Valid
  *  Input:  CountryCode, ChannelNum
@@ -382,26 +459,43 @@ static  struct
  *              15  = 4.9G channel 183
  *              16  = 4.9G channel 184
  *              .....
+<<<<<<< HEAD
  *  Output: TRUE if the specified 5GHz band is allowed to be used.
+=======
+ *  Output: true if the specified 5GHz band is allowed to be used.
+>>>>>>> refs/remotes/origin/master
             False otherwise.
 // 4.9G => Ch 183, 184, 185, 187, 188, 189, 192, 196 (Value:15 ~ 22)
 
 // 5G => Ch 7, 8, 9, 11, 12, 16, 34, 36, 38, 40, 42, 44, 46, 48, 52, 56, 60, 64,
 // 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 149, 153, 157, 161, 165 (Value 23 ~ 56)
  ************************************************************************/
+<<<<<<< HEAD
 BOOL
 ChannelValid(unsigned int CountryCode, unsigned int ChannelIndex)
 {
     BOOL    bValid;
 
     bValid = FALSE;
+=======
+bool
+ChannelValid(unsigned int CountryCode, unsigned int ChannelIndex)
+{
+    bool    bValid;
+
+    bValid = false;
+>>>>>>> refs/remotes/origin/master
     /*
      * If Channel Index is invalid, return invalid
      */
     if ((ChannelIndex > CB_MAX_CHANNEL) ||
         (ChannelIndex == 0))
     {
+<<<<<<< HEAD
         bValid = FALSE;
+=======
+        bValid = false;
+>>>>>>> refs/remotes/origin/master
         goto exit;
     }
 
@@ -412,6 +506,7 @@ exit:
 
 } /* end ChannelValid */
 
+<<<<<<< HEAD
 /************************************************************************
  * CHvChannelGetList
  * Get Available Channel List for a given country
@@ -446,17 +541,31 @@ void CHvInitChannelTable(void *pDeviceHandler)
 
     for (ii = 1; ii <= CB_MAX_CHANNEL; ii++)
 	sChannelTbl[ii].bValid = FALSE;
+=======
+void CHvInitChannelTable(struct vnt_private *pDevice)
+{
+	bool bMultiBand = false;
+	int ii;
+
+    for (ii = 1; ii <= CB_MAX_CHANNEL; ii++)
+	sChannelTbl[ii].bValid = false;
+>>>>>>> refs/remotes/origin/master
 
     switch (pDevice->byRFType) {
         case RF_AL2230:
         case RF_AL2230S:
         case RF_VT3226:
         case RF_VT3226D0:
+<<<<<<< HEAD
             bMultiBand = FALSE;
+=======
+            bMultiBand = false;
+>>>>>>> refs/remotes/origin/master
             break;
         case RF_AIROHA7230:
         case RF_VT3342A0:
         default :
+<<<<<<< HEAD
             bMultiBand = TRUE;
             break;
     }
@@ -466,6 +575,16 @@ void CHvInitChannelTable(void *pDeviceHandler)
         if (bMultiBand == TRUE) {
 		for (ii = 0; ii < CB_MAX_CHANNEL; ii++) {
 			sChannelTbl[ii+1].bValid = TRUE;
+=======
+            bMultiBand = true;
+            break;
+    }
+
+    if (pDevice->b11hEable == true) {
+        if (bMultiBand == true) {
+		for (ii = 0; ii < CB_MAX_CHANNEL; ii++) {
+			sChannelTbl[ii+1].bValid = true;
+>>>>>>> refs/remotes/origin/master
                 //pDevice->abyRegPwr[ii+1] = pDevice->abyOFDMDefaultPwr[ii+1];
                 //pDevice->abyLocalPwr[ii+1] = pDevice->abyOFDMDefaultPwr[ii+1];
 		}
@@ -475,16 +594,27 @@ void CHvInitChannelTable(void *pDeviceHandler)
 		}
         } else {
 		for (ii = 0; ii < CB_MAX_CHANNEL_24G; ii++) {
+<<<<<<< HEAD
 			sChannelTbl[ii+1].bValid = TRUE;
+=======
+			sChannelTbl[ii+1].bValid = true;
+>>>>>>> refs/remotes/origin/master
                 //pDevice->abyRegPwr[ii+1] = pDevice->abyCCKDefaultPwr[ii+1];
                 //pDevice->abyLocalPwr[ii+1] = pDevice->abyCCKDefaultPwr[ii+1];
 		}
         }
     } else if (pDevice->byZoneType <= CCODE_MAX) {
+<<<<<<< HEAD
         if (bMultiBand == TRUE) {
 		for (ii = 0; ii < CB_MAX_CHANNEL; ii++) {
 			if (ChannelRuleTab[pDevice->byZoneType].bChannelIdxList[ii] != 0) {
 				sChannelTbl[ii+1].bValid = TRUE;
+=======
+        if (bMultiBand == true) {
+		for (ii = 0; ii < CB_MAX_CHANNEL; ii++) {
+			if (ChannelRuleTab[pDevice->byZoneType].bChannelIdxList[ii] != 0) {
+				sChannelTbl[ii+1].bValid = true;
+>>>>>>> refs/remotes/origin/master
                     //pDevice->abyRegPwr[ii+1] = ChannelRuleTab[pDevice->byZoneType].byPower[ii];
                     //pDevice->abyLocalPwr[ii+1] = ChannelRuleTab[pDevice->byZoneType].byPower[ii];
 			}
@@ -492,7 +622,11 @@ void CHvInitChannelTable(void *pDeviceHandler)
         } else {
 		for (ii = 0; ii < CB_MAX_CHANNEL_24G; ii++) {
 			if (ChannelRuleTab[pDevice->byZoneType].bChannelIdxList[ii] != 0) {
+<<<<<<< HEAD
 				sChannelTbl[ii+1].bValid = TRUE;
+=======
+				sChannelTbl[ii+1].bValid = true;
+>>>>>>> refs/remotes/origin/master
                     //pDevice->abyRegPwr[ii+1] = ChannelRuleTab[pDevice->byZoneType].byPower[ii];
                     //pDevice->abyLocalPwr[ii+1] = ChannelRuleTab[pDevice->byZoneType].byPower[ii];
 			}
@@ -510,6 +644,7 @@ void CHvInitChannelTable(void *pDeviceHandler)
         }*/
     }
 }
+<<<<<<< HEAD
 
 BYTE CHbyGetChannelMapping(BYTE byChannelNumber)
 {
@@ -522,3 +657,5 @@ BYTE    byCHMapping = 0;
     }
     return byCHMapping;
 }
+=======
+>>>>>>> refs/remotes/origin/master

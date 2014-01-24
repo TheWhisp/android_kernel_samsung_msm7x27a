@@ -21,6 +21,7 @@
 #include <linux/clk.h>
 #include <linux/platform_device.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
 #include <linux/i2c/pca953x.h>
 #include <linux/can/platform/ti_hecc.h>
 #include <linux/davinci_emac.h>
@@ -31,10 +32,21 @@
 
 #include <mach/hardware.h>
 #include <mach/am35xx.h>
+=======
+#include <linux/platform_data/pca953x.h>
+#include <linux/can/platform/ti_hecc.h>
+#include <linux/davinci_emac.h>
+#include <linux/mmc/host.h>
+#include <linux/usb/musb.h>
+#include <linux/platform_data/gpio-omap.h>
+
+#include "am35xx.h"
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <plat/board.h>
 <<<<<<< HEAD
 #include <plat/common.h>
@@ -164,12 +176,20 @@ static void am3517_evm_ethernet_init(struct emac_platform_data *pdata)
 #include <video/omapdss.h>
 #include <video/omap-panel-generic-dpi.h>
 #include <video/omap-panel-dvi.h>
+=======
+#include "common.h"
+#include <video/omapdss.h>
+#include <video/omap-panel-data.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "am35xx-emac.h"
 #include "mux.h"
 #include "control.h"
 #include "hsmmc.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define LCD_PANEL_PWR		176
 #define LCD_PANEL_BKLIGHT_PWR	182
@@ -249,6 +269,7 @@ static int __init am3517_evm_i2c_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int lcd_enabled;
 static int dvi_enabled;
 
@@ -395,6 +416,100 @@ static void __init am3517_evm_init_early(void)
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct display_timing am3517_evm_lcd_videomode = {
+	.pixelclock	= { 0, 9000000, 0 },
+
+	.hactive = { 0, 480, 0 },
+	.hfront_porch = { 0, 3, 0 },
+	.hback_porch = { 0, 2, 0 },
+	.hsync_len = { 0, 42, 0 },
+
+	.vactive = { 0, 272, 0 },
+	.vfront_porch = { 0, 3, 0 },
+	.vback_porch = { 0, 2, 0 },
+	.vsync_len = { 0, 11, 0 },
+
+	.flags = DISPLAY_FLAGS_HSYNC_LOW | DISPLAY_FLAGS_VSYNC_LOW |
+		DISPLAY_FLAGS_DE_LOW | DISPLAY_FLAGS_PIXDATA_POSEDGE,
+};
+
+static struct panel_dpi_platform_data am3517_evm_lcd_pdata = {
+	.name                   = "lcd",
+	.source                 = "dpi.0",
+
+	.data_lines		= 16,
+
+	.display_timing		= &am3517_evm_lcd_videomode,
+
+	.enable_gpio		= LCD_PANEL_PWR,
+	.backlight_gpio		= LCD_PANEL_BKLIGHT_PWR,
+};
+
+static struct platform_device am3517_evm_lcd_device = {
+	.name                   = "panel-dpi",
+	.id                     = 0,
+	.dev.platform_data      = &am3517_evm_lcd_pdata,
+};
+
+static struct connector_dvi_platform_data am3517_evm_dvi_connector_pdata = {
+	.name                   = "dvi",
+	.source                 = "tfp410.0",
+	.i2c_bus_num            = -1,
+};
+
+static struct platform_device am3517_evm_dvi_connector_device = {
+	.name                   = "connector-dvi",
+	.id                     = 0,
+	.dev.platform_data      = &am3517_evm_dvi_connector_pdata,
+};
+
+static struct encoder_tfp410_platform_data am3517_evm_tfp410_pdata = {
+	.name                   = "tfp410.0",
+	.source                 = "dpi.0",
+	.data_lines             = 24,
+	.power_down_gpio        = -1,
+};
+
+static struct platform_device am3517_evm_tfp410_device = {
+	.name                   = "tfp410",
+	.id                     = 0,
+	.dev.platform_data      = &am3517_evm_tfp410_pdata,
+};
+
+static struct connector_atv_platform_data am3517_evm_tv_pdata = {
+	.name = "tv",
+	.source = "venc.0",
+	.connector_type = OMAP_DSS_VENC_TYPE_SVIDEO,
+	.invert_polarity = false,
+};
+
+static struct platform_device am3517_evm_tv_connector_device = {
+	.name                   = "connector-analog-tv",
+	.id                     = 0,
+	.dev.platform_data      = &am3517_evm_tv_pdata,
+};
+
+static struct omap_dss_board_info am3517_evm_dss_data = {
+	.default_display_name = "lcd",
+};
+
+static void __init am3517_evm_display_init(void)
+{
+	gpio_request_one(LCD_PANEL_PWM, GPIOF_OUT_INIT_HIGH, "lcd panel pwm");
+
+	omap_display_init(&am3517_evm_dss_data);
+
+	platform_device_register(&am3517_evm_tfp410_device);
+	platform_device_register(&am3517_evm_dvi_connector_device);
+	platform_device_register(&am3517_evm_lcd_device);
+	platform_device_register(&am3517_evm_tv_connector_device);
+}
+
+/*
+ * Board initialization
+ */
+>>>>>>> refs/remotes/origin/master
 
 static struct omap_musb_board_data musb_board_data = {
 	.interface_type         = MUSB_INTERFACE_ULPI,
@@ -425,7 +540,29 @@ static __init void am3517_evm_musb_init(void)
 	usb_musb_init(&musb_board_data);
 }
 
+<<<<<<< HEAD
 static const struct usbhs_omap_board_data usbhs_bdata __initconst = {
+=======
+static __init void am3517_evm_mcbsp1_init(void)
+{
+	u32 devconf0;
+
+	/* McBSP1 CLKR/FSR signal to be connected to CLKX/FSX pin */
+	devconf0 = omap_ctrl_readl(OMAP2_CONTROL_DEVCONF0);
+	devconf0 |=  OMAP2_MCBSP1_CLKR_MASK | OMAP2_MCBSP1_FSR_MASK;
+	omap_ctrl_writel(devconf0, OMAP2_CONTROL_DEVCONF0);
+}
+
+static struct usbhs_phy_data phy_data[] __initdata = {
+	{
+		.port = 1,
+		.reset_gpio = 57,
+		.vcc_gpio = -EINVAL,
+	},
+};
+
+static struct usbhs_omap_platform_data usbhs_bdata __initdata = {
+>>>>>>> refs/remotes/origin/master
 	.port_mode[0] = OMAP_EHCI_PORT_MODE_PHY,
 #if defined(CONFIG_PANEL_SHARP_LQ043T1DG01) || \
 		defined(CONFIG_PANEL_SHARP_LQ043T1DG01_MODULE)
@@ -433,12 +570,15 @@ static const struct usbhs_omap_board_data usbhs_bdata __initconst = {
 #else
 	.port_mode[1] = OMAP_EHCI_PORT_MODE_PHY,
 #endif
+<<<<<<< HEAD
 	.port_mode[2] = OMAP_USBHS_PORT_MODE_UNUSED,
 
 	.phy_reset  = true,
 	.reset_gpio_port[0]  = 57,
 	.reset_gpio_port[1]  = -EINVAL,
 	.reset_gpio_port[2]  = -EINVAL
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_OMAP_MUX
@@ -457,8 +597,12 @@ static struct resource am3517_hecc_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		.start	= INT_35XX_HECC0_IRQ,
 		.end	= INT_35XX_HECC0_IRQ,
+=======
+		.start	= 24 + OMAP_INTC_START,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -485,11 +629,14 @@ static void am3517_evm_hecc_init(struct ti_hecc_platform_data *pdata)
 	platform_device_register(&am3517_hecc_device);
 }
 
+<<<<<<< HEAD
 static struct omap_board_config_kernel am3517_evm_config[] __initdata = {
 };
 
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct omap2_hsmmc_info mmc[] = {
 	{
 		.mmc		= 1,
@@ -506,6 +653,7 @@ static struct omap2_hsmmc_info mmc[] = {
 	{}      /* Terminator */
 };
 
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
 static void __init am3517_evm_init(void)
@@ -528,6 +676,25 @@ static void __init am3517_evm_init(void)
 	am3517_evm_hecc_init(&am3517_evm_hecc_pdata);
 	/* DSS */
 	am3517_evm_display_init();
+=======
+static void __init am3517_evm_init(void)
+{
+	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
+
+	am3517_evm_i2c_init();
+
+	am3517_evm_display_init();
+
+	omap_serial_init();
+	omap_sdrc_init(NULL, NULL);
+
+	/* Configure GPIO for EHCI port */
+	omap_mux_init_gpio(57, OMAP_PIN_OUTPUT);
+
+	usbhs_init_phys(phy_data, ARRAY_SIZE(phy_data));
+	usbhs_init(&usbhs_bdata);
+	am3517_evm_hecc_init(&am3517_evm_hecc_pdata);
+>>>>>>> refs/remotes/origin/master
 
 	/* RTC - S35390A */
 	am3517_evm_rtc_init();
@@ -535,6 +702,7 @@ static void __init am3517_evm_init(void)
 	i2c_register_board_info(1, am3517evm_i2c1_boardinfo,
 				ARRAY_SIZE(am3517evm_i2c1_boardinfo));
 	/*Ethernet*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 	am3517_evm_ethernet_init(&am3517_evm_emac_pdata);
 
@@ -551,11 +719,19 @@ MACHINE_START(OMAP3517EVM, "OMAP3517/AM3517 EVM")
 	.init_machine	= am3517_evm_init,
 	.timer		= &omap_timer,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	am35xx_emac_init(AM35XX_DEFAULT_MDIO_FREQUENCY, 1);
 
 	/* MUSB */
 	am3517_evm_musb_init();
 
+<<<<<<< HEAD
+=======
+	/* McBSP1 */
+	am3517_evm_mcbsp1_init();
+
+>>>>>>> refs/remotes/origin/master
 	/* MMC init function */
 	omap_hsmmc_init(mmc);
 }
@@ -568,7 +744,13 @@ MACHINE_START(OMAP3517EVM, "OMAP3517/AM3517 EVM")
 	.init_irq	= omap3_init_irq,
 	.handle_irq	= omap3_intc_handle_irq,
 	.init_machine	= am3517_evm_init,
+<<<<<<< HEAD
 	.timer		= &omap3_timer,
 	.restart	= omap_prcm_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_late	= am35xx_init_late,
+	.init_time	= omap3_sync32k_timer_init,
+	.restart	= omap3xxx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

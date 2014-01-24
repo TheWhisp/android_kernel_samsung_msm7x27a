@@ -114,6 +114,7 @@ struct exception_table_entry {
 extern int fixup_exception(struct pt_regs *regs);
 
 /*
+<<<<<<< HEAD
  * We return the __get_user_N function results in a structure,
  * thus in r0 and r1.  If "err" is zero, "val" is the result
  * of the read; otherwise, "err" is -EFAULT.
@@ -153,6 +154,81 @@ extern int __put_user_bad(void);
  * Careful: we have to cast the result to the type of the pointer
  * for sign reasons.
  */
+=======
+ * Support macros for __get_user().
+ *
+ * Implementation note: The "case 8" logic of casting to the type of
+ * the result of subtracting the value from itself is basically a way
+ * of keeping all integer types the same, but casting any pointers to
+ * ptrdiff_t, i.e. also an integer type.  This way there are no
+ * questionable casts seen by the compiler on an ILP32 platform.
+ *
+ * Note that __get_user() and __put_user() assume proper alignment.
+ */
+
+#ifdef __LP64__
+#define _ASM_PTR	".quad"
+#define _ASM_ALIGN	".align 8"
+#else
+#define _ASM_PTR	".long"
+#define _ASM_ALIGN	".align 4"
+#endif
+
+#define __get_user_asm(OP, x, ptr, ret)					\
+	asm volatile("1: {" #OP " %1, %2; movei %0, 0 }\n"		\
+		     ".pushsection .fixup,\"ax\"\n"			\
+		     "0: { movei %1, 0; movei %0, %3 }\n"		\
+		     "j 9f\n"						\
+		     ".section __ex_table,\"a\"\n"			\
+		     _ASM_ALIGN "\n"					\
+		     _ASM_PTR " 1b, 0b\n"				\
+		     ".popsection\n"					\
+		     "9:"						\
+		     : "=r" (ret), "=r" (x)				\
+		     : "r" (ptr), "i" (-EFAULT))
+
+#ifdef __tilegx__
+#define __get_user_1(x, ptr, ret) __get_user_asm(ld1u, x, ptr, ret)
+#define __get_user_2(x, ptr, ret) __get_user_asm(ld2u, x, ptr, ret)
+#define __get_user_4(x, ptr, ret) __get_user_asm(ld4s, x, ptr, ret)
+#define __get_user_8(x, ptr, ret) __get_user_asm(ld, x, ptr, ret)
+#else
+#define __get_user_1(x, ptr, ret) __get_user_asm(lb_u, x, ptr, ret)
+#define __get_user_2(x, ptr, ret) __get_user_asm(lh_u, x, ptr, ret)
+#define __get_user_4(x, ptr, ret) __get_user_asm(lw, x, ptr, ret)
+#ifdef __LITTLE_ENDIAN
+#define __lo32(a, b) a
+#define __hi32(a, b) b
+#else
+#define __lo32(a, b) b
+#define __hi32(a, b) a
+#endif
+#define __get_user_8(x, ptr, ret)					\
+	({								\
+		unsigned int __a, __b;					\
+		asm volatile("1: { lw %1, %3; addi %2, %3, 4 }\n"	\
+			     "2: { lw %2, %2; movei %0, 0 }\n"		\
+			     ".pushsection .fixup,\"ax\"\n"		\
+			     "0: { movei %1, 0; movei %2, 0 }\n"	\
+			     "{ movei %0, %4; j 9f }\n"			\
+			     ".section __ex_table,\"a\"\n"		\
+			     ".align 4\n"				\
+			     ".word 1b, 0b\n"				\
+			     ".word 2b, 0b\n"				\
+			     ".popsection\n"				\
+			     "9:"					\
+			     : "=r" (ret), "=r" (__a), "=&r" (__b)	\
+			     : "r" (ptr), "i" (-EFAULT));		\
+		(x) = (__typeof(x))(__typeof((x)-(x)))			\
+			(((u64)__hi32(__a, __b) << 32) |		\
+			 __lo32(__a, __b));				\
+	})
+#endif
+
+extern int __get_user_bad(void)
+  __attribute__((warning("sizeof __get_user argument not 1, 2, 4 or 8")));
+
+>>>>>>> refs/remotes/origin/master
 /**
  * __get_user: - Get a simple variable from user space, with less checking.
  * @x:   Variable to store result.
@@ -174,6 +250,7 @@ extern int __put_user_bad(void);
  * function.
  */
 #define __get_user(x, ptr)						\
+<<<<<<< HEAD
 ({	struct __get_user __ret;					\
 	__typeof__(*(ptr)) const __user *__gu_addr = (ptr);		\
 	__chk_user_ptr(__gu_addr);					\
@@ -198,6 +275,66 @@ extern int __put_user_bad(void);
 	  __ret.val;			                                \
 	__ret.err;							\
 })
+=======
+	({								\
+		int __ret;						\
+		__chk_user_ptr(ptr);					\
+		switch (sizeof(*(ptr))) {				\
+		case 1: __get_user_1(x, ptr, __ret); break;		\
+		case 2: __get_user_2(x, ptr, __ret); break;		\
+		case 4: __get_user_4(x, ptr, __ret); break;		\
+		case 8: __get_user_8(x, ptr, __ret); break;		\
+		default: __ret = __get_user_bad(); break;		\
+		}							\
+		__ret;							\
+	})
+
+/* Support macros for __put_user(). */
+
+#define __put_user_asm(OP, x, ptr, ret)			\
+	asm volatile("1: {" #OP " %1, %2; movei %0, 0 }\n"		\
+		     ".pushsection .fixup,\"ax\"\n"			\
+		     "0: { movei %0, %3; j 9f }\n"			\
+		     ".section __ex_table,\"a\"\n"			\
+		     _ASM_ALIGN "\n"					\
+		     _ASM_PTR " 1b, 0b\n"				\
+		     ".popsection\n"					\
+		     "9:"						\
+		     : "=r" (ret)					\
+		     : "r" (ptr), "r" (x), "i" (-EFAULT))
+
+#ifdef __tilegx__
+#define __put_user_1(x, ptr, ret) __put_user_asm(st1, x, ptr, ret)
+#define __put_user_2(x, ptr, ret) __put_user_asm(st2, x, ptr, ret)
+#define __put_user_4(x, ptr, ret) __put_user_asm(st4, x, ptr, ret)
+#define __put_user_8(x, ptr, ret) __put_user_asm(st, x, ptr, ret)
+#else
+#define __put_user_1(x, ptr, ret) __put_user_asm(sb, x, ptr, ret)
+#define __put_user_2(x, ptr, ret) __put_user_asm(sh, x, ptr, ret)
+#define __put_user_4(x, ptr, ret) __put_user_asm(sw, x, ptr, ret)
+#define __put_user_8(x, ptr, ret)					\
+	({								\
+		u64 __x = (__typeof((x)-(x)))(x);			\
+		int __lo = (int) __x, __hi = (int) (__x >> 32);		\
+		asm volatile("1: { sw %1, %2; addi %0, %1, 4 }\n"	\
+			     "2: { sw %0, %3; movei %0, 0 }\n"		\
+			     ".pushsection .fixup,\"ax\"\n"		\
+			     "0: { movei %0, %4; j 9f }\n"		\
+			     ".section __ex_table,\"a\"\n"		\
+			     ".align 4\n"				\
+			     ".word 1b, 0b\n"				\
+			     ".word 2b, 0b\n"				\
+			     ".popsection\n"				\
+			     "9:"					\
+			     : "=&r" (ret)				\
+			     : "r" (ptr), "r" (__lo32(__lo, __hi)),	\
+			     "r" (__hi32(__lo, __hi)), "i" (-EFAULT));	\
+	})
+#endif
+
+extern int __put_user_bad(void)
+  __attribute__((warning("sizeof __put_user argument not 1, 2, 4 or 8")));
+>>>>>>> refs/remotes/origin/master
 
 /**
  * __put_user: - Write a simple value into user space, with less checking.
@@ -217,6 +354,7 @@ extern int __put_user_bad(void);
  * function.
  *
  * Returns zero on success, or -EFAULT on error.
+<<<<<<< HEAD
  *
  * Implementation note: The "case 8" logic of casting to the type of
  * the result of subtracting the value from itself is basically a way
@@ -250,6 +388,21 @@ extern int __put_user_bad(void);
 		break;							\
 	}								\
 	__pu_err;							\
+=======
+ */
+#define __put_user(x, ptr)						\
+({									\
+	int __ret;							\
+	__chk_user_ptr(ptr);						\
+	switch (sizeof(*(ptr))) {					\
+	case 1: __put_user_1(x, ptr, __ret); break;			\
+	case 2: __put_user_2(x, ptr, __ret); break;			\
+	case 4: __put_user_4(x, ptr, __ret); break;			\
+	case 8: __put_user_8(x, ptr, __ret); break;			\
+	default: __ret = __put_user_bad(); break;			\
+	}								\
+	__ret;								\
+>>>>>>> refs/remotes/origin/master
 })
 
 /*
@@ -353,7 +506,16 @@ _copy_from_user(void *to, const void __user *from, unsigned long n)
 	return n;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_DEBUG_COPY_FROM_USER
+=======
+#ifdef CONFIG_DEBUG_STRICT_USER_COPY_CHECKS
+/*
+ * There are still unprovable places in the generic code as of 2.6.34, so this
+ * option is not really compatible with -Werror, which is more useful in
+ * general.
+ */
+>>>>>>> refs/remotes/origin/master
 extern void copy_from_user_overflow(void)
 	__compiletime_warning("copy_from_user() size is not provably correct");
 
@@ -378,7 +540,11 @@ static inline unsigned long __must_check copy_from_user(void *to,
 /**
  * __copy_in_user() - copy data within user space, with less checking.
  * @to:   Destination address, in user space.
+<<<<<<< HEAD
  * @from: Source address, in kernel space.
+=======
+ * @from: Source address, in user space.
+>>>>>>> refs/remotes/origin/master
  * @n:    Number of bytes to copy.
  *
  * Context: User context only.  This function may sleep.
@@ -395,7 +561,11 @@ extern unsigned long __copy_in_user_inatomic(
 static inline unsigned long __must_check
 __copy_in_user(void __user *to, const void __user *from, unsigned long n)
 {
+<<<<<<< HEAD
 	might_sleep();
+=======
+	might_fault();
+>>>>>>> refs/remotes/origin/master
 	return __copy_in_user_inatomic(to, from, n);
 }
 
@@ -520,6 +690,7 @@ static inline unsigned long __must_check flush_user(
 }
 
 /**
+<<<<<<< HEAD
  * inv_user: - Invalidate a block of memory in user space from cache.
  * @mem:   Destination address, in user space.
  * @len:   Number of bytes to invalidate.
@@ -551,6 +722,8 @@ static inline unsigned long __must_check inv_user(
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * finv_user: - Flush-inval a block of memory in user space from cache.
  * @mem:   Destination address, in user space.
  * @len:   Number of bytes to invalidate.

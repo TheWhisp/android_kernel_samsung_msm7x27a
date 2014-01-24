@@ -23,6 +23,7 @@
 #include <linux/kernel.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DAIO_RESOURCE_NUM	NUM_DAIOTYP
 #define DAIO_OUT_MAX		SPDIFOO
 
@@ -42,6 +43,11 @@ union daio_usage {
 
 struct daio_usage {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DAIO_OUT_MAX		SPDIFOO
+
+struct daio_usage {
+>>>>>>> refs/remotes/origin/master
 	unsigned short data;
 };
 
@@ -50,7 +56,11 @@ struct daio_rsc_idx {
 	unsigned short right;
 };
 
+<<<<<<< HEAD
 struct daio_rsc_idx idx_20k1[NUM_DAIOTYP] = {
+=======
+static struct daio_rsc_idx idx_20k1[NUM_DAIOTYP] = {
+>>>>>>> refs/remotes/origin/master
 	[LINEO1] = {.left = 0x00, .right = 0x01},
 	[LINEO2] = {.left = 0x18, .right = 0x19},
 	[LINEO3] = {.left = 0x08, .right = 0x09},
@@ -61,16 +71,24 @@ struct daio_rsc_idx idx_20k1[NUM_DAIOTYP] = {
 	[SPDIFI1] = {.left = 0x95, .right = 0x9d},
 };
 
+<<<<<<< HEAD
 struct daio_rsc_idx idx_20k2[NUM_DAIOTYP] = {
+=======
+static struct daio_rsc_idx idx_20k2[NUM_DAIOTYP] = {
+>>>>>>> refs/remotes/origin/master
 	[LINEO1] = {.left = 0x40, .right = 0x41},
 	[LINEO2] = {.left = 0x60, .right = 0x61},
 	[LINEO3] = {.left = 0x50, .right = 0x51},
 	[LINEO4] = {.left = 0x70, .right = 0x71},
 	[LINEIM] = {.left = 0x45, .right = 0xc5},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	[MIC]	 = {.left = 0x55, .right = 0xd5},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[MIC]	 = {.left = 0x55, .right = 0xd5},
+>>>>>>> refs/remotes/origin/master
 	[SPDIFOO] = {.left = 0x00, .right = 0x01},
 	[SPDIFIO] = {.left = 0x05, .right = 0x85},
 };
@@ -149,9 +167,13 @@ static unsigned int daio_device_index(enum DAIOTYP type, struct hw *hw)
 		case LINEO4:	return 6;
 		case LINEIM:	return 4;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		case MIC:	return 5;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case MIC:	return 5;
+>>>>>>> refs/remotes/origin/master
 		default:	return -EINVAL;
 		}
 	default:
@@ -534,16 +556,22 @@ static int dai_rsc_uninit(struct dai *dai)
 static int daio_mgr_get_rsc(struct rsc_mgr *mgr, enum DAIOTYP type)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (((union daio_usage *)mgr->rscs)->data & (0x1 << type))
 		return -ENOENT;
 
 	((union daio_usage *)mgr->rscs)->data |= (0x1 << type);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (((struct daio_usage *)mgr->rscs)->data & (0x1 << type))
 		return -ENOENT;
 
 	((struct daio_usage *)mgr->rscs)->data |= (0x1 << type);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -551,10 +579,14 @@ static int daio_mgr_get_rsc(struct rsc_mgr *mgr, enum DAIOTYP type)
 static int daio_mgr_put_rsc(struct rsc_mgr *mgr, enum DAIOTYP type)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	((union daio_usage *)mgr->rscs)->data &= ~(0x1 << type);
 =======
 	((struct daio_usage *)mgr->rscs)->data &= ~(0x1 << type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	((struct daio_usage *)mgr->rscs)->data &= ~(0x1 << type);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -738,10 +770,14 @@ int daio_mgr_create(void *hw, struct daio_mgr **rdaio_mgr)
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = rsc_mgr_init(&daio_mgr->mgr, DAIO, DAIO_RESOURCE_NUM, hw);
 =======
 	err = rsc_mgr_init(&daio_mgr->mgr, DAIO, NUM_DAIOTYP, hw);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = rsc_mgr_init(&daio_mgr->mgr, DAIO, NUM_DAIOTYP, hw);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto error1;
 

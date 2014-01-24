@@ -16,6 +16,7 @@ do { \
 	debug_event(lcs_dbf_##name,level,(void*)(addr),len); \
 } while (0)
 
+<<<<<<< HEAD
 /* Allow to sort out low debug levels early to avoid wasted sprints */
 static inline int lcs_dbf_passes(debug_info_t *dbf_grp, int level)
 {
@@ -25,6 +26,11 @@ static inline int lcs_dbf_passes(debug_info_t *dbf_grp, int level)
 #define LCS_DBF_TEXT_(level,name,text...) \
 	do { \
 		if (lcs_dbf_passes(lcs_dbf_##name, level)) { \
+=======
+#define LCS_DBF_TEXT_(level,name,text...) \
+	do { \
+		if (debug_level_enabled(lcs_dbf_##name, level)) { \
+>>>>>>> refs/remotes/origin/master
 			sprintf(debug_buffer, text); \
 			debug_text_event(lcs_dbf_##name, level, debug_buffer); \
 		} \

@@ -55,7 +55,11 @@
 #define DMAR_IQT_REG	0x88	/* Invalidation queue tail register */
 #define DMAR_IQ_SHIFT	4	/* Invalidation queue head/tail shift */
 #define DMAR_IQA_REG	0x90	/* Invalidation queue addr register */
+<<<<<<< HEAD
 #define DMAR_ICS_REG	0x98	/* Invalidation complete status register */
+=======
+#define DMAR_ICS_REG	0x9c	/* Invalidation complete status register */
+>>>>>>> refs/remotes/origin/master
 #define DMAR_IRTA_REG	0xb8    /* Interrupt remapping table addr register */
 
 #define OFFSET_STRIDE		(9)
@@ -272,10 +276,14 @@ struct qi_desc {
 
 struct q_inval {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t      q_lock;
 =======
 	raw_spinlock_t  q_lock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spinlock_t  q_lock;
+>>>>>>> refs/remotes/origin/master
 	struct qi_desc  *desc;          /* invalidation queue */
 	int             *desc_status;   /* desc status */
 	int             free_head;      /* first free entry */
@@ -284,10 +292,14 @@ struct q_inval {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_INTR_REMAP
 =======
 #ifdef CONFIG_IRQ_REMAP
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_IRQ_REMAP
+>>>>>>> refs/remotes/origin/master
 /* 1MB - maximum possible interrupt remapping table size */
 #define INTR_REMAP_PAGE_ORDER	8
 #define INTR_REMAP_TABLE_REG_SIZE	0xf
@@ -316,6 +328,7 @@ enum {
 
 struct intel_iommu {
 	void __iomem	*reg; /* Pointer to hardware regs, virtual addr */
+<<<<<<< HEAD
 	u64		cap;
 	u64		ecap;
 	u32		gcmd; /* Holds TE, EAFL. Don't need SRTP, SFL, WBF */
@@ -324,6 +337,14 @@ struct intel_iommu {
 =======
 	raw_spinlock_t	register_lock; /* protect register handling */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 		reg_phys; /* physical address of hw register set */
+	u64		reg_size; /* size of hw register set */
+	u64		cap;
+	u64		ecap;
+	u32		gcmd; /* Holds TE, EAFL. Don't need SRTP, SFL, WBF */
+	raw_spinlock_t	register_lock; /* protect register handling */
+>>>>>>> refs/remotes/origin/master
 	int		seq_id;	/* sequence id of the iommu */
 	int		agaw; /* agaw of this iommu */
 	int		msagaw; /* max sagaw of this iommu */
@@ -331,10 +352,14 @@ struct intel_iommu {
 	unsigned char 	name[13];    /* Device Name */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_DMAR
 =======
 #ifdef CONFIG_INTEL_IOMMU
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_INTEL_IOMMU
+>>>>>>> refs/remotes/origin/master
 	unsigned long 	*domain_ids; /* bitmap of domains */
 	struct dmar_domain **domains; /* ptr to domains */
 	spinlock_t	lock; /* protect context, domain ids */
@@ -346,10 +371,14 @@ struct intel_iommu {
 	u32 *iommu_state; /* Store iommu states between suspend and resume.*/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_INTR_REMAP
 =======
 #ifdef CONFIG_IRQ_REMAP
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_IRQ_REMAP
+>>>>>>> refs/remotes/origin/master
 	struct ir_table *ir_table;	/* Interrupt remapping info */
 #endif
 	int		node;

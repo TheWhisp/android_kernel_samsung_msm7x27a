@@ -26,7 +26,11 @@
 #define COMP1					1
 #define COMP2					2
 
+<<<<<<< HEAD
 /* Comparator 1 voltage selection table in milivolts */
+=======
+/* Comparator 1 voltage selection table in millivolts */
+>>>>>>> refs/remotes/origin/master
 static const u16 COMP_VSEL_TABLE[] = {
 	0, 2500, 2500, 2500, 2500, 2550, 2600, 2650,
 	2700, 2750, 2800, 2850, 2900, 2950, 3000, 3050,
@@ -122,7 +126,11 @@ static ssize_t comp_threshold_show(struct device *dev,
 static DEVICE_ATTR(comp1_threshold, S_IRUGO, comp_threshold_show, NULL);
 static DEVICE_ATTR(comp2_threshold, S_IRUGO, comp_threshold_show, NULL);
 
+<<<<<<< HEAD
 static __devinit int tps65911_comparator_probe(struct platform_device *pdev)
+=======
+static int tps65911_comparator_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tps65910 *tps65910 = dev_get_drvdata(pdev->dev.parent);
 	struct tps65910_board *pdata = dev_get_platdata(tps65910->dev);
@@ -136,7 +144,11 @@ static __devinit int tps65911_comparator_probe(struct platform_device *pdev)
 
 	ret = comp_threshold_set(tps65910, COMP2, pdata->vmbch2_threshold);
 	if (ret < 0) {
+<<<<<<< HEAD
 		dev_err(&pdev->dev, "cannot set COMP2 theshold\n");
+=======
+		dev_err(&pdev->dev, "cannot set COMP2 threshold\n");
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
@@ -152,16 +164,25 @@ static __devinit int tps65911_comparator_probe(struct platform_device *pdev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static __devexit int tps65911_comparator_remove(struct platform_device *pdev)
+=======
+static int tps65911_comparator_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tps65910 *tps65910;
 
 	tps65910 = dev_get_drvdata(pdev->dev.parent);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	device_remove_file(&pdev->dev, &dev_attr_comp2_threshold);
 	device_remove_file(&pdev->dev, &dev_attr_comp1_threshold);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	device_remove_file(&pdev->dev, &dev_attr_comp2_threshold);
+	device_remove_file(&pdev->dev, &dev_attr_comp1_threshold);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -172,7 +193,11 @@ static struct platform_driver tps65911_comparator_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = tps65911_comparator_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(tps65911_comparator_remove),
+=======
+	.remove = tps65911_comparator_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init tps65911_comparator_init(void)

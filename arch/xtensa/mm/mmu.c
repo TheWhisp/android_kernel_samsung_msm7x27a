@@ -24,20 +24,39 @@ void __init paging_init(void)
  */
 void __init init_mmu(void)
 {
+<<<<<<< HEAD
 	/* Writing zeros to the <t>TLBCFG special registers ensure
 	 * that valid values exist in the register.  For existing
 	 * PGSZID<w> fields, zero selects the first element of the
 	 * page-size array.  For nonexistent PGSZID<w> fields, zero is
 	 * the best value to write.  Also, when changing PGSZID<w>
+=======
+#if !(XCHAL_HAVE_PTP_MMU && XCHAL_HAVE_SPANNING_WAY)
+	/*
+	 * Writing zeros to the instruction and data TLBCFG special
+	 * registers ensure that valid values exist in the register.
+	 *
+	 * For existing PGSZID<w> fields, zero selects the first element
+	 * of the page-size array.  For nonexistent PGSZID<w> fields,
+	 * zero is the best value to write.  Also, when changing PGSZID<w>
+>>>>>>> refs/remotes/origin/master
 	 * fields, the corresponding TLB must be flushed.
 	 */
 	set_itlbcfg_register(0);
 	set_dtlbcfg_register(0);
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 	flush_tlb_all();
 
 	/* Set rasid register to a known value. */
 
+<<<<<<< HEAD
 	set_rasid_register(ASID_USER_FIRST);
+=======
+	set_rasid_register(ASID_INSERT(ASID_USER_FIRST));
+>>>>>>> refs/remotes/origin/master
 
 	/* Set PTEVADDR special register to the start of the page
 	 * table, which is in kernel mappable space (ie. not
@@ -46,6 +65,7 @@ void __init init_mmu(void)
 	 */
 	set_ptevaddr_register(PGTABLE_START);
 }
+<<<<<<< HEAD
 
 struct kmem_cache *pgtable_cache __read_mostly;
 
@@ -66,3 +86,5 @@ void __init pgtable_cache_init(void)
 			SLAB_HWCACHE_ALIGN,
 			pgd_ctor);
 }
+=======
+>>>>>>> refs/remotes/origin/master

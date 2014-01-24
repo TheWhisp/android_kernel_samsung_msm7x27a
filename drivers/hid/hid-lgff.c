@@ -30,10 +30,15 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #include <linux/input.h>
+<<<<<<< HEAD
 #include <linux/usb.h>
 #include <linux/hid.h>
 
 #include "usbhid/usbhid.h"
+=======
+#include <linux/hid.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "hid-lg.h"
 
 struct dev_type {
@@ -59,6 +64,7 @@ static const signed short ff_joystick_ac[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const signed short ff_wheel[] = {
 	FF_CONSTANT,
 	FF_AUTOCENTER,
@@ -67,6 +73,8 @@ static const signed short ff_wheel[] = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct dev_type devices[] = {
 	{ 0x046d, 0xc211, ff_rumble },
 	{ 0x046d, 0xc219, ff_rumble },
@@ -74,6 +82,7 @@ static const struct dev_type devices[] = {
 	{ 0x046d, 0xc286, ff_joystick_ac },
 	{ 0x046d, 0xc287, ff_joystick_ac },
 	{ 0x046d, 0xc293, ff_joystick },
+<<<<<<< HEAD
 <<<<<<< HEAD
 	{ 0x046d, 0xc294, ff_wheel },
 	{ 0x046d, 0xc298, ff_wheel },
@@ -86,6 +95,9 @@ static const struct dev_type devices[] = {
 =======
 	{ 0x046d, 0xc295, ff_joystick },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ 0x046d, 0xc295, ff_joystick },
+>>>>>>> refs/remotes/origin/master
 };
 
 static int hid_lgff_play(struct input_dev *dev, void *data, struct ff_effect *effect)
@@ -109,7 +121,11 @@ static int hid_lgff_play(struct input_dev *dev, void *data, struct ff_effect *ef
 		report->field[0]->value[2] = x;
 		report->field[0]->value[3] = y;
 		dbg_hid("(x, y)=(%04x, %04x)\n", x, y);
+<<<<<<< HEAD
 		usbhid_submit_report(hid, report, USB_DIR_OUT);
+=======
+		hid_hw_request(hid, report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case FF_RUMBLE:
@@ -124,7 +140,11 @@ static int hid_lgff_play(struct input_dev *dev, void *data, struct ff_effect *ef
 		report->field[0]->value[2] = left;
 		report->field[0]->value[3] = right;
 		dbg_hid("(left, right)=(%04x, %04x)\n", left, right);
+<<<<<<< HEAD
 		usbhid_submit_report(hid, report, USB_DIR_OUT);
+=======
+		hid_hw_request(hid, report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	return 0;
@@ -144,12 +164,17 @@ static void hid_lgff_set_autocenter(struct input_dev *dev, u16 magnitude)
 	*value++ = 0x80;
 	*value++ = 0x00;
 	*value = 0x00;
+<<<<<<< HEAD
 	usbhid_submit_report(hid, report, USB_DIR_OUT);
+=======
+	hid_hw_request(hid, report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 }
 
 int lgff_init(struct hid_device* hid)
 {
 	struct hid_input *hidinput = list_entry(hid->inputs.next, struct hid_input, list);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct list_head *report_list = &hid->report_enum[HID_OUTPUT_REPORT].report_list;
 	struct input_dev *dev = hidinput->input;
@@ -158,10 +183,14 @@ int lgff_init(struct hid_device* hid)
 =======
 	struct input_dev *dev = hidinput->input;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct input_dev *dev = hidinput->input;
+>>>>>>> refs/remotes/origin/master
 	const signed short *ff_bits = ff_joystick;
 	int error;
 	int i;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Find the report to use */
 	if (list_empty(report_list)) {
@@ -181,6 +210,11 @@ int lgff_init(struct hid_device* hid)
 	if (!hid_validate_values(hid, HID_OUTPUT_REPORT, 0, 0, 7))
 		return -ENODEV;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Check that the report looks ok */
+	if (!hid_validate_values(hid, HID_OUTPUT_REPORT, 0, 0, 7))
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ARRAY_SIZE(devices); i++) {
 		if (dev->id.vendor == devices[i].idVendor &&

@@ -39,6 +39,11 @@ extern void debug_dma_map_page(struct device *dev, struct page *page,
 			       int direction, dma_addr_t dma_addr,
 			       bool map_single);
 
+<<<<<<< HEAD
+=======
+extern void debug_dma_mapping_error(struct device *dev, dma_addr_t dma_addr);
+
+>>>>>>> refs/remotes/origin/master
 extern void debug_dma_unmap_page(struct device *dev, dma_addr_t addr,
 				 size_t size, int direction, bool map_single);
 
@@ -83,6 +88,11 @@ extern void debug_dma_sync_sg_for_device(struct device *dev,
 
 extern void debug_dma_dump_mappings(struct device *dev);
 
+<<<<<<< HEAD
+=======
+extern void debug_dma_assert_idle(struct page *page);
+
+>>>>>>> refs/remotes/origin/master
 #else /* CONFIG_DMA_API_DEBUG */
 
 static inline void dma_debug_add_bus(struct bus_type *bus)
@@ -105,6 +115,14 @@ static inline void debug_dma_map_page(struct device *dev, struct page *page,
 {
 }
 
+<<<<<<< HEAD
+=======
+static inline void debug_dma_mapping_error(struct device *dev,
+					  dma_addr_t dma_addr)
+{
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void debug_dma_unmap_page(struct device *dev, dma_addr_t addr,
 					size_t size, int direction,
 					bool map_single)
@@ -176,6 +194,13 @@ static inline void debug_dma_dump_mappings(struct device *dev)
 {
 }
 
+<<<<<<< HEAD
+=======
+static inline void debug_dma_assert_idle(struct page *page)
+{
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_DMA_API_DEBUG */
 
 #endif /* __DMA_DEBUG_H */

@@ -139,18 +139,25 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
 	ui->xattr = 1;
 	ui->flags |= UBIFS_XATTR_FL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ui->data = kmalloc(size, GFP_NOFS);
 =======
 	ui->data = kmemdup(value, size, GFP_NOFS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ui->data = kmemdup(value, size, GFP_NOFS);
+>>>>>>> refs/remotes/origin/master
 	if (!ui->data) {
 		err = -ENOMEM;
 		goto out_free;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(ui->data, value, size);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	inode->i_size = ui->ui_size = size;
 	ui->data_len = size;
 
@@ -212,18 +219,25 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
 
 	kfree(ui->data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ui->data = kmalloc(size, GFP_NOFS);
 =======
 	ui->data = kmemdup(value, size, GFP_NOFS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ui->data = kmemdup(value, size, GFP_NOFS);
+>>>>>>> refs/remotes/origin/master
 	if (!ui->data) {
 		err = -ENOMEM;
 		goto out_free;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(ui->data, value, size);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	inode->i_size = ui->ui_size = size;
 	ui->data_len = size;
 
@@ -314,13 +328,22 @@ int ubifs_setxattr(struct dentry *dentry, const char *name,
 {
 	struct inode *inode, *host = dentry->d_inode;
 	struct ubifs_info *c = host->i_sb->s_fs_info;
+<<<<<<< HEAD
 	struct qstr nm = { .name = name, .len = strlen(name) };
+=======
+	struct qstr nm = QSTR_INIT(name, strlen(name));
+>>>>>>> refs/remotes/origin/master
 	struct ubifs_dent_node *xent;
 	union ubifs_key key;
 	int err, type;
 
+<<<<<<< HEAD
 	dbg_gen("xattr '%s', host ino %lu ('%.*s'), size %zd", name,
 		host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
+=======
+	dbg_gen("xattr '%s', host ino %lu ('%pd'), size %zd", name,
+		host->i_ino, dentry, size);
+>>>>>>> refs/remotes/origin/master
 	ubifs_assert(mutex_is_locked(&host->i_mutex));
 
 	if (size > UBIFS_MAX_INO_DATA)
@@ -377,14 +400,23 @@ ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
 {
 	struct inode *inode, *host = dentry->d_inode;
 	struct ubifs_info *c = host->i_sb->s_fs_info;
+<<<<<<< HEAD
 	struct qstr nm = { .name = name, .len = strlen(name) };
+=======
+	struct qstr nm = QSTR_INIT(name, strlen(name));
+>>>>>>> refs/remotes/origin/master
 	struct ubifs_inode *ui;
 	struct ubifs_dent_node *xent;
 	union ubifs_key key;
 	int err;
 
+<<<<<<< HEAD
 	dbg_gen("xattr '%s', ino %lu ('%.*s'), buf size %zd", name,
 		host->i_ino, dentry->d_name.len, dentry->d_name.name, size);
+=======
+	dbg_gen("xattr '%s', ino %lu ('%pd'), buf size %zd", name,
+		host->i_ino, dentry, size);
+>>>>>>> refs/remotes/origin/master
 
 	err = check_namespace(&nm);
 	if (err < 0)
@@ -415,8 +447,13 @@ ssize_t ubifs_getxattr(struct dentry *dentry, const char *name, void *buf,
 	if (buf) {
 		/* If @buf is %NULL we are supposed to return the length */
 		if (ui->data_len > size) {
+<<<<<<< HEAD
 			dbg_err("buffer size %zd, xattr len %d",
 				size, ui->data_len);
+=======
+			ubifs_err("buffer size %zd, xattr len %d",
+				  size, ui->data_len);
+>>>>>>> refs/remotes/origin/master
 			err = -ERANGE;
 			goto out_iput;
 		}
@@ -442,8 +479,13 @@ ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size)
 	int err, len, written = 0;
 	struct qstr nm = { .name = NULL };
 
+<<<<<<< HEAD
 	dbg_gen("ino %lu ('%.*s'), buffer size %zd", host->i_ino,
 		dentry->d_name.len, dentry->d_name.name, size);
+=======
+	dbg_gen("ino %lu ('%pd'), buffer size %zd", host->i_ino,
+		dentry, size);
+>>>>>>> refs/remotes/origin/master
 
 	len = host_ui->xattr_names + host_ui->xattr_cnt;
 	if (!buffer)
@@ -540,13 +582,22 @@ int ubifs_removexattr(struct dentry *dentry, const char *name)
 {
 	struct inode *inode, *host = dentry->d_inode;
 	struct ubifs_info *c = host->i_sb->s_fs_info;
+<<<<<<< HEAD
 	struct qstr nm = { .name = name, .len = strlen(name) };
+=======
+	struct qstr nm = QSTR_INIT(name, strlen(name));
+>>>>>>> refs/remotes/origin/master
 	struct ubifs_dent_node *xent;
 	union ubifs_key key;
 	int err;
 
+<<<<<<< HEAD
 	dbg_gen("xattr '%s', ino %lu ('%.*s')", name,
 		host->i_ino, dentry->d_name.len, dentry->d_name.name);
+=======
+	dbg_gen("xattr '%s', ino %lu ('%pd')", name,
+		host->i_ino, dentry);
+>>>>>>> refs/remotes/origin/master
 	ubifs_assert(mutex_is_locked(&host->i_mutex));
 
 	err = check_namespace(&nm);
@@ -573,16 +624,22 @@ int ubifs_removexattr(struct dentry *dentry, const char *name)
 
 	ubifs_assert(inode->i_nlink == 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = 0;
 	err = remove_xattr(c, host, inode, &nm);
 	if (err)
 		inode->i_nlink = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	clear_nlink(inode);
 	err = remove_xattr(c, host, inode, &nm);
 	if (err)
 		set_nlink(inode, 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* If @i_nlink is 0, 'iput()' will delete the inode */
 	iput(inode);

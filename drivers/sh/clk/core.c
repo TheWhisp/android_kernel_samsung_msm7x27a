@@ -26,9 +26,12 @@
 #include <linux/err.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/debugfs.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/cpufreq.h>
 #include <linux/clk.h>
 #include <linux/sh_clk.h>
@@ -38,11 +41,17 @@ static DEFINE_SPINLOCK(clock_lock);
 static DEFINE_MUTEX(clock_list_sem);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* clock disable operations are not passed on to hardware during boot */
 static int allow_disable;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* clock disable operations are not passed on to hardware during boot */
+static int allow_disable;
+
+>>>>>>> refs/remotes/origin/master
 void clk_rate_table_build(struct clk *clk,
 			  struct cpufreq_frequency_table *freq_table,
 			  int nr_freqs,
@@ -70,12 +79,20 @@ void clk_rate_table_build(struct clk *clk,
 		else
 			freq = clk->parent->rate * mult / div;
 
+<<<<<<< HEAD
 		freq_table[i].index = i;
+=======
+		freq_table[i].driver_data = i;
+>>>>>>> refs/remotes/origin/master
 		freq_table[i].frequency = freq;
 	}
 
 	/* Termination entry */
+<<<<<<< HEAD
 	freq_table[i].index = i;
+=======
+	freq_table[i].driver_data = i;
+>>>>>>> refs/remotes/origin/master
 	freq_table[i].frequency = CPUFREQ_TABLE_END;
 }
 
@@ -180,7 +197,10 @@ long clk_rate_div_range_round(struct clk *clk, unsigned int div_min,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static long clk_rate_mult_range_iter(unsigned int pos,
 				      struct clk_rate_round_data *rounder)
 {
@@ -201,7 +221,10 @@ long clk_rate_mult_range_round(struct clk *clk, unsigned int mult_min,
 	return clk_rate_round_helper(&mult_range_round);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int clk_rate_table_find(struct clk *clk,
 			struct cpufreq_frequency_table *freq_table,
 			unsigned long rate)
@@ -235,11 +258,14 @@ int clk_reparent(struct clk *child, struct clk *parent)
 	child->parent = parent;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* now do the debugfs renaming to reattach the child
 	   to the proper parent */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -264,10 +290,14 @@ static void __clk_disable(struct clk *clk)
 
 	if (!(--clk->usecount)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (likely(clk->ops && clk->ops->disable))
 =======
 		if (likely(allow_disable && clk->ops && clk->ops->disable))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (likely(allow_disable && clk->ops && clk->ops->disable))
+>>>>>>> refs/remotes/origin/master
 			clk->ops->disable(clk);
 		if (likely(clk->parent))
 			__clk_disable(clk->parent);
@@ -376,10 +406,14 @@ static int clk_establish_mapping(struct clk *clk)
 		if (!clk->parent) {
 			clk->mapping = &dummy_mapping;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return 0;
 =======
 			goto out;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto out;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/*
@@ -409,11 +443,17 @@ static int clk_establish_mapping(struct clk *clk)
 
 	clk->mapping = mapping;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 out:
 	clk->mapped_reg = clk->mapping->base;
 	clk->mapped_reg += (phys_addr_t)clk->enable_reg - clk->mapping->phys;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+	clk->mapped_reg = clk->mapping->base;
+	clk->mapped_reg += (phys_addr_t)clk->enable_reg - clk->mapping->phys;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -433,18 +473,24 @@ static void clk_teardown_mapping(struct clk *clk)
 	/* Nothing to do */
 	if (mapping == &dummy_mapping)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return;
 
 	kref_put(&mapping->ref, clk_destroy_mapping);
 	clk->mapping = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	kref_put(&mapping->ref, clk_destroy_mapping);
 	clk->mapping = NULL;
 out:
 	clk->mapped_reg = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int clk_register(struct clk *clk)
@@ -452,10 +498,14 @@ int clk_register(struct clk *clk)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (clk == NULL || IS_ERR(clk))
 =======
 	if (IS_ERR_OR_NULL(clk))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (IS_ERR_OR_NULL(clk))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	/*
@@ -725,6 +775,7 @@ subsys_initcall(clk_syscore_init);
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  *	debugfs support to trace clock tree hierarchy and attributes
  */
@@ -811,6 +862,8 @@ err_out:
 }
 late_initcall(clk_debugfs_init);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init clk_late_init(void)
 {
 	unsigned long flags;
@@ -832,4 +885,7 @@ static int __init clk_late_init(void)
 	return 0;
 }
 late_initcall(clk_late_init);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

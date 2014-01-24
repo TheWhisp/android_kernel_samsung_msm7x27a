@@ -1,10 +1,18 @@
 /*
  * QLogic Fibre Channel HBA Driver
+<<<<<<< HEAD
  * Copyright (c)  2003-2011 QLogic Corporation
+=======
+ * Copyright (c)  2003-2013 QLogic Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * See LICENSE.qla2xxx for copyright and licensing details.
  */
 #include "qla_def.h"
+<<<<<<< HEAD
+=======
+#include "qla_target.h"
+>>>>>>> refs/remotes/origin/master
 
 static int qla2x00_sns_ga_nxt(scsi_qla_host_t *, fc_port_t *);
 static int qla2x00_sns_gid_pt(scsi_qla_host_t *, sw_info_t *);
@@ -48,6 +56,11 @@ qla2x00_prep_ms_iocb(scsi_qla_host_t *vha, uint32_t req_size, uint32_t rsp_size)
 	ms_pkt->dseg_rsp_address[1] = cpu_to_le32(MSD(ha->ct_sns_dma));
 	ms_pkt->dseg_rsp_length = ms_pkt->rsp_bytecount;
 
+<<<<<<< HEAD
+=======
+	vha->qla_stats.control_requests++;
+
+>>>>>>> refs/remotes/origin/master
 	return (ms_pkt);
 }
 
@@ -86,6 +99,11 @@ qla24xx_prep_ms_iocb(scsi_qla_host_t *vha, uint32_t req_size, uint32_t rsp_size)
 	ct_pkt->dseg_1_len = ct_pkt->rsp_byte_count;
 	ct_pkt->vp_index = vha->vp_idx;
 
+<<<<<<< HEAD
+=======
+	vha->qla_stats.control_requests++;
+
+>>>>>>> refs/remotes/origin/master
 	return (ct_pkt);
 }
 
@@ -98,6 +116,7 @@ qla24xx_prep_ms_iocb(scsi_qla_host_t *vha, uint32_t req_size, uint32_t rsp_size)
  * Returns a pointer to the intitialized @ct_req.
  */
 static inline struct ct_sns_req *
+<<<<<<< HEAD
 qla2x00_prep_ct_req(struct ct_sns_req *ct_req, uint16_t cmd, uint16_t rsp_size)
 {
 	memset(ct_req, 0, sizeof(struct ct_sns_pkt));
@@ -109,6 +128,19 @@ qla2x00_prep_ct_req(struct ct_sns_req *ct_req, uint16_t cmd, uint16_t rsp_size)
 	ct_req->max_rsp_size = cpu_to_be16((rsp_size - 16) / 4);
 
 	return (ct_req);
+=======
+qla2x00_prep_ct_req(struct ct_sns_pkt *p, uint16_t cmd, uint16_t rsp_size)
+{
+	memset(p, 0, sizeof(struct ct_sns_pkt));
+
+	p->p.req.header.revision = 0x01;
+	p->p.req.header.gs_type = 0xFC;
+	p->p.req.header.gs_subtype = 0x02;
+	p->p.req.command = cpu_to_be16(cmd);
+	p->p.req.max_rsp_size = cpu_to_be16((rsp_size - 16) / 4);
+
+	return &p->p.req;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -122,17 +154,23 @@ qla2x00_chk_ms_status(scsi_qla_host_t *vha, ms_iocb_entry_t *ms_pkt,
 	rval = QLA_FUNCTION_FAILED;
 	if (ms_pkt->entry_status != 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG2_3(printk(KERN_WARNING "scsi(%ld): %s failed, error status "
 		    "(%x) on port_id: %02x%02x%02x.\n",
 		    vha->host_no, routine, ms_pkt->entry_status,
 		    vha->d_id.b.domain, vha->d_id.b.area,
 		    vha->d_id.b.al_pa));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ql_dbg(ql_dbg_disc, vha, 0x2031,
 		    "%s failed, error status (%x) on port_id: %02x%02x%02x.\n",
 		    routine, ms_pkt->entry_status, vha->d_id.b.domain,
 		    vha->d_id.b.area, vha->d_id.b.al_pa);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (IS_FWI2_CAPABLE(ha))
 			comp_status = le16_to_cpu(
@@ -146,6 +184,7 @@ qla2x00_chk_ms_status(scsi_qla_host_t *vha, ms_iocb_entry_t *ms_pkt,
 			if (ct_rsp->header.response !=
 			    __constant_cpu_to_be16(CT_ACCEPT_RESPONSE)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				DEBUG2_3(printk("scsi(%ld): %s failed, "
 				    "rejected request on port_id: %02x%02x%02x\n",
 				    vha->host_no, routine,
@@ -155,6 +194,8 @@ qla2x00_chk_ms_status(scsi_qla_host_t *vha, ms_iocb_entry_t *ms_pkt,
 				    (uint8_t *)&ct_rsp->header,
 				    sizeof(struct ct_rsp_hdr)));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				ql_dbg(ql_dbg_disc + ql_dbg_buffer, vha, 0x2077,
 				    "%s failed rejected request on port_id: "
 				    "%02x%02x%02x.\n", routine,
@@ -163,12 +204,16 @@ qla2x00_chk_ms_status(scsi_qla_host_t *vha, ms_iocb_entry_t *ms_pkt,
 				ql_dump_buffer(ql_dbg_disc + ql_dbg_buffer, vha,
 				    0x2078, (uint8_t *)&ct_rsp->header,
 				    sizeof(struct ct_rsp_hdr));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				rval = QLA_INVALID_COMMAND;
 			} else
 				rval = QLA_SUCCESS;
 			break;
 		default:
+<<<<<<< HEAD
 <<<<<<< HEAD
 			DEBUG2_3(printk("scsi(%ld): %s failed, completion "
 			    "status (%x) on port_id: %02x%02x%02x.\n",
@@ -176,12 +221,17 @@ qla2x00_chk_ms_status(scsi_qla_host_t *vha, ms_iocb_entry_t *ms_pkt,
 			    vha->d_id.b.domain, vha->d_id.b.area,
 			    vha->d_id.b.al_pa));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			ql_dbg(ql_dbg_disc, vha, 0x2033,
 			    "%s failed, completion status (%x) on port_id: "
 			    "%02x%02x%02x.\n", routine, comp_status,
 			    vha->d_id.b.domain, vha->d_id.b.area,
 			    vha->d_id.b.al_pa);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -214,7 +264,11 @@ qla2x00_ga_nxt(scsi_qla_host_t *vha, fc_port_t *fcport)
 	    GA_NXT_RSP_SIZE);
 
 	/* Prepare CT request */
+<<<<<<< HEAD
 	ct_req = qla2x00_prep_ct_req(&ha->ct_sns->p.req, GA_NXT_CMD,
+=======
+	ct_req = qla2x00_prep_ct_req(ha->ct_sns, GA_NXT_CMD,
+>>>>>>> refs/remotes/origin/master
 	    GA_NXT_RSP_SIZE);
 	ct_rsp = &ha->ct_sns->p.rsp;
 
@@ -229,12 +283,17 @@ qla2x00_ga_nxt(scsi_qla_host_t *vha, fc_port_t *fcport)
 	if (rval != QLA_SUCCESS) {
 		/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG2_3(printk("scsi(%ld): GA_NXT issue IOCB failed (%d).\n",
 		    vha->host_no, rval));
 =======
 		ql_dbg(ql_dbg_disc, vha, 0x2062,
 		    "GA_NXT issue IOCB failed (%d).\n", rval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2062,
+		    "GA_NXT issue IOCB failed (%d).\n", rval);
+>>>>>>> refs/remotes/origin/master
 	} else if (qla2x00_chk_ms_status(vha, ms_pkt, ct_rsp, "GA_NXT") !=
 	    QLA_SUCCESS) {
 		rval = QLA_FUNCTION_FAILED;
@@ -249,10 +308,17 @@ qla2x00_ga_nxt(scsi_qla_host_t *vha, fc_port_t *fcport)
 		memcpy(fcport->port_name, ct_rsp->rsp.ga_nxt.port_name,
 		    WWN_SIZE);
 
+<<<<<<< HEAD
+=======
+		fcport->fc4_type = (ct_rsp->rsp.ga_nxt.fc4_types[2] & BIT_0) ?
+		    FC4_TYPE_FCP_SCSI : FC4_TYPE_OTHER;
+
+>>>>>>> refs/remotes/origin/master
 		if (ct_rsp->rsp.ga_nxt.port_type != NS_N_PORT_TYPE &&
 		    ct_rsp->rsp.ga_nxt.port_type != NS_NL_PORT_TYPE)
 			fcport->d_id.b.domain = 0xf0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		DEBUG2_3(printk("scsi(%ld): GA_NXT entry - "
 		    "nn %02x%02x%02x%02x%02x%02x%02x%02x "
@@ -279,20 +345,34 @@ qla2x00_ga_nxt(scsi_qla_host_t *vha, fc_port_t *fcport)
 =======
 		    fcport->d_id.b.al_pa);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2063,
+		    "GA_NXT entry - nn %8phN pn %8phN "
+		    "port_id=%02x%02x%02x.\n",
+		    fcport->node_name, fcport->port_name,
+		    fcport->d_id.b.domain, fcport->d_id.b.area,
+		    fcport->d_id.b.al_pa);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return (rval);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int
 qla2x00_gid_pt_rsp_size(scsi_qla_host_t *vha)
 {
 	return vha->hw->max_fibre_devices * 4 + 16;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * qla2x00_gid_pt() - SNS scan for fabric devices via GID_PT command.
  * @ha: HA context
@@ -315,14 +395,19 @@ qla2x00_gid_pt(scsi_qla_host_t *vha, sw_info_t *list)
 	struct ct_sns_gid_pt_data *gid_data;
 	struct qla_hw_data *ha = vha->hw;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	uint16_t gid_pt_rsp_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint16_t gid_pt_rsp_size;
+>>>>>>> refs/remotes/origin/master
 
 	if (IS_QLA2100(ha) || IS_QLA2200(ha))
 		return qla2x00_sns_gid_pt(vha, list);
 
 	gid_data = NULL;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	/* Issue GID_PT */
@@ -334,6 +419,8 @@ qla2x00_gid_pt(scsi_qla_host_t *vha, sw_info_t *list)
 	ct_req = qla2x00_prep_ct_req(&ha->ct_sns->p.req, GID_PT_CMD,
 	    GID_PT_RSP_SIZE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	gid_pt_rsp_size = qla2x00_gid_pt_rsp_size(vha);
 	/* Issue GID_PT */
 	/* Prepare common MS IOCB */
@@ -341,9 +428,13 @@ qla2x00_gid_pt(scsi_qla_host_t *vha, sw_info_t *list)
 	    gid_pt_rsp_size);
 
 	/* Prepare CT request */
+<<<<<<< HEAD
 	ct_req = qla2x00_prep_ct_req(&ha->ct_sns->p.req, GID_PT_CMD,
 	    gid_pt_rsp_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ct_req = qla2x00_prep_ct_req(ha->ct_sns, GID_PT_CMD, gid_pt_rsp_size);
+>>>>>>> refs/remotes/origin/master
 	ct_rsp = &ha->ct_sns->p.rsp;
 
 	/* Prepare CT arguments -- port_type */
@@ -355,22 +446,31 @@ qla2x00_gid_pt(scsi_qla_host_t *vha, sw_info_t *list)
 	if (rval != QLA_SUCCESS) {
 		/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG2_3(printk("scsi(%ld): GID_PT issue IOCB failed (%d).\n",
 		    vha->host_no, rval));
 =======
 		ql_dbg(ql_dbg_disc, vha, 0x2055,
 		    "GID_PT issue IOCB failed (%d).\n", rval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2055,
+		    "GID_PT issue IOCB failed (%d).\n", rval);
+>>>>>>> refs/remotes/origin/master
 	} else if (qla2x00_chk_ms_status(vha, ms_pkt, ct_rsp, "GID_PT") !=
 	    QLA_SUCCESS) {
 		rval = QLA_FUNCTION_FAILED;
 	} else {
 		/* Set port IDs in switch info list. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0; i < MAX_FIBRE_DEVICES; i++) {
 =======
 		for (i = 0; i < ha->max_fibre_devices; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i < ha->max_fibre_devices; i++) {
+>>>>>>> refs/remotes/origin/master
 			gid_data = &ct_rsp->rsp.gid_pt.entries[i];
 			list[i].d_id.b.domain = gid_data->port_id[0];
 			list[i].d_id.b.area = gid_data->port_id[1];
@@ -392,10 +492,14 @@ qla2x00_gid_pt(scsi_qla_host_t *vha, sw_info_t *list)
 		 * the overload.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (i == MAX_FIBRE_DEVICES)
 =======
 		if (i == ha->max_fibre_devices)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (i == ha->max_fibre_devices)
+>>>>>>> refs/remotes/origin/master
 			rval = QLA_FUNCTION_FAILED;
 	}
 
@@ -413,10 +517,14 @@ int
 qla2x00_gpn_id(scsi_qla_host_t *vha, sw_info_t *list)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int		rval;
 =======
 	int		rval = QLA_SUCCESS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int		rval = QLA_SUCCESS;
+>>>>>>> refs/remotes/origin/master
 	uint16_t	i;
 
 	ms_iocb_entry_t	*ms_pkt;
@@ -428,17 +536,25 @@ qla2x00_gpn_id(scsi_qla_host_t *vha, sw_info_t *list)
 		return qla2x00_sns_gpn_id(vha, list);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < MAX_FIBRE_DEVICES; i++) {
 =======
 	for (i = 0; i < ha->max_fibre_devices; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < ha->max_fibre_devices; i++) {
+>>>>>>> refs/remotes/origin/master
 		/* Issue GPN_ID */
 		/* Prepare common MS IOCB */
 		ms_pkt = ha->isp_ops->prep_ms_iocb(vha, GPN_ID_REQ_SIZE,
 		    GPN_ID_RSP_SIZE);
 
 		/* Prepare CT request */
+<<<<<<< HEAD
 		ct_req = qla2x00_prep_ct_req(&ha->ct_sns->p.req, GPN_ID_CMD,
+=======
+		ct_req = qla2x00_prep_ct_req(ha->ct_sns, GPN_ID_CMD,
+>>>>>>> refs/remotes/origin/master
 		    GPN_ID_RSP_SIZE);
 		ct_rsp = &ha->ct_sns->p.rsp;
 
@@ -453,12 +569,15 @@ qla2x00_gpn_id(scsi_qla_host_t *vha, sw_info_t *list)
 		if (rval != QLA_SUCCESS) {
 			/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DEBUG2_3(printk("scsi(%ld): GPN_ID issue IOCB failed "
 			    "(%d).\n", vha->host_no, rval));
 		} else if (qla2x00_chk_ms_status(vha, ms_pkt, ct_rsp,
 		    "GPN_ID") != QLA_SUCCESS) {
 			rval = QLA_FUNCTION_FAILED;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			ql_dbg(ql_dbg_disc, vha, 0x2056,
 			    "GPN_ID issue IOCB failed (%d).\n", rval);
 			break;
@@ -466,7 +585,10 @@ qla2x00_gpn_id(scsi_qla_host_t *vha, sw_info_t *list)
 		    "GPN_ID") != QLA_SUCCESS) {
 			rval = QLA_FUNCTION_FAILED;
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			/* Save portname */
 			memcpy(list[i].port_name,
@@ -492,10 +614,14 @@ int
 qla2x00_gnn_id(scsi_qla_host_t *vha, sw_info_t *list)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int		rval;
 =======
 	int		rval = QLA_SUCCESS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int		rval = QLA_SUCCESS;
+>>>>>>> refs/remotes/origin/master
 	uint16_t	i;
 	struct qla_hw_data *ha = vha->hw;
 	ms_iocb_entry_t	*ms_pkt;
@@ -506,17 +632,25 @@ qla2x00_gnn_id(scsi_qla_host_t *vha, sw_info_t *list)
 		return qla2x00_sns_gnn_id(vha, list);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < MAX_FIBRE_DEVICES; i++) {
 =======
 	for (i = 0; i < ha->max_fibre_devices; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < ha->max_fibre_devices; i++) {
+>>>>>>> refs/remotes/origin/master
 		/* Issue GNN_ID */
 		/* Prepare common MS IOCB */
 		ms_pkt = ha->isp_ops->prep_ms_iocb(vha, GNN_ID_REQ_SIZE,
 		    GNN_ID_RSP_SIZE);
 
 		/* Prepare CT request */
+<<<<<<< HEAD
 		ct_req = qla2x00_prep_ct_req(&ha->ct_sns->p.req, GNN_ID_CMD,
+=======
+		ct_req = qla2x00_prep_ct_req(ha->ct_sns, GNN_ID_CMD,
+>>>>>>> refs/remotes/origin/master
 		    GNN_ID_RSP_SIZE);
 		ct_rsp = &ha->ct_sns->p.rsp;
 
@@ -531,12 +665,15 @@ qla2x00_gnn_id(scsi_qla_host_t *vha, sw_info_t *list)
 		if (rval != QLA_SUCCESS) {
 			/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DEBUG2_3(printk("scsi(%ld): GNN_ID issue IOCB failed "
 			    "(%d).\n", vha->host_no, rval));
 		} else if (qla2x00_chk_ms_status(vha, ms_pkt, ct_rsp,
 		    "GNN_ID") != QLA_SUCCESS) {
 			rval = QLA_FUNCTION_FAILED;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			ql_dbg(ql_dbg_disc, vha, 0x2057,
 			    "GNN_ID issue IOCB failed (%d).\n", rval);
 			break;
@@ -544,12 +681,16 @@ qla2x00_gnn_id(scsi_qla_host_t *vha, sw_info_t *list)
 		    "GNN_ID") != QLA_SUCCESS) {
 			rval = QLA_FUNCTION_FAILED;
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			/* Save nodename */
 			memcpy(list[i].node_name,
 			    ct_rsp->rsp.gnn_id.node_name, WWN_SIZE);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 			DEBUG2_3(printk("scsi(%ld): GID_PT entry - "
 			    "nn %02x%02x%02x%02x%02x%02x%02x%02x "
@@ -576,6 +717,14 @@ qla2x00_gnn_id(scsi_qla_host_t *vha, sw_info_t *list)
 =======
 			    list[i].d_id.b.al_pa);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ql_dbg(ql_dbg_disc, vha, 0x2058,
+			    "GID_PT entry - nn %8phN pn %8phN "
+			    "portid=%02x%02x%02x.\n",
+			    list[i].node_name, list[i].port_name,
+			    list[i].d_id.b.domain, list[i].d_id.b.area,
+			    list[i].d_id.b.al_pa);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* Last device exit. */
@@ -610,7 +759,11 @@ qla2x00_rft_id(scsi_qla_host_t *vha)
 	    RFT_ID_RSP_SIZE);
 
 	/* Prepare CT request */
+<<<<<<< HEAD
 	ct_req = qla2x00_prep_ct_req(&ha->ct_sns->p.req, RFT_ID_CMD,
+=======
+	ct_req = qla2x00_prep_ct_req(ha->ct_sns, RFT_ID_CMD,
+>>>>>>> refs/remotes/origin/master
 	    RFT_ID_RSP_SIZE);
 	ct_rsp = &ha->ct_sns->p.rsp;
 
@@ -627,16 +780,22 @@ qla2x00_rft_id(scsi_qla_host_t *vha)
 	if (rval != QLA_SUCCESS) {
 		/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG2_3(printk("scsi(%ld): RFT_ID issue IOCB failed (%d).\n",
 		    vha->host_no, rval));
 =======
 		ql_dbg(ql_dbg_disc, vha, 0x2043,
 		    "RFT_ID issue IOCB failed (%d).\n", rval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2043,
+		    "RFT_ID issue IOCB failed (%d).\n", rval);
+>>>>>>> refs/remotes/origin/master
 	} else if (qla2x00_chk_ms_status(vha, ms_pkt, ct_rsp, "RFT_ID") !=
 	    QLA_SUCCESS) {
 		rval = QLA_FUNCTION_FAILED;
 	} else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		DEBUG2(printk("scsi(%ld): RFT_ID exiting normally.\n",
 		    vha->host_no));
@@ -644,6 +803,10 @@ qla2x00_rft_id(scsi_qla_host_t *vha)
 		ql_dbg(ql_dbg_disc, vha, 0x2044,
 		    "RFT_ID exiting normally.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2044,
+		    "RFT_ID exiting normally.\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return (rval);
@@ -666,12 +829,17 @@ qla2x00_rff_id(scsi_qla_host_t *vha)
 
 	if (IS_QLA2100(ha) || IS_QLA2200(ha)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG2(printk("scsi(%ld): RFF_ID call unsupported on "
 		    "ISP2100/ISP2200.\n", vha->host_no));
 =======
 		ql_dbg(ql_dbg_disc, vha, 0x2046,
 		    "RFF_ID call not supported on ISP2100/ISP2200.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2046,
+		    "RFF_ID call not supported on ISP2100/ISP2200.\n");
+>>>>>>> refs/remotes/origin/master
 		return (QLA_SUCCESS);
 	}
 
@@ -681,7 +849,11 @@ qla2x00_rff_id(scsi_qla_host_t *vha)
 	    RFF_ID_RSP_SIZE);
 
 	/* Prepare CT request */
+<<<<<<< HEAD
 	ct_req = qla2x00_prep_ct_req(&ha->ct_sns->p.req, RFF_ID_CMD,
+=======
+	ct_req = qla2x00_prep_ct_req(ha->ct_sns, RFF_ID_CMD,
+>>>>>>> refs/remotes/origin/master
 	    RFF_ID_RSP_SIZE);
 	ct_rsp = &ha->ct_sns->p.rsp;
 
@@ -690,7 +862,12 @@ qla2x00_rff_id(scsi_qla_host_t *vha)
 	ct_req->req.rff_id.port_id[1] = vha->d_id.b.area;
 	ct_req->req.rff_id.port_id[2] = vha->d_id.b.al_pa;
 
+<<<<<<< HEAD
 	ct_req->req.rff_id.fc4_feature = BIT_1;
+=======
+	qlt_rff_id(vha, ct_req);
+
+>>>>>>> refs/remotes/origin/master
 	ct_req->req.rff_id.fc4_type = 0x08;		/* SCSI - FCP */
 
 	/* Execute MS IOCB */
@@ -699,16 +876,22 @@ qla2x00_rff_id(scsi_qla_host_t *vha)
 	if (rval != QLA_SUCCESS) {
 		/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG2_3(printk("scsi(%ld): RFF_ID issue IOCB failed (%d).\n",
 		    vha->host_no, rval));
 =======
 		ql_dbg(ql_dbg_disc, vha, 0x2047,
 		    "RFF_ID issue IOCB failed (%d).\n", rval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2047,
+		    "RFF_ID issue IOCB failed (%d).\n", rval);
+>>>>>>> refs/remotes/origin/master
 	} else if (qla2x00_chk_ms_status(vha, ms_pkt, ct_rsp, "RFF_ID") !=
 	    QLA_SUCCESS) {
 		rval = QLA_FUNCTION_FAILED;
 	} else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		DEBUG2(printk("scsi(%ld): RFF_ID exiting normally.\n",
 		    vha->host_no));
@@ -716,6 +899,10 @@ qla2x00_rff_id(scsi_qla_host_t *vha)
 		ql_dbg(ql_dbg_disc, vha, 0x2048,
 		    "RFF_ID exiting normally.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2048,
+		    "RFF_ID exiting normally.\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return (rval);
@@ -745,8 +932,12 @@ qla2x00_rnn_id(scsi_qla_host_t *vha)
 	    RNN_ID_RSP_SIZE);
 
 	/* Prepare CT request */
+<<<<<<< HEAD
 	ct_req = qla2x00_prep_ct_req(&ha->ct_sns->p.req, RNN_ID_CMD,
 	    RNN_ID_RSP_SIZE);
+=======
+	ct_req = qla2x00_prep_ct_req(ha->ct_sns, RNN_ID_CMD, RNN_ID_RSP_SIZE);
+>>>>>>> refs/remotes/origin/master
 	ct_rsp = &ha->ct_sns->p.rsp;
 
 	/* Prepare CT arguments -- port_id, node_name */
@@ -762,16 +953,22 @@ qla2x00_rnn_id(scsi_qla_host_t *vha)
 	if (rval != QLA_SUCCESS) {
 		/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG2_3(printk("scsi(%ld): RNN_ID issue IOCB failed (%d).\n",
 		    vha->host_no, rval));
 =======
 		ql_dbg(ql_dbg_disc, vha, 0x204d,
 		    "RNN_ID issue IOCB failed (%d).\n", rval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x204d,
+		    "RNN_ID issue IOCB failed (%d).\n", rval);
+>>>>>>> refs/remotes/origin/master
 	} else if (qla2x00_chk_ms_status(vha, ms_pkt, ct_rsp, "RNN_ID") !=
 	    QLA_SUCCESS) {
 		rval = QLA_FUNCTION_FAILED;
 	} else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		DEBUG2(printk("scsi(%ld): RNN_ID exiting normally.\n",
 		    vha->host_no));
@@ -779,6 +976,10 @@ qla2x00_rnn_id(scsi_qla_host_t *vha)
 		ql_dbg(ql_dbg_disc, vha, 0x204e,
 		    "RNN_ID exiting normally.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x204e,
+		    "RNN_ID exiting normally.\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return (rval);
@@ -788,9 +989,20 @@ void
 qla2x00_get_sym_node_name(scsi_qla_host_t *vha, uint8_t *snn)
 {
 	struct qla_hw_data *ha = vha->hw;
+<<<<<<< HEAD
 	sprintf(snn, "%s FW:v%d.%02d.%02d DVR:v%s",ha->model_number,
 	    ha->fw_major_version, ha->fw_minor_version,
 	    ha->fw_subminor_version, qla2x00_version_str);
+=======
+
+	if (IS_QLAFX00(ha))
+		sprintf(snn, "%s FW:v%s DVR:v%s", ha->model_number,
+		    ha->mr.fw_version, qla2x00_version_str);
+	else
+		sprintf(snn, "%s FW:v%d.%02d.%02d DVR:v%s", ha->model_number,
+		    ha->fw_major_version, ha->fw_minor_version,
+		    ha->fw_subminor_version, qla2x00_version_str);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -810,12 +1022,17 @@ qla2x00_rsnn_nn(scsi_qla_host_t *vha)
 
 	if (IS_QLA2100(ha) || IS_QLA2200(ha)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG2(printk("scsi(%ld): RSNN_ID call unsupported on "
 		    "ISP2100/ISP2200.\n", vha->host_no));
 =======
 		ql_dbg(ql_dbg_disc, vha, 0x2050,
 		    "RSNN_ID call unsupported on ISP2100/ISP2200.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2050,
+		    "RSNN_ID call unsupported on ISP2100/ISP2200.\n");
+>>>>>>> refs/remotes/origin/master
 		return (QLA_SUCCESS);
 	}
 
@@ -825,7 +1042,11 @@ qla2x00_rsnn_nn(scsi_qla_host_t *vha)
 	ms_pkt = ha->isp_ops->prep_ms_iocb(vha, 0, RSNN_NN_RSP_SIZE);
 
 	/* Prepare CT request */
+<<<<<<< HEAD
 	ct_req = qla2x00_prep_ct_req(&ha->ct_sns->p.req, RSNN_NN_CMD,
+=======
+	ct_req = qla2x00_prep_ct_req(ha->ct_sns, RSNN_NN_CMD,
+>>>>>>> refs/remotes/origin/master
 	    RSNN_NN_RSP_SIZE);
 	ct_rsp = &ha->ct_sns->p.rsp;
 
@@ -850,16 +1071,22 @@ qla2x00_rsnn_nn(scsi_qla_host_t *vha)
 	if (rval != QLA_SUCCESS) {
 		/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG2_3(printk("scsi(%ld): RSNN_NN issue IOCB failed (%d).\n",
 		    vha->host_no, rval));
 =======
 		ql_dbg(ql_dbg_disc, vha, 0x2051,
 		    "RSNN_NN issue IOCB failed (%d).\n", rval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2051,
+		    "RSNN_NN issue IOCB failed (%d).\n", rval);
+>>>>>>> refs/remotes/origin/master
 	} else if (qla2x00_chk_ms_status(vha, ms_pkt, ct_rsp, "RSNN_NN") !=
 	    QLA_SUCCESS) {
 		rval = QLA_FUNCTION_FAILED;
 	} else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		DEBUG2(printk("scsi(%ld): RSNN_NN exiting normally.\n",
 		    vha->host_no));
@@ -867,6 +1094,10 @@ qla2x00_rsnn_nn(scsi_qla_host_t *vha)
 		ql_dbg(ql_dbg_disc, vha, 0x2052,
 		    "RSNN_NN exiting normally.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2052,
+		    "RSNN_NN exiting normally.\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return (rval);
@@ -900,6 +1131,11 @@ qla2x00_prep_sns_cmd(scsi_qla_host_t *vha, uint16_t cmd, uint16_t scmd_len,
 	wc = (data_size - 16) / 4;		/* Size in 32bit words. */
 	sns_cmd->p.cmd.size = cpu_to_le16(wc);
 
+<<<<<<< HEAD
+=======
+	vha->qla_stats.control_requests++;
+
+>>>>>>> refs/remotes/origin/master
 	return (sns_cmd);
 }
 
@@ -916,10 +1152,14 @@ static int
 qla2x00_sns_ga_nxt(scsi_qla_host_t *vha, fc_port_t *fcport)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int		rval;
 =======
 	int		rval = QLA_SUCCESS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int		rval = QLA_SUCCESS;
+>>>>>>> refs/remotes/origin/master
 	struct qla_hw_data *ha = vha->hw;
 	struct sns_cmd_pkt	*sns_cmd;
 
@@ -939,6 +1179,7 @@ qla2x00_sns_ga_nxt(scsi_qla_host_t *vha, fc_port_t *fcport)
 	if (rval != QLA_SUCCESS) {
 		/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG2_3(printk("scsi(%ld): GA_NXT Send SNS failed (%d).\n",
 		    vha->host_no, rval));
 	} else if (sns_cmd->p.gan_data[8] != 0x80 ||
@@ -947,6 +1188,8 @@ qla2x00_sns_ga_nxt(scsi_qla_host_t *vha, fc_port_t *fcport)
 		    "ga_nxt_rsp:\n", vha->host_no));
 		DEBUG2_3(qla2x00_dump_buffer(sns_cmd->p.gan_data, 16));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ql_dbg(ql_dbg_disc, vha, 0x205f,
 		    "GA_NXT Send SNS failed (%d).\n", rval);
 	} else if (sns_cmd->p.gan_data[8] != 0x80 ||
@@ -955,7 +1198,10 @@ qla2x00_sns_ga_nxt(scsi_qla_host_t *vha, fc_port_t *fcport)
 		    "GA_NXT failed, rejected request ga_nxt_rsp:\n");
 		ql_dump_buffer(ql_dbg_disc + ql_dbg_buffer, vha, 0x2074,
 		    sns_cmd->p.gan_data, 16);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		rval = QLA_FUNCTION_FAILED;
 	} else {
 		/* Populate fc_port_t entry. */
@@ -970,6 +1216,7 @@ qla2x00_sns_ga_nxt(scsi_qla_host_t *vha, fc_port_t *fcport)
 		    sns_cmd->p.gan_data[16] != NS_NL_PORT_TYPE)
 			fcport->d_id.b.domain = 0xf0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		DEBUG2_3(printk("scsi(%ld): GA_NXT entry - "
 		    "nn %02x%02x%02x%02x%02x%02x%02x%02x "
@@ -996,6 +1243,14 @@ qla2x00_sns_ga_nxt(scsi_qla_host_t *vha, fc_port_t *fcport)
 =======
 		    fcport->d_id.b.al_pa);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2061,
+		    "GA_NXT entry - nn %8phN pn %8phN "
+		    "port_id=%02x%02x%02x.\n",
+		    fcport->node_name, fcport->port_name,
+		    fcport->d_id.b.domain, fcport->d_id.b.area,
+		    fcport->d_id.b.al_pa);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return (rval);
@@ -1021,20 +1276,30 @@ qla2x00_sns_gid_pt(scsi_qla_host_t *vha, sw_info_t *list)
 	uint8_t		*entry;
 	struct sns_cmd_pkt	*sns_cmd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	uint16_t gid_pt_sns_data_size;
 
 	gid_pt_sns_data_size = qla2x00_gid_pt_rsp_size(vha);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint16_t gid_pt_sns_data_size;
+
+	gid_pt_sns_data_size = qla2x00_gid_pt_rsp_size(vha);
+>>>>>>> refs/remotes/origin/master
 
 	/* Issue GID_PT. */
 	/* Prepare SNS command request. */
 	sns_cmd = qla2x00_prep_sns_cmd(vha, GID_PT_CMD, GID_PT_SNS_SCMD_LEN,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    GID_PT_SNS_DATA_SIZE);
 =======
 	    gid_pt_sns_data_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    gid_pt_sns_data_size);
+>>>>>>> refs/remotes/origin/master
 
 	/* Prepare SNS command arguments -- port_type. */
 	sns_cmd->p.cmd.param[0] = NS_NX_PORT_TYPE;
@@ -1044,6 +1309,7 @@ qla2x00_sns_gid_pt(scsi_qla_host_t *vha, sw_info_t *list)
 	    sizeof(struct sns_cmd_pkt));
 	if (rval != QLA_SUCCESS) {
 		/*EMPTY*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 		DEBUG2_3(printk("scsi(%ld): GID_PT Send SNS failed (%d).\n",
 		    vha->host_no, rval));
@@ -1057,6 +1323,8 @@ qla2x00_sns_gid_pt(scsi_qla_host_t *vha, sw_info_t *list)
 		/* Set port IDs in switch info list. */
 		for (i = 0; i < MAX_FIBRE_DEVICES; i++) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ql_dbg(ql_dbg_disc, vha, 0x206d,
 		    "GID_PT Send SNS failed (%d).\n", rval);
 	} else if (sns_cmd->p.gid_data[8] != 0x80 ||
@@ -1069,7 +1337,10 @@ qla2x00_sns_gid_pt(scsi_qla_host_t *vha, sw_info_t *list)
 	} else {
 		/* Set port IDs in switch info list. */
 		for (i = 0; i < ha->max_fibre_devices; i++) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			entry = &sns_cmd->p.gid_data[(i * 4) + 16];
 			list[i].d_id.b.domain = entry[1];
 			list[i].d_id.b.area = entry[2];
@@ -1089,10 +1360,14 @@ qla2x00_sns_gid_pt(scsi_qla_host_t *vha, sw_info_t *list)
 		 * the overload.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (i == MAX_FIBRE_DEVICES)
 =======
 		if (i == ha->max_fibre_devices)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (i == ha->max_fibre_devices)
+>>>>>>> refs/remotes/origin/master
 			rval = QLA_FUNCTION_FAILED;
 	}
 
@@ -1112,19 +1387,27 @@ static int
 qla2x00_sns_gpn_id(scsi_qla_host_t *vha, sw_info_t *list)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int		rval;
 =======
 	int		rval = QLA_SUCCESS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int		rval = QLA_SUCCESS;
+>>>>>>> refs/remotes/origin/master
 	struct qla_hw_data *ha = vha->hw;
 	uint16_t	i;
 	struct sns_cmd_pkt	*sns_cmd;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < MAX_FIBRE_DEVICES; i++) {
 =======
 	for (i = 0; i < ha->max_fibre_devices; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < ha->max_fibre_devices; i++) {
+>>>>>>> refs/remotes/origin/master
 		/* Issue GPN_ID */
 		/* Prepare SNS command request. */
 		sns_cmd = qla2x00_prep_sns_cmd(vha, GPN_ID_CMD,
@@ -1141,6 +1424,7 @@ qla2x00_sns_gpn_id(scsi_qla_host_t *vha, sw_info_t *list)
 		if (rval != QLA_SUCCESS) {
 			/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DEBUG2_3(printk("scsi(%ld): GPN_ID Send SNS failed "
 			    "(%d).\n", vha->host_no, rval));
 		} else if (sns_cmd->p.gpn_data[8] != 0x80 ||
@@ -1149,15 +1433,22 @@ qla2x00_sns_gpn_id(scsi_qla_host_t *vha, sw_info_t *list)
 			    "request, gpn_rsp:\n", vha->host_no));
 			DEBUG2_3(qla2x00_dump_buffer(sns_cmd->p.gpn_data, 16));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			ql_dbg(ql_dbg_disc, vha, 0x2032,
 			    "GPN_ID Send SNS failed (%d).\n", rval);
 		} else if (sns_cmd->p.gpn_data[8] != 0x80 ||
 		    sns_cmd->p.gpn_data[9] != 0x02) {
 			ql_dbg(ql_dbg_disc + ql_dbg_buffer, vha, 0x207e,
 			    "GPN_ID failed, rejected request, gpn_rsp:\n");
+<<<<<<< HEAD
 			ql_dump_buffer(ql_dbg_disc, vha, 0x207f,
 			    sns_cmd->p.gpn_data, 16);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ql_dump_buffer(ql_dbg_disc + ql_dbg_buffer, vha, 0x207f,
+			    sns_cmd->p.gpn_data, 16);
+>>>>>>> refs/remotes/origin/master
 			rval = QLA_FUNCTION_FAILED;
 		} else {
 			/* Save portname */
@@ -1186,19 +1477,27 @@ static int
 qla2x00_sns_gnn_id(scsi_qla_host_t *vha, sw_info_t *list)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int		rval;
 =======
 	int		rval = QLA_SUCCESS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int		rval = QLA_SUCCESS;
+>>>>>>> refs/remotes/origin/master
 	struct qla_hw_data *ha = vha->hw;
 	uint16_t	i;
 	struct sns_cmd_pkt	*sns_cmd;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < MAX_FIBRE_DEVICES; i++) {
 =======
 	for (i = 0; i < ha->max_fibre_devices; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < ha->max_fibre_devices; i++) {
+>>>>>>> refs/remotes/origin/master
 		/* Issue GNN_ID */
 		/* Prepare SNS command request. */
 		sns_cmd = qla2x00_prep_sns_cmd(vha, GNN_ID_CMD,
@@ -1215,6 +1514,7 @@ qla2x00_sns_gnn_id(scsi_qla_host_t *vha, sw_info_t *list)
 		if (rval != QLA_SUCCESS) {
 			/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DEBUG2_3(printk("scsi(%ld): GNN_ID Send SNS failed "
 			    "(%d).\n", vha->host_no, rval));
 		} else if (sns_cmd->p.gnn_data[8] != 0x80 ||
@@ -1223,6 +1523,8 @@ qla2x00_sns_gnn_id(scsi_qla_host_t *vha, sw_info_t *list)
 			    "request, gnn_rsp:\n", vha->host_no));
 			DEBUG2_3(qla2x00_dump_buffer(sns_cmd->p.gnn_data, 16));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			ql_dbg(ql_dbg_disc, vha, 0x203f,
 			    "GNN_ID Send SNS failed (%d).\n", rval);
 		} else if (sns_cmd->p.gnn_data[8] != 0x80 ||
@@ -1231,13 +1533,17 @@ qla2x00_sns_gnn_id(scsi_qla_host_t *vha, sw_info_t *list)
 			    "GNN_ID failed, rejected request, gnn_rsp:\n");
 			ql_dump_buffer(ql_dbg_disc + ql_dbg_buffer, vha, 0x207a,
 			    sns_cmd->p.gnn_data, 16);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			rval = QLA_FUNCTION_FAILED;
 		} else {
 			/* Save nodename */
 			memcpy(list[i].node_name, &sns_cmd->p.gnn_data[16],
 			    WWN_SIZE);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 			DEBUG2_3(printk("scsi(%ld): GID_PT entry - "
 			    "nn %02x%02x%02x%02x%02x%02x%02x%02x "
@@ -1264,6 +1570,14 @@ qla2x00_sns_gnn_id(scsi_qla_host_t *vha, sw_info_t *list)
 =======
 			    list[i].d_id.b.al_pa);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ql_dbg(ql_dbg_disc, vha, 0x206e,
+			    "GID_PT entry - nn %8phN pn %8phN "
+			    "port_id=%02x%02x%02x.\n",
+			    list[i].node_name, list[i].port_name,
+			    list[i].d_id.b.domain, list[i].d_id.b.area,
+			    list[i].d_id.b.al_pa);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* Last device exit. */
@@ -1307,6 +1621,7 @@ qla2x00_sns_rft_id(scsi_qla_host_t *vha)
 	if (rval != QLA_SUCCESS) {
 		/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG2_3(printk("scsi(%ld): RFT_ID Send SNS failed (%d).\n",
 		    vha->host_no, rval));
 	} else if (sns_cmd->p.rft_data[8] != 0x80 ||
@@ -1319,6 +1634,8 @@ qla2x00_sns_rft_id(scsi_qla_host_t *vha)
 		DEBUG2(printk("scsi(%ld): RFT_ID exiting normally.\n",
 		    vha->host_no));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ql_dbg(ql_dbg_disc, vha, 0x2060,
 		    "RFT_ID Send SNS failed (%d).\n", rval);
 	} else if (sns_cmd->p.rft_data[8] != 0x80 ||
@@ -1331,7 +1648,10 @@ qla2x00_sns_rft_id(scsi_qla_host_t *vha)
 	} else {
 		ql_dbg(ql_dbg_disc, vha, 0x2073,
 		    "RFT_ID exiting normally.\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return (rval);
@@ -1378,6 +1698,7 @@ qla2x00_sns_rnn_id(scsi_qla_host_t *vha)
 	if (rval != QLA_SUCCESS) {
 		/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG2_3(printk("scsi(%ld): RNN_ID Send SNS failed (%d).\n",
 		    vha->host_no, rval));
 	} else if (sns_cmd->p.rnn_data[8] != 0x80 ||
@@ -1390,6 +1711,8 @@ qla2x00_sns_rnn_id(scsi_qla_host_t *vha)
 		DEBUG2(printk("scsi(%ld): RNN_ID exiting normally.\n",
 		    vha->host_no));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ql_dbg(ql_dbg_disc, vha, 0x204a,
 		    "RNN_ID Send SNS failed (%d).\n", rval);
 	} else if (sns_cmd->p.rnn_data[8] != 0x80 ||
@@ -1402,7 +1725,10 @@ qla2x00_sns_rnn_id(scsi_qla_host_t *vha)
 	} else {
 		ql_dbg(ql_dbg_disc, vha, 0x204c,
 		    "RNN_ID exiting normally.\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return (rval);
@@ -1418,16 +1744,21 @@ static int
 qla2x00_mgmt_svr_login(scsi_qla_host_t *vha)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 =======
 	int ret, rval;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret, rval;
+>>>>>>> refs/remotes/origin/master
 	uint16_t mb[MAILBOX_REGISTER_COUNT];
 	struct qla_hw_data *ha = vha->hw;
 	ret = QLA_SUCCESS;
 	if (vha->flags.management_server_logged_in)
 		return ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ha->isp_ops->fabric_login(vha, vha->mgmt_svr_loop_id, 0xff, 0xff, 0xfa,
 	    mb, BIT_1|BIT_0);
@@ -1439,6 +1770,10 @@ qla2x00_mgmt_svr_login(scsi_qla_host_t *vha)
 =======
 	rval = ha->isp_ops->fabric_login(vha, vha->mgmt_svr_loop_id, 0xff, 0xff,
 	    0xfa, mb, BIT_1|BIT_0);
+=======
+	rval = ha->isp_ops->fabric_login(vha, vha->mgmt_svr_loop_id, 0xff, 0xff,
+	    0xfa, mb, BIT_1);
+>>>>>>> refs/remotes/origin/master
 	if (rval != QLA_SUCCESS || mb[0] != MBS_COMMAND_COMPLETE) {
 		if (rval == QLA_MEMORY_ALLOC_FAILED)
 			ql_dbg(ql_dbg_disc, vha, 0x2085,
@@ -1450,7 +1785,10 @@ qla2x00_mgmt_svr_login(scsi_qla_host_t *vha)
 			    "mb[0]=%x mb[1]=%x mb[2]=%x mb[6]=%x mb[7]=%x.\n",
 			    vha->mgmt_svr_loop_id, mb[0], mb[1], mb[2], mb[6],
 			    mb[7]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = QLA_FUNCTION_FAILED;
 	} else
 		vha->flags.management_server_logged_in = 1;
@@ -1562,6 +1900,7 @@ qla2x00_update_ms_fdmi_iocb(scsi_qla_host_t *vha, uint32_t req_size)
  * Returns a pointer to the intitialized @ct_req.
  */
 static inline struct ct_sns_req *
+<<<<<<< HEAD
 qla2x00_prep_ct_fdmi_req(struct ct_sns_req *ct_req, uint16_t cmd,
     uint16_t rsp_size)
 {
@@ -1574,6 +1913,20 @@ qla2x00_prep_ct_fdmi_req(struct ct_sns_req *ct_req, uint16_t cmd,
 	ct_req->max_rsp_size = cpu_to_be16((rsp_size - 16) / 4);
 
 	return ct_req;
+=======
+qla2x00_prep_ct_fdmi_req(struct ct_sns_pkt *p, uint16_t cmd,
+    uint16_t rsp_size)
+{
+	memset(p, 0, sizeof(struct ct_sns_pkt));
+
+	p->p.req.header.revision = 0x01;
+	p->p.req.header.gs_type = 0xFA;
+	p->p.req.header.gs_subtype = 0x10;
+	p->p.req.command = cpu_to_be16(cmd);
+	p->p.req.max_rsp_size = cpu_to_be16((rsp_size - 16) / 4);
+
+	return &p->p.req;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1601,8 +1954,12 @@ qla2x00_fdmi_rhba(scsi_qla_host_t *vha)
 	ms_pkt = ha->isp_ops->prep_ms_fdmi_iocb(vha, 0, RHBA_RSP_SIZE);
 
 	/* Prepare CT request */
+<<<<<<< HEAD
 	ct_req = qla2x00_prep_ct_fdmi_req(&ha->ct_sns->p.req, RHBA_CMD,
 	    RHBA_RSP_SIZE);
+=======
+	ct_req = qla2x00_prep_ct_fdmi_req(ha->ct_sns, RHBA_CMD, RHBA_RSP_SIZE);
+>>>>>>> refs/remotes/origin/master
 	ct_rsp = &ha->ct_sns->p.rsp;
 
 	/* Prepare FDMI command arguments -- attribute block, attributes. */
@@ -1624,6 +1981,7 @@ qla2x00_fdmi_rhba(scsi_qla_host_t *vha)
 	size += 4 + WWN_SIZE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): NODENAME=%02x%02x%02x%02x%02x%02x%02x%02x.\n",
 	    __func__, vha->host_no,
 	    eiter->a.node_name[0], eiter->a.node_name[1], eiter->a.node_name[2],
@@ -1637,16 +1995,26 @@ qla2x00_fdmi_rhba(scsi_qla_host_t *vha)
 	    eiter->a.node_name[4], eiter->a.node_name[5],
 	    eiter->a.node_name[6], eiter->a.node_name[7]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ql_dbg(ql_dbg_disc, vha, 0x2025,
+	    "NodeName = %8phN.\n", eiter->a.node_name);
+>>>>>>> refs/remotes/origin/master
 
 	/* Manufacturer. */
 	eiter = (struct ct_fdmi_hba_attr *) (entries + size);
 	eiter->type = __constant_cpu_to_be16(FDMI_HBA_MANUFACTURER);
+<<<<<<< HEAD
 	strcpy(eiter->a.manufacturer, "QLogic Corporation");
 	alen = strlen(eiter->a.manufacturer);
+=======
+	alen = strlen(QLA2XXX_MANUFACTURER);
+	strncpy(eiter->a.manufacturer, QLA2XXX_MANUFACTURER, alen + 1);
+>>>>>>> refs/remotes/origin/master
 	alen += (alen & 3) ? (4 - (alen & 3)) : 4;
 	eiter->len = cpu_to_be16(4 + alen);
 	size += 4 + alen;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): MANUFACTURER=%s.\n", __func__, vha->host_no,
 	    eiter->a.manufacturer));
@@ -1654,6 +2022,10 @@ qla2x00_fdmi_rhba(scsi_qla_host_t *vha)
 	ql_dbg(ql_dbg_disc, vha, 0x2026,
 	    "Manufacturer = %s.\n", eiter->a.manufacturer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ql_dbg(ql_dbg_disc, vha, 0x2026,
+	    "Manufacturer = %s.\n", eiter->a.manufacturer);
+>>>>>>> refs/remotes/origin/master
 
 	/* Serial number. */
 	eiter = (struct ct_fdmi_hba_attr *) (entries + size);
@@ -1666,12 +2038,17 @@ qla2x00_fdmi_rhba(scsi_qla_host_t *vha)
 	size += 4 + alen;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): SERIALNO=%s.\n", __func__, vha->host_no,
 	    eiter->a.serial_num));
 =======
 	ql_dbg(ql_dbg_disc, vha, 0x2027,
 	    "Serial no. = %s.\n", eiter->a.serial_num);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ql_dbg(ql_dbg_disc, vha, 0x2027,
+	    "Serial no. = %s.\n", eiter->a.serial_num);
+>>>>>>> refs/remotes/origin/master
 
 	/* Model name. */
 	eiter = (struct ct_fdmi_hba_attr *) (entries + size);
@@ -1683,23 +2060,33 @@ qla2x00_fdmi_rhba(scsi_qla_host_t *vha)
 	size += 4 + alen;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): MODEL_NAME=%s.\n", __func__, vha->host_no,
 	    eiter->a.model));
 =======
 	ql_dbg(ql_dbg_disc, vha, 0x2028,
 	    "Model Name = %s.\n", eiter->a.model);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ql_dbg(ql_dbg_disc, vha, 0x2028,
+	    "Model Name = %s.\n", eiter->a.model);
+>>>>>>> refs/remotes/origin/master
 
 	/* Model description. */
 	eiter = (struct ct_fdmi_hba_attr *) (entries + size);
 	eiter->type = __constant_cpu_to_be16(FDMI_HBA_MODEL_DESCRIPTION);
+<<<<<<< HEAD
 	if (ha->model_desc)
 		strncpy(eiter->a.model_desc, ha->model_desc, 80);
+=======
+	strncpy(eiter->a.model_desc, ha->model_desc, 80);
+>>>>>>> refs/remotes/origin/master
 	alen = strlen(eiter->a.model_desc);
 	alen += (alen & 3) ? (4 - (alen & 3)) : 4;
 	eiter->len = cpu_to_be16(4 + alen);
 	size += 4 + alen;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): MODEL_DESC=%s.\n", __func__, vha->host_no,
 	    eiter->a.model_desc));
@@ -1707,6 +2094,10 @@ qla2x00_fdmi_rhba(scsi_qla_host_t *vha)
 	ql_dbg(ql_dbg_disc, vha, 0x2029,
 	    "Model Desc = %s.\n", eiter->a.model_desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ql_dbg(ql_dbg_disc, vha, 0x2029,
+	    "Model Desc = %s.\n", eiter->a.model_desc);
+>>>>>>> refs/remotes/origin/master
 
 	/* Hardware version. */
 	eiter = (struct ct_fdmi_hba_attr *) (entries + size);
@@ -1718,12 +2109,17 @@ qla2x00_fdmi_rhba(scsi_qla_host_t *vha)
 	size += 4 + alen;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): HARDWAREVER=%s.\n", __func__, vha->host_no,
 	    eiter->a.hw_version));
 =======
 	ql_dbg(ql_dbg_disc, vha, 0x202a,
 	    "Hardware ver = %s.\n", eiter->a.hw_version);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ql_dbg(ql_dbg_disc, vha, 0x202a,
+	    "Hardware ver = %s.\n", eiter->a.hw_version);
+>>>>>>> refs/remotes/origin/master
 
 	/* Driver version. */
 	eiter = (struct ct_fdmi_hba_attr *) (entries + size);
@@ -1735,12 +2131,17 @@ qla2x00_fdmi_rhba(scsi_qla_host_t *vha)
 	size += 4 + alen;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): DRIVERVER=%s.\n", __func__, vha->host_no,
 	    eiter->a.driver_version));
 =======
 	ql_dbg(ql_dbg_disc, vha, 0x202b,
 	    "Driver ver = %s.\n", eiter->a.driver_version);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ql_dbg(ql_dbg_disc, vha, 0x202b,
+	    "Driver ver = %s.\n", eiter->a.driver_version);
+>>>>>>> refs/remotes/origin/master
 
 	/* Option ROM version. */
 	eiter = (struct ct_fdmi_hba_attr *) (entries + size);
@@ -1752,12 +2153,17 @@ qla2x00_fdmi_rhba(scsi_qla_host_t *vha)
 	size += 4 + alen;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): OPTROMVER=%s.\n", __func__, vha->host_no,
 	    eiter->a.orom_version));
 =======
 	ql_dbg(ql_dbg_disc, vha , 0x202c,
 	    "Optrom vers = %s.\n", eiter->a.orom_version);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ql_dbg(ql_dbg_disc, vha , 0x202c,
+	    "Optrom vers = %s.\n", eiter->a.orom_version);
+>>>>>>> refs/remotes/origin/master
 
 	/* Firmware version */
 	eiter = (struct ct_fdmi_hba_attr *) (entries + size);
@@ -1769,16 +2175,22 @@ qla2x00_fdmi_rhba(scsi_qla_host_t *vha)
 	size += 4 + alen;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): FIRMWAREVER=%s.\n", __func__, vha->host_no,
 	    eiter->a.fw_version));
 =======
 	ql_dbg(ql_dbg_disc, vha, 0x202d,
 	    "Firmware vers = %s.\n", eiter->a.fw_version);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ql_dbg(ql_dbg_disc, vha, 0x202d,
+	    "Firmware vers = %s.\n", eiter->a.fw_version);
+>>>>>>> refs/remotes/origin/master
 
 	/* Update MS request size. */
 	qla2x00_update_ms_fdmi_iocb(vha, size + 16);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): RHBA identifier="
 	    "%02x%02x%02x%02x%02x%02x%02x%02x size=%d.\n", __func__,
@@ -1803,6 +2215,13 @@ qla2x00_fdmi_rhba(scsi_qla_host_t *vha)
 	ql_dump_buffer(ql_dbg_disc + ql_dbg_buffer, vha, 0x2076,
 	    entries, size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ql_dbg(ql_dbg_disc, vha, 0x202e,
+	    "RHBA identifier = %8phN size=%d.\n",
+	    ct_req->req.rhba.hba_identifier, size);
+	ql_dump_buffer(ql_dbg_disc + ql_dbg_buffer, vha, 0x2076,
+	    entries, size);
+>>>>>>> refs/remotes/origin/master
 
 	/* Execute MS IOCB */
 	rval = qla2x00_issue_iocb(vha, ha->ms_iocb, ha->ms_iocb_dma,
@@ -1810,18 +2229,24 @@ qla2x00_fdmi_rhba(scsi_qla_host_t *vha)
 	if (rval != QLA_SUCCESS) {
 		/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG2_3(printk("scsi(%ld): RHBA issue IOCB failed (%d).\n",
 		    vha->host_no, rval));
 =======
 		ql_dbg(ql_dbg_disc, vha, 0x2030,
 		    "RHBA issue IOCB failed (%d).\n", rval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2030,
+		    "RHBA issue IOCB failed (%d).\n", rval);
+>>>>>>> refs/remotes/origin/master
 	} else if (qla2x00_chk_ms_status(vha, ms_pkt, ct_rsp, "RHBA") !=
 	    QLA_SUCCESS) {
 		rval = QLA_FUNCTION_FAILED;
 		if (ct_rsp->header.reason_code == CT_REASON_CANNOT_PERFORM &&
 		    ct_rsp->header.explanation_code ==
 		    CT_EXPL_ALREADY_REGISTERED) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			DEBUG2_13(printk("%s(%ld): HBA already registered.\n",
 			    __func__, vha->host_no));
@@ -1831,6 +2256,8 @@ qla2x00_fdmi_rhba(scsi_qla_host_t *vha)
 		DEBUG2(printk("scsi(%ld): RHBA exiting normally.\n",
 		    vha->host_no));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			ql_dbg(ql_dbg_disc, vha, 0x2034,
 			    "HBA already registered.\n");
 			rval = QLA_ALREADY_REGISTERED;
@@ -1838,7 +2265,10 @@ qla2x00_fdmi_rhba(scsi_qla_host_t *vha)
 	} else {
 		ql_dbg(ql_dbg_disc, vha, 0x2035,
 		    "RHBA exiting normally.\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return rval;
@@ -1865,13 +2295,18 @@ qla2x00_fdmi_dhba(scsi_qla_host_t *vha)
 	    DHBA_RSP_SIZE);
 
 	/* Prepare CT request */
+<<<<<<< HEAD
 	ct_req = qla2x00_prep_ct_fdmi_req(&ha->ct_sns->p.req, DHBA_CMD,
 	    DHBA_RSP_SIZE);
+=======
+	ct_req = qla2x00_prep_ct_fdmi_req(ha->ct_sns, DHBA_CMD, DHBA_RSP_SIZE);
+>>>>>>> refs/remotes/origin/master
 	ct_rsp = &ha->ct_sns->p.rsp;
 
 	/* Prepare FDMI command arguments -- portname. */
 	memcpy(ct_req->req.dhba.port_name, vha->port_name, WWN_SIZE);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): DHBA portname="
 	    "%02x%02x%02x%02x%02x%02x%02x%02x.\n", __func__, vha->host_no,
@@ -1887,6 +2322,10 @@ qla2x00_fdmi_dhba(scsi_qla_host_t *vha)
 	    ct_req->req.dhba.port_name[4], ct_req->req.dhba.port_name[5],
 	    ct_req->req.dhba.port_name[6], ct_req->req.dhba.port_name[7]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ql_dbg(ql_dbg_disc, vha, 0x2036,
+	    "DHBA portname = %8phN.\n", ct_req->req.dhba.port_name);
+>>>>>>> refs/remotes/origin/master
 
 	/* Execute MS IOCB */
 	rval = qla2x00_issue_iocb(vha, ha->ms_iocb, ha->ms_iocb_dma,
@@ -1894,16 +2333,22 @@ qla2x00_fdmi_dhba(scsi_qla_host_t *vha)
 	if (rval != QLA_SUCCESS) {
 		/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG2_3(printk("scsi(%ld): DHBA issue IOCB failed (%d).\n",
 		    vha->host_no, rval));
 =======
 		ql_dbg(ql_dbg_disc, vha, 0x2037,
 		    "DHBA issue IOCB failed (%d).\n", rval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2037,
+		    "DHBA issue IOCB failed (%d).\n", rval);
+>>>>>>> refs/remotes/origin/master
 	} else if (qla2x00_chk_ms_status(vha, ms_pkt, ct_rsp, "DHBA") !=
 	    QLA_SUCCESS) {
 		rval = QLA_FUNCTION_FAILED;
 	} else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		DEBUG2(printk("scsi(%ld): DHBA exiting normally.\n",
 		    vha->host_no));
@@ -1911,6 +2356,10 @@ qla2x00_fdmi_dhba(scsi_qla_host_t *vha)
 		ql_dbg(ql_dbg_disc, vha, 0x2038,
 		    "DHBA exiting normally.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2038,
+		    "DHBA exiting normally.\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return rval;
@@ -1941,8 +2390,12 @@ qla2x00_fdmi_rpa(scsi_qla_host_t *vha)
 	ms_pkt = ha->isp_ops->prep_ms_fdmi_iocb(vha, 0, RPA_RSP_SIZE);
 
 	/* Prepare CT request */
+<<<<<<< HEAD
 	ct_req = qla2x00_prep_ct_fdmi_req(&ha->ct_sns->p.req, RPA_CMD,
 	    RPA_RSP_SIZE);
+=======
+	ct_req = qla2x00_prep_ct_fdmi_req(ha->ct_sns, RPA_CMD, RPA_RSP_SIZE);
+>>>>>>> refs/remotes/origin/master
 	ct_rsp = &ha->ct_sns->p.rsp;
 
 	/* Prepare FDMI command arguments -- attribute block, attributes. */
@@ -1962,25 +2415,35 @@ qla2x00_fdmi_rpa(scsi_qla_host_t *vha)
 	size += 4 + 32;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): FC4_TYPES=%02x %02x.\n", __func__,
 		vha->host_no, eiter->a.fc4_types[2],
 		eiter->a.fc4_types[1]));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ql_dbg(ql_dbg_disc, vha, 0x2039,
 	    "FC4_TYPES=%02x %02x.\n",
 	    eiter->a.fc4_types[2],
 	    eiter->a.fc4_types[1]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Supported speed. */
 	eiter = (struct ct_fdmi_port_attr *) (entries + size);
 	eiter->type = __constant_cpu_to_be16(FDMI_PORT_SUPPORT_SPEED);
 	eiter->len = __constant_cpu_to_be16(4 + 4);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (IS_QLA8XXX_TYPE(ha))
 =======
 	if (IS_CNA_CAPABLE(ha))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (IS_CNA_CAPABLE(ha))
+>>>>>>> refs/remotes/origin/master
 		eiter->a.sup_speed = __constant_cpu_to_be32(
 		    FDMI_PORT_SPEED_10GB);
 	else if (IS_QLA25XX(ha))
@@ -2000,12 +2463,17 @@ qla2x00_fdmi_rpa(scsi_qla_host_t *vha)
 	size += 4 + 4;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): SUPPORTED_SPEED=%x.\n", __func__, vha->host_no,
 	    eiter->a.sup_speed));
 =======
 	ql_dbg(ql_dbg_disc, vha, 0x203a,
 	    "Supported_Speed=%x.\n", eiter->a.sup_speed);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ql_dbg(ql_dbg_disc, vha, 0x203a,
+	    "Supported_Speed=%x.\n", eiter->a.sup_speed);
+>>>>>>> refs/remotes/origin/master
 
 	/* Current speed. */
 	eiter = (struct ct_fdmi_port_attr *) (entries + size);
@@ -2033,12 +2501,18 @@ qla2x00_fdmi_rpa(scsi_qla_host_t *vha)
 		    __constant_cpu_to_be32(FDMI_PORT_SPEED_10GB);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case PORT_SPEED_16GB:
 		eiter->a.cur_speed =
 		    __constant_cpu_to_be32(FDMI_PORT_SPEED_16GB);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		eiter->a.cur_speed =
 		    __constant_cpu_to_be32(FDMI_PORT_SPEED_UNKNOWN);
@@ -2047,12 +2521,17 @@ qla2x00_fdmi_rpa(scsi_qla_host_t *vha)
 	size += 4 + 4;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): CURRENT_SPEED=%x.\n", __func__, vha->host_no,
 	    eiter->a.cur_speed));
 =======
 	ql_dbg(ql_dbg_disc, vha, 0x203b,
 	    "Current_Speed=%x.\n", eiter->a.cur_speed);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ql_dbg(ql_dbg_disc, vha, 0x203b,
+	    "Current_Speed=%x.\n", eiter->a.cur_speed);
+>>>>>>> refs/remotes/origin/master
 
 	/* Max frame size. */
 	eiter = (struct ct_fdmi_port_attr *) (entries + size);
@@ -2065,22 +2544,33 @@ qla2x00_fdmi_rpa(scsi_qla_host_t *vha)
 	size += 4 + 4;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): MAX_FRAME_SIZE=%x.\n", __func__, vha->host_no,
 	    eiter->a.max_frame_size));
 =======
 	ql_dbg(ql_dbg_disc, vha, 0x203c,
 	    "Max_Frame_Size=%x.\n", eiter->a.max_frame_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ql_dbg(ql_dbg_disc, vha, 0x203c,
+	    "Max_Frame_Size=%x.\n", eiter->a.max_frame_size);
+>>>>>>> refs/remotes/origin/master
 
 	/* OS device name. */
 	eiter = (struct ct_fdmi_port_attr *) (entries + size);
 	eiter->type = __constant_cpu_to_be16(FDMI_PORT_OS_DEVICE_NAME);
+<<<<<<< HEAD
 	strcpy(eiter->a.os_dev_name, QLA2XXX_DRIVER_NAME);
 	alen = strlen(eiter->a.os_dev_name);
+=======
+	alen = strlen(QLA2XXX_DRIVER_NAME);
+	strncpy(eiter->a.os_dev_name, QLA2XXX_DRIVER_NAME, alen + 1);
+>>>>>>> refs/remotes/origin/master
 	alen += (alen & 3) ? (4 - (alen & 3)) : 4;
 	eiter->len = cpu_to_be16(4 + alen);
 	size += 4 + alen;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): OS_DEVICE_NAME=%s.\n", __func__, vha->host_no,
 	    eiter->a.os_dev_name));
@@ -2088,6 +2578,10 @@ qla2x00_fdmi_rpa(scsi_qla_host_t *vha)
 	ql_dbg(ql_dbg_disc, vha, 0x204b,
 	    "OS_Device_Name=%s.\n", eiter->a.os_dev_name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ql_dbg(ql_dbg_disc, vha, 0x204b,
+	    "OS_Device_Name=%s.\n", eiter->a.os_dev_name);
+>>>>>>> refs/remotes/origin/master
 
 	/* Hostname. */
 	if (strlen(fc_host_system_hostname(vha->host))) {
@@ -2103,17 +2597,23 @@ qla2x00_fdmi_rpa(scsi_qla_host_t *vha)
 		size += 4 + alen;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG13(printk("%s(%ld): HOSTNAME=%s.\n", __func__,
 		    vha->host_no, eiter->a.host_name));
 =======
 		ql_dbg(ql_dbg_disc, vha, 0x203d,
 		    "HostName=%s.\n", eiter->a.host_name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x203d,
+		    "HostName=%s.\n", eiter->a.host_name);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Update MS request size. */
 	qla2x00_update_ms_fdmi_iocb(vha, size + 16);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	DEBUG13(printk("%s(%ld): RPA portname="
 	    "%02x%02x%02x%02x%02x%02x%02x%02x size=%d.\n", __func__,
@@ -2134,6 +2634,12 @@ qla2x00_fdmi_rpa(scsi_qla_host_t *vha)
 	ql_dump_buffer(ql_dbg_disc + ql_dbg_buffer, vha, 0x2079,
 	    entries, size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ql_dbg(ql_dbg_disc, vha, 0x203e,
+	    "RPA portname= %8phN size=%d.\n", ct_req->req.rpa.port_name, size);
+	ql_dump_buffer(ql_dbg_disc + ql_dbg_buffer, vha, 0x2079,
+	    entries, size);
+>>>>>>> refs/remotes/origin/master
 
 	/* Execute MS IOCB */
 	rval = qla2x00_issue_iocb(vha, ha->ms_iocb, ha->ms_iocb_dma,
@@ -2141,16 +2647,22 @@ qla2x00_fdmi_rpa(scsi_qla_host_t *vha)
 	if (rval != QLA_SUCCESS) {
 		/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG2_3(printk("scsi(%ld): RPA issue IOCB failed (%d).\n",
 		    vha->host_no, rval));
 =======
 		ql_dbg(ql_dbg_disc, vha, 0x2040,
 		    "RPA issue IOCB failed (%d).\n", rval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2040,
+		    "RPA issue IOCB failed (%d).\n", rval);
+>>>>>>> refs/remotes/origin/master
 	} else if (qla2x00_chk_ms_status(vha, ms_pkt, ct_rsp, "RPA") !=
 	    QLA_SUCCESS) {
 		rval = QLA_FUNCTION_FAILED;
 	} else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		DEBUG2(printk("scsi(%ld): RPA exiting normally.\n",
 		    vha->host_no));
@@ -2158,6 +2670,10 @@ qla2x00_fdmi_rpa(scsi_qla_host_t *vha)
 		ql_dbg(ql_dbg_disc, vha, 0x2041,
 		    "RPA exiting nornally.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(ql_dbg_disc, vha, 0x2041,
+		    "RPA exiting nornally.\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return rval;
@@ -2175,7 +2691,12 @@ qla2x00_fdmi_register(scsi_qla_host_t *vha)
 	int rval;
        struct qla_hw_data *ha = vha->hw;
 
+<<<<<<< HEAD
 	if (IS_QLA2100(ha) || IS_QLA2200(ha))
+=======
+	if (IS_QLA2100(ha) || IS_QLA2200(ha) ||
+	    IS_QLAFX00(ha))
+>>>>>>> refs/remotes/origin/master
 		return QLA_FUNCTION_FAILED;
 
 	rval = qla2x00_mgmt_svr_login(vha);
@@ -2211,10 +2732,14 @@ int
 qla2x00_gfpn_id(scsi_qla_host_t *vha, sw_info_t *list)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int		rval;
 =======
 	int		rval = QLA_SUCCESS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int		rval = QLA_SUCCESS;
+>>>>>>> refs/remotes/origin/master
 	uint16_t	i;
 	struct qla_hw_data *ha = vha->hw;
 	ms_iocb_entry_t	*ms_pkt;
@@ -2225,17 +2750,25 @@ qla2x00_gfpn_id(scsi_qla_host_t *vha, sw_info_t *list)
 		return QLA_FUNCTION_FAILED;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < MAX_FIBRE_DEVICES; i++) {
 =======
 	for (i = 0; i < ha->max_fibre_devices; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < ha->max_fibre_devices; i++) {
+>>>>>>> refs/remotes/origin/master
 		/* Issue GFPN_ID */
 		/* Prepare common MS IOCB */
 		ms_pkt = ha->isp_ops->prep_ms_iocb(vha, GFPN_ID_REQ_SIZE,
 		    GFPN_ID_RSP_SIZE);
 
 		/* Prepare CT request */
+<<<<<<< HEAD
 		ct_req = qla2x00_prep_ct_req(&ha->ct_sns->p.req, GFPN_ID_CMD,
+=======
+		ct_req = qla2x00_prep_ct_req(ha->ct_sns, GFPN_ID_CMD,
+>>>>>>> refs/remotes/origin/master
 		    GFPN_ID_RSP_SIZE);
 		ct_rsp = &ha->ct_sns->p.rsp;
 
@@ -2250,12 +2783,15 @@ qla2x00_gfpn_id(scsi_qla_host_t *vha, sw_info_t *list)
 		if (rval != QLA_SUCCESS) {
 			/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DEBUG2_3(printk("scsi(%ld): GFPN_ID issue IOCB "
 			    "failed (%d).\n", vha->host_no, rval));
 		} else if (qla2x00_chk_ms_status(vha, ms_pkt, ct_rsp,
 		    "GFPN_ID") != QLA_SUCCESS) {
 			rval = QLA_FUNCTION_FAILED;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			ql_dbg(ql_dbg_disc, vha, 0x2023,
 			    "GFPN_ID issue IOCB failed (%d).\n", rval);
 			break;
@@ -2263,7 +2799,10 @@ qla2x00_gfpn_id(scsi_qla_host_t *vha, sw_info_t *list)
 		    "GFPN_ID") != QLA_SUCCESS) {
 			rval = QLA_FUNCTION_FAILED;
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			/* Save fabric portname */
 			memcpy(list[i].fabric_port_name,
@@ -2310,6 +2849,7 @@ qla24xx_prep_ms_fm_iocb(scsi_qla_host_t *vha, uint32_t req_size,
 
 
 static inline struct ct_sns_req *
+<<<<<<< HEAD
 qla24xx_prep_ct_fm_req(struct ct_sns_req *ct_req, uint16_t cmd,
     uint16_t rsp_size)
 {
@@ -2322,6 +2862,20 @@ qla24xx_prep_ct_fm_req(struct ct_sns_req *ct_req, uint16_t cmd,
 	ct_req->max_rsp_size = cpu_to_be16((rsp_size - 16) / 4);
 
 	return ct_req;
+=======
+qla24xx_prep_ct_fm_req(struct ct_sns_pkt *p, uint16_t cmd,
+    uint16_t rsp_size)
+{
+	memset(p, 0, sizeof(struct ct_sns_pkt));
+
+	p->p.req.header.revision = 0x01;
+	p->p.req.header.gs_type = 0xFA;
+	p->p.req.header.gs_subtype = 0x01;
+	p->p.req.command = cpu_to_be16(cmd);
+	p->p.req.max_rsp_size = cpu_to_be16((rsp_size - 16) / 4);
+
+	return &p->p.req;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -2351,18 +2905,27 @@ qla2x00_gpsc(scsi_qla_host_t *vha, sw_info_t *list)
 		return rval;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < MAX_FIBRE_DEVICES; i++) {
 =======
 	for (i = 0; i < ha->max_fibre_devices; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < ha->max_fibre_devices; i++) {
+>>>>>>> refs/remotes/origin/master
 		/* Issue GFPN_ID */
 		/* Prepare common MS IOCB */
 		ms_pkt = qla24xx_prep_ms_fm_iocb(vha, GPSC_REQ_SIZE,
 		    GPSC_RSP_SIZE);
 
 		/* Prepare CT request */
+<<<<<<< HEAD
 		ct_req = qla24xx_prep_ct_fm_req(&ha->ct_sns->p.req,
 		    GPSC_CMD, GPSC_RSP_SIZE);
+=======
+		ct_req = qla24xx_prep_ct_fm_req(ha->ct_sns, GPSC_CMD,
+		    GPSC_RSP_SIZE);
+>>>>>>> refs/remotes/origin/master
 		ct_rsp = &ha->ct_sns->p.rsp;
 
 		/* Prepare CT arguments -- port_name */
@@ -2375,12 +2938,17 @@ qla2x00_gpsc(scsi_qla_host_t *vha, sw_info_t *list)
 		if (rval != QLA_SUCCESS) {
 			/*EMPTY*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DEBUG2_3(printk("scsi(%ld): GPSC issue IOCB "
 			    "failed (%d).\n", vha->host_no, rval));
 =======
 			ql_dbg(ql_dbg_disc, vha, 0x2059,
 			    "GPSC issue IOCB failed (%d).\n", rval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ql_dbg(ql_dbg_disc, vha, 0x2059,
+			    "GPSC issue IOCB failed (%d).\n", rval);
+>>>>>>> refs/remotes/origin/master
 		} else if ((rval = qla2x00_chk_ms_status(vha, ms_pkt, ct_rsp,
 		    "GPSC")) != QLA_SUCCESS) {
 			/* FM command unsupported? */
@@ -2390,6 +2958,7 @@ qla2x00_gpsc(scsi_qla_host_t *vha, sw_info_t *list)
 			     ct_rsp->header.reason_code ==
 				CT_REASON_COMMAND_UNSUPPORTED)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				DEBUG2(printk("scsi(%ld): GPSC command "
 				    "unsupported, disabling query...\n",
 				    vha->host_no));
@@ -2398,6 +2967,11 @@ qla2x00_gpsc(scsi_qla_host_t *vha, sw_info_t *list)
 				    "GPSC command unsupported, disabling "
 				    "query.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ql_dbg(ql_dbg_disc, vha, 0x205a,
+				    "GPSC command unsupported, disabling "
+				    "query.\n");
+>>>>>>> refs/remotes/origin/master
 				ha->flags.gpsc_supported = 0;
 				rval = QLA_FUNCTION_FAILED;
 				break;
@@ -2421,6 +2995,7 @@ qla2x00_gpsc(scsi_qla_host_t *vha, sw_info_t *list)
 			case BIT_11:
 				list[i].fp_speed = PORT_SPEED_8GB;
 				break;
+<<<<<<< HEAD
 			}
 
 <<<<<<< HEAD
@@ -2447,6 +3022,19 @@ qla2x00_gpsc(scsi_qla_host_t *vha, sw_info_t *list)
 =======
 			    be16_to_cpu(ct_rsp->rsp.gpsc.speed));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			case BIT_10:
+				list[i].fp_speed = PORT_SPEED_16GB;
+				break;
+			}
+
+			ql_dbg(ql_dbg_disc, vha, 0x205b,
+			    "GPSC ext entry - fpn "
+			    "%8phN speeds=%04x speed=%04x.\n",
+			    list[i].fabric_port_name,
+			    be16_to_cpu(ct_rsp->rsp.gpsc.speeds),
+			    be16_to_cpu(ct_rsp->rsp.gpsc.speed));
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* Last device exit. */
@@ -2477,10 +3065,14 @@ qla2x00_gff_id(scsi_qla_host_t *vha, sw_info_t *list)
 	uint8_t fcp_scsi_features = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < MAX_FIBRE_DEVICES; i++) {
 =======
 	for (i = 0; i < ha->max_fibre_devices; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < ha->max_fibre_devices; i++) {
+>>>>>>> refs/remotes/origin/master
 		/* Set default FC4 Type as UNKNOWN so the default is to
 		 * Process this port */
 		list[i].fc4_type = FC4_TYPE_UNKNOWN;
@@ -2494,7 +3086,11 @@ qla2x00_gff_id(scsi_qla_host_t *vha, sw_info_t *list)
 		    GFF_ID_RSP_SIZE);
 
 		/* Prepare CT request */
+<<<<<<< HEAD
 		ct_req = qla2x00_prep_ct_req(&ha->ct_sns->p.req, GFF_ID_CMD,
+=======
+		ct_req = qla2x00_prep_ct_req(ha->ct_sns, GFF_ID_CMD,
+>>>>>>> refs/remotes/origin/master
 		    GFF_ID_RSP_SIZE);
 		ct_rsp = &ha->ct_sns->p.rsp;
 
@@ -2509,6 +3105,7 @@ qla2x00_gff_id(scsi_qla_host_t *vha, sw_info_t *list)
 
 		if (rval != QLA_SUCCESS) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DEBUG2_3(printk(KERN_INFO
 			    "scsi(%ld): GFF_ID issue IOCB failed "
 			    "(%d).\n", vha->host_no, rval));
@@ -2518,13 +3115,18 @@ qla2x00_gff_id(scsi_qla_host_t *vha, sw_info_t *list)
 			    "scsi(%ld): GFF_ID IOCB status had a "
 			    "failure status code\n", vha->host_no));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			ql_dbg(ql_dbg_disc, vha, 0x205c,
 			    "GFF_ID issue IOCB failed (%d).\n", rval);
 		} else if (qla2x00_chk_ms_status(vha, ms_pkt, ct_rsp,
 			       "GFF_ID") != QLA_SUCCESS) {
 			ql_dbg(ql_dbg_disc, vha, 0x205d,
 			    "GFF_ID IOCB status had a failure status code.\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			fcp_scsi_features =
 			   ct_rsp->rsp.gff_id.fc4_features[GFF_FCP_SCSI_OFFSET];

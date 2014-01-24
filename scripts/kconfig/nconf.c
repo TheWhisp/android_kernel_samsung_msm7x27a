@@ -8,14 +8,20 @@
 #define _GNU_SOURCE
 #include <string.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define LKC_DIRECT_LINK
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <stdlib.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "lkc.h"
 #include "nconf.h"
 #include <ctype.h>
 
+<<<<<<< HEAD
 static const char nconf_readme[] = N_(
 "Overview\n"
 "--------\n"
@@ -197,10 +203,185 @@ load_config_text[] = N_(
 "last retrieved.  Leave blank to abort."),
 load_config_help[] = N_(
 "\n"
+=======
+static const char nconf_global_help[] = N_(
+"Help windows\n"
+"------------\n"
+"o  Global help:  Unless in a data entry window, pressing <F1> will give \n"
+"   you the global help window, which you are just reading.\n"
+"\n"
+"o  A short version of the global help is available by pressing <F3>.\n"
+"\n"
+"o  Local help:  To get help related to the current menu entry, use any\n"
+"   of <?> <h>, or if in a data entry window then press <F1>.\n"
+"\n"
+"\n"
+"Menu entries\n"
+"------------\n"
+"This interface lets you select features and parameters for the kernel\n"
+"build.  Kernel features can either be built-in, modularized, or removed.\n"
+"Parameters must be entered as text or decimal or hexadecimal numbers.\n"
+"\n"
+"Menu entries beginning with following braces represent features that\n"
+"  [ ]  can be built in or removed\n"
+"  < >  can be built in, modularized or removed\n"
+"  { }  can be built in or modularized, are selected by another feature\n"
+"  - -  are selected by another feature\n"
+"  XXX  cannot be selected.  Symbol Info <F2> tells you why.\n"
+"*, M or whitespace inside braces means to build in, build as a module\n"
+"or to exclude the feature respectively.\n"
+"\n"
+"To change any of these features, highlight it with the movement keys\n"
+"listed below and press <y> to build it in, <m> to make it a module or\n"
+"<n> to remove it.  You may press the <Space> key to cycle through the\n"
+"available options.\n"
+"\n"
+"A trailing \"--->\" designates a submenu, a trailing \"----\" an\n"
+"empty submenu.\n"
+"\n"
+"Menu navigation keys\n"
+"----------------------------------------------------------------------\n"
+"Linewise up                 <Up>\n"
+"Linewise down               <Down>\n"
+"Pagewise up                 <Page Up>\n"
+"Pagewise down               <Page Down>\n"
+"First entry                 <Home>\n"
+"Last entry                  <End>\n"
+"Enter a submenu             <Right>  <Enter>\n"
+"Go back to parent menu      <Left>   <Esc>  <F5>\n"
+"Close a help window         <Enter>  <Esc>  <F5>\n"
+"Close entry window, apply   <Enter>\n"
+"Close entry window, forget  <Esc>  <F5>\n"
+"Start incremental, case-insensitive search for STRING in menu entries,\n"
+"    no regex support, STRING is displayed in upper left corner\n"
+"                            </>STRING\n"
+"    Remove last character   <Backspace>\n"
+"    Jump to next hit        <Down>\n"
+"    Jump to previous hit    <Up>\n"
+"Exit menu search mode       </>  <Esc>\n"
+"Search for configuration variables with or without leading CONFIG_\n"
+"                            <F8>RegExpr<Enter>\n"
+"Verbose search help         <F8><F1>\n"
+"----------------------------------------------------------------------\n"
+"\n"
+"Unless in a data entry window, key <1> may be used instead of <F1>,\n"
+"<2> instead of <F2>, etc.\n"
+"\n"
+"\n"
+"Radiolist (Choice list)\n"
+"-----------------------\n"
+"Use the movement keys listed above to select the option you wish to set\n"
+"and press <Space>.\n"
+"\n"
+"\n"
+"Data entry\n"
+"----------\n"
+"Enter the requested information and press <Enter>.  Hexadecimal values\n"
+"may be entered without the \"0x\" prefix.\n"
+"\n"
+"\n"
+"Text Box (Help Window)\n"
+"----------------------\n"
+"Use movement keys as listed in table above.\n"
+"\n"
+"Press any of <Enter> <Esc> <q> <F5> <F9> to exit.\n"
+"\n"
+"\n"
+"Alternate configuration files\n"
+"-----------------------------\n"
+"nconfig supports switching between different configurations.\n"
+"Press <F6> to save your current configuration.  Press <F7> and enter\n"
+"a file name to load a previously saved configuration.\n"
+"\n"
+"\n"
+"Terminal configuration\n"
+"----------------------\n"
+"If you use nconfig in a xterm window, make sure your TERM environment\n"
+"variable specifies a terminal configuration which supports at least\n"
+"16 colors.  Otherwise nconfig will look rather bad.\n"
+"\n"
+"If the \"stty size\" command reports the current terminalsize correctly,\n"
+"nconfig will adapt to sizes larger than the traditional 80x25 \"standard\"\n"
+"and display longer menus properly.\n"
+"\n"
+"\n"
+"Single menu mode\n"
+"----------------\n"
+"If you prefer to have all of the menu entries listed in a single menu,\n"
+"rather than the default multimenu hierarchy, run nconfig with\n"
+"NCONFIG_MODE environment variable set to single_menu.  Example:\n"
+"\n"
+"make NCONFIG_MODE=single_menu nconfig\n"
+"\n"
+"<Enter> will then unfold the appropriate category, or fold it if it\n"
+"is already unfolded.  Folded menu entries will be designated by a\n"
+"leading \"++>\" and unfolded entries by a leading \"-->\".\n"
+"\n"
+"Note that this mode can eventually be a little more CPU expensive than\n"
+"the default mode, especially with a larger number of unfolded submenus.\n"
+"\n"),
+menu_no_f_instructions[] = N_(
+"Legend:  [*] built-in  [ ] excluded  <M> module  < > module capable.\n"
+"Submenus are designated by a trailing \"--->\", empty ones by \"----\".\n"
+"\n"
+"Use the following keys to navigate the menus:\n"
+"Move up or down with <Up> and <Down>.\n"
+"Enter a submenu with <Enter> or <Right>.\n"
+"Exit a submenu to its parent menu with <Esc> or <Left>.\n"
+"Pressing <y> includes, <n> excludes, <m> modularizes features.\n"
+"Pressing <Space> cycles through the available options.\n"
+"To search for menu entries press </>.\n"
+"<Esc> always leaves the current window.\n"
+"\n"
+"You do not have function keys support.\n"
+"Press <1> instead of <F1>, <2> instead of <F2>, etc.\n"
+"For verbose global help use key <1>.\n"
+"For help related to the current menu entry press <?> or <h>.\n"),
+menu_instructions[] = N_(
+"Legend:  [*] built-in  [ ] excluded  <M> module  < > module capable.\n"
+"Submenus are designated by a trailing \"--->\", empty ones by \"----\".\n"
+"\n"
+"Use the following keys to navigate the menus:\n"
+"Move up or down with <Up> or <Down>.\n"
+"Enter a submenu with <Enter> or <Right>.\n"
+"Exit a submenu to its parent menu with <Esc> or <Left>.\n"
+"Pressing <y> includes, <n> excludes, <m> modularizes features.\n"
+"Pressing <Space> cycles through the available options.\n"
+"To search for menu entries press </>.\n"
+"<Esc> always leaves the current window.\n"
+"\n"
+"Pressing <1> may be used instead of <F1>, <2> instead of <F2>, etc.\n"
+"For verbose global help press <F1>.\n"
+"For help related to the current menu entry press <?> or <h>.\n"),
+radiolist_instructions[] = N_(
+"Press <Up>, <Down>, <Home> or <End> to navigate a radiolist, select\n"
+"with <Space>.\n"
+"For help related to the current entry press <?> or <h>.\n"
+"For global help press <F1>.\n"),
+inputbox_instructions_int[] = N_(
+"Please enter a decimal value.\n"
+"Fractions will not be accepted.\n"
+"Press <Enter> to apply, <Esc> to cancel."),
+inputbox_instructions_hex[] = N_(
+"Please enter a hexadecimal value.\n"
+"Press <Enter> to apply, <Esc> to cancel."),
+inputbox_instructions_string[] = N_(
+"Please enter a string value.\n"
+"Press <Enter> to apply, <Esc> to cancel."),
+setmod_text[] = N_(
+"This feature depends on another feature which has been configured as a\n"
+"module.  As a result, the current feature will be built as a module too."),
+load_config_text[] = N_(
+"Enter the name of the configuration file you wish to load.\n"
+"Accept the name shown to restore the configuration you last\n"
+"retrieved.  Leave empty to abort."),
+load_config_help[] = N_(
+>>>>>>> refs/remotes/origin/master
 "For various reasons, one may wish to keep several different\n"
 "configurations available on a single machine.\n"
 "\n"
 "If you have saved a previous configuration in a file other than the\n"
+<<<<<<< HEAD
 "default one, entering its name here will allow you to modify that\n"
 "configuration.\n"
 "\n"
@@ -213,11 +394,24 @@ save_config_help[] = N_(
 "\n"
 "For various reasons, one may wish to keep different configurations\n"
 "available on a single machine.\n"
+=======
+"default one, entering its name here will allow you to load and modify\n"
+"that configuration.\n"
+"\n"
+"Leave empty to abort.\n"),
+save_config_text[] = N_(
+"Enter a filename to which this configuration should be saved\n"
+"as an alternate.  Leave empty to abort."),
+save_config_help[] = N_(
+"For various reasons, one may wish to keep several different\n"
+"configurations available on a single machine.\n"
+>>>>>>> refs/remotes/origin/master
 "\n"
 "Entering a file name here will allow you to later retrieve, modify\n"
 "and use the current configuration as an alternate to whatever\n"
 "configuration options you have selected at that time.\n"
 "\n"
+<<<<<<< HEAD
 "If you are uncertain what all this means then you should probably\n"
 "leave this blank.\n"),
 search_help[] = N_(
@@ -225,6 +419,13 @@ search_help[] = N_(
 "Search for symbols and display their relations. Regular expressions\n"
 "are allowed.\n"
 "Example: search for \"^FOO\"\n"
+=======
+"Leave empty to abort.\n"),
+search_help[] = N_(
+"Search for symbols (configuration variable names CONFIG_*) and display\n"
+"their relations.  Regular expressions are supported.\n"
+"Example:  Search for \"^FOO\".\n"
+>>>>>>> refs/remotes/origin/master
 "Result:\n"
 "-----------------------------------------------------------------\n"
 "Symbol: FOO [ = m]\n"
@@ -232,12 +433,17 @@ search_help[] = N_(
 "Defined at drivers/pci/Kconfig:47\n"
 "Depends on: X86_LOCAL_APIC && X86_IO_APIC || IA64\n"
 "Location:\n"
+<<<<<<< HEAD
 "  -> Bus options (PCI, PCMCIA, EISA, MCA, ISA)\n"
+=======
+"  -> Bus options (PCI, PCMCIA, EISA, ISA)\n"
+>>>>>>> refs/remotes/origin/master
 "    -> PCI support (PCI [ = y])\n"
 "      -> PCI access mode (<choice> [ = y])\n"
 "Selects: LIBCRC32\n"
 "Selected by: BAR\n"
 "-----------------------------------------------------------------\n"
+<<<<<<< HEAD
 "o The line 'Prompt:' shows the text used in the menu structure for\n"
 "  this symbol\n"
 "o The 'Defined at' line tell at what file / line number the symbol\n"
@@ -251,13 +457,34 @@ search_help[] = N_(
 "o The 'Selects:' line tell what symbol will be automatically\n"
 "  selected if this symbol is selected (y or m)\n"
 "o The 'Selected by' line tell what symbol has selected this symbol\n"
+=======
+"o  The line 'Prompt:' shows the text displayed for this symbol in\n"
+"   the menu hierarchy.\n"
+"o  The 'Defined at' line tells at what file / line number the symbol is\n"
+"   defined.\n"
+"o  The 'Depends on:' line lists symbols that need to be defined for\n"
+"   this symbol to be visible and selectable in the menu.\n"
+"o  The 'Location:' lines tell, where in the menu structure this symbol\n"
+"   is located.  A location followed by a [ = y] indicates that this is\n"
+"   a selectable menu item, and the current value is displayed inside\n"
+"   brackets.\n"
+"o  The 'Selects:' line tells, what symbol will be automatically selected\n"
+"   if this symbol is selected (y or m).\n"
+"o  The 'Selected by' line tells what symbol has selected this symbol.\n"
+>>>>>>> refs/remotes/origin/master
 "\n"
 "Only relevant lines are shown.\n"
 "\n\n"
 "Search examples:\n"
+<<<<<<< HEAD
 "Examples: USB  => find all symbols containing USB\n"
 "          ^USB => find all symbols starting with USB\n"
 "          USB$ => find all symbols ending with USB\n"
+=======
+"USB  => find all symbols containing USB\n"
+"^USB => find all symbols starting with USB\n"
+"USB$ => find all symbols ending with USB\n"
+>>>>>>> refs/remotes/origin/master
 "\n");
 
 struct mitem {
@@ -288,11 +515,17 @@ static int global_exit;
 const char *current_instructions = menu_instructions;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static char *dialog_input_result;
 static int dialog_input_result_len;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *dialog_input_result;
+static int dialog_input_result_len;
+
+>>>>>>> refs/remotes/origin/master
 static void conf(struct menu *menu);
 static void conf_choice(struct menu *menu);
 static void conf_string(struct menu *menu);
@@ -331,19 +564,31 @@ struct function_keys function_keys[] = {
 	},
 	{
 		.key_str = "F2",
+<<<<<<< HEAD
 		.func = "Sym Info",
+=======
+		.func = "SymInfo",
+>>>>>>> refs/remotes/origin/master
 		.key = F_SYMBOL,
 		.handler = handle_f2,
 	},
 	{
 		.key_str = "F3",
+<<<<<<< HEAD
 		.func = "Insts",
+=======
+		.func = "Help 2",
+>>>>>>> refs/remotes/origin/master
 		.key = F_INSTS,
 		.handler = handle_f3,
 	},
 	{
 		.key_str = "F4",
+<<<<<<< HEAD
 		.func = "Config",
+=======
+		.func = "ShowAll",
+>>>>>>> refs/remotes/origin/master
 		.key = F_CONF,
 		.handler = handle_f4,
 	},
@@ -367,7 +612,11 @@ struct function_keys function_keys[] = {
 	},
 	{
 		.key_str = "F8",
+<<<<<<< HEAD
 		.func = "Sym Search",
+=======
+		.func = "SymSearch",
+>>>>>>> refs/remotes/origin/master
 		.key = F_SEARCH,
 		.handler = handle_f8,
 	},
@@ -384,15 +633,27 @@ static void print_function_line(void)
 	int i;
 	int offset = 1;
 	const int skip = 1;
+<<<<<<< HEAD
 
 	for (i = 0; i < function_keys_num; i++) {
 		(void) wattrset(main_window, attributes[FUNCTION_HIGHLIGHT]);
 		mvwprintw(main_window, LINES-3, offset,
+=======
+	int lines = getmaxy(stdscr);
+
+	for (i = 0; i < function_keys_num; i++) {
+		(void) wattrset(main_window, attributes[FUNCTION_HIGHLIGHT]);
+		mvwprintw(main_window, lines-3, offset,
+>>>>>>> refs/remotes/origin/master
 				"%s",
 				function_keys[i].key_str);
 		(void) wattrset(main_window, attributes[FUNCTION_TEXT]);
 		offset += strlen(function_keys[i].key_str);
+<<<<<<< HEAD
 		mvwprintw(main_window, LINES-3,
+=======
+		mvwprintw(main_window, lines-3,
+>>>>>>> refs/remotes/origin/master
 				offset, "%s",
 				function_keys[i].func);
 		offset += strlen(function_keys[i].func) + skip;
@@ -404,7 +665,11 @@ static void print_function_line(void)
 static void handle_f1(int *key, struct menu *current_item)
 {
 	show_scroll_win(main_window,
+<<<<<<< HEAD
 			_("README"), _(nconf_readme));
+=======
+			_("Global help"), _(nconf_global_help));
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 
@@ -419,7 +684,11 @@ static void handle_f2(int *key, struct menu *current_item)
 static void handle_f3(int *key, struct menu *current_item)
 {
 	show_scroll_win(main_window,
+<<<<<<< HEAD
 			_("Instructions"),
+=======
+			_("Short help"),
+>>>>>>> refs/remotes/origin/master
 			_(current_instructions));
 	return;
 }
@@ -709,6 +978,7 @@ static void search_conf(void)
 	struct symbol **sym_arr;
 	struct gstr res;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char dialog_input_result[100];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -724,6 +994,21 @@ again:
 =======
 			"", &dialog_input_result, &dialog_input_result_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct gstr title;
+	char *dialog_input;
+	int dres;
+
+	title = str_new();
+	str_printf( &title, _("Enter (sub)string or regexp to search for "
+			      "(with or without \"%s\")"), CONFIG_);
+
+again:
+	dres = dialog_inputbox(main_window,
+			_("Search Configuration Parameter"),
+			str_get(&title),
+			"", &dialog_input_result, &dialog_input_result_len);
+>>>>>>> refs/remotes/origin/master
 	switch (dres) {
 	case 0:
 		break;
@@ -732,6 +1017,10 @@ again:
 				_("Search Configuration"), search_help);
 		goto again;
 	default:
+<<<<<<< HEAD
+=======
+		str_free(&title);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -741,11 +1030,19 @@ again:
 		dialog_input += strlen(CONFIG_);
 
 	sym_arr = sym_re_search(dialog_input);
+<<<<<<< HEAD
 	res = get_relations_str(sym_arr);
+=======
+	res = get_relations_str(sym_arr, NULL);
+>>>>>>> refs/remotes/origin/master
 	free(sym_arr);
 	show_scroll_win(main_window,
 			_("Search Results"), str_get(&res));
 	str_free(&res);
+<<<<<<< HEAD
+=======
+	str_free(&title);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -779,9 +1076,15 @@ static void build_conf(struct menu *menu)
 						indent + 1, ' ', prompt);
 				} else
 					item_make(menu, 'm',
+<<<<<<< HEAD
 						"   %*c%s  --->",
 						indent + 1,
 						' ', prompt);
+=======
+						  "   %*c%s  %s",
+						  indent + 1, ' ', prompt,
+						  menu_is_empty(menu) ? "----" : "--->");
+>>>>>>> refs/remotes/origin/master
 
 				if (single_menu_mode && menu->data)
 					goto conf_childs;
@@ -923,7 +1226,11 @@ static void build_conf(struct menu *menu)
 				(sym_has_value(sym) || !sym_is_changable(sym)) ?
 				"" : _(" (NEW)"));
 		if (menu->prompt && menu->prompt->type == P_MENU) {
+<<<<<<< HEAD
 			item_add_str("  --->");
+=======
+			item_add_str("  %s", menu_is_empty(menu) ? "----" : "--->");
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 	}
@@ -974,7 +1281,11 @@ static void show_menu(const char *prompt, const char *instructions,
 
 	clear();
 	(void) wattrset(main_window, attributes[NORMAL]);
+<<<<<<< HEAD
 	print_in_middle(stdscr, 1, 0, COLS,
+=======
+	print_in_middle(stdscr, 1, 0, getmaxx(stdscr),
+>>>>>>> refs/remotes/origin/master
 			menu_backtitle,
 			attributes[MAIN_HEADING]);
 
@@ -1088,9 +1399,12 @@ static void conf(struct menu *menu)
 	const char *prompt = menu_get_prompt(menu);
 	struct symbol *sym;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct menu *active_menu = NULL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int res;
 	int current_index = 0;
 	int last_top_row = 0;
@@ -1176,6 +1490,7 @@ static void conf(struct menu *menu)
 
 		submenu = (struct menu *) item_data();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		active_menu = (struct menu *)item_data();
 		if (!submenu || !menu_is_visible(submenu))
 			continue;
@@ -1188,6 +1503,11 @@ static void conf(struct menu *menu)
 			continue;
 		sym = submenu->sym;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!submenu || !menu_is_visible(submenu))
+			continue;
+		sym = submenu->sym;
+>>>>>>> refs/remotes/origin/master
 
 		switch (res) {
 		case ' ':
@@ -1252,6 +1572,7 @@ static void conf_message_callback(const char *fmt, va_list ap)
 static void show_help(struct menu *menu)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct gstr help = str_new();
 
 	if (menu && menu->sym && menu_has_help(menu)) {
@@ -1267,6 +1588,8 @@ static void show_help(struct menu *menu)
 		str_append(&help, nohelp_text);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct gstr help;
 
 	if (!menu)
@@ -1274,7 +1597,10 @@ static void show_help(struct menu *menu)
 
 	help = str_new();
 	menu_get_ext_help(menu, &help);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	show_scroll_win(main_window, _(menu_get_prompt(menu)), str_get(&help));
 	str_free(&help);
 }
@@ -1400,9 +1726,12 @@ static void conf_string(struct menu *menu)
 {
 	const char *prompt = menu_get_prompt(menu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char dialog_input_result[256];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	while (1) {
 		int res;
@@ -1426,12 +1755,17 @@ static void conf_string(struct menu *menu)
 				heading,
 				sym_get_string_value(menu->sym),
 <<<<<<< HEAD
+<<<<<<< HEAD
 				dialog_input_result,
 				sizeof(dialog_input_result));
 =======
 				&dialog_input_result,
 				&dialog_input_result_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				&dialog_input_result,
+				&dialog_input_result_len);
+>>>>>>> refs/remotes/origin/master
 		switch (res) {
 		case 0:
 			if (sym_set_string_value(menu->sym,
@@ -1452,14 +1786,18 @@ static void conf_string(struct menu *menu)
 static void conf_load(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char dialog_input_result[256];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	while (1) {
 		int res;
 		res = dialog_inputbox(main_window,
 				NULL, load_config_text,
 				filename,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				dialog_input_result,
 				sizeof(dialog_input_result));
@@ -1467,6 +1805,10 @@ static void conf_load(void)
 				&dialog_input_result,
 				&dialog_input_result_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				&dialog_input_result,
+				&dialog_input_result_len);
+>>>>>>> refs/remotes/origin/master
 		switch (res) {
 		case 0:
 			if (!dialog_input_result[0])
@@ -1492,14 +1834,18 @@ static void conf_load(void)
 static void conf_save(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char dialog_input_result[256];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	while (1) {
 		int res;
 		res = dialog_inputbox(main_window,
 				NULL, save_config_text,
 				filename,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				dialog_input_result,
 				sizeof(dialog_input_result));
@@ -1507,6 +1853,10 @@ static void conf_save(void)
 				&dialog_input_result,
 				&dialog_input_result_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				&dialog_input_result,
+				&dialog_input_result_len);
+>>>>>>> refs/remotes/origin/master
 		switch (res) {
 		case 0:
 			if (!dialog_input_result[0])
@@ -1533,14 +1883,28 @@ static void conf_save(void)
 
 void setup_windows(void)
 {
+<<<<<<< HEAD
+=======
+	int lines, columns;
+
+	getmaxyx(stdscr, lines, columns);
+
+>>>>>>> refs/remotes/origin/master
 	if (main_window != NULL)
 		delwin(main_window);
 
 	/* set up the menu and menu window */
+<<<<<<< HEAD
 	main_window = newwin(LINES-2, COLS-2, 2, 1);
 	keypad(main_window, TRUE);
 	mwin_max_lines = LINES-7;
 	mwin_max_cols = COLS-6;
+=======
+	main_window = newwin(lines-2, columns-2, 2, 1);
+	keypad(main_window, TRUE);
+	mwin_max_lines = lines-7;
+	mwin_max_cols = columns-6;
+>>>>>>> refs/remotes/origin/master
 
 	/* panels order is from bottom to top */
 	new_panel(main_window);
@@ -1548,6 +1912,10 @@ void setup_windows(void)
 
 int main(int ac, char **av)
 {
+<<<<<<< HEAD
+=======
+	int lines, columns;
+>>>>>>> refs/remotes/origin/master
 	char *mode;
 
 	setlocale(LC_ALL, "");
@@ -1573,7 +1941,12 @@ int main(int ac, char **av)
 	keypad(stdscr, TRUE);
 	curs_set(0);
 
+<<<<<<< HEAD
 	if (COLS < 75 || LINES < 20) {
+=======
+	getmaxyx(stdscr, lines, columns);
+	if (columns < 75 || lines < 20) {
+>>>>>>> refs/remotes/origin/master
 		endwin();
 		printf("Your terminal should have at "
 			"least 20 lines and 75 columns\n");
@@ -1581,7 +1954,15 @@ int main(int ac, char **av)
 	}
 
 	notimeout(stdscr, FALSE);
+<<<<<<< HEAD
 	ESCDELAY = 1;
+=======
+#if NCURSES_REENTRANT
+	set_escdelay(1);
+#else
+	ESCDELAY = 1;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	/* set btns menu */
 	curses_menu = new_menu(curses_menu_items);

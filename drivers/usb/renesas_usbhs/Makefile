@@ -5,10 +5,13 @@
 obj-$(CONFIG_USB_RENESAS_USBHS)	+= renesas_usbhs.o
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 renesas_usbhs-y			:= common.o mod.o pipe.o
 
 renesas_usbhs-$(CONFIG_USB_RENESAS_USBHS_UDC)	+= mod_gadget.o
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 renesas_usbhs-y			:= common.o mod.o pipe.o fifo.o
 
 ifneq ($(CONFIG_USB_RENESAS_USBHS_HCD),)
@@ -18,4 +21,7 @@ endif
 ifneq ($(CONFIG_USB_RENESAS_USBHS_UDC),)
 	renesas_usbhs-y		+= mod_gadget.o
 endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

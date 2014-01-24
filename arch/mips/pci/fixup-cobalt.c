@@ -52,6 +52,7 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_MARVELL, PCI_DEVICE_ID_MARVELL_GT64111,
 	 qube_raq_galileo_early_fixup);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __devinit cobalt_legacy_ide_resource_fixup(struct pci_dev *dev,
 						       struct resource *res)
 {
@@ -115,6 +116,8 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_82C586_1,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void qube_raq_via_bmIDE_fixup(struct pci_dev *dev)
 {
 	unsigned short cfgword;
@@ -158,14 +161,22 @@ static void qube_raq_galileo_fixup(struct pci_dev *dev)
 	 * --x--x--x--x--x--x--x--x--x--x--x--x--x--x--x--x--x--x--x--x--
 	 *
 	 * On all machines prior to Q2, we had the STOP line disconnected
+<<<<<<< HEAD
 	 * from Galileo to VIA on PCI.  The new Galileo does not function
+=======
+	 * from Galileo to VIA on PCI.	The new Galileo does not function
+>>>>>>> refs/remotes/origin/master
 	 * correctly unless we have it connected.
 	 *
 	 * Therefore we must set the disconnect/retry cycle values to
 	 * something sensible when using the new Galileo.
 	 */
 
+<<<<<<< HEAD
  	printk(KERN_INFO "Galileo: revision %u\n", dev->revision);
+=======
+	printk(KERN_INFO "Galileo: revision %u\n", dev->revision);
+>>>>>>> refs/remotes/origin/master
 
 #if 0
 	if (dev->revision >= 0x10) {
@@ -213,6 +224,7 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_82C586_0,
 	 qube_raq_via_board_id_fixup);
 
 static char irq_tab_qube1[] __initdata = {
+<<<<<<< HEAD
   [COBALT_PCICONF_CPU]     = 0,
   [COBALT_PCICONF_ETH0]    = QUBE1_ETH0_IRQ,
   [COBALT_PCICONF_RAQSCSI] = SCSI_IRQ,
@@ -237,6 +249,32 @@ static char irq_tab_raq2[] __initdata = {
   [COBALT_PCICONF_VIA]     = 0,
   [COBALT_PCICONF_PCISLOT] = PCISLOT_IRQ,
   [COBALT_PCICONF_ETH1]    = ETH1_IRQ
+=======
+  [COBALT_PCICONF_CPU]	   = 0,
+  [COBALT_PCICONF_ETH0]	   = QUBE1_ETH0_IRQ,
+  [COBALT_PCICONF_RAQSCSI] = SCSI_IRQ,
+  [COBALT_PCICONF_VIA]	   = 0,
+  [COBALT_PCICONF_PCISLOT] = PCISLOT_IRQ,
+  [COBALT_PCICONF_ETH1]	   = 0
+};
+
+static char irq_tab_cobalt[] __initdata = {
+  [COBALT_PCICONF_CPU]	   = 0,
+  [COBALT_PCICONF_ETH0]	   = ETH0_IRQ,
+  [COBALT_PCICONF_RAQSCSI] = SCSI_IRQ,
+  [COBALT_PCICONF_VIA]	   = 0,
+  [COBALT_PCICONF_PCISLOT] = PCISLOT_IRQ,
+  [COBALT_PCICONF_ETH1]	   = ETH1_IRQ
+};
+
+static char irq_tab_raq2[] __initdata = {
+  [COBALT_PCICONF_CPU]	   = 0,
+  [COBALT_PCICONF_ETH0]	   = ETH0_IRQ,
+  [COBALT_PCICONF_RAQSCSI] = RAQ2_SCSI_IRQ,
+  [COBALT_PCICONF_VIA]	   = 0,
+  [COBALT_PCICONF_PCISLOT] = PCISLOT_IRQ,
+  [COBALT_PCICONF_ETH1]	   = ETH1_IRQ
+>>>>>>> refs/remotes/origin/master
 };
 
 int __init pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)

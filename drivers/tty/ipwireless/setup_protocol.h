@@ -59,7 +59,11 @@ struct tl_setup_config_done_msg {
 	unsigned char sig_no;		/* TL_SETUP_SIGNO_CONFIG_DONE_MSG */
 } __attribute__ ((__packed__));
 
+<<<<<<< HEAD
 /* Asyncronous messages */
+=======
+/* Asynchronous messages */
+>>>>>>> refs/remotes/origin/master
 struct tl_setup_open_msg {
 	unsigned char sig_no;		/* TL_SETUP_SIGNO_OPEN_MSG */
 	unsigned char port_no;

@@ -27,7 +27,11 @@ static void mcf_cpu_reset(void)
 {
 	local_irq_disable();
 	/* Set watchdog to soft reset, and enabled */
+<<<<<<< HEAD
 	__raw_writeb(0xc0, MCF_MBAR + MCFSIM_SYPCR);
+=======
+	__raw_writeb(0xc0, MCFSIM_SYPCR);
+>>>>>>> refs/remotes/origin/master
 	for (;;)
 		/* wait for watchdog to timeout */;
 }

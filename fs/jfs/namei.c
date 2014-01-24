@@ -73,11 +73,16 @@ static inline void free_ea_wmap(struct inode *inode)
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int jfs_create(struct inode *dip, struct dentry *dentry, int mode,
 =======
 static int jfs_create(struct inode *dip, struct dentry *dentry, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
 		struct nameidata *nd)
+=======
+static int jfs_create(struct inode *dip, struct dentry *dentry, umode_t mode,
+		bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc = 0;
 	tid_t tid;		/* transaction id */
@@ -177,6 +182,7 @@ static int jfs_create(struct inode *dip, struct dentry *dentry, umode_t mode,
 	if (rc) {
 		free_ea_wmap(ip);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ip->i_nlink = 0;
 =======
 		clear_nlink(ip);
@@ -186,6 +192,14 @@ static int jfs_create(struct inode *dip, struct dentry *dentry, umode_t mode,
 	} else {
 		d_instantiate(dentry, ip);
 		unlock_new_inode(ip);
+=======
+		clear_nlink(ip);
+		unlock_new_inode(ip);
+		iput(ip);
+	} else {
+		unlock_new_inode(ip);
+		d_instantiate(dentry, ip);
+>>>>>>> refs/remotes/origin/master
 	}
 
       out2:
@@ -214,10 +228,14 @@ static int jfs_create(struct inode *dip, struct dentry *dentry, umode_t mode,
  * EACCESS: user needs search+write permission on the parent directory
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int jfs_mkdir(struct inode *dip, struct dentry *dentry, int mode)
 =======
 static int jfs_mkdir(struct inode *dip, struct dentry *dentry, umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int jfs_mkdir(struct inode *dip, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc = 0;
 	tid_t tid;		/* transaction id */
@@ -233,6 +251,7 @@ static int jfs_mkdir(struct inode *dip, struct dentry *dentry, umode_t mode)
 	dquot_initialize(dip);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* link count overflow on parent directory ? */
 	if (dip->i_nlink == JFS_LINK_MAX) {
 		rc = -EMLINK;
@@ -241,6 +260,8 @@ static int jfs_mkdir(struct inode *dip, struct dentry *dentry, umode_t mode)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * search parent directory for entry/freespace
 	 * (dtSearch() returns parent directory page pinned)
@@ -308,10 +329,14 @@ static int jfs_mkdir(struct inode *dip, struct dentry *dentry, umode_t mode)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ip->i_nlink = 2;	/* for '.' */
 =======
 	set_nlink(ip, 2);	/* for '.' */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(ip, 2);	/* for '.' */
+>>>>>>> refs/remotes/origin/master
 	ip->i_op = &jfs_dir_inode_operations;
 	ip->i_fop = &jfs_dir_operations;
 
@@ -331,6 +356,7 @@ static int jfs_mkdir(struct inode *dip, struct dentry *dentry, umode_t mode)
 	if (rc) {
 		free_ea_wmap(ip);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ip->i_nlink = 0;
 =======
 		clear_nlink(ip);
@@ -340,6 +366,14 @@ static int jfs_mkdir(struct inode *dip, struct dentry *dentry, umode_t mode)
 	} else {
 		d_instantiate(dentry, ip);
 		unlock_new_inode(ip);
+=======
+		clear_nlink(ip);
+		unlock_new_inode(ip);
+		iput(ip);
+	} else {
+		unlock_new_inode(ip);
+		d_instantiate(dentry, ip);
+>>>>>>> refs/remotes/origin/master
 	}
 
       out2:
@@ -830,11 +864,14 @@ static int jfs_link(struct dentry *old_dentry,
 		 dentry->d_name.name);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ip->i_nlink == JFS_LINK_MAX)
 		return -EMLINK;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dquot_initialize(dir);
 
 	tid = txBegin(ip->i_sb, 0);
@@ -871,10 +908,14 @@ static int jfs_link(struct dentry *old_dentry,
 
 	if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ip->i_nlink--; /* never instantiated */
 =======
 		drop_nlink(ip); /* never instantiated */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		drop_nlink(ip); /* never instantiated */
+>>>>>>> refs/remotes/origin/master
 		iput(ip);
 	} else
 		d_instantiate(dentry, ip);
@@ -924,10 +965,14 @@ static int jfs_symlink(struct inode *dip, struct dentry *dentry,
 	s64 xlen = 0;
 	int bmask = 0, xsize;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	s64 extent = 0, xaddr;
 =======
 	s64 xaddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s64 xaddr;
+>>>>>>> refs/remotes/origin/master
 	struct metapage *mp;
 	struct super_block *sb;
 	struct tblock *tblk;
@@ -1028,9 +1073,12 @@ static int jfs_symlink(struct inode *dip, struct dentry *dentry,
 			goto out3;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		extent = xaddr;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ip->i_size = ssize - 1;
 		while (ssize) {
 			/* This is kind of silly since PATH_MAX == 4K */
@@ -1087,6 +1135,7 @@ static int jfs_symlink(struct inode *dip, struct dentry *dentry,
 	if (rc) {
 		free_ea_wmap(ip);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ip->i_nlink = 0;
 =======
 		clear_nlink(ip);
@@ -1096,6 +1145,14 @@ static int jfs_symlink(struct inode *dip, struct dentry *dentry,
 	} else {
 		d_instantiate(dentry, ip);
 		unlock_new_inode(ip);
+=======
+		clear_nlink(ip);
+		unlock_new_inode(ip);
+		iput(ip);
+	} else {
+		unlock_new_inode(ip);
+		d_instantiate(dentry, ip);
+>>>>>>> refs/remotes/origin/master
 	}
 
       out2:
@@ -1181,12 +1238,15 @@ static int jfs_rename(struct inode *old_dir, struct dentry *old_dentry,
 				goto out3;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else if ((new_dir != old_dir) &&
 			   (new_dir->i_nlink == JFS_LINK_MAX)) {
 			rc = -EMLINK;
 			goto out3;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	} else if (new_ip) {
 		IWRITE_LOCK(new_ip, RDWRLOCK_NORMAL);
@@ -1234,7 +1294,11 @@ static int jfs_rename(struct inode *old_dir, struct dentry *old_dentry,
 				if (!S_ISDIR(old_ip->i_mode) && new_ip)
 					IWRITE_UNLOCK(new_ip);
 				jfs_error(new_ip->i_sb,
+<<<<<<< HEAD
 					  "jfs_rename: new_ip->i_nlink != 0");
+=======
+					  "new_ip->i_nlink != 0\n");
+>>>>>>> refs/remotes/origin/master
 				return -EIO;
 			}
 			tblk = tid_to_tblock(tid);
@@ -1399,10 +1463,14 @@ static int jfs_rename(struct inode *old_dir, struct dentry *old_dentry,
  */
 static int jfs_mknod(struct inode *dir, struct dentry *dentry,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int mode, dev_t rdev)
 =======
 		umode_t mode, dev_t rdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		umode_t mode, dev_t rdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct jfs_inode_info *jfs_ip;
 	struct btstack btstack;
@@ -1483,6 +1551,7 @@ static int jfs_mknod(struct inode *dir, struct dentry *dentry,
 	if (rc) {
 		free_ea_wmap(ip);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ip->i_nlink = 0;
 =======
 		clear_nlink(ip);
@@ -1492,6 +1561,14 @@ static int jfs_mknod(struct inode *dir, struct dentry *dentry,
 	} else {
 		d_instantiate(dentry, ip);
 		unlock_new_inode(ip);
+=======
+		clear_nlink(ip);
+		unlock_new_inode(ip);
+		iput(ip);
+	} else {
+		unlock_new_inode(ip);
+		d_instantiate(dentry, ip);
+>>>>>>> refs/remotes/origin/master
 	}
 
       out1:
@@ -1502,12 +1579,17 @@ static int jfs_mknod(struct inode *dir, struct dentry *dentry,
 	return rc;
 }
 
+<<<<<<< HEAD
 static struct dentry *jfs_lookup(struct inode *dip, struct dentry *dentry, struct nameidata *nd)
+=======
+static struct dentry *jfs_lookup(struct inode *dip, struct dentry *dentry, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct btstack btstack;
 	ino_t inum;
 	struct inode *ip;
 	struct component_name key;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	const char *name = dentry->d_name.name;
 	int len = dentry->d_name.len;
@@ -1538,6 +1620,8 @@ static struct dentry *jfs_lookup(struct inode *dip, struct dentry *dentry, struc
 		jfs_err("jfs_lookup: iget failed on inum %d", (uint) inum);
 		return ERR_CAST(ip);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	jfs_info("jfs_lookup: name = %s", dentry->d_name.name);
@@ -1555,7 +1639,10 @@ static struct dentry *jfs_lookup(struct inode *dip, struct dentry *dentry, struc
 		ip = jfs_iget(dip->i_sb, inum);
 		if (IS_ERR(ip))
 			jfs_err("jfs_lookup: iget failed on inum %d", (uint)inum);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return d_splice_alias(ip, dentry);
@@ -1621,16 +1708,24 @@ const struct inode_operations jfs_dir_inode_operations = {
 	.setattr	= jfs_setattr,
 #ifdef CONFIG_JFS_POSIX_ACL
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.check_acl	= jfs_check_acl,
 =======
 	.get_acl	= jfs_get_acl,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.get_acl	= jfs_get_acl,
+>>>>>>> refs/remotes/origin/master
 #endif
 };
 
 const struct file_operations jfs_dir_operations = {
 	.read		= generic_read_dir,
+<<<<<<< HEAD
 	.readdir	= jfs_readdir,
+=======
+	.iterate	= jfs_readdir,
+>>>>>>> refs/remotes/origin/master
 	.fsync		= jfs_fsync,
 	.unlocked_ioctl = jfs_ioctl,
 #ifdef CONFIG_COMPAT
@@ -1639,8 +1734,12 @@ const struct file_operations jfs_dir_operations = {
 	.llseek		= generic_file_llseek,
 };
 
+<<<<<<< HEAD
 static int jfs_ci_hash(const struct dentry *dir, const struct inode *inode,
 		struct qstr *this)
+=======
+static int jfs_ci_hash(const struct dentry *dir, struct qstr *this)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long hash;
 	int i;
@@ -1653,9 +1752,13 @@ static int jfs_ci_hash(const struct dentry *dir, const struct inode *inode,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int jfs_ci_compare(const struct dentry *parent,
 		const struct inode *pinode,
 		const struct dentry *dentry, const struct inode *inode,
+=======
+static int jfs_ci_compare(const struct dentry *parent, const struct dentry *dentry,
+>>>>>>> refs/remotes/origin/master
 		unsigned int len, const char *str, const struct qstr *name)
 {
 	int i, result = 1;
@@ -1671,6 +1774,7 @@ out:
 	return result;
 }
 
+<<<<<<< HEAD
 static int jfs_ci_revalidate(struct dentry *dentry, struct nameidata *nd)
 {
 <<<<<<< HEAD
@@ -1678,6 +1782,10 @@ static int jfs_ci_revalidate(struct dentry *dentry, struct nameidata *nd)
 		return -ECHILD;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int jfs_ci_revalidate(struct dentry *dentry, unsigned int flags)
+{
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * This is not negative dentry. Always valid.
 	 *
@@ -1695,7 +1803,11 @@ static int jfs_ci_revalidate(struct dentry *dentry, struct nameidata *nd)
 	 * This may be nfsd (or something), anyway, we can't see the
 	 * intent of this. So, since this can be for creation, drop it.
 	 */
+<<<<<<< HEAD
 	if (!nd)
+=======
+	if (!flags)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	/*
@@ -1703,6 +1815,7 @@ static int jfs_ci_revalidate(struct dentry *dentry, struct nameidata *nd)
 	 * case sensitive name which is specified by user if this is
 	 * for creation.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!(nd->flags & (LOOKUP_CONTINUE | LOOKUP_PARENT))) {
 		if (nd->flags & (LOOKUP_CREATE | LOOKUP_RENAME_TARGET))
@@ -1712,6 +1825,10 @@ static int jfs_ci_revalidate(struct dentry *dentry, struct nameidata *nd)
 	if (nd->flags & (LOOKUP_CREATE | LOOKUP_RENAME_TARGET))
 		return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (flags & (LOOKUP_CREATE | LOOKUP_RENAME_TARGET))
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 

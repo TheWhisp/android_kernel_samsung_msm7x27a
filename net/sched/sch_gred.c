@@ -35,10 +35,14 @@ struct gred_sched;
 struct gred_sched_data {
 	u32		limit;		/* HARD maximal queue length	*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32      	DP;		/* the drop pramaters */
 =======
 	u32		DP;		/* the drop parameters */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32		DP;		/* the drop parameters */
+>>>>>>> refs/remotes/origin/master
 	u32		bytesin;	/* bytes seen on virtualQ so far*/
 	u32		packetsin;	/* packets seen on virtualQ so far*/
 	u32		backlog;	/* bytes on the virtualQ */
@@ -46,9 +50,13 @@ struct gred_sched_data {
 
 	struct red_parms parms;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct red_vars  vars;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct red_vars  vars;
+>>>>>>> refs/remotes/origin/master
 	struct red_stats stats;
 };
 
@@ -64,10 +72,14 @@ struct gred_sched {
 	u32 		DPs;
 	u32 		def;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct red_parms wred_set;
 =======
 	struct red_vars wred_set;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct red_vars wred_set;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline int gred_wred_mode(struct gred_sched *table)
@@ -113,9 +125,14 @@ static inline int gred_wred_mode_check(struct Qdisc *sch)
 		if (q == NULL)
 			continue;
 
+<<<<<<< HEAD
 		for (n = 0; n < table->DPs; n++)
 			if (table->tab[n] && table->tab[n] != q &&
 			    table->tab[n]->prio == q->prio)
+=======
+		for (n = i + 1; n < table->DPs; n++)
+			if (table->tab[n] && table->tab[n]->prio == q->prio)
+>>>>>>> refs/remotes/origin/master
 				return 1;
 	}
 
@@ -138,28 +155,39 @@ static inline u16 tc_index_to_dp(struct sk_buff *skb)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void gred_load_wred_set(struct gred_sched *table,
 				      struct gred_sched_data *q)
 {
 	q->parms.qavg = table->wred_set.qavg;
 	q->parms.qidlestart = table->wred_set.qidlestart;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void gred_load_wred_set(const struct gred_sched *table,
 				      struct gred_sched_data *q)
 {
 	q->vars.qavg = table->wred_set.qavg;
 	q->vars.qidlestart = table->wred_set.qidlestart;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void gred_store_wred_set(struct gred_sched *table,
 				       struct gred_sched_data *q)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	table->wred_set.qavg = q->parms.qavg;
 =======
 	table->wred_set.qavg = q->vars.qavg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	table->wred_set.qavg = q->vars.qavg;
+	table->wred_set.qidlestart = q->vars.qidlestart;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int gred_use_ecn(struct gred_sched *t)
@@ -195,20 +223,29 @@ static int gred_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* fix tc_index? --could be controvesial but needed for
 =======
 		/* fix tc_index? --could be controversial but needed for
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* fix tc_index? --could be controversial but needed for
+>>>>>>> refs/remotes/origin/master
 		   requeueing */
 		skb->tc_index = (skb->tc_index & ~GRED_VQ_MASK) | dp;
 	}
 
+<<<<<<< HEAD
 	/* sum up all the qaves of prios <= to ours to get the new qave */
+=======
+	/* sum up all the qaves of prios < ours to get the new qave */
+>>>>>>> refs/remotes/origin/master
 	if (!gred_wred_mode(t) && gred_rio_mode(t)) {
 		int i;
 
 		for (i = 0; i < t->DPs; i++) {
 			if (t->tab[i] && t->tab[i]->prio < q->prio &&
+<<<<<<< HEAD
 <<<<<<< HEAD
 			    !red_is_idling(&t->tab[i]->parms))
 				qavg += t->tab[i]->parms.qavg;
@@ -216,6 +253,10 @@ static int gred_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 			    !red_is_idling(&t->tab[i]->vars))
 				qavg += t->tab[i]->vars.qavg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    !red_is_idling(&t->tab[i]->vars))
+				qavg += t->tab[i]->vars.qavg;
+>>>>>>> refs/remotes/origin/master
 		}
 
 	}
@@ -227,27 +268,37 @@ static int gred_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 		gred_load_wred_set(t, q);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	q->parms.qavg = red_calc_qavg(&q->parms, gred_backlog(t, q, sch));
 
 	if (red_is_idling(&q->parms))
 		red_end_of_idle_period(&q->parms);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	q->vars.qavg = red_calc_qavg(&q->parms,
 				     &q->vars,
 				     gred_backlog(t, q, sch));
 
 	if (red_is_idling(&q->vars))
 		red_end_of_idle_period(&q->vars);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (gred_wred_mode(t))
 		gred_store_wred_set(t, q);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch (red_action(&q->parms, q->parms.qavg + qavg)) {
 =======
 	switch (red_action(&q->parms, &q->vars, q->vars.qavg + qavg)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	switch (red_action(&q->parms, &q->vars, q->vars.qavg + qavg)) {
+>>>>>>> refs/remotes/origin/master
 	case RED_DONT_MARK:
 		break;
 
@@ -298,6 +349,7 @@ static struct sk_buff *gred_dequeue(struct Qdisc *sch)
 		u16 dp = tc_index_to_dp(skb);
 
 		if (dp >= t->DPs || (q = t->tab[dp]) == NULL) {
+<<<<<<< HEAD
 			if (net_ratelimit())
 				pr_warning("GRED: Unable to relocate VQ 0x%x "
 					   "after dequeue, screwing up "
@@ -311,14 +363,31 @@ static struct sk_buff *gred_dequeue(struct Qdisc *sch)
 =======
 				red_start_of_idle_period(&q->vars);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			net_warn_ratelimited("GRED: Unable to relocate VQ 0x%x after dequeue, screwing up backlog\n",
+					     tc_index_to_dp(skb));
+		} else {
+			q->backlog -= qdisc_pkt_len(skb);
+
+			if (gred_wred_mode(t)) {
+				if (!sch->qstats.backlog)
+					red_start_of_idle_period(&t->wred_set);
+			} else {
+				if (!q->backlog)
+					red_start_of_idle_period(&q->vars);
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 
 		return skb;
 	}
 
+<<<<<<< HEAD
 	if (gred_wred_mode(t) && !red_is_idling(&t->wred_set))
 		red_start_of_idle_period(&t->wred_set);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return NULL;
 }
 
@@ -334,31 +403,50 @@ static unsigned int gred_drop(struct Qdisc *sch)
 		u16 dp = tc_index_to_dp(skb);
 
 		if (dp >= t->DPs || (q = t->tab[dp]) == NULL) {
+<<<<<<< HEAD
 			if (net_ratelimit())
 				pr_warning("GRED: Unable to relocate VQ 0x%x "
 					   "while dropping, screwing up "
 					   "backlog.\n", tc_index_to_dp(skb));
+=======
+			net_warn_ratelimited("GRED: Unable to relocate VQ 0x%x while dropping, screwing up backlog\n",
+					     tc_index_to_dp(skb));
+>>>>>>> refs/remotes/origin/master
 		} else {
 			q->backlog -= len;
 			q->stats.other++;
 
+<<<<<<< HEAD
 			if (!q->backlog && !gred_wred_mode(t))
 <<<<<<< HEAD
 				red_start_of_idle_period(&q->parms);
 =======
 				red_start_of_idle_period(&q->vars);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (gred_wred_mode(t)) {
+				if (!sch->qstats.backlog)
+					red_start_of_idle_period(&t->wred_set);
+			} else {
+				if (!q->backlog)
+					red_start_of_idle_period(&q->vars);
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 
 		qdisc_drop(skb, sch);
 		return len;
 	}
 
+<<<<<<< HEAD
 	if (gred_wred_mode(t) && !red_is_idling(&t->wred_set))
 		red_start_of_idle_period(&t->wred_set);
 
 	return 0;
 
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void gred_reset(struct Qdisc *sch)
@@ -375,10 +463,14 @@ static void gred_reset(struct Qdisc *sch)
 			continue;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		red_restart(&q->parms);
 =======
 		red_restart(&q->vars);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		red_restart(&q->vars);
+>>>>>>> refs/remotes/origin/master
 		q->backlog = 0;
 	}
 }
@@ -438,6 +530,7 @@ static inline int gred_change_table_def(struct Qdisc *sch, struct nlattr *dps)
 
 static inline int gred_change_vq(struct Qdisc *sch, int dp,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 struct tc_gred_qopt *ctl, int prio, u8 *stab)
 {
 	struct gred_sched *table = qdisc_priv(sch);
@@ -451,6 +544,8 @@ static inline int gred_change_vq(struct Qdisc *sch, int dp,
 
 	q = table->tab[dp];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				 struct tc_gred_qopt *ctl, int prio,
 				 u8 *stab, u32 max_P,
 				 struct gred_sched_data **prealloc)
@@ -465,12 +560,16 @@ static inline int gred_change_vq(struct Qdisc *sch, int dp,
 			return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	q->DP = dp;
 	q->prio = prio;
 	q->limit = ctl->limit;
 
 	if (q->backlog == 0)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		red_end_of_idle_period(&q->parms);
 
@@ -479,13 +578,18 @@ static inline int gred_change_vq(struct Qdisc *sch, int dp,
 		      ctl->Scell_log, stab);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		red_end_of_idle_period(&q->vars);
 
 	red_set_parms(&q->parms,
 		      ctl->qth_min, ctl->qth_max, ctl->Wlog, ctl->Plog,
 		      ctl->Scell_log, stab, max_P);
 	red_set_vars(&q->vars);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -494,9 +598,13 @@ static const struct nla_policy gred_policy[TCA_GRED_MAX + 1] = {
 	[TCA_GRED_STAB]		= { .len = 256 },
 	[TCA_GRED_DPS]		= { .len = sizeof(struct tc_gred_sopt) },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	[TCA_GRED_MAX_P]	= { .type = NLA_U32 },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[TCA_GRED_MAX_P]	= { .type = NLA_U32 },
+>>>>>>> refs/remotes/origin/master
 };
 
 static int gred_change(struct Qdisc *sch, struct nlattr *opt)
@@ -507,10 +615,15 @@ static int gred_change(struct Qdisc *sch, struct nlattr *opt)
 	int err, prio = GRED_DEF_PRIO;
 	u8 *stab;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 max_P;
 	struct gred_sched_data *prealloc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 max_P;
+	struct gred_sched_data *prealloc;
+>>>>>>> refs/remotes/origin/master
 
 	if (opt == NULL)
 		return -EINVAL;
@@ -527,10 +640,15 @@ static int gred_change(struct Qdisc *sch, struct nlattr *opt)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	max_P = tb[TCA_GRED_MAX_P] ? nla_get_u32(tb[TCA_GRED_MAX_P]) : 0;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	max_P = tb[TCA_GRED_MAX_P] ? nla_get_u32(tb[TCA_GRED_MAX_P]) : 0;
+
+>>>>>>> refs/remotes/origin/master
 	err = -EINVAL;
 	ctl = nla_data(tb[TCA_GRED_PARMS]);
 	stab = nla_data(tb[TCA_GRED_STAB]);
@@ -554,15 +672,21 @@ static int gred_change(struct Qdisc *sch, struct nlattr *opt)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sch_tree_lock(sch);
 
 	err = gred_change_vq(sch, ctl->DP, ctl, prio, stab);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	prealloc = kzalloc(sizeof(*prealloc), GFP_KERNEL);
 	sch_tree_lock(sch);
 
 	err = gred_change_vq(sch, ctl->DP, ctl, prio, stab, max_P, &prealloc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		goto errout_locked;
 
@@ -577,9 +701,13 @@ static int gred_change(struct Qdisc *sch, struct nlattr *opt)
 errout_locked:
 	sch_tree_unlock(sch);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(prealloc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(prealloc);
+>>>>>>> refs/remotes/origin/master
 errout:
 	return err;
 }
@@ -608,9 +736,13 @@ static int gred_dump(struct Qdisc *sch, struct sk_buff *skb)
 	struct nlattr *parms, *opts = NULL;
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 max_p[MAX_DPs];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 max_p[MAX_DPs];
+>>>>>>> refs/remotes/origin/master
 	struct tc_gred_sopt sopt = {
 		.DPs	= table->DPs,
 		.def_DP	= table->def,
@@ -621,18 +753,29 @@ static int gred_dump(struct Qdisc *sch, struct sk_buff *skb)
 	opts = nla_nest_start(skb, TCA_OPTIONS);
 	if (opts == NULL)
 		goto nla_put_failure;
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_GRED_DPS, sizeof(sopt), &sopt);
 <<<<<<< HEAD
 =======
+=======
+	if (nla_put(skb, TCA_GRED_DPS, sizeof(sopt), &sopt))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < MAX_DPs; i++) {
 		struct gred_sched_data *q = table->tab[i];
 
 		max_p[i] = q ? q->parms.max_P : 0;
 	}
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_GRED_MAX_P, sizeof(max_p), max_p);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (nla_put(skb, TCA_GRED_MAX_P, sizeof(max_p), max_p))
+		goto nla_put_failure;
+
+>>>>>>> refs/remotes/origin/master
 	parms = nla_nest_start(skb, TCA_GRED_PARMS);
 	if (parms == NULL)
 		goto nla_put_failure;
@@ -640,6 +783,10 @@ static int gred_dump(struct Qdisc *sch, struct sk_buff *skb)
 	for (i = 0; i < MAX_DPs; i++) {
 		struct gred_sched_data *q = table->tab[i];
 		struct tc_gred_qopt opt;
+<<<<<<< HEAD
+=======
+		unsigned long qavg;
+>>>>>>> refs/remotes/origin/master
 
 		memset(&opt, 0, sizeof(opt));
 
@@ -672,10 +819,16 @@ static int gred_dump(struct Qdisc *sch, struct sk_buff *skb)
 			gred_load_wred_set(table, q);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		opt.qave = red_calc_qavg(&q->parms, q->parms.qavg);
 =======
 		opt.qave = red_calc_qavg(&q->parms, &q->vars, q->vars.qavg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		qavg = red_calc_qavg(&q->parms, &q->vars,
+				     q->vars.qavg >> q->parms.Wlog);
+		opt.qave = qavg >> q->parms.Wlog;
+>>>>>>> refs/remotes/origin/master
 
 append_opt:
 		if (nla_append(skb, sizeof(opt), &opt) < 0)

@@ -5,6 +5,7 @@
 # Object file lists.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-y			:= irq.o mm.o time.o
 =======
 obj-y			:= common.o
@@ -22,3 +23,12 @@ obj-$(CONFIG_ARCH_FORTUNET) += fortunet.o
 obj-$(CONFIG_ARCH_P720T)    += p720t.o
 leds-$(CONFIG_ARCH_P720T)   += p720t-leds.o
 obj-$(CONFIG_LEDS)          += $(leds-y)
+=======
+obj-y				:= common.o devices.o
+
+obj-$(CONFIG_ARCH_AUTCPU12)	+= board-autcpu12.o
+obj-$(CONFIG_ARCH_CDB89712)	+= board-cdb89712.o
+obj-$(CONFIG_ARCH_CLEP7312)	+= board-clep7312.o
+obj-$(CONFIG_ARCH_EDB7211)	+= board-edb7211.o
+obj-$(CONFIG_ARCH_P720T)	+= board-p720t.o
+>>>>>>> refs/remotes/origin/master

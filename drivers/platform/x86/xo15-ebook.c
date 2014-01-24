@@ -77,10 +77,21 @@ static void ebook_switch_notify(struct acpi_device *device, u32 event)
 	}
 }
 
+<<<<<<< HEAD
 static int ebook_switch_resume(struct acpi_device *device)
 {
 	return ebook_send_state(device);
 }
+=======
+#ifdef CONFIG_PM_SLEEP
+static int ebook_switch_resume(struct device *dev)
+{
+	return ebook_send_state(to_acpi_device(dev));
+}
+#endif
+
+static SIMPLE_DEV_PM_OPS(ebook_switch_pm, NULL, ebook_switch_resume);
+>>>>>>> refs/remotes/origin/master
 
 static int ebook_switch_add(struct acpi_device *device)
 {
@@ -146,7 +157,11 @@ static int ebook_switch_add(struct acpi_device *device)
 	return error;
 }
 
+<<<<<<< HEAD
 static int ebook_switch_remove(struct acpi_device *device, int type)
+=======
+static int ebook_switch_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ebook_switch *button = acpi_driver_data(device);
 
@@ -161,6 +176,7 @@ static struct acpi_driver xo15_ebook_driver = {
 	.ids = ebook_device_ids,
 	.ops = {
 		.add = ebook_switch_add,
+<<<<<<< HEAD
 		.resume = ebook_switch_resume,
 		.remove = ebook_switch_remove,
 		.notify = ebook_switch_notify,
@@ -179,3 +195,11 @@ static void __exit xo15_ebook_exit(void)
 
 module_init(xo15_ebook_init);
 module_exit(xo15_ebook_exit);
+=======
+		.remove = ebook_switch_remove,
+		.notify = ebook_switch_notify,
+	},
+	.drv.pm = &ebook_switch_pm,
+};
+module_acpi_driver(xo15_ebook_driver);
+>>>>>>> refs/remotes/origin/master

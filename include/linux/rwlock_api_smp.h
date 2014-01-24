@@ -172,8 +172,12 @@ static inline void __raw_read_lock_irq(rwlock_t *lock)
 
 static inline void __raw_read_lock_bh(rwlock_t *lock)
 {
+<<<<<<< HEAD
 	local_bh_disable();
 	preempt_disable();
+=======
+	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_LOCK_OFFSET);
+>>>>>>> refs/remotes/origin/master
 	rwlock_acquire_read(&lock->dep_map, 0, 0, _RET_IP_);
 	LOCK_CONTENDED(lock, do_raw_read_trylock, do_raw_read_lock);
 }
@@ -200,8 +204,12 @@ static inline void __raw_write_lock_irq(rwlock_t *lock)
 
 static inline void __raw_write_lock_bh(rwlock_t *lock)
 {
+<<<<<<< HEAD
 	local_bh_disable();
 	preempt_disable();
+=======
+	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_LOCK_OFFSET);
+>>>>>>> refs/remotes/origin/master
 	rwlock_acquire(&lock->dep_map, 0, 0, _RET_IP_);
 	LOCK_CONTENDED(lock, do_raw_write_trylock, do_raw_write_lock);
 }
@@ -250,8 +258,12 @@ static inline void __raw_read_unlock_bh(rwlock_t *lock)
 {
 	rwlock_release(&lock->dep_map, 1, _RET_IP_);
 	do_raw_read_unlock(lock);
+<<<<<<< HEAD
 	preempt_enable_no_resched();
 	local_bh_enable_ip((unsigned long)__builtin_return_address(0));
+=======
+	__local_bh_enable_ip(_RET_IP_, SOFTIRQ_LOCK_OFFSET);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void __raw_write_unlock_irqrestore(rwlock_t *lock,
@@ -275,8 +287,12 @@ static inline void __raw_write_unlock_bh(rwlock_t *lock)
 {
 	rwlock_release(&lock->dep_map, 1, _RET_IP_);
 	do_raw_write_unlock(lock);
+<<<<<<< HEAD
 	preempt_enable_no_resched();
 	local_bh_enable_ip((unsigned long)__builtin_return_address(0));
+=======
+	__local_bh_enable_ip(_RET_IP_, SOFTIRQ_LOCK_OFFSET);
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* __LINUX_RWLOCK_API_SMP_H */

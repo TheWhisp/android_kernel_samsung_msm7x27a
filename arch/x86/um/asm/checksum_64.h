@@ -5,6 +5,7 @@
 #ifndef __UM_SYSDEP_CHECKSUM_H
 #define __UM_SYSDEP_CHECKSUM_H
 
+<<<<<<< HEAD
 #include "linux/string.h"
 #include "linux/in6.h"
 #include "asm/uaccess.h"
@@ -130,6 +131,8 @@ static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
 	return (__force __sum16)sum;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline unsigned add32_with_carry(unsigned a, unsigned b)
 {
         asm("addl %2,%0\n\t"

@@ -40,10 +40,14 @@
  */
 #define CVMX_BOOTINFO_MAJ_VER 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CVMX_BOOTINFO_MIN_VER 2
 =======
 #define CVMX_BOOTINFO_MIN_VER 3
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CVMX_BOOTINFO_MIN_VER 3
+>>>>>>> refs/remotes/origin/master
 
 #if (CVMX_BOOTINFO_MAJ_VER == 1)
 #define CVMX_BOOTINFO_OCTEON_SERIAL_LEN 20
@@ -95,11 +99,19 @@ struct cvmx_bootinfo {
 #if (CVMX_BOOTINFO_MIN_VER >= 1)
 	/*
 	 * Several boards support compact flash on the Octeon boot
+<<<<<<< HEAD
 	 * bus.  The CF memory spaces may be mapped to different
 	 * addresses on different boards.  These are the physical
 	 * addresses, so care must be taken to use the correct
 	 * XKPHYS/KSEG0 addressing depending on the application's
 	 * ABI.  These values will be 0 if CF is not present.
+=======
+	 * bus.	 The CF memory spaces may be mapped to different
+	 * addresses on different boards.  These are the physical
+	 * addresses, so care must be taken to use the correct
+	 * XKPHYS/KSEG0 addressing depending on the application's
+	 * ABI.	 These values will be 0 if CF is not present.
+>>>>>>> refs/remotes/origin/master
 	 */
 	uint64_t compact_flash_common_base_addr;
 	uint64_t compact_flash_attribute_base_addr;
@@ -121,8 +133,11 @@ struct cvmx_bootinfo {
 	uint32_t config_flags;
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if (CVMX_BOOTINFO_MIN_VER >= 3)
 	/*
 	 * Address of the OF Flattened Device Tree structure
@@ -130,7 +145,10 @@ struct cvmx_bootinfo {
 	 */
 	uint64_t fdt_addr;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define CVMX_BOOTINFO_CFG_FLAG_PCI_HOST			(1ull << 0)
@@ -139,7 +157,11 @@ struct cvmx_bootinfo {
 #define CVMX_BOOTINFO_CFG_FLAG_NO_MAGIC			(1ull << 3)
 /* This flag is set if the TLB mappings are not contained in the
  * 0x10000000 - 0x20000000 boot bus region. */
+<<<<<<< HEAD
 #define CVMX_BOOTINFO_CFG_FLAG_OVERSIZE_TLB_MAPPING     (1ull << 4)
+=======
+#define CVMX_BOOTINFO_CFG_FLAG_OVERSIZE_TLB_MAPPING	(1ull << 4)
+>>>>>>> refs/remotes/origin/master
 #define CVMX_BOOTINFO_CFG_FLAG_BREAK			(1ull << 5)
 
 #endif /*   (CVMX_BOOTINFO_MAJ_VER == 1) */
@@ -172,6 +194,7 @@ enum cvmx_board_types_enum {
 	CVMX_BOARD_TYPE_EBT5600 = 22,
 	CVMX_BOARD_TYPE_EBH5201 = 23,
 	CVMX_BOARD_TYPE_EBT5200 = 24,
+<<<<<<< HEAD
 	CVMX_BOARD_TYPE_CB5600  = 25,
 	CVMX_BOARD_TYPE_CB5601  = 26,
 	CVMX_BOARD_TYPE_CB5200  = 27,
@@ -180,6 +203,14 @@ enum cvmx_board_types_enum {
 	CVMX_BOARD_TYPE_EBH5610 = 29,
 <<<<<<< HEAD
 =======
+=======
+	CVMX_BOARD_TYPE_CB5600	= 25,
+	CVMX_BOARD_TYPE_CB5601	= 26,
+	CVMX_BOARD_TYPE_CB5200	= 27,
+	/* Special 'generic' board type, supports many boards */
+	CVMX_BOARD_TYPE_GENERIC = 28,
+	CVMX_BOARD_TYPE_EBH5610 = 29,
+>>>>>>> refs/remotes/origin/master
 	CVMX_BOARD_TYPE_LANAI2_A = 30,
 	CVMX_BOARD_TYPE_LANAI2_U = 31,
 	CVMX_BOARD_TYPE_EBB5600 = 32,
@@ -196,7 +227,10 @@ enum cvmx_board_types_enum {
 	CVMX_BOARD_TYPE_REDWING = 43,
 	CVMX_BOARD_TYPE_NIC68_4 = 44,
 	CVMX_BOARD_TYPE_NIC10E_66 = 45,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	CVMX_BOARD_TYPE_MAX,
 
 	/*
@@ -215,7 +249,10 @@ enum cvmx_board_types_enum {
 	CVMX_BOARD_TYPE_CUST_NB5 = 10003,
 	CVMX_BOARD_TYPE_CUST_WMR500 = 10004,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	CVMX_BOARD_TYPE_CUST_ITB101 = 10005,
 	CVMX_BOARD_TYPE_CUST_NTE102 = 10006,
 	CVMX_BOARD_TYPE_CUST_AGS103 = 10007,
@@ -233,6 +270,7 @@ enum cvmx_board_types_enum {
 	CVMX_BOARD_TYPE_CUST_L2_WSTRNSNIC_TX = 10019,
 	CVMX_BOARD_TYPE_CUST_L2_WSTRNSNIC_RX = 10020,
 	CVMX_BOARD_TYPE_CUST_L2_ZINWELL = 10021,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	CVMX_BOARD_TYPE_CUST_DEFINED_MAX = 20000,
 
@@ -241,6 +279,16 @@ enum cvmx_board_types_enum {
 	 * use any numbers in this range.
 	 */
 	CVMX_BOARD_TYPE_CUST_PRIVATE_MIN = 20001,
+=======
+	CVMX_BOARD_TYPE_CUST_DEFINED_MAX = 20000,
+
+	/*
+	 * Set aside a range for customer private use.	The SDK won't
+	 * use any numbers in this range.
+	 */
+	CVMX_BOARD_TYPE_CUST_PRIVATE_MIN = 20001,
+	CVMX_BOARD_TYPE_UBNT_E100 = 20002,
+>>>>>>> refs/remotes/origin/master
 	CVMX_BOARD_TYPE_CUST_PRIVATE_MAX = 30000,
 
 	/* The remaining range is reserved for future use. */
@@ -295,7 +343,10 @@ static inline const char *cvmx_board_type_to_string(enum
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_GENERIC)
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_EBH5610)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_LANAI2_A)
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_LANAI2_U)
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_EBB5600)
@@ -312,7 +363,10 @@ static inline const char *cvmx_board_type_to_string(enum
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_REDWING)
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_NIC68_4)
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_NIC10E_66)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_MAX)
 
 			/* Customer boards listed here */
@@ -322,7 +376,10 @@ static inline const char *cvmx_board_type_to_string(enum
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_CUST_NB5)
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_CUST_WMR500)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_CUST_ITB101)
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_CUST_NTE102)
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_CUST_AGS103)
@@ -340,11 +397,18 @@ static inline const char *cvmx_board_type_to_string(enum
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_CUST_L2_WSTRNSNIC_TX)
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_CUST_L2_WSTRNSNIC_RX)
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_CUST_L2_ZINWELL)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_CUST_DEFINED_MAX)
 
 		    /* Customer private range */
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_CUST_PRIVATE_MIN)
+<<<<<<< HEAD
+=======
+		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_UBNT_E100)
+>>>>>>> refs/remotes/origin/master
 		ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_CUST_PRIVATE_MAX)
 	}
 	return "Unsupported Board";
@@ -358,6 +422,7 @@ static inline const char *cvmx_chip_type_to_string(enum
 	switch (type) {
 		ENUM_CHIP_TYPE_CASE(CVMX_CHIP_TYPE_NULL)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    ENUM_CHIP_TYPE_CASE(CVMX_CHIP_SIM_TYPE_DEPRECATED)
 		    ENUM_CHIP_TYPE_CASE(CVMX_CHIP_TYPE_OCTEON_SAMPLE)
 		    ENUM_CHIP_TYPE_CASE(CVMX_CHIP_TYPE_MAX)
@@ -366,6 +431,11 @@ static inline const char *cvmx_chip_type_to_string(enum
 		ENUM_CHIP_TYPE_CASE(CVMX_CHIP_TYPE_OCTEON_SAMPLE)
 		ENUM_CHIP_TYPE_CASE(CVMX_CHIP_TYPE_MAX)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ENUM_CHIP_TYPE_CASE(CVMX_CHIP_SIM_TYPE_DEPRECATED)
+		ENUM_CHIP_TYPE_CASE(CVMX_CHIP_TYPE_OCTEON_SAMPLE)
+		ENUM_CHIP_TYPE_CASE(CVMX_CHIP_TYPE_MAX)
+>>>>>>> refs/remotes/origin/master
 	}
 	return "Unsupported Chip";
 }

@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,8 +49,11 @@
  * POSSIBILITY OF SUCH DAMAGES.
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <acpi/acpi.h>
 #include "accommon.h"
 #include "acnamesp.h"
@@ -56,6 +63,7 @@ ACPI_MODULE_NAME("utmisc")
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
  * FUNCTION:    acpi_ut_validate_exception
  *
  * PARAMETERS:  Status       - The acpi_status code to be formatted
@@ -127,13 +135,21 @@ const char *acpi_ut_validate_exception(acpi_status status)
  * FUNCTION:    acpi_ut_is_pci_root_bridge
  *
  * PARAMETERS:  Id              - The HID/CID in string format
+=======
+ * FUNCTION:    acpi_ut_is_pci_root_bridge
+ *
+ * PARAMETERS:  id              - The HID/CID in string format
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      TRUE if the Id is a match for a PCI/PCI-Express Root Bridge
  *
  * DESCRIPTION: Determine if the input ID is a PCI Root Bridge ID.
  *
  ******************************************************************************/
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 u8 acpi_ut_is_pci_root_bridge(char *id)
 {
 
@@ -154,7 +170,11 @@ u8 acpi_ut_is_pci_root_bridge(char *id)
  *
  * FUNCTION:    acpi_ut_is_aml_table
  *
+<<<<<<< HEAD
  * PARAMETERS:  Table               - An ACPI table
+=======
+ * PARAMETERS:  table               - An ACPI table
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      TRUE if table contains executable AML; FALSE otherwise
  *
@@ -180,6 +200,7 @@ u8 acpi_ut_is_aml_table(struct acpi_table_header *table)
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
  * FUNCTION:    acpi_ut_allocate_owner_id
  *
  * PARAMETERS:  owner_id        - Where the new owner ID is returned
@@ -472,6 +493,11 @@ void acpi_ut_print_string(char *string, u8 max_length)
  * FUNCTION:    acpi_ut_dword_byte_swap
  *
  * PARAMETERS:  Value           - Value to be converted
+=======
+ * FUNCTION:    acpi_ut_dword_byte_swap
+ *
+ * PARAMETERS:  value           - Value to be converted
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      u32 integer with bytes swapped
  *
@@ -511,8 +537,13 @@ u32 acpi_ut_dword_byte_swap(u32 value)
  * RETURN:      None
  *
  * DESCRIPTION: Set the global integer bit width based upon the revision
+<<<<<<< HEAD
  *              of the DSDT.  For Revision 1 and 0, Integers are 32 bits.
  *              For Revision 2 and above, Integers are 64 bits.  Yes, this
+=======
+ *              of the DSDT. For Revision 1 and 0, Integers are 32 bits.
+ *              For Revision 2 and above, Integers are 64 bits. Yes, this
+>>>>>>> refs/remotes/origin/master
  *              makes a difference.
  *
  ******************************************************************************/
@@ -536,6 +567,7 @@ void acpi_ut_set_integer_width(u8 revision)
 	}
 }
 
+<<<<<<< HEAD
 #ifdef ACPI_DEBUG_OUTPUT
 /*******************************************************************************
  *
@@ -878,12 +910,19 @@ acpi_status acpi_ut_strtoul64(char *string, u32 base, u64 * ret_integer)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_ut_create_update_state_and_push
  *
+<<<<<<< HEAD
  * PARAMETERS:  Object          - Object to be added to the new state
  *              Action          - Increment/Decrement
+=======
+ * PARAMETERS:  object          - Object to be added to the new state
+ *              action          - Increment/Decrement
+>>>>>>> refs/remotes/origin/master
  *              state_list      - List the state will be added to
  *
  * RETURN:      Status
@@ -923,7 +962,11 @@ acpi_ut_create_update_state_and_push(union acpi_operand_object *object,
  * PARAMETERS:  source_object       - The package to walk
  *              target_object       - Target object (if package is being copied)
  *              walk_callback       - Called once for each package element
+<<<<<<< HEAD
  *              Context             - Passed to the callback function
+=======
+ *              context             - Passed to the callback function
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -932,7 +975,11 @@ acpi_ut_create_update_state_and_push(union acpi_operand_object *object,
  ******************************************************************************/
 
 acpi_status
+<<<<<<< HEAD
 acpi_ut_walk_package_tree(union acpi_operand_object * source_object,
+=======
+acpi_ut_walk_package_tree(union acpi_operand_object *source_object,
+>>>>>>> refs/remotes/origin/master
 			  void *target_object,
 			  acpi_pkg_callback walk_callback, void *context)
 {
@@ -959,10 +1006,17 @@ acpi_ut_walk_package_tree(union acpi_operand_object * source_object,
 
 		/*
 		 * Check for:
+<<<<<<< HEAD
 		 * 1) An uninitialized package element.  It is completely
 		 *    legal to declare a package and leave it uninitialized
 		 * 2) Not an internal object - can be a namespace node instead
 		 * 3) Any type other than a package.  Packages are handled in else
+=======
+		 * 1) An uninitialized package element. It is completely
+		 *    legal to declare a package and leave it uninitialized
+		 * 2) Not an internal object - can be a namespace node instead
+		 * 3) Any type other than a package. Packages are handled in else
+>>>>>>> refs/remotes/origin/master
 		 *    case below.
 		 */
 		if ((!this_source_obj) ||
@@ -981,7 +1035,11 @@ acpi_ut_walk_package_tree(union acpi_operand_object * source_object,
 			       state->pkg.source_object->package.count) {
 				/*
 				 * We've handled all of the objects at this level,  This means
+<<<<<<< HEAD
 				 * that we have just completed a package.  That package may
+=======
+				 * that we have just completed a package. That package may
+>>>>>>> refs/remotes/origin/master
 				 * have contained one or more packages itself.
 				 *
 				 * Delete this state and pop the previous state (package).
@@ -1043,3 +1101,76 @@ acpi_ut_walk_package_tree(union acpi_operand_object * source_object,
 
 	return_ACPI_STATUS(AE_AML_INTERNAL);
 }
+<<<<<<< HEAD
+=======
+
+#ifdef ACPI_DEBUG_OUTPUT
+/*******************************************************************************
+ *
+ * FUNCTION:    acpi_ut_display_init_pathname
+ *
+ * PARAMETERS:  type                - Object type of the node
+ *              obj_handle          - Handle whose pathname will be displayed
+ *              path                - Additional path string to be appended.
+ *                                      (NULL if no extra path)
+ *
+ * RETURN:      acpi_status
+ *
+ * DESCRIPTION: Display full pathname of an object, DEBUG ONLY
+ *
+ ******************************************************************************/
+
+void
+acpi_ut_display_init_pathname(u8 type,
+			      struct acpi_namespace_node *obj_handle,
+			      char *path)
+{
+	acpi_status status;
+	struct acpi_buffer buffer;
+
+	ACPI_FUNCTION_ENTRY();
+
+	/* Only print the path if the appropriate debug level is enabled */
+
+	if (!(acpi_dbg_level & ACPI_LV_INIT_NAMES)) {
+		return;
+	}
+
+	/* Get the full pathname to the node */
+
+	buffer.length = ACPI_ALLOCATE_LOCAL_BUFFER;
+	status = acpi_ns_handle_to_pathname(obj_handle, &buffer);
+	if (ACPI_FAILURE(status)) {
+		return;
+	}
+
+	/* Print what we're doing */
+
+	switch (type) {
+	case ACPI_TYPE_METHOD:
+
+		acpi_os_printf("Executing  ");
+		break;
+
+	default:
+
+		acpi_os_printf("Initializing ");
+		break;
+	}
+
+	/* Print the object type and pathname */
+
+	acpi_os_printf("%-12s %s",
+		       acpi_ut_get_type_name(type), (char *)buffer.pointer);
+
+	/* Extra path is used to append names like _STA, _INI, etc. */
+
+	if (path) {
+		acpi_os_printf(".%s", path);
+	}
+	acpi_os_printf("\n");
+
+	ACPI_FREE(buffer.pointer);
+}
+#endif
+>>>>>>> refs/remotes/origin/master

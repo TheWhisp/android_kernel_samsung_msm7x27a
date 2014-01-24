@@ -10,9 +10,13 @@
 #include <linux/pci.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/interrupt.h>
 #include <linux/of_device.h>
@@ -406,8 +410,12 @@ static void apb_init(struct pci_bus *sabre_bus)
 	}
 }
 
+<<<<<<< HEAD
 static void __devinit sabre_scan_bus(struct pci_pbm_info *pbm,
 				     struct device *parent)
+=======
+static void sabre_scan_bus(struct pci_pbm_info *pbm, struct device *parent)
+>>>>>>> refs/remotes/origin/master
 {
 	static int once;
 
@@ -446,8 +454,13 @@ static void __devinit sabre_scan_bus(struct pci_pbm_info *pbm,
 	sabre_register_error_handlers(pbm);
 }
 
+<<<<<<< HEAD
 static void __devinit sabre_pbm_init(struct pci_pbm_info *pbm,
 				     struct platform_device *op)
+=======
+static void sabre_pbm_init(struct pci_pbm_info *pbm,
+			   struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	psycho_pbm_init_common(pbm, op, "SABRE", PBM_CHIP_TYPE_SABRE);
 	pbm->pci_afsr = pbm->controller_regs + SABRE_PIOAFSR;
@@ -457,7 +470,11 @@ static void __devinit sabre_pbm_init(struct pci_pbm_info *pbm,
 }
 
 static const struct of_device_id sabre_match[];
+<<<<<<< HEAD
 static int __devinit sabre_probe(struct platform_device *op)
+=======
+static int sabre_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct of_device_id *match;
 	const struct linux_prom64_registers *pr_regs;

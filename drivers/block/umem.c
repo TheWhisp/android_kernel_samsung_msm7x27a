@@ -513,6 +513,7 @@ static void process_page(unsigned long data)
 	}
 }
 
+<<<<<<< HEAD
 struct mm_plug_cb {
 	struct blk_plug_cb cb;
 	struct cardinfo *card;
@@ -526,10 +527,21 @@ static void mm_unplug(struct blk_plug_cb *cb)
 	activate(mmcb->card);
 	spin_unlock_irq(&mmcb->card->lock);
 	kfree(mmcb);
+=======
+static void mm_unplug(struct blk_plug_cb *cb, bool from_schedule)
+{
+	struct cardinfo *card = cb->data;
+
+	spin_lock_irq(&card->lock);
+	activate(card);
+	spin_unlock_irq(&card->lock);
+	kfree(cb);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mm_check_plugged(struct cardinfo *card)
 {
+<<<<<<< HEAD
 	struct blk_plug *plug = current->plug;
 	struct mm_plug_cb *mmcb;
 
@@ -556,6 +568,12 @@ static int mm_make_request(struct request_queue *q, struct bio *bio)
 =======
 static void mm_make_request(struct request_queue *q, struct bio *bio)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return !!blk_check_plugged(mm_unplug, card, sizeof(struct blk_plug_cb));
+}
+
+static void mm_make_request(struct request_queue *q, struct bio *bio)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cardinfo *card = q->queuedata;
 	pr_debug("mm_make_request %llu %u\n",
@@ -570,10 +588,14 @@ static void mm_make_request(struct request_queue *q, struct bio *bio)
 	spin_unlock_irq(&card->lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
 	return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return;
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t mm_interrupt(int irq, void *__card)
@@ -820,8 +842,12 @@ static const struct block_device_operations mm_fops = {
 	.revalidate_disk = mm_revalidate,
 };
 
+<<<<<<< HEAD
 static int __devinit mm_pci_probe(struct pci_dev *dev,
 				const struct pci_device_id *id)
+=======
+static int mm_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = -ENODEV;
 	struct cardinfo *card = &cards[num_cards];

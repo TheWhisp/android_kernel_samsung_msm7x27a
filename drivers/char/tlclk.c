@@ -222,7 +222,11 @@ static int tlclk_open(struct inode *inode, struct file *filp)
 	/* This device is wired through the FPGA IO space of the ATCA blade
 	 * we can't share this IRQ */
 	result = request_irq(telclk_interrupt, &tlclk_interrupt,
+<<<<<<< HEAD
 			     IRQF_DISABLED, "telco_clock", tlclk_interrupt);
+=======
+			     0, "telco_clock", tlclk_interrupt);
+>>>>>>> refs/remotes/origin/master
 	if (result == -EBUSY)
 		printk(KERN_ERR "tlclk: Interrupt can't be reserved.\n");
 	else
@@ -784,8 +788,15 @@ static int __init tlclk_init(void)
 	}
 	tlclk_major = ret;
 	alarm_events = kzalloc( sizeof(struct tlclk_alarms), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!alarm_events)
 		goto out1;
+=======
+	if (!alarm_events) {
+		ret = -ENOMEM;
+		goto out1;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Read telecom clock IRQ number (Set by BIOS) */
 	if (!request_region(TLCLK_BASE, 8, "telco_clock")) {
@@ -798,10 +809,14 @@ static int __init tlclk_init(void)
 
 	if (0x0F == telclk_interrupt ) { /* not MCPBL0010 ? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "telclk_interrup = 0x%x non-mcpbl0010 hw.\n",
 =======
 		printk(KERN_ERR "telclk_interrupt = 0x%x non-mcpbl0010 hw.\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR "telclk_interrupt = 0x%x non-mcpbl0010 hw.\n",
+>>>>>>> refs/remotes/origin/master
 			telclk_interrupt);
 		ret = -ENXIO;
 		goto out3;

@@ -33,6 +33,12 @@
  */
 
 /dts-v1/;
+<<<<<<< HEAD
+=======
+
+/include/ "e500mc_power_isa.dtsi"
+
+>>>>>>> refs/remotes/origin/master
 / {
 	compatible = "fsl,P4080";
 	#address-cells = <2>;

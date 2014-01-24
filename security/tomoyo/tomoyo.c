@@ -2,19 +2,26 @@
  * security/tomoyo/tomoyo.c
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * LSM hooks for TOMOYO Linux.
  *
  * Copyright (C) 2005-2010  NTT DATA CORPORATION
 =======
  * Copyright (C) 2005-2011  NTT DATA CORPORATION
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2005-2011  NTT DATA CORPORATION
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/security.h>
 #include "common.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_cred_alloc_blank - Target for security_cred_alloc_blank().
  *
@@ -23,7 +30,10 @@
  *
  * Returns 0.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int tomoyo_cred_alloc_blank(struct cred *new, gfp_t gfp)
 {
 	new->security = NULL;
@@ -31,7 +41,10 @@ static int tomoyo_cred_alloc_blank(struct cred *new, gfp_t gfp)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_cred_prepare - Target for security_prepare_creds().
  *
@@ -41,7 +54,10 @@ static int tomoyo_cred_alloc_blank(struct cred *new, gfp_t gfp)
  *
  * Returns 0.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int tomoyo_cred_prepare(struct cred *new, const struct cred *old,
 			       gfp_t gfp)
 {
@@ -53,27 +69,39 @@ static int tomoyo_cred_prepare(struct cred *new, const struct cred *old,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_cred_transfer - Target for security_transfer_creds().
  *
  * @new: Pointer to "struct cred".
  * @old: Pointer to "struct cred".
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void tomoyo_cred_transfer(struct cred *new, const struct cred *old)
 {
 	tomoyo_cred_prepare(new, old, 0);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_cred_free - Target for security_cred_free().
  *
  * @cred: Pointer to "struct cred".
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void tomoyo_cred_free(struct cred *cred)
 {
 	struct tomoyo_domain_info *domain = cred->security;
@@ -82,7 +110,10 @@ static void tomoyo_cred_free(struct cred *cred)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_bprm_set_creds - Target for security_bprm_set_creds().
  *
@@ -90,7 +121,10 @@ static void tomoyo_cred_free(struct cred *cred)
  *
  * Returns 0 on success, negative value otherwise.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int tomoyo_bprm_set_creds(struct linux_binprm *bprm)
 {
 	int rc;
@@ -106,9 +140,13 @@ static int tomoyo_bprm_set_creds(struct linux_binprm *bprm)
 	if (bprm->cred_prepared)
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifndef CONFIG_SECURITY_TOMOYO_OMIT_USERSPACE_LOADER
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef CONFIG_SECURITY_TOMOYO_OMIT_USERSPACE_LOADER
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Load policy if /sbin/tomoyo-init exists and /sbin/init is requested
 	 * for the first time.
@@ -116,9 +154,13 @@ static int tomoyo_bprm_set_creds(struct linux_binprm *bprm)
 	if (!tomoyo_policy_loaded)
 		tomoyo_load_policy(bprm->filename);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Release reference to "struct tomoyo_domain_info" stored inside
 	 * "bprm->cred->security". New reference to "struct tomoyo_domain_info"
@@ -136,7 +178,10 @@ static int tomoyo_bprm_set_creds(struct linux_binprm *bprm)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_bprm_check_security - Target for security_bprm_check().
  *
@@ -144,7 +189,10 @@ static int tomoyo_bprm_set_creds(struct linux_binprm *bprm)
  *
  * Returns 0 on success, negative value otherwise.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int tomoyo_bprm_check_security(struct linux_binprm *bprm)
 {
 	struct tomoyo_domain_info *domain = bprm->cred->security;
@@ -163,6 +211,7 @@ static int tomoyo_bprm_check_security(struct linux_binprm *bprm)
 	 * Read permission is checked against interpreters using next domain.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return tomoyo_check_open_permission(domain, &bprm->file->f_path, O_RDONLY);
 }
 
@@ -180,6 +229,8 @@ static int tomoyo_path_unlink(struct path *parent, struct dentry *dentry)
 static int tomoyo_path_mkdir(struct path *parent, struct dentry *dentry,
 			     int mode)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return tomoyo_check_open_permission(domain, &bprm->file->f_path,
 					    O_RDONLY);
 }
@@ -235,13 +286,17 @@ static int tomoyo_path_unlink(struct path *parent, struct dentry *dentry)
  */
 static int tomoyo_path_mkdir(struct path *parent, struct dentry *dentry,
 			     umode_t mode)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct path path = { parent->mnt, dentry };
 	return tomoyo_path_number_perm(TOMOYO_TYPE_MKDIR, &path,
 				       mode & S_IALLUGO);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int tomoyo_path_rmdir(struct path *parent, struct dentry *dentry)
 {
@@ -250,6 +305,8 @@ static int tomoyo_path_rmdir(struct path *parent, struct dentry *dentry)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_path_rmdir - Target for security_path_rmdir().
  *
@@ -273,11 +330,15 @@ static int tomoyo_path_rmdir(struct path *parent, struct dentry *dentry)
  *
  * Returns 0 on success, negative value otherwise.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int tomoyo_path_symlink(struct path *parent, struct dentry *dentry,
 			       const char *old_name)
 {
 	struct path path = { parent->mnt, dentry };
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return tomoyo_path_perm(TOMOYO_TYPE_SYMLINK, &path);
 }
@@ -285,6 +346,8 @@ static int tomoyo_path_symlink(struct path *parent, struct dentry *dentry,
 static int tomoyo_path_mknod(struct path *parent, struct dentry *dentry,
 			     int mode, unsigned int dev)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return tomoyo_path_perm(TOMOYO_TYPE_SYMLINK, &path, old_name);
 }
 
@@ -300,7 +363,10 @@ static int tomoyo_path_mknod(struct path *parent, struct dentry *dentry,
  */
 static int tomoyo_path_mknod(struct path *parent, struct dentry *dentry,
 			     umode_t mode, unsigned int dev)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct path path = { parent->mnt, dentry };
 	int type = TOMOYO_TYPE_CREATE;
@@ -330,7 +396,10 @@ static int tomoyo_path_mknod(struct path *parent, struct dentry *dentry,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_path_link - Target for security_path_link().
  *
@@ -340,7 +409,10 @@ static int tomoyo_path_mknod(struct path *parent, struct dentry *dentry,
  *
  * Returns 0 on success, negative value otherwise.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int tomoyo_path_link(struct dentry *old_dentry, struct path *new_dir,
 			    struct dentry *new_dentry)
 {
@@ -350,7 +422,10 @@ static int tomoyo_path_link(struct dentry *old_dentry, struct path *new_dir,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_path_rename - Target for security_path_rename().
  *
@@ -361,7 +436,10 @@ static int tomoyo_path_link(struct dentry *old_dentry, struct path *new_dir,
  *
  * Returns 0 on success, negative value otherwise.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int tomoyo_path_rename(struct path *old_parent,
 			      struct dentry *old_dentry,
 			      struct path *new_parent,
@@ -373,6 +451,7 @@ static int tomoyo_path_rename(struct path *old_parent,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int tomoyo_file_fcntl(struct file *file, unsigned int cmd,
 			     unsigned long arg)
 {
@@ -382,6 +461,8 @@ static int tomoyo_file_fcntl(struct file *file, unsigned int cmd,
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_file_fcntl - Target for security_file_fcntl().
  *
@@ -401,15 +482,23 @@ static int tomoyo_file_fcntl(struct file *file, unsigned int cmd,
 }
 
 /**
+<<<<<<< HEAD
  * tomoyo_dentry_open - Target for security_dentry_open().
+=======
+ * tomoyo_file_open - Target for security_file_open().
+>>>>>>> refs/remotes/origin/master
  *
  * @f:    Pointer to "struct file".
  * @cred: Pointer to "struct cred".
  *
  * Returns 0 on success, negative value otherwise.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int tomoyo_dentry_open(struct file *f, const struct cred *cred)
+=======
+static int tomoyo_file_open(struct file *f, const struct cred *cred)
+>>>>>>> refs/remotes/origin/master
 {
 	int flags = f->f_flags;
 	/* Don't check read permission here if called from do_execve(). */
@@ -419,7 +508,10 @@ static int tomoyo_dentry_open(struct file *f, const struct cred *cred)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_file_ioctl - Target for security_file_ioctl().
  *
@@ -429,13 +521,17 @@ static int tomoyo_dentry_open(struct file *f, const struct cred *cred)
  *
  * Returns 0 on success, negative value otherwise.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int tomoyo_file_ioctl(struct file *file, unsigned int cmd,
 			     unsigned long arg)
 {
 	return tomoyo_path_number_perm(TOMOYO_TYPE_IOCTL, &file->f_path, cmd);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int tomoyo_path_chmod(struct dentry *dentry, struct vfsmount *mnt,
 			     mode_t mode)
@@ -446,6 +542,8 @@ static int tomoyo_path_chmod(struct dentry *dentry, struct vfsmount *mnt,
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_path_chmod - Target for security_path_chmod().
  *
@@ -469,6 +567,7 @@ static int tomoyo_path_chmod(struct path *path, umode_t mode)
  *
  * Returns 0 on success, negative value otherwise.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int tomoyo_path_chown(struct path *path, uid_t uid, gid_t gid)
 {
@@ -487,6 +586,20 @@ static int tomoyo_path_chroot(struct path *path)
 }
 
 =======
+=======
+static int tomoyo_path_chown(struct path *path, kuid_t uid, kgid_t gid)
+{
+	int error = 0;
+	if (uid_valid(uid))
+		error = tomoyo_path_number_perm(TOMOYO_TYPE_CHOWN, path,
+						from_kuid(&init_user_ns, uid));
+	if (!error && gid_valid(gid))
+		error = tomoyo_path_number_perm(TOMOYO_TYPE_CHGRP, path,
+						from_kgid(&init_user_ns, gid));
+	return error;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_path_chroot - Target for security_path_chroot().
  *
@@ -510,13 +623,19 @@ static int tomoyo_path_chroot(struct path *path)
  *
  * Returns 0 on success, negative value otherwise.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int tomoyo_sb_mount(char *dev_name, struct path *path,
 			   char *type, unsigned long flags, void *data)
+=======
+static int tomoyo_sb_mount(const char *dev_name, struct path *path,
+			   const char *type, unsigned long flags, void *data)
+>>>>>>> refs/remotes/origin/master
 {
 	return tomoyo_mount_permission(dev_name, path, type, flags, data);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int tomoyo_sb_umount(struct vfsmount *mnt, int flags)
 {
@@ -525,6 +644,8 @@ static int tomoyo_sb_umount(struct vfsmount *mnt, int flags)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_sb_umount - Target for security_sb_umount().
  *
@@ -547,14 +668,20 @@ static int tomoyo_sb_umount(struct vfsmount *mnt, int flags)
  *
  * Returns 0 on success, negative value otherwise.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int tomoyo_sb_pivotroot(struct path *old_path, struct path *new_path)
 {
 	return tomoyo_path2_perm(TOMOYO_TYPE_PIVOT_ROOT, new_path, old_path);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_socket_listen - Check permission for listen().
  *
@@ -613,7 +740,10 @@ static int tomoyo_socket_sendmsg(struct socket *sock, struct msghdr *msg,
 	return tomoyo_socket_sendmsg_permission(sock, msg, size);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * tomoyo_security_ops is a "struct security_operations" which is used for
  * registering TOMOYO.
@@ -627,7 +757,11 @@ static struct security_operations tomoyo_security_ops = {
 	.bprm_set_creds      = tomoyo_bprm_set_creds,
 	.bprm_check_security = tomoyo_bprm_check_security,
 	.file_fcntl          = tomoyo_file_fcntl,
+<<<<<<< HEAD
 	.dentry_open         = tomoyo_dentry_open,
+=======
+	.file_open           = tomoyo_file_open,
+>>>>>>> refs/remotes/origin/master
 	.path_truncate       = tomoyo_path_truncate,
 	.path_unlink         = tomoyo_path_unlink,
 	.path_mkdir          = tomoyo_path_mkdir,
@@ -637,9 +771,13 @@ static struct security_operations tomoyo_security_ops = {
 	.path_link           = tomoyo_path_link,
 	.path_rename         = tomoyo_path_rename,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.inode_getattr       = tomoyo_inode_getattr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.inode_getattr       = tomoyo_inode_getattr,
+>>>>>>> refs/remotes/origin/master
 	.file_ioctl          = tomoyo_file_ioctl,
 	.path_chmod          = tomoyo_path_chmod,
 	.path_chown          = tomoyo_path_chown,
@@ -648,11 +786,15 @@ static struct security_operations tomoyo_security_ops = {
 	.sb_umount           = tomoyo_sb_umount,
 	.sb_pivotroot        = tomoyo_sb_pivotroot,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.socket_bind         = tomoyo_socket_bind,
 	.socket_connect      = tomoyo_socket_connect,
 	.socket_listen       = tomoyo_socket_listen,
 	.socket_sendmsg      = tomoyo_socket_sendmsg,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
@@ -661,12 +803,22 @@ struct srcu_struct tomoyo_ss;
 
 <<<<<<< HEAD
 =======
+=======
+};
+
+/* Lock for GC. */
+DEFINE_SRCU(tomoyo_ss);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_init - Register TOMOYO Linux as a LSM module.
  *
  * Returns 0.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init tomoyo_init(void)
 {
 	struct cred *cred = (struct cred *) current_cred();
@@ -674,8 +826,12 @@ static int __init tomoyo_init(void)
 	if (!security_module_enable(&tomoyo_security_ops))
 		return 0;
 	/* register ourselves with the security framework */
+<<<<<<< HEAD
 	if (register_security(&tomoyo_security_ops) ||
 	    init_srcu_struct(&tomoyo_ss))
+=======
+	if (register_security(&tomoyo_security_ops))
+>>>>>>> refs/remotes/origin/master
 		panic("Failure registering TOMOYO Linux");
 	printk(KERN_INFO "TOMOYO Linux initialized\n");
 	cred->security = &tomoyo_kernel_domain;

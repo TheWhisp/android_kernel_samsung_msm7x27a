@@ -15,9 +15,13 @@
 #include <linux/audit.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/bug.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * fsnotify_d_instantiate - instantiate a dentry for inode
@@ -41,7 +45,11 @@ static inline int fsnotify_parent(struct path *path, struct dentry *dentry, __u3
 static inline int fsnotify_perm(struct file *file, int mask)
 {
 	struct path *path = &file->f_path;
+<<<<<<< HEAD
 	struct inode *inode = path->dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	__u32 fsnotify_mask = 0;
 	int ret;
 
@@ -112,7 +120,11 @@ static inline void fsnotify_move(struct inode *old_dir, struct inode *new_dir,
 
 	if (source)
 		fsnotify(source, FS_MOVE_SELF, moved->d_inode, FSNOTIFY_EVENT_INODE, NULL, 0);
+<<<<<<< HEAD
 	audit_inode_child(moved, new_dir);
+=======
+	audit_inode_child(new_dir, moved, AUDIT_TYPE_CHILD_CREATE);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -158,7 +170,11 @@ static inline void fsnotify_inoderemove(struct inode *inode)
  */
 static inline void fsnotify_create(struct inode *inode, struct dentry *dentry)
 {
+<<<<<<< HEAD
 	audit_inode_child(dentry, inode);
+=======
+	audit_inode_child(inode, dentry, AUDIT_TYPE_CHILD_CREATE);
+>>>>>>> refs/remotes/origin/master
 
 	fsnotify(inode, FS_CREATE, dentry->d_inode, FSNOTIFY_EVENT_INODE, dentry->d_name.name, 0);
 }
@@ -171,7 +187,11 @@ static inline void fsnotify_create(struct inode *inode, struct dentry *dentry)
 static inline void fsnotify_link(struct inode *dir, struct inode *inode, struct dentry *new_dentry)
 {
 	fsnotify_link_count(inode);
+<<<<<<< HEAD
 	audit_inode_child(new_dentry, dir);
+=======
+	audit_inode_child(dir, new_dentry, AUDIT_TYPE_CHILD_CREATE);
+>>>>>>> refs/remotes/origin/master
 
 	fsnotify(dir, FS_CREATE, inode, FSNOTIFY_EVENT_INODE, new_dentry->d_name.name, 0);
 }
@@ -184,7 +204,11 @@ static inline void fsnotify_mkdir(struct inode *inode, struct dentry *dentry)
 	__u32 mask = (FS_CREATE | FS_ISDIR);
 	struct inode *d_inode = dentry->d_inode;
 
+<<<<<<< HEAD
 	audit_inode_child(dentry, inode);
+=======
+	audit_inode_child(inode, dentry, AUDIT_TYPE_CHILD_CREATE);
+>>>>>>> refs/remotes/origin/master
 
 	fsnotify(inode, mask, d_inode, FSNOTIFY_EVENT_INODE, dentry->d_name.name, 0);
 }
@@ -195,7 +219,11 @@ static inline void fsnotify_mkdir(struct inode *inode, struct dentry *dentry)
 static inline void fsnotify_access(struct file *file)
 {
 	struct path *path = &file->f_path;
+<<<<<<< HEAD
 	struct inode *inode = path->dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	__u32 mask = FS_ACCESS;
 
 	if (S_ISDIR(inode->i_mode))
@@ -213,7 +241,11 @@ static inline void fsnotify_access(struct file *file)
 static inline void fsnotify_modify(struct file *file)
 {
 	struct path *path = &file->f_path;
+<<<<<<< HEAD
 	struct inode *inode = path->dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	__u32 mask = FS_MODIFY;
 
 	if (S_ISDIR(inode->i_mode))
@@ -231,7 +263,11 @@ static inline void fsnotify_modify(struct file *file)
 static inline void fsnotify_open(struct file *file)
 {
 	struct path *path = &file->f_path;
+<<<<<<< HEAD
 	struct inode *inode = path->dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	__u32 mask = FS_OPEN;
 
 	if (S_ISDIR(inode->i_mode))
@@ -247,7 +283,11 @@ static inline void fsnotify_open(struct file *file)
 static inline void fsnotify_close(struct file *file)
 {
 	struct path *path = &file->f_path;
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	fmode_t mode = file->f_mode;
 	__u32 mask = (mode & FMODE_WRITE) ? FS_CLOSE_WRITE : FS_CLOSE_NOWRITE;
 

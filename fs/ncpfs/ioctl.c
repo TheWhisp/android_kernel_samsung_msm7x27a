@@ -45,7 +45,11 @@ ncp_get_fs_info(struct ncp_server * server, struct inode *inode,
 		return -EINVAL;
 	}
 	/* TODO: info.addr = server->m.serv_addr; */
+<<<<<<< HEAD
 	SET_UID(info.mounted_uid, server->m.mounted_uid);
+=======
+	SET_UID(info.mounted_uid, from_kuid_munged(current_user_ns(), server->m.mounted_uid));
+>>>>>>> refs/remotes/origin/master
 	info.connection		= server->connection;
 	info.buffer_size	= server->buffer_size;
 	info.volume_number	= NCP_FINFO(inode)->volNumber;
@@ -69,7 +73,11 @@ ncp_get_fs_info_v2(struct ncp_server * server, struct inode *inode,
 		DPRINTK("info.version invalid: %d\n", info2.version);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	info2.mounted_uid   = server->m.mounted_uid;
+=======
+	info2.mounted_uid   = from_kuid_munged(current_user_ns(), server->m.mounted_uid);
+>>>>>>> refs/remotes/origin/master
 	info2.connection    = server->connection;
 	info2.buffer_size   = server->buffer_size;
 	info2.volume_number = NCP_FINFO(inode)->volNumber;
@@ -135,7 +143,11 @@ ncp_get_compat_fs_info_v2(struct ncp_server * server, struct inode *inode,
 		DPRINTK("info.version invalid: %d\n", info2.version);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	info2.mounted_uid   = server->m.mounted_uid;
+=======
+	info2.mounted_uid   = from_kuid_munged(current_user_ns(), server->m.mounted_uid);
+>>>>>>> refs/remotes/origin/master
 	info2.connection    = server->connection;
 	info2.buffer_size   = server->buffer_size;
 	info2.volume_number = NCP_FINFO(inode)->volNumber;
@@ -348,12 +360,17 @@ static long __ncp_ioctl(struct inode *inode, unsigned int cmd, unsigned long arg
 		{
 			u16 uid;
 
+<<<<<<< HEAD
 			SET_UID(uid, server->m.mounted_uid);
+=======
+			SET_UID(uid, from_kuid_munged(current_user_ns(), server->m.mounted_uid));
+>>>>>>> refs/remotes/origin/master
 			if (put_user(uid, (u16 __user *)argp))
 				return -EFAULT;
 			return 0;
 		}
 	case NCP_IOC_GETMOUNTUID32:
+<<<<<<< HEAD
 		if (put_user(server->m.mounted_uid,
 			     (u32 __user *)argp))
 			return -EFAULT;
@@ -364,6 +381,21 @@ static long __ncp_ioctl(struct inode *inode, unsigned int cmd, unsigned long arg
 			return -EFAULT;
 		return 0;
 
+=======
+	{
+		uid_t uid = from_kuid_munged(current_user_ns(), server->m.mounted_uid);
+		if (put_user(uid, (u32 __user *)argp))
+			return -EFAULT;
+		return 0;
+	}
+	case NCP_IOC_GETMOUNTUID64:
+	{
+		uid_t uid = from_kuid_munged(current_user_ns(), server->m.mounted_uid);
+		if (put_user(uid, (u64 __user *)argp))
+			return -EFAULT;
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
 	case NCP_IOC_GETROOT:
 		{
 			struct ncp_setroot_ioctl sr;
@@ -808,9 +840,15 @@ outrel:
 
 long ncp_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
+<<<<<<< HEAD
 	struct inode *inode = filp->f_dentry->d_inode;
 	struct ncp_server *server = NCP_SERVER(inode);
 	uid_t uid = current_uid();
+=======
+	struct inode *inode = file_inode(filp);
+	struct ncp_server *server = NCP_SERVER(inode);
+	kuid_t uid = current_uid();
+>>>>>>> refs/remotes/origin/master
 	int need_drop_write = 0;
 	long ret;
 
@@ -819,12 +857,20 @@ long ncp_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	case NCP_IOC_CONN_LOGGED_IN:
 	case NCP_IOC_SETROOT:
 		if (!capable(CAP_SYS_ADMIN)) {
+<<<<<<< HEAD
 			ret = -EACCES;
+=======
+			ret = -EPERM;
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 		break;
 	}
+<<<<<<< HEAD
 	if (server->m.mounted_uid != uid) {
+=======
+	if (!uid_eq(server->m.mounted_uid, uid)) {
+>>>>>>> refs/remotes/origin/master
 		switch (cmd) {
 		/*
 		 * Only mount owner can issue these ioctls.  Information
@@ -902,10 +948,14 @@ long ncp_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 outDropWrite:
 	if (need_drop_write)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mnt_drop_write(filp->f_path.mnt);
 =======
 		mnt_drop_write_file(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mnt_drop_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 out:
 	return ret;
 }

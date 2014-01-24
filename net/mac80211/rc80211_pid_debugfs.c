@@ -14,9 +14,13 @@
 #include <linux/skbuff.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/mac80211.h>
 #include "rate.h"
@@ -170,6 +174,7 @@ static ssize_t rate_control_pid_events_read(struct file *file, char __user *buf,
 	 * provide large enough buffers. */
 	length = length < RC_PID_PRINT_BUF_SIZE ?
 		 length : RC_PID_PRINT_BUF_SIZE;
+<<<<<<< HEAD
 	p = snprintf(pb, length, "%u %lu ", ev->id, ev->timestamp);
 	switch (ev->type) {
 	case RC_PID_EVENT_TYPE_TX_STATUS:
@@ -193,6 +198,31 @@ static ssize_t rate_control_pid_events_read(struct file *file, char __user *buf,
 		break;
 	}
 	p += snprintf(pb + p, length - p, "\n");
+=======
+	p = scnprintf(pb, length, "%u %lu ", ev->id, ev->timestamp);
+	switch (ev->type) {
+	case RC_PID_EVENT_TYPE_TX_STATUS:
+		p += scnprintf(pb + p, length - p, "tx_status %u %u",
+			       !(ev->data.flags & IEEE80211_TX_STAT_ACK),
+			       ev->data.tx_status.status.rates[0].idx);
+		break;
+	case RC_PID_EVENT_TYPE_RATE_CHANGE:
+		p += scnprintf(pb + p, length - p, "rate_change %d %d",
+			       ev->data.index, ev->data.rate);
+		break;
+	case RC_PID_EVENT_TYPE_TX_RATE:
+		p += scnprintf(pb + p, length - p, "tx_rate %d %d",
+			       ev->data.index, ev->data.rate);
+		break;
+	case RC_PID_EVENT_TYPE_PF_SAMPLE:
+		p += scnprintf(pb + p, length - p,
+			       "pf_sample %d %d %d %d",
+			       ev->data.pf_sample, ev->data.prop_err,
+			       ev->data.int_err, ev->data.der_err);
+		break;
+	}
+	p += scnprintf(pb + p, length - p, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&events->lock, status);
 

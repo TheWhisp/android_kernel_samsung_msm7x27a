@@ -4,7 +4,10 @@
  * This file is released under the GPL.
  */
 
+<<<<<<< HEAD
 #include "dm-space-map-checker.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "dm-space-map-common.h"
 #include "dm-space-map-disk.h"
 #include "dm-space-map.h"
@@ -141,6 +144,7 @@ static int sm_disk_inc_block(struct dm_space_map *sm, dm_block_t b)
 
 static int sm_disk_dec_block(struct dm_space_map *sm, dm_block_t b)
 {
+<<<<<<< HEAD
 	int r;
 	uint32_t old_count;
 	enum allocation_event ev;
@@ -161,6 +165,12 @@ static int sm_disk_dec_block(struct dm_space_map *sm, dm_block_t b)
 	}
 
 	return r;
+=======
+	enum allocation_event ev;
+	struct sm_disk *smd = container_of(sm, struct sm_disk, sm);
+
+	return sm_ll_dec(&smd->ll, b, &ev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int sm_disk_new_block(struct dm_space_map *sm, dm_block_t *b)
@@ -249,12 +259,21 @@ static struct dm_space_map ops = {
 	.new_block = sm_disk_new_block,
 	.commit = sm_disk_commit,
 	.root_size = sm_disk_root_size,
+<<<<<<< HEAD
 	.copy_root = sm_disk_copy_root
 };
 
 static struct dm_space_map *dm_sm_disk_create_real(
 	struct dm_transaction_manager *tm,
 	dm_block_t nr_blocks)
+=======
+	.copy_root = sm_disk_copy_root,
+	.register_threshold_callback = NULL
+};
+
+struct dm_space_map *dm_sm_disk_create(struct dm_transaction_manager *tm,
+				       dm_block_t nr_blocks)
+>>>>>>> refs/remotes/origin/master
 {
 	int r;
 	struct sm_disk *smd;
@@ -285,6 +304,7 @@ bad:
 	kfree(smd);
 	return ERR_PTR(r);
 }
+<<<<<<< HEAD
 
 struct dm_space_map *dm_sm_disk_create(struct dm_transaction_manager *tm,
 				       dm_block_t nr_blocks)
@@ -306,6 +326,12 @@ EXPORT_SYMBOL_GPL(dm_sm_disk_create);
 static struct dm_space_map *dm_sm_disk_open_real(
 	struct dm_transaction_manager *tm,
 	void *root_le, size_t len)
+=======
+EXPORT_SYMBOL_GPL(dm_sm_disk_create);
+
+struct dm_space_map *dm_sm_disk_open(struct dm_transaction_manager *tm,
+				     void *root_le, size_t len)
+>>>>>>> refs/remotes/origin/master
 {
 	int r;
 	struct sm_disk *smd;
@@ -332,6 +358,7 @@ bad:
 	kfree(smd);
 	return ERR_PTR(r);
 }
+<<<<<<< HEAD
 
 struct dm_space_map *dm_sm_disk_open(struct dm_transaction_manager *tm,
 				     void *root_le, size_t len)
@@ -339,6 +366,8 @@ struct dm_space_map *dm_sm_disk_open(struct dm_transaction_manager *tm,
 	return dm_sm_checker_create(
 		dm_sm_disk_open_real(tm, root_le, len));
 }
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(dm_sm_disk_open);
 
 /*----------------------------------------------------------------*/

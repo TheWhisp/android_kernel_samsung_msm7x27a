@@ -15,6 +15,7 @@
 
 #include <linux/linkage.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <mach/hardware.h>
 #include <mach/at91sam9_sdramc.h>
@@ -36,13 +37,24 @@ at91sam9_alt_reset:	mrc	p15, 0, r0, c1, c0, 0
 			ldr	r0, .at91_va_base_sdramc	@ preload constants
 			ldr	r1, .at91_va_base_rstc_cr
 =======
+=======
+#include <mach/hardware.h>
+#include <mach/at91_ramc.h>
+#include "at91_rstc.h"
+
+			.arm
+
+>>>>>>> refs/remotes/origin/master
 			.globl	at91sam9_alt_restart
 
 at91sam9_alt_restart:	ldr	r0, =at91_ramc_base		@ preload constants
 			ldr	r0, [r0]
 			ldr	r4, =at91_rstc_base
 			ldr	r1, [r4]
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			mov	r2, #1
 			mov	r3, #AT91_SDRAMC_LPCB_POWER_DOWN
@@ -52,6 +64,7 @@ at91sam9_alt_restart:	ldr	r0, =at91_ramc_base		@ preload constants
 
 			str	r2, [r0, #AT91_SDRAMC_TR]	@ disable SDRAM access
 			str	r3, [r0, #AT91_SDRAMC_LPR]	@ power down SDRAM
+<<<<<<< HEAD
 <<<<<<< HEAD
 			str	r4, [r1]			@ reset processor
 
@@ -66,3 +79,8 @@ at91sam9_alt_restart:	ldr	r0, =at91_ramc_base		@ preload constants
 
 			b	.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			str	r4, [r1, #AT91_RSTC_CR]		@ reset processor
+
+			b	.
+>>>>>>> refs/remotes/origin/master

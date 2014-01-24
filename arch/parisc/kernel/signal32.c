@@ -34,7 +34,10 @@
 #include <asm/uaccess.h>
 
 #include "signal32.h"
+<<<<<<< HEAD
 #include "sys32.h"
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define DEBUG_COMPAT_SIG 0 
 #define DEBUG_COMPAT_SIG_LEVEL 2
@@ -47,8 +50,11 @@
 #define DBG(LEVEL, ...)
 #endif
 
+<<<<<<< HEAD
 #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
 
+=======
+>>>>>>> refs/remotes/origin/master
 inline void
 sigset_32to64(sigset_t *s64, compat_sigset_t *s32)
 {
@@ -62,6 +68,7 @@ sigset_64to32(compat_sigset_t *s32, sigset_t *s64)
 	s32->sig[1] = (s64->sig[0] >> 32) & 0xffffffffUL;
 }
 
+<<<<<<< HEAD
 static int
 put_sigset32(compat_sigset_t __user *up, sigset_t *set, size_t sz)
 {
@@ -185,6 +192,8 @@ do_sigaltstack32 (const compat_stack_t __user *uss32, compat_stack_t __user *uos
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 long
 restore_sigcontext32(struct compat_sigcontext __user *sc, struct compat_regfile __user * rf,
 		struct pt_regs *regs)
@@ -445,7 +454,11 @@ copy_siginfo_from_user32 (siginfo_t *to, compat_siginfo_t __user *from)
 }
 
 int
+<<<<<<< HEAD
 copy_siginfo_to_user32 (compat_siginfo_t __user *to, siginfo_t *from)
+=======
+copy_siginfo_to_user32 (compat_siginfo_t __user *to, const siginfo_t *from)
+>>>>>>> refs/remotes/origin/master
 {
 	compat_uptr_t addr;
 	compat_int_t val;
@@ -501,6 +514,7 @@ copy_siginfo_to_user32 (compat_siginfo_t __user *to, siginfo_t *from)
 	}
 	return err;
 }
+<<<<<<< HEAD
 
 asmlinkage long compat_sys_rt_sigqueueinfo(int pid, int sig,
 	struct compat_siginfo __user *uinfo)
@@ -520,3 +534,5 @@ asmlinkage long compat_sys_rt_sigqueueinfo(int pid, int sig,
 	return kill_proc_info(sig, &info, pid);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master

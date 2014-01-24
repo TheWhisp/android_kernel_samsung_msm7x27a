@@ -1,6 +1,10 @@
 /*
  * QLogic iSCSI HBA Driver
+<<<<<<< HEAD
  * Copyright (c)  2003-2010 QLogic Corporation
+=======
+ * Copyright (c)  2003-2013 QLogic Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * See LICENSE.qla4xxx for copyright and licensing details.
  */
@@ -192,35 +196,71 @@ static void qla4xxx_build_scsi_iocbs(struct srb *srb,
 	}
 }
 
+<<<<<<< HEAD
 /**
  * qla4_8xxx_queue_iocb - Tell ISP it's got new request(s)
+=======
+void qla4_83xx_queue_iocb(struct scsi_qla_host *ha)
+{
+	writel(ha->request_in, &ha->qla4_83xx_reg->req_q_in);
+	readl(&ha->qla4_83xx_reg->req_q_in);
+}
+
+void qla4_83xx_complete_iocb(struct scsi_qla_host *ha)
+{
+	writel(ha->response_out, &ha->qla4_83xx_reg->rsp_q_out);
+	readl(&ha->qla4_83xx_reg->rsp_q_out);
+}
+
+/**
+ * qla4_82xx_queue_iocb - Tell ISP it's got new request(s)
+>>>>>>> refs/remotes/origin/master
  * @ha: pointer to host adapter structure.
  *
  * This routine notifies the ISP that one or more new request
  * queue entries have been placed on the request queue.
  **/
+<<<<<<< HEAD
 void qla4_8xxx_queue_iocb(struct scsi_qla_host *ha)
+=======
+void qla4_82xx_queue_iocb(struct scsi_qla_host *ha)
+>>>>>>> refs/remotes/origin/master
 {
 	uint32_t dbval = 0;
 
 	dbval = 0x14 | (ha->func_num << 5);
 	dbval = dbval | (0 << 8) | (ha->request_in << 16);
 
+<<<<<<< HEAD
 	qla4_8xxx_wr_32(ha, ha->nx_db_wr_ptr, ha->request_in);
 }
 
 /**
  * qla4_8xxx_complete_iocb - Tell ISP we're done with response(s)
+=======
+	qla4_82xx_wr_32(ha, ha->nx_db_wr_ptr, ha->request_in);
+}
+
+/**
+ * qla4_82xx_complete_iocb - Tell ISP we're done with response(s)
+>>>>>>> refs/remotes/origin/master
  * @ha: pointer to host adapter structure.
  *
  * This routine notifies the ISP that one or more response/completion
  * queue entries have been processed by the driver.
  * This also clears the interrupt.
  **/
+<<<<<<< HEAD
 void qla4_8xxx_complete_iocb(struct scsi_qla_host *ha)
 {
 	writel(ha->response_out, &ha->qla4_8xxx_reg->rsp_q_out);
 	readl(&ha->qla4_8xxx_reg->rsp_q_out);
+=======
+void qla4_82xx_complete_iocb(struct scsi_qla_host *ha)
+{
+	writel(ha->response_out, &ha->qla4_82xx_reg->rsp_q_out);
+	readl(&ha->qla4_82xx_reg->rsp_q_out);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -304,7 +344,11 @@ int qla4xxx_send_command_to_isp(struct scsi_qla_host *ha, struct srb * srb)
 		goto queuing_error;
 
 	/* total iocbs active */
+<<<<<<< HEAD
 	if ((ha->iocb_cnt + req_cnt) >= REQUEST_QUEUE_DEPTH)
+=======
+	if ((ha->iocb_cnt + req_cnt) >= ha->iocb_hiwat)
+>>>>>>> refs/remotes/origin/master
 		goto queuing_error;
 
 	/* Build command packet */
@@ -314,6 +358,7 @@ int qla4xxx_send_command_to_isp(struct scsi_qla_host *ha, struct srb * srb)
 	cmd_entry->handle = cpu_to_le32(index);
 	cmd_entry->target = cpu_to_le16(ddb_entry->fw_ddb_index);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cmd_entry->connection_id = cpu_to_le16(ddb_entry->connection_id);
 
 	int_to_scsilun(cmd->device->lun, &cmd_entry->lun);
@@ -322,6 +367,10 @@ int qla4xxx_send_command_to_isp(struct scsi_qla_host *ha, struct srb * srb)
 
 	int_to_scsilun(cmd->device->lun, &cmd_entry->lun);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	int_to_scsilun(cmd->device->lun, &cmd_entry->lun);
+>>>>>>> refs/remotes/origin/master
 	cmd_entry->ttlByteCnt = cpu_to_le32(scsi_bufflen(cmd));
 	memcpy(cmd_entry->cdb, cmd->cmnd, cmd->cmd_len);
 	cmd_entry->dataSegCnt = cpu_to_le16(tot_dsds);
@@ -387,7 +436,10 @@ queuing_error:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int qla4xxx_send_passthru0(struct iscsi_task *task)
 {
 	struct passthru0 *passthru_iocb;
@@ -504,6 +556,10 @@ static int qla4xxx_send_mbox_iocb(struct scsi_qla_host *ha, struct mrb *mrb,
 	mrb->mbox_cmd = in_mbox[0];
 	wmb();
 
+<<<<<<< HEAD
+=======
+	ha->iocb_cnt += mrb->iocb_cnt;
+>>>>>>> refs/remotes/origin/master
 	ha->isp_ops->queue_iocb(ha);
 exit_mbox_iocb:
 	spin_unlock_irqrestore(&ha->hardware_lock, flags);
@@ -546,4 +602,7 @@ exit_ping:
 	kfree(mrb);
 	return rval;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

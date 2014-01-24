@@ -272,9 +272,12 @@ static void c67x00_hcd_irq(struct c67x00_sie *sie, u16 int_status, u16 msg)
 		c67x00_ll_usb_clear_status(sie, SOF_EOP_IRQ_FLG);
 		c67x00_sched_kick(c67x00);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		set_bit(HCD_FLAG_SAW_IRQ, &hcd->flags);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -388,6 +391,11 @@ int c67x00_hcd_probe(struct c67x00_sie *sie)
 		goto err2;
 	}
 
+<<<<<<< HEAD
+=======
+	device_wakeup_enable(hcd->self.controller);
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&sie->lock, flags);
 	sie->private_data = c67x00;
 	sie->irq = c67x00_hcd_irq;

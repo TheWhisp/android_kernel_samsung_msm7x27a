@@ -2,12 +2,16 @@
  * security/tomoyo/memory.c
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Memory management functions for TOMOYO.
  *
  * Copyright (C) 2005-2010  NTT DATA CORPORATION
 =======
  * Copyright (C) 2005-2011  NTT DATA CORPORATION
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2005-2011  NTT DATA CORPORATION
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/hash.h>
@@ -34,16 +38,22 @@ void tomoyo_warn_oom(const char *function)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Memory allocated for policy. */
 static atomic_t tomoyo_policy_memory_size;
 /* Quota for holding policy. */
 static unsigned int tomoyo_quota_for_policy;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Memoy currently used by policy/audit log/query. */
 unsigned int tomoyo_memory_used[TOMOYO_MAX_MEMORY_STAT];
 /* Memory quota for "policy"/"audit log"/"query". */
 unsigned int tomoyo_memory_quota[TOMOYO_MAX_MEMORY_STAT];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * tomoyo_memory_ok - Check memory quota.
@@ -53,6 +63,7 @@ unsigned int tomoyo_memory_quota[TOMOYO_MAX_MEMORY_STAT];
  * Returns true on success, false otherwise.
  *
  * Returns true if @ptr is not NULL and quota not exceeded, false otherwise.
+<<<<<<< HEAD
 <<<<<<< HEAD
  */
 bool tomoyo_memory_ok(void *ptr)
@@ -67,6 +78,8 @@ bool tomoyo_memory_ok(void *ptr)
 	}
 	atomic_sub(s, &tomoyo_policy_memory_size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Caller holds tomoyo_policy_lock mutex.
  */
@@ -81,7 +94,10 @@ bool tomoyo_memory_ok(void *ptr)
 			return true;
 		tomoyo_memory_used[TOMOYO_MEMORY_POLICY] -= s;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tomoyo_warn_oom(__func__);
 	return false;
 }
@@ -95,10 +111,15 @@ bool tomoyo_memory_ok(void *ptr)
  * Returns pointer to allocated memory on success, NULL otherwise.
  * @data is zero-cleared on success.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *
  * Caller holds tomoyo_policy_lock mutex.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+ * Caller holds tomoyo_policy_lock mutex.
+>>>>>>> refs/remotes/origin/master
  */
 void *tomoyo_commit_ok(void *data, const unsigned int size)
 {
@@ -113,6 +134,7 @@ void *tomoyo_commit_ok(void *data, const unsigned int size)
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * tomoyo_memory_free - Free memory for elements.
  *
@@ -137,6 +159,8 @@ struct tomoyo_group *tomoyo_get_group(const char *group_name, const u8 idx)
 	struct tomoyo_group e = { };
 	struct tomoyo_group *group = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * tomoyo_get_group - Allocate memory for "struct tomoyo_path_group"/"struct tomoyo_number_group".
  *
  * @param: Pointer to "struct tomoyo_acl_param".
@@ -151,7 +175,10 @@ struct tomoyo_group *tomoyo_get_group(struct tomoyo_acl_param *param,
 	struct tomoyo_group *group = NULL;
 	struct list_head *list;
 	const char *group_name = tomoyo_read_token(param);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bool found = false;
 	if (!tomoyo_correct_word(group_name) || idx >= TOMOYO_MAX_GROUP)
 		return NULL;
@@ -161,18 +188,24 @@ struct tomoyo_group *tomoyo_get_group(struct tomoyo_acl_param *param,
 	if (mutex_lock_interruptible(&tomoyo_policy_lock))
 		goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	list_for_each_entry(group, &tomoyo_group_list[idx], list) {
 		if (e.group_name != group->group_name)
 			continue;
 		atomic_inc(&group->users);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	list = &param->ns->group_list[idx];
 	list_for_each_entry(group, list, head.list) {
 		if (e.group_name != group->group_name ||
 		    atomic_read(&group->head.users) == TOMOYO_GC_IN_PROGRESS)
 			continue;
 		atomic_inc(&group->head.users);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		found = true;
 		break;
 	}
@@ -181,6 +214,7 @@ struct tomoyo_group *tomoyo_get_group(struct tomoyo_acl_param *param,
 		if (entry) {
 			INIT_LIST_HEAD(&entry->member_list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			atomic_set(&entry->users, 1);
 			list_add_tail_rcu(&entry->list,
 					  &tomoyo_group_list[idx]);
@@ -188,16 +222,24 @@ struct tomoyo_group *tomoyo_get_group(struct tomoyo_acl_param *param,
 			atomic_set(&entry->head.users, 1);
 			list_add_tail_rcu(&entry->head.list, list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			atomic_set(&entry->head.users, 1);
+			list_add_tail_rcu(&entry->head.list, list);
+>>>>>>> refs/remotes/origin/master
 			group = entry;
 			found = true;
 		}
 	}
 	mutex_unlock(&tomoyo_policy_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
  out:
 =======
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	tomoyo_put_name(e.group_name);
 	return found ? group : NULL;
 }
@@ -223,9 +265,12 @@ const struct tomoyo_path_info *tomoyo_get_name(const char *name)
 	unsigned int hash;
 	int len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int allocated_len;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head *head;
 
 	if (!name)
@@ -235,6 +280,7 @@ const struct tomoyo_path_info *tomoyo_get_name(const char *name)
 	head = &tomoyo_name_list[hash_long(hash, TOMOYO_HASH_BITS)];
 	if (mutex_lock_interruptible(&tomoyo_policy_lock))
 		return NULL;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	list_for_each_entry(ptr, head, list) {
 		if (hash != ptr->entry.hash || strcmp(name, ptr->entry.name))
@@ -260,6 +306,8 @@ const struct tomoyo_path_info *tomoyo_get_name(const char *name)
 	list_add_tail(&ptr->list, head);
  out:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(ptr, head, head.list) {
 		if (hash != ptr->entry.hash || strcmp(name, ptr->entry.name) ||
 		    atomic_read(&ptr->head.users) == TOMOYO_GC_IN_PROGRESS)
@@ -279,23 +327,33 @@ const struct tomoyo_path_info *tomoyo_get_name(const char *name)
 		ptr = NULL;
 	}
 out:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&tomoyo_policy_lock);
 	return ptr ? &ptr->entry : NULL;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 /* Initial namespace.*/
 struct tomoyo_policy_namespace tomoyo_kernel_namespace;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Initial namespace.*/
+struct tomoyo_policy_namespace tomoyo_kernel_namespace;
+
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_mm_init - Initialize mm related code.
  */
 void __init tomoyo_mm_init(void)
 {
 	int idx;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	for (idx = 0; idx < TOMOYO_MAX_POLICY; idx++)
@@ -381,6 +439,8 @@ int tomoyo_write_memory_quota(struct tomoyo_io_buffer *head)
 		tomoyo_quota_for_query = size;
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (idx = 0; idx < TOMOYO_MAX_HASH; idx++)
 		INIT_LIST_HEAD(&tomoyo_name_list[idx]);
 	tomoyo_kernel_namespace.name = "<kernel>";
@@ -389,5 +449,8 @@ int tomoyo_write_memory_quota(struct tomoyo_io_buffer *head)
 	INIT_LIST_HEAD(&tomoyo_kernel_domain.acl_info_list);
 	tomoyo_kernel_domain.domainname = tomoyo_get_name("<kernel>");
 	list_add_tail_rcu(&tomoyo_kernel_domain.list, &tomoyo_domain_list);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

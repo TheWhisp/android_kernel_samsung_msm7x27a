@@ -33,10 +33,17 @@
 
 #include "i740_reg.h"
 
+<<<<<<< HEAD
 static char *mode_option __devinitdata;
 
 #ifdef CONFIG_MTRR
 static int mtrr __devinitdata = 1;
+=======
+static char *mode_option;
+
+#ifdef CONFIG_MTRR
+static int mtrr = 1;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 struct i740fb_par {
@@ -91,7 +98,11 @@ struct i740fb_par {
 #define DACSPEED24_SD	128
 #define DACSPEED32	86
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo i740fb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo i740fb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id =		"i740fb",
 	.type =		FB_TYPE_PACKED_PIXELS,
 	.visual =	FB_VISUAL_TRUECOLOR,
@@ -163,7 +174,11 @@ static int i740fb_ddc_getsda(void *data)
 	return !!(i740inreg(par, XRX, REG_DDC_STATE) & DDC_SDA);
 }
 
+<<<<<<< HEAD
 static int __devinit i740fb_setup_ddc_bus(struct fb_info *info)
+=======
+static int i740fb_setup_ddc_bus(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct i740fb_par *par = info->par;
 
@@ -203,8 +218,12 @@ static int i740fb_release(struct fb_info *info, int user)
 
 	mutex_lock(&(par->open_lock));
 	if (par->ref_count == 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "fb%d: release called with zero refcount\n",
 			info->node);
+=======
+		fb_err(info, "release called with zero refcount\n");
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&(par->open_lock));
 		return -EINVAL;
 	}
@@ -497,7 +516,11 @@ static int i740fb_decode_var(const struct fb_var_screeninfo *var,
 
 	mem = vxres * vyres * ((bpp + 1) / 8);
 	if (mem > info->screen_size) {
+<<<<<<< HEAD
 		dev_err(info->device, "not enough video memory (%d KB requested, %ld KB avaliable)\n",
+=======
+		dev_err(info->device, "not enough video memory (%d KB requested, %ld KB available)\n",
+>>>>>>> refs/remotes/origin/master
 			mem >> 10, info->screen_size >> 10);
 		return -ENOMEM;
 	}
@@ -728,7 +751,11 @@ static void vga_protect(struct i740fb_par *par)
 	i740outreg_mask(par, VGA_SEQ_I, VGA_SEQ_CLOCK_MODE, 0x20, 0x20);
 
 	i740inb(par, 0x3DA);
+<<<<<<< HEAD
 	i740outb(par, VGA_ATT_W, 0x00);	/* enable pallete access */
+=======
+	i740outb(par, VGA_ATT_W, 0x00);	/* enable palette access */
+>>>>>>> refs/remotes/origin/master
 }
 
 static void vga_unprotect(struct i740fb_par *par)
@@ -737,7 +764,11 @@ static void vga_unprotect(struct i740fb_par *par)
 	i740outreg_mask(par, VGA_SEQ_I, VGA_SEQ_CLOCK_MODE, 0, 0x20);
 
 	i740inb(par, 0x3DA);
+<<<<<<< HEAD
 	i740outb(par, VGA_ATT_W, 0x20);	/* disable pallete access */
+=======
+	i740outb(par, VGA_ATT_W, 0x20);	/* disable palette access */
+>>>>>>> refs/remotes/origin/master
 }
 
 static int i740fb_set_par(struct fb_info *info)
@@ -1007,8 +1038,12 @@ static struct fb_ops i740fb_ops = {
 
 /* ------------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static int __devinit i740fb_probe(struct pci_dev *dev,
 				  const struct pci_device_id *ent)
+=======
+static int i740fb_probe(struct pci_dev *dev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	struct i740fb_par *par;
@@ -1068,7 +1103,11 @@ static int __devinit i740fb_probe(struct pci_dev *dev,
 	par->has_sgram = !((tmp & DRAM_RAS_TIMING) ||
 			   (tmp & DRAM_RAS_PRECHARGE));
 
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: Intel740 on %s, %ld KB %s\n", info->node,
+=======
+	fb_info(info, "Intel740 on %s, %ld KB %s\n",
+>>>>>>> refs/remotes/origin/master
 		pci_name(dev), info->screen_size >> 10,
 		par->has_sgram ? "SGRAM" : "SDRAM");
 
@@ -1144,8 +1183,12 @@ static int __devinit i740fb_probe(struct pci_dev *dev,
 		goto err_reg_framebuffer;
 	}
 
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: %s frame buffer device\n",
 		info->node, info->fix.id);
+=======
+	fb_info(info, "%s frame buffer device\n", info->fix.id);
+>>>>>>> refs/remotes/origin/master
 	pci_set_drvdata(dev, info);
 #ifdef CONFIG_MTRR
 	if (mtrr) {
@@ -1174,7 +1217,11 @@ err_enable_device:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit i740fb_remove(struct pci_dev *dev)
+=======
+static void i740fb_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = pci_get_drvdata(dev);
 
@@ -1195,7 +1242,10 @@ static void __devexit i740fb_remove(struct pci_dev *dev)
 		pci_iounmap(dev, info->screen_base);
 		pci_release_regions(dev);
 /*		pci_disable_device(dev); */
+<<<<<<< HEAD
 		pci_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 		framebuffer_release(info);
 	}
 }
@@ -1275,7 +1325,11 @@ static struct pci_driver i740fb_driver = {
 	.name		= "i740fb",
 	.id_table	= i740fb_id_table,
 	.probe		= i740fb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(i740fb_remove),
+=======
+	.remove		= i740fb_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= i740fb_suspend,
 	.resume		= i740fb_resume,
 };
@@ -1303,7 +1357,11 @@ static int  __init i740fb_setup(char *options)
 }
 #endif
 
+<<<<<<< HEAD
 int __init i740fb_init(void)
+=======
+static int __init i740fb_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 #ifndef MODULE
 	char *option = NULL;

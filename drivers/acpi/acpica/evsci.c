@@ -7,10 +7,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,18 +57,72 @@
 #define _COMPONENT          ACPI_EVENTS
 ACPI_MODULE_NAME("evsci")
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+>>>>>>> refs/remotes/origin/master
 /* Local prototypes */
 static u32 ACPI_SYSTEM_XFACE acpi_ev_sci_xrupt_handler(void *context);
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
  * FUNCTION:    acpi_ev_sci_xrupt_handler
  *
  * PARAMETERS:  Context   - Calling Context
+=======
+ * FUNCTION:    acpi_ev_sci_dispatch
+ *
+ * PARAMETERS:  None
+ *
+ * RETURN:      Status code indicates whether interrupt was handled.
+ *
+ * DESCRIPTION: Dispatch the SCI to all host-installed SCI handlers.
+ *
+ ******************************************************************************/
+
+u32 acpi_ev_sci_dispatch(void)
+{
+	struct acpi_sci_handler_info *sci_handler;
+	acpi_cpu_flags flags;
+	u32 int_status = ACPI_INTERRUPT_NOT_HANDLED;
+
+	ACPI_FUNCTION_NAME(ev_sci_dispatch);
+
+	/* Are there any host-installed SCI handlers? */
+
+	if (!acpi_gbl_sci_handler_list) {
+		return (int_status);
+	}
+
+	flags = acpi_os_acquire_lock(acpi_gbl_gpe_lock);
+
+	/* Invoke all host-installed SCI handlers */
+
+	sci_handler = acpi_gbl_sci_handler_list;
+	while (sci_handler) {
+
+		/* Invoke the installed handler (at interrupt level) */
+
+		int_status |= sci_handler->address(sci_handler->context);
+
+		sci_handler = sci_handler->next;
+	}
+
+	acpi_os_release_lock(acpi_gbl_gpe_lock, flags);
+	return (int_status);
+}
+
+/*******************************************************************************
+ *
+ * FUNCTION:    acpi_ev_sci_xrupt_handler
+ *
+ * PARAMETERS:  context   - Calling Context
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status code indicates whether interrupt was handled.
  *
@@ -97,6 +155,14 @@ static u32 ACPI_SYSTEM_XFACE acpi_ev_sci_xrupt_handler(void *context)
 	 */
 	interrupt_handled |= acpi_ev_gpe_detect(gpe_xrupt_list);
 
+<<<<<<< HEAD
+=======
+	/* Invoke all host-installed SCI handlers */
+
+	interrupt_handled |= acpi_ev_sci_dispatch();
+
+	acpi_sci_count++;
+>>>>>>> refs/remotes/origin/master
 	return_UINT32(interrupt_handled);
 }
 
@@ -104,7 +170,11 @@ static u32 ACPI_SYSTEM_XFACE acpi_ev_sci_xrupt_handler(void *context)
  *
  * FUNCTION:    acpi_ev_gpe_xrupt_handler
  *
+<<<<<<< HEAD
  * PARAMETERS:  Context   - Calling Context
+=======
+ * PARAMETERS:  context   - Calling Context
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status code indicates whether interrupt was handled.
  *
@@ -120,14 +190,21 @@ u32 ACPI_SYSTEM_XFACE acpi_ev_gpe_xrupt_handler(void *context)
 	ACPI_FUNCTION_TRACE(ev_gpe_xrupt_handler);
 
 	/*
+<<<<<<< HEAD
 	 * We are guaranteed by the ACPI CA initialization/shutdown code that
+=======
+	 * We are guaranteed by the ACPICA initialization/shutdown code that
+>>>>>>> refs/remotes/origin/master
 	 * if this interrupt handler is installed, ACPI is enabled.
 	 */
 
 	/* GPEs: Check for and dispatch any GPEs that have occurred */
 
 	interrupt_handled |= acpi_ev_gpe_detect(gpe_xrupt_list);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return_UINT32(interrupt_handled);
 }
 
@@ -158,6 +235,7 @@ u32 acpi_ev_install_sci_handler(void)
 
 /******************************************************************************
  *
+<<<<<<< HEAD
  * FUNCTION:    acpi_ev_remove_sci_handler
  *
  * PARAMETERS:  none
@@ -167,6 +245,17 @@ u32 acpi_ev_install_sci_handler(void)
  *
  * DESCRIPTION: Remove the SCI interrupt handler. No further SCIs will be
  *              taken.
+=======
+ * FUNCTION:    acpi_ev_remove_all_sci_handlers
+ *
+ * PARAMETERS:  none
+ *
+ * RETURN:      AE_OK if handler uninstalled, AE_ERROR if handler was not
+ *              installed to begin with
+ *
+ * DESCRIPTION: Remove the SCI interrupt handler. No further SCIs will be
+ *              taken. Remove all host-installed SCI handlers.
+>>>>>>> refs/remotes/origin/master
  *
  * Note:  It doesn't seem important to disable all events or set the event
  *        enable registers to their original values. The OS should disable
@@ -175,11 +264,21 @@ u32 acpi_ev_install_sci_handler(void)
  *
  ******************************************************************************/
 
+<<<<<<< HEAD
 acpi_status acpi_ev_remove_sci_handler(void)
 {
 	acpi_status status;
 
 	ACPI_FUNCTION_TRACE(ev_remove_sci_handler);
+=======
+acpi_status acpi_ev_remove_all_sci_handlers(void)
+{
+	struct acpi_sci_handler_info *sci_handler;
+	acpi_cpu_flags flags;
+	acpi_status status;
+
+	ACPI_FUNCTION_TRACE(ev_remove_all_sci_handlers);
+>>>>>>> refs/remotes/origin/master
 
 	/* Just let the OS remove the handler and disable the level */
 
@@ -187,6 +286,7 @@ acpi_status acpi_ev_remove_sci_handler(void)
 	    acpi_os_remove_interrupt_handler((u32) acpi_gbl_FADT.sci_interrupt,
 					     acpi_ev_sci_xrupt_handler);
 
+<<<<<<< HEAD
 	return_ACPI_STATUS(status);
 }
 <<<<<<< HEAD
@@ -194,3 +294,24 @@ acpi_status acpi_ev_remove_sci_handler(void)
 
 #endif				/* !ACPI_REDUCED_HARDWARE */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!acpi_gbl_sci_handler_list) {
+		return (status);
+	}
+
+	flags = acpi_os_acquire_lock(acpi_gbl_gpe_lock);
+
+	/* Free all host-installed SCI handlers */
+
+	while (acpi_gbl_sci_handler_list) {
+		sci_handler = acpi_gbl_sci_handler_list;
+		acpi_gbl_sci_handler_list = sci_handler->next;
+		ACPI_FREE(sci_handler);
+	}
+
+	acpi_os_release_lock(acpi_gbl_gpe_lock, flags);
+	return_ACPI_STATUS(status);
+}
+
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/master

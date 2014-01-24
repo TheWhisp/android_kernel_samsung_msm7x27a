@@ -17,9 +17,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/soc.h>
 
 static struct snd_soc_card ln2440sbc;
@@ -31,16 +35,24 @@ static struct snd_soc_dai_link ln2440sbc_dai[] = {
 	.cpu_dai_name = "samsung-ac97",
 	.codec_dai_name = "ac97-hifi",
 	.codec_name = "ac97-codec",
+<<<<<<< HEAD
 	.platform_name = "samsung-audio",
+=======
+	.platform_name = "samsung-ac97",
+>>>>>>> refs/remotes/origin/master
 },
 };
 
 static struct snd_soc_card ln2440sbc = {
 	.name = "LN2440SBC",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.owner = THIS_MODULE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	.dai_link = ln2440sbc_dai,
 	.num_links = ARRAY_SIZE(ln2440sbc_dai),
 };

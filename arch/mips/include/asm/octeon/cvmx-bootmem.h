@@ -39,7 +39,11 @@
 #define CVMX_BOOTMEM_NUM_NAMED_BLOCKS 64
 
 /* minimum alignment of bootmem alloced blocks */
+<<<<<<< HEAD
 #define CVMX_BOOTMEM_ALIGNMENT_SIZE     (16ull)
+=======
+#define CVMX_BOOTMEM_ALIGNMENT_SIZE	(16ull)
+>>>>>>> refs/remotes/origin/master
 
 /* Flags for cvmx_bootmem_phy_mem* functions */
 /* Allocate from end of block instead of beginning */
@@ -151,8 +155,13 @@ extern void *cvmx_bootmem_alloc(uint64_t size, uint64_t alignment);
  * memory cannot be allocated at the specified address.
  *
  * @size:      Size in bytes of block to allocate
+<<<<<<< HEAD
  * @address:   Physical address to allocate memory at.  If this memory is not
  *                  available, the allocation fails.
+=======
+ * @address:   Physical address to allocate memory at.	If this memory is not
+ *		    available, the allocation fails.
+>>>>>>> refs/remotes/origin/master
  * @alignment: Alignment required - must be power of 2
  * Returns pointer to block of memory, NULL on error
  */
@@ -181,7 +190,11 @@ extern void *cvmx_bootmem_alloc_range(uint64_t size, uint64_t alignment,
  * @name:   name of block to free
  *
  * Returns 0 on failure,
+<<<<<<< HEAD
  *         !0 on success
+=======
+ *	   !0 on success
+>>>>>>> refs/remotes/origin/master
  */
 
 
@@ -210,9 +223,15 @@ extern void *cvmx_bootmem_alloc_named(uint64_t size, uint64_t alignment,
  *
  * @size:     Size in bytes of block to allocate
  * @address:  Physical address to allocate memory at.  If this
+<<<<<<< HEAD
  *            memory is not available, the allocation fails.
  * @name:     name of block - must be less than CVMX_BOOTMEM_NAME_LEN
  *            bytes
+=======
+ *	      memory is not available, the allocation fails.
+ * @name:     name of block - must be less than CVMX_BOOTMEM_NAME_LEN
+ *	      bytes
+>>>>>>> refs/remotes/origin/master
  *
  * Returns a pointer to block of memory, NULL on error
  */
@@ -249,7 +268,11 @@ extern int cvmx_bootmem_free_named(char *name);
  * @name:   name of block to free
  *
  * Returns pointer to named block descriptor on success
+<<<<<<< HEAD
  *         0 on failure
+=======
+ *	   0 on failure
+>>>>>>> refs/remotes/origin/master
  */
 struct cvmx_bootmem_named_block_desc *cvmx_bootmem_find_named_block(char *name);
 
@@ -258,11 +281,16 @@ struct cvmx_bootmem_named_block_desc *cvmx_bootmem_find_named_block(char *name);
  * (optional) requested address and alignment.
  *
  * @req_size: size of region to allocate.  All requests are rounded up
+<<<<<<< HEAD
  *            to be a multiple CVMX_BOOTMEM_ALIGNMENT_SIZE bytes size
+=======
+ *	      to be a multiple CVMX_BOOTMEM_ALIGNMENT_SIZE bytes size
+>>>>>>> refs/remotes/origin/master
  *
  * @address_min: Minimum address that block can occupy.
  *
  * @address_max: Specifies the maximum address_min (inclusive) that
+<<<<<<< HEAD
  *               the allocation can use.
  *
  * @alignment: Requested alignment of the block.  If this alignment
@@ -272,6 +300,17 @@ struct cvmx_bootmem_named_block_desc *cvmx_bootmem_find_named_block(char *name);
  *             internally enforced.  Requested alignments of less than
  *             CVMX_BOOTMEM_ALIGNMENT_SIZE are set to
  *             CVMX_BOOTMEM_ALIGNMENT_SIZE.)
+=======
+ *		 the allocation can use.
+ *
+ * @alignment: Requested alignment of the block.  If this alignment
+ *	       cannot be met, the allocation fails.  This must be a
+ *	       power of 2.  (Note: Alignment of
+ *	       CVMX_BOOTMEM_ALIGNMENT_SIZE bytes is required, and
+ *	       internally enforced.  Requested alignments of less than
+ *	       CVMX_BOOTMEM_ALIGNMENT_SIZE are set to
+ *	       CVMX_BOOTMEM_ALIGNMENT_SIZE.)
+>>>>>>> refs/remotes/origin/master
  *
  * @flags:     Flags to control options for the allocation.
  *
@@ -285,6 +324,7 @@ int64_t cvmx_bootmem_phy_alloc(uint64_t req_size, uint64_t address_min,
  * Allocates a named block of physical memory from the free list, at
  * (optional) requested address and alignment.
  *
+<<<<<<< HEAD
  * @param size      size of region to allocate.  All requests are rounded
  *                  up to be a multiple CVMX_BOOTMEM_ALIGNMENT_SIZE
  *                  bytes size
@@ -300,6 +340,23 @@ int64_t cvmx_bootmem_phy_alloc(uint64_t req_size, uint64_t address_min,
  *                  CVMX_BOOTMEM_ALIGNMENT_SIZE.)
  * @param name      name to assign to named block
  * @param flags     Flags to control options for the allocation.
+=======
+ * @param size	    size of region to allocate.	 All requests are rounded
+ *		    up to be a multiple CVMX_BOOTMEM_ALIGNMENT_SIZE
+ *		    bytes size
+ * @param min_addr Minimum address that block can occupy.
+ * @param max_addr  Specifies the maximum address_min (inclusive) that
+ *		    the allocation can use.
+ * @param alignment Requested alignment of the block.  If this
+ *		    alignment cannot be met, the allocation fails.
+ *		    This must be a power of 2.	(Note: Alignment of
+ *		    CVMX_BOOTMEM_ALIGNMENT_SIZE bytes is required, and
+ *		    internally enforced.  Requested alignments of less
+ *		    than CVMX_BOOTMEM_ALIGNMENT_SIZE are set to
+ *		    CVMX_BOOTMEM_ALIGNMENT_SIZE.)
+ * @param name	    name to assign to named block
+ * @param flags	    Flags to control options for the allocation.
+>>>>>>> refs/remotes/origin/master
  *
  * @return physical address of block allocated, or -1 on failure
  */
@@ -312,14 +369,24 @@ int64_t cvmx_bootmem_phy_named_block_alloc(uint64_t size, uint64_t min_addr,
  * Finds a named memory block by name.
  * Also used for finding an unused entry in the named block table.
  *
+<<<<<<< HEAD
  * @name: Name of memory block to find.  If NULL pointer given, then
  *        finds unused descriptor, if available.
+=======
+ * @name: Name of memory block to find.	 If NULL pointer given, then
+ *	  finds unused descriptor, if available.
+>>>>>>> refs/remotes/origin/master
  *
  * @flags: Flags to control options for the allocation.
  *
  * Returns Pointer to memory block descriptor, NULL if not found.
+<<<<<<< HEAD
  *         If NULL returned when name parameter is NULL, then no memory
  *         block descriptors are available.
+=======
+ *	   If NULL returned when name parameter is NULL, then no memory
+ *	   block descriptors are available.
+>>>>>>> refs/remotes/origin/master
  */
 struct cvmx_bootmem_named_block_desc *
 cvmx_bootmem_phy_named_block_find(char *name, uint32_t flags);
@@ -331,31 +398,51 @@ cvmx_bootmem_phy_named_block_find(char *name, uint32_t flags);
  * @flags:  flags for passing options
  *
  * Returns 0 on failure
+<<<<<<< HEAD
  *         1 on success
+=======
+ *	   1 on success
+>>>>>>> refs/remotes/origin/master
  */
 int cvmx_bootmem_phy_named_block_free(char *name, uint32_t flags);
 
 /**
+<<<<<<< HEAD
  * Frees a block to the bootmem allocator list.  This must
+=======
+ * Frees a block to the bootmem allocator list.	 This must
+>>>>>>> refs/remotes/origin/master
  * be used with care, as the size provided must match the size
  * of the block that was allocated, or the list will become
  * corrupted.
  *
  * IMPORTANT:  This is only intended to be used as part of named block
  * frees and initial population of the free memory list.
+<<<<<<< HEAD
  *                                                      *
+=======
+ *							*
+>>>>>>> refs/remotes/origin/master
  *
  * @phy_addr: physical address of block
  * @size:     size of block in bytes.
  * @flags:    flags for passing options
  *
  * Returns 1 on success,
+<<<<<<< HEAD
  *         0 on failure
+=======
+ *	   0 on failure
+>>>>>>> refs/remotes/origin/master
  */
 int __cvmx_bootmem_phy_free(uint64_t phy_addr, uint64_t size, uint32_t flags);
 
 /**
+<<<<<<< HEAD
  * Locks the bootmem allocator.  This is useful in certain situations
+=======
+ * Locks the bootmem allocator.	 This is useful in certain situations
+>>>>>>> refs/remotes/origin/master
  * where multiple allocations must be made without being interrupted.
  * This should be used with the CVMX_BOOTMEM_FLAG_NO_LOCKING flag.
  *
@@ -370,4 +457,9 @@ void cvmx_bootmem_lock(void);
  */
 void cvmx_bootmem_unlock(void);
 
+<<<<<<< HEAD
+=======
+extern struct cvmx_bootmem_desc *cvmx_bootmem_get_desc(void);
+
+>>>>>>> refs/remotes/origin/master
 #endif /*   __CVMX_BOOTMEM_H__ */

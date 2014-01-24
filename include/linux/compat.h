@@ -20,12 +20,57 @@
 #include <asm/signal.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef COMPAT_USE_64BIT_TIME
 #define COMPAT_USE_64BIT_TIME 0
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef __SC_DELOUSE
+#define __SC_DELOUSE(t,v) ((t)(unsigned long)(v))
+#endif
+
+#define COMPAT_SYSCALL_DEFINE1(name, ...) \
+        COMPAT_SYSCALL_DEFINEx(1, _##name, __VA_ARGS__)
+#define COMPAT_SYSCALL_DEFINE2(name, ...) \
+	COMPAT_SYSCALL_DEFINEx(2, _##name, __VA_ARGS__)
+#define COMPAT_SYSCALL_DEFINE3(name, ...) \
+	COMPAT_SYSCALL_DEFINEx(3, _##name, __VA_ARGS__)
+#define COMPAT_SYSCALL_DEFINE4(name, ...) \
+	COMPAT_SYSCALL_DEFINEx(4, _##name, __VA_ARGS__)
+#define COMPAT_SYSCALL_DEFINE5(name, ...) \
+	COMPAT_SYSCALL_DEFINEx(5, _##name, __VA_ARGS__)
+#define COMPAT_SYSCALL_DEFINE6(name, ...) \
+	COMPAT_SYSCALL_DEFINEx(6, _##name, __VA_ARGS__)
+
+#define COMPAT_SYSCALL_DEFINEx(x, name, ...)				\
+	asmlinkage long compat_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))\
+		__attribute__((alias(__stringify(compat_SyS##name))));  \
+	static inline long C_SYSC##name(__MAP(x,__SC_DECL,__VA_ARGS__));\
+	asmlinkage long compat_SyS##name(__MAP(x,__SC_LONG,__VA_ARGS__));\
+	asmlinkage long compat_SyS##name(__MAP(x,__SC_LONG,__VA_ARGS__))\
+	{								\
+		return C_SYSC##name(__MAP(x,__SC_DELOUSE,__VA_ARGS__));	\
+	}								\
+	static inline long C_SYSC##name(__MAP(x,__SC_DECL,__VA_ARGS__))
+
+#ifndef compat_user_stack_pointer
+#define compat_user_stack_pointer() current_user_stack_pointer()
+#endif
+#ifndef compat_sigaltstack	/* we'll need that for MIPS */
+typedef struct compat_sigaltstack {
+	compat_uptr_t			ss_sp;
+	int				ss_flags;
+	compat_size_t			ss_size;
+} compat_stack_t;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #define compat_jiffies_to_clock_t(x)	\
 		(((unsigned long)(x) * COMPAT_USER_HZ) / HZ)
 
@@ -91,17 +136,40 @@ typedef struct {
 } compat_sigset_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /*
  * These functions operate strictly on struct compat_time*
  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct compat_sigaction {
+#ifndef __ARCH_HAS_IRIX_SIGACTION
+	compat_uptr_t			sa_handler;
+	compat_ulong_t			sa_flags;
+#else
+	compat_uint_t			sa_flags;
+	compat_uptr_t			sa_handler;
+#endif
+#ifdef __ARCH_HAS_SA_RESTORER
+	compat_uptr_t			sa_restorer;
+#endif
+	compat_sigset_t			sa_mask __packed;
+};
+
+/*
+ * These functions operate strictly on struct compat_time*
+ */
+>>>>>>> refs/remotes/origin/master
 extern int get_compat_timespec(struct timespec *,
 			       const struct compat_timespec __user *);
 extern int put_compat_timespec(const struct timespec *,
 			       struct compat_timespec __user *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern int get_compat_timeval(struct timeval *,
 			      const struct compat_timeval __user *);
 extern int put_compat_timeval(const struct timeval *,
@@ -115,7 +183,10 @@ extern int compat_get_timespec(struct timespec *, const void __user *);
 extern int compat_put_timespec(const struct timespec *, void __user *);
 extern int compat_get_timeval(struct timeval *, const void __user *);
 extern int compat_put_timeval(const struct timeval *, void __user *);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct compat_iovec {
 	compat_uptr_t	iov_base;
@@ -169,11 +240,14 @@ struct compat_ustat {
 	char			f_fpack[6];
 };
 
+<<<<<<< HEAD
 typedef union compat_sigval {
 	compat_int_t	sival_int;
 	compat_uptr_t	sival_ptr;
 } compat_sigval_t;
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define COMPAT_SIGEV_PAD_SIZE	((SIGEV_MAX_SIZE/sizeof(int)) - 3)
 
 typedef struct compat_sigevent {
@@ -242,6 +316,18 @@ struct compat_robust_list_head {
 	compat_uptr_t			list_op_pending;
 };
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_COMPAT_OLD_SIGACTION
+struct compat_old_sigaction {
+	compat_uptr_t			sa_handler;
+	compat_old_sigset_t		sa_mask;
+	compat_ulong_t			sa_flags;
+	compat_uptr_t			sa_restorer;
+};
+#endif
+
+>>>>>>> refs/remotes/origin/master
 struct compat_statfs;
 struct compat_statfs64;
 struct compat_old_linux_dirent;
@@ -254,9 +340,13 @@ struct compat_sysctl_args;
 struct compat_kexec_segment;
 struct compat_mq_attr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct compat_msgbuf;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct compat_msgbuf;
+>>>>>>> refs/remotes/origin/master
 
 extern void compat_exit_robust_list(struct task_struct *curr);
 
@@ -267,6 +357,7 @@ asmlinkage long
 compat_sys_get_robust_list(int pid, compat_uptr_t __user *head_ptr,
 			   compat_size_t __user *len_ptr);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #ifdef CONFIG_ARCH_WANT_OLD_COMPAT_IPC
@@ -292,6 +383,16 @@ long compat_sys_shmat(int shmid, compat_uptr_t shmaddr, int shmflg);
 #endif
 long compat_sys_msgctl(int first, int second, void __user *uptr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+asmlinkage long compat_sys_ipc(u32, int, int, u32, compat_uptr_t, u32);
+asmlinkage long compat_sys_shmat(int shmid, compat_uptr_t shmaddr, int shmflg);
+asmlinkage long compat_sys_semctl(int semid, int semnum, int cmd, int arg);
+asmlinkage long compat_sys_msgsnd(int msqid, compat_uptr_t msgp,
+		compat_ssize_t msgsz, int msgflg);
+asmlinkage long compat_sys_msgrcv(int msqid, compat_uptr_t msgp,
+		compat_ssize_t msgsz, long msgtyp, int msgflg);
+long compat_sys_msgctl(int first, int second, void __user *uptr);
+>>>>>>> refs/remotes/origin/master
 long compat_sys_shmctl(int first, int second, void __user *uptr);
 long compat_sys_semtimedop(int semid, struct sembuf __user *tsems,
 		unsigned nsems, const struct compat_timespec __user *timeout);
@@ -309,9 +410,16 @@ asmlinkage ssize_t compat_sys_preadv(unsigned long fd,
 asmlinkage ssize_t compat_sys_pwritev(unsigned long fd,
 		const struct compat_iovec __user *vec,
 		unsigned long vlen, u32 pos_low, u32 pos_high);
+<<<<<<< HEAD
 
 int compat_do_execve(char *filename, compat_uptr_t __user *argv,
 		     compat_uptr_t __user *envp, struct pt_regs *regs);
+=======
+asmlinkage long comat_sys_lseek(unsigned int, compat_off_t, unsigned int);
+
+asmlinkage long compat_sys_execve(const char __user *filename, const compat_uptr_t __user *argv,
+		     const compat_uptr_t __user *envp);
+>>>>>>> refs/remotes/origin/master
 
 asmlinkage long compat_sys_select(int n, compat_ulong_t __user *inp,
 		compat_ulong_t __user *outp, compat_ulong_t __user *exp,
@@ -333,11 +441,23 @@ long compat_get_bitmap(unsigned long *mask, const compat_ulong_t __user *umask,
 long compat_put_bitmap(compat_ulong_t __user *umask, unsigned long *mask,
 		       unsigned long bitmap_size);
 int copy_siginfo_from_user32(siginfo_t *to, struct compat_siginfo __user *from);
+<<<<<<< HEAD
 int copy_siginfo_to_user32(struct compat_siginfo __user *to, siginfo_t *from);
+=======
+int copy_siginfo_to_user32(struct compat_siginfo __user *to, const siginfo_t *from);
+>>>>>>> refs/remotes/origin/master
 int get_compat_sigevent(struct sigevent *event,
 		const struct compat_sigevent __user *u_event);
 long compat_sys_rt_tgsigqueueinfo(compat_pid_t tgid, compat_pid_t pid, int sig,
 				  struct compat_siginfo __user *uinfo);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_COMPAT_OLD_SIGACTION
+asmlinkage long compat_sys_sigaction(int sig,
+                                   const struct compat_old_sigaction __user *act,
+                                   struct compat_old_sigaction __user *oact);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static inline int compat_timeval_compare(struct compat_timeval *lhs,
 					struct compat_timeval *rhs)
@@ -372,7 +492,12 @@ asmlinkage long compat_sys_settimeofday(struct compat_timeval __user *tv,
 asmlinkage long compat_sys_adjtimex(struct compat_timex __user *utp);
 
 extern int compat_printk(const char *fmt, ...);
+<<<<<<< HEAD
 extern void sigset_from_compat(sigset_t *set, compat_sigset_t *compat);
+=======
+extern void sigset_from_compat(sigset_t *set, const compat_sigset_t *compat);
+extern void sigset_to_compat(compat_sigset_t *compat, const sigset_t *set);
+>>>>>>> refs/remotes/origin/master
 
 asmlinkage long compat_sys_migrate_pages(compat_pid_t pid,
 		compat_ulong_t maxnode, const compat_ulong_t __user *old_nodes,
@@ -387,6 +512,7 @@ extern long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
 asmlinkage long compat_sys_ptrace(compat_long_t request, compat_long_t pid,
 				  compat_long_t addr, compat_long_t data);
 
+<<<<<<< HEAD
 /*
  * epoll (fs/eventpoll.c) compat bits follow ...
  */
@@ -394,6 +520,15 @@ struct epoll_event;
 #define compat_epoll_event	epoll_event
 asmlinkage long compat_sys_epoll_pwait(int epfd,
 			struct compat_epoll_event __user *events,
+=======
+asmlinkage long compat_sys_lookup_dcookie(u32, u32, char __user *, size_t);
+/*
+ * epoll (fs/eventpoll.c) compat bits follow ...
+ */
+struct epoll_event;	/* fortunately, this one is fixed-layout */
+asmlinkage long compat_sys_epoll_pwait(int epfd,
+			struct epoll_event __user *events,
+>>>>>>> refs/remotes/origin/master
 			int maxevents, int timeout,
 			const compat_sigset_t __user *sigmask,
 			compat_size_t sigsetsize);
@@ -474,6 +609,7 @@ asmlinkage long compat_sys_vmsplice(int fd, const struct compat_iovec __user *,
 				    unsigned int nr_segs, unsigned int flags);
 asmlinkage long compat_sys_open(const char __user *filename, int flags,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				int mode);
 asmlinkage long compat_sys_openat(unsigned int dfd, const char __user *filename,
 				  int flags, int mode);
@@ -485,6 +621,16 @@ asmlinkage long compat_sys_openat(unsigned int dfd, const char __user *filename,
 asmlinkage long compat_sys_open_by_handle_at(int mountdirfd,
 					     struct file_handle __user *handle,
 					     int flags);
+=======
+				umode_t mode);
+asmlinkage long compat_sys_openat(int dfd, const char __user *filename,
+				  int flags, umode_t mode);
+asmlinkage long compat_sys_open_by_handle_at(int mountdirfd,
+					     struct file_handle __user *handle,
+					     int flags);
+asmlinkage long compat_sys_truncate(const char __user *, compat_off_t);
+asmlinkage long compat_sys_ftruncate(unsigned int, compat_ulong_t);
+>>>>>>> refs/remotes/origin/master
 asmlinkage long compat_sys_pselect6(int n, compat_ulong_t __user *inp,
 				    compat_ulong_t __user *outp,
 				    compat_ulong_t __user *exp,
@@ -495,6 +641,7 @@ asmlinkage long compat_sys_ppoll(struct pollfd __user *ufds,
 				 struct compat_timespec __user *tsp,
 				 const compat_sigset_t __user *sigmask,
 				 compat_size_t sigsetsize);
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if (defined(CONFIG_NFSD) || defined(CONFIG_NFSD_MODULE)) && \
 	!defined(CONFIG_NFSD_DEPRECATED)
@@ -508,6 +655,8 @@ asmlinkage long compat_sys_nfsservctl(int cmd, void *notused, void *notused2);
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage long compat_sys_signalfd4(int ufd,
 				     const compat_sigset_t __user *sigmask,
 				     compat_size_t sigsetsize, int flags);
@@ -582,6 +731,22 @@ asmlinkage long compat_sys_rt_sigtimedwait(compat_sigset_t __user *uthese,
 		struct compat_timespec __user *uts, compat_size_t sigsetsize);
 asmlinkage long compat_sys_rt_sigsuspend(compat_sigset_t __user *unewset,
 					 compat_size_t sigsetsize);
+<<<<<<< HEAD
+=======
+asmlinkage long compat_sys_rt_sigprocmask(int how, compat_sigset_t __user *set,
+					  compat_sigset_t __user *oset,
+					  compat_size_t sigsetsize);
+asmlinkage long compat_sys_rt_sigpending(compat_sigset_t __user *uset,
+					 compat_size_t sigsetsize);
+#ifndef CONFIG_ODD_RT_SIGACTION
+asmlinkage long compat_sys_rt_sigaction(int,
+				 const struct compat_sigaction __user *,
+				 struct compat_sigaction __user *,
+				 compat_size_t);
+#endif
+asmlinkage long compat_sys_rt_sigqueueinfo(compat_pid_t pid, int sig,
+				struct compat_siginfo __user *uinfo);
+>>>>>>> refs/remotes/origin/master
 asmlinkage long compat_sys_sysinfo(struct compat_sysinfo __user *info);
 asmlinkage long compat_sys_ioctl(unsigned int fd, unsigned int cmd,
 				 unsigned long arg);
@@ -618,16 +783,22 @@ extern ssize_t compat_rw_copy_check_uvector(int type,
 		unsigned long nr_segs,
 		unsigned long fast_segs, struct iovec *fast_pointer,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 		struct iovec **ret_pointer);
 
 extern void __user *compat_alloc_user_space(unsigned long len);
 
+<<<<<<< HEAD
 =======
 		struct iovec **ret_pointer,
 		int check_access);
 
 extern void __user *compat_alloc_user_space(unsigned long len);
 
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage ssize_t compat_sys_process_vm_readv(compat_pid_t pid,
 		const struct compat_iovec __user *lvec,
 		unsigned long liovcnt, const struct compat_iovec __user *rvec,
@@ -637,7 +808,32 @@ asmlinkage ssize_t compat_sys_process_vm_writev(compat_pid_t pid,
 		unsigned long liovcnt, const struct compat_iovec __user *rvec,
 		unsigned long riovcnt, unsigned long flags);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+asmlinkage long compat_sys_sendfile(int out_fd, int in_fd,
+				    compat_off_t __user *offset, compat_size_t count);
+asmlinkage long compat_sys_sendfile64(int out_fd, int in_fd,
+				    compat_loff_t __user *offset, compat_size_t count);
+asmlinkage long compat_sys_sigaltstack(const compat_stack_t __user *uss_ptr,
+				       compat_stack_t __user *uoss_ptr);
+
+int compat_restore_altstack(const compat_stack_t __user *uss);
+int __compat_save_altstack(compat_stack_t __user *, unsigned long);
+#define compat_save_altstack_ex(uss, sp) do { \
+	compat_stack_t __user *__uss = uss; \
+	struct task_struct *t = current; \
+	put_user_ex(ptr_to_compat((void __user *)t->sas_ss_sp), &__uss->ss_sp); \
+	put_user_ex(sas_ss_flags(sp), &__uss->ss_flags); \
+	put_user_ex(t->sas_ss_size, &__uss->ss_size); \
+} while (0);
+
+asmlinkage long compat_sys_sched_rr_get_interval(compat_pid_t pid,
+						 struct compat_timespec __user *interval);
+
+asmlinkage long compat_sys_fanotify_mark(int, unsigned int, __u32, __u32,
+					    int, const char __user *);
+>>>>>>> refs/remotes/origin/master
 #else
 
 #define is_compat_task() (0)

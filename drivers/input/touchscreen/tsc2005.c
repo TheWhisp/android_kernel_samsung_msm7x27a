@@ -451,20 +451,28 @@ static struct attribute *tsc2005_attrs[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static mode_t tsc2005_attr_is_visible(struct kobject *kobj,
 =======
 static umode_t tsc2005_attr_is_visible(struct kobject *kobj,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static umode_t tsc2005_attr_is_visible(struct kobject *kobj,
+>>>>>>> refs/remotes/origin/master
 				      struct attribute *attr, int n)
 {
 	struct device *dev = container_of(kobj, struct device, kobj);
 	struct spi_device *spi = to_spi_device(dev);
 	struct tsc2005 *ts = spi_get_drvdata(spi);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mode = attr->mode;
 =======
 	umode_t mode = attr->mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t mode = attr->mode;
+>>>>>>> refs/remotes/origin/master
 
 	if (attr == &dev_attr_selftest.attr) {
 		if (!ts->set_reset)
@@ -563,7 +571,11 @@ static void tsc2005_close(struct input_dev *input)
 	mutex_unlock(&ts->mutex);
 }
 
+<<<<<<< HEAD
 static void __devinit tsc2005_setup_spi_xfer(struct tsc2005 *ts)
+=======
+static void tsc2005_setup_spi_xfer(struct tsc2005 *ts)
+>>>>>>> refs/remotes/origin/master
 {
 	tsc2005_setup_read(&ts->spi_x, TSC2005_REG_X, false);
 	tsc2005_setup_read(&ts->spi_y, TSC2005_REG_Y, false);
@@ -577,7 +589,11 @@ static void __devinit tsc2005_setup_spi_xfer(struct tsc2005 *ts)
 	spi_message_add_tail(&ts->spi_z2.spi_xfer, &ts->spi_read_msg);
 }
 
+<<<<<<< HEAD
 static int __devinit tsc2005_probe(struct spi_device *spi)
+=======
+static int tsc2005_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct tsc2005_platform_data *pdata = spi->dev.platform_data;
 	struct tsc2005 *ts;
@@ -658,7 +674,12 @@ static int __devinit tsc2005_probe(struct spi_device *spi)
 	tsc2005_stop_scan(ts);
 
 	error = request_threaded_irq(spi->irq, NULL, tsc2005_irq_thread,
+<<<<<<< HEAD
 				     IRQF_TRIGGER_RISING, "tsc2005", ts);
+=======
+				     IRQF_TRIGGER_RISING | IRQF_ONESHOT,
+				     "tsc2005", ts);
+>>>>>>> refs/remotes/origin/master
 	if (error) {
 		dev_err(&spi->dev, "Failed to request irq, err: %d\n", error);
 		goto err_free_mem;
@@ -685,7 +706,10 @@ static int __devinit tsc2005_probe(struct spi_device *spi)
 err_remove_sysfs:
 	sysfs_remove_group(&spi->dev.kobj, &tsc2005_attr_group);
 err_clear_drvdata:
+<<<<<<< HEAD
 	spi_set_drvdata(spi, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_irq(spi->irq, ts);
 err_free_mem:
 	input_free_device(input_dev);
@@ -693,7 +717,11 @@ err_free_mem:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit tsc2005_remove(struct spi_device *spi)
+=======
+static int tsc2005_remove(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tsc2005 *ts = spi_get_drvdata(spi);
 
@@ -703,7 +731,10 @@ static int __devexit tsc2005_remove(struct spi_device *spi)
 	input_unregister_device(ts->idev);
 	kfree(ts);
 
+<<<<<<< HEAD
 	spi_set_drvdata(spi, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -752,6 +783,7 @@ static struct spi_driver tsc2005_driver = {
 		.pm	= &tsc2005_pm_ops,
 	},
 	.probe	= tsc2005_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(tsc2005_remove),
 };
 
@@ -770,7 +802,17 @@ module_exit(tsc2005_exit);
 =======
 module_spi_driver(tsc2005_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove	= tsc2005_remove,
+};
+
+module_spi_driver(tsc2005_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Lauri Leukkunen <lauri.leukkunen@nokia.com>");
 MODULE_DESCRIPTION("TSC2005 Touchscreen Driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("spi:tsc2005");
+>>>>>>> refs/remotes/origin/master

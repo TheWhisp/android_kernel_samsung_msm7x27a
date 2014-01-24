@@ -24,6 +24,7 @@
 #endif /* SMTC */
 #include <asm-generic/mm_hooks.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_MIPS_PGD_C0_CONTEXT
 
 #define TLBMISS_HANDLER_SETUP_PGD(pgd)				\
@@ -47,6 +48,23 @@ static inline unsigned long get_current_pgd(void)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #else /* CONFIG_MIPS_PGD_C0_CONTEXT: using  pgd_current*/
+=======
+#define TLBMISS_HANDLER_SETUP_PGD(pgd)					\
+do {									\
+	extern void tlbmiss_handler_setup_pgd(unsigned long);		\
+	tlbmiss_handler_setup_pgd((unsigned long)(pgd));		\
+} while (0)
+
+#ifdef CONFIG_MIPS_PGD_C0_CONTEXT
+#define TLBMISS_HANDLER_SETUP()						\
+	do {								\
+		TLBMISS_HANDLER_SETUP_PGD(swapper_pg_dir);		\
+		write_c0_xcontext((unsigned long) smp_processor_id() <<	\
+						SMP_CPUID_REGSHIFT);	\
+	} while (0)
+
+#else /* !CONFIG_MIPS_PGD_C0_CONTEXT: using  pgd_current*/
+>>>>>>> refs/remotes/origin/master
 
 /*
  * For the fast tlb miss handlers, we keep a per cpu array of pointers
@@ -55,6 +73,7 @@ static inline unsigned long get_current_pgd(void)
  */
 extern unsigned long pgd_current[];
 
+<<<<<<< HEAD
 #define TLBMISS_HANDLER_SETUP_PGD(pgd) \
 	pgd_current[smp_processor_id()] = (unsigned long)(pgd)
 
@@ -70,6 +89,13 @@ extern unsigned long pgd_current[];
 	back_to_back_c0_hazard();					\
 	TLBMISS_HANDLER_SETUP_PGD(swapper_pg_dir)
 #endif
+=======
+#define TLBMISS_HANDLER_SETUP()						\
+	write_c0_context((unsigned long) smp_processor_id() <<		\
+						SMP_CPUID_REGSHIFT);	\
+	back_to_back_c0_hazard();					\
+	TLBMISS_HANDLER_SETUP_PGD(swapper_pg_dir)
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_MIPS_PGD_C0_CONTEXT*/
 #if defined(CONFIG_CPU_R3000) || defined(CONFIG_CPU_TX39XX)
 
@@ -81,18 +107,25 @@ extern unsigned long pgd_current[];
 #define ASID_INC	0x10
 #define ASID_MASK	0xff0
 
+<<<<<<< HEAD
 #elif defined(CONFIG_CPU_RM9000)
 
 #define ASID_INC	0x1
 #define ASID_MASK	0xfff
 
 /* SMTC/34K debug hack - but maybe we'll keep it */
+=======
+>>>>>>> refs/remotes/origin/master
 #elif defined(CONFIG_MIPS_MT_SMTC)
 
 #define ASID_INC	0x1
 extern unsigned long smtc_asid_mask;
 #define ASID_MASK	(smtc_asid_mask)
+<<<<<<< HEAD
 #define	HW_ASID_MASK	0xff
+=======
+#define HW_ASID_MASK	0xff
+>>>>>>> refs/remotes/origin/master
 /* End SMTC/34K debug hack */
 #else /* FIXME: not correct for R6000 */
 
@@ -121,15 +154,31 @@ static inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
 static inline void
 get_new_mmu_context(struct mm_struct *mm, unsigned long cpu)
 {
+<<<<<<< HEAD
+=======
+	extern void kvm_local_flush_tlb_all(void);
+>>>>>>> refs/remotes/origin/master
 	unsigned long asid = asid_cache(cpu);
 
 	if (! ((asid += ASID_INC) & ASID_MASK) ) {
 		if (cpu_has_vtag_icache)
 			flush_icache_all();
+<<<<<<< HEAD
 		local_flush_tlb_all();	/* start new asid cycle */
 		if (!asid)		/* fix version if needed */
 			asid = ASID_FIRST_VERSION;
 	}
+=======
+#ifdef CONFIG_KVM
+		kvm_local_flush_tlb_all();      /* start new asid cycle */
+#else
+		local_flush_tlb_all();	/* start new asid cycle */
+#endif
+		if (!asid)		/* fix version if needed */
+			asid = ASID_FIRST_VERSION;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	cpu_context(cpu, mm) = asid_cache(cpu) = asid;
 }
 
@@ -148,14 +197,22 @@ init_new_context(struct task_struct *tsk, struct mm_struct *mm)
 {
 	int i;
 
+<<<<<<< HEAD
 	for_each_online_cpu(i)
+=======
+	for_each_possible_cpu(i)
+>>>>>>> refs/remotes/origin/master
 		cpu_context(i, mm) = 0;
 
 	return 0;
 }
 
 static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+<<<<<<< HEAD
                              struct task_struct *tsk)
+=======
+			     struct task_struct *tsk)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cpu = smp_processor_id();
 	unsigned long flags;
@@ -253,7 +310,11 @@ activate_mm(struct mm_struct *prev, struct mm_struct *next)
 	}
 	/* See comments for similar code above */
 	write_c0_entryhi((read_c0_entryhi() & ~HW_ASID_MASK) |
+<<<<<<< HEAD
 	                 cpu_asid(cpu, next));
+=======
+			 cpu_asid(cpu, next));
+>>>>>>> refs/remotes/origin/master
 	ehb(); /* Make sure it propagates to TCStatus */
 	evpe(mtflags);
 #else

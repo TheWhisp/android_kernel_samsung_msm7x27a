@@ -91,7 +91,11 @@ static const struct hwspinlock_ops u8500_hwspinlock_ops = {
 	.relax		= u8500_hsem_relax,
 };
 
+<<<<<<< HEAD
 static int __devinit u8500_hsem_probe(struct platform_device *pdev)
+=======
+static int u8500_hsem_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hwspinlock_pdata *pdata = pdev->dev.platform_data;
 	struct hwspinlock_device *bank;
@@ -148,7 +152,11 @@ iounmap_base:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit u8500_hsem_remove(struct platform_device *pdev)
+=======
+static int u8500_hsem_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hwspinlock_device *bank = platform_get_drvdata(pdev);
 	void __iomem *io_base = bank->lock[0].priv - HSEM_REGISTER_OFFSET;
@@ -172,7 +180,11 @@ static int __devexit u8500_hsem_remove(struct platform_device *pdev)
 
 static struct platform_driver u8500_hsem_driver = {
 	.probe		= u8500_hsem_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(u8500_hsem_remove),
+=======
+	.remove		= u8500_hsem_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "u8500_hsem",
 		.owner	= THIS_MODULE,

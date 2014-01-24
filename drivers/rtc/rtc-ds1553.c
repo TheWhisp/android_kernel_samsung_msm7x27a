@@ -19,9 +19,13 @@
 #include <linux/platform_device.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_VERSION "0.3"
 
@@ -279,7 +283,11 @@ static struct bin_attribute ds1553_nvram_attr = {
 	.write = ds1553_nvram_write,
 };
 
+<<<<<<< HEAD
 static int __devinit ds1553_rtc_probe(struct platform_device *pdev)
+=======
+static int ds1553_rtc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtc_device *rtc;
 	struct resource *res;
@@ -288,6 +296,7 @@ static int __devinit ds1553_rtc_probe(struct platform_device *pdev)
 	void __iomem *ioaddr;
 	int ret = 0;
 
+<<<<<<< HEAD
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res)
 		return -ENODEV;
@@ -301,6 +310,16 @@ static int __devinit ds1553_rtc_probe(struct platform_device *pdev)
 	ioaddr = devm_ioremap(&pdev->dev, res->start, RTC_REG_SIZE);
 	if (!ioaddr)
 		return -ENOMEM;
+=======
+	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+	if (!pdata)
+		return -ENOMEM;
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	ioaddr = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(ioaddr))
+		return PTR_ERR(ioaddr);
+>>>>>>> refs/remotes/origin/master
 	pdata->ioaddr = ioaddr;
 	pdata->irq = platform_get_irq(pdev, 0);
 
@@ -324,33 +343,52 @@ static int __devinit ds1553_rtc_probe(struct platform_device *pdev)
 		if (devm_request_irq(&pdev->dev, pdata->irq,
 				ds1553_rtc_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				IRQF_DISABLED, pdev->name, pdev) < 0) {
 =======
 				0, pdev->name, pdev) < 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				0, pdev->name, pdev) < 0) {
+>>>>>>> refs/remotes/origin/master
 			dev_warn(&pdev->dev, "interrupt not available.\n");
 			pdata->irq = 0;
 		}
 	}
 
+<<<<<<< HEAD
 	rtc = rtc_device_register(pdev->name, &pdev->dev,
+=======
+	rtc = devm_rtc_device_register(&pdev->dev, pdev->name,
+>>>>>>> refs/remotes/origin/master
 				  &ds1553_rtc_ops, THIS_MODULE);
 	if (IS_ERR(rtc))
 		return PTR_ERR(rtc);
 	pdata->rtc = rtc;
 
 	ret = sysfs_create_bin_file(&pdev->dev.kobj, &ds1553_nvram_attr);
+<<<<<<< HEAD
 	if (ret)
 		rtc_device_unregister(rtc);
 	return ret;
 }
 
 static int __devexit ds1553_rtc_remove(struct platform_device *pdev)
+=======
+
+	return ret;
+}
+
+static int ds1553_rtc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtc_plat_data *pdata = platform_get_drvdata(pdev);
 
 	sysfs_remove_bin_file(&pdev->dev.kobj, &ds1553_nvram_attr);
+<<<<<<< HEAD
 	rtc_device_unregister(pdata->rtc);
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pdata->irq > 0)
 		writeb(0, pdata->ioaddr + RTC_INTERRUPTS);
 	return 0;
@@ -361,13 +399,18 @@ MODULE_ALIAS("platform:rtc-ds1553");
 
 static struct platform_driver ds1553_rtc_driver = {
 	.probe		= ds1553_rtc_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ds1553_rtc_remove),
+=======
+	.remove		= ds1553_rtc_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "rtc-ds1553",
 		.owner	= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static __init int ds1553_init(void)
 {
@@ -384,6 +427,9 @@ module_exit(ds1553_exit);
 =======
 module_platform_driver(ds1553_rtc_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(ds1553_rtc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Atsushi Nemoto <anemo@mba.ocn.ne.jp>");
 MODULE_DESCRIPTION("Dallas DS1553 RTC driver");

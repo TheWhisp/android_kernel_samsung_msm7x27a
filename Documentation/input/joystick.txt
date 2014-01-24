@@ -331,10 +331,14 @@ the USB documentation for how to setup an USB mouse.
 module. This includes, but is not limited to:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 * ThrustMaster Millenium 3D Inceptor
 =======
 * ThrustMaster Millennium 3D Interceptor
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+* ThrustMaster Millennium 3D Interceptor
+>>>>>>> refs/remotes/origin/master
 * ThrustMaster 3D Rage Pad
 * ThrustMaster Fusion Digital Game Pad
 

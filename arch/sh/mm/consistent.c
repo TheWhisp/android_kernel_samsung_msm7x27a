@@ -34,11 +34,16 @@ fs_initcall(dma_init);
 
 void *dma_generic_alloc_coherent(struct device *dev, size_t size,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 dma_addr_t *dma_handle, gfp_t gfp)
 =======
 				 dma_addr_t *dma_handle, gfp_t gfp,
 				 struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 dma_addr_t *dma_handle, gfp_t gfp,
+				 struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	void *ret, *ret_nocache;
 	int order = get_order(size);
@@ -70,11 +75,16 @@ void *dma_generic_alloc_coherent(struct device *dev, size_t size,
 
 void dma_generic_free_coherent(struct device *dev, size_t size,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			       void *vaddr, dma_addr_t dma_handle)
 =======
 			       void *vaddr, dma_addr_t dma_handle,
 			       struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       void *vaddr, dma_addr_t dma_handle,
+			       struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	int order = get_order(size);
 	unsigned long pfn = dma_handle >> PAGE_SHIFT;

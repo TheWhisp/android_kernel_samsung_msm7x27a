@@ -59,6 +59,7 @@ static struct platform_device pcit_cplus_serial8250_device = {
 };
 
 static struct resource pcit_cmos_rsrc[] = {
+<<<<<<< HEAD
         {
                 .start = 0x70,
                 .end   = 0x71,
@@ -75,6 +76,24 @@ static struct platform_device pcit_cmos_device = {
         .name           = "rtc_cmos",
         .num_resources  = ARRAY_SIZE(pcit_cmos_rsrc),
         .resource       = pcit_cmos_rsrc
+=======
+	{
+		.start = 0x70,
+		.end   = 0x71,
+		.flags = IORESOURCE_IO
+	},
+	{
+		.start = 8,
+		.end   = 8,
+		.flags = IORESOURCE_IRQ
+	}
+};
+
+static struct platform_device pcit_cmos_device = {
+	.name		= "rtc_cmos",
+	.num_resources	= ARRAY_SIZE(pcit_cmos_rsrc),
+	.resource	= pcit_cmos_rsrc
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device pcit_pcspeaker_pdev = {
@@ -128,6 +147,7 @@ static struct resource pcit_io_resources[] = {
 	}
 };
 
+<<<<<<< HEAD
 static struct resource sni_mem_resource = {
 	.start	= 0x18000000UL,
 	.end	= 0x1fbfffffUL,
@@ -135,6 +155,8 @@ static struct resource sni_mem_resource = {
 	.flags	= IORESOURCE_MEM
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init sni_pcit_resource_init(void)
 {
 	int i;
@@ -147,14 +169,31 @@ static void __init sni_pcit_resource_init(void)
 
 extern struct pci_ops sni_pcit_ops;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PCI
+static struct resource sni_mem_resource = {
+	.start	= 0x18000000UL,
+	.end	= 0x1fbfffffUL,
+	.name	= "PCIT PCI MEM",
+	.flags	= IORESOURCE_MEM
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct pci_controller sni_pcit_controller = {
 	.pci_ops	= &sni_pcit_ops,
 	.mem_resource	= &sni_mem_resource,
 	.mem_offset	= 0x00000000UL,
 	.io_resource	= &sni_io_resource,
 	.io_offset	= 0x00000000UL,
+<<<<<<< HEAD
 	.io_map_base    = SNI_PORT_BASE
 };
+=======
+	.io_map_base	= SNI_PORT_BASE
+};
+#endif /* CONFIG_PCI */
+>>>>>>> refs/remotes/origin/master
 
 static void enable_pcit_irq(struct irq_data *d)
 {
@@ -272,6 +311,7 @@ static int __init snirm_pcit_setup_devinit(void)
 {
 	switch (sni_brd_type) {
 	case SNI_BRD_PCI_TOWER:
+<<<<<<< HEAD
 	        platform_device_register(&pcit_serial8250_device);
 	        platform_device_register(&pcit_cmos_device);
 		platform_device_register(&pcit_pcspeaker_pdev);
@@ -282,6 +322,18 @@ static int __init snirm_pcit_setup_devinit(void)
 	        platform_device_register(&pcit_cmos_device);
 		platform_device_register(&pcit_pcspeaker_pdev);
 	        break;
+=======
+		platform_device_register(&pcit_serial8250_device);
+		platform_device_register(&pcit_cmos_device);
+		platform_device_register(&pcit_pcspeaker_pdev);
+		break;
+
+	case SNI_BRD_PCI_TOWER_CPLUS:
+		platform_device_register(&pcit_cplus_serial8250_device);
+		platform_device_register(&pcit_cmos_device);
+		platform_device_register(&pcit_pcspeaker_pdev);
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }

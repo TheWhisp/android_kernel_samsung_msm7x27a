@@ -27,9 +27,12 @@
 
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/errno.h>
 #include <linux/fs.h>
@@ -530,6 +533,17 @@ int ufs_prepare_chunk(struct page *page, loff_t pos, unsigned len)
 	return __block_write_begin(page, pos, len, ufs_getfrag_block);
 }
 
+<<<<<<< HEAD
+=======
+static void ufs_write_failed(struct address_space *mapping, loff_t to)
+{
+	struct inode *inode = mapping->host;
+
+	if (to > inode->i_size)
+		truncate_pagecache(inode, inode->i_size);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int ufs_write_begin(struct file *file, struct address_space *mapping,
 			loff_t pos, unsigned len, unsigned flags,
 			struct page **pagep, void **fsdata)
@@ -538,11 +552,16 @@ static int ufs_write_begin(struct file *file, struct address_space *mapping,
 
 	ret = block_write_begin(mapping, pos, len, flags, pagep,
 				ufs_getfrag_block);
+<<<<<<< HEAD
 	if (unlikely(ret)) {
 		loff_t isize = mapping->host->i_size;
 		if (pos + len > isize)
 			vmtruncate(mapping->host, isize);
 	}
+=======
+	if (unlikely(ret))
+		ufs_write_failed(mapping, pos + len);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -587,20 +606,28 @@ static int ufs1_read_inode(struct inode *inode, struct ufs_inode *ufs_inode)
 	struct ufs_inode_info *ufsi = UFS_I(inode);
 	struct super_block *sb = inode->i_sb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mode;
 =======
 	umode_t mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t mode;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Copy data to the in-core inode.
 	 */
 	inode->i_mode = mode = fs16_to_cpu(sb, ufs_inode->ui_mode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = fs16_to_cpu(sb, ufs_inode->ui_nlink);
 =======
 	set_nlink(inode, fs16_to_cpu(sb, ufs_inode->ui_nlink));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(inode, fs16_to_cpu(sb, ufs_inode->ui_nlink));
+>>>>>>> refs/remotes/origin/master
 	if (inode->i_nlink == 0) {
 		ufs_error (sb, "ufs_read_inode", "inode %lu has zero nlink\n", inode->i_ino);
 		return -1;
@@ -609,8 +636,13 @@ static int ufs1_read_inode(struct inode *inode, struct ufs_inode *ufs_inode)
 	/*
 	 * Linux now has 32-bit uid and gid, so we can support EFT.
 	 */
+<<<<<<< HEAD
 	inode->i_uid = ufs_get_inode_uid(sb, ufs_inode);
 	inode->i_gid = ufs_get_inode_gid(sb, ufs_inode);
+=======
+	i_uid_write(inode, ufs_get_inode_uid(sb, ufs_inode));
+	i_gid_write(inode, ufs_get_inode_gid(sb, ufs_inode));
+>>>>>>> refs/remotes/origin/master
 
 	inode->i_size = fs64_to_cpu(sb, ufs_inode->ui_size);
 	inode->i_atime.tv_sec = fs32_to_cpu(sb, ufs_inode->ui_atime.tv_sec);
@@ -642,10 +674,14 @@ static int ufs2_read_inode(struct inode *inode, struct ufs2_inode *ufs2_inode)
 	struct ufs_inode_info *ufsi = UFS_I(inode);
 	struct super_block *sb = inode->i_sb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mode;
 =======
 	umode_t mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t mode;
+>>>>>>> refs/remotes/origin/master
 
 	UFSD("Reading ufs2 inode, ino %lu\n", inode->i_ino);
 	/*
@@ -653,10 +689,14 @@ static int ufs2_read_inode(struct inode *inode, struct ufs2_inode *ufs2_inode)
 	 */
 	inode->i_mode = mode = fs16_to_cpu(sb, ufs2_inode->ui_mode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = fs16_to_cpu(sb, ufs2_inode->ui_nlink);
 =======
 	set_nlink(inode, fs16_to_cpu(sb, ufs2_inode->ui_nlink));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(inode, fs16_to_cpu(sb, ufs2_inode->ui_nlink));
+>>>>>>> refs/remotes/origin/master
 	if (inode->i_nlink == 0) {
 		ufs_error (sb, "ufs_read_inode", "inode %lu has zero nlink\n", inode->i_ino);
 		return -1;
@@ -665,8 +705,13 @@ static int ufs2_read_inode(struct inode *inode, struct ufs2_inode *ufs2_inode)
         /*
          * Linux now has 32-bit uid and gid, so we can support EFT.
          */
+<<<<<<< HEAD
 	inode->i_uid = fs32_to_cpu(sb, ufs2_inode->ui_uid);
 	inode->i_gid = fs32_to_cpu(sb, ufs2_inode->ui_gid);
+=======
+	i_uid_write(inode, fs32_to_cpu(sb, ufs2_inode->ui_uid));
+	i_gid_write(inode, fs32_to_cpu(sb, ufs2_inode->ui_gid));
+>>>>>>> refs/remotes/origin/master
 
 	inode->i_size = fs64_to_cpu(sb, ufs2_inode->ui_size);
 	inode->i_atime.tv_sec = fs64_to_cpu(sb, ufs2_inode->ui_atime);
@@ -765,8 +810,13 @@ static void ufs1_update_inode(struct inode *inode, struct ufs_inode *ufs_inode)
 	ufs_inode->ui_mode = cpu_to_fs16(sb, inode->i_mode);
 	ufs_inode->ui_nlink = cpu_to_fs16(sb, inode->i_nlink);
 
+<<<<<<< HEAD
 	ufs_set_inode_uid(sb, ufs_inode, inode->i_uid);
 	ufs_set_inode_gid(sb, ufs_inode, inode->i_gid);
+=======
+	ufs_set_inode_uid(sb, ufs_inode, i_uid_read(inode));
+	ufs_set_inode_gid(sb, ufs_inode, i_gid_read(inode));
+>>>>>>> refs/remotes/origin/master
 		
 	ufs_inode->ui_size = cpu_to_fs64(sb, inode->i_size);
 	ufs_inode->ui_atime.tv_sec = cpu_to_fs32(sb, inode->i_atime.tv_sec);
@@ -809,8 +859,13 @@ static void ufs2_update_inode(struct inode *inode, struct ufs2_inode *ufs_inode)
 	ufs_inode->ui_mode = cpu_to_fs16(sb, inode->i_mode);
 	ufs_inode->ui_nlink = cpu_to_fs16(sb, inode->i_nlink);
 
+<<<<<<< HEAD
 	ufs_inode->ui_uid = cpu_to_fs32(sb, inode->i_uid);
 	ufs_inode->ui_gid = cpu_to_fs32(sb, inode->i_gid);
+=======
+	ufs_inode->ui_uid = cpu_to_fs32(sb, i_uid_read(inode));
+	ufs_inode->ui_gid = cpu_to_fs32(sb, i_gid_read(inode));
+>>>>>>> refs/remotes/origin/master
 
 	ufs_inode->ui_size = cpu_to_fs64(sb, inode->i_size);
 	ufs_inode->ui_atime = cpu_to_fs64(sb, inode->i_atime.tv_sec);
@@ -915,7 +970,11 @@ void ufs_evict_inode(struct inode * inode)
 	}
 
 	invalidate_inode_buffers(inode);
+<<<<<<< HEAD
 	end_writeback(inode);
+=======
+	clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 
 	if (want_delete) {
 		lock_ufs(inode->i_sb);

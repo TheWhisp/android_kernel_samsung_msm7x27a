@@ -9,9 +9,13 @@
 
 #include <linux/device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
@@ -319,6 +323,7 @@ static struct flash_platform_data bfin_spi_flash_data = {
 static struct bfin5xx_spi_chip spi_flash_chip_info = {
 	.enable_dma = 0,         /* use dma transfer with this chip*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.bits_per_word = 8,
 };
 #endif
@@ -337,6 +342,8 @@ static struct bfin5xx_spi_chip spi_adc_chip_info = {
 	.bits_per_word = 16,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 
@@ -344,9 +351,12 @@ static struct bfin5xx_spi_chip spi_adc_chip_info = {
 static struct bfin5xx_spi_chip  mmc_spi_chip_info = {
 	.enable_dma = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.bits_per_word = 8,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 
@@ -370,6 +380,7 @@ static const struct ad7879_platform_data bfin_ad7879_ts_info = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_TOUCHSCREEN_AD7879_SPI) \
 	|| defined(CONFIG_TOUCHSCREEN_AD7879_SPI_MODULE)
 static struct bfin5xx_spi_chip spi_ad7879_chip_info = {
@@ -387,6 +398,8 @@ static struct bfin5xx_spi_chip spidev_chip_info = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_SND_BF5XX_I2S) || defined(CONFIG_SND_BF5XX_I2S_MODULE)
 static struct platform_device bfin_i2s = {
 	.name = "bfin-i2s",
@@ -395,6 +408,7 @@ static struct platform_device bfin_i2s = {
 };
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if defined(CONFIG_FB_BFIN_LQ035Q1) || defined(CONFIG_FB_BFIN_LQ035Q1_MODULE)
 static struct bfin5xx_spi_chip lq035q1_spi_chip_info = {
@@ -417,6 +431,9 @@ static struct bfin5xx_spi_chip spi_mcp23s08_usr_chip_info = {
 =======
 #if defined(CONFIG_GPIO_MCP23S08) || defined(CONFIG_GPIO_MCP23S08_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_GPIO_MCP23S08) || defined(CONFIG_GPIO_MCP23S08_MODULE)
+>>>>>>> refs/remotes/origin/master
 #include <linux/spi/mcp23s08.h>
 static const struct mcp23s08_platform_data bfin_mcp23s08_sys_gpio_info = {
 	.chip[0].is_present = true,
@@ -447,6 +464,7 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_BFIN_SPI_ADC)
 	|| defined(CONFIG_BFIN_SPI_ADC_MODULE)
 	{
@@ -465,6 +483,8 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
 	{
 		.modalias = "mmc_spi",
@@ -491,9 +511,12 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.bus_num = 0,
 		.chip_select = EXP_GPIO_SPISEL_BASE + 0x07 + MAX_CTRL_CS,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.controller_data = &spi_ad7879_chip_info,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.mode = SPI_CPHA | SPI_CPOL,
 	},
 #endif
@@ -506,9 +529,12 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.chip_select = EXP_GPIO_SPISEL_BASE + 0x03 + MAX_CTRL_CS,
 		.mode = SPI_CPHA | SPI_CPOL,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.controller_data = &spidev_chip_info,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 #endif
 #if defined(CONFIG_FB_BFIN_LQ035Q1) || defined(CONFIG_FB_BFIN_LQ035Q1_MODULE)
@@ -518,9 +544,12 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.bus_num = 0,
 		.chip_select = EXP_GPIO_SPISEL_BASE + 0x06 + MAX_CTRL_CS,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.controller_data = &lq035q1_spi_chip_info,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.mode = SPI_CPHA | SPI_CPOL,
 	},
 #endif
@@ -532,9 +561,12 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.bus_num = 0,
 		.chip_select = EXP_GPIO_SPISEL_BASE + 0x01 + MAX_CTRL_CS,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.controller_data = &spi_mcp23s08_sys_chip_info,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.mode = SPI_CPHA | SPI_CPOL,
 	},
 	{
@@ -544,19 +576,26 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.bus_num = 0,
 		.chip_select = EXP_GPIO_SPISEL_BASE + 0x02 + MAX_CTRL_CS,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.controller_data = &spi_mcp23s08_usr_chip_info,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.mode = SPI_CPHA | SPI_CPOL,
 	},
 #endif
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
 =======
 #if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/master
 /* SPI controller data */
 static struct bfin5xx_spi_master bfin_spi0_info = {
 	.num_chipselect = EXP_GPIO_SPISEL_BASE + 8 + MAX_CTRL_CS,
@@ -605,9 +644,12 @@ static struct resource bfin_uart0_resources[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start = IRQ_UART0_RX,
 		.end = IRQ_UART0_RX+1,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.start = IRQ_UART0_TX,
 		.end = IRQ_UART0_TX,
 		.flags = IORESOURCE_IRQ,
@@ -615,7 +657,10 @@ static struct resource bfin_uart0_resources[] = {
 	{
 		.start = IRQ_UART0_RX,
 		.end = IRQ_UART0_RX,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags = IORESOURCE_IRQ,
 	},
 	{
@@ -659,9 +704,12 @@ static struct resource bfin_uart1_resources[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start = IRQ_UART1_RX,
 		.end = IRQ_UART1_RX+1,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.start = IRQ_UART1_TX,
 		.end = IRQ_UART1_TX,
 		.flags = IORESOURCE_IRQ,
@@ -669,7 +717,10 @@ static struct resource bfin_uart1_resources[] = {
 	{
 		.start = IRQ_UART1_RX,
 		.end = IRQ_UART1_RX,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags = IORESOURCE_IRQ,
 	},
 	{
@@ -774,6 +825,11 @@ static struct platform_device bfin_sir1_device = {
 #endif
 
 #if defined(CONFIG_I2C_BLACKFIN_TWI) || defined(CONFIG_I2C_BLACKFIN_TWI_MODULE)
+<<<<<<< HEAD
+=======
+static const u16 bfin_twi0_pins[] = {P_TWI0_SCL, P_TWI0_SDA, 0};
+
+>>>>>>> refs/remotes/origin/master
 static struct resource bfin_twi0_resource[] = {
 	[0] = {
 		.start = TWI0_REGBASE,
@@ -792,6 +848,12 @@ static struct platform_device i2c_bfin_twi_device = {
 	.id = 0,
 	.num_resources = ARRAY_SIZE(bfin_twi0_resource),
 	.resource = bfin_twi0_resource,
+<<<<<<< HEAD
+=======
+	.dev = {
+		.platform_data = &bfin_twi0_pins,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 
@@ -950,10 +1012,14 @@ static struct platform_device *tll6527m_devices[] __initdata = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
 =======
 #if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/master
 	&bfin_spi0_device,
 #endif
 
@@ -1054,10 +1120,14 @@ void native_machine_restart(char *cmd)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void bfin_get_ether_addr(char *addr)
 =======
 int bfin_get_ether_addr(char *addr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int bfin_get_ether_addr(char *addr)
+>>>>>>> refs/remotes/origin/master
 {
 	/* the MAC is stored in OTP memory page 0xDF */
 	u32 ret;
@@ -1072,8 +1142,12 @@ int bfin_get_ether_addr(char *addr)
 			addr[ret] = otp_mac_p[5 - ret];
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(bfin_get_ether_addr);

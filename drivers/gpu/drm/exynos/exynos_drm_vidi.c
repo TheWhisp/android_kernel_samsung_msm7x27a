@@ -10,20 +10,35 @@
  * option) any later version.
  *
  */
+<<<<<<< HEAD
 #include "drmP.h"
 
 #include <linux/kernel.h>
 #include <linux/module.h>
+=======
+#include <drm/drmP.h>
+
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 
 #include <drm/exynos_drm.h>
 
+<<<<<<< HEAD
 #include "drm_edid.h"
 #include "drm_crtc_helper.h"
+=======
+#include <drm/drm_edid.h>
+#include <drm/drm_crtc_helper.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "exynos_drm_drv.h"
 #include "exynos_drm_crtc.h"
 #include "exynos_drm_encoder.h"
+<<<<<<< HEAD
+=======
+#include "exynos_drm_vidi.h"
+>>>>>>> refs/remotes/origin/master
 
 /* vidi has totally three virtual windows. */
 #define WINDOWS_NR		3
@@ -39,7 +54,10 @@ struct vidi_win_data {
 	unsigned int		fb_height;
 	unsigned int		bpp;
 	dma_addr_t		dma_addr;
+<<<<<<< HEAD
 	void __iomem		*vaddr;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int		buf_offsize;
 	unsigned int		line_size;	/* bytes */
 	bool			enabled;
@@ -56,6 +74,10 @@ struct vidi_context {
 	unsigned int			connected;
 	bool				vblank_on;
 	bool				suspended;
+<<<<<<< HEAD
+=======
+	bool				direct_vblank;
+>>>>>>> refs/remotes/origin/master
 	struct work_struct		work;
 	struct mutex			lock;
 };
@@ -85,14 +107,20 @@ static const char fake_edid_info[] = {
 	0x00, 0x00, 0x00, 0x06
 };
 
+<<<<<<< HEAD
 static void vidi_fake_vblank_handler(struct work_struct *work);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static bool vidi_display_is_connected(struct device *dev)
 {
 	struct vidi_context *ctx = get_vidi_context(dev);
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * connection request would come from user side
 	 * to do hotplug through specific ioctl.
@@ -100,6 +128,7 @@ static bool vidi_display_is_connected(struct device *dev)
 	return ctx->connected ? true : false;
 }
 
+<<<<<<< HEAD
 static int vidi_get_edid(struct device *dev, struct drm_connector *connector,
 				u8 *edid, int len)
 {
@@ -107,6 +136,13 @@ static int vidi_get_edid(struct device *dev, struct drm_connector *connector,
 	struct edid *raw_edid;
 
 	DRM_DEBUG_KMS("%s\n", __FILE__);
+=======
+static struct edid *vidi_get_edid(struct device *dev,
+			struct drm_connector *connector)
+{
+	struct vidi_context *ctx = get_vidi_context(dev);
+	struct edid *edid;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * the edid data comes from user side and it would be set
@@ -114,6 +150,7 @@ static int vidi_get_edid(struct device *dev, struct drm_connector *connector,
 	 */
 	if (!ctx->raw_edid) {
 		DRM_DEBUG_KMS("raw_edid is null.\n");
+<<<<<<< HEAD
 		return -EFAULT;
 	}
 
@@ -133,21 +170,41 @@ static int vidi_get_edid(struct device *dev, struct drm_connector *connector,
 					* EDID_LENGTH, len));
 
 	return 0;
+=======
+		return ERR_PTR(-EFAULT);
+	}
+
+	edid = drm_edid_duplicate(ctx->raw_edid);
+	if (!edid) {
+		DRM_DEBUG_KMS("failed to allocate edid\n");
+		return ERR_PTR(-ENOMEM);
+	}
+
+	return edid;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void *vidi_get_panel(struct device *dev)
 {
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* TODO. */
 
 	return NULL;
 }
 
+<<<<<<< HEAD
 static int vidi_check_timing(struct device *dev, void *timing)
 {
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+=======
+static int vidi_check_mode(struct device *dev, struct drm_display_mode *mode)
+{
+>>>>>>> refs/remotes/origin/master
 	/* TODO. */
 
 	return 0;
@@ -155,8 +212,11 @@ static int vidi_check_timing(struct device *dev, void *timing)
 
 static int vidi_display_power_on(struct device *dev, int mode)
 {
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* TODO */
 
 	return 0;
@@ -167,7 +227,11 @@ static struct exynos_drm_display_ops vidi_display_ops = {
 	.is_connected = vidi_display_is_connected,
 	.get_edid = vidi_get_edid,
 	.get_panel = vidi_get_panel,
+<<<<<<< HEAD
 	.check_timing = vidi_check_timing,
+=======
+	.check_mode = vidi_check_mode,
+>>>>>>> refs/remotes/origin/master
 	.power_on = vidi_display_power_on,
 };
 
@@ -175,7 +239,11 @@ static void vidi_dpms(struct device *subdrv_dev, int mode)
 {
 	struct vidi_context *ctx = get_vidi_context(subdrv_dev);
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s, %d\n", __FILE__, mode);
+=======
+	DRM_DEBUG_KMS("%d\n", mode);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&ctx->lock);
 
@@ -205,8 +273,11 @@ static void vidi_apply(struct device *subdrv_dev)
 	struct vidi_win_data *win_data;
 	int i;
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < WINDOWS_NR; i++) {
 		win_data = &ctx->win_data[i];
 		if (win_data->enabled && (ovl_ops && ovl_ops->commit))
@@ -221,8 +292,11 @@ static void vidi_commit(struct device *dev)
 {
 	struct vidi_context *ctx = get_vidi_context(dev);
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ctx->suspended)
 		return;
 }
@@ -231,14 +305,29 @@ static int vidi_enable_vblank(struct device *dev)
 {
 	struct vidi_context *ctx = get_vidi_context(dev);
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ctx->suspended)
 		return -EPERM;
 
 	if (!test_and_set_bit(0, &ctx->irq_flags))
 		ctx->vblank_on = true;
 
+<<<<<<< HEAD
+=======
+	ctx->direct_vblank = true;
+
+	/*
+	 * in case of page flip request, vidi_finish_pageflip function
+	 * will not be called because direct_vblank is true and then
+	 * that function will be called by overlay_ops->commit callback
+	 */
+	schedule_work(&ctx->work);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -246,8 +335,11 @@ static void vidi_disable_vblank(struct device *dev)
 {
 	struct vidi_context *ctx = get_vidi_context(dev);
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ctx->suspended)
 		return;
 
@@ -271,8 +363,11 @@ static void vidi_win_mode_set(struct device *dev,
 	int win;
 	unsigned long offset;
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!overlay) {
 		dev_err(dev, "overlay is NULL\n");
 		return;
@@ -282,7 +377,11 @@ static void vidi_win_mode_set(struct device *dev,
 	if (win == DEFAULT_ZPOS)
 		win = ctx->default_win;
 
+<<<<<<< HEAD
 	if (win < 0 || win > WINDOWS_NR)
+=======
+	if (win < 0 || win >= WINDOWS_NR)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	offset = overlay->fb_x * (overlay->bpp >> 3);
@@ -299,7 +398,10 @@ static void vidi_win_mode_set(struct device *dev,
 	win_data->fb_width = overlay->fb_width;
 	win_data->fb_height = overlay->fb_height;
 	win_data->dma_addr = overlay->dma_addr[0] + offset;
+<<<<<<< HEAD
 	win_data->vaddr = overlay->vaddr[0] + offset;
+=======
+>>>>>>> refs/remotes/origin/master
 	win_data->bpp = overlay->bpp;
 	win_data->buf_offsize = (overlay->fb_width - overlay->crtc_width) *
 				(overlay->bpp >> 3);
@@ -314,9 +416,13 @@ static void vidi_win_mode_set(struct device *dev,
 			win_data->offset_x, win_data->offset_y);
 	DRM_DEBUG_KMS("ovl_width = %d, ovl_height = %d\n",
 			win_data->ovl_width, win_data->ovl_height);
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("paddr = 0x%lx, vaddr = 0x%lx\n",
 			(unsigned long)win_data->dma_addr,
 			(unsigned long)win_data->vaddr);
+=======
+	DRM_DEBUG_KMS("paddr = 0x%lx\n", (unsigned long)win_data->dma_addr);
+>>>>>>> refs/remotes/origin/master
 	DRM_DEBUG_KMS("fb_width = %d, crtc_width = %d\n",
 			overlay->fb_width, overlay->crtc_width);
 }
@@ -327,15 +433,22 @@ static void vidi_win_commit(struct device *dev, int zpos)
 	struct vidi_win_data *win_data;
 	int win = zpos;
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ctx->suspended)
 		return;
 
 	if (win == DEFAULT_ZPOS)
 		win = ctx->default_win;
 
+<<<<<<< HEAD
 	if (win < 0 || win > WINDOWS_NR)
+=======
+	if (win < 0 || win >= WINDOWS_NR)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	win_data = &ctx->win_data[win];
@@ -354,12 +467,19 @@ static void vidi_win_disable(struct device *dev, int zpos)
 	struct vidi_win_data *win_data;
 	int win = zpos;
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
 	if (win == DEFAULT_ZPOS)
 		win = ctx->default_win;
 
 	if (win < 0 || win > WINDOWS_NR)
+=======
+	if (win == DEFAULT_ZPOS)
+		win = ctx->default_win;
+
+	if (win < 0 || win >= WINDOWS_NR)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	win_data = &ctx->win_data[win];
@@ -381,6 +501,7 @@ static struct exynos_drm_manager vidi_manager = {
 	.display_ops	= &vidi_display_ops,
 };
 
+<<<<<<< HEAD
 static void vidi_finish_pageflip(struct drm_device *drm_dev, int crtc)
 {
 	struct exynos_drm_private *dev_priv = drm_dev->dev_private;
@@ -427,6 +548,8 @@ static void vidi_finish_pageflip(struct drm_device *drm_dev, int crtc)
 	spin_unlock_irqrestore(&drm_dev->event_lock, flags);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void vidi_fake_vblank_handler(struct work_struct *work)
 {
 	struct vidi_context *ctx = container_of(work, struct vidi_context,
@@ -440,22 +563,44 @@ static void vidi_fake_vblank_handler(struct work_struct *work)
 	/* refresh rate is about 50Hz. */
 	usleep_range(16000, 20000);
 
+<<<<<<< HEAD
 	drm_handle_vblank(subdrv->drm_dev, manager->pipe);
 	vidi_finish_pageflip(subdrv->drm_dev, manager->pipe);
+=======
+	mutex_lock(&ctx->lock);
+
+	if (ctx->direct_vblank) {
+		drm_handle_vblank(subdrv->drm_dev, manager->pipe);
+		ctx->direct_vblank = false;
+		mutex_unlock(&ctx->lock);
+		return;
+	}
+
+	mutex_unlock(&ctx->lock);
+
+	exynos_drm_crtc_finish_pageflip(subdrv->drm_dev, manager->pipe);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int vidi_subdrv_probe(struct drm_device *drm_dev, struct device *dev)
 {
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
 	/*
 	 * enable drm irq mode.
 	 * - with irq_enabled = 1, we can use the vblank feature.
+=======
+	/*
+	 * enable drm irq mode.
+	 * - with irq_enabled = true, we can use the vblank feature.
+>>>>>>> refs/remotes/origin/master
 	 *
 	 * P.S. note that we wouldn't use drm irq handler but
 	 *	just specific driver own one instead because
 	 *	drm framework supports only one irq handler.
 	 */
+<<<<<<< HEAD
 	drm_dev->irq_enabled = 1;
 
 	/*
@@ -464,14 +609,29 @@ static int vidi_subdrv_probe(struct drm_device *drm_dev, struct device *dev)
 	 * vblank event.(after drm_vblank_put function is called)
 	 */
 	drm_dev->vblank_disable_allowed = 1;
+=======
+	drm_dev->irq_enabled = true;
+
+	/*
+	 * with vblank_disable_allowed = true, vblank interrupt will be disabled
+	 * by drm timer once a current process gives up ownership of
+	 * vblank event.(after drm_vblank_put function is called)
+	 */
+	drm_dev->vblank_disable_allowed = true;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static void vidi_subdrv_remove(struct drm_device *drm_dev)
 {
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+=======
+static void vidi_subdrv_remove(struct drm_device *drm_dev, struct device *dev)
+{
+>>>>>>> refs/remotes/origin/master
 	/* TODO. */
 }
 
@@ -480,11 +640,14 @@ static int vidi_power_on(struct vidi_context *ctx, bool enable)
 	struct exynos_drm_subdrv *subdrv = &ctx->subdrv;
 	struct device *dev = subdrv->dev;
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
 	if (enable != false && enable != true)
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (enable) {
 		ctx->suspended = false;
 
@@ -522,8 +685,11 @@ static int vidi_store_connection(struct device *dev,
 	struct vidi_context *ctx = get_vidi_context(dev);
 	int ret;
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = kstrtoint(buf, 0, &ctx->connected);
 	if (ret)
 		return ret;
@@ -531,6 +697,19 @@ static int vidi_store_connection(struct device *dev,
 	if (ctx->connected > 1)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	/* use fake edid data for test. */
+	if (!ctx->raw_edid)
+		ctx->raw_edid = (struct edid *)fake_edid_info;
+
+	/* if raw_edid isn't same as fake data then it can't be tested. */
+	if (ctx->raw_edid != (struct edid *)fake_edid_info) {
+		DRM_DEBUG_KMS("edid data is not fake data.\n");
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	DRM_DEBUG_KMS("requested connection.\n");
 
 	drm_helper_hpd_irq_event(ctx->subdrv.drm_dev);
@@ -550,18 +729,24 @@ int vidi_connection_ioctl(struct drm_device *drm_dev, void *data,
 	struct exynos_drm_display_ops *display_ops;
 	struct drm_exynos_vidi_connection *vidi = data;
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!vidi) {
 		DRM_DEBUG_KMS("user data for vidi is null.\n");
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (!vidi->edid) {
 		DRM_DEBUG_KMS("edid data is null.\n");
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (vidi->connection > 1) {
 		DRM_DEBUG_KMS("connection should be 0 or 1.\n");
 		return -EINVAL;
@@ -588,8 +773,33 @@ int vidi_connection_ioctl(struct drm_device *drm_dev, void *data,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (vidi->connection)
 		ctx->raw_edid = (struct edid *)vidi->edid;
+=======
+	if (vidi->connection) {
+		struct edid *raw_edid  = (struct edid *)(uint32_t)vidi->edid;
+		if (!drm_edid_is_valid(raw_edid)) {
+			DRM_DEBUG_KMS("edid data is invalid.\n");
+			return -EINVAL;
+		}
+		ctx->raw_edid = drm_edid_duplicate(raw_edid);
+		if (!ctx->raw_edid) {
+			DRM_DEBUG_KMS("failed to allocate raw_edid.\n");
+			return -ENOMEM;
+		}
+	} else {
+		/*
+		 * with connection = 0, free raw_edid
+		 * only if raw edid data isn't same as fake data.
+		 */
+		if (ctx->raw_edid && ctx->raw_edid !=
+				(struct edid *)fake_edid_info) {
+			kfree(ctx->raw_edid);
+			ctx->raw_edid = NULL;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	ctx->connected = vidi->connection;
 	drm_helper_hpd_irq_event(ctx->subdrv.drm_dev);
@@ -597,16 +807,24 @@ int vidi_connection_ioctl(struct drm_device *drm_dev, void *data,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit vidi_probe(struct platform_device *pdev)
+=======
+static int vidi_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = &pdev->dev;
 	struct vidi_context *ctx;
 	struct exynos_drm_subdrv *subdrv;
 	int ret;
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
 	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+=======
+	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!ctx)
 		return -ENOMEM;
 
@@ -614,9 +832,12 @@ static int __devinit vidi_probe(struct platform_device *pdev)
 
 	INIT_WORK(&ctx->work, vidi_fake_vblank_handler);
 
+<<<<<<< HEAD
 	/* for test */
 	ctx->raw_edid = (struct edid *)fake_edid_info;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	subdrv = &ctx->subdrv;
 	subdrv->dev = dev;
 	subdrv->manager = &vidi_manager;
@@ -627,7 +848,11 @@ static int __devinit vidi_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, ctx);
 
+<<<<<<< HEAD
 	ret = device_create_file(&pdev->dev, &dev_attr_connection);
+=======
+	ret = device_create_file(dev, &dev_attr_connection);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		DRM_INFO("failed to create connection sysfs.\n");
 
@@ -636,6 +861,7 @@ static int __devinit vidi_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit vidi_remove(struct platform_device *pdev)
 {
 	struct vidi_context *ctx = platform_get_drvdata(pdev);
@@ -645,6 +871,18 @@ static int __devexit vidi_remove(struct platform_device *pdev)
 	exynos_drm_subdrv_unregister(&ctx->subdrv);
 
 	kfree(ctx);
+=======
+static int vidi_remove(struct platform_device *pdev)
+{
+	struct vidi_context *ctx = platform_get_drvdata(pdev);
+
+	exynos_drm_subdrv_unregister(&ctx->subdrv);
+
+	if (ctx->raw_edid != (struct edid *)fake_edid_info) {
+		kfree(ctx->raw_edid);
+		ctx->raw_edid = NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -671,7 +909,11 @@ static const struct dev_pm_ops vidi_pm_ops = {
 
 struct platform_driver vidi_driver = {
 	.probe		= vidi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(vidi_remove),
+=======
+	.remove		= vidi_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "exynos-drm-vidi",
 		.owner	= THIS_MODULE,

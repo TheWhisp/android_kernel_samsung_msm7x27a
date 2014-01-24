@@ -43,6 +43,7 @@ EXPORT_SYMBOL(brcmu_pkt_buf_get_skb);
 /* Free the driver packet. Free the tag if present */
 void brcmu_pkt_buf_free_skb(struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	WARN_ON(skb->next);
 	if (skb->destructor)
 		/* cannot kfree_skb() on hard IRQ (net/core/skbuff.c) if
@@ -54,6 +55,13 @@ void brcmu_pkt_buf_free_skb(struct sk_buff *skb)
 		 * does not exist
 		 */
 		dev_kfree_skb(skb);
+=======
+	if (!skb)
+		return;
+
+	WARN_ON(skb->next);
+	dev_kfree_skb_any(skb);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(brcmu_pkt_buf_free_skb);
 
@@ -114,6 +122,34 @@ struct sk_buff *brcmu_pktq_pdeq(struct pktq *pq, int prec)
 }
 EXPORT_SYMBOL(brcmu_pktq_pdeq);
 
+<<<<<<< HEAD
+=======
+/*
+ * precedence based dequeue with match function. Passing a NULL pointer
+ * for the match function parameter is considered to be a wildcard so
+ * any packet on the queue is returned. In that case it is no different
+ * from brcmu_pktq_pdeq() above.
+ */
+struct sk_buff *brcmu_pktq_pdeq_match(struct pktq *pq, int prec,
+				      bool (*match_fn)(struct sk_buff *skb,
+						       void *arg), void *arg)
+{
+	struct sk_buff_head *q;
+	struct sk_buff *p, *next;
+
+	q = &pq->q[prec].skblist;
+	skb_queue_walk_safe(q, p, next) {
+		if (match_fn == NULL || match_fn(p, arg)) {
+			skb_unlink(p, q);
+			pq->len--;
+			return p;
+		}
+	}
+	return NULL;
+}
+EXPORT_SYMBOL(brcmu_pktq_pdeq_match);
+
+>>>>>>> refs/remotes/origin/master
 struct sk_buff *brcmu_pktq_pdeq_tail(struct pktq *pq, int prec)
 {
 	struct sk_buff_head *q;

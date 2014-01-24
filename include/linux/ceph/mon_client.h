@@ -5,7 +5,11 @@
 #include <linux/kref.h>
 #include <linux/rbtree.h>
 
+<<<<<<< HEAD
 #include "messenger.h"
+=======
+#include <linux/ceph/messenger.h>
+>>>>>>> refs/remotes/origin/master
 
 struct ceph_client;
 struct ceph_mount_args;
@@ -71,11 +75,15 @@ struct ceph_mon_client {
 	int cur_mon;                       /* last monitor i contacted */
 	unsigned long sub_sent, sub_renew_after;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ceph_connection *con;
 =======
 	struct ceph_connection con;
 >>>>>>> refs/remotes/origin/cm-10.0
 	bool have_fsid;
+=======
+	struct ceph_connection con;
+>>>>>>> refs/remotes/origin/master
 
 	/* pending generic requests */
 	struct rb_root generic_request_tree;

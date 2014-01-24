@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (C) 2004-2007,2011 Freescale Semiconductor, Inc.
+=======
+ * Copyright (C) 2004-2007,2011-2012 Freescale Semiconductor, Inc.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Author: Li Yang <leoli@freescale.com>
@@ -24,6 +28,10 @@
 #include <linux/ioport.h>
 #include <linux/types.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/init.h>
 #include <linux/list.h>
@@ -40,6 +48,7 @@
 #include <linux/fsl_devices.h>
 #include <linux/dmapool.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 
 #include <asm/byteorder.h>
 #include <asm/io.h>
@@ -47,6 +56,12 @@
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of_device.h>
+
+#include <asm/byteorder.h>
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/unaligned.h>
 #include <asm/dma.h>
 
@@ -62,9 +77,14 @@ static const char driver_name[] = "fsl-usb2-udc";
 static const char driver_desc[] = DRIVER_DESC;
 
 static struct usb_dr_device *dr_regs;
+<<<<<<< HEAD
 #ifndef CONFIG_ARCH_MXC
 static struct usb_sys_interface *usb_sys_regs;
 #endif
+=======
+
+static struct usb_sys_interface *usb_sys_regs;
+>>>>>>> refs/remotes/origin/master
 
 /* it is initialized in probe()  */
 static struct fsl_udc *udc_controller = NULL;
@@ -188,6 +208,7 @@ static void done(struct fsl_ep *ep, struct fsl_req *req, int status)
 		dma_pool_free(udc->td_pool, curr_td, curr_td->td_dma);
 	}
 
+<<<<<<< HEAD
 	if (req->mapped) {
 		dma_unmap_single(ep->udc->gadget.dev.parent,
 			req->req.dma, req->req.length,
@@ -202,6 +223,9 @@ static void done(struct fsl_ep *ep, struct fsl_req *req, int status)
 			ep_is_in(ep)
 				? DMA_TO_DEVICE
 				: DMA_FROM_DEVICE);
+=======
+	usb_gadget_unmap_request(&ep->udc->gadget, &req->req, ep_is_in(ep));
+>>>>>>> refs/remotes/origin/master
 
 	if (status && (status != -ESHUTDOWN))
 		VDBG("complete %s req %p stat %d len %u/%u",
@@ -248,10 +272,16 @@ static int dr_controller_setup(struct fsl_udc *udc)
 {
 	unsigned int tmp, portctrl, ep_num;
 	unsigned int max_no_of_ep;
+<<<<<<< HEAD
 #ifndef CONFIG_ARCH_MXC
 	unsigned int ctrl;
 #endif
 	unsigned long timeout;
+=======
+	unsigned int ctrl;
+	unsigned long timeout;
+
+>>>>>>> refs/remotes/origin/master
 #define FSL_UDC_RESET_TIMEOUT 1000
 
 	/* Config PHY interface */
@@ -259,12 +289,38 @@ static int dr_controller_setup(struct fsl_udc *udc)
 	portctrl &= ~(PORTSCX_PHY_TYPE_SEL | PORTSCX_PORT_WIDTH);
 	switch (udc->phy_mode) {
 	case FSL_USB2_PHY_ULPI:
+<<<<<<< HEAD
+=======
+		if (udc->pdata->have_sysif_regs) {
+			if (udc->pdata->controller_ver) {
+				/* controller version 1.6 or above */
+				ctrl = __raw_readl(&usb_sys_regs->control);
+				ctrl &= ~USB_CTRL_UTMI_PHY_EN;
+				ctrl |= USB_CTRL_USB_EN;
+				__raw_writel(ctrl, &usb_sys_regs->control);
+			}
+		}
+>>>>>>> refs/remotes/origin/master
 		portctrl |= PORTSCX_PTS_ULPI;
 		break;
 	case FSL_USB2_PHY_UTMI_WIDE:
 		portctrl |= PORTSCX_PTW_16BIT;
 		/* fall through */
 	case FSL_USB2_PHY_UTMI:
+<<<<<<< HEAD
+=======
+		if (udc->pdata->have_sysif_regs) {
+			if (udc->pdata->controller_ver) {
+				/* controller version 1.6 or above */
+				ctrl = __raw_readl(&usb_sys_regs->control);
+				ctrl |= (USB_CTRL_UTMI_PHY_EN |
+					USB_CTRL_USB_EN);
+				__raw_writel(ctrl, &usb_sys_regs->control);
+				mdelay(FSL_UTMI_PHY_DLY); /* Delay for UTMI
+					PHY CLK to become stable - 10ms*/
+			}
+		}
+>>>>>>> refs/remotes/origin/master
 		portctrl |= PORTSCX_PTS_UTMI;
 		break;
 	case FSL_USB2_PHY_SERIAL:
@@ -553,7 +609,11 @@ static int fsl_ep_enable(struct usb_ep *_ep,
 	ep = container_of(_ep, struct fsl_ep, ep);
 
 	/* catch various bogus parameters */
+<<<<<<< HEAD
 	if (!_ep || !desc || ep->desc
+=======
+	if (!_ep || !desc
+>>>>>>> refs/remotes/origin/master
 			|| (desc->bDescriptorType != USB_DT_ENDPOINT))
 		return -EINVAL;
 
@@ -563,10 +623,14 @@ static int fsl_ep_enable(struct usb_ep *_ep,
 		return -ESHUTDOWN;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	max = le16_to_cpu(desc->wMaxPacketSize);
 =======
 	max = usb_endpoint_maxp(desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	max = usb_endpoint_maxp(desc);
+>>>>>>> refs/remotes/origin/master
 
 	/* Disable automatic zlp generation.  Driver is responsible to indicate
 	 * explicitly through req->req.zero.  This is needed to enable multi-td
@@ -598,7 +662,11 @@ static int fsl_ep_enable(struct usb_ep *_ep,
 
 	spin_lock_irqsave(&udc->lock, flags);
 	ep->ep.maxpacket = max;
+<<<<<<< HEAD
 	ep->desc = desc;
+=======
+	ep->ep.desc = desc;
+>>>>>>> refs/remotes/origin/master
 	ep->stopped = 0;
 
 	/* Controller related setup */
@@ -622,7 +690,11 @@ static int fsl_ep_enable(struct usb_ep *_ep,
 	retval = 0;
 
 	VDBG("enabled %s (ep%d%s) maxpacket %d",ep->ep.name,
+<<<<<<< HEAD
 			ep->desc->bEndpointAddress & 0x0f,
+=======
+			ep->ep.desc->bEndpointAddress & 0x0f,
+>>>>>>> refs/remotes/origin/master
 			(desc->bEndpointAddress & USB_DIR_IN)
 				? "in" : "out", max);
 en_done:
@@ -642,7 +714,11 @@ static int fsl_ep_disable(struct usb_ep *_ep)
 	int ep_num;
 
 	ep = container_of(_ep, struct fsl_ep, ep);
+<<<<<<< HEAD
 	if (!_ep || !ep->desc) {
+=======
+	if (!_ep || !ep->ep.desc) {
+>>>>>>> refs/remotes/origin/master
 		VDBG("%s not enabled", _ep ? ep->ep.name : NULL);
 		return -EINVAL;
 	}
@@ -665,11 +741,15 @@ static int fsl_ep_disable(struct usb_ep *_ep)
 	/* nuke all pending requests (does flush) */
 	nuke(ep, -ESHUTDOWN);
 
+<<<<<<< HEAD
 	ep->desc = NULL;
 <<<<<<< HEAD
 =======
 	ep->ep.desc = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ep->ep.desc = NULL;
+>>>>>>> refs/remotes/origin/master
 	ep->stopped = 1;
 	spin_unlock_irqrestore(&udc->lock, flags);
 
@@ -708,6 +788,7 @@ static void fsl_free_request(struct usb_ep *_ep, struct usb_request *_req)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*-------------------------------------------------------------------------*/
 static void fsl_queue_td(struct fsl_ep *ep, struct fsl_req *req)
 {
@@ -715,6 +796,8 @@ static void fsl_queue_td(struct fsl_ep *ep, struct fsl_req *req)
 	u32 temp, bitmask, tmp_stat;
 	struct ep_queue_head *dQH = &ep->udc->ep_qh[i];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Actually add a dTD chain to an empty dQH and let go */
 static void fsl_prime_ep(struct fsl_ep *ep, struct ep_td_struct *td)
 {
@@ -740,7 +823,10 @@ static void fsl_prime_ep(struct fsl_ep *ep, struct ep_td_struct *td)
 static void fsl_queue_td(struct fsl_ep *ep, struct fsl_req *req)
 {
 	u32 temp, bitmask, tmp_stat;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* VDBG("QH addr Register 0x%8x", dr_regs->endpointlistaddr);
 	VDBG("ep_qh[%d] addr is 0x%8x", i, (u32)&(ep->udc->ep_qh[i])); */
@@ -751,26 +837,37 @@ static void fsl_queue_td(struct fsl_ep *ep, struct fsl_req *req)
 
 	/* check if the pipe is empty */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(list_empty(&ep->queue))) {
 =======
 	if (!(list_empty(&ep->queue)) && !(ep_index(ep) == 0)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(list_empty(&ep->queue)) && !(ep_index(ep) == 0)) {
+>>>>>>> refs/remotes/origin/master
 		/* Add td to the end */
 		struct fsl_req *lastreq;
 		lastreq = list_entry(ep->queue.prev, struct fsl_req, queue);
 		lastreq->tail->next_td_ptr =
 			cpu_to_hc32(req->head->td_dma & DTD_ADDR_MASK);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Ensure dTD's next dtd pointer to be updated */
 		wmb();
 		/* Read prime bit, if 1 goto done */
 		if (fsl_readl(&dr_regs->endpointprime) & bitmask)
+<<<<<<< HEAD
 			goto out;
 =======
 		/* Read prime bit, if 1 goto done */
 		if (fsl_readl(&dr_regs->endpointprime) & bitmask)
 			return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return;
+>>>>>>> refs/remotes/origin/master
 
 		do {
 			/* Set ATDTW bit in USBCMD */
@@ -787,6 +884,7 @@ static void fsl_queue_td(struct fsl_ep *ep, struct fsl_req *req)
 		fsl_writel(temp & ~USB_CMD_ATDTW, &dr_regs->usbcmd);
 
 		if (tmp_stat)
+<<<<<<< HEAD
 <<<<<<< HEAD
 			goto out;
 	}
@@ -811,11 +909,16 @@ static void fsl_queue_td(struct fsl_ep *ep, struct fsl_req *req)
 out:
 	return;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			return;
 	}
 
 	fsl_prime_ep(ep, req->head);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Fill in the dTD structure
@@ -924,6 +1027,10 @@ fsl_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 	struct fsl_req *req = container_of(_req, struct fsl_req, req);
 	struct fsl_udc *udc;
 	unsigned long flags;
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	/* catch various bogus parameters */
 	if (!_req || !req->req.complete || !req->req.buf
@@ -931,6 +1038,7 @@ fsl_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 		VDBG("%s, bad params", __func__);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	if (unlikely(!_ep || !ep->desc)) {
 		VDBG("%s, bad ep", __func__);
 		return -EINVAL;
@@ -940,6 +1048,13 @@ fsl_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 =======
 	if (usb_endpoint_xfer_isoc(ep->desc)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (unlikely(!_ep || !ep->ep.desc)) {
+		VDBG("%s, bad ep", __func__);
+		return -EINVAL;
+	}
+	if (usb_endpoint_xfer_isoc(ep->ep.desc)) {
+>>>>>>> refs/remotes/origin/master
 		if (req->req.length > ep->ep.maxpacket)
 			return -EMSGSIZE;
 	}
@@ -950,6 +1065,7 @@ fsl_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 
 	req->ep = ep;
 
+<<<<<<< HEAD
 	/* map virtual address to hardware */
 	if (req->req.dma == DMA_ADDR_INVALID) {
 		req->req.dma = dma_map_single(ep->udc->gadget.dev.parent,
@@ -966,6 +1082,11 @@ fsl_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 						: DMA_FROM_DEVICE);
 		req->mapped = 0;
 	}
+=======
+	ret = usb_gadget_map_request(&ep->udc->gadget, &req->req, ep_is_in(ep));
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	req->req.status = -EINPROGRESS;
 	req->req.actual = 0;
@@ -980,12 +1101,15 @@ fsl_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Update ep0 state */
 	if ((ep_index(ep) == 0))
 		udc->ep0_state = DATA_STATE_XMIT;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* irq handler advances the queue */
 	if (req != NULL)
 		list_add_tail(&req->queue, &ep->queue);
@@ -1037,6 +1161,7 @@ static int fsl_ep_dequeue(struct usb_ep *_ep, struct usb_request *_req)
 		/* The request isn't the last request in this ep queue */
 		if (req->queue.next != &ep->queue) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			struct ep_queue_head *qh;
 			struct fsl_req *next_req;
 
@@ -1050,6 +1175,8 @@ static int fsl_ep_dequeue(struct usb_ep *_ep, struct usb_request *_req)
 
 		/* The request hasn't been processed, patch up the TD chain */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			struct fsl_req *next_req;
 
 			next_req = list_entry(req->queue.next, struct fsl_req,
@@ -1059,11 +1186,15 @@ static int fsl_ep_dequeue(struct usb_ep *_ep, struct usb_request *_req)
 			fsl_prime_ep(ep, next_req->head);
 		}
 	/* The request hasn't been processed, patch up the TD chain */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		struct fsl_req *prev_req;
 
 		prev_req = list_entry(req->queue.prev, struct fsl_req, queue);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		fsl_writel(fsl_readl(&req->tail->next_td_ptr),
 				&prev_req->tail->next_td_ptr);
@@ -1071,6 +1202,9 @@ static int fsl_ep_dequeue(struct usb_ep *_ep, struct usb_request *_req)
 =======
 		prev_req->tail->next_td_ptr = req->tail->next_td_ptr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		prev_req->tail->next_td_ptr = req->tail->next_td_ptr;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	done(ep, req, -ECONNRESET);
@@ -1106,16 +1240,24 @@ static int fsl_ep_set_halt(struct usb_ep *_ep, int value)
 
 	ep = container_of(_ep, struct fsl_ep, ep);
 	udc = ep->udc;
+<<<<<<< HEAD
 	if (!_ep || !ep->desc) {
+=======
+	if (!_ep || !ep->ep.desc) {
+>>>>>>> refs/remotes/origin/master
 		status = -EINVAL;
 		goto out;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ep->desc->bmAttributes == USB_ENDPOINT_XFER_ISOC) {
 =======
 	if (usb_endpoint_xfer_isoc(ep->desc)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (usb_endpoint_xfer_isoc(ep->ep.desc)) {
+>>>>>>> refs/remotes/origin/master
 		status = -EOPNOTSUPP;
 		goto out;
 	}
@@ -1152,6 +1294,7 @@ static int fsl_ep_fifo_status(struct usb_ep *_ep)
 	int size = 0;
 	u32 bitmask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ep_queue_head *d_qh;
 =======
 	struct ep_queue_head *qh;
@@ -1159,6 +1302,12 @@ static int fsl_ep_fifo_status(struct usb_ep *_ep)
 
 	ep = container_of(_ep, struct fsl_ep, ep);
 	if (!_ep || (!ep->desc && ep_index(ep) != 0))
+=======
+	struct ep_queue_head *qh;
+
+	ep = container_of(_ep, struct fsl_ep, ep);
+	if (!_ep || (!ep->ep.desc && ep_index(ep) != 0))
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	udc = (struct fsl_udc *)ep->udc;
@@ -1167,20 +1316,28 @@ static int fsl_ep_fifo_status(struct usb_ep *_ep)
 		return -ESHUTDOWN;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	d_qh = &ep->udc->ep_qh[ep_index(ep) * 2 + ep_is_in(ep)];
 =======
 	qh = get_qh_by_ep(ep);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	qh = get_qh_by_ep(ep);
+>>>>>>> refs/remotes/origin/master
 
 	bitmask = (ep_is_in(ep)) ? (1 << (ep_index(ep) + 16)) :
 	    (1 << (ep_index(ep)));
 
 	if (fsl_readl(&dr_regs->endptstatus) & bitmask)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		size = (d_qh->size_ioc_int_sts & DTD_PACKET_SIZE)
 =======
 		size = (qh->size_ioc_int_sts & DTD_PACKET_SIZE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		size = (qh->size_ioc_int_sts & DTD_PACKET_SIZE)
+>>>>>>> refs/remotes/origin/master
 		    >> DTD_LENGTH_BIT_POS;
 
 	pr_debug("%s %u\n", __func__, size);
@@ -1199,7 +1356,11 @@ static void fsl_ep_fifo_flush(struct usb_ep *_ep)
 		return;
 	} else {
 		ep = container_of(_ep, struct fsl_ep, ep);
+<<<<<<< HEAD
 		if (!ep->desc)
+=======
+		if (!ep->ep.desc)
+>>>>>>> refs/remotes/origin/master
 			return;
 	}
 	ep_num = ep_index(ep);
@@ -1315,12 +1476,17 @@ static int fsl_vbus_draw(struct usb_gadget *gadget, unsigned mA)
 	struct fsl_udc *udc;
 
 	udc = container_of(gadget, struct fsl_udc, gadget);
+<<<<<<< HEAD
 	if (udc->transceiver)
 <<<<<<< HEAD
 		return otg_set_power(udc->transceiver, mA);
 =======
 		return usb_phy_set_power(udc->transceiver, mA);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_ERR_OR_NULL(udc->transceiver))
+		return usb_phy_set_power(udc->transceiver, mA);
+>>>>>>> refs/remotes/origin/master
 	return -ENOTSUPP;
 }
 
@@ -1344,6 +1510,7 @@ static int fsl_pullup(struct usb_gadget *gadget, int is_on)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int fsl_start(struct usb_gadget_driver *driver,
 		int (*bind)(struct usb_gadget *));
@@ -1351,6 +1518,14 @@ static int fsl_stop(struct usb_gadget_driver *driver);
 >>>>>>> refs/remotes/origin/cm-10.0
 /* defined in gadget.h */
 static struct usb_gadget_ops fsl_gadget_ops = {
+=======
+static int fsl_udc_start(struct usb_gadget *g,
+		struct usb_gadget_driver *driver);
+static int fsl_udc_stop(struct usb_gadget *g,
+		struct usb_gadget_driver *driver);
+/* defined in gadget.h */
+static const struct usb_gadget_ops fsl_gadget_ops = {
+>>>>>>> refs/remotes/origin/master
 	.get_frame = fsl_get_frame,
 	.wakeup = fsl_wakeup,
 /*	.set_selfpowered = fsl_set_selfpowered,	*/ /* Always selfpowered */
@@ -1358,10 +1533,15 @@ static struct usb_gadget_ops fsl_gadget_ops = {
 	.vbus_draw = fsl_vbus_draw,
 	.pullup = fsl_pullup,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.start = fsl_start,
 	.stop = fsl_stop,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.udc_start = fsl_udc_start,
+	.udc_stop = fsl_udc_stop,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Set protocol stall on ep0, protocol stall will automatically be cleared
@@ -1383,6 +1563,10 @@ static int ep0_prime_status(struct fsl_udc *udc, int direction)
 {
 	struct fsl_req *req = udc->status_req;
 	struct fsl_ep *ep;
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (direction == EP_DIR_IN)
 		udc->ep0_dir = USB_DIR_IN;
@@ -1391,11 +1575,16 @@ static int ep0_prime_status(struct fsl_udc *udc, int direction)
 
 	ep = &udc->eps[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	udc->ep0_state = WAIT_FOR_OUT_STATUS;
 =======
 	if (udc->ep0_state != DATA_STATE_XMIT)
 		udc->ep0_state = WAIT_FOR_OUT_STATUS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (udc->ep0_state != DATA_STATE_XMIT)
+		udc->ep0_state = WAIT_FOR_OUT_STATUS;
+>>>>>>> refs/remotes/origin/master
 
 	req->ep = ep;
 	req->req.length = 0;
@@ -1404,10 +1593,16 @@ static int ep0_prime_status(struct fsl_udc *udc, int direction)
 	req->req.complete = NULL;
 	req->dtd_count = 0;
 
+<<<<<<< HEAD
 	req->req.dma = dma_map_single(ep->udc->gadget.dev.parent,
 			req->req.buf, req->req.length,
 			ep_is_in(ep) ? DMA_TO_DEVICE : DMA_FROM_DEVICE);
 	req->mapped = 1;
+=======
+	ret = usb_gadget_map_request(&ep->udc->gadget, &req->req, ep_is_in(ep));
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (fsl_req_to_dtd(req, GFP_ATOMIC) == 0)
 		fsl_queue_td(ep, req);
@@ -1450,6 +1645,10 @@ static void ch9getstatus(struct fsl_udc *udc, u8 request_type, u16 value,
 	u16 tmp = 0;		/* Status, cpu endian */
 	struct fsl_req *req;
 	struct fsl_ep *ep;
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	ep = &udc->eps[0];
 
@@ -1468,7 +1667,11 @@ static void ch9getstatus(struct fsl_udc *udc, u8 request_type, u16 value,
 		target_ep = get_ep_by_pipe(udc, get_pipe_by_windex(index));
 
 		/* stall if endpoint doesn't exist */
+<<<<<<< HEAD
 		if (!target_ep->desc)
+=======
+		if (!target_ep->ep.desc)
+>>>>>>> refs/remotes/origin/master
 			goto stall;
 		tmp = dr_ep_get_stall(ep_index(target_ep), ep_is_in(target_ep))
 				<< USB_ENDPOINT_HALT;
@@ -1487,10 +1690,16 @@ static void ch9getstatus(struct fsl_udc *udc, u8 request_type, u16 value,
 	req->req.complete = NULL;
 	req->dtd_count = 0;
 
+<<<<<<< HEAD
 	req->req.dma = dma_map_single(ep->udc->gadget.dev.parent,
 				req->req.buf, req->req.length,
 				ep_is_in(ep) ? DMA_TO_DEVICE : DMA_FROM_DEVICE);
 	req->mapped = 1;
+=======
+	ret = usb_gadget_map_request(&ep->udc->gadget, &req->req, ep_is_in(ep));
+	if (ret)
+		goto stall;
+>>>>>>> refs/remotes/origin/master
 
 	/* prime the data phase */
 	if ((fsl_req_to_dtd(req, GFP_ATOMIC) == 0))
@@ -1501,11 +1710,17 @@ static void ch9getstatus(struct fsl_udc *udc, u8 request_type, u16 value,
 	list_add_tail(&req->queue, &ep->queue);
 	udc->ep0_state = DATA_STATE_XMIT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (ep0_prime_status(udc, EP_DIR_OUT))
 		ep0stall(udc);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ep0_prime_status(udc, EP_DIR_OUT))
+		ep0stall(udc);
+
+>>>>>>> refs/remotes/origin/master
 	return;
 stall:
 	ep0stall(udc);
@@ -1551,10 +1766,14 @@ static void setup_received_irq(struct fsl_udc *udc,
 			struct fsl_ep *ep;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (wValue != 0 || wLength != 0 || pipe > udc->max_ep)
 =======
 			if (wValue != 0 || wLength != 0 || pipe >= udc->max_ep)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (wValue != 0 || wLength != 0 || pipe >= udc->max_ep)
+>>>>>>> refs/remotes/origin/master
 				break;
 			ep = get_ep_by_pipe(udc, pipe);
 
@@ -1619,7 +1838,10 @@ static void setup_received_irq(struct fsl_udc *udc,
 		udc->ep0_state = (setup->bRequestType & USB_DIR_IN)
 				?  DATA_STATE_XMIT : DATA_STATE_RECV;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * If the data stage is IN, send status prime immediately.
 		 * See 2.0 Spec chapter 8.5.3.3 for detail.
@@ -1628,7 +1850,10 @@ static void setup_received_irq(struct fsl_udc *udc,
 			if (ep0_prime_status(udc, EP_DIR_OUT))
 				ep0stall(udc);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* No data phase, IN status from gadget */
 		udc->ep0_dir = USB_DIR_IN;
@@ -1658,6 +1883,7 @@ static void ep0_req_complete(struct fsl_udc *udc, struct fsl_ep *ep0,
 	switch (udc->ep0_state) {
 	case DATA_STATE_XMIT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* receive status phase */
 		if (ep0_prime_status(udc, EP_DIR_OUT))
 			ep0stall(udc);
@@ -1665,6 +1891,10 @@ static void ep0_req_complete(struct fsl_udc *udc, struct fsl_ep *ep0,
 		/* already primed at setup_received_irq */
 		udc->ep0_state = WAIT_FOR_OUT_STATUS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* already primed at setup_received_irq */
+		udc->ep0_state = WAIT_FOR_OUT_STATUS;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case DATA_STATE_RECV:
 		/* send status phase */
@@ -1814,10 +2044,14 @@ static void dtd_complete_irq(struct fsl_udc *udc)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < udc->max_ep * 2; i++) {
 =======
 	for (i = 0; i < udc->max_ep; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < udc->max_ep; i++) {
+>>>>>>> refs/remotes/origin/master
 		ep_num = i >> 1;
 		direction = i % 2;
 
@@ -1856,12 +2090,15 @@ static void dtd_complete_irq(struct fsl_udc *udc)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Process a port change interrupt */
 static void port_change_irq(struct fsl_udc *udc)
 {
 	u32 speed;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline enum usb_device_speed portscx_device_speed(u32 reg)
 {
 	switch (reg & PORTSCX_PORT_SPEED_MASK) {
@@ -1879,11 +2116,15 @@ static inline enum usb_device_speed portscx_device_speed(u32 reg)
 /* Process a port change interrupt */
 static void port_change_irq(struct fsl_udc *udc)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (udc->bus_reset)
 		udc->bus_reset = 0;
 
 	/* Bus resetting is finished */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!(fsl_readl(&dr_regs->portsc1) & PORTSCX_PORT_RESET)) {
 		/* Get the speed */
@@ -1905,11 +2146,16 @@ static void port_change_irq(struct fsl_udc *udc)
 		}
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!(fsl_readl(&dr_regs->portsc1) & PORTSCX_PORT_RESET))
 		/* Get the speed */
 		udc->gadget.speed =
 			portscx_device_speed(fsl_readl(&dr_regs->portsc1));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Update USB state */
 	if (!udc->resume_state)
@@ -2100,6 +2346,7 @@ static irqreturn_t fsl_udc_irq(int irq, void *_udc)
  * Called by initialization code of gadget drivers
 *----------------------------------------------------------------*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 =======
 static int fsl_start(struct usb_gadget_driver *driver,
@@ -2124,12 +2371,21 @@ static int fsl_start(struct usb_gadget_driver *driver,
 	if (udc_controller->driver)
 		return -EBUSY;
 
+=======
+static int fsl_udc_start(struct usb_gadget *g,
+		struct usb_gadget_driver *driver)
+{
+	int retval = 0;
+	unsigned long flags = 0;
+
+>>>>>>> refs/remotes/origin/master
 	/* lock is needed but whether should use this lock or another */
 	spin_lock_irqsave(&udc_controller->lock, flags);
 
 	driver->driver.bus = NULL;
 	/* hook up the driver */
 	udc_controller->driver = driver;
+<<<<<<< HEAD
 	udc_controller->gadget.dev.driver = &driver->driver;
 	spin_unlock_irqrestore(&udc_controller->lock, flags);
 
@@ -2143,11 +2399,17 @@ static int fsl_start(struct usb_gadget_driver *driver,
 	}
 
 	if (udc_controller->transceiver) {
+=======
+	spin_unlock_irqrestore(&udc_controller->lock, flags);
+
+	if (!IS_ERR_OR_NULL(udc_controller->transceiver)) {
+>>>>>>> refs/remotes/origin/master
 		/* Suspend the controller until OTG enable it */
 		udc_controller->stopped = 1;
 		printk(KERN_INFO "Suspend udc for OTG auto detect\n");
 
 		/* connect to bus through transceiver */
+<<<<<<< HEAD
 		if (udc_controller->transceiver) {
 <<<<<<< HEAD
 			retval = otg_set_peripheral(udc_controller->transceiver,
@@ -2155,11 +2417,19 @@ static int fsl_start(struct usb_gadget_driver *driver,
 			retval = otg_set_peripheral(
 					udc_controller->transceiver->otg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!IS_ERR_OR_NULL(udc_controller->transceiver)) {
+			retval = otg_set_peripheral(
+					udc_controller->transceiver->otg,
+>>>>>>> refs/remotes/origin/master
 						    &udc_controller->gadget);
 			if (retval < 0) {
 				ERR("can't bind to transceiver\n");
 				driver->unbind(&udc_controller->gadget);
+<<<<<<< HEAD
 				udc_controller->gadget.dev.driver = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 				udc_controller->driver = 0;
 				return retval;
 			}
@@ -2171,6 +2441,7 @@ static int fsl_start(struct usb_gadget_driver *driver,
 		udc_controller->ep0_state = WAIT_FOR_SETUP;
 		udc_controller->ep0_dir = 0;
 	}
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: bind to driver %s\n",
 			udc_controller->gadget.name, driver->driver.name);
 
@@ -2190,10 +2461,20 @@ int usb_gadget_unregister_driver(struct usb_gadget_driver *driver)
 /* Disconnect from gadget driver */
 static int fsl_stop(struct usb_gadget_driver *driver)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return retval;
+}
+
+/* Disconnect from gadget driver */
+static int fsl_udc_stop(struct usb_gadget *g,
+		struct usb_gadget_driver *driver)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fsl_ep *loop_ep;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	if (!udc_controller)
 		return -ENODEV;
 
@@ -2206,6 +2487,10 @@ static int fsl_stop(struct usb_gadget_driver *driver)
 =======
 		otg_set_peripheral(udc_controller->transceiver->otg, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_ERR_OR_NULL(udc_controller->transceiver))
+		otg_set_peripheral(udc_controller->transceiver->otg, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	/* stop DR, disable intr */
 	dr_controller_stop(udc_controller);
@@ -2224,6 +2509,7 @@ static int fsl_stop(struct usb_gadget_driver *driver)
 		nuke(loop_ep, -ESHUTDOWN);
 	spin_unlock_irqrestore(&udc_controller->lock, flags);
 
+<<<<<<< HEAD
 	/* report disconnect; the controller is already quiesced */
 	driver->disconnect(&udc_controller->gadget);
 
@@ -2240,6 +2526,12 @@ static int fsl_stop(struct usb_gadget_driver *driver)
 EXPORT_SYMBOL(usb_gadget_unregister_driver);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	udc_controller->driver = NULL;
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*-------------------------------------------------------------------------
 		PROC File System Support
@@ -2250,6 +2542,7 @@ EXPORT_SYMBOL(usb_gadget_unregister_driver);
 
 static const char proc_filename[] = "driver/fsl_usb2_udc";
 
+<<<<<<< HEAD
 static int fsl_proc_read(char *page, char **start, off_t off, int count,
 		int *eof, void *_dev)
 {
@@ -2258,39 +2551,65 @@ static int fsl_proc_read(char *page, char **start, off_t off, int count,
 	unsigned size = count;
 	unsigned long flags;
 	int t, i;
+=======
+static int fsl_proc_read(struct seq_file *m, void *v)
+{
+	unsigned long flags;
+	int i;
+>>>>>>> refs/remotes/origin/master
 	u32 tmp_reg;
 	struct fsl_ep *ep = NULL;
 	struct fsl_req *req;
 
 	struct fsl_udc *udc = udc_controller;
+<<<<<<< HEAD
 	if (off != 0)
 		return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&udc->lock, flags);
 
 	/* ------basic driver information ---- */
+<<<<<<< HEAD
 	t = scnprintf(next, size,
+=======
+	seq_printf(m,
+>>>>>>> refs/remotes/origin/master
 			DRIVER_DESC "\n"
 			"%s version: %s\n"
 			"Gadget driver: %s\n\n",
 			driver_name, DRIVER_VERSION,
 			udc->driver ? udc->driver->driver.name : "(none)");
+<<<<<<< HEAD
 	size -= t;
 	next += t;
 
 	/* ------ DR Registers ----- */
 	tmp_reg = fsl_readl(&dr_regs->usbcmd);
 	t = scnprintf(next, size,
+=======
+
+	/* ------ DR Registers ----- */
+	tmp_reg = fsl_readl(&dr_regs->usbcmd);
+	seq_printf(m,
+>>>>>>> refs/remotes/origin/master
 			"USBCMD reg:\n"
 			"SetupTW: %d\n"
 			"Run/Stop: %s\n\n",
 			(tmp_reg & USB_CMD_SUTW) ? 1 : 0,
 			(tmp_reg & USB_CMD_RUN_STOP) ? "Run" : "Stop");
+<<<<<<< HEAD
 	size -= t;
 	next += t;
 
 	tmp_reg = fsl_readl(&dr_regs->usbsts);
 	t = scnprintf(next, size,
+=======
+
+	tmp_reg = fsl_readl(&dr_regs->usbsts);
+	seq_printf(m,
+>>>>>>> refs/remotes/origin/master
 			"USB Status Reg:\n"
 			"Dr Suspend: %d Reset Received: %d System Error: %s "
 			"USB Error Interrupt: %s\n\n",
@@ -2298,12 +2617,19 @@ static int fsl_proc_read(char *page, char **start, off_t off, int count,
 			(tmp_reg & USB_STS_RESET) ? 1 : 0,
 			(tmp_reg & USB_STS_SYS_ERR) ? "Err" : "Normal",
 			(tmp_reg & USB_STS_ERR) ? "Err detected" : "No err");
+<<<<<<< HEAD
 	size -= t;
 	next += t;
 
 	tmp_reg = fsl_readl(&dr_regs->usbintr);
 	t = scnprintf(next, size,
 			"USB Intrrupt Enable Reg:\n"
+=======
+
+	tmp_reg = fsl_readl(&dr_regs->usbintr);
+	seq_printf(m,
+			"USB Interrupt Enable Reg:\n"
+>>>>>>> refs/remotes/origin/master
 			"Sleep Enable: %d SOF Received Enable: %d "
 			"Reset Enable: %d\n"
 			"System Error Enable: %d "
@@ -2316,6 +2642,7 @@ static int fsl_proc_read(char *page, char **start, off_t off, int count,
 			(tmp_reg & USB_INTR_PTC_DETECT_EN) ? 1 : 0,
 			(tmp_reg & USB_INTR_ERR_INT_EN) ? 1 : 0,
 			(tmp_reg & USB_INTR_INT_EN) ? 1 : 0);
+<<<<<<< HEAD
 	size -= t;
 	next += t;
 
@@ -2343,6 +2670,27 @@ static int fsl_proc_read(char *page, char **start, off_t off, int count,
 
 	tmp_reg = fsl_readl(&dr_regs->portsc1);
 	t = scnprintf(next, size,
+=======
+
+	tmp_reg = fsl_readl(&dr_regs->frindex);
+	seq_printf(m,
+			"USB Frame Index Reg: Frame Number is 0x%x\n\n",
+			(tmp_reg & USB_FRINDEX_MASKS));
+
+	tmp_reg = fsl_readl(&dr_regs->deviceaddr);
+	seq_printf(m,
+			"USB Device Address Reg: Device Addr is 0x%x\n\n",
+			(tmp_reg & USB_DEVICE_ADDRESS_MASK));
+
+	tmp_reg = fsl_readl(&dr_regs->endpointlistaddr);
+	seq_printf(m,
+			"USB Endpoint List Address Reg: "
+			"Device Addr is 0x%x\n\n",
+			(tmp_reg & USB_EP_LIST_ADDRESS_MASK));
+
+	tmp_reg = fsl_readl(&dr_regs->portsc1);
+	seq_printf(m,
+>>>>>>> refs/remotes/origin/master
 		"USB Port Status&Control Reg:\n"
 		"Port Transceiver Type : %s Port Speed: %s\n"
 		"PHY Low Power Suspend: %s Port Reset: %s "
@@ -2351,7 +2699,11 @@ static int fsl_proc_read(char *page, char **start, off_t off, int count,
 		"Port Enable/Disable Change: %s\n"
 		"Port Enabled/Disabled: %s "
 		"Current Connect Status: %s\n\n", ( {
+<<<<<<< HEAD
 			char *s;
+=======
+			const char *s;
+>>>>>>> refs/remotes/origin/master
 			switch (tmp_reg & PORTSCX_PTS_FSLS) {
 			case PORTSCX_PTS_UTMI:
 				s = "UTMI"; break;
@@ -2362,6 +2714,7 @@ static int fsl_proc_read(char *page, char **start, off_t off, int count,
 			default:
 				s = "None"; break;
 			}
+<<<<<<< HEAD
 <<<<<<< HEAD
 			s;} ), ( {
 			char *s;
@@ -2381,6 +2734,10 @@ static int fsl_proc_read(char *page, char **start, off_t off, int count,
 			s;} ),
 		usb_speed_string(portscx_device_speed(tmp_reg)),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			s;} ),
+		usb_speed_string(portscx_device_speed(tmp_reg)),
+>>>>>>> refs/remotes/origin/master
 		(tmp_reg & PORTSCX_PHY_LOW_POWER_SPD) ?
 		"Normal PHY mode" : "Low power mode",
 		(tmp_reg & PORTSCX_PORT_RESET) ? "In Reset" :
@@ -2394,6 +2751,7 @@ static int fsl_proc_read(char *page, char **start, off_t off, int count,
 		"Not correct",
 		(tmp_reg & PORTSCX_CURRENT_CONNECT_STATUS) ?
 		"Attached" : "Not-Att");
+<<<<<<< HEAD
 	size -= t;
 	next += t;
 
@@ -2401,6 +2759,13 @@ static int fsl_proc_read(char *page, char **start, off_t off, int count,
 	t = scnprintf(next, size,
 			"USB Mode Reg: Controller Mode is: %s\n\n", ( {
 				char *s;
+=======
+
+	tmp_reg = fsl_readl(&dr_regs->usbmode);
+	seq_printf(m,
+			"USB Mode Reg: Controller Mode is: %s\n\n", ( {
+				const char *s;
+>>>>>>> refs/remotes/origin/master
 				switch (tmp_reg & USB_MODE_CTRL_MODE_HOST) {
 				case USB_MODE_CTRL_MODE_IDLE:
 					s = "Idle"; break;
@@ -2413,6 +2778,7 @@ static int fsl_proc_read(char *page, char **start, off_t off, int count,
 				}
 				s;
 			} ));
+<<<<<<< HEAD
 	size -= t;
 	next += t;
 
@@ -2434,10 +2800,25 @@ static int fsl_proc_read(char *page, char **start, off_t off, int count,
 	t = scnprintf(next, size, "EP Prime Reg = [0x%x]\n\n", tmp_reg);
 	size -= t;
 	next += t;
+=======
+
+	tmp_reg = fsl_readl(&dr_regs->endptsetupstat);
+	seq_printf(m,
+			"Endpoint Setup Status Reg: SETUP on ep 0x%x\n\n",
+			(tmp_reg & EP_SETUP_STATUS_MASK));
+
+	for (i = 0; i < udc->max_ep / 2; i++) {
+		tmp_reg = fsl_readl(&dr_regs->endptctrl[i]);
+		seq_printf(m, "EP Ctrl Reg [0x%x]: = [0x%x]\n", i, tmp_reg);
+	}
+	tmp_reg = fsl_readl(&dr_regs->endpointprime);
+	seq_printf(m, "EP Prime Reg = [0x%x]\n\n", tmp_reg);
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CONFIG_ARCH_MXC
 	if (udc->pdata->have_sysif_regs) {
 		tmp_reg = usb_sys_regs->snoop1;
+<<<<<<< HEAD
 		t = scnprintf(next, size, "Snoop1 Reg : = [0x%x]\n\n", tmp_reg);
 		size -= t;
 		next += t;
@@ -2447,11 +2828,18 @@ static int fsl_proc_read(char *page, char **start, off_t off, int count,
 				tmp_reg);
 		size -= t;
 		next += t;
+=======
+		seq_printf(m, "Snoop1 Reg : = [0x%x]\n\n", tmp_reg);
+
+		tmp_reg = usb_sys_regs->control;
+		seq_printf(m, "General Control Reg : = [0x%x]\n\n", tmp_reg);
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 
 	/* ------fsl_udc, fsl_ep, fsl_request structure information ----- */
 	ep = &udc->eps[0];
+<<<<<<< HEAD
 	t = scnprintf(next, size, "For %s Maxpkt is 0x%x index is 0x%x\n",
 			ep->ep.name, ep_maxpacket(ep), ep_index(ep));
 	size -= t;
@@ -2469,16 +2857,35 @@ static int fsl_proc_read(char *page, char **start, off_t off, int count,
 				req->req.length, req->req.buf);
 			size -= t;
 			next += t;
+=======
+	seq_printf(m, "For %s Maxpkt is 0x%x index is 0x%x\n",
+			ep->ep.name, ep_maxpacket(ep), ep_index(ep));
+
+	if (list_empty(&ep->queue)) {
+		seq_puts(m, "its req queue is empty\n\n");
+	} else {
+		list_for_each_entry(req, &ep->queue, queue) {
+			seq_printf(m,
+				"req %p actual 0x%x length 0x%x buf %p\n",
+				&req->req, req->req.actual,
+				req->req.length, req->req.buf);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	/* other gadget->eplist ep */
 	list_for_each_entry(ep, &udc->gadget.ep_list, ep.ep_list) {
+<<<<<<< HEAD
 		if (ep->desc) {
 			t = scnprintf(next, size,
+=======
+		if (ep->ep.desc) {
+			seq_printf(m,
+>>>>>>> refs/remotes/origin/master
 					"\nFor %s Maxpkt is 0x%x "
 					"index is 0x%x\n",
 					ep->ep.name, ep_maxpacket(ep),
 					ep_index(ep));
+<<<<<<< HEAD
 			size -= t;
 			next += t;
 
@@ -2490,10 +2897,19 @@ static int fsl_proc_read(char *page, char **start, off_t off, int count,
 			} else {
 				list_for_each_entry(req, &ep->queue, queue) {
 					t = scnprintf(next, size,
+=======
+
+			if (list_empty(&ep->queue)) {
+				seq_puts(m, "its req queue is empty\n\n");
+			} else {
+				list_for_each_entry(req, &ep->queue, queue) {
+					seq_printf(m,
+>>>>>>> refs/remotes/origin/master
 						"req %p actual 0x%x length "
 						"0x%x  buf %p\n",
 						&req->req, req->req.actual,
 						req->req.length, req->req.buf);
+<<<<<<< HEAD
 					size -= t;
 					next += t;
 					}	/* end for each_entry of ep req */
@@ -2510,6 +2926,33 @@ static int fsl_proc_read(char *page, char **start, off_t off, int count,
 #define create_proc_file()	create_proc_read_entry(proc_filename, \
 				0, NULL, fsl_proc_read, NULL)
 
+=======
+				}	/* end for each_entry of ep req */
+			}	/* end for else */
+		}	/* end for if(ep->queue) */
+	}	/* end (ep->desc) */
+
+	spin_unlock_irqrestore(&udc->lock, flags);
+	return 0;
+}
+
+/*
+ * seq_file wrappers for procfile show routines.
+ */
+static int fsl_proc_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, fsl_proc_read, NULL);
+}
+
+static const struct file_operations fsl_proc_fops = {
+	.open		= fsl_proc_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+#define create_proc_file()	proc_create(proc_filename, 0, NULL, &fsl_proc_fops)
+>>>>>>> refs/remotes/origin/master
 #define remove_proc_file()	remove_proc_entry(proc_filename, NULL)
 
 #else				/* !CONFIG_USB_GADGET_DEBUG_FILES */
@@ -2543,7 +2986,11 @@ static int __init struct_udc_setup(struct fsl_udc *udc,
 	struct fsl_usb2_platform_data *pdata;
 	size_t size;
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	udc->phy_mode = pdata->phy_mode;
 
 	udc->eps = kzalloc(sizeof(struct fsl_ep) * udc->max_ep, GFP_KERNEL);
@@ -2606,7 +3053,11 @@ static int __init struct_ep_setup(struct fsl_udc *udc, unsigned char index,
 	/* for ep0: maxP defined in desc
 	 * for other eps, maxP is set by epautoconfig() called by gadget layer
 	 */
+<<<<<<< HEAD
 	ep->ep.maxpacket = (unsigned short) ~0;
+=======
+	usb_ep_set_maxpacket_limit(&ep->ep, (unsigned short) ~0);
+>>>>>>> refs/remotes/origin/master
 
 	/* the queue lists any req for this ep */
 	INIT_LIST_HEAD(&ep->queue);
@@ -2632,18 +3083,25 @@ static int __init fsl_udc_probe(struct platform_device *pdev)
 	unsigned int i;
 	u32 dccparams;
 
+<<<<<<< HEAD
 	if (strcmp(pdev->name, driver_name)) {
 		VDBG("Wrong device");
 		return -ENODEV;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	udc_controller = kzalloc(sizeof(struct fsl_udc), GFP_KERNEL);
 	if (udc_controller == NULL) {
 		ERR("malloc udc failed\n");
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	udc_controller->pdata = pdata;
 	spin_lock_init(&udc_controller->lock);
 	udc_controller->stopped = 1;
@@ -2651,11 +3109,16 @@ static int __init fsl_udc_probe(struct platform_device *pdev)
 #ifdef CONFIG_USB_OTG
 	if (pdata->operating_mode == FSL_USB2_DR_OTG) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		udc_controller->transceiver = otg_get_transceiver();
 =======
 		udc_controller->transceiver = usb_get_transceiver();
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (!udc_controller->transceiver) {
+=======
+		udc_controller->transceiver = usb_get_phy(USB_PHY_TYPE_USB2);
+		if (IS_ERR_OR_NULL(udc_controller->transceiver)) {
+>>>>>>> refs/remotes/origin/master
 			ERR("Can't find OTG driver!\n");
 			ret = -ENODEV;
 			goto err_kfree;
@@ -2671,10 +3134,14 @@ static int __init fsl_udc_probe(struct platform_device *pdev)
 
 	if (pdata->operating_mode == FSL_USB2_DR_DEVICE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!request_mem_region(res->start, res->end - res->start + 1,
 =======
 		if (!request_mem_region(res->start, resource_size(res),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!request_mem_region(res->start, resource_size(res),
+>>>>>>> refs/remotes/origin/master
 					driver_name)) {
 			ERR("request mem region for %s failed\n", pdev->name);
 			ret = -EBUSY;
@@ -2704,11 +3171,15 @@ static int __init fsl_udc_probe(struct platform_device *pdev)
 #ifndef CONFIG_ARCH_MXC
 	if (pdata->have_sysif_regs)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		usb_sys_regs = (struct usb_sys_interface *)
 				((u32)dr_regs + USB_DR_SYS_OFFSET);
 =======
 		usb_sys_regs = (void *)dr_regs + USB_DR_SYS_OFFSET;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usb_sys_regs = (void *)dr_regs + USB_DR_SYS_OFFSET;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	/* Initialize USB clocks */
@@ -2748,12 +3219,17 @@ static int __init fsl_udc_probe(struct platform_device *pdev)
 		goto err_free_irq;
 	}
 
+<<<<<<< HEAD
 	if (!udc_controller->transceiver) {
+=======
+	if (IS_ERR_OR_NULL(udc_controller->transceiver)) {
+>>>>>>> refs/remotes/origin/master
 		/* initialize usb hw reg except for regs for EP,
 		 * leave usbintr reg untouched */
 		dr_controller_setup(udc_controller);
 	}
 
+<<<<<<< HEAD
 	fsl_udc_clk_finalize(pdev);
 
 	/* Setup gadget structure */
@@ -2763,6 +3239,15 @@ static int __init fsl_udc_probe(struct platform_device *pdev)
 =======
 	udc_controller->gadget.max_speed = USB_SPEED_HIGH;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = fsl_udc_clk_finalize(pdev);
+	if (ret)
+		goto err_free_irq;
+
+	/* Setup gadget structure */
+	udc_controller->gadget.ops = &fsl_gadget_ops;
+	udc_controller->gadget.max_speed = USB_SPEED_HIGH;
+>>>>>>> refs/remotes/origin/master
 	udc_controller->gadget.ep0 = &udc_controller->eps[0].ep;
 	INIT_LIST_HEAD(&udc_controller->gadget.ep_list);
 	udc_controller->gadget.speed = USB_SPEED_UNKNOWN;
@@ -2770,6 +3255,7 @@ static int __init fsl_udc_probe(struct platform_device *pdev)
 
 	/* Setup gadget.dev and register with kernel */
 	dev_set_name(&udc_controller->gadget.dev, "gadget");
+<<<<<<< HEAD
 	udc_controller->gadget.dev.release = fsl_udc_release;
 	udc_controller->gadget.dev.parent = &pdev->dev;
 	ret = device_register(&udc_controller->gadget.dev);
@@ -2777,6 +3263,11 @@ static int __init fsl_udc_probe(struct platform_device *pdev)
 		goto err_free_irq;
 
 	if (udc_controller->transceiver)
+=======
+	udc_controller->gadget.dev.of_node = pdev->dev.of_node;
+
+	if (!IS_ERR_OR_NULL(udc_controller->transceiver))
+>>>>>>> refs/remotes/origin/master
 		udc_controller->gadget.is_otg = 1;
 
 	/* setup QH and epctrl for ep0 */
@@ -2787,8 +3278,14 @@ static int __init fsl_udc_probe(struct platform_device *pdev)
 	/* for ep0: the desc defined here;
 	 * for other eps, gadget layer called ep_enable with defined desc
 	 */
+<<<<<<< HEAD
 	udc_controller->eps[0].desc = &fsl_ep0_desc;
 	udc_controller->eps[0].ep.maxpacket = USB_MAX_CTRL_PAYLOAD;
+=======
+	udc_controller->eps[0].ep.desc = &fsl_ep0_desc;
+	usb_ep_set_maxpacket_limit(&udc_controller->eps[0].ep,
+				   USB_MAX_CTRL_PAYLOAD);
+>>>>>>> refs/remotes/origin/master
 
 	/* setup the udc->eps[] for non-control endpoints and link
 	 * to gadget.ep_list */
@@ -2807,6 +3304,7 @@ static int __init fsl_udc_probe(struct platform_device *pdev)
 			DTD_ALIGNMENT, UDC_DMA_BOUNDARY);
 	if (udc_controller->td_pool == NULL) {
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto err_unregister;
 	}
 <<<<<<< HEAD
@@ -2816,6 +3314,13 @@ static int __init fsl_udc_probe(struct platform_device *pdev)
 =======
 
 	ret = usb_add_gadget_udc(&pdev->dev, &udc_controller->gadget);
+=======
+		goto err_free_irq;
+	}
+
+	ret = usb_add_gadget_udc_release(&pdev->dev, &udc_controller->gadget,
+			fsl_udc_release);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto err_del_udc;
 
@@ -2824,9 +3329,12 @@ static int __init fsl_udc_probe(struct platform_device *pdev)
 
 err_del_udc:
 	dma_pool_destroy(udc_controller->td_pool);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 err_unregister:
 	device_unregister(&udc_controller->gadget.dev);
+=======
+>>>>>>> refs/remotes/origin/master
 err_free_irq:
 	free_irq(udc_controller->irq, udc_controller);
 err_iounmap:
@@ -2838,10 +3346,14 @@ err_iounmap_noclk:
 err_release_mem_region:
 	if (pdata->operating_mode == FSL_USB2_DR_DEVICE)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		release_mem_region(res->start, res->end - res->start + 1);
 =======
 		release_mem_region(res->start, resource_size(res));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		release_mem_region(res->start, resource_size(res));
+>>>>>>> refs/remotes/origin/master
 err_kfree:
 	kfree(udc_controller);
 	udc_controller = NULL;
@@ -2854,17 +3366,26 @@ err_kfree:
 static int __exit fsl_udc_remove(struct platform_device *pdev)
 {
 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	struct fsl_usb2_platform_data *pdata = pdev->dev.platform_data;
+=======
+	struct fsl_usb2_platform_data *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	DECLARE_COMPLETION(done);
 
 	if (!udc_controller)
 		return -ENODEV;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	usb_del_gadget_udc(&udc_controller->gadget);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	usb_del_gadget_udc(&udc_controller->gadget);
+>>>>>>> refs/remotes/origin/master
 	udc_controller->done = &done;
 
 	fsl_udc_clk_release();
@@ -2882,12 +3403,17 @@ static int __exit fsl_udc_remove(struct platform_device *pdev)
 	iounmap(dr_regs);
 	if (pdata->operating_mode == FSL_USB2_DR_DEVICE)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		release_mem_region(res->start, res->end - res->start + 1);
 =======
 		release_mem_region(res->start, resource_size(res));
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	device_unregister(&udc_controller->gadget.dev);
+=======
+		release_mem_region(res->start, resource_size(res));
+
+>>>>>>> refs/remotes/origin/master
 	/* free udc --wait for the release() finished */
 	wait_for_completion(&done);
 
@@ -2983,6 +3509,7 @@ static int fsl_udc_otg_resume(struct device *dev)
 
 	return fsl_udc_resume(NULL);
 }
+<<<<<<< HEAD
 
 /*-------------------------------------------------------------------------
 	Register entry point for the peripheral controller driver
@@ -3017,6 +3544,38 @@ static void __exit udc_exit(void)
 }
 
 module_exit(udc_exit);
+=======
+/*-------------------------------------------------------------------------
+	Register entry point for the peripheral controller driver
+--------------------------------------------------------------------------*/
+static const struct platform_device_id fsl_udc_devtype[] = {
+	{
+		.name = "imx-udc-mx27",
+	}, {
+		.name = "imx-udc-mx51",
+	}, {
+		/* sentinel */
+	}
+};
+MODULE_DEVICE_TABLE(platform, fsl_udc_devtype);
+static struct platform_driver udc_driver = {
+	.remove		= __exit_p(fsl_udc_remove),
+	/* Just for FSL i.mx SoC currently */
+	.id_table	= fsl_udc_devtype,
+	/* these suspend and resume are not usb suspend and resume */
+	.suspend	= fsl_udc_suspend,
+	.resume		= fsl_udc_resume,
+	.driver		= {
+			.name = driver_name,
+			.owner = THIS_MODULE,
+			/* udc suspend/resume called from OTG driver */
+			.suspend = fsl_udc_otg_suspend,
+			.resume  = fsl_udc_otg_resume,
+	},
+};
+
+module_platform_driver_probe(udc_driver, fsl_udc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_AUTHOR(DRIVER_AUTHOR);

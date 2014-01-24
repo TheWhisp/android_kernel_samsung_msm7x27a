@@ -21,7 +21,11 @@
 #ifdef CONFIG_SMP
 void doorbell_setup_this_cpu(void)
 {
+<<<<<<< HEAD
 	unsigned long tag = mfspr(SPRN_PIR) & 0x3fff;
+=======
+	unsigned long tag = mfspr(SPRN_DOORBELL_CPUTAG) & PPC_DBELL_TAG_MASK;
+>>>>>>> refs/remotes/origin/master
 
 	smp_muxed_ipi_set_data(smp_processor_id(), tag);
 }
@@ -29,11 +33,17 @@ void doorbell_setup_this_cpu(void)
 void doorbell_cause_ipi(int cpu, unsigned long data)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Order previous accesses vs. msgsnd, which is treated as a store */
 	mb();
 >>>>>>> refs/remotes/origin/cm-10.0
 	ppc_msgsnd(PPC_DBELL, 0, data);
+=======
+	/* Order previous accesses vs. msgsnd, which is treated as a store */
+	mb();
+	ppc_msgsnd(PPC_DBELL_MSGTYPE, 0, data);
+>>>>>>> refs/remotes/origin/master
 }
 
 void doorbell_exception(struct pt_regs *regs)
@@ -43,10 +53,17 @@ void doorbell_exception(struct pt_regs *regs)
 	irq_enter();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	may_hard_irq_enable();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	may_hard_irq_enable();
+
+	__get_cpu_var(irq_stat).doorbell_irqs++;
+
+>>>>>>> refs/remotes/origin/master
 	smp_ipi_demux();
 
 	irq_exit();

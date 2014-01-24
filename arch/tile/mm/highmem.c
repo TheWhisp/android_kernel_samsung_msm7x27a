@@ -93,7 +93,11 @@ static DEFINE_PER_CPU(struct kmap_amps, amps);
  * If we examine it earlier we are exposed to a race where it looks
  * writable earlier, but becomes immutable before we write the PTE.
  */
+<<<<<<< HEAD
 static void kmap_atomic_register(struct page *page, enum km_type type,
+=======
+static void kmap_atomic_register(struct page *page, int type,
+>>>>>>> refs/remotes/origin/master
 				 unsigned long va, pte_t *ptep, pte_t pteval)
 {
 	unsigned long flags;
@@ -114,7 +118,10 @@ static void kmap_atomic_register(struct page *page, enum km_type type,
 
 	list_add(&amp->list, &amp_list);
 	set_pte(ptep, pteval);
+<<<<<<< HEAD
 	arch_flush_lazy_mmu_mode();
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock(&amp_lock);
 	homecache_kpte_unlock(flags);
@@ -225,19 +232,27 @@ void *kmap_atomic_prot(struct page *page, pgprot_t prot)
 EXPORT_SYMBOL(kmap_atomic_prot);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void *__kmap_atomic(struct page *page)
 =======
 void *kmap_atomic(struct page *page)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void *kmap_atomic(struct page *page)
+>>>>>>> refs/remotes/origin/master
 {
 	/* PAGE_NONE is a magic value that tells us to check immutability. */
 	return kmap_atomic_prot(page, PAGE_NONE);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(__kmap_atomic);
 =======
 EXPORT_SYMBOL(kmap_atomic);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(kmap_atomic);
+>>>>>>> refs/remotes/origin/master
 
 void __kunmap_atomic(void *kvaddr)
 {
@@ -267,7 +282,10 @@ void __kunmap_atomic(void *kvaddr)
 		BUG_ON(vaddr >= (unsigned long)high_memory);
 	}
 
+<<<<<<< HEAD
 	arch_flush_lazy_mmu_mode();
+=======
+>>>>>>> refs/remotes/origin/master
 	pagefault_enable();
 }
 EXPORT_SYMBOL(__kunmap_atomic);

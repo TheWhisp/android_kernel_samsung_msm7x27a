@@ -174,14 +174,19 @@
 #include <linux/ioport.h>
 #include <linux/cpufreq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
 #include <linux/mutex.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <mach/hardware.h>
 #include <asm/mach-types.h>
@@ -194,6 +199,8 @@
 #define DEBUG 0
 /*
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <video/sa1100fb.h>
 
 #include <mach/hardware.h>
@@ -201,11 +208,15 @@
 #include <mach/shannon.h>
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Complain if VAR is out of range.
  */
 #define DEBUG_VAR 1
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #undef ASSABET_PAL_VIDEO
 
@@ -220,6 +231,11 @@ static struct sa1100fb_rgb rgb_4 = {
 
 static const struct sa1100fb_rgb rgb_4 = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "sa1100fb.h"
+
+static const struct sa1100fb_rgb rgb_4 = {
+>>>>>>> refs/remotes/origin/master
 	.red	= { .offset = 0,  .length = 4, },
 	.green	= { .offset = 0,  .length = 4, },
 	.blue	= { .offset = 0,  .length = 4, },
@@ -227,10 +243,14 @@ static const struct sa1100fb_rgb rgb_4 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct sa1100fb_rgb rgb_8 = {
 =======
 static const struct sa1100fb_rgb rgb_8 = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct sa1100fb_rgb rgb_8 = {
+>>>>>>> refs/remotes/origin/master
 	.red	= { .offset = 0,  .length = 8, },
 	.green	= { .offset = 0,  .length = 8, },
 	.blue	= { .offset = 0,  .length = 8, },
@@ -238,16 +258,21 @@ static const struct sa1100fb_rgb rgb_8 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct sa1100fb_rgb def_rgb_16 = {
 =======
 static const struct sa1100fb_rgb def_rgb_16 = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct sa1100fb_rgb def_rgb_16 = {
+>>>>>>> refs/remotes/origin/master
 	.red	= { .offset = 11, .length = 5, },
 	.green	= { .offset = 5,  .length = 6, },
 	.blue	= { .offset = 0,  .length = 5, },
 	.transp	= { .offset = 0,  .length = 0, },
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_SA1100_ASSABET
 #ifndef ASSABET_PAL_VIDEO
@@ -482,6 +507,10 @@ sa1100fb_get_machine_info(struct sa1100fb_info *fbi)
 
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+
+>>>>>>> refs/remotes/origin/master
 static int sa1100fb_activate_var(struct fb_var_screeninfo *var, struct sa1100fb_info *);
 static void set_ctrlr_state(struct sa1100fb_info *fbi, u_int state);
 
@@ -567,10 +596,14 @@ sa1100fb_setcolreg(u_int regno, u_int red, u_int green, u_int blue,
 	 * colour you requested.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (fbi->cmap_inverse) {
 =======
 	if (fbi->inf->cmap_inverse) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (fbi->inf->cmap_inverse) {
+>>>>>>> refs/remotes/origin/master
 		red   = 0xffff - red;
 		green = 0xffff - green;
 		blue  = 0xffff - blue;
@@ -645,6 +678,7 @@ sa1100fb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
 	if (var->yres < MIN_YRES)
 		var->yres = MIN_YRES;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (var->xres > fbi->max_xres)
 		var->xres = fbi->max_xres;
 	if (var->yres > fbi->max_yres)
@@ -654,6 +688,8 @@ sa1100fb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
 
 	DPRINTK("var->bits_per_pixel=%d\n", var->bits_per_pixel);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (var->xres > fbi->inf->xres)
 		var->xres = fbi->inf->xres;
 	if (var->yres > fbi->inf->yres)
@@ -662,7 +698,10 @@ sa1100fb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
 	var->yres_virtual = max(var->yres_virtual, var->yres);
 
 	dev_dbg(fbi->dev, "var->bits_per_pixel=%d\n", var->bits_per_pixel);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (var->bits_per_pixel) {
 	case 4:
 		rgbidx = RGB_4;
@@ -687,27 +726,37 @@ sa1100fb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
 	var->transp = fbi->rgb[rgbidx]->transp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DPRINTK("RGBT length = %d:%d:%d:%d\n",
 		var->red.length, var->green.length, var->blue.length,
 		var->transp.length);
 
 	DPRINTK("RGBT offset = %d:%d:%d:%d\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(fbi->dev, "RGBT length = %d:%d:%d:%d\n",
 		var->red.length, var->green.length, var->blue.length,
 		var->transp.length);
 
 	dev_dbg(fbi->dev, "RGBT offset = %d:%d:%d:%d\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		var->red.offset, var->green.offset, var->blue.offset,
 		var->transp.offset);
 
 #ifdef CONFIG_CPU_FREQ
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_DEBUG "dma period = %d ps, clock = %d kHz\n",
 =======
 	dev_dbg(fbi->dev, "dma period = %d ps, clock = %d kHz\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(fbi->dev, "dma period = %d ps, clock = %d kHz\n",
+>>>>>>> refs/remotes/origin/master
 		sa1100fb_display_dma_period(var),
 		cpufreq_get(smp_processor_id()));
 #endif
@@ -715,6 +764,7 @@ sa1100fb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline void sa1100fb_set_truecolor(u_int is_true_color)
 {
@@ -733,11 +783,16 @@ static inline void sa1100fb_set_truecolor(u_int is_true_color)
 #endif
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void sa1100fb_set_visual(struct sa1100fb_info *fbi, u32 visual)
 {
 	if (fbi->inf->set_visual)
 		fbi->inf->set_visual(visual);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -751,18 +806,24 @@ static int sa1100fb_set_par(struct fb_info *info)
 	unsigned long palette_mem_size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DPRINTK("set_par\n");
 
 	if (var->bits_per_pixel == 16)
 		fbi->fb.fix.visual = FB_VISUAL_TRUECOLOR;
 	else if (!fbi->cmap_static)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(fbi->dev, "set_par\n");
 
 	if (var->bits_per_pixel == 16)
 		fbi->fb.fix.visual = FB_VISUAL_TRUECOLOR;
 	else if (!fbi->inf->cmap_static)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		fbi->fb.fix.visual = FB_VISUAL_PSEUDOCOLOR;
 	else {
 		/*
@@ -780,10 +841,14 @@ static int sa1100fb_set_par(struct fb_info *info)
 	palette_mem_size = fbi->palette_size * sizeof(u16);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DPRINTK("palette_mem_size = 0x%08lx\n", (u_long) palette_mem_size);
 =======
 	dev_dbg(fbi->dev, "palette_mem_size = 0x%08lx\n", palette_mem_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(fbi->dev, "palette_mem_size = 0x%08lx\n", palette_mem_size);
+>>>>>>> refs/remotes/origin/master
 
 	fbi->palette_cpu = (u16 *)(fbi->map_cpu + PAGE_SIZE - palette_mem_size);
 	fbi->palette_dma = fbi->map_dma + PAGE_SIZE - palette_mem_size;
@@ -792,10 +857,14 @@ static int sa1100fb_set_par(struct fb_info *info)
 	 * Set (any) board control register to handle new color depth
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sa1100fb_set_truecolor(fbi->fb.fix.visual == FB_VISUAL_TRUECOLOR);
 =======
 	sa1100fb_set_visual(fbi, fbi->fb.fix.visual);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sa1100fb_set_visual(fbi, fbi->fb.fix.visual);
+>>>>>>> refs/remotes/origin/master
 	sa1100fb_activate_var(var, fbi);
 
 	return 0;
@@ -812,10 +881,14 @@ sa1100fb_set_cmap(struct fb_cmap *cmap, int kspc, int con,
 	 * Make sure the user isn't doing something stupid.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!kspc && (fbi->fb.var.bits_per_pixel == 16 || fbi->cmap_static))
 =======
 	if (!kspc && (fbi->fb.var.bits_per_pixel == 16 || fbi->inf->cmap_static))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!kspc && (fbi->fb.var.bits_per_pixel == 16 || fbi->inf->cmap_static))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	return gen_set_cmap(cmap, kspc, con, info);
@@ -863,10 +936,14 @@ static int sa1100fb_blank(int blank, struct fb_info *info)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DPRINTK("sa1100fb_blank: blank=%d\n", blank);
 =======
 	dev_dbg(fbi->dev, "sa1100fb_blank: blank=%d\n", blank);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(fbi->dev, "sa1100fb_blank: blank=%d\n", blank);
+>>>>>>> refs/remotes/origin/master
 
 	switch (blank) {
 	case FB_BLANK_POWERDOWN:
@@ -893,7 +970,11 @@ static int sa1100fb_mmap(struct fb_info *info,
 			 struct vm_area_struct *vma)
 {
 	struct sa1100fb_info *fbi = (struct sa1100fb_info *)info;
+<<<<<<< HEAD
 	unsigned long start, len, off = vma->vm_pgoff << PAGE_SHIFT;
+=======
+	unsigned long off = vma->vm_pgoff << PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/master
 
 	if (off < info->fix.smem_len) {
 		vma->vm_pgoff += 1; /* skip over the palette */
@@ -901,6 +982,7 @@ static int sa1100fb_mmap(struct fb_info *info,
 					     fbi->map_dma, fbi->map_size);
 	}
 
+<<<<<<< HEAD
 	start = info->fix.mmio_start;
 	len = PAGE_ALIGN((start & ~PAGE_MASK) + info->fix.mmio_len);
 
@@ -914,6 +996,11 @@ static int sa1100fb_mmap(struct fb_info *info,
 	return io_remap_pfn_range(vma, vma->vm_start, off >> PAGE_SHIFT,
 				   vma->vm_end - vma->vm_start,
 				   vma->vm_page_prot);
+=======
+	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+
+	return vm_iomap_memory(vma, info->fix.mmio_start, info->fix.mmio_len);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct fb_ops sa1100fb_ops = {
@@ -955,6 +1042,7 @@ static int sa1100fb_activate_var(struct fb_var_screeninfo *var, struct sa1100fb_
 	u_long flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DPRINTK("Configuring SA1100 LCD\n");
 
 	DPRINTK("var: xres=%d hslen=%d lm=%d rm=%d\n",
@@ -962,18 +1050,24 @@ static int sa1100fb_activate_var(struct fb_var_screeninfo *var, struct sa1100fb_
 		var->left_margin, var->right_margin);
 	DPRINTK("var: yres=%d vslen=%d um=%d bm=%d\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(fbi->dev, "Configuring SA1100 LCD\n");
 
 	dev_dbg(fbi->dev, "var: xres=%d hslen=%d lm=%d rm=%d\n",
 		var->xres, var->hsync_len,
 		var->left_margin, var->right_margin);
 	dev_dbg(fbi->dev, "var: yres=%d vslen=%d um=%d bm=%d\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		var->yres, var->vsync_len,
 		var->upper_margin, var->lower_margin);
 
 #if DEBUG_VAR
 	if (var->xres < 16        || var->xres > 1024)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR "%s: invalid xres %d\n",
 			fbi->fb.fix.id, var->xres);
@@ -1002,6 +1096,8 @@ static int sa1100fb_activate_var(struct fb_var_screeninfo *var, struct sa1100fb_
 
 	new_regs.lccr0 = fbi->lccr0 |
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dev_err(fbi->dev, "%s: invalid xres %d\n",
 			fbi->fb.fix.id, var->xres);
 	if (var->hsync_len < 1    || var->hsync_len > 64)
@@ -1028,7 +1124,10 @@ static int sa1100fb_activate_var(struct fb_var_screeninfo *var, struct sa1100fb_
 #endif
 
 	new_regs.lccr0 = fbi->inf->lccr0 |
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		LCCR0_LEN | LCCR0_LDM | LCCR0_BAM |
 		LCCR0_ERM | LCCR0_LtlEnd | LCCR0_DMADel(0);
 
@@ -1044,10 +1143,14 @@ static int sa1100fb_activate_var(struct fb_var_screeninfo *var, struct sa1100fb_
 	 */
 	yres = var->yres;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (fbi->lccr0 & LCCR0_Dual)
 =======
 	if (fbi->inf->lccr0 & LCCR0_Dual)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (fbi->inf->lccr0 & LCCR0_Dual)
+>>>>>>> refs/remotes/origin/master
 		yres /= 2;
 
 	new_regs.lccr2 =
@@ -1058,6 +1161,7 @@ static int sa1100fb_activate_var(struct fb_var_screeninfo *var, struct sa1100fb_
 
 	pcd = get_pcd(var->pixclock, cpufreq_get(0));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	new_regs.lccr3 = LCCR3_PixClkDiv(pcd) | fbi->lccr3 |
 		(var->sync & FB_SYNC_HOR_HIGH_ACT ? LCCR3_HorSnchH : LCCR3_HorSnchL) |
 		(var->sync & FB_SYNC_VERT_HIGH_ACT ? LCCR3_VrtSnchH : LCCR3_VrtSnchL);
@@ -1067,6 +1171,8 @@ static int sa1100fb_activate_var(struct fb_var_screeninfo *var, struct sa1100fb_
 	DPRINTK("nlccr2 = 0x%08lx\n", new_regs.lccr2);
 	DPRINTK("nlccr3 = 0x%08lx\n", new_regs.lccr3);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	new_regs.lccr3 = LCCR3_PixClkDiv(pcd) | fbi->inf->lccr3 |
 		(var->sync & FB_SYNC_HOR_HIGH_ACT ? LCCR3_HorSnchH : LCCR3_HorSnchL) |
 		(var->sync & FB_SYNC_VERT_HIGH_ACT ? LCCR3_VrtSnchH : LCCR3_VrtSnchL);
@@ -1075,7 +1181,10 @@ static int sa1100fb_activate_var(struct fb_var_screeninfo *var, struct sa1100fb_
 	dev_dbg(fbi->dev, "nlccr1 = 0x%08lx\n", new_regs.lccr1);
 	dev_dbg(fbi->dev, "nlccr2 = 0x%08lx\n", new_regs.lccr2);
 	dev_dbg(fbi->dev, "nlccr3 = 0x%08lx\n", new_regs.lccr3);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	half_screen_size = var->bits_per_pixel;
 	half_screen_size = half_screen_size * var->xres * var->yres / 16;
@@ -1096,17 +1205,23 @@ static int sa1100fb_activate_var(struct fb_var_screeninfo *var, struct sa1100fb_
 	 * and something has changed.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((LCCR0 != fbi->reg_lccr0)       || (LCCR1 != fbi->reg_lccr1) ||
 	    (LCCR2 != fbi->reg_lccr2)       || (LCCR3 != fbi->reg_lccr3) ||
 	    (DBAR1 != fbi->dbar1) || (DBAR2 != fbi->dbar2))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (readl_relaxed(fbi->base + LCCR0) != fbi->reg_lccr0 ||
 	    readl_relaxed(fbi->base + LCCR1) != fbi->reg_lccr1 ||
 	    readl_relaxed(fbi->base + LCCR2) != fbi->reg_lccr2 ||
 	    readl_relaxed(fbi->base + LCCR3) != fbi->reg_lccr3 ||
 	    readl_relaxed(fbi->base + DBAR1) != fbi->dbar1 ||
 	    readl_relaxed(fbi->base + DBAR2) != fbi->dbar2)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		sa1100fb_schedule_work(fbi, C_REENABLE);
 
 	return 0;
@@ -1121,31 +1236,43 @@ static int sa1100fb_activate_var(struct fb_var_screeninfo *var, struct sa1100fb_
 static inline void __sa1100fb_backlight_power(struct sa1100fb_info *fbi, int on)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DPRINTK("backlight o%s\n", on ? "n" : "ff");
 
 	if (sa1100fb_backlight_power)
 		sa1100fb_backlight_power(on);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(fbi->dev, "backlight o%s\n", on ? "n" : "ff");
 
 	if (fbi->inf->backlight_power)
 		fbi->inf->backlight_power(on);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void __sa1100fb_lcd_power(struct sa1100fb_info *fbi, int on)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	DPRINTK("LCD power o%s\n", on ? "n" : "ff");
 
 	if (sa1100fb_lcd_power)
 		sa1100fb_lcd_power(on);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(fbi->dev, "LCD power o%s\n", on ? "n" : "ff");
 
 	if (fbi->inf->lcd_power)
 		fbi->inf->lcd_power(on);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sa1100fb_setup_gpio(struct sa1100fb_info *fbi)
@@ -1176,9 +1303,12 @@ static void sa1100fb_setup_gpio(struct sa1100fb_info *fbi)
 
 	if (mask) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		GPDR |= mask;
 		GAFR |= mask;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		unsigned long flags;
 
 		/*
@@ -1192,17 +1322,24 @@ static void sa1100fb_setup_gpio(struct sa1100fb_info *fbi)
 		GPDR |= mask;
 		GAFR |= mask;
 		local_irq_restore(flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static void sa1100fb_enable_controller(struct sa1100fb_info *fbi)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DPRINTK("Enabling LCD controller\n");
 =======
 	dev_dbg(fbi->dev, "Enabling LCD controller\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(fbi->dev, "Enabling LCD controller\n");
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Make sure the mode bits are present in the first palette entry
@@ -1211,6 +1348,7 @@ static void sa1100fb_enable_controller(struct sa1100fb_info *fbi)
 	fbi->palette_cpu[0] |= palette_pbs(&fbi->fb.var);
 
 	/* Sequence from 11.7.10 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	LCCR3 = fbi->reg_lccr3;
 	LCCR2 = fbi->reg_lccr2;
@@ -1232,6 +1370,8 @@ static void sa1100fb_enable_controller(struct sa1100fb_info *fbi)
 	DPRINTK("LCCR2 = 0x%08x\n", LCCR2);
 	DPRINTK("LCCR3 = 0x%08x\n", LCCR3);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	writel_relaxed(fbi->reg_lccr3, fbi->base + LCCR3);
 	writel_relaxed(fbi->reg_lccr2, fbi->base + LCCR2);
 	writel_relaxed(fbi->reg_lccr1, fbi->base + LCCR1);
@@ -1249,12 +1389,16 @@ static void sa1100fb_enable_controller(struct sa1100fb_info *fbi)
 	dev_dbg(fbi->dev, "LCCR1: 0x%08x\n", readl_relaxed(fbi->base + LCCR1));
 	dev_dbg(fbi->dev, "LCCR2: 0x%08x\n", readl_relaxed(fbi->base + LCCR2));
 	dev_dbg(fbi->dev, "LCCR3: 0x%08x\n", readl_relaxed(fbi->base + LCCR3));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sa1100fb_disable_controller(struct sa1100fb_info *fbi)
 {
 	DECLARE_WAITQUEUE(wait, current);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	DPRINTK("Disabling LCD controller\n");
@@ -1263,22 +1407,30 @@ static void sa1100fb_disable_controller(struct sa1100fb_info *fbi)
 		GPCR |= SHANNON_GPIO_DISP_EN;
 	}	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 lccr0;
 
 	dev_dbg(fbi->dev, "Disabling LCD controller\n");
 
 	if (machine_is_shannon())
 		gpio_set_value(SHANNON_GPIO_DISP_EN, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	set_current_state(TASK_UNINTERRUPTIBLE);
 	add_wait_queue(&fbi->ctrlr_wait, &wait);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	LCSR = 0xffffffff;	/* Clear LCD Status Register */
 	LCCR0 &= ~LCCR0_LDM;	/* Enable LCD Disable Done Interrupt */
 	LCCR0 &= ~LCCR0_LEN;	/* Disable LCD Controller */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Clear LCD Status Register */
 	writel_relaxed(~0, fbi->base + LCSR);
 
@@ -1287,7 +1439,10 @@ static void sa1100fb_disable_controller(struct sa1100fb_info *fbi)
 	writel_relaxed(lccr0, fbi->base + LCCR0);
 	lccr0 &= ~LCCR0_LEN;	/* Disable LCD Controller */
 	writel_relaxed(lccr0, fbi->base + LCCR0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	schedule_timeout(20 * HZ / 1000);
 	remove_wait_queue(&fbi->ctrlr_wait, &wait);
@@ -1300,6 +1455,7 @@ static irqreturn_t sa1100fb_handle_irq(int irq, void *dev_id)
 {
 	struct sa1100fb_info *fbi = dev_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int lcsr = LCSR;
 
 	if (lcsr & LCSR_LDD) {
@@ -1309,6 +1465,8 @@ static irqreturn_t sa1100fb_handle_irq(int irq, void *dev_id)
 
 	LCSR = lcsr;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int lcsr = readl_relaxed(fbi->base + LCSR);
 
 	if (lcsr & LCSR_LDD) {
@@ -1318,7 +1476,10 @@ static irqreturn_t sa1100fb_handle_irq(int irq, void *dev_id)
 	}
 
 	writel_relaxed(lcsr, fbi->base + LCSR);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
@@ -1508,10 +1669,14 @@ sa1100fb_freq_policy(struct notifier_block *nb, unsigned long val,
 	case CPUFREQ_ADJUST:
 	case CPUFREQ_INCOMPATIBLE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG "min dma period: %d ps, "
 =======
 		dev_dbg(fbi->dev, "min dma period: %d ps, "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_dbg(fbi->dev, "min dma period: %d ps, "
+>>>>>>> refs/remotes/origin/master
 			"new clock %d kHz\n", sa1100fb_min_dma_period(fbi),
 			policy->max);
 		/* todo: fill in min/max values */
@@ -1562,10 +1727,14 @@ static int sa1100fb_resume(struct platform_device *dev)
  *      access to the video memory should occur at the new region.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sa1100fb_map_video_memory(struct sa1100fb_info *fbi)
 =======
 static int __devinit sa1100fb_map_video_memory(struct sa1100fb_info *fbi)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int sa1100fb_map_video_memory(struct sa1100fb_info *fbi)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * We reserve one page for the palette, plus the size
@@ -1592,10 +1761,14 @@ static int __devinit sa1100fb_map_video_memory(struct sa1100fb_info *fbi)
 
 /* Fake monspecs to fill in fbinfo structure */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct fb_monspecs monspecs __initdata = {
 =======
 static struct fb_monspecs monspecs __devinitdata = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct fb_monspecs monspecs = {
+>>>>>>> refs/remotes/origin/master
 	.hfmin	= 30000,
 	.hfmax	= 70000,
 	.vfmin	= 50,
@@ -1603,6 +1776,7 @@ static struct fb_monspecs monspecs __devinitdata = {
 };
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct sa1100fb_info * __init sa1100fb_init_fbinfo(struct device *dev)
 {
@@ -1615,6 +1789,13 @@ static struct sa1100fb_info * __devinit sa1100fb_init_fbinfo(struct device *dev)
 	struct sa1100fb_info *fbi;
 	unsigned i;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct sa1100fb_info *sa1100fb_init_fbinfo(struct device *dev)
+{
+	struct sa1100fb_mach_info *inf = dev_get_platdata(dev);
+	struct sa1100fb_info *fbi;
+	unsigned i;
+>>>>>>> refs/remotes/origin/master
 
 	fbi = kmalloc(sizeof(struct sa1100fb_info) + sizeof(u32) * 16,
 		      GFP_KERNEL);
@@ -1650,10 +1831,13 @@ static struct sa1100fb_info * __devinit sa1100fb_init_fbinfo(struct device *dev)
 	fbi->rgb[RGB_16]	= &def_rgb_16;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	inf = sa1100fb_get_machine_info(fbi);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * People just don't seem to get this.  We don't support
 	 * anything but correct entries now, so panic if someone
@@ -1665,6 +1849,7 @@ static struct sa1100fb_info * __devinit sa1100fb_init_fbinfo(struct device *dev)
 			"pixclock.");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fbi->max_xres			= inf->xres;
 	fbi->fb.var.xres		= inf->xres;
 	fbi->fb.var.xres_virtual	= inf->xres;
@@ -1673,11 +1858,16 @@ static struct sa1100fb_info * __devinit sa1100fb_init_fbinfo(struct device *dev)
 	fbi->fb.var.yres_virtual	= inf->yres;
 	fbi->max_bpp			= inf->bpp;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	fbi->fb.var.xres		= inf->xres;
 	fbi->fb.var.xres_virtual	= inf->xres;
 	fbi->fb.var.yres		= inf->yres;
 	fbi->fb.var.yres_virtual	= inf->yres;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	fbi->fb.var.bits_per_pixel	= inf->bpp;
 	fbi->fb.var.pixclock		= inf->pixclock;
 	fbi->fb.var.hsync_len		= inf->hsync_len;
@@ -1689,6 +1879,7 @@ static struct sa1100fb_info * __devinit sa1100fb_init_fbinfo(struct device *dev)
 	fbi->fb.var.sync		= inf->sync;
 	fbi->fb.var.grayscale		= inf->cmap_greyscale;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fbi->cmap_inverse		= inf->cmap_inverse;
 	fbi->cmap_static		= inf->cmap_static;
 	fbi->lccr0			= inf->lccr0;
@@ -1698,6 +1889,8 @@ static struct sa1100fb_info * __devinit sa1100fb_init_fbinfo(struct device *dev)
 	fbi->fb.fix.smem_len		= fbi->max_xres * fbi->max_yres *
 					  fbi->max_bpp / 8;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	fbi->state			= C_STARTUP;
 	fbi->task_state			= (u_char)-1;
 	fbi->fb.fix.smem_len		= inf->xres * inf->yres *
@@ -1708,7 +1901,10 @@ static struct sa1100fb_info * __devinit sa1100fb_init_fbinfo(struct device *dev)
 	for (i = 0; i < NR_RGB; i++)
 		if (inf->rgb[i])
 			fbi->rgb[i] = inf->rgb[i];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	init_waitqueue_head(&fbi->ctrlr_wait);
 	INIT_WORK(&fbi->task, sa1100fb_task);
@@ -1717,6 +1913,7 @@ static struct sa1100fb_info * __devinit sa1100fb_init_fbinfo(struct device *dev)
 	return fbi;
 }
 
+<<<<<<< HEAD
 static int __devinit sa1100fb_probe(struct platform_device *pdev)
 {
 	struct sa1100fb_info *fbi;
@@ -1733,6 +1930,15 @@ static int __devinit sa1100fb_probe(struct platform_device *pdev)
 	int ret, irq;
 
 	if (!pdev->dev.platform_data) {
+=======
+static int sa1100fb_probe(struct platform_device *pdev)
+{
+	struct sa1100fb_info *fbi;
+	struct resource *res;
+	int ret, irq;
+
+	if (!dev_get_platdata(&pdev->dev)) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&pdev->dev, "no platform LCD data\n");
 		return -EINVAL;
 	}
@@ -1743,7 +1949,10 @@ static int __devinit sa1100fb_probe(struct platform_device *pdev)
 		return -EINVAL;
 
 	if (!request_mem_region(res->start, resource_size(res), "LCD"))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 
 	fbi = sa1100fb_init_fbinfo(&pdev->dev);
@@ -1752,17 +1961,24 @@ static int __devinit sa1100fb_probe(struct platform_device *pdev)
 		goto failed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	fbi->base = ioremap(res->start, resource_size(res));
 	if (!fbi->base)
 		goto failed;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Initialize video memory */
 	ret = sa1100fb_map_video_memory(fbi);
 	if (ret)
 		goto failed;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = request_irq(irq, sa1100fb_handle_irq, IRQF_DISABLED,
 			  "LCD", fbi);
@@ -1776,6 +1992,8 @@ static int __devinit sa1100fb_probe(struct platform_device *pdev)
 		ASSABET_BCR_clear(ASSABET_BCR_LCD_ON);
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = request_irq(irq, sa1100fb_handle_irq, 0, "LCD", fbi);
 	if (ret) {
 		dev_err(&pdev->dev, "request_irq failed: %d\n", ret);
@@ -1788,7 +2006,10 @@ static int __devinit sa1100fb_probe(struct platform_device *pdev)
 		if (ret)
 			goto err_free_irq;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * This makes sure that our colour bitfield
@@ -1801,10 +2022,14 @@ static int __devinit sa1100fb_probe(struct platform_device *pdev)
 	ret = register_framebuffer(&fbi->fb);
 	if (ret < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto err_free_irq;
 =======
 		goto err_reg_fb;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err_reg_fb;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_CPU_FREQ
 	fbi->freq_transition.notifier_call = sa1100fb_freq_transition;
@@ -1817,6 +2042,7 @@ static int __devinit sa1100fb_probe(struct platform_device *pdev)
 	return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  err_free_irq:
 	free_irq(irq, fbi);
  failed:
@@ -1824,6 +2050,8 @@ static int __devinit sa1100fb_probe(struct platform_device *pdev)
 	kfree(fbi);
 	release_mem_region(0xb0100000, 0x10000);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  err_reg_fb:
 	if (machine_is_shannon())
 		gpio_free(SHANNON_GPIO_DISP_EN);
@@ -1832,10 +2060,15 @@ static int __devinit sa1100fb_probe(struct platform_device *pdev)
  failed:
 	if (fbi)
 		iounmap(fbi->base);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 	kfree(fbi);
 	release_mem_region(res->start, resource_size(res));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(fbi);
+	release_mem_region(res->start, resource_size(res));
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1846,9 +2079,13 @@ static struct platform_driver sa1100fb_driver = {
 	.driver		= {
 		.name	= "sa11x0-fb",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.owner	= THIS_MODULE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.owner	= THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

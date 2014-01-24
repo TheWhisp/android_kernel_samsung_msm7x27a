@@ -32,10 +32,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/miscdevice.h>
@@ -50,9 +55,12 @@
 #include <linux/uaccess.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct platform_device *ibwdt_platform_device;
 static unsigned long ibwdt_is_open;
@@ -62,9 +70,12 @@ static char expect_close;
 /* Module information */
 #define DRV_NAME "ib700wdt"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PFX DRV_NAME ": "
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  *
@@ -114,12 +125,17 @@ MODULE_PARM_DESC(timeout,
 		__MODULE_STRING(WATCHDOG_TIMEOUT) ".");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -263,11 +279,15 @@ static int ibwdt_close(struct inode *inode, struct file *file)
 		ibwdt_disable();
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 		     "WDT device closed unexpectedly.  WDT will not stop!\n");
 =======
 		pr_crit("WDT device closed unexpectedly.  WDT will not stop!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("WDT device closed unexpectedly.  WDT will not stop!\n");
+>>>>>>> refs/remotes/origin/master
 		ibwdt_ping();
 	}
 	clear_bit(0, &ibwdt_is_open);
@@ -298,18 +318,26 @@ static struct miscdevice ibwdt_miscdev = {
  *	Init & exit routines
  */
 
+<<<<<<< HEAD
 static int __devinit ibwdt_probe(struct platform_device *dev)
+=======
+static int ibwdt_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int res;
 
 #if WDT_START != WDT_STOP
 	if (!request_region(WDT_STOP, 1, "IB700 WDT")) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "STOP method I/O %X is not available.\n",
 								WDT_STOP);
 =======
 		pr_err("STOP method I/O %X is not available\n", WDT_STOP);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("STOP method I/O %X is not available\n", WDT_STOP);
+>>>>>>> refs/remotes/origin/master
 		res = -EIO;
 		goto out_nostopreg;
 	}
@@ -317,11 +345,15 @@ static int __devinit ibwdt_probe(struct platform_device *dev)
 
 	if (!request_region(WDT_START, 1, "IB700 WDT")) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "START method I/O %X is not available.\n",
 								WDT_START);
 =======
 		pr_err("START method I/O %X is not available\n", WDT_START);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("START method I/O %X is not available\n", WDT_START);
+>>>>>>> refs/remotes/origin/master
 		res = -EIO;
 		goto out_nostartreg;
 	}
@@ -331,20 +363,28 @@ static int __devinit ibwdt_probe(struct platform_device *dev)
 	if (ibwdt_set_heartbeat(timeout)) {
 		ibwdt_set_heartbeat(WATCHDOG_TIMEOUT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO PFX
 			"timeout value must be 0<=x<=30, using %d\n", timeout);
 =======
 		pr_info("timeout value must be 0<=x<=30, using %d\n", timeout);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("timeout value must be 0<=x<=30, using %d\n", timeout);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	res = misc_register(&ibwdt_miscdev);
 	if (res) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "failed to register misc device\n");
 =======
 		pr_err("failed to register misc device\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("failed to register misc device\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_nomisc;
 	}
 	return 0;
@@ -359,7 +399,11 @@ out_nostopreg:
 	return res;
 }
 
+<<<<<<< HEAD
 static int __devexit ibwdt_remove(struct platform_device *dev)
+=======
+static int ibwdt_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	misc_deregister(&ibwdt_miscdev);
 	release_region(WDT_START, 1);
@@ -377,7 +421,11 @@ static void ibwdt_shutdown(struct platform_device *dev)
 
 static struct platform_driver ibwdt_driver = {
 	.probe		= ibwdt_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ibwdt_remove),
+=======
+	.remove		= ibwdt_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= ibwdt_shutdown,
 	.driver		= {
 		.owner	= THIS_MODULE,
@@ -390,11 +438,15 @@ static int __init ibwdt_init(void)
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX
 		"WDT driver for IB700 single board computer initialising.\n");
 =======
 	pr_info("WDT driver for IB700 single board computer initialising\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("WDT driver for IB700 single board computer initialising\n");
+>>>>>>> refs/remotes/origin/master
 
 	err = platform_driver_register(&ibwdt_driver);
 	if (err)
@@ -419,10 +471,14 @@ static void __exit ibwdt_exit(void)
 	platform_device_unregister(ibwdt_platform_device);
 	platform_driver_unregister(&ibwdt_driver);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Watchdog Module Unloaded.\n");
 =======
 	pr_info("Watchdog Module Unloaded\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Watchdog Module Unloaded\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(ibwdt_init);
@@ -431,6 +487,9 @@ module_exit(ibwdt_exit);
 MODULE_AUTHOR("Charles Howes <chowes@vsol.net>");
 MODULE_DESCRIPTION("IB700 SBC watchdog driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* end of ib700wdt.c */

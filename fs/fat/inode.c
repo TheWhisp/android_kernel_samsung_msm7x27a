@@ -18,14 +18,23 @@
 #include <linux/pagemap.h>
 #include <linux/mpage.h>
 #include <linux/buffer_head.h>
+<<<<<<< HEAD
 #include <linux/exportfs.h>
 #include <linux/mount.h>
+=======
+#include <linux/mount.h>
+#include <linux/aio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/vfs.h>
 #include <linux/parser.h>
 #include <linux/uio.h>
 #include <linux/writeback.h>
 #include <linux/log2.h>
 #include <linux/hash.h>
+<<<<<<< HEAD
+=======
+#include <linux/blkdev.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/unaligned.h>
 #include "fat.h"
 
@@ -146,7 +155,11 @@ static void fat_write_failed(struct address_space *mapping, loff_t to)
 	struct inode *inode = mapping->host;
 
 	if (to > inode->i_size) {
+<<<<<<< HEAD
 		truncate_pagecache(inode, to, inode->i_size);
+=======
+		truncate_pagecache(inode, inode->i_size);
+>>>>>>> refs/remotes/origin/master
 		fat_truncate_blocks(inode, inode->i_size);
 	}
 }
@@ -212,12 +225,17 @@ static ssize_t fat_direct_IO(int rw, struct kiocb *iocb,
 	 * condition of fat_get_block() and ->truncate().
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = blockdev_direct_IO(rw, iocb, inode, inode->i_sb->s_bdev,
 				 iov, offset, nr_segs, fat_get_block, NULL);
 =======
 	ret = blockdev_direct_IO(rw, iocb, inode, iov, offset, nr_segs,
 				 fat_get_block);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = blockdev_direct_IO(rw, iocb, inode, iov, offset, nr_segs,
+				 fat_get_block);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0 && (rw & WRITE))
 		fat_write_failed(mapping, offset + iov_length(iov, nr_segs));
 
@@ -230,6 +248,7 @@ static sector_t _fat_bmap(struct address_space *mapping, sector_t block)
 
 	/* fat_get_cluster() assumes the requested blocknr isn't truncated. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	down_read(&mapping->host->i_alloc_sem);
 	blocknr = generic_block_bmap(mapping, block, fat_get_block);
 	up_read(&mapping->host->i_alloc_sem);
@@ -238,6 +257,11 @@ static sector_t _fat_bmap(struct address_space *mapping, sector_t block)
 	blocknr = generic_block_bmap(mapping, block, fat_get_block);
 	up_read(&MSDOS_I(mapping->host)->truncate_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	down_read(&MSDOS_I(mapping->host)->truncate_lock);
+	blocknr = generic_block_bmap(mapping, block, fat_get_block);
+	up_read(&MSDOS_I(mapping->host)->truncate_lock);
+>>>>>>> refs/remotes/origin/master
 
 	return blocknr;
 }
@@ -292,6 +316,7 @@ static inline unsigned long fat_hash(loff_t i_pos)
 	return hash_32(i_pos, FAT_HASH_BITS);
 }
 
+<<<<<<< HEAD
 void fat_attach(struct inode *inode, loff_t i_pos)
 {
 	struct msdos_sb_info *sbi = MSDOS_SB(inode->i_sb);
@@ -301,6 +326,44 @@ void fat_attach(struct inode *inode, loff_t i_pos)
 	MSDOS_I(inode)->i_pos = i_pos;
 	hlist_add_head(&MSDOS_I(inode)->i_fat_hash, head);
 	spin_unlock(&sbi->inode_hash_lock);
+=======
+static void dir_hash_init(struct super_block *sb)
+{
+	struct msdos_sb_info *sbi = MSDOS_SB(sb);
+	int i;
+
+	spin_lock_init(&sbi->dir_hash_lock);
+	for (i = 0; i < FAT_HASH_SIZE; i++)
+		INIT_HLIST_HEAD(&sbi->dir_hashtable[i]);
+}
+
+void fat_attach(struct inode *inode, loff_t i_pos)
+{
+	struct msdos_sb_info *sbi = MSDOS_SB(inode->i_sb);
+
+	if (inode->i_ino != MSDOS_ROOT_INO) {
+		struct hlist_head *head =   sbi->inode_hashtable
+					  + fat_hash(i_pos);
+
+		spin_lock(&sbi->inode_hash_lock);
+		MSDOS_I(inode)->i_pos = i_pos;
+		hlist_add_head(&MSDOS_I(inode)->i_fat_hash, head);
+		spin_unlock(&sbi->inode_hash_lock);
+	}
+
+	/* If NFS support is enabled, cache the mapping of start cluster
+	 * to directory inode. This is used during reconnection of
+	 * dentries to the filesystem root.
+	 */
+	if (S_ISDIR(inode->i_mode) && sbi->options.nfs) {
+		struct hlist_head *d_head = sbi->dir_hashtable;
+		d_head += fat_dir_hash(MSDOS_I(inode)->i_logstart);
+
+		spin_lock(&sbi->dir_hash_lock);
+		hlist_add_head(&MSDOS_I(inode)->i_dir_hash, d_head);
+		spin_unlock(&sbi->dir_hash_lock);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(fat_attach);
 
@@ -311,6 +374,15 @@ void fat_detach(struct inode *inode)
 	MSDOS_I(inode)->i_pos = 0;
 	hlist_del_init(&MSDOS_I(inode)->i_fat_hash);
 	spin_unlock(&sbi->inode_hash_lock);
+<<<<<<< HEAD
+=======
+
+	if (S_ISDIR(inode->i_mode) && sbi->options.nfs) {
+		spin_lock(&sbi->dir_hash_lock);
+		hlist_del_init(&MSDOS_I(inode)->i_dir_hash);
+		spin_unlock(&sbi->dir_hash_lock);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(fat_detach);
 
@@ -318,12 +390,19 @@ struct inode *fat_iget(struct super_block *sb, loff_t i_pos)
 {
 	struct msdos_sb_info *sbi = MSDOS_SB(sb);
 	struct hlist_head *head = sbi->inode_hashtable + fat_hash(i_pos);
+<<<<<<< HEAD
 	struct hlist_node *_p;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct msdos_inode_info *i;
 	struct inode *inode = NULL;
 
 	spin_lock(&sbi->inode_hash_lock);
+<<<<<<< HEAD
 	hlist_for_each_entry(i, _p, head, i_fat_hash) {
+=======
+	hlist_for_each_entry(i, head, i_fat_hash) {
+>>>>>>> refs/remotes/origin/master
 		BUG_ON(i->vfs_inode.i_sb != sb);
 		if (i->i_pos != i_pos)
 			continue;
@@ -363,7 +442,11 @@ static int fat_calc_dir_size(struct inode *inode)
 }
 
 /* doesn't deal with root inode */
+<<<<<<< HEAD
 static int fat_fill_inode(struct inode *inode, struct msdos_dir_entry *de)
+=======
+int fat_fill_inode(struct inode *inode, struct msdos_dir_entry *de)
+>>>>>>> refs/remotes/origin/master
 {
 	struct msdos_sb_info *sbi = MSDOS_SB(inode->i_sb);
 	int error;
@@ -380,10 +463,14 @@ static int fat_fill_inode(struct inode *inode, struct msdos_dir_entry *de)
 		inode->i_op = sbi->dir_ops;
 		inode->i_fop = &fat_dir_operations;
 
+<<<<<<< HEAD
 		MSDOS_I(inode)->i_start = le16_to_cpu(de->start);
 		if (sbi->fat_bits == 32)
 			MSDOS_I(inode)->i_start |= (le16_to_cpu(de->starthi) << 16);
 
+=======
+		MSDOS_I(inode)->i_start = fat_get_start(sbi, de);
+>>>>>>> refs/remotes/origin/master
 		MSDOS_I(inode)->i_logstart = MSDOS_I(inode)->i_start;
 		error = fat_calc_dir_size(inode);
 		if (error < 0)
@@ -391,18 +478,26 @@ static int fat_fill_inode(struct inode *inode, struct msdos_dir_entry *de)
 		MSDOS_I(inode)->mmu_private = inode->i_size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = fat_subdirs(inode);
 =======
 		set_nlink(inode, fat_subdirs(inode));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, fat_subdirs(inode));
+>>>>>>> refs/remotes/origin/master
 	} else { /* not a directory */
 		inode->i_generation |= 1;
 		inode->i_mode = fat_make_mode(sbi, de->attr,
 			((sbi->options.showexec && !is_exec(de->name + 8))
 			 ? S_IRUGO|S_IWUGO : S_IRWXUGO));
+<<<<<<< HEAD
 		MSDOS_I(inode)->i_start = le16_to_cpu(de->start);
 		if (sbi->fat_bits == 32)
 			MSDOS_I(inode)->i_start |= (le16_to_cpu(de->starthi) << 16);
+=======
+		MSDOS_I(inode)->i_start = fat_get_start(sbi, de);
+>>>>>>> refs/remotes/origin/master
 
 		MSDOS_I(inode)->i_logstart = MSDOS_I(inode)->i_start;
 		inode->i_size = le32_to_cpu(de->size);
@@ -431,12 +526,31 @@ static int fat_fill_inode(struct inode *inode, struct msdos_dir_entry *de)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static inline void fat_lock_build_inode(struct msdos_sb_info *sbi)
+{
+	if (sbi->options.nfs == FAT_NFS_NOSTALE_RO)
+		mutex_lock(&sbi->nfs_build_inode_lock);
+}
+
+static inline void fat_unlock_build_inode(struct msdos_sb_info *sbi)
+{
+	if (sbi->options.nfs == FAT_NFS_NOSTALE_RO)
+		mutex_unlock(&sbi->nfs_build_inode_lock);
+}
+
+>>>>>>> refs/remotes/origin/master
 struct inode *fat_build_inode(struct super_block *sb,
 			struct msdos_dir_entry *de, loff_t i_pos)
 {
 	struct inode *inode;
 	int err;
 
+<<<<<<< HEAD
+=======
+	fat_lock_build_inode(MSDOS_SB(sb));
+>>>>>>> refs/remotes/origin/master
 	inode = fat_iget(sb, i_pos);
 	if (inode)
 		goto out;
@@ -456,6 +570,10 @@ struct inode *fat_build_inode(struct super_block *sb,
 	fat_attach(inode, i_pos);
 	insert_inode_hash(inode);
 out:
+<<<<<<< HEAD
+=======
+	fat_unlock_build_inode(MSDOS_SB(sb));
+>>>>>>> refs/remotes/origin/master
 	return inode;
 }
 
@@ -469,11 +587,16 @@ static void fat_evict_inode(struct inode *inode)
 		fat_truncate_blocks(inode, 0);
 	}
 	invalidate_inode_buffers(inode);
+<<<<<<< HEAD
 	end_writeback(inode);
+=======
+	clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 	fat_cache_inval_inode(inode);
 	fat_detach(inode);
 }
 
+<<<<<<< HEAD
 static void fat_write_super(struct super_block *sb)
 {
 	lock_super(sb);
@@ -496,12 +619,70 @@ static int fat_sync_fs(struct super_block *sb, int wait)
 	}
 
 	return err;
+=======
+static void fat_set_state(struct super_block *sb,
+			unsigned int set, unsigned int force)
+{
+	struct buffer_head *bh;
+	struct fat_boot_sector *b;
+	struct msdos_sb_info *sbi = sb->s_fs_info;
+
+	/* do not change any thing if mounted read only */
+	if ((sb->s_flags & MS_RDONLY) && !force)
+		return;
+
+	/* do not change state if fs was dirty */
+	if (sbi->dirty) {
+		/* warn only on set (mount). */
+		if (set)
+			fat_msg(sb, KERN_WARNING, "Volume was not properly "
+				"unmounted. Some data may be corrupt. "
+				"Please run fsck.");
+		return;
+	}
+
+	bh = sb_bread(sb, 0);
+	if (bh == NULL) {
+		fat_msg(sb, KERN_ERR, "unable to read boot sector "
+			"to mark fs as dirty");
+		return;
+	}
+
+	b = (struct fat_boot_sector *) bh->b_data;
+
+	if (sbi->fat_bits == 32) {
+		if (set)
+			b->fat32.state |= FAT_STATE_DIRTY;
+		else
+			b->fat32.state &= ~FAT_STATE_DIRTY;
+	} else /* fat 16 and 12 */ {
+		if (set)
+			b->fat16.state |= FAT_STATE_DIRTY;
+		else
+			b->fat16.state &= ~FAT_STATE_DIRTY;
+	}
+
+	mark_buffer_dirty(bh);
+	sync_dirty_buffer(bh);
+	brelse(bh);
+}
+
+static void delayed_free(struct rcu_head *p)
+{
+	struct msdos_sb_info *sbi = container_of(p, struct msdos_sb_info, rcu);
+	unload_nls(sbi->nls_disk);
+	unload_nls(sbi->nls_io);
+	if (sbi->options.iocharset != fat_default_iocharset)
+		kfree(sbi->options.iocharset);
+	kfree(sbi);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void fat_put_super(struct super_block *sb)
 {
 	struct msdos_sb_info *sbi = MSDOS_SB(sb);
 
+<<<<<<< HEAD
 	if (sb->s_dirt)
 		fat_write_super(sb);
 
@@ -515,6 +696,14 @@ static void fat_put_super(struct super_block *sb)
 
 	sb->s_fs_info = NULL;
 	kfree(sbi);
+=======
+	fat_set_state(sb, 0, 0);
+
+	iput(sbi->fsinfo_inode);
+	iput(sbi->fat_inode);
+
+	call_rcu(&sbi->rcu, delayed_free);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct kmem_cache *fat_inode_cachep;
@@ -526,10 +715,15 @@ static struct inode *fat_alloc_inode(struct super_block *sb)
 	if (!ei)
 		return NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	init_rwsem(&ei->truncate_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	init_rwsem(&ei->truncate_lock);
+>>>>>>> refs/remotes/origin/master
 	return &ei->vfs_inode;
 }
 
@@ -537,9 +731,12 @@ static void fat_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(fat_inode_cachep, MSDOS_I(inode));
 }
 
@@ -557,6 +754,10 @@ static void init_once(void *foo)
 	ei->cache_valid_id = FAT_CACHE_VALID + 1;
 	INIT_LIST_HEAD(&ei->cache_lru);
 	INIT_HLIST_NODE(&ei->i_fat_hash);
+<<<<<<< HEAD
+=======
+	INIT_HLIST_NODE(&ei->i_dir_hash);
+>>>>>>> refs/remotes/origin/master
 	inode_init_once(&ei->vfs_inode);
 }
 
@@ -574,13 +775,36 @@ static int __init fat_init_inodecache(void)
 
 static void __exit fat_destroy_inodecache(void)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(fat_inode_cachep);
 }
 
 static int fat_remount(struct super_block *sb, int *flags, char *data)
 {
+<<<<<<< HEAD
 	struct msdos_sb_info *sbi = MSDOS_SB(sb);
 	*flags |= MS_NODIRATIME | (sbi->options.isvfat ? 0 : MS_NOATIME);
+=======
+	int new_rdonly;
+	struct msdos_sb_info *sbi = MSDOS_SB(sb);
+	*flags |= MS_NODIRATIME | (sbi->options.isvfat ? 0 : MS_NOATIME);
+
+	/* make sure we update state on remount. */
+	new_rdonly = *flags & MS_RDONLY;
+	if (new_rdonly != (sb->s_flags & MS_RDONLY)) {
+		if (new_rdonly)
+			fat_set_state(sb, 0, 0);
+		else
+			fat_set_state(sb, 1, 1);
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -610,6 +834,7 @@ static int fat_statfs(struct dentry *dentry, struct kstatfs *buf)
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline loff_t fat_i_pos_read(struct msdos_sb_info *sbi,
 				    struct inode *inode)
 {
@@ -624,6 +849,8 @@ static inline loff_t fat_i_pos_read(struct msdos_sb_info *sbi,
 	return i_pos;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int __fat_write_inode(struct inode *inode, int wait)
 {
 	struct super_block *sb = inode->i_sb;
@@ -631,7 +858,12 @@ static int __fat_write_inode(struct inode *inode, int wait)
 	struct buffer_head *bh;
 	struct msdos_dir_entry *raw_entry;
 	loff_t i_pos;
+<<<<<<< HEAD
 	int err;
+=======
+	sector_t blocknr;
+	int err, offset;
+>>>>>>> refs/remotes/origin/master
 
 	if (inode->i_ino == MSDOS_ROOT_INO)
 		return 0;
@@ -641,7 +873,12 @@ retry:
 	if (!i_pos)
 		return 0;
 
+<<<<<<< HEAD
 	bh = sb_bread(sb, i_pos >> sbi->dir_per_block_bits);
+=======
+	fat_get_blknr_offset(sbi, i_pos, &blocknr, &offset);
+	bh = sb_bread(sb, blocknr);
+>>>>>>> refs/remotes/origin/master
 	if (!bh) {
 		fat_msg(sb, KERN_ERR, "unable to read inode block "
 		       "for updating (i_pos %lld)", i_pos);
@@ -654,15 +891,23 @@ retry:
 		goto retry;
 	}
 
+<<<<<<< HEAD
 	raw_entry = &((struct msdos_dir_entry *) (bh->b_data))
 	    [i_pos & (sbi->dir_per_block - 1)];
+=======
+	raw_entry = &((struct msdos_dir_entry *) (bh->b_data))[offset];
+>>>>>>> refs/remotes/origin/master
 	if (S_ISDIR(inode->i_mode))
 		raw_entry->size = 0;
 	else
 		raw_entry->size = cpu_to_le32(inode->i_size);
 	raw_entry->attr = fat_make_attrs(inode);
+<<<<<<< HEAD
 	raw_entry->start = cpu_to_le16(MSDOS_I(inode)->i_logstart);
 	raw_entry->starthi = cpu_to_le16(MSDOS_I(inode)->i_logstart >> 16);
+=======
+	fat_set_start(raw_entry, MSDOS_I(inode)->i_logstart);
+>>>>>>> refs/remotes/origin/master
 	fat_time_unix2fat(sbi, &inode->i_mtime, &raw_entry->time,
 			  &raw_entry->date, NULL);
 	if (sbi->options.isvfat) {
@@ -683,7 +928,22 @@ retry:
 
 static int fat_write_inode(struct inode *inode, struct writeback_control *wbc)
 {
+<<<<<<< HEAD
 	return __fat_write_inode(inode, wbc->sync_mode == WB_SYNC_ALL);
+=======
+	int err;
+
+	if (inode->i_ino == MSDOS_FSINFO_INO) {
+		struct super_block *sb = inode->i_sb;
+
+		mutex_lock(&MSDOS_SB(sb)->s_lock);
+		err = fat_clusters_flush(sb);
+		mutex_unlock(&MSDOS_SB(sb)->s_lock);
+	} else
+		err = __fat_write_inode(inode, wbc->sync_mode == WB_SYNC_ALL);
+
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 int fat_sync_inode(struct inode *inode)
@@ -694,24 +954,32 @@ int fat_sync_inode(struct inode *inode)
 EXPORT_SYMBOL_GPL(fat_sync_inode);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int fat_show_options(struct seq_file *m, struct vfsmount *mnt);
 =======
 static int fat_show_options(struct seq_file *m, struct dentry *root);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int fat_show_options(struct seq_file *m, struct dentry *root);
+>>>>>>> refs/remotes/origin/master
 static const struct super_operations fat_sops = {
 	.alloc_inode	= fat_alloc_inode,
 	.destroy_inode	= fat_destroy_inode,
 	.write_inode	= fat_write_inode,
 	.evict_inode	= fat_evict_inode,
 	.put_super	= fat_put_super,
+<<<<<<< HEAD
 	.write_super	= fat_write_super,
 	.sync_fs	= fat_sync_fs,
+=======
+>>>>>>> refs/remotes/origin/master
 	.statfs		= fat_statfs,
 	.remount_fs	= fat_remount,
 
 	.show_options	= fat_show_options,
 };
 
+<<<<<<< HEAD
 /*
  * a FAT file handle with fhtype 3 is
  *  0/  i_ino - for fast, reliable lookup if still in the cache
@@ -852,12 +1120,31 @@ static int fat_show_options(struct seq_file *m, struct dentry *root)
 		seq_printf(m, ",uid=%u", opts->fs_uid);
 	if (opts->fs_gid != 0)
 		seq_printf(m, ",gid=%u", opts->fs_gid);
+=======
+static int fat_show_options(struct seq_file *m, struct dentry *root)
+{
+	struct msdos_sb_info *sbi = MSDOS_SB(root->d_sb);
+	struct fat_mount_options *opts = &sbi->options;
+	int isvfat = opts->isvfat;
+
+	if (!uid_eq(opts->fs_uid, GLOBAL_ROOT_UID))
+		seq_printf(m, ",uid=%u",
+				from_kuid_munged(&init_user_ns, opts->fs_uid));
+	if (!gid_eq(opts->fs_gid, GLOBAL_ROOT_GID))
+		seq_printf(m, ",gid=%u",
+				from_kgid_munged(&init_user_ns, opts->fs_gid));
+>>>>>>> refs/remotes/origin/master
 	seq_printf(m, ",fmask=%04o", opts->fs_fmask);
 	seq_printf(m, ",dmask=%04o", opts->fs_dmask);
 	if (opts->allow_utime)
 		seq_printf(m, ",allow_utime=%04o", opts->allow_utime);
 	if (sbi->nls_disk)
+<<<<<<< HEAD
 		seq_printf(m, ",codepage=%s", sbi->nls_disk->charset);
+=======
+		/* strip "cp" prefix from displayed option */
+		seq_printf(m, ",codepage=%s", &sbi->nls_disk->charset[2]);
+>>>>>>> refs/remotes/origin/master
 	if (isvfat) {
 		if (sbi->nls_io)
 			seq_printf(m, ",iocharset=%s", sbi->nls_io->charset);
@@ -907,14 +1194,30 @@ static int fat_show_options(struct seq_file *m, struct dentry *root)
 	}
 	if (opts->flush)
 		seq_puts(m, ",flush");
+<<<<<<< HEAD
 	if (opts->tz_utc)
 		seq_puts(m, ",tz=UTC");
+=======
+	if (opts->tz_set) {
+		if (opts->time_offset)
+			seq_printf(m, ",time_offset=%d", opts->time_offset);
+		else
+			seq_puts(m, ",tz=UTC");
+	}
+>>>>>>> refs/remotes/origin/master
 	if (opts->errors == FAT_ERRORS_CONT)
 		seq_puts(m, ",errors=continue");
 	else if (opts->errors == FAT_ERRORS_PANIC)
 		seq_puts(m, ",errors=panic");
 	else
 		seq_puts(m, ",errors=remount-ro");
+<<<<<<< HEAD
+=======
+	if (opts->nfs == FAT_NFS_NOSTALE_RO)
+		seq_puts(m, ",nfs=nostale_ro");
+	else if (opts->nfs)
+		seq_puts(m, ",nfs=stale_rw");
+>>>>>>> refs/remotes/origin/master
 	if (opts->discard)
 		seq_puts(m, ",discard");
 
@@ -930,11 +1233,17 @@ enum {
 	Opt_shortname_winnt, Opt_shortname_mixed, Opt_utf8_no, Opt_utf8_yes,
 	Opt_uni_xl_no, Opt_uni_xl_yes, Opt_nonumtail_no, Opt_nonumtail_yes,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	Opt_obsolate, Opt_flush, Opt_tz_utc, Opt_rodir, Opt_err_cont,
 =======
 	Opt_obsolete, Opt_flush, Opt_tz_utc, Opt_rodir, Opt_err_cont,
 >>>>>>> refs/remotes/origin/cm-10.0
 	Opt_err_panic, Opt_err_ro, Opt_discard, Opt_err,
+=======
+	Opt_obsolete, Opt_flush, Opt_tz_utc, Opt_rodir, Opt_err_cont,
+	Opt_err_panic, Opt_err_ro, Opt_discard, Opt_nfs, Opt_time_offset,
+	Opt_nfs_stale_rw, Opt_nfs_nostale_ro, Opt_err,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const match_table_t fat_tokens = {
@@ -959,10 +1268,15 @@ static const match_table_t fat_tokens = {
 	{Opt_immutable, "sys_immutable"},
 	{Opt_flush, "flush"},
 	{Opt_tz_utc, "tz=UTC"},
+<<<<<<< HEAD
+=======
+	{Opt_time_offset, "time_offset=%d"},
+>>>>>>> refs/remotes/origin/master
 	{Opt_err_cont, "errors=continue"},
 	{Opt_err_panic, "errors=panic"},
 	{Opt_err_ro, "errors=remount-ro"},
 	{Opt_discard, "discard"},
+<<<<<<< HEAD
 <<<<<<< HEAD
 	{Opt_obsolate, "conv=binary"},
 	{Opt_obsolate, "conv=text"},
@@ -976,6 +1290,11 @@ static const match_table_t fat_tokens = {
 	{Opt_obsolate, "cvf_options=%100s"},
 	{Opt_obsolate, "posix"},
 =======
+=======
+	{Opt_nfs_stale_rw, "nfs"},
+	{Opt_nfs_stale_rw, "nfs=stale_rw"},
+	{Opt_nfs_nostale_ro, "nfs=nostale_ro"},
+>>>>>>> refs/remotes/origin/master
 	{Opt_obsolete, "conv=binary"},
 	{Opt_obsolete, "conv=text"},
 	{Opt_obsolete, "conv=auto"},
@@ -987,7 +1306,10 @@ static const match_table_t fat_tokens = {
 	{Opt_obsolete, "cvf_format=%20s"},
 	{Opt_obsolete, "cvf_options=%100s"},
 	{Opt_obsolete, "posix"},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{Opt_err, NULL},
 };
 static const match_table_t msdos_tokens = {
@@ -1056,7 +1378,12 @@ static int parse_options(struct super_block *sb, char *options, int is_vfat,
 	opts->utf8 = opts->unicode_xlate = 0;
 	opts->numtail = 1;
 	opts->usefree = opts->nocase = 0;
+<<<<<<< HEAD
 	opts->tz_utc = 0;
+=======
+	opts->tz_set = 0;
+	opts->nfs = 0;
+>>>>>>> refs/remotes/origin/master
 	opts->errors = FAT_ERRORS_RO;
 	*debug = 0;
 
@@ -1111,6 +1438,7 @@ static int parse_options(struct super_block *sb, char *options, int is_vfat,
 			break;
 		case Opt_uid:
 			if (match_int(&args[0], &option))
+<<<<<<< HEAD
 				return 0;
 			opts->fs_uid = option;
 			break;
@@ -1122,33 +1450,80 @@ static int parse_options(struct super_block *sb, char *options, int is_vfat,
 		case Opt_umask:
 			if (match_octal(&args[0], &option))
 				return 0;
+=======
+				return -EINVAL;
+			opts->fs_uid = make_kuid(current_user_ns(), option);
+			if (!uid_valid(opts->fs_uid))
+				return -EINVAL;
+			break;
+		case Opt_gid:
+			if (match_int(&args[0], &option))
+				return -EINVAL;
+			opts->fs_gid = make_kgid(current_user_ns(), option);
+			if (!gid_valid(opts->fs_gid))
+				return -EINVAL;
+			break;
+		case Opt_umask:
+			if (match_octal(&args[0], &option))
+				return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 			opts->fs_fmask = opts->fs_dmask = option;
 			break;
 		case Opt_dmask:
 			if (match_octal(&args[0], &option))
+<<<<<<< HEAD
 				return 0;
+=======
+				return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 			opts->fs_dmask = option;
 			break;
 		case Opt_fmask:
 			if (match_octal(&args[0], &option))
+<<<<<<< HEAD
 				return 0;
+=======
+				return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 			opts->fs_fmask = option;
 			break;
 		case Opt_allow_utime:
 			if (match_octal(&args[0], &option))
+<<<<<<< HEAD
 				return 0;
+=======
+				return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 			opts->allow_utime = option & (S_IWGRP | S_IWOTH);
 			break;
 		case Opt_codepage:
 			if (match_int(&args[0], &option))
+<<<<<<< HEAD
 				return 0;
+=======
+				return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 			opts->codepage = option;
 			break;
 		case Opt_flush:
 			opts->flush = 1;
 			break;
+<<<<<<< HEAD
 		case Opt_tz_utc:
 			opts->tz_utc = 1;
+=======
+		case Opt_time_offset:
+			if (match_int(&args[0], &option))
+				return -EINVAL;
+			if (option < -12 * 60 || option > 12 * 60)
+				return -EINVAL;
+			opts->tz_set = 1;
+			opts->time_offset = option;
+			break;
+		case Opt_tz_utc:
+			opts->tz_set = 1;
+			opts->time_offset = 0;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case Opt_err_cont:
 			opts->errors = FAT_ERRORS_CONT;
@@ -1159,6 +1534,15 @@ static int parse_options(struct super_block *sb, char *options, int is_vfat,
 		case Opt_err_ro:
 			opts->errors = FAT_ERRORS_RO;
 			break;
+<<<<<<< HEAD
+=======
+		case Opt_nfs_stale_rw:
+			opts->nfs = FAT_NFS_STALE_RW;
+			break;
+		case Opt_nfs_nostale_ro:
+			opts->nfs = FAT_NFS_NOSTALE_RO;
+			break;
+>>>>>>> refs/remotes/origin/master
 
 		/* msdos specific */
 		case Opt_dots:
@@ -1220,10 +1604,14 @@ static int parse_options(struct super_block *sb, char *options, int is_vfat,
 
 		/* obsolete mount options */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case Opt_obsolate:
 =======
 		case Opt_obsolete:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case Opt_obsolete:
+>>>>>>> refs/remotes/origin/master
 			fat_msg(sb, KERN_INFO, "\"%s\" option is obsolete, "
 			       "not supported now", p);
 			break;
@@ -1242,6 +1630,7 @@ out:
 	/* UTF-8 doesn't provide FAT semantics */
 	if (!strcmp(opts->iocharset, "utf8")) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		fat_msg(sb, KERN_ERR, "utf8 is not a recommended IO charset"
 		       " for FAT filesystems, filesystem will be "
 		       "case sensitive!\n");
@@ -1250,6 +1639,11 @@ out:
 		       " for FAT filesystems, filesystem will be "
 		       "case sensitive!");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		fat_msg(sb, KERN_WARNING, "utf8 is not a recommended IO charset"
+		       " for FAT filesystems, filesystem will be "
+		       "case sensitive!");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* If user doesn't specify allow_utime, it's initialized from dmask. */
@@ -1257,6 +1651,13 @@ out:
 		opts->allow_utime = ~opts->fs_dmask & (S_IWGRP | S_IWOTH);
 	if (opts->unicode_xlate)
 		opts->utf8 = 0;
+<<<<<<< HEAD
+=======
+	if (opts->nfs == FAT_NFS_NOSTALE_RO) {
+		sb->s_flags |= MS_RDONLY;
+		sb->s_export_op = &fat_export_ops_nostale;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1267,7 +1668,11 @@ static int fat_read_root(struct inode *inode)
 	struct msdos_sb_info *sbi = MSDOS_SB(sb);
 	int error;
 
+<<<<<<< HEAD
 	MSDOS_I(inode)->i_pos = 0;
+=======
+	MSDOS_I(inode)->i_pos = MSDOS_ROOT_INO;
+>>>>>>> refs/remotes/origin/master
 	inode->i_uid = sbi->options.fs_uid;
 	inode->i_gid = sbi->options.fs_gid;
 	inode->i_version++;
@@ -1293,10 +1698,14 @@ static int fat_read_root(struct inode *inode)
 	inode->i_mtime.tv_sec = inode->i_atime.tv_sec = inode->i_ctime.tv_sec = 0;
 	inode->i_mtime.tv_nsec = inode->i_atime.tv_nsec = inode->i_ctime.tv_nsec = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = fat_subdirs(inode)+2;
 =======
 	set_nlink(inode, fat_subdirs(inode)+2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(inode, fat_subdirs(inode)+2);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1321,9 +1730,15 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 		   void (*setup)(struct super_block *))
 {
 	struct inode *root_inode = NULL, *fat_inode = NULL;
+<<<<<<< HEAD
 	struct buffer_head *bh;
 	struct fat_boot_sector *b;
 	struct fat_boot_bsx *bsx;
+=======
+	struct inode *fsinfo_inode = NULL;
+	struct buffer_head *bh;
+	struct fat_boot_sector *b;
+>>>>>>> refs/remotes/origin/master
 	struct msdos_sb_info *sbi;
 	u16 logical_sector_size;
 	u32 total_sectors, total_clusters, fat_clusters, rootdir_sectors;
@@ -1347,6 +1762,10 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 	sb->s_magic = MSDOS_SUPER_MAGIC;
 	sb->s_op = &fat_sops;
 	sb->s_export_op = &fat_export_ops;
+<<<<<<< HEAD
+=======
+	mutex_init(&sbi->nfs_build_inode_lock);
+>>>>>>> refs/remotes/origin/master
 	ratelimit_state_init(&sbi->ratelimit, DEFAULT_RATELIMIT_INTERVAL,
 			     DEFAULT_RATELIMIT_BURST);
 
@@ -1434,6 +1853,10 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 		b = (struct fat_boot_sector *) bh->b_data;
 	}
 
+<<<<<<< HEAD
+=======
+	mutex_init(&sbi->s_lock);
+>>>>>>> refs/remotes/origin/master
 	sbi->cluster_size = sb->s_blocksize * sbi->sec_per_clus;
 	sbi->cluster_bits = ffs(sbi->cluster_size) - 1;
 	sbi->fats = b->fats;
@@ -1445,16 +1868,23 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 	sbi->free_clus_valid = 0;
 	sbi->prev_free = FAT_START_ENT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	sb->s_maxbytes = 0xffffffff;
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!sbi->fat_length && b->fat32_length) {
+=======
+	sb->s_maxbytes = 0xffffffff;
+
+	if (!sbi->fat_length && b->fat32.length) {
+>>>>>>> refs/remotes/origin/master
 		struct fat_boot_fsinfo *fsinfo;
 		struct buffer_head *fsinfo_bh;
 
 		/* Must be FAT32 */
 		sbi->fat_bits = 32;
+<<<<<<< HEAD
 		sbi->fat_length = le32_to_cpu(b->fat32_length);
 		sbi->root_cluster = le32_to_cpu(b->root_cluster);
 
@@ -1465,6 +1895,13 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 >>>>>>> refs/remotes/origin/cm-10.0
 		/* MC - if info_sector is 0, don't multiply by 0 */
 		sbi->fsinfo_sector = le16_to_cpu(b->info_sector);
+=======
+		sbi->fat_length = le32_to_cpu(b->fat32.length);
+		sbi->root_cluster = le32_to_cpu(b->fat32.root_cluster);
+
+		/* MC - if info_sector is 0, don't multiply by 0 */
+		sbi->fsinfo_sector = le16_to_cpu(b->fat32.info_sector);
+>>>>>>> refs/remotes/origin/master
 		if (sbi->fsinfo_sector == 0)
 			sbi->fsinfo_sector = 1;
 
@@ -1476,8 +1913,11 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 			goto out_fail;
 		}
 
+<<<<<<< HEAD
 		bsx = (struct fat_boot_bsx *)(bh->b_data + FAT32_BSX_OFFSET);
 
+=======
+>>>>>>> refs/remotes/origin/master
 		fsinfo = (struct fat_boot_fsinfo *)fsinfo_bh->b_data;
 		if (!IS_FSINFO(fsinfo)) {
 			fat_msg(sb, KERN_WARNING, "Invalid FSINFO signature: "
@@ -1493,6 +1933,7 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 		}
 
 		brelse(fsinfo_bh);
+<<<<<<< HEAD
 	} else {
 		bsx = (struct fat_boot_bsx *)(bh->b_data + FAT16_BSX_OFFSET);
 	}
@@ -1500,6 +1941,21 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 	/* interpret volume ID as a little endian 32 bit integer */
 	sbi->vol_id = (((u32)bsx->vol_id[0]) | ((u32)bsx->vol_id[1] << 8) |
 		((u32)bsx->vol_id[2] << 16) | ((u32)bsx->vol_id[3] << 24));
+=======
+	}
+
+	/* interpret volume ID as a little endian 32 bit integer */
+	if (sbi->fat_bits == 32)
+		sbi->vol_id = (((u32)b->fat32.vol_id[0]) |
+					((u32)b->fat32.vol_id[1] << 8) |
+					((u32)b->fat32.vol_id[2] << 16) |
+					((u32)b->fat32.vol_id[3] << 24));
+	else /* fat 16 or 12 */
+		sbi->vol_id = (((u32)b->fat16.vol_id[0]) |
+					((u32)b->fat16.vol_id[1] << 8) |
+					((u32)b->fat16.vol_id[2] << 16) |
+					((u32)b->fat16.vol_id[3] << 24));
+>>>>>>> refs/remotes/origin/master
 
 	sbi->dir_per_block = sb->s_blocksize / sizeof(struct msdos_dir_entry);
 	sbi->dir_per_block_bits = ffs(sbi->dir_per_block) - 1;
@@ -1508,7 +1964,11 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 	sbi->dir_entries = get_unaligned_le16(&b->dir_entries);
 	if (sbi->dir_entries & (sbi->dir_per_block - 1)) {
 		if (!silent)
+<<<<<<< HEAD
 			fat_msg(sb, KERN_ERR, "bogus directroy-entries per block"
+=======
+			fat_msg(sb, KERN_ERR, "bogus directory-entries per block"
+>>>>>>> refs/remotes/origin/master
 			       " (%u)", sbi->dir_entries);
 		brelse(bh);
 		goto out_invalid;
@@ -1526,6 +1986,15 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 	if (sbi->fat_bits != 32)
 		sbi->fat_bits = (total_clusters > MAX_FAT12) ? 16 : 12;
 
+<<<<<<< HEAD
+=======
+	/* some OSes set FAT_STATE_DIRTY and clean it on unmount. */
+	if (sbi->fat_bits == 32)
+		sbi->dirty = b->fat32.state & FAT_STATE_DIRTY;
+	else /* fat 16 or 12 */
+		sbi->dirty = b->fat16.state & FAT_STATE_DIRTY;
+
+>>>>>>> refs/remotes/origin/master
 	/* check that FAT table does not overflow */
 	fat_clusters = calc_fat_clusters(sb);
 	total_clusters = min(total_clusters, fat_clusters - FAT_START_ENT);
@@ -1550,6 +2019,10 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 
 	/* set up enough so that it can read an inode */
 	fat_hash_init(sb);
+<<<<<<< HEAD
+=======
+	dir_hash_init(sb);
+>>>>>>> refs/remotes/origin/master
 	fat_ent_access_init(sb);
 
 	/*
@@ -1584,6 +2057,17 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 		goto out_fail;
 	MSDOS_I(fat_inode)->i_pos = 0;
 	sbi->fat_inode = fat_inode;
+<<<<<<< HEAD
+=======
+
+	fsinfo_inode = new_inode(sb);
+	if (!fsinfo_inode)
+		goto out_fail;
+	fsinfo_inode->i_ino = MSDOS_FSINFO_INO;
+	sbi->fsinfo_inode = fsinfo_inode;
+	insert_inode_hash(fsinfo_inode);
+
+>>>>>>> refs/remotes/origin/master
 	root_inode = new_inode(sb);
 	if (!root_inode)
 		goto out_fail;
@@ -1591,25 +2075,45 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
 	root_inode->i_version = 1;
 	error = fat_read_root(root_inode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (error < 0)
 		goto out_fail;
 	error = -ENOMEM;
 	insert_inode_hash(root_inode);
 	sb->s_root = d_alloc_root(root_inode);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (error < 0) {
 		iput(root_inode);
 		goto out_fail;
 	}
 	error = -ENOMEM;
 	insert_inode_hash(root_inode);
+<<<<<<< HEAD
 	sb->s_root = d_make_root(root_inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fat_attach(root_inode, 0);
+	sb->s_root = d_make_root(root_inode);
+>>>>>>> refs/remotes/origin/master
 	if (!sb->s_root) {
 		fat_msg(sb, KERN_ERR, "get root inode failed");
 		goto out_fail;
 	}
 
+<<<<<<< HEAD
+=======
+	if (sbi->options.discard) {
+		struct request_queue *q = bdev_get_queue(sb->s_bdev);
+		if (!blk_queue_discard(q))
+			fat_msg(sb, KERN_WARNING,
+					"mounting with \"discard\" option, but "
+					"the device does not support discard");
+	}
+
+	fat_set_state(sb, 1, 0);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 out_invalid:
@@ -1618,6 +2122,7 @@ out_invalid:
 		fat_msg(sb, KERN_INFO, "Can't find a valid FAT filesystem");
 
 out_fail:
+<<<<<<< HEAD
 	if (fat_inode)
 		iput(fat_inode);
 <<<<<<< HEAD
@@ -1625,6 +2130,12 @@ out_fail:
 		iput(root_inode);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (fsinfo_inode)
+		iput(fsinfo_inode);
+	if (fat_inode)
+		iput(fat_inode);
+>>>>>>> refs/remotes/origin/master
 	unload_nls(sbi->nls_io);
 	unload_nls(sbi->nls_disk);
 	if (sbi->options.iocharset != fat_default_iocharset)
@@ -1646,6 +2157,7 @@ static int writeback_inode(struct inode *inode)
 {
 
 	int ret;
+<<<<<<< HEAD
 	struct address_space *mapping = inode->i_mapping;
 	struct writeback_control wbc = {
 	       .sync_mode = WB_SYNC_NONE,
@@ -1658,6 +2170,16 @@ static int writeback_inode(struct inode *inode)
 	ret = sync_inode(inode, &wbc);
 	if (!ret)
 	       ret = filemap_fdatawrite(mapping);
+=======
+
+	/* if we used wait=1, sync_inode_metadata waits for the io for the
+	* inode to finish.  So wait=0 is sent down to sync_inode_metadata
+	* and filemap_fdatawrite is used for the data blocks
+	*/
+	ret = sync_inode_metadata(inode, 0);
+	if (!ret)
+		ret = filemap_fdatawrite(inode->i_mapping);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 

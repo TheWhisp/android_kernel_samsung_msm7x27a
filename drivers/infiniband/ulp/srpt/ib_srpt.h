@@ -228,7 +228,10 @@ struct srpt_recv_ioctx {
 struct srpt_send_ioctx {
 	struct srpt_ioctx	ioctx;
 	struct srpt_rdma_ch	*ch;
+<<<<<<< HEAD
 	struct kref		 kref;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct rdma_iu		*rdma_ius;
 	struct srp_direct_buf	*rbufs;
 	struct srp_direct_buf	single_rbuf;
@@ -326,6 +329,10 @@ struct srpt_rdma_ch {
 	u8			sess_name[36];
 	struct work_struct	release_work;
 	struct completion	*release_done;
+<<<<<<< HEAD
+=======
+	bool			in_shutdown;
+>>>>>>> refs/remotes/origin/master
 };
 
 /**

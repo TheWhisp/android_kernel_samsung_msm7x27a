@@ -476,8 +476,12 @@ out:
 	if (local_alloc_inode)
 		iput(local_alloc_inode);
 
+<<<<<<< HEAD
 	if (alloc_copy)
 		kfree(alloc_copy);
+=======
+	kfree(alloc_copy);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -534,7 +538,11 @@ int ocfs2_begin_local_alloc_recovery(struct ocfs2_super *osb,
 		mlog_errno(status);
 
 bail:
+<<<<<<< HEAD
 	if ((status < 0) && (*alloc_copy)) {
+=======
+	if (status < 0) {
+>>>>>>> refs/remotes/origin/master
 		kfree(*alloc_copy);
 		*alloc_copy = NULL;
 	}
@@ -784,6 +792,7 @@ bail:
 
 static u32 ocfs2_local_alloc_count_bits(struct ocfs2_dinode *alloc)
 {
+<<<<<<< HEAD
 	int i;
 	u8 *buffer;
 	u32 count = 0;
@@ -792,6 +801,12 @@ static u32 ocfs2_local_alloc_count_bits(struct ocfs2_dinode *alloc)
 	buffer = la->la_bitmap;
 	for (i = 0; i < le16_to_cpu(la->la_size); i++)
 		count += hweight8(buffer[i]);
+=======
+	u32 count;
+	struct ocfs2_local_alloc *la = OCFS2_LOCAL_ALLOC(alloc);
+
+	count = memweight(la->la_bitmap, le16_to_cpu(la->la_size));
+>>>>>>> refs/remotes/origin/master
 
 	trace_ocfs2_local_alloc_count_bits(count);
 	return count;
@@ -1087,7 +1102,11 @@ static int ocfs2_local_alloc_reserve_for_window(struct ocfs2_super *osb,
 	}
 
 retry_enospc:
+<<<<<<< HEAD
 	(*ac)->ac_bits_wanted = osb->local_alloc_default_bits;
+=======
+	(*ac)->ac_bits_wanted = osb->local_alloc_bits;
+>>>>>>> refs/remotes/origin/master
 	status = ocfs2_reserve_cluster_bitmap_bits(osb, *ac);
 	if (status == -ENOSPC) {
 		if (ocfs2_recalc_la_window(osb, OCFS2_LA_EVENT_ENOSPC) ==
@@ -1159,7 +1178,11 @@ retry_enospc:
 		    OCFS2_LA_DISABLED)
 			goto bail;
 
+<<<<<<< HEAD
 		ac->ac_bits_wanted = osb->local_alloc_default_bits;
+=======
+		ac->ac_bits_wanted = osb->local_alloc_bits;
+>>>>>>> refs/remotes/origin/master
 		status = ocfs2_claim_clusters(handle, ac,
 					      osb->local_alloc_bits,
 					      &cluster_off,
@@ -1294,8 +1317,12 @@ bail:
 	if (main_bm_inode)
 		iput(main_bm_inode);
 
+<<<<<<< HEAD
 	if (alloc_copy)
 		kfree(alloc_copy);
+=======
+	kfree(alloc_copy);
+>>>>>>> refs/remotes/origin/master
 
 	if (ac)
 		ocfs2_free_alloc_context(ac);

@@ -15,6 +15,7 @@ struct mci_dma_data {
 #define find_slave_dev(s)	((s)->sdata.dma_dev)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	setup_dma_addr(s, t, r)	do {		\
 	if (s) {				\
 		(s)->sdata.tx_reg = (t);	\
@@ -24,4 +25,6 @@ struct mci_dma_data {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __MACH_ATMEL_MCI_H */

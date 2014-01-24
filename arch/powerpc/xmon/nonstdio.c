@@ -7,9 +7,29 @@
  *      2 of the License, or (at your option) any later version.
  */
 #include <linux/string.h>
+<<<<<<< HEAD
 #include <asm/time.h>
 #include "nonstdio.h"
 
+=======
+#include <asm/udbg.h>
+#include <asm/time.h>
+#include "nonstdio.h"
+
+
+static int xmon_write(const void *ptr, int nb)
+{
+	return udbg_write(ptr, nb);
+}
+
+static int xmon_readchar(void)
+{
+	if (udbg_getc)
+		return udbg_getc();
+	return -1;
+}
+
+>>>>>>> refs/remotes/origin/master
 int xmon_putchar(int c)
 {
 	char ch = c;
@@ -23,6 +43,7 @@ static char line[256];
 static char *lineptr;
 static int lineleft;
 
+<<<<<<< HEAD
 int xmon_expect(const char *str, unsigned long timeout)
 {
 	int c;
@@ -51,6 +72,9 @@ int xmon_expect(const char *str, unsigned long timeout)
 }
 
 int xmon_getchar(void)
+=======
+static int xmon_getchar(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int c;
 
@@ -124,13 +148,28 @@ char *xmon_gets(char *str, int nb)
 void xmon_printf(const char *format, ...)
 {
 	va_list args;
+<<<<<<< HEAD
 	int n;
 	static char xmon_outbuf[1024];
+=======
+	static char xmon_outbuf[1024];
+	int rc, n;
+>>>>>>> refs/remotes/origin/master
 
 	va_start(args, format);
 	n = vsnprintf(xmon_outbuf, sizeof(xmon_outbuf), format, args);
 	va_end(args);
+<<<<<<< HEAD
 	xmon_write(xmon_outbuf, n);
+=======
+
+	rc = xmon_write(xmon_outbuf, n);
+
+	if (n && rc == 0) {
+		/* No udbg hooks, fallback to printk() - dangerous */
+		printk(xmon_outbuf);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 void xmon_puts(const char *str)

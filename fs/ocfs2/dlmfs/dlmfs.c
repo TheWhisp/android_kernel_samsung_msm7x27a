@@ -49,7 +49,10 @@
 
 #include "stackglue.h"
 #include "userdlm.h"
+<<<<<<< HEAD
 #include "dlmfsver.h"
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define MLOG_MASK_PREFIX ML_DLMFS
 #include "cluster/masklog.h"
@@ -224,7 +227,11 @@ static int dlmfs_file_setattr(struct dentry *dentry, struct iattr *attr)
 static unsigned int dlmfs_file_poll(struct file *file, poll_table *wait)
 {
 	int event = 0;
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct dlmfs_inode_private *ip = DLMFS_I(inode);
 
 	poll_wait(file, &ip->ip_lockres.l_event, wait);
@@ -245,7 +252,11 @@ static ssize_t dlmfs_file_read(struct file *filp,
 	int bytes_left;
 	ssize_t readlen, got;
 	char *lvb_buf;
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 
 	mlog(0, "inode %lu, count = %zu, *ppos = %llu\n",
 		inode->i_ino, count, *ppos);
@@ -293,7 +304,11 @@ static ssize_t dlmfs_file_write(struct file *filp,
 	int bytes_left;
 	ssize_t writelen;
 	char *lvb_buf;
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 
 	mlog(0, "inode %lu, count = %zu, *ppos = %llu\n",
 		inode->i_ino, count, *ppos);
@@ -355,9 +370,12 @@ static void dlmfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(dlmfs_inode_cache, DLMFS_I(inode));
 }
 
@@ -371,7 +389,11 @@ static void dlmfs_evict_inode(struct inode *inode)
 	int status;
 	struct dlmfs_inode_private *ip;
 
+<<<<<<< HEAD
 	end_writeback(inode);
+=======
+	clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 
 	mlog(0, "inode %lu\n", inode->i_ino);
 
@@ -405,6 +427,7 @@ static struct inode *dlmfs_get_root_inode(struct super_block *sb)
 {
 	struct inode *inode = new_inode(sb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int mode = S_IFDIR | 0755;
 =======
 	umode_t mode = S_IFDIR | 0755;
@@ -422,6 +445,13 @@ static struct inode *dlmfs_get_root_inode(struct super_block *sb)
 =======
 		inode_init_owner(inode, NULL, mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t mode = S_IFDIR | 0755;
+
+	if (inode) {
+		inode->i_ino = get_next_ino();
+		inode_init_owner(inode, NULL, mode);
+>>>>>>> refs/remotes/origin/master
 		inode->i_mapping->backing_dev_info = &dlmfs_backing_dev_info;
 		inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
 		inc_nlink(inode);
@@ -436,10 +466,14 @@ static struct inode *dlmfs_get_root_inode(struct super_block *sb)
 static struct inode *dlmfs_get_inode(struct inode *parent,
 				     struct dentry *dentry,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				     int mode)
 =======
 				     umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct super_block *sb = parent->i_sb;
 	struct inode * inode = new_inode(sb);
@@ -450,12 +484,16 @@ static struct inode *dlmfs_get_inode(struct inode *parent,
 
 	inode->i_ino = get_next_ino();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_mode = mode;
 	inode->i_uid = current_fsuid();
 	inode->i_gid = current_fsgid();
 =======
 	inode_init_owner(inode, parent, mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	inode_init_owner(inode, parent, mode);
+>>>>>>> refs/remotes/origin/master
 	inode->i_mapping->backing_dev_info = &dlmfs_backing_dev_info;
 	inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
 
@@ -493,6 +531,7 @@ static struct inode *dlmfs_get_inode(struct inode *parent,
 		break;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (parent->i_mode & S_ISGID) {
 		inode->i_gid = parent->i_gid;
@@ -502,6 +541,8 @@ static struct inode *dlmfs_get_inode(struct inode *parent,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return inode;
 }
 
@@ -512,10 +553,14 @@ static struct inode *dlmfs_get_inode(struct inode *parent,
 static int dlmfs_mkdir(struct inode * dir,
 		       struct dentry * dentry,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		       int mode)
 =======
 		       umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	int status;
 	struct inode *inode = NULL;
@@ -564,11 +609,16 @@ bail:
 static int dlmfs_create(struct inode *dir,
 			struct dentry *dentry,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			int mode,
 =======
 			umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
 			struct nameidata *nd)
+=======
+			umode_t mode,
+			bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	int status = 0;
 	struct inode *inode;
@@ -625,16 +675,20 @@ static int dlmfs_fill_super(struct super_block * sb,
 			    int silent)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct inode * inode;
 	struct dentry * root;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	sb->s_maxbytes = MAX_LFS_FILESIZE;
 	sb->s_blocksize = PAGE_CACHE_SIZE;
 	sb->s_blocksize_bits = PAGE_CACHE_SHIFT;
 	sb->s_magic = DLMFS_MAGIC;
 	sb->s_op = &dlmfs_ops;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	inode = dlmfs_get_root_inode(sb);
 	if (!inode)
@@ -651,6 +705,11 @@ static int dlmfs_fill_super(struct super_block * sb,
 	if (!sb->s_root)
 		return -ENOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sb->s_root = d_make_root(dlmfs_get_root_inode(sb));
+	if (!sb->s_root)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -701,14 +760,21 @@ static struct file_system_type dlmfs_fs_type = {
 	.mount		= dlmfs_mount,
 	.kill_sb	= kill_litter_super,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("ocfs2_dlmfs");
+>>>>>>> refs/remotes/origin/master
 
 static int __init init_dlmfs_fs(void)
 {
 	int status;
 	int cleanup_inode = 0, cleanup_worker = 0;
 
+<<<<<<< HEAD
 	dlmfs_print_version();
 
+=======
+>>>>>>> refs/remotes/origin/master
 	status = bdi_init(&dlmfs_backing_dev_info);
 	if (status)
 		return status;
@@ -752,6 +818,14 @@ static void __exit exit_dlmfs_fs(void)
 	flush_workqueue(user_dlm_worker);
 	destroy_workqueue(user_dlm_worker);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(dlmfs_inode_cache);
 
 	bdi_destroy(&dlmfs_backing_dev_info);
@@ -759,6 +833,10 @@ static void __exit exit_dlmfs_fs(void)
 
 MODULE_AUTHOR("Oracle");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_DESCRIPTION("OCFS2 DLM-Filesystem");
+>>>>>>> refs/remotes/origin/master
 
 module_init(init_dlmfs_fs)
 module_exit(exit_dlmfs_fs)

@@ -44,6 +44,7 @@ const char *const pci_mem_names[] = {
 const char pci_hae0_name[] = "HAE0";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Indicate whether we respect the PCI setup left by console. */
 /*
  * Make this long-lived  so that we know when shutting down
@@ -51,11 +52,16 @@ const char pci_hae0_name[] = "HAE0";
  */
 int pci_probe_only;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * If PCI_PROBE_ONLY in pci_flags is set, we don't change any PCI resource
  * assignments.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The PCI controller list.
@@ -68,15 +74,23 @@ struct pci_controller *pci_isa_hose;
  * Quirks.
  */
 
+<<<<<<< HEAD
 static void __init
 quirk_isa_bridge(struct pci_dev *dev)
+=======
+static void quirk_isa_bridge(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	dev->class = PCI_CLASS_BRIDGE_ISA << 8;
 }
 DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82378, quirk_isa_bridge);
 
+<<<<<<< HEAD
 static void __init
 quirk_cypress(struct pci_dev *dev)
+=======
+static void quirk_cypress(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	/* The Notorious Cy82C693 chip.  */
 
@@ -115,8 +129,12 @@ quirk_cypress(struct pci_dev *dev)
 DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CONTAQ, PCI_DEVICE_ID_CONTAQ_82C693, quirk_cypress);
 
 /* Called for each device after PCI setup is done. */
+<<<<<<< HEAD
 static void __init
 pcibios_fixup_final(struct pci_dev *dev)
+=======
+static void pcibios_fixup_final(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int class = dev->class >> 8;
 
@@ -207,6 +225,7 @@ pcibios_init(void)
 
 subsys_initcall(pcibios_init);
 
+<<<<<<< HEAD
 char * __devinit
 pcibios_setup(char *str)
 {
@@ -218,15 +237,25 @@ static struct pdev_srm_saved_conf *srm_saved_configs;
 
 void __devinit
 pdev_save_srm_config(struct pci_dev *dev)
+=======
+#ifdef ALPHA_RESTORE_SRM_SETUP
+static struct pdev_srm_saved_conf *srm_saved_configs;
+
+void pdev_save_srm_config(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pdev_srm_saved_conf *tmp;
 	static int printed = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!alpha_using_srm || pci_probe_only)
 =======
 	if (!alpha_using_srm || pci_has_flag(PCI_PROBE_ONLY))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!alpha_using_srm || pci_has_flag(PCI_PROBE_ONLY))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	if (!printed) {
@@ -254,10 +283,14 @@ pci_restore_srm_config(void)
 
 	/* No need to restore if probed only. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pci_probe_only)
 =======
 	if (pci_has_flag(PCI_PROBE_ONLY))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pci_has_flag(PCI_PROBE_ONLY))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	/* Restore SRM config. */
@@ -267,6 +300,7 @@ pci_restore_srm_config(void)
 }
 #endif
 
+<<<<<<< HEAD
 void __devinit
 <<<<<<< HEAD
 pcibios_fixup_resource(struct resource *res, struct resource *root)
@@ -323,17 +357,24 @@ pcibios_fixup_bus(struct pci_bus *bus)
  		pcibios_fixup_device_resources(dev, bus);
 =======
 pcibios_fixup_bus(struct pci_bus *bus)
+=======
+void pcibios_fixup_bus(struct pci_bus *bus)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev = bus->self;
 
 	if (pci_has_flag(PCI_PROBE_ONLY) && dev &&
  		   (dev->class >> 8) == PCI_CLASS_BRIDGE_PCI) {
  		pci_read_bridge_bases(bus);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} 
 
 	list_for_each_entry(dev, &bus->devices, bus_list) {
 		pdev_save_srm_config(dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if ((dev->class >> 8) != PCI_CLASS_BRIDGE_PCI)
 			pcibios_fixup_device_resources(dev, bus);
@@ -387,6 +428,11 @@ EXPORT_SYMBOL(pcibios_bus_to_resource);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 int
 pcibios_enable_device(struct pci_dev *dev, int mask)
 {
@@ -424,11 +470,16 @@ pcibios_claim_one_bus(struct pci_bus *b)
 			if (r->parent || !r->start || !r->flags)
 				continue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (pci_probe_only || (r->flags & IORESOURCE_PCI_FIXED))
 =======
 			if (pci_has_flag(PCI_PROBE_ONLY) ||
 			    (r->flags & IORESOURCE_PCI_FIXED))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (pci_has_flag(PCI_PROBE_ONLY) ||
+			    (r->flags & IORESOURCE_PCI_FIXED))
+>>>>>>> refs/remotes/origin/master
 				pci_claim_resource(dev, i);
 		}
 	}
@@ -451,6 +502,7 @@ common_init_pci(void)
 {
 	struct pci_controller *hose;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pci_bus *bus;
 	int next_busno;
 	int need_domain_info = 0;
@@ -459,6 +511,8 @@ common_init_pci(void)
 	for (next_busno = 0, hose = hose_head; hose; hose = hose->next) {
 		bus = pci_scan_bus(next_busno, alpha_mv.pci_ops, hose);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head resources;
 	struct pci_bus *bus;
 	int next_busno;
@@ -486,10 +540,16 @@ common_init_pci(void)
 
 		bus = pci_scan_root_bus(NULL, next_busno, alpha_mv.pci_ops,
 					hose, &resources);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		hose->bus = bus;
 		hose->need_domain_info = need_domain_info;
 		next_busno = bus->subordinate + 1;
+=======
+		hose->bus = bus;
+		hose->need_domain_info = need_domain_info;
+		next_busno = bus->busn_res.end + 1;
+>>>>>>> refs/remotes/origin/master
 		/* Don't allow 8-bit bus number overflow inside the hose -
 		   reserve some space for bridges. */ 
 		if (next_busno > 224) {
@@ -575,6 +635,7 @@ sys_pciconfig_iobase(long which, unsigned long bus, unsigned long dfn)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Create an __iomem token from a PCI BAR.  Copied from lib/iomap.c with
    no changes, since we don't want the other things in that object file.  */
 
@@ -602,6 +663,9 @@ void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxlen)
 =======
 /* Destroy an __iomem token.  Not copied from lib/iomap.c.  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Destroy an __iomem token.  Not copied from lib/iomap.c.  */
+>>>>>>> refs/remotes/origin/master
 
 void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
 {
@@ -610,9 +674,12 @@ void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(pci_iomap);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(pci_iounmap);
 
 /* FIXME: Some boxes have multiple ISA bridges! */

@@ -57,7 +57,11 @@ ah_esp_conn_fill_param_proto(struct net *net, int af,
 
 static struct ip_vs_conn *
 ah_esp_conn_in_get(int af, const struct sk_buff *skb,
+<<<<<<< HEAD
 		   const struct ip_vs_iphdr *iph, unsigned int proto_off,
+=======
+		   const struct ip_vs_iphdr *iph,
+>>>>>>> refs/remotes/origin/master
 		   int inverse)
 {
 	struct ip_vs_conn *cp;
@@ -85,9 +89,13 @@ ah_esp_conn_in_get(int af, const struct sk_buff *skb,
 
 static struct ip_vs_conn *
 ah_esp_conn_out_get(int af, const struct sk_buff *skb,
+<<<<<<< HEAD
 		    const struct ip_vs_iphdr *iph,
 		    unsigned int proto_off,
 		    int inverse)
+=======
+		    const struct ip_vs_iphdr *iph, int inverse)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ip_vs_conn *cp;
 	struct ip_vs_conn_param p;
@@ -110,7 +118,12 @@ ah_esp_conn_out_get(int af, const struct sk_buff *skb,
 
 static int
 ah_esp_conn_schedule(int af, struct sk_buff *skb, struct ip_vs_proto_data *pd,
+<<<<<<< HEAD
 		     int *verdict, struct ip_vs_conn **cpp)
+=======
+		     int *verdict, struct ip_vs_conn **cpp,
+		     struct ip_vs_iphdr *iph)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * AH/ESP is only related traffic. Pass the packet to IP stack.

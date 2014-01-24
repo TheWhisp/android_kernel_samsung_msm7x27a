@@ -45,10 +45,14 @@
 #include <asm/byteorder.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SBUS
 #include <linux/of.h>
@@ -531,8 +535,12 @@ fore200e_pca_reset(struct fore200e* fore200e)
 }
 
 
+<<<<<<< HEAD
 static int __devinit
 fore200e_pca_map(struct fore200e* fore200e)
+=======
+static int fore200e_pca_map(struct fore200e* fore200e)
+>>>>>>> refs/remotes/origin/master
 {
     DPRINTK(2, "device %s being mapped in memory\n", fore200e->name);
 
@@ -565,8 +573,12 @@ fore200e_pca_unmap(struct fore200e* fore200e)
 }
 
 
+<<<<<<< HEAD
 static int __devinit
 fore200e_pca_configure(struct fore200e* fore200e)
+=======
+static int fore200e_pca_configure(struct fore200e *fore200e)
+>>>>>>> refs/remotes/origin/master
 {
     struct pci_dev* pci_dev = (struct pci_dev*)fore200e->bus_dev;
     u8              master_ctrl, latency;
@@ -2032,8 +2044,12 @@ fore200e_change_qos(struct atm_vcc* vcc,struct atm_qos* qos, int flags)
 }
     
 
+<<<<<<< HEAD
 static int __devinit
 fore200e_irq_request(struct fore200e* fore200e)
+=======
+static int fore200e_irq_request(struct fore200e *fore200e)
+>>>>>>> refs/remotes/origin/master
 {
     if (request_irq(fore200e->irq, fore200e_interrupt, IRQF_SHARED, fore200e->name, fore200e->atm_dev) < 0) {
 
@@ -2055,8 +2071,12 @@ fore200e_irq_request(struct fore200e* fore200e)
 }
 
 
+<<<<<<< HEAD
 static int __devinit
 fore200e_get_esi(struct fore200e* fore200e)
+=======
+static int fore200e_get_esi(struct fore200e *fore200e)
+>>>>>>> refs/remotes/origin/master
 {
     struct prom_data* prom = kzalloc(sizeof(struct prom_data), GFP_KERNEL | GFP_DMA);
     int ok, i;
@@ -2085,8 +2105,12 @@ fore200e_get_esi(struct fore200e* fore200e)
 }
 
 
+<<<<<<< HEAD
 static int __devinit
 fore200e_alloc_rx_buf(struct fore200e* fore200e)
+=======
+static int fore200e_alloc_rx_buf(struct fore200e *fore200e)
+>>>>>>> refs/remotes/origin/master
 {
     int scheme, magn, nbr, size, i;
 
@@ -2150,8 +2174,12 @@ fore200e_alloc_rx_buf(struct fore200e* fore200e)
 }
 
 
+<<<<<<< HEAD
 static int __devinit
 fore200e_init_bs_queue(struct fore200e* fore200e)
+=======
+static int fore200e_init_bs_queue(struct fore200e *fore200e)
+>>>>>>> refs/remotes/origin/master
 {
     int scheme, magn, i;
 
@@ -2213,8 +2241,12 @@ fore200e_init_bs_queue(struct fore200e* fore200e)
 }
 
 
+<<<<<<< HEAD
 static int __devinit
 fore200e_init_rx_queue(struct fore200e* fore200e)
+=======
+static int fore200e_init_rx_queue(struct fore200e *fore200e)
+>>>>>>> refs/remotes/origin/master
 {
     struct host_rxq*     rxq =  &fore200e->host_rxq;
     struct cp_rxq_entry __iomem * cp_entry;
@@ -2273,8 +2305,12 @@ fore200e_init_rx_queue(struct fore200e* fore200e)
 }
 
 
+<<<<<<< HEAD
 static int __devinit
 fore200e_init_tx_queue(struct fore200e* fore200e)
+=======
+static int fore200e_init_tx_queue(struct fore200e *fore200e)
+>>>>>>> refs/remotes/origin/master
 {
     struct host_txq*     txq =  &fore200e->host_txq;
     struct cp_txq_entry __iomem * cp_entry;
@@ -2336,8 +2372,12 @@ fore200e_init_tx_queue(struct fore200e* fore200e)
 }
 
 
+<<<<<<< HEAD
 static int __devinit
 fore200e_init_cmd_queue(struct fore200e* fore200e)
+=======
+static int fore200e_init_cmd_queue(struct fore200e *fore200e)
+>>>>>>> refs/remotes/origin/master
 {
     struct host_cmdq*     cmdq =  &fore200e->host_cmdq;
     struct cp_cmdq_entry __iomem * cp_entry;
@@ -2378,10 +2418,17 @@ fore200e_init_cmd_queue(struct fore200e* fore200e)
 }
 
 
+<<<<<<< HEAD
 static void __devinit
 fore200e_param_bs_queue(struct fore200e* fore200e,
 			enum buffer_scheme scheme, enum buffer_magn magn,
 			int queue_length, int pool_size, int supply_blksize)
+=======
+static void fore200e_param_bs_queue(struct fore200e *fore200e,
+				    enum buffer_scheme scheme,
+				    enum buffer_magn magn, int queue_length,
+				    int pool_size, int supply_blksize)
+>>>>>>> refs/remotes/origin/master
 {
     struct bs_spec __iomem * bs_spec = &fore200e->cp_queues->init.bs_spec[ scheme ][ magn ];
 
@@ -2392,8 +2439,12 @@ fore200e_param_bs_queue(struct fore200e* fore200e,
 }
 
 
+<<<<<<< HEAD
 static int __devinit
 fore200e_initialize(struct fore200e* fore200e)
+=======
+static int fore200e_initialize(struct fore200e *fore200e)
+>>>>>>> refs/remotes/origin/master
 {
     struct cp_queues __iomem * cpq;
     int               ok, scheme, magn;
@@ -2444,8 +2495,12 @@ fore200e_initialize(struct fore200e* fore200e)
 }
 
 
+<<<<<<< HEAD
 static void __devinit
 fore200e_monitor_putc(struct fore200e* fore200e, char c)
+=======
+static void fore200e_monitor_putc(struct fore200e *fore200e, char c)
+>>>>>>> refs/remotes/origin/master
 {
     struct cp_monitor __iomem * monitor = fore200e->cp_monitor;
 
@@ -2456,8 +2511,12 @@ fore200e_monitor_putc(struct fore200e* fore200e, char c)
 }
 
 
+<<<<<<< HEAD
 static int __devinit
 fore200e_monitor_getc(struct fore200e* fore200e)
+=======
+static int fore200e_monitor_getc(struct fore200e *fore200e)
+>>>>>>> refs/remotes/origin/master
 {
     struct cp_monitor __iomem * monitor = fore200e->cp_monitor;
     unsigned long      timeout = jiffies + msecs_to_jiffies(50);
@@ -2481,8 +2540,12 @@ fore200e_monitor_getc(struct fore200e* fore200e)
 }
 
 
+<<<<<<< HEAD
 static void __devinit
 fore200e_monitor_puts(struct fore200e* fore200e, char* str)
+=======
+static void fore200e_monitor_puts(struct fore200e *fore200e, char *str)
+>>>>>>> refs/remotes/origin/master
 {
     while (*str) {
 
@@ -2501,8 +2564,12 @@ fore200e_monitor_puts(struct fore200e* fore200e, char* str)
 #define FW_EXT "_ecd.bin2"
 #endif
 
+<<<<<<< HEAD
 static int __devinit
 fore200e_load_and_start_fw(struct fore200e* fore200e)
+=======
+static int fore200e_load_and_start_fw(struct fore200e *fore200e)
+>>>>>>> refs/remotes/origin/master
 {
     const struct firmware *firmware;
     struct device *device;
@@ -2570,8 +2637,12 @@ release:
 }
 
 
+<<<<<<< HEAD
 static int __devinit
 fore200e_register(struct fore200e* fore200e, struct device *parent)
+=======
+static int fore200e_register(struct fore200e *fore200e, struct device *parent)
+>>>>>>> refs/remotes/origin/master
 {
     struct atm_dev* atm_dev;
 
@@ -2597,8 +2668,12 @@ fore200e_register(struct fore200e* fore200e, struct device *parent)
 }
 
 
+<<<<<<< HEAD
 static int __devinit
 fore200e_init(struct fore200e* fore200e, struct device *parent)
+=======
+static int fore200e_init(struct fore200e *fore200e, struct device *parent)
+>>>>>>> refs/remotes/origin/master
 {
     if (fore200e_register(fore200e, parent) < 0)
 	return -ENODEV;
@@ -2648,7 +2723,11 @@ fore200e_init(struct fore200e* fore200e, struct device *parent)
 
 #ifdef CONFIG_SBUS
 static const struct of_device_id fore200e_sba_match[];
+<<<<<<< HEAD
 static int __devinit fore200e_sba_probe(struct platform_device *op)
+=======
+static int fore200e_sba_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct of_device_id *match;
 	const struct fore200e_bus *bus;
@@ -2685,7 +2764,11 @@ static int __devinit fore200e_sba_probe(struct platform_device *op)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit fore200e_sba_remove(struct platform_device *op)
+=======
+static int fore200e_sba_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fore200e *fore200e = dev_get_drvdata(&op->dev);
 
@@ -2711,13 +2794,22 @@ static struct platform_driver fore200e_sba_driver = {
 		.of_match_table = fore200e_sba_match,
 	},
 	.probe		= fore200e_sba_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(fore200e_sba_remove),
+=======
+	.remove		= fore200e_sba_remove,
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
 static int __devinit
 fore200e_pca_detect(struct pci_dev *pci_dev, const struct pci_device_id *pci_ent)
+=======
+static int fore200e_pca_detect(struct pci_dev *pci_dev,
+			       const struct pci_device_id *pci_ent)
+>>>>>>> refs/remotes/origin/master
 {
     const struct fore200e_bus* bus = (struct fore200e_bus*) pci_ent->driver_data;
     struct fore200e* fore200e;
@@ -2770,7 +2862,11 @@ out_disable:
 }
 
 
+<<<<<<< HEAD
 static void __devexit fore200e_pca_remove_one(struct pci_dev *pci_dev)
+=======
+static void fore200e_pca_remove_one(struct pci_dev *pci_dev)
+>>>>>>> refs/remotes/origin/master
 {
     struct fore200e *fore200e;
 
@@ -2793,7 +2889,11 @@ MODULE_DEVICE_TABLE(pci, fore200e_pca_tbl);
 static struct pci_driver fore200e_pca_driver = {
     .name =     "fore_200e",
     .probe =    fore200e_pca_detect,
+<<<<<<< HEAD
     .remove =   __devexit_p(fore200e_pca_remove_one),
+=======
+    .remove =   fore200e_pca_remove_one,
+>>>>>>> refs/remotes/origin/master
     .id_table = fore200e_pca_tbl,
 };
 #endif

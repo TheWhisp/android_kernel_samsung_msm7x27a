@@ -22,11 +22,15 @@
 #include <linux/io.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <plat/hardware.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/clock.h>
 
+=======
+#include "soc.h"
+>>>>>>> refs/remotes/origin/master
 #include "clock.h"
 #include "clock3xxx.h"
 #include "prm2xxx_3xxx.h"
@@ -43,8 +47,13 @@
 
 /* needed by omap3_core_dpll_m2_set_rate() */
 struct clk *sdrc_ick_p, *arm_fck_p;
+<<<<<<< HEAD
 
 int omap3_dpll4_set_rate(struct clk *clk, unsigned long rate)
+=======
+int omap3_dpll4_set_rate(struct clk_hw *hw, unsigned long rate,
+				unsigned long parent_rate)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * According to the 12-5 CDP code from TI, "Limitation 2.5"
@@ -52,12 +61,20 @@ int omap3_dpll4_set_rate(struct clk *clk, unsigned long rate)
 	 * on DPLL4.
 	 */
 	if (omap_rev() == OMAP3430_REV_ES1_0) {
+<<<<<<< HEAD
 		pr_err("clock: DPLL4 cannot change rate due to "
 		       "silicon 'Limitation 2.5' on 3430ES1.\n");
 		return -EINVAL;
 	}
 
 	return omap3_noncore_dpll_set_rate(clk, rate);
+=======
+		pr_err("clock: DPLL4 cannot change rate due to silicon 'Limitation 2.5' on 3430ES1.\n");
+		return -EINVAL;
+	}
+
+	return omap3_noncore_dpll_set_rate(hw, rate, parent_rate);
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init omap3_clk_lock_dpll5(void)
@@ -67,6 +84,7 @@ void __init omap3_clk_lock_dpll5(void)
 
 	dpll5_clk = clk_get(NULL, "dpll5_ck");
 	clk_set_rate(dpll5_clk, DPLL5_FREQ_FOR_USBHOST);
+<<<<<<< HEAD
 	clk_enable(dpll5_clk);
 
 	/* Program dpll5_m2_clk divider for no division */
@@ -76,6 +94,17 @@ void __init omap3_clk_lock_dpll5(void)
 
 	clk_disable(dpll5_m2_clk);
 	clk_disable(dpll5_clk);
+=======
+	clk_prepare_enable(dpll5_clk);
+
+	/* Program dpll5_m2_clk divider for no division */
+	dpll5_m2_clk = clk_get(NULL, "dpll5_m2_ck");
+	clk_prepare_enable(dpll5_m2_clk);
+	clk_set_rate(dpll5_m2_clk, DPLL5_FREQ_FOR_USBHOST);
+
+	clk_disable_unprepare(dpll5_m2_clk);
+	clk_disable_unprepare(dpll5_clk);
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 
@@ -100,6 +129,10 @@ static int __init omap3xxx_clk_arch_init(void)
 	return ret;
 }
 
+<<<<<<< HEAD
 arch_initcall(omap3xxx_clk_arch_init);
+=======
+omap_arch_initcall(omap3xxx_clk_arch_init);
+>>>>>>> refs/remotes/origin/master
 
 

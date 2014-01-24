@@ -28,8 +28,11 @@
 #include <asm/required-features.h>
 #include <asm/msr-index.h>
 
+<<<<<<< HEAD
 struct cpu_features cpu;
 static u32 cpu_vendor[3];
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 err_flags[NCAPINTS];
 
 static const int req_level = CONFIG_X86_MINIMUM_CPU_FAMILY;
@@ -69,6 +72,7 @@ static int is_transmeta(void)
 	       cpu_vendor[2] == A32('M', 'x', '8', '6');
 }
 
+<<<<<<< HEAD
 static int has_fpu(void)
 {
 	u16 fcw = -1, fsw = -1;
@@ -155,6 +159,10 @@ static void get_flags(void)
 
 /* Returns a bitmask of which words we have error bits in */
 static int check_flags(void)
+=======
+/* Returns a bitmask of which words we have error bits in */
+static int check_cpuflags(void)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 err;
 	int i;
@@ -187,8 +195,13 @@ int check_cpu(int *cpu_level_ptr, int *req_level_ptr, u32 **err_flags_ptr)
 	if (has_eflag(X86_EFLAGS_AC))
 		cpu.level = 4;
 
+<<<<<<< HEAD
 	get_flags();
 	err = check_flags();
+=======
+	get_cpuflags();
+	err = check_cpuflags();
+>>>>>>> refs/remotes/origin/master
 
 	if (test_bit(X86_FEATURE_LM, cpu.flags))
 		cpu.level = 64;
@@ -207,8 +220,13 @@ int check_cpu(int *cpu_level_ptr, int *req_level_ptr, u32 **err_flags_ptr)
 		eax &= ~(1 << 15);
 		asm("wrmsr" : : "a" (eax), "d" (edx), "c" (ecx));
 
+<<<<<<< HEAD
 		get_flags();	/* Make sure it really did something */
 		err = check_flags();
+=======
+		get_cpuflags();	/* Make sure it really did something */
+		err = check_cpuflags();
+>>>>>>> refs/remotes/origin/master
 	} else if (err == 0x01 &&
 		   !(err_flags[0] & ~(1 << X86_FEATURE_CX8)) &&
 		   is_centaur() && cpu.model >= 6) {
@@ -223,7 +241,11 @@ int check_cpu(int *cpu_level_ptr, int *req_level_ptr, u32 **err_flags_ptr)
 		asm("wrmsr" : : "a" (eax), "d" (edx), "c" (ecx));
 
 		set_bit(X86_FEATURE_CX8, cpu.flags);
+<<<<<<< HEAD
 		err = check_flags();
+=======
+		err = check_cpuflags();
+>>>>>>> refs/remotes/origin/master
 	} else if (err == 0x01 && is_transmeta()) {
 		/* Transmeta might have masked feature bits in word 0 */
 
@@ -238,7 +260,11 @@ int check_cpu(int *cpu_level_ptr, int *req_level_ptr, u32 **err_flags_ptr)
 		    : : "ecx", "ebx");
 		asm("wrmsr" : : "a" (eax), "d" (edx), "c" (ecx));
 
+<<<<<<< HEAD
 		err = check_flags();
+=======
+		err = check_cpuflags();
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (err_flags_ptr)

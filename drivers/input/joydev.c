@@ -14,9 +14,12 @@
 
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/errno.h>
 #include <linux/joystick.h>
@@ -31,6 +34,10 @@
 #include <linux/poll.h>
 #include <linux/init.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/cdev.h>
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Vojtech Pavlik <vojtech@ucw.cz>");
 MODULE_DESCRIPTION("Joystick device interfaces");
@@ -43,13 +50,20 @@ MODULE_LICENSE("GPL");
 
 struct joydev {
 	int open;
+<<<<<<< HEAD
 	int minor;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct input_handle handle;
 	wait_queue_head_t wait;
 	struct list_head client_list;
 	spinlock_t client_lock; /* protects client_list */
 	struct mutex mutex;
 	struct device dev;
+<<<<<<< HEAD
+=======
+	struct cdev cdev;
+>>>>>>> refs/remotes/origin/master
 	bool exist;
 
 	struct js_corr corr[ABS_CNT];
@@ -74,9 +88,12 @@ struct joydev_client {
 	struct list_head node;
 };
 
+<<<<<<< HEAD
 static struct joydev *joydev_table[JOYDEV_MINORS];
 static DEFINE_MUTEX(joydev_table_mutex);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int joydev_correct(int value, struct js_corr *corr)
 {
 	switch (corr->type) {
@@ -249,13 +266,17 @@ static int joydev_release(struct inode *inode, struct file *file)
 	kfree(client);
 
 	joydev_close_device(joydev);
+<<<<<<< HEAD
 	put_device(&joydev->dev);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static int joydev_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	struct joydev_client *client;
 	struct joydev *joydev;
 	int i = iminor(inode) - JOYDEV_MINOR_BASE;
@@ -280,6 +301,16 @@ static int joydev_open(struct inode *inode, struct file *file)
 		error = -ENOMEM;
 		goto err_put_joydev;
 	}
+=======
+	struct joydev *joydev =
+			container_of(inode->i_cdev, struct joydev, cdev);
+	struct joydev_client *client;
+	int error;
+
+	client = kzalloc(sizeof(struct joydev_client), GFP_KERNEL);
+	if (!client)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&client->buffer_lock);
 	client->joydev = joydev;
@@ -297,8 +328,11 @@ static int joydev_open(struct inode *inode, struct file *file)
  err_free_client:
 	joydev_detach_client(joydev, client);
 	kfree(client);
+<<<<<<< HEAD
  err_put_joydev:
 	put_device(&joydev->dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -715,7 +749,11 @@ static long joydev_ioctl(struct file *file,
 
 	case JS_SET_ALL:
 		retval = copy_from_user(&joydev->glue, argp,
+<<<<<<< HEAD
 					sizeof(joydev->glue)) ? -EFAULT: 0;
+=======
+					sizeof(joydev->glue)) ? -EFAULT : 0;
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case JS_GET_ALL:
@@ -746,6 +784,7 @@ static const struct file_operations joydev_fops = {
 	.llseek		= no_llseek,
 };
 
+<<<<<<< HEAD
 static int joydev_install_chrdev(struct joydev *joydev)
 {
 	joydev_table[joydev->minor] = joydev;
@@ -759,6 +798,8 @@ static void joydev_remove_chrdev(struct joydev *joydev)
 	mutex_unlock(&joydev_table_mutex);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Mark device non-existent. This disables writes, ioctls and
  * prevents new users from opening the device. Already posted
@@ -777,7 +818,12 @@ static void joydev_cleanup(struct joydev *joydev)
 
 	joydev_mark_dead(joydev);
 	joydev_hangup(joydev);
+<<<<<<< HEAD
 	joydev_remove_chrdev(joydev);
+=======
+
+	cdev_del(&joydev->cdev);
+>>>>>>> refs/remotes/origin/master
 
 	/* joydev is marked dead so no one else accesses joydev->open */
 	if (joydev->open)
@@ -802,6 +848,7 @@ static int joydev_connect(struct input_handler *handler, struct input_dev *dev,
 			  const struct input_device_id *id)
 {
 	struct joydev *joydev;
+<<<<<<< HEAD
 	int i, j, t, minor;
 	int error;
 
@@ -817,15 +864,42 @@ static int joydev_connect(struct input_handler *handler, struct input_dev *dev,
 	joydev = kzalloc(sizeof(struct joydev), GFP_KERNEL);
 	if (!joydev)
 		return -ENOMEM;
+=======
+	int i, j, t, minor, dev_no;
+	int error;
+
+	minor = input_get_new_minor(JOYDEV_MINOR_BASE, JOYDEV_MINORS, true);
+	if (minor < 0) {
+		error = minor;
+		pr_err("failed to reserve new minor: %d\n", error);
+		return error;
+	}
+
+	joydev = kzalloc(sizeof(struct joydev), GFP_KERNEL);
+	if (!joydev) {
+		error = -ENOMEM;
+		goto err_free_minor;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	INIT_LIST_HEAD(&joydev->client_list);
 	spin_lock_init(&joydev->client_lock);
 	mutex_init(&joydev->mutex);
 	init_waitqueue_head(&joydev->wait);
+<<<<<<< HEAD
 
 	dev_set_name(&joydev->dev, "js%d", minor);
 	joydev->exist = true;
 	joydev->minor = minor;
+=======
+	joydev->exist = true;
+
+	dev_no = minor;
+	/* Normalize device number if it falls into legacy range */
+	if (dev_no < JOYDEV_MINOR_BASE + JOYDEV_MINORS)
+		dev_no -= JOYDEV_MINOR_BASE;
+	dev_set_name(&joydev->dev, "js%d", dev_no);
+>>>>>>> refs/remotes/origin/master
 
 	joydev->handle.dev = input_get_device(dev);
 	joydev->handle.name = dev_name(&joydev->dev);
@@ -879,7 +953,11 @@ static int joydev_connect(struct input_handler *handler, struct input_dev *dev,
 		}
 	}
 
+<<<<<<< HEAD
 	joydev->dev.devt = MKDEV(INPUT_MAJOR, JOYDEV_MINOR_BASE + minor);
+=======
+	joydev->dev.devt = MKDEV(INPUT_MAJOR, minor);
+>>>>>>> refs/remotes/origin/master
 	joydev->dev.class = &input_class;
 	joydev->dev.parent = &dev->dev;
 	joydev->dev.release = joydev_free;
@@ -889,7 +967,13 @@ static int joydev_connect(struct input_handler *handler, struct input_dev *dev,
 	if (error)
 		goto err_free_joydev;
 
+<<<<<<< HEAD
 	error = joydev_install_chrdev(joydev);
+=======
+	cdev_init(&joydev->cdev, &joydev_fops);
+	joydev->cdev.kobj.parent = &joydev->dev.kobj;
+	error = cdev_add(&joydev->cdev, joydev->dev.devt, 1);
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		goto err_unregister_handle;
 
@@ -905,6 +989,11 @@ static int joydev_connect(struct input_handler *handler, struct input_dev *dev,
 	input_unregister_handle(&joydev->handle);
  err_free_joydev:
 	put_device(&joydev->dev);
+<<<<<<< HEAD
+=======
+ err_free_minor:
+	input_free_minor(minor);
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -914,6 +1003,10 @@ static void joydev_disconnect(struct input_handle *handle)
 
 	device_del(&joydev->dev);
 	joydev_cleanup(joydev);
+<<<<<<< HEAD
+=======
+	input_free_minor(MINOR(joydev->dev.devt));
+>>>>>>> refs/remotes/origin/master
 	input_unregister_handle(handle);
 	put_device(&joydev->dev);
 }
@@ -965,7 +1058,11 @@ static struct input_handler joydev_handler = {
 	.match		= joydev_match,
 	.connect	= joydev_connect,
 	.disconnect	= joydev_disconnect,
+<<<<<<< HEAD
 	.fops		= &joydev_fops,
+=======
+	.legacy_minors	= true,
+>>>>>>> refs/remotes/origin/master
 	.minor		= JOYDEV_MINOR_BASE,
 	.name		= "joydev",
 	.id_table	= joydev_ids,

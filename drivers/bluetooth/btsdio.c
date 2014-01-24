@@ -157,10 +157,16 @@ static int btsdio_rx_packet(struct btsdio_data *data)
 
 	data->hdev->stat.byte_rx += len;
 
+<<<<<<< HEAD
 	skb->dev = (void *) data->hdev;
 	bt_cb(skb)->pkt_type = hdr[3];
 
 	err = hci_recv_frame(skb);
+=======
+	bt_cb(skb)->pkt_type = hdr[3];
+
+	err = hci_recv_frame(data->hdev, skb);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -189,7 +195,11 @@ static void btsdio_interrupt(struct sdio_func *func)
 
 static int btsdio_open(struct hci_dev *hdev)
 {
+<<<<<<< HEAD
 	struct btsdio_data *data = hdev->driver_data;
+=======
+	struct btsdio_data *data = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	BT_DBG("%s", hdev->name);
@@ -225,7 +235,11 @@ release:
 
 static int btsdio_close(struct hci_dev *hdev)
 {
+<<<<<<< HEAD
 	struct btsdio_data *data = hdev->driver_data;
+=======
+	struct btsdio_data *data = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
 
 	BT_DBG("%s", hdev->name);
 
@@ -246,7 +260,11 @@ static int btsdio_close(struct hci_dev *hdev)
 
 static int btsdio_flush(struct hci_dev *hdev)
 {
+<<<<<<< HEAD
 	struct btsdio_data *data = hdev->driver_data;
+=======
+	struct btsdio_data *data = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
 
 	BT_DBG("%s", hdev->name);
 
@@ -255,10 +273,16 @@ static int btsdio_flush(struct hci_dev *hdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int btsdio_send_frame(struct sk_buff *skb)
 {
 	struct hci_dev *hdev = (struct hci_dev *) skb->dev;
 	struct btsdio_data *data = hdev->driver_data;
+=======
+static int btsdio_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
+{
+	struct btsdio_data *data = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
 
 	BT_DBG("%s", hdev->name);
 
@@ -289,6 +313,7 @@ static int btsdio_send_frame(struct sk_buff *skb)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void btsdio_destruct(struct hci_dev *hdev)
 {
 	struct btsdio_data *data = hdev->driver_data;
@@ -298,6 +323,8 @@ static void btsdio_destruct(struct hci_dev *hdev)
 	kfree(data);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int btsdio_probe(struct sdio_func *func,
 				const struct sdio_device_id *id)
 {
@@ -313,7 +340,11 @@ static int btsdio_probe(struct sdio_func *func,
 		tuple = tuple->next;
 	}
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&func->dev, sizeof(*data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!data)
 		return -ENOMEM;
 
@@ -324,6 +355,7 @@ static int btsdio_probe(struct sdio_func *func,
 	skb_queue_head_init(&data->txq);
 
 	hdev = hci_alloc_dev();
+<<<<<<< HEAD
 	if (!hdev) {
 		kfree(data);
 		return -ENOMEM;
@@ -331,6 +363,13 @@ static int btsdio_probe(struct sdio_func *func,
 
 	hdev->bus = HCI_SDIO;
 	hdev->driver_data = data;
+=======
+	if (!hdev)
+		return -ENOMEM;
+
+	hdev->bus = HCI_SDIO;
+	hci_set_drvdata(hdev, data);
+>>>>>>> refs/remotes/origin/master
 
 	if (id->class == SDIO_CLASS_BT_AMP)
 		hdev->dev_type = HCI_AMP;
@@ -345,14 +384,20 @@ static int btsdio_probe(struct sdio_func *func,
 	hdev->close    = btsdio_close;
 	hdev->flush    = btsdio_flush;
 	hdev->send     = btsdio_send_frame;
+<<<<<<< HEAD
 	hdev->destruct = btsdio_destruct;
 
 	hdev->owner = THIS_MODULE;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	err = hci_register_dev(hdev);
 	if (err < 0) {
 		hci_free_dev(hdev);
+<<<<<<< HEAD
 		kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 

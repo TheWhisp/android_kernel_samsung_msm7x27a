@@ -3,7 +3,11 @@
  *  JZ4740 platform devices
  *
  *  This program is free software; you can redistribute it and/or modify it
+<<<<<<< HEAD
  *  under  the terms of the GNU General  Public License as published by the
+=======
+ *  under  the terms of the GNU General	 Public License as published by the
+>>>>>>> refs/remotes/origin/master
  *  Free Software Foundation;  either version 2 of the License, or (at your
  *  option) any later version.
  *
@@ -102,7 +106,11 @@ struct platform_device jz4740_mmc_device = {
 		.dma_mask = &jz4740_mmc_device.dev.coherent_dma_mask,
 		.coherent_dma_mask = DMA_BIT_MASK(32),
 	},
+<<<<<<< HEAD
 	.num_resources  = ARRAY_SIZE(jz4740_mmc_resources),
+=======
+	.num_resources	= ARRAY_SIZE(jz4740_mmc_resources),
+>>>>>>> refs/remotes/origin/master
 	.resource	= jz4740_mmc_resources,
 };
 
@@ -114,7 +122,11 @@ static struct resource jz4740_rtc_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		.start  = JZ4740_IRQ_RTC,
+=======
+		.start	= JZ4740_IRQ_RTC,
+>>>>>>> refs/remotes/origin/master
 		.end	= JZ4740_IRQ_RTC,
 		.flags	= IORESOURCE_IRQ,
 	},
@@ -144,7 +156,11 @@ static struct resource jz4740_i2c_resources[] = {
 struct platform_device jz4740_i2c_device = {
 	.name		= "jz4740-i2c",
 	.id		= 0,
+<<<<<<< HEAD
 	.num_resources  = ARRAY_SIZE(jz4740_i2c_resources),
+=======
+	.num_resources	= ARRAY_SIZE(jz4740_i2c_resources),
+>>>>>>> refs/remotes/origin/master
 	.resource	= jz4740_i2c_resources,
 };
 
@@ -157,11 +173,36 @@ static struct resource jz4740_nand_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		.name	= "bank",
+=======
+		.name	= "bank1",
+>>>>>>> refs/remotes/origin/master
 		.start	= 0x18000000,
 		.end	= 0x180C0000 - 1,
 		.flags = IORESOURCE_MEM,
 	},
+<<<<<<< HEAD
+=======
+	{
+		.name	= "bank2",
+		.start	= 0x14000000,
+		.end	= 0x140C0000 - 1,
+		.flags = IORESOURCE_MEM,
+	},
+	{
+		.name	= "bank3",
+		.start	= 0x0C000000,
+		.end	= 0x0C0C0000 - 1,
+		.flags = IORESOURCE_MEM,
+	},
+	{
+		.name	= "bank4",
+		.start	= 0x08000000,
+		.end	= 0x080C0000 - 1,
+		.flags = IORESOURCE_MEM,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device jz4740_nand_device = {
@@ -300,8 +341,43 @@ static struct resource jz4740_wdt_resources[] = {
 };
 
 struct platform_device jz4740_wdt_device = {
+<<<<<<< HEAD
 	.name          = "jz4740-wdt",
 	.id            = -1,
 	.num_resources = ARRAY_SIZE(jz4740_wdt_resources),
 	.resource      = jz4740_wdt_resources,
 };
+=======
+	.name	       = "jz4740-wdt",
+	.id	       = -1,
+	.num_resources = ARRAY_SIZE(jz4740_wdt_resources),
+	.resource      = jz4740_wdt_resources,
+};
+
+/* PWM */
+struct platform_device jz4740_pwm_device = {
+	.name = "jz4740-pwm",
+	.id   = -1,
+};
+
+/* DMA */
+static struct resource jz4740_dma_resources[] = {
+	{
+		.start	= JZ4740_DMAC_BASE_ADDR,
+		.end	= JZ4740_DMAC_BASE_ADDR + 0x400 - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	{
+		.start	= JZ4740_IRQ_DMAC,
+		.end	= JZ4740_IRQ_DMAC,
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+struct platform_device jz4740_dma_device = {
+	.name		= "jz4740-dma",
+	.id		= -1,
+	.num_resources	= ARRAY_SIZE(jz4740_dma_resources),
+	.resource	= jz4740_dma_resources,
+};
+>>>>>>> refs/remotes/origin/master

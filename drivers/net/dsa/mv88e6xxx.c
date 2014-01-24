@@ -8,6 +8,11 @@
  * (at your option) any later version.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/delay.h>
+#include <linux/jiffies.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/list.h>
 #include <linux/module.h>
 #include <linux/netdevice.h>
@@ -15,8 +20,12 @@
 #include <net/dsa.h>
 #include "mv88e6xxx.h"
 
+<<<<<<< HEAD
 /*
  * If the switch's ADDR[4:0] strap pins are strapped to zero, it will
+=======
+/* If the switch's ADDR[4:0] strap pins are strapped to zero, it will
+>>>>>>> refs/remotes/origin/master
  * use all 32 SMI bus addresses on its SMI bus, and all switch registers
  * will be directly accessible on some {device address,register address}
  * pair.  If the ADDR[4:0] pins are not strapped to zero, the switch
@@ -48,30 +57,46 @@ int __mv88e6xxx_reg_read(struct mii_bus *bus, int sw_addr, int addr, int reg)
 	if (sw_addr == 0)
 		return mdiobus_read(bus, addr, reg);
 
+<<<<<<< HEAD
 	/*
 	 * Wait for the bus to become free.
 	 */
+=======
+	/* Wait for the bus to become free. */
+>>>>>>> refs/remotes/origin/master
 	ret = mv88e6xxx_reg_wait_ready(bus, sw_addr);
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	/*
 	 * Transmit the read command.
 	 */
+=======
+	/* Transmit the read command. */
+>>>>>>> refs/remotes/origin/master
 	ret = mdiobus_write(bus, sw_addr, 0, 0x9800 | (addr << 5) | reg);
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	/*
 	 * Wait for the read command to complete.
 	 */
+=======
+	/* Wait for the read command to complete. */
+>>>>>>> refs/remotes/origin/master
 	ret = mv88e6xxx_reg_wait_ready(bus, sw_addr);
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	/*
 	 * Read the data.
 	 */
+=======
+	/* Read the data. */
+>>>>>>> refs/remotes/origin/master
 	ret = mdiobus_read(bus, sw_addr, 1);
 	if (ret < 0)
 		return ret;
@@ -100,30 +125,46 @@ int __mv88e6xxx_reg_write(struct mii_bus *bus, int sw_addr, int addr,
 	if (sw_addr == 0)
 		return mdiobus_write(bus, addr, reg, val);
 
+<<<<<<< HEAD
 	/*
 	 * Wait for the bus to become free.
 	 */
+=======
+	/* Wait for the bus to become free. */
+>>>>>>> refs/remotes/origin/master
 	ret = mv88e6xxx_reg_wait_ready(bus, sw_addr);
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	/*
 	 * Transmit the data to write.
 	 */
+=======
+	/* Transmit the data to write. */
+>>>>>>> refs/remotes/origin/master
 	ret = mdiobus_write(bus, sw_addr, 1, val);
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	/*
 	 * Transmit the write command.
 	 */
+=======
+	/* Transmit the write command. */
+>>>>>>> refs/remotes/origin/master
 	ret = mdiobus_write(bus, sw_addr, 0, 0x9400 | (addr << 5) | reg);
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	/*
 	 * Wait for the write command to complete.
 	 */
+=======
+	/* Wait for the write command to complete. */
+>>>>>>> refs/remotes/origin/master
 	ret = mv88e6xxx_reg_wait_ready(bus, sw_addr);
 	if (ret < 0)
 		return ret;
@@ -146,9 +187,13 @@ int mv88e6xxx_reg_write(struct dsa_switch *ds, int addr, int reg, u16 val)
 
 int mv88e6xxx_config_prio(struct dsa_switch *ds)
 {
+<<<<<<< HEAD
 	/*
 	 * Configure the IP ToS mapping registers.
 	 */
+=======
+	/* Configure the IP ToS mapping registers. */
+>>>>>>> refs/remotes/origin/master
 	REG_WRITE(REG_GLOBAL, 0x10, 0x0000);
 	REG_WRITE(REG_GLOBAL, 0x11, 0x0000);
 	REG_WRITE(REG_GLOBAL, 0x12, 0x5555);
@@ -158,9 +203,13 @@ int mv88e6xxx_config_prio(struct dsa_switch *ds)
 	REG_WRITE(REG_GLOBAL, 0x16, 0xffff);
 	REG_WRITE(REG_GLOBAL, 0x17, 0xffff);
 
+<<<<<<< HEAD
 	/*
 	 * Configure the IEEE 802.1p priority mapping register.
 	 */
+=======
+	/* Configure the IEEE 802.1p priority mapping register. */
+>>>>>>> refs/remotes/origin/master
 	REG_WRITE(REG_GLOBAL, 0x18, 0xfa41);
 
 	return 0;
@@ -183,6 +232,7 @@ int mv88e6xxx_set_addr_indirect(struct dsa_switch *ds, u8 *addr)
 	for (i = 0; i < 6; i++) {
 		int j;
 
+<<<<<<< HEAD
 		/*
 		 * Write the MAC address byte.
 		 */
@@ -191,6 +241,12 @@ int mv88e6xxx_set_addr_indirect(struct dsa_switch *ds, u8 *addr)
 		/*
 		 * Wait for the write to complete.
 		 */
+=======
+		/* Write the MAC address byte. */
+		REG_WRITE(REG_GLOBAL2, 0x0d, 0x8000 | (i << 8) | addr[i]);
+
+		/* Wait for the write to complete. */
+>>>>>>> refs/remotes/origin/master
 		for (j = 0; j < 16; j++) {
 			ret = REG_READ(REG_GLOBAL2, 0x0d);
 			if ((ret & 0x8000) == 0)
@@ -221,16 +277,29 @@ int mv88e6xxx_phy_write(struct dsa_switch *ds, int addr, int regnum, u16 val)
 static int mv88e6xxx_ppu_disable(struct dsa_switch *ds)
 {
 	int ret;
+<<<<<<< HEAD
 	int i;
+=======
+	unsigned long timeout;
+>>>>>>> refs/remotes/origin/master
 
 	ret = REG_READ(REG_GLOBAL, 0x04);
 	REG_WRITE(REG_GLOBAL, 0x04, ret & ~0x4000);
 
+<<<<<<< HEAD
 	for (i = 0; i < 1000; i++) {
 	        ret = REG_READ(REG_GLOBAL, 0x00);
 	        msleep(1);
 	        if ((ret & 0xc000) != 0xc000)
 	                return 0;
+=======
+	timeout = jiffies + 1 * HZ;
+	while (time_before(jiffies, timeout)) {
+		ret = REG_READ(REG_GLOBAL, 0x00);
+		usleep_range(1000, 2000);
+		if ((ret & 0xc000) != 0xc000)
+			return 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return -ETIMEDOUT;
@@ -239,16 +308,29 @@ static int mv88e6xxx_ppu_disable(struct dsa_switch *ds)
 static int mv88e6xxx_ppu_enable(struct dsa_switch *ds)
 {
 	int ret;
+<<<<<<< HEAD
 	int i;
+=======
+	unsigned long timeout;
+>>>>>>> refs/remotes/origin/master
 
 	ret = REG_READ(REG_GLOBAL, 0x04);
 	REG_WRITE(REG_GLOBAL, 0x04, ret | 0x4000);
 
+<<<<<<< HEAD
 	for (i = 0; i < 1000; i++) {
 	        ret = REG_READ(REG_GLOBAL, 0x00);
 	        msleep(1);
 	        if ((ret & 0xc000) == 0xc000)
 	                return 0;
+=======
+	timeout = jiffies + 1 * HZ;
+	while (time_before(jiffies, timeout)) {
+		ret = REG_READ(REG_GLOBAL, 0x00);
+		usleep_range(1000, 2000);
+		if ((ret & 0xc000) == 0xc000)
+			return 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return -ETIMEDOUT;
@@ -260,11 +342,19 @@ static void mv88e6xxx_ppu_reenable_work(struct work_struct *ugly)
 
 	ps = container_of(ugly, struct mv88e6xxx_priv_state, ppu_work);
 	if (mutex_trylock(&ps->ppu_mutex)) {
+<<<<<<< HEAD
 	        struct dsa_switch *ds = ((struct dsa_switch *)ps) - 1;
 
 	        if (mv88e6xxx_ppu_enable(ds) == 0)
 	                ps->ppu_disabled = 0;
 	        mutex_unlock(&ps->ppu_mutex);
+=======
+		struct dsa_switch *ds = ((struct dsa_switch *)ps) - 1;
+
+		if (mv88e6xxx_ppu_enable(ds) == 0)
+			ps->ppu_disabled = 0;
+		mutex_unlock(&ps->ppu_mutex);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -282,13 +372,18 @@ static int mv88e6xxx_ppu_access_get(struct dsa_switch *ds)
 
 	mutex_lock(&ps->ppu_mutex);
 
+<<<<<<< HEAD
 	/*
 	 * If the PHY polling unit is enabled, disable it so that
+=======
+	/* If the PHY polling unit is enabled, disable it so that
+>>>>>>> refs/remotes/origin/master
 	 * we can access the PHY registers.  If it was already
 	 * disabled, cancel the timer that is going to re-enable
 	 * it.
 	 */
 	if (!ps->ppu_disabled) {
+<<<<<<< HEAD
 	        ret = mv88e6xxx_ppu_disable(ds);
 	        if (ret < 0) {
 	                mutex_unlock(&ps->ppu_mutex);
@@ -298,6 +393,17 @@ static int mv88e6xxx_ppu_access_get(struct dsa_switch *ds)
 	} else {
 	        del_timer(&ps->ppu_timer);
 	        ret = 0;
+=======
+		ret = mv88e6xxx_ppu_disable(ds);
+		if (ret < 0) {
+			mutex_unlock(&ps->ppu_mutex);
+			return ret;
+		}
+		ps->ppu_disabled = 1;
+	} else {
+		del_timer(&ps->ppu_timer);
+		ret = 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -307,9 +413,13 @@ static void mv88e6xxx_ppu_access_put(struct dsa_switch *ds)
 {
 	struct mv88e6xxx_priv_state *ps = (void *)(ds + 1);
 
+<<<<<<< HEAD
 	/*
 	 * Schedule a timer to re-enable the PHY polling unit.
 	 */
+=======
+	/* Schedule a timer to re-enable the PHY polling unit. */
+>>>>>>> refs/remotes/origin/master
 	mod_timer(&ps->ppu_timer, jiffies + msecs_to_jiffies(10));
 	mutex_unlock(&ps->ppu_mutex);
 }
@@ -331,8 +441,13 @@ int mv88e6xxx_phy_read_ppu(struct dsa_switch *ds, int addr, int regnum)
 
 	ret = mv88e6xxx_ppu_access_get(ds);
 	if (ret >= 0) {
+<<<<<<< HEAD
 	        ret = mv88e6xxx_reg_read(ds, addr, regnum);
 	        mv88e6xxx_ppu_access_put(ds);
+=======
+		ret = mv88e6xxx_reg_read(ds, addr, regnum);
+		mv88e6xxx_ppu_access_put(ds);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -345,8 +460,13 @@ int mv88e6xxx_phy_write_ppu(struct dsa_switch *ds, int addr,
 
 	ret = mv88e6xxx_ppu_access_get(ds);
 	if (ret >= 0) {
+<<<<<<< HEAD
 	        ret = mv88e6xxx_reg_write(ds, addr, regnum, val);
 	        mv88e6xxx_ppu_access_put(ds);
+=======
+		ret = mv88e6xxx_reg_write(ds, addr, regnum, val);
+		mv88e6xxx_ppu_access_put(ds);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -380,7 +500,11 @@ void mv88e6xxx_poll_link(struct dsa_switch *ds)
 
 		if (!link) {
 			if (netif_carrier_ok(dev)) {
+<<<<<<< HEAD
 				printk(KERN_INFO "%s: link down\n", dev->name);
+=======
+				netdev_info(dev, "link down\n");
+>>>>>>> refs/remotes/origin/master
 				netif_carrier_off(dev);
 			}
 			continue;
@@ -404,10 +528,18 @@ void mv88e6xxx_poll_link(struct dsa_switch *ds)
 		fc = (port_status & 0x8000) ? 1 : 0;
 
 		if (!netif_carrier_ok(dev)) {
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: link up, %d Mb/s, %s duplex, "
 					 "flow control %sabled\n", dev->name,
 					 speed, duplex ? "full" : "half",
 					 fc ? "en" : "dis");
+=======
+			netdev_info(dev,
+				    "link up, %d Mb/s, %s duplex, flow control %sabled\n",
+				    speed,
+				    duplex ? "full" : "half",
+				    fc ? "en" : "dis");
+>>>>>>> refs/remotes/origin/master
 			netif_carrier_on(dev);
 		}
 	}
@@ -431,6 +563,7 @@ static int mv88e6xxx_stats_snapshot(struct dsa_switch *ds, int port)
 {
 	int ret;
 
+<<<<<<< HEAD
 	/*
 	 * Snapshot the hardware statistics counters for this port.
 	 */
@@ -439,6 +572,12 @@ static int mv88e6xxx_stats_snapshot(struct dsa_switch *ds, int port)
 	/*
 	 * Wait for the snapshotting to complete.
 	 */
+=======
+	/* Snapshot the hardware statistics counters for this port. */
+	REG_WRITE(REG_GLOBAL, 0x1d, 0xdc00 | port);
+
+	/* Wait for the snapshotting to complete. */
+>>>>>>> refs/remotes/origin/master
 	ret = mv88e6xxx_stats_wait(ds);
 	if (ret < 0)
 		return ret;
@@ -502,9 +641,13 @@ void mv88e6xxx_get_ethtool_stats(struct dsa_switch *ds,
 		return;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Read each of the counters.
 	 */
+=======
+	/* Read each of the counters. */
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < nr_stats; i++) {
 		struct mv88e6xxx_hw_stat *s = stats + i;
 		u32 low;

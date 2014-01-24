@@ -83,10 +83,14 @@ DecryptBuf(struct boot_data *boot, int cnt)
 /********************************************************************************/
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 pof_handle_data(hysdn_card * card, int datlen)
 =======
 pof_handle_data(hysdn_card *card, int datlen)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+pof_handle_data(hysdn_card *card, int datlen)
+>>>>>>> refs/remotes/origin/master
 {
 	struct boot_data *boot = card->boot;	/* pointer to boot specific data */
 	long l;
@@ -96,6 +100,7 @@ pof_handle_data(hysdn_card *card, int datlen)
 	/* handle the different record types */
 	switch (boot->pof_recid) {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case TAG_TIMESTMP:
 			if (card->debug_flags & LOG_POF_RECORD)
@@ -163,6 +168,8 @@ pof_handle_data(hysdn_card *card, int datlen)
 
 			break;	/* simply skip record */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case TAG_TIMESTMP:
 		if (card->debug_flags & LOG_POF_RECORD)
 			hysdn_addlog(card, "POF created %s", boot->buf.PofTime.DateTimeText);
@@ -228,7 +235,10 @@ pof_handle_data(hysdn_card *card, int datlen)
 				     datlen, boot->pof_recoffset);
 
 		break;	/* simply skip record */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}			/* switch boot->pof_recid */
 
 	return (0);
@@ -244,10 +254,14 @@ pof_handle_data(hysdn_card *card, int datlen)
 /******************************************************************************/
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 pof_write_buffer(hysdn_card * card, int datlen)
 =======
 pof_write_buffer(hysdn_card *card, int datlen)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+pof_write_buffer(hysdn_card *card, int datlen)
+>>>>>>> refs/remotes/origin/master
 {
 	struct boot_data *boot = card->boot;	/* pointer to boot specific data */
 
@@ -260,6 +274,7 @@ pof_write_buffer(hysdn_card *card, int datlen)
 		hysdn_addlog(card, "POF write: got %d bytes ", datlen);
 
 	switch (boot->pof_state) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case POF_READ_FILE_HEAD:
 			if (card->debug_flags & LOG_POF_WRITE)
@@ -333,6 +348,8 @@ pof_write_buffer(hysdn_card *card, int datlen)
 			boot->last_error = -EPOF_INTERNAL;	/* unknown state */
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case POF_READ_FILE_HEAD:
 		if (card->debug_flags & LOG_POF_WRITE)
 			hysdn_addlog(card, "POF write: checking file header");
@@ -404,7 +421,10 @@ pof_write_buffer(hysdn_card *card, int datlen)
 	default:
 		boot->last_error = -EPOF_INTERNAL;	/* unknown state */
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}			/* switch (boot->pof_state) */
 
 	return (boot->last_error);
@@ -419,10 +439,14 @@ pof_write_buffer(hysdn_card *card, int datlen)
 /*******************************************************************************/
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 pof_write_open(hysdn_card * card, unsigned char **bufp)
 =======
 pof_write_open(hysdn_card *card, unsigned char **bufp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+pof_write_open(hysdn_card *card, unsigned char **bufp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct boot_data *boot;	/* pointer to boot specific data */
 
@@ -465,10 +489,14 @@ pof_write_open(hysdn_card *card, unsigned char **bufp)
 /********************************************************************************/
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 pof_write_close(hysdn_card * card)
 =======
 pof_write_close(hysdn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+pof_write_close(hysdn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct boot_data *boot = card->boot;	/* pointer to boot specific data */
 
@@ -526,6 +554,7 @@ EvalSysrTokData(hysdn_card *card, unsigned char *cp, int len)
 		}
 		switch (*cp) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			case SYSR_TOK_B_CHAN:	/* 1 */
 				if (*(cp + 1) != 1)
 					return (1);	/* length invalid */
@@ -548,6 +577,8 @@ EvalSysrTokData(hysdn_card *card, unsigned char *cp, int len)
 				hysdn_addlog(card, "unknown token 0x%02x length %d", *cp, *(cp + 1));
 				break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case SYSR_TOK_B_CHAN:	/* 1 */
 			if (*(cp + 1) != 1)
 				return (1);	/* length invalid */
@@ -569,7 +600,10 @@ EvalSysrTokData(hysdn_card *card, unsigned char *cp, int len)
 		default:
 			hysdn_addlog(card, "unknown token 0x%02x length %d", *cp, *(cp + 1));
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		len -= (*(cp + 1) + 2);		/* adjust len */
 		cp += (*(cp + 1) + 2);	/* and pointer */

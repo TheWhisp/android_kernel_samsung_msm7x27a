@@ -28,39 +28,67 @@
 
 		user_led1 {
 			label = "user_led1";
+<<<<<<< HEAD
 			gpios = <&pioB 20 1>;
+=======
+			gpios = <&pioB 20 GPIO_ACTIVE_LOW>;
+>>>>>>> refs/remotes/origin/master
 		};
 
 /*
 * led already used by mother board but active as high
 *		user_led2 {
 *			label = "user_led2";
+<<<<<<< HEAD
 *			gpios = <&pioB 21 1>;
+=======
+*			gpios = <&pioB 21 GPIO_ACTIVE_LOW>;
+>>>>>>> refs/remotes/origin/master
 *		};
 */
 		user_led3 {
 			label = "user_led3";
+<<<<<<< HEAD
 			gpios = <&pioB 22 1>;
+=======
+			gpios = <&pioB 22 GPIO_ACTIVE_LOW>;
+>>>>>>> refs/remotes/origin/master
 		};
 
 		user_led4 {
 			label = "user_led4";
+<<<<<<< HEAD
 			gpios = <&pioB 23 1>;
+=======
+			gpios = <&pioB 23 GPIO_ACTIVE_LOW>;
+>>>>>>> refs/remotes/origin/master
 		};
 
 		red {
 			label = "red";
+<<<<<<< HEAD
 			gpios = <&pioB 24 1>;
+=======
+			gpios = <&pioB 24 GPIO_ACTIVE_LOW>;
+>>>>>>> refs/remotes/origin/master
 		};
 
 		orange {
 			label = "orange";
+<<<<<<< HEAD
 			gpios = <&pioB 30 1>;
+=======
+			gpios = <&pioB 30 GPIO_ACTIVE_LOW>;
+>>>>>>> refs/remotes/origin/master
 		};
 
 		green {
 			label = "green";
+<<<<<<< HEAD
 			gpios = <&pioB 31 1>;
+=======
+			gpios = <&pioB 31 GPIO_ACTIVE_LOW>;
+>>>>>>> refs/remotes/origin/master
 		};
 	};
 
@@ -71,25 +99,41 @@
 
 		user_pb1 {
 			label = "user_pb1";
+<<<<<<< HEAD
 			gpios = <&pioB 25 1>;
+=======
+			gpios = <&pioB 25 GPIO_ACTIVE_LOW>;
+>>>>>>> refs/remotes/origin/master
 			linux,code = <0x100>;
 		};
 
 		user_pb2 {
 			label = "user_pb2";
+<<<<<<< HEAD
 			gpios = <&pioB 13 1>;
+=======
+			gpios = <&pioB 13 GPIO_ACTIVE_LOW>;
+>>>>>>> refs/remotes/origin/master
 			linux,code = <0x101>;
 		};
 
 		user_pb3 {
 			label = "user_pb3";
+<<<<<<< HEAD
 			gpios = <&pioA 26 1>;
+=======
+			gpios = <&pioA 26 GPIO_ACTIVE_LOW>;
+>>>>>>> refs/remotes/origin/master
 			linux,code = <0x102>;
 		};
 
 		user_pb4 {
 			label = "user_pb4";
+<<<<<<< HEAD
 			gpios = <&pioC 9 1>;
+=======
+			gpios = <&pioC 9 GPIO_ACTIVE_LOW>;
+>>>>>>> refs/remotes/origin/master
 			linux,code = <0x103>;
 		};
 	};

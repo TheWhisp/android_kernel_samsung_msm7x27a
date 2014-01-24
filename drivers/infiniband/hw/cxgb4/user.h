@@ -32,7 +32,11 @@
 #ifndef __C4IW_USER_H__
 #define __C4IW_USER_H__
 
+<<<<<<< HEAD
 #define C4IW_UVERBS_ABI_VERSION	1
+=======
+#define C4IW_UVERBS_ABI_VERSION	2
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Make sure that all structs defined in this file remain laid out so

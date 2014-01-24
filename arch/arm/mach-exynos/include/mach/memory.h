@@ -15,8 +15,19 @@
 
 #define PLAT_PHYS_OFFSET		UL(0x40000000)
 
+<<<<<<< HEAD
 /* Maximum of 256MiB in one bank */
 #define MAX_PHYSMEM_BITS	32
 #define SECTION_SIZE_BITS	28
+=======
+#ifndef CONFIG_ARM_LPAE
+/* Maximum of 256MiB in one bank */
+#define MAX_PHYSMEM_BITS	32
+#define SECTION_SIZE_BITS	28
+#else
+#define MAX_PHYSMEM_BITS	36
+#define SECTION_SIZE_BITS	31
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_ARCH_MEMORY_H */

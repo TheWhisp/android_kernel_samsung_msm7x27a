@@ -18,6 +18,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/threads.h>
@@ -61,7 +66,11 @@ static bool debug;
 	} while (0)
 
 static int atir_minor;
+<<<<<<< HEAD
 static unsigned long pci_addr_phys;
+=======
+static phys_addr_t pci_addr_phys;
+>>>>>>> refs/remotes/origin/master
 static unsigned char *pci_addr_lin;
 
 static struct lirc_driver atir_driver;
@@ -72,6 +81,7 @@ static struct pci_dev *do_pci_probe(void)
 	my_dev = pci_get_device(PCI_VENDOR_ID_ATI,
 				PCI_DEVICE_ID_ATI_264VT, NULL);
 	if (my_dev) {
+<<<<<<< HEAD
 		printk(KERN_ERR DRIVER_NAME ": Using device: %s\n",
 		       pci_name(my_dev));
 		pci_addr_phys = 0;
@@ -86,6 +96,21 @@ static struct pci_dev *do_pci_probe(void)
 		}
 	} else {
 		printk(KERN_ERR DRIVER_NAME ": pci_probe failed\n");
+=======
+		pr_err("Using device: %s\n", pci_name(my_dev));
+		pci_addr_phys = 0;
+		if (my_dev->resource[0].flags & IORESOURCE_MEM) {
+			pci_addr_phys = my_dev->resource[0].start;
+			pr_info("memory at %pa\n", &pci_addr_phys);
+		}
+		if (pci_addr_phys == 0) {
+			pr_err("no memory resource ?\n");
+			pci_dev_put(my_dev);
+			return NULL;
+		}
+	} else {
+		pr_err("pci_probe failed\n");
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 	return my_dev;
@@ -119,19 +144,38 @@ static void atir_set_use_dec(void *data)
 int init_module(void)
 {
 	struct pci_dev *pdev;
+<<<<<<< HEAD
+=======
+	int rc;
+>>>>>>> refs/remotes/origin/master
 
 	pdev = do_pci_probe();
 	if (pdev == NULL)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	if (!atir_init_start())
 		return -ENODEV;
+=======
+	rc = pci_enable_device(pdev);
+	if (rc)
+		goto err_put_dev;
+
+	if (!atir_init_start()) {
+		rc = -ENODEV;
+		goto err_disable;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	strcpy(atir_driver.name, "ATIR");
 	atir_driver.minor       = -1;
 	atir_driver.code_length = 8;
 	atir_driver.sample_rate = 10;
+<<<<<<< HEAD
 	atir_driver.data        = 0;
+=======
+	atir_driver.data        = NULL;
+>>>>>>> refs/remotes/origin/master
 	atir_driver.add_to_buf  = atir_add_to_buf;
 	atir_driver.set_use_inc = atir_set_use_inc;
 	atir_driver.set_use_dec = atir_set_use_dec;
@@ -140,26 +184,57 @@ int init_module(void)
 
 	atir_minor = lirc_register_driver(&atir_driver);
 	if (atir_minor < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR DRIVER_NAME ": failed to register driver!\n");
 		return atir_minor;
+=======
+		pr_err("failed to register driver!\n");
+		rc = atir_minor;
+		goto err_unmap;
+>>>>>>> refs/remotes/origin/master
 	}
 	dprintk("driver is registered on minor %d\n", atir_minor);
 
 	return 0;
+<<<<<<< HEAD
+=======
+
+err_unmap:
+	iounmap(pci_addr_lin);
+err_disable:
+	pci_disable_device(pdev);
+err_put_dev:
+	pci_dev_put(pdev);
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 
 void cleanup_module(void)
 {
+<<<<<<< HEAD
 	lirc_unregister_driver(atir_minor);
+=======
+	struct pci_dev *pdev = to_pci_dev(atir_driver.dev);
+
+	lirc_unregister_driver(atir_minor);
+	iounmap(pci_addr_lin);
+	pci_disable_device(pdev);
+	pci_dev_put(pdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 
 static int atir_init_start(void)
 {
 	pci_addr_lin = ioremap(pci_addr_phys + DATA_PCI_OFF, 0x400);
+<<<<<<< HEAD
 	if (pci_addr_lin == 0) {
 		printk(KERN_INFO DRIVER_NAME ": pci mem must be mapped\n");
+=======
+	if (!pci_addr_lin) {
+		pr_info("pci mem must be mapped\n");
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	return 1;
@@ -171,7 +246,11 @@ static void cycle_delay(int cycle)
 }
 
 
+<<<<<<< HEAD
 static int poll_main()
+=======
+static int poll_main(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char status_high, status_low;
 

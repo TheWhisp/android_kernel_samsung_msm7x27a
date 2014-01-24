@@ -19,22 +19,36 @@
 #include <linux/rculist_bl.h>
 #include <linux/completion.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/rbtree.h>
 #include <linux/ktime.h>
 #include <linux/percpu.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/rbtree.h>
+#include <linux/ktime.h>
+#include <linux/percpu.h>
+#include <linux/lockref.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DIO_WAIT	0x00000010
 #define DIO_METADATA	0x00000020
 
 struct gfs2_log_operations;
+<<<<<<< HEAD
 struct gfs2_log_element;
+=======
+struct gfs2_bufdata;
+>>>>>>> refs/remotes/origin/master
 struct gfs2_holder;
 struct gfs2_glock;
 struct gfs2_quota_data;
 struct gfs2_trans;
+<<<<<<< HEAD
 struct gfs2_ail;
+=======
+>>>>>>> refs/remotes/origin/master
 struct gfs2_jdesc;
 struct gfs2_sbd;
 struct lm_lockops;
@@ -55,9 +69,14 @@ struct gfs2_log_header_host {
  */
 
 struct gfs2_log_operations {
+<<<<<<< HEAD
 	void (*lo_add) (struct gfs2_sbd *sdp, struct gfs2_log_element *le);
 	void (*lo_before_commit) (struct gfs2_sbd *sdp);
 	void (*lo_after_commit) (struct gfs2_sbd *sdp, struct gfs2_ail *ai);
+=======
+	void (*lo_before_commit) (struct gfs2_sbd *sdp);
+	void (*lo_after_commit) (struct gfs2_sbd *sdp, struct gfs2_trans *tr);
+>>>>>>> refs/remotes/origin/master
 	void (*lo_before_scan) (struct gfs2_jdesc *jd,
 				struct gfs2_log_header_host *head, int pass);
 	int (*lo_scan_elements) (struct gfs2_jdesc *jd, unsigned int start,
@@ -67,11 +86,14 @@ struct gfs2_log_operations {
 	const char *lo_name;
 };
 
+<<<<<<< HEAD
 struct gfs2_log_element {
 	struct list_head le_list;
 	const struct gfs2_log_operations *le_ops;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define GBF_FULL 1
 
 struct gfs2_bitmap {
@@ -81,6 +103,7 @@ struct gfs2_bitmap {
 	u32 bi_offset;
 	u32 bi_start;
 	u32 bi_len;
+<<<<<<< HEAD
 };
 
 struct gfs2_rgrpd {
@@ -90,6 +113,13 @@ struct gfs2_rgrpd {
 =======
 	struct rb_node rd_node;		/* Link with superblock */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 bi_blocks;
+};
+
+struct gfs2_rgrpd {
+	struct rb_node rd_node;		/* Link with superblock */
+>>>>>>> refs/remotes/origin/master
 	struct gfs2_glock *rd_gl;	/* Glock for this rgrp */
 	u64 rd_addr;			/* grp block disk address */
 	u64 rd_data0;			/* first data location */
@@ -97,10 +127,15 @@ struct gfs2_rgrpd {
 	u32 rd_data;			/* num of data blocks in rgrp */
 	u32 rd_bitbytes;		/* number of bytes in data bitmaps */
 	u32 rd_free;
+<<<<<<< HEAD
+=======
+	u32 rd_reserved;                /* number of blocks reserved */
+>>>>>>> refs/remotes/origin/master
 	u32 rd_free_clone;
 	u32 rd_dinodes;
 	u64 rd_igeneration;
 	struct gfs2_bitmap *rd_bits;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct mutex rd_mutex;
 	struct gfs2_log_element rd_le;
@@ -111,10 +146,18 @@ struct gfs2_rgrpd {
 >>>>>>> refs/remotes/origin/cm-10.0
 	u32 rd_last_alloc;
 	u32 rd_flags;
+=======
+	struct gfs2_sbd *rd_sbd;
+	struct gfs2_rgrp_lvb *rd_rgl;
+	u32 rd_last_alloc;
+	u32 rd_flags;
+	u32 rd_extfail_pt;		/* extent failure point */
+>>>>>>> refs/remotes/origin/master
 #define GFS2_RDF_CHECK		0x10000000 /* check for unlinked inodes */
 #define GFS2_RDF_UPTODATE	0x20000000 /* rg is up to date */
 #define GFS2_RDF_ERROR		0x40000000 /* error in rg */
 #define GFS2_RDF_MASK		0xf0000000 /* mask for internal flags */
+<<<<<<< HEAD
 };
 
 enum gfs2_state_bits {
@@ -124,6 +167,40 @@ enum gfs2_state_bits {
 =======
 	BH_Zeronew = BH_PrivateStart + 2,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spinlock_t rd_rsspin;           /* protects reservation related vars */
+	struct rb_root rd_rstree;       /* multi-block reservation tree */
+};
+
+struct gfs2_rbm {
+	struct gfs2_rgrpd *rgd;
+	u32 offset;		/* The offset is bitmap relative */
+	int bii;		/* Bitmap index */
+};
+
+static inline struct gfs2_bitmap *rbm_bi(const struct gfs2_rbm *rbm)
+{
+	return rbm->rgd->rd_bits + rbm->bii;
+}
+
+static inline u64 gfs2_rbm_to_block(const struct gfs2_rbm *rbm)
+{
+	return rbm->rgd->rd_data0 + (rbm_bi(rbm)->bi_start * GFS2_NBBY) +
+		rbm->offset;
+}
+
+static inline bool gfs2_rbm_eq(const struct gfs2_rbm *rbm1,
+			       const struct gfs2_rbm *rbm2)
+{
+	return (rbm1->rgd == rbm2->rgd) && (rbm1->bii == rbm2->bii) &&
+	       (rbm1->offset == rbm2->offset);
+}
+
+enum gfs2_state_bits {
+	BH_Pinned = BH_PrivateStart,
+	BH_Escaped = BH_PrivateStart + 1,
+	BH_Zeronew = BH_PrivateStart + 2,
+>>>>>>> refs/remotes/origin/master
 };
 
 BUFFER_FNS(Pinned, pinned)
@@ -131,14 +208,20 @@ TAS_BUFFER_FNS(Pinned, pinned)
 BUFFER_FNS(Escaped, escaped)
 TAS_BUFFER_FNS(Escaped, escaped)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 BUFFER_FNS(Zeronew, zeronew)
 TAS_BUFFER_FNS(Zeronew, zeronew)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+BUFFER_FNS(Zeronew, zeronew)
+TAS_BUFFER_FNS(Zeronew, zeronew)
+>>>>>>> refs/remotes/origin/master
 
 struct gfs2_bufdata {
 	struct buffer_head *bd_bh;
 	struct gfs2_glock *bd_gl;
+<<<<<<< HEAD
 
 	union {
 		struct list_head list_tr;
@@ -150,6 +233,14 @@ struct gfs2_bufdata {
 	struct gfs2_log_element bd_le;
 
 	struct gfs2_ail *bd_ail;
+=======
+	u64 bd_blkno;
+
+	struct list_head bd_list;
+	const struct gfs2_log_operations *bd_ops;
+
+	struct gfs2_trans *bd_tr;
+>>>>>>> refs/remotes/origin/master
 	struct list_head bd_ail_st_list;
 	struct list_head bd_ail_gl_list;
 };
@@ -163,9 +254,12 @@ struct gfs2_bufdata {
 #define GDLM_LVB_SIZE		32
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum {
 	DFL_BLOCK_LOCKS		= 0,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * ls_recover_flags:
  *
@@ -205,7 +299,10 @@ enum {
 	DFL_MOUNT_DONE		= 4,
 	DFL_UNMOUNT		= 5,
 	DFL_DLM_RECOVERY	= 6,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct lm_lockname {
@@ -219,12 +316,17 @@ struct lm_lockname {
 
 
 struct gfs2_glock_operations {
+<<<<<<< HEAD
 	void (*go_xmote_th) (struct gfs2_glock *gl);
+=======
+	void (*go_sync) (struct gfs2_glock *gl);
+>>>>>>> refs/remotes/origin/master
 	int (*go_xmote_bh) (struct gfs2_glock *gl, struct gfs2_holder *gh);
 	void (*go_inval) (struct gfs2_glock *gl, int flags);
 	int (*go_demote_ok) (const struct gfs2_glock *gl);
 	int (*go_lock) (struct gfs2_holder *gh);
 	void (*go_unlock) (struct gfs2_holder *gh);
+<<<<<<< HEAD
 	int (*go_dump)(struct seq_file *seq, const struct gfs2_glock *gl);
 	void (*go_callback) (struct gfs2_glock *gl);
 	const int go_type;
@@ -239,6 +341,17 @@ struct gfs2_glock_operations {
 enum {
 <<<<<<< HEAD
 =======
+=======
+	void (*go_dump)(struct seq_file *seq, const struct gfs2_glock *gl);
+	void (*go_callback)(struct gfs2_glock *gl, bool remote);
+	const int go_type;
+	const unsigned long go_flags;
+#define GLOF_ASPACE 1
+#define GLOF_LVB    2
+};
+
+enum {
+>>>>>>> refs/remotes/origin/master
 	GFS2_LKS_SRTT = 0,	/* Non blocking smoothed round trip time */
 	GFS2_LKS_SRTTVAR = 1,	/* Non blocking smoothed variance */
 	GFS2_LKS_SRTTB = 2,	/* Blocking smoothed round trip time */
@@ -255,7 +368,10 @@ struct gfs2_lkstats {
 };
 
 enum {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* States */
 	HIF_HOLDER		= 6,  /* Set for gh that "holds" the glock */
 	HIF_FIRST		= 7,
@@ -275,6 +391,48 @@ struct gfs2_holder {
 	unsigned long gh_ip;
 };
 
+<<<<<<< HEAD
+=======
+/* Resource group multi-block reservation, in order of appearance:
+
+   Step 1. Function prepares to write, allocates a mb, sets the size hint.
+   Step 2. User calls inplace_reserve to target an rgrp, sets the rgrp info
+   Step 3. Function get_local_rgrp locks the rgrp, determines which bits to use
+   Step 4. Bits are assigned from the rgrp based on either the reservation
+           or wherever it can.
+*/
+
+struct gfs2_blkreserv {
+	/* components used during write (step 1): */
+	atomic_t rs_sizehint;         /* hint of the write size */
+
+	struct gfs2_holder rs_rgd_gh; /* Filled in by get_local_rgrp */
+	struct rb_node rs_node;       /* link to other block reservations */
+	struct gfs2_rbm rs_rbm;       /* Start of reservation */
+	u32 rs_free;                  /* how many blocks are still free */
+	u64 rs_inum;                  /* Inode number for reservation */
+
+	/* ancillary quota stuff */
+	struct gfs2_quota_data *rs_qa_qd[2 * MAXQUOTAS];
+	struct gfs2_holder rs_qa_qd_ghs[2 * MAXQUOTAS];
+	unsigned int rs_qa_qd_num;
+};
+
+/*
+ * Allocation parameters
+ * @target: The number of blocks we'd ideally like to allocate
+ * @aflags: The flags (e.g. Orlov flag)
+ *
+ * The intent is to gradually expand this structure over time in
+ * order to give more information, e.g. alignment, min extent size
+ * to the allocation code.
+ */
+struct gfs2_alloc_parms {
+	u32 target;
+	u32 aflags;
+};
+
+>>>>>>> refs/remotes/origin/master
 enum {
 	GLF_LOCK			= 1,
 	GLF_DEMOTE			= 3,
@@ -290,13 +448,18 @@ enum {
 	GLF_LRU				= 13,
 	GLF_OBJECT			= 14, /* Used only for tracing */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	GLF_BLOCKING			= 15,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	GLF_BLOCKING			= 15,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct gfs2_glock {
 	struct hlist_bl_node gl_list;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	struct gfs2_sbd *gl_sbd;
@@ -306,6 +469,14 @@ struct gfs2_glock {
 	atomic_t gl_ref;
 
 	spinlock_t gl_spin;
+=======
+	struct gfs2_sbd *gl_sbd;
+	unsigned long gl_flags;		/* GLF_... */
+	struct lm_lockname gl_name;
+
+	struct lockref gl_lockref;
+#define gl_spin gl_lockref.lock
+>>>>>>> refs/remotes/origin/master
 
 	/* State fields protected by gl_spin */
 	unsigned int gl_state:2,	/* Current state */
@@ -317,40 +488,63 @@ struct gfs2_glock {
 	unsigned int gl_hash;
 	unsigned long gl_demote_time; /* time of first demote request */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head gl_holders;
 
 	const struct gfs2_glock_operations *gl_ops;
 	char gl_strname[GDLM_STRNAME_BYTES];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long gl_hold_time;
 	struct list_head gl_holders;
 
 	const struct gfs2_glock_operations *gl_ops;
 	ktime_t gl_dstamp;
 	struct gfs2_lkstats gl_stats;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct dlm_lksb gl_lksb;
 	char gl_lvb[32];
+=======
+	struct dlm_lksb gl_lksb;
+>>>>>>> refs/remotes/origin/master
 	unsigned long gl_tchange;
 	void *gl_object;
 
 	struct list_head gl_lru;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	struct gfs2_sbd *gl_sbd;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head gl_ail_list;
 	atomic_t gl_ail_count;
 	atomic_t gl_revokes;
 	struct delayed_work gl_work;
+<<<<<<< HEAD
 	struct work_struct gl_delete;
+=======
+	union {
+		/* For inode and iopen glocks only */
+		struct work_struct gl_delete;
+		/* For rgrp glocks only */
+		struct {
+			loff_t start;
+			loff_t end;
+		} gl_vm;
+	};
+>>>>>>> refs/remotes/origin/master
 	struct rcu_head gl_rcu;
 };
 
 #define GFS2_MIN_LVB_SIZE 32	/* Min size of LVB that gfs2 supports */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct gfs2_alloc {
 	/* Quota stuff */
@@ -395,6 +589,16 @@ enum {
 };
 
 
+=======
+enum {
+	GIF_INVALID		= 0,
+	GIF_QD_LOCKED		= 1,
+	GIF_ALLOC_FAILED	= 2,
+	GIF_SW_PAGED		= 3,
+	GIF_ORDERED		= 4,
+};
+
+>>>>>>> refs/remotes/origin/master
 struct gfs2_inode {
 	struct inode i_inode;
 	u64 i_no_addr;
@@ -405,6 +609,7 @@ struct gfs2_inode {
 	struct gfs2_glock *i_gl; /* Move into i_gh? */
 	struct gfs2_holder i_iopen_gh;
 	struct gfs2_holder i_gh; /* for prepare/commit_write only */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct gfs2_alloc *i_alloc;
 	u64 i_goal;	/* goal block for allocations */
@@ -419,6 +624,15 @@ struct gfs2_inode {
 	struct list_head i_trunc_list;
 	__be64 *i_hash_cache;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct gfs2_blkreserv *i_res; /* rgrp multi-block reservation */
+	struct gfs2_rgrpd *i_rgd;
+	u64 i_goal;	/* goal block for allocations */
+	struct rw_semaphore i_rw_mutex;
+	struct list_head i_ordered;
+	struct list_head i_trunc_list;
+	__be64 *i_hash_cache;
+>>>>>>> refs/remotes/origin/master
 	u32 i_entries;
 	u32 i_diskflags;
 	u8 i_height;
@@ -451,19 +665,33 @@ struct gfs2_revoke_replay {
 };
 
 enum {
+<<<<<<< HEAD
 	QDF_USER		= 0,
+=======
+>>>>>>> refs/remotes/origin/master
 	QDF_CHANGE		= 1,
 	QDF_LOCKED		= 2,
 	QDF_REFRESH		= 3,
 };
 
 struct gfs2_quota_data {
+<<<<<<< HEAD
 	struct list_head qd_list;
 	struct list_head qd_reclaim;
 
 	atomic_t qd_count;
 
 	u32 qd_id;
+=======
+	struct hlist_bl_node qd_hlist;
+	struct list_head qd_list;
+	struct kqid qd_id;
+	struct gfs2_sbd *qd_sbd;
+	struct lockref qd_lockref;
+	struct list_head qd_lru;
+	unsigned qd_hash;
+
+>>>>>>> refs/remotes/origin/master
 	unsigned long qd_flags;		/* QDF_... */
 
 	s64 qd_change;
@@ -481,6 +709,10 @@ struct gfs2_quota_data {
 
 	u64 qd_sync_gen;
 	unsigned long qd_last_warn;
+<<<<<<< HEAD
+=======
+	struct rcu_head qd_rcu;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct gfs2_trans {
@@ -493,12 +725,18 @@ struct gfs2_trans {
 	struct gfs2_holder tr_t_gh;
 
 	int tr_touched;
+<<<<<<< HEAD
 
 	unsigned int tr_num_buf;
+=======
+	int tr_attached;
+
+>>>>>>> refs/remotes/origin/master
 	unsigned int tr_num_buf_new;
 	unsigned int tr_num_databuf_new;
 	unsigned int tr_num_buf_rm;
 	unsigned int tr_num_databuf_rm;
+<<<<<<< HEAD
 	struct list_head tr_list_buf;
 
 	unsigned int tr_num_revoke;
@@ -511,6 +749,16 @@ struct gfs2_ail {
 	unsigned int ai_first;
 	struct list_head ai_ail1_list;
 	struct list_head ai_ail2_list;
+=======
+	unsigned int tr_num_revoke;
+	unsigned int tr_num_revoke_rm;
+
+	struct list_head tr_list;
+
+	unsigned int tr_first;
+	struct list_head tr_ail1_list;
+	struct list_head tr_ail2_list;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct gfs2_journal_extent {
@@ -531,9 +779,13 @@ struct gfs2_jdesc {
 	unsigned int jd_jid;
 	unsigned int jd_blocks;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int jd_recover_error;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int jd_recover_error;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct gfs2_statfs_change_host {
@@ -572,6 +824,10 @@ struct gfs2_args {
 	unsigned int ar_discard:1;		/* discard requests */
 	unsigned int ar_errors:2;               /* errors=withdraw | panic */
 	unsigned int ar_nobarrier:1;            /* do not send barriers */
+<<<<<<< HEAD
+=======
+	unsigned int ar_rgrplvb:1;		/* use lvbs for rgrp info */
+>>>>>>> refs/remotes/origin/master
 	int ar_commit;				/* Commit interval */
 	int ar_statfs_quantum;			/* The fast statfs interval */
 	int ar_quota_quantum;			/* The quota interval */
@@ -583,7 +839,10 @@ struct gfs2_tune {
 
 	unsigned int gt_logd_secs;
 
+<<<<<<< HEAD
 	unsigned int gt_quota_simul_sync; /* Max quotavals to sync at once */
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int gt_quota_warn_period; /* Secs between quota warn msgs */
 	unsigned int gt_quota_scale_num; /* Numerator */
 	unsigned int gt_quota_scale_den; /* Denominator */
@@ -604,9 +863,14 @@ enum {
 	SDF_DEMOTE		= 5,
 	SDF_NOJOURNALID		= 6,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	SDF_RORECOVERY		= 7, /* read only recovery */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SDF_RORECOVERY		= 7, /* read only recovery */
+	SDF_SKIP_DLM_UNLOCK	= 8,
+>>>>>>> refs/remotes/origin/master
 };
 
 #define GFS2_FSNAME_LEN		256
@@ -646,6 +910,7 @@ struct lm_lockstruct {
 	int ls_jid;
 	unsigned int ls_first;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int ls_first_done;
 	unsigned int ls_nodir;
 	const struct lm_lockops *ls_ops;
@@ -656,6 +921,8 @@ struct lm_lockstruct {
 	int ls_recover_jid_status;
 =======
 	unsigned int ls_nodir;
+=======
+>>>>>>> refs/remotes/origin/master
 	const struct lm_lockops *ls_ops;
 	dlm_lockspace_t *ls_dlm;
 
@@ -666,6 +933,10 @@ struct lm_lockstruct {
 	struct dlm_lksb ls_control_lksb; /* control_lock */
 	char ls_control_lvb[GDLM_LVB_SIZE]; /* control_lock lvb */
 	struct completion ls_sync_wait; /* {control,mounted}_{lock,unlock} */
+<<<<<<< HEAD
+=======
+	char *ls_lvb_bits;
+>>>>>>> refs/remotes/origin/master
 
 	spinlock_t ls_recover_spin; /* protects following fields */
 	unsigned long ls_recover_flags; /* DFL_ */
@@ -680,15 +951,22 @@ struct lm_lockstruct {
 struct gfs2_pcpu_lkstats {
 	/* One struct for each glock type */
 	struct gfs2_lkstats lkstats[10];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct gfs2_sbd {
 	struct super_block *sd_vfs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct gfs2_pcpu_lkstats __percpu *sd_lkstats;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct gfs2_pcpu_lkstats __percpu *sd_lkstats;
+>>>>>>> refs/remotes/origin/master
 	struct kobject sd_kobj;
 	unsigned long sd_flags;	/* SDF_... */
 	struct gfs2_sb_host sd_sb;
@@ -704,6 +982,10 @@ struct gfs2_sbd {
 	u32 sd_hash_bsize_shift;
 	u32 sd_hash_ptrs;	/* Number of pointers in a hash block */
 	u32 sd_qc_per_block;
+<<<<<<< HEAD
+=======
+	u32 sd_blocks_per_bitmap;
+>>>>>>> refs/remotes/origin/master
 	u32 sd_max_dirres;	/* Max blocks needed to add a directory entry */
 	u32 sd_max_height;	/* Max height of a file's metadata tree */
 	u64 sd_heightsize[GFS2_MAX_META_HEIGHT + 1];
@@ -723,9 +1005,14 @@ struct gfs2_sbd {
 	atomic_t sd_glock_disposal;
 	struct completion sd_locking_init;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct delayed_work sd_control_work;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct completion sd_wdack;
+	struct delayed_work sd_control_work;
+>>>>>>> refs/remotes/origin/master
 
 	/* Inode Stuff */
 
@@ -751,6 +1038,7 @@ struct gfs2_sbd {
 	int sd_rindex_uptodate;
 	spinlock_t sd_rindex_spin;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mutex sd_rindex_mutex;
 	struct list_head sd_rindex_list;
 	struct list_head sd_rindex_mru_list;
@@ -758,6 +1046,9 @@ struct gfs2_sbd {
 =======
 	struct rb_root sd_rindex_tree;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct rb_root sd_rindex_tree;
+>>>>>>> refs/remotes/origin/master
 	unsigned int sd_rgrps;
 	unsigned int sd_max_rg_data;
 
@@ -785,20 +1076,37 @@ struct gfs2_sbd {
 	struct list_head sd_quota_list;
 	atomic_t sd_quota_count;
 	struct mutex sd_quota_mutex;
+<<<<<<< HEAD
+=======
+	struct mutex sd_quota_sync_mutex;
+>>>>>>> refs/remotes/origin/master
 	wait_queue_head_t sd_quota_wait;
 	struct list_head sd_trunc_list;
 	spinlock_t sd_trunc_lock;
 
 	unsigned int sd_quota_slots;
+<<<<<<< HEAD
 	unsigned int sd_quota_chunks;
 	unsigned char **sd_quota_bitmap;
+=======
+	unsigned long *sd_quota_bitmap;
+	spinlock_t sd_bitmap_lock;
+>>>>>>> refs/remotes/origin/master
 
 	u64 sd_quota_sync_gen;
 
 	/* Log stuff */
 
+<<<<<<< HEAD
 	spinlock_t sd_log_lock;
 
+=======
+	struct address_space sd_aspace;
+
+	spinlock_t sd_log_lock;
+
+	struct gfs2_trans *sd_log_tr;
+>>>>>>> refs/remotes/origin/master
 	unsigned int sd_log_blks_reserved;
 	unsigned int sd_log_commited_buf;
 	unsigned int sd_log_commited_databuf;
@@ -812,9 +1120,15 @@ struct gfs2_sbd {
 
 	struct list_head sd_log_le_buf;
 	struct list_head sd_log_le_revoke;
+<<<<<<< HEAD
 	struct list_head sd_log_le_rg;
 	struct list_head sd_log_le_databuf;
 	struct list_head sd_log_le_ordered;
+=======
+	struct list_head sd_log_le_databuf;
+	struct list_head sd_log_le_ordered;
+	spinlock_t sd_ordered_lock;
+>>>>>>> refs/remotes/origin/master
 
 	atomic_t sd_log_thresh1;
 	atomic_t sd_log_thresh2;
@@ -829,7 +1143,13 @@ struct gfs2_sbd {
 
 	struct rw_semaphore sd_log_flush_lock;
 	atomic_t sd_log_in_flight;
+<<<<<<< HEAD
 	wait_queue_head_t sd_log_flush_wait;
+=======
+	struct bio *sd_log_bio;
+	wait_queue_head_t sd_log_flush_wait;
+	int sd_log_error;
+>>>>>>> refs/remotes/origin/master
 
 	unsigned int sd_log_flush_head;
 	u64 sd_log_flush_wrapped;
@@ -848,10 +1168,14 @@ struct gfs2_sbd {
 	unsigned int sd_replayed_blocks;
 
 	/* For quiescing the filesystem */
+<<<<<<< HEAD
 
 	struct gfs2_holder sd_freeze_gh;
 	struct mutex sd_freeze_lock;
 	unsigned int sd_freeze_count;
+=======
+	struct gfs2_holder sd_freeze_gh;
+>>>>>>> refs/remotes/origin/master
 
 	char sd_fsname[GFS2_FSNAME_LEN];
 	char sd_table_name[GFS2_FSNAME_LEN];
@@ -862,10 +1186,13 @@ struct gfs2_sbd {
 	unsigned long sd_last_warning;
 	struct dentry *debugfs_dir;    /* debugfs directory */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dentry *debugfs_dentry_glocks; /* for debugfs */
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dentry *debugfs_dentry_glocks;
 	struct dentry *debugfs_dentry_glstats;
 	struct dentry *debugfs_dentry_sbstats;
@@ -884,6 +1211,9 @@ static inline void gfs2_sbstats_inc(const struct gfs2_glock *gl, int which)
 	preempt_enable();
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __INCORE_DOT_H__ */
 

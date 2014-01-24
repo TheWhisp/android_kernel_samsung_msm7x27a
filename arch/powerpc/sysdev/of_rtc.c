@@ -11,6 +11,10 @@
 #include <linux/kernel.h>
 #include <linux/of.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <linux/slab.h>
 

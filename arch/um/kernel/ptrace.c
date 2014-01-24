@@ -3,11 +3,20 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
 #include "linux/audit.h"
 #include "linux/ptrace.h"
 #include "linux/sched.h"
 #include "asm/uaccess.h"
 #include "skas_ptrace.h"
+=======
+#include <linux/audit.h>
+#include <linux/ptrace.h>
+#include <linux/sched.h>
+#include <linux/tracehook.h>
+#include <asm/uaccess.h>
+#include <skas_ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 
 
@@ -51,6 +60,7 @@ long arch_ptrace(struct task_struct *child, long request,
 
 	switch (request) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* read word at location addr. */
 	case PTRACE_PEEKTEXT:
 	case PTRACE_PEEKDATA:
@@ -59,11 +69,14 @@ long arch_ptrace(struct task_struct *child, long request,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* read the word at location addr in the USER area. */
 	case PTRACE_PEEKUSR:
 		ret = peek_user(child, addr, data);
 		break;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* write the word at location addr. */
 	case PTRACE_POKETEXT:
@@ -73,6 +86,8 @@ long arch_ptrace(struct task_struct *child, long request,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* write the word at location addr in the USER area */
 	case PTRACE_POKEUSR:
 		ret = poke_user(child, addr, data);
@@ -114,6 +129,7 @@ long arch_ptrace(struct task_struct *child, long request,
 	}
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef PTRACE_GETFPREGS
 	case PTRACE_GETFPREGS: /* Get the child FPU state. */
 		ret = get_fpregs(vp, child);
@@ -126,6 +142,8 @@ long arch_ptrace(struct task_struct *child, long request,
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case PTRACE_GET_THREAD_AREA:
 		ret = ptrace_get_thread_area(child, addr, vp);
 		break;
@@ -164,6 +182,7 @@ long arch_ptrace(struct task_struct *child, long request,
 	}
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef PTRACE_ARCH_PRCTL
 	case PTRACE_ARCH_PRCTL:
 		/* XXX Calls ptrace on the host - needs some SMP thinking */
@@ -172,6 +191,8 @@ long arch_ptrace(struct task_struct *child, long request,
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		ret = ptrace_request(child, request, addr, data);
 		if (ret == -EIO)
@@ -202,6 +223,7 @@ static void send_sigtrap(struct task_struct *tsk, struct uml_pt_regs *regs,
  * XXX Check PT_DTRACE vs TIF_SINGLESTEP for singlestepping check and
  * PT_PTRACED vs TIF_SYSCALL_TRACE for syscall tracing check
  */
+<<<<<<< HEAD
 void syscall_trace(struct uml_pt_regs *regs, int entryexit)
 {
 	int is_singlestep = (current->ptrace & PT_DTRACE) && entryexit;
@@ -234,10 +256,21 @@ void syscall_trace(struct uml_pt_regs *regs, int entryexit)
 	/* Fake a debug trap */
 	if (is_singlestep)
 		send_sigtrap(current, regs, 0);
+=======
+void syscall_trace_enter(struct pt_regs *regs)
+{
+	audit_syscall_entry(HOST_AUDIT_ARCH,
+			    UPT_SYSCALL_NR(&regs->regs),
+			    UPT_SYSCALL_ARG1(&regs->regs),
+			    UPT_SYSCALL_ARG2(&regs->regs),
+			    UPT_SYSCALL_ARG3(&regs->regs),
+			    UPT_SYSCALL_ARG4(&regs->regs));
+>>>>>>> refs/remotes/origin/master
 
 	if (!test_thread_flag(TIF_SYSCALL_TRACE))
 		return;
 
+<<<<<<< HEAD
 	if (!(current->ptrace & PT_PTRACED))
 		return;
 
@@ -260,4 +293,26 @@ void syscall_trace(struct uml_pt_regs *regs, int entryexit)
 		send_sig(current->exit_code, current, 1);
 		current->exit_code = 0;
 	}
+=======
+	tracehook_report_syscall_entry(regs);
+}
+
+void syscall_trace_leave(struct pt_regs *regs)
+{
+	int ptraced = current->ptrace;
+
+	audit_syscall_exit(regs);
+
+	/* Fake a debug trap */
+	if (ptraced & PT_DTRACE)
+		send_sigtrap(current, &regs->regs, 0);
+
+	if (!test_thread_flag(TIF_SYSCALL_TRACE))
+		return;
+
+	tracehook_report_syscall_exit(regs, 0);
+	/* force do_signal() --> is_syscall() */
+	if (ptraced & PT_PTRACED)
+		set_thread_flag(TIF_SIGPENDING);
+>>>>>>> refs/remotes/origin/master
 }

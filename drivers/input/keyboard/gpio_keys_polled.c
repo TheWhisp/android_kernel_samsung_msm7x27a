@@ -25,6 +25,12 @@
 #include <linux/platform_device.h>
 #include <linux/gpio.h>
 #include <linux/gpio_keys.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+#include <linux/of_platform.h>
+#include <linux/of_gpio.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_NAME	"gpio-keys-polled"
 
@@ -38,7 +44,11 @@ struct gpio_keys_button_data {
 struct gpio_keys_polled_dev {
 	struct input_polled_dev *poll_dev;
 	struct device *dev;
+<<<<<<< HEAD
 	struct gpio_keys_platform_data *pdata;
+=======
+	const struct gpio_keys_platform_data *pdata;
+>>>>>>> refs/remotes/origin/master
 	struct gpio_keys_button_data data[0];
 };
 
@@ -67,11 +77,19 @@ static void gpio_keys_polled_check_state(struct input_dev *input,
 static void gpio_keys_polled_poll(struct input_polled_dev *dev)
 {
 	struct gpio_keys_polled_dev *bdev = dev->private;
+<<<<<<< HEAD
 	struct gpio_keys_platform_data *pdata = bdev->pdata;
 	struct input_dev *input = dev->input;
 	int i;
 
 	for (i = 0; i < bdev->pdata->nbuttons; i++) {
+=======
+	const struct gpio_keys_platform_data *pdata = bdev->pdata;
+	struct input_dev *input = dev->input;
+	int i;
+
+	for (i = 0; i < pdata->nbuttons; i++) {
+>>>>>>> refs/remotes/origin/master
 		struct gpio_keys_button_data *bdata = &bdev->data[i];
 
 		if (bdata->count < bdata->threshold)
@@ -85,7 +103,11 @@ static void gpio_keys_polled_poll(struct input_polled_dev *dev)
 static void gpio_keys_polled_open(struct input_polled_dev *dev)
 {
 	struct gpio_keys_polled_dev *bdev = dev->private;
+<<<<<<< HEAD
 	struct gpio_keys_platform_data *pdata = bdev->pdata;
+=======
+	const struct gpio_keys_platform_data *pdata = bdev->pdata;
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata->enable)
 		pdata->enable(bdev->dev);
@@ -94,31 +116,169 @@ static void gpio_keys_polled_open(struct input_polled_dev *dev)
 static void gpio_keys_polled_close(struct input_polled_dev *dev)
 {
 	struct gpio_keys_polled_dev *bdev = dev->private;
+<<<<<<< HEAD
 	struct gpio_keys_platform_data *pdata = bdev->pdata;
+=======
+	const struct gpio_keys_platform_data *pdata = bdev->pdata;
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata->disable)
 		pdata->disable(bdev->dev);
 }
 
+<<<<<<< HEAD
 static int __devinit gpio_keys_polled_probe(struct platform_device *pdev)
 {
 	struct gpio_keys_platform_data *pdata = pdev->dev.platform_data;
 	struct device *dev = &pdev->dev;
+=======
+#ifdef CONFIG_OF
+static struct gpio_keys_platform_data *gpio_keys_polled_get_devtree_pdata(struct device *dev)
+{
+	struct device_node *node, *pp;
+	struct gpio_keys_platform_data *pdata;
+	struct gpio_keys_button *button;
+	int error;
+	int nbuttons;
+	int i;
+
+	node = dev->of_node;
+	if (!node)
+		return NULL;
+
+	nbuttons = of_get_child_count(node);
+	if (nbuttons == 0)
+		return NULL;
+
+	pdata = kzalloc(sizeof(*pdata) + nbuttons * (sizeof *button),
+			GFP_KERNEL);
+	if (!pdata) {
+		error = -ENOMEM;
+		goto err_out;
+	}
+
+	pdata->buttons = (struct gpio_keys_button *)(pdata + 1);
+	pdata->nbuttons = nbuttons;
+
+	pdata->rep = !!of_get_property(node, "autorepeat", NULL);
+	of_property_read_u32(node, "poll-interval", &pdata->poll_interval);
+
+	i = 0;
+	for_each_child_of_node(node, pp) {
+		int gpio;
+		enum of_gpio_flags flags;
+
+		if (!of_find_property(pp, "gpios", NULL)) {
+			pdata->nbuttons--;
+			dev_warn(dev, "Found button without gpios\n");
+			continue;
+		}
+
+		gpio = of_get_gpio_flags(pp, 0, &flags);
+		if (gpio < 0) {
+			error = gpio;
+			if (error != -EPROBE_DEFER)
+				dev_err(dev,
+					"Failed to get gpio flags, error: %d\n",
+					error);
+			goto err_free_pdata;
+		}
+
+		button = &pdata->buttons[i++];
+
+		button->gpio = gpio;
+		button->active_low = flags & OF_GPIO_ACTIVE_LOW;
+
+		if (of_property_read_u32(pp, "linux,code", &button->code)) {
+			dev_err(dev, "Button without keycode: 0x%x\n",
+				button->gpio);
+			error = -EINVAL;
+			goto err_free_pdata;
+		}
+
+		button->desc = of_get_property(pp, "label", NULL);
+
+		if (of_property_read_u32(pp, "linux,input-type", &button->type))
+			button->type = EV_KEY;
+
+		button->wakeup = !!of_get_property(pp, "gpio-key,wakeup", NULL);
+
+		if (of_property_read_u32(pp, "debounce-interval",
+					 &button->debounce_interval))
+			button->debounce_interval = 5;
+	}
+
+	if (pdata->nbuttons == 0) {
+		error = -EINVAL;
+		goto err_free_pdata;
+	}
+
+	return pdata;
+
+err_free_pdata:
+	kfree(pdata);
+err_out:
+	return ERR_PTR(error);
+}
+
+static struct of_device_id gpio_keys_polled_of_match[] = {
+	{ .compatible = "gpio-keys-polled", },
+	{ },
+};
+MODULE_DEVICE_TABLE(of, gpio_keys_polled_of_match);
+
+#else
+
+static inline struct gpio_keys_platform_data *
+gpio_keys_polled_get_devtree_pdata(struct device *dev)
+{
+	return NULL;
+}
+#endif
+
+static int gpio_keys_polled_probe(struct platform_device *pdev)
+{
+	struct device *dev = &pdev->dev;
+	const struct gpio_keys_platform_data *pdata = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct gpio_keys_polled_dev *bdev;
 	struct input_polled_dev *poll_dev;
 	struct input_dev *input;
 	int error;
 	int i;
 
+<<<<<<< HEAD
 	if (!pdata || !pdata->poll_interval)
 		return -EINVAL;
+=======
+	if (!pdata) {
+		pdata = gpio_keys_polled_get_devtree_pdata(dev);
+		if (IS_ERR(pdata))
+			return PTR_ERR(pdata);
+		if (!pdata) {
+			dev_err(dev, "missing platform data\n");
+			return -EINVAL;
+		}
+	}
+
+	if (!pdata->poll_interval) {
+		dev_err(dev, "missing poll_interval value\n");
+		error = -EINVAL;
+		goto err_free_pdata;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	bdev = kzalloc(sizeof(struct gpio_keys_polled_dev) +
 		       pdata->nbuttons * sizeof(struct gpio_keys_button_data),
 		       GFP_KERNEL);
 	if (!bdev) {
 		dev_err(dev, "no memory for private data\n");
+<<<<<<< HEAD
 		return -ENOMEM;
+=======
+		error = -ENOMEM;
+		goto err_free_pdata;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	poll_dev = input_allocate_polled_device();
@@ -136,7 +296,10 @@ static int __devinit gpio_keys_polled_probe(struct platform_device *pdev)
 
 	input = poll_dev->input;
 
+<<<<<<< HEAD
 	input->evbit[0] = BIT(EV_KEY);
+=======
+>>>>>>> refs/remotes/origin/master
 	input->name = pdev->name;
 	input->phys = DRV_NAME"/input0";
 	input->dev.parent = &pdev->dev;
@@ -146,6 +309,13 @@ static int __devinit gpio_keys_polled_probe(struct platform_device *pdev)
 	input->id.product = 0x0001;
 	input->id.version = 0x0100;
 
+<<<<<<< HEAD
+=======
+	__set_bit(EV_KEY, input->evbit);
+	if (pdata->rep)
+		__set_bit(EV_REP, input->evbit);
+
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < pdata->nbuttons; i++) {
 		struct gpio_keys_button *button = &pdata->buttons[i];
 		struct gpio_keys_button_data *bdata = &bdev->data[i];
@@ -158,14 +328,20 @@ static int __devinit gpio_keys_polled_probe(struct platform_device *pdev)
 			goto err_free_gpio;
 		}
 
+<<<<<<< HEAD
 		error = gpio_request(gpio,
 				     button->desc ? button->desc : DRV_NAME);
+=======
+		error = gpio_request_one(gpio, GPIOF_IN,
+					 button->desc ?: DRV_NAME);
+>>>>>>> refs/remotes/origin/master
 		if (error) {
 			dev_err(dev, "unable to claim gpio %u, err=%d\n",
 				gpio, error);
 			goto err_free_gpio;
 		}
 
+<<<<<<< HEAD
 		error = gpio_direction_input(gpio);
 		if (error) {
 			dev_err(dev,
@@ -174,6 +350,8 @@ static int __devinit gpio_keys_polled_probe(struct platform_device *pdev)
 			goto err_free_gpio;
 		}
 
+=======
+>>>>>>> refs/remotes/origin/master
 		bdata->can_sleep = gpio_cansleep(gpio);
 		bdata->last_state = -1;
 		bdata->threshold = DIV_ROUND_UP(button->debounce_interval,
@@ -197,7 +375,11 @@ static int __devinit gpio_keys_polled_probe(struct platform_device *pdev)
 	/* report initial state of the buttons */
 	for (i = 0; i < pdata->nbuttons; i++)
 		gpio_keys_polled_check_state(input, &pdata->buttons[i],
+<<<<<<< HEAD
 					 &bdev->data[i]);
+=======
+					     &bdev->data[i]);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -210,6 +392,7 @@ err_free_gpio:
 err_free_bdev:
 	kfree(bdev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 	return error;
 }
@@ -218,6 +401,20 @@ static int __devexit gpio_keys_polled_remove(struct platform_device *pdev)
 {
 	struct gpio_keys_polled_dev *bdev = platform_get_drvdata(pdev);
 	struct gpio_keys_platform_data *pdata = bdev->pdata;
+=======
+err_free_pdata:
+	/* If we have no platform_data, we allocated pdata dynamically.  */
+	if (!dev_get_platdata(&pdev->dev))
+		kfree(pdata);
+
+	return error;
+}
+
+static int gpio_keys_polled_remove(struct platform_device *pdev)
+{
+	struct gpio_keys_polled_dev *bdev = platform_get_drvdata(pdev);
+	const struct gpio_keys_platform_data *pdata = bdev->pdata;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	input_unregister_polled_device(bdev->poll_dev);
@@ -227,14 +424,26 @@ static int __devexit gpio_keys_polled_remove(struct platform_device *pdev)
 
 	input_free_polled_device(bdev->poll_dev);
 
+<<<<<<< HEAD
 	kfree(bdev);
 	platform_set_drvdata(pdev, NULL);
+=======
+	/*
+	 * If we had no platform_data, we allocated pdata dynamically and
+	 * must free it here.
+	 */
+	if (!dev_get_platdata(&pdev->dev))
+		kfree(pdata);
+
+	kfree(bdev);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static struct platform_driver gpio_keys_polled_driver = {
 	.probe	= gpio_keys_polled_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(gpio_keys_polled_remove),
 	.driver	= {
 		.name	= DRV_NAME,
@@ -258,6 +467,16 @@ module_exit(gpio_keys_polled_exit);
 =======
 module_platform_driver(gpio_keys_polled_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove	= gpio_keys_polled_remove,
+	.driver	= {
+		.name	= DRV_NAME,
+		.owner	= THIS_MODULE,
+		.of_match_table = of_match_ptr(gpio_keys_polled_of_match),
+	},
+};
+module_platform_driver(gpio_keys_polled_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Gabor Juhos <juhosg@openwrt.org>");

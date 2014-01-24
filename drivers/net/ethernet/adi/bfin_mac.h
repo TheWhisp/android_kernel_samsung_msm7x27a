@@ -11,8 +11,12 @@
 #define _BFIN_MAC_H_
 
 #include <linux/net_tstamp.h>
+<<<<<<< HEAD
 #include <linux/clocksource.h>
 #include <linux/timecompare.h>
+=======
+#include <linux/ptp_clock_kernel.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/timer.h>
 #include <linux/etherdevice.h>
 #include <linux/bfin_mac.h>
@@ -94,6 +98,7 @@ struct bfin_mac_local {
 	struct mii_bus *mii_bus;
 
 #if defined(CONFIG_BFIN_MAC_USE_HWSTAMP)
+<<<<<<< HEAD
 	struct cyclecounter cycles;
 	struct timecounter clock;
 	struct timecompare compare;
@@ -102,5 +107,19 @@ struct bfin_mac_local {
 };
 
 extern int bfin_get_ether_addr(char *addr);
+=======
+	u32 addend;
+	unsigned int shift;
+	s32 max_ppb;
+	struct hwtstamp_config stamp_cfg;
+	struct ptp_clock_info caps;
+	struct ptp_clock *clock;
+	int phc_index;
+	spinlock_t phc_lock; /* protects time lo/hi registers */
+#endif
+};
+
+int bfin_get_ether_addr(char *addr);
+>>>>>>> refs/remotes/origin/master
 
 #endif

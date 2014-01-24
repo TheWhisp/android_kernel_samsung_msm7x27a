@@ -19,11 +19,14 @@
 #include <asm/page.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* Don't hold the runqueue lock over context switch */
 #define __ARCH_WANT_UNLOCKED_CTXSW
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* The sparc has no problems with write protection */
 #define wp_works_ok 1
 #define wp_works_ok__is_a_macro /* for versions in ksyms.c */
@@ -45,7 +48,13 @@
 #define TASK_SIZE_OF(tsk) \
 	(test_tsk_thread_flag(tsk,TIF_32BIT) ? \
 	 (1UL << 32UL) : ((unsigned long)-VPTE_SIZE))
+<<<<<<< HEAD
 #define TASK_SIZE	TASK_SIZE_OF(current)
+=======
+#define TASK_SIZE \
+	(test_thread_flag(TIF_32BIT) ? \
+	 (1UL << 32UL) : ((unsigned long)-VPTE_SIZE))
+>>>>>>> refs/remotes/origin/master
 #ifdef __KERNEL__
 
 #define STACK_TOP32	((1UL << 32UL) - PAGE_SIZE)
@@ -95,6 +104,10 @@ struct thread_struct {
 #ifndef __ASSEMBLY__
 
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <asm/fpumacro.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Return saved PC of a blocked thread. */
 struct task_struct;
@@ -144,6 +157,13 @@ do { \
 	: \
 	: "r" (regs), "r" (sp - sizeof(struct reg_window) - STACK_BIAS), \
 	  "i" ((const unsigned long)(&((struct pt_regs *)0)->u_regs[0]))); \
+<<<<<<< HEAD
+=======
+	fprs_write(0);	\
+	current_thread_info()->xfsr[0] = 0;	\
+	current_thread_info()->fpsaved[0] = 0;	\
+	regs->tstate &= ~TSTATE_PEF;	\
+>>>>>>> refs/remotes/origin/master
 } while (0)
 
 #define start_thread32(regs, pc, sp) \
@@ -184,23 +204,52 @@ do { \
 	: \
 	: "r" (regs), "r" (sp - sizeof(struct reg_window32)), \
 	  "i" ((const unsigned long)(&((struct pt_regs *)0)->u_regs[0]))); \
+<<<<<<< HEAD
+=======
+	fprs_write(0);	\
+	current_thread_info()->xfsr[0] = 0;	\
+	current_thread_info()->fpsaved[0] = 0;	\
+	regs->tstate &= ~TSTATE_PEF;	\
+>>>>>>> refs/remotes/origin/master
 } while (0)
 
 /* Free all resources held by a thread. */
 #define release_thread(tsk)		do { } while (0)
 
+<<<<<<< HEAD
 /* Prepare to copy thread state - unlazy all lazy status */
 #define prepare_to_copy(tsk)	do { } while (0)
 
 extern pid_t kernel_thread(int (*fn)(void *), void * arg, unsigned long flags);
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern unsigned long get_wchan(struct task_struct *task);
 
 #define task_pt_regs(tsk) (task_thread_info(tsk)->kregs)
 #define KSTK_EIP(tsk)  (task_pt_regs(tsk)->tpc)
 #define KSTK_ESP(tsk)  (task_pt_regs(tsk)->u_regs[UREG_FP])
 
+<<<<<<< HEAD
 #define cpu_relax()	barrier()
+=======
+/* Please see the commentary in asm/backoff.h for a description of
+ * what these instructions are doing and how they have been choosen.
+ * To make a long story short, we are trying to yield the current cpu
+ * strand during busy loops.
+ */
+#define cpu_relax()	asm volatile("\n99:\n\t"			\
+				     "rd	%%ccr, %%g0\n\t"	\
+				     "rd	%%ccr, %%g0\n\t"	\
+				     "rd	%%ccr, %%g0\n\t"	\
+				     ".section	.pause_3insn_patch,\"ax\"\n\t"\
+				     ".word	99b\n\t"		\
+				     "wr	%%g0, 128, %%asr27\n\t"	\
+				     "nop\n\t"				\
+				     "nop\n\t"				\
+				     ".previous"			\
+				     ::: "memory")
+>>>>>>> refs/remotes/origin/master
 
 /* Prefetch support.  This is tuned for UltraSPARC-III and later.
  * UltraSPARC-I will treat these as nops, and UltraSPARC-II has

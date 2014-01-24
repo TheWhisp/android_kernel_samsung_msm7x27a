@@ -54,6 +54,7 @@ static struct cpufreq_frequency_table s3c64xx_freq_table[] = {
 };
 #endif
 
+<<<<<<< HEAD
 static int s3c64xx_cpufreq_verify_speed(struct cpufreq_policy *policy)
 {
 	if (policy->cpu != 0)
@@ -62,6 +63,8 @@ static int s3c64xx_cpufreq_verify_speed(struct cpufreq_policy *policy)
 	return cpufreq_frequency_table_verify(policy, s3c64xx_freq_table);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned int s3c64xx_cpufreq_get_speed(unsigned int cpu)
 {
 	if (cpu != 0)
@@ -71,6 +74,7 @@ static unsigned int s3c64xx_cpufreq_get_speed(unsigned int cpu)
 }
 
 static int s3c64xx_cpufreq_set_target(struct cpufreq_policy *policy,
+<<<<<<< HEAD
 				      unsigned int target_freq,
 				      unsigned int relation)
 {
@@ -99,17 +103,37 @@ static int s3c64xx_cpufreq_set_target(struct cpufreq_policy *policy,
 
 #ifdef CONFIG_REGULATOR
 	if (vddarm && freqs.new > freqs.old) {
+=======
+				      unsigned int index)
+{
+	struct s3c64xx_dvfs *dvfs;
+	unsigned int old_freq, new_freq;
+	int ret;
+
+	old_freq = clk_get_rate(armclk) / 1000;
+	new_freq = s3c64xx_freq_table[index].frequency;
+	dvfs = &s3c64xx_dvfs_table[s3c64xx_freq_table[index].driver_data];
+
+#ifdef CONFIG_REGULATOR
+	if (vddarm && new_freq > old_freq) {
+>>>>>>> refs/remotes/origin/master
 		ret = regulator_set_voltage(vddarm,
 					    dvfs->vddarm_min,
 					    dvfs->vddarm_max);
 		if (ret != 0) {
 			pr_err("Failed to set VDDARM for %dkHz: %d\n",
+<<<<<<< HEAD
 			       freqs.new, ret);
 			goto err;
+=======
+			       new_freq, ret);
+			return ret;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 #endif
 
+<<<<<<< HEAD
 	ret = clk_set_rate(armclk, freqs.new * 1000);
 	if (ret < 0) {
 		pr_err("Failed to set rate %dkHz: %d\n",
@@ -121,13 +145,32 @@ static int s3c64xx_cpufreq_set_target(struct cpufreq_policy *policy,
 
 #ifdef CONFIG_REGULATOR
 	if (vddarm && freqs.new < freqs.old) {
+=======
+	ret = clk_set_rate(armclk, new_freq * 1000);
+	if (ret < 0) {
+		pr_err("Failed to set rate %dkHz: %d\n",
+		       new_freq, ret);
+		return ret;
+	}
+
+#ifdef CONFIG_REGULATOR
+	if (vddarm && new_freq < old_freq) {
+>>>>>>> refs/remotes/origin/master
 		ret = regulator_set_voltage(vddarm,
 					    dvfs->vddarm_min,
 					    dvfs->vddarm_max);
 		if (ret != 0) {
 			pr_err("Failed to set VDDARM for %dkHz: %d\n",
+<<<<<<< HEAD
 			       freqs.new, ret);
 			goto err_clk;
+=======
+			       new_freq, ret);
+			if (clk_set_rate(armclk, old_freq * 1000) < 0)
+				pr_err("Failed to restore original clock rate\n");
+
+			return ret;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 #endif
@@ -136,6 +179,7 @@ static int s3c64xx_cpufreq_set_target(struct cpufreq_policy *policy,
 		 clk_get_rate(armclk) / 1000);
 
 	return 0;
+<<<<<<< HEAD
 
 err_clk:
 	if (clk_set_rate(armclk, freqs.old * 1000) < 0)
@@ -144,6 +188,8 @@ err:
 	cpufreq_notify_transition(&freqs, CPUFREQ_POSTCHANGE);
 
 	return ret;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_REGULATOR
@@ -163,7 +209,11 @@ static void __init s3c64xx_cpufreq_config_regulator(void)
 		if (freq->frequency == CPUFREQ_ENTRY_INVALID)
 			continue;
 
+<<<<<<< HEAD
 		dvfs = &s3c64xx_dvfs_table[freq->index];
+=======
+		dvfs = &s3c64xx_dvfs_table[freq->driver_data];
+>>>>>>> refs/remotes/origin/master
 		found = 0;
 
 		for (i = 0; i < count; i++) {
@@ -240,15 +290,23 @@ static int s3c64xx_cpufreq_driver_init(struct cpufreq_policy *policy)
 		freq++;
 	}
 
+<<<<<<< HEAD
 	policy->cur = clk_get_rate(armclk) / 1000;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Datasheet says PLL stabalisation time (if we were to use
 	 * the PLLs, which we don't currently) is ~300us worst case,
 	 * but add some fudge.
 	 */
+<<<<<<< HEAD
 	policy->cpuinfo.transition_latency = (500 * 1000) + regulator_latency;
 
 	ret = cpufreq_frequency_table_cpuinfo(policy, s3c64xx_freq_table);
+=======
+	ret = cpufreq_generic_init(policy, s3c64xx_freq_table,
+			(500 * 1000) + regulator_latency);
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		pr_err("Failed to configure frequency table: %d\n",
 		       ret);
@@ -260,10 +318,16 @@ static int s3c64xx_cpufreq_driver_init(struct cpufreq_policy *policy)
 }
 
 static struct cpufreq_driver s3c64xx_cpufreq_driver = {
+<<<<<<< HEAD
 	.owner		= THIS_MODULE,
 	.flags          = 0,
 	.verify		= s3c64xx_cpufreq_verify_speed,
 	.target		= s3c64xx_cpufreq_set_target,
+=======
+	.flags          = 0,
+	.verify		= cpufreq_generic_frequency_table_verify,
+	.target_index	= s3c64xx_cpufreq_set_target,
+>>>>>>> refs/remotes/origin/master
 	.get		= s3c64xx_cpufreq_get_speed,
 	.init		= s3c64xx_cpufreq_driver_init,
 	.name		= "s3c",

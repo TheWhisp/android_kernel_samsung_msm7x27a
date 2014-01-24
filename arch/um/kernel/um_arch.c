@@ -10,6 +10,7 @@
 #include <linux/seq_file.h>
 #include <linux/string.h>
 #include <linux/utsname.h>
+<<<<<<< HEAD
 #include <asm/pgtable.h>
 #include <asm/processor.h>
 #include <asm/setup.h>
@@ -20,6 +21,20 @@
 #include "kern_util.h"
 #include "mem_user.h"
 #include "os.h"
+=======
+#include <linux/sched.h>
+#include <asm/pgtable.h>
+#include <asm/processor.h>
+#include <asm/sections.h>
+#include <asm/setup.h>
+#include <as-layout.h>
+#include <arch.h>
+#include <init.h>
+#include <kern.h>
+#include <kern_util.h>
+#include <mem_user.h>
+#include <os.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DEFAULT_COMMAND_LINE "root=98:0"
 
@@ -47,6 +62,13 @@ struct cpuinfo_um boot_cpu_data = {
 	.ipi_pipe		= { -1, -1 }
 };
 
+<<<<<<< HEAD
+=======
+union thread_union cpu0_irqstack
+	__attribute__((__section__(".data..init_irqstack"))) =
+		{ INIT_THREAD_INFO(init_task) };
+
+>>>>>>> refs/remotes/origin/master
 unsigned long thread_saved_pc(struct task_struct *task)
 {
 	/* FIXME: Need to look up userspace_pid by cpu */
@@ -103,10 +125,15 @@ const struct seq_operations cpuinfo_op = {
 /* Set in linux_main */
 unsigned long uml_physmem;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(uml_physmem);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(uml_physmem);
+
+>>>>>>> refs/remotes/origin/master
 unsigned long uml_reserved; /* Also modified in mem_init */
 unsigned long start_vm;
 unsigned long end_vm;
@@ -232,7 +259,10 @@ static int panic_exit(struct notifier_block *self, unsigned long unused1,
 		      void *unused2)
 {
 	bust_spinlocks(1);
+<<<<<<< HEAD
 	show_regs(&(current->thread.regs));
+=======
+>>>>>>> refs/remotes/origin/master
 	bust_spinlocks(0);
 	uml_exitcode = 1;
 	os_dump_core();

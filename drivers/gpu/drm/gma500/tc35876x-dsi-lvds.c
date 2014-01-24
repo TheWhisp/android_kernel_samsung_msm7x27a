@@ -700,7 +700,11 @@ static struct i2c_driver tc35876x_bridge_i2c_driver = {
 	},
 	.id_table = tc35876x_bridge_id,
 	.probe = tc35876x_bridge_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(tc35876x_bridge_remove),
+=======
+	.remove = tc35876x_bridge_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* LCD panel I2C */
@@ -741,7 +745,11 @@ static struct i2c_driver cmi_lcd_i2c_driver = {
 	},
 	.id_table = cmi_lcd_i2c_id,
 	.probe = cmi_lcd_i2c_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(cmi_lcd_i2c_remove),
+=======
+	.remove = cmi_lcd_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* HACK to create I2C device while it's not created by platform code */

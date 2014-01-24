@@ -26,6 +26,7 @@
 
 #include <acpi/button.h>
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm_edid.h"
 #include "drm_crtc_helper.h"
@@ -50,6 +51,41 @@ find_encoder_by_type(struct drm_connector *connector, int type)
 struct nouveau_encoder *
 find_encoder(struct drm_connector *connector, int type)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_runtime.h>
+
+#include <drm/drmP.h>
+#include <drm/drm_edid.h>
+#include <drm/drm_crtc_helper.h>
+
+#include "nouveau_reg.h"
+#include "nouveau_drm.h"
+#include "dispnv04/hw.h"
+#include "nouveau_acpi.h"
+
+#include "nouveau_display.h"
+#include "nouveau_connector.h"
+#include "nouveau_encoder.h"
+#include "nouveau_crtc.h"
+
+#include <subdev/i2c.h>
+#include <subdev/gpio.h>
+
+MODULE_PARM_DESC(tv_disable, "Disable TV-out detection");
+static int nouveau_tv_disable = 0;
+module_param_named(tv_disable, nouveau_tv_disable, int, 0400);
+
+MODULE_PARM_DESC(ignorelid, "Ignore ACPI lid status");
+static int nouveau_ignorelid = 0;
+module_param_named(ignorelid, nouveau_ignorelid, int, 0400);
+
+MODULE_PARM_DESC(duallink, "Allow dual-link TMDS (default: enabled)");
+static int nouveau_duallink = 1;
+module_param_named(duallink, nouveau_duallink, int, 0400);
+
+struct nouveau_encoder *
+find_encoder(struct drm_connector *connector, int type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct drm_device *dev = connector->dev;
 	struct nouveau_encoder *nv_encoder;
@@ -66,7 +102,11 @@ find_encoder(struct drm_connector *connector, int type)
 			continue;
 		nv_encoder = nouveau_encoder(obj_to_encoder(obj));
 
+<<<<<<< HEAD
 		if (type == OUTPUT_ANY || nv_encoder->dcb->type == type)
+=======
+		if (type == DCB_OUTPUT_ANY || nv_encoder->dcb->type == type)
+>>>>>>> refs/remotes/origin/master
 			return nv_encoder;
 	}
 
@@ -88,6 +128,7 @@ nouveau_encoder_connector_get(struct nouveau_encoder *encoder)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*TODO: This could use improvement, and learn to handle the fixed
  *      BIOS tables etc.  It's fine currently, for its only user.
  */
@@ -107,10 +148,13 @@ nouveau_connector_bpp(struct drm_connector *connector)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 nouveau_connector_destroy(struct drm_connector *connector)
 {
 	struct nouveau_connector *nv_connector = nouveau_connector(connector);
+<<<<<<< HEAD
 	struct drm_nouveau_private *dev_priv;
 <<<<<<< HEAD
 	struct nouveau_gpio_engine *pgpio;
@@ -143,21 +187,50 @@ nouveau_connector_destroy(struct drm_connector *connector)
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nouveau_event_ref(NULL, &nv_connector->hpd_func);
+>>>>>>> refs/remotes/origin/master
 	kfree(nv_connector->edid);
 	drm_sysfs_connector_remove(connector);
 	drm_connector_cleanup(connector);
 	kfree(connector);
 }
 
+<<<<<<< HEAD
 static struct nouveau_i2c_chan *
+=======
+static struct nouveau_i2c_port *
+>>>>>>> refs/remotes/origin/master
 nouveau_connector_ddc_detect(struct drm_connector *connector,
 			     struct nouveau_encoder **pnv_encoder)
 {
 	struct drm_device *dev = connector->dev;
+<<<<<<< HEAD
 	int i;
 
 	for (i = 0; i < DRM_CONNECTOR_MAX_ENCODER; i++) {
 		struct nouveau_i2c_chan *i2c = NULL;
+=======
+	struct nouveau_connector *nv_connector = nouveau_connector(connector);
+	struct nouveau_drm *drm = nouveau_drm(dev);
+	struct nouveau_gpio *gpio = nouveau_gpio(drm->device);
+	struct nouveau_i2c_port *port = NULL;
+	int i, panel = -ENODEV;
+
+	/* eDP panels need powering on by us (if the VBIOS doesn't default it
+	 * to on) before doing any AUX channel transactions.  LVDS panel power
+	 * is handled by the SOR itself, and not required for LVDS DDC.
+	 */
+	if (nv_connector->type == DCB_CONNECTOR_eDP) {
+		panel = gpio->get(gpio, 0, DCB_GPIO_PANEL_POWER, 0xff);
+		if (panel == 0) {
+			gpio->set(gpio, 0, DCB_GPIO_PANEL_POWER, 0xff, 1);
+			msleep(300);
+		}
+	}
+
+	for (i = 0; i < DRM_CONNECTOR_MAX_ENCODER; i++) {
+>>>>>>> refs/remotes/origin/master
 		struct nouveau_encoder *nv_encoder;
 		struct drm_mode_object *obj;
 		int id;
@@ -171,6 +244,7 @@ nouveau_connector_ddc_detect(struct drm_connector *connector,
 			continue;
 		nv_encoder = nouveau_encoder(obj_to_encoder(obj));
 
+<<<<<<< HEAD
 		if (nv_encoder->dcb->i2c_index < 0xf)
 			i2c = nouveau_i2c_find(dev, nv_encoder->dcb->i2c_index);
 
@@ -181,6 +255,24 @@ nouveau_connector_ddc_detect(struct drm_connector *connector,
 	}
 
 	return NULL;
+=======
+		port = nv_encoder->i2c;
+		if (port && nv_probe_i2c(port, 0x50)) {
+			*pnv_encoder = nv_encoder;
+			break;
+		}
+
+		port = NULL;
+	}
+
+	/* eDP panel not detected, restore panel power GPIO to previous
+	 * state to avoid confusing the SOR for other output types.
+	 */
+	if (!port && panel == 0)
+		gpio->set(gpio, 0, DCB_GPIO_PANEL_POWER, 0xff, panel);
+
+	return port;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct nouveau_encoder *
@@ -194,12 +286,17 @@ nouveau_connector_of_detect(struct drm_connector *connector)
 
 	if (!dn ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    !((nv_encoder = find_encoder_by_type(connector, OUTPUT_TMDS)) ||
 	      (nv_encoder = find_encoder_by_type(connector, OUTPUT_ANALOG))))
 =======
 	    !((nv_encoder = find_encoder(connector, OUTPUT_TMDS)) ||
 	      (nv_encoder = find_encoder(connector, OUTPUT_ANALOG))))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    !((nv_encoder = find_encoder(connector, DCB_OUTPUT_TMDS)) ||
+	      (nv_encoder = find_encoder(connector, DCB_OUTPUT_ANALOG))))
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	for_each_child_of_node(dn, cn) {
@@ -223,13 +320,18 @@ nouveau_connector_set_encoder(struct drm_connector *connector,
 			      struct nouveau_encoder *nv_encoder)
 {
 	struct nouveau_connector *nv_connector = nouveau_connector(connector);
+<<<<<<< HEAD
 	struct drm_nouveau_private *dev_priv = connector->dev->dev_private;
+=======
+	struct nouveau_drm *drm = nouveau_drm(connector->dev);
+>>>>>>> refs/remotes/origin/master
 	struct drm_device *dev = connector->dev;
 
 	if (nv_connector->detected_encoder == nv_encoder)
 		return;
 	nv_connector->detected_encoder = nv_encoder;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (dev_priv->card_type >= NV_50) {
@@ -239,20 +341,37 @@ nouveau_connector_set_encoder(struct drm_connector *connector,
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (nv_encoder->dcb->type == OUTPUT_LVDS ||
 	    nv_encoder->dcb->type == OUTPUT_TMDS) {
+=======
+	if (nv_device(drm->device)->card_type >= NV_50) {
+		connector->interlace_allowed = true;
+		connector->doublescan_allowed = true;
+	} else
+	if (nv_encoder->dcb->type == DCB_OUTPUT_LVDS ||
+	    nv_encoder->dcb->type == DCB_OUTPUT_TMDS) {
+>>>>>>> refs/remotes/origin/master
 		connector->doublescan_allowed = false;
 		connector->interlace_allowed = false;
 	} else {
 		connector->doublescan_allowed = true;
+<<<<<<< HEAD
 		if (dev_priv->card_type == NV_20 ||
 		   (dev_priv->card_type == NV_10 &&
 		    (dev->pci_device & 0x0ff0) != 0x0100 &&
 		    (dev->pci_device & 0x0ff0) != 0x0150))
+=======
+		if (nv_device(drm->device)->card_type == NV_20 ||
+		    ((nv_device(drm->device)->card_type == NV_10 ||
+		      nv_device(drm->device)->card_type == NV_11) &&
+		     (dev->pdev->device & 0x0ff0) != 0x0100 &&
+		     (dev->pdev->device & 0x0ff0) != 0x0150))
+>>>>>>> refs/remotes/origin/master
 			/* HW is broken */
 			connector->interlace_allowed = false;
 		else
 			connector->interlace_allowed = true;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (nv_connector->dcb->type == DCB_CONNECTOR_DVI_I) {
 =======
@@ -261,6 +380,12 @@ nouveau_connector_set_encoder(struct drm_connector *connector,
 		drm_connector_property_set_value(connector,
 			dev->mode_config.dvi_i_subconnector_property,
 			nv_encoder->dcb->type == OUTPUT_TMDS ?
+=======
+	if (nv_connector->type == DCB_CONNECTOR_DVI_I) {
+		drm_object_property_set_value(&connector->base,
+			dev->mode_config.dvi_i_subconnector_property,
+			nv_encoder->dcb->type == DCB_OUTPUT_TMDS ?
+>>>>>>> refs/remotes/origin/master
 			DRM_MODE_SUBCONNECTOR_DVID :
 			DRM_MODE_SUBCONNECTOR_DVIA);
 	}
@@ -270,6 +395,7 @@ static enum drm_connector_status
 nouveau_connector_detect(struct drm_connector *connector, bool force)
 {
 	struct drm_device *dev = connector->dev;
+<<<<<<< HEAD
 	struct nouveau_connector *nv_connector = nouveau_connector(connector);
 	struct nouveau_encoder *nv_encoder = NULL;
 <<<<<<< HEAD
@@ -278,6 +404,16 @@ nouveau_connector_detect(struct drm_connector *connector, bool force)
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct nouveau_i2c_chan *i2c;
 	int type;
+=======
+	struct nouveau_drm *drm = nouveau_drm(dev);
+	struct nouveau_connector *nv_connector = nouveau_connector(connector);
+	struct nouveau_encoder *nv_encoder = NULL;
+	struct nouveau_encoder *nv_partner;
+	struct nouveau_i2c_port *i2c;
+	int type;
+	int ret;
+	enum drm_connector_status conn_status = connector_status_disconnected;
+>>>>>>> refs/remotes/origin/master
 
 	/* Cleanup the previous EDID block. */
 	if (nv_connector->edid) {
@@ -286,22 +422,42 @@ nouveau_connector_detect(struct drm_connector *connector, bool force)
 		nv_connector->edid = NULL;
 	}
 
+<<<<<<< HEAD
+=======
+	ret = pm_runtime_get_sync(connector->dev->dev);
+	if (ret < 0)
+		return conn_status;
+
+>>>>>>> refs/remotes/origin/master
 	i2c = nouveau_connector_ddc_detect(connector, &nv_encoder);
 	if (i2c) {
 		nv_connector->edid = drm_get_edid(connector, &i2c->adapter);
 		drm_mode_connector_update_edid_property(connector,
 							nv_connector->edid);
 		if (!nv_connector->edid) {
+<<<<<<< HEAD
 			NV_ERROR(dev, "DDC responded, but no EDID for %s\n",
+=======
+			NV_ERROR(drm, "DDC responded, but no EDID for %s\n",
+>>>>>>> refs/remotes/origin/master
 				 drm_get_connector_name(connector));
 			goto detect_analog;
 		}
 
+<<<<<<< HEAD
 		if (nv_encoder->dcb->type == OUTPUT_DP &&
 		    !nouveau_dp_detect(to_drm_encoder(nv_encoder))) {
 			NV_ERROR(dev, "Detected %s, but failed init\n",
 				 drm_get_connector_name(connector));
 			return connector_status_disconnected;
+=======
+		if (nv_encoder->dcb->type == DCB_OUTPUT_DP &&
+		    !nouveau_dp_detect(to_drm_encoder(nv_encoder))) {
+			NV_ERROR(drm, "Detected %s, but failed init\n",
+				 drm_get_connector_name(connector));
+			conn_status = connector_status_disconnected;
+			goto out;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* Override encoder type for DVI-I based on whether EDID
@@ -309,6 +465,7 @@ nouveau_connector_detect(struct drm_connector *connector, bool force)
 		 * same i2c channel so the value returned from ddc_detect
 		 * isn't necessarily correct.
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (nv_connector->dcb->type == DCB_CONNECTOR_DVI_I) {
 =======
@@ -343,11 +500,35 @@ nouveau_connector_detect(struct drm_connector *connector, bool force)
 
 		nouveau_connector_set_encoder(connector, nv_encoder);
 		return connector_status_connected;
+=======
+		nv_partner = NULL;
+		if (nv_encoder->dcb->type == DCB_OUTPUT_TMDS)
+			nv_partner = find_encoder(connector, DCB_OUTPUT_ANALOG);
+		if (nv_encoder->dcb->type == DCB_OUTPUT_ANALOG)
+			nv_partner = find_encoder(connector, DCB_OUTPUT_TMDS);
+
+		if (nv_partner && ((nv_encoder->dcb->type == DCB_OUTPUT_ANALOG &&
+				    nv_partner->dcb->type == DCB_OUTPUT_TMDS) ||
+				   (nv_encoder->dcb->type == DCB_OUTPUT_TMDS &&
+				    nv_partner->dcb->type == DCB_OUTPUT_ANALOG))) {
+			if (nv_connector->edid->input & DRM_EDID_INPUT_DIGITAL)
+				type = DCB_OUTPUT_TMDS;
+			else
+				type = DCB_OUTPUT_ANALOG;
+
+			nv_encoder = find_encoder(connector, type);
+		}
+
+		nouveau_connector_set_encoder(connector, nv_encoder);
+		conn_status = connector_status_connected;
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	nv_encoder = nouveau_connector_of_detect(connector);
 	if (nv_encoder) {
 		nouveau_connector_set_encoder(connector, nv_encoder);
+<<<<<<< HEAD
 		return connector_status_connected;
 	}
 
@@ -361,6 +542,16 @@ detect_analog:
 	if (!nv_encoder && !nouveau_tv_disable)
 		nv_encoder = find_encoder(connector, OUTPUT_TV);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		conn_status = connector_status_connected;
+		goto out;
+	}
+
+detect_analog:
+	nv_encoder = find_encoder(connector, DCB_OUTPUT_ANALOG);
+	if (!nv_encoder && !nouveau_tv_disable)
+		nv_encoder = find_encoder(connector, DCB_OUTPUT_TV);
+>>>>>>> refs/remotes/origin/master
 	if (nv_encoder && force) {
 		struct drm_encoder *encoder = to_drm_encoder(nv_encoder);
 		struct drm_encoder_helper_funcs *helper =
@@ -369,19 +560,37 @@ detect_analog:
 		if (helper->detect(encoder, connector) ==
 						connector_status_connected) {
 			nouveau_connector_set_encoder(connector, nv_encoder);
+<<<<<<< HEAD
 			return connector_status_connected;
+=======
+			conn_status = connector_status_connected;
+			goto out;
+>>>>>>> refs/remotes/origin/master
 		}
 
 	}
 
+<<<<<<< HEAD
 	return connector_status_disconnected;
+=======
+ out:
+
+	pm_runtime_mark_last_busy(connector->dev->dev);
+	pm_runtime_put_autosuspend(connector->dev->dev);
+
+	return conn_status;
+>>>>>>> refs/remotes/origin/master
 }
 
 static enum drm_connector_status
 nouveau_connector_detect_lvds(struct drm_connector *connector, bool force)
 {
 	struct drm_device *dev = connector->dev;
+<<<<<<< HEAD
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
+=======
+	struct nouveau_drm *drm = nouveau_drm(dev);
+>>>>>>> refs/remotes/origin/master
 	struct nouveau_connector *nv_connector = nouveau_connector(connector);
 	struct nouveau_encoder *nv_encoder = NULL;
 	enum drm_connector_status status = connector_status_disconnected;
@@ -394,15 +603,23 @@ nouveau_connector_detect_lvds(struct drm_connector *connector, bool force)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nv_encoder = find_encoder_by_type(connector, OUTPUT_LVDS);
 =======
 	nv_encoder = find_encoder(connector, OUTPUT_LVDS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nv_encoder = find_encoder(connector, DCB_OUTPUT_LVDS);
+>>>>>>> refs/remotes/origin/master
 	if (!nv_encoder)
 		return connector_status_disconnected;
 
 	/* Try retrieving EDID via DDC */
+<<<<<<< HEAD
 	if (!dev_priv->vbios.fp_no_ddc) {
+=======
+	if (!drm->vbios.fp_no_ddc) {
+>>>>>>> refs/remotes/origin/master
 		status = nouveau_connector_detect(connector, force);
 		if (status == connector_status_connected)
 			goto out;
@@ -418,7 +635,11 @@ nouveau_connector_detect_lvds(struct drm_connector *connector, bool force)
 	 * valid - it's not (rh#613284)
 	 */
 	if (nv_encoder->dcb->lvdsconf.use_acpi_for_edid) {
+<<<<<<< HEAD
 		if (!nouveau_acpi_edid(dev, connector)) {
+=======
+		if ((nv_connector->edid = nouveau_acpi_edid(dev, connector))) {
+>>>>>>> refs/remotes/origin/master
 			status = connector_status_connected;
 			goto out;
 		}
@@ -428,7 +649,11 @@ nouveau_connector_detect_lvds(struct drm_connector *connector, bool force)
 	 * modeline is avalilable for the panel, set it as the panel's
 	 * native mode and exit.
 	 */
+<<<<<<< HEAD
 	if (nouveau_bios_fp_mode(dev, NULL) && (dev_priv->vbios.fp_no_ddc ||
+=======
+	if (nouveau_bios_fp_mode(dev, NULL) && (drm->vbios.fp_no_ddc ||
+>>>>>>> refs/remotes/origin/master
 	    nv_encoder->dcb->lvdsconf.use_straps_for_mode)) {
 		status = connector_status_connected;
 		goto out;
@@ -437,6 +662,7 @@ nouveau_connector_detect_lvds(struct drm_connector *connector, bool force)
 	/* Still nothing, some VBIOS images have a hardcoded EDID block
 	 * stored for the panel stored in them.
 	 */
+<<<<<<< HEAD
 	if (!dev_priv->vbios.fp_no_ddc) {
 		struct edid *edid =
 			(struct edid *)nouveau_bios_embedded_edid(dev);
@@ -444,6 +670,16 @@ nouveau_connector_detect_lvds(struct drm_connector *connector, bool force)
 			nv_connector->edid = kmalloc(EDID_LENGTH, GFP_KERNEL);
 			*(nv_connector->edid) = *edid;
 			status = connector_status_connected;
+=======
+	if (!drm->vbios.fp_no_ddc) {
+		struct edid *edid =
+			(struct edid *)nouveau_bios_embedded_edid(dev);
+		if (edid) {
+			nv_connector->edid =
+					kmemdup(edid, EDID_LENGTH, GFP_KERNEL);
+			if (nv_connector->edid)
+				status = connector_status_connected;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -463,10 +699,15 @@ out:
 static void
 nouveau_connector_force(struct drm_connector *connector)
 {
+<<<<<<< HEAD
+=======
+	struct nouveau_drm *drm = nouveau_drm(connector->dev);
+>>>>>>> refs/remotes/origin/master
 	struct nouveau_connector *nv_connector = nouveau_connector(connector);
 	struct nouveau_encoder *nv_encoder;
 	int type;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (nv_connector->dcb->type == DCB_CONNECTOR_DVI_I) {
 =======
@@ -486,6 +727,19 @@ nouveau_connector_force(struct drm_connector *connector)
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (!nv_encoder) {
 		NV_ERROR(connector->dev, "can't find encoder to force %s on!\n",
+=======
+	if (nv_connector->type == DCB_CONNECTOR_DVI_I) {
+		if (connector->force == DRM_FORCE_ON_DIGITAL)
+			type = DCB_OUTPUT_TMDS;
+		else
+			type = DCB_OUTPUT_ANALOG;
+	} else
+		type = DCB_OUTPUT_ANY;
+
+	nv_encoder = find_encoder(connector, type);
+	if (!nv_encoder) {
+		NV_ERROR(drm, "can't find encoder to force %s on!\n",
+>>>>>>> refs/remotes/origin/master
 			 drm_get_connector_name(connector));
 		connector->status = connector_status_disconnected;
 		return;
@@ -499,14 +753,19 @@ nouveau_connector_set_property(struct drm_connector *connector,
 			       struct drm_property *property, uint64_t value)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct drm_nouveau_private *dev_priv = connector->dev->dev_private;
 	struct nouveau_display_engine *disp = &dev_priv->engine.display;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nouveau_display *disp = nouveau_display(connector->dev);
+>>>>>>> refs/remotes/origin/master
 	struct nouveau_connector *nv_connector = nouveau_connector(connector);
 	struct nouveau_encoder *nv_encoder = nv_connector->detected_encoder;
 	struct drm_encoder *encoder = to_drm_encoder(nv_encoder);
 	struct drm_device *dev = connector->dev;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int ret;
 
@@ -514,6 +773,8 @@ nouveau_connector_set_property(struct drm_connector *connector,
 	if (property == dev->mode_config.scaling_mode_property) {
 		struct nouveau_crtc *nv_crtc = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct nouveau_crtc *nv_crtc;
 	int ret;
 
@@ -523,7 +784,10 @@ nouveau_connector_set_property(struct drm_connector *connector,
 
 	/* Scaling mode */
 	if (property == dev->mode_config.scaling_mode_property) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		bool modeset = false;
 
 		switch (value) {
@@ -550,10 +814,13 @@ nouveau_connector_set_property(struct drm_connector *connector,
 		nv_connector->scaling_mode = value;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (connector->encoder && connector->encoder->crtc)
 			nv_crtc = nouveau_crtc(connector->encoder->crtc);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!nv_crtc)
 			return 0;
 
@@ -566,10 +833,14 @@ nouveau_connector_set_property(struct drm_connector *connector,
 				return -EINVAL;
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ret = nv_crtc->set_scale(nv_crtc, value, true);
 =======
 			ret = nv_crtc->set_scale(nv_crtc, true);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret = nv_crtc->set_scale(nv_crtc, true);
+>>>>>>> refs/remotes/origin/master
 			if (ret)
 				return ret;
 		}
@@ -577,6 +848,7 @@ nouveau_connector_set_property(struct drm_connector *connector,
 		return 0;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Dithering */
 	if (property == dev->mode_config.dithering_mode_property) {
@@ -596,6 +868,8 @@ nouveau_connector_set_property(struct drm_connector *connector,
 		return nv_crtc->set_dither(nv_crtc, nv_connector->use_dithering,
 					   true);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Underscan */
 	if (property == disp->underscan_property) {
 		if (nv_connector->underscan != value) {
@@ -661,10 +935,16 @@ nouveau_connector_set_property(struct drm_connector *connector,
 			nv_crtc->color_vibrance = value - 100;
 			return nv_crtc->set_color_vibrance(nv_crtc, true);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (nv_encoder && nv_encoder->dcb->type == OUTPUT_TV)
+=======
+	}
+
+	if (nv_encoder && nv_encoder->dcb->type == DCB_OUTPUT_TV)
+>>>>>>> refs/remotes/origin/master
 		return get_slave_funcs(encoder)->set_property(
 			encoder, connector, property, value);
 
@@ -675,6 +955,10 @@ static struct drm_display_mode *
 nouveau_connector_native_mode(struct drm_connector *connector)
 {
 	struct drm_connector_helper_funcs *helper = connector->helper_private;
+<<<<<<< HEAD
+=======
+	struct nouveau_drm *drm = nouveau_drm(connector->dev);
+>>>>>>> refs/remotes/origin/master
 	struct nouveau_connector *nv_connector = nouveau_connector(connector);
 	struct drm_device *dev = connector->dev;
 	struct drm_display_mode *mode, *largest = NULL;
@@ -688,7 +972,11 @@ nouveau_connector_native_mode(struct drm_connector *connector)
 
 		/* Use preferred mode if there is one.. */
 		if (mode->type & DRM_MODE_TYPE_PREFERRED) {
+<<<<<<< HEAD
 			NV_DEBUG_KMS(dev, "native mode from preferred\n");
+=======
+			NV_DEBUG(drm, "native mode from preferred\n");
+>>>>>>> refs/remotes/origin/master
 			return drm_mode_duplicate(dev, mode);
 		}
 
@@ -711,7 +999,11 @@ nouveau_connector_native_mode(struct drm_connector *connector)
 		largest = mode;
 	}
 
+<<<<<<< HEAD
 	NV_DEBUG_KMS(dev, "native mode from largest: %dx%d@%d\n",
+=======
+	NV_DEBUG(drm, "native mode from largest: %dx%d@%d\n",
+>>>>>>> refs/remotes/origin/master
 		      high_w, high_h, high_v);
 	return largest ? drm_mode_duplicate(dev, largest) : NULL;
 }
@@ -773,6 +1065,7 @@ nouveau_connector_scaler_modes_add(struct drm_connector *connector)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static void
 nouveau_connector_detect_depth(struct drm_connector *connector)
@@ -781,6 +1074,15 @@ nouveau_connector_detect_depth(struct drm_connector *connector)
 	struct nouveau_connector *nv_connector = nouveau_connector(connector);
 	struct nouveau_encoder *nv_encoder = nv_connector->detected_encoder;
 	struct nvbios *bios = &dev_priv->vbios;
+=======
+static void
+nouveau_connector_detect_depth(struct drm_connector *connector)
+{
+	struct nouveau_drm *drm = nouveau_drm(connector->dev);
+	struct nouveau_connector *nv_connector = nouveau_connector(connector);
+	struct nouveau_encoder *nv_encoder = nv_connector->detected_encoder;
+	struct nvbios *bios = &drm->vbios;
+>>>>>>> refs/remotes/origin/master
 	struct drm_display_mode *mode = nv_connector->native_mode;
 	bool duallink;
 
@@ -795,7 +1097,11 @@ nouveau_connector_detect_depth(struct drm_connector *connector)
 	}
 
 	/* we're out of options unless we're LVDS, default to 8bpc */
+<<<<<<< HEAD
 	if (nv_encoder->dcb->type != OUTPUT_LVDS) {
+=======
+	if (nv_encoder->dcb->type != DCB_OUTPUT_LVDS) {
+>>>>>>> refs/remotes/origin/master
 		connector->display_info.bpc = 8;
 		return;
 	}
@@ -823,12 +1129,19 @@ nouveau_connector_detect_depth(struct drm_connector *connector)
 		connector->display_info.bpc = 8;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 nouveau_connector_get_modes(struct drm_connector *connector)
 {
 	struct drm_device *dev = connector->dev;
+<<<<<<< HEAD
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
+=======
+	struct nouveau_drm *drm = nouveau_drm(dev);
+>>>>>>> refs/remotes/origin/master
 	struct nouveau_connector *nv_connector = nouveau_connector(connector);
 	struct nouveau_encoder *nv_encoder = nv_connector->detected_encoder;
 	struct drm_encoder *encoder = to_drm_encoder(nv_encoder);
@@ -844,9 +1157,15 @@ nouveau_connector_get_modes(struct drm_connector *connector)
 	if (nv_connector->edid)
 		ret = drm_add_edid_modes(connector, nv_connector->edid);
 	else
+<<<<<<< HEAD
 	if (nv_encoder->dcb->type == OUTPUT_LVDS &&
 	    (nv_encoder->dcb->lvdsconf.use_straps_for_mode ||
 	     dev_priv->vbios.fp_no_ddc) && nouveau_bios_fp_mode(dev, NULL)) {
+=======
+	if (nv_encoder->dcb->type == DCB_OUTPUT_LVDS &&
+	    (nv_encoder->dcb->lvdsconf.use_straps_for_mode ||
+	     drm->vbios.fp_no_ddc) && nouveau_bios_fp_mode(dev, NULL)) {
+>>>>>>> refs/remotes/origin/master
 		struct drm_display_mode mode;
 
 		nouveau_bios_fp_mode(dev, &mode);
@@ -854,14 +1173,20 @@ nouveau_connector_get_modes(struct drm_connector *connector)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Determine display colour depth for everything except LVDS now,
 	 * DP requires this before mode_valid() is called.
 	 */
 	if (connector->connector_type != DRM_MODE_CONNECTOR_LVDS)
 		nouveau_connector_detect_depth(connector);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Find the native mode if this is a digital panel, if we didn't
 	 * find any modes through DDC previously add the native mode to
 	 * the list of modes.
@@ -878,6 +1203,7 @@ nouveau_connector_get_modes(struct drm_connector *connector)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (nv_encoder->dcb->type == OUTPUT_TV)
 		ret = get_slave_funcs(encoder)->get_modes(encoder, connector);
 
@@ -885,6 +1211,8 @@ nouveau_connector_get_modes(struct drm_connector *connector)
 	    nv_connector->dcb->type == DCB_CONNECTOR_LVDS_SPWG ||
 	    nv_connector->dcb->type == DCB_CONNECTOR_eDP)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Determine LVDS colour depth, must happen after determining
 	 * "native" mode as some VBIOS tables require us to use the
 	 * pixel clock as part of the lookup...
@@ -892,13 +1220,20 @@ nouveau_connector_get_modes(struct drm_connector *connector)
 	if (connector->connector_type == DRM_MODE_CONNECTOR_LVDS)
 		nouveau_connector_detect_depth(connector);
 
+<<<<<<< HEAD
 	if (nv_encoder->dcb->type == OUTPUT_TV)
+=======
+	if (nv_encoder->dcb->type == DCB_OUTPUT_TV)
+>>>>>>> refs/remotes/origin/master
 		ret = get_slave_funcs(encoder)->get_modes(encoder, connector);
 
 	if (nv_connector->type == DCB_CONNECTOR_LVDS ||
 	    nv_connector->type == DCB_CONNECTOR_LVDS_SPWG ||
 	    nv_connector->type == DCB_CONNECTOR_eDP)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret += nouveau_connector_scaler_modes_add(connector);
 
 	return ret;
@@ -908,6 +1243,7 @@ static unsigned
 get_tmds_link_bandwidth(struct drm_connector *connector)
 {
 	struct nouveau_connector *nv_connector = nouveau_connector(connector);
+<<<<<<< HEAD
 	struct drm_nouveau_private *dev_priv = connector->dev->dev_private;
 	struct dcb_entry *dcb = nv_connector->detected_encoder->dcb;
 
@@ -917,6 +1253,17 @@ get_tmds_link_bandwidth(struct drm_connector *connector)
 	else if (dev_priv->chipset >= 0x40)
 		return 155000;
 	else if (dev_priv->chipset >= 0x18)
+=======
+	struct nouveau_drm *drm = nouveau_drm(connector->dev);
+	struct dcb_output *dcb = nv_connector->detected_encoder->dcb;
+
+	if (dcb->location != DCB_LOC_ON_CHIP ||
+	    nv_device(drm->device)->chipset >= 0x46)
+		return 165000;
+	else if (nv_device(drm->device)->chipset >= 0x40)
+		return 155000;
+	else if (nv_device(drm->device)->chipset >= 0x18)
+>>>>>>> refs/remotes/origin/master
 		return 135000;
 	else
 		return 112000;
@@ -933,7 +1280,11 @@ nouveau_connector_mode_valid(struct drm_connector *connector,
 	unsigned clock = mode->clock;
 
 	switch (nv_encoder->dcb->type) {
+<<<<<<< HEAD
 	case OUTPUT_LVDS:
+=======
+	case DCB_OUTPUT_LVDS:
+>>>>>>> refs/remotes/origin/master
 		if (nv_connector->native_mode &&
 		    (mode->hdisplay > nv_connector->native_mode->hdisplay ||
 		     mode->vdisplay > nv_connector->native_mode->vdisplay))
@@ -942,16 +1293,25 @@ nouveau_connector_mode_valid(struct drm_connector *connector,
 		min_clock = 0;
 		max_clock = 400000;
 		break;
+<<<<<<< HEAD
 	case OUTPUT_TMDS:
+=======
+	case DCB_OUTPUT_TMDS:
+>>>>>>> refs/remotes/origin/master
 		max_clock = get_tmds_link_bandwidth(connector);
 		if (nouveau_duallink && nv_encoder->dcb->duallink_possible)
 			max_clock *= 2;
 		break;
+<<<<<<< HEAD
 	case OUTPUT_ANALOG:
+=======
+	case DCB_OUTPUT_ANALOG:
+>>>>>>> refs/remotes/origin/master
 		max_clock = nv_encoder->dcb->crtconf.maxfreq;
 		if (!max_clock)
 			max_clock = 350000;
 		break;
+<<<<<<< HEAD
 	case OUTPUT_TV:
 		return get_slave_funcs(encoder)->mode_valid(encoder, mode);
 	case OUTPUT_DP:
@@ -967,6 +1327,14 @@ nouveau_connector_mode_valid(struct drm_connector *connector,
 		max_clock *= nv_encoder->dp.link_bw;
 		clock = clock * (connector->display_info.bpc * 3) / 10;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case DCB_OUTPUT_TV:
+		return get_slave_funcs(encoder)->mode_valid(encoder, mode);
+	case DCB_OUTPUT_DP:
+		max_clock  = nv_encoder->dp.link_nr;
+		max_clock *= nv_encoder->dp.link_bw;
+		clock = clock * (connector->display_info.bpc * 3) / 10;
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		BUG_ON(1);
@@ -1025,7 +1393,40 @@ nouveau_connector_funcs_lvds = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+static void
+nouveau_connector_hotplug_work(struct work_struct *work)
+{
+	struct nouveau_connector *nv_connector =
+		container_of(work, struct nouveau_connector, hpd_work);
+	struct drm_connector *connector = &nv_connector->base;
+	struct drm_device *dev = connector->dev;
+	struct nouveau_drm *drm = nouveau_drm(dev);
+	struct nouveau_gpio *gpio = nouveau_gpio(drm->device);
+	bool plugged = gpio->get(gpio, 0, nv_connector->hpd.func, 0xff);
+
+	NV_DEBUG(drm, "%splugged %s\n", plugged ? "" : "un",
+		 drm_get_connector_name(connector));
+
+	if (plugged)
+		drm_helper_connector_dpms(connector, DRM_MODE_DPMS_ON);
+	else
+		drm_helper_connector_dpms(connector, DRM_MODE_DPMS_OFF);
+
+	drm_helper_hpd_irq_event(dev);
+}
+
+static int
+nouveau_connector_hotplug(void *data, int index)
+{
+	struct nouveau_connector *nv_connector = data;
+	schedule_work(&nv_connector->hpd_work);
+	return NVKM_EVENT_KEEP;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int
 drm_conntype_from_dcb(enum dcb_connector_type dcb)
 {
@@ -1053,11 +1454,15 @@ drm_conntype_from_dcb(enum dcb_connector_type dcb)
 	return DRM_MODE_CONNECTOR_Unknown;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct drm_connector *
 nouveau_connector_create(struct drm_device *dev, int index)
 {
 	const struct drm_connector_funcs *funcs = &nouveau_connector_funcs;
+<<<<<<< HEAD
 	struct drm_nouveau_private *dev_priv = dev->dev_private;
 <<<<<<< HEAD
 	struct nouveau_gpio_engine *pgpio = &dev_priv->engine.gpio;
@@ -1110,23 +1515,35 @@ nouveau_connector_create(struct drm_device *dev, int index)
 		return ERR_PTR(-EINVAL);
 =======
 	struct nouveau_display_engine *disp = &dev_priv->engine.display;
+=======
+	struct nouveau_drm *drm = nouveau_drm(dev);
+	struct nouveau_gpio *gpio = nouveau_gpio(drm->device);
+	struct nouveau_display *disp = nouveau_display(dev);
+>>>>>>> refs/remotes/origin/master
 	struct nouveau_connector *nv_connector = NULL;
 	struct drm_connector *connector;
 	int type, ret = 0;
 	bool dummy;
 
+<<<<<<< HEAD
 	NV_DEBUG_KMS(dev, "\n");
 
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(connector, &dev->mode_config.connector_list, head) {
 		nv_connector = nouveau_connector(connector);
 		if (nv_connector->index == index)
 			return connector;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	nv_connector = kzalloc(sizeof(*nv_connector), GFP_KERNEL);
 	if (!nv_connector)
 		return ERR_PTR(-ENOMEM);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	nv_connector->dcb = dcb;
 	connector = &nv_connector->base;
@@ -1167,6 +1584,15 @@ nouveau_connector_create(struct drm_device *dev, int index)
 
 	/* attempt to parse vbios connector type and hotplug gpio */
 	nv_connector->dcb = dcb_conn(dev, index);
+=======
+
+	connector = &nv_connector->base;
+	INIT_WORK(&nv_connector->hpd_work, nouveau_connector_hotplug_work);
+	nv_connector->index = index;
+
+	/* attempt to parse vbios connector type and hotplug gpio */
+	nv_connector->dcb = olddcb_conn(dev, index);
+>>>>>>> refs/remotes/origin/master
 	if (nv_connector->dcb) {
 		static const u8 hpd[16] = {
 			0xff, 0x07, 0x08, 0xff, 0xff, 0x51, 0x52, 0xff,
@@ -1174,16 +1600,37 @@ nouveau_connector_create(struct drm_device *dev, int index)
 		};
 
 		u32 entry = ROM16(nv_connector->dcb[0]);
+<<<<<<< HEAD
 		if (dcb_conntab(dev)[3] >= 4)
 			entry |= (u32)ROM16(nv_connector->dcb[2]) << 16;
 
 		nv_connector->hpd = ffs((entry & 0x07033000) >> 12);
 		nv_connector->hpd = hpd[nv_connector->hpd];
+=======
+		if (olddcb_conntab(dev)[3] >= 4)
+			entry |= (u32)ROM16(nv_connector->dcb[2]) << 16;
+
+		ret = gpio->find(gpio, 0, hpd[ffs((entry & 0x07033000) >> 12)],
+				 DCB_GPIO_UNUSED, &nv_connector->hpd);
+		if (ret)
+			nv_connector->hpd.func = DCB_GPIO_UNUSED;
+
+		if (nv_connector->hpd.func != DCB_GPIO_UNUSED) {
+			nouveau_event_new(gpio->events, nv_connector->hpd.line,
+					  nouveau_connector_hotplug,
+					  nv_connector,
+					 &nv_connector->hpd_func);
+		}
+>>>>>>> refs/remotes/origin/master
 
 		nv_connector->type = nv_connector->dcb[0];
 		if (drm_conntype_from_dcb(nv_connector->type) ==
 					  DRM_MODE_CONNECTOR_Unknown) {
+<<<<<<< HEAD
 			NV_WARN(dev, "unknown connector type %02x\n",
+=======
+			NV_WARN(drm, "unknown connector type %02x\n",
+>>>>>>> refs/remotes/origin/master
 				nv_connector->type);
 			nv_connector->type = DCB_CONNECTOR_NONE;
 		}
@@ -1201,15 +1648,24 @@ nouveau_connector_create(struct drm_device *dev, int index)
 		}
 	} else {
 		nv_connector->type = DCB_CONNECTOR_NONE;
+<<<<<<< HEAD
 		nv_connector->hpd = DCB_GPIO_UNUSED;
+=======
+		nv_connector->hpd.func = DCB_GPIO_UNUSED;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* no vbios data, or an unknown dcb connector type - attempt to
 	 * figure out something suitable ourselves
 	 */
 	if (nv_connector->type == DCB_CONNECTOR_NONE) {
+<<<<<<< HEAD
 		struct drm_nouveau_private *dev_priv = dev->dev_private;
 		struct dcb_table *dcbt = &dev_priv->vbios.dcb;
+=======
+		struct nouveau_drm *drm = nouveau_drm(dev);
+		struct dcb_table *dcbt = &drm->vbios.dcb;
+>>>>>>> refs/remotes/origin/master
 		u32 encoders = 0;
 		int i;
 
@@ -1218,18 +1674,29 @@ nouveau_connector_create(struct drm_device *dev, int index)
 				encoders |= (1 << dcbt->entry[i].type);
 		}
 
+<<<<<<< HEAD
 		if (encoders & (1 << OUTPUT_DP)) {
 			if (encoders & (1 << OUTPUT_TMDS))
+=======
+		if (encoders & (1 << DCB_OUTPUT_DP)) {
+			if (encoders & (1 << DCB_OUTPUT_TMDS))
+>>>>>>> refs/remotes/origin/master
 				nv_connector->type = DCB_CONNECTOR_DP;
 			else
 				nv_connector->type = DCB_CONNECTOR_eDP;
 		} else
+<<<<<<< HEAD
 		if (encoders & (1 << OUTPUT_TMDS)) {
 			if (encoders & (1 << OUTPUT_ANALOG))
+=======
+		if (encoders & (1 << DCB_OUTPUT_TMDS)) {
+			if (encoders & (1 << DCB_OUTPUT_ANALOG))
+>>>>>>> refs/remotes/origin/master
 				nv_connector->type = DCB_CONNECTOR_DVI_I;
 			else
 				nv_connector->type = DCB_CONNECTOR_DVI_D;
 		} else
+<<<<<<< HEAD
 		if (encoders & (1 << OUTPUT_ANALOG)) {
 			nv_connector->type = DCB_CONNECTOR_VGA;
 		} else
@@ -1237,6 +1704,15 @@ nouveau_connector_create(struct drm_device *dev, int index)
 			nv_connector->type = DCB_CONNECTOR_LVDS;
 		} else
 		if (encoders & (1 << OUTPUT_TV)) {
+=======
+		if (encoders & (1 << DCB_OUTPUT_ANALOG)) {
+			nv_connector->type = DCB_CONNECTOR_VGA;
+		} else
+		if (encoders & (1 << DCB_OUTPUT_LVDS)) {
+			nv_connector->type = DCB_CONNECTOR_LVDS;
+		} else
+		if (encoders & (1 << DCB_OUTPUT_TV)) {
+>>>>>>> refs/remotes/origin/master
 			nv_connector->type = DCB_CONNECTOR_TV_0;
 		}
 	}
@@ -1245,7 +1721,11 @@ nouveau_connector_create(struct drm_device *dev, int index)
 	if (type == DRM_MODE_CONNECTOR_LVDS) {
 		ret = nouveau_bios_parse_lvds_table(dev, 0, &dummy, &dummy);
 		if (ret) {
+<<<<<<< HEAD
 			NV_ERROR(dev, "Error parsing LVDS table, disabling\n");
+=======
+			NV_ERROR(drm, "Error parsing LVDS table, disabling\n");
+>>>>>>> refs/remotes/origin/master
 			kfree(nv_connector);
 			return ERR_PTR(ret);
 		}
@@ -1264,7 +1744,11 @@ nouveau_connector_create(struct drm_device *dev, int index)
 
 	/* Init DVI-I specific properties */
 	if (nv_connector->type == DCB_CONNECTOR_DVI_I)
+<<<<<<< HEAD
 		drm_connector_attach_property(connector, dev->mode_config.dvi_i_subconnector_property, 0);
+=======
+		drm_object_attach_property(&connector->base, dev->mode_config.dvi_i_subconnector_property, 0);
+>>>>>>> refs/remotes/origin/master
 
 	/* Add overscan compensation options to digital outputs */
 	if (disp->underscan_property &&
@@ -1272,6 +1756,7 @@ nouveau_connector_create(struct drm_device *dev, int index)
 	     type == DRM_MODE_CONNECTOR_DVII ||
 	     type == DRM_MODE_CONNECTOR_HDMIA ||
 	     type == DRM_MODE_CONNECTOR_DisplayPort)) {
+<<<<<<< HEAD
 		drm_connector_attach_property(connector,
 					      disp->underscan_property,
 					      UNDERSCAN_OFF);
@@ -1279,21 +1764,39 @@ nouveau_connector_create(struct drm_device *dev, int index)
 					      disp->underscan_hborder_property,
 					      0);
 		drm_connector_attach_property(connector,
+=======
+		drm_object_attach_property(&connector->base,
+					      disp->underscan_property,
+					      UNDERSCAN_OFF);
+		drm_object_attach_property(&connector->base,
+					      disp->underscan_hborder_property,
+					      0);
+		drm_object_attach_property(&connector->base,
+>>>>>>> refs/remotes/origin/master
 					      disp->underscan_vborder_property,
 					      0);
 	}
 
 	/* Add hue and saturation options */
 	if (disp->vibrant_hue_property)
+<<<<<<< HEAD
 		drm_connector_attach_property(connector,
 					      disp->vibrant_hue_property,
 					      90);
 	if (disp->color_vibrance_property)
 		drm_connector_attach_property(connector,
+=======
+		drm_object_attach_property(&connector->base,
+					      disp->vibrant_hue_property,
+					      90);
+	if (disp->color_vibrance_property)
+		drm_object_attach_property(&connector->base,
+>>>>>>> refs/remotes/origin/master
 					      disp->color_vibrance_property,
 					      150);
 
 	switch (nv_connector->type) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	case DCB_CONNECTOR_VGA:
 		if (dev_priv->card_type >= NV_50) {
@@ -1305,6 +1808,14 @@ nouveau_connector_create(struct drm_device *dev, int index)
 		connector->polled = DRM_CONNECTOR_POLL_CONNECT;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case DCB_CONNECTOR_VGA:
+		if (nv_device(drm->device)->card_type >= NV_50) {
+			drm_object_attach_property(&connector->base,
+					dev->mode_config.scaling_mode_property,
+					nv_connector->scaling_mode);
+		}
+>>>>>>> refs/remotes/origin/master
 		/* fall-through */
 	case DCB_CONNECTOR_TV_0:
 	case DCB_CONNECTOR_TV_1:
@@ -1314,6 +1825,7 @@ nouveau_connector_create(struct drm_device *dev, int index)
 	default:
 		nv_connector->scaling_mode = DRM_MODE_SCALE_FULLSCREEN;
 
+<<<<<<< HEAD
 		drm_connector_attach_property(connector,
 				dev->mode_config.scaling_mode_property,
 				nv_connector->scaling_mode);
@@ -1332,19 +1844,34 @@ nouveau_connector_create(struct drm_device *dev, int index)
 		if (disp->dithering_mode) {
 			nv_connector->dithering_mode = DITHERING_MODE_AUTO;
 			drm_connector_attach_property(connector,
+=======
+		drm_object_attach_property(&connector->base,
+				dev->mode_config.scaling_mode_property,
+				nv_connector->scaling_mode);
+		if (disp->dithering_mode) {
+			nv_connector->dithering_mode = DITHERING_MODE_AUTO;
+			drm_object_attach_property(&connector->base,
+>>>>>>> refs/remotes/origin/master
 						disp->dithering_mode,
 						nv_connector->dithering_mode);
 		}
 		if (disp->dithering_depth) {
 			nv_connector->dithering_depth = DITHERING_DEPTH_AUTO;
+<<<<<<< HEAD
 			drm_connector_attach_property(connector,
 						disp->dithering_depth,
 						nv_connector->dithering_depth);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			drm_object_attach_property(&connector->base,
+						disp->dithering_depth,
+						nv_connector->dithering_depth);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (pgpio->irq_register) {
 		pgpio->irq_register(dev, nv_connector->dcb->gpio_tag,
@@ -1414,4 +1941,12 @@ nouveau_connector_hotplug(void *data, int plugged)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	drm_helper_hpd_irq_event(dev);
+=======
+	connector->polled = DRM_CONNECTOR_POLL_CONNECT;
+	if (nv_connector->hpd.func != DCB_GPIO_UNUSED)
+		connector->polled = DRM_CONNECTOR_POLL_HPD;
+
+	drm_sysfs_connector_add(connector);
+	return connector;
+>>>>>>> refs/remotes/origin/master
 }

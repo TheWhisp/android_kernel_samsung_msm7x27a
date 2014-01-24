@@ -3,7 +3,11 @@
  * for access to MPT (Message Passing Technology) firmware.
  *
  * This code is based on drivers/scsi/mpt2sas/mpt2_base.c
+<<<<<<< HEAD
  * Copyright (C) 2007-2010  LSI Corporation
+=======
+ * Copyright (C) 2007-2013  LSI Corporation
+>>>>>>> refs/remotes/origin/master
  *  (mailto:DL-MPTFusionLinux@lsi.com)
  *
  * This program is free software; you can redistribute it and/or
@@ -43,9 +47,12 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/errno.h>
@@ -62,9 +69,13 @@
 #include <linux/io.h>
 #include <linux/time.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/kthread.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kthread.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/aer.h>
 
 #include "mpt2sas_base.h"
@@ -87,6 +98,7 @@ static int msix_disable = -1;
 module_param(msix_disable, int, 0);
 MODULE_PARM_DESC(msix_disable, " disable msix routed interrupts (default=0)");
 
+<<<<<<< HEAD
 static int missing_delay[2] = {-1, -1};
 module_param_array(missing_delay, int, NULL, 0);
 MODULE_PARM_DESC(missing_delay, " device missing delay , io missing delay");
@@ -112,6 +124,11 @@ static int mpt2sas_fwfault_debug;
 MODULE_PARM_DESC(mpt2sas_fwfault_debug, " enable detection of firmware fault "
 	"and halt firmware - (default=0)");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int mpt2sas_fwfault_debug;
+MODULE_PARM_DESC(mpt2sas_fwfault_debug, " enable detection of firmware fault "
+	"and halt firmware - (default=0)");
+>>>>>>> refs/remotes/origin/master
 
 static int disable_discovery = -1;
 module_param(disable_discovery, int, 0);
@@ -136,15 +153,22 @@ _scsih_set_fwfault_debug(const char *val, struct kernel_param *kp)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 module_param_call(mpt2sas_fwfault_debug, _scsih_set_fwfault_debug,
     param_get_int, &mpt2sas_fwfault_debug, 0644);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *  mpt2sas_remove_dead_ioc_func - kthread context to remove dead ioc
  * @arg: input argument, used to derive ioc
  *
@@ -168,7 +192,10 @@ static int mpt2sas_remove_dead_ioc_func(void *arg)
 
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * _base_fault_reset_work - workq handling ioc fault conditions
  * @work: input argument, used to derive ioc
  * Context: sleep.
@@ -184,22 +211,49 @@ _base_fault_reset_work(struct work_struct *work)
 	u32 doorbell;
 	int rc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct task_struct *p;
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	spin_lock_irqsave(&ioc->ioc_reset_in_progress_lock, flags);
 	if (ioc->shost_recovery)
+=======
+	struct task_struct *p;
+
+	spin_lock_irqsave(&ioc->ioc_reset_in_progress_lock, flags);
+	if (ioc->shost_recovery || ioc->pci_error_recovery)
+>>>>>>> refs/remotes/origin/master
 		goto rearm_timer;
 	spin_unlock_irqrestore(&ioc->ioc_reset_in_progress_lock, flags);
 
 	doorbell = mpt2sas_base_get_iocstate(ioc, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((doorbell & MPI2_IOC_STATE_MASK) == MPI2_IOC_STATE_MASK) {
 		printk(MPT2SAS_INFO_FMT "%s : SAS host is non-operational !!!!\n",
 			ioc->name, __func__);
 
+<<<<<<< HEAD
+=======
+		/* It may be possible that EEH recovery can resolve some of
+		 * pci bus failure issues rather removing the dead ioc function
+		 * by considering controller is in a non-operational state. So
+		 * here priority is given to the EEH recovery. If it doesn't
+		 * not resolve this issue, mpt2sas driver will consider this
+		 * controller to non-operational state and remove the dead ioc
+		 * function.
+		 */
+		if (ioc->non_operational_loop++ < 5) {
+			spin_lock_irqsave(&ioc->ioc_reset_in_progress_lock,
+							 flags);
+			goto rearm_timer;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Call _scsih_flush_pending_cmds callback so that we flush all
 		 * pending commands back to OS. This call is required to aovid
@@ -229,7 +283,12 @@ _base_fault_reset_work(struct work_struct *work)
 		return; /* don't rearm timer */
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ioc->non_operational_loop = 0;
+
+>>>>>>> refs/remotes/origin/master
 	if ((doorbell & MPI2_IOC_STATE_MASK) == MPI2_IOC_STATE_FAULT) {
 		rc = mpt2sas_base_hard_reset_handler(ioc, CAN_SLEEP,
 		    FORCE_BIG_HAMMER);
@@ -695,10 +754,14 @@ _base_sas_log_info(struct MPT2SAS_ADAPTER *ioc , u32 log_info)
 
 	/* eat the loginfos associated with task aborts */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ioc->ignore_loginfos && (log_info == 30050000 || log_info ==
 =======
 	if (ioc->ignore_loginfos && (log_info == 0x30050000 || log_info ==
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ioc->ignore_loginfos && (log_info == 0x30050000 || log_info ==
+>>>>>>> refs/remotes/origin/master
 	    0x31140000 || log_info == 0x31130000))
 		return;
 
@@ -740,6 +803,14 @@ _base_display_reply_info(struct MPT2SAS_ADAPTER *ioc, u16 smid, u8 msix_index,
 	u16 ioc_status;
 
 	mpi_reply = mpt2sas_base_get_reply_virt_addr(ioc, reply);
+<<<<<<< HEAD
+=======
+	if (unlikely(!mpi_reply)) {
+		printk(MPT2SAS_ERR_FMT "mpi_reply not valid at %s:%d/%s()!\n",
+			ioc->name, __FILE__, __LINE__, __func__);
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 	ioc_status = le16_to_cpu(mpi_reply->IOCStatus);
 #ifdef CONFIG_SCSI_MPT2SAS_LOGGING
 	if ((ioc_status & MPI2_IOCSTATUS_MASK) &&
@@ -782,9 +853,13 @@ mpt2sas_base_done(struct MPT2SAS_ADAPTER *ioc, u16 smid, u8 msix_index,
 	}
 	ioc->base_cmds.status &= ~MPT2_CMD_PENDING;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	complete(&ioc->base_cmds.done);
 	return 1;
 }
@@ -795,10 +870,16 @@ mpt2sas_base_done(struct MPT2SAS_ADAPTER *ioc, u16 smid, u8 msix_index,
  * @msix_index: MSIX table index supplied by the OS
  * @reply: reply message frame(lower 32bit addr)
  *
+<<<<<<< HEAD
  * Return 1 meaning mf should be freed from _base_interrupt
  *        0 means the mf is freed from this function.
  */
 static u8
+=======
+ * Returns void.
+ */
+static void
+>>>>>>> refs/remotes/origin/master
 _base_async_event(struct MPT2SAS_ADAPTER *ioc, u8 msix_index, u32 reply)
 {
 	Mpi2EventNotificationReply_t *mpi_reply;
@@ -807,9 +888,15 @@ _base_async_event(struct MPT2SAS_ADAPTER *ioc, u8 msix_index, u32 reply)
 
 	mpi_reply = mpt2sas_base_get_reply_virt_addr(ioc, reply);
 	if (!mpi_reply)
+<<<<<<< HEAD
 		return 1;
 	if (mpi_reply->Function != MPI2_FUNCTION_EVENT_NOTIFICATION)
 		return 1;
+=======
+		return;
+	if (mpi_reply->Function != MPI2_FUNCTION_EVENT_NOTIFICATION)
+		return;
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SCSI_MPT2SAS_LOGGING
 	_base_display_event_data(ioc, mpi_reply);
 #endif
@@ -839,7 +926,11 @@ _base_async_event(struct MPT2SAS_ADAPTER *ioc, u8 msix_index, u32 reply)
 	/* ctl callback handler */
 	mpt2sas_ctl_event_callback(ioc, msix_index, reply);
 
+<<<<<<< HEAD
 	return 1;
+=======
+	return;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -928,9 +1019,13 @@ static irqreturn_t
 _base_interrupt(int irq, void *bus_id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct adapter_reply_queue *reply_q = bus_id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct adapter_reply_queue *reply_q = bus_id;
+>>>>>>> refs/remotes/origin/master
 	union reply_descriptor rd;
 	u32 completed_cmds;
 	u8 request_desript_type;
@@ -938,12 +1033,17 @@ _base_interrupt(int irq, void *bus_id)
 	u8 cb_idx;
 	u32 reply;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 msix_index;
 	struct MPT2SAS_ADAPTER *ioc = bus_id;
 =======
 	u8 msix_index = reply_q->msix_index;
 	struct MPT2SAS_ADAPTER *ioc = reply_q->ioc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 msix_index = reply_q->msix_index;
+	struct MPT2SAS_ADAPTER *ioc = reply_q->ioc;
+>>>>>>> refs/remotes/origin/master
 	Mpi2ReplyDescriptorsUnion_t *rpf;
 	u8 rc;
 
@@ -951,12 +1051,15 @@ _base_interrupt(int irq, void *bus_id)
 		return IRQ_NONE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rpf = &ioc->reply_post_free[ioc->reply_post_host_index];
 	request_desript_type = rpf->Default.ReplyFlags
 	     & MPI2_RPY_DESCRIPT_FLAGS_TYPE_MASK;
 	if (request_desript_type == MPI2_RPY_DESCRIPT_FLAGS_UNUSED)
 		return IRQ_NONE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!atomic_add_unless(&reply_q->busy, 1, 1))
 		return IRQ_NONE;
 
@@ -967,7 +1070,10 @@ _base_interrupt(int irq, void *bus_id)
 		atomic_dec(&reply_q->busy);
 		return IRQ_NONE;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	completed_cmds = 0;
 	cb_idx = 0xFF;
@@ -977,12 +1083,16 @@ _base_interrupt(int irq, void *bus_id)
 			goto out;
 		reply = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cb_idx = 0xFF;
 		smid = le16_to_cpu(rpf->Default.DescriptorTypeDependent1);
 		msix_index = rpf->Default.MSIxIndex;
 =======
 		smid = le16_to_cpu(rpf->Default.DescriptorTypeDependent1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		smid = le16_to_cpu(rpf->Default.DescriptorTypeDependent1);
+>>>>>>> refs/remotes/origin/master
 		if (request_desript_type ==
 		    MPI2_RPY_DESCRIPT_FLAGS_ADDRESS_REPLY) {
 			reply = le32_to_cpu
@@ -996,6 +1106,7 @@ _base_interrupt(int irq, void *bus_id)
 		else if (request_desript_type ==
 		    MPI2_RPY_DESCRIPT_FLAGS_TARGETASSIST_SUCCESS)
 			goto next;
+<<<<<<< HEAD
 		if (smid)
 			cb_idx = _base_get_cb_idx(ioc, smid);
 		if (smid && cb_idx != 0xFF) {
@@ -1006,6 +1117,20 @@ _base_interrupt(int irq, void *bus_id)
 				    reply);
 			if (rc)
 				mpt2sas_base_free_smid(ioc, smid);
+=======
+		if (smid) {
+			cb_idx = _base_get_cb_idx(ioc, smid);
+		if ((likely(cb_idx < MPT_MAX_CALLBACKS))
+			    && (likely(mpt_callbacks[cb_idx] != NULL))) {
+				rc = mpt_callbacks[cb_idx](ioc, smid,
+				    msix_index, reply);
+			if (reply)
+				_base_display_reply_info(ioc, smid,
+				    msix_index, reply);
+			if (rc)
+				mpt2sas_base_free_smid(ioc, smid);
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 		if (!smid)
 			_base_async_event(ioc, msix_index, reply);
@@ -1027,6 +1152,7 @@ _base_interrupt(int irq, void *bus_id)
 
 		rpf->Words = cpu_to_le64(ULLONG_MAX);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ioc->reply_post_host_index = (ioc->reply_post_host_index ==
 		    (ioc->reply_post_queue_depth - 1)) ? 0 :
 		    ioc->reply_post_host_index + 1;
@@ -1039,6 +1165,8 @@ _base_interrupt(int irq, void *bus_id)
 		if (!ioc->reply_post_host_index)
 			rpf = ioc->reply_post_free;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		reply_q->reply_post_host_index =
 		    (reply_q->reply_post_host_index ==
 		    (ioc->reply_post_queue_depth - 1)) ? 0 :
@@ -1051,7 +1179,10 @@ _base_interrupt(int irq, void *bus_id)
 			goto out;
 		if (!reply_q->reply_post_host_index)
 			rpf = reply_q->reply_post_free;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		else
 			rpf++;
 	} while (1);
@@ -1059,12 +1190,15 @@ _base_interrupt(int irq, void *bus_id)
  out:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!completed_cmds)
 		return IRQ_NONE;
 
 	wmb();
 	writel(ioc->reply_post_host_index, &ioc->chip->ReplyPostHostIndex);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!completed_cmds) {
 		atomic_dec(&reply_q->busy);
 		return IRQ_NONE;
@@ -1079,13 +1213,19 @@ _base_interrupt(int irq, void *bus_id)
 	writel(reply_q->reply_post_host_index | (msix_index <<
 	    MPI2_RPHI_MSIX_INDEX_SHIFT), &ioc->chip->ReplyPostHostIndex);
 	atomic_dec(&reply_q->busy);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * _base_is_controller_msix_enabled - is controller support muli-reply queues
  * @ioc: per adapter object
  *
@@ -1130,7 +1270,10 @@ mpt2sas_base_flush_reply_queues(struct MPT2SAS_ADAPTER *ioc)
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * mpt2sas_base_release_callback_handler - clear interrupt callback handler
  * @cb_idx: callback index
  *
@@ -1309,12 +1452,15 @@ _base_check_enable_msix(struct MPT2SAS_ADAPTER *ioc)
 
 	/* get msix vector count */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pci_read_config_word(ioc->pdev, base + 2, &message_control);
 	ioc->msix_vector_count = (message_control & 0x3FF) + 1;
 
 	dinitprintk(ioc, printk(MPT2SAS_INFO_FMT "msix is supported, "
 	    "vector_count(%d)\n", ioc->name, ioc->msix_vector_count));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* NUMA_IO not supported for older controllers */
 	if (ioc->pdev->device == MPI2_MFGPAGE_DEVID_SAS2004 ||
 	    ioc->pdev->device == MPI2_MFGPAGE_DEVID_SAS2008 ||
@@ -1331,13 +1477,19 @@ _base_check_enable_msix(struct MPT2SAS_ADAPTER *ioc)
 	dinitprintk(ioc, printk(MPT2SAS_INFO_FMT "msix is supported, "
 	    "vector_count(%d)\n", ioc->name, ioc->msix_vector_count));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * _base_free_irq - free irq
  * @ioc: per adapter object
  *
@@ -1465,7 +1617,10 @@ _base_assign_reply_queues(struct MPT2SAS_ADAPTER *ioc)
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * _base_disable_msix - disables msix
  * @ioc: per adapter object
  *
@@ -1488,19 +1643,25 @@ static int
 _base_enable_msix(struct MPT2SAS_ADAPTER *ioc)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msix_entry entries;
 	int r;
 	u8 try_msix = 0;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct msix_entry *entries, *a;
 	int r;
 	int i;
 	u8 try_msix = 0;
 
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&ioc->reply_queue_list);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (msix_disable == -1 || msix_disable == 0)
 		try_msix = 1;
 
@@ -1510,6 +1671,7 @@ _base_enable_msix(struct MPT2SAS_ADAPTER *ioc)
 	if (_base_check_enable_msix(ioc) != 0)
 		goto try_ioapic;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	memset(&entries, 0, sizeof(struct msix_entry));
 	r = pci_enable_msix(ioc->pdev, &entries, 1);
@@ -1531,6 +1693,8 @@ _base_enable_msix(struct MPT2SAS_ADAPTER *ioc)
 	ioc->pci_irq = entries.vector;
 	ioc->msix_enable = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ioc->reply_queue_count = min_t(int, ioc->cpu_count,
 	    ioc->msix_vector_count);
 
@@ -1566,12 +1730,16 @@ _base_enable_msix(struct MPT2SAS_ADAPTER *ioc)
 	}
 
 	kfree(entries);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 /* failback to io_apic interrupt routing */
  try_ioapic:
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	r = request_irq(ioc->pdev->irq, _base_interrupt, IRQF_SHARED,
 	    ioc->name, ioc);
@@ -1590,6 +1758,10 @@ _base_enable_msix(struct MPT2SAS_ADAPTER *ioc)
 	r = _base_request_irq(ioc, 0, ioc->pdev->irq);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	r = _base_request_irq(ioc, 0, ioc->pdev->irq);
+
+>>>>>>> refs/remotes/origin/master
 	return r;
 }
 
@@ -1609,9 +1781,13 @@ mpt2sas_base_map_resources(struct MPT2SAS_ADAPTER *ioc)
 	u64 pio_chip = 0;
 	u64 chip_phys = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct adapter_reply_queue *reply_q;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct adapter_reply_queue *reply_q;
+>>>>>>> refs/remotes/origin/master
 
 	dinitprintk(ioc, printk(MPT2SAS_INFO_FMT "%s\n",
 	    ioc->name, __func__));
@@ -1620,6 +1796,10 @@ mpt2sas_base_map_resources(struct MPT2SAS_ADAPTER *ioc)
 	if (pci_enable_device_mem(pdev)) {
 		printk(MPT2SAS_WARN_FMT "pci_enable_device_mem: "
 		    "failed\n", ioc->name);
+<<<<<<< HEAD
+=======
+		ioc->bars = 0;
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -1628,6 +1808,10 @@ mpt2sas_base_map_resources(struct MPT2SAS_ADAPTER *ioc)
 	    MPT2SAS_DRIVER_NAME)) {
 		printk(MPT2SAS_WARN_FMT "pci_request_selected_regions: "
 		    "failed\n", ioc->name);
+<<<<<<< HEAD
+=======
+		ioc->bars = 0;
+>>>>>>> refs/remotes/origin/master
 		r = -ENODEV;
 		goto out_fail;
 	}
@@ -1675,16 +1859,22 @@ mpt2sas_base_map_resources(struct MPT2SAS_ADAPTER *ioc)
 		goto out_fail;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(MPT2SAS_INFO_FMT "%s: IRQ %d\n",
 	    ioc->name,  ((ioc->msix_enable) ? "PCI-MSI-X enabled" :
 	    "IO-APIC enabled"), ioc->pci_irq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(reply_q, &ioc->reply_queue_list, list)
 		printk(MPT2SAS_INFO_FMT "%s: IRQ %d\n",
 		    reply_q->name,  ((ioc->msix_enable) ? "PCI-MSI-X enabled" :
 		    "IO-APIC enabled"), reply_q->vector);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	printk(MPT2SAS_INFO_FMT "iomem(0x%016llx), mapped(0x%p), size(%d)\n",
 	    ioc->name, (unsigned long long)chip_phys, ioc->chip, memap_sz);
 	printk(MPT2SAS_INFO_FMT "ioport(0x%016llx), size(%d)\n",
@@ -1700,9 +1890,12 @@ mpt2sas_base_map_resources(struct MPT2SAS_ADAPTER *ioc)
 		iounmap(ioc->chip);
 	ioc->chip_phys = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ioc->pci_irq = -1;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_release_selected_regions(ioc->pdev, ioc->bars);
 	pci_disable_pcie_error_reporting(pdev);
 	pci_disable_device(pdev);
@@ -1950,14 +2143,20 @@ static inline void _base_writeq(__u64 b, volatile void __iomem *addr,
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u8
 _base_get_msix_index(struct MPT2SAS_ADAPTER *ioc)
 {
 	return ioc->cpu_msix_table[raw_smp_processor_id()];
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * mpt2sas_base_put_smid_scsi_io - send SCSI_IO request to firmware
  * @ioc: per adapter object
@@ -1975,10 +2174,14 @@ mpt2sas_base_put_smid_scsi_io(struct MPT2SAS_ADAPTER *ioc, u16 smid, u16 handle)
 
 	descriptor.SCSIIO.RequestFlags = MPI2_REQ_DESCRIPT_FLAGS_SCSI_IO;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	descriptor.SCSIIO.MSIxIndex = 0; /* TODO */
 =======
 	descriptor.SCSIIO.MSIxIndex =  _base_get_msix_index(ioc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	descriptor.SCSIIO.MSIxIndex =  _base_get_msix_index(ioc);
+>>>>>>> refs/remotes/origin/master
 	descriptor.SCSIIO.SMID = cpu_to_le16(smid);
 	descriptor.SCSIIO.DevHandle = cpu_to_le16(handle);
 	descriptor.SCSIIO.LMID = 0;
@@ -2003,10 +2206,14 @@ mpt2sas_base_put_smid_hi_priority(struct MPT2SAS_ADAPTER *ioc, u16 smid)
 	descriptor.HighPriority.RequestFlags =
 	    MPI2_REQ_DESCRIPT_FLAGS_HIGH_PRIORITY;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	descriptor.HighPriority.MSIxIndex = 0; /* TODO */
 =======
 	descriptor.HighPriority.MSIxIndex =  0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	descriptor.HighPriority.MSIxIndex =  0;
+>>>>>>> refs/remotes/origin/master
 	descriptor.HighPriority.SMID = cpu_to_le16(smid);
 	descriptor.HighPriority.LMID = 0;
 	descriptor.HighPriority.Reserved1 = 0;
@@ -2029,10 +2236,14 @@ mpt2sas_base_put_smid_default(struct MPT2SAS_ADAPTER *ioc, u16 smid)
 
 	descriptor.Default.RequestFlags = MPI2_REQ_DESCRIPT_FLAGS_DEFAULT_TYPE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	descriptor.Default.MSIxIndex = 0; /* TODO */
 =======
 	descriptor.Default.MSIxIndex =  _base_get_msix_index(ioc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	descriptor.Default.MSIxIndex =  _base_get_msix_index(ioc);
+>>>>>>> refs/remotes/origin/master
 	descriptor.Default.SMID = cpu_to_le16(smid);
 	descriptor.Default.LMID = 0;
 	descriptor.Default.DescriptorTypeDependent = 0;
@@ -2058,10 +2269,14 @@ mpt2sas_base_put_smid_target_assist(struct MPT2SAS_ADAPTER *ioc, u16 smid,
 	descriptor.SCSITarget.RequestFlags =
 	    MPI2_REQ_DESCRIPT_FLAGS_SCSI_TARGET;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	descriptor.SCSITarget.MSIxIndex = 0; /* TODO */
 =======
 	descriptor.SCSITarget.MSIxIndex =  _base_get_msix_index(ioc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	descriptor.SCSITarget.MSIxIndex =  _base_get_msix_index(ioc);
+>>>>>>> refs/remotes/origin/master
 	descriptor.SCSITarget.SMID = cpu_to_le16(smid);
 	descriptor.SCSITarget.LMID = 0;
 	descriptor.SCSITarget.IoIndex = cpu_to_le16(io_index);
@@ -2151,12 +2366,19 @@ _base_display_intel_branding(struct MPT2SAS_ADAPTER *ioc)
 			    MPT2SAS_INTEL_RMS2LL040_BRANDING);
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		case MPT2SAS_INTEL_RAMSDALE_SSDID:
 			printk(MPT2SAS_INFO_FMT "%s\n", ioc->name,
 			    MPT2SAS_INTEL_RAMSDALE_BRANDING);
 			break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case MPT2SAS_INTEL_SSD910_SSDID:
+			printk(MPT2SAS_INFO_FMT "%s\n", ioc->name,
+			    MPT2SAS_INTEL_SSD910_BRANDING);
+			break;
+>>>>>>> refs/remotes/origin/master
 		default:
 			break;
 		}
@@ -2167,7 +2389,10 @@ _base_display_intel_branding(struct MPT2SAS_ADAPTER *ioc)
 			    MPT2SAS_INTEL_RS25GB008_BRANDING);
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case MPT2SAS_INTEL_RMS25JB080_SSDID:
 			printk(MPT2SAS_INFO_FMT "%s\n", ioc->name,
 			    MPT2SAS_INTEL_RMS25JB080_BRANDING);
@@ -2184,7 +2409,18 @@ _base_display_intel_branding(struct MPT2SAS_ADAPTER *ioc)
 			printk(MPT2SAS_INFO_FMT "%s\n", ioc->name,
 			    MPT2SAS_INTEL_RMS25KB040_BRANDING);
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case MPT2SAS_INTEL_RMS25LB040_SSDID:
+			printk(MPT2SAS_INFO_FMT "%s\n", ioc->name,
+			    MPT2SAS_INTEL_RMS25LB040_BRANDING);
+			break;
+		case MPT2SAS_INTEL_RMS25LB080_SSDID:
+			printk(MPT2SAS_INFO_FMT "%s\n", ioc->name,
+			    MPT2SAS_INTEL_RMS25LB080_BRANDING);
+			break;
+>>>>>>> refs/remotes/origin/master
 		default:
 			break;
 		}
@@ -2253,17 +2489,23 @@ _base_display_ioc_capabilities(struct MPT2SAS_ADAPTER *ioc)
 	int i = 0;
 	char desc[16];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 revision;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 iounit_pg1_flags;
 	u32 bios_version;
 
 	bios_version = le32_to_cpu(ioc->bios_pg3.BiosVersion);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pci_read_config_byte(ioc->pdev, PCI_CLASS_REVISION, &revision);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	strncpy(desc, ioc->manu_pg0.ChipName, 16);
 	printk(MPT2SAS_INFO_FMT "%s: FWVersion(%02d.%02d.%02d.%02d), "
 	   "ChipRevision(0x%02x), BiosVersion(%02d.%02d.%02d.%02d)\n",
@@ -2273,10 +2515,14 @@ _base_display_ioc_capabilities(struct MPT2SAS_ADAPTER *ioc)
 	   (ioc->facts.FWVersion.Word & 0x0000FF00) >> 8,
 	   ioc->facts.FWVersion.Word & 0x000000FF,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   revision,
 =======
 	   ioc->pdev->revision,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	   ioc->pdev->revision,
+>>>>>>> refs/remotes/origin/master
 	   (bios_version & 0xFF000000) >> 24,
 	   (bios_version & 0x00FF0000) >> 16,
 	   (bios_version & 0x0000FF00) >> 8,
@@ -2365,7 +2611,11 @@ _base_display_ioc_capabilities(struct MPT2SAS_ADAPTER *ioc)
 }
 
 /**
+<<<<<<< HEAD
  * _base_update_missing_delay - change the missing delay timers
+=======
+ * mpt2sas_base_update_missing_delay - change the missing delay timers
+>>>>>>> refs/remotes/origin/master
  * @ioc: per adapter object
  * @device_missing_delay: amount of time till device is reported missing
  * @io_missing_delay: interval IO is returned when there is a missing device
@@ -2376,8 +2626,13 @@ _base_display_ioc_capabilities(struct MPT2SAS_ADAPTER *ioc)
  * delay, as well as the io missing delay. This should be called at driver
  * load time.
  */
+<<<<<<< HEAD
 static void
 _base_update_missing_delay(struct MPT2SAS_ADAPTER *ioc,
+=======
+void
+mpt2sas_base_update_missing_delay(struct MPT2SAS_ADAPTER *ioc,
+>>>>>>> refs/remotes/origin/master
 	u16 device_missing_delay, u8 io_missing_delay)
 {
 	u16 dmd, dmd_new, dmd_orignal;
@@ -2601,10 +2856,14 @@ _base_allocate_memory_pools(struct MPT2SAS_ADAPTER *ioc,  int sleep_flag)
 	u16 max_sge_elements;
 	u16 chains_needed_per_io;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 sz, total_sz;
 =======
 	u32 sz, total_sz, reply_post_free_sz;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 sz, total_sz, reply_post_free_sz;
+>>>>>>> refs/remotes/origin/master
 	u32 retry_sz;
 	u16 max_request_credit;
 	int i;
@@ -2677,6 +2936,7 @@ _base_allocate_memory_pools(struct MPT2SAS_ADAPTER *ioc,  int sleep_flag)
 	/* reply free queue sizing - taking into account for 64 FW events */
 	ioc->reply_free_queue_depth = ioc->hba_queue_depth + 64;
 
+<<<<<<< HEAD
 	/* align the reply post queue on the next 16 count boundary */
 	if (!ioc->reply_free_queue_depth % 16)
 		ioc->reply_post_queue_depth = ioc->reply_free_queue_depth + 16;
@@ -2694,6 +2954,27 @@ _base_allocate_memory_pools(struct MPT2SAS_ADAPTER *ioc,  int sleep_flag)
 	}
 
 
+=======
+	/* calculate reply descriptor post queue depth */
+	ioc->reply_post_queue_depth = ioc->hba_queue_depth +
+					ioc->reply_free_queue_depth +  1;
+	/* align the reply post queue on the next 16 count boundary */
+	if (ioc->reply_post_queue_depth % 16)
+		ioc->reply_post_queue_depth += 16 -
+			(ioc->reply_post_queue_depth % 16);
+
+
+	if (ioc->reply_post_queue_depth >
+	    facts->MaxReplyDescriptorPostQueueDepth) {
+		ioc->reply_post_queue_depth =
+			facts->MaxReplyDescriptorPostQueueDepth -
+		    (facts->MaxReplyDescriptorPostQueueDepth % 16);
+		ioc->hba_queue_depth =
+			((ioc->reply_post_queue_depth - 64) / 2) - 1;
+		ioc->reply_free_queue_depth = ioc->hba_queue_depth + 64;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	dinitprintk(ioc, printk(MPT2SAS_INFO_FMT "scatter gather: "
 	    "sge_in_main_msg(%d), sge_per_chain(%d), sge_per_io(%d), "
 	    "chains_per_io(%d)\n", ioc->name, ioc->max_sges_in_main_message,
@@ -2785,13 +3066,19 @@ _base_allocate_memory_pools(struct MPT2SAS_ADAPTER *ioc,  int sleep_flag)
 	ioc->chain_lookup = (struct chain_tracker *)__get_free_pages(
 	    GFP_KERNEL, ioc->chain_pages);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!ioc->chain_lookup) {
 		printk(MPT2SAS_ERR_FMT "chain_lookup: get_free_pages failed, "
 		    "sz(%d)\n", ioc->name, (int)sz);
 		goto out;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ioc->chain_dma_pool = pci_pool_create("chain pool", ioc->pdev,
 	    ioc->request_sz, 16, 0);
 	if (!ioc->chain_dma_pool) {
@@ -2916,15 +3203,21 @@ chain_done:
 
 	/* reply post queue, 16 byte align */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sz = ioc->reply_post_queue_depth * sizeof(Mpi2DefaultReplyDescriptor_t);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	reply_post_free_sz = ioc->reply_post_queue_depth *
 	    sizeof(Mpi2DefaultReplyDescriptor_t);
 	if (_base_is_controller_msix_enabled(ioc))
 		sz = reply_post_free_sz * ioc->reply_queue_count;
 	else
 		sz = reply_post_free_sz;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ioc->reply_post_free_dma_pool = pci_pool_create("reply_post_free pool",
 	    ioc->pdev, sz, 16, 0);
 	if (!ioc->reply_post_free_dma_pool) {
@@ -3395,12 +3688,17 @@ mpt2sas_base_sas_iounit_control(struct MPT2SAS_ADAPTER *ioc,
 	    mpi_request->Operation == MPI2_SAS_OP_PHY_LINK_RESET)
 		ioc->ioc_link_reset_in_progress = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mpt2sas_base_put_smid_default(ioc, smid);
 	init_completion(&ioc->base_cmds.done);
 =======
 	init_completion(&ioc->base_cmds.done);
 	mpt2sas_base_put_smid_default(ioc, smid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_completion(&ioc->base_cmds.done);
+	mpt2sas_base_put_smid_default(ioc, smid);
+>>>>>>> refs/remotes/origin/master
 	timeleft = wait_for_completion_timeout(&ioc->base_cmds.done,
 	    msecs_to_jiffies(10000));
 	if ((mpi_request->Operation == MPI2_SAS_OP_PHY_HARD_RESET ||
@@ -3502,12 +3800,17 @@ mpt2sas_base_scsi_enclosure_processor(struct MPT2SAS_ADAPTER *ioc,
 	ioc->base_cmds.smid = smid;
 	memcpy(request, mpi_request, sizeof(Mpi2SepReply_t));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mpt2sas_base_put_smid_default(ioc, smid);
 	init_completion(&ioc->base_cmds.done);
 =======
 	init_completion(&ioc->base_cmds.done);
 	mpt2sas_base_put_smid_default(ioc, smid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_completion(&ioc->base_cmds.done);
+	mpt2sas_base_put_smid_default(ioc, smid);
+>>>>>>> refs/remotes/origin/master
 	timeleft = wait_for_completion_timeout(&ioc->base_cmds.done,
 	    msecs_to_jiffies(10000));
 	if (!(ioc->base_cmds.status & MPT2_CMD_COMPLETE)) {
@@ -3572,10 +3875,14 @@ _base_get_port_facts(struct MPT2SAS_ADAPTER *ioc, int port, int sleep_flag)
 
 	pfacts = &ioc->pfacts[port];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memset(pfacts, 0, sizeof(struct mpt2sas_port_facts));
 =======
 	memset(pfacts, 0, sizeof(Mpi2PortFactsReply_t));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memset(pfacts, 0, sizeof(struct mpt2sas_port_facts));
+>>>>>>> refs/remotes/origin/master
 	pfacts->PortNumber = mpi_reply.PortNumber;
 	pfacts->VP_ID = mpi_reply.VP_ID;
 	pfacts->VF_ID = mpi_reply.VF_ID;
@@ -3618,10 +3925,14 @@ _base_get_ioc_facts(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 
 	facts = &ioc->facts;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memset(facts, 0, sizeof(struct mpt2sas_facts));
 =======
 	memset(facts, 0, sizeof(Mpi2IOCFactsReply_t));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memset(facts, 0, sizeof(struct mpt2sas_facts));
+>>>>>>> refs/remotes/origin/master
 	facts->MsgVersion = le16_to_cpu(mpi_reply.MsgVersion);
 	facts->HeaderVersion = le16_to_cpu(mpi_reply.HeaderVersion);
 	facts->VP_ID = mpi_reply.VP_ID;
@@ -3631,9 +3942,13 @@ _base_get_ioc_facts(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 	facts->WhoInit = mpi_reply.WhoInit;
 	facts->NumberOfPorts = mpi_reply.NumberOfPorts;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	facts->MaxMSIxVectors = mpi_reply.MaxMSIxVectors;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	facts->MaxMSIxVectors = mpi_reply.MaxMSIxVectors;
+>>>>>>> refs/remotes/origin/master
 	facts->RequestCredit = le16_to_cpu(mpi_reply.RequestCredit);
 	facts->MaxReplyDescriptorPostQueueDepth =
 	    le16_to_cpu(mpi_reply.MaxReplyDescriptorPostQueueDepth);
@@ -3692,11 +4007,16 @@ _base_send_ioc_init(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 	mpi_request.HeaderVersion = cpu_to_le16(MPI2_HEADER_VERSION);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	if (_base_is_controller_msix_enabled(ioc))
 		mpi_request.HostMSIxVectors = ioc->reply_queue_count;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (_base_is_controller_msix_enabled(ioc))
+		mpi_request.HostMSIxVectors = ioc->reply_queue_count;
+>>>>>>> refs/remotes/origin/master
 	mpi_request.SystemRequestFrameSize = cpu_to_le16(ioc->request_sz/4);
 	mpi_request.ReplyDescriptorPostQueueDepth =
 	    cpu_to_le16(ioc->reply_post_queue_depth);
@@ -3756,7 +4076,10 @@ _base_send_ioc_init(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * mpt2sas_port_enable_done - command completion routine for port enable
  * @ioc: per adapter object
  * @smid: system request message index
@@ -3809,7 +4132,10 @@ mpt2sas_port_enable_done(struct MPT2SAS_ADAPTER *ioc, u16 smid, u8 msix_index,
 
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * _base_send_port_enable - send port_enable(discovery stuff) to firmware
  * @ioc: per adapter object
  * @sleep_flag: CAN_SLEEP or NO_SLEEP
@@ -3821,6 +4147,7 @@ _base_send_port_enable(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 {
 	Mpi2PortEnableRequest_t *mpi_request;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 ioc_state;
 	unsigned long timeleft;
 	int r = 0;
@@ -3830,6 +4157,8 @@ _base_send_port_enable(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 
 	if (ioc->base_cmds.status & MPT2_CMD_PENDING) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	Mpi2PortEnableReply_t *mpi_reply;
 	unsigned long timeleft;
 	int r = 0;
@@ -3839,23 +4168,31 @@ _base_send_port_enable(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 	printk(MPT2SAS_INFO_FMT "sending port enable !!\n", ioc->name);
 
 	if (ioc->port_enable_cmds.status & MPT2_CMD_PENDING) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(MPT2SAS_ERR_FMT "%s: internal command already in use\n",
 		    ioc->name, __func__);
 		return -EAGAIN;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	smid = mpt2sas_base_get_smid(ioc, ioc->base_cb_idx);
 =======
 	smid = mpt2sas_base_get_smid(ioc, ioc->port_enable_cb_idx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	smid = mpt2sas_base_get_smid(ioc, ioc->port_enable_cb_idx);
+>>>>>>> refs/remotes/origin/master
 	if (!smid) {
 		printk(MPT2SAS_ERR_FMT "%s: failed obtaining a smid\n",
 		    ioc->name, __func__);
 		return -EAGAIN;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ioc->base_cmds.status = MPT2_CMD_PENDING;
 	mpi_request = mpt2sas_base_get_msg_frame(ioc, smid);
@@ -3871,6 +4208,8 @@ _base_send_port_enable(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 	    300*HZ);
 	if (!(ioc->base_cmds.status & MPT2_CMD_COMPLETE)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ioc->port_enable_cmds.status = MPT2_CMD_PENDING;
 	mpi_request = mpt2sas_base_get_msg_frame(ioc, smid);
 	ioc->port_enable_cmds.smid = smid;
@@ -3882,20 +4221,28 @@ _base_send_port_enable(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 	timeleft = wait_for_completion_timeout(&ioc->port_enable_cmds.done,
 	    300*HZ);
 	if (!(ioc->port_enable_cmds.status & MPT2_CMD_COMPLETE)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(MPT2SAS_ERR_FMT "%s: timeout\n",
 		    ioc->name, __func__);
 		_debug_dump_mf(mpi_request,
 		    sizeof(Mpi2PortEnableRequest_t)/4);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ioc->base_cmds.status & MPT2_CMD_RESET)
 =======
 		if (ioc->port_enable_cmds.status & MPT2_CMD_RESET)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ioc->port_enable_cmds.status & MPT2_CMD_RESET)
+>>>>>>> refs/remotes/origin/master
 			r = -EFAULT;
 		else
 			r = -ETIME;
 		goto out;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	} else
 		dinitprintk(ioc, printk(MPT2SAS_INFO_FMT "%s: complete\n",
@@ -3913,6 +4260,8 @@ _base_send_port_enable(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 	printk(MPT2SAS_INFO_FMT "port enable: %s\n",
 	    ioc->name, ((r == 0) ? "SUCCESS" : "FAILED"));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	mpi_reply = ioc->port_enable_cmds.reply;
 
@@ -3927,13 +4276,19 @@ _base_send_port_enable(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 	ioc->port_enable_cmds.status = MPT2_CMD_NOT_USED;
 	printk(MPT2SAS_INFO_FMT "port enable: %s\n", ioc->name, ((r == 0) ?
 	    "SUCCESS" : "FAILED"));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return r;
 }
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * mpt2sas_port_enable - initiate firmware discovery (don't wait for reply)
  * @ioc: per adapter object
  *
@@ -4020,7 +4375,10 @@ _base_determine_wait_on_discovery(struct MPT2SAS_ADAPTER *ioc)
 
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * _base_unmask_events - turn on notification for this event
  * @ioc: per adapter object
  * @event: firmware event
@@ -4089,12 +4447,17 @@ _base_event_notification(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 		mpi_request->EventMasks[i] =
 		    cpu_to_le32(ioc->event_masks[i]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mpt2sas_base_put_smid_default(ioc, smid);
 	init_completion(&ioc->base_cmds.done);
 =======
 	init_completion(&ioc->base_cmds.done);
 	mpt2sas_base_put_smid_default(ioc, smid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_completion(&ioc->base_cmds.done);
+	mpt2sas_base_put_smid_default(ioc, smid);
+>>>>>>> refs/remotes/origin/master
 	timeleft = wait_for_completion_timeout(&ioc->base_cmds.done, 30*HZ);
 	if (!(ioc->base_cmds.status & MPT2_CMD_COMPLETE)) {
 		printk(MPT2SAS_ERR_FMT "%s: timeout\n",
@@ -4206,11 +4569,23 @@ _base_diag_reset(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 	writel(host_diagnostic | MPI2_DIAG_RESET_ADAPTER,
 	     &ioc->chip->HostDiagnostic);
 
+<<<<<<< HEAD
 	/* don't access any registers for 50 milliseconds */
 	msleep(50);
 
 	/* 300 second max wait */
 	for (count = 0; count < 3000000 ; count++) {
+=======
+	/* This delay allows the chip PCIe hardware time to finish reset tasks*/
+	if (sleep_flag == CAN_SLEEP)
+		msleep(MPI2_HARD_RESET_PCIE_FIRST_READ_DELAY_MICRO_SEC/1000);
+	else
+		mdelay(MPI2_HARD_RESET_PCIE_FIRST_READ_DELAY_MICRO_SEC/1000);
+
+	/* Approximately 300 second max wait */
+	for (count = 0; count < (300000000 /
+	    MPI2_HARD_RESET_PCIE_SECOND_READ_DELAY_MICRO_SEC); count++) {
+>>>>>>> refs/remotes/origin/master
 
 		host_diagnostic = readl(&ioc->chip->HostDiagnostic);
 
@@ -4219,11 +4594,21 @@ _base_diag_reset(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 		if (!(host_diagnostic & MPI2_DIAG_RESET_ADAPTER))
 			break;
 
+<<<<<<< HEAD
 		/* wait 100 msec */
 		if (sleep_flag == CAN_SLEEP)
 			msleep(1);
 		else
 			mdelay(1);
+=======
+		/* Wait to pass the second read delay window */
+		if (sleep_flag == CAN_SLEEP)
+			msleep(MPI2_HARD_RESET_PCIE_SECOND_READ_DELAY_MICRO_SEC
+			       /1000);
+		else
+			mdelay(MPI2_HARD_RESET_PCIE_SECOND_READ_DELAY_MICRO_SEC
+			       /1000);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (host_diagnostic & MPI2_DIAG_HCB_MODE) {
@@ -4341,11 +4726,17 @@ _base_make_ioc_operational(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 	struct _tr_list *delayed_tr, *delayed_tr_next;
 	u8 hide_flag;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct adapter_reply_queue *reply_q;
 	long reply_post_free;
 	u32 reply_post_free_sz;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct adapter_reply_queue *reply_q;
+	long reply_post_free;
+	u32 reply_post_free_sz;
+>>>>>>> refs/remotes/origin/master
 
 	dinitprintk(ioc, printk(MPT2SAS_INFO_FMT "%s\n", ioc->name,
 	    __func__));
@@ -4412,10 +4803,13 @@ _base_make_ioc_operational(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 		ioc->reply_free[i] = cpu_to_le32(reply_address);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* initialize Reply Post Free Queue */
 	for (i = 0; i < ioc->reply_post_queue_depth; i++)
 		ioc->reply_post_free[i].Words = cpu_to_le64(ULLONG_MAX);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* initialize reply queues */
 	if (ioc->is_driver_loading)
 		_base_assign_reply_queues(ioc);
@@ -4436,12 +4830,16 @@ _base_make_ioc_operational(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 		reply_post_free += reply_post_free_sz;
 	}
  skip_init_reply_post_free_queue:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	r = _base_send_ioc_init(ioc, sleep_flag);
 	if (r)
 		return r;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* initialize the index's */
 	ioc->reply_free_host_index = ioc->reply_free_queue_depth - 1;
@@ -4451,6 +4849,8 @@ _base_make_ioc_operational(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 
 	_base_unmask_interrupts(ioc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* initialize reply free host index */
 	ioc->reply_free_host_index = ioc->reply_free_queue_depth - 1;
 	writel(ioc->reply_free_host_index, &ioc->chip->ReplyFreeHostIndex);
@@ -4467,7 +4867,10 @@ _base_make_ioc_operational(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 
 	_base_unmask_interrupts(ioc);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	r = _base_event_notification(ioc, sleep_flag);
 	if (r)
 		return r;
@@ -4476,19 +4879,28 @@ _base_make_ioc_operational(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 		_base_static_config_pages(ioc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ioc->wait_for_port_enable_to_complete && ioc->is_warpdrive) {
 		if (ioc->manu_pg10.OEMIdentifier  == 0x80) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (ioc->is_driver_loading) {
 		if (ioc->is_warpdrive && ioc->manu_pg10.OEMIdentifier
 		    == 0x80) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			hide_flag = (u8) (ioc->manu_pg10.OEMSpecificFlags0 &
+=======
+			hide_flag = (u8) (
+			    le32_to_cpu(ioc->manu_pg10.OEMSpecificFlags0) &
+>>>>>>> refs/remotes/origin/master
 			    MFG_PAGE10_HIDE_SSDS_MASK);
 			if (hide_flag != MFG_PAGE10_HIDE_SSDS_MASK)
 				ioc->mfg_pg10_hide_flag = hide_flag;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 
@@ -4500,11 +4912,16 @@ _base_make_ioc_operational(struct MPT2SAS_ADAPTER *ioc, int sleep_flag)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ioc->wait_for_discovery_to_complete =
 		    _base_determine_wait_on_discovery(ioc);
 		return r; /* scan_start and scan_finished support */
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	r = _base_send_port_enable(ioc, sleep_flag);
 	if (r)
 		return r;
@@ -4526,6 +4943,7 @@ mpt2sas_base_free_resources(struct MPT2SAS_ADAPTER *ioc)
 	dexitprintk(ioc, printk(MPT2SAS_INFO_FMT "%s\n", ioc->name,
 	    __func__));
 
+<<<<<<< HEAD
 	_base_mask_interrupts(ioc);
 	ioc->shost_recovery = 1;
 	_base_make_ioc_ready(ioc, CAN_SLEEP, SOFT_RESET);
@@ -4549,6 +4967,27 @@ mpt2sas_base_free_resources(struct MPT2SAS_ADAPTER *ioc)
 	pci_release_selected_regions(ioc->pdev, ioc->bars);
 	pci_disable_pcie_error_reporting(pdev);
 	pci_disable_device(pdev);
+=======
+	if (ioc->chip_phys && ioc->chip) {
+		_base_mask_interrupts(ioc);
+		ioc->shost_recovery = 1;
+		_base_make_ioc_ready(ioc, CAN_SLEEP, SOFT_RESET);
+		ioc->shost_recovery = 0;
+	}
+
+	_base_free_irq(ioc);
+	_base_disable_msix(ioc);
+
+	if (ioc->chip_phys && ioc->chip)
+		iounmap(ioc->chip);
+	ioc->chip_phys = 0;
+
+	if (pci_is_enabled(pdev)) {
+		pci_release_selected_regions(ioc->pdev, ioc->bars);
+		pci_disable_pcie_error_reporting(pdev);
+		pci_disable_device(pdev);
+	}
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 
@@ -4563,18 +5002,25 @@ mpt2sas_base_attach(struct MPT2SAS_ADAPTER *ioc)
 {
 	int r, i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int cpu_id, last_cpu_id = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int cpu_id, last_cpu_id = 0;
+>>>>>>> refs/remotes/origin/master
 
 	dinitprintk(ioc, printk(MPT2SAS_INFO_FMT "%s\n", ioc->name,
 	    __func__));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r = mpt2sas_base_map_resources(ioc);
 	if (r)
 		return r;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* setup cpu_msix_table */
 	ioc->cpu_count = num_online_cpus();
 	for_each_online_cpu(cpu_id)
@@ -4613,7 +5059,10 @@ mpt2sas_base_attach(struct MPT2SAS_ADAPTER *ioc)
 			((u8 *)&ioc->chip->Doorbell + (0x4000 + ((i - 1)
 			* 4)));
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pci_set_drvdata(ioc->pdev, ioc->shost);
 	r = _base_get_ioc_facts(ioc, CAN_SLEEP);
@@ -4626,10 +5075,14 @@ mpt2sas_base_attach(struct MPT2SAS_ADAPTER *ioc)
 
 	ioc->pfacts = kcalloc(ioc->facts.NumberOfPorts,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    sizeof(struct mpt2sas_port_facts), GFP_KERNEL);
 =======
 	    sizeof(Mpi2PortFactsReply_t), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    sizeof(struct mpt2sas_port_facts), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!ioc->pfacts) {
 		r = -ENOMEM;
 		goto out_free_resources;
@@ -4646,7 +5099,10 @@ mpt2sas_base_attach(struct MPT2SAS_ADAPTER *ioc)
 		goto out_free_resources;
 
 	init_waitqueue_head(&ioc->reset_wq);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* allocate memory pd handle bitmask list */
 	ioc->pd_handles_sz = (ioc->facts.MaxDevHandle / 8);
 	if (ioc->facts.MaxDevHandle % 8)
@@ -4657,7 +5113,16 @@ mpt2sas_base_attach(struct MPT2SAS_ADAPTER *ioc)
 		r = -ENOMEM;
 		goto out_free_resources;
 	}
+<<<<<<< HEAD
 
+=======
+	ioc->blocking_handles = kzalloc(ioc->pd_handles_sz,
+	    GFP_KERNEL);
+	if (!ioc->blocking_handles) {
+		r = -ENOMEM;
+		goto out_free_resources;
+	}
+>>>>>>> refs/remotes/origin/master
 	ioc->fwfault_debug = mpt2sas_fwfault_debug;
 
 	/* base internal command bits */
@@ -4666,12 +5131,18 @@ mpt2sas_base_attach(struct MPT2SAS_ADAPTER *ioc)
 	ioc->base_cmds.status = MPT2_CMD_NOT_USED;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* port_enable command bits */
 	ioc->port_enable_cmds.reply = kzalloc(ioc->reply_sz, GFP_KERNEL);
 	ioc->port_enable_cmds.status = MPT2_CMD_NOT_USED;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* transport internal command bits */
 	ioc->transport_cmds.reply = kzalloc(ioc->reply_sz, GFP_KERNEL);
 	ioc->transport_cmds.status = MPT2_CMD_NOT_USED;
@@ -4714,10 +5185,13 @@ mpt2sas_base_attach(struct MPT2SAS_ADAPTER *ioc)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	init_completion(&ioc->shost_recovery_done);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < MPI2_EVENT_NOTIFY_EVENTMASK_WORDS; i++)
 		ioc->event_masks[i] = -1;
 
@@ -4736,6 +5210,7 @@ mpt2sas_base_attach(struct MPT2SAS_ADAPTER *ioc)
 	if (r)
 		goto out_free_resources;
 
+<<<<<<< HEAD
 	if (missing_delay[0] != -1 && missing_delay[1] != -1)
 		_base_update_missing_delay(ioc, missing_delay[0],
 		    missing_delay[1]);
@@ -4744,6 +5219,10 @@ mpt2sas_base_attach(struct MPT2SAS_ADAPTER *ioc)
 	mpt2sas_base_start_watchdog(ioc);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ioc->non_operational_loop = 0;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
  out_free_resources:
@@ -4753,21 +5232,33 @@ mpt2sas_base_attach(struct MPT2SAS_ADAPTER *ioc)
 	_base_release_memory_pools(ioc);
 	pci_set_drvdata(ioc->pdev, NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(ioc->cpu_msix_table);
 	if (ioc->is_warpdrive)
 		kfree(ioc->reply_post_host_index);
 >>>>>>> refs/remotes/origin/cm-10.0
 	kfree(ioc->pd_handles);
+=======
+	kfree(ioc->cpu_msix_table);
+	if (ioc->is_warpdrive)
+		kfree(ioc->reply_post_host_index);
+	kfree(ioc->pd_handles);
+	kfree(ioc->blocking_handles);
+>>>>>>> refs/remotes/origin/master
 	kfree(ioc->tm_cmds.reply);
 	kfree(ioc->transport_cmds.reply);
 	kfree(ioc->scsih_cmds.reply);
 	kfree(ioc->config_cmds.reply);
 	kfree(ioc->base_cmds.reply);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(ioc->port_enable_cmds.reply);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(ioc->port_enable_cmds.reply);
+>>>>>>> refs/remotes/origin/master
 	kfree(ioc->ctl_cmds.reply);
 	kfree(ioc->ctl_cmds.sense);
 	kfree(ioc->pfacts);
@@ -4800,20 +5291,32 @@ mpt2sas_base_detach(struct MPT2SAS_ADAPTER *ioc)
 	_base_release_memory_pools(ioc);
 	pci_set_drvdata(ioc->pdev, NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(ioc->cpu_msix_table);
 	if (ioc->is_warpdrive)
 		kfree(ioc->reply_post_host_index);
 >>>>>>> refs/remotes/origin/cm-10.0
 	kfree(ioc->pd_handles);
+=======
+	kfree(ioc->cpu_msix_table);
+	if (ioc->is_warpdrive)
+		kfree(ioc->reply_post_host_index);
+	kfree(ioc->pd_handles);
+	kfree(ioc->blocking_handles);
+>>>>>>> refs/remotes/origin/master
 	kfree(ioc->pfacts);
 	kfree(ioc->ctl_cmds.reply);
 	kfree(ioc->ctl_cmds.sense);
 	kfree(ioc->base_cmds.reply);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(ioc->port_enable_cmds.reply);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(ioc->port_enable_cmds.reply);
+>>>>>>> refs/remotes/origin/master
 	kfree(ioc->tm_cmds.reply);
 	kfree(ioc->transport_cmds.reply);
 	kfree(ioc->scsih_cmds.reply);
@@ -4856,7 +5359,10 @@ _base_reset_handler(struct MPT2SAS_ADAPTER *ioc, int reset_phase)
 			complete(&ioc->base_cmds.done);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ioc->port_enable_cmds.status & MPT2_CMD_PENDING) {
 			ioc->port_enable_failed = 1;
 			ioc->port_enable_cmds.status |= MPT2_CMD_RESET;
@@ -4871,7 +5377,10 @@ _base_reset_handler(struct MPT2SAS_ADAPTER *ioc, int reset_phase)
 				complete(&ioc->port_enable_cmds.done);
 
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ioc->config_cmds.status & MPT2_CMD_PENDING) {
 			ioc->config_cmds.status |= MPT2_CMD_RESET;
 			mpt2sas_base_free_smid(ioc, ioc->config_cmds.smid);
@@ -4938,9 +5447,12 @@ mpt2sas_base_hard_reset_handler(struct MPT2SAS_ADAPTER *ioc, int sleep_flag,
 	int r;
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 pe_complete = ioc->wait_for_port_enable_to_complete;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dtmprintk(ioc, printk(MPT2SAS_INFO_FMT "%s: enter\n", ioc->name,
 	    __func__));
@@ -4950,10 +5462,14 @@ mpt2sas_base_hard_reset_handler(struct MPT2SAS_ADAPTER *ioc, int sleep_flag,
 		    ioc->name, __func__);
 		r = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto out;
 =======
 		goto out_unlocked;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out_unlocked;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (mpt2sas_fwfault_debug)
@@ -4992,11 +5508,16 @@ mpt2sas_base_hard_reset_handler(struct MPT2SAS_ADAPTER *ioc, int sleep_flag,
 	 * there is no reason to call make_ioc_operational
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pe_complete) {
 =======
 	if (ioc->is_driver_loading && ioc->port_enable_failed) {
 		ioc->remove_host = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ioc->is_driver_loading && ioc->port_enable_failed) {
+		ioc->remove_host = 1;
+>>>>>>> refs/remotes/origin/master
 		r = -EFAULT;
 		goto out;
 	}
@@ -5011,16 +5532,22 @@ mpt2sas_base_hard_reset_handler(struct MPT2SAS_ADAPTER *ioc, int sleep_flag,
 	ioc->ioc_reset_in_progress_status = r;
 	ioc->shost_recovery = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	complete(&ioc->shost_recovery_done);
 	spin_unlock_irqrestore(&ioc->ioc_reset_in_progress_lock, flags);
 	mutex_unlock(&ioc->reset_in_progress_mutex);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&ioc->ioc_reset_in_progress_lock, flags);
 	mutex_unlock(&ioc->reset_in_progress_mutex);
 
  out_unlocked:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dtmprintk(ioc, printk(MPT2SAS_INFO_FMT "%s: exit\n", ioc->name,
 	    __func__));
 	return r;

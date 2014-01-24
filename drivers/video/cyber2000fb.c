@@ -52,9 +52,12 @@
 
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef __arm__
 #include <asm/mach-types.h>
@@ -1234,7 +1237,11 @@ static int cyber2000fb_ddc_getsda(void *data)
 	return retval;
 }
 
+<<<<<<< HEAD
 static int __devinit cyber2000fb_setup_ddc_bus(struct cfb_info *cfb)
+=======
+static int cyber2000fb_setup_ddc_bus(struct cfb_info *cfb)
+>>>>>>> refs/remotes/origin/master
 {
 	strlcpy(cfb->ddc_adapter.name, cfb->fb.fix.id,
 		sizeof(cfb->ddc_adapter.name));
@@ -1309,7 +1316,11 @@ static int cyber2000fb_i2c_getscl(void *data)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit cyber2000fb_i2c_register(struct cfb_info *cfb)
+=======
+static int cyber2000fb_i2c_register(struct cfb_info *cfb)
+>>>>>>> refs/remotes/origin/master
 {
 	strlcpy(cfb->i2c_adapter.name, cfb->fb.fix.id,
 		sizeof(cfb->i2c_adapter.name));
@@ -1340,7 +1351,11 @@ static void cyber2000fb_i2c_unregister(struct cfb_info *cfb)
  * These parameters give
  * 640x480, hsync 31.5kHz, vsync 60Hz
  */
+<<<<<<< HEAD
 static struct fb_videomode __devinitdata cyber2000fb_default_mode = {
+=======
+static struct fb_videomode cyber2000fb_default_mode = {
+>>>>>>> refs/remotes/origin/master
 	.refresh	= 60,
 	.xres		= 640,
 	.yres		= 480,
@@ -1408,8 +1423,12 @@ static void cyberpro_init_hw(struct cfb_info *cfb)
 	}
 }
 
+<<<<<<< HEAD
 static struct cfb_info __devinit *cyberpro_alloc_fb_info(unsigned int id,
 							 char *name)
+=======
+static struct cfb_info *cyberpro_alloc_fb_info(unsigned int id, char *name)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cfb_info *cfb;
 
@@ -1528,7 +1547,11 @@ static int cyber2000fb_setup(char *options)
  *  - memory mapped access to the registers
  *  - initialised mem_ctl1 and mem_ctl2 appropriately.
  */
+<<<<<<< HEAD
 static int __devinit cyberpro_common_probe(struct cfb_info *cfb)
+=======
+static int cyberpro_common_probe(struct cfb_info *cfb)
+>>>>>>> refs/remotes/origin/master
 {
 	u_long smem_size;
 	u_int h_sync, v_sync;
@@ -1619,7 +1642,11 @@ failed:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit cyberpro_common_remove(struct cfb_info *cfb)
+=======
+static void cyberpro_common_remove(struct cfb_info *cfb)
+>>>>>>> refs/remotes/origin/master
 {
 	unregister_framebuffer(&cfb->fb);
 #ifdef CONFIG_FB_CYBER2000_DDC
@@ -1646,6 +1673,7 @@ static void cyberpro_common_resume(struct cfb_info *cfb)
 	cyber2000fb_set_par(&cfb->fb);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_SHARK
 
 #include <mach/framebuffer.h>
@@ -1707,6 +1735,8 @@ failed_release:
 }
 #endif /* CONFIG_ARCH_SHARK */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * PCI specific support.
  */
@@ -1784,8 +1814,13 @@ static int cyberpro_pci_enable_mmio(struct cfb_info *cfb)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit
 cyberpro_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int cyberpro_pci_probe(struct pci_dev *dev,
+			      const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cfb_info *cfb;
 	char name[16];
@@ -1808,8 +1843,15 @@ cyberpro_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 
 	cfb->irq = dev->irq;
 	cfb->region = pci_ioremap_bar(dev, 0);
+<<<<<<< HEAD
 	if (!cfb->region)
 		goto failed_ioremap;
+=======
+	if (!cfb->region) {
+		err = -ENOMEM;
+		goto failed_ioremap;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	cfb->regs = cfb->region + MMIO_OFFSET;
 	cfb->fb.device = &dev->dev;
@@ -1865,7 +1907,11 @@ failed_release:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit cyberpro_pci_remove(struct pci_dev *dev)
+=======
+static void cyberpro_pci_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cfb_info *cfb = pci_get_drvdata(dev);
 
@@ -1874,11 +1920,14 @@ static void __devexit cyberpro_pci_remove(struct pci_dev *dev)
 		iounmap(cfb->region);
 		cyberpro_free_fb_info(cfb);
 
+<<<<<<< HEAD
 		/*
 		 * Ensure that the driver data is no longer
 		 * valid.
 		 */
 		pci_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 		if (cfb == int_cfb_info)
 			int_cfb_info = NULL;
 
@@ -1925,7 +1974,11 @@ MODULE_DEVICE_TABLE(pci, cyberpro_pci_table);
 static struct pci_driver cyberpro_driver = {
 	.name		= "CyberPro",
 	.probe		= cyberpro_pci_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(cyberpro_pci_remove),
+=======
+	.remove		= cyberpro_pci_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= cyberpro_pci_suspend,
 	.resume		= cyberpro_pci_resume,
 	.id_table	= cyberpro_pci_table
@@ -1951,6 +2004,7 @@ static int __init cyber2000fb_init(void)
 	cyber2000fb_setup(option);
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_SHARK
 	err = cyberpro_vl_probe();
 	if (!err)
@@ -1961,18 +2015,29 @@ static int __init cyber2000fb_init(void)
 	if (!err)
 		ret = 0;
 #endif
+=======
+	err = pci_register_driver(&cyberpro_driver);
+	if (!err)
+		ret = 0;
+>>>>>>> refs/remotes/origin/master
 
 	return ret ? err : 0;
 }
 module_init(cyber2000fb_init);
 
+<<<<<<< HEAD
 #ifndef CONFIG_ARCH_SHARK
+=======
+>>>>>>> refs/remotes/origin/master
 static void __exit cyberpro_exit(void)
 {
 	pci_unregister_driver(&cyberpro_driver);
 }
 module_exit(cyberpro_exit);
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Russell King");
 MODULE_DESCRIPTION("CyberPro 2000, 2010 and 5000 framebuffer driver");

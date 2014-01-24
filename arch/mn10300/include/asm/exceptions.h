@@ -111,10 +111,14 @@ extern asmlinkage void misalignment(struct pt_regs *, enum exception_code);
 
 extern void die(const char *, struct pt_regs *, enum exception_code)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ATTRIB_NORET;
 =======
 	__noreturn;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__noreturn;
+>>>>>>> refs/remotes/origin/master
 
 extern int die_if_no_fixup(const char *, struct pt_regs *, enum exception_code);
 

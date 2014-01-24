@@ -11108,7 +11108,11 @@ MODULE_VERSION(AIC7XXX_H_VERSION);
 
 
 static struct scsi_host_template driver_template = {
+<<<<<<< HEAD
 	.proc_info		= aic7xxx_proc_info,
+=======
+	.show_info		= aic7xxx_show_info,
+>>>>>>> refs/remotes/origin/master
 	.detect			= aic7xxx_detect,
 	.release		= aic7xxx_release,
 	.info			= aic7xxx_info,	

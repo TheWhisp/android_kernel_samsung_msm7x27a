@@ -22,6 +22,7 @@
 #include <linux/pagevec.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/mm_inline.h>
 #include <linux/buffer_head.h>	/* for try_to_release_page() */
@@ -29,6 +30,10 @@
 #include <linux/export.h>
 #include <linux/mm_inline.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/mm_inline.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/percpu_counter.h>
 #include <linux/percpu.h>
 #include <linux/cpu.h>
@@ -36,6 +41,7 @@
 #include <linux/backing-dev.h>
 #include <linux/memcontrol.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #include <linux/hugetlb.h>
@@ -47,6 +53,19 @@
 int page_cluster;
 
 static DEFINE_PER_CPU(struct pagevec[NR_LRU_LISTS], lru_add_pvecs);
+=======
+#include <linux/uio.h>
+
+#include "internal.h"
+
+#define CREATE_TRACE_POINTS
+#include <trace/events/pagemap.h>
+
+/* How many pages do we try to swap or page in/out together? */
+int page_cluster;
+
+static DEFINE_PER_CPU(struct pagevec, lru_add_pvec);
+>>>>>>> refs/remotes/origin/master
 static DEFINE_PER_CPU(struct pagevec, lru_rotate_pvecs);
 static DEFINE_PER_CPU(struct pagevec, lru_deactivate_pvecs);
 
@@ -57,6 +76,7 @@ static DEFINE_PER_CPU(struct pagevec, lru_deactivate_pvecs);
 static void __page_cache_release(struct page *page)
 {
 	if (PageLRU(page)) {
+<<<<<<< HEAD
 		unsigned long flags;
 		struct zone *zone = page_zone(page);
 
@@ -68,6 +88,17 @@ static void __page_cache_release(struct page *page)
 =======
 		del_page_from_lru_list(zone, page, page_off_lru(page));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct zone *zone = page_zone(page);
+		struct lruvec *lruvec;
+		unsigned long flags;
+
+		spin_lock_irqsave(&zone->lru_lock, flags);
+		lruvec = mem_cgroup_page_lruvec(page, zone);
+		VM_BUG_ON(!PageLRU(page));
+		__ClearPageLRU(page);
+		del_page_from_lru_list(page, lruvec, page_off_lru(page));
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&zone->lru_lock, flags);
 	}
 }
@@ -83,17 +114,22 @@ static void __put_compound_page(struct page *page)
 	compound_page_dtor *dtor;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__page_cache_release(page);
 =======
 	if (!PageHuge(page))
 		__page_cache_release(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__page_cache_release(page);
+>>>>>>> refs/remotes/origin/master
 	dtor = get_compound_page_dtor(page);
 	(*dtor)(page);
 }
 
 static void put_compound_page(struct page *page)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	/*
@@ -150,11 +186,122 @@ static void put_compound_page(struct page *page)
 			VM_BUG_ON(atomic_read(&page->_count) != 0);
 			compound_unlock_irqrestore(page_head, flags);
 			if (put_page_testzero(page_head)) {
+=======
+	struct page *page_head;
+
+	if (likely(!PageTail(page))) {
+		if (put_page_testzero(page)) {
+			/*
+			 * By the time all refcounts have been released
+			 * split_huge_page cannot run anymore from under us.
+			 */
+			if (PageHead(page))
+				__put_compound_page(page);
+			else
+				__put_single_page(page);
+		}
+		return;
+	}
+
+	/* __split_huge_page_refcount can run under us */
+	page_head = compound_trans_head(page);
+
+	/*
+	 * THP can not break up slab pages so avoid taking
+	 * compound_lock() and skip the tail page refcounting (in
+	 * _mapcount) too. Slab performs non-atomic bit ops on
+	 * page->flags for better performance. In particular
+	 * slab_unlock() in slub used to be a hot path. It is still
+	 * hot on arches that do not support
+	 * this_cpu_cmpxchg_double().
+	 *
+	 * If "page" is part of a slab or hugetlbfs page it cannot be
+	 * splitted and the head page cannot change from under us. And
+	 * if "page" is part of a THP page under splitting, if the
+	 * head page pointed by the THP tail isn't a THP head anymore,
+	 * we'll find PageTail clear after smp_rmb() and we'll treat
+	 * it as a single page.
+	 */
+	if (!__compound_tail_refcounted(page_head)) {
+		/*
+		 * If "page" is a THP tail, we must read the tail page
+		 * flags after the head page flags. The
+		 * split_huge_page side enforces write memory barriers
+		 * between clearing PageTail and before the head page
+		 * can be freed and reallocated.
+		 */
+		smp_rmb();
+		if (likely(PageTail(page))) {
+			/*
+			 * __split_huge_page_refcount cannot race
+			 * here.
+			 */
+			VM_BUG_ON(!PageHead(page_head));
+			VM_BUG_ON(page_mapcount(page) != 0);
+			if (put_page_testzero(page_head)) {
+				/*
+				 * If this is the tail of a slab
+				 * compound page, the tail pin must
+				 * not be the last reference held on
+				 * the page, because the PG_slab
+				 * cannot be cleared before all tail
+				 * pins (which skips the _mapcount
+				 * tail refcounting) have been
+				 * released. For hugetlbfs the tail
+				 * pin may be the last reference on
+				 * the page instead, because
+				 * PageHeadHuge will not go away until
+				 * the compound page enters the buddy
+				 * allocator.
+				 */
+				VM_BUG_ON(PageSlab(page_head));
+				__put_compound_page(page_head);
+			}
+			return;
+		} else
+			/*
+			 * __split_huge_page_refcount run before us,
+			 * "page" was a THP tail. The split page_head
+			 * has been freed and reallocated as slab or
+			 * hugetlbfs page of smaller order (only
+			 * possible if reallocated as slab on x86).
+			 */
+			goto out_put_single;
+	}
+
+	if (likely(page != page_head && get_page_unless_zero(page_head))) {
+		unsigned long flags;
+
+		/*
+		 * page_head wasn't a dangling pointer but it may not
+		 * be a head page anymore by the time we obtain the
+		 * lock. That is ok as long as it can't be freed from
+		 * under us.
+		 */
+		flags = compound_lock_irqsave(page_head);
+		if (unlikely(!PageTail(page))) {
+			/* __split_huge_page_refcount run before us */
+			compound_unlock_irqrestore(page_head, flags);
+			if (put_page_testzero(page_head)) {
+				/*
+				 * The head page may have been freed
+				 * and reallocated as a compound page
+				 * of smaller order and then freed
+				 * again.  All we know is that it
+				 * cannot have become: a THP page, a
+				 * compound page of higher order, a
+				 * tail page.  That is because we
+				 * still hold the refcount of the
+				 * split THP tail and page_head was
+				 * the THP head before the split.
+				 */
+>>>>>>> refs/remotes/origin/master
 				if (PageHead(page_head))
 					__put_compound_page(page_head);
 				else
 					__put_single_page(page_head);
 			}
+<<<<<<< HEAD
 		} else {
 			/* page_head is a dangling pointer */
 			VM_BUG_ON(PageTail(page));
@@ -165,6 +312,39 @@ static void put_compound_page(struct page *page)
 			__put_compound_page(page);
 		else
 			__put_single_page(page);
+=======
+out_put_single:
+			if (put_page_testzero(page))
+				__put_single_page(page);
+			return;
+		}
+		VM_BUG_ON(page_head != page->first_page);
+		/*
+		 * We can release the refcount taken by
+		 * get_page_unless_zero() now that
+		 * __split_huge_page_refcount() is blocked on the
+		 * compound_lock.
+		 */
+		if (put_page_testzero(page_head))
+			VM_BUG_ON(1);
+		/* __split_huge_page_refcount will wait now */
+		VM_BUG_ON(page_mapcount(page) <= 0);
+		atomic_dec(&page->_mapcount);
+		VM_BUG_ON(atomic_read(&page_head->_count) <= 0);
+		VM_BUG_ON(atomic_read(&page->_count) != 0);
+		compound_unlock_irqrestore(page_head, flags);
+
+		if (put_page_testzero(page_head)) {
+			if (PageHead(page_head))
+				__put_compound_page(page_head);
+			else
+				__put_single_page(page_head);
+		}
+	} else {
+		/* page_head is a dangling pointer */
+		VM_BUG_ON(PageTail(page));
+		goto out_put_single;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -192,6 +372,7 @@ bool __get_page_tail(struct page *page)
 	 * split_huge_page().
 	 */
 	unsigned long flags;
+<<<<<<< HEAD
 	bool got = false;
 <<<<<<< HEAD
 	struct page *page_head = compound_trans_head(page);
@@ -212,6 +393,38 @@ bool __get_page_tail(struct page *page)
 
 	page_head = compound_trans_head(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool got;
+	struct page *page_head = compound_trans_head(page);
+
+	/* Ref to put_compound_page() comment. */
+	if (!__compound_tail_refcounted(page_head)) {
+		smp_rmb();
+		if (likely(PageTail(page))) {
+			/*
+			 * This is a hugetlbfs page or a slab
+			 * page. __split_huge_page_refcount
+			 * cannot race here.
+			 */
+			VM_BUG_ON(!PageHead(page_head));
+			__get_page_tail_foll(page, true);
+			return true;
+		} else {
+			/*
+			 * __split_huge_page_refcount run
+			 * before us, "page" was a THP
+			 * tail. The split page_head has been
+			 * freed and reallocated as slab or
+			 * hugetlbfs page of smaller order
+			 * (only possible if reallocated as
+			 * slab on x86).
+			 */
+			return false;
+		}
+	}
+
+	got = false;
+>>>>>>> refs/remotes/origin/master
 	if (likely(page != page_head && get_page_unless_zero(page_head))) {
 		/*
 		 * page_head wasn't a dangling pointer but it
@@ -230,9 +443,12 @@ bool __get_page_tail(struct page *page)
 			put_page(page_head);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return got;
 }
 EXPORT_SYMBOL(__get_page_tail);
@@ -256,12 +472,74 @@ void put_pages_list(struct list_head *pages)
 }
 EXPORT_SYMBOL(put_pages_list);
 
+<<<<<<< HEAD
 static void pagevec_lru_move_fn(struct pagevec *pvec,
 				void (*move_fn)(struct page *page, void *arg),
 				void *arg)
 {
 	int i;
 	struct zone *zone = NULL;
+=======
+/*
+ * get_kernel_pages() - pin kernel pages in memory
+ * @kiov:	An array of struct kvec structures
+ * @nr_segs:	number of segments to pin
+ * @write:	pinning for read/write, currently ignored
+ * @pages:	array that receives pointers to the pages pinned.
+ *		Should be at least nr_segs long.
+ *
+ * Returns number of pages pinned. This may be fewer than the number
+ * requested. If nr_pages is 0 or negative, returns 0. If no pages
+ * were pinned, returns -errno. Each page returned must be released
+ * with a put_page() call when it is finished with.
+ */
+int get_kernel_pages(const struct kvec *kiov, int nr_segs, int write,
+		struct page **pages)
+{
+	int seg;
+
+	for (seg = 0; seg < nr_segs; seg++) {
+		if (WARN_ON(kiov[seg].iov_len != PAGE_SIZE))
+			return seg;
+
+		pages[seg] = kmap_to_page(kiov[seg].iov_base);
+		page_cache_get(pages[seg]);
+	}
+
+	return seg;
+}
+EXPORT_SYMBOL_GPL(get_kernel_pages);
+
+/*
+ * get_kernel_page() - pin a kernel page in memory
+ * @start:	starting kernel address
+ * @write:	pinning for read/write, currently ignored
+ * @pages:	array that receives pointer to the page pinned.
+ *		Must be at least nr_segs long.
+ *
+ * Returns 1 if page is pinned. If the page was not pinned, returns
+ * -errno. The page returned must be released with a put_page() call
+ * when it is finished with.
+ */
+int get_kernel_page(unsigned long start, int write, struct page **pages)
+{
+	const struct kvec kiov = {
+		.iov_base = (void *)start,
+		.iov_len = PAGE_SIZE
+	};
+
+	return get_kernel_pages(&kiov, 1, write, pages);
+}
+EXPORT_SYMBOL_GPL(get_kernel_page);
+
+static void pagevec_lru_move_fn(struct pagevec *pvec,
+	void (*move_fn)(struct page *page, struct lruvec *lruvec, void *arg),
+	void *arg)
+{
+	int i;
+	struct zone *zone = NULL;
+	struct lruvec *lruvec;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags = 0;
 
 	for (i = 0; i < pagevec_count(pvec); i++) {
@@ -275,7 +553,12 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
 			spin_lock_irqsave(&zone->lru_lock, flags);
 		}
 
+<<<<<<< HEAD
 		(*move_fn)(page, arg);
+=======
+		lruvec = mem_cgroup_page_lruvec(page, zone);
+		(*move_fn)(page, lruvec, arg);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (zone)
 		spin_unlock_irqrestore(&zone->lru_lock, flags);
@@ -283,6 +566,7 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
 	pagevec_reinit(pvec);
 }
 
+<<<<<<< HEAD
 static void pagevec_move_tail_fn(struct page *page, void *arg)
 {
 	int *pgmoved = arg;
@@ -303,6 +587,16 @@ static void pagevec_move_tail_fn(struct page *page, void *arg)
 						   page, lru, lru);
 		list_move_tail(&page->lru, &lruvec->lists[lru]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void pagevec_move_tail_fn(struct page *page, struct lruvec *lruvec,
+				 void *arg)
+{
+	int *pgmoved = arg;
+
+	if (PageLRU(page) && !PageActive(page) && !PageUnevictable(page)) {
+		enum lru_list lru = page_lru_base_type(page);
+		list_move_tail(&page->lru, &lruvec->lists[lru]);
+>>>>>>> refs/remotes/origin/master
 		(*pgmoved)++;
 	}
 }
@@ -340,6 +634,7 @@ void rotate_reclaimable_page(struct page *page)
 	}
 }
 
+<<<<<<< HEAD
 static void update_page_reclaim_stat(struct zone *zone, struct page *page,
 				     int file, int rotated)
 {
@@ -347,10 +642,17 @@ static void update_page_reclaim_stat(struct zone *zone, struct page *page,
 	struct zone_reclaim_stat *memcg_reclaim_stat;
 
 	memcg_reclaim_stat = mem_cgroup_get_reclaim_stat_from_page(page);
+=======
+static void update_page_reclaim_stat(struct lruvec *lruvec,
+				     int file, int rotated)
+{
+	struct zone_reclaim_stat *reclaim_stat = &lruvec->reclaim_stat;
+>>>>>>> refs/remotes/origin/master
 
 	reclaim_stat->recent_scanned[file]++;
 	if (rotated)
 		reclaim_stat->recent_rotated[file]++;
+<<<<<<< HEAD
 
 	if (!memcg_reclaim_stat)
 		return;
@@ -375,6 +677,25 @@ static void __activate_page(struct page *page, void *arg)
 		__count_vm_event(PGACTIVATE);
 
 		update_page_reclaim_stat(zone, page, file, 1);
+=======
+}
+
+static void __activate_page(struct page *page, struct lruvec *lruvec,
+			    void *arg)
+{
+	if (PageLRU(page) && !PageActive(page) && !PageUnevictable(page)) {
+		int file = page_is_file_cache(page);
+		int lru = page_lru_base_type(page);
+
+		del_page_from_lru_list(page, lruvec, lru);
+		SetPageActive(page);
+		lru += LRU_ACTIVE;
+		add_page_to_lru_list(page, lruvec, lru);
+		trace_mm_lru_activate(page, page_to_pfn(page));
+
+		__count_vm_event(PGACTIVATE);
+		update_page_reclaim_stat(lruvec, file, 1);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -389,6 +710,14 @@ static void activate_page_drain(int cpu)
 		pagevec_lru_move_fn(pvec, __activate_page, NULL);
 }
 
+<<<<<<< HEAD
+=======
+static bool need_activate_page_drain(int cpu)
+{
+	return pagevec_count(&per_cpu(activate_page_pvecs, cpu)) != 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 void activate_page(struct page *page)
 {
 	if (PageLRU(page) && !PageActive(page) && !PageUnevictable(page)) {
@@ -406,16 +735,58 @@ static inline void activate_page_drain(int cpu)
 {
 }
 
+<<<<<<< HEAD
+=======
+static bool need_activate_page_drain(int cpu)
+{
+	return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 void activate_page(struct page *page)
 {
 	struct zone *zone = page_zone(page);
 
 	spin_lock_irq(&zone->lru_lock);
+<<<<<<< HEAD
 	__activate_page(page, NULL);
+=======
+	__activate_page(page, mem_cgroup_page_lruvec(page, zone), NULL);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irq(&zone->lru_lock);
 }
 #endif
 
+<<<<<<< HEAD
+=======
+static void __lru_cache_activate_page(struct page *page)
+{
+	struct pagevec *pvec = &get_cpu_var(lru_add_pvec);
+	int i;
+
+	/*
+	 * Search backwards on the optimistic assumption that the page being
+	 * activated has just been added to this pagevec. Note that only
+	 * the local pagevec is examined as a !PageLRU page could be in the
+	 * process of being released, reclaimed, migrated or on a remote
+	 * pagevec that is currently being drained. Furthermore, marking
+	 * a remote pagevec's page PageActive potentially hits a race where
+	 * a page is marked PageActive just after it is added to the inactive
+	 * list causing accounting errors and BUG_ON checks to trigger.
+	 */
+	for (i = pagevec_count(pvec) - 1; i >= 0; i--) {
+		struct page *pagevec_page = pvec->pages[i];
+
+		if (pagevec_page == page) {
+			SetPageActive(page);
+			break;
+		}
+	}
+
+	put_cpu_var(lru_add_pvec);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Mark a page as having seen activity.
  *
@@ -426,13 +797,29 @@ void activate_page(struct page *page)
 void mark_page_accessed(struct page *page)
 {
 	if (!PageActive(page) && !PageUnevictable(page) &&
+<<<<<<< HEAD
 			PageReferenced(page) && PageLRU(page)) {
 		activate_page(page);
+=======
+			PageReferenced(page)) {
+
+		/*
+		 * If the page is on the LRU, queue it for activation via
+		 * activate_page_pvecs. Otherwise, assume the page is on a
+		 * pagevec, mark it active and it'll be moved to the active
+		 * LRU on the next drain.
+		 */
+		if (PageLRU(page))
+			activate_page(page);
+		else
+			__lru_cache_activate_page(page);
+>>>>>>> refs/remotes/origin/master
 		ClearPageReferenced(page);
 	} else if (!PageReferenced(page)) {
 		SetPageReferenced(page);
 	}
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 =======
@@ -451,10 +838,30 @@ void __lru_cache_add(struct page *page, enum lru_list lru)
 		__pagevec_lru_add(pvec, lru);
 >>>>>>> refs/remotes/origin/cm-10.0
 	put_cpu_var(lru_add_pvecs);
+=======
+EXPORT_SYMBOL(mark_page_accessed);
+
+/*
+ * Queue the page for addition to the LRU via pagevec. The decision on whether
+ * to add the page to the [in]active [file|anon] list is deferred until the
+ * pagevec is drained. This gives a chance for the caller of __lru_cache_add()
+ * have the page added to the active list using mark_page_accessed().
+ */
+void __lru_cache_add(struct page *page)
+{
+	struct pagevec *pvec = &get_cpu_var(lru_add_pvec);
+
+	page_cache_get(page);
+	if (!pagevec_space(pvec))
+		__pagevec_lru_add(pvec);
+	pagevec_add(pvec, page);
+	put_cpu_var(lru_add_pvec);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(__lru_cache_add);
 
 /**
+<<<<<<< HEAD
  * lru_cache_add_lru - add a page to a page list
  * @page: the page to be added to the LRU.
  * @lru: the LRU list to which the page is added.
@@ -471,6 +878,16 @@ void lru_cache_add_lru(struct page *page, enum lru_list lru)
 
 	VM_BUG_ON(PageLRU(page) || PageActive(page) || PageUnevictable(page));
 	__lru_cache_add(page, lru);
+=======
+ * lru_cache_add - add a page to a page list
+ * @page: the page to be added to the LRU.
+ */
+void lru_cache_add(struct page *page)
+{
+	VM_BUG_ON(PageActive(page) && PageUnevictable(page));
+	VM_BUG_ON(PageLRU(page));
+	__lru_cache_add(page);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -486,11 +903,22 @@ void lru_cache_add_lru(struct page *page, enum lru_list lru)
 void add_page_to_unevictable_list(struct page *page)
 {
 	struct zone *zone = page_zone(page);
+<<<<<<< HEAD
 
 	spin_lock_irq(&zone->lru_lock);
 	SetPageUnevictable(page);
 	SetPageLRU(page);
 	add_page_to_lru_list(zone, page, LRU_UNEVICTABLE);
+=======
+	struct lruvec *lruvec;
+
+	spin_lock_irq(&zone->lru_lock);
+	lruvec = mem_cgroup_page_lruvec(page, zone);
+	ClearPageActive(page);
+	SetPageUnevictable(page);
+	SetPageLRU(page);
+	add_page_to_lru_list(page, lruvec, LRU_UNEVICTABLE);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irq(&zone->lru_lock);
 }
 
@@ -515,11 +943,19 @@ void add_page_to_unevictable_list(struct page *page)
  * be write it out by flusher threads as this is much more effective
  * than the single-page writeout from reclaim.
  */
+<<<<<<< HEAD
 static void lru_deactivate_fn(struct page *page, void *arg)
 {
 	int lru, file;
 	bool active;
 	struct zone *zone = page_zone(page);
+=======
+static void lru_deactivate_fn(struct page *page, struct lruvec *lruvec,
+			      void *arg)
+{
+	int lru, file;
+	bool active;
+>>>>>>> refs/remotes/origin/master
 
 	if (!PageLRU(page))
 		return;
@@ -532,6 +968,7 @@ static void lru_deactivate_fn(struct page *page, void *arg)
 		return;
 
 	active = PageActive(page);
+<<<<<<< HEAD
 
 	file = page_is_file_cache(page);
 	lru = page_lru_base_type(page);
@@ -539,6 +976,15 @@ static void lru_deactivate_fn(struct page *page, void *arg)
 	ClearPageActive(page);
 	ClearPageReferenced(page);
 	add_page_to_lru_list(zone, page, lru);
+=======
+	file = page_is_file_cache(page);
+	lru = page_lru_base_type(page);
+
+	del_page_from_lru_list(page, lruvec, lru + active);
+	ClearPageActive(page);
+	ClearPageReferenced(page);
+	add_page_to_lru_list(page, lruvec, lru);
+>>>>>>> refs/remotes/origin/master
 
 	if (PageWriteback(page) || PageDirty(page)) {
 		/*
@@ -549,13 +995,17 @@ static void lru_deactivate_fn(struct page *page, void *arg)
 		SetPageReclaim(page);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		struct lruvec *lruvec;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * The page's writeback ends up during pagevec
 		 * We moves tha page into tail of inactive.
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		list_move_tail(&page->lru, &zone->lru[lru].list);
 		mem_cgroup_rotate_reclaimable_page(page);
@@ -563,12 +1013,19 @@ static void lru_deactivate_fn(struct page *page, void *arg)
 		lruvec = mem_cgroup_lru_move_lists(zone, page, lru, lru);
 		list_move_tail(&page->lru, &lruvec->lists[lru]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		list_move_tail(&page->lru, &lruvec->lists[lru]);
+>>>>>>> refs/remotes/origin/master
 		__count_vm_event(PGROTATED);
 	}
 
 	if (active)
 		__count_vm_event(PGDEACTIVATE);
+<<<<<<< HEAD
 	update_page_reclaim_stat(zone, page, file, 0);
+=======
+	update_page_reclaim_stat(lruvec, file, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -576,6 +1033,7 @@ static void lru_deactivate_fn(struct page *page, void *arg)
  * Either "cpu" is the current CPU, and preemption has already been
  * disabled; or "cpu" is being hot-unplugged, and is already dead.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void drain_cpu_pagevecs(int cpu)
 =======
@@ -595,6 +1053,14 @@ void lru_add_drain_cpu(int cpu)
 			__pagevec_lru_add(pvec, lru);
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+void lru_add_drain_cpu(int cpu)
+{
+	struct pagevec *pvec = &per_cpu(lru_add_pvec, cpu);
+
+	if (pagevec_count(pvec))
+		__pagevec_lru_add(pvec);
+>>>>>>> refs/remotes/origin/master
 
 	pvec = &per_cpu(lru_rotate_pvecs, cpu);
 	if (pagevec_count(pvec)) {
@@ -642,10 +1108,14 @@ void deactivate_page(struct page *page)
 void lru_add_drain(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	drain_cpu_pagevecs(get_cpu());
 =======
 	lru_add_drain_cpu(get_cpu());
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lru_add_drain_cpu(get_cpu());
+>>>>>>> refs/remotes/origin/master
 	put_cpu();
 }
 
@@ -654,12 +1124,45 @@ static void lru_add_drain_per_cpu(struct work_struct *dummy)
 	lru_add_drain();
 }
 
+<<<<<<< HEAD
 /*
  * Returns 0 for success
  */
 int lru_add_drain_all(void)
 {
 	return schedule_on_each_cpu(lru_add_drain_per_cpu);
+=======
+static DEFINE_PER_CPU(struct work_struct, lru_add_drain_work);
+
+void lru_add_drain_all(void)
+{
+	static DEFINE_MUTEX(lock);
+	static struct cpumask has_work;
+	int cpu;
+
+	mutex_lock(&lock);
+	get_online_cpus();
+	cpumask_clear(&has_work);
+
+	for_each_online_cpu(cpu) {
+		struct work_struct *work = &per_cpu(lru_add_drain_work, cpu);
+
+		if (pagevec_count(&per_cpu(lru_add_pvec, cpu)) ||
+		    pagevec_count(&per_cpu(lru_rotate_pvecs, cpu)) ||
+		    pagevec_count(&per_cpu(lru_deactivate_pvecs, cpu)) ||
+		    need_activate_page_drain(cpu)) {
+			INIT_WORK(work, lru_add_drain_per_cpu);
+			schedule_work_on(cpu, work);
+			cpumask_set_cpu(cpu, &has_work);
+		}
+	}
+
+	for_each_cpu(cpu, &has_work)
+		flush_work(&per_cpu(lru_add_drain_work, cpu));
+
+	put_online_cpus();
+	mutex_unlock(&lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -679,6 +1182,7 @@ void release_pages(struct page **pages, int nr, int cold)
 {
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pagevec pages_to_free;
 	struct zone *zone = NULL;
 	unsigned long uninitialized_var(flags);
@@ -690,6 +1194,13 @@ void release_pages(struct page **pages, int nr, int cold)
 	unsigned long uninitialized_var(flags);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	LIST_HEAD(pages_to_free);
+	struct zone *zone = NULL;
+	struct lruvec *lruvec;
+	unsigned long uninitialized_var(flags);
+
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < nr; i++) {
 		struct page *page = pages[i];
 
@@ -715,6 +1226,7 @@ void release_pages(struct page **pages, int nr, int cold)
 				zone = pagezone;
 				spin_lock_irqsave(&zone->lru_lock, flags);
 			}
+<<<<<<< HEAD
 			VM_BUG_ON(!PageLRU(page));
 			__ClearPageLRU(page);
 <<<<<<< HEAD
@@ -735,15 +1247,32 @@ void release_pages(struct page **pages, int nr, int cold)
 
 		list_add(&page->lru, &pages_to_free);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+			lruvec = mem_cgroup_page_lruvec(page, zone);
+			VM_BUG_ON(!PageLRU(page));
+			__ClearPageLRU(page);
+			del_page_from_lru_list(page, lruvec, page_off_lru(page));
+		}
+
+		/* Clear Active bit in case of parallel mark_page_accessed */
+		ClearPageActive(page);
+
+		list_add(&page->lru, &pages_to_free);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (zone)
 		spin_unlock_irqrestore(&zone->lru_lock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pagevec_free(&pages_to_free);
 =======
 	free_hot_cold_page_list(&pages_to_free, cold);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	free_hot_cold_page_list(&pages_to_free, cold);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(release_pages);
 
@@ -763,6 +1292,7 @@ void __pagevec_release(struct pagevec *pvec)
 	release_pages(pvec->pages, pagevec_count(pvec), pvec->cold);
 	pagevec_reinit(pvec);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 EXPORT_SYMBOL(__pagevec_release);
@@ -786,10 +1316,21 @@ void lru_add_page_tail(struct zone* zone,
 	enum lru_list lru;
 	const int file = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(__pagevec_release);
+
+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+/* used by __split_huge_page_refcount() */
+void lru_add_page_tail(struct page *page, struct page *page_tail,
+		       struct lruvec *lruvec, struct list_head *list)
+{
+	const int file = 0;
+>>>>>>> refs/remotes/origin/master
 
 	VM_BUG_ON(!PageHead(page));
 	VM_BUG_ON(PageCompound(page_tail));
 	VM_BUG_ON(PageLRU(page_tail));
+<<<<<<< HEAD
 	VM_BUG_ON(NR_CPUS != 1 && !spin_is_locked(&zone->lru_lock));
 
 	SetPageLRU(page_tail);
@@ -826,6 +1367,21 @@ static void ____pagevec_lru_add_fn(struct page *page, void *arg)
 	if (likely(PageLRU(page)))
 		list_add_tail(&page_tail->lru, &page->lru);
 	else {
+=======
+	VM_BUG_ON(NR_CPUS != 1 &&
+		  !spin_is_locked(&lruvec_zone(lruvec)->lru_lock));
+
+	if (!list)
+		SetPageLRU(page_tail);
+
+	if (likely(PageLRU(page)))
+		list_add_tail(&page_tail->lru, &page->lru);
+	else if (list) {
+		/* page reclaim is reclaiming a huge page */
+		get_page(page_tail);
+		list_add_tail(&page_tail->lru, list);
+	} else {
+>>>>>>> refs/remotes/origin/master
 		struct list_head *list_head;
 		/*
 		 * Head page has not yet been counted, as an hpage,
@@ -834,12 +1390,17 @@ static void ____pagevec_lru_add_fn(struct page *page, void *arg)
 		 * Use the standard add function to put page_tail on the list,
 		 * but then correct its position so they all end up in order.
 		 */
+<<<<<<< HEAD
 		add_page_to_lru_list(zone, page_tail, lru);
+=======
+		add_page_to_lru_list(page_tail, lruvec, page_lru(page_tail));
+>>>>>>> refs/remotes/origin/master
 		list_head = page_tail->lru.prev;
 		list_move_tail(&page_tail->lru, list_head);
 	}
 
 	if (!PageUnevictable(page))
+<<<<<<< HEAD
 		update_page_reclaim_stat(zone, page_tail, file, active);
 }
 #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
@@ -866,12 +1427,32 @@ static void __pagevec_lru_add_fn(struct page *page, void *arg)
 	add_page_to_lru_list(zone, page, lru);
 	update_page_reclaim_stat(zone, page, file, active);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		update_page_reclaim_stat(lruvec, file, PageActive(page_tail));
+}
+#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+
+static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec,
+				 void *arg)
+{
+	int file = page_is_file_cache(page);
+	int active = PageActive(page);
+	enum lru_list lru = page_lru(page);
+
+	VM_BUG_ON(PageLRU(page));
+
+	SetPageLRU(page);
+	add_page_to_lru_list(page, lruvec, lru);
+	update_page_reclaim_stat(lruvec, file, active);
+	trace_mm_lru_insertion(page, page_to_pfn(page), lru, trace_pagemap_flags(page));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Add the passed pages to the LRU, then drop the caller's refcount
  * on them.  Reinitialises the caller's pagevec.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 void ____pagevec_lru_add(struct pagevec *pvec, enum lru_list lru)
 {
@@ -908,6 +1489,13 @@ void __pagevec_lru_add(struct pagevec *pvec, enum lru_list lru)
 }
 EXPORT_SYMBOL(__pagevec_lru_add);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __pagevec_lru_add(struct pagevec *pvec)
+{
+	pagevec_lru_move_fn(pvec, __pagevec_lru_add_fn, NULL);
+}
+EXPORT_SYMBOL(__pagevec_lru_add);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * pagevec_lookup - gang pagecache lookup
@@ -932,9 +1520,12 @@ unsigned pagevec_lookup(struct pagevec *pvec, struct address_space *mapping,
 	return pagevec_count(pvec);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(pagevec_lookup);
 
 unsigned pagevec_lookup_tag(struct pagevec *pvec, struct address_space *mapping,
@@ -945,9 +1536,12 @@ unsigned pagevec_lookup_tag(struct pagevec *pvec, struct address_space *mapping,
 	return pagevec_count(pvec);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(pagevec_lookup_tag);
 
 /*
@@ -956,9 +1550,21 @@ EXPORT_SYMBOL(pagevec_lookup_tag);
 void __init swap_setup(void)
 {
 	unsigned long megs = totalram_pages >> (20 - PAGE_SHIFT);
+<<<<<<< HEAD
 
 #ifdef CONFIG_SWAP
 	bdi_init(swapper_space.backing_dev_info);
+=======
+#ifdef CONFIG_SWAP
+	int i;
+
+	if (bdi_init(swapper_spaces[0].backing_dev_info))
+		panic("Failed to init swap bdi");
+	for (i = 0; i < MAX_SWAPFILES; i++) {
+		spin_lock_init(&swapper_spaces[i].tree_lock);
+		INIT_LIST_HEAD(&swapper_spaces[i].i_mmap_nonlinear);
+	}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	/* Use a smaller cluster for small-memory machines */

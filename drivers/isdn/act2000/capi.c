@@ -6,10 +6,14 @@
  * Author       Fritz Elfert
  * Copyright    by Fritz Elfert      <fritz@isdn4linux.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -69,6 +73,7 @@ static actcapi_msgdsc valid_msg[] = {
 	{{ 0xff, 0x00}, "MANUFACTURER_REQ"},
 	/* Responses */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{{ 0x01, 0x03}, "RESET_B3_RESP"},	
 	{{ 0x02, 0x03}, "CONNECT_RESP"},	
 	{{ 0x03, 0x03}, "CONNECT_ACTIVE_RESP"},	
@@ -78,6 +83,8 @@ static actcapi_msgdsc valid_msg[] = {
 	{{ 0x82, 0x03}, "CONNECT_B3_RESP"},	
 	{{ 0x83, 0x03}, "CONNECT_B3_ACTIVE_RESP"},	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{{ 0x01, 0x03}, "RESET_B3_RESP"},
 	{{ 0x02, 0x03}, "CONNECT_RESP"},
 	{{ 0x03, 0x03}, "CONNECT_ACTIVE_RESP"},
@@ -86,7 +93,10 @@ static actcapi_msgdsc valid_msg[] = {
 	{{ 0x08, 0x03}, "DATA_RESP"},
 	{{ 0x82, 0x03}, "CONNECT_B3_RESP"},
 	{{ 0x83, 0x03}, "CONNECT_B3_ACTIVE_RESP"},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{{ 0x84, 0x03}, "DISCONNECT_B3_RESP"},
 	{{ 0x86, 0x03}, "DATA_B3_RESP"},
 	{{ 0xff, 0x03}, "MANUFACTURER_RESP"},
@@ -104,10 +114,14 @@ static actcapi_msgdsc valid_msg[] = {
  */
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 actcapi_chkhdr(act2000_card * card, actcapi_msghdr *hdr)
 =======
 actcapi_chkhdr(act2000_card *card, actcapi_msghdr *hdr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+actcapi_chkhdr(act2000_card *card, actcapi_msghdr *hdr)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -119,14 +133,19 @@ actcapi_chkhdr(act2000_card *card, actcapi_msghdr *hdr)
 		if ((hdr->cmd.cmd == valid_msg[i].cmd.cmd) &&
 		    (hdr->cmd.subcmd == valid_msg[i].cmd.subcmd)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return (i?1:2);
 =======
 			return (i ? 1 : 2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return (i ? 1 : 2);
+>>>>>>> refs/remotes/origin/master
 		}
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define ACTCAPI_MKHDR(l, c, s) { \
 	skb = alloc_skb(l + 8, GFP_ATOMIC); \
@@ -151,6 +170,8 @@ actcapi_chkhdr(act2000_card *card, actcapi_msghdr *hdr)
 	act2000_schedule_tx(card); \
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ACTCAPI_MKHDR(l, c, s) {				\
 		skb = alloc_skb(l + 8, GFP_ATOMIC);		\
 		if (skb) {					\
@@ -173,7 +194,10 @@ actcapi_chkhdr(act2000_card *card, actcapi_msghdr *hdr)
 		skb_queue_tail(&card->sndq, skb);	\
 		act2000_schedule_tx(card);		\
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int
 actcapi_listen_req(act2000_card *card)
@@ -187,6 +211,7 @@ actcapi_listen_req(act2000_card *card)
 		eazmask |= card->bch[i].eazmask;
 	ACTCAPI_MKHDR(9, 0x05, 0x00);
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (!skb) {
                 printk(KERN_WARNING "actcapi: alloc_skb failed\n");
                 return -ENOMEM;
@@ -198,6 +223,8 @@ actcapi_listen_req(act2000_card *card)
 	ACTCAPI_QUEUE_TX;
         return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!skb) {
 		printk(KERN_WARNING "actcapi: alloc_skb failed\n");
 		return -ENOMEM;
@@ -208,7 +235,10 @@ actcapi_listen_req(act2000_card *card)
 	m->msg.listen_req.simask = (eazmask) ? 0x86 : 0; /* All SI's  */
 	ACTCAPI_QUEUE_TX;
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int
@@ -221,10 +251,14 @@ actcapi_connect_req(act2000_card *card, act2000_chan *chan, char *phone,
 	ACTCAPI_MKHDR((11 + strlen(phone)), 0x02, 0x00);
 	if (!skb) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 printk(KERN_WARNING "actcapi: alloc_skb failed\n");
 =======
 		printk(KERN_WARNING "actcapi: alloc_skb failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_WARNING "actcapi: alloc_skb failed\n");
+>>>>>>> refs/remotes/origin/master
 		chan->fsm_state = ACT2000_STATE_NULL;
 		return -ENOMEM;
 	}
@@ -234,10 +268,14 @@ actcapi_connect_req(act2000_card *card, act2000_chan *chan, char *phone,
 	m->msg.connect_req.si1 = si1;
 	m->msg.connect_req.si2 = si2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	m->msg.connect_req.eaz = eaz?eaz:'0';
 =======
 	m->msg.connect_req.eaz = eaz ? eaz : '0';
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	m->msg.connect_req.eaz = eaz ? eaz : '0';
+>>>>>>> refs/remotes/origin/master
 	m->msg.connect_req.addr.len = strlen(phone) + 1;
 	m->msg.connect_req.addr.tnp = 0x81;
 	memcpy(m->msg.connect_req.addr.num, phone, strlen(phone));
@@ -273,6 +311,7 @@ actcapi_manufacturer_req_net(act2000_card *card)
 
 	ACTCAPI_MKHDR(5, 0xff, 0x00);
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (!skb) {
                 printk(KERN_WARNING "actcapi: alloc_skb failed\n");
                 return -ENOMEM;
@@ -289,6 +328,8 @@ actcapi_manufacturer_req_net(act2000_card *card)
 		((card->ptype == ISDN_PTYPE_EURO)?ISDN_FEATURE_P_EURO:ISDN_FEATURE_P_1TR6);
         return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!skb) {
 		printk(KERN_WARNING "actcapi: alloc_skb failed\n");
 		return -ENOMEM;
@@ -304,7 +345,10 @@ actcapi_manufacturer_req_net(act2000_card *card)
 	card->interface.features |=
 		((card->ptype == ISDN_PTYPE_EURO) ? ISDN_FEATURE_P_EURO : ISDN_FEATURE_P_1TR6);
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -319,6 +363,7 @@ actcapi_manufacturer_req_v42(act2000_card *card, ulong arg)
 
 	ACTCAPI_MKHDR(8, 0xff, 0x00);
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (!skb) {
 
                 printk(KERN_WARNING "actcapi: alloc_skb failed\n");
@@ -330,6 +375,8 @@ actcapi_manufacturer_req_v42(act2000_card *card, ulong arg)
 	ACTCAPI_QUEUE_TX;
         return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!skb) {
 
 		printk(KERN_WARNING "actcapi: alloc_skb failed\n");
@@ -340,7 +387,10 @@ actcapi_manufacturer_req_v42(act2000_card *card, ulong arg)
 	m->msg.manufacturer_req_v42.v42control = (arg ? 1 : 0);
 	ACTCAPI_QUEUE_TX;
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #endif  /*  0  */
 
@@ -355,6 +405,7 @@ actcapi_manufacturer_req_errh(act2000_card *card)
 
 	ACTCAPI_MKHDR(4, 0xff, 0x00);
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (!skb) {
 
                 printk(KERN_WARNING "actcapi: alloc_skb failed\n");
@@ -365,6 +416,8 @@ actcapi_manufacturer_req_errh(act2000_card *card)
 	ACTCAPI_QUEUE_TX;
         return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!skb) {
 
 		printk(KERN_WARNING "actcapi: alloc_skb failed\n");
@@ -374,7 +427,10 @@ actcapi_manufacturer_req_errh(act2000_card *card)
 	m->msg.manufacturer_req_err.controller = 0;
 	ACTCAPI_QUEUE_TX;
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -408,10 +464,14 @@ actcapi_manufacturer_req_msn(act2000_card *card)
 		p = p->next;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
         return 0;
 =======
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 void
@@ -427,6 +487,7 @@ actcapi_select_b2_protocol_req(act2000_card *card, act2000_chan *chan)
 	       sizeof(m->msg.select_b2_protocol_req.dlpd));
 	m->msg.select_b2_protocol_req.dlpd.len = 6;
 	switch (chan->l2prot) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case ISDN_PROTO_L2_TRANS:
 			m->msg.select_b2_protocol_req.protocol = 0x03;
@@ -447,6 +508,8 @@ actcapi_select_b2_protocol_req(act2000_card *card, act2000_chan *chan)
 			m->msg.select_b2_protocol_req.dlpd.modulo = 8;
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case ISDN_PROTO_L2_TRANS:
 		m->msg.select_b2_protocol_req.protocol = 0x03;
 		m->msg.select_b2_protocol_req.dlpd.dlen = 4000;
@@ -465,7 +528,10 @@ actcapi_select_b2_protocol_req(act2000_card *card, act2000_chan *chan)
 		m->msg.select_b2_protocol_req.dlpd.win = 7;
 		m->msg.select_b2_protocol_req.dlpd.modulo = 8;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	ACTCAPI_QUEUE_TX;
 }
@@ -483,18 +549,24 @@ actcapi_select_b3_protocol_req(act2000_card *card, act2000_chan *chan)
 	       sizeof(m->msg.select_b3_protocol_req.ncpd));
 	switch (chan->l3prot) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case ISDN_PROTO_L3_TRANS:
 			m->msg.select_b3_protocol_req.protocol = 0x04;
 			m->msg.select_b3_protocol_req.ncpd.len = 13;
 			m->msg.select_b3_protocol_req.ncpd.modulo = 8;
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case ISDN_PROTO_L3_TRANS:
 		m->msg.select_b3_protocol_req.protocol = 0x04;
 		m->msg.select_b3_protocol_req.ncpd.len = 13;
 		m->msg.select_b3_protocol_req.ncpd.modulo = 8;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	ACTCAPI_QUEUE_TX;
 }
@@ -580,10 +652,14 @@ actcapi_connect_b3_resp(act2000_card *card, act2000_chan *chan, __u8 rejectcause
 	struct sk_buff *skb;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ACTCAPI_MKHDR((rejectcause?3:17), 0x82, 0x03);
 =======
 	ACTCAPI_MKHDR((rejectcause ? 3 : 17), 0x82, 0x03);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ACTCAPI_MKHDR((rejectcause ? 3 : 17), 0x82, 0x03);
+>>>>>>> refs/remotes/origin/master
 	ACTCAPI_CHKSKB;
 	m->msg.connect_b3_resp.ncci = chan->ncci;
 	m->msg.connect_b3_resp.rejectcause = rejectcause;
@@ -713,16 +789,22 @@ actcapi_data_b3_ind(act2000_card *card, struct sk_buff *skb) {
 	skb_pull(skb, 19);
 	card->interface.rcvcallb_skb(card->myid, chan, skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (!(skb = alloc_skb(11, GFP_ATOMIC))) {
                 printk(KERN_WARNING "actcapi: alloc_skb failed\n");
                 return 1;
         }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!(skb = alloc_skb(11, GFP_ATOMIC))) {
 		printk(KERN_WARNING "actcapi: alloc_skb failed\n");
 		return 1;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	msg = (actcapi_msg *)skb_put(skb, 11);
 	msg->hdr.len = 11;
 	msg->hdr.applicationID = 1;
@@ -752,6 +834,7 @@ handle_ack(act2000_card *card, act2000_chan *chan, __u8 blocknr) {
 	skb = skb_peek(&card->ackq);
 	spin_unlock_irqrestore(&card->lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (!skb) {
 		printk(KERN_WARNING "act2000: handle_ack nothing found!\n");
 		return 0;
@@ -764,6 +847,8 @@ handle_ack(act2000_card *card, act2000_chan *chan, __u8 blocknr) {
 			/* found corresponding DATA_B3_REQ */
                         skb_unlink(tmp, &card->ackq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!skb) {
 		printk(KERN_WARNING "act2000: handle_ack nothing found!\n");
 		return 0;
@@ -775,13 +860,17 @@ handle_ack(act2000_card *card, act2000_chan *chan, __u8 blocknr) {
 		    (m->msg.data_b3_req.blocknr == blocknr)) {
 			/* found corresponding DATA_B3_REQ */
 			skb_unlink(tmp, &card->ackq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			chan->queued -= m->msg.data_b3_req.datalen;
 			if (m->msg.data_b3_req.flags)
 				ret = m->msg.data_b3_req.datalen;
 			dev_kfree_skb(tmp);
 			if (chan->queued < 0)
 				chan->queued = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
                         return ret;
                 }
@@ -795,6 +884,8 @@ handle_ack(act2000_card *card, act2000_chan *chan, __u8 blocknr) {
 		}
         }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			return ret;
 		}
 		spin_lock_irqsave(&card->lock, flags);
@@ -806,7 +897,10 @@ handle_ack(act2000_card *card, act2000_chan *chan, __u8 blocknr) {
 			return 0;
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void
@@ -828,6 +922,7 @@ actcapi_dispatch(struct work_struct *work)
 		msg = (actcapi_msg *)skb->data;
 		ccmd = ((msg->hdr.cmd.cmd << 8) | msg->hdr.cmd.subcmd);
 		switch (ccmd) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case 0x8602:
 				/* DATA_B3_IND */
@@ -859,6 +954,8 @@ actcapi_dispatch(struct work_struct *work)
 					if (msg->msg.connect_conf.info) {
 						card->bch[chan].fsm_state = ACT2000_STATE_NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case 0x8602:
 			/* DATA_B3_IND */
 			if (actcapi_data_b3_ind(card, skb))
@@ -1039,11 +1136,15 @@ actcapi_dispatch(struct work_struct *work)
 						actcapi_listen_b3_req(card, ctmp);
 					else {
 						ctmp->fsm_state = ACT2000_STATE_NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						cmd.driver = card->myid;
 						cmd.command = ISDN_STAT_DHUP;
 						cmd.arg = chan;
 						card->interface.statcallb(&cmd);
+<<<<<<< HEAD
 <<<<<<< HEAD
 					} else {
 						card->bch[chan].fsm_state = ACT2000_STATE_OWAIT;
@@ -1150,6 +1251,8 @@ actcapi_dispatch(struct work_struct *work)
 					ctmp = &card->bch[chan];
 					actcapi_disconnect_resp(card, ctmp);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					}
 				}
 			break;
@@ -1195,13 +1298,17 @@ actcapi_dispatch(struct work_struct *work)
 			if ((chan >= 0) && (card->bch[chan].fsm_state == ACT2000_STATE_OBWAIT)) {
 				ctmp = &card->bch[chan];
 				if (msg->msg.connect_b3_conf.info) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					ctmp->fsm_state = ACT2000_STATE_NULL;
 					cmd.driver = card->myid;
 					cmd.command = ISDN_STAT_DHUP;
 					cmd.arg = chan;
 					card->interface.statcallb(&cmd);
 				} else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 					ctmp = (act2000_chan *)tmp;
 					ctmp->plci = msg->msg.disconnect_ind.plci;
@@ -1349,6 +1456,8 @@ actcapi_dispatch(struct work_struct *work)
 				printk(KERN_WARNING "act2000: UNHANDLED Message %04x\n", ccmd);
 				break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					ctmp->ncci = msg->msg.connect_b3_conf.ncci;
 					ctmp->fsm_state = ACT2000_STATE_BWAIT;
 				}
@@ -1402,7 +1511,10 @@ actcapi_dispatch(struct work_struct *work)
 		default:
 			printk(KERN_WARNING "act2000: UNHANDLED Message %04x\n", ccmd);
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		dev_kfree_skb(skb);
 	}
@@ -1487,10 +1599,14 @@ actcapi_debug_msg(struct sk_buff *skb, int direction)
 	int i;
 	char tmp[170];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 #ifndef DEBUG_DATA_MSG
 	if (msg->hdr.cmd.cmd == 0x86)
 		return;
@@ -1506,16 +1622,21 @@ actcapi_debug_msg(struct sk_buff *skb, int direction)
 			break;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_DEBUG "%s %s msg\n", direction?"Outgoing":"Incoming", descr);
 =======
 	printk(KERN_DEBUG "%s %s msg\n", direction ? "Outgoing" : "Incoming", descr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_DEBUG "%s %s msg\n", direction ? "Outgoing" : "Incoming", descr);
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_DEBUG " ApplID = %d\n", msg->hdr.applicationID);
 	printk(KERN_DEBUG " Len    = %d\n", msg->hdr.len);
 	printk(KERN_DEBUG " MsgNum = 0x%04x\n", msg->hdr.msgnum);
 	printk(KERN_DEBUG " Cmd    = 0x%02x\n", msg->hdr.cmd.cmd);
 	printk(KERN_DEBUG " SubCmd = 0x%02x\n", msg->hdr.cmd.subcmd);
 	switch (i) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case 0:
 			/* DATA B3 IND */
@@ -1656,6 +1777,8 @@ actcapi_debug_msg(struct sk_buff *skb, int direction)
 			       msg->msg.connect_active_resp.plci);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case 0:
 		/* DATA B3 IND */
 		printk(KERN_DEBUG " BLOCK = 0x%02x\n",
@@ -1794,7 +1917,10 @@ actcapi_debug_msg(struct sk_buff *skb, int direction)
 		printk(KERN_DEBUG " PLCI  = 0x%04x\n",
 		       msg->msg.connect_active_resp.plci);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 #endif

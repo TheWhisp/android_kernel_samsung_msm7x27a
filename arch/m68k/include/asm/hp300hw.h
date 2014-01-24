@@ -1,6 +1,7 @@
 #ifndef _M68K_HP300HW_H
 #define _M68K_HP300HW_H
 
+<<<<<<< HEAD
 extern unsigned long hp300_model;
 
 /* This information was taken from NetBSD */
@@ -21,5 +22,11 @@ extern unsigned long hp300_model;
 #define HP_425E		(13)	/* 25MHz 68040 - model 425e */
 #define HP_433T		(14)	/* 33MHz 68040 - model 433t */
 #define HP_433S		(15)	/* 33MHz 68040 - model 433s */
+=======
+#include <asm/bootinfo-hp300.h>
+
+
+extern unsigned long hp300_model;
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _M68K_HP300HW_H */

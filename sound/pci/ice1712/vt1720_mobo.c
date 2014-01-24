@@ -21,7 +21,10 @@
  *
  */      
 
+<<<<<<< HEAD
 #include <asm/io.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/interrupt.h>
 #include <linux/init.h>
@@ -32,7 +35,11 @@
 #include "vt1720_mobo.h"
 
 
+<<<<<<< HEAD
 static int __devinit k8x800_init(struct snd_ice1712 *ice)
+=======
+static int k8x800_init(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	ice->vt1720 = 1;
 
@@ -46,7 +53,11 @@ static int __devinit k8x800_init(struct snd_ice1712 *ice)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit k8x800_add_controls(struct snd_ice1712 *ice)
+=======
+static int k8x800_add_controls(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	/* FIXME: needs some quirks for VT1616? */
 	return 0;
@@ -54,7 +65,11 @@ static int __devinit k8x800_add_controls(struct snd_ice1712 *ice)
 
 /* EEPROM image */
 
+<<<<<<< HEAD
 static unsigned char k8x800_eeprom[] __devinitdata = {
+=======
+static unsigned char k8x800_eeprom[] = {
+>>>>>>> refs/remotes/origin/master
 	[ICE_EEP2_SYSCONF]     = 0x01,	/* clock 256, 1ADC, 2DACs */
 	[ICE_EEP2_ACLINK]      = 0x02,	/* ACLINK, packed */
 	[ICE_EEP2_I2S]         = 0x00,	/* - */
@@ -70,7 +85,11 @@ static unsigned char k8x800_eeprom[] __devinitdata = {
 	[ICE_EEP2_GPIO_STATE2] = 0x00,	/* - */
 };
 
+<<<<<<< HEAD
 static unsigned char sn25p_eeprom[] __devinitdata = {
+=======
+static unsigned char sn25p_eeprom[] = {
+>>>>>>> refs/remotes/origin/master
 	[ICE_EEP2_SYSCONF]     = 0x01,	/* clock 256, 1ADC, 2DACs */
 	[ICE_EEP2_ACLINK]      = 0x02,	/* ACLINK, packed */
 	[ICE_EEP2_I2S]         = 0x00,	/* - */
@@ -88,7 +107,11 @@ static unsigned char sn25p_eeprom[] __devinitdata = {
 
 
 /* entry point */
+<<<<<<< HEAD
 struct snd_ice1712_card_info snd_vt1720_mobo_cards[] __devinitdata = {
+=======
+struct snd_ice1712_card_info snd_vt1720_mobo_cards[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.subvendor = VT1720_SUBDEVICE_K8X800,
 		.name = "Albatron K8X800 Pro II",

@@ -19,8 +19,17 @@ EXPORT_SYMBOL(csum_partial);
 EXPORT_SYMBOL(csum_partial_copy_generic);
 EXPORT_SYMBOL(copy_page);
 EXPORT_SYMBOL(__clear_user);
+<<<<<<< HEAD
 EXPORT_SYMBOL(_ebss);
 EXPORT_SYMBOL(empty_zero_page);
+=======
+EXPORT_SYMBOL(empty_zero_page);
+#ifdef CONFIG_FLATMEM
+/* need in pfn_valid macro */
+EXPORT_SYMBOL(min_low_pfn);
+EXPORT_SYMBOL(max_low_pfn);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #define DECLARE_EXPORT(name)		\
 	extern void name(void);EXPORT_SYMBOL(name)

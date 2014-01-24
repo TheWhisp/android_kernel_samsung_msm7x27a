@@ -1,6 +1,7 @@
 #ifndef _LINUX_SOCKET_H
 #define _LINUX_SOCKET_H
 
+<<<<<<< HEAD
 /*
  * Desired design of maximum size and alignment (see RFC2553)
  */
@@ -24,12 +25,18 @@ struct __kernel_sockaddr_storage {
 } __attribute__ ((aligned(_K_SS_ALIGNSIZE)));	/* force desired alignment */
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/socket.h>			/* arch-dependent defines	*/
 #include <linux/sockios.h>		/* the SIOCxxx I/O controls	*/
 #include <linux/uio.h>			/* iovec support		*/
 #include <linux/types.h>		/* pid_t			*/
 #include <linux/compiler.h>		/* __user			*/
+<<<<<<< HEAD
+=======
+#include <uapi/linux/socket.h>
+>>>>>>> refs/remotes/origin/master
 
 struct pid;
 struct cred;
@@ -43,10 +50,14 @@ extern void socket_seq_show(struct seq_file *seq);
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 typedef unsigned short	sa_family_t;
 =======
 typedef __kernel_sa_family_t	sa_family_t;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+typedef __kernel_sa_family_t	sa_family_t;
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	1003.1g requires sa_family_t and that sa_data is char.
@@ -77,13 +88,21 @@ struct msghdr {
 	__kernel_size_t	msg_iovlen;	/* Number of blocks		*/
 	void 	*	msg_control;	/* Per protocol magic (eg BSD file descriptor passing) */
 	__kernel_size_t	msg_controllen;	/* Length of cmsg list */
+<<<<<<< HEAD
 	unsigned	msg_flags;
+=======
+	unsigned int	msg_flags;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* For recvmmsg/sendmmsg */
 struct mmsghdr {
 	struct msghdr   msg_hdr;
+<<<<<<< HEAD
 	unsigned        msg_len;
+=======
+	unsigned int        msg_len;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -193,6 +212,10 @@ struct ucred {
 #define AF_PPPOX	24	/* PPPoX sockets		*/
 #define AF_WANPIPE	25	/* Wanpipe API Sockets */
 #define AF_LLC		26	/* Linux LLC			*/
+<<<<<<< HEAD
+=======
+#define AF_IB		27	/* Native InfiniBand address	*/
+>>>>>>> refs/remotes/origin/master
 #define AF_CAN		29	/* Controller Area Network      */
 #define AF_TIPC		30	/* TIPC sockets			*/
 #define AF_BLUETOOTH	31	/* Bluetooth sockets 		*/
@@ -204,11 +227,17 @@ struct ucred {
 #define AF_CAIF		37	/* CAIF sockets			*/
 #define AF_ALG		38	/* Algorithm sockets		*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AF_MAX		39	/* For now.. */
 =======
 #define AF_NFC		39	/* NFC sockets			*/
 #define AF_MAX		40	/* For now.. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AF_NFC		39	/* NFC sockets			*/
+#define AF_VSOCK	40	/* vSockets			*/
+#define AF_MAX		41	/* For now.. */
+>>>>>>> refs/remotes/origin/master
 
 /* Protocol families, same as address families. */
 #define PF_UNSPEC	AF_UNSPEC
@@ -240,6 +269,10 @@ struct ucred {
 #define PF_PPPOX	AF_PPPOX
 #define PF_WANPIPE	AF_WANPIPE
 #define PF_LLC		AF_LLC
+<<<<<<< HEAD
+=======
+#define PF_IB		AF_IB
+>>>>>>> refs/remotes/origin/master
 #define PF_CAN		AF_CAN
 #define PF_TIPC		AF_TIPC
 #define PF_BLUETOOTH	AF_BLUETOOTH
@@ -251,9 +284,14 @@ struct ucred {
 #define PF_CAIF		AF_CAIF
 #define PF_ALG		AF_ALG
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PF_NFC		AF_NFC
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PF_NFC		AF_NFC
+#define PF_VSOCK	AF_VSOCK
+>>>>>>> refs/remotes/origin/master
 #define PF_MAX		AF_MAX
 
 /* Maximum queue length specifiable by listen.  */
@@ -284,6 +322,10 @@ struct ucred {
 #define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
 #define MSG_EOF         MSG_FIN
 
+<<<<<<< HEAD
+=======
+#define MSG_FASTOPEN	0x20000000	/* Send data in TCP SYN */
+>>>>>>> refs/remotes/origin/master
 #define MSG_CMSG_CLOEXEC 0x40000000	/* Set close_on_exit for file
 					   descriptor received through
 					   SCM_RIGHTS */
@@ -328,20 +370,30 @@ struct ucred {
 #define SOL_IUCV	277
 #define SOL_CAIF	278
 #define SOL_ALG		279
+<<<<<<< HEAD
+=======
+#define SOL_NFC		280
+>>>>>>> refs/remotes/origin/master
 
 /* IPX options */
 #define IPX_TYPE	1
 
+<<<<<<< HEAD
 extern void cred_to_ucred(struct pid *pid, const struct cred *cred, struct ucred *ucred,
 			  bool use_effective);
 
 extern int memcpy_fromiovec(unsigned char *kdata, struct iovec *iov, int len);
+=======
+extern void cred_to_ucred(struct pid *pid, const struct cred *cred, struct ucred *ucred);
+
+>>>>>>> refs/remotes/origin/master
 extern int memcpy_fromiovecend(unsigned char *kdata, const struct iovec *iov,
 			       int offset, int len);
 extern int csum_partial_copy_fromiovecend(unsigned char *kdata, 
 					  struct iovec *iov, 
 					  int offset, 
 					  unsigned int len, __wsum *csump);
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 extern int verify_iovec(struct msghdr *m, struct iovec *iov, struct sockaddr *address, int mode);
@@ -356,6 +408,15 @@ extern int memcpy_toiovecend(const struct iovec *v, unsigned char *kdata,
 			     int offset, int len);
 extern int move_addr_to_kernel(void __user *uaddr, int ulen, struct sockaddr_storage *kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern unsigned long iov_pages(const struct iovec *iov, int offset,
+			       unsigned long nr_segs);
+
+extern int verify_iovec(struct msghdr *m, struct iovec *iov, struct sockaddr_storage *address, int mode);
+extern int memcpy_toiovecend(const struct iovec *v, unsigned char *kdata,
+			     int offset, int len);
+extern int move_addr_to_kernel(void __user *uaddr, int ulen, struct sockaddr_storage *kaddr);
+>>>>>>> refs/remotes/origin/master
 extern int put_cmsg(struct msghdr*, int level, int type, int len, void *data);
 
 struct timespec;
@@ -367,5 +428,8 @@ extern int __sys_recvmmsg(int fd, struct mmsghdr __user *mmsg, unsigned int vlen
 			  unsigned int flags, struct timespec *timeout);
 extern int __sys_sendmmsg(int fd, struct mmsghdr __user *mmsg,
 			  unsigned int vlen, unsigned int flags);
+<<<<<<< HEAD
 #endif /* not kernel and not glibc */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_SOCKET_H */

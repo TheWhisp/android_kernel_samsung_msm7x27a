@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright 2011 Calxeda, Inc.
+=======
+ * Copyright 2011-2012 Calxeda, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -24,11 +28,16 @@
 	compatible = "calxeda,highbank";
 	#address-cells = <1>;
 	#size-cells = <1>;
+<<<<<<< HEAD
+=======
+	clock-ranges;
+>>>>>>> refs/remotes/origin/master
 
 	cpus {
 		#address-cells = <1>;
 		#size-cells = <0>;
 
+<<<<<<< HEAD
 		cpu@0 {
 			compatible = "arm,cortex-a9";
 			reg = <0>;
@@ -51,6 +60,52 @@
 			compatible = "arm,cortex-a9";
 			reg = <3>;
 			next-level-cache = <&L2>;
+=======
+		cpu@900 {
+			compatible = "arm,cortex-a9";
+			device_type = "cpu";
+			reg = <0x900>;
+			next-level-cache = <&L2>;
+			clocks = <&a9pll>;
+			clock-names = "cpu";
+			operating-points = <
+				/* kHz    ignored */
+				 1300000  1000000
+				 1200000  1000000
+				 1100000  1000000
+				  800000  1000000
+				  400000  1000000
+				  200000  1000000
+			>;
+			clock-latency = <100000>;
+		};
+
+		cpu@901 {
+			compatible = "arm,cortex-a9";
+			device_type = "cpu";
+			reg = <0x901>;
+			next-level-cache = <&L2>;
+			clocks = <&a9pll>;
+			clock-names = "cpu";
+		};
+
+		cpu@902 {
+			compatible = "arm,cortex-a9";
+			device_type = "cpu";
+			reg = <0x902>;
+			next-level-cache = <&L2>;
+			clocks = <&a9pll>;
+			clock-names = "cpu";
+		};
+
+		cpu@903 {
+			compatible = "arm,cortex-a9";
+			device_type = "cpu";
+			reg = <0x903>;
+			next-level-cache = <&L2>;
+			clocks = <&a9pll>;
+			clock-names = "cpu";
+>>>>>>> refs/remotes/origin/master
 		};
 	};
 
@@ -60,6 +115,7 @@
 		reg = <0x00000000 0xff900000>;
 	};
 
+<<<<<<< HEAD
 	chosen {
 		bootargs = "console=ttyAMA0";
 	};
@@ -70,17 +126,35 @@
 		compatible = "simple-bus";
 		interrupt-parent = <&intc>;
 		ranges;
+=======
+	soc {
+		ranges = <0x00000000 0x00000000 0xffffffff>;
+
+		memory-controller@fff00000 {
+			compatible = "calxeda,hb-ddr-ctrl";
+			reg = <0xfff00000 0x1000>;
+			interrupts = <0 91 4>;
+		};
+>>>>>>> refs/remotes/origin/master
 
 		timer@fff10600 {
 			compatible = "arm,cortex-a9-twd-timer";
 			reg = <0xfff10600 0x20>;
 			interrupts = <1 13 0xf01>;
+<<<<<<< HEAD
+=======
+			clocks = <&a9periphclk>;
+>>>>>>> refs/remotes/origin/master
 		};
 
 		watchdog@fff10620 {
 			compatible = "arm,cortex-a9-twd-wdt";
 			reg = <0xfff10620 0x20>;
 			interrupts = <1 14 0xf01>;
+<<<<<<< HEAD
+=======
+			clocks = <&a9periphclk>;
+>>>>>>> refs/remotes/origin/master
 		};
 
 		intc: interrupt-controller@fff11000 {
@@ -106,6 +180,7 @@
 			interrupts = <0 76 4  0 75 4  0 74 4  0 73 4>;
 		};
 
+<<<<<<< HEAD
 		sata@ffe08000 {
 			compatible = "calxeda,hb-ahci";
 			reg = <0xffe08000 0x10000>;
@@ -207,3 +282,16 @@
 		};
 	};
 };
+=======
+
+		sregs@fff3c200 {
+			compatible = "calxeda,hb-sregs-l2-ecc";
+			reg = <0xfff3c200 0x100>;
+			interrupts = <0 71 4  0 72 4>;
+		};
+
+	};
+};
+
+/include/ "ecx-common.dtsi"
+>>>>>>> refs/remotes/origin/master

@@ -22,6 +22,11 @@ extern unsigned long vdso64_rt_sigtramp;
 extern unsigned long vdso32_sigtramp;
 extern unsigned long vdso32_rt_sigtramp;
 
+<<<<<<< HEAD
+=======
+int vdso_getcpu_init(void);
+
+>>>>>>> refs/remotes/origin/master
 #else /* __ASSEMBLY__ */
 
 #ifdef __VDSO64__

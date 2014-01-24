@@ -1,8 +1,13 @@
 #ifndef __UML_LONGJMP_H
 #define __UML_LONGJMP_H
 
+<<<<<<< HEAD
 #include "sysdep/archsetjmp.h"
 #include "os.h"
+=======
+#include <sysdep/archsetjmp.h>
+#include <os.h>
+>>>>>>> refs/remotes/origin/master
 
 extern int setjmp(jmp_buf);
 extern void longjmp(jmp_buf, int);

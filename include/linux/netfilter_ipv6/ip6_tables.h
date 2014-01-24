@@ -11,15 +11,22 @@
  * 	flags are stored in host byte order (of course).
  * 	Port numbers are stored in HOST byte order.
  */
+<<<<<<< HEAD
 
 #ifndef _IP6_TABLES_H
 #define _IP6_TABLES_H
 
 #ifdef __KERNEL__
+=======
+#ifndef _IP6_TABLES_H
+#define _IP6_TABLES_H
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/if.h>
 #include <linux/in6.h>
 #include <linux/ipv6.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
 #endif
 #include <linux/types.h>
 #include <linux/compiler.h>
@@ -296,6 +303,12 @@ ip6t_get_target(struct ip6t_entry *e)
 #ifdef __KERNEL__
 
 #include <linux/init.h>
+=======
+
+#include <linux/init.h>
+#include <uapi/linux/netfilter_ipv6/ip6_tables.h>
+
+>>>>>>> refs/remotes/origin/master
 extern void ip6t_init(void) __init;
 
 extern void *ip6t_alloc_initial_table(const struct xt_table *);
@@ -311,8 +324,11 @@ extern unsigned int ip6t_do_table(struct sk_buff *skb,
 
 /* Check for an extension */
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int ip6t_ext_hdr(u8 nexthdr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int
 ip6t_ext_hdr(u8 nexthdr)
 {	return (nexthdr == IPPROTO_HOPOPTS) ||
@@ -324,11 +340,14 @@ ip6t_ext_hdr(u8 nexthdr)
 	       (nexthdr == IPPROTO_DSTOPTS);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /* find specified header and get offset to it */
 extern int ipv6_find_hdr(const struct sk_buff *skb, unsigned int *offset,
 			 int target, unsigned short *fragoff);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_COMPAT
 #include <net/compat.h>
 
@@ -336,12 +355,17 @@ struct compat_ip6t_entry {
 	struct ip6t_ip6 ipv6;
 	compat_uint_t nfcache;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u_int16_t target_offset;
 	u_int16_t next_offset;
 =======
 	__u16 target_offset;
 	__u16 next_offset;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__u16 target_offset;
+	__u16 next_offset;
+>>>>>>> refs/remotes/origin/master
 	compat_uint_t comefrom;
 	struct compat_xt_counters counters;
 	unsigned char elems[0];
@@ -354,5 +378,8 @@ compat_ip6t_get_target(struct compat_ip6t_entry *e)
 }
 
 #endif /* CONFIG_COMPAT */
+<<<<<<< HEAD
 #endif /*__KERNEL__*/
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _IP6_TABLES_H */

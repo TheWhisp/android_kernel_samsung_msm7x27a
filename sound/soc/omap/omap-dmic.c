@@ -2,19 +2,25 @@
  * omap-dmic.c  --  OMAP ASoC DMIC DAI driver
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2010 Texas Instruments
  *
  * Author: Liam Girdwood <lrg@ti.com>
  *	   David Lambert <dlambert@ti.com>
  *	   Misael Lopez Cruz <misael.lopez@ti.com>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2010 - 2011 Texas Instruments
  *
  * Author: David Lambert <dlambert@ti.com>
  *	   Misael Lopez Cruz <misael.lopez@ti.com>
  *	   Liam Girdwood <lrg@ti.com>
  *	   Peter Ujfalusi <peter.ujfalusi@ti.com>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,10 +39,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #undef DEBUG
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
@@ -46,18 +55,23 @@
 #include <linux/slab.h>
 #include <linux/pm_runtime.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <plat/dma.h>
 #include <plat/dmic.h>
 =======
 #include <plat/dma.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
 #include <sound/initval.h>
 #include <sound/soc.h>
+<<<<<<< HEAD
 
 #include "omap-pcm.h"
 #include "omap-dmic.h"
@@ -82,6 +96,12 @@ struct omap_dmic {
 	int abe_mode;
 	u32 up_enable;
 =======
+=======
+#include <sound/dmaengine_pcm.h>
+
+#include "omap-dmic.h"
+
+>>>>>>> refs/remotes/origin/master
 struct omap_dmic {
 	struct device *dev;
 	void __iomem *io_base;
@@ -93,6 +113,7 @@ struct omap_dmic {
 	int threshold;
 	u32 ch_enabled;
 	bool active;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct mutex mutex;
 };
@@ -109,15 +130,25 @@ static struct omap_pcm_dma_data omap_dmic_dai_dma_params = {
 	.port_addr	= OMAP44XX_DMIC_L3_BASE + OMAP_DMIC_DATA,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mutex mutex;
+
+	struct snd_dmaengine_dai_dma_data dma_data;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline void omap_dmic_write(struct omap_dmic *dmic, u16 reg, u32 val)
 {
+<<<<<<< HEAD
 	__raw_writel(val, dmic->io_base + reg);
+=======
+	writel_relaxed(val, dmic->io_base + reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int omap_dmic_read(struct omap_dmic *dmic, u16 reg)
 {
+<<<<<<< HEAD
 	return __raw_readl(dmic->io_base + reg);
 }
 
@@ -240,6 +271,11 @@ static void omap_dmic_close(struct omap_dmic *dmic)
 	omap_dmic_write(dmic, OMAP_DMIC_DMAENABLE_CLR, OMAP_DMIC_DMA_ENABLE);
 
 =======
+=======
+	return readl_relaxed(dmic->io_base + reg);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void omap_dmic_start(struct omap_dmic *dmic)
 {
 	u32 ctrl = omap_dmic_read(dmic, OMAP_DMIC_CTRL_REG);
@@ -267,7 +303,10 @@ static inline int dmic_is_enabled(struct omap_dmic *dmic)
 {
 	return omap_dmic_read(dmic, OMAP_DMIC_CTRL_REG) &
 						OMAP_DMIC_UP_ENABLE_MASK;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int omap_dmic_dai_startup(struct snd_pcm_substream *substream,
@@ -278,6 +317,7 @@ static int omap_dmic_dai_startup(struct snd_pcm_substream *substream,
 
 	mutex_lock(&dmic->mutex);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!dmic->active) {
 		pm_runtime_get_sync(dmic->dev);
@@ -299,6 +339,8 @@ static int omap_dmic_dai_startup(struct snd_pcm_substream *substream,
 out:
 	mutex_unlock(&dmic->mutex);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!dai->active)
 		dmic->active = 1;
 	else
@@ -306,7 +348,11 @@ out:
 
 	mutex_unlock(&dmic->mutex);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_dai_set_dma_data(dai, substream, &dmic->dma_data);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -318,6 +364,7 @@ static void omap_dmic_dai_shutdown(struct snd_pcm_substream *substream,
 	mutex_lock(&dmic->mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (--dmic->active == 0) {
 		omap_dmic_close(dmic);
 		pm_runtime_put_sync(dmic->dev);
@@ -327,12 +374,19 @@ static void omap_dmic_dai_shutdown(struct snd_pcm_substream *substream,
 	if (!dai->active)
 		dmic->active = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dai->active)
+		dmic->active = 0;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&dmic->mutex);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int omap_dmic_select_divider(struct omap_dmic *dmic, int sample_rate)
 {
 	int divider = -EINVAL;
@@ -396,12 +450,16 @@ div_err:
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int omap_dmic_dai_hw_params(struct snd_pcm_substream *substream,
 				    struct snd_pcm_hw_params *params,
 				    struct snd_soc_dai *dai)
 {
 	struct omap_dmic *dmic = snd_soc_dai_get_drvdata(dai);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int channels, rate, div;
 	int ret = 0;
@@ -436,6 +494,9 @@ static int omap_dmic_dai_hw_params(struct snd_pcm_substream *substream,
 	default:
 		dev_err(dmic->dev, "rate %d not supported\n", rate);
 =======
+=======
+	struct snd_dmaengine_dai_dma_data *dma_data;
+>>>>>>> refs/remotes/origin/master
 	int channels;
 
 	dmic->clk_div = omap_dmic_select_divider(dmic, params_rate(params));
@@ -457,11 +518,15 @@ static int omap_dmic_dai_hw_params(struct snd_pcm_substream *substream,
 		break;
 	default:
 		dev_err(dmic->dev, "invalid number of legacy channels\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	/* packet size is threshold * channels */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	omap_dmic_dai_dma_params.packet_size = 2 * channels;
 	snd_soc_dai_set_dma_data(dai, substream, &omap_dmic_dai_dma_params);
@@ -531,6 +596,12 @@ static void dmic_config_up_channels(struct omap_dmic *dmic, int dai_id,
 
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_data = snd_soc_dai_get_dma_data(dai, substream);
+	dma_data->maxburst = dmic->threshold * channels;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int omap_dmic_dai_prepare(struct snd_pcm_substream *substream,
@@ -538,10 +609,13 @@ static int omap_dmic_dai_prepare(struct snd_pcm_substream *substream,
 {
 	struct omap_dmic *dmic = snd_soc_dai_get_drvdata(dai);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Configure DMA controller */
 	omap_dmic_write(dmic, OMAP_DMIC_DMAENABLE_SET, OMAP_DMIC_DMA_ENABLE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 ctrl;
 
 	/* Configure uplink threshold */
@@ -563,7 +637,10 @@ static int omap_dmic_dai_prepare(struct snd_pcm_substream *substream,
 	omap_dmic_write(dmic, OMAP_DMIC_CTRL_REG,
 			ctrl | OMAP_DMICOUTFORMAT_LJUST | OMAP_DMIC_POLAR1 |
 			OMAP_DMIC_POLAR2 | OMAP_DMIC_POLAR3);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -576,6 +653,7 @@ static int omap_dmic_dai_trigger(struct snd_pcm_substream *substream,
 	switch (cmd) {
 	case SNDRV_PCM_TRIGGER_START:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dmic->running++;
 		dmic_config_up_channels(dmic, dai->id, 1);
 		dmic_set_up_channels(dmic);
@@ -585,11 +663,16 @@ static int omap_dmic_dai_trigger(struct snd_pcm_substream *substream,
 		dmic_config_up_channels(dmic, dai->id, 0);
 		dmic_set_up_channels(dmic);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		omap_dmic_start(dmic);
 		break;
 	case SNDRV_PCM_TRIGGER_STOP:
 		omap_dmic_stop(dmic);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		break;
@@ -598,6 +681,7 @@ static int omap_dmic_dai_trigger(struct snd_pcm_substream *substream,
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int omap_dmic_set_dai_sysclk(struct snd_soc_dai *dai,
 				    int clk_id, unsigned int freq,
@@ -612,6 +696,8 @@ static int omap_dmic_set_dai_sysclk(struct snd_soc_dai *dai,
 		dev_err(dmic->dev, "cant get dmic_fck\n");
 		return -ENODEV;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int omap_dmic_select_fclk(struct omap_dmic *dmic, int clk_id,
 				 unsigned int freq)
 {
@@ -640,11 +726,15 @@ static int omap_dmic_select_fclk(struct omap_dmic *dmic, int clk_id,
 	if (dmic->active && dmic_is_enabled(dmic)) {
 		dev_err(dmic->dev, "can't re-parent when DMIC active\n");
 		return -EBUSY;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	switch (clk_id) {
 	case OMAP_DMIC_SYSCLK_PAD_CLKS:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		parent_clk = clk_get(NULL, "pad_clks_ck");
 		if (IS_ERR(parent_clk)) {
@@ -706,6 +796,8 @@ err_busy:
 err_par:
 	clk_put(dmic_clk);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		parent_clk_name = "pad_clks_ck";
 		break;
 	case OMAP_DMIC_SYSCLK_SLIMBLUS_CLKS:
@@ -746,14 +838,20 @@ err_par:
 
 err_busy:
 	clk_put(parent_clk);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops omap_dmic_dai_ops = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int omap_dmic_select_outclk(struct omap_dmic *dmic, int clk_id,
 				    unsigned int freq)
 {
@@ -796,13 +894,17 @@ static int omap_dmic_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
 }
 
 static const struct snd_soc_dai_ops omap_dmic_dai_ops = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.startup	= omap_dmic_dai_startup,
 	.shutdown	= omap_dmic_dai_shutdown,
 	.hw_params	= omap_dmic_dai_hw_params,
 	.prepare	= omap_dmic_dai_prepare,
 	.trigger	= omap_dmic_dai_trigger,
 	.set_sysclk	= omap_dmic_set_dai_sysclk,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.set_clkdiv	= omap_dmic_set_clkdiv,
 };
@@ -853,6 +955,8 @@ static struct snd_soc_dai_driver omap_dmic_dai[] = {
 	.ops = &omap_dmic_dai_ops,
 },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int omap_dmic_probe(struct snd_soc_dai *dai)
@@ -892,20 +996,34 @@ static struct snd_soc_dai_driver omap_dmic_dai = {
 		.sig_bits = 24,
 	},
 	.ops = &omap_dmic_dai_ops,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static __devinit int asoc_dmic_probe(struct platform_device *pdev)
+=======
+};
+
+static const struct snd_soc_component_driver omap_dmic_component = {
+	.name		= "omap-dmic",
+};
+
+static int asoc_dmic_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct omap_dmic *dmic;
 	struct resource *res;
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dmic = kzalloc(sizeof(struct omap_dmic), GFP_KERNEL);
 =======
 	dmic = devm_kzalloc(&pdev->dev, sizeof(struct omap_dmic), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dmic = devm_kzalloc(&pdev->dev, sizeof(struct omap_dmic), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!dmic)
 		return -ENOMEM;
 
@@ -915,6 +1033,7 @@ static __devinit int asoc_dmic_probe(struct platform_device *pdev)
 
 	mutex_init(&dmic->mutex);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res) {
@@ -932,6 +1051,11 @@ static __devinit int asoc_dmic_probe(struct platform_device *pdev)
 	dmic->fclk = clk_get(dmic->dev, "dmic_fck");
 	if (IS_ERR(dmic->fclk)) {
 		dev_err(dmic->dev, "cant get dmic_fck\n");
+=======
+	dmic->fclk = clk_get(dmic->dev, "fck");
+	if (IS_ERR(dmic->fclk)) {
+		dev_err(dmic->dev, "cant get fck\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -941,6 +1065,7 @@ static __devinit int asoc_dmic_probe(struct platform_device *pdev)
 		ret = -ENODEV;
 		goto err_put_clk;
 	}
+<<<<<<< HEAD
 	omap_dmic_dai_dma_params.port_addr = res->start + OMAP_DMIC_DATA_REG;
 >>>>>>> refs/remotes/origin/cm-10.0
 
@@ -996,6 +1121,22 @@ err_res:
 	}
 
 	ret = snd_soc_register_dai(&pdev->dev, &omap_dmic_dai);
+=======
+	dmic->dma_data.addr = res->start + OMAP_DMIC_DATA_REG;
+
+	dmic->dma_data.filter_data = "up_link";
+
+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
+	dmic->io_base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(dmic->io_base)) {
+		ret = PTR_ERR(dmic->io_base);
+		goto err_put_clk;
+	}
+
+
+	ret = snd_soc_register_component(&pdev->dev, &omap_dmic_component,
+					 &omap_dmic_dai, 1);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto err_put_clk;
 
@@ -1003,6 +1144,7 @@ err_res:
 
 err_put_clk:
 	clk_put(dmic->fclk);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
@@ -1020,10 +1162,22 @@ static int __devexit asoc_dmic_remove(struct platform_device *pdev)
 	snd_soc_unregister_dai(&pdev->dev);
 	clk_put(dmic->fclk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+}
+
+static int asoc_dmic_remove(struct platform_device *pdev)
+{
+	struct omap_dmic *dmic = platform_get_drvdata(pdev);
+
+	snd_soc_unregister_component(&pdev->dev);
+	clk_put(dmic->fclk);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct platform_driver asoc_dmic_driver = {
 	.driver = {
 <<<<<<< HEAD
@@ -1053,10 +1207,31 @@ module_exit(snd_omap_dmic_exit);
 MODULE_ALIAS("platform:omap-dmic-dai");
 MODULE_AUTHOR("David Lambert <dlambert@ti.com>");
 =======
+=======
+static const struct of_device_id omap_dmic_of_match[] = {
+	{ .compatible = "ti,omap4-dmic", },
+	{ }
+};
+MODULE_DEVICE_TABLE(of, omap_dmic_of_match);
+
+static struct platform_driver asoc_dmic_driver = {
+	.driver = {
+		.name = "omap-dmic",
+		.owner = THIS_MODULE,
+		.of_match_table = omap_dmic_of_match,
+	},
+	.probe = asoc_dmic_probe,
+	.remove = asoc_dmic_remove,
+};
+
+>>>>>>> refs/remotes/origin/master
 module_platform_driver(asoc_dmic_driver);
 
 MODULE_ALIAS("platform:omap-dmic");
 MODULE_AUTHOR("Peter Ujfalusi <peter.ujfalusi@ti.com>");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("OMAP DMIC ASoC Interface");
 MODULE_LICENSE("GPL");

@@ -35,7 +35,11 @@ struct dm_transaction_manager;
  */
 
 /*
+<<<<<<< HEAD
  * Infomation about the values stored within the btree.
+=======
+ * Information about the values stored within the btree.
+>>>>>>> refs/remotes/origin/master
  */
 struct dm_btree_value_type {
 	void *context;
@@ -58,21 +62,33 @@ struct dm_btree_value_type {
 	 * somewhere.) This method is _not_ called for insertion of a new
 	 * value: It is assumed the ref count is already 1.
 	 */
+<<<<<<< HEAD
 	void (*inc)(void *context, void *value);
+=======
+	void (*inc)(void *context, const void *value);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * This value is being deleted.  The btree takes care of freeing
 	 * the memory pointed to by @value.  Often the del function just
 	 * needs to decrement a reference count somewhere.
 	 */
+<<<<<<< HEAD
 	void (*dec)(void *context, void *value);
+=======
+	void (*dec)(void *context, const void *value);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * A test for equality between two values.  When a value is
 	 * overwritten with a new one, the old one has the dec method
 	 * called _unless_ the new and old value are deemed equal.
 	 */
+<<<<<<< HEAD
 	int (*equal)(void *context, void *value1, void *value2);
+=======
+	int (*equal)(void *context, const void *value1, const void *value2);
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -142,4 +158,16 @@ int dm_btree_remove(struct dm_btree_info *info, dm_block_t root,
 int dm_btree_find_highest_key(struct dm_btree_info *info, dm_block_t root,
 			      uint64_t *result_keys);
 
+<<<<<<< HEAD
+=======
+/*
+ * Iterate through the a btree, calling fn() on each entry.
+ * It only works for single level trees and is internally recursive, so
+ * monitor stack usage carefully.
+ */
+int dm_btree_walk(struct dm_btree_info *info, dm_block_t root,
+		  int (*fn)(void *context, uint64_t *keys, void *leaf),
+		  void *context);
+
+>>>>>>> refs/remotes/origin/master
 #endif	/* _LINUX_DM_BTREE_H */

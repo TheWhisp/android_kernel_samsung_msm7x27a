@@ -390,7 +390,11 @@ static int mpc52xx_spi_transfer(struct spi_device *spi, struct spi_message *m)
 /*
  * OF Platform Bus Binding
  */
+<<<<<<< HEAD
 static int __devinit mpc52xx_spi_probe(struct platform_device *op)
+=======
+static int mpc52xx_spi_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct spi_master *master;
 	struct mpc52xx_spi *ms;
@@ -433,13 +437,20 @@ static int __devinit mpc52xx_spi_probe(struct platform_device *op)
 		goto err_alloc;
 	}
 
+<<<<<<< HEAD
 	master->bus_num = -1;
+=======
+>>>>>>> refs/remotes/origin/master
 	master->setup = mpc52xx_spi_setup;
 	master->transfer = mpc52xx_spi_transfer;
 	master->mode_bits = SPI_CPOL | SPI_CPHA | SPI_LSB_FIRST;
 	master->dev.of_node = op->dev.of_node;
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, master);
+=======
+	platform_set_drvdata(op, master);
+>>>>>>> refs/remotes/origin/master
 
 	ms = spi_master_get_devdata(master);
 	ms->master = master;
@@ -455,7 +466,11 @@ static int __devinit mpc52xx_spi_probe(struct platform_device *op)
 				GFP_KERNEL);
 		if (!ms->gpio_cs) {
 			rc = -ENOMEM;
+<<<<<<< HEAD
 			goto err_alloc;
+=======
+			goto err_alloc_gpio;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		for (i = 0; i < ms->gpio_cs_count; i++) {
@@ -479,8 +494,11 @@ static int __devinit mpc52xx_spi_probe(struct platform_device *op)
 			gpio_direction_output(gpio_cs, 1);
 			ms->gpio_cs[i] = gpio_cs;
 		}
+<<<<<<< HEAD
 	} else {
 		master->num_chipselect = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_lock_init(&ms->lock);
@@ -517,21 +535,35 @@ static int __devinit mpc52xx_spi_probe(struct platform_device *op)
 
  err_register:
 	dev_err(&ms->master->dev, "initialization failed\n");
+<<<<<<< HEAD
 	spi_master_put(master);
+=======
+>>>>>>> refs/remotes/origin/master
  err_gpio:
 	while (i-- > 0)
 		gpio_free(ms->gpio_cs[i]);
 
 	kfree(ms->gpio_cs);
+<<<<<<< HEAD
+=======
+ err_alloc_gpio:
+	spi_master_put(master);
+>>>>>>> refs/remotes/origin/master
  err_alloc:
  err_init:
 	iounmap(regs);
 	return rc;
 }
 
+<<<<<<< HEAD
 static int __devexit mpc52xx_spi_remove(struct platform_device *op)
 {
 	struct spi_master *master = dev_get_drvdata(&op->dev);
+=======
+static int mpc52xx_spi_remove(struct platform_device *op)
+{
+	struct spi_master *master = spi_master_get(platform_get_drvdata(op));
+>>>>>>> refs/remotes/origin/master
 	struct mpc52xx_spi *ms = spi_master_get_devdata(master);
 	int i;
 
@@ -543,13 +575,22 @@ static int __devexit mpc52xx_spi_remove(struct platform_device *op)
 
 	kfree(ms->gpio_cs);
 	spi_unregister_master(master);
+<<<<<<< HEAD
 	spi_master_put(master);
 	iounmap(ms->regs);
+=======
+	iounmap(ms->regs);
+	spi_master_put(master);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static const struct of_device_id mpc52xx_spi_match[] __devinitconst = {
+=======
+static const struct of_device_id mpc52xx_spi_match[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .compatible = "fsl,mpc5200-spi", },
 	{}
 };
@@ -562,6 +603,10 @@ static struct platform_driver mpc52xx_spi_of_driver = {
 		.of_match_table = mpc52xx_spi_match,
 	},
 	.probe = mpc52xx_spi_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(mpc52xx_spi_remove),
+=======
+	.remove = mpc52xx_spi_remove,
+>>>>>>> refs/remotes/origin/master
 };
 module_platform_driver(mpc52xx_spi_of_driver);

@@ -25,9 +25,12 @@
 #include <net/sock.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/fcntl.h>
 #include <linux/termios.h>	/* For TIOCINQ/OUTQ */
 #include <linux/mm.h>
@@ -52,7 +55,11 @@
 
 int ax25_hard_header(struct sk_buff *skb, struct net_device *dev,
 		     unsigned short type, const void *daddr,
+<<<<<<< HEAD
 		     const void *saddr, unsigned len)
+=======
+		     const void *saddr, unsigned int len)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char *buff;
 
@@ -223,7 +230,11 @@ put:
 
 int ax25_hard_header(struct sk_buff *skb, struct net_device *dev,
 		     unsigned short type, const void *daddr,
+<<<<<<< HEAD
 		     const void *saddr, unsigned len)
+=======
+		     const void *saddr, unsigned int len)
+>>>>>>> refs/remotes/origin/master
 {
 	return -AX25_HEADER_LEN;
 }

@@ -65,9 +65,12 @@ _GLOBAL(csum_tcpudp_magic)
 	srwi	r3,r3,16
 	blr
 
+<<<<<<< HEAD
 #define STACKFRAMESIZE 256
 #define STK_REG(i)	(112 + ((i)-14)*8)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Computes the checksum of a memory block at buff, length len,
  * and adds in "sum" (32-bit).
@@ -114,9 +117,15 @@ _GLOBAL(csum_partial)
 	mtctr	r6
 
 	stdu	r1,-STACKFRAMESIZE(r1)
+<<<<<<< HEAD
 	std	r14,STK_REG(r14)(r1)
 	std	r15,STK_REG(r15)(r1)
 	std	r16,STK_REG(r16)(r1)
+=======
+	std	r14,STK_REG(R14)(r1)
+	std	r15,STK_REG(R15)(r1)
+	std	r16,STK_REG(R16)(r1)
+>>>>>>> refs/remotes/origin/master
 
 	ld	r6,0(r3)
 	ld	r9,8(r3)
@@ -175,9 +184,15 @@ _GLOBAL(csum_partial)
 	adde	r0,r0,r15
 	adde	r0,r0,r16
 
+<<<<<<< HEAD
 	ld	r14,STK_REG(r14)(r1)
 	ld	r15,STK_REG(r15)(r1)
 	ld	r16,STK_REG(r16)(r1)
+=======
+	ld	r14,STK_REG(R14)(r1)
+	ld	r15,STK_REG(R15)(r1)
+	ld	r16,STK_REG(R16)(r1)
+>>>>>>> refs/remotes/origin/master
 	addi	r1,r1,STACKFRAMESIZE
 
 	andi.	r4,r4,63
@@ -229,6 +244,7 @@ _GLOBAL(csum_partial)
 	blr
 
 
+<<<<<<< HEAD
 	.macro source
 100:
 	.section __ex_table,"a"
@@ -242,6 +258,37 @@ _GLOBAL(csum_partial)
 	.section __ex_table,"a"
 	.align 3
 	.llong 200b,.Ldest_error
+=======
+	.macro srcnr
+100:
+	.section __ex_table,"a"
+	.align 3
+	.llong 100b,.Lsrc_error_nr
+	.previous
+	.endm
+
+	.macro source
+150:
+	.section __ex_table,"a"
+	.align 3
+	.llong 150b,.Lsrc_error
+	.previous
+	.endm
+
+	.macro dstnr
+200:
+	.section __ex_table,"a"
+	.align 3
+	.llong 200b,.Ldest_error_nr
+	.previous
+	.endm
+
+	.macro dest
+250:
+	.section __ex_table,"a"
+	.align 3
+	.llong 250b,.Ldest_error
+>>>>>>> refs/remotes/origin/master
 	.previous
 	.endm
 
@@ -277,11 +324,19 @@ _GLOBAL(csum_partial_copy_generic)
 	mtctr	r6
 
 1:
+<<<<<<< HEAD
 source;	lhz	r6,0(r3)		/* align to doubleword */
 	subi	r5,r5,2
 	addi	r3,r3,2
 	adde	r0,r0,r6
 dest;	sth	r6,0(r4)
+=======
+srcnr;	lhz	r6,0(r3)		/* align to doubleword */
+	subi	r5,r5,2
+	addi	r3,r3,2
+	adde	r0,r0,r6
+dstnr;	sth	r6,0(r4)
+>>>>>>> refs/remotes/origin/master
 	addi	r4,r4,2
 	bdnz	1b
 
@@ -299,9 +354,15 @@ dest;	sth	r6,0(r4)
 	mtctr	r6
 
 	stdu	r1,-STACKFRAMESIZE(r1)
+<<<<<<< HEAD
 	std	r14,STK_REG(r14)(r1)
 	std	r15,STK_REG(r15)(r1)
 	std	r16,STK_REG(r16)(r1)
+=======
+	std	r14,STK_REG(R14)(r1)
+	std	r15,STK_REG(R15)(r1)
+	std	r16,STK_REG(R16)(r1)
+>>>>>>> refs/remotes/origin/master
 
 source;	ld	r6,0(r3)
 source;	ld	r9,8(r3)
@@ -382,9 +443,15 @@ dest;	std	r16,56(r4)
 	adde	r0,r0,r15
 	adde	r0,r0,r16
 
+<<<<<<< HEAD
 	ld	r14,STK_REG(r14)(r1)
 	ld	r15,STK_REG(r15)(r1)
 	ld	r16,STK_REG(r16)(r1)
+=======
+	ld	r14,STK_REG(R14)(r1)
+	ld	r15,STK_REG(R15)(r1)
+	ld	r16,STK_REG(R16)(r1)
+>>>>>>> refs/remotes/origin/master
 	addi	r1,r1,STACKFRAMESIZE
 
 	andi.	r5,r5,63
@@ -395,10 +462,17 @@ dest;	std	r16,56(r4)
 
 	mtctr	r6
 3:
+<<<<<<< HEAD
 source;	ld	r6,0(r3)
 	addi	r3,r3,8
 	adde	r0,r0,r6
 dest;	std	r6,0(r4)
+=======
+srcnr;	ld	r6,0(r3)
+	addi	r3,r3,8
+	adde	r0,r0,r6
+dstnr;	std	r6,0(r4)
+>>>>>>> refs/remotes/origin/master
 	addi	r4,r4,8
 	bdnz	3b
 
@@ -408,10 +482,17 @@ dest;	std	r6,0(r4)
 	srdi.	r6,r5,2
 	beq	.Lcopy_tail_halfword
 
+<<<<<<< HEAD
 source;	lwz	r6,0(r3)
 	addi	r3,r3,4
 	adde	r0,r0,r6
 dest;	stw	r6,0(r4)
+=======
+srcnr;	lwz	r6,0(r3)
+	addi	r3,r3,4
+	adde	r0,r0,r6
+dstnr;	stw	r6,0(r4)
+>>>>>>> refs/remotes/origin/master
 	addi	r4,r4,4
 	subi	r5,r5,4
 
@@ -419,10 +500,17 @@ dest;	stw	r6,0(r4)
 	srdi.	r6,r5,1
 	beq	.Lcopy_tail_byte
 
+<<<<<<< HEAD
 source;	lhz	r6,0(r3)
 	addi	r3,r3,2
 	adde	r0,r0,r6
 dest;	sth	r6,0(r4)
+=======
+srcnr;	lhz	r6,0(r3)
+	addi	r3,r3,2
+	adde	r0,r0,r6
+dstnr;	sth	r6,0(r4)
+>>>>>>> refs/remotes/origin/master
 	addi	r4,r4,2
 	subi	r5,r5,2
 
@@ -430,10 +518,17 @@ dest;	sth	r6,0(r4)
 	andi.	r6,r5,1
 	beq	.Lcopy_finish
 
+<<<<<<< HEAD
 source;	lbz	r6,0(r3)
 	sldi	r9,r6,8			/* Pad the byte out to 16 bits */
 	adde	r0,r0,r9
 dest;	stb	r6,0(r4)
+=======
+srcnr;	lbz	r6,0(r3)
+	sldi	r9,r6,8			/* Pad the byte out to 16 bits */
+	adde	r0,r0,r9
+dstnr;	stb	r6,0(r4)
+>>>>>>> refs/remotes/origin/master
 
 .Lcopy_finish:
 	addze	r0,r0			/* add in final carry */
@@ -443,6 +538,14 @@ dest;	stb	r6,0(r4)
 	blr
 
 .Lsrc_error:
+<<<<<<< HEAD
+=======
+	ld	r14,STK_REG(R14)(r1)
+	ld	r15,STK_REG(R15)(r1)
+	ld	r16,STK_REG(R16)(r1)
+	addi	r1,r1,STACKFRAMESIZE
+.Lsrc_error_nr:
+>>>>>>> refs/remotes/origin/master
 	cmpdi	0,r7,0
 	beqlr
 	li	r6,-EFAULT
@@ -450,6 +553,14 @@ dest;	stb	r6,0(r4)
 	blr
 
 .Ldest_error:
+<<<<<<< HEAD
+=======
+	ld	r14,STK_REG(R14)(r1)
+	ld	r15,STK_REG(R15)(r1)
+	ld	r16,STK_REG(R16)(r1)
+	addi	r1,r1,STACKFRAMESIZE
+.Ldest_error_nr:
+>>>>>>> refs/remotes/origin/master
 	cmpdi	0,r8,0
 	beqlr
 	li	r6,-EFAULT

@@ -53,13 +53,20 @@ ACPI_MODULE_NAME("pci_link");
 #define ACPI_PCI_LINK_FILE_STATUS	"state"
 #define ACPI_PCI_LINK_MAX_POSSIBLE	16
 
+<<<<<<< HEAD
 static int acpi_pci_link_add(struct acpi_device *device);
 static int acpi_pci_link_remove(struct acpi_device *device, int type);
+=======
+static int acpi_pci_link_add(struct acpi_device *device,
+			     const struct acpi_device_id *not_used);
+static void acpi_pci_link_remove(struct acpi_device *device);
+>>>>>>> refs/remotes/origin/master
 
 static const struct acpi_device_id link_device_ids[] = {
 	{"PNP0C0F", 0},
 	{"", 0},
 };
+<<<<<<< HEAD
 MODULE_DEVICE_TABLE(acpi, link_device_ids);
 
 static struct acpi_driver acpi_pci_link_driver = {
@@ -70,6 +77,13 @@ static struct acpi_driver acpi_pci_link_driver = {
 		.add = acpi_pci_link_add,
 		.remove = acpi_pci_link_remove,
 	},
+=======
+
+static struct acpi_scan_handler pci_link_handler = {
+	.ids = link_device_ids,
+	.attach = acpi_pci_link_add,
+	.detach = acpi_pci_link_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -358,6 +372,10 @@ static int acpi_pci_link_set(struct acpi_pci_link *link, int irq)
 
 	}
 	resource->end.type = ACPI_RESOURCE_TYPE_END_TAG;
+<<<<<<< HEAD
+=======
+	resource->end.length = sizeof(struct acpi_resource);
+>>>>>>> refs/remotes/origin/master
 
 	/* Attempt to set the resource */
 	status = acpi_set_current_resources(link->device->handle, &buffer);
@@ -692,7 +710,12 @@ int acpi_pci_link_free_irq(acpi_handle handle)
                                  Driver Interface
    -------------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static int acpi_pci_link_add(struct acpi_device *device)
+=======
+static int acpi_pci_link_add(struct acpi_device *device,
+			     const struct acpi_device_id *not_used)
+>>>>>>> refs/remotes/origin/master
 {
 	int result;
 	struct acpi_pci_link *link;
@@ -720,6 +743,7 @@ static int acpi_pci_link_add(struct acpi_device *device)
 	       acpi_device_bid(device));
 	for (i = 0; i < link->irq.possible_count; i++) {
 		if (link->irq.active == link->irq.possible[i]) {
+<<<<<<< HEAD
 			printk(" *%d", link->irq.possible[i]);
 			found = 1;
 		} else
@@ -735,6 +759,23 @@ static int acpi_pci_link_add(struct acpi_device *device)
 		printk(", disabled.");
 
 	printk("\n");
+=======
+			printk(KERN_CONT " *%d", link->irq.possible[i]);
+			found = 1;
+		} else
+			printk(KERN_CONT " %d", link->irq.possible[i]);
+	}
+
+	printk(KERN_CONT ")");
+
+	if (!found)
+		printk(KERN_CONT " *%d", link->irq.active);
+
+	if (!link->device->status.enabled)
+		printk(KERN_CONT ", disabled.");
+
+	printk(KERN_CONT "\n");
+>>>>>>> refs/remotes/origin/master
 
 	list_add_tail(&link->list, &acpi_link_list);
 
@@ -746,7 +787,11 @@ static int acpi_pci_link_add(struct acpi_device *device)
 	if (result)
 		kfree(link);
 
+<<<<<<< HEAD
 	return result;
+=======
+	return result < 0 ? result : 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int acpi_pci_link_resume(struct acpi_pci_link *link)
@@ -766,7 +811,11 @@ static void irqrouter_resume(void)
 	}
 }
 
+<<<<<<< HEAD
 static int acpi_pci_link_remove(struct acpi_device *device, int type)
+=======
+static void acpi_pci_link_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_pci_link *link;
 
@@ -777,7 +826,10 @@ static int acpi_pci_link_remove(struct acpi_device *device, int type)
 	mutex_unlock(&acpi_link_lock);
 
 	kfree(link);
+<<<<<<< HEAD
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -874,6 +926,7 @@ static struct syscore_ops irqrouter_syscore_ops = {
 	.resume = irqrouter_resume,
 };
 
+<<<<<<< HEAD
 static int __init irqrouter_init_ops(void)
 {
 	if (!acpi_disabled && !acpi_noirq)
@@ -888,6 +941,12 @@ static int __init acpi_pci_link_init(void)
 {
 	if (acpi_noirq)
 		return 0;
+=======
+void __init acpi_pci_link_init(void)
+{
+	if (acpi_noirq)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	if (acpi_irq_balance == -1) {
 		/* no command line switch: enable balancing in IOAPIC mode */
@@ -896,6 +955,7 @@ static int __init acpi_pci_link_init(void)
 		else
 			acpi_irq_balance = 0;
 	}
+<<<<<<< HEAD
 
 	if (acpi_bus_register_driver(&acpi_pci_link_driver) < 0)
 		return -ENODEV;
@@ -904,3 +964,8 @@ static int __init acpi_pci_link_init(void)
 }
 
 subsys_initcall(acpi_pci_link_init);
+=======
+	register_syscore_ops(&irqrouter_syscore_ops);
+	acpi_scan_add_handler(&pci_link_handler);
+}
+>>>>>>> refs/remotes/origin/master

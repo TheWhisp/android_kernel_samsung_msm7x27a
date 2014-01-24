@@ -1,8 +1,13 @@
 #ifndef _FS_CEPH_DEBUGFS_H
 #define _FS_CEPH_DEBUGFS_H
 
+<<<<<<< HEAD
 #include "ceph_debug.h"
 #include "types.h"
+=======
+#include <linux/ceph/ceph_debug.h>
+#include <linux/ceph/types.h>
+>>>>>>> refs/remotes/origin/master
 
 #define CEPH_DEFINE_SHOW_FUNC(name)					\
 static int name##_open(struct inode *inode, struct file *file)		\

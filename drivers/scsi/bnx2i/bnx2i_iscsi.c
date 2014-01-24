@@ -2,10 +2,14 @@
  * bnx2i_iscsi.c: Broadcom NetXtreme II iSCSI driver.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2006 - 2010 Broadcom Corporation
 =======
  * Copyright (c) 2006 - 2011 Broadcom Corporation
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2006 - 2013 Broadcom Corporation
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2007, 2008 Red Hat, Inc.  All rights reserved.
  * Copyright (c) 2007, 2008 Mike Christie
  *
@@ -32,9 +36,13 @@ static struct scsi_host_template bnx2i_host_template;
 static DEFINE_SPINLOCK(bnx2i_resc_lock); /* protects global resources */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 DECLARE_PER_CPU(struct bnx2i_percpu_s, bnx2i_percpu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+DECLARE_PER_CPU(struct bnx2i_percpu_s, bnx2i_percpu);
+>>>>>>> refs/remotes/origin/master
 
 static int bnx2i_adapter_ready(struct bnx2i_hba *hba)
 {
@@ -603,7 +611,11 @@ void bnx2i_drop_session(struct iscsi_cls_session *cls_session)
 /**
  * bnx2i_ep_destroy_list_add - add an entry to EP destroy list
  * @hba:	pointer to adapter instance
+<<<<<<< HEAD
  * @ep:		pointer to endpoint (transport indentifier) structure
+=======
+ * @ep:		pointer to endpoint (transport identifier) structure
+>>>>>>> refs/remotes/origin/master
  *
  * EP destroy queue manager
  */
@@ -620,7 +632,11 @@ static int bnx2i_ep_destroy_list_add(struct bnx2i_hba *hba,
  * bnx2i_ep_destroy_list_del - add an entry to EP destroy list
  *
  * @hba: 		pointer to adapter instance
+<<<<<<< HEAD
  * @ep: 		pointer to endpoint (transport indentifier) structure
+=======
+ * @ep: 		pointer to endpoint (transport identifier) structure
+>>>>>>> refs/remotes/origin/master
  *
  * EP destroy queue manager
  */
@@ -637,7 +653,11 @@ static int bnx2i_ep_destroy_list_del(struct bnx2i_hba *hba,
 /**
  * bnx2i_ep_ofld_list_add - add an entry to ep offload pending list
  * @hba:	pointer to adapter instance
+<<<<<<< HEAD
  * @ep:		pointer to endpoint (transport indentifier) structure
+=======
+ * @ep:		pointer to endpoint (transport identifier) structure
+>>>>>>> refs/remotes/origin/master
  *
  * pending conn offload completion queue manager
  */
@@ -653,7 +673,11 @@ static int bnx2i_ep_ofld_list_add(struct bnx2i_hba *hba,
 /**
  * bnx2i_ep_ofld_list_del - add an entry to ep offload pending list
  * @hba: 		pointer to adapter instance
+<<<<<<< HEAD
  * @ep: 		pointer to endpoint (transport indentifier) structure
+=======
+ * @ep: 		pointer to endpoint (transport identifier) structure
+>>>>>>> refs/remotes/origin/master
  *
  * pending conn offload completion queue manager
  */
@@ -728,7 +752,11 @@ bnx2i_find_ep_in_destroy_list(struct bnx2i_hba *hba, u32 iscsi_cid)
 /**
  * bnx2i_ep_active_list_add - add an entry to ep active list
  * @hba:	pointer to adapter instance
+<<<<<<< HEAD
  * @ep:		pointer to endpoint (transport indentifier) structure
+=======
+ * @ep:		pointer to endpoint (transport identifier) structure
+>>>>>>> refs/remotes/origin/master
  *
  * current active conn queue manager
  */
@@ -744,7 +772,11 @@ static void bnx2i_ep_active_list_add(struct bnx2i_hba *hba,
 /**
  * bnx2i_ep_active_list_del - deletes an entry to ep active list
  * @hba:	pointer to adapter instance
+<<<<<<< HEAD
  * @ep:		pointer to endpoint (transport indentifier) structure
+=======
+ * @ep:		pointer to endpoint (transport identifier) structure
+>>>>>>> refs/remotes/origin/master
  *
  * current active conn queue manager
  */
@@ -815,6 +847,7 @@ struct bnx2i_hba *bnx2i_alloc_hba(struct cnic_dev *cnic)
 	hba->pci_func = PCI_FUNC(hba->pcidev->devfn);
 	hba->pci_devno = PCI_SLOT(hba->pcidev->devfn);
 
+<<<<<<< HEAD
 	bnx2i_identify_device(hba);
 	bnx2i_setup_host_queue_size(hba, shost);
 
@@ -825,6 +858,18 @@ struct bnx2i_hba *bnx2i_alloc_hba(struct cnic_dev *cnic)
 			goto ioreg_map_err;
 	} else if (test_bit(BNX2I_NX2_DEV_57710, &hba->cnic_dev_type)) {
 		hba->regview = ioremap_nocache(hba->netdev->base_addr, 4096);
+=======
+	bnx2i_identify_device(hba, cnic);
+	bnx2i_setup_host_queue_size(hba, shost);
+
+	hba->reg_base = pci_resource_start(hba->pcidev, 0);
+	if (test_bit(BNX2I_NX2_DEV_5709, &hba->cnic_dev_type)) {
+		hba->regview = pci_iomap(hba->pcidev, 0, BNX2_MQ_CONFIG2);
+		if (!hba->regview)
+			goto ioreg_map_err;
+	} else if (test_bit(BNX2I_NX2_DEV_57710, &hba->cnic_dev_type)) {
+		hba->regview = pci_iomap(hba->pcidev, 0, 4096);
+>>>>>>> refs/remotes/origin/master
 		if (!hba->regview)
 			goto ioreg_map_err;
 	}
@@ -881,6 +926,14 @@ struct bnx2i_hba *bnx2i_alloc_hba(struct cnic_dev *cnic)
 		hba->conn_ctx_destroy_tmo = 2 * HZ;
 	}
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_32BIT
+	spin_lock_init(&hba->stat_lock);
+#endif
+	memset(&hba->stats, 0, sizeof(struct iscsi_stats_info));
+
+>>>>>>> refs/remotes/origin/master
 	if (iscsi_host_add(shost, &hba->pcidev->dev))
 		goto free_dump_mem;
 	return hba;
@@ -891,7 +944,11 @@ cid_que_err:
 	bnx2i_free_mp_bdt(hba);
 mp_bdt_mem_err:
 	if (hba->regview) {
+<<<<<<< HEAD
 		iounmap(hba->regview);
+=======
+		pci_iounmap(hba->pcidev, hba->regview);
+>>>>>>> refs/remotes/origin/master
 		hba->regview = NULL;
 	}
 ioreg_map_err:
@@ -917,7 +974,11 @@ void bnx2i_free_hba(struct bnx2i_hba *hba)
 	pci_dev_put(hba->pcidev);
 
 	if (hba->regview) {
+<<<<<<< HEAD
 		iounmap(hba->regview);
+=======
+		pci_iounmap(hba->pcidev, hba->regview);
+>>>>>>> refs/remotes/origin/master
 		hba->regview = NULL;
 	}
 	bnx2i_free_mp_bdt(hba);
@@ -1188,12 +1249,24 @@ static int
 bnx2i_mtask_xmit(struct iscsi_conn *conn, struct iscsi_task *task)
 {
 	struct bnx2i_conn *bnx2i_conn = conn->dd_data;
+<<<<<<< HEAD
+=======
+	struct bnx2i_hba *hba = bnx2i_conn->hba;
+>>>>>>> refs/remotes/origin/master
 	struct bnx2i_cmd *cmd = task->dd_data;
 
 	memset(bnx2i_conn->gen_pdu.req_buf, 0, ISCSI_DEF_MAX_RECV_SEG_LEN);
 
 	bnx2i_setup_cmd_wqe_template(cmd);
 	bnx2i_conn->gen_pdu.req_buf_size = task->data_count;
+<<<<<<< HEAD
+=======
+
+	/* Tx PDU/data length count */
+	ADD_STATS_64(hba, tx_pdus, 1);
+	ADD_STATS_64(hba, tx_bytes, task->data_count);
+
+>>>>>>> refs/remotes/origin/master
 	if (task->data_count) {
 		memcpy(bnx2i_conn->gen_pdu.req_buf, task->data,
 		       task->data_count);
@@ -1221,15 +1294,21 @@ static int bnx2i_task_xmit(struct iscsi_task *task)
 	struct scsi_cmnd *sc = task->sc;
 	struct bnx2i_cmd *cmd = task->dd_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct iscsi_cmd *hdr = (struct iscsi_cmd *) task->hdr;
 
 	if (bnx2i_conn->ep->num_active_cmds + 1 > hba->max_sqes)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct iscsi_scsi_req *hdr = (struct iscsi_scsi_req *)task->hdr;
 
 	if (atomic_read(&bnx2i_conn->ep->num_active_cmds) + 1  >
 	    hba->max_sqes)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	/*
@@ -1370,11 +1449,17 @@ bnx2i_conn_create(struct iscsi_cls_session *cls_session, uint32_t cid)
 	bnx2i_conn->cls_conn = cls_conn;
 	bnx2i_conn->hba = hba;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	atomic_set(&bnx2i_conn->work_cnt, 0);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	atomic_set(&bnx2i_conn->work_cnt, 0);
+
+>>>>>>> refs/remotes/origin/master
 	/* 'ep' ptr will be assigned in bind() call */
 	bnx2i_conn->ep = NULL;
 	init_completion(&bnx2i_conn->cmd_cleanup_cmpl);
@@ -1479,18 +1564,27 @@ static void bnx2i_conn_destroy(struct iscsi_cls_conn *cls_conn)
 	struct Scsi_Host *shost;
 	struct bnx2i_hba *hba;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct bnx2i_work *work, *tmp;
 	unsigned cpu = 0;
 	struct bnx2i_percpu_s *p;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bnx2i_work *work, *tmp;
+	unsigned cpu = 0;
+	struct bnx2i_percpu_s *p;
+>>>>>>> refs/remotes/origin/master
 
 	shost = iscsi_session_to_shost(iscsi_conn_to_session(cls_conn));
 	hba = iscsi_host_priv(shost);
 
 	bnx2i_conn_free_login_resources(hba, bnx2i_conn);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (atomic_read(&bnx2i_conn->work_cnt)) {
 		for_each_online_cpu(cpu) {
@@ -1511,7 +1605,10 @@ static void bnx2i_conn_destroy(struct iscsi_cls_conn *cls_conn)
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	iscsi_conn_teardown(cls_conn);
 }
 
@@ -1706,7 +1803,11 @@ no_nx2_route:
 /**
  * bnx2i_tear_down_conn - tear down iscsi/tcp connection and free resources
  * @hba:	pointer to adapter instance
+<<<<<<< HEAD
  * @ep:		endpoint (transport indentifier) structure
+=======
+ * @ep:		endpoint (transport identifier) structure
+>>>>>>> refs/remotes/origin/master
  *
  * destroys cm_sock structure and on chip iscsi context
  */
@@ -1820,10 +1921,14 @@ static struct iscsi_endpoint *bnx2i_ep_connect(struct Scsi_Host *shost,
 	bnx2i_ep = ep->dd_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bnx2i_ep->num_active_cmds = 0;
 =======
 	atomic_set(&bnx2i_ep->num_active_cmds, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_set(&bnx2i_ep->num_active_cmds, 0);
+>>>>>>> refs/remotes/origin/master
 	iscsi_cid = bnx2i_alloc_iscsi_cid(hba);
 	if (iscsi_cid == -1) {
 		printk(KERN_ALERT "bnx2i (%s): alloc_ep - unable to allocate "
@@ -2204,7 +2309,10 @@ static int bnx2i_nl_set_path(struct Scsi_Host *shost, struct iscsi_path *params)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static umode_t bnx2i_attr_is_visible(int param_type, int param)
 {
 	switch (param_type) {
@@ -2258,7 +2366,10 @@ static umode_t bnx2i_attr_is_visible(int param_type, int param)
 
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * 'Scsi_Host_Template' structure and 'iscsi_tranport' structure template
@@ -2274,6 +2385,7 @@ static struct scsi_host_template bnx2i_host_template = {
 	.eh_target_reset_handler = iscsi_eh_recover_target,
 	.change_queue_depth	= iscsi_change_queue_depth,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.can_queue		= 1024,
 	.max_sectors		= 127,
 	.cmd_per_lun		= 24,
@@ -2282,6 +2394,12 @@ static struct scsi_host_template bnx2i_host_template = {
 	.max_sectors		= 127,
 	.cmd_per_lun		= 128,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.target_alloc		= iscsi_target_alloc,
+	.can_queue		= 2048,
+	.max_sectors		= 127,
+	.cmd_per_lun		= 128,
+>>>>>>> refs/remotes/origin/master
 	.this_id		= -1,
 	.use_clustering		= ENABLE_CLUSTERING,
 	.sg_tablesize		= ISCSI_MAX_BDS_PER_CMD,
@@ -2295,6 +2413,7 @@ struct iscsi_transport bnx2i_iscsi_transport = {
 				  CAP_MULTI_R2T | CAP_DATADGST |
 				  CAP_DATA_PATH_OFFLOAD |
 				  CAP_TEXT_NEGO,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.param_mask		= ISCSI_MAX_RECV_DLENGTH |
 				  ISCSI_MAX_XMIT_DLENGTH |
@@ -2324,15 +2443,21 @@ struct iscsi_transport bnx2i_iscsi_transport = {
 				  ISCSI_HOST_NETDEV_NAME,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.create_session		= bnx2i_session_create,
 	.destroy_session	= bnx2i_session_destroy,
 	.create_conn		= bnx2i_conn_create,
 	.bind_conn		= bnx2i_conn_bind,
 	.destroy_conn		= bnx2i_conn_destroy,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.attr_is_visible	= bnx2i_attr_is_visible,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.attr_is_visible	= bnx2i_attr_is_visible,
+>>>>>>> refs/remotes/origin/master
 	.set_param		= iscsi_set_param,
 	.get_conn_param		= iscsi_conn_get_param,
 	.get_session_param	= iscsi_session_get_param,

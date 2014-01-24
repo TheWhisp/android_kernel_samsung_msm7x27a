@@ -1,5 +1,8 @@
 
+<<<<<<< HEAD
 //   vim:tw=110:ts=4:
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef HCFCFG_H
 #define HCFCFG_H 1
 
@@ -22,7 +25,11 @@
 * hcfcfg.tpl list all #defines which must be specified to:
 *   adjust the HCF functions defined in HCF.C to the characteristics of a specific environment
 *		o maximum sizes for messages
+<<<<<<< HEAD
 *		o Endianess
+=======
+*		o Endianness
+>>>>>>> refs/remotes/origin/master
 *	Compiler specific macros
 *		o port I/O macros
 *		o type definitions
@@ -65,6 +72,7 @@
 * not agree with these terms and conditions, do not use the software.
 *
 <<<<<<< HEAD
+<<<<<<< HEAD
 * COPYRIGHT © 1994 - 1995	by AT&T.				All Rights Reserved
 * COPYRIGHT © 1996 - 2000 by Lucent Technologies.	All Rights Reserved
 * COPYRIGHT © 2001 - 2004	by Agere Systems Inc.	All Rights Reserved
@@ -73,6 +81,11 @@
 * COPYRIGHT Â© 1996 - 2000 by Lucent Technologies.	All Rights Reserved
 * COPYRIGHT Â© 2001 - 2004	by Agere Systems Inc.	All Rights Reserved
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+* COPYRIGHT Â© 1994 - 1995	by AT&T.				All Rights Reserved
+* COPYRIGHT Â© 1996 - 2000 by Lucent Technologies.	All Rights Reserved
+* COPYRIGHT Â© 2001 - 2004	by Agere Systems Inc.	All Rights Reserved
+>>>>>>> refs/remotes/origin/master
 * All rights reserved.
 *
 * Redistribution and use in source or binary forms, with or without
@@ -306,6 +319,7 @@ typedef unsigned long			hcf_32;
 #define HCF_TALLIES_HCF			0x0002	// HCF Tallies accumulated in IFB
 #define HCF_TALLIES_RESET		0x8000	// Tallies in IFB are reset when reported via hcf_get_info
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /************************************************************************************************/
@@ -796,6 +810,8 @@ extern void   OUT_PORT_STRING_16(hcf_16 port, void *addr, hcf_16 len);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /************************************************************************************************/
 /******************************************  L I N U X  *****************************************/
 /************************************************************************************************/
@@ -813,8 +829,11 @@ extern void   OUT_PORT_STRING_16(hcf_16 port, void *addr, hcf_16 len);
 #define HCF_SLEEP (HCF_CDS)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 //#define HCF_TYPE    (HCF_TYPE_HII5|HCF_TYPE_STA|HCF_TYPE_AP)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Note: Non-WARP firmware all support WPA. However the original Agere
  * linux driver does not enable WPA. Enabling WPA here causes whatever
  * preliminary WPA logic to be included, some of which may be specific
@@ -825,11 +844,15 @@ extern void   OUT_PORT_STRING_16(hcf_16 port, void *addr, hcf_16 len);
  */
 
 /* #define HCF_TYPE    (HCF_TYPE_HII5|HCF_TYPE_STA|HCF_TYPE_AP) */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef HERMES25
 #ifdef WARP
 #define HCF_TYPE    ( HCF_TYPE_WARP | HCF_TYPE_HII5 )
 #else
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define HCF_TYPE    HCF_TYPE_HII5
 #endif // WARP
@@ -837,12 +860,17 @@ extern void   OUT_PORT_STRING_16(hcf_16 port, void *addr, hcf_16 len);
 #define HCF_TYPE    HCF_TYPE_NONE
 #endif // HERMES25
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define HCF_TYPE    (HCF_TYPE_HII5 | HCF_TYPE_WPA)
 #endif /* WARP */
 #else
 #define HCF_TYPE    HCF_TYPE_WPA
 #endif /* HERMES25 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef ENABLE_DMA
 #define HCF_DMA		1
@@ -965,6 +993,7 @@ extern void   OUT_PORT_STRING_16(hcf_16 port, void *addr, hcf_16 len);
 #define  OUT_PORT_STRING_8_16(port, addr, len)	OUT_PORT_STRING_16(port, addr, len)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifndef OUTPUTDEBUGMSG
 #define OUTPUTDEBUGMSG(dprintf_exp)
@@ -977,6 +1006,8 @@ extern void   OUT_PORT_STRING_16(hcf_16 port, void *addr, hcf_16 len);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef CFG_SCAN_CHANNELS_2GHZ
 #define CFG_SCAN_CHANNELS_2GHZ 0xFCC2
 #endif /* CFG_SCAN_CHANNELS_2GHZ */
@@ -984,6 +1015,7 @@ extern void   OUT_PORT_STRING_16(hcf_16 port, void *addr, hcf_16 len);
 #define HCF_MAX_MSG 1600 //get going ;?
 #endif	// WVLAN_49
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 
@@ -2024,6 +2056,8 @@ err: /* commented here */ /*	"BSP is not defined..." */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /************************************************************************************************************/
 /***********************************                                   **************************************/
 /************************************************************************************************************/
@@ -2040,12 +2074,15 @@ err: /* commented here */ /*	"BSP is not defined..." */
 #endif // 		HCF_BIG_ENDIAN
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if ! defined	HCF_DL_ONLY
 #define 		HCF_DL_ONLY			0
 #endif // 		HCF_DL_ONLY
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if ! defined	HCF_DMA
 #define 		HCF_DMA				0
 #endif // 		HCF_DMA
@@ -2054,6 +2091,7 @@ err: /* commented here */ /*	"BSP is not defined..." */
 #define			HCF_ENCAP			HCF_ENC
 #endif //		HCF_ENCAP
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if ! defined	HCF_ENTRY
 #define			HCF_ENTRY( ifbp )
@@ -2065,6 +2103,8 @@ err: /* commented here */ /*	"BSP is not defined..." */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if ! defined	HCF_EXT
 #define			HCF_EXT				0
 #endif //		HCF_EXT
@@ -2107,6 +2147,7 @@ err: /* commented here */ /*	"BSP is not defined..." */
 #endif //	 	HCF_BIG_ENDIAN
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if				HCF_DL_ONLY
 #undef			HCF_DL_ONLY
 #define			HCF_DL_ONLY			1		//just for convenience of generating cfg_hcf_opt
@@ -2114,6 +2155,8 @@ err: /* commented here */ /*	"BSP is not defined..." */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if				HCF_DMA
 #undef			HCF_DMA
 #define			HCF_DMA				1		//just for convenience of generating cfg_hcf_opt
@@ -2290,6 +2333,7 @@ err: primary variants 1 and 2 correspond with H-I only;
 #endif //		TEXT
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if !defined	_TCHAR_DEFINED
 #define 		TCHAR	char
 #endif //		_TCHAR_DEFINED
@@ -2310,6 +2354,11 @@ err: HCF_INT_OFF is obsolete;
 /*********************** C O N F L I C T   D E T E C T I O N  &  R E S O L U T I O N ************************/
 /************************************************************************************************************/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/************************************************************************************************************/
+/*********************** C O N F L I C T   D E T E C T I O N  &  R E S O L U T I O N ************************/
+/************************************************************************************************************/
+>>>>>>> refs/remotes/origin/master
 #if HCF_ALIGN != 1 && HCF_ALIGN != 2 && HCF_ALIGN != 4 && HCF_ALIGN != 8
 err: invalid value for HCF_ALIGN;
 #endif // HCF_ALIGN
@@ -2328,12 +2377,15 @@ err: invalid value for HCF_BIG_ENDIAN;
 #endif // HCF_BIG_ENDIAN
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if HCF_DL_ONLY != 0 && HCF_DL_ONLY != 1
 err: invalid value for HCF_DL_ONLY;
 #endif // HCF_DL_ONLY
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if HCF_DMA != 0 && HCF_DMA != 1
 err: invalid value for HCF_DMA;
 #endif // HCF_DMA

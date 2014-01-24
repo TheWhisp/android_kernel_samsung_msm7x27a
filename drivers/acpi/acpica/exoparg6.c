@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Module Name: exoparg6 - AML execution - opcodes with 6 arguments
@@ -7,10 +10,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -124,7 +131,10 @@ acpi_ex_do_match(u32 match_op,
 		break;
 
 	case MATCH_MEQ:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * True if equal: (P[i] == M)
 		 * Change to:     (M == P[i])
@@ -138,7 +148,10 @@ acpi_ex_do_match(u32 match_op,
 		break;
 
 	case MATCH_MLE:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * True if less than or equal: (P[i] <= M) (P[i] not_greater than M)
 		 * Change to:                  (M >= P[i]) (M not_less than P[i])
@@ -153,7 +166,10 @@ acpi_ex_do_match(u32 match_op,
 		break;
 
 	case MATCH_MLT:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * True if less than: (P[i] < M)
 		 * Change to:         (M > P[i])
@@ -167,7 +183,10 @@ acpi_ex_do_match(u32 match_op,
 		break;
 
 	case MATCH_MGE:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * True if greater than or equal: (P[i] >= M) (P[i] not_less than M)
 		 * Change to:                     (M <= P[i]) (M not_greater than P[i])
@@ -182,7 +201,10 @@ acpi_ex_do_match(u32 match_op,
 		break;
 
 	case MATCH_MGT:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * True if greater than: (P[i] > M)
 		 * Change to:            (M < P[i])
@@ -202,7 +224,11 @@ acpi_ex_do_match(u32 match_op,
 		return (FALSE);
 	}
 
+<<<<<<< HEAD
 	return logical_result;
+=======
+	return (logical_result);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*******************************************************************************
@@ -273,7 +299,11 @@ acpi_status acpi_ex_opcode_6A_0T_1R(struct acpi_walk_state * walk_state)
 		 * and the next should be examined.
 		 *
 		 * Upon finding a match, the loop will terminate via "break" at
+<<<<<<< HEAD
 		 * the bottom.  If it terminates "normally", match_value will be
+=======
+		 * the bottom. If it terminates "normally", match_value will be
+>>>>>>> refs/remotes/origin/master
 		 * ACPI_UINT64_MAX (Ones) (its initial value) indicating that no
 		 * match was found.
 		 */
@@ -324,7 +354,11 @@ acpi_status acpi_ex_opcode_6A_0T_1R(struct acpi_walk_state * walk_state)
 		goto cleanup;
 	}
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 
 	/* Delete return object on error */
 

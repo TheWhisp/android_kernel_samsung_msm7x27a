@@ -14,7 +14,10 @@
 #include <linux/v4l2-mediabus.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Parallel flags */
 /*
  * Can the client run in master or in slave mode. By "Master mode" an operation
@@ -42,6 +45,12 @@
 #define V4L2_MBUS_FIELD_EVEN_HIGH		(1 << 10)
 /* FIELD = 1/0 - Field1 (odd)/Field2 (even) */
 #define V4L2_MBUS_FIELD_EVEN_LOW		(1 << 11)
+<<<<<<< HEAD
+=======
+/* Active state of Sync-on-green (SoG) signal, 0/1 for LOW/HIGH respectively. */
+#define V4L2_MBUS_VIDEO_SOG_ACTIVE_HIGH	(1 << 12)
+#define V4L2_MBUS_VIDEO_SOG_ACTIVE_LOW		(1 << 13)
+>>>>>>> refs/remotes/origin/master
 
 /* Serial flags */
 /* How many lanes the client can use */
@@ -86,7 +95,10 @@ struct v4l2_mbus_config {
 	unsigned int flags;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void v4l2_fill_pix_format(struct v4l2_pix_format *pix_fmt,
 				const struct v4l2_mbus_framefmt *mbus_fmt)
 {

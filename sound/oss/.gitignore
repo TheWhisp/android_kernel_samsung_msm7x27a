@@ -1,4 +1,7 @@
 #Ignore generated files
+<<<<<<< HEAD
 maui_boot.h
+=======
+>>>>>>> refs/remotes/origin/master
 pss_boot.h
 trix_boot.h

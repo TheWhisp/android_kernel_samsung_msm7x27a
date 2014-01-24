@@ -2,7 +2,11 @@
  * Basic EISA bus support for the SGI Indigo-2.
  *
  * (C) 2002 Pascal Dameme <netinet@freesurf.fr>
+<<<<<<< HEAD
  *      and Marc Zyngier <mzyngier@freesurf.fr>
+=======
+ *	and Marc Zyngier <mzyngier@freesurf.fr>
+>>>>>>> refs/remotes/origin/master
  *
  * This code is released under both the GPL version 2 and BSD
  * licenses.  Either license may be used.
@@ -40,6 +44,7 @@
 
 /* I2 has four EISA slots. */
 #define IP22_EISA_MAX_SLOTS	  4
+<<<<<<< HEAD
 #define EISA_MAX_IRQ             16
 
 #define EIU_MODE_REG     0x0001ffc0
@@ -47,6 +52,15 @@
 #define EIU_PREMPT_REG   0x0001ffc8
 #define EIU_QUIET_REG    0x0001ffcc
 #define EIU_INTRPT_ACK   0x00010004
+=======
+#define EISA_MAX_IRQ		 16
+
+#define EIU_MODE_REG	 0x0001ffc0
+#define EIU_STAT_REG	 0x0001ffc4
+#define EIU_PREMPT_REG	 0x0001ffc8
+#define EIU_QUIET_REG	 0x0001ffcc
+#define EIU_INTRPT_ACK	 0x00010004
+>>>>>>> refs/remotes/origin/master
 
 static char __init *decode_eisa_sig(unsigned long addr)
 {
@@ -73,12 +87,19 @@ static char __init *decode_eisa_sig(unsigned long addr)
 
 static irqreturn_t ip22_eisa_intr(int irq, void *dev_id)
 {
+<<<<<<< HEAD
 	u8 eisa_irq;
 	u8 dma1, dma2;
 
 	eisa_irq = inb(EIU_INTRPT_ACK);
 	dma1 = inb(EISA_DMA1_STATUS);
 	dma2 = inb(EISA_DMA2_STATUS);
+=======
+	u8 eisa_irq = inb(EIU_INTRPT_ACK);
+
+	inb(EISA_DMA1_STATUS);
+	inb(EISA_DMA2_STATUS);
+>>>>>>> refs/remotes/origin/master
 
 	if (eisa_irq < EISA_MAX_IRQ) {
 		do_IRQ(eisa_irq);

@@ -26,6 +26,7 @@
 #include <linux/bitops.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/io.h>
 #include <asm/smp.h>
@@ -35,6 +36,11 @@
 #include <asm/io.h>
 #include <asm/smp.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+#include <asm/io.h>
+#include <asm/smp.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/pgalloc.h>
 #include <asm/delay.h>

@@ -20,9 +20,13 @@
 #include <linux/device.h>
 #include <linux/kallsyms.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mutex.h>
 #include <linux/pm.h>
 #include <linux/pm_runtime.h>
@@ -31,16 +35,26 @@
 #include <linux/sched.h>
 #include <linux/async.h>
 #include <linux/suspend.h>
+<<<<<<< HEAD
+=======
+#include <trace/events/power.h>
+#include <linux/cpuidle.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/timer.h>
 
 #include "../base.h"
 #include "power.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 typedef int (*pm_callback_t)(struct device *);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+typedef int (*pm_callback_t)(struct device *);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The entries in the dpm_list list are in a depth first order, simply
  * because children are guaranteed to be discovered after parents, and
@@ -52,6 +66,7 @@ typedef int (*pm_callback_t)(struct device *);
  */
 
 LIST_HEAD(dpm_list);
+<<<<<<< HEAD
 LIST_HEAD(dpm_prepared_list);
 LIST_HEAD(dpm_suspended_list);
 <<<<<<< HEAD
@@ -79,12 +94,55 @@ static int async_error;
  * @dev: Device object being initialized.
  */
 void device_pm_init(struct device *dev)
+=======
+static LIST_HEAD(dpm_prepared_list);
+static LIST_HEAD(dpm_suspended_list);
+static LIST_HEAD(dpm_late_early_list);
+static LIST_HEAD(dpm_noirq_list);
+
+struct suspend_stats suspend_stats;
+static DEFINE_MUTEX(dpm_list_mtx);
+static pm_message_t pm_transition;
+
+static int async_error;
+
+static char *pm_verb(int event)
+{
+	switch (event) {
+	case PM_EVENT_SUSPEND:
+		return "suspend";
+	case PM_EVENT_RESUME:
+		return "resume";
+	case PM_EVENT_FREEZE:
+		return "freeze";
+	case PM_EVENT_QUIESCE:
+		return "quiesce";
+	case PM_EVENT_HIBERNATE:
+		return "hibernate";
+	case PM_EVENT_THAW:
+		return "thaw";
+	case PM_EVENT_RESTORE:
+		return "restore";
+	case PM_EVENT_RECOVER:
+		return "recover";
+	default:
+		return "(unknown PM event)";
+	}
+}
+
+/**
+ * device_pm_sleep_init - Initialize system suspend-related device fields.
+ * @dev: Device object being initialized.
+ */
+void device_pm_sleep_init(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	dev->power.is_prepared = false;
 	dev->power.is_suspended = false;
 	init_completion(&dev->power.completion);
 	complete_all(&dev->power.completion);
 	dev->power.wakeup = NULL;
+<<<<<<< HEAD
 	spin_lock_init(&dev->power.lock);
 	pm_runtime_init(dev);
 	INIT_LIST_HEAD(&dev->power.entry);
@@ -92,6 +150,9 @@ void device_pm_init(struct device *dev)
 =======
 	dev->power.power_state = PMSG_INVALID;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_LIST_HEAD(&dev->power.entry);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -124,9 +185,12 @@ void device_pm_add(struct device *dev)
 			dev_name(dev->parent));
 	list_add_tail(&dev->power.entry, &dpm_list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dev_pm_qos_constraints_init(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&dpm_list_mtx);
 }
 
@@ -141,9 +205,12 @@ void device_pm_remove(struct device *dev)
 	complete_all(&dev->power.completion);
 	mutex_lock(&dpm_list_mtx);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dev_pm_qos_constraints_destroy(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	list_del_init(&dev->power.entry);
 	mutex_unlock(&dpm_list_mtx);
 	device_wakeup_disable(dev);
@@ -193,6 +260,7 @@ static ktime_t initcall_debug_start(struct device *dev)
 {
 	ktime_t calltime = ktime_set(0, 0);
 
+<<<<<<< HEAD
 	if (initcall_debug) {
 <<<<<<< HEAD
 		pr_info("calling  %s+ @ %i\n",
@@ -202,6 +270,12 @@ static ktime_t initcall_debug_start(struct device *dev)
 			dev_name(dev), task_pid_nr(current),
 			dev->parent ? dev_name(dev->parent) : "none");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pm_print_times_enabled) {
+		pr_info("calling  %s+ @ %i, parent: %s\n",
+			dev_name(dev), task_pid_nr(current),
+			dev->parent ? dev_name(dev->parent) : "none");
+>>>>>>> refs/remotes/origin/master
 		calltime = ktime_get();
 	}
 
@@ -209,6 +283,7 @@ static ktime_t initcall_debug_start(struct device *dev)
 }
 
 static void initcall_debug_report(struct device *dev, ktime_t calltime,
+<<<<<<< HEAD
 				  int error)
 {
 	ktime_t delta, rettime;
@@ -219,6 +294,23 @@ static void initcall_debug_report(struct device *dev, ktime_t calltime,
 		pr_info("call %s+ returned %d after %Ld usecs\n", dev_name(dev),
 			error, (unsigned long long)ktime_to_ns(delta) >> 10);
 	}
+=======
+				  int error, pm_message_t state, char *info)
+{
+	ktime_t rettime;
+	s64 nsecs;
+
+	rettime = ktime_get();
+	nsecs = (s64) ktime_to_ns(ktime_sub(rettime, calltime));
+
+	if (pm_print_times_enabled) {
+		pr_info("call %s+ returned %d after %Ld usecs\n", dev_name(dev),
+			error, (unsigned long long)nsecs >> 10);
+	}
+
+	trace_device_pm_report_time(dev, info, nsecs, pm_verb(state.event),
+				    error);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -247,6 +339,7 @@ static void dpm_wait_for_children(struct device *dev, bool async)
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * pm_op - Execute the PM operation appropriate for given PM event.
  * @dev: Device to handle.
@@ -277,6 +370,8 @@ static int pm_op(struct device *dev,
 		}
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * pm_op - Return the PM operation appropriate for given PM event.
  * @ops: PM operations to choose from.
  * @state: PM transition of the system being carried out.
@@ -289,11 +384,15 @@ static pm_callback_t pm_op(const struct dev_pm_ops *ops, pm_message_t state)
 		return ops->suspend;
 	case PM_EVENT_RESUME:
 		return ops->resume;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_SUSPEND */
 #ifdef CONFIG_HIBERNATE_CALLBACKS
 	case PM_EVENT_FREEZE:
 	case PM_EVENT_QUIESCE:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (ops->freeze) {
 			error = ops->freeze(dev);
@@ -333,6 +432,8 @@ static pm_callback_t pm_op(const struct dev_pm_ops *ops, pm_message_t state)
  * pm_noirq_op - Execute the PM operation appropriate for given PM event.
  * @dev: Device to handle.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return ops->freeze;
 	case PM_EVENT_HIBERNATE:
 		return ops->poweroff;
@@ -384,13 +485,17 @@ static pm_callback_t pm_late_early_op(const struct dev_pm_ops *ops,
 
 /**
  * pm_noirq_op - Return the PM operation appropriate for given PM event.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @ops: PM operations to choose from.
  * @state: PM transition of the system being carried out.
  *
  * The driver of @dev will not receive interrupts while this function is being
  * executed.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int pm_noirq_op(struct device *dev,
 			const struct dev_pm_ops *ops,
@@ -421,6 +526,8 @@ static int pm_noirq_op(struct device *dev,
 		}
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static pm_callback_t pm_noirq_op(const struct dev_pm_ops *ops, pm_message_t state)
 {
 	switch (state.event) {
@@ -429,11 +536,15 @@ static pm_callback_t pm_noirq_op(const struct dev_pm_ops *ops, pm_message_t stat
 		return ops->suspend_noirq;
 	case PM_EVENT_RESUME:
 		return ops->resume_noirq;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_SUSPEND */
 #ifdef CONFIG_HIBERNATE_CALLBACKS
 	case PM_EVENT_FREEZE:
 	case PM_EVENT_QUIESCE:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (ops->freeze_noirq) {
 			error = ops->freeze_noirq(dev);
@@ -474,6 +585,8 @@ static pm_callback_t pm_noirq_op(const struct dev_pm_ops *ops, pm_message_t stat
 
 	return error;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return ops->freeze_noirq;
 	case PM_EVENT_HIBERNATE:
 		return ops->poweroff_noirq;
@@ -486,6 +599,7 @@ static pm_callback_t pm_noirq_op(const struct dev_pm_ops *ops, pm_message_t stat
 	}
 
 	return NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -511,6 +625,8 @@ static char *pm_verb(int event)
 	default:
 		return "(unknown PM event)";
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void pm_dev_dbg(struct device *dev, pm_message_t state, char *info)
@@ -545,7 +661,10 @@ static void dpm_show_time(ktime_t starttime, pm_message_t state, char *info)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int dpm_run_callback(pm_callback_t cb, struct device *dev,
 			    pm_message_t state, char *info)
 {
@@ -561,12 +680,84 @@ static int dpm_run_callback(pm_callback_t cb, struct device *dev,
 	error = cb(dev);
 	suspend_report_result(cb, error);
 
+<<<<<<< HEAD
 	initcall_debug_report(dev, calltime, error);
+=======
+	initcall_debug_report(dev, calltime, error, state, info);
+>>>>>>> refs/remotes/origin/master
 
 	return error;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_DPM_WATCHDOG
+struct dpm_watchdog {
+	struct device		*dev;
+	struct task_struct	*tsk;
+	struct timer_list	timer;
+};
+
+#define DECLARE_DPM_WATCHDOG_ON_STACK(wd) \
+	struct dpm_watchdog wd
+
+/**
+ * dpm_watchdog_handler - Driver suspend / resume watchdog handler.
+ * @data: Watchdog object address.
+ *
+ * Called when a driver has timed out suspending or resuming.
+ * There's not much we can do here to recover so panic() to
+ * capture a crash-dump in pstore.
+ */
+static void dpm_watchdog_handler(unsigned long data)
+{
+	struct dpm_watchdog *wd = (void *)data;
+
+	dev_emerg(wd->dev, "**** DPM device timeout ****\n");
+	show_stack(wd->tsk, NULL);
+	panic("%s %s: unrecoverable failure\n",
+		dev_driver_string(wd->dev), dev_name(wd->dev));
+}
+
+/**
+ * dpm_watchdog_set - Enable pm watchdog for given device.
+ * @wd: Watchdog. Must be allocated on the stack.
+ * @dev: Device to handle.
+ */
+static void dpm_watchdog_set(struct dpm_watchdog *wd, struct device *dev)
+{
+	struct timer_list *timer = &wd->timer;
+
+	wd->dev = dev;
+	wd->tsk = current;
+
+	init_timer_on_stack(timer);
+	/* use same timeout value for both suspend and resume */
+	timer->expires = jiffies + HZ * CONFIG_DPM_WATCHDOG_TIMEOUT;
+	timer->function = dpm_watchdog_handler;
+	timer->data = (unsigned long)wd;
+	add_timer(timer);
+}
+
+/**
+ * dpm_watchdog_clear - Disable suspend/resume watchdog.
+ * @wd: Watchdog to disable.
+ */
+static void dpm_watchdog_clear(struct dpm_watchdog *wd)
+{
+	struct timer_list *timer = &wd->timer;
+
+	del_timer_sync(timer);
+	destroy_timer_on_stack(timer);
+}
+#else
+#define DECLARE_DPM_WATCHDOG_ON_STACK(wd)
+#define dpm_watchdog_set(x, y)
+#define dpm_watchdog_clear(x)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*------------------------- Resume routines -------------------------*/
 
 /**
@@ -580,15 +771,21 @@ static int dpm_run_callback(pm_callback_t cb, struct device *dev,
 static int device_resume_noirq(struct device *dev, pm_message_t state)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pm_callback_t callback = NULL;
 	char *info = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_callback_t callback = NULL;
+	char *info = NULL;
+>>>>>>> refs/remotes/origin/master
 	int error = 0;
 
 	TRACE_DEVICE(dev);
 	TRACE_RESUME(0);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (dev->pwr_domain) {
 		pm_dev_dbg(dev, state, "EARLY power domain ");
@@ -605,6 +802,11 @@ static int device_resume_noirq(struct device *dev, pm_message_t state)
 	}
 
 =======
+=======
+	if (dev->power.syscore)
+		goto Out;
+
+>>>>>>> refs/remotes/origin/master
 	if (dev->pm_domain) {
 		info = "noirq power domain ";
 		callback = pm_noirq_op(&dev->pm_domain->ops, state);
@@ -626,12 +828,17 @@ static int device_resume_noirq(struct device *dev, pm_message_t state)
 
 	error = dpm_run_callback(callback, dev, state, info);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ Out:
+>>>>>>> refs/remotes/origin/master
 	TRACE_RESUME(error);
 	return error;
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * dpm_resume_noirq - Execute "early resume" callbacks for non-sysdev devices.
  * @state: PM transition of the system being carried out.
@@ -641,6 +848,8 @@ static int device_resume_noirq(struct device *dev, pm_message_t state)
  */
 void dpm_resume_noirq(pm_message_t state)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * dpm_resume_noirq - Execute "noirq resume" callbacks for all devices.
  * @state: PM transition of the system being carried out.
  *
@@ -648,7 +857,10 @@ void dpm_resume_noirq(pm_message_t state)
  * enable device drivers to receive interrupts.
  */
 static void dpm_resume_noirq(pm_message_t state)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	ktime_t starttime = ktime_get();
 
@@ -659,6 +871,7 @@ static void dpm_resume_noirq(pm_message_t state)
 
 		get_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		list_move_tail(&dev->power.entry, &dpm_suspended_list);
 		mutex_unlock(&dpm_list_mtx);
 
@@ -666,6 +879,8 @@ static void dpm_resume_noirq(pm_message_t state)
 		if (error)
 			pm_dev_err(dev, state, " early", error);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		list_move_tail(&dev->power.entry, &dpm_late_early_list);
 		mutex_unlock(&dpm_list_mtx);
 
@@ -676,12 +891,16 @@ static void dpm_resume_noirq(pm_message_t state)
 			dpm_save_failed_dev(dev_name(dev));
 			pm_dev_err(dev, state, " noirq", error);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		mutex_lock(&dpm_list_mtx);
 		put_device(dev);
 	}
 	mutex_unlock(&dpm_list_mtx);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dpm_show_time(starttime, state, "early");
 	resume_device_irqs();
@@ -708,6 +927,11 @@ static int legacy_resume(struct device *dev, int (*cb)(struct device *dev))
 =======
 	dpm_show_time(starttime, state, "noirq");
 	resume_device_irqs();
+=======
+	dpm_show_time(starttime, state, "noirq");
+	resume_device_irqs();
+	cpuidle_resume();
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -726,6 +950,12 @@ static int device_resume_early(struct device *dev, pm_message_t state)
 	TRACE_DEVICE(dev);
 	TRACE_RESUME(0);
 
+<<<<<<< HEAD
+=======
+	if (dev->power.syscore)
+		goto Out;
+
+>>>>>>> refs/remotes/origin/master
 	if (dev->pm_domain) {
 		info = "early power domain ";
 		callback = pm_late_early_op(&dev->pm_domain->ops, state);
@@ -747,14 +977,24 @@ static int device_resume_early(struct device *dev, pm_message_t state)
 
 	error = dpm_run_callback(callback, dev, state, info);
 
+<<<<<<< HEAD
 	TRACE_RESUME(error);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ Out:
+	TRACE_RESUME(error);
+
+	pm_runtime_enable(dev);
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * dpm_resume_early - Execute "early resume" callbacks for all devices.
  * @state: PM transition of the system being carried out.
  */
@@ -798,7 +1038,10 @@ void dpm_resume_start(pm_message_t state)
 EXPORT_SYMBOL_GPL(dpm_resume_start);
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * device_resume - Execute "resume" callbacks for given device.
  * @dev: Device to handle.
  * @state: PM transition of the system being carried out.
@@ -807,6 +1050,7 @@ EXPORT_SYMBOL_GPL(dpm_resume_start);
 static int device_resume(struct device *dev, pm_message_t state, bool async)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int error = 0;
 =======
 	pm_callback_t callback = NULL;
@@ -814,11 +1058,25 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
 	int error = 0;
 	bool put = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_callback_t callback = NULL;
+	char *info = NULL;
+	int error = 0;
+	DECLARE_DPM_WATCHDOG_ON_STACK(wd);
+>>>>>>> refs/remotes/origin/master
 
 	TRACE_DEVICE(dev);
 	TRACE_RESUME(0);
 
+<<<<<<< HEAD
 	dpm_wait(dev->parent, async);
+=======
+	if (dev->power.syscore)
+		goto Complete;
+
+	dpm_wait(dev->parent, async);
+	dpm_watchdog_set(&wd, dev);
+>>>>>>> refs/remotes/origin/master
 	device_lock(dev);
 
 	/*
@@ -830,6 +1088,7 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
 	if (!dev->power.is_suspended)
 		goto Unlock;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (dev->pwr_domain) {
 		pm_dev_dbg(dev, state, "power domain ");
@@ -845,6 +1104,8 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
 	pm_runtime_enable(dev);
 	put = true;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (dev->pm_domain) {
 		info = "power domain ";
 		callback = pm_op(&dev->pm_domain->ops, state);
@@ -855,11 +1116,15 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
 		info = "type ";
 		callback = pm_op(dev->type->pm, state);
 		goto Driver;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (dev->class) {
 		if (dev->class->pm) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			pm_dev_dbg(dev, state, "class ");
 			error = pm_op(dev, dev->class->pm, state);
@@ -868,19 +1133,25 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
 			pm_dev_dbg(dev, state, "legacy class ");
 			error = legacy_resume(dev, dev->class->resume);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			info = "class ";
 			callback = pm_op(dev->class->pm, state);
 			goto Driver;
 		} else if (dev->class->resume) {
 			info = "legacy class ";
 			callback = dev->class->resume;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			goto End;
 		}
 	}
 
 	if (dev->bus) {
 		if (dev->bus->pm) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			pm_dev_dbg(dev, state, "");
 			error = pm_op(dev, dev->bus->pm, state);
@@ -892,6 +1163,8 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
 
  End:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			info = "bus ";
 			callback = pm_op(dev->bus->pm, state);
 		} else if (dev->bus->resume) {
@@ -909,11 +1182,15 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
 
  End:
 	error = dpm_run_callback(callback, dev, state, info);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->power.is_suspended = false;
 
  Unlock:
 	device_unlock(dev);
+<<<<<<< HEAD
 	complete_all(&dev->power.completion);
 
 	TRACE_RESUME(error);
@@ -924,6 +1201,15 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
 		pm_runtime_put_sync(dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dpm_watchdog_clear(&wd);
+
+ Complete:
+	complete_all(&dev->power.completion);
+
+	TRACE_RESUME(error);
+
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -945,6 +1231,7 @@ static bool is_async(struct device *dev)
 }
 
 /**
+<<<<<<< HEAD
  *	dpm_drv_timeout - Driver suspend / resume watchdog handler
  *	@data: struct device which timed out
  *
@@ -969,6 +1256,8 @@ static void dpm_drv_timeout(unsigned long data)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * dpm_resume - Execute "resume" callbacks for non-sysdev devices.
  * @state: PM transition of the system being carried out.
  *
@@ -987,7 +1276,11 @@ void dpm_resume(pm_message_t state)
 	async_error = 0;
 
 	list_for_each_entry(dev, &dpm_suspended_list, power.entry) {
+<<<<<<< HEAD
 		INIT_COMPLETION(dev->power.completion);
+=======
+		reinit_completion(&dev->power.completion);
+>>>>>>> refs/remotes/origin/master
 		if (is_async(dev)) {
 			get_device(dev);
 			async_schedule(async_resume, dev);
@@ -1004,16 +1297,22 @@ void dpm_resume(pm_message_t state)
 
 			error = device_resume(dev, state, false);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (error)
 				pm_dev_err(dev, state, "", error);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (error) {
 				suspend_stats.failed_resume++;
 				dpm_save_failed_step(SUSPEND_RESUME);
 				dpm_save_failed_dev(dev_name(dev));
 				pm_dev_err(dev, state, "", error);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			mutex_lock(&dpm_list_mtx);
 		}
@@ -1033,6 +1332,7 @@ void dpm_resume(pm_message_t state)
  */
 static void device_complete(struct device *dev, pm_message_t state)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	device_lock(dev);
 
@@ -1056,6 +1356,14 @@ static void device_complete(struct device *dev, pm_message_t state)
 	void (*callback)(struct device *) = NULL;
 	char *info = NULL;
 
+=======
+	void (*callback)(struct device *) = NULL;
+	char *info = NULL;
+
+	if (dev->power.syscore)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	device_lock(dev);
 
 	if (dev->pm_domain) {
@@ -1080,10 +1388,18 @@ static void device_complete(struct device *dev, pm_message_t state)
 	if (callback) {
 		pm_dev_dbg(dev, state, info);
 		callback(dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	device_unlock(dev);
+=======
+	}
+
+	device_unlock(dev);
+
+	pm_runtime_put(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1167,6 +1483,7 @@ static pm_message_t resume_event(pm_message_t sleep_state)
 static int device_suspend_noirq(struct device *dev, pm_message_t state)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int error;
 
 	if (dev->pwr_domain) {
@@ -1200,6 +1517,14 @@ static int device_suspend_noirq(struct device *dev, pm_message_t state)
 	pm_callback_t callback = NULL;
 	char *info = NULL;
 
+=======
+	pm_callback_t callback = NULL;
+	char *info = NULL;
+
+	if (dev->power.syscore)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (dev->pm_domain) {
 		info = "noirq power domain ";
 		callback = pm_noirq_op(&dev->pm_domain->ops, state);
@@ -1224,21 +1549,29 @@ static int device_suspend_noirq(struct device *dev, pm_message_t state)
 
 /**
  * dpm_suspend_noirq - Execute "noirq suspend" callbacks for all devices.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @state: PM transition of the system being carried out.
  *
  * Prevent device drivers from receiving interrupts and call the "noirq" suspend
  * handlers for all non-sysdev devices.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int dpm_suspend_noirq(pm_message_t state)
 =======
 static int dpm_suspend_noirq(pm_message_t state)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int dpm_suspend_noirq(pm_message_t state)
+>>>>>>> refs/remotes/origin/master
 {
 	ktime_t starttime = ktime_get();
 	int error = 0;
 
+<<<<<<< HEAD
 	suspend_device_irqs();
 	mutex_lock(&dpm_list_mtx);
 <<<<<<< HEAD
@@ -1248,6 +1581,13 @@ static int dpm_suspend_noirq(pm_message_t state)
 	while (!list_empty(&dpm_late_early_list)) {
 		struct device *dev = to_device(dpm_late_early_list.prev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpuidle_pause();
+	suspend_device_irqs();
+	mutex_lock(&dpm_list_mtx);
+	while (!list_empty(&dpm_late_early_list)) {
+		struct device *dev = to_device(dpm_late_early_list.prev);
+>>>>>>> refs/remotes/origin/master
 
 		get_device(dev);
 		mutex_unlock(&dpm_list_mtx);
@@ -1257,30 +1597,47 @@ static int dpm_suspend_noirq(pm_message_t state)
 		mutex_lock(&dpm_list_mtx);
 		if (error) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pm_dev_err(dev, state, " late", error);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			pm_dev_err(dev, state, " noirq", error);
 			suspend_stats.failed_suspend_noirq++;
 			dpm_save_failed_step(SUSPEND_SUSPEND_NOIRQ);
 			dpm_save_failed_dev(dev_name(dev));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			put_device(dev);
 			break;
 		}
 		if (!list_empty(&dev->power.entry))
 			list_move(&dev->power.entry, &dpm_noirq_list);
 		put_device(dev);
+<<<<<<< HEAD
+=======
+
+		if (pm_wakeup_pending()) {
+			error = -EBUSY;
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&dpm_list_mtx);
 	if (error)
 		dpm_resume_noirq(resume_event(state));
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dpm_show_time(starttime, state, "late");
 	return error;
 }
 EXPORT_SYMBOL_GPL(dpm_suspend_noirq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dpm_show_time(starttime, state, "noirq");
 	return error;
 }
@@ -1297,6 +1654,14 @@ static int device_suspend_late(struct device *dev, pm_message_t state)
 	pm_callback_t callback = NULL;
 	char *info = NULL;
 
+<<<<<<< HEAD
+=======
+	__pm_runtime_disable(dev, false);
+
+	if (dev->power.syscore)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (dev->pm_domain) {
 		info = "late power domain ";
 		callback = pm_late_early_op(&dev->pm_domain->ops, state);
@@ -1349,6 +1714,14 @@ static int dpm_suspend_late(pm_message_t state)
 		if (!list_empty(&dev->power.entry))
 			list_move(&dev->power.entry, &dpm_late_early_list);
 		put_device(dev);
+<<<<<<< HEAD
+=======
+
+		if (pm_wakeup_pending()) {
+			error = -EBUSY;
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&dpm_list_mtx);
 	if (error)
@@ -1378,7 +1751,10 @@ int dpm_suspend_end(pm_message_t state)
 	return 0;
 }
 EXPORT_SYMBOL_GPL(dpm_suspend_end);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * legacy_suspend - Execute a legacy (bus or class) suspend callback for device.
@@ -1387,7 +1763,12 @@ EXPORT_SYMBOL_GPL(dpm_suspend_end);
  * @cb: Suspend callback to execute.
  */
 static int legacy_suspend(struct device *dev, pm_message_t state,
+<<<<<<< HEAD
 			  int (*cb)(struct device *dev, pm_message_t state))
+=======
+			  int (*cb)(struct device *dev, pm_message_t state),
+			  char *info)
+>>>>>>> refs/remotes/origin/master
 {
 	int error;
 	ktime_t calltime;
@@ -1397,7 +1778,11 @@ static int legacy_suspend(struct device *dev, pm_message_t state,
 	error = cb(dev, state);
 	suspend_report_result(cb, error);
 
+<<<<<<< HEAD
 	initcall_debug_report(dev, calltime, error);
+=======
+	initcall_debug_report(dev, calltime, error, state, info);
+>>>>>>> refs/remotes/origin/master
 
 	return error;
 }
@@ -1410,6 +1795,7 @@ static int legacy_suspend(struct device *dev, pm_message_t state,
  */
 static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	pm_callback_t callback = NULL;
@@ -1427,15 +1813,37 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 		goto Complete;
 
 	pm_runtime_get_noresume(dev);
+=======
+	pm_callback_t callback = NULL;
+	char *info = NULL;
+	int error = 0;
+	DECLARE_DPM_WATCHDOG_ON_STACK(wd);
+
+	dpm_wait_for_children(dev, async);
+
+	if (async_error)
+		goto Complete;
+
+	/*
+	 * If a device configured to wake up the system from sleep states
+	 * has been suspended at run time and there's a resume request pending
+	 * for it, this is equivalent to the device signaling wakeup, so the
+	 * system suspend operation should be aborted.
+	 */
+>>>>>>> refs/remotes/origin/master
 	if (pm_runtime_barrier(dev) && device_may_wakeup(dev))
 		pm_wakeup_event(dev, 0);
 
 	if (pm_wakeup_pending()) {
+<<<<<<< HEAD
 		pm_runtime_put_sync(dev);
+=======
+>>>>>>> refs/remotes/origin/master
 		async_error = -EBUSY;
 		goto Complete;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	data.dev = dev;
 	data.tsk = get_current();
@@ -1467,6 +1875,14 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 		error = pm_op(dev, dev->type->pm, state);
 		goto End;
 =======
+=======
+	if (dev->power.syscore)
+		goto Complete;
+
+	dpm_watchdog_set(&wd, dev);
+	device_lock(dev);
+
+>>>>>>> refs/remotes/origin/master
 	if (dev->pm_domain) {
 		info = "power domain ";
 		callback = pm_op(&dev->pm_domain->ops, state);
@@ -1477,11 +1893,15 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 		info = "type ";
 		callback = pm_op(dev->type->pm, state);
 		goto Run;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (dev->class) {
 		if (dev->class->pm) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			pm_dev_dbg(dev, state, "class ");
 			error = pm_op(dev, dev->class->pm, state);
@@ -1494,12 +1914,22 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 		} else if (dev->class->suspend) {
 			pm_dev_dbg(dev, state, "legacy class ");
 			error = legacy_suspend(dev, state, dev->class->suspend);
+=======
+			info = "class ";
+			callback = pm_op(dev->class->pm, state);
+			goto Run;
+		} else if (dev->class->suspend) {
+			pm_dev_dbg(dev, state, "legacy class ");
+			error = legacy_suspend(dev, state, dev->class->suspend,
+						"legacy class ");
+>>>>>>> refs/remotes/origin/master
 			goto End;
 		}
 	}
 
 	if (dev->bus) {
 		if (dev->bus->pm) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			pm_dev_dbg(dev, state, "");
 			error = pm_op(dev, dev->bus->pm, state);
@@ -1514,11 +1944,18 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 
  Unlock:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			info = "bus ";
 			callback = pm_op(dev->bus->pm, state);
 		} else if (dev->bus->suspend) {
 			pm_dev_dbg(dev, state, "legacy bus ");
+<<<<<<< HEAD
 			error = legacy_suspend(dev, state, dev->bus->suspend);
+=======
+			error = legacy_suspend(dev, state, dev->bus->suspend,
+						"legacy bus ");
+>>>>>>> refs/remotes/origin/master
 			goto End;
 		}
 	}
@@ -1539,6 +1976,7 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 			dev->parent->power.wakeup_path = true;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	device_unlock(dev);
 
@@ -1561,6 +1999,15 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 		__pm_runtime_disable(dev, false);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	device_unlock(dev);
+	dpm_watchdog_clear(&wd);
+
+ Complete:
+	complete_all(&dev->power.completion);
+	if (error)
+		async_error = error;
+>>>>>>> refs/remotes/origin/master
 
 	return error;
 }
@@ -1572,21 +2019,31 @@ static void async_suspend(void *data, async_cookie_t cookie)
 
 	error = __device_suspend(dev, pm_transition, true);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (error)
 		pm_dev_err(dev, pm_transition, " async", error);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (error) {
 		dpm_save_failed_dev(dev_name(dev));
 		pm_dev_err(dev, pm_transition, " async", error);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	put_device(dev);
 }
 
 static int device_suspend(struct device *dev)
 {
+<<<<<<< HEAD
 	INIT_COMPLETION(dev->power.completion);
+=======
+	reinit_completion(&dev->power.completion);
+>>>>>>> refs/remotes/origin/master
 
 	if (pm_async_enabled && dev->power.async_suspend) {
 		get_device(dev);
@@ -1623,9 +2080,13 @@ int dpm_suspend(pm_message_t state)
 		if (error) {
 			pm_dev_err(dev, state, "", error);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			dpm_save_failed_dev(dev_name(dev));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dpm_save_failed_dev(dev_name(dev));
+>>>>>>> refs/remotes/origin/master
 			put_device(dev);
 			break;
 		}
@@ -1640,13 +2101,19 @@ int dpm_suspend(pm_message_t state)
 	if (!error)
 		error = async_error;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!error)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (error) {
 		suspend_stats.failed_suspend++;
 		dpm_save_failed_step(SUSPEND_SUSPEND);
 	} else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dpm_show_time(starttime, state, NULL);
 	return error;
 }
@@ -1661,6 +2128,7 @@ int dpm_suspend(pm_message_t state)
  */
 static int device_prepare(struct device *dev, pm_message_t state)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	int (*callback)(struct device *) = NULL;
@@ -1701,6 +2169,25 @@ static int device_prepare(struct device *dev, pm_message_t state)
 
  End:
 =======
+=======
+	int (*callback)(struct device *) = NULL;
+	char *info = NULL;
+	int error = 0;
+
+	if (dev->power.syscore)
+		return 0;
+
+	/*
+	 * If a device's parent goes into runtime suspend at the wrong time,
+	 * it won't be possible to resume the device.  To prevent this we
+	 * block runtime suspend here, during the prepare phase, and allow
+	 * it again during the complete phase.
+	 */
+	pm_runtime_get_noresume(dev);
+
+	device_lock(dev);
+
+>>>>>>> refs/remotes/origin/master
 	dev->power.wakeup_path = device_may_wakeup(dev);
 
 	if (dev->pm_domain) {
@@ -1727,9 +2214,17 @@ static int device_prepare(struct device *dev, pm_message_t state)
 		suspend_report_result(callback, error);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	device_unlock(dev);
 
+=======
+	device_unlock(dev);
+
+	if (error)
+		pm_runtime_put(dev);
+
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -1753,6 +2248,7 @@ int dpm_prepare(pm_message_t state)
 		mutex_unlock(&dpm_list_mtx);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pm_runtime_get_noresume(dev);
 		if (pm_runtime_barrier(dev) && device_may_wakeup(dev))
 			pm_wakeup_event(dev, 0);
@@ -1763,6 +2259,9 @@ int dpm_prepare(pm_message_t state)
 =======
 		error = device_prepare(dev, state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		error = device_prepare(dev, state);
+>>>>>>> refs/remotes/origin/master
 
 		mutex_lock(&dpm_list_mtx);
 		if (error) {
@@ -1799,13 +2298,19 @@ int dpm_suspend_start(pm_message_t state)
 
 	error = dpm_prepare(state);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!error)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (error) {
 		suspend_stats.failed_prepare++;
 		dpm_save_failed_step(SUSPEND_PREPARE);
 	} else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		error = dpm_suspend(state);
 	return error;
 }
@@ -1829,3 +2334,28 @@ int device_pm_wait_for_dev(struct device *subordinate, struct device *dev)
 	return async_error;
 }
 EXPORT_SYMBOL_GPL(device_pm_wait_for_dev);
+<<<<<<< HEAD
+=======
+
+/**
+ * dpm_for_each_dev - device iterator.
+ * @data: data for the callback.
+ * @fn: function to be called for each device.
+ *
+ * Iterate over devices in dpm_list, and call @fn for each device,
+ * passing it @data.
+ */
+void dpm_for_each_dev(void *data, void (*fn)(struct device *, void *))
+{
+	struct device *dev;
+
+	if (!fn)
+		return;
+
+	device_pm_lock();
+	list_for_each_entry(dev, &dpm_list, power.entry)
+		fn(dev, data);
+	device_pm_unlock();
+}
+EXPORT_SYMBOL_GPL(dpm_for_each_dev);
+>>>>>>> refs/remotes/origin/master

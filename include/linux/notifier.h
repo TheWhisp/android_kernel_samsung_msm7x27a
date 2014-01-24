@@ -47,8 +47,16 @@
  * runtime initialization.
  */
 
+<<<<<<< HEAD
 struct notifier_block {
 	int (*notifier_call)(struct notifier_block *, unsigned long, void *);
+=======
+typedef	int (*notifier_fn_t)(struct notifier_block *nb,
+			unsigned long action, void *data);
+
+struct notifier_block {
+	notifier_fn_t notifier_call;
+>>>>>>> refs/remotes/origin/master
 	struct notifier_block __rcu *next;
 	int priority;
 };
@@ -186,6 +194,7 @@ static inline int notifier_to_errno(int ret)
  */
  
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* netdevice notifier chain. Please remember to update the rtnetlink
  * notification exclusion list in rtnetlink_event() when adding new
  * types.
@@ -261,6 +270,8 @@ static inline int notifier_to_errno(int ret)
 #define PM_RESTORE_PREPARE	0x0005 /* Going to restore a saved image */
 #define PM_POST_RESTORE		0x0006 /* Restore failed */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* CPU notfiers are defined in include/linux/cpu.h. */
 
 /* netdevice notifiers are defined in include/linux/netdevice.h */
@@ -272,7 +283,10 @@ static inline int notifier_to_errno(int ret)
 /* Virtual Terminal events are defined in include/linux/vt.h. */
 
 #define NETLINK_URELEASE	0x0001	/* Unicast netlink socket released */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Console keyboard events.
  * Note: KBD_KEYCODE is always sent before KBD_UNBOUND_KEYCODE, KBD_UNICODE and
@@ -286,6 +300,7 @@ static inline int notifier_to_errno(int ret)
 extern struct blocking_notifier_head reboot_notifier_list;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Virtual Terminal events. */
 #define VT_ALLOCATE		0x0001 /* Console got allocated */
 #define VT_DEALLOCATE		0x0002 /* Console will be deallocated */
@@ -295,5 +310,7 @@ extern struct blocking_notifier_head reboot_notifier_list;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __KERNEL__ */
 #endif /* _LINUX_NOTIFIER_H */

@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  *  include/asm-s390/elf.h
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *  S390 version
  *
  *  Derived from "include/asm-i386/elf.h"
@@ -103,15 +106,27 @@
 #define HWCAP_S390_HPAGE	128
 #define HWCAP_S390_ETF3EH	256
 #define HWCAP_S390_HIGH_GPRS	512
+<<<<<<< HEAD
+=======
+#define HWCAP_S390_TE		1024
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These are used to set parameters in the core dumps.
  */
+<<<<<<< HEAD
 #ifndef __s390x__
 #define ELF_CLASS	ELFCLASS32
 #else /* __s390x__ */
 #define ELF_CLASS	ELFCLASS64
 #endif /* __s390x__ */
+=======
+#ifndef CONFIG_64BIT
+#define ELF_CLASS	ELFCLASS32
+#else /* CONFIG_64BIT */
+#define ELF_CLASS	ELFCLASS64
+#endif /* CONFIG_64BIT */
+>>>>>>> refs/remotes/origin/master
 #define ELF_DATA	ELFDATA2MSB
 #define ELF_ARCH	EM_S390
 
@@ -120,6 +135,11 @@
  */
 
 #include <asm/ptrace.h>
+<<<<<<< HEAD
+=======
+#include <asm/compat.h>
+#include <asm/syscall.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/user.h>
 
 typedef s390_fp_regs elf_fpregset_t;
@@ -130,9 +150,12 @@ typedef s390_compat_regs compat_elf_gregset_t;
 
 #include <linux/sched.h>	/* for task_struct */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>		/* for save_access_regs */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mmu_context.h>
 
 #include <asm/vdso.h>
@@ -185,6 +208,7 @@ extern unsigned long elf_hwcap;
 extern char elf_platform[];
 #define ELF_PLATFORM (elf_platform)
 
+<<<<<<< HEAD
 #ifndef __s390x__
 #define SET_PERSONALITY(ex) set_personality(PER_LINUX)
 #else /* __s390x__ */
@@ -203,6 +227,33 @@ do {								\
 		clear_thread_flag(TIF_31BIT);			\
 } while (0)
 #endif /* __s390x__ */
+=======
+#ifndef CONFIG_COMPAT
+#define SET_PERSONALITY(ex) \
+do {								\
+	set_personality(PER_LINUX |				\
+		(current->personality & (~PER_MASK)));		\
+	current_thread_info()->sys_call_table = 		\
+		(unsigned long) &sys_call_table;		\
+} while (0)
+#else /* CONFIG_COMPAT */
+#define SET_PERSONALITY(ex)					\
+do {								\
+	if (personality(current->personality) != PER_LINUX32)	\
+		set_personality(PER_LINUX |			\
+			(current->personality & ~PER_MASK));	\
+	if ((ex).e_ident[EI_CLASS] == ELFCLASS32) {		\
+		set_thread_flag(TIF_31BIT);			\
+		current_thread_info()->sys_call_table =		\
+			(unsigned long)	&sys_call_table_emu;	\
+	} else {						\
+		clear_thread_flag(TIF_31BIT);			\
+		current_thread_info()->sys_call_table =		\
+			(unsigned long) &sys_call_table;	\
+	}							\
+} while (0)
+#endif /* CONFIG_COMPAT */
+>>>>>>> refs/remotes/origin/master
 
 #define STACK_RND_MASK	0x7ffUL
 
@@ -221,4 +272,9 @@ int arch_setup_additional_pages(struct linux_binprm *, int);
 extern unsigned long arch_randomize_brk(struct mm_struct *mm);
 #define arch_randomize_brk arch_randomize_brk
 
+<<<<<<< HEAD
+=======
+void *fill_cpu_elf_notes(void *ptr, struct save_area *sa);
+
+>>>>>>> refs/remotes/origin/master
 #endif

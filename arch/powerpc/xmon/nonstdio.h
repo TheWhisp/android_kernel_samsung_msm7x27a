@@ -4,6 +4,7 @@
 #define putchar	xmon_putchar
 
 extern int xmon_putchar(int c);
+<<<<<<< HEAD
 extern int xmon_getchar(void);
 extern void xmon_puts(const char *);
 extern char *xmon_gets(char *, int);
@@ -13,3 +14,8 @@ extern int xmon_expect(const char *str, unsigned long timeout);
 extern int xmon_write(const void *ptr, int nb);
 extern int xmon_readchar(void);
 extern int xmon_read_poll(void);
+=======
+extern void xmon_puts(const char *);
+extern char *xmon_gets(char *, int);
+extern void xmon_printf(const char *, ...);
+>>>>>>> refs/remotes/origin/master

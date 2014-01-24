@@ -17,10 +17,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt and
 =======
  * See Documentation/DMA-API-HOWTO.txt and
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See Documentation/DMA-API-HOWTO.txt and
+>>>>>>> refs/remotes/origin/master
  * Documentation/DMA-API.txt for documentation.
  */
 
@@ -33,18 +37,25 @@
 #include <asm/io.h>
 #include <asm-generic/dma-coherent.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/cacheflush.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cacheflush.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DMA_ERROR_CODE		(~(dma_addr_t)0x0)
 
 #define __dma_alloc_coherent(dev, gfp, size, handle)	NULL
 #define __dma_free_coherent(size, addr)		((void)0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define __dma_sync(addr, size, rw)		((void)0)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline unsigned long device_to_mask(struct device *dev)
 {
@@ -107,7 +118,10 @@ static inline int dma_set_mask(struct device *dev, u64 dma_mask)
 #include <asm-generic/dma-mapping-common.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void __dma_sync(unsigned long paddr,
 			      size_t size, enum dma_data_direction direction)
 {
@@ -124,10 +138,18 @@ static inline void __dma_sync(unsigned long paddr,
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static inline int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
 {
 	struct dma_map_ops *ops = get_dma_ops(dev);
+=======
+static inline int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
+{
+	struct dma_map_ops *ops = get_dma_ops(dev);
+
+	debug_dma_mapping_error(dev, dma_addr);
+>>>>>>> refs/remotes/origin/master
 	if (ops->mapping_error)
 		return ops->mapping_error(dev, dma_addr);
 
@@ -138,15 +160,21 @@ static inline int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
 #define dma_free_noncoherent(d, s, v, h) dma_free_coherent(d, s, v, h)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void *dma_alloc_coherent(struct device *dev, size_t size,
 					dma_addr_t *dma_handle, gfp_t flag)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define dma_alloc_coherent(d, s, h, f) dma_alloc_attrs(d, s, h, f, NULL)
 
 static inline void *dma_alloc_attrs(struct device *dev, size_t size,
 				    dma_addr_t *dma_handle, gfp_t flag,
 				    struct dma_attrs *attrs)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct dma_map_ops *ops = get_dma_ops(dev);
 	void *memory;
@@ -154,35 +182,49 @@ static inline void *dma_alloc_attrs(struct device *dev, size_t size,
 	BUG_ON(!ops);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memory = ops->alloc_coherent(dev, size, dma_handle, flag);
 =======
 	memory = ops->alloc(dev, size, dma_handle, flag, attrs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memory = ops->alloc(dev, size, dma_handle, flag, attrs);
+>>>>>>> refs/remotes/origin/master
 
 	debug_dma_alloc_coherent(dev, size, *dma_handle, memory);
 	return memory;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void dma_free_coherent(struct device *dev, size_t size,
 				     void *cpu_addr, dma_addr_t dma_handle)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define dma_free_coherent(d,s,c,h) dma_free_attrs(d, s, c, h, NULL)
 
 static inline void dma_free_attrs(struct device *dev, size_t size,
 				  void *cpu_addr, dma_addr_t dma_handle,
 				  struct dma_attrs *attrs)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct dma_map_ops *ops = get_dma_ops(dev);
 
 	BUG_ON(!ops);
 	debug_dma_free_coherent(dev, size, cpu_addr, dma_handle);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ops->free_coherent(dev, size, cpu_addr, dma_handle);
 =======
 	ops->free(dev, size, cpu_addr, dma_handle, attrs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ops->free(dev, size, cpu_addr, dma_handle, attrs);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
@@ -190,10 +232,14 @@ static inline void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
 {
 	BUG_ON(direction == DMA_NONE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__dma_sync(vaddr, size, (int)direction);
 =======
 	__dma_sync(virt_to_phys(vaddr), size, (int)direction);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__dma_sync(virt_to_phys(vaddr), size, (int)direction);
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif	/* _ASM_MICROBLAZE_DMA_MAPPING_H */

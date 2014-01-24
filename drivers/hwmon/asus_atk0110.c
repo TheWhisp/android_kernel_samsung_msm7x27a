@@ -14,9 +14,16 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/dmi.h>
+<<<<<<< HEAD
 
 #include <acpi/acpi.h>
 #include <acpi/acpixf.h>
+=======
+#include <linux/jiffies.h>
+#include <linux/err.h>
+
+#include <acpi/acpi.h>
+>>>>>>> refs/remotes/origin/master
 #include <acpi/acpi_drivers.h>
 #include <acpi/acpi_bus.h>
 
@@ -45,11 +52,16 @@ static const struct dmi_system_id __initconst atk_force_new_if[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Minimum time between readings, enforced in order to avoid
 =======
 /*
  * Minimum time between readings, enforced in order to avoid
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Minimum time between readings, enforced in order to avoid
+>>>>>>> refs/remotes/origin/master
  * hogging the CPU.
  */
 #define CACHE_TIME		HZ
@@ -121,7 +133,11 @@ struct atk_data {
 	acpi_handle rtmp_handle;
 	acpi_handle rvlt_handle;
 	acpi_handle rfan_handle;
+<<<<<<< HEAD
 	/* new inteface */
+=======
+	/* new interface */
+>>>>>>> refs/remotes/origin/master
 	acpi_handle enumerate_handle;
 	acpi_handle read_handle;
 	acpi_handle write_handle;
@@ -173,11 +189,16 @@ struct atk_sensor_data {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Return buffer format:
 =======
 /*
  * Return buffer format:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Return buffer format:
+>>>>>>> refs/remotes/origin/master
  * [0-3] "value" is valid flag
  * [4-7] value
  * [8- ] unknown stuff on newer mobos
@@ -196,7 +217,11 @@ struct atk_acpi_input_buf {
 };
 
 static int atk_add(struct acpi_device *device);
+<<<<<<< HEAD
 static int atk_remove(struct acpi_device *device, int type);
+=======
+static int atk_remove(struct acpi_device *device);
+>>>>>>> refs/remotes/origin/master
 static void atk_print_sensor(struct atk_data *data, union acpi_object *obj);
 static int atk_read_value(struct atk_sensor_data *sensor, u64 *value);
 static void atk_free_sensors(struct atk_data *data);
@@ -327,11 +352,16 @@ static union acpi_object *atk_get_pack_member(struct atk_data *data,
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* New package format is:
 =======
 /*
  * New package format is:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * New package format is:
+>>>>>>> refs/remotes/origin/master
  * - flag (int)
  *	class - used for de-muxing the request to the correct GITn
  *	type (volt, temp, fan)
@@ -635,11 +665,16 @@ static int atk_read_value_new(struct atk_sensor_data *sensor, u64 *value)
 	buf = (struct atk_acpi_ret_buffer *)obj->buffer.pointer;
 	if (buf->flags == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* The reading is not valid, possible causes:
 =======
 		/*
 		 * The reading is not valid, possible causes:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/*
+		 * The reading is not valid, possible causes:
+>>>>>>> refs/remotes/origin/master
 		 * - sensor failure
 		 * - enumeration was FUBAR (and we didn't notice)
 		 */
@@ -978,7 +1013,10 @@ static int atk_add_sensor(struct atk_data *data, union acpi_object *obj)
 
 	return 1;
 out:
+<<<<<<< HEAD
 	kfree(sensor->acpi_name);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(sensor);
 	return err;
 }
@@ -1338,11 +1376,16 @@ static int atk_probe_if(struct atk_data *data)
 				 acpi_format_exception(status));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Check for hwmon methods: first check "old" style methods; note that
 =======
 	/*
 	 * Check for hwmon methods: first check "old" style methods; note that
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * Check for hwmon methods: first check "old" style methods; note that
+>>>>>>> refs/remotes/origin/master
 	 * both may be present: in this case we stick to the old interface;
 	 * analysis of multiple DSDTs indicates that when both interfaces
 	 * are present the new one (GGRP/GITM) is not functional.
@@ -1350,11 +1393,16 @@ static int atk_probe_if(struct atk_data *data)
 	if (new_if)
 		dev_info(dev, "Overriding interface detection\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (data->rtmp_handle && data->rvlt_handle && data->rfan_handle && !new_if)
 =======
 	if (data->rtmp_handle &&
 			data->rvlt_handle && data->rfan_handle && !new_if)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (data->rtmp_handle &&
+			data->rvlt_handle && data->rfan_handle && !new_if)
+>>>>>>> refs/remotes/origin/master
 		data->old_interface = true;
 	else if (data->enumerate_handle && data->read_handle &&
 			data->write_handle)
@@ -1439,7 +1487,11 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int atk_remove(struct acpi_device *device, int type)
+=======
+static int atk_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct atk_data *data = device->driver_data;
 	dev_dbg(&device->dev, "removing...\n");

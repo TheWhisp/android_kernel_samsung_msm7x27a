@@ -98,7 +98,11 @@ static struct platform_device alix_leds_dev = {
 	.dev.platform_data = &alix_leds_data,
 };
 
+<<<<<<< HEAD
 static struct __initdata platform_device *alix_devs[] = {
+=======
+static struct platform_device *alix_devs[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 	&alix_buttons_dev,
 	&alix_leds_dev,
 };

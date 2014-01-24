@@ -8,6 +8,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
 #include <linux/jbd.h>
 #include <linux/ext3_fs.h>
@@ -30,6 +31,15 @@ unsigned long ext3_count_free (struct buffer_head * map, unsigned int numchars)
 		sum += nibblemap[map->b_data[i] & 0xf] +
 			nibblemap[(map->b_data[i] >> 4) & 0xf];
 	return (sum);
+=======
+#include "ext3.h"
+
+#ifdef EXT3FS_DEBUG
+
+unsigned long ext3_count_free (struct buffer_head * map, unsigned int numchars)
+{
+	return numchars * BITS_PER_BYTE - memweight(map->b_data, numchars);
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif  /*  EXT3FS_DEBUG  */

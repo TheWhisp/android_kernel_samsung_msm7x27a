@@ -24,6 +24,10 @@
 #include <linux/platform_device.h>
 #include <linux/hw_random.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <asm/io.h>
 
@@ -94,7 +98,11 @@ static struct hwrng pasemi_rng = {
 	.data_read	= pasemi_rng_data_read,
 };
 
+<<<<<<< HEAD
 static int __devinit rng_probe(struct platform_device *ofdev)
+=======
+static int rng_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *rng_regs;
 	struct device_node *rng_np = ofdev->dev.of_node;
@@ -122,7 +130,11 @@ static int __devinit rng_probe(struct platform_device *ofdev)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit rng_remove(struct platform_device *dev)
+=======
+static int rng_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *rng_regs = (void __iomem *)pasemi_rng.priv;
 
@@ -149,6 +161,7 @@ static struct platform_driver rng_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init rng_init(void)
 {
 	return platform_driver_register(&rng_driver);
@@ -163,6 +176,9 @@ module_exit(rng_exit);
 =======
 module_platform_driver(rng_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(rng_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Egor Martovetsky <egor@pasemi.com>");

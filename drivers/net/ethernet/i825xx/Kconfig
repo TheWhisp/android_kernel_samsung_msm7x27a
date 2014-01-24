@@ -5,9 +5,13 @@
 config NET_VENDOR_I825XX
 	bool "Intel (82586/82593/82596) devices"
 	default y
+<<<<<<< HEAD
 	depends on NET_VENDOR_INTEL && (ISA || ISA_DMA_API || ARM || \
 		   ARCH_ACORN || MCA || MCA_LEGACY || SNI_RM || SUN3 || \
 		   GSC || BVME6000 || MVME16x || EXPERIMENTAL)
+=======
+	depends on NET_VENDOR_INTEL
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  If you have a network (Ethernet) card belonging to this class, say Y
 	  and read the Ethernet-HOWTO, available from
@@ -20,6 +24,7 @@ config NET_VENDOR_I825XX
 
 if NET_VENDOR_I825XX
 
+<<<<<<< HEAD
 config ELPLUS
 	tristate "3c505 \"EtherLink Plus\" support"
 	depends on ISA && ISA_DMA_API
@@ -65,6 +70,8 @@ config ELMC_II
 	  To compile this driver as a module, choose M here. The module
 	  will be called 3c527.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ARM_ETHER1
 	tristate "Acorn Ether1 support"
 	depends on ARM && ARCH_ACORN
@@ -72,6 +79,7 @@ config ARM_ETHER1
 	  If you have an Acorn system with one of these (AKA25) network cards,
 	  you should say Y to this option if you wish to use it with Linux.
 
+<<<<<<< HEAD
 config APRICOT
 	tristate "Apricot Xen-II on board Ethernet"
 	depends on ISA
@@ -83,6 +91,8 @@ config APRICOT
 	  To compile this driver as a module, choose M here. The module
 	  will be called apricot.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config BVME6000_NET
 	tristate "BVME6000 Ethernet support"
 	depends on BVME6000
@@ -92,6 +102,7 @@ config BVME6000_NET
 	  in your kernel.
 	  To compile this driver as a module, choose M here.
 
+<<<<<<< HEAD
 config EEXPRESS
 	tristate "EtherExpress 16 support"
 	depends on ISA
@@ -119,6 +130,8 @@ config EEXPRESS_PRO
 	  To compile this driver as a module, choose M here. The module
 	  will be called eepro.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config LASI_82596
 	tristate "Lasi ethernet"
 	depends on GSC
@@ -126,6 +139,7 @@ config LASI_82596
 	  Say Y here to support the builtin Intel 82596 ethernet controller
 	  found in Hewlett-Packard PA-RISC machines with 10Mbit ethernet.
 
+<<<<<<< HEAD
 config LP486E
 	tristate "LP486E on board Ethernet"
 	depends on ISA
@@ -134,6 +148,8 @@ config LP486E
 	  for the Panther motherboard, which is one of the two shipped in the
 	  Intel Professional Workstation.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config MVME16x_NET
 	tristate "MVME16x Ethernet support"
 	depends on MVME16x
@@ -143,6 +159,7 @@ config MVME16x_NET
 	  driver for this chip in your kernel.
 	  To compile this driver as a module, choose M here.
 
+<<<<<<< HEAD
 config NI52
 	tristate "NI5210 support"
 	depends on ISA
@@ -154,6 +171,8 @@ config NI52
 	  To compile this driver as a module, choose M here. The module
 	  will be called ni52.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config SNI_82596
 	tristate "SNI RM ethernet"
 	depends on SNI_RM
@@ -170,6 +189,7 @@ config SUN3_82586
 	  that this driver does not support 82586-based adapters on additional
 	  VME boards.
 
+<<<<<<< HEAD
 config ZNET
 	tristate "Zenith Z-Note support (EXPERIMENTAL)"
 	depends on EXPERIMENTAL && ISA_DMA_API
@@ -180,4 +200,6 @@ config ZNET
 	  by this driver. Read the Ethernet-HOWTO, available from
 	  <http://www.tldp.org/docs.html#howto>.
 
+=======
+>>>>>>> refs/remotes/origin/master
 endif # NET_VENDOR_I825XX

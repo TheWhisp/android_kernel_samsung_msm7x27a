@@ -20,6 +20,10 @@
 #include <linux/mutex.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/completion.h>
 #include <linux/mfd/core.h>
@@ -65,7 +69,11 @@ static ssize_t jz4740_hwmon_read_adcin(struct device *dev,
 
 	mutex_lock(&hwmon->lock);
 
+<<<<<<< HEAD
 	INIT_COMPLETION(*completion);
+=======
+	reinit_completion(completion);
+>>>>>>> refs/remotes/origin/master
 
 	enable_irq(hwmon->irq);
 	hwmon->cell->enable(to_platform_device(dev));
@@ -101,28 +109,45 @@ static const struct attribute_group jz4740_hwmon_attr_group = {
 	.attrs = jz4740_hwmon_attributes,
 };
 
+<<<<<<< HEAD
 static int __devinit jz4740_hwmon_probe(struct platform_device *pdev)
+=======
+static int jz4740_hwmon_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct jz4740_hwmon *hwmon;
 
+<<<<<<< HEAD
 	hwmon = kmalloc(sizeof(*hwmon), GFP_KERNEL);
 	if (!hwmon) {
 		dev_err(&pdev->dev, "Failed to allocate driver structure\n");
 		return -ENOMEM;
 	}
+=======
+	hwmon = devm_kzalloc(&pdev->dev, sizeof(*hwmon), GFP_KERNEL);
+	if (!hwmon)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	hwmon->cell = mfd_get_cell(pdev);
 
 	hwmon->irq = platform_get_irq(pdev, 0);
 	if (hwmon->irq < 0) {
+<<<<<<< HEAD
 		ret = hwmon->irq;
 		dev_err(&pdev->dev, "Failed to get platform irq: %d\n", ret);
 		goto err_free;
+=======
+		dev_err(&pdev->dev, "Failed to get platform irq: %d\n",
+			hwmon->irq);
+		return hwmon->irq;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	hwmon->mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!hwmon->mem) {
+<<<<<<< HEAD
 		ret = -ENOENT;
 		dev_err(&pdev->dev, "Failed to get platform mmio resource\n");
 		goto err_free;
@@ -142,6 +167,24 @@ static int __devinit jz4740_hwmon_probe(struct platform_device *pdev)
 		ret = -EBUSY;
 		dev_err(&pdev->dev, "Failed to ioremap mmio memory\n");
 		goto err_release_mem_region;
+=======
+		dev_err(&pdev->dev, "Failed to get platform mmio resource\n");
+		return -ENOENT;
+	}
+
+	hwmon->mem = devm_request_mem_region(&pdev->dev, hwmon->mem->start,
+			resource_size(hwmon->mem), pdev->name);
+	if (!hwmon->mem) {
+		dev_err(&pdev->dev, "Failed to request mmio memory region\n");
+		return -EBUSY;
+	}
+
+	hwmon->base = devm_ioremap_nocache(&pdev->dev, hwmon->mem->start,
+					   resource_size(hwmon->mem));
+	if (!hwmon->base) {
+		dev_err(&pdev->dev, "Failed to ioremap mmio memory\n");
+		return -EBUSY;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	init_completion(&hwmon->read_completion);
@@ -149,17 +192,29 @@ static int __devinit jz4740_hwmon_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, hwmon);
 
+<<<<<<< HEAD
 	ret = request_irq(hwmon->irq, jz4740_hwmon_irq, 0, pdev->name, hwmon);
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to request irq: %d\n", ret);
 		goto err_iounmap;
+=======
+	ret = devm_request_irq(&pdev->dev, hwmon->irq, jz4740_hwmon_irq, 0,
+			       pdev->name, hwmon);
+	if (ret) {
+		dev_err(&pdev->dev, "Failed to request irq: %d\n", ret);
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 	disable_irq(hwmon->irq);
 
 	ret = sysfs_create_group(&pdev->dev.kobj, &jz4740_hwmon_attr_group);
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to create sysfs group: %d\n", ret);
+<<<<<<< HEAD
 		goto err_free_irq;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	hwmon->hwmon = hwmon_device_register(&pdev->dev);
@@ -172,6 +227,7 @@ static int __devinit jz4740_hwmon_probe(struct platform_device *pdev)
 
 err_remove_file:
 	sysfs_remove_group(&pdev->dev.kobj, &jz4740_hwmon_attr_group);
+<<<<<<< HEAD
 err_free_irq:
 	free_irq(hwmon->irq, hwmon);
 err_iounmap:
@@ -186,12 +242,19 @@ err_free:
 }
 
 static int __devexit jz4740_hwmon_remove(struct platform_device *pdev)
+=======
+	return ret;
+}
+
+static int jz4740_hwmon_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct jz4740_hwmon *hwmon = platform_get_drvdata(pdev);
 
 	hwmon_device_unregister(hwmon->hwmon);
 	sysfs_remove_group(&pdev->dev.kobj, &jz4740_hwmon_attr_group);
 
+<<<<<<< HEAD
 	free_irq(hwmon->irq, hwmon);
 
 	iounmap(hwmon->base);
@@ -210,12 +273,21 @@ static struct platform_driver jz4740_hwmon_driver = {
 >>>>>>> refs/remotes/origin/cm-10.0
 	.probe	= jz4740_hwmon_probe,
 	.remove = __devexit_p(jz4740_hwmon_remove),
+=======
+	return 0;
+}
+
+static struct platform_driver jz4740_hwmon_driver = {
+	.probe	= jz4740_hwmon_probe,
+	.remove = jz4740_hwmon_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "jz4740-hwmon",
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init jz4740_hwmon_init(void)
 {
@@ -231,6 +303,9 @@ module_exit(jz4740_hwmon_exit);
 =======
 module_platform_driver(jz4740_hwmon_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(jz4740_hwmon_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("JZ4740 SoC HWMON driver");
 MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");

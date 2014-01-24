@@ -33,18 +33,25 @@
 #include <net/sock.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/fcntl.h>
 #include <linux/mm.h>
 #include <linux/interrupt.h>
 #include <linux/init.h>
 #include <linux/seq_file.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 static ax25_route *ax25_route_list;
 static DEFINE_RWLOCK(ax25_route_lock);
@@ -481,7 +488,11 @@ struct sk_buff *ax25_rt_build_path(struct sk_buff *skb, ax25_address *src,
 		if (skb->sk != NULL)
 			skb_set_owner_w(skbn, skb->sk);
 
+<<<<<<< HEAD
 		kfree_skb(skb);
+=======
+		consume_skb(skb);
+>>>>>>> refs/remotes/origin/master
 
 		skb = skbn;
 	}

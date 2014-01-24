@@ -145,7 +145,11 @@ static void exit_round_robin(unsigned int tsk_index)
 }
 
 static unsigned int idle_pct = 5; /* percentage */
+<<<<<<< HEAD
 static unsigned int round_robin_time = 10; /* second */
+=======
+static unsigned int round_robin_time = 1; /* second */
+>>>>>>> refs/remotes/origin/master
 static int power_saving_thread(void *data)
 {
 	struct sched_param param = {.sched_priority = 1};
@@ -193,10 +197,14 @@ static int power_saving_thread(void *data)
 					CLOCK_EVT_NOTIFY_BROADCAST_ENTER, &cpu);
 			stop_critical_timings();
 
+<<<<<<< HEAD
 			__monitor((void *)&current_thread_info()->flags, 0, 0);
 			smp_mb();
 			if (!need_resched())
 				__mwait(power_saving_mwait_eax, 1);
+=======
+			mwait_idle_with_hints(power_saving_mwait_eax, 1);
+>>>>>>> refs/remotes/origin/master
 
 			start_critical_timings();
 			if (lapic_marked_unstable)
@@ -231,6 +239,7 @@ static struct task_struct *ps_tsks[NR_CPUS];
 static unsigned int ps_tsk_num;
 static int create_power_saving_task(void)
 {
+<<<<<<< HEAD
 	int rc = -ENOMEM;
 
 	ps_tsks[ps_tsk_num] = kthread_run(power_saving_thread,
@@ -241,6 +250,21 @@ static int create_power_saving_task(void)
 		ps_tsk_num++;
 	else
 		ps_tsks[ps_tsk_num] = NULL;
+=======
+	int rc;
+
+	ps_tsks[ps_tsk_num] = kthread_run(power_saving_thread,
+		(void *)(unsigned long)ps_tsk_num,
+		"acpi_pad/%d", ps_tsk_num);
+
+	if (IS_ERR(ps_tsks[ps_tsk_num])) {
+		rc = PTR_ERR(ps_tsks[ps_tsk_num]);
+		ps_tsks[ps_tsk_num] = NULL;
+	} else {
+		rc = 0;
+		ps_tsk_num++;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
@@ -286,7 +310,11 @@ static ssize_t acpi_pad_rrtime_store(struct device *dev,
 	struct device_attribute *attr, const char *buf, size_t count)
 {
 	unsigned long num;
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 0, &num))
+=======
+	if (kstrtoul(buf, 0, &num))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	if (num < 1 || num >= 100)
 		return -EINVAL;
@@ -309,7 +337,11 @@ static ssize_t acpi_pad_idlepct_store(struct device *dev,
 	struct device_attribute *attr, const char *buf, size_t count)
 {
 	unsigned long num;
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 0, &num))
+=======
+	if (kstrtoul(buf, 0, &num))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	if (num < 1 || num >= 100)
 		return -EINVAL;
@@ -332,7 +364,11 @@ static ssize_t acpi_pad_idlecpus_store(struct device *dev,
 	struct device_attribute *attr, const char *buf, size_t count)
 {
 	unsigned long num;
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 0, &num))
+=======
+	if (kstrtoul(buf, 0, &num))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	mutex_lock(&isolated_cpus_lock);
 	acpi_pad_idle_cpus(num);
@@ -452,12 +488,19 @@ static void acpi_pad_notify(acpi_handle handle, u32 event,
 	switch (event) {
 	case ACPI_PROCESSOR_AGGREGATOR_NOTIFY:
 		acpi_pad_handle_notify(handle);
+<<<<<<< HEAD
 		acpi_bus_generate_proc_event(device, event, 0);
+=======
+>>>>>>> refs/remotes/origin/master
 		acpi_bus_generate_netlink_event(device->pnp.device_class,
 			dev_name(&device->dev), event, 0);
 		break;
 	default:
+<<<<<<< HEAD
 		printk(KERN_WARNING "Unsupported event [0x%x]\n", event);
+=======
+		pr_warn("Unsupported event [0x%x]\n", event);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 }
@@ -482,8 +525,12 @@ static int acpi_pad_add(struct acpi_device *device)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int acpi_pad_remove(struct acpi_device *device,
 	int type)
+=======
+static int acpi_pad_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	mutex_lock(&isolated_cpus_lock);
 	acpi_pad_idle_cpus(0);

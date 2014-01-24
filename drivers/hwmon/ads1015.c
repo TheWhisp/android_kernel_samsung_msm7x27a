@@ -46,17 +46,36 @@ static const unsigned int fullscale_table[8] = {
 	6144, 4096, 2048, 1024, 512, 256, 256, 256 };
 
 /* Data rates in samples per second */
+<<<<<<< HEAD
 static const unsigned int data_rate_table[8] = {
 	128, 250, 490, 920, 1600, 2400, 3300, 3300 };
+=======
+static const unsigned int data_rate_table_1015[8] = {
+	128, 250, 490, 920, 1600, 2400, 3300, 3300
+};
+
+static const unsigned int data_rate_table_1115[8] = {
+	8, 16, 32, 64, 128, 250, 475, 860
+};
+>>>>>>> refs/remotes/origin/master
 
 #define ADS1015_DEFAULT_CHANNELS 0xff
 #define ADS1015_DEFAULT_PGA 2
 #define ADS1015_DEFAULT_DATA_RATE 4
 
+<<<<<<< HEAD
+=======
+enum ads1015_chips {
+	ads1015,
+	ads1115,
+};
+
+>>>>>>> refs/remotes/origin/master
 struct ads1015_data {
 	struct device *hwmon_dev;
 	struct mutex update_lock; /* mutex protect updates */
 	struct ads1015_channel_data channel_data[ADS1015_CHANNELS];
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
@@ -82,19 +101,32 @@ static int ads1015_read_value(struct i2c_client *client, unsigned int channel,
 	unsigned int pga = data->channel_data[channel].pga;
 	int fullscale;
 =======
+=======
+	enum ads1015_chips id;
+};
+
+>>>>>>> refs/remotes/origin/master
 static int ads1015_read_adc(struct i2c_client *client, unsigned int channel)
 {
 	u16 config;
 	struct ads1015_data *data = i2c_get_clientdata(client);
 	unsigned int pga = data->channel_data[channel].pga;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int data_rate = data->channel_data[channel].data_rate;
 	unsigned int conversion_time_ms;
+=======
+	unsigned int data_rate = data->channel_data[channel].data_rate;
+	unsigned int conversion_time_ms;
+	const unsigned int * const rate_table = data->id == ads1115 ?
+		data_rate_table_1115 : data_rate_table_1015;
+>>>>>>> refs/remotes/origin/master
 	int res;
 
 	mutex_lock(&data->update_lock);
 
 	/* get channel parameters */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	res = ads1015_read_reg(client, ADS1015_CONFIG);
 	if (res < 0)
@@ -102,12 +134,18 @@ static int ads1015_read_adc(struct i2c_client *client, unsigned int channel)
 	config = res;
 	fullscale = fullscale_table[pga];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	res = i2c_smbus_read_word_swapped(client, ADS1015_CONFIG);
 	if (res < 0)
 		goto err_unlock;
 	config = res;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	conversion_time_ms = DIV_ROUND_UP(1000, data_rate_table[data_rate]);
+=======
+	conversion_time_ms = DIV_ROUND_UP(1000, rate_table[data_rate]);
+>>>>>>> refs/remotes/origin/master
 
 	/* setup and start single conversion */
 	config &= 0x001f;
@@ -117,20 +155,28 @@ static int ads1015_read_adc(struct i2c_client *client, unsigned int channel)
 	config |= (data_rate & 0x0007) << 5;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	res = ads1015_write_reg(client, ADS1015_CONFIG, config);
 =======
 	res = i2c_smbus_write_word_swapped(client, ADS1015_CONFIG, config);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = i2c_smbus_write_word_swapped(client, ADS1015_CONFIG, config);
+>>>>>>> refs/remotes/origin/master
 	if (res < 0)
 		goto err_unlock;
 
 	/* wait until conversion finished */
 	msleep(conversion_time_ms);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	res = ads1015_read_reg(client, ADS1015_CONFIG);
 =======
 	res = i2c_smbus_read_word_swapped(client, ADS1015_CONFIG);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = i2c_smbus_read_word_swapped(client, ADS1015_CONFIG);
+>>>>>>> refs/remotes/origin/master
 	if (res < 0)
 		goto err_unlock;
 	config = res;
@@ -140,6 +186,7 @@ static int ads1015_read_adc(struct i2c_client *client, unsigned int channel)
 		goto err_unlock;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	res = ads1015_read_reg(client, ADS1015_CONVERSION);
 	if (res < 0)
@@ -154,6 +201,9 @@ static int ads1015_read_adc(struct i2c_client *client, unsigned int channel)
 =======
 	res = i2c_smbus_read_word_swapped(client, ADS1015_CONVERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = i2c_smbus_read_word_swapped(client, ADS1015_CONVERSION);
+>>>>>>> refs/remotes/origin/master
 
 err_unlock:
 	mutex_unlock(&data->update_lock);
@@ -161,24 +211,36 @@ err_unlock:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int ads1015_reg_to_mv(struct i2c_client *client, unsigned int channel,
 			     s16 reg)
 {
 	struct ads1015_data *data = i2c_get_clientdata(client);
 	unsigned int pga = data->channel_data[channel].pga;
 	int fullscale = fullscale_table[pga];
+<<<<<<< HEAD
 
 	return DIV_ROUND_CLOSEST(reg * fullscale, 0x7ff0);
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const unsigned mask = data->id == ads1115 ? 0x7fff : 0x7ff0;
+
+	return DIV_ROUND_CLOSEST(reg * fullscale, mask);
+}
+
+>>>>>>> refs/remotes/origin/master
 /* sysfs callback function */
 static ssize_t show_in(struct device *dev, struct device_attribute *da,
 	char *buf)
 {
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 	struct i2c_client *client = to_i2c_client(dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int in;
 	int res;
@@ -187,6 +249,8 @@ static ssize_t show_in(struct device *dev, struct device_attribute *da,
 
 	return (res < 0) ? res : sprintf(buf, "%d\n", in);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int res;
 	int index = attr->index;
 
@@ -195,7 +259,10 @@ static ssize_t show_in(struct device *dev, struct device_attribute *da,
 		return res;
 
 	return sprintf(buf, "%d\n", ads1015_reg_to_mv(client, index, res));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct sensor_device_attribute ads1015_in[] = {
@@ -221,7 +288,10 @@ static int ads1015_remove(struct i2c_client *client)
 	hwmon_device_unregister(data->hwmon_dev);
 	for (k = 0; k < ADS1015_CHANNELS; ++k)
 		device_remove_file(&client->dev, &ads1015_in[k].dev_attr);
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -319,12 +389,20 @@ static int ads1015_probe(struct i2c_client *client,
 	int err;
 	unsigned int k;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct ads1015_data), GFP_KERNEL);
 	if (!data) {
 		err = -ENOMEM;
 		goto exit;
 	}
 
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct ads1015_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+	data->id = id->driver_data;
+>>>>>>> refs/remotes/origin/master
 	i2c_set_clientdata(client, data);
 	mutex_init(&data->update_lock);
 
@@ -349,13 +427,21 @@ static int ads1015_probe(struct i2c_client *client,
 exit_remove:
 	for (k = 0; k < ADS1015_CHANNELS; ++k)
 		device_remove_file(&client->dev, &ads1015_in[k].dev_attr);
+<<<<<<< HEAD
 	kfree(data);
 exit:
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
 static const struct i2c_device_id ads1015_id[] = {
+<<<<<<< HEAD
 	{ "ads1015", 0 },
+=======
+	{ "ads1015",  ads1015},
+	{ "ads1115",  ads1115},
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 MODULE_DEVICE_TABLE(i2c, ads1015_id);
@@ -370,6 +456,7 @@ static struct i2c_driver ads1015_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensors_ads1015_init(void)
 {
 	return i2c_add_driver(&ads1015_driver);
@@ -382,13 +469,19 @@ static void __exit sensors_ads1015_exit(void)
 =======
 module_i2c_driver(ads1015_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(ads1015_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Dirk Eibach <eibach@gdsys.de>");
 MODULE_DESCRIPTION("ADS1015 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(sensors_ads1015_init);
 module_exit(sensors_ads1015_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -98,6 +98,7 @@ ReadByteAmd7930(struct IsdnCardState *cs, unsigned char offset)
 {
 	/* direct register */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(offset < 8)
 		return (inb(cs->hw.njet.isac + 4*offset));
 
@@ -106,6 +107,8 @@ ReadByteAmd7930(struct IsdnCardState *cs, unsigned char offset)
 		outb(offset, cs->hw.njet.isac + 4*AMD_CR);
 		return(inb(cs->hw.njet.isac + 4*AMD_DR));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (offset < 8)
 		return (inb(cs->hw.njet.isac + 4 * offset));
 
@@ -113,7 +116,10 @@ ReadByteAmd7930(struct IsdnCardState *cs, unsigned char offset)
 	else {
 		outb(offset, cs->hw.njet.isac + 4 * AMD_CR);
 		return (inb(cs->hw.njet.isac + 4 * AMD_DR));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -123,6 +129,7 @@ WriteByteAmd7930(struct IsdnCardState *cs, unsigned char offset, unsigned char v
 {
 	/* direct register */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(offset < 8)
 		outb(value, cs->hw.njet.isac + 4*offset);
 
@@ -131,6 +138,8 @@ WriteByteAmd7930(struct IsdnCardState *cs, unsigned char offset, unsigned char v
 		outb(offset, cs->hw.njet.isac + 4*AMD_CR);
 		outb(value, cs->hw.njet.isac + 4*AMD_DR);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (offset < 8)
 		outb(value, cs->hw.njet.isac + 4 * offset);
 
@@ -138,7 +147,10 @@ WriteByteAmd7930(struct IsdnCardState *cs, unsigned char offset, unsigned char v
 	else {
 		outb(offset, cs->hw.njet.isac + 4 * AMD_CR);
 		outb(value, cs->hw.njet.isac + 4 * AMD_DR);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -146,26 +158,36 @@ WriteByteAmd7930(struct IsdnCardState *cs, unsigned char offset, unsigned char v
 static void
 enpci_setIrqMask(struct IsdnCardState *cs, unsigned char val) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (!val)
 	        outb(0x00, cs->hw.njet.base+NETJET_IRQMASK1);
         else
 	        outb(TJ_AMD_IRQ, cs->hw.njet.base+NETJET_IRQMASK1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!val)
 		outb(0x00, cs->hw.njet.base + NETJET_IRQMASK1);
 	else
 		outb(TJ_AMD_IRQ, cs->hw.njet.base + NETJET_IRQMASK1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 static unsigned char dummyrr(struct IsdnCardState *cs, int chan, unsigned char off)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return(5);
 =======
 	return (5);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (5);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void dummywr(struct IsdnCardState *cs, int chan, unsigned char off, unsigned char value)
@@ -205,14 +227,19 @@ enpci_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 {
 	u_long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
         unsigned char *chan;
 =======
 	unsigned char *chan;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned char *chan;
+>>>>>>> refs/remotes/origin/master
 
 	if (cs->debug & L1_DEB_ISAC)
 		debugl1(cs, "enter:now PCI: card_msg: 0x%04X", mt);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         switch (mt) {
 		case CARD_RESET:
@@ -274,6 +301,8 @@ enpci_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 	}
 	return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (mt) {
 	case CARD_RESET:
 		spin_lock_irqsave(&cs->lock, flags);
@@ -333,7 +362,10 @@ enpci_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 
 	}
 	return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t
@@ -347,6 +379,7 @@ enpci_interrupt(int intno, void *dev_id)
 	s1val = inb(cs->hw.njet.base + NETJET_IRQSTAT1);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* AMD threw an interrupt */
 	if (!(s1val & TJ_AMD_IRQ)) {
                 /* read and clear interrupt-register */
@@ -355,6 +388,11 @@ enpci_interrupt(int intno, void *dev_id)
 	if (!(s1val & TJ_AMD_IRQ)) {
 		/* read and clear interrupt-register */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* AMD threw an interrupt */
+	if (!(s1val & TJ_AMD_IRQ)) {
+		/* read and clear interrupt-register */
+>>>>>>> refs/remotes/origin/master
 		ir = ReadByteAmd7930(cs, 0x00);
 		Amd7930_interrupt(cs, ir);
 		s1val = 1;
@@ -362,16 +400,22 @@ enpci_interrupt(int intno, void *dev_id)
 		s1val = 0;
 	s0val = inb(cs->hw.njet.base + NETJET_IRQSTAT0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((s0val | s1val)==0) { // shared IRQ
 		spin_unlock_irqrestore(&cs->lock, flags);
 		return IRQ_NONE;
 	} 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((s0val | s1val) == 0) { // shared IRQ
 		spin_unlock_irqrestore(&cs->lock, flags);
 		return IRQ_NONE;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (s0val)
 		outb(s0val, cs->hw.njet.base + NETJET_IRQSTAT0);
 
@@ -379,20 +423,28 @@ enpci_interrupt(int intno, void *dev_id)
 	/* set bits in sval to indicate which page is free */
 	if (inl(cs->hw.njet.base + NETJET_DMA_WRITE_ADR) <
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inl(cs->hw.njet.base + NETJET_DMA_WRITE_IRQ))
 =======
 	    inl(cs->hw.njet.base + NETJET_DMA_WRITE_IRQ))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    inl(cs->hw.njet.base + NETJET_DMA_WRITE_IRQ))
+>>>>>>> refs/remotes/origin/master
 		/* the 2nd write page is free */
 		s0val = 0x08;
 	else	/* the 1st write page is free */
 		s0val = 0x04;
 	if (inl(cs->hw.njet.base + NETJET_DMA_READ_ADR) <
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inl(cs->hw.njet.base + NETJET_DMA_READ_IRQ))
 =======
 	    inl(cs->hw.njet.base + NETJET_DMA_READ_IRQ))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    inl(cs->hw.njet.base + NETJET_DMA_READ_IRQ))
+>>>>>>> refs/remotes/origin/master
 		/* the 2nd read page is free */
 		s0val = s0val | 0x02;
 	else	/* the 1st read page is free */
@@ -406,18 +458,24 @@ enpci_interrupt(int intno, void *dev_id)
 		cs->hw.njet.irqstat0 = s0val;
 		if ((cs->hw.njet.irqstat0 & NETJET_IRQM0_READ) !=
 <<<<<<< HEAD
+<<<<<<< HEAD
 			(cs->hw.njet.last_is0 & NETJET_IRQM0_READ))
 			/* we have a read dma int */
 			read_tiger(cs);
 		if ((cs->hw.njet.irqstat0 & NETJET_IRQM0_WRITE) !=
 			(cs->hw.njet.last_is0 & NETJET_IRQM0_WRITE))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		    (cs->hw.njet.last_is0 & NETJET_IRQM0_READ))
 			/* we have a read dma int */
 			read_tiger(cs);
 		if ((cs->hw.njet.irqstat0 & NETJET_IRQM0_WRITE) !=
 		    (cs->hw.njet.last_is0 & NETJET_IRQM0_WRITE))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/* we have a write dma int */
 			write_tiger(cs);
 		test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
@@ -426,6 +484,7 @@ enpci_interrupt(int intno, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit en_pci_probe(struct pci_dev *dev_netjet,
 				  struct IsdnCardState *cs)
 {
@@ -437,21 +496,33 @@ static int __devinit en_pci_probe(struct pci_dev *dev_netjet,
 		printk(KERN_WARNING "enter:now PCI: No IRQ for PCI card found\n");
 		return(0);
 =======
+=======
+static int en_pci_probe(struct pci_dev *dev_netjet, struct IsdnCardState *cs)
+{
+	if (pci_enable_device(dev_netjet))
+>>>>>>> refs/remotes/origin/master
 		return (0);
 	cs->irq = dev_netjet->irq;
 	if (!cs->irq) {
 		printk(KERN_WARNING "enter:now PCI: No IRQ for PCI card found\n");
 		return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	cs->hw.njet.base = pci_resource_start(dev_netjet, 0);
 	if (!cs->hw.njet.base) {
 		printk(KERN_WARNING "enter:now PCI: No IO-Adr for PCI card found\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return(0);
 =======
 		return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return (0);
+>>>>>>> refs/remotes/origin/master
 	}
 	/* checks Sub-Vendor ID because system crashes with Traverse-Card */
 	if ((dev_netjet->subsystem_vendor != 0x55) ||
@@ -459,30 +530,43 @@ static int __devinit en_pci_probe(struct pci_dev *dev_netjet,
 		printk(KERN_WARNING "enter:now: You tried to load this driver with an incompatible TigerJet-card\n");
 		printk(KERN_WARNING "Use type=20 for Traverse NetJet PCI Card.\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return(0);
 	}
 
 	return(1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return (0);
 	}
 
 	return (1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void __devinit en_cs_init(struct IsdnCard *card,
 				 struct IsdnCardState *cs)
+=======
+}
+
+static void en_cs_init(struct IsdnCard *card, struct IsdnCardState *cs)
+>>>>>>> refs/remotes/origin/master
 {
 	cs->hw.njet.auxa = cs->hw.njet.base + NETJET_AUXDATA;
 	cs->hw.njet.isac = cs->hw.njet.base + 0xC0; // Fenster zum AMD
 
 	/* Reset an */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cs->hw.njet.ctrl_reg = 0x07;  // ge�ndert von 0xff
 =======
 	cs->hw.njet.ctrl_reg = 0x07;  // geändert von 0xff
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cs->hw.njet.ctrl_reg = 0x07;  // geändert von 0xff
+>>>>>>> refs/remotes/origin/master
 	outb(cs->hw.njet.ctrl_reg, cs->hw.njet.base + NETJET_CTRL);
 	/* 20 ms Pause */
 	mdelay(20);
@@ -499,12 +583,17 @@ static void __devinit en_cs_init(struct IsdnCard *card,
 	outb(cs->hw.njet.auxd, cs->hw.njet.auxa);
 }
 
+<<<<<<< HEAD
 static int __devinit en_cs_init_rest(struct IsdnCard *card,
 				     struct IsdnCardState *cs)
+=======
+static int en_cs_init_rest(struct IsdnCard *card, struct IsdnCardState *cs)
+>>>>>>> refs/remotes/origin/master
 {
 	const int bytecnt = 256;
 
 	printk(KERN_INFO
+<<<<<<< HEAD
 <<<<<<< HEAD
 		"enter:now PCI: PCI card configured at 0x%lx IRQ %d\n",
 		cs->hw.njet.base, cs->irq);
@@ -512,6 +601,10 @@ static int __devinit en_cs_init_rest(struct IsdnCard *card,
 	       "enter:now PCI: PCI card configured at 0x%lx IRQ %d\n",
 	       cs->hw.njet.base, cs->irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       "enter:now PCI: PCI card configured at 0x%lx IRQ %d\n",
+	       cs->hw.njet.base, cs->irq);
+>>>>>>> refs/remotes/origin/master
 	if (!request_region(cs->hw.njet.base, bytecnt, "Fn_ISDN")) {
 		printk(KERN_WARNING
 		       "HiSax: enter:now config port %lx-%lx already in use\n",
@@ -523,6 +616,7 @@ static int __devinit en_cs_init_rest(struct IsdnCard *card,
 	setup_Amd7930(cs);
 	cs->hw.njet.last_is0 = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* macro rByteAMD */
         cs->readisac = &ReadByteAmd7930;
         /* macro wByteAMD */
@@ -531,6 +625,8 @@ static int __devinit en_cs_init_rest(struct IsdnCard *card,
 
         cs->BC_Read_Reg  = &dummyrr;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* macro rByteAMD */
 	cs->readisac = &ReadByteAmd7930;
 	/* macro wByteAMD */
@@ -538,7 +634,10 @@ static int __devinit en_cs_init_rest(struct IsdnCard *card,
 	cs->dc.amd7930.setIrqMask = &enpci_setIrqMask;
 
 	cs->BC_Read_Reg  = &dummyrr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cs->BC_Write_Reg = &dummywr;
 	cs->BC_Send_Data = &netjet_fill_dma;
 	cs->cardmsg = &enpci_card_msg;
@@ -548,11 +647,18 @@ static int __devinit en_cs_init_rest(struct IsdnCard *card,
 	return (1);
 }
 
+<<<<<<< HEAD
 static struct pci_dev *dev_netjet __devinitdata = NULL;
 
 /* called by config.c */
 int __devinit
 setup_enternow_pci(struct IsdnCard *card)
+=======
+static struct pci_dev *dev_netjet = NULL;
+
+/* called by config.c */
+int setup_enternow_pci(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct IsdnCardState *cs = card->cs;
@@ -562,6 +668,7 @@ setup_enternow_pci(struct IsdnCard *card)
 #error "not running on big endian machines now"
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         strcpy(tmp, enternow_pci_rev);
 	printk(KERN_INFO "HiSax: Formula-n Europe AG enter:now ISDN PCI driver Rev. %s\n", HiSax_getrev(tmp));
@@ -580,6 +687,8 @@ setup_enternow_pci(struct IsdnCard *card)
                         printk(KERN_WARNING "enter:now PCI: No PCI card found\n");
 			return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	strcpy(tmp, enternow_pci_rev);
 	printk(KERN_INFO "HiSax: Formula-n Europe AG enter:now ISDN PCI driver Rev. %s\n", HiSax_getrev(tmp));
 	if (cs->typ != ISDN_CTYPE_ENTERNOW)
@@ -596,7 +705,10 @@ setup_enternow_pci(struct IsdnCard *card)
 		} else {
 			printk(KERN_WARNING "enter:now PCI: No PCI card found\n");
 			return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		en_cs_init(card, cs);
@@ -604,8 +716,12 @@ setup_enternow_pci(struct IsdnCard *card)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         return en_cs_init_rest(card, cs);
 =======
 	return en_cs_init_rest(card, cs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return en_cs_init_rest(card, cs);
+>>>>>>> refs/remotes/origin/master
 }

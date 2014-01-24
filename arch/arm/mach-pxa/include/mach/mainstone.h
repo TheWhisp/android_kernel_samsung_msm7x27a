@@ -14,10 +14,15 @@
 #define ASM_ARCH_MAINSTONE_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <mach/irqs.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/irqs.h>
+
+>>>>>>> refs/remotes/origin/master
 #define MST_ETH_PHYS		PXA_CS4_PHYS
 
 #define MST_FPGA_PHYS		PXA_CS2_PHYS

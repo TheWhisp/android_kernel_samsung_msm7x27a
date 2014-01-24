@@ -22,9 +22,13 @@
  * the best guess is to add 0.5s.
  */
 
+<<<<<<< HEAD
 int rtc_hctosys_ret = -ENODEV;
 
 int rtc_hctosys(void)
+=======
+static int __init rtc_hctosys(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = -ENODEV;
 	struct rtc_time tm;
@@ -56,7 +60,11 @@ int rtc_hctosys(void)
 
 	rtc_tm_to_time(&tm, &tv.tv_sec);
 
+<<<<<<< HEAD
 	do_settimeofday(&tv);
+=======
+	err = do_settimeofday(&tv);
+>>>>>>> refs/remotes/origin/master
 
 	dev_info(rtc->dev.parent,
 		"setting system clock to "

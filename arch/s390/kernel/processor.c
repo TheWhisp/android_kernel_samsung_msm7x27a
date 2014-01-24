@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/kernel/processor.c
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *  Copyright IBM Corp. 2008
  *  Author(s): Martin Schwidefsky (schwidefsky@de.ibm.com)
  */
@@ -23,6 +26,7 @@ static DEFINE_PER_CPU(struct cpuid, cpu_id);
 /*
  * cpu_init - initializes state that is per-CPU.
  */
+<<<<<<< HEAD
 void __cpuinit cpu_init(void)
 {
 	struct cpuid *id = &per_cpu(cpu_id, smp_processor_id());
@@ -30,6 +34,12 @@ void __cpuinit cpu_init(void)
 =======
 	struct s390_idle_data *idle = &__get_cpu_var(s390_idle);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void cpu_init(void)
+{
+	struct s390_idle_data *idle = &__get_cpu_var(s390_idle);
+	struct cpuid *id = &__get_cpu_var(cpu_id);
+>>>>>>> refs/remotes/origin/master
 
 	get_cpu_id(id);
 	atomic_inc(&init_mm.mm_count);
@@ -37,9 +47,13 @@ void __cpuinit cpu_init(void)
 	BUG_ON(current->mm);
 	enter_lazy_tlb(&init_mm, current);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	memset(idle, 0, sizeof(*idle));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memset(idle, 0, sizeof(*idle));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -47,9 +61,15 @@ void __cpuinit cpu_init(void)
  */
 static int show_cpuinfo(struct seq_file *m, void *v)
 {
+<<<<<<< HEAD
 	static const char *hwcap_str[10] = {
 		"esan3", "zarch", "stfle", "msa", "ldisp", "eimm", "dfp",
 		"edat", "etf3eh", "highgprs"
+=======
+	static const char *hwcap_str[] = {
+		"esan3", "zarch", "stfle", "msa", "ldisp", "eimm", "dfp",
+		"edat", "etf3eh", "highgprs", "te"
+>>>>>>> refs/remotes/origin/master
 	};
 	unsigned long n = (unsigned long) v - 1;
 	int i;
@@ -62,10 +82,18 @@ static int show_cpuinfo(struct seq_file *m, void *v)
 			   num_online_cpus(), loops_per_jiffy/(500000/HZ),
 			   (loops_per_jiffy/(5000/HZ))%100);
 		seq_puts(m, "features\t: ");
+<<<<<<< HEAD
 		for (i = 0; i < 10; i++)
 			if (hwcap_str[i] && (elf_hwcap & (1UL << i)))
 				seq_printf(m, "%s ", hwcap_str[i]);
 		seq_puts(m, "\n");
+=======
+		for (i = 0; i < ARRAY_SIZE(hwcap_str); i++)
+			if (hwcap_str[i] && (elf_hwcap & (1UL << i)))
+				seq_printf(m, "%s ", hwcap_str[i]);
+		seq_puts(m, "\n");
+		show_cacheinfo(m);
+>>>>>>> refs/remotes/origin/master
 	}
 	get_online_cpus();
 	if (cpu_online(n)) {
@@ -83,10 +111,14 @@ static int show_cpuinfo(struct seq_file *m, void *v)
 static void *c_start(struct seq_file *m, loff_t *pos)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return *pos < NR_CPUS ? (void *)((unsigned long) *pos + 1) : NULL;
 =======
 	return *pos < nr_cpu_ids ? (void *)((unsigned long) *pos + 1) : NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return *pos < nr_cpu_ids ? (void *)((unsigned long) *pos + 1) : NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void *c_next(struct seq_file *m, void *v, loff_t *pos)

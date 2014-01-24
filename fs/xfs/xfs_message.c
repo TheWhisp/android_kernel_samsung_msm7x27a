@@ -17,10 +17,15 @@
 
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_types.h"
 #include "xfs_log.h"
 #include "xfs_inum.h"
 #include "xfs_trans.h"
+=======
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+>>>>>>> refs/remotes/origin/master
 #include "xfs_sb.h"
 #include "xfs_ag.h"
 #include "xfs_mount.h"
@@ -94,6 +99,17 @@ xfs_alert_tag(
 }
 
 void
+<<<<<<< HEAD
+=======
+asswarn(char *expr, char *file, int line)
+{
+	xfs_warn(NULL, "Assertion failed: %s, file: %s, line: %d",
+		expr, file, line);
+	WARN_ON(1);
+}
+
+void
+>>>>>>> refs/remotes/origin/master
 assfail(char *expr, char *file, int line)
 {
 	xfs_emerg(NULL, "Assertion failed: %s, file: %s, line: %d",

@@ -6,10 +6,14 @@
   Copyright (c) 2005 Martin Langer <martin-langer@gmx.de>,
   Copyright (c) 2005-2007 Stefano Brivio <stefano.brivio@polimi.it>
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) 2005-2008 Michael Buesch <mb@bu3sch.de>
 =======
   Copyright (c) 2005-2008 Michael Buesch <m@bues.ch>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  Copyright (c) 2005-2008 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
   Copyright (c) 2005, 2006 Danny van Dyk <kugelfang@gentoo.org>
   Copyright (c) 2005, 2006 Andreas Jaggi <andreas.jaggi@waterwave.ch>
 
@@ -36,10 +40,15 @@
 #include "phy_n.h"
 #include "phy_lp.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "phy_ht.h"
 #include "phy_lcn.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "phy_ht.h"
+#include "phy_lcn.h"
+>>>>>>> refs/remotes/origin/master
 #include "b43.h"
 #include "main.h"
 
@@ -69,7 +78,10 @@ int b43_phy_allocate(struct b43_wldev *dev)
 #endif
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case B43_PHYTYPE_HT:
 #ifdef CONFIG_B43_PHY_HT
 		phy->ops = &b43_phyops_ht;
@@ -80,7 +92,10 @@ int b43_phy_allocate(struct b43_wldev *dev)
 		phy->ops = &b43_phyops_lcn;
 #endif
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (B43_WARN_ON(!phy->ops))
 		return -ENODEV;
@@ -156,10 +171,14 @@ void b43_radio_lock(struct b43_wldev *dev)
 #if B43_DEBUG
 	B43_WARN_ON(dev->phy.radio_locked);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->phy.radio_locked = 1;
 =======
 	dev->phy.radio_locked = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->phy.radio_locked = true;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	macctl = b43_read32(dev, B43_MMIO_MACCTL);
@@ -178,10 +197,14 @@ void b43_radio_unlock(struct b43_wldev *dev)
 #if B43_DEBUG
 	B43_WARN_ON(!dev->phy.radio_locked);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->phy.radio_locked = 0;
 =======
 	dev->phy.radio_locked = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->phy.radio_locked = false;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	/* Commit any write */
@@ -197,6 +220,7 @@ void b43_phy_lock(struct b43_wldev *dev)
 #if B43_DEBUG
 	B43_WARN_ON(dev->phy.phy_locked);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->phy.phy_locked = 1;
 #endif
 	B43_WARN_ON(dev->sdev->id.revision < 3);
@@ -205,6 +229,11 @@ void b43_phy_lock(struct b43_wldev *dev)
 #endif
 	B43_WARN_ON(dev->dev->core_rev < 3);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->phy.phy_locked = true;
+#endif
+	B43_WARN_ON(dev->dev->core_rev < 3);
+>>>>>>> refs/remotes/origin/master
 
 	if (!b43_is_mode(dev->wl, NL80211_IFTYPE_AP))
 		b43_power_saving_ctl_bits(dev, B43_PS_AWAKE);
@@ -215,6 +244,7 @@ void b43_phy_unlock(struct b43_wldev *dev)
 #if B43_DEBUG
 	B43_WARN_ON(!dev->phy.phy_locked);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->phy.phy_locked = 0;
 #endif
 	B43_WARN_ON(dev->sdev->id.revision < 3);
@@ -223,6 +253,11 @@ void b43_phy_unlock(struct b43_wldev *dev)
 #endif
 	B43_WARN_ON(dev->dev->core_rev < 3);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->phy.phy_locked = false;
+#endif
+	B43_WARN_ON(dev->dev->core_rev < 3);
+>>>>>>> refs/remotes/origin/master
 
 	if (!b43_is_mode(dev->wl, NL80211_IFTYPE_AP))
 		b43_power_saving_ctl_bits(dev, 0);
@@ -270,6 +305,24 @@ void b43_radio_maskset(struct b43_wldev *dev, u16 offset, u16 mask, u16 set)
 			  (b43_radio_read16(dev, offset) & mask) | set);
 }
 
+<<<<<<< HEAD
+=======
+bool b43_radio_wait_value(struct b43_wldev *dev, u16 offset, u16 mask,
+			  u16 value, int delay, int timeout)
+{
+	u16 val;
+	int i;
+
+	for (i = 0; i < timeout; i += delay) {
+		val = b43_radio_read(dev, offset);
+		if ((val & mask) == value)
+			return true;
+		udelay(delay);
+	}
+	return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 u16 b43_phy_read(struct b43_wldev *dev, u16 reg)
 {
 	assert_mac_suspended(dev);
@@ -411,12 +464,17 @@ void b43_phy_txpower_check(struct b43_wldev *dev, unsigned int flags)
 	phy->next_txpwr_check_time = round_jiffies(now + (HZ * 2));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((dev->sdev->bus->boardinfo.vendor == SSB_BOARDVENDOR_BCM) &&
 	    (dev->sdev->bus->boardinfo.type == SSB_BOARD_BU4306))
 =======
 	if ((dev->dev->board_vendor == SSB_BOARDVENDOR_BCM) &&
 	    (dev->dev->board_type == SSB_BOARD_BU4306))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((dev->dev->board_vendor == SSB_BOARDVENDOR_BCM) &&
+	    (dev->dev->board_type == SSB_BOARD_BU4306))
+>>>>>>> refs/remotes/origin/master
 		return; /* No software txpower adjustment needed */
 
 	result = phy->ops->recalc_txpower(dev, !!(flags & B43_TXPWR_IGNORE_TSSI));
@@ -463,7 +521,11 @@ int b43_phy_shm_tssi_read(struct b43_wldev *dev, u16 shm_offset)
 	average = (a + b + c + d + 2) / 4;
 	if (is_ofdm) {
 		/* Adjust for CCK-boost */
+<<<<<<< HEAD
 		if (b43_shm_read16(dev, B43_SHM_SHARED, B43_SHM_SH_HOSTFLO)
+=======
+		if (b43_shm_read16(dev, B43_SHM_SHARED, B43_SHM_SH_HOSTF1)
+>>>>>>> refs/remotes/origin/master
 		    & B43_HF_CCKBOOST)
 			average = (average >= 13) ? (average - 13) : 0;
 	}
@@ -484,7 +546,10 @@ bool b43_channel_type_is_40mhz(enum nl80211_channel_type channel_type)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* http://bcm-v4.sipsolutions.net/802.11/PHY/N/BmacPhyClkFgc */
 void b43_phy_force_clock(struct b43_wldev *dev, bool force)
 {
@@ -517,7 +582,10 @@ void b43_phy_force_clock(struct b43_wldev *dev, bool force)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* http://bcm-v4.sipsolutions.net/802.11/PHY/Cordic */
 struct b43_c32 b43_cordic(int theta)
 {

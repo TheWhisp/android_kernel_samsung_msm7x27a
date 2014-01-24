@@ -5,10 +5,14 @@
  *          Timur Tabi <timur@freescale.com>
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2004,2007 Freescale Semiconductor, Inc
 =======
  * Copyright 2004,2007,2012 Freescale Semiconductor, Inc
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2004,2007,2012 Freescale Semiconductor, Inc
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
@@ -21,6 +25,7 @@
 #ifdef __KERNEL__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * These #ifdefs are safe because it's not possible to build a kernel that
  * runs on e500 and e600 cores.
@@ -32,6 +37,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * Global Utility Registers.
  *
@@ -44,6 +51,7 @@
  * #ifdefs.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_85xx
 struct ccsr_guts_85xx {
 #else
@@ -52,6 +60,9 @@ struct ccsr_guts_86xx {
 =======
 struct ccsr_guts {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct ccsr_guts {
+>>>>>>> refs/remotes/origin/master
 	__be32	porpllsr;	/* 0x.0000 - POR PLL Ratio Status Register */
 	__be32	porbmsr;	/* 0x.0004 - POR Boot Mode Status Register */
 	__be32	porimpscr;	/* 0x.0008 - POR I/O Impedance Status and Control Register */
@@ -72,6 +83,11 @@ struct ccsr_guts {
         __be32  dmuxcr;		/* 0x.0068 - DMA Mux Control Register */
         u8	res06c[0x70 - 0x6c];
 	__be32	devdisr;	/* 0x.0070 - Device Disable Control */
+<<<<<<< HEAD
+=======
+#define CCSR_GUTS_DEVDISR_TB1	0x00001000
+#define CCSR_GUTS_DEVDISR_TB0	0x00004000
+>>>>>>> refs/remotes/origin/master
 	__be32	devdisr2;	/* 0x.0074 - Device Disable Control 2 */
 	u8	res078[0x7c - 0x78];
 	__be32  pmjcr;		/* 0x.007c - 4 Power Management Jog Control Register */
@@ -89,6 +105,7 @@ struct ccsr_guts {
 	__be32	rstcr;		/* 0x.00b0 - Reset Control Register */
 	u8	res0b4[0xc0 - 0xb4];
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_85xx
 	__be32  iovselsr;	/* 0x.00c0 - I/O voltage select status register */
 #else
@@ -102,6 +119,16 @@ struct ccsr_guts {
 	__be32  iodelay1;	/* 0x.0224 - IO delay control register 1 */
 	__be32  iodelay2;	/* 0x.0228 - IO delay control register 2 */
 	u8	res22c[0x800 - 0x22c];
+=======
+	__be32  iovselsr;	/* 0x.00c0 - I/O voltage select status register
+					     Called 'elbcvselcr' on 86xx SOCs */
+	u8	res0c4[0x224 - 0xc4];
+	__be32  iodelay1;	/* 0x.0224 - IO delay control register 1 */
+	__be32  iodelay2;	/* 0x.0228 - IO delay control register 2 */
+	u8	res22c[0x604 - 0x22c];
+	__be32	pamubypenr; 	/* 0x.604 - PAMU bypass enable register */
+	u8	res608[0x800 - 0x608];
+>>>>>>> refs/remotes/origin/master
 	__be32	clkdvdr;	/* 0x.0800 - Clock Divide Register */
 	u8	res804[0x900 - 0x804];
 	__be32	ircr;		/* 0x.0900 - Infrared Control Register */
@@ -131,12 +158,18 @@ struct ccsr_guts {
 } __attribute__ ((packed));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Alternate function signal multiplex control */
 #define MPC85xx_PMUXCR_QE(x) (0x8000 >> (x))
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC_86xx
 
 #define CCSR_GUTS_DMACR_DEV_SSI	0	/* DMA controller/channel set to SSI */
@@ -156,10 +189,14 @@ struct ccsr_guts {
  * device: The device to set as the source (CCSR_GUTS_DMACR_DEV_xx)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void guts_set_dmacr(struct ccsr_guts_86xx __iomem *guts,
 =======
 static inline void guts_set_dmacr(struct ccsr_guts __iomem *guts,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void guts_set_dmacr(struct ccsr_guts __iomem *guts,
+>>>>>>> refs/remotes/origin/master
 	unsigned int co, unsigned int ch, unsigned int device)
 {
 	unsigned int shift = 16 + (8 * (1 - co) + 2 * (3 - ch));
@@ -196,10 +233,14 @@ static inline void guts_set_dmacr(struct ccsr_guts __iomem *guts,
  * value: the new value for the bit (0 or 1)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void guts_set_pmuxcr_dma(struct ccsr_guts_86xx __iomem *guts,
 =======
 static inline void guts_set_pmuxcr_dma(struct ccsr_guts __iomem *guts,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void guts_set_pmuxcr_dma(struct ccsr_guts __iomem *guts,
+>>>>>>> refs/remotes/origin/master
 	unsigned int co, unsigned int ch, unsigned int value)
 {
 	if ((ch == 0) || (ch == 3)) {

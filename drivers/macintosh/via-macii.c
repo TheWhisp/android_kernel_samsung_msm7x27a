@@ -35,9 +35,12 @@
 #include <asm/macints.h>
 #include <asm/mac_via.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static volatile unsigned char *via;
 
@@ -163,10 +166,14 @@ int macii_init(void)
 	if (err) goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = request_irq(IRQ_MAC_ADB, macii_interrupt, IRQ_FLG_LOCK, "ADB",
 =======
 	err = request_irq(IRQ_MAC_ADB, macii_interrupt, 0, "ADB",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = request_irq(IRQ_MAC_ADB, macii_interrupt, 0, "ADB",
+>>>>>>> refs/remotes/origin/master
 			  macii_interrupt);
 	if (err) goto out;
 

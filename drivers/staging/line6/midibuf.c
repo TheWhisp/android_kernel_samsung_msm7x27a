@@ -33,23 +33,39 @@ static int midibuf_message_length(unsigned char code)
 	}
 }
 
+<<<<<<< HEAD
 static int midibuf_is_empty(struct MidiBuffer *this)
+=======
+static int midibuf_is_empty(struct midi_buffer *this)
+>>>>>>> refs/remotes/origin/master
 {
 	return (this->pos_read == this->pos_write) && !this->full;
 }
 
+<<<<<<< HEAD
 static int midibuf_is_full(struct MidiBuffer *this)
+=======
+static int midibuf_is_full(struct midi_buffer *this)
+>>>>>>> refs/remotes/origin/master
 {
 	return this->full;
 }
 
+<<<<<<< HEAD
 void line6_midibuf_reset(struct MidiBuffer *this)
+=======
+void line6_midibuf_reset(struct midi_buffer *this)
+>>>>>>> refs/remotes/origin/master
 {
 	this->pos_read = this->pos_write = this->full = 0;
 	this->command_prev = -1;
 }
 
+<<<<<<< HEAD
 int line6_midibuf_init(struct MidiBuffer *this, int size, int split)
+=======
+int line6_midibuf_init(struct midi_buffer *this, int size, int split)
+>>>>>>> refs/remotes/origin/master
 {
 	this->buf = kmalloc(size, GFP_KERNEL);
 
@@ -62,6 +78,7 @@ int line6_midibuf_init(struct MidiBuffer *this, int size, int split)
 	return 0;
 }
 
+<<<<<<< HEAD
 void line6_midibuf_status(struct MidiBuffer *this)
 {
 	printk(KERN_DEBUG "midibuf size=%d split=%d pos_read=%d pos_write=%d "
@@ -70,6 +87,16 @@ void line6_midibuf_status(struct MidiBuffer *this)
 }
 
 int line6_midibuf_bytes_free(struct MidiBuffer *this)
+=======
+void line6_midibuf_status(struct midi_buffer *this)
+{
+	pr_debug("midibuf size=%d split=%d pos_read=%d pos_write=%d full=%d command_prev=%02x\n",
+		 this->size, this->split, this->pos_read, this->pos_write,
+		 this->full, this->command_prev);
+}
+
+int line6_midibuf_bytes_free(struct midi_buffer *this)
+>>>>>>> refs/remotes/origin/master
 {
 	return
 	    midibuf_is_full(this) ?
@@ -78,7 +105,11 @@ int line6_midibuf_bytes_free(struct MidiBuffer *this)
 	    1;
 }
 
+<<<<<<< HEAD
 int line6_midibuf_bytes_used(struct MidiBuffer *this)
+=======
+int line6_midibuf_bytes_used(struct midi_buffer *this)
+>>>>>>> refs/remotes/origin/master
 {
 	return
 	    midibuf_is_empty(this) ?
@@ -87,7 +118,11 @@ int line6_midibuf_bytes_used(struct MidiBuffer *this)
 	    1;
 }
 
+<<<<<<< HEAD
 int line6_midibuf_write(struct MidiBuffer *this, unsigned char *data,
+=======
+int line6_midibuf_write(struct midi_buffer *this, unsigned char *data,
+>>>>>>> refs/remotes/origin/master
 			int length)
 {
 	int bytes_free;
@@ -130,7 +165,12 @@ int line6_midibuf_write(struct MidiBuffer *this, unsigned char *data,
 	return length + skip_active_sense;
 }
 
+<<<<<<< HEAD
 int line6_midibuf_read(struct MidiBuffer *this, unsigned char *data, int length)
+=======
+int line6_midibuf_read(struct midi_buffer *this, unsigned char *data,
+		       int length)
+>>>>>>> refs/remotes/origin/master
 {
 	int bytes_used;
 	int length1, length2;
@@ -234,7 +274,11 @@ int line6_midibuf_read(struct MidiBuffer *this, unsigned char *data, int length)
 	return length + repeat;
 }
 
+<<<<<<< HEAD
 int line6_midibuf_ignore(struct MidiBuffer *this, int length)
+=======
+int line6_midibuf_ignore(struct midi_buffer *this, int length)
+>>>>>>> refs/remotes/origin/master
 {
 	int bytes_used = line6_midibuf_bytes_used(this);
 
@@ -246,7 +290,11 @@ int line6_midibuf_ignore(struct MidiBuffer *this, int length)
 	return length;
 }
 
+<<<<<<< HEAD
 int line6_midibuf_skip_message(struct MidiBuffer *this, unsigned short mask)
+=======
+int line6_midibuf_skip_message(struct midi_buffer *this, unsigned short mask)
+>>>>>>> refs/remotes/origin/master
 {
 	int cmd = this->command_prev;
 
@@ -257,7 +305,11 @@ int line6_midibuf_skip_message(struct MidiBuffer *this, unsigned short mask)
 	return 0;
 }
 
+<<<<<<< HEAD
 void line6_midibuf_destroy(struct MidiBuffer *this)
+=======
+void line6_midibuf_destroy(struct midi_buffer *this)
+>>>>>>> refs/remotes/origin/master
 {
 	kfree(this->buf);
 	this->buf = NULL;

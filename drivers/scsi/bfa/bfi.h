@@ -24,7 +24,10 @@
 #pragma pack(1)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Per dma segment max size */
 #define BFI_MEM_DMA_SEG_SZ	(131072)
 
@@ -43,12 +46,16 @@
 #define BFI_MEM_SEG_REQ_OFFSET(_tag, _sz)	\
 	((_tag) - (BFI_MEM_SEG_FROM_TAG(_tag, _sz) * BFI_MEM_NREQS_SEG(_sz)))
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * BFI FW image type
  */
 #define	BFI_FLASH_CHUNK_SZ			256	/*  Flash chunk size */
 #define	BFI_FLASH_CHUNK_SZ_WORDS	(BFI_FLASH_CHUNK_SZ/sizeof(u32))
+<<<<<<< HEAD
 <<<<<<< HEAD
 enum {
 	BFI_IMAGE_CB_FC,
@@ -58,6 +65,8 @@ enum {
 };
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Msg header common to all msgs
@@ -68,23 +77,31 @@ struct bfi_mhdr_s {
 	union {
 		struct {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			u8	rsvd;
 			u8	lpu_id;	/*  msg destination		    */
 =======
 			u8	qid;
 			u8	fn_lpu;	/*  msg destination		    */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			u8	qid;
+			u8	fn_lpu;	/*  msg destination		    */
+>>>>>>> refs/remotes/origin/master
 		} h2i;
 		u16	i2htok;	/*  token in msgs to host	    */
 	} mtag;
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define bfi_h2i_set(_mh, _mc, _op, _lpuid) do {		\
 	(_mh).msg_class		= (_mc);      \
 	(_mh).msg_id		= (_op);      \
 	(_mh).mtag.h2i.lpu_id	= (_lpuid);      \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define bfi_fn_lpu(__fn, __lpu)	((__fn) << 1 | (__lpu))
 #define bfi_mhdr_2_fn(_mh)	((_mh)->mtag.h2i.fn_lpu >> 1)
 
@@ -92,7 +109,10 @@ struct bfi_mhdr_s {
 	(_mh).msg_class		= (_mc);      \
 	(_mh).msg_id		= (_op);      \
 	(_mh).mtag.h2i.fn_lpu	= (_fn_lpu);      \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } while (0)
 
 #define bfi_i2h_set(_mh, _mc, _op, _i2htok) do {		\
@@ -141,10 +161,14 @@ union bfi_addr_u {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Scatter Gather Element
 =======
  * Scatter Gather Element used for fast-path IO requests
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Scatter Gather Element used for fast-path IO requests
+>>>>>>> refs/remotes/origin/master
  */
 struct bfi_sge_s {
 #ifdef __BIG_ENDIAN
@@ -160,7 +184,10 @@ struct bfi_sge_s {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * Generic DMA addr-len pair.
  */
@@ -169,7 +196,10 @@ struct bfi_alen_s {
 	u32			al_len;		/* length of buffer	*/
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Scatter Gather Page
  */
@@ -182,14 +212,20 @@ struct bfi_sgpg_s {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* FCP module definitions */
 #define BFI_IO_MAX	(2000)
 #define BFI_IOIM_SNSLEN	(256)
 #define BFI_IOIM_SNSBUF_SEGS	\
 	BFI_MEM_DMA_NSEGS(BFI_IO_MAX, BFI_IOIM_SNSLEN)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Large Message structure - 128 Bytes size Msgs
  */
@@ -213,7 +249,10 @@ struct bfi_mbmsg_s {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Supported PCI function class codes (personality)
  */
 enum bfi_pcifn_class {
@@ -222,32 +261,45 @@ enum bfi_pcifn_class {
 };
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Message Classes
  */
 enum bfi_mclass {
 	BFI_MC_IOC		= 1,	/*  IO Controller (IOC)	    */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BFI_MC_FCPORT		= 5,	/*  FC port			    */
 	BFI_MC_IOCFC		= 6,	/*  FC - IO Controller (IOC)	    */
 	BFI_MC_LL               = 7,    /*  Link Layer                      */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	BFI_MC_DIAG		= 2,    /*  Diagnostic Msgs            */
 	BFI_MC_FLASH		= 3,	/*  Flash message class	*/
 	BFI_MC_CEE		= 4,	/*  CEE	*/
 	BFI_MC_FCPORT		= 5,	/*  FC port			    */
 	BFI_MC_IOCFC		= 6,	/*  FC - IO Controller (IOC)	    */
 	BFI_MC_ABLK		= 7,	/*  ASIC block configuration	    */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	BFI_MC_UF		= 8,	/*  Unsolicited frame receive	    */
 	BFI_MC_FCXP		= 9,	/*  FC Transport		    */
 	BFI_MC_LPS		= 10,	/*  lport fc login services	    */
 	BFI_MC_RPORT		= 11,	/*  Remote port		    */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BFI_MC_ITNIM		= 12,	/*  I-T nexus (Initiator mode)	    */
 =======
 	BFI_MC_ITN		= 12,	/*  I-T nexus (Initiator mode)	    */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BFI_MC_ITN		= 12,	/*  I-T nexus (Initiator mode)	    */
+>>>>>>> refs/remotes/origin/master
 	BFI_MC_IOIM_READ	= 13,	/*  read IO (Initiator mode)	    */
 	BFI_MC_IOIM_WRITE	= 14,	/*  write IO (Initiator mode)	    */
 	BFI_MC_IOIM_IO		= 15,	/*  IO (Initiator mode)	    */
@@ -256,17 +308,25 @@ enum bfi_mclass {
 	BFI_MC_TSKIM		= 18,	/*  Initiator Task management	    */
 	BFI_MC_PORT		= 21,	/*  Physical port		    */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BFI_MC_SFP		= 22,	/*  SFP module	*/
 	BFI_MC_PHY		= 25,   /*  External PHY message class	*/
 >>>>>>> refs/remotes/origin/cm-10.0
 	BFI_MC_MAX		= 32
+=======
+	BFI_MC_SFP		= 22,	/*  SFP module	*/
+	BFI_MC_PHY		= 25,   /*  External PHY message class	*/
+	BFI_MC_FRU		= 34,
+	BFI_MC_MAX		= 35
+>>>>>>> refs/remotes/origin/master
 };
 
 #define BFI_IOC_MAX_CQS		4
 #define BFI_IOC_MAX_CQS_ASIC	8
 #define BFI_IOC_MSGLEN_MAX	32	/* 32 bytes */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define BFI_BOOT_TYPE_OFF		8
 #define BFI_BOOT_LOADER_OFF		12
@@ -281,6 +341,8 @@ enum bfi_mclass {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *----------------------------------------------------------------------
  *				IOC
@@ -288,7 +350,10 @@ enum bfi_mclass {
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Different asic generations
  */
@@ -305,7 +370,10 @@ enum bfi_asic_mode {
 	BFI_ASIC_MODE_COMBO	= 4,	/* FC 16G and Ethernet 10G port	*/
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum bfi_ioc_h2i_msgs {
 	BFI_IOC_H2I_ENABLE_REQ		= 1,
 	BFI_IOC_H2I_DISABLE_REQ		= 2,
@@ -319,12 +387,17 @@ enum bfi_ioc_i2h_msgs {
 	BFI_IOC_I2H_DISABLE_REPLY	= BFA_I2HM(2),
 	BFI_IOC_I2H_GETATTR_REPLY	= BFA_I2HM(3),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BFI_IOC_I2H_READY_EVENT		= BFA_I2HM(4),
 	BFI_IOC_I2H_HBEAT		= BFA_I2HM(5),
 =======
 	BFI_IOC_I2H_HBEAT		= BFA_I2HM(4),
 	BFI_IOC_I2H_ACQ_ADDR_REPLY	= BFA_I2HM(5),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BFI_IOC_I2H_HBEAT		= BFA_I2HM(4),
+	BFI_IOC_I2H_ACQ_ADDR_REPLY	= BFA_I2HM(5),
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -335,16 +408,25 @@ struct bfi_ioc_getattr_req_s {
 	union bfi_addr_u	attr_addr;
 };
 
+<<<<<<< HEAD
+=======
+#define BFI_IOC_ATTR_UUID_SZ	16
+>>>>>>> refs/remotes/origin/master
 struct bfi_ioc_attr_s {
 	wwn_t		mfg_pwwn;	/*  Mfg port wwn	   */
 	wwn_t		mfg_nwwn;	/*  Mfg node wwn	   */
 	mac_t		mfg_mac;	/*  Mfg mac		   */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u16	rsvd_a;
 =======
 	u8		port_mode;	/* bfi_port_mode	   */
 	u8		rsvd_a;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8		port_mode;	/* bfi_port_mode	   */
+	u8		rsvd_a;
+>>>>>>> refs/remotes/origin/master
 	wwn_t		pwwn;
 	wwn_t		nwwn;
 	mac_t		mac;		/*  PBC or Mfg mac	   */
@@ -364,6 +446,13 @@ struct bfi_ioc_attr_s {
 	char		optrom_version[BFA_VERSION_LEN];
 	struct		bfa_mfg_vpd_s	vpd;
 	u32	card_type;	/*  card type			*/
+<<<<<<< HEAD
+=======
+	u8	mfg_day;	/* manufacturing day */
+	u8	mfg_month;	/* manufacturing month */
+	u16	mfg_year;	/* manufacturing year */
+	u8	uuid[BFI_IOC_ATTR_UUID_SZ];	/*!< chinook uuid */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -397,11 +486,14 @@ struct bfi_ioc_getattr_reply_s {
 #define BFI_IOC_MD5SUM_SZ	4
 struct bfi_ioc_image_hdr_s {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32	signature;	/*  constant signature */
 	u32	rsvd_a;
 	u32	exec;		/*  exec vector	*/
 	u32	param;		/*  parameters		*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32	signature;	/* constant signature		*/
 	u8	asic_gen;	/* asic generation		*/
 	u8	asic_mode;
@@ -409,11 +501,15 @@ struct bfi_ioc_image_hdr_s {
 	u8	port1_mode;	/* device mode for port 1	*/
 	u32	exec;		/* exec vector			*/
 	u32	bootenv;	/* fimware boot env		*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32	rsvd_b[4];
 	u32	md5sum[BFI_IOC_MD5SUM_SZ];
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  *  BFI_IOC_I2H_READY_EVENT message
@@ -423,6 +519,8 @@ struct bfi_ioc_rdy_event_s {
 	u8			init_status;	/*  init event status */
 	u8			rsvd[3];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define BFI_FWBOOT_DEVMODE_OFF		4
 #define BFI_FWBOOT_TYPE_OFF		8
 #define BFI_FWBOOT_ENV_OFF		12
@@ -439,7 +537,10 @@ struct bfi_ioc_rdy_event_s {
 enum bfi_port_mode {
 	BFI_PORT_MODE_FC	= 1,
 	BFI_PORT_MODE_ETH	= 2,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct bfi_ioc_hbeat_s {
@@ -463,6 +564,13 @@ enum bfi_ioc_state {
 	BFI_IOC_MEMTEST		= 9,	/*  IOC is doing memtest	     */
 };
 
+<<<<<<< HEAD
+=======
+#define BFA_IOC_CB_JOIN_SH	16
+#define BFA_IOC_CB_FWSTATE_MASK	0x0000ffff
+#define BFA_IOC_CB_JOIN_MASK	0xffff0000
+
+>>>>>>> refs/remotes/origin/master
 #define BFI_IOC_ENDIAN_SIG  0x12345678
 
 enum {
@@ -499,12 +607,17 @@ enum {
 struct bfi_ioc_ctrl_req_s {
 	struct bfi_mhdr_s	mh;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8			ioc_class;
 	u8			rsvd[3];
 =======
 	u16			clscode;
 	u16			rsvd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16			clscode;
+	u16			rsvd;
+>>>>>>> refs/remotes/origin/master
 	u32		tv_sec;
 };
 #define bfi_ioc_enable_req_t struct bfi_ioc_ctrl_req_s;
@@ -517,12 +630,18 @@ struct bfi_ioc_ctrl_reply_s {
 	struct bfi_mhdr_s	mh;		/*  Common msg header     */
 	u8			status;		/*  enable/disable status */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8			rsvd[3];
 =======
 	u8			port_mode;	/*  bfa_mode_s	*/
 	u8			cap_bm;		/*  capability bit mask */
 	u8			rsvd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8			port_mode;	/*  bfa_mode_s	*/
+	u8			cap_bm;		/*  capability bit mask */
+	u8			rsvd;
+>>>>>>> refs/remotes/origin/master
 };
 #define bfi_ioc_enable_reply_t struct bfi_ioc_ctrl_reply_s;
 #define bfi_ioc_disable_reply_t struct bfi_ioc_ctrl_reply_s;
@@ -545,10 +664,14 @@ union bfi_ioc_h2i_msg_u {
 union bfi_ioc_i2h_msg_u {
 	struct bfi_mhdr_s		mh;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct bfi_ioc_rdy_event_s	rdy_event;
 =======
 	struct bfi_ioc_ctrl_reply_s	fw_event;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfi_ioc_ctrl_reply_s	fw_event;
+>>>>>>> refs/remotes/origin/master
 	u32			mboxmsg[BFI_IOC_MSGSZ];
 };
 
@@ -562,9 +685,13 @@ union bfi_ioc_i2h_msg_u {
 #define BFI_PBC_MAX_BLUNS	8
 #define BFI_PBC_MAX_VPORTS	16
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define BFI_PBC_PORT_DISABLED	2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BFI_PBC_PORT_DISABLED	2
+>>>>>>> refs/remotes/origin/master
 
 /*
  * PBC boot lun configuration
@@ -747,7 +874,10 @@ union bfi_port_i2h_msg_u {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *----------------------------------------------------------------------
  *				ABLK
@@ -798,7 +928,12 @@ struct bfi_ablk_h2i_pf_req_s {
 	u8			pcifn;
 	u8			port;
 	u16			pers;
+<<<<<<< HEAD
 	u32			bw;
+=======
+	u16			bw_min; /* percent BW @ max speed */
+	u16			bw_max; /* percent BW @ max speed */
+>>>>>>> refs/remotes/origin/master
 };
 
 /* BFI_ABLK_H2I_OPTROM_ENABLE, BFI_ABLK_H2I_OPTROM_DISABLE */
@@ -1068,6 +1203,10 @@ enum bfi_diag_h2i {
 	BFI_DIAG_H2I_TEMPSENSOR = 4,
 	BFI_DIAG_H2I_LEDTEST = 5,
 	BFI_DIAG_H2I_QTEST      = 6,
+<<<<<<< HEAD
+=======
+	BFI_DIAG_H2I_DPORT	= 7,
+>>>>>>> refs/remotes/origin/master
 };
 
 enum bfi_diag_i2h {
@@ -1077,6 +1216,11 @@ enum bfi_diag_i2h {
 	BFI_DIAG_I2H_TEMPSENSOR = BFA_I2HM(BFI_DIAG_H2I_TEMPSENSOR),
 	BFI_DIAG_I2H_LEDTEST = BFA_I2HM(BFI_DIAG_H2I_LEDTEST),
 	BFI_DIAG_I2H_QTEST      = BFA_I2HM(BFI_DIAG_H2I_QTEST),
+<<<<<<< HEAD
+=======
+	BFI_DIAG_I2H_DPORT	= BFA_I2HM(BFI_DIAG_H2I_DPORT),
+	BFI_DIAG_I2H_DPORT_SCN	= BFA_I2HM(8),
+>>>>>>> refs/remotes/origin/master
 };
 
 #define BFI_DIAG_MAX_SGES	2
@@ -1163,6 +1307,83 @@ struct bfi_diag_qtest_req_s {
 #define bfi_diag_qtest_rsp_t struct bfi_diag_qtest_req_s
 
 /*
+<<<<<<< HEAD
+=======
+ *	D-port test
+ */
+enum bfi_dport_req {
+	BFI_DPORT_DISABLE	= 0,	/* disable dport request	*/
+	BFI_DPORT_ENABLE	= 1,	/* enable dport request		*/
+	BFI_DPORT_START		= 2,	/* start dport request	*/
+	BFI_DPORT_SHOW		= 3,	/* show dport request	*/
+	BFI_DPORT_DYN_DISABLE	= 4,	/* disable dynamic dport request */
+};
+
+enum bfi_dport_scn {
+	BFI_DPORT_SCN_TESTSTART		= 1,
+	BFI_DPORT_SCN_TESTCOMP		= 2,
+	BFI_DPORT_SCN_SFP_REMOVED	= 3,
+	BFI_DPORT_SCN_DDPORT_ENABLE	= 4,
+	BFI_DPORT_SCN_DDPORT_DISABLE	= 5,
+	BFI_DPORT_SCN_FCPORT_DISABLE	= 6,
+	BFI_DPORT_SCN_SUBTESTSTART	= 7,
+	BFI_DPORT_SCN_TESTSKIP		= 8,
+	BFI_DPORT_SCN_DDPORT_DISABLED	= 9,
+};
+
+struct bfi_diag_dport_req_s {
+	struct bfi_mhdr_s	mh;	/* 4 bytes                      */
+	u8			req;	/* request 1: enable 0: disable	*/
+	u8			rsvd[3];
+	u32			lpcnt;
+	u32			payload;
+};
+
+struct bfi_diag_dport_rsp_s {
+	struct bfi_mhdr_s	mh;	/* header 4 bytes		*/
+	bfa_status_t		status;	/* reply status			*/
+	wwn_t			pwwn;	/* switch port wwn. 8 bytes	*/
+	wwn_t			nwwn;	/* switch node wwn. 8 bytes	*/
+};
+
+struct bfi_diag_dport_scn_teststart_s {
+	wwn_t	pwwn;	/* switch port wwn. 8 bytes */
+	wwn_t	nwwn;	/* switch node wwn. 8 bytes */
+	u8	type;	/* bfa_diag_dport_test_type_e */
+	u8	rsvd[3];
+	u32	numfrm; /* from switch uint in 1M */
+};
+
+struct bfi_diag_dport_scn_testcomp_s {
+	u8	status; /* bfa_diag_dport_test_status_e */
+	u8	speed;  /* bfa_port_speed_t  */
+	u16	numbuffer; /* from switch  */
+	u8	subtest_status[DPORT_TEST_MAX];  /* 4 bytes */
+	u32	latency;   /* from switch  */
+	u32	distance;  /* from swtich unit in meters  */
+			/* Buffers required to saturate the link */
+	u16	frm_sz;	/* from switch for buf_reqd */
+	u8	rsvd[2];
+};
+
+struct bfi_diag_dport_scn_s {		/* max size == RDS_RMESZ	*/
+	struct bfi_mhdr_s	mh;	/* header 4 bytes		*/
+	u8			state;  /* new state			*/
+	u8			rsvd[3];
+	union {
+		struct bfi_diag_dport_scn_teststart_s teststart;
+		struct bfi_diag_dport_scn_testcomp_s testcomp;
+	} info;
+};
+
+union bfi_diag_dport_msg_u {
+	struct bfi_diag_dport_req_s	req;
+	struct bfi_diag_dport_rsp_s	rsp;
+	struct bfi_diag_dport_scn_s	scn;
+};
+
+/*
+>>>>>>> refs/remotes/origin/master
  *	PHY module specific
  */
 enum bfi_phy_h2i_msgs_e {
@@ -1258,7 +1479,56 @@ struct bfi_phy_write_rsp_s {
 	u32			length;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum bfi_fru_h2i_msgs {
+	BFI_FRUVPD_H2I_WRITE_REQ = 1,
+	BFI_FRUVPD_H2I_READ_REQ = 2,
+	BFI_TFRU_H2I_WRITE_REQ = 3,
+	BFI_TFRU_H2I_READ_REQ = 4,
+};
+
+enum bfi_fru_i2h_msgs {
+	BFI_FRUVPD_I2H_WRITE_RSP = BFA_I2HM(1),
+	BFI_FRUVPD_I2H_READ_RSP = BFA_I2HM(2),
+	BFI_TFRU_I2H_WRITE_RSP = BFA_I2HM(3),
+	BFI_TFRU_I2H_READ_RSP = BFA_I2HM(4),
+};
+
+/*
+ * FRU write request
+ */
+struct bfi_fru_write_req_s {
+	struct bfi_mhdr_s	mh;	/* Common msg header */
+	u8			last;
+	u8			rsv_1[3];
+	u8			trfr_cmpl;
+	u8			rsv_2[3];
+	u32			offset;
+	u32			length;
+	struct bfi_alen_s	alen;
+};
+
+/*
+ * FRU read request
+ */
+struct bfi_fru_read_req_s {
+	struct bfi_mhdr_s	mh;	/* Common msg header */
+	u32			offset;
+	u32			length;
+	struct bfi_alen_s	alen;
+};
+
+/*
+ * FRU response
+ */
+struct bfi_fru_rsp_s {
+	struct bfi_mhdr_s	mh;	/* Common msg header */
+	u32			status;
+	u32			length;
+};
+>>>>>>> refs/remotes/origin/master
 #pragma pack()
 
 #endif /* __BFI_H__ */

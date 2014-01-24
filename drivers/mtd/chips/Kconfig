@@ -43,9 +43,12 @@ choice
 	prompt "Flash cmd/query data swapping"
 	depends on MTD_CFI_ADV_OPTIONS
 	default MTD_CFI_NOSWAP
+<<<<<<< HEAD
 
 config MTD_CFI_NOSWAP
 	bool "NO"
+=======
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This option defines the way in which the CPU attempts to arrange
 	  data bits when writing the 'magic' commands to the chips. Saying
@@ -55,12 +58,17 @@ config MTD_CFI_NOSWAP
 	  Specific arrangements are possible with the BIG_ENDIAN_BYTE and
 	  LITTLE_ENDIAN_BYTE, if the bytes are reversed.
 
+<<<<<<< HEAD
 	  If you have a LART, on which the data (and address) lines were
 	  connected in a fashion which ensured that the nets were as short
 	  as possible, resulting in a bit-shuffling which seems utterly
 	  random to the untrained eye, you need the LART_ENDIAN_BYTE option.
 
 	  Yes, there really exists something sicker than PDP-endian :)
+=======
+config MTD_CFI_NOSWAP
+	bool "NO"
+>>>>>>> refs/remotes/origin/master
 
 config MTD_CFI_BE_BYTE_SWAP
 	bool "BIG_ENDIAN_BYTE"
@@ -153,7 +161,10 @@ config MTD_CFI_I8
 config MTD_OTP
 	bool "Protection Registers aka one-time programmable (OTP) bits"
 	depends on MTD_CFI_ADV_OPTIONS
+<<<<<<< HEAD
 	select HAVE_MTD_OTP
+=======
+>>>>>>> refs/remotes/origin/master
 	default n
 	help
 	  This enables support for reading, writing and locking so called
@@ -232,7 +243,11 @@ config MTD_ABSENT
 
 config MTD_XIP
 	bool "XIP aware MTD support"
+<<<<<<< HEAD
 	depends on !SMP && (MTD_CFI_INTELEXT || MTD_CFI_AMDSTD) && EXPERIMENTAL && ARCH_MTD_XIP
+=======
+	depends on !SMP && (MTD_CFI_INTELEXT || MTD_CFI_AMDSTD) && ARCH_MTD_XIP
+>>>>>>> refs/remotes/origin/master
 	default y if XIP_KERNEL
 	help
 	  This allows MTD support to work with flash memory which is also

@@ -38,7 +38,11 @@
 
 #ifdef SUPPORT_MAGIC_GATE
 
+<<<<<<< HEAD
 int mg_check_int_error(struct rts51x_chip *chip)
+=======
+static int mg_check_int_error(struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 value;
 
@@ -119,7 +123,11 @@ int mg_set_tpc_para_sub(struct rts51x_chip *chip, int type, u8 mg_entry_num)
   * 2. send SET_ID TPC command to medium with Leaf ID released by host
   * in this SCSI CMD.
   */
+<<<<<<< HEAD
 int mg_set_leaf_id(struct scsi_cmnd *srb, struct rts51x_chip *chip)
+=======
+int rts51x_mg_set_leaf_id(struct scsi_cmnd *srb, struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval;
 	int i;
@@ -129,10 +137,17 @@ int mg_set_leaf_id(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 	RTS51X_DEBUGP("--%s--\n", __func__);
 
 	if (scsi_bufflen(srb) < 12) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MEDIA_INVALID_CMD_FIELD);
 		TRACE_RET(chip, STATUS_FAIL);
 	}
 	ms_cleanup_work(chip);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MEDIA_INVALID_CMD_FIELD);
+		TRACE_RET(chip, STATUS_FAIL);
+	}
+	rts51x_ms_cleanup_work(chip);
+>>>>>>> refs/remotes/origin/master
 
 	retval = ms_switch_clock(chip);
 	if (retval != STATUS_SUCCESS)
@@ -140,7 +155,11 @@ int mg_set_leaf_id(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 
 	retval = mg_send_ex_cmd(chip, MG_SET_LID, 0);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_ESTAB);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_ESTAB);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, retval);
 	}
 
@@ -151,12 +170,20 @@ int mg_set_leaf_id(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 	retval =
 	    ms_write_bytes(chip, PRO_WRITE_SHORT_DATA, 32, WAIT_INT, buf1, 32);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_ESTAB);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_ESTAB);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, retval);
 	}
 	retval = mg_check_int_error(chip);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_ESTAB);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_ESTAB);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, retval);
 	}
 
@@ -170,7 +197,11 @@ int mg_set_leaf_id(struct scsi_cmnd *srb, struct rts51x_chip *chip)
   * data(1536 bytes totally) from medium by using READ_LONG_DATA TPC
   * for 3 times, and report data to host with data-length is 1052 bytes.
   */
+<<<<<<< HEAD
 int mg_get_local_EKB(struct scsi_cmnd *srb, struct rts51x_chip *chip)
+=======
+int rts51x_mg_get_local_EKB(struct scsi_cmnd *srb, struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval = STATUS_FAIL;
 	int bufflen;
@@ -179,7 +210,11 @@ int mg_get_local_EKB(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 
 	RTS51X_DEBUGP("--%s--\n", __func__);
 
+<<<<<<< HEAD
 	ms_cleanup_work(chip);
+=======
+	rts51x_ms_cleanup_work(chip);
+>>>>>>> refs/remotes/origin/master
 
 	retval = ms_switch_clock(chip);
 	if (retval != STATUS_SUCCESS)
@@ -196,21 +231,33 @@ int mg_get_local_EKB(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 
 	retval = mg_send_ex_cmd(chip, MG_GET_LEKB, 0);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+>>>>>>> refs/remotes/origin/master
 		TRACE_GOTO(chip, GetEKBFinish);
 	}
 
 	retval = ms_transfer_data(chip, MS_TM_AUTO_READ, PRO_READ_LONG_DATA,
 				  3, WAIT_INT, 0, 0, buf + 4, 1536);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+>>>>>>> refs/remotes/origin/master
 		rts51x_write_register(chip, CARD_STOP, MS_STOP | MS_CLR_ERR,
 				      MS_STOP | MS_CLR_ERR);
 		TRACE_GOTO(chip, GetEKBFinish);
 	}
 	retval = mg_check_int_error(chip);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+>>>>>>> refs/remotes/origin/master
 		TRACE_GOTO(chip, GetEKBFinish);
 	}
 
@@ -229,7 +276,11 @@ GetEKBFinish:
   * TPC commands to the medium for writing 8-bytes data as challenge
   * by host within a short data packet.
   */
+<<<<<<< HEAD
 int mg_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip)
+=======
+int rts51x_mg_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ms_info *ms_card = &(chip->ms_card);
 	int retval;
@@ -240,7 +291,11 @@ int mg_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 
 	RTS51X_DEBUGP("--%s--\n", __func__);
 
+<<<<<<< HEAD
 	ms_cleanup_work(chip);
+=======
+	rts51x_ms_cleanup_work(chip);
+>>>>>>> refs/remotes/origin/master
 
 	retval = ms_switch_clock(chip);
 	if (retval != STATUS_SUCCESS)
@@ -248,19 +303,31 @@ int mg_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 
 	retval = mg_send_ex_cmd(chip, MG_GET_ID, 0);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_INCOMPATIBLE_MEDIUM);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_INCOMPATIBLE_MEDIUM);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, retval);
 	}
 
 	retval =
 	    ms_read_bytes(chip, PRO_READ_SHORT_DATA, 32, WAIT_INT, buf, 32);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_INCOMPATIBLE_MEDIUM);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_INCOMPATIBLE_MEDIUM);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, retval);
 	}
 	retval = mg_check_int_error(chip);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_INCOMPATIBLE_MEDIUM);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_INCOMPATIBLE_MEDIUM);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, retval);
 	}
 
@@ -276,13 +343,21 @@ int mg_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 	}
 
 	if (i == 2500) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_INCOMPATIBLE_MEDIUM);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_INCOMPATIBLE_MEDIUM);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, STATUS_FAIL);
 	}
 
 	retval = mg_send_ex_cmd(chip, MG_SET_RD, 0);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_INCOMPATIBLE_MEDIUM);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_INCOMPATIBLE_MEDIUM);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, retval);
 	}
 
@@ -296,12 +371,20 @@ int mg_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 	retval =
 	    ms_write_bytes(chip, PRO_WRITE_SHORT_DATA, 32, WAIT_INT, buf, 32);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_INCOMPATIBLE_MEDIUM);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_INCOMPATIBLE_MEDIUM);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, retval);
 	}
 	retval = mg_check_int_error(chip);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_INCOMPATIBLE_MEDIUM);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_INCOMPATIBLE_MEDIUM);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, retval);
 	}
 
@@ -320,7 +403,11 @@ int mg_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip)
   * The paremeter MagicGateID is the one that adapter has obtained from
   * the medium by TPC commands in Set Leaf ID command phase previously.
   */
+<<<<<<< HEAD
 int mg_get_rsp_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip)
+=======
+int rts51x_mg_get_rsp_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ms_info *ms_card = &(chip->ms_card);
 	int retval, i;
@@ -330,7 +417,11 @@ int mg_get_rsp_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 
 	RTS51X_DEBUGP("--%s--\n", __func__);
 
+<<<<<<< HEAD
 	ms_cleanup_work(chip);
+=======
+	rts51x_ms_cleanup_work(chip);
+>>>>>>> refs/remotes/origin/master
 
 	retval = ms_switch_clock(chip);
 	if (retval != STATUS_SUCCESS)
@@ -338,19 +429,31 @@ int mg_get_rsp_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 
 	retval = mg_send_ex_cmd(chip, MG_MAKE_RMS, 0);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, retval);
 	}
 
 	retval =
 	    ms_read_bytes(chip, PRO_READ_SHORT_DATA, 32, WAIT_INT, buf1, 32);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, retval);
 	}
 	retval = mg_check_int_error(chip);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, retval);
 	}
 
@@ -375,7 +478,11 @@ int mg_get_rsp_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 	}
 
 	if (i == 2500) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, STATUS_FAIL);
 	}
 
@@ -389,7 +496,11 @@ int mg_get_rsp_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip)
   * issues TPC commands to the medium for writing 8-bytes data as
   * challenge by host within a short data packet.
   */
+<<<<<<< HEAD
 int mg_rsp(struct scsi_cmnd *srb, struct rts51x_chip *chip)
+=======
+int rts51x_mg_rsp(struct scsi_cmnd *srb, struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ms_info *ms_card = &(chip->ms_card);
 	int retval;
@@ -400,7 +511,11 @@ int mg_rsp(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 
 	RTS51X_DEBUGP("--%s--\n", __func__);
 
+<<<<<<< HEAD
 	ms_cleanup_work(chip);
+=======
+	rts51x_ms_cleanup_work(chip);
+>>>>>>> refs/remotes/origin/master
 
 	retval = ms_switch_clock(chip);
 	if (retval != STATUS_SUCCESS)
@@ -408,7 +523,11 @@ int mg_rsp(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 
 	retval = mg_send_ex_cmd(chip, MG_MAKE_KSE, 0);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, retval);
 	}
 
@@ -422,12 +541,20 @@ int mg_rsp(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 	retval =
 	    ms_write_bytes(chip, PRO_WRITE_SHORT_DATA, 32, WAIT_INT, buf, 32);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, retval);
 	}
 	retval = mg_check_int_error(chip);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_KEY_FAIL_NOT_AUTHEN);
+>>>>>>> refs/remotes/origin/master
 		TRACE_RET(chip, retval);
 	}
 
@@ -444,10 +571,17 @@ int mg_rsp(struct scsi_cmnd *srb, struct rts51x_chip *chip)
   *
   * Since the extra 4 bytes data is just only a prefix to original data
   * that read from medium, so that the 4-byte data pushed into Ring buffer
+<<<<<<< HEAD
   * precedes data tramsinssion from medium to Ring buffer by DMA mechanisim
   * in order to get maximum performance and minimum code size simultaneously.
   */
 int mg_get_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
+=======
+  * precedes data transmission from medium to Ring buffer by DMA mechanism
+  * in order to get maximum performance and minimum code size simultaneously.
+  */
+int rts51x_mg_get_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ms_info *ms_card = &(chip->ms_card);
 	int retval;
@@ -457,7 +591,11 @@ int mg_get_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 
 	RTS51X_DEBUGP("--%s--\n", __func__);
 
+<<<<<<< HEAD
 	ms_cleanup_work(chip);
+=======
+	rts51x_ms_cleanup_work(chip);
+>>>>>>> refs/remotes/origin/master
 
 	retval = ms_switch_clock(chip);
 	if (retval != STATUS_SUCCESS)
@@ -474,21 +612,33 @@ int mg_get_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 
 	retval = mg_send_ex_cmd(chip, MG_GET_IBD, ms_card->mg_entry_num);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MEDIA_UNRECOVER_READ_ERR);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MEDIA_UNRECOVER_READ_ERR);
+>>>>>>> refs/remotes/origin/master
 		TRACE_GOTO(chip, GetICVFinish);
 	}
 
 	retval = ms_transfer_data(chip, MS_TM_AUTO_READ, PRO_READ_LONG_DATA,
 				  2, WAIT_INT, 0, 0, buf + 4, 1024);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MEDIA_UNRECOVER_READ_ERR);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MEDIA_UNRECOVER_READ_ERR);
+>>>>>>> refs/remotes/origin/master
 		rts51x_write_register(chip, CARD_STOP, MS_STOP | MS_CLR_ERR,
 				      MS_STOP | MS_CLR_ERR);
 		TRACE_GOTO(chip, GetICVFinish);
 	}
 	retval = mg_check_int_error(chip);
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		set_sense_type(chip, lun, SENSE_TYPE_MEDIA_UNRECOVER_READ_ERR);
+=======
+		rts51x_set_sense_type(chip, lun, SENSE_TYPE_MEDIA_UNRECOVER_READ_ERR);
+>>>>>>> refs/remotes/origin/master
 		TRACE_GOTO(chip, GetICVFinish);
 	}
 
@@ -511,7 +661,11 @@ GetICVFinish:
   * that sent by host, and it should be skipped by shifting DMA pointer
   * before writing 1024 bytes to medium.
   */
+<<<<<<< HEAD
 int mg_set_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
+=======
+int rts51x_mg_set_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ms_info *ms_card = &(chip->ms_card);
 	int retval;
@@ -524,7 +678,11 @@ int mg_set_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 
 	RTS51X_DEBUGP("--%s--\n", __func__);
 
+<<<<<<< HEAD
 	ms_cleanup_work(chip);
+=======
+	rts51x_ms_cleanup_work(chip);
+>>>>>>> refs/remotes/origin/master
 
 	retval = ms_switch_clock(chip);
 	if (retval != STATUS_SUCCESS)
@@ -541,6 +699,7 @@ int mg_set_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 	if (retval != STATUS_SUCCESS) {
 		if (ms_card->mg_auth == 0) {
 			if ((buf[5] & 0xC0) != 0)
+<<<<<<< HEAD
 				set_sense_type(chip, lun,
 					SENSE_TYPE_MG_KEY_FAIL_NOT_ESTAB);
 			else
@@ -548,6 +707,15 @@ int mg_set_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 					SENSE_TYPE_MG_WRITE_ERR);
 		} else {
 			set_sense_type(chip, lun, SENSE_TYPE_MG_WRITE_ERR);
+=======
+				rts51x_set_sense_type(chip, lun,
+					SENSE_TYPE_MG_KEY_FAIL_NOT_ESTAB);
+			else
+				rts51x_set_sense_type(chip, lun,
+					SENSE_TYPE_MG_WRITE_ERR);
+		} else {
+			rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_WRITE_ERR);
+>>>>>>> refs/remotes/origin/master
 		}
 		TRACE_GOTO(chip, SetICVFinish);
 	}
@@ -563,7 +731,11 @@ int mg_set_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 		rts51x_add_cmd(chip, WRITE_REG_CMD, MS_TRANS_CFG, 0xFF,
 			       WAIT_INT);
 
+<<<<<<< HEAD
 		trans_dma_enable(DMA_TO_DEVICE, chip, 512, DMA_512);
+=======
+		rts51x_trans_dma_enable(DMA_TO_DEVICE, chip, 512, DMA_512);
+>>>>>>> refs/remotes/origin/master
 
 		rts51x_add_cmd(chip, WRITE_REG_CMD, MS_TRANSFER, 0xFF,
 			       MS_TRANSFER_START | MS_TM_NORMAL_WRITE);
@@ -572,7 +744,11 @@ int mg_set_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 
 		retval = rts51x_send_cmd(chip, MODE_CDOR, 100);
 		if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 			set_sense_type(chip, lun, SENSE_TYPE_MG_WRITE_ERR);
+=======
+			rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_WRITE_ERR);
+>>>>>>> refs/remotes/origin/master
 			TRACE_GOTO(chip, SetICVFinish);
 		}
 
@@ -583,6 +759,7 @@ int mg_set_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 			rts51x_clear_ms_error(chip);
 			if (ms_card->mg_auth == 0) {
 				if ((buf[5] & 0xC0) != 0)
+<<<<<<< HEAD
 					set_sense_type(chip, lun,
 						SENSE_TYPE_MG_KEY_FAIL_NOT_ESTAB);
 				else
@@ -590,6 +767,15 @@ int mg_set_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 						SENSE_TYPE_MG_WRITE_ERR);
 			} else {
 				set_sense_type(chip, lun,
+=======
+					rts51x_set_sense_type(chip, lun,
+						SENSE_TYPE_MG_KEY_FAIL_NOT_ESTAB);
+				else
+					rts51x_set_sense_type(chip, lun,
+						SENSE_TYPE_MG_WRITE_ERR);
+			} else {
+				rts51x_set_sense_type(chip, lun,
+>>>>>>> refs/remotes/origin/master
 					       SENSE_TYPE_MG_WRITE_ERR);
 			}
 			retval = STATUS_FAIL;
@@ -602,6 +788,7 @@ int mg_set_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 			rts51x_clear_ms_error(chip);
 			if (ms_card->mg_auth == 0) {
 				if ((buf[5] & 0xC0) != 0)
+<<<<<<< HEAD
 					set_sense_type(chip, lun,
 						SENSE_TYPE_MG_KEY_FAIL_NOT_ESTAB);
 				else
@@ -609,6 +796,15 @@ int mg_set_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 						SENSE_TYPE_MG_WRITE_ERR);
 			} else {
 				set_sense_type(chip, lun,
+=======
+					rts51x_set_sense_type(chip, lun,
+						SENSE_TYPE_MG_KEY_FAIL_NOT_ESTAB);
+				else
+					rts51x_set_sense_type(chip, lun,
+						SENSE_TYPE_MG_WRITE_ERR);
+			} else {
+				rts51x_set_sense_type(chip, lun,
+>>>>>>> refs/remotes/origin/master
 					       SENSE_TYPE_MG_WRITE_ERR);
 			}
 			retval = STATUS_FAIL;
@@ -622,6 +818,7 @@ int mg_set_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 		rts51x_clear_ms_error(chip);
 		if (ms_card->mg_auth == 0) {
 			if ((buf[5] & 0xC0) != 0)
+<<<<<<< HEAD
 				set_sense_type(chip, lun,
 					SENSE_TYPE_MG_KEY_FAIL_NOT_ESTAB);
 			else
@@ -629,6 +826,15 @@ int mg_set_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip)
 					SENSE_TYPE_MG_WRITE_ERR);
 		} else {
 			set_sense_type(chip, lun, SENSE_TYPE_MG_WRITE_ERR);
+=======
+				rts51x_set_sense_type(chip, lun,
+					SENSE_TYPE_MG_KEY_FAIL_NOT_ESTAB);
+			else
+				rts51x_set_sense_type(chip, lun,
+					SENSE_TYPE_MG_WRITE_ERR);
+		} else {
+			rts51x_set_sense_type(chip, lun, SENSE_TYPE_MG_WRITE_ERR);
+>>>>>>> refs/remotes/origin/master
 		}
 		TRACE_GOTO(chip, SetICVFinish);
 	}

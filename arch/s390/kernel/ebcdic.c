@@ -1,10 +1,17 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/kernel/ebcdic.c
+=======
+>>>>>>> refs/remotes/origin/master
  *    ECBDIC -> ASCII, ASCII -> ECBDIC,
  *    upper to lower case (EBCDIC) conversion tables.
  *
  *  S390 version
+<<<<<<< HEAD
  *    Copyright (C) 1999 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+ *    Copyright IBM Corp. 1999
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Martin Schwidefsky <schwidefsky@de.ibm.com>
  *               Martin Peschke <peschke@fh-brandenburg.de>
  */

@@ -16,10 +16,14 @@
  *  the following options:
  *	max_rate:baudrate	- set the maximum baud rate
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	power_leve:level	- set the transmitter power level
 =======
  *	power_level:level	- set the transmitter power level
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	power_level:level	- set the transmitter power level
+>>>>>>> refs/remotes/origin/master
  *	tx_lpm:0|1		- set transmit low power mode
  */
 #include <linux/module.h>
@@ -35,20 +39,28 @@
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/dmaengine.h>
 #include <linux/sa11x0-dma.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/dmaengine.h>
+#include <linux/sa11x0-dma.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/irda/irda.h>
 #include <net/irda/wrapper.h>
 #include <net/irda/irda_device.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/irq.h>
 #include <mach/dma.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/hardware.h>
 #include <asm/mach/irda.h>
 
@@ -57,9 +69,12 @@ static int tx_lpm;
 static int max_rate = 4000000;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct sa1100_irda {
 	unsigned char		hscr0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct sa1100_buf {
 	struct device		*dev;
 	struct sk_buff		*skb;
@@ -69,7 +84,10 @@ struct sa1100_buf {
 };
 
 struct sa1100_irda {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char		utcr4;
 	unsigned char		power;
 	unsigned char		open;
@@ -77,6 +95,7 @@ struct sa1100_irda {
 	int			speed;
 	int			newspeed;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct sk_buff		*txskb;
 	struct sk_buff		*rxskb;
@@ -88,6 +107,10 @@ struct sa1100_irda {
 	struct sa1100_buf	dma_rx;
 	struct sa1100_buf	dma_tx;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sa1100_buf	dma_rx;
+	struct sa1100_buf	dma_tx;
+>>>>>>> refs/remotes/origin/master
 
 	struct device		*dev;
 	struct irda_platform_data *pdata;
@@ -97,9 +120,12 @@ struct sa1100_irda {
 	iobuff_t		tx_buff;
 	iobuff_t		rx_buff;
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	int (*tx_start)(struct sk_buff *, struct net_device *, struct sa1100_irda *);
 	irqreturn_t (*irq)(struct net_device *, struct sa1100_irda *);
@@ -107,13 +133,19 @@ struct sa1100_irda {
 
 static int sa1100_irda_set_speed(struct sa1100_irda *, int);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define IS_FIR(si)		((si)->speed >= 4000000)
 
 #define HPSIR_MAX_RXLEN		2047
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct dma_slave_config sa1100_irda_sir_tx = {
 	.direction	= DMA_TO_DEVICE,
 	.dst_addr	= __PREG(Ser2UTDR),
@@ -190,12 +222,16 @@ static void sa1100_irda_dma_start(struct sa1100_buf *buf,
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Allocate and map the receive buffer, unless it is already allocated.
  */
 static int sa1100_irda_rx_alloc(struct sa1100_irda *si)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (si->rxskb)
 		return 0;
@@ -204,12 +240,17 @@ static int sa1100_irda_rx_alloc(struct sa1100_irda *si)
 
 	if (!si->rxskb) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (si->dma_rx.skb)
 		return 0;
 
 	si->dma_rx.skb = alloc_skb(HPSIR_MAX_RXLEN + 1, GFP_ATOMIC);
 	if (!si->dma_rx.skb) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "sa1100_ir: out of memory for RX SKB\n");
 		return -ENOMEM;
 	}
@@ -219,12 +260,15 @@ static int sa1100_irda_rx_alloc(struct sa1100_irda *si)
 	 * within the frame.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skb_reserve(si->rxskb, 1);
 
 	si->rxbuf_dma = dma_map_single(si->dev, si->rxskb->data,
 					HPSIR_MAX_RXLEN,
 					DMA_FROM_DEVICE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	skb_reserve(si->dma_rx.skb, 1);
 
 	sg_set_buf(&si->dma_rx.sg, si->dma_rx.skb->data, HPSIR_MAX_RXLEN);
@@ -233,7 +277,10 @@ static int sa1100_irda_rx_alloc(struct sa1100_irda *si)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -244,10 +291,14 @@ static int sa1100_irda_rx_alloc(struct sa1100_irda *si)
 static void sa1100_irda_rx_dma_start(struct sa1100_irda *si)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!si->rxskb) {
 =======
 	if (!si->dma_rx.skb) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!si->dma_rx.skb) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "sa1100_ir: rx buffer went missing\n");
 		return;
 	}
@@ -256,14 +307,19 @@ static void sa1100_irda_rx_dma_start(struct sa1100_irda *si)
 	 * First empty receive FIFO
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	Ser2HSCR0 = si->hscr0 | HSCR0_HSSP;
 =======
 	Ser2HSCR0 = HSCR0_HSSP;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	Ser2HSCR0 = HSCR0_HSSP;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Enable the DMA, receiver and receive interrupt.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sa1100_clear_dma(si->rxdma);
 	sa1100_start_dma(si->rxdma, si->rxbuf_dma, HPSIR_MAX_RXLEN);
@@ -509,6 +565,8 @@ static void sa1100_irda_hpsir_irq(struct net_device *dev)
 {
 	struct sa1100_irda *si = netdev_priv(dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dmaengine_terminate_all(si->dma_rx.chan);
 	sa1100_irda_dma_start(&si->dma_rx, DMA_DEV_TO_MEM, NULL, NULL);
 
@@ -585,7 +643,10 @@ static int sa1100_irda_sir_tx_start(struct sk_buff *skb, struct net_device *dev,
 
 static irqreturn_t sa1100_irda_sir_irq(struct net_device *dev, struct sa1100_irda *si)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int status;
 
 	status = Ser2UTSR0;
@@ -639,6 +700,7 @@ static irqreturn_t sa1100_irda_sir_irq(struct net_device *dev, struct sa1100_ird
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (status & UTSR0_TFS && si->tx_buff.len) {
 		/*
 		 * Transmitter FIFO is not full
@@ -679,6 +741,8 @@ static irqreturn_t sa1100_irda_sir_irq(struct net_device *dev, struct sa1100_ird
 		}
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
@@ -764,17 +828,24 @@ static int sa1100_irda_fir_tx_start(struct sk_buff *skb, struct net_device *dev,
 	Ser2HSCR0 = HSCR0_HSSP | HSCR0_TXE;
 
 	return NETDEV_TX_OK;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sa1100_irda_fir_error(struct sa1100_irda *si, struct net_device *dev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct sk_buff *skb = si->rxskb;
 	dma_addr_t dma_addr;
 =======
 	struct sk_buff *skb = si->dma_rx.skb;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sk_buff *skb = si->dma_rx.skb;
+>>>>>>> refs/remotes/origin/master
 	unsigned int len, stat, data;
 
 	if (!skb) {
@@ -786,17 +857,23 @@ static void sa1100_irda_fir_error(struct sa1100_irda *si, struct net_device *dev
 	 * Get the current data position.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dma_addr = sa1100_get_dma_pos(si->rxdma);
 	len = dma_addr - si->rxbuf_dma;
 	if (len > HPSIR_MAX_RXLEN)
 		len = HPSIR_MAX_RXLEN;
 	dma_unmap_single(si->dev, si->rxbuf_dma, len, DMA_FROM_DEVICE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	len = sa1100_irda_dma_xferred(&si->dma_rx);
 	if (len > HPSIR_MAX_RXLEN)
 		len = HPSIR_MAX_RXLEN;
 	dma_unmap_sg(si->dma_rx.dev, &si->dma_rx.sg, 1, DMA_FROM_DEVICE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	do {
 		/*
@@ -825,10 +902,14 @@ static void sa1100_irda_fir_error(struct sa1100_irda *si, struct net_device *dev
 
 	if (stat & HSSR1_EOF) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		si->rxskb = NULL;
 =======
 		si->dma_rx.skb = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		si->dma_rx.skb = NULL;
+>>>>>>> refs/remotes/origin/master
 
 		skb_put(skb, len);
 		skb->dev = dev;
@@ -846,21 +927,28 @@ static void sa1100_irda_fir_error(struct sa1100_irda *si, struct net_device *dev
 	} else {
 		/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * Remap the buffer.
 		 */
 		si->rxbuf_dma = dma_map_single(si->dev, si->rxskb->data,
 						HPSIR_MAX_RXLEN,
 						DMA_FROM_DEVICE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 * Remap the buffer - it was previously mapped, and we
 		 * hope that this succeeds.
 		 */
 		dma_map_sg(si->dma_rx.dev, &si->dma_rx.sg, 1, DMA_FROM_DEVICE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * FIR format interrupt service routine.  We only have to
  * handle RX events; transmit events go via the TX DMA handler.
@@ -876,6 +964,8 @@ static void sa1100_irda_fir_irq(struct net_device *dev)
 	 */
 	sa1100_stop_dma(si->rxdma);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * We only have to handle RX events here; transmit events go via the TX
  * DMA handler. We disable RX, process, and the restart RX.
  */
@@ -885,7 +975,10 @@ static irqreturn_t sa1100_irda_fir_irq(struct net_device *dev, struct sa1100_ird
 	 * Stop RX DMA
 	 */
 	dmaengine_pause(si->dma_rx.chan);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Framing error - we throw away the packet completely.
@@ -902,10 +995,14 @@ static irqreturn_t sa1100_irda_fir_irq(struct net_device *dev, struct sa1100_ird
 		 * Clear out the DMA...
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		Ser2HSCR0 = si->hscr0 | HSCR0_HSSP;
 =======
 		Ser2HSCR0 = HSCR0_HSSP;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		Ser2HSCR0 = HSCR0_HSSP;
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Clear selected status bits now, so we
@@ -927,6 +1024,7 @@ static irqreturn_t sa1100_irda_fir_irq(struct net_device *dev, struct sa1100_ird
 	 * No matter what happens, we must restart reception.
 	 */
 	sa1100_irda_rx_dma_start(si);
+<<<<<<< HEAD
 <<<<<<< HEAD
 }
 
@@ -997,6 +1095,8 @@ static void sa1100_irda_txdma_irq(void *id)
 	 */
 	netif_wake_queue(dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return IRQ_HANDLED;
 }
@@ -1115,7 +1215,10 @@ static irqreturn_t sa1100_irda_irq(int irq, void *dev_id)
 	struct sa1100_irda *si = netdev_priv(dev);
 
 	return si->irq(dev, si);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int sa1100_irda_hard_xmit(struct sk_buff *skb, struct net_device *dev)
@@ -1132,6 +1235,7 @@ static int sa1100_irda_hard_xmit(struct sk_buff *skb, struct net_device *dev)
 		si->newspeed = speed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * If this is an empty frame, we can bypass a lot.
 	 */
@@ -1145,10 +1249,16 @@ static int sa1100_irda_hard_xmit(struct sk_buff *skb, struct net_device *dev)
 	if (skb->len == 0) {
 		sa1100_irda_check_speed(si);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* If this is an empty frame, we can bypass a lot. */
+	if (skb->len == 0) {
+		sa1100_irda_check_speed(si);
+>>>>>>> refs/remotes/origin/master
 		dev_kfree_skb(skb);
 		return NETDEV_TX_OK;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!IS_FIR(si)) {
 		netif_stop_queue(dev);
@@ -1195,13 +1305,18 @@ static int sa1100_irda_hard_xmit(struct sk_buff *skb, struct net_device *dev)
 
 	return NETDEV_TX_OK;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	netif_stop_queue(dev);
 
 	/* We must not already have a skb to transmit... */
 	BUG_ON(si->dma_tx.skb);
 
 	return si->tx_start(skb, dev, si);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -1249,7 +1364,10 @@ sa1100_irda_ioctl(struct net_device *dev, struct ifreq *ifreq, int cmd)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int sa1100_irda_startup(struct sa1100_irda *si)
 {
 	int ret;
@@ -1313,7 +1431,10 @@ static void sa1100_irda_shutdown(struct sa1100_irda *si)
 		si->pdata->shutdown(si->dev);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int sa1100_irda_start(struct net_device *dev)
 {
 	struct sa1100_irda *si = netdev_priv(dev);
@@ -1321,6 +1442,7 @@ static int sa1100_irda_start(struct net_device *dev)
 
 	si->speed = 9600;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = request_irq(dev->irq, sa1100_irda_irq, 0, dev->name, dev);
 	if (err)
@@ -1334,6 +1456,8 @@ static int sa1100_irda_start(struct net_device *dev)
 	err = sa1100_request_dma(DMA_Ser2HSSPWr, "IrDA transmit",
 				 sa1100_irda_txdma_irq, dev, &si->txdma);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = sa1100_irda_dma_request(si->dev, &si->dma_rx, "Ser2ICPRc",
 				&sa1100_irda_fir_rx);
 	if (err)
@@ -1341,11 +1465,15 @@ static int sa1100_irda_start(struct net_device *dev)
 
 	err = sa1100_irda_dma_request(si->dev, &si->dma_tx, "Ser2ICPTr",
 				&sa1100_irda_sir_tx);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto err_tx_dma;
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * The interrupt must remain disabled for now.
 	 */
@@ -1354,6 +1482,8 @@ static int sa1100_irda_start(struct net_device *dev)
 	/*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Setup the serial port for the specified speed.
 	 */
 	err = sa1100_irda_startup(si);
@@ -1369,34 +1499,47 @@ static int sa1100_irda_start(struct net_device *dev)
 		goto err_irlap;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = request_irq(dev->irq, sa1100_irda_irq, 0, dev->name, dev);
 	if (err)
 		goto err_irq;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Now enable the interrupt and start the queue
 	 */
 	si->open = 1;
 	sa1100_set_power(si, power_level); /* low power mode */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	enable_irq(dev->irq);
 	netif_start_queue(dev);
 	return 0;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	netif_start_queue(dev);
 	return 0;
 
 err_irq:
 	irlap_close(si->irlap);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 err_irlap:
 	si->open = 0;
 	sa1100_irda_shutdown(si);
 err_startup:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sa1100_free_dma(si->txdma);
 err_tx_dma:
@@ -1405,17 +1548,23 @@ err_rx_dma:
 	free_irq(dev->irq, dev);
 err_irq:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dma_release_channel(si->dma_tx.chan);
 err_tx_dma:
 	dma_release_channel(si->dma_rx.chan);
 err_rx_dma:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
 static int sa1100_irda_stop(struct net_device *dev)
 {
 	struct sa1100_irda *si = netdev_priv(dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	disable_irq(dev->irq);
@@ -1431,6 +1580,8 @@ static int sa1100_irda_stop(struct net_device *dev)
 		dev_kfree_skb(si->rxskb);
 		si->rxskb = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *skb;
 
 	netif_stop_queue(dev);
@@ -1456,7 +1607,10 @@ static int sa1100_irda_stop(struct net_device *dev)
 			     DMA_TO_DEVICE);
 		dev_kfree_skb(skb);
 		si->dma_tx.skb = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Stop IrLAP */
@@ -1465,6 +1619,7 @@ static int sa1100_irda_stop(struct net_device *dev)
 		si->irlap = NULL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	netif_stop_queue(dev);
 	si->open = 0;
@@ -1475,12 +1630,17 @@ static int sa1100_irda_stop(struct net_device *dev)
 	sa1100_free_dma(si->txdma);
 	sa1100_free_dma(si->rxdma);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Free resources
 	 */
 	dma_release_channel(si->dma_tx.chan);
 	dma_release_channel(si->dma_rx.chan);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	free_irq(dev->irq, dev);
 
 	sa1100_set_power(si, 0);
@@ -1513,21 +1673,31 @@ static int sa1100_irda_probe(struct platform_device *pdev)
 	struct sa1100_irda *si;
 	unsigned int baudrate_mask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int err;
 =======
 	int err, irq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err, irq;
+>>>>>>> refs/remotes/origin/master
 
 	if (!pdev->dev.platform_data)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	irq = platform_get_irq(pdev, 0);
 	if (irq <= 0)
 		return irq < 0 ? irq : -ENXIO;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	err = request_mem_region(__PREG(Ser2UTCR0), 0x24, "IrDA") ? 0 : -EBUSY;
 	if (err)
 		goto err_mem_1;
@@ -1539,6 +1709,7 @@ static int sa1100_irda_probe(struct platform_device *pdev)
 		goto err_mem_3;
 
 	dev = alloc_irdadev(sizeof(struct sa1100_irda));
+<<<<<<< HEAD
 	if (!dev)
 		goto err_mem_4;
 
@@ -1547,16 +1718,31 @@ static int sa1100_irda_probe(struct platform_device *pdev)
 	SET_NETDEV_DEV(dev, &pdev->dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dev) {
+		err = -ENOMEM;
+		goto err_mem_4;
+	}
+
+	SET_NETDEV_DEV(dev, &pdev->dev);
+
+>>>>>>> refs/remotes/origin/master
 	si = netdev_priv(dev);
 	si->dev = &pdev->dev;
 	si->pdata = pdev->dev.platform_data;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	sg_init_table(&si->dma_rx.sg, 1);
 	sg_init_table(&si->dma_tx.sg, 1);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sg_init_table(&si->dma_rx.sg, 1);
+	sg_init_table(&si->dma_tx.sg, 1);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Initialise the HP-SIR buffers
 	 */
@@ -1564,19 +1750,27 @@ static int sa1100_irda_probe(struct platform_device *pdev)
 	if (err)
 		goto err_mem_5;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = sa1100_irda_init_iobuf(&si->tx_buff, 4000);
 =======
 	err = sa1100_irda_init_iobuf(&si->tx_buff, IRDA_SIR_MAX_FRAME);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = sa1100_irda_init_iobuf(&si->tx_buff, IRDA_SIR_MAX_FRAME);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto err_mem_5;
 
 	dev->netdev_ops	= &sa1100_irda_netdev_ops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->irq	= IRQ_Ser2ICP;
 =======
 	dev->irq	= irq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->irq	= irq;
+>>>>>>> refs/remotes/origin/master
 
 	irda_init_max_qos_capabilies(&si->qos);
 
@@ -1651,7 +1845,10 @@ static int sa1100_irda_remove(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 /*
  * Suspend the IrDA interface.
@@ -1720,7 +1917,10 @@ static int sa1100_irda_resume(struct platform_device *pdev)
 #define sa1100_irda_resume	NULL
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver sa1100ir_driver = {
 	.probe		= sa1100_irda_probe,
 	.remove		= sa1100_irda_remove,

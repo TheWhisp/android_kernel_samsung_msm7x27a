@@ -21,6 +21,7 @@
 #include <linux/console.h>
 #include <linux/delay.h>
 #include <linux/err.h>
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/types.h>
 <<<<<<< HEAD
@@ -29,6 +30,11 @@
 
 #include <xen/xen.h>
 =======
+=======
+#include <linux/irq.h>
+#include <linux/init.h>
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/list.h>
 
 #include <asm/io.h>
@@ -38,6 +44,7 @@
 #include <xen/interface/xen.h>
 #include <xen/hvm.h>
 #include <xen/grant_table.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <xen/page.h>
 #include <xen/events.h>
@@ -47,11 +54,20 @@
 =======
 #include <xen/xenbus.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <xen/page.h>
+#include <xen/events.h>
+#include <xen/interface/io/console.h>
+#include <xen/interface/sched.h>
+#include <xen/hvc-console.h>
+#include <xen/xenbus.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "hvc_console.h"
 
 #define HVC_COOKIE   0x58656e /* "Xen" in hex */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct hvc_struct *hvc;
 static int xencons_irq;
@@ -79,6 +95,8 @@ static int __write_console(const char *data, int len)
 	struct xencons_interface *intf = xencons_interface();
 	XENCONS_RING_IDX cons, prod;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct xencons_info {
 	struct list_head list;
 	struct xenbus_device *xbdev;
@@ -128,7 +146,10 @@ static int __write_console(struct xencons_info *xencons,
 {
 	XENCONS_RING_IDX cons, prod;
 	struct xencons_interface *intf = xencons->intf;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int sent = 0;
 
 	cons = intf->out_cons;
@@ -144,10 +165,14 @@ static int __write_console(struct xencons_info *xencons,
 
 	if (sent)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		notify_daemon();
 =======
 		notify_daemon(xencons);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		notify_daemon(xencons);
+>>>>>>> refs/remotes/origin/master
 	return sent;
 }
 
@@ -155,11 +180,17 @@ static int domU_write_console(uint32_t vtermno, const char *data, int len)
 {
 	int ret = len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct xencons_info *cons = vtermno_to_xencons(vtermno);
 	if (cons == NULL)
 		return -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct xencons_info *cons = vtermno_to_xencons(vtermno);
+	if (cons == NULL)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Make sure the whole buffer is emitted, polling if
@@ -169,10 +200,14 @@ static int domU_write_console(uint32_t vtermno, const char *data, int len)
 	 */
 	while (len) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int sent = __write_console(data, len);
 =======
 		int sent = __write_console(cons, data, len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		int sent = __write_console(cons, data, len);
+>>>>>>> refs/remotes/origin/master
 		
 		data += sent;
 		len -= sent;
@@ -187,10 +222,13 @@ static int domU_write_console(uint32_t vtermno, const char *data, int len)
 static int domU_read_console(uint32_t vtermno, char *buf, int len)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct xencons_interface *intf = xencons_interface();
 	XENCONS_RING_IDX cons, prod;
 	int recv = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct xencons_interface *intf;
 	XENCONS_RING_IDX cons, prod;
 	int recv = 0;
@@ -198,7 +236,10 @@ static int domU_read_console(uint32_t vtermno, char *buf, int len)
 	if (xencons == NULL)
 		return -EINVAL;
 	intf = xencons->intf;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cons = intf->in_cons;
 	prod = intf->in_prod;
@@ -212,10 +253,14 @@ static int domU_read_console(uint32_t vtermno, char *buf, int len)
 	intf->in_cons = cons;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	notify_daemon();
 =======
 	notify_daemon(xencons);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	notify_daemon(xencons);
+>>>>>>> refs/remotes/origin/master
 	return recv;
 }
 
@@ -240,7 +285,11 @@ static int dom0_write_console(uint32_t vtermno, const char *str, int len)
 {
 	int rc = HYPERVISOR_console_io(CONSOLEIO_write, len, (char *)str);
 	if (rc < 0)
+<<<<<<< HEAD
 		return 0;
+=======
+		return rc;
+>>>>>>> refs/remotes/origin/master
 
 	return len;
 }
@@ -254,11 +303,14 @@ static struct hv_ops dom0_hvc_ops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init xen_hvc_init(void)
 {
 	struct hvc_struct *hp;
 	struct hv_ops *ops;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int xen_hvm_console_init(void)
 {
 	int r;
@@ -271,6 +323,7 @@ static int xen_hvm_console_init(void)
 
 	info = vtermno_to_xencons(HVC_COOKIE);
 	if (!info) {
+<<<<<<< HEAD
 		info = kzalloc(sizeof(struct xencons_info), GFP_KERNEL | __GFP_ZERO);
 		if (!info)
 			return -ENOMEM;
@@ -279,6 +332,15 @@ static int xen_hvm_console_init(void)
 	/* already configured */
 	if (info->intf != NULL)
 		return 0;
+=======
+		info = kzalloc(sizeof(struct xencons_info), GFP_KERNEL);
+		if (!info)
+			return -ENOMEM;
+	} else if (info->intf != NULL) {
+		/* already configured */
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If the toolstack (or the hypervisor) hasn't set these values, the
 	 * default value is 0. Even though mfn = 0 and evtchn = 0 are
@@ -294,7 +356,11 @@ static int xen_hvm_console_init(void)
 	if (r < 0 || v == 0)
 		goto err;
 	mfn = v;
+<<<<<<< HEAD
 	info->intf = ioremap(mfn << PAGE_SHIFT, PAGE_SIZE);
+=======
+	info->intf = xen_remap(mfn << PAGE_SHIFT, PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 	if (info->intf == NULL)
 		goto err;
 	info->vtermno = HVC_COOKIE;
@@ -312,11 +378,15 @@ err:
 static int xen_pv_console_init(void)
 {
 	struct xencons_info *info;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!xen_pv_domain())
 		return -ENODEV;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (xen_initial_domain()) {
 		ops = &dom0_hvc_ops;
@@ -341,11 +411,14 @@ static int xen_pv_console_init(void)
 
 	console_pfn = mfn_to_pfn(xen_start_info->console.domU.mfn);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!xen_start_info->console.domU.evtchn)
 		return -ENODEV;
 
 	info = vtermno_to_xencons(HVC_COOKIE);
 	if (!info) {
+<<<<<<< HEAD
 		info = kzalloc(sizeof(struct xencons_info), GFP_KERNEL | __GFP_ZERO);
 		if (!info)
 			return -ENOMEM;
@@ -355,6 +428,15 @@ static int xen_pv_console_init(void)
 	if (info->intf != NULL)
 		return 0;
 
+=======
+		info = kzalloc(sizeof(struct xencons_info), GFP_KERNEL);
+		if (!info)
+			return -ENOMEM;
+	} else if (info->intf != NULL) {
+		/* already configured */
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
 	info->evtchn = xen_start_info->console.domU.evtchn;
 	info->intf = mfn_to_virt(xen_start_info->console.domU.mfn);
 	info->vtermno = HVC_COOKIE;
@@ -375,7 +457,11 @@ static int xen_initial_domain_console_init(void)
 
 	info = vtermno_to_xencons(HVC_COOKIE);
 	if (!info) {
+<<<<<<< HEAD
 		info = kzalloc(sizeof(struct xencons_info), GFP_KERNEL | __GFP_ZERO);
+=======
+		info = kzalloc(sizeof(struct xencons_info), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		if (!info)
 			return -ENOMEM;
 	}
@@ -386,7 +472,10 @@ static int xen_initial_domain_console_init(void)
 	spin_lock(&xencons_lock);
 	list_add_tail(&info->list, &xenconsoles);
 	spin_unlock(&xencons_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -394,9 +483,12 @@ static int xen_initial_domain_console_init(void)
 void xen_console_resume(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (xencons_irq)
 		rebind_evtchn_irq(xen_start_info->console.domU.evtchn, xencons_irq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct xencons_info *info = vtermno_to_xencons(HVC_COOKIE);
 	if (info != NULL && info->irq)
 		rebind_evtchn_irq(info->evtchn, info->irq);
@@ -518,7 +610,11 @@ static int xencons_connect_backend(struct xenbus_device *dev,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit xencons_probe(struct xenbus_device *dev,
+=======
+static int xencons_probe(struct xenbus_device *dev,
+>>>>>>> refs/remotes/origin/master
 				  const struct xenbus_device_id *id)
 {
 	int ret, devid;
@@ -528,9 +624,15 @@ static int __devinit xencons_probe(struct xenbus_device *dev,
 	if (devid == 0)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	info = kzalloc(sizeof(struct xencons_info), GFP_KERNEL | __GFP_ZERO);
 	if (!info)
 		goto error_nomem;
+=======
+	info = kzalloc(sizeof(struct xencons_info), GFP_KERNEL);
+	if (!info)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	dev_set_drvdata(&dev->dev, info);
 	info->xbdev = dev;
 	info->vtermno = xenbus_devid_to_vtermno(devid);
@@ -574,7 +676,10 @@ static void xencons_backend_changed(struct xenbus_device *dev,
 	case XenbusStateInitialising:
 	case XenbusStateInitialised:
 	case XenbusStateUnknown:
+<<<<<<< HEAD
 	case XenbusStateClosed:
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case XenbusStateInitWait:
@@ -584,6 +689,13 @@ static void xencons_backend_changed(struct xenbus_device *dev,
 		xenbus_switch_state(dev, XenbusStateConnected);
 		break;
 
+<<<<<<< HEAD
+=======
+	case XenbusStateClosed:
+		if (dev->state == XenbusStateClosed)
+			break;
+		/* Missed the backend's CLOSING state -- fallthrough */
+>>>>>>> refs/remotes/origin/master
 	case XenbusStateClosing:
 		xenbus_frontend_closed(dev);
 		break;
@@ -653,15 +765,21 @@ static int __init xen_hvc_init(void)
 	r = xenbus_register_frontend(&xencons_driver);
 #endif
 	return r;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit xen_hvc_fini(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (hvc)
 		hvc_remove(hvc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct xencons_info *entry, *next;
 
 	if (list_empty(&xenconsoles))
@@ -670,11 +788,15 @@ static void __exit xen_hvc_fini(void)
 	list_for_each_entry_safe(entry, next, &xenconsoles, list) {
 		xen_console_remove(entry);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int xen_cons_init(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct hv_ops *ops;
 
@@ -684,15 +806,23 @@ static int xen_cons_init(void)
 
 	if (!xen_domain())
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct hv_ops *ops;
+
+	if (!xen_domain())
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	if (xen_initial_domain())
 		ops = &dom0_hvc_ops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else
 		ops = &domU_hvc_ops;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	else {
 		int r;
 		ops = &domU_hvc_ops;
@@ -705,15 +835,22 @@ static int xen_cons_init(void)
 			return r;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	hvc_instantiate(HVC_COOKIE, 0, ops);
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 module_init(xen_hvc_init);
 module_exit(xen_hvc_fini);
 console_initcall(xen_cons_init);
@@ -726,11 +863,17 @@ static void xenboot_write_console(struct console *console, const char *string,
 	const char *pos;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!xen_pv_domain())
 		return;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!xen_pv_domain())
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	dom0_write_console(0, string, len);
 
 	if (xen_initial_domain())
@@ -753,12 +896,35 @@ struct console xenboot_console = {
 	.name		= "xenboot",
 	.write		= xenboot_write_console,
 	.flags		= CON_PRINTBUFFER | CON_BOOT | CON_ANYTIME,
+<<<<<<< HEAD
+=======
+	.index		= -1,
+>>>>>>> refs/remotes/origin/master
 };
 #endif	/* CONFIG_EARLY_PRINTK */
 
 void xen_raw_console_write(const char *str)
 {
+<<<<<<< HEAD
 	dom0_write_console(0, str, strlen(str));
+=======
+	ssize_t len = strlen(str);
+	int rc = 0;
+
+	if (xen_domain()) {
+		rc = dom0_write_console(0, str, len);
+#ifdef CONFIG_X86
+		if (rc == -ENOSYS && xen_hvm_domain())
+			goto outb_print;
+
+	} else if (xen_cpuid_base()) {
+		int i;
+outb_print:
+		for (i = 0; i < len; i++)
+			outb(str[i], 0xe9);
+#endif
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 void xen_raw_printk(const char *fmt, ...)

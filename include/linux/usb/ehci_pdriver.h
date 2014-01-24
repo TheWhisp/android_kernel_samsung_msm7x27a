@@ -19,6 +19,12 @@
 #ifndef __USB_CORE_EHCI_PDRIVER_H
 #define __USB_CORE_EHCI_PDRIVER_H
 
+<<<<<<< HEAD
+=======
+struct platform_device;
+struct usb_hcd;
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct usb_ehci_pdata - platform_data for generic ehci driver
  *
@@ -29,6 +35,11 @@
  *			initialization.
  * @port_power_off:	set to 1 if the controller needs to be powered down
  *			after initialization.
+<<<<<<< HEAD
+=======
+ * @no_io_watchdog:	set to 1 if the controller does not need the I/O
+ *			watchdog to run.
+>>>>>>> refs/remotes/origin/master
  *
  * These are general configuration options for the EHCI controller. All of
  * these options are activating more or less workarounds for some hardware.
@@ -39,8 +50,21 @@ struct usb_ehci_pdata {
 	unsigned	has_synopsys_hc_bug:1;
 	unsigned	big_endian_desc:1;
 	unsigned	big_endian_mmio:1;
+<<<<<<< HEAD
 	unsigned	port_power_on:1;
 	unsigned	port_power_off:1;
+=======
+	unsigned	no_io_watchdog:1;
+
+	/* Turn on all power and clocks */
+	int (*power_on)(struct platform_device *pdev);
+	/* Turn off all power and clocks */
+	void (*power_off)(struct platform_device *pdev);
+	/* Turn on only VBUS suspend power and hotplug detection,
+	 * turn off everything else */
+	void (*power_suspend)(struct platform_device *pdev);
+	int (*pre_setup)(struct usb_hcd *hcd);
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* __USB_CORE_EHCI_PDRIVER_H */

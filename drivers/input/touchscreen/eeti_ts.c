@@ -36,18 +36,24 @@
 #include <linux/slab.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int flip_x;
 module_param(flip_x, bool, 0644);
 MODULE_PARM_DESC(flip_x, "flip x coordinate");
 
 static int flip_y;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool flip_x;
 module_param(flip_x, bool, 0644);
 MODULE_PARM_DESC(flip_x, "flip x coordinate");
 
 static bool flip_y;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(flip_y, bool, 0644);
 MODULE_PARM_DESC(flip_y, "flip y coordinate");
 
@@ -162,7 +168,11 @@ static void eeti_ts_close(struct input_dev *dev)
 	eeti_ts_stop(priv);
 }
 
+<<<<<<< HEAD
 static int __devinit eeti_ts_probe(struct i2c_client *client,
+=======
+static int eeti_ts_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 				   const struct i2c_device_id *idp)
 {
 	struct eeti_ts_platform_data *pdata = client->dev.platform_data;
@@ -214,8 +224,12 @@ static int __devinit eeti_ts_probe(struct i2c_client *client,
 	if (err < 0)
 		goto err1;
 
+<<<<<<< HEAD
 	if (pdata)
 		priv->irq_active_high = pdata->irq_active_high;
+=======
+	priv->irq_active_high = pdata->irq_active_high;
+>>>>>>> refs/remotes/origin/master
 
 	irq_flags = priv->irq_active_high ?
 		IRQF_TRIGGER_RISING : IRQF_TRIGGER_FALLING;
@@ -256,7 +270,11 @@ err0:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit eeti_ts_remove(struct i2c_client *client)
+=======
+static int eeti_ts_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct eeti_ts_priv *priv = i2c_get_clientdata(client);
 
@@ -273,7 +291,11 @@ static int __devexit eeti_ts_remove(struct i2c_client *client)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int eeti_ts_suspend(struct device *dev)
 {
 	struct i2c_client *client = to_i2c_client(dev);
@@ -311,9 +333,15 @@ static int eeti_ts_resume(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 
 static SIMPLE_DEV_PM_OPS(eeti_ts_pm, eeti_ts_suspend, eeti_ts_resume);
 #endif
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(eeti_ts_pm, eeti_ts_suspend, eeti_ts_resume);
+>>>>>>> refs/remotes/origin/master
 
 static const struct i2c_device_id eeti_ts_id[] = {
 	{ "eeti_ts", 0 },
@@ -324,6 +352,7 @@ MODULE_DEVICE_TABLE(i2c, eeti_ts_id);
 static struct i2c_driver eeti_ts_driver = {
 	.driver = {
 		.name = "eeti_ts",
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 		.pm = &eeti_ts_pm,
 #endif
@@ -346,10 +375,21 @@ static void __exit eeti_ts_exit(void)
 =======
 module_i2c_driver(eeti_ts_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm = &eeti_ts_pm,
+	},
+	.probe = eeti_ts_probe,
+	.remove = eeti_ts_remove,
+	.id_table = eeti_ts_id,
+};
+
+module_i2c_driver(eeti_ts_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("EETI Touchscreen driver");
 MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(eeti_ts_init);
@@ -357,3 +397,5 @@ module_exit(eeti_ts_exit);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

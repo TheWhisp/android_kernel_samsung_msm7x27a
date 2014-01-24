@@ -46,7 +46,11 @@
 static char *fb_mode = "640x480-16@60";
 static unsigned long default_bpp = 16;
 
+<<<<<<< HEAD
 static struct fb_videomode __devinitdata sm501_default_mode = {
+=======
+static struct fb_videomode sm501_default_mode = {
+>>>>>>> refs/remotes/origin/master
 	.refresh	= 60,
 	.xres		= 640,
 	.yres		= 480,
@@ -583,10 +587,14 @@ static int sm501fb_pan_crt(struct fb_var_screeninfo *var,
 	struct sm501fb_par  *par = info->par;
 	struct sm501fb_info *fbi = par->info;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int bytes_pixel = var->bits_per_pixel / 8;
 =======
 	unsigned int bytes_pixel = info->var.bits_per_pixel / 8;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int bytes_pixel = info->var.bits_per_pixel / 8;
+>>>>>>> refs/remotes/origin/master
 	unsigned long reg;
 	unsigned long xoffs;
 
@@ -619,16 +627,22 @@ static int sm501fb_pan_pnl(struct fb_var_screeninfo *var,
 	unsigned long reg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	reg = var->xoffset | (var->xres_virtual << 16);
 	smc501_writel(reg, fbi->regs + SM501_DC_PANEL_FB_WIDTH);
 
 	reg = var->yoffset | (var->yres_virtual << 16);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	reg = var->xoffset | (info->var.xres_virtual << 16);
 	smc501_writel(reg, fbi->regs + SM501_DC_PANEL_FB_WIDTH);
 
 	reg = var->yoffset | (info->var.yres_virtual << 16);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	smc501_writel(reg, fbi->regs + SM501_DC_PANEL_FB_HEIGHT);
 
 	sm501fb_sync_regs(fbi);
@@ -1675,8 +1689,12 @@ static void sm501fb_stop(struct sm501fb_info *info)
 			   resource_size(info->regs_res));
 }
 
+<<<<<<< HEAD
 static int __devinit sm501fb_init_fb(struct fb_info *fb,
 			   enum sm501_controller head,
+=======
+static int sm501fb_init_fb(struct fb_info *fb, enum sm501_controller head,
+>>>>>>> refs/remotes/origin/master
 			   const char *fbname)
 {
 	struct sm501_platdata_fbsub *pd;
@@ -1861,8 +1879,13 @@ static struct sm501_platdata_fb sm501fb_def_pdata = {
 static char driver_name_crt[] = "sm501fb-crt";
 static char driver_name_pnl[] = "sm501fb-panel";
 
+<<<<<<< HEAD
 static int __devinit sm501fb_probe_one(struct sm501fb_info *info,
 				       enum sm501_controller head)
+=======
+static int sm501fb_probe_one(struct sm501fb_info *info,
+			     enum sm501_controller head)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char *name = (head == HEAD_CRT) ? "crt" : "panel";
 	struct sm501_platdata_fbsub *pd;
@@ -1903,9 +1926,14 @@ static void sm501_free_init_fb(struct sm501fb_info *info,
 	fb_dealloc_cmap(&fbi->cmap);
 }
 
+<<<<<<< HEAD
 static int __devinit sm501fb_start_one(struct sm501fb_info *info,
 				       enum sm501_controller head,
 				       const char *drvname)
+=======
+static int sm501fb_start_one(struct sm501fb_info *info,
+			     enum sm501_controller head, const char *drvname)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *fbi = info->fb[head];
 	int ret;
@@ -1933,7 +1961,11 @@ static int __devinit sm501fb_start_one(struct sm501fb_info *info,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit sm501fb_probe(struct platform_device *pdev)
+=======
+static int sm501fb_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sm501fb_info *info;
 	struct device *dev = &pdev->dev;
@@ -2242,6 +2274,7 @@ static struct platform_driver sm501fb_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __devinit sm501fb_init(void)
 {
 	return platform_driver_register(&sm501fb_driver);
@@ -2257,6 +2290,9 @@ module_exit(sm501fb_cleanup);
 =======
 module_platform_driver(sm501fb_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(sm501fb_driver);
+>>>>>>> refs/remotes/origin/master
 
 module_param_named(mode, fb_mode, charp, 0);
 MODULE_PARM_DESC(mode,

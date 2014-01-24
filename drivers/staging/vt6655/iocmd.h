@@ -37,7 +37,10 @@
 //typedef uint16_t u16;
 //typedef uint8_t u8;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 // ioctl Command code
 #define MAGIC_CODE	                 0x3142
 #define IOCTL_CMD_TEST	            (SIOCDEVPRIVATE + 0)
@@ -45,6 +48,7 @@
 #define IOCTL_CMD_HOSTAPD           (SIOCDEVPRIVATE + 2)
 #define IOCTL_CMD_WPA               (SIOCDEVPRIVATE + 3)
 
+<<<<<<< HEAD
 
 typedef enum tagWMAC_CMD {
 
@@ -76,6 +80,36 @@ typedef enum tagWZONETYPE {
   ZoneType_Japan=1,
   ZoneType_Europe=2
 }WZONETYPE;
+=======
+typedef enum tagWMAC_CMD {
+	WLAN_CMD_BSS_SCAN,
+	WLAN_CMD_BSS_JOIN,
+	WLAN_CMD_DISASSOC,
+	WLAN_CMD_SET_WEP,
+	WLAN_CMD_GET_LINK,
+	WLAN_CMD_GET_LISTLEN,
+	WLAN_CMD_GET_LIST,
+	WLAN_CMD_GET_MIB,
+	WLAN_CMD_GET_STAT,
+	WLAN_CMD_STOP_MAC,
+	WLAN_CMD_START_MAC,
+	WLAN_CMD_AP_START,
+	WLAN_CMD_SET_HOSTAPD,
+	WLAN_CMD_SET_HOSTAPD_STA,
+	WLAN_CMD_SET_802_1X,
+	WLAN_CMD_SET_HOST_WEP,
+	WLAN_CMD_SET_WPA,
+	WLAN_CMD_GET_NODE_CNT,
+	WLAN_CMD_ZONETYPE_SET,
+	WLAN_CMD_GET_NODE_LIST
+} WMAC_CMD, *PWMAC_CMD;
+
+typedef enum tagWZONETYPE {
+	ZoneType_USA = 0,
+	ZoneType_Japan = 1,
+	ZoneType_Europe = 2
+} WZONETYPE;
+>>>>>>> refs/remotes/origin/master
 
 #define ADHOC	0
 #define INFRA	1
@@ -85,8 +119,12 @@ typedef enum tagWZONETYPE {
 #define ADHOC_STARTED	   1
 #define ADHOC_JOINTED	   2
 
+<<<<<<< HEAD
 
 #define PHY80211a 	    0
+=======
+#define PHY80211a       0
+>>>>>>> refs/remotes/origin/master
 #define PHY80211b       1
 #define PHY80211g       2
 
@@ -115,17 +153,24 @@ typedef struct tagSCmdRequest {
 //
 
 typedef struct tagSCmdScan {
+<<<<<<< HEAD
 
 	u8 ssid[SSID_MAXLEN + 2];
 
 } SCmdScan, *PSCmdScan;
 
 
+=======
+	u8 ssid[SSID_MAXLEN + 2];
+} SCmdScan, *PSCmdScan;
+
+>>>>>>> refs/remotes/origin/master
 //
 // BSS Join
 //
 
 typedef struct tagSCmdBSSJoin {
+<<<<<<< HEAD
 
     u16	    wBSSType;
     u16     wBBPType;
@@ -134,6 +179,14 @@ typedef struct tagSCmdBSSJoin {
     bool bPSEnable;
     bool bShareKeyAuth;
 
+=======
+	u16	    wBSSType;
+	u16     wBBPType;
+	u8	    ssid[SSID_MAXLEN + 2];
+	u32	    uChannel;
+	bool bPSEnable;
+	bool bShareKeyAuth;
+>>>>>>> refs/remotes/origin/master
 } SCmdBSSJoin, *PSCmdBSSJoin;
 
 //
@@ -141,23 +194,37 @@ typedef struct tagSCmdBSSJoin {
 //
 
 typedef struct tagSCmdZoneTypeSet {
+<<<<<<< HEAD
 
  bool bWrite;
  WZONETYPE  ZoneType;
 
+=======
+	bool bWrite;
+	WZONETYPE  ZoneType;
+>>>>>>> refs/remotes/origin/master
 } SCmdZoneTypeSet, *PSCmdZoneTypeSet;
 
 #ifdef WPA_SM_Transtatus
 typedef struct tagSWPAResult {
+<<<<<<< HEAD
          char	ifname[100];
          u8 proto;
          u8 key_mgmt;
          u8 eap_type;
          bool authenticated;
+=======
+	char	ifname[100];
+	u8 proto;
+	u8 key_mgmt;
+	u8 eap_type;
+	bool authenticated;
+>>>>>>> refs/remotes/origin/master
 } SWPAResult, *PSWPAResult;
 #endif
 
 typedef struct tagSCmdStartAP {
+<<<<<<< HEAD
 
     u16	    wBSSType;
     u16     wBBPType;
@@ -203,10 +270,47 @@ typedef struct tagSBSSIDItem {
 
 typedef struct tagSBSSIDList {
 
+=======
+	u16	    wBSSType;
+	u16     wBBPType;
+	u8	    ssid[SSID_MAXLEN + 2];
+	u32	    uChannel;
+	u32     uBeaconInt;
+	bool bShareKeyAuth;
+	u8      byBasicRate;
+} SCmdStartAP, *PSCmdStartAP;
+
+typedef struct tagSCmdSetWEP {
+	bool bEnableWep;
+	u8      byKeyIndex;
+	u8      abyWepKey[WEP_NKEYS][WEP_KEYMAXLEN];
+	bool bWepKeyAvailable[WEP_NKEYS];
+	u32     auWepKeyLength[WEP_NKEYS];
+} SCmdSetWEP, *PSCmdSetWEP;
+
+typedef struct tagSBSSIDItem {
+	u32	    uChannel;
+	u8      abyBSSID[BSSID_LEN];
+	u8      abySSID[SSID_MAXLEN + 1];
+	//2006-1116-01,<Modify> by NomadZhao
+	//u16	    wBeaconInterval;
+	//u16	    wCapInfo;
+	//u8      byNetType;
+	u8      byNetType;
+	u16	    wBeaconInterval;
+	u16	    wCapInfo;        // for address of byNetType at align 4
+
+	bool bWEPOn;
+	u32     uRSSI;
+} SBSSIDItem;
+
+typedef struct tagSBSSIDList {
+>>>>>>> refs/remotes/origin/master
 	u32		    uItem;
 	SBSSIDItem	sBSSIDList[0];
 } SBSSIDList, *PSBSSIDList;
 
+<<<<<<< HEAD
 
 typedef struct tagSCmdLinkStatus {
 
@@ -218,6 +322,16 @@ typedef struct tagSCmdLinkStatus {
     u32     uChannel;
     u32     uLinkRate;
 
+=======
+typedef struct tagSCmdLinkStatus {
+	bool bLink;
+	u16   wBSSType;
+	u8      byState;
+	u8      abyBSSID[BSSID_LEN];
+	u8      abySSID[SSID_MAXLEN + 2];
+	u32     uChannel;
+	u32     uLinkRate;
+>>>>>>> refs/remotes/origin/master
 } SCmdLinkStatus, *PSCmdLinkStatus;
 
 //
@@ -238,15 +352,24 @@ typedef struct tagSDot11MIBCount {
 	u32 FCSErrorCount;
 } SDot11MIBCount, *PSDot11MIBCount;
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 //
 // statistic counter
 //
 typedef struct tagSStatMIBCount {
+<<<<<<< HEAD
     //
     // ISR status count
     //
+=======
+	//
+	// ISR status count
+	//
+>>>>>>> refs/remotes/origin/master
 	u32   dwIsrTx0OK;
 	u32   dwIsrTx1OK;
 	u32   dwIsrBeaconTxOK;
@@ -256,12 +379,21 @@ typedef struct tagSStatMIBCount {
 	u32   dwIsrUnrecoverableError;
 	u32   dwIsrSoftInterrupt;
 	u32   dwIsrRxNoBuf;
+<<<<<<< HEAD
     /////////////////////////////////////
 
 	u32   dwIsrUnknown;               // unknown interrupt count
 
     // RSR status count
     //
+=======
+	/////////////////////////////////////
+
+	u32   dwIsrUnknown;               // unknown interrupt count
+
+	// RSR status count
+	//
+>>>>>>> refs/remotes/origin/master
 	u32   dwRsrFrmAlgnErr;
 	u32   dwRsrErr;
 	u32   dwRsrCRCErr;
@@ -282,10 +414,17 @@ typedef struct tagSStatMIBCount {
 	u32   dwRsrBroadcast;
 	u32   dwRsrMulticast;
 	u32   dwRsrDirected;
+<<<<<<< HEAD
     // 64-bit OID
 	u32   ullRsrOK;
 
     // for some optional OIDs (64 bits) and DMI support
+=======
+	// 64-bit OID
+	u32   ullRsrOK;
+
+	// for some optional OIDs (64 bits) and DMI support
+>>>>>>> refs/remotes/origin/master
 	u32   ullRxBroadcastBytes;
 	u32   ullRxMulticastBytes;
 	u32   ullRxDirectedBytes;
@@ -301,13 +440,22 @@ typedef struct tagSStatMIBCount {
 	u32   dwRsrRxFrmLen512_1023;
 	u32   dwRsrRxFrmLen1024_1518;
 
+<<<<<<< HEAD
     // TSR0,1 status count
     //
+=======
+	// TSR0,1 status count
+	//
+>>>>>>> refs/remotes/origin/master
 	u32   dwTsrTotalRetry[2];        // total collision retry count
 	u32   dwTsrOnceRetry[2];         // this packet only occur one collision
 	u32   dwTsrMoreThanOnceRetry[2]; // this packet occur more than one collision
 	u32   dwTsrRetry[2];             // this packet has ever occur collision,
+<<<<<<< HEAD
                                        // that is (dwTsrOnceCollision0 + dwTsrMoreThanOnceCollision0)
+=======
+	// that is (dwTsrOnceCollision0 + dwTsrMoreThanOnceCollision0)
+>>>>>>> refs/remotes/origin/master
 	u32   dwTsrACKData[2];
 	u32   dwTsrErr[2];
 	u32   dwAllTsrOK[2];
@@ -320,23 +468,38 @@ typedef struct tagSStatMIBCount {
 	u32   dwTsrMulticast[2];
 	u32   dwTsrDirected[2];
 
+<<<<<<< HEAD
     // RD/TD count
+=======
+	// RD/TD count
+>>>>>>> refs/remotes/origin/master
 	u32   dwCntRxFrmLength;
 	u32   dwCntTxBufLength;
 
 	u8    abyCntRxPattern[16];
 	u8    abyCntTxPattern[16];
 
+<<<<<<< HEAD
     // Software check....
+=======
+	// Software check....
+>>>>>>> refs/remotes/origin/master
 	u32   dwCntRxDataErr;             // rx buffer data software compare CRC err count
 	u32   dwCntDecryptErr;            // rx buffer data software compare CRC err count
 	u32   dwCntRxICVErr;              // rx buffer data software compare CRC err count
 	u32    idxRxErrorDesc;             // index for rx data error RD
 
+<<<<<<< HEAD
     // 64-bit OID
 	u32   ullTsrOK[2];
 
     // for some optional OIDs (64 bits) and DMI support
+=======
+	// 64-bit OID
+	u32   ullTsrOK[2];
+
+	// for some optional OIDs (64 bits) and DMI support
+>>>>>>> refs/remotes/origin/master
 	u32   ullTxBroadcastFrames[2];
 	u32   ullTxMulticastFrames[2];
 	u32   ullTxDirectedFrames[2];
@@ -345,6 +508,7 @@ typedef struct tagSStatMIBCount {
 	u32   ullTxDirectedBytes[2];
 } SStatMIBCount, *PSStatMIBCount;
 
+<<<<<<< HEAD
 
 typedef struct tagSNodeItem {
     // STA info
@@ -383,11 +547,44 @@ typedef struct tagSCmdValue {
 } SCmdValue,  *PSCmdValue;
 
 
+=======
+typedef struct tagSNodeItem {
+	// STA info
+	u16            wAID;
+	u8             abyMACAddr[6];
+	u16            wTxDataRate;
+	u16            wInActiveCount;
+	u16            wEnQueueCnt;
+	u16            wFlags;
+	bool bPWBitOn;
+	u8             byKeyIndex;
+	u16            wWepKeyLength;
+	u8            abyWepKey[WEP_KEYMAXLEN];
+	// Auto rate fallback vars
+	bool bIsInFallback;
+	u32            uTxFailures;
+	u32            uTxAttempts;
+	u16            wFailureRatio;
+} SNodeItem;
+
+typedef struct tagSNodeList {
+	u32		    uItem;
+	SNodeItem	sNodeList[0];
+} SNodeList, *PSNodeList;
+
+typedef struct tagSCmdValue {
+	u32 dwValue;
+} SCmdValue,  *PSCmdValue;
+
+>>>>>>> refs/remotes/origin/master
 //
 // hostapd & viawget ioctl related
 //
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 // VIAGWET_IOCTL_HOSTAPD ioctl() cmd:
 enum {
 	VIAWGET_HOSTAPD_FLUSH = 1,
@@ -404,6 +601,7 @@ enum {
 	VIAWGET_HOSTAPD_STA_CLEAR_STATS = 12,
 };
 
+<<<<<<< HEAD
 
 #define VIAWGET_HOSTAPD_GENERIC_ELEMENT_HDR_LEN \
 ((int) (&((struct viawget_hostapd_param *) 0)->u.generic_elem.data))
@@ -412,6 +610,13 @@ enum {
 
 
 
+=======
+#define VIAWGET_HOSTAPD_GENERIC_ELEMENT_HDR_LEN				\
+	((int)(&((struct viawget_hostapd_param *)0)->u.generic_elem.data))
+
+// Maximum length for algorithm names (-1 for nul termination) used in ioctl()
+
+>>>>>>> refs/remotes/origin/master
 struct viawget_hostapd_param {
 	u32 cmd;
 	u8 sta_addr[6];
@@ -464,6 +669,7 @@ struct viawget_hostapd_param {
 
 /*---------------------  Export Variables  --------------------------*/
 
+<<<<<<< HEAD
 
 /*---------------------  Export Types  ------------------------------*/
 
@@ -472,4 +678,10 @@ struct viawget_hostapd_param {
 
 
 
+=======
+/*---------------------  Export Types  ------------------------------*/
+
+/*---------------------  Export Functions  --------------------------*/
+
+>>>>>>> refs/remotes/origin/master
 #endif //__IOCMD_H__

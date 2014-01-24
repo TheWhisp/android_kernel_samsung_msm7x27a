@@ -16,12 +16,17 @@
 #include <linux/interrupt.h>
 #include <linux/delay.h>
 #include <linux/of_gpio.h>
+<<<<<<< HEAD
 #include <linux/of_i2c.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/slab.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/machdep.h>
 #include <asm/prom.h>

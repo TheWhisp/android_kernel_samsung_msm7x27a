@@ -51,7 +51,11 @@
 #define BRDIOCTL_POSTSCALE_NOTIFY (BRDIOCTL_PWRCONTROL + 0xA)
 #define BRDIOCTL_CONSTRAINT_REQUEST (BRDIOCTL_PWRCONTROL + 0xB)
 
+<<<<<<< HEAD
 /* Number of actual DSP-MMU TLB entrries */
+=======
+/* Number of actual DSP-MMU TLB entries */
+>>>>>>> refs/remotes/origin/master
 #define BRDIOCTL_NUMOFMMUTLB        32
 
 struct bridge_ioctl_extproc {

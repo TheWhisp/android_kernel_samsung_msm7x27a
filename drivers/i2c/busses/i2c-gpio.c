@@ -15,19 +15,28 @@
 #include <linux/slab.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/gpio.h>
 =======
 #include <linux/gpio.h>
 #include <linux/of_gpio.h>
 #include <linux/of_i2c.h>
+=======
+#include <linux/gpio.h>
+#include <linux/of.h>
+#include <linux/of_gpio.h>
+>>>>>>> refs/remotes/origin/master
 
 struct i2c_gpio_private_data {
 	struct i2c_adapter adap;
 	struct i2c_algo_bit_data bit_data;
 	struct i2c_gpio_platform_data pdata;
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Toggle SDA by changing the direction of the pin */
 static void i2c_gpio_setsda_dir(void *data, int state)
@@ -91,6 +100,7 @@ static int i2c_gpio_getscl(void *data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __devinit i2c_gpio_probe(struct platform_device *pdev)
 {
 =======
@@ -111,6 +121,31 @@ static int __devinit of_i2c_gpio_probe(struct device_node *np,
 		return -ENODEV;
 	}
 
+=======
+static int of_i2c_gpio_get_pins(struct device_node *np,
+				unsigned int *sda_pin, unsigned int *scl_pin)
+{
+	if (of_gpio_count(np) < 2)
+		return -ENODEV;
+
+	*sda_pin = of_get_gpio(np, 0);
+	*scl_pin = of_get_gpio(np, 1);
+
+	if (!gpio_is_valid(*sda_pin) || !gpio_is_valid(*scl_pin)) {
+		pr_err("%s: invalid GPIO pins, sda=%d/scl=%d\n",
+		       np->full_name, *sda_pin, *scl_pin);
+		return -ENODEV;
+	}
+
+	return 0;
+}
+
+static void of_i2c_gpio_get_props(struct device_node *np,
+				  struct i2c_gpio_platform_data *pdata)
+{
+	u32 reg;
+
+>>>>>>> refs/remotes/origin/master
 	of_property_read_u32(np, "i2c-gpio,delay-us", &pdata->udelay);
 
 	if (!of_property_read_u32(np, "i2c-gpio,timeout-ms", &reg))
@@ -122,6 +157,7 @@ static int __devinit of_i2c_gpio_probe(struct device_node *np,
 		of_property_read_bool(np, "i2c-gpio,scl-open-drain");
 	pdata->scl_is_output_only =
 		of_property_read_bool(np, "i2c-gpio,scl-output-only");
+<<<<<<< HEAD
 
 	return 0;
 }
@@ -172,6 +208,62 @@ static int __devinit i2c_gpio_probe(struct platform_device *pdev)
 	ret = gpio_request(pdata->scl_pin, "scl");
 	if (ret)
 		goto err_request_scl;
+=======
+}
+
+static int i2c_gpio_probe(struct platform_device *pdev)
+{
+	struct i2c_gpio_private_data *priv;
+	struct i2c_gpio_platform_data *pdata;
+	struct i2c_algo_bit_data *bit_data;
+	struct i2c_adapter *adap;
+	unsigned int sda_pin, scl_pin;
+	int ret;
+
+	/* First get the GPIO pins; if it fails, we'll defer the probe. */
+	if (pdev->dev.of_node) {
+		ret = of_i2c_gpio_get_pins(pdev->dev.of_node,
+					   &sda_pin, &scl_pin);
+		if (ret)
+			return ret;
+	} else {
+		if (!dev_get_platdata(&pdev->dev))
+			return -ENXIO;
+		pdata = dev_get_platdata(&pdev->dev);
+		sda_pin = pdata->sda_pin;
+		scl_pin = pdata->scl_pin;
+	}
+
+	ret = gpio_request(sda_pin, "sda");
+	if (ret) {
+		if (ret == -EINVAL)
+			ret = -EPROBE_DEFER;	/* Try again later */
+		goto err_request_sda;
+	}
+	ret = gpio_request(scl_pin, "scl");
+	if (ret) {
+		if (ret == -EINVAL)
+			ret = -EPROBE_DEFER;	/* Try again later */
+		goto err_request_scl;
+	}
+
+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+	if (!priv) {
+		ret = -ENOMEM;
+		goto err_add_bus;
+	}
+	adap = &priv->adap;
+	bit_data = &priv->bit_data;
+	pdata = &priv->pdata;
+
+	if (pdev->dev.of_node) {
+		pdata->sda_pin = sda_pin;
+		pdata->scl_pin = scl_pin;
+		of_i2c_gpio_get_props(pdev->dev.of_node, pdata);
+	} else {
+		memcpy(pdata, dev_get_platdata(&pdev->dev), sizeof(*pdata));
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata->sda_is_open_drain) {
 		gpio_direction_output(pdata->sda_pin, 1);
@@ -208,6 +300,7 @@ static int __devinit i2c_gpio_probe(struct platform_device *pdev)
 	bit_data->data = pdata;
 
 	adap->owner = THIS_MODULE;
+<<<<<<< HEAD
 	snprintf(adap->name, sizeof(adap->name), "i2c-gpio%d", pdev->id);
 	adap->algo_data = bit_data;
 	adap->class = I2C_CLASS_HWMON | I2C_CLASS_SPD;
@@ -223,10 +316,24 @@ static int __devinit i2c_gpio_probe(struct platform_device *pdev)
 	 * sense when there are multiple adapters.
 	 */
 	adap->nr = (pdev->id != -1) ? pdev->id : 0;
+=======
+	if (pdev->dev.of_node)
+		strlcpy(adap->name, dev_name(&pdev->dev), sizeof(adap->name));
+	else
+		snprintf(adap->name, sizeof(adap->name), "i2c-gpio%d", pdev->id);
+
+	adap->algo_data = bit_data;
+	adap->class = I2C_CLASS_HWMON | I2C_CLASS_SPD;
+	adap->dev.parent = &pdev->dev;
+	adap->dev.of_node = pdev->dev.of_node;
+
+	adap->nr = pdev->id;
+>>>>>>> refs/remotes/origin/master
 	ret = i2c_bit_add_numbered_bus(adap);
 	if (ret)
 		goto err_add_bus;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	platform_set_drvdata(pdev, adap);
 =======
@@ -234,6 +341,9 @@ static int __devinit i2c_gpio_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, priv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	platform_set_drvdata(pdev, priv);
+>>>>>>> refs/remotes/origin/master
 
 	dev_info(&pdev->dev, "using pins %u (SDA) and %u (SCL%s)\n",
 		 pdata->sda_pin, pdata->scl_pin,
@@ -243,6 +353,7 @@ static int __devinit i2c_gpio_probe(struct platform_device *pdev)
 	return 0;
 
 err_add_bus:
+<<<<<<< HEAD
 	gpio_free(pdata->scl_pin);
 err_request_scl:
 	gpio_free(pdata->sda_pin);
@@ -266,6 +377,17 @@ static int __devexit i2c_gpio_remove(struct platform_device *pdev)
 	adap = platform_get_drvdata(pdev);
 	pdata = pdev->dev.platform_data;
 =======
+=======
+	gpio_free(scl_pin);
+err_request_scl:
+	gpio_free(sda_pin);
+err_request_sda:
+	return ret;
+}
+
+static int i2c_gpio_remove(struct platform_device *pdev)
+{
+>>>>>>> refs/remotes/origin/master
 	struct i2c_gpio_private_data *priv;
 	struct i2c_gpio_platform_data *pdata;
 	struct i2c_adapter *adap;
@@ -273,22 +395,31 @@ static int __devexit i2c_gpio_remove(struct platform_device *pdev)
 	priv = platform_get_drvdata(pdev);
 	adap = &priv->adap;
 	pdata = &priv->pdata;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	i2c_del_adapter(adap);
 	gpio_free(pdata->scl_pin);
 	gpio_free(pdata->sda_pin);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(adap->algo_data);
 	kfree(adap);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_OF)
 static const struct of_device_id i2c_gpio_dt_ids[] = {
 	{ .compatible = "i2c-gpio", },
@@ -298,11 +429,15 @@ static const struct of_device_id i2c_gpio_dt_ids[] = {
 MODULE_DEVICE_TABLE(of, i2c_gpio_dt_ids);
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver i2c_gpio_driver = {
 	.driver		= {
 		.name	= "i2c-gpio",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 		.of_match_table	= of_match_ptr(i2c_gpio_dt_ids),
@@ -310,6 +445,12 @@ static struct platform_driver i2c_gpio_driver = {
 	},
 	.probe		= i2c_gpio_probe,
 	.remove		= __devexit_p(i2c_gpio_remove),
+=======
+		.of_match_table	= of_match_ptr(i2c_gpio_dt_ids),
+	},
+	.probe		= i2c_gpio_probe,
+	.remove		= i2c_gpio_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init i2c_gpio_init(void)

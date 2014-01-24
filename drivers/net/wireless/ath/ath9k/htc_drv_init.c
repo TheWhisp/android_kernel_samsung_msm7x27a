@@ -14,6 +14,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include "htc.h"
 
 MODULE_AUTHOR("Atheros Communications");
@@ -28,6 +33,13 @@ int htc_modparam_nohwcrypt;
 module_param_named(nohwcrypt, htc_modparam_nohwcrypt, int, 0444);
 MODULE_PARM_DESC(nohwcrypt, "Disable hardware encryption");
 
+<<<<<<< HEAD
+=======
+static int ath9k_htc_btcoex_enable;
+module_param_named(btcoex_enable, ath9k_htc_btcoex_enable, int, 0444);
+MODULE_PARM_DESC(btcoex_enable, "Enable wifi-BT coexistence");
+
+>>>>>>> refs/remotes/origin/master
 #define CHAN2G(_freq, _idx)  { \
 	.center_freq = (_freq), \
 	.hw_value = (_idx), \
@@ -42,10 +54,13 @@ MODULE_PARM_DESC(nohwcrypt, "Disable hardware encryption");
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ATH_HTC_BTCOEX_PRODUCT_ID "wb193"
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct ieee80211_channel ath9k_2ghz_channels[] = {
 	CHAN2G(2412, 0), /* Channel 1 */
 	CHAN2G(2417, 1), /* Channel 2 */
@@ -279,14 +294,24 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int ath9k_reg_notifier(struct wiphy *wiphy,
 			      struct regulatory_request *request)
+=======
+static void ath9k_reg_notifier(struct wiphy *wiphy,
+			       struct regulatory_request *request)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_hw *hw = wiphy_to_ieee80211_hw(wiphy);
 	struct ath9k_htc_priv *priv = hw->priv;
 
+<<<<<<< HEAD
 	return ath_reg_notifier_apply(wiphy, request,
 				      ath9k_hw_regulatory(priv->ah));
+=======
+	ath_reg_notifier_apply(wiphy, request,
+			       ath9k_hw_regulatory(priv->ah));
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned int ath9k_regread(void *hw_priv, u32 reg_offset)
@@ -303,11 +328,15 @@ static unsigned int ath9k_regread(void *hw_priv, u32 reg_offset)
 			  100);
 	if (unlikely(r)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_WMI,
 			"REGISTER READ FAILED: (0x%04x, %d)\n",
 =======
 		ath_dbg(common, WMI, "REGISTER READ FAILED: (0x%04x, %d)\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, WMI, "REGISTER READ FAILED: (0x%04x, %d)\n",
+>>>>>>> refs/remotes/origin/master
 			reg_offset, r);
 		return -EIO;
 	}
@@ -335,10 +364,14 @@ static void ath9k_multi_regread(void *hw_priv, u32 *addr,
 			   100);
 	if (unlikely(ret)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_WMI,
 =======
 		ath_dbg(common, WMI,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, WMI,
+>>>>>>> refs/remotes/origin/master
 			"Multiple REGISTER READ FAILED (count: %d)\n", count);
 	}
 
@@ -364,11 +397,15 @@ static void ath9k_regwrite_single(void *hw_priv, u32 val, u32 reg_offset)
 			  100);
 	if (unlikely(r)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_WMI,
 			"REGISTER WRITE FAILED:(0x%04x, %d)\n",
 =======
 		ath_dbg(common, WMI, "REGISTER WRITE FAILED:(0x%04x, %d)\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, WMI, "REGISTER WRITE FAILED:(0x%04x, %d)\n",
+>>>>>>> refs/remotes/origin/master
 			reg_offset, r);
 	}
 }
@@ -400,10 +437,14 @@ static void ath9k_regwrite_buffer(void *hw_priv, u32 val, u32 reg_offset)
 			  100);
 		if (unlikely(r)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_WMI,
 =======
 			ath_dbg(common, WMI,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath_dbg(common, WMI,
+>>>>>>> refs/remotes/origin/master
 				"REGISTER WRITE FAILED, multi len: %d\n",
 				priv->wmi->multi_write_idx);
 		}
@@ -454,10 +495,14 @@ static void ath9k_regwrite_flush(void *hw_priv)
 			  100);
 		if (unlikely(r)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_WMI,
 =======
 			ath_dbg(common, WMI,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath_dbg(common, WMI,
+>>>>>>> refs/remotes/origin/master
 				"REGISTER WRITE FAILED, multi len: %d\n",
 				priv->wmi->multi_write_idx);
 		}
@@ -533,19 +578,30 @@ static void setup_ht_cap(struct ath9k_htc_priv *priv,
 
 	/* ath9k_htc supports only 1 or 2 stream devices */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tx_streams = ath9k_cmn_count_streams(common->tx_chainmask, 2);
 	rx_streams = ath9k_cmn_count_streams(common->rx_chainmask, 2);
 
 	ath_dbg(common, ATH_DBG_CONFIG,
 		"TX streams %d, RX streams: %d\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	tx_streams = ath9k_cmn_count_streams(priv->ah->txchainmask, 2);
 	rx_streams = ath9k_cmn_count_streams(priv->ah->rxchainmask, 2);
 
 	ath_dbg(common, CONFIG, "TX streams %d, RX streams: %d\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		tx_streams, rx_streams);
 
+=======
+		tx_streams, rx_streams);
+
+	if (tx_streams >= 2)
+		ht_info->cap |= IEEE80211_HT_CAP_TX_STBC;
+
+>>>>>>> refs/remotes/origin/master
 	if (tx_streams != rx_streams) {
 		ht_info->mcs.tx_params |= IEEE80211_HT_MCS_TX_RX_DIFF;
 		ht_info->mcs.tx_params |= ((tx_streams - 1) <<
@@ -578,11 +634,16 @@ static int ath9k_init_queues(struct ath9k_htc_priv *priv)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	if (!ath9k_htc_txq_setup(priv, WME_AC_BE)) {
+=======
+	if (!ath9k_htc_txq_setup(priv, IEEE80211_AC_BE)) {
+>>>>>>> refs/remotes/origin/master
 		ath_err(common, "Unable to setup xmit queue for BE traffic\n");
 		goto err;
 	}
 
+<<<<<<< HEAD
 	if (!ath9k_htc_txq_setup(priv, WME_AC_BK)) {
 		ath_err(common, "Unable to setup xmit queue for BK traffic\n");
 		goto err;
@@ -592,6 +653,17 @@ static int ath9k_init_queues(struct ath9k_htc_priv *priv)
 		goto err;
 	}
 	if (!ath9k_htc_txq_setup(priv, WME_AC_VO)) {
+=======
+	if (!ath9k_htc_txq_setup(priv, IEEE80211_AC_BK)) {
+		ath_err(common, "Unable to setup xmit queue for BK traffic\n");
+		goto err;
+	}
+	if (!ath9k_htc_txq_setup(priv, IEEE80211_AC_VI)) {
+		ath_err(common, "Unable to setup xmit queue for VI traffic\n");
+		goto err;
+	}
+	if (!ath9k_htc_txq_setup(priv, IEEE80211_AC_VO)) {
+>>>>>>> refs/remotes/origin/master
 		ath_err(common, "Unable to setup xmit queue for VO traffic\n");
 		goto err;
 	}
@@ -602,6 +674,7 @@ err:
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void ath9k_init_crypto(struct ath9k_htc_priv *priv)
 {
@@ -624,6 +697,8 @@ static void ath9k_init_crypto(struct ath9k_htc_priv *priv)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void ath9k_init_channels_rates(struct ath9k_htc_priv *priv)
 {
 	if (priv->ah->caps.hw_caps & ATH9K_HW_CAP_2GHZ) {
@@ -654,16 +729,20 @@ static void ath9k_init_misc(struct ath9k_htc_priv *priv)
 	struct ath_common *common = ath9k_hw_common(priv->ah);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	common->tx_chainmask = priv->ah->caps.tx_chainmask;
 	common->rx_chainmask = priv->ah->caps.rx_chainmask;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memcpy(common->bssidmask, ath_bcast_mac, ETH_ALEN);
 
 	priv->ah->opmode = NL80211_IFTYPE_STATION;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void ath9k_init_btcoex(struct ath9k_htc_priv *priv)
 {
@@ -690,6 +769,8 @@ static void ath9k_init_btcoex(struct ath9k_htc_priv *priv)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ath9k_init_priv(struct ath9k_htc_priv *priv,
 			   u16 devid, char *product,
 			   u32 drv_info)
@@ -698,7 +779,11 @@ static int ath9k_init_priv(struct ath9k_htc_priv *priv,
 	struct ath_common *common;
 	int i, ret = 0, csz = 0;
 
+<<<<<<< HEAD
 	priv->op_flags |= OP_INVALID;
+=======
+	set_bit(OP_INVALID, &priv->op_flags);
+>>>>>>> refs/remotes/origin/master
 
 	ah = kzalloc(sizeof(struct ath_hw), GFP_KERNEL);
 	if (!ah)
@@ -706,9 +791,12 @@ static int ath9k_init_priv(struct ath9k_htc_priv *priv,
 
 	ah->hw_version.devid = devid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ah->hw_version.subsysid = 0; /* FIXME */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ah->hw_version.usbdev = drv_info;
 	ah->ah_flags |= AH_USE_EEPROM;
 	ah->reg_ops.read = ath9k_regread;
@@ -726,6 +814,10 @@ static int ath9k_init_priv(struct ath9k_htc_priv *priv,
 	common->hw = priv->hw;
 	common->priv = priv;
 	common->debug_mask = ath9k_debug;
+<<<<<<< HEAD
+=======
+	common->btcoex_enabled = ath9k_htc_btcoex_enable == 1;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&priv->beacon_lock);
 	spin_lock_init(&priv->tx.tx_lock);
@@ -764,6 +856,7 @@ static int ath9k_init_priv(struct ath9k_htc_priv *priv,
 		priv->cur_beacon_conf.bslot[i] = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath9k_init_crypto(priv);
 	ath9k_init_channels_rates(priv);
 	ath9k_init_misc(priv);
@@ -773,11 +866,16 @@ static int ath9k_init_priv(struct ath9k_htc_priv *priv,
 		ath9k_init_btcoex(priv);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ath9k_cmn_init_crypto(ah);
 	ath9k_init_channels_rates(priv);
 	ath9k_init_misc(priv);
 	ath9k_htc_init_btcoex(priv, product);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -791,10 +889,34 @@ err_hw:
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static const struct ieee80211_iface_limit if_limits[] = {
+	{ .max = 2,	.types = BIT(NL80211_IFTYPE_STATION) |
+				 BIT(NL80211_IFTYPE_P2P_CLIENT) },
+	{ .max = 2,	.types = BIT(NL80211_IFTYPE_AP) |
+#ifdef CONFIG_MAC80211_MESH
+				 BIT(NL80211_IFTYPE_MESH_POINT) |
+#endif
+				 BIT(NL80211_IFTYPE_P2P_GO) },
+};
+
+static const struct ieee80211_iface_combination if_comb = {
+	.limits = if_limits,
+	.n_limits = ARRAY_SIZE(if_limits),
+	.max_interfaces = 2,
+	.num_different_channels = 1,
+};
+
+>>>>>>> refs/remotes/origin/master
 static void ath9k_set_hw_capab(struct ath9k_htc_priv *priv,
 			       struct ieee80211_hw *hw)
 {
 	struct ath_common *common = ath9k_hw_common(priv->ah);
+<<<<<<< HEAD
+=======
+	struct base_eep_header *pBase;
+>>>>>>> refs/remotes/origin/master
 
 	hw->flags = IEEE80211_HW_SIGNAL_DBM |
 		IEEE80211_HW_AMPDU_AGGREGATION |
@@ -804,9 +926,14 @@ static void ath9k_set_hw_capab(struct ath9k_htc_priv *priv,
 		IEEE80211_HW_SUPPORTS_PS |
 		IEEE80211_HW_PS_NULLFUNC_STACK |
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		IEEE80211_HW_REPORTS_TX_ACK_STATUS |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		IEEE80211_HW_REPORTS_TX_ACK_STATUS |
+		IEEE80211_HW_MFP_CAPABLE |
+>>>>>>> refs/remotes/origin/master
 		IEEE80211_HW_HOST_BROADCAST_PS_BUFFERING;
 
 	hw->wiphy->interface_modes =
@@ -814,6 +941,7 @@ static void ath9k_set_hw_capab(struct ath9k_htc_priv *priv,
 		BIT(NL80211_IFTYPE_ADHOC) |
 		BIT(NL80211_IFTYPE_AP) |
 		BIT(NL80211_IFTYPE_P2P_GO) |
+<<<<<<< HEAD
 		BIT(NL80211_IFTYPE_P2P_CLIENT);
 
 	hw->wiphy->flags &= ~WIPHY_FLAG_PS_ON_BY_DEFAULT;
@@ -826,6 +954,22 @@ static void ath9k_set_hw_capab(struct ath9k_htc_priv *priv,
 	hw->queues = 4;
 	hw->channel_change_time = 5000;
 	hw->max_listen_interval = 10;
+=======
+		BIT(NL80211_IFTYPE_P2P_CLIENT) |
+		BIT(NL80211_IFTYPE_MESH_POINT);
+
+	hw->wiphy->iface_combinations = &if_comb;
+	hw->wiphy->n_iface_combinations = 1;
+
+	hw->wiphy->flags &= ~WIPHY_FLAG_PS_ON_BY_DEFAULT;
+
+	hw->wiphy->flags |= WIPHY_FLAG_IBSS_RSN |
+			    WIPHY_FLAG_HAS_REMAIN_ON_CHANNEL;
+
+	hw->queues = 4;
+	hw->channel_change_time = 5000;
+	hw->max_listen_interval = 1;
+>>>>>>> refs/remotes/origin/master
 
 	hw->vif_data_size = sizeof(struct ath9k_htc_vif);
 	hw->sta_data_size = sizeof(struct ath9k_htc_sta);
@@ -850,6 +994,15 @@ static void ath9k_set_hw_capab(struct ath9k_htc_priv *priv,
 				     &priv->sbands[IEEE80211_BAND_5GHZ].ht_cap);
 	}
 
+<<<<<<< HEAD
+=======
+	pBase = ath9k_htc_get_eeprom_base(priv);
+	if (pBase) {
+		hw->wiphy->available_antennas_rx = pBase->rxMask;
+		hw->wiphy->available_antennas_tx = pBase->txMask;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	SET_IEEE80211_PERM_ADDR(hw, common->macaddr);
 }
 
@@ -868,7 +1021,11 @@ static int ath9k_init_firmware_version(struct ath9k_htc_priv *priv)
 	priv->fw_version_major = be16_to_cpu(cmd_rsp.major);
 	priv->fw_version_minor = be16_to_cpu(cmd_rsp.minor);
 
+<<<<<<< HEAD
 	snprintf(hw->wiphy->fw_version, ETHTOOL_BUSINFO_LEN, "%d.%d",
+=======
+	snprintf(hw->wiphy->fw_version, sizeof(hw->wiphy->fw_version), "%d.%d",
+>>>>>>> refs/remotes/origin/master
 		 priv->fw_version_major,
 		 priv->fw_version_minor);
 
@@ -958,6 +1115,7 @@ static int ath9k_init_device(struct ath9k_htc_priv *priv,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CONFIG,
 		"WMI:%d, BCN:%d, CAB:%d, UAPSD:%d, MGMT:%d, "
 		"BE:%d, BK:%d, VI:%d, VO:%d\n",
@@ -965,6 +1123,10 @@ static int ath9k_init_device(struct ath9k_htc_priv *priv,
 	ath_dbg(common, CONFIG,
 		"WMI:%d, BCN:%d, CAB:%d, UAPSD:%d, MGMT:%d, BE:%d, BK:%d, VI:%d, VO:%d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CONFIG,
+		"WMI:%d, BCN:%d, CAB:%d, UAPSD:%d, MGMT:%d, BE:%d, BK:%d, VI:%d, VO:%d\n",
+>>>>>>> refs/remotes/origin/master
 		priv->wmi_cmd_ep,
 		priv->beacon_ep,
 		priv->cab_ep,
@@ -1083,9 +1245,13 @@ int ath9k_htc_resume(struct htc_target *htc_handle)
 static int __init ath9k_htc_init(void)
 {
 	if (ath9k_hif_usb_init() < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR
 			"ath9k_htc: No USB devices found,"
 			" driver not installed.\n");
+=======
+		pr_err("No USB devices found, driver not installed\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -1096,6 +1262,10 @@ module_init(ath9k_htc_init);
 static void __exit ath9k_htc_exit(void)
 {
 	ath9k_hif_usb_exit();
+<<<<<<< HEAD
 	printk(KERN_INFO "ath9k_htc: Driver unloaded\n");
+=======
+	pr_info("Driver unloaded\n");
+>>>>>>> refs/remotes/origin/master
 }
 module_exit(ath9k_htc_exit);

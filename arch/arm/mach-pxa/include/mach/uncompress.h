@@ -72,8 +72,11 @@ static inline void arch_decomp_setup(void)
 		uart_is_pxa = 0;
 	}
 }
+<<<<<<< HEAD
 
 /*
  * nothing to do
  */
 #define arch_decomp_wdog()
+=======
+>>>>>>> refs/remotes/origin/master

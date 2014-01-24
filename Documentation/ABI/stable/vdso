@@ -24,4 +24,8 @@ though.
 
 (As of this writing, this ABI documentation as been confirmed for x86_64.
  The maintainers of the other vDSO-using architectures should confirm
+<<<<<<< HEAD
  that it is correct for their architecture.)
+=======
+ that it is correct for their architecture.)
+>>>>>>> refs/remotes/origin/master

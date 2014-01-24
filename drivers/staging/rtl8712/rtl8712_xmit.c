@@ -30,7 +30,10 @@
 
 #include "osdep_service.h"
 #include "drv_types.h"
+<<<<<<< HEAD
 #include "rtl871x_byteorder.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "wifi.h"
 #include "osdep_intf.h"
 #include "usb_ops.h"
@@ -38,9 +41,13 @@
 static void dump_xframe(struct _adapter *padapter,
 			struct xmit_frame *pxmitframe);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static void update_txdesc(struct xmit_frame *pxmitframe, uint *pmem, int sz);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void update_txdesc(struct xmit_frame *pxmitframe, uint *pmem, int sz);
+>>>>>>> refs/remotes/origin/master
 
 sint _r8712_init_hw_txqueue(struct hw_txqueue *phw_txqueue, u8 ac_tag)
 {
@@ -243,6 +250,7 @@ void r8712_do_queue_select(struct _adapter *padapter,
 			   struct pkt_attrib *pattrib)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 qsel = 0;
 	struct dvobj_priv *pdvobj = (struct dvobj_priv *)&padapter->dvobjpriv;
 
@@ -254,6 +262,8 @@ void r8712_do_queue_select(struct _adapter *padapter,
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int qsel = 0;
 	struct dvobj_priv *pdvobj = (struct dvobj_priv *)&padapter->dvobjpriv;
 
@@ -392,7 +402,11 @@ u8 r8712_dump_aggr_xframe(struct xmit_buf *pxmitbuf,
 {
 	struct _adapter *padapter = pxmitframe->padapter;
 	struct dvobj_priv *pdvobj = (struct dvobj_priv *) &padapter->dvobjpriv;
+<<<<<<< HEAD
 	struct tx_desc * ptxdesc = (struct tx_desc *)pxmitbuf->pbuf;
+=======
+	struct tx_desc *ptxdesc = (struct tx_desc *)pxmitbuf->pbuf;
+>>>>>>> refs/remotes/origin/master
 	struct cmd_hdr *pcmd_hdr = (struct cmd_hdr *)
 		(pxmitbuf->pbuf + TXDESC_SIZE);
 	u16 total_length = (u16) (ptxdesc->txdw0 & 0xffff);
@@ -428,7 +442,10 @@ u8 r8712_dump_aggr_xframe(struct xmit_buf *pxmitbuf,
 
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void update_txdesc(struct xmit_frame *pxmitframe, uint *pmem, int sz)
 {
 	uint qsel;
@@ -440,11 +457,17 @@ static void update_txdesc(struct xmit_frame *pxmitframe, uint *pmem, int sz)
 	struct tx_desc *ptxdesc = (struct tx_desc *)pmem;
 	struct dvobj_priv *pdvobj = (struct dvobj_priv *)&padapter->dvobjpriv;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_R8712_TX_AGGR
 	struct cmd_priv *pcmdpriv = (struct cmd_priv *)&padapter->cmdpriv;
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_R8712_TX_AGGR
+	struct cmd_priv *pcmdpriv = (struct cmd_priv *)&padapter->cmdpriv;
+#endif
+>>>>>>> refs/remotes/origin/master
 	u8 blnSetTxDescOffset;
 	sint bmcst = IS_MCAST(pattrib->ra);
 	struct ht_priv *phtpriv = &pmlmepriv->htpriv;
@@ -479,9 +502,12 @@ static void update_txdesc(struct xmit_frame *pxmitframe, uint *pmem, int sz)
 		/* offset 4 */
 		ptxdesc->txdw1 |= cpu_to_le32((pattrib->mac_id)&0x1f);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		qsel = (uint)(pattrib->qsel & 0x0000001f);
 		ptxdesc->txdw1 |= cpu_to_le32((qsel << QSEL_SHT) & 0x00001f00);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_R8712_TX_AGGR
 		/* dirty workaround, need to check if it is aggr cmd. */
@@ -516,7 +542,10 @@ static void update_txdesc(struct xmit_frame *pxmitframe, uint *pmem, int sz)
 		qsel = (uint)(pattrib->qsel & 0x0000001f);
 		ptxdesc->txdw1 |= cpu_to_le32((qsel << QSEL_SHT) & 0x00001f00);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!pqospriv->qos_option)
 			ptxdesc->txdw1 |= cpu_to_le32(BIT(16));/*Non-QoS*/
 		if ((pattrib->encrypt > 0) && !pattrib->bswenc) {
@@ -639,14 +668,20 @@ int r8712_xmitframe_complete(struct _adapter *padapter,
 	sint hwentry;
 	struct xmit_frame *pxmitframe = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int res = _SUCCESS, xcnt = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_R8712_TX_AGGR
 	struct xmit_frame *p2ndxmitframe = NULL;
 #else
 	int res = _SUCCESS, xcnt = 0;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	phwxmits = pxmitpriv->hwxmits;
 	hwentry = pxmitpriv->hwxmit_entry;
@@ -654,6 +689,7 @@ int r8712_xmitframe_complete(struct _adapter *padapter,
 		pxmitbuf = r8712_alloc_xmitbuf(pxmitpriv);
 		if (!pxmitbuf)
 			return false;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 	do {
@@ -682,6 +718,8 @@ int r8712_xmitframe_complete(struct _adapter *padapter,
 		break;
 	} while (0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_R8712_TX_AGGR
 		pxmitbuf->aggr_nr = 0;
 #endif
@@ -750,7 +788,10 @@ int r8712_xmitframe_complete(struct _adapter *padapter,
 		r8712_free_xmitbuf(pxmitpriv, pxmitbuf);
 		return false;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return true;
 }
 
@@ -785,9 +826,12 @@ static void dump_xframe(struct _adapter *padapter,
 		pxmitframe->bpending[t] = false;
 		ff_hwaddr = get_ff_hwaddr(pxmitframe);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		r8712_write_port(padapter, ff_hwaddr, w_sz,
 			   (unsigned char *)pxmitframe);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_R8712_TX_AGGR
 		r8712_write_port(padapter, RTL8712_DMA_H2CCMD, w_sz,
 				(unsigned char *)pxmitframe);
@@ -795,7 +839,10 @@ static void dump_xframe(struct _adapter *padapter,
 		r8712_write_port(padapter, ff_hwaddr, w_sz,
 			   (unsigned char *)pxmitframe);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		mem_addr += w_sz;
 		mem_addr = (u8 *)RND4(((addr_t)(mem_addr)));
 	}

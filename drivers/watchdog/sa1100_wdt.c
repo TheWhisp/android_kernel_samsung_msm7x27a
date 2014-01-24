@@ -18,11 +18,17 @@
  *	27/11/2000 Initial release
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -32,9 +38,13 @@
 #include <linux/watchdog.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/io.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bitops.h>
 #include <linux/uaccess.h>
 #include <linux/timex.h>
@@ -60,10 +70,17 @@ static int sa1100dog_open(struct inode *inode, struct file *file)
 		return -EBUSY;
 
 	/* Activate SA1100 Watchdog timer */
+<<<<<<< HEAD
 	OSMR3 = OSCR + pre_margin;
 	OSSR = OSSR_M3;
 	OWER = OWER_WME;
 	OIER |= OIER_E3;
+=======
+	writel_relaxed(readl_relaxed(OSCR) + pre_margin, OSMR3);
+	writel_relaxed(OSSR_M3, OSSR);
+	writel_relaxed(OWER_WME, OWER);
+	writel_relaxed(readl_relaxed(OIER) | OIER_E3, OIER);
+>>>>>>> refs/remotes/origin/master
 	return nonseekable_open(inode, file);
 }
 
@@ -77,10 +94,14 @@ static int sa1100dog_open(struct inode *inode, struct file *file)
 static int sa1100dog_release(struct inode *inode, struct file *file)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_CRIT "WATCHDOG: Device closed - timer will not stop\n");
 =======
 	pr_crit("Device closed - timer will not stop\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_crit("Device closed - timer will not stop\n");
+>>>>>>> refs/remotes/origin/master
 	clear_bit(1, &sa1100wdt_users);
 	return 0;
 }
@@ -90,7 +111,11 @@ static ssize_t sa1100dog_write(struct file *file, const char __user *data,
 {
 	if (len)
 		/* Refresh OSMR3 timer. */
+<<<<<<< HEAD
 		OSMR3 = OSCR + pre_margin;
+=======
+		writel_relaxed(readl_relaxed(OSCR) + pre_margin, OSMR3);
+>>>>>>> refs/remotes/origin/master
 	return len;
 }
 
@@ -124,7 +149,11 @@ static long sa1100dog_ioctl(struct file *file, unsigned int cmd,
 		break;
 
 	case WDIOC_KEEPALIVE:
+<<<<<<< HEAD
 		OSMR3 = OSCR + pre_margin;
+=======
+		writel_relaxed(readl_relaxed(OSCR) + pre_margin, OSMR3);
+>>>>>>> refs/remotes/origin/master
 		ret = 0;
 		break;
 
@@ -139,7 +168,11 @@ static long sa1100dog_ioctl(struct file *file, unsigned int cmd,
 		}
 
 		pre_margin = oscr_freq * time;
+<<<<<<< HEAD
 		OSMR3 = OSCR + pre_margin;
+=======
+		writel_relaxed(readl_relaxed(OSCR) + pre_margin, OSMR3);
+>>>>>>> refs/remotes/origin/master
 		/*fall through*/
 
 	case WDIOC_GETTIMEOUT:
@@ -184,6 +217,7 @@ static int __init sa1100dog_init(void)
 	ret = misc_register(&sa1100dog_miscdev);
 	if (ret == 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO
 			"SA1100/PXA2xx Watchdog Timer: timer margin %d sec\n",
 						margin);
@@ -191,6 +225,10 @@ static int __init sa1100dog_init(void)
 		pr_info("SA1100/PXA2xx Watchdog Timer: timer margin %d sec\n",
 			margin);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("SA1100/PXA2xx Watchdog Timer: timer margin %d sec\n",
+			margin);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -209,4 +247,7 @@ module_param(margin, int, 0);
 MODULE_PARM_DESC(margin, "Watchdog margin in seconds (default 60s)");
 
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

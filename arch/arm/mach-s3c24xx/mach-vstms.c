@@ -36,6 +36,7 @@
 #include <mach/regs-gpio.h>
 #include <mach/regs-lcd.h>
 
+<<<<<<< HEAD
 #include <mach/idle.h>
 #include <mach/fb.h>
 
@@ -48,6 +49,19 @@
 #include <plat/devs.h>
 #include <plat/cpu.h>
 
+=======
+#include <mach/fb.h>
+
+#include <linux/platform_data/i2c-s3c2410.h>
+#include <linux/platform_data/mtd-nand-s3c2410.h>
+
+#include <plat/clock.h>
+#include <plat/devs.h>
+#include <plat/cpu.h>
+#include <plat/samsung-time.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 static struct map_desc vstms_iodesc[] __initdata = {
 };
@@ -127,6 +141,10 @@ static struct platform_device *vstms_devices[] __initdata = {
 	&s3c_device_iis,
 	&s3c_device_rtc,
 	&s3c_device_nand,
+<<<<<<< HEAD
+=======
+	&s3c2412_device_dma,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init vstms_fixup(struct tag *tags, char **cmdline,
@@ -144,6 +162,10 @@ static void __init vstms_map_io(void)
 	s3c24xx_init_io(vstms_iodesc, ARRAY_SIZE(vstms_iodesc));
 	s3c24xx_init_clocks(12000000);
 	s3c24xx_init_uarts(vstms_uartcfgs, ARRAY_SIZE(vstms_uartcfgs));
+<<<<<<< HEAD
+=======
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init vstms_init(void)
@@ -158,9 +180,16 @@ MACHINE_START(VSTMS, "VSTMS")
 	.atag_offset	= 0x100,
 
 	.fixup		= vstms_fixup,
+<<<<<<< HEAD
 	.init_irq	= s3c24xx_init_irq,
 	.init_machine	= vstms_init,
 	.map_io		= vstms_map_io,
 	.timer		= &s3c24xx_timer,
+=======
+	.init_irq	= s3c2412_init_irq,
+	.init_machine	= vstms_init,
+	.map_io		= vstms_map_io,
+	.init_time	= samsung_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.restart	= s3c2412_restart,
 MACHINE_END

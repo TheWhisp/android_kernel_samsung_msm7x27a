@@ -6,15 +6,20 @@
  * Copyright (C) 2008 Nokia Corporation
  * Copyright (C) 2009 Samsung Electronics
 <<<<<<< HEAD
+<<<<<<< HEAD
  *                    Author: Michal Nazarewicz (m.nazarewicz@samsung.com)
 =======
  *                    Author: Michal Nazarewicz (mina86@mina86.com)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *                    Author: Michal Nazarewicz (mina86@mina86.com)
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+<<<<<<< HEAD
 <<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
@@ -27,6 +32,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 /* #define VERBOSE_DEBUG */
@@ -34,21 +41,34 @@
 #include <linux/slab.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/etherdevice.h>
 
 #include <asm/atomic.h>
 =======
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/etherdevice.h>
 
 #include <linux/atomic.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include "u_ether.h"
 #include "rndis.h"
 
 
+=======
+
+#include "u_ether.h"
+#include "u_ether_configfs.h"
+#include "u_rndis.h"
+#include "rndis.h"
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This function is an RNDIS Ethernet port -- a Microsoft protocol that's
  * been promoted instead of the standard CDC Ethernet.  The published RNDIS
@@ -91,6 +111,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct rndis_ep_descs {
 	struct usb_endpoint_descriptor	*in;
 	struct usb_endpoint_descriptor	*out;
@@ -99,6 +120,8 @@ struct rndis_ep_descs {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct f_rndis {
 	struct gether			port;
 	u8				ctrl_id, data_id;
@@ -107,6 +130,7 @@ struct f_rndis {
 	const char			*manufacturer;
 	int				config;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	struct rndis_ep_descs		fs;
@@ -117,6 +141,9 @@ struct f_rndis {
 =======
 	struct usb_ep			*notify;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_ep			*notify;
+>>>>>>> refs/remotes/origin/master
 	struct usb_request		*notify_req;
 	atomic_t			notify_count;
 };
@@ -130,18 +157,24 @@ static inline struct f_rndis *func_to_rndis(struct usb_function *f)
 static unsigned int bitrate(struct usb_gadget *g)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (gadget_is_dualspeed(g) && g->speed == USB_SPEED_HIGH)
 		return 13 * 512 * 8 * 1000 * 8;
 	else
 		return 19 *  64 * 1 * 1000 * 8;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (gadget_is_superspeed(g) && g->speed == USB_SPEED_SUPER)
 		return 13 * 1024 * 8 * 1000 * 8;
 	else if (gadget_is_dualspeed(g) && g->speed == USB_SPEED_HIGH)
 		return 13 * 512 * 8 * 1000 * 8;
 	else
 		return 19 * 64 * 1 * 1000 * 8;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*-------------------------------------------------------------------------*/
@@ -149,7 +182,11 @@ static unsigned int bitrate(struct usb_gadget *g)
 /*
  */
 
+<<<<<<< HEAD
 #define LOG2_STATUS_INTERVAL_MSEC	5	/* 1 << 5 == 32 msec */
+=======
+#define RNDIS_STATUS_INTERVAL_MS	32
+>>>>>>> refs/remotes/origin/master
 #define STATUS_BYTECOUNT		8	/* 8 bytes data */
 
 
@@ -221,18 +258,26 @@ rndis_iad_descriptor = {
 	.bLength =		sizeof rndis_iad_descriptor,
 	.bDescriptorType =	USB_DT_INTERFACE_ASSOCIATION,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	.bFirstInterface =	0, /* XXX, hardcoded */
 	.bInterfaceCount = 	2,	// control + data
 	.bFunctionClass =	USB_CLASS_COMM,
 	.bFunctionSubClass =	USB_CDC_SUBCLASS_ETHERNET,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.bFunctionProtocol =	USB_CDC_ACM_PROTO_VENDOR,
 =======
 	.bFunctionProtocol =	USB_CDC_PROTO_NONE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.bFunctionProtocol =	USB_CDC_PROTO_NONE,
+>>>>>>> refs/remotes/origin/master
 	/* .iFunction = DYNAMIC */
 };
 
@@ -245,7 +290,11 @@ static struct usb_endpoint_descriptor fs_notify_desc = {
 	.bEndpointAddress =	USB_DIR_IN,
 	.bmAttributes =		USB_ENDPOINT_XFER_INT,
 	.wMaxPacketSize =	cpu_to_le16(STATUS_BYTECOUNT),
+<<<<<<< HEAD
 	.bInterval =		1 << LOG2_STATUS_INTERVAL_MSEC,
+=======
+	.bInterval =		RNDIS_STATUS_INTERVAL_MS,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct usb_endpoint_descriptor fs_in_desc = {
@@ -267,9 +316,13 @@ static struct usb_endpoint_descriptor fs_out_desc = {
 static struct usb_descriptor_header *eth_fs_function[] = {
 	(struct usb_descriptor_header *) &rndis_iad_descriptor,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/* control interface matches ACM, not Ethernet */
 	(struct usb_descriptor_header *) &rndis_control_intf,
 	(struct usb_descriptor_header *) &header_desc,
@@ -278,9 +331,13 @@ static struct usb_descriptor_header *eth_fs_function[] = {
 	(struct usb_descriptor_header *) &rndis_union_desc,
 	(struct usb_descriptor_header *) &fs_notify_desc,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/* data interface has no altsetting */
 	(struct usb_descriptor_header *) &rndis_data_intf,
 	(struct usb_descriptor_header *) &fs_in_desc,
@@ -297,12 +354,18 @@ static struct usb_endpoint_descriptor hs_notify_desc = {
 	.bEndpointAddress =	USB_DIR_IN,
 	.bmAttributes =		USB_ENDPOINT_XFER_INT,
 	.wMaxPacketSize =	cpu_to_le16(STATUS_BYTECOUNT),
+<<<<<<< HEAD
 	.bInterval =		LOG2_STATUS_INTERVAL_MSEC + 4,
 };
 <<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.bInterval =		USB_MS_TO_HS_INTERVAL(RNDIS_STATUS_INTERVAL_MS)
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct usb_endpoint_descriptor hs_in_desc = {
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
@@ -324,9 +387,13 @@ static struct usb_endpoint_descriptor hs_out_desc = {
 static struct usb_descriptor_header *eth_hs_function[] = {
 	(struct usb_descriptor_header *) &rndis_iad_descriptor,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/* control interface matches ACM, not Ethernet */
 	(struct usb_descriptor_header *) &rndis_control_intf,
 	(struct usb_descriptor_header *) &header_desc,
@@ -335,9 +402,13 @@ static struct usb_descriptor_header *eth_hs_function[] = {
 	(struct usb_descriptor_header *) &rndis_union_desc,
 	(struct usb_descriptor_header *) &hs_notify_desc,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/* data interface has no altsetting */
 	(struct usb_descriptor_header *) &rndis_data_intf,
 	(struct usb_descriptor_header *) &hs_in_desc,
@@ -346,7 +417,10 @@ static struct usb_descriptor_header *eth_hs_function[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* super speed support: */
 
 static struct usb_endpoint_descriptor ss_notify_desc = {
@@ -356,7 +430,11 @@ static struct usb_endpoint_descriptor ss_notify_desc = {
 	.bEndpointAddress =	USB_DIR_IN,
 	.bmAttributes =		USB_ENDPOINT_XFER_INT,
 	.wMaxPacketSize =	cpu_to_le16(STATUS_BYTECOUNT),
+<<<<<<< HEAD
 	.bInterval =		LOG2_STATUS_INTERVAL_MSEC + 4,
+=======
+	.bInterval =		USB_MS_TO_HS_INTERVAL(RNDIS_STATUS_INTERVAL_MS)
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct usb_ss_ep_comp_descriptor ss_intr_comp_desc = {
@@ -417,7 +495,10 @@ static struct usb_descriptor_header *eth_ss_function[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* string descriptors: */
 
 static struct usb_string rndis_string_defs[] = {
@@ -520,17 +601,22 @@ static void rndis_response_complete(struct usb_ep *ep, struct usb_request *req)
 static void rndis_command_complete(struct usb_ep *ep, struct usb_request *req)
 {
 	struct f_rndis			*rndis = req->context;
+<<<<<<< HEAD
 	struct usb_composite_dev	*cdev = rndis->port.func.config->cdev;
 	int				status;
 <<<<<<< HEAD
 =======
 	rndis_init_msg_type		*buf;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int				status;
+>>>>>>> refs/remotes/origin/master
 
 	/* received RNDIS command from USB_CDC_SEND_ENCAPSULATED_COMMAND */
 //	spin_lock(&dev->lock);
 	status = rndis_msg_parser(rndis->config, (u8 *) req->buf);
 	if (status < 0)
+<<<<<<< HEAD
 		ERROR(cdev, "RNDIS command error %d, %d/%d\n",
 			status, req->actual, req->length);
 <<<<<<< HEAD
@@ -549,6 +635,10 @@ static void rndis_command_complete(struct usb_ep *ep, struct usb_request *req)
 							    "disabled");
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("RNDIS command error %d, %d/%d\n",
+			status, req->actual, req->length);
+>>>>>>> refs/remotes/origin/master
 //	spin_unlock(&dev->lock);
 }
 
@@ -596,9 +686,13 @@ rndis_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
 				memcpy(req->buf, buf, n);
 				req->complete = rndis_response_complete;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 				req->context = rndis;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				req->context = rndis;
+>>>>>>> refs/remotes/origin/master
 				rndis_free_response(rndis->config, buf);
 				value = n;
 			}
@@ -642,6 +736,7 @@ static int rndis_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 			VDBG(cdev, "reset rndis control %d\n", intf);
 			usb_ep_disable(rndis->notify);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else {
 			VDBG(cdev, "init rndis ctrl %d\n", intf);
 		}
@@ -650,6 +745,8 @@ static int rndis_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 				rndis->fs.notify);
 		usb_ep_enable(rndis->notify, rndis->notify_desc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		if (!rndis->notify->desc) {
 			VDBG(cdev, "init rndis ctrl %d\n", intf);
@@ -657,7 +754,10 @@ static int rndis_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 				goto fail;
 		}
 		usb_ep_enable(rndis->notify);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		rndis->notify->driver_data = rndis;
 
 	} else if (intf == rndis->data_id) {
@@ -669,6 +769,7 @@ static int rndis_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!rndis->port.in) {
 			DBG(cdev, "init rndis\n");
 		}
@@ -677,6 +778,8 @@ static int rndis_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 		rndis->port.out = ep_choose(cdev->gadget,
 				rndis->hs.out, rndis->fs.out);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!rndis->port.in_ep->desc || !rndis->port.out_ep->desc) {
 			DBG(cdev, "init rndis\n");
 			if (config_ep_by_speed(cdev->gadget, f,
@@ -688,7 +791,10 @@ static int rndis_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 				goto fail;
 			}
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* Avoid ZLPs; they can be troublesome. */
 		rndis->port.is_zlp_ok = false;
@@ -755,7 +861,11 @@ static void rndis_open(struct gether *geth)
 
 	DBG(cdev, "%s\n", __func__);
 
+<<<<<<< HEAD
 	rndis_set_param_medium(rndis->config, NDIS_MEDIUM_802_3,
+=======
+	rndis_set_param_medium(rndis->config, RNDIS_MEDIUM_802_3,
+>>>>>>> refs/remotes/origin/master
 				bitrate(cdev->gadget) / 100);
 	rndis_signal_connect(rndis->config);
 }
@@ -766,12 +876,26 @@ static void rndis_close(struct gether *geth)
 
 	DBG(geth->func.config->cdev, "%s\n", __func__);
 
+<<<<<<< HEAD
 	rndis_set_param_medium(rndis->config, NDIS_MEDIUM_802_3, 0);
+=======
+	rndis_set_param_medium(rndis->config, RNDIS_MEDIUM_802_3, 0);
+>>>>>>> refs/remotes/origin/master
 	rndis_signal_disconnect(rndis->config);
 }
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
+=======
+/* Some controllers can't support RNDIS ... */
+static inline bool can_support_rndis(struct usb_configuration *c)
+{
+	/* everything else is *presumably* fine */
+	return true;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* ethernet function driver setup/binding */
 
 static int
@@ -779,9 +903,46 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 {
 	struct usb_composite_dev *cdev = c->cdev;
 	struct f_rndis		*rndis = func_to_rndis(f);
+<<<<<<< HEAD
 	int			status;
 	struct usb_ep		*ep;
 
+=======
+	struct usb_string	*us;
+	int			status;
+	struct usb_ep		*ep;
+
+	struct f_rndis_opts *rndis_opts;
+
+	if (!can_support_rndis(c))
+		return -EINVAL;
+
+	rndis_opts = container_of(f->fi, struct f_rndis_opts, func_inst);
+
+	/*
+	 * in drivers/usb/gadget/configfs.c:configfs_composite_bind()
+	 * configurations are bound in sequence with list_for_each_entry,
+	 * in each configuration its functions are bound in sequence
+	 * with list_for_each_entry, so we assume no race condition
+	 * with regard to rndis_opts->bound access
+	 */
+	if (!rndis_opts->bound) {
+		gether_set_gadget(rndis_opts->net, cdev->gadget);
+		status = gether_register_netdev(rndis_opts->net);
+		if (status)
+			return status;
+		rndis_opts->bound = true;
+	}
+
+	us = usb_gstrings_attach(cdev, rndis_strings,
+				 ARRAY_SIZE(rndis_string_defs));
+	if (IS_ERR(us))
+		return PTR_ERR(us);
+	rndis_control_intf.iInterface = us[0].id;
+	rndis_data_intf.iInterface = us[1].id;
+	rndis_iad_descriptor.iFunction = us[2].id;
+
+>>>>>>> refs/remotes/origin/master
 	/* allocate instance-specific interface IDs */
 	status = usb_interface_id(c, f);
 	if (status < 0)
@@ -838,6 +999,7 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 	rndis->notify_req->context = rndis;
 	rndis->notify_req->complete = rndis_response_complete;
 
+<<<<<<< HEAD
 	/* copy descriptors, and track endpoint copies */
 	f->descriptors = usb_copy_descriptors(eth_fs_function);
 	if (!f->descriptors)
@@ -853,10 +1015,13 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* support all relevant hardware speeds... we expect that when
 	 * hardware is dual speed, all bulk-capable endpoints work at
 	 * both speeds
 	 */
+<<<<<<< HEAD
 	if (gadget_is_dualspeed(c->cdev->gadget)) {
 		hs_in_desc.bEndpointAddress =
 				fs_in_desc.bEndpointAddress;
@@ -897,10 +1062,25 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 			goto fail;
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+	hs_in_desc.bEndpointAddress = fs_in_desc.bEndpointAddress;
+	hs_out_desc.bEndpointAddress = fs_out_desc.bEndpointAddress;
+	hs_notify_desc.bEndpointAddress = fs_notify_desc.bEndpointAddress;
+
+	ss_in_desc.bEndpointAddress = fs_in_desc.bEndpointAddress;
+	ss_out_desc.bEndpointAddress = fs_out_desc.bEndpointAddress;
+	ss_notify_desc.bEndpointAddress = fs_notify_desc.bEndpointAddress;
+
+	status = usb_assign_descriptors(f, eth_fs_function, eth_hs_function,
+			eth_ss_function);
+	if (status)
+		goto fail;
+>>>>>>> refs/remotes/origin/master
 
 	rndis->port.open = rndis_open;
 	rndis->port.close = rndis_close;
 
+<<<<<<< HEAD
 	status = rndis_register(rndis_response_available, rndis);
 	if (status < 0)
 		goto fail;
@@ -914,11 +1094,19 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 				   rndis->manufacturer))
 			goto fail;
 =======
+=======
+	rndis_set_param_medium(rndis->config, RNDIS_MEDIUM_802_3, 0);
+	rndis_set_host_mac(rndis->config, rndis->ethaddr);
+
+>>>>>>> refs/remotes/origin/master
 	if (rndis->manufacturer && rndis->vendorID &&
 			rndis_set_param_vendor(rndis->config, rndis->vendorID,
 					       rndis->manufacturer))
 		goto fail;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* NOTE:  all that is done without knowing or caring about
 	 * the network link ... which is unavailable to this code
@@ -927,15 +1115,20 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 
 	DBG(cdev, "RNDIS: %s speed IN/%s OUT/%s NOTIFY/%s\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			gadget_is_superspeed(c->cdev->gadget) ? "super" :
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			gadget_is_superspeed(c->cdev->gadget) ? "super" :
+>>>>>>> refs/remotes/origin/master
 			gadget_is_dualspeed(c->cdev->gadget) ? "dual" : "full",
 			rndis->port.in_ep->name, rndis->port.out_ep->name,
 			rndis->notify->name);
 	return 0;
 
 fail:
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (gadget_is_superspeed(c->cdev->gadget) && f->ss_descriptors)
@@ -945,6 +1138,9 @@ fail:
 		usb_free_descriptors(f->hs_descriptors);
 	if (f->descriptors)
 		usb_free_descriptors(f->descriptors);
+=======
+	usb_free_all_descriptors(f);
+>>>>>>> refs/remotes/origin/master
 
 	if (rndis->notify_req) {
 		kfree(rndis->notify_req->buf);
@@ -955,6 +1151,7 @@ fail:
 	if (rndis->notify)
 		rndis->notify->driver_data = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (rndis->port.out)
 		rndis->port.out_ep->driver_data = NULL;
 	if (rndis->port.in)
@@ -963,6 +1160,11 @@ fail:
 		rndis->port.out_ep->driver_data = NULL;
 	if (rndis->port.in_ep)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rndis->port.out_ep)
+		rndis->port.out_ep->driver_data = NULL;
+	if (rndis->port.in_ep)
+>>>>>>> refs/remotes/origin/master
 		rndis->port.in_ep->driver_data = NULL;
 
 	ERROR(cdev, "%s: can't bind, err %d\n", f->name, status);
@@ -970,6 +1172,7 @@ fail:
 	return status;
 }
 
+<<<<<<< HEAD
 static void
 rndis_unbind(struct usb_configuration *c, struct usb_function *f)
 {
@@ -1074,6 +1277,138 @@ rndis_bind_config_vendor(struct usb_configuration *c, u8 ethaddr[ETH_ALEN],
 	rndis->vendorID = vendorID;
 	rndis->manufacturer = manufacturer;
 
+=======
+void rndis_borrow_net(struct usb_function_instance *f, struct net_device *net)
+{
+	struct f_rndis_opts *opts;
+
+	opts = container_of(f, struct f_rndis_opts, func_inst);
+	if (opts->bound)
+		gether_cleanup(netdev_priv(opts->net));
+	else
+		free_netdev(opts->net);
+	opts->borrowed_net = opts->bound = true;
+	opts->net = net;
+}
+EXPORT_SYMBOL(rndis_borrow_net);
+
+static inline struct f_rndis_opts *to_f_rndis_opts(struct config_item *item)
+{
+	return container_of(to_config_group(item), struct f_rndis_opts,
+			    func_inst.group);
+}
+
+/* f_rndis_item_ops */
+USB_ETHERNET_CONFIGFS_ITEM(rndis);
+
+/* f_rndis_opts_dev_addr */
+USB_ETHERNET_CONFIGFS_ITEM_ATTR_DEV_ADDR(rndis);
+
+/* f_rndis_opts_host_addr */
+USB_ETHERNET_CONFIGFS_ITEM_ATTR_HOST_ADDR(rndis);
+
+/* f_rndis_opts_qmult */
+USB_ETHERNET_CONFIGFS_ITEM_ATTR_QMULT(rndis);
+
+/* f_rndis_opts_ifname */
+USB_ETHERNET_CONFIGFS_ITEM_ATTR_IFNAME(rndis);
+
+static struct configfs_attribute *rndis_attrs[] = {
+	&f_rndis_opts_dev_addr.attr,
+	&f_rndis_opts_host_addr.attr,
+	&f_rndis_opts_qmult.attr,
+	&f_rndis_opts_ifname.attr,
+	NULL,
+};
+
+static struct config_item_type rndis_func_type = {
+	.ct_item_ops	= &rndis_item_ops,
+	.ct_attrs	= rndis_attrs,
+	.ct_owner	= THIS_MODULE,
+};
+
+static void rndis_free_inst(struct usb_function_instance *f)
+{
+	struct f_rndis_opts *opts;
+
+	opts = container_of(f, struct f_rndis_opts, func_inst);
+	if (!opts->borrowed_net) {
+		if (opts->bound)
+			gether_cleanup(netdev_priv(opts->net));
+		else
+			free_netdev(opts->net);
+	}
+	kfree(opts);
+}
+
+static struct usb_function_instance *rndis_alloc_inst(void)
+{
+	struct f_rndis_opts *opts;
+
+	opts = kzalloc(sizeof(*opts), GFP_KERNEL);
+	if (!opts)
+		return ERR_PTR(-ENOMEM);
+	mutex_init(&opts->lock);
+	opts->func_inst.free_func_inst = rndis_free_inst;
+	opts->net = gether_setup_default();
+	if (IS_ERR(opts->net)) {
+		struct net_device *net = opts->net;
+		kfree(opts);
+		return ERR_CAST(net);
+	}
+
+	config_group_init_type_name(&opts->func_inst.group, "",
+				    &rndis_func_type);
+
+	return &opts->func_inst;
+}
+
+static void rndis_free(struct usb_function *f)
+{
+	struct f_rndis *rndis;
+	struct f_rndis_opts *opts;
+
+	rndis = func_to_rndis(f);
+	rndis_deregister(rndis->config);
+	opts = container_of(f->fi, struct f_rndis_opts, func_inst);
+	kfree(rndis);
+	mutex_lock(&opts->lock);
+	opts->refcnt--;
+	mutex_unlock(&opts->lock);
+}
+
+static void rndis_unbind(struct usb_configuration *c, struct usb_function *f)
+{
+	struct f_rndis		*rndis = func_to_rndis(f);
+
+	usb_free_all_descriptors(f);
+
+	kfree(rndis->notify_req->buf);
+	usb_ep_free_request(rndis->notify, rndis->notify_req);
+}
+
+static struct usb_function *rndis_alloc(struct usb_function_instance *fi)
+{
+	struct f_rndis	*rndis;
+	struct f_rndis_opts *opts;
+	int status;
+
+	/* allocate and initialize one new instance */
+	rndis = kzalloc(sizeof(*rndis), GFP_KERNEL);
+	if (!rndis)
+		return ERR_PTR(-ENOMEM);
+
+	opts = container_of(fi, struct f_rndis_opts, func_inst);
+	mutex_lock(&opts->lock);
+	opts->refcnt++;
+
+	gether_get_host_addr_u8(opts->net, rndis->ethaddr);
+	rndis->vendorID = opts->vendor_id;
+	rndis->manufacturer = opts->manufacturer;
+
+	rndis->port.ioport = netdev_priv(opts->net);
+	mutex_unlock(&opts->lock);
+>>>>>>> refs/remotes/origin/master
 	/* RNDIS activates when the host changes this filter */
 	rndis->port.cdc_filter = 0;
 
@@ -1083,13 +1418,17 @@ rndis_bind_config_vendor(struct usb_configuration *c, u8 ethaddr[ETH_ALEN],
 	rndis->port.unwrap = rndis_rm_hdr;
 
 	rndis->port.func.name = "rndis";
+<<<<<<< HEAD
 	rndis->port.func.strings = rndis_strings;
+=======
+>>>>>>> refs/remotes/origin/master
 	/* descriptors are per-instance copies */
 	rndis->port.func.bind = rndis_bind;
 	rndis->port.func.unbind = rndis_unbind;
 	rndis->port.func.set_alt = rndis_set_alt;
 	rndis->port.func.setup = rndis_setup;
 	rndis->port.func.disable = rndis_disable;
+<<<<<<< HEAD
 
 	status = usb_add_function(c, &rndis->port.func);
 	if (status) {
@@ -1099,3 +1438,40 @@ fail:
 	}
 	return status;
 }
+=======
+	rndis->port.func.free_func = rndis_free;
+
+	status = rndis_register(rndis_response_available, rndis);
+	if (status < 0) {
+		kfree(rndis);
+		return ERR_PTR(status);
+	}
+	rndis->config = status;
+
+	return &rndis->port.func;
+}
+
+DECLARE_USB_FUNCTION(rndis, rndis_alloc_inst, rndis_alloc);
+
+static int __init rndis_mod_init(void)
+{
+	int ret;
+
+	ret = rndis_init();
+	if (ret)
+		return ret;
+
+	return usb_function_register(&rndisusb_func);
+}
+module_init(rndis_mod_init);
+
+static void __exit rndis_mod_exit(void)
+{
+	usb_function_unregister(&rndisusb_func);
+	rndis_exit();
+}
+module_exit(rndis_mod_exit);
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("David Brownell");
+>>>>>>> refs/remotes/origin/master

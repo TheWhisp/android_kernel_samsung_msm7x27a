@@ -20,6 +20,10 @@
 #include <linux/gpio.h>
 #include <linux/gpio_keys.h>
 #include <linux/input.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <mach/kirkwood.h>
@@ -161,7 +165,11 @@ static int __init ts41x_pci_init(void)
 		 * (Marvell 88sx7042/sata_mv) is known to stop working
 		 * after a few minutes.
 		 */
+<<<<<<< HEAD
 		orion_pcie_reset((void __iomem *)PCIE_VIRT_BASE);
+=======
+		orion_pcie_reset(PCIE_VIRT_BASE);
+>>>>>>> refs/remotes/origin/master
 
 		kirkwood_pcie_id(&dev, &rev);
 		if (dev == MV88F6282_DEV_ID)
@@ -169,25 +177,38 @@ static int __init ts41x_pci_init(void)
 		else
 			kirkwood_pcie_init(KW_PCIE0);
 	}
+<<<<<<< HEAD
 
    return 0;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 subsys_initcall(ts41x_pci_init);
 
 MACHINE_START(TS41X, "QNAP TS-41x")
 	/* Maintainer: Martin Michlmayr <tbm@cyrius.com> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 =======
 	.atag_offset	= 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= qnap_ts41x_init,
 	.map_io		= kirkwood_map_io,
 	.init_early	= kirkwood_init_early,
 	.init_irq	= kirkwood_init_irq,
+<<<<<<< HEAD
 	.timer		= &kirkwood_timer,
 <<<<<<< HEAD
 =======
 	.restart	= kirkwood_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= kirkwood_timer_init,
+	.restart	= kirkwood_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

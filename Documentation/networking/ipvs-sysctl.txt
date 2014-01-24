@@ -16,7 +16,17 @@ amemthresh - INTEGER
         the strategy is disabled and the variable is  set  to 1.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+backup_only - BOOLEAN
+	0 - disabled (default)
+	not 0 - enabled
+
+	If set, disable the director function while the server is
+	in backup mode to avoid packet loops for DR/TUN methods.
+
+>>>>>>> refs/remotes/origin/master
 conntrack - BOOLEAN
 	0 - disabled (default)
 	not 0 - enabled
@@ -34,7 +44,10 @@ conntrack - BOOLEAN
 
 	Only available when IPVS is compiled with CONFIG_IP_VS_NFCT enabled.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 cache_bypass - BOOLEAN
         0 - disabled (default)
         not 0 - enabled
@@ -60,10 +73,14 @@ debug_level - INTEGER
 	12 or more - packet traversal
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	Only available when IPVS is compiled with the CONFIG_IPVS_DEBUG
 =======
 	Only available when IPVS is compiled with CONFIG_IP_VS_DEBUG enabled.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	Only available when IPVS is compiled with CONFIG_IP_VS_DEBUG enabled.
+>>>>>>> refs/remotes/origin/master
 
 	Higher debugging levels include the messages for lower debugging
 	levels, so setting debug level 2, includes level 0, 1 and 2
@@ -148,6 +165,7 @@ secure_tcp - INTEGER
         0  - disabled (default)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         The secure_tcp defense is to use a more complicated state
         transition table and some possible short timeouts of each
         state. In the VS/NAT, it delays the entering the ESTABLISHED
@@ -156,12 +174,17 @@ secure_tcp - INTEGER
 
         The value definition is the same as that of drop_entry or
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	The secure_tcp defense is to use a more complicated TCP state
 	transition table. For VS/NAT, it also delays entering the
 	TCP ESTABLISHED state until the three way handshake is completed.
 
         The value definition is the same as that of drop_entry and
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
         drop_packet.
 
 sync_threshold - INTEGER
@@ -174,7 +197,10 @@ sync_threshold - INTEGER
         modulus 50 equals the threshold. The range of the threshold is
         from 0 to 49.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 snat_reroute - BOOLEAN
 	0 - disabled
@@ -193,6 +219,22 @@ snat_reroute - BOOLEAN
 	always be the same as the original route so it is an optimisation
 	to disable snat_reroute and avoid the recalculation.
 
+<<<<<<< HEAD
+=======
+sync_persist_mode - INTEGER
+	default 0
+
+	Controls the synchronisation of connections when using persistence
+
+	0: All types of connections are synchronised
+	1: Attempt to reduce the synchronisation traffic depending on
+	the connection type. For persistent services avoid synchronisation
+	for normal connections, do it only for persistence templates.
+	In such case, for TCP and SCTP it may need enabling sloppy_tcp and
+	sloppy_sctp flags on backup servers. For non-persistent services
+	such optimization is not applied, mode 0 is assumed.
+
+>>>>>>> refs/remotes/origin/master
 sync_version - INTEGER
 	default 1
 
@@ -208,4 +250,7 @@ sync_version - INTEGER
 
 	Kernels with this sync_version entry are able to receive messages
 	of both version 1 and version 2 of the synchronisation protocol.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

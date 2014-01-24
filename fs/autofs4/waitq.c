@@ -42,10 +42,15 @@ void autofs4_catatonic_mode(struct autofs_sb_info *sbi)
 	while (wq) {
 		nwq = wq->next;
 		wq->status = -ENOENT; /* Magic is gone - report failure */
+<<<<<<< HEAD
 		if (wq->name.name) {
 			kfree(wq->name.name);
 			wq->name.name = NULL;
 		}
+=======
+		kfree(wq->name.name);
+		wq->name.name = NULL;
+>>>>>>> refs/remotes/origin/master
 		wq->wait_ctr--;
 		wake_up_interruptible(&wq->queue);
 		wq = nwq;
@@ -57,11 +62,16 @@ void autofs4_catatonic_mode(struct autofs_sb_info *sbi)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int autofs4_write(struct file *file, const void *addr, int bytes)
 =======
 static int autofs4_write(struct autofs_sb_info *sbi,
 			 struct file *file, const void *addr, int bytes)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int autofs4_write(struct autofs_sb_info *sbi,
+			 struct file *file, const void *addr, int bytes)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long sigpipe, flags;
 	mm_segment_t fs;
@@ -69,10 +79,13 @@ static int autofs4_write(struct autofs_sb_info *sbi,
 	ssize_t wr = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/** WARNING: this is not safe for writing more than PIPE_BUF bytes! **/
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	sigpipe = sigismember(&current->pending.signal, SIGPIPE);
 
 	/* Save pointer to user space and point back to kernel space */
@@ -80,18 +93,26 @@ static int autofs4_write(struct autofs_sb_info *sbi,
 	set_fs(KERNEL_DS);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_lock(&sbi->pipe_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&sbi->pipe_mutex);
+>>>>>>> refs/remotes/origin/master
 	while (bytes &&
 	       (wr = file->f_op->write(file,data,bytes,&file->f_pos)) > 0) {
 		data += wr;
 		bytes -= wr;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_unlock(&sbi->pipe_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&sbi->pipe_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	set_fs(fs);
 
@@ -107,10 +128,14 @@ static int autofs4_write(struct autofs_sb_info *sbi,
 	return (bytes > 0);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	
+>>>>>>> refs/remotes/origin/master
 static void autofs4_notify_daemon(struct autofs_sb_info *sbi,
 				 struct autofs_wait_queue *wq,
 				 int type)
@@ -125,15 +150,20 @@ static void autofs4_notify_daemon(struct autofs_sb_info *sbi,
 
 	DPRINTK("wait id = 0x%08lx, name = %.*s, type=%d",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wq->wait_queue_token, wq->name.len, wq->name.name, type);
 =======
 		(unsigned long) wq->wait_queue_token, wq->name.len, wq->name.name, type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(unsigned long) wq->wait_queue_token, wq->name.len, wq->name.name, type);
+>>>>>>> refs/remotes/origin/master
 
 	memset(&pkt,0,sizeof pkt); /* For security reasons */
 
 	pkt.hdr.proto_version = sbi->version;
 	pkt.hdr.type = type;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	mutex_lock(&sbi->wq_mutex);
@@ -144,6 +174,9 @@ static void autofs4_notify_daemon(struct autofs_sb_info *sbi,
 		return;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	switch (type) {
 	/* Kernel protocol v4 missing and expire packets */
 	case autofs_ptype_missing:
@@ -180,6 +213,10 @@ static void autofs4_notify_daemon(struct autofs_sb_info *sbi,
 	case autofs_ptype_expire_direct:
 	{
 		struct autofs_v5_packet *packet = &pkt.v5_pkt.v5_packet;
+<<<<<<< HEAD
+=======
+		struct user_namespace *user_ns = sbi->pipe->f_cred->user_ns;
+>>>>>>> refs/remotes/origin/master
 
 		pktsz = sizeof(*packet);
 
@@ -189,14 +226,20 @@ static void autofs4_notify_daemon(struct autofs_sb_info *sbi,
 		packet->name[wq->name.len] = '\0';
 		packet->dev = wq->dev;
 		packet->ino = wq->ino;
+<<<<<<< HEAD
 		packet->uid = wq->uid;
 		packet->gid = wq->gid;
+=======
+		packet->uid = from_kuid_munged(user_ns, wq->uid);
+		packet->gid = from_kgid_munged(user_ns, wq->gid);
+>>>>>>> refs/remotes/origin/master
 		packet->pid = wq->pid;
 		packet->tgid = wq->tgid;
 		break;
 	}
 	default:
 		printk("autofs4_notify_daemon: bad type %d!\n", type);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return;
 	}
@@ -215,19 +258,28 @@ static void autofs4_notify_daemon(struct autofs_sb_info *sbi,
 		fput(pipe);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&sbi->wq_mutex);
 		return;
 	}
 
+<<<<<<< HEAD
 	pipe = sbi->pipe;
 	get_file(pipe);
+=======
+	pipe = get_file(sbi->pipe);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&sbi->wq_mutex);
 
 	if (autofs4_write(sbi, pipe, &pkt, pktsz))
 		autofs4_catatonic_mode(sbi);
 	fput(pipe);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int autofs4_getpath(struct autofs_sb_info *sbi,
@@ -307,11 +359,17 @@ static int validate_request(struct autofs_wait_queue **wait,
 	struct autofs_info *ino;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (sbi->catatonic)
 		return -ENOENT;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (sbi->catatonic)
+		return -ENOENT;
+
+>>>>>>> refs/remotes/origin/master
 	/* Wait in progress, continue; */
 	wq = autofs4_find_wait(sbi, qstr);
 	if (wq) {
@@ -345,11 +403,17 @@ static int validate_request(struct autofs_wait_queue **wait,
 				return -EINTR;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (sbi->catatonic)
 				return -ENOENT;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (sbi->catatonic)
+				return -ENOENT;
+
+>>>>>>> refs/remotes/origin/master
 			wq = autofs4_find_wait(sbi, qstr);
 			if (wq) {
 				*wait = wq;
@@ -451,10 +515,14 @@ int autofs4_wait(struct autofs_sb_info *sbi, struct dentry *dentry,
 	ret = validate_request(&wq, sbi, &qstr, dentry, notify);
 	if (ret <= 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ret == 0)
 =======
 		if (ret != -EINTR)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ret != -EINTR)
+>>>>>>> refs/remotes/origin/master
 			mutex_unlock(&sbi->wq_mutex);
 		kfree(qstr.name);
 		return ret;
@@ -484,7 +552,10 @@ int autofs4_wait(struct autofs_sb_info *sbi, struct dentry *dentry,
 		wq->tgid = current->tgid;
 		wq->status = -EINTR; /* Status return if interrupted */
 		wq->wait_ctr = 2;
+<<<<<<< HEAD
 		mutex_unlock(&sbi->wq_mutex);
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (sbi->version < 5) {
 			if (notify == NFY_MOUNT)
@@ -506,6 +577,7 @@ int autofs4_wait(struct autofs_sb_info *sbi, struct dentry *dentry,
 			(unsigned long) wq->wait_queue_token, wq->name.len,
 			wq->name.name, notify);
 
+<<<<<<< HEAD
 		/* autofs4_notify_daemon() may block */
 		autofs4_notify_daemon(sbi, wq, type);
 	} else {
@@ -515,6 +587,17 @@ int autofs4_wait(struct autofs_sb_info *sbi, struct dentry *dentry,
 		DPRINTK("existing wait id = 0x%08lx, name = %.*s, nfy=%d",
 			(unsigned long) wq->wait_queue_token, wq->name.len,
 			wq->name.name, notify);
+=======
+		/* autofs4_notify_daemon() may block; it will unlock ->wq_mutex */
+		autofs4_notify_daemon(sbi, wq, type);
+	} else {
+		wq->wait_ctr++;
+		DPRINTK("existing wait id = 0x%08lx, name = %.*s, nfy=%d",
+			(unsigned long) wq->wait_queue_token, wq->name.len,
+			wq->name.name, notify);
+		mutex_unlock(&sbi->wq_mutex);
+		kfree(qstr.name);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*

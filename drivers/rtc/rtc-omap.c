@@ -20,9 +20,16 @@
 #include <linux/rtc.h>
 #include <linux/bcd.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 
 #include <asm/io.h>
 
+=======
+#include <linux/of.h>
+#include <linux/of_device.h>
+#include <linux/pm_runtime.h>
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 
 /* The OMAP1 RTC is a year/month/day/hours/minutes/seconds BCD clock
  * with century-range alarm matching, driven by the 32kHz clock.
@@ -38,6 +45,11 @@
  * the SoC). See the BOARD-SPECIFIC CUSTOMIZATION comment.
  */
 
+<<<<<<< HEAD
+=======
+#define	DRIVER_NAME			"omap_rtc"
+
+>>>>>>> refs/remotes/origin/master
 #define OMAP_RTC_BASE			0xfffb4800
 
 /* RTC registers */
@@ -64,6 +76,14 @@
 #define OMAP_RTC_COMP_MSB_REG		0x50
 #define OMAP_RTC_OSC_REG		0x54
 
+<<<<<<< HEAD
+=======
+#define OMAP_RTC_KICK0_REG		0x6c
+#define OMAP_RTC_KICK1_REG		0x70
+
+#define OMAP_RTC_IRQWAKEEN		0x7c
+
+>>>>>>> refs/remotes/origin/master
 /* OMAP_RTC_CTRL_REG bit fields: */
 #define OMAP_RTC_CTRL_SPLIT		(1<<7)
 #define OMAP_RTC_CTRL_DISABLE		(1<<6)
@@ -88,10 +108,34 @@
 #define OMAP_RTC_INTERRUPTS_IT_ALARM    (1<<3)
 #define OMAP_RTC_INTERRUPTS_IT_TIMER    (1<<2)
 
+<<<<<<< HEAD
 static void __iomem	*rtc_base;
 
 #define rtc_read(addr)		__raw_readb(rtc_base + (addr))
 #define rtc_write(val, addr)	__raw_writeb(val, rtc_base + (addr))
+=======
+/* OMAP_RTC_IRQWAKEEN bit fields: */
+#define OMAP_RTC_IRQWAKEEN_ALARM_WAKEEN    (1<<1)
+
+/* OMAP_RTC_KICKER values */
+#define	KICK0_VALUE			0x83e70b13
+#define	KICK1_VALUE			0x95a4f1e0
+
+#define	OMAP_RTC_HAS_KICKER		0x1
+
+/*
+ * Few RTC IP revisions has special WAKE-EN Register to enable Wakeup
+ * generation for event Alarm.
+ */
+#define	OMAP_RTC_HAS_IRQWAKEEN		0x2
+
+static void __iomem	*rtc_base;
+
+#define rtc_read(addr)		readb(rtc_base + (addr))
+#define rtc_write(val, addr)	writeb(val, rtc_base + (addr))
+
+#define rtc_writel(val, addr)	writel(val, rtc_base + (addr))
+>>>>>>> refs/remotes/origin/master
 
 
 /* we rely on the rtc framework to handle locking (rtc->ops_lock),
@@ -285,11 +329,55 @@ static struct rtc_class_ops omap_rtc_ops = {
 static int omap_rtc_alarm;
 static int omap_rtc_timer;
 
+<<<<<<< HEAD
 static int __init omap_rtc_probe(struct platform_device *pdev)
 {
 	struct resource		*res, *mem;
 	struct rtc_device	*rtc;
 	u8			reg, new_ctrl;
+=======
+#define	OMAP_RTC_DATA_AM3352_IDX	1
+#define	OMAP_RTC_DATA_DA830_IDX		2
+
+static struct platform_device_id omap_rtc_devtype[] = {
+	{
+		.name	= DRIVER_NAME,
+	},
+	[OMAP_RTC_DATA_AM3352_IDX] = {
+		.name	= "am3352-rtc",
+		.driver_data = OMAP_RTC_HAS_KICKER | OMAP_RTC_HAS_IRQWAKEEN,
+	},
+	[OMAP_RTC_DATA_DA830_IDX] = {
+		.name	= "da830-rtc",
+		.driver_data = OMAP_RTC_HAS_KICKER,
+	},
+	{},
+};
+MODULE_DEVICE_TABLE(platform, omap_rtc_devtype);
+
+static const struct of_device_id omap_rtc_of_match[] = {
+	{	.compatible	= "ti,da830-rtc",
+		.data		= &omap_rtc_devtype[OMAP_RTC_DATA_DA830_IDX],
+	},
+	{	.compatible	= "ti,am3352-rtc",
+		.data		= &omap_rtc_devtype[OMAP_RTC_DATA_AM3352_IDX],
+	},
+	{},
+};
+MODULE_DEVICE_TABLE(of, omap_rtc_of_match);
+
+static int __init omap_rtc_probe(struct platform_device *pdev)
+{
+	struct resource		*res;
+	struct rtc_device	*rtc;
+	u8			reg, new_ctrl;
+	const struct platform_device_id *id_entry;
+	const struct of_device_id *of_id;
+
+	of_id = of_match_device(omap_rtc_of_match, &pdev->dev);
+	if (of_id)
+		pdev->id_entry = of_id->data;
+>>>>>>> refs/remotes/origin/master
 
 	omap_rtc_timer = platform_get_irq(pdev, 0);
 	if (omap_rtc_timer <= 0) {
@@ -304,6 +392,7 @@ static int __init omap_rtc_probe(struct platform_device *pdev)
 	}
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (!res) {
 		pr_debug("%s: RTC resource data missing\n", pdev->name);
 		return -ENOENT;
@@ -323,6 +412,23 @@ static int __init omap_rtc_probe(struct platform_device *pdev)
 	}
 
 	rtc = rtc_device_register(pdev->name, &pdev->dev,
+=======
+	rtc_base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(rtc_base))
+		return PTR_ERR(rtc_base);
+
+	/* Enable the clock/module so that we can access the registers */
+	pm_runtime_enable(&pdev->dev);
+	pm_runtime_get_sync(&pdev->dev);
+
+	id_entry = platform_get_device_id(pdev);
+	if (id_entry && (id_entry->driver_data & OMAP_RTC_HAS_KICKER)) {
+		rtc_writel(KICK0_VALUE, OMAP_RTC_KICK0_REG);
+		rtc_writel(KICK1_VALUE, OMAP_RTC_KICK1_REG);
+	}
+
+	rtc = devm_rtc_device_register(&pdev->dev, pdev->name,
+>>>>>>> refs/remotes/origin/master
 			&omap_rtc_ops, THIS_MODULE);
 	if (IS_ERR(rtc)) {
 		pr_debug("%s: can't register RTC device, err %ld\n",
@@ -330,7 +436,10 @@ static int __init omap_rtc_probe(struct platform_device *pdev)
 		goto fail0;
 	}
 	platform_set_drvdata(pdev, rtc);
+<<<<<<< HEAD
 	dev_set_drvdata(&rtc->dev, mem);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* clear pending irqs, and set 1/second periodic,
 	 * which we'll use instead of update irqs
@@ -348,6 +457,7 @@ static int __init omap_rtc_probe(struct platform_device *pdev)
 		rtc_write(OMAP_RTC_STATUS_ALARM, OMAP_RTC_STATUS_REG);
 
 	/* handle periodic and alarm irqs */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (request_irq(omap_rtc_timer, rtc_irq, IRQF_DISABLED,
 =======
@@ -368,6 +478,20 @@ static int __init omap_rtc_probe(struct platform_device *pdev)
 		pr_debug("%s: RTC alarm interrupt IRQ%d already claimed\n",
 			pdev->name, omap_rtc_alarm);
 		goto fail2;
+=======
+	if (devm_request_irq(&pdev->dev, omap_rtc_timer, rtc_irq, 0,
+			dev_name(&rtc->dev), rtc)) {
+		pr_debug("%s: RTC timer interrupt IRQ%d already claimed\n",
+			pdev->name, omap_rtc_timer);
+		goto fail0;
+	}
+	if ((omap_rtc_timer != omap_rtc_alarm) &&
+		(devm_request_irq(&pdev->dev, omap_rtc_alarm, rtc_irq, 0,
+			dev_name(&rtc->dev), rtc))) {
+		pr_debug("%s: RTC alarm interrupt IRQ%d already claimed\n",
+			pdev->name, omap_rtc_alarm);
+		goto fail0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* On boards with split power, RTC_ON_NOFF won't reset the RTC */
@@ -377,10 +501,14 @@ static int __init omap_rtc_probe(struct platform_device *pdev)
 
 	/* force to 24 hour mode */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	new_ctrl = reg & ~(OMAP_RTC_CTRL_SPLIT|OMAP_RTC_CTRL_AUTO_COMP);
 =======
 	new_ctrl = reg & (OMAP_RTC_CTRL_SPLIT|OMAP_RTC_CTRL_AUTO_COMP);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	new_ctrl = reg & (OMAP_RTC_CTRL_SPLIT|OMAP_RTC_CTRL_AUTO_COMP);
+>>>>>>> refs/remotes/origin/master
 	new_ctrl |= OMAP_RTC_CTRL_STOP;
 
 	/* BOARD-SPECIFIC CUSTOMIZATION CAN GO HERE:
@@ -397,6 +525,11 @@ static int __init omap_rtc_probe(struct platform_device *pdev)
 	 *    is write-only, and always reads as zero...)
 	 */
 
+<<<<<<< HEAD
+=======
+	device_init_wakeup(&pdev->dev, true);
+
+>>>>>>> refs/remotes/origin/master
 	if (new_ctrl & (u8) OMAP_RTC_CTRL_SPLIT)
 		pr_info("%s: split power mode\n", pdev->name);
 
@@ -405,6 +538,7 @@ static int __init omap_rtc_probe(struct platform_device *pdev)
 
 	return 0;
 
+<<<<<<< HEAD
 fail2:
 	free_irq(omap_rtc_timer, rtc);
 fail1:
@@ -413,19 +547,32 @@ fail0:
 	iounmap(rtc_base);
 fail:
 	release_mem_region(mem->start, resource_size(mem));
+=======
+fail0:
+	if (id_entry && (id_entry->driver_data & OMAP_RTC_HAS_KICKER))
+		rtc_writel(0, OMAP_RTC_KICK0_REG);
+	pm_runtime_put_sync(&pdev->dev);
+	pm_runtime_disable(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	return -EIO;
 }
 
 static int __exit omap_rtc_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct rtc_device	*rtc = platform_get_drvdata(pdev);
 	struct resource		*mem = dev_get_drvdata(&rtc->dev);
+=======
+	const struct platform_device_id *id_entry =
+				platform_get_device_id(pdev);
+>>>>>>> refs/remotes/origin/master
 
 	device_init_wakeup(&pdev->dev, 0);
 
 	/* leave rtc running, but disable irqs */
 	rtc_write(0, OMAP_RTC_INTERRUPTS_REG);
 
+<<<<<<< HEAD
 	free_irq(omap_rtc_timer, rtc);
 
 	if (omap_rtc_timer != omap_rtc_alarm)
@@ -453,10 +600,53 @@ static int omap_rtc_suspend(struct platform_device *pdev, pm_message_t state)
 		enable_irq_wake(omap_rtc_alarm);
 	else
 		rtc_write(0, OMAP_RTC_INTERRUPTS_REG);
+=======
+	if (id_entry && (id_entry->driver_data & OMAP_RTC_HAS_KICKER))
+		rtc_writel(0, OMAP_RTC_KICK0_REG);
+
+	/* Disable the clock/module */
+	pm_runtime_put_sync(&pdev->dev);
+	pm_runtime_disable(&pdev->dev);
 
 	return 0;
 }
 
+#ifdef CONFIG_PM_SLEEP
+static u8 irqstat;
+
+static int omap_rtc_suspend(struct device *dev)
+{
+	u8 irqwake_stat;
+	struct platform_device *pdev = to_platform_device(dev);
+	const struct platform_device_id *id_entry =
+					platform_get_device_id(pdev);
+
+	irqstat = rtc_read(OMAP_RTC_INTERRUPTS_REG);
+
+	/* FIXME the RTC alarm is not currently acting as a wakeup event
+	 * source on some platforms, and in fact this enable() call is just
+	 * saving a flag that's never used...
+	 */
+	if (device_may_wakeup(dev)) {
+		enable_irq_wake(omap_rtc_alarm);
+
+		if (id_entry->driver_data & OMAP_RTC_HAS_IRQWAKEEN) {
+			irqwake_stat = rtc_read(OMAP_RTC_IRQWAKEEN);
+			irqwake_stat |= OMAP_RTC_IRQWAKEEN_ALARM_WAKEEN;
+			rtc_write(irqwake_stat, OMAP_RTC_IRQWAKEEN);
+		}
+	} else {
+		rtc_write(0, OMAP_RTC_INTERRUPTS_REG);
+	}
+
+	/* Disable the clock/module */
+	pm_runtime_put_sync(dev);
+>>>>>>> refs/remotes/origin/master
+
+	return 0;
+}
+
+<<<<<<< HEAD
 static int omap_rtc_resume(struct platform_device *pdev)
 {
 	if (device_may_wakeup(&pdev->dev))
@@ -471,6 +661,35 @@ static int omap_rtc_resume(struct platform_device *pdev)
 #define omap_rtc_resume  NULL
 #endif
 
+=======
+static int omap_rtc_resume(struct device *dev)
+{
+	u8 irqwake_stat;
+	struct platform_device *pdev = to_platform_device(dev);
+	const struct platform_device_id *id_entry =
+				platform_get_device_id(pdev);
+
+	/* Enable the clock/module so that we can access the registers */
+	pm_runtime_get_sync(dev);
+
+	if (device_may_wakeup(dev)) {
+		disable_irq_wake(omap_rtc_alarm);
+
+		if (id_entry->driver_data & OMAP_RTC_HAS_IRQWAKEEN) {
+			irqwake_stat = rtc_read(OMAP_RTC_IRQWAKEEN);
+			irqwake_stat &= ~OMAP_RTC_IRQWAKEEN_ALARM_WAKEEN;
+			rtc_write(irqwake_stat, OMAP_RTC_IRQWAKEEN);
+		}
+	} else {
+		rtc_write(irqstat, OMAP_RTC_INTERRUPTS_REG);
+	}
+	return 0;
+}
+#endif
+
+static SIMPLE_DEV_PM_OPS(omap_rtc_pm_ops, omap_rtc_suspend, omap_rtc_resume);
+
+>>>>>>> refs/remotes/origin/master
 static void omap_rtc_shutdown(struct platform_device *pdev)
 {
 	rtc_write(0, OMAP_RTC_INTERRUPTS_REG);
@@ -479,6 +698,7 @@ static void omap_rtc_shutdown(struct platform_device *pdev)
 MODULE_ALIAS("platform:omap_rtc");
 static struct platform_driver omap_rtc_driver = {
 	.remove		= __exit_p(omap_rtc_remove),
+<<<<<<< HEAD
 	.suspend	= omap_rtc_suspend,
 	.resume		= omap_rtc_resume,
 	.shutdown	= omap_rtc_shutdown,
@@ -499,6 +719,19 @@ static void __exit rtc_exit(void)
 	platform_driver_unregister(&omap_rtc_driver);
 }
 module_exit(rtc_exit);
+=======
+	.shutdown	= omap_rtc_shutdown,
+	.driver		= {
+		.name	= DRIVER_NAME,
+		.owner	= THIS_MODULE,
+		.pm	= &omap_rtc_pm_ops,
+		.of_match_table = omap_rtc_of_match,
+	},
+	.id_table	= omap_rtc_devtype,
+};
+
+module_platform_driver_probe(omap_rtc_driver, omap_rtc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("George G. Davis (and others)");
 MODULE_LICENSE("GPL");

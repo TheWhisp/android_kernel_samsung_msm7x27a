@@ -296,8 +296,12 @@ static int build_snap_context(struct ceph_snap_realm *realm)
 	struct ceph_snap_realm *parent = realm->parent;
 	struct ceph_snap_context *snapc;
 	int err = 0;
+<<<<<<< HEAD
 	int i;
 	int num = realm->num_prior_parent_snaps + realm->num_snaps;
+=======
+	u32 num = realm->num_prior_parent_snaps + realm->num_snaps;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * build parent context, if it hasn't been built.
@@ -321,16 +325,25 @@ static int build_snap_context(struct ceph_snap_realm *realm)
 	    realm->cached_context->seq == realm->seq &&
 	    (!parent ||
 	     realm->cached_context->seq >= parent->cached_context->seq)) {
+<<<<<<< HEAD
 		dout("build_snap_context %llx %p: %p seq %lld (%d snaps)"
 		     " (unchanged)\n",
 		     realm->ino, realm, realm->cached_context,
 		     realm->cached_context->seq,
 		     realm->cached_context->num_snaps);
+=======
+		dout("build_snap_context %llx %p: %p seq %lld (%u snaps)"
+		     " (unchanged)\n",
+		     realm->ino, realm, realm->cached_context,
+		     realm->cached_context->seq,
+		     (unsigned int) realm->cached_context->num_snaps);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	/* alloc new snap context */
 	err = -ENOMEM;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (num > ULONG_MAX / sizeof(u64) - sizeof(*snapc))
 =======
@@ -341,11 +354,23 @@ static int build_snap_context(struct ceph_snap_realm *realm)
 	if (!snapc)
 		goto fail;
 	atomic_set(&snapc->nref, 1);
+=======
+	if (num > (SIZE_MAX - sizeof(*snapc)) / sizeof(u64))
+		goto fail;
+	snapc = ceph_create_snap_context(num, GFP_NOFS);
+	if (!snapc)
+		goto fail;
+>>>>>>> refs/remotes/origin/master
 
 	/* build (reverse sorted) snap vector */
 	num = 0;
 	snapc->seq = realm->seq;
 	if (parent) {
+<<<<<<< HEAD
+=======
+		u32 i;
+
+>>>>>>> refs/remotes/origin/master
 		/* include any of parent's snaps occurring _after_ my
 		   parent became my parent */
 		for (i = 0; i < parent->cached_context->num_snaps; i++)
@@ -365,8 +390,14 @@ static int build_snap_context(struct ceph_snap_realm *realm)
 
 	sort(snapc->snaps, num, sizeof(u64), cmpu64_rev, NULL);
 	snapc->num_snaps = num;
+<<<<<<< HEAD
 	dout("build_snap_context %llx %p: %p seq %lld (%d snaps)\n",
 	     realm->ino, realm, snapc, snapc->seq, snapc->num_snaps);
+=======
+	dout("build_snap_context %llx %p: %p seq %lld (%u snaps)\n",
+	     realm->ino, realm, snapc, snapc->seq,
+	     (unsigned int) snapc->num_snaps);
+>>>>>>> refs/remotes/origin/master
 
 	if (realm->cached_context)
 		ceph_put_snap_context(realm->cached_context);
@@ -406,9 +437,15 @@ static void rebuild_snap_realms(struct ceph_snap_realm *realm)
  * helper to allocate and decode an array of snapids.  free prior
  * instance, if any.
  */
+<<<<<<< HEAD
 static int dup_array(u64 **dst, __le64 *src, int num)
 {
 	int i;
+=======
+static int dup_array(u64 **dst, __le64 *src, u32 num)
+{
+	u32 i;
+>>>>>>> refs/remotes/origin/master
 
 	kfree(*dst);
 	if (num) {
@@ -451,10 +488,13 @@ void ceph_queue_cap_snap(struct ceph_inode_info *ci)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 	used = __ceph_caps_used(ci);
 	dirty = __ceph_caps_dirty(ci);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&ci->i_ceph_lock);
 	used = __ceph_caps_used(ci);
 	dirty = __ceph_caps_dirty(ci);
@@ -467,7 +507,10 @@ void ceph_queue_cap_snap(struct ceph_inode_info *ci)
 	if (used & CEPH_CAP_FILE_WR)
 		dirty |= CEPH_CAP_FILE_WR;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (__ceph_have_pending_cap_snap(ci)) {
 		/* there is no point in queuing multiple "pending" cap_snaps,
 		   as no new writes are allowed to start when pending, so any
@@ -475,6 +518,7 @@ void ceph_queue_cap_snap(struct ceph_inode_info *ci)
 		   cap_snap.  lucky us. */
 		dout("queue_cap_snap %p already pending\n", inode);
 		kfree(capsnap);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	} else if (ci->i_wrbuffer_ref_head || (used & CEPH_CAP_FILE_WR) ||
 		   (dirty & (CEPH_CAP_AUTH_EXCL|CEPH_CAP_XATTR_EXCL|
@@ -484,6 +528,8 @@ void ceph_queue_cap_snap(struct ceph_inode_info *ci)
 		dout("queue_cap_snap %p cap_snap %p queuing under %p\n", inode,
 		     capsnap, snapc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} else if (dirty & (CEPH_CAP_AUTH_EXCL|CEPH_CAP_XATTR_EXCL|
 			    CEPH_CAP_FILE_EXCL|CEPH_CAP_FILE_WR)) {
 		struct ceph_snap_context *snapc = ci->i_head_snapc;
@@ -497,7 +543,10 @@ void ceph_queue_cap_snap(struct ceph_inode_info *ci)
 
 		dout("queue_cap_snap %p cap_snap %p queuing under %p %s\n",
 		     inode, capsnap, snapc, ceph_cap_string(dirty));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ihold(inode);
 
 		atomic_set(&capsnap->nref, 1);
@@ -549,10 +598,14 @@ void ceph_queue_cap_snap(struct ceph_inode_info *ci)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -562,10 +615,14 @@ void ceph_queue_cap_snap(struct ceph_inode_info *ci)
  * If capsnap can now be flushed, add to snap_flush list, and return 1.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Caller must hold i_lock.
 =======
  * Caller must hold i_ceph_lock.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Caller must hold i_ceph_lock.
+>>>>>>> refs/remotes/origin/master
  */
 int __ceph_finish_cap_snap(struct ceph_inode_info *ci,
 			    struct ceph_cap_snap *capsnap)
@@ -768,6 +825,7 @@ static void flush_snaps(struct ceph_mds_client *mdsc)
 		ihold(inode);
 		spin_unlock(&mdsc->snap_flush_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock(&inode->i_lock);
 		__ceph_flush_snaps(ci, &session, 0);
 		spin_unlock(&inode->i_lock);
@@ -776,6 +834,11 @@ static void flush_snaps(struct ceph_mds_client *mdsc)
 		__ceph_flush_snaps(ci, &session, 0);
 		spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_lock(&ci->i_ceph_lock);
+		__ceph_flush_snaps(ci, &session, 0);
+		spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 		iput(inode);
 		spin_lock(&mdsc->snap_flush_lock);
 	}
@@ -882,10 +945,14 @@ void ceph_handle_snap(struct ceph_mds_client *mdsc,
 			ci = ceph_inode(inode);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			spin_lock(&inode->i_lock);
 =======
 			spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 			if (!ci->i_snap_realm)
 				goto skip_inode;
 			/*
@@ -915,10 +982,14 @@ void ceph_handle_snap(struct ceph_mds_client *mdsc,
 			ci->i_snap_realm = realm;
 			spin_unlock(&realm->inodes_with_caps_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			spin_unlock(&inode->i_lock);
 =======
 			spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 
 			ceph_get_snap_realm(mdsc, realm);
 			ceph_put_snap_realm(mdsc, oldrealm);
@@ -928,10 +999,14 @@ void ceph_handle_snap(struct ceph_mds_client *mdsc,
 
 skip_inode:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			spin_unlock(&inode->i_lock);
 =======
 			spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 			iput(inode);
 		}
 

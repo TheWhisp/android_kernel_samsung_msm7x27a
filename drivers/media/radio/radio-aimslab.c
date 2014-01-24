@@ -1,18 +1,25 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* radiotrack (radioreveal) driver for Linux radio support
  * (c) 1997 M. Kirkwood
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * AimsLab RadioTrack (aka RadioVeveal) driver
  *
  * Copyright 1997 M. Kirkwood
  *
  * Converted to the radio-isa framework by Hans Verkuil <hans.verkuil@cisco.com>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Converted to V4L2 API by Mauro Carvalho Chehab <mchehab@infradead.org>
  * Converted to new API by Alan Cox <alan@lxorguk.ukuu.org.uk>
  * Various bugfixes and enhancements by Russell Kroll <rkroll@exploits.org>
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * History:
  * 1999-02-24	Russell Kroll <rkroll@exploits.org>
@@ -23,6 +30,8 @@
  *
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Notes on the hardware (reverse engineered from other peoples'
  * reverse engineering of AIMS' code :-)
  *
@@ -39,9 +48,13 @@
  *   out(port, stop_changing_the_volume);
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Fully tested with the Keene USB FM Transmitter and the v4l2-compliance tool.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Fully tested with the Keene USB FM Transmitter and the v4l2-compliance tool.
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/module.h>	/* Modules 			*/
@@ -49,6 +62,7 @@
 #include <linux/ioport.h>	/* request_region		*/
 #include <linux/delay.h>	/* msleep			*/
 #include <linux/videodev2.h>	/* kernel radio structs		*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/version.h>	/* for KERNEL_VERSION MACRO	*/
 #include <linux/io.h>		/* outb, outb_p			*/
@@ -59,23 +73,33 @@ MODULE_AUTHOR("M.Kirkwood");
 MODULE_DESCRIPTION("A driver for the RadioTrack/RadioReveal radio card.");
 MODULE_LICENSE("GPL");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>		/* outb, outb_p			*/
 #include <linux/slab.h>
 #include <media/v4l2-device.h>
 #include <media/v4l2-ioctl.h>
 #include <media/v4l2-ctrls.h>
 #include "radio-isa.h"
+<<<<<<< HEAD
+=======
+#include "lm7000.h"
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("M. Kirkwood");
 MODULE_DESCRIPTION("A driver for the RadioTrack/RadioReveal radio card.");
 MODULE_LICENSE("GPL");
 MODULE_VERSION("1.0.0");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CONFIG_RADIO_RTRACK_PORT
 #define CONFIG_RADIO_RTRACK_PORT -1
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int io = CONFIG_RADIO_RTRACK_PORT;
 static int radio_nr = -1;
@@ -399,6 +423,8 @@ static const struct v4l2_ioctl_ops rtrack_ioctl_ops = {
 	.vidioc_g_ctrl      = vidioc_g_ctrl,
 	.vidioc_s_ctrl      = vidioc_s_ctrl,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define RTRACK_MAX 2
 
 static int io[RTRACK_MAX] = { [0] = CONFIG_RADIO_RTRACK_PORT,
@@ -424,6 +450,7 @@ static struct radio_isa_card *rtrack_alloc(void)
 	return rt ? &rt->isa : NULL;
 }
 
+<<<<<<< HEAD
 /* The 128+64 on these outb's is to keep the volume stable while tuning.
  * Without them, the volume _will_ creep up with each frequency change
  * and bit 4 (+16) is to keep the signal strength meter enabled.
@@ -441,10 +468,39 @@ static void send_1_byte(struct radio_isa_card *isa, int on)
 	outb_p(128+64+16+on+4+1, isa->io);	/* wr-enable+data high */
 	outb_p(128+64+16+on+4+2+1, isa->io);	/* clock */
 	msleep(1);
+=======
+#define AIMS_BIT_TUN_CE		(1 << 0)
+#define AIMS_BIT_TUN_CLK	(1 << 1)
+#define AIMS_BIT_TUN_DATA	(1 << 2)
+#define AIMS_BIT_VOL_CE		(1 << 3)
+#define AIMS_BIT_TUN_STRQ	(1 << 4)
+/* bit 5 is not connected */
+#define AIMS_BIT_VOL_UP		(1 << 6)	/* active low */
+#define AIMS_BIT_VOL_DN		(1 << 7)	/* active low */
+
+static void rtrack_set_pins(void *handle, u8 pins)
+{
+	struct radio_isa_card *isa = handle;
+	struct rtrack *rt = container_of(isa, struct rtrack, isa);
+	u8 bits = AIMS_BIT_VOL_DN | AIMS_BIT_VOL_UP | AIMS_BIT_TUN_STRQ;
+
+	if (!v4l2_ctrl_g_ctrl(rt->isa.mute))
+		bits |= AIMS_BIT_VOL_CE;
+
+	if (pins & LM7000_DATA)
+		bits |= AIMS_BIT_TUN_DATA;
+	if (pins & LM7000_CLK)
+		bits |= AIMS_BIT_TUN_CLK;
+	if (pins & LM7000_CE)
+		bits |= AIMS_BIT_TUN_CE;
+
+	outb_p(bits, rt->isa.io);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int rtrack_s_frequency(struct radio_isa_card *isa, u32 freq)
 {
+<<<<<<< HEAD
 	int on = v4l2_ctrl_g_ctrl(isa->mute) ? 0 : 8;
 	int i;
 
@@ -473,6 +529,10 @@ static int rtrack_s_frequency(struct radio_isa_card *isa, u32 freq)
 	send_1_byte(isa, on);		/* 23: AM/FM (FM = 1, always) */
 
 	outb(0xd0 + on, isa->io);	/* volume steady + sigstr */
+=======
+	lm7000_set_freq(freq, isa, rtrack_set_pins);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -546,11 +606,15 @@ static struct radio_isa_driver rtrack_driver = {
 	.ops = &rtrack_ops,
 	.has_stereo = true,
 	.max_volume = 0xff,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init rtrack_init(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct rtrack *rt = &rtrack_card;
 	struct v4l2_device *v4l2_dev = &rt->v4l2_dev;
@@ -605,10 +669,14 @@ static int __init rtrack_init(void)
 =======
 	return isa_register_driver(&rtrack_driver.driver, RTRACK_MAX);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return isa_register_driver(&rtrack_driver.driver, RTRACK_MAX);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit rtrack_exit(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct rtrack *rt = &rtrack_card;
 
@@ -618,11 +686,17 @@ static void __exit rtrack_exit(void)
 =======
 	isa_unregister_driver(&rtrack_driver.driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	isa_unregister_driver(&rtrack_driver.driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(rtrack_init);
 module_exit(rtrack_exit);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

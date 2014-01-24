@@ -153,7 +153,11 @@ static int bq32k_probe(struct i2c_client *client,
 	if (error)
 		return error;
 
+<<<<<<< HEAD
 	rtc = rtc_device_register(bq32k_driver.driver.name, &client->dev,
+=======
+	rtc = devm_rtc_device_register(&client->dev, bq32k_driver.driver.name,
+>>>>>>> refs/remotes/origin/master
 						&bq32k_rtc_ops, THIS_MODULE);
 	if (IS_ERR(rtc))
 		return PTR_ERR(rtc);
@@ -163,6 +167,7 @@ static int bq32k_probe(struct i2c_client *client,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit bq32k_remove(struct i2c_client *client)
 {
 	struct rtc_device *rtc = i2c_get_clientdata(client);
@@ -171,6 +176,8 @@ static int __devexit bq32k_remove(struct i2c_client *client)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct i2c_device_id bq32k_id[] = {
 	{ "bq32000", 0 },
 	{ }
@@ -183,6 +190,7 @@ static struct i2c_driver bq32k_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= bq32k_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(bq32k_remove),
 	.id_table	= bq32k_id,
 };
@@ -202,6 +210,12 @@ module_exit(bq32k_exit);
 =======
 module_i2c_driver(bq32k_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.id_table	= bq32k_id,
+};
+
+module_i2c_driver(bq32k_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Semihalf, Piotr Ziecik <kosmo@semihalf.com>");
 MODULE_DESCRIPTION("TI BQ32000 I2C RTC driver");

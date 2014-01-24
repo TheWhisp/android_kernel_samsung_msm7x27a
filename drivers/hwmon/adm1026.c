@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
     adm1026.c - Part of lm_sensors, Linux kernel modules for hardware
 	     monitoring
     Copyright (C) 2002, 2003  Philip Pokorny <ppokorny@penguincomputing.com>
@@ -24,6 +25,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * adm1026.c - Part of lm_sensors, Linux kernel modules for hardware
  *	       monitoring
  * Copyright (C) 2002, 2003  Philip Pokorny <ppokorny@penguincomputing.com>
@@ -47,7 +50,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/module.h>
 #include <linux/init.h>
@@ -75,6 +81,7 @@ static int gpio_fan[8] = { -1, -1, -1, -1, -1, -1, -1, -1 };
 module_param_array(gpio_input, int, NULL, 0);
 MODULE_PARM_DESC(gpio_input, "List of GPIO pins (0-16) to program as inputs");
 module_param_array(gpio_output, int, NULL, 0);
+<<<<<<< HEAD
 MODULE_PARM_DESC(gpio_output, "List of GPIO pins (0-16) to program as "
 	"outputs");
 module_param_array(gpio_inverted, int, NULL, 0);
@@ -83,6 +90,16 @@ MODULE_PARM_DESC(gpio_inverted, "List of GPIO pins (0-16) to program as "
 module_param_array(gpio_normal, int, NULL, 0);
 MODULE_PARM_DESC(gpio_normal, "List of GPIO pins (0-16) to program as "
 	"normal/non-inverted");
+=======
+MODULE_PARM_DESC(gpio_output,
+		 "List of GPIO pins (0-16) to program as outputs");
+module_param_array(gpio_inverted, int, NULL, 0);
+MODULE_PARM_DESC(gpio_inverted,
+		 "List of GPIO pins (0-16) to program as inverted");
+module_param_array(gpio_normal, int, NULL, 0);
+MODULE_PARM_DESC(gpio_normal,
+		 "List of GPIO pins (0-16) to program as normal/non-inverted");
+>>>>>>> refs/remotes/origin/master
 module_param_array(gpio_fan, int, NULL, 0);
 MODULE_PARM_DESC(gpio_fan, "List of GPIO pins (0-7) to program as fan tachs");
 
@@ -117,11 +134,16 @@ MODULE_PARM_DESC(gpio_fan, "List of GPIO pins (0-7) to program as fan tachs");
 #define E2CFG_CLK_EXT		0x80
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* There are 10 general analog inputs and 7 dedicated inputs
 =======
 /*
  * There are 10 general analog inputs and 7 dedicated inputs
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * There are 10 general analog inputs and 7 dedicated inputs
+>>>>>>> refs/remotes/origin/master
  * They are:
  *    0 - 9  =  AIN0 - AIN9
  *       10  =  Vbat
@@ -149,11 +171,16 @@ static u16 ADM1026_REG_IN_MAX[] = {
 	};
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Temperatures are:
 =======
 /*
  * Temperatures are:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Temperatures are:
+>>>>>>> refs/remotes/origin/master
  *    0 - Internal
  *    1 - External 1
  *    2 - External 2
@@ -207,21 +234,31 @@ static u16 ADM1026_REG_TEMP_OFFSET[] = { 0x1e, 0x6e, 0x6f };
 #define ADM1026_PWM_MAX			255
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Conversions. Rounding and limit checking is only done on the TO_REG
 =======
 /*
  * Conversions. Rounding and limit checking is only done on the TO_REG
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Conversions. Rounding and limit checking is only done on the TO_REG
+>>>>>>> refs/remotes/origin/master
  * variants. Note that you should be a bit careful with which arguments
  * these macros are called: arguments may be evaluated more than once.
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* IN are scaled according to built-in resistors.  These are the
 =======
 /*
  * IN are scaled according to built-in resistors.  These are the
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * IN are scaled according to built-in resistors.  These are the
+>>>>>>> refs/remotes/origin/master
  *   voltages corresponding to 3/4 of full scale (192 or 0xc0)
  *   NOTE: The -12V input needs an additional factor to account
  *      for the Vref pullup resistor.
@@ -239,6 +276,7 @@ static int adm1026_scaling[] = { /* .001 Volts */
 	};
 #define NEG12_OFFSET  16000
 #define SCALE(val, from, to) (((val)*(to) + ((from)/2))/(from))
+<<<<<<< HEAD
 #define INS_TO_REG(n, val)  (SENSORS_LIMIT(SCALE(val, adm1026_scaling[n], 192),\
 	0, 255))
 #define INS_FROM_REG(n, val) (SCALE(val, 192, adm1026_scaling[n]))
@@ -249,10 +287,19 @@ static int adm1026_scaling[] = { /* .001 Volts */
 /*
  * FAN speed is measured using 22.5kHz clock and counts for 2 pulses
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define INS_TO_REG(n, val)  (clamp_val(SCALE(val, adm1026_scaling[n], 192),\
+	0, 255))
+#define INS_FROM_REG(n, val) (SCALE(val, 192, adm1026_scaling[n]))
+
+/*
+ * FAN speed is measured using 22.5kHz clock and counts for 2 pulses
+>>>>>>> refs/remotes/origin/master
  *   and we assume a 2 pulse-per-rev fan tach signal
  *      22500 kHz * 60 (sec/min) * 2 (pulse) / 2 (pulse/rev) == 1350000
  */
 #define FAN_TO_REG(val, div)  ((val) <= 0 ? 0xff : \
+<<<<<<< HEAD
 <<<<<<< HEAD
 				SENSORS_LIMIT(1350000/((val)*(div)), 1, 254))
 #define FAN_FROM_REG(val, div) ((val) == 0 ? -1:(val) == 0xff ? 0 : \
@@ -268,6 +315,9 @@ static int adm1026_scaling[] = { /* .001 Volts */
 	-127, 127))
 =======
 				SENSORS_LIMIT(1350000 / ((val) * (div)), \
+=======
+				clamp_val(1350000 / ((val) * (div)), \
+>>>>>>> refs/remotes/origin/master
 					      1, 254))
 #define FAN_FROM_REG(val, div) ((val) == 0 ? -1 : (val) == 0xff ? 0 : \
 				1350000 / ((val) * (div)))
@@ -275,6 +325,7 @@ static int adm1026_scaling[] = { /* .001 Volts */
 #define DIV_TO_REG(val) ((val) >= 8 ? 3 : (val) >= 4 ? 2 : (val) >= 2 ? 1 : 0)
 
 /* Temperature is reported in 1 degC increments */
+<<<<<<< HEAD
 #define TEMP_TO_REG(val) (SENSORS_LIMIT(((val) + ((val) < 0 ? -500 : 500)) \
 					/ 1000, -127, 127))
 #define TEMP_FROM_REG(val) ((val) * 1000)
@@ -284,11 +335,22 @@ static int adm1026_scaling[] = { /* .001 Volts */
 #define OFFSET_FROM_REG(val) ((val) * 1000)
 
 #define PWM_TO_REG(val) (SENSORS_LIMIT(val, 0, 255))
+=======
+#define TEMP_TO_REG(val) (clamp_val(((val) + ((val) < 0 ? -500 : 500)) \
+					/ 1000, -127, 127))
+#define TEMP_FROM_REG(val) ((val) * 1000)
+#define OFFSET_TO_REG(val) (clamp_val(((val) + ((val) < 0 ? -500 : 500)) \
+					  / 1000, -127, 127))
+#define OFFSET_FROM_REG(val) ((val) * 1000)
+
+#define PWM_TO_REG(val) (clamp_val(val, 0, 255))
+>>>>>>> refs/remotes/origin/master
 #define PWM_FROM_REG(val) (val)
 
 #define PWM_MIN_TO_REG(val) ((val) & 0xf0)
 #define PWM_MIN_FROM_REG(val) (((val) & 0xf0) + ((val) >> 4))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Analog output is a voltage, and scaled to millivolts.  The datasheet
  *   indicates that the DAC could be used to drive the fans, but in our
@@ -299,17 +361,26 @@ static int adm1026_scaling[] = { /* .001 Volts */
 
 /* Chip sampling rates
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Analog output is a voltage, and scaled to millivolts.  The datasheet
  *   indicates that the DAC could be used to drive the fans, but in our
  *   example board (Arima HDAMA) it isn't connected to the fans at all.
  */
+<<<<<<< HEAD
 #define DAC_TO_REG(val) (SENSORS_LIMIT(((((val) * 255) + 500) / 2500), 0, 255))
+=======
+#define DAC_TO_REG(val) (clamp_val(((((val) * 255) + 500) / 2500), 0, 255))
+>>>>>>> refs/remotes/origin/master
 #define DAC_FROM_REG(val) (((val) * 2500) / 255)
 
 /*
  * Chip sampling rates
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Some sensors are not updated more frequently than once per second
  *    so it doesn't make sense to read them more often than that.
@@ -324,12 +395,15 @@ static int adm1026_scaling[] = { /* .001 Volts */
 #define ADM1026_CONFIG_INTERVAL		(5 * 60 * HZ)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* We allow for multiple chips in a single system.
  *
  * For each registered ADM1026, we need to keep state information
  * at client->data. The adm1026_data structure is dynamically
  * allocated, when a new client structure is allocated. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * We allow for multiple chips in a single system.
  *
@@ -337,7 +411,10 @@ static int adm1026_scaling[] = { /* .001 Volts */
  * at client->data. The adm1026_data structure is dynamically
  * allocated, when a new client structure is allocated.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct pwm_data {
 	u8 pwm;
@@ -452,6 +529,7 @@ static void adm1026_init_client(struct i2c_client *client)
 	dev_dbg(&client->dev, "ADM1026_REG_CONFIG1 is: 0x%02x\n",
 		data->config1);
 	if ((data->config1 & CFG1_MONITOR) == 0) {
+<<<<<<< HEAD
 		dev_dbg(&client->dev, "Monitoring not currently "
 			"enabled.\n");
 	}
@@ -491,6 +569,34 @@ static void adm1026_init_client(struct i2c_client *client)
 			value = adm1026_read_value(client,
 					ADM1026_REG_GPIO_CFG_0_3 + i/4);
 =======
+=======
+		dev_dbg(&client->dev,
+			"Monitoring not currently enabled.\n");
+	}
+	if (data->config1 & CFG1_INT_ENABLE) {
+		dev_dbg(&client->dev,
+			"SMBALERT interrupts are enabled.\n");
+	}
+	if (data->config1 & CFG1_AIN8_9) {
+		dev_dbg(&client->dev,
+			"in8 and in9 enabled. temp3 disabled.\n");
+	} else {
+		dev_dbg(&client->dev,
+			"temp3 enabled.  in8 and in9 disabled.\n");
+	}
+	if (data->config1 & CFG1_THERM_HOT) {
+		dev_dbg(&client->dev,
+			"Automatic THERM, PWM, and temp limits enabled.\n");
+	}
+
+	if (data->config3 & CFG3_GPIO16_ENABLE) {
+		dev_dbg(&client->dev,
+			"GPIO16 enabled.  THERM pin disabled.\n");
+	} else {
+		dev_dbg(&client->dev,
+			"THERM pin enabled.  GPIO16 disabled.\n");
+	}
+>>>>>>> refs/remotes/origin/master
 	if (data->config3 & CFG3_VREF_250)
 		dev_dbg(&client->dev, "Vref is 2.50 Volts.\n");
 	else
@@ -501,7 +607,10 @@ static void adm1026_init_client(struct i2c_client *client)
 		if ((i & 0x03) == 0) {
 			value = adm1026_read_value(client,
 					ADM1026_REG_GPIO_CFG_0_3 + i / 4);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		data->gpio_config[i] = value & 0x03;
 		value >>= 2;
@@ -512,11 +621,16 @@ static void adm1026_init_client(struct i2c_client *client)
 	adm1026_print_gpio(client);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* If the user asks us to reprogram the GPIO config, then
 =======
 	/*
 	 * If the user asks us to reprogram the GPIO config, then
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * If the user asks us to reprogram the GPIO config, then
+>>>>>>> refs/remotes/origin/master
 	 * do it now.
 	 */
 	if (gpio_input[0] != -1 || gpio_output[0] != -1
@@ -526,11 +640,16 @@ static void adm1026_init_client(struct i2c_client *client)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* WE INTENTIONALLY make no changes to the limits,
 =======
 	/*
 	 * WE INTENTIONALLY make no changes to the limits,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * WE INTENTIONALLY make no changes to the limits,
+>>>>>>> refs/remotes/origin/master
 	 *   offsets, pwms, fans and zones.  If they were
 	 *   configured, we don't want to mess with them.
 	 *   If they weren't, the default is 100% PWM, no
@@ -542,10 +661,14 @@ static void adm1026_init_client(struct i2c_client *client)
 	 *   will not result in potentially dangerous fan speed decrease.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	data->pwm1.auto_pwm_min=255;
 =======
 	data->pwm1.auto_pwm_min = 255;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data->pwm1.auto_pwm_min = 255;
+>>>>>>> refs/remotes/origin/master
 	/* Start monitoring */
 	value = adm1026_read_value(client, ADM1026_REG_CONFIG1);
 	/* Set MONITOR, clear interrupt acknowledge and s/w reset */
@@ -558,10 +681,14 @@ static void adm1026_init_client(struct i2c_client *client)
 	value = adm1026_read_value(client, ADM1026_REG_FAN_DIV_0_3) |
 		(adm1026_read_value(client, ADM1026_REG_FAN_DIV_4_7) << 8);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0;i <= 7;++i) {
 =======
 	for (i = 0; i <= 7; ++i) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i <= 7; ++i) {
+>>>>>>> refs/remotes/origin/master
 		data->fan_div[i] = DIV_FROM_REG(value & 0x03);
 		value >>= 2;
 	}
@@ -574,10 +701,14 @@ static void adm1026_print_gpio(struct i2c_client *client)
 
 	dev_dbg(&client->dev, "GPIO config is:\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0;i <= 7;++i) {
 =======
 	for (i = 0; i <= 7; ++i) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i <= 7; ++i) {
+>>>>>>> refs/remotes/origin/master
 		if (data->config2 & (1 << i)) {
 			dev_dbg(&client->dev, "\t%sGP%s%d\n",
 				data->gpio_config[i] & 0x02 ? "" : "!",
@@ -588,10 +719,14 @@ static void adm1026_print_gpio(struct i2c_client *client)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 8;i <= 15;++i) {
 =======
 	for (i = 8; i <= 15; ++i) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 8; i <= 15; ++i) {
+>>>>>>> refs/remotes/origin/master
 		dev_dbg(&client->dev, "\t%sGP%s%d\n",
 			data->gpio_config[i] & 0x02 ? "" : "!",
 			data->gpio_config[i] & 0x01 ? "OUT" : "IN",
@@ -615,16 +750,22 @@ static void adm1026_fixup_gpio(struct i2c_client *client)
 
 	/* Make the changes requested. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* We may need to unlock/stop monitoring or soft-reset the
 =======
 	/*
 	 * We may need to unlock/stop monitoring or soft-reset the
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * We may need to unlock/stop monitoring or soft-reset the
+>>>>>>> refs/remotes/origin/master
 	 *    chip before we can make changes.  This hasn't been
 	 *    tested much.  FIXME
 	 */
 
 	/* Make outputs */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (i = 0;i <= 16;++i) {
 		if (gpio_output[i] >= 0 && gpio_output[i] <= 16) {
@@ -667,6 +808,8 @@ static void adm1026_fixup_gpio(struct i2c_client *client)
 			data->config2 &= ~(1 << gpio_fan[i]);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i <= 16; ++i) {
 		if (gpio_output[i] >= 0 && gpio_output[i] <= 16)
 			data->gpio_config[gpio_output[i]] |= 0x01;
@@ -700,7 +843,10 @@ static void adm1026_fixup_gpio(struct i2c_client *client)
 	for (i = 0; i <= 7; ++i) {
 		if (gpio_fan[i] >= 0 && gpio_fan[i] <= 7)
 			data->config2 &= ~(1 << gpio_fan[i]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Write new configs to registers */
@@ -709,10 +855,14 @@ static void adm1026_fixup_gpio(struct i2c_client *client)
 			| ((data->gpio_config[16] & 0x03) << 6);
 	adm1026_write_value(client, ADM1026_REG_CONFIG3, data->config3);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 15, value = 0;i >= 0;--i) {
 =======
 	for (i = 15, value = 0; i >= 0; --i) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 15, value = 0; i >= 0; --i) {
+>>>>>>> refs/remotes/origin/master
 		value <<= 2;
 		value |= data->gpio_config[i] & 0x03;
 		if ((i & 0x03) == 0) {
@@ -738,41 +888,57 @@ static struct adm1026_data *adm1026_update_device(struct device *dev)
 	mutex_lock(&data->update_lock);
 	if (!data->valid
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    || time_after(jiffies, data->last_reading + ADM1026_DATA_INTERVAL)) {
 		/* Things that change quickly */
 		dev_dbg(&client->dev, "Reading sensor values\n");
 		for (i = 0;i <= 16;++i) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	    || time_after(jiffies,
 			  data->last_reading + ADM1026_DATA_INTERVAL)) {
 		/* Things that change quickly */
 		dev_dbg(&client->dev, "Reading sensor values\n");
 		for (i = 0; i <= 16; ++i) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			data->in[i] =
 			    adm1026_read_value(client, ADM1026_REG_IN[i]);
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0;i <= 7;++i) {
 =======
 		for (i = 0; i <= 7; ++i) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i <= 7; ++i) {
+>>>>>>> refs/remotes/origin/master
 			data->fan[i] =
 			    adm1026_read_value(client, ADM1026_REG_FAN(i));
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0;i <= 2;++i) {
 			/* NOTE: temp[] is s8 and we assume 2's complement
 			 *   "conversion" in the assignment */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; i <= 2; ++i) {
 			/*
 			 * NOTE: temp[] is s8 and we assume 2's complement
 			 *   "conversion" in the assignment
 			 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			data->temp[i] =
 			    adm1026_read_value(client, ADM1026_REG_TEMP[i]);
 		}
@@ -802,17 +968,25 @@ static struct adm1026_data *adm1026_update_device(struct device *dev)
 		data->gpio = gpio;
 
 		data->last_reading = jiffies;
+<<<<<<< HEAD
 	}; /* last_reading */
+=======
+	}	/* last_reading */
+>>>>>>> refs/remotes/origin/master
 
 	if (!data->valid ||
 	    time_after(jiffies, data->last_config + ADM1026_CONFIG_INTERVAL)) {
 		/* Things that don't change often */
 		dev_dbg(&client->dev, "Reading config values\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0;i <= 16;++i) {
 =======
 		for (i = 0; i <= 16; ++i) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i <= 16; ++i) {
+>>>>>>> refs/remotes/origin/master
 			data->in_min[i] = adm1026_read_value(client,
 				ADM1026_REG_IN_MIN[i]);
 			data->in_max[i] = adm1026_read_value(client,
@@ -823,10 +997,14 @@ static struct adm1026_data *adm1026_update_device(struct device *dev)
 			| (adm1026_read_value(client, ADM1026_REG_FAN_DIV_4_7)
 			<< 8);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0;i <= 7;++i) {
 =======
 		for (i = 0; i <= 7; ++i) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i <= 7; ++i) {
+>>>>>>> refs/remotes/origin/master
 			data->fan_min[i] = adm1026_read_value(client,
 				ADM1026_REG_FAN_MIN(i));
 			data->fan_div[i] = DIV_FROM_REG(value & 0x03);
@@ -835,11 +1013,16 @@ static struct adm1026_data *adm1026_update_device(struct device *dev)
 
 		for (i = 0; i <= 2; ++i) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			/* NOTE: temp_xxx[] are s8 and we assume 2's
 =======
 			/*
 			 * NOTE: temp_xxx[] are s8 and we assume 2's
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/*
+			 * NOTE: temp_xxx[] are s8 and we assume 2's
+>>>>>>> refs/remotes/origin/master
 			 *    complement "conversion" in the assignment
 			 */
 			data->temp_min[i] = adm1026_read_value(client,
@@ -889,10 +1072,14 @@ static struct adm1026_data *adm1026_update_device(struct device *dev)
 
 		value = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0;i <= 15;++i) {
 =======
 		for (i = 0; i <= 15; ++i) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i <= 15; ++i) {
+>>>>>>> refs/remotes/origin/master
 			if ((i & 0x03) == 0) {
 				value = adm1026_read_value(client,
 					    ADM1026_REG_GPIO_CFG_0_3 + i/4);
@@ -902,7 +1089,11 @@ static struct adm1026_data *adm1026_update_device(struct device *dev)
 		}
 
 		data->last_config = jiffies;
+<<<<<<< HEAD
 	}; /* last_config */
+=======
+	}	/* last_config */
+>>>>>>> refs/remotes/origin/master
 
 	data->valid = 1;
 	mutex_unlock(&data->update_lock);
@@ -933,15 +1124,21 @@ static ssize_t set_in_min(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1026_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->in_min[nr] = INS_TO_REG(nr, val);
@@ -965,15 +1162,21 @@ static ssize_t set_in_max(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1026_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->in_max[nr] = INS_TO_REG(nr, val);
@@ -1009,27 +1212,38 @@ in_reg(14);
 in_reg(15);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_in16(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_in16(struct device *dev, struct device_attribute *attr,
 			 char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_in16(struct device *dev, struct device_attribute *attr,
+			 char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adm1026_data *data = adm1026_update_device(dev);
 	return sprintf(buf, "%d\n", INS_FROM_REG(16, data->in[16]) -
 		NEG12_OFFSET);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_in16_min(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_in16_min(struct device *dev, struct device_attribute *attr,
 			     char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_in16_min(struct device *dev, struct device_attribute *attr,
+			     char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adm1026_data *data = adm1026_update_device(dev);
 	return sprintf(buf, "%d\n", INS_FROM_REG(16, data->in_min[16])
 		- NEG12_OFFSET);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t set_in16_min(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
@@ -1037,6 +1251,8 @@ static ssize_t set_in16_min(struct device *dev, struct device_attribute *attr, c
 	struct adm1026_data *data = i2c_get_clientdata(client);
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t set_in16_min(struct device *dev, struct device_attribute *attr,
 			    const char *buf, size_t count)
 {
@@ -1048,7 +1264,10 @@ static ssize_t set_in16_min(struct device *dev, struct device_attribute *attr,
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->in_min[16] = INS_TO_REG(16, val + NEG12_OFFSET);
@@ -1057,16 +1276,22 @@ static ssize_t set_in16_min(struct device *dev, struct device_attribute *attr,
 	return count;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_in16_max(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_in16_max(struct device *dev, struct device_attribute *attr,
 			     char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_in16_max(struct device *dev, struct device_attribute *attr,
+			     char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adm1026_data *data = adm1026_update_device(dev);
 	return sprintf(buf, "%d\n", INS_FROM_REG(16, data->in_max[16])
 			- NEG12_OFFSET);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t set_in16_max(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
@@ -1074,6 +1299,8 @@ static ssize_t set_in16_max(struct device *dev, struct device_attribute *attr, c
 	struct adm1026_data *data = i2c_get_clientdata(client);
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t set_in16_max(struct device *dev, struct device_attribute *attr,
 			    const char *buf, size_t count)
 {
@@ -1085,7 +1312,10 @@ static ssize_t set_in16_max(struct device *dev, struct device_attribute *attr,
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->in_max[16] = INS_TO_REG(16, val+NEG12_OFFSET);
@@ -1096,16 +1326,22 @@ static ssize_t set_in16_max(struct device *dev, struct device_attribute *attr,
 
 static SENSOR_DEVICE_ATTR(in16_input, S_IRUGO, show_in16, NULL, 16);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static SENSOR_DEVICE_ATTR(in16_min, S_IRUGO | S_IWUSR, show_in16_min, set_in16_min, 16);
 static SENSOR_DEVICE_ATTR(in16_max, S_IRUGO | S_IWUSR, show_in16_max, set_in16_max, 16);
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static SENSOR_DEVICE_ATTR(in16_min, S_IRUGO | S_IWUSR, show_in16_min,
 			  set_in16_min, 16);
 static SENSOR_DEVICE_ATTR(in16_max, S_IRUGO | S_IWUSR, show_in16_max,
 			  set_in16_max, 16);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /* Now add fan read/write functions */
@@ -1136,15 +1372,21 @@ static ssize_t set_fan_min(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1026_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->fan_min[nr] = FAN_TO_REG(val, data->fan_div[nr]);
@@ -1179,6 +1421,7 @@ static void fixup_fan_min(struct device *dev, int fan, int old_div)
 
 	/* 0 and 0xff are special.  Don't adjust them */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (data->fan_min[fan] == 0 || data->fan_min[fan] == 0xff) {
 		return;
 	}
@@ -1189,6 +1432,13 @@ static void fixup_fan_min(struct device *dev, int fan, int old_div)
 
 	new_min = data->fan_min[fan] * old_div / new_div;
 	new_min = SENSORS_LIMIT(new_min, 1, 254);
+=======
+	if (data->fan_min[fan] == 0 || data->fan_min[fan] == 0xff)
+		return;
+
+	new_min = data->fan_min[fan] * old_div / new_div;
+	new_min = clamp_val(new_min, 1, 254);
+>>>>>>> refs/remotes/origin/master
 	data->fan_min[fan] = new_min;
 	adm1026_write_value(client, ADM1026_REG_FAN_MIN(fan), new_min);
 }
@@ -1210,10 +1460,13 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1026_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val, orig_div, new_div;
 
 	val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int orig_div, new_div;
 	int err;
@@ -1222,7 +1475,10 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *attr,
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	new_div = DIV_TO_REG(val);
 
 	mutex_lock(&data->update_lock);
@@ -1244,6 +1500,7 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *attr,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (data->fan_div[nr] != orig_div) {
 		fixup_fan_min(dev, nr, orig_div);
 	}
@@ -1252,6 +1509,11 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *attr,
 		fixup_fan_min(dev, nr, orig_div);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (data->fan_div[nr] != orig_div)
+		fixup_fan_min(dev, nr, orig_div);
+
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 	return count;
 }
@@ -1294,15 +1556,21 @@ static ssize_t set_temp_min(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1026_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->temp_min[nr] = TEMP_TO_REG(val);
@@ -1327,15 +1595,21 @@ static ssize_t set_temp_max(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1026_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->temp_max[nr] = TEMP_TO_REG(val);
@@ -1375,15 +1649,21 @@ static ssize_t set_temp_offset(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1026_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->temp_offset[nr] = TEMP_TO_REG(val);
@@ -1394,12 +1674,17 @@ static ssize_t set_temp_offset(struct device *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define temp_offset_reg(offset)							\
 static SENSOR_DEVICE_ATTR(temp##offset##_offset, S_IRUGO | S_IWUSR,		\
 =======
 #define temp_offset_reg(offset)						\
 static SENSOR_DEVICE_ATTR(temp##offset##_offset, S_IRUGO | S_IWUSR,	\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define temp_offset_reg(offset)						\
+static SENSOR_DEVICE_ATTR(temp##offset##_offset, S_IRUGO | S_IWUSR,	\
+>>>>>>> refs/remotes/origin/master
 		show_temp_offset, set_temp_offset, offset - 1);
 
 temp_offset_reg(1);
@@ -1440,15 +1725,21 @@ static ssize_t set_temp_auto_point1_temp(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1026_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->temp_tmin[nr] = TEMP_TO_REG(val);
@@ -1483,6 +1774,7 @@ static ssize_t set_temp_crit_enable(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1026_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 
 	if ((val == 1) || (val==0)) {
@@ -1493,6 +1785,8 @@ static ssize_t set_temp_crit_enable(struct device *dev,
 		mutex_unlock(&data->update_lock);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
@@ -1508,7 +1802,10 @@ static ssize_t set_temp_crit_enable(struct device *dev,
 	adm1026_write_value(client, ADM1026_REG_CONFIG1, data->config1);
 	mutex_unlock(&data->update_lock);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
@@ -1536,15 +1833,21 @@ static ssize_t set_temp_crit(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1026_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->temp_crit[nr] = TEMP_TO_REG(val);
@@ -1563,15 +1866,21 @@ temp_crit_reg(2);
 temp_crit_reg(3);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_analog_out_reg(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_analog_out_reg(struct device *dev,
 				   struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_analog_out_reg(struct device *dev,
+				   struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adm1026_data *data = adm1026_update_device(dev);
 	return sprintf(buf, "%d\n", DAC_FROM_REG(data->analog_out));
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t set_analog_out_reg(struct device *dev, struct device_attribute *attr, const char *buf,
 		size_t count)
@@ -1580,6 +1889,8 @@ static ssize_t set_analog_out_reg(struct device *dev, struct device_attribute *a
 	struct adm1026_data *data = i2c_get_clientdata(client);
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t set_analog_out_reg(struct device *dev,
 				  struct device_attribute *attr,
 				  const char *buf, size_t count)
@@ -1592,7 +1903,10 @@ static ssize_t set_analog_out_reg(struct device *dev,
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->analog_out = DAC_TO_REG(val);
@@ -1605,11 +1919,16 @@ static DEVICE_ATTR(analog_out, S_IRUGO | S_IWUSR, show_analog_out_reg,
 	set_analog_out_reg);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_vid_reg(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_vid_reg(struct device *dev, struct device_attribute *attr,
 			    char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_vid_reg(struct device *dev, struct device_attribute *attr,
+			    char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adm1026_data *data = adm1026_update_device(dev);
 	int vid = (data->gpio >> 11) & 0x1f;
@@ -1618,20 +1937,27 @@ static ssize_t show_vid_reg(struct device *dev, struct device_attribute *attr,
 	return sprintf(buf, "%d\n", vid_from_reg(vid, data->vrm));
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEVICE_ATTR(cpu0_vid, S_IRUGO, show_vid_reg, NULL);
 
 static ssize_t show_vrm_reg(struct device *dev, struct device_attribute *attr, char *buf)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static DEVICE_ATTR(cpu0_vid, S_IRUGO, show_vid_reg, NULL);
 
 static ssize_t show_vrm_reg(struct device *dev, struct device_attribute *attr,
 			    char *buf)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct adm1026_data *data = dev_get_drvdata(dev);
 	return sprintf(buf, "%d\n", data->vrm);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t store_vrm_reg(struct device *dev, struct device_attribute *attr, const char *buf,
 		size_t count)
@@ -1640,6 +1966,8 @@ static ssize_t store_vrm_reg(struct device *dev, struct device_attribute *attr, 
 
 	data->vrm = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t store_vrm_reg(struct device *dev, struct device_attribute *attr,
 			     const char *buf, size_t count)
@@ -1653,18 +1981,26 @@ static ssize_t store_vrm_reg(struct device *dev, struct device_attribute *attr,
 		return err;
 
 	data->vrm = val;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
 static DEVICE_ATTR(vrm, S_IRUGO | S_IWUSR, show_vrm_reg, store_vrm_reg);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_alarms_reg(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_alarms_reg(struct device *dev,
 			       struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_alarms_reg(struct device *dev,
+			       struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adm1026_data *data = adm1026_update_device(dev);
 	return sprintf(buf, "%ld\n", data->alarms);
@@ -1710,15 +2046,21 @@ static SENSOR_DEVICE_ATTR(in10_alarm, S_IRUGO, show_alarm, NULL, 25);
 static SENSOR_DEVICE_ATTR(in8_alarm, S_IRUGO, show_alarm, NULL, 26);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_alarm_mask(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_alarm_mask(struct device *dev,
 			       struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_alarm_mask(struct device *dev,
+			       struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adm1026_data *data = adm1026_update_device(dev);
 	return sprintf(buf, "%ld\n", data->alarm_mask);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t set_alarm_mask(struct device *dev, struct device_attribute *attr, const char *buf,
 		size_t count)
@@ -1728,6 +2070,8 @@ static ssize_t set_alarm_mask(struct device *dev, struct device_attribute *attr,
 	int val = simple_strtol(buf, NULL, 10);
 	unsigned long mask;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t set_alarm_mask(struct device *dev, struct device_attribute *attr,
 			      const char *buf, size_t count)
 {
@@ -1740,7 +2084,10 @@ static ssize_t set_alarm_mask(struct device *dev, struct device_attribute *attr,
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->alarm_mask = val & 0x7fffffff;
@@ -1766,15 +2113,21 @@ static DEVICE_ATTR(alarm_mask, S_IRUGO | S_IWUSR, show_alarm_mask,
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_gpio(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_gpio(struct device *dev, struct device_attribute *attr,
 			 char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_gpio(struct device *dev, struct device_attribute *attr,
+			 char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adm1026_data *data = adm1026_update_device(dev);
 	return sprintf(buf, "%ld\n", data->gpio);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t set_gpio(struct device *dev, struct device_attribute *attr, const char *buf,
 		size_t count)
@@ -1784,6 +2137,8 @@ static ssize_t set_gpio(struct device *dev, struct device_attribute *attr, const
 	int val = simple_strtol(buf, NULL, 10);
 	long gpio;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t set_gpio(struct device *dev, struct device_attribute *attr,
 			const char *buf, size_t count)
 {
@@ -1796,7 +2151,10 @@ static ssize_t set_gpio(struct device *dev, struct device_attribute *attr,
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->gpio = val & 0x1ffff;
@@ -1813,16 +2171,22 @@ static ssize_t set_gpio(struct device *dev, struct device_attribute *attr,
 static DEVICE_ATTR(gpio, S_IRUGO | S_IWUSR, show_gpio, set_gpio);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static ssize_t show_gpio_mask(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_gpio_mask(struct device *dev, struct device_attribute *attr,
 			      char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_gpio_mask(struct device *dev, struct device_attribute *attr,
+			      char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adm1026_data *data = adm1026_update_device(dev);
 	return sprintf(buf, "%ld\n", data->gpio_mask);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t set_gpio_mask(struct device *dev, struct device_attribute *attr, const char *buf,
 		size_t count)
@@ -1832,6 +2196,8 @@ static ssize_t set_gpio_mask(struct device *dev, struct device_attribute *attr, 
 	int val = simple_strtol(buf, NULL, 10);
 	long mask;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t set_gpio_mask(struct device *dev, struct device_attribute *attr,
 			     const char *buf, size_t count)
 {
@@ -1844,7 +2210,10 @@ static ssize_t set_gpio_mask(struct device *dev, struct device_attribute *attr,
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->gpio_mask = val & 0x1ffff;
@@ -1861,15 +2230,21 @@ static ssize_t set_gpio_mask(struct device *dev, struct device_attribute *attr,
 static DEVICE_ATTR(gpio_mask, S_IRUGO | S_IWUSR, show_gpio_mask, set_gpio_mask);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_pwm_reg(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_pwm_reg(struct device *dev, struct device_attribute *attr,
 			    char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_pwm_reg(struct device *dev, struct device_attribute *attr,
+			    char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adm1026_data *data = adm1026_update_device(dev);
 	return sprintf(buf, "%d\n", PWM_FROM_REG(data->pwm1.pwm));
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t set_pwm_reg(struct device *dev, struct device_attribute *attr, const char *buf,
 		size_t count)
@@ -1878,21 +2253,32 @@ static ssize_t set_pwm_reg(struct device *dev, struct device_attribute *attr, co
 static ssize_t set_pwm_reg(struct device *dev, struct device_attribute *attr,
 			   const char *buf, size_t count)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static ssize_t set_pwm_reg(struct device *dev, struct device_attribute *attr,
+			   const char *buf, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1026_data *data = i2c_get_clientdata(client);
 
 	if (data->pwm1.enable == 1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		long val;
 		int err;
 
 		err = kstrtol(buf, 10, &val);
 		if (err)
 			return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		mutex_lock(&data->update_lock);
 		data->pwm1.pwm = PWM_TO_REG(val);
@@ -1902,16 +2288,23 @@ static ssize_t set_pwm_reg(struct device *dev, struct device_attribute *attr,
 	return count;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_auto_pwm_min(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 
 static ssize_t show_auto_pwm_min(struct device *dev,
 				 struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static ssize_t show_auto_pwm_min(struct device *dev,
+				 struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adm1026_data *data = adm1026_update_device(dev);
 	return sprintf(buf, "%d\n", data->pwm1.auto_pwm_min);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t set_auto_pwm_min(struct device *dev, struct device_attribute *attr, const char *buf,
 		size_t count)
@@ -1920,6 +2313,8 @@ static ssize_t set_auto_pwm_min(struct device *dev, struct device_attribute *att
 	struct adm1026_data *data = i2c_get_clientdata(client);
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t set_auto_pwm_min(struct device *dev,
 				struct device_attribute *attr, const char *buf,
@@ -1933,10 +2328,16 @@ static ssize_t set_auto_pwm_min(struct device *dev,
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->pwm1.auto_pwm_min = SENSORS_LIMIT(val, 0, 255);
+=======
+
+	mutex_lock(&data->update_lock);
+	data->pwm1.auto_pwm_min = clamp_val(val, 0, 255);
+>>>>>>> refs/remotes/origin/master
 	if (data->pwm1.enable == 2) { /* apply immediately */
 		data->pwm1.pwm = PWM_TO_REG((data->pwm1.pwm & 0x0f) |
 			PWM_MIN_TO_REG(data->pwm1.auto_pwm_min));
@@ -1946,12 +2347,15 @@ static ssize_t set_auto_pwm_min(struct device *dev,
 	return count;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_auto_pwm_max(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	return sprintf(buf, "%d\n", ADM1026_PWM_MAX);
 }
 static ssize_t show_pwm_enable(struct device *dev, struct device_attribute *attr, char *buf)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t show_auto_pwm_max(struct device *dev,
 				 struct device_attribute *attr, char *buf)
@@ -1961,11 +2365,15 @@ static ssize_t show_auto_pwm_max(struct device *dev,
 
 static ssize_t show_pwm_enable(struct device *dev,
 			       struct device_attribute *attr, char *buf)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct adm1026_data *data = adm1026_update_device(dev);
 	return sprintf(buf, "%d\n", data->pwm1.enable);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t set_pwm_enable(struct device *dev, struct device_attribute *attr, const char *buf,
 		size_t count)
@@ -1997,6 +2405,8 @@ static ssize_t set_pwm_enable(struct device *dev, struct device_attribute *attr,
 		mutex_unlock(&data->update_lock);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t set_pwm_enable(struct device *dev, struct device_attribute *attr,
 			      const char *buf, size_t count)
@@ -2031,7 +2441,10 @@ static ssize_t set_pwm_enable(struct device *dev, struct device_attribute *attr,
 	}
 	mutex_unlock(&data->update_lock);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
@@ -2240,15 +2653,24 @@ static int adm1026_detect(struct i2c_client *client,
 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA)) {
 		/* We need to be able to do byte I/O */
 		return -ENODEV;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Now, we do the remaining detection. */
 
 	company = adm1026_read_value(client, ADM1026_REG_COMPANY);
 	verstep = adm1026_read_value(client, ADM1026_REG_VERSTEP);
 
+<<<<<<< HEAD
 	dev_dbg(&adapter->dev, "Detecting device at %d,0x%02x with"
 		" COMPANY: 0x%02x and VERSTEP: 0x%02x\n",
+=======
+	dev_dbg(&adapter->dev,
+		"Detecting device at %d,0x%02x with COMPANY: 0x%02x and VERSTEP: 0x%02x\n",
+>>>>>>> refs/remotes/origin/master
 		i2c_adapter_id(client->adapter), client->addr,
 		company, verstep);
 
@@ -2260,11 +2682,20 @@ static int adm1026_detect(struct i2c_client *client,
 		/* Analog Devices ADM1026 */
 	} else if (company == ADM1026_COMPANY_ANALOG_DEV
 		&& (verstep & 0xf0) == ADM1026_VERSTEP_GENERIC) {
+<<<<<<< HEAD
 		dev_err(&adapter->dev, "Unrecognized stepping "
 			"0x%02x. Defaulting to ADM1026.\n", verstep);
 	} else if ((verstep & 0xf0) == ADM1026_VERSTEP_GENERIC) {
 		dev_err(&adapter->dev, "Found version/stepping "
 			"0x%02x. Assuming generic ADM1026.\n",
+=======
+		dev_err(&adapter->dev,
+			"Unrecognized stepping 0x%02x. Defaulting to ADM1026.\n",
+			verstep);
+	} else if ((verstep & 0xf0) == ADM1026_VERSTEP_GENERIC) {
+		dev_err(&adapter->dev,
+			"Found version/stepping 0x%02x. Assuming generic ADM1026.\n",
+>>>>>>> refs/remotes/origin/master
 			verstep);
 	} else {
 		dev_dbg(&adapter->dev, "Autodetection failed\n");
@@ -2283,11 +2714,18 @@ static int adm1026_probe(struct i2c_client *client,
 	struct adm1026_data *data;
 	int err;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct adm1026_data), GFP_KERNEL);
 	if (!data) {
 		err = -ENOMEM;
 		goto exit;
 	}
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct adm1026_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(client, data);
 	mutex_init(&data->update_lock);
@@ -2300,12 +2738,18 @@ static int adm1026_probe(struct i2c_client *client,
 
 	/* Register sysfs hooks */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((err = sysfs_create_group(&client->dev.kobj, &adm1026_group)))
 =======
 	err = sysfs_create_group(&client->dev.kobj, &adm1026_group);
 	if (err)
 >>>>>>> refs/remotes/origin/cm-10.0
 		goto exitfree;
+=======
+	err = sysfs_create_group(&client->dev.kobj, &adm1026_group);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 	if (data->config1 & CFG1_AIN8_9)
 		err = sysfs_create_group(&client->dev.kobj,
 					 &adm1026_group_in8_9);
@@ -2330,9 +2774,12 @@ exitremove:
 		sysfs_remove_group(&client->dev.kobj, &adm1026_group_in8_9);
 	else
 		sysfs_remove_group(&client->dev.kobj, &adm1026_group_temp3);
+<<<<<<< HEAD
 exitfree:
 	kfree(data);
 exit:
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -2345,6 +2792,7 @@ static int adm1026_remove(struct i2c_client *client)
 		sysfs_remove_group(&client->dev.kobj, &adm1026_group_in8_9);
 	else
 		sysfs_remove_group(&client->dev.kobj, &adm1026_group_temp3);
+<<<<<<< HEAD
 	kfree(data);
 	return 0;
 }
@@ -2362,14 +2810,23 @@ static void __exit sm_adm1026_exit(void)
 =======
 module_i2c_driver(adm1026_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+}
+
+module_i2c_driver(adm1026_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Philip Pokorny <ppokorny@penguincomputing.com>, "
 	      "Justin Thiessen <jthiessen@penguincomputing.com>");
 MODULE_DESCRIPTION("ADM1026 driver");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(sm_adm1026_init);
 module_exit(sm_adm1026_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -24,8 +24,13 @@
 
 #include <mach/pxa300.h>
 #include <mach/colibri.h>
+<<<<<<< HEAD
 #include <mach/ohci.h>
 #include <mach/pxafb.h>
+=======
+#include <linux/platform_data/usb-ohci-pxa27x.h>
+#include <linux/platform_data/video-pxafb.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/audio.h>
 
 #include "generic.h"
@@ -79,12 +84,17 @@ static struct resource colibri_asix_resource[] = {
 	},
 	[1] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start = gpio_to_irq(COLIBRI_ETH_IRQ_GPIO),
 		.end   = gpio_to_irq(COLIBRI_ETH_IRQ_GPIO),
 =======
 		.start = PXA_GPIO_TO_IRQ(COLIBRI_ETH_IRQ_GPIO),
 		.end   = PXA_GPIO_TO_IRQ(COLIBRI_ETH_IRQ_GPIO),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start = PXA_GPIO_TO_IRQ(COLIBRI_ETH_IRQ_GPIO),
+		.end   = PXA_GPIO_TO_IRQ(COLIBRI_ETH_IRQ_GPIO),
+>>>>>>> refs/remotes/origin/master
 		.flags = IORESOURCE_IRQ | IRQF_TRIGGER_FALLING,
 	}
 };
@@ -189,20 +199,28 @@ void __init colibri_pxa300_init(void)
 
 MACHINE_START(COLIBRI300, "Toradex Colibri PXA300")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= COLIBRI_SDRAM_BASE + 0x100,
 	.init_machine	= colibri_pxa300_init,
 	.map_io		= pxa3xx_map_io,
 	.init_irq	= pxa3xx_init_irq,
 	.timer		= &pxa_timer,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.init_machine	= colibri_pxa300_init,
 	.map_io		= pxa3xx_map_io,
 	.nr_irqs	= PXA_NR_IRQS,
 	.init_irq	= pxa3xx_init_irq,
 	.handle_irq	= pxa3xx_handle_irq,
+<<<<<<< HEAD
 	.timer		= &pxa_timer,
 	.restart	= pxa_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 

@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -31,6 +32,8 @@
 #define FILE_DEVICE_CAPI20 0x8001
         /* DEVICE_CONTROL codes for user and kernel mode applications */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -59,13 +62,17 @@
 /* the common device type for CAPI20 drivers */
 #define FILE_DEVICE_CAPI20 0x8001
 /* DEVICE_CONTROL codes for user and kernel mode applications */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define CAPI20_CTL_REGISTER             0x0801
 #define CAPI20_CTL_RELEASE              0x0802
 #define CAPI20_CTL_GET_MANUFACTURER     0x0805
 #define CAPI20_CTL_GET_VERSION          0x0806
 #define CAPI20_CTL_GET_SERIAL           0x0807
 #define CAPI20_CTL_GET_PROFILE          0x0808
+<<<<<<< HEAD
 <<<<<<< HEAD
         /* INTERNAL_DEVICE_CONTROL codes for kernel mode applicatios only */
 #define CAPI20_CTL_PUT_MESSAGE          0x0803
@@ -102,6 +109,8 @@ typedef struct api_profile_s {
 } API_PROFILE;
         /* ISDN Common API message types                            */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* INTERNAL_DEVICE_CONTROL codes for kernel mode applicatios only */
 #define CAPI20_CTL_PUT_MESSAGE          0x0803
 #define CAPI20_CTL_GET_MESSAGE          0x0804
@@ -136,7 +145,10 @@ typedef struct api_profile_s {
 	dword         B3_Protocols;
 } API_PROFILE;
 /* ISDN Common API message types                            */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define _ALERT_R                        0x8001
 #define _CONNECT_R                      0x8002
 #define _CONNECT_I                      0x8202
@@ -162,6 +174,7 @@ typedef struct api_profile_s {
 #define _MANUFACTURER_R                 0x80ff
 #define _MANUFACTURER_I                 0x82ff
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* OR this to convert a REQUEST to a CONFIRM                */
 #define CONFIRM                 0x0100
         /* OR this to convert a INDICATION to a RESPONSE            */
@@ -170,6 +183,11 @@ typedef struct api_profile_s {
 #define CONFIRM                 0x0100
 /* OR this to convert a INDICATION to a RESPONSE            */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* OR this to convert a REQUEST to a CONFIRM                */
+#define CONFIRM                 0x0100
+/* OR this to convert a INDICATION to a RESPONSE            */
+>>>>>>> refs/remotes/origin/master
 #define RESPONSE                0x0100
 /*------------------------------------------------------------------*/
 /* diehl isdn private MANUFACTURER codes                            */
@@ -189,6 +207,7 @@ typedef struct api_profile_s {
 /*------------------------------------------------------------------*/
 /* parameter structures                                             */
 /*------------------------------------------------------------------*/
+<<<<<<< HEAD
 <<<<<<< HEAD
         /* ALERT-REQUEST                                            */
 typedef struct {
@@ -433,6 +452,8 @@ typedef struct {
   word Reject;
   byte structs[1];      /* NCPI */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* ALERT-REQUEST                                            */
 typedef struct {
 	byte structs[0];      /* Additional Info */
@@ -675,7 +696,10 @@ typedef struct {
 typedef struct {
 	word Reject;
 	byte structs[0];      /* NCPI */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } _CON_B3_T90_A_RESP;
 /*------------------------------------------------------------------*/
 /* message structure                                                */
@@ -683,6 +707,7 @@ typedef struct {
 typedef struct _API_MSG CAPI_MSG;
 typedef struct _MSG_HEADER CAPI_MSG_HEADER;
 struct _API_MSG {
+<<<<<<< HEAD
 <<<<<<< HEAD
   struct _MSG_HEADER {
     word        length;
@@ -743,6 +768,8 @@ struct _API_MSG {
     byte                b[200];
   } info;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct _MSG_HEADER {
 		word        length;
 		word        appl_id;
@@ -801,7 +828,10 @@ struct _API_MSG {
 		_CON_B3_T90_A_RESP  connect_b3_t90_a_res;
 		byte                b[200];
 	} info;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 /*------------------------------------------------------------------*/
 /* non-fatal errors                                                 */
@@ -1077,7 +1107,11 @@ struct _API_MSG {
 /*------------------------------------------------------------------*/
 /*------------------------------------------------------------------*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* _INC_CAPI20 */  
 =======
 #endif /* _INC_CAPI20 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* _INC_CAPI20 */
+>>>>>>> refs/remotes/origin/master

@@ -11,7 +11,11 @@ struct test_fail {
 };
 
 #define DEFINE_TEST_FAIL(test)	\
+<<<<<<< HEAD
 	const struct test_fail test[] __initdata
+=======
+	const struct test_fail test[] __initconst
+>>>>>>> refs/remotes/origin/master
 
 #define DECLARE_TEST_OK(type, test_type)	\
 	test_type {				\
@@ -21,7 +25,11 @@ struct test_fail {
 	}
 
 #define DEFINE_TEST_OK(type, test)	\
+<<<<<<< HEAD
 	const type test[] __initdata
+=======
+	const type test[] __initconst
+>>>>>>> refs/remotes/origin/master
 
 #define TEST_FAIL(fn, type, fmt, test)					\
 {									\

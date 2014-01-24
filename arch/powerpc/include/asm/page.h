@@ -37,7 +37,10 @@
 #define PAGE_SIZE		(ASM_CONST(1) << PAGE_SHIFT)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 #ifdef CONFIG_HUGETLB_PAGE
 extern unsigned int HPAGE_SHIFT;
@@ -50,7 +53,10 @@ extern unsigned int HPAGE_SHIFT;
 #define HUGE_MAX_HSTATE		(MMU_PAGE_COUNT-1)
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* We do define AT_SYSINFO_EHDR but don't use the gate mechanism */
 #define __HAVE_ARCH_GATE_AREA		1
 
@@ -81,7 +87,11 @@ extern unsigned int HPAGE_SHIFT;
  *
  * Also, KERNELBASE >= PAGE_OFFSET and PHYSICAL_START >= MEMORY_START
  *
+<<<<<<< HEAD
  * There are two was to determine a physical address from a virtual one:
+=======
+ * There are two ways to determine a physical address from a virtual one:
+>>>>>>> refs/remotes/origin/master
  * va = pa + PAGE_OFFSET - MEMORY_START
  * va = pa + KERNELBASE - PHYSICAL_START
  *
@@ -96,14 +106,19 @@ extern unsigned int HPAGE_SHIFT;
 #define LOAD_OFFSET	ASM_CONST((CONFIG_KERNEL_START-CONFIG_PHYSICAL_START))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_RELOCATABLE)
 =======
 #if defined(CONFIG_NONSTATIC_KERNEL)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_NONSTATIC_KERNEL)
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 
 extern phys_addr_t memstart_addr;
 extern phys_addr_t kernstart_addr;
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 #define PHYSICAL_START	kernstart_addr
@@ -115,6 +130,8 @@ extern phys_addr_t kernstart_addr;
 #define MEMORY_START	0UL
 #elif defined(CONFIG_RELOCATABLE)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_RELOCATABLE_PPC32
 extern long long virt_phys_offset;
@@ -138,7 +155,10 @@ extern long long virt_phys_offset;
 #ifdef CONFIG_PPC64
 #define MEMORY_START	0UL
 #elif defined(CONFIG_NONSTATIC_KERNEL)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define MEMORY_START	memstart_addr
 #else
 #define MEMORY_START	(PHYSICAL_START + PAGE_OFFSET - KERNELBASE)
@@ -159,7 +179,10 @@ extern long long virt_phys_offset;
  * from information at hand (program counter, TLB lookup).
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * On BookE with RELOCATABLE (RELOCATABLE_PPC32)
  *
  *   With RELOCATABLE_PPC32,  we support loading the kernel at any physical 
@@ -225,11 +248,15 @@ extern long long virt_phys_offset;
  * 	__pa(x) = x + PHYSICAL_START - Effective KERNELBASE
  * 		= x - virt_phys_offset
  * 		
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * On non-Book-E PPC64 PAGE_OFFSET and MEMORY_START are constants so use
  * the other definitions for __va & __pa.
  */
 #ifdef CONFIG_BOOKE
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define __va(x) ((void *)(unsigned long)((phys_addr_t)(x) - PHYSICAL_START + KERNELBASE))
 #define __pa(x) ((unsigned long)(x) + PHYSICAL_START - KERNELBASE)
@@ -238,6 +265,8 @@ extern long long virt_phys_offset;
 #define __pa(x) ((unsigned long)(x) - PAGE_OFFSET + MEMORY_START)
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define __va(x) ((void *)(unsigned long)((phys_addr_t)(x) + VIRT_PHYS_OFFSET))
 #define __pa(x) ((unsigned long)(x) - VIRT_PHYS_OFFSET)
 #else
@@ -254,7 +283,10 @@ extern long long virt_phys_offset;
 #define __pa(x) ((unsigned long)(x) - PAGE_OFFSET + MEMORY_START)
 #endif
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Unfortunately the PLT is in the BSS in the PPC32 ELF ABI,
@@ -291,7 +323,11 @@ extern long long virt_phys_offset;
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+#ifndef CONFIG_PPC_BOOK3S_64
+>>>>>>> refs/remotes/origin/master
 /*
  * Use the top bit of the higher-level page table entries to indicate whether
  * the entries we point to contain hugepages.  This works because we know that
@@ -303,6 +339,10 @@ extern long long virt_phys_offset;
 #else
 #define PD_HUGE 0x80000000
 #endif
+<<<<<<< HEAD
+=======
+#endif /* CONFIG_PPC_BOOK3S_64 */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Some number of bits at the level of the page table that points to
@@ -310,7 +350,10 @@ extern long long virt_phys_offset;
  */
 #define HUGEPD_SHIFT_MASK     0x3f
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 
 #undef STRICT_MM_TYPECHECKS
@@ -397,19 +440,44 @@ typedef unsigned long pgprot_t;
 
 typedef struct { signed long pd; } hugepd_t;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HUGEPD_SHIFT_MASK     0x3f
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef CONFIG_HUGETLB_PAGE
+=======
+
+#ifdef CONFIG_HUGETLB_PAGE
+#ifdef CONFIG_PPC_BOOK3S_64
+static inline int hugepd_ok(hugepd_t hpd)
+{
+	/*
+	 * hugepd pointer, bottom two bits == 00 and next 4 bits
+	 * indicate size of table
+	 */
+	return (((hpd.pd & 0x3) == 0x0) && ((hpd.pd & HUGEPD_SHIFT_MASK) != 0));
+}
+#else
+>>>>>>> refs/remotes/origin/master
 static inline int hugepd_ok(hugepd_t hpd)
 {
 	return (hpd.pd > 0);
 }
+<<<<<<< HEAD
 
 #define is_hugepd(pdep)               (hugepd_ok(*((hugepd_t *)(pdep))))
 #else /* CONFIG_HUGETLB_PAGE */
 #define is_hugepd(pdep)			0
+=======
+#endif
+
+#define is_hugepd(pdep)               (hugepd_ok(*((hugepd_t *)(pdep))))
+int pgd_huge(pgd_t pgd);
+#else /* CONFIG_HUGETLB_PAGE */
+#define is_hugepd(pdep)			0
+#define pgd_huge(pgd)			0
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_HUGETLB_PAGE */
 
 struct page;
@@ -418,9 +486,13 @@ extern void copy_user_page(void *to, void *from, unsigned long vaddr,
 		struct page *p);
 extern int page_is_ram(unsigned long pfn);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern int devmem_is_allowed(unsigned long pfn);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int devmem_is_allowed(unsigned long pfn);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PPC_SMLPAR
 void arch_free_page(struct page *page, int order);
@@ -429,7 +501,15 @@ void arch_free_page(struct page *page, int order);
 
 struct vm_area_struct;
 
+<<<<<<< HEAD
 typedef struct page *pgtable_t;
+=======
+#if defined(CONFIG_PPC_64K_PAGES) && defined(CONFIG_PPC64)
+typedef pte_t *pgtable_t;
+#else
+typedef struct page *pgtable_t;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #include <asm-generic/memory_model.h>
 #endif /* __ASSEMBLY__ */

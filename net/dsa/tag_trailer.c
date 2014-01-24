@@ -115,6 +115,7 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct packet_type trailer_packet_type __read_mostly = {
 	.type	= cpu_to_be16(ETH_P_TRAILER),
 	.func	= trailer_rcv,
@@ -133,8 +134,13 @@ static void __exit trailer_cleanup_module(void)
 }
 module_exit(trailer_cleanup_module);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct packet_type trailer_packet_type __read_mostly = {
 	.type	= cpu_to_be16(ETH_P_TRAILER),
 	.func	= trailer_rcv,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

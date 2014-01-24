@@ -58,7 +58,11 @@ static struct fb_monspecs __initdata atevklcd10x_default_monspecs = {
 	.dclkmax		= 28330000,
 };
 
+<<<<<<< HEAD
 static struct atmel_lcdfb_info __initdata atevklcd10x_lcdc_data = {
+=======
+static struct atmel_lcdfb_pdata __initdata atevklcd10x_lcdc_data = {
+>>>>>>> refs/remotes/origin/master
 	.default_bpp		= 16,
 	.default_dmacon		= ATMEL_LCDC_DMAEN | ATMEL_LCDC_DMA2DEN,
 	.default_lcdcon2	= (ATMEL_LCDC_DISTYPE_TFT
@@ -96,7 +100,11 @@ static struct fb_monspecs __initdata atevklcd10x_default_monspecs = {
 	.dclkmax		= 7000000,
 };
 
+<<<<<<< HEAD
 static struct atmel_lcdfb_info __initdata atevklcd10x_lcdc_data = {
+=======
+static struct atmel_lcdfb_pdata __initdata atevklcd10x_lcdc_data = {
+>>>>>>> refs/remotes/origin/master
 	.default_bpp		= 16,
 	.default_dmacon		= ATMEL_LCDC_DMAEN | ATMEL_LCDC_DMA2DEN,
 	.default_lcdcon2	= (ATMEL_LCDC_DISTYPE_TFT
@@ -134,7 +142,11 @@ static struct fb_monspecs __initdata atevklcd10x_default_monspecs = {
 	.dclkmax		= 6400000,
 };
 
+<<<<<<< HEAD
 static struct atmel_lcdfb_info __initdata atevklcd10x_lcdc_data = {
+=======
+static struct atmel_lcdfb_pdata __initdata atevklcd10x_lcdc_data = {
+>>>>>>> refs/remotes/origin/master
 	.default_bpp		= 16,
 	.default_dmacon		= ATMEL_LCDC_DMAEN | ATMEL_LCDC_DMA2DEN,
 	.default_lcdcon2	= (ATMEL_LCDC_DISTYPE_TFT
@@ -145,7 +157,11 @@ static struct atmel_lcdfb_info __initdata atevklcd10x_lcdc_data = {
 };
 #endif
 
+<<<<<<< HEAD
 static void atevklcd10x_lcdc_power_control(int on)
+=======
+static void atevklcd10x_lcdc_power_control(struct atmel_lcdfb_pdata *pdata, int on)
+>>>>>>> refs/remotes/origin/master
 {
 	gpio_set_value(GPIO_PIN_PB(15), on);
 }

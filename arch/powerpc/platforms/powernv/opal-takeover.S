@@ -14,8 +14,11 @@
 #include <asm/asm-offsets.h>
 #include <asm/opal.h>
 
+<<<<<<< HEAD
 #define STK_PARAM(i)	(48 + ((i)-3)*8)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define H_HAL_TAKEOVER			0x5124
 #define H_HAL_TAKEOVER_QUERY_MAGIC	-1
 
@@ -23,6 +26,7 @@
 _GLOBAL(opal_query_takeover)
 	mfcr	r0
 	stw	r0,8(r1)
+<<<<<<< HEAD
 	std	r3,STK_PARAM(r3)(r1)
 	std	r4,STK_PARAM(r4)(r1)
 	li	r3,H_HAL_TAKEOVER
@@ -31,6 +35,16 @@ _GLOBAL(opal_query_takeover)
 	ld	r10,STK_PARAM(r3)(r1)
 	std	r4,0(r10)
 	ld	r10,STK_PARAM(r4)(r1)
+=======
+	std	r3,STK_PARAM(R3)(r1)
+	std	r4,STK_PARAM(R4)(r1)
+	li	r3,H_HAL_TAKEOVER
+	li	r4,H_HAL_TAKEOVER_QUERY_MAGIC
+	HVSC
+	ld	r10,STK_PARAM(R3)(r1)
+	std	r4,0(r10)
+	ld	r10,STK_PARAM(R4)(r1)
+>>>>>>> refs/remotes/origin/master
 	std	r5,0(r10)
 	lwz	r0,8(r1)
 	mtcrf	0xff,r0

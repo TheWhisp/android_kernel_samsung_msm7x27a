@@ -1,6 +1,7 @@
 	/* SunOS's execv() call only specifies the argv argument, the
 	 * environment settings are the same as the calling processes.
 	 */
+<<<<<<< HEAD
 sys_execve:
 	sethi	%hi(sparc_execve), %g1
 	ba,pt	%xcc, execve_merge
@@ -18,6 +19,21 @@ execve_merge:
 	flushw
 	jmpl	%g1, %g0
 	 add	%sp, PTREGS_OFF, %o0
+=======
+sys64_execve:
+	set	sys_execve, %g1
+	jmpl	%g1, %g0
+	 flushw
+
+#ifdef CONFIG_COMPAT
+sunos_execv:
+	mov	%g0, %o2
+sys32_execve:
+	set	compat_sys_execve, %g1
+	jmpl	%g1, %g0
+	 flushw
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	.align	32
 sys_sparc_pipe:
@@ -29,16 +45,22 @@ sys_nis_syscall:
 sys_memory_ordering:
 	ba,pt	%xcc, sparc_memory_ordering
 	 add	%sp, PTREGS_OFF, %o1
+<<<<<<< HEAD
 sys_sigaltstack:
 	ba,pt	%xcc, do_sigaltstack
 	 add	%i6, STACK_BIAS, %o2
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_COMPAT
 sys32_sigstack:
 	ba,pt	%xcc, do_sys32_sigstack
 	 mov	%i6, %o2
+<<<<<<< HEAD
 sys32_sigaltstack:
 	ba,pt	%xcc, do_sys32_sigaltstack
 	 mov	%i6, %o2
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	.align	32
 #ifdef CONFIG_COMPAT
@@ -62,7 +84,11 @@ sys32_rt_sigreturn:
 #endif
 	.align	32
 1:	ldx	[%g6 + TI_FLAGS], %l5
+<<<<<<< HEAD
 	andcc	%l5, (_TIF_SYSCALL_TRACE|_TIF_SECCOMP|_TIF_SYSCALL_AUDIT|_TIF_SYSCALL_TRACEPOINT), %g0
+=======
+	andcc	%l5, (_TIF_SYSCALL_TRACE|_TIF_SECCOMP|_TIF_SYSCALL_AUDIT|_TIF_SYSCALL_TRACEPOINT|_TIF_NOHZ), %g0
+>>>>>>> refs/remotes/origin/master
 	be,pt	%icc, rtrap
 	 nop
 	call	syscall_trace_leave
@@ -108,6 +134,7 @@ sys_clone:
 	ba,pt	%xcc, sparc_do_fork
 	 add	%sp, PTREGS_OFF, %o2
 
+<<<<<<< HEAD
 	.globl	ret_from_syscall
 ret_from_syscall:
 	/* Clear current_thread_info()->new_child. */
@@ -117,11 +144,41 @@ ret_from_syscall:
 	 mov	%g7, %o0
 	ba,pt	%xcc, ret_sys_call
 	 ldx	[%sp + PTREGS_OFF + PT_V9_I0], %o0
+=======
+	.globl	ret_from_fork
+ret_from_fork:
+	/* Clear current_thread_info()->new_child. */
+	stb	%g0, [%g6 + TI_NEW_CHILD]
+	call	schedule_tail
+	 mov	%g7, %o0
+	ldx	[%sp + PTREGS_OFF + PT_V9_I0], %o0
+	brnz,pt	%o0, ret_sys_call
+	 ldx	[%g6 + TI_FLAGS], %l0
+	ldx	[%sp + PTREGS_OFF + PT_V9_G1], %l1
+	call	%l1
+	 ldx	[%sp + PTREGS_OFF + PT_V9_G2], %o0
+	ba,pt	%xcc, ret_sys_call
+	 mov	0, %o0
+
+	.globl	sparc_exit_group
+	.type	sparc_exit_group,#function
+sparc_exit_group:
+	sethi	%hi(sys_exit_group), %g7
+	ba,pt	%xcc, 1f
+	 or	%g7, %lo(sys_exit_group), %g7
+	.size	sparc_exit_group,.-sparc_exit_group
+>>>>>>> refs/remotes/origin/master
 
 	.globl	sparc_exit
 	.type	sparc_exit,#function
 sparc_exit:
+<<<<<<< HEAD
 	rdpr	%pstate, %g2
+=======
+	sethi	%hi(sys_exit), %g7
+	or	%g7, %lo(sys_exit), %g7
+1:	rdpr	%pstate, %g2
+>>>>>>> refs/remotes/origin/master
 	wrpr	%g2, PSTATE_IE, %pstate
 	rdpr	%otherwin, %g1
 	rdpr	%cansave, %g3
@@ -129,7 +186,11 @@ sparc_exit:
 	wrpr	%g3, 0x0, %cansave
 	wrpr	%g0, 0x0, %otherwin
 	wrpr	%g2, 0x0, %pstate
+<<<<<<< HEAD
 	ba,pt	%xcc, sys_exit
+=======
+	jmpl	%g7, %g0
+>>>>>>> refs/remotes/origin/master
 	 stb	%g0, [%g6 + TI_WSAVED]
 	.size	sparc_exit,.-sparc_exit
 
@@ -179,7 +240,11 @@ linux_sparc_syscall32:
 
 	srl	%i3, 0, %o3				! IEU0
 	srl	%i2, 0, %o2				! IEU0	Group
+<<<<<<< HEAD
 	andcc	%l0, (_TIF_SYSCALL_TRACE|_TIF_SECCOMP|_TIF_SYSCALL_AUDIT|_TIF_SYSCALL_TRACEPOINT), %g0
+=======
+	andcc	%l0, (_TIF_SYSCALL_TRACE|_TIF_SECCOMP|_TIF_SYSCALL_AUDIT|_TIF_SYSCALL_TRACEPOINT|_TIF_NOHZ), %g0
+>>>>>>> refs/remotes/origin/master
 	bne,pn	%icc, linux_syscall_trace32		! CTI
 	 mov	%i0, %l5				! IEU1
 5:	call	%l7					! CTI	Group brk forced
@@ -202,7 +267,11 @@ linux_sparc_syscall:
 
 	mov	%i3, %o3				! IEU1
 	mov	%i4, %o4				! IEU0	Group
+<<<<<<< HEAD
 	andcc	%l0, (_TIF_SYSCALL_TRACE|_TIF_SECCOMP|_TIF_SYSCALL_AUDIT|_TIF_SYSCALL_TRACEPOINT), %g0
+=======
+	andcc	%l0, (_TIF_SYSCALL_TRACE|_TIF_SECCOMP|_TIF_SYSCALL_AUDIT|_TIF_SYSCALL_TRACEPOINT|_TIF_NOHZ), %g0
+>>>>>>> refs/remotes/origin/master
 	bne,pn	%icc, linux_syscall_trace		! CTI	Group
 	 mov	%i0, %l5				! IEU0
 2:	call	%l7					! CTI	Group brk forced
@@ -218,11 +287,18 @@ ret_sys_call:
 
 	cmp	%o0, -ERESTART_RESTARTBLOCK
 	bgeu,pn	%xcc, 1f
+<<<<<<< HEAD
 	 andcc	%l0, (_TIF_SYSCALL_TRACE|_TIF_SECCOMP|_TIF_SYSCALL_AUDIT|_TIF_SYSCALL_TRACEPOINT), %g0
 	ldx	[%sp + PTREGS_OFF + PT_V9_TNPC], %l1 ! pc = npc
 
 2:
 	stb	%g0, [%g6 + TI_SYS_NOERROR]
+=======
+	 andcc	%l0, (_TIF_SYSCALL_TRACE|_TIF_SECCOMP|_TIF_SYSCALL_AUDIT|_TIF_SYSCALL_TRACEPOINT|_TIF_NOHZ), %g0
+	ldx	[%sp + PTREGS_OFF + PT_V9_TNPC], %l1 ! pc = npc
+
+2:
+>>>>>>> refs/remotes/origin/master
 	/* System call success, clear Carry condition code. */
 	andn	%g3, %g2, %g3
 3:

@@ -13,6 +13,7 @@
 #define __ARM_PERF_EVENT_H__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* ARM performance counters start from 1 (in the cp15 accesses) so use the
  * same indexes here for consistency. */
 #define PERF_EVENT_INDEX_OFFSET 1
@@ -53,4 +54,22 @@ armpmu_get_max_events(void);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * The ARMv7 CPU PMU supports up to 32 event counters.
+ */
+#define ARMPMU_MAX_HWEVENTS		32
+
+#define HW_OP_UNSUPPORTED		0xFFFF
+#define C(_x)				PERF_COUNT_HW_CACHE_##_x
+#define CACHE_OP_UNSUPPORTED		0xFFFF
+
+#ifdef CONFIG_HW_PERF_EVENTS
+struct pt_regs;
+extern unsigned long perf_instruction_pointer(struct pt_regs *regs);
+extern unsigned long perf_misc_flags(struct pt_regs *regs);
+#define perf_misc_flags(regs)	perf_misc_flags(regs)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ARM_PERF_EVENT_H__ */

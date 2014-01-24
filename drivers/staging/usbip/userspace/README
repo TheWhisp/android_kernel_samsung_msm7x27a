@@ -1,20 +1,27 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # vim:tw=78:ts=4:expandtab:ai:sw=4
 #
 # README for usbip-utils
 #
 # Copyright (C) 2005-2008 Takahiro Hirofuchi
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #
 # README for usbip-utils
 #
 # Copyright (C) 2011 matt mooney <mfm@muteddisk.com>
 #               2005-2008 Takahiro Hirofuchi
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 [Requirements]
     - USB/IP device drivers
+<<<<<<< HEAD
 <<<<<<< HEAD
         Its source code is included under $(top)/drivers/.
 
@@ -24,6 +31,8 @@
     - libwrap0-dev
         tcp wrapper library
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	Found in the staging directory of the Linux kernel.
 
     - sysfsutils >= 2.0.0
@@ -31,6 +40,7 @@
 
     - libwrap0-dev
 	tcp wrapper library
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
     - gcc >= 4.0
@@ -233,6 +243,13 @@ Detach the imported device.
 [Contact]
     Mailing List: usbip-devel _at_ lists.sourceforge.net
 =======
+=======
+
+    - gcc >= 4.0
+
+    - libtool, automake >= 1.9, autoconf >= 2.5.0, pkg-config
+
+>>>>>>> refs/remotes/origin/master
 
 [Install]
     0. Generate configuration scripts.
@@ -268,7 +285,11 @@ Detach the imported device.
     client:# usbip list --remote <host>
 	- List exported USB devices on the <host>.
 
+<<<<<<< HEAD
     client:# usbip attach --host <host> --busid 1-2
+=======
+    client:# usbip attach --remote <host> --busid 1-2
+>>>>>>> refs/remotes/origin/master
 	- Connect the remote USB device.
 
     client:# usbip port
@@ -377,7 +398,11 @@ exportable on the host.
 
 Attach a remote USB device:
 
+<<<<<<< HEAD
     deux:# usbip attach --host 10.0.0.3 --busid 1-1
+=======
+    deux:# usbip attach --remote 10.0.0.3 --busid 1-1
+>>>>>>> refs/remotes/origin/master
     port 0 attached
 
 Show the devices attached to this client:
@@ -411,4 +436,7 @@ Detach the imported device:
 
 [Contact]
     Mailing List: linux-usb@vger.kernel.org
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

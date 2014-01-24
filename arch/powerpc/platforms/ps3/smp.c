@@ -58,6 +58,7 @@ static void ps3_smp_message_pass(int cpu, int msg)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ps3_smp_probe(void)
 {
 	return 2;
@@ -103,6 +104,8 @@ static void __init ps3_smp_setup_cpu(int cpu)
 
 	DBG(" <- %s:%d: (%d)\n", __func__, __LINE__, cpu);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init ps3_smp_probe(void)
 {
 	int cpu;
@@ -148,7 +151,10 @@ static int __init ps3_smp_probe(void)
 	}
 
 	return 2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void ps3_smp_cleanup_cpu(int cpu)
@@ -172,9 +178,12 @@ static struct smp_ops_t ps3_smp_ops = {
 	.message_pass	= ps3_smp_message_pass,
 	.kick_cpu	= smp_generic_kick_cpu,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.setup_cpu	= ps3_smp_setup_cpu,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 void smp_init_ps3(void)

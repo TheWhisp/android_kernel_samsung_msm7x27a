@@ -15,10 +15,14 @@ EXPORT_SYMBOL(__lshrdi3);
 EXPORT_SYMBOL(__muldi3);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_M68000) || defined(CONFIG_COLDFIRE)
 =======
 #if defined(CONFIG_CPU_HAS_NO_MULDIV64)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_CPU_HAS_NO_MULDIV64)
+>>>>>>> refs/remotes/origin/master
 /*
  * Simpler 68k and ColdFire parts also need a few other gcc functions.
  */

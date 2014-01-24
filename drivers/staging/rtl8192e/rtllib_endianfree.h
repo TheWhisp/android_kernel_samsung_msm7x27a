@@ -33,9 +33,15 @@
 #define ReadEF2Byte(_ptr)		EF2Byte(*((u16 *)(_ptr)))
 #define ReadEF4Byte(_ptr)		EF4Byte(*((u32 *)(_ptr)))
 
+<<<<<<< HEAD
 #define WriteEF1Byte(_ptr, _val)	(*((u8 *)(_ptr))) = EF1Byte(_val)
 #define WriteEF2Byte(_ptr, _val)	(*((u16 *)(_ptr))) = EF2Byte(_val)
 #define WriteEF4Byte(_ptr, _val)	(*((u32 *)(_ptr))) = EF4Byte(_val)
+=======
+#define WriteEF1Byte(_ptr, _val)	((*((u8 *)(_ptr))) = EF1Byte(_val))
+#define WriteEF2Byte(_ptr, _val)	((*((u16 *)(_ptr))) = EF2Byte(_val))
+#define WriteEF4Byte(_ptr, _val)	((*((u32 *)(_ptr))) = EF4Byte(_val))
+>>>>>>> refs/remotes/origin/master
 #if BYTE_ORDER == __MACHINE_LITTLE_ENDIAN
 #define H2N1BYTE(_val)	((u8)(_val))
 #define H2N2BYTE(_val)	(((((u16)(_val))&0x00ff)<<8)|\
@@ -84,6 +90,7 @@
 	  (~BIT_OFFSET_LEN_MASK_32(__BitOffset, __BitLen)) \
 	)
 
+<<<<<<< HEAD
 #define SET_BITS_TO_LE_4BYTE(__pStart, __BitOffset, __BitLen, __Value) \
 	*((u32 *)(__pStart)) = \
 	EF4Byte( \
@@ -93,6 +100,8 @@
 	);
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define BIT_LEN_MASK_16(__BitLen) \
 	(0xFFFF >> (16 - (__BitLen)))
 
@@ -109,6 +118,7 @@
 	  BIT_LEN_MASK_16(__BitLen) \
 	)
 
+<<<<<<< HEAD
 #define LE_BITS_CLEARED_TO_2BYTE(__pStart, __BitOffset, __BitLen) \
 	( \
 	  LE_P2BYTE_TO_HOST_2BYTE(__pStart) \
@@ -124,6 +134,8 @@
 		(__BitOffset)) \
 	);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define BIT_LEN_MASK_8(__BitLen) \
 	(0xFF >> (8 - (__BitLen)))
 
@@ -140,6 +152,7 @@
 	  BIT_LEN_MASK_8(__BitLen) \
 	)
 
+<<<<<<< HEAD
 #define LE_BITS_CLEARED_TO_1BYTE(__pStart, __BitOffset, __BitLen) \
 	( \
 	  LE_P1BYTE_TO_HOST_1BYTE(__pStart) \
@@ -154,6 +167,8 @@
 		(__BitOffset))						\
 	);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define	N_BYTE_ALIGMENT(__Value, __Aligment)			\
 	 ((__Aligment == 1) ? (__Value) : (((__Value + __Aligment - 1) / \
 	__Aligment) * __Aligment))

@@ -1,6 +1,7 @@
 #ifndef _LINUX_MSDOS_FS_H
 #define _LINUX_MSDOS_FS_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/magic.h>
 #include <asm/byteorder.h>
@@ -176,10 +177,17 @@ struct msdos_dir_slot {
 };
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/msdos_fs.h>
+
+>>>>>>> refs/remotes/origin/master
 /* media of boot sector */
 static inline int fat_valid_media(u8 media)
 {
 	return 0xf8 <= media || media == 0xf0;
 }
+<<<<<<< HEAD
 #endif /* !__KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !_LINUX_MSDOS_FS_H */

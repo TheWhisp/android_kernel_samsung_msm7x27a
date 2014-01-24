@@ -1,6 +1,11 @@
 /****************************************************************************
+<<<<<<< HEAD
  * Driver for Solarflare Solarstorm network controllers and boards
  * Copyright 2007-2010 Solarflare Communications Inc.
+=======
+ * Driver for Solarflare network controllers and boards
+ * Copyright 2007-2012 Solarflare Communications Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published
@@ -380,7 +385,11 @@ static ssize_t set_phy_flash_cfg(struct device *dev,
 		new_mode = PHY_MODE_SPECIAL;
 	if (!((old_mode ^ new_mode) & PHY_MODE_SPECIAL)) {
 		err = 0;
+<<<<<<< HEAD
 	} else if (efx->state != STATE_RUNNING || netif_running(efx->net_dev)) {
+=======
+	} else if (efx->state != STATE_READY || netif_running(efx->net_dev)) {
+>>>>>>> refs/remotes/origin/master
 		err = -EBUSY;
 	} else {
 		/* Reset the PHY, reconfigure the MAC and enable/disable

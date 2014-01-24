@@ -9,6 +9,7 @@
 #include <asm/ipi.h>
 #include <linux/cpumask.h>
 
+<<<<<<< HEAD
 /*
  * Need to use more than cpu 0, because we need more vectors
  * when MSI-X are used.
@@ -20,17 +21,23 @@ static const struct cpumask *x2apic_target_cpus(void)
 
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int x2apic_apic_id_valid(int apicid)
 {
 	return 1;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int x2apic_apic_id_registered(void)
 {
 	return 1;
 }
 
+<<<<<<< HEAD
 /*
  * For now each logical cpu is in its own vector allocation domain.
  */
@@ -40,6 +47,8 @@ static void x2apic_vector_allocation_domain(int cpu, struct cpumask *retmask)
 	cpumask_set_cpu(cpu, retmask);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 __x2apic_send_IPI_dest(unsigned int apicid, int vector, unsigned int dest)
 {

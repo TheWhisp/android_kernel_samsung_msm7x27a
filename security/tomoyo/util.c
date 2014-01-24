@@ -2,12 +2,16 @@
  * security/tomoyo/util.c
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Utility functions for TOMOYO.
  *
  * Copyright (C) 2005-2010  NTT DATA CORPORATION
 =======
  * Copyright (C) 2005-2011  NTT DATA CORPORATION
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2005-2011  NTT DATA CORPORATION
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/slab.h>
@@ -20,7 +24,10 @@ DEFINE_MUTEX(tomoyo_policy_lock);
 bool tomoyo_policy_loaded;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Mapping table from "enum tomoyo_mac_index" to
  * "enum tomoyo_mac_category_index".
@@ -191,7 +198,10 @@ const struct tomoyo_path_info *tomoyo_get_domainname
 	return NULL;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_parse_ulong - Parse an "unsigned long" value.
  *
@@ -199,19 +209,27 @@ const struct tomoyo_path_info *tomoyo_get_domainname
  * @str:    Pointer to string to parse.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Returns value type on success, 0 otherwise.
 =======
  * Returns one of values in "enum tomoyo_value_type".
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Returns one of values in "enum tomoyo_value_type".
+>>>>>>> refs/remotes/origin/master
  *
  * The @src is updated to point the first character after the value
  * on success.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u8 tomoyo_parse_ulong(unsigned long *result, char **str)
 =======
 u8 tomoyo_parse_ulong(unsigned long *result, char **str)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+u8 tomoyo_parse_ulong(unsigned long *result, char **str)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *cp = *str;
 	char *ep;
@@ -229,10 +247,14 @@ u8 tomoyo_parse_ulong(unsigned long *result, char **str)
 	*result = simple_strtoul(cp, &ep, base);
 	if (cp == ep)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
 =======
 		return TOMOYO_VALUE_TYPE_INVALID;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return TOMOYO_VALUE_TYPE_INVALID;
+>>>>>>> refs/remotes/origin/master
 	*str = ep;
 	switch (base) {
 	case 16:
@@ -271,6 +293,7 @@ void tomoyo_print_ulong(char *buffer, const int buffer_len,
  * tomoyo_parse_name_union - Parse a tomoyo_name_union.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @filename: Name or name group.
  * @ptr:      Pointer to "struct tomoyo_name_union".
  *
@@ -289,6 +312,8 @@ bool tomoyo_parse_name_union(const char *filename,
 	ptr->filename = tomoyo_get_name(filename);
 	ptr->is_group = false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @param: Pointer to "struct tomoyo_acl_param".
  * @ptr:   Pointer to "struct tomoyo_name_union".
  *
@@ -307,13 +332,17 @@ bool tomoyo_parse_name_union(struct tomoyo_acl_param *param,
 	if (!tomoyo_correct_word(filename))
 		return false;
 	ptr->filename = tomoyo_get_name(filename);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ptr->filename != NULL;
 }
 
 /**
  * tomoyo_parse_number_union - Parse a tomoyo_number_union.
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @data: Number or number range or number group.
  * @ptr:  Pointer to "struct tomoyo_number_union".
@@ -341,6 +370,8 @@ bool tomoyo_parse_number_union(char *data, struct tomoyo_number_union *num)
 		num->values[1] = v;
 		num->max_type = type;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @param: Pointer to "struct tomoyo_acl_param".
  * @ptr:   Pointer to "struct tomoyo_number_union".
  *
@@ -367,23 +398,32 @@ bool tomoyo_parse_number_union(struct tomoyo_acl_param *param,
 	if (!*data) {
 		ptr->values[1] = v;
 		ptr->value_type[1] = type;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return true;
 	}
 	if (*data++ != '-')
 		return false;
 	type = tomoyo_parse_ulong(&v, &data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!type || *data)
 		return false;
 	num->values[1] = v;
 	num->max_type = type;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (type == TOMOYO_VALUE_TYPE_INVALID || *data || ptr->values[0] > v)
 		return false;
 	ptr->values[1] = v;
 	ptr->value_type[1] = type;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return true;
 }
 
@@ -432,7 +472,10 @@ static inline u8 tomoyo_make_byte(const u8 c1, const u8 c2, const u8 c3)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * tomoyo_valid - Check whether the character is a valid char.
  *
  * @c: The character to check.
@@ -457,7 +500,10 @@ static inline bool tomoyo_invalid(const unsigned char c)
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * tomoyo_str_starts - Check whether the given string starts with the given keyword.
  *
  * @src:  Pointer to pointer to the string.
@@ -512,6 +558,7 @@ void tomoyo_normalize_line(unsigned char *buffer)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * tomoyo_tokenize - Tokenize string.
  *
  * @buffer: The line to tokenize.
@@ -547,6 +594,11 @@ bool tomoyo_tokenize(char *buffer, char *w[], size_t size)
  *
  * @string: The string to check. Maybe non-'\0'-terminated.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * tomoyo_correct_word2 - Validate a string.
+ *
+ * @string: The string to check. Maybe non-'\0'-terminated.
+>>>>>>> refs/remotes/origin/master
  * @len:    Length of @string.
  *
  * Check whether the given string follows the naming rules.
@@ -605,21 +657,30 @@ static bool tomoyo_correct_word2(const char *string, size_t len)
 					break;
 				c = tomoyo_make_byte(c, d, e);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (tomoyo_invalid(c))
 					continue; /* pattern is not \000 */
 =======
 				if (c <= ' ' || c >= 127)
 					continue;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (c <= ' ' || c >= 127)
+					continue;
+>>>>>>> refs/remotes/origin/master
 			}
 			goto out;
 		} else if (in_repetition && c == '/') {
 			goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else if (tomoyo_invalid(c)) {
 =======
 		} else if (c <= ' ' || c >= 127) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else if (c <= ' ' || c >= 127) {
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 	}
@@ -666,6 +727,7 @@ bool tomoyo_correct_path(const char *filename)
 bool tomoyo_correct_domain(const unsigned char *domainname)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!domainname || strncmp(domainname, TOMOYO_ROOT_NAME,
 				   TOMOYO_ROOT_NAME_LEN))
 		goto out;
@@ -675,18 +737,24 @@ bool tomoyo_correct_domain(const unsigned char *domainname)
 	if (*domainname++ != ' ')
 		goto out;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!domainname || !tomoyo_domain_def(domainname))
 		return false;
 	domainname = strchr(domainname, ' ');
 	if (!domainname++)
 		return true;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	while (1) {
 		const unsigned char *cp = strchr(domainname, ' ');
 		if (!cp)
 			break;
 		if (*domainname != '/' ||
 		    !tomoyo_correct_word2(domainname, cp - domainname))
+<<<<<<< HEAD
 <<<<<<< HEAD
 			goto out;
 		domainname = cp + 1;
@@ -695,11 +763,16 @@ bool tomoyo_correct_domain(const unsigned char *domainname)
  out:
 	return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			return false;
 		domainname = cp + 1;
 	}
 	return tomoyo_correct_path(domainname);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -712,8 +785,11 @@ bool tomoyo_correct_domain(const unsigned char *domainname)
 bool tomoyo_domain_def(const unsigned char *buffer)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return !strncmp(buffer, TOMOYO_ROOT_NAME, TOMOYO_ROOT_NAME_LEN);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	const unsigned char *cp;
 	int len;
 	if (*buffer != '<')
@@ -727,7 +803,10 @@ bool tomoyo_domain_def(const unsigned char *buffer)
 	    !tomoyo_correct_word2(buffer + 1, len - 2))
 		return false;
 	return true;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1094,18 +1173,26 @@ bool tomoyo_path_matches_pattern(const struct tomoyo_path_info *filename,
 const char *tomoyo_get_exe(void)
 {
 	struct mm_struct *mm = current->mm;
+<<<<<<< HEAD
 	struct vm_area_struct *vma;
+=======
+>>>>>>> refs/remotes/origin/master
 	const char *cp = NULL;
 
 	if (!mm)
 		return NULL;
 	down_read(&mm->mmap_sem);
+<<<<<<< HEAD
 	for (vma = mm->mmap; vma; vma = vma->vm_next) {
 		if ((vma->vm_flags & VM_EXECUTABLE) && vma->vm_file) {
 			cp = tomoyo_realpath_from_path(&vma->vm_file->f_path);
 			break;
 		}
 	}
+=======
+	if (mm->exe_file)
+		cp = tomoyo_realpath_from_path(&mm->exe_file->f_path);
+>>>>>>> refs/remotes/origin/master
 	up_read(&mm->mmap_sem);
 	return cp;
 }
@@ -1114,14 +1201,19 @@ const char *tomoyo_get_exe(void)
  * tomoyo_get_mode - Get MAC mode.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @ns:      Pointer to "struct tomoyo_policy_namespace".
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @ns:      Pointer to "struct tomoyo_policy_namespace".
+>>>>>>> refs/remotes/origin/master
  * @profile: Profile number.
  * @index:   Index number of functionality.
  *
  * Returns mode.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 int tomoyo_get_mode(const u8 profile, const u8 index)
 {
@@ -1135,6 +1227,8 @@ int tomoyo_get_mode(const u8 profile, const u8 index)
 	if (mode == TOMOYO_CONFIG_USE_DEFAULT)
 		mode = tomoyo_profile(profile)->default_config;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int tomoyo_get_mode(const struct tomoyo_policy_namespace *ns, const u8 profile,
 		    const u8 index)
 {
@@ -1150,7 +1244,10 @@ int tomoyo_get_mode(const struct tomoyo_policy_namespace *ns, const u8 profile,
 				 + TOMOYO_MAX_MAC_INDEX];
 	if (mode == TOMOYO_CONFIG_USE_DEFAULT)
 		mode = p->default_config;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return mode & 3;
 }
 
@@ -1175,14 +1272,19 @@ int tomoyo_init_request_info(struct tomoyo_request_info *r,
 	r->profile = profile;
 	r->type = index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r->mode = tomoyo_get_mode(profile, index);
 =======
 	r->mode = tomoyo_get_mode(domain->ns, profile, index);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	r->mode = tomoyo_get_mode(domain->ns, profile, index);
+>>>>>>> refs/remotes/origin/master
 	return r->mode;
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * tomoyo_last_word - Get last component of a line.
  *
@@ -1240,6 +1342,8 @@ void tomoyo_warn_log(struct tomoyo_request_info *r, const char *fmt, ...)
 /**
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * tomoyo_domain_quota_is_ok - Check for domain's quota.
  *
  * @r: Pointer to "struct tomoyo_request_info".
@@ -1260,6 +1364,7 @@ bool tomoyo_domain_quota_is_ok(struct tomoyo_request_info *r)
 		return true;
 	list_for_each_entry_rcu(ptr, &domain->acl_info_list, list) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ptr->is_deleted)
 			continue;
 		switch (ptr->type) {
@@ -1274,6 +1379,8 @@ bool tomoyo_domain_quota_is_ok(struct tomoyo_request_info *r)
 			if (perm & (1 << TOMOYO_TYPE_READ_WRITE))
 				count -= 2;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		u16 perm;
 		u8 i;
 		if (ptr->is_deleted)
@@ -1282,31 +1389,41 @@ bool tomoyo_domain_quota_is_ok(struct tomoyo_request_info *r)
 		case TOMOYO_TYPE_PATH_ACL:
 			perm = container_of(ptr, struct tomoyo_path_acl, head)
 				->perm;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case TOMOYO_TYPE_PATH2_ACL:
 			perm = container_of(ptr, struct tomoyo_path2_acl, head)
 				->perm;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			for (i = 0; i < TOMOYO_MAX_PATH2_OPERATION; i++)
 				if (perm & (1 << i))
 					count++;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case TOMOYO_TYPE_PATH_NUMBER_ACL:
 			perm = container_of(ptr, struct tomoyo_path_number_acl,
 					    head)->perm;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			for (i = 0; i < TOMOYO_MAX_PATH_NUMBER_OPERATION; i++)
 				if (perm & (1 << i))
 					count++;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case TOMOYO_TYPE_MKDEV_ACL:
 			perm = container_of(ptr, struct tomoyo_mkdev_acl,
 					    head)->perm;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			for (i = 0; i < TOMOYO_MAX_MKDEV_OPERATION; i++)
 				if (perm & (1 << i))
@@ -1324,6 +1441,8 @@ bool tomoyo_domain_quota_is_ok(struct tomoyo_request_info *r)
 		printk(KERN_WARNING "TOMOYO-WARNING: "
 		       "Domain '%s' has so many ACLs to hold. "
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case TOMOYO_TYPE_INET_ACL:
 			perm = container_of(ptr, struct tomoyo_inet_acl,
@@ -1352,7 +1471,10 @@ bool tomoyo_domain_quota_is_ok(struct tomoyo_request_info *r)
 		tomoyo_write_log(r, "%s", tomoyo_dif[TOMOYO_DIF_QUOTA_WARNED]);
 		printk(KERN_WARNING "WARNING: "
 		       "Domain '%s' has too many ACLs to hold. "
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		       "Stopped learning mode.\n", domain->domainname->name);
 	}
 	return false;

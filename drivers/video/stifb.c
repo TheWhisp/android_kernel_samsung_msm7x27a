@@ -1101,6 +1101,10 @@ static int __init stifb_init_fb(struct sti_struct *sti, int bpp_pref)
 	var = &info->var;
 
 	fb->sti = sti;
+<<<<<<< HEAD
+=======
+	dev_name = sti->sti_data->inq_outptr.dev_name;
+>>>>>>> refs/remotes/origin/master
 	/* store upper 32bits of the graphics id */
 	fb->id = fb->sti->graphics_id[0];
 
@@ -1114,11 +1118,19 @@ static int __init stifb_init_fb(struct sti_struct *sti, int bpp_pref)
 		  Since this driver only supports standard mode, we check
 		  if the device name contains the string "DX" and tell the
 		  user how to reconfigure the card. */
+<<<<<<< HEAD
 		if (strstr(sti->outptr.dev_name, "DX")) {
 		   printk(KERN_WARNING
 "WARNING: stifb framebuffer driver does not support '%s' in double-buffer mode.\n"
 "WARNING: Please disable the double-buffer mode in IPL menu (the PARISC-BIOS).\n",
 			sti->outptr.dev_name);
+=======
+		if (strstr(dev_name, "DX")) {
+		   printk(KERN_WARNING
+"WARNING: stifb framebuffer driver does not support '%s' in double-buffer mode.\n"
+"WARNING: Please disable the double-buffer mode in IPL menu (the PARISC-BIOS).\n",
+			dev_name);
+>>>>>>> refs/remotes/origin/master
 		   goto out_err0;
 		}
 		/* fall though */
@@ -1130,7 +1142,11 @@ static int __init stifb_init_fb(struct sti_struct *sti, int bpp_pref)
 		break;
 	default:
 		printk(KERN_WARNING "stifb: '%s' (id: 0x%08x) not supported.\n",
+<<<<<<< HEAD
 			sti->outptr.dev_name, fb->id);
+=======
+			dev_name, fb->id);
+>>>>>>> refs/remotes/origin/master
 		goto out_err0;
 	}
 	
@@ -1154,7 +1170,10 @@ static int __init stifb_init_fb(struct sti_struct *sti, int bpp_pref)
 		fb->id = S9000_ID_A1659A;
 		break;
 	case S9000_ID_TIMBER:	/* HP9000/710 Any (may be a grayscale device) */
+<<<<<<< HEAD
 		dev_name = fb->sti->outptr.dev_name;
+=======
+>>>>>>> refs/remotes/origin/master
 		if (strstr(dev_name, "GRAYSCALE") || 
 		    strstr(dev_name, "Grayscale") ||
 		    strstr(dev_name, "grayscale"))
@@ -1283,14 +1302,22 @@ static int __init stifb_init_fb(struct sti_struct *sti, int bpp_pref)
 
 	sti->info = info; /* save for unregister_framebuffer() */
 
+<<<<<<< HEAD
 	printk(KERN_INFO 
 	    "fb%d: %s %dx%d-%d frame buffer device, %s, id: %04x, mmio: 0x%04lx\n",
 		fb->info.node, 
+=======
+	fb_info(&fb->info, "%s %dx%d-%d frame buffer device, %s, id: %04x, mmio: 0x%04lx\n",
+>>>>>>> refs/remotes/origin/master
 		fix->id,
 		var->xres, 
 		var->yres,
 		var->bits_per_pixel,
+<<<<<<< HEAD
 		sti->outptr.dev_name,
+=======
+		dev_name,
+>>>>>>> refs/remotes/origin/master
 		fb->id, 
 		fix->mmio_start);
 

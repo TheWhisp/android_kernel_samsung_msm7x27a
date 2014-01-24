@@ -28,6 +28,7 @@
 #include <linux/omapfb.h>
 #include <linux/vmalloc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -35,6 +36,13 @@
 #include <video/omapdss.h>
 #include <plat/vrfb.h>
 #include <plat/vram.h>
+=======
+#include <linux/export.h>
+#include <linux/sizes.h>
+
+#include <video/omapdss.h>
+#include <video/omapvrfb.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "omapfb.h"
 
@@ -73,7 +81,11 @@ static int omapfb_setup_plane(struct fb_info *fbi, struct omapfb_plane_info *pi)
 
 	DBG("omapfb_setup_plane\n");
 
+<<<<<<< HEAD
 	if (ofbi->num_overlays != 1) {
+=======
+	if (ofbi->num_overlays == 0) {
+>>>>>>> refs/remotes/origin/master
 		r = -EINVAL;
 		goto out;
 	}
@@ -115,10 +127,13 @@ static int omapfb_setup_plane(struct fb_info *fbi, struct omapfb_plane_info *pi)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pi->enabled) {
 		struct omap_overlay_info info;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!pi->enabled) {
 		r = ovl->disable(ovl);
 		if (r)
@@ -126,11 +141,15 @@ static int omapfb_setup_plane(struct fb_info *fbi, struct omapfb_plane_info *pi)
 	}
 
 	if (pi->enabled) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		r = omapfb_setup_overlay(fbi, ovl, pi->pos_x, pi->pos_y,
 			pi->out_width, pi->out_height);
 		if (r)
 			goto undo;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 		ovl->get_overlay_info(ovl, &info);
@@ -143,15 +162,20 @@ static int omapfb_setup_plane(struct fb_info *fbi, struct omapfb_plane_info *pi)
 		}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		struct omap_overlay_info info;
 
 		ovl->get_overlay_info(ovl, &info);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		info.enabled = pi->enabled;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		info.pos_x = pi->pos_x;
 		info.pos_y = pi->pos_y;
 		info.out_width = pi->out_width;
@@ -166,14 +190,20 @@ static int omapfb_setup_plane(struct fb_info *fbi, struct omapfb_plane_info *pi)
 		ovl->manager->apply(ovl->manager);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pi->enabled) {
 		r = ovl->enable(ovl);
 		if (r)
 			goto undo;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Release the locks in a specific order to keep lockdep happy */
 	if (old_rg->id > new_rg->id) {
 		omapfb_put_mem_region(old_rg);
@@ -213,6 +243,7 @@ static int omapfb_query_plane(struct fb_info *fbi, struct omapfb_plane_info *pi)
 {
 	struct omapfb_info *ofbi = FB2OFB(fbi);
 
+<<<<<<< HEAD
 	if (ofbi->num_overlays != 1) {
 		memset(pi, 0, sizeof(*pi));
 	} else {
@@ -232,6 +263,12 @@ static int omapfb_query_plane(struct fb_info *fbi, struct omapfb_plane_info *pi)
 		pi->out_width = ovli->out_width;
 		pi->out_height = ovli->out_height;
 =======
+=======
+	if (ofbi->num_overlays == 0) {
+		memset(pi, 0, sizeof(*pi));
+	} else {
+		struct omap_overlay *ovl;
+>>>>>>> refs/remotes/origin/master
 		struct omap_overlay_info ovli;
 
 		ovl = ofbi->overlays[0];
@@ -245,7 +282,10 @@ static int omapfb_query_plane(struct fb_info *fbi, struct omapfb_plane_info *pi)
 		pi->mem_idx = get_mem_idx(ofbi);
 		pi->out_width = ovli.out_width;
 		pi->out_height = ovli.out_height;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -255,24 +295,44 @@ static int omapfb_setup_mem(struct fb_info *fbi, struct omapfb_mem_info *mi)
 {
 	struct omapfb_info *ofbi = FB2OFB(fbi);
 	struct omapfb2_device *fbdev = ofbi->fbdev;
+<<<<<<< HEAD
+=======
+	struct omap_dss_device *display = fb2display(fbi);
+>>>>>>> refs/remotes/origin/master
 	struct omapfb2_mem_region *rg;
 	int r = 0, i;
 	size_t size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mi->type > OMAPFB_MEMTYPE_MAX)
 =======
 	if (mi->type != OMAPFB_MEMTYPE_SDRAM)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mi->type != OMAPFB_MEMTYPE_SDRAM)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	size = PAGE_ALIGN(mi->size);
 
+<<<<<<< HEAD
+=======
+	if (display && display->driver->sync)
+		display->driver->sync(display);
+
+>>>>>>> refs/remotes/origin/master
 	rg = ofbi->region;
 
 	down_write_nested(&rg->lock, rg->id);
 	atomic_inc(&rg->lock_count);
 
+<<<<<<< HEAD
+=======
+	if (rg->size == size && rg->type == mi->type)
+		goto out;
+
+>>>>>>> refs/remotes/origin/master
 	if (atomic_read(&rg->map_count)) {
 		r = -EBUSY;
 		goto out;
@@ -287,24 +347,37 @@ static int omapfb_setup_mem(struct fb_info *fbi, struct omapfb_mem_info *mi)
 
 		for (j = 0; j < ofbi2->num_overlays; j++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (ofbi2->overlays[j]->info.enabled) {
 =======
 			struct omap_overlay *ovl;
 			ovl = ofbi2->overlays[j];
 			if (ovl->is_enabled(ovl)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			struct omap_overlay *ovl;
+			ovl = ofbi2->overlays[j];
+			if (ovl->is_enabled(ovl)) {
+>>>>>>> refs/remotes/origin/master
 				r = -EBUSY;
 				goto out;
 			}
 		}
 	}
 
+<<<<<<< HEAD
 	if (rg->size != size || rg->type != mi->type) {
 		r = omapfb_realloc_fbmem(fbi, size, mi->type);
 		if (r) {
 			dev_err(fbdev->dev, "realloc fbmem failed\n");
 			goto out;
 		}
+=======
+	r = omapfb_realloc_fbmem(fbi, size, mi->type);
+	if (r) {
+		dev_err(fbdev->dev, "realloc fbmem failed\n");
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 
  out:
@@ -330,7 +403,11 @@ static int omapfb_query_mem(struct fb_info *fbi, struct omapfb_mem_info *mi)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int omapfb_update_window_nolock(struct fb_info *fbi,
+=======
+static int omapfb_update_window(struct fb_info *fbi,
+>>>>>>> refs/remotes/origin/master
 		u32 x, u32 y, u32 w, u32 h)
 {
 	struct omap_dss_device *display = fb2display(fbi);
@@ -350,6 +427,7 @@ static int omapfb_update_window_nolock(struct fb_info *fbi,
 	return display->driver->update(display, x, y, w, h);
 }
 
+<<<<<<< HEAD
 /* This function is exported for SGX driver use */
 int omapfb_update_window(struct fb_info *fbi,
 		u32 x, u32 y, u32 w, u32 h)
@@ -401,6 +479,8 @@ static int omapfb_set_update_mode(struct fb_info *fbi,
 
 	r = display->driver->set_update_mode(display, um);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int omapfb_set_update_mode(struct fb_info *fbi,
 				   enum omapfb_update_mode mode)
 {
@@ -440,11 +520,15 @@ int omapfb_set_update_mode(struct fb_info *fbi,
 	}
 
 	omapfb_unlock(fbdev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return r;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int omapfb_get_update_mode(struct fb_info *fbi,
 		enum omapfb_update_mode *mode)
@@ -452,6 +536,8 @@ static int omapfb_get_update_mode(struct fb_info *fbi,
 	struct omap_dss_device *display = fb2display(fbi);
 	enum omap_dss_update_mode m;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int omapfb_get_update_mode(struct fb_info *fbi,
 		enum omapfb_update_mode *mode)
 {
@@ -459,11 +545,15 @@ int omapfb_get_update_mode(struct fb_info *fbi,
 	struct omapfb_info *ofbi = FB2OFB(fbi);
 	struct omapfb2_device *fbdev = ofbi->fbdev;
 	struct omapfb_display_data *d;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!display)
 		return -EINVAL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!display->driver->get_update_mode) {
 		*mode = OMAPFB_AUTO_UPDATE;
@@ -486,6 +576,8 @@ int omapfb_get_update_mode(struct fb_info *fbi,
 		BUG();
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	omapfb_lock(fbdev);
 
 	d = get_display_data(fbdev, display);
@@ -493,7 +585,10 @@ int omapfb_get_update_mode(struct fb_info *fbi,
 	*mode = d->update_mode;
 
 	omapfb_unlock(fbdev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -712,6 +807,10 @@ int omapfb_ioctl(struct fb_info *fbi, unsigned int cmd, unsigned long arg)
 	struct omapfb_info *ofbi = FB2OFB(fbi);
 	struct omapfb2_device *fbdev = ofbi->fbdev;
 	struct omap_dss_device *display = fb2display(fbi);
+<<<<<<< HEAD
+=======
+	struct omap_overlay_manager *mgr;
+>>>>>>> refs/remotes/origin/master
 
 	union {
 		struct omapfb_update_window_old	uwnd_o;
@@ -758,7 +857,11 @@ int omapfb_ioctl(struct fb_info *fbi, unsigned int cmd, unsigned long arg)
 			break;
 		}
 
+<<<<<<< HEAD
 		r = omapfb_update_window_nolock(fbi, p.uwnd_o.x, p.uwnd_o.y,
+=======
+		r = omapfb_update_window(fbi, p.uwnd_o.x, p.uwnd_o.y,
+>>>>>>> refs/remotes/origin/master
 				p.uwnd_o.width, p.uwnd_o.height);
 		break;
 
@@ -775,7 +878,11 @@ int omapfb_ioctl(struct fb_info *fbi, unsigned int cmd, unsigned long arg)
 			break;
 		}
 
+<<<<<<< HEAD
 		r = omapfb_update_window_nolock(fbi, p.uwnd.x, p.uwnd.y,
+=======
+		r = omapfb_update_window(fbi, p.uwnd.x, p.uwnd.y,
+>>>>>>> refs/remotes/origin/master
 				p.uwnd.width, p.uwnd.height);
 		break;
 
@@ -899,12 +1006,26 @@ int omapfb_ioctl(struct fb_info *fbi, unsigned int cmd, unsigned long arg)
 
 	case OMAPFB_WAITFORVSYNC:
 		DBG("ioctl WAITFORVSYNC\n");
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		if (!display) {
 			r = -EINVAL;
 			break;
 		}
 
+<<<<<<< HEAD
 		r = display->manager->wait_for_vsync(display->manager);
+=======
+		mgr = omapdss_find_mgr_from_display(display);
+		if (!mgr) {
+			r = -EINVAL;
+			break;
+		}
+
+		r = mgr->wait_for_vsync(mgr);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case OMAPFB_WAITFORGO:
@@ -963,6 +1084,7 @@ int omapfb_ioctl(struct fb_info *fbi, unsigned int cmd, unsigned long arg)
 		break;
 
 	case OMAPFB_GET_VRAM_INFO: {
+<<<<<<< HEAD
 		unsigned long vram, free, largest;
 
 		DBG("ioctl GET_VRAM_INFO\n");
@@ -971,6 +1093,17 @@ int omapfb_ioctl(struct fb_info *fbi, unsigned int cmd, unsigned long arg)
 		p.vram_info.total = vram;
 		p.vram_info.free = free;
 		p.vram_info.largest_free_block = largest;
+=======
+		DBG("ioctl GET_VRAM_INFO\n");
+
+		/*
+		 * We don't have the ability to get this vram info anymore.
+		 * Fill in something that should keep the applications working.
+		 */
+		p.vram_info.total = SZ_1M * 64;
+		p.vram_info.free = SZ_1M * 64;
+		p.vram_info.largest_free_block = SZ_1M * 64;
+>>>>>>> refs/remotes/origin/master
 
 		if (copy_to_user((void __user *)arg, &p.vram_info,
 					sizeof(p.vram_info)))

@@ -17,6 +17,13 @@
  * Authors: Alexander Graf <agraf@suse.de>
  */
 
+<<<<<<< HEAD
+=======
+#ifdef __LITTLE_ENDIAN__
+#error Need to fix SLB shadow accesses in little endian mode
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #define SHADOW_SLB_ESID(num)	(SLBSHADOW_SAVEAREA + (num * 0x10))
 #define SHADOW_SLB_VSID(num)	(SLBSHADOW_SAVEAREA + (num * 0x10) + 0x8)
 #define UNBOLT_SLB_ENTRY(num) \
@@ -54,10 +61,14 @@ slb_exit_skip_ ## num:
 	 * R2 = host R2
 	 * R3 = shadow vcpu
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * all other volatile GPRS = free
 =======
 	 * all other volatile GPRS = free except R4, R6
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * all other volatile GPRS = free except R4, R6
+>>>>>>> refs/remotes/origin/master
 	 * SVCPU[CR]  = guest CR
 	 * SVCPU[XER] = guest XER
 	 * SVCPU[CTR] = guest CTR
@@ -70,10 +81,13 @@ slb_exit_skip_ ## num:
 
 	ld	r12, PACA_SLBSHADOWPTR(r13)
 
+<<<<<<< HEAD
 	/* Save off the first entry so we can slbie it later */
 	ld	r10, SHADOW_SLB_ESID(0)(r12)
 	ld	r11, SHADOW_SLB_VSID(0)(r12)
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Remove bolted entries */
 	UNBOLT_SLB_ENTRY(0)
 	UNBOLT_SLB_ENTRY(1)
@@ -85,6 +99,7 @@ slb_exit_skip_ ## num:
 
 	/* Flush SLB */
 
+<<<<<<< HEAD
 	slbia
 
 	/* r0 = esid & ESID_MASK */
@@ -96,6 +111,12 @@ slb_exit_skip_ ## num:
 
 	isync
 
+=======
+	li	r10, 0
+	slbmte	r10, r10
+	slbia
+
+>>>>>>> refs/remotes/origin/master
 	/* Fill SLB with our shadow */
 
 	lbz	r12, SVCPU_SLB_MAX(r3)

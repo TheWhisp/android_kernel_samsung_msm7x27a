@@ -20,12 +20,15 @@
 #include <asm/paca.h>
 #include <asm/cputable.h>
 #include <asm/prom.h>
+<<<<<<< HEAD
 #include <asm/abs_addr.h>
 <<<<<<< HEAD
 #include <asm/firmware.h>
 #include <asm/iseries/hv_call.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct stab_entry {
 	unsigned long esid_data;
@@ -262,7 +265,11 @@ void __init stabs_alloc(void)
 		memset((void *)newstab, 0, HW_PAGE_SIZE);
 
 		paca[cpu].stab_addr = newstab;
+<<<<<<< HEAD
 		paca[cpu].stab_real = virt_to_abs(newstab);
+=======
+		paca[cpu].stab_real = __pa(newstab);
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_INFO "Segment table for CPU %d at 0x%llx "
 		       "virtual, 0x%llx absolute\n",
 		       cpu, paca[cpu].stab_addr, paca[cpu].stab_real);
@@ -289,6 +296,7 @@ void stab_initialize(unsigned long stab)
 	stabreal = get_paca()->stab_real | 0x1ul;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ISERIES
 	if (firmware_has_feature(FW_FEATURE_ISERIES)) {
 		HvCall1(HvCallBaseSetASR, stabreal);
@@ -298,5 +306,7 @@ void stab_initialize(unsigned long stab)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mtspr(SPRN_ASR, stabreal);
 }

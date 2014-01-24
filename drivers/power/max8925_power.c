@@ -12,6 +12,10 @@
 #include <linux/module.h>
 #include <linux/err.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/i2c.h>
 #include <linux/interrupt.h>
 #include <linux/platform_device.h>
@@ -79,10 +83,15 @@ struct max8925_power_info {
 	unsigned		topoff_threshold:2;
 	unsigned		fast_charge:3;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned		no_temp_support:1;
 	unsigned		no_insert_detect:1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned		no_temp_support:1;
+	unsigned		no_insert_detect:1;
+>>>>>>> refs/remotes/origin/master
 
 	int (*set_charger) (int);
 };
@@ -122,6 +131,7 @@ static irqreturn_t max8925_charger_handler(int irq, void *data)
 		info->ac_online = 0;
 		__set_charger(info, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(chip->dev, "Adapter is removal\n");
 		break;
 	case MAX8925_IRQ_VCHG_USB_R:
@@ -136,6 +146,9 @@ static irqreturn_t max8925_charger_handler(int irq, void *data)
 =======
 		dev_dbg(chip->dev, "Adapter removed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_dbg(chip->dev, "Adapter removed\n");
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MAX8925_IRQ_VCHG_THM_OK_F:
 		/* Battery is not ready yet */
@@ -178,13 +191,18 @@ static int start_measure(struct max8925_power_info *info, int type)
 {
 	unsigned char buf[2] = {0, 0};
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int meas_cmd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int meas_cmd;
+>>>>>>> refs/remotes/origin/master
 	int meas_reg = 0, ret;
 
 	switch (type) {
 	case MEASURE_VCHG:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		meas_reg = MAX8925_ADC_VCHG;
 		break;
@@ -196,6 +214,8 @@ static int start_measure(struct max8925_power_info *info, int type)
 		break;
 	case MEASURE_ISNS:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		meas_cmd = MAX8925_CMD_VCHG;
 		meas_reg = MAX8925_ADC_VCHG;
 		break;
@@ -209,13 +229,17 @@ static int start_measure(struct max8925_power_info *info, int type)
 		break;
 	case MEASURE_ISNS:
 		meas_cmd = MAX8925_CMD_ISNS;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		meas_reg = MAX8925_ADC_ISNS;
 		break;
 	default:
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	max8925_bulk_read(info->adc, meas_reg, 2, buf);
 	ret = (buf[0] << 4) | (buf[1] >> 4);
@@ -224,6 +248,11 @@ static int start_measure(struct max8925_power_info *info, int type)
 	max8925_bulk_read(info->adc, meas_reg, 2, buf);
 	ret = ((buf[0]<<8) | buf[1]) >> 4;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	max8925_reg_write(info->adc, meas_cmd, 0);
+	max8925_bulk_read(info->adc, meas_reg, 2, buf);
+	ret = ((buf[0]<<8) | buf[1]) >> 4;
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -244,10 +273,14 @@ static int max8925_ac_get_prop(struct power_supply *psy,
 			ret = start_measure(info, MEASURE_VCHG);
 			if (ret >= 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				val->intval = ret << 1;	/* unit is mV */
 =======
 				val->intval = ret * 2000;	/* unit is uV */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				val->intval = ret * 2000;	/* unit is uV */
+>>>>>>> refs/remotes/origin/master
 				goto out;
 			}
 		}
@@ -282,10 +315,14 @@ static int max8925_usb_get_prop(struct power_supply *psy,
 			ret = start_measure(info, MEASURE_VCHG);
 			if (ret >= 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				val->intval = ret << 1;	/* unit is mV */
 =======
 				val->intval = ret * 2000;	/* unit is uV */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				val->intval = ret * 2000;	/* unit is uV */
+>>>>>>> refs/remotes/origin/master
 				goto out;
 			}
 		}
@@ -310,9 +347,12 @@ static int max8925_bat_get_prop(struct power_supply *psy,
 {
 	struct max8925_power_info *info = dev_get_drvdata(psy->dev->parent);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long long int tmp = 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	switch (psp) {
@@ -324,10 +364,14 @@ static int max8925_bat_get_prop(struct power_supply *psy,
 			ret = start_measure(info, MEASURE_VMBATT);
 			if (ret >= 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				val->intval = ret << 1;	/* unit is mV */
 =======
 				val->intval = ret * 2000;	/* unit is uV */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				val->intval = ret * 2000;	/* unit is uV */
+>>>>>>> refs/remotes/origin/master
 				ret = 0;
 				break;
 			}
@@ -339,12 +383,17 @@ static int max8925_bat_get_prop(struct power_supply *psy,
 			ret = start_measure(info, MEASURE_ISNS);
 			if (ret >= 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				tmp = (long long int)ret * 6250 / 4096 - 3125;
 				ret = (int)tmp;
 =======
 				/* assume r_sns is 0.02 */
 				ret = ((ret * 6250) - 3125) /* uA */;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				/* assume r_sns is 0.02 */
+				ret = ((ret * 6250) - 3125) /* uA */;
+>>>>>>> refs/remotes/origin/master
 				val->intval = 0;
 				if (ret > 0)
 					val->intval = ret; /* unit is mA */
@@ -414,12 +463,17 @@ do {									\
 			_irq, ret);					\
 } while (0)
 
+<<<<<<< HEAD
 static __devinit int max8925_init_charger(struct max8925_chip *chip,
+=======
+static int max8925_init_charger(struct max8925_chip *chip,
+>>>>>>> refs/remotes/origin/master
 					  struct max8925_power_info *info)
 {
 	int ret;
 
 	REQUEST_IRQ(MAX8925_IRQ_VCHG_DC_OVP, "ac-ovp");
+<<<<<<< HEAD
 <<<<<<< HEAD
 	REQUEST_IRQ(MAX8925_IRQ_VCHG_DC_F, "ac-remove");
 	REQUEST_IRQ(MAX8925_IRQ_VCHG_DC_R, "ac-insert");
@@ -429,6 +483,8 @@ static __devinit int max8925_init_charger(struct max8925_chip *chip,
 	REQUEST_IRQ(MAX8925_IRQ_VCHG_THM_OK_R, "batt-temp-in-range");
 	REQUEST_IRQ(MAX8925_IRQ_VCHG_THM_OK_F, "batt-temp-out-range");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!info->no_insert_detect) {
 		REQUEST_IRQ(MAX8925_IRQ_VCHG_DC_F, "ac-remove");
 		REQUEST_IRQ(MAX8925_IRQ_VCHG_DC_R, "ac-insert");
@@ -437,7 +493,10 @@ static __devinit int max8925_init_charger(struct max8925_chip *chip,
 		REQUEST_IRQ(MAX8925_IRQ_VCHG_THM_OK_R, "batt-temp-in-range");
 		REQUEST_IRQ(MAX8925_IRQ_VCHG_THM_OK_F, "batt-temp-out-range");
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	REQUEST_IRQ(MAX8925_IRQ_VCHG_SYSLOW_F, "vsys-high");
 	REQUEST_IRQ(MAX8925_IRQ_VCHG_SYSLOW_R, "vsys-low");
 	REQUEST_IRQ(MAX8925_IRQ_VCHG_RST, "charger-reset");
@@ -446,10 +505,13 @@ static __devinit int max8925_init_charger(struct max8925_chip *chip,
 	REQUEST_IRQ(MAX8925_IRQ_VCHG_TMR_FAULT, "charger-timer-expire");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	info->ac_online = 0;
 	info->usb_online = 0;
 	info->bat_online = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	info->usb_online = 0;
 	info->bat_online = 0;
 
@@ -459,7 +521,10 @@ static __devinit int max8925_init_charger(struct max8925_chip *chip,
 	else
 		info->ac_online = 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = max8925_reg_read(info->gpm, MAX8925_CHG_STATUS);
 	if (ret >= 0) {
 		/*
@@ -488,7 +553,11 @@ static __devinit int max8925_init_charger(struct max8925_chip *chip,
 	return 0;
 }
 
+<<<<<<< HEAD
 static __devexit int max8925_deinit_charger(struct max8925_power_info *info)
+=======
+static int max8925_deinit_charger(struct max8925_power_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct max8925_chip *chip = info->chip;
 	int irq;
@@ -500,21 +569,83 @@ static __devexit int max8925_deinit_charger(struct max8925_power_info *info)
 	return 0;
 }
 
+<<<<<<< HEAD
 static __devinit int max8925_power_probe(struct platform_device *pdev)
+=======
+#ifdef CONFIG_OF
+static struct max8925_power_pdata *
+max8925_power_dt_init(struct platform_device *pdev)
+{
+	struct device_node *nproot = pdev->dev.parent->of_node;
+	struct device_node *np;
+	int batt_detect;
+	int topoff_threshold;
+	int fast_charge;
+	int no_temp_support;
+	int no_insert_detect;
+	struct max8925_power_pdata *pdata;
+
+	if (!nproot)
+		return pdev->dev.platform_data;
+
+	np = of_find_node_by_name(nproot, "charger");
+	if (!np) {
+		dev_err(&pdev->dev, "failed to find charger node\n");
+		return NULL;
+	}
+
+	pdata = devm_kzalloc(&pdev->dev,
+			sizeof(struct max8925_power_pdata),
+			GFP_KERNEL);
+
+	of_property_read_u32(np, "topoff-threshold", &topoff_threshold);
+	of_property_read_u32(np, "batt-detect", &batt_detect);
+	of_property_read_u32(np, "fast-charge", &fast_charge);
+	of_property_read_u32(np, "no-insert-detect", &no_insert_detect);
+	of_property_read_u32(np, "no-temp-support", &no_temp_support);
+	of_node_put(np);
+
+	pdata->batt_detect = batt_detect;
+	pdata->fast_charge = fast_charge;
+	pdata->topoff_threshold = topoff_threshold;
+	pdata->no_insert_detect = no_insert_detect;
+	pdata->no_temp_support = no_temp_support;
+
+	return pdata;
+}
+#else
+static struct max8925_power_pdata *
+max8925_power_dt_init(struct platform_device *pdev)
+{
+	return pdev->dev.platform_data;
+}
+#endif
+
+static int max8925_power_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct max8925_chip *chip = dev_get_drvdata(pdev->dev.parent);
 	struct max8925_power_pdata *pdata = NULL;
 	struct max8925_power_info *info;
 	int ret;
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
+=======
+	pdata = max8925_power_dt_init(pdev);
+>>>>>>> refs/remotes/origin/master
 	if (!pdata) {
 		dev_err(&pdev->dev, "platform data isn't assigned to "
 			"power supply\n");
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	info = kzalloc(sizeof(struct max8925_power_info), GFP_KERNEL);
+=======
+	info = devm_kzalloc(&pdev->dev, sizeof(struct max8925_power_info),
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!info)
 		return -ENOMEM;
 	info->chip = chip;
@@ -528,10 +659,15 @@ static __devinit int max8925_power_probe(struct platform_device *pdev)
 	info->ac.num_properties = ARRAY_SIZE(max8925_ac_props);
 	info->ac.get_property = max8925_ac_get_prop;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	info->ac.supplied_to = pdata->supplied_to;
 	info->ac.num_supplicants = pdata->num_supplicants;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	info->ac.supplied_to = pdata->supplied_to;
+	info->ac.num_supplicants = pdata->num_supplicants;
+>>>>>>> refs/remotes/origin/master
 	ret = power_supply_register(&pdev->dev, &info->ac);
 	if (ret)
 		goto out;
@@ -543,11 +679,17 @@ static __devinit int max8925_power_probe(struct platform_device *pdev)
 	info->usb.num_properties = ARRAY_SIZE(max8925_usb_props);
 	info->usb.get_property = max8925_usb_get_prop;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	info->usb.supplied_to = pdata->supplied_to;
 	info->usb.num_supplicants = pdata->num_supplicants;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	info->usb.supplied_to = pdata->supplied_to;
+	info->usb.num_supplicants = pdata->num_supplicants;
+
+>>>>>>> refs/remotes/origin/master
 	ret = power_supply_register(&pdev->dev, &info->usb);
 	if (ret)
 		goto out_usb;
@@ -568,10 +710,15 @@ static __devinit int max8925_power_probe(struct platform_device *pdev)
 	info->fast_charge = pdata->fast_charge;
 	info->set_charger = pdata->set_charger;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	info->no_temp_support = pdata->no_temp_support;
 	info->no_insert_detect = pdata->no_insert_detect;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	info->no_temp_support = pdata->no_temp_support;
+	info->no_insert_detect = pdata->no_insert_detect;
+>>>>>>> refs/remotes/origin/master
 
 	max8925_init_charger(chip, info);
 	return 0;
@@ -580,11 +727,18 @@ out_battery:
 out_usb:
 	power_supply_unregister(&info->ac);
 out:
+<<<<<<< HEAD
 	kfree(info);
 	return ret;
 }
 
 static __devexit int max8925_power_remove(struct platform_device *pdev)
+=======
+	return ret;
+}
+
+static int max8925_power_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct max8925_power_info *info = platform_get_drvdata(pdev);
 
@@ -593,19 +747,27 @@ static __devexit int max8925_power_remove(struct platform_device *pdev)
 		power_supply_unregister(&info->usb);
 		power_supply_unregister(&info->battery);
 		max8925_deinit_charger(info);
+<<<<<<< HEAD
 		kfree(info);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
 
 static struct platform_driver max8925_power_driver = {
 	.probe	= max8925_power_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(max8925_power_remove),
+=======
+	.remove	= max8925_power_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver	= {
 		.name	= "max8925-power",
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init max8925_power_init(void)
 {
@@ -621,6 +783,9 @@ module_exit(max8925_power_exit);
 =======
 module_platform_driver(max8925_power_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(max8925_power_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Power supply driver for MAX8925");

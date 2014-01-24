@@ -63,16 +63,22 @@
  * Local functions
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void	xprt_request_init(struct rpc_task *, struct rpc_xprt *);
 static void	xprt_connect_status(struct rpc_task *task);
 static int      __xprt_get_cong(struct rpc_xprt *, struct rpc_task *);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void	 xprt_init(struct rpc_xprt *xprt, struct net *net);
 static void	xprt_request_init(struct rpc_task *, struct rpc_xprt *);
 static void	xprt_connect_status(struct rpc_task *task);
 static int      __xprt_get_cong(struct rpc_xprt *, struct rpc_task *);
 static void	 xprt_destroy(struct rpc_xprt *xprt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_SPINLOCK(xprt_list_lock);
 static LIST_HEAD(xprt_list);
@@ -195,25 +201,35 @@ EXPORT_SYMBOL_GPL(xprt_load_transport);
  * xprt_reserve_xprt - serialize write access to transports
  * @task: task that is requesting access to the transport
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @xprt: pointer to the target transport
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @xprt: pointer to the target transport
+>>>>>>> refs/remotes/origin/master
  *
  * This prevents mixing the payload of separate requests, and prevents
  * transport connects from colliding with writes.  No congestion control
  * is provided.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int xprt_reserve_xprt(struct rpc_task *task)
 {
 	struct rpc_rqst *req = task->tk_rqstp;
 	struct rpc_xprt	*xprt = req->rq_xprt;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int xprt_reserve_xprt(struct rpc_xprt *xprt, struct rpc_task *task)
 {
 	struct rpc_rqst *req = task->tk_rqstp;
 	int priority;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (test_and_set_bit(XPRT_LOCKED, &xprt->state)) {
 		if (task == xprt->snd_task)
@@ -221,6 +237,7 @@ int xprt_reserve_xprt(struct rpc_xprt *xprt, struct rpc_task *task)
 		goto out_sleep;
 	}
 	xprt->snd_task = task;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	req->rq_bytes_sent = 0;
 	req->rq_ntrans++;
@@ -230,6 +247,10 @@ int xprt_reserve_xprt(struct rpc_xprt *xprt, struct rpc_task *task)
 		req->rq_ntrans++;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (req != NULL)
+		req->rq_ntrans++;
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 
@@ -239,11 +260,14 @@ out_sleep:
 	task->tk_timeout = 0;
 	task->tk_status = -EAGAIN;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (req->rq_ntrans)
 		rpc_sleep_on(&xprt->resend, task, NULL);
 	else
 		rpc_sleep_on(&xprt->sending, task, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (req == NULL)
 		priority = RPC_PRIORITY_LOW;
 	else if (!req->rq_ntrans)
@@ -251,7 +275,10 @@ out_sleep:
 	else
 		priority = RPC_PRIORITY_HIGH;
 	rpc_sleep_on_priority(&xprt->sending, task, NULL, priority);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL_GPL(xprt_reserve_xprt);
@@ -259,7 +286,11 @@ EXPORT_SYMBOL_GPL(xprt_reserve_xprt);
 static void xprt_clear_locked(struct rpc_xprt *xprt)
 {
 	xprt->snd_task = NULL;
+<<<<<<< HEAD
 	if (!test_bit(XPRT_CLOSE_WAIT, &xprt->state) || xprt->shutdown) {
+=======
+	if (!test_bit(XPRT_CLOSE_WAIT, &xprt->state)) {
+>>>>>>> refs/remotes/origin/master
 		smp_mb__before_clear_bit();
 		clear_bit(XPRT_LOCKED, &xprt->state);
 		smp_mb__after_clear_bit();
@@ -276,22 +307,29 @@ static void xprt_clear_locked(struct rpc_xprt *xprt)
  * woken up and given access to the transport.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int xprt_reserve_xprt_cong(struct rpc_task *task)
 {
 	struct rpc_xprt	*xprt = task->tk_xprt;
 	struct rpc_rqst *req = task->tk_rqstp;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int xprt_reserve_xprt_cong(struct rpc_xprt *xprt, struct rpc_task *task)
 {
 	struct rpc_rqst *req = task->tk_rqstp;
 	int priority;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (test_and_set_bit(XPRT_LOCKED, &xprt->state)) {
 		if (task == xprt->snd_task)
 			return 1;
 		goto out_sleep;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (__xprt_get_cong(xprt, task)) {
 		xprt->snd_task = task;
@@ -300,15 +338,21 @@ int xprt_reserve_xprt_cong(struct rpc_xprt *xprt, struct rpc_task *task)
 			req->rq_ntrans++;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (req == NULL) {
 		xprt->snd_task = task;
 		return 1;
 	}
 	if (__xprt_get_cong(xprt, task)) {
 		xprt->snd_task = task;
+<<<<<<< HEAD
 		req->rq_bytes_sent = 0;
 		req->rq_ntrans++;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		req->rq_ntrans++;
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 	xprt_clear_locked(xprt);
@@ -317,11 +361,14 @@ out_sleep:
 	task->tk_timeout = 0;
 	task->tk_status = -EAGAIN;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (req && req->rq_ntrans)
 		rpc_sleep_on(&xprt->resend, task, NULL);
 	else
 		rpc_sleep_on(&xprt->sending, task, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (req == NULL)
 		priority = RPC_PRIORITY_LOW;
 	else if (!req->rq_ntrans)
@@ -329,7 +376,10 @@ out_sleep:
 	else
 		priority = RPC_PRIORITY_HIGH;
 	rpc_sleep_on_priority(&xprt->sending, task, NULL, priority);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL_GPL(xprt_reserve_xprt_cong);
@@ -340,14 +390,19 @@ static inline int xprt_lock_write(struct rpc_xprt *xprt, struct rpc_task *task)
 
 	spin_lock_bh(&xprt->transport_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	retval = xprt->ops->reserve_xprt(task);
 =======
 	retval = xprt->ops->reserve_xprt(xprt, task);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = xprt->ops->reserve_xprt(xprt, task);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_bh(&xprt->transport_lock);
 	return retval;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __xprt_lock_write_next(struct rpc_xprt *xprt)
 {
@@ -365,11 +420,14 @@ static void __xprt_lock_write_next(struct rpc_xprt *xprt)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool __xprt_lock_write_func(struct rpc_task *task, void *data)
 {
 	struct rpc_xprt *xprt = data;
 	struct rpc_rqst *req;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	req = task->tk_rqstp;
 	xprt->snd_task = task;
@@ -389,6 +447,12 @@ static void __xprt_lock_write_next_cong(struct rpc_xprt *xprt)
 	struct rpc_task *task;
 
 =======
+=======
+	req = task->tk_rqstp;
+	xprt->snd_task = task;
+	if (req)
+		req->rq_ntrans++;
+>>>>>>> refs/remotes/origin/master
 	return true;
 }
 
@@ -414,7 +478,10 @@ static bool __xprt_lock_write_cong_func(struct rpc_task *task, void *data)
 	}
 	if (__xprt_get_cong(xprt, task)) {
 		xprt->snd_task = task;
+<<<<<<< HEAD
 		req->rq_bytes_sent = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 		req->rq_ntrans++;
 		return true;
 	}
@@ -423,11 +490,15 @@ static bool __xprt_lock_write_cong_func(struct rpc_task *task, void *data)
 
 static void __xprt_lock_write_next_cong(struct rpc_xprt *xprt)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (test_and_set_bit(XPRT_LOCKED, &xprt->state))
 		return;
 	if (RPCXPRT_CONGESTED(xprt))
 		goto out_unlock;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	task = rpc_wake_up_next(&xprt->resend);
 	if (!task) {
@@ -448,6 +519,10 @@ static void __xprt_lock_write_next_cong(struct rpc_xprt *xprt)
 	if (rpc_wake_up_first(&xprt->sending, __xprt_lock_write_cong_func, xprt))
 		return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rpc_wake_up_first(&xprt->sending, __xprt_lock_write_cong_func, xprt))
+		return;
+>>>>>>> refs/remotes/origin/master
 out_unlock:
 	xprt_clear_locked(xprt);
 }
@@ -462,6 +537,14 @@ out_unlock:
 void xprt_release_xprt(struct rpc_xprt *xprt, struct rpc_task *task)
 {
 	if (xprt->snd_task == task) {
+<<<<<<< HEAD
+=======
+		if (task != NULL) {
+			struct rpc_rqst *req = task->tk_rqstp;
+			if (req != NULL)
+				req->rq_bytes_sent = 0;
+		}
+>>>>>>> refs/remotes/origin/master
 		xprt_clear_locked(xprt);
 		__xprt_lock_write_next(xprt);
 	}
@@ -479,6 +562,14 @@ EXPORT_SYMBOL_GPL(xprt_release_xprt);
 void xprt_release_xprt_cong(struct rpc_xprt *xprt, struct rpc_task *task)
 {
 	if (xprt->snd_task == task) {
+<<<<<<< HEAD
+=======
+		if (task != NULL) {
+			struct rpc_rqst *req = task->tk_rqstp;
+			if (req != NULL)
+				req->rq_bytes_sent = 0;
+		}
+>>>>>>> refs/remotes/origin/master
 		xprt_clear_locked(xprt);
 		__xprt_lock_write_next_cong(xprt);
 	}
@@ -534,21 +625,37 @@ __xprt_put_cong(struct rpc_xprt *xprt, struct rpc_rqst *req)
  */
 void xprt_release_rqst_cong(struct rpc_task *task)
 {
+<<<<<<< HEAD
 	__xprt_put_cong(task->tk_xprt, task->tk_rqstp);
+=======
+	struct rpc_rqst *req = task->tk_rqstp;
+
+	__xprt_put_cong(req->rq_xprt, req);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(xprt_release_rqst_cong);
 
 /**
  * xprt_adjust_cwnd - adjust transport congestion window
+<<<<<<< HEAD
+=======
+ * @xprt: pointer to xprt
+>>>>>>> refs/remotes/origin/master
  * @task: recently completed RPC request used to adjust window
  * @result: result code of completed RPC request
  *
  * We use a time-smoothed congestion estimator to avoid heavy oscillation.
  */
+<<<<<<< HEAD
 void xprt_adjust_cwnd(struct rpc_task *task, int result)
 {
 	struct rpc_rqst *req = task->tk_rqstp;
 	struct rpc_xprt *xprt = task->tk_xprt;
+=======
+void xprt_adjust_cwnd(struct rpc_xprt *xprt, struct rpc_task *task, int result)
+{
+	struct rpc_rqst *req = task->tk_rqstp;
+>>>>>>> refs/remotes/origin/master
 	unsigned long cwnd = xprt->cwnd;
 
 	if (result >= 0 && cwnd <= xprt->cong) {
@@ -612,9 +719,12 @@ EXPORT_SYMBOL_GPL(xprt_wait_for_buffer_space);
  */
 void xprt_write_space(struct rpc_xprt *xprt)
 {
+<<<<<<< HEAD
 	if (unlikely(xprt->shutdown))
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_bh(&xprt->transport_lock);
 	if (xprt->snd_task) {
 		dprintk("RPC:       write space: waking waiting task on "
@@ -639,7 +749,11 @@ void xprt_set_retrans_timeout_def(struct rpc_task *task)
 }
 EXPORT_SYMBOL_GPL(xprt_set_retrans_timeout_def);
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * xprt_set_retrans_timeout_rtt - set a request's retransmit timeout
  * @task: task whose timeout is to be set
  *
@@ -787,7 +901,11 @@ xprt_init_autodisconnect(unsigned long data)
 	struct rpc_xprt *xprt = (struct rpc_xprt *)data;
 
 	spin_lock(&xprt->transport_lock);
+<<<<<<< HEAD
 	if (!list_empty(&xprt->recv) || xprt->shutdown)
+=======
+	if (!list_empty(&xprt->recv))
+>>>>>>> refs/remotes/origin/master
 		goto out_abort;
 	if (test_and_set_bit(XPRT_LOCKED, &xprt->state))
 		goto out_abort;
@@ -806,7 +924,11 @@ out_abort:
  */
 void xprt_connect(struct rpc_task *task)
 {
+<<<<<<< HEAD
 	struct rpc_xprt	*xprt = task->tk_xprt;
+=======
+	struct rpc_xprt	*xprt = task->tk_rqstp->rq_xprt;
+>>>>>>> refs/remotes/origin/master
 
 	dprintk("RPC: %5u xprt_connect xprt %p %s connected\n", task->tk_pid,
 			xprt, (xprt_connected(xprt) ? "is" : "is not"));
@@ -825,12 +947,16 @@ void xprt_connect(struct rpc_task *task)
 		xprt_release_write(xprt, task);
 	else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (task->tk_rqstp)
 			task->tk_rqstp->rq_bytes_sent = 0;
 
 =======
 		task->tk_rqstp->rq_bytes_sent = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		task->tk_rqstp->rq_bytes_sent = 0;
+>>>>>>> refs/remotes/origin/master
 		task->tk_timeout = task->tk_rqstp->rq_timeout;
 		rpc_sleep_on(&xprt->pending, task, xprt_connect_status);
 
@@ -839,13 +965,21 @@ void xprt_connect(struct rpc_task *task)
 		if (xprt_test_and_set_connecting(xprt))
 			return;
 		xprt->stat.connect_start = jiffies;
+<<<<<<< HEAD
 		xprt->ops->connect(task);
+=======
+		xprt->ops->connect(xprt, task);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static void xprt_connect_status(struct rpc_task *task)
 {
+<<<<<<< HEAD
 	struct rpc_xprt	*xprt = task->tk_xprt;
+=======
+	struct rpc_xprt	*xprt = task->tk_rqstp->rq_xprt;
+>>>>>>> refs/remotes/origin/master
 
 	if (task->tk_status == 0) {
 		xprt->stat.connect_count++;
@@ -867,10 +1001,14 @@ static void xprt_connect_status(struct rpc_task *task)
 		dprintk("RPC: %5u xprt_connect_status: error %d connecting to "
 				"server %s\n", task->tk_pid, -task->tk_status,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				task->tk_client->cl_server);
 =======
 				xprt->servername);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				xprt->servername);
+>>>>>>> refs/remotes/origin/master
 		xprt_release_write(xprt, task);
 		task->tk_status = -EIO;
 	}
@@ -901,7 +1039,11 @@ static void xprt_update_rtt(struct rpc_task *task)
 {
 	struct rpc_rqst *req = task->tk_rqstp;
 	struct rpc_rtt *rtt = task->tk_client->cl_rtt;
+<<<<<<< HEAD
 	unsigned timer = task->tk_msg.rpc_proc->p_timer;
+=======
+	unsigned int timer = task->tk_msg.rpc_proc->p_timer;
+>>>>>>> refs/remotes/origin/master
 	long m = usecs_to_jiffies(ktime_to_us(req->rq_rtt));
 
 	if (timer) {
@@ -953,7 +1095,11 @@ static void xprt_timer(struct rpc_task *task)
 	spin_lock_bh(&xprt->transport_lock);
 	if (!req->rq_reply_bytes_recvd) {
 		if (xprt->ops->timer)
+<<<<<<< HEAD
 			xprt->ops->timer(task);
+=======
+			xprt->ops->timer(xprt, task);
+>>>>>>> refs/remotes/origin/master
 	} else
 		task->tk_status = 0;
 	spin_unlock_bh(&xprt->transport_lock);
@@ -969,15 +1115,24 @@ static inline int xprt_has_timer(struct rpc_xprt *xprt)
  * @task: RPC task about to send a request
  *
  */
+<<<<<<< HEAD
 int xprt_prepare_transmit(struct rpc_task *task)
 {
 	struct rpc_rqst	*req = task->tk_rqstp;
 	struct rpc_xprt	*xprt = req->rq_xprt;
 	int err = 0;
+=======
+bool xprt_prepare_transmit(struct rpc_task *task)
+{
+	struct rpc_rqst	*req = task->tk_rqstp;
+	struct rpc_xprt	*xprt = req->rq_xprt;
+	bool ret = false;
+>>>>>>> refs/remotes/origin/master
 
 	dprintk("RPC: %5u xprt_prepare_transmit\n", task->tk_pid);
 
 	spin_lock_bh(&xprt->transport_lock);
+<<<<<<< HEAD
 	if (req->rq_reply_bytes_recvd && !req->rq_bytes_sent) {
 		err = req->rq_reply_bytes_recvd;
 		goto out_unlock;
@@ -991,6 +1146,29 @@ int xprt_prepare_transmit(struct rpc_task *task)
 out_unlock:
 	spin_unlock_bh(&xprt->transport_lock);
 	return err;
+=======
+	if (!req->rq_bytes_sent) {
+		if (req->rq_reply_bytes_recvd) {
+			task->tk_status = req->rq_reply_bytes_recvd;
+			goto out_unlock;
+		}
+		if ((task->tk_flags & RPC_TASK_NO_RETRANS_TIMEOUT)
+		    && xprt_connected(xprt)
+		    && req->rq_connect_cookie == xprt->connect_cookie) {
+			xprt->ops->set_retrans_timeout(task);
+			rpc_sleep_on(&xprt->pending, task, xprt_timer);
+			goto out_unlock;
+		}
+	}
+	if (!xprt->ops->reserve_xprt(xprt, task)) {
+		task->tk_status = -EAGAIN;
+		goto out_unlock;
+	}
+	ret = true;
+out_unlock:
+	spin_unlock_bh(&xprt->transport_lock);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 void xprt_end_transmit(struct rpc_task *task)
@@ -1009,10 +1187,14 @@ void xprt_transmit(struct rpc_task *task)
 	struct rpc_rqst	*req = task->tk_rqstp;
 	struct rpc_xprt	*xprt = req->rq_xprt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int status;
 =======
 	int status, numreqs;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int status, numreqs;
+>>>>>>> refs/remotes/origin/master
 
 	dprintk("RPC: %5u xprt_transmit(%u)\n", task->tk_pid, req->rq_slen);
 
@@ -1035,7 +1217,10 @@ void xprt_transmit(struct rpc_task *task)
 	} else if (!req->rq_bytes_sent)
 		return;
 
+<<<<<<< HEAD
 	req->rq_connect_cookie = xprt->connect_cookie;
+=======
+>>>>>>> refs/remotes/origin/master
 	req->rq_xtime = ktime_get();
 	status = xprt->ops->send_request(task);
 	if (status != 0) {
@@ -1050,10 +1235,13 @@ void xprt_transmit(struct rpc_task *task)
 	xprt->ops->set_retrans_timeout(task);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xprt->stat.sends++;
 	xprt->stat.req_u += xprt->stat.sends - xprt->stat.recvs;
 	xprt->stat.bklog_u += xprt->backlog.qlen;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	numreqs = atomic_read(&xprt->num_reqs);
 	if (numreqs > xprt->stat.max_slots)
 		xprt->stat.max_slots = numreqs;
@@ -1062,21 +1250,35 @@ void xprt_transmit(struct rpc_task *task)
 	xprt->stat.bklog_u += xprt->backlog.qlen;
 	xprt->stat.sending_u += xprt->sending.qlen;
 	xprt->stat.pending_u += xprt->pending.qlen;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Don't race with disconnect */
 	if (!xprt_connected(xprt))
 		task->tk_status = -ENOTCONN;
+<<<<<<< HEAD
 	else if (!req->rq_reply_bytes_recvd && rpc_reply_expected(task)) {
+=======
+	else {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Sleep on the pending queue since
 		 * we're expecting a reply.
 		 */
+<<<<<<< HEAD
 		rpc_sleep_on(&xprt->pending, task, xprt_timer);
+=======
+		if (!req->rq_reply_bytes_recvd && rpc_reply_expected(task))
+			rpc_sleep_on(&xprt->pending, task, xprt_timer);
+		req->rq_connect_cookie = xprt->connect_cookie;
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_bh(&xprt->transport_lock);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void xprt_alloc_slot(struct rpc_task *task)
 {
@@ -1105,6 +1307,36 @@ static void xprt_free_slot(struct rpc_xprt *xprt, struct rpc_rqst *req)
 	spin_lock(&xprt->reserve_lock);
 	list_add(&req->rq_list, &xprt->free);
 =======
+=======
+static void xprt_add_backlog(struct rpc_xprt *xprt, struct rpc_task *task)
+{
+	set_bit(XPRT_CONGESTED, &xprt->state);
+	rpc_sleep_on(&xprt->backlog, task, NULL);
+}
+
+static void xprt_wake_up_backlog(struct rpc_xprt *xprt)
+{
+	if (rpc_wake_up_next(&xprt->backlog) == NULL)
+		clear_bit(XPRT_CONGESTED, &xprt->state);
+}
+
+static bool xprt_throttle_congested(struct rpc_xprt *xprt, struct rpc_task *task)
+{
+	bool ret = false;
+
+	if (!test_bit(XPRT_CONGESTED, &xprt->state))
+		goto out;
+	spin_lock(&xprt->reserve_lock);
+	if (test_bit(XPRT_CONGESTED, &xprt->state)) {
+		rpc_sleep_on(&xprt->backlog, task, NULL);
+		ret = true;
+	}
+	spin_unlock(&xprt->reserve_lock);
+out:
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct rpc_rqst *xprt_dynamic_alloc_slot(struct rpc_xprt *xprt, gfp_t gfp_flags)
 {
 	struct rpc_rqst *req = ERR_PTR(-EAGAIN);
@@ -1139,7 +1371,11 @@ void xprt_alloc_slot(struct rpc_xprt *xprt, struct rpc_task *task)
 		list_del(&req->rq_list);
 		goto out_init_req;
 	}
+<<<<<<< HEAD
 	req = xprt_dynamic_alloc_slot(xprt, GFP_NOWAIT);
+=======
+	req = xprt_dynamic_alloc_slot(xprt, GFP_NOWAIT|__GFP_NOWARN);
+>>>>>>> refs/remotes/origin/master
 	if (!IS_ERR(req))
 		goto out_init_req;
 	switch (PTR_ERR(req)) {
@@ -1149,7 +1385,11 @@ void xprt_alloc_slot(struct rpc_xprt *xprt, struct rpc_task *task)
 		task->tk_status = -ENOMEM;
 		break;
 	case -EAGAIN:
+<<<<<<< HEAD
 		rpc_sleep_on(&xprt->backlog, task, NULL);
+=======
+		xprt_add_backlog(xprt, task);
+>>>>>>> refs/remotes/origin/master
 		dprintk("RPC:       waiting for request slot\n");
 	default:
 		task->tk_status = -EAGAIN;
@@ -1185,6 +1425,7 @@ static void xprt_free_slot(struct rpc_xprt *xprt, struct rpc_rqst *req)
 		memset(req, 0, sizeof(*req));	/* mark unused */
 		list_add(&req->rq_list, &xprt->free);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	rpc_wake_up_next(&xprt->backlog);
 	spin_unlock(&xprt->reserve_lock);
@@ -1195,6 +1436,12 @@ struct rpc_xprt *xprt_alloc(struct net *net, int size, int max_req)
 {
 	struct rpc_xprt *xprt;
 =======
+=======
+	xprt_wake_up_backlog(xprt);
+	spin_unlock(&xprt->reserve_lock);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void xprt_free_all_slots(struct rpc_xprt *xprt)
 {
 	struct rpc_rqst *req;
@@ -1212,11 +1459,15 @@ struct rpc_xprt *xprt_alloc(struct net *net, size_t size,
 	struct rpc_xprt *xprt;
 	struct rpc_rqst *req;
 	int i;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	xprt = kzalloc(size, GFP_KERNEL);
 	if (xprt == NULL)
 		goto out;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	atomic_set(&xprt->count, 1);
 
@@ -1231,17 +1482,25 @@ struct rpc_xprt *xprt_alloc(struct net *net, size_t size,
 out_free:
 	kfree(xprt);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	xprt_init(xprt, net);
 
 	for (i = 0; i < num_prealloc; i++) {
 		req = kzalloc(sizeof(struct rpc_rqst), GFP_KERNEL);
 		if (!req)
+<<<<<<< HEAD
 			break;
 		list_add(&req->rq_list, &xprt->free);
 	}
 	if (i < num_prealloc)
 		goto out_free;
+=======
+			goto out_free;
+		list_add(&req->rq_list, &xprt->free);
+	}
+>>>>>>> refs/remotes/origin/master
 	if (max_alloc > num_prealloc)
 		xprt->max_reqs = max_alloc;
 	else
@@ -1253,7 +1512,10 @@ out_free:
 
 out_free:
 	xprt_free(xprt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	return NULL;
 }
@@ -1263,10 +1525,14 @@ void xprt_free(struct rpc_xprt *xprt)
 {
 	put_net(xprt->xprt_net);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(xprt->slot);
 =======
 	xprt_free_all_slots(xprt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xprt_free_all_slots(xprt);
+>>>>>>> refs/remotes/origin/master
 	kfree(xprt);
 }
 EXPORT_SYMBOL_GPL(xprt_free);
@@ -1275,11 +1541,17 @@ EXPORT_SYMBOL_GPL(xprt_free);
  * xprt_reserve - allocate an RPC request slot
  * @task: RPC task requesting a slot allocation
  *
+<<<<<<< HEAD
  * If no more slots are available, place the task on the transport's
+=======
+ * If the transport is marked as being congested, or if no more
+ * slots are available, place the task on the transport's
+>>>>>>> refs/remotes/origin/master
  * backlog queue.
  */
 void xprt_reserve(struct rpc_task *task)
 {
+<<<<<<< HEAD
 	struct rpc_xprt	*xprt = task->tk_xprt;
 
 <<<<<<< HEAD
@@ -1288,14 +1560,51 @@ void xprt_reserve(struct rpc_task *task)
 	xprt_alloc_slot(task);
 	spin_unlock(&xprt->reserve_lock);
 =======
+=======
+	struct rpc_xprt	*xprt;
+
+>>>>>>> refs/remotes/origin/master
 	task->tk_status = 0;
 	if (task->tk_rqstp != NULL)
 		return;
 
 	task->tk_timeout = 0;
 	task->tk_status = -EAGAIN;
+<<<<<<< HEAD
 	xprt->ops->alloc_slot(xprt, task);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rcu_read_lock();
+	xprt = rcu_dereference(task->tk_client->cl_xprt);
+	if (!xprt_throttle_congested(xprt, task))
+		xprt->ops->alloc_slot(xprt, task);
+	rcu_read_unlock();
+}
+
+/**
+ * xprt_retry_reserve - allocate an RPC request slot
+ * @task: RPC task requesting a slot allocation
+ *
+ * If no more slots are available, place the task on the transport's
+ * backlog queue.
+ * Note that the only difference with xprt_reserve is that we now
+ * ignore the value of the XPRT_CONGESTED flag.
+ */
+void xprt_retry_reserve(struct rpc_task *task)
+{
+	struct rpc_xprt	*xprt;
+
+	task->tk_status = 0;
+	if (task->tk_rqstp != NULL)
+		return;
+
+	task->tk_timeout = 0;
+	task->tk_status = -EAGAIN;
+	rcu_read_lock();
+	xprt = rcu_dereference(task->tk_client->cl_xprt);
+	xprt->ops->alloc_slot(xprt, task);
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline __be32 xprt_alloc_xid(struct rpc_xprt *xprt)
@@ -1313,14 +1622,27 @@ static void xprt_request_init(struct rpc_task *task, struct rpc_xprt *xprt)
 	struct rpc_rqst	*req = task->tk_rqstp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	INIT_LIST_HEAD(&req->rq_list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_LIST_HEAD(&req->rq_list);
+>>>>>>> refs/remotes/origin/master
 	req->rq_timeout = task->tk_client->cl_timeout->to_initval;
 	req->rq_task	= task;
 	req->rq_xprt    = xprt;
 	req->rq_buffer  = NULL;
 	req->rq_xid     = xprt_alloc_xid(xprt);
+<<<<<<< HEAD
+=======
+	req->rq_connect_cookie = xprt->connect_cookie - 1;
+	req->rq_bytes_sent = 0;
+	req->rq_snd_buf.len = 0;
+	req->rq_snd_buf.buflen = 0;
+	req->rq_rcv_buf.len = 0;
+	req->rq_rcv_buf.buflen = 0;
+>>>>>>> refs/remotes/origin/master
 	req->rq_release_snd_buf = NULL;
 	xprt_reset_majortimeo(req);
 	dprintk("RPC: %5u reserved req %p xid %08x\n", task->tk_pid,
@@ -1336,6 +1658,7 @@ void xprt_release(struct rpc_task *task)
 {
 	struct rpc_xprt	*xprt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct rpc_rqst	*req;
 
 	if (!(req = task->tk_rqstp))
@@ -1344,6 +1667,8 @@ void xprt_release(struct rpc_task *task)
 	xprt = req->rq_xprt;
 	rpc_count_iostats(task);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct rpc_rqst	*req = task->tk_rqstp;
 
 	if (req == NULL) {
@@ -1362,7 +1687,10 @@ void xprt_release(struct rpc_task *task)
 		task->tk_ops->rpc_count_stats(task, task->tk_calldata);
 	else if (task->tk_client)
 		rpc_count_iostats(task, task->tk_client->cl_metrics);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_bh(&xprt->transport_lock);
 	xprt->ops->release_xprt(xprt, task);
 	if (xprt->ops->release_request)
@@ -1390,7 +1718,10 @@ void xprt_release(struct rpc_task *task)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void xprt_init(struct rpc_xprt *xprt, struct net *net)
 {
 	atomic_set(&xprt->count, 1);
@@ -1419,7 +1750,10 @@ static void xprt_init(struct rpc_xprt *xprt, struct net *net)
 	xprt->xprt_net = get_net(net);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * xprt_create_transport - create an RPC transport
  * @args: rpc transport creation arguments
@@ -1429,9 +1763,12 @@ struct rpc_xprt *xprt_create_transport(struct xprt_create *args)
 {
 	struct rpc_xprt	*xprt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct rpc_rqst	*req;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct xprt_class *t;
 
 	spin_lock(&xprt_list_lock);
@@ -1450,6 +1787,7 @@ found:
 	if (IS_ERR(xprt)) {
 		dprintk("RPC:       xprt_create_transport: failed, %ld\n",
 				-PTR_ERR(xprt));
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return xprt;
 	}
@@ -1471,12 +1809,19 @@ found:
 		goto out;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out;
+	}
+	if (args->flags & XPRT_CREATE_NO_IDLE_TIMEOUT)
+		xprt->idle_timeout = 0;
+>>>>>>> refs/remotes/origin/master
 	INIT_WORK(&xprt->task_cleanup, xprt_autoclose);
 	if (xprt_has_timer(xprt))
 		setup_timer(&xprt->timer, xprt_init_autodisconnect,
 			    (unsigned long)xprt);
 	else
 		init_timer(&xprt->timer);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	xprt->last_used = jiffies;
 	xprt->cwnd = RPC_INITCWND;
@@ -1497,6 +1842,8 @@ found:
 	dprintk("RPC:       created transport %p with %u slots\n", xprt,
 			xprt->max_reqs);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (strlen(args->servername) > RPC_MAXNETNAMELEN) {
 		xprt_destroy(xprt);
@@ -1511,7 +1858,10 @@ found:
 	dprintk("RPC:       created transport %p with %u slots\n", xprt,
 			xprt->max_reqs);
 out:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return xprt;
 }
 
@@ -1523,12 +1873,16 @@ out:
 static void xprt_destroy(struct rpc_xprt *xprt)
 {
 	dprintk("RPC:       destroying transport %p\n", xprt);
+<<<<<<< HEAD
 	xprt->shutdown = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 	del_timer_sync(&xprt->timer);
 
 	rpc_destroy_wait_queue(&xprt->binding);
 	rpc_destroy_wait_queue(&xprt->pending);
 	rpc_destroy_wait_queue(&xprt->sending);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	rpc_destroy_wait_queue(&xprt->resend);
 	rpc_destroy_wait_queue(&xprt->backlog);
@@ -1538,6 +1892,11 @@ static void xprt_destroy(struct rpc_xprt *xprt)
 	cancel_work_sync(&xprt->task_cleanup);
 	kfree(xprt->servername);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rpc_destroy_wait_queue(&xprt->backlog);
+	cancel_work_sync(&xprt->task_cleanup);
+	kfree(xprt->servername);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Tear down transport state and free the rpc_xprt
 	 */

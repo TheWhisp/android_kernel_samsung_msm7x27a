@@ -18,7 +18,10 @@ struct uml_net {
 	struct net_device *dev;
 	struct platform_device pdev;
 	int index;
+<<<<<<< HEAD
 	unsigned char mac[ETH_ALEN];
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct uml_net_private {

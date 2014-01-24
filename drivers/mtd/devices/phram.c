@@ -34,13 +34,17 @@ struct phram_mtd_list {
 static LIST_HEAD(phram_list);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int phram_erase(struct mtd_info *mtd, struct erase_info *instr)
 {
 	u_char *start = mtd->priv;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (instr->addr + instr->len > mtd->size)
 		return -EINVAL;
@@ -57,6 +61,8 @@ static int phram_erase(struct mtd_info *mtd, struct erase_info *instr)
 	mtd_erase_callback(instr);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(start + instr->addr, 0xff, instr->len);
 
 	/*
@@ -66,13 +72,17 @@ static int phram_erase(struct mtd_info *mtd, struct erase_info *instr)
 	 */
 	instr->state = MTD_ERASE_DONE;
 	mtd_erase_callback(instr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int phram_point(struct mtd_info *mtd, loff_t from, size_t len,
 		size_t *retlen, void **virt, resource_size_t *phys)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (from + len > mtd->size)
 		return -EINVAL;
@@ -83,11 +93,14 @@ static int phram_point(struct mtd_info *mtd, loff_t from, size_t len,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*virt = mtd->priv + from;
 	*retlen = len;
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void phram_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
 {
@@ -96,6 +109,11 @@ static int phram_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
 {
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int phram_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
+{
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int phram_read(struct mtd_info *mtd, loff_t from, size_t len,
@@ -103,6 +121,7 @@ static int phram_read(struct mtd_info *mtd, loff_t from, size_t len,
 {
 	u_char *start = mtd->priv;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (from >= mtd->size)
 		return -EINVAL;
@@ -115,6 +134,9 @@ static int phram_read(struct mtd_info *mtd, loff_t from, size_t len,
 =======
 	memcpy(buf, start + from, len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(buf, start + from, len);
+>>>>>>> refs/remotes/origin/master
 	*retlen = len;
 	return 0;
 }
@@ -124,6 +146,7 @@ static int phram_write(struct mtd_info *mtd, loff_t to, size_t len,
 {
 	u_char *start = mtd->priv;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (to >= mtd->size)
 		return -EINVAL;
@@ -136,15 +159,21 @@ static int phram_write(struct mtd_info *mtd, loff_t to, size_t len,
 =======
 	memcpy(start + to, buf, len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(start + to, buf, len);
+>>>>>>> refs/remotes/origin/master
 	*retlen = len;
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void unregister_devices(void)
 {
 	struct phram_mtd_list *this, *safe;
@@ -157,7 +186,11 @@ static void unregister_devices(void)
 	}
 }
 
+<<<<<<< HEAD
 static int register_device(char *name, unsigned long start, unsigned long len)
+=======
+static int register_device(char *name, phys_addr_t start, size_t len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct phram_mtd_list *new;
 	int ret = -ENOMEM;
@@ -178,18 +211,24 @@ static int register_device(char *name, unsigned long start, unsigned long len)
 	new->mtd.size = len;
 	new->mtd.flags = MTD_CAP_RAM;
 <<<<<<< HEAD
+<<<<<<< HEAD
         new->mtd.erase = phram_erase;
 	new->mtd.point = phram_point;
 	new->mtd.unpoint = phram_unpoint;
 	new->mtd.read = phram_read;
 	new->mtd.write = phram_write;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	new->mtd._erase = phram_erase;
 	new->mtd._point = phram_point;
 	new->mtd._unpoint = phram_unpoint;
 	new->mtd._read = phram_read;
 	new->mtd._write = phram_write;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	new->mtd.owner = THIS_MODULE;
 	new->mtd.type = MTD_RAM;
 	new->mtd.erasesize = PAGE_SIZE;
@@ -212,6 +251,7 @@ out0:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int ustrtoul(const char *cp, char **endp, unsigned int base)
 {
 	unsigned long result = simple_strtoul(cp, endp, base);
@@ -241,6 +281,37 @@ static int parse_num32(uint32_t *num32, const char *token)
 
 	*num32 = n;
 	return 0;
+=======
+static int parse_num64(uint64_t *num64, char *token)
+{
+	size_t len;
+	int shift = 0;
+	int ret;
+
+	len = strlen(token);
+	/* By dwmw2 editorial decree, "ki", "Mi" or "Gi" are to be used. */
+	if (len > 2) {
+		if (token[len - 1] == 'i') {
+			switch (token[len - 2]) {
+			case 'G':
+				shift += 10;
+			case 'M':
+				shift += 10;
+			case 'k':
+				shift += 10;
+				token[len - 2] = 0;
+				break;
+			default:
+				return -EINVAL;
+			}
+		}
+	}
+
+	ret = kstrtou64(token, 0, num64);
+	*num64 <<= shift;
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int parse_name(char **pname, const char *token)
@@ -277,12 +348,16 @@ static inline void kill_final_newline(char *str)
 } while (0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int phram_setup(const char *val, struct kernel_param *kp)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This shall contain the module parameter if any. It is of the form:
  * - phram=<device>,<address>,<size> for module case
  * - phram.phram=<device>,<address>,<size> for built-in case
+<<<<<<< HEAD
  * We leave 64 bytes for the device name, 12 for the address and 12 for the
  * size.
  * Example: phram.phram=rootfs,0xa0000000,512Mi
@@ -297,6 +372,21 @@ static int __init phram_setup(const char *val)
 	char *name;
 	uint32_t start;
 	uint32_t len;
+=======
+ * We leave 64 bytes for the device name, 20 for the address and 20 for the
+ * size.
+ * Example: phram.phram=rootfs,0xa0000000,512Mi
+ */
+static __initdata char phram_paramline[64 + 20 + 20];
+
+static int __init phram_setup(const char *val)
+{
+	char buf[64 + 20 + 20], *str = buf;
+	char *token[3];
+	char *name;
+	uint64_t start;
+	uint64_t len;
+>>>>>>> refs/remotes/origin/master
 	int i, ret;
 
 	if (strnlen(val, sizeof(buf)) >= sizeof(buf))
@@ -318,13 +408,21 @@ static int __init phram_setup(const char *val)
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	ret = parse_num32(&start, token[1]);
+=======
+	ret = parse_num64(&start, token[1]);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		kfree(name);
 		parse_err("illegal start address\n");
 	}
 
+<<<<<<< HEAD
 	ret = parse_num32(&len, token[2]);
+=======
+	ret = parse_num64(&len, token[2]);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		kfree(name);
 		parse_err("illegal device length\n");
@@ -332,7 +430,11 @@ static int __init phram_setup(const char *val)
 
 	ret = register_device(name, start, len);
 	if (!ret)
+<<<<<<< HEAD
 		pr_info("%s device: %#x at %#x\n", name, len, start);
+=======
+		pr_info("%s device: %#llx at %#llx\n", name, len, start);
+>>>>>>> refs/remotes/origin/master
 	else
 		kfree(name);
 
@@ -340,8 +442,11 @@ static int __init phram_setup(const char *val)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 module_param_call(phram, phram_setup, NULL, NULL, 000);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init phram_param_call(const char *val, struct kernel_param *kp)
 {
 	/*
@@ -356,18 +461,27 @@ static int __init phram_param_call(const char *val, struct kernel_param *kp)
 }
 
 module_param_call(phram, phram_param_call, NULL, NULL, 000);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>\"");
 
 
 static int __init init_phram(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (phram_paramline[0])
 		return phram_setup(phram_paramline);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (phram_paramline[0])
+		return phram_setup(phram_paramline);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

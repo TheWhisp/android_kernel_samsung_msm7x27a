@@ -6,9 +6,34 @@
 #ifndef __ASM_ARM_DELAY_H
 #define __ASM_ARM_DELAY_H
 
+<<<<<<< HEAD
 #include <asm/param.h>	/* HZ */
 
 extern void __delay(unsigned long loops);
+=======
+#include <asm/memory.h>
+#include <asm/param.h>	/* HZ */
+
+#define MAX_UDELAY_MS	2
+#define UDELAY_MULT	((UL(2199023) * HZ) >> 11)
+#define UDELAY_SHIFT	30
+
+#ifndef __ASSEMBLY__
+
+struct delay_timer {
+	unsigned long (*read_current_timer)(void);
+	unsigned long freq;
+};
+
+extern struct arm_delay_ops {
+	void (*delay)(unsigned long);
+	void (*const_udelay)(unsigned long);
+	void (*udelay)(unsigned long);
+	unsigned long ticks_per_jiffy;
+} arm_delay_ops;
+
+#define __delay(n)		arm_delay_ops.delay(n)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This function intentionally does not exist; if you see references to
@@ -23,25 +48,50 @@ extern void __bad_udelay(void);
  * division by multiplication: you don't have to worry about
  * loss of precision.
  *
+<<<<<<< HEAD
  * Use only for very small delays ( < 1 msec).  Should probably use a
+=======
+ * Use only for very small delays ( < 2 msec).  Should probably use a
+>>>>>>> refs/remotes/origin/master
  * lookup table, really, as the multiplications take much too long with
  * short delays.  This is a "reasonable" implementation, though (and the
  * first constant multiplications gets optimized away if the delay is
  * a constant)
  */
+<<<<<<< HEAD
 extern void __udelay(unsigned long usecs);
 extern void __const_udelay(unsigned long);
 
 #define MAX_UDELAY_MS 2
+=======
+#define __udelay(n)		arm_delay_ops.udelay(n)
+#define __const_udelay(n)	arm_delay_ops.const_udelay(n)
+>>>>>>> refs/remotes/origin/master
 
 #define udelay(n)							\
 	(__builtin_constant_p(n) ?					\
 	  ((n) > (MAX_UDELAY_MS * 1000) ? __bad_udelay() :		\
+<<<<<<< HEAD
 			__const_udelay((n) * ((2199023U*HZ)>>11))) :	\
 	  __udelay(n))
 
 extern void set_delay_fn(void (*fn)(unsigned long));
 extern void read_current_timer_delay_loop(unsigned long loops);
+=======
+			__const_udelay((n) * UDELAY_MULT)) :		\
+	  __udelay(n))
+
+/* Loop-based definitions for assembly code. */
+extern void __loop_delay(unsigned long loops);
+extern void __loop_udelay(unsigned long usecs);
+extern void __loop_const_udelay(unsigned long);
+
+/* Delay-loop timer registration. */
+#define ARCH_HAS_READ_CURRENT_TIMER
+extern void register_current_timer_delay(const struct delay_timer *timer);
+
+#endif /* __ASSEMBLY__ */
+>>>>>>> refs/remotes/origin/master
 
 #endif /* defined(_ARM_DELAY_H) */
 

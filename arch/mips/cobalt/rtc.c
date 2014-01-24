@@ -46,7 +46,11 @@ static __init int cobalt_rtc_add(void)
 		return -ENOMEM;
 
 	retval = platform_device_add_resources(pdev, cobalt_rtc_resource,
+<<<<<<< HEAD
 	                                       ARRAY_SIZE(cobalt_rtc_resource));
+=======
+					       ARRAY_SIZE(cobalt_rtc_resource));
+>>>>>>> refs/remotes/origin/master
 	if (retval)
 		goto err_free_device;
 

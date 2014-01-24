@@ -95,6 +95,7 @@ static int x25_state1_machine(struct sock *sk, struct sk_buff *skb, int frametyp
 
 	switch (frametype) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case X25_CALL_ACCEPTED: {
 
 			x25_stop_timer(sk);
@@ -152,6 +153,8 @@ static int x25_state1_machine(struct sock *sk, struct sk_buff *skb, int frametyp
 		default:
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case X25_CALL_ACCEPTED: {
 
 		x25_stop_timer(sk);
@@ -208,7 +211,10 @@ static int x25_state1_machine(struct sock *sk, struct sk_buff *skb, int frametyp
 
 	default:
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -447,6 +453,7 @@ int x25_process_rx_frame(struct sock *sk, struct sk_buff *skb)
 
 	switch (x25->state) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case X25_STATE_1:
 			queued = x25_state1_machine(sk, skb, frametype);
 			break;
@@ -460,6 +467,8 @@ int x25_process_rx_frame(struct sock *sk, struct sk_buff *skb)
 			queued = x25_state4_machine(sk, skb, frametype);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case X25_STATE_1:
 		queued = x25_state1_machine(sk, skb, frametype);
 		break;
@@ -472,7 +481,10 @@ int x25_process_rx_frame(struct sock *sk, struct sk_buff *skb)
 	case X25_STATE_4:
 		queued = x25_state4_machine(sk, skb, frametype);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	x25_kick(sk);

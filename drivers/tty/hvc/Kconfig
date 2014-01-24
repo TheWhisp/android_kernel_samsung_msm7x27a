@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+if TTY
+
+>>>>>>> refs/remotes/origin/master
 config HVC_DRIVER
 	bool
 	help
@@ -20,6 +25,7 @@ config HVC_CONSOLE
 	  which is accessed via the HMC.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config HVC_ISERIES
 	bool "iSeries Hypervisor Virtual Console support"
 	depends on PPC_ISERIES
@@ -30,6 +36,8 @@ config HVC_ISERIES
 	help
 	  iSeries machines support a hypervisor virtual console.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config HVC_OLD_HVSI
 	bool "Old driver for pSeries serial port (/dev/hvsi*)"
 	depends on HVC_CONSOLE
@@ -43,7 +51,10 @@ config HVC_OPAL
 	default y
 	help
 	  PowerNV machines running under OPAL need that driver to get a console
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config HVC_RTAS
 	bool "IBM RTAS Console support"
@@ -79,7 +90,10 @@ config HVC_XEN
 	  Xen virtual console device driver
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config HVC_XEN_FRONTEND
 	bool "Xen Hypervisor Multiple Consoles support"
 	depends on HVC_XEN
@@ -88,6 +102,7 @@ config HVC_XEN_FRONTEND
 	help
 	  Xen driver for secondary virtual consoles
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 config HVC_UDBG
        bool "udbg based fake hypervisor console"
@@ -96,11 +111,21 @@ config HVC_UDBG
        default n
 <<<<<<< HEAD
 =======
+=======
+config HVC_UDBG
+       bool "udbg based fake hypervisor console"
+       depends on PPC
+       select HVC_DRIVER
+       default n
+>>>>>>> refs/remotes/origin/master
        help
          This is meant to be used during HW bring up or debugging when
 	 no other console mechanism exist but udbg, to get you a quick
 	 console for userspace. Do NOT enable in production kernels. 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config HVC_DCC
        bool "ARM JTAG DCC console"
@@ -137,3 +162,7 @@ config HVCS
 	  which will also be compiled when this driver is built as a
 	  module.
 
+<<<<<<< HEAD
+=======
+endif # TTY
+>>>>>>> refs/remotes/origin/master

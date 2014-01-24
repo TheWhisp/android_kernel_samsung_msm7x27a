@@ -58,6 +58,7 @@ ENTRY(v4_flush_user_tlb_range)
 	__INITDATA
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.type	v4_tlb_fns, #object
 ENTRY(v4_tlb_fns)
 	.long	v4_flush_user_tlb_range
@@ -68,3 +69,7 @@ ENTRY(v4_tlb_fns)
 	/* define struct cpu_tlb_fns (see <asm/tlbflush.h> and proc-macros.S) */
 	define_tlb_functions v4, v4_tlb_flags
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* define struct cpu_tlb_fns (see <asm/tlbflush.h> and proc-macros.S) */
+	define_tlb_functions v4, v4_tlb_flags
+>>>>>>> refs/remotes/origin/master

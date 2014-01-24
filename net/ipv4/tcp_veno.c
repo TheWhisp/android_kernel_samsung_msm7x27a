@@ -114,13 +114,22 @@ static void tcp_veno_cwnd_event(struct sock *sk, enum tcp_ca_event event)
 		tcp_veno_init(sk);
 }
 
+<<<<<<< HEAD
 static void tcp_veno_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
+=======
+static void tcp_veno_cong_avoid(struct sock *sk, u32 ack, u32 acked,
+				u32 in_flight)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct veno *veno = inet_csk_ca(sk);
 
 	if (!veno->doing_veno_now) {
+<<<<<<< HEAD
 		tcp_reno_cong_avoid(sk, ack, in_flight);
+=======
+		tcp_reno_cong_avoid(sk, ack, acked, in_flight);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -133,7 +142,11 @@ static void tcp_veno_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 		/* We don't have enough rtt samples to do the Veno
 		 * calculation, so we'll behave like Reno.
 		 */
+<<<<<<< HEAD
 		tcp_reno_cong_avoid(sk, ack, in_flight);
+=======
+		tcp_reno_cong_avoid(sk, ack, acked, in_flight);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		u64 target_cwnd;
 		u32 rtt;
@@ -152,7 +165,11 @@ static void tcp_veno_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 
 		if (tp->snd_cwnd <= tp->snd_ssthresh) {
 			/* Slow start.  */
+<<<<<<< HEAD
 			tcp_slow_start(tp);
+=======
+			tcp_slow_start(tp, acked);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			/* Congestion avoidance. */
 			if (veno->diff < beta) {

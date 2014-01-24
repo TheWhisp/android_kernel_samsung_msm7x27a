@@ -13,9 +13,14 @@
 #include <linux/err.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/stat.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/stat.h>
+#include <linux/pm_runtime.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mmc/host.h>
 #include <linux/mmc/card.h>
@@ -99,6 +104,10 @@ static int mmc_decode_cid(struct mmc_card *card)
 		card->cid.prod_name[3]	= UNSTUFF_BITS(resp, 72, 8);
 		card->cid.prod_name[4]	= UNSTUFF_BITS(resp, 64, 8);
 		card->cid.prod_name[5]	= UNSTUFF_BITS(resp, 56, 8);
+<<<<<<< HEAD
+=======
+		card->cid.prv		= UNSTUFF_BITS(resp, 48, 8);
+>>>>>>> refs/remotes/origin/master
 		card->cid.serial	= UNSTUFF_BITS(resp, 16, 32);
 		card->cid.month		= UNSTUFF_BITS(resp, 12, 4);
 		card->cid.year		= UNSTUFF_BITS(resp, 8, 4) + 1997;
@@ -106,10 +115,14 @@ static int mmc_decode_cid(struct mmc_card *card)
 
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: card has unknown MMCA version %d\n",
 =======
 		pr_err("%s: card has unknown MMCA version %d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: card has unknown MMCA version %d\n",
+>>>>>>> refs/remotes/origin/master
 			mmc_hostname(card->host), card->csd.mmca_vsn);
 		return -EINVAL;
 	}
@@ -144,10 +157,14 @@ static int mmc_decode_csd(struct mmc_card *card)
 	csd->structure = UNSTUFF_BITS(resp, 126, 2);
 	if (csd->structure == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: unrecognised CSD structure version %d\n",
 =======
 		pr_err("%s: unrecognised CSD structure version %d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: unrecognised CSD structure version %d\n",
+>>>>>>> refs/remotes/origin/master
 			mmc_hostname(card->host), csd->structure);
 		return -EINVAL;
 	}
@@ -208,10 +225,14 @@ static int mmc_get_ext_csd(struct mmc_card *card, u8 **new_ext_csd)
 	ext_csd = kmalloc(512, GFP_KERNEL);
 	if (!ext_csd) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: could not allocate a buffer to "
 =======
 		pr_err("%s: could not allocate a buffer to "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: could not allocate a buffer to "
+>>>>>>> refs/remotes/origin/master
 			"receive the ext_csd.\n", mmc_hostname(card->host));
 		return -ENOMEM;
 	}
@@ -234,19 +255,27 @@ static int mmc_get_ext_csd(struct mmc_card *card, u8 **new_ext_csd)
 		 */
 		if (card->csd.capacity == (4096 * 512)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: unable to read EXT_CSD "
 =======
 			pr_err("%s: unable to read EXT_CSD "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s: unable to read EXT_CSD "
+>>>>>>> refs/remotes/origin/master
 				"on a possible high capacity card. "
 				"Card will be ignored.\n",
 				mmc_hostname(card->host));
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING "%s: unable to read "
 =======
 			pr_warning("%s: unable to read "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warning("%s: unable to read "
+>>>>>>> refs/remotes/origin/master
 				"EXT_CSD, performance might "
 				"suffer.\n",
 				mmc_hostname(card->host));
@@ -259,12 +288,19 @@ static int mmc_get_ext_csd(struct mmc_card *card, u8 **new_ext_csd)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void mmc_select_card_type(struct mmc_card *card)
 {
 	struct mmc_host *host = card->host;
 	u8 card_type = card->ext_csd.raw_card_type & EXT_CSD_CARD_TYPE_MASK;
+<<<<<<< HEAD
 	unsigned int caps = host->caps, caps2 = host->caps2;
+=======
+	u32 caps = host->caps, caps2 = host->caps2;
+>>>>>>> refs/remotes/origin/master
 	unsigned int hs_max_dtr = 0;
 
 	if (card_type & EXT_CSD_CARD_TYPE_26)
@@ -290,12 +326,16 @@ static void mmc_select_card_type(struct mmc_card *card)
 	card->ext_csd.card_type = card_type;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Decode extended CSD.
  */
 static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int err = 0;
 =======
@@ -303,6 +343,11 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 	unsigned int part_size;
 	u8 hc_erase_grp_sz = 0, hc_wp_grp_sz = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err = 0, idx;
+	unsigned int part_size;
+	u8 hc_erase_grp_sz = 0, hc_wp_grp_sz = 0;
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(!card);
 
@@ -314,10 +359,14 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 	if (card->csd.structure == 3) {
 		if (card->ext_csd.raw_ext_csd_structure > 2) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: unrecognised EXT_CSD structure "
 =======
 			pr_err("%s: unrecognised EXT_CSD structure "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s: unrecognised EXT_CSD structure "
+>>>>>>> refs/remotes/origin/master
 				"version %d\n", mmc_hostname(card->host),
 					card->ext_csd.raw_ext_csd_structure);
 			err = -EINVAL;
@@ -326,8 +375,13 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 	}
 
 	card->ext_csd.rev = ext_csd[EXT_CSD_REV];
+<<<<<<< HEAD
 	if (card->ext_csd.rev > 6) {
 		printk(KERN_ERR "%s: unrecognised EXT_CSD revision %d\n",
+=======
+	if (card->ext_csd.rev > 7) {
+		pr_err("%s: unrecognised EXT_CSD revision %d\n",
+>>>>>>> refs/remotes/origin/master
 			mmc_hostname(card->host), card->ext_csd.rev);
 		err = -EINVAL;
 		goto out;
@@ -348,6 +402,7 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 		if (card->ext_csd.sectors > (2u * 1024 * 1024 * 1024) / 512)
 			mmc_card_set_blockaddr(card);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	card->ext_csd.raw_card_type = ext_csd[EXT_CSD_CARD_TYPE];
 	switch (ext_csd[EXT_CSD_CARD_TYPE] & EXT_CSD_CARD_TYPE_MASK) {
@@ -383,6 +438,11 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 	card->ext_csd.raw_card_type = ext_csd[EXT_CSD_CARD_TYPE];
 	mmc_select_card_type(card);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	card->ext_csd.raw_card_type = ext_csd[EXT_CSD_CARD_TYPE];
+	mmc_select_card_type(card);
+>>>>>>> refs/remotes/origin/master
 
 	card->ext_csd.raw_s_a_timeout = ext_csd[EXT_CSD_S_A_TIMEOUT];
 	card->ext_csd.raw_erase_timeout_mult =
@@ -414,12 +474,15 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 		 * multiples of 128K.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		card->ext_csd.boot_size = ext_csd[EXT_CSD_BOOT_MULT] << 17;
 	}
 
 	card->ext_csd.raw_hc_erase_gap_size =
 		ext_csd[EXT_CSD_PARTITION_ATTRIBUTE];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ext_csd[EXT_CSD_BOOT_MULT] && mmc_boot_partition_access(card->host)) {
 			for (idx = 0; idx < MMC_NUM_BOOT_PARTITION; idx++) {
 				part_size = ext_csd[EXT_CSD_BOOT_MULT] << 17;
@@ -433,7 +496,10 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 
 	card->ext_csd.raw_hc_erase_gap_size =
 		ext_csd[EXT_CSD_HC_WP_GRP_SIZE];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	card->ext_csd.raw_sec_trim_mult =
 		ext_csd[EXT_CSD_SEC_TRIM_MULT];
 	card->ext_csd.raw_sec_erase_mult =
@@ -452,6 +518,7 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 		if ((ext_csd[EXT_CSD_PARTITION_SUPPORT] & 0x2) &&
 		    (ext_csd[EXT_CSD_PARTITION_ATTRIBUTE] & 0x1)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			u8 hc_erase_grp_sz =
 				ext_csd[EXT_CSD_HC_ERASE_GRP_SIZE];
 			u8 hc_wp_grp_sz =
@@ -460,6 +527,11 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 				ext_csd[EXT_CSD_HC_ERASE_GRP_SIZE];
 			hc_wp_grp_sz =
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			hc_erase_grp_sz =
+				ext_csd[EXT_CSD_HC_ERASE_GRP_SIZE];
+			hc_wp_grp_sz =
+>>>>>>> refs/remotes/origin/master
 				ext_csd[EXT_CSD_HC_WP_GRP_SIZE];
 
 			card->ext_csd.enhanced_area_en = 1;
@@ -489,7 +561,10 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 			card->ext_csd.enhanced_area_size = -EINVAL;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * General purpose partition feature support --
@@ -526,7 +601,10 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 					MMC_BLK_DATA_AREA_GP);
 			}
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		card->ext_csd.sec_trim_mult =
 			ext_csd[EXT_CSD_SEC_TRIM_MULT];
 		card->ext_csd.sec_erase_mult =
@@ -536,11 +614,14 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 		card->ext_csd.trim_timeout = 300 *
 			ext_csd[EXT_CSD_TRIM_MULT];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 	if (card->ext_csd.rev >= 5)
 		card->ext_csd.rel_param = ext_csd[EXT_CSD_WR_REL_PARAM];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Note that the call to mmc_part_add above defaults to read
@@ -549,15 +630,45 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 		 */
 		card->ext_csd.boot_ro_lock = ext_csd[EXT_CSD_BOOT_WP];
 		card->ext_csd.boot_ro_lockable = true;
+<<<<<<< HEAD
 	}
 
 	if (card->ext_csd.rev >= 5) {
 		/* check whether the eMMC card support BKOPS */
+=======
+
+		/* Save power class values */
+		card->ext_csd.raw_pwr_cl_52_195 =
+			ext_csd[EXT_CSD_PWR_CL_52_195];
+		card->ext_csd.raw_pwr_cl_26_195 =
+			ext_csd[EXT_CSD_PWR_CL_26_195];
+		card->ext_csd.raw_pwr_cl_52_360 =
+			ext_csd[EXT_CSD_PWR_CL_52_360];
+		card->ext_csd.raw_pwr_cl_26_360 =
+			ext_csd[EXT_CSD_PWR_CL_26_360];
+		card->ext_csd.raw_pwr_cl_200_195 =
+			ext_csd[EXT_CSD_PWR_CL_200_195];
+		card->ext_csd.raw_pwr_cl_200_360 =
+			ext_csd[EXT_CSD_PWR_CL_200_360];
+		card->ext_csd.raw_pwr_cl_ddr_52_195 =
+			ext_csd[EXT_CSD_PWR_CL_DDR_52_195];
+		card->ext_csd.raw_pwr_cl_ddr_52_360 =
+			ext_csd[EXT_CSD_PWR_CL_DDR_52_360];
+	}
+
+	if (card->ext_csd.rev >= 5) {
+		/* Adjust production date as per JEDEC JESD84-B451 */
+		if (card->cid.year < 2010)
+			card->cid.year += 16;
+
+		/* check whether the eMMC card supports BKOPS */
+>>>>>>> refs/remotes/origin/master
 		if (ext_csd[EXT_CSD_BKOPS_SUPPORT] & 0x1) {
 			card->ext_csd.bkops = 1;
 			card->ext_csd.bkops_en = ext_csd[EXT_CSD_BKOPS_EN];
 			card->ext_csd.raw_bkops_status =
 				ext_csd[EXT_CSD_BKOPS_STATUS];
+<<<<<<< HEAD
 			if (!card->ext_csd.bkops_en &&
 				card->host->caps2 & MMC_CAP2_INIT_BKOPS) {
 				err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
@@ -568,6 +679,11 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 				else
 					card->ext_csd.bkops_en = 1;
 			}
+=======
+			if (!card->ext_csd.bkops_en)
+				pr_info("%s: BKOPS_EN bit is not set\n",
+					mmc_hostname(card->host));
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* check whether the eMMC card supports HPI */
@@ -587,8 +703,23 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 
 		card->ext_csd.rel_param = ext_csd[EXT_CSD_WR_REL_PARAM];
 		card->ext_csd.rst_n_function = ext_csd[EXT_CSD_RST_N_FUNCTION];
+<<<<<<< HEAD
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		/*
+		 * RPMB regions are defined in multiples of 128K.
+		 */
+		card->ext_csd.raw_rpmb_size_mult = ext_csd[EXT_CSD_RPMB_MULT];
+		if (ext_csd[EXT_CSD_RPMB_MULT] && mmc_host_cmd23(card->host)) {
+			mmc_part_add(card, ext_csd[EXT_CSD_RPMB_MULT] << 17,
+				EXT_CSD_PART_CONFIG_ACC_RPMB,
+				"rpmb", 0, false,
+				MMC_BLK_DATA_AREA_RPMB);
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	card->ext_csd.raw_erased_mem_count = ext_csd[EXT_CSD_ERASED_MEM_CONT];
 	if (ext_csd[EXT_CSD_ERASED_MEM_CONT])
@@ -597,7 +728,10 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 		card->erased_byte = 0x0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* eMMC v4.5 or later */
 	if (card->ext_csd.rev >= 6) {
 		card->ext_csd.feature_support |= MMC_DISCARD_FEATURE;
@@ -626,13 +760,24 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 		} else {
 			card->ext_csd.data_tag_unit_size = 0;
 		}
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		card->ext_csd.max_packed_writes =
 			ext_csd[EXT_CSD_MAX_PACKED_WRITES];
 		card->ext_csd.max_packed_reads =
 			ext_csd[EXT_CSD_MAX_PACKED_READS];
+<<<<<<< HEAD
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else {
+		card->ext_csd.data_sector_size = 512;
+	}
+
+>>>>>>> refs/remotes/origin/master
 out:
 	return err;
 }
@@ -654,6 +799,7 @@ static int mmc_compare_ext_csds(struct mmc_card *card, unsigned bus_width)
 	err = mmc_get_ext_csd(card, &bw_ext_csd);
 
 	if (err || bw_ext_csd == NULL) {
+<<<<<<< HEAD
 		if (bus_width != MMC_BUS_WIDTH_1)
 			err = -EINVAL;
 		goto out;
@@ -668,6 +814,14 @@ static int mmc_compare_ext_csds(struct mmc_card *card, unsigned bus_width)
 =======
 	err = !((card->ext_csd.raw_partition_support ==
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = -EINVAL;
+		goto out;
+	}
+
+	/* only compare read only fields */
+	err = !((card->ext_csd.raw_partition_support ==
+>>>>>>> refs/remotes/origin/master
 			bw_ext_csd[EXT_CSD_PARTITION_SUPPORT]) &&
 		(card->ext_csd.raw_erased_mem_count ==
 			bw_ext_csd[EXT_CSD_ERASED_MEM_CONT]) &&
@@ -700,7 +854,27 @@ static int mmc_compare_ext_csds(struct mmc_card *card, unsigned bus_width)
 		(card->ext_csd.raw_sectors[2] ==
 			bw_ext_csd[EXT_CSD_SEC_CNT + 2]) &&
 		(card->ext_csd.raw_sectors[3] ==
+<<<<<<< HEAD
 			bw_ext_csd[EXT_CSD_SEC_CNT + 3]));
+=======
+			bw_ext_csd[EXT_CSD_SEC_CNT + 3]) &&
+		(card->ext_csd.raw_pwr_cl_52_195 ==
+			bw_ext_csd[EXT_CSD_PWR_CL_52_195]) &&
+		(card->ext_csd.raw_pwr_cl_26_195 ==
+			bw_ext_csd[EXT_CSD_PWR_CL_26_195]) &&
+		(card->ext_csd.raw_pwr_cl_52_360 ==
+			bw_ext_csd[EXT_CSD_PWR_CL_52_360]) &&
+		(card->ext_csd.raw_pwr_cl_26_360 ==
+			bw_ext_csd[EXT_CSD_PWR_CL_26_360]) &&
+		(card->ext_csd.raw_pwr_cl_200_195 ==
+			bw_ext_csd[EXT_CSD_PWR_CL_200_195]) &&
+		(card->ext_csd.raw_pwr_cl_200_360 ==
+			bw_ext_csd[EXT_CSD_PWR_CL_200_360]) &&
+		(card->ext_csd.raw_pwr_cl_ddr_52_195 ==
+			bw_ext_csd[EXT_CSD_PWR_CL_DDR_52_195]) &&
+		(card->ext_csd.raw_pwr_cl_ddr_52_360 ==
+			bw_ext_csd[EXT_CSD_PWR_CL_DDR_52_360]));
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		err = -EINVAL;
 
@@ -721,10 +895,19 @@ MMC_DEV_ATTR(hwrev, "0x%x\n", card->cid.hwrev);
 MMC_DEV_ATTR(manfid, "0x%06x\n", card->cid.manfid);
 MMC_DEV_ATTR(name, "%s\n", card->cid.prod_name);
 MMC_DEV_ATTR(oemid, "0x%04x\n", card->cid.oemid);
+<<<<<<< HEAD
+=======
+MMC_DEV_ATTR(prv, "0x%x\n", card->cid.prv);
+>>>>>>> refs/remotes/origin/master
 MMC_DEV_ATTR(serial, "0x%08x\n", card->cid.serial);
 MMC_DEV_ATTR(enhanced_area_offset, "%llu\n",
 		card->ext_csd.enhanced_area_offset);
 MMC_DEV_ATTR(enhanced_area_size, "%u\n", card->ext_csd.enhanced_area_size);
+<<<<<<< HEAD
+=======
+MMC_DEV_ATTR(raw_rpmb_size_mult, "%#x\n", card->ext_csd.raw_rpmb_size_mult);
+MMC_DEV_ATTR(rel_sectors, "%#x\n", card->ext_csd.rel_sectors);
+>>>>>>> refs/remotes/origin/master
 
 static struct attribute *mmc_std_attrs[] = {
 	&dev_attr_cid.attr,
@@ -737,9 +920,18 @@ static struct attribute *mmc_std_attrs[] = {
 	&dev_attr_manfid.attr,
 	&dev_attr_name.attr,
 	&dev_attr_oemid.attr,
+<<<<<<< HEAD
 	&dev_attr_serial.attr,
 	&dev_attr_enhanced_area_offset.attr,
 	&dev_attr_enhanced_area_size.attr,
+=======
+	&dev_attr_prv.attr,
+	&dev_attr_serial.attr,
+	&dev_attr_enhanced_area_offset.attr,
+	&dev_attr_enhanced_area_size.attr,
+	&dev_attr_raw_rpmb_size_mult.attr,
+	&dev_attr_rel_sectors.attr,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -758,18 +950,28 @@ static struct device_type mmc_type = {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Select the PowerClass for the current bus width
  * If power class is defined for 4/8 bit bus in the
  * extended CSD register, select it by executing the
  * mmc_switch command.
  */
 static int mmc_select_powerclass(struct mmc_card *card,
+<<<<<<< HEAD
 		unsigned int bus_width, u8 *ext_csd)
 {
 	int err = 0;
 	unsigned int pwrclass_val;
 	unsigned int index = 0;
+=======
+		unsigned int bus_width)
+{
+	int err = 0;
+	unsigned int pwrclass_val = 0;
+>>>>>>> refs/remotes/origin/master
 	struct mmc_host *host;
 
 	BUG_ON(!card);
@@ -777,9 +979,12 @@ static int mmc_select_powerclass(struct mmc_card *card,
 	host = card->host;
 	BUG_ON(!host);
 
+<<<<<<< HEAD
 	if (ext_csd == NULL)
 		return 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Power class selection is supported for versions >= 4.0 */
 	if (card->csd.mmca_vsn < CSD_SPEC_VER_4)
 		return 0;
@@ -791,6 +996,7 @@ static int mmc_select_powerclass(struct mmc_card *card,
 	switch (1 << host->ios.vdd) {
 	case MMC_VDD_165_195:
 		if (host->ios.clock <= 26000000)
+<<<<<<< HEAD
 			index = EXT_CSD_PWR_CL_26_195;
 		else if	(host->ios.clock <= 52000000)
 			index = (bus_width <= EXT_CSD_BUS_WIDTH_8) ?
@@ -798,6 +1004,15 @@ static int mmc_select_powerclass(struct mmc_card *card,
 				EXT_CSD_PWR_CL_DDR_52_195;
 		else if (host->ios.clock <= 200000000)
 			index = EXT_CSD_PWR_CL_200_195;
+=======
+			pwrclass_val = card->ext_csd.raw_pwr_cl_26_195;
+		else if	(host->ios.clock <= 52000000)
+			pwrclass_val = (bus_width <= EXT_CSD_BUS_WIDTH_8) ?
+				card->ext_csd.raw_pwr_cl_52_195 :
+				card->ext_csd.raw_pwr_cl_ddr_52_195;
+		else if (host->ios.clock <= 200000000)
+			pwrclass_val = card->ext_csd.raw_pwr_cl_200_195;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MMC_VDD_27_28:
 	case MMC_VDD_28_29:
@@ -809,6 +1024,7 @@ static int mmc_select_powerclass(struct mmc_card *card,
 	case MMC_VDD_34_35:
 	case MMC_VDD_35_36:
 		if (host->ios.clock <= 26000000)
+<<<<<<< HEAD
 			index = EXT_CSD_PWR_CL_26_360;
 		else if	(host->ios.clock <= 52000000)
 			index = (bus_width <= EXT_CSD_BUS_WIDTH_8) ?
@@ -816,6 +1032,15 @@ static int mmc_select_powerclass(struct mmc_card *card,
 				EXT_CSD_PWR_CL_DDR_52_360;
 		else if (host->ios.clock <= 200000000)
 			index = EXT_CSD_PWR_CL_200_360;
+=======
+			pwrclass_val = card->ext_csd.raw_pwr_cl_26_360;
+		else if	(host->ios.clock <= 52000000)
+			pwrclass_val = (bus_width <= EXT_CSD_BUS_WIDTH_8) ?
+				card->ext_csd.raw_pwr_cl_52_360 :
+				card->ext_csd.raw_pwr_cl_ddr_52_360;
+		else if (host->ios.clock <= 200000000)
+			pwrclass_val = card->ext_csd.raw_pwr_cl_200_360;
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		pr_warning("%s: Voltage range not supported "
@@ -823,8 +1048,11 @@ static int mmc_select_powerclass(struct mmc_card *card,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	pwrclass_val = ext_csd[index];
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (bus_width & (EXT_CSD_BUS_WIDTH_8 | EXT_CSD_DDR_BUS_WIDTH_8))
 		pwrclass_val = (pwrclass_val & EXT_CSD_PWR_CL_8BIT_MASK) >>
 				EXT_CSD_PWR_CL_8BIT_SHIFT;
@@ -849,7 +1077,11 @@ static int mmc_select_powerclass(struct mmc_card *card,
  */
 static int mmc_select_hs200(struct mmc_card *card)
 {
+<<<<<<< HEAD
 	int idx, err = 0;
+=======
+	int idx, err = -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	struct mmc_host *host;
 	static unsigned ext_csd_bits[] = {
 		EXT_CSD_BUS_WIDTH_4,
@@ -865,10 +1097,19 @@ static int mmc_select_hs200(struct mmc_card *card)
 	host = card->host;
 
 	if (card->ext_csd.card_type & EXT_CSD_CARD_TYPE_SDR_1_2V &&
+<<<<<<< HEAD
 	    host->caps2 & MMC_CAP2_HS200_1_2V_SDR)
 		if (mmc_set_signal_voltage(host, MMC_SIGNAL_VOLTAGE_120, 0))
 			err = mmc_set_signal_voltage(host,
 						     MMC_SIGNAL_VOLTAGE_180, 0);
+=======
+			host->caps2 & MMC_CAP2_HS200_1_2V_SDR)
+		err = __mmc_set_signal_voltage(host, MMC_SIGNAL_VOLTAGE_120);
+
+	if (err && card->ext_csd.card_type & EXT_CSD_CARD_TYPE_SDR_1_8V &&
+			host->caps2 & MMC_CAP2_HS200_1_8V_SDR)
+		err = __mmc_set_signal_voltage(host, MMC_SIGNAL_VOLTAGE_180);
+>>>>>>> refs/remotes/origin/master
 
 	/* If fails try again during next card power cycle */
 	if (err)
@@ -917,7 +1158,10 @@ err:
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Handle the detection and initialisation of a card.
  *
  * In the case of a resume, "oldcard" will contain the card
@@ -937,24 +1181,34 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 	WARN_ON(!host->claimed);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Set correct bus mode for MMC before attempting init */
 	if (!mmc_host_is_spi(host))
 		mmc_set_bus_mode(host, MMC_BUSMODE_OPENDRAIN);
 
+<<<<<<< HEAD
 	/* Initialization should be done at 3.3 V I/O voltage. */
 	mmc_set_signal_voltage(host, MMC_SIGNAL_VOLTAGE_330, 0);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Since we're changing the OCR value, we seem to
 	 * need to tell some cards to go back to the idle
 	 * state.  We wait 1ms to give cards time to
 	 * respond.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	 * mmc_go_idle is needed for eMMC that are asleep
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * mmc_go_idle is needed for eMMC that are asleep
+>>>>>>> refs/remotes/origin/master
 	 */
 	mmc_go_idle(host);
 
@@ -999,6 +1253,10 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 			goto err;
 		}
 
+<<<<<<< HEAD
+=======
+		card->ocr = ocr;
+>>>>>>> refs/remotes/origin/master
 		card->type = MMC_TYPE_MMC;
 		card->rca = 1;
 		memcpy(card->raw_cid, cid, sizeof(card->raw_cid));
@@ -1062,9 +1320,12 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 
 		/* Erase size depends on CSD and Extended CSD */
 		mmc_set_erase_size(card);
+<<<<<<< HEAD
 
 		if (card->ext_csd.sectors && (rocr & MMC_CARD_SECTOR_ADDR))
 			mmc_card_set_blockaddr(card);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1072,16 +1333,22 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 	 * bit.  This bit will be lost every time after a reset or power off.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (card->ext_csd.enhanced_area_en) {
 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
 				 EXT_CSD_ERASE_GROUP_DEF, 1, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (card->ext_csd.enhanced_area_en ||
 	    (card->ext_csd.rev >= 3 && (host->caps2 & MMC_CAP2_HC_ERASE_SZ))) {
 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
 				 EXT_CSD_ERASE_GROUP_DEF, 1,
 				 card->ext_csd.generic_cmd6_time);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (err && err != -EBADMSG)
 			goto free_card;
@@ -1120,6 +1387,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * Activate high speed (if supported)
 	 */
 	if ((card->ext_csd.hs_max_dtr != 0) &&
@@ -1132,6 +1400,11 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 	 */
 	if ((host->caps2 & MMC_CAP2_POWEROFF_NOTIFY) &&
 	    (card->ext_csd.rev >= 6)) {
+=======
+	 * Enable power_off_notification byte in the ext_csd register
+	 */
+	if (card->ext_csd.rev >= 6) {
+>>>>>>> refs/remotes/origin/master
 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
 				 EXT_CSD_POWER_OFF_NOTIFICATION,
 				 EXT_CSD_POWER_ON,
@@ -1144,7 +1417,11 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 		 * so check for success and update the flag
 		 */
 		if (!err)
+<<<<<<< HEAD
 			card->poweroff_notify_state = MMC_POWERED_ON;
+=======
+			card->ext_csd.power_off_notification = EXT_CSD_POWER_ON;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1160,11 +1437,15 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 					 EXT_CSD_HS_TIMING, 1,
 					 card->ext_csd.generic_cmd6_time);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (err && err != -EBADMSG)
 			goto free_card;
 
 		if (err) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			printk(KERN_WARNING "%s: switch to highspeed failed\n",
 			       mmc_hostname(card->host));
@@ -1173,6 +1454,8 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 			mmc_card_set_highspeed(card);
 			mmc_set_timing(card->host, MMC_TIMING_MMC_HS);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			pr_warning("%s: switch to highspeed failed\n",
 			       mmc_hostname(card->host));
 			err = 0;
@@ -1186,7 +1469,10 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 				mmc_card_set_highspeed(card);
 				mmc_set_timing(card->host, MMC_TIMING_MMC_HS);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1196,12 +1482,20 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 	max_dtr = (unsigned int)-1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mmc_card_highspeed(card)) {
 =======
 	if (mmc_card_highspeed(card) || mmc_card_hs200(card)) {
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (max_dtr > card->ext_csd.hs_max_dtr)
 			max_dtr = card->ext_csd.hs_max_dtr;
+=======
+	if (mmc_card_highspeed(card) || mmc_card_hs200(card)) {
+		if (max_dtr > card->ext_csd.hs_max_dtr)
+			max_dtr = card->ext_csd.hs_max_dtr;
+		if (mmc_card_highspeed(card) && (max_dtr > 52000000))
+			max_dtr = 52000000;
+>>>>>>> refs/remotes/origin/master
 	} else if (max_dtr > card->csd.max_dtr) {
 		max_dtr = card->csd.max_dtr;
 	}
@@ -1226,10 +1520,13 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * Activate wide bus and DDR (if supported).
 	 */
 	if ((card->csd.mmca_vsn >= CSD_SPEC_VER_4) &&
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Indicate HS200 SDR mode (if supported).
 	 */
 	if (mmc_card_hs200(card)) {
@@ -1262,7 +1559,11 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 
 		ext_csd_bits = (bus_width == MMC_BUS_WIDTH_8) ?
 				EXT_CSD_BUS_WIDTH_8 : EXT_CSD_BUS_WIDTH_4;
+<<<<<<< HEAD
 		err = mmc_select_powerclass(card, ext_csd_bits, ext_csd);
+=======
+		err = mmc_select_powerclass(card, ext_csd_bits);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			pr_warning("%s: power class selection to bus width %d"
 				   " failed\n", mmc_hostname(card->host),
@@ -1274,7 +1575,10 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 	 */
 	if (!mmc_card_hs200(card) &&
 	    (card->csd.mmca_vsn >= CSD_SPEC_VER_4) &&
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	    (host->caps & (MMC_CAP_4_BIT_DATA | MMC_CAP_8_BIT_DATA))) {
 		static unsigned ext_csd_bits[][2] = {
 			{ EXT_CSD_BUS_WIDTH_8, EXT_CSD_DDR_BUS_WIDTH_8 },
@@ -1297,6 +1601,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 			if (bus_width == MMC_BUS_WIDTH_1)
 				ddr = 0; /* no DDR for 1-bit width */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
 					 EXT_CSD_BUS_WIDTH,
 					 ext_csd_bits[idx][0],
@@ -1304,6 +1609,9 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 =======
 			err = mmc_select_powerclass(card, ext_csd_bits[idx][0],
 						    ext_csd);
+=======
+			err = mmc_select_powerclass(card, ext_csd_bits[idx][0]);
+>>>>>>> refs/remotes/origin/master
 			if (err)
 				pr_warning("%s: power class selection to "
 					   "bus width %d failed\n",
@@ -1314,7 +1622,10 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 					 EXT_CSD_BUS_WIDTH,
 					 ext_csd_bits[idx][0],
 					 card->ext_csd.generic_cmd6_time);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!err) {
 				mmc_set_bus_width(card->host, bus_width);
 
@@ -1335,6 +1646,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 
 		if (!err && ddr) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
 					 EXT_CSD_BUS_WIDTH,
 					 ext_csd_bits[idx][1],
@@ -1345,6 +1657,9 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 =======
 			err = mmc_select_powerclass(card, ext_csd_bits[idx][1],
 						    ext_csd);
+=======
+			err = mmc_select_powerclass(card, ext_csd_bits[idx][1]);
+>>>>>>> refs/remotes/origin/master
 			if (err)
 				pr_warning("%s: power class selection to "
 					   "bus width %d ddr %d failed\n",
@@ -1358,7 +1673,10 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 		}
 		if (err) {
 			pr_warning("%s: switch to bus width %d ddr %d "
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				"failed\n", mmc_hostname(card->host),
 				1 << bus_width, ddr);
 			goto free_card;
@@ -1378,8 +1696,13 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 			 * WARNING: eMMC rules are NOT the same as SD DDR
 			 */
 			if (ddr == MMC_1_2V_DDR_MODE) {
+<<<<<<< HEAD
 				err = mmc_set_signal_voltage(host,
 					MMC_SIGNAL_VOLTAGE_120, 0);
+=======
+				err = __mmc_set_signal_voltage(host,
+					MMC_SIGNAL_VOLTAGE_120);
+>>>>>>> refs/remotes/origin/master
 				if (err)
 					goto err;
 			}
@@ -1390,7 +1713,10 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Enable HPI feature (if supported)
 	 */
@@ -1434,9 +1760,19 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 		}
 	}
 
+<<<<<<< HEAD
 	if ((host->caps2 & MMC_CAP2_PACKED_CMD) &&
 			(card->ext_csd.max_packed_writes > 0) &&
 			(card->ext_csd.max_packed_reads > 0)) {
+=======
+	/*
+	 * The mandatory minimum values are defined for packed command.
+	 * read: 5, write: 3
+	 */
+	if (card->ext_csd.max_packed_writes >= 3 &&
+	    card->ext_csd.max_packed_reads >= 5 &&
+	    host->caps2 & MMC_CAP2_PACKED_CMD) {
+>>>>>>> refs/remotes/origin/master
 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
 				EXT_CSD_EXP_EVENTS_CTRL,
 				EXT_CSD_PACKED_EVENT_EN,
@@ -1444,13 +1780,19 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 		if (err && err != -EBADMSG)
 			goto free_card;
 		if (err) {
+<<<<<<< HEAD
 			pr_warning("%s: Enabling packed event failed\n",
 					mmc_hostname(card->host));
+=======
+			pr_warn("%s: Enabling packed event failed\n",
+				mmc_hostname(card->host));
+>>>>>>> refs/remotes/origin/master
 			card->ext_csd.packed_event_en = 0;
 			err = 0;
 		} else {
 			card->ext_csd.packed_event_en = 1;
 		}
+<<<<<<< HEAD
 
 	}
 
@@ -1472,6 +1814,10 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (!oldcard)
 		host->card = card;
 
@@ -1487,6 +1833,7 @@ err:
 	return err;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static int mmc_poweroff_notify(struct mmc_host *host, int notify)
@@ -1524,6 +1871,76 @@ static int mmc_poweroff_notify(struct mmc_host *host, int notify)
 	return err;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int mmc_can_sleep(struct mmc_card *card)
+{
+	return (card && card->ext_csd.rev >= 3);
+}
+
+static int mmc_sleep(struct mmc_host *host)
+{
+	struct mmc_command cmd = {0};
+	struct mmc_card *card = host->card;
+	int err;
+
+	if (host->caps2 & MMC_CAP2_NO_SLEEP_CMD)
+		return 0;
+
+	err = mmc_deselect_cards(host);
+	if (err)
+		return err;
+
+	cmd.opcode = MMC_SLEEP_AWAKE;
+	cmd.arg = card->rca << 16;
+	cmd.arg |= 1 << 15;
+
+	cmd.flags = MMC_RSP_R1B | MMC_CMD_AC;
+	err = mmc_wait_for_cmd(host, &cmd, 0);
+	if (err)
+		return err;
+
+	/*
+	 * If the host does not wait while the card signals busy, then we will
+	 * will have to wait the sleep/awake timeout.  Note, we cannot use the
+	 * SEND_STATUS command to poll the status because that command (and most
+	 * others) is invalid while the card sleeps.
+	 */
+	if (!(host->caps & MMC_CAP_WAIT_WHILE_BUSY))
+		mmc_delay(DIV_ROUND_UP(card->ext_csd.sa_timeout, 10000));
+
+	return err;
+}
+
+static int mmc_can_poweroff_notify(const struct mmc_card *card)
+{
+	return card &&
+		mmc_card_mmc(card) &&
+		(card->ext_csd.power_off_notification == EXT_CSD_POWER_ON);
+}
+
+static int mmc_poweroff_notify(struct mmc_card *card, unsigned int notify_type)
+{
+	unsigned int timeout = card->ext_csd.generic_cmd6_time;
+	int err;
+
+	/* Use EXT_CSD_POWER_OFF_SHORT as default notification type. */
+	if (notify_type == EXT_CSD_POWER_OFF_LONG)
+		timeout = card->ext_csd.power_off_longtime;
+
+	err = __mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
+			EXT_CSD_POWER_OFF_NOTIFICATION,
+			notify_type, timeout, true, false);
+	if (err)
+		pr_err("%s: Power Off Notification timed out, %u\n",
+		       mmc_hostname(card->host), timeout);
+
+	/* Disable the power off notification after the switch operation. */
+	card->ext_csd.power_off_notification = EXT_CSD_NO_POWER_NOTIFICATION;
+
+	return err;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Host is being removed. Free up the current card.
  */
@@ -1533,10 +1950,14 @@ static void mmc_remove(struct mmc_host *host)
 	BUG_ON(!host->card);
 
 	mmc_remove_card(host->card);
+<<<<<<< HEAD
 
 	mmc_claim_host(host);
 	host->card = NULL;
 	mmc_release_host(host);
+=======
+	host->card = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1557,14 +1978,22 @@ static void mmc_detect(struct mmc_host *host)
 	BUG_ON(!host);
 	BUG_ON(!host->card);
 
+<<<<<<< HEAD
 	mmc_claim_host(host);
+=======
+	mmc_get_card(host->card);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Just check if our card has been removed.
 	 */
 	err = _mmc_detect_card_removed(host);
 
+<<<<<<< HEAD
 	mmc_release_host(host);
+=======
+	mmc_put_card(host->card);
+>>>>>>> refs/remotes/origin/master
 
 	if (err) {
 		mmc_remove(host);
@@ -1576,17 +2005,26 @@ static void mmc_detect(struct mmc_host *host)
 	}
 }
 
+<<<<<<< HEAD
 /*
  * Suspend callback from host.
  */
 static int mmc_suspend(struct mmc_host *host)
 {
 	int err = 0;
+=======
+static int _mmc_suspend(struct mmc_host *host, bool is_suspend)
+{
+	int err = 0;
+	unsigned int notify_type = is_suspend ? EXT_CSD_POWER_OFF_SHORT :
+					EXT_CSD_POWER_OFF_LONG;
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(!host);
 	BUG_ON(!host->card);
 
 	mmc_claim_host(host);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (mmc_card_can_sleep(host))
 		err = mmc_card_sleep(host);
@@ -1616,11 +2054,58 @@ static int mmc_suspend(struct mmc_host *host)
 			~(MMC_STATE_HIGHSPEED | MMC_STATE_HIGHSPEED_200);
 >>>>>>> refs/remotes/origin/cm-10.0
 	mmc_release_host(host);
+=======
+
+	if (mmc_card_suspended(host->card))
+		goto out;
+
+	if (mmc_card_doing_bkops(host->card)) {
+		err = mmc_stop_bkops(host->card);
+		if (err)
+			goto out;
+	}
+
+	err = mmc_cache_ctrl(host, 0);
+	if (err)
+		goto out;
+
+	if (mmc_can_poweroff_notify(host->card) &&
+		((host->caps2 & MMC_CAP2_FULL_PWR_CYCLE) || !is_suspend))
+		err = mmc_poweroff_notify(host->card, notify_type);
+	else if (mmc_can_sleep(host->card))
+		err = mmc_sleep(host);
+	else if (!mmc_host_is_spi(host))
+		err = mmc_deselect_cards(host);
+	host->card->state &= ~(MMC_STATE_HIGHSPEED | MMC_STATE_HIGHSPEED_200);
+
+	if (!err) {
+		mmc_power_off(host);
+		mmc_card_set_suspended(host->card);
+	}
+out:
+	mmc_release_host(host);
+	return err;
+}
+
+/*
+ * Suspend callback
+ */
+static int mmc_suspend(struct mmc_host *host)
+{
+	int err;
+
+	err = _mmc_suspend(host, true);
+	if (!err) {
+		pm_runtime_disable(&host->card->dev);
+		pm_runtime_set_suspended(&host->card->dev);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
 
 /*
+<<<<<<< HEAD
  * Resume callback from host.
  *
  * This function tries to determine if the same card is still present
@@ -1629,11 +2114,20 @@ static int mmc_suspend(struct mmc_host *host)
 static int mmc_resume(struct mmc_host *host)
 {
 	int err;
+=======
+ * This function tries to determine if the same card is still present
+ * and, if so, restore all state to it.
+ */
+static int _mmc_resume(struct mmc_host *host)
+{
+	int err = 0;
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(!host);
 	BUG_ON(!host->card);
 
 	mmc_claim_host(host);
+<<<<<<< HEAD
 	err = mmc_init_card(host, host->ocr, host->card);
 	mmc_release_host(host);
 
@@ -1672,10 +2166,60 @@ static int mmc_sleep(struct mmc_host *host)
 >>>>>>> refs/remotes/origin/cm-10.0
 				 mmc_hostname(host), err);
 	}
+=======
+
+	if (!mmc_card_suspended(host->card))
+		goto out;
+
+	mmc_power_up(host, host->card->ocr);
+	err = mmc_init_card(host, host->card->ocr, host->card);
+	mmc_card_clr_suspended(host->card);
+
+out:
+	mmc_release_host(host);
+	return err;
+}
+
+/*
+ * Shutdown callback
+ */
+static int mmc_shutdown(struct mmc_host *host)
+{
+	int err = 0;
+
+	/*
+	 * In a specific case for poweroff notify, we need to resume the card
+	 * before we can shutdown it properly.
+	 */
+	if (mmc_can_poweroff_notify(host->card) &&
+		!(host->caps2 & MMC_CAP2_FULL_PWR_CYCLE))
+		err = _mmc_resume(host);
+
+	if (!err)
+		err = _mmc_suspend(host, false);
 
 	return err;
 }
 
+/*
+ * Callback for resume.
+ */
+static int mmc_resume(struct mmc_host *host)
+{
+	int err = 0;
+
+	if (!(host->caps & MMC_CAP_RUNTIME_RESUME)) {
+		err = _mmc_resume(host);
+		pm_runtime_set_active(&host->card->dev);
+		pm_runtime_mark_last_busy(&host->card->dev);
+	}
+	pm_runtime_enable(&host->card->dev);
+>>>>>>> refs/remotes/origin/master
+
+	return err;
+}
+
+<<<<<<< HEAD
 static int mmc_awake(struct mmc_host *host)
 {
 	struct mmc_card *card = host->card;
@@ -1687,19 +2231,70 @@ static int mmc_awake(struct mmc_host *host)
 			pr_debug("%s: Error %d while awaking sleeping card",
 				 mmc_hostname(host), err);
 	}
+=======
+/*
+ * Callback for runtime_suspend.
+ */
+static int mmc_runtime_suspend(struct mmc_host *host)
+{
+	int err;
+
+	if (!(host->caps & MMC_CAP_AGGRESSIVE_PM))
+		return 0;
+
+	err = _mmc_suspend(host, true);
+	if (err)
+		pr_err("%s: error %d doing aggessive suspend\n",
+			mmc_hostname(host), err);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
 
+<<<<<<< HEAD
 static const struct mmc_bus_ops mmc_ops = {
 	.awake = mmc_awake,
 	.sleep = mmc_sleep,
+=======
+/*
+ * Callback for runtime_resume.
+ */
+static int mmc_runtime_resume(struct mmc_host *host)
+{
+	int err;
+
+	if (!(host->caps & (MMC_CAP_AGGRESSIVE_PM | MMC_CAP_RUNTIME_RESUME)))
+		return 0;
+
+	err = _mmc_resume(host);
+	if (err)
+		pr_err("%s: error %d doing aggessive resume\n",
+			mmc_hostname(host), err);
+
+	return 0;
+}
+
+static int mmc_power_restore(struct mmc_host *host)
+{
+	int ret;
+
+	host->card->state &= ~(MMC_STATE_HIGHSPEED | MMC_STATE_HIGHSPEED_200);
+	mmc_claim_host(host);
+	ret = mmc_init_card(host, host->card->ocr, host->card);
+	mmc_release_host(host);
+
+	return ret;
+}
+
+static const struct mmc_bus_ops mmc_ops = {
+>>>>>>> refs/remotes/origin/master
 	.remove = mmc_remove,
 	.detect = mmc_detect,
 	.suspend = NULL,
 	.resume = NULL,
 	.power_restore = mmc_power_restore,
 	.alive = mmc_alive,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	.poweroff_notify = mmc_poweroff_notify,
@@ -1709,16 +2304,30 @@ static const struct mmc_bus_ops mmc_ops = {
 static const struct mmc_bus_ops mmc_ops_unsafe = {
 	.awake = mmc_awake,
 	.sleep = mmc_sleep,
+=======
+	.shutdown = mmc_shutdown,
+};
+
+static const struct mmc_bus_ops mmc_ops_unsafe = {
+>>>>>>> refs/remotes/origin/master
 	.remove = mmc_remove,
 	.detect = mmc_detect,
 	.suspend = mmc_suspend,
 	.resume = mmc_resume,
+<<<<<<< HEAD
 	.power_restore = mmc_power_restore,
 	.alive = mmc_alive,
 <<<<<<< HEAD
 =======
 	.poweroff_notify = mmc_poweroff_notify,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.runtime_suspend = mmc_runtime_suspend,
+	.runtime_resume = mmc_runtime_resume,
+	.power_restore = mmc_power_restore,
+	.alive = mmc_alive,
+	.shutdown = mmc_shutdown,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void mmc_attach_bus_ops(struct mmc_host *host)
@@ -1738,18 +2347,28 @@ static void mmc_attach_bus_ops(struct mmc_host *host)
 int mmc_attach_mmc(struct mmc_host *host)
 {
 	int err;
+<<<<<<< HEAD
 	u32 ocr;
+=======
+	u32 ocr, rocr;
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(!host);
 	WARN_ON(!host->claimed);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Set correct bus mode for MMC before attempting attach */
 	if (!mmc_host_is_spi(host))
 		mmc_set_bus_mode(host, MMC_BUSMODE_OPENDRAIN);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	err = mmc_send_op_cond(host, 0, &ocr);
 	if (err)
 		return err;
@@ -1767,6 +2386,7 @@ int mmc_attach_mmc(struct mmc_host *host)
 			goto err;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Sanity check the voltages that the card claims to
 	 * support.
@@ -1783,11 +2403,18 @@ int mmc_attach_mmc(struct mmc_host *host)
 	}
 
 	host->ocr = mmc_select_voltage(host, ocr);
+=======
+	rocr = mmc_select_voltage(host, ocr);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Can we support the voltage of the card?
 	 */
+<<<<<<< HEAD
 	if (!host->ocr) {
+=======
+	if (!rocr) {
+>>>>>>> refs/remotes/origin/master
 		err = -EINVAL;
 		goto err;
 	}
@@ -1795,7 +2422,11 @@ int mmc_attach_mmc(struct mmc_host *host)
 	/*
 	 * Detect and init the card.
 	 */
+<<<<<<< HEAD
 	err = mmc_init_card(host, host->ocr, NULL);
+=======
+	err = mmc_init_card(host, rocr, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto err;
 
@@ -1816,10 +2447,14 @@ err:
 	mmc_detach_bus(host);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_ERR "%s: error %d whilst initialising MMC card\n",
 =======
 	pr_err("%s: error %d whilst initialising MMC card\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_err("%s: error %d whilst initialising MMC card\n",
+>>>>>>> refs/remotes/origin/master
 		mmc_hostname(host), err);
 
 	return err;

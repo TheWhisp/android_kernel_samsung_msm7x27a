@@ -10,6 +10,7 @@
  *
  */
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/of.h>
 #include <linux/of_fdt.h>
 #include <linux/initrd.h>
@@ -42,12 +43,19 @@ void __init early_init_dt_setup_initrd_arch(unsigned long start,
 }
 #endif
 
+=======
+#include <linux/memblock.h>
+
+>>>>>>> refs/remotes/origin/master
 void __init early_init_dt_add_memory_arch(u64 base, u64 size)
 {
 	c6x_add_memory(base, size);
 }
+<<<<<<< HEAD
 
 void * __init early_init_dt_alloc_memory_arch(u64 size, u64 align)
 {
 	return __va(memblock_alloc(size, align));
 }
+=======
+>>>>>>> refs/remotes/origin/master

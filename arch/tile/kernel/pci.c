@@ -20,6 +20,7 @@
 #include <linux/capability.h>
 #include <linux/sched.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/bootmem.h>
 #include <linux/irq.h>
 #include <linux/io.h>
@@ -28,6 +29,12 @@
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/irq.h>
+#include <linux/io.h>
+#include <linux/uaccess.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/processor.h>
 #include <asm/sections.h>
@@ -55,6 +62,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+static int pci_probe = 1;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This flag tells if the platform is TILEmpower that needs
  * special configuration for the PLX switch chip.
@@ -84,7 +96,11 @@ EXPORT_SYMBOL(pcibios_align_resource);
  * controller_id is the controller number, config type is 0 or 1 for
  * config0 or config1 operations.
  */
+<<<<<<< HEAD
 static int __devinit tile_pcie_open(int controller_id, int config_type)
+=======
+static int tile_pcie_open(int controller_id, int config_type)
+>>>>>>> refs/remotes/origin/master
 {
 	char filename[32];
 	int fd;
@@ -100,8 +116,12 @@ static int __devinit tile_pcie_open(int controller_id, int config_type)
 /*
  * Get the IRQ numbers from the HV and set up the handlers for them.
  */
+<<<<<<< HEAD
 static int __devinit tile_init_irqs(int controller_id,
 				 struct pci_controller *controller)
+=======
+static int tile_init_irqs(int controller_id, struct pci_controller *controller)
+>>>>>>> refs/remotes/origin/master
 {
 	char filename[32];
 	int fd;
@@ -145,6 +165,7 @@ static int __devinit tile_init_irqs(int controller_id,
  * Returns the number of controllers discovered.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __devinit tile_pci_init(void)
 =======
 int __init tile_pci_init(void)
@@ -152,6 +173,17 @@ int __init tile_pci_init(void)
 {
 	int i;
 
+=======
+int __init tile_pci_init(void)
+{
+	int i;
+
+	if (!pci_probe) {
+		pr_info("PCI: disabled by boot argument\n");
+		return 0;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	pr_info("PCI: Searching for controllers...\n");
 
 	/* Re-init number of PCIe controllers to support hot-plug feature. */
@@ -200,7 +232,10 @@ int __init tile_pci_init(void)
 			controller->hv_cfg_fd[0] = hv_cfg_fd0;
 			controller->hv_cfg_fd[1] = hv_cfg_fd1;
 			controller->hv_mem_fd = hv_mem_fd;
+<<<<<<< HEAD
 			controller->first_busno = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 			controller->last_busno = 0xff;
 			controller->ops = &tile_cfg_ops;
 
@@ -237,10 +272,14 @@ err_cont:
  * a normal [0:3] range.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int tile_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 static int tile_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int tile_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_controller *controller =
 		(struct pci_controller *)dev->sysdata;
@@ -248,7 +287,11 @@ static int tile_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 }
 
 
+<<<<<<< HEAD
 static void __devinit fixup_read_and_payload_sizes(void)
+=======
+static void fixup_read_and_payload_sizes(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev = NULL;
 	int smallest_max_payload = 0x1; /* Tile maxes out at 256 bytes. */
@@ -256,6 +299,7 @@ static void __devinit fixup_read_and_payload_sizes(void)
 	u16 new_values;
 
 	/* Scan for the smallest maximum payload size. */
+<<<<<<< HEAD
 	while ((dev = pci_get_device(PCI_ANY_ID, PCI_ANY_ID, dev)) != NULL) {
 		int pcie_caps_offset;
 		u32 devcap;
@@ -270,10 +314,21 @@ static void __devinit fixup_read_and_payload_sizes(void)
 		max_payload = devcap & PCI_EXP_DEVCAP_PAYLOAD;
 		if (max_payload < smallest_max_payload)
 			smallest_max_payload = max_payload;
+=======
+	for_each_pci_dev(dev) {
+		u32 devcap;
+
+		if (!pci_is_pcie(dev))
+			continue;
+
+		if (dev->pcie_mpss < smallest_max_payload)
+			smallest_max_payload = dev->pcie_mpss;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Now, set the max_payload_size for all devices to that value. */
 	new_values = (max_read_size << 12) | (smallest_max_payload << 5);
+<<<<<<< HEAD
 	while ((dev = pci_get_device(PCI_ANY_ID, PCI_ANY_ID, dev)) != NULL) {
 		int pcie_caps_offset;
 		u16 devctl;
@@ -289,6 +344,12 @@ static void __devinit fixup_read_and_payload_sizes(void)
 		pci_write_config_word(dev, pcie_caps_offset + PCI_EXP_DEVCTL,
 				      devctl);
 	}
+=======
+	for_each_pci_dev(dev)
+		pcie_capability_clear_and_set_word(dev, PCI_EXP_DEVCTL,
+				PCI_EXP_DEVCTL_PAYLOAD | PCI_EXP_DEVCTL_READRQ,
+				new_values);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -299,10 +360,14 @@ static void __devinit fixup_read_and_payload_sizes(void)
  * tile_pci_init.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __devinit pcibios_init(void)
 =======
 int __init pcibios_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __init pcibios_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -313,7 +378,11 @@ int __init pcibios_init(void)
 	 * known to require at least 20ms here, but we use a more
 	 * conservative value.
 	 */
+<<<<<<< HEAD
 	mdelay(250);
+=======
+	msleep(250);
+>>>>>>> refs/remotes/origin/master
 
 	/* Scan all of the recorded PCI controllers.  */
 	for (i = 0; i < TILE_NUM_PCIE; i++) {
@@ -325,6 +394,10 @@ int __init pcibios_init(void)
 		if (pci_scan_flags[i] == 0 && controllers[i].ops != NULL) {
 			struct pci_controller *controller = &controllers[i];
 			struct pci_bus *bus;
+<<<<<<< HEAD
+=======
+			LIST_HEAD(resources);
+>>>>>>> refs/remotes/origin/master
 
 			if (tile_init_irqs(i, controller)) {
 				pr_err("PCI: Could not initialize IRQs\n");
@@ -333,6 +406,7 @@ int __init pcibios_init(void)
 
 			pr_info("PCI: initializing controller #%d\n", i);
 
+<<<<<<< HEAD
 			/*
 			 * This comes from the generic Linux PCI driver.
 			 *
@@ -345,6 +419,14 @@ int __init pcibios_init(void)
 			bus = pci_scan_bus(0, controller->ops, controller);
 			controller->root_bus = bus;
 			controller->last_busno = bus->subordinate;
+=======
+			pci_add_resource(&resources, &ioport_resource);
+			pci_add_resource(&resources, &iomem_resource);
+			bus = pci_scan_root_bus(NULL, 0, controller->ops,
+						controller, &resources);
+			controller->root_bus = bus;
+			controller->last_busno = bus->busn_res.end;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -405,18 +487,26 @@ subsys_initcall(pcibios_init);
 /*
  * No bus fixups needed.
  */
+<<<<<<< HEAD
 void __devinit pcibios_fixup_bus(struct pci_bus *bus)
+=======
+void pcibios_fixup_bus(struct pci_bus *bus)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Nothing needs to be done. */
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void pcibios_set_master(struct pci_dev *dev)
 {
 	/* No special bus mastering setup handling. */
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /*
  * This can be called from the generic PCI layer, but doesn't need to
@@ -425,10 +515,20 @@ void pcibios_set_master(struct pci_dev *dev)
 char __devinit *pcibios_setup(char *str)
 {
 	/* Nothing needs to be done. */
+=======
+/* Process any "pci=" kernel boot arguments. */
+char *__init pcibios_setup(char *str)
+{
+	if (!strcmp(str, "off")) {
+		pci_probe = 0;
+		return NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 	return str;
 }
 
 /*
+<<<<<<< HEAD
  * This is called from the generic Linux layer.
  */
 void __devinit pcibios_update_irq(struct pci_dev *dev, int irq)
@@ -437,6 +537,8 @@ void __devinit pcibios_update_irq(struct pci_dev *dev, int irq)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Enable memory and/or address decoding, as appropriate, for the
  * device described by the 'dev' struct.
  *
@@ -490,6 +592,7 @@ int pcibios_enable_device(struct pci_dev *dev, int mask)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max)
 {
 	unsigned long start = pci_resource_start(dev, bar);
@@ -513,6 +616,8 @@ EXPORT_SYMBOL(pci_iomap);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /****************************************************************
  *
  * Tile PCI config space read/write routines
@@ -529,11 +634,16 @@ EXPORT_SYMBOL(pci_iomap);
  * specified bus & slot.
  */
 
+<<<<<<< HEAD
 static int __devinit tile_cfg_read(struct pci_bus *bus,
 				   unsigned int devfn,
 				   int offset,
 				   int size,
 				   u32 *val)
+=======
+static int tile_cfg_read(struct pci_bus *bus, unsigned int devfn, int offset,
+			 int size, u32 *val)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_controller *controller = bus->sysdata;
 	int busnum = bus->number & 0xff;
@@ -575,11 +685,16 @@ static int __devinit tile_cfg_read(struct pci_bus *bus,
  * See tile_cfg_read() for relevant comments.
  * Note that "val" is the value to write, not a pointer to that value.
  */
+<<<<<<< HEAD
 static int __devinit tile_cfg_write(struct pci_bus *bus,
 				    unsigned int devfn,
 				    int offset,
 				    int size,
 				    u32 val)
+=======
+static int tile_cfg_write(struct pci_bus *bus, unsigned int devfn, int offset,
+			  int size, u32 val)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_controller *controller = bus->sysdata;
 	int busnum = bus->number & 0xff;

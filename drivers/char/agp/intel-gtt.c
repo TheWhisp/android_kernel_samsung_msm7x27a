@@ -31,16 +31,22 @@
  * If we have Intel graphics, we're not going to have anything other than
  * an Intel IOMMU. So make the correct use of the PCI DMA API contingent
 <<<<<<< HEAD
+<<<<<<< HEAD
  * on the Intel IOMMU support (CONFIG_DMAR).
  * Only newer chipsets need to bother with this, of course.
  */
 #ifdef CONFIG_DMAR
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * on the Intel IOMMU support (CONFIG_INTEL_IOMMU).
  * Only newer chipsets need to bother with this, of course.
  */
 #ifdef CONFIG_INTEL_IOMMU
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define USE_PCI_DMA_API 1
 #else
 #define USE_PCI_DMA_API 0
@@ -67,13 +73,19 @@ struct intel_gtt_driver {
 };
 
 static struct _intel_private {
+<<<<<<< HEAD
 	struct intel_gtt base;
+=======
+>>>>>>> refs/remotes/origin/master
 	const struct intel_gtt_driver *driver;
 	struct pci_dev *pcidev;	/* device one */
 	struct pci_dev *bridge_dev;
 	u8 __iomem *registers;
 	phys_addr_t gtt_bus_addr;
+<<<<<<< HEAD
 	phys_addr_t gma_bus_addr;
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 PGETBL_save;
 	u32 __iomem *gtt;		/* I915G */
 	bool clear_fake_agp; /* on first access via agp, fill with scratch */
@@ -84,9 +96,24 @@ static struct _intel_private {
 	int resource_valid;
 	struct page *scratch_page;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dma_addr_t scratch_page_dma;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	phys_addr_t scratch_page_dma;
+	int refcount;
+	/* Whether i915 needs to use the dmar apis or not. */
+	unsigned int needs_dmar : 1;
+	phys_addr_t gma_bus_addr;
+	/*  Size of memory reserved for graphics by the BIOS */
+	unsigned int stolen_size;
+	/* Total number of gtt entries. */
+	unsigned int gtt_total_entries;
+	/* Part of the gtt that is mappable by the cpu, for those chips where
+	 * this is not the full gtt. */
+	unsigned int gtt_mappable_entries;
+>>>>>>> refs/remotes/origin/master
 } intel_private;
 
 #define INTEL_GTT_GEN	intel_private.driver->gen
@@ -95,6 +122,7 @@ static struct _intel_private {
 #define IS_IRONLAKE	intel_private.driver->is_ironlake
 #define HAS_PGTBL_EN	intel_private.driver->has_pgtbl_enable
 
+<<<<<<< HEAD
 int intel_gtt_map_memory(struct page **pages, unsigned int num_entries,
 			 struct scatterlist **sg_list, int *num_sg)
 {
@@ -118,17 +146,44 @@ int intel_gtt_map_memory(struct page **pages, unsigned int num_entries,
 	*num_sg = pci_map_sg(intel_private.pcidev, *sg_list,
 				 num_entries, PCI_DMA_BIDIRECTIONAL);
 	if (unlikely(!*num_sg))
+=======
+static int intel_gtt_map_memory(struct page **pages,
+				unsigned int num_entries,
+				struct sg_table *st)
+{
+	struct scatterlist *sg;
+	int i;
+
+	DBG("try mapping %lu pages\n", (unsigned long)num_entries);
+
+	if (sg_alloc_table(st, num_entries, GFP_KERNEL))
+		goto err;
+
+	for_each_sg(st->sgl, sg, num_entries, i)
+		sg_set_page(sg, pages[i], PAGE_SIZE, 0);
+
+	if (!pci_map_sg(intel_private.pcidev,
+			st->sgl, st->nents, PCI_DMA_BIDIRECTIONAL))
+>>>>>>> refs/remotes/origin/master
 		goto err;
 
 	return 0;
 
 err:
+<<<<<<< HEAD
 	sg_free_table(&st);
 	return -ENOMEM;
 }
 EXPORT_SYMBOL(intel_gtt_map_memory);
 
 void intel_gtt_unmap_memory(struct scatterlist *sg_list, int num_sg)
+=======
+	sg_free_table(st);
+	return -ENOMEM;
+}
+
+static void intel_gtt_unmap_memory(struct scatterlist *sg_list, int num_sg)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sg_table st;
 	DBG("try unmapping %lu pages\n", (unsigned long)mem->page_count);
@@ -141,7 +196,10 @@ void intel_gtt_unmap_memory(struct scatterlist *sg_list, int num_sg)
 
 	sg_free_table(&st);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(intel_gtt_unmap_memory);
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void intel_fake_agp_enable(struct agp_bridge_data *bridge, u32 mode)
 {
@@ -310,12 +368,17 @@ static int intel_gtt_setup_scratch_page(void)
 	get_page(page);
 	set_pages_uc(page, 1);
 
+<<<<<<< HEAD
 	if (intel_private.base.needs_dmar) {
+=======
+	if (intel_private.needs_dmar) {
+>>>>>>> refs/remotes/origin/master
 		dma_addr = pci_map_page(intel_private.pcidev, page, 0,
 				    PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
 		if (pci_dma_mapping_error(intel_private.pcidev, dma_addr))
 			return -EINVAL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		intel_private.scratch_page_dma = dma_addr;
 	} else
@@ -325,6 +388,11 @@ static int intel_gtt_setup_scratch_page(void)
 	} else
 		intel_private.base.scratch_page_dma = page_to_phys(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		intel_private.scratch_page_dma = dma_addr;
+	} else
+		intel_private.scratch_page_dma = page_to_phys(page);
+>>>>>>> refs/remotes/origin/master
 
 	intel_private.scratch_page = page;
 
@@ -392,6 +460,7 @@ static unsigned int intel_gtt_stolen_size(void)
 			stolen_size = 0;
 			break;
 		}
+<<<<<<< HEAD
 	} else if (INTEL_GTT_GEN == 6) {
 		/*
 		 * SandyBridge has new memory control reg at 0x50.w
@@ -448,6 +517,8 @@ static unsigned int intel_gtt_stolen_size(void)
 			stolen_size = MB(512);
 			break;
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		switch (gmch_ctrl & I855_GMCH_GMS_MASK) {
 		case I855_GMCH_GMS_STOLEN_1M:
@@ -581,6 +652,7 @@ static unsigned int i965_gtt_total_entries(void)
 
 static unsigned int intel_gtt_total_entries(void)
 {
+<<<<<<< HEAD
 	int size;
 
 	if (IS_G33 || INTEL_GTT_GEN == 4 || INTEL_GTT_GEN == 5)
@@ -608,6 +680,15 @@ static unsigned int intel_gtt_total_entries(void)
 		 * required to map the aperture.
 		 */
 		return intel_private.base.gtt_mappable_entries;
+=======
+	if (IS_G33 || INTEL_GTT_GEN == 4 || INTEL_GTT_GEN == 5)
+		return i965_gtt_total_entries();
+	else {
+		/* On previous hardware, the GTT size was just what was
+		 * required to map the aperture.
+		 */
+		return intel_private.gtt_mappable_entries;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -648,10 +729,14 @@ static void intel_gtt_teardown_scratch_page(void)
 {
 	set_pages_wb(intel_private.scratch_page, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pci_unmap_page(intel_private.pcidev, intel_private.scratch_page_dma,
 =======
 	pci_unmap_page(intel_private.pcidev, intel_private.base.scratch_page_dma,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_unmap_page(intel_private.pcidev, intel_private.scratch_page_dma,
+>>>>>>> refs/remotes/origin/master
 		       PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
 	put_page(intel_private.scratch_page);
 	__free_page(intel_private.scratch_page);
@@ -667,8 +752,48 @@ static void intel_gtt_cleanup(void)
 	intel_gtt_teardown_scratch_page();
 }
 
+<<<<<<< HEAD
 static int intel_gtt_init(void)
 {
+=======
+/* Certain Gen5 chipsets require require idling the GPU before
+ * unmapping anything from the GTT when VT-d is enabled.
+ */
+static inline int needs_ilk_vtd_wa(void)
+{
+#ifdef CONFIG_INTEL_IOMMU
+	const unsigned short gpu_devid = intel_private.pcidev->device;
+
+	/* Query intel_iommu to see if we need the workaround. Presumably that
+	 * was loaded first.
+	 */
+	if ((gpu_devid == PCI_DEVICE_ID_INTEL_IRONLAKE_M_HB ||
+	     gpu_devid == PCI_DEVICE_ID_INTEL_IRONLAKE_M_IG) &&
+	     intel_iommu_gfx_mapped)
+		return 1;
+#endif
+	return 0;
+}
+
+static bool intel_gtt_can_wc(void)
+{
+	if (INTEL_GTT_GEN <= 2)
+		return false;
+
+	if (INTEL_GTT_GEN >= 6)
+		return false;
+
+	/* Reports of major corruption with ILK vt'd enabled */
+	if (needs_ilk_vtd_wa())
+		return false;
+
+	return true;
+}
+
+static int intel_gtt_init(void)
+{
+	u32 gma_addr;
+>>>>>>> refs/remotes/origin/master
 	u32 gtt_map_size;
 	int ret;
 
@@ -676,8 +801,13 @@ static int intel_gtt_init(void)
 	if (ret != 0)
 		return ret;
 
+<<<<<<< HEAD
 	intel_private.base.gtt_mappable_entries = intel_gtt_mappable_entries();
 	intel_private.base.gtt_total_entries = intel_gtt_total_entries();
+=======
+	intel_private.gtt_mappable_entries = intel_gtt_mappable_entries();
+	intel_private.gtt_total_entries = intel_gtt_total_entries();
+>>>>>>> refs/remotes/origin/master
 
 	/* save the PGETBL reg for resume */
 	intel_private.PGETBL_save =
@@ -689,6 +819,7 @@ static int intel_gtt_init(void)
 
 	dev_info(&intel_private.bridge_dev->dev,
 			"detected gtt size: %dK total, %dK mappable\n",
+<<<<<<< HEAD
 			intel_private.base.gtt_total_entries * 4,
 			intel_private.base.gtt_mappable_entries * 4);
 
@@ -697,10 +828,26 @@ static int intel_gtt_init(void)
 	intel_private.gtt = ioremap(intel_private.gtt_bus_addr,
 				    gtt_map_size);
 	if (!intel_private.gtt) {
+=======
+			intel_private.gtt_total_entries * 4,
+			intel_private.gtt_mappable_entries * 4);
+
+	gtt_map_size = intel_private.gtt_total_entries * 4;
+
+	intel_private.gtt = NULL;
+	if (intel_gtt_can_wc())
+		intel_private.gtt = ioremap_wc(intel_private.gtt_bus_addr,
+					       gtt_map_size);
+	if (intel_private.gtt == NULL)
+		intel_private.gtt = ioremap(intel_private.gtt_bus_addr,
+					    gtt_map_size);
+	if (intel_private.gtt == NULL) {
+>>>>>>> refs/remotes/origin/master
 		intel_private.driver->cleanup();
 		iounmap(intel_private.registers);
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	intel_private.base.gtt = intel_private.gtt;
@@ -711,6 +858,14 @@ static int intel_gtt_init(void)
 	intel_private.base.stolen_size = intel_gtt_stolen_size();
 
 	intel_private.base.needs_dmar = USE_PCI_DMA_API && INTEL_GTT_GEN > 2;
+=======
+
+	global_cache_flush();   /* FIXME: ? */
+
+	intel_private.stolen_size = intel_gtt_stolen_size();
+
+	intel_private.needs_dmar = USE_PCI_DMA_API && INTEL_GTT_GEN > 2;
+>>>>>>> refs/remotes/origin/master
 
 	ret = intel_gtt_setup_scratch_page();
 	if (ret != 0) {
@@ -718,6 +873,18 @@ static int intel_gtt_init(void)
 		return ret;
 	}
 
+<<<<<<< HEAD
+=======
+	if (INTEL_GTT_GEN <= 2)
+		pci_read_config_dword(intel_private.pcidev, I810_GMADDR,
+				      &gma_addr);
+	else
+		pci_read_config_dword(intel_private.pcidev, I915_GMADDR,
+				      &gma_addr);
+
+	intel_private.gma_bus_addr = (gma_addr & PCI_BASE_ADDRESS_MEM_MASK);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -727,8 +894,12 @@ static int intel_fake_agp_fetch_size(void)
 	unsigned int aper_size;
 	int i;
 
+<<<<<<< HEAD
 	aper_size = (intel_private.base.gtt_mappable_entries << PAGE_SHIFT)
 		    / MB(1);
+=======
+	aper_size = (intel_private.gtt_mappable_entries << PAGE_SHIFT) / MB(1);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < num_sizes; i++) {
 		if (aper_size == intel_fake_agp_sizes[i].size) {
@@ -791,6 +962,7 @@ static void i830_write_entry(dma_addr_t addr, unsigned int entry,
 	writel(addr | pte_flags, intel_private.gtt + entry);
 }
 
+<<<<<<< HEAD
 static bool intel_enable_gtt(void)
 {
 	u32 gma_addr;
@@ -808,6 +980,12 @@ static bool intel_enable_gtt(void)
 	if (INTEL_GTT_GEN >= 6)
 	    return true;
 
+=======
+bool intel_enable_gtt(void)
+{
+	u8 __iomem *reg;
+
+>>>>>>> refs/remotes/origin/master
 	if (INTEL_GTT_GEN == 2) {
 		u16 gmch_ctrl;
 
@@ -847,6 +1025,10 @@ static bool intel_enable_gtt(void)
 
 	return true;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(intel_enable_gtt);
+>>>>>>> refs/remotes/origin/master
 
 static int i830_setup(void)
 {
@@ -902,8 +1084,12 @@ static bool i830_check_flags(unsigned int flags)
 	return false;
 }
 
+<<<<<<< HEAD
 void intel_gtt_insert_sg_entries(struct scatterlist *sg_list,
 				 unsigned int sg_len,
+=======
+void intel_gtt_insert_sg_entries(struct sg_table *st,
+>>>>>>> refs/remotes/origin/master
 				 unsigned int pg_start,
 				 unsigned int flags)
 {
@@ -915,12 +1101,20 @@ void intel_gtt_insert_sg_entries(struct scatterlist *sg_list,
 
 	/* sg may merge pages, but we have to separate
 	 * per-page addr for GTT */
+<<<<<<< HEAD
 	for_each_sg(sg_list, sg, sg_len, i) {
 		len = sg_dma_len(sg) >> PAGE_SHIFT;
 		for (m = 0; m < len; m++) {
 			dma_addr_t addr = sg_dma_address(sg) + (m << PAGE_SHIFT);
 			intel_private.driver->write_entry(addr,
 							  j, flags);
+=======
+	for_each_sg(st->sgl, sg, st->nents, i) {
+		len = sg_dma_len(sg) >> PAGE_SHIFT;
+		for (m = 0; m < len; m++) {
+			dma_addr_t addr = sg_dma_address(sg) + (m << PAGE_SHIFT);
+			intel_private.driver->write_entry(addr, j, flags);
+>>>>>>> refs/remotes/origin/master
 			j++;
 		}
 	}
@@ -928,8 +1122,15 @@ void intel_gtt_insert_sg_entries(struct scatterlist *sg_list,
 }
 EXPORT_SYMBOL(intel_gtt_insert_sg_entries);
 
+<<<<<<< HEAD
 void intel_gtt_insert_pages(unsigned int first_entry, unsigned int num_entries,
 			    struct page **pages, unsigned int flags)
+=======
+static void intel_gtt_insert_pages(unsigned int first_entry,
+				   unsigned int num_entries,
+				   struct page **pages,
+				   unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, j;
 
@@ -940,13 +1141,17 @@ void intel_gtt_insert_pages(unsigned int first_entry, unsigned int num_entries,
 	}
 	readl(intel_private.gtt+j-1);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(intel_gtt_insert_pages);
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int intel_fake_agp_insert_entries(struct agp_memory *mem,
 					 off_t pg_start, int type)
 {
 	int ret = -EINVAL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (intel_private.base.do_idle_maps)
@@ -956,6 +1161,11 @@ static int intel_fake_agp_insert_entries(struct agp_memory *mem,
 	if (intel_private.clear_fake_agp) {
 		int start = intel_private.base.stolen_size / PAGE_SIZE;
 		int end = intel_private.base.gtt_mappable_entries;
+=======
+	if (intel_private.clear_fake_agp) {
+		int start = intel_private.stolen_size / PAGE_SIZE;
+		int end = intel_private.gtt_mappable_entries;
+>>>>>>> refs/remotes/origin/master
 		intel_gtt_clear_range(start, end - start);
 		intel_private.clear_fake_agp = false;
 	}
@@ -966,7 +1176,11 @@ static int intel_fake_agp_insert_entries(struct agp_memory *mem,
 	if (mem->page_count == 0)
 		goto out;
 
+<<<<<<< HEAD
 	if (pg_start + mem->page_count > intel_private.base.gtt_total_entries)
+=======
+	if (pg_start + mem->page_count > intel_private.gtt_total_entries)
+>>>>>>> refs/remotes/origin/master
 		goto out_err;
 
 	if (type != mem->type)
@@ -978,6 +1192,7 @@ static int intel_fake_agp_insert_entries(struct agp_memory *mem,
 	if (!mem->is_flushed)
 		global_cache_flush();
 
+<<<<<<< HEAD
 	if (intel_private.base.needs_dmar) {
 		ret = intel_gtt_map_memory(mem->pages, mem->page_count,
 					   &mem->sg_list, &mem->num_sg);
@@ -986,6 +1201,18 @@ static int intel_fake_agp_insert_entries(struct agp_memory *mem,
 
 		intel_gtt_insert_sg_entries(mem->sg_list, mem->num_sg,
 					    pg_start, type);
+=======
+	if (intel_private.needs_dmar) {
+		struct sg_table st;
+
+		ret = intel_gtt_map_memory(mem->pages, mem->page_count, &st);
+		if (ret != 0)
+			return ret;
+
+		intel_gtt_insert_sg_entries(&st, pg_start, type);
+		mem->sg_list = st.sgl;
+		mem->num_sg = st.nents;
+>>>>>>> refs/remotes/origin/master
 	} else
 		intel_gtt_insert_pages(pg_start, mem->page_count, mem->pages,
 				       type);
@@ -1003,10 +1230,14 @@ void intel_gtt_clear_range(unsigned int first_entry, unsigned int num_entries)
 
 	for (i = first_entry; i < (first_entry + num_entries); i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		intel_private.driver->write_entry(intel_private.scratch_page_dma,
 =======
 		intel_private.driver->write_entry(intel_private.base.scratch_page_dma,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		intel_private.driver->write_entry(intel_private.scratch_page_dma,
+>>>>>>> refs/remotes/origin/master
 						  i, 0);
 	}
 	readl(intel_private.gtt+i-1);
@@ -1020,6 +1251,7 @@ static int intel_fake_agp_remove_entries(struct agp_memory *mem,
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (intel_private.base.do_idle_maps)
 		return -ENODEV;
@@ -1028,6 +1260,11 @@ static int intel_fake_agp_remove_entries(struct agp_memory *mem,
 	intel_gtt_clear_range(pg_start, mem->page_count);
 
 	if (intel_private.base.needs_dmar) {
+=======
+	intel_gtt_clear_range(pg_start, mem->page_count);
+
+	if (intel_private.needs_dmar) {
+>>>>>>> refs/remotes/origin/master
 		intel_gtt_unmap_memory(mem->sg_list, mem->num_sg);
 		mem->sg_list = NULL;
 		mem->num_sg = 0;
@@ -1184,6 +1421,7 @@ static void i965_write_entry(dma_addr_t addr,
 	writel(addr | pte_flags, intel_private.gtt + entry);
 }
 
+<<<<<<< HEAD
 static bool gen6_check_flags(unsigned int flags)
 {
 	return true;
@@ -1242,11 +1480,18 @@ static inline int needs_idle_maps(void)
 static int i9xx_setup(void)
 {
 	u32 reg_addr;
+=======
+static int i9xx_setup(void)
+{
+	u32 reg_addr, gtt_addr;
+	int size = KB(512);
+>>>>>>> refs/remotes/origin/master
 
 	pci_read_config_dword(intel_private.pcidev, I915_MMADDR, &reg_addr);
 
 	reg_addr &= 0xfff80000;
 
+<<<<<<< HEAD
 	intel_private.registers = ioremap(reg_addr, 128 * 4096);
 	if (!intel_private.registers)
 		return -ENOMEM;
@@ -1279,6 +1524,26 @@ static int i9xx_setup(void)
 		intel_private.base.do_idle_maps = 1;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	intel_private.registers = ioremap(reg_addr, size);
+	if (!intel_private.registers)
+		return -ENOMEM;
+
+	switch (INTEL_GTT_GEN) {
+	case 3:
+		pci_read_config_dword(intel_private.pcidev,
+				      I915_PTEADDR, &gtt_addr);
+		intel_private.gtt_bus_addr = gtt_addr;
+		break;
+	case 5:
+		intel_private.gtt_bus_addr = reg_addr + MB(2);
+		break;
+	default:
+		intel_private.gtt_bus_addr = reg_addr + KB(512);
+		break;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	intel_i9xx_setup_flush();
 
 	return 0;
@@ -1385,6 +1650,7 @@ static const struct intel_gtt_driver ironlake_gtt_driver = {
 	.check_flags = i830_check_flags,
 	.chipset_flush = i9xx_chipset_flush,
 };
+<<<<<<< HEAD
 static const struct intel_gtt_driver sandybridge_gtt_driver = {
 	.gen = 6,
 	.setup = i9xx_setup,
@@ -1394,6 +1660,8 @@ static const struct intel_gtt_driver sandybridge_gtt_driver = {
 	.check_flags = gen6_check_flags,
 	.chipset_flush = i9xx_chipset_flush,
 };
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Table to describe Intel GMCH and AGP/PCIE GART drivers.  At least one of
  * driver and gmch_driver must be non-null, and find_gmch will determine
@@ -1474,6 +1742,7 @@ static const struct intel_gtt_driver_description {
 	    "HD Graphics", &ironlake_gtt_driver },
 	{ PCI_DEVICE_ID_INTEL_IRONLAKE_M_IG,
 	    "HD Graphics", &ironlake_gtt_driver },
+<<<<<<< HEAD
 	{ PCI_DEVICE_ID_INTEL_SANDYBRIDGE_GT1_IG,
 	    "Sandybridge", &sandybridge_gtt_driver },
 	{ PCI_DEVICE_ID_INTEL_SANDYBRIDGE_GT2_IG,
@@ -1503,6 +1772,8 @@ static const struct intel_gtt_driver_description {
 	{ PCI_DEVICE_ID_INTEL_IVYBRIDGE_S_GT2_IG,
 	    "Ivybridge", &sandybridge_gtt_driver },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ 0, NULL, NULL }
 };
 
@@ -1523,6 +1794,7 @@ static int find_gmch(u16 device)
 	return 1;
 }
 
+<<<<<<< HEAD
 int intel_gmch_probe(struct pci_dev *pdev,
 				      struct agp_bridge_data *bridge)
 {
@@ -1531,6 +1803,34 @@ int intel_gmch_probe(struct pci_dev *pdev,
 
 	for (i = 0; intel_gtt_chipsets[i].name != NULL; i++) {
 		if (find_gmch(intel_gtt_chipsets[i].gmch_chip_id)) {
+=======
+int intel_gmch_probe(struct pci_dev *bridge_pdev, struct pci_dev *gpu_pdev,
+		     struct agp_bridge_data *bridge)
+{
+	int i, mask;
+
+	/*
+	 * Can be called from the fake agp driver but also directly from
+	 * drm/i915.ko. Hence we need to check whether everything is set up
+	 * already.
+	 */
+	if (intel_private.driver) {
+		intel_private.refcount++;
+		return 1;
+	}
+
+	for (i = 0; intel_gtt_chipsets[i].name != NULL; i++) {
+		if (gpu_pdev) {
+			if (gpu_pdev->device ==
+			    intel_gtt_chipsets[i].gmch_chip_id) {
+				intel_private.pcidev = pci_dev_get(gpu_pdev);
+				intel_private.driver =
+					intel_gtt_chipsets[i].gtt_driver;
+
+				break;
+			}
+		} else if (find_gmch(intel_gtt_chipsets[i].gmch_chip_id)) {
+>>>>>>> refs/remotes/origin/master
 			intel_private.driver =
 				intel_gtt_chipsets[i].gtt_driver;
 			break;
@@ -1540,6 +1840,7 @@ int intel_gmch_probe(struct pci_dev *pdev,
 	if (!intel_private.driver)
 		return 0;
 
+<<<<<<< HEAD
 	bridge->driver = &intel_fake_agp_driver;
 	bridge->dev_private_data = &intel_private;
 	bridge->dev = pdev;
@@ -1547,6 +1848,19 @@ int intel_gmch_probe(struct pci_dev *pdev,
 	intel_private.bridge_dev = pci_dev_get(pdev);
 
 	dev_info(&pdev->dev, "Intel %s Chipset\n", intel_gtt_chipsets[i].name);
+=======
+	intel_private.refcount++;
+
+	if (bridge) {
+		bridge->driver = &intel_fake_agp_driver;
+		bridge->dev_private_data = &intel_private;
+		bridge->dev = bridge_pdev;
+	}
+
+	intel_private.bridge_dev = pci_dev_get(bridge_pdev);
+
+	dev_info(&bridge_pdev->dev, "Intel %s Chipset\n", intel_gtt_chipsets[i].name);
+>>>>>>> refs/remotes/origin/master
 
 	mask = intel_private.driver->dma_mask_size;
 	if (pci_set_dma_mask(intel_private.pcidev, DMA_BIT_MASK(mask)))
@@ -1556,19 +1870,37 @@ int intel_gmch_probe(struct pci_dev *pdev,
 		pci_set_consistent_dma_mask(intel_private.pcidev,
 					    DMA_BIT_MASK(mask));
 
+<<<<<<< HEAD
 	/*if (bridge->driver == &intel_810_driver)
 		return 1;*/
 
 	if (intel_gtt_init() != 0)
 		return 0;
+=======
+	if (intel_gtt_init() != 0) {
+		intel_gmch_remove();
+
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
 EXPORT_SYMBOL(intel_gmch_probe);
 
+<<<<<<< HEAD
 const struct intel_gtt *intel_gtt_get(void)
 {
 	return &intel_private.base;
+=======
+void intel_gtt_get(size_t *gtt_total, size_t *stolen_size,
+		   phys_addr_t *mappable_base, unsigned long *mappable_end)
+{
+	*gtt_total = intel_private.gtt_total_entries << PAGE_SHIFT;
+	*stolen_size = intel_private.stolen_size;
+	*mappable_base = intel_private.gma_bus_addr;
+	*mappable_end = intel_private.gtt_mappable_entries << PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(intel_gtt_get);
 
@@ -1579,12 +1911,24 @@ void intel_gtt_chipset_flush(void)
 }
 EXPORT_SYMBOL(intel_gtt_chipset_flush);
 
+<<<<<<< HEAD
 void intel_gmch_remove(struct pci_dev *pdev)
 {
+=======
+void intel_gmch_remove(void)
+{
+	if (--intel_private.refcount)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	if (intel_private.pcidev)
 		pci_dev_put(intel_private.pcidev);
 	if (intel_private.bridge_dev)
 		pci_dev_put(intel_private.bridge_dev);
+<<<<<<< HEAD
+=======
+	intel_private.driver = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(intel_gmch_remove);
 

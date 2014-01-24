@@ -34,7 +34,10 @@
 #include "rts51x_chip.h"
 #include "rts51x_card.h"
 #include "rts51x_transport.h"
+<<<<<<< HEAD
 #include "rts51x_sys.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "xd.h"
 #include "ms.h"
 #include "sd.h"
@@ -79,6 +82,7 @@ int rts51x_reset_chip(struct rts51x_chip *chip)
 				      chip->option.sd20_pad_drive);
 		if (chip->rts5179)
 			rts51x_write_register(chip, CARD_PULL_CTL5, 0x03, 0x01);
+<<<<<<< HEAD
 		if (!chip->option.ww_enable) {
 			if (CHECK_PKG(chip, LQFP48)) {
 				rts51x_write_register(chip, CARD_PULL_CTL3,
@@ -93,6 +97,20 @@ int rts51x_reset_chip(struct rts51x_chip *chip)
 				rts51x_write_register(chip, CARD_PULL_CTL6,
 						      0x0c, 0x08);
 			}
+=======
+		if (CHECK_PKG(chip, LQFP48)) {
+			rts51x_write_register(chip, CARD_PULL_CTL3,
+					      0x80, 0x80);
+			rts51x_write_register(chip, CARD_PULL_CTL6,
+					      0xf0, 0xA0);
+		} else {
+			rts51x_write_register(chip, CARD_PULL_CTL1,
+					      0x30, 0x20);
+			rts51x_write_register(chip, CARD_PULL_CTL3,
+					      0x80, 0x80);
+			rts51x_write_register(chip, CARD_PULL_CTL6,
+					      0x0c, 0x08);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (chip->option.sd_ctl & SUPPORT_UHS50_MMC44) {
@@ -121,12 +139,15 @@ int rts51x_reset_chip(struct rts51x_chip *chip)
 
 	/* GPIO OE */
 	rts51x_add_cmd(chip, WRITE_REG_CMD, CARD_GPIO, GPIO_OE, GPIO_OE);
+<<<<<<< HEAD
 #ifdef LED_AUTO_BLINK
 	/* LED autoblink */
 	rts51x_add_cmd(chip, WRITE_REG_CMD, CARD_AUTO_BLINK,
 		       BLINK_ENABLE | BLINK_SPEED_MASK,
 		       BLINK_ENABLE | chip->option.led_blink_speed);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	rts51x_add_cmd(chip, WRITE_REG_CMD, CARD_DMA1_CTL,
 		       EXTEND_DMA1_ASYNC_SIGNAL, EXTEND_DMA1_ASYNC_SIGNAL);
 
@@ -141,10 +162,16 @@ int rts51x_reset_chip(struct rts51x_chip *chip)
 	}
 #endif
 	if (chip->option.FT2_fast_mode) {
+<<<<<<< HEAD
 		card_power_on(chip, SD_CARD | MS_CARD | XD_CARD);
 		wait_timeout(10);
 	}
 	rts51x_clear_start_time(chip);
+=======
+		rts51x_card_power_on(chip, SD_CARD | MS_CARD | XD_CARD);
+		wait_timeout(10);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return STATUS_SUCCESS;
 }
@@ -164,12 +191,15 @@ int rts51x_init_chip(struct rts51x_chip *chip)
 	chip->card_ejected = 0;
 
 	chip->lun2card[0] = XD_CARD | SD_CARD | MS_CARD;
+<<<<<<< HEAD
 #if 0
 	chip->option.sdr50_tx_phase = 0x01;
 	chip->option.sdr50_rx_phase = 0x05;
 	chip->option.ddr50_tx_phase = 0x09;
 	chip->option.ddr50_rx_phase = 0x06; /* add for debug */
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CLOSE_SSC_POWER
 	rts51x_write_register(chip, FPDCTL, SSC_POWER_MASK, SSC_POWER_ON);
 	udelay(100);
@@ -178,9 +208,12 @@ int rts51x_init_chip(struct rts51x_chip *chip)
 	RTS51X_SET_STAT(chip, STAT_RUN);
 
 	RTS51X_READ_REG(chip, HW_VERSION, &val);
+<<<<<<< HEAD
 	if ((val & 0x0f) >= 2)
 		chip->option.rcc_bug_fix_en = 0;
 	RTS51X_DEBUGP("rcc bug fix enable:%d\n", chip->option.rcc_bug_fix_en);
+=======
+>>>>>>> refs/remotes/origin/master
 	RTS51X_DEBUGP("HW_VERSION: 0x%x\n", val);
 	if (val & FPGA_VER) {
 		chip->asic_code = 0;
@@ -231,13 +264,21 @@ int rts51x_init_chip(struct rts51x_chip *chip)
 
 int rts51x_release_chip(struct rts51x_chip *chip)
 {
+<<<<<<< HEAD
 	xd_free_l2p_tbl(chip);
 	ms_free_l2p_tbl(chip);
+=======
+	rts51x_xd_free_l2p_tbl(chip);
+	rts51x_ms_free_l2p_tbl(chip);
+>>>>>>> refs/remotes/origin/master
 	chip->card_ready = 0;
 	return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 #ifndef LED_AUTO_BLINK
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void rts51x_blink_led(struct rts51x_chip *chip)
 {
 	/* Read/Write */
@@ -247,6 +288,7 @@ static inline void rts51x_blink_led(struct rts51x_chip *chip)
 			chip->led_toggle_counter++;
 		} else {
 			chip->led_toggle_counter = 0;
+<<<<<<< HEAD
 			toggle_gpio(chip, LED_GPIO);
 		}
 	}
@@ -265,6 +307,12 @@ void rts51x_set_start_time(struct rts51x_chip *chip)
 void rts51x_clear_start_time(struct rts51x_chip *chip)
 {
 }
+=======
+			rts51x_toggle_gpio(chip, LED_GPIO);
+		}
+	}
+}
+>>>>>>> refs/remotes/origin/master
 
 static void rts51x_auto_delink_cmd(struct rts51x_chip *chip)
 {
@@ -287,7 +335,10 @@ static void rts51x_auto_delink_polling_cycle(struct rts51x_chip *chip)
 			chip->option.delink_delay * 2) {
 		if (chip->auto_delink_counter ==
 		    chip->option.delink_delay) {
+<<<<<<< HEAD
 			clear_first_install_mark(chip);
+=======
+>>>>>>> refs/remotes/origin/master
 			if (chip->card_exist) {
 				/* False card */
 				if (!chip->card_ejected) {
@@ -321,6 +372,7 @@ static void rts51x_auto_delink(struct rts51x_chip *chip)
 }
 #else
 /* some of called funcs are not implemented, so comment it out */
+<<<<<<< HEAD
 #if 0
 /* using precise time as delink time */
 static void rts51x_auto_delink_precise_time(struct rts51x_chip *chip)
@@ -374,11 +426,16 @@ static void rts51x_auto_delink_precise_time(struct rts51x_chip *chip)
 static void rts51x_auto_delink(struct rts51x_chip *chip)
 {
 	rts51x_auto_delink_precise_time(chip);
+=======
+static void rts51x_auto_delink(struct rts51x_chip *chip)
+{
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
 void rts51x_polling_func(struct rts51x_chip *chip)
 {
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 	struct sd_info *sd_card = &(chip->sd_card);
 
@@ -406,6 +463,8 @@ void rts51x_polling_func(struct rts51x_chip *chip)
 		}
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	rts51x_init_cards(chip);
 
@@ -431,23 +490,35 @@ void rts51x_polling_func(struct rts51x_chip *chip)
 		if (!RTS51X_CHK_STAT(chip, STAT_IDLE)) {
 			RTS51X_DEBUGP("Idle state!\n");
 			RTS51X_SET_STAT(chip, STAT_IDLE);
+<<<<<<< HEAD
 #ifndef LED_AUTO_BLINK
 			chip->led_toggle_counter = 0;
 #endif
+=======
+			chip->led_toggle_counter = 0;
+>>>>>>> refs/remotes/origin/master
 			/* Idle state, turn off LED
 			 * to reduce power consumption */
 			if (chip->option.led_always_on
 			    && (chip->card_exist &
 				(SD_CARD | MS_CARD | XD_CARD))
 			    && (!chip->card_ejected)) {
+<<<<<<< HEAD
 				turn_on_led(chip, LED_GPIO);
+=======
+				rts51x_turn_on_led(chip, LED_GPIO);
+>>>>>>> refs/remotes/origin/master
 			} else {
 				if (chip->rts5179) {
 					rts51x_ep0_write_register(chip,
 								  CARD_GPIO,
 								  0x03, 0x00);
 				} else {
+<<<<<<< HEAD
 					turn_off_led(chip, LED_GPIO);
+=======
+					rts51x_turn_off_led(chip, LED_GPIO);
+>>>>>>> refs/remotes/origin/master
 				}
 
 			}
@@ -467,10 +538,15 @@ void rts51x_polling_func(struct rts51x_chip *chip)
 
 	switch (RTS51X_GET_STAT(chip)) {
 	case STAT_RUN:
+<<<<<<< HEAD
 #ifndef LED_AUTO_BLINK
 		rts51x_blink_led(chip);
 #endif
 		do_remaining_work(chip);
+=======
+		rts51x_blink_led(chip);
+		rts51x_do_remaining_work(chip);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case STAT_IDLE:
@@ -480,12 +556,19 @@ void rts51x_polling_func(struct rts51x_chip *chip)
 		break;
 	}
 
+<<<<<<< HEAD
 	if (chip->option.auto_delink_en && !chip->card_ready) {
 		rts51x_auto_delink(chip);
 	} else {
 		chip->auto_delink_counter = 0;
 		rts51x_clear_start_time(chip);
 	}
+=======
+	if (chip->option.auto_delink_en && !chip->card_ready)
+		rts51x_auto_delink(chip);
+	else
+		chip->auto_delink_counter = 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 void rts51x_add_cmd(struct rts51x_chip *chip,
@@ -826,12 +909,20 @@ void rts51x_do_before_power_down(struct rts51x_chip *chip)
 	if (chip->rts5179)
 		rts51x_ep0_write_register(chip, CARD_GPIO, 0x03, 0x00);
 	else
+<<<<<<< HEAD
 		turn_off_led(chip, LED_GPIO);
+=======
+		rts51x_turn_off_led(chip, LED_GPIO);
+>>>>>>> refs/remotes/origin/master
 
 	chip->cur_clk = 0;
 	chip->card_exist = 0;
 	chip->cur_card = 0;
+<<<<<<< HEAD
 	if (chip->asic_code && !chip->option.ww_enable) {
+=======
+	if (chip->asic_code) {
+>>>>>>> refs/remotes/origin/master
 		if (CHECK_PKG(chip, LQFP48)) {
 			rts51x_write_register(chip, CARD_PULL_CTL3, 0x80, 0x00);
 			rts51x_write_register(chip, CARD_PULL_CTL6, 0xf0, 0x50);
@@ -863,6 +954,7 @@ void rts51x_prepare_run(struct rts51x_chip *chip)
 		rts51x_write_register(chip, CLK_DIV, CLK_CHANGE, 0x00);
 	}
 #endif
+<<<<<<< HEAD
 #if 0
 	if (chip->option.ss_en && RTS51X_CHK_STAT(chip, STAT_SS)) {
 		rts51x_try_to_exit_ss(chip);
@@ -873,6 +965,8 @@ void rts51x_prepare_run(struct rts51x_chip *chip)
 
 	RTS51X_SET_STAT(chip, STAT_RUN);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef _MSG_TRACE
@@ -926,7 +1020,11 @@ void rts51x_pp_status(struct rts51x_chip *chip, unsigned int lun, u8 *status,
 {
 	struct sd_info *sd_card = &(chip->sd_card);
 	struct ms_info *ms_card = &(chip->ms_card);
+<<<<<<< HEAD
 	u8 card = get_lun_card(chip, lun);
+=======
+	u8 card = rts51x_get_lun_card(chip, lun);
+>>>>>>> refs/remotes/origin/master
 #ifdef SUPPORT_OC
 	u8 oc_now_mask = 0, oc_ever_mask = 0;
 #endif
@@ -1017,6 +1115,7 @@ void rts51x_pp_status(struct rts51x_chip *chip, unsigned int lun, u8 *status,
 				status[0x0F] = 0x00;
 		}
 	}
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 	/* SD Lock/Unlock */
 	if (card == SD_CARD) {
@@ -1035,6 +1134,8 @@ void rts51x_pp_status(struct rts51x_chip *chip, unsigned int lun, u8 *status,
 
 	RTS51X_DEBUGP("status[0x17] = 0x%x\n", status[0x17]);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Function 0
 	 * Support Magic Gate, CPRM and PhyRegister R/W */
@@ -1044,12 +1145,15 @@ void rts51x_pp_status(struct rts51x_chip *chip, unsigned int lun, u8 *status,
 	 * Support OC LUN status & WP LUN status */
 	status[0x1A] = 0x28;
 
+<<<<<<< HEAD
 	/* Function 7 */
 #ifdef SUPPORT_SD_LOCK
 	/* Support SD Lock/Unlock */
 	status[0x1F] = 0x01;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Function 2
 	 * Support OC LUN status & WP LUN status */
 	status[0x1A] = 0x28;
@@ -1111,9 +1215,15 @@ void rts51x_read_status(struct rts51x_chip *chip, unsigned int lun,
 		rts51x_status[12] = 0;
 
 	/* Detailed Type */
+<<<<<<< HEAD
 	if (get_lun_card(chip, lun) == XD_CARD) {
 		rts51x_status[13] = 0x40;
 	} else if (get_lun_card(chip, lun) == SD_CARD) {
+=======
+	if (rts51x_get_lun_card(chip, lun) == XD_CARD) {
+		rts51x_status[13] = 0x40;
+	} else if (rts51x_get_lun_card(chip, lun) == SD_CARD) {
+>>>>>>> refs/remotes/origin/master
 		struct sd_info *sd_card = &(chip->sd_card);
 
 		rts51x_status[13] = 0x20;
@@ -1129,7 +1239,11 @@ void rts51x_read_status(struct rts51x_chip *chip, unsigned int lun,
 			if (CHK_MMC_SECTOR_MODE(sd_card))
 				rts51x_status[13] |= 0x04; /* Hi capacity */
 		}
+<<<<<<< HEAD
 	} else if (get_lun_card(chip, lun) == MS_CARD) {
+=======
+	} else if (rts51x_get_lun_card(chip, lun) == MS_CARD) {
+>>>>>>> refs/remotes/origin/master
 		struct ms_info *ms_card = &(chip->ms_card);
 
 		if (CHK_MSPRO(ms_card)) {

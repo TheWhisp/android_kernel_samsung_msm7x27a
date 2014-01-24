@@ -20,9 +20,12 @@
 #define __ASM_BCM47XX_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* SSB bus */
 extern struct ssb_bus ssb_bcm47xx;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/ssb/ssb.h>
 #include <linux/bcma/bcma.h>
 #include <linux/bcma/bcma_soc.h>
@@ -48,8 +51,22 @@ union bcm47xx_bus {
 extern union bcm47xx_bus bcm47xx_bus;
 extern enum bcm47xx_bus_type bcm47xx_bus_type;
 
+<<<<<<< HEAD
 void bcm47xx_fill_sprom(struct ssb_sprom *sprom, const char *prefix);
 void bcm47xx_fill_sprom_ethernet(struct ssb_sprom *sprom, const char *prefix);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void bcm47xx_fill_sprom(struct ssb_sprom *sprom, const char *prefix,
+			bool fallback);
+
+#ifdef CONFIG_BCM47XX_SSB
+void bcm47xx_fill_ssb_boardinfo(struct ssb_boardinfo *boardinfo,
+				const char *prefix);
+#endif
+#ifdef CONFIG_BCM47XX_BCMA
+void bcm47xx_fill_bcma_boardinfo(struct bcma_boardinfo *boardinfo,
+				 const char *prefix);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_BCM47XX_H */

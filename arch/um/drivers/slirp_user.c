@@ -8,6 +8,7 @@
 #include <string.h>
 #include <sys/wait.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "net_user.h"
 #include "os.h"
@@ -18,6 +19,11 @@
 #include "os.h"
 #include "slirp.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net_user.h>
+#include <os.h>
+#include "slirp.h"
+>>>>>>> refs/remotes/origin/master
 
 static int slirp_user_init(void *data, void *dev)
 {

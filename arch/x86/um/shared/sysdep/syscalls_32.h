@@ -3,6 +3,7 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
 #include "asm/unistd.h"
 #include "sysdep/ptrace.h"
 
@@ -13,6 +14,13 @@ typedef long syscall_handler_t(struct pt_regs);
  */
 extern syscall_handler_t sys_rt_sigaction;
 
+=======
+#include <asm/unistd.h>
+#include <sysdep/ptrace.h>
+
+typedef long syscall_handler_t(struct pt_regs);
+
+>>>>>>> refs/remotes/origin/master
 extern syscall_handler_t *sys_call_table[];
 
 #define EXECUTE_SYSCALL(syscall, regs) \

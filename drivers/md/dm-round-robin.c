@@ -15,9 +15,13 @@
 
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DM_MSG_PREFIX "multipath round-robin"
 
@@ -118,9 +122,13 @@ static int rr_add_path(struct path_selector *ps, struct dm_path *path,
 	struct path_info *pi;
 	unsigned repeat_count = RR_MIN_IO;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	char dummy;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char dummy;
+>>>>>>> refs/remotes/origin/master
 
 	if (argc > 1) {
 		*error = "round-robin ps: incorrect number of arguments";
@@ -129,10 +137,14 @@ static int rr_add_path(struct path_selector *ps, struct dm_path *path,
 
 	/* First path argument is number of I/Os before switching path */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((argc == 1) && (sscanf(argv[0], "%u", &repeat_count) != 1)) {
 =======
 	if ((argc == 1) && (sscanf(argv[0], "%u%c", &repeat_count, &dummy) != 1)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((argc == 1) && (sscanf(argv[0], "%u%c", &repeat_count, &dummy) != 1)) {
+>>>>>>> refs/remotes/origin/master
 		*error = "round-robin ps: invalid repeat count";
 		return -EINVAL;
 	}

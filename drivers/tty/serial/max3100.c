@@ -44,18 +44,27 @@
 #include <linux/slab.h>
 #include <linux/device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/serial_core.h>
 #include <linux/serial.h>
 #include <linux/spi/spi.h>
 #include <linux/freezer.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/tty.h>
 #include <linux/tty_flip.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/tty.h>
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/serial_max3100.h>
 
@@ -185,8 +194,12 @@ static void max3100_work(struct work_struct *w);
 
 static void max3100_dowork(struct max3100_port *s)
 {
+<<<<<<< HEAD
 	if (!s->force_end_work && !work_pending(&s->work) &&
 	    !freezing(current) && !s->suspending)
+=======
+	if (!s->force_end_work && !freezing(current) && !s->suspending)
+>>>>>>> refs/remotes/origin/master
 		queue_work(s->workqueue, &s->work);
 }
 
@@ -317,8 +330,13 @@ static void max3100_work(struct work_struct *w)
 			}
 		}
 
+<<<<<<< HEAD
 		if (rxchars > 16 && s->port.state->port.tty != NULL) {
 			tty_flip_buffer_push(s->port.state->port.tty);
+=======
+		if (rxchars > 16) {
+			tty_flip_buffer_push(&s->port.state->port);
+>>>>>>> refs/remotes/origin/master
 			rxchars = 0;
 		}
 		if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
@@ -330,8 +348,13 @@ static void max3100_work(struct work_struct *w)
 		  (!uart_circ_empty(xmit) &&
 		   !uart_tx_stopped(&s->port))));
 
+<<<<<<< HEAD
 	if (rxchars > 0 && s->port.state->port.tty != NULL)
 		tty_flip_buffer_push(s->port.state->port.tty);
+=======
+	if (rxchars > 0)
+		tty_flip_buffer_push(&s->port.state->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t max3100_irq(int irqno, void *dev_id)
@@ -536,7 +559,11 @@ max3100_set_termios(struct uart_port *port, struct ktermios *termios,
 			MAX3100_STATUS_OE;
 
 	/* we are sending char from a workqueue so enable */
+<<<<<<< HEAD
 	s->port.state->port.tty->low_latency = 1;
+=======
+	s->port.state->port.low_latency = 1;
+>>>>>>> refs/remotes/origin/master
 
 	if (s->poll_time > 0)
 		del_timer_sync(&s->timer);
@@ -748,7 +775,11 @@ static struct uart_driver max3100_uart_driver = {
 };
 static int uart_driver_registered;
 
+<<<<<<< HEAD
 static int __devinit max3100_probe(struct spi_device *spi)
+=======
+static int max3100_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, retval;
 	struct plat_max3100 *pdata;
@@ -785,8 +816,13 @@ static int __devinit max3100_probe(struct spi_device *spi)
 	max3100s[i]->spi = spi;
 	max3100s[i]->irq = spi->irq;
 	spin_lock_init(&max3100s[i]->conf_lock);
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, max3100s[i]);
 	pdata = spi->dev.platform_data;
+=======
+	spi_set_drvdata(spi, max3100s[i]);
+	pdata = dev_get_platdata(&spi->dev);
+>>>>>>> refs/remotes/origin/master
 	max3100s[i]->crystal = pdata->crystal;
 	max3100s[i]->loopback = pdata->loopback;
 	max3100s[i]->poll_time = pdata->poll_time * HZ / 1000;
@@ -824,15 +860,22 @@ static int __devinit max3100_probe(struct spi_device *spi)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit max3100_remove(struct spi_device *spi)
 {
 	struct max3100_port *s = dev_get_drvdata(&spi->dev);
+=======
+static int max3100_remove(struct spi_device *spi)
+{
+	struct max3100_port *s = spi_get_drvdata(spi);
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	mutex_lock(&max3100s_lock);
 
 	/* find out the index for the chip we are removing */
 	for (i = 0; i < MAX_MAX3100; i++)
+<<<<<<< HEAD
 		if (max3100s[i] == s)
 			break;
 
@@ -841,6 +884,18 @@ static int __devexit max3100_remove(struct spi_device *spi)
 	kfree(max3100s[i]);
 	max3100s[i] = NULL;
 
+=======
+		if (max3100s[i] == s) {
+			dev_dbg(&spi->dev, "%s: removing port %d\n", __func__, i);
+			uart_remove_one_port(&max3100_uart_driver, &max3100s[i]->port);
+			kfree(max3100s[i]);
+			max3100s[i] = NULL;
+			break;
+		}
+
+	WARN_ON(i == MAX_MAX3100);
+	
+>>>>>>> refs/remotes/origin/master
 	/* check if this is the last chip we have */
 	for (i = 0; i < MAX_MAX3100; i++)
 		if (max3100s[i]) {
@@ -854,11 +909,19 @@ static int __devexit max3100_remove(struct spi_device *spi)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 
 static int max3100_suspend(struct spi_device *spi, pm_message_t state)
 {
 	struct max3100_port *s = dev_get_drvdata(&spi->dev);
+=======
+#ifdef CONFIG_PM_SLEEP
+
+static int max3100_suspend(struct device *dev)
+{
+	struct max3100_port *s = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(&s->spi->dev, "%s\n", __func__);
 
@@ -879,9 +942,15 @@ static int max3100_suspend(struct spi_device *spi, pm_message_t state)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int max3100_resume(struct spi_device *spi)
 {
 	struct max3100_port *s = dev_get_drvdata(&spi->dev);
+=======
+static int max3100_resume(struct device *dev)
+{
+	struct max3100_port *s = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(&s->spi->dev, "%s\n", __func__);
 
@@ -899,14 +968,23 @@ static int max3100_resume(struct spi_device *spi)
 	return 0;
 }
 
+<<<<<<< HEAD
 #else
 #define max3100_suspend NULL
 #define max3100_resume  NULL
+=======
+static SIMPLE_DEV_PM_OPS(max3100_pm_ops, max3100_suspend, max3100_resume);
+#define MAX3100_PM_OPS (&max3100_pm_ops)
+
+#else
+#define MAX3100_PM_OPS NULL
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static struct spi_driver max3100_driver = {
 	.driver = {
 		.name		= "max3100",
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.bus		= &spi_bus_type,
 =======
@@ -931,6 +1009,16 @@ static void __exit max3100_exit(void)
 	spi_unregister_driver(&max3100_driver);
 }
 module_exit(max3100_exit);
+=======
+		.owner		= THIS_MODULE,
+		.pm		= MAX3100_PM_OPS,
+	},
+	.probe		= max3100_probe,
+	.remove		= max3100_remove,
+};
+
+module_spi_driver(max3100_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("MAX3100 driver");
 MODULE_AUTHOR("Christian Pellegrin <chripell@evolware.org>");

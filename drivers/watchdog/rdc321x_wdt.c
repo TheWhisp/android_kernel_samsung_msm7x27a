@@ -225,13 +225,21 @@ static struct miscdevice rdc321x_wdt_misc = {
 	.fops	= &rdc321x_wdt_fops,
 };
 
+<<<<<<< HEAD
 static int __devinit rdc321x_wdt_probe(struct platform_device *pdev)
+=======
+static int rdc321x_wdt_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct resource *r;
 	struct rdc321x_wdt_pdata *pdata;
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!pdata) {
 		dev_err(&pdev->dev, "no platform data supplied\n");
 		return -ENODEV;
@@ -272,7 +280,11 @@ static int __devinit rdc321x_wdt_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit rdc321x_wdt_remove(struct platform_device *pdev)
+=======
+static int rdc321x_wdt_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (rdc321x_wdt_device.queue) {
 		rdc321x_wdt_device.queue = 0;
@@ -286,13 +298,18 @@ static int __devexit rdc321x_wdt_remove(struct platform_device *pdev)
 
 static struct platform_driver rdc321x_wdt_driver = {
 	.probe = rdc321x_wdt_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(rdc321x_wdt_remove),
+=======
+	.remove = rdc321x_wdt_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.owner = THIS_MODULE,
 		.name = "rdc321x-wdt",
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init rdc321x_wdt_init(void)
 {
@@ -309,8 +326,14 @@ module_exit(rdc321x_wdt_exit);
 =======
 module_platform_driver(rdc321x_wdt_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(rdc321x_wdt_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Florian Fainelli <florian@openwrt.org>");
 MODULE_DESCRIPTION("RDC321x watchdog driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

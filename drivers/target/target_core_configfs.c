@@ -3,8 +3,12 @@
  *
  * This file contains ConfigFS logic for the Generic Target Engine project.
  *
+<<<<<<< HEAD
  * Copyright (c) 2008-2011 Rising Tide Systems
  * Copyright (c) 2008-2011 Linux-iSCSI.org
+=======
+ * (c) Copyright 2008-2013 Datera, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Nicholas A. Bellinger <nab@kernel.org>
  *
@@ -24,9 +28,12 @@
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <generated/utsrelease.h>
 #include <linux/utsname.h>
 #include <linux/init.h>
@@ -41,22 +48,29 @@
 #include <linux/syscalls.h>
 #include <linux/configfs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <target/target_core_base.h>
 #include <target/target_core_device.h>
 #include <target/target_core_transport.h>
 #include <target/target_core_fabric_ops.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 
 #include <target/target_core_base.h>
 #include <target/target_core_backend.h>
 #include <target/target_core_fabric.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <target/target_core_fabric_configfs.h>
 #include <target/target_core_configfs.h>
 #include <target/configfs_macros.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include "target_core_alua.h"
 #include "target_core_hba.h"
@@ -67,16 +81,25 @@
 static struct list_head g_tf_list;
 static struct mutex g_tf_lock;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include "target_core_internal.h"
 #include "target_core_alua.h"
 #include "target_core_pr.h"
 #include "target_core_rd.h"
+<<<<<<< HEAD
+=======
+#include "target_core_xcopy.h"
+>>>>>>> refs/remotes/origin/master
 
 extern struct t10_alua_lu_gp *default_lu_gp;
 
 static LIST_HEAD(g_tf_list);
 static DEFINE_MUTEX(g_tf_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct target_core_configfs_attribute {
 	struct configfs_attribute attr;
@@ -85,12 +108,18 @@ struct target_core_configfs_attribute {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct config_group target_core_hbagroup;
 static struct config_group alua_group;
 static struct config_group alua_lu_gps_group;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct se_hba *
 item_to_hba(struct config_item *item)
 {
@@ -125,19 +154,27 @@ static struct target_fabric_configfs *target_core_get_fabric(
 	struct target_fabric_configfs *tf;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(name))
 =======
 	if (!name)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!name)
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	mutex_lock(&g_tf_lock);
 	list_for_each_entry(tf, &g_tf_list, tf_list) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!(strcmp(tf->tf_name, name))) {
 =======
 		if (!strcmp(tf->tf_name, name)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!strcmp(tf->tf_name, name)) {
+>>>>>>> refs/remotes/origin/master
 			atomic_inc(&tf->tf_access_cnt);
 			mutex_unlock(&g_tf_lock);
 			return tf;
@@ -159,6 +196,7 @@ static struct config_group *target_core_register_fabric(
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Target_Core_ConfigFS: REGISTER -> group: %p name:"
 			" %s\n", group, name);
 	/*
@@ -175,6 +213,11 @@ static struct config_group *target_core_register_fabric(
 			" %s\n", group, name);
 	/*
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("Target_Core_ConfigFS: REGISTER -> group: %p name:"
+			" %s\n", group, name);
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * Below are some hardcoded request_module() calls to automatically
 	 * local fabric modules when the following is called:
 	 *
@@ -185,10 +228,14 @@ static struct config_group *target_core_register_fabric(
 	 * mkdir(2) system calls with known TCM fabric modules.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(strncmp(name, "iscsi", 5))) {
 =======
 	if (!strncmp(name, "iscsi", 5)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!strncmp(name, "iscsi", 5)) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Automatically load the LIO Target fabric module when the
 		 * following is called:
@@ -198,18 +245,24 @@ static struct config_group *target_core_register_fabric(
 		ret = request_module("iscsi_target_mod");
 		if (ret < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "request_module() failed for"
 				" iscsi_target_mod.ko: %d\n", ret);
 			return ERR_PTR(-EINVAL);
 		}
 	} else if (!(strncmp(name, "loopback", 8))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			pr_err("request_module() failed for"
 				" iscsi_target_mod.ko: %d\n", ret);
 			return ERR_PTR(-EINVAL);
 		}
 	} else if (!strncmp(name, "loopback", 8)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Automatically load the tcm_loop fabric module when the
 		 * following is called:
@@ -219,16 +272,21 @@ static struct config_group *target_core_register_fabric(
 		ret = request_module("tcm_loop");
 		if (ret < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "request_module() failed for"
 =======
 			pr_err("request_module() failed for"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("request_module() failed for"
+>>>>>>> refs/remotes/origin/master
 				" tcm_loop.ko: %d\n", ret);
 			return ERR_PTR(-EINVAL);
 		}
 	}
 
 	tf = target_core_get_fabric(name);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!(tf)) {
 		printk(KERN_ERR "target_core_get_fabric() failed for %s\n",
@@ -237,30 +295,41 @@ static struct config_group *target_core_register_fabric(
 	}
 	printk(KERN_INFO "Target_Core_ConfigFS: REGISTER -> Located fabric:"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!tf) {
 		pr_err("target_core_get_fabric() failed for %s\n",
 			name);
 		return ERR_PTR(-EINVAL);
 	}
 	pr_debug("Target_Core_ConfigFS: REGISTER -> Located fabric:"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			" %s\n", tf->tf_name);
 	/*
 	 * On a successful target_core_get_fabric() look, the returned
 	 * struct target_fabric_configfs *tf will contain a usage reference.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Target_Core_ConfigFS: REGISTER tfc_wwn_cit -> %p\n",
 =======
 	pr_debug("Target_Core_ConfigFS: REGISTER tfc_wwn_cit -> %p\n",
 >>>>>>> refs/remotes/origin/cm-10.0
 			&TF_CIT_TMPL(tf)->tfc_wwn_cit);
+=======
+	pr_debug("Target_Core_ConfigFS: REGISTER tfc_wwn_cit -> %p\n",
+			&tf->tf_cit_tmpl.tfc_wwn_cit);
+>>>>>>> refs/remotes/origin/master
 
 	tf->tf_group.default_groups = tf->tf_default_groups;
 	tf->tf_group.default_groups[0] = &tf->tf_disc_group;
 	tf->tf_group.default_groups[1] = NULL;
 
 	config_group_init_type_name(&tf->tf_group, name,
+<<<<<<< HEAD
 			&TF_CIT_TMPL(tf)->tfc_wwn_cit);
 	config_group_init_type_name(&tf->tf_disc_group, "discovery_auth",
 			&TF_CIT_TMPL(tf)->tfc_discovery_cit);
@@ -270,6 +339,13 @@ static struct config_group *target_core_register_fabric(
 =======
 	pr_debug("Target_Core_ConfigFS: REGISTER -> Allocated Fabric:"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			&tf->tf_cit_tmpl.tfc_wwn_cit);
+	config_group_init_type_name(&tf->tf_disc_group, "discovery_auth",
+			&tf->tf_cit_tmpl.tfc_discovery_cit);
+
+	pr_debug("Target_Core_ConfigFS: REGISTER -> Allocated Fabric:"
+>>>>>>> refs/remotes/origin/master
 			" %s\n", tf->tf_group.cg_item.ci_name);
 	/*
 	 * Setup tf_ops.tf_subsys pointer for usage with configfs_depend_item()
@@ -277,10 +353,14 @@ static struct config_group *target_core_register_fabric(
 	tf->tf_ops.tf_subsys = tf->tf_subsys;
 	tf->tf_fabric = &tf->tf_group.cg_item;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Target_Core_ConfigFS: REGISTER -> Set tf->tf_fabric"
 =======
 	pr_debug("Target_Core_ConfigFS: REGISTER -> Set tf->tf_fabric"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("Target_Core_ConfigFS: REGISTER -> Set tf->tf_fabric"
+>>>>>>> refs/remotes/origin/master
 			" for %s\n", name);
 
 	return &tf->tf_group;
@@ -300,6 +380,7 @@ static void target_core_deregister_fabric(
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Target_Core_ConfigFS: DEREGISTER -> Looking up %s in"
 		" tf list\n", config_item_name(item));
 
@@ -313,6 +394,8 @@ static void target_core_deregister_fabric(
 
 	printk(KERN_INFO "Target_Core_ConfigFS: DEREGISTER -> Releasing ci"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_debug("Target_Core_ConfigFS: DEREGISTER -> Looking up %s in"
 		" tf list\n", config_item_name(item));
 
@@ -325,7 +408,10 @@ static void target_core_deregister_fabric(
 	tf->tf_fabric = NULL;
 
 	pr_debug("Target_Core_ConfigFS: DEREGISTER -> Releasing ci"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			" %s\n", config_item_name(item));
 
 	tf_group = &tf->tf_group;
@@ -369,7 +455,11 @@ static struct configfs_subsystem target_core_fabrics = {
 	},
 };
 
+<<<<<<< HEAD
 static struct configfs_subsystem *target_core_subsystem[] = {
+=======
+struct configfs_subsystem *target_core_subsystem[] = {
+>>>>>>> refs/remotes/origin/master
 	&target_core_fabrics,
 	NULL,
 };
@@ -393,6 +483,7 @@ struct target_fabric_configfs *target_fabric_configfs_init(
 	struct target_fabric_configfs *tf;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(fabric_mod)) {
 		printk(KERN_ERR "Missing struct module *fabric_mod pointer\n");
 		return NULL;
@@ -411,6 +502,8 @@ struct target_fabric_configfs *target_fabric_configfs_init(
 	if (!(tf))
 		return NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!(name)) {
 		pr_err("Unable to locate passed fabric name\n");
 		return ERR_PTR(-EINVAL);
@@ -424,7 +517,10 @@ struct target_fabric_configfs *target_fabric_configfs_init(
 	tf = kzalloc(sizeof(struct target_fabric_configfs), GFP_KERNEL);
 	if (!tf)
 		return ERR_PTR(-ENOMEM);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	INIT_LIST_HEAD(&tf->tf_list);
 	atomic_set(&tf->tf_access_cnt, 0);
@@ -443,6 +539,7 @@ struct target_fabric_configfs *target_fabric_configfs_init(
 	mutex_unlock(&g_tf_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "<<<<<<<<<<<<<<<<<<<<<< BEGIN FABRIC API >>>>>>>>"
 			">>>>>>>>>>>>>>\n");
 	printk(KERN_INFO "Initialized struct target_fabric_configfs: %p for"
@@ -451,6 +548,11 @@ struct target_fabric_configfs *target_fabric_configfs_init(
 			">>>>>>>>>>>>>>\n");
 	pr_debug("Initialized struct target_fabric_configfs: %p for"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("<<<<<<<<<<<<<<<<<<<<<< BEGIN FABRIC API >>>>>>>>"
+			">>>>>>>>>>>>>>\n");
+	pr_debug("Initialized struct target_fabric_configfs: %p for"
+>>>>>>> refs/remotes/origin/master
 			" %s\n", tf, tf->tf_name);
 	return tf;
 }
@@ -479,6 +581,7 @@ static int target_fabric_tf_ops_check(
 {
 	struct target_core_fabric_ops *tfo = &tf->tf_ops;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!(tfo->get_fabric_name)) {
 		printk(KERN_ERR "Missing tfo->get_fabric_name()\n");
@@ -615,6 +718,8 @@ static int target_fabric_tf_ops_check(
 	if (!(tfo->is_state_remove)) {
 		printk(KERN_ERR "Missing tfo->is_state_remove()\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!tfo->get_fabric_name) {
 		pr_err("Missing tfo->get_fabric_name()\n");
 		return -EINVAL;
@@ -719,6 +824,7 @@ static int target_fabric_tf_ops_check(
 		pr_err("Missing tfo->queue_tm_rsp()\n");
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	if (!tfo->set_fabric_sense_len) {
 		pr_err("Missing tfo->set_fabric_sense_len()\n");
 		return -EINVAL;
@@ -728,11 +834,14 @@ static int target_fabric_tf_ops_check(
 >>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We at least require tfo->fabric_make_wwn(), tfo->fabric_drop_wwn()
 	 * tfo->fabric_make_tpg() and tfo->fabric_drop_tpg() in
 	 * target_core_fabric_configfs.c WWN+TPG group context code.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!(tfo->fabric_make_wwn)) {
 		printk(KERN_ERR "Missing tfo->fabric_make_wwn()\n");
@@ -749,6 +858,8 @@ static int target_fabric_tf_ops_check(
 	if (!(tfo->fabric_drop_tpg)) {
 		printk(KERN_ERR "Missing tfo->fabric_drop_tpg()\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!tfo->fabric_make_wwn) {
 		pr_err("Missing tfo->fabric_make_wwn()\n");
 		return -EINVAL;
@@ -763,7 +874,10 @@ static int target_fabric_tf_ops_check(
 	}
 	if (!tfo->fabric_drop_tpg) {
 		pr_err("Missing tfo->fabric_drop_tpg()\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -782,6 +896,7 @@ int target_fabric_configfs_register(
 	struct target_fabric_configfs *tf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct config_group *su_group;
 	int ret;
 
@@ -799,6 +914,8 @@ int target_fabric_configfs_register(
 	if (!(su_group)) {
 		printk(KERN_ERR "Unable to locate target struct config_group"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (!tf) {
@@ -808,7 +925,10 @@ int target_fabric_configfs_register(
 	}
 	if (!tf->tf_subsys) {
 		pr_err("Unable to target struct config_subsystem"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			" pointer\n");
 		return -EINVAL;
 	}
@@ -817,10 +937,14 @@ int target_fabric_configfs_register(
 		return ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "<<<<<<<<<<<<<<<<<<<<<< END FABRIC API >>>>>>>>>>>>"
 =======
 	pr_debug("<<<<<<<<<<<<<<<<<<<<<< END FABRIC API >>>>>>>>>>>>"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("<<<<<<<<<<<<<<<<<<<<<< END FABRIC API >>>>>>>>>>>>"
+>>>>>>> refs/remotes/origin/master
 		">>>>>>>>>>\n");
 	return 0;
 }
@@ -830,21 +954,28 @@ void target_fabric_configfs_deregister(
 	struct target_fabric_configfs *tf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct config_group *su_group;
 	struct configfs_subsystem *su;
 
 	if (!(tf)) {
 		printk(KERN_ERR "Unable to locate passed target_fabric_"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct configfs_subsystem *su;
 
 	if (!tf) {
 		pr_err("Unable to locate passed target_fabric_"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			"configfs\n");
 		return;
 	}
 	su = tf->tf_subsys;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!(su)) {
 		printk(KERN_ERR "Unable to locate passed tf->tf_subsys"
@@ -860,22 +991,31 @@ void target_fabric_configfs_deregister(
 
 	printk(KERN_INFO "<<<<<<<<<<<<<<<<<<<<<< BEGIN FABRIC API >>>>>>>>>>"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!su) {
 		pr_err("Unable to locate passed tf->tf_subsys"
 			" pointer\n");
 		return;
 	}
 	pr_debug("<<<<<<<<<<<<<<<<<<<<<< BEGIN FABRIC API >>>>>>>>>>"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			">>>>>>>>>>>>\n");
 	mutex_lock(&g_tf_lock);
 	if (atomic_read(&tf->tf_access_cnt)) {
 		mutex_unlock(&g_tf_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "Non zero tf->tf_access_cnt for fabric %s\n",
 =======
 		pr_err("Non zero tf->tf_access_cnt for fabric %s\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Non zero tf->tf_access_cnt for fabric %s\n",
+>>>>>>> refs/remotes/origin/master
 			tf->tf_name);
 		BUG();
 	}
@@ -883,15 +1023,20 @@ void target_fabric_configfs_deregister(
 	mutex_unlock(&g_tf_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Target_Core_ConfigFS: DEREGISTER -> Releasing tf:"
 =======
 	pr_debug("Target_Core_ConfigFS: DEREGISTER -> Releasing tf:"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("Target_Core_ConfigFS: DEREGISTER -> Releasing tf:"
+>>>>>>> refs/remotes/origin/master
 			" %s\n", tf->tf_name);
 	tf->tf_module = NULL;
 	tf->tf_subsys = NULL;
 	kfree(tf);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	printk("<<<<<<<<<<<<<<<<<<<<<< END FABRIC API >>>>>>>>>>>>>>>>>"
 			">>>>>\n");
@@ -900,6 +1045,10 @@ void target_fabric_configfs_deregister(
 	pr_debug("<<<<<<<<<<<<<<<<<<<<<< END FABRIC API >>>>>>>>>>>>>>>>>"
 			">>>>>\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("<<<<<<<<<<<<<<<<<<<<<< END FABRIC API >>>>>>>>>>>>>>>>>"
+			">>>>>\n");
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(target_fabric_configfs_deregister);
 
@@ -914,6 +1063,7 @@ static ssize_t target_core_dev_show_attr_##_name(			\
 	struct se_dev_attrib *da,					\
 	char *page)							\
 {									\
+<<<<<<< HEAD
 	struct se_device *dev;						\
 	struct se_subsystem_dev *se_dev = da->da_sub_dev;			\
 	ssize_t rb;							\
@@ -937,6 +1087,10 @@ static ssize_t target_core_dev_show_attr_##_name(			\
 	spin_unlock(&se_dev->se_dev_lock);				\
 									\
 	return rb;							\
+=======
+	return snprintf(page, PAGE_SIZE, "%u\n",			\
+		(u32)da->da_dev->dev_attrib._name);			\
+>>>>>>> refs/remotes/origin/master
 }
 
 #define DEF_DEV_ATTRIB_STORE(_name)					\
@@ -945,6 +1099,7 @@ static ssize_t target_core_dev_store_attr_##_name(			\
 	const char *page,						\
 	size_t count)							\
 {									\
+<<<<<<< HEAD
 	struct se_device *dev;						\
 	struct se_subsystem_dev *se_dev = da->da_sub_dev;			\
 	unsigned long val;						\
@@ -973,6 +1128,18 @@ static ssize_t target_core_dev_store_attr_##_name(			\
 	}								\
 	ret = se_dev_set_##_name(dev, (u32)val);			\
 	spin_unlock(&se_dev->se_dev_lock);				\
+=======
+	unsigned long val;						\
+	int ret;							\
+									\
+	ret = kstrtoul(page, 0, &val);				\
+	if (ret < 0) {							\
+		pr_err("kstrtoul() failed with"		\
+			" ret: %d\n", ret);				\
+		return -EINVAL;						\
+	}								\
+	ret = se_dev_set_##_name(da->da_dev, (u32)val);			\
+>>>>>>> refs/remotes/origin/master
 									\
 	return (!ret) ? count : -EINVAL;				\
 }
@@ -998,6 +1165,12 @@ static struct target_core_dev_attrib_attribute				\
 	__CONFIGFS_EATTR_RO(_name,					\
 	target_core_dev_show_attr_##_name);
 
+<<<<<<< HEAD
+=======
+DEF_DEV_ATTRIB(emulate_model_alias);
+SE_DEV_ATTR(emulate_model_alias, S_IRUGO | S_IWUSR);
+
+>>>>>>> refs/remotes/origin/master
 DEF_DEV_ATTRIB(emulate_dpo);
 SE_DEV_ATTR(emulate_dpo, S_IRUGO | S_IWUSR);
 
@@ -1022,18 +1195,33 @@ SE_DEV_ATTR(emulate_tpu, S_IRUGO | S_IWUSR);
 DEF_DEV_ATTRIB(emulate_tpws);
 SE_DEV_ATTR(emulate_tpws, S_IRUGO | S_IWUSR);
 
+<<<<<<< HEAD
 DEF_DEV_ATTRIB(enforce_pr_isids);
 SE_DEV_ATTR(enforce_pr_isids, S_IRUGO | S_IWUSR);
 
 <<<<<<< HEAD
 =======
+=======
+DEF_DEV_ATTRIB(emulate_caw);
+SE_DEV_ATTR(emulate_caw, S_IRUGO | S_IWUSR);
+
+DEF_DEV_ATTRIB(emulate_3pc);
+SE_DEV_ATTR(emulate_3pc, S_IRUGO | S_IWUSR);
+
+DEF_DEV_ATTRIB(enforce_pr_isids);
+SE_DEV_ATTR(enforce_pr_isids, S_IRUGO | S_IWUSR);
+
+>>>>>>> refs/remotes/origin/master
 DEF_DEV_ATTRIB(is_nonrot);
 SE_DEV_ATTR(is_nonrot, S_IRUGO | S_IWUSR);
 
 DEF_DEV_ATTRIB(emulate_rest_reord);
 SE_DEV_ATTR(emulate_rest_reord, S_IRUGO | S_IWUSR);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 DEF_DEV_ATTRIB_RO(hw_block_size);
 SE_DEV_ATTR_RO(hw_block_size);
 
@@ -1043,6 +1231,7 @@ SE_DEV_ATTR(block_size, S_IRUGO | S_IWUSR);
 DEF_DEV_ATTRIB_RO(hw_max_sectors);
 SE_DEV_ATTR_RO(hw_max_sectors);
 
+<<<<<<< HEAD
 DEF_DEV_ATTRIB(max_sectors);
 SE_DEV_ATTR(max_sectors, S_IRUGO | S_IWUSR);
 
@@ -1052,6 +1241,11 @@ DEF_DEV_ATTRIB(fabric_max_sectors);
 SE_DEV_ATTR(fabric_max_sectors, S_IRUGO | S_IWUSR);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+DEF_DEV_ATTRIB(fabric_max_sectors);
+SE_DEV_ATTR(fabric_max_sectors, S_IRUGO | S_IWUSR);
+
+>>>>>>> refs/remotes/origin/master
 DEF_DEV_ATTRIB(optimal_sectors);
 SE_DEV_ATTR(optimal_sectors, S_IRUGO | S_IWUSR);
 
@@ -1062,11 +1256,14 @@ DEF_DEV_ATTRIB(queue_depth);
 SE_DEV_ATTR(queue_depth, S_IRUGO | S_IWUSR);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 DEF_DEV_ATTRIB(task_timeout);
 SE_DEV_ATTR(task_timeout, S_IRUGO | S_IWUSR);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 DEF_DEV_ATTRIB(max_unmap_lba_count);
 SE_DEV_ATTR(max_unmap_lba_count, S_IRUGO | S_IWUSR);
 
@@ -1079,9 +1276,19 @@ SE_DEV_ATTR(unmap_granularity, S_IRUGO | S_IWUSR);
 DEF_DEV_ATTRIB(unmap_granularity_alignment);
 SE_DEV_ATTR(unmap_granularity_alignment, S_IRUGO | S_IWUSR);
 
+<<<<<<< HEAD
 CONFIGFS_EATTR_OPS(target_core_dev_attrib, se_dev_attrib, da_group);
 
 static struct configfs_attribute *target_core_dev_attrib_attrs[] = {
+=======
+DEF_DEV_ATTRIB(max_write_same_len);
+SE_DEV_ATTR(max_write_same_len, S_IRUGO | S_IWUSR);
+
+CONFIGFS_EATTR_OPS(target_core_dev_attrib, se_dev_attrib, da_group);
+
+static struct configfs_attribute *target_core_dev_attrib_attrs[] = {
+	&target_core_dev_attrib_emulate_model_alias.attr,
+>>>>>>> refs/remotes/origin/master
 	&target_core_dev_attrib_emulate_dpo.attr,
 	&target_core_dev_attrib_emulate_fua_write.attr,
 	&target_core_dev_attrib_emulate_fua_read.attr,
@@ -1090,6 +1297,7 @@ static struct configfs_attribute *target_core_dev_attrib_attrs[] = {
 	&target_core_dev_attrib_emulate_tas.attr,
 	&target_core_dev_attrib_emulate_tpu.attr,
 	&target_core_dev_attrib_emulate_tpws.attr,
+<<<<<<< HEAD
 	&target_core_dev_attrib_enforce_pr_isids.attr,
 <<<<<<< HEAD
 =======
@@ -1106,15 +1314,32 @@ static struct configfs_attribute *target_core_dev_attrib_attrs[] = {
 	&target_core_dev_attrib_queue_depth.attr,
 	&target_core_dev_attrib_task_timeout.attr,
 =======
+=======
+	&target_core_dev_attrib_emulate_caw.attr,
+	&target_core_dev_attrib_emulate_3pc.attr,
+	&target_core_dev_attrib_enforce_pr_isids.attr,
+	&target_core_dev_attrib_is_nonrot.attr,
+	&target_core_dev_attrib_emulate_rest_reord.attr,
+	&target_core_dev_attrib_hw_block_size.attr,
+	&target_core_dev_attrib_block_size.attr,
+	&target_core_dev_attrib_hw_max_sectors.attr,
+>>>>>>> refs/remotes/origin/master
 	&target_core_dev_attrib_fabric_max_sectors.attr,
 	&target_core_dev_attrib_optimal_sectors.attr,
 	&target_core_dev_attrib_hw_queue_depth.attr,
 	&target_core_dev_attrib_queue_depth.attr,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	&target_core_dev_attrib_max_unmap_lba_count.attr,
 	&target_core_dev_attrib_max_unmap_block_desc_count.attr,
 	&target_core_dev_attrib_unmap_granularity.attr,
 	&target_core_dev_attrib_unmap_granularity_alignment.attr,
+<<<<<<< HEAD
+=======
+	&target_core_dev_attrib_max_write_same_len.attr,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -1155,6 +1380,7 @@ static ssize_t target_core_dev_wwn_show_attr_vpd_unit_serial(
 	struct t10_wwn *t10_wwn,
 	char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_dev = t10_wwn->t10_sub_dev;
 	struct se_device *dev;
 
@@ -1166,6 +1392,8 @@ static ssize_t target_core_dev_wwn_show_attr_vpd_unit_serial(
 >>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return sprintf(page, "T10 VPD Unit Serial Number: %s\n",
 		&t10_wwn->unit_serial[0]);
 }
@@ -1175,8 +1403,12 @@ static ssize_t target_core_dev_wwn_store_attr_vpd_unit_serial(
 	const char *page,
 	size_t count)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *su_dev = t10_wwn->t10_sub_dev;
 	struct se_device *dev;
+=======
+	struct se_device *dev = t10_wwn->t10_dev;
+>>>>>>> refs/remotes/origin/master
 	unsigned char buf[INQUIRY_VPD_SERIAL_LEN];
 
 	/*
@@ -1189,22 +1421,31 @@ static ssize_t target_core_dev_wwn_store_attr_vpd_unit_serial(
 	 * it is doing 'the right thing' wrt a world wide unique
 	 * VPD Unit Serial Number that OS dependent multipath can depend on.
 	 */
+<<<<<<< HEAD
 	if (su_dev->su_dev_flags & SDF_FIRMWARE_VPD_UNIT_SERIAL) {
 <<<<<<< HEAD
 		printk(KERN_ERR "Underlying SCSI device firmware provided VPD"
 =======
 		pr_err("Underlying SCSI device firmware provided VPD"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dev->dev_flags & DF_FIRMWARE_VPD_UNIT_SERIAL) {
+		pr_err("Underlying SCSI device firmware provided VPD"
+>>>>>>> refs/remotes/origin/master
 			" Unit Serial, ignoring request\n");
 		return -EOPNOTSUPP;
 	}
 
 	if (strlen(page) >= INQUIRY_VPD_SERIAL_LEN) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "Emulated VPD Unit Serial exceeds"
 =======
 		pr_err("Emulated VPD Unit Serial exceeds"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Emulated VPD Unit Serial exceeds"
+>>>>>>> refs/remotes/origin/master
 		" INQUIRY_VPD_SERIAL_LEN: %d\n", INQUIRY_VPD_SERIAL_LEN);
 		return -EOVERFLOW;
 	}
@@ -1214,6 +1455,7 @@ static ssize_t target_core_dev_wwn_store_attr_vpd_unit_serial(
 	 * (underneath the initiator side OS dependent multipath code)
 	 * could cause negative effects.
 	 */
+<<<<<<< HEAD
 	dev = su_dev->se_dev_ptr;
 <<<<<<< HEAD
 	if ((dev)) {
@@ -1229,6 +1471,15 @@ static ssize_t target_core_dev_wwn_store_attr_vpd_unit_serial(
 			return -EINVAL;
 		}
 	}
+=======
+	if (dev->export_count) {
+		pr_err("Unable to set VPD Unit Serial while"
+			" active %d $FABRIC_MOD exports exist\n",
+			dev->export_count);
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * This currently assumes ASCII encoding for emulated VPD Unit Serial.
 	 *
@@ -1237,6 +1488,7 @@ static ssize_t target_core_dev_wwn_store_attr_vpd_unit_serial(
 	 */
 	memset(buf, 0, INQUIRY_VPD_SERIAL_LEN);
 	snprintf(buf, INQUIRY_VPD_SERIAL_LEN, "%s", page);
+<<<<<<< HEAD
 	snprintf(su_dev->t10_wwn.unit_serial, INQUIRY_VPD_SERIAL_LEN,
 			"%s", strstrip(buf));
 	su_dev->su_dev_flags |= SDF_EMULATED_VPD_UNIT_SERIAL;
@@ -1247,6 +1499,14 @@ static ssize_t target_core_dev_wwn_store_attr_vpd_unit_serial(
 	pr_debug("Target_Core_ConfigFS: Set emulated VPD Unit Serial:"
 >>>>>>> refs/remotes/origin/cm-10.0
 			" %s\n", su_dev->t10_wwn.unit_serial);
+=======
+	snprintf(dev->t10_wwn.unit_serial, INQUIRY_VPD_SERIAL_LEN,
+			"%s", strstrip(buf));
+	dev->dev_flags |= DF_EMULATED_VPD_UNIT_SERIAL;
+
+	pr_debug("Target_Core_ConfigFS: Set emulated VPD Unit Serial:"
+			" %s\n", dev->t10_wwn.unit_serial);
+>>>>>>> refs/remotes/origin/master
 
 	return count;
 }
@@ -1260,12 +1520,16 @@ static ssize_t target_core_dev_wwn_show_attr_vpd_protocol_identifier(
 	struct t10_wwn *t10_wwn,
 	char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_dev = t10_wwn->t10_sub_dev;
 	struct se_device *dev;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct t10_vpd *vpd;
 	unsigned char buf[VPD_TMP_BUF_SIZE];
 	ssize_t len = 0;
 
+<<<<<<< HEAD
 	dev = se_dev->se_dev_ptr;
 <<<<<<< HEAD
 	if (!(dev))
@@ -1274,24 +1538,34 @@ static ssize_t target_core_dev_wwn_show_attr_vpd_protocol_identifier(
 >>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(buf, 0, VPD_TMP_BUF_SIZE);
 
 	spin_lock(&t10_wwn->t10_vpd_lock);
 	list_for_each_entry(vpd, &t10_wwn->t10_vpd_list, vpd_list) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!(vpd->protocol_identifier_set))
 =======
 		if (!vpd->protocol_identifier_set)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!vpd->protocol_identifier_set)
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		transport_dump_vpd_proto_id(vpd, buf, VPD_TMP_BUF_SIZE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ((len + strlen(buf) >= PAGE_SIZE))
 =======
 		if (len + strlen(buf) >= PAGE_SIZE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (len + strlen(buf) >= PAGE_SIZE)
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		len += sprintf(page+len, "%s", buf);
@@ -1319,12 +1593,16 @@ static ssize_t target_core_dev_wwn_show_attr_##_name(			\
 	struct t10_wwn *t10_wwn,					\
 	char *page)							\
 {									\
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_dev = t10_wwn->t10_sub_dev;		\
 	struct se_device *dev;						\
+=======
+>>>>>>> refs/remotes/origin/master
 	struct t10_vpd *vpd;							\
 	unsigned char buf[VPD_TMP_BUF_SIZE];				\
 	ssize_t len = 0;						\
 									\
+<<<<<<< HEAD
 	dev = se_dev->se_dev_ptr;					\
 <<<<<<< HEAD
 	if (!(dev))							\
@@ -1333,6 +1611,8 @@ static ssize_t target_core_dev_wwn_show_attr_##_name(			\
 >>>>>>> refs/remotes/origin/cm-10.0
 		return -ENODEV;						\
 									\
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&t10_wwn->t10_vpd_lock);				\
 	list_for_each_entry(vpd, &t10_wwn->t10_vpd_list, vpd_list) {	\
 		if (vpd->association != _assoc)				\
@@ -1341,30 +1621,42 @@ static ssize_t target_core_dev_wwn_show_attr_##_name(			\
 		memset(buf, 0, VPD_TMP_BUF_SIZE);			\
 		transport_dump_vpd_assoc(vpd, buf, VPD_TMP_BUF_SIZE);	\
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ((len + strlen(buf) >= PAGE_SIZE))			\
 =======
 		if (len + strlen(buf) >= PAGE_SIZE)			\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (len + strlen(buf) >= PAGE_SIZE)			\
+>>>>>>> refs/remotes/origin/master
 			break;						\
 		len += sprintf(page+len, "%s", buf);			\
 									\
 		memset(buf, 0, VPD_TMP_BUF_SIZE);			\
 		transport_dump_vpd_ident_type(vpd, buf, VPD_TMP_BUF_SIZE); \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ((len + strlen(buf) >= PAGE_SIZE))			\
 =======
 		if (len + strlen(buf) >= PAGE_SIZE)			\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (len + strlen(buf) >= PAGE_SIZE)			\
+>>>>>>> refs/remotes/origin/master
 			break;						\
 		len += sprintf(page+len, "%s", buf);			\
 									\
 		memset(buf, 0, VPD_TMP_BUF_SIZE);			\
 		transport_dump_vpd_ident(vpd, buf, VPD_TMP_BUF_SIZE); \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ((len + strlen(buf) >= PAGE_SIZE))			\
 =======
 		if (len + strlen(buf) >= PAGE_SIZE)			\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (len + strlen(buf) >= PAGE_SIZE)			\
+>>>>>>> refs/remotes/origin/master
 			break;						\
 		len += sprintf(page+len, "%s", buf);			\
 	}								\
@@ -1375,10 +1667,14 @@ static ssize_t target_core_dev_wwn_show_attr_##_name(			\
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * VPD page 0x83 Assoication: Logical Unit
 =======
  * VPD page 0x83 Association: Logical Unit
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * VPD page 0x83 Association: Logical Unit
+>>>>>>> refs/remotes/origin/master
  */
 DEF_DEV_WWN_ASSOC_SHOW(vpd_assoc_logical_unit, 0x00);
 
@@ -1448,7 +1744,11 @@ static struct config_item_type target_core_dev_wwn_cit = {
 
 /*  Start functions for struct config_item_type target_core_dev_pr_cit */
 
+<<<<<<< HEAD
 CONFIGFS_EATTR_STRUCT(target_core_dev_pr, se_subsystem_dev);
+=======
+CONFIGFS_EATTR_STRUCT(target_core_dev_pr, se_device);
+>>>>>>> refs/remotes/origin/master
 #define SE_DEV_PR_ATTR(_name, _mode)					\
 static struct target_core_dev_pr_attribute target_core_dev_pr_##_name = \
 	__CONFIGFS_EATTR(_name, _mode,					\
@@ -1460,6 +1760,7 @@ static struct target_core_dev_pr_attribute target_core_dev_pr_##_name =	\
 	__CONFIGFS_EATTR_RO(_name,					\
 	target_core_dev_pr_show_attr_##_name);
 
+<<<<<<< HEAD
 /*
  * res_holder
  */
@@ -1467,10 +1768,15 @@ static ssize_t target_core_dev_pr_show_spc3_res(
 	struct se_device *dev,
 	char *page,
 	ssize_t *len)
+=======
+static ssize_t target_core_dev_pr_show_spc3_res(struct se_device *dev,
+		char *page)
+>>>>>>> refs/remotes/origin/master
 {
 	struct se_node_acl *se_nacl;
 	struct t10_pr_registration *pr_reg;
 	char i_buf[PR_REG_ISID_ID_LEN];
+<<<<<<< HEAD
 	int prf_isid;
 
 	memset(i_buf, 0, PR_REG_ISID_ID_LEN);
@@ -1566,10 +1872,61 @@ static ssize_t target_core_dev_pr_show_attr_res_holder(
 	}
 
 	return len;
+=======
+
+	memset(i_buf, 0, PR_REG_ISID_ID_LEN);
+
+	pr_reg = dev->dev_pr_res_holder;
+	if (!pr_reg)
+		return sprintf(page, "No SPC-3 Reservation holder\n");
+
+	se_nacl = pr_reg->pr_reg_nacl;
+	core_pr_dump_initiator_port(pr_reg, i_buf, PR_REG_ISID_ID_LEN);
+
+	return sprintf(page, "SPC-3 Reservation: %s Initiator: %s%s\n",
+		se_nacl->se_tpg->se_tpg_tfo->get_fabric_name(),
+		se_nacl->initiatorname, i_buf);
+}
+
+static ssize_t target_core_dev_pr_show_spc2_res(struct se_device *dev,
+		char *page)
+{
+	struct se_node_acl *se_nacl;
+	ssize_t len;
+
+	se_nacl = dev->dev_reserved_node_acl;
+	if (se_nacl) {
+		len = sprintf(page,
+			      "SPC-2 Reservation: %s Initiator: %s\n",
+			      se_nacl->se_tpg->se_tpg_tfo->get_fabric_name(),
+			      se_nacl->initiatorname);
+	} else {
+		len = sprintf(page, "No SPC-2 Reservation holder\n");
+	}
+	return len;
+}
+
+static ssize_t target_core_dev_pr_show_attr_res_holder(struct se_device *dev,
+		char *page)
+{
+	int ret;
+
+	if (dev->transport->transport_type == TRANSPORT_PLUGIN_PHBA_PDEV)
+		return sprintf(page, "Passthrough\n");
+
+	spin_lock(&dev->dev_reservation_lock);
+	if (dev->dev_reservation_flags & DRF_SPC2_RESERVATIONS)
+		ret = target_core_dev_pr_show_spc2_res(dev, page);
+	else
+		ret = target_core_dev_pr_show_spc3_res(dev, page);
+	spin_unlock(&dev->dev_reservation_lock);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 SE_DEV_PR_ATTR_RO(res_holder);
 
+<<<<<<< HEAD
 /*
  * res_pr_all_tgt_pts
  */
@@ -1618,11 +1975,31 @@ static ssize_t target_core_dev_pr_show_attr_res_pr_all_tgt_pts(
 			" Target Port registration\n");
 	spin_unlock(&dev->dev_reservation_lock);
 
+=======
+static ssize_t target_core_dev_pr_show_attr_res_pr_all_tgt_pts(
+		struct se_device *dev, char *page)
+{
+	ssize_t len = 0;
+
+	spin_lock(&dev->dev_reservation_lock);
+	if (!dev->dev_pr_res_holder) {
+		len = sprintf(page, "No SPC-3 Reservation holder\n");
+	} else if (dev->dev_pr_res_holder->pr_reg_all_tg_pt) {
+		len = sprintf(page, "SPC-3 Reservation: All Target"
+			" Ports registration\n");
+	} else {
+		len = sprintf(page, "SPC-3 Reservation: Single"
+			" Target Port registration\n");
+	}
+
+	spin_unlock(&dev->dev_reservation_lock);
+>>>>>>> refs/remotes/origin/master
 	return len;
 }
 
 SE_DEV_PR_ATTR_RO(res_pr_all_tgt_pts);
 
+<<<<<<< HEAD
 /*
  * res_pr_generation
  */
@@ -1647,6 +2024,12 @@ static ssize_t target_core_dev_pr_show_attr_res_pr_generation(
 
 	return sprintf(page, "0x%08x\n", su_dev->t10_pr.pr_generation);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t target_core_dev_pr_show_attr_res_pr_generation(
+		struct se_device *dev, char *page)
+{
+	return sprintf(page, "0x%08x\n", dev->t10_pr.pr_generation);
+>>>>>>> refs/remotes/origin/master
 }
 
 SE_DEV_PR_ATTR_RO(res_pr_generation);
@@ -1655,10 +2038,15 @@ SE_DEV_PR_ATTR_RO(res_pr_generation);
  * res_pr_holder_tg_port
  */
 static ssize_t target_core_dev_pr_show_attr_res_pr_holder_tg_port(
+<<<<<<< HEAD
 	struct se_subsystem_dev *su_dev,
 	char *page)
 {
 	struct se_device *dev;
+=======
+		struct se_device *dev, char *page)
+{
+>>>>>>> refs/remotes/origin/master
 	struct se_node_acl *se_nacl;
 	struct se_lun *lun;
 	struct se_portal_group *se_tpg;
@@ -1666,6 +2054,7 @@ static ssize_t target_core_dev_pr_show_attr_res_pr_holder_tg_port(
 	struct target_core_fabric_ops *tfo;
 	ssize_t len = 0;
 
+<<<<<<< HEAD
 	dev = su_dev->se_dev_ptr;
 <<<<<<< HEAD
 	if (!(dev))
@@ -1699,34 +2088,63 @@ static ssize_t target_core_dev_pr_show_attr_res_pr_holder_tg_port(
 =======
 	tfo = se_tpg->se_tpg_tfo;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&dev->dev_reservation_lock);
+	pr_reg = dev->dev_pr_res_holder;
+	if (!pr_reg) {
+		len = sprintf(page, "No SPC-3 Reservation holder\n");
+		goto out_unlock;
+	}
+
+	se_nacl = pr_reg->pr_reg_nacl;
+	se_tpg = se_nacl->se_tpg;
+	lun = pr_reg->pr_reg_tg_pt_lun;
+	tfo = se_tpg->se_tpg_tfo;
+>>>>>>> refs/remotes/origin/master
 
 	len += sprintf(page+len, "SPC-3 Reservation: %s"
 		" Target Node Endpoint: %s\n", tfo->get_fabric_name(),
 		tfo->tpg_get_wwn(se_tpg));
 	len += sprintf(page+len, "SPC-3 Reservation: Relative Port"
+<<<<<<< HEAD
 		" Identifer Tag: %hu %s Portal Group Tag: %hu"
 		" %s Logical Unit: %u\n", lun->lun_sep->sep_rtpi,
 		tfo->get_fabric_name(), tfo->tpg_get_tag(se_tpg),
 		tfo->get_fabric_name(), lun->unpacked_lun);
 	spin_unlock(&dev->dev_reservation_lock);
 
+=======
+		" Identifier Tag: %hu %s Portal Group Tag: %hu"
+		" %s Logical Unit: %u\n", lun->lun_sep->sep_rtpi,
+		tfo->get_fabric_name(), tfo->tpg_get_tag(se_tpg),
+		tfo->get_fabric_name(), lun->unpacked_lun);
+
+out_unlock:
+	spin_unlock(&dev->dev_reservation_lock);
+>>>>>>> refs/remotes/origin/master
 	return len;
 }
 
 SE_DEV_PR_ATTR_RO(res_pr_holder_tg_port);
 
+<<<<<<< HEAD
 /*
  * res_pr_registered_i_pts
  */
 static ssize_t target_core_dev_pr_show_attr_res_pr_registered_i_pts(
 	struct se_subsystem_dev *su_dev,
 	char *page)
+=======
+static ssize_t target_core_dev_pr_show_attr_res_pr_registered_i_pts(
+		struct se_device *dev, char *page)
+>>>>>>> refs/remotes/origin/master
 {
 	struct target_core_fabric_ops *tfo;
 	struct t10_pr_registration *pr_reg;
 	unsigned char buf[384];
 	char i_buf[PR_REG_ISID_ID_LEN];
 	ssize_t len = 0;
+<<<<<<< HEAD
 	int reg_count = 0, prf_isid;
 
 <<<<<<< HEAD
@@ -1751,11 +2169,20 @@ static ssize_t target_core_dev_pr_show_attr_res_pr_registered_i_pts(
 	spin_lock(&su_dev->t10_pr.registration_lock);
 	list_for_each_entry(pr_reg, &su_dev->t10_pr.registration_list,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int reg_count = 0;
+
+	len += sprintf(page+len, "SPC-3 PR Registrations:\n");
+
+	spin_lock(&dev->t10_pr.registration_lock);
+	list_for_each_entry(pr_reg, &dev->t10_pr.registration_list,
+>>>>>>> refs/remotes/origin/master
 			pr_reg_list) {
 
 		memset(buf, 0, 384);
 		memset(i_buf, 0, PR_REG_ISID_ID_LEN);
 		tfo = pr_reg->pr_reg_nacl->se_tpg->se_tpg_tfo;
+<<<<<<< HEAD
 		prf_isid = core_pr_dump_initiator_port(pr_reg, &i_buf[0],
 					PR_REG_ISID_ID_LEN);
 		sprintf(buf, "%s Node: %s%s Key: 0x%016Lx PRgen: 0x%08x\n",
@@ -1769,11 +2196,22 @@ static ssize_t target_core_dev_pr_show_attr_res_pr_registered_i_pts(
 =======
 		if (len + strlen(buf) >= PAGE_SIZE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		core_pr_dump_initiator_port(pr_reg, i_buf,
+					PR_REG_ISID_ID_LEN);
+		sprintf(buf, "%s Node: %s%s Key: 0x%016Lx PRgen: 0x%08x\n",
+			tfo->get_fabric_name(),
+			pr_reg->pr_reg_nacl->initiatorname, i_buf, pr_reg->pr_res_key,
+			pr_reg->pr_res_generation);
+
+		if (len + strlen(buf) >= PAGE_SIZE)
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		len += sprintf(page+len, "%s", buf);
 		reg_count++;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_unlock(&T10_RES(su_dev)->registration_lock);
 
@@ -1783,6 +2221,11 @@ static ssize_t target_core_dev_pr_show_attr_res_pr_registered_i_pts(
 
 	if (!reg_count)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&dev->t10_pr.registration_lock);
+
+	if (!reg_count)
+>>>>>>> refs/remotes/origin/master
 		len += sprintf(page+len, "None\n");
 
 	return len;
@@ -1790,6 +2233,7 @@ static ssize_t target_core_dev_pr_show_attr_res_pr_registered_i_pts(
 
 SE_DEV_PR_ATTR_RO(res_pr_registered_i_pts);
 
+<<<<<<< HEAD
 /*
  * res_pr_type
  */
@@ -1830,11 +2274,30 @@ static ssize_t target_core_dev_pr_show_attr_res_pr_type(
 		core_scsi3_pr_dump_type(pr_reg->pr_res_type));
 	spin_unlock(&dev->dev_reservation_lock);
 
+=======
+static ssize_t target_core_dev_pr_show_attr_res_pr_type(
+		struct se_device *dev, char *page)
+{
+	struct t10_pr_registration *pr_reg;
+	ssize_t len = 0;
+
+	spin_lock(&dev->dev_reservation_lock);
+	pr_reg = dev->dev_pr_res_holder;
+	if (pr_reg) {
+		len = sprintf(page, "SPC-3 Reservation Type: %s\n",
+			core_scsi3_pr_dump_type(pr_reg->pr_res_type));
+	} else {
+		len = sprintf(page, "No SPC-3 Reservation holder\n");
+	}
+
+	spin_unlock(&dev->dev_reservation_lock);
+>>>>>>> refs/remotes/origin/master
 	return len;
 }
 
 SE_DEV_PR_ATTR_RO(res_pr_type);
 
+<<<<<<< HEAD
 /*
  * res_type
  */
@@ -1870,10 +2333,22 @@ static ssize_t target_core_dev_pr_show_attr_res_type(
 	}
 
 	return len;
+=======
+static ssize_t target_core_dev_pr_show_attr_res_type(
+		struct se_device *dev, char *page)
+{
+	if (dev->transport->transport_type == TRANSPORT_PLUGIN_PHBA_PDEV)
+		return sprintf(page, "SPC_PASSTHROUGH\n");
+	else if (dev->dev_reservation_flags & DRF_SPC2_RESERVATIONS)
+		return sprintf(page, "SPC2_RESERVATIONS\n");
+	else
+		return sprintf(page, "SPC3_PERSISTENT_RESERVATIONS\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 SE_DEV_PR_ATTR_RO(res_type);
 
+<<<<<<< HEAD
 /*
  * res_aptpl_active
  */
@@ -1901,6 +2376,16 @@ static ssize_t target_core_dev_pr_show_attr_res_aptpl_active(
 	return sprintf(page, "APTPL Bit Status: %s\n",
 		(su_dev->t10_pr.pr_aptpl_active) ? "Activated" : "Disabled");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t target_core_dev_pr_show_attr_res_aptpl_active(
+		struct se_device *dev, char *page)
+{
+	if (dev->transport->transport_type == TRANSPORT_PLUGIN_PHBA_PDEV)
+		return 0;
+
+	return sprintf(page, "APTPL Bit Status: %s\n",
+		(dev->t10_pr.pr_aptpl_active) ? "Activated" : "Disabled");
+>>>>>>> refs/remotes/origin/master
 }
 
 SE_DEV_PR_ATTR_RO(res_aptpl_active);
@@ -1909,6 +2394,7 @@ SE_DEV_PR_ATTR_RO(res_aptpl_active);
  * res_aptpl_metadata
  */
 static ssize_t target_core_dev_pr_show_attr_res_aptpl_metadata(
+<<<<<<< HEAD
 	struct se_subsystem_dev *su_dev,
 	char *page)
 {
@@ -1923,6 +2409,11 @@ static ssize_t target_core_dev_pr_show_attr_res_aptpl_metadata(
 
 	if (su_dev->t10_pr.res_type != SPC3_PERSISTENT_RESERVATIONS)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct se_device *dev, char *page)
+{
+	if (dev->transport->transport_type == TRANSPORT_PLUGIN_PHBA_PDEV)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	return sprintf(page, "Ready to process PR APTPL metadata..\n");
@@ -1954,11 +2445,18 @@ static match_table_t tokens = {
 };
 
 static ssize_t target_core_dev_pr_store_attr_res_aptpl_metadata(
+<<<<<<< HEAD
 	struct se_subsystem_dev *su_dev,
 	const char *page,
 	size_t count)
 {
 	struct se_device *dev;
+=======
+	struct se_device *dev,
+	const char *page,
+	size_t count)
+{
+>>>>>>> refs/remotes/origin/master
 	unsigned char *i_fabric = NULL, *i_port = NULL, *isid = NULL;
 	unsigned char *t_fabric = NULL, *t_port = NULL;
 	char *orig, *ptr, *arg_p, *opts;
@@ -1970,6 +2468,7 @@ static ssize_t target_core_dev_pr_store_attr_res_aptpl_metadata(
 	u16 port_rpti = 0, tpgt = 0;
 	u8 type = 0, scope;
 
+<<<<<<< HEAD
 	dev = su_dev->se_dev_ptr;
 <<<<<<< HEAD
 	if (!(dev))
@@ -1990,6 +2489,15 @@ static ssize_t target_core_dev_pr_store_attr_res_aptpl_metadata(
 	if (atomic_read(&dev->dev_export_obj.obj_access_count)) {
 		pr_debug("Unable to process APTPL metadata while"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dev->transport->transport_type == TRANSPORT_PLUGIN_PHBA_PDEV)
+		return 0;
+	if (dev->dev_reservation_flags & DRF_SPC2_RESERVATIONS)
+		return 0;
+
+	if (dev->export_count) {
+		pr_debug("Unable to process APTPL metadata while"
+>>>>>>> refs/remotes/origin/master
 			" active fabric exports exist\n");
 		return -EINVAL;
 	}
@@ -2000,10 +2508,14 @@ static ssize_t target_core_dev_pr_store_attr_res_aptpl_metadata(
 
 	orig = opts;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while ((ptr = strsep(&opts, ",")) != NULL) {
 =======
 	while ((ptr = strsep(&opts, ",\n")) != NULL) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while ((ptr = strsep(&opts, ",\n")) != NULL) {
+>>>>>>> refs/remotes/origin/master
 		if (!*ptr)
 			continue;
 
@@ -2024,10 +2536,14 @@ static ssize_t target_core_dev_pr_store_attr_res_aptpl_metadata(
 			}
 			if (strlen(i_port) >= PR_APTPL_MAX_IPORT_LEN) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_ERR "APTPL metadata initiator_node="
 =======
 				pr_err("APTPL metadata initiator_node="
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_err("APTPL metadata initiator_node="
+>>>>>>> refs/remotes/origin/master
 					" exceeds PR_APTPL_MAX_IPORT_LEN: %d\n",
 					PR_APTPL_MAX_IPORT_LEN);
 				ret = -EINVAL;
@@ -2042,10 +2558,14 @@ static ssize_t target_core_dev_pr_store_attr_res_aptpl_metadata(
 			}
 			if (strlen(isid) >= PR_REG_ISID_LEN) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_ERR "APTPL metadata initiator_isid"
 =======
 				pr_err("APTPL metadata initiator_isid"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_err("APTPL metadata initiator_isid"
+>>>>>>> refs/remotes/origin/master
 					"= exceeds PR_REG_ISID_LEN: %d\n",
 					PR_REG_ISID_LEN);
 				ret = -EINVAL;
@@ -2058,6 +2578,7 @@ static ssize_t target_core_dev_pr_store_attr_res_aptpl_metadata(
 				ret = -ENOMEM;
 				goto out;
 			}
+<<<<<<< HEAD
 			ret = strict_strtoull(arg_p, 0, &tmp_ll);
 			if (ret < 0) {
 <<<<<<< HEAD
@@ -2065,6 +2586,11 @@ static ssize_t target_core_dev_pr_store_attr_res_aptpl_metadata(
 =======
 				pr_err("strict_strtoull() failed for"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret = kstrtoull(arg_p, 0, &tmp_ll);
+			if (ret < 0) {
+				pr_err("kstrtoull() failed for"
+>>>>>>> refs/remotes/origin/master
 					" sa_res_key=\n");
 				goto out;
 			}
@@ -2111,10 +2637,14 @@ static ssize_t target_core_dev_pr_store_attr_res_aptpl_metadata(
 			}
 			if (strlen(t_port) >= PR_APTPL_MAX_TPORT_LEN) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_ERR "APTPL metadata target_node="
 =======
 				pr_err("APTPL metadata target_node="
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_err("APTPL metadata target_node="
+>>>>>>> refs/remotes/origin/master
 					" exceeds PR_APTPL_MAX_TPORT_LEN: %d\n",
 					PR_APTPL_MAX_TPORT_LEN);
 				ret = -EINVAL;
@@ -2139,32 +2669,45 @@ static ssize_t target_core_dev_pr_store_attr_res_aptpl_metadata(
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(i_port) || !(t_port) || !(sa_res_key)) {
 		printk(KERN_ERR "Illegal parameters for APTPL registration\n");
 =======
 	if (!i_port || !t_port || !sa_res_key) {
 		pr_err("Illegal parameters for APTPL registration\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!i_port || !t_port || !sa_res_key) {
+		pr_err("Illegal parameters for APTPL registration\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto out;
 	}
 
 	if (res_holder && !(type)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "Illegal PR type: 0x%02x for reservation"
 =======
 		pr_err("Illegal PR type: 0x%02x for reservation"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Illegal PR type: 0x%02x for reservation"
+>>>>>>> refs/remotes/origin/master
 				" holder\n", type);
 		ret = -EINVAL;
 		goto out;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = core_scsi3_alloc_aptpl_registration(T10_RES(su_dev), sa_res_key,
 =======
 	ret = core_scsi3_alloc_aptpl_registration(&su_dev->t10_pr, sa_res_key,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = core_scsi3_alloc_aptpl_registration(&dev->t10_pr, sa_res_key,
+>>>>>>> refs/remotes/origin/master
 			i_port, isid, mapped_lun, t_port, tpgt, target_lun,
 			res_holder, all_tg_pt, type);
 out:
@@ -2179,7 +2722,11 @@ out:
 
 SE_DEV_PR_ATTR(res_aptpl_metadata, S_IRUGO | S_IWUSR);
 
+<<<<<<< HEAD
 CONFIGFS_EATTR_OPS(target_core_dev_pr, se_subsystem_dev, se_dev_pr_group);
+=======
+CONFIGFS_EATTR_OPS(target_core_dev_pr, se_device, dev_pr_group);
+>>>>>>> refs/remotes/origin/master
 
 static struct configfs_attribute *target_core_dev_pr_attrs[] = {
 	&target_core_dev_pr_res_holder.attr,
@@ -2212,6 +2759,7 @@ static struct config_item_type target_core_dev_pr_cit = {
 static ssize_t target_core_show_dev_info(void *p, char *page)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_dev = (struct se_subsystem_dev *)p;
 =======
 	struct se_subsystem_dev *se_dev = p;
@@ -2231,6 +2779,16 @@ static ssize_t target_core_show_dev_info(void *p, char *page)
 	transport_dump_dev_state(se_dev->se_dev_ptr, page, &bl);
 	read_bytes += bl;
 	read_bytes += t->show_configfs_dev_params(hba, se_dev, page+read_bytes);
+=======
+	struct se_device *dev = p;
+	struct se_subsystem_api *t = dev->transport;
+	int bl = 0;
+	ssize_t read_bytes = 0;
+
+	transport_dump_dev_state(dev, page, &bl);
+	read_bytes += bl;
+	read_bytes += t->show_configfs_dev_params(dev, page+read_bytes);
+>>>>>>> refs/remotes/origin/master
 	return read_bytes;
 }
 
@@ -2247,6 +2805,7 @@ static ssize_t target_core_store_dev_control(
 	const char *page,
 	size_t count)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct se_subsystem_dev *se_dev = (struct se_subsystem_dev *)p;
 	struct se_hba *hba = se_dev->se_dev_hba;
@@ -2267,6 +2826,12 @@ static ssize_t target_core_store_dev_control(
 	}
 
 	return t->set_configfs_dev_params(hba, se_dev, page, count);
+=======
+	struct se_device *dev = p;
+	struct se_subsystem_api *t = dev->transport;
+
+	return t->set_configfs_dev_params(dev, page, count);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct target_core_configfs_attribute target_core_attr_dev_control = {
@@ -2280,6 +2845,7 @@ static struct target_core_configfs_attribute target_core_attr_dev_control = {
 static ssize_t target_core_show_dev_alias(void *p, char *page)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_dev = (struct se_subsystem_dev *)p;
 =======
 	struct se_subsystem_dev *se_dev = p;
@@ -2289,6 +2855,14 @@ static ssize_t target_core_show_dev_alias(void *p, char *page)
 		return 0;
 
 	return snprintf(page, PAGE_SIZE, "%s\n", se_dev->se_dev_alias);
+=======
+	struct se_device *dev = p;
+
+	if (!(dev->dev_flags & DF_USING_ALIAS))
+		return 0;
+
+	return snprintf(page, PAGE_SIZE, "%s\n", dev->dev_alias);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t target_core_store_dev_alias(
@@ -2296,6 +2870,7 @@ static ssize_t target_core_store_dev_alias(
 	const char *page,
 	size_t count)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct se_subsystem_dev *se_dev = (struct se_subsystem_dev *)p;
 =======
@@ -2310,11 +2885,20 @@ static ssize_t target_core_store_dev_alias(
 =======
 		pr_err("alias count: %d exceeds"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct se_device *dev = p;
+	struct se_hba *hba = dev->se_hba;
+	ssize_t read_bytes;
+
+	if (count > (SE_DEV_ALIAS_LEN-1)) {
+		pr_err("alias count: %d exceeds"
+>>>>>>> refs/remotes/origin/master
 			" SE_DEV_ALIAS_LEN-1: %u\n", (int)count,
 			SE_DEV_ALIAS_LEN-1);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	se_dev->su_dev_flags |= SDF_USING_ALIAS;
 	read_bytes = snprintf(&se_dev->se_dev_alias[0], SE_DEV_ALIAS_LEN,
@@ -2336,6 +2920,20 @@ static ssize_t target_core_store_dev_alias(
 		config_item_name(&hba->hba_group.cg_item),
 		config_item_name(&se_dev->se_dev_group.cg_item),
 		se_dev->se_dev_alias);
+=======
+	read_bytes = snprintf(&dev->dev_alias[0], SE_DEV_ALIAS_LEN, "%s", page);
+	if (!read_bytes)
+		return -EINVAL;
+	if (dev->dev_alias[read_bytes - 1] == '\n')
+		dev->dev_alias[read_bytes - 1] = '\0';
+
+	dev->dev_flags |= DF_USING_ALIAS;
+
+	pr_debug("Target_Core_ConfigFS: %s/%s set alias: %s\n",
+		config_item_name(&hba->hba_group.cg_item),
+		config_item_name(&dev->dev_group.cg_item),
+		dev->dev_alias);
+>>>>>>> refs/remotes/origin/master
 
 	return read_bytes;
 }
@@ -2351,6 +2949,7 @@ static struct target_core_configfs_attribute target_core_attr_dev_alias = {
 static ssize_t target_core_show_dev_udev_path(void *p, char *page)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_dev = (struct se_subsystem_dev *)p;
 =======
 	struct se_subsystem_dev *se_dev = p;
@@ -2360,6 +2959,14 @@ static ssize_t target_core_show_dev_udev_path(void *p, char *page)
 		return 0;
 
 	return snprintf(page, PAGE_SIZE, "%s\n", se_dev->se_dev_udev_path);
+=======
+	struct se_device *dev = p;
+
+	if (!(dev->dev_flags & DF_USING_UDEV_PATH))
+		return 0;
+
+	return snprintf(page, PAGE_SIZE, "%s\n", dev->udev_path);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t target_core_store_dev_udev_path(
@@ -2367,6 +2974,7 @@ static ssize_t target_core_store_dev_udev_path(
 	const char *page,
 	size_t count)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct se_subsystem_dev *se_dev = (struct se_subsystem_dev *)p;
 =======
@@ -2381,11 +2989,20 @@ static ssize_t target_core_store_dev_udev_path(
 =======
 		pr_err("udev_path count: %d exceeds"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct se_device *dev = p;
+	struct se_hba *hba = dev->se_hba;
+	ssize_t read_bytes;
+
+	if (count > (SE_UDEV_PATH_LEN-1)) {
+		pr_err("udev_path count: %d exceeds"
+>>>>>>> refs/remotes/origin/master
 			" SE_UDEV_PATH_LEN-1: %u\n", (int)count,
 			SE_UDEV_PATH_LEN-1);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	se_dev->su_dev_flags |= SDF_USING_UDEV_PATH;
 	read_bytes = snprintf(&se_dev->se_dev_udev_path[0], SE_UDEV_PATH_LEN,
@@ -2407,6 +3024,21 @@ static ssize_t target_core_store_dev_udev_path(
 		config_item_name(&hba->hba_group.cg_item),
 		config_item_name(&se_dev->se_dev_group.cg_item),
 		se_dev->se_dev_udev_path);
+=======
+	read_bytes = snprintf(&dev->udev_path[0], SE_UDEV_PATH_LEN,
+			"%s", page);
+	if (!read_bytes)
+		return -EINVAL;
+	if (dev->udev_path[read_bytes - 1] == '\n')
+		dev->udev_path[read_bytes - 1] = '\0';
+
+	dev->dev_flags |= DF_USING_UDEV_PATH;
+
+	pr_debug("Target_Core_ConfigFS: %s/%s set udev_path: %s\n",
+		config_item_name(&hba->hba_group.cg_item),
+		config_item_name(&dev->dev_group.cg_item),
+		dev->udev_path);
+>>>>>>> refs/remotes/origin/master
 
 	return read_bytes;
 }
@@ -2419,11 +3051,22 @@ static struct target_core_configfs_attribute target_core_attr_dev_udev_path = {
 	.store	= target_core_store_dev_udev_path,
 };
 
+<<<<<<< HEAD
+=======
+static ssize_t target_core_show_dev_enable(void *p, char *page)
+{
+	struct se_device *dev = p;
+
+	return snprintf(page, PAGE_SIZE, "%d\n", !!(dev->dev_flags & DF_CONFIGURED));
+}
+
+>>>>>>> refs/remotes/origin/master
 static ssize_t target_core_store_dev_enable(
 	void *p,
 	const char *page,
 	size_t count)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct se_subsystem_dev *se_dev = (struct se_subsystem_dev *)p;
 =======
@@ -2444,11 +3087,19 @@ static ssize_t target_core_store_dev_enable(
 	if ((se_dev->se_dev_ptr)) {
 		printk(KERN_ERR "se_dev->se_dev_ptr already set for storage"
 =======
+=======
+	struct se_device *dev = p;
+	char *ptr;
+	int ret;
+
+	ptr = strstr(page, "1");
+>>>>>>> refs/remotes/origin/master
 	if (!ptr) {
 		pr_err("For dev_enable ops, only valid value"
 				" is \"1\"\n");
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	if (se_dev->se_dev_ptr) {
 		pr_err("se_dev->se_dev_ptr already set for storage"
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -2473,30 +3124,46 @@ static ssize_t target_core_store_dev_enable(
 >>>>>>> refs/remotes/origin/cm-10.0
 		" %p\n", se_dev->se_dev_ptr);
 
+=======
+
+	ret = target_configure_device(dev);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
 static struct target_core_configfs_attribute target_core_attr_dev_enable = {
 	.attr	= { .ca_owner = THIS_MODULE,
 		    .ca_name = "enable",
+<<<<<<< HEAD
 		    .ca_mode = S_IWUSR },
 	.show	= NULL,
+=======
+		    .ca_mode =  S_IRUGO | S_IWUSR },
+	.show	= target_core_show_dev_enable,
+>>>>>>> refs/remotes/origin/master
 	.store	= target_core_store_dev_enable,
 };
 
 static ssize_t target_core_show_alua_lu_gp(void *p, char *page)
 {
+<<<<<<< HEAD
 	struct se_device *dev;
 <<<<<<< HEAD
 	struct se_subsystem_dev *su_dev = (struct se_subsystem_dev *)p;
 =======
 	struct se_subsystem_dev *su_dev = p;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct se_device *dev = p;
+>>>>>>> refs/remotes/origin/master
 	struct config_item *lu_ci;
 	struct t10_alua_lu_gp *lu_gp;
 	struct t10_alua_lu_gp_member *lu_gp_mem;
 	ssize_t len = 0;
 
+<<<<<<< HEAD
 	dev = su_dev->se_dev_ptr;
 <<<<<<< HEAD
 	if (!(dev))
@@ -2530,6 +3197,15 @@ static ssize_t target_core_show_alua_lu_gp(void *p, char *page)
 =======
 	if (lu_gp) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lu_gp_mem = dev->dev_alua_lu_gp_mem;
+	if (!lu_gp_mem)
+		return 0;
+
+	spin_lock(&lu_gp_mem->lu_gp_mem_lock);
+	lu_gp = lu_gp_mem->lu_gp;
+	if (lu_gp) {
+>>>>>>> refs/remotes/origin/master
 		lu_ci = &lu_gp->lu_gp_group.cg_item;
 		len += sprintf(page, "LU Group Alias: %s\nLU Group ID: %hu\n",
 			config_item_name(lu_ci), lu_gp->lu_gp_id);
@@ -2544,6 +3220,7 @@ static ssize_t target_core_store_alua_lu_gp(
 	const char *page,
 	size_t count)
 {
+<<<<<<< HEAD
 	struct se_device *dev;
 <<<<<<< HEAD
 	struct se_subsystem_dev *su_dev = (struct se_subsystem_dev *)p;
@@ -2551,11 +3228,16 @@ static ssize_t target_core_store_alua_lu_gp(
 	struct se_subsystem_dev *su_dev = p;
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct se_hba *hba = su_dev->se_dev_hba;
+=======
+	struct se_device *dev = p;
+	struct se_hba *hba = dev->se_hba;
+>>>>>>> refs/remotes/origin/master
 	struct t10_alua_lu_gp *lu_gp = NULL, *lu_gp_new = NULL;
 	struct t10_alua_lu_gp_member *lu_gp_mem;
 	unsigned char buf[LU_GROUP_NAME_BUF];
 	int move = 0;
 
+<<<<<<< HEAD
 	dev = su_dev->se_dev_ptr;
 <<<<<<< HEAD
 	if (!(dev))
@@ -2580,6 +3262,14 @@ static ssize_t target_core_store_alua_lu_gp(
 =======
 		pr_err("ALUA LU Group Alias too large!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lu_gp_mem = dev->dev_alua_lu_gp_mem;
+	if (!lu_gp_mem)
+		return 0;
+
+	if (count > LU_GROUP_NAME_BUF) {
+		pr_err("ALUA LU Group Alias too large!\n");
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	memset(buf, 0, LU_GROUP_NAME_BUF);
@@ -2595,6 +3285,7 @@ static ssize_t target_core_store_alua_lu_gp(
 		 * core_alua_get_lu_gp_by_name below().
 		 */
 		lu_gp_new = core_alua_get_lu_gp_by_name(strstrip(buf));
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (!(lu_gp_new))
 			return -ENODEV;
@@ -2625,10 +3316,20 @@ static ssize_t target_core_store_alua_lu_gp(
 =======
 	if (lu_gp) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!lu_gp_new)
+			return -ENODEV;
+	}
+
+	spin_lock(&lu_gp_mem->lu_gp_mem_lock);
+	lu_gp = lu_gp_mem->lu_gp;
+	if (lu_gp) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Clearing an existing lu_gp association, and replacing
 		 * with NULL
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (!(lu_gp_new)) {
 			printk(KERN_INFO "Target_Core_ConfigFS: Releasing %s/%s"
@@ -2640,6 +3341,14 @@ static ssize_t target_core_store_alua_lu_gp(
 				" %hu\n",
 				config_item_name(&hba->hba_group.cg_item),
 				config_item_name(&su_dev->se_dev_group.cg_item),
+=======
+		if (!lu_gp_new) {
+			pr_debug("Target_Core_ConfigFS: Releasing %s/%s"
+				" from ALUA LU Group: core/alua/lu_gps/%s, ID:"
+				" %hu\n",
+				config_item_name(&hba->hba_group.cg_item),
+				config_item_name(&dev->dev_group.cg_item),
+>>>>>>> refs/remotes/origin/master
 				config_item_name(&lu_gp->lu_gp_group.cg_item),
 				lu_gp->lu_gp_id);
 
@@ -2661,6 +3370,7 @@ static ssize_t target_core_store_alua_lu_gp(
 	spin_unlock(&lu_gp_mem->lu_gp_mem_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Target_Core_ConfigFS: %s %s/%s to ALUA LU Group:"
 =======
 	pr_debug("Target_Core_ConfigFS: %s %s/%s to ALUA LU Group:"
@@ -2669,6 +3379,13 @@ static ssize_t target_core_store_alua_lu_gp(
 		(move) ? "Moving" : "Adding",
 		config_item_name(&hba->hba_group.cg_item),
 		config_item_name(&su_dev->se_dev_group.cg_item),
+=======
+	pr_debug("Target_Core_ConfigFS: %s %s/%s to ALUA LU Group:"
+		" core/alua/lu_gps/%s, ID: %hu\n",
+		(move) ? "Moving" : "Adding",
+		config_item_name(&hba->hba_group.cg_item),
+		config_item_name(&dev->dev_group.cg_item),
+>>>>>>> refs/remotes/origin/master
 		config_item_name(&lu_gp_new->lu_gp_group.cg_item),
 		lu_gp_new->lu_gp_id);
 
@@ -2696,6 +3413,7 @@ static struct configfs_attribute *lio_core_dev_attrs[] = {
 
 static void target_core_dev_release(struct config_item *item)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_dev = container_of(to_config_group(item),
 				struct se_subsystem_dev, se_dev_group);
 	struct se_hba *hba = item_to_hba(&se_dev->se_dev_hba->hba_group.cg_item);
@@ -2739,12 +3457,21 @@ static void target_core_dev_release(struct config_item *item)
 >>>>>>> refs/remotes/origin/cm-10.0
 			"_dev_t: %p\n", se_dev);
 	kfree(se_dev);
+=======
+	struct config_group *dev_cg = to_config_group(item);
+	struct se_device *dev =
+		container_of(dev_cg, struct se_device, dev_group);
+
+	kfree(dev_cg->default_groups);
+	target_free_device(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t target_core_dev_show(struct config_item *item,
 				     struct configfs_attribute *attr,
 				     char *page)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_dev = container_of(
 			to_config_group(item), struct se_subsystem_dev,
 			se_dev_group);
@@ -2762,12 +3489,25 @@ static ssize_t target_core_dev_show(struct config_item *item,
 
 	return tc_attr->show(se_dev, page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct config_group *dev_cg = to_config_group(item);
+	struct se_device *dev =
+		container_of(dev_cg, struct se_device, dev_group);
+	struct target_core_configfs_attribute *tc_attr = container_of(
+			attr, struct target_core_configfs_attribute, attr);
+
+	if (!tc_attr->show)
+		return -EINVAL;
+
+	return tc_attr->show(dev, page);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t target_core_dev_store(struct config_item *item,
 				      struct configfs_attribute *attr,
 				      const char *page, size_t count)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_dev = container_of(
 			to_config_group(item), struct se_subsystem_dev,
 			se_dev_group);
@@ -2785,6 +3525,18 @@ static ssize_t target_core_dev_store(struct config_item *item,
 
 	return tc_attr->store(se_dev, page, count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct config_group *dev_cg = to_config_group(item);
+	struct se_device *dev =
+		container_of(dev_cg, struct se_device, dev_group);
+	struct target_core_configfs_attribute *tc_attr = container_of(
+			attr, struct target_core_configfs_attribute, attr);
+
+	if (!tc_attr->store)
+		return -EINVAL;
+
+	return tc_attr->store(dev, page, count);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct configfs_item_operations target_core_dev_item_ops = {
@@ -2825,10 +3577,14 @@ static ssize_t target_core_alua_lu_gp_show_attr_lu_gp_id(
 	char *page)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(lu_gp->lu_gp_valid_id))
 =======
 	if (!lu_gp->lu_gp_valid_id)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!lu_gp->lu_gp_valid_id)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	return sprintf(page, "%hu\n", lu_gp->lu_gp_id);
@@ -2843,6 +3599,7 @@ static ssize_t target_core_alua_lu_gp_store_attr_lu_gp_id(
 	unsigned long lu_gp_id;
 	int ret;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(page, 0, &lu_gp_id);
 	if (ret < 0) {
 <<<<<<< HEAD
@@ -2859,6 +3616,16 @@ static ssize_t target_core_alua_lu_gp_store_attr_lu_gp_id(
 =======
 		pr_err("ALUA lu_gp_id: %lu exceeds maximum:"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = kstrtoul(page, 0, &lu_gp_id);
+	if (ret < 0) {
+		pr_err("kstrtoul() returned %d for"
+			" lu_gp_id\n", ret);
+		return ret;
+	}
+	if (lu_gp_id > 0x0000ffff) {
+		pr_err("ALUA lu_gp_id: %lu exceeds maximum:"
+>>>>>>> refs/remotes/origin/master
 			" 0x0000ffff\n", lu_gp_id);
 		return -EINVAL;
 	}
@@ -2868,10 +3635,14 @@ static ssize_t target_core_alua_lu_gp_store_attr_lu_gp_id(
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Target_Core_ConfigFS: Set ALUA Logical Unit"
 =======
 	pr_debug("Target_Core_ConfigFS: Set ALUA Logical Unit"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("Target_Core_ConfigFS: Set ALUA Logical Unit"
+>>>>>>> refs/remotes/origin/master
 		" Group: core/alua/lu_gps/%s to ID: %hu\n",
 		config_item_name(&alua_lu_gp_cg->cg_item),
 		lu_gp->lu_gp_id);
@@ -2890,7 +3661,10 @@ static ssize_t target_core_alua_lu_gp_show_attr_members(
 {
 	struct se_device *dev;
 	struct se_hba *hba;
+<<<<<<< HEAD
 	struct se_subsystem_dev *su_dev;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct t10_alua_lu_gp_member *lu_gp_mem;
 	ssize_t len = 0, cur_len;
 	unsigned char buf[LU_GROUP_NAME_BUF];
@@ -2900,6 +3674,7 @@ static ssize_t target_core_alua_lu_gp_show_attr_members(
 	spin_lock(&lu_gp->lu_gp_lock);
 	list_for_each_entry(lu_gp_mem, &lu_gp->lu_gp_mem_list, lu_gp_mem_list) {
 		dev = lu_gp_mem->lu_gp_mem_dev;
+<<<<<<< HEAD
 		su_dev = dev->se_sub_dev;
 		hba = su_dev->se_dev_hba;
 
@@ -2914,6 +3689,17 @@ static ssize_t target_core_alua_lu_gp_show_attr_members(
 =======
 			pr_warn("Ran out of lu_gp_show_attr"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		hba = dev->se_hba;
+
+		cur_len = snprintf(buf, LU_GROUP_NAME_BUF, "%s/%s\n",
+			config_item_name(&hba->hba_group.cg_item),
+			config_item_name(&dev->dev_group.cg_item));
+		cur_len++; /* Extra byte for NULL terminator */
+
+		if ((cur_len + len) > PAGE_SIZE) {
+			pr_warn("Ran out of lu_gp_show_attr"
+>>>>>>> refs/remotes/origin/master
 				"_members buffer\n");
 			break;
 		}
@@ -2978,10 +3764,14 @@ static struct config_group *target_core_alua_create_lu_gp(
 			&target_core_alua_lu_gp_cit);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Target_Core_ConfigFS: Allocated ALUA Logical Unit"
 =======
 	pr_debug("Target_Core_ConfigFS: Allocated ALUA Logical Unit"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("Target_Core_ConfigFS: Allocated ALUA Logical Unit"
+>>>>>>> refs/remotes/origin/master
 		" Group: core/alua/lu_gps/%s\n",
 		config_item_name(alua_lu_gp_ci));
 
@@ -2997,10 +3787,14 @@ static void target_core_alua_drop_lu_gp(
 			struct t10_alua_lu_gp, lu_gp_group);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Target_Core_ConfigFS: Releasing ALUA Logical Unit"
 =======
 	pr_debug("Target_Core_ConfigFS: Releasing ALUA Logical Unit"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("Target_Core_ConfigFS: Releasing ALUA Logical Unit"
+>>>>>>> refs/remotes/origin/master
 		" Group: core/alua/lu_gps/%s, ID: %hu\n",
 		config_item_name(item), lu_gp->lu_gp_id);
 	/*
@@ -3055,6 +3849,7 @@ static ssize_t target_core_alua_tg_pt_gp_store_attr_alua_access_state(
 	const char *page,
 	size_t count)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *su_dev = tg_pt_gp->tg_pt_gp_su_dev;
 	unsigned long tmp;
 	int new_state, ret;
@@ -3066,10 +3861,19 @@ static ssize_t target_core_alua_tg_pt_gp_store_attr_alua_access_state(
 	if (!tg_pt_gp->tg_pt_gp_valid_id) {
 		pr_err("Unable to do implict ALUA on non valid"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct se_device *dev = tg_pt_gp->tg_pt_gp_dev;
+	unsigned long tmp;
+	int new_state, ret;
+
+	if (!tg_pt_gp->tg_pt_gp_valid_id) {
+		pr_err("Unable to do implicit ALUA on non valid"
+>>>>>>> refs/remotes/origin/master
 			" tg_pt_gp ID: %hu\n", tg_pt_gp->tg_pt_gp_valid_id);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	ret = strict_strtoul(page, 0, &tmp);
 	if (ret < 0) {
 <<<<<<< HEAD
@@ -3094,6 +3898,23 @@ static ssize_t target_core_alua_tg_pt_gp_store_attr_alua_access_state(
 	}
 
 	ret = core_alua_do_port_transition(tg_pt_gp, su_dev->se_dev_ptr,
+=======
+	ret = kstrtoul(page, 0, &tmp);
+	if (ret < 0) {
+		pr_err("Unable to extract new ALUA access state from"
+				" %s\n", page);
+		return ret;
+	}
+	new_state = (int)tmp;
+
+	if (!(tg_pt_gp->tg_pt_gp_alua_access_type & TPGS_IMPLICIT_ALUA)) {
+		pr_err("Unable to process implicit configfs ALUA"
+			" transition while TPGS_IMPLICIT_ALUA is disabled\n");
+		return -EINVAL;
+	}
+
+	ret = core_alua_do_port_transition(tg_pt_gp, dev,
+>>>>>>> refs/remotes/origin/master
 					NULL, NULL, new_state, 0);
 	return (!ret) ? count : -EINVAL;
 }
@@ -3120,17 +3941,23 @@ static ssize_t target_core_alua_tg_pt_gp_store_attr_alua_access_status(
 	int new_status, ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(tg_pt_gp->tg_pt_gp_valid_id)) {
 		printk(KERN_ERR "Unable to do set ALUA access status on non"
 =======
 	if (!tg_pt_gp->tg_pt_gp_valid_id) {
 		pr_err("Unable to do set ALUA access status on non"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!tg_pt_gp->tg_pt_gp_valid_id) {
+		pr_err("Unable to do set ALUA access status on non"
+>>>>>>> refs/remotes/origin/master
 			" valid tg_pt_gp ID: %hu\n",
 			tg_pt_gp->tg_pt_gp_valid_id);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	ret = strict_strtoul(page, 0, &tmp);
 	if (ret < 0) {
 <<<<<<< HEAD
@@ -3140,10 +3967,18 @@ static ssize_t target_core_alua_tg_pt_gp_store_attr_alua_access_status(
 >>>>>>> refs/remotes/origin/cm-10.0
 				" from %s\n", page);
 		return -EINVAL;
+=======
+	ret = kstrtoul(page, 0, &tmp);
+	if (ret < 0) {
+		pr_err("Unable to extract new ALUA access status"
+				" from %s\n", page);
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 	new_status = (int)tmp;
 
 	if ((new_status != ALUA_STATUS_NONE) &&
+<<<<<<< HEAD
 	    (new_status != ALUA_STATUS_ALTERED_BY_EXPLICT_STPG) &&
 	    (new_status != ALUA_STATUS_ALTERED_BY_IMPLICT_ALUA)) {
 <<<<<<< HEAD
@@ -3151,6 +3986,11 @@ static ssize_t target_core_alua_tg_pt_gp_store_attr_alua_access_status(
 =======
 		pr_err("Illegal ALUA access status: 0x%02x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    (new_status != ALUA_STATUS_ALTERED_BY_EXPLICIT_STPG) &&
+	    (new_status != ALUA_STATUS_ALTERED_BY_IMPLICIT_ALUA)) {
+		pr_err("Illegal ALUA access status: 0x%02x\n",
+>>>>>>> refs/remotes/origin/master
 				new_status);
 		return -EINVAL;
 	}
@@ -3182,6 +4022,93 @@ static ssize_t target_core_alua_tg_pt_gp_store_attr_alua_access_type(
 SE_DEV_ALUA_TG_PT_ATTR(alua_access_type, S_IRUGO | S_IWUSR);
 
 /*
+<<<<<<< HEAD
+=======
+ * alua_supported_states
+ */
+
+#define SE_DEV_ALUA_SUPPORT_STATE_SHOW(_name, _var, _bit)		\
+static ssize_t target_core_alua_tg_pt_gp_show_attr_alua_support_##_name( \
+	struct t10_alua_tg_pt_gp *t, char *p)				\
+{									\
+	return sprintf(p, "%d\n", !!(t->_var & _bit));			\
+}
+
+#define SE_DEV_ALUA_SUPPORT_STATE_STORE(_name, _var, _bit)		\
+static ssize_t target_core_alua_tg_pt_gp_store_attr_alua_support_##_name(\
+	struct t10_alua_tg_pt_gp *t, const char *p, size_t c)		\
+{									\
+	unsigned long tmp;						\
+	int ret;							\
+									\
+	if (!t->tg_pt_gp_valid_id) {					\
+		pr_err("Unable to do set ##_name ALUA state on non"	\
+		       " valid tg_pt_gp ID: %hu\n",			\
+		       t->tg_pt_gp_valid_id);				\
+		return -EINVAL;						\
+	}								\
+									\
+	ret = kstrtoul(p, 0, &tmp);					\
+	if (ret < 0) {							\
+		pr_err("Invalid value '%s', must be '0' or '1'\n", p);	\
+		return -EINVAL;						\
+	}								\
+	if (tmp > 1) {							\
+		pr_err("Invalid value '%ld', must be '0' or '1'\n", tmp); \
+		return -EINVAL;						\
+	}								\
+	if (!tmp)							\
+		t->_var |= _bit;					\
+	else								\
+		t->_var &= ~_bit;					\
+									\
+	return c;							\
+}
+
+SE_DEV_ALUA_SUPPORT_STATE_SHOW(transitioning,
+			       tg_pt_gp_alua_supported_states, ALUA_T_SUP);
+SE_DEV_ALUA_SUPPORT_STATE_STORE(transitioning,
+				tg_pt_gp_alua_supported_states, ALUA_T_SUP);
+SE_DEV_ALUA_TG_PT_ATTR(alua_support_transitioning, S_IRUGO | S_IWUSR);
+
+SE_DEV_ALUA_SUPPORT_STATE_SHOW(offline,
+			       tg_pt_gp_alua_supported_states, ALUA_O_SUP);
+SE_DEV_ALUA_SUPPORT_STATE_STORE(offline,
+				tg_pt_gp_alua_supported_states, ALUA_O_SUP);
+SE_DEV_ALUA_TG_PT_ATTR(alua_support_offline, S_IRUGO | S_IWUSR);
+
+SE_DEV_ALUA_SUPPORT_STATE_SHOW(lba_dependent,
+			       tg_pt_gp_alua_supported_states, ALUA_LBD_SUP);
+SE_DEV_ALUA_SUPPORT_STATE_STORE(lba_dependent,
+				tg_pt_gp_alua_supported_states, ALUA_LBD_SUP);
+SE_DEV_ALUA_TG_PT_ATTR(alua_support_lba_dependent, S_IRUGO | S_IWUSR);
+
+SE_DEV_ALUA_SUPPORT_STATE_SHOW(unavailable,
+			       tg_pt_gp_alua_supported_states, ALUA_U_SUP);
+SE_DEV_ALUA_SUPPORT_STATE_STORE(unavailable,
+				tg_pt_gp_alua_supported_states, ALUA_U_SUP);
+SE_DEV_ALUA_TG_PT_ATTR(alua_support_unavailable, S_IRUGO | S_IWUSR);
+
+SE_DEV_ALUA_SUPPORT_STATE_SHOW(standby,
+			       tg_pt_gp_alua_supported_states, ALUA_S_SUP);
+SE_DEV_ALUA_SUPPORT_STATE_STORE(standby,
+				tg_pt_gp_alua_supported_states, ALUA_S_SUP);
+SE_DEV_ALUA_TG_PT_ATTR(alua_support_standby, S_IRUGO | S_IWUSR);
+
+SE_DEV_ALUA_SUPPORT_STATE_SHOW(active_optimized,
+			       tg_pt_gp_alua_supported_states, ALUA_AO_SUP);
+SE_DEV_ALUA_SUPPORT_STATE_STORE(active_optimized,
+				tg_pt_gp_alua_supported_states, ALUA_AO_SUP);
+SE_DEV_ALUA_TG_PT_ATTR(alua_support_active_optimized, S_IRUGO | S_IWUSR);
+
+SE_DEV_ALUA_SUPPORT_STATE_SHOW(active_nonoptimized,
+			       tg_pt_gp_alua_supported_states, ALUA_AN_SUP);
+SE_DEV_ALUA_SUPPORT_STATE_STORE(active_nonoptimized,
+				tg_pt_gp_alua_supported_states, ALUA_AN_SUP);
+SE_DEV_ALUA_TG_PT_ATTR(alua_support_active_nonoptimized, S_IRUGO | S_IWUSR);
+
+/*
+>>>>>>> refs/remotes/origin/master
  * alua_write_metadata
  */
 static ssize_t target_core_alua_tg_pt_gp_show_attr_alua_write_metadata(
@@ -3199,6 +4126,7 @@ static ssize_t target_core_alua_tg_pt_gp_store_attr_alua_write_metadata(
 	unsigned long tmp;
 	int ret;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(page, 0, &tmp);
 	if (ret < 0) {
 <<<<<<< HEAD
@@ -3215,6 +4143,16 @@ static ssize_t target_core_alua_tg_pt_gp_store_attr_alua_write_metadata(
 =======
 		pr_err("Illegal value for alua_write_metadata:"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = kstrtoul(page, 0, &tmp);
+	if (ret < 0) {
+		pr_err("Unable to extract alua_write_metadata\n");
+		return ret;
+	}
+
+	if ((tmp != 0) && (tmp != 1)) {
+		pr_err("Illegal value for alua_write_metadata:"
+>>>>>>> refs/remotes/origin/master
 			" %lu\n", tmp);
 		return -EINVAL;
 	}
@@ -3269,6 +4207,29 @@ static ssize_t target_core_alua_tg_pt_gp_store_attr_trans_delay_msecs(
 SE_DEV_ALUA_TG_PT_ATTR(trans_delay_msecs, S_IRUGO | S_IWUSR);
 
 /*
+<<<<<<< HEAD
+=======
+ * implicit_trans_secs
+ */
+static ssize_t target_core_alua_tg_pt_gp_show_attr_implicit_trans_secs(
+	struct t10_alua_tg_pt_gp *tg_pt_gp,
+	char *page)
+{
+	return core_alua_show_implicit_trans_secs(tg_pt_gp, page);
+}
+
+static ssize_t target_core_alua_tg_pt_gp_store_attr_implicit_trans_secs(
+	struct t10_alua_tg_pt_gp *tg_pt_gp,
+	const char *page,
+	size_t count)
+{
+	return core_alua_store_implicit_trans_secs(tg_pt_gp, page, count);
+}
+
+SE_DEV_ALUA_TG_PT_ATTR(implicit_trans_secs, S_IRUGO | S_IWUSR);
+
+/*
+>>>>>>> refs/remotes/origin/master
  * preferred
  */
 
@@ -3297,10 +4258,14 @@ static ssize_t target_core_alua_tg_pt_gp_show_attr_tg_pt_gp_id(
 	char *page)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(tg_pt_gp->tg_pt_gp_valid_id))
 =======
 	if (!tg_pt_gp->tg_pt_gp_valid_id)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!tg_pt_gp->tg_pt_gp_valid_id)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	return sprintf(page, "%hu\n", tg_pt_gp->tg_pt_gp_id);
@@ -3315,6 +4280,7 @@ static ssize_t target_core_alua_tg_pt_gp_store_attr_tg_pt_gp_id(
 	unsigned long tg_pt_gp_id;
 	int ret;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(page, 0, &tg_pt_gp_id);
 	if (ret < 0) {
 <<<<<<< HEAD
@@ -3331,6 +4297,16 @@ static ssize_t target_core_alua_tg_pt_gp_store_attr_tg_pt_gp_id(
 =======
 		pr_err("ALUA tg_pt_gp_id: %lu exceeds maximum:"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = kstrtoul(page, 0, &tg_pt_gp_id);
+	if (ret < 0) {
+		pr_err("kstrtoul() returned %d for"
+			" tg_pt_gp_id\n", ret);
+		return ret;
+	}
+	if (tg_pt_gp_id > 0x0000ffff) {
+		pr_err("ALUA tg_pt_gp_id: %lu exceeds maximum:"
+>>>>>>> refs/remotes/origin/master
 			" 0x0000ffff\n", tg_pt_gp_id);
 		return -EINVAL;
 	}
@@ -3340,10 +4316,14 @@ static ssize_t target_core_alua_tg_pt_gp_store_attr_tg_pt_gp_id(
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Target_Core_ConfigFS: Set ALUA Target Port Group: "
 =======
 	pr_debug("Target_Core_ConfigFS: Set ALUA Target Port Group: "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("Target_Core_ConfigFS: Set ALUA Target Port Group: "
+>>>>>>> refs/remotes/origin/master
 		"core/alua/tg_pt_gps/%s to ID: %hu\n",
 		config_item_name(&alua_tg_pt_gp_cg->cg_item),
 		tg_pt_gp->tg_pt_gp_id);
@@ -3378,6 +4358,7 @@ static ssize_t target_core_alua_tg_pt_gp_show_attr_members(
 
 		cur_len = snprintf(buf, TG_PT_GROUP_NAME_BUF, "%s/%s/tpgt_%hu"
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"/%s\n", TPG_TFO(tpg)->get_fabric_name(),
 			TPG_TFO(tpg)->tpg_get_wwn(tpg),
 			TPG_TFO(tpg)->tpg_get_tag(tpg),
@@ -3386,15 +4367,24 @@ static ssize_t target_core_alua_tg_pt_gp_show_attr_members(
 			tpg->se_tpg_tfo->tpg_get_wwn(tpg),
 			tpg->se_tpg_tfo->tpg_get_tag(tpg),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			"/%s\n", tpg->se_tpg_tfo->get_fabric_name(),
+			tpg->se_tpg_tfo->tpg_get_wwn(tpg),
+			tpg->se_tpg_tfo->tpg_get_tag(tpg),
+>>>>>>> refs/remotes/origin/master
 			config_item_name(&lun->lun_group.cg_item));
 		cur_len++; /* Extra byte for NULL terminator */
 
 		if ((cur_len + len) > PAGE_SIZE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING "Ran out of lu_gp_show_attr"
 =======
 			pr_warn("Ran out of lu_gp_show_attr"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn("Ran out of lu_gp_show_attr"
+>>>>>>> refs/remotes/origin/master
 				"_members buffer\n");
 			break;
 		}
@@ -3415,9 +4405,23 @@ static struct configfs_attribute *target_core_alua_tg_pt_gp_attrs[] = {
 	&target_core_alua_tg_pt_gp_alua_access_state.attr,
 	&target_core_alua_tg_pt_gp_alua_access_status.attr,
 	&target_core_alua_tg_pt_gp_alua_access_type.attr,
+<<<<<<< HEAD
 	&target_core_alua_tg_pt_gp_alua_write_metadata.attr,
 	&target_core_alua_tg_pt_gp_nonop_delay_msecs.attr,
 	&target_core_alua_tg_pt_gp_trans_delay_msecs.attr,
+=======
+	&target_core_alua_tg_pt_gp_alua_support_transitioning.attr,
+	&target_core_alua_tg_pt_gp_alua_support_offline.attr,
+	&target_core_alua_tg_pt_gp_alua_support_lba_dependent.attr,
+	&target_core_alua_tg_pt_gp_alua_support_unavailable.attr,
+	&target_core_alua_tg_pt_gp_alua_support_standby.attr,
+	&target_core_alua_tg_pt_gp_alua_support_active_nonoptimized.attr,
+	&target_core_alua_tg_pt_gp_alua_support_active_optimized.attr,
+	&target_core_alua_tg_pt_gp_alua_write_metadata.attr,
+	&target_core_alua_tg_pt_gp_nonop_delay_msecs.attr,
+	&target_core_alua_tg_pt_gp_trans_delay_msecs.attr,
+	&target_core_alua_tg_pt_gp_implicit_trans_secs.attr,
+>>>>>>> refs/remotes/origin/master
 	&target_core_alua_tg_pt_gp_preferred.attr,
 	&target_core_alua_tg_pt_gp_tg_pt_gp_id.attr,
 	&target_core_alua_tg_pt_gp_members.attr,
@@ -3455,6 +4459,7 @@ static struct config_group *target_core_alua_create_tg_pt_gp(
 	struct t10_alua *alua = container_of(group, struct t10_alua,
 					alua_tg_pt_gps_group);
 	struct t10_alua_tg_pt_gp *tg_pt_gp;
+<<<<<<< HEAD
 	struct se_subsystem_dev *su_dev = alua->t10_sub_dev;
 	struct config_group *alua_tg_pt_gp_cg = NULL;
 	struct config_item *alua_tg_pt_gp_ci = NULL;
@@ -3465,6 +4470,13 @@ static struct config_group *target_core_alua_create_tg_pt_gp(
 =======
 	if (!tg_pt_gp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct config_group *alua_tg_pt_gp_cg = NULL;
+	struct config_item *alua_tg_pt_gp_ci = NULL;
+
+	tg_pt_gp = core_alua_allocate_tg_pt_gp(alua->t10_dev, name, 0);
+	if (!tg_pt_gp)
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	alua_tg_pt_gp_cg = &tg_pt_gp->tg_pt_gp_group;
@@ -3474,10 +4486,14 @@ static struct config_group *target_core_alua_create_tg_pt_gp(
 			&target_core_alua_tg_pt_gp_cit);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Target_Core_ConfigFS: Allocated ALUA Target Port"
 =======
 	pr_debug("Target_Core_ConfigFS: Allocated ALUA Target Port"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("Target_Core_ConfigFS: Allocated ALUA Target Port"
+>>>>>>> refs/remotes/origin/master
 		" Group: alua/tg_pt_gps/%s\n",
 		config_item_name(alua_tg_pt_gp_ci));
 
@@ -3492,10 +4508,14 @@ static void target_core_alua_drop_tg_pt_gp(
 			struct t10_alua_tg_pt_gp, tg_pt_gp_group);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Target_Core_ConfigFS: Releasing ALUA Target Port"
 =======
 	pr_debug("Target_Core_ConfigFS: Releasing ALUA Target Port"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("Target_Core_ConfigFS: Releasing ALUA Target Port"
+>>>>>>> refs/remotes/origin/master
 		" Group: alua/tg_pt_gps/%s, ID: %hu\n",
 		config_item_name(item), tg_pt_gp->tg_pt_gp_id);
 	/*
@@ -3568,10 +4588,17 @@ static struct config_group *target_core_make_subdev(
 	const char *name)
 {
 	struct t10_alua_tg_pt_gp *tg_pt_gp;
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_dev;
 	struct se_subsystem_api *t;
 	struct config_item *hba_ci = &group->cg_item;
 	struct se_hba *hba = item_to_hba(hba_ci);
+=======
+	struct se_subsystem_api *t;
+	struct config_item *hba_ci = &group->cg_item;
+	struct se_hba *hba = item_to_hba(hba_ci);
+	struct se_device *dev;
+>>>>>>> refs/remotes/origin/master
 	struct config_group *dev_cg = NULL, *tg_pt_gp_cg = NULL;
 	struct config_group *dev_stat_grp = NULL;
 	int errno = -ENOMEM, ret;
@@ -3584,6 +4611,7 @@ static struct config_group *target_core_make_subdev(
 	 */
 	t = hba->transport;
 
+<<<<<<< HEAD
 	se_dev = kzalloc(sizeof(struct se_subsystem_dev), GFP_KERNEL);
 	if (!se_dev) {
 <<<<<<< HEAD
@@ -3677,10 +4705,41 @@ static struct config_group *target_core_make_subdev(
 	dev_cg->default_groups[2] = &se_dev->t10_wwn.t10_wwn_group;
 	dev_cg->default_groups[3] = &se_dev->t10_alua.alua_tg_pt_gps_group;
 	dev_cg->default_groups[4] = &se_dev->dev_stat_grps.stat_group;
+=======
+	dev = target_alloc_device(hba, name);
+	if (!dev)
+		goto out_unlock;
+
+	dev_cg = &dev->dev_group;
+
+	dev_cg->default_groups = kmalloc(sizeof(struct config_group *) * 6,
+			GFP_KERNEL);
+	if (!dev_cg->default_groups)
+		goto out_free_device;
+
+	config_group_init_type_name(dev_cg, name, &target_core_dev_cit);
+	config_group_init_type_name(&dev->dev_attrib.da_group, "attrib",
+			&target_core_dev_attrib_cit);
+	config_group_init_type_name(&dev->dev_pr_group, "pr",
+			&target_core_dev_pr_cit);
+	config_group_init_type_name(&dev->t10_wwn.t10_wwn_group, "wwn",
+			&target_core_dev_wwn_cit);
+	config_group_init_type_name(&dev->t10_alua.alua_tg_pt_gps_group,
+			"alua", &target_core_alua_tg_pt_gps_cit);
+	config_group_init_type_name(&dev->dev_stat_grps.stat_group,
+			"statistics", &target_core_stat_cit);
+
+	dev_cg->default_groups[0] = &dev->dev_attrib.da_group;
+	dev_cg->default_groups[1] = &dev->dev_pr_group;
+	dev_cg->default_groups[2] = &dev->t10_wwn.t10_wwn_group;
+	dev_cg->default_groups[3] = &dev->t10_alua.alua_tg_pt_gps_group;
+	dev_cg->default_groups[4] = &dev->dev_stat_grps.stat_group;
+>>>>>>> refs/remotes/origin/master
 	dev_cg->default_groups[5] = NULL;
 	/*
 	 * Add core/$HBA/$DEV/alua/default_tg_pt_gp
 	 */
+<<<<<<< HEAD
 	tg_pt_gp = core_alua_allocate_tg_pt_gp(se_dev, "default_tg_pt_gp", 1);
 <<<<<<< HEAD
 	if (!(tg_pt_gp))
@@ -3703,12 +4762,27 @@ static struct config_group *target_core_make_subdev(
 >>>>>>> refs/remotes/origin/cm-10.0
 				"default_groups\n");
 		goto out;
+=======
+	tg_pt_gp = core_alua_allocate_tg_pt_gp(dev, "default_tg_pt_gp", 1);
+	if (!tg_pt_gp)
+		goto out_free_dev_cg_default_groups;
+	dev->t10_alua.default_tg_pt_gp = tg_pt_gp;
+
+	tg_pt_gp_cg = &dev->t10_alua.alua_tg_pt_gps_group;
+	tg_pt_gp_cg->default_groups = kmalloc(sizeof(struct config_group *) * 2,
+				GFP_KERNEL);
+	if (!tg_pt_gp_cg->default_groups) {
+		pr_err("Unable to allocate tg_pt_gp_cg->"
+				"default_groups\n");
+		goto out_free_tg_pt_gp;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	config_group_init_type_name(&tg_pt_gp->tg_pt_gp_group,
 			"default_tg_pt_gp", &target_core_alua_tg_pt_gp_cit);
 	tg_pt_gp_cg->default_groups[0] = &tg_pt_gp->tg_pt_gp_group;
 	tg_pt_gp_cg->default_groups[1] = NULL;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	T10_ALUA(se_dev)->default_tg_pt_gp = tg_pt_gp;
 	/*
@@ -3764,6 +4838,32 @@ out:
 		t->free_device(se_dev->se_dev_su_ptr);
 	kfree(se_dev);
 unlock:
+=======
+	/*
+	 * Add core/$HBA/$DEV/statistics/ default groups
+	 */
+	dev_stat_grp = &dev->dev_stat_grps.stat_group;
+	dev_stat_grp->default_groups = kmalloc(sizeof(struct config_group *) * 4,
+				GFP_KERNEL);
+	if (!dev_stat_grp->default_groups) {
+		pr_err("Unable to allocate dev_stat_grp->default_groups\n");
+		goto out_free_tg_pt_gp_cg_default_groups;
+	}
+	target_stat_setup_dev_default_groups(dev);
+
+	mutex_unlock(&hba->hba_access_mutex);
+	return dev_cg;
+
+out_free_tg_pt_gp_cg_default_groups:
+	kfree(tg_pt_gp_cg->default_groups);
+out_free_tg_pt_gp:
+	core_alua_free_tg_pt_gp(tg_pt_gp);
+out_free_dev_cg_default_groups:
+	kfree(dev_cg->default_groups);
+out_free_device:
+	target_free_device(dev);
+out_unlock:
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&hba->hba_access_mutex);
 	return ERR_PTR(errno);
 }
@@ -3772,6 +4872,7 @@ static void target_core_drop_subdev(
 	struct config_group *group,
 	struct config_item *item)
 {
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_dev = container_of(to_config_group(item),
 				struct se_subsystem_dev, se_dev_group);
 	struct se_hba *hba;
@@ -3798,6 +4899,21 @@ static void target_core_drop_subdev(
 
 	dev_stat_grp = &se_dev->dev_stat_grps.stat_group;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct config_group *dev_cg = to_config_group(item);
+	struct se_device *dev =
+		container_of(dev_cg, struct se_device, dev_group);
+	struct se_hba *hba;
+	struct config_item *df_item;
+	struct config_group *tg_pt_gp_cg, *dev_stat_grp;
+	int i;
+
+	hba = item_to_hba(&dev->se_hba->hba_group.cg_item);
+
+	mutex_lock(&hba->hba_access_mutex);
+
+	dev_stat_grp = &dev->dev_stat_grps.stat_group;
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; dev_stat_grp->default_groups[i]; i++) {
 		df_item = &dev_stat_grp->default_groups[i]->cg_item;
 		dev_stat_grp->default_groups[i] = NULL;
@@ -3806,10 +4922,14 @@ static void target_core_drop_subdev(
 	kfree(dev_stat_grp->default_groups);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tg_pt_gp_cg = &T10_ALUA(se_dev)->alua_tg_pt_gps_group;
 =======
 	tg_pt_gp_cg = &se_dev->t10_alua.alua_tg_pt_gps_group;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tg_pt_gp_cg = &dev->t10_alua.alua_tg_pt_gps_group;
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; tg_pt_gp_cg->default_groups[i]; i++) {
 		df_item = &tg_pt_gp_cg->default_groups[i]->cg_item;
 		tg_pt_gp_cg->default_groups[i] = NULL;
@@ -3821,20 +4941,29 @@ static void target_core_drop_subdev(
 	 * directly from target_core_alua_tg_pt_gp_release().
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	T10_ALUA(se_dev)->default_tg_pt_gp = NULL;
 =======
 	se_dev->t10_alua.default_tg_pt_gp = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	dev_cg = &se_dev->se_dev_group;
+=======
+	dev->t10_alua.default_tg_pt_gp = NULL;
+
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; dev_cg->default_groups[i]; i++) {
 		df_item = &dev_cg->default_groups[i]->cg_item;
 		dev_cg->default_groups[i] = NULL;
 		config_item_put(df_item);
 	}
 	/*
+<<<<<<< HEAD
 	 * The releasing of se_dev and associated se_dev->se_dev_ptr is done
 	 * from target_core_dev_item_ops->release() ->target_core_dev_release().
+=======
+	 * se_dev is released from target_core_dev_item_ops->release()
+>>>>>>> refs/remotes/origin/master
 	 */
 	config_item_put(item);
 	mutex_unlock(&hba->hba_access_mutex);
@@ -3891,6 +5020,7 @@ static ssize_t target_core_hba_store_attr_hba_mode(struct se_hba *hba,
 	if (transport->pmode_enable_hba == NULL)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(page, 0, &mode_flag);
 	if (ret < 0) {
 <<<<<<< HEAD
@@ -3913,6 +5043,18 @@ static ssize_t target_core_hba_store_attr_hba_mode(struct se_hba *hba,
 		return -EINVAL;
 	}
 	spin_unlock(&hba->device_lock);
+=======
+	ret = kstrtoul(page, 0, &mode_flag);
+	if (ret < 0) {
+		pr_err("Unable to extract hba mode flag: %d\n", ret);
+		return ret;
+	}
+
+	if (hba->dev_count) {
+		pr_err("Unable to set hba_mode with active devices\n");
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	ret = transport->pmode_enable_hba(hba, mode_flag);
 	if (ret < 0)
@@ -3968,10 +5110,14 @@ static struct config_group *target_core_call_addhbatotarget(
 	memset(buf, 0, TARGET_CORE_NAME_MAX_LEN);
 	if (strlen(name) >= TARGET_CORE_NAME_MAX_LEN) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "Passed *name strlen(): %d exceeds"
 =======
 		pr_err("Passed *name strlen(): %d exceeds"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Passed *name strlen(): %d exceeds"
+>>>>>>> refs/remotes/origin/master
 			" TARGET_CORE_NAME_MAX_LEN: %d\n", (int)strlen(name),
 			TARGET_CORE_NAME_MAX_LEN);
 		return ERR_PTR(-ENAMETOOLONG);
@@ -3980,12 +5126,17 @@ static struct config_group *target_core_call_addhbatotarget(
 
 	str = strstr(buf, "_");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(str)) {
 		printk(KERN_ERR "Unable to locate \"_\" for $SUBSYSTEM_PLUGIN_$HOST_ID\n");
 =======
 	if (!str) {
 		pr_err("Unable to locate \"_\" for $SUBSYSTEM_PLUGIN_$HOST_ID\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!str) {
+		pr_err("Unable to locate \"_\" for $SUBSYSTEM_PLUGIN_$HOST_ID\n");
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-EINVAL);
 	}
 	se_plugin_str = buf;
@@ -3995,10 +5146,14 @@ static struct config_group *target_core_call_addhbatotarget(
 	 */
 	str2 = strstr(str+1, "_");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((str2)) {
 =======
 	if (str2) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (str2) {
+>>>>>>> refs/remotes/origin/master
 		*str2 = '\0'; /* Terminate for *se_plugin_str */
 		str2++; /* Skip to start of plugin dependent ID */
 		str = str2;
@@ -4007,6 +5162,7 @@ static struct config_group *target_core_call_addhbatotarget(
 		str++; /* Skip to start of plugin dependent ID */
 	}
 
+<<<<<<< HEAD
 	ret = strict_strtoul(str, 0, &plugin_dep_id);
 	if (ret < 0) {
 <<<<<<< HEAD
@@ -4016,16 +5172,27 @@ static struct config_group *target_core_call_addhbatotarget(
 >>>>>>> refs/remotes/origin/cm-10.0
 				" plugin_dep_id\n", ret);
 		return ERR_PTR(-EINVAL);
+=======
+	ret = kstrtoul(str, 0, &plugin_dep_id);
+	if (ret < 0) {
+		pr_err("kstrtoul() returned %d for"
+				" plugin_dep_id\n", ret);
+		return ERR_PTR(ret);
+>>>>>>> refs/remotes/origin/master
 	}
 	/*
 	 * Load up TCM subsystem plugins if they have not already been loaded.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (transport_subsystem_check_init() < 0)
 		return ERR_PTR(-EINVAL);
 =======
 	transport_subsystem_check_init();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	transport_subsystem_check_init();
+>>>>>>> refs/remotes/origin/master
 
 	hba = core_alloc_hba(se_plugin_str, plugin_dep_id, 0);
 	if (IS_ERR(hba))
@@ -4071,10 +5238,14 @@ static int __init target_core_init_configfs(void)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "TARGET_CORE[0]: Loading Generic Kernel Storage"
 =======
 	pr_debug("TARGET_CORE[0]: Loading Generic Kernel Storage"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("TARGET_CORE[0]: Loading Generic Kernel Storage"
+>>>>>>> refs/remotes/origin/master
 		" Engine: %s on %s/%s on "UTS_RELEASE"\n",
 		TARGET_CORE_VERSION, utsname()->sysname, utsname()->machine);
 
@@ -4082,6 +5253,7 @@ static int __init target_core_init_configfs(void)
 	config_group_init(&subsys->su_group);
 	mutex_init(&subsys->su_mutex);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	INIT_LIST_HEAD(&g_tf_list);
 	mutex_init(&g_tf_lock);
@@ -4094,11 +5266,17 @@ static int __init target_core_init_configfs(void)
 	if (ret < 0)
 		return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = init_se_kmem_caches();
+	if (ret < 0)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Create $CONFIGFS/target/core default group for HBA <-> Storage Object
 	 * and ALUA Logical Unit Group and Target Port Group infrastructure.
 	 */
 	target_cg = &subsys->su_group;
+<<<<<<< HEAD
 	target_cg->default_groups = kzalloc(sizeof(struct config_group) * 2,
 				GFP_KERNEL);
 <<<<<<< HEAD
@@ -4111,6 +5289,10 @@ static int __init target_core_init_configfs(void)
 			"core", &target_core_cit);
 	target_cg->default_groups[0] = &se_global->target_core_hbagroup;
 =======
+=======
+	target_cg->default_groups = kmalloc(sizeof(struct config_group) * 2,
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!target_cg->default_groups) {
 		pr_err("Unable to allocate target_cg->default_groups\n");
 		ret = -ENOMEM;
@@ -4120,11 +5302,15 @@ static int __init target_core_init_configfs(void)
 	config_group_init_type_name(&target_core_hbagroup,
 			"core", &target_core_cit);
 	target_cg->default_groups[0] = &target_core_hbagroup;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	target_cg->default_groups[1] = NULL;
 	/*
 	 * Create ALUA infrastructure under /sys/kernel/config/target/core/alua/
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	hba_cg = &se_global->target_core_hbagroup;
 	hba_cg->default_groups = kzalloc(sizeof(struct config_group) * 2,
@@ -4139,6 +5325,10 @@ static int __init target_core_init_configfs(void)
 =======
 	hba_cg = &target_core_hbagroup;
 	hba_cg->default_groups = kzalloc(sizeof(struct config_group) * 2,
+=======
+	hba_cg = &target_core_hbagroup;
+	hba_cg->default_groups = kmalloc(sizeof(struct config_group *) * 2,
+>>>>>>> refs/remotes/origin/master
 				GFP_KERNEL);
 	if (!hba_cg->default_groups) {
 		pr_err("Unable to allocate hba_cg->default_groups\n");
@@ -4148,12 +5338,16 @@ static int __init target_core_init_configfs(void)
 	config_group_init_type_name(&alua_group,
 			"alua", &target_core_alua_cit);
 	hba_cg->default_groups[0] = &alua_group;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	hba_cg->default_groups[1] = NULL;
 	/*
 	 * Add ALUA Logical Unit Group and Target Port Group ConfigFS
 	 * groups under /sys/kernel/config/target/core/alua/
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	alua_cg = &se_global->alua_group;
 	alua_cg->default_groups = kzalloc(sizeof(struct config_group) * 2,
@@ -4169,6 +5363,10 @@ static int __init target_core_init_configfs(void)
 =======
 	alua_cg = &alua_group;
 	alua_cg->default_groups = kzalloc(sizeof(struct config_group) * 2,
+=======
+	alua_cg = &alua_group;
+	alua_cg->default_groups = kmalloc(sizeof(struct config_group *) * 2,
+>>>>>>> refs/remotes/origin/master
 			GFP_KERNEL);
 	if (!alua_cg->default_groups) {
 		pr_err("Unable to allocate alua_cg->default_groups\n");
@@ -4179,12 +5377,16 @@ static int __init target_core_init_configfs(void)
 	config_group_init_type_name(&alua_lu_gps_group,
 			"lu_gps", &target_core_alua_lu_gps_cit);
 	alua_cg->default_groups[0] = &alua_lu_gps_group;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	alua_cg->default_groups[1] = NULL;
 	/*
 	 * Add core/alua/lu_gps/default_lu_gp
 	 */
 	lu_gp = core_alua_allocate_lu_gp("default_lu_gp", 1);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (IS_ERR(lu_gp))
 		goto out_global;
@@ -4195,18 +5397,27 @@ static int __init target_core_init_configfs(void)
 	if (!(lu_gp_cg->default_groups)) {
 		printk(KERN_ERR "Unable to allocate lu_gp_cg->default_groups\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(lu_gp)) {
 		ret = -ENOMEM;
 		goto out_global;
 	}
 
 	lu_gp_cg = &alua_lu_gps_group;
+<<<<<<< HEAD
 	lu_gp_cg->default_groups = kzalloc(sizeof(struct config_group) * 2,
+=======
+	lu_gp_cg->default_groups = kmalloc(sizeof(struct config_group *) * 2,
+>>>>>>> refs/remotes/origin/master
 			GFP_KERNEL);
 	if (!lu_gp_cg->default_groups) {
 		pr_err("Unable to allocate lu_gp_cg->default_groups\n");
 		ret = -ENOMEM;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out_global;
 	}
 
@@ -4215,15 +5426,20 @@ static int __init target_core_init_configfs(void)
 	lu_gp_cg->default_groups[0] = &lu_gp->lu_gp_group;
 	lu_gp_cg->default_groups[1] = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	se_global->default_lu_gp = lu_gp;
 =======
 	default_lu_gp = lu_gp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	default_lu_gp = lu_gp;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Register the target_core_mod subsystem with configfs.
 	 */
 	ret = configfs_register_subsystem(subsys);
 	if (ret < 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR "Error %d while registering subsystem %s\n",
 			ret, subsys->su_group.cg_item.ci_namebuf);
@@ -4231,12 +5447,17 @@ static int __init target_core_init_configfs(void)
 	}
 	printk(KERN_INFO "TARGET_CORE[0]: Initialized ConfigFS Fabric"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err("Error %d while registering subsystem %s\n",
 			ret, subsys->su_group.cg_item.ci_namebuf);
 		goto out_global;
 	}
 	pr_debug("TARGET_CORE[0]: Initialized ConfigFS Fabric"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		" Infrastructure: "TARGET_CORE_CONFIGFS_VERSION" on %s/%s"
 		" on "UTS_RELEASE"\n", utsname()->sysname, utsname()->machine);
 	/*
@@ -4250,6 +5471,13 @@ static int __init target_core_init_configfs(void)
 	if (ret < 0)
 		goto out;
 
+<<<<<<< HEAD
+=======
+	ret = target_xcopy_setup_pt();
+	if (ret < 0)
+		goto out;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 out:
@@ -4257,6 +5485,7 @@ out:
 	core_dev_release_virtual_lun0();
 	rd_module_exit();
 out_global:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (se_global->default_lu_gp) {
 		core_alua_free_lu_gp(se_global->default_lu_gp);
@@ -4266,6 +5495,11 @@ out_global:
 		core_alua_free_lu_gp(default_lu_gp);
 		default_lu_gp = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (default_lu_gp) {
+		core_alua_free_lu_gp(default_lu_gp);
+		default_lu_gp = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 	if (lu_gp_cg)
 		kfree(lu_gp_cg->default_groups);
@@ -4275,12 +5509,17 @@ out_global:
 		kfree(hba_cg->default_groups);
 	kfree(target_cg->default_groups);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	release_se_global();
 	return -1;
 =======
 	release_se_kmem_caches();
 	return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	release_se_kmem_caches();
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit target_core_exit_configfs(void)
@@ -4291,6 +5530,7 @@ static void __exit target_core_exit_configfs(void)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	se_global->in_shutdown = 1;
 	subsys = target_core_subsystem[0];
 
@@ -4300,6 +5540,11 @@ static void __exit target_core_exit_configfs(void)
 
 	lu_gp_cg = &alua_lu_gps_group;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	subsys = target_core_subsystem[0];
+
+	lu_gp_cg = &alua_lu_gps_group;
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; lu_gp_cg->default_groups[i]; i++) {
 		item = &lu_gp_cg->default_groups[i]->cg_item;
 		lu_gp_cg->default_groups[i] = NULL;
@@ -4309,10 +5554,14 @@ static void __exit target_core_exit_configfs(void)
 	lu_gp_cg->default_groups = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	alua_cg = &se_global->alua_group;
 =======
 	alua_cg = &alua_group;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	alua_cg = &alua_group;
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; alua_cg->default_groups[i]; i++) {
 		item = &alua_cg->default_groups[i]->cg_item;
 		alua_cg->default_groups[i] = NULL;
@@ -4322,10 +5571,14 @@ static void __exit target_core_exit_configfs(void)
 	alua_cg->default_groups = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hba_cg = &se_global->target_core_hbagroup;
 =======
 	hba_cg = &target_core_hbagroup;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hba_cg = &target_core_hbagroup;
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; hba_cg->default_groups[i]; i++) {
 		item = &hba_cg->default_groups[i]->cg_item;
 		hba_cg->default_groups[i] = NULL;
@@ -4341,20 +5594,27 @@ static void __exit target_core_exit_configfs(void)
 	kfree(subsys->su_group.default_groups);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	core_alua_free_lu_gp(se_global->default_lu_gp);
 	se_global->default_lu_gp = NULL;
 
 	printk(KERN_INFO "TARGET_CORE[0]: Released ConfigFS Fabric"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	core_alua_free_lu_gp(default_lu_gp);
 	default_lu_gp = NULL;
 
 	pr_debug("TARGET_CORE[0]: Released ConfigFS Fabric"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			" Infrastructure\n");
 
 	core_dev_release_virtual_lun0();
 	rd_module_exit();
+<<<<<<< HEAD
 <<<<<<< HEAD
 	release_se_global();
 
@@ -4362,6 +5622,10 @@ static void __exit target_core_exit_configfs(void)
 =======
 	release_se_kmem_caches();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	target_xcopy_release_pt();
+	release_se_kmem_caches();
+>>>>>>> refs/remotes/origin/master
 }
 
 MODULE_DESCRIPTION("Target_Core_Mod/ConfigFS");

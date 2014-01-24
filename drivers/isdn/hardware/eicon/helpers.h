@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,11 +46,15 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 #ifndef __DIVA_XDI_CARD_CONFIG_HELPERS_INC__
 #define __DIVA_XDI_CARD_CONFIG_HELPERS_INC__
+<<<<<<< HEAD
 <<<<<<< HEAD
 dword diva_get_protocol_file_features  (byte* File,
                       int offset,
@@ -73,6 +80,8 @@ void *xdiLoadArchive (PISDN_ADAPTER IoAdapter, dword *FileLength, unsigned long 
   -------------------------------------------------------------------------- */
 void xdiFreeFile (void* handle);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 dword diva_get_protocol_file_features(byte *File,
 				      int offset,
 				      char *IdStringBuffer,
@@ -96,5 +105,8 @@ void *xdiLoadArchive(PISDN_ADAPTER IoAdapter, dword *FileLength, unsigned long M
    Free all system resources accessed by xdiLoadFile and xdiLoadArchive
    -------------------------------------------------------------------------- */
 void xdiFreeFile(void *handle);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

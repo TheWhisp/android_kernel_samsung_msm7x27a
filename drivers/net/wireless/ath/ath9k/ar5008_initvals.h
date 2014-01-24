@@ -15,6 +15,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const u32 ar5416Modes[][6] = {
 	{0x00001030, 0x00000230, 0x00000460, 0x000002c0, 0x00000160, 0x000001e0},
 	{0x00001070, 0x00000168, 0x000002d0, 0x00000318, 0x0000018c, 0x000001e0},
@@ -80,6 +81,8 @@ static const u32 ar5416Modes[][6] = {
 	{0x0000a330, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 	{0x0000a334, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const u32 ar5416Modes[][5] = {
 	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
 	{0x00001030, 0x00000230, 0x00000460, 0x000002c0, 0x00000160},
@@ -145,7 +148,10 @@ static const u32 ar5416Modes[][5] = {
 	{0x0000a32c, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 	{0x0000a330, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 	{0x0000a334, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const u32 ar5416Common[][2] = {
@@ -533,7 +539,11 @@ static const u32 ar5416Bank0[][2] = {
 };
 
 static const u32 ar5416BB_RfGain[][3] = {
+<<<<<<< HEAD
 	/* Addr      5G_HT20     5G_HT40   */
+=======
+	/* Addr      5G          2G        */
+>>>>>>> refs/remotes/origin/master
 	{0x00009a00, 0x00000000, 0x00000000},
 	{0x00009a04, 0x00000040, 0x00000040},
 	{0x00009a08, 0x00000080, 0x00000080},
@@ -613,12 +623,20 @@ static const u32 ar5416Bank2[][2] = {
 };
 
 static const u32 ar5416Bank3[][3] = {
+<<<<<<< HEAD
 	/* Addr      5G_HT20     5G_HT40   */
+=======
+	/* Addr      5G          2G        */
+>>>>>>> refs/remotes/origin/master
 	{0x000098f0, 0x01400018, 0x01c00018},
 };
 
 static const u32 ar5416Bank6[][3] = {
+<<<<<<< HEAD
 	/* Addr      5G_HT20     5G_HT40   */
+=======
+	/* Addr      5G          2G        */
+>>>>>>> refs/remotes/origin/master
 	{0x0000989c, 0x00000000, 0x00000000},
 	{0x0000989c, 0x00000000, 0x00000000},
 	{0x0000989c, 0x00000000, 0x00000000},
@@ -655,7 +673,11 @@ static const u32 ar5416Bank6[][3] = {
 };
 
 static const u32 ar5416Bank6TPC[][3] = {
+<<<<<<< HEAD
 	/* Addr      5G_HT20     5G_HT40   */
+=======
+	/* Addr      5G          2G        */
+>>>>>>> refs/remotes/origin/master
 	{0x0000989c, 0x00000000, 0x00000000},
 	{0x0000989c, 0x00000000, 0x00000000},
 	{0x0000989c, 0x00000000, 0x00000000},
@@ -737,9 +759,13 @@ static const u32 ar5416Addac[][2] = {
 	{0x0000989c, 0x00000000},
 	{0x0000989c, 0x00000000},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{0x000098cc, 0x00000000},
 =======
 	{0x000098c4, 0x00000000},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{0x000098c4, 0x00000000},
+>>>>>>> refs/remotes/origin/master
 };
 

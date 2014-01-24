@@ -10,12 +10,19 @@
 #include <linux/writeback.h>
 #include <linux/vmalloc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pagevec.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include "super.h"
 #include "mds_client.h"
+=======
+
+#include "super.h"
+#include "mds_client.h"
+#include "cache.h"
+>>>>>>> refs/remotes/origin/master
 #include <linux/ceph/decode.h>
 
 /*
@@ -302,6 +309,7 @@ struct inode *ceph_alloc_inode(struct super_block *sb)
 	dout("alloc_inode %p\n", &ci->vfs_inode);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spin_lock_init(&ci->i_ceph_lock);
 
@@ -310,6 +318,15 @@ struct inode *ceph_alloc_inode(struct super_block *sb)
 	ci->i_time_warp_seq = 0;
 	ci->i_ceph_flags = 0;
 	ci->i_release_count = 0;
+=======
+	spin_lock_init(&ci->i_ceph_lock);
+
+	ci->i_version = 0;
+	ci->i_time_warp_seq = 0;
+	ci->i_ceph_flags = 0;
+	atomic_set(&ci->i_release_count, 1);
+	atomic_set(&ci->i_complete_count, 0);
+>>>>>>> refs/remotes/origin/master
 	ci->i_symlink = NULL;
 
 	memset(&ci->i_dir_layout, 0, sizeof(ci->i_dir_layout));
@@ -350,6 +367,10 @@ struct inode *ceph_alloc_inode(struct super_block *sb)
 	for (i = 0; i < CEPH_FILE_MODE_NUM; i++)
 		ci->i_nr_by_mode[i] = 0;
 
+<<<<<<< HEAD
+=======
+	mutex_init(&ci->i_truncate_mutex);
+>>>>>>> refs/remotes/origin/master
 	ci->i_truncate_seq = 0;
 	ci->i_truncate_size = 0;
 	ci->i_truncate_pending = 0;
@@ -383,6 +404,11 @@ struct inode *ceph_alloc_inode(struct super_block *sb)
 
 	INIT_WORK(&ci->i_vmtruncate_work, ceph_vmtruncate_work);
 
+<<<<<<< HEAD
+=======
+	ceph_fscache_inode_init(ci);
+
+>>>>>>> refs/remotes/origin/master
 	return &ci->vfs_inode;
 }
 
@@ -392,9 +418,12 @@ static void ceph_i_callback(struct rcu_head *head)
 	struct ceph_inode_info *ci = ceph_inode(inode);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(ceph_inode_cachep, ci);
 }
 
@@ -406,6 +435,11 @@ void ceph_destroy_inode(struct inode *inode)
 
 	dout("destroy_inode %p ino %llx.%llx\n", inode, ceph_vinop(inode));
 
+<<<<<<< HEAD
+=======
+	ceph_fscache_unregister_inode_cookie(ci);
+
+>>>>>>> refs/remotes/origin/master
 	ceph_queue_caps_release(inode);
 
 	/*
@@ -440,7 +474,10 @@ void ceph_destroy_inode(struct inode *inode)
 	call_rcu(&inode->i_rcu, ceph_i_callback);
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Helpers to fill in size, ctime, mtime, and atime.  We have to be
  * careful because either the client or MDS may have more up to date
@@ -465,16 +502,30 @@ int ceph_fill_file_size(struct inode *inode, int issued,
 			dout("truncate_seq %u -> %u\n",
 			     ci->i_truncate_seq, truncate_seq);
 			ci->i_truncate_seq = truncate_seq;
+<<<<<<< HEAD
+=======
+
+			/* the MDS should have revoked these caps */
+			WARN_ON_ONCE(issued & (CEPH_CAP_FILE_EXCL |
+					       CEPH_CAP_FILE_RD |
+					       CEPH_CAP_FILE_WR |
+					       CEPH_CAP_FILE_LAZYIO));
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * If we hold relevant caps, or in the case where we're
 			 * not the only client referencing this file and we
 			 * don't hold those caps, then we need to check whether
 			 * the file is either opened or mmaped
 			 */
+<<<<<<< HEAD
 			if ((issued & (CEPH_CAP_FILE_CACHE|CEPH_CAP_FILE_RD|
 				       CEPH_CAP_FILE_WR|CEPH_CAP_FILE_BUFFER|
 				       CEPH_CAP_FILE_EXCL|
 				       CEPH_CAP_FILE_LAZYIO)) ||
+=======
+			if ((issued & (CEPH_CAP_FILE_CACHE|
+				       CEPH_CAP_FILE_BUFFER)) ||
+>>>>>>> refs/remotes/origin/master
 			    mapping_mapped(inode->i_mapping) ||
 			    __ceph_caps_file_wanted(ci)) {
 				ci->i_truncate_pending++;
@@ -488,6 +539,13 @@ int ceph_fill_file_size(struct inode *inode, int issued,
 		     truncate_size);
 		ci->i_truncate_size = truncate_size;
 	}
+<<<<<<< HEAD
+=======
+
+	if (queue_trunc)
+		ceph_fscache_invalidate(inode);
+
+>>>>>>> refs/remotes/origin/master
 	return queue_trunc;
 }
 
@@ -572,6 +630,7 @@ static int fill_inode(struct inode *inode,
 	struct ceph_inode_info *ci = ceph_inode(inode);
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int issued, implemented;
 =======
 	int issued = 0, implemented;
@@ -579,6 +638,13 @@ static int fill_inode(struct inode *inode,
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct timespec mtime, atime, ctime;
 	u32 nsplits;
+=======
+	int issued = 0, implemented;
+	struct timespec mtime, atime, ctime;
+	u32 nsplits;
+	struct ceph_inode_frag *frag;
+	struct rb_node *rb_node;
+>>>>>>> refs/remotes/origin/master
 	struct ceph_buffer *xattr_blob = NULL;
 	int err = 0;
 	int queue_trunc = 0;
@@ -600,10 +666,14 @@ static int fill_inode(struct inode *inode,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * provided version will be odd if inode value is projected,
@@ -620,11 +690,15 @@ static int fill_inode(struct inode *inode,
 	    (ci->i_version & ~1) >= le64_to_cpu(info->version))
 		goto no_change;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	
 	updating_inode = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	
+>>>>>>> refs/remotes/origin/master
 	issued = __ceph_caps_issued(ci, &implemented);
 	issued |= implemented | __ceph_caps_dirty(ci);
 
@@ -635,6 +709,7 @@ static int fill_inode(struct inode *inode,
 
 	if ((issued & CEPH_CAP_AUTH_EXCL) == 0) {
 		inode->i_mode = le32_to_cpu(info->mode);
+<<<<<<< HEAD
 		inode->i_uid = le32_to_cpu(info->uid);
 		inode->i_gid = le32_to_cpu(info->gid);
 		dout("%p mode 0%o uid.gid %d.%d\n", inode, inode->i_mode,
@@ -647,6 +722,17 @@ static int fill_inode(struct inode *inode,
 =======
 		set_nlink(inode, le32_to_cpu(info->nlink));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		inode->i_uid = make_kuid(&init_user_ns, le32_to_cpu(info->uid));
+		inode->i_gid = make_kgid(&init_user_ns, le32_to_cpu(info->gid));
+		dout("%p mode 0%o uid.gid %d.%d\n", inode, inode->i_mode,
+		     from_kuid(&init_user_ns, inode->i_uid),
+		     from_kgid(&init_user_ns, inode->i_gid));
+	}
+
+	if ((issued & CEPH_CAP_LINK_EXCL) == 0)
+		set_nlink(inode, le32_to_cpu(info->nlink));
+>>>>>>> refs/remotes/origin/master
 
 	/* be careful with mtime, atime, size */
 	ceph_decode_timespec(&atime, &info->atime);
@@ -705,6 +791,7 @@ static int fill_inode(struct inode *inode,
 		inode->i_op = &ceph_symlink_iops;
 		if (!ci->i_symlink) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			int symlen = iinfo->symlink_len;
 			char *sym;
 
@@ -720,6 +807,8 @@ static int fill_inode(struct inode *inode,
 
 			spin_lock(&inode->i_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			u32 symlen = iinfo->symlink_len;
 			char *sym;
 
@@ -735,7 +824,10 @@ static int fill_inode(struct inode *inode,
 				goto out;
 
 			spin_lock(&ci->i_ceph_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!ci->i_symlink)
 				ci->i_symlink = sym;
 			else
@@ -755,6 +847,7 @@ static int fill_inode(struct inode *inode,
 		ci->i_rsubdirs = le64_to_cpu(info->rsubdirs);
 		ceph_decode_timespec(&ci->i_rctime, &info->rctime);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		/* set dir completion flag? */
 		if (ci->i_files == 0 && ci->i_subdirs == 0 &&
@@ -768,18 +861,36 @@ static int fill_inode(struct inode *inode,
 		}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		pr_err("fill_inode %llx.%llx BAD mode 0%o\n",
 		       ceph_vinop(inode), inode->i_mode);
 	}
 
+<<<<<<< HEAD
 no_change:
 <<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* set dir completion flag? */
+	if (S_ISDIR(inode->i_mode) &&
+	    ci->i_files == 0 && ci->i_subdirs == 0 &&
+	    ceph_snap(inode) == CEPH_NOSNAP &&
+	    (le32_to_cpu(info->cap.caps) & CEPH_CAP_FILE_SHARED) &&
+	    (issued & CEPH_CAP_FILE_EXCL) == 0 &&
+	    !__ceph_dir_is_complete(ci)) {
+		dout(" marking %p complete (empty)\n", inode);
+		__ceph_dir_set_complete(ci, atomic_read(&ci->i_release_count));
+		ci->i_max_offset = 2;
+	}
+no_change:
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 
 	/* queue truncate if we saw i_size decrease */
 	if (queue_trunc)
@@ -789,6 +900,7 @@ no_change:
 	/* FIXME: move me up, if/when version reflects fragtree changes */
 	nsplits = le32_to_cpu(info->fragtree.nsplits);
 	mutex_lock(&ci->i_fragtree_mutex);
+<<<<<<< HEAD
 	for (i = 0; i < nsplits; i++) {
 		u32 id = le32_to_cpu(info->fragtree.splits[i].frag);
 		struct ceph_inode_frag *frag = __get_or_create_frag(ci, id);
@@ -798,6 +910,40 @@ no_change:
 		frag->split_by = le32_to_cpu(info->fragtree.splits[i].by);
 		dout(" frag %x split by %d\n", frag->frag, frag->split_by);
 	}
+=======
+	rb_node = rb_first(&ci->i_fragtree);
+	for (i = 0; i < nsplits; i++) {
+		u32 id = le32_to_cpu(info->fragtree.splits[i].frag);
+		frag = NULL;
+		while (rb_node) {
+			frag = rb_entry(rb_node, struct ceph_inode_frag, node);
+			if (ceph_frag_compare(frag->frag, id) >= 0) {
+				if (frag->frag != id)
+					frag = NULL;
+				else
+					rb_node = rb_next(rb_node);
+				break;
+			}
+			rb_node = rb_next(rb_node);
+			rb_erase(&frag->node, &ci->i_fragtree);
+			kfree(frag);
+			frag = NULL;
+		}
+		if (!frag) {
+			frag = __get_or_create_frag(ci, id);
+			if (IS_ERR(frag))
+				continue;
+		}
+		frag->split_by = le32_to_cpu(info->fragtree.splits[i].by);
+		dout(" frag %x split by %d\n", frag->frag, frag->split_by);
+	}
+	while (rb_node) {
+		frag = rb_entry(rb_node, struct ceph_inode_frag, node);
+		rb_node = rb_next(rb_node);
+		rb_erase(&frag->node, &ci->i_fragtree);
+		kfree(frag);
+	}
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&ci->i_fragtree_mutex);
 
 	/* were we issued a capability? */
@@ -815,20 +961,28 @@ no_change:
 				     caps_reservation);
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			spin_lock(&inode->i_lock);
 =======
 			spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 			dout(" %p got snap_caps %s\n", inode,
 			     ceph_cap_string(le32_to_cpu(info->cap.caps)));
 			ci->i_snap_caps |= le32_to_cpu(info->cap.caps);
 			if (cap_fmode >= 0)
 				__ceph_get_fmode(ci, cap_fmode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			spin_unlock(&inode->i_lock);
 =======
 			spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else if (cap_fmode >= 0) {
 		pr_warning("mds issued no caps on %llx.%llx\n",
@@ -836,6 +990,7 @@ no_change:
 		__ceph_get_fmode(ci, cap_fmode);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	/* set dir completion flag? */
@@ -852,6 +1007,8 @@ no_change:
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* update delegation info? */
 	if (dirinfo)
 		ceph_fill_dirfrag(inode, dirinfo);
@@ -884,22 +1041,31 @@ static void update_dentry_lease(struct dentry *dentry,
 
 	spin_lock(&dentry->d_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dout("update_dentry_lease %p mask %d duration %lu ms ttl %lu\n",
 	     dentry, le16_to_cpu(lease->mask), duration, ttl);
 =======
 	dout("update_dentry_lease %p duration %lu ms ttl %lu\n",
 	     dentry, duration, ttl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dout("update_dentry_lease %p duration %lu ms ttl %lu\n",
+	     dentry, duration, ttl);
+>>>>>>> refs/remotes/origin/master
 
 	/* make lease_rdcache_gen match directory */
 	dir = dentry->d_parent->d_inode;
 	di->lease_shared_gen = ceph_inode(dir)->i_shared_gen;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (lease->mask == 0)
 =======
 	if (duration == 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (duration == 0)
+>>>>>>> refs/remotes/origin/master
 		goto out_unlock;
 
 	if (di->lease_gen == session->s_cap_gen &&
@@ -927,24 +1093,35 @@ out_unlock:
  * Set dentry's directory position based on the current dir's max, and
  * order it in d_subdirs, so that dcache_readdir behaves.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *
  * Always called under directory's i_mutex.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+ * Always called under directory's i_mutex.
+>>>>>>> refs/remotes/origin/master
  */
 static void ceph_set_dentry_offset(struct dentry *dn)
 {
 	struct dentry *dir = dn->d_parent;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct inode *inode = dn->d_parent->d_inode;
 =======
 	struct inode *inode = dir->d_inode;
 	struct ceph_inode_info *ci;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct inode *inode = dir->d_inode;
+	struct ceph_inode_info *ci;
+>>>>>>> refs/remotes/origin/master
 	struct ceph_dentry_info *di;
 
 	BUG_ON(!inode);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	di = ceph_dentry(dn);
 
@@ -956,17 +1133,26 @@ static void ceph_set_dentry_offset(struct dentry *dn)
 	di->offset = ceph_inode(inode)->i_max_offset++;
 	spin_unlock(&inode->i_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ci = ceph_inode(inode);
 	di = ceph_dentry(dn);
 
 	spin_lock(&ci->i_ceph_lock);
+<<<<<<< HEAD
 	if (!ceph_dir_test_complete(inode)) {
+=======
+	if (!__ceph_dir_is_complete(ci)) {
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&ci->i_ceph_lock);
 		return;
 	}
 	di->offset = ceph_inode(inode)->i_max_offset++;
 	spin_unlock(&ci->i_ceph_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&dir->d_lock);
 	spin_lock_nested(&dn->d_lock, DENTRY_D_LOCK_NESTED);
@@ -1006,8 +1192,13 @@ static struct dentry *splice_dentry(struct dentry *dn, struct inode *in,
 	} else if (realdn) {
 		dout("dn %p (%d) spliced with %p (%d) "
 		     "inode %p ino %llx.%llx\n",
+<<<<<<< HEAD
 		     dn, dn->d_count,
 		     realdn, realdn->d_count,
+=======
+		     dn, d_count(dn),
+		     realdn, d_count(realdn),
+>>>>>>> refs/remotes/origin/master
 		     realdn->d_inode, ceph_vinop(realdn->d_inode));
 		dput(dn);
 		dn = realdn;
@@ -1043,7 +1234,10 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 	struct ceph_mds_reply_inode *ininfo;
 	struct ceph_vino vino;
 	struct ceph_fs_client *fsc = ceph_sb_to_client(sb);
+<<<<<<< HEAD
 	int i = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 
 	dout("fill_trace %p is_dentry %d is_target %d\n", req,
@@ -1094,12 +1288,15 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 		struct inode *dir = req->r_locked_dir;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = fill_inode(dir, &rinfo->diri, rinfo->dirfrag,
 				 session, req->r_request_started, -1,
 				 &req->r_caps_reservation);
 		if (err < 0)
 			return err;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (dir) {
 			err = fill_inode(dir, &rinfo->diri, rinfo->dirfrag,
 					 session, req->r_request_started, -1,
@@ -1109,7 +1306,33 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 		} else {
 			WARN_ON_ONCE(1);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+
+	if (rinfo->head->is_target) {
+		vino.ino = le64_to_cpu(rinfo->targeti.in->ino);
+		vino.snap = le64_to_cpu(rinfo->targeti.in->snapid);
+
+		in = ceph_get_inode(sb, vino);
+		if (IS_ERR(in)) {
+			err = PTR_ERR(in);
+			goto done;
+		}
+		req->r_target_inode = in;
+
+		err = fill_inode(in, &rinfo->targeti, NULL,
+				session, req->r_request_started,
+				(le32_to_cpu(rinfo->head->result) == 0) ?
+				req->r_fmode : -1,
+				&req->r_caps_reservation);
+		if (err < 0) {
+			pr_err("fill_inode badness %p %llx.%llx\n",
+				in, ceph_vinop(in));
+			goto done;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1118,9 +1341,13 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 	 */
 	if (rinfo->head->is_dentry && !req->r_aborted &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	    req->r_locked_dir &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    req->r_locked_dir &&
+>>>>>>> refs/remotes/origin/master
 	    (rinfo->head->is_target || strncmp(req->r_dentry->d_name.name,
 					       fsc->mount_options->snapdir_name,
 					       req->r_dentry->d_name.len))) {
@@ -1149,12 +1376,16 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 		/* do we have a dn lease? */
 		have_lease = have_dir_cap ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 			(le16_to_cpu(rinfo->dlease->mask) &
 			 CEPH_LOCK_DN);
 
 =======
 			le32_to_cpu(rinfo->dlease->duration_ms);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			le32_to_cpu(rinfo->dlease->duration_ms);
+>>>>>>> refs/remotes/origin/master
 		if (!have_lease)
 			dout("fill_trace  no dentry lease or dir cap\n");
 
@@ -1182,6 +1413,7 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 			/*
 			 * d_move() puts the renamed dentry at the end of
 			 * d_subdirs.  We need to assign it an appropriate
+<<<<<<< HEAD
 			 * directory offset so we can behave when holding
 <<<<<<< HEAD
 			 * I_COMPLETE.
@@ -1195,6 +1427,16 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 
 			dn = req->r_old_dentry;  /* use old_dentry */
 			in = dn->d_inode;
+=======
+			 * directory offset so we can behave when dir is
+			 * complete.
+			 */
+			ceph_set_dentry_offset(req->r_old_dentry);
+			dout("dn %p gets new offset %lld\n", req->r_old_dentry,
+			     ceph_dentry(req->r_old_dentry)->offset);
+
+			dn = req->r_old_dentry;  /* use old_dentry */
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* null dentry? */
@@ -1216,6 +1458,7 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 		}
 
 		/* attach proper inode */
+<<<<<<< HEAD
 		ininfo = rinfo->targeti.in;
 		vino.ino = le64_to_cpu(ininfo->ino);
 		vino.snap = le64_to_cpu(ininfo->snapid);
@@ -1229,12 +1472,17 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 				d_delete(dn);
 				goto done;
 			}
+=======
+		if (!dn->d_inode) {
+			ihold(in);
+>>>>>>> refs/remotes/origin/master
 			dn = splice_dentry(dn, in, &have_lease, true);
 			if (IS_ERR(dn)) {
 				err = PTR_ERR(dn);
 				goto done;
 			}
 			req->r_dentry = dn;  /* may have spliced */
+<<<<<<< HEAD
 			ihold(in);
 		} else if (ceph_ino(in) == vino.ino &&
 			   ceph_snap(in) == vino.snap) {
@@ -1245,15 +1493,28 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 			     vino.ino, vino.snap);
 			have_lease = false;
 			in = NULL;
+=======
+		} else if (dn->d_inode && dn->d_inode != in) {
+			dout(" %p links to %p %llx.%llx, not %llx.%llx\n",
+			     dn, dn->d_inode, ceph_vinop(dn->d_inode),
+			     ceph_vinop(in));
+			have_lease = false;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (have_lease)
 			update_dentry_lease(dn, rinfo->dlease, session,
 					    req->r_request_started);
 		dout(" final dn %p\n", dn);
+<<<<<<< HEAD
 		i++;
 	} else if (req->r_op == CEPH_MDS_OP_LOOKUPSNAP ||
 		   req->r_op == CEPH_MDS_OP_MKSNAP) {
+=======
+	} else if (!req->r_aborted &&
+		   (req->r_op == CEPH_MDS_OP_LOOKUPSNAP ||
+		    req->r_op == CEPH_MDS_OP_MKSNAP)) {
+>>>>>>> refs/remotes/origin/master
 		struct dentry *dn = req->r_dentry;
 
 		/* fill out a snapdir LOOKUPSNAP dentry */
@@ -1263,6 +1524,7 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 		ininfo = rinfo->targeti.in;
 		vino.ino = le64_to_cpu(ininfo->ino);
 		vino.snap = le64_to_cpu(ininfo->snapid);
+<<<<<<< HEAD
 		in = ceph_get_inode(sb, vino);
 		if (IS_ERR(in)) {
 			pr_err("fill_inode get_inode badness %llx.%llx\n",
@@ -1272,12 +1534,17 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 			goto done;
 		}
 		dout(" linking snapped dir %p to dn %p\n", in, dn);
+=======
+		dout(" linking snapped dir %p to dn %p\n", in, dn);
+		ihold(in);
+>>>>>>> refs/remotes/origin/master
 		dn = splice_dentry(dn, in, NULL, true);
 		if (IS_ERR(dn)) {
 			err = PTR_ERR(dn);
 			goto done;
 		}
 		req->r_dentry = dn;  /* may have spliced */
+<<<<<<< HEAD
 		ihold(in);
 		rinfo->head->is_dentry = 1;  /* fool notrace handlers */
 	}
@@ -1317,6 +1584,50 @@ done:
 /*
  * Prepopulate our cache with readdir results, leases, etc.
  */
+=======
+	}
+done:
+	dout("fill_trace done err=%d\n", err);
+	return err;
+}
+
+/*
+ * Prepopulate our cache with readdir results, leases, etc.
+ */
+static int readdir_prepopulate_inodes_only(struct ceph_mds_request *req,
+					   struct ceph_mds_session *session)
+{
+	struct ceph_mds_reply_info_parsed *rinfo = &req->r_reply_info;
+	int i, err = 0;
+
+	for (i = 0; i < rinfo->dir_nr; i++) {
+		struct ceph_vino vino;
+		struct inode *in;
+		int rc;
+
+		vino.ino = le64_to_cpu(rinfo->dir_in[i].in->ino);
+		vino.snap = le64_to_cpu(rinfo->dir_in[i].in->snapid);
+
+		in = ceph_get_inode(req->r_dentry->d_sb, vino);
+		if (IS_ERR(in)) {
+			err = PTR_ERR(in);
+			dout("new_inode badness got %d\n", err);
+			continue;
+		}
+		rc = fill_inode(in, &rinfo->dir_in[i], NULL, session,
+				req->r_request_started, -1,
+				&req->r_caps_reservation);
+		if (rc < 0) {
+			pr_err("fill_inode badness on %p got %d\n", in, rc);
+			err = rc;
+			continue;
+		}
+	}
+
+	return err;
+}
+
+>>>>>>> refs/remotes/origin/master
 int ceph_readdir_prepopulate(struct ceph_mds_request *req,
 			     struct ceph_mds_session *session)
 {
@@ -1325,11 +1636,34 @@ int ceph_readdir_prepopulate(struct ceph_mds_request *req,
 	struct qstr dname;
 	struct dentry *dn;
 	struct inode *in;
+<<<<<<< HEAD
 	int err = 0, i;
 	struct inode *snapdir = NULL;
 	struct ceph_mds_request_head *rhead = req->r_request->front.iov_base;
 	u64 frag = le32_to_cpu(rhead->args.readdir.frag);
 	struct ceph_dentry_info *di;
+=======
+	int err = 0, ret, i;
+	struct inode *snapdir = NULL;
+	struct ceph_mds_request_head *rhead = req->r_request->front.iov_base;
+	struct ceph_dentry_info *di;
+	u64 r_readdir_offset = req->r_readdir_offset;
+	u32 frag = le32_to_cpu(rhead->args.readdir.frag);
+
+	if (rinfo->dir_dir &&
+	    le32_to_cpu(rinfo->dir_dir->frag) != frag) {
+		dout("readdir_prepopulate got new frag %x -> %x\n",
+		     frag, le32_to_cpu(rinfo->dir_dir->frag));
+		frag = le32_to_cpu(rinfo->dir_dir->frag);
+		if (ceph_frag_is_leftmost(frag))
+			r_readdir_offset = 2;
+		else
+			r_readdir_offset = 0;
+	}
+
+	if (req->r_aborted)
+		return readdir_prepopulate_inodes_only(req, session);
+>>>>>>> refs/remotes/origin/master
 
 	if (le32_to_cpu(rinfo->head->op) == CEPH_MDS_OP_LSSNAP) {
 		snapdir = ceph_get_snapdir(parent->d_inode);
@@ -1343,6 +1677,10 @@ int ceph_readdir_prepopulate(struct ceph_mds_request *req,
 			ceph_fill_dirfrag(parent->d_inode, rinfo->dir_dir);
 	}
 
+<<<<<<< HEAD
+=======
+	/* FIXME: release caps/leases if error occurs */
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < rinfo->dir_nr; i++) {
 		struct ceph_vino vino;
 
@@ -1367,9 +1705,16 @@ retry_lookup:
 				err = -ENOMEM;
 				goto out;
 			}
+<<<<<<< HEAD
 			err = ceph_init_dentry(dn);
 			if (err < 0) {
 				dput(dn);
+=======
+			ret = ceph_init_dentry(dn);
+			if (ret < 0) {
+				dput(dn);
+				err = ret;
+>>>>>>> refs/remotes/origin/master
 				goto out;
 			}
 		} else if (dn->d_inode &&
@@ -1389,9 +1734,12 @@ retry_lookup:
 			spin_unlock(&parent->d_lock);
 		}
 
+<<<<<<< HEAD
 		di = dn->d_fsdata;
 		di->offset = ceph_make_fpos(frag, i + req->r_readdir_offset);
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/* inode */
 		if (dn->d_inode) {
 			in = dn->d_inode;
@@ -1399,31 +1747,67 @@ retry_lookup:
 			in = ceph_get_inode(parent->d_sb, vino);
 			if (IS_ERR(in)) {
 				dout("new_inode badness\n");
+<<<<<<< HEAD
 				d_delete(dn);
+=======
+				d_drop(dn);
+>>>>>>> refs/remotes/origin/master
 				dput(dn);
 				err = PTR_ERR(in);
 				goto out;
 			}
+<<<<<<< HEAD
 			dn = splice_dentry(dn, in, NULL, false);
 			if (IS_ERR(dn))
 				dn = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (fill_inode(in, &rinfo->dir_in[i], NULL, session,
 			       req->r_request_started, -1,
 			       &req->r_caps_reservation) < 0) {
 			pr_err("fill_inode badness on %p\n", in);
+<<<<<<< HEAD
 			goto next_item;
 		}
 		if (dn)
 			update_dentry_lease(dn, rinfo->dir_dlease[i],
 					    req->r_session,
 					    req->r_request_started);
+=======
+			if (!dn->d_inode)
+				iput(in);
+			d_drop(dn);
+			goto next_item;
+		}
+
+		if (!dn->d_inode) {
+			dn = splice_dentry(dn, in, NULL, false);
+			if (IS_ERR(dn)) {
+				err = PTR_ERR(dn);
+				dn = NULL;
+				goto next_item;
+			}
+		}
+
+		di = dn->d_fsdata;
+		di->offset = ceph_make_fpos(frag, i + r_readdir_offset);
+
+		update_dentry_lease(dn, rinfo->dir_dlease[i],
+				    req->r_session,
+				    req->r_request_started);
+>>>>>>> refs/remotes/origin/master
 next_item:
 		if (dn)
 			dput(dn);
 	}
+<<<<<<< HEAD
 	req->r_did_prepopulate = true;
+=======
+	if (err == 0)
+		req->r_did_prepopulate = true;
+>>>>>>> refs/remotes/origin/master
 
 out:
 	if (snapdir) {
@@ -1440,10 +1824,14 @@ int ceph_inode_set_size(struct inode *inode, loff_t size)
 	int ret = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	dout("set_size %p %llu -> %llu\n", inode, inode->i_size, size);
 	inode->i_size = size;
 	inode->i_blocks = (size + (1 << 9) - 1) >> 9;
@@ -1454,10 +1842,14 @@ int ceph_inode_set_size(struct inode *inode, loff_t size)
 		ret = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1468,6 +1860,7 @@ int ceph_inode_set_size(struct inode *inode, loff_t size)
 void ceph_queue_writeback(struct inode *inode)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (queue_work(ceph_inode_to_client(inode)->wb_wq,
 		       &ceph_inode(inode)->i_wb_work)) {
 		dout("ceph_queue_writeback %p\n", inode);
@@ -1475,6 +1868,8 @@ void ceph_queue_writeback(struct inode *inode)
 	} else {
 		dout("ceph_queue_writeback %p failed\n", inode);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ihold(inode);
 	if (queue_work(ceph_inode_to_client(inode)->wb_wq,
 		       &ceph_inode(inode)->i_wb_work)) {
@@ -1482,7 +1877,10 @@ void ceph_queue_writeback(struct inode *inode)
 	} else {
 		dout("ceph_queue_writeback %p failed\n", inode);
 		iput(inode);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1502,6 +1900,7 @@ static void ceph_writeback_work(struct work_struct *work)
  */
 void ceph_queue_invalidate(struct inode *inode)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (queue_work(ceph_inode_to_client(inode)->pg_inv_wq,
 		       &ceph_inode(inode)->i_pg_inv_work)) {
@@ -1553,6 +1952,8 @@ static void ceph_invalidate_nondirty_pages(struct address_space *mapping)
 		pagevec_release(&pvec);
 		cond_resched();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ihold(inode);
 	if (queue_work(ceph_inode_to_client(inode)->pg_inv_wq,
 		       &ceph_inode(inode)->i_pg_inv_work)) {
@@ -1560,7 +1961,10 @@ static void ceph_invalidate_nondirty_pages(struct address_space *mapping)
 	} else {
 		dout("ceph_queue_invalidate %p failed\n", inode);
 		iput(inode);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1577,14 +1981,20 @@ static void ceph_invalidate_work(struct work_struct *work)
 	int check = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&ci->i_truncate_mutex);
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	dout("invalidate_pages %p gen %d revoking %d\n", inode,
 	     ci->i_rdcache_gen, ci->i_rdcache_revoking);
 	if (ci->i_rdcache_revoking != ci->i_rdcache_gen) {
 		/* nevermind! */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		spin_unlock(&inode->i_lock);
 		goto out;
@@ -1597,15 +2007,25 @@ static void ceph_invalidate_work(struct work_struct *work)
 	spin_lock(&inode->i_lock);
 =======
 		spin_unlock(&ci->i_ceph_lock);
+=======
+		spin_unlock(&ci->i_ceph_lock);
+		mutex_unlock(&ci->i_truncate_mutex);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 	orig_gen = ci->i_rdcache_gen;
 	spin_unlock(&ci->i_ceph_lock);
 
+<<<<<<< HEAD
 	truncate_inode_pages(&inode->i_data, 0);
 
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	truncate_inode_pages(inode->i_mapping, 0);
+
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	if (orig_gen == ci->i_rdcache_gen &&
 	    orig_gen == ci->i_rdcache_revoking) {
 		dout("invalidate_pages %p gen %d successful\n", inode,
@@ -1618,10 +2038,15 @@ static void ceph_invalidate_work(struct work_struct *work)
 		     ci->i_rdcache_revoking);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+	mutex_unlock(&ci->i_truncate_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	if (check)
 		ceph_check_caps(ci, 0, NULL);
@@ -1631,7 +2056,11 @@ out:
 
 
 /*
+<<<<<<< HEAD
  * called by trunc_wq; take i_mutex ourselves
+=======
+ * called by trunc_wq;
+>>>>>>> refs/remotes/origin/master
  *
  * We also truncate in a separate thread as well.
  */
@@ -1642,9 +2071,13 @@ static void ceph_vmtruncate_work(struct work_struct *work)
 	struct inode *inode = &ci->vfs_inode;
 
 	dout("vmtruncate_work %p\n", inode);
+<<<<<<< HEAD
 	mutex_lock(&inode->i_mutex);
 	__ceph_do_pending_vmtruncate(inode);
 	mutex_unlock(&inode->i_mutex);
+=======
+	__ceph_do_pending_vmtruncate(inode);
+>>>>>>> refs/remotes/origin/master
 	iput(inode);
 }
 
@@ -1657,6 +2090,7 @@ void ceph_queue_vmtruncate(struct inode *inode)
 	struct ceph_inode_info *ci = ceph_inode(inode);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (queue_work(ceph_sb_to_client(inode->i_sb)->trunc_wq,
 		       &ci->i_vmtruncate_work)) {
 		dout("ceph_queue_vmtruncate %p\n", inode);
@@ -1666,6 +2100,10 @@ void ceph_queue_vmtruncate(struct inode *inode)
 		     inode, ci->i_truncate_pending);
 =======
 	ihold(inode);
+=======
+	ihold(inode);
+
+>>>>>>> refs/remotes/origin/master
 	if (queue_work(ceph_sb_to_client(inode->i_sb)->trunc_wq,
 		       &ci->i_vmtruncate_work)) {
 		dout("ceph_queue_vmtruncate %p\n", inode);
@@ -1673,13 +2111,19 @@ void ceph_queue_vmtruncate(struct inode *inode)
 		dout("ceph_queue_vmtruncate %p failed, pending=%d\n",
 		     inode, ci->i_truncate_pending);
 		iput(inode);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 /*
+<<<<<<< HEAD
  * called with i_mutex held.
  *
+=======
+>>>>>>> refs/remotes/origin/master
  * Make sure any pending truncation is applied before doing anything
  * that may depend on it.
  */
@@ -1687,6 +2131,7 @@ void __ceph_do_pending_vmtruncate(struct inode *inode)
 {
 	struct ceph_inode_info *ci = ceph_inode(inode);
 	u64 to;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int wrbuffer_refs, wake = 0;
 
@@ -1698,12 +2143,21 @@ retry:
 =======
 	int wrbuffer_refs, finish = 0;
 
+=======
+	int wrbuffer_refs, finish = 0;
+
+	mutex_lock(&ci->i_truncate_mutex);
+>>>>>>> refs/remotes/origin/master
 retry:
 	spin_lock(&ci->i_ceph_lock);
 	if (ci->i_truncate_pending == 0) {
 		dout("__do_pending_vmtruncate %p none pending\n", inode);
 		spin_unlock(&ci->i_ceph_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mutex_unlock(&ci->i_truncate_mutex);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -1715,19 +2169,30 @@ retry:
 		dout("__do_pending_vmtruncate %p flushing snaps first\n",
 		     inode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock(&inode->i_lock);
 =======
 		spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 		filemap_write_and_wait_range(&inode->i_data, 0,
 					     inode->i_sb->s_maxbytes);
 		goto retry;
 	}
 
+<<<<<<< HEAD
+=======
+	/* there should be no reader or writer */
+	WARN_ON_ONCE(ci->i_rd_ref || ci->i_wr_ref);
+
+>>>>>>> refs/remotes/origin/master
 	to = ci->i_truncate_size;
 	wrbuffer_refs = ci->i_wrbuffer_ref;
 	dout("__do_pending_vmtruncate %p (%d) to %lld\n", inode,
 	     ci->i_truncate_pending, to);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 
@@ -1744,6 +2209,8 @@ retry:
 	if (wake)
 		wake_up_all(&ci->i_cap_wq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&ci->i_ceph_lock);
 
 	truncate_inode_pages(inode->i_mapping, to);
@@ -1757,14 +2224,24 @@ retry:
 	if (!finish)
 		goto retry;
 
+<<<<<<< HEAD
+=======
+	mutex_unlock(&ci->i_truncate_mutex);
+
+>>>>>>> refs/remotes/origin/master
 	if (wrbuffer_refs == 0)
 		ceph_check_caps(ci, CHECK_CAPS_AUTHONLY, NULL);
 
 	wake_up_all(&ci->i_cap_wq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
+=======
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * symlinks
  */
@@ -1778,6 +2255,15 @@ static void *ceph_sym_follow_link(struct dentry *dentry, struct nameidata *nd)
 static const struct inode_operations ceph_symlink_iops = {
 	.readlink = generic_readlink,
 	.follow_link = ceph_sym_follow_link,
+<<<<<<< HEAD
+=======
+	.setattr = ceph_setattr,
+	.getattr = ceph_getattr,
+	.setxattr = ceph_setxattr,
+	.getxattr = ceph_getxattr,
+	.listxattr = ceph_listxattr,
+	.removexattr = ceph_removexattr,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -1788,10 +2274,14 @@ int ceph_setattr(struct dentry *dentry, struct iattr *attr)
 	struct inode *inode = dentry->d_inode;
 	struct ceph_inode_info *ci = ceph_inode(inode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct inode *parent_inode = dentry->d_parent->d_inode;
 =======
 	struct inode *parent_inode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct inode *parent_inode;
+>>>>>>> refs/remotes/origin/master
 	const unsigned int ia_valid = attr->ia_valid;
 	struct ceph_mds_request *req;
 	struct ceph_mds_client *mdsc = ceph_sb_to_client(dentry->d_sb)->mdsc;
@@ -1804,8 +2294,11 @@ int ceph_setattr(struct dentry *dentry, struct iattr *attr)
 	if (ceph_snap(inode) != CEPH_NOSNAP)
 		return -EROFS;
 
+<<<<<<< HEAD
 	__ceph_do_pending_vmtruncate(inode);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	err = inode_change_ok(inode, attr);
 	if (err != 0)
 		return err;
@@ -1816,35 +2309,61 @@ int ceph_setattr(struct dentry *dentry, struct iattr *attr)
 		return PTR_ERR(req);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	issued = __ceph_caps_issued(ci, NULL);
 	dout("setattr %p issued %s\n", inode, ceph_cap_string(issued));
 
 	if (ia_valid & ATTR_UID) {
 		dout("setattr %p uid %d -> %d\n", inode,
+<<<<<<< HEAD
 		     inode->i_uid, attr->ia_uid);
+=======
+		     from_kuid(&init_user_ns, inode->i_uid),
+		     from_kuid(&init_user_ns, attr->ia_uid));
+>>>>>>> refs/remotes/origin/master
 		if (issued & CEPH_CAP_AUTH_EXCL) {
 			inode->i_uid = attr->ia_uid;
 			dirtied |= CEPH_CAP_AUTH_EXCL;
 		} else if ((issued & CEPH_CAP_AUTH_SHARED) == 0 ||
+<<<<<<< HEAD
 			   attr->ia_uid != inode->i_uid) {
 			req->r_args.setattr.uid = cpu_to_le32(attr->ia_uid);
+=======
+			   !uid_eq(attr->ia_uid, inode->i_uid)) {
+			req->r_args.setattr.uid = cpu_to_le32(
+				from_kuid(&init_user_ns, attr->ia_uid));
+>>>>>>> refs/remotes/origin/master
 			mask |= CEPH_SETATTR_UID;
 			release |= CEPH_CAP_AUTH_SHARED;
 		}
 	}
 	if (ia_valid & ATTR_GID) {
 		dout("setattr %p gid %d -> %d\n", inode,
+<<<<<<< HEAD
 		     inode->i_gid, attr->ia_gid);
+=======
+		     from_kgid(&init_user_ns, inode->i_gid),
+		     from_kgid(&init_user_ns, attr->ia_gid));
+>>>>>>> refs/remotes/origin/master
 		if (issued & CEPH_CAP_AUTH_EXCL) {
 			inode->i_gid = attr->ia_gid;
 			dirtied |= CEPH_CAP_AUTH_EXCL;
 		} else if ((issued & CEPH_CAP_AUTH_SHARED) == 0 ||
+<<<<<<< HEAD
 			   attr->ia_gid != inode->i_gid) {
 			req->r_args.setattr.gid = cpu_to_le32(attr->ia_gid);
+=======
+			   !gid_eq(attr->ia_gid, inode->i_gid)) {
+			req->r_args.setattr.gid = cpu_to_le32(
+				from_kgid(&init_user_ns, attr->ia_gid));
+>>>>>>> refs/remotes/origin/master
 			mask |= CEPH_SETATTR_GID;
 			release |= CEPH_CAP_AUTH_SHARED;
 		}
@@ -1968,10 +2487,14 @@ int ceph_setattr(struct dentry *dentry, struct iattr *attr)
 
 	release &= issued;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 
 	if (inode_dirty_flags)
 		__mark_inode_dirty(inode, inode_dirty_flags);
@@ -1983,17 +2506,24 @@ int ceph_setattr(struct dentry *dentry, struct iattr *attr)
 		req->r_args.setattr.mask = cpu_to_le32(mask);
 		req->r_num_caps = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = ceph_mdsc_do_request(mdsc, parent_inode, req);
 =======
 		parent_inode = ceph_get_dentry_parent_inode(dentry);
 		err = ceph_mdsc_do_request(mdsc, parent_inode, req);
 		iput(parent_inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		parent_inode = ceph_get_dentry_parent_inode(dentry);
+		err = ceph_mdsc_do_request(mdsc, parent_inode, req);
+		iput(parent_inode);
+>>>>>>> refs/remotes/origin/master
 	}
 	dout("setattr %p result=%d (%s locally, %d remote)\n", inode, err,
 	     ceph_cap_string(dirtied), mask);
 
 	ceph_mdsc_put_request(req);
+<<<<<<< HEAD
 	__ceph_do_pending_vmtruncate(inode);
 	return err;
 out:
@@ -2002,6 +2532,13 @@ out:
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mask & CEPH_SETATTR_SIZE)
+		__ceph_do_pending_vmtruncate(inode);
+	return err;
+out:
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	ceph_mdsc_put_request(req);
 	return err;
 }
@@ -2045,28 +2582,38 @@ int ceph_do_getattr(struct inode *inode, int mask)
  * the AUTH cap, then call the generic handler.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ceph_permission(struct inode *inode, int mask, unsigned int flags)
 {
 	int err;
 
 	if (flags & IPERM_FLAG_RCU)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int ceph_permission(struct inode *inode, int mask)
 {
 	int err;
 
 	if (mask & MAY_NOT_BLOCK)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ECHILD;
 
 	err = ceph_do_getattr(inode, CEPH_CAP_AUTH_SHARED);
 
 	if (!err)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = generic_permission(inode, mask, flags, NULL);
 =======
 		err = generic_permission(inode, mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = generic_permission(inode, mask);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 

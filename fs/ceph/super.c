@@ -17,7 +17,13 @@
 
 #include "super.h"
 #include "mds_client.h"
+<<<<<<< HEAD
 
+=======
+#include "cache.h"
+
+#include <linux/ceph/ceph_features.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ceph/decode.h>
 #include <linux/ceph/mon_client.h>
 #include <linux/ceph/auth.h>
@@ -80,11 +86,15 @@ static int ceph_statfs(struct dentry *dentry, struct kstatfs *buf)
 	buf->f_frsize = 1 << CEPH_BLOCK_SHIFT;
 	buf->f_blocks = le64_to_cpu(st.kb) >> (CEPH_BLOCK_SHIFT-10);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buf->f_bfree = (le64_to_cpu(st.kb) - le64_to_cpu(st.kb_used)) >>
 		(CEPH_BLOCK_SHIFT-10);
 =======
 	buf->f_bfree = le64_to_cpu(st.kb_avail) >> (CEPH_BLOCK_SHIFT-10);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	buf->f_bfree = le64_to_cpu(st.kb_avail) >> (CEPH_BLOCK_SHIFT-10);
+>>>>>>> refs/remotes/origin/master
 	buf->f_bavail = le64_to_cpu(st.kb_avail) >> (CEPH_BLOCK_SHIFT-10);
 
 	buf->f_files = le64_to_cpu(st.num_objects);
@@ -125,9 +135,13 @@ enum {
 	Opt_wsize,
 	Opt_rsize,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	Opt_rasize,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	Opt_rasize,
+>>>>>>> refs/remotes/origin/master
 	Opt_caps_wanted_delay_min,
 	Opt_caps_wanted_delay_max,
 	Opt_cap_release_safety,
@@ -144,25 +158,37 @@ enum {
 	Opt_rbytes,
 	Opt_norbytes,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	Opt_noasyncreaddir,
 	Opt_ino32,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	Opt_asyncreaddir,
 	Opt_noasyncreaddir,
 	Opt_dcache,
 	Opt_nodcache,
 	Opt_ino32,
 	Opt_noino32,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	Opt_fscache,
+	Opt_nofscache
+>>>>>>> refs/remotes/origin/master
 };
 
 static match_table_t fsopt_tokens = {
 	{Opt_wsize, "wsize=%d"},
 	{Opt_rsize, "rsize=%d"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{Opt_rasize, "rasize=%d"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{Opt_rasize, "rasize=%d"},
+>>>>>>> refs/remotes/origin/master
 	{Opt_caps_wanted_delay_min, "caps_wanted_delay_min=%d"},
 	{Opt_caps_wanted_delay_max, "caps_wanted_delay_max=%d"},
 	{Opt_cap_release_safety, "cap_release_safety=%d"},
@@ -177,16 +203,24 @@ static match_table_t fsopt_tokens = {
 	{Opt_rbytes, "rbytes"},
 	{Opt_norbytes, "norbytes"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{Opt_noasyncreaddir, "noasyncreaddir"},
 	{Opt_ino32, "ino32"},
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{Opt_asyncreaddir, "asyncreaddir"},
 	{Opt_noasyncreaddir, "noasyncreaddir"},
 	{Opt_dcache, "dcache"},
 	{Opt_nodcache, "nodcache"},
 	{Opt_ino32, "ino32"},
 	{Opt_noino32, "noino32"},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{Opt_fscache, "fsc"},
+	{Opt_nofscache, "nofsc"},
+>>>>>>> refs/remotes/origin/master
 	{-1, NULL}
 };
 
@@ -233,11 +267,17 @@ static int parse_fsopt_token(char *c, void *private)
 		fsopt->rsize = intval;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case Opt_rasize:
 		fsopt->rasize = intval;
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case Opt_rasize:
+		fsopt->rasize = intval;
+		break;
+>>>>>>> refs/remotes/origin/master
 	case Opt_caps_wanted_delay_min:
 		fsopt->caps_wanted_delay_min = intval;
 		break;
@@ -266,6 +306,7 @@ static int parse_fsopt_token(char *c, void *private)
 		fsopt->flags &= ~CEPH_MOUNT_OPT_RBYTES;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case Opt_noasyncreaddir:
 		fsopt->flags |= CEPH_MOUNT_OPT_NOASYNCREADDIR;
 		break;
@@ -273,6 +314,8 @@ static int parse_fsopt_token(char *c, void *private)
 		fsopt->flags |= CEPH_MOUNT_OPT_INO32;
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case Opt_asyncreaddir:
 		fsopt->flags &= ~CEPH_MOUNT_OPT_NOASYNCREADDIR;
 		break;
@@ -291,7 +334,16 @@ static int parse_fsopt_token(char *c, void *private)
 	case Opt_noino32:
 		fsopt->flags &= ~CEPH_MOUNT_OPT_INO32;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case Opt_fscache:
+		fsopt->flags |= CEPH_MOUNT_OPT_FSCACHE;
+		break;
+	case Opt_nofscache:
+		fsopt->flags &= ~CEPH_MOUNT_OPT_FSCACHE;
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		BUG_ON(token);
 	}
@@ -344,7 +396,14 @@ static int parse_mount_options(struct ceph_mount_options **pfsopt,
 {
 	struct ceph_mount_options *fsopt;
 	const char *dev_name_end;
+<<<<<<< HEAD
 	int err = -ENOMEM;
+=======
+	int err;
+
+	if (!dev_name || !*dev_name)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	fsopt = kzalloc(sizeof(*fsopt), GFP_KERNEL);
 	if (!fsopt)
@@ -352,6 +411,7 @@ static int parse_mount_options(struct ceph_mount_options **pfsopt,
 
 	dout("parse_mount_options %p, dev_name '%s'\n", fsopt, dev_name);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         fsopt->sb_flags = flags;
         fsopt->flags = CEPH_MOUNT_OPT_DEFAULT;
@@ -376,6 +436,8 @@ static int parse_mount_options(struct ceph_mount_options **pfsopt,
                 goto out;
         }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	fsopt->sb_flags = flags;
 	fsopt->flags = CEPH_MOUNT_OPT_DEFAULT;
 
@@ -389,6 +451,7 @@ static int parse_mount_options(struct ceph_mount_options **pfsopt,
 	fsopt->max_readdir_bytes = CEPH_MAX_READDIR_BYTES_DEFAULT;
 	fsopt->congestion_kb = default_congestion_kb();
 
+<<<<<<< HEAD
 	/* ip1[:port1][,ip2[:port2]...]:/subdir/in/fs */
 	err = -EINVAL;
 	if (!dev_name)
@@ -413,13 +476,47 @@ static int parse_mount_options(struct ceph_mount_options **pfsopt,
 	if (err)
 		goto out;
 =======
+=======
+	/*
+	 * Distinguish the server list from the path in "dev_name".
+	 * Internally we do not include the leading '/' in the path.
+	 *
+	 * "dev_name" will look like:
+	 *     <server_spec>[,<server_spec>...]:[<path>]
+	 * where
+	 *     <server_spec> is <ip>[:<port>]
+	 *     <path> is optional, but if present must begin with '/'
+	 */
+	dev_name_end = strchr(dev_name, '/');
+	if (dev_name_end) {
+		/* skip over leading '/' for path */
+		*path = dev_name_end + 1;
+	} else {
+		/* path is empty */
+		dev_name_end = dev_name + strlen(dev_name);
+		*path = dev_name_end;
+	}
+	err = -EINVAL;
+	dev_name_end--;		/* back up to ':' separator */
+	if (dev_name_end < dev_name || *dev_name_end != ':') {
+		pr_err("device name is missing path (no : separator in %s)\n",
+				dev_name);
+		goto out;
+	}
+	dout("device name '%.*s'\n", (int)(dev_name_end - dev_name), dev_name);
+	dout("server path '%s'\n", *path);
+
+>>>>>>> refs/remotes/origin/master
 	*popt = ceph_parse_options(options, dev_name, dev_name_end,
 				 parse_fsopt_token, (void *)fsopt);
 	if (IS_ERR(*popt)) {
 		err = PTR_ERR(*popt);
 		goto out;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* success */
 	*pfsopt = fsopt;
@@ -434,18 +531,24 @@ out:
  * ceph_show_options - Show mount options in /proc/mounts
  * @m: seq_file to write to
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @mnt: mount descriptor
  */
 static int ceph_show_options(struct seq_file *m, struct vfsmount *mnt)
 {
 	struct ceph_fs_client *fsc = ceph_sb_to_client(mnt->mnt_sb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @root: root of that (sub)tree
  */
 static int ceph_show_options(struct seq_file *m, struct dentry *root)
 {
 	struct ceph_fs_client *fsc = ceph_sb_to_client(root->d_sb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ceph_mount_options *fsopt = fsc->mount_options;
 	struct ceph_options *opt = fsc->client->options;
 
@@ -466,10 +569,13 @@ static int ceph_show_options(struct seq_file *m, struct dentry *root)
 	if (opt->osd_idle_ttl != CEPH_OSD_IDLE_TTL_DEFAULT)
 		seq_printf(m, ",osd_idle_ttl=%d", opt->osd_idle_ttl);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (opt->osd_timeout != CEPH_OSD_TIMEOUT_DEFAULT)
 		seq_printf(m, ",osdtimeout=%d", opt->osd_timeout);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (opt->osd_keepalive_timeout != CEPH_OSD_KEEPALIVE_DEFAULT)
 		seq_printf(m, ",osdkeepalivetimeout=%d",
 			   opt->osd_keepalive_timeout);
@@ -481,22 +587,37 @@ static int ceph_show_options(struct seq_file *m, struct dentry *root)
 	if (fsopt->flags & CEPH_MOUNT_OPT_NOASYNCREADDIR)
 		seq_puts(m, ",noasyncreaddir");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (fsopt->flags & CEPH_MOUNT_OPT_DCACHE)
 		seq_puts(m, ",dcache");
 	else
 		seq_puts(m, ",nodcache");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (fsopt->flags & CEPH_MOUNT_OPT_FSCACHE)
+		seq_puts(m, ",fsc");
+	else
+		seq_puts(m, ",nofsc");
+>>>>>>> refs/remotes/origin/master
 
 	if (fsopt->wsize)
 		seq_printf(m, ",wsize=%d", fsopt->wsize);
 	if (fsopt->rsize != CEPH_RSIZE_DEFAULT)
 		seq_printf(m, ",rsize=%d", fsopt->rsize);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (fsopt->rasize != CEPH_RASIZE_DEFAULT)
 		seq_printf(m, ",rasize=%d", fsopt->rasize);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (fsopt->rasize != CEPH_RASIZE_DEFAULT)
+		seq_printf(m, ",rasize=%d", fsopt->rasize);
+>>>>>>> refs/remotes/origin/master
 	if (fsopt->congestion_kb != default_congestion_kb())
 		seq_printf(m, ",write_congestion_kb=%d", fsopt->congestion_kb);
 	if (fsopt->caps_wanted_delay_min != CEPH_CAPS_WANTED_DELAY_MIN_DEFAULT)
@@ -540,11 +661,14 @@ static int extra_mon_dispatch(struct ceph_client *client, struct ceph_msg *msg)
  * create a new fs client
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct ceph_fs_client *create_fs_client(struct ceph_mount_options *fsopt,
 					struct ceph_options *opt)
 {
 	struct ceph_fs_client *fsc;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct ceph_fs_client *create_fs_client(struct ceph_mount_options *fsopt,
 					struct ceph_options *opt)
 {
@@ -553,7 +677,12 @@ static struct ceph_fs_client *create_fs_client(struct ceph_mount_options *fsopt,
 		CEPH_FEATURE_FLOCK |
 		CEPH_FEATURE_DIRLAYOUTHASH;
 	const unsigned required_features = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int page_count;
+	size_t size;
+>>>>>>> refs/remotes/origin/master
 	int err = -ENOMEM;
 
 	fsc = kzalloc(sizeof(*fsc), GFP_KERNEL);
@@ -561,21 +690,29 @@ static struct ceph_fs_client *create_fs_client(struct ceph_mount_options *fsopt,
 		return ERR_PTR(-ENOMEM);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fsc->client = ceph_create_client(opt, fsc);
 =======
 	fsc->client = ceph_create_client(opt, fsc, supported_features,
 					 required_features);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fsc->client = ceph_create_client(opt, fsc, supported_features,
+					 required_features);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(fsc->client)) {
 		err = PTR_ERR(fsc->client);
 		goto fail;
 	}
 	fsc->client->extra_mon_dispatch = extra_mon_dispatch;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fsc->client->supported_features |= CEPH_FEATURE_FLOCK |
 		CEPH_FEATURE_DIRLAYOUTHASH;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	fsc->client->monc.want_mdsmap = 1;
 
 	fsc->mount_options = fsopt;
@@ -606,16 +743,35 @@ static struct ceph_fs_client *create_fs_client(struct ceph_mount_options *fsopt,
 
 	/* set up mempools */
 	err = -ENOMEM;
+<<<<<<< HEAD
 	fsc->wb_pagevec_pool = mempool_create_kmalloc_pool(10,
 			      fsc->mount_options->wsize >> PAGE_CACHE_SHIFT);
 	if (!fsc->wb_pagevec_pool)
 		goto fail_trunc_wq;
 
+=======
+	page_count = fsc->mount_options->wsize >> PAGE_CACHE_SHIFT;
+	size = sizeof (struct page *) * (page_count ? page_count : 1);
+	fsc->wb_pagevec_pool = mempool_create_kmalloc_pool(10, size);
+	if (!fsc->wb_pagevec_pool)
+		goto fail_trunc_wq;
+
+	/* setup fscache */
+	if ((fsopt->flags & CEPH_MOUNT_OPT_FSCACHE) &&
+	    (ceph_fscache_register_fs(fsc) != 0))
+		goto fail_fscache;
+
+>>>>>>> refs/remotes/origin/master
 	/* caps */
 	fsc->min_caps = fsopt->max_readdir;
 
 	return fsc;
 
+<<<<<<< HEAD
+=======
+fail_fscache:
+	ceph_fscache_unregister_fs(fsc);
+>>>>>>> refs/remotes/origin/master
 fail_trunc_wq:
 	destroy_workqueue(fsc->trunc_wq);
 fail_pg_inv_wq:
@@ -632,6 +788,7 @@ fail:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void destroy_fs_client(struct ceph_fs_client *fsc)
 =======
 static void destroy_fs_client(struct ceph_fs_client *fsc)
@@ -639,6 +796,14 @@ static void destroy_fs_client(struct ceph_fs_client *fsc)
 {
 	dout("destroy_fs_client %p\n", fsc);
 
+=======
+static void destroy_fs_client(struct ceph_fs_client *fsc)
+{
+	dout("destroy_fs_client %p\n", fsc);
+
+	ceph_fscache_unregister_fs(fsc);
+
+>>>>>>> refs/remotes/origin/master
 	destroy_workqueue(fsc->wb_wq);
 	destroy_workqueue(fsc->pg_inv_wq);
 	destroy_workqueue(fsc->trunc_wq);
@@ -673,6 +838,11 @@ static void ceph_inode_init_once(void *foo)
 
 static int __init init_caches(void)
 {
+<<<<<<< HEAD
+=======
+	int error = -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	ceph_inode_cachep = kmem_cache_create("ceph_inode_info",
 				      sizeof(struct ceph_inode_info),
 				      __alignof__(struct ceph_inode_info),
@@ -696,23 +866,48 @@ static int __init init_caches(void)
 	if (ceph_file_cachep == NULL)
 		goto bad_file;
 
+<<<<<<< HEAD
 	return 0;
 
+=======
+	if ((error = ceph_fscache_register()))
+		goto bad_file;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 bad_file:
 	kmem_cache_destroy(ceph_dentry_cachep);
 bad_dentry:
 	kmem_cache_destroy(ceph_cap_cachep);
 bad_cap:
 	kmem_cache_destroy(ceph_inode_cachep);
+<<<<<<< HEAD
 	return -ENOMEM;
+=======
+	return error;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void destroy_caches(void)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(ceph_inode_cachep);
 	kmem_cache_destroy(ceph_cap_cachep);
 	kmem_cache_destroy(ceph_dentry_cachep);
 	kmem_cache_destroy(ceph_file_cachep);
+<<<<<<< HEAD
+=======
+
+	ceph_fscache_unregister();
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -770,6 +965,7 @@ static struct dentry *open_root_dentry(struct ceph_fs_client *fsc,
 	err = ceph_mdsc_do_request(mdsc, NULL, req);
 	if (err == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dout("open_root_inode success\n");
 		if (ceph_ino(req->r_target_inode) == CEPH_INO_ROOT &&
 		    fsc->sb->s_root == NULL)
@@ -778,6 +974,8 @@ static struct dentry *open_root_dentry(struct ceph_fs_client *fsc,
 			root = d_obtain_alias(req->r_target_inode);
 		req->r_target_inode = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		struct inode *inode = req->r_target_inode;
 		req->r_target_inode = NULL;
 		dout("open_root_inode success\n");
@@ -792,15 +990,22 @@ static struct dentry *open_root_dentry(struct ceph_fs_client *fsc,
 			root = d_obtain_alias(inode);
 		}
 		ceph_init_dentry(root);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dout("open_root_inode success, root dentry is %p\n", root);
 	} else {
 		root = ERR_PTR(err);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	ceph_mdsc_put_request(req);
 	return root;
 }
@@ -940,12 +1145,15 @@ static int ceph_register_bdi(struct super_block *sb,
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* set ra_pages based on rsize mount option? */
 	if (fsc->mount_options->rsize >= PAGE_CACHE_SIZE)
 		fsc->backing_dev_info.ra_pages =
 			(fsc->mount_options->rsize + PAGE_CACHE_SIZE - 1)
 			>> PAGE_SHIFT;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* set ra_pages based on rasize mount option? */
 	if (fsc->mount_options->rasize >= PAGE_CACHE_SIZE)
 		fsc->backing_dev_info.ra_pages =
@@ -955,8 +1163,12 @@ static int ceph_register_bdi(struct super_block *sb,
 		fsc->backing_dev_info.ra_pages =
 			default_backing_dev_info.ra_pages;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	err = bdi_register(&fsc->backing_dev_info, NULL, "ceph-%d",
+=======
+	err = bdi_register(&fsc->backing_dev_info, NULL, "ceph-%ld",
+>>>>>>> refs/remotes/origin/master
 			   atomic_long_inc_return(&bdi_seq));
 	if (!err)
 		sb->s_bdi = &fsc->backing_dev_info;
@@ -987,12 +1199,17 @@ static struct dentry *ceph_mount(struct file_system_type *fs_type,
 	if (IS_ERR(fsc)) {
 		res = ERR_CAST(fsc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kfree(fsopt);
 		kfree(opt);
 =======
 		destroy_mount_options(fsopt);
 		ceph_destroy_options(opt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		destroy_mount_options(fsopt);
+		ceph_destroy_options(opt);
+>>>>>>> refs/remotes/origin/master
 		goto out_final;
 	}
 
@@ -1004,7 +1221,11 @@ static struct dentry *ceph_mount(struct file_system_type *fs_type,
 
 	if (ceph_test_opt(fsc->client, NOSHARE))
 		compare_super = NULL;
+<<<<<<< HEAD
 	sb = sget(fs_type, compare_super, ceph_set_super, fsc);
+=======
+	sb = sget(fs_type, compare_super, ceph_set_super, flags, fsc);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(sb)) {
 		res = ERR_CAST(sb);
 		goto out;
@@ -1061,6 +1282,10 @@ static struct file_system_type ceph_fs_type = {
 	.kill_sb	= ceph_kill_sb,
 	.fs_flags	= FS_RENAME_DOES_D_MOVE,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("ceph");
+>>>>>>> refs/remotes/origin/master
 
 #define _STRINGIFY(x) #x
 #define STRINGIFY(x) _STRINGIFY(x)
@@ -1072,9 +1297,13 @@ static int __init init_ceph(void)
 		goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ceph_xattr_init();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ceph_xattr_init();
+>>>>>>> refs/remotes/origin/master
 	ret = register_filesystem(&ceph_fs_type);
 	if (ret)
 		goto out_icache;
@@ -1085,9 +1314,13 @@ static int __init init_ceph(void)
 
 out_icache:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ceph_xattr_exit();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ceph_xattr_exit();
+>>>>>>> refs/remotes/origin/master
 	destroy_caches();
 out:
 	return ret;
@@ -1098,9 +1331,13 @@ static void __exit exit_ceph(void)
 	dout("exit_ceph\n");
 	unregister_filesystem(&ceph_fs_type);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ceph_xattr_exit();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ceph_xattr_exit();
+>>>>>>> refs/remotes/origin/master
 	destroy_caches();
 }
 

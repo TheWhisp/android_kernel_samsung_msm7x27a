@@ -164,6 +164,7 @@ static void acpi_processor_ppc_ost(acpi_handle handle, int status)
 		{.type = ACPI_TYPE_INTEGER,},
 	};
 	struct acpi_object_list arg_list = {2, params};
+<<<<<<< HEAD
 	acpi_handle temp;
 
 	params[0].integer.value = ACPI_PROCESSOR_NOTIFY_PERFORMANCE;
@@ -175,6 +176,14 @@ static void acpi_processor_ppc_ost(acpi_handle handle, int status)
 
 	acpi_evaluate_object(handle, "_OST", &arg_list, NULL);
 	return;
+=======
+
+	if (acpi_has_method(handle, "_OST")) {
+		params[0].integer.value = ACPI_PROCESSOR_NOTIFY_PERFORMANCE;
+		params[1].integer.value =  status;
+		acpi_evaluate_object(handle, "_OST", &arg_list, NULL);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 int acpi_processor_ppc_has_changed(struct acpi_processor *pr, int event_flag)
@@ -241,6 +250,7 @@ void acpi_processor_ppc_exit(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /*
  * Do a quick check if the systems looks like it should use ACPI
@@ -265,6 +275,8 @@ void acpi_processor_load_module(struct acpi_processor *pr)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int acpi_processor_get_performance_control(struct acpi_processor *pr)
 {
 	int result = 0;
@@ -327,6 +339,44 @@ static int acpi_processor_get_performance_control(struct acpi_processor *pr)
 	return result;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_X86
+/*
+ * Some AMDs have 50MHz frequency multiples, but only provide 100MHz rounding
+ * in their ACPI data. Calculate the real values and fix up the _PSS data.
+ */
+static void amd_fixup_frequency(struct acpi_processor_px *px, int i)
+{
+	u32 hi, lo, fid, did;
+	int index = px->control & 0x00000007;
+
+	if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD)
+		return;
+
+	if ((boot_cpu_data.x86 == 0x10 && boot_cpu_data.x86_model < 10)
+	    || boot_cpu_data.x86 == 0x11) {
+		rdmsr(MSR_AMD_PSTATE_DEF_BASE + index, lo, hi);
+		/*
+		 * MSR C001_0064+:
+		 * Bit 63: PstateEn. Read-write. If set, the P-state is valid.
+		 */
+		if (!(hi & BIT(31)))
+			return;
+
+		fid = lo & 0x3f;
+		did = (lo >> 6) & 7;
+		if (boot_cpu_data.x86 == 0x10)
+			px->core_frequency = (100 * (fid + 0x10)) >> did;
+		else
+			px->core_frequency = (100 * (fid + 8)) >> did;
+	}
+}
+#else
+static void amd_fixup_frequency(struct acpi_processor_px *px, int i) {};
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static int acpi_processor_get_performance_states(struct acpi_processor *pr)
 {
 	int result = 0;
@@ -336,6 +386,10 @@ static int acpi_processor_get_performance_states(struct acpi_processor *pr)
 	struct acpi_buffer state = { 0, NULL };
 	union acpi_object *pss = NULL;
 	int i;
+<<<<<<< HEAD
+=======
+	int last_invalid = -1;
+>>>>>>> refs/remotes/origin/master
 
 
 	status = acpi_evaluate_object(pr->handle, "_PSS", NULL, &buffer);
@@ -381,6 +435,11 @@ static int acpi_processor_get_performance_states(struct acpi_processor *pr)
 			goto end;
 		}
 
+<<<<<<< HEAD
+=======
+		amd_fixup_frequency(px, i);
+
+>>>>>>> refs/remotes/origin/master
 		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
 				  "State [%d]: core_frequency[%d] power[%d] transition_latency[%d] bus_master_latency[%d] control[0x%x] status[0x%x]\n",
 				  i,
@@ -397,6 +456,7 @@ static int acpi_processor_get_performance_states(struct acpi_processor *pr)
 		    ((u32)(px->core_frequency * 1000) !=
 		     (px->core_frequency * 1000))) {
 			printk(KERN_ERR FW_BUG PREFIX
+<<<<<<< HEAD
 			       "Invalid BIOS _PSS frequency: 0x%llx MHz\n",
 			       px->core_frequency);
 			result = -EFAULT;
@@ -405,23 +465,62 @@ static int acpi_processor_get_performance_states(struct acpi_processor *pr)
 		}
 	}
 
+=======
+			       "Invalid BIOS _PSS frequency found for processor %d: 0x%llx MHz\n",
+			       pr->id, px->core_frequency);
+			if (last_invalid == -1)
+				last_invalid = i;
+		} else {
+			if (last_invalid != -1) {
+				/*
+				 * Copy this valid entry over last_invalid entry
+				 */
+				memcpy(&(pr->performance->states[last_invalid]),
+				       px, sizeof(struct acpi_processor_px));
+				++last_invalid;
+			}
+		}
+	}
+
+	if (last_invalid == 0) {
+		printk(KERN_ERR FW_BUG PREFIX
+		       "No valid BIOS _PSS frequency found for processor %d\n", pr->id);
+		result = -EFAULT;
+		kfree(pr->performance->states);
+		pr->performance->states = NULL;
+	}
+
+	if (last_invalid > 0)
+		pr->performance->state_count = last_invalid;
+
+>>>>>>> refs/remotes/origin/master
       end:
 	kfree(buffer.pointer);
 
 	return result;
 }
 
+<<<<<<< HEAD
 static int acpi_processor_get_performance_info(struct acpi_processor *pr)
 {
 	int result = 0;
 	acpi_status status = AE_OK;
 	acpi_handle handle = NULL;
+=======
+int acpi_processor_get_performance_info(struct acpi_processor *pr)
+{
+	int result = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!pr || !pr->performance || !pr->handle)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	status = acpi_get_handle(pr->handle, "_PCT", &handle);
 	if (ACPI_FAILURE(status)) {
+=======
+	if (!acpi_has_method(pr->handle, "_PCT")) {
+>>>>>>> refs/remotes/origin/master
 		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
 				  "ACPI-based processor performance control unavailable\n"));
 		return -ENODEV;
@@ -447,7 +546,11 @@ static int acpi_processor_get_performance_info(struct acpi_processor *pr)
 	 */
  update_bios:
 #ifdef CONFIG_X86
+<<<<<<< HEAD
 	if (ACPI_SUCCESS(acpi_get_handle(pr->handle, "_PPC", &handle))){
+=======
+	if (acpi_has_method(pr->handle, "_PPC")) {
+>>>>>>> refs/remotes/origin/master
 		if(boot_cpu_has(X86_FEATURE_EST))
 			printk(KERN_WARNING FW_BUG "BIOS needs update for CPU "
 			       "frequency support\n");
@@ -455,7 +558,11 @@ static int acpi_processor_get_performance_info(struct acpi_processor *pr)
 #endif
 	return result;
 }
+<<<<<<< HEAD
 
+=======
+EXPORT_SYMBOL_GPL(acpi_processor_get_performance_info);
+>>>>>>> refs/remotes/origin/master
 int acpi_processor_notify_smm(struct module *calling_module)
 {
 	acpi_status status;
@@ -585,7 +692,11 @@ end:
 int acpi_processor_preregister_performance(
 		struct acpi_processor_performance __percpu *performance)
 {
+<<<<<<< HEAD
 	int count, count_target;
+=======
+	int count_target;
+>>>>>>> refs/remotes/origin/master
 	int retval = 0;
 	unsigned int i, j;
 	cpumask_var_t covered_cpus;
@@ -657,7 +768,10 @@ int acpi_processor_preregister_performance(
 
 		/* Validate the Domain info */
 		count_target = pdomain->num_processors;
+<<<<<<< HEAD
 		count = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 		if (pdomain->coord_type == DOMAIN_COORD_TYPE_SW_ALL)
 			pr->performance->shared_type = CPUFREQ_SHARED_TYPE_ALL;
 		else if (pdomain->coord_type == DOMAIN_COORD_TYPE_HW_ALL)
@@ -691,7 +805,10 @@ int acpi_processor_preregister_performance(
 
 			cpumask_set_cpu(j, covered_cpus);
 			cpumask_set_cpu(j, pr->performance->shared_cpu_map);
+<<<<<<< HEAD
 			count++;
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		for_each_possible_cpu(j) {

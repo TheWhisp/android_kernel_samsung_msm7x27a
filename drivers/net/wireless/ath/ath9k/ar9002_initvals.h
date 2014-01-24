@@ -15,6 +15,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const u32 ar9280Modes_9280_2[][6] = {
 	{0x00001030, 0x00000230, 0x00000460, 0x000002c0, 0x00000160, 0x000001e0},
 	{0x00001070, 0x00000168, 0x000002d0, 0x00000318, 0x0000018c, 0x000001e0},
@@ -63,6 +64,8 @@ static const u32 ar9280Modes_9280_2[][6] = {
 	{0x0000a3d8, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 	{0x00007894, 0x5a508000, 0x5a508000, 0x5a508000, 0x5a508000, 0x5a508000},
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const u32 ar9280Modes_9280_2[][5] = {
 	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
 	{0x00001030, 0x00000230, 0x00000460, 0x000002c0, 0x00000160},
@@ -111,7 +114,10 @@ static const u32 ar9280Modes_9280_2[][5] = {
 	{0x0000a388, 0x0c000000, 0x0c000000, 0x08000000, 0x0c000000},
 	{0x0000a3d8, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 	{0x00007894, 0x5a508000, 0x5a508000, 0x5a508000, 0x5a508000},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const u32 ar9280Common_9280_2[][2] = {
@@ -475,6 +481,7 @@ static const u32 ar9280Modes_fast_clock_9280_2[][3] = {
 	{0x00009918, 0x0000000b, 0x00000016},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const u32 ar9280Modes_backoff_23db_rxgain_9280_2[][6] = {
 	{0x00009a00, 0x00008184, 0x00008184, 0x00000290, 0x00000290, 0x00000290},
@@ -942,6 +949,8 @@ static const u32 ar9280Modes_original_tx_gain_9280_2[][6] = {
 	{0x00007820, 0x92592480, 0x92592480, 0x92592480, 0x92592480, 0x92592480},
 	{0x00007844, 0x92592480, 0x92592480, 0x92592480, 0x92592480, 0x92592480},
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const u32 ar9280Modes_backoff_23db_rxgain_9280_2[][5] = {
 	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
 	{0x00009a00, 0x00008184, 0x00008184, 0x00000290, 0x00000290},
@@ -1412,7 +1421,10 @@ static const u32 ar9280Modes_original_tx_gain_9280_2[][5] = {
 	{0x00007840, 0x00392000, 0x00392000, 0x00392000, 0x00392000},
 	{0x00007820, 0x92592480, 0x92592480, 0x92592480, 0x92592480},
 	{0x00007844, 0x92592480, 0x92592480, 0x92592480, 0x92592480},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const u32 ar9280PciePhy_clkreq_off_L1_9280[][2] = {
@@ -1443,6 +1455,7 @@ static const u32 ar9280PciePhy_clkreq_always_on_L1_9280[][2] = {
 	{0x00004044, 0x00000000},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const u32 ar9285PciePhy_clkreq_always_on_L1_9285[][2] = {
 	/* Addr      allmodes  */
@@ -1776,6 +1789,8 @@ static const u32 ar9285Modes_9285_1_2[][6] = {
 	{0x0000a250, 0x0004f000, 0x0004f000, 0x0004a000, 0x0004a000, 0x0004a000},
 	{0x0000a358, 0x7999aa02, 0x7999aa02, 0x7999aa0e, 0x7999aa0e, 0x7999aa0e},
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const u32 ar9285Modes_9285_1_2[][5] = {
 	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
 	{0x00001030, 0x00000230, 0x00000460, 0x000002c0, 0x00000160},
@@ -2080,7 +2095,10 @@ static const u32 ar9285Modes_9285_1_2[][5] = {
 	{0x0000a230, 0x00000000, 0x00000000, 0x00000210, 0x00000108},
 	{0x0000a250, 0x0004f000, 0x0004f000, 0x0004a000, 0x0004a000},
 	{0x0000a358, 0x7999aa02, 0x7999aa02, 0x7999aa0e, 0x7999aa0e},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const u32 ar9285Common_9285_1_2[][2] = {
@@ -2404,6 +2422,7 @@ static const u32 ar9285Common_9285_1_2[][2] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const u32 ar9285Modes_high_power_tx_gain_9285_1_2[][6] = {
 	{0x0000a300, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 	{0x0000a304, 0x00000000, 0x00000000, 0x00006200, 0x00006200, 0x00000000},
@@ -2637,6 +2656,8 @@ static const u32 ar9287Modes_9287_1_1[][6] = {
 	{0x0000a358, 0x7999aa02, 0x7999aa02, 0x7999aa0e, 0x7999aa0e, 0x7999aa0e},
 	{0x0000a3d8, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const u32 ar9285Modes_high_power_tx_gain_9285_1_2[][5] = {
 	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
 	{0x0000a300, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
@@ -2846,7 +2867,10 @@ static const u32 ar9287Modes_9287_1_1[][5] = {
 	{0x0000a250, 0x00000000, 0x00000000, 0x0004a000, 0x0004a000},
 	{0x0000a358, 0x7999aa02, 0x7999aa02, 0x7999aa0e, 0x7999aa0e},
 	{0x0000a3d8, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const u32 ar9287Common_9287_1_1[][2] = {
@@ -3232,6 +3256,7 @@ static const u32 ar9287Common_japan_2484_cck_fir_coeff_9287_1_1[][2] = {
 	{0x0000a1fc, 0xca9228ee},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const u32 ar9287Modes_tx_gain_9287_1_1[][6] = {
 	{0x0000a300, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
@@ -3875,6 +3900,8 @@ static const u32 ar9271Modes_9271[][6] = {
 	{0x0000a250, 0x0004f000, 0x0004f000, 0x0004a000, 0x0004a000, 0x0004a000},
 	{0x0000a358, 0x7999aa02, 0x7999aa02, 0x7999aa0e, 0x7999aa0e, 0x7999aa0e},
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const u32 ar9287Modes_tx_gain_9287_1_1[][5] = {
 	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
 	{0x0000a300, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
@@ -4491,7 +4518,10 @@ static const u32 ar9271Modes_9271[][5] = {
 	{0x0000a230, 0x00000000, 0x00000000, 0x00000210, 0x00000108},
 	{0x0000a250, 0x0004f000, 0x0004f000, 0x0004a000, 0x0004a000},
 	{0x0000a358, 0x7999aa02, 0x7999aa02, 0x7999aa0e, 0x7999aa0e},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const u32 ar9271Common_9271[][2] = {
@@ -4824,6 +4854,7 @@ static const u32 ar9271Common_9271[][2] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const u32 ar9271Common_normal_cck_fir_coeff_9271[][2] = {
 	/* Addr      allmodes  */
 	{0x0000a1f4, 0x00fffeff},
@@ -4925,6 +4956,8 @@ static const u32 ar9271Modes_high_power_tx_gain_9271[][6] = {
 	{0x0000a3dc, 0x06318c63, 0x06318c63, 0x06318c63, 0x06318c63, 0x06318c63},
 	{0x0000a3e0, 0x00000063, 0x00000063, 0x00000063, 0x00000063, 0x00000063},
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const u32 ar9271Modes_9271_ANI_reg[][5] = {
 	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
 	{0x00009850, 0x6d4000e2, 0x6d4000e2, 0x6d4000e2, 0x6d4000e2},
@@ -5009,6 +5042,9 @@ static const u32 ar9271Modes_high_power_tx_gain_9271[][5] = {
 	{0x0000a398, 0x00000063, 0x00000063, 0x00000063, 0x00000063},
 	{0x0000a3dc, 0x06318c63, 0x06318c63, 0x06318c63, 0x06318c63},
 	{0x0000a3e0, 0x00000063, 0x00000063, 0x00000063, 0x00000063},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 

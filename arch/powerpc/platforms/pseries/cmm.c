@@ -34,18 +34,26 @@
 #include <linux/stringify.h>
 #include <linux/swap.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/firmware.h>
 #include <asm/hvcall.h>
 #include <asm/mmu.h>
 #include <asm/pgalloc.h>
 #include <asm/uaccess.h>
 #include <linux/memory.h>
+<<<<<<< HEAD
 
 #include "plpar_wrappers.h"
+=======
+#include <asm/plpar_wrappers.h>
+>>>>>>> refs/remotes/origin/master
 
 #define CMM_DRIVER_VERSION	"1.0.0"
 #define CMM_DEFAULT_DELAY	1
@@ -70,10 +78,14 @@ static unsigned int cmm_debug = CMM_DEBUG;
 static unsigned int cmm_disabled = CMM_DISABLE;
 static unsigned long min_mem_mb = CMM_MIN_MEM_MB;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct sys_device cmm_sysdev;
 =======
 static struct device cmm_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct device cmm_dev;
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Brian King <brking@linux.vnet.ibm.com>");
 MODULE_DESCRIPTION("IBM System p Collaborative Memory Manager");
@@ -356,25 +368,35 @@ static int cmm_thread(void *dummy)
 
 #define CMM_SHOW(name, format, args...)			\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static ssize_t show_##name(struct sys_device *dev,	\
 				   struct sysdev_attribute *attr,	\
 =======
 	static ssize_t show_##name(struct device *dev,	\
 				   struct device_attribute *attr,	\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static ssize_t show_##name(struct device *dev,	\
+				   struct device_attribute *attr,	\
+>>>>>>> refs/remotes/origin/master
 				   char *buf)			\
 	{							\
 		return sprintf(buf, format, ##args);		\
 	}							\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static SYSDEV_ATTR(name, S_IRUGO, show_##name, NULL)
 =======
 	static DEVICE_ATTR(name, S_IRUGO, show_##name, NULL)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static DEVICE_ATTR(name, S_IRUGO, show_##name, NULL)
+>>>>>>> refs/remotes/origin/master
 
 CMM_SHOW(loaned_kb, "%lu\n", PAGES2KB(loaned_pages));
 CMM_SHOW(loaned_target_kb, "%lu\n", PAGES2KB(loaned_pages_target));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t show_oom_pages(struct sys_device *dev,
 			      struct sysdev_attribute *attr, char *buf)
@@ -382,10 +404,15 @@ static ssize_t show_oom_pages(struct sys_device *dev,
 static ssize_t show_oom_pages(struct device *dev,
 			      struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_oom_pages(struct device *dev,
+			      struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	return sprintf(buf, "%lu\n", PAGES2KB(oom_freed_pages));
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t store_oom_pages(struct sys_device *dev,
 			       struct sysdev_attribute *attr,
@@ -393,6 +420,10 @@ static ssize_t store_oom_pages(struct sys_device *dev,
 static ssize_t store_oom_pages(struct device *dev,
 			       struct device_attribute *attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t store_oom_pages(struct device *dev,
+			       struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 			       const char *buf, size_t count)
 {
 	unsigned long val = simple_strtoul (buf, NULL, 10);
@@ -407,6 +438,7 @@ static ssize_t store_oom_pages(struct device *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(oom_freed_kb, S_IWUSR| S_IRUGO,
 		   show_oom_pages, store_oom_pages);
 
@@ -419,6 +451,8 @@ static struct sysdev_attribute *cmm_attrs[] = {
 static struct sysdev_class cmm_sysdev_class = {
 	.name = "cmm",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static DEVICE_ATTR(oom_freed_kb, S_IWUSR | S_IRUGO,
 		   show_oom_pages, store_oom_pages);
 
@@ -431,7 +465,10 @@ static struct device_attribute *cmm_attrs[] = {
 static struct bus_type cmm_subsys = {
 	.name = "cmm",
 	.dev_name = "cmm",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -440,6 +477,7 @@ static struct bus_type cmm_subsys = {
  * Return value:
  * 	0 on success / other on failure
  **/
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int cmm_sysfs_register(struct sys_device *sysdev)
 {
@@ -457,6 +495,8 @@ static int cmm_sysfs_register(struct sys_device *sysdev)
 	for (i = 0; i < ARRAY_SIZE(cmm_attrs); i++) {
 		if ((rc = sysdev_create_file(sysdev, cmm_attrs[i])))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int cmm_sysfs_register(struct device *dev)
 {
 	int i, rc;
@@ -472,7 +512,10 @@ static int cmm_sysfs_register(struct device *dev)
 
 	for (i = 0; i < ARRAY_SIZE(cmm_attrs); i++) {
 		if ((rc = device_create_file(dev, cmm_attrs[i])))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			goto fail;
 	}
 
@@ -481,16 +524,22 @@ static int cmm_sysfs_register(struct device *dev)
 fail:
 	while (--i >= 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sysdev_remove_file(sysdev, cmm_attrs[i]);
 	sysdev_unregister(sysdev);
 class_unregister:
 	sysdev_class_unregister(&cmm_sysdev_class);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		device_remove_file(dev, cmm_attrs[i]);
 	device_unregister(dev);
 subsys_unregister:
 	bus_unregister(&cmm_subsys);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -499,14 +548,19 @@ subsys_unregister:
  *
  **/
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void cmm_unregister_sysfs(struct sys_device *sysdev)
 =======
 static void cmm_unregister_sysfs(struct device *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void cmm_unregister_sysfs(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
 	for (i = 0; i < ARRAY_SIZE(cmm_attrs); i++)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		sysdev_remove_file(sysdev, cmm_attrs[i]);
 	sysdev_unregister(sysdev);
@@ -516,6 +570,11 @@ static void cmm_unregister_sysfs(struct device *dev)
 	device_unregister(dev);
 	bus_unregister(&cmm_subsys);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		device_remove_file(dev, cmm_attrs[i]);
+	device_unregister(dev);
+	bus_unregister(&cmm_subsys);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -735,10 +794,14 @@ static int cmm_init(void)
 		goto out_oom_notifier;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((rc = cmm_sysfs_register(&cmm_sysdev)))
 =======
 	if ((rc = cmm_sysfs_register(&cmm_dev)))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((rc = cmm_sysfs_register(&cmm_dev)))
+>>>>>>> refs/remotes/origin/master
 		goto out_reboot_notifier;
 
 	if (register_memory_notifier(&cmm_mem_nb) ||
@@ -760,10 +823,14 @@ out_unregister_notifier:
 	unregister_memory_notifier(&cmm_mem_nb);
 	unregister_memory_isolate_notifier(&cmm_mem_isolate_nb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cmm_unregister_sysfs(&cmm_sysdev);
 =======
 	cmm_unregister_sysfs(&cmm_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmm_unregister_sysfs(&cmm_dev);
+>>>>>>> refs/remotes/origin/master
 out_reboot_notifier:
 	unregister_reboot_notifier(&cmm_reboot_nb);
 out_oom_notifier:
@@ -787,10 +854,14 @@ static void cmm_exit(void)
 	unregister_memory_isolate_notifier(&cmm_mem_isolate_nb);
 	cmm_free_pages(loaned_pages);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cmm_unregister_sysfs(&cmm_sysdev);
 =======
 	cmm_unregister_sysfs(&cmm_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmm_unregister_sysfs(&cmm_dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**

@@ -21,9 +21,12 @@
 #include <linux/notifier.h>
 #include <linux/bitops.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 #include <asm/hpsim.h>
 
@@ -133,6 +136,7 @@ netdev_probe(char *name, unsigned char *ether)
 
 static inline int
 <<<<<<< HEAD
+<<<<<<< HEAD
 netdev_connect(int irq)
 {
 	/* XXX Fix me
@@ -146,6 +150,8 @@ netdev_connect(int irq)
 static inline int
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 netdev_attach(int fd, int irq, unsigned int ipaddr)
 {
 	/* this puts the host interface in the right mode (start interrupting) */
@@ -179,10 +185,14 @@ static const struct net_device_ops simeth_netdev_ops = {
 	.ndo_start_xmit		= simeth_tx,
 	.ndo_get_stats		= simeth_get_stats,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= set_multicast_list, /* not yet used */
 =======
 	.ndo_set_rx_mode	= set_multicast_list, /* not yet used */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= set_multicast_list, /* not yet used */
+>>>>>>> refs/remotes/origin/master
 
 };
 
@@ -204,10 +214,14 @@ simeth_probe1(void)
 	struct simeth_local *local;
 	struct net_device *dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int fd, i, err, rc;
 =======
 	int fd, err, rc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int fd, err, rc;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * XXX Fix me
@@ -241,16 +255,20 @@ simeth_probe1(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((rc = assign_irq_vector(AUTO_ASSIGN)) < 0)
 		panic("%s: out of interrupt vectors!\n", __func__);
 	dev->irq = rc;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * attach the interrupt in the simulator, this does enable interrupts
 	 * until a netdev_attach() is called
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	netdev_connect(dev->irq);
 
@@ -261,13 +279,18 @@ simeth_probe1(void)
 	}
 	printk(", IRQ %d\n", dev->irq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((rc = hpsim_get_irq(NETWORK_INTR)) < 0)
 		panic("%s: out of interrupt vectors!\n", __func__);
 	dev->irq = rc;
 
 	printk(KERN_INFO "%s: hosteth=%s simfd=%d, HwAddr=%pm, IRQ %d\n",
 	       dev->name, simeth_device, local->simfd, dev->dev_addr, dev->irq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -312,7 +335,11 @@ static __inline__ int dev_is_ethdev(struct net_device *dev)
 static int
 simeth_device_event(struct notifier_block *this,unsigned long event, void *ptr)
 {
+<<<<<<< HEAD
 	struct net_device *dev = ptr;
+=======
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 	struct simeth_local *local;
 	struct in_device *in_dev;
 	struct in_ifaddr **ifap = NULL;

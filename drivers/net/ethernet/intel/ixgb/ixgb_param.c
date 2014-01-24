@@ -47,7 +47,11 @@
 
 #define IXGB_PARAM_INIT { [0 ... IXGB_MAX_NIC] = OPTION_UNSET }
 #define IXGB_PARAM(X, desc)					\
+<<<<<<< HEAD
 	static int __devinitdata X[IXGB_MAX_NIC+1]		\
+=======
+	static int X[IXGB_MAX_NIC+1]		\
+>>>>>>> refs/remotes/origin/master
 		= IXGB_PARAM_INIT;				\
 	static unsigned int num_##X = 0;			\
 	module_param_array_named(X, X, int, &num_##X, 0);	\
@@ -199,7 +203,11 @@ struct ixgb_option {
 	} arg;
 };
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 ixgb_validate_option(unsigned int *value, const struct ixgb_option *opt)
 {
 	if (*value == OPTION_UNSET) {
@@ -257,7 +265,11 @@ ixgb_validate_option(unsigned int *value, const struct ixgb_option *opt)
  * in a variable in the adapter structure.
  **/
 
+<<<<<<< HEAD
 void __devinit
+=======
+void
+>>>>>>> refs/remotes/origin/master
 ixgb_check_options(struct ixgb_adapter *adapter)
 {
 	int bd = adapter->bd_number;

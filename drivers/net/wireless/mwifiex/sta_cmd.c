@@ -24,6 +24,10 @@
 #include "main.h"
 #include "wmm.h"
 #include "11n.h"
+<<<<<<< HEAD
+=======
+#include "11ac.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This function prepares command to set/get RSSI information.
@@ -68,6 +72,7 @@ mwifiex_cmd_802_11_rssi_info(struct mwifiex_private *priv,
 static int mwifiex_cmd_mac_control(struct mwifiex_private *priv,
 				   struct host_cmd_ds_command *cmd,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   u16 cmd_action, void *data_buf)
 {
 	struct host_cmd_ds_mac_control *mac_ctrl = &cmd->params.mac_ctrl;
@@ -77,6 +82,11 @@ static int mwifiex_cmd_mac_control(struct mwifiex_private *priv,
 {
 	struct host_cmd_ds_mac_control *mac_ctrl = &cmd->params.mac_ctrl;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   u16 cmd_action, u16 *action)
+{
+	struct host_cmd_ds_mac_control *mac_ctrl = &cmd->params.mac_ctrl;
+>>>>>>> refs/remotes/origin/master
 
 	if (cmd_action != HostCmd_ACT_GEN_SET) {
 		dev_err(priv->adapter->dev,
@@ -88,10 +98,14 @@ static int mwifiex_cmd_mac_control(struct mwifiex_private *priv,
 	cmd->size =
 		cpu_to_le16(sizeof(struct host_cmd_ds_mac_control) + S_DS_GEN);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mac_ctrl->action = cpu_to_le16(action);
 =======
 	mac_ctrl->action = cpu_to_le16(*action);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mac_ctrl->action = cpu_to_le16(*action);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -115,6 +129,7 @@ static int mwifiex_cmd_802_11_snmp_mib(struct mwifiex_private *priv,
 				       struct host_cmd_ds_command *cmd,
 				       u16 cmd_action, u32 cmd_oid,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				       void *data_buf)
 {
 	struct host_cmd_ds_802_11_snmp_mib *snmp_mib = &cmd->params.smib;
@@ -124,10 +139,16 @@ static int mwifiex_cmd_802_11_snmp_mib(struct mwifiex_private *priv,
 {
 	struct host_cmd_ds_802_11_snmp_mib *snmp_mib = &cmd->params.smib;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       u16 *ul_temp)
+{
+	struct host_cmd_ds_802_11_snmp_mib *snmp_mib = &cmd->params.smib;
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(priv->adapter->dev, "cmd: SNMP_CMD: cmd_oid = 0x%x\n", cmd_oid);
 	cmd->command = cpu_to_le16(HostCmd_CMD_802_11_SNMP_MIB);
 	cmd->size = cpu_to_le16(sizeof(struct host_cmd_ds_802_11_snmp_mib)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		- 1 + S_DS_GEN);
 
@@ -197,6 +218,8 @@ static int mwifiex_cmd_802_11_snmp_mib(struct mwifiex_private *priv,
 	       cmd_action, cmd_oid, le16_to_cpu(snmp_mib->buf_size),
 	       le16_to_cpu(*(__le16 *) snmp_mib->value));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				- 1 + S_DS_GEN);
 
 	snmp_mib->oid = cpu_to_le16((u16)cmd_oid);
@@ -216,7 +239,10 @@ static int mwifiex_cmd_802_11_snmp_mib(struct mwifiex_private *priv,
 		" Value=0x%x\n",
 		cmd_action, cmd_oid, le16_to_cpu(snmp_mib->buf_size),
 		le16_to_cpu(*(__le16 *) snmp_mib->value));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -248,19 +274,26 @@ mwifiex_cmd_802_11_get_log(struct host_cmd_ds_command *cmd)
 static int mwifiex_cmd_tx_rate_cfg(struct mwifiex_private *priv,
 				   struct host_cmd_ds_command *cmd,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   u16 cmd_action, void *data_buf)
 =======
 				   u16 cmd_action, u16 *pbitmap_rates)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   u16 cmd_action, u16 *pbitmap_rates)
+>>>>>>> refs/remotes/origin/master
 {
 	struct host_cmd_ds_tx_rate_cfg *rate_cfg = &cmd->params.tx_rate_cfg;
 	struct mwifiex_rate_scope *rate_scope;
 	struct mwifiex_rate_drop_pattern *rate_drop;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 *pbitmap_rates = (u16 *) data_buf;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 i;
 
 	cmd->command = cpu_to_le16(HostCmd_CMD_TX_RATE_CFG);
@@ -272,12 +305,17 @@ static int mwifiex_cmd_tx_rate_cfg(struct mwifiex_private *priv,
 		      sizeof(struct host_cmd_ds_tx_rate_cfg));
 	rate_scope->type = cpu_to_le16(TLV_TYPE_RATE_SCOPE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rate_scope->length = cpu_to_le16(sizeof(struct mwifiex_rate_scope) -
 			sizeof(struct mwifiex_ie_types_header));
 =======
 	rate_scope->length = cpu_to_le16
 		(sizeof(*rate_scope) - sizeof(struct mwifiex_ie_types_header));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rate_scope->length = cpu_to_le16
+		(sizeof(*rate_scope) - sizeof(struct mwifiex_ie_types_header));
+>>>>>>> refs/remotes/origin/master
 	if (pbitmap_rates != NULL) {
 		rate_scope->hr_dsss_rate_bitmap = cpu_to_le16(pbitmap_rates[0]);
 		rate_scope->ofdm_rate_bitmap = cpu_to_le16(pbitmap_rates[1]);
@@ -300,10 +338,14 @@ static int mwifiex_cmd_tx_rate_cfg(struct mwifiex_private *priv,
 
 	rate_drop = (struct mwifiex_rate_drop_pattern *) ((u8 *) rate_scope +
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sizeof(struct mwifiex_rate_scope));
 =======
 					     sizeof(struct mwifiex_rate_scope));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					     sizeof(struct mwifiex_rate_scope));
+>>>>>>> refs/remotes/origin/master
 	rate_drop->type = cpu_to_le16(TLV_TYPE_RATE_DROP_CONTROL);
 	rate_drop->length = cpu_to_le16(sizeof(rate_drop->rate_drop_mode));
 	rate_drop->rate_drop_mode = 0;
@@ -327,16 +369,22 @@ static int mwifiex_cmd_tx_rate_cfg(struct mwifiex_private *priv,
  */
 static int mwifiex_cmd_tx_power_cfg(struct host_cmd_ds_command *cmd,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    u16 cmd_action, void *data_buf)
 {
 	struct mwifiex_types_power_group *pg_tlv;
 	struct host_cmd_ds_txpwr_cfg *txp;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				    u16 cmd_action,
 				    struct host_cmd_ds_txpwr_cfg *txp)
 {
 	struct mwifiex_types_power_group *pg_tlv;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct host_cmd_ds_txpwr_cfg *cmd_txp_cfg = &cmd->params.txp_cfg;
 
 	cmd->command = cpu_to_le16(HostCmd_CMD_TXPWR_CFG);
@@ -345,6 +393,7 @@ static int mwifiex_cmd_tx_power_cfg(struct host_cmd_ds_command *cmd,
 	switch (cmd_action) {
 	case HostCmd_ACT_GEN_SET:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		txp = (struct host_cmd_ds_txpwr_cfg *) data_buf;
 		if (txp->mode) {
 			pg_tlv = (struct mwifiex_types_power_group
@@ -352,21 +401,30 @@ static int mwifiex_cmd_tx_power_cfg(struct host_cmd_ds_command *cmd,
 				     sizeof(struct host_cmd_ds_txpwr_cfg));
 			memmove(cmd_txp_cfg, data_buf,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (txp->mode) {
 			pg_tlv = (struct mwifiex_types_power_group
 				  *) ((unsigned long) txp +
 				     sizeof(struct host_cmd_ds_txpwr_cfg));
 			memmove(cmd_txp_cfg, txp,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 				sizeof(struct host_cmd_ds_txpwr_cfg) +
 				sizeof(struct mwifiex_types_power_group) +
 				pg_tlv->length);
+=======
+				sizeof(struct host_cmd_ds_txpwr_cfg) +
+				sizeof(struct mwifiex_types_power_group) +
+				le16_to_cpu(pg_tlv->length));
+>>>>>>> refs/remotes/origin/master
 
 			pg_tlv = (struct mwifiex_types_power_group *) ((u8 *)
 				  cmd_txp_cfg +
 				  sizeof(struct host_cmd_ds_txpwr_cfg));
 			cmd->size = cpu_to_le16(le16_to_cpu(cmd->size) +
 				  sizeof(struct mwifiex_types_power_group) +
+<<<<<<< HEAD
 				  pg_tlv->length);
 		} else {
 <<<<<<< HEAD
@@ -375,6 +433,11 @@ static int mwifiex_cmd_tx_power_cfg(struct host_cmd_ds_command *cmd,
 =======
 			memmove(cmd_txp_cfg, txp, sizeof(*txp));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  le16_to_cpu(pg_tlv->length));
+		} else {
+			memmove(cmd_txp_cfg, txp, sizeof(*txp));
+>>>>>>> refs/remotes/origin/master
 		}
 		cmd_txp_cfg->action = cpu_to_le16(cmd_action);
 		break;
@@ -387,6 +450,59 @@ static int mwifiex_cmd_tx_power_cfg(struct host_cmd_ds_command *cmd,
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * This function prepares command to get RF Tx power.
+ */
+static int mwifiex_cmd_rf_tx_power(struct mwifiex_private *priv,
+				   struct host_cmd_ds_command *cmd,
+				   u16 cmd_action, void *data_buf)
+{
+	struct host_cmd_ds_rf_tx_pwr *txp = &cmd->params.txp;
+
+	cmd->size = cpu_to_le16(sizeof(struct host_cmd_ds_rf_tx_pwr)
+				+ S_DS_GEN);
+	cmd->command = cpu_to_le16(HostCmd_CMD_RF_TX_PWR);
+	txp->action = cpu_to_le16(cmd_action);
+
+	return 0;
+}
+
+/*
+ * This function prepares command to set rf antenna.
+ */
+static int mwifiex_cmd_rf_antenna(struct mwifiex_private *priv,
+				  struct host_cmd_ds_command *cmd,
+				  u16 cmd_action,
+				  struct mwifiex_ds_ant_cfg *ant_cfg)
+{
+	struct host_cmd_ds_rf_ant_mimo *ant_mimo = &cmd->params.ant_mimo;
+	struct host_cmd_ds_rf_ant_siso *ant_siso = &cmd->params.ant_siso;
+
+	cmd->command = cpu_to_le16(HostCmd_CMD_RF_ANTENNA);
+
+	if (cmd_action != HostCmd_ACT_GEN_SET)
+		return 0;
+
+	if (priv->adapter->hw_dev_mcs_support == HT_STREAM_2X2) {
+		cmd->size = cpu_to_le16(sizeof(struct host_cmd_ds_rf_ant_mimo) +
+					S_DS_GEN);
+		ant_mimo->action_tx = cpu_to_le16(HostCmd_ACT_SET_TX);
+		ant_mimo->tx_ant_mode = cpu_to_le16((u16)ant_cfg->tx_ant);
+		ant_mimo->action_rx = cpu_to_le16(HostCmd_ACT_SET_RX);
+		ant_mimo->rx_ant_mode = cpu_to_le16((u16)ant_cfg->rx_ant);
+	} else {
+		cmd->size = cpu_to_le16(sizeof(struct host_cmd_ds_rf_ant_siso) +
+					S_DS_GEN);
+		ant_siso->action = cpu_to_le16(HostCmd_ACT_SET_BOTH);
+		ant_siso->ant_mode = cpu_to_le16((u16)ant_cfg->tx_ant);
+	}
+
+	return 0;
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * This function prepares command to set Host Sleep configuration.
  *
  * Preparation includes -
@@ -396,16 +512,20 @@ static int mwifiex_cmd_tx_power_cfg(struct host_cmd_ds_command *cmd,
  *      - Ensuring correct endian-ness
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int mwifiex_cmd_802_11_hs_cfg(struct mwifiex_private *priv,
 				     struct host_cmd_ds_command *cmd,
 				     u16 cmd_action,
 				     struct mwifiex_hs_config_param *data_buf)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 mwifiex_cmd_802_11_hs_cfg(struct mwifiex_private *priv,
 			  struct host_cmd_ds_command *cmd,
 			  u16 cmd_action,
 			  struct mwifiex_hs_config_param *hscfg_param)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct mwifiex_adapter *adapter = priv->adapter;
@@ -417,11 +537,20 @@ mwifiex_cmd_802_11_hs_cfg(struct mwifiex_private *priv,
 =======
 	if (!hscfg_param)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+{
+	struct mwifiex_adapter *adapter = priv->adapter;
+	struct host_cmd_ds_802_11_hs_cfg_enh *hs_cfg = &cmd->params.opt_hs_cfg;
+	bool hs_activate = false;
+
+	if (!hscfg_param)
+>>>>>>> refs/remotes/origin/master
 		/* New Activate command */
 		hs_activate = true;
 	cmd->command = cpu_to_le16(HostCmd_CMD_802_11_HS_CFG_ENH);
 
 	if (!hs_activate &&
+<<<<<<< HEAD
 <<<<<<< HEAD
 	    (data_buf->conditions
 	    != cpu_to_le32(HOST_SLEEP_CFG_CANCEL))
@@ -441,6 +570,9 @@ mwifiex_cmd_802_11_hs_cfg(struct mwifiex_private *priv,
 					   host_cmd_ds_802_11_hs_cfg_enh));
 =======
 	    (hscfg_param->conditions != cpu_to_le32(HOST_SLEEP_CFG_CANCEL)) &&
+=======
+	    (hscfg_param->conditions != cpu_to_le32(HS_CFG_CANCEL)) &&
+>>>>>>> refs/remotes/origin/master
 	    ((adapter->arp_filter_size > 0) &&
 	     (adapter->arp_filter_size <= ARP_FILTER_MAX_BUF_SIZE))) {
 		dev_dbg(adapter->dev,
@@ -456,13 +588,17 @@ mwifiex_cmd_802_11_hs_cfg(struct mwifiex_private *priv,
 	} else {
 		cmd->size = cpu_to_le16(S_DS_GEN + sizeof(struct
 						host_cmd_ds_802_11_hs_cfg_enh));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (hs_activate) {
 		hs_cfg->action = cpu_to_le16(HS_ACTIVATE);
 		hs_cfg->params.hs_activate.resp_ctrl = RESP_NEEDED;
 	} else {
 		hs_cfg->action = cpu_to_le16(HS_CONFIGURE);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		hs_cfg->params.hs_config.conditions = data_buf->conditions;
 		hs_cfg->params.hs_config.gpio = data_buf->gpio;
@@ -472,6 +608,11 @@ mwifiex_cmd_802_11_hs_cfg(struct mwifiex_private *priv,
 		hs_cfg->params.hs_config.gpio = hscfg_param->gpio;
 		hs_cfg->params.hs_config.gap = hscfg_param->gap;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		hs_cfg->params.hs_config.conditions = hscfg_param->conditions;
+		hs_cfg->params.hs_config.gpio = hscfg_param->gpio;
+		hs_cfg->params.hs_config.gap = hscfg_param->gap;
+>>>>>>> refs/remotes/origin/master
 		dev_dbg(adapter->dev,
 			"cmd: HS_CFG_CMD: condition:0x%x gpio:0x%x gap:0x%x\n",
 		       hs_cfg->params.hs_config.conditions,
@@ -516,18 +657,24 @@ static int mwifiex_cmd_802_11_mac_address(struct mwifiex_private *priv,
  *      - Ensuring correct endian-ness
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int mwifiex_cmd_mac_multicast_adr(struct host_cmd_ds_command *cmd,
 					 u16 cmd_action, void *data_buf)
 {
 	struct mwifiex_multicast_list *mcast_list =
 		(struct mwifiex_multicast_list *) data_buf;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 mwifiex_cmd_mac_multicast_adr(struct host_cmd_ds_command *cmd,
 			      u16 cmd_action,
 			      struct mwifiex_multicast_list *mcast_list)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct host_cmd_ds_mac_multicast_adr *mcast_addr = &cmd->params.mc_addr;
 
 	cmd->size = cpu_to_le16(sizeof(struct host_cmd_ds_mac_multicast_adr) +
@@ -554,10 +701,14 @@ mwifiex_cmd_mac_multicast_adr(struct host_cmd_ds_command *cmd,
 static int mwifiex_cmd_802_11_deauthenticate(struct mwifiex_private *priv,
 					     struct host_cmd_ds_command *cmd,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					     void *data_buf)
 =======
 					     u8 *mac)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					     u8 *mac)
+>>>>>>> refs/remotes/origin/master
 {
 	struct host_cmd_ds_802_11_deauthenticate *deauth = &cmd->params.deauth;
 
@@ -567,10 +718,14 @@ static int mwifiex_cmd_802_11_deauthenticate(struct mwifiex_private *priv,
 
 	/* Set AP MAC address */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(deauth->mac_addr, (u8 *) data_buf, ETH_ALEN);
 =======
 	memcpy(deauth->mac_addr, mac, ETH_ALEN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(deauth->mac_addr, mac, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(priv->adapter->dev, "cmd: Deauth: %pM\n", deauth->mac_addr);
 
@@ -647,10 +802,14 @@ mwifiex_set_keyparamset_wep(struct mwifiex_private *priv,
 				(struct mwifiex_ie_type_key_param_set *)
 						((u8 *)key_param_set +
 <<<<<<< HEAD
+<<<<<<< HEAD
 						cur_key_param_len);
 =======
 						 cur_key_param_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						 cur_key_param_len);
+>>>>>>> refs/remotes/origin/master
 		} else if (!priv->wep_key[i].key_length) {
 			continue;
 		} else {
@@ -674,6 +833,7 @@ mwifiex_set_keyparamset_wep(struct mwifiex_private *priv,
  *      - Ensuring correct endian-ness
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int mwifiex_cmd_802_11_key_material(struct mwifiex_private *priv,
 					   struct host_cmd_ds_command *cmd,
 					   u16 cmd_action,
@@ -684,6 +844,8 @@ static int mwifiex_cmd_802_11_key_material(struct mwifiex_private *priv,
 	struct mwifiex_ds_encrypt_key *enc_key =
 		(struct mwifiex_ds_encrypt_key *) data_buf;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 mwifiex_cmd_802_11_key_material(struct mwifiex_private *priv,
 				struct host_cmd_ds_command *cmd,
@@ -692,10 +854,16 @@ mwifiex_cmd_802_11_key_material(struct mwifiex_private *priv,
 {
 	struct host_cmd_ds_802_11_key_material *key_material =
 		&cmd->params.key_material;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	u16 key_param_len = 0;
 	int ret = 0;
 	const u8 bc_mac[] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
+=======
+	struct host_cmd_tlv_mac_addr *tlv_mac;
+	u16 key_param_len = 0, cmd_size;
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 
 	cmd->command = cpu_to_le16(HostCmd_CMD_802_11_KEY_MATERIAL);
 	key_material->action = cpu_to_le16(cmd_action);
@@ -723,6 +891,7 @@ mwifiex_cmd_802_11_key_material(struct mwifiex_private *priv,
 		dev_dbg(priv->adapter->dev, "info: Set WAPI Key\n");
 		key_material->key_param_set.key_type_id =
 <<<<<<< HEAD
+<<<<<<< HEAD
 			cpu_to_le16(KEY_TYPE_ID_WAPI);
 		if (cmd_oid == KEY_INFO_ENABLED)
 			key_material->key_param_set.key_info =
@@ -731,6 +900,8 @@ mwifiex_cmd_802_11_key_material(struct mwifiex_private *priv,
 			key_material->key_param_set.key_info =
 				cpu_to_le16(!KEY_ENABLED);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 						cpu_to_le16(KEY_TYPE_ID_WAPI);
 		if (cmd_oid == KEY_INFO_ENABLED)
 			key_material->key_param_set.key_info =
@@ -738,7 +909,10 @@ mwifiex_cmd_802_11_key_material(struct mwifiex_private *priv,
 		else
 			key_material->key_param_set.key_info =
 						cpu_to_le16(!KEY_ENABLED);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		key_material->key_param_set.key[0] = enc_key->key_index;
 		if (!priv->sec_info.wapi_key_on)
@@ -747,7 +921,11 @@ mwifiex_cmd_802_11_key_material(struct mwifiex_private *priv,
 			/* set 0 when re-key */
 			key_material->key_param_set.key[1] = 0;
 
+<<<<<<< HEAD
 		if (0 != memcmp(enc_key->mac_addr, bc_mac, sizeof(bc_mac))) {
+=======
+		if (!is_broadcast_ether_addr(enc_key->mac_addr)) {
+>>>>>>> refs/remotes/origin/master
 			/* WAPI pairwise key: unicast */
 			key_material->key_param_set.key_info |=
 				cpu_to_le16(KEY_UNICAST);
@@ -758,6 +936,7 @@ mwifiex_cmd_802_11_key_material(struct mwifiex_private *priv,
 		}
 
 		key_material->key_param_set.type =
+<<<<<<< HEAD
 <<<<<<< HEAD
 			cpu_to_le16(TLV_TYPE_KEY_MATERIAL);
 		key_material->key_param_set.key_len =
@@ -771,11 +950,21 @@ mwifiex_cmd_802_11_key_material(struct mwifiex_private *priv,
 		       enc_key->key_material, enc_key->key_len);
 		memcpy(&key_material->key_param_set.key[2 + enc_key->key_len],
 		       enc_key->wapi_rxpn, WAPI_RXPN_LEN);
+=======
+					cpu_to_le16(TLV_TYPE_KEY_MATERIAL);
+		key_material->key_param_set.key_len =
+						cpu_to_le16(WAPI_KEY_LEN);
+		memcpy(&key_material->key_param_set.key[2],
+		       enc_key->key_material, enc_key->key_len);
+		memcpy(&key_material->key_param_set.key[2 + enc_key->key_len],
+		       enc_key->pn, PN_LEN);
+>>>>>>> refs/remotes/origin/master
 		key_material->key_param_set.length =
 			cpu_to_le16(WAPI_KEY_LEN + KEYPARAMSET_FIXED_LEN);
 
 		key_param_len = (WAPI_KEY_LEN + KEYPARAMSET_FIXED_LEN) +
 				 sizeof(struct mwifiex_ie_types_header);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		cmd->size = cpu_to_le16(key_param_len +
 				sizeof(key_material->action) + S_DS_GEN);
@@ -825,32 +1014,81 @@ mwifiex_cmd_802_11_key_material(struct mwifiex_private *priv,
 		else		/* AES group key: multicast */
 			key_material->key_param_set.key_info |=
 							cpu_to_le16(KEY_MCAST);
+=======
+		cmd->size = cpu_to_le16(sizeof(key_material->action)
+					+ S_DS_GEN +  key_param_len);
+		return ret;
+	}
+	if (enc_key->key_len == WLAN_KEY_LEN_CCMP) {
+		if (enc_key->is_igtk_key) {
+			dev_dbg(priv->adapter->dev, "cmd: CMAC_AES\n");
+			key_material->key_param_set.key_type_id =
+					cpu_to_le16(KEY_TYPE_ID_AES_CMAC);
+			if (cmd_oid == KEY_INFO_ENABLED)
+				key_material->key_param_set.key_info =
+						cpu_to_le16(KEY_ENABLED);
+			else
+				key_material->key_param_set.key_info =
+						cpu_to_le16(!KEY_ENABLED);
+
+			key_material->key_param_set.key_info |=
+							cpu_to_le16(KEY_IGTK);
+		} else {
+			dev_dbg(priv->adapter->dev, "cmd: WPA_AES\n");
+			key_material->key_param_set.key_type_id =
+						cpu_to_le16(KEY_TYPE_ID_AES);
+			if (cmd_oid == KEY_INFO_ENABLED)
+				key_material->key_param_set.key_info =
+						cpu_to_le16(KEY_ENABLED);
+			else
+				key_material->key_param_set.key_info =
+						cpu_to_le16(!KEY_ENABLED);
+
+			if (enc_key->key_index & MWIFIEX_KEY_INDEX_UNICAST)
+				/* AES pairwise key: unicast */
+				key_material->key_param_set.key_info |=
+						cpu_to_le16(KEY_UNICAST);
+			else	/* AES group key: multicast */
+				key_material->key_param_set.key_info |=
+							cpu_to_le16(KEY_MCAST);
+		}
+>>>>>>> refs/remotes/origin/master
 	} else if (enc_key->key_len == WLAN_KEY_LEN_TKIP) {
 		dev_dbg(priv->adapter->dev, "cmd: WPA_TKIP\n");
 		key_material->key_param_set.key_type_id =
 						cpu_to_le16(KEY_TYPE_ID_TKIP);
 		key_material->key_param_set.key_info =
 						cpu_to_le16(KEY_ENABLED);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (enc_key->key_index & MWIFIEX_KEY_INDEX_UNICAST)
 				/* TKIP pairwise key: unicast */
 			key_material->key_param_set.key_info |=
+<<<<<<< HEAD
 <<<<<<< HEAD
 				cpu_to_le16(KEY_UNICAST);
 		else		/* TKIP group key: multicast */
 			key_material->key_param_set.key_info |=
 				cpu_to_le16(KEY_MCAST);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 						cpu_to_le16(KEY_UNICAST);
 		else		/* TKIP group key: multicast */
 			key_material->key_param_set.key_info |=
 							cpu_to_le16(KEY_MCAST);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (key_material->key_param_set.key_type_id) {
 		key_material->key_param_set.type =
+<<<<<<< HEAD
 <<<<<<< HEAD
 			cpu_to_le16(TLV_TYPE_KEY_MATERIAL);
 		key_material->key_param_set.key_len =
@@ -860,12 +1098,18 @@ mwifiex_cmd_802_11_key_material(struct mwifiex_private *priv,
 		key_material->key_param_set.key_len =
 					cpu_to_le16((u16) enc_key->key_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					cpu_to_le16(TLV_TYPE_KEY_MATERIAL);
+		key_material->key_param_set.key_len =
+					cpu_to_le16((u16) enc_key->key_len);
+>>>>>>> refs/remotes/origin/master
 		memcpy(key_material->key_param_set.key, enc_key->key_material,
 		       enc_key->key_len);
 		key_material->key_param_set.length =
 			cpu_to_le16((u16) enc_key->key_len +
 				    KEYPARAMSET_FIXED_LEN);
 
+<<<<<<< HEAD
 		key_param_len = (u16) (enc_key->key_len + KEYPARAMSET_FIXED_LEN)
 <<<<<<< HEAD
 				      + sizeof(struct mwifiex_ie_types_header);
@@ -878,6 +1122,47 @@ mwifiex_cmd_802_11_key_material(struct mwifiex_private *priv,
 		cmd->size = cpu_to_le16(sizeof(key_material->action) + S_DS_GEN
 					+ key_param_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		key_param_len = (u16)(enc_key->key_len + KEYPARAMSET_FIXED_LEN)
+				+ sizeof(struct mwifiex_ie_types_header);
+
+		if (le16_to_cpu(key_material->key_param_set.key_type_id) ==
+							KEY_TYPE_ID_AES_CMAC) {
+			struct mwifiex_cmac_param *param =
+					(void *)key_material->key_param_set.key;
+
+			memcpy(param->ipn, enc_key->pn, IGTK_PN_LEN);
+			memcpy(param->key, enc_key->key_material,
+			       WLAN_KEY_LEN_AES_CMAC);
+
+			key_param_len = sizeof(struct mwifiex_cmac_param);
+			key_material->key_param_set.key_len =
+						cpu_to_le16(key_param_len);
+			key_param_len += KEYPARAMSET_FIXED_LEN;
+			key_material->key_param_set.length =
+						cpu_to_le16(key_param_len);
+			key_param_len += sizeof(struct mwifiex_ie_types_header);
+		}
+
+		cmd->size = cpu_to_le16(sizeof(key_material->action) + S_DS_GEN
+					+ key_param_len);
+
+		if (priv->bss_type == MWIFIEX_BSS_TYPE_UAP) {
+			tlv_mac = (void *)((u8 *)&key_material->key_param_set +
+					   key_param_len);
+			tlv_mac->header.type =
+					cpu_to_le16(TLV_TYPE_STA_MAC_ADDR);
+			tlv_mac->header.len = cpu_to_le16(ETH_ALEN);
+			memcpy(tlv_mac->mac_addr, enc_key->mac_addr, ETH_ALEN);
+			cmd_size = key_param_len + S_DS_GEN +
+				   sizeof(key_material->action) +
+				   sizeof(struct host_cmd_tlv_mac_addr);
+		} else {
+			cmd_size = key_param_len + S_DS_GEN +
+				   sizeof(key_material->action);
+		}
+		cmd->size = cpu_to_le16(cmd_size);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -915,6 +1200,7 @@ static int mwifiex_cmd_802_11d_domain_info(struct mwifiex_private *priv,
 	domain->header.type = cpu_to_le16(WLAN_EID_COUNTRY);
 	memcpy(domain->country_code, adapter->domain_reg.country_code,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sizeof(domain->country_code));
 
 	domain->header.len = cpu_to_le16((no_of_triplet *
@@ -931,6 +1217,8 @@ static int mwifiex_cmd_802_11d_domain_info(struct mwifiex_private *priv,
 				sizeof(struct mwifiex_ie_types_header)
 				+ S_DS_GEN);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	       sizeof(domain->country_code));
 
 	domain->header.len =
@@ -947,7 +1235,10 @@ static int mwifiex_cmd_802_11d_domain_info(struct mwifiex_private *priv,
 					le16_to_cpu(domain->header.len) +
 					sizeof(struct mwifiex_ie_types_header)
 					+ S_DS_GEN);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		cmd->size = cpu_to_le16(sizeof(domain_info->action) + S_DS_GEN);
 	}
@@ -956,6 +1247,7 @@ static int mwifiex_cmd_802_11d_domain_info(struct mwifiex_private *priv,
 }
 
 /*
+<<<<<<< HEAD
  * This function prepares command to set/get RF channel.
  *
  * Preparation includes -
@@ -1004,6 +1296,8 @@ static int mwifiex_cmd_802_11_rf_channel(struct mwifiex_private *priv,
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * This function prepares command to set/get IBSS coalescing status.
  *
  * Preparation includes -
@@ -1013,17 +1307,23 @@ static int mwifiex_cmd_802_11_rf_channel(struct mwifiex_private *priv,
  */
 static int mwifiex_cmd_ibss_coalescing_status(struct host_cmd_ds_command *cmd,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					      u16 cmd_action, void *data_buf)
 {
 	struct host_cmd_ds_802_11_ibss_status *ibss_coal =
 		&(cmd->params.ibss_coalescing);
 	u16 enable = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					      u16 cmd_action, u16 *enable)
 {
 	struct host_cmd_ds_802_11_ibss_status *ibss_coal =
 		&(cmd->params.ibss_coalescing);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cmd->command = cpu_to_le16(HostCmd_CMD_802_11_IBSS_COALESCING_STATUS);
 	cmd->size = cpu_to_le16(sizeof(struct host_cmd_ds_802_11_ibss_status) +
@@ -1034,15 +1334,21 @@ static int mwifiex_cmd_ibss_coalescing_status(struct host_cmd_ds_command *cmd,
 	switch (cmd_action) {
 	case HostCmd_ACT_GEN_SET:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (data_buf != NULL)
 			enable = *(u16 *) data_buf;
 		ibss_coal->enable = cpu_to_le16(enable);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (enable)
 			ibss_coal->enable = cpu_to_le16(*enable);
 		else
 			ibss_coal->enable = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 		/* In other case.. Nothing to do */
@@ -1075,6 +1381,7 @@ static int mwifiex_cmd_reg_access(struct host_cmd_ds_command *cmd,
 				  u16 cmd_action, void *data_buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mwifiex_ds_reg_rw *reg_rw;
 
 	reg_rw = (struct mwifiex_ds_reg_rw *) data_buf;
@@ -1082,18 +1389,26 @@ static int mwifiex_cmd_reg_access(struct host_cmd_ds_command *cmd,
 	struct mwifiex_ds_reg_rw *reg_rw = data_buf;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mwifiex_ds_reg_rw *reg_rw = data_buf;
+
+>>>>>>> refs/remotes/origin/master
 	switch (le16_to_cpu(cmd->command)) {
 	case HostCmd_CMD_MAC_REG_ACCESS:
 	{
 		struct host_cmd_ds_mac_reg_access *mac_reg;
 
 		cmd->size = cpu_to_le16(sizeof(*mac_reg) + S_DS_GEN);
+<<<<<<< HEAD
 		mac_reg = (struct host_cmd_ds_mac_reg_access *) &cmd->
 <<<<<<< HEAD
 			params.mac_reg;
 =======
 								params.mac_reg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mac_reg = &cmd->params.mac_reg;
+>>>>>>> refs/remotes/origin/master
 		mac_reg->action = cpu_to_le16(cmd_action);
 		mac_reg->offset =
 			cpu_to_le16((u16) le32_to_cpu(reg_rw->offset));
@@ -1106,12 +1421,16 @@ static int mwifiex_cmd_reg_access(struct host_cmd_ds_command *cmd,
 
 		cmd->size = cpu_to_le16(sizeof(*bbp_reg) + S_DS_GEN);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bbp_reg = (struct host_cmd_ds_bbp_reg_access *) &cmd->
 			params.bbp_reg;
 =======
 		bbp_reg = (struct host_cmd_ds_bbp_reg_access *)
 							&cmd->params.bbp_reg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bbp_reg = &cmd->params.bbp_reg;
+>>>>>>> refs/remotes/origin/master
 		bbp_reg->action = cpu_to_le16(cmd_action);
 		bbp_reg->offset =
 			cpu_to_le16((u16) le32_to_cpu(reg_rw->offset));
@@ -1124,6 +1443,7 @@ static int mwifiex_cmd_reg_access(struct host_cmd_ds_command *cmd,
 
 		cmd->size = cpu_to_le16(sizeof(*rf_reg) + S_DS_GEN);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rf_reg = (struct host_cmd_ds_rf_reg_access *) &cmd->
 			params.rf_reg;
 		rf_reg->action = cpu_to_le16(cmd_action);
@@ -1135,6 +1455,11 @@ static int mwifiex_cmd_reg_access(struct host_cmd_ds_command *cmd,
 		rf_reg->action = cpu_to_le16(cmd_action);
 		rf_reg->offset = cpu_to_le16((u16) le32_to_cpu(reg_rw->offset));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rf_reg = &cmd->params.rf_reg;
+		rf_reg->action = cpu_to_le16(cmd_action);
+		rf_reg->offset = cpu_to_le16((u16) le32_to_cpu(reg_rw->offset));
+>>>>>>> refs/remotes/origin/master
 		rf_reg->value = (u8) le32_to_cpu(reg_rw->value);
 		break;
 	}
@@ -1143,6 +1468,7 @@ static int mwifiex_cmd_reg_access(struct host_cmd_ds_command *cmd,
 		struct host_cmd_ds_pmic_reg_access *pmic_reg;
 
 		cmd->size = cpu_to_le16(sizeof(*pmic_reg) + S_DS_GEN);
+<<<<<<< HEAD
 		pmic_reg = (struct host_cmd_ds_pmic_reg_access *) &cmd->
 				params.pmic_reg;
 		pmic_reg->action = cpu_to_le16(cmd_action);
@@ -1152,6 +1478,12 @@ static int mwifiex_cmd_reg_access(struct host_cmd_ds_command *cmd,
 =======
 				cpu_to_le16((u16) le32_to_cpu(reg_rw->offset));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pmic_reg = &cmd->params.pmic_reg;
+		pmic_reg->action = cpu_to_le16(cmd_action);
+		pmic_reg->offset =
+				cpu_to_le16((u16) le32_to_cpu(reg_rw->offset));
+>>>>>>> refs/remotes/origin/master
 		pmic_reg->value = (u8) le32_to_cpu(reg_rw->value);
 		break;
 	}
@@ -1160,6 +1492,7 @@ static int mwifiex_cmd_reg_access(struct host_cmd_ds_command *cmd,
 		struct host_cmd_ds_rf_reg_access *cau_reg;
 
 		cmd->size = cpu_to_le16(sizeof(*cau_reg) + S_DS_GEN);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		cau_reg = (struct host_cmd_ds_rf_reg_access *) &cmd->
 				params.rf_reg;
@@ -1173,11 +1506,18 @@ static int mwifiex_cmd_reg_access(struct host_cmd_ds_command *cmd,
 		cau_reg->offset =
 				cpu_to_le16((u16) le32_to_cpu(reg_rw->offset));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cau_reg = &cmd->params.rf_reg;
+		cau_reg->action = cpu_to_le16(cmd_action);
+		cau_reg->offset =
+				cpu_to_le16((u16) le32_to_cpu(reg_rw->offset));
+>>>>>>> refs/remotes/origin/master
 		cau_reg->value = (u8) le32_to_cpu(reg_rw->value);
 		break;
 	}
 	case HostCmd_CMD_802_11_EEPROM_ACCESS:
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 		struct mwifiex_ds_read_eeprom *rd_eeprom =
 			(struct mwifiex_ds_read_eeprom *) data_buf;
@@ -1186,6 +1526,10 @@ static int mwifiex_cmd_reg_access(struct host_cmd_ds_command *cmd,
 >>>>>>> refs/remotes/origin/cm-10.0
 		struct host_cmd_ds_802_11_eeprom_access *cmd_eeprom =
 			(struct host_cmd_ds_802_11_eeprom_access *)
+=======
+		struct mwifiex_ds_read_eeprom *rd_eeprom = data_buf;
+		struct host_cmd_ds_802_11_eeprom_access *cmd_eeprom =
+>>>>>>> refs/remotes/origin/master
 			&cmd->params.eeprom;
 
 		cmd->size = cpu_to_le16(sizeof(*cmd_eeprom) + S_DS_GEN);
@@ -1204,7 +1548,10 @@ static int mwifiex_cmd_reg_access(struct host_cmd_ds_command *cmd,
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * This function prepares command to set PCI-Express
  * host buffer configuration
  *
@@ -1220,7 +1567,10 @@ mwifiex_cmd_pcie_host_spec(struct mwifiex_private *priv,
 	struct host_cmd_ds_pcie_details *host_spec =
 					&cmd->params.pcie_host_spec;
 	struct pcie_service_card *card = priv->adapter->card;
+<<<<<<< HEAD
 	phys_addr_t *buf_pa;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cmd->command = cpu_to_le16(HostCmd_CMD_PCIE_DESC_DETAILS);
 	cmd->size = cpu_to_le16(sizeof(struct
@@ -1242,10 +1592,18 @@ mwifiex_cmd_pcie_host_spec(struct mwifiex_private *priv,
 	host_spec->evtbd_addr_lo = (u32)(card->evtbd_ring_pbase);
 	host_spec->evtbd_addr_hi = (u32)(((u64)card->evtbd_ring_pbase)>>32);
 	host_spec->evtbd_count = MWIFIEX_MAX_EVT_BD;
+<<<<<<< HEAD
 	if (card->sleep_cookie) {
 		buf_pa = MWIFIEX_SKB_PACB(card->sleep_cookie);
 		host_spec->sleep_cookie_addr_lo = (u32) *buf_pa;
 		host_spec->sleep_cookie_addr_hi = (u32) (((u64)*buf_pa) >> 32);
+=======
+	if (card->sleep_cookie_vbase) {
+		host_spec->sleep_cookie_addr_lo =
+						(u32)(card->sleep_cookie_pbase);
+		host_spec->sleep_cookie_addr_hi =
+				 (u32)(((u64)(card->sleep_cookie_pbase)) >> 32);
+>>>>>>> refs/remotes/origin/master
 		dev_dbg(priv->adapter->dev, "sleep_cook_lo phy addr: 0x%x\n",
 			host_spec->sleep_cookie_addr_lo);
 	}
@@ -1254,7 +1612,292 @@ mwifiex_cmd_pcie_host_spec(struct mwifiex_private *priv,
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * This function prepares command for event subscription, configuration
+ * and query. Events can be subscribed or unsubscribed. Current subscribed
+ * events can be queried. Also, current subscribed events are reported in
+ * every FW response.
+ */
+static int
+mwifiex_cmd_802_11_subsc_evt(struct mwifiex_private *priv,
+			     struct host_cmd_ds_command *cmd,
+			     struct mwifiex_ds_misc_subsc_evt *subsc_evt_cfg)
+{
+	struct host_cmd_ds_802_11_subsc_evt *subsc_evt = &cmd->params.subsc_evt;
+	struct mwifiex_ie_types_rssi_threshold *rssi_tlv;
+	u16 event_bitmap;
+	u8 *pos;
+
+	cmd->command = cpu_to_le16(HostCmd_CMD_802_11_SUBSCRIBE_EVENT);
+	cmd->size = cpu_to_le16(sizeof(struct host_cmd_ds_802_11_subsc_evt) +
+				S_DS_GEN);
+
+	subsc_evt->action = cpu_to_le16(subsc_evt_cfg->action);
+	dev_dbg(priv->adapter->dev, "cmd: action: %d\n", subsc_evt_cfg->action);
+
+	/*For query requests, no configuration TLV structures are to be added.*/
+	if (subsc_evt_cfg->action == HostCmd_ACT_GEN_GET)
+		return 0;
+
+	subsc_evt->events = cpu_to_le16(subsc_evt_cfg->events);
+
+	event_bitmap = subsc_evt_cfg->events;
+	dev_dbg(priv->adapter->dev, "cmd: event bitmap : %16x\n",
+		event_bitmap);
+
+	if (((subsc_evt_cfg->action == HostCmd_ACT_BITWISE_CLR) ||
+	     (subsc_evt_cfg->action == HostCmd_ACT_BITWISE_SET)) &&
+	    (event_bitmap == 0)) {
+		dev_dbg(priv->adapter->dev, "Error: No event specified "
+			"for bitwise action type\n");
+		return -EINVAL;
+	}
+
+	/*
+	 * Append TLV structures for each of the specified events for
+	 * subscribing or re-configuring. This is not required for
+	 * bitwise unsubscribing request.
+	 */
+	if (subsc_evt_cfg->action == HostCmd_ACT_BITWISE_CLR)
+		return 0;
+
+	pos = ((u8 *)subsc_evt) +
+			sizeof(struct host_cmd_ds_802_11_subsc_evt);
+
+	if (event_bitmap & BITMASK_BCN_RSSI_LOW) {
+		rssi_tlv = (struct mwifiex_ie_types_rssi_threshold *) pos;
+
+		rssi_tlv->header.type = cpu_to_le16(TLV_TYPE_RSSI_LOW);
+		rssi_tlv->header.len =
+		    cpu_to_le16(sizeof(struct mwifiex_ie_types_rssi_threshold) -
+				sizeof(struct mwifiex_ie_types_header));
+		rssi_tlv->abs_value = subsc_evt_cfg->bcn_l_rssi_cfg.abs_value;
+		rssi_tlv->evt_freq = subsc_evt_cfg->bcn_l_rssi_cfg.evt_freq;
+
+		dev_dbg(priv->adapter->dev, "Cfg Beacon Low Rssi event, "
+			"RSSI:-%d dBm, Freq:%d\n",
+			subsc_evt_cfg->bcn_l_rssi_cfg.abs_value,
+			subsc_evt_cfg->bcn_l_rssi_cfg.evt_freq);
+
+		pos += sizeof(struct mwifiex_ie_types_rssi_threshold);
+		le16_add_cpu(&cmd->size,
+			     sizeof(struct mwifiex_ie_types_rssi_threshold));
+	}
+
+	if (event_bitmap & BITMASK_BCN_RSSI_HIGH) {
+		rssi_tlv = (struct mwifiex_ie_types_rssi_threshold *) pos;
+
+		rssi_tlv->header.type = cpu_to_le16(TLV_TYPE_RSSI_HIGH);
+		rssi_tlv->header.len =
+		    cpu_to_le16(sizeof(struct mwifiex_ie_types_rssi_threshold) -
+				sizeof(struct mwifiex_ie_types_header));
+		rssi_tlv->abs_value = subsc_evt_cfg->bcn_h_rssi_cfg.abs_value;
+		rssi_tlv->evt_freq = subsc_evt_cfg->bcn_h_rssi_cfg.evt_freq;
+
+		dev_dbg(priv->adapter->dev, "Cfg Beacon High Rssi event, "
+			"RSSI:-%d dBm, Freq:%d\n",
+			subsc_evt_cfg->bcn_h_rssi_cfg.abs_value,
+			subsc_evt_cfg->bcn_h_rssi_cfg.evt_freq);
+
+		pos += sizeof(struct mwifiex_ie_types_rssi_threshold);
+		le16_add_cpu(&cmd->size,
+			     sizeof(struct mwifiex_ie_types_rssi_threshold));
+	}
+
+	return 0;
+}
+
+static int
+mwifiex_cmd_append_rpn_expression(struct mwifiex_private *priv,
+				  struct mwifiex_mef_entry *mef_entry,
+				  u8 **buffer)
+{
+	struct mwifiex_mef_filter *filter = mef_entry->filter;
+	int i, byte_len;
+	u8 *stack_ptr = *buffer;
+
+	for (i = 0; i < MWIFIEX_MEF_MAX_FILTERS; i++) {
+		filter = &mef_entry->filter[i];
+		if (!filter->filt_type)
+			break;
+		*(__le32 *)stack_ptr = cpu_to_le32((u32)filter->repeat);
+		stack_ptr += 4;
+		*stack_ptr = TYPE_DNUM;
+		stack_ptr += 1;
+
+		byte_len = filter->byte_seq[MWIFIEX_MEF_MAX_BYTESEQ];
+		memcpy(stack_ptr, filter->byte_seq, byte_len);
+		stack_ptr += byte_len;
+		*stack_ptr = byte_len;
+		stack_ptr += 1;
+		*stack_ptr = TYPE_BYTESEQ;
+		stack_ptr += 1;
+
+		*(__le32 *)stack_ptr = cpu_to_le32((u32)filter->offset);
+		stack_ptr += 4;
+		*stack_ptr = TYPE_DNUM;
+		stack_ptr += 1;
+
+		*stack_ptr = filter->filt_type;
+		stack_ptr += 1;
+
+		if (filter->filt_action) {
+			*stack_ptr = filter->filt_action;
+			stack_ptr += 1;
+		}
+
+		if (stack_ptr - *buffer > STACK_NBYTES)
+			return -1;
+	}
+
+	*buffer = stack_ptr;
+	return 0;
+}
+
+static int
+mwifiex_cmd_mef_cfg(struct mwifiex_private *priv,
+		    struct host_cmd_ds_command *cmd,
+		    struct mwifiex_ds_mef_cfg *mef)
+{
+	struct host_cmd_ds_mef_cfg *mef_cfg = &cmd->params.mef_cfg;
+	u8 *pos = (u8 *)mef_cfg;
+
+	cmd->command = cpu_to_le16(HostCmd_CMD_MEF_CFG);
+
+	mef_cfg->criteria = cpu_to_le32(mef->criteria);
+	mef_cfg->num_entries = cpu_to_le16(mef->num_entries);
+	pos += sizeof(*mef_cfg);
+	mef_cfg->mef_entry->mode = mef->mef_entry->mode;
+	mef_cfg->mef_entry->action = mef->mef_entry->action;
+	pos += sizeof(*(mef_cfg->mef_entry));
+
+	if (mwifiex_cmd_append_rpn_expression(priv, mef->mef_entry, &pos))
+		return -1;
+
+	mef_cfg->mef_entry->exprsize =
+			cpu_to_le16(pos - mef_cfg->mef_entry->expr);
+	cmd->size = cpu_to_le16((u16) (pos - (u8 *)mef_cfg) + S_DS_GEN);
+
+	return 0;
+}
+
+/* This function parse cal data from ASCII to hex */
+static u32 mwifiex_parse_cal_cfg(u8 *src, size_t len, u8 *dst)
+{
+	u8 *s = src, *d = dst;
+
+	while (s - src < len) {
+		if (*s && (isspace(*s) || *s == '\t')) {
+			s++;
+			continue;
+		}
+		if (isxdigit(*s)) {
+			*d++ = simple_strtol(s, NULL, 16);
+			s += 2;
+		} else {
+			s++;
+		}
+	}
+
+	return d - dst;
+}
+
+/* This function prepares command of set_cfg_data. */
+static int mwifiex_cmd_cfg_data(struct mwifiex_private *priv,
+				struct host_cmd_ds_command *cmd,
+				u16 cmd_action)
+{
+	struct host_cmd_ds_802_11_cfg_data *cfg_data = &cmd->params.cfg_data;
+	struct mwifiex_adapter *adapter = priv->adapter;
+	u32 len, cal_data_offset;
+	u8 *tmp_cmd = (u8 *)cmd;
+
+	cal_data_offset = S_DS_GEN + sizeof(*cfg_data);
+	if ((adapter->cal_data->data) && (adapter->cal_data->size > 0))
+		len = mwifiex_parse_cal_cfg((u8 *)adapter->cal_data->data,
+					    adapter->cal_data->size,
+					    (u8 *)(tmp_cmd + cal_data_offset));
+	else
+		return -1;
+
+	cfg_data->action = cpu_to_le16(cmd_action);
+	cfg_data->type = cpu_to_le16(CFG_DATA_TYPE_CAL);
+	cfg_data->data_len = cpu_to_le16(len);
+
+	cmd->command = cpu_to_le16(HostCmd_CMD_CFG_DATA);
+	cmd->size = cpu_to_le16(S_DS_GEN + sizeof(*cfg_data) + len);
+
+	return 0;
+}
+
+static int
+mwifiex_cmd_coalesce_cfg(struct mwifiex_private *priv,
+			 struct host_cmd_ds_command *cmd,
+			 u16 cmd_action, void *data_buf)
+{
+	struct host_cmd_ds_coalesce_cfg *coalesce_cfg =
+						&cmd->params.coalesce_cfg;
+	struct mwifiex_ds_coalesce_cfg *cfg = data_buf;
+	struct coalesce_filt_field_param *param;
+	u16 cnt, idx, length;
+	struct coalesce_receive_filt_rule *rule;
+
+	cmd->command = cpu_to_le16(HostCmd_CMD_COALESCE_CFG);
+	cmd->size = cpu_to_le16(S_DS_GEN);
+
+	coalesce_cfg->action = cpu_to_le16(cmd_action);
+	coalesce_cfg->num_of_rules = cpu_to_le16(cfg->num_of_rules);
+	rule = coalesce_cfg->rule;
+
+	for (cnt = 0; cnt < cfg->num_of_rules; cnt++) {
+		rule->header.type = cpu_to_le16(TLV_TYPE_COALESCE_RULE);
+		rule->max_coalescing_delay =
+			cpu_to_le16(cfg->rule[cnt].max_coalescing_delay);
+		rule->pkt_type = cfg->rule[cnt].pkt_type;
+		rule->num_of_fields = cfg->rule[cnt].num_of_fields;
+
+		length = 0;
+
+		param = rule->params;
+		for (idx = 0; idx < cfg->rule[cnt].num_of_fields; idx++) {
+			param->operation = cfg->rule[cnt].params[idx].operation;
+			param->operand_len =
+					cfg->rule[cnt].params[idx].operand_len;
+			param->offset =
+				cpu_to_le16(cfg->rule[cnt].params[idx].offset);
+			memcpy(param->operand_byte_stream,
+			       cfg->rule[cnt].params[idx].operand_byte_stream,
+			       param->operand_len);
+
+			length += sizeof(struct coalesce_filt_field_param);
+
+			param++;
+		}
+
+		/* Total rule length is sizeof max_coalescing_delay(u16),
+		 * num_of_fields(u8), pkt_type(u8) and total length of the all
+		 * params
+		 */
+		rule->header.len = cpu_to_le16(length + sizeof(u16) +
+					       sizeof(u8) + sizeof(u8));
+
+		/* Add the rule length to the command size*/
+		le16_add_cpu(&cmd->size, le16_to_cpu(rule->header.len) +
+			     sizeof(struct mwifiex_ie_types_header));
+
+		rule = (void *)((u8 *)rule->params + length);
+	}
+
+	/* Add sizeof action, num_of_rules to total command length */
+	le16_add_cpu(&cmd->size, sizeof(u16) + sizeof(u16));
+
+	return 0;
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * This function prepares the commands before sending them to the firmware.
  *
  * This is a generic function which calls specific command preparation
@@ -1265,11 +1908,15 @@ int mwifiex_sta_prepare_cmd(struct mwifiex_private *priv, uint16_t cmd_no,
 			    void *data_buf, void *cmd_buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct host_cmd_ds_command *cmd_ptr =
 		(struct host_cmd_ds_command *) cmd_buf;
 =======
 	struct host_cmd_ds_command *cmd_ptr = cmd_buf;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct host_cmd_ds_command *cmd_ptr = cmd_buf;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	/* Prepare command */
@@ -1277,6 +1924,12 @@ int mwifiex_sta_prepare_cmd(struct mwifiex_private *priv, uint16_t cmd_no,
 	case HostCmd_CMD_GET_HW_SPEC:
 		ret = mwifiex_cmd_get_hw_spec(priv, cmd_ptr);
 		break;
+<<<<<<< HEAD
+=======
+	case HostCmd_CMD_CFG_DATA:
+		ret = mwifiex_cmd_cfg_data(priv, cmd_ptr, cmd_action);
+		break;
+>>>>>>> refs/remotes/origin/master
 	case HostCmd_CMD_MAC_CONTROL:
 		ret = mwifiex_cmd_mac_control(priv, cmd_ptr, cmd_action,
 					      data_buf);
@@ -1297,6 +1950,17 @@ int mwifiex_sta_prepare_cmd(struct mwifiex_private *priv, uint16_t cmd_no,
 		ret = mwifiex_cmd_tx_power_cfg(cmd_ptr, cmd_action,
 					       data_buf);
 		break;
+<<<<<<< HEAD
+=======
+	case HostCmd_CMD_RF_TX_PWR:
+		ret = mwifiex_cmd_rf_tx_power(priv, cmd_ptr, cmd_action,
+					      data_buf);
+		break;
+	case HostCmd_CMD_RF_ANTENNA:
+		ret = mwifiex_cmd_rf_antenna(priv, cmd_ptr, cmd_action,
+					     data_buf);
+		break;
+>>>>>>> refs/remotes/origin/master
 	case HostCmd_CMD_802_11_PS_MODE_ENH:
 		ret = mwifiex_cmd_enh_power_mode(priv, cmd_ptr, cmd_action,
 						 (uint16_t)cmd_oid, data_buf);
@@ -1359,9 +2023,39 @@ int mwifiex_sta_prepare_cmd(struct mwifiex_private *priv, uint16_t cmd_no,
 				    S_DS_GEN);
 		ret = 0;
 		break;
+<<<<<<< HEAD
 	case HostCmd_CMD_802_11_RF_CHANNEL:
 		ret = mwifiex_cmd_802_11_rf_channel(priv, cmd_ptr, cmd_action,
 						    data_buf);
+=======
+	case HostCmd_CMD_MGMT_FRAME_REG:
+		cmd_ptr->command = cpu_to_le16(cmd_no);
+		cmd_ptr->params.reg_mask.action = cpu_to_le16(cmd_action);
+		cmd_ptr->params.reg_mask.mask = cpu_to_le32(*(u32 *)data_buf);
+		cmd_ptr->size =
+			cpu_to_le16(sizeof(struct host_cmd_ds_mgmt_frame_reg) +
+				    S_DS_GEN);
+		ret = 0;
+		break;
+	case HostCmd_CMD_REMAIN_ON_CHAN:
+		cmd_ptr->command = cpu_to_le16(cmd_no);
+		memcpy(&cmd_ptr->params, data_buf,
+		       sizeof(struct host_cmd_ds_remain_on_chan));
+		cmd_ptr->size =
+		      cpu_to_le16(sizeof(struct host_cmd_ds_remain_on_chan) +
+				  S_DS_GEN);
+		break;
+	case HostCmd_CMD_11AC_CFG:
+		ret = mwifiex_cmd_11ac_cfg(priv, cmd_ptr, cmd_action, data_buf);
+		break;
+	case HostCmd_CMD_P2P_MODE_CFG:
+		cmd_ptr->command = cpu_to_le16(cmd_no);
+		cmd_ptr->params.mode_cfg.action = cpu_to_le16(cmd_action);
+		cmd_ptr->params.mode_cfg.mode = cpu_to_le16(*(u16 *)data_buf);
+		cmd_ptr->size =
+			cpu_to_le16(sizeof(struct host_cmd_ds_p2p_mode_cfg) +
+				    S_DS_GEN);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case HostCmd_CMD_FUNC_INIT:
 		if (priv->adapter->hw_status == MWIFIEX_HW_STATUS_RESET)
@@ -1386,6 +2080,7 @@ int mwifiex_sta_prepare_cmd(struct mwifiex_private *priv, uint16_t cmd_no,
 	case HostCmd_CMD_802_11_KEY_MATERIAL:
 		ret = mwifiex_cmd_802_11_key_material(priv, cmd_ptr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						cmd_action, cmd_oid,
 						data_buf);
 		break;
@@ -1393,13 +2088,18 @@ int mwifiex_sta_prepare_cmd(struct mwifiex_private *priv, uint16_t cmd_no,
 		ret = mwifiex_cmd_802_11d_domain_info(priv, cmd_ptr,
 						cmd_action);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 						      cmd_action, cmd_oid,
 						      data_buf);
 		break;
 	case HostCmd_CMD_802_11D_DOMAIN_INFO:
 		ret = mwifiex_cmd_802_11d_domain_info(priv, cmd_ptr,
 						      cmd_action);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case HostCmd_CMD_RECONFIGURE_TX_BUFF:
 		ret = mwifiex_cmd_recfg_tx_buf(priv, cmd_ptr, cmd_action,
@@ -1411,11 +2111,15 @@ int mwifiex_sta_prepare_cmd(struct mwifiex_private *priv, uint16_t cmd_no,
 		break;
 	case HostCmd_CMD_11N_CFG:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = mwifiex_cmd_11n_cfg(cmd_ptr, cmd_action,
 					  data_buf);
 =======
 		ret = mwifiex_cmd_11n_cfg(cmd_ptr, cmd_action, data_buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = mwifiex_cmd_11n_cfg(priv, cmd_ptr, cmd_action, data_buf);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case HostCmd_CMD_WMM_GET_STATUS:
 		dev_dbg(priv->adapter->dev,
@@ -1446,16 +2150,37 @@ int mwifiex_sta_prepare_cmd(struct mwifiex_private *priv, uint16_t cmd_no,
 		else if (priv->bss_mode == NL80211_IFTYPE_STATION)
 			cmd_ptr->params.bss_mode.con_type =
 				CONNECTION_TYPE_INFRA;
+<<<<<<< HEAD
+=======
+		else if (priv->bss_mode == NL80211_IFTYPE_AP)
+			cmd_ptr->params.bss_mode.con_type = CONNECTION_TYPE_AP;
+>>>>>>> refs/remotes/origin/master
 		cmd_ptr->size = cpu_to_le16(sizeof(struct
 				host_cmd_ds_set_bss_mode) + S_DS_GEN);
 		ret = 0;
 		break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	case HostCmd_CMD_PCIE_DESC_DETAILS:
 		ret = mwifiex_cmd_pcie_host_spec(priv, cmd_ptr, cmd_action);
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case HostCmd_CMD_PCIE_DESC_DETAILS:
+		ret = mwifiex_cmd_pcie_host_spec(priv, cmd_ptr, cmd_action);
+		break;
+	case HostCmd_CMD_802_11_SUBSCRIBE_EVENT:
+		ret = mwifiex_cmd_802_11_subsc_evt(priv, cmd_ptr, data_buf);
+		break;
+	case HostCmd_CMD_MEF_CFG:
+		ret = mwifiex_cmd_mef_cfg(priv, cmd_ptr, data_buf);
+		break;
+	case HostCmd_CMD_COALESCE_CFG:
+		ret = mwifiex_cmd_coalesce_cfg(priv, cmd_ptr, cmd_action,
+					       data_buf);
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		dev_err(priv->adapter->dev,
 			"PREP_CMD: unknown cmd- %#x\n", cmd_no);
@@ -1473,9 +2198,13 @@ int mwifiex_sta_prepare_cmd(struct mwifiex_private *priv, uint16_t cmd_no,
  *
  * The following commands are issued sequentially -
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *      - Set PCI-Express host buffer configuration (PCIE only)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *      - Set PCI-Express host buffer configuration (PCIE only)
+>>>>>>> refs/remotes/origin/master
  *      - Function init (for first interface only)
  *      - Read MAC address (for first interface only)
  *      - Reconfigure Tx buffer size (for first interface only)
@@ -1489,25 +2218,37 @@ int mwifiex_sta_prepare_cmd(struct mwifiex_private *priv, uint16_t cmd_no,
  */
 int mwifiex_sta_init_cmd(struct mwifiex_private *priv, u8 first_sta)
 {
+<<<<<<< HEAD
+=======
+	struct mwifiex_adapter *adapter = priv->adapter;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	u16 enable = true;
 	struct mwifiex_ds_11n_amsdu_aggr_ctrl amsdu_aggr_ctrl;
 	struct mwifiex_ds_auto_ds auto_ds;
 	enum state_11d_t state_11d;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (first_sta) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mwifiex_ds_11n_tx_cfg tx_cfg;
 
 	if (first_sta) {
 		if (priv->adapter->iface_type == MWIFIEX_PCIE) {
+<<<<<<< HEAD
 			ret = mwifiex_send_cmd_async(priv,
+=======
+			ret = mwifiex_send_cmd_sync(priv,
+>>>>>>> refs/remotes/origin/master
 						HostCmd_CMD_PCIE_DESC_DETAILS,
 						HostCmd_ACT_GEN_SET, 0, NULL);
 			if (ret)
 				return -1;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 		ret = mwifiex_send_cmd_async(priv, HostCmd_CMD_FUNC_INIT,
@@ -1517,10 +2258,30 @@ int mwifiex_sta_init_cmd(struct mwifiex_private *priv, u8 first_sta)
 		/* Read MAC address from HW */
 		ret = mwifiex_send_cmd_async(priv, HostCmd_CMD_GET_HW_SPEC,
 					     HostCmd_ACT_GEN_GET, 0, NULL);
+=======
+
+		ret = mwifiex_send_cmd_sync(priv, HostCmd_CMD_FUNC_INIT,
+					    HostCmd_ACT_GEN_SET, 0, NULL);
+		if (ret)
+			return -1;
+
+		/* Download calibration data to firmware */
+		if (adapter->cal_data) {
+			ret = mwifiex_send_cmd_sync(priv, HostCmd_CMD_CFG_DATA,
+						HostCmd_ACT_GEN_SET, 0, NULL);
+			if (ret)
+				return -1;
+		}
+
+		/* Read MAC address from HW */
+		ret = mwifiex_send_cmd_sync(priv, HostCmd_CMD_GET_HW_SPEC,
+					    HostCmd_ACT_GEN_GET, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			return -1;
 
 		/* Reconfigure tx buf size */
+<<<<<<< HEAD
 		ret = mwifiex_send_cmd_async(priv,
 					     HostCmd_CMD_RECONFIGURE_TX_BUFF,
 					     HostCmd_ACT_GEN_SET, 0,
@@ -1540,11 +2301,35 @@ int mwifiex_sta_init_cmd(struct mwifiex_private *priv, u8 first_sta)
 	/* get tx rate */
 	ret = mwifiex_send_cmd_async(priv, HostCmd_CMD_TX_RATE_CFG,
 				     HostCmd_ACT_GEN_GET, 0, NULL);
+=======
+		ret = mwifiex_send_cmd_sync(priv,
+					    HostCmd_CMD_RECONFIGURE_TX_BUFF,
+					    HostCmd_ACT_GEN_SET, 0,
+					    &priv->adapter->tx_buf_size);
+		if (ret)
+			return -1;
+
+		if (priv->bss_type != MWIFIEX_BSS_TYPE_UAP) {
+			/* Enable IEEE PS by default */
+			priv->adapter->ps_mode = MWIFIEX_802_11_POWER_MODE_PSP;
+			ret = mwifiex_send_cmd_sync(
+					priv, HostCmd_CMD_802_11_PS_MODE_ENH,
+					EN_AUTO_PS, BITMAP_STA_PS, NULL);
+			if (ret)
+				return -1;
+		}
+	}
+
+	/* get tx rate */
+	ret = mwifiex_send_cmd_sync(priv, HostCmd_CMD_TX_RATE_CFG,
+				    HostCmd_ACT_GEN_GET, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return -1;
 	priv->data_rate = 0;
 
 	/* get tx power */
+<<<<<<< HEAD
 	ret = mwifiex_send_cmd_async(priv, HostCmd_CMD_TXPWR_CFG,
 				     HostCmd_ACT_GEN_GET, 0, NULL);
 	if (ret)
@@ -1556,10 +2341,26 @@ int mwifiex_sta_init_cmd(struct mwifiex_private *priv, u8 first_sta)
 				     HostCmd_ACT_GEN_SET, 0, &enable);
 	if (ret)
 		return -1;
+=======
+	ret = mwifiex_send_cmd_sync(priv, HostCmd_CMD_RF_TX_PWR,
+				    HostCmd_ACT_GEN_GET, 0, NULL);
+	if (ret)
+		return -1;
+
+	if (priv->bss_type == MWIFIEX_BSS_TYPE_STA) {
+		/* set ibss coalescing_status */
+		ret = mwifiex_send_cmd_sync(
+				priv, HostCmd_CMD_802_11_IBSS_COALESCING_STATUS,
+				HostCmd_ACT_GEN_SET, 0, &enable);
+		if (ret)
+			return -1;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	memset(&amsdu_aggr_ctrl, 0, sizeof(amsdu_aggr_ctrl));
 	amsdu_aggr_ctrl.enable = true;
 	/* Send request to firmware */
+<<<<<<< HEAD
 	ret = mwifiex_send_cmd_async(priv, HostCmd_CMD_AMSDU_AGGR_CTRL,
 				     HostCmd_ACT_GEN_SET, 0,
 <<<<<<< HEAD
@@ -1567,10 +2368,16 @@ int mwifiex_sta_init_cmd(struct mwifiex_private *priv, u8 first_sta)
 =======
 				     &amsdu_aggr_ctrl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = mwifiex_send_cmd_sync(priv, HostCmd_CMD_AMSDU_AGGR_CTRL,
+				    HostCmd_ACT_GEN_SET, 0,
+				    &amsdu_aggr_ctrl);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return -1;
 	/* MAC Control must be the last command in init_fw */
 	/* set MAC Control */
+<<<<<<< HEAD
 	ret = mwifiex_send_cmd_async(priv, HostCmd_CMD_MAC_CONTROL,
 				     HostCmd_ACT_GEN_SET, 0,
 				     &priv->curr_pkt_filter);
@@ -1585,10 +2392,28 @@ int mwifiex_sta_init_cmd(struct mwifiex_private *priv, u8 first_sta)
 					     HostCmd_CMD_802_11_PS_MODE_ENH,
 					     EN_AUTO_PS, BITMAP_AUTO_DS,
 					     &auto_ds);
+=======
+	ret = mwifiex_send_cmd_sync(priv, HostCmd_CMD_MAC_CONTROL,
+				    HostCmd_ACT_GEN_SET, 0,
+				    &priv->curr_pkt_filter);
+	if (ret)
+		return -1;
+
+	if (first_sta && priv->adapter->iface_type != MWIFIEX_USB &&
+	    priv->bss_type != MWIFIEX_BSS_TYPE_UAP) {
+		/* Enable auto deep sleep */
+		auto_ds.auto_ds = DEEP_SLEEP_ON;
+		auto_ds.idle_time = DEEP_SLEEP_IDLE_TIME;
+		ret = mwifiex_send_cmd_sync(priv,
+					    HostCmd_CMD_802_11_PS_MODE_ENH,
+					    EN_AUTO_PS, BITMAP_AUTO_DS,
+					    &auto_ds);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			return -1;
 	}
 
+<<<<<<< HEAD
 	/* Send cmd to FW to enable/disable 11D function */
 	state_11d = ENABLE_11D;
 	ret = mwifiex_send_cmd_async(priv, HostCmd_CMD_802_11_SNMP_MIB,
@@ -1600,16 +2425,38 @@ int mwifiex_sta_init_cmd(struct mwifiex_private *priv, u8 first_sta)
 	/* set last_init_cmd */
 	priv->adapter->last_init_cmd = HostCmd_CMD_802_11_SNMP_MIB;
 =======
+=======
+	if (priv->bss_type != MWIFIEX_BSS_TYPE_UAP) {
+		/* Send cmd to FW to enable/disable 11D function */
+		state_11d = ENABLE_11D;
+		ret = mwifiex_send_cmd_sync(priv, HostCmd_CMD_802_11_SNMP_MIB,
+					    HostCmd_ACT_GEN_SET, DOT11D_I,
+					    &state_11d);
+		if (ret)
+			dev_err(priv->adapter->dev,
+				"11D: failed to enable 11D\n");
+	}
+
+	/* set last_init_cmd before sending the command */
+	priv->adapter->last_init_cmd = HostCmd_CMD_11N_CFG;
+
+>>>>>>> refs/remotes/origin/master
 	/* Send cmd to FW to configure 11n specific configuration
 	 * (Short GI, Channel BW, Green field support etc.) for transmit
 	 */
 	tx_cfg.tx_htcap = MWIFIEX_FW_DEF_HTTXCFG;
+<<<<<<< HEAD
 	ret = mwifiex_send_cmd_async(priv, HostCmd_CMD_11N_CFG,
 				     HostCmd_ACT_GEN_SET, 0, &tx_cfg);
 
 	/* set last_init_cmd */
 	priv->adapter->last_init_cmd = HostCmd_CMD_11N_CFG;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = mwifiex_send_cmd_sync(priv, HostCmd_CMD_11N_CFG,
+				    HostCmd_ACT_GEN_SET, 0, &tx_cfg);
+
+>>>>>>> refs/remotes/origin/master
 	ret = -EINPROGRESS;
 
 	return ret;

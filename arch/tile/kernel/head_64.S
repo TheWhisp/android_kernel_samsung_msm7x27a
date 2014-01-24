@@ -25,6 +25,18 @@
 #include <arch/chip.h>
 #include <arch/spr_def.h>
 
+<<<<<<< HEAD
+=======
+/* Extract two 32-bit bit values that were read into one register. */
+#ifdef __BIG_ENDIAN__
+#define GET_FIRST_INT(rd, rs) shrsi rd, rs, 32
+#define GET_SECOND_INT(rd, rs) addxi rd, rs, 0
+#else
+#define GET_FIRST_INT(rd, rs) addxi rd, rs, 0
+#define GET_SECOND_INT(rd, rs) shrsi rd, rs, 32
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This module contains the entry code for kernel images. It performs the
  * minimal setup needed to call the generic C routines.
@@ -34,6 +46,7 @@
 ENTRY(_start)
 	/* Notify the hypervisor of what version of the API we want */
 	{
+<<<<<<< HEAD
 	  movei r1, TILE_CHIP
 	  movei r2, TILE_CHIP_REV
 	}
@@ -45,6 +58,25 @@ ENTRY(_start)
 	{
 	  move r0, zero
 	  jal hv_inquire_asid
+=======
+#if KERNEL_PL == 1 && _HV_VERSION == 13
+	  /* Support older hypervisors by asking for API version 12. */
+	  movei r0, _HV_VERSION_OLD_HV_INIT
+#else
+	  movei r0, _HV_VERSION
+#endif
+	  movei r1, TILE_CHIP
+	}
+	{
+	  movei r2, TILE_CHIP_REV
+	  movei r3, KERNEL_PL
+	}
+	jal _hv_init
+	/* Get a reasonable default ASID in r0 */
+	{
+	  move r0, zero
+	  jal _hv_inquire_asid
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -55,7 +87,11 @@ ENTRY(_start)
 	 * other CPUs should see a properly-constructed page table.
 	 */
 	{
+<<<<<<< HEAD
 	  v4int_l r2, zero, r0    /* ASID for hv_install_context */
+=======
+	  GET_FIRST_INT(r2, r0)    /* ASID for hv_install_context */
+>>>>>>> refs/remotes/origin/master
 	  moveli r4, hw1_last(swapper_pgprot - PAGE_OFFSET)
 	}
 	{
@@ -71,7 +107,11 @@ ENTRY(_start)
 	{
 	  /* After initializing swapper_pgprot, HV_PTE_GLOBAL is set. */
 	  bfextu r7, r1, HV_PTE_INDEX_GLOBAL, HV_PTE_INDEX_GLOBAL
+<<<<<<< HEAD
 	  inv r4
+=======
+	  finv r4
+>>>>>>> refs/remotes/origin/master
 	}
 	bnez r7, .Lno_write
 	{
@@ -114,12 +154,18 @@ ENTRY(_start)
 	  shl16insli r0, r0, hw0(swapper_pg_dir - PAGE_OFFSET)
 	}
 	{
+<<<<<<< HEAD
 	  move r3, zero
 	  j hv_install_context
+=======
+	  moveli r3, CTX_PAGE_FLAG
+	  j _hv_install_context
+>>>>>>> refs/remotes/origin/master
 	}
 1:
 
 	/* Install the interrupt base. */
+<<<<<<< HEAD
 	moveli r0, hw2_last(MEM_SV_START)
 	shl16insli r0, r0, hw1(MEM_SV_START)
 	shl16insli r0, r0, hw0(MEM_SV_START)
@@ -138,6 +184,21 @@ ENTRY(_start)
 	}
 	{
 	  v4int_l r6, zero, r0    /* r6 = x */
+=======
+	moveli r0, hw2_last(intrpt_start)
+	shl16insli r0, r0, hw1(intrpt_start)
+	shl16insli r0, r0, hw0(intrpt_start)
+	mtspr SPR_INTERRUPT_VECTOR_BASE_K, r0
+
+	/* Get our processor number and save it away in SAVE_K_0. */
+	jal _hv_inquire_topology
+	{
+	  GET_FIRST_INT(r5, r1)   /* r5 = width */
+	  GET_SECOND_INT(r4, r0)  /* r4 = y */
+	}
+	{
+	  GET_FIRST_INT(r6, r0)   /* r6 = x */
+>>>>>>> refs/remotes/origin/master
 	  mul_lu_lu r4, r4, r5
 	}
 	{
@@ -148,7 +209,11 @@ ENTRY(_start)
 	/*
 	 * Load up our per-cpu offset.  When the first (master) tile
 	 * boots, this value is still zero, so we will load boot_pc
+<<<<<<< HEAD
 	 * with start_kernel, and boot_sp with init_stack + THREAD_SIZE.
+=======
+	 * with start_kernel, and boot_sp with at the top of init_stack.
+>>>>>>> refs/remotes/origin/master
 	 * The master tile initializes the per-cpu offset array, so that
 	 * when subsequent (secondary) tiles boot, they will instead load
 	 * from their per-cpu versions of boot_sp and boot_pc.
@@ -192,9 +257,15 @@ ENTRY(_start)
 	}
 	ld r0, r0
 	ld sp, r1
+<<<<<<< HEAD
 	or r4, sp, r4
 	mtspr SPR_SYSTEM_SAVE_K_0, r4  /* save ksp0 + cpu */
 	addi sp, sp, -STACK_TOP_DELTA
+=======
+	shli r4, r4, CPU_SHIFT
+	bfins r4, sp, 0, CPU_SHIFT-1
+	mtspr SPR_SYSTEM_SAVE_K_0, r4  /* save ksp0 + cpu */
+>>>>>>> refs/remotes/origin/master
 	{
 	  move lr, zero   /* stop backtraces in the called function */
 	  jr r0
@@ -210,12 +281,17 @@ ENTRY(empty_zero_page)
 	.macro PTE cpa, bits1
 	.quad HV_PTE_PAGE | HV_PTE_DIRTY | HV_PTE_PRESENT | HV_PTE_ACCESSED |\
 	      HV_PTE_GLOBAL | (HV_PTE_MODE_CACHE_NO_L3 << HV_PTE_INDEX_MODE) |\
+<<<<<<< HEAD
 	      (\bits1) | (HV_CPA_TO_PFN(\cpa) << HV_PTE_INDEX_PFN)
+=======
+	      (\bits1) | (HV_CPA_TO_PTFN(\cpa) << HV_PTE_INDEX_PTFN)
+>>>>>>> refs/remotes/origin/master
 	.endm
 
 __PAGE_ALIGNED_DATA
 	.align PAGE_SIZE
 ENTRY(swapper_pg_dir)
+<<<<<<< HEAD
 	.org swapper_pg_dir + HV_L0_INDEX(PAGE_OFFSET) * HV_PTE_SIZE
 .Lsv_data_pmd:
 	.quad 0  /* PTE temp_data_pmd - PAGE_OFFSET, 0 */
@@ -223,6 +299,15 @@ ENTRY(swapper_pg_dir)
 .Lsv_code_pmd:
 	.quad 0  /* PTE temp_code_pmd - PAGE_OFFSET, 0 */
 	.org swapper_pg_dir + HV_L0_SIZE
+=======
+	.org swapper_pg_dir + PGD_INDEX(PAGE_OFFSET) * HV_PTE_SIZE
+.Lsv_data_pmd:
+	.quad 0  /* PTE temp_data_pmd - PAGE_OFFSET, 0 */
+	.org swapper_pg_dir + PGD_INDEX(MEM_SV_START) * HV_PTE_SIZE
+.Lsv_code_pmd:
+	.quad 0  /* PTE temp_code_pmd - PAGE_OFFSET, 0 */
+	.org swapper_pg_dir + SIZEOF_PGD
+>>>>>>> refs/remotes/origin/master
 	END(swapper_pg_dir)
 
 	.align HV_PAGE_TABLE_ALIGN
@@ -233,11 +318,19 @@ ENTRY(temp_data_pmd)
 	 * permissions later.
 	 */
 	.set addr, 0
+<<<<<<< HEAD
 	.rept HV_L1_ENTRIES
 	PTE addr, HV_PTE_READABLE | HV_PTE_WRITABLE
 	.set addr, addr + HV_PAGE_SIZE_LARGE
 	.endr
 	.org temp_data_pmd + HV_L1_SIZE
+=======
+	.rept PTRS_PER_PMD
+	PTE addr, HV_PTE_READABLE | HV_PTE_WRITABLE
+	.set addr, addr + HPAGE_SIZE
+	.endr
+	.org temp_data_pmd + SIZEOF_PMD
+>>>>>>> refs/remotes/origin/master
 	END(temp_data_pmd)
 
 	.align HV_PAGE_TABLE_ALIGN
@@ -248,11 +341,19 @@ ENTRY(temp_code_pmd)
 	 * permissions later.
 	 */
 	.set addr, 0
+<<<<<<< HEAD
 	.rept HV_L1_ENTRIES
 	PTE addr, HV_PTE_READABLE | HV_PTE_EXECUTABLE
 	.set addr, addr + HV_PAGE_SIZE_LARGE
 	.endr
 	.org temp_code_pmd + HV_L1_SIZE
+=======
+	.rept PTRS_PER_PMD
+	PTE addr, HV_PTE_READABLE | HV_PTE_EXECUTABLE
+	.set addr, addr + HPAGE_SIZE
+	.endr
+	.org temp_code_pmd + SIZEOF_PMD
+>>>>>>> refs/remotes/origin/master
 	END(temp_code_pmd)
 
 	/*

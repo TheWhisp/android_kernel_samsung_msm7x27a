@@ -307,6 +307,10 @@ struct mpc52xx_lpbfifo_request {
 	size_t size;
 	size_t pos;	/* current position of transfer */
 	int flags;
+<<<<<<< HEAD
+=======
+	int defer_xfer_start;
+>>>>>>> refs/remotes/origin/master
 
 	/* What to do when finished */
 	void (*callback)(struct mpc52xx_lpbfifo_request *);
@@ -323,6 +327,10 @@ struct mpc52xx_lpbfifo_request {
 extern int mpc52xx_lpbfifo_submit(struct mpc52xx_lpbfifo_request *req);
 extern void mpc52xx_lpbfifo_abort(struct mpc52xx_lpbfifo_request *req);
 extern void mpc52xx_lpbfifo_poll(void);
+<<<<<<< HEAD
+=======
+extern int mpc52xx_lpbfifo_start_xfer(struct mpc52xx_lpbfifo_request *req);
+>>>>>>> refs/remotes/origin/master
 
 /* mpc52xx_pic.c */
 extern void mpc52xx_init_irq(void);

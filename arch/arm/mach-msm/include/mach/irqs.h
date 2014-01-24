@@ -1,10 +1,14 @@
 /*
  * Copyright (C) 2007 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2008-2010, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -23,6 +27,7 @@
 
 #define MSM_IRQ_BIT(irq)     (1 << ((irq) & 31))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #include "irqs-8625.h"
@@ -87,10 +92,14 @@
 #include "irqs-9625.h"
 >>>>>>> refs/remotes/origin/cm-10.0
 #elif defined(CONFIG_ARCH_MSM7X30)
+=======
+#if defined(CONFIG_ARCH_MSM7X30)
+>>>>>>> refs/remotes/origin/master
 #include "irqs-7x30.h"
 #elif defined(CONFIG_ARCH_QSD8X50)
 #include "irqs-8x50.h"
 #include "sirc.h"
+<<<<<<< HEAD
 #elif defined(CONFIG_ARCH_MSM8X60)
 #include "irqs-8x60.h"
 #elif defined(CONFIG_ARCH_MSM7X01A) || defined(CONFIG_ARCH_MSM7X25) \
@@ -107,10 +116,15 @@
 #elif defined(CONFIG_ARCH_FSM9XXX)
 #include "irqs-fsm9xxx.h"
 #include "sirc.h"
+=======
+#elif defined(CONFIG_ARCH_MSM_ARM11)
+#include "irqs-7x00.h"
+>>>>>>> refs/remotes/origin/master
 #else
 #error "Unknown architecture specification"
 #endif
 
+<<<<<<< HEAD
 #endif
 
 <<<<<<< HEAD
@@ -130,5 +144,10 @@
 		NR_PM8821_IRQS + NR_TABLA_IRQS + NR_GPIO_EXPANDER_IRQS + (n))
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NR_IRQS (NR_MSM_IRQS + NR_GPIO_IRQS + NR_BOARD_IRQS)
+#define MSM_GPIO_TO_INT(n) (NR_MSM_IRQS + (n))
+#define MSM_INT_TO_REG(base, irq) (base + irq / 32)
+>>>>>>> refs/remotes/origin/master
 
 #endif

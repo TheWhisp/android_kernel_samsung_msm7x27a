@@ -9,10 +9,15 @@
 #define __ASM_BARRIER_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/addrspace.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/addrspace.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * read_barrier_depends - Flush all pending reads that subsequents reads
  * depend on.
@@ -95,7 +100,11 @@
 		: "memory")
 #ifdef CONFIG_CPU_CAVIUM_OCTEON
 # define OCTEON_SYNCW_STR	".set push\n.set arch=octeon\nsyncw\nsyncw\n.set pop\n"
+<<<<<<< HEAD
 # define __syncw() 	__asm__ __volatile__(OCTEON_SYNCW_STR : : : "memory")
+=======
+# define __syncw()	__asm__ __volatile__(OCTEON_SYNCW_STR : : : "memory")
+>>>>>>> refs/remotes/origin/master
 
 # define fast_wmb()	__syncw()
 # define fast_rmb()	barrier()
@@ -161,7 +170,11 @@
 #endif
 
 #if defined(CONFIG_WEAK_REORDERING_BEYOND_LLSC) && defined(CONFIG_SMP)
+<<<<<<< HEAD
 #define __WEAK_LLSC_MB		"       sync	\n"
+=======
+#define __WEAK_LLSC_MB		"	sync	\n"
+>>>>>>> refs/remotes/origin/master
 #else
 #define __WEAK_LLSC_MB		"		\n"
 #endif
@@ -183,4 +196,22 @@
 #define nudge_writes() mb()
 #endif
 
+<<<<<<< HEAD
+=======
+#define smp_store_release(p, v)						\
+do {									\
+	compiletime_assert_atomic_type(*p);				\
+	smp_mb();							\
+	ACCESS_ONCE(*p) = (v);						\
+} while (0)
+
+#define smp_load_acquire(p)						\
+({									\
+	typeof(*p) ___p1 = ACCESS_ONCE(*p);				\
+	compiletime_assert_atomic_type(*p);				\
+	smp_mb();							\
+	___p1;								\
+})
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_BARRIER_H */

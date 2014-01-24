@@ -8,6 +8,10 @@
 #include <linux/module.h>
 #include <linux/kdebug.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/context_tracking.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/signal.h>
 #include <asm/cacheflush.h>
 #include <asm/uaccess.h>
@@ -349,7 +353,11 @@ int __kprobes kprobe_fault_handler(struct pt_regs *regs, int trapnr)
 	case KPROBE_HIT_SSDONE:
 		/*
 		 * We increment the nmissed count for accounting,
+<<<<<<< HEAD
 		 * we can also use npre/npostfault count for accouting
+=======
+		 * we can also use npre/npostfault count for accounting
+>>>>>>> refs/remotes/origin/master
 		 * these specific fault cases.
 		 */
 		kprobes_inc_nmissed_count(cur);
@@ -418,12 +426,21 @@ int __kprobes kprobe_exceptions_notify(struct notifier_block *self,
 asmlinkage void __kprobes kprobe_trap(unsigned long trap_level,
 				      struct pt_regs *regs)
 {
+<<<<<<< HEAD
+=======
+	enum ctx_state prev_state = exception_enter();
+
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(trap_level != 0x170 && trap_level != 0x171);
 
 	if (user_mode(regs)) {
 		local_irq_enable();
 		bad_trap(regs, trap_level);
+<<<<<<< HEAD
 		return;
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* trap_level == 0x170 --> ta 0x70
@@ -433,6 +450,11 @@ asmlinkage void __kprobes kprobe_trap(unsigned long trap_level,
 		       (trap_level == 0x170) ? "debug" : "debug_2",
 		       regs, 0, trap_level, SIGTRAP) != NOTIFY_STOP)
 		bad_trap(regs, trap_level);
+<<<<<<< HEAD
+=======
+out:
+	exception_exit(prev_state);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Jprobes support.  */
@@ -511,7 +533,11 @@ int __kprobes trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
 {
 	struct kretprobe_instance *ri = NULL;
 	struct hlist_head *head, empty_rp;
+<<<<<<< HEAD
 	struct hlist_node *node, *tmp;
+=======
+	struct hlist_node *tmp;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags, orig_ret_address = 0;
 	unsigned long trampoline_address =(unsigned long)&kretprobe_trampoline;
 
@@ -531,7 +557,11 @@ int __kprobes trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
 	 *       real return address, and all the rest will point to
 	 *       kretprobe_trampoline
 	 */
+<<<<<<< HEAD
 	hlist_for_each_entry_safe(ri, node, tmp, head, hlist) {
+=======
+	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
+>>>>>>> refs/remotes/origin/master
 		if (ri->task != current)
 			/* another task is sharing our hash bucket */
 			continue;
@@ -559,7 +589,11 @@ int __kprobes trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
 	kretprobe_hash_unlock(current, &flags);
 	preempt_enable_no_resched();
 
+<<<<<<< HEAD
 	hlist_for_each_entry_safe(ri, node, tmp, &empty_rp, hlist) {
+=======
+	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
+>>>>>>> refs/remotes/origin/master
 		hlist_del(&ri->hlist);
 		kfree(ri);
 	}

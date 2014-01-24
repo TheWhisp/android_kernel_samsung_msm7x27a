@@ -11,16 +11,28 @@
 #include <linux/unistd.h>
 #include <linux/cpu.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/oom.h>
+#include <linux/rcupdate.h>
+#include <linux/export.h>
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kthread.h>
 #include <linux/stop_machine.h>
 #include <linux/mutex.h>
 #include <linux/gfp.h>
 #include <linux/suspend.h>
 
+<<<<<<< HEAD
+=======
+#include "smpboot.h"
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 /* Serializes the updates to cpu_online_mask, cpu_present_mask */
 static DEFINE_MUTEX(cpu_add_remove_lock);
@@ -79,6 +91,13 @@ void put_online_cpus(void)
 	if (cpu_hotplug.active_writer == current)
 		return;
 	mutex_lock(&cpu_hotplug.lock);
+<<<<<<< HEAD
+=======
+
+	if (WARN_ON(!cpu_hotplug.refcount))
+		cpu_hotplug.refcount++; /* try to fix things up */
+
+>>>>>>> refs/remotes/origin/master
 	if (!--cpu_hotplug.refcount && unlikely(cpu_hotplug.active_writer))
 		wake_up_process(cpu_hotplug.active_writer);
 	mutex_unlock(&cpu_hotplug.lock);
@@ -108,7 +127,11 @@ EXPORT_SYMBOL_GPL(put_online_cpus);
  * get_online_cpus() not an api which is called all that often.
  *
  */
+<<<<<<< HEAD
 static void cpu_hotplug_begin(void)
+=======
+void cpu_hotplug_begin(void)
+>>>>>>> refs/remotes/origin/master
 {
 	cpu_hotplug.active_writer = current;
 
@@ -122,14 +145,21 @@ static void cpu_hotplug_begin(void)
 	}
 }
 
+<<<<<<< HEAD
 static void cpu_hotplug_done(void)
+=======
+void cpu_hotplug_done(void)
+>>>>>>> refs/remotes/origin/master
 {
 	cpu_hotplug.active_writer = NULL;
 	mutex_unlock(&cpu_hotplug.lock);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Wait for currently running CPU hotplug operations to complete (if any) and
  * disable future CPU hotplug (from sysfs). The 'cpu_add_remove_lock' protects
@@ -151,11 +181,15 @@ void cpu_hotplug_enable(void)
 	cpu_maps_update_done();
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #else /* #if CONFIG_HOTPLUG_CPU */
 static void cpu_hotplug_begin(void) {}
 static void cpu_hotplug_done(void) {}
 #endif	/* #else #if CONFIG_HOTPLUG_CPU */
+=======
+#endif	/* CONFIG_HOTPLUG_CPU */
+>>>>>>> refs/remotes/origin/master
 
 /* Need to know about CPUs going up/down? */
 int __ref register_cpu_notifier(struct notifier_block *nb)
@@ -199,6 +233,7 @@ void __ref unregister_cpu_notifier(struct notifier_block *nb)
 }
 EXPORT_SYMBOL(unregister_cpu_notifier);
 
+<<<<<<< HEAD
 static inline void check_for_tasks(int cpu)
 {
 	struct task_struct *p;
@@ -212,6 +247,59 @@ static inline void check_for_tasks(int cpu)
 =======
 		    (p->utime || p->stime))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/**
+ * clear_tasks_mm_cpumask - Safely clear tasks' mm_cpumask for a CPU
+ * @cpu: a CPU id
+ *
+ * This function walks all processes, finds a valid mm struct for each one and
+ * then clears a corresponding bit in mm's cpumask.  While this all sounds
+ * trivial, there are various non-obvious corner cases, which this function
+ * tries to solve in a safe manner.
+ *
+ * Also note that the function uses a somewhat relaxed locking scheme, so it may
+ * be called only for an already offlined CPU.
+ */
+void clear_tasks_mm_cpumask(int cpu)
+{
+	struct task_struct *p;
+
+	/*
+	 * This function is called after the cpu is taken down and marked
+	 * offline, so its not like new tasks will ever get this cpu set in
+	 * their mm mask. -- Peter Zijlstra
+	 * Thus, we may use rcu_read_lock() here, instead of grabbing
+	 * full-fledged tasklist_lock.
+	 */
+	WARN_ON(cpu_online(cpu));
+	rcu_read_lock();
+	for_each_process(p) {
+		struct task_struct *t;
+
+		/*
+		 * Main thread might exit, but other threads may still have
+		 * a valid mm. Find one.
+		 */
+		t = find_lock_task_mm(p);
+		if (!t)
+			continue;
+		cpumask_clear_cpu(cpu, mm_cpumask(t->mm));
+		task_unlock(t);
+	}
+	rcu_read_unlock();
+}
+
+static inline void check_for_tasks(int cpu)
+{
+	struct task_struct *p;
+	cputime_t utime, stime;
+
+	write_lock_irq(&tasklist_lock);
+	for_each_process(p) {
+		task_cputime(p, &utime, &stime);
+		if (task_cpu(p) == cpu && p->state == TASK_RUNNING &&
+		    (utime || stime))
+>>>>>>> refs/remotes/origin/master
 			printk(KERN_WARNING "Task %s (pid = %d) is on cpu %d "
 				"(state = %ld, flags = %x)\n",
 				p->comm, task_pid_nr(p), cpu,
@@ -237,6 +325,11 @@ static int __ref take_cpu_down(void *_param)
 		return err;
 
 	cpu_notify(CPU_DYING | param->mod, param->hcpu);
+<<<<<<< HEAD
+=======
+	/* Park the stopper thread */
+	kthread_park(current);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -268,11 +361,40 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen)
 		goto out_release;
 	}
 
+<<<<<<< HEAD
 	err = __stop_machine(take_cpu_down, &tcd_param, cpumask_of(cpu));
 	if (err) {
 		/* CPU didn't die: tell everyone.  Can't complain. */
 		cpu_notify_nofail(CPU_DOWN_FAILED | mod, hcpu);
 
+=======
+	/*
+	 * By now we've cleared cpu_active_mask, wait for all preempt-disabled
+	 * and RCU users of this state to go away such that all new such users
+	 * will observe it.
+	 *
+	 * For CONFIG_PREEMPT we have preemptible RCU and its sync_rcu() might
+	 * not imply sync_sched(), so explicitly call both.
+	 *
+	 * Do sync before park smpboot threads to take care the rcu boost case.
+	 */
+#ifdef CONFIG_PREEMPT
+	synchronize_sched();
+#endif
+	synchronize_rcu();
+
+	smpboot_park_threads(cpu);
+
+	/*
+	 * So now all preempt/rcu users must observe !cpu_active().
+	 */
+
+	err = __stop_machine(take_cpu_down, &tcd_param, cpumask_of(cpu));
+	if (err) {
+		/* CPU didn't die: tell everyone.  Can't complain. */
+		smpboot_unpark_threads(cpu);
+		cpu_notify_nofail(CPU_DOWN_FAILED | mod, hcpu);
+>>>>>>> refs/remotes/origin/master
 		goto out_release;
 	}
 	BUG_ON(cpu_online(cpu));
@@ -323,16 +445,42 @@ EXPORT_SYMBOL(cpu_down);
 #endif /*CONFIG_HOTPLUG_CPU*/
 
 /* Requires cpu_add_remove_lock to be held */
+<<<<<<< HEAD
 static int __cpuinit _cpu_up(unsigned int cpu, int tasks_frozen)
+=======
+static int _cpu_up(unsigned int cpu, int tasks_frozen)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret, nr_calls = 0;
 	void *hcpu = (void *)(long)cpu;
 	unsigned long mod = tasks_frozen ? CPU_TASKS_FROZEN : 0;
+<<<<<<< HEAD
 
 	if (cpu_online(cpu) || !cpu_present(cpu))
 		return -EINVAL;
 
 	cpu_hotplug_begin();
+=======
+	struct task_struct *idle;
+
+	cpu_hotplug_begin();
+
+	if (cpu_online(cpu) || !cpu_present(cpu)) {
+		ret = -EINVAL;
+		goto out;
+	}
+
+	idle = idle_thread_get(cpu);
+	if (IS_ERR(idle)) {
+		ret = PTR_ERR(idle);
+		goto out;
+	}
+
+	ret = smpboot_create_threads(cpu);
+	if (ret)
+		goto out;
+
+>>>>>>> refs/remotes/origin/master
 	ret = __cpu_notify(CPU_UP_PREPARE | mod, hcpu, -1, &nr_calls);
 	if (ret) {
 		nr_calls--;
@@ -342,22 +490,37 @@ static int __cpuinit _cpu_up(unsigned int cpu, int tasks_frozen)
 	}
 
 	/* Arch-specific enabling code. */
+<<<<<<< HEAD
 	ret = __cpu_up(cpu);
+=======
+	ret = __cpu_up(cpu, idle);
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0)
 		goto out_notify;
 	BUG_ON(!cpu_online(cpu));
 
+<<<<<<< HEAD
+=======
+	/* Wake the per cpu threads */
+	smpboot_unpark_threads(cpu);
+
+>>>>>>> refs/remotes/origin/master
 	/* Now call notifier in preparation. */
 	cpu_notify(CPU_ONLINE | mod, hcpu);
 
 out_notify:
 	if (ret != 0)
 		__cpu_notify(CPU_UP_CANCELED | mod, hcpu, nr_calls, NULL);
+<<<<<<< HEAD
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	cpu_hotplug_done();
 
 	return ret;
 }
 
+<<<<<<< HEAD
 int __cpuinit cpu_up(unsigned int cpu)
 {
 	int err = 0;
@@ -367,6 +530,12 @@ int __cpuinit cpu_up(unsigned int cpu)
 	pg_data_t	*pgdat;
 #endif
 
+=======
+int cpu_up(unsigned int cpu)
+{
+	int err = 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (!cpu_possible(cpu)) {
 		printk(KERN_ERR "can't online cpu %d because it is not "
 			"configured as may-hotadd at boot time\n", cpu);
@@ -377,6 +546,7 @@ int __cpuinit cpu_up(unsigned int cpu)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 #ifdef	CONFIG_MEMORY_HOTPLUG
 	nid = cpu_to_node(cpu);
 	if (!node_online(nid)) {
@@ -398,6 +568,11 @@ int __cpuinit cpu_up(unsigned int cpu)
 		mutex_unlock(&zonelists_mutex);
 	}
 #endif
+=======
+	err = try_online_node(cpu_to_node(cpu));
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	cpu_maps_update_begin();
 
@@ -413,13 +588,18 @@ out:
 	return err;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(cpu_up);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(cpu_up);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PM_SLEEP_SMP
 static cpumask_var_t frozen_cpus;
 
+<<<<<<< HEAD
 void __weak arch_disable_nonboot_cpus_begin(void)
 {
 }
@@ -428,6 +608,8 @@ void __weak arch_disable_nonboot_cpus_end(void)
 {
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 int disable_nonboot_cpus(void)
 {
 	int cpu, first_cpu, error = 0;
@@ -439,7 +621,10 @@ int disable_nonboot_cpus(void)
 	 * with the userspace trying to use the CPU hotplug at the same time
 	 */
 	cpumask_clear(frozen_cpus);
+<<<<<<< HEAD
 	arch_disable_nonboot_cpus_begin();
+=======
+>>>>>>> refs/remotes/origin/master
 
 	printk("Disabling non-boot CPUs ...\n");
 	for_each_online_cpu(cpu) {
@@ -455,8 +640,11 @@ int disable_nonboot_cpus(void)
 		}
 	}
 
+<<<<<<< HEAD
 	arch_disable_nonboot_cpus_end();
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!error) {
 		BUG_ON(num_online_cpus() > 1);
 		/* Make sure the CPUs won't be enabled by someone else */
@@ -507,10 +695,14 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int alloc_frozen_cpus(void)
 =======
 static int __init alloc_frozen_cpus(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init alloc_frozen_cpus(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!alloc_cpumask_var(&frozen_cpus, GFP_KERNEL|__GFP_ZERO))
 		return -ENOMEM;
@@ -519,6 +711,7 @@ static int __init alloc_frozen_cpus(void)
 core_initcall(alloc_frozen_cpus);
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Prevent regular CPU hotplug from racing with the freezer, by disabling CPU
  * hotplug when tasks are about to be frozen. Also, don't allow the freezer
@@ -552,6 +745,8 @@ void cpu_hotplug_enable_after_thaw(void)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * When callbacks for CPU hotplug notifications are being executed, we must
  * ensure that the state of the system with respect to the tasks being frozen
  * or not, as reported by the notification, remains unchanged *throughout the
@@ -571,19 +766,27 @@ cpu_hotplug_pm_callback(struct notifier_block *nb,
 	case PM_SUSPEND_PREPARE:
 	case PM_HIBERNATION_PREPARE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cpu_hotplug_disable_before_freeze();
 =======
 		cpu_hotplug_disable();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cpu_hotplug_disable();
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case PM_POST_SUSPEND:
 	case PM_POST_HIBERNATION:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cpu_hotplug_enable_after_thaw();
 =======
 		cpu_hotplug_enable();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cpu_hotplug_enable();
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -595,11 +798,21 @@ cpu_hotplug_pm_callback(struct notifier_block *nb,
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int cpu_hotplug_pm_sync_init(void)
 =======
 static int __init cpu_hotplug_pm_sync_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
+=======
+static int __init cpu_hotplug_pm_sync_init(void)
+{
+	/*
+	 * cpu_hotplug_pm_callback has higher priority than x86
+	 * bsp_pm_callback which depends on cpu_hotplug_pm_callback
+	 * to disable cpu hotplug to avoid cpu hotplug race.
+	 */
+>>>>>>> refs/remotes/origin/master
 	pm_notifier(cpu_hotplug_pm_callback, 0);
 	return 0;
 }
@@ -615,7 +828,11 @@ core_initcall(cpu_hotplug_pm_sync_init);
  * It must be called by the arch code on the new cpu, before the new cpu
  * enables interrupts and before the "boot" cpu returns from __cpu_up().
  */
+<<<<<<< HEAD
 void __cpuinit notify_cpu_starting(unsigned int cpu)
+=======
+void notify_cpu_starting(unsigned int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long val = CPU_STARTING;
 
@@ -723,6 +940,7 @@ void init_cpu_online(const struct cpumask *src)
 {
 	cpumask_copy(to_cpumask(cpu_online_bits), src);
 }
+<<<<<<< HEAD
 
 static ATOMIC_NOTIFIER_HEAD(idle_notifier);
 
@@ -743,3 +961,5 @@ void idle_notifier_call_chain(unsigned long val)
 	atomic_notifier_call_chain(&idle_notifier, val, NULL);
 }
 EXPORT_SYMBOL_GPL(idle_notifier_call_chain);
+=======
+>>>>>>> refs/remotes/origin/master

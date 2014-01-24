@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
@@ -25,7 +28,10 @@
  * Larry Finger <Larry.Finger@lwfinger.net>
  *
  ******************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __XMIT_OSDEP_H_
 #define __XMIT_OSDEP_H_
 
@@ -51,9 +57,13 @@ struct xmit_buf;
 
 int r8712_xmit_entry(_pkt *pkt, struct  net_device *pnetdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void r8712_SetFilter(struct work_struct *work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void r8712_SetFilter(struct work_struct *work);
+>>>>>>> refs/remotes/origin/master
 int r8712_xmit_resource_alloc(struct _adapter *padapter,
 			   struct xmit_buf *pxmitbuf);
 void r8712_xmit_resource_free(struct _adapter *padapter,

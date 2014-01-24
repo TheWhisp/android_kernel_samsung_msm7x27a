@@ -4,6 +4,11 @@
  * Copyright (C) 2009 Neil Horman <nhorman@tuxdriver.com>
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
 #include <linux/string.h>
@@ -22,6 +27,10 @@
 #include <linux/timer.h>
 #include <linux/bitops.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/genetlink.h>
 #include <net/netevent.h>
 
@@ -61,7 +70,10 @@ static struct genl_family net_drop_monitor_family = {
 	.hdrsize        = 0,
 	.name           = "NET_DM",
 	.version        = 2,
+<<<<<<< HEAD
 	.maxattr        = NET_DM_CMD_MAX,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static DEFINE_PER_CPU(struct per_cpu_dm_data, dm_cpu_data);
@@ -103,6 +115,13 @@ static struct sk_buff *reset_per_cpu_data(struct per_cpu_dm_data *data)
 	return skb;
 }
 
+<<<<<<< HEAD
+=======
+static struct genl_multicast_group dropmon_mcgrps[] = {
+	{ .name = "events", },
+};
+
+>>>>>>> refs/remotes/origin/master
 static void send_dm_alert(struct work_struct *work)
 {
 	struct sk_buff *skb;
@@ -113,7 +132,12 @@ static void send_dm_alert(struct work_struct *work)
 	skb = reset_per_cpu_data(data);
 
 	if (skb)
+<<<<<<< HEAD
 		genlmsg_multicast(skb, 0, NET_DM_GRP_ALERT, GFP_KERNEL);
+=======
+		genlmsg_multicast(&net_drop_monitor_family, skb, 0,
+				  0, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -225,9 +249,21 @@ static int set_all_monitor_traces(int state)
 
 	switch (state) {
 	case TRACE_ON:
+<<<<<<< HEAD
 		rc |= register_trace_kfree_skb(trace_kfree_skb_hit, NULL);
 		rc |= register_trace_napi_poll(trace_napi_poll_hit, NULL);
 		break;
+=======
+		if (!try_module_get(THIS_MODULE)) {
+			rc = -ENODEV;
+			break;
+		}
+
+		rc |= register_trace_kfree_skb(trace_kfree_skb_hit, NULL);
+		rc |= register_trace_napi_poll(trace_napi_poll_hit, NULL);
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	case TRACE_OFF:
 		rc |= unregister_trace_kfree_skb(trace_kfree_skb_hit, NULL);
 		rc |= unregister_trace_napi_poll(trace_napi_poll_hit, NULL);
@@ -243,6 +279,12 @@ static int set_all_monitor_traces(int state)
 				kfree_rcu(new_stat, rcu);
 			}
 		}
+<<<<<<< HEAD
+=======
+
+		module_put(THIS_MODULE);
+
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		rc = 1;
@@ -283,9 +325,15 @@ static int net_dm_cmd_trace(struct sk_buff *skb,
 }
 
 static int dropmon_net_event(struct notifier_block *ev_block,
+<<<<<<< HEAD
 			unsigned long event, void *ptr)
 {
 	struct net_device *dev = ptr;
+=======
+			     unsigned long event, void *ptr)
+{
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 	struct dm_hw_stat_delta *new_stat = NULL;
 	struct dm_hw_stat_delta *tmp;
 
@@ -321,7 +369,11 @@ out:
 	return NOTIFY_DONE;
 }
 
+<<<<<<< HEAD
 static struct genl_ops dropmon_ops[] = {
+=======
+static const struct genl_ops dropmon_ops[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.cmd = NET_DM_CMD_CONFIG,
 		.doit = net_dm_cmd_config,
@@ -345,6 +397,7 @@ static int __init init_net_drop_monitor(void)
 	struct per_cpu_dm_data *data;
 	int cpu, rc;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "Initializing network drop monitor service\n");
 
 	if (sizeof(void *) > 8) {
@@ -363,12 +416,36 @@ static int __init init_net_drop_monitor(void)
 	rc = register_netdevice_notifier(&dropmon_net_notifier);
 	if (rc < 0) {
 		printk(KERN_CRIT "Failed to register netdevice notifier\n");
+=======
+	pr_info("Initializing network drop monitor service\n");
+
+	if (sizeof(void *) > 8) {
+		pr_err("Unable to store program counters on this arch, Drop monitor failed\n");
+		return -ENOSPC;
+	}
+
+	rc = genl_register_family_with_ops_groups(&net_drop_monitor_family,
+						  dropmon_ops, dropmon_mcgrps);
+	if (rc) {
+		pr_err("Could not create drop monitor netlink family\n");
+		return rc;
+	}
+	WARN_ON(net_drop_monitor_family.mcgrp_offset != NET_DM_GRP_ALERT);
+
+	rc = register_netdevice_notifier(&dropmon_net_notifier);
+	if (rc < 0) {
+		pr_crit("Failed to register netdevice notifier\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_unreg;
 	}
 
 	rc = 0;
 
+<<<<<<< HEAD
 	for_each_present_cpu(cpu) {
+=======
+	for_each_possible_cpu(cpu) {
+>>>>>>> refs/remotes/origin/master
 		data = &per_cpu(dm_cpu_data, cpu);
 		INIT_WORK(&data->dm_alert_work, send_dm_alert);
 		init_timer(&data->send_timer);
@@ -387,4 +464,41 @@ out:
 	return rc;
 }
 
+<<<<<<< HEAD
 late_initcall(init_net_drop_monitor);
+=======
+static void exit_net_drop_monitor(void)
+{
+	struct per_cpu_dm_data *data;
+	int cpu;
+
+	BUG_ON(unregister_netdevice_notifier(&dropmon_net_notifier));
+
+	/*
+	 * Because of the module_get/put we do in the trace state change path
+	 * we are guarnateed not to have any current users when we get here
+	 * all we need to do is make sure that we don't have any running timers
+	 * or pending schedule calls
+	 */
+
+	for_each_possible_cpu(cpu) {
+		data = &per_cpu(dm_cpu_data, cpu);
+		del_timer_sync(&data->send_timer);
+		cancel_work_sync(&data->dm_alert_work);
+		/*
+		 * At this point, we should have exclusive access
+		 * to this struct and can free the skb inside it
+		 */
+		kfree_skb(data->skb);
+	}
+
+	BUG_ON(genl_unregister_family(&net_drop_monitor_family));
+}
+
+module_init(init_net_drop_monitor);
+module_exit(exit_net_drop_monitor);
+
+MODULE_LICENSE("GPL v2");
+MODULE_AUTHOR("Neil Horman <nhorman@tuxdriver.com>");
+MODULE_ALIAS_GENL_FAMILY("NET_DM");
+>>>>>>> refs/remotes/origin/master

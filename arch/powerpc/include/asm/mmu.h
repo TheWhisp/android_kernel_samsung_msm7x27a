@@ -101,6 +101,10 @@
 #define MMU_FTRS_POWER5		MMU_FTRS_POWER4 | MMU_FTR_LOCKLESS_TLBIE
 #define MMU_FTRS_POWER6		MMU_FTRS_POWER4 | MMU_FTR_LOCKLESS_TLBIE
 #define MMU_FTRS_POWER7		MMU_FTRS_POWER4 | MMU_FTR_LOCKLESS_TLBIE
+<<<<<<< HEAD
+=======
+#define MMU_FTRS_POWER8		MMU_FTRS_POWER4 | MMU_FTR_LOCKLESS_TLBIE
+>>>>>>> refs/remotes/origin/master
 #define MMU_FTRS_CELL		MMU_FTRS_DEFAULT_HPTE_ARCH_V2 | \
 				MMU_FTR_CI_LARGE_PAGE
 #define MMU_FTRS_PA6T		MMU_FTRS_DEFAULT_HPTE_ARCH_V2 | \
@@ -116,23 +120,32 @@
 #include <asm/cputable.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC_FSL_BOOK3E
 #include <asm/percpu.h>
 DECLARE_PER_CPU(int, next_tlbcam_idx);
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int mmu_has_feature(unsigned long feature)
 {
 	return (cur_cpu_spec->mmu_features & feature);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern unsigned int __start___mmu_ftr_fixup, __stop___mmu_ftr_fixup;
 
 /* MMU initialization (64-bit only fo now) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void mmu_clear_feature(unsigned long feature)
 {
 	cur_cpu_spec->mmu_features &= ~feature;
@@ -141,7 +154,10 @@ static inline void mmu_clear_feature(unsigned long feature)
 extern unsigned int __start___mmu_ftr_fixup, __stop___mmu_ftr_fixup;
 
 /* MMU initialization */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void early_init_mmu(void);
 extern void early_init_mmu_secondary(void);
 
@@ -155,6 +171,18 @@ extern void setup_initial_memory_limit(phys_addr_t first_memblock_base,
 extern u64 ppc64_rma_size;
 #endif /* CONFIG_PPC64 */
 
+<<<<<<< HEAD
+=======
+struct mm_struct;
+#ifdef CONFIG_DEBUG_VM
+extern void assert_pte_locked(struct mm_struct *mm, unsigned long addr);
+#else /* CONFIG_DEBUG_VM */
+static inline void assert_pte_locked(struct mm_struct *mm, unsigned long addr)
+{
+}
+#endif /* !CONFIG_DEBUG_VM */
+
+>>>>>>> refs/remotes/origin/master
 #endif /* !__ASSEMBLY__ */
 
 /* The kernel use the constants below to index in the page sizes array.
@@ -172,18 +200,23 @@ extern u64 ppc64_rma_size;
  * to think about, feedback welcome. --BenH.
  */
 
+<<<<<<< HEAD
 /* There are #define as they have to be used in assembly
  *
  * WARNING: If you change this list, make sure to update the array of
  * names currently in arch/powerpc/mm/hugetlbpage.c or bad things will
  * happen
  */
+=======
+/* These are #defines as they have to be used in assembly */
+>>>>>>> refs/remotes/origin/master
 #define MMU_PAGE_4K	0
 #define MMU_PAGE_16K	1
 #define MMU_PAGE_64K	2
 #define MMU_PAGE_64K_AP	3	/* "Admixed pages" (hash64 only) */
 #define MMU_PAGE_256K	4
 #define MMU_PAGE_1M	5
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define MMU_PAGE_8M	6
 #define MMU_PAGE_16M	7
@@ -194,6 +227,8 @@ extern u64 ppc64_rma_size;
 #define MMU_PAGE_COUNT	12
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define MMU_PAGE_4M	6
 #define MMU_PAGE_8M	7
 #define MMU_PAGE_16M	8
@@ -204,7 +239,10 @@ extern u64 ppc64_rma_size;
 #define MMU_PAGE_64G	13
 
 #define MMU_PAGE_COUNT	14
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_PPC_STD_MMU_64)
 /* 64-bit classic hash table MMU */

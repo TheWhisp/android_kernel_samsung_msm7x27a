@@ -24,6 +24,7 @@
 #include <linux/tick.h>
 #include <linux/uaccess.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 
 /*
  * Kernel thread creation.  The desired kernel function is "wrapped"
@@ -51,6 +52,9 @@ int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
 	return do_fork(flags|CLONE_VM|CLONE_UNTRACED, 0, &regs, 0, NULL, NULL);
 }
 EXPORT_SYMBOL(kernel_thread);
+=======
+#include <linux/tracehook.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Program thread launch.  Often defined as a macro in processor.h,
@@ -78,6 +82,7 @@ void start_thread(struct pt_regs *regs, unsigned long pc, unsigned long sp)
  *  If hardware or VM offer wait termination even though interrupts
  *  are disabled.
  */
+<<<<<<< HEAD
 static void default_idle(void)
 {
 	__vmwait();
@@ -100,6 +105,13 @@ void cpu_idle(void)
 		tick_nohz_idle_exit();
 		schedule();
 	}
+=======
+void arch_cpu_idle(void)
+{
+	__vmwait();
+	/*  interrupts wake us up, but irqs are still disabled */
+	local_irq_enable();
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -114,8 +126,12 @@ unsigned long thread_saved_pc(struct task_struct *tsk)
  * Copy architecture-specific thread state
  */
 int copy_thread(unsigned long clone_flags, unsigned long usp,
+<<<<<<< HEAD
 		unsigned long unused, struct task_struct *p,
 		struct pt_regs *regs)
+=======
+		unsigned long arg, struct task_struct *p)
+>>>>>>> refs/remotes/origin/master
 {
 	struct thread_info *ti = task_thread_info(p);
 	struct hexagon_switch_stack *ss;
@@ -125,16 +141,26 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 	childregs = (struct pt_regs *) (((unsigned long) ti + THREAD_SIZE) -
 					sizeof(*childregs));
 
+<<<<<<< HEAD
 	memcpy(childregs, regs, sizeof(*childregs));
+=======
+>>>>>>> refs/remotes/origin/master
 	ti->regs = childregs;
 
 	/*
 	 * Establish kernel stack pointer and initial PC for new thread
+<<<<<<< HEAD
+=======
+	 * Note that unlike the usual situation, we do not copy the
+	 * parent's callee-saved here; those are in pt_regs and whatever
+	 * we leave here will be overridden on return to userland.
+>>>>>>> refs/remotes/origin/master
 	 */
 	ss = (struct hexagon_switch_stack *) ((unsigned long) childregs -
 						    sizeof(*ss));
 	ss->lr = (unsigned long)ret_from_fork;
 	p->thread.switch_sp = ss;
+<<<<<<< HEAD
 
 	/* If User mode thread, set pt_reg stack pointer as per parameter */
 	if (user_mode(childregs)) {
@@ -180,6 +206,42 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 	 * field on switch_to.
 	 */
 	p->stack = (void *)ti;
+=======
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		memset(childregs, 0, sizeof(struct pt_regs));
+		/* r24 <- fn, r25 <- arg */
+		ss->r24 = usp;
+		ss->r25 = arg;
+		pt_set_kmode(childregs);
+		return 0;
+	}
+	memcpy(childregs, current_pt_regs(), sizeof(*childregs));
+	ss->r2524 = 0;
+
+	if (usp)
+		pt_set_rte_sp(childregs, usp);
+
+	/* Child sees zero return value */
+	childregs->r00 = 0;
+
+	/*
+	 * The clone syscall has the C signature:
+	 * int [r0] clone(int flags [r0],
+	 *           void *child_frame [r1],
+	 *           void *parent_tid [r2],
+	 *           void *child_tid [r3],
+	 *           void *thread_control_block [r4]);
+	 * ugp is used to provide TLS support.
+	 */
+	if (clone_flags & CLONE_SETTLS)
+		childregs->ugp = childregs->r04;
+
+	/*
+	 * Parent sees new pid -- not necessary, not even possible at
+	 * this point in the fork process
+	 * Might also want to set things like ti->addr_limit
+	 */
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -234,6 +296,7 @@ unsigned long get_wchan(struct task_struct *p)
 }
 
 /*
+<<<<<<< HEAD
  * Borrowed from PowerPC -- basically allow smaller kernel stacks if we
  * go crazy with the page sizes.
  */
@@ -276,4 +339,49 @@ void thread_info_cache_init(void)
 int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fpu)
 {
 	return 0;
+=======
+ * Required placeholder.
+ */
+int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fpu)
+{
+	return 0;
+}
+
+
+/*
+ * Called on the exit path of event entry; see vm_entry.S
+ *
+ * Interrupts will already be disabled.
+ *
+ * Returns 0 if there's no need to re-check for more work.
+ */
+
+int do_work_pending(struct pt_regs *regs, u32 thread_info_flags)
+{
+	if (!(thread_info_flags & _TIF_WORK_MASK)) {
+		return 0;
+	}  /* shortcut -- no work to be done */
+
+	local_irq_enable();
+
+	if (thread_info_flags & _TIF_NEED_RESCHED) {
+		schedule();
+		return 1;
+	}
+
+	if (thread_info_flags & _TIF_SIGPENDING) {
+		do_signal(regs);
+		return 1;
+	}
+
+	if (thread_info_flags & _TIF_NOTIFY_RESUME) {
+		clear_thread_flag(TIF_NOTIFY_RESUME);
+		tracehook_notify_resume(regs);
+		return 1;
+	}
+
+	/* Should not even reach here */
+	panic("%s: bad thread_info flags 0x%08x\n", __func__,
+		thread_info_flags);
+>>>>>>> refs/remotes/origin/master
 }

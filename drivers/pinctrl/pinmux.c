@@ -33,6 +33,7 @@
 int pinmux_check_ops(struct pinctrl_dev *pctldev)
 {
 	const struct pinmux_ops *ops = pctldev->desc->pmxops;
+<<<<<<< HEAD
 	unsigned selector = 0;
 
 	/* Check that we implement required operations */
@@ -49,6 +50,27 @@ int pinmux_check_ops(struct pinctrl_dev *pctldev)
 							   selector);
 		if (!fname) {
 			pr_err("pinmux ops has no name for function%u\n",
+=======
+	unsigned nfuncs;
+	unsigned selector = 0;
+
+	/* Check that we implement required operations */
+	if (!ops ||
+	    !ops->get_functions_count ||
+	    !ops->get_function_name ||
+	    !ops->get_function_groups ||
+	    !ops->enable) {
+		dev_err(pctldev->dev, "pinmux ops lacks necessary functions\n");
+		return -EINVAL;
+	}
+	/* Check that all functions registered have names */
+	nfuncs = ops->get_functions_count(pctldev);
+	while (selector < nfuncs) {
+		const char *fname = ops->get_function_name(pctldev,
+							   selector);
+		if (!fname) {
+			dev_err(pctldev->dev, "pinmux ops has no name for function%u\n",
+>>>>>>> refs/remotes/origin/master
 				selector);
 			return -EINVAL;
 		}
@@ -85,6 +107,7 @@ static int pin_request(struct pinctrl_dev *pctldev,
 	const struct pinmux_ops *ops = pctldev->desc->pmxops;
 	int status = -EINVAL;
 
+<<<<<<< HEAD
 	dev_dbg(pctldev->dev, "request pin %d for %s\n", pin, owner);
 
 	desc = pin_desc_get(pctldev, pin);
@@ -94,11 +117,29 @@ static int pin_request(struct pinctrl_dev *pctldev,
 		goto out;
 	}
 
+=======
+	desc = pin_desc_get(pctldev, pin);
+	if (desc == NULL) {
+		dev_err(pctldev->dev,
+			"pin %d is not registered so it cannot be requested\n",
+			pin);
+		goto out;
+	}
+
+	dev_dbg(pctldev->dev, "request pin %d (%s) for %s\n",
+		pin, desc->name, owner);
+
+>>>>>>> refs/remotes/origin/master
 	if (gpio_range) {
 		/* There's no need to support multiple GPIO requests */
 		if (desc->gpio_owner) {
 			dev_err(pctldev->dev,
+<<<<<<< HEAD
 				"pin already requested\n");
+=======
+				"pin %s already requested by %s; cannot claim for %s\n",
+				desc->name, desc->gpio_owner, owner);
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 
@@ -106,7 +147,12 @@ static int pin_request(struct pinctrl_dev *pctldev,
 	} else {
 		if (desc->mux_usecount && strcmp(desc->mux_owner, owner)) {
 			dev_err(pctldev->dev,
+<<<<<<< HEAD
 				"pin already requested\n");
+=======
+				"pin %s already requested by %s; cannot claim for %s\n",
+				desc->name, desc->mux_owner, owner);
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 
@@ -139,8 +185,12 @@ static int pin_request(struct pinctrl_dev *pctldev,
 		status = 0;
 
 	if (status) {
+<<<<<<< HEAD
 		dev_err(pctldev->dev, "->request on device %s failed for pin %d\n",
 		       pctldev->desc->name, pin);
+=======
+		dev_err(pctldev->dev, "request() failed for pin %d\n", pin);
+>>>>>>> refs/remotes/origin/master
 		module_put(pctldev->owner);
 	}
 
@@ -157,7 +207,11 @@ out_free_pin:
 out:
 	if (status)
 		dev_err(pctldev->dev, "pin-%d (%s) status %d\n",
+<<<<<<< HEAD
 		       pin, owner, status);
+=======
+			pin, owner, status);
+>>>>>>> refs/remotes/origin/master
 
 	return status;
 }
@@ -188,6 +242,14 @@ static const char *pin_free(struct pinctrl_dev *pctldev, int pin,
 	}
 
 	if (!gpio_range) {
+<<<<<<< HEAD
+=======
+		/*
+		 * A pin should not be freed more times than allocated.
+		 */
+		if (WARN_ON(!desc->mux_usecount))
+			return NULL;
+>>>>>>> refs/remotes/origin/master
 		desc->mux_usecount--;
 		if (desc->mux_usecount)
 			return NULL;
@@ -226,14 +288,21 @@ int pinmux_request_gpio(struct pinctrl_dev *pctldev,
 			struct pinctrl_gpio_range *range,
 			unsigned pin, unsigned gpio)
 {
+<<<<<<< HEAD
 	char gpiostr[16];
+=======
+>>>>>>> refs/remotes/origin/master
 	const char *owner;
 	int ret;
 
 	/* Conjure some name stating what chip and pin this is taken by */
+<<<<<<< HEAD
 	snprintf(gpiostr, 15, "%s:%d", range->name, gpio);
 
 	owner = kstrdup(gpiostr, GFP_KERNEL);
+=======
+	owner = kasprintf(GFP_KERNEL, "%s:%d", range->name, gpio);
+>>>>>>> refs/remotes/origin/master
 	if (!owner)
 		return -EINVAL;
 
@@ -287,10 +356,18 @@ static int pinmux_func_name_to_selector(struct pinctrl_dev *pctldev,
 					const char *function)
 {
 	const struct pinmux_ops *ops = pctldev->desc->pmxops;
+<<<<<<< HEAD
 	unsigned selector = 0;
 
 	/* See if this pctldev has this function */
 	while (ops->list_functions(pctldev, selector) >= 0) {
+=======
+	unsigned nfuncs = ops->get_functions_count(pctldev);
+	unsigned selector = 0;
+
+	/* See if this pctldev has this function */
+	while (selector < nfuncs) {
+>>>>>>> refs/remotes/origin/master
 		const char *fname = ops->get_function_name(pctldev,
 							   selector);
 
@@ -310,12 +387,16 @@ int pinmux_map_to_setting(struct pinctrl_map const *map,
 {
 	struct pinctrl_dev *pctldev = setting->pctldev;
 	const struct pinmux_ops *pmxops = pctldev->desc->pmxops;
+<<<<<<< HEAD
 	const struct pinctrl_ops *pctlops = pctldev->desc->pctlops;
+=======
+>>>>>>> refs/remotes/origin/master
 	char const * const *groups;
 	unsigned num_groups;
 	int ret;
 	const char *group;
 	int i;
+<<<<<<< HEAD
 	const unsigned *pins;
 	unsigned num_pins;
 
@@ -331,6 +412,35 @@ int pinmux_map_to_setting(struct pinctrl_map const *map,
 	if (!num_groups)
 		return -EINVAL;
 
+=======
+
+	if (!pmxops) {
+		dev_err(pctldev->dev, "does not support mux function\n");
+		return -EINVAL;
+	}
+
+	ret = pinmux_func_name_to_selector(pctldev, map->data.mux.function);
+	if (ret < 0) {
+		dev_err(pctldev->dev, "invalid function %s in map table\n",
+			map->data.mux.function);
+		return ret;
+	}
+	setting->data.mux.func = ret;
+
+	ret = pmxops->get_function_groups(pctldev, setting->data.mux.func,
+					  &groups, &num_groups);
+	if (ret < 0) {
+		dev_err(pctldev->dev, "can't query groups for function %s\n",
+			map->data.mux.function);
+		return ret;
+	}
+	if (!num_groups) {
+		dev_err(pctldev->dev,
+			"function %s can't be selected on any group\n",
+			map->data.mux.function);
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/master
 	if (map->data.mux.group) {
 		bool found = false;
 		group = map->data.mux.group;
@@ -340,12 +450,22 @@ int pinmux_map_to_setting(struct pinctrl_map const *map,
 				break;
 			}
 		}
+<<<<<<< HEAD
 		if (!found)
 			return -EINVAL;
+=======
+		if (!found) {
+			dev_err(pctldev->dev,
+				"invalid group \"%s\" for function \"%s\"\n",
+				group, map->data.mux.function);
+			return -EINVAL;
+		}
+>>>>>>> refs/remotes/origin/master
 	} else {
 		group = groups[0];
 	}
 
+<<<<<<< HEAD
 	setting->data.mux.group = pinctrl_get_group_selector(pctldev, group);
 	if (setting->data.mux.group < 0)
 		return setting->data.mux.group;
@@ -373,12 +493,22 @@ int pinmux_map_to_setting(struct pinctrl_map const *map,
 			return -ENODEV;
 		}
 	}
+=======
+	ret = pinctrl_get_group_selector(pctldev, group);
+	if (ret < 0) {
+		dev_err(pctldev->dev, "invalid group %s in map table\n",
+			map->data.mux.group);
+		return ret;
+	}
+	setting->data.mux.group = ret;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 void pinmux_free_setting(struct pinctrl_setting const *setting)
 {
+<<<<<<< HEAD
 	struct pinctrl_dev *pctldev = setting->pctldev;
 	const struct pinctrl_ops *pctlops = pctldev->desc->pctlops;
 	const unsigned *pins;
@@ -397,6 +527,9 @@ void pinmux_free_setting(struct pinctrl_setting const *setting)
 
 	for (i = 0; i < num_pins; i++)
 		pin_free(pctldev, pins[i], NULL);
+=======
+	/* This function is currently unused */
+>>>>>>> refs/remotes/origin/master
 }
 
 int pinmux_enable_setting(struct pinctrl_setting const *setting)
@@ -413,6 +546,7 @@ int pinmux_enable_setting(struct pinctrl_setting const *setting)
 	ret = pctlops->get_group_pins(pctldev, setting->data.mux.group,
 				      &pins, &num_pins);
 	if (ret) {
+<<<<<<< HEAD
 		/* errors only affect debug data, so just warn */
 		dev_warn(pctldev->dev,
 			 "could not get pins for group selector %d\n",
@@ -420,6 +554,40 @@ int pinmux_enable_setting(struct pinctrl_setting const *setting)
 		num_pins = 0;
 	}
 
+=======
+		const char *gname;
+
+		/* errors only affect debug data, so just warn */
+		gname = pctlops->get_group_name(pctldev,
+						setting->data.mux.group);
+		dev_warn(pctldev->dev,
+			 "could not get pins for group %s\n",
+			 gname);
+		num_pins = 0;
+	}
+
+	/* Try to allocate all pins in this group, one by one */
+	for (i = 0; i < num_pins; i++) {
+		ret = pin_request(pctldev, pins[i], setting->dev_name, NULL);
+		if (ret) {
+			const char *gname;
+			const char *pname;
+
+			desc = pin_desc_get(pctldev, pins[i]);
+			pname = desc ? desc->name : "non-existing";
+			gname = pctlops->get_group_name(pctldev,
+						setting->data.mux.group);
+			dev_err(pctldev->dev,
+				"could not request pin %d (%s) from group %s "
+				" on device %s\n",
+				pins[i], pname, gname,
+				pinctrl_dev_get_name(pctldev));
+			goto err_pin_request;
+		}
+	}
+
+	/* Now that we have acquired the pins, encode the mux setting */
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < num_pins; i++) {
 		desc = pin_desc_get(pctldev, pins[i]);
 		if (desc == NULL) {
@@ -431,8 +599,31 @@ int pinmux_enable_setting(struct pinctrl_setting const *setting)
 		desc->mux_setting = &(setting->data.mux);
 	}
 
+<<<<<<< HEAD
 	return ops->enable(pctldev, setting->data.mux.func,
 			   setting->data.mux.group);
+=======
+	ret = ops->enable(pctldev, setting->data.mux.func,
+			  setting->data.mux.group);
+
+	if (ret)
+		goto err_enable;
+
+	return 0;
+
+err_enable:
+	for (i = 0; i < num_pins; i++) {
+		desc = pin_desc_get(pctldev, pins[i]);
+		if (desc)
+			desc->mux_setting = NULL;
+	}
+err_pin_request:
+	/* On error release all taken pins */
+	while (--i >= 0)
+		pin_free(pctldev, pins[i], NULL);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 void pinmux_disable_setting(struct pinctrl_setting const *setting)
@@ -449,6 +640,7 @@ void pinmux_disable_setting(struct pinctrl_setting const *setting)
 	ret = pctlops->get_group_pins(pctldev, setting->data.mux.group,
 				      &pins, &num_pins);
 	if (ret) {
+<<<<<<< HEAD
 		/* errors only affect debug data, so just warn */
 		dev_warn(pctldev->dev,
 			 "could not get pins for group selector %d\n",
@@ -456,6 +648,20 @@ void pinmux_disable_setting(struct pinctrl_setting const *setting)
 		num_pins = 0;
 	}
 
+=======
+		const char *gname;
+
+		/* errors only affect debug data, so just warn */
+		gname = pctlops->get_group_name(pctldev,
+						setting->data.mux.group);
+		dev_warn(pctldev->dev,
+			 "could not get pins for group %s\n",
+			 gname);
+		num_pins = 0;
+	}
+
+	/* Flag the descs that no setting is active */
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < num_pins; i++) {
 		desc = pin_desc_get(pctldev, pins[i]);
 		if (desc == NULL) {
@@ -464,10 +670,32 @@ void pinmux_disable_setting(struct pinctrl_setting const *setting)
 				 pins[i]);
 			continue;
 		}
+<<<<<<< HEAD
 		desc->mux_setting = NULL;
 	}
 
 	ops->disable(pctldev, setting->data.mux.func, setting->data.mux.group);
+=======
+		if (desc->mux_setting == &(setting->data.mux)) {
+			desc->mux_setting = NULL;
+			/* And release the pin */
+			pin_free(pctldev, pins[i], NULL);
+		} else {
+			const char *gname;
+
+			gname = pctlops->get_group_name(pctldev,
+						setting->data.mux.group);
+			dev_warn(pctldev->dev,
+				 "not freeing pin %d (%s) as part of "
+				 "deactivating group %s - it is already "
+				 "used for some other setting",
+				 pins[i], desc->name, gname);
+		}
+	}
+
+	if (ops->disable)
+		ops->disable(pctldev, setting->data.mux.func, setting->data.mux.group);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_DEBUG_FS
@@ -477,11 +705,23 @@ static int pinmux_functions_show(struct seq_file *s, void *what)
 {
 	struct pinctrl_dev *pctldev = s->private;
 	const struct pinmux_ops *pmxops = pctldev->desc->pmxops;
+<<<<<<< HEAD
 	unsigned func_selector = 0;
 
 	mutex_lock(&pinctrl_mutex);
 
 	while (pmxops->list_functions(pctldev, func_selector) >= 0) {
+=======
+	unsigned nfuncs;
+	unsigned func_selector = 0;
+
+	if (!pmxops)
+		return 0;
+
+	mutex_lock(&pctldev->mutex);
+	nfuncs = pmxops->get_functions_count(pctldev);
+	while (func_selector < nfuncs) {
+>>>>>>> refs/remotes/origin/master
 		const char *func = pmxops->get_function_name(pctldev,
 							  func_selector);
 		const char * const *groups;
@@ -503,7 +743,11 @@ static int pinmux_functions_show(struct seq_file *s, void *what)
 		func_selector++;
 	}
 
+<<<<<<< HEAD
 	mutex_unlock(&pinctrl_mutex);
+=======
+	mutex_unlock(&pctldev->mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -515,10 +759,20 @@ static int pinmux_pins_show(struct seq_file *s, void *what)
 	const struct pinmux_ops *pmxops = pctldev->desc->pmxops;
 	unsigned i, pin;
 
+<<<<<<< HEAD
 	seq_puts(s, "Pinmux settings per pin\n");
 	seq_puts(s, "Format: pin (name): mux_owner gpio_owner hog?\n");
 
 	mutex_lock(&pinctrl_mutex);
+=======
+	if (!pmxops)
+		return 0;
+
+	seq_puts(s, "Pinmux settings per pin\n");
+	seq_puts(s, "Format: pin (name): mux_owner gpio_owner hog?\n");
+
+	mutex_lock(&pctldev->mutex);
+>>>>>>> refs/remotes/origin/master
 
 	/* The pin number can be retrived from the pin controller descriptor */
 	for (i = 0; i < pctldev->desc->npins; i++) {
@@ -553,7 +807,11 @@ static int pinmux_pins_show(struct seq_file *s, void *what)
 			seq_printf(s, "\n");
 	}
 
+<<<<<<< HEAD
 	mutex_unlock(&pinctrl_mutex);
+=======
+	mutex_unlock(&pctldev->mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

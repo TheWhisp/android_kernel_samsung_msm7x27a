@@ -30,9 +30,13 @@
 #include <asm/io.h>
 #include <asm/irq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/page.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/page.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/param.h>
 #include <asm/pdc.h>
 #include <asm/led.h>
@@ -203,10 +207,13 @@ static struct clocksource clocksource_cr16 = {
 	.read			= read_cr16,
 	.mask			= CLOCKSOURCE_MASK(BITS_PER_LONG),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.mult			= 0, /* to be set */
 	.shift			= 22,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.flags			= CLOCK_SOURCE_IS_CONTINUOUS,
 };
 
@@ -278,10 +285,14 @@ void __init time_init(void)
 	/* register at clocksource framework */
 	current_cr16_khz = PAGE0->mem_10msec/10;  /* kHz */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clocksource_cr16.mult = clocksource_khz2mult(current_cr16_khz,
 						clocksource_cr16.shift);
 	clocksource_register(&clocksource_cr16);
 =======
 	clocksource_register_khz(&clocksource_cr16, current_cr16_khz);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clocksource_register_khz(&clocksource_cr16, current_cr16_khz);
+>>>>>>> refs/remotes/origin/master
 }

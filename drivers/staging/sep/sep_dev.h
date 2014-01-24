@@ -6,12 +6,17 @@
  *  sep_dev.h - Security Processor Device Structures
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  Copyright(c) 2009,2010 Intel Corporation. All rights reserved.
  *  Contributions(c) 2009,2010 Discretix. All rights reserved.
 =======
  *  Copyright(c) 2009-2011 Intel Corporation. All rights reserved.
  *  Contributions(c) 2009-2011 Discretix. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  Copyright(c) 2009-2011 Intel Corporation. All rights reserved.
+ *  Contributions(c) 2009-2011 Discretix. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by the Free
@@ -34,9 +39,13 @@
  *  CHANGES
  *  2010.09.14  upgrade to Medfield
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *  2011.02.22  enable kernel crypto
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  2011.02.22  enable kernel crypto
+>>>>>>> refs/remotes/origin/master
  */
 
 struct sep_device {
@@ -45,6 +54,7 @@ struct sep_device {
 
 	/* character device file */
 	struct cdev sep_cdev;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cdev sep_daemon_cdev;
 	struct cdev sep_singleton_cdev;
@@ -63,6 +73,8 @@ struct sep_device {
 	struct mutex ioctl_mutex;
 	spinlock_t snd_rply_lck;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* devices (using misc dev) */
 	struct miscdevice miscdev_sep;
@@ -73,12 +85,16 @@ struct sep_device {
 	spinlock_t snd_rply_lck;
 	/* guards driver memory usage in fastcall if */
 	struct semaphore sep_doublebuf;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* flags to indicate use and lock status of sep */
 	u32 pid_doing_transaction;
 	unsigned long in_use_flags;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* request daemon alread open */
 	unsigned long request_daemon_open;
@@ -88,6 +104,8 @@ struct sep_device {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* address of the shared memory allocated during init for SEP driver
 	   (coherent alloc) */
 	dma_addr_t shared_bus;
@@ -100,6 +118,7 @@ struct sep_device {
 	void __iomem *reg_addr;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* wait queue head (event) of the driver */
 	wait_queue_head_t event;
 	wait_queue_head_t event_request_daemon;
@@ -111,6 +130,8 @@ struct sep_device {
 	/* access flag for singleton device */
 	unsigned long singleton_access_flag;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* wait queue heads of the driver */
 	wait_queue_head_t event_interrupt;
 	wait_queue_head_t event_transactions;
@@ -127,13 +148,17 @@ struct sep_device {
 
 	/* Power state */
 	u32 power_state;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* transaction counter that coordinates the
 	   transactions between SEP and HOST */
 	unsigned long send_ct;
 	/* counter for the messages from sep */
 	unsigned long reply_ct;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* counter for the number of bytes allocated in the pool for the
 	   current transaction */
@@ -150,6 +175,8 @@ struct sep_device {
 	struct sep_dma_resource dma_res_arr[SEP_MAX_NUM_SYNC_DMA_OPS];
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* The following are used for kernel crypto client requests */
 	u32 in_kernel; /* Set for kernel client request */
@@ -199,7 +226,10 @@ struct sep_queue_data {
 struct sep_queue_info {
 	struct list_head list;
 	struct sep_queue_data data;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline void sep_write_reg(struct sep_device *dev, int reg, u32 value)

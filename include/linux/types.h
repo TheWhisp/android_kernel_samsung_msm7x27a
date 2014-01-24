@@ -1,6 +1,7 @@
 #ifndef _LINUX_TYPES_H
 #define _LINUX_TYPES_H
 
+<<<<<<< HEAD
 #include <asm/types.h>
 
 #ifndef __ASSEMBLY__
@@ -17,6 +18,15 @@
 #include <linux/posix_types.h>
 
 #ifdef __KERNEL__
+=======
+#define __EXPORTED_HEADERS__
+#include <uapi/linux/types.h>
+
+#ifndef __ASSEMBLY__
+
+#define DECLARE_BITMAP(name,bits) \
+	unsigned long name[BITS_TO_LONGS(bits)]
+>>>>>>> refs/remotes/origin/master
 
 typedef __u32 __kernel_dev_t;
 
@@ -25,10 +35,15 @@ typedef __kernel_dev_t		dev_t;
 typedef __kernel_ino_t		ino_t;
 typedef __kernel_mode_t		mode_t;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 typedef unsigned short		umode_t;
 >>>>>>> refs/remotes/origin/cm-10.0
 typedef __kernel_nlink_t	nlink_t;
+=======
+typedef unsigned short		umode_t;
+typedef __u32			nlink_t;
+>>>>>>> refs/remotes/origin/master
 typedef __kernel_off_t		off_t;
 typedef __kernel_pid_t		pid_t;
 typedef __kernel_daddr_t	daddr_t;
@@ -160,6 +175,7 @@ typedef u64 dma_addr_t;
 typedef u32 dma_addr_t;
 #endif /* dma_addr_t */
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 /*
@@ -208,6 +224,17 @@ typedef __u32 __bitwise __wsum;
 #ifdef __KERNEL__
 typedef unsigned __bitwise__ gfp_t;
 typedef unsigned __bitwise__ fmode_t;
+=======
+#ifdef __CHECKER__
+#else
+#endif
+#ifdef __CHECK_ENDIAN__
+#else
+#endif
+typedef unsigned __bitwise__ gfp_t;
+typedef unsigned __bitwise__ fmode_t;
+typedef unsigned __bitwise__ oom_flags_t;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PHYS_ADDR_T_64BIT
 typedef u64 phys_addr_t;
@@ -218,14 +245,20 @@ typedef u32 phys_addr_t;
 typedef phys_addr_t resource_size_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This type is the placeholder for a hardware interrupt number. It has to be
  * big enough to enclose whatever representation is used by a given platform.
  */
 typedef unsigned long irq_hw_number_t;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 typedef struct {
 	int counter;
 } atomic_t;
@@ -256,6 +289,7 @@ struct ustat {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /**
  * struct rcu_head - callback structure for use with RCU
@@ -269,5 +303,18 @@ struct rcu_head {
 
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif	/* __KERNEL__ */
+=======
+/**
+ * struct callback_head - callback structure for use with RCU and task_work
+ * @next: next update requests in a list
+ * @func: actual update function to call after the grace period.
+ */
+struct callback_head {
+	struct callback_head *next;
+	void (*func)(struct callback_head *head);
+};
+#define rcu_head callback_head
+
+>>>>>>> refs/remotes/origin/master
 #endif /*  __ASSEMBLY__ */
 #endif /* _LINUX_TYPES_H */

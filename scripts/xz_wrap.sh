@@ -13,12 +13,17 @@ BCJ=
 LZMA2OPTS=
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 case $ARCH in
 	x86|x86_64)     BCJ=--x86 ;;
 =======
 case $SRCARCH in
 	x86)            BCJ=--x86 ;;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+case $SRCARCH in
+	x86)            BCJ=--x86 ;;
+>>>>>>> refs/remotes/origin/master
 	powerpc)        BCJ=--powerpc ;;
 	ia64)           BCJ=--ia64; LZMA2OPTS=pb=4 ;;
 	arm)            BCJ=--arm ;;

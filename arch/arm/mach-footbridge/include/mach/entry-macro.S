@@ -15,11 +15,14 @@
 		.equ	dc21285_low, ARMCSR_BASE & 0x00ffffff
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.macro	disable_fiq
 		.endm
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.macro  get_irqnr_preamble, base, tmp
 		mov	\base, #dc21285_high
 		.if	dc21285_low
@@ -28,11 +31,14 @@
 		.endm
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.macro  arch_ret_to_user, tmp1, tmp2
 		.endm
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.macro	get_irqnr_and_base, irqnr, irqstat, base, tmp
 		ldr	\irqstat, [\base, #0x180]	@ get interrupts
 

@@ -11,12 +11,16 @@ Registration
 Drivers can register a regulator by calling :-
 
 struct regulator_dev *regulator_register(struct regulator_desc *regulator_desc,
+<<<<<<< HEAD
 	struct device *dev, struct regulator_init_data *init_data,
 <<<<<<< HEAD
 	void *driver_data);
 =======
 	void *driver_data, struct device_node *of_node);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 const struct regulator_config *config);
+>>>>>>> refs/remotes/origin/master
 
 This will register the regulators capabilities and operations to the regulator
 core.

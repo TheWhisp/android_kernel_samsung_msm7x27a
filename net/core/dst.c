@@ -94,7 +94,11 @@ loop:
 			 * But we do not have state "obsoleted, but
 			 * referenced by parent", so it is right.
 			 */
+<<<<<<< HEAD
 			if (dst->obsolete > 1)
+=======
+			if (dst->obsolete > 0)
+>>>>>>> refs/remotes/origin/master
 				continue;
 
 			___dst_free(dst);
@@ -149,10 +153,25 @@ int dst_discard(struct sk_buff *skb)
 }
 EXPORT_SYMBOL(dst_discard);
 
+<<<<<<< HEAD
 const u32 dst_default_metrics[RTAX_MAX];
 
 void *dst_alloc(struct dst_ops *ops, struct net_device *dev,
 		int initial_ref, int initial_obsolete, int flags)
+=======
+const u32 dst_default_metrics[RTAX_MAX + 1] = {
+	/* This initializer is needed to force linker to place this variable
+	 * into const section. Otherwise it might end into bss section.
+	 * We really want to avoid false sharing on this variable, and catch
+	 * any writes on it.
+	 */
+	[RTAX_MAX] = 0xdeadbeef,
+};
+
+
+void *dst_alloc(struct dst_ops *ops, struct net_device *dev,
+		int initial_ref, int initial_obsolete, unsigned short flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dst_entry *dst;
 
@@ -171,11 +190,15 @@ void *dst_alloc(struct dst_ops *ops, struct net_device *dev,
 	dst_init_metrics(dst, dst_default_metrics, true);
 	dst->expires = 0UL;
 	dst->path = dst;
+<<<<<<< HEAD
 	RCU_INIT_POINTER(dst->_neighbour, NULL);
 <<<<<<< HEAD
 	dst->hh = NULL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dst->from = NULL;
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_XFRM
 	dst->xfrm = NULL;
 #endif
@@ -192,6 +215,10 @@ void *dst_alloc(struct dst_ops *ops, struct net_device *dev,
 	dst->__use = 0;
 	dst->lastuse = jiffies;
 	dst->flags = flags;
+<<<<<<< HEAD
+=======
+	dst->pending_confirm = 0;
+>>>>>>> refs/remotes/origin/master
 	dst->next = NULL;
 	if (!(flags & DST_NOCOUNT))
 		dst_entries_add(ops, 1);
@@ -206,7 +233,11 @@ static void ___dst_free(struct dst_entry *dst)
 	 */
 	if (dst->dev == NULL || !(dst->dev->flags&IFF_UP))
 		dst->input = dst->output = dst_discard;
+<<<<<<< HEAD
 	dst->obsolete = 2;
+=======
+	dst->obsolete = DST_OBSOLETE_DEAD;
+>>>>>>> refs/remotes/origin/master
 }
 
 void __dst_free(struct dst_entry *dst)
@@ -218,8 +249,13 @@ void __dst_free(struct dst_entry *dst)
 	if (dst_garbage.timer_inc > DST_GC_INC) {
 		dst_garbage.timer_inc = DST_GC_INC;
 		dst_garbage.timer_expires = DST_GC_MIN;
+<<<<<<< HEAD
 		cancel_delayed_work(&dst_gc_work);
 		schedule_delayed_work(&dst_gc_work, dst_garbage.timer_expires);
+=======
+		mod_delayed_work(system_wq, &dst_gc_work,
+				 dst_garbage.timer_expires);
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_bh(&dst_garbage.lock);
 }
@@ -228,15 +264,19 @@ EXPORT_SYMBOL(__dst_free);
 struct dst_entry *dst_destroy(struct dst_entry * dst)
 {
 	struct dst_entry *child;
+<<<<<<< HEAD
 	struct neighbour *neigh;
 <<<<<<< HEAD
 	struct hh_cache *hh;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	smp_rmb();
 
 again:
+<<<<<<< HEAD
 	neigh = rcu_dereference_protected(dst->_neighbour, 1);
 <<<<<<< HEAD
 	hh = dst->hh;
@@ -255,6 +295,10 @@ again:
 		neigh_release(neigh);
 	}
 
+=======
+	child = dst->child;
+
+>>>>>>> refs/remotes/origin/master
 	if (!(dst->flags & DST_NOCOUNT))
 		dst_entries_add(dst->ops, -1);
 
@@ -336,27 +380,46 @@ void __dst_destroy_metrics_generic(struct dst_entry *dst, unsigned long old)
 EXPORT_SYMBOL(__dst_destroy_metrics_generic);
 
 /**
+<<<<<<< HEAD
  * skb_dst_set_noref - sets skb dst, without a reference
  * @skb: buffer
  * @dst: dst entry
+=======
+ * __skb_dst_set_noref - sets skb dst, without a reference
+ * @skb: buffer
+ * @dst: dst entry
+ * @force: if force is set, use noref version even for DST_NOCACHE entries
+>>>>>>> refs/remotes/origin/master
  *
  * Sets skb dst, assuming a reference was not taken on dst
  * skb_dst_drop() should not dst_release() this dst
  */
+<<<<<<< HEAD
 void skb_dst_set_noref(struct sk_buff *skb, struct dst_entry *dst)
+=======
+void __skb_dst_set_noref(struct sk_buff *skb, struct dst_entry *dst, bool force)
+>>>>>>> refs/remotes/origin/master
 {
 	WARN_ON(!rcu_read_lock_held() && !rcu_read_lock_bh_held());
 	/* If dst not in cache, we must take a reference, because
 	 * dst_release() will destroy dst as soon as its refcount becomes zero
 	 */
+<<<<<<< HEAD
 	if (unlikely(dst->flags & DST_NOCACHE)) {
+=======
+	if (unlikely((dst->flags & DST_NOCACHE) && !force)) {
+>>>>>>> refs/remotes/origin/master
 		dst_hold(dst);
 		skb_dst_set(skb, dst);
 	} else {
 		skb->_skb_refdst = (unsigned long)dst | SKB_DST_NOREF;
 	}
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(skb_dst_set_noref);
+=======
+EXPORT_SYMBOL(__skb_dst_set_noref);
+>>>>>>> refs/remotes/origin/master
 
 /* Dirty hack. We did it in 2.2 (in __dst_free),
  * we have _very_ good reasons not to repeat
@@ -378,6 +441,7 @@ static void dst_ifdown(struct dst_entry *dst, struct net_device *dev,
 	if (!unregister) {
 		dst->input = dst->output = dst_discard;
 	} else {
+<<<<<<< HEAD
 		struct neighbour *neigh;
 
 		dst->dev = dev_net(dst->dev)->loopback_dev;
@@ -395,17 +459,30 @@ static void dst_ifdown(struct dst_entry *dst, struct net_device *dev,
 			dev_put(dev);
 		}
 		rcu_read_unlock();
+=======
+		dst->dev = dev_net(dst->dev)->loopback_dev;
+		dev_hold(dst->dev);
+		dev_put(dev);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static int dst_dev_event(struct notifier_block *this, unsigned long event,
 			 void *ptr)
 {
+<<<<<<< HEAD
 	struct net_device *dev = ptr;
 	struct dst_entry *dst, *last = NULL;
 
 	switch (event) {
 	case NETDEV_UNREGISTER:
+=======
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+	struct dst_entry *dst, *last = NULL;
+
+	switch (event) {
+	case NETDEV_UNREGISTER_FINAL:
+>>>>>>> refs/remotes/origin/master
 	case NETDEV_DOWN:
 		mutex_lock(&dst_gc_mutex);
 		for (dst = dst_busy_list; dst; dst = dst->next) {

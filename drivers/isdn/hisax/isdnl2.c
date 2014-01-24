@@ -4,10 +4,14 @@
  *              based on the teles driver from Jan den Ouden
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -42,10 +46,14 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define L2_STATE_COUNT (ST_L2_8+1)
 =======
 #define L2_STATE_COUNT (ST_L2_8 + 1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define L2_STATE_COUNT (ST_L2_8 + 1)
+>>>>>>> refs/remotes/origin/master
 
 static char *strL2State[] =
 {
@@ -85,10 +93,14 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define L2_EVENT_COUNT (EV_L2_FRAME_ERROR+1)
 =======
 #define L2_EVENT_COUNT (EV_L2_FRAME_ERROR + 1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define L2_EVENT_COUNT (EV_L2_FRAME_ERROR + 1)
+>>>>>>> refs/remotes/origin/master
 
 static char *strL2Event[] =
 {
@@ -168,10 +180,14 @@ ReleaseWin(struct Layer2 *l2)
 	int cnt;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if((cnt = freewin1(l2)))
 =======
 	if ((cnt = freewin1(l2)))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((cnt = freewin1(l2)))
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "isdl2 freed %d skbuffs in release\n", cnt);
 }
 
@@ -181,10 +197,14 @@ cansend(struct PStack *st)
 	unsigned int p1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(test_bit(FLG_MOD128, &st->l2.flag))
 =======
 	if (test_bit(FLG_MOD128, &st->l2.flag))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_bit(FLG_MOD128, &st->l2.flag))
+>>>>>>> refs/remotes/origin/master
 		p1 = (st->l2.vs - st->l2.va) % 128;
 	else
 		p1 = (st->l2.vs - st->l2.va) % 8;
@@ -215,10 +235,14 @@ l2addrsize(struct Layer2 *l2)
 
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 sethdraddr(struct Layer2 *l2, u_char * header, int rsp)
 =======
 sethdraddr(struct Layer2 *l2, u_char *header, int rsp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+sethdraddr(struct Layer2 *l2, u_char *header, int rsp)
+>>>>>>> refs/remotes/origin/master
 {
 	u_char *ptr = header;
 	int crbit = rsp;
@@ -251,45 +275,62 @@ enqueue_super(struct PStack *st,
 
 static inline int
 <<<<<<< HEAD
+<<<<<<< HEAD
 IsUI(u_char * data)
 =======
 IsUI(u_char *data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+IsUI(u_char *data)
+>>>>>>> refs/remotes/origin/master
 {
 	return ((data[0] & 0xef) == UI);
 }
 
 static inline int
 <<<<<<< HEAD
+<<<<<<< HEAD
 IsUA(u_char * data)
 =======
 IsUA(u_char *data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+IsUA(u_char *data)
+>>>>>>> refs/remotes/origin/master
 {
 	return ((data[0] & 0xef) == UA);
 }
 
 static inline int
 <<<<<<< HEAD
+<<<<<<< HEAD
 IsDM(u_char * data)
 =======
 IsDM(u_char *data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+IsDM(u_char *data)
+>>>>>>> refs/remotes/origin/master
 {
 	return ((data[0] & 0xef) == DM);
 }
 
 static inline int
 <<<<<<< HEAD
+<<<<<<< HEAD
 IsDISC(u_char * data)
 =======
 IsDISC(u_char *data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+IsDISC(u_char *data)
+>>>>>>> refs/remotes/origin/master
 {
 	return ((data[0] & 0xef) == DISC);
 }
 
 static inline int
+<<<<<<< HEAD
 <<<<<<< HEAD
 IsSFrame(u_char * data, struct PStack *st)
 {
@@ -303,6 +344,8 @@ IsSFrame(u_char * data, struct PStack *st)
 static inline int
 IsSABME(u_char * data, struct PStack *st)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 IsSFrame(u_char *data, struct PStack *st)
 {
 	register u_char d = *data;
@@ -314,7 +357,10 @@ IsSFrame(u_char *data, struct PStack *st)
 
 static inline int
 IsSABME(u_char *data, struct PStack *st)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	u_char d = data[0] & ~0x10;
 
@@ -323,30 +369,42 @@ IsSABME(u_char *data, struct PStack *st)
 
 static inline int
 <<<<<<< HEAD
+<<<<<<< HEAD
 IsREJ(u_char * data, struct PStack *st)
 =======
 IsREJ(u_char *data, struct PStack *st)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+IsREJ(u_char *data, struct PStack *st)
+>>>>>>> refs/remotes/origin/master
 {
 	return (test_bit(FLG_MOD128, &st->l2.flag) ? data[0] == REJ : (data[0] & 0xf) == REJ);
 }
 
 static inline int
 <<<<<<< HEAD
+<<<<<<< HEAD
 IsFRMR(u_char * data)
 =======
 IsFRMR(u_char *data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+IsFRMR(u_char *data)
+>>>>>>> refs/remotes/origin/master
 {
 	return ((data[0] & 0xef) == FRMR);
 }
 
 static inline int
 <<<<<<< HEAD
+<<<<<<< HEAD
 IsRNR(u_char * data, struct PStack *st)
 =======
 IsRNR(u_char *data, struct PStack *st)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+IsRNR(u_char *data, struct PStack *st)
+>>>>>>> refs/remotes/origin/master
 {
 	return (test_bit(FLG_MOD128, &st->l2.flag) ? data[0] == RNR : (data[0] & 0xf) == RNR);
 }
@@ -435,22 +493,31 @@ FRMR_error(struct PStack *st, struct sk_buff *skb)
 		else
 			l2m_debug(&st->l2.l2m, "FRMR information %2x %2x %2x %2x %2x",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				datap[0], datap[1], datap[2],
 				datap[3], datap[4]);
 =======
 				  datap[0], datap[1], datap[2],
 				  datap[3], datap[4]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  datap[0], datap[1], datap[2],
+				  datap[3], datap[4]);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (skb->len < headers + 3)
 			return 'N';
 		else
 			l2m_debug(&st->l2.l2m, "FRMR information %2x %2x %2x",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				datap[0], datap[1], datap[2]);
 =======
 				  datap[0], datap[1], datap[2]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  datap[0], datap[1], datap[2]);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -460,6 +527,7 @@ static unsigned int
 legalnr(struct PStack *st, unsigned int nr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
         struct Layer2 *l2 = &st->l2;
 
 	if(test_bit(FLG_MOD128, &l2->flag))
@@ -468,6 +536,11 @@ legalnr(struct PStack *st, unsigned int nr)
 
 	if (test_bit(FLG_MOD128, &l2->flag))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct Layer2 *l2 = &st->l2;
+
+	if (test_bit(FLG_MOD128, &l2->flag))
+>>>>>>> refs/remotes/origin/master
 		return ((nr - l2->va) % 128) <= ((l2->vs - l2->va) % 128);
 	else
 		return ((nr - l2->va) % 8) <= ((l2->vs - l2->va) % 8);
@@ -484,10 +557,14 @@ setva(struct PStack *st, unsigned int nr)
 	while (l2->va != nr) {
 		(l2->va)++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if(test_bit(FLG_MOD128, &l2->flag))
 =======
 		if (test_bit(FLG_MOD128, &l2->flag))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (test_bit(FLG_MOD128, &l2->flag))
+>>>>>>> refs/remotes/origin/master
 			l2->va %= 128;
 		else
 			l2->va %= 8;
@@ -499,10 +576,14 @@ setva(struct PStack *st, unsigned int nr)
 		l2->sow = (l2->sow + 1) % l2->window;
 		spin_unlock_irqrestore(&l2->lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (test_bit(FLG_LLI_L2WAKEUP, &st->lli.flag) && (len >=0))
 =======
 		if (test_bit(FLG_LLI_L2WAKEUP, &st->lli.flag) && (len >= 0))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (test_bit(FLG_LLI_L2WAKEUP, &st->lli.flag) && (len >= 0))
+>>>>>>> refs/remotes/origin/master
 			lli_writewakeup(st, len);
 		spin_lock_irqsave(&l2->lock, flags);
 	}
@@ -528,10 +609,14 @@ send_uframe(struct PStack *st, u_char cmd, u_char cr)
 
 static inline u_char
 <<<<<<< HEAD
+<<<<<<< HEAD
 get_PollFlag(struct PStack * st, struct sk_buff * skb)
 =======
 get_PollFlag(struct PStack *st, struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+get_PollFlag(struct PStack *st, struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	return (skb->data[l2addrsize(&(st->l2))] & 0x10);
 }
@@ -564,16 +649,21 @@ static inline void
 stop_t200(struct PStack *st, int i)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(test_and_clear_bit(FLG_T200_RUN, &st->l2.flag))
 =======
 	if (test_and_clear_bit(FLG_T200_RUN, &st->l2.flag))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_and_clear_bit(FLG_T200_RUN, &st->l2.flag))
+>>>>>>> refs/remotes/origin/master
 		FsmDelTimer(&st->l2.t200, i);
 }
 
 static inline void
 st5_dl_release_l2l3(struct PStack *st)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		int pr;
 
@@ -584,6 +674,8 @@ st5_dl_release_l2l3(struct PStack *st)
 
 		st->l2.l2l3(st, pr, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int pr;
 
 	if (test_and_clear_bit(FLG_PEND_REL, &st->l2.flag))
@@ -592,12 +684,16 @@ st5_dl_release_l2l3(struct PStack *st)
 		pr = DL_RELEASE | INDICATION;
 
 	st->l2.l2l3(st, pr, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
 lapb_dl_release_l2l3(struct PStack *st, int f)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (test_bit(FLG_LAPB, &st->l2.flag))
 			st->l2.l2l1(st, PH_DEACTIVATE | REQUEST, NULL);
@@ -607,6 +703,11 @@ lapb_dl_release_l2l3(struct PStack *st, int f)
 		st->l2.l2l1(st, PH_DEACTIVATE | REQUEST, NULL);
 	st->l2.l2l3(st, DL_RELEASE | f, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_bit(FLG_LAPB, &st->l2.flag))
+		st->l2.l2l1(st, PH_DEACTIVATE | REQUEST, NULL);
+	st->l2.l2l3(st, DL_RELEASE | f, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -672,10 +773,14 @@ static void
 l2_go_st3(struct FsmInst *fi, int event, void *arg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	FsmChangeState(fi, ST_L2_3); 
 =======
 	FsmChangeState(fi, ST_L2_3);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	FsmChangeState(fi, ST_L2_3);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -684,10 +789,14 @@ l2_mdl_assign(struct FsmInst *fi, int event, void *arg)
 	struct PStack *st = fi->userdata;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	FsmChangeState(fi, ST_L2_3); 
 =======
 	FsmChangeState(fi, ST_L2_3);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	FsmChangeState(fi, ST_L2_3);
+>>>>>>> refs/remotes/origin/master
 	st->l2.l2tei(st, MDL_ASSIGN | INDICATION, NULL);
 }
 
@@ -878,10 +987,14 @@ l2_restart_multi(struct FsmInst *fi, int event, void *arg)
 		st->l2.l2l3(st, DL_ESTABLISH | INDICATION, NULL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ST_L2_7==state) || (ST_L2_8 == state))
 =======
 	if ((ST_L2_7 == state) || (ST_L2_8 == state))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ST_L2_7 == state) || (ST_L2_8 == state))
+>>>>>>> refs/remotes/origin/master
 		if (!skb_queue_empty(&st->l2.i_queue) && cansend(st))
 			st->l2.l2l1(st, PH_PULL | REQUEST, NULL);
 }
@@ -909,10 +1022,14 @@ l2_connected(struct FsmInst *fi, int event, void *arg)
 	struct PStack *st = fi->userdata;
 	struct sk_buff *skb = arg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int pr=-1;
 =======
 	int pr = -1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int pr = -1;
+>>>>>>> refs/remotes/origin/master
 
 	if (!get_PollFlag(st, skb)) {
 		l2_mdl_error_ua(fi, event, arg);
@@ -984,10 +1101,14 @@ l2_st5_dm_release(struct FsmInst *fi, int event, void *arg)
 	if (get_PollFlagFree(st, skb)) {
 		stop_t200(st, 7);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 	if (!test_bit(FLG_L3_INIT, &st->l2.flag))
 =======
 		if (!test_bit(FLG_L3_INIT, &st->l2.flag))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!test_bit(FLG_L3_INIT, &st->l2.flag))
+>>>>>>> refs/remotes/origin/master
 			skb_queue_purge(&st->l2.i_queue);
 		if (test_bit(FLG_LAPB, &st->l2.flag))
 			st->l2.l2l1(st, PH_DEACTIVATE | REQUEST, NULL);
@@ -1076,10 +1197,14 @@ invoke_retransmission(struct PStack *st, unsigned int nr)
 		while (l2->vs != nr) {
 			(l2->vs)--;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if(test_bit(FLG_MOD128, &l2->flag)) {
 =======
 			if (test_bit(FLG_MOD128, &l2->flag)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (test_bit(FLG_MOD128, &l2->flag)) {
+>>>>>>> refs/remotes/origin/master
 				l2->vs %= 128;
 				p1 = (l2->vs - l2->va) % 128;
 			} else {
@@ -1152,10 +1277,14 @@ l2_st7_got_super(struct FsmInst *fi, int event, void *arg)
 		} else if ((l2->va != nr) || (typ == RNR)) {
 			setva(st, nr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if(typ != RR) FsmDelTimer(&st->l2.t203, 9);
 =======
 			if (typ != RR) FsmDelTimer(&st->l2.t203, 9);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (typ != RR) FsmDelTimer(&st->l2.t203, 9);
+>>>>>>> refs/remotes/origin/master
 			restart_t200(st, 12);
 		}
 		if (!skb_queue_empty(&st->l2.i_queue) && (typ == RR))
@@ -1223,16 +1352,22 @@ l2_got_iframe(struct FsmInst *fi, int event, void *arg)
 	if (test_bit(FLG_OWN_BUSY, &l2->flag)) {
 		dev_kfree_skb(skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if(PollFlag) enquiry_response(st);
 	} else if (l2->vr == ns) {
 		(l2->vr)++;
 		if(test_bit(FLG_MOD128, &l2->flag))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (PollFlag) enquiry_response(st);
 	} else if (l2->vr == ns) {
 		(l2->vr)++;
 		if (test_bit(FLG_MOD128, &l2->flag))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			l2->vr %= 128;
 		else
 			l2->vr %= 8;
@@ -1300,10 +1435,14 @@ l2_st5_tout_200(struct FsmInst *fi, int event, void *arg)
 
 	if (test_bit(FLG_LAPD, &st->l2.flag) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		test_bit(FLG_DCHAN_BUSY, &st->l2.flag)) {
 =======
 	    test_bit(FLG_DCHAN_BUSY, &st->l2.flag)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    test_bit(FLG_DCHAN_BUSY, &st->l2.flag)) {
+>>>>>>> refs/remotes/origin/master
 		FsmAddTimer(&st->l2.t200, st->l2.T200, EV_L2_T200, NULL, 9);
 	} else if (st->l2.rc == st->l2.N200) {
 		FsmChangeState(fi, ST_L2_4);
@@ -1328,10 +1467,14 @@ l2_st6_tout_200(struct FsmInst *fi, int event, void *arg)
 
 	if (test_bit(FLG_LAPD, &st->l2.flag) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		test_bit(FLG_DCHAN_BUSY, &st->l2.flag)) {
 =======
 	    test_bit(FLG_DCHAN_BUSY, &st->l2.flag)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    test_bit(FLG_DCHAN_BUSY, &st->l2.flag)) {
+>>>>>>> refs/remotes/origin/master
 		FsmAddTimer(&st->l2.t200, st->l2.T200, EV_L2_T200, NULL, 9);
 	} else if (st->l2.rc == st->l2.N200) {
 		FsmChangeState(fi, ST_L2_4);
@@ -1353,10 +1496,14 @@ l2_st7_tout_200(struct FsmInst *fi, int event, void *arg)
 
 	if (test_bit(FLG_LAPD, &st->l2.flag) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		test_bit(FLG_DCHAN_BUSY, &st->l2.flag)) {
 =======
 	    test_bit(FLG_DCHAN_BUSY, &st->l2.flag)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    test_bit(FLG_DCHAN_BUSY, &st->l2.flag)) {
+>>>>>>> refs/remotes/origin/master
 		FsmAddTimer(&st->l2.t200, st->l2.T200, EV_L2_T200, NULL, 9);
 		return;
 	}
@@ -1375,10 +1522,14 @@ l2_st8_tout_200(struct FsmInst *fi, int event, void *arg)
 
 	if (test_bit(FLG_LAPD, &st->l2.flag) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		test_bit(FLG_DCHAN_BUSY, &st->l2.flag)) {
 =======
 	    test_bit(FLG_DCHAN_BUSY, &st->l2.flag)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    test_bit(FLG_DCHAN_BUSY, &st->l2.flag)) {
+>>>>>>> refs/remotes/origin/master
 		FsmAddTimer(&st->l2.t200, st->l2.T200, EV_L2_T200, NULL, 9);
 		return;
 	}
@@ -1400,10 +1551,14 @@ l2_st7_tout_203(struct FsmInst *fi, int event, void *arg)
 
 	if (test_bit(FLG_LAPD, &st->l2.flag) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		test_bit(FLG_DCHAN_BUSY, &st->l2.flag)) {
 =======
 	    test_bit(FLG_DCHAN_BUSY, &st->l2.flag)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    test_bit(FLG_DCHAN_BUSY, &st->l2.flag)) {
+>>>>>>> refs/remotes/origin/master
 		FsmAddTimer(&st->l2.t203, st->l2.T203, EV_L2_T203, NULL, 9);
 		return;
 	}
@@ -1442,10 +1597,14 @@ l2_pull_iqueue(struct FsmInst *fi, int event, void *arg)
 	}
 	spin_lock_irqsave(&l2->lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(test_bit(FLG_MOD128, &l2->flag))
 =======
 	if (test_bit(FLG_MOD128, &l2->flag))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_bit(FLG_MOD128, &l2->flag))
+>>>>>>> refs/remotes/origin/master
 		p1 = (l2->vs - l2->va) % 128;
 	else
 		p1 = (l2->vs - l2->va) % 8;
@@ -1619,10 +1778,14 @@ l2_st14_persistent_da(struct FsmInst *fi, int event, void *arg)
 {
 	struct PStack *st = fi->userdata;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	skb_queue_purge(&st->l2.i_queue);
 	skb_queue_purge(&st->l2.ui_queue);
 	if (test_and_clear_bit(FLG_ESTAB_PEND, &st->l2.flag))
@@ -1673,10 +1836,14 @@ l2_set_own_busy(struct FsmInst *fi, int event, void *arg)
 	struct PStack *st = fi->userdata;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(!test_and_set_bit(FLG_OWN_BUSY, &st->l2.flag)) {
 =======
 	if (!test_and_set_bit(FLG_OWN_BUSY, &st->l2.flag)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!test_and_set_bit(FLG_OWN_BUSY, &st->l2.flag)) {
+>>>>>>> refs/remotes/origin/master
 		enquiry_cr(st, RNR, RSP, 0);
 		test_and_clear_bit(FLG_ACK_PEND, &st->l2.flag);
 	}
@@ -1688,10 +1855,14 @@ l2_clear_own_busy(struct FsmInst *fi, int event, void *arg)
 	struct PStack *st = fi->userdata;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(!test_and_clear_bit(FLG_OWN_BUSY, &st->l2.flag)) {
 =======
 	if (!test_and_clear_bit(FLG_OWN_BUSY, &st->l2.flag)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!test_and_clear_bit(FLG_OWN_BUSY, &st->l2.flag)) {
+>>>>>>> refs/remotes/origin/master
 		enquiry_cr(st, RR, RSP, 0);
 		test_and_clear_bit(FLG_ACK_PEND, &st->l2.flag);
 	}
@@ -1817,6 +1988,7 @@ isdnl2_l1l2(struct PStack *st, int pr, void *arg)
 
 	switch (pr) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case (PH_DATA | INDICATION):
 			datap = skb->data;
 			len = l2addrsize(&st->l2);
@@ -1888,6 +2060,8 @@ isdnl2_l1l2(struct PStack *st, int pr, void *arg)
 			l2m_debug(&st->l2.l2m, "l2 unknown pr %04x", pr);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (PH_DATA | INDICATION):
 		datap = skb->data;
 		len = l2addrsize(&st->l2);
@@ -1958,7 +2132,10 @@ isdnl2_l1l2(struct PStack *st, int pr, void *arg)
 	default:
 		l2m_debug(&st->l2.l2m, "l2 unknown pr %04x", pr);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1966,6 +2143,7 @@ static void
 isdnl2_l3l2(struct PStack *st, int pr, void *arg)
 {
 	switch (pr) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (DL_DATA | REQUEST):
 			if (FsmEvent(&st->l2.l2m, EV_L2_DL_DATA, arg)) {
@@ -2007,6 +2185,8 @@ isdnl2_l3l2(struct PStack *st, int pr, void *arg)
 			FsmEvent(&st->l2.l2m, EV_L2_MDL_ERROR, arg);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (DL_DATA | REQUEST):
 		if (FsmEvent(&st->l2.l2m, EV_L2_DL_DATA, arg)) {
 			dev_kfree_skb((struct sk_buff *) arg);
@@ -2046,7 +2226,10 @@ isdnl2_l3l2(struct PStack *st, int pr, void *arg)
 	case (MDL_ERROR | RESPONSE):
 		FsmEvent(&st->l2.l2m, EV_L2_MDL_ERROR, arg);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -2088,10 +2271,14 @@ setstack_isdnl2(struct PStack *st, char *debug_id)
 		st->l2.l2m.state = ST_L2_4;
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 	st->l2.l2m.state = ST_L2_1;
 =======
 		st->l2.l2m.state = ST_L2_1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		st->l2.l2m.state = ST_L2_1;
+>>>>>>> refs/remotes/origin/master
 	st->l2.l2m.debug = 0;
 	st->l2.l2m.userdata = st;
 	st->l2.l2m.userint = 0;
@@ -2107,6 +2294,7 @@ transl2_l3l2(struct PStack *st, int pr, void *arg)
 {
 	switch (pr) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case (DL_DATA | REQUEST):
 		case (DL_UNIT_DATA | REQUEST):
 			st->l2.l2l1(st, PH_DATA | REQUEST, arg);
@@ -2118,6 +2306,8 @@ transl2_l3l2(struct PStack *st, int pr, void *arg)
 			st->l2.l2l1(st, PH_DEACTIVATE | REQUEST, NULL);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (DL_DATA | REQUEST):
 	case (DL_UNIT_DATA | REQUEST):
 		st->l2.l2l1(st, PH_DATA | REQUEST, arg);
@@ -2128,7 +2318,10 @@ transl2_l3l2(struct PStack *st, int pr, void *arg)
 	case (DL_RELEASE | REQUEST):
 		st->l2.l2l1(st, PH_DEACTIVATE | REQUEST, NULL);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

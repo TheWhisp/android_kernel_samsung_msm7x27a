@@ -247,12 +247,19 @@ static int prism2_wep_get_key(void *key, int len, u8 *seq, void *priv)
 }
 
 
+<<<<<<< HEAD
 static char *prism2_wep_print_stats(char *p, void *priv)
 {
 	struct prism2_wep_data *wep = priv;
 	p += sprintf(p, "key[%d] alg=WEP len=%d\n",
 		     wep->key_idx, wep->key_len);
 	return p;
+=======
+static void prism2_wep_print_stats(struct seq_file *m, void *priv)
+{
+	struct prism2_wep_data *wep = priv;
+	seq_printf(m, "key[%d] alg=WEP len=%d\n", wep->key_idx, wep->key_len);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct lib80211_crypto_ops rtllib_crypt_wep = {
@@ -272,13 +279,21 @@ static struct lib80211_crypto_ops rtllib_crypt_wep = {
 };
 
 
+<<<<<<< HEAD
 int __init rtllib_crypto_wep_init(void)
+=======
+static int __init rtllib_crypto_wep_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return lib80211_register_crypto_ops(&rtllib_crypt_wep);
 }
 
 
+<<<<<<< HEAD
 void __exit rtllib_crypto_wep_exit(void)
+=======
+static void __exit rtllib_crypto_wep_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	lib80211_unregister_crypto_ops(&rtllib_crypt_wep);
 }

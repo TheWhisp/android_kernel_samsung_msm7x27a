@@ -201,7 +201,11 @@ static int __set_item(struct pppoe_net *pn, struct pppox_sock *po)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct pppox_sock *__delete_item(struct pppoe_net *pn, __be16 sid,
+=======
+static void __delete_item(struct pppoe_net *pn, __be16 sid,
+>>>>>>> refs/remotes/origin/master
 					char *addr, int ifindex)
 {
 	int hash = hash_item(sid, addr);
@@ -220,8 +224,11 @@ static struct pppox_sock *__delete_item(struct pppoe_net *pn, __be16 sid,
 		src = &ret->next;
 		ret = ret->next;
 	}
+<<<<<<< HEAD
 
 	return ret;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**********************************************************************
@@ -264,6 +271,7 @@ static inline struct pppox_sock *get_item_by_addr(struct net *net,
 	return pppox_sock;
 }
 
+<<<<<<< HEAD
 static inline struct pppox_sock *delete_item(struct pppoe_net *pn, __be16 sid,
 					char *addr, int ifindex)
 {
@@ -274,6 +282,14 @@ static inline struct pppox_sock *delete_item(struct pppoe_net *pn, __be16 sid,
 	write_unlock_bh(&pn->hash_lock);
 
 	return ret;
+=======
+static inline void delete_item(struct pppoe_net *pn, __be16 sid,
+					char *addr, int ifindex)
+{
+	write_lock_bh(&pn->hash_lock);
+	__delete_item(pn, sid, addr, ifindex);
+	write_unlock_bh(&pn->hash_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /***************************************************************************
@@ -344,7 +360,11 @@ static void pppoe_flush_dev(struct net_device *dev)
 static int pppoe_device_event(struct notifier_block *this,
 			      unsigned long event, void *ptr)
 {
+<<<<<<< HEAD
 	struct net_device *dev = (struct net_device *)ptr;
+=======
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 
 	/* Only look at sockets that are using this specific device. */
 	switch (event) {
@@ -985,6 +1005,7 @@ static int pppoe_recvmsg(struct kiocb *iocb, struct socket *sock,
 	if (error < 0)
 		goto end;
 
+<<<<<<< HEAD
 	m->msg_namelen = 0;
 
 	if (skb) {
@@ -992,6 +1013,15 @@ static int pppoe_recvmsg(struct kiocb *iocb, struct socket *sock,
 		error = skb_copy_datagram_iovec(skb, 0, m->msg_iov, total_len);
 		if (error == 0)
 			error = total_len;
+=======
+	if (skb) {
+		total_len = min_t(size_t, total_len, skb->len);
+		error = skb_copy_datagram_iovec(skb, 0, m->msg_iov, total_len);
+		if (error == 0) {
+			consume_skb(skb);
+			return total_len;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	kfree_skb(skb);
@@ -1138,7 +1168,11 @@ static __net_init int pppoe_init_net(struct net *net)
 
 	rwlock_init(&pn->hash_lock);
 
+<<<<<<< HEAD
 	pde = proc_net_fops_create(net, "pppoe", S_IRUGO, &pppoe_seq_fops);
+=======
+	pde = proc_create("pppoe", S_IRUGO, net->proc_net, &pppoe_seq_fops);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PROC_FS
 	if (!pde)
 		return -ENOMEM;
@@ -1149,7 +1183,11 @@ static __net_init int pppoe_init_net(struct net *net)
 
 static __net_exit void pppoe_exit_net(struct net *net)
 {
+<<<<<<< HEAD
 	proc_net_remove(net, "pppoe");
+=======
+	remove_proc_entry("pppoe", net->proc_net);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct pernet_operations pppoe_net_ops = {

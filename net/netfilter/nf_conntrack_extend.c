@@ -44,7 +44,12 @@ void __nf_ct_ext_destroy(struct nf_conn *ct)
 EXPORT_SYMBOL(__nf_ct_ext_destroy);
 
 static void *
+<<<<<<< HEAD
 nf_ct_ext_create(struct nf_ct_ext **ext, enum nf_ct_ext_id id, gfp_t gfp)
+=======
+nf_ct_ext_create(struct nf_ct_ext **ext, enum nf_ct_ext_id id,
+		 size_t var_alloc_len, gfp_t gfp)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int off, len;
 	struct nf_ct_ext_type *t;
@@ -54,8 +59,13 @@ nf_ct_ext_create(struct nf_ct_ext **ext, enum nf_ct_ext_id id, gfp_t gfp)
 	t = rcu_dereference(nf_ct_ext_types[id]);
 	BUG_ON(t == NULL);
 	off = ALIGN(sizeof(struct nf_ct_ext), t->align);
+<<<<<<< HEAD
 	len = off + t->len;
 	alloc_size = t->alloc_size;
+=======
+	len = off + t->len + var_alloc_len;
+	alloc_size = t->alloc_size + var_alloc_len;
+>>>>>>> refs/remotes/origin/master
 	rcu_read_unlock();
 
 	*ext = kzalloc(alloc_size, gfp);
@@ -68,7 +78,12 @@ nf_ct_ext_create(struct nf_ct_ext **ext, enum nf_ct_ext_id id, gfp_t gfp)
 	return (void *)(*ext) + off;
 }
 
+<<<<<<< HEAD
 void *__nf_ct_ext_add(struct nf_conn *ct, enum nf_ct_ext_id id, gfp_t gfp)
+=======
+void *__nf_ct_ext_add_length(struct nf_conn *ct, enum nf_ct_ext_id id,
+			     size_t var_alloc_len, gfp_t gfp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nf_ct_ext *old, *new;
 	int i, newlen, newoff;
@@ -79,7 +94,11 @@ void *__nf_ct_ext_add(struct nf_conn *ct, enum nf_ct_ext_id id, gfp_t gfp)
 
 	old = ct->ext;
 	if (!old)
+<<<<<<< HEAD
 		return nf_ct_ext_create(&ct->ext, id, gfp);
+=======
+		return nf_ct_ext_create(&ct->ext, id, var_alloc_len, gfp);
+>>>>>>> refs/remotes/origin/master
 
 	if (__nf_ct_ext_exist(old, id))
 		return NULL;
@@ -89,7 +108,11 @@ void *__nf_ct_ext_add(struct nf_conn *ct, enum nf_ct_ext_id id, gfp_t gfp)
 	BUG_ON(t == NULL);
 
 	newoff = ALIGN(old->len, t->align);
+<<<<<<< HEAD
 	newlen = newoff + t->len;
+=======
+	newlen = newoff + t->len + var_alloc_len;
+>>>>>>> refs/remotes/origin/master
 	rcu_read_unlock();
 
 	new = __krealloc(old, newlen, gfp);
@@ -117,7 +140,11 @@ void *__nf_ct_ext_add(struct nf_conn *ct, enum nf_ct_ext_id id, gfp_t gfp)
 	memset((void *)new + newoff, 0, newlen - newoff);
 	return (void *)new + newoff;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(__nf_ct_ext_add);
+=======
+EXPORT_SYMBOL(__nf_ct_ext_add_length);
+>>>>>>> refs/remotes/origin/master
 
 static void update_alloc_size(struct nf_ct_ext_type *type)
 {
@@ -182,10 +209,14 @@ void nf_ct_extend_unregister(struct nf_ct_ext_type *type)
 {
 	mutex_lock(&nf_ct_ext_type_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_assign_pointer(nf_ct_ext_types[type->id], NULL);
 =======
 	RCU_INIT_POINTER(nf_ct_ext_types[type->id], NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RCU_INIT_POINTER(nf_ct_ext_types[type->id], NULL);
+>>>>>>> refs/remotes/origin/master
 	update_alloc_size(type);
 	mutex_unlock(&nf_ct_ext_type_mutex);
 	rcu_barrier(); /* Wait for completion of call_rcu()'s */

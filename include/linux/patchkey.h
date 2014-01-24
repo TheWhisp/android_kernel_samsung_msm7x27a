@@ -9,6 +9,7 @@
  * Do not include this file directly.  Please use <sys/soundcard.h> instead.
  * For kernel code, use <linux/soundcard.h>
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_PATCHKEY_H_INDIRECT
 #error "patchkey.h included directly"
@@ -25,6 +26,14 @@
 #endif
 
 #if defined(__KERNEL__)
+=======
+#ifndef _LINUX_PATCHKEY_H
+#define _LINUX_PATCHKEY_H
+
+#  include <asm/byteorder.h>
+#include <uapi/linux/patchkey.h>
+
+>>>>>>> refs/remotes/origin/master
 #  if defined(__BIG_ENDIAN)
 #    define _PATCHKEY(id) (0xfd00|id)
 #  elif defined(__LITTLE_ENDIAN)
@@ -32,6 +41,7 @@
 #  else
 #    error "could not determine byte order"
 #  endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 #elif defined(__BYTE_ORDER)
 =======
@@ -51,4 +61,6 @@
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_PATCHKEY_H */

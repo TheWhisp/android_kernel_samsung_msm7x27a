@@ -88,7 +88,11 @@ struct pci_pbm_info {
 	int				chip_revision;
 
 	/* Name used for top-level resources. */
+<<<<<<< HEAD
 	char				*name;
+=======
+	const char			*name;
+>>>>>>> refs/remotes/origin/master
 
 	/* OBP specific information. */
 	struct platform_device		*op;
@@ -97,6 +101,10 @@ struct pci_pbm_info {
 	/* PBM I/O and Memory space resources. */
 	struct resource			io_space;
 	struct resource			mem_space;
+<<<<<<< HEAD
+=======
+	struct resource			busn;
+>>>>>>> refs/remotes/origin/master
 
 	/* Base of PCI Config space, can be per-PBM or shared. */
 	unsigned long			config_space;

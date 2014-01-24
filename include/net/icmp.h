@@ -25,12 +25,17 @@
 
 struct icmp_err {
   int		errno;
+<<<<<<< HEAD
   unsigned	fatal:1;
+=======
+  unsigned int	fatal:1;
+>>>>>>> refs/remotes/origin/master
 };
 
 extern const struct icmp_err icmp_err_convert[];
 #define ICMP_INC_STATS(net, field)	SNMP_INC_STATS((net)->mib.icmp_statistics, field)
 #define ICMP_INC_STATS_BH(net, field)	SNMP_INC_STATS_BH((net)->mib.icmp_statistics, field)
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define ICMPMSGOUT_INC_STATS(net, field)	SNMP_INC_STATS((net)->mib.icmpmsg_statistics, field+256)
 #define ICMPMSGIN_INC_STATS_BH(net, field)	SNMP_INC_STATS_BH((net)->mib.icmpmsg_statistics, field)
@@ -38,16 +43,28 @@ extern const struct icmp_err icmp_err_convert[];
 #define ICMPMSGOUT_INC_STATS(net, field)	SNMP_INC_STATS_ATOMIC_LONG((net)->mib.icmpmsg_statistics, field+256)
 #define ICMPMSGIN_INC_STATS_BH(net, field)	SNMP_INC_STATS_ATOMIC_LONG((net)->mib.icmpmsg_statistics, field)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ICMPMSGOUT_INC_STATS(net, field)	SNMP_INC_STATS_ATOMIC_LONG((net)->mib.icmpmsg_statistics, field+256)
+#define ICMPMSGIN_INC_STATS_BH(net, field)	SNMP_INC_STATS_ATOMIC_LONG((net)->mib.icmpmsg_statistics, field)
+>>>>>>> refs/remotes/origin/master
 
 struct dst_entry;
 struct net_proto_family;
 struct sk_buff;
 struct net;
 
+<<<<<<< HEAD
 extern void	icmp_send(struct sk_buff *skb_in,  int type, int code, __be32 info);
 extern int	icmp_rcv(struct sk_buff *skb);
 extern int	icmp_ioctl(struct sock *sk, int cmd, unsigned long arg);
 extern int	icmp_init(void);
 extern void	icmp_out_count(struct net *net, unsigned char type);
+=======
+void icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info);
+int icmp_rcv(struct sk_buff *skb);
+void icmp_err(struct sk_buff *skb, u32 info);
+int icmp_init(void);
+void icmp_out_count(struct net *net, unsigned char type);
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* _ICMP_H */

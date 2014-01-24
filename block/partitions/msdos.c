@@ -23,6 +23,10 @@
 #include "check.h"
 #include "msdos.h"
 #include "efi.h"
+<<<<<<< HEAD
+=======
+#include "aix.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Many architectures don't like unaligned accesses, while
@@ -90,10 +94,28 @@ static int aix_magic_present(struct parsed_partitions *state, unsigned char *p)
 		if (d[0] == '_' && d[1] == 'L' && d[2] == 'V' && d[3] == 'M')
 			ret = 1;
 		put_dev_sector(sect);
+<<<<<<< HEAD
 	};
 	return ret;
 }
 
+=======
+	}
+	return ret;
+}
+
+static void set_info(struct parsed_partitions *state, int slot,
+		     u32 disksig)
+{
+	struct partition_meta_info *info = &state->parts[slot].info;
+
+	snprintf(info->uuid, sizeof(info->uuid), "%08x-%02x", disksig,
+		 slot);
+	info->volname[0] = 0;
+	state->parts[slot].has_info = true;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Create devices for each logical partition in an extended partition.
  * The logical partitions form a linked list, with each entry being
@@ -106,7 +128,12 @@ static int aix_magic_present(struct parsed_partitions *state, unsigned char *p)
  */
 
 static void parse_extended(struct parsed_partitions *state,
+<<<<<<< HEAD
 			   sector_t first_sector, sector_t first_size)
+=======
+			   sector_t first_sector, sector_t first_size,
+			   u32 disksig)
+>>>>>>> refs/remotes/origin/master
 {
 	struct partition *p;
 	Sector sect;
@@ -130,7 +157,11 @@ static void parse_extended(struct parsed_partitions *state,
 			return;
 
 		if (!msdos_magic_present(data + 510))
+<<<<<<< HEAD
 			goto done; 
+=======
+			goto done;
+>>>>>>> refs/remotes/origin/master
 
 		p = (struct partition *) (data + 0x1be);
 
@@ -143,7 +174,11 @@ static void parse_extended(struct parsed_partitions *state,
 		 * and OS/2 seems to use all four entries.
 		 */
 
+<<<<<<< HEAD
 		/* 
+=======
+		/*
+>>>>>>> refs/remotes/origin/master
 		 * First process the data partition(s)
 		 */
 		for (i=0; i<4; i++, p++) {
@@ -166,6 +201,10 @@ static void parse_extended(struct parsed_partitions *state,
 			}
 
 			put_partition(state, state->next, next, size);
+<<<<<<< HEAD
+=======
+			set_info(state, state->next, disksig);
+>>>>>>> refs/remotes/origin/master
 			if (SYS_IND(p) == LINUX_RAID_PARTITION)
 				state->parts[state->next].flags = ADDPART_FLAG_RAID;
 			loopct = 0;
@@ -250,7 +289,11 @@ static void parse_solaris_x86(struct parsed_partitions *state,
 }
 
 #if defined(CONFIG_BSD_DISKLABEL)
+<<<<<<< HEAD
 /* 
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * Create devices for BSD partitions listed in a disklabel, under a
  * dos-like partition. See parse_extended() for more information.
  */
@@ -281,7 +324,11 @@ static void parse_bsd(struct parsed_partitions *state,
 
 		if (state->next == state->limit)
 			break;
+<<<<<<< HEAD
 		if (p->p_fstype == BSD_FS_UNUSED) 
+=======
+		if (p->p_fstype == BSD_FS_UNUSED)
+>>>>>>> refs/remotes/origin/master
 			continue;
 		bsd_start = le32_to_cpu(p->p_offset);
 		bsd_size = le32_to_cpu(p->p_size);
@@ -428,7 +475,11 @@ static struct {
 	{NEW_SOLARIS_X86_PARTITION, parse_solaris_x86},
 	{0, NULL},
 };
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> refs/remotes/origin/master
 int msdos_partition(struct parsed_partitions *state)
 {
 	sector_t sector_size = bdev_logical_block_size(state->bdev) / 512;
@@ -437,10 +488,15 @@ int msdos_partition(struct parsed_partitions *state)
 	struct partition *p;
 	struct fat_boot_sector *fb;
 	int slot;
+<<<<<<< HEAD
+=======
+	u32 disksig;
+>>>>>>> refs/remotes/origin/master
 
 	data = read_part_sector(state, 0, &sect);
 	if (!data)
 		return -1;
+<<<<<<< HEAD
 	if (!msdos_magic_present(data + 510)) {
 		put_dev_sector(sect);
 		return 0;
@@ -449,6 +505,25 @@ int msdos_partition(struct parsed_partitions *state)
 	if (aix_magic_present(state, data)) {
 		put_dev_sector(sect);
 		strlcat(state->pp_buf, " [AIX]", PAGE_SIZE);
+=======
+
+	/*
+	 * Note order! (some AIX disks, e.g. unbootable kind,
+	 * have no MSDOS 55aa)
+	 */
+	if (aix_magic_present(state, data)) {
+		put_dev_sector(sect);
+#ifdef CONFIG_AIX_PARTITION
+		return aix_partition(state);
+#else
+		strlcat(state->pp_buf, " [AIX]", PAGE_SIZE);
+		return 0;
+#endif
+	}
+
+	if (!msdos_magic_present(data + 510)) {
+		put_dev_sector(sect);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -491,6 +566,11 @@ int msdos_partition(struct parsed_partitions *state)
 #endif
 	p = (struct partition *) (data + 0x1be);
 
+<<<<<<< HEAD
+=======
+	disksig = le32_to_cpup((__le32 *)(data + 0x1b8));
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Look for partitions in two passes:
 	 * First find the primary and DOS-type extended partitions.
@@ -515,11 +595,19 @@ int msdos_partition(struct parsed_partitions *state)
 			put_partition(state, slot, start, n);
 
 			strlcat(state->pp_buf, " <", PAGE_SIZE);
+<<<<<<< HEAD
 			parse_extended(state, start, size);
+=======
+			parse_extended(state, start, size, disksig);
+>>>>>>> refs/remotes/origin/master
 			strlcat(state->pp_buf, " >", PAGE_SIZE);
 			continue;
 		}
 		put_partition(state, slot, start, size);
+<<<<<<< HEAD
+=======
+		set_info(state, slot, disksig);
+>>>>>>> refs/remotes/origin/master
 		if (SYS_IND(p) == LINUX_RAID_PARTITION)
 			state->parts[slot].flags = ADDPART_FLAG_RAID;
 		if (SYS_IND(p) == DM6_PARTITION)

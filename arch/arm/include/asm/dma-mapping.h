@@ -6,26 +6,52 @@
 #include <linux/mm_types.h>
 #include <linux/scatterlist.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/dma-attrs.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/dma-attrs.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/dma-debug.h>
 
 #include <asm-generic/dma-coherent.h>
 #include <asm/memory.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define DMA_ERROR_CODE	(~0)
 extern struct dma_map_ops arm_dma_ops;
 
 static inline struct dma_map_ops *get_dma_ops(struct device *dev)
+=======
+#include <xen/xen.h>
+#include <asm/xen/hypervisor.h>
+
+#define DMA_ERROR_CODE	(~0)
+extern struct dma_map_ops arm_dma_ops;
+extern struct dma_map_ops arm_coherent_dma_ops;
+
+static inline struct dma_map_ops *__generic_dma_ops(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (dev && dev->archdata.dma_ops)
 		return dev->archdata.dma_ops;
 	return &arm_dma_ops;
 }
 
+<<<<<<< HEAD
+=======
+static inline struct dma_map_ops *get_dma_ops(struct device *dev)
+{
+	if (xen_initial_domain())
+		return xen_dma_ops;
+	else
+		return __generic_dma_ops(dev);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void set_dma_ops(struct device *dev, struct dma_map_ops *ops)
 {
 	BUG_ON(!dev);
@@ -39,7 +65,10 @@ static inline int dma_set_mask(struct device *dev, u64 mask)
 	return get_dma_ops(dev)->set_dma_mask(dev, mask);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef __arch_page_to_dma
 #error Please update to __arch_pfn_to_dma
 #endif
@@ -63,16 +92,24 @@ static inline unsigned long dma_to_pfn(struct device *dev, dma_addr_t addr)
 static inline void *dma_to_virt(struct device *dev, dma_addr_t addr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (void *)__bus_to_virt(addr);
 =======
 	return (void *)__bus_to_virt((unsigned long)addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (void *)__bus_to_virt((unsigned long)addr);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline dma_addr_t virt_to_dma(struct device *dev, void *addr)
 {
 	return (dma_addr_t)__virt_to_bus((unsigned long)(addr));
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 #else
 static inline dma_addr_t pfn_to_dma(struct device *dev, unsigned long pfn)
 {
@@ -95,6 +132,7 @@ static inline dma_addr_t virt_to_dma(struct device *dev, void *addr)
 }
 #endif
 
+<<<<<<< HEAD
 /*
 <<<<<<< HEAD
  * The DMA API is built upon the notion of "buffer ownership".  A buffer
@@ -187,15 +225,63 @@ static inline int dma_set_mask(struct device *dev, u64 dma_mask)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* The ARM override for dma_max_pfn() */
+static inline unsigned long dma_max_pfn(struct device *dev)
+{
+	return PHYS_PFN_OFFSET + dma_to_pfn(dev, *dev->dma_mask);
+}
+#define dma_max_pfn(dev) dma_max_pfn(dev)
+
+static inline dma_addr_t phys_to_dma(struct device *dev, phys_addr_t paddr)
+{
+	unsigned int offset = paddr & ~PAGE_MASK;
+	return pfn_to_dma(dev, __phys_to_pfn(paddr)) + offset;
+}
+
+static inline phys_addr_t dma_to_phys(struct device *dev, dma_addr_t dev_addr)
+{
+	unsigned int offset = dev_addr & ~PAGE_MASK;
+	return __pfn_to_phys(dma_to_pfn(dev, dev_addr)) + offset;
+}
+
+static inline bool dma_capable(struct device *dev, dma_addr_t addr, size_t size)
+{
+	u64 limit, mask;
+
+	if (!dev->dma_mask)
+		return 0;
+
+	mask = *dev->dma_mask;
+
+	limit = (mask + 1) & ~mask;
+	if (limit && size > limit)
+		return 0;
+
+	if ((addr | (addr + size - 1)) & ~mask)
+		return 0;
+
+	return 1;
+}
+
+static inline void dma_mark_clean(void *addr, size_t size) { }
+
+/*
+>>>>>>> refs/remotes/origin/master
  * DMA errors are defined by all-bits-set in the DMA address.
  */
 static inline int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return dma_addr == ~0;
 =======
 	return dma_addr == DMA_ERROR_CODE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	debug_dma_mapping_error(dev, dma_addr);
+	return dma_addr == DMA_ERROR_CODE;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -213,6 +299,7 @@ static inline void dma_free_noncoherent(struct device *dev, size_t size,
 {
 }
 
+<<<<<<< HEAD
 
 /*
  * dma_coherent_pre_ops - barrier functions for coherent memory before DMA.
@@ -272,6 +359,12 @@ extern void *dma_alloc_coherent(struct device *, size_t, dma_addr_t *, gfp_t);
 =======
 extern int dma_supported(struct device *dev, u64 mask);
 
+=======
+extern int dma_supported(struct device *dev, u64 mask);
+
+extern int arm_dma_set_mask(struct device *dev, u64 dma_mask);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * arm_dma_alloc - allocate consistent memory for DMA
  * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
@@ -303,31 +396,43 @@ static inline void *dma_alloc_attrs(struct device *dev, size_t size,
 
 /**
  * arm_dma_free - free memory allocated by arm_dma_alloc
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
  * @size: size of memory originally requested in dma_alloc_coherent
  * @cpu_addr: CPU-view address returned from dma_alloc_coherent
  * @handle: device-view address returned from dma_alloc_coherent
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * Free (and unmap) a DMA buffer previously allocated by
  * dma_alloc_coherent().
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @attrs: optinal attributes that specific mapping properties
  *
  * Free (and unmap) a DMA buffer previously allocated by
  * arm_dma_alloc().
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * References to memory and mappings associated with cpu_addr/handle
  * during and after this call executing are illegal.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern void dma_free_coherent(struct device *, size_t, void *, dma_addr_t);
 
 /**
  * dma_mmap_coherent - map a coherent DMA allocation into user space
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern void arm_dma_free(struct device *dev, size_t size, void *cpu_addr,
 			 dma_addr_t handle, struct dma_attrs *attrs);
 
@@ -346,21 +451,29 @@ static inline void dma_free_attrs(struct device *dev, size_t size,
 
 /**
  * arm_dma_mmap - map a coherent DMA allocation into user space
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
  * @vma: vm_area_struct describing requested user mapping
  * @cpu_addr: kernel CPU-view address returned from dma_alloc_coherent
  * @handle: device-view address returned from dma_alloc_coherent
  * @size: size of memory originally requested in dma_alloc_coherent
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @attrs: optinal attributes that specific mapping properties
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @attrs: optinal attributes that specific mapping properties
+>>>>>>> refs/remotes/origin/master
  *
  * Map a coherent DMA buffer previously allocated by dma_alloc_coherent
  * into user space.  The coherent DMA buffer must not be freed by the
  * driver until the user space mapping has been released.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 int dma_mmap_coherent(struct device *, struct vm_area_struct *,
 		void *, dma_addr_t, size_t);
@@ -389,10 +502,13 @@ int dma_mmap_writecombine(struct device *, struct vm_area_struct *,
 
 #ifdef CONFIG_DMABOUNCE
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern int arm_dma_mmap(struct device *dev, struct vm_area_struct *vma,
 			void *cpu_addr, dma_addr_t dma_addr, size_t size,
 			struct dma_attrs *attrs);
 
+<<<<<<< HEAD
 #define dma_mmap_coherent(d, v, c, h, s) dma_mmap_attrs(d, v, c, h, s, NULL)
 
 static inline int dma_mmap_attrs(struct device *dev, struct vm_area_struct *vma,
@@ -404,6 +520,8 @@ static inline int dma_mmap_attrs(struct device *dev, struct vm_area_struct *vma,
 	return ops->mmap(dev, vma, cpu_addr, dma_addr, size, attrs);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void *dma_alloc_writecombine(struct device *dev, size_t size,
 				       dma_addr_t *dma_handle, gfp_t flag)
 {
@@ -420,6 +538,7 @@ static inline void dma_free_writecombine(struct device *dev, size_t size,
 	return dma_free_attrs(dev, size, cpu_addr, dma_handle, &attrs);
 }
 
+<<<<<<< HEAD
 static inline int dma_mmap_writecombine(struct device *dev, struct vm_area_struct *vma,
 		      void *cpu_addr, dma_addr_t dma_addr, size_t size)
 {
@@ -488,6 +607,15 @@ static inline int dma_mmap_nonconsistent(struct device *dev,
 extern void __init init_consistent_dma_size(unsigned long size);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * This can be called during early boot to increase the size of the atomic
+ * coherent DMA pool above the default value of 256KiB. It must be called
+ * before postcore_initcall.
+ */
+extern void __init init_dma_coherent_pool_size(unsigned long size);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * For SA-1111, IXP425, and ADI systems  the dma-mapping functions are "magic"
  * and utilize bounce buffers as needed to work around limited DMA windows.
@@ -507,13 +635,18 @@ extern void __init init_consistent_dma_size(unsigned long size);
  * @small_buf_size: size of buffers to use with small buffer pool
  * @large_buf_size: size of buffers to use with large buffer pool (can be 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @needs_bounce_fn: called to determine whether buffer needs bouncing
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @needs_bounce_fn: called to determine whether buffer needs bouncing
+>>>>>>> refs/remotes/origin/master
  *
  * This function should be called by low-level platform code to register
  * a device as requireing DMA buffer bouncing. The function will allocate
  * appropriate DMA pools for the device.
+<<<<<<< HEAD
 <<<<<<< HEAD
  *
  */
@@ -524,6 +657,11 @@ extern int dmabounce_register_dev(struct device *, unsigned long,
 extern int dmabounce_register_dev(struct device *, unsigned long,
 		unsigned long, int (*)(struct device *, dma_addr_t, size_t));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+extern int dmabounce_register_dev(struct device *, unsigned long,
+		unsigned long, int (*)(struct device *, dma_addr_t, size_t));
+>>>>>>> refs/remotes/origin/master
 
 /**
  * dmabounce_unregister_dev
@@ -537,6 +675,7 @@ extern int dmabounce_register_dev(struct device *, unsigned long,
  */
 extern void dmabounce_unregister_dev(struct device *);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /**
  * dma_needs_bounce
@@ -842,6 +981,10 @@ extern void dma_sync_sg_for_device(struct device *, struct scatterlist *, int,
 		enum dma_data_direction);
 
 =======
+=======
+
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The scatter list versions of the above methods.
  */
@@ -853,7 +996,13 @@ extern void arm_dma_sync_sg_for_cpu(struct device *, struct scatterlist *, int,
 		enum dma_data_direction);
 extern void arm_dma_sync_sg_for_device(struct device *, struct scatterlist *, int,
 		enum dma_data_direction);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int arm_dma_get_sgtable(struct device *dev, struct sg_table *sgt,
+		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+		struct dma_attrs *attrs);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __KERNEL__ */
 #endif

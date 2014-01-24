@@ -257,6 +257,7 @@ static struct serio_driver twidjoy_drv = {
 	.disconnect	= twidjoy_disconnect,
 };
 
+<<<<<<< HEAD
 /*
  * The functions for inserting/removing us as a module.
  */
@@ -273,3 +274,6 @@ static void __exit twidjoy_exit(void)
 
 module_init(twidjoy_init);
 module_exit(twidjoy_exit);
+=======
+module_serio_driver(twidjoy_drv);
+>>>>>>> refs/remotes/origin/master

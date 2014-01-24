@@ -1,15 +1,21 @@
 /***********************************************************************/
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*!
 
     AudioScience HPI driver
     Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
 
     AudioScience HPI driver
     Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of version 2 of the GNU General Public License as
@@ -25,6 +31,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 \file
+<<<<<<< HEAD
 <<<<<<< HEAD
 Functions for reading DSP code to load into DSP
 
@@ -43,10 +50,16 @@ Functions for reading DSP code using
 hotplug firmware loader from individual dsp code files
 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Functions for reading DSP code using
+hotplug firmware loader from individual dsp code files
+*/
+>>>>>>> refs/remotes/origin/master
 /***********************************************************************/
 #define SOURCEFILE_NAME "hpidspcd.c"
 #include "hpidspcd.h"
 #include "hpidebug.h"
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /**
@@ -83,6 +96,8 @@ short hpi_dsp_code_open(u32 adapter, struct dsp_code *ps_dsp_code,
 	struct code_header header;
 	char fw_name[20];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include "hpi_version.h"
 
 struct dsp_code_private {
@@ -100,11 +115,15 @@ short hpi_dsp_code_open(u32 adapter, void *os_data, struct dsp_code *dsp_code,
 	struct code_header header;
 	char fw_name[20];
 	short err_ret = HPI_ERROR_DSP_FILE_NOT_FOUND;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	sprintf(fw_name, "asihpi/dsp%04x.bin", adapter);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = request_firmware(&ps_firmware, fw_name,
 		&ps_dsp_code->ps_dev->dev);
@@ -201,6 +220,17 @@ short hpi_dsp_code_read_word(struct dsp_code *ps_dsp_code, u32 *pword)
 	if (firmware->size < sizeof(header)) {
 		dev_printk(KERN_ERR, &dev->dev, "Header size too small %s\n",
 			fw_name);
+=======
+	err = request_firmware(&firmware, fw_name, &dev->dev);
+
+	if (err || !firmware) {
+		dev_err(&dev->dev, "%d, request_firmware failed for %s\n",
+			err, fw_name);
+		goto error1;
+	}
+	if (firmware->size < sizeof(header)) {
+		dev_err(&dev->dev, "Header size too small %s\n", fw_name);
+>>>>>>> refs/remotes/origin/master
 		goto error2;
 	}
 	memcpy(&header, firmware->data, sizeof(header));
@@ -208,7 +238,11 @@ short hpi_dsp_code_read_word(struct dsp_code *ps_dsp_code, u32 *pword)
 	if ((header.type != 0x45444F43) ||	/* "CODE" */
 		(header.adapter != adapter)
 		|| (header.size != firmware->size)) {
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &dev->dev,
+=======
+		dev_err(&dev->dev,
+>>>>>>> refs/remotes/origin/master
 			"Invalid firmware header size %d != file %zd\n",
 			header.size, firmware->size);
 		goto error2;
@@ -216,17 +250,28 @@ short hpi_dsp_code_read_word(struct dsp_code *ps_dsp_code, u32 *pword)
 
 	if ((header.version >> 9) != (HPI_VER >> 9)) {
 		/* Consider even and subsequent odd minor versions to be compatible */
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &dev->dev,
 			"Incompatible firmware version "
 			"DSP image %X != Driver %X\n", header.version,
 			HPI_VER);
+=======
+		dev_err(&dev->dev, "Incompatible firmware version DSP image %X != Driver %X\n",
+			header.version, HPI_VER);
+>>>>>>> refs/remotes/origin/master
 		goto error2;
 	}
 
 	if (header.version != HPI_VER) {
+<<<<<<< HEAD
 		dev_printk(KERN_INFO, &dev->dev,
 			"Firmware: release version mismatch  DSP image %X != Driver %X\n",
 			header.version, HPI_VER);
+=======
+		dev_info(&dev->dev,
+			 "Firmware: release version mismatch  DSP image %X != Driver %X\n",
+			 header.version, HPI_VER);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	HPI_DEBUG_LOG(DEBUG, "dsp code %s opened\n", fw_name);
@@ -274,12 +319,16 @@ short hpi_dsp_code_read_word(struct dsp_code *dsp_code, u32 *pword)
 	*pword = ((u32 *)(dsp_code->pvt->firmware->data))[dsp_code->
 		word_count];
 	dsp_code->word_count++;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 /*-------------------------------------------------------------------*/
 short hpi_dsp_code_read_block(size_t words_requested,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct dsp_code *ps_dsp_code, u32 **ppblock)
 {
@@ -292,6 +341,8 @@ short hpi_dsp_code_read_block(size_t words_requested,
 		ps_dsp_code->word_count;
 	ps_dsp_code->word_count += words_requested;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dsp_code *dsp_code, u32 **ppblock)
 {
 	if (dsp_code->word_count + words_requested > dsp_code->block_length)
@@ -301,6 +352,9 @@ short hpi_dsp_code_read_block(size_t words_requested,
 		((u32 *)(dsp_code->pvt->firmware->data)) +
 		dsp_code->word_count;
 	dsp_code->word_count += words_requested;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }

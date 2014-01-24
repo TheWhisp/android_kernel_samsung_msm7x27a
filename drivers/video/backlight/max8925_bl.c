@@ -18,9 +18,13 @@
 #include <linux/mfd/max8925.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define MAX_BRIGHTNESS		(0xff)
 #define MIN_BRIGHTNESS		(0)
@@ -30,7 +34,13 @@
 struct max8925_backlight_data {
 	struct max8925_chip	*chip;
 
+<<<<<<< HEAD
 	int		current_brightness;
+=======
+	int	current_brightness;
+	int	reg_mode_cntl;
+	int	reg_cntl;
+>>>>>>> refs/remotes/origin/master
 };
 
 static int max8925_backlight_set(struct backlight_device *bl, int brightness)
@@ -45,16 +55,27 @@ static int max8925_backlight_set(struct backlight_device *bl, int brightness)
 	else
 		value = brightness;
 
+<<<<<<< HEAD
 	ret = max8925_reg_write(chip->i2c, MAX8925_WLED_CNTL, value);
+=======
+	ret = max8925_reg_write(chip->i2c, data->reg_cntl, value);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto out;
 
 	if (!data->current_brightness && brightness)
 		/* enable WLED output */
+<<<<<<< HEAD
 		ret = max8925_set_bits(chip->i2c, MAX8925_WLED_MODE_CNTL, 1, 1);
 	else if (!brightness)
 		/* disable WLED output */
 		ret = max8925_set_bits(chip->i2c, MAX8925_WLED_MODE_CNTL, 1, 0);
+=======
+		ret = max8925_set_bits(chip->i2c, data->reg_mode_cntl, 1, 1);
+	else if (!brightness)
+		/* disable WLED output */
+		ret = max8925_set_bits(chip->i2c, data->reg_mode_cntl, 1, 0);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto out;
 	dev_dbg(chip->dev, "set brightness %d\n", value);
@@ -88,7 +109,11 @@ static int max8925_backlight_get_brightness(struct backlight_device *bl)
 	struct max8925_chip *chip = data->chip;
 	int ret;
 
+<<<<<<< HEAD
 	ret = max8925_reg_read(chip->i2c, MAX8925_WLED_CNTL);
+=======
+	ret = max8925_reg_read(chip->i2c, data->reg_cntl);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return -EINVAL;
 	data->current_brightness = ret;
@@ -102,15 +127,50 @@ static const struct backlight_ops max8925_backlight_ops = {
 	.get_brightness	= max8925_backlight_get_brightness,
 };
 
+<<<<<<< HEAD
 static int __devinit max8925_backlight_probe(struct platform_device *pdev)
 {
 	struct max8925_chip *chip = dev_get_drvdata(pdev->dev.parent);
 	struct max8925_platform_data *max8925_pdata;
 	struct max8925_backlight_pdata *pdata = NULL;
+=======
+static void max8925_backlight_dt_init(struct platform_device *pdev)
+{
+	struct device_node *nproot = pdev->dev.parent->of_node, *np;
+	struct max8925_backlight_pdata *pdata;
+	u32 val;
+
+	if (!nproot || !IS_ENABLED(CONFIG_OF))
+		return;
+
+	pdata = devm_kzalloc(&pdev->dev,
+			     sizeof(struct max8925_backlight_pdata),
+			     GFP_KERNEL);
+	if (!pdata)
+		return;
+
+	np = of_find_node_by_name(nproot, "backlight");
+	if (!np) {
+		dev_err(&pdev->dev, "failed to find backlight node\n");
+		return;
+	}
+
+	if (!of_property_read_u32(np, "maxim,max8925-dual-string", &val))
+		pdata->dual_string = val;
+
+	pdev->dev.platform_data = pdata;
+}
+
+static int max8925_backlight_probe(struct platform_device *pdev)
+{
+	struct max8925_chip *chip = dev_get_drvdata(pdev->dev.parent);
+	struct max8925_backlight_pdata *pdata;
+>>>>>>> refs/remotes/origin/master
 	struct max8925_backlight_data *data;
 	struct backlight_device *bl;
 	struct backlight_properties props;
 	struct resource *res;
+<<<<<<< HEAD
 	char name[MAX8925_NAME_SIZE];
 	unsigned char value;
 	int ret;
@@ -141,12 +201,36 @@ static int __devinit max8925_backlight_probe(struct platform_device *pdev)
 	if (data == NULL)
 		return -ENOMEM;
 	strncpy(name, res->name, MAX8925_NAME_SIZE);
+=======
+	unsigned char value;
+	int ret = 0;
+
+	data = devm_kzalloc(&pdev->dev, sizeof(struct max8925_backlight_data),
+			    GFP_KERNEL);
+	if (data == NULL)
+		return -ENOMEM;
+
+	res = platform_get_resource(pdev, IORESOURCE_REG, 0);
+	if (!res) {
+		dev_err(&pdev->dev, "No REG resource for mode control!\n");
+		return -ENXIO;
+	}
+	data->reg_mode_cntl = res->start;
+	res = platform_get_resource(pdev, IORESOURCE_REG, 1);
+	if (!res) {
+		dev_err(&pdev->dev, "No REG resource for control!\n");
+		return -ENXIO;
+	}
+	data->reg_cntl = res->start;
+
+>>>>>>> refs/remotes/origin/master
 	data->chip = chip;
 	data->current_brightness = 0;
 
 	memset(&props, 0, sizeof(struct backlight_properties));
 	props.type = BACKLIGHT_RAW;
 	props.max_brightness = MAX_BRIGHTNESS;
+<<<<<<< HEAD
 	bl = backlight_device_register(name, &pdev->dev, data,
 					&max8925_backlight_ops, &props);
 	if (IS_ERR(bl)) {
@@ -155,6 +239,13 @@ static int __devinit max8925_backlight_probe(struct platform_device *pdev)
 		kfree(data);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bl = devm_backlight_device_register(&pdev->dev, "max8925-backlight",
+					&pdev->dev, data,
+					&max8925_backlight_ops, &props);
+	if (IS_ERR(bl)) {
+		dev_err(&pdev->dev, "failed to register backlight\n");
+>>>>>>> refs/remotes/origin/master
 		return PTR_ERR(bl);
 	}
 	bl->props.brightness = MAX_BRIGHTNESS;
@@ -162,6 +253,7 @@ static int __devinit max8925_backlight_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, bl);
 
 	value = 0;
+<<<<<<< HEAD
 	if (pdata->lxw_scl)
 		value |= (1 << 7);
 	if (pdata->lxw_freq)
@@ -196,6 +288,25 @@ static int __devexit max8925_backlight_remove(struct platform_device *pdev)
 	backlight_device_unregister(bl);
 >>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
+=======
+	if (!pdev->dev.platform_data)
+		max8925_backlight_dt_init(pdev);
+
+	pdata = pdev->dev.platform_data;
+	if (pdata) {
+		if (pdata->lxw_scl)
+			value |= (1 << 7);
+		if (pdata->lxw_freq)
+			value |= (LWX_FREQ(pdata->lxw_freq) << 4);
+		if (pdata->dual_string)
+			value |= (1 << 1);
+	}
+	ret = max8925_set_bits(chip->i2c, data->reg_mode_cntl, 0xfe, value);
+	if (ret < 0)
+		return ret;
+	backlight_update_status(bl);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct platform_driver max8925_backlight_driver = {
@@ -204,6 +315,7 @@ static struct platform_driver max8925_backlight_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= max8925_backlight_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(max8925_backlight_remove),
 };
 
@@ -222,6 +334,11 @@ module_exit(max8925_backlight_exit);
 =======
 module_platform_driver(max8925_backlight_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+module_platform_driver(max8925_backlight_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Backlight Driver for Maxim MAX8925");
 MODULE_AUTHOR("Haojian Zhuang <haojian.zhuang@marvell.com>");

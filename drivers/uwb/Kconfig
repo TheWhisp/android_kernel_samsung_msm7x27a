@@ -3,8 +3,12 @@
 #
 
 menuconfig UWB
+<<<<<<< HEAD
 	tristate "Ultra Wideband devices (EXPERIMENTAL)"
 	depends on EXPERIMENTAL
+=======
+	tristate "Ultra Wideband devices"
+>>>>>>> refs/remotes/origin/master
 	depends on PCI
 	default n
 	help

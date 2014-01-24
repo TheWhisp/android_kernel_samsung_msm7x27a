@@ -1,6 +1,7 @@
 #ifndef _ASM_SPARC_IOCTLS_H
 #define _ASM_SPARC_IOCTLS_H
 
+<<<<<<< HEAD
 #include <asm/ioctl.h>
 
 /* Big T */
@@ -118,6 +119,10 @@
 
 /* Kernel definitions */
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/ioctls.h>
+
+>>>>>>> refs/remotes/origin/master
 #define TIOCGETC __TIOCGETC
 #define TIOCGETP __TIOCGETP
 #define TIOCGLTC __TIOCGLTC
@@ -125,6 +130,7 @@
 #define TIOCSETP __TIOCSETP
 #define TIOCSETN __TIOCSETN
 #define TIOCSETC __TIOCSETC
+<<<<<<< HEAD
 #endif
 
 /* Used for packet mode */
@@ -137,4 +143,6 @@
 #define TIOCPKT_DOSTOP		32
 #define TIOCPKT_IOCTL		64
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !(_ASM_SPARC_IOCTLS_H) */

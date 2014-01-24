@@ -14,10 +14,19 @@
 #include <linux/mm.h>
 #include <linux/vmalloc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/platform_device.h>
+=======
+#include <linux/module.h>
+#include <linux/clk.h>
+#include <linux/of_platform.h>
+#include <linux/of_gpio.h>
+#include <linux/of_irq.h>
+#include <linux/of_pci.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/pci.h>
 #include <asm/gpio.h>
@@ -25,6 +34,7 @@
 
 #include <lantiq_soc.h>
 #include <lantiq_irq.h>
+<<<<<<< HEAD
 #include <lantiq_platform.h>
 
 #include "pci-lantiq.h"
@@ -36,6 +46,11 @@
 #define LTQ_PCI_IO_BASE			0x1AE00000
 #define LTQ_PCI_IO_SIZE			0x00200000
 
+=======
+
+#include "pci-lantiq.h"
+
+>>>>>>> refs/remotes/origin/master
 #define PCI_CR_FCI_ADDR_MAP0		0x00C0
 #define PCI_CR_FCI_ADDR_MAP1		0x00C4
 #define PCI_CR_FCI_ADDR_MAP2		0x00C8
@@ -71,6 +86,7 @@
 #define ltq_pci_cfg_w32(x, y)	ltq_w32((x), ltq_pci_mapped_cfg + (y))
 #define ltq_pci_cfg_r32(x)	ltq_r32(ltq_pci_mapped_cfg + (x))
 
+<<<<<<< HEAD
 struct ltq_pci_gpio_map {
 	int pin;
 	int alt0;
@@ -109,10 +125,21 @@ static int ltq_pci_req_mask = 0xf;
 static int *ltq_pci_irq_map;
 
 struct pci_ops ltq_pci_ops = {
+=======
+__iomem void *ltq_pci_mapped_cfg;
+static __iomem void *ltq_pci_membase;
+
+static int reset_gpio;
+static struct clk *clk_pci, *clk_external;
+static struct resource pci_io_resource;
+static struct resource pci_mem_resource;
+static struct pci_ops pci_ops = {
+>>>>>>> refs/remotes/origin/master
 	.read	= ltq_pci_read_config_dword,
 	.write	= ltq_pci_write_config_dword
 };
 
+<<<<<<< HEAD
 static struct resource pci_io_resource = {
 	.name	= "pci io space",
 	.start	= LTQ_PCI_IO_BASE,
@@ -129,12 +156,17 @@ static struct resource pci_mem_resource = {
 
 static struct pci_controller ltq_pci_controller = {
 	.pci_ops	= &ltq_pci_ops,
+=======
+static struct pci_controller pci_controller = {
+	.pci_ops	= &pci_ops,
+>>>>>>> refs/remotes/origin/master
 	.mem_resource	= &pci_mem_resource,
 	.mem_offset	= 0x00000000UL,
 	.io_resource	= &pci_io_resource,
 	.io_offset	= 0x00000000UL,
 };
 
+<<<<<<< HEAD
 int pcibios_plat_dev_init(struct pci_dev *dev)
 {
 	if (ltqpci_plat_dev_init)
@@ -144,16 +176,24 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
 }
 
 static u32 ltq_calc_bar11mask(void)
+=======
+static inline u32 ltq_calc_bar11mask(void)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 mem, bar11mask;
 
 	/* BAR11MASK value depends on available memory on system. */
+<<<<<<< HEAD
 	mem = num_physpages * PAGE_SIZE;
+=======
+	mem = get_num_physpages() * PAGE_SIZE;
+>>>>>>> refs/remotes/origin/master
 	bar11mask = (0x0ffffff0 & ~((1 << (fls(mem) - 1)) - 1)) | 8;
 
 	return bar11mask;
 }
 
+<<<<<<< HEAD
 static void ltq_pci_setup_gpio(int gpio)
 {
 	int i;
@@ -201,6 +241,52 @@ static int __devinit ltq_pci_startup(struct ltq_pci_data *conf)
 
 	/* setup pci clock and gpis used by pci */
 	ltq_pci_setup_gpio(conf->gpio);
+=======
+static int ltq_pci_startup(struct platform_device *pdev)
+{
+	struct device_node *node = pdev->dev.of_node;
+	const __be32 *req_mask, *bus_clk;
+	u32 temp_buffer;
+
+	/* get our clocks */
+	clk_pci = clk_get(&pdev->dev, NULL);
+	if (IS_ERR(clk_pci)) {
+		dev_err(&pdev->dev, "failed to get pci clock\n");
+		return PTR_ERR(clk_pci);
+	}
+
+	clk_external = clk_get(&pdev->dev, "external");
+	if (IS_ERR(clk_external)) {
+		clk_put(clk_pci);
+		dev_err(&pdev->dev, "failed to get external pci clock\n");
+		return PTR_ERR(clk_external);
+	}
+
+	/* read the bus speed that we want */
+	bus_clk = of_get_property(node, "lantiq,bus-clock", NULL);
+	if (bus_clk)
+		clk_set_rate(clk_pci, *bus_clk);
+
+	/* and enable the clocks */
+	clk_enable(clk_pci);
+	if (of_find_property(node, "lantiq,external-clock", NULL))
+		clk_enable(clk_external);
+	else
+		clk_disable(clk_external);
+
+	/* setup reset gpio used by pci */
+	reset_gpio = of_get_named_gpio(node, "gpio-reset", 0);
+	if (gpio_is_valid(reset_gpio)) {
+		int ret = devm_gpio_request(&pdev->dev,
+						reset_gpio, "pci-reset");
+		if (ret) {
+			dev_err(&pdev->dev,
+				"failed to request gpio %d\n", reset_gpio);
+			return ret;
+		}
+		gpio_direction_output(reset_gpio, 1);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* enable auto-switching between PCI and EBU */
 	ltq_pci_w32(0xa, PCI_CR_CLK_CTRL);
@@ -213,7 +299,16 @@ static int __devinit ltq_pci_startup(struct ltq_pci_data *conf)
 
 	/* enable external 2 PCI masters */
 	temp_buffer = ltq_pci_r32(PCI_CR_PC_ARB);
+<<<<<<< HEAD
 	temp_buffer &= (~(ltq_pci_req_mask << 16));
+=======
+	/* setup the request mask */
+	req_mask = of_get_property(node, "req-mask", NULL);
+	if (req_mask)
+		temp_buffer &= ~((*req_mask & 0xf) << 16);
+	else
+		temp_buffer &= ~0xf0000;
+>>>>>>> refs/remotes/origin/master
 	/* enable internal arbiter */
 	temp_buffer |= (1 << INTERNAL_ARB_ENABLE_BIT);
 	/* enable internal PCI master reqest */
@@ -257,6 +352,7 @@ static int __devinit ltq_pci_startup(struct ltq_pci_data *conf)
 	ltq_ebu_w32(ltq_ebu_r32(LTQ_EBU_PCC_IEN) | 0x10, LTQ_EBU_PCC_IEN);
 
 	/* toggle reset pin */
+<<<<<<< HEAD
 	__gpio_set_value(21, 0);
 	wmb();
 	mdelay(1);
@@ -302,6 +398,57 @@ ltq_pci_driver = {
 	.driver = {
 		.name = "ltq_pci",
 		.owner = THIS_MODULE,
+=======
+	if (gpio_is_valid(reset_gpio)) {
+		__gpio_set_value(reset_gpio, 0);
+		wmb();
+		mdelay(1);
+		__gpio_set_value(reset_gpio, 1);
+	}
+	return 0;
+}
+
+static int ltq_pci_probe(struct platform_device *pdev)
+{
+	struct resource *res_cfg, *res_bridge;
+
+	pci_clear_flags(PCI_PROBE_ONLY);
+
+	res_cfg = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	res_bridge = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+	if (!res_cfg || !res_bridge) {
+		dev_err(&pdev->dev, "missing memory reources\n");
+		return -EINVAL;
+	}
+
+	ltq_pci_membase = devm_ioremap_resource(&pdev->dev, res_bridge);
+	if (IS_ERR(ltq_pci_membase))
+		return PTR_ERR(ltq_pci_membase);
+
+	ltq_pci_mapped_cfg = devm_ioremap_resource(&pdev->dev, res_cfg);
+	if (IS_ERR(ltq_pci_mapped_cfg))
+		return PTR_ERR(ltq_pci_mapped_cfg);
+
+	ltq_pci_startup(pdev);
+
+	pci_load_of_ranges(&pci_controller, pdev->dev.of_node);
+	register_pci_controller(&pci_controller);
+	return 0;
+}
+
+static const struct of_device_id ltq_pci_match[] = {
+	{ .compatible = "lantiq,pci-xway" },
+	{},
+};
+MODULE_DEVICE_TABLE(of, ltq_pci_match);
+
+static struct platform_driver ltq_pci_driver = {
+	.probe = ltq_pci_probe,
+	.driver = {
+		.name = "pci-xway",
+		.owner = THIS_MODULE,
+		.of_match_table = ltq_pci_match,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -309,7 +456,11 @@ int __init pcibios_init(void)
 {
 	int ret = platform_driver_register(&ltq_pci_driver);
 	if (ret)
+<<<<<<< HEAD
 		printk(KERN_INFO "ltq_pci: Error registering platfom driver!");
+=======
+		pr_info("pci-xway: Error registering platform driver!");
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 

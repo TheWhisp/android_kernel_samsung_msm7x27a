@@ -38,6 +38,10 @@ typedef s64		compat_s64;
 typedef u32		compat_uint_t;
 typedef u32		compat_ulong_t;
 typedef u64		compat_u64;
+<<<<<<< HEAD
+=======
+typedef u32		compat_uptr_t;
+>>>>>>> refs/remotes/origin/master
 
 struct compat_timespec {
 	compat_time_t	tv_sec;
@@ -101,11 +105,16 @@ struct compat_statfs {
 	int		f_namelen;	/* SunOS ignores this field. */
 	int		f_frsize;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int		f_spare[5];
 =======
 	int		f_flags;
 	int		f_spare[4];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int		f_flags;
+	int		f_spare[4];
+>>>>>>> refs/remotes/origin/master
 };
 
 #define COMPAT_RLIM_OLD_INFINITY	0x7fffffff
@@ -118,6 +127,67 @@ typedef u32		compat_old_sigset_t;
 
 typedef u32		compat_sigset_word;
 
+<<<<<<< HEAD
+=======
+typedef union compat_sigval {
+	compat_int_t	sival_int;
+	compat_uptr_t	sival_ptr;
+} compat_sigval_t;
+
+#define SI_PAD_SIZE32	(128/sizeof(int) - 3)
+
+typedef struct compat_siginfo {
+	int si_signo;
+	int si_errno;
+	int si_code;
+
+	union {
+		int _pad[SI_PAD_SIZE32];
+
+		/* kill() */
+		struct {
+			compat_pid_t _pid;		/* sender's pid */
+			__compat_uid_t _uid;		/* sender's uid */
+		} _kill;
+
+		/* POSIX.1b timers */
+		struct {
+			compat_timer_t _tid;		/* timer id */
+			int _overrun;			/* overrun count */
+			compat_sigval_t _sigval;	/* same as below */
+			int _sys_private;	/* not to be passed to user */
+		} _timer;
+
+		/* POSIX.1b signals */
+		struct {
+			compat_pid_t _pid;		/* sender's pid */
+			__compat_uid_t _uid;		/* sender's uid */
+			compat_sigval_t _sigval;
+		} _rt;
+
+		/* SIGCHLD */
+		struct {
+			compat_pid_t _pid;		/* which child */
+			__compat_uid_t _uid;		/* sender's uid */
+			int _status;			/* exit code */
+			compat_clock_t _utime;
+			compat_clock_t _stime;
+		} _sigchld;
+
+		/* SIGILL, SIGFPE, SIGSEGV, SIGBUS, SIGEMT */
+		struct {
+			unsigned int _addr; /* faulting insn/memory ref. */
+		} _sigfault;
+
+		/* SIGPOLL */
+		struct {
+			int _band;	/* POLL_IN, POLL_OUT, POLL_MSG */
+			int _fd;
+		} _sigpoll;
+	} _sifields;
+} compat_siginfo_t;
+
+>>>>>>> refs/remotes/origin/master
 #define COMPAT_OFF_T_MAX	0x7fffffff
 #define COMPAT_LOFF_T_MAX	0x7fffffffffffffffL
 
@@ -127,7 +197,10 @@ typedef u32		compat_sigset_word;
  * as pointers because the syscall entry code will have
  * appropriately converted them already.
  */
+<<<<<<< HEAD
 typedef	u32		compat_uptr_t;
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline void __user *compat_ptr(compat_uptr_t uptr)
 {

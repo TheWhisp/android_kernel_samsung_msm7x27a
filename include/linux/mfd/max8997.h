@@ -75,6 +75,7 @@ enum max8998_regulators {
 struct max8997_regulator_data {
 	int id;
 	struct regulator_init_data *initdata;
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
@@ -92,6 +93,9 @@ enum max8997_muic_charger_type {
 	MAX8997_CHARGER_TYPE_500MA,
 	MAX8997_CHARGER_TYPE_1A,
 	MAX8997_CHARGER_TYPE_DEAD_BATTERY = 7,
+=======
+	struct device_node *reg_node;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct max8997_muic_reg_data {
@@ -101,6 +105,7 @@ struct max8997_muic_reg_data {
 
 /**
  * struct max8997_muic_platform_data
+<<<<<<< HEAD
  * @usb_callback: callback function for USB
  *		  inform callee of USB type (HOST or DEVICE)
  *		  and attached state(true or false)
@@ -115,11 +120,14 @@ struct max8997_muic_reg_data {
  *		  inform callee of attached state(true or false)
  * @uart_callback: callback function for JIG UART
  *		   inform callee of attached state(true or false)
+=======
+>>>>>>> refs/remotes/origin/master
  * @init_data: array of max8997_muic_reg_data
  *	       used for initializing registers of MAX8997 MUIC device
  * @num_init_data: array size of init_data
  */
 struct max8997_muic_platform_data {
+<<<<<<< HEAD
 	void (*usb_callback)(enum max8997_muic_usb_type usb_type,
 		bool attached);
 	void (*charger_callback)(bool attached,
@@ -131,6 +139,20 @@ struct max8997_muic_platform_data {
 
 	struct max8997_muic_reg_data *init_data;
 	int num_init_data;
+=======
+	struct max8997_muic_reg_data *init_data;
+	int num_init_data;
+
+	/* Check cable state after certain delay */
+	int detcable_delay_ms;
+
+	/*
+	 * Default usb/uart path whether UART/USB or AUX_UART/AUX_USB
+	 * h/w path of COMP2/COMN1 on CONTROL1 register.
+	 */
+	int path_usb;
+	int path_uart;
+>>>>>>> refs/remotes/origin/master
 };
 
 enum max8997_haptic_motor_type {
@@ -204,10 +226,15 @@ struct max8997_led_platform_data {
 	u8 brightness[2];
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 struct max8997_platform_data {
 	/* IRQ */
 	int irq_base;
+=======
+struct max8997_platform_data {
+	/* IRQ */
+>>>>>>> refs/remotes/origin/master
 	int ono;
 	int wakeup;
 
@@ -236,12 +263,15 @@ struct max8997_platform_data {
 	bool buck5_gpiodvs;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* MUIC: Not implemented */
 	/* HAPTIC: Not implemented */
 	/* RTC: Not implemented */
 	/* Flash: Not implemented */
 	/* Charger control: Not implemented */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* ---- Charger control ---- */
 	/* eoc stands for 'end of charge' */
 	int eoc_mA; /* 50 ~ 200mA by 10mA step */
@@ -257,7 +287,10 @@ struct max8997_platform_data {
 	/* RTC: Not implemented */
 	/* ---- LED ---- */
 	struct max8997_led_platform_data *led_pdata;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* __LINUX_MFD_MAX8998_H */

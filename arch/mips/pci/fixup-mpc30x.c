@@ -22,13 +22,21 @@
 
 #include <asm/vr41xx/mpc30x.h>
 
+<<<<<<< HEAD
 static const int internal_func_irqs[] __initdata = {
+=======
+static const int internal_func_irqs[] __initconst = {
+>>>>>>> refs/remotes/origin/master
 	VRC4173_CASCADE_IRQ,
 	VRC4173_AC97_IRQ,
 	VRC4173_USB_IRQ,
 };
 
+<<<<<<< HEAD
 static const int irq_tab_mpc30x[] __initdata = {
+=======
+static const int irq_tab_mpc30x[] __initconst = {
+>>>>>>> refs/remotes/origin/master
  [12] = VRC4173_PCMCIA1_IRQ,
  [13] = VRC4173_PCMCIA2_IRQ,
  [29] = MQ200_IRQ,

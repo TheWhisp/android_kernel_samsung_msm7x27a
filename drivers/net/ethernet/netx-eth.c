@@ -34,7 +34,11 @@
 #include <mach/netx-regs.h>
 #include <mach/pfifo.h>
 #include <mach/xc.h>
+<<<<<<< HEAD
 #include <mach/eth.h>
+=======
+#include <linux/platform_data/eth-netx.h>
+>>>>>>> refs/remotes/origin/master
 
 /* XC Fifo Offsets */
 #define EMPTY_PTR_FIFO(xcno)    (0 + ((xcno) << 3))	/* Index of the empty pointer FIFO */
@@ -152,8 +156,11 @@ static void netx_eth_receive(struct net_device *ndev)
 
 	skb = netdev_alloc_skb(ndev, len);
 	if (unlikely(skb == NULL)) {
+<<<<<<< HEAD
 		printk(KERN_NOTICE "%s: Low memory, packet dropped.\n",
 			ndev->name);
+=======
+>>>>>>> refs/remotes/origin/master
 		ndev->stats.rx_dropped++;
 		return;
 	}
@@ -392,7 +399,11 @@ static int netx_eth_drv_probe(struct platform_device *pdev)
 
 	priv = netdev_priv(ndev);
 
+<<<<<<< HEAD
 	pdata = (struct netxeth_platform_data *)pdev->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	priv->xc = request_xc(pdata->xcno, &pdev->dev);
 	if (!priv->xc) {
 		dev_err(&pdev->dev, "unable to request xc engine\n");
@@ -424,7 +435,10 @@ exit_free_pfifo:
 exit_free_xc:
 	free_xc(priv->xc);
 exit_free_netdev:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_netdev(ndev);
 exit:
 	return ret;
@@ -432,11 +446,17 @@ exit:
 
 static int netx_eth_drv_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct net_device *ndev = dev_get_drvdata(&pdev->dev);
 	struct netx_eth_priv *priv = netdev_priv(ndev);
 
 	platform_set_drvdata(pdev, NULL);
 
+=======
+	struct net_device *ndev = platform_get_drvdata(pdev);
+	struct netx_eth_priv *priv = netdev_priv(ndev);
+
+>>>>>>> refs/remotes/origin/master
 	unregister_netdev(ndev);
 	xc_stop(priv->xc);
 	free_xc(priv->xc);

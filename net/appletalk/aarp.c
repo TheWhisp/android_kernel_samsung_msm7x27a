@@ -40,9 +40,13 @@
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 int sysctl_aarp_expiry_time = AARP_EXPIRY_TIME;
 int sysctl_aarp_tick_time = AARP_TICK_TIME;
@@ -335,7 +339,11 @@ static void aarp_expire_timeout(unsigned long unused)
 static int aarp_device_event(struct notifier_block *this, unsigned long event,
 			     void *ptr)
 {
+<<<<<<< HEAD
 	struct net_device *dev = ptr;
+=======
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 	int ct;
 
 	if (!net_eq(dev_net(dev), &init_net))
@@ -784,6 +792,7 @@ static int aarp_rcv(struct sk_buff *skb, struct net_device *dev,
 
 	switch (function) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case AARP_REPLY:
 			if (!unresolved_count)	/* Speed up */
 				break;
@@ -866,6 +875,8 @@ static int aarp_rcv(struct sk_buff *skb, struct net_device *dev,
 			aarp_send_reply(dev, ma, &sa, ea->hw_src);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case AARP_REPLY:
 		if (!unresolved_count)	/* Speed up */
 			break;
@@ -947,7 +958,10 @@ static int aarp_rcv(struct sk_buff *skb, struct net_device *dev,
 		 */
 		aarp_send_reply(dev, ma, &sa, ea->hw_src);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 unlock:

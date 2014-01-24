@@ -39,7 +39,11 @@
  * the rest of the system
  */
 static void sibyte_set_mode(enum clock_event_mode mode,
+<<<<<<< HEAD
                            struct clock_event_device *evt)
+=======
+			   struct clock_event_device *evt)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cpu = smp_processor_id();
 	void __iomem *cfg, *init;
@@ -107,7 +111,11 @@ static DEFINE_PER_CPU(struct clock_event_device, sibyte_hpt_clockevent);
 static DEFINE_PER_CPU(struct irqaction, sibyte_hpt_irqaction);
 static DEFINE_PER_CPU(char [18], sibyte_hpt_name);
 
+<<<<<<< HEAD
 void __cpuinit sb1250_clockevent_init(void)
+=======
+void sb1250_clockevent_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cpu = smp_processor_id();
 	unsigned int irq = K_INT_TIMER_0 + cpu;
@@ -143,12 +151,17 @@ void __cpuinit sb1250_clockevent_init(void)
 
 	sb1250_unmask_irq(cpu, irq);
 
+<<<<<<< HEAD
 	action->handler	= sibyte_counter_handler;
 <<<<<<< HEAD
 	action->flags	= IRQF_DISABLED | IRQF_PERCPU | IRQF_TIMER;
 =======
 	action->flags	= IRQF_PERCPU | IRQF_TIMER;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	action->handler = sibyte_counter_handler;
+	action->flags	= IRQF_PERCPU | IRQF_TIMER;
+>>>>>>> refs/remotes/origin/master
 	action->name	= name;
 	action->dev_id	= cd;
 

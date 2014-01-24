@@ -29,7 +29,11 @@ More details follow:
 
                                   Write 'mem' to
                                 /sys/power/state
+<<<<<<< HEAD
                                     syfs file
+=======
+                                    sysfs file
+>>>>>>> refs/remotes/origin/master
                                         |
                                         v
                                Acquire pm_mutex lock

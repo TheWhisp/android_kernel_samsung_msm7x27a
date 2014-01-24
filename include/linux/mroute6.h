@@ -1,6 +1,7 @@
 #ifndef __LINUX_MROUTE6_H
 #define __LINUX_MROUTE6_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/sockios.h>
 
@@ -120,15 +121,25 @@ struct sioc_mif_req6 {
  */
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/pim.h>
 #include <linux/skbuff.h>	/* for struct sk_buff_head */
 #include <net/net_namespace.h>
+<<<<<<< HEAD
+=======
+#include <uapi/linux/mroute6.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_IPV6_MROUTE
 static inline int ip6_mroute_opt(int opt)
 {
+<<<<<<< HEAD
 	return (opt >= MRT6_BASE) && (opt <= MRT6_BASE + 10);
+=======
+	return (opt >= MRT6_BASE) && (opt <= MRT6_MAX);
+>>>>>>> refs/remotes/origin/master
 }
 #else
 static inline int ip6_mroute_opt(int opt)
@@ -231,9 +242,12 @@ struct mfc6_cache {
 
 #define MFC_ASSERT_THRESH (3*HZ)		/* Maximal freq. of asserts */
 
+<<<<<<< HEAD
 #endif
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 struct rtmsg;
 extern int ip6mr_get_route(struct net *net, struct sk_buff *skb,
 			   struct rtmsg *rtm, int nowait);
@@ -252,6 +266,7 @@ static inline int ip6mr_sk_done(struct sock *sk)
 }
 #endif
 #endif
+<<<<<<< HEAD
 
 /*
  * Structure used to communicate from kernel to multicast router.
@@ -273,3 +288,5 @@ struct mrt6msg {
 };
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

@@ -625,12 +625,17 @@ static int unifb_pan_display(struct fb_var_screeninfo *var,
 			return -EINVAL;
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (var->xoffset + var->xres > info->var.xres_virtual ||
 		    var->yoffset + var->yres > info->var.yres_virtual)
 =======
 		if (var->xoffset + info->var.xres > info->var.xres_virtual ||
 		    var->yoffset + info->var.yres > info->var.yres_virtual)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (var->xoffset + info->var.xres > info->var.xres_virtual ||
+		    var->yoffset + info->var.yres > info->var.yres_virtual)
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 	}
 	info->var.xoffset = var->xoffset;
@@ -645,6 +650,7 @@ static int unifb_pan_display(struct fb_var_screeninfo *var,
 int unifb_mmap(struct fb_info *info,
 		    struct vm_area_struct *vma)
 {
+<<<<<<< HEAD
 	unsigned long size = vma->vm_end - vma->vm_start;
 	unsigned long offset = vma->vm_pgoff << PAGE_SHIFT;
 	unsigned long pos = info->fix.smem_start + offset;
@@ -661,6 +667,11 @@ int unifb_mmap(struct fb_info *info,
 	vma->vm_flags |= VM_RESERVED;	/* avoid to swap out this VMA */
 	return 0;
 
+=======
+	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+
+	return vm_iomap_memory(vma, info->fix.smem_start, info->fix.smem_len);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct fb_ops unifb_ops = {
@@ -731,9 +742,14 @@ static int unifb_probe(struct platform_device *dev)
 	platform_set_drvdata(dev, info);
 	platform_device_add_data(dev, unifb_regs, sizeof(u32) * UNIFB_REGS_NUM);
 
+<<<<<<< HEAD
 	printk(KERN_INFO
 	       "fb%d: Virtual frame buffer device, using %dM of video memory\n",
 	       info->node, UNIFB_MEMSIZE >> 20);
+=======
+	fb_info(info, "Virtual frame buffer device, using %dM of video memory\n",
+		UNIFB_MEMSIZE >> 20);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 err2:
 	fb_dealloc_cmap(&info->cmap);

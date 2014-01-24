@@ -55,7 +55,10 @@ struct dm_verity {
 	unsigned shash_descsize;/* the size of temporary space for crypto */
 	int hash_failed;	/* set to 1 if hash of any block failed */
 
+<<<<<<< HEAD
 	mempool_t *io_mempool;	/* mempool of struct dm_verity_io */
+=======
+>>>>>>> refs/remotes/origin/master
 	mempool_t *vec_mempool;	/* mempool of bio vector */
 
 	struct workqueue_struct *verify_wq;
@@ -66,7 +69,10 @@ struct dm_verity {
 
 struct dm_verity_io {
 	struct dm_verity *v;
+<<<<<<< HEAD
 	struct bio *bio;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* original values of bio->bi_end_io and bio->bi_private */
 	bio_end_io_t *orig_bi_end_io;
@@ -95,6 +101,16 @@ struct dm_verity_io {
 	 */
 };
 
+<<<<<<< HEAD
+=======
+struct dm_verity_prefetch_work {
+	struct work_struct work;
+	struct dm_verity *v;
+	sector_t block;
+	unsigned n_blocks;
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct shash_desc *io_hash_desc(struct dm_verity *v, struct dm_verity_io *io)
 {
 	return (struct shash_desc *)(io + 1);
@@ -389,8 +405,13 @@ test_block_hash:
  */
 static void verity_finish_io(struct dm_verity_io *io, int error)
 {
+<<<<<<< HEAD
 	struct bio *bio = io->bio;
 	struct dm_verity *v = io->v;
+=======
+	struct dm_verity *v = io->v;
+	struct bio *bio = dm_bio_from_per_bio_data(io, v->ti->per_bio_data_size);
+>>>>>>> refs/remotes/origin/master
 
 	bio->bi_end_io = io->orig_bi_end_io;
 	bio->bi_private = io->orig_bi_private;
@@ -398,8 +419,11 @@ static void verity_finish_io(struct dm_verity_io *io, int error)
 	if (io->io_vec != io->io_vec_inline)
 		mempool_free(io->io_vec, v->vec_mempool);
 
+<<<<<<< HEAD
 	mempool_free(io, v->io_mempool);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	bio_endio(bio, error);
 }
 
@@ -428,24 +452,43 @@ static void verity_end_io(struct bio *bio, int error)
  * The root buffer is not prefetched, it is assumed that it will be cached
  * all the time.
  */
+<<<<<<< HEAD
 static void verity_prefetch_io(struct dm_verity *v, struct dm_verity_io *io)
 {
+=======
+static void verity_prefetch_io(struct work_struct *work)
+{
+	struct dm_verity_prefetch_work *pw =
+		container_of(work, struct dm_verity_prefetch_work, work);
+	struct dm_verity *v = pw->v;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	for (i = v->levels - 2; i >= 0; i--) {
 		sector_t hash_block_start;
 		sector_t hash_block_end;
+<<<<<<< HEAD
 		verity_hash_at_level(v, io->block, i, &hash_block_start, NULL);
 		verity_hash_at_level(v, io->block + io->n_blocks - 1, i, &hash_block_end, NULL);
 		if (!i) {
 			unsigned cluster = *(volatile unsigned *)&dm_verity_prefetch_cluster;
+=======
+		verity_hash_at_level(v, pw->block, i, &hash_block_start, NULL);
+		verity_hash_at_level(v, pw->block + pw->n_blocks - 1, i, &hash_block_end, NULL);
+		if (!i) {
+			unsigned cluster = ACCESS_ONCE(dm_verity_prefetch_cluster);
+>>>>>>> refs/remotes/origin/master
 
 			cluster >>= v->data_dev_block_bits;
 			if (unlikely(!cluster))
 				goto no_prefetch_cluster;
 
 			if (unlikely(cluster & (cluster - 1)))
+<<<<<<< HEAD
 				cluster = 1 << (fls(cluster) - 1);
+=======
+				cluster = 1 << __fls(cluster);
+>>>>>>> refs/remotes/origin/master
 
 			hash_block_start &= ~(sector_t)(cluster - 1);
 			hash_block_end |= cluster - 1;
@@ -456,14 +499,40 @@ no_prefetch_cluster:
 		dm_bufio_prefetch(v->bufio, hash_block_start,
 				  hash_block_end - hash_block_start + 1);
 	}
+<<<<<<< HEAD
+=======
+
+	kfree(pw);
+}
+
+static void verity_submit_prefetch(struct dm_verity *v, struct dm_verity_io *io)
+{
+	struct dm_verity_prefetch_work *pw;
+
+	pw = kmalloc(sizeof(struct dm_verity_prefetch_work),
+		GFP_NOIO | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+
+	if (!pw)
+		return;
+
+	INIT_WORK(&pw->work, verity_prefetch_io);
+	pw->v = v;
+	pw->block = io->block;
+	pw->n_blocks = io->n_blocks;
+	queue_work(v->verify_wq, &pw->work);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Bio map function. It allocates dm_verity_io structure and bio vector and
  * fills them. Then it issues prefetches and the I/O.
  */
+<<<<<<< HEAD
 static int verity_map(struct dm_target *ti, struct bio *bio,
 		      union map_info *map_context)
+=======
+static int verity_map(struct dm_target *ti, struct bio *bio)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dm_verity *v = ti->private;
 	struct dm_verity_io *io;
@@ -477,7 +546,11 @@ static int verity_map(struct dm_target *ti, struct bio *bio,
 		return -EIO;
 	}
 
+<<<<<<< HEAD
 	if ((bio->bi_sector + bio_sectors(bio)) >>
+=======
+	if (bio_end_sector(bio) >>
+>>>>>>> refs/remotes/origin/master
 	    (v->data_dev_block_bits - SECTOR_SHIFT) > v->data_blocks) {
 		DMERR_LIMIT("io out of range");
 		return -EIO;
@@ -486,9 +559,14 @@ static int verity_map(struct dm_target *ti, struct bio *bio,
 	if (bio_data_dir(bio) == WRITE)
 		return -EIO;
 
+<<<<<<< HEAD
 	io = mempool_alloc(v->io_mempool, GFP_NOIO);
 	io->v = v;
 	io->bio = bio;
+=======
+	io = dm_per_bio_data(bio, ti->per_bio_data_size);
+	io->v = v;
+>>>>>>> refs/remotes/origin/master
 	io->orig_bi_end_io = bio->bi_end_io;
 	io->orig_bi_private = bio->bi_private;
 	io->block = bio->bi_sector >> (v->data_dev_block_bits - SECTOR_SHIFT);
@@ -496,7 +574,11 @@ static int verity_map(struct dm_target *ti, struct bio *bio,
 
 	bio->bi_end_io = verity_end_io;
 	bio->bi_private = io;
+<<<<<<< HEAD
 	io->io_vec_size = bio->bi_vcnt - bio->bi_idx;
+=======
+	io->io_vec_size = bio_segments(bio);
+>>>>>>> refs/remotes/origin/master
 	if (io->io_vec_size < DM_VERITY_IO_VEC_INLINE)
 		io->io_vec = io->io_vec_inline;
 	else
@@ -504,7 +586,11 @@ static int verity_map(struct dm_target *ti, struct bio *bio,
 	memcpy(io->io_vec, bio_iovec(bio),
 	       io->io_vec_size * sizeof(struct bio_vec));
 
+<<<<<<< HEAD
 	verity_prefetch_io(v, io);
+=======
+	verity_submit_prefetch(v, io);
+>>>>>>> refs/remotes/origin/master
 
 	generic_make_request(bio);
 
@@ -514,8 +600,13 @@ static int verity_map(struct dm_target *ti, struct bio *bio,
 /*
  * Status: V (valid) or C (corruption found)
  */
+<<<<<<< HEAD
 static int verity_status(struct dm_target *ti, status_type_t type,
 			 char *result, unsigned maxlen)
+=======
+static void verity_status(struct dm_target *ti, status_type_t type,
+			  unsigned status_flags, char *result, unsigned maxlen)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dm_verity *v = ti->private;
 	unsigned sz = 0;
@@ -546,8 +637,11 @@ static int verity_status(struct dm_target *ti, status_type_t type,
 				DMEMIT("%02x", v->salt[x]);
 		break;
 	}
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int verity_ioctl(struct dm_target *ti, unsigned cmd,
@@ -610,9 +704,12 @@ static void verity_dtr(struct dm_target *ti)
 	if (v->vec_mempool)
 		mempool_destroy(v->vec_mempool);
 
+<<<<<<< HEAD
 	if (v->io_mempool)
 		mempool_destroy(v->io_mempool);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (v->bufio)
 		dm_bufio_client_destroy(v->bufio);
 
@@ -677,8 +774,13 @@ static int verity_ctr(struct dm_target *ti, unsigned argc, char **argv)
 		goto bad;
 	}
 
+<<<<<<< HEAD
 	if (sscanf(argv[0], "%d%c", &num, &dummy) != 1 ||
 	    num < 0 || num > 1) {
+=======
+	if (sscanf(argv[0], "%u%c", &num, &dummy) != 1 ||
+	    num > 1) {
+>>>>>>> refs/remotes/origin/master
 		ti->error = "Invalid version";
 		r = -EINVAL;
 		goto bad;
@@ -705,7 +807,11 @@ static int verity_ctr(struct dm_target *ti, unsigned argc, char **argv)
 		r = -EINVAL;
 		goto bad;
 	}
+<<<<<<< HEAD
 	v->data_dev_block_bits = ffs(num) - 1;
+=======
+	v->data_dev_block_bits = __ffs(num);
+>>>>>>> refs/remotes/origin/master
 
 	if (sscanf(argv[4], "%u%c", &num, &dummy) != 1 ||
 	    !num || (num & (num - 1)) ||
@@ -715,7 +821,11 @@ static int verity_ctr(struct dm_target *ti, unsigned argc, char **argv)
 		r = -EINVAL;
 		goto bad;
 	}
+<<<<<<< HEAD
 	v->hash_dev_block_bits = ffs(num) - 1;
+=======
+	v->hash_dev_block_bits = __ffs(num);
+>>>>>>> refs/remotes/origin/master
 
 	if (sscanf(argv[5], "%llu%c", &num_ll, &dummy) != 1 ||
 	    (sector_t)(num_ll << (v->data_dev_block_bits - SECTOR_SHIFT))
@@ -794,7 +904,11 @@ static int verity_ctr(struct dm_target *ti, unsigned argc, char **argv)
 	}
 
 	v->hash_per_block_bits =
+<<<<<<< HEAD
 		fls((1 << v->hash_dev_block_bits) / v->digest_size) - 1;
+=======
+		__fls((1 << v->hash_dev_block_bits) / v->digest_size);
+>>>>>>> refs/remotes/origin/master
 
 	v->levels = 0;
 	if (v->data_blocks)
@@ -840,6 +954,7 @@ static int verity_ctr(struct dm_target *ti, unsigned argc, char **argv)
 		goto bad;
 	}
 
+<<<<<<< HEAD
 	v->io_mempool = mempool_create_kmalloc_pool(DM_VERITY_MEMPOOL_SIZE,
 	  sizeof(struct dm_verity_io) + v->shash_descsize + v->digest_size * 2);
 	if (!v->io_mempool) {
@@ -847,6 +962,9 @@ static int verity_ctr(struct dm_target *ti, unsigned argc, char **argv)
 		r = -ENOMEM;
 		goto bad;
 	}
+=======
+	ti->per_bio_data_size = roundup(sizeof(struct dm_verity_io) + v->shash_descsize + v->digest_size * 2, __alignof__(struct dm_verity_io));
+>>>>>>> refs/remotes/origin/master
 
 	v->vec_mempool = mempool_create_kmalloc_pool(DM_VERITY_MEMPOOL_SIZE,
 					BIO_MAX_PAGES * sizeof(struct bio_vec));
@@ -874,7 +992,11 @@ bad:
 
 static struct target_type verity_target = {
 	.name		= "verity",
+<<<<<<< HEAD
 	.version	= {1, 0, 0},
+=======
+	.version	= {1, 2, 0},
+>>>>>>> refs/remotes/origin/master
 	.module		= THIS_MODULE,
 	.ctr		= verity_ctr,
 	.dtr		= verity_dtr,

@@ -16,8 +16,11 @@
 #include <linux/string.h>
 #include <linux/module.h>
 
+<<<<<<< HEAD
 #undef strchr
 
+=======
+>>>>>>> refs/remotes/origin/master
 char *strchr(const char *s, int c)
 {
 	int z, g;

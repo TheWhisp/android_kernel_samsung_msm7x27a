@@ -19,10 +19,19 @@
 #include <linux/gpio.h>
 #include <linux/rfkill.h>
 
+<<<<<<< HEAD
 #include <mach/regs-gpio.h>
 #include <mach/hardware.h>
 #include <mach/h1940-latch.h>
 #include <mach/h1940.h>
+=======
+#include <plat/gpio-cfg.h>
+#include <mach/hardware.h>
+#include <mach/regs-gpio.h>
+#include <mach/gpio-samsung.h>
+
+#include "h1940.h"
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_NAME "h1940-bt"
 
@@ -62,7 +71,11 @@ static const struct rfkill_ops h1940bt_rfkill_ops = {
 	.set_block = h1940bt_set_block,
 };
 
+<<<<<<< HEAD
 static int __devinit h1940bt_probe(struct platform_device *pdev)
+=======
+static int h1940bt_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rfkill *rfk;
 	int ret = 0;
@@ -138,6 +151,7 @@ static struct platform_driver h1940bt_driver = {
 	.remove		= h1940bt_remove,
 };
 
+<<<<<<< HEAD
 
 static int __init h1940bt_init(void)
 {
@@ -151,6 +165,9 @@ static void __exit h1940bt_exit(void)
 
 module_init(h1940bt_init);
 module_exit(h1940bt_exit);
+=======
+module_platform_driver(h1940bt_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");
 MODULE_DESCRIPTION("Driver for the iPAQ H1940 bluetooth chip");

@@ -6,10 +6,14 @@
 #include <asm/scatterlist.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* See Documentation/PCI/PCI-DMA-mapping.txt */
 =======
 /* See Documentation/DMA-API-HOWTO.txt */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* See Documentation/DMA-API-HOWTO.txt */
+>>>>>>> refs/remotes/origin/master
 struct hppa_dma_ops {
 	int  (*dma_supported)(struct device *dev, u64 mask);
 	void *(*alloc_consistent)(struct device *dev, size_t size, dma_addr_t *iova, gfp_t flag);
@@ -50,6 +54,12 @@ extern struct hppa_dma_ops pcx_dma_ops;
 
 extern struct hppa_dma_ops *hppa_dma_ops;
 
+<<<<<<< HEAD
+=======
+#define dma_alloc_attrs(d, s, h, f, a) dma_alloc_coherent(d, s, h, f)
+#define dma_free_attrs(d, s, h, f, a) dma_free_coherent(d, s, h, f)
+
+>>>>>>> refs/remotes/origin/master
 static inline void *
 dma_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_handle,
 		   gfp_t flag)
@@ -215,10 +225,14 @@ parisc_walk_tree(struct device *dev)
 }
 		
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define GET_IOC(dev) (HBA_DATA(parisc_walk_tree(dev))->iommu);	
 =======
 #define GET_IOC(dev) (HBA_DATA(parisc_walk_tree(dev))->iommu)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define GET_IOC(dev) (HBA_DATA(parisc_walk_tree(dev))->iommu)
+>>>>>>> refs/remotes/origin/master
 	
 
 #ifdef CONFIG_IOMMU_CCIO
@@ -246,4 +260,22 @@ void * sba_get_iommu(struct parisc_device *dev);
 /* At the moment, we panic on error for IOMMU resource exaustion */
 #define dma_mapping_error(dev, x)	0
 
+<<<<<<< HEAD
+=======
+/* This API cannot be supported on PA-RISC */
+static inline int dma_mmap_coherent(struct device *dev,
+				    struct vm_area_struct *vma, void *cpu_addr,
+				    dma_addr_t dma_addr, size_t size)
+{
+	return -EINVAL;
+}
+
+static inline int dma_get_sgtable(struct device *dev, struct sg_table *sgt,
+				  void *cpu_addr, dma_addr_t dma_addr,
+				  size_t size)
+{
+	return -EINVAL;
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif

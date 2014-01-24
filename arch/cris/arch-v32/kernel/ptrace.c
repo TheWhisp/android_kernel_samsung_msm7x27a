@@ -16,9 +16,12 @@
 #include <asm/page.h>
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/processor.h>
 #include <arch/hwregs/supp_reg.h>
 
@@ -118,8 +121,11 @@ void user_disable_single_step(struct task_struct *child)
 void
 ptrace_disable(struct task_struct *child)
 {
+<<<<<<< HEAD
 	unsigned long tmp;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Deconfigure SPC and S-bit. */
 	user_disable_single_step(child);
 	put_reg(child, PT_SPC, 0);

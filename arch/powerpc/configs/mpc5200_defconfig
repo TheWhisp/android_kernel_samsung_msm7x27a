@@ -1,6 +1,7 @@
 CONFIG_EXPERIMENTAL=y
 CONFIG_SYSVIPC=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_LOG_BUF_SHIFT=14
 CONFIG_BLK_DEV_INITRD=y
 # CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
@@ -9,6 +10,11 @@ CONFIG_SPARSE_IRQ=y
 CONFIG_LOG_BUF_SHIFT=14
 CONFIG_BLK_DEV_INITRD=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_SPARSE_IRQ=y
+CONFIG_LOG_BUF_SHIFT=14
+CONFIG_BLK_DEV_INITRD=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_MODULES=y
 CONFIG_MODULE_UNLOAD=y
 # CONFIG_BLK_DEV_BSG is not set
@@ -19,6 +25,7 @@ CONFIG_PPC_EFIKA=y
 CONFIG_PPC_LITE5200=y
 CONFIG_PPC_MEDIA5200=y
 CONFIG_PPC_MPC5200_BUGFIX=y
+<<<<<<< HEAD
 <<<<<<< HEAD
 CONFIG_PPC_MPC5200_GPIO=y
 =======
@@ -34,6 +41,13 @@ CONFIG_SPARSE_IRQ=y
 CONFIG_PM=y
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_PPC_MPC5200_LPBFIFO=m
+# CONFIG_PPC_PMAC is not set
+CONFIG_SIMPLE_GPIO=y
+CONFIG_NO_HZ=y
+CONFIG_HIGH_RES_TIMERS=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_NET=y
 CONFIG_PACKET=y
 CONFIG_UNIX=y
@@ -49,16 +63,20 @@ CONFIG_SYN_COOKIES=y
 CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
 CONFIG_MTD=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_MTD_CONCAT=y
 CONFIG_MTD_PARTITIONS=y
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_MTD_CMDLINE_PARTS=y
 CONFIG_MTD_OF_PARTS=y
 CONFIG_MTD_CHAR=y
 CONFIG_MTD_BLOCK=y
 CONFIG_MTD_CFI=y
 CONFIG_MTD_CFI_AMDSTD=y
+<<<<<<< HEAD
 <<<<<<< HEAD
 CONFIG_MTD_RAM=y
 CONFIG_MTD_ROM=y
@@ -68,15 +86,23 @@ CONFIG_MTD_ROM=y
 CONFIG_MTD_PHYSMAP_OF=y
 CONFIG_MTD_PLATRAM=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_MTD_ROM=y
+CONFIG_MTD_PHYSMAP_OF=y
+CONFIG_MTD_PLATRAM=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_MTD_UBI=m
 CONFIG_PROC_DEVICETREE=y
 CONFIG_BLK_DEV_LOOP=y
 CONFIG_BLK_DEV_RAM=y
 CONFIG_BLK_DEV_RAM_SIZE=32768
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_MISC_DEVICES=y
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_EEPROM_AT24=y
 CONFIG_SCSI_TGT=y
 CONFIG_BLK_DEV_SD=y
@@ -86,17 +112,23 @@ CONFIG_PATA_MPC52xx=y
 CONFIG_PATA_PLATFORM=y
 CONFIG_NETDEVICES=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_LXT_PHY=y
 CONFIG_NET_ETHERNET=y
 CONFIG_FEC_MPC52xx=y
 # CONFIG_NETDEV_1000 is not set
 # CONFIG_NETDEV_10000 is not set
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_FEC_MPC52xx=y
 CONFIG_AMD_PHY=y
 CONFIG_LXT_PHY=y
 CONFIG_FIXED_PHY=y
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # CONFIG_INPUT_KEYBOARD is not set
 # CONFIG_INPUT_MOUSE is not set
 # CONFIG_SERIO is not set
@@ -112,6 +144,7 @@ CONFIG_SPI_MPC52xx=m
 CONFIG_SPI_MPC52xx_PSC=m
 CONFIG_SPI_SPIDEV=m
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_WATCHDOG=y
 CONFIG_DRM=y
 CONFIG_VIDEO_OUTPUT_CONTROL=y
@@ -121,6 +154,8 @@ CONFIG_FB_RADEON=y
 CONFIG_FRAMEBUFFER_CONSOLE=y
 CONFIG_LOGO=y
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_GPIO_SYSFS=y
 CONFIG_SENSORS_LM80=y
 CONFIG_SENSORS_LM87=m
@@ -147,7 +182,10 @@ CONFIG_SND_SOC=y
 CONFIG_SND_SOC_MPC5200_I2S=y
 CONFIG_SND_MPC52xx_SOC_PCM030=y
 CONFIG_SND_MPC52xx_SOC_EFIKA=y
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_HID_DRAGONRISE=y
 CONFIG_HID_GYRATION=y
 CONFIG_HID_TWINHAN=y
@@ -173,6 +211,7 @@ CONFIG_NEW_LEDS=y
 CONFIG_RTC_CLASS=y
 CONFIG_RTC_DRV_DS1307=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_EXT2_FS=y
 CONFIG_EXT3_FS=y
 # CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
@@ -184,6 +223,15 @@ CONFIG_EXT2_FS=y
 CONFIG_EXT3_FS=y
 # CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_RTC_DRV_DS1374=y
+CONFIG_RTC_DRV_PCF8563=m
+CONFIG_DMADEVICES=y
+CONFIG_PPC_BESTCOMM=y
+CONFIG_EXT2_FS=y
+CONFIG_EXT3_FS=y
+# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
+>>>>>>> refs/remotes/origin/master
 CONFIG_MSDOS_FS=y
 CONFIG_VFAT_FS=y
 CONFIG_PROC_KCORE=y
@@ -202,7 +250,10 @@ CONFIG_DEBUG_KERNEL=y
 CONFIG_DETECT_HUNG_TASK=y
 CONFIG_DEBUG_INFO=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 # CONFIG_RCU_CPU_STALL_DETECTOR is not set
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # CONFIG_CRYPTO_ANSI_CPRNG is not set

@@ -6,6 +6,11 @@
 # for more details.
 #
 
+<<<<<<< HEAD
+=======
+KBUILD_DEFCONFIG := dsk6455_defconfig
+
+>>>>>>> refs/remotes/origin/master
 cflags-y += -mno-dsbt -msdata=none
 
 cflags-$(CONFIG_C6X_BIG_KERNEL) += -mlong-calls
@@ -39,7 +44,11 @@ DTB:=$(subst dtbImage.,,$(filter dtbImage.%, $(MAKECMDGOALS)))
 export DTB
 
 ifneq ($(DTB),)
+<<<<<<< HEAD
 core-y	+= $(boot)/
+=======
+core-y	+= $(boot)/dts/
+>>>>>>> refs/remotes/origin/master
 endif
 
 # With make 3.82 we cannot mix normal and wildcard targets

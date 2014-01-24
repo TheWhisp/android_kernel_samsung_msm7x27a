@@ -33,16 +33,24 @@
 #include <linux/input/sparse-keymap.h>
 #include <linux/dmi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/fb.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/fb.h>
+>>>>>>> refs/remotes/origin/master
 #include <acpi/acpi_bus.h>
 
 #include "asus-wmi.h"
 
 #define	EEEPC_WMI_FILE	"eeepc-wmi"
 
+<<<<<<< HEAD
 MODULE_AUTHOR("Corentin Chary <corentincj@iksaif.net>");
+=======
+MODULE_AUTHOR("Corentin Chary <corentin.chary@gmail.com>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("Eee PC WMI Hotkey Driver");
 MODULE_LICENSE("GPL");
 
@@ -61,14 +69,23 @@ MODULE_PARM_DESC(hotplug_wireless,
 		 "acpi4asus-user@lists.sourceforge.net.");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Values for T101MT "Home" key */
 #define HOME_PRESS	0xe4
 #define HOME_HOLD	0xea
 #define HOME_RELEASE	0xe5
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static const struct key_entry eeepc_wmi_keymap[] = {
+=======
+static const struct key_entry eeepc_wmi_keymap[] = {
+	{ KE_KEY, ASUS_WMI_BRN_DOWN, { KEY_BRIGHTNESSDOWN } },
+	{ KE_KEY, ASUS_WMI_BRN_UP, { KEY_BRIGHTNESSUP } },
+>>>>>>> refs/remotes/origin/master
 	/* Sleep already handled via generic ACPI code */
 	{ KE_KEY, 0x30, { KEY_VOLUMEUP } },
 	{ KE_KEY, 0x31, { KEY_VOLUMEDOWN } },
@@ -84,21 +101,30 @@ static const struct key_entry eeepc_wmi_keymap[] = {
 	{ KE_KEY, 0xe0, { KEY_PROG1 } }, /* Task Manager */
 	{ KE_KEY, 0xe1, { KEY_F14 } }, /* Change Resolution */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ KE_KEY, HOME_PRESS, { KEY_CONFIG } }, /* Home/Express gate key */
 >>>>>>> refs/remotes/origin/cm-10.0
 	{ KE_KEY, 0xe8, { KEY_SCREENLOCK } },
 	{ KE_KEY, 0xe9, { KEY_BRIGHTNESS_ZERO } },
+=======
+	{ KE_KEY, HOME_PRESS, { KEY_CONFIG } }, /* Home/Express gate key */
+	{ KE_KEY, 0xe8, { KEY_SCREENLOCK } },
+	{ KE_KEY, 0xe9, { KEY_DISPLAYTOGGLE } },
+>>>>>>> refs/remotes/origin/master
 	{ KE_KEY, 0xeb, { KEY_CAMERA_ZOOMOUT } },
 	{ KE_KEY, 0xec, { KEY_CAMERA_UP } },
 	{ KE_KEY, 0xed, { KEY_CAMERA_DOWN } },
 	{ KE_KEY, 0xee, { KEY_CAMERA_LEFT } },
 	{ KE_KEY, 0xef, { KEY_CAMERA_RIGHT } },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ KE_END, 0},
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{ KE_KEY, 0xf3, { KEY_MENU } },
 	{ KE_KEY, 0xf5, { KEY_HOMEPAGE } },
 	{ KE_KEY, 0xf6, { KEY_ESC } },
@@ -121,6 +147,14 @@ static struct quirk_entry quirk_asus_et2012_type3 = {
 	.store_backlight_power = true,
 };
 
+<<<<<<< HEAD
+=======
+static struct quirk_entry quirk_asus_x101ch = {
+	/* We need this when ACPI function doesn't do this well */
+	.wmi_backlight_power = true,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct quirk_entry *quirks;
 
 static void et2012_quirks(void)
@@ -171,6 +205,27 @@ static struct dmi_system_id asus_quirks[] = {
 		},
 		.driver_data = &quirk_asus_unknown,
 	},
+<<<<<<< HEAD
+=======
+	{
+		.callback = dmi_matched,
+		.ident = "ASUSTeK Computer INC. X101CH",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "X101CH"),
+		},
+		.driver_data = &quirk_asus_x101ch,
+	},
+	{
+		.callback = dmi_matched,
+		.ident = "ASUSTeK Computer INC. 1015CX",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "1015CX"),
+		},
+		.driver_data = &quirk_asus_x101ch,
+	},
+>>>>>>> refs/remotes/origin/master
 	{},
 };
 
@@ -193,7 +248,10 @@ static void eeepc_wmi_key_filter(struct asus_wmi_driver *asus_wmi, int *code,
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static acpi_status eeepc_wmi_parse_device(acpi_handle handle, u32 level,
 						 void *context, void **retval)
 {
@@ -230,6 +288,7 @@ static int eeepc_wmi_probe(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void eeepc_dmi_check(struct asus_wmi_driver *driver)
 {
 	const char *model;
@@ -257,6 +316,8 @@ static void eeepc_wmi_quirks(struct asus_wmi_driver *driver)
 	driver->hotplug_wireless = hotplug_wireless;
 	eeepc_dmi_check(driver);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void eeepc_wmi_quirks(struct asus_wmi_driver *driver)
 {
 	quirks = &quirk_asus_unknown;
@@ -267,7 +328,10 @@ static void eeepc_wmi_quirks(struct asus_wmi_driver *driver)
 	driver->quirks = quirks;
 	driver->quirks->wapf = -1;
 	driver->panel_power = FB_BLANK_UNBLANK;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct asus_wmi_driver asus_wmi_driver = {
@@ -278,6 +342,7 @@ static struct asus_wmi_driver asus_wmi_driver = {
 	.input_name = "Eee PC WMI hotkeys",
 	.input_phys = EEEPC_WMI_FILE "/input0",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.probe = eeepc_wmi_probe,
 	.quirks = eeepc_wmi_quirks,
 =======
@@ -285,6 +350,11 @@ static struct asus_wmi_driver asus_wmi_driver = {
 	.probe = eeepc_wmi_probe,
 	.detect_quirks = eeepc_wmi_quirks,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.key_filter = eeepc_wmi_key_filter,
+	.probe = eeepc_wmi_probe,
+	.detect_quirks = eeepc_wmi_quirks,
+>>>>>>> refs/remotes/origin/master
 };
 
 

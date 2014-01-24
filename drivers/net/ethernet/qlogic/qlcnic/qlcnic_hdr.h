@@ -1,6 +1,10 @@
 /*
  * QLogic qlcnic NIC Driver
+<<<<<<< HEAD
  * Copyright (c)  2009-2010 QLogic Corporation
+=======
+ * Copyright (c) 2009-2013 QLogic Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * See LICENSE.qlcnic for copyright and licensing details.
  */
@@ -11,6 +15,11 @@
 #include <linux/kernel.h>
 #include <linux/types.h>
 
+<<<<<<< HEAD
+=======
+#include "qlcnic_hw.h"
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The basic unit of access when reading/writing control registers.
  */
@@ -387,9 +396,12 @@ enum {
 #define QLCNIC_ROMUSB_ROM_DUMMY_BYTE_CNT (ROMUSB_ROM + 0x0014)
 #define QLCNIC_ROMUSB_ROM_RDATA		(ROMUSB_ROM + 0x0018)
 
+<<<<<<< HEAD
 /* Lock IDs for ROM lock */
 #define ROM_LOCK_DRIVER	0x0d417340
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
 *
 *    Definitions specific to M25P flash
@@ -449,13 +461,19 @@ enum {
 #define ISR_INT_TARGET_STATUS_F7   (QLCNIC_PCIX_PS_REG(PCIX_TARGET_STATUS_F7))
 #define ISR_INT_TARGET_MASK_F7     (QLCNIC_PCIX_PS_REG(PCIX_TARGET_MASK_F7))
 
+<<<<<<< HEAD
 #define QLCNIC_PCI_MN_2M	(0)
 #define QLCNIC_PCI_MS_2M	(0x80000)
+=======
+>>>>>>> refs/remotes/origin/master
 #define QLCNIC_PCI_OCM0_2M	(0x000c0000UL)
 #define QLCNIC_PCI_CRBSPACE	(0x06000000UL)
 #define QLCNIC_PCI_CAMQM	(0x04800000UL)
 #define QLCNIC_PCI_CAMQM_END	(0x04800800UL)
+<<<<<<< HEAD
 #define QLCNIC_PCI_2MB_SIZE	(0x00200000UL)
+=======
+>>>>>>> refs/remotes/origin/master
 #define QLCNIC_PCI_CAMQM_2M_BASE	(0x000ff800UL)
 
 #define QLCNIC_CRB_CAM	QLCNIC_PCI_CRB_WINDOW(QLCNIC_HW_PX_MAP_CRB_CAM)
@@ -491,7 +509,11 @@ enum {
 #define QLCNIC_NIU_GB_MAC_CONFIG_1(I)		\
 		(QLCNIC_CRB_NIU + 0x30004 + (I)*0x10000)
 
+<<<<<<< HEAD
 
+=======
+#define MAX_CTL_CHECK	1000
+>>>>>>> refs/remotes/origin/master
 #define TEST_AGT_CTRL	(0x00)
 
 #define TA_CTL_START	BIT_0
@@ -499,6 +521,7 @@ enum {
 #define TA_CTL_WRITE	BIT_2
 #define TA_CTL_BUSY	BIT_3
 
+<<<<<<< HEAD
 /*
  *   Register offsets for MN
  */
@@ -537,6 +560,8 @@ enum {
 #define SIU_TEST_AGT_ADDR_MASK		0x3ffff8
 #define SIU_TEST_AGT_UPPER_ADDR(off)	((off)>>22)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* XG Link status */
 #define XG_LINK_UP	0x10
 #define XG_LINK_DOWN	0x20
@@ -556,9 +581,12 @@ enum {
 
 #define QLCNIC_CAM_RAM_BASE	(QLCNIC_CRB_CAM + 0x02000)
 #define QLCNIC_CAM_RAM(reg)	(QLCNIC_CAM_RAM_BASE + (reg))
+<<<<<<< HEAD
 #define QLCNIC_FW_VERSION_MAJOR (QLCNIC_CAM_RAM(0x150))
 #define QLCNIC_FW_VERSION_MINOR (QLCNIC_CAM_RAM(0x154))
 #define QLCNIC_FW_VERSION_SUB	(QLCNIC_CAM_RAM(0x158))
+=======
+>>>>>>> refs/remotes/origin/master
 #define QLCNIC_ROM_LOCK_ID	(QLCNIC_CAM_RAM(0x100))
 #define QLCNIC_PHY_LOCK_ID	(QLCNIC_CAM_RAM(0x120))
 #define QLCNIC_CRB_WIN_LOCK_ID	(QLCNIC_CAM_RAM(0x124))
@@ -568,6 +596,7 @@ enum {
 #define QLCNIC_REG(X)		(NIC_CRB_BASE+(X))
 #define QLCNIC_REG_2(X) 	(NIC_CRB_BASE_2+(X))
 
+<<<<<<< HEAD
 #define QLCNIC_CDRP_CRB_OFFSET		(QLCNIC_REG(0x18))
 #define QLCNIC_ARG1_CRB_OFFSET		(QLCNIC_REG(0x1c))
 #define QLCNIC_ARG2_CRB_OFFSET		(QLCNIC_REG(0x20))
@@ -589,6 +618,19 @@ enum {
 
 #define CRB_FW_CAPABILITIES_1		(QLCNIC_CAM_RAM(0x128))
 #define CRB_MAC_BLOCK_START		(QLCNIC_CAM_RAM(0x1c0))
+=======
+#define QLCNIC_CDRP_MAX_ARGS	4
+#define QLCNIC_CDRP_ARG(i)	(QLCNIC_REG(0x18 + ((i) * 4)))
+
+#define QLCNIC_CDRP_CRB_OFFSET		(QLCNIC_REG(0x18))
+#define QLCNIC_SIGN_CRB_OFFSET		(QLCNIC_REG(0x28))
+
+#define CRB_XG_STATE_P3P		(QLCNIC_REG(0x98))
+#define CRB_PF_LINK_SPEED_1		(QLCNIC_REG(0xe8))
+#define CRB_DRIVER_VERSION		(QLCNIC_REG(0x2a0))
+
+#define CRB_FW_CAPABILITIES_2		(QLCNIC_CAM_RAM(0x12c))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * CrbPortPhanCntrHi/Lo is used to pass the address of HostPhantomIndex address
@@ -615,11 +657,14 @@ enum {
 /* Lock IDs for PHY lock */
 #define PHY_LOCK_DRIVER		0x44524956
 
+<<<<<<< HEAD
 /* Used for PS PCI Memory access */
 #define PCIX_PS_OP_ADDR_LO	(0x10000)
 /*   via CRB  (PS side only)     */
 #define PCIX_PS_OP_ADDR_HI	(0x10004)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define PCIX_INT_VECTOR 	(0x10100)
 #define PCIX_INT_MASK		(0x10104)
 
@@ -681,6 +726,7 @@ enum {
 #define QLCNIC_PEG_TUNE_CAPABILITY	(QLCNIC_CAM_RAM(0x02c))
 
 #define QLCNIC_DMA_WATCHDOG_CTRL	(QLCNIC_CAM_RAM(0x14))
+<<<<<<< HEAD
 #define QLCNIC_PEG_ALIVE_COUNTER	(QLCNIC_CAM_RAM(0xb0))
 #define QLCNIC_PEG_HALT_STATUS1 	(QLCNIC_CAM_RAM(0xa8))
 #define QLCNIC_PEG_HALT_STATUS2 	(QLCNIC_CAM_RAM(0xac))
@@ -692,6 +738,8 @@ enum {
 #define QLCNIC_CRB_DEV_PARTITION_INFO	(QLCNIC_CAM_RAM(0x14c))
 #define QLCNIC_CRB_DRV_IDC_VER		(QLCNIC_CAM_RAM(0x174))
 #define QLCNIC_CRB_DEV_NPAR_STATE	(QLCNIC_CAM_RAM(0x19c))
+=======
+>>>>>>> refs/remotes/origin/master
 #define QLCNIC_ROM_DEV_INIT_TIMEOUT	(0x3e885c)
 #define QLCNIC_ROM_DRV_RESET_TIMEOUT	(0x3e8860)
 
@@ -704,11 +752,19 @@ enum {
 #define QLCNIC_DEV_FAILED		0x6
 #define QLCNIC_DEV_QUISCENT		0x7
 
+<<<<<<< HEAD
+=======
+#define QLCNIC_DEV_BADBAD		0xbad0bad0
+
+>>>>>>> refs/remotes/origin/master
 #define QLCNIC_DEV_NPAR_NON_OPER	0 /* NON Operational */
 #define QLCNIC_DEV_NPAR_OPER		1 /* NPAR Operational */
 #define QLCNIC_DEV_NPAR_OPER_TIMEO	30 /* Operational time out */
 
+<<<<<<< HEAD
 #define QLC_DEV_CHECK_ACTIVE(VAL, FN)		((VAL) & (1 << (FN * 4)))
+=======
+>>>>>>> refs/remotes/origin/master
 #define QLC_DEV_SET_REF_CNT(VAL, FN)		((VAL) |= (1 << (FN * 4)))
 #define QLC_DEV_CLR_REF_CNT(VAL, FN)		((VAL) &= ~(1 << (FN * 4)))
 #define QLC_DEV_SET_RST_RDY(VAL, FN)		((VAL) |= (1 << (FN * 4)))
@@ -739,7 +795,15 @@ enum {
 #define QLCNIC_CMDPEG_CHECK_RETRY_COUNT	60
 #define QLCNIC_CMDPEG_CHECK_DELAY	500
 #define QLCNIC_HEARTBEAT_PERIOD_MSECS	200
+<<<<<<< HEAD
 #define QLCNIC_HEARTBEAT_CHECK_RETRY_COUNT	45
+=======
+#define QLCNIC_HEARTBEAT_CHECK_RETRY_COUNT	10
+
+#define QLCNIC_MAX_MC_COUNT		38
+#define QLCNIC_MAX_UC_COUNT		512
+#define QLCNIC_WATCHDOG_TIMEOUTVALUE	5
+>>>>>>> refs/remotes/origin/master
 
 #define	ISR_MSI_INT_TRIGGER(FUNC) (QLCNIC_PCIX_PS_REG(PCIX_MSI_F(FUNC)))
 #define ISR_LEGACY_INT_TRIGGERED(VAL)	(((VAL) & 0x300) == 0x200)
@@ -763,12 +827,16 @@ struct qlcnic_legacy_intr_set {
 	u32	pci_int_reg;
 };
 
+<<<<<<< HEAD
 #define QLCNIC_FW_API		0x1b216c
 #define QLCNIC_DRV_OP_MODE	0x1b2170
+=======
+>>>>>>> refs/remotes/origin/master
 #define QLCNIC_MSIX_BASE	0x132110
 #define QLCNIC_MAX_PCI_FUNC	8
 #define QLCNIC_MAX_VLAN_FILTERS	64
 
+<<<<<<< HEAD
 /* FW dump defines */
 #define MIU_TEST_CTR		0x41000090
 #define MIU_TEST_ADDR_LO	0x41000094
@@ -779,12 +847,18 @@ struct qlcnic_legacy_intr_set {
 static const u32 MIU_TEST_READ_DATA[] = {
 	0x410000A8, 0x410000AC, 0x410000B8, 0x410000BC, };
 
+=======
+#define FLASH_ROM_WINDOW	0x42110030
+#define FLASH_ROM_DATA		0x42150000
+
+>>>>>>> refs/remotes/origin/master
 #define QLCNIC_FW_DUMP_REG1	0x00130060
 #define QLCNIC_FW_DUMP_REG2	0x001e0000
 #define QLCNIC_FLASH_SEM2_LK	0x0013C010
 #define QLCNIC_FLASH_SEM2_ULK	0x0013C014
 #define QLCNIC_FLASH_LOCK_ID	0x001B2100
 
+<<<<<<< HEAD
 #define QLCNIC_RD_DUMP_REG(addr, bar0, data) do {			\
 	writel((addr & 0xFFFF0000), (void *) (bar0 +			\
 		QLCNIC_FW_DUMP_REG1));					\
@@ -801,11 +875,20 @@ static const u32 MIU_TEST_READ_DATA[] = {
 	readl((void *) (bar0 + QLCNIC_FW_DUMP_REG2 + LSW(addr)));	\
 } while (0)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* PCI function operational mode */
 enum {
 	QLCNIC_MGMT_FUNC	= 0,
 	QLCNIC_PRIV_FUNC	= 1,
+<<<<<<< HEAD
 	QLCNIC_NON_PRIV_FUNC	= 2
+=======
+	QLCNIC_NON_PRIV_FUNC	= 2,
+	QLCNIC_SRIOV_PF_FUNC	= 3,
+	QLCNIC_SRIOV_VF_FUNC	= 4,
+	QLCNIC_UNKNOWN_FUNC_MODE = 5
+>>>>>>> refs/remotes/origin/master
 };
 
 enum {
@@ -825,55 +908,106 @@ enum {
 #define LSD(x)  ((uint32_t)((uint64_t)(x)))
 #define MSD(x)  ((uint32_t)((((uint64_t)(x)) >> 16) >> 16))
 
+<<<<<<< HEAD
+=======
+#define QLCNIC_MS_CTRL			0x41000090
+#define QLCNIC_MS_ADDR_LO		0x41000094
+#define QLCNIC_MS_ADDR_HI		0x41000098
+#define QLCNIC_MS_WRTDATA_LO		0x410000A0
+#define QLCNIC_MS_WRTDATA_HI		0x410000A4
+#define QLCNIC_MS_WRTDATA_ULO		0x410000B0
+#define QLCNIC_MS_WRTDATA_UHI		0x410000B4
+#define QLCNIC_MS_RDDATA_LO		0x410000A8
+#define QLCNIC_MS_RDDATA_HI		0x410000AC
+#define QLCNIC_MS_RDDATA_ULO		0x410000B8
+#define QLCNIC_MS_RDDATA_UHI		0x410000BC
+
+#define QLCNIC_TA_WRITE_ENABLE	(TA_CTL_ENABLE | TA_CTL_WRITE)
+#define QLCNIC_TA_WRITE_START	(TA_CTL_START | TA_CTL_ENABLE | TA_CTL_WRITE)
+#define QLCNIC_TA_START_ENABLE	(TA_CTL_START | TA_CTL_ENABLE)
+
+>>>>>>> refs/remotes/origin/master
 #define	QLCNIC_LEGACY_INTR_CONFIG					\
 {									\
 	{								\
 		.int_vec_bit	=	PCIX_INT_VECTOR_BIT_F0,		\
 		.tgt_status_reg	=	ISR_INT_TARGET_STATUS,		\
+<<<<<<< HEAD
 		.tgt_mask_reg	=	ISR_INT_TARGET_MASK,		\
 		.pci_int_reg	=	ISR_MSI_INT_TRIGGER(0) },	\
+=======
+		.tgt_mask_reg	=	ISR_INT_TARGET_MASK, },		\
+>>>>>>> refs/remotes/origin/master
 									\
 	{								\
 		.int_vec_bit	=	PCIX_INT_VECTOR_BIT_F1,		\
 		.tgt_status_reg	=	ISR_INT_TARGET_STATUS_F1,	\
+<<<<<<< HEAD
 		.tgt_mask_reg	=	ISR_INT_TARGET_MASK_F1,		\
 		.pci_int_reg	=	ISR_MSI_INT_TRIGGER(1) },	\
+=======
+		.tgt_mask_reg	=	ISR_INT_TARGET_MASK_F1, },	\
+>>>>>>> refs/remotes/origin/master
 									\
 	{								\
 		.int_vec_bit	=	PCIX_INT_VECTOR_BIT_F2,		\
 		.tgt_status_reg	=	ISR_INT_TARGET_STATUS_F2,	\
+<<<<<<< HEAD
 		.tgt_mask_reg	=	ISR_INT_TARGET_MASK_F2,		\
 		.pci_int_reg	=	ISR_MSI_INT_TRIGGER(2) },	\
+=======
+		.tgt_mask_reg	=	ISR_INT_TARGET_MASK_F2, },	\
+>>>>>>> refs/remotes/origin/master
 									\
 	{								\
 		.int_vec_bit	=	PCIX_INT_VECTOR_BIT_F3,		\
 		.tgt_status_reg	=	ISR_INT_TARGET_STATUS_F3,	\
+<<<<<<< HEAD
 		.tgt_mask_reg	=	ISR_INT_TARGET_MASK_F3,		\
 		.pci_int_reg	=	ISR_MSI_INT_TRIGGER(3) },	\
+=======
+		.tgt_mask_reg	=	ISR_INT_TARGET_MASK_F3, },	\
+>>>>>>> refs/remotes/origin/master
 									\
 	{								\
 		.int_vec_bit	=	PCIX_INT_VECTOR_BIT_F4,		\
 		.tgt_status_reg	=	ISR_INT_TARGET_STATUS_F4,	\
+<<<<<<< HEAD
 		.tgt_mask_reg	=	ISR_INT_TARGET_MASK_F4,		\
 		.pci_int_reg	=	ISR_MSI_INT_TRIGGER(4) },	\
+=======
+		.tgt_mask_reg	=	ISR_INT_TARGET_MASK_F4, },	\
+>>>>>>> refs/remotes/origin/master
 									\
 	{								\
 		.int_vec_bit	=	PCIX_INT_VECTOR_BIT_F5,		\
 		.tgt_status_reg	=	ISR_INT_TARGET_STATUS_F5,	\
+<<<<<<< HEAD
 		.tgt_mask_reg	=	ISR_INT_TARGET_MASK_F5,		\
 		.pci_int_reg	=	ISR_MSI_INT_TRIGGER(5) },	\
+=======
+		.tgt_mask_reg	=	ISR_INT_TARGET_MASK_F5, },	\
+>>>>>>> refs/remotes/origin/master
 									\
 	{								\
 		.int_vec_bit	=	PCIX_INT_VECTOR_BIT_F6,		\
 		.tgt_status_reg	=	ISR_INT_TARGET_STATUS_F6,	\
+<<<<<<< HEAD
 		.tgt_mask_reg	=	ISR_INT_TARGET_MASK_F6,		\
 		.pci_int_reg	=	ISR_MSI_INT_TRIGGER(6) },	\
+=======
+		.tgt_mask_reg	=	ISR_INT_TARGET_MASK_F6, },	\
+>>>>>>> refs/remotes/origin/master
 									\
 	{								\
 		.int_vec_bit	=	PCIX_INT_VECTOR_BIT_F7,		\
 		.tgt_status_reg	=	ISR_INT_TARGET_STATUS_F7,	\
+<<<<<<< HEAD
 		.tgt_mask_reg	=	ISR_INT_TARGET_MASK_F7,		\
 		.pci_int_reg	=	ISR_MSI_INT_TRIGGER(7) },	\
+=======
+		.tgt_mask_reg	=	ISR_INT_TARGET_MASK_F7, },	\
+>>>>>>> refs/remotes/origin/master
 }
 
 /* NIU REGS */
@@ -1014,6 +1148,11 @@ enum {
 #define QLCNIC_NIU_PROMISC_MODE		1
 #define QLCNIC_NIU_ALLMULTI_MODE	2
 
+<<<<<<< HEAD
+=======
+#define QLCNIC_PCIE_SEM_TIMEOUT	10000
+
+>>>>>>> refs/remotes/origin/master
 struct crb_128M_2M_sub_block_map {
 	unsigned valid;
 	unsigned start_128M;

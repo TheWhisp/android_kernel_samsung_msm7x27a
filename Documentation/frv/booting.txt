@@ -107,6 +107,7 @@ separated by spaces:
       bits, and no flow control.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   (*) root=/dev/<xxxx>
 
       This specifies the device upon which the root filesystem resides. For
@@ -115,6 +116,8 @@ separated by spaces:
 	/dev/nfs	NFS root filesystem
 	/dev/mtdblock3	Fourth RedBoot partition on the System Flash
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   (*) root=<xxxx>
 
       This specifies the device upon which the root filesystem resides. It
@@ -129,7 +132,10 @@ separated by spaces:
 
       Authoritative information can be found in
       "Documentation/kernel-parameters.txt".
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
   (*) rw
 
@@ -191,6 +197,7 @@ separated by spaces:
       This tells the kernel what program to run initially. By default this is
       /sbin/init, but /sbin/sash or /bin/sh are common alternatives.
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   (*) vdc=...
 
@@ -199,3 +206,5 @@ separated by spaces:
       information.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

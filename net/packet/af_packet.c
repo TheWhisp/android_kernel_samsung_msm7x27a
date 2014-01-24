@@ -41,12 +41,18 @@
  *					and packet_mreq.
  *		Johann Baudy	:	Added TX RING.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *		Chetan Loke	:	Implemented TPACKET_V3 block abstraction
  *					layer.
  *					Copyright (C) 2011, <lokec@ccs.neu.edu>
  *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *		This program is free software; you can redistribute it and/or
  *		modify it under the terms of the GNU General Public License
@@ -77,9 +83,12 @@
 #include <linux/errno.h>
 #include <linux/timer.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/ioctls.h>
 #include <asm/page.h>
@@ -95,11 +104,20 @@
 #include <linux/virtio_net.h>
 #include <linux/errqueue.h>
 #include <linux/net_tstamp.h>
+<<<<<<< HEAD
 
+=======
+#include <linux/reciprocal_div.h>
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_INET
 #include <net/inet_common.h>
 #endif
 
+<<<<<<< HEAD
+=======
+#include "internal.h"
+
+>>>>>>> refs/remotes/origin/master
 /*
    Assumptions:
    - if device has no dev->hard_header routine, it adds and removes ll header
@@ -153,6 +171,7 @@ dev->hard_header == NULL (ll header is added by device, we cannot control it)
 
 /* Private packet socket structures. */
 
+<<<<<<< HEAD
 struct packet_mclist {
 	struct packet_mclist	*next;
 	int			ifindex;
@@ -161,6 +180,8 @@ struct packet_mclist {
 	unsigned short		alen;
 	unsigned char		addr[MAX_ADDR_LEN];
 };
+=======
+>>>>>>> refs/remotes/origin/master
 /* identical to struct packet_mreq except it has
  * a longer address field.
  */
@@ -172,6 +193,7 @@ struct packet_mreq_max {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int packet_set_ring(struct sock *sk, struct tpacket_req *req,
 		int closing, int tx_ring);
 
@@ -180,6 +202,18 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
 		int closing, int tx_ring);
 
 
+=======
+union tpacket_uhdr {
+	struct tpacket_hdr  *h1;
+	struct tpacket2_hdr *h2;
+	struct tpacket3_hdr *h3;
+	void *raw;
+};
+
+static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
+		int closing, int tx_ring);
+
+>>>>>>> refs/remotes/origin/master
 #define V3_ALIGNMENT	(8)
 
 #define BLK_HDR_LEN	(ALIGN(sizeof(struct tpacket_block_desc), V3_ALIGNMENT))
@@ -187,6 +221,7 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
 #define BLK_PLUS_PRIV(sz_of_priv) \
 	(BLK_HDR_LEN + ALIGN((sz_of_priv), V3_ALIGNMENT))
 
+<<<<<<< HEAD
 /* kbdq - kernel block descriptor queue */
 struct tpacket_kbdq_core {
 	struct pgv	*pkbdq;
@@ -259,6 +294,9 @@ struct packet_sock {
 	struct tpacket_kbdq_core	prb_bdqc;
 	atomic_t		pending;
 };
+=======
+#define PGV_FROM_VMALLOC 1
+>>>>>>> refs/remotes/origin/master
 
 #define BLOCK_STATUS(x)	((x)->hdr.bh1.block_status)
 #define BLOCK_NUM_PKTS(x)	((x)->hdr.bh1.num_pkts)
@@ -270,6 +308,11 @@ struct packet_sock {
 
 struct packet_sock;
 static int tpacket_snd(struct packet_sock *po, struct msghdr *msg);
+<<<<<<< HEAD
+=======
+static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
+		       struct packet_type *pt, struct net_device *orig_dev);
+>>>>>>> refs/remotes/origin/master
 
 static void *packet_previous_frame(struct packet_sock *po,
 		struct packet_ring_buffer *rb,
@@ -296,6 +339,7 @@ static void prb_fill_vlan_info(struct tpacket_kbdq_core *,
 		struct tpacket3_hdr *);
 static void packet_flush_mclist(struct sock *sk);
 
+<<<<<<< HEAD
 struct packet_fanout;
 struct packet_sock {
 	/* struct sock has to be the first member of packet_sock */
@@ -346,6 +390,8 @@ struct packet_fanout {
 };
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct packet_skb_cb {
 	unsigned int origlen;
 	union {
@@ -357,7 +403,10 @@ struct packet_skb_cb {
 #define PACKET_SKB_CB(__skb)	((struct packet_skb_cb *)((__skb)->cb))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define GET_PBDQC_FROM_RB(x)	((struct tpacket_kbdq_core *)(&(x)->prb_bdqc))
 #define GET_PBLOCK_DESC(x, bid)	\
 	((struct tpacket_block_desc *)((x)->pkbdq[(bid)].buffer))
@@ -367,6 +416,7 @@ struct packet_skb_cb {
 	(((x)->kactive_blk_num < ((x)->knum_blocks-1)) ? \
 	((x)->kactive_blk_num+1) : 0)
 
+<<<<<<< HEAD
 static struct packet_sock *pkt_sk(struct sock *sk)
 {
 	return (struct packet_sock *)sk;
@@ -374,6 +424,34 @@ static struct packet_sock *pkt_sk(struct sock *sk)
 
 static void __fanout_unlink(struct sock *sk, struct packet_sock *po);
 static void __fanout_link(struct sock *sk, struct packet_sock *po);
+=======
+static void __fanout_unlink(struct sock *sk, struct packet_sock *po);
+static void __fanout_link(struct sock *sk, struct packet_sock *po);
+
+static struct net_device *packet_cached_dev_get(struct packet_sock *po)
+{
+	struct net_device *dev;
+
+	rcu_read_lock();
+	dev = rcu_dereference(po->cached_dev);
+	if (likely(dev))
+		dev_hold(dev);
+	rcu_read_unlock();
+
+	return dev;
+}
+
+static void packet_cached_dev_assign(struct packet_sock *po,
+				     struct net_device *dev)
+{
+	rcu_assign_pointer(po->cached_dev, dev);
+}
+
+static void packet_cached_dev_reset(struct packet_sock *po)
+{
+	RCU_INIT_POINTER(po->cached_dev, NULL);
+}
+>>>>>>> refs/remotes/origin/master
 
 /* register_prot_hook must be invoked with the po->bind_lock held,
  * or from a context in which asynchronous accesses to the packet
@@ -382,11 +460,19 @@ static void __fanout_link(struct sock *sk, struct packet_sock *po);
 static void register_prot_hook(struct sock *sk)
 {
 	struct packet_sock *po = pkt_sk(sk);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (!po->running) {
 		if (po->fanout)
 			__fanout_link(sk, po);
 		else
 			dev_add_pack(&po->prot_hook);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		sock_hold(sk);
 		po->running = 1;
 	}
@@ -404,10 +490,18 @@ static void __unregister_prot_hook(struct sock *sk, bool sync)
 	struct packet_sock *po = pkt_sk(sk);
 
 	po->running = 0;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (po->fanout)
 		__fanout_unlink(sk, po);
 	else
 		__dev_remove_pack(&po->prot_hook);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	__sock_put(sk);
 
 	if (sync) {
@@ -425,7 +519,10 @@ static void unregister_prot_hook(struct sock *sk, bool sync)
 		__unregister_prot_hook(sk, sync);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline __pure struct page *pgv_to_page(void *addr)
 {
 	if (is_vmalloc_addr(addr))
@@ -435,11 +532,15 @@ static inline __pure struct page *pgv_to_page(void *addr)
 
 static void __packet_set_status(struct packet_sock *po, void *frame, int status)
 {
+<<<<<<< HEAD
 	union {
 		struct tpacket_hdr *h1;
 		struct tpacket2_hdr *h2;
 		void *raw;
 	} h;
+=======
+	union tpacket_uhdr h;
+>>>>>>> refs/remotes/origin/master
 
 	h.raw = frame;
 	switch (po->tp_version) {
@@ -452,6 +553,7 @@ static void __packet_set_status(struct packet_sock *po, void *frame, int status)
 		flush_dcache_page(pgv_to_page(&h.h2->tp_status));
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	default:
 		pr_err("TPACKET version not supported\n");
 =======
@@ -459,6 +561,11 @@ static void __packet_set_status(struct packet_sock *po, void *frame, int status)
 	default:
 		WARN(1, "TPACKET version not supported.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case TPACKET_V3:
+	default:
+		WARN(1, "TPACKET version not supported.\n");
+>>>>>>> refs/remotes/origin/master
 		BUG();
 	}
 
@@ -467,11 +574,15 @@ static void __packet_set_status(struct packet_sock *po, void *frame, int status)
 
 static int __packet_get_status(struct packet_sock *po, void *frame)
 {
+<<<<<<< HEAD
 	union {
 		struct tpacket_hdr *h1;
 		struct tpacket2_hdr *h2;
 		void *raw;
 	} h;
+=======
+	union tpacket_uhdr h;
+>>>>>>> refs/remotes/origin/master
 
 	smp_rmb();
 
@@ -484,6 +595,7 @@ static int __packet_get_status(struct packet_sock *po, void *frame)
 		flush_dcache_page(pgv_to_page(&h.h2->tp_status));
 		return h.h2->tp_status;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	default:
 		pr_err("TPACKET version not supported\n");
 =======
@@ -491,22 +603,87 @@ static int __packet_get_status(struct packet_sock *po, void *frame)
 	default:
 		WARN(1, "TPACKET version not supported.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case TPACKET_V3:
+	default:
+		WARN(1, "TPACKET version not supported.\n");
+>>>>>>> refs/remotes/origin/master
 		BUG();
 		return 0;
 	}
 }
 
+<<<<<<< HEAD
+=======
+static __u32 tpacket_get_timestamp(struct sk_buff *skb, struct timespec *ts,
+				   unsigned int flags)
+{
+	struct skb_shared_hwtstamps *shhwtstamps = skb_hwtstamps(skb);
+
+	if (shhwtstamps) {
+		if ((flags & SOF_TIMESTAMPING_SYS_HARDWARE) &&
+		    ktime_to_timespec_cond(shhwtstamps->syststamp, ts))
+			return TP_STATUS_TS_SYS_HARDWARE;
+		if ((flags & SOF_TIMESTAMPING_RAW_HARDWARE) &&
+		    ktime_to_timespec_cond(shhwtstamps->hwtstamp, ts))
+			return TP_STATUS_TS_RAW_HARDWARE;
+	}
+
+	if (ktime_to_timespec_cond(skb->tstamp, ts))
+		return TP_STATUS_TS_SOFTWARE;
+
+	return 0;
+}
+
+static __u32 __packet_set_timestamp(struct packet_sock *po, void *frame,
+				    struct sk_buff *skb)
+{
+	union tpacket_uhdr h;
+	struct timespec ts;
+	__u32 ts_status;
+
+	if (!(ts_status = tpacket_get_timestamp(skb, &ts, po->tp_tstamp)))
+		return 0;
+
+	h.raw = frame;
+	switch (po->tp_version) {
+	case TPACKET_V1:
+		h.h1->tp_sec = ts.tv_sec;
+		h.h1->tp_usec = ts.tv_nsec / NSEC_PER_USEC;
+		break;
+	case TPACKET_V2:
+		h.h2->tp_sec = ts.tv_sec;
+		h.h2->tp_nsec = ts.tv_nsec;
+		break;
+	case TPACKET_V3:
+	default:
+		WARN(1, "TPACKET version not supported.\n");
+		BUG();
+	}
+
+	/* one flush is safe, as both fields always lie on the same cacheline */
+	flush_dcache_page(pgv_to_page(&h.h1->tp_sec));
+	smp_wmb();
+
+	return ts_status;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void *packet_lookup_frame(struct packet_sock *po,
 		struct packet_ring_buffer *rb,
 		unsigned int position,
 		int status)
 {
 	unsigned int pg_vec_pos, frame_offset;
+<<<<<<< HEAD
 	union {
 		struct tpacket_hdr *h1;
 		struct tpacket2_hdr *h2;
 		void *raw;
 	} h;
+=======
+	union tpacket_uhdr h;
+>>>>>>> refs/remotes/origin/master
 
 	pg_vec_pos = position / rb->frames_per_block;
 	frame_offset = position % rb->frames_per_block;
@@ -521,10 +698,14 @@ static void *packet_lookup_frame(struct packet_sock *po,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void *packet_current_frame(struct packet_sock *po,
 =======
 static void *packet_current_frame(struct packet_sock *po,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void *packet_current_frame(struct packet_sock *po,
+>>>>>>> refs/remotes/origin/master
 		struct packet_ring_buffer *rb,
 		int status)
 {
@@ -532,8 +713,11 @@ static void *packet_current_frame(struct packet_sock *po,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void *packet_previous_frame(struct packet_sock *po,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void prb_del_retire_blk_timer(struct tpacket_kbdq_core *pkc)
 {
 	del_timer_sync(&pkc->retire_blk_timer);
@@ -547,9 +731,15 @@ static void prb_shutdown_retire_blk_timer(struct packet_sock *po,
 
 	pkc = tx_ring ? &po->tx_ring.prb_bdqc : &po->rx_ring.prb_bdqc;
 
+<<<<<<< HEAD
 	spin_lock(&rb_queue->lock);
 	pkc->delete_blk_timer = 1;
 	spin_unlock(&rb_queue->lock);
+=======
+	spin_lock_bh(&rb_queue->lock);
+	pkc->delete_blk_timer = 1;
+	spin_unlock_bh(&rb_queue->lock);
+>>>>>>> refs/remotes/origin/master
 
 	prb_del_retire_blk_timer(pkc);
 }
@@ -582,6 +772,10 @@ static int prb_calc_retire_blk_tmo(struct packet_sock *po,
 	unsigned int mbits = 0, msec = 0, div = 0, tmo = 0;
 	struct ethtool_cmd ecmd;
 	int err;
+<<<<<<< HEAD
+=======
+	u32 speed;
+>>>>>>> refs/remotes/origin/master
 
 	rtnl_lock();
 	dev = __dev_get_by_index(sock_net(&po->sk), po->ifindex);
@@ -590,6 +784,7 @@ static int prb_calc_retire_blk_tmo(struct packet_sock *po,
 		return DEFAULT_PRB_RETIRE_TOV;
 	}
 	err = __ethtool_get_settings(dev, &ecmd);
+<<<<<<< HEAD
 	rtnl_unlock();
 	if (!err) {
 		switch (ecmd.speed) {
@@ -601,14 +796,27 @@ static int prb_calc_retire_blk_tmo(struct packet_sock *po,
 			msec = 1;
 			div = 1000/1000;
 			break;
+=======
+	speed = ethtool_cmd_speed(&ecmd);
+	rtnl_unlock();
+	if (!err) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * If the link speed is so slow you don't really
 		 * need to worry about perf anyways
 		 */
+<<<<<<< HEAD
 		case SPEED_100:
 		case SPEED_10:
 		default:
 			return DEFAULT_PRB_RETIRE_TOV;
+=======
+		if (speed < SPEED_1000 || speed == SPEED_UNKNOWN) {
+			return DEFAULT_PRB_RETIRE_TOV;
+		} else {
+			msec = 1;
+			div = speed / 1000;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -643,13 +851,21 @@ static void init_prb_bdqc(struct packet_sock *po,
 	p1->knxt_seq_num = 1;
 	p1->pkbdq = pg_vec;
 	pbd = (struct tpacket_block_desc *)pg_vec[0].buffer;
+<<<<<<< HEAD
 	p1->pkblk_start	= (char *)pg_vec[0].buffer;
+=======
+	p1->pkblk_start	= pg_vec[0].buffer;
+>>>>>>> refs/remotes/origin/master
 	p1->kblk_size = req_u->req3.tp_block_size;
 	p1->knum_blocks	= req_u->req3.tp_block_nr;
 	p1->hdrlen = po->tp_hdrlen;
 	p1->version = po->tp_version;
 	p1->last_kactive_blk_num = 0;
+<<<<<<< HEAD
 	po->stats_u.stats3.tp_freeze_q_cnt = 0;
+=======
+	po->stats.stats3.tp_freeze_q_cnt = 0;
+>>>>>>> refs/remotes/origin/master
 	if (req_u->req3.tp_retire_blk_tov)
 		p1->retire_blk_tov = req_u->req3.tp_retire_blk_tov;
 	else
@@ -817,7 +1033,11 @@ static void prb_close_block(struct tpacket_kbdq_core *pkc1,
 	struct tpacket3_hdr *last_pkt;
 	struct tpacket_hdr_v1 *h1 = &pbd1->hdr.bh1;
 
+<<<<<<< HEAD
 	if (po->stats.tp_drops)
+=======
+	if (po->stats.stats3.tp_drops)
+>>>>>>> refs/remotes/origin/master
 		status |= TP_STATUS_LOSING;
 
 	last_pkt = (struct tpacket3_hdr *)pkc1->prev;
@@ -866,6 +1086,7 @@ static void prb_open_block(struct tpacket_kbdq_core *pkc1,
 	/* We could have just memset this but we will lose the
 	 * flexibility of making the priv area sticky
 	 */
+<<<<<<< HEAD
 	BLOCK_SNUM(pbd1) = pkc1->knxt_seq_num++;
 	BLOCK_NUM_PKTS(pbd1) = 0;
 	BLOCK_LEN(pbd1) = BLK_PLUS_PRIV(pkc1->blk_sizeof_priv);
@@ -880,6 +1101,28 @@ static void prb_open_block(struct tpacket_kbdq_core *pkc1,
 	pbd1->version = pkc1->version;
 	pkc1->prev = pkc1->nxt_offset;
 	pkc1->pkblk_end = pkc1->pkblk_start + pkc1->kblk_size;
+=======
+
+	BLOCK_SNUM(pbd1) = pkc1->knxt_seq_num++;
+	BLOCK_NUM_PKTS(pbd1) = 0;
+	BLOCK_LEN(pbd1) = BLK_PLUS_PRIV(pkc1->blk_sizeof_priv);
+
+	getnstimeofday(&ts);
+
+	h1->ts_first_pkt.ts_sec = ts.tv_sec;
+	h1->ts_first_pkt.ts_nsec = ts.tv_nsec;
+
+	pkc1->pkblk_start = (char *)pbd1;
+	pkc1->nxt_offset = pkc1->pkblk_start + BLK_PLUS_PRIV(pkc1->blk_sizeof_priv);
+
+	BLOCK_O2FP(pbd1) = (__u32)BLK_PLUS_PRIV(pkc1->blk_sizeof_priv);
+	BLOCK_O2PRIV(pbd1) = BLK_HDR_LEN;
+
+	pbd1->version = pkc1->version;
+	pkc1->prev = pkc1->nxt_offset;
+	pkc1->pkblk_end = pkc1->pkblk_start + pkc1->kblk_size;
+
+>>>>>>> refs/remotes/origin/master
 	prb_thaw_queue(pkc1);
 	_prb_refresh_rx_retire_blk_timer(pkc1);
 
@@ -913,7 +1156,11 @@ static void prb_freeze_queue(struct tpacket_kbdq_core *pkc,
 				  struct packet_sock *po)
 {
 	pkc->reset_pending_on_curr_blk = 1;
+<<<<<<< HEAD
 	po->stats_u.stats3.tp_freeze_q_cnt++;
+=======
+	po->stats.stats3.tp_freeze_q_cnt++;
+>>>>>>> refs/remotes/origin/master
 }
 
 #define TOTAL_PKT_LEN_INCL_ALIGN(length) (ALIGN((length), V3_ALIGNMENT))
@@ -1012,7 +1259,12 @@ static void prb_fill_vlan_info(struct tpacket_kbdq_core *pkc,
 		ppd->hv1.tp_vlan_tci = vlan_tx_tag_get(pkc->skb);
 		ppd->tp_status = TP_STATUS_VLAN_VALID;
 	} else {
+<<<<<<< HEAD
 		ppd->hv1.tp_vlan_tci = ppd->tp_status = 0;
+=======
+		ppd->hv1.tp_vlan_tci = 0;
+		ppd->tp_status = TP_STATUS_AVAILABLE;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1055,7 +1307,11 @@ static void *__packet_lookup_frame_in_block(struct packet_sock *po,
 	struct tpacket_block_desc *pbd;
 	char *curr, *end;
 
+<<<<<<< HEAD
 	pkc = GET_PBDQC_FROM_RB(((struct packet_ring_buffer *)&po->rx_ring));
+=======
+	pkc = GET_PBDQC_FROM_RB(&po->rx_ring);
+>>>>>>> refs/remotes/origin/master
 	pbd = GET_CURR_PBLOCK_DESC_FROM_CORE(pkc);
 
 	/* Queue is frozen when user space is lagging behind */
@@ -1081,7 +1337,11 @@ static void *__packet_lookup_frame_in_block(struct packet_sock *po,
 	smp_mb();
 	curr = pkc->nxt_offset;
 	pkc->skb = skb;
+<<<<<<< HEAD
 	end = (char *) ((char *)pbd + pkc->kblk_size);
+=======
+	end = (char *)pbd + pkc->kblk_size;
+>>>>>>> refs/remotes/origin/master
 
 	/* first try the current block */
 	if (curr+TOTAL_PKT_LEN_INCL_ALIGN(len) < end) {
@@ -1123,17 +1383,29 @@ static void *packet_current_rx_frame(struct packet_sock *po,
 	default:
 		WARN(1, "TPACKET version not supported\n");
 		BUG();
+<<<<<<< HEAD
 		return 0;
+=======
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static void *prb_lookup_block(struct packet_sock *po,
 				     struct packet_ring_buffer *rb,
+<<<<<<< HEAD
 				     unsigned int previous,
 				     int status)
 {
 	struct tpacket_kbdq_core *pkc  = GET_PBDQC_FROM_RB(rb);
 	struct tpacket_block_desc *pbd = GET_PBLOCK_DESC(pkc, previous);
+=======
+				     unsigned int idx,
+				     int status)
+{
+	struct tpacket_kbdq_core *pkc  = GET_PBDQC_FROM_RB(rb);
+	struct tpacket_block_desc *pbd = GET_PBLOCK_DESC(pkc, idx);
+>>>>>>> refs/remotes/origin/master
 
 	if (status != BLOCK_STATUS(pbd))
 		return NULL;
@@ -1185,7 +1457,10 @@ static void packet_increment_rx_head(struct packet_sock *po,
 }
 
 static void *packet_previous_frame(struct packet_sock *po,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct packet_ring_buffer *rb,
 		int status)
 {
@@ -1194,14 +1469,19 @@ static void *packet_previous_frame(struct packet_sock *po,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void packet_increment_head(struct packet_ring_buffer *buff)
 =======
 static void packet_increment_head(struct packet_ring_buffer *buff)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void packet_increment_head(struct packet_ring_buffer *buff)
+>>>>>>> refs/remotes/origin/master
 {
 	buff->head = buff->head != buff->frame_max ? buff->head+1 : 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline struct packet_sock *pkt_sk(struct sock *sk)
 {
@@ -1210,6 +1490,31 @@ static inline struct packet_sock *pkt_sk(struct sock *sk)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool packet_rcv_has_room(struct packet_sock *po, struct sk_buff *skb)
+{
+	struct sock *sk = &po->sk;
+	bool has_room;
+
+	if (po->prot_hook.func != tpacket_rcv)
+		return (atomic_read(&sk->sk_rmem_alloc) + skb->truesize)
+			<= sk->sk_rcvbuf;
+
+	spin_lock(&sk->sk_receive_queue.lock);
+	if (po->tp_version == TPACKET_V3)
+		has_room = prb_lookup_block(po, &po->rx_ring,
+					    po->rx_ring.prb_bdqc.kactive_blk_num,
+					    TP_STATUS_KERNEL);
+	else
+		has_room = packet_lookup_frame(po, &po->rx_ring,
+					       po->rx_ring.head,
+					       TP_STATUS_KERNEL);
+	spin_unlock(&sk->sk_receive_queue.lock);
+
+	return has_room;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void packet_sock_destruct(struct sock *sk)
 {
 	skb_queue_purge(&sk->sk_error_queue);
@@ -1226,7 +1531,10 @@ static void packet_sock_destruct(struct sock *sk)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int fanout_rr_next(struct packet_fanout *f, unsigned int num)
 {
 	int x = atomic_read(&f->rr_cur) + 1;
@@ -1237,6 +1545,7 @@ static int fanout_rr_next(struct packet_fanout *f, unsigned int num)
 	return x;
 }
 
+<<<<<<< HEAD
 static struct sock *fanout_demux_hash(struct packet_fanout *f, struct sk_buff *skb, unsigned int num)
 {
 	u32 idx, hash = skb->rxhash;
@@ -1247,6 +1556,18 @@ static struct sock *fanout_demux_hash(struct packet_fanout *f, struct sk_buff *s
 }
 
 static struct sock *fanout_demux_lb(struct packet_fanout *f, struct sk_buff *skb, unsigned int num)
+=======
+static unsigned int fanout_demux_hash(struct packet_fanout *f,
+				      struct sk_buff *skb,
+				      unsigned int num)
+{
+	return reciprocal_divide(skb->rxhash, num);
+}
+
+static unsigned int fanout_demux_lb(struct packet_fanout *f,
+				    struct sk_buff *skb,
+				    unsigned int num)
+>>>>>>> refs/remotes/origin/master
 {
 	int cur, old;
 
@@ -1254,6 +1575,7 @@ static struct sock *fanout_demux_lb(struct packet_fanout *f, struct sk_buff *skb
 	while ((old = atomic_cmpxchg(&f->rr_cur, cur,
 				     fanout_rr_next(f, num))) != cur)
 		cur = old;
+<<<<<<< HEAD
 	return f->arr[cur];
 }
 
@@ -1262,6 +1584,49 @@ static struct sock *fanout_demux_cpu(struct packet_fanout *f, struct sk_buff *sk
 	unsigned int cpu = smp_processor_id();
 
 	return f->arr[cpu % num];
+=======
+	return cur;
+}
+
+static unsigned int fanout_demux_cpu(struct packet_fanout *f,
+				     struct sk_buff *skb,
+				     unsigned int num)
+{
+	return smp_processor_id() % num;
+}
+
+static unsigned int fanout_demux_rnd(struct packet_fanout *f,
+				     struct sk_buff *skb,
+				     unsigned int num)
+{
+	return reciprocal_divide(prandom_u32(), num);
+}
+
+static unsigned int fanout_demux_rollover(struct packet_fanout *f,
+					  struct sk_buff *skb,
+					  unsigned int idx, unsigned int skip,
+					  unsigned int num)
+{
+	unsigned int i, j;
+
+	i = j = min_t(int, f->next[idx], num - 1);
+	do {
+		if (i != skip && packet_rcv_has_room(pkt_sk(f->arr[i]), skb)) {
+			if (i != j)
+				f->next[idx] = i;
+			return i;
+		}
+		if (++i == num)
+			i = 0;
+	} while (i != j);
+
+	return idx;
+}
+
+static bool fanout_has_flag(struct packet_fanout *f, u16 flag)
+{
+	return f->flags & (flag >> 8);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int packet_rcv_fanout(struct sk_buff *skb, struct net_device *dev,
@@ -1270,7 +1635,11 @@ static int packet_rcv_fanout(struct sk_buff *skb, struct net_device *dev,
 	struct packet_fanout *f = pt->af_packet_priv;
 	unsigned int num = f->num_members;
 	struct packet_sock *po;
+<<<<<<< HEAD
 	struct sock *sk;
+=======
+	unsigned int idx;
+>>>>>>> refs/remotes/origin/master
 
 	if (!net_eq(dev_net(dev), read_pnet(&f->net)) ||
 	    !num) {
@@ -1281,12 +1650,17 @@ static int packet_rcv_fanout(struct sk_buff *skb, struct net_device *dev,
 	switch (f->type) {
 	case PACKET_FANOUT_HASH:
 	default:
+<<<<<<< HEAD
 		if (f->defrag) {
+=======
+		if (fanout_has_flag(f, PACKET_FANOUT_FLAG_DEFRAG)) {
+>>>>>>> refs/remotes/origin/master
 			skb = ip_check_defrag(skb, IP_DEFRAG_AF_PACKET);
 			if (!skb)
 				return 0;
 		}
 		skb_get_rxhash(skb);
+<<<<<<< HEAD
 		sk = fanout_demux_hash(f, skb, num);
 		break;
 	case PACKET_FANOUT_LB:
@@ -1298,11 +1672,40 @@ static int packet_rcv_fanout(struct sk_buff *skb, struct net_device *dev,
 	}
 
 	po = pkt_sk(sk);
+=======
+		idx = fanout_demux_hash(f, skb, num);
+		break;
+	case PACKET_FANOUT_LB:
+		idx = fanout_demux_lb(f, skb, num);
+		break;
+	case PACKET_FANOUT_CPU:
+		idx = fanout_demux_cpu(f, skb, num);
+		break;
+	case PACKET_FANOUT_RND:
+		idx = fanout_demux_rnd(f, skb, num);
+		break;
+	case PACKET_FANOUT_ROLLOVER:
+		idx = fanout_demux_rollover(f, skb, 0, (unsigned int) -1, num);
+		break;
+	}
+
+	po = pkt_sk(f->arr[idx]);
+	if (fanout_has_flag(f, PACKET_FANOUT_FLAG_ROLLOVER) &&
+	    unlikely(!packet_rcv_has_room(po, skb))) {
+		idx = fanout_demux_rollover(f, skb, idx, idx, num);
+		po = pkt_sk(f->arr[idx]);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return po->prot_hook.func(skb, dev, &po->prot_hook, orig_dev);
 }
 
+<<<<<<< HEAD
 static DEFINE_MUTEX(fanout_mutex);
+=======
+DEFINE_MUTEX(fanout_mutex);
+EXPORT_SYMBOL_GPL(fanout_mutex);
+>>>>>>> refs/remotes/origin/master
 static LIST_HEAD(fanout_list);
 
 static void __fanout_link(struct sock *sk, struct packet_sock *po)
@@ -1332,7 +1735,11 @@ static void __fanout_unlink(struct sock *sk, struct packet_sock *po)
 	spin_unlock(&f->lock);
 }
 
+<<<<<<< HEAD
 bool match_fanout_group(struct packet_type *ptype, struct sock * sk)
+=======
+static bool match_fanout_group(struct packet_type *ptype, struct sock * sk)
+>>>>>>> refs/remotes/origin/master
 {
 	if (ptype->af_packet_priv == (void*)((struct packet_sock *)sk)->fanout)
 		return true;
@@ -1345,6 +1752,7 @@ static int fanout_add(struct sock *sk, u16 id, u16 type_flags)
 	struct packet_sock *po = pkt_sk(sk);
 	struct packet_fanout *f, *match;
 	u8 type = type_flags & 0xff;
+<<<<<<< HEAD
 	u8 defrag = (type_flags & PACKET_FANOUT_FLAG_DEFRAG) ? 1 : 0;
 	int err;
 
@@ -1352,6 +1760,19 @@ static int fanout_add(struct sock *sk, u16 id, u16 type_flags)
 	case PACKET_FANOUT_HASH:
 	case PACKET_FANOUT_LB:
 	case PACKET_FANOUT_CPU:
+=======
+	u8 flags = type_flags >> 8;
+	int err;
+
+	switch (type) {
+	case PACKET_FANOUT_ROLLOVER:
+		if (type_flags & PACKET_FANOUT_FLAG_ROLLOVER)
+			return -EINVAL;
+	case PACKET_FANOUT_HASH:
+	case PACKET_FANOUT_LB:
+	case PACKET_FANOUT_CPU:
+	case PACKET_FANOUT_RND:
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return -EINVAL;
@@ -1373,7 +1794,11 @@ static int fanout_add(struct sock *sk, u16 id, u16 type_flags)
 		}
 	}
 	err = -EINVAL;
+<<<<<<< HEAD
 	if (match && match->defrag != defrag)
+=======
+	if (match && match->flags != flags)
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	if (!match) {
 		err = -ENOMEM;
@@ -1383,7 +1808,11 @@ static int fanout_add(struct sock *sk, u16 id, u16 type_flags)
 		write_pnet(&match->net, sock_net(sk));
 		match->id = id;
 		match->type = type;
+<<<<<<< HEAD
 		match->defrag = defrag;
+=======
+		match->flags = flags;
+>>>>>>> refs/remotes/origin/master
 		atomic_set(&match->rr_cur, 0);
 		INIT_LIST_HEAD(&match->list);
 		spin_lock_init(&match->lock);
@@ -1423,9 +1852,15 @@ static void fanout_release(struct sock *sk)
 	if (!f)
 		return;
 
+<<<<<<< HEAD
 	po->fanout = NULL;
 
 	mutex_lock(&fanout_mutex);
+=======
+	mutex_lock(&fanout_mutex);
+	po->fanout = NULL;
+
+>>>>>>> refs/remotes/origin/master
 	if (atomic_dec_and_test(&f->sk_ref)) {
 		list_del(&f->list);
 		dev_remove_pack(&f->prot_hook);
@@ -1433,7 +1868,10 @@ static void fanout_release(struct sock *sk)
 	}
 	mutex_unlock(&fanout_mutex);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static const struct proto_ops packet_ops;
 
@@ -1521,9 +1959,13 @@ static int packet_sendmsg_spkt(struct kiocb *iocb, struct socket *sock,
 	__be16 proto = 0;
 	int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int extra_len = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int extra_len = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 *	Get and verify the address.
@@ -1541,7 +1983,11 @@ static int packet_sendmsg_spkt(struct kiocb *iocb, struct socket *sock,
 	 *	Find the device first to size check it
 	 */
 
+<<<<<<< HEAD
 	saddr->spkt_device[13] = 0;
+=======
+	saddr->spkt_device[sizeof(saddr->spkt_device) - 1] = 0;
+>>>>>>> refs/remotes/origin/master
 retry:
 	rcu_read_lock();
 	dev = dev_get_by_name_rcu(sock_net(sk), saddr->spkt_device);
@@ -1559,9 +2005,12 @@ retry:
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = -EMSGSIZE;
 	if (len > dev->mtu + dev->hard_header_len + VLAN_HLEN)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(sock_flag(sk, SOCK_NOFCS))) {
 		if (!netif_supports_nofcs(dev)) {
 			err = -EPROTONOSUPPORT;
@@ -1572,23 +2021,32 @@ retry:
 
 	err = -EMSGSIZE;
 	if (len > dev->mtu + dev->hard_header_len + VLAN_HLEN + extra_len)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out_unlock;
 
 	if (!skb) {
 		size_t reserved = LL_RESERVED_SPACE(dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		unsigned int hhlen = dev->header_ops ? dev->hard_header_len : 0;
 
 		rcu_read_unlock();
 		skb = sock_wmalloc(sk, len + reserved, 0, GFP_KERNEL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		int tlen = dev->needed_tailroom;
 		unsigned int hhlen = dev->header_ops ? dev->hard_header_len : 0;
 
 		rcu_read_unlock();
 		skb = sock_wmalloc(sk, len + reserved + tlen, 0, GFP_KERNEL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (skb == NULL)
 			return -ENOBUFS;
 		/* FIXME: Save some space for broken drivers that write a hard
@@ -1612,10 +2070,14 @@ retry:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (len > (dev->mtu + dev->hard_header_len)) {
 =======
 	if (len > (dev->mtu + dev->hard_header_len + extra_len)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (len > (dev->mtu + dev->hard_header_len + extra_len)) {
+>>>>>>> refs/remotes/origin/master
 		/* Earlier code assumed this would be a VLAN pkt,
 		 * double-check this now that we have the actual
 		 * packet in hand.
@@ -1633,6 +2095,7 @@ retry:
 	skb->dev = dev;
 	skb->priority = sk->sk_priority;
 	skb->mark = sk->sk_mark;
+<<<<<<< HEAD
 	err = sock_tx_timestamp(sk, &skb_shinfo(skb)->tx_flags);
 	if (err < 0)
 		goto out_unlock;
@@ -1643,6 +2106,16 @@ retry:
 		skb->no_fcs = 1;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	sock_tx_timestamp(sk, &skb_shinfo(skb)->tx_flags);
+
+	if (unlikely(extra_len == 4))
+		skb->no_fcs = 1;
+
+	skb_probe_transport_header(skb, 0);
+
+>>>>>>> refs/remotes/origin/master
 	dev_queue_xmit(skb);
 	rcu_read_unlock();
 	return len;
@@ -1655,10 +2128,14 @@ out_free:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned int run_filter(const struct sk_buff *skb,
 =======
 static unsigned int run_filter(const struct sk_buff *skb,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int run_filter(const struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/master
 				      const struct sock *sk,
 				      unsigned int res)
 {
@@ -1731,11 +2208,15 @@ static int packet_rcv(struct sk_buff *skb, struct net_device *dev,
 		snaplen = res;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (atomic_read(&sk->sk_rmem_alloc) + skb->truesize >=
 	    (unsigned)sk->sk_rcvbuf)
 =======
 	if (atomic_read(&sk->sk_rmem_alloc) >= sk->sk_rcvbuf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (atomic_read(&sk->sk_rmem_alloc) >= sk->sk_rcvbuf)
+>>>>>>> refs/remotes/origin/master
 		goto drop_n_acct;
 
 	if (skb_shared(skb)) {
@@ -1747,7 +2228,11 @@ static int packet_rcv(struct sk_buff *skb, struct net_device *dev,
 			skb->data = skb_head;
 			skb->len = skb_len;
 		}
+<<<<<<< HEAD
 		kfree_skb(skb);
+=======
+		consume_skb(skb);
+>>>>>>> refs/remotes/origin/master
 		skb = nskb;
 	}
 
@@ -1779,7 +2264,11 @@ static int packet_rcv(struct sk_buff *skb, struct net_device *dev,
 	nf_reset(skb);
 
 	spin_lock(&sk->sk_receive_queue.lock);
+<<<<<<< HEAD
 	po->stats.tp_packets++;
+=======
+	po->stats.stats1.tp_packets++;
+>>>>>>> refs/remotes/origin/master
 	skb->dropcount = atomic_read(&sk->sk_drops);
 	__skb_queue_tail(&sk->sk_receive_queue, skb);
 	spin_unlock(&sk->sk_receive_queue.lock);
@@ -1788,7 +2277,11 @@ static int packet_rcv(struct sk_buff *skb, struct net_device *dev,
 
 drop_n_acct:
 	spin_lock(&sk->sk_receive_queue.lock);
+<<<<<<< HEAD
 	po->stats.tp_drops++;
+=======
+	po->stats.stats1.tp_drops++;
+>>>>>>> refs/remotes/origin/master
 	atomic_inc(&sk->sk_drops);
 	spin_unlock(&sk->sk_receive_queue.lock);
 
@@ -1808,6 +2301,7 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 	struct sock *sk;
 	struct packet_sock *po;
 	struct sockaddr_ll *sll;
+<<<<<<< HEAD
 	union {
 		struct tpacket_hdr *h1;
 		struct tpacket2_hdr *h2;
@@ -1830,6 +2324,17 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 	struct timeval tv;
 	struct timespec ts;
 	struct skb_shared_hwtstamps *shhwtstamps = skb_hwtstamps(skb);
+=======
+	union tpacket_uhdr h;
+	u8 *skb_head = skb->data;
+	int skb_len = skb->len;
+	unsigned int snaplen, res;
+	unsigned long status = TP_STATUS_USER;
+	unsigned short macoff, netoff, hdrlen;
+	struct sk_buff *copy_skb = NULL;
+	struct timespec ts;
+	__u32 ts_status;
+>>>>>>> refs/remotes/origin/master
 
 	if (skb->pkt_type == PACKET_LOOPBACK)
 		goto drop;
@@ -1864,12 +2369,17 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 		macoff = netoff = TPACKET_ALIGN(po->tp_hdrlen) + 16 +
 				  po->tp_reserve;
 	} else {
+<<<<<<< HEAD
 		unsigned maclen = skb_network_offset(skb);
+=======
+		unsigned int maclen = skb_network_offset(skb);
+>>>>>>> refs/remotes/origin/master
 		netoff = TPACKET_ALIGN(po->tp_hdrlen +
 				       (maclen < 16 ? 16 : maclen)) +
 			po->tp_reserve;
 		macoff = netoff - maclen;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	if (macoff + snaplen > po->rx_ring.frame_size) {
@@ -1896,6 +2406,8 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 		goto ring_is_full;
 	packet_increment_head(&po->rx_ring);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (po->tp_version <= TPACKET_V2) {
 		if (macoff + snaplen > po->rx_ring.frame_size) {
 			if (po->copy_thresh &&
@@ -1927,30 +2439,49 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 	 * Anyways, moving it for V1/V2 only as V3 doesn't need this
 	 * at packet level.
 	 */
+<<<<<<< HEAD
 		if (po->stats.tp_drops)
 			status |= TP_STATUS_LOSING;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
 	po->stats.tp_packets++;
+=======
+		if (po->stats.stats1.tp_drops)
+			status |= TP_STATUS_LOSING;
+	}
+	po->stats.stats1.tp_packets++;
+>>>>>>> refs/remotes/origin/master
 	if (copy_skb) {
 		status |= TP_STATUS_COPY;
 		__skb_queue_tail(&sk->sk_receive_queue, copy_skb);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!po->stats.tp_drops)
 		status &= ~TP_STATUS_LOSING;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&sk->sk_receive_queue.lock);
 
 	skb_copy_bits(skb, 0, h.raw + macoff, snaplen);
 
+<<<<<<< HEAD
+=======
+	if (!(ts_status = tpacket_get_timestamp(skb, &ts, po->tp_tstamp)))
+		getnstimeofday(&ts);
+
+	status |= ts_status;
+
+>>>>>>> refs/remotes/origin/master
 	switch (po->tp_version) {
 	case TPACKET_V1:
 		h.h1->tp_len = skb->len;
 		h.h1->tp_snaplen = snaplen;
 		h.h1->tp_mac = macoff;
 		h.h1->tp_net = netoff;
+<<<<<<< HEAD
 		if ((po->tp_tstamp & SOF_TIMESTAMPING_SYS_HARDWARE)
 				&& shhwtstamps->syststamp.tv64)
 			tv = ktime_to_timeval(shhwtstamps->syststamp);
@@ -1963,6 +2494,10 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 			do_gettimeofday(&tv);
 		h.h1->tp_sec = tv.tv_sec;
 		h.h1->tp_usec = tv.tv_usec;
+=======
+		h.h1->tp_sec = ts.tv_sec;
+		h.h1->tp_usec = ts.tv_nsec / NSEC_PER_USEC;
+>>>>>>> refs/remotes/origin/master
 		hdrlen = sizeof(*h.h1);
 		break;
 	case TPACKET_V2:
@@ -1970,6 +2505,7 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 		h.h2->tp_snaplen = snaplen;
 		h.h2->tp_mac = macoff;
 		h.h2->tp_net = netoff;
+<<<<<<< HEAD
 		if ((po->tp_tstamp & SOF_TIMESTAMPING_SYS_HARDWARE)
 				&& shhwtstamps->syststamp.tv64)
 			ts = ktime_to_timespec(shhwtstamps->syststamp);
@@ -1980,6 +2516,8 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 			ts = ktime_to_timespec(skb->tstamp);
 		else
 			getnstimeofday(&ts);
+=======
+>>>>>>> refs/remotes/origin/master
 		h.h2->tp_sec = ts.tv_sec;
 		h.h2->tp_nsec = ts.tv_nsec;
 		if (vlan_tx_tag_present(skb)) {
@@ -1992,7 +2530,10 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 		hdrlen = sizeof(*h.h2);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case TPACKET_V3:
 		/* tp_nxt_offset,vlan are already populated above.
 		 * So DONT clear those fields here
@@ -2002,6 +2543,7 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 		h.h3->tp_snaplen = snaplen;
 		h.h3->tp_mac = macoff;
 		h.h3->tp_net = netoff;
+<<<<<<< HEAD
 		if ((po->tp_tstamp & SOF_TIMESTAMPING_SYS_HARDWARE)
 				&& shhwtstamps->syststamp.tv64)
 			ts = ktime_to_timespec(shhwtstamps->syststamp);
@@ -2012,11 +2554,16 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 			ts = ktime_to_timespec(skb->tstamp);
 		else
 			getnstimeofday(&ts);
+=======
+>>>>>>> refs/remotes/origin/master
 		h.h3->tp_sec  = ts.tv_sec;
 		h.h3->tp_nsec = ts.tv_nsec;
 		hdrlen = sizeof(*h.h3);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		BUG();
 	}
@@ -2033,14 +2580,18 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 		sll->sll_ifindex = dev->ifindex;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__packet_set_status(po, h.raw, status);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	smp_mb();
 #if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE == 1
 	{
 		u8 *start, *end;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		end = (u8 *)PAGE_ALIGN((unsigned long)h.raw + macoff + snaplen);
 		for (start = h.raw; start < end; start += PAGE_SIZE)
@@ -2048,6 +2599,8 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 	}
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (po->tp_version <= TPACKET_V2) {
 			end = (u8 *)PAGE_ALIGN((unsigned long)h.raw
 				+ macoff + snaplen);
@@ -2061,7 +2614,10 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 		__packet_set_status(po, h.raw, status);
 	else
 		prb_clear_blk_fill_status(&po->rx_ring);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	sk->sk_data_ready(sk, 0);
 
@@ -2075,7 +2631,11 @@ drop:
 	return 0;
 
 ring_is_full:
+<<<<<<< HEAD
 	po->stats.tp_drops++;
+=======
+	po->stats.stats1.tp_drops++;
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&sk->sk_receive_queue.lock);
 
 	sk->sk_data_ready(sk, 0);
@@ -2089,6 +2649,7 @@ static void tpacket_destruct_skb(struct sk_buff *skb)
 	void *ph;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(skb == NULL);
 
 =======
@@ -2098,6 +2659,17 @@ static void tpacket_destruct_skb(struct sk_buff *skb)
 		BUG_ON(atomic_read(&po->tx_ring.pending) == 0);
 		atomic_dec(&po->tx_ring.pending);
 		__packet_set_status(po, ph, TP_STATUS_AVAILABLE);
+=======
+	if (likely(po->tx_ring.pg_vec)) {
+		__u32 ts;
+
+		ph = skb_shinfo(skb)->destructor_arg;
+		BUG_ON(atomic_read(&po->tx_ring.pending) == 0);
+		atomic_dec(&po->tx_ring.pending);
+
+		ts = __packet_set_timestamp(po, ph, skb);
+		__packet_set_status(po, ph, TP_STATUS_AVAILABLE | ts);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	sock_wfree(skb);
@@ -2105,6 +2677,7 @@ static void tpacket_destruct_skb(struct sk_buff *skb)
 
 static int tpacket_fill_skb(struct packet_sock *po, struct sk_buff *skb,
 		void *frame, struct net_device *dev, int size_max,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		__be16 proto, unsigned char *addr)
 =======
@@ -2116,6 +2689,11 @@ static int tpacket_fill_skb(struct packet_sock *po, struct sk_buff *skb,
 		struct tpacket2_hdr *h2;
 		void *raw;
 	} ph;
+=======
+		__be16 proto, unsigned char *addr, int hlen)
+{
+	union tpacket_uhdr ph;
+>>>>>>> refs/remotes/origin/master
 	int to_write, offset, len, tp_len, nr_frags, len_max;
 	struct socket *sock = po->sk.sk_socket;
 	struct page *page;
@@ -2128,6 +2706,10 @@ static int tpacket_fill_skb(struct packet_sock *po, struct sk_buff *skb,
 	skb->dev = dev;
 	skb->priority = po->sk.sk_priority;
 	skb->mark = po->sk.sk_mark;
+<<<<<<< HEAD
+=======
+	sock_tx_timestamp(&po->sk, &skb_shinfo(skb)->tx_flags);
+>>>>>>> refs/remotes/origin/master
 	skb_shinfo(skb)->destructor_arg = ph.raw;
 
 	switch (po->tp_version) {
@@ -2144,6 +2726,7 @@ static int tpacket_fill_skb(struct packet_sock *po, struct sk_buff *skb,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skb_reserve(skb, LL_RESERVED_SPACE(dev));
 =======
 	skb_reserve(skb, hlen);
@@ -2151,6 +2734,41 @@ static int tpacket_fill_skb(struct packet_sock *po, struct sk_buff *skb,
 	skb_reset_network_header(skb);
 
 	data = ph.raw + po->tp_hdrlen - sizeof(struct sockaddr_ll);
+=======
+	skb_reserve(skb, hlen);
+	skb_reset_network_header(skb);
+	skb_probe_transport_header(skb, 0);
+
+	if (po->tp_tx_has_off) {
+		int off_min, off_max, off;
+		off_min = po->tp_hdrlen - sizeof(struct sockaddr_ll);
+		off_max = po->tx_ring.frame_size - tp_len;
+		if (sock->type == SOCK_DGRAM) {
+			switch (po->tp_version) {
+			case TPACKET_V2:
+				off = ph.h2->tp_net;
+				break;
+			default:
+				off = ph.h1->tp_net;
+				break;
+			}
+		} else {
+			switch (po->tp_version) {
+			case TPACKET_V2:
+				off = ph.h2->tp_mac;
+				break;
+			default:
+				off = ph.h1->tp_mac;
+				break;
+			}
+		}
+		if (unlikely((off < off_min) || (off_max < off)))
+			return -EINVAL;
+		data = ph.raw + off;
+	} else {
+		data = ph.raw + po->tp_hdrlen - sizeof(struct sockaddr_ll);
+	}
+>>>>>>> refs/remotes/origin/master
 	to_write = tp_len;
 
 	if (sock->type == SOCK_DGRAM) {
@@ -2176,7 +2794,10 @@ static int tpacket_fill_skb(struct packet_sock *po, struct sk_buff *skb,
 		to_write -= dev->hard_header_len;
 	}
 
+<<<<<<< HEAD
 	err = -EFAULT;
+=======
+>>>>>>> refs/remotes/origin/master
 	offset = offset_in_page(data);
 	len_max = PAGE_SIZE - offset;
 	len = ((to_write > len_max) ? len_max : to_write);
@@ -2215,16 +2836,21 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 	struct net_device *dev;
 	__be16 proto;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ifindex, err, reserve = 0;
 =======
 	bool need_rls_dev = false;
 	int err, reserve = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err, reserve = 0;
+>>>>>>> refs/remotes/origin/master
 	void *ph;
 	struct sockaddr_ll *saddr = (struct sockaddr_ll *)msg->msg_name;
 	int tp_len, size_max;
 	unsigned char *addr;
 	int len_sum = 0;
+<<<<<<< HEAD
 	int status = 0;
 <<<<<<< HEAD
 =======
@@ -2240,6 +2866,15 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 =======
 		dev = po->prot_hook.dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int status = TP_STATUS_AVAILABLE;
+	int hlen, tlen;
+
+	mutex_lock(&po->pg_vec_lock);
+
+	if (likely(saddr == NULL)) {
+		dev	= packet_cached_dev_get(po);
+>>>>>>> refs/remotes/origin/master
 		proto	= po->num;
 		addr	= NULL;
 	} else {
@@ -2250,6 +2885,7 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 					+ offsetof(struct sockaddr_ll,
 						sll_addr)))
 			goto out;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ifindex	= saddr->sll_ifindex;
 		proto	= saddr->sll_protocol;
@@ -2271,10 +2907,25 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 
 	reserve = dev->hard_header_len;
 
+=======
+		proto	= saddr->sll_protocol;
+		addr	= saddr->sll_addr;
+		dev = dev_get_by_index(sock_net(&po->sk), saddr->sll_ifindex);
+	}
+
+	err = -ENXIO;
+	if (unlikely(dev == NULL))
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	err = -ENETDOWN;
 	if (unlikely(!(dev->flags & IFF_UP)))
 		goto out_put;
 
+<<<<<<< HEAD
+=======
+	reserve = dev->hard_header_len;
+
+>>>>>>> refs/remotes/origin/master
 	size_max = po->tx_ring.frame_size
 		- (po->tp_hdrlen - sizeof(struct sockaddr_ll));
 
@@ -2292,15 +2943,21 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 
 		status = TP_STATUS_SEND_REQUEST;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		skb = sock_alloc_send_skb(&po->sk,
 				LL_ALLOCATED_SPACE(dev)
 				+ sizeof(struct sockaddr_ll),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		hlen = LL_RESERVED_SPACE(dev);
 		tlen = dev->needed_tailroom;
 		skb = sock_alloc_send_skb(&po->sk,
 				hlen + tlen + sizeof(struct sockaddr_ll),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				0, &err);
 
 		if (unlikely(skb == NULL))
@@ -2308,10 +2965,14 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 
 		tp_len = tpacket_fill_skb(po, skb, ph, dev, size_max, proto,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				addr);
 =======
 				addr, hlen);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				addr, hlen);
+>>>>>>> refs/remotes/origin/master
 
 		if (unlikely(tp_len < 0)) {
 			if (po->tp_loss) {
@@ -2362,27 +3023,37 @@ out_status:
 	kfree_skb(skb);
 out_put:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_put(dev);
 =======
 	if (need_rls_dev)
 		dev_put(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_put(dev);
+>>>>>>> refs/remotes/origin/master
 out:
 	mutex_unlock(&po->pg_vec_lock);
 	return err;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct sk_buff *packet_alloc_skb(struct sock *sk, size_t prepad,
 					       size_t reserve, size_t len,
 					       size_t linear, int noblock,
 					       int *err)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct sk_buff *packet_alloc_skb(struct sock *sk, size_t prepad,
 				        size_t reserve, size_t len,
 				        size_t linear, int noblock,
 				        int *err)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *skb;
 
@@ -2391,7 +3062,11 @@ static struct sk_buff *packet_alloc_skb(struct sock *sk, size_t prepad,
 		linear = len;
 
 	skb = sock_alloc_send_pskb(sk, prepad + linear, len - linear, noblock,
+<<<<<<< HEAD
 				   err);
+=======
+				   err, 0);
+>>>>>>> refs/remotes/origin/master
 	if (!skb)
 		return NULL;
 
@@ -2412,6 +3087,7 @@ static int packet_snd(struct socket *sock,
 	struct net_device *dev;
 	__be16 proto;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned char *addr;
 	int ifindex, err, reserve = 0;
 =======
@@ -2419,27 +3095,41 @@ static int packet_snd(struct socket *sock,
 	unsigned char *addr;
 	int err, reserve = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned char *addr;
+	int err, reserve = 0;
+>>>>>>> refs/remotes/origin/master
 	struct virtio_net_hdr vnet_hdr = { 0 };
 	int offset = 0;
 	int vnet_hdr_len;
 	struct packet_sock *po = pkt_sk(sk);
 	unsigned short gso_type = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int hlen, tlen;
 	int extra_len = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int hlen, tlen;
+	int extra_len = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 *	Get and verify the address.
 	 */
 
+<<<<<<< HEAD
 	if (saddr == NULL) {
 <<<<<<< HEAD
 		ifindex	= po->ifindex;
 =======
 		dev = po->prot_hook.dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (likely(saddr == NULL)) {
+		dev	= packet_cached_dev_get(po);
+>>>>>>> refs/remotes/origin/master
 		proto	= po->num;
 		addr	= NULL;
 	} else {
@@ -2448,6 +3138,7 @@ static int packet_snd(struct socket *sock,
 			goto out;
 		if (msg->msg_namelen < (saddr->sll_halen + offsetof(struct sockaddr_ll, sll_addr)))
 			goto out;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ifindex	= saddr->sll_ifindex;
 		proto	= saddr->sll_protocol;
@@ -2474,6 +3165,22 @@ static int packet_snd(struct socket *sock,
 	if (!(dev->flags & IFF_UP))
 		goto out_unlock;
 
+=======
+		proto	= saddr->sll_protocol;
+		addr	= saddr->sll_addr;
+		dev = dev_get_by_index(sock_net(sk), saddr->sll_ifindex);
+	}
+
+	err = -ENXIO;
+	if (unlikely(dev == NULL))
+		goto out_unlock;
+	err = -ENETDOWN;
+	if (unlikely(!(dev->flags & IFF_UP)))
+		goto out_unlock;
+
+	if (sock->type == SOCK_RAW)
+		reserve = dev->hard_header_len;
+>>>>>>> refs/remotes/origin/master
 	if (po->has_vnet_hdr) {
 		vnet_hdr_len = sizeof(vnet_hdr);
 
@@ -2523,6 +3230,7 @@ static int packet_snd(struct socket *sock,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = -EMSGSIZE;
 	if (!gso_type && (len > dev->mtu + reserve + VLAN_HLEN))
 		goto out_unlock;
@@ -2531,6 +3239,8 @@ static int packet_snd(struct socket *sock,
 	skb = packet_alloc_skb(sk, LL_ALLOCATED_SPACE(dev),
 			       LL_RESERVED_SPACE(dev), len, vnet_hdr.hdr_len,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(sock_flag(sk, SOCK_NOFCS))) {
 		if (!netif_supports_nofcs(dev)) {
 			err = -EPROTONOSUPPORT;
@@ -2547,7 +3257,10 @@ static int packet_snd(struct socket *sock,
 	hlen = LL_RESERVED_SPACE(dev);
 	tlen = dev->needed_tailroom;
 	skb = packet_alloc_skb(sk, hlen + tlen, hlen, len, vnet_hdr.hdr_len,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			       msg->msg_flags & MSG_DONTWAIT, &err);
 	if (skb == NULL)
 		goto out_unlock;
@@ -2563,6 +3276,7 @@ static int packet_snd(struct socket *sock,
 	err = skb_copy_datagram_from_iovec(skb, offset, msg->msg_iov, 0, len);
 	if (err)
 		goto out_free;
+<<<<<<< HEAD
 	err = sock_tx_timestamp(sk, &skb_shinfo(skb)->tx_flags);
 	if (err < 0)
 		goto out_free;
@@ -2572,6 +3286,12 @@ static int packet_snd(struct socket *sock,
 =======
 	if (!gso_type && (len > dev->mtu + reserve + extra_len)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	sock_tx_timestamp(sk, &skb_shinfo(skb)->tx_flags);
+
+	if (!gso_type && (len > dev->mtu + reserve + extra_len)) {
+>>>>>>> refs/remotes/origin/master
 		/* Earlier code assumed this would be a VLAN pkt,
 		 * double-check this now that we have the actual
 		 * packet in hand.
@@ -2610,11 +3330,19 @@ static int packet_snd(struct socket *sock,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (unlikely(extra_len == 4))
 		skb->no_fcs = 1;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	skb_probe_transport_header(skb, reserve);
+
+	if (unlikely(extra_len == 4))
+		skb->no_fcs = 1;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *	Now send it
 	 */
@@ -2624,11 +3352,15 @@ static int packet_snd(struct socket *sock,
 		goto out_unlock;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_put(dev);
 =======
 	if (need_rls_dev)
 		dev_put(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_put(dev);
+>>>>>>> refs/remotes/origin/master
 
 	return len;
 
@@ -2636,10 +3368,14 @@ out_free:
 	kfree_skb(skb);
 out_unlock:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dev)
 =======
 	if (dev && need_rls_dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dev)
+>>>>>>> refs/remotes/origin/master
 		dev_put(dev);
 out:
 	return err;
@@ -2667,10 +3403,14 @@ static int packet_release(struct socket *sock)
 	struct packet_sock *po;
 	struct net *net;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tpacket_req req;
 =======
 	union tpacket_req_u req_u;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	union tpacket_req_u req_u;
+>>>>>>> refs/remotes/origin/master
 
 	if (!sk)
 		return 0;
@@ -2678,6 +3418,7 @@ static int packet_release(struct socket *sock)
 	net = sock_net(sk);
 	po = pkt_sk(sk);
 
+<<<<<<< HEAD
 	spin_lock_bh(&net->packet.sklist_lock);
 	sk_del_node_init_rcu(sk);
 	sock_prot_inuse_add(net, sk->sk_prot, -1);
@@ -2699,12 +3440,30 @@ static int packet_release(struct socket *sock)
 		dev_put(po->prot_hook.dev);
 		po->prot_hook.dev = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&net->packet.sklist_lock);
+	sk_del_node_init_rcu(sk);
+	mutex_unlock(&net->packet.sklist_lock);
+
+	preempt_disable();
+	sock_prot_inuse_add(net, sk->sk_prot, -1);
+	preempt_enable();
+
+	spin_lock(&po->bind_lock);
+	unregister_prot_hook(sk, false);
+	packet_cached_dev_reset(po);
+
+	if (po->prot_hook.dev) {
+		dev_put(po->prot_hook.dev);
+		po->prot_hook.dev = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock(&po->bind_lock);
 
 	packet_flush_mclist(sk);
 
 	if (po->rx_ring.pg_vec) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		memset(&req, 0, sizeof(req));
 		packet_set_ring(sk, &req, 1, 0);
@@ -2716,6 +3475,8 @@ static int packet_release(struct socket *sock)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		memset(&req_u, 0, sizeof(req_u));
 		packet_set_ring(sk, &req_u, 1, 0);
 	}
@@ -2727,7 +3488,10 @@ static int packet_release(struct socket *sock)
 
 	fanout_release(sk);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	synchronize_net();
 	/*
 	 *	Now the socket is dead. No more input will appear.
@@ -2752,6 +3516,7 @@ static int packet_do_bind(struct sock *sk, struct net_device *dev, __be16 protoc
 {
 	struct packet_sock *po = pkt_sk(sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 *	Detach an existing hook if present.
 	 */
@@ -2771,6 +3536,8 @@ static int packet_do_bind(struct sock *sk, struct net_device *dev, __be16 protoc
 	po->num = protocol;
 	po->prot_hook.type = protocol;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (po->fanout) {
 		if (dev)
@@ -2783,19 +3550,33 @@ static int packet_do_bind(struct sock *sk, struct net_device *dev, __be16 protoc
 
 	spin_lock(&po->bind_lock);
 	unregister_prot_hook(sk, true);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	po->num = protocol;
 	po->prot_hook.type = protocol;
 	if (po->prot_hook.dev)
 		dev_put(po->prot_hook.dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	po->prot_hook.dev = dev;
 
 	po->ifindex = dev ? dev->ifindex : 0;
 
+=======
+
+	po->prot_hook.dev = dev;
+	po->ifindex = dev ? dev->ifindex : 0;
+
+	packet_cached_dev_assign(po, dev);
+
+>>>>>>> refs/remotes/origin/master
 	if (protocol == 0)
 		goto out_unlock;
 
 	if (!dev || (dev->flags & IFF_UP)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		dev_add_pack(&po->prot_hook);
 		sock_hold(sk);
@@ -2803,6 +3584,9 @@ static int packet_do_bind(struct sock *sk, struct net_device *dev, __be16 protoc
 =======
 		register_prot_hook(sk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		register_prot_hook(sk);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		sk->sk_err = ENETDOWN;
 		if (!sock_flag(sk, SOCK_DEAD))
@@ -2837,6 +3621,7 @@ static int packet_bind_spkt(struct socket *sock, struct sockaddr *uaddr,
 
 	dev = dev_get_by_name(sock_net(sk), name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dev) {
 		err = packet_do_bind(sk, dev, pkt_sk(sk)->num);
 		dev_put(dev);
@@ -2845,6 +3630,10 @@ static int packet_bind_spkt(struct socket *sock, struct sockaddr *uaddr,
 	if (dev)
 		err = packet_do_bind(sk, dev, pkt_sk(sk)->num);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dev)
+		err = packet_do_bind(sk, dev, pkt_sk(sk)->num);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -2873,10 +3662,13 @@ static int packet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len
 	}
 	err = packet_do_bind(sk, dev, sll->sll_protocol ? : pkt_sk(sk)->num);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dev)
 		dev_put(dev);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 out:
 	return err;
@@ -2900,7 +3692,11 @@ static int packet_create(struct net *net, struct socket *sock, int protocol,
 	__be16 proto = (__force __be16)protocol; /* weird, but documented */
 	int err;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_RAW))
+=======
+	if (!ns_capable(net->user_ns, CAP_NET_RAW))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 	if (sock->type != SOCK_DGRAM && sock->type != SOCK_RAW &&
 	    sock->type != SOCK_PACKET)
@@ -2923,6 +3719,11 @@ static int packet_create(struct net *net, struct socket *sock, int protocol,
 	sk->sk_family = PF_PACKET;
 	po->num = proto;
 
+<<<<<<< HEAD
+=======
+	packet_cached_dev_reset(po);
+
+>>>>>>> refs/remotes/origin/master
 	sk->sk_destruct = packet_sock_destruct;
 	sk_refcnt_debug_inc(sk);
 
@@ -2942,6 +3743,7 @@ static int packet_create(struct net *net, struct socket *sock, int protocol,
 	if (proto) {
 		po->prot_hook.type = proto;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_add_pack(&po->prot_hook);
 		sock_hold(sk);
 		po->running = 1;
@@ -2954,12 +3756,25 @@ static int packet_create(struct net *net, struct socket *sock, int protocol,
 	sk_add_node_rcu(sk, &net->packet.sklist);
 	sock_prot_inuse_add(net, &packet_proto, 1);
 	spin_unlock_bh(&net->packet.sklist_lock);
+=======
+		register_prot_hook(sk);
+	}
+
+	mutex_lock(&net->packet.sklist_lock);
+	sk_add_node_rcu(sk, &net->packet.sklist);
+	mutex_unlock(&net->packet.sklist_lock);
+
+	preempt_disable();
+	sock_prot_inuse_add(net, &packet_proto, 1);
+	preempt_enable();
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int packet_recv_error(struct sock *sk, struct msghdr *msg, int len)
 {
 	struct sock_exterr_skb *serr;
@@ -3005,6 +3820,8 @@ out:
 	return err;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	Pull a packet from our receive queue and hand it to the user.
  *	If necessary we block.
@@ -3016,7 +3833,10 @@ static int packet_recvmsg(struct kiocb *iocb, struct socket *sock,
 	struct sock *sk = sock->sk;
 	struct sk_buff *skb;
 	int copied, err;
+<<<<<<< HEAD
 	struct sockaddr_ll *sll;
+=======
+>>>>>>> refs/remotes/origin/master
 	int vnet_hdr_len = 0;
 
 	err = -EINVAL;
@@ -3030,7 +3850,12 @@ static int packet_recvmsg(struct kiocb *iocb, struct socket *sock,
 #endif
 
 	if (flags & MSG_ERRQUEUE) {
+<<<<<<< HEAD
 		err = packet_recv_error(sk, msg, len);
+=======
+		err = sock_recv_errqueue(sk, msg, len,
+					 SOL_PACKET, PACKET_TX_TIMESTAMP);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -3090,10 +3915,15 @@ static int packet_recvmsg(struct kiocb *iocb, struct socket *sock,
 			vnet_hdr.csum_start = skb_checksum_start_offset(skb);
 			vnet_hdr.csum_offset = skb->csum_offset;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		} else if (skb->ip_summed == CHECKSUM_UNNECESSARY) {
 			vnet_hdr.flags = VIRTIO_NET_HDR_F_DATA_VALID;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else if (skb->ip_summed == CHECKSUM_UNNECESSARY) {
+			vnet_hdr.flags = VIRTIO_NET_HDR_F_DATA_VALID;
+>>>>>>> refs/remotes/origin/master
 		} /* else everything is zero */
 
 		err = memcpy_toiovec(msg->msg_iov, (void *)&vnet_hdr,
@@ -3102,6 +3932,7 @@ static int packet_recvmsg(struct kiocb *iocb, struct socket *sock,
 			goto out_free;
 	}
 
+<<<<<<< HEAD
 	/*
 	 *	If the address length field is there to be filled in, we fill
 	 *	it in now.
@@ -3118,6 +3949,12 @@ static int packet_recvmsg(struct kiocb *iocb, struct socket *sock,
 	 *	user program they can ask the device for its MTU anyway.
 	 */
 
+=======
+	/* You lose any data beyond the buffer you gave. If it worries
+	 * a user program they can ask the device for its MTU
+	 * anyway.
+	 */
+>>>>>>> refs/remotes/origin/master
 	copied = skb->len;
 	if (copied > len) {
 		copied = len;
@@ -3130,9 +3967,26 @@ static int packet_recvmsg(struct kiocb *iocb, struct socket *sock,
 
 	sock_recv_ts_and_drops(msg, sk, skb);
 
+<<<<<<< HEAD
 	if (msg->msg_name)
 		memcpy(msg->msg_name, &PACKET_SKB_CB(skb)->sa,
 		       msg->msg_namelen);
+=======
+	if (msg->msg_name) {
+		/* If the address length field is there to be filled
+		 * in, we fill it in now.
+		 */
+		if (sock->type == SOCK_PACKET) {
+			msg->msg_namelen = sizeof(struct sockaddr_pkt);
+		} else {
+			struct sockaddr_ll *sll = &PACKET_SKB_CB(skb)->sa.ll;
+			msg->msg_namelen = sll->sll_halen +
+				offsetof(struct sockaddr_ll, sll_addr);
+		}
+		memcpy(msg->msg_name, &PACKET_SKB_CB(skb)->sa,
+		       msg->msg_namelen);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (pkt_sk(sk)->auxdata) {
 		struct tpacket_auxdata aux;
@@ -3396,6 +4250,7 @@ packet_setsockopt(struct socket *sock, int level, int optname, char __user *optv
 	case PACKET_TX_RING:
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct tpacket_req req;
 
 		if (optlen < sizeof(req))
@@ -3406,6 +4261,8 @@ packet_setsockopt(struct socket *sock, int level, int optname, char __user *optv
 			return -EFAULT;
 		return packet_set_ring(sk, &req, 0, optname == PACKET_TX_RING);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		union tpacket_req_u req_u;
 		int len;
 
@@ -3427,7 +4284,10 @@ packet_setsockopt(struct socket *sock, int level, int optname, char __user *optv
 			return -EFAULT;
 		return packet_set_ring(sk, &req_u, 0,
 			optname == PACKET_TX_RING);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	case PACKET_COPY_THRESH:
 	{
@@ -3455,9 +4315,13 @@ packet_setsockopt(struct socket *sock, int level, int optname, char __user *optv
 		case TPACKET_V1:
 		case TPACKET_V2:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		case TPACKET_V3:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case TPACKET_V3:
+>>>>>>> refs/remotes/origin/master
 			po->tp_version = val;
 			return 0;
 		default:
@@ -3543,7 +4407,10 @@ packet_setsockopt(struct socket *sock, int level, int optname, char __user *optv
 		return 0;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case PACKET_FANOUT:
 	{
 		int val;
@@ -3555,7 +4422,23 @@ packet_setsockopt(struct socket *sock, int level, int optname, char __user *optv
 
 		return fanout_add(sk, val & 0xffff, val >> 16);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case PACKET_TX_HAS_OFF:
+	{
+		unsigned int val;
+
+		if (optlen != sizeof(val))
+			return -EINVAL;
+		if (po->rx_ring.pg_vec || po->tx_ring.pg_vec)
+			return -EBUSY;
+		if (copy_from_user(&val, optval, sizeof(val)))
+			return -EFAULT;
+		po->tp_tx_has_off = !!val;
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -ENOPROTOOPT;
 	}
@@ -3565,6 +4448,7 @@ static int packet_getsockopt(struct socket *sock, int level, int optname,
 			     char __user *optval, int __user *optlen)
 {
 	int len;
+<<<<<<< HEAD
 	int val;
 	struct sock *sk = sock->sk;
 	struct packet_sock *po = pkt_sk(sk);
@@ -3574,6 +4458,13 @@ static int packet_getsockopt(struct socket *sock, int level, int optname,
 =======
 	union tpacket_stats_u st_u;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int val, lv = sizeof(val);
+	struct sock *sk = sock->sk;
+	struct packet_sock *po = pkt_sk(sk);
+	void *data = &val;
+	union tpacket_stats_u st;
+>>>>>>> refs/remotes/origin/master
 
 	if (level != SOL_PACKET)
 		return -ENOPROTOOPT;
@@ -3586,6 +4477,7 @@ static int packet_getsockopt(struct socket *sock, int level, int optname,
 
 	switch (optname) {
 	case PACKET_STATISTICS:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (len > sizeof(struct tpacket_stats))
 			len = sizeof(struct tpacket_stats);
@@ -3646,6 +4538,35 @@ static int packet_getsockopt(struct socket *sock, int level, int optname,
 			len = sizeof(int);
 		val = po->tp_version;
 		data = &val;
+=======
+		spin_lock_bh(&sk->sk_receive_queue.lock);
+		memcpy(&st, &po->stats, sizeof(st));
+		memset(&po->stats, 0, sizeof(po->stats));
+		spin_unlock_bh(&sk->sk_receive_queue.lock);
+
+		if (po->tp_version == TPACKET_V3) {
+			lv = sizeof(struct tpacket_stats_v3);
+			st.stats3.tp_packets += st.stats3.tp_drops;
+			data = &st.stats3;
+		} else {
+			lv = sizeof(struct tpacket_stats);
+			st.stats1.tp_packets += st.stats1.tp_drops;
+			data = &st.stats1;
+		}
+
+		break;
+	case PACKET_AUXDATA:
+		val = po->auxdata;
+		break;
+	case PACKET_ORIGDEV:
+		val = po->origdev;
+		break;
+	case PACKET_VNET_HDR:
+		val = po->has_vnet_hdr;
+		break;
+	case PACKET_VERSION:
+		val = po->tp_version;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case PACKET_HDRLEN:
 		if (len > sizeof(int))
@@ -3659,6 +4580,7 @@ static int packet_getsockopt(struct socket *sock, int level, int optname,
 		case TPACKET_V2:
 			val = sizeof(struct tpacket2_hdr);
 			break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 		case TPACKET_V3:
@@ -3700,10 +4622,43 @@ static int packet_getsockopt(struct socket *sock, int level, int optname,
 		data = &val;
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case TPACKET_V3:
+			val = sizeof(struct tpacket3_hdr);
+			break;
+		default:
+			return -EINVAL;
+		}
+		break;
+	case PACKET_RESERVE:
+		val = po->tp_reserve;
+		break;
+	case PACKET_LOSS:
+		val = po->tp_loss;
+		break;
+	case PACKET_TIMESTAMP:
+		val = po->tp_tstamp;
+		break;
+	case PACKET_FANOUT:
+		val = (po->fanout ?
+		       ((u32)po->fanout->id |
+			((u32)po->fanout->type << 16) |
+			((u32)po->fanout->flags << 24)) :
+		       0);
+		break;
+	case PACKET_TX_HAS_OFF:
+		val = po->tp_tx_has_off;
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -ENOPROTOOPT;
 	}
 
+<<<<<<< HEAD
+=======
+	if (len > lv)
+		len = lv;
+>>>>>>> refs/remotes/origin/master
 	if (put_user(len, optlen))
 		return -EFAULT;
 	if (copy_to_user(optval, data, len))
@@ -3712,6 +4667,7 @@ static int packet_getsockopt(struct socket *sock, int level, int optname,
 }
 
 
+<<<<<<< HEAD
 static int packet_notifier(struct notifier_block *this, unsigned long msg, void *data)
 {
 	struct sock *sk;
@@ -3721,6 +4677,17 @@ static int packet_notifier(struct notifier_block *this, unsigned long msg, void 
 
 	rcu_read_lock();
 	sk_for_each_rcu(sk, node, &net->packet.sklist) {
+=======
+static int packet_notifier(struct notifier_block *this,
+			   unsigned long msg, void *ptr)
+{
+	struct sock *sk;
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+	struct net *net = dev_net(dev);
+
+	rcu_read_lock();
+	sk_for_each_rcu(sk, &net->packet.sklist) {
+>>>>>>> refs/remotes/origin/master
 		struct packet_sock *po = pkt_sk(sk);
 
 		switch (msg) {
@@ -3734,23 +4701,34 @@ static int packet_notifier(struct notifier_block *this, unsigned long msg, void 
 				spin_lock(&po->bind_lock);
 				if (po->running) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 					__dev_remove_pack(&po->prot_hook);
 					__sock_put(sk);
 					po->running = 0;
 =======
 					__unregister_prot_hook(sk, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					__unregister_prot_hook(sk, false);
+>>>>>>> refs/remotes/origin/master
 					sk->sk_err = ENETDOWN;
 					if (!sock_flag(sk, SOCK_DEAD))
 						sk->sk_error_report(sk);
 				}
 				if (msg == NETDEV_UNREGISTER) {
+<<<<<<< HEAD
 					po->ifindex = -1;
 <<<<<<< HEAD
 =======
 					if (po->prot_hook.dev)
 						dev_put(po->prot_hook.dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					packet_cached_dev_reset(po);
+					po->ifindex = -1;
+					if (po->prot_hook.dev)
+						dev_put(po->prot_hook.dev);
+>>>>>>> refs/remotes/origin/master
 					po->prot_hook.dev = NULL;
 				}
 				spin_unlock(&po->bind_lock);
@@ -3759,6 +4737,7 @@ static int packet_notifier(struct notifier_block *this, unsigned long msg, void 
 		case NETDEV_UP:
 			if (dev->ifindex == po->ifindex) {
 				spin_lock(&po->bind_lock);
+<<<<<<< HEAD
 <<<<<<< HEAD
 				if (po->num && !po->running) {
 					dev_add_pack(&po->prot_hook);
@@ -3769,6 +4748,10 @@ static int packet_notifier(struct notifier_block *this, unsigned long msg, void 
 				if (po->num)
 					register_prot_hook(sk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (po->num)
+					register_prot_hook(sk);
+>>>>>>> refs/remotes/origin/master
 				spin_unlock(&po->bind_lock);
 			}
 			break;
@@ -3842,11 +4825,16 @@ static unsigned int packet_poll(struct file *file, struct socket *sock,
 	spin_lock_bh(&sk->sk_receive_queue.lock);
 	if (po->rx_ring.pg_vec) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!packet_previous_frame(po, &po->rx_ring, TP_STATUS_KERNEL))
 =======
 		if (!packet_previous_rx_frame(po, &po->rx_ring,
 			TP_STATUS_KERNEL))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!packet_previous_rx_frame(po, &po->rx_ring,
+			TP_STATUS_KERNEL))
+>>>>>>> refs/remotes/origin/master
 			mask |= POLLIN | POLLRDNORM;
 	}
 	spin_unlock_bh(&sk->sk_receive_queue.lock);
@@ -3908,10 +4896,14 @@ static void free_pg_vec(struct pgv *pg_vec, unsigned int order,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline char *alloc_one_pg_vec_page(unsigned long order)
 =======
 static char *alloc_one_pg_vec_page(unsigned long order)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *alloc_one_pg_vec_page(unsigned long order)
+>>>>>>> refs/remotes/origin/master
 {
 	char *buffer = NULL;
 	gfp_t gfp_flags = GFP_KERNEL | __GFP_COMP |
@@ -3970,10 +4962,14 @@ out_free_pgvec:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int packet_set_ring(struct sock *sk, struct tpacket_req *req,
 =======
 static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
+>>>>>>> refs/remotes/origin/master
 		int closing, int tx_ring)
 {
 	struct pgv *pg_vec = NULL;
@@ -3983,8 +4979,11 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
 	struct sk_buff_head *rb_queue;
 	__be16 num;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int err;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int err = -EINVAL;
 	/* Added to avoid minimal code churn */
 	struct tpacket_req *req = &req_u->req;
@@ -3994,7 +4993,10 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
 		WARN(1, "Tx-ring is not supported.\n");
 		goto out;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	rb = tx_ring ? &po->tx_ring : &po->rx_ring;
 	rb_queue = tx_ring ? &sk->sk_write_queue : &sk->sk_receive_queue;
@@ -4021,11 +5023,17 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
 			po->tp_hdrlen = TPACKET2_HDRLEN;
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		case TPACKET_V3:
 			po->tp_hdrlen = TPACKET3_HDRLEN;
 			break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case TPACKET_V3:
+			po->tp_hdrlen = TPACKET3_HDRLEN;
+			break;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		err = -EINVAL;
@@ -4052,7 +5060,10 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
 		if (unlikely(!pg_vec))
 			goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		switch (po->tp_version) {
 		case TPACKET_V3:
 		/* Transmit path is not supported. We checked
@@ -4064,7 +5075,10 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
 		default:
 			break;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	/* Done */
 	else {
@@ -4081,6 +5095,7 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
 	num = po->num;
 	if (was_running) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__dev_remove_pack(&po->prot_hook);
 		po->num = 0;
 		po->running = 0;
@@ -4089,6 +5104,10 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
 		po->num = 0;
 		__unregister_prot_hook(sk, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		po->num = 0;
+		__unregister_prot_hook(sk, false);
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock(&po->bind_lock);
 
@@ -4120,6 +5139,7 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
 
 	spin_lock(&po->bind_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (was_running && !po->running) {
 		sock_hold(sk);
 		po->running = 1;
@@ -4129,6 +5149,8 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
 	spin_unlock(&po->bind_lock);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (was_running) {
 		po->num = num;
 		register_prot_hook(sk);
@@ -4139,7 +5161,10 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
 		if (!tx_ring)
 			prb_shutdown_retire_blk_timer(po, tx_ring, rb_queue);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	release_sock(sk);
 
 	if (pg_vec)
@@ -4302,7 +5327,11 @@ static int packet_seq_show(struct seq_file *seq, void *v)
 			   po->ifindex,
 			   po->running,
 			   atomic_read(&s->sk_rmem_alloc),
+<<<<<<< HEAD
 			   sock_i_uid(s),
+=======
+			   from_kuid_munged(seq_user_ns(seq), sock_i_uid(s)),
+>>>>>>> refs/remotes/origin/master
 			   sock_i_ino(s));
 	}
 
@@ -4334,10 +5363,17 @@ static const struct file_operations packet_seq_fops = {
 
 static int __net_init packet_net_init(struct net *net)
 {
+<<<<<<< HEAD
 	spin_lock_init(&net->packet.sklist_lock);
 	INIT_HLIST_HEAD(&net->packet.sklist);
 
 	if (!proc_net_fops_create(net, "packet", 0, &packet_seq_fops))
+=======
+	mutex_init(&net->packet.sklist_lock);
+	INIT_HLIST_HEAD(&net->packet.sklist);
+
+	if (!proc_create("packet", 0, net->proc_net, &packet_seq_fops))
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	return 0;
@@ -4345,7 +5381,11 @@ static int __net_init packet_net_init(struct net *net)
 
 static void __net_exit packet_net_exit(struct net *net)
 {
+<<<<<<< HEAD
 	proc_net_remove(net, "packet");
+=======
+	remove_proc_entry("packet", net->proc_net);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct pernet_operations packet_net_ops = {

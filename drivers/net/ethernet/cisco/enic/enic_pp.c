@@ -184,7 +184,11 @@ static int (*enic_pp_handlers[])(struct enic *enic, int vf,
 };
 
 static const int enic_pp_handlers_count =
+<<<<<<< HEAD
 			sizeof(enic_pp_handlers)/sizeof(*enic_pp_handlers);
+=======
+			ARRAY_SIZE(enic_pp_handlers);
+>>>>>>> refs/remotes/origin/master
 
 static int enic_pp_preassociate(struct enic *enic, int vf,
 	struct enic_port_profile *prev_pp, int *restore_pp)

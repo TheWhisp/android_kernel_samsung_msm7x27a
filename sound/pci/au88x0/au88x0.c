@@ -20,10 +20,14 @@
 #include <linux/slab.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/dma-mapping.h>
 #include <sound/initval.h>
 
@@ -31,10 +35,14 @@
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 =======
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/master
 static int pcifix[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 255 };
 
 module_param_array(index, int, NULL, 0444);
@@ -86,7 +94,11 @@ static void vortex_fix_agp_bridge(struct pci_dev *via)
 	}
 }
 
+<<<<<<< HEAD
 static void __devinit snd_vortex_workaround(struct pci_dev *vortex, int fix)
+=======
+static void snd_vortex_workaround(struct pci_dev *vortex, int fix)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *via = NULL;
 
@@ -145,7 +157,11 @@ static int snd_vortex_dev_free(struct snd_device *device)
 
 // chip-specific constructor
 // (see "Management of Cards and Components")
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 snd_vortex_create(struct snd_card *card, struct pci_dev *pci, vortex_t ** rchip)
 {
 	vortex_t *chip;
@@ -205,10 +221,14 @@ snd_vortex_create(struct snd_card *card, struct pci_dev *pci, vortex_t ** rchip)
 
 	if ((err = request_irq(pci->irq, vortex_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	                       IRQF_SHARED, CARD_NAME_SHORT,
 =======
 			       IRQF_SHARED, KBUILD_MODNAME,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       IRQF_SHARED, KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/master
 	                       chip)) != 0) {
 		printk(KERN_ERR "cannot grab irq\n");
 		goto irq_out;
@@ -246,7 +266,11 @@ snd_vortex_create(struct snd_card *card, struct pci_dev *pci, vortex_t ** rchip)
 }
 
 // constructor -- see "Constructor" sub-section
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 snd_vortex_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
 {
 	static int dev;
@@ -281,9 +305,12 @@ snd_vortex_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
 
 	// (4) Alloc components.
 <<<<<<< HEAD
+<<<<<<< HEAD
 	// ADB pcm.
 	if ((err = snd_vortex_new_pcm(chip, VORTEX_PCM_ADB, NR_ADB)) < 0) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = snd_vortex_mixer(chip);
 	if (err < 0) {
 		snd_card_free(card);
@@ -292,7 +319,10 @@ snd_vortex_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
 	// ADB pcm.
 	err = snd_vortex_new_pcm(chip, VORTEX_PCM_ADB, NR_PCM);
 	if (err < 0) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		snd_card_free(card);
 		return err;
 	}
@@ -323,6 +353,7 @@ snd_vortex_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
 	}
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	// snd_ac97_mixer and Vortex mixer.
 	if ((err = snd_vortex_mixer(chip)) < 0) {
 		snd_card_free(card);
@@ -330,6 +361,8 @@ snd_vortex_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((err = snd_vortex_midi(chip)) < 0) {
 		snd_card_free(card);
 		return err;
@@ -393,6 +426,7 @@ snd_vortex_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
 }
 
 // destructor -- see "Destructor" sub-section
+<<<<<<< HEAD
 static void __devexit snd_vortex_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
@@ -425,3 +459,19 @@ static void __exit alsa_card_vortex_exit(void)
 
 module_init(alsa_card_vortex_init)
 module_exit(alsa_card_vortex_exit)
+=======
+static void snd_vortex_remove(struct pci_dev *pci)
+{
+	snd_card_free(pci_get_drvdata(pci));
+}
+
+// pci_driver definition
+static struct pci_driver vortex_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = snd_vortex_ids,
+	.probe = snd_vortex_probe,
+	.remove = snd_vortex_remove,
+};
+
+module_pci_driver(vortex_driver);
+>>>>>>> refs/remotes/origin/master

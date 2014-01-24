@@ -5,6 +5,7 @@
  *
  * Authors: Felipe Balbi <balbi@ti.com>,
  *
+<<<<<<< HEAD
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -33,20 +34,38 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+=======
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2  of
+ * the License as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/platform_device.h>
 
 #include "core.h"
+<<<<<<< HEAD
 #include "xhci.h"
+=======
+>>>>>>> refs/remotes/origin/master
 
 int dwc3_host_init(struct dwc3 *dwc)
 {
 	struct platform_device	*xhci;
 	int			ret;
+<<<<<<< HEAD
 	struct xhci_plat_data	pdata;
 
 	xhci = platform_device_alloc("xhci-hcd", -1);
+=======
+
+	xhci = platform_device_alloc("xhci-hcd", PLATFORM_DEVID_AUTO);
+>>>>>>> refs/remotes/origin/master
 	if (!xhci) {
 		dev_err(dwc->dev, "couldn't allocate xHCI device\n");
 		ret = -ENOMEM;
@@ -60,6 +79,7 @@ int dwc3_host_init(struct dwc3 *dwc)
 	xhci->dev.dma_parms	= dwc->dev->dma_parms;
 
 	dwc->xhci = xhci;
+<<<<<<< HEAD
 	pdata.vendor = ((dwc->revision & DWC3_GSNPSID_MASK) >>
 			__ffs(DWC3_GSNPSID_MASK) & DWC3_GSNPSREV_MASK);
 	pdata.revision = dwc->revision & DWC3_GSNPSREV_MASK;
@@ -70,6 +90,8 @@ int dwc3_host_init(struct dwc3 *dwc)
 		dev_err(dwc->dev, "couldn't add pdata to xHCI device\n");
 		goto err1;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = platform_device_add_resources(xhci, dwc->xhci_resources,
 						DWC3_XHCI_RESOURCES_NUM);

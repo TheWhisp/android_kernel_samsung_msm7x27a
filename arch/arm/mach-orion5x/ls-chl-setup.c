@@ -23,9 +23,12 @@
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/orion5x.h>
 #include "common.h"
 #include "mpp.h"
@@ -144,10 +147,14 @@ static struct mv_sata_platform_data lschl_sata_data = {
 static void lschl_power_off(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	arm_machine_restart('h', NULL);
 =======
 	orion5x_restart('h', NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	orion5x_restart(REBOOT_HARD, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*****************************************************************************
@@ -302,8 +309,15 @@ static void __init lschl_init(void)
 	orion5x_uart0_init();
 	orion5x_xor_init();
 
+<<<<<<< HEAD
 	orion5x_setup_dev_boot_win(LSCHL_NOR_BOOT_BASE,
 				   LSCHL_NOR_BOOT_SIZE);
+=======
+	mvebu_mbus_add_window_by_id(ORION_MBUS_DEVBUS_BOOT_TARGET,
+				    ORION_MBUS_DEVBUS_BOOT_ATTR,
+				    LSCHL_NOR_BOOT_BASE,
+				    LSCHL_NOR_BOOT_SIZE);
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(&lschl_nor_flash);
 
 	platform_device_register(&lschl_leds);
@@ -326,18 +340,28 @@ static void __init lschl_init(void)
 MACHINE_START(LINKSTATION_LSCHL, "Buffalo Linkstation LiveV3 (LS-CHL)")
 	/* Maintainer: Ash Hughes <ashley.hughes@blueyonder.co.uk> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 =======
 	.atag_offset	= 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= lschl_init,
 	.map_io		= orion5x_map_io,
 	.init_early	= orion5x_init_early,
 	.init_irq	= orion5x_init_irq,
+<<<<<<< HEAD
 	.timer		= &orion5x_timer,
 	.fixup		= tag_fixup_mem32,
 <<<<<<< HEAD
 =======
 	.restart	= orion5x_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= orion5x_timer_init,
+	.fixup		= tag_fixup_mem32,
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

@@ -6,9 +6,16 @@
  * more details.
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "udl_drv.h"
 #include <linux/shmem_fs.h>
+=======
+#include <drm/drmP.h>
+#include "udl_drv.h"
+#include <linux/shmem_fs.h>
+#include <linux/dma-buf.h>
+>>>>>>> refs/remotes/origin/master
 
 struct udl_gem_object *udl_gem_alloc_object(struct drm_device *dev,
 					    size_t size)
@@ -65,12 +72,15 @@ int udl_dumb_create(struct drm_file *file,
 			      args->size, &args->handle);
 }
 
+<<<<<<< HEAD
 int udl_dumb_destroy(struct drm_file *file, struct drm_device *dev,
 		     uint32_t handle)
 {
 	return drm_gem_handle_delete(file, handle);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 int udl_drm_gem_mmap(struct file *filp, struct vm_area_struct *vma)
 {
 	int ret;
@@ -102,7 +112,10 @@ int udl_gem_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 	ret = vm_insert_page(vma, (unsigned long)vmf->virtual_address, page);
 	switch (ret) {
 	case -EAGAIN:
+<<<<<<< HEAD
 		set_need_resched();
+=======
+>>>>>>> refs/remotes/origin/master
 	case 0:
 	case -ERESTARTSYS:
 		return VM_FAULT_NOPAGE;
@@ -113,6 +126,7 @@ int udl_gem_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 	}
 }
 
+<<<<<<< HEAD
 int udl_gem_init_object(struct drm_gem_object *obj)
 {
 	BUG();
@@ -126,10 +140,16 @@ static int udl_gem_get_pages(struct udl_gem_object *obj, gfp_t gfpmask)
 	struct page *page;
 	struct inode *inode;
 	struct address_space *mapping;
+=======
+static int udl_gem_get_pages(struct udl_gem_object *obj, gfp_t gfpmask)
+{
+	struct page **pages;
+>>>>>>> refs/remotes/origin/master
 
 	if (obj->pages)
 		return 0;
 
+<<<<<<< HEAD
 	page_count = obj->base.size / PAGE_SIZE;
 	BUG_ON(obj->pages != NULL);
 	obj->pages = drm_malloc_ab(page_count, sizeof(struct page *));
@@ -154,10 +174,20 @@ err_pages:
 	drm_free_large(obj->pages);
 	obj->pages = NULL;
 	return PTR_ERR(page);
+=======
+	pages = drm_gem_get_pages(&obj->base, gfpmask);
+	if (IS_ERR(pages))
+		return PTR_ERR(pages);
+
+	obj->pages = pages;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void udl_gem_put_pages(struct udl_gem_object *obj)
 {
+<<<<<<< HEAD
 	int page_count = obj->base.size / PAGE_SIZE;
 	int i;
 
@@ -165,6 +195,15 @@ static void udl_gem_put_pages(struct udl_gem_object *obj)
 		page_cache_release(obj->pages[i]);
 
 	drm_free_large(obj->pages);
+=======
+	if (obj->base.import_attach) {
+		drm_free_large(obj->pages);
+		obj->pages = NULL;
+		return;
+	}
+
+	drm_gem_put_pages(&obj->base, obj->pages, false, false);
+>>>>>>> refs/remotes/origin/master
 	obj->pages = NULL;
 }
 
@@ -173,6 +212,16 @@ int udl_gem_vmap(struct udl_gem_object *obj)
 	int page_count = obj->base.size / PAGE_SIZE;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	if (obj->base.import_attach) {
+		obj->vmapping = dma_buf_vmap(obj->base.import_attach->dmabuf);
+		if (!obj->vmapping)
+			return -ENOMEM;
+		return 0;
+	}
+		
+>>>>>>> refs/remotes/origin/master
 	ret = udl_gem_get_pages(obj, GFP_KERNEL);
 	if (ret)
 		return ret;
@@ -185,6 +234,14 @@ int udl_gem_vmap(struct udl_gem_object *obj)
 
 void udl_gem_vunmap(struct udl_gem_object *obj)
 {
+<<<<<<< HEAD
+=======
+	if (obj->base.import_attach) {
+		dma_buf_vunmap(obj->base.import_attach->dmabuf, obj->vmapping);
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (obj->vmapping)
 		vunmap(obj->vmapping);
 
@@ -198,11 +255,21 @@ void udl_gem_free_object(struct drm_gem_object *gem_obj)
 	if (obj->vmapping)
 		udl_gem_vunmap(obj);
 
+<<<<<<< HEAD
 	if (obj->pages)
 		udl_gem_put_pages(obj);
 
 	if (gem_obj->map_list.map)
 		drm_gem_free_mmap_offset(gem_obj);
+=======
+	if (gem_obj->import_attach)
+		drm_prime_gem_destroy(gem_obj, obj->sg);
+
+	if (obj->pages)
+		udl_gem_put_pages(obj);
+
+	drm_gem_free_mmap_offset(gem_obj);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* the dumb interface doesn't work with the GEM straight MMAP
@@ -224,6 +291,7 @@ int udl_gem_mmap(struct drm_file *file, struct drm_device *dev,
 
 	ret = udl_gem_get_pages(gobj, GFP_KERNEL);
 	if (ret)
+<<<<<<< HEAD
 		return ret;
 	if (!gobj->base.map_list.map) {
 		ret = drm_gem_create_mmap_offset(obj);
@@ -232,6 +300,14 @@ int udl_gem_mmap(struct drm_file *file, struct drm_device *dev,
 	}
 
 	*offset = (u64)gobj->base.map_list.hash.key << PAGE_SHIFT;
+=======
+		goto out;
+	ret = drm_gem_create_mmap_offset(obj);
+	if (ret)
+		goto out;
+
+	*offset = drm_vma_node_offset_addr(&gobj->base.vma_node);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	drm_gem_object_unreference(&gobj->base);
@@ -239,3 +315,73 @@ unlock:
 	mutex_unlock(&dev->struct_mutex);
 	return ret;
 }
+<<<<<<< HEAD
+=======
+
+static int udl_prime_create(struct drm_device *dev,
+			    size_t size,
+			    struct sg_table *sg,
+			    struct udl_gem_object **obj_p)
+{
+	struct udl_gem_object *obj;
+	int npages;
+
+	npages = size / PAGE_SIZE;
+
+	*obj_p = NULL;
+	obj = udl_gem_alloc_object(dev, npages * PAGE_SIZE);
+	if (!obj)
+		return -ENOMEM;
+
+	obj->sg = sg;
+	obj->pages = drm_malloc_ab(npages, sizeof(struct page *));
+	if (obj->pages == NULL) {
+		DRM_ERROR("obj pages is NULL %d\n", npages);
+		return -ENOMEM;
+	}
+
+	drm_prime_sg_to_page_addr_arrays(sg, obj->pages, NULL, npages);
+
+	*obj_p = obj;
+	return 0;
+}
+
+struct drm_gem_object *udl_gem_prime_import(struct drm_device *dev,
+				struct dma_buf *dma_buf)
+{
+	struct dma_buf_attachment *attach;
+	struct sg_table *sg;
+	struct udl_gem_object *uobj;
+	int ret;
+
+	/* need to attach */
+	attach = dma_buf_attach(dma_buf, dev->dev);
+	if (IS_ERR(attach))
+		return ERR_CAST(attach);
+
+	get_dma_buf(dma_buf);
+
+	sg = dma_buf_map_attachment(attach, DMA_BIDIRECTIONAL);
+	if (IS_ERR(sg)) {
+		ret = PTR_ERR(sg);
+		goto fail_detach;
+	}
+
+	ret = udl_prime_create(dev, dma_buf->size, sg, &uobj);
+	if (ret) {
+		goto fail_unmap;
+	}
+
+	uobj->base.import_attach = attach;
+
+	return &uobj->base;
+
+fail_unmap:
+	dma_buf_unmap_attachment(attach, sg, DMA_BIDIRECTIONAL);
+fail_detach:
+	dma_buf_detach(dma_buf, attach);
+	dma_buf_put(dma_buf);
+
+	return ERR_PTR(ret);
+}
+>>>>>>> refs/remotes/origin/master

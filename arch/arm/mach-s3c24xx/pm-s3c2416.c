@@ -16,12 +16,20 @@
 
 #include <asm/cacheflush.h>
 
+<<<<<<< HEAD
 #include <mach/regs-power.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/regs-s3c2443-clock.h>
 
 #include <plat/cpu.h>
 #include <plat/pm.h>
 
+<<<<<<< HEAD
+=======
+#include "s3c2412-power.h"
+
+>>>>>>> refs/remotes/origin/master
 extern void s3c2412_sleep_enter(void);
 
 static int s3c2416_cpu_suspend(unsigned long arg)
@@ -34,7 +42,12 @@ static int s3c2416_cpu_suspend(unsigned long arg)
 
 	s3c2412_sleep_enter();
 
+<<<<<<< HEAD
 	panic("sleep resumed to originator?");
+=======
+	pr_info("Failed to suspend the system\n");
+	return 1; /* Aborting suspend */
+>>>>>>> refs/remotes/origin/master
 }
 
 static void s3c2416_pm_prepare(void)

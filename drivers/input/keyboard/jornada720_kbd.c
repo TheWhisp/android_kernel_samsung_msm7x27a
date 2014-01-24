@@ -28,9 +28,13 @@
 #include <mach/jornada720.h>
 #include <mach/hardware.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <mach/irqs.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Kristoffer Ericson <Kristoffer.Ericson@gmail.com>");
 MODULE_DESCRIPTION("HP Jornada 710/720/728 keyboard driver");
@@ -97,7 +101,11 @@ static irqreturn_t jornada720_kbd_interrupt(int irq, void *dev_id)
 	return IRQ_HANDLED;
 };
 
+<<<<<<< HEAD
 static int __devinit jornada720_kbd_probe(struct platform_device *pdev)
+=======
+static int jornada720_kbd_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct jornadakbd *jornadakbd;
 	struct input_dev *input_dev;
@@ -134,10 +142,14 @@ static int __devinit jornada720_kbd_probe(struct platform_device *pdev)
 	err = request_irq(IRQ_GPIO0,
 			  jornada720_kbd_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			  IRQF_DISABLED | IRQF_TRIGGER_FALLING,
 =======
 			  IRQF_TRIGGER_FALLING,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  IRQF_TRIGGER_FALLING,
+>>>>>>> refs/remotes/origin/master
 			  "jornadakbd", pdev);
 	if (err) {
 		printk(KERN_INFO "jornadakbd720_kbd: Unable to grab IRQ\n");
@@ -153,18 +165,28 @@ static int __devinit jornada720_kbd_probe(struct platform_device *pdev)
  fail2:	/* IRQ, DEVICE, MEMORY */
 	free_irq(IRQ_GPIO0, pdev);
  fail1:	/* DEVICE, MEMORY */
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	input_free_device(input_dev);
 	kfree(jornadakbd);
 	return err;
 };
 
+<<<<<<< HEAD
 static int __devexit jornada720_kbd_remove(struct platform_device *pdev)
+=======
+static int jornada720_kbd_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct jornadakbd *jornadakbd = platform_get_drvdata(pdev);
 
 	free_irq(IRQ_GPIO0, pdev);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	input_unregister_device(jornadakbd->input);
 	kfree(jornadakbd);
 
@@ -180,6 +202,7 @@ static struct platform_driver jornada720_kbd_driver = {
 		.owner	= THIS_MODULE,
 	 },
 	.probe   = jornada720_kbd_probe,
+<<<<<<< HEAD
 	.remove  = __devexit_p(jornada720_kbd_remove),
 };
 <<<<<<< HEAD
@@ -199,3 +222,8 @@ module_exit(jornada720_kbd_exit);
 =======
 module_platform_driver(jornada720_kbd_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove  = jornada720_kbd_remove,
+};
+module_platform_driver(jornada720_kbd_driver);
+>>>>>>> refs/remotes/origin/master

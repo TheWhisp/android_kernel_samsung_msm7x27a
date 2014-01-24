@@ -14,6 +14,7 @@
 
 #include <linux/dma-mapping.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 #include <linux/clk.h>
@@ -21,10 +22,21 @@
 #include <linux/platform_device.h>
 #include <linux/i2c-gpio.h>
 #include <linux/atmel-mci.h>
+=======
+#include <linux/gpio.h>
+#include <linux/clk.h>
+#include <linux/platform_device.h>
+#include <linux/i2c-gpio.h>
+#include <linux/atmel-mci.h>
+#include <linux/platform_data/crypto-atmel.h>
+
+#include <linux/platform_data/at91_adc.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/fb.h>
 #include <video/atmel_lcdc.h>
 
+<<<<<<< HEAD
 #include <mach/board.h>
 <<<<<<< HEAD
 #include <mach/gpio.h>
@@ -47,6 +59,21 @@
 #include "generic.h"
 #include "clock.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/at91_adc.h>
+#include <mach/at91sam9g45.h>
+#include <mach/at91sam9g45_matrix.h>
+#include <mach/at91_matrix.h>
+#include <mach/at91sam9_smc.h>
+#include <linux/platform_data/dma-atmel.h>
+#include <mach/atmel-mci.h>
+
+#include <media/atmel-isi.h>
+
+#include "board.h"
+#include "generic.h"
+#include "clock.h"
+>>>>>>> refs/remotes/origin/master
 
 
 /* --------------------------------------------------------------------
@@ -57,6 +84,7 @@
 static u64 hdmac_dmamask = DMA_BIT_MASK(32);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct at_dma_platform_data atdma_pdata = {
 	.nr_channels	= 8,
 };
@@ -66,34 +94,51 @@ static struct resource hdmac_resources[] = {
 		.start	= AT91_BASE_SYS + AT91_DMA,
 		.end	= AT91_BASE_SYS + AT91_DMA + SZ_512 - 1,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct resource hdmac_resources[] = {
 	[0] = {
 		.start	= AT91SAM9G45_BASE_DMA,
 		.end	= AT91SAM9G45_BASE_DMA + SZ_512 - 1,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
 		.start	= AT91SAM9G45_ID_DMA,
 		.end	= AT91SAM9G45_ID_DMA,
+=======
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_DMA,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_DMA,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
 
 static struct platform_device at_hdmac_device = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.name		= "at_hdmac",
 =======
 	.name		= "at91sam9g45_dma",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.name		= "at91sam9g45_dma",
+>>>>>>> refs/remotes/origin/master
 	.id		= -1,
 	.dev		= {
 				.dma_mask		= &hdmac_dmamask,
 				.coherent_dma_mask	= DMA_BIT_MASK(32),
 <<<<<<< HEAD
+<<<<<<< HEAD
 				.platform_data		= &atdma_pdata,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	.resource	= hdmac_resources,
 	.num_resources	= ARRAY_SIZE(hdmac_resources),
@@ -101,6 +146,7 @@ static struct platform_device at_hdmac_device = {
 
 void __init at91_add_device_hdmac(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dma_cap_set(DMA_MEMCPY, atdma_pdata.cap_mask);
 	dma_cap_set(DMA_SLAVE, atdma_pdata.cap_mask);
@@ -116,6 +162,9 @@ void __init at91_add_device_hdmac(void)
 #endif
 		platform_device_register(&at_hdmac_device);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	platform_device_register(&at_hdmac_device);
+>>>>>>> refs/remotes/origin/master
 }
 #else
 void __init at91_add_device_hdmac(void) {}
@@ -137,8 +186,13 @@ static struct resource usbh_ohci_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_UHPHS,
 		.end	= AT91SAM9G45_ID_UHPHS,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_UHPHS,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_UHPHS,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -165,9 +219,12 @@ void __init at91_add_device_usbh_ohci(struct at91_usbh_data *data)
 	/* Enable VBus control for UHP ports */
 	for (i = 0; i < data->ports; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (data->vbus_pin[i])
 			at91_set_gpio_output(data->vbus_pin[i], 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (gpio_is_valid(data->vbus_pin[i]))
 			at91_set_gpio_output(data->vbus_pin[i],
 					     data->vbus_pin_active_low[i]);
@@ -177,7 +234,10 @@ void __init at91_add_device_usbh_ohci(struct at91_usbh_data *data)
 	for (i = 0; i < data->ports; i++) {
 		if (gpio_is_valid(data->overcurrent_pin[i]))
 			at91_set_gpio_input(data->overcurrent_pin[i], 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	usbh_ohci_data = *data;
@@ -204,8 +264,13 @@ static struct resource usbh_ehci_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_UHPHS,
 		.end	= AT91SAM9G45_ID_UHPHS,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_UHPHS,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_UHPHS,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -232,6 +297,7 @@ void __init at91_add_device_usbh_ehci(struct at91_usbh_data *data)
 	/* Enable VBus control for UHP ports */
 	for (i = 0; i < data->ports; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (data->vbus_pin[i])
 			at91_set_gpio_output(data->vbus_pin[i], 0);
 =======
@@ -239,6 +305,11 @@ void __init at91_add_device_usbh_ehci(struct at91_usbh_data *data)
 			at91_set_gpio_output(data->vbus_pin[i],
 					     data->vbus_pin_active_low[i]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (gpio_is_valid(data->vbus_pin[i]))
+			at91_set_gpio_output(data->vbus_pin[i],
+					     data->vbus_pin_active_low[i]);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	usbh_ehci_data = *data;
@@ -254,10 +325,14 @@ void __init at91_add_device_usbh_ehci(struct at91_usbh_data *data) {}
  * -------------------------------------------------------------------- */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_USB_GADGET_ATMEL_USBA) || defined(CONFIG_USB_GADGET_ATMEL_USBA_MODULE)
 =======
 #if defined(CONFIG_USB_ATMEL_USBA) || defined(CONFIG_USB_ATMEL_USBA_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_USB_ATMEL_USBA) || defined(CONFIG_USB_ATMEL_USBA_MODULE)
+>>>>>>> refs/remotes/origin/master
 static struct resource usba_udc_resources[] = {
 	[0] = {
 		.start	= AT91SAM9G45_UDPHS_FIFO,
@@ -270,8 +345,13 @@ static struct resource usba_udc_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[2] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_UDPHS,
 		.end	= AT91SAM9G45_ID_UDPHS,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_UDPHS,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_UDPHS,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -324,10 +404,14 @@ void __init at91_add_device_usba(struct usba_platform_data *data)
 	memcpy(usba_udc_data.ep, usba_udc_ep, sizeof(usba_udc_ep));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (data && data->vbus_pin > 0) {
 =======
 	if (data && gpio_is_valid(data->vbus_pin)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (data && gpio_is_valid(data->vbus_pin)) {
+>>>>>>> refs/remotes/origin/master
 		at91_set_gpio_input(data->vbus_pin, 0);
 		at91_set_deglitch(data->vbus_pin, 1);
 		usba_udc_data.pdata.vbus_pin = data->vbus_pin;
@@ -349,10 +433,14 @@ void __init at91_add_device_usba(struct usba_platform_data *data) {}
 #if defined(CONFIG_MACB) || defined(CONFIG_MACB_MODULE)
 static u64 eth_dmamask = DMA_BIT_MASK(32);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct at91_eth_data eth_data;
 =======
 static struct macb_platform_data eth_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct macb_platform_data eth_data;
+>>>>>>> refs/remotes/origin/master
 
 static struct resource eth_resources[] = {
 	[0] = {
@@ -361,8 +449,13 @@ static struct resource eth_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_EMAC,
 		.end	= AT91SAM9G45_ID_EMAC,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_EMAC,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_EMAC,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -380,19 +473,27 @@ static struct platform_device at91sam9g45_eth_device = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __init at91_add_device_eth(struct at91_eth_data *data)
 =======
 void __init at91_add_device_eth(struct macb_platform_data *data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __init at91_add_device_eth(struct macb_platform_data *data)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!data)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (data->phy_irq_pin) {
 =======
 	if (gpio_is_valid(data->phy_irq_pin)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (gpio_is_valid(data->phy_irq_pin)) {
+>>>>>>> refs/remotes/origin/master
 		at91_set_gpio_input(data->phy_irq_pin, 0);
 		at91_set_deglitch(data->phy_irq_pin, 1);
 	}
@@ -425,10 +526,14 @@ void __init at91_add_device_eth(struct macb_platform_data *data)
 }
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __init at91_add_device_eth(struct at91_eth_data *data) {}
 =======
 void __init at91_add_device_eth(struct macb_platform_data *data) {}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __init at91_add_device_eth(struct macb_platform_data *data) {}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 
@@ -447,8 +552,13 @@ static struct resource mmc0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_MCI0,
 		.end	= AT91SAM9G45_ID_MCI0,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_MCI0,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_MCI0,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -472,8 +582,13 @@ static struct resource mmc1_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_MCI1,
 		.end	= AT91SAM9G45_ID_MCI1,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_MCI1,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_MCI1,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -512,12 +627,17 @@ void __init at91_add_device_mci(short mmc_id, struct mci_platform_data *data)
 	/* DMA slave channel configuration */
 	atslave->dma_dev = &at_hdmac_device.dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	atslave->reg_width = AT_DMA_SLAVE_WIDTH_32BIT;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	atslave->cfg = ATC_FIFOCFG_HALFFIFO
 			| ATC_SRC_H2SEL_HW | ATC_DST_H2SEL_HW;
 	atslave->ctrla = ATC_SCSIZE_16 | ATC_DCSIZE_16;
+=======
+	atslave->cfg = ATC_FIFOCFG_HALFFIFO
+			| ATC_SRC_H2SEL_HW | ATC_DST_H2SEL_HW;
+>>>>>>> refs/remotes/origin/master
 	if (mmc_id == 0)	/* MCI0 */
 		atslave->cfg |= ATC_SRC_PER(AT_DMA_ID_MCI0)
 			      | ATC_DST_PER(AT_DMA_ID_MCI0);
@@ -533,18 +653,24 @@ void __init at91_add_device_mci(short mmc_id, struct mci_platform_data *data)
 
 	/* input/irq */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (data->slot[0].detect_pin) {
 		at91_set_gpio_input(data->slot[0].detect_pin, 1);
 		at91_set_deglitch(data->slot[0].detect_pin, 1);
 	}
 	if (data->slot[0].wp_pin)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (gpio_is_valid(data->slot[0].detect_pin)) {
 		at91_set_gpio_input(data->slot[0].detect_pin, 1);
 		at91_set_deglitch(data->slot[0].detect_pin, 1);
 	}
 	if (gpio_is_valid(data->slot[0].wp_pin))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		at91_set_gpio_input(data->slot[0].wp_pin, 1);
 
 	if (mmc_id == 0) {		/* MCI0 */
@@ -621,12 +747,17 @@ static struct resource nand_resources[] = {
 	},
 	[1] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= AT91_BASE_SYS + AT91_ECC,
 		.end	= AT91_BASE_SYS + AT91_ECC + SZ_512 - 1,
 =======
 		.start	= AT91SAM9G45_BASE_ECC,
 		.end	= AT91SAM9G45_BASE_ECC + SZ_512 - 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start	= AT91SAM9G45_BASE_ECC,
+		.end	= AT91SAM9G45_BASE_ECC + SZ_512 - 1,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_MEM,
 	}
 };
@@ -649,6 +780,7 @@ void __init at91_add_device_nand(struct atmel_nand_data *data)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	csa = at91_sys_read(AT91_MATRIX_EBICSA);
 	at91_sys_write(AT91_MATRIX_EBICSA, csa | AT91_MATRIX_EBI_CS3A_SMC_SMARTMEDIA);
 
@@ -663,6 +795,8 @@ void __init at91_add_device_nand(struct atmel_nand_data *data)
 	/* card detect pin */
 	if (data->det_pin)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	csa = at91_matrix_read(AT91_MATRIX_EBICSA);
 	at91_matrix_write(AT91_MATRIX_EBICSA, csa | AT91_MATRIX_EBI_CS3A_SMC_SMARTMEDIA);
 
@@ -676,7 +810,10 @@ void __init at91_add_device_nand(struct atmel_nand_data *data)
 
 	/* card detect pin */
 	if (gpio_is_valid(data->det_pin))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		at91_set_gpio_input(data->det_pin, 1);
 
 	nand_data = *data;
@@ -756,14 +893,23 @@ static struct resource twi0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_TWI0,
 		.end	= AT91SAM9G45_ID_TWI0,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_TWI0,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_TWI0,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
 
 static struct platform_device at91sam9g45_twi0_device = {
+<<<<<<< HEAD
 	.name		= "at91_i2c",
+=======
+	.name		= "i2c-at91sam9g10",
+>>>>>>> refs/remotes/origin/master
 	.id		= 0,
 	.resource	= twi0_resources,
 	.num_resources	= ARRAY_SIZE(twi0_resources),
@@ -776,14 +922,23 @@ static struct resource twi1_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_TWI1,
 		.end	= AT91SAM9G45_ID_TWI1,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_TWI1,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_TWI1,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
 
 static struct platform_device at91sam9g45_twi1_device = {
+<<<<<<< HEAD
 	.name		= "at91_i2c",
+=======
+	.name		= "i2c-at91sam9g10",
+>>>>>>> refs/remotes/origin/master
 	.id		= 1,
 	.resource	= twi1_resources,
 	.num_resources	= ARRAY_SIZE(twi1_resources),
@@ -796,18 +951,26 @@ void __init at91_add_device_i2c(short i2c_id, struct i2c_board_info *devices, in
 	/* pins used for TWI interface */
 	if (i2c_id == 0) {
 		at91_set_A_periph(AT91_PIN_PA20, 0);		/* TWD */
+<<<<<<< HEAD
 		at91_set_multi_drive(AT91_PIN_PA20, 1);
 
 		at91_set_A_periph(AT91_PIN_PA21, 0);		/* TWCK */
 		at91_set_multi_drive(AT91_PIN_PA21, 1);
+=======
+		at91_set_A_periph(AT91_PIN_PA21, 0);		/* TWCK */
+>>>>>>> refs/remotes/origin/master
 
 		platform_device_register(&at91sam9g45_twi0_device);
 	} else {
 		at91_set_A_periph(AT91_PIN_PB10, 0);		/* TWD */
+<<<<<<< HEAD
 		at91_set_multi_drive(AT91_PIN_PB10, 1);
 
 		at91_set_A_periph(AT91_PIN_PB11, 0);		/* TWCK */
 		at91_set_multi_drive(AT91_PIN_PB11, 1);
+=======
+		at91_set_A_periph(AT91_PIN_PB11, 0);		/* TWCK */
+>>>>>>> refs/remotes/origin/master
 
 		platform_device_register(&at91sam9g45_twi1_device);
 	}
@@ -831,8 +994,13 @@ static struct resource spi0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_SPI0,
 		.end	= AT91SAM9G45_ID_SPI0,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_SPI0,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_SPI0,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -857,8 +1025,13 @@ static struct resource spi1_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_SPI1,
 		.end	= AT91SAM9G45_ID_SPI1,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_SPI1,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_SPI1,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -893,11 +1066,17 @@ void __init at91_add_device_spi(struct spi_board_info *devices, int nr_devices)
 			cs_pin = spi1_standard_cs[devices[i].chip_select];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (!gpio_is_valid(cs_pin))
 			continue;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!gpio_is_valid(cs_pin))
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		if (devices[i].bus_num == 0)
 			enable_spi0 = 1;
 		else
@@ -948,8 +1127,13 @@ static struct resource ac97_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_AC97C,
 		.end	= AT91SAM9G45_ID_AC97C,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_AC97C,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_AC97C,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -978,10 +1162,14 @@ void __init at91_add_device_ac97(struct ac97c_platform_data *data)
 
 	/* reset */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (data->reset_pin)
 =======
 	if (gpio_is_valid(data->reset_pin))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (gpio_is_valid(data->reset_pin))
+>>>>>>> refs/remotes/origin/master
 		at91_set_gpio_output(data->reset_pin, 0);
 
 	ac97_data = *data;
@@ -992,7 +1180,10 @@ void __init at91_add_device_ac97(struct ac97c_platform_data *data) {}
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* --------------------------------------------------------------------
  *  Image Sensor Interface
  * -------------------------------------------------------------------- */
@@ -1007,8 +1198,13 @@ struct resource isi_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_ISI,
 		.end	= AT91SAM9G45_ID_ISI,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_ISI,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_ISI,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -1083,7 +1279,10 @@ void __init at91_add_device_isi(struct isi_platform_data *data,
 		bool use_pck_as_mck) {}
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* --------------------------------------------------------------------
  *  LCD Controller
@@ -1091,7 +1290,11 @@ void __init at91_add_device_isi(struct isi_platform_data *data,
 
 #if defined(CONFIG_FB_ATMEL) || defined(CONFIG_FB_ATMEL_MODULE)
 static u64 lcdc_dmamask = DMA_BIT_MASK(32);
+<<<<<<< HEAD
 static struct atmel_lcdfb_info lcdc_data;
+=======
+static struct atmel_lcdfb_pdata lcdc_data;
+>>>>>>> refs/remotes/origin/master
 
 static struct resource lcdc_resources[] = {
 	[0] = {
@@ -1100,14 +1303,22 @@ static struct resource lcdc_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_LCDC,
 		.end	= AT91SAM9G45_ID_LCDC,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_LCDC,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_LCDC,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
 
 static struct platform_device at91_lcdc_device = {
+<<<<<<< HEAD
 	.name		= "atmel_lcdfb",
+=======
+>>>>>>> refs/remotes/origin/master
 	.id		= 0,
 	.dev		= {
 				.dma_mask		= &lcdc_dmamask,
@@ -1118,11 +1329,23 @@ static struct platform_device at91_lcdc_device = {
 	.num_resources	= ARRAY_SIZE(lcdc_resources),
 };
 
+<<<<<<< HEAD
 void __init at91_add_device_lcdc(struct atmel_lcdfb_info *data)
+=======
+void __init at91_add_device_lcdc(struct atmel_lcdfb_pdata *data)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!data)
 		return;
 
+<<<<<<< HEAD
+=======
+	if (cpu_is_at91sam9g45es())
+		at91_lcdc_device.name = "at91sam9g45es-lcdfb";
+	else
+		at91_lcdc_device.name = "at91sam9g45-lcdfb";
+
+>>>>>>> refs/remotes/origin/master
 	at91_set_A_periph(AT91_PIN_PE0, 0);	/* LCDDPWR */
 
 	at91_set_A_periph(AT91_PIN_PE2, 0);	/* LCDCC */
@@ -1159,7 +1382,11 @@ void __init at91_add_device_lcdc(struct atmel_lcdfb_info *data)
 	platform_device_register(&at91_lcdc_device);
 }
 #else
+<<<<<<< HEAD
 void __init at91_add_device_lcdc(struct atmel_lcdfb_info *data) {}
+=======
+void __init at91_add_device_lcdc(struct atmel_lcdfb_pdata *data) {}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 
@@ -1172,6 +1399,7 @@ static struct resource tcb0_resources[] = {
 	[0] = {
 		.start	= AT91SAM9G45_BASE_TCB0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.end	= AT91SAM9G45_BASE_TCB0 + SZ_16K - 1,
 =======
 		.end	= AT91SAM9G45_BASE_TCB0 + SZ_256 - 1,
@@ -1181,6 +1409,14 @@ static struct resource tcb0_resources[] = {
 	[1] = {
 		.start	= AT91SAM9G45_ID_TCB,
 		.end	= AT91SAM9G45_ID_TCB,
+=======
+		.end	= AT91SAM9G45_BASE_TCB0 + SZ_256 - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_TCB,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_TCB,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -1197,6 +1433,7 @@ static struct resource tcb1_resources[] = {
 	[0] = {
 		.start	= AT91SAM9G45_BASE_TCB1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.end	= AT91SAM9G45_BASE_TCB1 + SZ_16K - 1,
 =======
 		.end	= AT91SAM9G45_BASE_TCB1 + SZ_256 - 1,
@@ -1206,6 +1443,14 @@ static struct resource tcb1_resources[] = {
 	[1] = {
 		.start	= AT91SAM9G45_ID_TCB,
 		.end	= AT91SAM9G45_ID_TCB,
+=======
+		.end	= AT91SAM9G45_BASE_TCB1 + SZ_256 - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_TCB,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_TCB,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -1217,6 +1462,7 @@ static struct platform_device at91sam9g45_tcb1_device = {
 	.num_resources	= ARRAY_SIZE(tcb1_resources),
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __init at91_add_device_tc(void)
 {
@@ -1241,6 +1487,10 @@ static void __init at91_add_device_tc(void)
 #endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init at91_add_device_tc(void)
+{
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(&at91sam9g45_tcb0_device);
 	platform_device_register(&at91sam9g45_tcb1_device);
 }
@@ -1255,11 +1505,14 @@ static void __init at91_add_device_tc(void) { }
 
 #if defined(CONFIG_RTC_DRV_AT91RM9200) || defined(CONFIG_RTC_DRV_AT91RM9200_MODULE)
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_device at91sam9g45_rtc_device = {
 	.name		= "at91_rtc",
 	.id		= -1,
 	.num_resources	= 0,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct resource rtc_resources[] = {
 	[0] = {
 		.start	= AT91SAM9G45_BASE_RTC,
@@ -1267,8 +1520,13 @@ static struct resource rtc_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91_ID_SYS,
 		.end	= AT91_ID_SYS,
+=======
+		.start	= NR_IRQS_LEGACY + AT91_ID_SYS,
+		.end	= NR_IRQS_LEGACY + AT91_ID_SYS,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -1278,7 +1536,10 @@ static struct platform_device at91sam9g45_rtc_device = {
 	.id		= -1,
 	.resource	= rtc_resources,
 	.num_resources	= ARRAY_SIZE(rtc_resources),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init at91_add_device_rtc(void)
@@ -1305,8 +1566,13 @@ static struct resource tsadcc_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_TSC,
 		.end	= AT91SAM9G45_ID_TSC,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_TSC,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_TSC,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	}
 };
@@ -1342,21 +1608,131 @@ void __init at91_add_device_tsadcc(struct at91_tsadcc_data *data) {}
 
 
 /* --------------------------------------------------------------------
+<<<<<<< HEAD
+=======
+ *  ADC
+ * -------------------------------------------------------------------- */
+
+#if IS_ENABLED(CONFIG_AT91_ADC)
+static struct at91_adc_data adc_data;
+
+static struct resource adc_resources[] = {
+	[0] = {
+		.start	= AT91SAM9G45_BASE_TSC,
+		.end	= AT91SAM9G45_BASE_TSC + SZ_16K - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_TSC,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_TSC,
+		.flags	= IORESOURCE_IRQ,
+	}
+};
+
+static struct platform_device at91_adc_device = {
+	.name		= "at91_adc",
+	.id		= -1,
+	.dev		= {
+				.platform_data	= &adc_data,
+	},
+	.resource	= adc_resources,
+	.num_resources	= ARRAY_SIZE(adc_resources),
+};
+
+static struct at91_adc_trigger at91_adc_triggers[] = {
+	[0] = {
+		.name = "external-rising",
+		.value = 1,
+		.is_external = true,
+	},
+	[1] = {
+		.name = "external-falling",
+		.value = 2,
+		.is_external = true,
+	},
+	[2] = {
+		.name = "external-any",
+		.value = 3,
+		.is_external = true,
+	},
+	[3] = {
+		.name = "continuous",
+		.value = 6,
+		.is_external = false,
+	},
+};
+
+static struct at91_adc_reg_desc at91_adc_register_g45 = {
+	.channel_base = AT91_ADC_CHR(0),
+	.drdy_mask = AT91_ADC_DRDY,
+	.status_register = AT91_ADC_SR,
+	.trigger_register = 0x08,
+};
+
+void __init at91_add_device_adc(struct at91_adc_data *data)
+{
+	if (!data)
+		return;
+
+	if (test_bit(0, &data->channels_used))
+		at91_set_gpio_input(AT91_PIN_PD20, 0);
+	if (test_bit(1, &data->channels_used))
+		at91_set_gpio_input(AT91_PIN_PD21, 0);
+	if (test_bit(2, &data->channels_used))
+		at91_set_gpio_input(AT91_PIN_PD22, 0);
+	if (test_bit(3, &data->channels_used))
+		at91_set_gpio_input(AT91_PIN_PD23, 0);
+	if (test_bit(4, &data->channels_used))
+		at91_set_gpio_input(AT91_PIN_PD24, 0);
+	if (test_bit(5, &data->channels_used))
+		at91_set_gpio_input(AT91_PIN_PD25, 0);
+	if (test_bit(6, &data->channels_used))
+		at91_set_gpio_input(AT91_PIN_PD26, 0);
+	if (test_bit(7, &data->channels_used))
+		at91_set_gpio_input(AT91_PIN_PD27, 0);
+
+	if (data->use_external_triggers)
+		at91_set_A_periph(AT91_PIN_PD28, 0);
+
+	data->num_channels = 8;
+	data->startup_time = 40;
+	data->registers = &at91_adc_register_g45;
+	data->trigger_number = 4;
+	data->trigger_list = at91_adc_triggers;
+
+	adc_data = *data;
+	platform_device_register(&at91_adc_device);
+}
+#else
+void __init at91_add_device_adc(struct at91_adc_data *data) {}
+#endif
+
+/* --------------------------------------------------------------------
+>>>>>>> refs/remotes/origin/master
  *  RTT
  * -------------------------------------------------------------------- */
 
 static struct resource rtt_resources[] = {
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= AT91_BASE_SYS + AT91_RTT,
 		.end	= AT91_BASE_SYS + AT91_RTT + SZ_16 - 1,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.start	= AT91SAM9G45_BASE_RTT,
 		.end	= AT91SAM9G45_BASE_RTT + SZ_16 - 1,
 		.flags	= IORESOURCE_MEM,
 	}, {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		.flags	= IORESOURCE_MEM,
+=======
+		.flags	= IORESOURCE_MEM,
+	}, {
+		.flags  = IORESOURCE_IRQ,
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
@@ -1365,12 +1741,15 @@ static struct platform_device at91sam9g45_rtt_device = {
 	.id		= 0,
 	.resource	= rtt_resources,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_resources	= ARRAY_SIZE(rtt_resources),
 };
 
 static void __init at91_add_device_rtt(void)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #if IS_ENABLED(CONFIG_RTC_DRV_AT91SAM9)
@@ -1381,10 +1760,19 @@ static void __init at91_add_device_rtt_rtc(void)
 	 * The second resource is needed:
 	 * GPBR will serve as the storage for RTC time offset
 	 */
+<<<<<<< HEAD
 	at91sam9g45_rtt_device.num_resources = 2;
 	rtt_resources[1].start = AT91SAM9G45_BASE_GPBR +
 				 4 * CONFIG_RTC_DRV_AT91SAM9_GPBR;
 	rtt_resources[1].end = rtt_resources[1].start + 3;
+=======
+	at91sam9g45_rtt_device.num_resources = 3;
+	rtt_resources[1].start = AT91SAM9G45_BASE_GPBR +
+				 4 * CONFIG_RTC_DRV_AT91SAM9_GPBR;
+	rtt_resources[1].end = rtt_resources[1].start + 3;
+	rtt_resources[2].start = NR_IRQS_LEGACY + AT91_ID_SYS;
+	rtt_resources[2].end = NR_IRQS_LEGACY + AT91_ID_SYS;
+>>>>>>> refs/remotes/origin/master
 }
 #else
 static void __init at91_add_device_rtt_rtc(void)
@@ -1397,14 +1785,20 @@ static void __init at91_add_device_rtt_rtc(void)
 static void __init at91_add_device_rtt(void)
 {
 	at91_add_device_rtt_rtc();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(&at91sam9g45_rtt_device);
 }
 
 
 /* --------------------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *  TRNG
  * -------------------------------------------------------------------- */
 
@@ -1433,17 +1827,23 @@ static void __init at91_add_device_trng(void) {}
 #endif
 
 /* --------------------------------------------------------------------
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  Watchdog
  * -------------------------------------------------------------------- */
 
 #if defined(CONFIG_AT91SAM9X_WATCHDOG) || defined(CONFIG_AT91SAM9X_WATCHDOG_MODULE)
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct platform_device at91sam9g45_wdt_device = {
 	.name		= "at91_wdt",
 	.id		= -1,
 	.num_resources	= 0,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct resource wdt_resources[] = {
 	{
 		.start	= AT91SAM9G45_BASE_WDT,
@@ -1457,7 +1857,10 @@ static struct platform_device at91sam9g45_wdt_device = {
 	.id		= -1,
 	.resource	= wdt_resources,
 	.num_resources	= ARRAY_SIZE(wdt_resources),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init at91_add_device_watchdog(void)
@@ -1483,8 +1886,13 @@ static struct resource pwm_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_PWMC,
 		.end	= AT91SAM9G45_ID_PWMC,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_PWMC,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_PWMC,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -1536,14 +1944,23 @@ static struct resource ssc0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_SSC0,
 		.end	= AT91SAM9G45_ID_SSC0,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_SSC0,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_SSC0,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
 
 static struct platform_device at91sam9g45_ssc0_device = {
+<<<<<<< HEAD
 	.name	= "ssc",
+=======
+	.name	= "at91sam9g45_ssc",
+>>>>>>> refs/remotes/origin/master
 	.id	= 0,
 	.dev	= {
 		.dma_mask		= &ssc0_dmamask,
@@ -1578,14 +1995,23 @@ static struct resource ssc1_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_SSC1,
 		.end	= AT91SAM9G45_ID_SSC1,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_SSC1,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_SSC1,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
 
 static struct platform_device at91sam9g45_ssc1_device = {
+<<<<<<< HEAD
 	.name	= "ssc",
+=======
+	.name	= "at91sam9g45_ssc",
+>>>>>>> refs/remotes/origin/master
 	.id	= 1,
 	.dev	= {
 		.dma_mask		= &ssc1_dmamask,
@@ -1654,6 +2080,7 @@ void __init at91_add_device_ssc(unsigned id, unsigned pins) {}
 static struct resource dbgu_resources[] = {
 	[0] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= AT91_VA_BASE_SYS + AT91_DBGU,
 		.end	= AT91_VA_BASE_SYS + AT91_DBGU + SZ_512 - 1,
 =======
@@ -1665,6 +2092,15 @@ static struct resource dbgu_resources[] = {
 	[1] = {
 		.start	= AT91_ID_SYS,
 		.end	= AT91_ID_SYS,
+=======
+		.start	= AT91SAM9G45_BASE_DBGU,
+		.end	= AT91SAM9G45_BASE_DBGU + SZ_512 - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= NR_IRQS_LEGACY + AT91_ID_SYS,
+		.end	= NR_IRQS_LEGACY + AT91_ID_SYS,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -1673,9 +2109,12 @@ static struct atmel_uart_data dbgu_data = {
 	.use_dma_tx	= 0,
 	.use_dma_rx	= 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.regs		= (void __iomem *)(AT91_VA_BASE_SYS + AT91_DBGU),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static u64 dbgu_dmamask = DMA_BIT_MASK(32);
@@ -1705,8 +2144,13 @@ static struct resource uart0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_US0,
 		.end	= AT91SAM9G45_ID_US0,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_US0,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_US0,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -1748,8 +2192,13 @@ static struct resource uart1_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_US1,
 		.end	= AT91SAM9G45_ID_US1,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_US1,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_US1,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -1791,8 +2240,13 @@ static struct resource uart2_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_US2,
 		.end	= AT91SAM9G45_ID_US2,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_US2,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_US2,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -1834,8 +2288,13 @@ static struct resource uart3_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= AT91SAM9G45_ID_US3,
 		.end	= AT91SAM9G45_ID_US3,
+=======
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_US3,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_US3,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -1872,9 +2331,12 @@ static inline void configure_usart3_pins(unsigned pins)
 
 static struct platform_device *__initdata at91_uarts[ATMEL_MAX_UART];	/* the UARTs to use */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_device *atmel_default_console_device;	/* the serial console device */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 void __init at91_register_uart(unsigned id, unsigned portnr, unsigned pins)
 {
@@ -1912,6 +2374,7 @@ void __init at91_register_uart(unsigned id, unsigned portnr, unsigned pins)
 		at91_uarts[portnr] = pdev;
 }
 
+<<<<<<< HEAD
 void __init at91_set_serial_console(unsigned portnr)
 {
 	if (portnr < ATMEL_MAX_UART) {
@@ -1920,6 +2383,8 @@ void __init at91_set_serial_console(unsigned portnr)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void __init at91_add_device_serial(void)
 {
 	int i;
@@ -1928,6 +2393,7 @@ void __init at91_add_device_serial(void)
 		if (at91_uarts[i])
 			platform_device_register(at91_uarts[i]);
 	}
+<<<<<<< HEAD
 
 	if (!atmel_default_console_device)
 		printk(KERN_INFO "AT91: No default serial console defined.\n");
@@ -1938,6 +2404,136 @@ void __init at91_set_serial_console(unsigned portnr) {}
 void __init at91_add_device_serial(void) {}
 #endif
 
+=======
+}
+#else
+void __init at91_register_uart(unsigned id, unsigned portnr, unsigned pins) {}
+void __init at91_add_device_serial(void) {}
+#endif
+
+/* --------------------------------------------------------------------
+ *  SHA1/SHA256
+ * -------------------------------------------------------------------- */
+
+#if defined(CONFIG_CRYPTO_DEV_ATMEL_SHA) || defined(CONFIG_CRYPTO_DEV_ATMEL_SHA_MODULE)
+static struct resource sha_resources[] = {
+	{
+		.start	= AT91SAM9G45_BASE_SHA,
+		.end	= AT91SAM9G45_BASE_SHA + SZ_16K - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_AESTDESSHA,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_AESTDESSHA,
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static struct platform_device at91sam9g45_sha_device = {
+	.name	= "atmel_sha",
+	.id		= -1,
+	.resource	= sha_resources,
+	.num_resources	= ARRAY_SIZE(sha_resources),
+};
+
+static void __init at91_add_device_sha(void)
+{
+	platform_device_register(&at91sam9g45_sha_device);
+}
+#else
+static void __init at91_add_device_sha(void) {}
+#endif
+
+/* --------------------------------------------------------------------
+ *  DES/TDES
+ * -------------------------------------------------------------------- */
+
+#if defined(CONFIG_CRYPTO_DEV_ATMEL_TDES) || defined(CONFIG_CRYPTO_DEV_ATMEL_TDES_MODULE)
+static struct resource tdes_resources[] = {
+	[0] = {
+		.start	= AT91SAM9G45_BASE_TDES,
+		.end	= AT91SAM9G45_BASE_TDES + SZ_16K - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_AESTDESSHA,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_AESTDESSHA,
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static struct platform_device at91sam9g45_tdes_device = {
+	.name	= "atmel_tdes",
+	.id		= -1,
+	.resource	= tdes_resources,
+	.num_resources	= ARRAY_SIZE(tdes_resources),
+};
+
+static void __init at91_add_device_tdes(void)
+{
+	platform_device_register(&at91sam9g45_tdes_device);
+}
+#else
+static void __init at91_add_device_tdes(void) {}
+#endif
+
+/* --------------------------------------------------------------------
+ *  AES
+ * -------------------------------------------------------------------- */
+
+#if defined(CONFIG_CRYPTO_DEV_ATMEL_AES) || defined(CONFIG_CRYPTO_DEV_ATMEL_AES_MODULE)
+static struct crypto_platform_data aes_data;
+static struct crypto_dma_data alt_atslave;
+static u64 aes_dmamask = DMA_BIT_MASK(32);
+
+static struct resource aes_resources[] = {
+	[0] = {
+		.start	= AT91SAM9G45_BASE_AES,
+		.end	= AT91SAM9G45_BASE_AES + SZ_16K - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= NR_IRQS_LEGACY + AT91SAM9G45_ID_AESTDESSHA,
+		.end	= NR_IRQS_LEGACY + AT91SAM9G45_ID_AESTDESSHA,
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static struct platform_device at91sam9g45_aes_device = {
+	.name	= "atmel_aes",
+	.id		= -1,
+	.dev	= {
+		.dma_mask		= &aes_dmamask,
+		.coherent_dma_mask	= DMA_BIT_MASK(32),
+		.platform_data		= &aes_data,
+	},
+	.resource	= aes_resources,
+	.num_resources	= ARRAY_SIZE(aes_resources),
+};
+
+static void __init at91_add_device_aes(void)
+{
+	struct at_dma_slave	*atslave;
+
+	/* DMA TX slave channel configuration */
+	atslave = &alt_atslave.txdata;
+	atslave->dma_dev = &at_hdmac_device.dev;
+	atslave->cfg = ATC_FIFOCFG_ENOUGHSPACE	| ATC_SRC_H2SEL_HW |
+						ATC_SRC_PER(AT_DMA_ID_AES_RX);
+
+	/* DMA RX slave channel configuration */
+	atslave = &alt_atslave.rxdata;
+	atslave->dma_dev = &at_hdmac_device.dev;
+	atslave->cfg = ATC_FIFOCFG_ENOUGHSPACE	| ATC_DST_H2SEL_HW |
+						ATC_DST_PER(AT_DMA_ID_AES_TX);
+
+	aes_data.dma_slave = &alt_atslave;
+	platform_device_register(&at91sam9g45_aes_device);
+}
+#else
+static void __init at91_add_device_aes(void) {}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /* -------------------------------------------------------------------- */
 /*
@@ -1946,6 +2542,7 @@ void __init at91_add_device_serial(void) {}
  */
 static int __init at91_add_standard_devices(void)
 {
+<<<<<<< HEAD
 	at91_add_device_hdmac();
 	at91_add_device_rtc();
 	at91_add_device_rtt();
@@ -1955,6 +2552,20 @@ static int __init at91_add_standard_devices(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 	at91_add_device_watchdog();
 	at91_add_device_tc();
+=======
+	if (of_have_populated_dt())
+		return 0;
+
+	at91_add_device_hdmac();
+	at91_add_device_rtc();
+	at91_add_device_rtt();
+	at91_add_device_trng();
+	at91_add_device_watchdog();
+	at91_add_device_tc();
+	at91_add_device_sha();
+	at91_add_device_tdes();
+	at91_add_device_aes();
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

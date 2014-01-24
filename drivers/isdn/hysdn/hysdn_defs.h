@@ -42,10 +42,14 @@
 #define B1_PROT_64KBIT_HDLC        0x0001
 #define B1_PROT_64KBIT_TRANSPARENT 0x0002
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define B1_PROT_V110_ASYNCH        0x0004 
 =======
 #define B1_PROT_V110_ASYNCH        0x0004
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define B1_PROT_V110_ASYNCH        0x0004
+>>>>>>> refs/remotes/origin/master
 #define B1_PROT_V110_SYNCH         0x0008
 #define B1_PROT_T30                0x0010
 #define B1_PROT_64KBIT_INV_HDLC    0x0020
@@ -204,10 +208,14 @@ typedef struct HYSDN_CARD {
 
 		char infobuf[128];	/* for function procinfo */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 		struct HYSDN_CARD  *card;
 		struct capi_ctr capi_ctrl;
 		struct sk_buff *skbs[HYSDN_MAX_CAPI_SKB];
@@ -215,10 +223,14 @@ typedef struct HYSDN_CARD {
 		int sk_count;		/* number of buffers currently in ring */
 		struct sk_buff *tx_skb;	/* buffer for tx operation */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 		struct list_head ncci_head;
 	} *hyctrlinfo;
 #endif /* CONFIG_HYSDN_CAPI */
@@ -248,18 +260,24 @@ extern void hysdn_procconf_release(void);	/* deinit proc config filesys */
 extern int hysdn_proclog_init(hysdn_card *);	/* init proc log entry */
 extern void hysdn_proclog_release(hysdn_card *);	/* deinit proc log entry */
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void hysdn_addlog(hysdn_card *, char *,...);	/* output data to log */
 extern void hysdn_card_errlog(hysdn_card *, tErrLogEntry *, int);	/* output card log */
 
 /* boardergo.c */
 extern int ergo_inithardware(hysdn_card * card);	/* get hardware -> module init */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern void hysdn_addlog(hysdn_card *, char *, ...);	/* output data to log */
 extern void hysdn_card_errlog(hysdn_card *, tErrLogEntry *, int);	/* output card log */
 
 /* boardergo.c */
 extern int ergo_inithardware(hysdn_card *card);	/* get hardware -> module init */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* hysdn_boot.c */
 extern int pof_write_close(hysdn_card *);	/* close proc file after writing pof */
@@ -269,6 +287,7 @@ extern int EvalSysrTokData(hysdn_card *, unsigned char *, int);		/* Check Sysrea
 
 /* hysdn_sched.c */
 extern int hysdn_sched_tx(hysdn_card *, unsigned char *,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			unsigned short volatile *, unsigned short volatile *,
 			unsigned short);
@@ -280,6 +299,8 @@ extern int hysdn_tx_cfgline(hysdn_card *, unsigned char *,
 /* hysdn_net.c */
 extern unsigned int hynet_enable; 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			  unsigned short volatile *, unsigned short volatile *,
 			  unsigned short);
 extern int hysdn_sched_rx(hysdn_card *, unsigned char *, unsigned short,
@@ -289,13 +310,17 @@ extern int hysdn_tx_cfgline(hysdn_card *, unsigned char *,
 
 /* hysdn_net.c */
 extern unsigned int hynet_enable;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern int hysdn_net_create(hysdn_card *);	/* create a new net device */
 extern int hysdn_net_release(hysdn_card *);	/* delete the device */
 extern char *hysdn_net_getname(hysdn_card *);	/* get name of net interface */
 extern void hysdn_tx_netack(hysdn_card *);	/* acknowledge a packet tx */
 extern struct sk_buff *hysdn_tx_netget(hysdn_card *);	/* get next network packet */
 extern void hysdn_rx_netpkt(hysdn_card *, unsigned char *,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			unsigned short);	/* rxed packet from network */
 
@@ -308,6 +333,8 @@ extern void hycapi_rx_capipkt(hysdn_card * card, unsigned char * buf,
 				unsigned short len);
 extern void hycapi_tx_capiack(hysdn_card * card);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			    unsigned short);	/* rxed packet from network */
 
 #ifdef CONFIG_HYSDN_CAPI
@@ -318,7 +345,10 @@ extern int hycapi_capi_stop(hysdn_card *card);   /* suspend */
 extern void hycapi_rx_capipkt(hysdn_card *card, unsigned char *buf,
 			      unsigned short len);
 extern void hycapi_tx_capiack(hysdn_card *card);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct sk_buff *hycapi_tx_capiget(hysdn_card *card);
 extern int hycapi_init(void);
 extern void hycapi_cleanup(void);

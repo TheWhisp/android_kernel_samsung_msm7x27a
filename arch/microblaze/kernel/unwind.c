@@ -13,21 +13,32 @@
  */
 
 /* #define DEBUG 1 */
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kallsyms.h>
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/stacktrace.h>
 #include <linux/types.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <asm/sections.h>
 #include <asm/exceptions.h>
 #include <asm/unwind.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/switch_to.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/master
 
 struct stack_trace;
 

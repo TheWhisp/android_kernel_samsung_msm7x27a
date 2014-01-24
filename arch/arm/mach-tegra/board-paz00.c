@@ -17,6 +17,7 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -109,6 +110,17 @@ static struct rfkill_gpio_platform_data wifi_rfkill_platform_data = {
 	.name		= "wifi_rfkill",
 	.reset_gpio	= TEGRA_WIFI_RST,
 	.shutdown_gpio	= TEGRA_WIFI_PWRN,
+=======
+#include <linux/platform_device.h>
+#include <linux/gpio/driver.h>
+#include <linux/rfkill-gpio.h>
+#include "board.h"
+
+static struct rfkill_gpio_platform_data wifi_rfkill_platform_data = {
+	.name		= "wifi_rfkill",
+	.reset_gpio	= 25, /* PD1 */
+	.shutdown_gpio	= 85, /* PK5 */
+>>>>>>> refs/remotes/origin/master
 	.type	= RFKILL_TYPE_WLAN,
 };
 
@@ -120,6 +132,7 @@ static struct platform_device wifi_rfkill_device = {
 	},
 };
 
+<<<<<<< HEAD
 static struct gpio_led gpio_leds[] = {
 	{
 		.name			= "wifi-led",
@@ -286,3 +299,19 @@ MACHINE_START(PAZ00, "Toshiba AC100 / Dynabook AZ")
 	.restart	= tegra_assert_system_reset,
 >>>>>>> refs/remotes/origin/cm-10.0
 MACHINE_END
+=======
+static struct gpiod_lookup_table wifi_gpio_lookup = {
+	.dev_id = "rfkill_gpio",
+	.table = {
+		GPIO_LOOKUP_IDX("tegra-gpio", 25, NULL, 0, 0),
+		GPIO_LOOKUP_IDX("tegra-gpio", 85, NULL, 1, 0),
+		{ },
+	},
+};
+
+void __init tegra_paz00_wifikill_init(void)
+{
+	gpiod_add_lookup_table(&wifi_gpio_lookup);
+	platform_device_register(&wifi_rfkill_device);
+}
+>>>>>>> refs/remotes/origin/master

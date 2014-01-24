@@ -44,9 +44,13 @@
 
 #include <linux/highmem.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <scsi/scsi.h>
 #include <scsi/scsi_cmnd.h>
 
@@ -69,7 +73,11 @@ void usb_stor_pad12_command(struct scsi_cmnd *srb, struct us_data *us)
 	 * NOTE: This only works because a scsi_cmnd struct field contains
 	 * a unsigned char cmnd[16], so we know we have storage available
 	 */
+<<<<<<< HEAD
 	for (; srb->cmd_len<12; srb->cmd_len++)
+=======
+	for (; srb->cmd_len < 12; srb->cmd_len++)
+>>>>>>> refs/remotes/origin/master
 		srb->cmnd[srb->cmd_len] = 0;
 
 	/* send the command to the transport layer */
@@ -79,14 +87,22 @@ void usb_stor_pad12_command(struct scsi_cmnd *srb, struct us_data *us)
 void usb_stor_ufi_command(struct scsi_cmnd *srb, struct us_data *us)
 {
 	/* fix some commands -- this is a form of mode translation
+<<<<<<< HEAD
 	 * UFI devices only accept 12 byte long commands 
+=======
+	 * UFI devices only accept 12 byte long commands
+>>>>>>> refs/remotes/origin/master
 	 *
 	 * NOTE: This only works because a scsi_cmnd struct field contains
 	 * a unsigned char cmnd[16], so we know we have storage available
 	 */
 
 	/* Pad the ATAPI command with zeros */
+<<<<<<< HEAD
 	for (; srb->cmd_len<12; srb->cmd_len++)
+=======
+	for (; srb->cmd_len < 12; srb->cmd_len++)
+>>>>>>> refs/remotes/origin/master
 		srb->cmnd[srb->cmd_len] = 0;
 
 	/* set command length to 12 bytes (this affects the transport layer) */
@@ -138,6 +154,7 @@ unsigned int usb_stor_access_xfer_buf(unsigned char *buffer,
 	unsigned int buflen, struct scsi_cmnd *srb, struct scatterlist **sgptr,
 	unsigned int *offset, enum xfer_buf_dir dir)
 {
+<<<<<<< HEAD
 	unsigned int cnt;
 	struct scatterlist *sg = *sgptr;
 
@@ -201,6 +218,44 @@ unsigned int usb_stor_access_xfer_buf(unsigned char *buffer,
 	*sgptr = sg;
 
 	/* Return the amount actually transferred */
+=======
+	unsigned int cnt = 0;
+	struct scatterlist *sg = *sgptr;
+	struct sg_mapping_iter miter;
+	unsigned int nents = scsi_sg_count(srb);
+
+	if (sg)
+		nents = sg_nents(sg);
+	else
+		sg = scsi_sglist(srb);
+
+	sg_miter_start(&miter, sg, nents, dir == FROM_XFER_BUF ?
+		SG_MITER_FROM_SG: SG_MITER_TO_SG);
+
+	if (!sg_miter_skip(&miter, *offset))
+		return cnt;
+
+	while (sg_miter_next(&miter) && cnt < buflen) {
+		unsigned int len = min_t(unsigned int, miter.length,
+				buflen - cnt);
+
+		if (dir == FROM_XFER_BUF)
+			memcpy(buffer + cnt, miter.addr, len);
+		else
+			memcpy(miter.addr, buffer + cnt, len);
+
+		if (*offset + len < miter.piter.sg->length) {
+			*offset += len;
+			*sgptr = miter.piter.sg;
+		} else {
+			*offset = 0;
+			*sgptr = sg_next(miter.piter.sg);
+		}
+		cnt += len;
+	}
+	sg_miter_stop(&miter);
+
+>>>>>>> refs/remotes/origin/master
 	return cnt;
 }
 EXPORT_SYMBOL_GPL(usb_stor_access_xfer_buf);

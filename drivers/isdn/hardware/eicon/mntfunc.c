@@ -28,10 +28,14 @@ static DESCRIPTOR DAdapter;
 static DESCRIPTOR MAdapter;
 static DESCRIPTOR MaintDescriptor =
 <<<<<<< HEAD
+<<<<<<< HEAD
     { IDI_DIMAINT, 0, 0, (IDI_CALL) diva_maint_prtComp };
 =======
 { IDI_DIMAINT, 0, 0, (IDI_CALL) diva_maint_prtComp };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+{ IDI_DIMAINT, 0, 0, (IDI_CALL) diva_maint_prtComp };
+>>>>>>> refs/remotes/origin/master
 
 extern int diva_os_copy_to_user(void *os_handle, void __user *dst,
 				const void *src, int length);
@@ -49,10 +53,14 @@ static void no_printf(unsigned char *x, ...)
  *  DIDD callback function
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void *didd_callback(void *context, DESCRIPTOR * adapter,
 =======
 static void *didd_callback(void *context, DESCRIPTOR *adapter,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void *didd_callback(void *context, DESCRIPTOR *adapter,
+>>>>>>> refs/remotes/origin/master
 			   int removal)
 {
 	if (adapter->type == IDI_DADAPTER) {
@@ -80,7 +88,11 @@ static void *didd_callback(void *context, DESCRIPTOR *adapter,
 /*
  * connect to didd
  */
+<<<<<<< HEAD
 static int DIVA_INIT_FUNCTION connect_didd(void)
+=======
+static int __init connect_didd(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int x = 0;
 	int dadapter = 0;
@@ -96,16 +108,22 @@ static int DIVA_INIT_FUNCTION connect_didd(void)
 			req.didd_notify.e.Req = 0;
 			req.didd_notify.e.Rc =
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    IDI_SYNC_REQ_DIDD_REGISTER_ADAPTER_NOTIFY;
 			req.didd_notify.info.callback = (void *)didd_callback;
 			req.didd_notify.info.context = NULL;
 			DAdapter.request((ENTITY *) & req);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				IDI_SYNC_REQ_DIDD_REGISTER_ADAPTER_NOTIFY;
 			req.didd_notify.info.callback = (void *)didd_callback;
 			req.didd_notify.info.context = NULL;
 			DAdapter.request((ENTITY *)&req);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (req.didd_notify.e.Rc != 0xff)
 				return (0);
 			notify_handle = req.didd_notify.info.handle;
@@ -113,16 +131,22 @@ static int DIVA_INIT_FUNCTION connect_didd(void)
 			req.didd_add_adapter.e.Req = 0;
 			req.didd_add_adapter.e.Rc =
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    IDI_SYNC_REQ_DIDD_ADD_ADAPTER;
 			req.didd_add_adapter.info.descriptor =
 			    (void *) &MaintDescriptor;
 			DAdapter.request((ENTITY *) & req);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				IDI_SYNC_REQ_DIDD_ADD_ADAPTER;
 			req.didd_add_adapter.info.descriptor =
 				(void *) &MaintDescriptor;
 			DAdapter.request((ENTITY *)&req);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (req.didd_add_adapter.e.Rc != 0xff)
 				return (0);
 		} else if ((DIDD_Table[x].type > 0)
@@ -136,7 +160,11 @@ static int DIVA_INIT_FUNCTION connect_didd(void)
 /*
  * disconnect from didd
  */
+<<<<<<< HEAD
 static void DIVA_EXIT_FUNCTION disconnect_didd(void)
+=======
+static void __exit disconnect_didd(void)
+>>>>>>> refs/remotes/origin/master
 {
 	IDI_SYNC_REQ req;
 
@@ -144,14 +172,19 @@ static void DIVA_EXIT_FUNCTION disconnect_didd(void)
 	req.didd_notify.e.Rc = IDI_SYNC_REQ_DIDD_REMOVE_ADAPTER_NOTIFY;
 	req.didd_notify.info.handle = notify_handle;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DAdapter.request((ENTITY *) & req);
 =======
 	DAdapter.request((ENTITY *)&req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DAdapter.request((ENTITY *)&req);
+>>>>>>> refs/remotes/origin/master
 
 	req.didd_remove_adapter.e.Req = 0;
 	req.didd_remove_adapter.e.Rc = IDI_SYNC_REQ_DIDD_REMOVE_ADAPTER;
 	req.didd_remove_adapter.info.p_request =
+<<<<<<< HEAD
 <<<<<<< HEAD
 	    (IDI_CALL) MaintDescriptor.request;
 	DAdapter.request((ENTITY *) & req);
@@ -159,6 +192,10 @@ static void DIVA_EXIT_FUNCTION disconnect_didd(void)
 		(IDI_CALL) MaintDescriptor.request;
 	DAdapter.request((ENTITY *)&req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(IDI_CALL) MaintDescriptor.request;
+	DAdapter.request((ENTITY *)&req);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -179,6 +216,7 @@ int maint_read_write(void __user *buf, int count)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cmd = *(dword *) & data[0];	/* command */
 	id = *(dword *) & data[4];	/* driver id */
 	mask = *(dword *) & data[8];	/* mask or size */
@@ -187,6 +225,11 @@ int maint_read_write(void __user *buf, int count)
 	id = *(dword *)&data[4];	/* driver id */
 	mask = *(dword *)&data[8];	/* mask or size */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmd = *(dword *)&data[0];	/* command */
+	id = *(dword *)&data[4];	/* driver id */
+	mask = *(dword *)&data[8];	/* mask or size */
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd) {
 	case DITRACE_CMD_GET_DRIVER_INFO:
@@ -216,6 +259,7 @@ int maint_read_write(void __user *buf, int count)
 		break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     /*
        Filter commands will ignore the ID due to fact that filtering affects
        the B- channel and Audio Tap trace levels only. Also MAINT driver will
@@ -230,6 +274,8 @@ int maint_read_write(void __user *buf, int count)
 			} else {
 				ret = diva_set_trace_filter ((int)mask, data);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		  Filter commands will ignore the ID due to fact that filtering affects
 		  the B- channel and Audio Tap trace levels only. Also MAINT driver will
@@ -243,7 +289,10 @@ int maint_read_write(void __user *buf, int count)
 				ret = -EFAULT;
 			} else {
 				ret = diva_set_trace_filter((int)mask, data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		} else {
 			ret = -EINVAL;
@@ -252,12 +301,17 @@ int maint_read_write(void __user *buf, int count)
 
 	case DITRACE_READ_SELECTIVE_TRACE_FILTER:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ((ret = diva_get_trace_filter (sizeof(data), data)) > 0) {
 			if (diva_os_copy_to_user (NULL, buf, data, ret))
 =======
 		if ((ret = diva_get_trace_filter(sizeof(data), data)) > 0) {
 			if (diva_os_copy_to_user(NULL, buf, data, ret))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ((ret = diva_get_trace_filter(sizeof(data), data)) > 0) {
+			if (diva_os_copy_to_user(NULL, buf, data, ret))
+>>>>>>> refs/remotes/origin/master
 				ret = -EFAULT;
 		} else {
 			ret = -ENODEV;
@@ -265,6 +319,7 @@ int maint_read_write(void __user *buf, int count)
 		break;
 
 	case DITRACE_READ_TRACE_ENTRY:{
+<<<<<<< HEAD
 <<<<<<< HEAD
 			diva_os_spin_lock_magic_t old_irql;
 			word size;
@@ -349,6 +404,8 @@ int maint_read_write(void __user *buf, int count)
 			diva_os_free(0, pbuf);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		diva_os_spin_lock_magic_t old_irql;
 		word size;
 		diva_dbg_entry_head_t *pmsg;
@@ -431,7 +488,10 @@ int maint_read_write(void __user *buf, int count)
 		}
 		diva_os_free(0, pbuf);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -443,7 +503,11 @@ int maint_read_write(void __user *buf, int count)
 /*
  *  init
  */
+<<<<<<< HEAD
 int DIVA_INIT_FUNCTION mntfunc_init(int *buffer_length, void **buffer,
+=======
+int __init mntfunc_init(int *buffer_length, void **buffer,
+>>>>>>> refs/remotes/origin/master
 				    unsigned long diva_dbg_mem)
 {
 	if (*buffer_length < 64) {
@@ -460,10 +524,14 @@ int DIVA_INIT_FUNCTION mntfunc_init(int *buffer_length, void **buffer,
 		while ((*buffer_length >= (64 * 1024))
 		       &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		       (!(*buffer = diva_os_malloc (0, *buffer_length)))) {
 =======
 		       (!(*buffer = diva_os_malloc(0, *buffer_length)))) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       (!(*buffer = diva_os_malloc(0, *buffer_length)))) {
+>>>>>>> refs/remotes/origin/master
 			*buffer_length -= 1024;
 		}
 
@@ -476,10 +544,14 @@ int DIVA_INIT_FUNCTION mntfunc_init(int *buffer_length, void **buffer,
 	if (diva_maint_init(*buffer, *buffer_length, (diva_dbg_mem == 0))) {
 		if (!diva_dbg_mem) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			diva_os_free (0, *buffer);
 =======
 			diva_os_free(0, *buffer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			diva_os_free(0, *buffer);
+>>>>>>> refs/remotes/origin/master
 		}
 		DBG_ERR(("init: maint init failed"));
 		return (0);
@@ -490,10 +562,14 @@ int DIVA_INIT_FUNCTION mntfunc_init(int *buffer_length, void **buffer,
 		diva_maint_finit();
 		if (!diva_dbg_mem) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			diva_os_free (0, *buffer);
 =======
 			diva_os_free(0, *buffer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			diva_os_free(0, *buffer);
+>>>>>>> refs/remotes/origin/master
 		}
 		return (0);
 	}
@@ -503,7 +579,11 @@ int DIVA_INIT_FUNCTION mntfunc_init(int *buffer_length, void **buffer,
 /*
  *  exit
  */
+<<<<<<< HEAD
 void DIVA_EXIT_FUNCTION mntfunc_finit(void)
+=======
+void __exit mntfunc_finit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	void *buffer;
 	int i = 100;
@@ -518,10 +598,14 @@ void DIVA_EXIT_FUNCTION mntfunc_finit(void)
 
 	if ((buffer = diva_maint_finit())) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		diva_os_free (0, buffer);
 =======
 		diva_os_free(0, buffer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		diva_os_free(0, buffer);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	memset(&MAdapter, 0, sizeof(MAdapter));

@@ -13,6 +13,7 @@
  *  published by the Free Software Foundation.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -21,6 +22,8 @@
 
 #include <mach/gpio.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/gpio.h>
 #include <linux/gpio-pxa.h>
 #include <linux/module.h>
@@ -29,7 +32,10 @@
 #include <linux/io.h>
 #include <linux/syscore_ops.h>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/pxa2xx-regs.h>
 #include <mach/mfp-pxa2xx.h>
 
@@ -41,14 +47,20 @@
 #define GAFR_U(x)	__GAFR(1, x)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define BANK_OFF(n)	(((n) < 3) ? (n) << 2 : 0x100 + (((n) - 3) << 2))
 #define GPLR(x)		__REG2(0x40E00000, BANK_OFF((x) >> 5))
 #define GPDR(x)		__REG2(0x40E00000, BANK_OFF((x) >> 5) + 0x0c)
 #define GPSR(x)		__REG2(0x40E00000, BANK_OFF((x) >> 5) + 0x18)
 #define GPCR(x)		__REG2(0x40E00000, BANK_OFF((x) >> 5) + 0x24)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define PWER_WE35	(1 << 24)
 
 struct gpio_desc {
@@ -243,14 +255,20 @@ static void __init pxa25x_mfp_init(void)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* running before pxa_gpio_probe() */
 #ifdef CONFIG_CPU_PXA26x
 	pxa_last_gpio = 89;
 #else
 	pxa_last_gpio = 84;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i <= pxa_last_gpio; i++)
 		gpio_desc[i].valid = 1;
 
@@ -321,9 +339,13 @@ static void __init pxa27x_mfp_init(void)
 	int i, gpio;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pxa_last_gpio = 120;	/* running before pxa_gpio_probe() */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pxa_last_gpio = 120;	/* running before pxa_gpio_probe() */
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i <= pxa_last_gpio; i++) {
 		/* skip GPIO2, 5, 6, 7, 8, they are not
 		 * valid pins allow configuration
@@ -370,9 +392,13 @@ static inline void pxa27x_mfp_init(void) {}
 static unsigned long saved_gafr[2][4];
 static unsigned long saved_gpdr[4];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static unsigned long saved_gplr[4];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned long saved_gplr[4];
+>>>>>>> refs/remotes/origin/master
 static unsigned long saved_pgsr[4];
 
 static int pxa2xx_mfp_suspend(void)
@@ -392,6 +418,7 @@ static int pxa2xx_mfp_suspend(void)
 
 	for (i = 0; i <= gpio_to_bank(pxa_last_gpio); i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		saved_gafr[0][i] = GAFR_L(i);
 		saved_gafr[1][i] = GAFR_U(i);
@@ -401,6 +428,8 @@ static int pxa2xx_mfp_suspend(void)
 		GPDR(i * 32) = gpdr_lpm[i];
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		saved_gafr[0][i] = GAFR_L(i);
 		saved_gafr[1][i] = GAFR_U(i);
 		saved_gpdr[i] = GPDR(i * 32);
@@ -421,7 +450,10 @@ static int pxa2xx_mfp_suspend(void)
 			GPDR(i) &= ~GPIO_bit(i);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -433,10 +465,15 @@ static void pxa2xx_mfp_resume(void)
 		GAFR_L(i) = saved_gafr[0][i];
 		GAFR_U(i) = saved_gafr[1][i];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		GPSR(i * 32) = saved_gplr[i];
 		GPCR(i * 32) = ~saved_gplr[i];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		GPSR(i * 32) = saved_gplr[i];
+		GPCR(i * 32) = ~saved_gplr[i];
+>>>>>>> refs/remotes/origin/master
 		GPDR(i * 32) = saved_gpdr[i];
 		PGSR(i) = saved_pgsr[i];
 	}

@@ -227,13 +227,20 @@ static void hac_ac97_coldrst(struct snd_ac97 *ac97)
 	hac_ac97_warmrst(ac97);
 }
 
+<<<<<<< HEAD
 struct snd_ac97_bus_ops soc_ac97_ops = {
+=======
+static struct snd_ac97_bus_ops hac_ac97_ops = {
+>>>>>>> refs/remotes/origin/master
 	.read	= hac_ac97_read,
 	.write	= hac_ac97_write,
 	.reset	= hac_ac97_coldrst,
 	.warm_reset = hac_ac97_warmrst,
 };
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(soc_ac97_ops);
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int hac_hw_params(struct snd_pcm_substream *substream,
 			 struct snd_pcm_hw_params *params,
@@ -267,10 +274,14 @@ static int hac_hw_params(struct snd_pcm_substream *substream,
 	SNDRV_PCM_FMTBIT_S16_LE
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops hac_dai_ops = {
 =======
 static const struct snd_soc_dai_ops hac_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops hac_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params	= hac_hw_params,
 };
 
@@ -314,6 +325,7 @@ static struct snd_soc_dai_driver sh4_hac_dai[] = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit hac_soc_platform_probe(struct platform_device *pdev)
 {
 	return snd_soc_register_dais(&pdev->dev, sh4_hac_dai,
@@ -323,6 +335,26 @@ static int __devinit hac_soc_platform_probe(struct platform_device *pdev)
 static int __devexit hac_soc_platform_remove(struct platform_device *pdev)
 {
 	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(sh4_hac_dai));
+=======
+static const struct snd_soc_component_driver sh4_hac_component = {
+	.name		= "sh4-hac",
+};
+
+static int hac_soc_platform_probe(struct platform_device *pdev)
+{
+	ret = snd_soc_set_ac97_ops(&hac_ac97_ops);
+	if (ret != 0)
+		return ret;
+
+	return snd_soc_register_component(&pdev->dev, &sh4_hac_component,
+					  sh4_hac_dai, ARRAY_SIZE(sh4_hac_dai));
+}
+
+static int hac_soc_platform_remove(struct platform_device *pdev)
+{
+	snd_soc_unregister_component(&pdev->dev);
+	snd_soc_set_ac97_ops(NULL);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -333,6 +365,7 @@ static struct platform_driver hac_pcm_driver = {
 	},
 
 	.probe = hac_soc_platform_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(hac_soc_platform_remove),
 };
 
@@ -351,6 +384,12 @@ module_exit(sh4_hac_pcm_exit);
 =======
 module_platform_driver(hac_pcm_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = hac_soc_platform_remove,
+};
+
+module_platform_driver(hac_pcm_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("SuperH onchip HAC (AC97) audio driver");

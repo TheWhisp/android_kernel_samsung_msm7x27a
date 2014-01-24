@@ -1,10 +1,18 @@
 /* 
+<<<<<<< HEAD
  * File...........: linux/include/asm-s390x/idals.h
  * Author(s)......: Holger Smolinski <Holger.Smolinski@de.ibm.com>
  *		    Martin Schwidefsky <schwidefsky@de.ibm.com>
  * Bugreports.to..: <Linux390@de.ibm.com>
  * (C) IBM Corporation, IBM Deutschland Entwicklung GmbH, 2000a
  
+=======
+ * Author(s)......: Holger Smolinski <Holger.Smolinski@de.ibm.com>
+ *		    Martin Schwidefsky <schwidefsky@de.ibm.com>
+ * Bugreports.to..: <Linux390@de.ibm.com>
+ * Copyright IBM Corp. 2000
+ *
+>>>>>>> refs/remotes/origin/master
  * History of changes
  * 07/24/00 new file
  * 05/04/02 code restructuring.
@@ -20,7 +28,11 @@
 #include <asm/cio.h>
 #include <asm/uaccess.h>
 
+<<<<<<< HEAD
 #ifdef __s390x__
+=======
+#ifdef CONFIG_64BIT
+>>>>>>> refs/remotes/origin/master
 #define IDA_SIZE_LOG 12 /* 11 for 2k , 12 for 4k */
 #else
 #define IDA_SIZE_LOG 11 /* 11 for 2k , 12 for 4k */
@@ -33,7 +45,11 @@
 static inline int
 idal_is_needed(void *vaddr, unsigned int length)
 {
+<<<<<<< HEAD
 #ifdef __s390x__
+=======
+#ifdef CONFIG_64BIT
+>>>>>>> refs/remotes/origin/master
 	return ((__pa(vaddr) + length - 1) >> 31) != 0;
 #else
 	return 0;
@@ -78,7 +94,11 @@ static inline unsigned long *idal_create_words(unsigned long *idaws,
 static inline int
 set_normalized_cda(struct ccw1 * ccw, void *vaddr)
 {
+<<<<<<< HEAD
 #ifdef __s390x__
+=======
+#ifdef CONFIG_64BIT
+>>>>>>> refs/remotes/origin/master
 	unsigned int nridaws;
 	unsigned long *idal;
 
@@ -105,7 +125,11 @@ set_normalized_cda(struct ccw1 * ccw, void *vaddr)
 static inline void
 clear_normalized_cda(struct ccw1 * ccw)
 {
+<<<<<<< HEAD
 #ifdef __s390x__
+=======
+#ifdef CONFIG_64BIT
+>>>>>>> refs/remotes/origin/master
 	if (ccw->flags & CCW_FLAG_IDA) {
 		kfree((void *)(unsigned long) ccw->cda);
 		ccw->flags &= ~CCW_FLAG_IDA;
@@ -182,7 +206,11 @@ idal_buffer_free(struct idal_buffer *ib)
 static inline int
 __idal_buffer_is_needed(struct idal_buffer *ib)
 {
+<<<<<<< HEAD
 #ifdef __s390x__
+=======
+#ifdef CONFIG_64BIT
+>>>>>>> refs/remotes/origin/master
 	return ib->size > (4096ul << ib->page_order) ||
 		idal_is_needed(ib->data[0], ib->size);
 #else

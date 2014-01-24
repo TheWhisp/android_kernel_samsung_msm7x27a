@@ -2,7 +2,11 @@
  * Copyright(c) 2008 - 2010 Realtek Corporation. All rights reserved.
  *
  * Based on the r8180 driver, which is:
+<<<<<<< HEAD
  * Copyright 2004-2005 Andrea Merello <andreamrl@tiscali.it>, et al.
+=======
+ * Copyright 2004-2005 Andrea Merello <andrea.merello@gmail.com>, et al.
+>>>>>>> refs/remotes/origin/master
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -28,7 +32,10 @@
 
 #include <linux/module.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioport.h>
 #include <linux/sched.h>
 #include <linux/types.h>
@@ -88,10 +95,13 @@
 	.subvendor = PCI_ANY_ID, .subdevice = PCI_ANY_ID , \
 	.driver_data = (kernel_ulong_t)&(cfg)
 
+<<<<<<< HEAD
 #define irqreturn_type irqreturn_t
 
 #define rtl8192_interrupt(x, y, z) rtl8192_interrupt_rsl(x, y)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define RTL_MAX_SCAN_SIZE 128
 
 #define RTL_RATE_MAX		30
@@ -192,6 +202,11 @@
 #define MAX_RX_COUNT				64
 #define MAX_TX_QUEUE_COUNT			9
 
+<<<<<<< HEAD
+=======
+extern int hwwep;
+
+>>>>>>> refs/remotes/origin/master
 enum RTL819x_PHY_PARAM {
 	RTL819X_PHY_MACPHY_REG			= 0,
 	RTL819X_PHY_MACPHY_REG_PG		= 1,
@@ -353,7 +368,10 @@ struct rt_stats {
 	unsigned long rxrdu;
 	unsigned long rxok;
 	unsigned long rxframgment;
+<<<<<<< HEAD
 	unsigned long rxcmdpkt[8];
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long rxurberr;
 	unsigned long rxstaterr;
 	unsigned long rxdatacrcerr;
@@ -944,7 +962,11 @@ struct r8192_priv {
 	bool		bfsync_processing;
 	u32		rate_record;
 	u32		rateCountDiffRecord;
+<<<<<<< HEAD
 	u32		ContiuneDiffCount;
+=======
+	u32		ContinueDiffCount;
+>>>>>>> refs/remotes/origin/master
 	bool		bswitch_fsync;
 	u8		framesync;
 	u32		framesyncC34;
@@ -1045,8 +1067,11 @@ void rtl8192_set_chan(struct net_device *dev, short ch);
 void check_rfctrl_gpio_timer(unsigned long data);
 
 void rtl8192_hw_wakeup_wq(void *data);
+<<<<<<< HEAD
 irqreturn_type rtl8192_interrupt(int irq, void *netdev, struct pt_regs *regs);
 
+=======
+>>>>>>> refs/remotes/origin/master
 short rtl8192_pci_initdescring(struct net_device *dev);
 
 void rtl8192_cancel_deferred_work(struct r8192_priv *priv);
@@ -1086,10 +1111,13 @@ void ActUpdateChannelAccessSetting(struct net_device *dev,
 			   enum wireless_mode WirelessMode,
 			   struct channel_access_setting *ChnlAccessSetting);
 
+<<<<<<< HEAD
 /* proc stuff from rtl_debug.c */
 void rtl8192_proc_init_one(struct net_device *dev);
 void rtl8192_proc_remove_one(struct net_device *dev);
 void rtl8192_proc_module_init(void);
 void rtl8192_proc_module_remove(void);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

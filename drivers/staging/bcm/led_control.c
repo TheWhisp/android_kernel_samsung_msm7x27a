@@ -6,6 +6,7 @@
 static B_UINT16 CFG_CalculateChecksum(B_UINT8 *pu8Buffer, B_UINT32 u32Size)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	B_UINT16 	u16CheckSum=0;
 	while(u32Size--) {
 		u16CheckSum += (B_UINT8)~(*pu8Buffer);
@@ -19,6 +20,8 @@ BOOLEAN IsReqGpioIsLedInNVM(PMINI_ADAPTER Adapter, UINT gpios)
 	Status = (Adapter->gpioBitMap & gpios) ^ gpios ;
 	if(Status)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	B_UINT16 u16CheckSum = 0;
 	while (u32Size--) {
 		u16CheckSum += (B_UINT8)~(*pu8Buffer);
@@ -27,17 +30,26 @@ BOOLEAN IsReqGpioIsLedInNVM(PMINI_ADAPTER Adapter, UINT gpios)
 	return u16CheckSum;
 }
 
+<<<<<<< HEAD
 BOOLEAN IsReqGpioIsLedInNVM(PMINI_ADAPTER Adapter, UINT gpios)
+=======
+bool IsReqGpioIsLedInNVM(struct bcm_mini_adapter *Adapter, UINT gpios)
+>>>>>>> refs/remotes/origin/master
 {
 	INT Status;
 	Status = (Adapter->gpioBitMap & gpios) ^ gpios;
 	if (Status)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		return FALSE;
+=======
+		return false;
+>>>>>>> refs/remotes/origin/master
 	else
 		return TRUE;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static INT LED_Blink(PMINI_ADAPTER Adapter, UINT GPIO_Num, UCHAR uiLedIndex, ULONG timeout, INT num_of_time, LedEventInfo_t currdriverstate)
 =======
@@ -79,6 +91,14 @@ static INT LED_Blink(PMINI_ADAPTER Adapter, UINT GPIO_Num, UCHAR uiLedIndex,
 			TURN_OFF_LED(GPIO_Num, uiLedIndex);
 			Status=EVENT_SIGNALED;
 =======
+=======
+static INT LED_Blink(struct bcm_mini_adapter *Adapter, UINT GPIO_Num, UCHAR uiLedIndex,
+		ULONG timeout, INT num_of_time, enum bcm_led_events currdriverstate)
+{
+	int Status = STATUS_SUCCESS;
+	bool bInfinite = false;
+
+>>>>>>> refs/remotes/origin/master
 	/* Check if num_of_time is -ve. If yes, blink led in infinite loop */
 	if (num_of_time < 0) {
 		bInfinite = TRUE;
@@ -108,24 +128,34 @@ static INT LED_Blink(PMINI_ADAPTER Adapter, UINT GPIO_Num, UCHAR uiLedIndex,
 		if (Status) {
 			TURN_OFF_LED(GPIO_Num, uiLedIndex);
 			Status = EVENT_SIGNALED;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
 		TURN_OFF_LED(GPIO_Num, uiLedIndex);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		Status = wait_event_interruptible_timeout(Adapter->LEDInfo.notify_led_event,
 					currdriverstate!= Adapter->DriverState || kthread_should_stop(),
 					msecs_to_jiffies(timeout));
 		if(bInfinite == FALSE)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		Status = wait_event_interruptible_timeout(
 				Adapter->LEDInfo.notify_led_event,
 				currdriverstate != Adapter->DriverState ||
 					kthread_should_stop(),
 				msecs_to_jiffies(timeout));
+<<<<<<< HEAD
 		if (bInfinite == FALSE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (bInfinite == false)
+>>>>>>> refs/remotes/origin/master
 			num_of_time--;
 	}
 	return Status;
@@ -133,6 +163,7 @@ static INT LED_Blink(PMINI_ADAPTER Adapter, UINT GPIO_Num, UCHAR uiLedIndex,
 
 static INT ScaleRateofTransfer(ULONG rate)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if(rate <= 3)
 		return rate;
@@ -148,6 +179,8 @@ static INT ScaleRateofTransfer(ULONG rate)
 		return 9;
 	else if((rate > 500) && (rate <= 600))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (rate <= 3)
 		return rate;
 	else if ((rate > 3) && (rate <= 100))
@@ -161,7 +194,10 @@ static INT ScaleRateofTransfer(ULONG rate)
 	else if ((rate > 400) && (rate <= 500))
 		return 9;
 	else if ((rate > 500) && (rate <= 600))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return 10;
 	else
 		return MAX_NUM_OF_BLINKS;
@@ -169,6 +205,7 @@ static INT ScaleRateofTransfer(ULONG rate)
 
 
 
+<<<<<<< HEAD
 static INT LED_Proportional_Blink(PMINI_ADAPTER Adapter, UCHAR GPIO_Num_tx,
 <<<<<<< HEAD
 		UCHAR uiTxLedIndex, UCHAR GPIO_Num_rx, UCHAR uiRxLedIndex, LedEventInfo_t currdriverstate)
@@ -181,17 +218,26 @@ static INT LED_Proportional_Blink(PMINI_ADAPTER Adapter, UCHAR GPIO_Num_tx,
 =======
 		UCHAR uiTxLedIndex, UCHAR GPIO_Num_rx, UCHAR uiRxLedIndex,
 		LedEventInfo_t currdriverstate)
+=======
+static INT LED_Proportional_Blink(struct bcm_mini_adapter *Adapter, UCHAR GPIO_Num_tx,
+		UCHAR uiTxLedIndex, UCHAR GPIO_Num_rx, UCHAR uiRxLedIndex,
+		enum bcm_led_events currdriverstate)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Initial values of TX and RX packets */
 	ULONG64 Initial_num_of_packts_tx = 0, Initial_num_of_packts_rx = 0;
 	/* values of TX and RX packets after 1 sec */
 	ULONG64 Final_num_of_packts_tx = 0, Final_num_of_packts_rx = 0;
 	/* Rate of transfer of Tx and Rx in 1 sec */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ULONG64 rate_of_transfer_tx = 0, rate_of_transfer_rx = 0;
 	int Status = STATUS_SUCCESS;
 	INT num_of_time = 0, num_of_time_tx = 0, num_of_time_rx = 0;
 	UINT remDelay = 0;
+<<<<<<< HEAD
 	BOOLEAN bBlinkBothLED = TRUE;
 <<<<<<< HEAD
 	//UINT GPIO_num = DISABLE_GPIO_NUM;
@@ -317,6 +363,9 @@ static INT LED_Proportional_Blink(PMINI_ADAPTER Adapter, UCHAR GPIO_Num_tx,
 		num_of_time_tx= ScaleRateofTransfer((ULONG)rate_of_transfer_tx);
 		num_of_time_rx= ScaleRateofTransfer((ULONG)rate_of_transfer_rx);
 =======
+=======
+	bool bBlinkBothLED = TRUE;
+>>>>>>> refs/remotes/origin/master
 	/* UINT GPIO_num = DISABLE_GPIO_NUM; */
 	ulong timeout = 0;
 
@@ -328,7 +377,11 @@ static INT LED_Proportional_Blink(PMINI_ADAPTER Adapter, UCHAR GPIO_Num_tx,
 	num_of_time_tx = ScaleRateofTransfer((ULONG)rate_of_transfer_tx);
 	num_of_time_rx = ScaleRateofTransfer((ULONG)rate_of_transfer_rx);
 
+<<<<<<< HEAD
 	while ((Adapter->device_removed == FALSE)) {
+=======
+	while ((Adapter->device_removed == false)) {
+>>>>>>> refs/remotes/origin/master
 		timeout = 50;
 		/*
 		 * Blink Tx and Rx LED when both Tx and Rx is
@@ -448,12 +501,16 @@ static INT LED_Proportional_Blink(PMINI_ADAPTER Adapter, UCHAR GPIO_Num_tx,
 			ScaleRateofTransfer((ULONG)rate_of_transfer_tx);
 		num_of_time_rx =
 			ScaleRateofTransfer((ULONG)rate_of_transfer_rx);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	}
 	return Status;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 //-----------------------------------------------------------------------------
@@ -487,6 +544,8 @@ static INT ValidateDSDParamsChecksum(
 	{
 		BCM_DEBUG_PRINT(Adapter,DBG_TYPE_OTHERS, LED_DUMP_INFO, DBG_LVL_ALL,"LED Thread: ValidateDSDParamsChecksum Allocation failed");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * -----------------------------------------------------------------------------
  * Procedure:   ValidateDSDParamsChecksum
@@ -503,7 +562,11 @@ static INT ValidateDSDParamsChecksum(
  *  <OSAL_STATUS_CODE>
  * -----------------------------------------------------------------------------
  */
+<<<<<<< HEAD
 static INT ValidateDSDParamsChecksum(PMINI_ADAPTER Adapter, ULONG ulParamOffset,
+=======
+static INT ValidateDSDParamsChecksum(struct bcm_mini_adapter *Adapter, ULONG ulParamOffset,
+>>>>>>> refs/remotes/origin/master
 					USHORT usParamLen)
 {
 	INT Status = STATUS_SUCCESS;
@@ -520,11 +583,15 @@ static INT ValidateDSDParamsChecksum(PMINI_ADAPTER Adapter, ULONG ulParamOffset,
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, LED_DUMP_INFO,
 			DBG_LVL_ALL,
 			"LED Thread: ValidateDSDParamsChecksum Allocation failed");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     //
     //	Read the DSD data from the parameter offset.
@@ -562,6 +629,8 @@ static INT ValidateDSDParamsChecksum(PMINI_ADAPTER Adapter, ULONG ulParamOffset,
 	{
 		BCM_DEBUG_PRINT(Adapter,DBG_TYPE_OTHERS, LED_DUMP_INFO, DBG_LVL_ALL,"LED Thread: ValidateDSDParamsChecksum: Checksums don't match");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Read the DSD data from the parameter offset. */
 	if (STATUS_SUCCESS != BeceemNVMRead(Adapter, (PUINT)puBuffer,
 			ulParamOffset, usParamLen)) {
@@ -602,7 +671,10 @@ static INT ValidateDSDParamsChecksum(PMINI_ADAPTER Adapter, ULONG ulParamOffset,
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, LED_DUMP_INFO,
 			DBG_LVL_ALL,
 			"LED Thread: ValidateDSDParamsChecksum: Checksums don't match");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		Status = STATUS_IMAGE_CHECKSUM_MISMATCH;
 		goto exit;
 	}
@@ -613,6 +685,7 @@ exit:
 }
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 //-----------------------------------------------------------------------------
 // Procedure:   ValidateHWParmStructure
@@ -684,6 +757,8 @@ static int ReadLEDInformationFromEEPROM(PMINI_ADAPTER Adapter, UCHAR GPIO_Array[
 		}
 		BeceemNVMRead(Adapter,(PUINT)&dwReadValue,EEPROM_HW_PARAM_POINTER_ADDRRES_MAP5,4);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * -----------------------------------------------------------------------------
  * Procedure:   ValidateHWParmStructure
@@ -699,7 +774,11 @@ static int ReadLEDInformationFromEEPROM(PMINI_ADAPTER Adapter, UCHAR GPIO_Array[
  *  <OSAL_STATUS_CODE>
  * -----------------------------------------------------------------------------
  */
+<<<<<<< HEAD
 static INT ValidateHWParmStructure(PMINI_ADAPTER Adapter, ULONG ulHwParamOffset)
+=======
+static INT ValidateHWParmStructure(struct bcm_mini_adapter *Adapter, ULONG ulHwParamOffset)
+>>>>>>> refs/remotes/origin/master
 {
 
 	INT Status = STATUS_SUCCESS;
@@ -723,7 +802,11 @@ static INT ValidateHWParmStructure(PMINI_ADAPTER Adapter, ULONG ulHwParamOffset)
 	return Status;
 } /* ValidateHWParmStructure() */
 
+<<<<<<< HEAD
 static int ReadLEDInformationFromEEPROM(PMINI_ADAPTER Adapter,
+=======
+static int ReadLEDInformationFromEEPROM(struct bcm_mini_adapter *Adapter,
+>>>>>>> refs/remotes/origin/master
 					UCHAR GPIO_Array[])
 {
 	int Status = STATUS_SUCCESS;
@@ -761,11 +844,15 @@ static int ReadLEDInformationFromEEPROM(PMINI_ADAPTER Adapter,
 
 		BeceemNVMRead(Adapter, (PUINT)&dwReadValue,
 			EEPROM_HW_PARAM_POINTER_ADDRRES_MAP5, 4);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dwReadValue = ntohl(dwReadValue);
 	}
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	BCM_DEBUG_PRINT(Adapter,DBG_TYPE_OTHERS, LED_DUMP_INFO, DBG_LVL_ALL,"LED Thread: Start address of HW_PARAM structure = 0x%lx",dwReadValue);
 
@@ -843,6 +930,8 @@ static int ReadConfigFileStructure(PMINI_ADAPTER Adapter, BOOLEAN *bEnableThread
 	int Status = STATUS_SUCCESS;
 	UCHAR GPIO_Array[NUM_OF_LEDS+1]; /*Array to store GPIO numbers from EEPROM*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, LED_DUMP_INFO, DBG_LVL_ALL,
 		"LED Thread: Start address of HW_PARAM structure = 0x%lx",
 		dwReadValue);
@@ -907,19 +996,28 @@ static int ReadConfigFileStructure(PMINI_ADAPTER Adapter, BOOLEAN *bEnableThread
 }
 
 
+<<<<<<< HEAD
 static int ReadConfigFileStructure(PMINI_ADAPTER Adapter,
 					BOOLEAN *bEnableThread)
+=======
+static int ReadConfigFileStructure(struct bcm_mini_adapter *Adapter,
+					bool *bEnableThread)
+>>>>>>> refs/remotes/origin/master
 {
 	int Status = STATUS_SUCCESS;
 	/* Array to store GPIO numbers from EEPROM */
 	UCHAR GPIO_Array[NUM_OF_LEDS+1];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	UINT uiIndex = 0;
 	UINT uiNum_of_LED_Type = 0;
 	PUCHAR puCFGData	= NULL;
 	UCHAR bData = 0;
 	memset(GPIO_Array, DISABLE_GPIO_NUM, NUM_OF_LEDS+1);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if(!Adapter->pstargetparams || IS_ERR(Adapter->pstargetparams))
 	{
@@ -963,6 +1061,8 @@ static int ReadConfigFileStructure(PMINI_ADAPTER Adapter,
 			Adapter->LEDInfo.LEDState[uiIndex].BitPolarity = 0;
 			/*unset the bit 8*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!Adapter->pstargetparams || IS_ERR(Adapter->pstargetparams)) {
 		BCM_DEBUG_PRINT (Adapter, DBG_TYPE_OTHERS, LED_DUMP_INFO,
 			DBG_LVL_ALL, "Target Params not Avail.\n");
@@ -973,10 +1073,17 @@ static int ReadConfigFileStructure(PMINI_ADAPTER Adapter,
 	/* Read the GPIO numbers from EEPROM */
 	Status = ReadLEDInformationFromEEPROM(Adapter, GPIO_Array);
 	if (Status == STATUS_IMAGE_CHECKSUM_MISMATCH) {
+<<<<<<< HEAD
 		*bEnableThread = FALSE;
 		return STATUS_SUCCESS;
 	} else if (Status) {
 		*bEnableThread = FALSE;
+=======
+		*bEnableThread = false;
+		return STATUS_SUCCESS;
+	} else if (Status) {
+		*bEnableThread = false;
+>>>>>>> refs/remotes/origin/master
 		return Status;
 	}
 
@@ -1004,30 +1111,40 @@ static int ReadConfigFileStructure(PMINI_ADAPTER Adapter,
 		if (bData & 0x80) {
 			Adapter->LEDInfo.LEDState[uiIndex].BitPolarity = 0;
 			/* unset the bit 8 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			bData = bData & 0x7f;
 		}
 
 		Adapter->LEDInfo.LEDState[uiIndex].LED_Type = bData;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if(bData <= NUM_OF_LEDS)
 			Adapter->LEDInfo.LEDState[uiIndex].GPIO_Num = GPIO_Array[bData];
 		else
 			Adapter->LEDInfo.LEDState[uiIndex].GPIO_Num = DISABLE_GPIO_NUM;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (bData <= NUM_OF_LEDS)
 			Adapter->LEDInfo.LEDState[uiIndex].GPIO_Num =
 							GPIO_Array[bData];
 		else
 			Adapter->LEDInfo.LEDState[uiIndex].GPIO_Num =
 							DISABLE_GPIO_NUM;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		puCFGData++;
 		bData = *puCFGData;
 		Adapter->LEDInfo.LEDState[uiIndex].LED_On_State = bData;
 		puCFGData++;
 		bData = *puCFGData;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		Adapter->LEDInfo.LEDState[uiIndex].LED_Blink_State= bData;
 		puCFGData++;
@@ -1043,6 +1160,8 @@ static int ReadConfigFileStructure(PMINI_ADAPTER Adapter,
 	}
 	if(uiNum_of_LED_Type >= NUM_OF_LEDS)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		Adapter->LEDInfo.LEDState[uiIndex].LED_Blink_State = bData;
 		puCFGData++;
 	}
@@ -1058,6 +1177,7 @@ static int ReadConfigFileStructure(PMINI_ADAPTER Adapter,
 			uiNum_of_LED_Type++;
 	}
 	if (uiNum_of_LED_Type >= NUM_OF_LEDS)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		*bEnableThread = FALSE;
 
@@ -1078,6 +1198,12 @@ static int ReadConfigFileStructure(PMINI_ADAPTER Adapter,
 //-----------------------------------------------------------------------------
 
 =======
+=======
+		*bEnableThread = false;
+
+	return Status;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * -----------------------------------------------------------------------------
@@ -1093,13 +1219,18 @@ static int ReadConfigFileStructure(PMINI_ADAPTER Adapter,
  *
  * -----------------------------------------------------------------------------
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static VOID LedGpioInit(PMINI_ADAPTER Adapter)
+=======
+static VOID LedGpioInit(struct bcm_mini_adapter *Adapter)
+>>>>>>> refs/remotes/origin/master
 {
 	UINT uiResetValue = 0;
 	UINT uiIndex      = 0;
 
 	/* Set all LED GPIO Mode to output mode */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if(rdmalt(Adapter, GPIO_MODE_REGISTER, &uiResetValue, sizeof(uiResetValue)) <0)
 		BCM_DEBUG_PRINT (Adapter,DBG_TYPE_OTHERS, LED_DUMP_INFO, DBG_LVL_ALL,"LED Thread: RDM Failed\n");
@@ -1118,6 +1249,8 @@ static VOID LedGpioInit(PMINI_ADAPTER Adapter)
 
 static INT BcmGetGPIOPinInfo(PMINI_ADAPTER Adapter, UCHAR *GPIO_num_tx, UCHAR *GPIO_num_rx ,UCHAR *uiLedTxIndex, UCHAR *uiLedRxIndex,LedEventInfo_t currdriverstate)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (rdmalt(Adapter, GPIO_MODE_REGISTER, &uiResetValue,
 			sizeof(uiResetValue)) < 0)
 		BCM_DEBUG_PRINT (Adapter, DBG_TYPE_OTHERS, LED_DUMP_INFO,
@@ -1134,6 +1267,7 @@ static INT BcmGetGPIOPinInfo(PMINI_ADAPTER Adapter, UCHAR *GPIO_num_tx, UCHAR *G
 		BCM_DEBUG_PRINT (Adapter, DBG_TYPE_OTHERS, LED_DUMP_INFO,
 			DBG_LVL_ALL, "LED Thread: WRM Failed\n");
 
+<<<<<<< HEAD
 	Adapter->LEDInfo.bIdle_led_off = FALSE;
 }
 
@@ -1141,12 +1275,21 @@ static INT BcmGetGPIOPinInfo(PMINI_ADAPTER Adapter, UCHAR *GPIO_num_tx,
 		UCHAR *GPIO_num_rx, UCHAR *uiLedTxIndex, UCHAR *uiLedRxIndex,
 		LedEventInfo_t currdriverstate)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	Adapter->LEDInfo.bIdle_led_off = false;
+}
+
+static INT BcmGetGPIOPinInfo(struct bcm_mini_adapter *Adapter, UCHAR *GPIO_num_tx,
+		UCHAR *GPIO_num_rx, UCHAR *uiLedTxIndex, UCHAR *uiLedRxIndex,
+		enum bcm_led_events currdriverstate)
+>>>>>>> refs/remotes/origin/master
 {
 	UINT uiIndex = 0;
 
 	*GPIO_num_tx = DISABLE_GPIO_NUM;
 	*GPIO_num_rx = DISABLE_GPIO_NUM;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for(uiIndex = 0; uiIndex < NUM_OF_LEDS; uiIndex++)
 	{
@@ -1167,6 +1310,8 @@ static INT BcmGetGPIOPinInfo(PMINI_ADAPTER Adapter, UCHAR *GPIO_num_tx,
 					else
 					{
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (uiIndex = 0; uiIndex < NUM_OF_LEDS; uiIndex++) {
 
 		if ((currdriverstate == NORMAL_OPERATION) ||
@@ -1180,12 +1325,16 @@ static INT BcmGetGPIOPinInfo(PMINI_ADAPTER Adapter, UCHAR *GPIO_num_tx,
 						*GPIO_num_tx = Adapter->LEDInfo.LEDState[uiIndex].GPIO_Num;
 						*uiLedTxIndex = uiIndex;
 					} else {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						*GPIO_num_rx = Adapter->LEDInfo.LEDState[uiIndex].GPIO_Num;
 						*uiLedRxIndex = uiIndex;
 					}
 				}
 			}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		}
 		else
@@ -1195,18 +1344,24 @@ static INT BcmGetGPIOPinInfo(PMINI_ADAPTER Adapter, UCHAR *GPIO_num_tx,
 				if(Adapter->LEDInfo.LEDState[uiIndex].GPIO_Num != DISABLE_GPIO_NUM)
 				{
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			if (Adapter->LEDInfo.LEDState[uiIndex].LED_On_State
 					& currdriverstate) {
 				if (Adapter->LEDInfo.LEDState[uiIndex].GPIO_Num
 						!= DISABLE_GPIO_NUM) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					*GPIO_num_tx = Adapter->LEDInfo.LEDState[uiIndex].GPIO_Num;
 					*uiLedTxIndex = uiIndex;
 				}
 			}
 		}
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return STATUS_SUCCESS ;
 =======
@@ -1224,10 +1379,22 @@ static VOID LEDControlThread(PMINI_ADAPTER Adapter)
 >>>>>>> refs/remotes/origin/cm-10.0
 	UINT uiResetValue = 0;
 	LedEventInfo_t currdriverstate = 0;
+=======
+	return STATUS_SUCCESS;
+}
+static VOID LEDControlThread(struct bcm_mini_adapter *Adapter)
+{
+	UINT uiIndex = 0;
+	UCHAR GPIO_num = 0;
+	UCHAR uiLedIndex = 0;
+	UINT uiResetValue = 0;
+	enum bcm_led_events currdriverstate = 0;
+>>>>>>> refs/remotes/origin/master
 	ulong timeout = 0;
 
 	INT Status = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	UCHAR  dummyGPIONum = 0;
 	UCHAR  dummyIndex = 0;
@@ -1272,11 +1439,17 @@ static VOID LEDControlThread(PMINI_ADAPTER Adapter)
 		if(Adapter->LEDInfo.bLedInitDone == FALSE)
 		{
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	UCHAR dummyGPIONum = 0;
 	UCHAR dummyIndex = 0;
 
 	/* currdriverstate = Adapter->DriverState; */
+<<<<<<< HEAD
 	Adapter->LEDInfo.bIdleMode_tx_from_host = FALSE;
+=======
+	Adapter->LEDInfo.bIdleMode_tx_from_host = false;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Wait till event is triggered
@@ -1314,12 +1487,17 @@ static VOID LEDControlThread(PMINI_ADAPTER Adapter)
 		if (GPIO_num != DISABLE_GPIO_NUM)
 			TURN_OFF_LED(1 << GPIO_num, uiLedIndex);
 
+<<<<<<< HEAD
 		if (Adapter->LEDInfo.bLedInitDone == FALSE) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (Adapter->LEDInfo.bLedInitDone == false) {
+>>>>>>> refs/remotes/origin/master
 			LedGpioInit(Adapter);
 			Adapter->LEDInfo.bLedInitDone = TRUE;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		switch(Adapter->DriverState)
 		{
@@ -1373,6 +1551,8 @@ static VOID LEDControlThread(PMINI_ADAPTER Adapter)
 			break;
 			case NORMAL_OPERATION:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		switch (Adapter->DriverState) {
 		case DRIVER_INIT:
 			currdriverstate = DRIVER_INIT;
@@ -1421,13 +1601,17 @@ static VOID LEDControlThread(PMINI_ADAPTER Adapter)
 				TURN_ON_LED(1 << GPIO_num, uiLedIndex);
 			break;
 		case NORMAL_OPERATION:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			{
 				UCHAR GPIO_num_tx = DISABLE_GPIO_NUM;
 				UCHAR GPIO_num_rx = DISABLE_GPIO_NUM;
 				UCHAR uiLEDTx = 0;
 				UCHAR uiLEDRx = 0;
 				currdriverstate = NORMAL_OPERATION;
+<<<<<<< HEAD
 <<<<<<< HEAD
 				Adapter->LEDInfo.bIdle_led_off =  FALSE;
 
@@ -1529,6 +1713,9 @@ static VOID LEDControlThread(PMINI_ADAPTER Adapter)
 				break;
 =======
 				Adapter->LEDInfo.bIdle_led_off = FALSE;
+=======
+				Adapter->LEDInfo.bIdle_led_off = false;
+>>>>>>> refs/remotes/origin/master
 
 				BcmGetGPIOPinInfo(Adapter, &GPIO_num_tx,
 					&GPIO_num_rx, &uiLEDTx, &uiLEDRx,
@@ -1574,7 +1761,11 @@ static VOID LEDControlThread(PMINI_ADAPTER Adapter)
 
 			}
 			/* Turn off LED And WAKE-UP for Sendinf IDLE mode ACK */
+<<<<<<< HEAD
 			Adapter->LEDInfo.bLedInitDone = FALSE;
+=======
+			Adapter->LEDInfo.bLedInitDone = false;
+>>>>>>> refs/remotes/origin/master
 			Adapter->LEDInfo.bIdle_led_off = TRUE;
 			wake_up(&Adapter->LEDInfo.idleModeSyncEvent);
 			GPIO_num = DISABLE_GPIO_NUM;
@@ -1601,7 +1792,11 @@ static VOID LEDControlThread(PMINI_ADAPTER Adapter)
 			currdriverstate = LED_THREAD_INACTIVE;
 			Adapter->LEDInfo.led_thread_running =
 					BCM_LED_THREAD_RUNNING_INACTIVELY;
+<<<<<<< HEAD
 			Adapter->LEDInfo.bLedInitDone = FALSE;
+=======
+			Adapter->LEDInfo.bLedInitDone = false;
+>>>>>>> refs/remotes/origin/master
 			/* disable ALL LED */
 			for (uiIndex = 0; uiIndex < NUM_OF_LEDS; uiIndex++) {
 				if (Adapter->LEDInfo.LEDState[uiIndex].GPIO_Num
@@ -1612,7 +1807,11 @@ static VOID LEDControlThread(PMINI_ADAPTER Adapter)
 		case LED_THREAD_ACTIVE:
 			BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, LED_DUMP_INFO,
 				DBG_LVL_ALL, "Activating LED thread again...");
+<<<<<<< HEAD
 			if (Adapter->LinkUpStatus == FALSE)
+=======
+			if (Adapter->LinkUpStatus == false)
+>>>>>>> refs/remotes/origin/master
 				Adapter->DriverState = NO_NETWORK_ENTRY;
 			else
 				Adapter->DriverState = NORMAL_OPERATION;
@@ -1623,12 +1822,16 @@ static VOID LEDControlThread(PMINI_ADAPTER Adapter)
 			/* return; */
 		default:
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	Adapter->LEDInfo.led_thread_running = BCM_LED_THREAD_DISABLED;
 }
 
+<<<<<<< HEAD
 int InitLedSettings(PMINI_ADAPTER Adapter)
 {
 	int Status = STATUS_SUCCESS;
@@ -1680,6 +1883,14 @@ int InitLedSettings(PMINI_ADAPTER Adapter)
         	return PTR_ERR(Adapter->LEDInfo.led_cntrl_threadid);
     	}
 =======
+=======
+int InitLedSettings(struct bcm_mini_adapter *Adapter)
+{
+	int Status = STATUS_SUCCESS;
+	bool bEnableThread = TRUE;
+	UCHAR uiIndex = 0;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Initially set BitPolarity to normal polarity. The bit 8 of LED type
 	 * is used to change the polarity of the LED.
@@ -1716,7 +1927,11 @@ int InitLedSettings(PMINI_ADAPTER Adapter)
 		init_waitqueue_head(&Adapter->LEDInfo.idleModeSyncEvent);
 		Adapter->LEDInfo.led_thread_running =
 					BCM_LED_THREAD_RUNNING_ACTIVELY;
+<<<<<<< HEAD
 		Adapter->LEDInfo.bIdle_led_off = FALSE;
+=======
+		Adapter->LEDInfo.bIdle_led_off = false;
+>>>>>>> refs/remotes/origin/master
 		Adapter->LEDInfo.led_cntrl_threadid =
 			kthread_run((int (*)(void *)) LEDControlThread,
 			Adapter, "led_control_thread");
@@ -1728,7 +1943,10 @@ int InitLedSettings(PMINI_ADAPTER Adapter)
 				BCM_LED_THREAD_DISABLED;
 			return PTR_ERR(Adapter->LEDInfo.led_cntrl_threadid);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return Status;
 }

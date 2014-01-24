@@ -7,7 +7,10 @@
 #ifndef __UM_UBD_USER_H
 #define __UM_UBD_USER_H
 
+<<<<<<< HEAD
 extern void ignore_sigwinch_sig(void);
+=======
+>>>>>>> refs/remotes/origin/master
 extern int start_io_thread(unsigned long sp, int *fds_out);
 extern int io_thread(void *arg);
 extern int kernel_fd;

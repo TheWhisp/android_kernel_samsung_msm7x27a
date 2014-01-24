@@ -14,6 +14,7 @@
 #ifndef _LINUX_PERF_EVENT_H
 #define _LINUX_PERF_EVENT_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/ioctl.h>
 #include <asm/byteorder.h>
@@ -633,11 +634,19 @@ enum perf_callchain_context {
 
 #ifdef __KERNEL__
 /*
+=======
+#include <uapi/linux/perf_event.h>
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Kernel-internal data types and definitions:
  */
 
 #ifdef CONFIG_PERF_EVENTS
+<<<<<<< HEAD
 # include <linux/cgroup.h>
+=======
+>>>>>>> refs/remotes/origin/master
 # include <asm/perf_event.h>
 # include <asm/local64.h>
 #endif
@@ -665,6 +674,7 @@ struct perf_guest_info_callbacks {
 #include <linux/cpu.h>
 #include <linux/irq_work.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/jump_label.h>
 #include <asm/atomic.h>
 =======
@@ -676,6 +686,15 @@ struct perf_guest_info_callbacks {
 
 #define PERF_MAX_STACK_DEPTH		255
 
+=======
+#include <linux/static_key.h>
+#include <linux/jump_label_ratelimit.h>
+#include <linux/atomic.h>
+#include <linux/sysfs.h>
+#include <linux/perf_regs.h>
+#include <asm/local.h>
+
+>>>>>>> refs/remotes/origin/master
 struct perf_callchain_entry {
 	__u64				nr;
 	__u64				ip[PERF_MAX_STACK_DEPTH];
@@ -686,6 +705,7 @@ struct perf_raw_record {
 	void				*data;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct perf_branch_entry {
 	__u64				from;
@@ -713,6 +733,8 @@ struct perf_branch_entry {
 		reserved:62;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * branch stack layout:
  *  nr: number of taken branches stored in entries[]
@@ -722,16 +744,29 @@ struct perf_branch_entry {
  * to least recent, i.e., entries[0] contains the most
  * recent branch.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct perf_branch_stack {
 	__u64				nr;
 	struct perf_branch_entry	entries[0];
 };
 
+<<<<<<< HEAD
 struct task_struct;
 
 <<<<<<< HEAD
 =======
+=======
+struct perf_regs_user {
+	__u64		abi;
+	struct pt_regs	*regs;
+};
+
+struct task_struct;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * extra PMU register associated with an event
  */
@@ -742,7 +777,12 @@ struct hw_perf_event_extra {
 	int		idx;	/* index in shared_regs->regs[] */
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct event_constraint;
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct hw_perf_event - performance event hardware details:
  */
@@ -754,6 +794,7 @@ struct hw_perf_event {
 			u64		last_tag;
 			unsigned long	config_base;
 			unsigned long	event_base;
+<<<<<<< HEAD
 			int		idx;
 			int		last_cpu;
 <<<<<<< HEAD
@@ -765,20 +806,46 @@ struct hw_perf_event {
 			struct hw_perf_event_extra extra_reg;
 			struct hw_perf_event_extra branch_reg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			int		event_base_rdpmc;
+			int		idx;
+			int		last_cpu;
+			int		flags;
+
+			struct hw_perf_event_extra extra_reg;
+			struct hw_perf_event_extra branch_reg;
+
+			struct event_constraint *constraint;
+>>>>>>> refs/remotes/origin/master
 		};
 		struct { /* software */
 			struct hrtimer	hrtimer;
 		};
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_HW_BREAKPOINT
 		struct { /* breakpoint */
 			struct arch_hw_breakpoint	info;
 			struct list_head		bp_list;
+=======
+		struct { /* tracepoint */
+			struct task_struct	*tp_target;
+			/* for tp_event->class */
+			struct list_head	tp_list;
+		};
+#ifdef CONFIG_HAVE_HW_BREAKPOINT
+		struct { /* breakpoint */
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Crufty hack to avoid the chicken and egg
 			 * problem hw_breakpoint has with context
 			 * creation and event initalization.
 			 */
 			struct task_struct		*bp_target;
+<<<<<<< HEAD
+=======
+			struct arch_hw_breakpoint	info;
+			struct list_head		bp_list;
+>>>>>>> refs/remotes/origin/master
 		};
 #endif
 	};
@@ -788,9 +855,13 @@ struct hw_perf_event {
 	u64				last_period;
 	local64_t			period_left;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u64                             interrupts_seq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64                             interrupts_seq;
+>>>>>>> refs/remotes/origin/master
 	u64				interrupts;
 
 	u64				freq_time_stamp;
@@ -820,15 +891,24 @@ struct pmu {
 
 	struct device			*dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	const struct attribute_group	**attr_groups;
 >>>>>>> refs/remotes/origin/cm-10.0
 	char				*name;
+=======
+	const struct attribute_group	**attr_groups;
+	const char			*name;
+>>>>>>> refs/remotes/origin/master
 	int				type;
 
 	int * __percpu			pmu_disable_count;
 	struct perf_cpu_context * __percpu pmu_cpu_context;
 	int				task_ctx_nr;
+<<<<<<< HEAD
+=======
+	int				hrtimer_interval_ms;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Fully disable/enable this PMU, can be used to protect from the PMI
@@ -889,7 +969,10 @@ struct pmu {
 	 */
 	void (*cancel_txn)		(struct pmu *pmu); /* optional */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Will return the value for perf_event_mmap_page::index for this event,
@@ -901,7 +984,10 @@ struct pmu {
 	 * flush branch stack on context-switches (needed in cpu-wide mode)
 	 */
 	void (*flush_branch_stack)	(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -915,6 +1001,7 @@ enum perf_event_active_state {
 };
 
 struct file;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define PERF_BUFFER_WRITABLE		0x01
@@ -951,6 +1038,11 @@ struct perf_sample_data;
 
 typedef void (*perf_overflow_handler_t)(struct perf_event *,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct perf_sample_data;
+
+typedef void (*perf_overflow_handler_t)(struct perf_event *,
+>>>>>>> refs/remotes/origin/master
 					struct perf_sample_data *,
 					struct pt_regs *regs);
 
@@ -970,6 +1062,7 @@ struct swevent_hlist {
 #define PERF_ATTACH_GROUP	0x02
 #define PERF_ATTACH_TASK	0x04
 
+<<<<<<< HEAD
 #ifdef CONFIG_CGROUP_PERF
 /*
  * perf_cgroup_info keeps track of time_enabled for a cgroup.
@@ -991,15 +1084,50 @@ struct perf_cgroup {
 struct ring_buffer;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct perf_cgroup;
+struct ring_buffer;
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct perf_event - performance event kernel representation:
  */
 struct perf_event {
 #ifdef CONFIG_PERF_EVENTS
+<<<<<<< HEAD
 	struct list_head		group_entry;
 	struct list_head		event_entry;
 	struct list_head		sibling_list;
 	struct hlist_node		hlist_entry;
+=======
+	/*
+	 * entry onto perf_event_context::event_list;
+	 *   modifications require ctx->lock
+	 *   RCU safe iterations.
+	 */
+	struct list_head		event_entry;
+
+	/*
+	 * XXX: group_entry and sibling_list should be mutually exclusive;
+	 * either you're a sibling on a group, or you're the group leader.
+	 * Rework the code to always use the same list element.
+	 *
+	 * Locked for modification by both ctx->mutex and ctx->lock; holding
+	 * either sufficies for read.
+	 */
+	struct list_head		group_entry;
+	struct list_head		sibling_list;
+
+	/*
+	 * We need storage to track the entries in perf_pmu_migrate_context; we
+	 * cannot use the event_entry because of RCU and we want to keep the
+	 * group in tact which avoids us using the other two entries.
+	 */
+	struct list_head		migrate_entry;
+
+	struct hlist_node		hlist_entry;
+	struct list_head		active_entry;
+>>>>>>> refs/remotes/origin/master
 	int				nr_siblings;
 	int				group_flags;
 	struct perf_event		*group_leader;
@@ -1079,6 +1207,7 @@ struct perf_event {
 	struct mutex			mmap_mutex;
 	atomic_t			mmap_count;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int				mmap_locked;
 	struct user_struct		*mmap_user;
 	struct perf_buffer		*buffer;
@@ -1087,6 +1216,11 @@ struct perf_event {
 	struct ring_buffer		*rb;
 	struct list_head		rb_entry;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	struct ring_buffer		*rb;
+	struct list_head		rb_entry;
+>>>>>>> refs/remotes/origin/master
 
 	/* poll related */
 	wait_queue_head_t		waitq;
@@ -1108,19 +1242,29 @@ struct perf_event {
 
 	perf_overflow_handler_t		overflow_handler;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	void				*overflow_handler_context;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void				*overflow_handler_context;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_EVENT_TRACING
 	struct ftrace_event_call	*tp_event;
 	struct event_filter		*filter;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #ifdef CONFIG_FUNCTION_TRACER
 	struct ftrace_ops               ftrace_ops;
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_FUNCTION_TRACER
+	struct ftrace_ops               ftrace_ops;
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_CGROUP_PERF
@@ -1164,9 +1308,13 @@ struct perf_event_context {
 	int				is_active;
 	int				nr_stat;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int				nr_freq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int				nr_freq;
+>>>>>>> refs/remotes/origin/master
 	int				rotate_disable;
 	atomic_t			refcount;
 	struct task_struct		*task;
@@ -1186,6 +1334,7 @@ struct perf_event_context {
 	u64				generation;
 	int				pin_count;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct rcu_head			rcu_head;
 	int				nr_cgroups; /* cgroup events present */
 =======
@@ -1193,6 +1342,11 @@ struct perf_event_context {
 	int				nr_branch_stack; /* branch_stack evt */
 	struct rcu_head			rcu_head;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int				nr_cgroups;	 /* cgroup evts */
+	int				nr_branch_stack; /* branch_stack evt */
+	struct rcu_head			rcu_head;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -1209,8 +1363,14 @@ struct perf_cpu_context {
 	struct perf_event_context	*task_ctx;
 	int				active_oncpu;
 	int				exclusive;
+<<<<<<< HEAD
 	struct list_head		rotation_list;
 	int				jiffies_interval;
+=======
+	struct hrtimer			hrtimer;
+	ktime_t				hrtimer_interval;
+	struct list_head		rotation_list;
+>>>>>>> refs/remotes/origin/master
 	struct pmu			*unique_pmu;
 	struct perf_cgroup		*cgrp;
 };
@@ -1218,37 +1378,54 @@ struct perf_cpu_context {
 struct perf_output_handle {
 	struct perf_event		*event;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct perf_buffer		*buffer;
 =======
 	struct ring_buffer		*rb;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ring_buffer		*rb;
+>>>>>>> refs/remotes/origin/master
 	unsigned long			wakeup;
 	unsigned long			size;
 	void				*addr;
 	int				page;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int				nmi;
 	int				sample;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_PERF_EVENTS
 
+<<<<<<< HEAD
 extern int perf_pmu_register(struct pmu *pmu, char *name, int type);
+=======
+extern int perf_pmu_register(struct pmu *pmu, const char *name, int type);
+>>>>>>> refs/remotes/origin/master
 extern void perf_pmu_unregister(struct pmu *pmu);
 
 extern int perf_num_counters(void);
 extern const char *perf_pmu_name(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void __perf_event_task_sched_in(struct task_struct *task);
 extern void __perf_event_task_sched_out(struct task_struct *task, struct task_struct *next);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern void __perf_event_task_sched_in(struct task_struct *prev,
 				       struct task_struct *task);
 extern void __perf_event_task_sched_out(struct task_struct *prev,
 					struct task_struct *next);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern int perf_event_init_task(struct task_struct *child);
 extern void perf_event_exit_task(struct task_struct *child);
 extern void perf_event_free_task(struct task_struct *task);
@@ -1259,15 +1436,20 @@ extern void perf_pmu_enable(struct pmu *pmu);
 extern int perf_event_task_disable(void);
 extern int perf_event_task_enable(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern int perf_event_refresh(struct perf_event *event, int refresh);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int perf_event_refresh(struct perf_event *event, int refresh);
+>>>>>>> refs/remotes/origin/master
 extern void perf_event_update_userpage(struct perf_event *event);
 extern int perf_event_release_kernel(struct perf_event *event);
 extern struct perf_event *
 perf_event_create_kernel_counter(struct perf_event_attr *attr,
 				int cpu,
 				struct task_struct *task,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				perf_overflow_handler_t callback);
 extern u64 perf_event_read_value(struct perf_event *event,
@@ -1276,11 +1458,20 @@ extern u64 perf_event_read_value(struct perf_event *event,
 =======
 				perf_overflow_handler_t callback,
 				void *context);
+=======
+				perf_overflow_handler_t callback,
+				void *context);
+extern void perf_pmu_migrate_context(struct pmu *pmu,
+				int src_cpu, int dst_cpu);
+>>>>>>> refs/remotes/origin/master
 extern u64 perf_event_read_value(struct perf_event *event,
 				 u64 *enabled, u64 *running);
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct perf_sample_data {
 	u64				type;
 
@@ -1298,6 +1489,7 @@ struct perf_sample_data {
 		u32	reserved;
 	}				cpu_entry;
 	u64				period;
+<<<<<<< HEAD
 	struct perf_callchain_entry	*callchain;
 	struct perf_raw_record		*raw;
 <<<<<<< HEAD
@@ -1314,6 +1506,35 @@ static inline void perf_sample_data_init(struct perf_sample_data *data, u64 addr
 =======
 	data->br_stack = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	union  perf_mem_data_src	data_src;
+	struct perf_callchain_entry	*callchain;
+	struct perf_raw_record		*raw;
+	struct perf_branch_stack	*br_stack;
+	struct perf_regs_user		regs_user;
+	u64				stack_user_size;
+	u64				weight;
+	/*
+	 * Transaction flags for abort events:
+	 */
+	u64				txn;
+};
+
+static inline void perf_sample_data_init(struct perf_sample_data *data,
+					 u64 addr, u64 period)
+{
+	/* remaining struct members initialized in perf_prepare_sample() */
+	data->addr = addr;
+	data->raw  = NULL;
+	data->br_stack = NULL;
+	data->period = period;
+	data->regs_user.abi = PERF_SAMPLE_REGS_ABI_NONE;
+	data->regs_user.regs = NULL;
+	data->stack_user_size = 0;
+	data->weight = 0;
+	data->data_src.val = 0;
+	data->txn = 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 extern void perf_output_sample(struct perf_output_handle *handle,
@@ -1326,10 +1547,14 @@ extern void perf_prepare_sample(struct perf_event_header *header,
 				struct pt_regs *regs);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int perf_event_overflow(struct perf_event *event, int nmi,
 =======
 extern int perf_event_overflow(struct perf_event *event,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int perf_event_overflow(struct perf_event *event,
+>>>>>>> refs/remotes/origin/master
 				 struct perf_sample_data *data,
 				 struct pt_regs *regs);
 
@@ -1347,6 +1572,7 @@ static inline int is_software_event(struct perf_event *event)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct jump_label_key perf_swevent_enabled[PERF_COUNT_SW_MAX];
 
 extern void __perf_sw_event(u32, u64, int, struct pt_regs *, u64);
@@ -1355,6 +1581,11 @@ extern struct static_key perf_swevent_enabled[PERF_COUNT_SW_MAX];
 
 extern void __perf_sw_event(u32, u64, struct pt_regs *, u64);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct static_key perf_swevent_enabled[PERF_COUNT_SW_MAX];
+
+extern void __perf_sw_event(u32, u64, struct pt_regs *, u64);
+>>>>>>> refs/remotes/origin/master
 
 #ifndef perf_arch_fetch_caller_regs
 static inline void perf_arch_fetch_caller_regs(struct pt_regs *regs, unsigned long ip) { }
@@ -1377,22 +1608,29 @@ static inline void perf_fetch_caller_regs(struct pt_regs *regs)
 
 static __always_inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 perf_sw_event(u32 event_id, u64 nr, int nmi, struct pt_regs *regs, u64 addr)
 {
 	struct pt_regs hot_regs;
 
 	if (static_branch(&perf_swevent_enabled[event_id])) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 perf_sw_event(u32 event_id, u64 nr, struct pt_regs *regs, u64 addr)
 {
 	struct pt_regs hot_regs;
 
 	if (static_key_false(&perf_swevent_enabled[event_id])) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!regs) {
 			perf_fetch_caller_regs(&hot_regs);
 			regs = &hot_regs;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		__perf_sw_event(event_id, nr, nmi, regs, addr);
 	}
@@ -1412,6 +1650,8 @@ static inline void perf_event_task_sched_out(struct task_struct *task, struct ta
 
 	__perf_event_task_sched_out(task, next);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		__perf_sw_event(event_id, nr, regs, addr);
 	}
 }
@@ -1432,7 +1672,10 @@ static inline void perf_event_task_sched_out(struct task_struct *prev,
 
 	if (static_key_false(&perf_sched_events.key))
 		__perf_event_task_sched_out(prev, next);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 extern void perf_event_mmap(struct vm_area_struct *vma);
@@ -1458,10 +1701,23 @@ static inline void perf_callchain_store(struct perf_callchain_entry *entry, u64 
 extern int sysctl_perf_event_paranoid;
 extern int sysctl_perf_event_mlock;
 extern int sysctl_perf_event_sample_rate;
+<<<<<<< HEAD
+=======
+extern int sysctl_perf_cpu_time_max_percent;
+
+extern void perf_sample_event_took(u64 sample_len_ns);
+>>>>>>> refs/remotes/origin/master
 
 extern int perf_proc_update_handler(struct ctl_table *table, int write,
 		void __user *buffer, size_t *lenp,
 		loff_t *ppos);
+<<<<<<< HEAD
+=======
+extern int perf_cpu_time_max_percent_handler(struct ctl_table *table, int write,
+		void __user *buffer, size_t *lenp,
+		loff_t *ppos);
+
+>>>>>>> refs/remotes/origin/master
 
 static inline bool perf_paranoid_tracepoint_raw(void)
 {
@@ -1481,7 +1737,12 @@ static inline bool perf_paranoid_kernel(void)
 extern void perf_event_init(void);
 extern void perf_tp_event(u64 addr, u64 count, void *record,
 			  int entry_size, struct pt_regs *regs,
+<<<<<<< HEAD
 			  struct hlist_head *head, int rctx);
+=======
+			  struct hlist_head *head, int rctx,
+			  struct task_struct *task);
+>>>>>>> refs/remotes/origin/master
 extern void perf_bp_event(struct perf_event *event, void *data);
 
 #ifndef perf_misc_flags
@@ -1491,10 +1752,13 @@ extern void perf_bp_event(struct perf_event *event, void *data);
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int perf_output_begin(struct perf_output_handle *handle,
 			     struct perf_event *event, unsigned int size,
 			     int nmi, int sample);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline bool has_branch_stack(struct perf_event *event)
 {
 	return event->attr.sample_type & PERF_SAMPLE_BRANCH_STACK;
@@ -1502,6 +1766,7 @@ static inline bool has_branch_stack(struct perf_event *event)
 
 extern int perf_output_begin(struct perf_output_handle *handle,
 			     struct perf_event *event, unsigned int size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 extern void perf_output_end(struct perf_output_handle *handle);
 extern void perf_output_copy(struct perf_output_handle *handle,
@@ -1519,12 +1784,31 @@ static inline void
 perf_event_task_sched_out(struct task_struct *task,
 			    struct task_struct *next)			{ }
 =======
+=======
+extern void perf_output_end(struct perf_output_handle *handle);
+extern unsigned int perf_output_copy(struct perf_output_handle *handle,
+			     const void *buf, unsigned int len);
+extern unsigned int perf_output_skip(struct perf_output_handle *handle,
+				     unsigned int len);
+extern int perf_swevent_get_recursion_context(void);
+extern void perf_swevent_put_recursion_context(int rctx);
+extern u64 perf_swevent_set_period(struct perf_event *event);
+extern void perf_event_enable(struct perf_event *event);
+extern void perf_event_disable(struct perf_event *event);
+extern int __perf_event_disable(void *info);
+extern void perf_event_task_tick(void);
+#else
+static inline void
+>>>>>>> refs/remotes/origin/master
 perf_event_task_sched_in(struct task_struct *prev,
 			 struct task_struct *task)			{ }
 static inline void
 perf_event_task_sched_out(struct task_struct *prev,
 			  struct task_struct *next)			{ }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int perf_event_init_task(struct task_struct *child)	{ return 0; }
 static inline void perf_event_exit_task(struct task_struct *child)	{ }
 static inline void perf_event_free_task(struct task_struct *task)	{ }
@@ -1533,11 +1817,14 @@ static inline void perf_event_print_debug(void)				{ }
 static inline int perf_event_task_disable(void)				{ return -EINVAL; }
 static inline int perf_event_task_enable(void)				{ return -EINVAL; }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static inline void
 perf_sw_event(u32 event_id, u64 nr, int nmi,
 		     struct pt_regs *regs, u64 addr)			{ }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int perf_event_refresh(struct perf_event *event, int refresh)
 {
 	return -EINVAL;
@@ -1545,7 +1832,10 @@ static inline int perf_event_refresh(struct perf_event *event, int refresh)
 
 static inline void
 perf_sw_event(u32 event_id, u64 nr, struct pt_regs *regs, u64 addr)	{ }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void
 perf_bp_event(struct perf_event *event, void *data)			{ }
 
@@ -1560,11 +1850,27 @@ static inline void perf_event_fork(struct task_struct *tsk)		{ }
 static inline void perf_event_init(void)				{ }
 static inline int  perf_swevent_get_recursion_context(void)		{ return -1; }
 static inline void perf_swevent_put_recursion_context(int rctx)		{ }
+<<<<<<< HEAD
 static inline void perf_event_enable(struct perf_event *event)		{ }
 static inline void perf_event_disable(struct perf_event *event)		{ }
 static inline void perf_event_task_tick(void)				{ }
 #endif
 
+=======
+static inline u64 perf_swevent_set_period(struct perf_event *event)	{ return 0; }
+static inline void perf_event_enable(struct perf_event *event)		{ }
+static inline void perf_event_disable(struct perf_event *event)		{ }
+static inline int __perf_event_disable(void *info)			{ return -1; }
+static inline void perf_event_task_tick(void)				{ }
+#endif
+
+#if defined(CONFIG_PERF_EVENTS) && defined(CONFIG_NO_HZ_FULL)
+extern bool perf_event_can_stop_tick(void);
+#else
+static inline bool perf_event_can_stop_tick(void)			{ return true; }
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_PERF_EVENTS) && defined(CONFIG_CPU_SUP_INTEL)
 extern void perf_restore_debug_store(void);
 #else
@@ -1574,6 +1880,7 @@ static inline void perf_restore_debug_store(void)			{ }
 #define perf_output_put(handle, x) perf_output_copy((handle), &(x), sizeof(x))
 
 /*
+<<<<<<< HEAD
  * This has to have a higher priority than migration_notifier in sched.c.
  */
 #define perf_cpu_notifier(fn)						\
@@ -1591,6 +1898,39 @@ do {									\
 
 <<<<<<< HEAD
 =======
+=======
+ * This has to have a higher priority than migration_notifier in sched/core.c.
+ */
+#define perf_cpu_notifier(fn)						\
+do {									\
+	static struct notifier_block fn##_nb =				\
+		{ .notifier_call = fn, .priority = CPU_PRI_PERF };	\
+	unsigned long cpu = smp_processor_id();				\
+	unsigned long flags;						\
+	fn(&fn##_nb, (unsigned long)CPU_UP_PREPARE,			\
+		(void *)(unsigned long)cpu);				\
+	local_irq_save(flags);						\
+	fn(&fn##_nb, (unsigned long)CPU_STARTING,			\
+		(void *)(unsigned long)cpu);				\
+	local_irq_restore(flags);					\
+	fn(&fn##_nb, (unsigned long)CPU_ONLINE,				\
+		(void *)(unsigned long)cpu);				\
+	register_cpu_notifier(&fn##_nb);				\
+} while (0)
+
+
+struct perf_pmu_events_attr {
+	struct device_attribute attr;
+	u64 id;
+	const char *event_str;
+};
+
+#define PMU_EVENT_ATTR(_name, _var, _id, _show)				\
+static struct perf_pmu_events_attr _var = {				\
+	.attr = __ATTR(_name, 0444, _show, NULL),			\
+	.id   =  _id,							\
+};
+>>>>>>> refs/remotes/origin/master
 
 #define PMU_FORMAT_ATTR(_name, _format)					\
 static ssize_t								\
@@ -1604,6 +1944,9 @@ _name##_show(struct device *dev,					\
 									\
 static struct device_attribute format_attr_##_name = __ATTR_RO(_name)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_PERF_EVENT_H */

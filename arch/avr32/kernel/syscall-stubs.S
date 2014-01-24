@@ -20,18 +20,22 @@ __sys_rt_sigsuspend:
 	mov	r10, sp
 	rjmp	sys_rt_sigsuspend
 
+<<<<<<< HEAD
 	.global	__sys_sigaltstack
 	.type	__sys_sigaltstack,@function
 __sys_sigaltstack:
 	mov	r10, sp
 	rjmp	sys_sigaltstack
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.global	__sys_rt_sigreturn
 	.type	__sys_rt_sigreturn,@function
 __sys_rt_sigreturn:
 	mov	r12, sp
 	rjmp	sys_rt_sigreturn
 
+<<<<<<< HEAD
 	.global	__sys_fork
 	.type	__sys_fork,@function
 __sys_fork:
@@ -56,6 +60,8 @@ __sys_execve:
 	mov	r9, sp
 	rjmp	sys_execve
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.global	__sys_mmap2
 	.type	__sys_mmap2,@function
 __sys_mmap2:

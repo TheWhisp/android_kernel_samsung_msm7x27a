@@ -63,10 +63,14 @@ static int __init br_init(void)
 	brioctl_set(br_ioctl_deviceless_stub);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_ATM_LANE) || defined(CONFIG_ATM_LANE_MODULE)
 =======
 #if IS_ENABLED(CONFIG_ATM_LANE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_ATM_LANE)
+>>>>>>> refs/remotes/origin/master
 	br_fdb_test_addr_hook = br_fdb_test_addr;
 #endif
 
@@ -98,10 +102,14 @@ static void __exit br_deinit(void)
 
 	br_netfilter_fini();
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_ATM_LANE) || defined(CONFIG_ATM_LANE_MODULE)
 =======
 #if IS_ENABLED(CONFIG_ATM_LANE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_ATM_LANE)
+>>>>>>> refs/remotes/origin/master
 	br_fdb_test_addr_hook = NULL;
 #endif
 

@@ -18,9 +18,24 @@
  * Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+<<<<<<< HEAD
 #ifndef CONFIG_PCI
 #error "This file is PCI bus glue.  CONFIG_PCI must be defined."
 #endif
+=======
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/pci.h>
+#include <linux/usb.h>
+#include <linux/usb/hcd.h>
+
+#include "ehci.h"
+#include "pci-quirks.h"
+
+#define DRIVER_DESC "EHCI PCI platform driver"
+
+static const char hcd_name[] = "ehci-pci";
+>>>>>>> refs/remotes/origin/master
 
 /* defined here to avoid adding to pci_ids.h for single instance use */
 #define PCI_DEVICE_ID_INTEL_CE4100_USB	0x2e70
@@ -49,11 +64,28 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
 {
 	struct ehci_hcd		*ehci = hcd_to_ehci(hcd);
 	struct pci_dev		*pdev = to_pci_dev(hcd->self.controller);
+<<<<<<< HEAD
 	struct pci_dev		*p_smbus;
 	u8			rev;
 	u32			temp;
 	int			retval;
 
+=======
+	u32			temp;
+	int			retval;
+
+	ehci->caps = hcd->regs;
+
+	/*
+	 * ehci_init() causes memory for DMA transfers to be
+	 * allocated.  Thus, any vendor-specific workarounds based on
+	 * limiting the type of memory used for DMA transfers must
+	 * happen before ehci_setup() is called.
+	 *
+	 * Most other workarounds can be done either before or after
+	 * init and reset; they are located here too.
+	 */
+>>>>>>> refs/remotes/origin/master
 	switch (pdev->vendor) {
 	case PCI_VENDOR_ID_TOSHIBA_2:
 		/* celleb's companion chip */
@@ -66,6 +98,7 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
 #endif
 		}
 		break;
+<<<<<<< HEAD
 	}
 
 	ehci->caps = hcd->regs;
@@ -80,6 +113,8 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
          * limiting the type of memory used for DMA transfers must
          * happen before ehci_init() is called. */
 	switch (pdev->vendor) {
+=======
+>>>>>>> refs/remotes/origin/master
 	case PCI_VENDOR_ID_NVIDIA:
 		/* NVidia reports that certain chips don't handle
 		 * QH, ITD, or SITD addresses above 2GB.  (But TD,
@@ -95,6 +130,7 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
 				ehci_warn(ehci, "can't enable NVidia "
 					"workaround for >2GB RAM\n");
 			break;
+<<<<<<< HEAD
 		}
 		break;
 	}
@@ -150,6 +186,25 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
 			hcd->has_tt = 1;
 			tdi_reset(ehci);
 		}
+=======
+
+		/* Some NForce2 chips have problems with selective suspend;
+		 * fixed in newer silicon.
+		 */
+		case 0x0068:
+			if (pdev->revision < 0xa4)
+				ehci->no_selective_suspend = 1;
+			break;
+		}
+		break;
+	case PCI_VENDOR_ID_INTEL:
+		if (pdev->device == PCI_DEVICE_ID_INTEL_CE4100_USB)
+			hcd->has_tt = 1;
+		break;
+	case PCI_VENDOR_ID_TDI:
+		if (pdev->device == PCI_DEVICE_ID_TDI_EHCI)
+			hcd->has_tt = 1;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case PCI_VENDOR_ID_AMD:
 		/* AMD PLL quirk */
@@ -161,6 +216,7 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
 			retval = -EIO;
 			goto done;
 		}
+<<<<<<< HEAD
 		break;
 	case PCI_VENDOR_ID_NVIDIA:
 		switch (pdev->device) {
@@ -183,6 +239,19 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
 			ehci->has_ppcd = 0;
 			ehci->command &= ~CMD_PPCEE;
 			break;
+=======
+
+		/*
+		 * EHCI controller on AMD SB700/SB800/Hudson-2/3 platforms may
+		 * read/write memory space which does not belong to it when
+		 * there is NULL pointer with T-bit set to 1 in the frame list
+		 * table. To avoid the issue, the frame list link pointer
+		 * should always contain a valid pointer to a inactive qh.
+		 */
+		if (pdev->device == 0x7808) {
+			ehci->use_dummy_qh = 1;
+			ehci_info(ehci, "applying AMD SB700/SB800/Hudson-2/3 EHCI dummy qh workaround\n");
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	case PCI_VENDOR_ID_VIA:
@@ -203,6 +272,7 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
 		/* AMD PLL quirk */
 		if (usb_amd_find_chipset_info())
 			ehci->amd_pll_fix = 1;
+<<<<<<< HEAD
 		/* SB600 and old version of SB700 have a bug in EHCI controller,
 		 * which causes usb devices lose response in some cases.
 		 */
@@ -222,6 +292,29 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
 				pci_write_config_byte(pdev, 0x53, tmp | (1<<3));
 			}
 			pci_dev_put(p_smbus);
+=======
+
+		/*
+		 * EHCI controller on AMD SB700/SB800/Hudson-2/3 platforms may
+		 * read/write memory space which does not belong to it when
+		 * there is NULL pointer with T-bit set to 1 in the frame list
+		 * table. To avoid the issue, the frame list link pointer
+		 * should always contain a valid pointer to a inactive qh.
+		 */
+		if (pdev->device == 0x4396) {
+			ehci->use_dummy_qh = 1;
+			ehci_info(ehci, "applying AMD SB700/SB800/Hudson-2/3 EHCI dummy qh workaround\n");
+		}
+		/* SB600 and old version of SB700 have a bug in EHCI controller,
+		 * which causes usb devices lose response in some cases.
+		 */
+		if ((pdev->device == 0x4386 || pdev->device == 0x4396) &&
+				usb_amd_hang_symptom_quirk()) {
+			u8 tmp;
+			ehci_info(ehci, "applying AMD SB600/SB700 USB freeze workaround\n");
+			pci_read_config_byte(pdev, 0x53, &tmp);
+			pci_write_config_byte(pdev, 0x53, tmp | (1<<3));
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	case PCI_VENDOR_ID_NETMOS:
@@ -232,6 +325,7 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
 	}
 
 	/* optional debug port, normally in the first BAR */
+<<<<<<< HEAD
 	temp = pci_find_capability(pdev, 0x0a);
 	if (temp) {
 		pci_read_config_dword(pdev, temp, &temp);
@@ -245,12 +339,58 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
 				(temp & DBGP_ENABLED)
 					? " IN USE"
 					: "");
+=======
+	temp = pci_find_capability(pdev, PCI_CAP_ID_DBG);
+	if (temp) {
+		pci_read_config_dword(pdev, temp, &temp);
+		temp >>= 16;
+		if (((temp >> 13) & 7) == 1) {
+			u32 hcs_params = ehci_readl(ehci,
+						    &ehci->caps->hcs_params);
+
+			temp &= 0x1fff;
+			ehci->debug = hcd->regs + temp;
+			temp = ehci_readl(ehci, &ehci->debug->control);
+			ehci_info(ehci, "debug port %d%s\n",
+				  HCS_DEBUG_PORT(hcs_params),
+				  (temp & DBGP_ENABLED) ? " IN USE" : "");
+>>>>>>> refs/remotes/origin/master
 			if (!(temp & DBGP_ENABLED))
 				ehci->debug = NULL;
 		}
 	}
 
+<<<<<<< HEAD
 	ehci_reset(ehci);
+=======
+	retval = ehci_setup(hcd);
+	if (retval)
+		return retval;
+
+	/* These workarounds need to be applied after ehci_setup() */
+	switch (pdev->vendor) {
+	case PCI_VENDOR_ID_NEC:
+		ehci->need_io_watchdog = 0;
+		break;
+	case PCI_VENDOR_ID_INTEL:
+		ehci->need_io_watchdog = 0;
+		break;
+	case PCI_VENDOR_ID_NVIDIA:
+		switch (pdev->device) {
+		/* MCP89 chips on the MacBookAir3,1 give EPROTO when
+		 * fetching device descriptors unless LPM is disabled.
+		 * There are also intermittent problems enumerating
+		 * devices with PPCD enabled.
+		 */
+		case 0x0d9d:
+			ehci_info(ehci, "disable ppcd for nvidia mcp89\n");
+			ehci->has_ppcd = 0;
+			ehci->command &= ~CMD_PPCEE;
+			break;
+		}
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* at least the Genesys GL880S needs fixup here */
 	temp = HCS_N_CC(ehci->hcs_params) * HCS_N_PCC(ehci->hcs_params);
@@ -275,6 +415,7 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
 	}
 
 	/* Serial Bus Release Number is at PCI 0x60 offset */
+<<<<<<< HEAD
 	pci_read_config_byte(pdev, 0x60, &ehci->sbrn);
 <<<<<<< HEAD
 =======
@@ -282,6 +423,13 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
 	    && pdev->device == PCI_DEVICE_ID_STMICRO_USB_HOST)
 		ehci->sbrn = 0x20; /* ConneXT has no sbrn register */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pdev->vendor == PCI_VENDOR_ID_STMICRO
+	    && pdev->device == PCI_DEVICE_ID_STMICRO_USB_HOST)
+		;	/* ConneXT has no sbrn register */
+	else
+		pci_read_config_byte(pdev, 0x60, &ehci->sbrn);
+>>>>>>> refs/remotes/origin/master
 
 	/* Keep this around for a while just in case some EHCI
 	 * implementation uses legacy PCI PM support.  This test
@@ -298,6 +446,7 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
 		}
 	}
 
+<<<<<<< HEAD
 #ifdef	CONFIG_USB_SUSPEND
 	/* REVISIT: the controller works fine for wakeup iff the root hub
 	 * itself is "globally" suspended, but usbcore currently doesn't
@@ -309,11 +458,17 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
 	 * success.  That's lying to usbcore, and it matters for runtime
 	 * PM scenarios with selective suspend and remote wakeup...
 	 */
+=======
+#ifdef	CONFIG_PM_RUNTIME
+>>>>>>> refs/remotes/origin/master
 	if (ehci->no_selective_suspend && device_can_wakeup(&pdev->dev))
 		ehci_warn(ehci, "selective suspend/wakeup unavailable\n");
 #endif
 
+<<<<<<< HEAD
 	ehci_port_power(ehci, 1);
+=======
+>>>>>>> refs/remotes/origin/master
 	retval = ehci_pci_reinit(ehci, pdev);
 done:
 	return retval;
@@ -332,6 +487,7 @@ done:
  * Also they depend on separate root hub suspend/resume.
  */
 
+<<<<<<< HEAD
 static int ehci_pci_suspend(struct usb_hcd *hcd, bool do_wakeup)
 {
 	struct ehci_hcd		*ehci = hcd_to_ehci(hcd);
@@ -382,11 +538,14 @@ static void ehci_enable_xhci_companion(void)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int ehci_pci_resume(struct usb_hcd *hcd, bool hibernated)
 {
 	struct ehci_hcd		*ehci = hcd_to_ehci(hcd);
 	struct pci_dev		*pdev = to_pci_dev(hcd->self.controller);
 
+<<<<<<< HEAD
 	/* The BIOS on systems with the Intel Panther Point chipset may or may
 	 * not support xHCI natively.  That means that during system resume, it
 	 * may switch the ports back to EHCI so that users can use their
@@ -530,6 +689,23 @@ static const struct hc_driver ehci_pci_hc_driver = {
 	.update_device =	ehci_update_device,
 
 	.clear_tt_buffer_complete	= ehci_clear_tt_buffer_complete,
+=======
+	if (ehci_resume(hcd, hibernated) != 0)
+		(void) ehci_pci_reinit(ehci, pdev);
+	return 0;
+}
+
+#else
+
+#define ehci_suspend		NULL
+#define ehci_pci_resume		NULL
+#endif	/* CONFIG_PM */
+
+static struct hc_driver __read_mostly ehci_pci_hc_driver;
+
+static const struct ehci_driver_overrides pci_overrides __initconst = {
+	.reset =		ehci_pci_setup,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*-------------------------------------------------------------------------*/
@@ -540,11 +716,17 @@ static const struct pci_device_id pci_ids [] = { {
 	PCI_DEVICE_CLASS(PCI_CLASS_SERIAL_USB_EHCI, ~0),
 	.driver_data =	(unsigned long) &ehci_pci_hc_driver,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	}, {
 	PCI_VDEVICE(STMICRO, PCI_DEVICE_ID_STMICRO_USB_HOST),
 	.driver_data = (unsigned long) &ehci_pci_hc_driver,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}, {
+	PCI_VDEVICE(STMICRO, PCI_DEVICE_ID_STMICRO_USB_HOST),
+	.driver_data = (unsigned long) &ehci_pci_hc_driver,
+>>>>>>> refs/remotes/origin/master
 	},
 	{ /* end: all zeroes */ }
 };
@@ -559,9 +741,44 @@ static struct pci_driver ehci_pci_driver = {
 	.remove =	usb_hcd_pci_remove,
 	.shutdown = 	usb_hcd_pci_shutdown,
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM_SLEEP
+=======
+#ifdef CONFIG_PM
+>>>>>>> refs/remotes/origin/master
 	.driver =	{
 		.pm =	&usb_hcd_pci_pm_ops
 	},
 #endif
 };
+<<<<<<< HEAD
+=======
+
+static int __init ehci_pci_init(void)
+{
+	if (usb_disabled())
+		return -ENODEV;
+
+	pr_info("%s: " DRIVER_DESC "\n", hcd_name);
+
+	ehci_init_driver(&ehci_pci_hc_driver, &pci_overrides);
+
+	/* Entries for the PCI suspend/resume callbacks are special */
+	ehci_pci_hc_driver.pci_suspend = ehci_suspend;
+	ehci_pci_hc_driver.pci_resume = ehci_pci_resume;
+
+	return pci_register_driver(&ehci_pci_driver);
+}
+module_init(ehci_pci_init);
+
+static void __exit ehci_pci_cleanup(void)
+{
+	pci_unregister_driver(&ehci_pci_driver);
+}
+module_exit(ehci_pci_cleanup);
+
+MODULE_DESCRIPTION(DRIVER_DESC);
+MODULE_AUTHOR("David Brownell");
+MODULE_AUTHOR("Alan Stern");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

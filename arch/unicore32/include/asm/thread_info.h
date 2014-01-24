@@ -118,12 +118,15 @@ static inline struct thread_info *current_thread_info(void)
 #endif
 
 /*
+<<<<<<< HEAD
  * We use bit 30 of the preempt_count to indicate that kernel
  * preemption is occurring.  See <asm/hardirq.h>.
  */
 #define PREEMPT_ACTIVE	0x40000000
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * thread information flags:
  *  TIF_SYSCALL_TRACE	- syscall trace active
  *  TIF_SIGPENDING	- signal pending
@@ -136,9 +139,12 @@ static inline struct thread_info *current_thread_info(void)
 #define TIF_SYSCALL_TRACE	8
 #define TIF_MEMDIE		18
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TIF_FREEZE		19
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define TIF_RESTORE_SIGMASK	20
 
 #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
@@ -146,15 +152,23 @@ static inline struct thread_info *current_thread_info(void)
 #define _TIF_NOTIFY_RESUME	(1 << TIF_NOTIFY_RESUME)
 #define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define _TIF_FREEZE		(1 << TIF_FREEZE)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #define _TIF_RESTORE_SIGMASK	(1 << TIF_RESTORE_SIGMASK)
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Change these and you break ASM code in entry-common.S
  */
+<<<<<<< HEAD
 #define _TIF_WORK_MASK		0x000000ff
+=======
+#define _TIF_WORK_MASK \
+	(_TIF_SIGPENDING | _TIF_NEED_RESCHED | _TIF_NOTIFY_RESUME)
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __KERNEL__ */
 #endif /* __UNICORE_THREAD_INFO_H__ */

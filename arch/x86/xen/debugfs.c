@@ -19,6 +19,7 @@ struct dentry * __init xen_init_debugfs(void)
 	return d_xen_debug;
 }
 
+<<<<<<< HEAD
 struct array_data
 {
 	void *array;
@@ -127,3 +128,5 @@ struct dentry *xen_debugfs_create_u32_array(const char *name, umode_t mode,
 
 	return debugfs_create_file(name, mode, parent, data, &u32_array_fops);
 }
+=======
+>>>>>>> refs/remotes/origin/master

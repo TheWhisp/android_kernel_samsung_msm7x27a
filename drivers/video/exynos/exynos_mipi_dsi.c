@@ -30,6 +30,7 @@
 #include <linux/interrupt.h>
 #include <linux/kthread.h>
 #include <linux/notifier.h>
+<<<<<<< HEAD
 #include <linux/regulator/consumer.h>
 #include <linux/pm_runtime.h>
 
@@ -37,6 +38,15 @@
 
 #include <plat/fb.h>
 
+=======
+#include <linux/phy/phy.h>
+#include <linux/regulator/consumer.h>
+#include <linux/pm_runtime.h>
+#include <linux/err.h>
+
+#include <video/exynos_mipi_dsim.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "exynos_mipi_dsi_common.h"
 #include "exynos_mipi_dsi_lowlevel.h"
 
@@ -58,7 +68,11 @@ static struct mipi_dsim_platform_data *to_dsim_plat(struct platform_device
 }
 
 static struct regulator_bulk_data supplies[] = {
+<<<<<<< HEAD
 	{ .supply = "vdd10", },
+=======
+	{ .supply = "vdd11", },
+>>>>>>> refs/remotes/origin/master
 	{ .supply = "vdd18", },
 };
 
@@ -102,9 +116,17 @@ static void exynos_mipi_update_cfg(struct mipi_dsim_device *dsim)
 	/* set display timing. */
 	exynos_mipi_dsi_set_display_mode(dsim, dsim->dsim_config);
 
+<<<<<<< HEAD
 	/*
 	 * data from Display controller(FIMD) is transferred in video mode
 	 * but in case of command mode, all settigs is updated to registers.
+=======
+	exynos_mipi_dsi_init_interrupt(dsim);
+
+	/*
+	 * data from Display controller(FIMD) is transferred in video mode
+	 * but in case of command mode, all settings are updated to registers.
+>>>>>>> refs/remotes/origin/master
 	 */
 	exynos_mipi_dsi_stand_by(dsim, 1);
 }
@@ -139,7 +161,10 @@ static int exynos_mipi_dsi_early_blank_mode(struct mipi_dsim_device *dsim,
 
 static int exynos_mipi_dsi_blank_mode(struct mipi_dsim_device *dsim, int power)
 {
+<<<<<<< HEAD
 	struct platform_device *pdev = to_platform_device(dsim->dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mipi_dsim_lcd_driver *client_drv = dsim->dsim_lcd_drv;
 	struct mipi_dsim_lcd_device *client_dev = dsim->dsim_lcd_dev;
 
@@ -152,11 +177,18 @@ static int exynos_mipi_dsi_blank_mode(struct mipi_dsim_device *dsim, int power)
 		if (client_drv && client_drv->power_on)
 			client_drv->power_on(client_dev, 1);
 
+<<<<<<< HEAD
 		exynos_mipi_regulator_disable(dsim);
 
 		/* enable MIPI-DSI PHY. */
 		if (dsim->pd->phy_enable)
 			dsim->pd->phy_enable(pdev, true);
+=======
+		exynos_mipi_regulator_enable(dsim);
+
+		/* enable MIPI-DSI PHY. */
+		phy_power_on(dsim->phy);
+>>>>>>> refs/remotes/origin/master
 
 		clk_enable(dsim->clock);
 
@@ -203,7 +235,12 @@ int exynos_mipi_dsi_register_lcd_device(struct mipi_dsim_lcd_device *lcd_dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 struct mipi_dsim_ddi *exynos_mipi_dsi_find_lcd_device(struct mipi_dsim_lcd_driver *lcd_drv)
+=======
+static struct mipi_dsim_ddi *exynos_mipi_dsi_find_lcd_device(
+					struct mipi_dsim_lcd_driver *lcd_drv)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mipi_dsim_ddi *dsim_ddi, *next;
 	struct mipi_dsim_lcd_device *lcd_dev;
@@ -263,7 +300,12 @@ int exynos_mipi_dsi_register_lcd_driver(struct mipi_dsim_lcd_driver *lcd_drv)
 
 }
 
+<<<<<<< HEAD
 struct mipi_dsim_ddi *exynos_mipi_dsi_bind_lcd_ddi(struct mipi_dsim_device *dsim,
+=======
+static struct mipi_dsim_ddi *exynos_mipi_dsi_bind_lcd_ddi(
+						struct mipi_dsim_device *dsim,
+>>>>>>> refs/remotes/origin/master
 						const char *name)
 {
 	struct mipi_dsim_ddi *dsim_ddi, *next;
@@ -334,7 +376,12 @@ static int exynos_mipi_dsi_probe(struct platform_device *pdev)
 	struct mipi_dsim_ddi *dsim_ddi;
 	int ret = -EINVAL;
 
+<<<<<<< HEAD
 	dsim = kzalloc(sizeof(struct mipi_dsim_device), GFP_KERNEL);
+=======
+	dsim = devm_kzalloc(&pdev->dev, sizeof(struct mipi_dsim_device),
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!dsim) {
 		dev_err(&pdev->dev, "failed to allocate dsim object.\n");
 		return -ENOMEM;
@@ -348,13 +395,21 @@ static int exynos_mipi_dsi_probe(struct platform_device *pdev)
 	dsim_pd = (struct mipi_dsim_platform_data *)dsim->pd;
 	if (dsim_pd == NULL) {
 		dev_err(&pdev->dev, "failed to get platform data for dsim.\n");
+<<<<<<< HEAD
 		goto err_clock_get;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 	/* get mipi_dsim_config. */
 	dsim_config = dsim_pd->dsim_config;
 	if (dsim_config == NULL) {
 		dev_err(&pdev->dev, "failed to get dsim config data.\n");
+<<<<<<< HEAD
 		goto err_clock_get;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dsim->dsim_config = dsim_config;
@@ -362,6 +417,7 @@ static int exynos_mipi_dsi_probe(struct platform_device *pdev)
 
 	mutex_init(&dsim->lock);
 
+<<<<<<< HEAD
 	ret = regulator_bulk_get(&pdev->dev, ARRAY_SIZE(supplies), supplies);
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to get regulators: %d\n", ret);
@@ -372,11 +428,29 @@ static int exynos_mipi_dsi_probe(struct platform_device *pdev)
 	if (IS_ERR(dsim->clock)) {
 		dev_err(&pdev->dev, "failed to get dsim clock source\n");
 		goto err_clock_get;
+=======
+	ret = devm_regulator_bulk_get(&pdev->dev, ARRAY_SIZE(supplies),
+					supplies);
+	if (ret) {
+		dev_err(&pdev->dev, "Failed to get regulators: %d\n", ret);
+		return ret;
+	}
+
+	dsim->phy = devm_phy_get(&pdev->dev, "dsim");
+	if (IS_ERR(dsim->phy))
+		return PTR_ERR(dsim->phy);
+
+	dsim->clock = devm_clk_get(&pdev->dev, "dsim0");
+	if (IS_ERR(dsim->clock)) {
+		dev_err(&pdev->dev, "failed to get dsim clock source\n");
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	clk_enable(dsim->clock);
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (!res) {
 		dev_err(&pdev->dev, "failed to get io memory region\n");
 		goto err_platform_get;
@@ -395,6 +469,13 @@ static int exynos_mipi_dsi_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "failed to remap io region\n");
 		ret = -ENOMEM;
 		goto err_ioremap;
+=======
+
+	dsim->reg_base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(dsim->reg_base)) {
+		ret = PTR_ERR(dsim->reg_base);
+		goto error;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_init(&dsim->lock);
@@ -403,6 +484,7 @@ static int exynos_mipi_dsi_probe(struct platform_device *pdev)
 	dsim_ddi = exynos_mipi_dsi_bind_lcd_ddi(dsim, dsim_pd->lcd_panel_name);
 	if (!dsim_ddi) {
 		dev_err(&pdev->dev, "mipi_dsim_ddi object not found.\n");
+<<<<<<< HEAD
 		goto err_bind;
 	}
 
@@ -425,15 +507,50 @@ static int exynos_mipi_dsi_probe(struct platform_device *pdev)
 	init_completion(&dsim_rd_comp);
 
 	/* enable interrupt */
+=======
+		ret = -EINVAL;
+		goto error;
+	}
+
+	dsim->irq = platform_get_irq(pdev, 0);
+	if (IS_ERR_VALUE(dsim->irq)) {
+		dev_err(&pdev->dev, "failed to request dsim irq resource\n");
+		ret = -EINVAL;
+		goto error;
+	}
+
+	init_completion(&dsim_wr_comp);
+	init_completion(&dsim_rd_comp);
+	platform_set_drvdata(pdev, dsim);
+
+	ret = devm_request_irq(&pdev->dev, dsim->irq,
+			exynos_mipi_dsi_interrupt_handler,
+			IRQF_SHARED, dev_name(&pdev->dev), dsim);
+	if (ret != 0) {
+		dev_err(&pdev->dev, "failed to request dsim irq\n");
+		ret = -EINVAL;
+		goto error;
+	}
+
+	/* enable interrupts */
+>>>>>>> refs/remotes/origin/master
 	exynos_mipi_dsi_init_interrupt(dsim);
 
 	/* initialize mipi-dsi client(lcd panel). */
 	if (dsim_ddi->dsim_lcd_drv && dsim_ddi->dsim_lcd_drv->probe)
 		dsim_ddi->dsim_lcd_drv->probe(dsim_ddi->dsim_lcd_dev);
 
+<<<<<<< HEAD
 	/* in case that mipi got enabled at bootloader. */
 	if (dsim_pd->enabled)
 		goto out;
+=======
+	/* in case mipi-dsi has been enabled by bootloader */
+	if (dsim_pd->enabled) {
+		exynos_mipi_regulator_enable(dsim);
+		goto done;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* lcd panel power on. */
 	if (dsim_ddi->dsim_lcd_drv && dsim_ddi->dsim_lcd_drv->power_on)
@@ -442,8 +559,12 @@ static int exynos_mipi_dsi_probe(struct platform_device *pdev)
 	exynos_mipi_regulator_enable(dsim);
 
 	/* enable MIPI-DSI PHY. */
+<<<<<<< HEAD
 	if (dsim->pd->phy_enable)
 		dsim->pd->phy_enable(pdev, true);
+=======
+	phy_power_on(dsim->phy);
+>>>>>>> refs/remotes/origin/master
 
 	exynos_mipi_update_cfg(dsim);
 
@@ -453,6 +574,7 @@ static int exynos_mipi_dsi_probe(struct platform_device *pdev)
 
 	dsim->suspended = false;
 
+<<<<<<< HEAD
 out:
 	platform_set_drvdata(pdev, dsim);
 
@@ -482,11 +604,28 @@ err_platform_get_irq:
 }
 
 static int __devexit exynos_mipi_dsi_remove(struct platform_device *pdev)
+=======
+done:
+	platform_set_drvdata(pdev, dsim);
+
+	dev_dbg(&pdev->dev, "%s() completed successfully (%s mode)\n", __func__,
+		dsim_config->e_interface == DSIM_COMMAND ? "CPU" : "RGB");
+
+	return 0;
+
+error:
+	clk_disable(dsim->clock);
+	return ret;
+}
+
+static int exynos_mipi_dsi_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mipi_dsim_device *dsim = platform_get_drvdata(pdev);
 	struct mipi_dsim_ddi *dsim_ddi, *next;
 	struct mipi_dsim_lcd_driver *dsim_lcd_drv;
 
+<<<<<<< HEAD
 	iounmap(dsim->reg_base);
 
 	clk_disable(dsim->clock);
@@ -494,6 +633,9 @@ static int __devexit exynos_mipi_dsi_remove(struct platform_device *pdev)
 
 	release_resource(dsim->res);
 	release_mem_region(dsim->res->start, resource_size(dsim->res));
+=======
+	clk_disable(dsim->clock);
+>>>>>>> refs/remotes/origin/master
 
 	list_for_each_entry_safe(dsim_ddi, next, &dsim_ddi_list, list) {
 		if (dsim_ddi) {
@@ -509,6 +651,7 @@ static int __devexit exynos_mipi_dsi_remove(struct platform_device *pdev)
 		}
 	}
 
+<<<<<<< HEAD
 	regulator_bulk_free(ARRAY_SIZE(supplies), supplies);
 	kfree(dsim);
 
@@ -519,6 +662,15 @@ static int __devexit exynos_mipi_dsi_remove(struct platform_device *pdev)
 static int exynos_mipi_dsi_suspend(struct platform_device *pdev,
 		pm_message_t state)
 {
+=======
+	return 0;
+}
+
+#ifdef CONFIG_PM_SLEEP
+static int exynos_mipi_dsi_suspend(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+>>>>>>> refs/remotes/origin/master
 	struct mipi_dsim_device *dsim = platform_get_drvdata(pdev);
 	struct mipi_dsim_lcd_driver *client_drv = dsim->dsim_lcd_drv;
 	struct mipi_dsim_lcd_device *client_dev = dsim->dsim_lcd_dev;
@@ -531,9 +683,14 @@ static int exynos_mipi_dsi_suspend(struct platform_device *pdev,
 	if (client_drv && client_drv->suspend)
 		client_drv->suspend(client_dev);
 
+<<<<<<< HEAD
 	/* enable MIPI-DSI PHY. */
 	if (dsim->pd->phy_enable)
 		dsim->pd->phy_enable(pdev, false);
+=======
+	/* disable MIPI-DSI PHY. */
+	phy_power_off(dsim->phy);
+>>>>>>> refs/remotes/origin/master
 
 	clk_disable(dsim->clock);
 
@@ -544,8 +701,14 @@ static int exynos_mipi_dsi_suspend(struct platform_device *pdev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int exynos_mipi_dsi_resume(struct platform_device *pdev)
 {
+=======
+static int exynos_mipi_dsi_resume(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+>>>>>>> refs/remotes/origin/master
 	struct mipi_dsim_device *dsim = platform_get_drvdata(pdev);
 	struct mipi_dsim_lcd_driver *client_drv = dsim->dsim_lcd_drv;
 	struct mipi_dsim_lcd_device *client_dev = dsim->dsim_lcd_dev;
@@ -562,8 +725,12 @@ static int exynos_mipi_dsi_resume(struct platform_device *pdev)
 	exynos_mipi_regulator_enable(dsim);
 
 	/* enable MIPI-DSI PHY. */
+<<<<<<< HEAD
 	if (dsim->pd->phy_enable)
 		dsim->pd->phy_enable(pdev, true);
+=======
+	phy_power_on(dsim->phy);
+>>>>>>> refs/remotes/origin/master
 
 	clk_enable(dsim->clock);
 
@@ -577,6 +744,7 @@ static int exynos_mipi_dsi_resume(struct platform_device *pdev)
 
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define exynos_mipi_dsi_suspend NULL
 #define exynos_mipi_dsi_resume NULL
@@ -590,6 +758,21 @@ static struct platform_driver exynos_mipi_dsi_driver = {
 	.driver = {
 		   .name = "exynos-mipi-dsim",
 		   .owner = THIS_MODULE,
+=======
+#endif
+
+static const struct dev_pm_ops exynos_mipi_dsi_pm_ops = {
+	SET_SYSTEM_SLEEP_PM_OPS(exynos_mipi_dsi_suspend, exynos_mipi_dsi_resume)
+};
+
+static struct platform_driver exynos_mipi_dsi_driver = {
+	.probe = exynos_mipi_dsi_probe,
+	.remove = exynos_mipi_dsi_remove,
+	.driver = {
+		   .name = "exynos-mipi-dsim",
+		   .owner = THIS_MODULE,
+		   .pm = &exynos_mipi_dsi_pm_ops,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

@@ -21,9 +21,13 @@
 #include <linux/types.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
@@ -38,18 +42,25 @@
 #include <asm/mach/irq.h>
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
 #include <mach/board.h>
 <<<<<<< HEAD
 #include <mach/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+
+#include "at91_aic.h"
+#include "board.h"
+>>>>>>> refs/remotes/origin/master
 #include "generic.h"
 
 
 static void __init csb637_init_early(void)
 {
 	/* Initialize processor: 3.6864 MHz crystal */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	at91rm9200_initialize(3686400);
 =======
@@ -73,6 +84,12 @@ static struct at91_eth_data __initdata csb637_eth_data = {
 =======
 static struct macb_platform_data __initdata csb637_eth_data = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	at91_initialize(3686400);
+}
+
+static struct macb_platform_data __initdata csb637_eth_data = {
+>>>>>>> refs/remotes/origin/master
 	.phy_irq_pin	= AT91_PIN_PC0,
 	.is_rmii	= 0,
 };
@@ -80,10 +97,15 @@ static struct macb_platform_data __initdata csb637_eth_data = {
 static struct at91_usbh_data __initdata csb637_usbh_data = {
 	.ports		= 2,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.vbus_pin	= {-EINVAL, -EINVAL},
 	.overcurrent_pin= {-EINVAL, -EINVAL},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.vbus_pin	= {-EINVAL, -EINVAL},
+	.overcurrent_pin= {-EINVAL, -EINVAL},
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct at91_udc_data __initdata csb637_udc_data = {
@@ -141,6 +163,11 @@ static void __init csb637_board_init(void)
 	/* LED(s) */
 	at91_gpio_leds(csb_leds, ARRAY_SIZE(csb_leds));
 	/* Serial */
+<<<<<<< HEAD
+=======
+	/* DBGU on ttyS0. (Rx & Tx only) */
+	at91_register_uart(0, 0, 0);
+>>>>>>> refs/remotes/origin/master
 	at91_add_device_serial();
 	/* Ethernet */
 	at91_add_device_eth(&csb637_eth_data);
@@ -158,6 +185,7 @@ static void __init csb637_board_init(void)
 
 MACHINE_START(CSB637, "Cogent CSB637")
 	/* Maintainer: Bill Gatliff */
+<<<<<<< HEAD
 	.timer		= &at91rm9200_timer,
 <<<<<<< HEAD
 	.map_io		= at91rm9200_map_io,
@@ -168,5 +196,12 @@ MACHINE_START(CSB637, "Cogent CSB637")
 	.init_early	= csb637_init_early,
 	.init_irq	= at91_init_irq_default,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= at91rm9200_timer_init,
+	.map_io		= at91_map_io,
+	.handle_irq	= at91_aic_handle_irq,
+	.init_early	= csb637_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= csb637_board_init,
 MACHINE_END

@@ -16,6 +16,7 @@ obj-y		:= enlighten.o setup.o multicalls.o mmu.o irq.o \
 			p2m.o
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_EVENT_TRACING) += trace.o
 
@@ -24,4 +25,12 @@ obj-$(CONFIG_SMP)		+= smp.o
 obj-$(CONFIG_PARAVIRT_SPINLOCKS)+= spinlock.o
 obj-$(CONFIG_XEN_DEBUG_FS)	+= debugfs.o
 obj-$(CONFIG_XEN_DOM0)		+= vga.o
+=======
+obj-$(CONFIG_EVENT_TRACING) += trace.o
+
+obj-$(CONFIG_SMP)		+= smp.o
+obj-$(CONFIG_PARAVIRT_SPINLOCKS)+= spinlock.o
+obj-$(CONFIG_XEN_DEBUG_FS)	+= debugfs.o
+obj-$(CONFIG_XEN_DOM0)		+= apic.o vga.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_SWIOTLB_XEN)	+= pci-swiotlb-xen.o

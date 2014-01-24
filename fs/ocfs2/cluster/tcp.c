@@ -60,9 +60,13 @@
 #include <linux/kref.h>
 #include <linux/net.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/tcp.h>
 
 #include <asm/uaccess.h>
@@ -307,6 +311,7 @@ static u8 o2net_num_from_nn(struct o2net_node *nn)
 
 static int o2net_prep_nsw(struct o2net_node *nn, struct o2net_status_wait *nsw)
 {
+<<<<<<< HEAD
 	int ret = 0;
 
 	do {
@@ -329,6 +334,24 @@ static int o2net_prep_nsw(struct o2net_node *nn, struct o2net_status_wait *nsw)
 	}
 
 	return ret;
+=======
+	int ret;
+
+	spin_lock(&nn->nn_lock);
+	ret = idr_alloc(&nn->nn_status_idr, nsw, 0, 0, GFP_ATOMIC);
+	if (ret >= 0) {
+		nsw->ns_id = ret;
+		list_add_tail(&nsw->ns_node_item, &nn->nn_status_list);
+	}
+	spin_unlock(&nn->nn_lock);
+	if (ret < 0)
+		return ret;
+
+	init_waitqueue_head(&nsw->ns_wq);
+	nsw->ns_sys_status = O2NET_ERR_NONE;
+	nsw->ns_status = 0;
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void o2net_complete_nsw_locked(struct o2net_node *nn,
@@ -415,6 +438,12 @@ static void sc_kref_release(struct kref *kref)
 	sc->sc_node = NULL;
 
 	o2net_debug_del_sc(sc);
+<<<<<<< HEAD
+=======
+
+	if (sc->sc_page)
+		__free_page(sc->sc_page);
+>>>>>>> refs/remotes/origin/master
 	kfree(sc);
 }
 
@@ -550,11 +579,17 @@ static void o2net_set_nn_state(struct o2net_node *nn,
 
 	if (was_valid && !valid) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE "o2net: no longer connected to "
 =======
 		printk(KERN_NOTICE "o2net: No longer connected to "
 >>>>>>> refs/remotes/origin/cm-10.0
 		       SC_NODEF_FMT "\n", SC_NODEF_ARGS(old_sc));
+=======
+		if (old_sc)
+			printk(KERN_NOTICE "o2net: No longer connected to "
+				SC_NODEF_FMT "\n", SC_NODEF_ARGS(old_sc));
+>>>>>>> refs/remotes/origin/master
 		o2net_complete_nodes_nsw(nn);
 	}
 
@@ -564,10 +599,14 @@ static void o2net_set_nn_state(struct o2net_node *nn,
 		printk(KERN_NOTICE "o2net: %s " SC_NODEF_FMT "\n",
 		       o2nm_this_node() > sc->sc_node->nd_num ?
 <<<<<<< HEAD
+<<<<<<< HEAD
 		       		"connected to" : "accepted connection from",
 =======
 		       "Connected to" : "Accepted connection from",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       "Connected to" : "Accepted connection from",
+>>>>>>> refs/remotes/origin/master
 		       SC_NODEF_ARGS(sc));
 	}
 
@@ -647,6 +686,7 @@ static void o2net_state_change(struct sock *sk)
 	state_change = sc->sc_state_change;
 
 	switch(sk->sk_state) {
+<<<<<<< HEAD
 		/* ignore connecting sockets as they make progress */
 		case TCP_SYN_SENT:
 		case TCP_SYN_RECV:
@@ -664,6 +704,21 @@ static void o2net_state_change(struct sock *sk)
 			      SC_NODEF_ARGS(sc), sk->sk_state);
 			o2net_sc_queue_work(sc, &sc->sc_shutdown_work);
 			break;
+=======
+	/* ignore connecting sockets as they make progress */
+	case TCP_SYN_SENT:
+	case TCP_SYN_RECV:
+		break;
+	case TCP_ESTABLISHED:
+		o2net_sc_queue_work(sc, &sc->sc_connect_work);
+		break;
+	default:
+		printk(KERN_INFO "o2net: Connection to " SC_NODEF_FMT
+			" shutdown, state %d\n",
+			SC_NODEF_ARGS(sc), sk->sk_state);
+		o2net_sc_queue_work(sc, &sc->sc_shutdown_work);
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 out:
 	read_unlock(&sk->sk_callback_lock);
@@ -783,6 +838,7 @@ static struct o2net_msg_handler *
 o2net_handler_tree_lookup(u32 msg_type, u32 key, struct rb_node ***ret_p,
 			  struct rb_node **ret_parent)
 {
+<<<<<<< HEAD
         struct rb_node **p = &o2net_handler_tree.rb_node;
         struct rb_node *parent = NULL;
 	struct o2net_msg_handler *nmh, *ret = NULL;
@@ -809,6 +865,34 @@ o2net_handler_tree_lookup(u32 msg_type, u32 key, struct rb_node ***ret_p,
                 *ret_parent = parent;
 
         return ret;
+=======
+	struct rb_node **p = &o2net_handler_tree.rb_node;
+	struct rb_node *parent = NULL;
+	struct o2net_msg_handler *nmh, *ret = NULL;
+	int cmp;
+
+	while (*p) {
+		parent = *p;
+		nmh = rb_entry(parent, struct o2net_msg_handler, nh_node);
+		cmp = o2net_handler_cmp(nmh, msg_type, key);
+
+		if (cmp < 0)
+			p = &(*p)->rb_left;
+		else if (cmp > 0)
+			p = &(*p)->rb_right;
+		else {
+			ret = nmh;
+			break;
+		}
+	}
+
+	if (ret_p != NULL)
+		*ret_p = p;
+	if (ret_parent != NULL)
+		*ret_parent = parent;
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void o2net_handler_kref_release(struct kref *kref)
@@ -885,7 +969,11 @@ int o2net_register_handler(u32 msg_type, u32 key, u32 max_len,
 		/* we've had some trouble with handlers seemingly vanishing. */
 		mlog_bug_on_msg(o2net_handler_tree_lookup(msg_type, key, &p,
 							  &parent) == NULL,
+<<<<<<< HEAD
 			        "couldn't find handler we *just* registerd "
+=======
+			        "couldn't find handler we *just* registered "
+>>>>>>> refs/remotes/origin/master
 				"for type %u key %08x\n", msg_type, key);
 	}
 	write_unlock(&o2net_handler_lock);
@@ -1051,7 +1139,10 @@ static int o2net_tx_can_proceed(struct o2net_node *nn,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Get a map of all nodes to which this node is currently connected to */
 void o2net_fill_node_map(unsigned long *map, unsigned bytes)
 {
@@ -1071,7 +1162,10 @@ void o2net_fill_node_map(unsigned long *map, unsigned bytes)
 }
 EXPORT_SYMBOL_GPL(o2net_fill_node_map);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int o2net_send_message_vec(u32 msg_type, u32 key, struct kvec *caller_vec,
 			   size_t caller_veclen, u8 target_node, int *status)
 {
@@ -1183,10 +1277,15 @@ out:
 	o2net_debug_del_nst(&nst); /* must be before dropping sc and node */
 	if (sc)
 		sc_put(sc);
+<<<<<<< HEAD
 	if (vec)
 		kfree(vec);
 	if (msg)
 		kfree(msg);
+=======
+	kfree(vec);
+	kfree(msg);
+>>>>>>> refs/remotes/origin/master
 	o2net_complete_nsw(nn, &nsw, 0, 0, 0);
 	return ret;
 }
@@ -1323,18 +1422,24 @@ static int o2net_check_handshake(struct o2net_sock_container *sc)
 
 	if (hand->protocol_version != cpu_to_be64(O2NET_PROTOCOL_VERSION)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mlog(ML_NOTICE, SC_NODEF_FMT " advertised net protocol "
 		     "version %llu but %llu is required, disconnecting\n",
 		     SC_NODEF_ARGS(sc),
 		     (unsigned long long)be64_to_cpu(hand->protocol_version),
 		     O2NET_PROTOCOL_VERSION);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_NOTICE "o2net: " SC_NODEF_FMT " Advertised net "
 		       "protocol version %llu but %llu is required. "
 		       "Disconnecting.\n", SC_NODEF_ARGS(sc),
 		       (unsigned long long)be64_to_cpu(hand->protocol_version),
 		       O2NET_PROTOCOL_VERSION);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* don't bother reconnecting if its the wrong version. */
 		o2net_ensure_shutdown(nn, sc, -ENOTCONN);
@@ -1349,18 +1454,24 @@ static int o2net_check_handshake(struct o2net_sock_container *sc)
 	if (be32_to_cpu(hand->o2net_idle_timeout_ms) !=
 				o2net_idle_timeout()) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mlog(ML_NOTICE, SC_NODEF_FMT " uses a network idle timeout of "
 		     "%u ms, but we use %u ms locally.  disconnecting\n",
 		     SC_NODEF_ARGS(sc),
 		     be32_to_cpu(hand->o2net_idle_timeout_ms),
 		     o2net_idle_timeout());
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_NOTICE "o2net: " SC_NODEF_FMT " uses a network "
 		       "idle timeout of %u ms, but we use %u ms locally. "
 		       "Disconnecting.\n", SC_NODEF_ARGS(sc),
 		       be32_to_cpu(hand->o2net_idle_timeout_ms),
 		       o2net_idle_timeout());
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		o2net_ensure_shutdown(nn, sc, -ENOTCONN);
 		return -1;
 	}
@@ -1368,18 +1479,24 @@ static int o2net_check_handshake(struct o2net_sock_container *sc)
 	if (be32_to_cpu(hand->o2net_keepalive_delay_ms) !=
 			o2net_keepalive_delay()) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mlog(ML_NOTICE, SC_NODEF_FMT " uses a keepalive delay of "
 		     "%u ms, but we use %u ms locally.  disconnecting\n",
 		     SC_NODEF_ARGS(sc),
 		     be32_to_cpu(hand->o2net_keepalive_delay_ms),
 		     o2net_keepalive_delay());
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_NOTICE "o2net: " SC_NODEF_FMT " uses a keepalive "
 		       "delay of %u ms, but we use %u ms locally. "
 		       "Disconnecting.\n", SC_NODEF_ARGS(sc),
 		       be32_to_cpu(hand->o2net_keepalive_delay_ms),
 		       o2net_keepalive_delay());
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		o2net_ensure_shutdown(nn, sc, -ENOTCONN);
 		return -1;
 	}
@@ -1387,18 +1504,24 @@ static int o2net_check_handshake(struct o2net_sock_container *sc)
 	if (be32_to_cpu(hand->o2hb_heartbeat_timeout_ms) !=
 			O2HB_MAX_WRITE_TIMEOUT_MS) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mlog(ML_NOTICE, SC_NODEF_FMT " uses a heartbeat timeout of "
 		     "%u ms, but we use %u ms locally.  disconnecting\n",
 		     SC_NODEF_ARGS(sc),
 		     be32_to_cpu(hand->o2hb_heartbeat_timeout_ms),
 		     O2HB_MAX_WRITE_TIMEOUT_MS);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_NOTICE "o2net: " SC_NODEF_FMT " uses a heartbeat "
 		       "timeout of %u ms, but we use %u ms locally. "
 		       "Disconnecting.\n", SC_NODEF_ARGS(sc),
 		       be32_to_cpu(hand->o2hb_heartbeat_timeout_ms),
 		       O2HB_MAX_WRITE_TIMEOUT_MS);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		o2net_ensure_shutdown(nn, sc, -ENOTCONN);
 		return -1;
 	}
@@ -1610,6 +1733,7 @@ static void o2net_idle_timer(unsigned long data)
 	struct o2net_sock_container *sc = (struct o2net_sock_container *)data;
 	struct o2net_node *nn = o2net_nn_from_num(sc->sc_node->nd_num);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef CONFIG_DEBUG_FS
 	ktime_t now = ktime_get();
@@ -1633,6 +1757,8 @@ static void o2net_idle_timer(unsigned long data)
 	     (long long)ktime_to_us(sc->sc_tv_func_stop));
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_DEBUG_FS
 	unsigned long msecs = ktime_to_ms(ktime_get()) -
 		ktime_to_ms(sc->sc_tv_timer);
@@ -1643,7 +1769,10 @@ static void o2net_idle_timer(unsigned long data)
 	printk(KERN_NOTICE "o2net: Connection to " SC_NODEF_FMT " has been "
 	       "idle for %lu.%lu secs, shutting it down.\n", SC_NODEF_ARGS(sc),
 	       msecs / 1000, msecs % 1000);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Initialize the nn_timeout so that the next connection attempt
@@ -1775,6 +1904,7 @@ static void o2net_start_connect(struct work_struct *work)
 		ret = 0;
 
 out:
+<<<<<<< HEAD
 	if (ret) {
 <<<<<<< HEAD
 		mlog(ML_NOTICE, "connect attempt to " SC_NODEF_FMT " failed "
@@ -1787,6 +1917,14 @@ out:
 		 * from set_nn_state */
 		if (sc)
 			o2net_ensure_shutdown(nn, sc, 0);
+=======
+	if (ret && sc) {
+		printk(KERN_NOTICE "o2net: Connect attempt to " SC_NODEF_FMT
+		       " failed with errno %d\n", SC_NODEF_ARGS(sc), ret);
+		/* 0 err so that another will be queued and attempted
+		 * from set_nn_state */
+		o2net_ensure_shutdown(nn, sc, 0);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (sc)
 		sc_put(sc);
@@ -1806,12 +1944,17 @@ static void o2net_connect_expired(struct work_struct *work)
 	spin_lock(&nn->nn_lock);
 	if (!nn->nn_sc_valid) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mlog(ML_ERROR, "no connection established with node %u after "
 		     "%u.%u seconds, giving up and returning errors.\n",
 =======
 		printk(KERN_NOTICE "o2net: No connection established with "
 		       "node %u after %u.%u seconds, giving up.\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_NOTICE "o2net: No connection established with "
+		       "node %u after %u.%u seconds, giving up.\n",
+>>>>>>> refs/remotes/origin/master
 		     o2net_num_from_nn(nn),
 		     o2net_idle_timeout() / 1000,
 		     o2net_idle_timeout() % 1000);
@@ -1955,6 +2098,7 @@ static int o2net_accept_one(struct socket *sock)
 	node = o2nm_get_node_by_ip(sin.sin_addr.s_addr);
 	if (node == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mlog(ML_NOTICE, "attempt to connect from unknown node at %pI4:%d\n",
 		     &sin.sin_addr.s_addr, ntohs(sin.sin_port));
 =======
@@ -1962,12 +2106,18 @@ static int o2net_accept_one(struct socket *sock)
 		       "node at %pI4:%d\n", &sin.sin_addr.s_addr,
 		       ntohs(sin.sin_port));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_NOTICE "o2net: Attempt to connect from unknown "
+		       "node at %pI4:%d\n", &sin.sin_addr.s_addr,
+		       ntohs(sin.sin_port));
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto out;
 	}
 
 	if (o2nm_this_node() >= node->nd_num) {
 		local_node = o2nm_get_node_by_num(o2nm_this_node());
+<<<<<<< HEAD
 <<<<<<< HEAD
 		mlog(ML_NOTICE, "unexpected connect attempt seen at node '%s' ("
 		     "%u, %pI4:%d) from node '%s' (%u, %pI4:%d)\n",
@@ -1984,6 +2134,18 @@ static int o2net_accept_one(struct socket *sock)
 		       ntohs(local_node->nd_ipv4_port), node->nd_name,
 		       node->nd_num, &sin.sin_addr.s_addr, ntohs(sin.sin_port));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (local_node)
+			printk(KERN_NOTICE "o2net: Unexpected connect attempt "
+					"seen at node '%s' (%u, %pI4:%d) from "
+					"node '%s' (%u, %pI4:%d)\n",
+					local_node->nd_name, local_node->nd_num,
+					&(local_node->nd_ipv4_address),
+					ntohs(local_node->nd_ipv4_port),
+					node->nd_name,
+					node->nd_num, &sin.sin_addr.s_addr,
+					ntohs(sin.sin_port));
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto out;
 	}
@@ -2009,16 +2171,22 @@ static int o2net_accept_one(struct socket *sock)
 	spin_unlock(&nn->nn_lock);
 	if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mlog(ML_NOTICE, "attempt to connect from node '%s' at "
 		     "%pI4:%d but it already has an open connection\n",
 		     node->nd_name, &sin.sin_addr.s_addr,
 		     ntohs(sin.sin_port));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_NOTICE "o2net: Attempt to connect from node '%s' "
 		       "at %pI4:%d but it already has an open connection\n",
 		       node->nd_name, &sin.sin_addr.s_addr,
 		       ntohs(sin.sin_port));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -2099,10 +2267,14 @@ static int o2net_open_listening_sock(__be32 addr, __be16 port)
 	ret = sock_create(PF_INET, SOCK_STREAM, IPPROTO_TCP, &sock);
 	if (ret < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mlog(ML_ERROR, "unable to create socket, ret=%d\n", ret);
 =======
 		printk(KERN_ERR "o2net: Error %d while creating socket\n", ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR "o2net: Error %d while creating socket\n", ret);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -2116,6 +2288,7 @@ static int o2net_open_listening_sock(__be32 addr, __be16 port)
 	o2net_listen_sock = sock;
 	INIT_WORK(&o2net_listen_work, o2net_accept_many);
 
+<<<<<<< HEAD
 	sock->sk->sk_reuse = 1;
 	ret = sock->ops->bind(sock, (struct sockaddr *)&sin, sizeof(sin));
 	if (ret < 0) {
@@ -2126,10 +2299,18 @@ static int o2net_open_listening_sock(__be32 addr, __be16 port)
 		printk(KERN_ERR "o2net: Error %d while binding socket at "
 		       "%pI4:%u\n", ret, &addr, ntohs(port)); 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sock->sk->sk_reuse = SK_CAN_REUSE;
+	ret = sock->ops->bind(sock, (struct sockaddr *)&sin, sizeof(sin));
+	if (ret < 0) {
+		printk(KERN_ERR "o2net: Error %d while binding socket at "
+		       "%pI4:%u\n", ret, &addr, ntohs(port)); 
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 	ret = sock->ops->listen(sock, 64);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (ret < 0) {
 		mlog(ML_ERROR, "unable to listen on %pI4:%u, ret=%d\n",
@@ -2140,6 +2321,11 @@ static int o2net_open_listening_sock(__be32 addr, __be16 port)
 		printk(KERN_ERR "o2net: Error %d while listening on %pI4:%u\n",
 		       ret, &addr, ntohs(port));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret < 0)
+		printk(KERN_ERR "o2net: Error %d while listening on %pI4:%u\n",
+		       ret, &addr, ntohs(port));
+>>>>>>> refs/remotes/origin/master
 
 out:
 	if (ret) {

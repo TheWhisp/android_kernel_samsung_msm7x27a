@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Engenio/LSI RDAC SCSI Device Handler
 =======
  * LSI/Engenio/NetApp E-Series RDAC SCSI Device Handler
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * LSI/Engenio/NetApp E-Series RDAC SCSI Device Handler
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) 2005 Mike Christie. All rights reserved.
  * Copyright (C) Chandra Seetharaman, IBM Corp. 2007
@@ -29,9 +33,13 @@
 #include <linux/workqueue.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define RDAC_NAME "rdac"
 #define RDAC_RETRY_COUNT 5
@@ -44,10 +52,14 @@
  * driver, and then converted to Linux conventions.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define RDAC_QUIESCENCE_TIME 20;
 =======
 #define RDAC_QUIESCENCE_TIME 20
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define RDAC_QUIESCENCE_TIME 20
+>>>>>>> refs/remotes/origin/master
 /*
  * Page Codes
  */
@@ -141,6 +153,7 @@ struct c4_inquiry {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct rdac_controller {
 	u8			subsys_id[SUBSYS_ID_LEN];
 	u8			slot_id[SLOT_ID_LEN];
@@ -163,6 +176,9 @@ struct rdac_controller {
 =======
 #define UNIQUE_ID_LEN 16
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define UNIQUE_ID_LEN 16
+>>>>>>> refs/remotes/origin/master
 struct c8_inquiry {
 	u8	peripheral_info;
 	u8	page_code; /* 0xC8 */
@@ -176,17 +192,24 @@ struct c8_inquiry {
 	u8	vol_user_label[60];
 	u8	array_uniq_id_len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8	array_unique_id[16];
 =======
 	u8	array_unique_id[UNIQUE_ID_LEN];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8	array_unique_id[UNIQUE_ID_LEN];
+>>>>>>> refs/remotes/origin/master
 	u8	array_user_label_len;
 	u8	array_user_label[60];
 	u8	lun[8];
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct rdac_controller {
 	u8			array_id[UNIQUE_ID_LEN];
 	int			use_ms10;
@@ -206,7 +229,10 @@ struct rdac_controller {
 	struct list_head	ms_head;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct c2_inquiry {
 	u8	peripheral_info;
 	u8	page_code;	/* 0xC2 */
@@ -405,6 +431,7 @@ static void release_controller(struct kref *kref)
 	ctlr = container_of(kref, struct rdac_controller, kref);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	flush_workqueue(kmpath_rdacd);
 	spin_lock(&list_lock);
 	list_del(&ctlr->node);
@@ -425,6 +452,8 @@ static struct rdac_controller *get_controller(u8 *subsys_id, u8 *slot_id,
 			kref_get(&tmp->kref);
 			spin_unlock(&list_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	list_del(&ctlr->node);
 	kfree(ctlr);
 }
@@ -439,12 +468,16 @@ static struct rdac_controller *get_controller(int index, char *array_name,
 			  (tmp->index == index) &&
 			  (tmp->host == sdev->host)) {
 			kref_get(&tmp->kref);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return tmp;
 		}
 	}
 	ctlr = kmalloc(sizeof(*ctlr), GFP_ATOMIC);
 	if (!ctlr)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		goto done;
 
@@ -460,6 +493,8 @@ static struct rdac_controller *get_controller(int index, char *array_name,
 		ctlr->index = 1;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	/* initialize fields of controller */
@@ -468,7 +503,10 @@ static struct rdac_controller *get_controller(int index, char *array_name,
 	ctlr->host = sdev->host;
 	memcpy(ctlr->array_name, array_name, ARRAY_LABEL_LEN);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kref_init(&ctlr->kref);
 	ctlr->use_ms10 = -1;
 	ctlr->ms_queued = 0;
@@ -478,11 +516,15 @@ static struct rdac_controller *get_controller(int index, char *array_name,
 	INIT_LIST_HEAD(&ctlr->ms_head);
 	list_add(&ctlr->node, &ctlr_list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 done:
 	spin_unlock(&list_lock);
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return ctlr;
 }
 
@@ -519,10 +561,14 @@ done:
 
 static int get_lun_info(struct scsi_device *sdev, struct rdac_dh_data *h,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			char *array_name)
 =======
 			char *array_name, u8 *array_id)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			char *array_name, u8 *array_id)
+>>>>>>> refs/remotes/origin/master
 {
 	int err, i;
 	struct c8_inquiry *inqp;
@@ -542,10 +588,15 @@ static int get_lun_info(struct scsi_device *sdev, struct rdac_dh_data *h,
 
 		*(array_name+ARRAY_LABEL_LEN-1) = '\0';
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		memset(array_id, 0, UNIQUE_ID_LEN);
 		memcpy(array_id, inqp->array_unique_id, inqp->array_uniq_id_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memset(array_id, 0, UNIQUE_ID_LEN);
+		memcpy(array_id, inqp->array_unique_id, inqp->array_uniq_id_len);
+>>>>>>> refs/remotes/origin/master
 	}
 	return err;
 }
@@ -588,6 +639,7 @@ static int check_ownership(struct scsi_device *sdev, struct rdac_dh_data *h)
 
 static int initialize_controller(struct scsi_device *sdev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 struct rdac_dh_data *h, char *array_name)
 {
 	int err;
@@ -596,17 +648,25 @@ static int initialize_controller(struct scsi_device *sdev,
 {
 	int err, index;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct rdac_dh_data *h, char *array_name, u8 *array_id)
+{
+	int err, index;
+>>>>>>> refs/remotes/origin/master
 	struct c4_inquiry *inqp;
 
 	err = submit_inquiry(sdev, 0xC4, sizeof(struct c4_inquiry), h);
 	if (err == SCSI_DH_OK) {
 		inqp = &h->inq.c4;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		h->ctlr = get_controller(inqp->subsys_id, inqp->slot_id,
 					array_name);
 		if (!h->ctlr)
 			err = SCSI_DH_RES_TEMP_UNAVAIL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* get the controller index */
 		if (inqp->slot_id[1] == 0x31)
 			index = 0;
@@ -618,7 +678,10 @@ static int initialize_controller(struct scsi_device *sdev,
 		if (!h->ctlr)
 			err = SCSI_DH_RES_TEMP_UNAVAIL;
 		spin_unlock(&list_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return err;
 }
@@ -889,10 +952,15 @@ static const struct scsi_dh_devlist rdac_dev_list[] = {
 	{"IBM", "1742"},
 	{"IBM", "1745"},
 	{"IBM", "1746"},
+<<<<<<< HEAD
+=======
+	{"IBM", "1813"},
+>>>>>>> refs/remotes/origin/master
 	{"IBM", "1814"},
 	{"IBM", "1815"},
 	{"IBM", "1818"},
 	{"IBM", "3526"},
+<<<<<<< HEAD
 	{"SGI", "TP9400"},
 	{"SGI", "TP9500"},
 <<<<<<< HEAD
@@ -924,6 +992,21 @@ static const struct scsi_dh_devlist rdac_dev_list[] = {
 
 =======
 	{"SUN", "ArrayStorage"},
+=======
+	{"SGI", "TP9"},
+	{"SGI", "IS"},
+	{"STK", "OPENstorage D280"},
+	{"STK", "FLEXLINE 380"},
+	{"SUN", "CSM"},
+	{"SUN", "LCSM100"},
+	{"SUN", "STK6580_6780"},
+	{"SUN", "SUN_6180"},
+	{"SUN", "ArrayStorage"},
+	{"DELL", "MD3"},
+	{"NETAPP", "INF-01-00"},
+	{"LSI", "INF-01-00"},
+	{"ENGENIO", "INF-01-00"},
+>>>>>>> refs/remotes/origin/master
 	{NULL, NULL},
 };
 
@@ -945,7 +1028,10 @@ static bool rdac_match(struct scsi_device *sdev)
 	return false;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int rdac_bus_attach(struct scsi_device *sdev);
 static void rdac_bus_detach(struct scsi_device *sdev);
 
@@ -959,9 +1045,13 @@ static struct scsi_device_handler rdac_dh = {
 	.detach = rdac_bus_detach,
 	.activate = rdac_activate,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.match = rdac_match,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.match = rdac_match,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int rdac_bus_attach(struct scsi_device *sdev)
@@ -972,16 +1062,24 @@ static int rdac_bus_attach(struct scsi_device *sdev)
 	int err;
 	char array_name[ARRAY_LABEL_LEN];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	char array_id[UNIQUE_ID_LEN];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char array_id[UNIQUE_ID_LEN];
+>>>>>>> refs/remotes/origin/master
 
 	scsi_dh_data = kzalloc(sizeof(*scsi_dh_data)
 			       + sizeof(*h) , GFP_KERNEL);
 	if (!scsi_dh_data) {
 		sdev_printk(KERN_ERR, sdev, "%s: Attach failed\n",
 			    RDAC_NAME);
+<<<<<<< HEAD
 		return 0;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	scsi_dh_data->scsi_dh = &rdac_dh;
@@ -990,18 +1088,24 @@ static int rdac_bus_attach(struct scsi_device *sdev)
 	h->state = RDAC_STATE_ACTIVE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = get_lun_info(sdev, h, array_name);
 	if (err != SCSI_DH_OK)
 		goto failed;
 
 	err = initialize_controller(sdev, h, array_name);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = get_lun_info(sdev, h, array_name, array_id);
 	if (err != SCSI_DH_OK)
 		goto failed;
 
 	err = initialize_controller(sdev, h, array_name, array_id);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err != SCSI_DH_OK)
 		goto failed;
 
@@ -1029,12 +1133,18 @@ static int rdac_bus_attach(struct scsi_device *sdev)
 
 clean_ctlr:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kref_put(&h->ctlr->kref, release_controller);
 =======
 	spin_lock(&list_lock);
 	kref_put(&h->ctlr->kref, release_controller);
 	spin_unlock(&list_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&list_lock);
+	kref_put(&h->ctlr->kref, release_controller);
+	spin_unlock(&list_lock);
+>>>>>>> refs/remotes/origin/master
 
 failed:
 	kfree(scsi_dh_data);
@@ -1050,6 +1160,7 @@ static void rdac_bus_detach( struct scsi_device *sdev )
 	unsigned long flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(sdev->request_queue->queue_lock, flags);
 	scsi_dh_data = sdev->scsi_dh_data;
 	sdev->scsi_dh_data = NULL;
@@ -1059,6 +1170,8 @@ static void rdac_bus_detach( struct scsi_device *sdev )
 	if (h->ctlr)
 		kref_put(&h->ctlr->kref, release_controller);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	scsi_dh_data = sdev->scsi_dh_data;
 	h = (struct rdac_dh_data *) scsi_dh_data->buf;
 	if (h->ctlr && h->ctlr->ms_queued)
@@ -1072,7 +1185,10 @@ static void rdac_bus_detach( struct scsi_device *sdev )
 	if (h->ctlr)
 		kref_put(&h->ctlr->kref, release_controller);
 	spin_unlock(&list_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(scsi_dh_data);
 	module_put(THIS_MODULE);
 	sdev_printk(KERN_NOTICE, sdev, "%s: Detached\n", RDAC_NAME);
@@ -1098,10 +1214,15 @@ static int __init rdac_init(void)
 		scsi_unregister_device_handler(&rdac_dh);
 		printk(KERN_ERR "kmpath_rdacd creation failed.\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 		r = -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		r = -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 done:
 	return r;
@@ -1117,10 +1238,14 @@ module_init(rdac_init);
 module_exit(rdac_exit);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_DESCRIPTION("Multipath LSI/Engenio RDAC driver");
 =======
 MODULE_DESCRIPTION("Multipath LSI/Engenio/NetApp E-Series RDAC driver");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_DESCRIPTION("Multipath LSI/Engenio/NetApp E-Series RDAC driver");
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Mike Christie, Chandra Seetharaman");
 MODULE_VERSION("01.00.0000.0000");
 MODULE_LICENSE("GPL");

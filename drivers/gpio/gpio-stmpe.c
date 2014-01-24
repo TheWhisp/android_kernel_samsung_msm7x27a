@@ -11,7 +11,13 @@
 #include <linux/slab.h>
 #include <linux/gpio.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 #include <linux/interrupt.h>
+=======
+#include <linux/irqdomain.h>
+#include <linux/interrupt.h>
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mfd/stmpe.h>
 
 /*
@@ -28,6 +34,10 @@ struct stmpe_gpio {
 	struct stmpe *stmpe;
 	struct device *dev;
 	struct mutex irq_lock;
+<<<<<<< HEAD
+=======
+	struct irq_domain *domain;
+>>>>>>> refs/remotes/origin/master
 
 	int irq_base;
 	unsigned norequest_mask;
@@ -103,7 +113,11 @@ static int stmpe_gpio_to_irq(struct gpio_chip *chip, unsigned offset)
 {
 	struct stmpe_gpio *stmpe_gpio = to_stmpe_gpio(chip);
 
+<<<<<<< HEAD
 	return stmpe_gpio->irq_base + offset;
+=======
+	return irq_create_mapping(stmpe_gpio->domain, offset);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int stmpe_gpio_request(struct gpio_chip *chip, unsigned offset)
@@ -126,13 +140,21 @@ static struct gpio_chip template_chip = {
 	.set			= stmpe_gpio_set,
 	.to_irq			= stmpe_gpio_to_irq,
 	.request		= stmpe_gpio_request,
+<<<<<<< HEAD
 	.can_sleep		= 1,
+=======
+	.can_sleep		= true,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int stmpe_gpio_irq_set_type(struct irq_data *d, unsigned int type)
 {
 	struct stmpe_gpio *stmpe_gpio = irq_data_get_irq_chip_data(d);
+<<<<<<< HEAD
 	int offset = d->irq - stmpe_gpio->irq_base;
+=======
+	int offset = d->hwirq;
+>>>>>>> refs/remotes/origin/master
 	int regoffset = offset / 8;
 	int mask = 1 << (offset % 8);
 
@@ -199,7 +221,11 @@ static void stmpe_gpio_irq_sync_unlock(struct irq_data *d)
 static void stmpe_gpio_irq_mask(struct irq_data *d)
 {
 	struct stmpe_gpio *stmpe_gpio = irq_data_get_irq_chip_data(d);
+<<<<<<< HEAD
 	int offset = d->irq - stmpe_gpio->irq_base;
+=======
+	int offset = d->hwirq;
+>>>>>>> refs/remotes/origin/master
 	int regoffset = offset / 8;
 	int mask = 1 << (offset % 8);
 
@@ -209,7 +235,11 @@ static void stmpe_gpio_irq_mask(struct irq_data *d)
 static void stmpe_gpio_irq_unmask(struct irq_data *d)
 {
 	struct stmpe_gpio *stmpe_gpio = irq_data_get_irq_chip_data(d);
+<<<<<<< HEAD
 	int offset = d->irq - stmpe_gpio->irq_base;
+=======
+	int offset = d->hwirq;
+>>>>>>> refs/remotes/origin/master
 	int regoffset = offset / 8;
 	int mask = 1 << (offset % 8);
 
@@ -251,8 +281,15 @@ static irqreturn_t stmpe_gpio_irq(int irq, void *dev)
 		while (stat) {
 			int bit = __ffs(stat);
 			int line = bank * 8 + bit;
+<<<<<<< HEAD
 
 			handle_nested_irq(stmpe_gpio->irq_base + line);
+=======
+			int child_irq = irq_find_mapping(stmpe_gpio->domain,
+							 line);
+
+			handle_nested_irq(child_irq);
+>>>>>>> refs/remotes/origin/master
 			stat &= ~(1 << bit);
 		}
 
@@ -267,6 +304,7 @@ static irqreturn_t stmpe_gpio_irq(int irq, void *dev)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit stmpe_gpio_irq_init(struct stmpe_gpio *stmpe_gpio)
 {
 	int base = stmpe_gpio->irq_base;
@@ -283,10 +321,30 @@ static int __devinit stmpe_gpio_irq_init(struct stmpe_gpio *stmpe_gpio)
 		irq_set_noprobe(irq);
 #endif
 	}
+=======
+static int stmpe_gpio_irq_map(struct irq_domain *d, unsigned int irq,
+			      irq_hw_number_t hwirq)
+{
+	struct stmpe_gpio *stmpe_gpio = d->host_data;
+
+	if (!stmpe_gpio)
+		return -EINVAL;
+
+	irq_set_chip_data(irq, stmpe_gpio);
+	irq_set_chip_and_handler(irq, &stmpe_gpio_irq_chip,
+				 handle_simple_irq);
+	irq_set_nested_thread(irq, 1);
+#ifdef CONFIG_ARM
+	set_irq_flags(irq, IRQF_VALID);
+#else
+	irq_set_noprobe(irq);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static void stmpe_gpio_irq_remove(struct stmpe_gpio *stmpe_gpio)
 {
 	int base = stmpe_gpio->irq_base;
@@ -304,6 +362,46 @@ static void stmpe_gpio_irq_remove(struct stmpe_gpio *stmpe_gpio)
 static int __devinit stmpe_gpio_probe(struct platform_device *pdev)
 {
 	struct stmpe *stmpe = dev_get_drvdata(pdev->dev.parent);
+=======
+static void stmpe_gpio_irq_unmap(struct irq_domain *d, unsigned int irq)
+{
+#ifdef CONFIG_ARM
+	set_irq_flags(irq, 0);
+#endif
+	irq_set_chip_and_handler(irq, NULL, NULL);
+	irq_set_chip_data(irq, NULL);
+}
+
+static const struct irq_domain_ops stmpe_gpio_irq_simple_ops = {
+	.unmap = stmpe_gpio_irq_unmap,
+	.map = stmpe_gpio_irq_map,
+	.xlate = irq_domain_xlate_twocell,
+};
+
+static int stmpe_gpio_irq_init(struct stmpe_gpio *stmpe_gpio,
+		struct device_node *np)
+{
+	int base = 0;
+
+	if (!np)
+		base = stmpe_gpio->irq_base;
+
+	stmpe_gpio->domain = irq_domain_add_simple(np,
+				stmpe_gpio->chip.ngpio, base,
+				&stmpe_gpio_irq_simple_ops, stmpe_gpio);
+	if (!stmpe_gpio->domain) {
+		dev_err(stmpe_gpio->dev, "failed to create irqdomain\n");
+		return -ENOSYS;
+	}
+
+	return 0;
+}
+
+static int stmpe_gpio_probe(struct platform_device *pdev)
+{
+	struct stmpe *stmpe = dev_get_drvdata(pdev->dev.parent);
+	struct device_node *np = pdev->dev.of_node;
+>>>>>>> refs/remotes/origin/master
 	struct stmpe_gpio_platform_data *pdata;
 	struct stmpe_gpio *stmpe_gpio;
 	int ret;
@@ -321,6 +419,7 @@ static int __devinit stmpe_gpio_probe(struct platform_device *pdev)
 
 	stmpe_gpio->dev = &pdev->dev;
 	stmpe_gpio->stmpe = stmpe;
+<<<<<<< HEAD
 	stmpe_gpio->norequest_mask = pdata ? pdata->norequest_mask : 0;
 
 	stmpe_gpio->chip = template_chip;
@@ -328,6 +427,22 @@ static int __devinit stmpe_gpio_probe(struct platform_device *pdev)
 	stmpe_gpio->chip.dev = &pdev->dev;
 	stmpe_gpio->chip.base = pdata ? pdata->gpio_base : -1;
 
+=======
+	stmpe_gpio->chip = template_chip;
+	stmpe_gpio->chip.ngpio = stmpe->num_gpios;
+	stmpe_gpio->chip.dev = &pdev->dev;
+#ifdef CONFIG_OF
+	stmpe_gpio->chip.of_node = np;
+#endif
+	stmpe_gpio->chip.base = pdata ? pdata->gpio_base : -1;
+
+	if (pdata)
+		stmpe_gpio->norequest_mask = pdata->norequest_mask;
+	else if (np)
+		of_property_read_u32(np, "st,norequest-mask",
+				&stmpe_gpio->norequest_mask);
+
+>>>>>>> refs/remotes/origin/master
 	if (irq >= 0)
 		stmpe_gpio->irq_base = stmpe->irq_base + STMPE_INT_GPIO(0);
 	else
@@ -340,7 +455,11 @@ static int __devinit stmpe_gpio_probe(struct platform_device *pdev)
 		goto out_free;
 
 	if (irq >= 0) {
+<<<<<<< HEAD
 		ret = stmpe_gpio_irq_init(stmpe_gpio);
+=======
+		ret = stmpe_gpio_irq_init(stmpe_gpio, np);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			goto out_disable;
 
@@ -348,7 +467,11 @@ static int __devinit stmpe_gpio_probe(struct platform_device *pdev)
 				IRQF_ONESHOT, "stmpe-gpio", stmpe_gpio);
 		if (ret) {
 			dev_err(&pdev->dev, "unable to get irq: %d\n", ret);
+<<<<<<< HEAD
 			goto out_removeirq;
+=======
+			goto out_disable;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -368,9 +491,12 @@ static int __devinit stmpe_gpio_probe(struct platform_device *pdev)
 out_freeirq:
 	if (irq >= 0)
 		free_irq(irq, stmpe_gpio);
+<<<<<<< HEAD
 out_removeirq:
 	if (irq >= 0)
 		stmpe_gpio_irq_remove(stmpe_gpio);
+=======
+>>>>>>> refs/remotes/origin/master
 out_disable:
 	stmpe_disable(stmpe, STMPE_BLOCK_GPIO);
 out_free:
@@ -378,7 +504,11 @@ out_free:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit stmpe_gpio_remove(struct platform_device *pdev)
+=======
+static int stmpe_gpio_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct stmpe_gpio *stmpe_gpio = platform_get_drvdata(pdev);
 	struct stmpe *stmpe = stmpe_gpio->stmpe;
@@ -398,11 +528,17 @@ static int __devexit stmpe_gpio_remove(struct platform_device *pdev)
 
 	stmpe_disable(stmpe, STMPE_BLOCK_GPIO);
 
+<<<<<<< HEAD
 	if (irq >= 0) {
 		free_irq(irq, stmpe_gpio);
 		stmpe_gpio_irq_remove(stmpe_gpio);
 	}
 	platform_set_drvdata(pdev, NULL);
+=======
+	if (irq >= 0)
+		free_irq(irq, stmpe_gpio);
+
+>>>>>>> refs/remotes/origin/master
 	kfree(stmpe_gpio);
 
 	return 0;
@@ -412,7 +548,11 @@ static struct platform_driver stmpe_gpio_driver = {
 	.driver.name	= "stmpe-gpio",
 	.driver.owner	= THIS_MODULE,
 	.probe		= stmpe_gpio_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(stmpe_gpio_remove),
+=======
+	.remove		= stmpe_gpio_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init stmpe_gpio_init(void)

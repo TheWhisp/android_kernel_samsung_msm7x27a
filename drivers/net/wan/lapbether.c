@@ -21,10 +21,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/types.h>
 #include <linux/socket.h>
@@ -39,9 +44,12 @@
 #include <linux/skbuff.h>
 #include <net/sock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <linux/mm.h>
 #include <linux/interrupt.h>
@@ -174,6 +182,7 @@ static netdev_tx_t lapbeth_xmit(struct sk_buff *skb,
 	case X25_IFACE_CONNECT:
 		if ((err = lapb_connect_request(dev)) != LAPB_OK)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "lapbeth: lapb_connect_request "
 			       "error: %d\n", err);
 		goto drop;
@@ -182,12 +191,17 @@ static netdev_tx_t lapbeth_xmit(struct sk_buff *skb,
 			printk(KERN_ERR "lapbeth: lapb_disconnect_request "
 			       "err: %d\n", err);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			pr_err("lapb_connect_request error: %d\n", err);
 		goto drop;
 	case X25_IFACE_DISCONNECT:
 		if ((err = lapb_disconnect_request(dev)) != LAPB_OK)
 			pr_err("lapb_disconnect_request err: %d\n", err);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Fall thru */
 	default:
 		goto drop;
@@ -197,10 +211,14 @@ static netdev_tx_t lapbeth_xmit(struct sk_buff *skb,
 
 	if ((err = lapb_data_request(dev, skb)) != LAPB_OK) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "lapbeth: lapb_data_request error - %d\n", err);
 =======
 		pr_err("lapb_data_request error - %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("lapb_data_request error - %d\n", err);
+>>>>>>> refs/remotes/origin/master
 		goto drop;
 	}
 out:
@@ -241,10 +259,14 @@ static void lapbeth_connected(struct net_device *dev, int reason)
 
 	if (!skb) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "lapbeth: out of memory\n");
 =======
 		pr_err("out of memory\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("out of memory\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -262,10 +284,14 @@ static void lapbeth_disconnected(struct net_device *dev, int reason)
 
 	if (!skb) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "lapbeth: out of memory\n");
 =======
 		pr_err("out of memory\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("out of memory\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -288,10 +314,14 @@ static int lapbeth_set_mac_address(struct net_device *dev, void *addr)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct lapb_register_struct lapbeth_callbacks = {
 =======
 static const struct lapb_register_struct lapbeth_callbacks = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct lapb_register_struct lapbeth_callbacks = {
+>>>>>>> refs/remotes/origin/master
 	.connect_confirmation    = lapbeth_connected,
 	.connect_indication      = lapbeth_connected,
 	.disconnect_confirmation = lapbeth_disconnected,
@@ -299,9 +329,12 @@ static const struct lapb_register_struct lapbeth_callbacks = {
 	.data_indication         = lapbeth_data_indication,
 	.data_transmit           = lapbeth_data_transmit,
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -313,10 +346,14 @@ static int lapbeth_open(struct net_device *dev)
 
 	if ((err = lapb_register(dev, &lapbeth_callbacks)) != LAPB_OK) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "lapbeth: lapb_register error - %d\n", err);
 =======
 		pr_err("lapb_register error: %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("lapb_register error: %d\n", err);
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -332,10 +369,14 @@ static int lapbeth_close(struct net_device *dev)
 
 	if ((err = lapb_unregister(dev)) != LAPB_OK)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "lapbeth: lapb_unregister error - %d\n", err);
 =======
 		pr_err("lapb_unregister error: %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("lapb_unregister error: %d\n", err);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -415,7 +456,11 @@ static int lapbeth_device_event(struct notifier_block *this,
 				unsigned long event, void *ptr)
 {
 	struct lapbethdev *lapbeth;
+<<<<<<< HEAD
 	struct net_device *dev = ptr;
+=======
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 
 	if (dev_net(dev) != &init_net)
 		return NOTIFY_DONE;

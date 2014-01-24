@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/init.h>
 
 __INITDATA
@@ -13,6 +14,10 @@ __FINIT
 #include <asm/page_types.h>
 #include <linux/linkage.h>
 #include <linux/init.h>
+=======
+#include <asm/page_types.h>
+#include <linux/linkage.h>
+>>>>>>> refs/remotes/origin/master
 
 __PAGE_ALIGNED_DATA
 
@@ -32,4 +37,7 @@ vdso_end:
 vdso_pages:
 	.zero (vdso_end - vdso_start + PAGE_SIZE - 1) / PAGE_SIZE * 8
 	.size vdso_pages, .-vdso_pages
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

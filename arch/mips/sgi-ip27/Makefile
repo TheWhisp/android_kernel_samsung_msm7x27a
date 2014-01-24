@@ -7,4 +7,8 @@ obj-y	:= ip27-berr.o ip27-irq.o ip27-init.o ip27-klconfig.o ip27-klnuma.o \
 	   ip27-xtalk.o
 
 obj-$(CONFIG_EARLY_PRINTK)	+= ip27-console.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_PCI)		+= ip27-irq-pci.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_SMP)		+= ip27-smp.o

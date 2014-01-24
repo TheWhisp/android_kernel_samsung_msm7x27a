@@ -7,10 +7,13 @@
 #
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 MKIMAGE		:= $(srctree)/scripts/mkuboot.sh
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extra-y		:= vmlinux.bin vmlinux.gz
 
 OBJCOPYFLAGS_vmlinux.bin := -O binary -R .note.gnu.build-id
@@ -21,6 +24,7 @@ $(obj)/vmlinux.gz: $(obj)/vmlinux.bin FORCE
 	$(call if_changed,gzip)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 quiet_cmd_uimage = UIMAGE $@
       cmd_uimage = $(CONFIG_SHELL) $(MKIMAGE) -A avr32 -O linux -T kernel	\
 		-C gzip -a $(CONFIG_LOAD_ADDRESS) -e $(CONFIG_ENTRY_ADDRESS)	\
@@ -30,6 +34,11 @@ UIMAGE_LOADADDR = $(CONFIG_LOAD_ADDRESS)
 UIMAGE_ENTRYADDR = $(CONFIG_ENTRY_ADDRESS)
 UIMAGE_COMPRESSION = gzip
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+UIMAGE_LOADADDR = $(CONFIG_LOAD_ADDRESS)
+UIMAGE_ENTRYADDR = $(CONFIG_ENTRY_ADDRESS)
+UIMAGE_COMPRESSION = gzip
+>>>>>>> refs/remotes/origin/master
 
 targets += uImage uImage.srec
 $(obj)/uImage: $(obj)/vmlinux.gz

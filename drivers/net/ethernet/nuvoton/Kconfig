@@ -22,7 +22,10 @@ config W90P910_ETH
 	tristate "Nuvoton w90p910 Ethernet support"
 	depends on ARM && ARCH_W90X900
 	select PHYLIB
+<<<<<<< HEAD
 	select NET_CORE
+=======
+>>>>>>> refs/remotes/origin/master
 	select MII
 	---help---
 	  Say Y here if you want to use built-in Ethernet ports

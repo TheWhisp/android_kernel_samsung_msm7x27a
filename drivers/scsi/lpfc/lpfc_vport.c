@@ -1,7 +1,11 @@
 /*******************************************************************
  * This file is part of the Emulex Linux Device Driver for         *
  * Fibre Channel Host Bus Adapters.                                *
+<<<<<<< HEAD
  * Copyright (C) 2004-2008 Emulex.  All rights reserved.           *
+=======
+ * Copyright (C) 2004-2013 Emulex.  All rights reserved.           *
+>>>>>>> refs/remotes/origin/master
  * EMULEX and SLI are trademarks of Emulex.                        *
  * www.emulex.com                                                  *
  * Portions Copyright (C) 2004-2005 Christoph Hellwig              *
@@ -80,7 +84,11 @@ inline void lpfc_vport_set_state(struct lpfc_vport *vport,
 	}
 }
 
+<<<<<<< HEAD
 static int
+=======
+int
+>>>>>>> refs/remotes/origin/master
 lpfc_alloc_vpi(struct lpfc_hba *phba)
 {
 	unsigned long vpi;
@@ -387,6 +395,12 @@ lpfc_vport_create(struct fc_vport *fc_vport, bool disable)
 	/* Create binary sysfs attribute for vport */
 	lpfc_alloc_sysfs_attr(vport);
 
+<<<<<<< HEAD
+=======
+	/* Set the DFT_LUN_Q_DEPTH accordingly */
+	vport->cfg_lun_queue_depth  = phba->pport->cfg_lun_queue_depth;
+
+>>>>>>> refs/remotes/origin/master
 	*(struct lpfc_vport **)fc_vport->dd_data = vport;
 	vport->fc_vport = fc_vport;
 
@@ -568,6 +582,10 @@ lpfc_vport_delete(struct fc_vport *fc_vport)
 	struct lpfc_vport *vport = *(struct lpfc_vport **)fc_vport->dd_data;
 	struct lpfc_hba   *phba = vport->phba;
 	long timeout;
+<<<<<<< HEAD
+=======
+	bool ns_ndlp_referenced = false;
+>>>>>>> refs/remotes/origin/master
 
 	if (vport->port_type == LPFC_PHYSICAL_PORT) {
 		lpfc_printf_vlog(vport, KERN_ERR, LOG_VPORT,
@@ -628,6 +646,21 @@ lpfc_vport_delete(struct fc_vport *fc_vport)
 
 	lpfc_debugfs_terminate(vport);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * The call to fc_remove_host might release the NameServer ndlp. Since
+	 * we might need to use the ndlp to send the DA_ID CT command,
+	 * increment the reference for the NameServer ndlp to prevent it from
+	 * being released.
+	 */
+	ndlp = lpfc_findnode_did(vport, NameServer_DID);
+	if (ndlp && NLP_CHK_NODE_ACT(ndlp)) {
+		lpfc_nlp_get(ndlp);
+		ns_ndlp_referenced = true;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* Remove FC host and then SCSI host with the vport */
 	fc_remove_host(lpfc_shost_from_vport(vport));
 	scsi_remove_host(lpfc_shost_from_vport(vport));
@@ -693,14 +726,19 @@ lpfc_vport_delete(struct fc_vport *fc_vport)
 			NLP_SET_FREE_REQ(ndlp);
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (!NLP_CHK_NODE_ACT(ndlp))
 =======
 			if (!NLP_CHK_NODE_ACT(ndlp)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!NLP_CHK_NODE_ACT(ndlp)) {
+>>>>>>> refs/remotes/origin/master
 				ndlp = lpfc_enable_node(vport, ndlp,
 						NLP_STE_UNUSED_NODE);
 				if (!ndlp)
 					goto skip_logo;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 			/* Remove ndlp from vport npld list */
@@ -709,6 +747,11 @@ lpfc_vport_delete(struct fc_vport *fc_vport)
 
 			/* Remove ndlp from vport list */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			}
+
+			/* Remove ndlp from vport list */
+>>>>>>> refs/remotes/origin/master
 			lpfc_dequeue_node(vport, ndlp);
 			spin_lock_irq(&phba->ndlp_lock);
 			if (!NLP_CHK_FREE_REQ(ndlp))
@@ -722,9 +765,12 @@ lpfc_vport_delete(struct fc_vport *fc_vport)
 			spin_unlock_irq(&phba->ndlp_lock);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!(vport->vpi_state & LPFC_VPI_REGISTERED))
 			goto skip_logo;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * If the vpi is not registered, then a valid FDISC doesn't
@@ -736,7 +782,10 @@ lpfc_vport_delete(struct fc_vport *fc_vport)
 			goto skip_logo;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		vport->unreg_vpi_cmpl = VPORT_INVAL;
 		timeout = msecs_to_jiffies(phba->fc_ratov * 2000);
 		if (!lpfc_issue_els_npiv_logo(vport, ndlp))
@@ -748,6 +797,19 @@ lpfc_vport_delete(struct fc_vport *fc_vport)
 		lpfc_discovery_wait(vport);
 
 skip_logo:
+<<<<<<< HEAD
+=======
+
+	/*
+	 * If the NameServer ndlp has been incremented to allow the DA_ID CT
+	 * command to be sent, decrement the ndlp now.
+	 */
+	if (ns_ndlp_referenced) {
+		ndlp = lpfc_findnode_did(vport, NameServer_DID);
+		lpfc_nlp_put(ndlp);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	lpfc_cleanup(vport);
 	lpfc_sli_host_down(vport);
 
@@ -789,16 +851,22 @@ lpfc_create_vport_work_array(struct lpfc_hba *phba)
 	spin_lock_irq(&phba->hbalock);
 	list_for_each_entry(port_iterator, &phba->port_list, listentry) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!scsi_host_get(lpfc_shost_from_vport(port_iterator))) {
 			if (!(port_iterator->load_flag & FC_UNLOADING))
 				lpfc_printf_vlog(port_iterator, KERN_ERR,
 					 LOG_VPORT,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (port_iterator->load_flag & FC_UNLOADING)
 			continue;
 		if (!scsi_host_get(lpfc_shost_from_vport(port_iterator))) {
 			lpfc_printf_vlog(port_iterator, KERN_ERR, LOG_VPORT,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					 "1801 Create vport work array FAILED: "
 					 "cannot do scsi_host_get\n");
 			continue;

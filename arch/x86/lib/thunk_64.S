@@ -6,6 +6,7 @@
  * Subject to the GNU public license, v.2. No warranty of any kind.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	#include <linux/linkage.h>
 	#include <asm/dwarf2.h>
@@ -34,6 +35,8 @@
 	/* the next element would be the rip */
 	movq 9*8(%rsp), %rdi
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/linkage.h>
 #include <asm/dwarf2.h>
 #include <asm/calling.h>
@@ -51,12 +54,16 @@
 	movq_cfi_restore 9*8, rdi
 	.endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	call \func
 	jmp  restore
 	CFI_ENDPROC
 	.endm
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	thunk_ra trace_hardirqs_on_thunk,trace_hardirqs_on_caller
 	thunk_ra trace_hardirqs_off_thunk,trace_hardirqs_off_caller
@@ -67,6 +74,8 @@
 #endif
 	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_TRACE_IRQFLAGS
 	THUNK trace_hardirqs_on_thunk,trace_hardirqs_on_caller,1
 	THUNK trace_hardirqs_off_thunk,trace_hardirqs_off_caller,1
@@ -76,15 +85,22 @@
 	THUNK lockdep_sys_exit_thunk,lockdep_sys_exit
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* SAVE_ARGS below is used only for the .cfi directives it contains. */
 	CFI_STARTPROC
 	SAVE_ARGS
 restore:
 	RESTORE_ARGS
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret	
 =======
 	ret
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret
+>>>>>>> refs/remotes/origin/master
 	CFI_ENDPROC

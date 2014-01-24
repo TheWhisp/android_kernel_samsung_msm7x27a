@@ -51,10 +51,13 @@ static void *lib80211_wep_init(int keyidx)
 	priv->tx_tfm = crypto_alloc_blkcipher("ecb(arc4)", 0, CRYPTO_ALG_ASYNC);
 	if (IS_ERR(priv->tx_tfm)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG "lib80211_crypt_wep: could not allocate "
 		       "crypto API arc4\n");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		priv->tx_tfm = NULL;
 		goto fail;
 	}
@@ -62,10 +65,13 @@ static void *lib80211_wep_init(int keyidx)
 	priv->rx_tfm = crypto_alloc_blkcipher("ecb(arc4)", 0, CRYPTO_ALG_ASYNC);
 	if (IS_ERR(priv->rx_tfm)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG "lib80211_crypt_wep: could not allocate "
 		       "crypto API arc4\n");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		priv->rx_tfm = NULL;
 		goto fail;
 	}
@@ -263,11 +269,18 @@ static int lib80211_wep_get_key(void *key, int len, u8 * seq, void *priv)
 	return wep->key_len;
 }
 
+<<<<<<< HEAD
 static char *lib80211_wep_print_stats(char *p, void *priv)
 {
 	struct lib80211_wep_data *wep = priv;
 	p += sprintf(p, "key[%d] alg=WEP len=%d\n", wep->key_idx, wep->key_len);
 	return p;
+=======
+static void lib80211_wep_print_stats(struct seq_file *m, void *priv)
+{
+	struct lib80211_wep_data *wep = priv;
+	seq_printf(m, "key[%d] alg=WEP len=%d\n", wep->key_idx, wep->key_len);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct lib80211_crypto_ops lib80211_crypt_wep = {

@@ -15,9 +15,13 @@
 #include <asm/proto.h>
 #include <asm/vdso.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/page.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/page.h>
+>>>>>>> refs/remotes/origin/master
 
 unsigned int __read_mostly vdso_enabled = 1;
 
@@ -25,11 +29,14 @@ extern char vdso_start[], vdso_end[];
 extern unsigned short vdso_sync_cpuid;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct page **vdso_pages;
 static unsigned vdso_size;
 
 static int __init init_vdso_vars(void)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct page *vdso_pages[];
 static unsigned vdso_size;
 
@@ -102,11 +109,15 @@ found:
 }
 
 static int __init init_vdso(void)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int npages = (vdso_end - vdso_start + PAGE_SIZE - 1) / PAGE_SIZE;
 	int i;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	vdso_size = npages << PAGE_SHIFT;
 	vdso_pages = kmalloc(sizeof(struct page *) * npages, GFP_KERNEL);
@@ -130,6 +141,8 @@ static int __init init_vdso(void)
 }
 subsys_initcall(init_vdso_vars);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	patch_vdso64(vdso_start, vdso_end - vdso_start);
 
 	vdso_size = npages << PAGE_SHIFT;
@@ -147,7 +160,10 @@ subsys_initcall(init_vdso_vars);
 	return 0;
 }
 subsys_initcall(init_vdso);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct linux_binprm;
 
@@ -169,7 +185,10 @@ static unsigned long vdso_addr(unsigned long start, unsigned len)
 	if (addr >= end)
 		addr = end;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * page-align it here so that get_unmapped_area doesn't
@@ -177,22 +196,33 @@ static unsigned long vdso_addr(unsigned long start, unsigned len)
 	 * unaligned here as a result of stack start randomization.
 	 */
 	addr = PAGE_ALIGN(addr);
+<<<<<<< HEAD
 	addr = align_addr(addr, NULL, ALIGN_VDSO);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	addr = align_vdso_addr(addr);
+
+>>>>>>> refs/remotes/origin/master
 	return addr;
 }
 
 /* Setup a VMA at program startup for the vsyscall page.
    Not called for compat tasks */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int setup_additional_pages(struct linux_binprm *bprm,
 				  int uses_interp,
 				  struct page **pages,
 				  unsigned size)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct mm_struct *mm = current->mm;
 	unsigned long addr;
@@ -203,12 +233,17 @@ static int setup_additional_pages(struct linux_binprm *bprm,
 
 	down_write(&mm->mmap_sem);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	addr = vdso_addr(mm->start_stack, vdso_size);
 	addr = get_unmapped_area(NULL, addr, vdso_size, 0, 0);
 =======
 	addr = vdso_addr(mm->start_stack, size);
 	addr = get_unmapped_area(NULL, addr, size, 0, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	addr = vdso_addr(mm->start_stack, size);
+	addr = get_unmapped_area(NULL, addr, size, 0, 0);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR_VALUE(addr)) {
 		ret = addr;
 		goto up_fail;
@@ -217,17 +252,23 @@ static int setup_additional_pages(struct linux_binprm *bprm,
 	current->mm->context.vdso = (void *)addr;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = install_special_mapping(mm, addr, vdso_size,
 				      VM_READ|VM_EXEC|
 				      VM_MAYREAD|VM_MAYWRITE|VM_MAYEXEC|
 				      VM_ALWAYSDUMP,
 				      vdso_pages);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = install_special_mapping(mm, addr, size,
 				      VM_READ|VM_EXEC|
 				      VM_MAYREAD|VM_MAYWRITE|VM_MAYEXEC,
 				      pages);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		current->mm->context.vdso = NULL;
 		goto up_fail;
@@ -239,7 +280,10 @@ up_fail:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
 {
 	return setup_additional_pages(bprm, uses_interp, vdso_pages,
@@ -254,7 +298,10 @@ int x32_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static __init int vdso_setup(char *s)
 {
 	vdso_enabled = simple_strtoul(s, NULL, 0);

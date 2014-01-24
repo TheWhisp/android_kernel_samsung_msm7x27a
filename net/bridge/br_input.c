@@ -17,6 +17,7 @@
 #include <linux/etherdevice.h>
 #include <linux/netfilter_bridge.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -25,6 +26,12 @@
 /* Bridge group multicast address 802.1d (pg 51). */
 const u8 br_group_address[ETH_ALEN] = { 0x01, 0x80, 0xc2, 0x00, 0x00, 0x00 };
 
+=======
+#include <linux/export.h>
+#include <linux/rculist.h>
+#include "br_private.h"
+
+>>>>>>> refs/remotes/origin/master
 /* Hook for brouter */
 br_should_route_hook_t __rcu *br_should_route_hook __read_mostly;
 EXPORT_SYMBOL(br_should_route_hook);
@@ -40,6 +47,23 @@ static int br_pass_frame_up(struct sk_buff *skb)
 	brstats->rx_bytes += skb->len;
 	u64_stats_update_end(&brstats->syncp);
 
+<<<<<<< HEAD
+=======
+	/* Bridge is just like any other port.  Make sure the
+	 * packet is allowed except in promisc modue when someone
+	 * may be running packet capture.
+	 */
+	if (!(brdev->flags & IFF_PROMISC) &&
+	    !br_allowed_egress(br, br_get_vlan_info(br), skb)) {
+		kfree_skb(skb);
+		return NET_RX_DROP;
+	}
+
+	skb = br_handle_vlan(br, br_get_vlan_info(br), skb);
+	if (!skb)
+		return NET_RX_DROP;
+
+>>>>>>> refs/remotes/origin/master
 	indev = skb->dev;
 	skb->dev = brdev;
 
@@ -56,16 +80,34 @@ int br_handle_frame_finish(struct sk_buff *skb)
 	struct net_bridge_fdb_entry *dst;
 	struct net_bridge_mdb_entry *mdst;
 	struct sk_buff *skb2;
+<<<<<<< HEAD
+=======
+	bool unicast = true;
+	u16 vid = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!p || p->state == BR_STATE_DISABLED)
 		goto drop;
 
+<<<<<<< HEAD
 	/* insert into forwarding database after filtering to avoid spoofing */
 	br = p->br;
 	br_fdb_update(br, p, eth_hdr(skb)->h_source);
 
 	if (!is_broadcast_ether_addr(dest) && is_multicast_ether_addr(dest) &&
 	    br_multicast_rcv(br, p, skb))
+=======
+	if (!br_allowed_ingress(p->br, nbp_get_vlan_info(p), skb, &vid))
+		goto drop;
+
+	/* insert into forwarding database after filtering to avoid spoofing */
+	br = p->br;
+	if (p->flags & BR_LEARNING)
+		br_fdb_update(br, p, eth_hdr(skb)->h_source, vid);
+
+	if (!is_broadcast_ether_addr(dest) && is_multicast_ether_addr(dest) &&
+	    br_multicast_rcv(br, p, skb, vid))
+>>>>>>> refs/remotes/origin/master
 		goto drop;
 
 	if (p->state == BR_STATE_LEARNING)
@@ -81,11 +123,21 @@ int br_handle_frame_finish(struct sk_buff *skb)
 
 	dst = NULL;
 
+<<<<<<< HEAD
 	if (is_broadcast_ether_addr(dest))
 		skb2 = skb;
 	else if (is_multicast_ether_addr(dest)) {
 		mdst = br_mdb_get(br, skb);
 		if (mdst || BR_INPUT_SKB_CB_MROUTERS_ONLY(skb)) {
+=======
+	if (is_broadcast_ether_addr(dest)) {
+		skb2 = skb;
+		unicast = false;
+	} else if (is_multicast_ether_addr(dest)) {
+		mdst = br_mdb_get(br, skb, vid);
+		if ((mdst || BR_INPUT_SKB_CB_MROUTERS_ONLY(skb)) &&
+		    br_multicast_querier_exists(br, eth_hdr(skb))) {
+>>>>>>> refs/remotes/origin/master
 			if ((mdst && mdst->mglist) ||
 			    br_multicast_is_router(br))
 				skb2 = skb;
@@ -96,8 +148,15 @@ int br_handle_frame_finish(struct sk_buff *skb)
 		} else
 			skb2 = skb;
 
+<<<<<<< HEAD
 		br->dev->stats.multicast++;
 	} else if ((dst = __br_fdb_get(br, dest)) && dst->is_local) {
+=======
+		unicast = false;
+		br->dev->stats.multicast++;
+	} else if ((dst = __br_fdb_get(br, dest, vid)) &&
+			dst->is_local) {
+>>>>>>> refs/remotes/origin/master
 		skb2 = skb;
 		/* Do not forward the packet since it's local. */
 		skb = NULL;
@@ -108,7 +167,11 @@ int br_handle_frame_finish(struct sk_buff *skb)
 			dst->used = jiffies;
 			br_forward(dst->dst, skb, skb2);
 		} else
+<<<<<<< HEAD
 			br_flood_forward(br, skb, skb2);
+=======
+			br_flood_forward(br, skb, skb2, unicast);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (skb2)
@@ -125,6 +188,7 @@ drop:
 static int br_handle_local_finish(struct sk_buff *skb)
 {
 	struct net_bridge_port *p = br_port_get_rcu(skb->dev);
+<<<<<<< HEAD
 
 	br_fdb_update(p->br, p, eth_hdr(skb)->h_source);
 	return 0;	 /* process further */
@@ -142,6 +206,16 @@ static inline int is_link_local(const unsigned char *dest)
 	return ((a[0] ^ b[0]) | (a[1] ^ b[1]) | ((a[2] ^ b[2]) & m)) == 0;
 }
 
+=======
+	u16 vid = 0;
+
+	br_vlan_get_tag(skb, &vid);
+	if (p->flags & BR_LEARNING)
+		br_fdb_update(p->br, p, eth_hdr(skb)->h_source, vid);
+	return 0;	 /* process further */
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Return NULL if skb is handled
  * note: already called with rcu_read_lock
@@ -165,6 +239,7 @@ rx_handler_result_t br_handle_frame(struct sk_buff **pskb)
 
 	p = br_port_get_rcu(skb->dev);
 
+<<<<<<< HEAD
 	if (unlikely(is_link_local(dest))) {
 <<<<<<< HEAD
 		/* Pause frames shouldn't be passed up by driver anyway */
@@ -176,6 +251,9 @@ rx_handler_result_t br_handle_frame(struct sk_buff **pskb)
 			goto forward;
 
 =======
+=======
+	if (unlikely(is_link_local_ether_addr(dest))) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * See IEEE 802.1D Table 7-10 Reserved addresses
 		 *
@@ -207,7 +285,10 @@ rx_handler_result_t br_handle_frame(struct sk_buff **pskb)
 		}
 
 		/* Deliver packet to local host only */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (NF_HOOK(NFPROTO_BRIDGE, NF_BR_LOCAL_IN, skb, skb->dev,
 			    NULL, br_handle_local_finish)) {
 			return RX_HANDLER_CONSUMED; /* consumed by filter */
@@ -230,7 +311,11 @@ forward:
 		}
 		/* fall through */
 	case BR_STATE_LEARNING:
+<<<<<<< HEAD
 		if (!compare_ether_addr(p->br->dev->dev_addr, dest))
+=======
+		if (ether_addr_equal(p->br->dev->dev_addr, dest))
+>>>>>>> refs/remotes/origin/master
 			skb->pkt_type = PACKET_HOST;
 
 		NF_HOOK(NFPROTO_BRIDGE, NF_BR_PRE_ROUTING, skb, skb->dev, NULL,

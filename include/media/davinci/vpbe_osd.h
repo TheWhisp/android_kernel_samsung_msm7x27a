@@ -26,7 +26,13 @@
 
 #include <media/davinci/vpbe_types.h>
 
+<<<<<<< HEAD
 #define VPBE_OSD_SUBDEV_NAME "vpbe-osd"
+=======
+#define DM644X_VPBE_OSD_SUBDEV_NAME	"dm644x,vpbe-osd"
+#define DM365_VPBE_OSD_SUBDEV_NAME	"dm365,vpbe-osd"
+#define DM355_VPBE_OSD_SUBDEV_NAME	"dm355,vpbe-osd"
+>>>>>>> refs/remotes/origin/master
 
 /**
  * enum osd_layer
@@ -80,9 +86,15 @@ enum osd_pix_format {
 	PIXFMT_4BPP,
 	PIXFMT_8BPP,
 	PIXFMT_RGB565,
+<<<<<<< HEAD
 	PIXFMT_YCbCrI,
 	PIXFMT_RGB888,
 	PIXFMT_YCrCbI,
+=======
+	PIXFMT_YCBCRI,
+	PIXFMT_RGB888,
+	PIXFMT_YCRCBI,
+>>>>>>> refs/remotes/origin/master
 	PIXFMT_NV12,
 	PIXFMT_OSD_ATTR,
 };
@@ -357,7 +369,11 @@ struct osd_state {
 	spinlock_t lock;
 	struct device *dev;
 	dma_addr_t osd_base_phys;
+<<<<<<< HEAD
 	unsigned long osd_base;
+=======
+	void __iomem *osd_base;
+>>>>>>> refs/remotes/origin/master
 	unsigned long osd_size;
 	/* 1-->the isr will toggle the VID0 ping-pong buffer */
 	int pingpong;
@@ -387,7 +403,10 @@ struct osd_state {
 };
 
 struct osd_platform_data {
+<<<<<<< HEAD
 	enum vpbe_version vpbe_type;
+=======
+>>>>>>> refs/remotes/origin/master
 	int  field_inv_wa_enable;
 };
 

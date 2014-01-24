@@ -16,11 +16,26 @@ config BITREVERSE
 config RATIONAL
 	boolean
 
+<<<<<<< HEAD
 config GENERIC_FIND_FIRST_BIT
 	bool
 
 <<<<<<< HEAD
 =======
+=======
+config GENERIC_STRNCPY_FROM_USER
+	bool
+
+config GENERIC_STRNLEN_USER
+	bool
+
+config GENERIC_NET_UTILS
+	bool
+
+config GENERIC_FIND_FIRST_BIT
+	bool
+
+>>>>>>> refs/remotes/origin/master
 config NO_GENERIC_PCI_IOPORT_MAP
 	bool
 
@@ -35,7 +50,19 @@ config GENERIC_IO
 	boolean
 	default n
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config STMP_DEVICE
+	bool
+
+config PERCPU_RWSEM
+	boolean
+
+config ARCH_USE_CMPXCHG_LOCKREF
+	bool
+
+>>>>>>> refs/remotes/origin/master
 config CRC_CCITT
 	tristate "CRC-CCITT functions"
 	help
@@ -54,6 +81,11 @@ config CRC16
 
 config CRC_T10DIF
 	tristate "CRC calculation for the T10 Data Integrity Field"
+<<<<<<< HEAD
+=======
+	select CRYPTO
+	select CRYPTO_CRCT10DIF
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option is only needed if a module that's not in the
 	  kernel tree needs to calculate CRC checks for use with the
@@ -69,19 +101,26 @@ config CRC_ITU_T
 
 config CRC32
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "CRC32 functions"
 =======
 	tristate "CRC32/CRC32c functions"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tristate "CRC32/CRC32c functions"
+>>>>>>> refs/remotes/origin/master
 	default y
 	select BITREVERSE
 	help
 	  This option is provided for the case where no in-kernel-tree
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  modules require CRC32 functions, but a module built outside the
 	  kernel tree does. Such modules that use library CRC32 functions
 	  require M here.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  modules require CRC32/CRC32c functions, but a module built outside
 	  the kernel tree does. Such modules that use library CRC32/CRC32c
 	  functions require M here.
@@ -142,7 +181,10 @@ config CRC32_BIT
 	  Only choose this option if you are debugging crc32.
 
 endchoice
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config CRC7
 	tristate "CRC7 functions"
@@ -164,7 +206,10 @@ config LIBCRC32C
 	  Module will be libcrc32c.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config CRC8
 	tristate "CRC8 function"
 	help
@@ -172,12 +217,25 @@ config CRC8
 	  when they need to do cyclic redundancy check according CRC8
 	  algorithm. Module will be called crc8.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config AUDIT_GENERIC
 	bool
 	depends on AUDIT && !AUDIT_ARCH
 	default y
 
+<<<<<<< HEAD
+=======
+config RANDOM32_SELFTEST
+	bool "PRNG perform self test on init"
+	default n
+	help
+	  This option enables the 32 bit PRNG library functions to perform a
+	  self test on initialization.
+
+>>>>>>> refs/remotes/origin/master
 #
 # compression support is select'ed if needed
 #
@@ -193,6 +251,18 @@ config LZO_COMPRESS
 config LZO_DECOMPRESS
 	tristate
 
+<<<<<<< HEAD
+=======
+config LZ4_COMPRESS
+	tristate
+
+config LZ4HC_COMPRESS
+	tristate
+
+config LZ4_DECOMPRESS
+	tristate
+
+>>>>>>> refs/remotes/origin/master
 source "lib/xz/Kconfig"
 
 #
@@ -217,6 +287,13 @@ config DECOMPRESS_LZO
 	select LZO_DECOMPRESS
 	tristate
 
+<<<<<<< HEAD
+=======
+config DECOMPRESS_LZ4
+	select LZ4_DECOMPRESS
+	tristate
+
+>>>>>>> refs/remotes/origin/master
 #
 # Generic allocator support is selected if needed
 #
@@ -298,6 +375,7 @@ config TEXTSEARCH_FSM
 config BTREE
 	boolean
 
+<<<<<<< HEAD
 config HAS_IOMEM
 	boolean
 	depends on !NO_IOMEM
@@ -305,6 +383,26 @@ config HAS_IOMEM
 =======
 	select GENERIC_IO
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config ASSOCIATIVE_ARRAY
+	bool
+	help
+	  Generic associative array.  Can be searched and iterated over whilst
+	  it is being modified.  It is also reasonably quick to search and
+	  modify.  The algorithms are non-recursive, and the trees are highly
+	  capacious.
+
+	  See:
+
+		Documentation/assoc_array.txt
+
+	  for more information.
+
+config HAS_IOMEM
+	boolean
+	depends on !NO_IOMEM
+	select GENERIC_IO
+>>>>>>> refs/remotes/origin/master
 	default y
 
 config HAS_IOPORT
@@ -329,18 +427,28 @@ config CPUMASK_OFFSTACK
 
 config DISABLE_OBSOLETE_CPUMASK_FUNCTIONS
        bool "Disable obsolete cpumask functions" if DEBUG_PER_CPU_MAPS
+<<<<<<< HEAD
        depends on EXPERIMENTAL && BROKEN
+=======
+       depends on BROKEN
+>>>>>>> refs/remotes/origin/master
 
 config CPU_RMAP
 	bool
 	depends on SMP
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config DQL
 	bool
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config DQL
+	bool
+
+>>>>>>> refs/remotes/origin/master
 #
 # Netlink attribute parsing support is select'ed if needed
 #
@@ -353,6 +461,12 @@ config NLATTR
 config GENERIC_ATOMIC64
        bool
 
+<<<<<<< HEAD
+=======
+config ARCH_HAS_ATOMIC64_DEC_IF_POSITIVE
+	def_bool y if GENERIC_ATOMIC64
+
+>>>>>>> refs/remotes/origin/master
 config LRU_CACHE
 	tristate
 
@@ -367,7 +481,10 @@ config AVERAGE
 	  If unsure, say N.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config CLZ_TAB
 	bool
 
@@ -377,6 +494,17 @@ config CORDIC
 	  This option provides an implementation of the CORDIC algorithm;
 	  calculations are in fixed point. Module will be called cordic.
 
+<<<<<<< HEAD
+=======
+config DDR
+	bool "JEDEC DDR data"
+	help
+	  Data from JEDEC specs for DDR SDRAM memories,
+	  particularly the AC timing parameters and addressing
+	  information. This data is useful for drivers handling
+	  DDR SDRAM controllers.
+
+>>>>>>> refs/remotes/origin/master
 config MPILIB
 	tristate
 	select CLZ_TAB
@@ -385,6 +513,7 @@ config MPILIB
 	  It is used to implement RSA digital signature verification,
 	  which is used by IMA/EVM digital signature extension.
 
+<<<<<<< HEAD
 config MPILIB_EXTRA
 	bool
 	depends on MPILIB
@@ -393,6 +522,8 @@ config MPILIB_EXTRA
 	  This code is unnecessary for RSA digital signature verification,
 	  but can be compiled if needed.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config SIGNATURE
 	tristate
 	depends on KEYS && CRYPTO
@@ -402,5 +533,24 @@ config SIGNATURE
 	  Digital signature verification. Currently only RSA is supported.
 	  Implementation is done using GnuPG MPI library
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#
+# libfdt files, only selected if needed.
+#
+config LIBFDT
+	bool
+
+config OID_REGISTRY
+	tristate
+	help
+	  Enable fast lookup object identifier registry.
+
+config UCS2_STRING
+        tristate
+
+source "lib/fonts/Kconfig"
+
+>>>>>>> refs/remotes/origin/master
 endmenu

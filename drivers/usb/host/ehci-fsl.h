@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (C) 2005-2010 Freescale Semiconductor, Inc.
+=======
+/* Copyright (C) 2005-2010,2012 Freescale Semiconductor, Inc.
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2005 MontaVista Software
  *
  * This program is free software; you can redistribute  it and/or modify it
@@ -20,10 +24,15 @@
 
 /* offsets for the non-ehci registers in the FSL SOC USB controller */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define FSL_SOC_USB_SBUSCFG	0x90
 #define SBUSCFG_INCR8		0x02	/* INCR8, specified */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define FSL_SOC_USB_SBUSCFG	0x90
+#define SBUSCFG_INCR8		0x02	/* INCR8, specified */
+>>>>>>> refs/remotes/origin/master
 #define FSL_SOC_USB_ULPIVP	0x170
 #define FSL_SOC_USB_PORTSC1	0x184
 #define PORT_PTS_MSK		(3<<30)
@@ -52,8 +61,25 @@
 #define FSL_SOC_USB_CTRL	0x500	/* NOTE: big-endian */
 #define CTRL_UTMI_PHY_EN	(1<<9)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define CTRL_PHY_CLK_VALID	(1 << 17)
 >>>>>>> refs/remotes/origin/cm-10.0
 #define SNOOP_SIZE_2GB		0x1e
+=======
+#define CTRL_PHY_CLK_VALID	(1 << 17)
+#define SNOOP_SIZE_2GB		0x1e
+
+/* control Register Bit Masks */
+#define ULPI_INT_EN             (1<<0)
+#define WU_INT_EN               (1<<1)
+#define USB_CTRL_USB_EN         (1<<2)
+#define LINE_STATE_FILTER__EN   (1<<3)
+#define KEEP_OTG_ON             (1<<4)
+#define OTG_PORT                (1<<5)
+#define PLL_RESET               (1<<8)
+#define UTMI_PHY_EN             (1<<9)
+#define ULPI_PHY_CLK_SEL        (1<<10)
+#define PHY_CLK_VALID		(1<<17)
+>>>>>>> refs/remotes/origin/master
 #endif				/* _EHCI_FSL_H */

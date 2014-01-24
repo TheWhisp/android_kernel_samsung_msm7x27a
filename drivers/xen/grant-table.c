@@ -31,6 +31,11 @@
  * IN THE SOFTWARE.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "xen:" KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/sched.h>
 #include <linux/mm.h>
@@ -38,6 +43,11 @@
 #include <linux/vmalloc.h>
 #include <linux/uaccess.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/delay.h>
+#include <linux/hardirq.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <xen/xen.h>
 #include <xen/interface/xen.h>
@@ -45,14 +55,22 @@
 #include <xen/grant_table.h>
 #include <xen/interface/memory.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <xen/hvc-console.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/xen/hypercall.h>
+=======
+#include <xen/hvc-console.h>
+#include <xen/swiotlb-xen.h>
+#include <asm/xen/hypercall.h>
+#include <asm/xen/interface.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/pgtable.h>
 #include <asm/sync_bitops.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /* External tools reserve first few grant table entries. */
@@ -64,6 +82,11 @@
 #define NR_RESERVED_ENTRIES 8
 #define GNTTAB_LIST_END 0xffffffff
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* External tools reserve first few grant table entries. */
+#define NR_RESERVED_ENTRIES 8
+#define GNTTAB_LIST_END 0xffffffff
+>>>>>>> refs/remotes/origin/master
 
 static grant_ref_t **gnttab_list;
 static unsigned int nr_grant_frames;
@@ -75,8 +98,11 @@ unsigned long xen_hvm_resume_frames;
 EXPORT_SYMBOL_GPL(xen_hvm_resume_frames);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct grant_entry *shared;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static union {
 	struct grant_entry_v1 *v1;
 	union grant_entry_v2 *v2;
@@ -91,7 +117,11 @@ struct gnttab_ops {
 	 * nr_gframes is the number of frames to map grant table. Returning
 	 * GNTST_okay means success and negative value means failure.
 	 */
+<<<<<<< HEAD
 	int (*map_frames)(unsigned long *frames, unsigned int nr_gframes);
+=======
+	int (*map_frames)(xen_pfn_t *frames, unsigned int nr_gframes);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Release a list of frames which are mapped in map_frames for grant
 	 * entry status.
@@ -162,7 +192,10 @@ static grant_status_t *grstatus;
 
 static int grant_table_version;
 static int grefs_per_grant_frame;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct gnttab_free_callback *gnttab_free_callback_list;
 
@@ -170,9 +203,13 @@ static int gnttab_expand(unsigned int req_entries);
 
 #define RPP (PAGE_SIZE / sizeof(grant_ref_t))
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SPP (PAGE_SIZE / sizeof(grant_status_t))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SPP (PAGE_SIZE / sizeof(grant_status_t))
+>>>>>>> refs/remotes/origin/master
 
 static inline grant_ref_t *__gnttab_entry(grant_ref_t entry)
 {
@@ -185,10 +222,14 @@ static int get_free_entries(unsigned count)
 {
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ref, rc;
 =======
 	int ref, rc = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ref, rc = 0;
+>>>>>>> refs/remotes/origin/master
 	grant_ref_t head;
 
 	spin_lock_irqsave(&gnttab_list_lock, flags);
@@ -249,6 +290,7 @@ static void put_free_entry(grant_ref_t ref)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void update_grant_entry(grant_ref_t ref, domid_t domid,
 			       unsigned long frame, unsigned flags)
 {
@@ -267,6 +309,8 @@ static void update_grant_entry(grant_ref_t ref, domid_t domid,
 	wmb();
 	shared[ref].flags = flags;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Following applies to gnttab_update_entry_v1 and gnttab_update_entry_v2.
  * Introducing a valid entry into the grant table:
@@ -294,7 +338,10 @@ static void gnttab_update_entry_v2(grant_ref_t ref, domid_t domid,
 	gnttab_shared.v2[ref].full_page.frame = frame;
 	wmb();
 	gnttab_shared.v2[ref].hdr.flags = GTF_permit_access | flags;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -304,10 +351,14 @@ void gnttab_grant_foreign_access_ref(grant_ref_t ref, domid_t domid,
 				     unsigned long frame, int readonly)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	update_grant_entry(ref, domid, frame,
 =======
 	gnttab_interface->update_entry(ref, domid, frame,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gnttab_interface->update_entry(ref, domid, frame,
+>>>>>>> refs/remotes/origin/master
 			   GTF_permit_access | (readonly ? GTF_readonly : 0));
 }
 EXPORT_SYMBOL_GPL(gnttab_grant_foreign_access_ref);
@@ -327,6 +378,7 @@ int gnttab_grant_foreign_access(domid_t domid, unsigned long frame,
 }
 EXPORT_SYMBOL_GPL(gnttab_grant_foreign_access);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int gnttab_query_foreign_access(grant_ref_t ref)
 {
@@ -348,6 +400,11 @@ void gnttab_update_subpage_entry_v2(grant_ref_t ref, domid_t domid,
 				    unsigned long frame, int flags,
 				    unsigned page_off,
 				    unsigned length)
+=======
+static void gnttab_update_subpage_entry_v2(grant_ref_t ref, domid_t domid,
+					   unsigned long frame, int flags,
+					   unsigned page_off, unsigned length)
+>>>>>>> refs/remotes/origin/master
 {
 	gnttab_shared.v2[ref].sub_page.frame = frame;
 	gnttab_shared.v2[ref].sub_page.page_off = page_off;
@@ -404,9 +461,15 @@ bool gnttab_subpage_grants_available(void)
 }
 EXPORT_SYMBOL_GPL(gnttab_subpage_grants_available);
 
+<<<<<<< HEAD
 void gnttab_update_trans_entry_v2(grant_ref_t ref, domid_t domid,
 				  int flags, domid_t trans_domid,
 				  grant_ref_t trans_gref)
+=======
+static void gnttab_update_trans_entry_v2(grant_ref_t ref, domid_t domid,
+					 int flags, domid_t trans_domid,
+					 grant_ref_t trans_gref)
+>>>>>>> refs/remotes/origin/master
 {
 	gnttab_shared.v2[ref].transitive.trans_domid = trans_domid;
 	gnttab_shared.v2[ref].transitive.gref = trans_gref;
@@ -484,6 +547,7 @@ static int gnttab_end_foreign_access_ref_v1(grant_ref_t ref, int readonly)
 
 	pflags = &gnttab_shared.v1[ref].flags;
 	nflags = *pflags;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	do {
 		flags = nflags;
@@ -497,6 +561,12 @@ static int gnttab_end_foreign_access_ref_v1(grant_ref_t ref, int readonly)
 	return 1;
 }
 =======
+=======
+	do {
+		flags = nflags;
+		if (flags & (GTF_reading|GTF_writing))
+			return 0;
+>>>>>>> refs/remotes/origin/master
 	} while ((nflags = sync_cmpxchg(pflags, flags, 0)) != flags);
 
 	return 1;
@@ -525,6 +595,7 @@ static int gnttab_end_foreign_access_ref_v2(grant_ref_t ref, int readonly)
 	return 1;
 }
 
+<<<<<<< HEAD
 int gnttab_end_foreign_access_ref(grant_ref_t ref, int readonly)
 {
 	return gnttab_interface->end_foreign_access_ref(ref, readonly);
@@ -532,6 +603,104 @@ int gnttab_end_foreign_access_ref(grant_ref_t ref, int readonly)
 >>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL_GPL(gnttab_end_foreign_access_ref);
 
+=======
+static inline int _gnttab_end_foreign_access_ref(grant_ref_t ref, int readonly)
+{
+	return gnttab_interface->end_foreign_access_ref(ref, readonly);
+}
+
+int gnttab_end_foreign_access_ref(grant_ref_t ref, int readonly)
+{
+	if (_gnttab_end_foreign_access_ref(ref, readonly))
+		return 1;
+	pr_warn("WARNING: g.e. %#x still in use!\n", ref);
+	return 0;
+}
+EXPORT_SYMBOL_GPL(gnttab_end_foreign_access_ref);
+
+struct deferred_entry {
+	struct list_head list;
+	grant_ref_t ref;
+	bool ro;
+	uint16_t warn_delay;
+	struct page *page;
+};
+static LIST_HEAD(deferred_list);
+static void gnttab_handle_deferred(unsigned long);
+static DEFINE_TIMER(deferred_timer, gnttab_handle_deferred, 0, 0);
+
+static void gnttab_handle_deferred(unsigned long unused)
+{
+	unsigned int nr = 10;
+	struct deferred_entry *first = NULL;
+	unsigned long flags;
+
+	spin_lock_irqsave(&gnttab_list_lock, flags);
+	while (nr--) {
+		struct deferred_entry *entry
+			= list_first_entry(&deferred_list,
+					   struct deferred_entry, list);
+
+		if (entry == first)
+			break;
+		list_del(&entry->list);
+		spin_unlock_irqrestore(&gnttab_list_lock, flags);
+		if (_gnttab_end_foreign_access_ref(entry->ref, entry->ro)) {
+			put_free_entry(entry->ref);
+			if (entry->page) {
+				pr_debug("freeing g.e. %#x (pfn %#lx)\n",
+					 entry->ref, page_to_pfn(entry->page));
+				__free_page(entry->page);
+			} else
+				pr_info("freeing g.e. %#x\n", entry->ref);
+			kfree(entry);
+			entry = NULL;
+		} else {
+			if (!--entry->warn_delay)
+				pr_info("g.e. %#x still pending\n", entry->ref);
+			if (!first)
+				first = entry;
+		}
+		spin_lock_irqsave(&gnttab_list_lock, flags);
+		if (entry)
+			list_add_tail(&entry->list, &deferred_list);
+		else if (list_empty(&deferred_list))
+			break;
+	}
+	if (!list_empty(&deferred_list) && !timer_pending(&deferred_timer)) {
+		deferred_timer.expires = jiffies + HZ;
+		add_timer(&deferred_timer);
+	}
+	spin_unlock_irqrestore(&gnttab_list_lock, flags);
+}
+
+static void gnttab_add_deferred(grant_ref_t ref, bool readonly,
+				struct page *page)
+{
+	struct deferred_entry *entry = kmalloc(sizeof(*entry), GFP_ATOMIC);
+	const char *what = KERN_WARNING "leaking";
+
+	if (entry) {
+		unsigned long flags;
+
+		entry->ref = ref;
+		entry->ro = readonly;
+		entry->page = page;
+		entry->warn_delay = 60;
+		spin_lock_irqsave(&gnttab_list_lock, flags);
+		list_add_tail(&entry->list, &deferred_list);
+		if (!timer_pending(&deferred_timer)) {
+			deferred_timer.expires = jiffies + HZ;
+			add_timer(&deferred_timer);
+		}
+		spin_unlock_irqrestore(&gnttab_list_lock, flags);
+		what = KERN_DEBUG "deferring";
+	}
+	printk("%s g.e. %#x (pfn %#lx)\n",
+	       what, ref, page ? page_to_pfn(page) : -1);
+}
+
+>>>>>>> refs/remotes/origin/master
 void gnttab_end_foreign_access(grant_ref_t ref, int readonly,
 			       unsigned long page)
 {
@@ -539,12 +708,18 @@ void gnttab_end_foreign_access(grant_ref_t ref, int readonly,
 		put_free_entry(ref);
 		if (page != 0)
 			free_page(page);
+<<<<<<< HEAD
 	} else {
 		/* XXX This needs to be fixed so that the ref and page are
 		   placed on a list to be freed up later. */
 		printk(KERN_WARNING
 		       "WARNING: leaking g.e. and page still in use!\n");
 	}
+=======
+	} else
+		gnttab_add_deferred(ref, readonly,
+				    page ? virt_to_page(page) : NULL);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(gnttab_end_foreign_access);
 
@@ -565,6 +740,7 @@ void gnttab_grant_foreign_transfer_ref(grant_ref_t ref, domid_t domid,
 				       unsigned long pfn)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	update_grant_entry(ref, domid, pfn, GTF_accept_transfer);
 }
 EXPORT_SYMBOL_GPL(gnttab_grant_foreign_transfer_ref);
@@ -574,6 +750,8 @@ unsigned long gnttab_end_foreign_transfer_ref(grant_ref_t ref)
 	unsigned long frame;
 	u16           flags;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	gnttab_interface->update_entry(ref, domid, pfn, GTF_accept_transfer);
 }
 EXPORT_SYMBOL_GPL(gnttab_grant_foreign_transfer_ref);
@@ -585,12 +763,16 @@ static unsigned long gnttab_end_foreign_transfer_ref_v1(grant_ref_t ref)
 	u16          *pflags;
 
 	pflags = &gnttab_shared.v1[ref].flags;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If a transfer is not even yet started, try to reclaim the grant
 	 * reference and return failure (== 0).
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while (!((flags = shared[ref].flags) & GTF_transfer_committed)) {
 		if (sync_cmpxchg(&shared[ref].flags, flags, 0) == flags)
@@ -598,6 +780,10 @@ static unsigned long gnttab_end_foreign_transfer_ref_v1(grant_ref_t ref)
 	while (!((flags = *pflags) & GTF_transfer_committed)) {
 		if (sync_cmpxchg(pflags, flags, 0) == flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (!((flags = *pflags) & GTF_transfer_committed)) {
+		if (sync_cmpxchg(pflags, flags, 0) == flags)
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		cpu_relax();
 	}
@@ -605,17 +791,24 @@ static unsigned long gnttab_end_foreign_transfer_ref_v1(grant_ref_t ref)
 	/* If a transfer is in progress then wait until it is completed. */
 	while (!(flags & GTF_transfer_completed)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		flags = shared[ref].flags;
 =======
 		flags = *pflags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		flags = *pflags;
+>>>>>>> refs/remotes/origin/master
 		cpu_relax();
 	}
 
 	rmb();	/* Read the frame number /after/ reading completion status. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	frame = shared[ref].frame;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	frame = gnttab_shared.v1[ref].frame;
 	BUG_ON(frame == 0);
 
@@ -648,19 +841,28 @@ static unsigned long gnttab_end_foreign_transfer_ref_v2(grant_ref_t ref)
 
 	rmb();  /* Read the frame number /after/ reading completion status. */
 	frame = gnttab_shared.v2[ref].full_page.frame;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(frame == 0);
 
 	return frame;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 unsigned long gnttab_end_foreign_transfer_ref(grant_ref_t ref)
 {
 	return gnttab_interface->end_foreign_transfer_ref(ref);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(gnttab_end_foreign_transfer_ref);
 
 unsigned long gnttab_end_foreign_transfer(grant_ref_t ref)
@@ -784,6 +986,7 @@ static int grow_gnttab_list(unsigned int more_frames)
 	unsigned int nr_glist_frames, new_nr_glist_frames;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	new_nr_grant_frames = nr_grant_frames + more_frames;
 	extra_entries       = more_frames * GREFS_PER_GRANT_FRAME;
 
@@ -791,6 +994,8 @@ static int grow_gnttab_list(unsigned int more_frames)
 	new_nr_glist_frames =
 		(new_nr_grant_frames * GREFS_PER_GRANT_FRAME + RPP - 1) / RPP;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(grefs_per_grant_frame == 0);
 
 	new_nr_grant_frames = nr_grant_frames + more_frames;
@@ -799,7 +1004,10 @@ static int grow_gnttab_list(unsigned int more_frames)
 	nr_glist_frames = (nr_grant_frames * grefs_per_grant_frame + RPP - 1) / RPP;
 	new_nr_glist_frames =
 		(new_nr_grant_frames * grefs_per_grant_frame + RPP - 1) / RPP;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = nr_glist_frames; i < new_nr_glist_frames; i++) {
 		gnttab_list[i] = (grant_ref_t *)__get_free_page(GFP_ATOMIC);
 		if (!gnttab_list[i])
@@ -808,6 +1016,7 @@ static int grow_gnttab_list(unsigned int more_frames)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = GREFS_PER_GRANT_FRAME * nr_grant_frames;
 	     i < GREFS_PER_GRANT_FRAME * new_nr_grant_frames - 1; i++)
 		gnttab_entry(i) = i + 1;
@@ -815,13 +1024,18 @@ static int grow_gnttab_list(unsigned int more_frames)
 	gnttab_entry(i) = gnttab_free_head;
 	gnttab_free_head = GREFS_PER_GRANT_FRAME * nr_grant_frames;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = grefs_per_grant_frame * nr_grant_frames;
 	     i < grefs_per_grant_frame * new_nr_grant_frames - 1; i++)
 		gnttab_entry(i) = i + 1;
 
 	gnttab_entry(i) = gnttab_free_head;
 	gnttab_free_head = grefs_per_grant_frame * nr_grant_frames;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	gnttab_free_count += extra_entries;
 
 	nr_grant_frames = new_nr_grant_frames;
@@ -860,6 +1074,7 @@ unsigned int gnttab_max_grant_frames(void)
 }
 EXPORT_SYMBOL_GPL(gnttab_max_grant_frames);
 
+<<<<<<< HEAD
 int gnttab_map_refs(struct gnttab_map_grant_ref *map_ops,
 <<<<<<< HEAD
 =======
@@ -868,6 +1083,60 @@ int gnttab_map_refs(struct gnttab_map_grant_ref *map_ops,
 		    struct page **pages, unsigned int count)
 {
 	int i, ret;
+=======
+/* Handling of paged out grant targets (GNTST_eagain) */
+#define MAX_DELAY 256
+static inline void
+gnttab_retry_eagain_gop(unsigned int cmd, void *gop, int16_t *status,
+						const char *func)
+{
+	unsigned delay = 1;
+
+	do {
+		BUG_ON(HYPERVISOR_grant_table_op(cmd, gop, 1));
+		if (*status == GNTST_eagain)
+			msleep(delay++);
+	} while ((*status == GNTST_eagain) && (delay < MAX_DELAY));
+
+	if (delay >= MAX_DELAY) {
+		pr_err("%s: %s eagain grant\n", func, current->comm);
+		*status = GNTST_bad_page;
+	}
+}
+
+void gnttab_batch_map(struct gnttab_map_grant_ref *batch, unsigned count)
+{
+	struct gnttab_map_grant_ref *op;
+
+	if (HYPERVISOR_grant_table_op(GNTTABOP_map_grant_ref, batch, count))
+		BUG();
+	for (op = batch; op < batch + count; op++)
+		if (op->status == GNTST_eagain)
+			gnttab_retry_eagain_gop(GNTTABOP_map_grant_ref, op,
+						&op->status, __func__);
+}
+EXPORT_SYMBOL_GPL(gnttab_batch_map);
+
+void gnttab_batch_copy(struct gnttab_copy *batch, unsigned count)
+{
+	struct gnttab_copy *op;
+
+	if (HYPERVISOR_grant_table_op(GNTTABOP_copy, batch, count))
+		BUG();
+	for (op = batch; op < batch + count; op++)
+		if (op->status == GNTST_eagain)
+			gnttab_retry_eagain_gop(GNTTABOP_copy, op,
+						&op->status, __func__);
+}
+EXPORT_SYMBOL_GPL(gnttab_batch_copy);
+
+int gnttab_map_refs(struct gnttab_map_grant_ref *map_ops,
+		    struct gnttab_map_grant_ref *kmap_ops,
+		    struct page **pages, unsigned int count)
+{
+	int i, ret;
+	bool lazy = false;
+>>>>>>> refs/remotes/origin/master
 	pte_t *pte;
 	unsigned long mfn;
 
@@ -875,8 +1144,32 @@ int gnttab_map_refs(struct gnttab_map_grant_ref *map_ops,
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	if (xen_feature(XENFEAT_auto_translated_physmap))
 		return ret;
+=======
+	/* Retry eagain maps */
+	for (i = 0; i < count; i++)
+		if (map_ops[i].status == GNTST_eagain)
+			gnttab_retry_eagain_gop(GNTTABOP_map_grant_ref, map_ops + i,
+						&map_ops[i].status, __func__);
+
+	/* this is basically a nop on x86 */
+	if (xen_feature(XENFEAT_auto_translated_physmap)) {
+		for (i = 0; i < count; i++) {
+			if (map_ops[i].status)
+				continue;
+			set_phys_to_machine(map_ops[i].host_addr >> PAGE_SHIFT,
+					map_ops[i].dev_bus_addr >> PAGE_SHIFT);
+		}
+		return ret;
+	}
+
+	if (!in_interrupt() && paravirt_get_lazy_mode() == PARAVIRT_LAZY_NONE) {
+		arch_enter_lazy_mmu_mode();
+		lazy = true;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < count; i++) {
 		/* Do not add to override if the map failed. */
@@ -888,6 +1181,7 @@ int gnttab_map_refs(struct gnttab_map_grant_ref *map_ops,
 				(map_ops[i].host_addr & ~PAGE_MASK));
 			mfn = pte_mfn(*pte);
 		} else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			/* If you really wanted to do this:
 			 * mfn = PFN_DOWN(map_ops[i].dev_bus_addr);
@@ -909,20 +1203,34 @@ int gnttab_map_refs(struct gnttab_map_grant_ref *map_ops,
 		ret = m2p_add_override(mfn, pages[i],
 				       map_ops[i].flags & GNTMAP_contains_pte);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			mfn = PFN_DOWN(map_ops[i].dev_bus_addr);
 		}
 		ret = m2p_add_override(mfn, pages[i], kmap_ops ?
 				       &kmap_ops[i] : NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (ret)
 			return ret;
 	}
 
+=======
+		if (ret)
+			goto out;
+	}
+
+ out:
+	if (lazy)
+		arch_leave_lazy_mmu_mode();
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL_GPL(gnttab_map_refs);
 
 int gnttab_unmap_refs(struct gnttab_unmap_grant_ref *unmap_ops,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		struct page **pages, unsigned int count)
 =======
@@ -931,11 +1239,19 @@ int gnttab_unmap_refs(struct gnttab_unmap_grant_ref *unmap_ops,
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	int i, ret;
+=======
+		      struct gnttab_map_grant_ref *kmap_ops,
+		      struct page **pages, unsigned int count)
+{
+	int i, ret;
+	bool lazy = false;
+>>>>>>> refs/remotes/origin/master
 
 	ret = HYPERVISOR_grant_table_op(GNTTABOP_unmap_grant_ref, unmap_ops, count);
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	if (xen_feature(XENFEAT_auto_translated_physmap))
 		return ret;
 
@@ -950,19 +1266,53 @@ int gnttab_unmap_refs(struct gnttab_unmap_grant_ref *unmap_ops,
 			return ret;
 	}
 
+=======
+	/* this is basically a nop on x86 */
+	if (xen_feature(XENFEAT_auto_translated_physmap)) {
+		for (i = 0; i < count; i++) {
+			set_phys_to_machine(unmap_ops[i].host_addr >> PAGE_SHIFT,
+					INVALID_P2M_ENTRY);
+		}
+		return ret;
+	}
+
+	if (!in_interrupt() && paravirt_get_lazy_mode() == PARAVIRT_LAZY_NONE) {
+		arch_enter_lazy_mmu_mode();
+		lazy = true;
+	}
+
+	for (i = 0; i < count; i++) {
+		ret = m2p_remove_override(pages[i], kmap_ops ?
+				       &kmap_ops[i] : NULL);
+		if (ret)
+			goto out;
+	}
+
+ out:
+	if (lazy)
+		arch_leave_lazy_mmu_mode();
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL_GPL(gnttab_unmap_refs);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned nr_status_frames(unsigned nr_grant_frames)
 {
 	BUG_ON(grefs_per_grant_frame == 0);
 	return (nr_grant_frames * grefs_per_grant_frame + SPP - 1) / SPP;
 }
 
+<<<<<<< HEAD
 static int gnttab_map_frames_v1(unsigned long *frames, unsigned int nr_gframes)
+=======
+static int gnttab_map_frames_v1(xen_pfn_t *frames, unsigned int nr_gframes)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 
@@ -979,7 +1329,11 @@ static void gnttab_unmap_frames_v1(void)
 	arch_gnttab_unmap(gnttab_shared.addr, nr_grant_frames);
 }
 
+<<<<<<< HEAD
 static int gnttab_map_frames_v2(unsigned long *frames, unsigned int nr_gframes)
+=======
+static int gnttab_map_frames_v2(xen_pfn_t *frames, unsigned int nr_gframes)
+>>>>>>> refs/remotes/origin/master
 {
 	uint64_t *sframes;
 	unsigned int nr_sframes;
@@ -1028,11 +1382,18 @@ static void gnttab_unmap_frames_v2(void)
 	arch_gnttab_unmap(grstatus, nr_status_frames(nr_grant_frames));
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int gnttab_map(unsigned int start_idx, unsigned int end_idx)
 {
 	struct gnttab_setup_table setup;
 	unsigned long *frames;
+=======
+static int gnttab_map(unsigned int start_idx, unsigned int end_idx)
+{
+	struct gnttab_setup_table setup;
+	xen_pfn_t *frames;
+>>>>>>> refs/remotes/origin/master
 	unsigned int nr_gframes = end_idx + 1;
 	int rc;
 
@@ -1051,8 +1412,13 @@ static int gnttab_map(unsigned int start_idx, unsigned int end_idx)
 			xatp.gpfn = (xen_hvm_resume_frames >> PAGE_SHIFT) + i;
 			rc = HYPERVISOR_memory_op(XENMEM_add_to_physmap, &xatp);
 			if (rc != 0) {
+<<<<<<< HEAD
 				printk(KERN_WARNING
 						"grant table add_to_physmap failed, err=%d\n", rc);
+=======
+				pr_warn("grant table add_to_physmap failed, err=%d\n",
+					rc);
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 		} while (i-- > start_idx);
@@ -1061,11 +1427,17 @@ static int gnttab_map(unsigned int start_idx, unsigned int end_idx)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* No need for kzalloc as it is initialized in following hypercall
 	 * GNTTABOP_setup_table.
 	 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* No need for kzalloc as it is initialized in following hypercall
+	 * GNTTABOP_setup_table.
+	 */
+>>>>>>> refs/remotes/origin/master
 	frames = kmalloc(nr_gframes * sizeof(unsigned long), GFP_ATOMIC);
 	if (!frames)
 		return -ENOMEM;
@@ -1083,6 +1455,7 @@ static int gnttab_map(unsigned int start_idx, unsigned int end_idx)
 	BUG_ON(rc || setup.status);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = arch_gnttab_map_shared(frames, nr_gframes, gnttab_max_grant_frames(),
 				    &shared);
 	BUG_ON(rc);
@@ -1094,6 +1467,8 @@ static int gnttab_map(unsigned int start_idx, unsigned int end_idx)
 
 int gnttab_resume(void)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = gnttab_interface->map_frames(frames, nr_gframes);
 
 	kfree(frames);
@@ -1149,12 +1524,19 @@ static void gnttab_request_version(void)
 		grefs_per_grant_frame = PAGE_SIZE / sizeof(struct grant_entry_v1);
 		gnttab_interface = &gnttab_v1_ops;
 	}
+<<<<<<< HEAD
 	printk(KERN_INFO "Grant tables using version %d layout.\n",
 		grant_table_version);
 }
 
 static int gnttab_setup(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Grant tables using version %d layout\n", grant_table_version);
+}
+
+static int gnttab_setup(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int max_nr_gframes;
 
@@ -1165,6 +1547,7 @@ static int gnttab_setup(void)
 	if (xen_pv_domain())
 		return gnttab_map(0, nr_grant_frames - 1);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!shared) {
 		shared = ioremap(xen_hvm_resume_frames, PAGE_SIZE * max_nr_gframes);
@@ -1177,6 +1560,14 @@ static int gnttab_setup(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 			printk(KERN_WARNING
 					"Failed to ioremap gnttab share frames!");
+=======
+	if (gnttab_shared.addr == NULL) {
+		gnttab_shared.addr = xen_remap(xen_hvm_resume_frames,
+						PAGE_SIZE * max_nr_gframes);
+		if (gnttab_shared.addr == NULL) {
+			pr_warn("Failed to ioremap gnttab share frames (addr=0x%08lx)!\n",
+					xen_hvm_resume_frames);
+>>>>>>> refs/remotes/origin/master
 			return -ENOMEM;
 		}
 	}
@@ -1187,10 +1578,13 @@ static int gnttab_setup(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int gnttab_suspend(void)
 {
 	arch_gnttab_unmap_shared(shared, nr_grant_frames);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int gnttab_resume(void)
 {
 	gnttab_request_version();
@@ -1200,7 +1594,10 @@ int gnttab_resume(void)
 int gnttab_suspend(void)
 {
 	gnttab_interface->unmap_frames();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1210,15 +1607,21 @@ static int gnttab_expand(unsigned int req_entries)
 	unsigned int cur, extra;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cur = nr_grant_frames;
 	extra = ((req_entries + (GREFS_PER_GRANT_FRAME-1)) /
 		 GREFS_PER_GRANT_FRAME);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(grefs_per_grant_frame == 0);
 	cur = nr_grant_frames;
 	extra = ((req_entries + (grefs_per_grant_frame-1)) /
 		 grefs_per_grant_frame);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cur + extra > gnttab_max_grant_frames())
 		return -ENOSPC;
 
@@ -1235,18 +1638,25 @@ int gnttab_init(void)
 	unsigned int max_nr_glist_frames, nr_glist_frames;
 	unsigned int nr_init_grefs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	int ret;
 
 	gnttab_request_version();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+
+	gnttab_request_version();
+>>>>>>> refs/remotes/origin/master
 	nr_grant_frames = 1;
 	boot_max_nr_grant_frames = __max_nr_grant_frames();
 
 	/* Determine the maximum number of frames required for the
 	 * grant reference free list on the current hypervisor.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	max_nr_glist_frames = (boot_max_nr_grant_frames *
 			       GREFS_PER_GRANT_FRAME / RPP);
@@ -1255,12 +1665,18 @@ int gnttab_init(void)
 	max_nr_glist_frames = (boot_max_nr_grant_frames *
 			       grefs_per_grant_frame / RPP);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BUG_ON(grefs_per_grant_frame == 0);
+	max_nr_glist_frames = (boot_max_nr_grant_frames *
+			       grefs_per_grant_frame / RPP);
+>>>>>>> refs/remotes/origin/master
 
 	gnttab_list = kmalloc(max_nr_glist_frames * sizeof(grant_ref_t *),
 			      GFP_KERNEL);
 	if (gnttab_list == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	nr_glist_frames = (nr_grant_frames * GREFS_PER_GRANT_FRAME + RPP - 1) / RPP;
 	for (i = 0; i < nr_glist_frames; i++) {
@@ -1274,6 +1690,8 @@ int gnttab_init(void)
 
 	nr_init_grefs = nr_grant_frames * GREFS_PER_GRANT_FRAME;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	nr_glist_frames = (nr_grant_frames * grefs_per_grant_frame + RPP - 1) / RPP;
 	for (i = 0; i < nr_glist_frames; i++) {
 		gnttab_list[i] = (grant_ref_t *)__get_free_page(GFP_KERNEL);
@@ -1289,7 +1707,10 @@ int gnttab_init(void)
 	}
 
 	nr_init_grefs = nr_grant_frames * grefs_per_grant_frame;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	for (i = NR_RESERVED_ENTRIES; i < nr_init_grefs - 1; i++)
 		gnttab_entry(i) = i + 1;
@@ -1306,6 +1727,7 @@ int gnttab_init(void)
 		free_page((unsigned long)gnttab_list[i]);
 	kfree(gnttab_list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return -ENOMEM;
 =======
 	return ret;
@@ -1314,6 +1736,13 @@ int gnttab_init(void)
 EXPORT_SYMBOL_GPL(gnttab_init);
 
 static int __devinit __gnttab_init(void)
+=======
+	return ret;
+}
+EXPORT_SYMBOL_GPL(gnttab_init);
+
+static int __gnttab_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Delay grant-table initialization in the PV on HVM case */
 	if (xen_hvm_domain())

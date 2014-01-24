@@ -122,6 +122,7 @@ struct max8952_platform_data {
 	int gpio_vid1;
 	int gpio_en;
 
+<<<<<<< HEAD
 	u8 default_mode;
 	u8 dvs_mode[MAX8952_NUM_DVS_MODE]; /* MAX8952_DVS_MODEx_XXXXmV */
 
@@ -129,6 +130,15 @@ struct max8952_platform_data {
 	u8 ramp_speed;
 
 	struct regulator_init_data reg_data;
+=======
+	u32 default_mode;
+	u32 dvs_mode[MAX8952_NUM_DVS_MODE]; /* MAX8952_DVS_MODEx_XXXXmV */
+
+	u32 sync_freq;
+	u32 ramp_speed;
+
+	struct regulator_init_data *reg_data;
+>>>>>>> refs/remotes/origin/master
 };
 
 

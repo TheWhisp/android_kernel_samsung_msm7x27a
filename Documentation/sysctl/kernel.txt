@@ -18,13 +18,17 @@ before actually making adjustments.
 Currently, these files might (depending on your configuration)
 show up in /proc/sys/kernel:
 <<<<<<< HEAD
+<<<<<<< HEAD
 - acpi_video_flags
 - acct
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 - acct
 - acpi_video_flags
 - auto_msgmni
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 - bootloader_type	     [ X86 only ]
 - bootloader_version	     [ X86 only ]
@@ -35,28 +39,44 @@ show up in /proc/sys/kernel:
 =======
 - cap_last_cap
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+- bootloader_type	     [ X86 only ]
+- bootloader_version	     [ X86 only ]
+- callhome		     [ S390 only ]
+- cap_last_cap
+>>>>>>> refs/remotes/origin/master
 - core_pattern
 - core_pipe_limit
 - core_uses_pid
 - ctrl-alt-del
 <<<<<<< HEAD
+<<<<<<< HEAD
 - dentry-state
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 - dmesg_restrict
 - domainname
 - hostname
 - hotplug
 <<<<<<< HEAD
+<<<<<<< HEAD
 - java-appletviewer           [ binfmt_java, obsolete ]
 - java-interpreter            [ binfmt_java, obsolete ]
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 - kptr_restrict
 - kstack_depth_to_print       [ X86 only ]
 - l2cr                        [ PPC only ]
 - modprobe                    ==> Documentation/debugging-modules.txt
 - modules_disabled
+<<<<<<< HEAD
+=======
+- msg_next_id		      [ sysv ipc ]
+>>>>>>> refs/remotes/origin/master
 - msgmax
 - msgmnb
 - msgmni
@@ -67,11 +87,14 @@ show up in /proc/sys/kernel:
 - overflowuid
 - panic
 <<<<<<< HEAD
+<<<<<<< HEAD
 - pid_max
 - powersave-nap               [ PPC only ]
 - panic_on_unrecovered_nmi
 - printk
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 - panic_on_oops
 - panic_on_unrecovered_nmi
 - panic_on_stackoverflow
@@ -81,34 +104,51 @@ show up in /proc/sys/kernel:
 - printk_delay
 - printk_ratelimit
 - printk_ratelimit_burst
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 - randomize_va_space
 - real-root-dev               ==> Documentation/initrd.txt
 - reboot-cmd                  [ SPARC only ]
 - rtsig-max
 - rtsig-nr
 - sem
+<<<<<<< HEAD
 - sg-big-buff                 [ generic SCSI device (sg) ]
 <<<<<<< HEAD
 - shmall
 - shmmax                      [ sysv ipc ]
 - shmmni
 =======
+=======
+- sem_next_id		      [ sysv ipc ]
+- sg-big-buff                 [ generic SCSI device (sg) ]
+- shm_next_id		      [ sysv ipc ]
+>>>>>>> refs/remotes/origin/master
 - shm_rmid_forced
 - shmall
 - shmmax                      [ sysv ipc ]
 - shmmni
+<<<<<<< HEAD
 - softlockup_thresh
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 - stop-a                      [ SPARC only ]
 - sysrq                       ==> Documentation/sysrq.txt
 - tainted
 - threads-max
 - unknown_nmi_panic
+<<<<<<< HEAD
+=======
+- watchdog_thresh
+>>>>>>> refs/remotes/origin/master
 - version
 
 ==============================================================
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 acpi_video_flags:
 
@@ -121,6 +161,8 @@ set during run time.
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 acct:
 
 highwater lowwater frequency
@@ -139,7 +181,10 @@ valid for 30 seconds.
 ==============================================================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 acpi_video_flags:
 
 flags
@@ -159,7 +204,10 @@ Echoing "0" turns it off. auto_msgmni default value is 1.
 
 ==============================================================
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 bootloader_type:
 
 x86 bootloader identification
@@ -189,6 +237,7 @@ Documentation/x86/boot.txt for additional information.
 
 ==============================================================
 
+<<<<<<< HEAD
 boot_reason:
 
 ARM -- reason for device boot
@@ -202,6 +251,8 @@ Documentation/arm/msm/boot.txt for Qualcomm's family of devices.
 
 ==============================================================
 
+=======
+>>>>>>> refs/remotes/origin/master
 callhome:
 
 Controls the kernel's callhome behavior in case of a kernel panic.
@@ -218,7 +269,10 @@ on has a service contract with IBM.
 ==============================================================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 cap_last_cap
 
 Highest valid capability of the running kernel.  Exports
@@ -226,7 +280,10 @@ CAP_LAST_CAP from the kernel.
 
 ==============================================================
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 core_pattern:
 
 core_pattern is used to specify a core dumpfile pattern name.
@@ -242,8 +299,16 @@ core_pattern is used to specify a core dumpfile pattern name.
 	%<NUL>	'%' is dropped
 	%%	output one '%'
 	%p	pid
+<<<<<<< HEAD
 	%u	uid
 	%g	gid
+=======
+	%P	global pid (init PID namespace)
+	%u	uid
+	%g	gid
+	%d	dump mode, matches PR_SET_DUMPABLE and
+		/proc/sys/fs/suid_dumpable
+>>>>>>> refs/remotes/origin/master
 	%s	signal number
 	%t	UNIX time of dump
 	%h	hostname
@@ -258,6 +323,7 @@ core_pattern is used to specify a core dumpfile pattern name.
 
 core_pipe_limit:
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 This sysctl is only applicable when core_pattern is configured to pipe core
 files to a user space helper (when the first character of core_pattern is a '|',
@@ -276,6 +342,8 @@ captured in parallel, but that no waiting will take place (i.e. the collecting
 process is not guaranteed access to /proc/<crashing pid>/).  This value defaults
 to 0.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 This sysctl is only applicable when core_pattern is configured to pipe
 core files to a user space helper (when the first character of
 core_pattern is a '|', see above).  When collecting cores via a pipe
@@ -294,7 +362,10 @@ special value, indicating that unlimited processes may be captured in
 parallel, but that no waiting will take place (i.e. the collecting
 process is not guaranteed access to /proc/<crashing pid>/).  This
 value defaults to 0.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 ==============================================================
 
@@ -326,6 +397,7 @@ to decide what to do with it.
 dmesg_restrict:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 This toggle indicates whether unprivileged users are prevented from using
 dmesg(8) to view messages from the kernel's log buffer.  When
 dmesg_restrict is set to (0) there are no restrictions.  When
@@ -335,6 +407,8 @@ dmesg(8).
 The kernel config option CONFIG_SECURITY_DMESG_RESTRICT sets the default
 value of dmesg_restrict.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 This toggle indicates whether unprivileged users are prevented
 from using dmesg(8) to view messages from the kernel's log buffer.
 When dmesg_restrict is set to (0) there are no restrictions. When
@@ -343,7 +417,10 @@ dmesg(8).
 
 The kernel config option CONFIG_SECURITY_DMESG_RESTRICT sets the
 default value of dmesg_restrict.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 ==============================================================
 
@@ -375,6 +452,7 @@ Default value is "/sbin/hotplug".
 ==============================================================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 l2cr: (PPC only)
 
 This flag controls the L2 cache of G3 processor boards. If
@@ -394,6 +472,29 @@ printed using the %pK format specifier will be replaced with 0's
 unless the user has CAP_SYSLOG.  When kptr_restrict is set to
 (2), kernel pointers printed using %pK will be replaced with 0's
 regardless of privileges.
+=======
+kptr_restrict:
+
+This toggle indicates whether restrictions are placed on
+exposing kernel addresses via /proc and other interfaces.
+
+When kptr_restrict is set to (0), the default, there are no restrictions.
+
+When kptr_restrict is set to (1), kernel pointers printed using the %pK
+format specifier will be replaced with 0's unless the user has CAP_SYSLOG
+and effective user and group ids are equal to the real ids. This is
+because %pK checks are done at read() time rather than open() time, so
+if permissions are elevated between the open() and the read() (e.g via
+a setuid binary) then %pK will not leak kernel pointers to unprivileged
+users. Note, this is a temporary solution only. The correct long-term
+solution is to do the permission checks at open() time. Consider removing
+world read permissions from files that use %pK, and using dmesg_restrict
+to protect against uses of %pK in dmesg(8) if leaking kernel pointer
+values to unprivileged users is a concern.
+
+When kptr_restrict is set to (2), kernel pointers printed using
+%pK will be replaced with 0's regardless of privileges.
+>>>>>>> refs/remotes/origin/master
 
 ==============================================================
 
@@ -405,7 +506,10 @@ kernel stack.
 ==============================================================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 l2cr: (PPC only)
 
 This flag controls the L2 cache of G3 processor boards. If
@@ -413,7 +517,10 @@ This flag controls the L2 cache of G3 processor boards. If
 
 ==============================================================
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 modules_disabled:
 
 A toggle value indicating if modules are allowed to be loaded
@@ -425,7 +532,26 @@ to false.
 ==============================================================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+msg_next_id, sem_next_id, and shm_next_id:
+
+These three toggles allows to specify desired id for next allocated IPC
+object: message, semaphore or shared memory respectively.
+
+By default they are equal to -1, which means generic allocation logic.
+Possible values to set are in range {0..INT_MAX}.
+
+Notes:
+1) kernel doesn't guarantee, that new object will have desired id. So,
+it's up to userspace, how to handle an object with "wrong" id.
+2) Toggle with non-default value will be set back to -1 by kernel after
+successful IPC object allocation.
+
+==============================================================
+
+>>>>>>> refs/remotes/origin/master
 nmi_watchdog:
 
 Enables/Disables the NMI watchdog on x86 systems. When the value is
@@ -441,7 +567,81 @@ utilize.
 
 ==============================================================
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+numa_balancing
+
+Enables/disables automatic page fault based NUMA memory
+balancing. Memory is moved automatically to nodes
+that access it often.
+
+Enables/disables automatic NUMA memory balancing. On NUMA machines, there
+is a performance penalty if remote memory is accessed by a CPU. When this
+feature is enabled the kernel samples what task thread is accessing memory
+by periodically unmapping pages and later trapping a page fault. At the
+time of the page fault, it is determined if the data being accessed should
+be migrated to a local memory node.
+
+The unmapping of pages and trapping faults incur additional overhead that
+ideally is offset by improved memory locality but there is no universal
+guarantee. If the target workload is already bound to NUMA nodes then this
+feature should be disabled. Otherwise, if the system overhead from the
+feature is too high then the rate the kernel samples for NUMA hinting
+faults may be controlled by the numa_balancing_scan_period_min_ms,
+numa_balancing_scan_delay_ms, numa_balancing_scan_period_max_ms,
+numa_balancing_scan_size_mb, numa_balancing_settle_count sysctls and
+numa_balancing_migrate_deferred.
+
+==============================================================
+
+numa_balancing_scan_period_min_ms, numa_balancing_scan_delay_ms,
+numa_balancing_scan_period_max_ms, numa_balancing_scan_size_mb
+
+Automatic NUMA balancing scans tasks address space and unmaps pages to
+detect if pages are properly placed or if the data should be migrated to a
+memory node local to where the task is running.  Every "scan delay" the task
+scans the next "scan size" number of pages in its address space. When the
+end of the address space is reached the scanner restarts from the beginning.
+
+In combination, the "scan delay" and "scan size" determine the scan rate.
+When "scan delay" decreases, the scan rate increases.  The scan delay and
+hence the scan rate of every task is adaptive and depends on historical
+behaviour. If pages are properly placed then the scan delay increases,
+otherwise the scan delay decreases.  The "scan size" is not adaptive but
+the higher the "scan size", the higher the scan rate.
+
+Higher scan rates incur higher system overhead as page faults must be
+trapped and potentially data must be migrated. However, the higher the scan
+rate, the more quickly a tasks memory is migrated to a local node if the
+workload pattern changes and minimises performance impact due to remote
+memory accesses. These sysctls control the thresholds for scan delays and
+the number of pages scanned.
+
+numa_balancing_scan_period_min_ms is the minimum time in milliseconds to
+scan a tasks virtual memory. It effectively controls the maximum scanning
+rate for each task.
+
+numa_balancing_scan_delay_ms is the starting "scan delay" used for a task
+when it initially forks.
+
+numa_balancing_scan_period_max_ms is the maximum time in milliseconds to
+scan a tasks virtual memory. It effectively controls the minimum scanning
+rate for each task.
+
+numa_balancing_scan_size_mb is how many megabytes worth of pages are
+scanned for a given scan.
+
+numa_balancing_migrate_deferred is how many page migrations get skipped
+unconditionally, after a page migration is skipped because a page is shared
+with other tasks. This reduces page migration overhead, and determines
+how much stronger the "move task near its memory" policy scheduler becomes,
+versus the "move memory near its task" memory management policy, for workloads
+with shared memory.
+
+==============================================================
+
+>>>>>>> refs/remotes/origin/master
 osrelease, ostype & version:
 
 # cat osrelease
@@ -462,16 +662,22 @@ The only way to tune these values is to rebuild the kernel :-)
 overflowgid & overflowuid:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 if your architecture did not always support 32-bit UIDs (i.e. arm, i386,
 m68k, sh, and sparc32), a fixed UID and GID will be returned to
 applications that use the old 16-bit UID/GID system calls, if the actual
 UID or GID would exceed 65535.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 if your architecture did not always support 32-bit UIDs (i.e. arm,
 i386, m68k, sh, and sparc32), a fixed UID and GID will be returned to
 applications that use the old 16-bit UID/GID system calls, if the
 actual UID or GID would exceed 65535.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 These sysctls allow you to change the value of the fixed UID and GID.
 The default is 65534.
@@ -481,10 +687,13 @@ The default is 65534.
 panic:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 The value in this file represents the number of seconds the
 kernel waits before rebooting on a panic. When you use the
 software watchdog, the recommended setting is 60.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 The value in this file represents the number of seconds the kernel
 waits before rebooting on a panic. When you use the software watchdog,
 the recommended setting is 60.
@@ -501,7 +710,10 @@ dealt with than an uncorrected parity/ECC error get propagated.
 A small number of systems do generate NMI's for bizarre random reasons
 such as power management so the default is off. That sysctl works like
 the existing panic controls already in that directory.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 ==============================================================
 
@@ -517,7 +729,10 @@ Controls the kernel's behaviour when an oops or BUG is encountered.
 ==============================================================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 panic_on_stackoverflow:
 
 Controls the kernel's behavior when detecting the overflows of
@@ -530,8 +745,38 @@ This file shows up if CONFIG_DEBUG_STACKOVERFLOW is enabled.
 
 ==============================================================
 
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+perf_cpu_time_max_percent:
+
+Hints to the kernel how much CPU time it should be allowed to
+use to handle perf sampling events.  If the perf subsystem
+is informed that its samples are exceeding this limit, it
+will drop its sampling frequency to attempt to reduce its CPU
+usage.
+
+Some perf sampling happens in NMIs.  If these samples
+unexpectedly take too long to execute, the NMIs can become
+stacked up next to each other so much that nothing else is
+allowed to execute.
+
+0: disable the mechanism.  Do not monitor or correct perf's
+   sampling rate no matter how CPU time it takes.
+
+1-100: attempt to throttle perf's sample rate to this
+   percentage of CPU.  Note: the kernel calculates an
+   "expected" length of each sample event.  100 here means
+   100% of that expected length.  Even if this is set to
+   100, you may still see sample throttling if this
+   length is exceeded.  Set to 0 if you truly do not care
+   how much CPU is consumed.
+
+==============================================================
+
+
+>>>>>>> refs/remotes/origin/master
 pid_max:
 
 PID allocation wrap value.  When the kernel's next PID value
@@ -541,7 +786,10 @@ PIDs of value pid_max or larger are not allocated.
 ==============================================================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 ns_last_pid:
 
 The last pid allocated in the current (the one task using this sysctl
@@ -550,7 +798,10 @@ kernel tries to allocate a number starting from this one.
 
 ==============================================================
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 powersave-nap: (PPC only)
 
 If set, Linux-PPC will use the 'nap' mode of powersaving,
@@ -579,7 +830,10 @@ the different loglevels.
 ==============================================================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 printk_delay:
 
 Delay each printk message in printk_delay milliseconds
@@ -588,7 +842,10 @@ Value from 0 - 10000 is allowed.
 
 ==============================================================
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 printk_ratelimit:
 
 Some warning messages are rate limited. printk_ratelimit specifies
@@ -609,6 +866,7 @@ send before ratelimiting kicks in.
 ==============================================================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 printk_delay:
 
 Delay each printk message in printk_delay milliseconds
@@ -621,6 +879,9 @@ randomize-va-space:
 =======
 randomize_va_space:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+randomize_va_space:
+>>>>>>> refs/remotes/origin/master
 
 This option can be used to select the type of process address
 space randomization that is used in the system, for architectures
@@ -684,24 +945,46 @@ are doing anyway :)
 ==============================================================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 shmmax: 
 
 This value can be used to query and set the run time limit
 on the maximum shared memory segment size that can be created.
 Shared memory segments up to 1Gb are now supported in the 
 =======
+=======
+shmall:
+
+This parameter sets the total amount of shared memory pages that
+can be used system wide. Hence, SHMALL should always be at least
+ceil(shmmax/PAGE_SIZE).
+
+If you are not sure what the default PAGE_SIZE is on your Linux
+system, you can run the following command:
+
+# getconf PAGE_SIZE
+
+==============================================================
+
+>>>>>>> refs/remotes/origin/master
 shmmax:
 
 This value can be used to query and set the run time limit
 on the maximum shared memory segment size that can be created.
 Shared memory segments up to 1Gb are now supported in the
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 kernel.  This value defaults to SHMMAX.
 
 ==============================================================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 shm_rmid_forced:
 
 Linux lets you set resource limits, including how much memory one
@@ -723,6 +1006,7 @@ without users and with a dead originative process will be destroyed.
 
 ==============================================================
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 softlockup_thresh:
 
@@ -738,6 +1022,9 @@ tainted:
 =======
 tainted:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+tainted:
+>>>>>>> refs/remotes/origin/master
 
 Non-zero if the kernel has been tainted.  Numeric values, which
 can be ORed together:
@@ -759,6 +1046,7 @@ can be ORed together:
         instead of using the one provided by the hardware.
  512 - A kernel warning has occurred.
 1024 - A module from drivers/staging was loaded.
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 ==============================================================
@@ -788,11 +1076,16 @@ oprofile may have more registers to utilize.
 2048 - The system is working around a severe firmware bug.
 4096 - An out-of-tree module has been loaded.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+2048 - The system is working around a severe firmware bug.
+4096 - An out-of-tree module has been loaded.
+>>>>>>> refs/remotes/origin/master
 
 ==============================================================
 
 unknown_nmi_panic:
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 The value in this file affects behavior of handling NMI. When the value is
 non-zero, unknown NMI is trapped and then panic occurs. At that time, kernel
@@ -822,3 +1115,24 @@ that time, kernel debugging information is displayed on console.
 NMI switch that most IA32 servers have fires unknown NMI up, for
 example.  If a system hangs up, try pressing the NMI switch.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+The value in this file affects behavior of handling NMI. When the
+value is non-zero, unknown NMI is trapped and then panic occurs. At
+that time, kernel debugging information is displayed on console.
+
+NMI switch that most IA32 servers have fires unknown NMI up, for
+example.  If a system hangs up, try pressing the NMI switch.
+
+==============================================================
+
+watchdog_thresh:
+
+This value can be used to control the frequency of hrtimer and NMI
+events and the soft and hard lockup thresholds. The default threshold
+is 10 seconds.
+
+The softlockup threshold is (2 * watchdog_thresh). Setting this
+tunable to zero will disable lockup detection altogether.
+
+==============================================================
+>>>>>>> refs/remotes/origin/master

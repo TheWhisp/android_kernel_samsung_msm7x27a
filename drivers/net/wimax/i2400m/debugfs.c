@@ -27,9 +27,13 @@
 #include <linux/spinlock.h>
 #include <linux/device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "i2400m.h"
 
 
@@ -57,6 +61,7 @@ struct dentry *debugfs_create_netdev_queue_stopped(
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /*
  * inode->i_private has the @data argument to debugfs_create_file()
@@ -70,6 +75,8 @@ int i2400m_stats_open(struct inode *inode, struct file *filp)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * We don't allow partial reads of this file, as then the reader would
  * get weirdly confused data as it is updated.
@@ -124,10 +131,14 @@ static
 const struct file_operations i2400m_rx_stats_fops = {
 	.owner =	THIS_MODULE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open =		i2400m_stats_open,
 =======
 	.open =		simple_open,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open =		simple_open,
+>>>>>>> refs/remotes/origin/master
 	.read =		i2400m_rx_stats_read,
 	.write =	i2400m_rx_stats_write,
 	.llseek =	default_llseek,
@@ -181,10 +192,14 @@ static
 const struct file_operations i2400m_tx_stats_fops = {
 	.owner =	THIS_MODULE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open =		i2400m_stats_open,
 =======
 	.open =		simple_open,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open =		simple_open,
+>>>>>>> refs/remotes/origin/master
 	.read =		i2400m_tx_stats_read,
 	.write =	i2400m_tx_stats_write,
 	.llseek =	default_llseek,
@@ -234,6 +249,10 @@ int debugfs_i2400m_reset_set(void *data, u64 val)
 		result = i2400m_reset(i2400m, rt);
 		if (result >= 0)
 			result = 0;
+<<<<<<< HEAD
+=======
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		result = -EINVAL;
 	}

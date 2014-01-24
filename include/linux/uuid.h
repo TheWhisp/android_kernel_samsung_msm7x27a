@@ -17,6 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_UUID_H_
 #define _LINUX_UUID_H_
@@ -53,6 +54,13 @@ typedef struct {
 #define NULL_UUID_BE							\
 	UUID_BE(0x00000000, 0x0000, 0x0000, 0x00, 0x00, 0x00, 0x00,	\
 		0x00, 0x00, 0x00, 0x00)
+=======
+#ifndef _LINUX_UUID_H_
+#define _LINUX_UUID_H_
+
+#include <uapi/linux/uuid.h>
+
+>>>>>>> refs/remotes/origin/master
 
 static inline int uuid_le_cmp(const uuid_le u1, const uuid_le u2)
 {

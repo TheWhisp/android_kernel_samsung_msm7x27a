@@ -2,8 +2,11 @@
 #define _ASM_X86_RWLOCK_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define RW_LOCK_BIAS		 0x01000000
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/asm.h>
 
 #if CONFIG_NR_CPUS <= 2048
@@ -46,7 +49,10 @@ typedef union {
 #endif /* CONFIG_NR_CPUS */
 
 #define __ARCH_RW_LOCK_UNLOCKED		{ RW_LOCK_BIAS }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Actual code is in asm/spinlock.h or in arch/x86/lib/rwlock.S */
 

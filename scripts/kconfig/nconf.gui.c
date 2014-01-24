@@ -48,7 +48,11 @@ static void set_normal_colors(void)
 	init_pair(INPUT_FIELD, -1, -1);
 
 	init_pair(FUNCTION_HIGHLIGHT, -1, -1);
+<<<<<<< HEAD
 	init_pair(FUNCTION_TEXT, COLOR_BLUE, -1);
+=======
+	init_pair(FUNCTION_TEXT, COLOR_YELLOW, -1);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* available attributes:
@@ -276,8 +280,13 @@ int btn_dialog(WINDOW *main_window, const char *msg, int btn_num, ...)
 
 	total_width = max(msg_width, btns_width);
 	/* place dialog in middle of screen */
+<<<<<<< HEAD
 	y = (LINES-(msg_lines+4))/2;
 	x = (COLS-(total_width+4))/2;
+=======
+	y = (getmaxy(stdscr)-(msg_lines+4))/2;
+	x = (getmaxx(stdscr)-(total_width+4))/2;
+>>>>>>> refs/remotes/origin/master
 
 
 	/* create the windows */
@@ -357,10 +366,14 @@ int btn_dialog(WINDOW *main_window, const char *msg, int btn_num, ...)
 int dialog_inputbox(WINDOW *main_window,
 		const char *title, const char *prompt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		const char *init, char *result, int result_len)
 =======
 		const char *init, char **resultp, int *result_len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		const char *init, char **resultp, int *result_len)
+>>>>>>> refs/remotes/origin/master
 {
 	int prompt_lines = 0;
 	int prompt_width = 0;
@@ -372,8 +385,11 @@ int dialog_inputbox(WINDOW *main_window,
 	int res = -1;
 	int cursor_position = strlen(init);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int cursor_form_win;
 	char *result = *resultp;
 
@@ -381,7 +397,10 @@ int dialog_inputbox(WINDOW *main_window,
 		*result_len = strlen(init)+1;
 		*resultp = result = realloc(result, *result_len);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* find the widest line of msg: */
 	prompt_lines = get_line_no(prompt);
@@ -395,6 +414,7 @@ int dialog_inputbox(WINDOW *main_window,
 		prompt_width = max(prompt_width, strlen(title));
 
 	/* place dialog in middle of screen */
+<<<<<<< HEAD
 	y = (LINES-(prompt_lines+4))/2;
 	x = (COLS-(prompt_width+4))/2;
 
@@ -403,6 +423,12 @@ int dialog_inputbox(WINDOW *main_window,
 =======
 	strncpy(result, init, *result_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	y = (getmaxy(stdscr)-(prompt_lines+4))/2;
+	x = (getmaxx(stdscr)-(prompt_width+4))/2;
+
+	strncpy(result, init, *result_len);
+>>>>>>> refs/remotes/origin/master
 
 	/* create the windows */
 	win = newwin(prompt_lines+6, prompt_width+7, y, x);
@@ -424,12 +450,18 @@ int dialog_inputbox(WINDOW *main_window,
 
 	mvwprintw(form_win, 0, 0, "%*s", prompt_width, " ");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mvwprintw(form_win, 0, 0, "%s", result);
 =======
 	cursor_form_win = min(cursor_position, prompt_width-1);
 	mvwprintw(form_win, 0, 0, "%s",
 		  result + cursor_position-cursor_form_win);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cursor_form_win = min(cursor_position, prompt_width-1);
+	mvwprintw(form_win, 0, 0, "%s",
+		  result + cursor_position-cursor_form_win);
+>>>>>>> refs/remotes/origin/master
 
 	/* create panels */
 	panel = new_panel(win);
@@ -456,10 +488,15 @@ int dialog_inputbox(WINDOW *main_window,
 						len-cursor_position+1);
 				cursor_position--;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 				cursor_form_win--;
 				len--;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				cursor_form_win--;
+				len--;
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		case KEY_DC:
@@ -468,13 +505,18 @@ int dialog_inputbox(WINDOW *main_window,
 						&result[cursor_position+1],
 						len-cursor_position+1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 				len--;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				len--;
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		case KEY_UP:
 		case KEY_RIGHT:
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (cursor_position < len &&
 			    cursor_position < min(result_len, prompt_width))
@@ -505,6 +547,8 @@ int dialog_inputbox(WINDOW *main_window,
 		mvwprintw(form_win, 0, 0, "%s", result);
 		wmove(form_win, 0, cursor_position);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (cursor_position < len) {
 				cursor_position++;
 				cursor_form_win++;
@@ -557,7 +601,10 @@ int dialog_inputbox(WINDOW *main_window,
 		mvwprintw(form_win, 0, 0, "%s",
 			result + cursor_position-cursor_form_win);
 		wmove(form_win, 0, cursor_form_win);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		touchwin(win);
 		refresh_all_windows(main_window);
 
@@ -598,7 +645,11 @@ void show_scroll_win(WINDOW *main_window,
 {
 	int res;
 	int total_lines = get_line_no(text);
+<<<<<<< HEAD
 	int x, y;
+=======
+	int x, y, lines, columns;
+>>>>>>> refs/remotes/origin/master
 	int start_x = 0, start_y = 0;
 	int text_lines = 0, text_cols = 0;
 	int total_cols = 0;
@@ -609,6 +660,11 @@ void show_scroll_win(WINDOW *main_window,
 	WINDOW *pad;
 	PANEL *panel;
 
+<<<<<<< HEAD
+=======
+	getmaxyx(stdscr, lines, columns);
+
+>>>>>>> refs/remotes/origin/master
 	/* find the widest line of msg: */
 	total_lines = get_line_no(text);
 	for (i = 0; i < total_lines; i++) {
@@ -622,14 +678,24 @@ void show_scroll_win(WINDOW *main_window,
 	(void) wattrset(pad, attributes[SCROLLWIN_TEXT]);
 	fill_window(pad, text);
 
+<<<<<<< HEAD
 	win_lines = min(total_lines+4, LINES-2);
 	win_cols = min(total_cols+2, COLS-2);
+=======
+	win_lines = min(total_lines+4, lines-2);
+	win_cols = min(total_cols+2, columns-2);
+>>>>>>> refs/remotes/origin/master
 	text_lines = max(win_lines-4, 0);
 	text_cols = max(win_cols-2, 0);
 
 	/* place window in middle of screen */
+<<<<<<< HEAD
 	y = (LINES-win_lines)/2;
 	x = (COLS-win_cols)/2;
+=======
+	y = (lines-win_lines)/2;
+	x = (columns-win_cols)/2;
+>>>>>>> refs/remotes/origin/master
 
 	win = newwin(win_lines, win_cols, y, x);
 	keypad(win, TRUE);
@@ -657,9 +723,17 @@ void show_scroll_win(WINDOW *main_window,
 		switch (res) {
 		case KEY_NPAGE:
 		case ' ':
+<<<<<<< HEAD
 			start_y += text_lines-2;
 			break;
 		case KEY_PPAGE:
+=======
+		case 'd':
+			start_y += text_lines-2;
+			break;
+		case KEY_PPAGE:
+		case 'u':
+>>>>>>> refs/remotes/origin/master
 			start_y -= text_lines+2;
 			break;
 		case KEY_HOME:
@@ -685,10 +759,17 @@ void show_scroll_win(WINDOW *main_window,
 			start_x++;
 			break;
 		}
+<<<<<<< HEAD
 		if (res == 10 || res == 27 || res == 'q'
 		    || res == KEY_F(F_BACK) || res == KEY_F(F_EXIT)) {
 			break;
 		}
+=======
+		if (res == 10 || res == 27 || res == 'q' ||
+			res == KEY_F(F_HELP) || res == KEY_F(F_BACK) ||
+			res == KEY_F(F_EXIT))
+			break;
+>>>>>>> refs/remotes/origin/master
 		if (start_y < 0)
 			start_y = 0;
 		if (start_y >= total_lines-text_lines)

@@ -11,10 +11,14 @@
  * published by the Free Software Foundation.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -24,21 +28,33 @@
 #include <linux/delay.h>
 #include <linux/workqueue.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/i2c/at24.h>
+=======
+#include <linux/platform_data/at24.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/input.h>
 #include <linux/err.h>
 #include <linux/clk.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #include <linux/input/matrix_keypad.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include <mach/hardware.h>
+=======
+#include <linux/input/matrix_keypad.h>
+#include <linux/mfd/menelaus.h>
+#include <linux/omap-dma.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <mach/gpio.h>
 #include <plat/usb.h>
@@ -77,6 +93,21 @@ static const unsigned int h4_keymap[] = {
 #if defined(CONFIG_KEYBOARD_MATRIX) || defined(CONFIG_KEYBOARD_MATRIX_MODULE)
 static const uint32_t board_matrix_keys[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <video/omapdss.h>
+#include <video/omap-panel-data.h>
+
+#include "common.h"
+#include "mux.h"
+#include "control.h"
+#include "gpmc.h"
+#include "gpmc-smc91x.h"
+
+#define H4_FLASH_CS	0
+
+#if defined(CONFIG_KEYBOARD_MATRIX) || defined(CONFIG_KEYBOARD_MATRIX_MODULE)
+static const uint32_t board_matrix_keys[] = {
+>>>>>>> refs/remotes/origin/master
 	KEY(0, 0, KEY_LEFT),
 	KEY(1, 0, KEY_RIGHT),
 	KEY(2, 0, KEY_A),
@@ -110,7 +141,10 @@ static const uint32_t board_matrix_keys[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct matrix_keymap_data board_keymap_data = {
 	.keymap			= board_matrix_keys,
 	.keymap_size		= ARRAY_SIZE(board_matrix_keys),
@@ -176,7 +210,10 @@ static inline void board_mkp_init(void)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct mtd_partition h4_partitions[] = {
 	/* bootloader (U-Boot, etc) in first sector */
 	{
@@ -228,6 +265,7 @@ static struct platform_device h4_flash_device = {
 	.resource	= &h4_flash_resource,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const struct matrix_keymap_data h4_keymap_data = {
 	.keymap		= h4_keymap,
@@ -286,6 +324,50 @@ static struct omap_dss_board_info h4_dss_data = {
 	.devices	= h4_dss_devices,
 	.default_device	= &h4_lcd_device,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct display_timing cm_t35_lcd_videomode = {
+	.pixelclock	= { 0, 6250000, 0 },
+
+	.hactive = { 0, 240, 0 },
+	.hfront_porch = { 0, 15, 0 },
+	.hback_porch = { 0, 60, 0 },
+	.hsync_len = { 0, 15, 0 },
+
+	.vactive = { 0, 320, 0 },
+	.vfront_porch = { 0, 1, 0 },
+	.vback_porch = { 0, 1, 0 },
+	.vsync_len = { 0, 1, 0 },
+
+	.flags = DISPLAY_FLAGS_HSYNC_HIGH | DISPLAY_FLAGS_VSYNC_HIGH |
+		DISPLAY_FLAGS_DE_HIGH | DISPLAY_FLAGS_PIXDATA_POSEDGE,
+};
+
+static struct panel_dpi_platform_data cm_t35_lcd_pdata = {
+	.name                   = "lcd",
+	.source                 = "dpi.0",
+
+	.data_lines		= 16,
+
+	.display_timing		= &cm_t35_lcd_videomode,
+
+	.enable_gpio		= -1,
+	.backlight_gpio		= -1,
+};
+
+static struct platform_device cm_t35_lcd_device = {
+	.name                   = "panel-dpi",
+	.id                     = 0,
+	.dev.platform_data      = &cm_t35_lcd_pdata,
+};
+
+static struct platform_device *h4_devices[] __initdata = {
+	&h4_flash_device,
+	&cm_t35_lcd_device,
+};
+
+static struct omap_dss_board_info h4_dss_data = {
+	.default_display_name = "lcd",
+>>>>>>> refs/remotes/origin/master
 };
 
 /* 2420 Sysboot setup (2430 is different) */
@@ -314,6 +396,7 @@ static u32 is_gpmc_muxed(void)
 		return 0;
 }
 
+<<<<<<< HEAD
 static inline void __init h4_init_debug(void)
 {
 	int eth_cs;
@@ -379,6 +462,33 @@ out:
 	clk_put(gpmc_fck);
 }
 
+=======
+#if IS_ENABLED(CONFIG_SMC91X)
+
+static struct omap_smc91x_platform_data board_smc91x_data = {
+	.cs		= 1,
+	.gpio_irq	= 92,
+	.flags		= GPMC_TIMINGS_SMC91C96 | IORESOURCE_IRQ_LOWLEVEL,
+};
+
+static void __init board_smc91x_init(void)
+{
+	if (is_gpmc_muxed())
+		board_smc91x_data.flags |= GPMC_MUX_ADD_DATA;
+
+	omap_mux_init_gpio(board_smc91x_data.gpio_irq, OMAP_PIN_INPUT);
+	gpmc_smc91x_init(&board_smc91x_data);
+}
+
+#else
+
+static inline void board_smc91x_init(void)
+{
+}
+
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static void __init h4_init_flash(void)
 {
 	unsigned long base;
@@ -391,6 +501,7 @@ static void __init h4_init_flash(void)
 	h4_flash_resource.end	= base + SZ_64M - 1;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct omap_lcd_config h4_lcd_config __initdata = {
 	.ctrl_name	= "internal",
@@ -427,6 +538,8 @@ static void __init omap_h4_init_irq(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct at24_platform_data m24c01 = {
 	.byte_len	= SZ_1K / 8,
 	.page_size	= 16,
@@ -436,9 +549,12 @@ static struct i2c_board_info __initdata h4_i2c_board_info[] = {
 	{
 		I2C_BOARD_INFO("isp1301_omap", 0x2d),
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= OMAP_GPIO_IRQ(125),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	{	/* EEPROM on mainboard */
 		I2C_BOARD_INFO("24c01", 0x52),
@@ -461,17 +577,21 @@ static void __init omap_h4_init(void)
 	omap2420_mux_init(board_mux, OMAP_PACKAGE_ZAF);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	omap_board_config = h4_config;
 	omap_board_config_size = ARRAY_SIZE(h4_config);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Make sure the serial ports are muxed on at this point.
 	 * You have to mux them off in device drivers later on
 	 * if not needed.
 	 */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if defined(CONFIG_KEYBOARD_OMAP) || defined(CONFIG_KEYBOARD_OMAP_MODULE)
 	omap_mux_init_gpio(88, OMAP_PULL_ENA | OMAP_PULL_UP);
@@ -502,10 +622,15 @@ static void __init omap_h4_init(void)
 	board_mkp_init();
 	h4_i2c_board_info[0].irq = gpio_to_irq(125);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	board_mkp_init();
+	h4_i2c_board_info[0].irq = gpio_to_irq(125);
+>>>>>>> refs/remotes/origin/master
 	i2c_register_board_info(1, h4_i2c_board_info,
 			ARRAY_SIZE(h4_i2c_board_info));
 
 	platform_add_devices(h4_devices, ARRAY_SIZE(h4_devices));
+<<<<<<< HEAD
 	omap2_usbfs_init(&h4_usb_config);
 	omap_serial_init();
 <<<<<<< HEAD
@@ -522,10 +647,19 @@ static void __init omap_h4_map_io(void)
 
 	omap_display_init(&h4_dss_data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	omap_serial_init();
+	omap_sdrc_init(NULL, NULL);
+	h4_init_flash();
+	board_smc91x_init();
+
+	omap_display_init(&h4_dss_data);
+>>>>>>> refs/remotes/origin/master
 }
 
 MACHINE_START(OMAP_H4, "OMAP2420 H4 board")
 	/* Maintainer: Paul Mundt <paul.mundt@nokia.com> */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boot_params	= 0x80000100,
 	.reserve	= omap_reserve,
@@ -535,6 +669,8 @@ MACHINE_START(OMAP_H4, "OMAP2420 H4 board")
 	.init_machine	= omap_h4_init,
 	.timer		= &omap_timer,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.reserve	= omap_reserve,
 	.map_io		= omap242x_map_io,
@@ -542,7 +678,13 @@ MACHINE_START(OMAP_H4, "OMAP2420 H4 board")
 	.init_irq	= omap2_init_irq,
 	.handle_irq	= omap2_intc_handle_irq,
 	.init_machine	= omap_h4_init,
+<<<<<<< HEAD
 	.timer		= &omap2_timer,
 	.restart	= omap_prcm_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_late	= omap2420_init_late,
+	.init_time	= omap2_sync32k_timer_init,
+	.restart	= omap2xxx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

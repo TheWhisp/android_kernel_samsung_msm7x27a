@@ -28,10 +28,14 @@
 #include <linux/delay.h>
 #include <linux/pnp.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/dma.h>
 #include <sound/core.h>
 #include <sound/gus.h>
@@ -60,6 +64,7 @@ MODULE_SUPPORTED_DEVICE("{{AMD,InterWave STB with TEA6330T}}");
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_ISAPNP; /* Enable this card */
 #ifdef CONFIG_PNP
 static int isapnp[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
@@ -68,6 +73,11 @@ static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_ISAPNP; /* Enable this ca
 #ifdef CONFIG_PNP
 static bool isapnp[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_ISAPNP; /* Enable this card */
+#ifdef CONFIG_PNP
+static bool isapnp[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
+>>>>>>> refs/remotes/origin/master
 #endif
 static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* 0x210,0x220,0x230,0x240,0x250,0x260 */
 #ifdef SNDRV_STB
@@ -217,9 +227,15 @@ static struct snd_i2c_bit_ops snd_interwave_i2c_bit_ops = {
 	.getdata  = snd_interwave_i2c_getdataline,
 };
 
+<<<<<<< HEAD
 static int __devinit snd_interwave_detect_stb(struct snd_interwave *iwcard,
 					      struct snd_gus_card * gus, int dev,
 					      struct snd_i2c_bus **rbus)
+=======
+static int snd_interwave_detect_stb(struct snd_interwave *iwcard,
+				    struct snd_gus_card *gus, int dev,
+				    struct snd_i2c_bus **rbus)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long port;
 	struct snd_i2c_bus *bus;
@@ -259,11 +275,19 @@ static int __devinit snd_interwave_detect_stb(struct snd_interwave *iwcard,
 }
 #endif
 
+<<<<<<< HEAD
 static int __devinit snd_interwave_detect(struct snd_interwave *iwcard,
 				          struct snd_gus_card * gus,
 				          int dev
 #ifdef SNDRV_STB
 				          , struct snd_i2c_bus **rbus
+=======
+static int snd_interwave_detect(struct snd_interwave *iwcard,
+				struct snd_gus_card *gus,
+				int dev
+#ifdef SNDRV_STB
+				, struct snd_i2c_bus **rbus
+>>>>>>> refs/remotes/origin/master
 #endif
 				          )
 {
@@ -328,7 +352,11 @@ static irqreturn_t snd_interwave_interrupt(int irq, void *dev_id)
 	return IRQ_RETVAL(handled);
 }
 
+<<<<<<< HEAD
 static void __devinit snd_interwave_reset(struct snd_gus_card * gus)
+=======
+static void snd_interwave_reset(struct snd_gus_card *gus)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_gf1_write8(gus, SNDRV_GF1_GB_RESET, 0x00);
 	udelay(160);
@@ -336,7 +364,11 @@ static void __devinit snd_interwave_reset(struct snd_gus_card * gus)
 	udelay(160);
 }
 
+<<<<<<< HEAD
 static void __devinit snd_interwave_bank_sizes(struct snd_gus_card * gus, int *sizes)
+=======
+static void snd_interwave_bank_sizes(struct snd_gus_card *gus, int *sizes)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int idx;
 	unsigned int local;
@@ -387,7 +419,11 @@ struct rom_hdr {
 	/* 511 */ unsigned char csum;
 };
 
+<<<<<<< HEAD
 static void __devinit snd_interwave_detect_memory(struct snd_gus_card * gus)
+=======
+static void snd_interwave_detect_memory(struct snd_gus_card *gus)
+>>>>>>> refs/remotes/origin/master
 {
 	static unsigned int lmc[13] =
 	{
@@ -453,9 +489,13 @@ static void __devinit snd_interwave_detect_memory(struct snd_gus_card * gus)
 		for (i = 0; i < 8; ++i)
 			iwave[i] = snd_gf1_peek(gus, bank_pos + i);
 #ifdef CONFIG_SND_DEBUG_ROM
+<<<<<<< HEAD
 		printk(KERN_DEBUG "ROM at 0x%06x = %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x\n", bank_pos,
 		       iwave[0], iwave[1], iwave[2], iwave[3],
 		       iwave[4], iwave[5], iwave[6], iwave[7]);
+=======
+		printk(KERN_DEBUG "ROM at 0x%06x = %8phC\n", bank_pos, iwave);
+>>>>>>> refs/remotes/origin/master
 #endif
 		if (strncmp(iwave, "INTRWAVE", 8))
 			continue;	/* first check */
@@ -486,7 +526,11 @@ static void __devinit snd_interwave_detect_memory(struct snd_gus_card * gus)
 		snd_interwave_reset(gus);
 }
 
+<<<<<<< HEAD
 static void __devinit snd_interwave_init(int dev, struct snd_gus_card * gus)
+=======
+static void snd_interwave_init(int dev, struct snd_gus_card *gus)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 
@@ -519,7 +563,11 @@ WSS_DOUBLE("Mic Playback Volume", 0,
 		CS4231_LEFT_MIC_INPUT, CS4231_RIGHT_MIC_INPUT, 0, 0, 31, 1)
 };
 
+<<<<<<< HEAD
 static int __devinit snd_interwave_mixer(struct snd_wss *chip)
+=======
+static int snd_interwave_mixer(struct snd_wss *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = chip->card;
 	struct snd_ctl_elem_id id1, id2;
@@ -569,9 +617,15 @@ static int __devinit snd_interwave_mixer(struct snd_wss *chip)
 
 #ifdef CONFIG_PNP
 
+<<<<<<< HEAD
 static int __devinit snd_interwave_pnp(int dev, struct snd_interwave *iwcard,
 				       struct pnp_card_link *card,
 				       const struct pnp_card_device_id *id)
+=======
+static int snd_interwave_pnp(int dev, struct snd_interwave *iwcard,
+			     struct pnp_card_link *card,
+			     const struct pnp_card_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pnp_dev *pdev;
 	int err;
@@ -655,7 +709,11 @@ static int snd_interwave_card_new(int dev, struct snd_card **cardp)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_interwave_probe(struct snd_card *card, int dev)
+=======
+static int snd_interwave_probe(struct snd_card *card, int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int xirq, xdma1, xdma2;
 	struct snd_interwave *iwcard = card->private_data;
@@ -695,10 +753,14 @@ static int __devinit snd_interwave_probe(struct snd_card *card, int dev)
 		return err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (request_irq(xirq, snd_interwave_interrupt, IRQF_DISABLED,
 =======
 	if (request_irq(xirq, snd_interwave_interrupt, 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (request_irq(xirq, snd_interwave_interrupt, 0,
+>>>>>>> refs/remotes/origin/master
 			"InterWave", iwcard)) {
 		snd_printk(KERN_ERR PFX "unable to grab IRQ %d\n", xirq);
 		return -EBUSY;
@@ -790,7 +852,11 @@ static int __devinit snd_interwave_probe(struct snd_card *card, int dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_interwave_isa_probe1(int dev, struct device *devptr)
+=======
+static int snd_interwave_isa_probe1(int dev, struct device *devptr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	int err;
@@ -808,8 +874,13 @@ static int __devinit snd_interwave_isa_probe1(int dev, struct device *devptr)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_interwave_isa_match(struct device *pdev,
 					     unsigned int dev)
+=======
+static int snd_interwave_isa_match(struct device *pdev,
+				   unsigned int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!enable[dev])
 		return 0;
@@ -820,8 +891,13 @@ static int __devinit snd_interwave_isa_match(struct device *pdev,
 	return 1;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_interwave_isa_probe(struct device *pdev,
 					     unsigned int dev)
+=======
+static int snd_interwave_isa_probe(struct device *pdev,
+				   unsigned int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	static int possible_irqs[] = {5, 11, 12, 9, 7, 15, 3, -1};
@@ -861,17 +937,27 @@ static int __devinit snd_interwave_isa_probe(struct device *pdev,
 	}
 }
 
+<<<<<<< HEAD
 static int __devexit snd_interwave_isa_remove(struct device *devptr, unsigned int dev)
 {
 	snd_card_free(dev_get_drvdata(devptr));
 	dev_set_drvdata(devptr, NULL);
+=======
+static int snd_interwave_isa_remove(struct device *devptr, unsigned int dev)
+{
+	snd_card_free(dev_get_drvdata(devptr));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct isa_driver snd_interwave_driver = {
 	.match		= snd_interwave_isa_match,
 	.probe		= snd_interwave_isa_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(snd_interwave_isa_remove),
+=======
+	.remove		= snd_interwave_isa_remove,
+>>>>>>> refs/remotes/origin/master
 	/* FIXME: suspend,resume */
 	.driver		= {
 		.name	= INTERWAVE_DRIVER
@@ -879,8 +965,13 @@ static struct isa_driver snd_interwave_driver = {
 };
 
 #ifdef CONFIG_PNP
+<<<<<<< HEAD
 static int __devinit snd_interwave_pnp_detect(struct pnp_card_link *pcard,
 					      const struct pnp_card_device_id *pid)
+=======
+static int snd_interwave_pnp_detect(struct pnp_card_link *pcard,
+				    const struct pnp_card_device_id *pid)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	struct snd_card *card;
@@ -911,7 +1002,11 @@ static int __devinit snd_interwave_pnp_detect(struct pnp_card_link *pcard,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_interwave_pnp_remove(struct pnp_card_link * pcard)
+=======
+static void snd_interwave_pnp_remove(struct pnp_card_link *pcard)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_card_free(pnp_get_card_drvdata(pcard));
 	pnp_set_card_drvdata(pcard, NULL);
@@ -922,7 +1017,11 @@ static struct pnp_card_driver interwave_pnpc_driver = {
 	.name = INTERWAVE_PNP_DRIVER,
 	.id_table = snd_interwave_pnpids,
 	.probe = snd_interwave_pnp_detect,
+<<<<<<< HEAD
 	.remove = __devexit_p(snd_interwave_pnp_remove),
+=======
+	.remove = snd_interwave_pnp_remove,
+>>>>>>> refs/remotes/origin/master
 	/* FIXME: suspend,resume */
 };
 

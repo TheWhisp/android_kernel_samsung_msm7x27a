@@ -1038,9 +1038,13 @@ tioce_bus_fixup(struct pcibus_bussoft *prom_bussoft, struct pci_controller *cont
 		       tioce_common->ce_pcibus.bs_persist_busnum);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	irq_set_handler(SGI_PCIASIC_ERROR, handle_level_irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq_set_handler(SGI_PCIASIC_ERROR, handle_level_irq);
+>>>>>>> refs/remotes/origin/master
 	sn_set_err_irq_affinity(SGI_PCIASIC_ERROR);
 	return tioce_common;
 }

@@ -30,9 +30,12 @@
 #include <linux/kernel.h>
 #include <linux/device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/init.h>
 #include <asm/uaccess.h>
@@ -50,19 +53,26 @@
 #include <asm/mipsmtregs.h>
 #include <asm/cacheflush.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/cpu.h>
 #include <asm/mips_mt.h>
 #include <asm/processor.h>
 #include <asm/system.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/atomic.h>
 #include <asm/cpu.h>
 #include <asm/mips_mt.h>
 #include <asm/processor.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/vpe.h>
 #include <asm/kspd.h>
+=======
+#include <asm/vpe.h>
+>>>>>>> refs/remotes/origin/master
 
 typedef void *vpe_handle;
 
@@ -81,11 +91,14 @@ static char module_name[] = "vpe";
 static int major;
 static const int minor = 1;	/* fixed for now  */
 
+<<<<<<< HEAD
 #ifdef CONFIG_MIPS_APSP_KSPD
 static struct kspd_notifications kspd_events;
 static int kspd_events_reqd;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* grab the likely amount of memory we will need. */
 #ifdef CONFIG_MIPS_VPE_LOADER_TOM
 #define P_SIZE (2 * 1024 * 1024)
@@ -203,10 +216,14 @@ static struct tc *get_tc(int index)
 	spin_unlock(&vpecontrol.tc_list_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return NULL;
 =======
 	return res;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return res;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* allocate a vpe and associate it with this minor (or index) */
@@ -276,7 +293,11 @@ static void __maybe_unused dump_mtregs(void)
 	       val & MVPCONF0_PTC, (val & MVPCONF0_M) >> MVPCONF0_M_SHIFT);
 }
 
+<<<<<<< HEAD
 /* Find some VPE program space  */
+=======
+/* Find some VPE program space	*/
+>>>>>>> refs/remotes/origin/master
 static void *alloc_progmem(unsigned long len)
 {
 	void *addr;
@@ -314,7 +335,11 @@ static long get_offset(unsigned long *size, Elf_Shdr * sechdr)
 }
 
 /* Lay out the SHF_ALLOC sections in a way not dissimilar to how ld
+<<<<<<< HEAD
    might -- code, read-only data, read-write data, small data.  Tally
+=======
+   might -- code, read-only data, read-write data, small data.	Tally
+>>>>>>> refs/remotes/origin/master
    sizes, and place the offsets into sh_entsize fields: high bit means it
    belongs in init. */
 static void layout_sections(struct module *mod, const Elf_Ehdr * hdr,
@@ -408,7 +433,11 @@ static int apply_r_mips_pc16(struct module *me, uint32_t *location,
 
 	if( (rel > 32768) || (rel < -32768) ) {
 		printk(KERN_DEBUG "VPE loader: "
+<<<<<<< HEAD
  		       "apply_r_mips_pc16: relative address out of range 0x%x\n", rel);
+=======
+		       "apply_r_mips_pc16: relative address out of range 0x%x\n", rel);
+>>>>>>> refs/remotes/origin/master
 		return -ENOEXEC;
 	}
 
@@ -480,7 +509,11 @@ static int apply_r_mips_lo16(struct module *me, uint32_t *location,
 	Elf32_Addr val, vallo;
 	struct mips_hi16 *l, *next;
 
+<<<<<<< HEAD
 	/* Sign extend the addend we extract from the lo insn.  */
+=======
+	/* Sign extend the addend we extract from the lo insn.	*/
+>>>>>>> refs/remotes/origin/master
 	vallo = ((insnlo & 0xffff) ^ 0x8000) - 0x8000;
 
 	if (mips_hi16_list != NULL) {
@@ -492,7 +525,11 @@ static int apply_r_mips_lo16(struct module *me, uint32_t *location,
 			/*
 			 * The value for the HI16 had best be the same.
 			 */
+<<<<<<< HEAD
  			if (v != l->value) {
+=======
+			if (v != l->value) {
+>>>>>>> refs/remotes/origin/master
 				printk(KERN_DEBUG "VPE loader: "
 				       "apply_r_mips_lo16/hi16: \t"
 				       "inconsistent value information\n");
@@ -527,7 +564,11 @@ static int apply_r_mips_lo16(struct module *me, uint32_t *location,
 	}
 
 	/*
+<<<<<<< HEAD
 	 * Ok, we're done with the HI16 relocs.  Now deal with the LO16.
+=======
+	 * Ok, we're done with the HI16 relocs.	 Now deal with the LO16.
+>>>>>>> refs/remotes/origin/master
 	 */
 	val = v + vallo;
 	insnlo = (insnlo & ~0xffff) | (val & 0xffff);
@@ -601,7 +642,11 @@ static int apply_relocations(Elf32_Shdr *sechdrs,
 		res = reloc_handlers[ELF32_R_TYPE(r_info)](me, location, v);
 		if( res ) {
 			char *r = rstrs[ELF32_R_TYPE(r_info)];
+<<<<<<< HEAD
 		    	printk(KERN_WARNING "VPE loader: .text+0x%x "
+=======
+			printk(KERN_WARNING "VPE loader: .text+0x%x "
+>>>>>>> refs/remotes/origin/master
 			       "relocation type %s for symbol \"%s\" failed\n",
 			       rel[i].r_offset, r ? r : "UNKNOWN",
 			       strtab + sym->st_name);
@@ -719,6 +764,7 @@ static int vpe_run(struct vpe * v)
 	dmt_flag = dmt();
 	vpeflags = dvpe();
 
+<<<<<<< HEAD
 	if (!list_empty(&v->tc)) {
 		if ((t = list_entry(v->tc.next, struct tc, tc)) == NULL) {
 			evpe(vpeflags);
@@ -731,6 +777,9 @@ static int vpe_run(struct vpe * v)
 			return -ENOEXEC;
 		}
 	} else {
+=======
+	if (list_empty(&v->tc)) {
+>>>>>>> refs/remotes/origin/master
 		evpe(vpeflags);
 		emt(dmt_flag);
 		local_irq_restore(flags);
@@ -742,6 +791,11 @@ static int vpe_run(struct vpe * v)
 		return -ENOEXEC;
 	}
 
+<<<<<<< HEAD
+=======
+	t = list_first_entry(&v->tc, struct tc, tc);
+
+>>>>>>> refs/remotes/origin/master
 	/* Put MVPE's into 'configuration state' */
 	set_c0_mvpcontrol(MVPCONTROL_VPC);
 
@@ -794,7 +848,11 @@ static int vpe_run(struct vpe * v)
 
 	/* Set up the XTC bit in vpeconf0 to point at our tc */
 	write_vpe_c0_vpeconf0( (read_vpe_c0_vpeconf0() & ~(VPECONF0_XTC))
+<<<<<<< HEAD
 	                      | (t->index << VPECONF0_XTC_SHIFT));
+=======
+			      | (t->index << VPECONF0_XTC_SHIFT));
+>>>>>>> refs/remotes/origin/master
 
 	back_to_back_c0_hazard();
 
@@ -948,6 +1006,7 @@ static int vpe_elfload(struct vpe * v)
 			       secstrings + sechdrs[i].sh_name, sechdrs[i].sh_addr);
 		}
 
+<<<<<<< HEAD
  		/* Fix up syms, so that st_value is a pointer to location. */
  		simplify_symbols(sechdrs, symindex, strtab, secstrings,
  				 hdr->e_shnum, &mod);
@@ -976,6 +1035,36 @@ static int vpe_elfload(struct vpe * v)
 
   		}
   	} else {
+=======
+		/* Fix up syms, so that st_value is a pointer to location. */
+		simplify_symbols(sechdrs, symindex, strtab, secstrings,
+				 hdr->e_shnum, &mod);
+
+		/* Now do relocations. */
+		for (i = 1; i < hdr->e_shnum; i++) {
+			const char *strtab = (char *)sechdrs[strindex].sh_addr;
+			unsigned int info = sechdrs[i].sh_info;
+
+			/* Not a valid relocation section? */
+			if (info >= hdr->e_shnum)
+				continue;
+
+			/* Don't bother with non-allocated sections */
+			if (!(sechdrs[info].sh_flags & SHF_ALLOC))
+				continue;
+
+			if (sechdrs[i].sh_type == SHT_REL)
+				err = apply_relocations(sechdrs, strtab, symindex, i,
+							&mod);
+			else if (sechdrs[i].sh_type == SHT_RELA)
+				err = apply_relocate_add(sechdrs, strtab, symindex, i,
+							 &mod);
+			if (err < 0)
+				return err;
+
+		}
+	} else {
+>>>>>>> refs/remotes/origin/master
 		struct elf_phdr *phdr = (struct elf_phdr *) ((char *)hdr + hdr->e_phoff);
 
 		for (i = 0; i < hdr->e_phnum; i++) {
@@ -990,6 +1079,7 @@ static int vpe_elfload(struct vpe * v)
 		}
 
 		for (i = 0; i < hdr->e_shnum; i++) {
+<<<<<<< HEAD
  			/* Internal symbols and strings. */
  			if (sechdrs[i].sh_type == SHT_SYMTAB) {
  				symindex = i;
@@ -1000,6 +1090,18 @@ static int vpe_elfload(struct vpe * v)
  				   magic symbols */
  				sechdrs[i].sh_addr = (size_t) hdr + sechdrs[i].sh_offset;
  			}
+=======
+			/* Internal symbols and strings. */
+			if (sechdrs[i].sh_type == SHT_SYMTAB) {
+				symindex = i;
+				strindex = sechdrs[i].sh_link;
+				strtab = (char *)hdr + sechdrs[strindex].sh_offset;
+
+				/* mark the symtab's address for when we try to find the
+				   magic symbols */
+				sechdrs[i].sh_addr = (size_t) hdr + sechdrs[i].sh_offset;
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1071,7 +1173,11 @@ static int getcwd(char *buff, int size)
 	return ret;
 }
 
+<<<<<<< HEAD
 /* checks VPE is unused and gets ready to load program  */
+=======
+/* checks VPE is unused and gets ready to load program	*/
+>>>>>>> refs/remotes/origin/master
 static int vpe_open(struct inode *inode, struct file *filp)
 {
 	enum vpe_state state;
@@ -1117,6 +1223,7 @@ static int vpe_open(struct inode *inode, struct file *filp)
 	v->uid = filp->f_cred->fsuid;
 	v->gid = filp->f_cred->fsgid;
 
+<<<<<<< HEAD
 #ifdef CONFIG_MIPS_APSP_KSPD
 	/* get kspd to tell us when a syscall_exit happens */
 	if (!kspd_events_reqd) {
@@ -1125,6 +1232,8 @@ static int vpe_open(struct inode *inode, struct file *filp)
 	}
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	v->cwd[0] = 0;
 	ret = getcwd(v->cwd, VPE_PATH_MAX);
 	if (ret < 0)
@@ -1151,11 +1260,19 @@ static int vpe_release(struct inode *inode, struct file *filp)
 		if (vpe_elfload(v) >= 0) {
 			vpe_run(v);
 		} else {
+<<<<<<< HEAD
  			printk(KERN_WARNING "VPE loader: ELF load failed.\n");
 			ret = -ENOEXEC;
 		}
 	} else {
  		printk(KERN_WARNING "VPE loader: only elf files are supported\n");
+=======
+			printk(KERN_WARNING "VPE loader: ELF load failed.\n");
+			ret = -ENOEXEC;
+		}
+	} else {
+		printk(KERN_WARNING "VPE loader: only elf files are supported\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOEXEC;
 	}
 
@@ -1179,7 +1296,11 @@ static ssize_t vpe_write(struct file *file, const char __user * buffer,
 	size_t ret = count;
 	struct vpe *v;
 
+<<<<<<< HEAD
 	if (iminor(file->f_path.dentry->d_inode) != minor)
+=======
+	if (iminor(file_inode(file)) != minor)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	v = get_vpe(tclimit);
@@ -1357,6 +1478,7 @@ char *vpe_getcwd(int index)
 
 EXPORT_SYMBOL(vpe_getcwd);
 
+<<<<<<< HEAD
 #ifdef CONFIG_MIPS_APSP_KSPD
 static void kspd_sp_exit( int sp_id)
 {
@@ -1364,6 +1486,8 @@ static void kspd_sp_exit( int sp_id)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t store_kill(struct device *dev, struct device_attribute *attr,
 			  const char *buf, size_t len)
 {
@@ -1381,8 +1505,14 @@ static ssize_t store_kill(struct device *dev, struct device_attribute *attr,
 
 	return len;
 }
+<<<<<<< HEAD
 
 static ssize_t show_ntcs(struct device *cd, struct device_attribute *attr,
+=======
+static DEVICE_ATTR(kill, S_IWUSR, NULL, store_kill);
+
+static ssize_t ntcs_show(struct device *cd, struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 			 char *buf)
 {
 	struct vpe *vpe = get_vpe(tclimit);
@@ -1390,7 +1520,11 @@ static ssize_t show_ntcs(struct device *cd, struct device_attribute *attr,
 	return sprintf(buf, "%d\n", vpe->ntcs);
 }
 
+<<<<<<< HEAD
 static ssize_t store_ntcs(struct device *dev, struct device_attribute *attr,
+=======
+static ssize_t ntcs_store(struct device *dev, struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 			  const char *buf, size_t len)
 {
 	struct vpe *vpe = get_vpe(tclimit);
@@ -1411,12 +1545,23 @@ static ssize_t store_ntcs(struct device *dev, struct device_attribute *attr,
 out_einval:
 	return -EINVAL;
 }
+<<<<<<< HEAD
 
 static struct device_attribute vpe_class_attributes[] = {
 	__ATTR(kill, S_IWUSR, NULL, store_kill),
 	__ATTR(ntcs, S_IRUGO | S_IWUSR, show_ntcs, store_ntcs),
 	{}
 };
+=======
+static DEVICE_ATTR_RW(ntcs);
+
+static struct attribute *vpe_attrs[] = {
+	&dev_attr_kill.attr,
+	&dev_attr_ntcs.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(vpe);
+>>>>>>> refs/remotes/origin/master
 
 static void vpe_device_release(struct device *cd)
 {
@@ -1427,7 +1572,11 @@ struct class vpe_class = {
 	.name = "vpe",
 	.owner = THIS_MODULE,
 	.dev_release = vpe_device_release,
+<<<<<<< HEAD
 	.dev_attrs = vpe_class_attributes,
+=======
+	.dev_groups = vpe_groups,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct device vpe_device;
@@ -1601,9 +1750,12 @@ out_reenable:
 	emt(mtflags);
 	local_irq_restore(flags);
 
+<<<<<<< HEAD
 #ifdef CONFIG_MIPS_APSP_KSPD
 	kspd_events.kspd_sp_exit = kspd_sp_exit;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 out_class:

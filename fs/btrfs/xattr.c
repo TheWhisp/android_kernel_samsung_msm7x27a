@@ -103,6 +103,7 @@ static int do_setxattr(struct btrfs_trans_handle *trans,
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* first lets see if we already have this xattr */
 	di = btrfs_lookup_xattr(trans, root, path, btrfs_ino(inode), name,
 				strlen(name), -1);
@@ -141,6 +142,8 @@ static int do_setxattr(struct btrfs_trans_handle *trans,
 				      name, name_len, value, size);
 	BUG_ON(ret);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (flags & XATTR_REPLACE) {
 		di = btrfs_lookup_xattr(trans, root, path, btrfs_ino(inode), name,
 					name_len, -1);
@@ -161,6 +164,19 @@ static int do_setxattr(struct btrfs_trans_handle *trans,
 		 */
 		if (!value)
 			goto out;
+<<<<<<< HEAD
+=======
+	} else {
+		di = btrfs_lookup_xattr(NULL, root, path, btrfs_ino(inode),
+					name, name_len, 0);
+		if (IS_ERR(di)) {
+			ret = PTR_ERR(di);
+			goto out;
+		}
+		if (!di && !value)
+			goto out;
+		btrfs_release_path(path);
+>>>>>>> refs/remotes/origin/master
 	}
 
 again:
@@ -209,18 +225,27 @@ again:
 			goto again;
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	btrfs_free_path(path);
 	return ret;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /*
  * @value: "" makes the attribute to empty, NULL removes it
  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * @value: "" makes the attribute to empty, NULL removes it
+ */
+>>>>>>> refs/remotes/origin/master
 int __btrfs_setxattr(struct btrfs_trans_handle *trans,
 		     struct inode *inode, const char *name,
 		     const void *value, size_t size, int flags)
@@ -239,6 +264,7 @@ int __btrfs_setxattr(struct btrfs_trans_handle *trans,
 	if (ret)
 		goto out;
 
+<<<<<<< HEAD
 	inode->i_ctime = CURRENT_TIME;
 	ret = btrfs_update_inode(trans, root, inode);
 	BUG_ON(ret);
@@ -248,6 +274,15 @@ out:
 =======
 	btrfs_end_transaction(trans, root);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	inode_inc_iversion(inode);
+	inode->i_ctime = CURRENT_TIME;
+	set_bit(BTRFS_INODE_COPY_EVERYTHING, &BTRFS_I(inode)->runtime_flags);
+	ret = btrfs_update_inode(trans, root, inode);
+	BUG_ON(ret);
+out:
+	btrfs_end_transaction(trans, root);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -311,7 +346,11 @@ ssize_t btrfs_listxattr(struct dentry *dentry, char *buffer, size_t size)
 
 		di = btrfs_item_ptr(leaf, slot, struct btrfs_dir_item);
 		if (verify_dir_item(root, leaf, di))
+<<<<<<< HEAD
 			continue;
+=======
+			goto next;
+>>>>>>> refs/remotes/origin/master
 
 		name_len = btrfs_dir_name_len(leaf, di);
 		total_size += name_len + 1;
@@ -442,6 +481,7 @@ int btrfs_removexattr(struct dentry *dentry, const char *name)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int btrfs_xattr_security_init(struct btrfs_trans_handle *trans,
 			      struct inode *inode, struct inode *dir,
 			      const struct qstr *qstr)
@@ -478,6 +518,10 @@ int btrfs_xattr_security_init(struct btrfs_trans_handle *trans,
 =======
 int btrfs_initxattrs(struct inode *inode, const struct xattr *xattr_array,
 		     void *fs_info)
+=======
+static int btrfs_initxattrs(struct inode *inode,
+			    const struct xattr *xattr_array, void *fs_info)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct xattr *xattr;
 	struct btrfs_trans_handle *trans = fs_info;
@@ -509,4 +553,7 @@ int btrfs_xattr_security_init(struct btrfs_trans_handle *trans,
 	return security_inode_init_security(inode, dir, qstr,
 					    &btrfs_initxattrs, trans);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

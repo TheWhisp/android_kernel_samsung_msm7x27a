@@ -9,10 +9,14 @@ SYNOPSIS
 --------
 [verse]
 <<<<<<< HEAD
+<<<<<<< HEAD
 'perf test <options>'
 =======
 'perf test [<options>] [{list <test-name-fragment>|[<test-name-fragments>|<test-numbers>]}]'
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+'perf test [<options>] [{list <test-name-fragment>|[<test-name-fragments>|<test-numbers>]}]'
+>>>>>>> refs/remotes/origin/master
 
 DESCRIPTION
 -----------
@@ -20,16 +24,28 @@ This command does assorted sanity tests, initially through linked routines but
 also will look for a directory with more tests in the form of scripts.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 To get a list of available tests use 'perf test list', specifying a test name
 fragment will show all tests that have it.
 
 To run just specific tests, inform test name fragments or the numbers obtained
 from 'perf test list'.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 OPTIONS
 -------
+=======
+OPTIONS
+-------
+-s::
+--skip::
+	Tests to skip (comma separater numeric list).
+
+>>>>>>> refs/remotes/origin/master
 -v::
 --verbose::
 	Be more verbose.

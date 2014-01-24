@@ -1,11 +1,19 @@
 #ifdef CONFIG_MMU
+<<<<<<< HEAD
+=======
+#include <linux/list.h>
+#include <linux/vmalloc.h>
+>>>>>>> refs/remotes/origin/master
 
 /* the upper-most page table pointer */
 extern pmd_t *top_pmd;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TOP_PTE(x)	pte_offset_kernel(top_pmd, x)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * 0xffff8000 to 0xffffffff is reserved for any ARM architecture
  * specific hacks for copying pages efficiently, while 0xffff4000
@@ -31,7 +39,10 @@ static inline pte_t get_top_pte(unsigned long va)
 	pte_t *ptep = pte_offset_kernel(top_pmd, va);
 	return *ptep;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline pmd_t *pmd_off_k(unsigned long virt)
 {
@@ -39,20 +50,27 @@ static inline pmd_t *pmd_off_k(unsigned long virt)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct mem_type;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct mem_type {
 	pteval_t prot_pte;
 	pmdval_t prot_l1;
 	pmdval_t prot_sect;
 	unsigned int domain;
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 const struct mem_type *get_mem_type(unsigned int type);
 
 extern void __flush_dcache_page(struct address_space *mapping, struct page *page);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 
@@ -62,6 +80,8 @@ void __init bootmem_init(void);
 void arm_mm_memblock_reserve(void);
 void __init create_mapping(struct map_desc *md);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * ARM specific vm_struct->flags bits.
  */
@@ -79,6 +99,7 @@ void __init create_mapping(struct map_desc *md);
 #define VM_ARM_MTYPE(mt)		((mt) << 20)
 #define VM_ARM_MTYPE_MASK	(0x1f << 20)
 
+<<<<<<< HEAD
 #endif
 
 #ifdef CONFIG_ZONE_DMA
@@ -88,9 +109,37 @@ extern u32 arm_dma_limit;
 #endif
 
 struct map_desc;
+=======
+/* consistent regions used by dma_alloc_attrs() */
+#define VM_ARM_DMA_CONSISTENT	0x20000000
+
+
+struct static_vm {
+	struct vm_struct vm;
+	struct list_head list;
+};
+
+extern struct list_head static_vmlist;
+extern struct static_vm *find_static_vm_vaddr(void *vaddr);
+extern __init void add_static_vm_early(struct static_vm *svm);
+
+#endif
+
+#ifdef CONFIG_ZONE_DMA
+extern phys_addr_t arm_dma_limit;
+extern unsigned long arm_dma_pfn_limit;
+#else
+#define arm_dma_limit ((phys_addr_t)~0)
+#define arm_dma_pfn_limit (~0ul >> PAGE_SHIFT)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 extern phys_addr_t arm_lowmem_limit;
 
 void __init bootmem_init(void);
 void arm_mm_memblock_reserve(void);
 void dma_contiguous_remap(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

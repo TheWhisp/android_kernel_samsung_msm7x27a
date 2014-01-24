@@ -13,6 +13,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -25,6 +26,15 @@
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/board-sx1.h>
+=======
+#include <linux/gpio.h>
+#include <linux/platform_device.h>
+
+#include <mach/hardware.h>
+#include <mach/board-sx1.h>
+
+#include "mmc.h"
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_MMC_OMAP) || defined(CONFIG_MMC_OMAP_MODULE)
 

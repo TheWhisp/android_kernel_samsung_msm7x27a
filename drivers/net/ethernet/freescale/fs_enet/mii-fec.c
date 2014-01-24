@@ -31,6 +31,10 @@
 #include <linux/ethtool.h>
 #include <linux/bitops.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 
 #include <asm/pgtable.h>
@@ -102,7 +106,11 @@ static int fs_enet_fec_mii_reset(struct mii_bus *bus)
 }
 
 static struct of_device_id fs_enet_mdio_fec_match[];
+<<<<<<< HEAD
 static int __devinit fs_enet_mdio_probe(struct platform_device *ofdev)
+=======
+static int fs_enet_mdio_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct of_device_id *match;
 	struct resource res;
@@ -137,8 +145,15 @@ static int __devinit fs_enet_mdio_probe(struct platform_device *ofdev)
 	snprintf(new_bus->id, MII_BUS_ID_SIZE, "%x", res.start);
 
 	fec->fecp = ioremap(res.start, resource_size(&res));
+<<<<<<< HEAD
 	if (!fec->fecp)
 		goto out_fec;
+=======
+	if (!fec->fecp) {
+		ret = -ENOMEM;
+		goto out_fec;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (get_bus_freq) {
 		clock = get_bus_freq(ofdev->dev.of_node);
@@ -172,11 +187,21 @@ static int __devinit fs_enet_mdio_probe(struct platform_device *ofdev)
 
 	new_bus->phy_mask = ~0;
 	new_bus->irq = kmalloc(sizeof(int) * PHY_MAX_ADDR, GFP_KERNEL);
+<<<<<<< HEAD
 	if (!new_bus->irq)
 		goto out_unmap_regs;
 
 	new_bus->parent = &ofdev->dev;
 	dev_set_drvdata(&ofdev->dev, new_bus);
+=======
+	if (!new_bus->irq) {
+		ret = -ENOMEM;
+		goto out_unmap_regs;
+	}
+
+	new_bus->parent = &ofdev->dev;
+	platform_set_drvdata(ofdev, new_bus);
+>>>>>>> refs/remotes/origin/master
 
 	ret = of_mdiobus_register(new_bus, ofdev->dev.of_node);
 	if (ret)
@@ -185,7 +210,10 @@ static int __devinit fs_enet_mdio_probe(struct platform_device *ofdev)
 	return 0;
 
 out_free_irqs:
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(new_bus->irq);
 out_unmap_regs:
 	iounmap(fec->fecp);
@@ -200,11 +228,18 @@ out:
 
 static int fs_enet_mdio_remove(struct platform_device *ofdev)
 {
+<<<<<<< HEAD
 	struct mii_bus *bus = dev_get_drvdata(&ofdev->dev);
 	struct fec_info *fec = bus->priv;
 
 	mdiobus_unregister(bus);
 	dev_set_drvdata(&ofdev->dev, NULL);
+=======
+	struct mii_bus *bus = platform_get_drvdata(ofdev);
+	struct fec_info *fec = bus->priv;
+
+	mdiobus_unregister(bus);
+>>>>>>> refs/remotes/origin/master
 	kfree(bus->irq);
 	iounmap(fec->fecp);
 	kfree(fec);

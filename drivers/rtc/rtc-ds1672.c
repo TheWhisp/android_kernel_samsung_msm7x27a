@@ -12,9 +12,13 @@
 #include <linux/i2c.h>
 #include <linux/rtc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_VERSION "0.4"
 
@@ -40,8 +44,22 @@ static int ds1672_get_datetime(struct i2c_client *client, struct rtc_time *tm)
 	unsigned char buf[4];
 
 	struct i2c_msg msgs[] = {
+<<<<<<< HEAD
 		{client->addr, 0, 1, &addr},	/* setup read ptr */
 		{client->addr, I2C_M_RD, 4, buf},	/* read date */
+=======
+		{/* setup read ptr */
+			.addr = client->addr,
+			.len = 1,
+			.buf = &addr
+		},
+		{/* read date */
+			.addr = client->addr,
+			.flags = I2C_M_RD,
+			.len = 4,
+			.buf = buf
+		},
+>>>>>>> refs/remotes/origin/master
 	};
 
 	/* read date registers */
@@ -102,8 +120,22 @@ static int ds1672_get_control(struct i2c_client *client, u8 *status)
 	unsigned char addr = DS1672_REG_CONTROL;
 
 	struct i2c_msg msgs[] = {
+<<<<<<< HEAD
 		{client->addr, 0, 1, &addr},	/* setup read ptr */
 		{client->addr, I2C_M_RD, 1, status},	/* read control */
+=======
+		{/* setup read ptr */
+			.addr = client->addr,
+			.len = 1,
+			.buf = &addr
+		},
+		{/* read control */
+			.addr = client->addr,
+			.flags = I2C_M_RD,
+			.len = 1,
+			.buf = status
+		},
+>>>>>>> refs/remotes/origin/master
 	};
 
 	/* read control register */
@@ -138,6 +170,7 @@ static const struct rtc_class_ops ds1672_rtc_ops = {
 	.set_mmss = ds1672_rtc_set_mmss,
 };
 
+<<<<<<< HEAD
 static int ds1672_remove(struct i2c_client *client)
 {
 	struct rtc_device *rtc = i2c_get_clientdata(client);
@@ -148,6 +181,8 @@ static int ds1672_remove(struct i2c_client *client)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int ds1672_probe(struct i2c_client *client,
 			const struct i2c_device_id *id)
 {
@@ -162,7 +197,11 @@ static int ds1672_probe(struct i2c_client *client,
 
 	dev_info(&client->dev, "chip found, driver version " DRV_VERSION "\n");
 
+<<<<<<< HEAD
 	rtc = rtc_device_register(ds1672_driver.driver.name, &client->dev,
+=======
+	rtc = devm_rtc_device_register(&client->dev, ds1672_driver.driver.name,
+>>>>>>> refs/remotes/origin/master
 				  &ds1672_rtc_ops, THIS_MODULE);
 
 	if (IS_ERR(rtc))
@@ -187,7 +226,10 @@ static int ds1672_probe(struct i2c_client *client,
 	return 0;
 
  exit_devreg:
+<<<<<<< HEAD
 	rtc_device_unregister(rtc);
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -201,6 +243,7 @@ static struct i2c_driver ds1672_driver = {
 		   .name = "rtc-ds1672",
 		   },
 	.probe = &ds1672_probe,
+<<<<<<< HEAD
 	.remove = &ds1672_remove,
 	.id_table = ds1672_id,
 };
@@ -218,14 +261,23 @@ static void __exit ds1672_exit(void)
 =======
 module_i2c_driver(ds1672_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.id_table = ds1672_id,
+};
+
+module_i2c_driver(ds1672_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alessandro Zummo <a.zummo@towertech.it>");
 MODULE_DESCRIPTION("Dallas/Maxim DS1672 timekeeper driver");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_VERSION);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(ds1672_init);
 module_exit(ds1672_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

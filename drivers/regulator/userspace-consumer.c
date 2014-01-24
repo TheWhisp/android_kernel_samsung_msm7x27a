@@ -19,9 +19,13 @@
 #include <linux/err.h>
 #include <linux/mutex.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/regulator/consumer.h>
 #include <linux/regulator/userspace-consumer.h>
@@ -114,11 +118,21 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
 	struct userspace_consumer_data *drvdata;
 	int ret;
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
 	if (!pdata)
 		return -EINVAL;
 
 	drvdata = kzalloc(sizeof(struct userspace_consumer_data), GFP_KERNEL);
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+	if (!pdata)
+		return -EINVAL;
+
+	drvdata = devm_kzalloc(&pdev->dev,
+			       sizeof(struct userspace_consumer_data),
+			       GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (drvdata == NULL)
 		return -ENOMEM;
 
@@ -128,16 +142,28 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
 
 	mutex_init(&drvdata->lock);
 
+<<<<<<< HEAD
 	ret = regulator_bulk_get(&pdev->dev, drvdata->num_supplies,
 				 drvdata->supplies);
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to get supplies: %d\n", ret);
 		goto err_alloc_supplies;
+=======
+	ret = devm_regulator_bulk_get(&pdev->dev, drvdata->num_supplies,
+				      drvdata->supplies);
+	if (ret) {
+		dev_err(&pdev->dev, "Failed to get supplies: %d\n", ret);
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = sysfs_create_group(&pdev->dev.kobj, &attr_group);
 	if (ret != 0)
+<<<<<<< HEAD
 		goto err_create_attrs;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata->init_on) {
 		ret = regulator_bulk_enable(drvdata->num_supplies,
@@ -157,11 +183,14 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
 err_enable:
 	sysfs_remove_group(&pdev->dev.kobj, &attr_group);
 
+<<<<<<< HEAD
 err_create_attrs:
 	regulator_bulk_free(drvdata->num_supplies, drvdata->supplies);
 
 err_alloc_supplies:
 	kfree(drvdata);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -174,9 +203,12 @@ static int regulator_userspace_consumer_remove(struct platform_device *pdev)
 	if (data->enabled)
 		regulator_bulk_disable(data->num_supplies, data->supplies);
 
+<<<<<<< HEAD
 	regulator_bulk_free(data->num_supplies, data->supplies);
 	kfree(data);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -188,6 +220,7 @@ static struct platform_driver regulator_userspace_consumer_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int __init regulator_userspace_consumer_init(void)
@@ -204,6 +237,9 @@ module_exit(regulator_userspace_consumer_exit);
 =======
 module_platform_driver(regulator_userspace_consumer_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(regulator_userspace_consumer_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mike Rapoport <mike@compulab.co.il>");
 MODULE_DESCRIPTION("Userspace consumer for voltage and current regulators");

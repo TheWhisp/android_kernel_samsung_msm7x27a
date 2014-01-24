@@ -14,6 +14,7 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 #include <dspbridge/host_os.h>
@@ -35,10 +36,32 @@ struct gh_t_hash_tab {
 
 static void noop(void *p);
 
+=======
+#include <linux/err.h>
+#include <linux/hashtable.h>
+#include <linux/slab.h>
+
+struct gh_node {
+	struct hlist_node hl;
+	u8 data[0];
+};
+
+#define GH_HASH_ORDER 8
+
+struct gh_t_hash_tab {
+	u32 val_size;
+	DECLARE_HASHTABLE(hash_table, GH_HASH_ORDER);
+	u32 (*hash)(const void *key);
+	bool (*match)(const void *key, const void *value);
+	void (*delete)(void *key);
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  *  ======== gh_create ========
  */
 
+<<<<<<< HEAD
 struct gh_t_hash_tab *gh_create(u16 max_bucket, u16 val_size,
 				u16(*hash) (void *, u16), bool(*match) (void *,
 									void *),
@@ -68,6 +91,24 @@ struct gh_t_hash_tab *gh_create(u16 max_bucket, u16 val_size,
 
 	for (i = 0; i < max_bucket; i++)
 		hash_tab->buckets[i] = NULL;
+=======
+struct gh_t_hash_tab *gh_create(u32 val_size, u32 (*hash)(const void *),
+				bool (*match)(const void *, const void *),
+				void (*delete)(void *))
+{
+	struct gh_t_hash_tab *hash_tab;
+
+	hash_tab = kzalloc(sizeof(struct gh_t_hash_tab), GFP_KERNEL);
+	if (!hash_tab)
+		return ERR_PTR(-ENOMEM);
+
+	hash_init(hash_tab->hash_table);
+
+	hash_tab->val_size = val_size;
+	hash_tab->hash = hash;
+	hash_tab->match = match;
+	hash_tab->delete = delete;
+>>>>>>> refs/remotes/origin/master
 
 	return hash_tab;
 }
@@ -77,6 +118,7 @@ struct gh_t_hash_tab *gh_create(u16 max_bucket, u16 val_size,
  */
 void gh_delete(struct gh_t_hash_tab *hash_tab)
 {
+<<<<<<< HEAD
 	struct element *elem, *next;
 	u16 i;
 
@@ -92,6 +134,18 @@ void gh_delete(struct gh_t_hash_tab *hash_tab)
 			}
 
 			kfree(hash_tab->buckets);
+=======
+	struct gh_node *n;
+	struct hlist_node *tmp;
+	u32 i;
+
+	if (hash_tab) {
+		hash_for_each_safe(hash_tab->hash_table, i, tmp, n, hl) {
+			hash_del(&n->hl);
+			if (hash_tab->delete)
+				hash_tab->delete(n->data);
+			kfree(n);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		kfree(hash_tab);
@@ -99,6 +153,7 @@ void gh_delete(struct gh_t_hash_tab *hash_tab)
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  *  ======== gh_exit ========
  */
@@ -176,6 +231,44 @@ void *gh_insert(struct gh_t_hash_tab *hash_tab, void *key, void *value)
 static void noop(void *p)
 {
 	p = p;			/* stifle compiler warning */
+=======
+ *  ======== gh_find ========
+ */
+
+void *gh_find(struct gh_t_hash_tab *hash_tab, const void *key)
+{
+	struct gh_node *n;
+	u32 key_hash = hash_tab->hash(key);
+
+	hash_for_each_possible(hash_tab->hash_table, n, hl, key_hash) {
+		if (hash_tab->match(key, n->data))
+			return n->data;
+	}
+
+	return ERR_PTR(-ENODATA);
+}
+
+/*
+ *  ======== gh_insert ========
+ */
+
+void *gh_insert(struct gh_t_hash_tab *hash_tab, const void *key,
+		const void *value)
+{
+	struct gh_node *n;
+
+	n = kmalloc(sizeof(struct gh_node) + hash_tab->val_size,
+			GFP_KERNEL);
+
+	if (!n)
+		return ERR_PTR(-ENOMEM);
+
+	INIT_HLIST_NODE(&n->hl);
+	hash_add(hash_tab->hash_table, &n->hl, hash_tab->hash(key));
+	memcpy(n->data, value, hash_tab->val_size);
+
+	return n->data;
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_TIDSPBRIDGE_BACKTRACE
@@ -190,6 +283,7 @@ static void noop(void *p)
 void gh_iterate(struct gh_t_hash_tab *hash_tab,
 		void (*callback)(void *, void *), void *user_data)
 {
+<<<<<<< HEAD
 	struct element *elem;
 	u32 i;
 
@@ -201,5 +295,15 @@ void gh_iterate(struct gh_t_hash_tab *hash_tab,
 				elem = elem->next;
 			}
 		}
+=======
+	struct gh_node *n;
+	u32 i;
+
+	if (!hash_tab)
+		return;
+
+	hash_for_each(hash_tab->hash_table, i, n, hl)
+		callback(&n->data, user_data);
+>>>>>>> refs/remotes/origin/master
 }
 #endif

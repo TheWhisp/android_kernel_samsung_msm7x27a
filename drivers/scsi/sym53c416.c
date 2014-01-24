@@ -38,9 +38,12 @@
 #include <linux/spinlock.h>
 #include <asm/dma.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <linux/blkdev.h>
 #include <linux/isapnp.h>
@@ -585,7 +588,11 @@ static int sym53c416_test(int base)
 }
 
 
+<<<<<<< HEAD
 static struct isapnp_device_id id_table[] __devinitdata = {
+=======
+static struct isapnp_device_id id_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{	ISAPNP_ANY_ID, ISAPNP_ANY_ID,
 		ISAPNP_VENDOR('S','L','I'), ISAPNP_FUNCTION(0x4161), 0 },
 	{	ISAPNP_ANY_ID, ISAPNP_ANY_ID,

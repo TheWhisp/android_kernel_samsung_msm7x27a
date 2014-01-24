@@ -7,6 +7,7 @@
 #ifndef _LINUX_NFS_H
 #define _LINUX_NFS_H
 
+<<<<<<< HEAD
 #define NFS_PROGRAM	100003
 #define NFS_PORT	2049
 #define NFS_MAXDATA	8192
@@ -134,6 +135,11 @@ enum nfs_ftype {
 #ifdef __KERNEL__
 #include <linux/sunrpc/msg_prot.h>
 #include <linux/string.h>
+=======
+#include <linux/sunrpc/msg_prot.h>
+#include <linux/string.h>
+#include <uapi/linux/nfs.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is the kernel NFS client file handle representation
@@ -172,5 +178,8 @@ enum nfs3_stable_how {
 	NFS_DATA_SYNC = 1,
 	NFS_FILE_SYNC = 2
 };
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_NFS_H */

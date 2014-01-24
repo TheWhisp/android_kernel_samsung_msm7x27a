@@ -15,9 +15,13 @@
 #include <asm/io.h>
 #include <asm/fpu.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/traps.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/traps.h>
+>>>>>>> refs/remotes/origin/master
 
 /* The PR (precision) bit in the FP Status Register must be clear when
  * an frchg instruction is executed, otherwise the instruction is undefined.

@@ -22,6 +22,10 @@
 #define S5P_VA_GPIO3		S3C_ADDR(0x02280000)
 
 #define S5P_VA_SYSRAM		S3C_ADDR(0x02400000)
+<<<<<<< HEAD
+=======
+#define S5P_VA_SYSRAM_NS	S3C_ADDR(0x02410000)
+>>>>>>> refs/remotes/origin/master
 #define S5P_VA_DMC0		S3C_ADDR(0x02440000)
 #define S5P_VA_DMC1		S3C_ADDR(0x02480000)
 #define S5P_VA_SROMC		S3C_ADDR(0x024C0000)

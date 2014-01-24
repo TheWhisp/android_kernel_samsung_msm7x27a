@@ -35,7 +35,10 @@
 #define S5P6450_GPS_BASE		(S5P_VA_GPIO + 0x0300)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define S5P64X0_SPCON0			(S5P_VA_GPIO + 0x1A0)
 #define S5P64X0_SPCON0_LCD_SEL_MASK	(0x3 << 0)
 #define S5P64X0_SPCON0_LCD_SEL_RGB	(0x1 << 0)
@@ -67,5 +70,8 @@
 #define S5P64X0_SLPEN			(S5P_VA_GPIO + 0x930)
 #define S5P64X0_SLPEN_USE_xSLP		(1 << 0)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_ARCH_REGS_GPIO_H */

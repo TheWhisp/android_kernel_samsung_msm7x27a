@@ -139,9 +139,12 @@
 #include <linux/io.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/ecard.h>
 
 #include "../scsi.h"
@@ -2840,6 +2843,7 @@ char *acornscsi_info(struct Scsi_Host *host)
     return string;
 }
 
+<<<<<<< HEAD
 int acornscsi_proc_info(struct Scsi_Host *instance, char *buffer, char **start, off_t offset,
 			int length, int inout)
 {
@@ -2854,6 +2858,17 @@ int acornscsi_proc_info(struct Scsi_Host *instance, char *buffer, char **start, 
     host  = (AS_Host *)instance->hostdata;
     
     p += sprintf(p, "AcornSCSI driver v%d.%d.%d"
+=======
+static int acornscsi_show_info(struct seq_file *m, struct Scsi_Host *instance)
+{
+    int devidx;
+    struct scsi_device *scd;
+    AS_Host *host;
+
+    host  = (AS_Host *)instance->hostdata;
+    
+    seq_printf(m, "AcornSCSI driver v%d.%d.%d"
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SCSI_ACORNSCSI_SYNC
     " SYNC"
 #endif
@@ -2868,6 +2883,7 @@ int acornscsi_proc_info(struct Scsi_Host *instance, char *buffer, char **start, 
 #endif
 		"\n\n", VER_MAJOR, VER_MINOR, VER_PATCH);
 
+<<<<<<< HEAD
     p += sprintf(p,	"SBIC: WD33C93A  Address: %p    IRQ : %d\n",
 			host->base + SBIC_REGIDX, host->scsi.irq);
 #ifdef USE_DMAC
@@ -2876,6 +2892,16 @@ int acornscsi_proc_info(struct Scsi_Host *instance, char *buffer, char **start, 
 #endif
 
     p += sprintf(p,	"Statistics:\n"
+=======
+    seq_printf(m,	"SBIC: WD33C93A  Address: %p    IRQ : %d\n",
+			host->base + SBIC_REGIDX, host->scsi.irq);
+#ifdef USE_DMAC
+    seq_printf(m,	"DMAC: uPC71071  Address: %p  IRQ : %d\n\n",
+			host->base + DMAC_OFFSET, host->scsi.irq);
+#endif
+
+    seq_printf(m,	"Statistics:\n"
+>>>>>>> refs/remotes/origin/master
 			"Queued commands: %-10u    Issued commands: %-10u\n"
 			"Done commands  : %-10u    Reads          : %-10u\n"
 			"Writes         : %-10u    Others         : %-10u\n"
@@ -2890,7 +2916,11 @@ int acornscsi_proc_info(struct Scsi_Host *instance, char *buffer, char **start, 
     for (devidx = 0; devidx < 9; devidx ++) {
 	unsigned int statptr, prev;
 
+<<<<<<< HEAD
 	p += sprintf(p, "\n%c:", devidx == 8 ? 'H' : ('0' + devidx));
+=======
+	seq_printf(m, "\n%c:", devidx == 8 ? 'H' : ('0' + devidx));
+>>>>>>> refs/remotes/origin/master
 	statptr = host->status_ptr[devidx] - 10;
 
 	if ((signed int)statptr < 0)
@@ -2900,7 +2930,11 @@ int acornscsi_proc_info(struct Scsi_Host *instance, char *buffer, char **start, 
 
 	for (; statptr != host->status_ptr[devidx]; statptr = (statptr + 1) & (STATUS_BUFFER_SIZE - 1)) {
 	    if (host->status[devidx][statptr].when) {
+<<<<<<< HEAD
 		p += sprintf(p, "%c%02X:%02X+%2ld",
+=======
+		seq_printf(m, "%c%02X:%02X+%2ld",
+>>>>>>> refs/remotes/origin/master
 			host->status[devidx][statptr].irq ? '-' : ' ',
 			host->status[devidx][statptr].ph,
 			host->status[devidx][statptr].ssr,
@@ -2911,6 +2945,7 @@ int acornscsi_proc_info(struct Scsi_Host *instance, char *buffer, char **start, 
 	}
     }
 
+<<<<<<< HEAD
     p += sprintf(p, "\nAttached devices:\n");
 
     shost_for_each_device(scd, instance) {
@@ -2951,11 +2986,38 @@ int acornscsi_proc_info(struct Scsi_Host *instance, char *buffer, char **start, 
 	pos = length;
 
     return pos;
+=======
+    seq_printf(m, "\nAttached devices:\n");
+
+    shost_for_each_device(scd, instance) {
+	seq_printf(m, "Device/Lun TaggedQ      Sync\n");
+	seq_printf(m, "     %d/%d   ", scd->id, scd->lun);
+	if (scd->tagged_supported)
+		seq_printf(m, "%3sabled(%3d) ",
+			     scd->simple_tags ? "en" : "dis",
+			     scd->current_tag);
+	else
+		seq_printf(m, "unsupported  ");
+
+	if (host->device[scd->id].sync_xfer & 15)
+		seq_printf(m, "offset %d, %d ns\n",
+			     host->device[scd->id].sync_xfer & 15,
+			     acornscsi_getperiod(host->device[scd->id].sync_xfer));
+	else
+		seq_printf(m, "async\n");
+
+    }
+    return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct scsi_host_template acornscsi_template = {
 	.module			= THIS_MODULE,
+<<<<<<< HEAD
 	.proc_info		= acornscsi_proc_info,
+=======
+	.show_info		= acornscsi_show_info,
+>>>>>>> refs/remotes/origin/master
 	.name			= "AcornSCSI",
 	.info			= acornscsi_info,
 	.queuecommand		= acornscsi_queuecmd,
@@ -2969,8 +3031,12 @@ static struct scsi_host_template acornscsi_template = {
 	.proc_name		= "acornscsi",
 };
 
+<<<<<<< HEAD
 static int __devinit
 acornscsi_probe(struct expansion_card *ec, const struct ecard_id *id)
+=======
+static int acornscsi_probe(struct expansion_card *ec, const struct ecard_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host;
 	AS_Host *ashost;
@@ -3036,7 +3102,11 @@ acornscsi_probe(struct expansion_card *ec, const struct ecard_id *id)
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit acornscsi_remove(struct expansion_card *ec)
+=======
+static void acornscsi_remove(struct expansion_card *ec)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host = ecard_get_drvdata(ec);
 	AS_Host *ashost = (AS_Host *)host->hostdata;
@@ -3067,7 +3137,11 @@ static const struct ecard_id acornscsi_cids[] = {
 
 static struct ecard_driver acornscsi_driver = {
 	.probe		= acornscsi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(acornscsi_remove),
+=======
+	.remove		= acornscsi_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= acornscsi_cids,
 	.drv = {
 		.name		= "acornscsi",

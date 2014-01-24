@@ -8,6 +8,7 @@ typedef greg_t gregset_t[NGREG];
 typedef struct fpregset {
 	int f_fpcntl[3];
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef __mcoldfire__
 	int f_fpregs[8][2];
 #else
@@ -16,6 +17,9 @@ typedef struct fpregset {
 =======
 	int f_fpregs[8*3];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int f_fpregs[8*3];
+>>>>>>> refs/remotes/origin/master
 } fpregset_t;
 
 struct mcontext {

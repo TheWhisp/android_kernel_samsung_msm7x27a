@@ -53,9 +53,12 @@
 #include <linux/bitops.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/uaccess.h>
@@ -109,7 +112,11 @@ static const struct pci_device_id icom_pci_table[] = {
 	{}
 };
 
+<<<<<<< HEAD
 struct lookup_proc_table start_proc[4] = {
+=======
+static struct lookup_proc_table start_proc[4] = {
+>>>>>>> refs/remotes/origin/master
 	{NULL, ICOM_CONTROL_START_A},
 	{NULL, ICOM_CONTROL_START_B},
 	{NULL, ICOM_CONTROL_START_C},
@@ -117,14 +124,22 @@ struct lookup_proc_table start_proc[4] = {
 };
 
 
+<<<<<<< HEAD
 struct lookup_proc_table stop_proc[4] = {
+=======
+static struct lookup_proc_table stop_proc[4] = {
+>>>>>>> refs/remotes/origin/master
 	{NULL, ICOM_CONTROL_STOP_A},
 	{NULL, ICOM_CONTROL_STOP_B},
 	{NULL, ICOM_CONTROL_STOP_C},
 	{NULL, ICOM_CONTROL_STOP_D}
 };
 
+<<<<<<< HEAD
 struct lookup_int_table int_mask_tbl[4] = {
+=======
+static struct lookup_int_table int_mask_tbl[4] = {
+>>>>>>> refs/remotes/origin/master
 	{NULL, ICOM_INT_MASK_PRC_A},
 	{NULL, ICOM_INT_MASK_PRC_B},
 	{NULL, ICOM_INT_MASK_PRC_C},
@@ -179,7 +194,11 @@ static void free_port_memory(struct icom_port *icom_port)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit get_port_memory(struct icom_port *icom_port)
+=======
+static int get_port_memory(struct icom_port *icom_port)
+>>>>>>> refs/remotes/origin/master
 {
 	int index;
 	unsigned long stgAddr;
@@ -301,11 +320,21 @@ static void stop_processor(struct icom_port *icom_port)
 	spin_lock_irqsave(&icom_lock, flags);
 
 	port = icom_port->port;
+<<<<<<< HEAD
+=======
+	if (port >= ARRAY_SIZE(stop_proc)) {
+		dev_err(&icom_port->adapter->pci_dev->dev,
+			"Invalid port assignment\n");
+		goto unlock;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (port == 0 || port == 1)
 		stop_proc[port].global_control_reg = &icom_port->global_reg->control;
 	else
 		stop_proc[port].global_control_reg = &icom_port->global_reg->control_2;
 
+<<<<<<< HEAD
 
 	if (port < 4) {
 		temp = readl(stop_proc[port].global_control_reg);
@@ -320,6 +349,16 @@ static void stop_processor(struct icom_port *icom_port)
                         "Invalid port assignment\n");
 	}
 
+=======
+	temp = readl(stop_proc[port].global_control_reg);
+	temp = (temp & ~start_proc[port].processor_id) | stop_proc[port].processor_id;
+	writel(temp, stop_proc[port].global_control_reg);
+
+	/* write flush */
+	readl(stop_proc[port].global_control_reg);
+
+unlock:
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&icom_lock, flags);
 }
 
@@ -332,10 +371,20 @@ static void start_processor(struct icom_port *icom_port)
 	spin_lock_irqsave(&icom_lock, flags);
 
 	port = icom_port->port;
+<<<<<<< HEAD
+=======
+	if (port >= ARRAY_SIZE(start_proc)) {
+		dev_err(&icom_port->adapter->pci_dev->dev,
+			"Invalid port assignment\n");
+		goto unlock;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (port == 0 || port == 1)
 		start_proc[port].global_control_reg = &icom_port->global_reg->control;
 	else
 		start_proc[port].global_control_reg = &icom_port->global_reg->control_2;
+<<<<<<< HEAD
 	if (port < 4) {
 		temp = readl(start_proc[port].global_control_reg);
 		temp =
@@ -349,6 +398,17 @@ static void start_processor(struct icom_port *icom_port)
                         "Invalid port assignment\n");
 	}
 
+=======
+
+	temp = readl(start_proc[port].global_control_reg);
+	temp = (temp & ~stop_proc[port].processor_id) | start_proc[port].processor_id;
+	writel(temp, start_proc[port].global_control_reg);
+
+	/* write flush */
+	readl(start_proc[port].global_control_reg);
+
+unlock:
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&icom_lock, flags);
 }
 
@@ -509,7 +569,11 @@ static void load_code(struct icom_port *icom_port)
 		/* Stop processor */
 		stop_processor(icom_port);
 
+<<<<<<< HEAD
 		dev_err(&icom_port->adapter->pci_dev->dev,"Port not opertional\n");
+=======
+		dev_err(&icom_port->adapter->pci_dev->dev,"Port not operational\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (new_page != NULL)
@@ -561,6 +625,15 @@ static int startup(struct icom_port *icom_port)
 	 */
 	spin_lock_irqsave(&icom_lock, flags);
 	port = icom_port->port;
+<<<<<<< HEAD
+=======
+	if (port >= ARRAY_SIZE(int_mask_tbl)) {
+		dev_err(&icom_port->adapter->pci_dev->dev,
+			"Invalid port assignment\n");
+		goto unlock;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (port == 0 || port == 1)
 		int_mask_tbl[port].global_int_mask = &icom_port->global_reg->int_mask;
 	else
@@ -570,6 +643,7 @@ static int startup(struct icom_port *icom_port)
 		writew(0x00FF, icom_port->int_reg);
 	else
 		writew(0x3F00, icom_port->int_reg);
+<<<<<<< HEAD
 	if (port < 4) {
 		temp = readl(int_mask_tbl[port].global_int_mask);
 		writel(temp & ~int_mask_tbl[port].processor_id, int_mask_tbl[port].global_int_mask);
@@ -581,6 +655,16 @@ static int startup(struct icom_port *icom_port)
                         "Invalid port assignment\n");
 	}
 
+=======
+
+	temp = readl(int_mask_tbl[port].global_int_mask);
+	writel(temp & ~int_mask_tbl[port].processor_id, int_mask_tbl[port].global_int_mask);
+
+	/* write flush */
+	readl(int_mask_tbl[port].global_int_mask);
+
+unlock:
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&icom_lock, flags);
 	return 0;
 }
@@ -599,11 +683,20 @@ static void shutdown(struct icom_port *icom_port)
 	 * disable all interrupts
 	 */
 	port = icom_port->port;
+<<<<<<< HEAD
+=======
+	if (port >= ARRAY_SIZE(int_mask_tbl)) {
+		dev_err(&icom_port->adapter->pci_dev->dev,
+			"Invalid port assignment\n");
+		goto unlock;
+	}
+>>>>>>> refs/remotes/origin/master
 	if (port == 0 || port == 1)
 		int_mask_tbl[port].global_int_mask = &icom_port->global_reg->int_mask;
 	else
 		int_mask_tbl[port].global_int_mask = &icom_port->global_reg->int_mask_2;
 
+<<<<<<< HEAD
 	if (port < 4) {
 		temp = readl(int_mask_tbl[port].global_int_mask);
 		writel(temp | int_mask_tbl[port].processor_id, int_mask_tbl[port].global_int_mask);
@@ -614,6 +707,15 @@ static void shutdown(struct icom_port *icom_port)
 		dev_err(&icom_port->adapter->pci_dev->dev,
                         "Invalid port assignment\n");
 	}
+=======
+	temp = readl(int_mask_tbl[port].global_int_mask);
+	writel(temp | int_mask_tbl[port].processor_id, int_mask_tbl[port].global_int_mask);
+
+	/* write flush */
+	readl(int_mask_tbl[port].global_int_mask);
+
+unlock:
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&icom_lock, flags);
 
 	/*
@@ -738,7 +840,11 @@ static void xmit_interrupt(u16 port_int_reg, struct icom_port *icom_port)
 static void recv_interrupt(u16 port_int_reg, struct icom_port *icom_port)
 {
 	short int count, rcv_buff;
+<<<<<<< HEAD
 	struct tty_struct *tty = icom_port->uart_port.state->port.tty;
+=======
+	struct tty_port *port = &icom_port->uart_port.state->port;
+>>>>>>> refs/remotes/origin/master
 	unsigned short int status;
 	struct uart_icount *icount;
 	unsigned long offset;
@@ -765,7 +871,11 @@ static void recv_interrupt(u16 port_int_reg, struct icom_port *icom_port)
 		/* Block copy all but the last byte as this may have status */
 		if (count > 0) {
 			first = icom_port->recv_buf[offset];
+<<<<<<< HEAD
 			tty_insert_flip_string(tty, icom_port->recv_buf + offset, count - 1);
+=======
+			tty_insert_flip_string(port, icom_port->recv_buf + offset, count - 1);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		icount = &icom_port->uart_port.icount;
@@ -816,7 +926,11 @@ static void recv_interrupt(u16 port_int_reg, struct icom_port *icom_port)
 
 		}
 
+<<<<<<< HEAD
 		tty_insert_flip_char(tty, *(icom_port->recv_buf + offset + count - 1), flag);
+=======
+		tty_insert_flip_char(port, *(icom_port->recv_buf + offset + count - 1), flag);
+>>>>>>> refs/remotes/origin/master
 
 		if (status & SA_FLAGS_OVERRUN)
 			/*
@@ -824,7 +938,11 @@ static void recv_interrupt(u16 port_int_reg, struct icom_port *icom_port)
 			 * reported immediately, and doesn't
 			 * affect the current character
 			 */
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, 0, TTY_OVERRUN);
+=======
+			tty_insert_flip_char(port, 0, TTY_OVERRUN);
+>>>>>>> refs/remotes/origin/master
 ignore_char:
 		icom_port->statStg->rcv[rcv_buff].flags = 0;
 		icom_port->statStg->rcv[rcv_buff].leLength = 0;
@@ -838,7 +956,14 @@ ignore_char:
 		status = cpu_to_le16(icom_port->statStg->rcv[rcv_buff].flags);
 	}
 	icom_port->next_rcv = rcv_buff;
+<<<<<<< HEAD
 	tty_flip_buffer_push(tty);
+=======
+
+	spin_unlock(&icom_port->uart_port.lock);
+	tty_flip_buffer_push(port);
+	spin_lock(&icom_port->uart_port.lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void process_interrupt(u16 port_int_reg,
@@ -1091,8 +1216,12 @@ static void icom_close(struct uart_port *port)
 
 	/* stop receiver */
 	cmdReg = readb(&ICOM_PORT->dram->CmdReg);
+<<<<<<< HEAD
 	writeb(cmdReg & (unsigned char) ~CMD_RCV_ENABLE,
 	       &ICOM_PORT->dram->CmdReg);
+=======
+	writeb(cmdReg & ~CMD_RCV_ENABLE, &ICOM_PORT->dram->CmdReg);
+>>>>>>> refs/remotes/origin/master
 
 	shutdown(ICOM_PORT);
 
@@ -1318,7 +1447,11 @@ static struct uart_driver icom_uart_driver = {
 	.cons = ICOM_CONSOLE,
 };
 
+<<<<<<< HEAD
 static int __devinit icom_init_ports(struct icom_adapter *icom_adapter)
+=======
+static int icom_init_ports(struct icom_adapter *icom_adapter)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 subsystem_id = icom_adapter->subsystem_id;
 	int i;
@@ -1385,7 +1518,11 @@ static void icom_port_active(struct icom_port *icom_port, struct icom_adapter *i
 			    0x8024 + 2 - 2 * (icom_port->port - 2);
 	}
 }
+<<<<<<< HEAD
 static int __devinit icom_load_ports(struct icom_adapter *icom_adapter)
+=======
+static int icom_load_ports(struct icom_adapter *icom_adapter)
+>>>>>>> refs/remotes/origin/master
 {
 	struct icom_port *icom_port;
 	int port_num;
@@ -1411,7 +1548,11 @@ static int __devinit icom_load_ports(struct icom_adapter *icom_adapter)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit icom_alloc_adapter(struct icom_adapter
+=======
+static int icom_alloc_adapter(struct icom_adapter
+>>>>>>> refs/remotes/origin/master
 					**icom_adapter_ref)
 {
 	int adapter_count = 0;
@@ -1419,8 +1560,12 @@ static int __devinit icom_alloc_adapter(struct icom_adapter
 	struct icom_adapter *cur_adapter_entry;
 	struct list_head *tmp;
 
+<<<<<<< HEAD
 	icom_adapter = (struct icom_adapter *)
 	    kzalloc(sizeof(struct icom_adapter), GFP_KERNEL);
+=======
+	icom_adapter = kzalloc(sizeof(struct icom_adapter), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 
 	if (!icom_adapter) {
 		return -ENOMEM;
@@ -1491,7 +1636,11 @@ static void icom_kref_release(struct kref *kref)
 	icom_remove_adapter(icom_adapter);
 }
 
+<<<<<<< HEAD
 static int __devinit icom_probe(struct pci_dev *dev,
+=======
+static int icom_probe(struct pci_dev *dev,
+>>>>>>> refs/remotes/origin/master
 				const struct pci_device_id *ent)
 {
 	int index;
@@ -1558,10 +1707,14 @@ static int __devinit icom_probe(struct pci_dev *dev,
 	 /* save off irq and request irq line */
 	 if ( (retval = request_irq(dev->irq, icom_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   IRQF_DISABLED | IRQF_SHARED, ICOM_DRIVER_NAME,
 =======
 				   IRQF_SHARED, ICOM_DRIVER_NAME,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   IRQF_SHARED, ICOM_DRIVER_NAME,
+>>>>>>> refs/remotes/origin/master
 				   (void *) icom_adapter))) {
 		  goto probe_exit2;
 	 }
@@ -1576,7 +1729,11 @@ static int __devinit icom_probe(struct pci_dev *dev,
 			icom_port->uart_port.type = PORT_ICOM;
 			icom_port->uart_port.iotype = UPIO_MEM;
 			icom_port->uart_port.membase =
+<<<<<<< HEAD
 					       (char *) icom_adapter->base_addr_pci;
+=======
+				(unsigned char __iomem *)icom_adapter->base_addr_pci;
+>>>>>>> refs/remotes/origin/master
 			icom_port->uart_port.fifosize = 16;
 			icom_port->uart_port.ops = &icom_ops;
 			icom_port->uart_port.line =
@@ -1604,7 +1761,11 @@ probe_exit0:
 	return retval;
 }
 
+<<<<<<< HEAD
 static void __devexit icom_remove(struct pci_dev *dev)
+=======
+static void icom_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct icom_adapter *icom_adapter;
 	struct list_head *tmp;
@@ -1625,7 +1786,11 @@ static struct pci_driver icom_pci_driver = {
 	.name = ICOM_DRIVER_NAME,
 	.id_table = icom_pci_table,
 	.probe = icom_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(icom_remove),
+=======
+	.remove = icom_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init icom_init(void)

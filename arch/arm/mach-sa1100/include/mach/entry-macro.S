@@ -9,22 +9,28 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  		.macro	disable_fiq
 		.endm
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.macro  get_irqnr_preamble, base, tmp
 		mov	\base, #0xfa000000		@ ICIP = 0xfa050000
 		add	\base, \base, #0x00050000
 		.endm
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.macro  arch_ret_to_user, tmp1, tmp2
 		.endm
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.macro	get_irqnr_and_base, irqnr, irqstat, base, tmp
 		ldr	\irqstat, [\base]		@ get irqs
 		ldr	\irqnr, [\base, #4]		@ ICMR = 0xfa050004

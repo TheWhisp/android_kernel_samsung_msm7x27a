@@ -22,6 +22,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 /*** Includes ***/
 
 #include <linux/module.h>
@@ -115,8 +120,12 @@ static void out(int offset, int value)
 		parport_write_control(pport, value);
 		break;
 	case LIRC_LP_STATUS:
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: attempt to write to status register\n",
 		       LIRC_DRIVER_NAME);
+=======
+		pr_info("attempt to write to status register\n");
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 }
@@ -166,13 +175,18 @@ static unsigned int init_lirc_timer(void)
 		if (default_timer == 0) {
 			/* autodetect timer */
 			newtimer = (1000000*count)/timeelapsed;
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: %u Hz timer detected\n",
 			       LIRC_DRIVER_NAME, newtimer);
+=======
+			pr_info("%u Hz timer detected\n", newtimer);
+>>>>>>> refs/remotes/origin/master
 			return newtimer;
 		}  else {
 			newtimer = (1000000*count)/timeelapsed;
 			if (abs(newtimer - default_timer) > default_timer/10) {
 				/* bad timer */
+<<<<<<< HEAD
 				printk(KERN_NOTICE "%s: bad timer: %u Hz\n",
 				       LIRC_DRIVER_NAME, newtimer);
 				printk(KERN_NOTICE "%s: using default timer: "
@@ -182,11 +196,23 @@ static unsigned int init_lirc_timer(void)
 			} else {
 				printk(KERN_INFO "%s: %u Hz timer detected\n",
 				       LIRC_DRIVER_NAME, newtimer);
+=======
+				pr_notice("bad timer: %u Hz\n", newtimer);
+				pr_notice("using default timer: %u Hz\n",
+					  default_timer);
+				return default_timer;
+			} else {
+				pr_info("%u Hz timer detected\n", newtimer);
+>>>>>>> refs/remotes/origin/master
 				return newtimer; /* use detected value */
 			}
 		}
 	} else {
+<<<<<<< HEAD
 		printk(KERN_NOTICE "%s: no timer detected\n", LIRC_DRIVER_NAME);
+=======
+		pr_notice("no timer detected\n");
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 }
@@ -194,6 +220,7 @@ static unsigned int init_lirc_timer(void)
 static int lirc_claim(void)
 {
 	if (parport_claim(ppdevice) != 0) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: could not claim port\n",
 		       LIRC_DRIVER_NAME);
 		printk(KERN_WARNING "%s: waiting for port becoming available"
@@ -201,6 +228,12 @@ static int lirc_claim(void)
 		if (parport_claim_or_block(ppdevice) < 0) {
 			printk(KERN_NOTICE "%s: could not claim port, giving"
 			       " up\n", LIRC_DRIVER_NAME);
+=======
+		pr_warn("could not claim port\n");
+		pr_warn("waiting for port becoming available\n");
+		if (parport_claim_or_block(ppdevice) < 0) {
+			pr_notice("could not claim port, giving up\n");
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		}
 	}
@@ -219,7 +252,11 @@ static void rbuf_write(int signal)
 	if (nwptr == rptr) {
 		/* no new signals will be accepted */
 		lost_irqs++;
+<<<<<<< HEAD
 		printk(KERN_NOTICE "%s: buffer overrun\n", LIRC_DRIVER_NAME);
+=======
+		pr_notice("buffer overrun\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	rbuf[wptr] = signal;
@@ -290,7 +327,11 @@ static void irq_handler(void *blah)
 		if (signal > timeout
 		    || (check_pselecd && (in(1) & LP_PSELECD))) {
 			signal = 0;
+<<<<<<< HEAD
 			printk(KERN_NOTICE "%s: timeout\n", LIRC_DRIVER_NAME);
+=======
+			pr_notice("timeout\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	} while (lirc_get_signal());
@@ -583,12 +624,20 @@ static struct lirc_driver driver = {
 
 static struct platform_device *lirc_parallel_dev;
 
+<<<<<<< HEAD
 static int __devinit lirc_parallel_probe(struct platform_device *dev)
+=======
+static int lirc_parallel_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit lirc_parallel_remove(struct platform_device *dev)
+=======
+static int lirc_parallel_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -606,7 +655,11 @@ static int lirc_parallel_resume(struct platform_device *dev)
 
 static struct platform_driver lirc_parallel_driver = {
 	.probe	= lirc_parallel_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(lirc_parallel_remove),
+=======
+	.remove	= lirc_parallel_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= lirc_parallel_suspend,
 	.resume	= lirc_parallel_resume,
 	.driver	= {
@@ -644,8 +697,12 @@ static int __init lirc_parallel_init(void)
 
 	result = platform_driver_register(&lirc_parallel_driver);
 	if (result) {
+<<<<<<< HEAD
 		printk(KERN_NOTICE "platform_driver_register"
 					" returned %d\n", result);
+=======
+		pr_notice("platform_driver_register returned %d\n", result);
+>>>>>>> refs/remotes/origin/master
 		return result;
 	}
 
@@ -661,8 +718,12 @@ static int __init lirc_parallel_init(void)
 
 	pport = parport_find_base(io);
 	if (pport == NULL) {
+<<<<<<< HEAD
 		printk(KERN_NOTICE "%s: no port at %x found\n",
 		       LIRC_DRIVER_NAME, io);
+=======
+		pr_notice("no port at %x found\n", io);
+>>>>>>> refs/remotes/origin/master
 		result = -ENXIO;
 		goto exit_device_put;
 	}
@@ -670,8 +731,12 @@ static int __init lirc_parallel_init(void)
 					   pf, kf, irq_handler, 0, NULL);
 	parport_put_port(pport);
 	if (ppdevice == NULL) {
+<<<<<<< HEAD
 		printk(KERN_NOTICE "%s: parport_register_device() failed\n",
 		       LIRC_DRIVER_NAME);
+=======
+		pr_notice("parport_register_device() failed\n");
+>>>>>>> refs/remotes/origin/master
 		result = -ENXIO;
 		goto exit_device_put;
 	}
@@ -706,14 +771,22 @@ static int __init lirc_parallel_init(void)
 	driver.dev = &lirc_parallel_dev->dev;
 	driver.minor = lirc_register_driver(&driver);
 	if (driver.minor < 0) {
+<<<<<<< HEAD
 		printk(KERN_NOTICE "%s: register_chrdev() failed\n",
 		       LIRC_DRIVER_NAME);
+=======
+		pr_notice("register_chrdev() failed\n");
+>>>>>>> refs/remotes/origin/master
 		parport_unregister_device(ppdevice);
 		result = -EIO;
 		goto exit_device_put;
 	}
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: installed using port 0x%04x irq %d\n",
 	       LIRC_DRIVER_NAME, io, irq);
+=======
+	pr_info("installed using port 0x%04x irq %d\n", io, irq);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 exit_device_put:

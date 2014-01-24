@@ -5,10 +5,14 @@
 config NET_VENDOR_8390
 	bool "National Semi-conductor 8390 devices"
 	default y
+<<<<<<< HEAD
 	depends on NET_VENDOR_NATSEMI && (AMIGA_PCMCIA || PCI || SUPERH || \
 		   ISA || MCA || EISA || MAC || M32R || MACH_TX49XX || \
 		   MCA_LEGACY || H8300 || ARM || MIPS || ZORRO || PCMCIA || \
 		   EXPERIMENTAL)
+=======
+	depends on NET_VENDOR_NATSEMI
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  If you have a network (Ethernet) card belonging to this class, say Y
 	  and read the Ethernet-HOWTO, available from
@@ -21,6 +25,7 @@ config NET_VENDOR_8390
 
 if NET_VENDOR_8390
 
+<<<<<<< HEAD
 config EL2
 	tristate "3c503 \"EtherLink II\" support"
 	depends on ISA
@@ -45,6 +50,8 @@ config AC3200
 	  To compile this driver as a module, choose M here. The module
 	  will be called ac3200.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config PCMCIA_AXNET
 	tristate "Asix AX88190 PCMCIA support"
 	depends on PCMCIA
@@ -60,6 +67,10 @@ config PCMCIA_AXNET
 config AX88796
 	tristate "ASIX AX88796 NE2000 clone support"
 	depends on (ARM || MIPS || SUPERH)
+<<<<<<< HEAD
+=======
+	select CRC32
+>>>>>>> refs/remotes/origin/master
 	select PHYLIB
 	select MDIO_BITBANG
 	---help---
@@ -73,6 +84,7 @@ config AX88796_93CX6
 	---help---
 	  Select this if your platform comes with an external 93CX6 eeprom.
 
+<<<<<<< HEAD
 config E2100
 	tristate "Cabletron E21xx support"
 	depends on ISA
@@ -121,6 +133,8 @@ config HPLAN
 	  To compile this driver as a module, choose M here. The module
 	  will be called hp.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config HYDRA
 	tristate "Hydra support"
 	depends on ZORRO
@@ -139,6 +153,7 @@ config ARM_ETHERH
 	  If you have an Acorn system with one of these network cards, you
 	  should say Y to this option if you wish to use it with Linux.
 
+<<<<<<< HEAD
 config LNE390
 	tristate "Mylex EISA LNE390A/B support (EXPERIMENTAL)"
 	depends on PCI && EISA && EXPERIMENTAL
@@ -151,6 +166,8 @@ config LNE390
 	  To compile this driver as a module, choose M here. The module
 	  will be called lne390.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config MAC8390
 	bool "Macintosh NS 8390 based ethernet cards"
 	depends on MAC
@@ -161,6 +178,23 @@ config MAC8390
 	  and read the Ethernet-HOWTO, available from
 	  <http://www.tldp.org/docs.html#howto>.
 
+<<<<<<< HEAD
+=======
+config MCF8390
+	tristate "ColdFire NS8390 based Ethernet support"
+	depends on COLDFIRE
+	select CRC32
+	---help---
+	  This driver is for Ethernet devices using an NS8390-compatible
+	  chipset on many common ColdFire CPU based boards. Many of the older
+	  Freescale dev boards use this, and some other common boards like
+	  some SnapGear routers do as well.
+
+	  If you have one of these boards and want to use the network interface
+	  on them then choose Y. To compile this driver as a module, choose M
+	  here, the module will be called mcf8390.
+
+>>>>>>> refs/remotes/origin/master
 config NE2000
 	tristate "NE2000/NE1000 support"
 	depends on (ISA || (Q40 && m) || M32R || MACH_TX49XX)
@@ -172,15 +206,20 @@ config NE2000
 	  without a specific driver are compatible with NE2000.
 
 	  If you have a PCI NE2000 card however, say N here and Y to "PCI
+<<<<<<< HEAD
 	  NE2000 and clone support" under "EISA, VLB, PCI and on board
 	  controllers" below. If you have a NE2000 card and are running on
 	  an MCA system (a bus system used on some IBM PS/2 computers and
 	  laptops), say N here and Y to "NE/2 (ne2000 MCA version) support",
 	  below.
+=======
+	  NE2000 and clone support" below.
+>>>>>>> refs/remotes/origin/master
 
 	  To compile this driver as a module, choose M here. The module
 	  will be called ne.
 
+<<<<<<< HEAD
 config NE2_MCA
 	tristate "NE/2 (ne2000 MCA version) support"
 	depends on MCA_LEGACY
@@ -193,6 +232,8 @@ config NE2_MCA
 	  To compile this driver as a module, choose M here. The module
 	  will be called ne2.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config NE2K_PCI
 	tristate "PCI NE2000 and clones support (see help)"
 	depends on PCI
@@ -223,6 +264,7 @@ config APNE
 	  To compile this driver as a module, choose M here: the module
 	  will be called apne.
 
+<<<<<<< HEAD
 config NE3210
 	tristate "Novell/Eagle/Microdyne NE3210 EISA support (EXPERIMENTAL)"
 	depends on PCI && EISA && EXPERIMENTAL
@@ -236,6 +278,8 @@ config NE3210
 	  To compile this driver as a module, choose M here. The module
 	  will be called ne3210.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config PCMCIA_PCNET
 	tristate "NE2000 compatible PCMCIA support"
 	depends on PCMCIA
@@ -247,6 +291,7 @@ config PCMCIA_PCNET
 	  To compile this driver as a module, choose M here: the module will be
 	  called pcnet_cs.  If unsure, say N.
 
+<<<<<<< HEAD
 config NE_H8300
 	tristate "NE2000 compatible support for H8/300"
 	depends on H8300
@@ -254,6 +299,8 @@ config NE_H8300
 	  Say Y here if you want to use the NE2000 compatible
 	  controller on the Renesas H8/300 processor.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config STNIC
 	tristate "National DP83902AV  support"
 	depends on SUPERH
@@ -266,6 +313,7 @@ config STNIC
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 config ULTRAMCA
 	tristate "SMC Ultra MCA support"
 	depends on MCA
@@ -278,6 +326,8 @@ config ULTRAMCA
 	  To compile this driver as a module, choose M here. The module
 	  will be called smc-mca.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ULTRA
 	tristate "SMC Ultra support"
 	depends on ISA
@@ -297,6 +347,7 @@ config ULTRA
 	  To compile this driver as a module, choose M here. The module
 	  will be called smc-ultra.
 
+<<<<<<< HEAD
 config ULTRA32
 	tristate "SMC Ultra32 EISA support"
 	depends on EISA
@@ -309,6 +360,8 @@ config ULTRA32
 	  To compile this driver as a module, choose M here. The module
 	  will be called smc-ultra32.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config WD80x3
 	tristate "WD80*3 support"
 	depends on ISA

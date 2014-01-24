@@ -52,10 +52,14 @@ struct prcm_config {
 	unsigned long cm_clksel_mdm;	/* modem dividers 2430 only */
 	unsigned long base_sdrc_rfr;	/* base refresh timing for a set */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned char flags;
 =======
 	unsigned short flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned short flags;
+>>>>>>> refs/remotes/origin/master
 };
 
 

@@ -56,6 +56,7 @@
 static int squashfs_new_inode(struct super_block *sb, struct inode *inode,
 				struct squashfs_base_inode *sqsh_ino)
 {
+<<<<<<< HEAD
 	int err;
 
 	err = squashfs_get_id(sb, le16_to_cpu(sqsh_ino->uid), &inode->i_uid);
@@ -66,6 +67,22 @@ static int squashfs_new_inode(struct super_block *sb, struct inode *inode,
 	if (err)
 		return err;
 
+=======
+	uid_t i_uid;
+	gid_t i_gid;
+	int err;
+
+	err = squashfs_get_id(sb, le16_to_cpu(sqsh_ino->uid), &i_uid);
+	if (err)
+		return err;
+
+	err = squashfs_get_id(sb, le16_to_cpu(sqsh_ino->guid), &i_gid);
+	if (err)
+		return err;
+
+	i_uid_write(inode, i_uid);
+	i_gid_write(inode, i_gid);
+>>>>>>> refs/remotes/origin/master
 	inode->i_ino = le32_to_cpu(sqsh_ino->inode_number);
 	inode->i_mtime.tv_sec = le32_to_cpu(sqsh_ino->mtime);
 	inode->i_atime.tv_sec = inode->i_mtime.tv_sec;
@@ -160,10 +177,14 @@ int squashfs_read_inode(struct inode *inode, long long ino)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 1;
 =======
 		set_nlink(inode, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/master
 		inode->i_size = le32_to_cpu(sqsh_ino->file_size);
 		inode->i_fop = &generic_ro_fops;
 		inode->i_mode |= S_IFREG;
@@ -208,14 +229,19 @@ int squashfs_read_inode(struct inode *inode, long long ino)
 
 		xattr_id = le32_to_cpu(sqsh_ino->xattr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = le32_to_cpu(sqsh_ino->nlink);
 =======
 		set_nlink(inode, le32_to_cpu(sqsh_ino->nlink));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, le32_to_cpu(sqsh_ino->nlink));
+>>>>>>> refs/remotes/origin/master
 		inode->i_size = le64_to_cpu(sqsh_ino->file_size);
 		inode->i_op = &squashfs_inode_ops;
 		inode->i_fop = &generic_ro_fops;
 		inode->i_mode |= S_IFREG;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		inode->i_blocks = ((inode->i_size -
 				le64_to_cpu(sqsh_ino->sparse) - 1) >> 9) + 1;
@@ -223,6 +249,10 @@ int squashfs_read_inode(struct inode *inode, long long ino)
 		inode->i_blocks = (inode->i_size -
 				le64_to_cpu(sqsh_ino->sparse) + 511) >> 9;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		inode->i_blocks = (inode->i_size -
+				le64_to_cpu(sqsh_ino->sparse) + 511) >> 9;
+>>>>>>> refs/remotes/origin/master
 
 		squashfs_i(inode)->fragment_block = frag_blk;
 		squashfs_i(inode)->fragment_size = frag_size;
@@ -246,10 +276,14 @@ int squashfs_read_inode(struct inode *inode, long long ino)
 			goto failed_read;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = le32_to_cpu(sqsh_ino->nlink);
 =======
 		set_nlink(inode, le32_to_cpu(sqsh_ino->nlink));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, le32_to_cpu(sqsh_ino->nlink));
+>>>>>>> refs/remotes/origin/master
 		inode->i_size = le16_to_cpu(sqsh_ino->file_size);
 		inode->i_op = &squashfs_dir_inode_ops;
 		inode->i_fop = &squashfs_dir_ops;
@@ -275,10 +309,14 @@ int squashfs_read_inode(struct inode *inode, long long ino)
 
 		xattr_id = le32_to_cpu(sqsh_ino->xattr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = le32_to_cpu(sqsh_ino->nlink);
 =======
 		set_nlink(inode, le32_to_cpu(sqsh_ino->nlink));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, le32_to_cpu(sqsh_ino->nlink));
+>>>>>>> refs/remotes/origin/master
 		inode->i_size = le32_to_cpu(sqsh_ino->file_size);
 		inode->i_op = &squashfs_dir_inode_ops;
 		inode->i_fop = &squashfs_dir_ops;
@@ -306,10 +344,14 @@ int squashfs_read_inode(struct inode *inode, long long ino)
 			goto failed_read;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = le32_to_cpu(sqsh_ino->nlink);
 =======
 		set_nlink(inode, le32_to_cpu(sqsh_ino->nlink));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, le32_to_cpu(sqsh_ino->nlink));
+>>>>>>> refs/remotes/origin/master
 		inode->i_size = le32_to_cpu(sqsh_ino->symlink_size);
 		inode->i_op = &squashfs_symlink_inode_ops;
 		inode->i_data.a_ops = &squashfs_symlink_aops;
@@ -351,10 +393,14 @@ int squashfs_read_inode(struct inode *inode, long long ino)
 		else
 			inode->i_mode |= S_IFBLK;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = le32_to_cpu(sqsh_ino->nlink);
 =======
 		set_nlink(inode, le32_to_cpu(sqsh_ino->nlink));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, le32_to_cpu(sqsh_ino->nlink));
+>>>>>>> refs/remotes/origin/master
 		rdev = le32_to_cpu(sqsh_ino->rdev);
 		init_special_inode(inode, inode->i_mode, new_decode_dev(rdev));
 
@@ -379,10 +425,14 @@ int squashfs_read_inode(struct inode *inode, long long ino)
 		xattr_id = le32_to_cpu(sqsh_ino->xattr);
 		inode->i_op = &squashfs_inode_ops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = le32_to_cpu(sqsh_ino->nlink);
 =======
 		set_nlink(inode, le32_to_cpu(sqsh_ino->nlink));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, le32_to_cpu(sqsh_ino->nlink));
+>>>>>>> refs/remotes/origin/master
 		rdev = le32_to_cpu(sqsh_ino->rdev);
 		init_special_inode(inode, inode->i_mode, new_decode_dev(rdev));
 
@@ -404,10 +454,14 @@ int squashfs_read_inode(struct inode *inode, long long ino)
 		else
 			inode->i_mode |= S_IFSOCK;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = le32_to_cpu(sqsh_ino->nlink);
 =======
 		set_nlink(inode, le32_to_cpu(sqsh_ino->nlink));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, le32_to_cpu(sqsh_ino->nlink));
+>>>>>>> refs/remotes/origin/master
 		init_special_inode(inode, inode->i_mode, 0);
 		break;
 	}
@@ -427,10 +481,14 @@ int squashfs_read_inode(struct inode *inode, long long ino)
 		xattr_id = le32_to_cpu(sqsh_ino->xattr);
 		inode->i_op = &squashfs_inode_ops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = le32_to_cpu(sqsh_ino->nlink);
 =======
 		set_nlink(inode, le32_to_cpu(sqsh_ino->nlink));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, le32_to_cpu(sqsh_ino->nlink));
+>>>>>>> refs/remotes/origin/master
 		init_special_inode(inode, inode->i_mode, 0);
 		break;
 	}

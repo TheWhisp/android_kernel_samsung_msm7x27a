@@ -14,26 +14,36 @@
 #include <linux/init.h>
 #include <linux/serial_core.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/dm9000.h>
 #include <linux/fb.h>
 #include <linux/gpio.h>
 #include <linux/delay.h>
 #include <linux/pwm_backlight.h>
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
 #include <asm/hardware/vic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/s3c-hsotg.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 #include <asm/setup.h>
 #include <asm/mach-types.h>
 
 #include <video/platform_lcd.h>
+<<<<<<< HEAD
 
 #include <mach/map.h>
 #include <mach/regs-clock.h>
@@ -41,10 +51,17 @@
 #include <mach/regs-fb.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <video/samsung_fimd.h>
+
+#include <mach/map.h>
+#include <mach/regs-clock.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <plat/regs-serial.h>
 #include <plat/regs-srom.h>
 #include <plat/gpio-cfg.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <plat/s5pv210.h>
 =======
@@ -67,6 +84,23 @@
 
 #include "common.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <plat/devs.h>
+#include <plat/cpu.h>
+#include <plat/adc.h>
+#include <linux/platform_data/touchscreen-s3c2410.h>
+#include <linux/platform_data/ata-samsung_cf.h>
+#include <linux/platform_data/i2c-s3c2410.h>
+#include <plat/keypad.h>
+#include <plat/pm.h>
+#include <plat/fb.h>
+#include <plat/samsung-time.h>
+#include <plat/backlight.h>
+#include <plat/mfc.h>
+#include <plat/clock.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 /* Following are default values for UCON, ULCON and UFCON UART registers */
 #define SMDKV210_UCON_DEFAULT	(S3C2410_UCON_TXILEVEL |	\
@@ -137,6 +171,7 @@ static struct samsung_keypad_platdata smdkv210_keypad_data __initdata = {
 };
 
 static struct resource smdkv210_dm9000_resources[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start	= S5PV210_PA_SROM_BANK5,
 		.end	= S5PV210_PA_SROM_BANK5,
@@ -152,6 +187,12 @@ static struct resource smdkv210_dm9000_resources[] = {
 		.end	= IRQ_EINT(9),
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHLEVEL,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S5PV210_PA_SROM_BANK5, 1),
+	[1] = DEFINE_RES_MEM(S5PV210_PA_SROM_BANK5 + 2, 1),
+	[2] = DEFINE_RES_NAMED(IRQ_EINT(9), 1, NULL, IORESOURCE_IRQ \
+				| IORESOURCE_IRQ_HIGHLEVEL),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct dm9000_plat_data smdkv210_dm9000_platdata = {
@@ -160,10 +201,14 @@ static struct dm9000_plat_data smdkv210_dm9000_platdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_device smdkv210_dm9000 = {
 =======
 static struct platform_device smdkv210_dm9000 = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_device smdkv210_dm9000 = {
+>>>>>>> refs/remotes/origin/master
 	.name		= "dm9000",
 	.id		= -1,
 	.num_resources	= ARRAY_SIZE(smdkv210_dm9000_resources),
@@ -179,15 +224,20 @@ static void smdkv210_lte480wv_set_power(struct plat_lcd_data *pd,
 	if (power) {
 #if !defined(CONFIG_BACKLIGHT_PWM)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		gpio_request(S5PV210_GPD0(3), "GPD0");
 		gpio_direction_output(S5PV210_GPD0(3), 1);
 =======
 		gpio_request_one(S5PV210_GPD0(3), GPIOF_OUT_INIT_HIGH, "GPD0");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		gpio_request_one(S5PV210_GPD0(3), GPIOF_OUT_INIT_HIGH, "GPD0");
+>>>>>>> refs/remotes/origin/master
 		gpio_free(S5PV210_GPD0(3));
 #endif
 
 		/* fire nRESET on power up */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		gpio_request(S5PV210_GPH0(6), "GPH0");
 
@@ -195,6 +245,9 @@ static void smdkv210_lte480wv_set_power(struct plat_lcd_data *pd,
 =======
 		gpio_request_one(S5PV210_GPH0(6), GPIOF_OUT_INIT_HIGH, "GPH0");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		gpio_request_one(S5PV210_GPH0(6), GPIOF_OUT_INIT_HIGH, "GPH0");
+>>>>>>> refs/remotes/origin/master
 
 		gpio_set_value(S5PV210_GPH0(6), 0);
 		mdelay(10);
@@ -206,11 +259,15 @@ static void smdkv210_lte480wv_set_power(struct plat_lcd_data *pd,
 	} else {
 #if !defined(CONFIG_BACKLIGHT_PWM)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		gpio_request(S5PV210_GPD0(3), "GPD0");
 		gpio_direction_output(S5PV210_GPD0(3), 0);
 =======
 		gpio_request_one(S5PV210_GPD0(3), GPIOF_OUT_INIT_LOW, "GPD0");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		gpio_request_one(S5PV210_GPD0(3), GPIOF_OUT_INIT_LOW, "GPD0");
+>>>>>>> refs/remotes/origin/master
 		gpio_free(S5PV210_GPD0(3));
 #endif
 	}
@@ -227,6 +284,7 @@ static struct platform_device smdkv210_lcd_lte480wv = {
 };
 
 static struct s3c_fb_pd_win smdkv210_fb_win0 = {
+<<<<<<< HEAD
 	.win_mode = {
 		.left_margin	= 13,
 		.right_margin	= 8,
@@ -239,15 +297,37 @@ static struct s3c_fb_pd_win smdkv210_fb_win0 = {
 	},
 	.max_bpp	= 32,
 	.default_bpp	= 24,
+=======
+	.max_bpp	= 32,
+	.default_bpp	= 24,
+	.xres		= 800,
+	.yres		= 480,
+};
+
+static struct fb_videomode smdkv210_lcd_timing = {
+	.left_margin	= 13,
+	.right_margin	= 8,
+	.upper_margin	= 7,
+	.lower_margin	= 5,
+	.hsync_len	= 3,
+	.vsync_len	= 1,
+	.xres		= 800,
+	.yres		= 480,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct s3c_fb_platdata smdkv210_lcd0_pdata __initdata = {
 	.win[0]		= &smdkv210_fb_win0,
+<<<<<<< HEAD
+=======
+	.vtiming	= &smdkv210_lcd_timing,
+>>>>>>> refs/remotes/origin/master
 	.vidcon0	= VIDCON0_VIDOUT_RGB | VIDCON0_PNRMODE_RGB,
 	.vidcon1	= VIDCON1_INV_HSYNC | VIDCON1_INV_VSYNC,
 	.setup_gpio	= s5pv210_fb_gpio_setup_24bpp,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int smdkv210_backlight_init(struct device *dev)
 {
@@ -290,6 +370,11 @@ static struct platform_device smdkv210_backlight_device = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* USB OTG */
+static struct s3c_hsotg_plat smdkv210_hsotg_pdata;
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_device *smdkv210_devices[] __initdata = {
 	&s3c_device_adc,
 	&s3c_device_cfcon,
@@ -301,11 +386,19 @@ static struct platform_device *smdkv210_devices[] __initdata = {
 	&s3c_device_i2c0,
 	&s3c_device_i2c1,
 	&s3c_device_i2c2,
+<<<<<<< HEAD
 	&s3c_device_rtc,
 	&s3c_device_ts,
 	&s3c_device_wdt,
 <<<<<<< HEAD
 =======
+=======
+	&samsung_device_pwm,
+	&s3c_device_rtc,
+	&s3c_device_ts,
+	&s3c_device_usb_hsotg,
+	&s3c_device_wdt,
+>>>>>>> refs/remotes/origin/master
 	&s5p_device_fimc0,
 	&s5p_device_fimc1,
 	&s5p_device_fimc2,
@@ -314,6 +407,7 @@ static struct platform_device *smdkv210_devices[] __initdata = {
 	&s5p_device_mfc,
 	&s5p_device_mfc_l,
 	&s5p_device_mfc_r,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	&s5pv210_device_ac97,
 	&s5pv210_device_iis0,
@@ -326,11 +420,19 @@ static struct platform_device *smdkv210_devices[] __initdata = {
 	&s3c_device_timer[3],
 	&smdkv210_backlight_device,
 =======
+=======
+	&s5pv210_device_ac97,
+	&s5pv210_device_iis0,
+	&s5pv210_device_spdif,
+>>>>>>> refs/remotes/origin/master
 	&samsung_asoc_idma,
 	&samsung_device_keypad,
 	&smdkv210_dm9000,
 	&smdkv210_lcd_lte480wv,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init smdkv210_dm9000_init(void)
@@ -364,11 +466,14 @@ static struct i2c_board_info smdkv210_i2c_devs2[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct s3c2410_ts_mach_info s3c_ts_platform __initdata = {
 	.delay			= 10000,
 	.presc			= 49,
 	.oversampling_shift	= 2,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* LCD Backlight data */
 static struct samsung_bl_gpio_info smdkv210_bl_gpio_info = {
 	.no = S5PV210_GPD0(3),
@@ -378,11 +483,16 @@ static struct samsung_bl_gpio_info smdkv210_bl_gpio_info = {
 static struct platform_pwm_backlight_data smdkv210_bl_data = {
 	.pwm_id = 3,
 	.pwm_period_ns = 1000,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.enable_gpio = -1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init smdkv210_map_io(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	s5p_init_io(NULL, 0, S5P_VA_CHIPID);
 =======
@@ -395,12 +505,23 @@ static void __init smdkv210_map_io(void)
 
 <<<<<<< HEAD
 =======
+=======
+	s5pv210_init_io(NULL, 0);
+	s3c24xx_init_clocks(clk_xusbxti.rate);
+	s3c24xx_init_uarts(smdkv210_uartcfgs, ARRAY_SIZE(smdkv210_uartcfgs));
+	samsung_set_timer_source(SAMSUNG_PWM2, SAMSUNG_PWM4);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void __init smdkv210_reserve(void)
 {
 	s5p_mfc_reserve_mem(0x43000000, 8 << 20, 0x51000000, 8 << 20);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init smdkv210_machine_init(void)
 {
 	s3c_pm_init();
@@ -409,10 +530,14 @@ static void __init smdkv210_machine_init(void)
 
 	samsung_keypad_set_platdata(&smdkv210_keypad_data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	s3c24xx_ts_set_platdata(&s3c_ts_platform);
 =======
 	s3c24xx_ts_set_platdata(NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s3c24xx_ts_set_platdata(NULL);
+>>>>>>> refs/remotes/origin/master
 
 	s3c_i2c0_set_platdata(NULL);
 	s3c_i2c1_set_platdata(NULL);
@@ -429,15 +554,24 @@ static void __init smdkv210_machine_init(void)
 	s3c_fb_set_platdata(&smdkv210_lcd0_pdata);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	samsung_bl_set(&smdkv210_bl_gpio_info, &smdkv210_bl_data);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	platform_add_devices(smdkv210_devices, ARRAY_SIZE(smdkv210_devices));
+=======
+	s3c_hsotg_set_platdata(&smdkv210_hsotg_pdata);
+
+	platform_add_devices(smdkv210_devices, ARRAY_SIZE(smdkv210_devices));
+
+	samsung_bl_set(&smdkv210_bl_gpio_info, &smdkv210_bl_data);
+>>>>>>> refs/remotes/origin/master
 }
 
 MACHINE_START(SMDKV210, "SMDKV210")
 	/* Maintainer: Kukjin Kim <kgene.kim@samsung.com> */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boot_params	= S5P_PA_SDRAM + 0x100,
 	.init_irq	= s5pv210_init_irq,
@@ -454,4 +588,13 @@ MACHINE_START(SMDKV210, "SMDKV210")
 	.restart	= s5pv210_restart,
 	.reserve	= &smdkv210_reserve,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.init_irq	= s5pv210_init_irq,
+	.map_io		= smdkv210_map_io,
+	.init_machine	= smdkv210_machine_init,
+	.init_time	= samsung_timer_init,
+	.restart	= s5pv210_restart,
+	.reserve	= &smdkv210_reserve,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

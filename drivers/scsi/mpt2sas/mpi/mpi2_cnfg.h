@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  Copyright (c) 2000-2010 LSI Corporation.
 =======
  *  Copyright (c) 2000-2011 LSI Corporation.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  Copyright (c) 2000-2013 LSI Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  *
  *           Name:  mpi2_cnfg.h
@@ -11,10 +15,14 @@
  *  Creation Date:  November 10, 2006
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *    mpi2_cnfg.h Version:  02.00.16
 =======
  *    mpi2_cnfg.h Version:  02.00.21
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *    mpi2_cnfg.h Version:  02.00.23
+>>>>>>> refs/remotes/origin/master
  *
  *  Version History
  *  ---------------
@@ -136,7 +144,10 @@
  *  08-11-10  02.00.16  Removed IO Unit Page 1 device path (multi-pathing)
  *                      defines.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *  11-10-10  02.00.17  Added ReceptacleID field (replacing Reserved1) to
  *                      MPI2_MANPAGE7_CONNECTOR_INFO and reworked defines for
  *                      the Pinout field.
@@ -156,8 +167,16 @@
  *                      Added SpinupFlags field containing a Disable Spin-up
  *                      bit to the MPI2_SAS_IOUNIT4_SPINUP_GROUP fields of
  *                      SAS IO Unit Page 4.
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  11-18-11  02.00.22  Added define MPI2_IOCPAGE6_CAP_FLAGS_4K_SECTORS_SUPPORT.
+ *                      Added UEFIVersion field to BIOS Page 1 and defined new
+ *                      BiosOptions bits.
+ *  11-27-12  02.00.23  Added MPI2_MANPAGE7_FLAG_EVENTREPLAY_SLOT_ORDER.
+ *			 Added MPI2_BIOSPAGE1_OPTIONS_MASK_OEM_ID.
+>>>>>>> refs/remotes/origin/master
  *  --------------------------------------------------------------------------
  */
 
@@ -242,9 +261,13 @@ typedef union _MPI2_CONFIG_EXT_PAGE_HEADER_UNION
 #define MPI2_CONFIG_EXTPAGETYPE_SAS_PORT            (0x18)
 #define MPI2_CONFIG_EXTPAGETYPE_ETHERNET            (0x19)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MPI2_CONFIG_EXTPAGETYPE_EXT_MANUFACTURING   (0x1A)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MPI2_CONFIG_EXTPAGETYPE_EXT_MANUFACTURING   (0x1A)
+>>>>>>> refs/remotes/origin/master
 
 
 /*****************************************************************************
@@ -357,12 +380,18 @@ typedef struct _MPI2_CONFIG_REQUEST
     U8                      VF_ID;                      /* 0x09 */
     U16                     Reserved1;                  /* 0x0A */
 <<<<<<< HEAD
+<<<<<<< HEAD
     U32                     Reserved2;                  /* 0x0C */
 =======
 	U8                      Reserved2;                  /* 0x0C */
 	U8                      ProxyVF_ID;                 /* 0x0D */
 	U16                     Reserved4;                  /* 0x0E */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	U8                      Reserved2;                  /* 0x0C */
+	U8                      ProxyVF_ID;                 /* 0x0D */
+	U16                     Reserved4;                  /* 0x0E */
+>>>>>>> refs/remotes/origin/master
     U32                     Reserved3;                  /* 0x10 */
     MPI2_CONFIG_PAGE_HEADER Header;                     /* 0x14 */
     U32                     PageAddress;                /* 0x18 */
@@ -654,16 +683,21 @@ typedef struct _MPI2_MANPAGE7_CONNECTOR_INFO
     U8                          Connector[16];          /* 0x04 */
     U8                          Location;               /* 0x14 */
 <<<<<<< HEAD
+<<<<<<< HEAD
     U8                          Reserved1;              /* 0x15 */
 =======
 	U8                          ReceptacleID;           /* 0x15 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	U8                          ReceptacleID;           /* 0x15 */
+>>>>>>> refs/remotes/origin/master
     U16                         Slot;                   /* 0x16 */
     U32                         Reserved2;              /* 0x18 */
 } MPI2_MANPAGE7_CONNECTOR_INFO, MPI2_POINTER PTR_MPI2_MANPAGE7_CONNECTOR_INFO,
   Mpi2ManPage7ConnectorInfo_t, MPI2_POINTER pMpi2ManPage7ConnectorInfo_t;
 
 /* defines for the Pinout field */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define MPI2_MANPAGE7_PINOUT_SFF_8484_L4                (0x00080000)
 #define MPI2_MANPAGE7_PINOUT_SFF_8484_L3                (0x00040000)
@@ -676,6 +710,8 @@ typedef struct _MPI2_MANPAGE7_CONNECTOR_INFO
 #define MPI2_MANPAGE7_PINOUT_SFF_8482                   (0x00000002)
 #define MPI2_MANPAGE7_PINOUT_CONNECTION_UNKNOWN         (0x00000001)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define MPI2_MANPAGE7_PINOUT_LANE_MASK                  (0x0000FF00)
 #define MPI2_MANPAGE7_PINOUT_LANE_SHIFT                 (8)
 
@@ -694,7 +730,10 @@ typedef struct _MPI2_MANPAGE7_CONNECTOR_INFO
 #define MPI2_MANPAGE7_PINOUT_SFF_8644_8X                (0x0B)
 #define MPI2_MANPAGE7_PINOUT_SFF_8644_16X               (0x0C)
 #define MPI2_MANPAGE7_PINOUT_SFF_8436                   (0x0D)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* defines for the Location field */
 #define MPI2_MANPAGE7_LOCATION_UNKNOWN                  (0x01)
@@ -729,12 +768,19 @@ typedef struct _MPI2_CONFIG_PAGE_MAN_7
   Mpi2ManufacturingPage7_t, MPI2_POINTER pMpi2ManufacturingPage7_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MPI2_MANUFACTURING7_PAGEVERSION                 (0x00)
 =======
 #define MPI2_MANUFACTURING7_PAGEVERSION                 (0x01)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 /* defines for the Flags field */
+=======
+#define MPI2_MANUFACTURING7_PAGEVERSION                 (0x01)
+
+/* defines for the Flags field */
+#define MPI2_MANPAGE7_FLAG_EVENTREPLAY_SLOT_ORDER       (0x00000002)
+>>>>>>> refs/remotes/origin/master
 #define MPI2_MANPAGE7_FLAG_USE_SLOT_INFO                (0x00000001)
 
 
@@ -920,12 +966,15 @@ typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_7 {
     U8                      IOCTemperatureUnits;                    /* 0x12 */
     U8                      IOCSpeed;                               /* 0x13 */
 <<<<<<< HEAD
+<<<<<<< HEAD
     U32                     Reserved3;                              /* 0x14 */
 } MPI2_CONFIG_PAGE_IO_UNIT_7, MPI2_POINTER PTR_MPI2_CONFIG_PAGE_IO_UNIT_7,
   Mpi2IOUnitPage7_t, MPI2_POINTER pMpi2IOUnitPage7_t;
 
 #define MPI2_IOUNITPAGE7_PAGEVERSION                    (0x01)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	U16                     BoardTemperature;              /* 0x14 */
 	U8                      BoardTemperatureUnits;         /* 0x16 */
 	U8                      Reserved3;                     /* 0x17 */
@@ -933,7 +982,10 @@ typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_7 {
   Mpi2IOUnitPage7_t, MPI2_POINTER pMpi2IOUnitPage7_t;
 
 #define MPI2_IOUNITPAGE7_PAGEVERSION                    (0x02)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* defines for IO Unit Page 7 PCIeWidth field */
 #define MPI2_IOUNITPAGE7_PCIE_WIDTH_X1              (0x01)
@@ -959,6 +1011,7 @@ typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_7 {
 #define MPI2_IOUNITPAGE7_PMCAP_25_0_PCT_IOCSPEED    (0x00000200)
 #define MPI2_IOUNITPAGE7_PMCAP_50_0_PCT_IOCSPEED    (0x00000100)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MPI2_IOUNITPAGE7_PMCAP_PCIE_WIDTH_CHANGE    (0x00000008)
 #define MPI2_IOUNITPAGE7_PMCAP_PCIE_SPEED_CHANGE    (0x00000004)
 
@@ -966,6 +1019,10 @@ typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_7 {
 #define MPI2_IOUNITPAGE7_PMCAP_PCIE_WIDTH_CHANGE    (0x00000008) /* obsolete */
 #define MPI2_IOUNITPAGE7_PMCAP_PCIE_SPEED_CHANGE    (0x00000004) /* obsolete */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MPI2_IOUNITPAGE7_PMCAP_PCIE_WIDTH_CHANGE    (0x00000008) /* obsolete */
+#define MPI2_IOUNITPAGE7_PMCAP_PCIE_SPEED_CHANGE    (0x00000004) /* obsolete */
+>>>>>>> refs/remotes/origin/master
 
 /* defines for IO Unit Page 7 IOCTemperatureUnits field */
 #define MPI2_IOUNITPAGE7_IOC_TEMP_NOT_PRESENT       (0x00)
@@ -979,7 +1036,10 @@ typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_7 {
 #define MPI2_IOUNITPAGE7_IOC_SPEED_EIGHTH           (0x08)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* defines for IO Unit Page 7 BoardTemperatureUnits field */
 #define MPI2_IOUNITPAGE7_BOARD_TEMP_NOT_PRESENT     (0x00)
 #define MPI2_IOUNITPAGE7_BOARD_TEMP_FAHRENHEIT      (0x01)
@@ -1099,7 +1159,10 @@ Mpi2IOUnitPage10_t, MPI2_POINTER pMpi2IOUnitPage10_t;
 
 #define MPI2_IOUNITPAGE10_PAGEVERSION                   (0x01)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /****************************************************************************
@@ -1187,9 +1250,16 @@ typedef struct _MPI2_CONFIG_PAGE_IOC_6
 } MPI2_CONFIG_PAGE_IOC_6, MPI2_POINTER PTR_MPI2_CONFIG_PAGE_IOC_6,
   Mpi2IOCPage6_t, MPI2_POINTER pMpi2IOCPage6_t;
 
+<<<<<<< HEAD
 #define MPI2_IOCPAGE6_PAGEVERSION                       (0x04)
 
 /* defines for IOC Page 6 CapabilitiesFlags */
+=======
+#define MPI2_IOCPAGE6_PAGEVERSION                       (0x05)
+
+/* defines for IOC Page 6 CapabilitiesFlags */
+#define MPI2_IOCPAGE6_CAP_FLAGS_4K_SECTORS_SUPPORT      (0x00000020)
+>>>>>>> refs/remotes/origin/master
 #define MPI2_IOCPAGE6_CAP_FLAGS_RAID10_SUPPORT          (0x00000010)
 #define MPI2_IOCPAGE6_CAP_FLAGS_RAID1_SUPPORT           (0x00000008)
 #define MPI2_IOCPAGE6_CAP_FLAGS_RAID1E_SUPPORT          (0x00000004)
@@ -1208,19 +1278,27 @@ typedef struct _MPI2_CONFIG_PAGE_IOC_7
     U32                     EventMasks[MPI2_IOCPAGE7_EVENTMASK_WORDS];/* 0x08 */
     U16                     SASBroadcastPrimitiveMasks; /* 0x18 */
 <<<<<<< HEAD
+<<<<<<< HEAD
     U16                     Reserved2;                  /* 0x1A */
 =======
 	U16                     SASNotifyPrimitiveMasks;    /* 0x1A */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	U16                     SASNotifyPrimitiveMasks;    /* 0x1A */
+>>>>>>> refs/remotes/origin/master
     U32                     Reserved3;                  /* 0x1C */
 } MPI2_CONFIG_PAGE_IOC_7, MPI2_POINTER PTR_MPI2_CONFIG_PAGE_IOC_7,
   Mpi2IOCPage7_t, MPI2_POINTER pMpi2IOCPage7_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MPI2_IOCPAGE7_PAGEVERSION                       (0x01)
 =======
 #define MPI2_IOCPAGE7_PAGEVERSION                       (0x02)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MPI2_IOCPAGE7_PAGEVERSION                       (0x02)
+>>>>>>> refs/remotes/origin/master
 
 
 /* IOC Page 8 */
@@ -1268,6 +1346,7 @@ typedef struct _MPI2_CONFIG_PAGE_IOC_8
 
 typedef struct _MPI2_CONFIG_PAGE_BIOS_1
 {
+<<<<<<< HEAD
     MPI2_CONFIG_PAGE_HEADER Header;                     /* 0x00 */
     U32                     BiosOptions;                /* 0x04 */
     U32                     IOCSettings;                /* 0x08 */
@@ -1286,6 +1365,34 @@ typedef struct _MPI2_CONFIG_PAGE_BIOS_1
 
 /* values for BIOS Page 1 BiosOptions field */
 #define MPI2_BIOSPAGE1_OPTIONS_DISABLE_BIOS             (0x00000001)
+=======
+	MPI2_CONFIG_PAGE_HEADER Header;                     /* 0x00 */
+	U32                     BiosOptions;                /* 0x04 */
+	U32                     IOCSettings;                /* 0x08 */
+	U32                     Reserved1;                  /* 0x0C */
+	U32                     DeviceSettings;             /* 0x10 */
+	U16                     NumberOfDevices;            /* 0x14 */
+	U16                     UEFIVersion;                /* 0x16 */
+	U16                     IOTimeoutBlockDevicesNonRM; /* 0x18 */
+	U16                     IOTimeoutSequential;        /* 0x1A */
+	U16                     IOTimeoutOther;             /* 0x1C */
+	U16                     IOTimeoutBlockDevicesRM;    /* 0x1E */
+} MPI2_CONFIG_PAGE_BIOS_1, MPI2_POINTER PTR_MPI2_CONFIG_PAGE_BIOS_1,
+  Mpi2BiosPage1_t, MPI2_POINTER pMpi2BiosPage1_t;
+
+#define MPI2_BIOSPAGE1_PAGEVERSION                      (0x05)
+
+/* values for BIOS Page 1 BiosOptions field */
+#define MPI2_BIOSPAGE1_OPTIONS_MASK_OEM_ID                  (0x000000F0)
+#define MPI2_BIOSPAGE1_OPTIONS_LSI_OEM_ID                   (0x00000000)
+
+#define MPI2_BIOSPAGE1_OPTIONS_MASK_UEFI_HII_REGISTRATION   (0x00000006)
+#define MPI2_BIOSPAGE1_OPTIONS_ENABLE_UEFI_HII              (0x00000000)
+#define MPI2_BIOSPAGE1_OPTIONS_DISABLE_UEFI_HII             (0x00000002)
+#define MPI2_BIOSPAGE1_OPTIONS_VERSION_CHECK_UEFI_HII       (0x00000004)
+
+#define MPI2_BIOSPAGE1_OPTIONS_DISABLE_BIOS                 (0x00000001)
+>>>>>>> refs/remotes/origin/master
 
 /* values for BIOS Page 1 IOCSettings field */
 #define MPI2_BIOSPAGE1_IOCSET_MASK_BOOT_PREFERENCE      (0x00030000)
@@ -1312,6 +1419,16 @@ typedef struct _MPI2_CONFIG_PAGE_BIOS_1
 #define MPI2_BIOSPAGE1_DEVSET_DISABLE_NON_RM_LUN        (0x00000002)
 #define MPI2_BIOSPAGE1_DEVSET_DISABLE_OTHER_LUN         (0x00000001)
 
+<<<<<<< HEAD
+=======
+/* defines for BIOS Page 1 UEFIVersion field */
+#define MPI2_BIOSPAGE1_UEFI_VER_MAJOR_MASK              (0xFF00)
+#define MPI2_BIOSPAGE1_UEFI_VER_MAJOR_SHIFT             (8)
+#define MPI2_BIOSPAGE1_UEFI_VER_MINOR_MASK              (0x00FF)
+#define MPI2_BIOSPAGE1_UEFI_VER_MINOR_SHIFT             (0)
+
+
+>>>>>>> refs/remotes/origin/master
 
 /* BIOS Page 2 */
 
@@ -2042,11 +2159,14 @@ typedef struct _MPI2_SAS_IOUNIT4_SPINUP_GROUP
     U8          MaxTargetSpinup;            /* 0x00 */
     U8          SpinupDelay;                /* 0x01 */
 <<<<<<< HEAD
+<<<<<<< HEAD
     U16         Reserved1;                  /* 0x02 */
 } MPI2_SAS_IOUNIT4_SPINUP_GROUP, MPI2_POINTER PTR_MPI2_SAS_IOUNIT4_SPINUP_GROUP,
   Mpi2SasIOUnit4SpinupGroup_t, MPI2_POINTER pMpi2SasIOUnit4SpinupGroup_t;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	U8          SpinupFlags;                /* 0x02 */
 	U8          Reserved1;                  /* 0x03 */
 } MPI2_SAS_IOUNIT4_SPINUP_GROUP, MPI2_POINTER PTR_MPI2_SAS_IOUNIT4_SPINUP_GROUP,
@@ -2055,7 +2175,10 @@ typedef struct _MPI2_SAS_IOUNIT4_SPINUP_GROUP
 /* defines for SAS IO Unit Page 4 SpinupFlags */
 #define MPI2_SASIOUNIT4_SPINUP_DISABLE_FLAG         (0x01)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Host code (drivers, BIOS, utilities, etc.) should leave this define set to
  * one and check the value returned for NumPhys at runtime.
@@ -2275,6 +2398,7 @@ typedef struct _MPI2_CONFIG_PAGE_SASIOUNIT_8 {
 
 /* defines for PowerManagementCapabilities field */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MPI2_SASIOUNIT8_PM_HOST_PORT_WIDTH_MOD          (0x000001000)
 #define MPI2_SASIOUNIT8_PM_HOST_SAS_SLUMBER_MODE        (0x000000800)
 #define MPI2_SASIOUNIT8_PM_HOST_SAS_PARTIAL_MODE        (0x000000400)
@@ -2286,6 +2410,8 @@ typedef struct _MPI2_CONFIG_PAGE_SASIOUNIT_8 {
 #define MPI2_SASIOUNIT8_PM_IOUNIT_SATA_SLUMBER_MODE     (0x000000002)
 #define MPI2_SASIOUNIT8_PM_IOUNIT_SATA_PARTIAL_MODE     (0x000000001)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define MPI2_SASIOUNIT8_PM_HOST_PORT_WIDTH_MOD          (0x00001000)
 #define MPI2_SASIOUNIT8_PM_HOST_SAS_SLUMBER_MODE        (0x00000800)
 #define MPI2_SASIOUNIT8_PM_HOST_SAS_PARTIAL_MODE        (0x00000400)
@@ -2296,10 +2422,37 @@ typedef struct _MPI2_CONFIG_PAGE_SASIOUNIT_8 {
 #define MPI2_SASIOUNIT8_PM_IOUNIT_SAS_PARTIAL_MODE      (0x00000004)
 #define MPI2_SASIOUNIT8_PM_IOUNIT_SATA_SLUMBER_MODE     (0x00000002)
 #define MPI2_SASIOUNIT8_PM_IOUNIT_SATA_PARTIAL_MODE     (0x00000001)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 
 
+=======
+
+
+
+/* SAS IO Unit Page 16 */
+
+typedef struct _MPI2_CONFIG_PAGE_SASIOUNIT16 {
+	MPI2_CONFIG_EXTENDED_PAGE_HEADER  Header;                  /* 0x00 */
+	U64                         TimeStamp;                     /* 0x08 */
+	U32                         Reserved1;                     /* 0x10 */
+	U32                         Reserved2;                     /* 0x14 */
+	U32                         FastPathPendedRequests;        /* 0x18 */
+	U32                         FastPathUnPendedRequests;      /* 0x1C */
+	U32                         FastPathHostRequestStarts;     /* 0x20 */
+	U32                         FastPathFirmwareRequestStarts; /* 0x24 */
+	U32                         FastPathHostCompletions;       /* 0x28 */
+	U32                         FastPathFirmwareCompletions;   /* 0x2C */
+	U32                         NonFastPathRequestStarts;      /* 0x30 */
+	U32			    NonFastPathHostCompletions;    /* 0x30 */
+} MPI2_CONFIG_PAGE_SASIOUNIT16,
+MPI2_POINTER PTR_MPI2_CONFIG_PAGE_SASIOUNIT16,
+Mpi2SasIOUnitPage16_t, MPI2_POINTER pMpi2SasIOUnitPage16_t;
+
+#define MPI2_SASIOUNITPAGE16_PAGEVERSION    (0x00)
+
+>>>>>>> refs/remotes/origin/master
 
 /****************************************************************************
 *   SAS Expander Config Pages
@@ -2417,19 +2570,26 @@ typedef struct _MPI2_CONFIG_PAGE_EXPANDER_1
 /* use MPI2_SAS_NEG_LINK_RATE_ defines for the NegotiatedLinkRate field */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* use MPI2_SAS_APHYINFO_ defines for AttachedPhyInfo field */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* values for SAS Expander Page 1 DiscoveryInfo field */
 #define MPI2_SAS_EXPANDER1_DISCINFO_BAD_PHY_DISABLED    (0x04)
 #define MPI2_SAS_EXPANDER1_DISCINFO_LINK_STATUS_CHANGE  (0x02)
 #define MPI2_SAS_EXPANDER1_DISCINFO_NO_ROUTING_ENTRIES  (0x01)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* use MPI2_SAS_APHYINFO_ defines for AttachedPhyInfo field */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* use MPI2_SAS_APHYINFO_ defines for AttachedPhyInfo field */
+>>>>>>> refs/remotes/origin/master
 
 /****************************************************************************
 *   SAS Device Config Pages
@@ -2491,9 +2651,13 @@ typedef struct _MPI2_CONFIG_PAGE_SAS_DEV_0
 
 /* values for SAS Device Page 0 Flags field */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MPI2_SAS_DEVICE0_FLAGS_UNAUTHORIZED_DEVICE          (0x8000)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MPI2_SAS_DEVICE0_FLAGS_UNAUTHORIZED_DEVICE          (0x8000)
+>>>>>>> refs/remotes/origin/master
 #define MPI2_SAS_DEVICE0_FLAGS_SLUMBER_PM_CAPABLE           (0x1000)
 #define MPI2_SAS_DEVICE0_FLAGS_PARTIAL_PM_CAPABLE           (0x0800)
 #define MPI2_SAS_DEVICE0_FLAGS_SATA_ASYNCHRONOUS_NOTIFY     (0x0400)
@@ -2553,10 +2717,15 @@ typedef struct _MPI2_CONFIG_PAGE_SAS_PHY_0
 #define MPI2_SASPHY0_PAGEVERSION            (0x03)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* use MPI2_SAS_APHYINFO_ defines for AttachedPhyInfo field */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* use MPI2_SAS_APHYINFO_ defines for AttachedPhyInfo field */
+
+>>>>>>> refs/remotes/origin/master
 /* use MPI2_SAS_PRATE_ defines for the ProgrammedLinkRate field */
 
 /* use MPI2_SAS_HWRATE_ defines for the HwLinkRate field */
@@ -2565,6 +2734,7 @@ typedef struct _MPI2_CONFIG_PAGE_SAS_PHY_0
 #define MPI2_SAS_PHY0_FLAGS_SGPIO_DIRECT_ATTACH_ENC             (0x01)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* use MPI2_SAS_APHYINFO_ defines for AttachedPhyInfo field */
 
 /* use MPI2_SAS_NEG_LINK_RATE_ defines for the NegotiatedLinkRate field */
@@ -2572,11 +2742,16 @@ typedef struct _MPI2_CONFIG_PAGE_SAS_PHY_0
 /* use MPI2_SAS_PHYINFO_ for the PhyInfo field */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* use MPI2_SAS_PHYINFO_ for the PhyInfo field */
 
 /* use MPI2_SAS_NEG_LINK_RATE_ defines for the NegotiatedLinkRate field */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* SAS PHY Page 1 */
 
@@ -3062,7 +3237,10 @@ typedef struct _MPI2_CONFIG_PAGE_ETHERNET_1 {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /****************************************************************************
 *   Extended Manufacturing Config Pages
 ****************************************************************************/
@@ -3083,6 +3261,9 @@ typedef struct _MPI2_CONFIG_PAGE_EXT_MAN_PS {
 
 /* PageVersion should be provided by product-specific code */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 

@@ -28,7 +28,10 @@
 
 #define DRV_NAME	"jme"
 #define DRV_VERSION	"1.0.8"
+<<<<<<< HEAD
 #define PFX		DRV_NAME ": "
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define PCI_DEVICE_ID_JMICRON_JMC250	0x0250
 #define PCI_DEVICE_ID_JMICRON_JMC260	0x0260

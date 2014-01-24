@@ -80,13 +80,21 @@ static void mc33880_set(struct gpio_chip *chip, unsigned offset, int value)
 	mutex_unlock(&mc->lock);
 }
 
+<<<<<<< HEAD
 static int __devinit mc33880_probe(struct spi_device *spi)
+=======
+static int mc33880_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mc33880 *mc;
 	struct mc33880_platform_data *pdata;
 	int ret;
 
+<<<<<<< HEAD
 	pdata = spi->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&spi->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!pdata || !pdata->base) {
 		dev_dbg(&spi->dev, "incorrect or missing platform data\n");
 		return -EINVAL;
@@ -101,13 +109,21 @@ static int __devinit mc33880_probe(struct spi_device *spi)
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	mc = kzalloc(sizeof(struct mc33880), GFP_KERNEL);
+=======
+	mc = devm_kzalloc(&spi->dev, sizeof(struct mc33880), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!mc)
 		return -ENOMEM;
 
 	mutex_init(&mc->lock);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, mc);
+=======
+	spi_set_drvdata(spi, mc);
+>>>>>>> refs/remotes/origin/master
 
 	mc->spi = spi;
 
@@ -115,7 +131,11 @@ static int __devinit mc33880_probe(struct spi_device *spi)
 	mc->chip.set = mc33880_set;
 	mc->chip.base = pdata->base;
 	mc->chip.ngpio = PIN_NUMBER;
+<<<<<<< HEAD
 	mc->chip.can_sleep = 1;
+=======
+	mc->chip.can_sleep = true;
+>>>>>>> refs/remotes/origin/master
 	mc->chip.dev = &spi->dev;
 	mc->chip.owner = THIS_MODULE;
 
@@ -130,7 +150,12 @@ static int __devinit mc33880_probe(struct spi_device *spi)
 		ret = mc33880_write_config(mc);
 
 	if (ret) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Failed writing to " DRIVER_NAME ": %d\n", ret);
+=======
+		dev_err(&spi->dev, "Failed writing to " DRIVER_NAME ": %d\n",
+			ret);
+>>>>>>> refs/remotes/origin/master
 		goto exit_destroy;
 	}
 
@@ -141,6 +166,7 @@ static int __devinit mc33880_probe(struct spi_device *spi)
 	return ret;
 
 exit_destroy:
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, NULL);
 	mutex_destroy(&mc->lock);
 	kfree(mc);
@@ -148,10 +174,18 @@ exit_destroy:
 }
 
 static int __devexit mc33880_remove(struct spi_device *spi)
+=======
+	mutex_destroy(&mc->lock);
+	return ret;
+}
+
+static int mc33880_remove(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mc33880 *mc;
 	int ret;
 
+<<<<<<< HEAD
 	mc = dev_get_drvdata(&spi->dev);
 	if (mc == NULL)
 		return -ENODEV;
@@ -163,6 +197,16 @@ static int __devexit mc33880_remove(struct spi_device *spi)
 		mutex_destroy(&mc->lock);
 		kfree(mc);
 	} else
+=======
+	mc = spi_get_drvdata(spi);
+	if (mc == NULL)
+		return -ENODEV;
+
+	ret = gpiochip_remove(&mc->chip);
+	if (!ret)
+		mutex_destroy(&mc->lock);
+	else
+>>>>>>> refs/remotes/origin/master
 		dev_err(&spi->dev, "Failed to remove the GPIO controller: %d\n",
 			ret);
 
@@ -175,7 +219,11 @@ static struct spi_driver mc33880_driver = {
 		.owner		= THIS_MODULE,
 	},
 	.probe		= mc33880_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(mc33880_remove),
+=======
+	.remove		= mc33880_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init mc33880_init(void)

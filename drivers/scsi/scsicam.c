@@ -17,9 +17,12 @@
 #include <linux/kernel.h>
 #include <linux/blkdev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/unaligned.h>
 
 #include <scsi/scsicam.h>

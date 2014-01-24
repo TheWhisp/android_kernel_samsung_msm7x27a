@@ -24,6 +24,7 @@
  */
 
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/drbd.h>
 #include "drbd_int.h"
 #include "drbd_wrappers.h"
@@ -39,6 +40,75 @@ struct __packed al_transaction {
 		u32 pos;
 		u32 extent; } updates[1 + AL_EXTENTS_PT];
 	u32       xor_sum;
+=======
+#include <linux/crc32c.h>
+#include <linux/drbd.h>
+#include <linux/drbd_limits.h>
+#include <linux/dynamic_debug.h>
+#include "drbd_int.h"
+#include "drbd_wrappers.h"
+
+
+enum al_transaction_types {
+	AL_TR_UPDATE = 0,
+	AL_TR_INITIALIZED = 0xffff
+};
+/* all fields on disc in big endian */
+struct __packed al_transaction_on_disk {
+	/* don't we all like magic */
+	__be32	magic;
+
+	/* to identify the most recent transaction block
+	 * in the on disk ring buffer */
+	__be32	tr_number;
+
+	/* checksum on the full 4k block, with this field set to 0. */
+	__be32	crc32c;
+
+	/* type of transaction, special transaction types like:
+	 * purge-all, set-all-idle, set-all-active, ... to-be-defined
+	 * see also enum al_transaction_types */
+	__be16	transaction_type;
+
+	/* we currently allow only a few thousand extents,
+	 * so 16bit will be enough for the slot number. */
+
+	/* how many updates in this transaction */
+	__be16	n_updates;
+
+	/* maximum slot number, "al-extents" in drbd.conf speak.
+	 * Having this in each transaction should make reconfiguration
+	 * of that parameter easier. */
+	__be16	context_size;
+
+	/* slot number the context starts with */
+	__be16	context_start_slot_nr;
+
+	/* Some reserved bytes.  Expected usage is a 64bit counter of
+	 * sectors-written since device creation, and other data generation tag
+	 * supporting usage */
+	__be32	__reserved[4];
+
+	/* --- 36 byte used --- */
+
+	/* Reserve space for up to AL_UPDATES_PER_TRANSACTION changes
+	 * in one transaction, then use the remaining byte in the 4k block for
+	 * context information.  "Flexible" number of updates per transaction
+	 * does not help, as we have to account for the case when all update
+	 * slots are used anyways, so it would only complicate code without
+	 * additional benefit.
+	 */
+	__be16	update_slot_nr[AL_UPDATES_PER_TRANSACTION];
+
+	/* but the extent number is 32bit, which at an extent size of 4 MiB
+	 * allows to cover device sizes of up to 2**54 Byte (16 PiB) */
+	__be32	update_extent_nr[AL_UPDATES_PER_TRANSACTION];
+
+	/* --- 420 bytes used (36 + 64*6) --- */
+
+	/* 4096 - 420 = 3676 = 919 * 4 */
+	__be32	context[AL_CONTEXT_PER_TRANSACTION];
+>>>>>>> refs/remotes/origin/master
 };
 
 struct update_odbm_work {
@@ -48,6 +118,7 @@ struct update_odbm_work {
 
 struct update_al_work {
 	struct drbd_work w;
+<<<<<<< HEAD
 	struct lc_element *al_ext;
 	struct completion event;
 	unsigned int enr;
@@ -64,6 +135,49 @@ struct drbd_atodb_wait {
 
 
 int w_al_write_transaction(struct drbd_conf *, struct drbd_work *, int);
+=======
+	struct completion event;
+	int err;
+};
+
+
+void *drbd_md_get_buffer(struct drbd_conf *mdev)
+{
+	int r;
+
+	wait_event(mdev->misc_wait,
+		   (r = atomic_cmpxchg(&mdev->md_io_in_use, 0, 1)) == 0 ||
+		   mdev->state.disk <= D_FAILED);
+
+	return r ? NULL : page_address(mdev->md_io_page);
+}
+
+void drbd_md_put_buffer(struct drbd_conf *mdev)
+{
+	if (atomic_dec_and_test(&mdev->md_io_in_use))
+		wake_up(&mdev->misc_wait);
+}
+
+void wait_until_done_or_force_detached(struct drbd_conf *mdev, struct drbd_backing_dev *bdev,
+				     unsigned int *done)
+{
+	long dt;
+
+	rcu_read_lock();
+	dt = rcu_dereference(bdev->disk_conf)->disk_timeout;
+	rcu_read_unlock();
+	dt = dt * HZ / 10;
+	if (dt == 0)
+		dt = MAX_SCHEDULE_TIMEOUT;
+
+	dt = wait_event_timeout(mdev->misc_wait,
+			*done || test_bit(FORCE_DETACH, &mdev->flags), dt);
+	if (dt == 0) {
+		dev_err(DEV, "meta-data IO operation timed out\n");
+		drbd_chk_io_error(mdev, 1, DRBD_FORCE_DETACH);
+	}
+}
+>>>>>>> refs/remotes/origin/master
 
 static int _drbd_md_sync_page_io(struct drbd_conf *mdev,
 				 struct drbd_backing_dev *bdev,
@@ -71,17 +185,25 @@ static int _drbd_md_sync_page_io(struct drbd_conf *mdev,
 				 int rw, int size)
 {
 	struct bio *bio;
+<<<<<<< HEAD
 	struct drbd_md_io md_io;
 	int ok;
 
 	md_io.mdev = mdev;
 	init_completion(&md_io.event);
 	md_io.error = 0;
+=======
+	int err;
+
+	mdev->md_io.done = 0;
+	mdev->md_io.error = -ENODEV;
+>>>>>>> refs/remotes/origin/master
 
 	if ((rw & WRITE) && !test_bit(MD_NO_FUA, &mdev->flags))
 		rw |= REQ_FUA | REQ_FLUSH;
 	rw |= REQ_SYNC;
 
+<<<<<<< HEAD
 	bio = bio_alloc(GFP_NOIO, 1);
 	bio->bi_bdev = bdev->md_bdev;
 	bio->bi_sector = sector;
@@ -92,21 +214,56 @@ static int _drbd_md_sync_page_io(struct drbd_conf *mdev,
 	bio->bi_end_io = drbd_md_io_complete;
 	bio->bi_rw = rw;
 
+=======
+	bio = bio_alloc_drbd(GFP_NOIO);
+	bio->bi_bdev = bdev->md_bdev;
+	bio->bi_sector = sector;
+	err = -EIO;
+	if (bio_add_page(bio, page, size, 0) != size)
+		goto out;
+	bio->bi_private = &mdev->md_io;
+	bio->bi_end_io = drbd_md_io_complete;
+	bio->bi_rw = rw;
+
+	if (!(rw & WRITE) && mdev->state.disk == D_DISKLESS && mdev->ldev == NULL)
+		/* special case, drbd_md_read() during drbd_adm_attach(): no get_ldev */
+		;
+	else if (!get_ldev_if_state(mdev, D_ATTACHING)) {
+		/* Corresponding put_ldev in drbd_md_io_complete() */
+		dev_err(DEV, "ASSERT FAILED: get_ldev_if_state() == 1 in _drbd_md_sync_page_io()\n");
+		err = -ENODEV;
+		goto out;
+	}
+
+	bio_get(bio); /* one bio_put() is in the completion handler */
+	atomic_inc(&mdev->md_io_in_use); /* drbd_md_put_buffer() is in the completion handler */
+>>>>>>> refs/remotes/origin/master
 	if (drbd_insert_fault(mdev, (rw & WRITE) ? DRBD_FAULT_MD_WR : DRBD_FAULT_MD_RD))
 		bio_endio(bio, -EIO);
 	else
 		submit_bio(rw, bio);
+<<<<<<< HEAD
 	wait_for_completion(&md_io.event);
 	ok = bio_flagged(bio, BIO_UPTODATE) && md_io.error == 0;
 
  out:
 	bio_put(bio);
 	return ok;
+=======
+	wait_until_done_or_force_detached(mdev, bdev, &mdev->md_io.done);
+	if (bio_flagged(bio, BIO_UPTODATE))
+		err = mdev->md_io.error;
+
+ out:
+	bio_put(bio);
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 int drbd_md_sync_page_io(struct drbd_conf *mdev, struct drbd_backing_dev *bdev,
 			 sector_t sector, int rw)
 {
+<<<<<<< HEAD
 	int logical_block_size, mask, ok;
 	int offset = 0;
 	struct page *iop = mdev->md_io_page;
@@ -150,10 +307,27 @@ int drbd_md_sync_page_io(struct drbd_conf *mdev, struct drbd_backing_dev *bdev,
 
 	if (sector < drbd_md_first_sector(bdev) ||
 	    sector > drbd_md_last_sector(bdev))
+=======
+	int err;
+	struct page *iop = mdev->md_io_page;
+
+	D_ASSERT(atomic_read(&mdev->md_io_in_use) == 1);
+
+	BUG_ON(!bdev->md_bdev);
+
+	dev_dbg(DEV, "meta_data io: %s [%d]:%s(,%llus,%s) %pS\n",
+	     current->comm, current->pid, __func__,
+	     (unsigned long long)sector, (rw & WRITE) ? "WRITE" : "READ",
+	     (void*)_RET_IP_ );
+
+	if (sector < drbd_md_first_sector(bdev) ||
+	    sector + 7 > drbd_md_last_sector(bdev))
+>>>>>>> refs/remotes/origin/master
 		dev_alert(DEV, "%s [%d]:%s(,%llus,%s) out of range md access!\n",
 		     current->comm, current->pid, __func__,
 		     (unsigned long long)sector, (rw & WRITE) ? "WRITE" : "READ");
 
+<<<<<<< HEAD
 	ok = _drbd_md_sync_page_io(mdev, bdev, iop, sector, rw, logical_block_size);
 	if (unlikely(!ok)) {
 		dev_err(DEV, "drbd_md_sync_page_io(,%llus,%s) failed!\n",
@@ -236,10 +410,144 @@ void drbd_al_begin_io(struct drbd_conf *mdev, sector_t sector)
 		spin_lock_irq(&mdev->al_lock);
 		lc_changed(mdev->act_log, al_ext);
 		spin_unlock_irq(&mdev->al_lock);
+=======
+	/* we do all our meta data IO in aligned 4k blocks. */
+	err = _drbd_md_sync_page_io(mdev, bdev, iop, sector, rw, 4096);
+	if (err) {
+		dev_err(DEV, "drbd_md_sync_page_io(,%llus,%s) failed with error %d\n",
+		    (unsigned long long)sector, (rw & WRITE) ? "WRITE" : "READ", err);
+	}
+	return err;
+}
+
+static struct bm_extent *find_active_resync_extent(struct drbd_conf *mdev, unsigned int enr)
+{
+	struct lc_element *tmp;
+	tmp = lc_find(mdev->resync, enr/AL_EXT_PER_BM_SECT);
+	if (unlikely(tmp != NULL)) {
+		struct bm_extent  *bm_ext = lc_entry(tmp, struct bm_extent, lce);
+		if (test_bit(BME_NO_WRITES, &bm_ext->flags))
+			return bm_ext;
+	}
+	return NULL;
+}
+
+static struct lc_element *_al_get(struct drbd_conf *mdev, unsigned int enr, bool nonblock)
+{
+	struct lc_element *al_ext;
+	struct bm_extent *bm_ext;
+	int wake;
+
+	spin_lock_irq(&mdev->al_lock);
+	bm_ext = find_active_resync_extent(mdev, enr);
+	if (bm_ext) {
+		wake = !test_and_set_bit(BME_PRIORITY, &bm_ext->flags);
+		spin_unlock_irq(&mdev->al_lock);
+		if (wake)
+			wake_up(&mdev->al_wait);
+		return NULL;
+	}
+	if (nonblock)
+		al_ext = lc_try_get(mdev->act_log, enr);
+	else
+		al_ext = lc_get(mdev->act_log, enr);
+	spin_unlock_irq(&mdev->al_lock);
+	return al_ext;
+}
+
+bool drbd_al_begin_io_fastpath(struct drbd_conf *mdev, struct drbd_interval *i)
+{
+	/* for bios crossing activity log extent boundaries,
+	 * we may need to activate two extents in one go */
+	unsigned first = i->sector >> (AL_EXTENT_SHIFT-9);
+	unsigned last = i->size == 0 ? first : (i->sector + (i->size >> 9) - 1) >> (AL_EXTENT_SHIFT-9);
+
+	D_ASSERT((unsigned)(last - first) <= 1);
+	D_ASSERT(atomic_read(&mdev->local_cnt) > 0);
+
+	/* FIXME figure out a fast path for bios crossing AL extent boundaries */
+	if (first != last)
+		return false;
+
+	return _al_get(mdev, first, true);
+}
+
+bool drbd_al_begin_io_prepare(struct drbd_conf *mdev, struct drbd_interval *i)
+{
+	/* for bios crossing activity log extent boundaries,
+	 * we may need to activate two extents in one go */
+	unsigned first = i->sector >> (AL_EXTENT_SHIFT-9);
+	unsigned last = i->size == 0 ? first : (i->sector + (i->size >> 9) - 1) >> (AL_EXTENT_SHIFT-9);
+	unsigned enr;
+	bool need_transaction = false;
+
+	D_ASSERT(first <= last);
+	D_ASSERT(atomic_read(&mdev->local_cnt) > 0);
+
+	for (enr = first; enr <= last; enr++) {
+		struct lc_element *al_ext;
+		wait_event(mdev->al_wait,
+				(al_ext = _al_get(mdev, enr, false)) != NULL);
+		if (al_ext->lc_number != enr)
+			need_transaction = true;
+	}
+	return need_transaction;
+}
+
+static int al_write_transaction(struct drbd_conf *mdev, bool delegate);
+
+/* When called through generic_make_request(), we must delegate
+ * activity log I/O to the worker thread: a further request
+ * submitted via generic_make_request() within the same task
+ * would be queued on current->bio_list, and would only start
+ * after this function returns (see generic_make_request()).
+ *
+ * However, if we *are* the worker, we must not delegate to ourselves.
+ */
+
+/*
+ * @delegate:   delegate activity log I/O to the worker thread
+ */
+void drbd_al_begin_io_commit(struct drbd_conf *mdev, bool delegate)
+{
+	bool locked = false;
+
+	BUG_ON(delegate && current == mdev->tconn->worker.task);
+
+	/* Serialize multiple transactions.
+	 * This uses test_and_set_bit, memory barrier is implicit.
+	 */
+	wait_event(mdev->al_wait,
+			mdev->act_log->pending_changes == 0 ||
+			(locked = lc_try_lock_for_transaction(mdev->act_log)));
+
+	if (locked) {
+		/* Double check: it may have been committed by someone else,
+		 * while we have been waiting for the lock. */
+		if (mdev->act_log->pending_changes) {
+			bool write_al_updates;
+
+			rcu_read_lock();
+			write_al_updates = rcu_dereference(mdev->ldev->disk_conf)->al_updates;
+			rcu_read_unlock();
+
+			if (write_al_updates)
+				al_write_transaction(mdev, delegate);
+			spin_lock_irq(&mdev->al_lock);
+			/* FIXME
+			if (err)
+				we need an "lc_cancel" here;
+			*/
+			lc_committed(mdev->act_log);
+			spin_unlock_irq(&mdev->al_lock);
+		}
+		lc_unlock(mdev->act_log);
+>>>>>>> refs/remotes/origin/master
 		wake_up(&mdev->al_wait);
 	}
 }
 
+<<<<<<< HEAD
 void drbd_al_complete_io(struct drbd_conf *mdev, sector_t sector)
 {
 	unsigned int enr = (sector >> (AL_EXTENT_SHIFT-9));
@@ -260,6 +568,91 @@ void drbd_al_complete_io(struct drbd_conf *mdev, sector_t sector)
 		wake_up(&mdev->al_wait);
 
 	spin_unlock_irqrestore(&mdev->al_lock, flags);
+=======
+/*
+ * @delegate:   delegate activity log I/O to the worker thread
+ */
+void drbd_al_begin_io(struct drbd_conf *mdev, struct drbd_interval *i, bool delegate)
+{
+	BUG_ON(delegate && current == mdev->tconn->worker.task);
+
+	if (drbd_al_begin_io_prepare(mdev, i))
+		drbd_al_begin_io_commit(mdev, delegate);
+}
+
+int drbd_al_begin_io_nonblock(struct drbd_conf *mdev, struct drbd_interval *i)
+{
+	struct lru_cache *al = mdev->act_log;
+	/* for bios crossing activity log extent boundaries,
+	 * we may need to activate two extents in one go */
+	unsigned first = i->sector >> (AL_EXTENT_SHIFT-9);
+	unsigned last = i->size == 0 ? first : (i->sector + (i->size >> 9) - 1) >> (AL_EXTENT_SHIFT-9);
+	unsigned nr_al_extents;
+	unsigned available_update_slots;
+	unsigned enr;
+
+	D_ASSERT(first <= last);
+
+	nr_al_extents = 1 + last - first; /* worst case: all touched extends are cold. */
+	available_update_slots = min(al->nr_elements - al->used,
+				al->max_pending_changes - al->pending_changes);
+
+	/* We want all necessary updates for a given request within the same transaction
+	 * We could first check how many updates are *actually* needed,
+	 * and use that instead of the worst-case nr_al_extents */
+	if (available_update_slots < nr_al_extents)
+		return -EWOULDBLOCK;
+
+	/* Is resync active in this area? */
+	for (enr = first; enr <= last; enr++) {
+		struct lc_element *tmp;
+		tmp = lc_find(mdev->resync, enr/AL_EXT_PER_BM_SECT);
+		if (unlikely(tmp != NULL)) {
+			struct bm_extent  *bm_ext = lc_entry(tmp, struct bm_extent, lce);
+			if (test_bit(BME_NO_WRITES, &bm_ext->flags)) {
+				if (!test_and_set_bit(BME_PRIORITY, &bm_ext->flags))
+					return -EBUSY;
+				return -EWOULDBLOCK;
+			}
+		}
+	}
+
+	/* Checkout the refcounts.
+	 * Given that we checked for available elements and update slots above,
+	 * this has to be successful. */
+	for (enr = first; enr <= last; enr++) {
+		struct lc_element *al_ext;
+		al_ext = lc_get_cumulative(mdev->act_log, enr);
+		if (!al_ext)
+			dev_info(DEV, "LOGIC BUG for enr=%u\n", enr);
+	}
+	return 0;
+}
+
+void drbd_al_complete_io(struct drbd_conf *mdev, struct drbd_interval *i)
+{
+	/* for bios crossing activity log extent boundaries,
+	 * we may need to activate two extents in one go */
+	unsigned first = i->sector >> (AL_EXTENT_SHIFT-9);
+	unsigned last = i->size == 0 ? first : (i->sector + (i->size >> 9) - 1) >> (AL_EXTENT_SHIFT-9);
+	unsigned enr;
+	struct lc_element *extent;
+	unsigned long flags;
+
+	D_ASSERT(first <= last);
+	spin_lock_irqsave(&mdev->al_lock, flags);
+
+	for (enr = first; enr <= last; enr++) {
+		extent = lc_find(mdev->act_log, enr);
+		if (!extent) {
+			dev_err(DEV, "al_complete_io() called on inactive extent %u\n", enr);
+			continue;
+		}
+		lc_put(mdev->act_log, extent);
+	}
+	spin_unlock_irqrestore(&mdev->al_lock, flags);
+	wake_up(&mdev->al_wait);
+>>>>>>> refs/remotes/origin/master
 }
 
 #if (PAGE_SHIFT + 3) < (AL_EXTENT_SHIFT - BM_BLOCK_SHIFT)
@@ -285,6 +678,7 @@ static unsigned int rs_extent_to_bm_page(unsigned int rs_enr)
 	return rs_enr >>
 		/* bit to page */
 		((PAGE_SHIFT + 3) -
+<<<<<<< HEAD
 		/* al extent number to bit */
 		 (BM_EXT_SHIFT - BM_BLOCK_SHIFT));
 }
@@ -317,10 +711,51 @@ w_al_write_transaction(struct drbd_conf *mdev, struct drbd_work *w, int unused)
 	 * if we cannot write out the bitmap of the evicted extent. */
 	if (mdev->state.conn < C_CONNECTED && evicted != LC_FREE)
 		drbd_bm_write_page(mdev, al_extent_to_bm_page(evicted));
+=======
+		/* resync extent number to bit */
+		 (BM_EXT_SHIFT - BM_BLOCK_SHIFT));
+}
+
+static sector_t al_tr_number_to_on_disk_sector(struct drbd_conf *mdev)
+{
+	const unsigned int stripes = mdev->ldev->md.al_stripes;
+	const unsigned int stripe_size_4kB = mdev->ldev->md.al_stripe_size_4k;
+
+	/* transaction number, modulo on-disk ring buffer wrap around */
+	unsigned int t = mdev->al_tr_number % (mdev->ldev->md.al_size_4k);
+
+	/* ... to aligned 4k on disk block */
+	t = ((t % stripes) * stripe_size_4kB) + t/stripes;
+
+	/* ... to 512 byte sector in activity log */
+	t *= 8;
+
+	/* ... plus offset to the on disk position */
+	return mdev->ldev->md.md_offset + mdev->ldev->md.al_offset + t;
+}
+
+static int
+_al_write_transaction(struct drbd_conf *mdev)
+{
+	struct al_transaction_on_disk *buffer;
+	struct lc_element *e;
+	sector_t sector;
+	int i, mx;
+	unsigned extent_nr;
+	unsigned crc = 0;
+	int err = 0;
+
+	if (!get_ldev(mdev)) {
+		dev_err(DEV, "disk is %s, cannot start al transaction\n",
+			drbd_disk_str(mdev->state.disk));
+		return -EIO;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* The bitmap write may have failed, causing a state change. */
 	if (mdev->state.disk < D_INCONSISTENT) {
 		dev_err(DEV,
+<<<<<<< HEAD
 			"disk is %s, cannot write al transaction (-%d +%d)\n",
 			drbd_disk_str(mdev->state.disk), evicted, new_enr);
 		complete(&((struct update_al_work *)w)->event);
@@ -342,10 +777,62 @@ w_al_write_transaction(struct drbd_conf *mdev, struct drbd_work *w, int unused)
 	xor_sum ^= new_enr;
 
 	mx = min_t(int, AL_EXTENTS_PT,
+=======
+			"disk is %s, cannot write al transaction\n",
+			drbd_disk_str(mdev->state.disk));
+		put_ldev(mdev);
+		return -EIO;
+	}
+
+	buffer = drbd_md_get_buffer(mdev); /* protects md_io_buffer, al_tr_cycle, ... */
+	if (!buffer) {
+		dev_err(DEV, "disk failed while waiting for md_io buffer\n");
+		put_ldev(mdev);
+		return -ENODEV;
+	}
+
+	memset(buffer, 0, sizeof(*buffer));
+	buffer->magic = cpu_to_be32(DRBD_AL_MAGIC);
+	buffer->tr_number = cpu_to_be32(mdev->al_tr_number);
+
+	i = 0;
+
+	/* Even though no one can start to change this list
+	 * once we set the LC_LOCKED -- from drbd_al_begin_io(),
+	 * lc_try_lock_for_transaction() --, someone may still
+	 * be in the process of changing it. */
+	spin_lock_irq(&mdev->al_lock);
+	list_for_each_entry(e, &mdev->act_log->to_be_changed, list) {
+		if (i == AL_UPDATES_PER_TRANSACTION) {
+			i++;
+			break;
+		}
+		buffer->update_slot_nr[i] = cpu_to_be16(e->lc_index);
+		buffer->update_extent_nr[i] = cpu_to_be32(e->lc_new_number);
+		if (e->lc_number != LC_FREE)
+			drbd_bm_mark_for_writeout(mdev,
+					al_extent_to_bm_page(e->lc_number));
+		i++;
+	}
+	spin_unlock_irq(&mdev->al_lock);
+	BUG_ON(i > AL_UPDATES_PER_TRANSACTION);
+
+	buffer->n_updates = cpu_to_be16(i);
+	for ( ; i < AL_UPDATES_PER_TRANSACTION; i++) {
+		buffer->update_slot_nr[i] = cpu_to_be16(-1);
+		buffer->update_extent_nr[i] = cpu_to_be32(LC_FREE);
+	}
+
+	buffer->context_size = cpu_to_be16(mdev->act_log->nr_elements);
+	buffer->context_start_slot_nr = cpu_to_be16(mdev->al_tr_cycle);
+
+	mx = min_t(int, AL_CONTEXT_PER_TRANSACTION,
+>>>>>>> refs/remotes/origin/master
 		   mdev->act_log->nr_elements - mdev->al_tr_cycle);
 	for (i = 0; i < mx; i++) {
 		unsigned idx = mdev->al_tr_cycle + i;
 		extent_nr = lc_element_by_index(mdev->act_log, idx)->lc_number;
+<<<<<<< HEAD
 		buffer->updates[i+1].pos = cpu_to_be32(idx);
 		buffer->updates[i+1].extent = cpu_to_be32(extent_nr);
 		xor_sum ^= extent_nr;
@@ -569,6 +1056,75 @@ void drbd_al_apply_to_bm(struct drbd_conf *mdev)
 
 	dev_info(DEV, "Marked additional %s as out-of-sync based on AL.\n",
 	     ppsize(ppb, Bit2KB(add)));
+=======
+		buffer->context[i] = cpu_to_be32(extent_nr);
+	}
+	for (; i < AL_CONTEXT_PER_TRANSACTION; i++)
+		buffer->context[i] = cpu_to_be32(LC_FREE);
+
+	mdev->al_tr_cycle += AL_CONTEXT_PER_TRANSACTION;
+	if (mdev->al_tr_cycle >= mdev->act_log->nr_elements)
+		mdev->al_tr_cycle = 0;
+
+	sector = al_tr_number_to_on_disk_sector(mdev);
+
+	crc = crc32c(0, buffer, 4096);
+	buffer->crc32c = cpu_to_be32(crc);
+
+	if (drbd_bm_write_hinted(mdev))
+		err = -EIO;
+	else {
+		bool write_al_updates;
+		rcu_read_lock();
+		write_al_updates = rcu_dereference(mdev->ldev->disk_conf)->al_updates;
+		rcu_read_unlock();
+		if (write_al_updates) {
+			if (drbd_md_sync_page_io(mdev, mdev->ldev, sector, WRITE)) {
+				err = -EIO;
+				drbd_chk_io_error(mdev, 1, DRBD_META_IO_ERROR);
+			} else {
+				mdev->al_tr_number++;
+				mdev->al_writ_cnt++;
+			}
+		}
+	}
+
+	drbd_md_put_buffer(mdev);
+	put_ldev(mdev);
+
+	return err;
+}
+
+
+static int w_al_write_transaction(struct drbd_work *w, int unused)
+{
+	struct update_al_work *aw = container_of(w, struct update_al_work, w);
+	struct drbd_conf *mdev = w->mdev;
+	int err;
+
+	err = _al_write_transaction(mdev);
+	aw->err = err;
+	complete(&aw->event);
+
+	return err != -EIO ? err : 0;
+}
+
+/* Calls from worker context (see w_restart_disk_io()) need to write the
+   transaction directly. Others came through generic_make_request(),
+   those need to delegate it to the worker. */
+static int al_write_transaction(struct drbd_conf *mdev, bool delegate)
+{
+	if (delegate) {
+		struct update_al_work al_work;
+		init_completion(&al_work.event);
+		al_work.w.cb = w_al_write_transaction;
+		al_work.w.mdev = mdev;
+		drbd_queue_work_front(&mdev->tconn->sender_work, &al_work.w);
+		wait_for_completion(&al_work.event);
+		return al_work.err;
+	} else
+		return _al_write_transaction(mdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int _try_lc_del(struct drbd_conf *mdev, struct lc_element *al_ext)
@@ -598,7 +1154,11 @@ void drbd_al_shrink(struct drbd_conf *mdev)
 	struct lc_element *al_ext;
 	int i;
 
+<<<<<<< HEAD
 	D_ASSERT(test_bit(__LC_DIRTY, &mdev->act_log->flags));
+=======
+	D_ASSERT(test_bit(__LC_LOCKED, &mdev->act_log->flags));
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < mdev->act_log->nr_elements; i++) {
 		al_ext = lc_element_by_index(mdev->act_log, i);
@@ -610,15 +1170,48 @@ void drbd_al_shrink(struct drbd_conf *mdev)
 	wake_up(&mdev->al_wait);
 }
 
+<<<<<<< HEAD
 static int w_update_odbm(struct drbd_conf *mdev, struct drbd_work *w, int unused)
 {
 	struct update_odbm_work *udw = container_of(w, struct update_odbm_work, w);
+=======
+int drbd_initialize_al(struct drbd_conf *mdev, void *buffer)
+{
+	struct al_transaction_on_disk *al = buffer;
+	struct drbd_md *md = &mdev->ldev->md;
+	sector_t al_base = md->md_offset + md->al_offset;
+	int al_size_4k = md->al_stripes * md->al_stripe_size_4k;
+	int i;
+
+	memset(al, 0, 4096);
+	al->magic = cpu_to_be32(DRBD_AL_MAGIC);
+	al->transaction_type = cpu_to_be16(AL_TR_INITIALIZED);
+	al->crc32c = cpu_to_be32(crc32c(0, al, 4096));
+
+	for (i = 0; i < al_size_4k; i++) {
+		int err = drbd_md_sync_page_io(mdev, mdev->ldev, al_base + i * 8, WRITE);
+		if (err)
+			return err;
+	}
+	return 0;
+}
+
+static int w_update_odbm(struct drbd_work *w, int unused)
+{
+	struct update_odbm_work *udw = container_of(w, struct update_odbm_work, w);
+	struct drbd_conf *mdev = w->mdev;
+	struct sib_info sib = { .sib_reason = SIB_SYNC_PROGRESS, };
+>>>>>>> refs/remotes/origin/master
 
 	if (!get_ldev(mdev)) {
 		if (__ratelimit(&drbd_ratelimit_state))
 			dev_warn(DEV, "Can not update on disk bitmap, local IO disabled.\n");
 		kfree(udw);
+<<<<<<< HEAD
 		return 1;
+=======
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	drbd_bm_write_page(mdev, rs_extent_to_bm_page(udw->enr));
@@ -636,9 +1229,15 @@ static int w_update_odbm(struct drbd_conf *mdev, struct drbd_work *w, int unused
 			break;
 		}
 	}
+<<<<<<< HEAD
 	drbd_bcast_sync_progress(mdev);
 
 	return 1;
+=======
+	drbd_bcast_event(mdev, &sib);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -671,6 +1270,7 @@ static void drbd_try_clear_on_disk_bm(struct drbd_conf *mdev, sector_t sector,
 			else
 				ext->rs_failed += count;
 			if (ext->rs_left < ext->rs_failed) {
+<<<<<<< HEAD
 				dev_err(DEV, "BAD! sector=%llus enr=%u rs_left=%d "
 				    "rs_failed=%d count=%d\n",
 				     (unsigned long long)sector,
@@ -681,6 +1281,22 @@ static void drbd_try_clear_on_disk_bm(struct drbd_conf *mdev, sector_t sector,
 				lc_put(mdev->resync, &ext->lce);
 				drbd_force_state(mdev, NS(conn, C_DISCONNECTING));
 				return;
+=======
+				dev_warn(DEV, "BAD! sector=%llus enr=%u rs_left=%d "
+				    "rs_failed=%d count=%d cstate=%s\n",
+				     (unsigned long long)sector,
+				     ext->lce.lc_number, ext->rs_left,
+				     ext->rs_failed, count,
+				     drbd_conn_str(mdev->state.conn));
+
+				/* We don't expect to be able to clear more bits
+				 * than have been set when we originally counted
+				 * the set bits to cache that value in ext->rs_left.
+				 * Whatever the reason (disconnect during resync,
+				 * delayed local completion of an application write),
+				 * try to fix it up by recounting here. */
+				ext->rs_left = drbd_bm_e_weight(mdev, enr);
+>>>>>>> refs/remotes/origin/master
 			}
 		} else {
 			/* Normally this element should be in the cache,
@@ -704,7 +1320,13 @@ static void drbd_try_clear_on_disk_bm(struct drbd_conf *mdev, sector_t sector,
 			}
 			ext->rs_left = rs_left;
 			ext->rs_failed = success ? 0 : count;
+<<<<<<< HEAD
 			lc_changed(mdev->resync, &ext->lce);
+=======
+			/* we don't keep a persistent log of the resync lru,
+			 * we can commit any change right away. */
+			lc_committed(mdev->resync);
+>>>>>>> refs/remotes/origin/master
 		}
 		lc_put(mdev->resync, &ext->lce);
 		/* no race, we are within the al_lock! */
@@ -716,7 +1338,12 @@ static void drbd_try_clear_on_disk_bm(struct drbd_conf *mdev, sector_t sector,
 			if (udw) {
 				udw->enr = ext->lce.lc_number;
 				udw->w.cb = w_update_odbm;
+<<<<<<< HEAD
 				drbd_queue_work_front(&mdev->data.work, &udw->w);
+=======
+				udw->w.mdev = mdev;
+				drbd_queue_work_front(&mdev->tconn->sender_work, &udw->w);
+>>>>>>> refs/remotes/origin/master
 			} else {
 				dev_warn(DEV, "Could not kmalloc an udw\n");
 			}
@@ -762,16 +1389,34 @@ void __drbd_set_in_sync(struct drbd_conf *mdev, sector_t sector, int size,
 	int wake_up = 0;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	if (size <= 0 || (size & 0x1ff) != 0 || size > DRBD_MAX_BIO_SIZE) {
+=======
+	if (size <= 0 || !IS_ALIGNED(size, 512) || size > DRBD_MAX_BIO_SIZE) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(DEV, "drbd_set_in_sync: sector=%llus size=%d nonsense!\n",
 				(unsigned long long)sector, size);
 		return;
 	}
+<<<<<<< HEAD
 	nr_sectors = drbd_get_capacity(mdev->this_bdev);
 	esector = sector + (size >> 9) - 1;
 
 	ERR_IF(sector >= nr_sectors) return;
 	ERR_IF(esector >= nr_sectors) esector = (nr_sectors-1);
+=======
+
+	if (!get_ldev(mdev))
+		return; /* no disk, no metadata, no bitmap to clear bits in */
+
+	nr_sectors = drbd_get_capacity(mdev->this_bdev);
+	esector = sector + (size >> 9) - 1;
+
+	if (!expect(sector < nr_sectors))
+		goto out;
+	if (!expect(esector < nr_sectors))
+		esector = nr_sectors - 1;
+>>>>>>> refs/remotes/origin/master
 
 	lbnr = BM_SECT_TO_BIT(nr_sectors-1);
 
@@ -779,7 +1424,11 @@ void __drbd_set_in_sync(struct drbd_conf *mdev, sector_t sector, int size,
 	 * round up start sector, round down end sector.  we make sure we only
 	 * clear full, aligned, BM_BLOCK_SIZE (4K) blocks */
 	if (unlikely(esector < BM_SECT_PER_BIT-1))
+<<<<<<< HEAD
 		return;
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(esector == (nr_sectors-1)))
 		ebnr = lbnr;
 	else
@@ -787,14 +1436,22 @@ void __drbd_set_in_sync(struct drbd_conf *mdev, sector_t sector, int size,
 	sbnr = BM_SECT_TO_BIT(sector + BM_SECT_PER_BIT-1);
 
 	if (sbnr > ebnr)
+<<<<<<< HEAD
 		return;
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * ok, (capacity & 7) != 0 sometimes, but who cares...
 	 * we count rs_{total,left} in bits, not sectors.
 	 */
 	count = drbd_bm_clear_bits(mdev, sbnr, ebnr);
+<<<<<<< HEAD
 	if (count && get_ldev(mdev)) {
+=======
+	if (count) {
+>>>>>>> refs/remotes/origin/master
 		drbd_advance_rs_marks(mdev, drbd_bm_total_weight(mdev));
 		spin_lock_irqsave(&mdev->al_lock, flags);
 		drbd_try_clear_on_disk_bm(mdev, sector, count, true);
@@ -803,8 +1460,14 @@ void __drbd_set_in_sync(struct drbd_conf *mdev, sector_t sector, int size,
 		/* just wake_up unconditional now, various lc_chaged(),
 		 * lc_put() in drbd_try_clear_on_disk_bm(). */
 		wake_up = 1;
+<<<<<<< HEAD
 		put_ldev(mdev);
 	}
+=======
+	}
+out:
+	put_ldev(mdev);
+>>>>>>> refs/remotes/origin/master
 	if (wake_up)
 		wake_up(&mdev->al_wait);
 }
@@ -820,12 +1483,24 @@ void __drbd_set_in_sync(struct drbd_conf *mdev, sector_t sector, int size,
 int __drbd_set_out_of_sync(struct drbd_conf *mdev, sector_t sector, int size,
 			    const char *file, const unsigned int line)
 {
+<<<<<<< HEAD
 	unsigned long sbnr, ebnr, lbnr, flags;
+=======
+	unsigned long sbnr, ebnr, flags;
+>>>>>>> refs/remotes/origin/master
 	sector_t esector, nr_sectors;
 	unsigned int enr, count = 0;
 	struct lc_element *e;
 
+<<<<<<< HEAD
 	if (size <= 0 || (size & 0x1ff) != 0 || size > DRBD_MAX_BIO_SIZE) {
+=======
+	/* this should be an empty REQ_FLUSH */
+	if (size == 0)
+		return 0;
+
+	if (size < 0 || !IS_ALIGNED(size, 512) || size > DRBD_MAX_BIO_SIZE) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(DEV, "sector: %llus, size: %d\n",
 			(unsigned long long)sector, size);
 		return 0;
@@ -837,12 +1512,19 @@ int __drbd_set_out_of_sync(struct drbd_conf *mdev, sector_t sector, int size,
 	nr_sectors = drbd_get_capacity(mdev->this_bdev);
 	esector = sector + (size >> 9) - 1;
 
+<<<<<<< HEAD
 	ERR_IF(sector >= nr_sectors)
 		goto out;
 	ERR_IF(esector >= nr_sectors)
 		esector = (nr_sectors-1);
 
 	lbnr = BM_SECT_TO_BIT(nr_sectors-1);
+=======
+	if (!expect(sector < nr_sectors))
+		goto out;
+	if (!expect(esector < nr_sectors))
+		esector = nr_sectors - 1;
+>>>>>>> refs/remotes/origin/master
 
 	/* we set it out of sync,
 	 * we do not need to round anything here */
@@ -885,7 +1567,11 @@ struct bm_extent *_bme_get(struct drbd_conf *mdev, unsigned int enr)
 		if (bm_ext->lce.lc_number != enr) {
 			bm_ext->rs_left = drbd_bm_e_weight(mdev, enr);
 			bm_ext->rs_failed = 0;
+<<<<<<< HEAD
 			lc_changed(mdev->resync, &bm_ext->lce);
+=======
+			lc_committed(mdev->resync);
+>>>>>>> refs/remotes/origin/master
 			wakeup = 1;
 		}
 		if (bm_ext->lce.refcnt == 1)
@@ -901,7 +1587,11 @@ struct bm_extent *_bme_get(struct drbd_conf *mdev, unsigned int enr)
 		if (rs_flags & LC_STARVING)
 			dev_warn(DEV, "Have to wait for element"
 			     " (resync LRU too small?)\n");
+<<<<<<< HEAD
 		BUG_ON(rs_flags & LC_DIRTY);
+=======
+		BUG_ON(rs_flags & LC_LOCKED);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return bm_ext;
@@ -909,6 +1599,7 @@ struct bm_extent *_bme_get(struct drbd_conf *mdev, unsigned int enr)
 
 static int _is_in_al(struct drbd_conf *mdev, unsigned int enr)
 {
+<<<<<<< HEAD
 	struct lc_element *al_ext;
 	int rv = 0;
 
@@ -929,6 +1620,14 @@ static int _is_in_al(struct drbd_conf *mdev, unsigned int enr)
 		dev_info(DEV, "Delaying sync read until app's write is done\n");
 	}
 	*/
+=======
+	int rv;
+
+	spin_lock_irq(&mdev->al_lock);
+	rv = lc_is_used(mdev->act_log, enr);
+	spin_unlock_irq(&mdev->al_lock);
+
+>>>>>>> refs/remotes/origin/master
 	return rv;
 }
 
@@ -1058,13 +1757,21 @@ int drbd_try_rs_begin_io(struct drbd_conf *mdev, sector_t sector)
 			if (rs_flags & LC_STARVING)
 				dev_warn(DEV, "Have to wait for element"
 				     " (resync LRU too small?)\n");
+<<<<<<< HEAD
 			BUG_ON(rs_flags & LC_DIRTY);
+=======
+			BUG_ON(rs_flags & LC_LOCKED);
+>>>>>>> refs/remotes/origin/master
 			goto try_again;
 		}
 		if (bm_ext->lce.lc_number != enr) {
 			bm_ext->rs_left = drbd_bm_e_weight(mdev, enr);
 			bm_ext->rs_failed = 0;
+<<<<<<< HEAD
 			lc_changed(mdev->resync, &bm_ext->lce);
+=======
+			lc_committed(mdev->resync);
+>>>>>>> refs/remotes/origin/master
 			wake_up(&mdev->al_wait);
 			D_ASSERT(test_bit(BME_LOCKED, &bm_ext->flags) == 0);
 		}
@@ -1075,8 +1782,11 @@ int drbd_try_rs_begin_io(struct drbd_conf *mdev, sector_t sector)
 	}
 check_al:
 	for (i = 0; i < AL_EXT_PER_BM_SECT; i++) {
+<<<<<<< HEAD
 		if (unlikely(al_enr+i == mdev->act_log->new_number))
 			goto try_again;
+=======
+>>>>>>> refs/remotes/origin/master
 		if (lc_is_used(mdev->act_log, al_enr+i))
 			goto try_again;
 	}
@@ -1192,6 +1902,10 @@ int drbd_rs_del_all(struct drbd_conf *mdev)
 		put_ldev(mdev);
 	}
 	spin_unlock_irq(&mdev->al_lock);
+<<<<<<< HEAD
+=======
+	wake_up(&mdev->al_wait);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1210,7 +1924,11 @@ void drbd_rs_failed_io(struct drbd_conf *mdev, sector_t sector, int size)
 	sector_t esector, nr_sectors;
 	int wake_up = 0;
 
+<<<<<<< HEAD
 	if (size <= 0 || (size & 0x1ff) != 0 || size > DRBD_MAX_BIO_SIZE) {
+=======
+	if (size <= 0 || !IS_ALIGNED(size, 512) || size > DRBD_MAX_BIO_SIZE) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(DEV, "drbd_rs_failed_io: sector=%llus size=%d nonsense!\n",
 				(unsigned long long)sector, size);
 		return;
@@ -1218,8 +1936,15 @@ void drbd_rs_failed_io(struct drbd_conf *mdev, sector_t sector, int size)
 	nr_sectors = drbd_get_capacity(mdev->this_bdev);
 	esector = sector + (size >> 9) - 1;
 
+<<<<<<< HEAD
 	ERR_IF(sector >= nr_sectors) return;
 	ERR_IF(esector >= nr_sectors) esector = (nr_sectors-1);
+=======
+	if (!expect(sector < nr_sectors))
+		return;
+	if (!expect(esector < nr_sectors))
+		esector = nr_sectors - 1;
+>>>>>>> refs/remotes/origin/master
 
 	lbnr = BM_SECT_TO_BIT(nr_sectors-1);
 

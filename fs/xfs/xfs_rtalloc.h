@@ -18,6 +18,7 @@
 #ifndef __XFS_RTALLOC_H__
 #define	__XFS_RTALLOC_H__
 
+<<<<<<< HEAD
 struct xfs_mount;
 struct xfs_trans;
 
@@ -74,6 +75,13 @@ struct xfs_trans;
 
 #ifdef __KERNEL__
 
+=======
+/* kernel only definitions and functions */
+
+struct xfs_mount;
+struct xfs_trans;
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_XFS_RT
 /*
  * Function prototypes for exported functions.
@@ -146,6 +154,33 @@ xfs_growfs_rt(
 	struct xfs_mount	*mp,	/* file system mount structure */
 	xfs_growfs_rt_t		*in);	/* user supplied growfs struct */
 
+<<<<<<< HEAD
+=======
+/*
+ * From xfs_rtbitmap.c
+ */
+int xfs_rtbuf_get(struct xfs_mount *mp, struct xfs_trans *tp,
+		  xfs_rtblock_t block, int issum, struct xfs_buf **bpp);
+int xfs_rtcheck_range(struct xfs_mount *mp, struct xfs_trans *tp,
+		      xfs_rtblock_t start, xfs_extlen_t len, int val,
+		      xfs_rtblock_t *new, int *stat);
+int xfs_rtfind_back(struct xfs_mount *mp, struct xfs_trans *tp,
+		    xfs_rtblock_t start, xfs_rtblock_t limit,
+		    xfs_rtblock_t *rtblock);
+int xfs_rtfind_forw(struct xfs_mount *mp, struct xfs_trans *tp,
+		    xfs_rtblock_t start, xfs_rtblock_t limit,
+		    xfs_rtblock_t *rtblock);
+int xfs_rtmodify_range(struct xfs_mount *mp, struct xfs_trans *tp,
+		       xfs_rtblock_t start, xfs_extlen_t len, int val);
+int xfs_rtmodify_summary(struct xfs_mount *mp, struct xfs_trans *tp, int log,
+			 xfs_rtblock_t bbno, int delta, xfs_buf_t **rbpp,
+			 xfs_fsblock_t *rsb);
+int xfs_rtfree_range(struct xfs_mount *mp, struct xfs_trans *tp,
+		     xfs_rtblock_t start, xfs_extlen_t len,
+		     struct xfs_buf **rbpp, xfs_fsblock_t *rsb);
+
+
+>>>>>>> refs/remotes/origin/master
 #else
 # define xfs_rtallocate_extent(t,b,min,max,l,a,f,p,rb)  (ENOSYS)
 # define xfs_rtfree_extent(t,b,l)                       (ENOSYS)
@@ -165,6 +200,9 @@ xfs_rtmount_init(
 # define xfs_rtunmount_inodes(m)
 #endif	/* CONFIG_XFS_RT */
 
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* __XFS_RTALLOC_H__ */

@@ -104,12 +104,16 @@ static void cisco_keepalive_send(struct net_device *dev, u32 type,
 			    sizeof(struct cisco_packet));
 	if (!skb) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING
 		       "%s: Memory squeeze on cisco_keepalive_send()\n",
 		       dev->name);
 =======
 		netdev_warn(dev, "Memory squeeze on cisco_keepalive_send()\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_warn(dev, "Memory squeeze on cisco_keepalive_send()\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	skb_reserve(skb, 4);
@@ -186,12 +190,17 @@ static int cisco_rx(struct sk_buff *skb)
 		    (skb->len != sizeof(struct hdlc_header) +
 		     CISCO_BIG_PACKET_LEN)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: Invalid length of Cisco control"
 			       " packet (%d bytes)\n", dev->name, skb->len);
 =======
 			netdev_info(dev, "Invalid length of Cisco control packet (%d bytes)\n",
 				    skb->len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_info(dev, "Invalid length of Cisco control packet (%d bytes)\n",
+				    skb->len);
+>>>>>>> refs/remotes/origin/master
 			goto rx_error;
 		}
 
@@ -227,11 +236,15 @@ static int cisco_rx(struct sk_buff *skb)
 
 		case CISCO_ADDR_REPLY:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: Unexpected Cisco IP address "
 			       "reply\n", dev->name);
 =======
 			netdev_info(dev, "Unexpected Cisco IP address reply\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_info(dev, "Unexpected Cisco IP address reply\n");
+>>>>>>> refs/remotes/origin/master
 			goto rx_error;
 
 		case CISCO_KEEPALIVE_REQ:
@@ -249,6 +262,7 @@ static int cisco_rx(struct sk_buff *skb)
 					hrs = min / 60; min -= hrs * 60;
 					days = hrs / 24; hrs -= days * 24;
 <<<<<<< HEAD
+<<<<<<< HEAD
 					printk(KERN_INFO "%s: Link up (peer "
 					       "uptime %ud%uh%um%us)\n",
 					       dev->name, days, hrs, min, sec);
@@ -256,6 +270,10 @@ static int cisco_rx(struct sk_buff *skb)
 					netdev_info(dev, "Link up (peer uptime %ud%uh%um%us)\n",
 						    days, hrs, min, sec);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					netdev_info(dev, "Link up (peer uptime %ud%uh%um%us)\n",
+						    days, hrs, min, sec);
+>>>>>>> refs/remotes/origin/master
 					netif_dormant_off(dev);
 					st->up = 1;
 				}
@@ -268,11 +286,15 @@ static int cisco_rx(struct sk_buff *skb)
 	} /* switch (protocol) */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: Unsupported protocol %x\n", dev->name,
 	       ntohs(data->protocol));
 =======
 	netdev_info(dev, "Unsupported protocol %x\n", ntohs(data->protocol));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netdev_info(dev, "Unsupported protocol %x\n", ntohs(data->protocol));
+>>>>>>> refs/remotes/origin/master
 	dev_kfree_skb_any(skb);
 	return NET_RX_DROP;
 
@@ -295,10 +317,14 @@ static void cisco_timer(unsigned long arg)
 	    time_after(jiffies, st->last_poll + st->settings.timeout * HZ)) {
 		st->up = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: Link down\n", dev->name);
 =======
 		netdev_info(dev, "Link down\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(dev, "Link down\n");
+>>>>>>> refs/remotes/origin/master
 		netif_dormant_on(dev);
 	}
 

@@ -39,6 +39,11 @@
 #include <linux/bitops.h>
 #include <linux/workqueue.h>
 #include <linux/of.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_net.h>
 #include <linux/slab.h>
 
@@ -359,10 +364,33 @@ static int emac_reset(struct emac_instance *dev)
 	}
 
 #ifdef CONFIG_PPC_DCR_NATIVE
+<<<<<<< HEAD
 	/* Enable internal clock source */
 	if (emac_has_feature(dev, EMAC_FTR_460EX_PHY_CLK_FIX))
 		dcri_clrset(SDR0, SDR0_ETH_CFG,
 			    0, SDR0_ETH_CFG_ECS << dev->cell_index);
+=======
+	/*
+	 * PPC460EX/GT Embedded Processor Advanced User's Manual
+	 * section 28.10.1 Mode Register 0 (EMACx_MR0) states:
+	 * Note: The PHY must provide a TX Clk in order to perform a soft reset
+	 * of the EMAC. If none is present, select the internal clock
+	 * (SDR0_ETH_CFG[EMACx_PHY_CLK] = 1).
+	 * After a soft reset, select the external clock.
+	 */
+	if (emac_has_feature(dev, EMAC_FTR_460EX_PHY_CLK_FIX)) {
+		if (dev->phy_address == 0xffffffff &&
+		    dev->phy_map == 0xffffffff) {
+			/* No PHY: select internal loop clock before reset */
+			dcri_clrset(SDR0, SDR0_ETH_CFG,
+				    0, SDR0_ETH_CFG_ECS << dev->cell_index);
+		} else {
+			/* PHY present: select external clock before reset */
+			dcri_clrset(SDR0, SDR0_ETH_CFG,
+				    SDR0_ETH_CFG_ECS << dev->cell_index, 0);
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	out_be32(&p->mr0, EMAC_MR0_SRST);
@@ -370,10 +398,21 @@ static int emac_reset(struct emac_instance *dev)
 		--n;
 
 #ifdef CONFIG_PPC_DCR_NATIVE
+<<<<<<< HEAD
 	 /* Enable external clock source */
 	if (emac_has_feature(dev, EMAC_FTR_460EX_PHY_CLK_FIX))
 		dcri_clrset(SDR0, SDR0_ETH_CFG,
 			    SDR0_ETH_CFG_ECS << dev->cell_index, 0);
+=======
+	if (emac_has_feature(dev, EMAC_FTR_460EX_PHY_CLK_FIX)) {
+		if (dev->phy_address == 0xffffffff &&
+		    dev->phy_map == 0xffffffff) {
+			/* No PHY: restore external clock source after reset */
+			dcri_clrset(SDR0, SDR0_ETH_CFG,
+				    SDR0_ETH_CFG_ECS << dev->cell_index, 0);
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	if (n) {
@@ -2190,11 +2229,18 @@ static void emac_ethtool_get_drvinfo(struct net_device *ndev,
 {
 	struct emac_instance *dev = netdev_priv(ndev);
 
+<<<<<<< HEAD
 	strcpy(info->driver, "ibm_emac");
 	strcpy(info->version, DRV_VERSION);
 	info->fw_version[0] = '\0';
 	sprintf(info->bus_info, "PPC 4xx EMAC-%d %s",
 		dev->cell_index, dev->ofdev->dev.of_node->full_name);
+=======
+	strlcpy(info->driver, "ibm_emac", sizeof(info->driver));
+	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+	snprintf(info->bus_info, sizeof(info->bus_info), "PPC 4xx EMAC-%d %s",
+		 dev->cell_index, dev->ofdev->dev.of_node->full_name);
+>>>>>>> refs/remotes/origin/master
 	info->regdump_len = emac_ethtool_get_regs_len(ndev);
 }
 
@@ -2261,8 +2307,13 @@ struct emac_depentry {
 #define	EMAC_DEP_PREV_IDX	5
 #define	EMAC_DEP_COUNT		6
 
+<<<<<<< HEAD
 static int __devinit emac_check_deps(struct emac_instance *dev,
 				     struct emac_depentry *deps)
+=======
+static int emac_check_deps(struct emac_instance *dev,
+			   struct emac_depentry *deps)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, there = 0;
 	struct device_node *np;
@@ -2293,7 +2344,11 @@ static int __devinit emac_check_deps(struct emac_instance *dev,
 		if (deps[i].ofdev == NULL)
 			continue;
 		if (deps[i].drvdata == NULL)
+<<<<<<< HEAD
 			deps[i].drvdata = dev_get_drvdata(&deps[i].ofdev->dev);
+=======
+			deps[i].drvdata = platform_get_drvdata(deps[i].ofdev);
+>>>>>>> refs/remotes/origin/master
 		if (deps[i].drvdata != NULL)
 			there++;
 	}
@@ -2314,8 +2369,13 @@ static void emac_put_deps(struct emac_instance *dev)
 		of_dev_put(dev->tah_dev);
 }
 
+<<<<<<< HEAD
 static int __devinit emac_of_bus_notify(struct notifier_block *nb,
 					unsigned long action, void *data)
+=======
+static int emac_of_bus_notify(struct notifier_block *nb, unsigned long action,
+			      void *data)
+>>>>>>> refs/remotes/origin/master
 {
 	/* We are only intereted in device addition */
 	if (action == BUS_NOTIFY_BOUND_DRIVER)
@@ -2323,11 +2383,19 @@ static int __devinit emac_of_bus_notify(struct notifier_block *nb,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct notifier_block emac_of_bus_notifier __devinitdata = {
 	.notifier_call = emac_of_bus_notify
 };
 
 static int __devinit emac_wait_deps(struct emac_instance *dev)
+=======
+static struct notifier_block emac_of_bus_notifier = {
+	.notifier_call = emac_of_bus_notify
+};
+
+static int emac_wait_deps(struct emac_instance *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct emac_depentry deps[EMAC_DEP_COUNT];
 	int i, err;
@@ -2367,8 +2435,13 @@ static int __devinit emac_wait_deps(struct emac_instance *dev)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit emac_read_uint_prop(struct device_node *np, const char *name,
 					 u32 *val, int fatal)
+=======
+static int emac_read_uint_prop(struct device_node *np, const char *name,
+			       u32 *val, int fatal)
+>>>>>>> refs/remotes/origin/master
 {
 	int len;
 	const u32 *prop = of_get_property(np, name, &len);
@@ -2382,7 +2455,11 @@ static int __devinit emac_read_uint_prop(struct device_node *np, const char *nam
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit emac_init_phy(struct emac_instance *dev)
+=======
+static int emac_init_phy(struct emac_instance *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np = dev->ofdev->dev.of_node;
 	struct net_device *ndev = dev->ndev;
@@ -2518,7 +2595,11 @@ static int __devinit emac_init_phy(struct emac_instance *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit emac_init_config(struct emac_instance *dev)
+=======
+static int emac_init_config(struct emac_instance *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np = dev->ofdev->dev.of_node;
 	const void *p;
@@ -2657,7 +2738,11 @@ static int __devinit emac_init_config(struct emac_instance *dev)
 		       np->full_name);
 		return -ENXIO;
 	}
+<<<<<<< HEAD
 	memcpy(dev->ndev->dev_addr, p, 6);
+=======
+	memcpy(dev->ndev->dev_addr, p, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	/* IAHT and GAHT filter parameterization */
 	if (emac_has_feature(dev, EMAC_FTR_EMAC4SYNC)) {
@@ -2703,7 +2788,11 @@ static const struct net_device_ops emac_gige_netdev_ops = {
 	.ndo_change_mtu		= emac_change_mtu,
 };
 
+<<<<<<< HEAD
 static int __devinit emac_probe(struct platform_device *ofdev)
+=======
+static int emac_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *ndev;
 	struct emac_instance *dev;
@@ -2780,9 +2869,15 @@ static int __devinit emac_probe(struct platform_device *ofdev)
 		/*  display more info about what's missing ? */
 		goto err_reg_unmap;
 	}
+<<<<<<< HEAD
 	dev->mal = dev_get_drvdata(&dev->mal_dev->dev);
 	if (dev->mdio_dev != NULL)
 		dev->mdio_instance = dev_get_drvdata(&dev->mdio_dev->dev);
+=======
+	dev->mal = platform_get_drvdata(dev->mal_dev);
+	if (dev->mdio_dev != NULL)
+		dev->mdio_instance = platform_get_drvdata(dev->mdio_dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* Register with MAL */
 	dev->commac.ops = &emac_commac_ops;
@@ -2873,7 +2968,11 @@ static int __devinit emac_probe(struct platform_device *ofdev)
 	 * fully initialized
 	 */
 	wmb();
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, dev);
+=======
+	platform_set_drvdata(ofdev, dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* There's a new kid in town ! Let's tell everybody */
 	wake_up_all(&emac_probe_wait);
@@ -2930,6 +3029,7 @@ static int __devinit emac_probe(struct platform_device *ofdev)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit emac_remove(struct platform_device *ofdev)
 {
 	struct emac_instance *dev = dev_get_drvdata(&ofdev->dev);
@@ -2938,6 +3038,14 @@ static int __devexit emac_remove(struct platform_device *ofdev)
 
 	dev_set_drvdata(&ofdev->dev, NULL);
 
+=======
+static int emac_remove(struct platform_device *ofdev)
+{
+	struct emac_instance *dev = platform_get_drvdata(ofdev);
+
+	DBG(dev, "remove" NL);
+
+>>>>>>> refs/remotes/origin/master
 	unregister_netdev(dev->ndev);
 
 	cancel_work_sync(&dev->reset_work);

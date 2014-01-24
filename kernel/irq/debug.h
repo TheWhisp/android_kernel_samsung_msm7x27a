@@ -5,16 +5,22 @@
 #include <linux/kallsyms.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define P(f) if (desc->status_use_accessors & f) printk("%14s set\n", #f)
 #define PS(f) if (desc->istate & f) printk("%14s set\n", #f)
 /* FIXME */
 #define PD(f) do { } while (0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ___P(f) if (desc->status_use_accessors & f) printk("%14s set\n", #f)
 #define ___PS(f) if (desc->istate & f) printk("%14s set\n", #f)
 /* FIXME */
 #define ___PD(f) do { } while (0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline void print_irq_desc(unsigned int irq, struct irq_desc *desc)
 {
@@ -30,6 +36,7 @@ static inline void print_irq_desc(unsigned int irq, struct irq_desc *desc)
 		print_symbol("%s\n", (unsigned long)desc->action->handler);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	P(IRQ_LEVEL);
 	P(IRQ_PER_CPU);
@@ -52,6 +59,8 @@ static inline void print_irq_desc(unsigned int irq, struct irq_desc *desc)
 #undef PS
 #undef PD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	___P(IRQ_LEVEL);
 	___P(IRQ_PER_CPU);
 	___P(IRQ_NOPROBE);
@@ -72,4 +81,7 @@ static inline void print_irq_desc(unsigned int irq, struct irq_desc *desc)
 #undef ___P
 #undef ___PS
 #undef ___PD
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

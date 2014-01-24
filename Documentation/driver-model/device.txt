@@ -46,28 +46,39 @@ struct device_attribute {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Attributes of devices can be exported via drivers using a simple
 procfs-like interface. 
 =======
 Attributes of devices can be exported by a device driver through sysfs.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Attributes of devices can be exported by a device driver through sysfs.
+>>>>>>> refs/remotes/origin/master
 
 Please see Documentation/filesystems/sysfs.txt for more information
 on how sysfs works.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 As explained in Documentation/kobject.txt, device attributes must be be
 created before the KOBJ_ADD uevent is generated. The only way to realize
 that is by defining an attribute group.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 Attributes are declared using a macro called DEVICE_ATTR:
 
 #define DEVICE_ATTR(name,mode,show,store)
 
 Example:
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 DEVICE_ATTR(power,0644,show_power,store_power);
 
@@ -85,6 +96,8 @@ device_remove_file(dev,&dev_attr_power);
 
 The file name will be 'power' with a mode of 0644 (-rw-r--r--).
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static DEVICE_ATTR(type, 0444, show_type, NULL);
 static DEVICE_ATTR(power, 0644, show_power, store_power);
 
@@ -116,7 +129,10 @@ group pointer in struct device before device_register() is invoked:
 The device_register() function will use the 'groups' pointer to create the
 device attributes and the device_unregister() function will use this pointer
 to remove the device attributes.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 Word of warning:  While the kernel allows device_create_file() and
 device_remove_file() to be called on a device at any time, userspace has
@@ -129,6 +145,7 @@ not know about the new attributes.
 This is important for device driver that need to publish additional
 attributes for a device at driver probe time.  If the device driver simply
 calls device_create_file() on the device structure passed to it, then
+<<<<<<< HEAD
 <<<<<<< HEAD
 userspace will never be notified of the new attributes.  Instead, it should
 probably use class_create() and class->dev_attrs to set up a list of
@@ -154,3 +171,6 @@ probe function would do something like:
 =======
 userspace will never be notified of the new attributes.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+userspace will never be notified of the new attributes.
+>>>>>>> refs/remotes/origin/master

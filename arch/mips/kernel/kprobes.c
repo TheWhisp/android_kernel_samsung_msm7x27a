@@ -26,17 +26,25 @@
 #include <linux/kprobes.h>
 #include <linux/preempt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/uaccess.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/uaccess.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kdebug.h>
 #include <linux/slab.h>
 
 #include <asm/ptrace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/branch.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/branch.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/break.h>
 #include <asm/inst.h>
 
@@ -121,7 +129,10 @@ insn_ok:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * insn_has_ll_or_sc function checks whether instruction is ll or sc
  * one; putting breakpoint on top of atomic ll/sc pair is bad idea;
@@ -146,7 +157,10 @@ static int __kprobes insn_has_ll_or_sc(union mips_instruction insn)
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int __kprobes arch_prepare_kprobe(struct kprobe *p)
 {
 	union mips_instruction insn;
@@ -154,12 +168,15 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
 	int ret = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	prev_insn = p->addr[-1];
 	insn = p->addr[0];
 
 	if (insn_has_delayslot(insn) || insn_has_delayslot(prev_insn)) {
 		pr_notice("Kprobes for branch and jump instructions are not supported\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	insn = p->addr[0];
 
 	if (insn_has_ll_or_sc(insn)) {
@@ -173,7 +190,10 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
 				sizeof(mips_instruction)) == 0) &&
 				insn_has_delayslot(prev_insn)) {
 		pr_notice("Kprobes for branch delayslot are not supported\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto out;
 	}
@@ -190,10 +210,13 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
 	 * instruction at index zero and a break trap instruction at
 	 * index one.
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 */
 
 	memcpy(&p->ainsn.insn[0], p->addr, sizeof(kprobe_opcode_t));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 *
 	 * On MIPS arch if the instruction at probed address is a
 	 * branch instruction, we need to execute the instruction at
@@ -208,7 +231,10 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
 	else
 		memcpy(&p->ainsn.insn[0], p->addr, sizeof(kprobe_opcode_t));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	p->ainsn.insn[1] = breakpoint2_insn;
 	p->opcode = *p->addr;
 
@@ -230,7 +256,14 @@ void __kprobes arch_disarm_kprobe(struct kprobe *p)
 
 void __kprobes arch_remove_kprobe(struct kprobe *p)
 {
+<<<<<<< HEAD
 	free_insn_slot(p->ainsn.insn, 0);
+=======
+	if (p->ainsn.insn) {
+		free_insn_slot(p->ainsn.insn, 0);
+		p->ainsn.insn = NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static void save_previous_kprobe(struct kprobe_ctlblk *kcb)
@@ -260,9 +293,12 @@ static void set_current_kprobe(struct kprobe *p, struct pt_regs *regs,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void prepare_singlestep(struct kprobe *p, struct pt_regs *regs)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * evaluate_branch_instrucion -
  *
@@ -315,7 +351,10 @@ static void prepare_singlestep(struct kprobe *p, struct pt_regs *regs,
 {
 	int ret = 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	regs->cp0_status &= ~ST0_IE;
 
 	/* single step inline if the instruction is a break */
@@ -323,9 +362,12 @@ static void prepare_singlestep(struct kprobe *p, struct pt_regs *regs,
 	    p->opcode.word == breakpoint2_insn.word)
 		regs->cp0_epc = (unsigned long)p->addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else
 		regs->cp0_epc = (unsigned long)&p->ainsn.insn[0];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	else if (insn_has_delayslot(p->opcode)) {
 		ret = evaluate_branch_instruction(p, regs, kcb);
 		if (ret < 0) {
@@ -339,7 +381,11 @@ static void prepare_singlestep(struct kprobe *p, struct pt_regs *regs,
 /*
  * Called after single-stepping.  p->addr is the address of the
  * instruction whose first byte has been replaced by the "break 0"
+<<<<<<< HEAD
  * instruction.  To avoid the SMP problems that can occur when we
+=======
+ * instruction.	 To avoid the SMP problems that can occur when we
+>>>>>>> refs/remotes/origin/master
  * temporarily put back the original opcode to single-step, we
  * single-stepped a copy of the instruction.  The address of this
  * copy is p->ainsn.insn.
@@ -358,7 +404,10 @@ static void __kprobes resume_execution(struct kprobe *p,
 		unsigned long orig_epc = kcb->kprobe_saved_epc;
 		regs->cp0_epc = orig_epc + 4;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __kprobes kprobe_handler(struct pt_regs *regs)
@@ -398,9 +447,12 @@ static int __kprobes kprobe_handler(struct pt_regs *regs)
 			set_current_kprobe(p, regs, kcb);
 			kprobes_inc_nmissed_count(p);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			prepare_singlestep(p, regs);
 			kcb->kprobe_status = KPROBE_REENTER;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			prepare_singlestep(p, regs, kcb);
 			kcb->kprobe_status = KPROBE_REENTER;
 			if (kcb->flags & SKIP_DELAYSLOT) {
@@ -408,7 +460,10 @@ static int __kprobes kprobe_handler(struct pt_regs *regs)
 				restore_previous_kprobe(kcb);
 				preempt_enable_no_resched();
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return 1;
 		} else {
 			if (addr->word != breakpoint_insn.word) {
@@ -453,9 +508,12 @@ static int __kprobes kprobe_handler(struct pt_regs *regs)
 
 ss_probe:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	prepare_singlestep(p, regs);
 	kcb->kprobe_status = KPROBE_HIT_SS;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	prepare_singlestep(p, regs, kcb);
 	if (kcb->flags & SKIP_DELAYSLOT) {
 		kcb->kprobe_status = KPROBE_HIT_SSDONE;
@@ -466,7 +524,10 @@ ss_probe:
 	} else
 		kcb->kprobe_status = KPROBE_HIT_SS;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 1;
 
 no_kprobe:
@@ -475,6 +536,7 @@ no_kprobe:
 
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Called after single-stepping.  p->addr is the address of the
@@ -497,6 +559,8 @@ static void __kprobes resume_execution(struct kprobe *p,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int post_kprobe_handler(struct pt_regs *regs)
 {
 	struct kprobe *cur = kprobe_running();
@@ -600,7 +664,11 @@ void jprobe_return_end(void);
 
 void __kprobes jprobe_return(void)
 {
+<<<<<<< HEAD
 	/* Assembler quirk necessitates this '0,code' business.  */
+=======
+	/* Assembler quirk necessitates this '0,code' business.	 */
+>>>>>>> refs/remotes/origin/master
 	asm volatile(
 		"break 0,%0\n\t"
 		".globl jprobe_return_end\n"
@@ -663,7 +731,11 @@ static int __kprobes trampoline_probe_handler(struct kprobe *p,
 {
 	struct kretprobe_instance *ri = NULL;
 	struct hlist_head *head, empty_rp;
+<<<<<<< HEAD
 	struct hlist_node *node, *tmp;
+=======
+	struct hlist_node *tmp;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags, orig_ret_address = 0;
 	unsigned long trampoline_address = (unsigned long)kretprobe_trampoline;
 
@@ -679,11 +751,19 @@ static int __kprobes trampoline_probe_handler(struct kprobe *p,
 	 * We can handle this because:
 	 *     - instances are always inserted at the head of the list
 	 *     - when multiple return probes are registered for the same
+<<<<<<< HEAD
 	 *       function, the first instance's ret_addr will point to the
 	 *       real return address, and all the rest will point to
 	 *       kretprobe_trampoline
 	 */
 	hlist_for_each_entry_safe(ri, node, tmp, head, hlist) {
+=======
+	 *	 function, the first instance's ret_addr will point to the
+	 *	 real return address, and all the rest will point to
+	 *	 kretprobe_trampoline
+	 */
+	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
+>>>>>>> refs/remotes/origin/master
 		if (ri->task != current)
 			/* another task is sharing our hash bucket */
 			continue;
@@ -710,7 +790,11 @@ static int __kprobes trampoline_probe_handler(struct kprobe *p,
 	kretprobe_hash_unlock(current, &flags);
 	preempt_enable_no_resched();
 
+<<<<<<< HEAD
 	hlist_for_each_entry_safe(ri, node, tmp, &empty_rp, hlist) {
+=======
+	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
+>>>>>>> refs/remotes/origin/master
 		hlist_del(&ri->hlist);
 		kfree(ri);
 	}

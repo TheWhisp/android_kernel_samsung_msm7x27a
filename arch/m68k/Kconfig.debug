@@ -3,7 +3,10 @@ menu "Kernel hacking"
 source "lib/Kconfig.debug"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config BOOTPARAM
 	bool 'Compiled-in Kernel Boot Parameter'
 
@@ -13,9 +16,14 @@ config BOOTPARAM_STRING
 	depends on BOOTPARAM
 
 config EARLY_PRINTK
+<<<<<<< HEAD
 	bool "Early printk" if EMBEDDED
 	depends on MVME16x || MAC
 	default y
+=======
+	bool "Early printk"
+	depends on MVME16x || MAC
+>>>>>>> refs/remotes/origin/master
 	help
           Write kernel log output directly to a serial port.
 
@@ -23,7 +31,10 @@ config EARLY_PRINTK
           early before the console code is initialized.
           You should normally say N here, unless you want to debug such a crash.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 if !MMU
 
 config FULLDEBUG
@@ -38,6 +49,7 @@ config HIGHPROFILE
 	  Use a fast secondary clock to produce profiling information.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config BOOTPARAM
 	bool 'Compiled-in Kernel Boot Parameter'
 
@@ -48,6 +60,8 @@ config BOOTPARAM_STRING
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config NO_KERNEL_MSG
 	bool "Suppress Kernel BUG Messages"
 	help
@@ -55,7 +69,11 @@ config NO_KERNEL_MSG
 
 config BDM_DISABLE
 	bool "Disable BDM signals"
+<<<<<<< HEAD
 	depends on (EXPERIMENTAL && COLDFIRE)
+=======
+	depends on COLDFIRE
+>>>>>>> refs/remotes/origin/master
 	help
 	  Disable the ColdFire CPU's BDM signals.
 

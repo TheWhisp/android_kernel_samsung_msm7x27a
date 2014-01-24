@@ -23,9 +23,12 @@
 #include <asm/mipsregs.h>
 #include <asm/signal.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/ip32/crime.h>
 #include <asm/ip32/mace.h>
@@ -117,18 +120,24 @@ extern irqreturn_t crime_cpuerr_intr(int irq, void *dev_id);
 static struct irqaction memerr_irq = {
 	.handler = crime_memerr_intr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flags = IRQF_DISABLED,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.name = "CRIME memory error",
 };
 
 static struct irqaction cpuerr_irq = {
 	.handler = crime_cpuerr_intr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flags = IRQF_DISABLED,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.name = "CRIME CPU error",
 };
 
@@ -185,7 +194,11 @@ static struct irq_chip crime_edge_interrupt = {
 
 /*
  * This is for MACE PCI interrupts.  We can decrease bus traffic by masking
+<<<<<<< HEAD
  * as close to the source as possible.  This also means we can take the
+=======
+ * as close to the source as possible.	This also means we can take the
+>>>>>>> refs/remotes/origin/master
  * next chunk of the CRIME register in one piece.
  */
 
@@ -283,11 +296,19 @@ static void disable_maceisa_irq(struct irq_data *d)
 	unsigned int crime_int = 0;
 
 	maceisa_mask &= ~(1 << (d->irq - MACEISA_AUDIO_SW_IRQ));
+<<<<<<< HEAD
         if (!(maceisa_mask & MACEISA_AUDIO_INT))
 		crime_int |= MACE_AUDIO_INT;
         if (!(maceisa_mask & MACEISA_MISC_INT))
 		crime_int |= MACE_MISC_INT;
         if (!(maceisa_mask & MACEISA_SUPERIO_INT))
+=======
+	if (!(maceisa_mask & MACEISA_AUDIO_INT))
+		crime_int |= MACE_AUDIO_INT;
+	if (!(maceisa_mask & MACEISA_MISC_INT))
+		crime_int |= MACE_MISC_INT;
+	if (!(maceisa_mask & MACEISA_SUPERIO_INT))
+>>>>>>> refs/remotes/origin/master
 		crime_int |= MACE_SUPERIO_INT;
 	crime_mask &= ~crime_int;
 	crime->imask = crime_mask;

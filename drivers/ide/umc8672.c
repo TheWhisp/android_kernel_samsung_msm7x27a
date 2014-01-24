@@ -128,7 +128,11 @@ static const struct ide_port_ops umc8672_port_ops = {
 	.set_pio_mode		= umc_set_pio_mode,
 };
 
+<<<<<<< HEAD
 static const struct ide_port_info umc8672_port_info __initdata = {
+=======
+static const struct ide_port_info umc8672_port_info __initconst = {
+>>>>>>> refs/remotes/origin/master
 	.name			= DRV_NAME,
 	.chipset		= ide_umc8672,
 	.port_ops		= &umc8672_port_ops,
@@ -161,10 +165,14 @@ static int __init umc8672_probe(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int probe_umc8672;
 =======
 static bool probe_umc8672;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool probe_umc8672;
+>>>>>>> refs/remotes/origin/master
 
 module_param_named(probe, probe_umc8672, bool, 0);
 MODULE_PARM_DESC(probe, "probe for UMC8672 chipset");

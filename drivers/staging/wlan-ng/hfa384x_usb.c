@@ -171,11 +171,19 @@ static void hfa384x_ctlxout_callback(struct urb *urb);
 static void hfa384x_usbin_callback(struct urb *urb);
 
 static void
+<<<<<<< HEAD
 hfa384x_usbin_txcompl(wlandevice_t *wlandev, hfa384x_usbin_t * usbin);
 
 static void hfa384x_usbin_rx(wlandevice_t *wlandev, struct sk_buff *skb);
 
 static void hfa384x_usbin_info(wlandevice_t *wlandev, hfa384x_usbin_t * usbin);
+=======
+hfa384x_usbin_txcompl(wlandevice_t *wlandev, hfa384x_usbin_t *usbin);
+
+static void hfa384x_usbin_rx(wlandevice_t *wlandev, struct sk_buff *skb);
+
+static void hfa384x_usbin_info(wlandevice_t *wlandev, hfa384x_usbin_t *usbin);
+>>>>>>> refs/remotes/origin/master
 
 static void
 hfa384x_usbout_tx(wlandevice_t *wlandev, hfa384x_usbout_t *usbout);
@@ -285,7 +293,11 @@ static inline const char *ctlxstr(CTLX_STATE s)
 	return ctlx_str[s];
 };
 
+<<<<<<< HEAD
 static inline hfa384x_usbctlx_t *get_active_ctlx(hfa384x_t * hw)
+=======
+static inline hfa384x_usbctlx_t *get_active_ctlx(hfa384x_t *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	return list_entry(hw->ctlxq.active.next, hfa384x_usbctlx_t, list);
 }
@@ -355,7 +367,11 @@ static int submit_rx_urb(hfa384x_t *hw, gfp_t memflags)
 
 		/* Check whether we need to reset the RX pipe */
 		if (result == -EPIPE) {
+<<<<<<< HEAD
 			printk(KERN_WARNING
+=======
+			netdev_warn(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 			       "%s rx pipe stalled: requesting reset\n",
 			       hw->wlandev->netdev->name);
 			if (!test_and_set_bit(WORK_RX_HALT, &hw->usb_flags))
@@ -405,7 +421,11 @@ static int submit_tx_urb(hfa384x_t *hw, struct urb *tx_urb, gfp_t memflags)
 
 			/* Test whether we need to reset the TX pipe */
 			if (result == -EPIPE) {
+<<<<<<< HEAD
 				printk(KERN_WARNING
+=======
+				netdev_warn(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 				       "%s tx pipe stalled: requesting reset\n",
 				       netdev->name);
 				set_bit(WORK_TX_HALT, &hw->usb_flags);
@@ -454,11 +474,19 @@ static void hfa384x_usb_defer(struct work_struct *data)
 
 		ret = usb_clear_halt(hw->usb, hw->endp_in);
 		if (ret != 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR
 			       "Failed to clear rx pipe for %s: err=%d\n",
 			       netdev->name, ret);
 		} else {
 			printk(KERN_INFO "%s rx pipe reset complete.\n",
+=======
+			netdev_err(hw->wlandev->netdev,
+			       "Failed to clear rx pipe for %s: err=%d\n",
+			       netdev->name, ret);
+		} else {
+			netdev_info(hw->wlandev->netdev, "%s rx pipe reset complete.\n",
+>>>>>>> refs/remotes/origin/master
 			       netdev->name);
 			clear_bit(WORK_RX_HALT, &hw->usb_flags);
 			set_bit(WORK_RX_RESUME, &hw->usb_flags);
@@ -471,7 +499,11 @@ static void hfa384x_usb_defer(struct work_struct *data)
 
 		ret = submit_rx_urb(hw, GFP_KERNEL);
 		if (ret != 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR
+=======
+			netdev_err(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 			       "Failed to resume %s rx pipe.\n", netdev->name);
 		} else {
 			clear_bit(WORK_RX_RESUME, &hw->usb_flags);
@@ -485,11 +517,19 @@ static void hfa384x_usb_defer(struct work_struct *data)
 		usb_kill_urb(&hw->tx_urb);
 		ret = usb_clear_halt(hw->usb, hw->endp_out);
 		if (ret != 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR
 			       "Failed to clear tx pipe for %s: err=%d\n",
 			       netdev->name, ret);
 		} else {
 			printk(KERN_INFO "%s tx pipe reset complete.\n",
+=======
+			netdev_err(hw->wlandev->netdev,
+			       "Failed to clear tx pipe for %s: err=%d\n",
+			       netdev->name, ret);
+		} else {
+			netdev_info(hw->wlandev->netdev, "%s tx pipe reset complete.\n",
+>>>>>>> refs/remotes/origin/master
 			       netdev->name);
 			clear_bit(WORK_TX_HALT, &hw->usb_flags);
 			set_bit(WORK_TX_RESUME, &hw->usb_flags);
@@ -1211,7 +1251,11 @@ int hfa384x_corereset(hfa384x_t *hw, int holdtime, int settletime, int genesis)
 
 	result = usb_reset_device(hw->usb);
 	if (result < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "usb_reset_device() failed, result=%d.\n",
+=======
+		netdev_err(hw->wlandev->netdev, "usb_reset_device() failed, result=%d.\n",
+>>>>>>> refs/remotes/origin/master
 		       result);
 	}
 
@@ -1311,7 +1355,11 @@ cleanup:
 		if (ctlx->state == CTLX_COMPLETE) {
 			result = completor->complete(completor);
 		} else {
+<<<<<<< HEAD
 			printk(KERN_WARNING "CTLX[%d] error: state(%s)\n",
+=======
+			netdev_warn(hw->wlandev->netdev, "CTLX[%d] error: state(%s)\n",
+>>>>>>> refs/remotes/origin/master
 			       le16_to_cpu(ctlx->outbuf.type),
 			       ctlxstr(ctlx->state));
 			result = -EIO;
@@ -2018,7 +2066,11 @@ int hfa384x_drvr_flashdl_write(hfa384x_t *hw, u32 daddr, void *buf, u32 len)
 	if (hw->dlstate != HFA384x_DLSTATE_FLASHENABLED)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "Download %d bytes to flash @0x%06x\n", len, daddr);
+=======
+	netdev_info(hw->wlandev->netdev, "Download %d bytes to flash @0x%06x\n", len, daddr);
+>>>>>>> refs/remotes/origin/master
 
 	/* Convert to flat address for arithmetic */
 	/* NOTE: dlbuffer RID stores the address in AUX format */
@@ -2028,7 +2080,11 @@ int hfa384x_drvr_flashdl_write(hfa384x_t *hw, u32 daddr, void *buf, u32 len)
 		 hw->bufinfo.page, hw->bufinfo.offset, dlbufaddr);
 
 #if 0
+<<<<<<< HEAD
 	printk(KERN_WARNING "dlbuf@0x%06lx len=%d to=%d\n", dlbufaddr,
+=======
+	netdev_warn(hw->wlandev->netdev, "dlbuf@0x%06lx len=%d to=%d\n", dlbufaddr,
+>>>>>>> refs/remotes/origin/master
 	       hw->bufinfo.len, hw->dltimeout);
 #endif
 	/* Calculations to determine how many fills of the dlbuffer to do
@@ -2055,14 +2111,22 @@ int hfa384x_drvr_flashdl_write(hfa384x_t *hw, u32 daddr, void *buf, u32 len)
 		burnlo = HFA384x_ADDR_CMD_MKOFF(burndaddr);
 		burnhi = HFA384x_ADDR_CMD_MKPAGE(burndaddr);
 
+<<<<<<< HEAD
 		printk(KERN_INFO "Writing %d bytes to flash @0x%06x\n",
+=======
+		netdev_info(hw->wlandev->netdev, "Writing %d bytes to flash @0x%06x\n",
+>>>>>>> refs/remotes/origin/master
 		       burnlen, burndaddr);
 
 		/* Set the download mode */
 		result = hfa384x_cmd_download(hw, HFA384x_PROGMODE_NV,
 					      burnlo, burnhi, burnlen);
 		if (result) {
+<<<<<<< HEAD
 			printk(KERN_ERR "download(NV,lo=%x,hi=%x,len=%x) "
+=======
+			netdev_err(hw->wlandev->netdev, "download(NV,lo=%x,hi=%x,len=%x) "
+>>>>>>> refs/remotes/origin/master
 			       "cmd failed, result=%d. Aborting d/l\n",
 			       burnlo, burnhi, burnlen, result);
 			goto exit_proc;
@@ -2094,7 +2158,11 @@ int hfa384x_drvr_flashdl_write(hfa384x_t *hw, u32 daddr, void *buf, u32 len)
 					      HFA384x_PROGMODE_NVWRITE,
 					      0, 0, 0);
 		if (result) {
+<<<<<<< HEAD
 			printk(KERN_ERR
+=======
+			netdev_err(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 			       "download(NVWRITE,lo=%x,hi=%x,len=%x) "
 			       "cmd failed, result=%d. Aborting d/l\n",
 			       burnlo, burnhi, burnlen, result);
@@ -2140,11 +2208,15 @@ exit_proc:
 ----------------------------------------------------------------*/
 int hfa384x_drvr_getconfig(hfa384x_t *hw, u16 rid, void *buf, u16 len)
 {
+<<<<<<< HEAD
 	int result;
 
 	result = hfa384x_dorrid_wait(hw, rid, buf, len);
 
 	return result;
+=======
+	return hfa384x_dorrid_wait(hw, rid, buf, len);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -2283,7 +2355,11 @@ int hfa384x_drvr_ramdl_enable(hfa384x_t *hw, u32 exeaddr)
 	/* Check that a port isn't active */
 	for (i = 0; i < HFA384x_PORTID_MAX; i++) {
 		if (hw->port_enabled[i]) {
+<<<<<<< HEAD
 			printk(KERN_ERR
+=======
+			netdev_err(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 			       "Can't download with a macport enabled.\n");
 			return -EINVAL;
 		}
@@ -2291,7 +2367,11 @@ int hfa384x_drvr_ramdl_enable(hfa384x_t *hw, u32 exeaddr)
 
 	/* Check that we're not already in a download state */
 	if (hw->dlstate != HFA384x_DLSTATE_DISABLED) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Download state not disabled.\n");
+=======
+		netdev_err(hw->wlandev->netdev, "Download state not disabled.\n");
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -2356,7 +2436,11 @@ int hfa384x_drvr_ramdl_write(hfa384x_t *hw, u32 daddr, void *buf, u32 len)
 	if (hw->dlstate != HFA384x_DLSTATE_RAMENABLED)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "Writing %d bytes to ram @0x%06x\n", len, daddr);
+=======
+	netdev_info(hw->wlandev->netdev, "Writing %d bytes to ram @0x%06x\n", len, daddr);
+>>>>>>> refs/remotes/origin/master
 
 	/* How many dowmem calls?  */
 	nwrites = len / HFA384x_USB_RWMEM_MAXLEN;
@@ -2453,7 +2537,11 @@ int hfa384x_drvr_readpda(hfa384x_t *hw, void *buf, unsigned int len)
 						len);
 
 		if (result) {
+<<<<<<< HEAD
 			printk(KERN_WARNING
+=======
+			netdev_warn(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 			       "Read from index %zd failed, continuing\n", i);
 			continue;
 		}
@@ -2466,13 +2554,21 @@ int hfa384x_drvr_readpda(hfa384x_t *hw, void *buf, unsigned int len)
 			pdrcode = le16_to_cpu(pda[currpdr + 1]);
 			/* Test the record length */
 			if (pdrlen > HFA384x_PDR_LEN_MAX || pdrlen == 0) {
+<<<<<<< HEAD
 				printk(KERN_ERR "pdrlen invalid=%d\n", pdrlen);
+=======
+				netdev_err(hw->wlandev->netdev, "pdrlen invalid=%d\n", pdrlen);
+>>>>>>> refs/remotes/origin/master
 				pdaok = 0;
 				break;
 			}
 			/* Test the code */
 			if (!hfa384x_isgood_pdrcode(pdrcode)) {
+<<<<<<< HEAD
 				printk(KERN_ERR "pdrcode invalid=%d\n",
+=======
+				netdev_err(hw->wlandev->netdev, "pdrcode invalid=%d\n",
+>>>>>>> refs/remotes/origin/master
 				       pdrcode);
 				pdaok = 0;
 				break;
@@ -2488,7 +2584,11 @@ int hfa384x_drvr_readpda(hfa384x_t *hw, void *buf, unsigned int len)
 			}
 		}
 		if (pdaok) {
+<<<<<<< HEAD
 			printk(KERN_INFO
+=======
+			netdev_info(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 			       "PDA Read from 0x%08x in %s space.\n",
 			       pdaloc[i].cardaddr,
 			       pdaloc[i].auxctl == 0 ? "EXTDS" :
@@ -2568,20 +2668,36 @@ int hfa384x_drvr_start(hfa384x_t *hw)
 	result =
 	    usb_get_status(hw->usb, USB_RECIP_ENDPOINT, hw->endp_in, &status);
 	if (result < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Cannot get bulk in endpoint status.\n");
 		goto done;
 	}
 	if ((status == 1) && usb_clear_halt(hw->usb, hw->endp_in))
 		printk(KERN_ERR "Failed to reset bulk in endpoint.\n");
+=======
+		netdev_err(hw->wlandev->netdev, "Cannot get bulk in endpoint status.\n");
+		goto done;
+	}
+	if ((status == 1) && usb_clear_halt(hw->usb, hw->endp_in))
+		netdev_err(hw->wlandev->netdev, "Failed to reset bulk in endpoint.\n");
+>>>>>>> refs/remotes/origin/master
 
 	result =
 	    usb_get_status(hw->usb, USB_RECIP_ENDPOINT, hw->endp_out, &status);
 	if (result < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Cannot get bulk out endpoint status.\n");
 		goto done;
 	}
 	if ((status == 1) && usb_clear_halt(hw->usb, hw->endp_out))
 		printk(KERN_ERR "Failed to reset bulk out endpoint.\n");
+=======
+		netdev_err(hw->wlandev->netdev, "Cannot get bulk out endpoint status.\n");
+		goto done;
+	}
+	if ((status == 1) && usb_clear_halt(hw->usb, hw->endp_out))
+		netdev_err(hw->wlandev->netdev, "Failed to reset bulk out endpoint.\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* Synchronous unlink, in case we're trying to restart the driver */
 	usb_kill_urb(&hw->rx_urb);
@@ -2589,7 +2705,11 @@ int hfa384x_drvr_start(hfa384x_t *hw)
 	/* Post the IN urb */
 	result = submit_rx_urb(hw, GFP_KERNEL);
 	if (result != 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR
+=======
+		netdev_err(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 		       "Fatal, failed to submit RX URB, result=%d\n", result);
 		goto done;
 	}
@@ -2609,7 +2729,11 @@ int hfa384x_drvr_start(hfa384x_t *hw)
 	result = result2 = hfa384x_cmd_initialize(hw);
 	if (result1 != 0) {
 		if (result2 != 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR
+=======
+			netdev_err(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 				"cmd_initialize() failed on two attempts, results %d and %d\n",
 				result1, result2);
 			usb_kill_urb(&hw->rx_urb);
@@ -2620,9 +2744,15 @@ int hfa384x_drvr_start(hfa384x_t *hw)
 			pr_debug("but second attempt succeeded. All should be ok\n");
 		}
 	} else if (result2 != 0) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "First cmd_initialize() succeeded, but second attempt failed (result=%d)\n",
 			result2);
 		printk(KERN_WARNING
+=======
+		netdev_warn(hw->wlandev->netdev, "First cmd_initialize() succeeded, but second attempt failed (result=%d)\n",
+			result2);
+		netdev_warn(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 		       "Most likely the card will be functional\n");
 		goto done;
 	}
@@ -2713,7 +2843,11 @@ int hfa384x_drvr_txframe(hfa384x_t *hw, struct sk_buff *skb,
 	char *ptr;
 
 	if (hw->tx_urb.status == -EINPROGRESS) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "TX URB already in use\n");
+=======
+		netdev_warn(hw->wlandev->netdev, "TX URB already in use\n");
+>>>>>>> refs/remotes/origin/master
 		result = 3;
 		goto exit;
 	}
@@ -2788,7 +2922,11 @@ int hfa384x_drvr_txframe(hfa384x_t *hw, struct sk_buff *skb,
 	result = 1;
 	ret = submit_tx_urb(hw, &hw->tx_urb, GFP_ATOMIC);
 	if (ret != 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "submit_tx_urb() failed, error=%d\n", ret);
+=======
+		netdev_err(hw->wlandev->netdev, "submit_tx_urb() failed, error=%d\n", ret);
+>>>>>>> refs/remotes/origin/master
 		result = 3;
 	}
 
@@ -3013,7 +3151,11 @@ static void unlocked_usbctlx_complete(hfa384x_t *hw, hfa384x_usbctlx_t *ctlx)
 		break;
 
 	default:
+<<<<<<< HEAD
 		printk(KERN_ERR "CTLX[%d] not in a terminating state(%s)\n",
+=======
+		netdev_err(hw->wlandev->netdev, "CTLX[%d] not in a terminating state(%s)\n",
+>>>>>>> refs/remotes/origin/master
 		       le16_to_cpu(ctlx->outbuf.type), ctlxstr(ctlx->state));
 		break;
 	}			/* switch */
@@ -3095,7 +3237,11 @@ static void hfa384x_usbctlxq_run(hfa384x_t *hw)
 			 * this CTLX back in the "pending" queue
 			 * and schedule a reset ...
 			 */
+<<<<<<< HEAD
 			printk(KERN_WARNING
+=======
+			netdev_warn(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 			       "%s tx pipe stalled: requesting reset\n",
 			       hw->wlandev->netdev->name);
 			list_move(&head->list, &hw->ctlxq.pending);
@@ -3105,12 +3251,20 @@ static void hfa384x_usbctlxq_run(hfa384x_t *hw)
 		}
 
 		if (result == -ESHUTDOWN) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "%s urb shutdown!\n",
+=======
+			netdev_warn(hw->wlandev->netdev, "%s urb shutdown!\n",
+>>>>>>> refs/remotes/origin/master
 			       hw->wlandev->netdev->name);
 			break;
 		}
 
+<<<<<<< HEAD
 		printk(KERN_ERR "Failed to submit CTLX[%d]: error=%d\n",
+=======
+		netdev_err(hw->wlandev->netdev, "Failed to submit CTLX[%d]: error=%d\n",
+>>>>>>> refs/remotes/origin/master
 		       le16_to_cpu(head->outbuf.type), result);
 		unlocked_usbctlx_complete(hw, head);
 	}			/* while */
@@ -3177,7 +3331,11 @@ static void hfa384x_usbin_callback(struct urb *urb)
 		break;
 
 	case -EPIPE:
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s rx pipe stalled: requesting reset\n",
+=======
+		netdev_warn(hw->wlandev->netdev, "%s rx pipe stalled: requesting reset\n",
+>>>>>>> refs/remotes/origin/master
 		       wlandev->netdev->name);
 		if (!test_and_set_bit(WORK_RX_HALT, &hw->usb_flags))
 			schedule_work(&hw->usb_work);
@@ -3228,7 +3386,11 @@ static void hfa384x_usbin_callback(struct urb *urb)
 		result = submit_rx_urb(hw, GFP_ATOMIC);
 
 		if (result != 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR
+=======
+			netdev_err(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 			       "Fatal, failed to resubmit rx_urb. error=%d\n",
 			       result);
 		}
@@ -3364,7 +3526,11 @@ retry:
 		 * Check that our message is what we're expecting ...
 		 */
 		if (ctlx->outbuf.type != intype) {
+<<<<<<< HEAD
 			printk(KERN_WARNING
+=======
+			netdev_warn(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 			       "Expected IN[%d], received IN[%d] - ignored.\n",
 			       le16_to_cpu(ctlx->outbuf.type),
 			       le16_to_cpu(intype));
@@ -3400,7 +3566,11 @@ retry:
 			/*
 			 * Throw this CTLX away ...
 			 */
+<<<<<<< HEAD
 			printk(KERN_ERR
+=======
+			netdev_err(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 			       "Matched IN URB, CTLX[%d] in invalid state(%s)."
 			       " Discarded.\n",
 			       le16_to_cpu(ctlx->outbuf.type),
@@ -3538,7 +3708,11 @@ static void hfa384x_usbin_rx(wlandevice_t *wlandev, struct sk_buff *skb)
 		break;
 
 	default:
+<<<<<<< HEAD
 		printk(KERN_WARNING "Received frame on unsupported port=%d\n",
+=======
+		netdev_warn(hw->wlandev->netdev, "Received frame on unsupported port=%d\n",
+>>>>>>> refs/remotes/origin/master
 		       HFA384x_RXSTATUS_MACPORT_GET(usbin->rxfrm.desc.status));
 		goto done;
 		break;
@@ -3600,7 +3774,11 @@ static void hfa384x_int_rxmonitor(wlandevice_t *wlandev,
 
 	skb = dev_alloc_skb(skblen);
 	if (skb == NULL) {
+<<<<<<< HEAD
 		printk(KERN_ERR
+=======
+		netdev_err(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 		       "alloc_skb failed trying to allocate %d bytes\n",
 		       skblen);
 		return;
@@ -3718,7 +3896,11 @@ static void hfa384x_usbout_callback(struct urb *urb)
 		case -EPIPE:
 			{
 				hfa384x_t *hw = wlandev->priv;
+<<<<<<< HEAD
 				printk(KERN_WARNING
+=======
+				netdev_warn(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 				       "%s tx pipe stalled: requesting reset\n",
 				       wlandev->netdev->name);
 				if (!test_and_set_bit
@@ -3751,7 +3933,11 @@ static void hfa384x_usbout_callback(struct urb *urb)
 			break;
 
 		default:
+<<<<<<< HEAD
 			printk(KERN_INFO "unknown urb->status=%d\n",
+=======
+			netdev_info(wlandev->netdev, "unknown urb->status=%d\n",
+>>>>>>> refs/remotes/origin/master
 			       urb->status);
 			++(wlandev->linux_stats.tx_errors);
 			break;
@@ -3790,7 +3976,11 @@ static void hfa384x_ctlxout_callback(struct urb *urb)
 #endif
 	if ((urb->status == -ESHUTDOWN) ||
 	    (urb->status == -ENODEV) || (hw == NULL))
+<<<<<<< HEAD
 		goto done;
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 
 retry:
 	spin_lock_irqsave(&hw->ctlxq.lock, flags);
@@ -3803,7 +3993,11 @@ retry:
 	 */
 	if (list_empty(&hw->ctlxq.active)) {
 		spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+<<<<<<< HEAD
 		goto done;
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -3845,7 +4039,11 @@ retry:
 
 		default:
 			/* This is NOT a valid CTLX "success" state! */
+<<<<<<< HEAD
 			printk(KERN_ERR
+=======
+			netdev_err(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 				"Illegal CTLX[%d] success state(%s, %d) in OUT URB\n",
 				le16_to_cpu(ctlx->outbuf.type),
 				ctlxstr(ctlx->state), urb->status);
@@ -3855,7 +4053,11 @@ retry:
 		/* If the pipe has stalled then we need to reset it */
 		if ((urb->status == -EPIPE) &&
 		    !test_and_set_bit(WORK_TX_HALT, &hw->usb_flags)) {
+<<<<<<< HEAD
 			printk(KERN_WARNING
+=======
+			netdev_warn(hw->wlandev->netdev,
+>>>>>>> refs/remotes/origin/master
 			       "%s tx pipe stalled: requesting reset\n",
 			       hw->wlandev->netdev->name);
 			schedule_work(&hw->usb_work);
@@ -3886,9 +4088,12 @@ delresp:
 
 	if (run_queue)
 		hfa384x_usbctlxq_run(hw);
+<<<<<<< HEAD
 
 done:
 	;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -3985,6 +4190,7 @@ static void hfa384x_usbctlx_resptimerfn(unsigned long data)
 		if (unlocked_usbctlx_cancel_async(hw, ctlx) == 0) {
 			spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
 			hfa384x_usbctlxq_run(hw);
+<<<<<<< HEAD
 			goto done;
 		}
 	}
@@ -3994,6 +4200,12 @@ static void hfa384x_usbctlx_resptimerfn(unsigned long data)
 done:
 	;
 
+=======
+			return;
+		}
+	}
+	spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------
@@ -4057,12 +4269,16 @@ static void hfa384x_usb_throttlefn(unsigned long data)
 static int hfa384x_usbctlx_submit(hfa384x_t *hw, hfa384x_usbctlx_t *ctlx)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 	int ret;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&hw->ctlxq.lock, flags);
 
 	if (hw->wlandev->hwremoved) {
 		spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+<<<<<<< HEAD
 		ret = -ENODEV;
 	} else {
 		ctlx->state = CTLX_PENDING;
@@ -4074,6 +4290,17 @@ static int hfa384x_usbctlx_submit(hfa384x_t *hw, hfa384x_usbctlx_t *ctlx)
 	}
 
 	return ret;
+=======
+		return -ENODEV;
+	}
+
+	ctlx->state = CTLX_PENDING;
+	list_add_tail(&ctlx->list, &hw->ctlxq.pending);
+	spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+	hfa384x_usbctlxq_run(hw);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------

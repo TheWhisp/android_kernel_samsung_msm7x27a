@@ -14,6 +14,10 @@
 
 #include <linux/kernel.h>
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/list.h>
 #include <linux/timer.h>
@@ -34,10 +38,17 @@
 
 #include <plat/regs-serial.h>
 #include <mach/regs-gpio.h>
+<<<<<<< HEAD
 #include <mach/regs-mem.h>
 #include <mach/regs-lcd.h>
 #include <plat/nand.h>
 #include <plat/iic.h>
+=======
+#include <mach/regs-lcd.h>
+#include <mach/gpio-samsung.h>
+#include <linux/platform_data/mtd-nand-s3c2410.h>
+#include <linux/platform_data/i2c-s3c2410.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/nand.h>
@@ -47,7 +58,12 @@
 #include <plat/clock.h>
 #include <plat/devs.h>
 #include <plat/cpu.h>
+<<<<<<< HEAD
 #include <plat/mci.h>
+=======
+#include <linux/platform_data/mmc-s3cmci.h>
+#include <plat/samsung-time.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "common.h"
 
@@ -118,6 +134,7 @@ static struct s3c2410_platform_nand __initdata at2440evb_nand_info = {
 /* DM9000AEP 10/100 ethernet controller */
 
 static struct resource at2440evb_dm9k_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S3C2410_CS3,
 		.end   = S3C2410_CS3 + 3,
@@ -133,6 +150,12 @@ static struct resource at2440evb_dm9k_resource[] = {
 		.end   = IRQ_EINT7,
 		.flags = IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE,
 	}
+=======
+	[0] = DEFINE_RES_MEM(S3C2410_CS3, 4),
+	[1] = DEFINE_RES_MEM(S3C2410_CS3 + 4, 4),
+	[2] = DEFINE_RES_NAMED(IRQ_EINT7, 1, NULL, IORESOURCE_IRQ \
+					| IORESOURCE_IRQ_HIGHEDGE),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct dm9000_plat_data at2440evb_dm9k_pdata = {
@@ -203,6 +226,10 @@ static void __init at2440evb_map_io(void)
 	s3c24xx_init_io(at2440evb_iodesc, ARRAY_SIZE(at2440evb_iodesc));
 	s3c24xx_init_clocks(16934400);
 	s3c24xx_init_uarts(at2440evb_uartcfgs, ARRAY_SIZE(at2440evb_uartcfgs));
+<<<<<<< HEAD
+=======
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init at2440evb_init(void)
@@ -220,7 +247,12 @@ MACHINE_START(AT2440EVB, "AT2440EVB")
 	.atag_offset	= 0x100,
 	.map_io		= at2440evb_map_io,
 	.init_machine	= at2440evb_init,
+<<<<<<< HEAD
 	.init_irq	= s3c24xx_init_irq,
 	.timer		= &s3c24xx_timer,
+=======
+	.init_irq	= s3c2440_init_irq,
+	.init_time	= samsung_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.restart	= s3c244x_restart,
 MACHINE_END

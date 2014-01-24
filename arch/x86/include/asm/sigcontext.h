@@ -1,6 +1,7 @@
 #ifndef _ASM_X86_SIGCONTEXT_H
 #define _ASM_X86_SIGCONTEXT_H
 
+<<<<<<< HEAD
 #include <linux/compiler.h>
 #include <linux/types.h>
 
@@ -99,6 +100,11 @@ struct _fpstate {
 #define X86_FXSR_MAGIC		0x0000
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/sigcontext.h>
+
+#ifdef __i386__
+>>>>>>> refs/remotes/origin/master
 struct sigcontext {
 	unsigned short gs, __gsh;
 	unsigned short fs, __fsh;
@@ -131,6 +137,7 @@ struct sigcontext {
 	unsigned long oldmask;
 	unsigned long cr2;
 };
+<<<<<<< HEAD
 #else /* __KERNEL__ */
 /*
  * User-space might still rely on the old definition:
@@ -187,6 +194,9 @@ struct _fpstate {
 };
 
 #ifdef __KERNEL__
+=======
+#else /* __i386__ */
+>>>>>>> refs/remotes/origin/master
 struct sigcontext {
 	unsigned long r8;
 	unsigned long r9;
@@ -225,6 +235,7 @@ struct sigcontext {
 	void __user *fpstate;		/* zero when no FPU/extended context */
 	unsigned long reserved1[8];
 };
+<<<<<<< HEAD
 #else /* __KERNEL__ */
 /*
  * User-space might still rely on the old definition:
@@ -321,4 +332,7 @@ struct _xstate {
 	/* new processor state extensions go here */
 };
 
+=======
+#endif /* !__i386__ */
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_SIGCONTEXT_H */

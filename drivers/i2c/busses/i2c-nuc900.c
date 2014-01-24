@@ -29,7 +29,11 @@
 #include <linux/io.h>
 
 #include <mach/mfp.h>
+<<<<<<< HEAD
 #include <mach/i2c.h>
+=======
+#include <linux/platform_data/i2c-nuc900.h>
+>>>>>>> refs/remotes/origin/master
 
 /* nuc900 i2c registers offset */
 
@@ -304,7 +308,11 @@ retry_write:
 
 	case STATE_READ:
 		/* we have a byte of data in the data register, do
+<<<<<<< HEAD
 		 * something with it, and then work out wether we are
+=======
+		 * something with it, and then work out whether we are
+>>>>>>> refs/remotes/origin/master
 		 * going to do any more read/write
 		 */
 
@@ -502,7 +510,12 @@ static int nuc900_i2c_xfer(struct i2c_adapter *adap,
 /* declare our i2c functionality */
 static u32 nuc900_i2c_func(struct i2c_adapter *adap)
 {
+<<<<<<< HEAD
 	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL | I2C_FUNC_PROTOCOL_MANGLING;
+=======
+	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL | I2C_FUNC_NOSTART |
+		I2C_FUNC_PROTOCOL_MANGLING;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* i2c bus registration info */
@@ -517,14 +530,22 @@ static const struct i2c_algorithm nuc900_i2c_algorithm = {
  * called by the bus driver when a suitable device is found
 */
 
+<<<<<<< HEAD
 static int __devinit nuc900_i2c_probe(struct platform_device *pdev)
+=======
+static int nuc900_i2c_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nuc900_i2c *i2c;
 	struct nuc900_platform_i2c *pdata;
 	struct resource *res;
 	int ret;
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!pdata) {
 		dev_err(&pdev->dev, "no platform data\n");
 		return -EINVAL;
@@ -594,10 +615,14 @@ static int __devinit nuc900_i2c_probe(struct platform_device *pdev)
 	i2c->adap.dev.parent = &pdev->dev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mfp_set_groupg(&pdev->dev);
 =======
 	mfp_set_groupg(&pdev->dev, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mfp_set_groupg(&pdev->dev, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	clk_get_rate(i2c->clk);
 
@@ -615,10 +640,14 @@ static int __devinit nuc900_i2c_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = request_irq(i2c->irq, nuc900_i2c_irq, IRQF_DISABLED | IRQF_SHARED,
 =======
 	ret = request_irq(i2c->irq, nuc900_i2c_irq, IRQF_SHARED,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = request_irq(i2c->irq, nuc900_i2c_irq, IRQF_SHARED,
+>>>>>>> refs/remotes/origin/master
 			  dev_name(&pdev->dev), i2c);
 
 	if (ret != 0) {
@@ -670,7 +699,11 @@ static int __devinit nuc900_i2c_probe(struct platform_device *pdev)
  * called when device is removed from the bus
 */
 
+<<<<<<< HEAD
 static int __devexit nuc900_i2c_remove(struct platform_device *pdev)
+=======
+static int nuc900_i2c_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nuc900_i2c *i2c = platform_get_drvdata(pdev);
 
@@ -691,7 +724,11 @@ static int __devexit nuc900_i2c_remove(struct platform_device *pdev)
 
 static struct platform_driver nuc900_i2c_driver = {
 	.probe		= nuc900_i2c_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(nuc900_i2c_remove),
+=======
+	.remove		= nuc900_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.owner	= THIS_MODULE,
 		.name	= "nuc900-i2c0",

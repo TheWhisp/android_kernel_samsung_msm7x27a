@@ -42,22 +42,32 @@ _GLOBAL(__setup_cpu_a2)
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_WSP_COPRO
 =======
 #ifdef CONFIG_PPC_ICSWX
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PPC_ICSWX
+>>>>>>> refs/remotes/origin/master
 	/* Make sure ACOP starts out as zero */
 	li	r3,0
 	mtspr   SPRN_ACOP,r3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Skip the following if we are in Guest mode */
 	mfmsr	r3
 	andis.	r0,r3,MSR_GS@h
 	bne	_icswx_skip_guest
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Enable icswx instruction */
 	mfspr   r3,SPRN_A2_CCR2
 	ori     r3,r3,A2_CCR2_ENABLE_ICSWX
@@ -67,11 +77,16 @@ _GLOBAL(__setup_cpu_a2)
 	li      r3,-1
 	mtspr   SPRN_HACOP,r3
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* CONFIG_PPC_WSP_COPRO */
 =======
 _icswx_skip_guest:
 #endif /* CONFIG_PPC_ICSWX */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+_icswx_skip_guest:
+#endif /* CONFIG_PPC_ICSWX */
+>>>>>>> refs/remotes/origin/master
 
 	/* Enable doorbell */
 	mfspr   r3,SPRN_A2_CCR2
@@ -111,19 +126,31 @@ _icswx_skip_guest:
 	lis	r4,(MMUCR0_TLBSEL_I|MMUCR0_ECL)@h
 	mtspr	SPRN_MMUCR0, r4
 	li	r4,A2_IERAT_SIZE-1
+<<<<<<< HEAD
 	PPC_ERATWE(r4,r4,3)
+=======
+	PPC_ERATWE(R4,R4,3)
+>>>>>>> refs/remotes/origin/master
 
 	/* Now set the D-ERAT watermark to 31 */
 	lis	r4,(MMUCR0_TLBSEL_D|MMUCR0_ECL)@h
 	mtspr	SPRN_MMUCR0, r4
 	li	r4,A2_DERAT_SIZE-1
+<<<<<<< HEAD
 	PPC_ERATWE(r4,r4,3)
+=======
+	PPC_ERATWE(R4,R4,3)
+>>>>>>> refs/remotes/origin/master
 
 	/* And invalidate the beast just in case. That won't get rid of
 	 * a bolted entry though it will be in LRU and so will go away eventually
 	 * but let's not bother for now
 	 */
+<<<<<<< HEAD
 	PPC_ERATILX(0,0,0)
+=======
+	PPC_ERATILX(0,0,R0)
+>>>>>>> refs/remotes/origin/master
 1:
 	blr
 

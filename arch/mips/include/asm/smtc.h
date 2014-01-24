@@ -14,8 +14,13 @@
 
 extern unsigned int smtc_status;
 
+<<<<<<< HEAD
 #define SMTC_TLB_SHARED	0x00000001
 #define SMTC_MTC_ACTIVE	0x00000002
+=======
+#define SMTC_TLB_SHARED 0x00000001
+#define SMTC_MTC_ACTIVE 0x00000002
+>>>>>>> refs/remotes/origin/master
 
 /*
  * TLB/ASID Management information
@@ -33,6 +38,15 @@ typedef long asiduse;
 #endif
 #endif
 
+<<<<<<< HEAD
+=======
+/*
+ * VPE Management information
+ */
+
+#define MAX_SMTC_VPES	MAX_SMTC_TLBS	/* FIXME: May not always be true. */
+
+>>>>>>> refs/remotes/origin/master
 extern asiduse smtc_live_asid[MAX_SMTC_TLBS][MAX_SMTC_ASIDS];
 
 struct mm_struct;
@@ -47,9 +61,13 @@ extern void smtc_smp_finish(void);
 extern void smtc_boot_secondary(int cpu, struct task_struct *t);
 extern void smtc_cpus_done(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void smtc_init_secondary(void);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void smtc_init_secondary(void);
+>>>>>>> refs/remotes/origin/master
 
 
 /*

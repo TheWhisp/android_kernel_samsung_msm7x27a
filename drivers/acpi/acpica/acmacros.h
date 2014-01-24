@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,6 +57,7 @@
  * get into potential aligment issues -- see the STORE macros below.
  * Use with care.
  */
+<<<<<<< HEAD
 #define ACPI_GET8(ptr)                  *ACPI_CAST_PTR (u8, ptr)
 #define ACPI_GET16(ptr)                 *ACPI_CAST_PTR (u16, ptr)
 #define ACPI_GET32(ptr)                 *ACPI_CAST_PTR (u32, ptr)
@@ -61,12 +66,30 @@
 #define ACPI_SET16(ptr)                 *ACPI_CAST_PTR (u16, ptr)
 #define ACPI_SET32(ptr)                 *ACPI_CAST_PTR (u32, ptr)
 #define ACPI_SET64(ptr)                 *ACPI_CAST_PTR (u64, ptr)
+=======
+#define ACPI_CAST8(ptr)                 ACPI_CAST_PTR (u8, (ptr))
+#define ACPI_CAST16(ptr)                ACPI_CAST_PTR (u16, (ptr))
+#define ACPI_CAST32(ptr)                ACPI_CAST_PTR (u32, (ptr))
+#define ACPI_CAST64(ptr)                ACPI_CAST_PTR (u64, (ptr))
+#define ACPI_GET8(ptr)                  (*ACPI_CAST8 (ptr))
+#define ACPI_GET16(ptr)                 (*ACPI_CAST16 (ptr))
+#define ACPI_GET32(ptr)                 (*ACPI_CAST32 (ptr))
+#define ACPI_GET64(ptr)                 (*ACPI_CAST64 (ptr))
+#define ACPI_SET8(ptr, val)             (*ACPI_CAST8 (ptr) = (u8) (val))
+#define ACPI_SET16(ptr, val)            (*ACPI_CAST16 (ptr) = (u16) (val))
+#define ACPI_SET32(ptr, val)            (*ACPI_CAST32 (ptr) = (u32) (val))
+#define ACPI_SET64(ptr, val)            (*ACPI_CAST64 (ptr) = (u64) (val))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * printf() format helpers
  */
 
+<<<<<<< HEAD
 /* Split 64-bit integer into two 32-bit values. Use with %8.8_x%8.8_x */
+=======
+/* Split 64-bit integer into two 32-bit values. Use with %8.8X%8.8X */
+>>>>>>> refs/remotes/origin/master
 
 #define ACPI_FORMAT_UINT64(i)           ACPI_HIDWORD(i), ACPI_LODWORD(i)
 
@@ -88,6 +111,7 @@
 
 /* These macros reverse the bytes during the move, converting little-endian to big endian */
 
+<<<<<<< HEAD
 			  /* Big Endian      <==        Little Endian */
 			  /*  Hi...Lo                     Lo...Hi     */
 /* 16-bit source, 16/32/64 destination */
@@ -102,15 +126,37 @@
 #define ACPI_MOVE_16_TO_64(d, s)        {(*(u64 *)(void *)(d))=0;\
 									 ((u8 *)(void *)(d))[6] = ((u8 *)(void *)(s))[1];\
 									 ((u8 *)(void *)(d))[7] = ((u8 *)(void *)(s))[0];}
+=======
+	 /* Big Endian      <==        Little Endian */
+	 /*  Hi...Lo                     Lo...Hi     */
+/* 16-bit source, 16/32/64 destination */
+
+#define ACPI_MOVE_16_TO_16(d, s)        {((  u8 *)(void *)(d))[0] = ((u8 *)(void *)(s))[1];\
+			  ((  u8 *)(void *)(d))[1] = ((u8 *)(void *)(s))[0];}
+
+#define ACPI_MOVE_16_TO_32(d, s)        {(*(u32 *)(void *)(d))=0;\
+					  ((u8 *)(void *)(d))[2] = ((u8 *)(void *)(s))[1];\
+					  ((u8 *)(void *)(d))[3] = ((u8 *)(void *)(s))[0];}
+
+#define ACPI_MOVE_16_TO_64(d, s)        {(*(u64 *)(void *)(d))=0;\
+							   ((u8 *)(void *)(d))[6] = ((u8 *)(void *)(s))[1];\
+							   ((u8 *)(void *)(d))[7] = ((u8 *)(void *)(s))[0];}
+>>>>>>> refs/remotes/origin/master
 
 /* 32-bit source, 16/32/64 destination */
 
 #define ACPI_MOVE_32_TO_16(d, s)        ACPI_MOVE_16_TO_16(d, s)	/* Truncate to 16 */
 
 #define ACPI_MOVE_32_TO_32(d, s)        {((  u8 *)(void *)(d))[0] = ((u8 *)(void *)(s))[3];\
+<<<<<<< HEAD
 										 ((  u8 *)(void *)(d))[1] = ((u8 *)(void *)(s))[2];\
 										 ((  u8 *)(void *)(d))[2] = ((u8 *)(void *)(s))[1];\
 										 ((  u8 *)(void *)(d))[3] = ((u8 *)(void *)(s))[0];}
+=======
+									  ((  u8 *)(void *)(d))[1] = ((u8 *)(void *)(s))[2];\
+									  ((  u8 *)(void *)(d))[2] = ((u8 *)(void *)(s))[1];\
+									  ((  u8 *)(void *)(d))[3] = ((u8 *)(void *)(s))[0];}
+>>>>>>> refs/remotes/origin/master
 
 #define ACPI_MOVE_32_TO_64(d, s)        {(*(u64 *)(void *)(d))=0;\
 										   ((u8 *)(void *)(d))[4] = ((u8 *)(void *)(s))[3];\
@@ -200,6 +246,7 @@
 #endif
 #endif
 
+<<<<<<< HEAD
 /* Macros based on machine integer width */
 
 #if ACPI_MACHINE_WIDTH == 32
@@ -218,6 +265,14 @@
 #define _ACPI_DIV(value, power_of2)      ((u32) ((value) >> (power_of2)))
 #define _ACPI_MUL(value, power_of2)      ((u32) ((value) << (power_of2)))
 #define _ACPI_MOD(value, divisor)        ((u32) ((value) & ((divisor) -1)))
+=======
+/*
+ * Fast power-of-two math macros for non-optimized compilers
+ */
+#define _ACPI_DIV(value, power_of2)     ((u32) ((value) >> (power_of2)))
+#define _ACPI_MUL(value, power_of2)     ((u32) ((value) << (power_of2)))
+#define _ACPI_MOD(value, divisor)       ((u32) ((value) & ((divisor) -1)))
+>>>>>>> refs/remotes/origin/master
 
 #define ACPI_DIV_2(a)                   _ACPI_DIV(a, 1)
 #define ACPI_MUL_2(a)                   _ACPI_MUL(a, 1)
@@ -242,12 +297,21 @@
 /*
  * Rounding macros (Power of two boundaries only)
  */
+<<<<<<< HEAD
 #define ACPI_ROUND_DOWN(value, boundary)     (((acpi_size)(value)) & \
 						(~(((acpi_size) boundary)-1)))
 
 #define ACPI_ROUND_UP(value, boundary)	     ((((acpi_size)(value)) + \
 						(((acpi_size) boundary)-1)) & \
 						(~(((acpi_size) boundary)-1)))
+=======
+#define ACPI_ROUND_DOWN(value, boundary)    (((acpi_size)(value)) & \
+												(~(((acpi_size) boundary)-1)))
+
+#define ACPI_ROUND_UP(value, boundary)      ((((acpi_size)(value)) + \
+												(((acpi_size) boundary)-1)) & \
+												(~(((acpi_size) boundary)-1)))
+>>>>>>> refs/remotes/origin/master
 
 /* Note: sizeof(acpi_size) evaluates to either 4 or 8 (32- vs 64-bit mode) */
 
@@ -268,7 +332,11 @@
 
 #define ACPI_ROUND_UP_TO(value, boundary)   (((value) + ((boundary)-1)) / (boundary))
 
+<<<<<<< HEAD
 #define ACPI_IS_MISALIGNED(value)	    (((acpi_size) value) & (sizeof(acpi_size)-1))
+=======
+#define ACPI_IS_MISALIGNED(value)           (((acpi_size) value) & (sizeof(acpi_size)-1))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Bitmask creation
@@ -281,6 +349,7 @@
 
 /* Bitfields within ACPI registers */
 
+<<<<<<< HEAD
 #define ACPI_REGISTER_PREPARE_BITS(val, pos, mask)      ((val << pos) & mask)
 #define ACPI_REGISTER_INSERT_VALUE(reg, pos, mask, val)  reg = (reg & (~(mask))) | ACPI_REGISTER_PREPARE_BITS(val, pos, mask)
 
@@ -295,6 +364,67 @@
  */
 #define ACPI_GET_DESCRIPTOR_TYPE(d)     (((union acpi_descriptor *)(void *)(d))->common.descriptor_type)
 #define ACPI_SET_DESCRIPTOR_TYPE(d, t)  (((union acpi_descriptor *)(void *)(d))->common.descriptor_type = t)
+=======
+#define ACPI_REGISTER_PREPARE_BITS(val, pos, mask) \
+	((val << pos) & mask)
+
+#define ACPI_REGISTER_INSERT_VALUE(reg, pos, mask, val) \
+	reg = (reg & (~(mask))) | ACPI_REGISTER_PREPARE_BITS(val, pos, mask)
+
+#define ACPI_INSERT_BITS(target, mask, source) \
+	target = ((target & (~(mask))) | (source & mask))
+
+/* Generic bitfield macros and masks */
+
+#define ACPI_GET_BITS(source_ptr, position, mask) \
+	((*source_ptr >> position) & mask)
+
+#define ACPI_SET_BITS(target_ptr, position, mask, value) \
+	(*target_ptr |= ((value & mask) << position))
+
+#define ACPI_1BIT_MASK      0x00000001
+#define ACPI_2BIT_MASK      0x00000003
+#define ACPI_3BIT_MASK      0x00000007
+#define ACPI_4BIT_MASK      0x0000000F
+#define ACPI_5BIT_MASK      0x0000001F
+#define ACPI_6BIT_MASK      0x0000003F
+#define ACPI_7BIT_MASK      0x0000007F
+#define ACPI_8BIT_MASK      0x000000FF
+#define ACPI_16BIT_MASK     0x0000FFFF
+#define ACPI_24BIT_MASK     0x00FFFFFF
+
+/* Macros to extract flag bits from position zero */
+
+#define ACPI_GET_1BIT_FLAG(value)                   ((value) & ACPI_1BIT_MASK)
+#define ACPI_GET_2BIT_FLAG(value)                   ((value) & ACPI_2BIT_MASK)
+#define ACPI_GET_3BIT_FLAG(value)                   ((value) & ACPI_3BIT_MASK)
+#define ACPI_GET_4BIT_FLAG(value)                   ((value) & ACPI_4BIT_MASK)
+
+/* Macros to extract flag bits from position one and above */
+
+#define ACPI_EXTRACT_1BIT_FLAG(field, position)     (ACPI_GET_1BIT_FLAG ((field) >> position))
+#define ACPI_EXTRACT_2BIT_FLAG(field, position)     (ACPI_GET_2BIT_FLAG ((field) >> position))
+#define ACPI_EXTRACT_3BIT_FLAG(field, position)     (ACPI_GET_3BIT_FLAG ((field) >> position))
+#define ACPI_EXTRACT_4BIT_FLAG(field, position)     (ACPI_GET_4BIT_FLAG ((field) >> position))
+
+/* ACPI Pathname helpers */
+
+#define ACPI_IS_ROOT_PREFIX(c)      ((c) == (u8) 0x5C)	/* Backslash */
+#define ACPI_IS_PARENT_PREFIX(c)    ((c) == (u8) 0x5E)	/* Carat */
+#define ACPI_IS_PATH_SEPARATOR(c)   ((c) == (u8) 0x2E)	/* Period (dot) */
+
+/*
+ * An object of type struct acpi_namespace_node can appear in some contexts
+ * where a pointer to an object of type union acpi_operand_object can also
+ * appear. This macro is used to distinguish them.
+ *
+ * The "DescriptorType" field is the second field in both structures.
+ */
+#define ACPI_GET_DESCRIPTOR_PTR(d)      (((union acpi_descriptor *)(void *)(d))->common.common_pointer)
+#define ACPI_SET_DESCRIPTOR_PTR(d, p)   (((union acpi_descriptor *)(void *)(d))->common.common_pointer = (p))
+#define ACPI_GET_DESCRIPTOR_TYPE(d)     (((union acpi_descriptor *)(void *)(d))->common.descriptor_type)
+#define ACPI_SET_DESCRIPTOR_TYPE(d, t)  (((union acpi_descriptor *)(void *)(d))->common.descriptor_type = (t))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Macros for the master AML opcode table
@@ -336,16 +466,27 @@
  * Ascii error messages can be configured out
  */
 #ifndef ACPI_NO_ERROR_MESSAGES
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Error reporting. Callers module and line number are inserted by AE_INFO,
  * the plist contains a set of parens to allow variable-length lists.
  * These macros are used for both the debug and non-debug versions of the code.
  */
+<<<<<<< HEAD
 #define ACPI_ERROR_NAMESPACE(s, e)      acpi_ut_namespace_error (AE_INFO, s, e);
 #define ACPI_ERROR_METHOD(s, n, p, e)   acpi_ut_method_error (AE_INFO, s, n, p, e);
 #define ACPI_WARN_PREDEFINED(plist)     acpi_ut_predefined_warning plist
 #define ACPI_INFO_PREDEFINED(plist)     acpi_ut_predefined_info plist
+=======
+#define ACPI_ERROR_NAMESPACE(s, e)          acpi_ut_namespace_error (AE_INFO, s, e);
+#define ACPI_ERROR_METHOD(s, n, p, e)       acpi_ut_method_error (AE_INFO, s, n, p, e);
+#define ACPI_WARN_PREDEFINED(plist)         acpi_ut_predefined_warning plist
+#define ACPI_INFO_PREDEFINED(plist)         acpi_ut_predefined_info plist
+#define ACPI_BIOS_ERROR_PREDEFINED(plist)   acpi_ut_predefined_bios_error plist
+>>>>>>> refs/remotes/origin/master
 
 #else
 
@@ -355,6 +496,7 @@
 #define ACPI_ERROR_METHOD(s, n, p, e)
 #define ACPI_WARN_PREDEFINED(plist)
 #define ACPI_INFO_PREDEFINED(plist)
+<<<<<<< HEAD
 
 #endif		/* ACPI_NO_ERROR_MESSAGES */
 
@@ -522,13 +664,22 @@
 
 <<<<<<< HEAD
 =======
+=======
+#define ACPI_BIOS_ERROR_PREDEFINED(plist)
+
+#endif				/* ACPI_NO_ERROR_MESSAGES */
+
+>>>>>>> refs/remotes/origin/master
 #if (!ACPI_REDUCED_HARDWARE)
 #define ACPI_HW_OPTIONAL_FUNCTION(addr)     addr
 #else
 #define ACPI_HW_OPTIONAL_FUNCTION(addr)     NULL
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Some code only gets executed when the debugger is built in.
  * Note that this is entirely independent of whether the
@@ -540,6 +691,7 @@
 #define ACPI_DEBUGGER_EXEC(a)
 #endif
 
+<<<<<<< HEAD
 #ifdef ACPI_DEBUG_OUTPUT
 /*
  * 1) Set name to blanks
@@ -587,5 +739,20 @@
 #ifndef ACPI_PREEMPTION_POINT
 #define ACPI_PREEMPTION_POINT() /* no preemption */
 #endif
+=======
+/*
+ * Macros used for ACPICA utilities only
+ */
+
+/* Generate a UUID */
+
+#define ACPI_INIT_UUID(a, b, c, d0, d1, d2, d3, d4, d5, d6, d7) \
+	(a) & 0xFF, ((a) >> 8) & 0xFF, ((a) >> 16) & 0xFF, ((a) >> 24) & 0xFF, \
+	(b) & 0xFF, ((b) >> 8) & 0xFF, \
+	(c) & 0xFF, ((c) >> 8) & 0xFF, \
+	(d0), (d1), (d2), (d3), (d4), (d5), (d6), (d7)
+
+#define ACPI_IS_OCTAL_DIGIT(d)              (((char)(d) >= '0') && ((char)(d) <= '7'))
+>>>>>>> refs/remotes/origin/master
 
 #endif				/* ACMACROS_H */

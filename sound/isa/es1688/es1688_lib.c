@@ -25,9 +25,13 @@
 #include <linux/slab.h>
 #include <linux/ioport.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/es1688.h>
 #include <sound/initval.h>
@@ -615,10 +619,17 @@ static int snd_es1688_capture_close(struct snd_pcm_substream *substream)
 
 static int snd_es1688_free(struct snd_es1688 *chip)
 {
+<<<<<<< HEAD
 	if (chip->res_port) {
 		snd_es1688_init(chip, 0);
 		release_and_free_resource(chip->res_port);
 	}
+=======
+	if (chip->hardware != ES1688_HW_UNDEF)
+		snd_es1688_init(chip, 0);
+	if (chip->res_port)
+		release_and_free_resource(chip->res_port);
+>>>>>>> refs/remotes/origin/master
 	if (chip->irq >= 0)
 		free_irq(chip->irq, (void *) chip);
 	if (chip->dma8 >= 0) {
@@ -660,6 +671,7 @@ int snd_es1688_create(struct snd_card *card,
 		return -ENOMEM;
 	chip->irq = -1;
 	chip->dma8 = -1;
+<<<<<<< HEAD
 	
 	if ((chip->res_port = request_region(port + 4, 12, "ES1688")) == NULL) {
 		snd_printk(KERN_ERR "es1688: can't grab port 0x%lx\n", port + 4);
@@ -677,6 +689,29 @@ int snd_es1688_create(struct snd_card *card,
 	if (request_dma(dma8, "ES1688")) {
 		snd_printk(KERN_ERR "es1688: can't grab DMA8 %d\n", dma8);
 		return -EBUSY;
+=======
+	chip->hardware = ES1688_HW_UNDEF;
+	
+	chip->res_port = request_region(port + 4, 12, "ES1688");
+	if (chip->res_port == NULL) {
+		snd_printk(KERN_ERR "es1688: can't grab port 0x%lx\n", port + 4);
+		err = -EBUSY;
+		goto exit;
+	}
+
+	err = request_irq(irq, snd_es1688_interrupt, 0, "ES1688", (void *) chip);
+	if (err < 0) {
+		snd_printk(KERN_ERR "es1688: can't grab IRQ %d\n", irq);
+		goto exit;
+	}
+
+	chip->irq = irq;
+	err = request_dma(dma8, "ES1688");
+
+	if (err < 0) {
+		snd_printk(KERN_ERR "es1688: can't grab DMA8 %d\n", dma8);
+		goto exit;
+>>>>>>> refs/remotes/origin/master
 	}
 	chip->dma8 = dma8;
 
@@ -692,6 +727,7 @@ int snd_es1688_create(struct snd_card *card,
 
 	err = snd_es1688_probe(chip);
 	if (err < 0)
+<<<<<<< HEAD
 		return err;
 
 	err = snd_es1688_init(chip, 1);
@@ -700,6 +736,20 @@ int snd_es1688_create(struct snd_card *card,
 
 	/* Register device */
 	return snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+=======
+		goto exit;
+
+	err = snd_es1688_init(chip, 1);
+	if (err < 0)
+		goto exit;
+
+	/* Register device */
+	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+exit:
+	if (err)
+		snd_es1688_free(chip);
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct snd_pcm_ops snd_es1688_playback_ops = {

@@ -77,6 +77,7 @@ void x25_link_control(struct sk_buff *skb, struct x25_neigh *nb,
 
 	switch (frametype) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case X25_RESTART_REQUEST:
 			confirm = !x25_t20timer_pending(nb);
 			x25_stop_t20timer(nb);
@@ -105,6 +106,8 @@ void x25_link_control(struct sk_buff *skb, struct x25_neigh *nb,
 			       "with LCI 000\n", frametype);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case X25_RESTART_REQUEST:
 		confirm = !x25_t20timer_pending(nb);
 		x25_stop_t20timer(nb);
@@ -131,7 +134,10 @@ void x25_link_control(struct sk_buff *skb, struct x25_neigh *nb,
 		printk(KERN_WARNING "x25: received unknown %02X with LCI 000\n",
 		       frametype);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (nb->state == X25_LINK_STATE_3)
@@ -226,6 +232,7 @@ void x25_transmit_link(struct sk_buff *skb, struct x25_neigh *nb)
 {
 	switch (nb->state) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case X25_LINK_STATE_0:
 			skb_queue_tail(&nb->queue, skb);
 			nb->state = X25_LINK_STATE_1;
@@ -239,6 +246,8 @@ void x25_transmit_link(struct sk_buff *skb, struct x25_neigh *nb)
 			x25_send_frame(skb, nb);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case X25_LINK_STATE_0:
 		skb_queue_tail(&nb->queue, skb);
 		nb->state = X25_LINK_STATE_1;
@@ -251,7 +260,10 @@ void x25_transmit_link(struct sk_buff *skb, struct x25_neigh *nb)
 	case X25_LINK_STATE_3:
 		x25_send_frame(skb, nb);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -262,6 +274,7 @@ void x25_link_established(struct x25_neigh *nb)
 {
 	switch (nb->state) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case X25_LINK_STATE_0:
 			nb->state = X25_LINK_STATE_2;
 			break;
@@ -271,6 +284,8 @@ void x25_link_established(struct x25_neigh *nb)
 			x25_start_t20timer(nb);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case X25_LINK_STATE_0:
 		nb->state = X25_LINK_STATE_2;
 		break;
@@ -279,7 +294,10 @@ void x25_link_established(struct x25_neigh *nb)
 		nb->state = X25_LINK_STATE_2;
 		x25_start_t20timer(nb);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

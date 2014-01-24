@@ -3,6 +3,7 @@
 #include <linux/gpio.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_H83007) || defined(CONFIG_H83068)
 #include <asm/regs306x.h>
 #endif
@@ -163,22 +164,31 @@
 =======
 #define SCxSR_TEND(port)	(((port)->type == PORT_SCI) ? SCI_TEND   : SCIF_TEND)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SCxSR_TEND(port)	(((port)->type == PORT_SCI) ? SCI_TEND   : SCIF_TEND)
+>>>>>>> refs/remotes/origin/master
 #define SCxSR_RDxF(port)	(((port)->type == PORT_SCI) ? SCI_RDRF   : SCIF_RDF)
 #define SCxSR_TDxE(port)	(((port)->type == PORT_SCI) ? SCI_TDRE   : SCIF_TDFE)
 #define SCxSR_FER(port)		(((port)->type == PORT_SCI) ? SCI_FER    : SCIF_FER)
 #define SCxSR_PER(port)		(((port)->type == PORT_SCI) ? SCI_PER    : SCIF_PER)
 #define SCxSR_BRK(port)		(((port)->type == PORT_SCI) ? 0x00       : SCIF_BRK)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SCxSR_ORER(port)	(((port)->type == PORT_SCI) ? SCI_ORER	 : SCIF_ORER)
 =======
 
 #define SCxSR_ERRORS(port)	(to_sci_port(port)->cfg->error_mask)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#define SCxSR_ERRORS(port)	(to_sci_port(port)->cfg->error_mask)
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_CPU_SUBTYPE_SH7705) || \
     defined(CONFIG_CPU_SUBTYPE_SH7720) || \
     defined(CONFIG_CPU_SUBTYPE_SH7721) || \
     defined(CONFIG_ARCH_SH73A0) || \
+<<<<<<< HEAD
     defined(CONFIG_ARCH_SH7367) || \
     defined(CONFIG_ARCH_SH7377) || \
 <<<<<<< HEAD
@@ -188,6 +198,8 @@
 # define SCxSR_TDxE_CLEAR(port)	 (sci_in(port, SCxSR) & 0xffdf)
 # define SCxSR_BREAK_CLEAR(port) (sci_in(port, SCxSR) & 0xffe3)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     defined(CONFIG_ARCH_SH7372) || \
     defined(CONFIG_ARCH_R8A7740)
 
@@ -195,7 +207,10 @@
 # define SCxSR_ERROR_CLEAR(port) (serial_port_in(port, SCxSR) & 0xfd73)
 # define SCxSR_TDxE_CLEAR(port)	 (serial_port_in(port, SCxSR) & 0xffdf)
 # define SCxSR_BREAK_CLEAR(port) (serial_port_in(port, SCxSR) & 0xffe3)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 # define SCxSR_RDxF_CLEAR(port)	 (((port)->type == PORT_SCI) ? 0xbc : 0x00fc)
 # define SCxSR_ERROR_CLEAR(port) (((port)->type == PORT_SCI) ? 0xc4 : 0x0073)
@@ -210,6 +225,7 @@
 
 #define SCI_MAJOR		204
 #define SCI_MINOR_START		8
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define SCI_IN(size, offset)					\
@@ -488,3 +504,5 @@ static inline int sci_rxd_in(struct uart_port *port)
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

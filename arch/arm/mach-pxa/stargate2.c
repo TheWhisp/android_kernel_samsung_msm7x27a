@@ -27,7 +27,11 @@
 
 #include <linux/i2c/pxa-i2c.h>
 #include <linux/i2c/pcf857x.h>
+<<<<<<< HEAD
 #include <linux/i2c/at24.h>
+=======
+#include <linux/platform_data/at24.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/smc91x.h>
 #include <linux/gpio.h>
 #include <linux/leds.h>
@@ -44,7 +48,11 @@
 #include <asm/mach/flash.h>
 
 #include <mach/pxa27x.h>
+<<<<<<< HEAD
 #include <mach/mmc.h>
+=======
+#include <linux/platform_data/mmc-pxamci.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/udc.h>
 #include <mach/pxa27x-udc.h>
 #include <mach/smemc.h>
@@ -52,7 +60,11 @@
 #include <linux/spi/spi.h>
 #include <linux/spi/pxa2xx_spi.h>
 #include <linux/mfd/da903x.h>
+<<<<<<< HEAD
 #include <linux/sht15.h>
+=======
+#include <linux/platform_data/sht15.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "devices.h"
 #include "generic.h"
@@ -151,6 +163,7 @@ static struct platform_device sht15 = {
 };
 
 static struct regulator_consumer_supply stargate2_sensor_3_con[] = {
+<<<<<<< HEAD
 	{
 <<<<<<< HEAD
 		.dev = &sht15.dev,
@@ -159,6 +172,9 @@ static struct regulator_consumer_supply stargate2_sensor_3_con[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
 		.supply = "vcc",
 	},
+=======
+	REGULATOR_SUPPLY("vcc", "sht15"),
+>>>>>>> refs/remotes/origin/master
 };
 
 enum stargate2_ldos{
@@ -381,10 +397,14 @@ static struct spi_board_info spi_board_info[] __initdata = {
 		.chip_select = 0,
 		.controller_data = &staccel_chip_info,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq = IRQ_GPIO(96),
 =======
 		.irq = PXA_GPIO_TO_IRQ(96),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq = PXA_GPIO_TO_IRQ(96),
+>>>>>>> refs/remotes/origin/master
 	}, {
 		.modalias = "cc2420",
 		.max_speed_hz = 6500000,
@@ -555,10 +575,14 @@ static struct i2c_board_info __initdata imote2_pwr_i2c_board_info[] = {
 		.addr = 0x49,
 		.platform_data = &imote2_da9030_pdata,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq = gpio_to_irq(1),
 =======
 		.irq = PXA_GPIO_TO_IRQ(1),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq = PXA_GPIO_TO_IRQ(1),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -573,10 +597,14 @@ static struct i2c_board_info __initdata imote2_i2c_board_info[] = {
 		 * pull up resistors are missing.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq = IRQ_GPIO(99),
 =======
 		.irq = PXA_GPIO_TO_IRQ(99),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq = PXA_GPIO_TO_IRQ(99),
+>>>>>>> refs/remotes/origin/master
 	}, { /* ITS400 Sensor board only */
 		.type = "tsl2561",
 		.addr = 0x49,
@@ -584,18 +612,24 @@ static struct i2c_board_info __initdata imote2_i2c_board_info[] = {
 		 * pull up resistors are missing.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq = IRQ_GPIO(99),
 	}, { /* ITS400 Sensor board only */
 		.type = "tmp175",
 		.addr = 0x4A,
 		.irq = IRQ_GPIO(96),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.irq = PXA_GPIO_TO_IRQ(99),
 	}, { /* ITS400 Sensor board only */
 		.type = "tmp175",
 		.addr = 0x4A,
 		.irq = PXA_GPIO_TO_IRQ(96),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}, { /* IMB400 Multimedia board */
 		.type = "wm8940",
 		.addr = 0x1A,
@@ -618,21 +652,31 @@ static struct pxa2xx_udc_mach_info imote2_udc_info __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device imote2_audio_device = {
 	.name = "imote2-audio",
 	.id   = -1,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device *imote2_devices[] = {
 	&stargate2_flash_device,
 	&imote2_leds,
 	&sht15,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&imote2_audio_device,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&imote2_audio_device,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init imote2_init(void)
@@ -698,12 +742,17 @@ static struct resource smc91x_resources[] = {
 	},
 	[1] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start = IRQ_GPIO(40),
 		.end = IRQ_GPIO(40),
 =======
 		.start = PXA_GPIO_TO_IRQ(40),
 		.end = PXA_GPIO_TO_IRQ(40),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start = PXA_GPIO_TO_IRQ(40),
+		.end = PXA_GPIO_TO_IRQ(40),
+>>>>>>> refs/remotes/origin/master
 		.flags = IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE,
 	}
 };
@@ -749,10 +798,14 @@ static int stargate2_mci_init(struct device *dev,
 	gpio_direction_input(SG2_GPIO_nSD_DETECT);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = request_irq(IRQ_GPIO(SG2_GPIO_nSD_DETECT),
 =======
 	err = request_irq(PXA_GPIO_TO_IRQ(SG2_GPIO_nSD_DETECT),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = request_irq(PXA_GPIO_TO_IRQ(SG2_GPIO_nSD_DETECT),
+>>>>>>> refs/remotes/origin/master
 			  stargate2_detect_int,
 			  IRQ_TYPE_EDGE_BOTH,
 			  "MMC card detect",
@@ -776,18 +829,29 @@ static int stargate2_mci_init(struct device *dev,
  *
  * Very simple control. Either it is on or off and is controlled by
  * a gpio pin */
+<<<<<<< HEAD
 static void stargate2_mci_setpower(struct device *dev, unsigned int vdd)
 {
 	gpio_set_value(SG2_SD_POWER_ENABLE, !!vdd);
+=======
+static int stargate2_mci_setpower(struct device *dev, unsigned int vdd)
+{
+	gpio_set_value(SG2_SD_POWER_ENABLE, !!vdd);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void stargate2_mci_exit(struct device *dev, void *data)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	free_irq(IRQ_GPIO(SG2_GPIO_nSD_DETECT), data);
 =======
 	free_irq(PXA_GPIO_TO_IRQ(SG2_GPIO_nSD_DETECT), data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	free_irq(PXA_GPIO_TO_IRQ(SG2_GPIO_nSD_DETECT), data);
+>>>>>>> refs/remotes/origin/master
 	gpio_free(SG2_SD_POWER_ENABLE);
 	gpio_free(SG2_GPIO_nSD_DETECT);
 }
@@ -963,10 +1027,14 @@ static struct i2c_board_info __initdata stargate2_pwr_i2c_board_info[] = {
 		.addr = 0x49,
 		.platform_data = &stargate2_da9030_pdata,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq = gpio_to_irq(1),
 =======
 		.irq = PXA_GPIO_TO_IRQ(1),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq = PXA_GPIO_TO_IRQ(1),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -992,10 +1060,14 @@ static struct i2c_board_info __initdata stargate2_i2c_board_info[] = {
 		 * pull up resistors are missing.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq = IRQ_GPIO(99),
 =======
 		.irq = PXA_GPIO_TO_IRQ(99),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq = PXA_GPIO_TO_IRQ(99),
+>>>>>>> refs/remotes/origin/master
 	}, { /* ITS400 Sensor board only */
 		.type = "tsl2561",
 		.addr = 0x49,
@@ -1003,18 +1075,24 @@ static struct i2c_board_info __initdata stargate2_i2c_board_info[] = {
 		 * pull up resistors are missing.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq = IRQ_GPIO(99),
 	}, { /* ITS400 Sensor board only */
 		.type = "tmp175",
 		.addr = 0x4A,
 		.irq = IRQ_GPIO(96),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.irq = PXA_GPIO_TO_IRQ(99),
 	}, { /* ITS400 Sensor board only */
 		.type = "tmp175",
 		.addr = 0x4A,
 		.irq = PXA_GPIO_TO_IRQ(96),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -1066,6 +1144,7 @@ static void __init stargate2_init(void)
 MACHINE_START(INTELMOTE2, "IMOTE 2")
 	.map_io		= pxa27x_map_io,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.init_irq	= pxa27x_init_irq,
 	.timer		= &pxa_timer,
 	.init_machine	= imote2_init,
@@ -1079,6 +1158,15 @@ MACHINE_START(INTELMOTE2, "IMOTE 2")
 	.atag_offset	= 0x100,
 	.restart	= pxa_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= pxa27x_init_irq,
+	.handle_irq	= pxa27x_handle_irq,
+	.init_time	= pxa_timer_init,
+	.init_machine	= imote2_init,
+	.atag_offset	= 0x100,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
@@ -1087,6 +1175,7 @@ MACHINE_START(STARGATE2, "Stargate 2")
 	.map_io = pxa27x_map_io,
 	.nr_irqs = STARGATE_NR_IRQS,
 	.init_irq = pxa27x_init_irq,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.timer = &pxa_timer,
 	.init_machine = stargate2_init,
@@ -1098,5 +1187,12 @@ MACHINE_START(STARGATE2, "Stargate 2")
 	.atag_offset = 0x100,
 	.restart	= pxa_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.handle_irq = pxa27x_handle_irq,
+	.init_time	= pxa_timer_init,
+	.init_machine = stargate2_init,
+	.atag_offset = 0x100,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif

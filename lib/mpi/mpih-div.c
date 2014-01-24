@@ -37,6 +37,7 @@
 #define UDIV_TIME UMUL_TIME
 #endif
 
+<<<<<<< HEAD
 /* FIXME: We should be using invert_limb (or invert_normalized_limb)
  * here (not udiv_qrnnd).
  */
@@ -190,6 +191,8 @@ mpihelp_mod_1(mpi_ptr_t dividend_ptr, mpi_size_t dividend_size,
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Divide num (NP/NSIZE) by den (DP/DSIZE) and write
  * the NSIZE-DSIZE least significant quotient limbs at QP
  * and the DSIZE long remainder at NP.	If QEXTRA_LIMBS is
@@ -387,6 +390,7 @@ q_test:
 
 	return most_significant_q_limb;
 }
+<<<<<<< HEAD
 
 /****************
  * Divide (DIVIDEND_PTR,,DIVIDEND_SIZE) by DIVISOR_LIMB.
@@ -543,3 +547,5 @@ mpihelp_divmod_1(mpi_ptr_t quot_ptr,
 		return r;
 	}
 }
+=======
+>>>>>>> refs/remotes/origin/master

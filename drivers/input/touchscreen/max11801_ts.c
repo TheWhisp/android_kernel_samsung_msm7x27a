@@ -10,11 +10,16 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
 <<<<<<< HEAD
+<<<<<<< HEAD
  * the Free Software Foundation; either version 2 of the License.
 =======
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+>>>>>>> refs/remotes/origin/master
  */
 
 /*
@@ -160,7 +165,11 @@ out:
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static void __devinit max11801_ts_phy_init(struct max11801_data *data)
+=======
+static void max11801_ts_phy_init(struct max11801_data *data)
+>>>>>>> refs/remotes/origin/master
 {
 	struct i2c_client *client = data->client;
 
@@ -178,19 +187,31 @@ static void __devinit max11801_ts_phy_init(struct max11801_data *data)
 	max11801_write_reg(client, OP_MODE_CONF_REG, 0x36);
 }
 
+<<<<<<< HEAD
 static int __devinit max11801_ts_probe(struct i2c_client *client,
+=======
+static int max11801_ts_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 				       const struct i2c_device_id *id)
 {
 	struct max11801_data *data;
 	struct input_dev *input_dev;
 	int error;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct max11801_data), GFP_KERNEL);
 	input_dev = input_allocate_device();
 	if (!data || !input_dev) {
 		dev_err(&client->dev, "Failed to allocate memory\n");
 		error = -ENOMEM;
 		goto err_free_mem;
+=======
+	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+	input_dev = devm_input_allocate_device(&client->dev);
+	if (!data || !input_dev) {
+		dev_err(&client->dev, "Failed to allocate memory\n");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	data->client = client;
@@ -209,16 +230,27 @@ static int __devinit max11801_ts_probe(struct i2c_client *client,
 
 	max11801_ts_phy_init(data);
 
+<<<<<<< HEAD
 	error = request_threaded_irq(client->irq, NULL, max11801_ts_interrupt,
 				     IRQF_TRIGGER_LOW | IRQF_ONESHOT,
 				     "max11801_ts", data);
 	if (error) {
 		dev_err(&client->dev, "Failed to register interrupt\n");
 		goto err_free_mem;
+=======
+	error = devm_request_threaded_irq(&client->dev, client->irq, NULL,
+					  max11801_ts_interrupt,
+					  IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+					  "max11801_ts", data);
+	if (error) {
+		dev_err(&client->dev, "Failed to register interrupt\n");
+		return error;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	error = input_register_device(data->input_dev);
 	if (error)
+<<<<<<< HEAD
 		goto err_free_irq;
 
 	i2c_set_clientdata(client, data);
@@ -241,6 +273,12 @@ static __devexit int max11801_ts_remove(struct i2c_client *client)
 	kfree(data);
 
 	return 0;
+=======
+		return error;
+
+	i2c_set_clientdata(client, data);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct i2c_device_id max11801_ts_id[] = {
@@ -256,6 +294,7 @@ static struct i2c_driver max11801_ts_driver = {
 	},
 	.id_table	= max11801_ts_id,
 	.probe		= max11801_ts_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(max11801_ts_remove),
 };
 
@@ -275,6 +314,11 @@ module_exit(max11801_ts_exit);
 =======
 module_i2c_driver(max11801_ts_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+module_i2c_driver(max11801_ts_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Zhang Jiejing <jiejing.zhang@freescale.com>");
 MODULE_DESCRIPTION("Touchscreen driver for MAXI MAX11801 controller");

@@ -27,19 +27,26 @@
  *
  * Please send any bug reports or fixes you make to the
  * email address(es):
+<<<<<<< HEAD
  *    lksctp developers <lksctp-developers@lists.sourceforge.net>
  *
  * Or submit a bug report through the following website:
  *    http://www.sf.net/projects/lksctp
+=======
+ *    lksctp developers <linux-sctp@vger.kernel.org>
+>>>>>>> refs/remotes/origin/master
  *
  * Written or modified by:
  *    La Monte H.P. Yarroll <piggy@acm.org>
  *    Jon Grimm             <jgrimm@us.ibm.com>
  *    Karl Knutson          <karl@athena.chicago.il.us>
  *    Sridhar Samudrala     <sri@us.ibm.com>
+<<<<<<< HEAD
  *
  * Any bugs reported given to us we will try to fix... any fixes shared will
  * be incorporated into the next SCTP release.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/slab.h>
@@ -51,7 +58,11 @@
 static void sctp_tsnmap_update(struct sctp_tsnmap *map);
 static void sctp_tsnmap_find_gap_ack(unsigned long *map, __u16 off,
 				     __u16 len, __u16 *start, __u16 *end);
+<<<<<<< HEAD
 static int sctp_tsnmap_grow(struct sctp_tsnmap *map, u16 gap);
+=======
+static int sctp_tsnmap_grow(struct sctp_tsnmap *map, u16 size);
+>>>>>>> refs/remotes/origin/master
 
 /* Initialize a block of memory as a tsnmap.  */
 struct sctp_tsnmap *sctp_tsnmap_init(struct sctp_tsnmap *map, __u16 len,
@@ -114,7 +125,12 @@ int sctp_tsnmap_check(const struct sctp_tsnmap *map, __u32 tsn)
 
 
 /* Mark this TSN as seen.  */
+<<<<<<< HEAD
 int sctp_tsnmap_mark(struct sctp_tsnmap *map, __u32 tsn)
+=======
+int sctp_tsnmap_mark(struct sctp_tsnmap *map, __u32 tsn,
+		     struct sctp_transport *trans)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 gap;
 
@@ -123,7 +139,11 @@ int sctp_tsnmap_mark(struct sctp_tsnmap *map, __u32 tsn)
 
 	gap = tsn - map->base_tsn;
 
+<<<<<<< HEAD
 	if (gap >= map->len && !sctp_tsnmap_grow(map, gap))
+=======
+	if (gap >= map->len && !sctp_tsnmap_grow(map, gap + 1))
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	if (!sctp_tsnmap_has_gap(map) && gap == 0) {
@@ -133,6 +153,12 @@ int sctp_tsnmap_mark(struct sctp_tsnmap *map, __u32 tsn)
 		 */
 		map->max_tsn_seen++;
 		map->cumulative_tsn_ack_point++;
+<<<<<<< HEAD
+=======
+		if (trans)
+			trans->sack_generation =
+				trans->asoc->peer.sack_generation;
+>>>>>>> refs/remotes/origin/master
 		map->base_tsn++;
 	} else {
 		/* Either we already have a gap, or about to record a gap, so
@@ -157,8 +183,13 @@ int sctp_tsnmap_mark(struct sctp_tsnmap *map, __u32 tsn)
 
 
 /* Initialize a Gap Ack Block iterator from memory being provided.  */
+<<<<<<< HEAD
 SCTP_STATIC void sctp_tsnmap_iter_init(const struct sctp_tsnmap *map,
 				       struct sctp_tsnmap_iter *iter)
+=======
+static void sctp_tsnmap_iter_init(const struct sctp_tsnmap *map,
+				  struct sctp_tsnmap_iter *iter)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Only start looking one past the Cumulative TSN Ack Point.  */
 	iter->start = map->cumulative_tsn_ack_point + 1;
@@ -167,9 +198,15 @@ SCTP_STATIC void sctp_tsnmap_iter_init(const struct sctp_tsnmap *map,
 /* Get the next Gap Ack Blocks. Returns 0 if there was not another block
  * to get.
  */
+<<<<<<< HEAD
 SCTP_STATIC int sctp_tsnmap_next_gap_ack(const struct sctp_tsnmap *map,
 					 struct sctp_tsnmap_iter *iter,
 					 __u16 *start, __u16 *end)
+=======
+static int sctp_tsnmap_next_gap_ack(const struct sctp_tsnmap *map,
+				    struct sctp_tsnmap_iter *iter,
+				    __u16 *start, __u16 *end)
+>>>>>>> refs/remotes/origin/master
 {
 	int ended = 0;
 	__u16 start_ = 0, end_ = 0, offset;
@@ -268,7 +305,11 @@ __u16 sctp_tsnmap_pending(struct sctp_tsnmap *map)
 	__u32 max_tsn = map->max_tsn_seen;
 	__u32 base_tsn = map->base_tsn;
 	__u16 pending_data;
+<<<<<<< HEAD
 	u32 gap, i;
+=======
+	u32 gap;
+>>>>>>> refs/remotes/origin/master
 
 	pending_data = max_tsn - cum_tsn;
 	gap = max_tsn - base_tsn;
@@ -276,11 +317,15 @@ __u16 sctp_tsnmap_pending(struct sctp_tsnmap *map)
 	if (gap == 0 || gap >= map->len)
 		goto out;
 
+<<<<<<< HEAD
 	for (i = 0; i < gap+1; i++) {
 		if (test_bit(i, map->tsn_map))
 			pending_data--;
 	}
 
+=======
+	pending_data -= bitmap_weight(map->tsn_map, gap + 1);
+>>>>>>> refs/remotes/origin/master
 out:
 	return pending_data;
 }
@@ -360,23 +405,39 @@ __u16 sctp_tsnmap_num_gabs(struct sctp_tsnmap *map,
 	return ngaps;
 }
 
+<<<<<<< HEAD
 static int sctp_tsnmap_grow(struct sctp_tsnmap *map, u16 gap)
+=======
+static int sctp_tsnmap_grow(struct sctp_tsnmap *map, u16 size)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long *new;
 	unsigned long inc;
 	u16  len;
 
+<<<<<<< HEAD
 	if (gap >= SCTP_TSN_MAP_SIZE)
 		return 0;
 
 	inc = ALIGN((gap - map->len),BITS_PER_LONG) + SCTP_TSN_MAP_INCREMENT;
+=======
+	if (size > SCTP_TSN_MAP_SIZE)
+		return 0;
+
+	inc = ALIGN((size - map->len), BITS_PER_LONG) + SCTP_TSN_MAP_INCREMENT;
+>>>>>>> refs/remotes/origin/master
 	len = min_t(u16, map->len + inc, SCTP_TSN_MAP_SIZE);
 
 	new = kzalloc(len>>3, GFP_ATOMIC);
 	if (!new)
 		return 0;
 
+<<<<<<< HEAD
 	bitmap_copy(new, map->tsn_map, map->max_tsn_seen - map->base_tsn);
+=======
+	bitmap_copy(new, map->tsn_map,
+		map->max_tsn_seen - map->cumulative_tsn_ack_point);
+>>>>>>> refs/remotes/origin/master
 	kfree(map->tsn_map);
 	map->tsn_map = new;
 	map->len = len;

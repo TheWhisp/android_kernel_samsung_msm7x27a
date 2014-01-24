@@ -18,9 +18,12 @@
 #ifndef TARGET_H
 #define TARGET_H
 
+<<<<<<< HEAD
 #define AR6003_BOARD_DATA_OFFSET       4
 #define AR6003_RD_OFFSET               12
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define AR6003_BOARD_DATA_SZ		1024
 #define AR6003_BOARD_EXT_DATA_SZ	768
 #define AR6003_BOARD_EXT_DATA_SZ_V2	1024
@@ -28,7 +31,11 @@
 #define AR6004_BOARD_DATA_SZ     6144
 #define AR6004_BOARD_EXT_DATA_SZ 0
 
+<<<<<<< HEAD
 #define RESET_CONTROL_ADDRESS		0x00000000
+=======
+#define RESET_CONTROL_ADDRESS		0x00004000
+>>>>>>> refs/remotes/origin/master
 #define RESET_CONTROL_COLD_RST		0x00000100
 #define RESET_CONTROL_MBOX_RST		0x00000004
 
@@ -332,10 +339,13 @@ struct host_interest {
 #define HI_OPTION_FW_SUBMODE_BITS      0x2
 #define HI_OPTION_FW_SUBMODE_SHIFT     0x14
 
+<<<<<<< HEAD
 #ifdef SS_3RD_INTF
 #define HI_OPTION_VIRTU_MAC_ENABLE     0x10
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Convert a Target virtual address into a Target physical address */
 #define AR6003_VTOP(vaddr) ((vaddr) & 0x001fffff)
 #define AR6004_VTOP(vaddr) (vaddr)

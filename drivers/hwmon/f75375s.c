@@ -1,31 +1,46 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * f75375s.c - driver for the Fintek F75375/SP and F75373
  *             hardware monitoring features
 =======
  * f75375s.c - driver for the Fintek F75375/SP, F75373 and
  *             F75387SG/RG hardware monitoring features
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * f75375s.c - driver for the Fintek F75375/SP, F75373 and
+ *             F75387SG/RG hardware monitoring features
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2006-2007  Riku Voipio
  *
  * Datasheets available at:
  *
  * f75375:
 <<<<<<< HEAD
+<<<<<<< HEAD
  * http://www.fintek.com.tw/files/productfiles/F75375_V026P.pdf 
 =======
  * http://www.fintek.com.tw/files/productfiles/F75375_V026P.pdf
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * http://www.fintek.com.tw/files/productfiles/F75375_V026P.pdf
+>>>>>>> refs/remotes/origin/master
  *
  * f75373:
  * http://www.fintek.com.tw/files/productfiles/F75373_V025P.pdf
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
  * f75387:
  * http://www.fintek.com.tw/files/productfiles/F75387_V027P.pdf
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * f75387:
+ * http://www.fintek.com.tw/files/productfiles/F75387_V027P.pdf
+ *
+>>>>>>> refs/remotes/origin/master
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -56,10 +71,14 @@
 static const unsigned short normal_i2c[] = { 0x2d, 0x2e, I2C_CLIENT_END };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum chips { f75373, f75375 };
 =======
 enum chips { f75373, f75375, f75387 };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum chips { f75373, f75375, f75387 };
+>>>>>>> refs/remotes/origin/master
 
 /* Fintek F75375 registers  */
 #define F75375_REG_CONFIG0		0x0
@@ -79,9 +98,13 @@ enum chips { f75373, f75375, f75387 };
 
 #define F75375_REG_TEMP(nr)		(0x14 + (nr))
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define F75387_REG_TEMP11_LSB(nr)	(0x1a + (nr))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define F75387_REG_TEMP11_LSB(nr)	(0x1a + (nr))
+>>>>>>> refs/remotes/origin/master
 #define F75375_REG_TEMP_HIGH(nr)	(0x28 + (nr) * 2)
 #define F75375_REG_TEMP_HYST(nr)	(0x29 + (nr) * 2)
 
@@ -102,15 +125,21 @@ enum chips { f75373, f75375, f75387 };
 #define F75375_REG_PWM2_DROP_DUTY	0x6C
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define FAN_CTRL_LINEAR(nr)		(4 + nr)
 #define FAN_CTRL_MODE(nr)		(4 + ((nr) * 2))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define F75375_FAN_CTRL_LINEAR(nr)	(4 + nr)
 #define F75387_FAN_CTRL_LINEAR(nr)	(1 + ((nr) * 4))
 #define FAN_CTRL_MODE(nr)		(4 + ((nr) * 2))
 #define F75387_FAN_DUTY_MODE(nr)	(2 + ((nr) * 4))
 #define F75387_FAN_MANU_MODE(nr)	((nr) * 4)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Data structures and manipulation thereof
@@ -134,26 +163,37 @@ struct f75375_data {
 	u16 fan[2];
 	u16 fan_min[2];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 fan_full[2];
 	u16 fan_exp[2];
 =======
 	u16 fan_max[2];
 	u16 fan_target[2];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 fan_max[2];
+	u16 fan_target[2];
+>>>>>>> refs/remotes/origin/master
 	u8 fan_timer;
 	u8 pwm[2];
 	u8 pwm_mode[2];
 	u8 pwm_enable[2];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	s8 temp[2];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * f75387: For remote temperature reading, it uses signed 11-bit
 	 * values with LSB = 0.125 degree Celsius, left-justified in 16-bit
 	 * registers. For original 8-bit temp readings, the LSB just is 0.
 	 */
 	s16 temp11[2];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	s8 temp_high[2];
 	s8 temp_max_hyst[2];
 };
@@ -168,9 +208,13 @@ static const struct i2c_device_id f75375_id[] = {
 	{ "f75373", f75373 },
 	{ "f75375", f75375 },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ "f75387", f75387 },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "f75387", f75387 },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 MODULE_DEVICE_TABLE(i2c, f75375_id);
@@ -196,12 +240,17 @@ static inline int f75375_read8(struct i2c_client *client, u8 reg)
 static inline u16 f75375_read16(struct i2c_client *client, u8 reg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return ((i2c_smbus_read_byte_data(client, reg) << 8)
 		| i2c_smbus_read_byte_data(client, reg + 1));
 =======
 	return (i2c_smbus_read_byte_data(client, reg) << 8)
 		| i2c_smbus_read_byte_data(client, reg + 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (i2c_smbus_read_byte_data(client, reg) << 8)
+		| i2c_smbus_read_byte_data(client, reg + 1);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void f75375_write8(struct i2c_client *client, u8 reg,
@@ -220,7 +269,10 @@ static inline void f75375_write16(struct i2c_client *client, u8 reg,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void f75375_write_pwm(struct i2c_client *client, int nr)
 {
 	struct f75375_data *data = i2c_get_clientdata(client);
@@ -231,7 +283,10 @@ static void f75375_write_pwm(struct i2c_client *client, int nr)
 			      data->pwm[nr]);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct f75375_data *f75375_update_device(struct device *dev)
 {
 	struct i2c_client *client = to_i2c_client(dev);
@@ -249,6 +304,7 @@ static struct f75375_data *f75375_update_device(struct device *dev)
 			data->temp_max_hyst[nr] =
 				f75375_read8(client, F75375_REG_TEMP_HYST(nr));
 <<<<<<< HEAD
+<<<<<<< HEAD
 			data->fan_full[nr] =
 				f75375_read16(client, F75375_REG_FAN_FULL(nr));
 			data->fan_min[nr] =
@@ -259,13 +315,18 @@ static struct f75375_data *f75375_update_device(struct device *dev)
 				F75375_REG_FAN_PWM_DUTY(nr));
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			data->fan_max[nr] =
 				f75375_read16(client, F75375_REG_FAN_FULL(nr));
 			data->fan_min[nr] =
 				f75375_read16(client, F75375_REG_FAN_MIN(nr));
 			data->fan_target[nr] =
 				f75375_read16(client, F75375_REG_FAN_EXP(nr));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		for (nr = 0; nr < 4; nr++) {
 			data->in_max[nr] =
@@ -282,9 +343,12 @@ static struct f75375_data *f75375_update_device(struct device *dev)
 		|| !data->valid) {
 		for (nr = 0; nr < 2; nr++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			data->temp[nr] =
 				f75375_read8(client, F75375_REG_TEMP(nr));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			data->pwm[nr] =	f75375_read8(client,
 				F75375_REG_FAN_PWM_DUTY(nr));
 			/* assign MSB, therefore shift it by 8 bits */
@@ -295,7 +359,10 @@ static struct f75375_data *f75375_update_device(struct device *dev)
 				data->temp11[nr] |=
 					f75375_read8(client,
 						     F75387_REG_TEMP11_LSB(nr));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			data->fan[nr] =
 				f75375_read16(client, F75375_REG_FAN(nr));
 		}
@@ -316,10 +383,14 @@ static inline u16 rpm_from_reg(u16 reg)
 	if (reg == 0 || reg == 0xffff)
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (1500000 / reg);
 =======
 	return 1500000 / reg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 1500000 / reg;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline u16 rpm_to_reg(int rpm)
@@ -327,8 +398,11 @@ static inline u16 rpm_to_reg(int rpm)
 	if (rpm < 367 || rpm > 0xffff)
 		return 0xffff;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (1500000 / rpm);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return 1500000 / rpm;
 }
 
@@ -343,7 +417,11 @@ static bool duty_mode_enabled(u8 pwm_enable)
 	case 3: /* Manual, speed mode */
 		return false;
 	default:
+<<<<<<< HEAD
 		BUG();
+=======
+		WARN(1, "Unexpected pwm_enable value %d\n", pwm_enable);
+>>>>>>> refs/remotes/origin/master
 		return true;
 	}
 }
@@ -359,10 +437,16 @@ static bool auto_mode_enabled(u8 pwm_enable)
 	case 4: /* Auto, duty mode */
 		return true;
 	default:
+<<<<<<< HEAD
 		BUG();
 		return false;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		WARN(1, "Unexpected pwm_enable value %d\n", pwm_enable);
+		return false;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t set_fan_min(struct device *dev, struct device_attribute *attr,
@@ -372,15 +456,21 @@ static ssize_t set_fan_min(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct f75375_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err < 0)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->fan_min[nr] = rpm_to_reg(val);
@@ -390,15 +480,20 @@ static ssize_t set_fan_min(struct device *dev, struct device_attribute *attr,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t set_fan_exp(struct device *dev, struct device_attribute *attr,
 =======
 static ssize_t set_fan_target(struct device *dev, struct device_attribute *attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t set_fan_target(struct device *dev, struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 		const char *buf, size_t count)
 {
 	int nr = to_sensor_dev_attr(attr)->index;
 	struct i2c_client *client = to_i2c_client(dev);
 	struct f75375_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int val = simple_strtoul(buf, NULL, 10);
 
@@ -406,6 +501,8 @@ static ssize_t set_fan_target(struct device *dev, struct device_attribute *attr,
 	data->fan_exp[nr] = rpm_to_reg(val);
 	f75375_write16(client, F75375_REG_FAN_EXP(nr), data->fan_exp[nr]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
@@ -421,7 +518,10 @@ static ssize_t set_fan_target(struct device *dev, struct device_attribute *attr,
 	mutex_lock(&data->update_lock);
 	data->fan_target[nr] = rpm_to_reg(val);
 	f75375_write16(client, F75375_REG_FAN_EXP(nr), data->fan_target[nr]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 	return count;
 }
@@ -433,12 +533,15 @@ static ssize_t set_pwm(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct f75375_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtoul(buf, NULL, 10);
 
 	mutex_lock(&data->update_lock);
 	data->pwm[nr] = SENSORS_LIMIT(val, 0, 255);
 	f75375_write8(client, F75375_REG_FAN_PWM_DUTY(nr), data->pwm[nr]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
@@ -451,9 +554,14 @@ static ssize_t set_pwm(struct device *dev, struct device_attribute *attr,
 		return -EINVAL;
 
 	mutex_lock(&data->update_lock);
+<<<<<<< HEAD
 	data->pwm[nr] = SENSORS_LIMIT(val, 0, 255);
 	f75375_write_pwm(client, nr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data->pwm[nr] = clamp_val(val, 0, 255);
+	f75375_write_pwm(client, nr);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 	return count;
 }
@@ -475,6 +583,7 @@ static int set_pwm_enable_direct(struct i2c_client *client, int nr, int val)
 		return -EINVAL;
 
 	fanmode = f75375_read8(client, F75375_REG_FAN_TIMER);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	fanmode &= ~(3 << FAN_CTRL_MODE(nr));
 
@@ -498,6 +607,8 @@ static int set_pwm_enable_direct(struct i2c_client *client, int nr, int val)
 		f75375_write8(client, F75375_REG_FAN_PWM_DUTY(nr),
 				data->pwm[nr]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (data->kind == f75387) {
 		/* For now, deny dangerous toggling of duty mode */
 		if (duty_mode_enabled(data->pwm_enable[nr]) !=
@@ -550,7 +661,10 @@ static int set_pwm_enable_direct(struct i2c_client *client, int nr, int val)
 	data->pwm_enable[nr] = val;
 	if (val == 0)
 		f75375_write_pwm(client, nr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -561,16 +675,22 @@ static ssize_t set_pwm_enable(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct f75375_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtoul(buf, NULL, 10);
 	int err = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err < 0)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	err = set_pwm_enable_direct(client, nr, val);
@@ -585,9 +705,12 @@ static ssize_t set_pwm_mode(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct f75375_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtoul(buf, NULL, 10);
 	u8 conf = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 	u8 conf;
@@ -596,11 +719,15 @@ static ssize_t set_pwm_mode(struct device *dev, struct device_attribute *attr,
 	err = kstrtoul(buf, 10, &val);
 	if (err < 0)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!(val == 0 || val == 1))
 		return -EINVAL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mutex_lock(&data->update_lock);
 	conf = f75375_read8(client, F75375_REG_CONFIG1);
@@ -611,6 +738,8 @@ static ssize_t set_pwm_mode(struct device *dev, struct device_attribute *attr,
 
 	f75375_write8(client, F75375_REG_CONFIG1, conf);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* F75373 does not support DC (linear voltage) fan control mode */
 	if (data->kind == f75373 && val == 0)
 		return -EINVAL;
@@ -632,7 +761,10 @@ static ssize_t set_pwm_mode(struct device *dev, struct device_attribute *attr,
 		conf |= (1 << ctrl);
 
 	f75375_write8(client, reg, conf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	data->pwm_mode[nr] = val;
 	mutex_unlock(&data->update_lock);
 	return count;
@@ -688,8 +820,11 @@ static ssize_t set_in_max(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct f75375_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
@@ -697,8 +832,12 @@ static ssize_t set_in_max(struct device *dev, struct device_attribute *attr,
 	if (err < 0)
 		return err;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	val = SENSORS_LIMIT(VOLT_TO_REG(val), 0, 0xff);
+=======
+	val = clamp_val(VOLT_TO_REG(val), 0, 0xff);
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&data->update_lock);
 	data->in_max[nr] = val;
 	f75375_write8(client, F75375_REG_VOLT_HIGH(nr), data->in_max[nr]);
@@ -713,8 +852,11 @@ static ssize_t set_in_min(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct f75375_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
@@ -722,8 +864,12 @@ static ssize_t set_in_min(struct device *dev, struct device_attribute *attr,
 	if (err < 0)
 		return err;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	val = SENSORS_LIMIT(VOLT_TO_REG(val), 0, 0xff);
+=======
+	val = clamp_val(VOLT_TO_REG(val), 0, 0xff);
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&data->update_lock);
 	data->in_min[nr] = val;
 	f75375_write8(client, F75375_REG_VOLT_LOW(nr), data->in_min[nr]);
@@ -733,6 +879,7 @@ static ssize_t set_in_min(struct device *dev, struct device_attribute *attr,
 #define TEMP_FROM_REG(val) ((val) * 1000)
 #define TEMP_TO_REG(val) ((val) / 1000)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static ssize_t show_temp(struct device *dev, struct device_attribute *attr,
 =======
@@ -740,15 +887,24 @@ static ssize_t show_temp(struct device *dev, struct device_attribute *attr,
 
 static ssize_t show_temp11(struct device *dev, struct device_attribute *attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TEMP11_FROM_REG(reg)	((reg) / 32 * 125)
+
+static ssize_t show_temp11(struct device *dev, struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 		char *buf)
 {
 	int nr = to_sensor_dev_attr(attr)->index;
 	struct f75375_data *data = f75375_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf, "%d\n", TEMP_FROM_REG(data->temp[nr]));
 =======
 	return sprintf(buf, "%d\n", TEMP11_FROM_REG(data->temp11[nr]));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", TEMP11_FROM_REG(data->temp11[nr]));
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t show_temp_max(struct device *dev, struct device_attribute *attr,
@@ -774,8 +930,11 @@ static ssize_t set_temp_max(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct f75375_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
@@ -783,8 +942,12 @@ static ssize_t set_temp_max(struct device *dev, struct device_attribute *attr,
 	if (err < 0)
 		return err;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	val = SENSORS_LIMIT(TEMP_TO_REG(val), 0, 127);
+=======
+	val = clamp_val(TEMP_TO_REG(val), 0, 127);
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&data->update_lock);
 	data->temp_high[nr] = val;
 	f75375_write8(client, F75375_REG_TEMP_HIGH(nr), data->temp_high[nr]);
@@ -799,8 +962,11 @@ static ssize_t set_temp_max_hyst(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct f75375_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
@@ -808,8 +974,12 @@ static ssize_t set_temp_max_hyst(struct device *dev,
 	if (err < 0)
 		return err;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	val = SENSORS_LIMIT(TEMP_TO_REG(val), 0, 127);
+=======
+	val = clamp_val(TEMP_TO_REG(val), 0, 127);
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&data->update_lock);
 	data->temp_max_hyst[nr] = val;
 	f75375_write8(client, F75375_REG_TEMP_HYST(nr),
@@ -830,12 +1000,17 @@ static ssize_t show_##thing(struct device *dev, struct device_attribute *attr, \
 show_fan(fan);
 show_fan(fan_min);
 <<<<<<< HEAD
+<<<<<<< HEAD
 show_fan(fan_full);
 show_fan(fan_exp);
 =======
 show_fan(fan_max);
 show_fan(fan_target);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+show_fan(fan_max);
+show_fan(fan_target);
+>>>>>>> refs/remotes/origin/master
 
 static SENSOR_DEVICE_ATTR(in0_input, S_IRUGO, show_in, NULL, 0);
 static SENSOR_DEVICE_ATTR(in0_max, S_IRUGO|S_IWUSR,
@@ -858,24 +1033,33 @@ static SENSOR_DEVICE_ATTR(in3_max, S_IRUGO|S_IWUSR,
 static SENSOR_DEVICE_ATTR(in3_min, S_IRUGO|S_IWUSR,
 	show_in_min, set_in_min, 3);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO, show_temp, NULL, 0);
 =======
 static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO, show_temp11, NULL, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO, show_temp11, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 static SENSOR_DEVICE_ATTR(temp1_max_hyst, S_IRUGO|S_IWUSR,
 	show_temp_max_hyst, set_temp_max_hyst, 0);
 static SENSOR_DEVICE_ATTR(temp1_max, S_IRUGO|S_IWUSR,
 	show_temp_max, set_temp_max, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static SENSOR_DEVICE_ATTR(temp2_input, S_IRUGO, show_temp, NULL, 1);
 =======
 static SENSOR_DEVICE_ATTR(temp2_input, S_IRUGO, show_temp11, NULL, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static SENSOR_DEVICE_ATTR(temp2_input, S_IRUGO, show_temp11, NULL, 1);
+>>>>>>> refs/remotes/origin/master
 static SENSOR_DEVICE_ATTR(temp2_max_hyst, S_IRUGO|S_IWUSR,
 	show_temp_max_hyst, set_temp_max_hyst, 1);
 static SENSOR_DEVICE_ATTR(temp2_max, S_IRUGO|S_IWUSR,
 	show_temp_max, set_temp_max, 1);
 static SENSOR_DEVICE_ATTR(fan1_input, S_IRUGO, show_fan, NULL, 0);
+<<<<<<< HEAD
 <<<<<<< HEAD
 static SENSOR_DEVICE_ATTR(fan1_full, S_IRUGO, show_fan_full, NULL, 0);
 static SENSOR_DEVICE_ATTR(fan1_min, S_IRUGO|S_IWUSR,
@@ -889,6 +1073,8 @@ static SENSOR_DEVICE_ATTR(fan2_min, S_IRUGO|S_IWUSR,
 static SENSOR_DEVICE_ATTR(fan2_exp, S_IRUGO|S_IWUSR,
 	show_fan_exp, set_fan_exp, 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static SENSOR_DEVICE_ATTR(fan1_max, S_IRUGO, show_fan_max, NULL, 0);
 static SENSOR_DEVICE_ATTR(fan1_min, S_IRUGO|S_IWUSR,
 	show_fan_min, set_fan_min, 0);
@@ -900,7 +1086,10 @@ static SENSOR_DEVICE_ATTR(fan2_min, S_IRUGO|S_IWUSR,
 	show_fan_min, set_fan_min, 1);
 static SENSOR_DEVICE_ATTR(fan2_target, S_IRUGO|S_IWUSR,
 	show_fan_target, set_fan_target, 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static SENSOR_DEVICE_ATTR(pwm1, S_IRUGO|S_IWUSR,
 	show_pwm, set_pwm, 0);
 static SENSOR_DEVICE_ATTR(pwm1_enable, S_IRUGO|S_IWUSR,
@@ -923,6 +1112,7 @@ static struct attribute *f75375_attributes[] = {
 	&sensor_dev_attr_temp2_max_hyst.dev_attr.attr,
 	&sensor_dev_attr_fan1_input.dev_attr.attr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&sensor_dev_attr_fan1_full.dev_attr.attr,
 	&sensor_dev_attr_fan1_min.dev_attr.attr,
 	&sensor_dev_attr_fan1_exp.dev_attr.attr,
@@ -931,6 +1121,8 @@ static struct attribute *f75375_attributes[] = {
 	&sensor_dev_attr_fan2_min.dev_attr.attr,
 	&sensor_dev_attr_fan2_exp.dev_attr.attr,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	&sensor_dev_attr_fan1_max.dev_attr.attr,
 	&sensor_dev_attr_fan1_min.dev_attr.attr,
 	&sensor_dev_attr_fan1_target.dev_attr.attr,
@@ -938,7 +1130,10 @@ static struct attribute *f75375_attributes[] = {
 	&sensor_dev_attr_fan2_max.dev_attr.attr,
 	&sensor_dev_attr_fan2_min.dev_attr.attr,
 	&sensor_dev_attr_fan2_target.dev_attr.attr,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	&sensor_dev_attr_pwm1.dev_attr.attr,
 	&sensor_dev_attr_pwm1_enable.dev_attr.attr,
 	&sensor_dev_attr_pwm1_mode.dev_attr.attr,
@@ -969,6 +1164,7 @@ static void f75375_init(struct i2c_client *client, struct f75375_data *data,
 {
 	int nr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_pwm_enable_direct(client, 0, f75375s_pdata->pwm_enable[0]);
 	set_pwm_enable_direct(client, 1, f75375s_pdata->pwm_enable[1]);
 	for (nr = 0; nr < 2; nr++) {
@@ -976,6 +1172,8 @@ static void f75375_init(struct i2c_client *client, struct f75375_data *data,
 		f75375_write8(client, F75375_REG_FAN_PWM_DUTY(nr),
 			data->pwm[nr]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!f75375s_pdata) {
 		u8 conf, mode;
@@ -1030,9 +1228,14 @@ static void f75375_init(struct i2c_client *client, struct f75375_data *data,
 		if (auto_mode_enabled(f75375s_pdata->pwm_enable[nr]) ||
 		    !duty_mode_enabled(f75375s_pdata->pwm_enable[nr]))
 			continue;
+<<<<<<< HEAD
 		data->pwm[nr] = SENSORS_LIMIT(f75375s_pdata->pwm[nr], 0, 255);
 		f75375_write_pwm(client, nr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		data->pwm[nr] = clamp_val(f75375s_pdata->pwm[nr], 0, 255);
+		f75375_write_pwm(client, nr);
+>>>>>>> refs/remotes/origin/master
 	}
 
 }
@@ -1041,24 +1244,36 @@ static int f75375_probe(struct i2c_client *client,
 		const struct i2c_device_id *id)
 {
 	struct f75375_data *data;
+<<<<<<< HEAD
 	struct f75375s_platform_data *f75375s_pdata = client->dev.platform_data;
+=======
+	struct f75375s_platform_data *f75375s_pdata =
+			dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	if (!i2c_check_functionality(client->adapter,
 				I2C_FUNC_SMBUS_BYTE_DATA))
 		return -EIO;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(data = kzalloc(sizeof(struct f75375_data), GFP_KERNEL)))
 =======
 	data = kzalloc(sizeof(struct f75375_data), GFP_KERNEL);
 	if (!data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct f75375_data),
+			    GFP_KERNEL);
+	if (!data)
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	i2c_set_clientdata(client, data);
 	mutex_init(&data->update_lock);
 	data->kind = id->driver_data;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((err = sysfs_create_group(&client->dev.kobj, &f75375_group)))
 		goto exit_free;
@@ -1071,6 +1286,13 @@ static int f75375_probe(struct i2c_client *client,
 
 	if (data->kind != f75373) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = sysfs_create_group(&client->dev.kobj, &f75375_group);
+	if (err)
+		return err;
+
+	if (data->kind != f75373) {
+>>>>>>> refs/remotes/origin/master
 		err = sysfs_chmod_file(&client->dev.kobj,
 			&sensor_dev_attr_pwm1_mode.dev_attr.attr,
 			S_IRUGO | S_IWUSR);
@@ -1090,18 +1312,25 @@ static int f75375_probe(struct i2c_client *client,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (f75375s_pdata != NULL)
 		f75375_init(client, data, f75375s_pdata);
 =======
 	f75375_init(client, data, f75375s_pdata);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	f75375_init(client, data, f75375s_pdata);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 exit_remove:
 	sysfs_remove_group(&client->dev.kobj, &f75375_group);
+<<<<<<< HEAD
 exit_free:
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -1110,7 +1339,10 @@ static int f75375_remove(struct i2c_client *client)
 	struct f75375_data *data = i2c_get_clientdata(client);
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &f75375_group);
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1126,11 +1358,14 @@ static int f75375_detect(struct i2c_client *client,
 	vendid = f75375_read16(client, F75375_REG_VENDOR);
 	chipid = f75375_read16(client, F75375_CHIP_ID);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (chipid == 0x0306 && vendid == 0x1934)
 		name = "f75375";
 	else if (chipid == 0x0204 && vendid == 0x1934)
 		name = "f75373";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (vendid != 0x1934)
 		return -ENODEV;
 
@@ -1140,7 +1375,10 @@ static int f75375_detect(struct i2c_client *client,
 		name = "f75373";
 	else if (chipid == 0x0410)
 		name = "f75387";
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	else
 		return -ENODEV;
 
@@ -1151,6 +1389,7 @@ static int f75375_detect(struct i2c_client *client,
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init sensors_f75375_init(void)
 {
@@ -1169,9 +1408,14 @@ MODULE_DESCRIPTION("F75373/F75375 hardware monitoring driver");
 module_init(sensors_f75375_init);
 module_exit(sensors_f75375_exit);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 module_i2c_driver(f75375_driver);
 
 MODULE_AUTHOR("Riku Voipio");
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("F75373/F75375/F75387 hardware monitoring driver");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

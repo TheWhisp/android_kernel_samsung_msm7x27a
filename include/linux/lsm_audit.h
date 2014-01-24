@@ -22,9 +22,12 @@
 #include <linux/key.h>
 #include <linux/skbuff.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct lsm_network_audit {
 	int netif;
@@ -43,7 +46,10 @@ struct lsm_network_audit {
 		} v6;
 	} fam;
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Auxiliary data to use in generating the audit record. */
 struct common_audit_data {
@@ -58,11 +64,15 @@ struct common_audit_data {
 #define LSM_AUDIT_DATA_KMOD	8
 #define LSM_AUDIT_DATA_INODE	9
 #define LSM_AUDIT_DATA_DENTRY	10
+<<<<<<< HEAD
 	struct task_struct *tsk;
+=======
+>>>>>>> refs/remotes/origin/master
 	union 	{
 		struct path path;
 		struct dentry *dentry;
 		struct inode *inode;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		struct {
 			int netif;
@@ -84,6 +94,9 @@ struct common_audit_data {
 =======
 		struct lsm_network_audit *net;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct lsm_network_audit *net;
+>>>>>>> refs/remotes/origin/master
 		int cap;
 		int ipc_id;
 		struct task_struct *tsk;
@@ -98,6 +111,7 @@ struct common_audit_data {
 	/* this union contains LSM specific data */
 	union {
 #ifdef CONFIG_SECURITY_SMACK
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* SMACK data */
 		struct smack_audit_data {
@@ -158,6 +172,8 @@ struct common_audit_data {
 	void (*lsm_pre_audit)(struct audit_buffer *, void *);
 	void (*lsm_post_audit)(struct audit_buffer *, void *);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		struct smack_audit_data *smack_audit_data;
 #endif
 #ifdef CONFIG_SECURITY_SELINUX
@@ -167,7 +183,10 @@ struct common_audit_data {
 		struct apparmor_audit_data *apparmor_audit_data;
 #endif
 	}; /* per LSM data pointer union */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define v4info fam.v4
@@ -179,6 +198,7 @@ int ipv4_skb_to_auditdata(struct sk_buff *skb,
 int ipv6_skb_to_auditdata(struct sk_buff *skb,
 		struct common_audit_data *ad, u8 *proto);
 
+<<<<<<< HEAD
 /* Initialize an LSM audit data structure. */
 #define COMMON_AUDIT_DATA_INIT(_d, _t) \
 	{ memset((_d), 0, sizeof(struct common_audit_data)); \
@@ -191,5 +211,10 @@ void common_lsm_audit(struct common_audit_data *a,
 	void (*pre_audit)(struct audit_buffer *, void *),
 	void (*post_audit)(struct audit_buffer *, void *));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void common_lsm_audit(struct common_audit_data *a,
+	void (*pre_audit)(struct audit_buffer *, void *),
+	void (*post_audit)(struct audit_buffer *, void *));
+>>>>>>> refs/remotes/origin/master
 
 #endif

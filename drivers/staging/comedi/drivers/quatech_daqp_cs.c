@@ -47,6 +47,10 @@ Status: works
 Devices: [Quatech] DAQP-208 (daqp), DAQP-308
 */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include "../comedidev.h"
 #include <linux/semaphore.h>
 
@@ -56,6 +60,7 @@ Devices: [Quatech] DAQP-208 (daqp), DAQP-308
 
 #include <linux/completion.h>
 
+<<<<<<< HEAD
 /* Maximum number of separate DAQP devices we'll allow */
 #define MAX_DEV         4
 
@@ -64,11 +69,18 @@ struct local_info_t {
 	int stop;
 	int table_index;
 	char board_name[32];
+=======
+#include "comedi_fc.h"
+
+struct daqp_private {
+	int stop;
+>>>>>>> refs/remotes/origin/master
 
 	enum { semaphore, buffer } interrupt_mode;
 
 	struct completion eos;
 
+<<<<<<< HEAD
 	struct comedi_device *dev;
 	struct comedi_subdevice *s;
 	int count;
@@ -78,6 +90,11 @@ struct local_info_t {
 
 static struct local_info_t *dev_table[MAX_DEV] = { NULL, /* ... */  };
 
+=======
+	int count;
+};
+
+>>>>>>> refs/remotes/origin/master
 /* The DAQP communicates with the system through a 16 byte I/O window. */
 
 #define DAQP_FIFO_SIZE		4096
@@ -161,6 +178,7 @@ static struct local_info_t *dev_table[MAX_DEV] = { NULL, /* ... */  };
 #define DAQP_AUX_FIFO_NEARFULL		0x02
 #define DAQP_AUX_FIFO_EMPTY		0x01
 
+<<<<<<< HEAD
 /* These range structures tell COMEDI how the sample values map to
  * voltages.  The A/D converter has four	.ranges = +/- 10V through
  * +/- 1.25V, and the D/A converter has only	.one = +/- 5V.
@@ -214,31 +232,58 @@ static void hex_dump(char *str, void *ptr, int len)
 }
 
 #endif
+=======
+static const struct comedi_lrange range_daqp_ai = {
+	4, {
+		BIP_RANGE(10),
+		BIP_RANGE(5),
+		BIP_RANGE(2.5),
+		BIP_RANGE(1.25)
+	}
+};
+>>>>>>> refs/remotes/origin/master
 
 /* Cancel a running acquisition */
 
 static int daqp_ai_cancel(struct comedi_device *dev, struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
 	struct local_info_t *local = (struct local_info_t *)s->private;
 
 	if (local->stop)
 		return -EIO;
 
 
+=======
+	struct daqp_private *devpriv = dev->private;
+
+	if (devpriv->stop)
+		return -EIO;
+
+>>>>>>> refs/remotes/origin/master
 	outb(DAQP_COMMAND_STOP, dev->iobase + DAQP_COMMAND);
 
 	/* flush any linguring data in FIFO - superfluous here */
 	/* outb(DAQP_COMMAND_RSTF, dev->iobase+DAQP_COMMAND); */
 
+<<<<<<< HEAD
 	local->interrupt_mode = semaphore;
+=======
+	devpriv->interrupt_mode = semaphore;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 /* Interrupt handler
  *
+<<<<<<< HEAD
  * Operates in one of two modes.  If local->interrupt_mode is
  * 'semaphore', just signal the local->eos completion and return
+=======
+ * Operates in one of two modes.  If devpriv->interrupt_mode is
+ * 'semaphore', just signal the devpriv->eos completion and return
+>>>>>>> refs/remotes/origin/master
  * (one-shot mode).  Otherwise (continuous mode), read data in from
  * the card, transfer it to the buffer provided by the higher-level
  * comedi kernel module, and signal various comedi callback routines,
@@ -246,6 +291,7 @@ static int daqp_ai_cancel(struct comedi_device *dev, struct comedi_subdevice *s)
  */
 static enum irqreturn daqp_interrupt(int irq, void *dev_id)
 {
+<<<<<<< HEAD
 	struct local_info_t *local = (struct local_info_t *)dev_id;
 	struct comedi_device *dev;
 	struct comedi_subdevice *s;
@@ -296,11 +342,35 @@ static enum irqreturn daqp_interrupt(int irq, void *dev_id)
 			 & DAQP_STATUS_FIFO_EMPTY)) {
 
 			short data;
+=======
+	struct comedi_device *dev = dev_id;
+	struct daqp_private *devpriv = dev->private;
+	struct comedi_subdevice *s = dev->read_subdev;
+	int loop_limit = 10000;
+	int status;
+
+	if (!dev->attached)
+		return IRQ_NONE;
+
+	switch (devpriv->interrupt_mode) {
+	case semaphore:
+		complete(&devpriv->eos);
+		break;
+
+	case buffer:
+		while (!((status = inb(dev->iobase + DAQP_STATUS))
+			 & DAQP_STATUS_FIFO_EMPTY)) {
+			unsigned short data;
+>>>>>>> refs/remotes/origin/master
 
 			if (status & DAQP_STATUS_DATA_LOST) {
 				s->async->events |=
 				    COMEDI_CB_EOA | COMEDI_CB_OVERFLOW;
+<<<<<<< HEAD
 				printk("daqp: data lost\n");
+=======
+				dev_warn(dev->class_dev, "data lost\n");
+>>>>>>> refs/remotes/origin/master
 				daqp_ai_cancel(dev, s);
 				break;
 			}
@@ -315,9 +385,15 @@ static enum irqreturn daqp_interrupt(int irq, void *dev_id)
 			 * and stop conversion if zero
 			 */
 
+<<<<<<< HEAD
 			if (local->count > 0) {
 				local->count--;
 				if (local->count == 0) {
+=======
+			if (devpriv->count > 0) {
+				devpriv->count--;
+				if (devpriv->count == 0) {
+>>>>>>> refs/remotes/origin/master
 					daqp_ai_cancel(dev, s);
 					s->async->events |= COMEDI_CB_EOA;
 					break;
@@ -329,8 +405,13 @@ static enum irqreturn daqp_interrupt(int irq, void *dev_id)
 		}
 
 		if (loop_limit <= 0) {
+<<<<<<< HEAD
 			printk(KERN_WARNING
 			       "loop_limit reached in daqp_interrupt()\n");
+=======
+			dev_warn(dev->class_dev,
+				 "loop_limit reached in daqp_interrupt()\n");
+>>>>>>> refs/remotes/origin/master
 			daqp_ai_cancel(dev, s);
 			s->async->events |= COMEDI_CB_EOA | COMEDI_CB_ERROR;
 		}
@@ -342,21 +423,55 @@ static enum irqreturn daqp_interrupt(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
+=======
+static void daqp_ai_set_one_scanlist_entry(struct comedi_device *dev,
+					   unsigned int chanspec,
+					   int start)
+{
+	unsigned int chan = CR_CHAN(chanspec);
+	unsigned int range = CR_RANGE(chanspec);
+	unsigned int aref = CR_AREF(chanspec);
+	unsigned int val;
+
+	val = DAQP_SCANLIST_CHANNEL(chan) | DAQP_SCANLIST_GAIN(range);
+
+	if (aref == AREF_DIFF)
+		val |= DAQP_SCANLIST_DIFFERENTIAL;
+
+	if (start)
+		val |= DAQP_SCANLIST_START;
+
+	outb(val & 0xff, dev->iobase + DAQP_SCANLIST);
+	outb((val >> 8) & 0xff, dev->iobase + DAQP_SCANLIST);
+}
+
+>>>>>>> refs/remotes/origin/master
 /* One-shot analog data acquisition routine */
 
 static int daqp_ai_insn_read(struct comedi_device *dev,
 			     struct comedi_subdevice *s,
 			     struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
 	struct local_info_t *local = (struct local_info_t *)s->private;
+=======
+	struct daqp_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int v;
 	int counter = 10000;
 
+<<<<<<< HEAD
 	if (local->stop)
 		return -EIO;
 
 
+=======
+	if (devpriv->stop)
+		return -EIO;
+
+>>>>>>> refs/remotes/origin/master
 	/* Stop any running conversion */
 	daqp_ai_cancel(dev, s);
 
@@ -366,6 +481,7 @@ static int daqp_ai_insn_read(struct comedi_device *dev,
 	outb(DAQP_COMMAND_RSTQ, dev->iobase + DAQP_COMMAND);
 
 	/* Program one scan list entry */
+<<<<<<< HEAD
 
 	v = DAQP_SCANLIST_CHANNEL(CR_CHAN(insn->chanspec))
 	    | DAQP_SCANLIST_GAIN(CR_RANGE(insn->chanspec));
@@ -378,6 +494,9 @@ static int daqp_ai_insn_read(struct comedi_device *dev,
 
 	outb(v & 0xff, dev->iobase + DAQP_SCANLIST);
 	outb(v >> 8, dev->iobase + DAQP_SCANLIST);
+=======
+	daqp_ai_set_one_scanlist_entry(dev, insn->chanspec, 1);
+>>>>>>> refs/remotes/origin/master
 
 	/* Reset data FIFO (see page 28 of DAQP User's Manual) */
 
@@ -395,6 +514,7 @@ static int daqp_ai_insn_read(struct comedi_device *dev,
 	 */
 
 	while (--counter
+<<<<<<< HEAD
 	       && (inb(dev->iobase + DAQP_STATUS) & DAQP_STATUS_EVENTS)) ;
 	if (!counter) {
 		printk("daqp: couldn't clear interrupts in status register\n");
@@ -405,6 +525,18 @@ static int daqp_ai_insn_read(struct comedi_device *dev,
 	local->interrupt_mode = semaphore;
 	local->dev = dev;
 	local->s = s;
+=======
+	       && (inb(dev->iobase + DAQP_STATUS) & DAQP_STATUS_EVENTS))
+		;
+	if (!counter) {
+		dev_err(dev->class_dev,
+			"couldn't clear interrupts in status register\n");
+		return -1;
+	}
+
+	init_completion(&devpriv->eos);
+	devpriv->interrupt_mode = semaphore;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < insn->n; i++) {
 
@@ -414,7 +546,11 @@ static int daqp_ai_insn_read(struct comedi_device *dev,
 
 		/* Wait for interrupt service routine to unblock completion */
 		/* Maybe could use a timeout here, but it's interruptible */
+<<<<<<< HEAD
 		if (wait_for_completion_interruptible(&local->eos))
+=======
+		if (wait_for_completion_interruptible(&devpriv->eos))
+>>>>>>> refs/remotes/origin/master
 			return -EINTR;
 
 		data[i] = inb(dev->iobase + DAQP_FIFO);
@@ -456,6 +592,7 @@ static int daqp_ai_cmdtest(struct comedi_device *dev,
 	int err = 0;
 	int tmp;
 
+<<<<<<< HEAD
 	/* step 1: make sure trigger sources are trivially valid */
 
 	tmp = cmd->start_src;
@@ -482,10 +619,22 @@ static int daqp_ai_cmdtest(struct comedi_device *dev,
 	cmd->stop_src &= TRIG_COUNT | TRIG_NONE;
 	if (!cmd->stop_src || tmp != cmd->stop_src)
 		err++;
+=======
+	/* Step 1 : check if triggers are trivially valid */
+
+	err |= cfc_check_trigger_src(&cmd->start_src, TRIG_NOW);
+	err |= cfc_check_trigger_src(&cmd->scan_begin_src,
+					TRIG_TIMER | TRIG_FOLLOW);
+	err |= cfc_check_trigger_src(&cmd->convert_src,
+					TRIG_TIMER | TRIG_NOW);
+	err |= cfc_check_trigger_src(&cmd->scan_end_src, TRIG_COUNT);
+	err |= cfc_check_trigger_src(&cmd->stop_src, TRIG_COUNT | TRIG_NONE);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 1;
 
+<<<<<<< HEAD
 	/*
 	 * step 2: make sure trigger sources
 	 * are unique and mutually compatible
@@ -501,10 +650,20 @@ static int daqp_ai_cmdtest(struct comedi_device *dev,
 		err++;
 	if (cmd->stop_src != TRIG_COUNT && cmd->stop_src != TRIG_NONE)
 		err++;
+=======
+	/* Step 2a : make sure trigger sources are unique */
+
+	err |= cfc_check_trigger_is_unique(cmd->scan_begin_src);
+	err |= cfc_check_trigger_is_unique(cmd->convert_src);
+	err |= cfc_check_trigger_is_unique(cmd->stop_src);
+
+	/* Step 2b : and mutually compatible */
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 2;
 
+<<<<<<< HEAD
 	/* step 3: make sure arguments are trivially compatible */
 
 	if (cmd->start_arg != 0) {
@@ -518,6 +677,17 @@ static int daqp_ai_cmdtest(struct comedi_device *dev,
 		cmd->scan_begin_arg = MAX_SPEED;
 		err++;
 	}
+=======
+	/* Step 3: check if arguments are trivially valid */
+
+	err |= cfc_check_trigger_arg_is(&cmd->start_arg, 0);
+
+#define MAX_SPEED	10000	/* 100 kHz - in nanoseconds */
+
+	if (cmd->scan_begin_src == TRIG_TIMER)
+		err |= cfc_check_trigger_arg_min(&cmd->scan_begin_arg,
+						 MAX_SPEED);
+>>>>>>> refs/remotes/origin/master
 
 	/* If both scan_begin and convert are both timer values, the only
 	 * way that can make sense is if the scan time is the number of
@@ -526,6 +696,7 @@ static int daqp_ai_cmdtest(struct comedi_device *dev,
 
 	if (cmd->scan_begin_src == TRIG_TIMER && cmd->convert_src == TRIG_TIMER
 	    && cmd->scan_begin_arg != cmd->convert_arg * cmd->scan_end_arg) {
+<<<<<<< HEAD
 		err++;
 	}
 
@@ -550,6 +721,20 @@ static int daqp_ai_cmdtest(struct comedi_device *dev,
 			err++;
 		}
 	}
+=======
+		err |= -EINVAL;
+	}
+
+	if (cmd->convert_src == TRIG_TIMER)
+		err |= cfc_check_trigger_arg_min(&cmd->convert_arg, MAX_SPEED);
+
+	err |= cfc_check_trigger_arg_is(&cmd->scan_end_arg, cmd->chanlist_len);
+
+	if (cmd->stop_src == TRIG_COUNT)
+		err |= cfc_check_trigger_arg_max(&cmd->stop_arg, 0x00ffffff);
+	else	/* TRIG_NONE */
+		err |= cfc_check_trigger_arg_is(&cmd->stop_arg, 0);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 3;
@@ -580,7 +765,11 @@ static int daqp_ai_cmdtest(struct comedi_device *dev,
 
 static int daqp_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
 	struct local_info_t *local = (struct local_info_t *)s->private;
+=======
+	struct daqp_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	struct comedi_cmd *cmd = &s->async->cmd;
 	int counter;
 	int scanlist_start_on_every_entry;
@@ -589,10 +778,16 @@ static int daqp_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 	int i;
 	int v;
 
+<<<<<<< HEAD
 	if (local->stop)
 		return -EIO;
 
 
+=======
+	if (devpriv->stop)
+		return -EIO;
+
+>>>>>>> refs/remotes/origin/master
 	/* Stop any running conversion */
 	daqp_ai_cancel(dev, s);
 
@@ -631,6 +826,7 @@ static int daqp_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 	}
 
 	/* Program scan list */
+<<<<<<< HEAD
 
 	for (i = 0; i < cmd->chanlist_len; i++) {
 
@@ -649,6 +845,12 @@ static int daqp_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 
 		outb(v & 0xff, dev->iobase + DAQP_SCANLIST);
 		outb(v >> 8, dev->iobase + DAQP_SCANLIST);
+=======
+	for (i = 0; i < cmd->chanlist_len; i++) {
+		int start = (i == 0 || scanlist_start_on_every_entry);
+
+		daqp_ai_set_one_scanlist_entry(dev, cmd->chanlist[i], start);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Now it's time to program the FIFO threshold, basically the
@@ -714,6 +916,7 @@ static int daqp_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 
 	/* Save away the number of conversions we should perform, and
 	 * compute the FIFO threshold (in bytes, not samples - that's
+<<<<<<< HEAD
 	 * why we multiple local->count by 2 = sizeof(sample))
 	 */
 
@@ -724,6 +927,18 @@ static int daqp_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 			threshold /= 2;
 	} else {
 		local->count = -1;
+=======
+	 * why we multiple devpriv->count by 2 = sizeof(sample))
+	 */
+
+	if (cmd->stop_src == TRIG_COUNT) {
+		devpriv->count = cmd->stop_arg * cmd->scan_end_arg;
+		threshold = 2 * devpriv->count;
+		while (threshold > DAQP_FIFO_SIZE * 3 / 4)
+			threshold /= 2;
+	} else {
+		devpriv->count = -1;
+>>>>>>> refs/remotes/origin/master
 		threshold = DAQP_FIFO_SIZE / 2;
 	}
 
@@ -757,6 +972,7 @@ static int daqp_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 	 */
 	counter = 100;
 	while (--counter
+<<<<<<< HEAD
 	       && (inb(dev->iobase + DAQP_STATUS) & DAQP_STATUS_EVENTS)) ;
 	if (!counter) {
 		printk(KERN_ERR
@@ -767,6 +983,17 @@ static int daqp_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 	local->interrupt_mode = buffer;
 	local->dev = dev;
 	local->s = s;
+=======
+	       && (inb(dev->iobase + DAQP_STATUS) & DAQP_STATUS_EVENTS))
+		;
+	if (!counter) {
+		dev_err(dev->class_dev,
+			"couldn't clear interrupts in status register\n");
+		return -1;
+	}
+
+	devpriv->interrupt_mode = buffer;
+>>>>>>> refs/remotes/origin/master
 
 	/* Start conversion */
 	outb(DAQP_COMMAND_ARM | DAQP_COMMAND_FIFO_DATA,
@@ -775,6 +1002,7 @@ static int daqp_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Single-shot analog output routine */
 
 static int daqp_ao_insn_write(struct comedi_device *dev,
@@ -811,10 +1039,49 @@ static int daqp_di_insn_read(struct comedi_device *dev,
 	struct local_info_t *local = (struct local_info_t *)s->private;
 
 	if (local->stop)
+=======
+static int daqp_ao_insn_write(struct comedi_device *dev,
+			      struct comedi_subdevice *s,
+			      struct comedi_insn *insn,
+			      unsigned int *data)
+{
+	struct daqp_private *devpriv = dev->private;
+	unsigned int chan = CR_CHAN(insn->chanspec);
+	unsigned int val;
+	int i;
+
+	if (devpriv->stop)
+		return -EIO;
+
+	/* Make sure D/A update mode is direct update */
+	outb(0, dev->iobase + DAQP_AUX);
+
+	for (i = 0; i > insn->n; i++) {
+		val = data[0];
+		val &= 0x0fff;
+		val ^= 0x0800;		/* Flip the sign */
+		val |= (chan << 12);
+
+		outw(val, dev->iobase + DAQP_DA);
+	}
+
+	return insn->n;
+}
+
+static int daqp_di_insn_bits(struct comedi_device *dev,
+			     struct comedi_subdevice *s,
+			     struct comedi_insn *insn,
+			     unsigned int *data)
+{
+	struct daqp_private *devpriv = dev->private;
+
+	if (devpriv->stop)
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 
 	data[0] = inb(dev->iobase + DAQP_DIGITAL_IO);
 
+<<<<<<< HEAD
 	return 1;
 }
 
@@ -1071,26 +1338,146 @@ static int daqp_cs_suspend(struct pcmcia_device *link)
 
 	/* Mark the device as stopped, to block IO until later */
 	local->stop = 1;
+=======
+	return insn->n;
+}
+
+static int daqp_do_insn_bits(struct comedi_device *dev,
+			     struct comedi_subdevice *s,
+			     struct comedi_insn *insn,
+			     unsigned int *data)
+{
+	struct daqp_private *devpriv = dev->private;
+
+	if (devpriv->stop)
+		return -EIO;
+
+	if (comedi_dio_update_state(s, data))
+		outb(s->state, dev->iobase + DAQP_DIGITAL_IO);
+
+	data[1] = s->state;
+
+	return insn->n;
+}
+
+static int daqp_auto_attach(struct comedi_device *dev,
+			    unsigned long context)
+{
+	struct pcmcia_device *link = comedi_to_pcmcia_dev(dev);
+	struct daqp_private *devpriv;
+	struct comedi_subdevice *s;
+	int ret;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	link->config_flags |= CONF_AUTO_SET_IO | CONF_ENABLE_IRQ;
+	ret = comedi_pcmcia_enable(dev, NULL);
+	if (ret)
+		return ret;
+	dev->iobase = link->resource[0]->start;
+
+	link->priv = dev;
+	ret = pcmcia_request_irq(link, daqp_interrupt);
+	if (ret)
+		return ret;
+
+	ret = comedi_alloc_subdevices(dev, 4);
+	if (ret)
+		return ret;
+
+	s = &dev->subdevices[0];
+	dev->read_subdev = s;
+	s->type		= COMEDI_SUBD_AI;
+	s->subdev_flags	= SDF_READABLE | SDF_GROUND | SDF_DIFF | SDF_CMD_READ;
+	s->n_chan	= 8;
+	s->len_chanlist	= 2048;
+	s->maxdata	= 0xffff;
+	s->range_table	= &range_daqp_ai;
+	s->insn_read	= daqp_ai_insn_read;
+	s->do_cmdtest	= daqp_ai_cmdtest;
+	s->do_cmd	= daqp_ai_cmd;
+	s->cancel	= daqp_ai_cancel;
+
+	s = &dev->subdevices[1];
+	s->type		= COMEDI_SUBD_AO;
+	s->subdev_flags	= SDF_WRITEABLE;
+	s->n_chan	= 2;
+	s->maxdata	= 0x0fff;
+	s->range_table	= &range_bipolar5;
+	s->insn_write	= daqp_ao_insn_write;
+
+	s = &dev->subdevices[2];
+	s->type		= COMEDI_SUBD_DI;
+	s->subdev_flags	= SDF_READABLE;
+	s->n_chan	= 1;
+	s->maxdata	= 1;
+	s->insn_bits	= daqp_di_insn_bits;
+
+	s = &dev->subdevices[3];
+	s->type		= COMEDI_SUBD_DO;
+	s->subdev_flags	= SDF_WRITEABLE;
+	s->n_chan	= 1;
+	s->maxdata	= 1;
+	s->insn_bits	= daqp_do_insn_bits;
+
+	return 0;
+}
+
+static struct comedi_driver driver_daqp = {
+	.driver_name	= "quatech_daqp_cs",
+	.module		= THIS_MODULE,
+	.auto_attach	= daqp_auto_attach,
+	.detach		= comedi_pcmcia_disable,
+};
+
+static int daqp_cs_suspend(struct pcmcia_device *link)
+{
+	struct comedi_device *dev = link->priv;
+	struct daqp_private *devpriv = dev ? dev->private : NULL;
+
+	/* Mark the device as stopped, to block IO until later */
+	if (devpriv)
+		devpriv->stop = 1;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int daqp_cs_resume(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
 	struct local_info_t *local = link->priv;
 
 	local->stop = 0;
+=======
+	struct comedi_device *dev = link->priv;
+	struct daqp_private *devpriv = dev ? dev->private : NULL;
+
+	if (devpriv)
+		devpriv->stop = 0;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 /*====================================================================*/
 
 #ifdef MODULE
+=======
+static int daqp_cs_attach(struct pcmcia_device *link)
+{
+	return comedi_pcmcia_auto_config(link, &driver_daqp);
+}
+>>>>>>> refs/remotes/origin/master
 
 static const struct pcmcia_device_id daqp_cs_id_table[] = {
 	PCMCIA_DEVICE_MANF_CARD(0x0137, 0x0027),
 	PCMCIA_DEVICE_NULL
 };
+<<<<<<< HEAD
 
 MODULE_DEVICE_TABLE(pcmcia, daqp_cs_id_table);
 MODULE_AUTHOR("Brent Baccala <baccala@freesoft.org>");
@@ -1121,3 +1508,21 @@ void __exit cleanup_module(void)
 }
 
 #endif
+=======
+MODULE_DEVICE_TABLE(pcmcia, daqp_cs_id_table);
+
+static struct pcmcia_driver daqp_cs_driver = {
+	.name		= "quatech_daqp_cs",
+	.owner		= THIS_MODULE,
+	.id_table	= daqp_cs_id_table,
+	.probe		= daqp_cs_attach,
+	.remove		= comedi_pcmcia_auto_unconfig,
+	.suspend	= daqp_cs_suspend,
+	.resume		= daqp_cs_resume,
+};
+module_comedi_pcmcia_driver(driver_daqp, daqp_cs_driver);
+
+MODULE_DESCRIPTION("Comedi driver for Quatech DAQP PCMCIA data capture cards");
+MODULE_AUTHOR("Brent Baccala <baccala@freesoft.org>");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

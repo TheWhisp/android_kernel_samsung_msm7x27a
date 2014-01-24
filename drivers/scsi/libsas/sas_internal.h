@@ -31,9 +31,13 @@
 #include <scsi/scsi_transport_sas.h>
 #include <scsi/libsas.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <scsi/sas_ata.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <scsi/sas_ata.h>
+>>>>>>> refs/remotes/origin/master
 
 #define sas_printk(fmt, ...) printk(KERN_NOTICE "sas: " fmt, ## __VA_ARGS__)
 
@@ -43,7 +47,10 @@
 #define ASSIGN_SAS_TASK(_sc, _t) do { (_sc)->host_scribble = (void *) _t; } while (0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct sas_phy_data {
 	/* let reset be performed in sas_queue_work() context */
 	struct sas_phy *phy;
@@ -56,7 +63,10 @@ struct sas_phy_data {
 	struct sas_work enable_work;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void sas_scsi_recover_host(struct Scsi_Host *shost);
 
 int sas_show_class(enum sas_class class, char *buf);
@@ -76,11 +86,17 @@ int  sas_init_queue(struct sas_ha_struct *sas_ha);
 int  sas_init_events(struct sas_ha_struct *sas_ha);
 void sas_shutdown_queue(struct sas_ha_struct *sas_ha);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void sas_disable_revalidation(struct sas_ha_struct *ha);
 void sas_enable_revalidation(struct sas_ha_struct *ha);
 void __sas_drain_work(struct sas_ha_struct *ha);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void sas_disable_revalidation(struct sas_ha_struct *ha);
+void sas_enable_revalidation(struct sas_ha_struct *ha);
+void __sas_drain_work(struct sas_ha_struct *ha);
+>>>>>>> refs/remotes/origin/master
 
 void sas_deform_port(struct asd_sas_phy *phy, int gone);
 
@@ -90,9 +106,13 @@ void sas_porte_link_reset_err(struct work_struct *work);
 void sas_porte_timer_event(struct work_struct *work);
 void sas_porte_hard_reset(struct work_struct *work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void sas_queue_work(struct sas_ha_struct *ha, struct sas_work *sw);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void sas_queue_work(struct sas_ha_struct *ha, struct sas_work *sw);
+>>>>>>> refs/remotes/origin/master
 
 int sas_notify_lldd_dev_found(struct domain_device *);
 void sas_notify_lldd_dev_gone(struct domain_device *);
@@ -102,11 +122,15 @@ int sas_smp_phy_control(struct domain_device *dev, int phy_id,
 int sas_smp_get_phy_events(struct sas_phy *phy);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct domain_device *sas_find_dev_by_rphy(struct sas_rphy *rphy);
 
 void sas_hae_reset(struct work_struct *work);
 
 =======
+=======
+void sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event);
+>>>>>>> refs/remotes/origin/master
 void sas_device_set_phy(struct domain_device *dev, struct sas_port *port);
 struct domain_device *sas_find_dev_by_rphy(struct sas_rphy *rphy);
 struct domain_device *sas_ex_to_ata(struct domain_device *ex_dev, int phy_id);
@@ -118,7 +142,10 @@ void sas_hae_reset(struct work_struct *work);
 
 void sas_free_device(struct kref *kref);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SCSI_SAS_HOST_SMP
 extern int sas_smp_host_handler(struct Scsi_Host *shost, struct request *req,
 				struct request *rsp);
@@ -133,6 +160,7 @@ static inline int sas_smp_host_handler(struct Scsi_Host *shost,
 }
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline void sas_queue_event(int event, spinlock_t *lock,
 				   unsigned long *pending,
@@ -165,6 +193,8 @@ static inline void sas_begin_event(int event, spinlock_t *lock,
 	__clear_bit(event, pending);
 	spin_unlock_irqrestore(lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void sas_fail_probe(struct domain_device *dev, const char *func, int err)
 {
 	SAS_DPRINTK("%s: for %s device %16llx returned %d\n",
@@ -172,7 +202,10 @@ static inline void sas_fail_probe(struct domain_device *dev, const char *func, i
 					    "direct-attached",
 		    SAS_ADDR(dev->sas_addr), err);
 	sas_unregister_dev(dev->port, dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void sas_fill_in_rphy(struct domain_device *dev,
@@ -182,6 +215,7 @@ static inline void sas_fill_in_rphy(struct domain_device *dev,
 	rphy->identify.initiator_port_protocols = dev->iproto;
 	rphy->identify.target_port_protocols = dev->tproto;
 	switch (dev->dev_type) {
+<<<<<<< HEAD
 	case SATA_DEV:
 		/* FIXME: need sata device type */
 	case SAS_END_DEV:
@@ -195,6 +229,18 @@ static inline void sas_fill_in_rphy(struct domain_device *dev,
 		rphy->identify.device_type = SAS_EDGE_EXPANDER_DEVICE;
 		break;
 	case FANOUT_DEV:
+=======
+	case SAS_SATA_DEV:
+		/* FIXME: need sata device type */
+	case SAS_END_DEVICE:
+	case SAS_SATA_PENDING:
+		rphy->identify.device_type = SAS_END_DEVICE;
+		break;
+	case SAS_EDGE_EXPANDER_DEVICE:
+		rphy->identify.device_type = SAS_EDGE_EXPANDER_DEVICE;
+		break;
+	case SAS_FANOUT_EXPANDER_DEVICE:
+>>>>>>> refs/remotes/origin/master
 		rphy->identify.device_type = SAS_FANOUT_EXPANDER_DEVICE;
 		break;
 	default:
@@ -204,7 +250,10 @@ static inline void sas_fill_in_rphy(struct domain_device *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void sas_phy_set_target(struct asd_sas_phy *p, struct domain_device *dev)
 {
 	struct sas_phy *phy = p->phy;
@@ -221,7 +270,10 @@ static inline void sas_phy_set_target(struct asd_sas_phy *p, struct domain_devic
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void sas_add_parent_port(struct domain_device *dev, int phy_id)
 {
 	struct expander_device *ex = &dev->ex_dev;
@@ -238,7 +290,10 @@ static inline void sas_add_parent_port(struct domain_device *dev, int phy_id)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct domain_device *sas_alloc_device(void)
 {
 	struct domain_device *dev = kzalloc(sizeof(*dev), GFP_KERNEL);
@@ -258,5 +313,8 @@ static inline void sas_put_device(struct domain_device *dev)
 	kref_put(&dev->kref, sas_free_device);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _SAS_INTERNAL_H_ */

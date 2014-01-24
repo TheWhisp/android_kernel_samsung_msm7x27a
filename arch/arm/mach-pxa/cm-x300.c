@@ -13,9 +13,13 @@
  * published by the Free Software Foundation.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) "%s: " fmt, __func__
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) "%s: " fmt, __func__
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -32,7 +36,11 @@
 #include <linux/pwm_backlight.h>
 
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/i2c/pca953x.h>
+=======
+#include <linux/platform_data/pca953x.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/i2c/pxa-i2c.h>
 
 #include <linux/mfd/da903x.h>
@@ -48,6 +56,7 @@
 #include <asm/mach/arch.h>
 #include <asm/setup.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/system_info.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -60,6 +69,18 @@
 #include <plat/pxa3xx_nand.h>
 #include <mach/audio.h>
 #include <mach/pxa3xx-u2d.h>
+=======
+#include <asm/system_info.h>
+
+#include <mach/pxa300.h>
+#include <mach/pxa27x-udc.h>
+#include <linux/platform_data/video-pxafb.h>
+#include <linux/platform_data/mmc-pxamci.h>
+#include <linux/platform_data/usb-ohci-pxa27x.h>
+#include <linux/platform_data/mtd-nand-pxa3xx.h>
+#include <mach/audio.h>
+#include <linux/platform_data/usb-pxa3xx-ulpi.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach/map.h>
 
@@ -72,10 +93,14 @@
 #define GPIO85_MMC_WP		(85)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	CM_X300_MMC_IRQ		IRQ_GPIO(GPIO82_MMC_IRQ)
 =======
 #define	CM_X300_MMC_IRQ		PXA_GPIO_TO_IRQ(GPIO82_MMC_IRQ)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	CM_X300_MMC_IRQ		PXA_GPIO_TO_IRQ(GPIO82_MMC_IRQ)
+>>>>>>> refs/remotes/origin/master
 
 #define GPIO95_RTC_CS		(95)
 #define GPIO96_RTC_WR		(96)
@@ -241,12 +266,17 @@ static struct resource dm9000_resources[] = {
 	},
 	[2] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= IRQ_GPIO(mfp_to_gpio(MFP_PIN_GPIO99)),
 		.end	= IRQ_GPIO(mfp_to_gpio(MFP_PIN_GPIO99)),
 =======
 		.start	= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO99)),
 		.end	= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO99)),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start	= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO99)),
+		.end	= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO99)),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE,
 	}
 };
@@ -325,6 +355,10 @@ static struct platform_pwm_backlight_data cm_x300_backlight_data = {
 	.max_brightness	= 100,
 	.dft_brightness	= 100,
 	.pwm_period_ns	= 10000,
+<<<<<<< HEAD
+=======
+	.enable_gpio	= -1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device cm_x300_backlight_device = {
@@ -441,6 +475,7 @@ static struct pxa3xx_nand_platform_data cm_x300_nand_info = {
 	.enable_arbiter	= 1,
 	.keep_config	= 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.parts		= cm_x300_nand_partitions,
 	.nr_parts	= ARRAY_SIZE(cm_x300_nand_partitions),
 =======
@@ -448,6 +483,11 @@ static struct pxa3xx_nand_platform_data cm_x300_nand_info = {
 	.parts[0]	= cm_x300_nand_partitions,
 	.nr_parts[0]	= ARRAY_SIZE(cm_x300_nand_partitions),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.num_cs		= 1,
+	.parts[0]	= cm_x300_nand_partitions,
+	.nr_parts[0]	= ARRAY_SIZE(cm_x300_nand_partitions),
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init cm_x300_init_nand(void)
@@ -508,6 +548,7 @@ static int cm_x300_ulpi_phy_reset(void)
 
 	/* reset the PHY */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = gpio_request(GPIO_ULPI_PHY_RST, "ulpi reset");
 	if (err) {
 		pr_err("%s: failed to request ULPI reset GPIO: %d\n",
@@ -517,6 +558,8 @@ static int cm_x300_ulpi_phy_reset(void)
 
 	gpio_direction_output(GPIO_ULPI_PHY_RST, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = gpio_request_one(GPIO_ULPI_PHY_RST, GPIOF_OUT_INIT_LOW,
 			       "ulpi reset");
 	if (err) {
@@ -524,7 +567,10 @@ static int cm_x300_ulpi_phy_reset(void)
 		return err;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	msleep(10);
 	gpio_set_value(GPIO_ULPI_PHY_RST, 1);
 	msleep(10);
@@ -544,11 +590,15 @@ static inline int cm_x300_u2d_init(struct device *dev)
 		if (IS_ERR(pout_clk)) {
 			err = PTR_ERR(pout_clk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("%s: failed to get CLK_POUT: %d\n",
 			       __func__, err);
 =======
 			pr_err("failed to get CLK_POUT: %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("failed to get CLK_POUT: %d\n", err);
+>>>>>>> refs/remotes/origin/master
 			return err;
 		}
 		clk_enable(pout_clk);
@@ -749,6 +799,7 @@ struct da9030_battery_info cm_x300_battery_info = {
 };
 
 static struct regulator_consumer_supply buck2_consumers[] = {
+<<<<<<< HEAD
 	{
 <<<<<<< HEAD
 		.dev = NULL,
@@ -756,6 +807,9 @@ static struct regulator_consumer_supply buck2_consumers[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
 		.supply = "vcc_core",
 	},
+=======
+	REGULATOR_SUPPLY("vcc_core", NULL),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct regulator_init_data buck2_data = {
@@ -809,6 +863,7 @@ static void __init cm_x300_init_da9030(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init cm_x300_init_wi2wi(void)
 {
 	int bt_reset, wlan_en;
@@ -843,6 +898,8 @@ static void __init cm_x300_init_wi2wi(void)
 		gpio_free(bt_reset);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* wi2wi gpio setting for system_rev >= 130 */
 static struct gpio cm_x300_wi2wi_gpios[] __initdata = {
 	{ 71, GPIOF_OUT_INIT_HIGH, "wlan en" },
@@ -871,7 +928,10 @@ static void __init cm_x300_init_wi2wi(void)
 	gpio_set_value(cm_x300_wi2wi_gpios[1].gpio, 1);
 
 	gpio_free_array(ARRAY_AND_SIZE(cm_x300_wi2wi_gpios));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* MFP */
@@ -915,12 +975,17 @@ static void __init cm_x300_init(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init cm_x300_fixup(struct machine_desc *mdesc, struct tag *tags,
 				 char **cmdline, struct meminfo *mi)
 =======
 static void __init cm_x300_fixup(struct tag *tags, char **cmdline,
 				 struct meminfo *mi)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init cm_x300_fixup(struct tag *tags, char **cmdline,
+				 struct meminfo *mi)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Make sure that mi->bank[0].start = PHYS_ADDR */
 	for (; tags->hdr.size; tags = tag_next(tags))
@@ -933,6 +998,7 @@ static void __init cm_x300_fixup(struct tag *tags, char **cmdline,
 
 MACHINE_START(CM_X300, "CM-X300 module")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
 	.map_io		= pxa3xx_map_io,
 	.init_irq	= pxa3xx_init_irq,
@@ -940,14 +1006,23 @@ MACHINE_START(CM_X300, "CM-X300 module")
 	.init_machine	= cm_x300_init,
 	.fixup		= cm_x300_fixup,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.map_io		= pxa3xx_map_io,
 	.nr_irqs	= PXA_NR_IRQS,
 	.init_irq	= pxa3xx_init_irq,
 	.handle_irq	= pxa3xx_handle_irq,
+<<<<<<< HEAD
 	.timer		= &pxa_timer,
 	.init_machine	= cm_x300_init,
 	.fixup		= cm_x300_fixup,
 	.restart	= pxa_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.init_machine	= cm_x300_init,
+	.fixup		= cm_x300_fixup,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

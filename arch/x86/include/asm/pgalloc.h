@@ -80,12 +80,28 @@ static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd,
 #if PAGETABLE_LEVELS > 2
 static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long addr)
 {
+<<<<<<< HEAD
 	return (pmd_t *)get_zeroed_page(GFP_KERNEL|__GFP_REPEAT);
+=======
+	struct page *page;
+	page = alloc_pages(GFP_KERNEL | __GFP_REPEAT | __GFP_ZERO, 0);
+	if (!page)
+		return NULL;
+	if (!pgtable_pmd_page_ctor(page)) {
+		__free_pages(page, 0);
+		return NULL;
+	}
+	return (pmd_t *)page_address(page);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
 {
 	BUG_ON((unsigned long)pmd & (PAGE_SIZE-1));
+<<<<<<< HEAD
+=======
+	pgtable_pmd_page_dtor(virt_to_page(pmd));
+>>>>>>> refs/remotes/origin/master
 	free_page((unsigned long)pmd);
 }
 

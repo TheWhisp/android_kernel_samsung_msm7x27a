@@ -221,7 +221,11 @@ out_free:
 	kfree(desc);
 out_put_ubi:
 	ubi_put_device(ubi);
+<<<<<<< HEAD
 	dbg_err("cannot open device %d, volume %d, error %d",
+=======
+	ubi_err("cannot open device %d, volume %d, error %d",
+>>>>>>> refs/remotes/origin/master
 		ubi_num, vol_id, err);
 	return ERR_PTR(err);
 }
@@ -411,10 +415,14 @@ int ubi_leb_read(struct ubi_volume_desc *desc, int lnum, char *buf, int offset,
 
 	err = ubi_eba_read_leb(ubi, vol, lnum, buf, offset, len, check);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (err && err == -EBADMSG && vol->vol_type == UBI_STATIC_VOLUME) {
 =======
 	if (err && mtd_is_eccerr(err) && vol->vol_type == UBI_STATIC_VOLUME) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (err && mtd_is_eccerr(err) && vol->vol_type == UBI_STATIC_VOLUME) {
+>>>>>>> refs/remotes/origin/master
 		ubi_warn("mark volume %d as corrupted", vol_id);
 		vol->corrupted = 1;
 	}
@@ -430,11 +438,17 @@ EXPORT_SYMBOL_GPL(ubi_leb_read);
  * @buf: data to write
  * @offset: offset within the logical eraseblock where to write
  * @len: how many bytes to write
+<<<<<<< HEAD
  * @dtype: expected data type
  *
  * This function writes @len bytes of data from @buf to offset @offset of
  * logical eraseblock @lnum. The @dtype argument describes expected lifetime of
  * the data.
+=======
+ *
+ * This function writes @len bytes of data from @buf to offset @offset of
+ * logical eraseblock @lnum.
+>>>>>>> refs/remotes/origin/master
  *
  * This function takes care of physical eraseblock write failures. If write to
  * the physical eraseblock write operation fails, the logical eraseblock is
@@ -451,7 +465,11 @@ EXPORT_SYMBOL_GPL(ubi_leb_read);
  * returns immediately with %-EBADF code.
  */
 int ubi_leb_write(struct ubi_volume_desc *desc, int lnum, const void *buf,
+<<<<<<< HEAD
 		  int offset, int len, int dtype)
+=======
+		  int offset, int len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ubi_volume *vol = desc->vol;
 	struct ubi_device *ubi = vol->ubi;
@@ -470,17 +488,24 @@ int ubi_leb_write(struct ubi_volume_desc *desc, int lnum, const void *buf,
 	    offset & (ubi->min_io_size - 1) || len & (ubi->min_io_size - 1))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (dtype != UBI_LONGTERM && dtype != UBI_SHORTTERM &&
 	    dtype != UBI_UNKNOWN)
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (vol->upd_marker)
 		return -EBADF;
 
 	if (len == 0)
 		return 0;
 
+<<<<<<< HEAD
 	return ubi_eba_write_leb(ubi, vol, lnum, buf, offset, len, dtype);
+=======
+	return ubi_eba_write_leb(ubi, vol, lnum, buf, offset, len);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(ubi_leb_write);
 
@@ -490,7 +515,10 @@ EXPORT_SYMBOL_GPL(ubi_leb_write);
  * @lnum: logical eraseblock number to change
  * @buf: data to write
  * @len: how many bytes to write
+<<<<<<< HEAD
  * @dtype: expected data type
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This function changes the contents of a logical eraseblock atomically. @buf
  * has to contain new logical eraseblock data, and @len - the length of the
@@ -501,7 +529,11 @@ EXPORT_SYMBOL_GPL(ubi_leb_write);
  * code in case of failure.
  */
 int ubi_leb_change(struct ubi_volume_desc *desc, int lnum, const void *buf,
+<<<<<<< HEAD
 		   int len, int dtype)
+=======
+		   int len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ubi_volume *vol = desc->vol;
 	struct ubi_device *ubi = vol->ubi;
@@ -519,17 +551,24 @@ int ubi_leb_change(struct ubi_volume_desc *desc, int lnum, const void *buf,
 	    len > vol->usable_leb_size || len & (ubi->min_io_size - 1))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (dtype != UBI_LONGTERM && dtype != UBI_SHORTTERM &&
 	    dtype != UBI_UNKNOWN)
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (vol->upd_marker)
 		return -EBADF;
 
 	if (len == 0)
 		return 0;
 
+<<<<<<< HEAD
 	return ubi_eba_atomic_leb_change(ubi, vol, lnum, buf, len, dtype);
+=======
+	return ubi_eba_atomic_leb_change(ubi, vol, lnum, buf, len);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(ubi_leb_change);
 
@@ -566,7 +605,11 @@ int ubi_leb_erase(struct ubi_volume_desc *desc, int lnum)
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 	return ubi_wl_flush(ubi);
+=======
+	return ubi_wl_flush(ubi, vol->vol_id, lnum);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(ubi_leb_erase);
 
@@ -630,7 +673,10 @@ EXPORT_SYMBOL_GPL(ubi_leb_unmap);
  * ubi_leb_map - map logical eraseblock to a physical eraseblock.
  * @desc: volume descriptor
  * @lnum: logical eraseblock number
+<<<<<<< HEAD
  * @dtype: expected data type
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This function maps an un-mapped logical eraseblock @lnum to a physical
  * eraseblock. This means, that after a successful invocation of this
@@ -643,7 +689,11 @@ EXPORT_SYMBOL_GPL(ubi_leb_unmap);
  * eraseblock is already mapped, and other negative error codes in case of
  * other failures.
  */
+<<<<<<< HEAD
 int ubi_leb_map(struct ubi_volume_desc *desc, int lnum, int dtype)
+=======
+int ubi_leb_map(struct ubi_volume_desc *desc, int lnum)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ubi_volume *vol = desc->vol;
 	struct ubi_device *ubi = vol->ubi;
@@ -656,17 +706,24 @@ int ubi_leb_map(struct ubi_volume_desc *desc, int lnum, int dtype)
 	if (lnum < 0 || lnum >= vol->reserved_pebs)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (dtype != UBI_LONGTERM && dtype != UBI_SHORTTERM &&
 	    dtype != UBI_UNKNOWN)
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (vol->upd_marker)
 		return -EBADF;
 
 	if (vol->eba_tbl[lnum] >= 0)
 		return -EBADMSG;
 
+<<<<<<< HEAD
 	return ubi_eba_write_leb(ubi, vol, lnum, NULL, 0, 0, dtype);
+=======
+	return ubi_eba_write_leb(ubi, vol, lnum, NULL, 0, 0);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(ubi_leb_map);
 
@@ -719,17 +776,51 @@ int ubi_sync(int ubi_num)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ubi->mtd->sync)
 		ubi->mtd->sync(ubi->mtd);
 
 =======
 	mtd_sync(ubi->mtd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mtd_sync(ubi->mtd);
+>>>>>>> refs/remotes/origin/master
 	ubi_put_device(ubi);
 	return 0;
 }
 EXPORT_SYMBOL_GPL(ubi_sync);
 
+<<<<<<< HEAD
+=======
+/**
+ * ubi_flush - flush UBI work queue.
+ * @ubi_num: UBI device to flush work queue
+ * @vol_id: volume id to flush for
+ * @lnum: logical eraseblock number to flush for
+ *
+ * This function executes all pending works for a particular volume id / logical
+ * eraseblock number pair. If either value is set to %UBI_ALL, then it acts as
+ * a wildcard for all of the corresponding volume numbers or logical
+ * eraseblock numbers. It returns zero in case of success and a negative error
+ * code in case of failure.
+ */
+int ubi_flush(int ubi_num, int vol_id, int lnum)
+{
+	struct ubi_device *ubi;
+	int err = 0;
+
+	ubi = ubi_get_device(ubi_num);
+	if (!ubi)
+		return -ENODEV;
+
+	err = ubi_wl_flush(ubi, vol_id, lnum);
+	ubi_put_device(ubi);
+	return err;
+}
+EXPORT_SYMBOL_GPL(ubi_flush);
+
+>>>>>>> refs/remotes/origin/master
 BLOCKING_NOTIFIER_HEAD(ubi_notifiers);
 
 /**

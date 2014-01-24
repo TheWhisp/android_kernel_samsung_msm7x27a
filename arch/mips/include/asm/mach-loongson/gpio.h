@@ -10,8 +10,13 @@
  * (at your option) any later version.
  */
 
+<<<<<<< HEAD
 #ifndef	__STLS2F_GPIO_H
 #define	__STLS2F_GPIO_H
+=======
+#ifndef __STLS2F_GPIO_H
+#define __STLS2F_GPIO_H
+>>>>>>> refs/remotes/origin/master
 
 #include <asm-generic/gpio.h>
 

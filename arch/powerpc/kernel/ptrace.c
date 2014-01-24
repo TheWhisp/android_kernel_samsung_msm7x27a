@@ -31,6 +31,7 @@
 #include <linux/audit.h>
 #include <trace/syscall.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC32
 #include <linux/module.h>
 #endif
@@ -38,15 +39,24 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/hw_breakpoint.h>
 #include <linux/perf_event.h>
+=======
+#include <linux/hw_breakpoint.h>
+#include <linux/perf_event.h>
+#include <linux/context_tracking.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 #include <asm/page.h>
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 #include <asm/switch_to.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/master
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/syscalls.h>
@@ -189,6 +199,34 @@ static int set_user_msr(struct task_struct *task, unsigned long msr)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC64
+static int get_user_dscr(struct task_struct *task, unsigned long *data)
+{
+	*data = task->thread.dscr;
+	return 0;
+}
+
+static int set_user_dscr(struct task_struct *task, unsigned long dscr)
+{
+	task->thread.dscr = dscr;
+	task->thread.dscr_inherit = 1;
+	return 0;
+}
+#else
+static int get_user_dscr(struct task_struct *task, unsigned long *data)
+{
+	return -EIO;
+}
+
+static int set_user_dscr(struct task_struct *task, unsigned long dscr)
+{
+	return -EIO;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * We prevent mucking around with the reserved area of trap
  * which are used internally by the kernel.
@@ -202,6 +240,7 @@ static int set_user_trap(struct task_struct *task, unsigned long trap)
 /*
  * Get contents of register REGNO in task TASK.
  */
+<<<<<<< HEAD
 unsigned long ptrace_get_reg(struct task_struct *task, int regno)
 {
 	if (task->thread.regs == NULL)
@@ -212,6 +251,25 @@ unsigned long ptrace_get_reg(struct task_struct *task, int regno)
 
 	if (regno < (sizeof(struct pt_regs) / sizeof(unsigned long)))
 		return ((unsigned long *)task->thread.regs)[regno];
+=======
+int ptrace_get_reg(struct task_struct *task, int regno, unsigned long *data)
+{
+	if ((task->thread.regs == NULL) || !data)
+		return -EIO;
+
+	if (regno == PT_MSR) {
+		*data = get_user_msr(task);
+		return 0;
+	}
+
+	if (regno == PT_DSCR)
+		return get_user_dscr(task, data);
+
+	if (regno < (sizeof(struct pt_regs) / sizeof(unsigned long))) {
+		*data = ((unsigned long *)task->thread.regs)[regno];
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return -EIO;
 }
@@ -228,6 +286,11 @@ int ptrace_put_reg(struct task_struct *task, int regno, unsigned long data)
 		return set_user_msr(task, data);
 	if (regno == PT_TRAP)
 		return set_user_trap(task, data);
+<<<<<<< HEAD
+=======
+	if (regno == PT_DSCR)
+		return set_user_dscr(task, data);
+>>>>>>> refs/remotes/origin/master
 
 	if (regno <= PT_MAX_PUT_REG) {
 		((unsigned long *)task->thread.regs)[regno] = data;
@@ -337,7 +400,11 @@ static int fpr_get(struct task_struct *target, const struct user_regset *regset,
 		   void *kbuf, void __user *ubuf)
 {
 #ifdef CONFIG_VSX
+<<<<<<< HEAD
 	double buf[33];
+=======
+	u64 buf[33];
+>>>>>>> refs/remotes/origin/master
 	int i;
 #endif
 	flush_fp_to_thread(target);
@@ -346,6 +413,7 @@ static int fpr_get(struct task_struct *target, const struct user_regset *regset,
 	/* copy to local buffer then write that out */
 	for (i = 0; i < 32 ; i++)
 		buf[i] = target->thread.TS_FPR(i);
+<<<<<<< HEAD
 	memcpy(&buf[32], &target->thread.fpscr, sizeof(double));
 	return user_regset_copyout(&pos, &count, &kbuf, &ubuf, buf, 0, -1);
 
@@ -355,6 +423,17 @@ static int fpr_get(struct task_struct *target, const struct user_regset *regset,
 
 	return user_regset_copyout(&pos, &count, &kbuf, &ubuf,
 				   &target->thread.fpr, 0, -1);
+=======
+	buf[32] = target->thread.fp_state.fpscr;
+	return user_regset_copyout(&pos, &count, &kbuf, &ubuf, buf, 0, -1);
+
+#else
+	BUILD_BUG_ON(offsetof(struct thread_fp_state, fpscr) !=
+		     offsetof(struct thread_fp_state, fpr[32][0]));
+
+	return user_regset_copyout(&pos, &count, &kbuf, &ubuf,
+				   &target->thread.fp_state, 0, -1);
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
@@ -363,7 +442,11 @@ static int fpr_set(struct task_struct *target, const struct user_regset *regset,
 		   const void *kbuf, const void __user *ubuf)
 {
 #ifdef CONFIG_VSX
+<<<<<<< HEAD
 	double buf[33];
+=======
+	u64 buf[33];
+>>>>>>> refs/remotes/origin/master
 	int i;
 #endif
 	flush_fp_to_thread(target);
@@ -375,6 +458,7 @@ static int fpr_set(struct task_struct *target, const struct user_regset *regset,
 		return i;
 	for (i = 0; i < 32 ; i++)
 		target->thread.TS_FPR(i) = buf[i];
+<<<<<<< HEAD
 	memcpy(&target->thread.fpscr, &buf[32], sizeof(double));
 	return 0;
 #else
@@ -383,6 +467,16 @@ static int fpr_set(struct task_struct *target, const struct user_regset *regset,
 
 	return user_regset_copyin(&pos, &count, &kbuf, &ubuf,
 				  &target->thread.fpr, 0, -1);
+=======
+	target->thread.fp_state.fpscr = buf[32];
+	return 0;
+#else
+	BUILD_BUG_ON(offsetof(struct thread_fp_state, fpscr) !=
+		     offsetof(struct thread_fp_state, fpr[32][0]));
+
+	return user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+				  &target->thread.fp_state, 0, -1);
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
@@ -415,11 +509,19 @@ static int vr_get(struct task_struct *target, const struct user_regset *regset,
 
 	flush_altivec_to_thread(target);
 
+<<<<<<< HEAD
 	BUILD_BUG_ON(offsetof(struct thread_struct, vscr) !=
 		     offsetof(struct thread_struct, vr[32]));
 
 	ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf,
 				  &target->thread.vr, 0,
+=======
+	BUILD_BUG_ON(offsetof(struct thread_vr_state, vscr) !=
+		     offsetof(struct thread_vr_state, vr[32]));
+
+	ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf,
+				  &target->thread.vr_state, 0,
+>>>>>>> refs/remotes/origin/master
 				  33 * sizeof(vector128));
 	if (!ret) {
 		/*
@@ -446,11 +548,20 @@ static int vr_set(struct task_struct *target, const struct user_regset *regset,
 
 	flush_altivec_to_thread(target);
 
+<<<<<<< HEAD
 	BUILD_BUG_ON(offsetof(struct thread_struct, vscr) !=
 		     offsetof(struct thread_struct, vr[32]));
 
 	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
 				 &target->thread.vr, 0, 33 * sizeof(vector128));
+=======
+	BUILD_BUG_ON(offsetof(struct thread_vr_state, vscr) !=
+		     offsetof(struct thread_vr_state, vr[32]));
+
+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+				 &target->thread.vr_state, 0,
+				 33 * sizeof(vector128));
+>>>>>>> refs/remotes/origin/master
 	if (!ret && count > 0) {
 		/*
 		 * We use only the first word of vrsave.
@@ -489,13 +600,21 @@ static int vsr_get(struct task_struct *target, const struct user_regset *regset,
 		   unsigned int pos, unsigned int count,
 		   void *kbuf, void __user *ubuf)
 {
+<<<<<<< HEAD
 	double buf[32];
+=======
+	u64 buf[32];
+>>>>>>> refs/remotes/origin/master
 	int ret, i;
 
 	flush_vsx_to_thread(target);
 
 	for (i = 0; i < 32 ; i++)
+<<<<<<< HEAD
 		buf[i] = target->thread.fpr[i][TS_VSRLOWOFFSET];
+=======
+		buf[i] = target->thread.fp_state.fpr[i][TS_VSRLOWOFFSET];
+>>>>>>> refs/remotes/origin/master
 	ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf,
 				  buf, 0, 32 * sizeof(double));
 
@@ -506,7 +625,11 @@ static int vsr_set(struct task_struct *target, const struct user_regset *regset,
 		   unsigned int pos, unsigned int count,
 		   const void *kbuf, const void __user *ubuf)
 {
+<<<<<<< HEAD
 	double buf[32];
+=======
+	u64 buf[32];
+>>>>>>> refs/remotes/origin/master
 	int ret,i;
 
 	flush_vsx_to_thread(target);
@@ -514,7 +637,11 @@ static int vsr_set(struct task_struct *target, const struct user_regset *regset,
 	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
 				 buf, 0, 32 * sizeof(double));
 	for (i = 0; i < 32 ; i++)
+<<<<<<< HEAD
 		target->thread.fpr[i][TS_VSRLOWOFFSET] = buf[i];
+=======
+		target->thread.fp_state.fpr[i][TS_VSRLOWOFFSET] = buf[i];
+>>>>>>> refs/remotes/origin/master
 
 
 	return ret;
@@ -632,7 +759,11 @@ static const struct user_regset native_regsets[] = {
 #endif
 #ifdef CONFIG_SPE
 	[REGSET_SPE] = {
+<<<<<<< HEAD
 		.n = 35,
+=======
+		.core_note_type = NT_PPC_SPE, .n = 35,
+>>>>>>> refs/remotes/origin/master
 		.size = sizeof(u32), .align = sizeof(u32),
 		.active = evr_active, .get = evr_get, .set = evr_set
 	},
@@ -829,8 +960,13 @@ void user_enable_single_step(struct task_struct *task)
 
 	if (regs != NULL) {
 #ifdef CONFIG_PPC_ADV_DEBUG_REGS
+<<<<<<< HEAD
 		task->thread.dbcr0 &= ~DBCR0_BT;
 		task->thread.dbcr0 |= DBCR0_IDM | DBCR0_IC;
+=======
+		task->thread.debug.dbcr0 &= ~DBCR0_BT;
+		task->thread.debug.dbcr0 |= DBCR0_IDM | DBCR0_IC;
+>>>>>>> refs/remotes/origin/master
 		regs->msr |= MSR_DE;
 #else
 		regs->msr &= ~MSR_BE;
@@ -846,8 +982,13 @@ void user_enable_block_step(struct task_struct *task)
 
 	if (regs != NULL) {
 #ifdef CONFIG_PPC_ADV_DEBUG_REGS
+<<<<<<< HEAD
 		task->thread.dbcr0 &= ~DBCR0_IC;
 		task->thread.dbcr0 = DBCR0_IDM | DBCR0_BT;
+=======
+		task->thread.debug.dbcr0 &= ~DBCR0_IC;
+		task->thread.debug.dbcr0 = DBCR0_IDM | DBCR0_BT;
+>>>>>>> refs/remotes/origin/master
 		regs->msr |= MSR_DE;
 #else
 		regs->msr &= ~MSR_SE;
@@ -869,6 +1010,7 @@ void user_disable_single_step(struct task_struct *task)
 		 * And, after doing so, if all debug flags are off, turn
 		 * off DBCR0(IDM) and MSR(DE) .... Torez
 		 */
+<<<<<<< HEAD
 		task->thread.dbcr0 &= ~DBCR0_IC;
 		/*
 		 * Test to see if any of the DBCR_ACTIVE_EVENTS bits are set.
@@ -879,6 +1021,18 @@ void user_disable_single_step(struct task_struct *task)
 			 * All debug events were off.....
 			 */
 			task->thread.dbcr0 &= ~DBCR0_IDM;
+=======
+		task->thread.debug.dbcr0 &= ~(DBCR0_IC|DBCR0_BT);
+		/*
+		 * Test to see if any of the DBCR_ACTIVE_EVENTS bits are set.
+		 */
+		if (!DBCR_ACTIVE_EVENTS(task->thread.debug.dbcr0,
+					task->thread.debug.dbcr1)) {
+			/*
+			 * All debug events were off.....
+			 */
+			task->thread.debug.dbcr0 &= ~DBCR0_IDM;
+>>>>>>> refs/remotes/origin/master
 			regs->msr &= ~MSR_DE;
 		}
 #else
@@ -890,10 +1044,14 @@ void user_disable_single_step(struct task_struct *task)
 
 #ifdef CONFIG_HAVE_HW_BREAKPOINT
 <<<<<<< HEAD
+<<<<<<< HEAD
 void ptrace_triggered(struct perf_event *bp, int nmi,
 =======
 void ptrace_triggered(struct perf_event *bp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void ptrace_triggered(struct perf_event *bp,
+>>>>>>> refs/remotes/origin/master
 		      struct perf_sample_data *data, struct pt_regs *regs)
 {
 	struct perf_event_attr attr;
@@ -919,6 +1077,12 @@ int ptrace_set_debugreg(struct task_struct *task, unsigned long addr,
 	struct perf_event *bp;
 	struct perf_event_attr attr;
 #endif /* CONFIG_HAVE_HW_BREAKPOINT */
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_PPC_ADV_DEBUG_REGS
+	struct arch_hw_breakpoint hw_brk;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	/* For ppc64 we support one DABR and no IABR's at the moment (ppc64).
 	 *  For embedded processors we support one DAC and no IAC's at the
@@ -945,6 +1109,7 @@ int ptrace_set_debugreg(struct task_struct *task, unsigned long addr,
 	 */
 
 	/* Ensure breakpoint translation bit is set */
+<<<<<<< HEAD
 	if (data && !(data & DABR_TRANSLATION))
 		return -EIO;
 #ifdef CONFIG_HAVE_HW_BREAKPOINT
@@ -953,15 +1118,29 @@ int ptrace_set_debugreg(struct task_struct *task, unsigned long addr,
 
 	bp = thread->ptrace_bps[0];
 	if ((!data) || !(data & (DABR_DATA_WRITE | DABR_DATA_READ))) {
+=======
+	if (data && !(data & HW_BRK_TYPE_TRANSLATE))
+		return -EIO;
+	hw_brk.address = data & (~HW_BRK_TYPE_DABR);
+	hw_brk.type = (data & HW_BRK_TYPE_DABR) | HW_BRK_TYPE_PRIV_ALL;
+	hw_brk.len = 8;
+#ifdef CONFIG_HAVE_HW_BREAKPOINT
+	bp = thread->ptrace_bps[0];
+	if ((!data) || !(hw_brk.type & HW_BRK_TYPE_RDWR)) {
+>>>>>>> refs/remotes/origin/master
 		if (bp) {
 			unregister_hw_breakpoint(bp);
 			thread->ptrace_bps[0] = NULL;
 		}
+<<<<<<< HEAD
 		ptrace_put_breakpoints(task);
+=======
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	if (bp) {
 		attr = bp->attr;
+<<<<<<< HEAD
 		attr.bp_addr = data & ~HW_BREAKPOINT_ALIGN;
 		arch_bp_generic_fields(data &
 					(DABR_DATA_WRITE | DABR_DATA_READ),
@@ -974,11 +1153,26 @@ int ptrace_set_debugreg(struct task_struct *task, unsigned long addr,
 		thread->ptrace_bps[0] = bp;
 		ptrace_put_breakpoints(task);
 		thread->dabr = data;
+=======
+		attr.bp_addr = hw_brk.address;
+		arch_bp_generic_fields(hw_brk.type, &attr.bp_type);
+
+		/* Enable breakpoint */
+		attr.disabled = false;
+
+		ret =  modify_user_hw_breakpoint(bp, &attr);
+		if (ret) {
+			return ret;
+		}
+		thread->ptrace_bps[0] = bp;
+		thread->hw_brk = hw_brk;
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	/* Create a new breakpoint request if one doesn't exist already */
 	hw_breakpoint_init(&attr);
+<<<<<<< HEAD
 	attr.bp_addr = data & ~HW_BREAKPOINT_ALIGN;
 	arch_bp_generic_fields(data & (DABR_DATA_WRITE | DABR_DATA_READ),
 								&attr.bp_type);
@@ -1001,6 +1195,21 @@ int ptrace_set_debugreg(struct task_struct *task, unsigned long addr,
 
 	/* Move contents to the DABR register */
 	task->thread.dabr = data;
+=======
+	attr.bp_addr = hw_brk.address;
+	arch_bp_generic_fields(hw_brk.type,
+			       &attr.bp_type);
+
+	thread->ptrace_bps[0] = bp = register_user_hw_breakpoint(&attr,
+					       ptrace_triggered, NULL, task);
+	if (IS_ERR(bp)) {
+		thread->ptrace_bps[0] = NULL;
+		return PTR_ERR(bp);
+	}
+
+#endif /* CONFIG_HAVE_HW_BREAKPOINT */
+	task->thread.hw_brk = hw_brk;
+>>>>>>> refs/remotes/origin/master
 #else /* CONFIG_PPC_ADV_DEBUG_REGS */
 	/* As described above, it was assumed 3 bits were passed with the data
 	 *  address, but we will assume only the mode bits will be passed
@@ -1008,6 +1217,7 @@ int ptrace_set_debugreg(struct task_struct *task, unsigned long addr,
 	 */
 
 	/* DAC's hold the whole address without any mode flags */
+<<<<<<< HEAD
 	task->thread.dac1 = data & ~0x3UL;
 
 	if (task->thread.dac1 == 0) {
@@ -1016,6 +1226,16 @@ int ptrace_set_debugreg(struct task_struct *task, unsigned long addr,
 					task->thread.dbcr1)) {
 			task->thread.regs->msr &= ~MSR_DE;
 			task->thread.dbcr0 &= ~DBCR0_IDM;
+=======
+	task->thread.debug.dac1 = data & ~0x3UL;
+
+	if (task->thread.debug.dac1 == 0) {
+		dbcr_dac(task) &= ~(DBCR_DAC1R | DBCR_DAC1W);
+		if (!DBCR_ACTIVE_EVENTS(task->thread.debug.dbcr0,
+					task->thread.debug.dbcr1)) {
+			task->thread.regs->msr &= ~MSR_DE;
+			task->thread.debug.dbcr0 &= ~DBCR0_IDM;
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -1027,7 +1247,11 @@ int ptrace_set_debugreg(struct task_struct *task, unsigned long addr,
 
 	/* Set the Internal Debugging flag (IDM bit 1) for the DBCR0
 	   register */
+<<<<<<< HEAD
 	task->thread.dbcr0 |= DBCR0_IDM;
+=======
+	task->thread.debug.dbcr0 |= DBCR0_IDM;
+>>>>>>> refs/remotes/origin/master
 
 	/* Check for write and read flags and set DBCR0
 	   accordingly */
@@ -1053,6 +1277,7 @@ void ptrace_disable(struct task_struct *child)
 }
 
 #ifdef CONFIG_PPC_ADV_DEBUG_REGS
+<<<<<<< HEAD
 static long set_intruction_bp(struct task_struct *child,
 			      struct ppc_hw_breakpoint *bp_info)
 {
@@ -1061,6 +1286,16 @@ static long set_intruction_bp(struct task_struct *child,
 	int slot2_in_use = ((child->thread.dbcr0 & DBCR0_IAC2) != 0);
 	int slot3_in_use = ((child->thread.dbcr0 & DBCR0_IAC3) != 0);
 	int slot4_in_use = ((child->thread.dbcr0 & DBCR0_IAC4) != 0);
+=======
+static long set_instruction_bp(struct task_struct *child,
+			      struct ppc_hw_breakpoint *bp_info)
+{
+	int slot;
+	int slot1_in_use = ((child->thread.debug.dbcr0 & DBCR0_IAC1) != 0);
+	int slot2_in_use = ((child->thread.debug.dbcr0 & DBCR0_IAC2) != 0);
+	int slot3_in_use = ((child->thread.debug.dbcr0 & DBCR0_IAC3) != 0);
+	int slot4_in_use = ((child->thread.debug.dbcr0 & DBCR0_IAC4) != 0);
+>>>>>>> refs/remotes/origin/master
 
 	if (dbcr_iac_range(child) & DBCR_IAC12MODE)
 		slot2_in_use = 1;
@@ -1079,9 +1314,15 @@ static long set_intruction_bp(struct task_struct *child,
 		/* We need a pair of IAC regsisters */
 		if ((!slot1_in_use) && (!slot2_in_use)) {
 			slot = 1;
+<<<<<<< HEAD
 			child->thread.iac1 = bp_info->addr;
 			child->thread.iac2 = bp_info->addr2;
 			child->thread.dbcr0 |= DBCR0_IAC1;
+=======
+			child->thread.debug.iac1 = bp_info->addr;
+			child->thread.debug.iac2 = bp_info->addr2;
+			child->thread.debug.dbcr0 |= DBCR0_IAC1;
+>>>>>>> refs/remotes/origin/master
 			if (bp_info->addr_mode ==
 					PPC_BREAKPOINT_MODE_RANGE_EXCLUSIVE)
 				dbcr_iac_range(child) |= DBCR_IAC12X;
@@ -1090,9 +1331,15 @@ static long set_intruction_bp(struct task_struct *child,
 #if CONFIG_PPC_ADV_DEBUG_IACS > 2
 		} else if ((!slot3_in_use) && (!slot4_in_use)) {
 			slot = 3;
+<<<<<<< HEAD
 			child->thread.iac3 = bp_info->addr;
 			child->thread.iac4 = bp_info->addr2;
 			child->thread.dbcr0 |= DBCR0_IAC3;
+=======
+			child->thread.debug.iac3 = bp_info->addr;
+			child->thread.debug.iac4 = bp_info->addr2;
+			child->thread.debug.dbcr0 |= DBCR0_IAC3;
+>>>>>>> refs/remotes/origin/master
 			if (bp_info->addr_mode ==
 					PPC_BREAKPOINT_MODE_RANGE_EXCLUSIVE)
 				dbcr_iac_range(child) |= DBCR_IAC34X;
@@ -1112,13 +1359,19 @@ static long set_intruction_bp(struct task_struct *child,
 			 */
 			if (slot2_in_use || (slot3_in_use == slot4_in_use)) {
 				slot = 1;
+<<<<<<< HEAD
 				child->thread.iac1 = bp_info->addr;
 				child->thread.dbcr0 |= DBCR0_IAC1;
+=======
+				child->thread.debug.iac1 = bp_info->addr;
+				child->thread.debug.dbcr0 |= DBCR0_IAC1;
+>>>>>>> refs/remotes/origin/master
 				goto out;
 			}
 		}
 		if (!slot2_in_use) {
 			slot = 2;
+<<<<<<< HEAD
 			child->thread.iac2 = bp_info->addr;
 			child->thread.dbcr0 |= DBCR0_IAC2;
 #if CONFIG_PPC_ADV_DEBUG_IACS > 2
@@ -1130,12 +1383,29 @@ static long set_intruction_bp(struct task_struct *child,
 			slot = 4;
 			child->thread.iac4 = bp_info->addr;
 			child->thread.dbcr0 |= DBCR0_IAC4;
+=======
+			child->thread.debug.iac2 = bp_info->addr;
+			child->thread.debug.dbcr0 |= DBCR0_IAC2;
+#if CONFIG_PPC_ADV_DEBUG_IACS > 2
+		} else if (!slot3_in_use) {
+			slot = 3;
+			child->thread.debug.iac3 = bp_info->addr;
+			child->thread.debug.dbcr0 |= DBCR0_IAC3;
+		} else if (!slot4_in_use) {
+			slot = 4;
+			child->thread.debug.iac4 = bp_info->addr;
+			child->thread.debug.dbcr0 |= DBCR0_IAC4;
+>>>>>>> refs/remotes/origin/master
 #endif
 		} else
 			return -ENOSPC;
 	}
 out:
+<<<<<<< HEAD
 	child->thread.dbcr0 |= DBCR0_IDM;
+=======
+	child->thread.debug.dbcr0 |= DBCR0_IDM;
+>>>>>>> refs/remotes/origin/master
 	child->thread.regs->msr |= MSR_DE;
 
 	return slot;
@@ -1145,11 +1415,16 @@ static int del_instruction_bp(struct task_struct *child, int slot)
 {
 	switch (slot) {
 	case 1:
+<<<<<<< HEAD
 		if ((child->thread.dbcr0 & DBCR0_IAC1) == 0)
+=======
+		if ((child->thread.debug.dbcr0 & DBCR0_IAC1) == 0)
+>>>>>>> refs/remotes/origin/master
 			return -ENOENT;
 
 		if (dbcr_iac_range(child) & DBCR_IAC12MODE) {
 			/* address range - clear slots 1 & 2 */
+<<<<<<< HEAD
 			child->thread.iac2 = 0;
 			dbcr_iac_range(child) &= ~DBCR_IAC12MODE;
 		}
@@ -1158,21 +1433,41 @@ static int del_instruction_bp(struct task_struct *child, int slot)
 		break;
 	case 2:
 		if ((child->thread.dbcr0 & DBCR0_IAC2) == 0)
+=======
+			child->thread.debug.iac2 = 0;
+			dbcr_iac_range(child) &= ~DBCR_IAC12MODE;
+		}
+		child->thread.debug.iac1 = 0;
+		child->thread.debug.dbcr0 &= ~DBCR0_IAC1;
+		break;
+	case 2:
+		if ((child->thread.debug.dbcr0 & DBCR0_IAC2) == 0)
+>>>>>>> refs/remotes/origin/master
 			return -ENOENT;
 
 		if (dbcr_iac_range(child) & DBCR_IAC12MODE)
 			/* used in a range */
 			return -EINVAL;
+<<<<<<< HEAD
 		child->thread.iac2 = 0;
 		child->thread.dbcr0 &= ~DBCR0_IAC2;
 		break;
 #if CONFIG_PPC_ADV_DEBUG_IACS > 2
 	case 3:
 		if ((child->thread.dbcr0 & DBCR0_IAC3) == 0)
+=======
+		child->thread.debug.iac2 = 0;
+		child->thread.debug.dbcr0 &= ~DBCR0_IAC2;
+		break;
+#if CONFIG_PPC_ADV_DEBUG_IACS > 2
+	case 3:
+		if ((child->thread.debug.dbcr0 & DBCR0_IAC3) == 0)
+>>>>>>> refs/remotes/origin/master
 			return -ENOENT;
 
 		if (dbcr_iac_range(child) & DBCR_IAC34MODE) {
 			/* address range - clear slots 3 & 4 */
+<<<<<<< HEAD
 			child->thread.iac4 = 0;
 			dbcr_iac_range(child) &= ~DBCR_IAC34MODE;
 		}
@@ -1181,13 +1476,28 @@ static int del_instruction_bp(struct task_struct *child, int slot)
 		break;
 	case 4:
 		if ((child->thread.dbcr0 & DBCR0_IAC4) == 0)
+=======
+			child->thread.debug.iac4 = 0;
+			dbcr_iac_range(child) &= ~DBCR_IAC34MODE;
+		}
+		child->thread.debug.iac3 = 0;
+		child->thread.debug.dbcr0 &= ~DBCR0_IAC3;
+		break;
+	case 4:
+		if ((child->thread.debug.dbcr0 & DBCR0_IAC4) == 0)
+>>>>>>> refs/remotes/origin/master
 			return -ENOENT;
 
 		if (dbcr_iac_range(child) & DBCR_IAC34MODE)
 			/* Used in a range */
 			return -EINVAL;
+<<<<<<< HEAD
 		child->thread.iac4 = 0;
 		child->thread.dbcr0 &= ~DBCR0_IAC4;
+=======
+		child->thread.debug.iac4 = 0;
+		child->thread.debug.dbcr0 &= ~DBCR0_IAC4;
+>>>>>>> refs/remotes/origin/master
 		break;
 #endif
 	default:
@@ -1217,18 +1527,31 @@ static int set_dac(struct task_struct *child, struct ppc_hw_breakpoint *bp_info)
 			dbcr_dac(child) |= DBCR_DAC1R;
 		if (bp_info->trigger_type & PPC_BREAKPOINT_TRIGGER_WRITE)
 			dbcr_dac(child) |= DBCR_DAC1W;
+<<<<<<< HEAD
 		child->thread.dac1 = (unsigned long)bp_info->addr;
 #if CONFIG_PPC_ADV_DEBUG_DVCS > 0
 		if (byte_enable) {
 			child->thread.dvc1 =
 				(unsigned long)bp_info->condition_value;
 			child->thread.dbcr2 |=
+=======
+		child->thread.debug.dac1 = (unsigned long)bp_info->addr;
+#if CONFIG_PPC_ADV_DEBUG_DVCS > 0
+		if (byte_enable) {
+			child->thread.debug.dvc1 =
+				(unsigned long)bp_info->condition_value;
+			child->thread.debug.dbcr2 |=
+>>>>>>> refs/remotes/origin/master
 				((byte_enable << DBCR2_DVC1BE_SHIFT) |
 				 (condition_mode << DBCR2_DVC1M_SHIFT));
 		}
 #endif
 #ifdef CONFIG_PPC_ADV_DEBUG_DAC_RANGE
+<<<<<<< HEAD
 	} else if (child->thread.dbcr2 & DBCR2_DAC12MODE) {
+=======
+	} else if (child->thread.debug.dbcr2 & DBCR2_DAC12MODE) {
+>>>>>>> refs/remotes/origin/master
 		/* Both dac1 and dac2 are part of a range */
 		return -ENOSPC;
 #endif
@@ -1238,19 +1561,32 @@ static int set_dac(struct task_struct *child, struct ppc_hw_breakpoint *bp_info)
 			dbcr_dac(child) |= DBCR_DAC2R;
 		if (bp_info->trigger_type & PPC_BREAKPOINT_TRIGGER_WRITE)
 			dbcr_dac(child) |= DBCR_DAC2W;
+<<<<<<< HEAD
 		child->thread.dac2 = (unsigned long)bp_info->addr;
 #if CONFIG_PPC_ADV_DEBUG_DVCS > 0
 		if (byte_enable) {
 			child->thread.dvc2 =
 				(unsigned long)bp_info->condition_value;
 			child->thread.dbcr2 |=
+=======
+		child->thread.debug.dac2 = (unsigned long)bp_info->addr;
+#if CONFIG_PPC_ADV_DEBUG_DVCS > 0
+		if (byte_enable) {
+			child->thread.debug.dvc2 =
+				(unsigned long)bp_info->condition_value;
+			child->thread.debug.dbcr2 |=
+>>>>>>> refs/remotes/origin/master
 				((byte_enable << DBCR2_DVC2BE_SHIFT) |
 				 (condition_mode << DBCR2_DVC2M_SHIFT));
 		}
 #endif
 	} else
 		return -ENOSPC;
+<<<<<<< HEAD
 	child->thread.dbcr0 |= DBCR0_IDM;
+=======
+	child->thread.debug.dbcr0 |= DBCR0_IDM;
+>>>>>>> refs/remotes/origin/master
 	child->thread.regs->msr |= MSR_DE;
 
 	return slot + 4;
@@ -1262,6 +1598,7 @@ static int del_dac(struct task_struct *child, int slot)
 		if ((dbcr_dac(child) & (DBCR_DAC1R | DBCR_DAC1W)) == 0)
 			return -ENOENT;
 
+<<<<<<< HEAD
 		child->thread.dac1 = 0;
 		dbcr_dac(child) &= ~(DBCR_DAC1R | DBCR_DAC1W);
 #ifdef CONFIG_PPC_ADV_DEBUG_DAC_RANGE
@@ -1273,12 +1610,26 @@ static int del_dac(struct task_struct *child, int slot)
 #endif
 #if CONFIG_PPC_ADV_DEBUG_DVCS > 0
 		child->thread.dvc1 = 0;
+=======
+		child->thread.debug.dac1 = 0;
+		dbcr_dac(child) &= ~(DBCR_DAC1R | DBCR_DAC1W);
+#ifdef CONFIG_PPC_ADV_DEBUG_DAC_RANGE
+		if (child->thread.debug.dbcr2 & DBCR2_DAC12MODE) {
+			child->thread.debug.dac2 = 0;
+			child->thread.debug.dbcr2 &= ~DBCR2_DAC12MODE;
+		}
+		child->thread.debug.dbcr2 &= ~(DBCR2_DVC1M | DBCR2_DVC1BE);
+#endif
+#if CONFIG_PPC_ADV_DEBUG_DVCS > 0
+		child->thread.debug.dvc1 = 0;
+>>>>>>> refs/remotes/origin/master
 #endif
 	} else if (slot == 2) {
 		if ((dbcr_dac(child) & (DBCR_DAC2R | DBCR_DAC2W)) == 0)
 			return -ENOENT;
 
 #ifdef CONFIG_PPC_ADV_DEBUG_DAC_RANGE
+<<<<<<< HEAD
 		if (child->thread.dbcr2 & DBCR2_DAC12MODE)
 			/* Part of a range */
 			return -EINVAL;
@@ -1288,6 +1639,17 @@ static int del_dac(struct task_struct *child, int slot)
 		child->thread.dvc2 = 0;
 #endif
 		child->thread.dac2 = 0;
+=======
+		if (child->thread.debug.dbcr2 & DBCR2_DAC12MODE)
+			/* Part of a range */
+			return -EINVAL;
+		child->thread.debug.dbcr2 &= ~(DBCR2_DVC2M | DBCR2_DVC2BE);
+#endif
+#if CONFIG_PPC_ADV_DEBUG_DVCS > 0
+		child->thread.debug.dvc2 = 0;
+#endif
+		child->thread.debug.dac2 = 0;
+>>>>>>> refs/remotes/origin/master
 		dbcr_dac(child) &= ~(DBCR_DAC2R | DBCR_DAC2W);
 	} else
 		return -EINVAL;
@@ -1329,11 +1691,16 @@ static int set_dac_range(struct task_struct *child,
 			return -EIO;
 	}
 
+<<<<<<< HEAD
 	if (child->thread.dbcr0 &
+=======
+	if (child->thread.debug.dbcr0 &
+>>>>>>> refs/remotes/origin/master
 	    (DBCR0_DAC1R | DBCR0_DAC1W | DBCR0_DAC2R | DBCR0_DAC2W))
 		return -ENOSPC;
 
 	if (bp_info->trigger_type & PPC_BREAKPOINT_TRIGGER_READ)
+<<<<<<< HEAD
 		child->thread.dbcr0 |= (DBCR0_DAC1R | DBCR0_IDM);
 	if (bp_info->trigger_type & PPC_BREAKPOINT_TRIGGER_WRITE)
 		child->thread.dbcr0 |= (DBCR0_DAC1W | DBCR0_IDM);
@@ -1345,6 +1712,19 @@ static int set_dac_range(struct task_struct *child,
 		child->thread.dbcr2  |= DBCR2_DAC12MX;
 	else	/* PPC_BREAKPOINT_MODE_MASK */
 		child->thread.dbcr2  |= DBCR2_DAC12MM;
+=======
+		child->thread.debug.dbcr0 |= (DBCR0_DAC1R | DBCR0_IDM);
+	if (bp_info->trigger_type & PPC_BREAKPOINT_TRIGGER_WRITE)
+		child->thread.debug.dbcr0 |= (DBCR0_DAC1W | DBCR0_IDM);
+	child->thread.debug.dac1 = bp_info->addr;
+	child->thread.debug.dac2 = bp_info->addr2;
+	if (mode == PPC_BREAKPOINT_MODE_RANGE_INCLUSIVE)
+		child->thread.debug.dbcr2  |= DBCR2_DAC12M;
+	else if (mode == PPC_BREAKPOINT_MODE_RANGE_EXCLUSIVE)
+		child->thread.debug.dbcr2  |= DBCR2_DAC12MX;
+	else	/* PPC_BREAKPOINT_MODE_MASK */
+		child->thread.debug.dbcr2  |= DBCR2_DAC12MM;
+>>>>>>> refs/remotes/origin/master
 	child->thread.regs->msr |= MSR_DE;
 
 	return 5;
@@ -1354,8 +1734,19 @@ static int set_dac_range(struct task_struct *child,
 static long ppc_set_hwdebug(struct task_struct *child,
 		     struct ppc_hw_breakpoint *bp_info)
 {
+<<<<<<< HEAD
 #ifndef CONFIG_PPC_ADV_DEBUG_REGS
 	unsigned long dabr;
+=======
+#ifdef CONFIG_HAVE_HW_BREAKPOINT
+	int len = 0;
+	struct thread_struct *thread = &(child->thread);
+	struct perf_event *bp;
+	struct perf_event_attr attr;
+#endif /* CONFIG_HAVE_HW_BREAKPOINT */
+#ifndef CONFIG_PPC_ADV_DEBUG_REGS
+	struct arch_hw_breakpoint brk;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	if (bp_info->version != 1)
@@ -1381,7 +1772,11 @@ static long ppc_set_hwdebug(struct task_struct *child,
 		if ((bp_info->trigger_type != PPC_BREAKPOINT_TRIGGER_EXECUTE) ||
 		    (bp_info->condition_mode != PPC_BREAKPOINT_CONDITION_NONE))
 			return -EINVAL;
+<<<<<<< HEAD
 		return set_intruction_bp(child, bp_info);
+=======
+		return set_instruction_bp(child, bp_info);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (bp_info->addr_mode == PPC_BREAKPOINT_MODE_EXACT)
 		return set_dac(child, bp_info);
@@ -1397,6 +1792,7 @@ static long ppc_set_hwdebug(struct task_struct *child,
 	 */
 	if ((bp_info->trigger_type & PPC_BREAKPOINT_TRIGGER_RW) == 0 ||
 	    (bp_info->trigger_type & ~PPC_BREAKPOINT_TRIGGER_RW) != 0 ||
+<<<<<<< HEAD
 	    bp_info->addr_mode != PPC_BREAKPOINT_MODE_EXACT ||
 	    bp_info->condition_mode != PPC_BREAKPOINT_CONDITION_NONE)
 		return -EINVAL;
@@ -1415,13 +1811,76 @@ static long ppc_set_hwdebug(struct task_struct *child,
 		dabr |= DABR_DATA_WRITE;
 
 	child->thread.dabr = dabr;
+=======
+	    bp_info->condition_mode != PPC_BREAKPOINT_CONDITION_NONE)
+		return -EINVAL;
+
+	if ((unsigned long)bp_info->addr >= TASK_SIZE)
+		return -EIO;
+
+	brk.address = bp_info->addr & ~7UL;
+	brk.type = HW_BRK_TYPE_TRANSLATE;
+	brk.len = 8;
+	if (bp_info->trigger_type & PPC_BREAKPOINT_TRIGGER_READ)
+		brk.type |= HW_BRK_TYPE_READ;
+	if (bp_info->trigger_type & PPC_BREAKPOINT_TRIGGER_WRITE)
+		brk.type |= HW_BRK_TYPE_WRITE;
+#ifdef CONFIG_HAVE_HW_BREAKPOINT
+	/*
+	 * Check if the request is for 'range' breakpoints. We can
+	 * support it if range < 8 bytes.
+	 */
+	if (bp_info->addr_mode == PPC_BREAKPOINT_MODE_RANGE_INCLUSIVE)
+		len = bp_info->addr2 - bp_info->addr;
+	else if (bp_info->addr_mode == PPC_BREAKPOINT_MODE_EXACT)
+		len = 1;
+	else
+		return -EINVAL;
+	bp = thread->ptrace_bps[0];
+	if (bp)
+		return -ENOSPC;
+
+	/* Create a new breakpoint request if one doesn't exist already */
+	hw_breakpoint_init(&attr);
+	attr.bp_addr = (unsigned long)bp_info->addr & ~HW_BREAKPOINT_ALIGN;
+	attr.bp_len = len;
+	arch_bp_generic_fields(brk.type, &attr.bp_type);
+
+	thread->ptrace_bps[0] = bp = register_user_hw_breakpoint(&attr,
+					       ptrace_triggered, NULL, child);
+	if (IS_ERR(bp)) {
+		thread->ptrace_bps[0] = NULL;
+		return PTR_ERR(bp);
+	}
+
+	return 1;
+#endif /* CONFIG_HAVE_HW_BREAKPOINT */
+
+	if (bp_info->addr_mode != PPC_BREAKPOINT_MODE_EXACT)
+		return -EINVAL;
+
+	if (child->thread.hw_brk.address)
+		return -ENOSPC;
+
+	child->thread.hw_brk = brk;
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 #endif /* !CONFIG_PPC_ADV_DEBUG_DVCS */
 }
 
+<<<<<<< HEAD
 static long ppc_del_hwdebug(struct task_struct *child, long addr, long data)
 {
+=======
+static long ppc_del_hwdebug(struct task_struct *child, long data)
+{
+#ifdef CONFIG_HAVE_HW_BREAKPOINT
+	int ret = 0;
+	struct thread_struct *thread = &(child->thread);
+	struct perf_event *bp;
+#endif /* CONFIG_HAVE_HW_BREAKPOINT */
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC_ADV_DEBUG_REGS
 	int rc;
 
@@ -1431,9 +1890,15 @@ static long ppc_del_hwdebug(struct task_struct *child, long addr, long data)
 		rc = del_dac(child, (int)data - 4);
 
 	if (!rc) {
+<<<<<<< HEAD
 		if (!DBCR_ACTIVE_EVENTS(child->thread.dbcr0,
 					child->thread.dbcr1)) {
 			child->thread.dbcr0 &= ~DBCR0_IDM;
+=======
+		if (!DBCR_ACTIVE_EVENTS(child->thread.debug.dbcr0,
+					child->thread.debug.dbcr1)) {
+			child->thread.debug.dbcr0 &= ~DBCR0_IDM;
+>>>>>>> refs/remotes/origin/master
 			child->thread.regs->msr &= ~MSR_DE;
 		}
 	}
@@ -1441,15 +1906,35 @@ static long ppc_del_hwdebug(struct task_struct *child, long addr, long data)
 #else
 	if (data != 1)
 		return -EINVAL;
+<<<<<<< HEAD
 	if (child->thread.dabr == 0)
 		return -ENOENT;
 
 	child->thread.dabr = 0;
+=======
+
+#ifdef CONFIG_HAVE_HW_BREAKPOINT
+	bp = thread->ptrace_bps[0];
+	if (bp) {
+		unregister_hw_breakpoint(bp);
+		thread->ptrace_bps[0] = NULL;
+	} else
+		ret = -ENOENT;
+	return ret;
+#else /* CONFIG_HAVE_HW_BREAKPOINT */
+	if (child->thread.hw_brk.address == 0)
+		return -ENOENT;
+
+	child->thread.hw_brk.address = 0;
+	child->thread.hw_brk.type = 0;
+#endif /* CONFIG_HAVE_HW_BREAKPOINT */
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 #endif
 }
 
+<<<<<<< HEAD
 /*
  * Here are the old "legacy" powerpc specific getregs/setregs ptrace calls,
  * we mark them as obsolete now, they will be removed in a future version
@@ -1484,6 +1969,8 @@ static long arch_ptrace_old(struct task_struct *child, long request,
 	return -EPERM;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 long arch_ptrace(struct task_struct *child, long request,
 		 unsigned long addr, unsigned long data)
 {
@@ -1510,16 +1997,29 @@ long arch_ptrace(struct task_struct *child, long request,
 
 		CHECK_FULL_REGS(child->thread.regs);
 		if (index < PT_FPR0) {
+<<<<<<< HEAD
 			tmp = ptrace_get_reg(child, (int) index);
+=======
+			ret = ptrace_get_reg(child, (int) index, &tmp);
+			if (ret)
+				break;
+>>>>>>> refs/remotes/origin/master
 		} else {
 			unsigned int fpidx = index - PT_FPR0;
 
 			flush_fp_to_thread(child);
 			if (fpidx < (PT_FPSCR - PT_FPR0))
+<<<<<<< HEAD
 				tmp = ((unsigned long *)child->thread.fpr)
 					[fpidx * TS_FPRWIDTH];
 			else
 				tmp = child->thread.fpscr.val;
+=======
+				memcpy(&tmp, &child->thread.TS_FPR(fpidx),
+				       sizeof(long));
+			else
+				tmp = child->thread.fp_state.fpscr;
+>>>>>>> refs/remotes/origin/master
 		}
 		ret = put_user(tmp, datalp);
 		break;
@@ -1549,10 +2049,17 @@ long arch_ptrace(struct task_struct *child, long request,
 
 			flush_fp_to_thread(child);
 			if (fpidx < (PT_FPSCR - PT_FPR0))
+<<<<<<< HEAD
 				((unsigned long *)child->thread.fpr)
 					[fpidx * TS_FPRWIDTH] = data;
 			else
 				child->thread.fpscr.val = data;
+=======
+				memcpy(&child->thread.TS_FPR(fpidx), &data,
+				       sizeof(long));
+			else
+				child->thread.fp_state.fpscr = data;
+>>>>>>> refs/remotes/origin/master
 			ret = 0;
 		}
 		break;
@@ -1585,7 +2092,17 @@ long arch_ptrace(struct task_struct *child, long request,
 		dbginfo.data_bp_alignment = 4;
 #endif
 		dbginfo.sizeof_condition = 0;
+<<<<<<< HEAD
 		dbginfo.features = 0;
+=======
+#ifdef CONFIG_HAVE_HW_BREAKPOINT
+		dbginfo.features = PPC_DEBUG_FEATURE_DATA_BP_RANGE;
+		if (cpu_has_feature(CPU_FTR_DAWR))
+			dbginfo.features |= PPC_DEBUG_FEATURE_DATA_BP_DAWR;
+#else
+		dbginfo.features = 0;
+#endif /* CONFIG_HAVE_HW_BREAKPOINT */
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_PPC_ADV_DEBUG_REGS */
 
 		if (!access_ok(VERIFY_WRITE, datavp,
@@ -1612,19 +2129,37 @@ long arch_ptrace(struct task_struct *child, long request,
 	}
 
 	case PPC_PTRACE_DELHWDEBUG: {
+<<<<<<< HEAD
 		ret = ppc_del_hwdebug(child, addr, data);
+=======
+		ret = ppc_del_hwdebug(child, data);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
 	case PTRACE_GET_DEBUGREG: {
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_PPC_ADV_DEBUG_REGS
+		unsigned long dabr_fake;
+#endif
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		/* We only support one DABR and no IABRS at the moment */
 		if (addr > 0)
 			break;
 #ifdef CONFIG_PPC_ADV_DEBUG_REGS
+<<<<<<< HEAD
 		ret = put_user(child->thread.dac1, datalp);
 #else
 		ret = put_user(child->thread.dabr, datalp);
+=======
+		ret = put_user(child->thread.debug.dac1, datalp);
+#else
+		dabr_fake = ((child->thread.hw_brk.address & (~HW_BRK_TYPE_DABR)) |
+			     (child->thread.hw_brk.type & HW_BRK_TYPE_DABR));
+		ret = put_user(dabr_fake, datalp);
+>>>>>>> refs/remotes/origin/master
 #endif
 		break;
 	}
@@ -1705,6 +2240,7 @@ long arch_ptrace(struct task_struct *child, long request,
 					     datavp);
 #endif
 
+<<<<<<< HEAD
 	/* Old reverse args ptrace callss */
 	case PPC_PTRACE_GETREGS: /* Get GPRs 0 - 31. */
 	case PPC_PTRACE_SETREGS: /* Set GPRs 0 - 31. */
@@ -1713,6 +2249,8 @@ long arch_ptrace(struct task_struct *child, long request,
 		ret = arch_ptrace_old(child, request, addr, data);
 		break;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		ret = ptrace_request(child, request, addr, data);
 		break;
@@ -1728,7 +2266,13 @@ long do_syscall_trace_enter(struct pt_regs *regs)
 {
 	long ret = 0;
 
+<<<<<<< HEAD
 	secure_computing(regs->gpr[0]);
+=======
+	user_exit();
+
+	secure_computing_strict(regs->gpr[0]);
+>>>>>>> refs/remotes/origin/master
 
 	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
 	    tracehook_report_syscall_entry(regs))
@@ -1742,6 +2286,7 @@ long do_syscall_trace_enter(struct pt_regs *regs)
 	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
 		trace_sys_enter(regs, regs->gpr[0]);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (unlikely(current->audit_context)) {
 #ifdef CONFIG_PPC64
@@ -1760,6 +2305,8 @@ long do_syscall_trace_enter(struct pt_regs *regs)
 					    regs->gpr[6] & 0xffffffff);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC64
 	if (!is_32bit_task())
 		audit_syscall_entry(AUDIT_ARCH_PPC64,
@@ -1774,7 +2321,10 @@ long do_syscall_trace_enter(struct pt_regs *regs)
 				    regs->gpr[4] & 0xffffffff,
 				    regs->gpr[5] & 0xffffffff,
 				    regs->gpr[6] & 0xffffffff);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret ?: regs->gpr[0];
 }
@@ -1784,12 +2334,16 @@ void do_syscall_trace_leave(struct pt_regs *regs)
 	int step;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(current->audit_context))
 		audit_syscall_exit((regs->ccr&0x10000000)?AUDITSC_FAILURE:AUDITSC_SUCCESS,
 				   regs->result);
 =======
 	audit_syscall_exit(regs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	audit_syscall_exit(regs);
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
 		trace_sys_exit(regs, regs->result);
@@ -1797,4 +2351,9 @@ void do_syscall_trace_leave(struct pt_regs *regs)
 	step = test_thread_flag(TIF_SINGLESTEP);
 	if (step || test_thread_flag(TIF_SYSCALL_TRACE))
 		tracehook_report_syscall_exit(regs, step);
+<<<<<<< HEAD
+=======
+
+	user_enter();
+>>>>>>> refs/remotes/origin/master
 }

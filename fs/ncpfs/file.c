@@ -8,9 +8,12 @@
 
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/time.h>
 #include <linux/kernel.h>
@@ -24,6 +27,7 @@
 #include "ncp_fs.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ncp_fsync(struct file *file, int datasync)
 {
 	return 0;
@@ -32,6 +36,11 @@ static int ncp_fsync(struct file *file, loff_t start, loff_t end, int datasync)
 {
 	return filemap_write_and_wait_range(file->f_mapping, start, end);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ncp_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+{
+	return filemap_write_and_wait_range(file->f_mapping, start, end);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -117,8 +126,12 @@ ncp_file_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
 	void* freepage;
 	size_t freelen;
 
+<<<<<<< HEAD
 	DPRINTK("ncp_file_read: enter %s/%s\n",
 		dentry->d_parent->d_name.name, dentry->d_name.name);
+=======
+	DPRINTK("ncp_file_read: enter %pd2\n", dentry);
+>>>>>>> refs/remotes/origin/master
 
 	pos = *ppos;
 
@@ -176,8 +189,12 @@ ncp_file_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
 
 	file_accessed(file);
 
+<<<<<<< HEAD
 	DPRINTK("ncp_file_read: exit %s/%s\n",
 		dentry->d_parent->d_name.name, dentry->d_name.name);
+=======
+	DPRINTK("ncp_file_read: exit %pd2\n", dentry);
+>>>>>>> refs/remotes/origin/master
 outrel:
 	ncp_inode_close(inode);		
 	return already_read ? already_read : error;
@@ -194,8 +211,12 @@ ncp_file_write(struct file *file, const char __user *buf, size_t count, loff_t *
 	int errno;
 	void* bouncebuffer;
 
+<<<<<<< HEAD
 	DPRINTK("ncp_file_write: enter %s/%s\n",
 		dentry->d_parent->d_name.name, dentry->d_name.name);
+=======
+	DPRINTK("ncp_file_write: enter %pd2\n", dentry);
+>>>>>>> refs/remotes/origin/master
 	if ((ssize_t) count < 0)
 		return -EINVAL;
 	pos = *ppos;
@@ -231,6 +252,13 @@ ncp_file_write(struct file *file, const char __user *buf, size_t count, loff_t *
 
 	already_written = 0;
 
+<<<<<<< HEAD
+=======
+	errno = file_update_time(file);
+	if (errno)
+		goto outrel;
+
+>>>>>>> refs/remotes/origin/master
 	bouncebuffer = vmalloc(bufsize);
 	if (!bouncebuffer) {
 		errno = -EIO;	/* -ENOMEM */
@@ -262,8 +290,11 @@ ncp_file_write(struct file *file, const char __user *buf, size_t count, loff_t *
 	}
 	vfree(bouncebuffer);
 
+<<<<<<< HEAD
 	file_update_time(file);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	*ppos = pos;
 
 	if (pos > i_size_read(inode)) {
@@ -272,8 +303,12 @@ ncp_file_write(struct file *file, const char __user *buf, size_t count, loff_t *
 			i_size_write(inode, pos);
 		mutex_unlock(&inode->i_mutex);
 	}
+<<<<<<< HEAD
 	DPRINTK("ncp_file_write: exit %s/%s\n",
 		dentry->d_parent->d_name.name, dentry->d_name.name);
+=======
+	DPRINTK("ncp_file_write: exit %pd2\n", dentry);
+>>>>>>> refs/remotes/origin/master
 outrel:
 	ncp_inode_close(inode);		
 	return already_written ? already_written : errno;

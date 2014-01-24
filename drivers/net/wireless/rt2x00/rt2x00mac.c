@@ -46,7 +46,11 @@ static int rt2x00mac_tx_rts_cts(struct rt2x00_dev *rt2x00dev,
 
 	skb = dev_alloc_skb(data_length + rt2x00dev->hw->extra_tx_headroom);
 	if (unlikely(!skb)) {
+<<<<<<< HEAD
 		WARNING(rt2x00dev, "Failed to create RTS/CTS frame.\n");
+=======
+		rt2x00_warn(rt2x00dev, "Failed to create RTS/CTS frame\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
@@ -90,16 +94,29 @@ static int rt2x00mac_tx_rts_cts(struct rt2x00_dev *rt2x00dev,
 				  frag_skb->data, data_length, tx_info,
 				  (struct ieee80211_rts *)(skb->data));
 
+<<<<<<< HEAD
 	retval = rt2x00queue_write_tx_frame(queue, skb, true);
 	if (retval) {
 		dev_kfree_skb_any(skb);
 		WARNING(rt2x00dev, "Failed to send RTS/CTS frame.\n");
+=======
+	retval = rt2x00queue_write_tx_frame(queue, skb, NULL, true);
+	if (retval) {
+		dev_kfree_skb_any(skb);
+		rt2x00_warn(rt2x00dev, "Failed to send RTS/CTS frame\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return retval;
 }
 
+<<<<<<< HEAD
 void rt2x00mac_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
+=======
+void rt2x00mac_tx(struct ieee80211_hw *hw,
+		  struct ieee80211_tx_control *control,
+		  struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rt2x00_dev *rt2x00dev = hw->priv;
 	struct ieee80211_tx_info *tx_info = IEEE80211_SKB_CB(skb);
@@ -124,9 +141,15 @@ void rt2x00mac_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
 
 	queue = rt2x00queue_get_tx_queue(rt2x00dev, qid);
 	if (unlikely(!queue)) {
+<<<<<<< HEAD
 		ERROR(rt2x00dev,
 		      "Attempt to send packet over invalid queue %d.\n"
 		      "Please file bug report to %s.\n", qid, DRV_PROJECT);
+=======
+		rt2x00_err(rt2x00dev,
+			   "Attempt to send packet over invalid queue %d\n"
+			   "Please file bug report to %s\n", qid, DRV_PROJECT);
+>>>>>>> refs/remotes/origin/master
 		goto exit_free_skb;
 	}
 
@@ -149,7 +172,11 @@ void rt2x00mac_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
 			goto exit_fail;
 	}
 
+<<<<<<< HEAD
 	if (unlikely(rt2x00queue_write_tx_frame(queue, skb, false)))
+=======
+	if (unlikely(rt2x00queue_write_tx_frame(queue, skb, control->sta, false)))
+>>>>>>> refs/remotes/origin/master
 		goto exit_fail;
 
 	/*
@@ -170,10 +197,14 @@ void rt2x00mac_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
 	spin_unlock(&queue->tx_lock);
  exit_free_skb:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_kfree_skb_any(skb);
 =======
 	ieee80211_free_txskb(hw, skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ieee80211_free_txskb(hw, skb);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(rt2x00mac_tx);
 
@@ -216,6 +247,7 @@ int rt2x00mac_add_interface(struct ieee80211_hw *hw,
 	    !test_bit(DEVICE_STATE_STARTED, &rt2x00dev->flags))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	switch (vif->type) {
 	case NL80211_IFTYPE_AP:
 		/*
@@ -256,6 +288,8 @@ int rt2x00mac_add_interface(struct ieee80211_hw *hw,
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Loop through all beacon queues to find a free
 	 * entry. Since there are as much beacon entries
@@ -282,9 +316,12 @@ int rt2x00mac_add_interface(struct ieee80211_hw *hw,
 		rt2x00dev->intf_sta_count++;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_init(&intf->seqlock);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&intf->beacon_skb_mutex);
 	intf->beacon = entry;
 
@@ -428,11 +465,19 @@ void rt2x00mac_configure_filter(struct ieee80211_hw *hw,
 	 * of different types, but has no a separate filter for PS Poll frames,
 	 * FIF_CONTROL flag implies FIF_PSPOLL.
 	 */
+<<<<<<< HEAD
 	if (!test_bit(CAPABILITY_CONTROL_FILTERS, &rt2x00dev->cap_flags)) {
 		if (*total_flags & FIF_CONTROL || *total_flags & FIF_PSPOLL)
 			*total_flags |= FIF_CONTROL | FIF_PSPOLL;
 	}
 	if (!test_bit(CAPABILITY_CONTROL_FILTER_PSPOLL, &rt2x00dev->cap_flags)) {
+=======
+	if (!rt2x00_has_cap_control_filters(rt2x00dev)) {
+		if (*total_flags & FIF_CONTROL || *total_flags & FIF_PSPOLL)
+			*total_flags |= FIF_CONTROL | FIF_PSPOLL;
+	}
+	if (!rt2x00_has_cap_control_filter_pspoll(rt2x00dev)) {
+>>>>>>> refs/remotes/origin/master
 		if (*total_flags & FIF_CONTROL)
 			*total_flags |= FIF_PSPOLL;
 	}
@@ -470,9 +515,15 @@ int rt2x00mac_set_tim(struct ieee80211_hw *hw, struct ieee80211_sta *sta,
 	if (!test_bit(DEVICE_STATE_ENABLED_RADIO, &rt2x00dev->flags))
 		return 0;
 
+<<<<<<< HEAD
 	ieee80211_iterate_active_interfaces_atomic(rt2x00dev->hw,
 						   rt2x00mac_set_tim_iter,
 						   rt2x00dev);
+=======
+	ieee80211_iterate_active_interfaces_atomic(
+		rt2x00dev->hw, IEEE80211_IFACE_ITER_RESUME_ALL,
+		rt2x00mac_set_tim_iter, rt2x00dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* queue work to upodate the beacon template */
 	ieee80211_queue_work(rt2x00dev->hw, &rt2x00dev->intf_work);
@@ -511,6 +562,7 @@ int rt2x00mac_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 	static const u8 bcast_addr[ETH_ALEN] =
 		{ 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct rt2x00_sta *sta_priv = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -537,6 +589,30 @@ int rt2x00mac_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 =======
 	crypto.bssidx = rt2x00lib_get_bssidx(rt2x00dev, vif);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct rt2x00_sta *sta_priv = NULL;
+
+	if (!test_bit(DEVICE_STATE_PRESENT, &rt2x00dev->flags))
+		return 0;
+
+	if (!rt2x00_has_cap_hw_crypto(rt2x00dev))
+		return -EOPNOTSUPP;
+
+	/*
+	 * To support IBSS RSN, don't program group keys in IBSS, the
+	 * hardware will then not attempt to decrypt the frames.
+	 */
+	if (vif->type == NL80211_IFTYPE_ADHOC &&
+	    !(key->flags & IEEE80211_KEY_FLAG_PAIRWISE))
+		return -EOPNOTSUPP;
+
+	if (key->keylen > 32)
+		return -ENOSPC;
+
+	memset(&crypto, 0, sizeof(crypto));
+
+	crypto.bssidx = rt2x00lib_get_bssidx(rt2x00dev, vif);
+>>>>>>> refs/remotes/origin/master
 	crypto.cipher = rt2x00crypto_key_to_cipher(key);
 	if (crypto.cipher == CIPHER_NONE)
 		return -EOPNOTSUPP;
@@ -544,16 +620,22 @@ int rt2x00mac_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 	crypto.cmd = cmd;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (sta)
 		crypto.address = sta->addr;
 	else
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (sta) {
 		crypto.address = sta->addr;
 		sta_priv = sta_to_rt2x00_sta(sta);
 		crypto.wcid = sta_priv->wcid;
 	} else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		crypto.address = bcast_addr;
 
 	if (crypto.cipher == CIPHER_TKIP)
@@ -593,7 +675,10 @@ EXPORT_SYMBOL_GPL(rt2x00mac_set_key);
 #endif /* CONFIG_RT2X00_LIB_CRYPTO */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int rt2x00mac_sta_add(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 		      struct ieee80211_sta *sta)
 {
@@ -627,7 +712,10 @@ int rt2x00mac_sta_remove(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 }
 EXPORT_SYMBOL_GPL(rt2x00mac_sta_remove);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void rt2x00mac_sw_scan_start(struct ieee80211_hw *hw)
 {
 	struct rt2x00_dev *rt2x00dev = hw->priv;
@@ -740,9 +828,25 @@ void rt2x00mac_bss_info_changed(struct ieee80211_hw *hw,
 			rt2x00dev->intf_associated--;
 
 		rt2x00leds_led_assoc(rt2x00dev, !!rt2x00dev->intf_associated);
+<<<<<<< HEAD
 	}
 
 	/*
+=======
+
+		clear_bit(CONFIG_QOS_DISABLED, &rt2x00dev->flags);
+	}
+
+	/*
+	 * Check for access point which do not support 802.11e . We have to
+	 * generate data frames sequence number in S/W for such AP, because
+	 * of H/W bug.
+	 */
+	if (changes & BSS_CHANGED_QOS && !bss_conf->qos)
+		set_bit(CONFIG_QOS_DISABLED, &rt2x00dev->flags);
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * When the erp information has changed, we should perform
 	 * additional configuration steps. For all other changes we are done.
 	 */
@@ -754,11 +858,16 @@ void rt2x00mac_bss_info_changed(struct ieee80211_hw *hw,
 EXPORT_SYMBOL_GPL(rt2x00mac_bss_info_changed);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int rt2x00mac_conf_tx(struct ieee80211_hw *hw, u16 queue_idx,
 =======
 int rt2x00mac_conf_tx(struct ieee80211_hw *hw,
 		      struct ieee80211_vif *vif, u16 queue_idx,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int rt2x00mac_conf_tx(struct ieee80211_hw *hw,
+		      struct ieee80211_vif *vif, u16 queue_idx,
+>>>>>>> refs/remotes/origin/master
 		      const struct ieee80211_tx_queue_params *params)
 {
 	struct rt2x00_dev *rt2x00dev = hw->priv;
@@ -785,9 +894,16 @@ int rt2x00mac_conf_tx(struct ieee80211_hw *hw,
 	queue->aifs = params->aifs;
 	queue->txop = params->txop;
 
+<<<<<<< HEAD
 	INFO(rt2x00dev,
 	     "Configured TX queue %d - CWmin: %d, CWmax: %d, Aifs: %d, TXop: %d.\n",
 	     queue_idx, queue->cw_min, queue->cw_max, queue->aifs, queue->txop);
+=======
+	rt2x00_dbg(rt2x00dev,
+		   "Configured TX queue %d - CWmin: %d, CWmax: %d, Aifs: %d, TXop: %d\n",
+		   queue_idx, queue->cw_min, queue->cw_max, queue->aifs,
+		   queue->txop);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -802,11 +918,21 @@ void rt2x00mac_rfkill_poll(struct ieee80211_hw *hw)
 }
 EXPORT_SYMBOL_GPL(rt2x00mac_rfkill_poll);
 
+<<<<<<< HEAD
 void rt2x00mac_flush(struct ieee80211_hw *hw, bool drop)
+=======
+void rt2x00mac_flush(struct ieee80211_hw *hw, u32 queues, bool drop)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rt2x00_dev *rt2x00dev = hw->priv;
 	struct data_queue *queue;
 
+<<<<<<< HEAD
+=======
+	if (!test_bit(DEVICE_STATE_PRESENT, &rt2x00dev->flags))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	tx_queue_for_each(rt2x00dev, queue)
 		rt2x00queue_flush_queue(queue, drop);
 }
@@ -893,7 +1019,10 @@ void rt2x00mac_get_ringparam(struct ieee80211_hw *hw,
 }
 EXPORT_SYMBOL_GPL(rt2x00mac_get_ringparam);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 bool rt2x00mac_tx_frames_pending(struct ieee80211_hw *hw)
 {
@@ -908,4 +1037,7 @@ bool rt2x00mac_tx_frames_pending(struct ieee80211_hw *hw)
 	return false;
 }
 EXPORT_SYMBOL_GPL(rt2x00mac_tx_frames_pending);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -39,7 +39,11 @@
 
 
 /* And the same for proc */
+<<<<<<< HEAD
 int proc_dolasatstring(ctl_table *table, int write,
+=======
+int proc_dolasatstring(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 		       void *buffer, size_t *lenp, loff_t *ppos)
 {
 	int r;
@@ -54,7 +58,11 @@ int proc_dolasatstring(ctl_table *table, int write,
 }
 
 /* proc function to write EEPROM after changing int entry */
+<<<<<<< HEAD
 int proc_dolasatint(ctl_table *table, int write,
+=======
+int proc_dolasatint(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 		       void *buffer, size_t *lenp, loff_t *ppos)
 {
 	int r;
@@ -72,7 +80,11 @@ int proc_dolasatint(ctl_table *table, int write,
 static int rtctmp;
 
 /* proc function to read/write RealTime Clock */
+<<<<<<< HEAD
 int proc_dolasatrtc(ctl_table *table, int write,
+=======
+int proc_dolasatrtc(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 		       void *buffer, size_t *lenp, loff_t *ppos)
 {
 	struct timespec ts;
@@ -97,7 +109,11 @@ int proc_dolasatrtc(ctl_table *table, int write,
 #endif
 
 #ifdef CONFIG_INET
+<<<<<<< HEAD
 int proc_lasat_ip(ctl_table *table, int write,
+=======
+int proc_lasat_ip(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 		       void *buffer, size_t *lenp, loff_t *ppos)
 {
 	unsigned int ip;
@@ -134,8 +150,13 @@ int proc_lasat_ip(ctl_table *table, int write,
 	} else {
 		ip = *(unsigned int *)(table->data);
 		sprintf(ipbuf, "%d.%d.%d.%d",
+<<<<<<< HEAD
 			(ip)       & 0xff,
 			(ip >>  8) & 0xff,
+=======
+			(ip)	   & 0xff,
+			(ip >>	8) & 0xff,
+>>>>>>> refs/remotes/origin/master
 			(ip >> 16) & 0xff,
 			(ip >> 24) & 0xff);
 		len = strlen(ipbuf);
@@ -157,7 +178,11 @@ int proc_lasat_ip(ctl_table *table, int write,
 }
 #endif
 
+<<<<<<< HEAD
 int proc_lasat_prid(ctl_table *table, int write,
+=======
+int proc_lasat_prid(struct ctl_table *table, int write,
+>>>>>>> refs/remotes/origin/master
 		       void *buffer, size_t *lenp, loff_t *ppos)
 {
 	int r;
@@ -176,7 +201,11 @@ int proc_lasat_prid(ctl_table *table, int write,
 
 extern int lasat_boot_to_service;
 
+<<<<<<< HEAD
 static ctl_table lasat_table[] = {
+=======
+static struct ctl_table lasat_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "cpu-hz",
 		.data		= &lasat_board_info.li_cpu_hz,
@@ -262,7 +291,11 @@ static ctl_table lasat_table[] = {
 	{}
 };
 
+<<<<<<< HEAD
 static ctl_table lasat_root_table[] = {
+=======
+static struct ctl_table lasat_root_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "lasat",
 		.mode		=  0555,

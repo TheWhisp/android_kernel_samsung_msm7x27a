@@ -20,9 +20,12 @@
 #include <asm/mipsregs.h>
 #include <asm/prefetch.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Return current * instruction pointer ("program counter").
@@ -32,7 +35,10 @@
 /*
  * System setup and hardware flags..
  */
+<<<<<<< HEAD
 extern void (*cpu_wait)(void);
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern unsigned int vced_count, vcei_count;
 
@@ -48,11 +54,22 @@ extern unsigned int vced_count, vcei_count;
 #define SPECIAL_PAGES_SIZE PAGE_SIZE
 
 #ifdef CONFIG_32BIT
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KVM_GUEST
+/* User space process size is limited to 1GB in KVM Guest Mode */
+#define TASK_SIZE	0x3fff8000UL
+#else
+>>>>>>> refs/remotes/origin/master
 /*
  * User space process size: 2GB. This is hardcoded into a few places,
  * so don't change it unless you know what you are doing.
  */
 #define TASK_SIZE	0x7fff8000UL
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #ifdef __KERNEL__
 #define STACK_TOP_MAX	TASK_SIZE
@@ -116,8 +133,13 @@ struct mips_fpu_struct {
 typedef __u32 dspreg_t;
 
 struct mips_dsp_state {
+<<<<<<< HEAD
 	dspreg_t        dspr[NUM_DSP_REGS];
 	unsigned int    dspcontrol;
+=======
+	dspreg_t	dspr[NUM_DSP_REGS];
+	unsigned int	dspcontrol;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define INIT_CPUMASK { \
@@ -137,6 +159,7 @@ union mips_watch_reg_state {
 	struct mips3264_watch_reg_state mips3264;
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_CAVIUM_OCTEON
 
 struct octeon_cop2_state {
@@ -165,11 +188,42 @@ struct octeon_cop2_state {
 	unsigned long   cop2_aes_keylen;
 	/* DMFC2 rt, 0x0100; DMFC2 rt, 0x0101 */
 	unsigned long   cop2_aes_result[2];
+=======
+#if defined(CONFIG_CPU_CAVIUM_OCTEON)
+
+struct octeon_cop2_state {
+	/* DMFC2 rt, 0x0201 */
+	unsigned long	cop2_crc_iv;
+	/* DMFC2 rt, 0x0202 (Set with DMTC2 rt, 0x1202) */
+	unsigned long	cop2_crc_length;
+	/* DMFC2 rt, 0x0200 (set with DMTC2 rt, 0x4200) */
+	unsigned long	cop2_crc_poly;
+	/* DMFC2 rt, 0x0402; DMFC2 rt, 0x040A */
+	unsigned long	cop2_llm_dat[2];
+       /* DMFC2 rt, 0x0084 */
+	unsigned long	cop2_3des_iv;
+	/* DMFC2 rt, 0x0080; DMFC2 rt, 0x0081; DMFC2 rt, 0x0082 */
+	unsigned long	cop2_3des_key[3];
+	/* DMFC2 rt, 0x0088 (Set with DMTC2 rt, 0x0098) */
+	unsigned long	cop2_3des_result;
+	/* DMFC2 rt, 0x0111 (FIXME: Read Pass1 Errata) */
+	unsigned long	cop2_aes_inp0;
+	/* DMFC2 rt, 0x0102; DMFC2 rt, 0x0103 */
+	unsigned long	cop2_aes_iv[2];
+	/* DMFC2 rt, 0x0104; DMFC2 rt, 0x0105; DMFC2 rt, 0x0106; DMFC2
+	 * rt, 0x0107 */
+	unsigned long	cop2_aes_key[4];
+	/* DMFC2 rt, 0x0110 */
+	unsigned long	cop2_aes_keylen;
+	/* DMFC2 rt, 0x0100; DMFC2 rt, 0x0101 */
+	unsigned long	cop2_aes_result[2];
+>>>>>>> refs/remotes/origin/master
 	/* DMFC2 rt, 0x0240; DMFC2 rt, 0x0241; DMFC2 rt, 0x0242; DMFC2
 	 * rt, 0x0243; DMFC2 rt, 0x0244; DMFC2 rt, 0x0245; DMFC2 rt,
 	 * 0x0246; DMFC2 rt, 0x0247; DMFC2 rt, 0x0248; DMFC2 rt,
 	 * 0x0249; DMFC2 rt, 0x024A; DMFC2 rt, 0x024B; DMFC2 rt,
 	 * 0x024C; DMFC2 rt, 0x024D; DMFC2 rt, 0x024E - Pass2 */
+<<<<<<< HEAD
 	unsigned long   cop2_hsh_datw[15];
 	/* DMFC2 rt, 0x0250; DMFC2 rt, 0x0251; DMFC2 rt, 0x0252; DMFC2
 	 * rt, 0x0253; DMFC2 rt, 0x0254; DMFC2 rt, 0x0255; DMFC2 rt,
@@ -183,12 +237,43 @@ struct octeon_cop2_state {
 	unsigned long   cop2_gfm_result[2];
 };
 #define INIT_OCTEON_COP2 {0,}
+=======
+	unsigned long	cop2_hsh_datw[15];
+	/* DMFC2 rt, 0x0250; DMFC2 rt, 0x0251; DMFC2 rt, 0x0252; DMFC2
+	 * rt, 0x0253; DMFC2 rt, 0x0254; DMFC2 rt, 0x0255; DMFC2 rt,
+	 * 0x0256; DMFC2 rt, 0x0257 - Pass2 */
+	unsigned long	cop2_hsh_ivw[8];
+	/* DMFC2 rt, 0x0258; DMFC2 rt, 0x0259 - Pass2 */
+	unsigned long	cop2_gfm_mult[2];
+	/* DMFC2 rt, 0x025E - Pass2 */
+	unsigned long	cop2_gfm_poly;
+	/* DMFC2 rt, 0x025A; DMFC2 rt, 0x025B - Pass2 */
+	unsigned long	cop2_gfm_result[2];
+};
+#define COP2_INIT						\
+	.cp2			= {0,},
+>>>>>>> refs/remotes/origin/master
 
 struct octeon_cvmseg_state {
 	unsigned long cvmseg[CONFIG_CAVIUM_OCTEON_CVMSEG_SIZE]
 			    [cpu_dcache_line_size() / sizeof(unsigned long)];
 };
 
+<<<<<<< HEAD
+=======
+#elif defined(CONFIG_CPU_XLP)
+struct nlm_cop2_state {
+	u64	rx[4];
+	u64	tx[4];
+	u32	tx_msg_status;
+	u32	rx_msg_status;
+};
+
+#define COP2_INIT						\
+	.cp2			= {{0}, {0}, 0, 0},
+#else
+#define COP2_INIT
+>>>>>>> refs/remotes/origin/master
 #endif
 
 typedef struct {
@@ -230,11 +315,20 @@ struct thread_struct {
 	unsigned long cp0_badvaddr;	/* Last user fault */
 	unsigned long cp0_baduaddr;	/* Last kernel fault accessing USEG */
 	unsigned long error_code;
+<<<<<<< HEAD
 	unsigned long irix_trampoline;  /* Wheee... */
 	unsigned long irix_oldctx;
 #ifdef CONFIG_CPU_CAVIUM_OCTEON
     struct octeon_cop2_state cp2 __attribute__ ((__aligned__(128)));
     struct octeon_cvmseg_state cvmseg __attribute__ ((__aligned__(128)));
+=======
+#ifdef CONFIG_CPU_CAVIUM_OCTEON
+	struct octeon_cop2_state cp2 __attribute__ ((__aligned__(128)));
+	struct octeon_cvmseg_state cvmseg __attribute__ ((__aligned__(128)));
+#endif
+#ifdef CONFIG_CPU_XLP
+	struct nlm_cop2_state cp2;
+>>>>>>> refs/remotes/origin/master
 #endif
 	struct mips_abi *abi;
 };
@@ -247,6 +341,7 @@ struct thread_struct {
 #define FPAFF_INIT
 #endif /* CONFIG_MIPS_MT_FPAFF */
 
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_CAVIUM_OCTEON
 #define OCTEON_INIT						\
 	.cp2			= INIT_OCTEON_COP2,
@@ -258,6 +353,12 @@ struct thread_struct {
         /*							\
          * Saved main processor registers			\
          */							\
+=======
+#define INIT_THREAD  {						\
+	/*							\
+	 * Saved main processor registers			\
+	 */							\
+>>>>>>> refs/remotes/origin/master
 	.reg16			= 0,				\
 	.reg17			= 0,				\
 	.reg18			= 0,				\
@@ -301,12 +402,19 @@ struct thread_struct {
 	.cp0_badvaddr		= 0,				\
 	.cp0_baduaddr		= 0,				\
 	.error_code		= 0,				\
+<<<<<<< HEAD
 	.irix_trampoline	= 0,				\
 	.irix_oldctx		= 0,				\
 	/*							\
 	 * Cavium Octeon specifics (null if not Octeon)		\
 	 */							\
 	OCTEON_INIT						\
+=======
+	/*							\
+	 * Platform specific cop2 registers(null if no COP2)	\
+	 */							\
+	COP2_INIT						\
+>>>>>>> refs/remotes/origin/master
 }
 
 struct task_struct;
@@ -314,11 +422,14 @@ struct task_struct;
 /* Free all resources held by a thread. */
 #define release_thread(thread) do { } while(0)
 
+<<<<<<< HEAD
 /* Prepare to copy thread state - unlazy all lazy status */
 #define prepare_to_copy(tsk)	do { } while (0)
 
 extern long kernel_thread(int (*fn)(void *), void * arg, unsigned long flags);
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern unsigned long thread_saved_pc(struct task_struct *tsk);
 
 /*
@@ -345,7 +456,11 @@ unsigned long get_wchan(struct task_struct *p);
  * aborts compilation on some CPUs.  It's simply not possible to unwind
  * some CPU's stackframes.
  *
+<<<<<<< HEAD
  * __builtin_return_address works only for non-leaf functions.  We avoid the
+=======
+ * __builtin_return_address works only for non-leaf functions.	We avoid the
+>>>>>>> refs/remotes/origin/master
  * overhead of a function call by forcing the compiler to save the return
  * address register on the stack.
  */
@@ -360,14 +475,20 @@ unsigned long get_wchan(struct task_struct *p);
 #define prefetchw(x) __builtin_prefetch((x), 1, 1)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * See Documentation/scheduler/sched-arch.txt; prevents deadlock on SMP
  * systems.
  */
 #define __ARCH_WANT_UNLOCKED_CTXSW
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif /* _ASM_PROCESSOR_H */

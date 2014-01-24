@@ -37,6 +37,7 @@ static struct nf_ct_ext_type timeout_extend __read_mostly = {
 	.id	= NF_CT_EXT_TIMEOUT,
 };
 
+<<<<<<< HEAD
 int nf_conntrack_timeout_init(struct net *net)
 {
 	int ret = 0;
@@ -57,4 +58,17 @@ void nf_conntrack_timeout_fini(struct net *net)
 {
 	if (net_eq(net, &init_net))
 		nf_ct_extend_unregister(&timeout_extend);
+=======
+int nf_conntrack_timeout_init(void)
+{
+	int ret = nf_ct_extend_register(&timeout_extend);
+	if (ret < 0)
+		pr_err("nf_ct_timeout: Unable to register timeout extension.\n");
+	return ret;
+}
+
+void nf_conntrack_timeout_fini(void)
+{
+	nf_ct_extend_unregister(&timeout_extend);
+>>>>>>> refs/remotes/origin/master
 }

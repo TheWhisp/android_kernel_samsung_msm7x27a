@@ -53,24 +53,33 @@ static void get_cpu_itimer(struct task_struct *tsk, unsigned int clock_id,
 	cval = it->expires;
 	cinterval = it->incr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cputime_eq(cval, cputime_zero)) {
 =======
 	if (cval) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cval) {
+>>>>>>> refs/remotes/origin/master
 		struct task_cputime cputime;
 		cputime_t t;
 
 		thread_group_cputimer(tsk, &cputime);
 		if (clock_id == CPUCLOCK_PROF)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			t = cputime_add(cputime.utime, cputime.stime);
 =======
 			t = cputime.utime + cputime.stime;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			t = cputime.utime + cputime.stime;
+>>>>>>> refs/remotes/origin/master
 		else
 			/* CPUCLOCK_VIRT */
 			t = cputime.utime;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (cputime_le(cval, t))
 			/* about to fire */
@@ -78,12 +87,17 @@ static void get_cpu_itimer(struct task_struct *tsk, unsigned int clock_id,
 		else
 			cval = cputime_sub(cval, t);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (cval < t)
 			/* about to fire */
 			cval = cputime_one_jiffy;
 		else
 			cval = cval - t;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_unlock_irq(&tsk->sighand->siglock);
@@ -178,6 +192,7 @@ static void set_cpu_itimer(struct task_struct *tsk, unsigned int clock_id,
 	cval = it->expires;
 	cinterval = it->incr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cputime_eq(cval, cputime_zero) ||
 	    !cputime_eq(nval, cputime_zero)) {
 		if (cputime_gt(nval, cputime_zero))
@@ -187,6 +202,11 @@ static void set_cpu_itimer(struct task_struct *tsk, unsigned int clock_id,
 		if (nval > 0)
 			nval += cputime_one_jiffy;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cval || nval) {
+		if (nval > 0)
+			nval += cputime_one_jiffy;
+>>>>>>> refs/remotes/origin/master
 		set_process_cpu_timer(tsk, clock_id, &nval, &cval);
 	}
 	it->expires = nval;
@@ -308,16 +328,22 @@ SYSCALL_DEFINE3(setitimer, int, which, struct itimerval __user *, value,
 		if(copy_from_user(&set_buffer, value, sizeof(set_buffer)))
 			return -EFAULT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else
 		memset((char *) &set_buffer, 0, sizeof(set_buffer));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		memset(&set_buffer, 0, sizeof(set_buffer));
 		printk_once(KERN_WARNING "%s calls setitimer() with new_value NULL pointer."
 			    " Misfeature support will be removed\n",
 			    current->comm);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	error = do_setitimer(which, &set_buffer, ovalue ? &get_buffer : NULL);
 	if (error || !ovalue)

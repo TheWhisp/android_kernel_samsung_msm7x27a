@@ -28,9 +28,12 @@
 #include <arch/svinto.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/sync_serial.h>
 #include <arch/io_interface_mux.h>
 
@@ -658,7 +661,11 @@ static int sync_serial_release(struct inode *inode, struct file *file)
 
 static unsigned int sync_serial_poll(struct file *file, poll_table *wait)
 {
+<<<<<<< HEAD
 	int dev = MINOR(file->f_dentry->d_inode->i_rdev);
+=======
+	int dev = MINOR(file_inode(file)->i_rdev);
+>>>>>>> refs/remotes/origin/master
 	unsigned int mask = 0;
 	struct sync_port *port;
 	DEBUGPOLL(static unsigned int prev_mask = 0);
@@ -689,7 +696,11 @@ static int sync_serial_ioctl_unlocked(struct file *file,
 	int return_val = 0;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	int dev = MINOR(file->f_dentry->d_inode->i_rdev);
+=======
+	int dev = MINOR(file_inode(file)->i_rdev);
+>>>>>>> refs/remotes/origin/master
 	struct sync_port *port;
 
 	if (dev < 0 || dev >= NUMBER_OF_PORTS || !ports[dev].enabled) {
@@ -977,7 +988,11 @@ static long sync_serial_ioctl(struct file *file,
 static ssize_t sync_serial_write(struct file *file, const char *buf,
 	size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	int dev = MINOR(file->f_dentry->d_inode->i_rdev);
+=======
+	int dev = MINOR(file_inode(file)->i_rdev);
+>>>>>>> refs/remotes/origin/master
 	DECLARE_WAITQUEUE(wait, current);
 	struct sync_port *port;
 	unsigned long flags;
@@ -1101,7 +1116,11 @@ static ssize_t sync_serial_write(struct file *file, const char *buf,
 static ssize_t sync_serial_read(struct file *file, char *buf,
 				size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	int dev = MINOR(file->f_dentry->d_inode->i_rdev);
+=======
+	int dev = MINOR(file_inode(file)->i_rdev);
+>>>>>>> refs/remotes/origin/master
 	int avail;
 	struct sync_port *port;
 	unsigned char *start;

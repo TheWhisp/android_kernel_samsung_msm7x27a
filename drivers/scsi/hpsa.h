@@ -34,7 +34,11 @@ struct access_method {
 	void (*set_intr_mask)(struct ctlr_info *h, unsigned long val);
 	unsigned long (*fifo_full)(struct ctlr_info *h);
 	bool (*intr_pending)(struct ctlr_info *h);
+<<<<<<< HEAD
 	unsigned long (*command_completed)(struct ctlr_info *h);
+=======
+	unsigned long (*command_completed)(struct ctlr_info *h, u8 q);
+>>>>>>> refs/remotes/origin/master
 };
 
 struct hpsa_scsi_dev_t {
@@ -48,6 +52,16 @@ struct hpsa_scsi_dev_t {
 	unsigned char raid_level;	/* from inquiry page 0xC1 */
 };
 
+<<<<<<< HEAD
+=======
+struct reply_pool {
+	u64 *head;
+	size_t size;
+	u8 wraparound;
+	u32 current_entry;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct ctlr_info {
 	int	ctlr;
 	char	devname[8];
@@ -59,9 +73,12 @@ struct ctlr_info {
 	int 	nr_cmds; /* Number of commands allowed on this controller */
 	struct CfgTable __iomem *cfgtable;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int     max_sg_entries;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int	interrupts_enabled;
 	int	major;
 	int 	max_commands;
@@ -72,7 +89,11 @@ struct ctlr_info {
 #	define DOORBELL_INT	1
 #	define SIMPLE_MODE_INT	2
 #	define MEMQ_MODE_INT	3
+<<<<<<< HEAD
 	unsigned int intr[4];
+=======
+	unsigned int intr[MAX_REPLY_QUEUES];
+>>>>>>> refs/remotes/origin/master
 	unsigned int msix_vector;
 	unsigned int msi_vector;
 	int intr_mode; /* either PERF_MODE_INT or SIMPLE_MODE_INT */
@@ -82,7 +103,10 @@ struct ctlr_info {
 	struct list_head reqQ;
 	struct list_head cmpQ;
 	unsigned int Qdepth;
+<<<<<<< HEAD
 	unsigned int maxQsinceinit;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int maxSG;
 	spinlock_t lock;
 	int maxsgentries;
@@ -96,6 +120,7 @@ struct ctlr_info {
 	struct ErrorInfo 	*errinfo_pool;
 	dma_addr_t		errinfo_pool_dhandle;
 	unsigned long  		*cmd_pool_bits;
+<<<<<<< HEAD
 	int			nr_allocs;
 	int			nr_frees;
 <<<<<<< HEAD
@@ -103,6 +128,8 @@ struct ctlr_info {
 	int			busy_scanning;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int			scan_finished;
 	spinlock_t		scan_lock;
 	wait_queue_head_t	scan_wait_queue;
@@ -111,11 +138,15 @@ struct ctlr_info {
 	spinlock_t devlock; /* to protect hba[ctlr]->dev[];  */
 	int ndevices; /* number of used elements in .dev[] array. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HPSA_MAX_SCSI_DEVS_PER_HBA 256
 	struct hpsa_scsi_dev_t *dev[HPSA_MAX_SCSI_DEVS_PER_HBA];
 =======
 	struct hpsa_scsi_dev_t *dev[HPSA_MAX_DEVICES];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hpsa_scsi_dev_t *dev[HPSA_MAX_DEVICES];
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Performant mode tables.
 	 */
@@ -125,6 +156,7 @@ struct ctlr_info {
 	unsigned long transMethod;
 
 	/*
+<<<<<<< HEAD
 	 * Performant mode completion buffer
 	 */
 	u64 *reply_pool;
@@ -136,6 +168,17 @@ struct ctlr_info {
 	unsigned char *hba_inquiry_data;
 <<<<<<< HEAD
 =======
+=======
+	 * Performant mode completion buffers
+	 */
+	u64 *reply_pool;
+	size_t reply_pool_size;
+	struct reply_pool reply_queue[MAX_REPLY_QUEUES];
+	u8 nreply_queues;
+	dma_addr_t reply_pool_dhandle;
+	u32 *blockFetchTable;
+	unsigned char *hba_inquiry_data;
+>>>>>>> refs/remotes/origin/master
 	u64 last_intr_timestamp;
 	u32 last_heartbeat;
 	u64 last_heartbeat_timestamp;
@@ -143,7 +186,33 @@ struct ctlr_info {
 	atomic_t firmware_flash_in_progress;
 	u32 lockup_detected;
 	struct list_head lockup_list;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Address of h->q[x] is passed to intr handler to know which queue */
+	u8 q[MAX_REPLY_QUEUES];
+	u32 TMFSupportFlags; /* cache what task mgmt funcs are supported. */
+#define HPSATMF_BITS_SUPPORTED  (1 << 0)
+#define HPSATMF_PHYS_LUN_RESET  (1 << 1)
+#define HPSATMF_PHYS_NEX_RESET  (1 << 2)
+#define HPSATMF_PHYS_TASK_ABORT (1 << 3)
+#define HPSATMF_PHYS_TSET_ABORT (1 << 4)
+#define HPSATMF_PHYS_CLEAR_ACA  (1 << 5)
+#define HPSATMF_PHYS_CLEAR_TSET (1 << 6)
+#define HPSATMF_PHYS_QRY_TASK   (1 << 7)
+#define HPSATMF_PHYS_QRY_TSET   (1 << 8)
+#define HPSATMF_PHYS_QRY_ASYNC  (1 << 9)
+#define HPSATMF_MASK_SUPPORTED  (1 << 16)
+#define HPSATMF_LOG_LUN_RESET   (1 << 17)
+#define HPSATMF_LOG_NEX_RESET   (1 << 18)
+#define HPSATMF_LOG_TASK_ABORT  (1 << 19)
+#define HPSATMF_LOG_TSET_ABORT  (1 << 20)
+#define HPSATMF_LOG_CLEAR_ACA   (1 << 21)
+#define HPSATMF_LOG_CLEAR_TSET  (1 << 22)
+#define HPSATMF_LOG_QRY_TASK    (1 << 23)
+#define HPSATMF_LOG_QRY_TSET    (1 << 24)
+#define HPSATMF_LOG_QRY_ASYNC   (1 << 25)
+>>>>>>> refs/remotes/origin/master
 };
 #define HPSA_ABORT_MSG 0
 #define HPSA_DEVICE_RESET_MSG 1
@@ -235,9 +304,12 @@ static void SA5_submit_command(struct ctlr_info *h,
 		c->Header.Tag.lower);
 	writel(c->busaddr, h->vaddr + SA5_REQUEST_PORT_OFFSET);
 	(void) readl(h->vaddr + SA5_SCRATCHPAD_OFFSET);
+<<<<<<< HEAD
 	h->commands_outstanding++;
 	if (h->commands_outstanding > h->max_outstanding)
 		h->max_outstanding = h->commands_outstanding;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -273,6 +345,7 @@ static void SA5_performant_intr_mask(struct ctlr_info *h, unsigned long val)
 	}
 }
 
+<<<<<<< HEAD
 static unsigned long SA5_performant_completed(struct ctlr_info *h)
 {
 	unsigned long register_value = FIFO_EMPTY;
@@ -283,6 +356,19 @@ static unsigned long SA5_performant_completed(struct ctlr_info *h)
 	register_value = readl(h->vaddr + SA5_OUTDB_STATUS);
 	/* msi auto clears the interrupt pending bit. */
 	if (!(h->msi_vector || h->msix_vector)) {
+=======
+static unsigned long SA5_performant_completed(struct ctlr_info *h, u8 q)
+{
+	struct reply_pool *rq = &h->reply_queue[q];
+	unsigned long flags, register_value = FIFO_EMPTY;
+
+	/* msi auto clears the interrupt pending bit. */
+	if (!(h->msi_vector || h->msix_vector)) {
+		/* flush the controller write of the reply queue by reading
+		 * outbound doorbell status register.
+		 */
+		register_value = readl(h->vaddr + SA5_OUTDB_STATUS);
+>>>>>>> refs/remotes/origin/master
 		writel(SA5_OUTDB_CLEAR_PERF_BIT, h->vaddr + SA5_OUTDB_CLEAR);
 		/* Do a read in order to flush the write to the controller
 		 * (as per spec.)
@@ -290,19 +376,35 @@ static unsigned long SA5_performant_completed(struct ctlr_info *h)
 		register_value = readl(h->vaddr + SA5_OUTDB_STATUS);
 	}
 
+<<<<<<< HEAD
 	if ((*(h->reply_pool_head) & 1) == (h->reply_pool_wraparound)) {
 		register_value = *(h->reply_pool_head);
 		(h->reply_pool_head)++;
 		h->commands_outstanding--;
+=======
+	if ((rq->head[rq->current_entry] & 1) == rq->wraparound) {
+		register_value = rq->head[rq->current_entry];
+		rq->current_entry++;
+		spin_lock_irqsave(&h->lock, flags);
+		h->commands_outstanding--;
+		spin_unlock_irqrestore(&h->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		register_value = FIFO_EMPTY;
 	}
 	/* Check for wraparound */
+<<<<<<< HEAD
 	if (h->reply_pool_head == (h->reply_pool + h->max_commands)) {
 		h->reply_pool_head = h->reply_pool;
 		h->reply_pool_wraparound ^= 1;
 	}
 
+=======
+	if (rq->current_entry == h->max_commands) {
+		rq->current_entry = 0;
+		rq->wraparound ^= 1;
+	}
+>>>>>>> refs/remotes/origin/master
 	return register_value;
 }
 
@@ -322,6 +424,7 @@ static unsigned long SA5_fifo_full(struct ctlr_info *h)
  *   returns value read from hardware.
  *     returns FIFO_EMPTY if there is nothing to read
  */
+<<<<<<< HEAD
 static unsigned long SA5_completed(struct ctlr_info *h)
 {
 	unsigned long register_value
@@ -329,6 +432,20 @@ static unsigned long SA5_completed(struct ctlr_info *h)
 
 	if (register_value != FIFO_EMPTY)
 		h->commands_outstanding--;
+=======
+static unsigned long SA5_completed(struct ctlr_info *h,
+	__attribute__((unused)) u8 q)
+{
+	unsigned long register_value
+		= readl(h->vaddr + SA5_REPLY_PORT_OFFSET);
+	unsigned long flags;
+
+	if (register_value != FIFO_EMPTY) {
+		spin_lock_irqsave(&h->lock, flags);
+		h->commands_outstanding--;
+		spin_unlock_irqrestore(&h->lock, flags);
+	}
+>>>>>>> refs/remotes/origin/master
 
 #ifdef HPSA_DEBUG
 	if (register_value != FIFO_EMPTY)
@@ -336,10 +453,14 @@ static unsigned long SA5_completed(struct ctlr_info *h)
 			register_value);
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(&h->pdev->dev, "hpsa: FIFO Empty read\n");
 =======
 		dev_dbg(&h->pdev->dev, "FIFO Empty read\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_dbg(&h->pdev->dev, "FIFO Empty read\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	return register_value;

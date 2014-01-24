@@ -8,10 +8,16 @@ menuconfig SND_SOC
 	select AC97_BUS if SND_SOC_AC97_BUS
 	select SND_JACK if INPUT=y || INPUT=SND
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	select REGMAP_I2C if I2C
 	select REGMAP_SPI if SPI_MASTER
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select REGMAP_I2C if I2C
+	select REGMAP_SPI if SPI_MASTER
+	select SND_COMPRESS_OFFLOAD
+>>>>>>> refs/remotes/origin/master
 	---help---
 
 	  If you want ASoC support, you should say Y here and also to the
@@ -25,6 +31,7 @@ menuconfig SND_SOC
 
 if SND_SOC
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config SND_SOC_CACHE_LZO
 	bool "Support LZO compression for register caches"
@@ -60,29 +67,66 @@ source "sound/soc/davinci/Kconfig"
 source "sound/soc/ep93xx/Kconfig"
 source "sound/soc/fsl/Kconfig"
 source "sound/soc/imx/Kconfig"
+=======
+config SND_SOC_AC97_BUS
+	bool
+
+config SND_SOC_GENERIC_DMAENGINE_PCM
+	bool
+	select SND_DMAENGINE_PCM
+
+# All the supported SoCs
+source "sound/soc/adi/Kconfig"
+source "sound/soc/atmel/Kconfig"
+source "sound/soc/au1x/Kconfig"
+source "sound/soc/bcm/Kconfig"
+source "sound/soc/blackfin/Kconfig"
+source "sound/soc/cirrus/Kconfig"
+source "sound/soc/davinci/Kconfig"
+source "sound/soc/dwc/Kconfig"
+source "sound/soc/fsl/Kconfig"
+>>>>>>> refs/remotes/origin/master
 source "sound/soc/jz4740/Kconfig"
 source "sound/soc/nuc900/Kconfig"
 source "sound/soc/omap/Kconfig"
 source "sound/soc/kirkwood/Kconfig"
+<<<<<<< HEAD
 source "sound/soc/mid-x86/Kconfig"
 <<<<<<< HEAD
 =======
 source "sound/soc/msm/Kconfig"
 source "sound/soc/mxs/Kconfig"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+source "sound/soc/intel/Kconfig"
+source "sound/soc/mxs/Kconfig"
+>>>>>>> refs/remotes/origin/master
 source "sound/soc/pxa/Kconfig"
 source "sound/soc/samsung/Kconfig"
 source "sound/soc/s6000/Kconfig"
 source "sound/soc/sh/Kconfig"
+<<<<<<< HEAD
 source "sound/soc/tegra/Kconfig"
 source "sound/soc/txx9/Kconfig"
 <<<<<<< HEAD
 source "sound/soc/msm/Kconfig"
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+source "sound/soc/spear/Kconfig"
+source "sound/soc/tegra/Kconfig"
+source "sound/soc/txx9/Kconfig"
+source "sound/soc/ux500/Kconfig"
+>>>>>>> refs/remotes/origin/master
 
 # Supported codecs
 source "sound/soc/codecs/Kconfig"
 
+<<<<<<< HEAD
+=======
+# generic frame-work
+source "sound/soc/generic/Kconfig"
+
+>>>>>>> refs/remotes/origin/master
 endif	# SND_SOC
 

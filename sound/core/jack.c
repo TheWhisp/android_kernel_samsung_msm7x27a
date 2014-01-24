@@ -22,6 +22,7 @@
 #include <linux/input.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -29,11 +30,19 @@
 #include <sound/core.h>
 
 static int jack_switch_types[] = {
+=======
+#include <linux/module.h>
+#include <sound/jack.h>
+#include <sound/core.h>
+
+static int jack_switch_types[SND_JACK_SWITCH_TYPES] = {
+>>>>>>> refs/remotes/origin/master
 	SW_HEADPHONE_INSERT,
 	SW_MICROPHONE_INSERT,
 	SW_LINEOUT_INSERT,
 	SW_JACK_PHYSICAL_INSERT,
 	SW_VIDEOOUT_INSERT,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	SW_HPHL_OVERCURRENT,
 	SW_HPHR_OVERCURRENT,
@@ -51,6 +60,17 @@ static int snd_jack_dev_free(struct snd_device *device)
 
 	if (jack->private_free)
 		jack->private_free(jack);
+=======
+	SW_LINEIN_INSERT,
+};
+
+static int snd_jack_dev_disconnect(struct snd_device *device)
+{
+	struct snd_jack *jack = device->device_data;
+
+	if (!jack->input_dev)
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* If the input device is registered with the input subsystem
 	 * then we need to use a different deallocator. */
@@ -58,6 +78,21 @@ static int snd_jack_dev_free(struct snd_device *device)
 		input_unregister_device(jack->input_dev);
 	else
 		input_free_device(jack->input_dev);
+<<<<<<< HEAD
+=======
+	jack->input_dev = NULL;
+	return 0;
+}
+
+static int snd_jack_dev_free(struct snd_device *device)
+{
+	struct snd_jack *jack = device->device_data;
+
+	if (jack->private_free)
+		jack->private_free(jack);
+
+	snd_jack_dev_disconnect(device);
+>>>>>>> refs/remotes/origin/master
 
 	kfree(jack->id);
 	kfree(jack);
@@ -109,8 +144,13 @@ static int snd_jack_dev_register(struct snd_device *device)
  *
  * Creates a new jack object.
  *
+<<<<<<< HEAD
  * Returns zero if successful, or a negative error code on failure.
  * On success jjack will be initialised.
+=======
+ * Return: Zero if successful, or a negative error code on failure.
+ * On success @jjack will be initialised.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_jack_new(struct snd_card *card, const char *id, int type,
 		 struct snd_jack **jjack)
@@ -121,6 +161,10 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
 	static struct snd_device_ops ops = {
 		.dev_free = snd_jack_dev_free,
 		.dev_register = snd_jack_dev_register,
+<<<<<<< HEAD
+=======
+		.dev_disconnect = snd_jack_dev_disconnect,
+>>>>>>> refs/remotes/origin/master
 	};
 
 	jack = kzalloc(sizeof(struct snd_jack), GFP_KERNEL);
@@ -139,7 +183,11 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
 
 	jack->type = type;
 
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(jack_switch_types); i++)
+=======
+	for (i = 0; i < SND_JACK_SWITCH_TYPES; i++)
+>>>>>>> refs/remotes/origin/master
 		if (type & (1 << i))
 			input_set_capability(jack->input_dev, EV_SW,
 					     jack_switch_types[i]);
@@ -166,7 +214,11 @@ EXPORT_SYMBOL(snd_jack_new);
  * @jack:   The jack to configure
  * @parent: The device to set as parent for the jack.
  *
+<<<<<<< HEAD
  * Set the parent for the jack input device in the device tree.  This
+=======
+ * Set the parent for the jack devices in the device tree.  This
+>>>>>>> refs/remotes/origin/master
  * function is only valid prior to registration of the jack.  If no
  * parent is configured then the parent device will be the sound card.
  */
@@ -190,6 +242,12 @@ EXPORT_SYMBOL(snd_jack_set_parent);
  * mapping is provided but keys are enabled in the jack type then
  * BTN_n numeric buttons will be reported.
  *
+<<<<<<< HEAD
+=======
+ * If jacks are not reporting via the input API this call will have no
+ * effect.
+ *
+>>>>>>> refs/remotes/origin/master
  * Note that this is intended to be use by simple devices with small
  * numbers of keys that can be reported.  It is also possible to
  * access the input device directly - devices with complex input
@@ -197,6 +255,11 @@ EXPORT_SYMBOL(snd_jack_set_parent);
  * using this abstraction.
  *
  * This function may only be called prior to registration of the jack.
+<<<<<<< HEAD
+=======
+ *
+ * Return: Zero if successful, or a negative error code on failure.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_jack_set_key(struct snd_jack *jack, enum snd_jack_types type,
 		     int keytype)

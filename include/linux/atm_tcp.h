@@ -3,6 +3,7 @@
 
 /* Written 1997-2000 by Werner Almesberger, EPFL LRC/ICA */
 
+<<<<<<< HEAD
 
 #ifndef LINUX_ATM_TCP_H
 #define LINUX_ATM_TCP_H
@@ -58,6 +59,13 @@ struct atmtcp_control {
 
 
 #ifdef __KERNEL__
+=======
+#ifndef LINUX_ATM_TCP_H
+#define LINUX_ATM_TCP_H
+
+#include <uapi/linux/atm_tcp.h>
+
+>>>>>>> refs/remotes/origin/master
 
 struct atm_tcp_ops {
 	int (*attach)(struct atm_vcc *vcc,int itf);
@@ -69,5 +77,8 @@ struct atm_tcp_ops {
 extern struct atm_tcp_ops atm_tcp_ops;
 
 #endif
+<<<<<<< HEAD
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

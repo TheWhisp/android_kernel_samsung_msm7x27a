@@ -38,9 +38,13 @@
 #include <asm/irq.h>
 #include <asm/prom.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/setup.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_SERIAL_SUNZILOG_CONSOLE) && defined(CONFIG_MAGIC_SYSRQ)
 #define SUPPORT_SYSRQ
@@ -48,12 +52,17 @@
 
 #include <linux/serial_core.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include "suncore.h"
 =======
 #include <linux/sunserialcore.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sunserialcore.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "sunzilog.h"
 
 /* On 32-bit sparcs we need to delay after register accesses
@@ -327,6 +336,7 @@ static void sunzilog_kbdms_receive_chars(struct uart_sunzilog_port *up,
 				serio_interrupt(&up->serio, ch, 0);
 #endif
 			break;
+<<<<<<< HEAD
 		};
 	}
 }
@@ -342,6 +352,21 @@ sunzilog_receive_chars(struct uart_sunzilog_port *up,
 	if (up->port.state != NULL &&		/* Unopened serial console */
 	    up->port.state->port.tty != NULL)	/* Keyboard || mouse */
 		tty = up->port.state->port.tty;
+=======
+		}
+	}
+}
+
+static struct tty_port *
+sunzilog_receive_chars(struct uart_sunzilog_port *up,
+		       struct zilog_channel __iomem *channel)
+{
+	struct tty_port *port = NULL;
+	unsigned char ch, r1, flag;
+
+	if (up->port.state != NULL)		/* Unopened serial console */
+		port = &up->port.state->port;
+>>>>>>> refs/remotes/origin/master
 
 	for (;;) {
 
@@ -374,11 +399,14 @@ sunzilog_receive_chars(struct uart_sunzilog_port *up,
 			continue;
 		}
 
+<<<<<<< HEAD
 		if (tty == NULL) {
 			uart_handle_sysrq_char(&up->port, ch);
 			continue;
 		}
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/* A real serial line, record the character and status.  */
 		flag = TTY_NORMAL;
 		up->port.icount.rx++;
@@ -403,11 +431,16 @@ sunzilog_receive_chars(struct uart_sunzilog_port *up,
 			else if (r1 & CRC_ERR)
 				flag = TTY_FRAME;
 		}
+<<<<<<< HEAD
 		if (uart_handle_sysrq_char(&up->port, ch))
+=======
+		if (uart_handle_sysrq_char(&up->port, ch) || !port)
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		if (up->port.ignore_status_mask == 0xff ||
 		    (r1 & up->port.ignore_status_mask) == 0) {
+<<<<<<< HEAD
 		    	tty_insert_flip_char(tty, ch, flag);
 		}
 		if (r1 & Rx_OVR)
@@ -415,6 +448,15 @@ sunzilog_receive_chars(struct uart_sunzilog_port *up,
 	}
 
 	return tty;
+=======
+		    	tty_insert_flip_char(port, ch, flag);
+		}
+		if (r1 & Rx_OVR)
+			tty_insert_flip_char(port, 0, TTY_OVERRUN);
+	}
+
+	return port;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sunzilog_status_handle(struct uart_sunzilog_port *up,
@@ -547,21 +589,33 @@ static irqreturn_t sunzilog_interrupt(int irq, void *dev_id)
 	while (up) {
 		struct zilog_channel __iomem *channel
 			= ZILOG_CHANNEL_FROM_PORT(&up->port);
+<<<<<<< HEAD
 		struct tty_struct *tty;
+=======
+		struct tty_port *port;
+>>>>>>> refs/remotes/origin/master
 		unsigned char r3;
 
 		spin_lock(&up->port.lock);
 		r3 = read_zsreg(channel, R3);
 
 		/* Channel A */
+<<<<<<< HEAD
 		tty = NULL;
+=======
+		port = NULL;
+>>>>>>> refs/remotes/origin/master
 		if (r3 & (CHAEXT | CHATxIP | CHARxIP)) {
 			writeb(RES_H_IUS, &channel->control);
 			ZSDELAY();
 			ZS_WSYNC(channel);
 
 			if (r3 & CHARxIP)
+<<<<<<< HEAD
 				tty = sunzilog_receive_chars(up, channel);
+=======
+				port = sunzilog_receive_chars(up, channel);
+>>>>>>> refs/remotes/origin/master
 			if (r3 & CHAEXT)
 				sunzilog_status_handle(up, channel);
 			if (r3 & CHATxIP)
@@ -569,22 +623,35 @@ static irqreturn_t sunzilog_interrupt(int irq, void *dev_id)
 		}
 		spin_unlock(&up->port.lock);
 
+<<<<<<< HEAD
 		if (tty)
 			tty_flip_buffer_push(tty);
+=======
+		if (port)
+			tty_flip_buffer_push(port);
+>>>>>>> refs/remotes/origin/master
 
 		/* Channel B */
 		up = up->next;
 		channel = ZILOG_CHANNEL_FROM_PORT(&up->port);
 
 		spin_lock(&up->port.lock);
+<<<<<<< HEAD
 		tty = NULL;
+=======
+		port = NULL;
+>>>>>>> refs/remotes/origin/master
 		if (r3 & (CHBEXT | CHBTxIP | CHBRxIP)) {
 			writeb(RES_H_IUS, &channel->control);
 			ZSDELAY();
 			ZS_WSYNC(channel);
 
 			if (r3 & CHBRxIP)
+<<<<<<< HEAD
 				tty = sunzilog_receive_chars(up, channel);
+=======
+				port = sunzilog_receive_chars(up, channel);
+>>>>>>> refs/remotes/origin/master
 			if (r3 & CHBEXT)
 				sunzilog_status_handle(up, channel);
 			if (r3 & CHBTxIP)
@@ -592,8 +659,13 @@ static irqreturn_t sunzilog_interrupt(int irq, void *dev_id)
 		}
 		spin_unlock(&up->port.lock);
 
+<<<<<<< HEAD
 		if (tty)
 			tty_flip_buffer_push(tty);
+=======
+		if (port)
+			tty_flip_buffer_push(port);
+>>>>>>> refs/remotes/origin/master
 
 		up = up->next;
 	}
@@ -912,7 +984,11 @@ sunzilog_convert_to_zs(struct uart_sunzilog_port *up, unsigned int cflag,
 		up->curregs[R5] |= Tx8;
 		up->parity_mask = 0xff;
 		break;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	up->curregs[R4] &= ~0x0c;
 	if (cflag & CSTOPB)
 		up->curregs[R4] |= SB2;
@@ -1254,7 +1330,11 @@ static int __init sunzilog_console_setup(struct console *con, char *options)
 	default: case B9600: baud = 9600; break;
 	case B19200: baud = 19200; break;
 	case B38400: baud = 38400; break;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	brg = BPS_TO_BRG(baud, ZS_CLOCK / ZS_CLOCK_DIVISOR);
 
@@ -1290,7 +1370,11 @@ static inline struct console *SUNZILOG_CONSOLE(void)
 #define SUNZILOG_CONSOLE()	(NULL)
 #endif
 
+<<<<<<< HEAD
 static void __devinit sunzilog_init_kbdms(struct uart_sunzilog_port *up)
+=======
+static void sunzilog_init_kbdms(struct uart_sunzilog_port *up)
+>>>>>>> refs/remotes/origin/master
 {
 	int baud, brg;
 
@@ -1310,7 +1394,11 @@ static void __devinit sunzilog_init_kbdms(struct uart_sunzilog_port *up)
 }
 
 #ifdef CONFIG_SERIO
+<<<<<<< HEAD
 static void __devinit sunzilog_register_serio(struct uart_sunzilog_port *up)
+=======
+static void sunzilog_register_serio(struct uart_sunzilog_port *up)
+>>>>>>> refs/remotes/origin/master
 {
 	struct serio *serio = &up->serio;
 
@@ -1339,7 +1427,11 @@ static void __devinit sunzilog_register_serio(struct uart_sunzilog_port *up)
 }
 #endif
 
+<<<<<<< HEAD
 static void __devinit sunzilog_init_hw(struct uart_sunzilog_port *up)
+=======
+static void sunzilog_init_hw(struct uart_sunzilog_port *up)
+>>>>>>> refs/remotes/origin/master
 {
 	struct zilog_channel __iomem *channel;
 	unsigned long flags;
@@ -1407,12 +1499,18 @@ static void __devinit sunzilog_init_hw(struct uart_sunzilog_port *up)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int zilog_irq = -1;
 =======
 static int zilog_irq;
 >>>>>>> refs/remotes/origin/cm-10.0
 
 static int __devinit zs_probe(struct platform_device *op)
+=======
+static int zilog_irq;
+
+static int zs_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	static int kbm_inst, uart_inst;
 	int inst;
@@ -1439,10 +1537,14 @@ static int __devinit zs_probe(struct platform_device *op)
 	rp = sunzilog_chip_regs[inst];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (zilog_irq == -1)
 =======
 	if (!zilog_irq)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!zilog_irq)
+>>>>>>> refs/remotes/origin/master
 		zilog_irq = op->archdata.irqs[0];
 
 	up = &sunzilog_port_table[inst * 2];
@@ -1518,12 +1620,20 @@ static int __devinit zs_probe(struct platform_device *op)
 		kbm_inst++;
 	}
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, &up[0]);
+=======
+	platform_set_drvdata(op, &up[0]);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit zs_remove_one(struct uart_sunzilog_port *up)
+=======
+static void zs_remove_one(struct uart_sunzilog_port *up)
+>>>>>>> refs/remotes/origin/master
 {
 	if (ZS_IS_KEYB(up) || ZS_IS_MOUSE(up)) {
 #ifdef CONFIG_SERIO
@@ -1533,9 +1643,15 @@ static void __devexit zs_remove_one(struct uart_sunzilog_port *up)
 		uart_remove_one_port(&sunzilog_reg, &up->port);
 }
 
+<<<<<<< HEAD
 static int __devexit zs_remove(struct platform_device *op)
 {
 	struct uart_sunzilog_port *up = dev_get_drvdata(&op->dev);
+=======
+static int zs_remove(struct platform_device *op)
+{
+	struct uart_sunzilog_port *up = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 	struct zilog_layout __iomem *regs;
 
 	zs_remove_one(&up[0]);
@@ -1544,8 +1660,11 @@ static int __devexit zs_remove(struct platform_device *op)
 	regs = sunzilog_chip_regs[up[0].port.line / 2];
 	of_iounmap(&op->resource[0], regs, sizeof(struct zilog_layout));
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1564,7 +1683,11 @@ static struct platform_driver zs_driver = {
 		.of_match_table = zs_match,
 	},
 	.probe		= zs_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(zs_remove),
+=======
+	.remove		= zs_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init sunzilog_init(void)
@@ -1598,10 +1721,14 @@ static int __init sunzilog_init(void)
 		goto out_unregister_uart;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (zilog_irq != -1) {
 =======
 	if (zilog_irq) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (zilog_irq) {
+>>>>>>> refs/remotes/origin/master
 		struct uart_sunzilog_port *up = sunzilog_irq_chain;
 		err = request_irq(zilog_irq, sunzilog_interrupt, IRQF_SHARED,
 				  "zs", sunzilog_irq_chain);
@@ -1643,10 +1770,14 @@ static void __exit sunzilog_exit(void)
 	platform_driver_unregister(&zs_driver);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (zilog_irq != -1) {
 =======
 	if (zilog_irq) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (zilog_irq) {
+>>>>>>> refs/remotes/origin/master
 		struct uart_sunzilog_port *up = sunzilog_irq_chain;
 
 		/* Disable Interrupts */
@@ -1663,10 +1794,14 @@ static void __exit sunzilog_exit(void)
 
 		free_irq(zilog_irq, sunzilog_irq_chain);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		zilog_irq = -1;
 =======
 		zilog_irq = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		zilog_irq = 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (sunzilog_reg.nr) {

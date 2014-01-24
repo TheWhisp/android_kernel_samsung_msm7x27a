@@ -19,6 +19,7 @@
 
 /* Access user memory, but use MMU to avoid propagating kernel exceptions. */
 
+<<<<<<< HEAD
 	.pushsection .fixup,"ax"
 
 get_user_fault:
@@ -68,6 +69,8 @@ __put_user_N(2, st2)
 __put_user_N(4, st4)
 __put_user_N(8, st)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * strnlen_user_asm takes the pointer in r0, and the length bound in r1.
  * It returns the length, including the terminating NUL, or zero on exception.
@@ -85,6 +88,10 @@ strnlen_user_fault:
 	{ move r0, zero; jrp lr }
 	ENDPROC(strnlen_user_fault)
 	.section __ex_table,"a"
+<<<<<<< HEAD
+=======
+	.align 8
+>>>>>>> refs/remotes/origin/master
 	.quad 1b, strnlen_user_fault
 	.popsection
 
@@ -96,18 +103,32 @@ strnlen_user_fault:
  */
 STD_ENTRY(strncpy_from_user_asm)
 	{ beqz r2, 2f; move r3, r0 }
+<<<<<<< HEAD
 1:      { ld1u r4, r1; addi r1, r1, 1; addi r2, r2, -1 }
 	{ st1 r0, r4; addi r0, r0, 1 }
 	beqz r2, 2f
 	bnezt r4, 1b
 	addi r0, r0, -1   /* don't count the trailing NUL */
 2:      { sub r0, r0, r3; jrp lr }
+=======
+1:	{ ld1u r4, r1; addi r1, r1, 1; addi r2, r2, -1 }
+	{ st1 r0, r4; addi r0, r0, 1 }
+	beqz r4, 2f
+	bnezt r2, 1b
+	{ sub r0, r0, r3; jrp lr }
+2:	addi r0, r0, -1   /* don't count the trailing NUL */
+	{ sub r0, r0, r3; jrp lr }
+>>>>>>> refs/remotes/origin/master
 	STD_ENDPROC(strncpy_from_user_asm)
 	.pushsection .fixup,"ax"
 strncpy_from_user_fault:
 	{ movei r0, -EFAULT; jrp lr }
 	ENDPROC(strncpy_from_user_fault)
 	.section __ex_table,"a"
+<<<<<<< HEAD
+=======
+	.align 8
+>>>>>>> refs/remotes/origin/master
 	.quad 1b, strncpy_from_user_fault
 	.popsection
 
@@ -126,6 +147,10 @@ STD_ENTRY(clear_user_asm)
 	bnezt r1, 1b
 2:      { move r0, r1; jrp lr }
 	.pushsection __ex_table,"a"
+<<<<<<< HEAD
+=======
+	.align 8
+>>>>>>> refs/remotes/origin/master
 	.quad 1b, 2b
 	.popsection
 
@@ -135,6 +160,10 @@ STD_ENTRY(clear_user_asm)
 2:      { move r0, r1; jrp lr }
 	STD_ENDPROC(clear_user_asm)
 	.pushsection __ex_table,"a"
+<<<<<<< HEAD
+=======
+	.align 8
+>>>>>>> refs/remotes/origin/master
 	.quad 1b, 2b
 	.popsection
 
@@ -154,6 +183,7 @@ STD_ENTRY(flush_user_asm)
 2:      { move r0, r1; jrp lr }
 	STD_ENDPROC(flush_user_asm)
 	.pushsection __ex_table,"a"
+<<<<<<< HEAD
 	.quad 1b, 2b
 	.popsection
 
@@ -173,6 +203,9 @@ STD_ENTRY(inv_user_asm)
 2:      { move r0, r1; jrp lr }
 	STD_ENDPROC(inv_user_asm)
 	.pushsection __ex_table,"a"
+=======
+	.align 8
+>>>>>>> refs/remotes/origin/master
 	.quad 1b, 2b
 	.popsection
 
@@ -192,5 +225,9 @@ STD_ENTRY(finv_user_asm)
 2:      { move r0, r1; jrp lr }
 	STD_ENDPROC(finv_user_asm)
 	.pushsection __ex_table,"a"
+<<<<<<< HEAD
+=======
+	.align 8
+>>>>>>> refs/remotes/origin/master
 	.quad 1b, 2b
 	.popsection

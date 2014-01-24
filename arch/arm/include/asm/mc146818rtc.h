@@ -6,12 +6,18 @@
 
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/irqs.h>
 =======
 #include <linux/kernel.h>
 
 #define RTC_IRQ BUILD_BUG_ON(1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kernel.h>
+
+#define RTC_IRQ BUILD_BUG_ON(1)
+>>>>>>> refs/remotes/origin/master
 
 #ifndef RTC_PORT
 #define RTC_PORT(x)	(0x70 + (x))

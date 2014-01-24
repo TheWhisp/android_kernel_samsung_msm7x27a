@@ -22,7 +22,11 @@
 #include <linux/slab.h>
 #include <linux/genalloc.h>
 
+<<<<<<< HEAD
 #include <mach/sram.h>
+=======
+#include <linux/platform_data/dma-mmp_tdma.h>
+>>>>>>> refs/remotes/origin/master
 
 struct sram_bank_info {
 	char *pool_name;
@@ -61,14 +65,22 @@ struct gen_pool *sram_get_gpool(char *pool_name)
 }
 EXPORT_SYMBOL(sram_get_gpool);
 
+<<<<<<< HEAD
 static int __devinit sram_probe(struct platform_device *pdev)
+=======
+static int sram_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sram_platdata *pdata = pdev->dev.platform_data;
 	struct sram_bank_info *info;
 	struct resource *res;
 	int ret = 0;
 
+<<<<<<< HEAD
 	if (!pdata && !pdata->pool_name)
+=======
+	if (!pdata || !pdata->pool_name)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	info = kzalloc(sizeof(*info), GFP_KERNEL);
@@ -125,7 +137,11 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit sram_remove(struct platform_device *pdev)
+=======
+static int sram_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sram_bank_info *info;
 

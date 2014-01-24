@@ -23,7 +23,11 @@
 #include <linux/rmap.h>
 #include <linux/pagemap.h>
 
+<<<<<<< HEAD
 struct page *fb_deferred_io_page(struct fb_info *info, unsigned long offs)
+=======
+static struct page *fb_deferred_io_page(struct fb_info *info, unsigned long offs)
+>>>>>>> refs/remotes/origin/master
 {
 	void *screen_base = (void __force *) info->screen_base;
 	struct page *page;
@@ -67,6 +71,7 @@ static int fb_deferred_io_fault(struct vm_area_struct *vma,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int fb_deferred_io_fsync(struct file *file, int datasync)
 {
 	struct fb_info *info = file->private_data;
@@ -79,19 +84,33 @@ int fb_deferred_io_fsync(struct file *file, loff_t start, loff_t end, int datasy
 	if (err)
 		return err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int fb_deferred_io_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+{
+	struct fb_info *info = file->private_data;
+	struct inode *inode = file_inode(file);
+	int err = filemap_write_and_wait_range(inode->i_mapping, start, end);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	/* Skip if deferred io is compiled-in but disabled on this fbdev */
 	if (!info->fbdefio)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_lock(&inode->i_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/master
 	/* Kill off the delayed work */
 	cancel_delayed_work_sync(&info->deferred_work);
 
 	/* Run it immediately */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return schedule_delayed_work(&info->deferred_work, 0);
 =======
@@ -99,6 +118,11 @@ int fb_deferred_io_fsync(struct file *file, loff_t start, loff_t end, int datasy
 	mutex_unlock(&inode->i_mutex);
 	return err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = schedule_delayed_work(&info->deferred_work, 0);
+	mutex_unlock(&inode->i_mutex);
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(fb_deferred_io_fsync);
 
@@ -117,9 +141,21 @@ static int fb_deferred_io_mkwrite(struct vm_area_struct *vma,
 	deferred framebuffer IO. then if userspace touches a page
 	again, we repeat the same scheme */
 
+<<<<<<< HEAD
 	/* protect against the workqueue changing the page list */
 	mutex_lock(&fbdefio->lock);
 
+=======
+	file_update_time(vma->vm_file);
+
+	/* protect against the workqueue changing the page list */
+	mutex_lock(&fbdefio->lock);
+
+	/* first write in this cycle, notify the driver */
+	if (fbdefio->first_io && list_empty(&fbdefio->pagelist))
+		fbdefio->first_io(info);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We want the page to remain locked from ->page_mkwrite until
 	 * the PTE is marked dirty to avoid page_mkclean() being called
@@ -173,7 +209,11 @@ static const struct address_space_operations fb_deferred_io_aops = {
 static int fb_deferred_io_mmap(struct fb_info *info, struct vm_area_struct *vma)
 {
 	vma->vm_ops = &fb_deferred_io_vm_ops;
+<<<<<<< HEAD
 	vma->vm_flags |= ( VM_RESERVED | VM_DONTEXPAND );
+=======
+	vma->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
+>>>>>>> refs/remotes/origin/master
 	if (!(info->flags & FBINFO_VIRTFB))
 		vma->vm_flags |= VM_IO;
 	vma->vm_private_data = info;
@@ -237,11 +277,15 @@ void fb_deferred_io_cleanup(struct fb_info *info)
 
 	BUG_ON(!fbdefio);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cancel_delayed_work(&info->deferred_work);
 	flush_scheduled_work();
 =======
 	cancel_delayed_work_sync(&info->deferred_work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cancel_delayed_work_sync(&info->deferred_work);
+>>>>>>> refs/remotes/origin/master
 
 	/* clear out the mapping that we setup */
 	for (i = 0 ; i < info->fix.smem_len; i += PAGE_SIZE) {

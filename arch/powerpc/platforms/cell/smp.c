@@ -16,9 +16,12 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/smp.h>
 #include <linux/interrupt.h>
@@ -28,18 +31,24 @@
 #include <linux/cache.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 #include <linux/cpu.h>
 
 #include <asm/ptrace.h>
 #include <asm/atomic.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/cpu.h>
 
 #include <asm/ptrace.h>
 #include <linux/atomic.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 #include <asm/page.h>
 #include <asm/pgtable.h>
@@ -51,9 +60,12 @@
 #include <asm/cputable.h>
 #include <asm/firmware.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/rtas.h>
 #include <asm/cputhreads.h>
 
@@ -83,7 +95,11 @@ static cpumask_t of_spin_map;
  *	0	- failure
  *	1	- success
  */
+<<<<<<< HEAD
 static inline int __devinit smp_startup_cpu(unsigned int lcpu)
+=======
+static inline int smp_startup_cpu(unsigned int lcpu)
+>>>>>>> refs/remotes/origin/master
 {
 	int status;
 	unsigned long start_here = __pa((u32)*((unsigned long *)
@@ -124,7 +140,11 @@ static int __init smp_iic_probe(void)
 	return cpumask_weight(cpu_possible_mask);
 }
 
+<<<<<<< HEAD
 static void __devinit smp_cell_setup_cpu(int cpu)
+=======
+static void smp_cell_setup_cpu(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	if (cpu != boot_cpuid)
 		iic_setup_cpu();
@@ -135,7 +155,11 @@ static void __devinit smp_cell_setup_cpu(int cpu)
 	mtspr(SPRN_DABRX, DABRX_KERNEL | DABRX_USER);
 }
 
+<<<<<<< HEAD
 static int __devinit smp_cell_kick_cpu(int nr)
+=======
+static int smp_cell_kick_cpu(int nr)
+>>>>>>> refs/remotes/origin/master
 {
 	BUG_ON(nr < 0 || nr >= NR_CPUS);
 
@@ -152,6 +176,7 @@ static int __devinit smp_cell_kick_cpu(int nr)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int smp_cell_cpu_bootable(unsigned int nr)
 {
 	/* Special case - we inhibit secondary thread startup
@@ -165,12 +190,18 @@ static int smp_cell_cpu_bootable(unsigned int nr)
 
 	return 1;
 }
+=======
+>>>>>>> refs/remotes/origin/master
 static struct smp_ops_t bpa_iic_smp_ops = {
 	.message_pass	= iic_message_pass,
 	.probe		= smp_iic_probe,
 	.kick_cpu	= smp_cell_kick_cpu,
 	.setup_cpu	= smp_cell_setup_cpu,
+<<<<<<< HEAD
 	.cpu_bootable	= smp_cell_cpu_bootable,
+=======
+	.cpu_bootable	= smp_generic_cpu_bootable,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* This is called very early */

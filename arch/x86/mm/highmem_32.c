@@ -1,6 +1,10 @@
 #include <linux/highmem.h>
 #include <linux/module.h>
 #include <linux/swap.h> /* for totalram_pages */
+<<<<<<< HEAD
+=======
+#include <linux/bootmem.h>
+>>>>>>> refs/remotes/origin/master
 
 void *kmap(struct page *page)
 {
@@ -52,18 +56,24 @@ void *kmap_atomic_prot(struct page *page, pgprot_t prot)
 EXPORT_SYMBOL(kmap_atomic_prot);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void *__kmap_atomic(struct page *page)
 {
 	return kmap_atomic_prot(page, kmap_prot);
 }
 EXPORT_SYMBOL(__kmap_atomic);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void *kmap_atomic(struct page *page)
 {
 	return kmap_atomic_prot(page, kmap_prot);
 }
 EXPORT_SYMBOL(kmap_atomic);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is the same as kmap_atomic() but can map memory that doesn't
@@ -129,6 +139,14 @@ void __init set_highmem_pages_init(void)
 	struct zone *zone;
 	int nid;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Explicitly reset zone->managed_pages because set_highmem_pages_init()
+	 * is invoked before free_all_bootmem()
+	 */
+	reset_all_zones_managed_pages();
+>>>>>>> refs/remotes/origin/master
 	for_each_zone(zone) {
 		unsigned long zone_start_pfn, zone_end_pfn;
 
@@ -145,5 +163,8 @@ void __init set_highmem_pages_init(void)
 		add_highpages_with_active_regions(nid, zone_start_pfn,
 				 zone_end_pfn);
 	}
+<<<<<<< HEAD
 	totalram_pages += totalhigh_pages;
+=======
+>>>>>>> refs/remotes/origin/master
 }

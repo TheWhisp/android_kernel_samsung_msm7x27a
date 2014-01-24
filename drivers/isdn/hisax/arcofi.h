@@ -10,10 +10,14 @@
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
  
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 #define ARCOFI_USE	1
 
 /* states */

@@ -342,16 +342,23 @@ static int dlm_find_mle(struct dlm_ctxt *dlm,
 {
 	struct dlm_master_list_entry *tmpmle;
 	struct hlist_head *bucket;
+<<<<<<< HEAD
 	struct hlist_node *list;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int hash;
 
 	assert_spin_locked(&dlm->master_lock);
 
 	hash = dlm_lockid_hash(name, namelen);
 	bucket = dlm_master_hash(dlm, hash);
+<<<<<<< HEAD
 	hlist_for_each(list, bucket) {
 		tmpmle = hlist_entry(list, struct dlm_master_list_entry,
 				     master_hash_node);
+=======
+	hlist_for_each_entry(tmpmle, bucket, master_hash_node) {
+>>>>>>> refs/remotes/origin/master
 		if (!dlm_mle_equal(dlm, tmpmle, name, namelen))
 			continue;
 		dlm_get_mle(tmpmle);
@@ -632,6 +639,7 @@ error:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __dlm_lockres_grab_inflight_ref(struct dlm_ctxt *dlm,
 				   struct dlm_lock_resource *res,
 				   int new_lockres,
@@ -656,6 +664,8 @@ void __dlm_lockres_drop_inflight_ref(struct dlm_ctxt *dlm,
 				   const char *file,
 				   int line)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void dlm_lockres_set_refmap_bit(struct dlm_ctxt *dlm,
 				struct dlm_lock_resource *res, int bit)
 {
@@ -693,11 +703,15 @@ void dlm_lockres_grab_inflight_ref(struct dlm_ctxt *dlm,
 
 void dlm_lockres_drop_inflight_ref(struct dlm_ctxt *dlm,
 				   struct dlm_lock_resource *res)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	assert_spin_locked(&res->spinlock);
 
 	BUG_ON(res->inflight_locks == 0);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	res->inflight_locks--;
 	mlog(0, "%s:%.*s: inflight--: now %u\n",
@@ -706,6 +720,8 @@ void dlm_lockres_drop_inflight_ref(struct dlm_ctxt *dlm,
 	if (res->inflight_locks == 0)
 		dlm_lockres_clear_refmap_bit(dlm->node_num, res);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	res->inflight_locks--;
 
@@ -713,7 +729,10 @@ void dlm_lockres_drop_inflight_ref(struct dlm_ctxt *dlm,
 	     res->lockname.len, res->lockname.name, res->inflight_locks,
 	     __builtin_return_address(0));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	wake_up(&res->wq);
 }
 
@@ -748,9 +767,12 @@ struct dlm_lock_resource * dlm_get_lock_resource(struct dlm_ctxt *dlm,
 	int tries = 0;
 	int bit, wait_on_recovery = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int drop_inflight_if_nonlocal = 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(!lockid);
 
@@ -762,6 +784,7 @@ lookup:
 	spin_lock(&dlm->spinlock);
 	tmpres = __dlm_lookup_lockres_full(dlm, lockid, namelen, hash);
 	if (tmpres) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		int dropping_ref = 0;
 
@@ -787,6 +810,8 @@ lookup:
 			spin_lock(&tmpres->spinlock);
 			__dlm_wait_on_lockres_flags(tmpres, DLM_LOCK_RES_DROPPING_REF);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&dlm->spinlock);
 		spin_lock(&tmpres->spinlock);
 		/* Wait on the thread that is mastering the resource */
@@ -804,7 +829,10 @@ lookup:
 			BUG_ON(tmpres->owner == dlm->node_num);
 			__dlm_wait_on_lockres_flags(tmpres,
 						    DLM_LOCK_RES_DROPPING_REF);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			spin_unlock(&tmpres->spinlock);
 			dlm_lockres_put(tmpres);
 			tmpres = NULL;
@@ -812,13 +840,19 @@ lookup:
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mlog(0, "found in hash!\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Grab inflight ref to pin the resource */
 		dlm_lockres_grab_inflight_ref(dlm, tmpres);
 
 		spin_unlock(&tmpres->spinlock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (res)
 			dlm_lockres_put(res);
 		res = tmpres;
@@ -910,12 +944,17 @@ lookup:
 		bit = find_next_bit(dlm->recovery_map, O2NM_MAX_NODES, 0);
 		if (bit < O2NM_MAX_NODES) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mlog(ML_NOTICE, "%s:%.*s: at least one node (%d) to "
 			     "recover before lock mastery can begin\n",
 =======
 			mlog(0, "%s: res %.*s, At least one node (%d) "
 			     "to recover before lock mastery can begin\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mlog(0, "%s: res %.*s, At least one node (%d) "
+			     "to recover before lock mastery can begin\n",
+>>>>>>> refs/remotes/origin/master
 			     dlm->name, namelen, (char *)lockid, bit);
 			wait_on_recovery = 1;
 		}
@@ -929,6 +968,7 @@ lookup:
 	/* finally add the lockres to its hash bucket */
 	__dlm_insert_lockres(dlm, res);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* since this lockres is new it doesn't not require the spinlock */
 	dlm_lockres_grab_inflight_ref_new(dlm, res);
 
@@ -936,12 +976,17 @@ lookup:
 	 * this inflight reference below */
 	drop_inflight_if_nonlocal = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Grab inflight ref to pin the resource */
 	spin_lock(&res->spinlock);
 	dlm_lockres_grab_inflight_ref(dlm, res);
 	spin_unlock(&res->spinlock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* get an extra ref on the mle in case this is a BLOCK
 	 * if so, the creator of the BLOCK may try to put the last
@@ -958,12 +1003,17 @@ redo_request:
 		 * so we only need to clear out the recovery map once. */
 		if (dlm_is_recovery_lock(lockid, namelen)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mlog(ML_NOTICE, "%s: recovery map is not empty, but "
 			     "must master $RECOVERY lock now\n", dlm->name);
 =======
 			mlog(0, "%s: Recovery map is not empty, but must "
 			     "master $RECOVERY lock now\n", dlm->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mlog(0, "%s: Recovery map is not empty, but must "
+			     "master $RECOVERY lock now\n", dlm->name);
+>>>>>>> refs/remotes/origin/master
 			if (!dlm_pre_master_reco_lockres(dlm, res))
 				wait_on_recovery = 0;
 			else {
@@ -982,12 +1032,17 @@ redo_request:
 		bit = find_next_bit(dlm->recovery_map, O2NM_MAX_NODES, 0);
 		if (bit < O2NM_MAX_NODES) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mlog(ML_NOTICE, "%s:%.*s: at least one node (%d) to "
 			     "recover before lock mastery can begin\n",
 =======
 			mlog(0, "%s: res %.*s, At least one node (%d) "
 			     "to recover before lock mastery can begin\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mlog(0, "%s: res %.*s, At least one node (%d) "
+			     "to recover before lock mastery can begin\n",
+>>>>>>> refs/remotes/origin/master
 			     dlm->name, namelen, (char *)lockid, bit);
 			wait_on_recovery = 1;
 		} else
@@ -1017,12 +1072,17 @@ redo_request:
 			 * master will know that asserts are needed back to
 			 * the lower nodes. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mlog(0, "%s:%.*s: requests only up to %u but master "
 			     "is %u, keep going\n", dlm->name, namelen,
 =======
 			mlog(0, "%s: res %.*s, Requests only up to %u but "
 			     "master is %u, keep going\n", dlm->name, namelen,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mlog(0, "%s: res %.*s, Requests only up to %u but "
+			     "master is %u, keep going\n", dlm->name, namelen,
+>>>>>>> refs/remotes/origin/master
 			     lockid, nodenum, mle->master);
 		}
 	}
@@ -1033,6 +1093,7 @@ wait:
 	if (ret < 0) {
 		wait_on_recovery = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mlog(0, "%s:%.*s: node map changed, redo the "
 		     "master request now, blocked=%d\n",
 		     dlm->name, res->lockname.len,
@@ -1041,13 +1102,18 @@ wait:
 			mlog(ML_ERROR, "%s:%.*s: spinning on "
 			     "dlm_wait_for_lock_mastery, blocked=%d\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		mlog(0, "%s: res %.*s, Node map changed, redo the master "
 		     "request now, blocked=%d\n", dlm->name, res->lockname.len,
 		     res->lockname.name, blocked);
 		if (++tries > 20) {
 			mlog(ML_ERROR, "%s: res %.*s, Spinning on "
 			     "dlm_wait_for_lock_mastery, blocked = %d\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			     dlm->name, res->lockname.len,
 			     res->lockname.name, blocked);
 			dlm_print_one_lock_resource(res);
@@ -1058,11 +1124,16 @@ wait:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mlog(0, "lockres mastered by %u\n", res->owner);
 =======
 	mlog(0, "%s: res %.*s, Mastered by %u\n", dlm->name, res->lockname.len,
 	     res->lockname.name, res->owner);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mlog(0, "%s: res %.*s, Mastered by %u\n", dlm->name, res->lockname.len,
+	     res->lockname.name, res->owner);
+>>>>>>> refs/remotes/origin/master
 	/* make sure we never continue without this */
 	BUG_ON(res->owner == O2NM_MAX_NODES);
 
@@ -1075,10 +1146,13 @@ wait:
 wake_waiters:
 	spin_lock(&res->spinlock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (res->owner != dlm->node_num && drop_inflight_if_nonlocal)
 		dlm_lockres_drop_inflight_ref(dlm, res);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	res->state &= ~DLM_LOCK_RES_IN_PROGRESS;
 	spin_unlock(&res->spinlock);
 	wake_up(&res->wq);
@@ -1552,12 +1626,16 @@ way_up_top:
 
 		if (res->owner == dlm->node_num) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mlog(0, "%s:%.*s: setting bit %u in refmap\n",
 			     dlm->name, namelen, name, request->node_idx);
 			dlm_lockres_set_refmap_bit(request->node_idx, res);
 =======
 			dlm_lockres_set_refmap_bit(dlm, res, request->node_idx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dlm_lockres_set_refmap_bit(dlm, res, request->node_idx);
+>>>>>>> refs/remotes/origin/master
 			spin_unlock(&res->spinlock);
 			response = DLM_MASTER_RESP_YES;
 			if (mle)
@@ -1623,6 +1701,7 @@ way_up_top:
 				 * other nodes */
 				dispatch_assert = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				dlm_lockres_set_refmap_bit(request->node_idx, res);
 				mlog(0, "%s:%.*s: setting bit %u in refmap\n",
 				     dlm->name, namelen, name,
@@ -1631,6 +1710,10 @@ way_up_top:
 				dlm_lockres_set_refmap_bit(dlm, res,
 							   request->node_idx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				dlm_lockres_set_refmap_bit(dlm, res,
+							   request->node_idx);
+>>>>>>> refs/remotes/origin/master
 			} else
 				response = DLM_MASTER_RESP_NO;
 		} else {
@@ -1837,10 +1920,14 @@ again:
 			     namelen, lockname, to);
 			spin_lock(&res->spinlock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dlm_lockres_set_refmap_bit(to, res);
 =======
 			dlm_lockres_set_refmap_bit(dlm, res, to);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dlm_lockres_set_refmap_bit(dlm, res, to);
+>>>>>>> refs/remotes/origin/master
 			spin_unlock(&res->spinlock);
 		}
 	}
@@ -2022,8 +2109,15 @@ ok:
 			 * up nodes that this node contacted */
 			while ((nn = find_next_bit (mle->response_map, O2NM_MAX_NODES,
 						    nn+1)) < O2NM_MAX_NODES) {
+<<<<<<< HEAD
 				if (nn != dlm->node_num && nn != assert->node_idx)
 					master_request = 1;
+=======
+				if (nn != dlm->node_num && nn != assert->node_idx) {
+					master_request = 1;
+					break;
+				}
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		mle->master = assert->node_idx;
@@ -2154,7 +2248,11 @@ int dlm_dispatch_assert_master(struct dlm_ctxt *dlm,
 			       int ignore_higher, u8 request_from, u32 flags)
 {
 	struct dlm_work_item *item;
+<<<<<<< HEAD
 	item = kzalloc(sizeof(*item), GFP_NOFS);
+=======
+	item = kzalloc(sizeof(*item), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 	if (!item)
 		return -ENOMEM;
 
@@ -2326,10 +2424,13 @@ int dlm_drop_lockres_ref(struct dlm_ctxt *dlm, struct dlm_lock_resource *res)
 	BUG_ON(namelen > O2NM_MAX_NAME_LEN);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mlog(0, "%s:%.*s: sending deref to %d\n",
 	     dlm->name, namelen, lockname, res->owner);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(&deref, 0, sizeof(deref));
 	deref.node_idx = dlm->node_num;
 	deref.namelen = namelen;
@@ -2338,6 +2439,7 @@ int dlm_drop_lockres_ref(struct dlm_ctxt *dlm, struct dlm_lock_resource *res)
 	ret = o2net_send_message(DLM_DEREF_LOCKRES_MSG, dlm->key,
 				 &deref, sizeof(deref), res->owner, &r);
 	if (ret < 0)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		mlog(ML_ERROR, "Error %d when sending message %u (key 0x%x) to "
 		     "node %u\n", ret, DLM_DEREF_LOCKRES_MSG, dlm->key,
@@ -2348,13 +2450,18 @@ int dlm_drop_lockres_ref(struct dlm_ctxt *dlm, struct dlm_lock_resource *res)
 		    "(master=%u) got %d.\n", dlm->name, namelen,
 		    lockname, res->owner, r);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		mlog(ML_ERROR, "%s: res %.*s, error %d send DEREF to node %u\n",
 		     dlm->name, namelen, lockname, ret, res->owner);
 	else if (r < 0) {
 		/* BAD.  other node says I did not have a ref. */
 		mlog(ML_ERROR, "%s: res %.*s, DEREF to node %u got %d\n",
 		     dlm->name, namelen, lockname, res->owner, r);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dlm_print_one_lock_resource(res);
 		BUG();
 	}
@@ -2411,10 +2518,14 @@ int dlm_deref_lockres_handler(struct o2net_msg *msg, u32 len, void *data,
 		BUG_ON(res->state & DLM_LOCK_RES_DROPPING_REF);
 		if (test_bit(node, res->refmap)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dlm_lockres_clear_refmap_bit(node, res);
 =======
 			dlm_lockres_clear_refmap_bit(dlm, res, node);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dlm_lockres_clear_refmap_bit(dlm, res, node);
+>>>>>>> refs/remotes/origin/master
 			cleared = 1;
 		}
 	}
@@ -2475,10 +2586,14 @@ static void dlm_deref_lockres_worker(struct dlm_work_item *item, void *data)
 	if (test_bit(node, res->refmap)) {
 		__dlm_wait_on_lockres_flags(res, DLM_LOCK_RES_SETREF_INPROG);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dlm_lockres_clear_refmap_bit(node, res);
 =======
 		dlm_lockres_clear_refmap_bit(dlm, res, node);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dlm_lockres_clear_refmap_bit(dlm, res, node);
+>>>>>>> refs/remotes/origin/master
 		cleared = 1;
 	}
 	spin_unlock(&res->spinlock);
@@ -2515,6 +2630,13 @@ static int dlm_is_lockres_migrateable(struct dlm_ctxt *dlm,
 
 	assert_spin_locked(&res->spinlock);
 
+<<<<<<< HEAD
+=======
+	/* delay migration when the lockres is in MIGRATING state */
+	if (res->state & DLM_LOCK_RES_MIGRATING)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (res->owner != dlm->node_num)
 		return 0;
 
@@ -2961,11 +3083,16 @@ static void dlm_remove_nonlocal_locks(struct dlm_ctxt *dlm,
 				BUG_ON(lock->ast_pending);
 				BUG_ON(lock->bast_pending);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				dlm_lockres_clear_refmap_bit(lock->ml.node, res);
 =======
 				dlm_lockres_clear_refmap_bit(dlm, res,
 							     lock->ml.node);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				dlm_lockres_clear_refmap_bit(dlm, res,
+							     lock->ml.node);
+>>>>>>> refs/remotes/origin/master
 				list_del_init(&lock->list);
 				dlm_lock_put(lock);
 				/* In a normal unlock, we would have added a
@@ -2987,10 +3114,14 @@ static void dlm_remove_nonlocal_locks(struct dlm_ctxt *dlm,
 			     "migrating lockres, clearing\n", dlm->name,
 			     res->lockname.len, res->lockname.name, bit);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dlm_lockres_clear_refmap_bit(bit, res);
 =======
 			dlm_lockres_clear_refmap_bit(dlm, res, bit);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dlm_lockres_clear_refmap_bit(dlm, res, bit);
+>>>>>>> refs/remotes/origin/master
 		}
 		bit++;
 	}
@@ -3084,6 +3215,7 @@ static int dlm_do_migrate_request(struct dlm_ctxt *dlm,
 					 &status);
 		if (ret < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mlog(ML_ERROR, "Error %d when sending message %u (key "
 			     "0x%x) to node %u\n", ret, DLM_MIGRATE_REQUEST_MSG,
 			     dlm->key, nodenum);
@@ -3092,6 +3224,11 @@ static int dlm_do_migrate_request(struct dlm_ctxt *dlm,
 			     "MIGRATE_REQUEST to node %u\n", dlm->name,
 			     migrate.namelen, migrate.name, ret, nodenum);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mlog(ML_ERROR, "%s: res %.*s, Error %d send "
+			     "MIGRATE_REQUEST to node %u\n", dlm->name,
+			     migrate.namelen, migrate.name, ret, nodenum);
+>>>>>>> refs/remotes/origin/master
 			if (!dlm_is_host_down(ret)) {
 				mlog(ML_ERROR, "unhandled error=%d!\n", ret);
 				BUG();
@@ -3111,10 +3248,14 @@ static int dlm_do_migrate_request(struct dlm_ctxt *dlm,
 			     nodenum);
 			spin_lock(&res->spinlock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dlm_lockres_set_refmap_bit(nodenum, res);
 =======
 			dlm_lockres_set_refmap_bit(dlm, res, nodenum);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dlm_lockres_set_refmap_bit(dlm, res, nodenum);
+>>>>>>> refs/remotes/origin/master
 			spin_unlock(&res->spinlock);
 		}
 	}
@@ -3359,7 +3500,11 @@ void dlm_clean_master_list(struct dlm_ctxt *dlm, u8 dead_node)
 	struct dlm_master_list_entry *mle;
 	struct dlm_lock_resource *res;
 	struct hlist_head *bucket;
+<<<<<<< HEAD
 	struct hlist_node *list;
+=======
+	struct hlist_node *tmp;
+>>>>>>> refs/remotes/origin/master
 	unsigned int i;
 
 	mlog(0, "dlm=%s, dead node=%u\n", dlm->name, dead_node);
@@ -3370,10 +3515,14 @@ top:
 	spin_lock(&dlm->master_lock);
 	for (i = 0; i < DLM_HASH_BUCKETS; i++) {
 		bucket = dlm_master_hash(dlm, i);
+<<<<<<< HEAD
 		hlist_for_each(list, bucket) {
 			mle = hlist_entry(list, struct dlm_master_list_entry,
 					  master_hash_node);
 
+=======
+		hlist_for_each_entry_safe(mle, tmp, bucket, master_hash_node) {
+>>>>>>> refs/remotes/origin/master
 			BUG_ON(mle->type != DLM_MLE_BLOCK &&
 			       mle->type != DLM_MLE_MASTER &&
 			       mle->type != DLM_MLE_MIGRATION);
@@ -3449,10 +3598,14 @@ int dlm_finish_migration(struct dlm_ctxt *dlm, struct dlm_lock_resource *res,
 	 * a reference after the migration completes */
 	spin_lock(&res->spinlock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dlm_lockres_set_refmap_bit(old_master, res);
 =======
 	dlm_lockres_set_refmap_bit(dlm, res, old_master);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dlm_lockres_set_refmap_bit(dlm, res, old_master);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&res->spinlock);
 
 	mlog(0, "now time to do a migrate request to other nodes\n");
@@ -3558,7 +3711,11 @@ void dlm_force_free_mles(struct dlm_ctxt *dlm)
 	int i;
 	struct hlist_head *bucket;
 	struct dlm_master_list_entry *mle;
+<<<<<<< HEAD
 	struct hlist_node *tmp, *list;
+=======
+	struct hlist_node *tmp;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We notified all other nodes that we are exiting the domain and
@@ -3574,9 +3731,13 @@ void dlm_force_free_mles(struct dlm_ctxt *dlm)
 
 	for (i = 0; i < DLM_HASH_BUCKETS; i++) {
 		bucket = dlm_master_hash(dlm, i);
+<<<<<<< HEAD
 		hlist_for_each_safe(list, tmp, bucket) {
 			mle = hlist_entry(list, struct dlm_master_list_entry,
 					  master_hash_node);
+=======
+		hlist_for_each_entry_safe(mle, tmp, bucket, master_hash_node) {
+>>>>>>> refs/remotes/origin/master
 			if (mle->type != DLM_MLE_BLOCK) {
 				mlog(ML_ERROR, "bad mle: %p\n", mle);
 				dlm_print_one_mle(mle);

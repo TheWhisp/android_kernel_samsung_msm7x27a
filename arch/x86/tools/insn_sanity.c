@@ -55,7 +55,11 @@ static FILE		*input_file;	/* Input file name */
 static void usage(const char *err)
 {
 	if (err)
+<<<<<<< HEAD
 		fprintf(stderr, "Error: %s\n\n", err);
+=======
+		fprintf(stderr, "%s: Error: %s\n\n", prog, err);
+>>>>>>> refs/remotes/origin/master
 	fprintf(stderr, "Usage: %s [-y|-n|-v] [-s seed[,no]] [-m max] [-i input]\n", prog);
 	fprintf(stderr, "\t-y	64bit mode\n");
 	fprintf(stderr, "\t-n	32bit mode\n");
@@ -269,7 +273,17 @@ int main(int argc, char **argv)
 		insns++;
 	}
 
+<<<<<<< HEAD
 	fprintf(stdout, "%s: decoded and checked %d %s instructions with %d errors (seed:0x%x)\n", (errors) ? "Failure" : "Success", insns, (input_file) ? "given" : "random", errors, seed);
+=======
+	fprintf(stdout, "%s: %s: decoded and checked %d %s instructions with %d errors (seed:0x%x)\n",
+		prog,
+		(errors) ? "Failure" : "Success",
+		insns,
+		(input_file) ? "given" : "random",
+		errors,
+		seed);
+>>>>>>> refs/remotes/origin/master
 
 	return errors ? 1 : 0;
 }

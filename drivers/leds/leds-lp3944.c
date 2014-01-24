@@ -86,7 +86,11 @@ static int lp3944_reg_read(struct i2c_client *client, u8 reg, u8 *value)
 
 	tmp = i2c_smbus_read_byte_data(client, reg);
 	if (tmp < 0)
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		return tmp;
+>>>>>>> refs/remotes/origin/master
 
 	*value = tmp;
 
@@ -289,7 +293,11 @@ static void lp3944_led_set_brightness(struct led_classdev *led_cdev,
 	dev_dbg(&led->client->dev, "%s: %s, %d\n",
 		__func__, led_cdev->name, brightness);
 
+<<<<<<< HEAD
 	led->status = brightness;
+=======
+	led->status = !!brightness;
+>>>>>>> refs/remotes/origin/master
 	schedule_work(&led->work);
 }
 
@@ -374,10 +382,18 @@ exit:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit lp3944_probe(struct i2c_client *client,
 				  const struct i2c_device_id *id)
 {
 	struct lp3944_platform_data *lp3944_pdata = client->dev.platform_data;
+=======
+static int lp3944_probe(struct i2c_client *client,
+				  const struct i2c_device_id *id)
+{
+	struct lp3944_platform_data *lp3944_pdata =
+			dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	struct lp3944_data *data;
 	int err;
 
@@ -393,7 +409,12 @@ static int __devinit lp3944_probe(struct i2c_client *client,
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct lp3944_data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct lp3944_data),
+			GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!data)
 		return -ENOMEM;
 
@@ -403,18 +424,29 @@ static int __devinit lp3944_probe(struct i2c_client *client,
 	mutex_init(&data->lock);
 
 	err = lp3944_configure(client, data, lp3944_pdata);
+<<<<<<< HEAD
 	if (err < 0) {
 		kfree(data);
 		return err;
 	}
+=======
+	if (err < 0)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	dev_info(&client->dev, "lp3944 enabled\n");
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit lp3944_remove(struct i2c_client *client)
 {
 	struct lp3944_platform_data *pdata = client->dev.platform_data;
+=======
+static int lp3944_remove(struct i2c_client *client)
+{
+	struct lp3944_platform_data *pdata = dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	struct lp3944_data *data = i2c_get_clientdata(client);
 	int i;
 
@@ -431,8 +463,11 @@ static int __devexit lp3944_remove(struct i2c_client *client)
 			break;
 		}
 
+<<<<<<< HEAD
 	kfree(data);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -449,6 +484,7 @@ static struct i2c_driver lp3944_driver = {
 		   .name = "lp3944",
 	},
 	.probe    = lp3944_probe,
+<<<<<<< HEAD
 	.remove   = __devexit_p(lp3944_remove),
 	.id_table = lp3944_id,
 };
@@ -469,6 +505,13 @@ module_exit(lp3944_module_exit);
 =======
 module_i2c_driver(lp3944_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove   = lp3944_remove,
+	.id_table = lp3944_id,
+};
+
+module_i2c_driver(lp3944_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Antonio Ospite <ospite@studenti.unina.it>");
 MODULE_DESCRIPTION("LP3944 Fun Light Chip");

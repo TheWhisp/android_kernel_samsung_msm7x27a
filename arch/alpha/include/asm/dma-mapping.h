@@ -13,6 +13,7 @@ static inline struct dma_map_ops *get_dma_ops(struct device *dev)
 #include <asm-generic/dma-mapping-common.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void *dma_alloc_coherent(struct device *dev, size_t size,
 				       dma_addr_t *dma_handle, gfp_t gfp)
 {
@@ -24,6 +25,8 @@ static inline void dma_free_coherent(struct device *dev, size_t size,
 {
 	get_dma_ops(dev)->free_coherent(dev, size, vaddr, dma_handle);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define dma_alloc_coherent(d,s,h,f)	dma_alloc_attrs(d,s,h,f,NULL)
 
 static inline void *dma_alloc_attrs(struct device *dev, size_t size,
@@ -40,7 +43,10 @@ static inline void dma_free_attrs(struct device *dev, size_t size,
 				  struct dma_attrs *attrs)
 {
 	get_dma_ops(dev)->free(dev, size, vaddr, dma_handle, attrs);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)

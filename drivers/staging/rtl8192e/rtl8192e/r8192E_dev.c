@@ -2,7 +2,11 @@
  * Copyright(c) 2008 - 2010 Realtek Corporation. All rights reserved.
  *
  * Based on the r8180 driver, which is:
+<<<<<<< HEAD
  * Copyright 2004-2005 Andrea Merello <andreamrl@tiscali.it>, et al.
+=======
+ * Copyright 2004-2005 Andrea Merello <andrea.merello@gmail.com>, et al.
+>>>>>>> refs/remotes/origin/master
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -30,7 +34,11 @@
 #include "rtl_dm.h"
 #include "rtl_wx.h"
 
+<<<<<<< HEAD
 extern int WDCAPARA_ADD[];
+=======
+static int WDCAPARA_ADD[] = {EDCAPARA_BE, EDCAPARA_BK, EDCAPARA_VI, EDCAPARA_VO};
+>>>>>>> refs/remotes/origin/master
 
 void rtl8192e_start_beacon(struct net_device *dev)
 {
@@ -193,11 +201,20 @@ void rtl8192e_SetHwReg(struct net_device *dev, u8 variable, u8 *val)
 
 		dm_init_edca_turbo(dev);
 
+<<<<<<< HEAD
 		u4bAcParam = ((((u32)(qos_parameters->tx_op_limit[pAcParam])) <<
 			     AC_PARAM_TXOP_LIMIT_OFFSET) |
 			     (((u32)(qos_parameters->cw_max[pAcParam])) <<
 			     AC_PARAM_ECW_MAX_OFFSET) |
 			     (((u32)(qos_parameters->cw_min[pAcParam])) <<
+=======
+		u4bAcParam = (((le16_to_cpu(
+					qos_parameters->tx_op_limit[pAcParam])) <<
+			     AC_PARAM_TXOP_LIMIT_OFFSET) |
+			     ((le16_to_cpu(qos_parameters->cw_max[pAcParam])) <<
+			     AC_PARAM_ECW_MAX_OFFSET) |
+			     ((le16_to_cpu(qos_parameters->cw_min[pAcParam])) <<
+>>>>>>> refs/remotes/origin/master
 			     AC_PARAM_ECW_MIN_OFFSET) |
 			     (((u32)u1bAIFS) << AC_PARAM_AIFS_OFFSET));
 
@@ -720,7 +737,11 @@ start:
 	}
 	priv->pFirmware->firmware_status = FW_STATUS_0_INIT;
 
+<<<<<<< HEAD
 	if (priv->RegRfOff == true)
+=======
+	if (priv->RegRfOff)
+>>>>>>> refs/remotes/origin/master
 		priv->rtllib->eRFPowerState = eRfOff;
 
 	ulRegRead = read_nic_dword(dev, CPU_GEN);
@@ -745,7 +766,11 @@ start:
 	}
 	RT_TRACE(COMP_INIT, "BB Config Start!\n");
 	rtStatus = rtl8192_BBConfig(dev);
+<<<<<<< HEAD
 	if (rtStatus != true) {
+=======
+	if (!rtStatus) {
+>>>>>>> refs/remotes/origin/master
 		RT_TRACE(COMP_ERR, "BB Config failed\n");
 		return rtStatus;
 	}
@@ -856,7 +881,11 @@ start:
 	if (priv->ResetProgress == RESET_TYPE_NORESET) {
 		RT_TRACE(COMP_INIT, "RF Config Started!\n");
 		rtStatus = rtl8192_phy_RFConfig(dev);
+<<<<<<< HEAD
 		if (rtStatus != true) {
+=======
+		if (!rtStatus) {
+>>>>>>> refs/remotes/origin/master
 			RT_TRACE(COMP_ERR, "RF Config failed\n");
 			return rtStatus;
 		}
@@ -869,7 +898,11 @@ start:
 
 	write_nic_byte(dev, 0x87, 0x0);
 
+<<<<<<< HEAD
 	if (priv->RegRfOff == true) {
+=======
+	if (priv->RegRfOff) {
+>>>>>>> refs/remotes/origin/master
 		RT_TRACE((COMP_INIT | COMP_RF | COMP_POWER),
 			  "%s(): Turn off RF for RegRfOff ----------\n",
 			  __func__);
@@ -1183,6 +1216,11 @@ void  rtl8192_tx_fill_desc(struct net_device *dev, struct tx_desc *pdesc,
 						pTxFwInfo->TxRate,
 						cb_desc);
 
+<<<<<<< HEAD
+=======
+	if (pci_dma_mapping_error(priv->pdev, mapping))
+		RT_TRACE(COMP_ERR, "DMA Mapping error\n");
+>>>>>>> refs/remotes/origin/master
 	if (cb_desc->bAMPDUEnable) {
 		pTxFwInfo->AllowAggregation = 1;
 		pTxFwInfo->RxMF = cb_desc->ampdu_factor;
@@ -1269,7 +1307,11 @@ void  rtl8192_tx_fill_desc(struct net_device *dev, struct tx_desc *pdesc,
 	pdesc->LastSeg = 1;
 	pdesc->TxBufferSize = skb->len;
 
+<<<<<<< HEAD
 	pdesc->TxBuffAddr = cpu_to_le32(mapping);
+=======
+	pdesc->TxBuffAddr = mapping;
+>>>>>>> refs/remotes/origin/master
 }
 
 void  rtl8192_tx_fill_cmd_desc(struct net_device *dev,
@@ -1280,6 +1322,11 @@ void  rtl8192_tx_fill_cmd_desc(struct net_device *dev,
 	dma_addr_t mapping = pci_map_single(priv->pdev, skb->data, skb->len,
 			 PCI_DMA_TODEVICE);
 
+<<<<<<< HEAD
+=======
+	if (pci_dma_mapping_error(priv->pdev, mapping))
+		RT_TRACE(COMP_ERR, "DMA Mapping error\n");
+>>>>>>> refs/remotes/origin/master
 	memset(entry, 0, 12);
 	entry->LINIP = cb_desc->bLastIniPkt;
 	entry->FirstSeg = 1;
@@ -1297,7 +1344,11 @@ void  rtl8192_tx_fill_cmd_desc(struct net_device *dev,
 		entry_tmp->RATid = (u8)DESC_PACKET_TYPE_INIT;
 	}
 	entry->TxBufferSize = skb->len;
+<<<<<<< HEAD
 	entry->TxBuffAddr = cpu_to_le32(mapping);
+=======
+	entry->TxBuffAddr = mapping;
+>>>>>>> refs/remotes/origin/master
 	entry->OWN = 1;
 }
 
@@ -1862,6 +1913,7 @@ static void rtl8192_TranslateRxSignalStuff(struct net_device *dev,
 	type = WLAN_FC_GET_TYPE(fc);
 	praddr = hdr->addr1;
 
+<<<<<<< HEAD
 	bpacket_match_bssid = ((RTLLIB_FTYPE_CTL != type) &&
 			(!compare_ether_addr(priv->rtllib->
 			current_network.bssid,
@@ -1871,6 +1923,17 @@ static void rtl8192_TranslateRxSignalStuff(struct net_device *dev,
 	bpacket_toself =  bpacket_match_bssid &&	/* check this */
 			  (!compare_ether_addr(praddr,
 			  priv->rtllib->dev->dev_addr));
+=======
+	bpacket_match_bssid =
+		((RTLLIB_FTYPE_CTL != type) &&
+		 ether_addr_equal(priv->rtllib->current_network.bssid,
+				  (fc & RTLLIB_FCTL_TODS) ? hdr->addr1 :
+				  (fc & RTLLIB_FCTL_FROMDS) ? hdr->addr2 :
+				  hdr->addr3) &&
+		 (!pstats->bHwError) && (!pstats->bCRC) && (!pstats->bICV));
+	bpacket_toself = bpacket_match_bssid &&		/* check this */
+			 ether_addr_equal(praddr, priv->rtllib->dev->dev_addr);
+>>>>>>> refs/remotes/origin/master
 	if (WLAN_FC_GET_FRAMETYPE(fc) == RTLLIB_STYPE_BEACON)
 		bPacketBeacon = true;
 	if (bpacket_match_bssid)
@@ -2124,10 +2187,18 @@ void rtl8192_update_ratr_table(struct net_device *dev)
 	struct rtllib_device *ieee = priv->rtllib;
 	u8 *pMcsRate = ieee->dot11HTOperationalRateSet;
 	u32 ratr_value = 0;
+<<<<<<< HEAD
 	u8 rate_index = 0;
 
 	rtl8192_config_rate(dev, (u16 *)(&ratr_value));
 	ratr_value |= (*(u16 *)(pMcsRate)) << 12;
+=======
+	u16 rate_config = 0;
+	u8 rate_index = 0;
+
+	rtl8192_config_rate(dev, &rate_config);
+	ratr_value = rate_config | *pMcsRate << 12;
+>>>>>>> refs/remotes/origin/master
 	switch (ieee->mode) {
 	case IEEE_A:
 		ratr_value &= 0x00000FF0;
@@ -2208,7 +2279,11 @@ rtl8192_InitializeVariables(struct net_device  *dev)
 	priv->MidHighPwrTHR_L2 = 0x40;
 	priv->PwrDomainProtect = false;
 
+<<<<<<< HEAD
 	priv->bfirst_after_down = 0;
+=======
+	priv->bfirst_after_down = false;
+>>>>>>> refs/remotes/origin/master
 }
 
 void rtl8192_EnableInterrupt(struct net_device *dev)

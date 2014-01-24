@@ -20,10 +20,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -45,10 +50,14 @@ static int verbose;
 static int port = 0x91;
 static int ticks = 10000;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static spinlock_t cpu5wdt_lock;
 =======
 static DEFINE_SPINLOCK(cpu5wdt_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_SPINLOCK(cpu5wdt_lock);
+>>>>>>> refs/remotes/origin/master
 
 #define PFX			"cpu5wdt: "
 
@@ -81,10 +90,14 @@ static void cpu5wdt_trigger(unsigned long unused)
 {
 	if (verbose > 2)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG PFX "trigger at %i ticks\n", ticks);
 =======
 		pr_debug("trigger at %i ticks\n", ticks);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("trigger at %i ticks\n", ticks);
+>>>>>>> refs/remotes/origin/master
 
 	if (cpu5wdt_device.running)
 		ticks--;
@@ -110,10 +123,14 @@ static void cpu5wdt_reset(void)
 
 	if (verbose)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG PFX "reset (%i ticks)\n", (int) ticks);
 =======
 		pr_debug("reset (%i ticks)\n", (int) ticks);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("reset (%i ticks)\n", (int) ticks);
+>>>>>>> refs/remotes/origin/master
 
 }
 
@@ -147,10 +164,14 @@ static int cpu5wdt_stop(void)
 	spin_unlock_irqrestore(&cpu5wdt_lock, flags);
 	if (verbose)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX "stop not possible\n");
 =======
 		pr_crit("stop not possible\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("stop not possible\n");
+>>>>>>> refs/remotes/origin/master
 	return -EIO;
 }
 
@@ -234,12 +255,17 @@ static struct miscdevice cpu5wdt_misc = {
 
 /* init/exit function */
 
+<<<<<<< HEAD
 static int __devinit cpu5wdt_init(void)
+=======
+static int cpu5wdt_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int val;
 	int err;
 
 	if (verbose)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_DEBUG PFX
 				"port=0x%x, verbose=%i\n", port, verbose);
@@ -251,16 +277,25 @@ static int __devinit cpu5wdt_init(void)
 
 	init_completion(&cpu5wdt_device.stop);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("port=0x%x, verbose=%i\n", port, verbose);
+
+	init_completion(&cpu5wdt_device.stop);
+>>>>>>> refs/remotes/origin/master
 	cpu5wdt_device.queue = 0;
 	setup_timer(&cpu5wdt_device.timer, cpu5wdt_trigger, 0);
 	cpu5wdt_device.default_ticks = ticks;
 
 	if (!request_region(port, CPU5WDT_EXTENT, PFX)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "request_region failed\n");
 =======
 		pr_err("request_region failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("request_region failed\n");
+>>>>>>> refs/remotes/origin/master
 		err = -EBUSY;
 		goto no_port;
 	}
@@ -270,27 +305,37 @@ static int __devinit cpu5wdt_init(void)
 	val = (val >> 2) & 1;
 	if (!val)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO PFX "sorry, was my fault\n");
 
 	err = misc_register(&cpu5wdt_misc);
 	if (err < 0) {
 		printk(KERN_ERR PFX "misc_register failed\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_info("sorry, was my fault\n");
 
 	err = misc_register(&cpu5wdt_misc);
 	if (err < 0) {
 		pr_err("misc_register failed\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto no_misc;
 	}
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "init success\n");
 =======
 	pr_info("init success\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("init success\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 no_misc:
@@ -299,16 +344,28 @@ no_port:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit cpu5wdt_init_module(void)
+=======
+static int cpu5wdt_init_module(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return cpu5wdt_init();
 }
 
+<<<<<<< HEAD
 static void __devexit cpu5wdt_exit(void)
+=======
+static void cpu5wdt_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (cpu5wdt_device.queue) {
 		cpu5wdt_device.queue = 0;
 		wait_for_completion(&cpu5wdt_device.stop);
+<<<<<<< HEAD
+=======
+		del_timer(&cpu5wdt_device.timer);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	misc_deregister(&cpu5wdt_misc);
@@ -317,7 +374,11 @@ static void __devexit cpu5wdt_exit(void)
 
 }
 
+<<<<<<< HEAD
 static void __devexit cpu5wdt_exit_module(void)
+=======
+static void cpu5wdt_exit_module(void)
+>>>>>>> refs/remotes/origin/master
 {
 	cpu5wdt_exit();
 }
@@ -331,7 +392,10 @@ MODULE_AUTHOR("Heiko Ronsdorf <hero@ihg.uni-duisburg.de>");
 MODULE_DESCRIPTION("sma cpu5 watchdog driver");
 MODULE_SUPPORTED_DEVICE("sma cpu5 watchdog");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 
 module_param(port, int, 0);
 MODULE_PARM_DESC(port, "base address of watchdog card, default is 0x91");

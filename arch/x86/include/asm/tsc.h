@@ -49,6 +49,7 @@ extern void tsc_init(void);
 extern void mark_tsc_unstable(char *reason);
 extern int unsynchronized_tsc(void);
 extern int check_tsc_unstable(void);
+<<<<<<< HEAD
 extern unsigned long native_calibrate_tsc(void);
 
 <<<<<<< HEAD
@@ -58,6 +59,12 @@ extern cycles_t vread_tsc(void);
 =======
 extern int tsc_clocksource_reliable;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int check_tsc_disabled(void);
+extern unsigned long native_calibrate_tsc(void);
+
+extern int tsc_clocksource_reliable;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Boot-time check whether the TSCs are synchronized across
@@ -68,11 +75,19 @@ extern void check_tsc_sync_target(void);
 
 extern int notsc_setup(char *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void save_sched_clock_state(void);
 extern void restore_sched_clock_state(void);
 =======
 extern void tsc_save_sched_clock_state(void);
 extern void tsc_restore_sched_clock_state(void);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void tsc_save_sched_clock_state(void);
+extern void tsc_restore_sched_clock_state(void);
+
+/* MSR based TSC calibration for Intel Atom SoC platforms */
+int try_msr_calibrate_tsc(unsigned long *fast_calibrate);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_X86_TSC_H */

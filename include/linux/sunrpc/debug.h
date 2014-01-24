@@ -5,6 +5,7 @@
  *
  * Copyright (C) 1996, Olaf Kirch <okir@monad.swb.de>
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_SUNRPC_DEBUG_H_
 #define _LINUX_SUNRPC_DEBUG_H_
@@ -27,22 +28,35 @@
 #define RPCDBG_ALL		0x7fff
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_SUNRPC_DEBUG_H_
+#define _LINUX_SUNRPC_DEBUG_H_
+
+#include <uapi/linux/sunrpc/debug.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Enable RPC debugging/profiling.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SYSCTL
 #define  RPC_DEBUG
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SUNRPC_DEBUG
 #define  RPC_DEBUG
 #endif
 #ifdef CONFIG_TRACEPOINTS
 #define RPC_TRACEPOINTS
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* #define  RPC_PROFILE */
 
 /*
@@ -57,13 +71,18 @@ extern unsigned int		nlm_debug;
 
 #define dprintk(args...)	dfprintk(FACILITY, ## args)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define dprintk_rcu(args...)	dfprintk_rcu(FACILITY, ## args)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define dprintk_rcu(args...)	dfprintk_rcu(FACILITY, ## args)
+>>>>>>> refs/remotes/origin/master
 
 #undef ifdebug
 #ifdef RPC_DEBUG			
 # define ifdebug(fac)		if (unlikely(rpc_debug & RPCDBG_##fac))
+<<<<<<< HEAD
 <<<<<<< HEAD
 # define dfprintk(fac, args...)	do { ifdebug(fac) printk(args); } while(0)
 # define RPC_IFDEBUG(x)		x
@@ -71,6 +90,8 @@ extern unsigned int		nlm_debug;
 # define ifdebug(fac)		if (0)
 # define dfprintk(fac, args...)	do ; while (0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 # define dfprintk(fac, args...)	\
 	do { \
@@ -92,7 +113,10 @@ extern unsigned int		nlm_debug;
 # define ifdebug(fac)		if (0)
 # define dfprintk(fac, args...)	do {} while (0)
 # define dfprintk_rcu(fac, args...)	do {} while (0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # define RPC_IFDEBUG(x)
 #endif
 
@@ -104,6 +128,7 @@ void		rpc_register_sysctl(void);
 void		rpc_unregister_sysctl(void);
 #endif
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 /*
@@ -124,4 +149,6 @@ enum {
 	CTL_MAX_RESVPORT,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_SUNRPC_DEBUG_H_ */

@@ -1,6 +1,7 @@
 #ifndef _TCP_MEMCG_H
 #define _TCP_MEMCG_H
 
+<<<<<<< HEAD
 struct tcp_memcontrol {
 	struct cg_proto cg_proto;
 	/* per-cgroup tcp memory pressure knobs */
@@ -16,4 +17,9 @@ int tcp_init_cgroup(struct cgroup *cgrp, struct cgroup_subsys *ss);
 void tcp_destroy_cgroup(struct cgroup *cgrp);
 unsigned long long tcp_max_memory(const struct mem_cgroup *memcg);
 void tcp_prot_mem(struct mem_cgroup *memcg, long val, int idx);
+=======
+struct cg_proto *tcp_proto_cgroup(struct mem_cgroup *memcg);
+int tcp_init_cgroup(struct mem_cgroup *memcg, struct cgroup_subsys *ss);
+void tcp_destroy_cgroup(struct mem_cgroup *memcg);
+>>>>>>> refs/remotes/origin/master
 #endif /* _TCP_MEMCG_H */

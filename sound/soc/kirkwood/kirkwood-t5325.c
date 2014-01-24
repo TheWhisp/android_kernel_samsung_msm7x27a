@@ -15,9 +15,13 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <sound/soc.h>
+<<<<<<< HEAD
 #include <mach/kirkwood.h>
 #include <plat/audio.h>
 #include <asm/mach-types.h>
+=======
+#include <linux/platform_data/asoc-kirkwood.h>
+>>>>>>> refs/remotes/origin/master
 #include "../codecs/alc5623.h"
 
 static int t5325_hw_params(struct snd_pcm_substream *substream,
@@ -25,6 +29,7 @@ static int t5325_hw_params(struct snd_pcm_substream *substream,
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
 	int ret;
@@ -41,6 +46,9 @@ static int t5325_hw_params(struct snd_pcm_substream *substream,
 =======
 	unsigned int freq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int freq;
+>>>>>>> refs/remotes/origin/master
 
 	freq = params_rate(params) * 256;
 
@@ -75,6 +83,7 @@ static int t5325_dai_init(struct snd_soc_pcm_runtime *rtd)
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_new_controls(dapm, t5325_dapm_widgets,
 				ARRAY_SIZE(t5325_dapm_widgets));
 
@@ -82,15 +91,20 @@ static int t5325_dai_init(struct snd_soc_pcm_runtime *rtd)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
 	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
 	snd_soc_dapm_enable_pin(dapm, "Speaker");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -98,6 +112,7 @@ static struct snd_soc_dai_link t5325_dai[] = {
 {
 	.name = "ALC5621",
 	.stream_name = "ALC5621 HiFi",
+<<<<<<< HEAD
 	.cpu_dai_name = "kirkwood-i2s",
 	.platform_name = "kirkwood-pcm-audio",
 	.codec_dai_name = "alc5621-hifi",
@@ -106,11 +121,19 @@ static struct snd_soc_dai_link t5325_dai[] = {
 =======
 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.cpu_dai_name = "i2s",
+	.platform_name = "mvebu-audio",
+	.codec_dai_name = "alc5621-hifi",
+	.codec_name = "alc562x-codec.0-001a",
+	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS,
+>>>>>>> refs/remotes/origin/master
 	.ops = &t5325_ops,
 	.init = t5325_dai_init,
 },
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static struct snd_soc_card t5325 = {
@@ -151,6 +174,8 @@ static void __exit t5325_exit(void)
 }
 module_exit(t5325_exit);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct snd_soc_card t5325 = {
 	.name = "t5325",
 	.owner = THIS_MODULE,
@@ -163,7 +188,11 @@ static struct snd_soc_card t5325 = {
 	.num_dapm_routes = ARRAY_SIZE(t5325_route),
 };
 
+<<<<<<< HEAD
 static int __devinit t5325_probe(struct platform_device *pdev)
+=======
+static int t5325_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = &t5325;
 	int ret;
@@ -177,7 +206,11 @@ static int __devinit t5325_probe(struct platform_device *pdev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit t5325_remove(struct platform_device *pdev)
+=======
+static int t5325_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = platform_get_drvdata(pdev);
 
@@ -191,16 +224,27 @@ static struct platform_driver t5325_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= t5325_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(t5325_remove),
 };
 
 module_platform_driver(t5325_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= t5325_remove,
+};
+
+module_platform_driver(t5325_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");
 MODULE_DESCRIPTION("ALSA SoC t5325 audio client");
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_ALIAS("platform:t5325-audio");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:t5325-audio");
+>>>>>>> refs/remotes/origin/master

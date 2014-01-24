@@ -4,12 +4,15 @@
  * regulatory support structures
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2008-2009	Luis R. Rodriguez <lrodriguez@atheros.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright 2008-2009	Luis R. Rodriguez <mcgrof@qca.qualcomm.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -23,9 +26,15 @@
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
  */
 
+=======
+ */
+
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/master
 
 /**
  * enum environment_cap - Environment parsed from country IE
@@ -43,6 +52,10 @@ enum environment_cap {
 /**
  * struct regulatory_request - used to keep track of regulatory requests
  *
+<<<<<<< HEAD
+=======
+ * @rcu_head: RCU head struct used to free the request
+>>>>>>> refs/remotes/origin/master
  * @wiphy_idx: this is set if this request's initiator is
  * 	%REGDOM_SET_BY_COUNTRY_IE or %REGDOM_SET_BY_DRIVER. This
  * 	can be used by the wireless core to deal with conflicts
@@ -57,12 +70,22 @@ enum environment_cap {
  * 	98 - result of an intersection between two regulatory domains
  *	97 - regulatory domain has not yet been configured
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @dfs_region: If CRDA responded with a regulatory domain that requires
  *	DFS master operation on a known DFS region (NL80211_DFS_*),
  *	dfs_region represents that region. Drivers can use this and the
  *	@alpha2 to adjust their device's DFS parameters as required.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @user_reg_hint_type: if the @initiator was of type
+ *	%NL80211_REGDOM_SET_BY_USER, this classifies the type
+ *	of hint passed. This could be any of the %NL80211_USER_REG_HINT_*
+ *	types.
+>>>>>>> refs/remotes/origin/master
  * @intersect: indicates whether the wireless core should intersect
  * 	the requested regulatory domain with the presently set regulatory
  * 	domain.
@@ -79,6 +102,7 @@ enum environment_cap {
  * @list: used to insert into the reg_requests_list linked list
  */
 struct regulatory_request {
+<<<<<<< HEAD
 	int wiphy_idx;
 	enum nl80211_reg_initiator initiator;
 	char alpha2[2];
@@ -86,6 +110,14 @@ struct regulatory_request {
 =======
 	u8 dfs_region;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct rcu_head rcu_head;
+	int wiphy_idx;
+	enum nl80211_reg_initiator initiator;
+	enum nl80211_user_reg_hint_type user_reg_hint_type;
+	char alpha2[2];
+	u8 dfs_region;
+>>>>>>> refs/remotes/origin/master
 	bool intersect;
 	bool processed;
 	enum environment_cap country_ie_env;
@@ -110,12 +142,19 @@ struct ieee80211_reg_rule {
 };
 
 struct ieee80211_regdomain {
+<<<<<<< HEAD
 	u32 n_reg_rules;
 	char alpha2[2];
 <<<<<<< HEAD
 =======
 	u8 dfs_region;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct rcu_head rcu_head;
+	u32 n_reg_rules;
+	char alpha2[2];
+	u8 dfs_region;
+>>>>>>> refs/remotes/origin/master
 	struct ieee80211_reg_rule reg_rules[];
 };
 

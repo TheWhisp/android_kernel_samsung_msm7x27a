@@ -29,9 +29,12 @@
 #include <asm/io.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgtable.h>
 #include <asm/sn/addrs.h>
 #include <asm/sn/intr.h>
@@ -511,7 +514,11 @@ static int mbcs_gscr_mmap(struct file *fp, struct vm_area_struct *vma)
 
 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
 
+<<<<<<< HEAD
 	/* Remap-pfn-range will mark the range VM_IO and VM_RESERVED */
+=======
+	/* Remap-pfn-range will mark the range VM_IO */
+>>>>>>> refs/remotes/origin/master
 	if (remap_pfn_range(vma,
 			    vma->vm_start,
 			    __pa(soft->gscr_addr) >> PAGE_SHIFT,
@@ -803,7 +810,11 @@ static int mbcs_remove(struct cx_dev *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static const struct cx_device_id __devinitdata mbcs_id_table[] = {
+=======
+static const struct cx_device_id mbcs_id_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 	 .part_num = MBCS_PART_NUM,
 	 .mfg_num = MBCS_MFG_NUM,

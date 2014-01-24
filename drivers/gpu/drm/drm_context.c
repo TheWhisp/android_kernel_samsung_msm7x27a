@@ -40,7 +40,11 @@
  *		needed by SiS driver's memory management.
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
+=======
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 
 /******************************************************************/
 /** \name Context bitmap support */
@@ -74,6 +78,7 @@ void drm_ctxbitmap_free(struct drm_device * dev, int ctx_handle)
  */
 static int drm_ctxbitmap_next(struct drm_device * dev)
 {
+<<<<<<< HEAD
 	int new_id;
 	int ret;
 
@@ -91,6 +96,15 @@ again:
 	}
 	mutex_unlock(&dev->struct_mutex);
 	return new_id;
+=======
+	int ret;
+
+	mutex_lock(&dev->struct_mutex);
+	ret = idr_alloc(&dev->ctx_idr, NULL, DRM_RESERVED_CONTEXTS, 0,
+			GFP_KERNEL);
+	mutex_unlock(&dev->struct_mutex);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -117,7 +131,11 @@ int drm_ctxbitmap_init(struct drm_device * dev)
 void drm_ctxbitmap_cleanup(struct drm_device * dev)
 {
 	mutex_lock(&dev->struct_mutex);
+<<<<<<< HEAD
 	idr_remove_all(&dev->ctx_idr);
+=======
+	idr_destroy(&dev->ctx_idr);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&dev->struct_mutex);
 }
 
@@ -155,10 +173,13 @@ int drm_getsareactx(struct drm_device *dev, void *data,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&dev->struct_mutex);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	request->handle = NULL;
 	list_for_each_entry(_entry, &dev->maplist, head) {
 		if (_entry->map == map) {
@@ -168,11 +189,17 @@ int drm_getsareactx(struct drm_device *dev, void *data,
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	mutex_unlock(&dev->struct_mutex);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	mutex_unlock(&dev->struct_mutex);
+
+>>>>>>> refs/remotes/origin/master
 	if (request->handle == NULL)
 		return -EINVAL;
 
@@ -269,7 +296,10 @@ static int drm_context_switch_complete(struct drm_device *dev,
 				       struct drm_file *file_priv, int new)
 {
 	dev->last_context = new;	/* PRE/POST: This is the _only_ writer. */
+<<<<<<< HEAD
 	dev->last_switch = jiffies;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!_DRM_LOCK_IS_HELD(file_priv->master->lock.hw_lock->lock)) {
 		DRM_ERROR("Lock isn't held after context switch\n");
@@ -279,7 +309,10 @@ static int drm_context_switch_complete(struct drm_device *dev,
 	   when the kernel holds the lock, release
 	   that lock here. */
 	clear_bit(0, &dev->context_flag);
+<<<<<<< HEAD
 	wake_up(&dev->context_wait);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -354,18 +387,24 @@ int drm_addctx(struct drm_device *dev, void *data,
 
 	mutex_lock(&dev->ctxlist_mutex);
 	list_add(&ctx_entry->head, &dev->ctxlist);
+<<<<<<< HEAD
 	++dev->ctx_count;
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&dev->ctxlist_mutex);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 int drm_modctx(struct drm_device *dev, void *data, struct drm_file *file_priv)
 {
 	/* This does nothing */
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * Get context.
  *
@@ -458,7 +497,10 @@ int drm_rmctx(struct drm_device *dev, void *data,
 			if (pos->handle == ctx->handle) {
 				list_del(&pos->head);
 				kfree(pos);
+<<<<<<< HEAD
 				--dev->ctx_count;
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}

@@ -3,11 +3,16 @@
 
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 #include <linux/irqflags.h>
 #include <asm/cmpxchg.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/irqflags.h>
+#include <asm/cmpxchg.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Atomic operations that C can't guarantee us.  Useful for
@@ -61,7 +66,10 @@ static inline int atomic_dec_and_test(atomic_t *v)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int atomic_dec_and_test_lt(atomic_t *v)
 {
 	char c;
@@ -72,7 +80,10 @@ static inline int atomic_dec_and_test_lt(atomic_t *v)
 	return c != 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int atomic_inc_and_test(atomic_t *v)
 {
 	char c;
@@ -188,35 +199,49 @@ static inline int atomic_add_negative(int i, atomic_t *v)
 	__asm__ __volatile__("addl %2,%1; smi %0"
 			     : "=d" (c), "+m" (*v)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     : "id" (i));
 =======
 			     : ASM_DI (i));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     : ASM_DI (i));
+>>>>>>> refs/remotes/origin/master
 	return c != 0;
 }
 
 static inline void atomic_clear_mask(unsigned long mask, unsigned long *v)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__asm__ __volatile__("andl %1,%0" : "+m" (*v) : "id" (~(mask)));
 =======
 	__asm__ __volatile__("andl %1,%0" : "+m" (*v) : ASM_DI (~(mask)));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__asm__ __volatile__("andl %1,%0" : "+m" (*v) : ASM_DI (~(mask)));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void atomic_set_mask(unsigned long mask, unsigned long *v)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	__asm__ __volatile__("orl %1,%0" : "+m" (*v) : "id" (mask));
 }
 
 static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	__asm__ __volatile__("orl %1,%0" : "+m" (*v) : ASM_DI (mask));
 }
 
 static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int c, old;
 	c = atomic_read(v);
@@ -229,6 +254,7 @@ static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
 		c = old;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return c != (u);
 }
 
@@ -238,6 +264,11 @@ static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return c;
+}
+
+>>>>>>> refs/remotes/origin/master
 
 /* Atomic operations are already serializing */
 #define smp_mb__before_atomic_dec()	barrier()
@@ -246,8 +277,11 @@ static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
 #define smp_mb__after_atomic_inc()	barrier()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm-generic/atomic-long.h>
 #include <asm-generic/atomic64.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ARCH_M68K_ATOMIC __ */

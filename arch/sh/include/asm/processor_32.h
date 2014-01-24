@@ -39,7 +39,11 @@
 /* This decides where the kernel will search for a free chunk of vm
  * space during mmap's.
  */
+<<<<<<< HEAD
 #define TASK_UNMAPPED_BASE	(TASK_SIZE / 3)
+=======
+#define TASK_UNMAPPED_BASE	PAGE_ALIGN(TASK_SIZE / 3)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Bit of SR register
@@ -111,6 +115,19 @@ struct thread_struct {
 
 	/* Extended processor state */
 	union thread_xstate *xstate;
+<<<<<<< HEAD
+=======
+
+	/*
+	 * fpu_counter contains the number of consecutive context switches
+	 * that the FPU is used. If this is over a threshold, the lazy fpu
+	 * saving becomes unlazy to save the trap. This is an unsigned char
+	 * so that after 256 times the counter wraps and the behavior turns
+	 * lazy again; this to deal with bursty apps that only use FPU for
+	 * a short time
+	 */
+	unsigned char fpu_counter;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define INIT_THREAD  {						\
@@ -126,6 +143,7 @@ extern void start_thread(struct pt_regs *regs, unsigned long new_pc, unsigned lo
 /* Free all resources held by a thread. */
 extern void release_thread(struct task_struct *);
 
+<<<<<<< HEAD
 /* Prepare to copy thread state - unlazy all lazy status */
 void prepare_to_copy(struct task_struct *tsk);
 
@@ -134,6 +152,8 @@ void prepare_to_copy(struct task_struct *tsk);
  */
 extern int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Copy and release all segment info associated with a VM */
 #define copy_segments(p, mm)	do { } while(0)
 #define release_segments(mm)	do { } while(0)

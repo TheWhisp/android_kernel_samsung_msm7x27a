@@ -18,6 +18,10 @@
 #include <linux/initrd.h>
 
 #include <asm/sections.h>
+<<<<<<< HEAD
+=======
+#include <asm/uaccess.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * ZERO_PAGE is a special page that is used for zero-initialized
@@ -57,6 +61,7 @@ void __init paging_init(void)
 
 void __init mem_init(void)
 {
+<<<<<<< HEAD
 	int codek, datak;
 	unsigned long tmp;
 	unsigned long len = memory_end - memory_start;
@@ -72,11 +77,20 @@ void __init mem_init(void)
 	tmp = nr_free_pages() << PAGE_SHIFT;
 	printk(KERN_INFO "Memory: %luk/%luk RAM (%dk kernel code, %dk data)\n",
 	       tmp >> 10, len >> 10, codek, datak);
+=======
+	high_memory = (void *)(memory_end & PAGE_MASK);
+
+	/* this will put all memory onto the freelists */
+	free_all_bootmem();
+
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_BLK_DEV_INITRD
 void __init free_initrd_mem(unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 	int pages = 0;
 	for (; start < end; start += PAGE_SIZE) {
 		ClearPageReserved(virt_to_page(start));
@@ -87,11 +101,15 @@ void __init free_initrd_mem(unsigned long start, unsigned long end)
 	}
 	printk(KERN_INFO "Freeing initrd memory: %luk freed\n",
 	       (pages * PAGE_SIZE) >> 10);
+=======
+	free_reserved_area((void *)start, (void *)end, -1, "initrd");
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
 void __init free_initmem(void)
 {
+<<<<<<< HEAD
 	unsigned long addr;
 
 	/*
@@ -110,4 +128,7 @@ void __init free_initmem(void)
 	}
 	printk(KERN_INFO "Freeing unused kernel memory: %dK freed\n",
 	       (int) ((addr - PAGE_ALIGN((long) &__init_begin)) >> 10));
+=======
+	free_initmem_default(-1);
+>>>>>>> refs/remotes/origin/master
 }

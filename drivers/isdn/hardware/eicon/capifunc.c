@@ -3,16 +3,22 @@
  * ISDN interface module for Eicon active cards DIVA.
  * CAPI Interface common functions
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * Copyright 2000-2003 by Armin Schindler (mac@melware.de) 
  * Copyright 2000-2003 Cytronics & Melware (info@melware.de)
  * 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright 2000-2003 by Armin Schindler (mac@melware.de)
  * Copyright 2000-2003 Cytronics & Melware (info@melware.de)
  *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -51,10 +57,14 @@ static LIST_HEAD(cards);
 
 static dword notify_handle;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void DIRequest(ENTITY * e);
 =======
 static void DIRequest(ENTITY *e);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void DIRequest(ENTITY *e);
+>>>>>>> refs/remotes/origin/master
 static DESCRIPTOR MAdapter;
 static DESCRIPTOR DAdapter;
 static byte ControllerMap[MAX_DESCRIPTORS + 1];
@@ -172,10 +182,14 @@ static int find_free_id(void)
 		num++;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return(num + 1);
 =======
 	return (num + 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (num + 1);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -192,16 +206,21 @@ static diva_card *find_card_by_ctrl(word controller)
 			if (card->remove_in_progress)
 				card = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return(card);
 =======
 			return (card);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return (card);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return (diva_card *) 0;
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Buffer RX/TX 
  */
@@ -214,6 +233,8 @@ void *TransmitBufferSet(APPL * appl, dword ref)
 
 void *TransmitBufferGet(APPL * appl, void *p)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Buffer RX/TX
  */
 void *TransmitBufferSet(APPL *appl, dword ref)
@@ -224,7 +245,10 @@ void *TransmitBufferSet(APPL *appl, dword ref)
 }
 
 void *TransmitBufferGet(APPL *appl, void *p)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	if (appl->xbuffer_internal[(dword)(long)p])
 		return appl->xbuffer_internal[(dword)(long)p];
@@ -232,6 +256,7 @@ void *TransmitBufferGet(APPL *appl, void *p)
 	return appl->xbuffer_ptr[(dword)(long)p];
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void TransmitBufferFree(APPL * appl, void *p)
 {
@@ -241,6 +266,8 @@ void TransmitBufferFree(APPL * appl, void *p)
 
 void *ReceiveBufferGet(APPL * appl, int Num)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void TransmitBufferFree(APPL *appl, void *p)
 {
 	appl->xbuffer_used[(dword)(long)p] = false;
@@ -248,7 +275,10 @@ void TransmitBufferFree(APPL *appl, void *p)
 		}
 
 void *ReceiveBufferGet(APPL *appl, int Num)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	return &appl->ReceiveBuffer[Num * appl->MaxDataLength];
 }
@@ -260,19 +290,27 @@ void api_remove_complete(void)
 {
 	DBG_PRV1(("api_remove_complete"))
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 =======
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * main function called by message.c
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void sendf(APPL * appl, word command, dword Id, word Number, byte * format, ...)
 =======
 void sendf(APPL *appl, word command, dword Id, word Number, byte *format, ...)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void sendf(APPL *appl, word command, dword Id, word Number, byte *format, ...)
+>>>>>>> refs/remotes/origin/master
 {
 	word i, j;
 	word length = 12, dlength = 0;
@@ -291,10 +329,14 @@ void sendf(APPL *appl, word command, dword Id, word Number, byte *format, ...)
 		  appl->Id, command, (byte *) format))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	PUT_WORD(&msg.header.appl_id, appl->Id);
 =======
 		PUT_WORD(&msg.header.appl_id, appl->Id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		PUT_WORD(&msg.header.appl_id, appl->Id);
+>>>>>>> refs/remotes/origin/master
 	PUT_WORD(&msg.header.command, command);
 	if ((byte) (command >> 8) == 0x82)
 		Number = appl->Number++;
@@ -302,10 +344,14 @@ void sendf(APPL *appl, word command, dword Id, word Number, byte *format, ...)
 
 	PUT_DWORD(&msg.header.controller, Id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	write = (byte *) & msg;
 =======
 	write = (byte *)&msg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	write = (byte *)&msg;
+>>>>>>> refs/remotes/origin/master
 	write += 12;
 
 	va_start(ap, format);
@@ -346,6 +392,7 @@ void sendf(APPL *appl, word command, dword Id, word Number, byte *format, ...)
 	if (command == _DATA_B3_I)
 		dlength = GET_WORD(
 <<<<<<< HEAD
+<<<<<<< HEAD
 			      ((byte *) & msg.info.data_b3_ind.Data_Length));
 
 	if (!(dmb = diva_os_alloc_message_buffer(length + dlength,
@@ -357,6 +404,8 @@ void sendf(APPL *appl, word command, dword Id, word Number, byte *format, ...)
 	/* copy msg header to sk_buff */
 	memcpy(write, (byte *) & msg, length);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			((byte *)&msg.info.data_b3_ind.Data_Length));
 
 	if (!(dmb = diva_os_alloc_message_buffer(length + dlength,
@@ -367,7 +416,10 @@ void sendf(APPL *appl, word command, dword Id, word Number, byte *format, ...)
 
 	/* copy msg header to sk_buff */
 	memcpy(write, (byte *)&msg, length);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* if DATA_B3_IND, copy data too */
 	if (command == _DATA_B3_I) {
@@ -390,16 +442,22 @@ void sendf(APPL *appl, word command, dword Id, word Number, byte *format, ...)
 				xlog("\x00\x02", &msg, 0x81, length);
 				for (i = 0; i < dlength; i += 256) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				  DBG_BLK((((char *)(long)GET_DWORD(&msg.info.data_b3_ind.Data)) + i,
 				  	((dlength - i) < 256) ? (dlength - i) : 256))
 				  if (!(myDriverDebugHandle.dbgMask & DL_PRV0))
 					  break; /* not more if not explicitly requested */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					DBG_BLK((((char *)(long)GET_DWORD(&msg.info.data_b3_ind.Data)) + i,
 						 ((dlength - i) < 256) ? (dlength - i) : 256))
 						if (!(myDriverDebugHandle.dbgMask & DL_PRV0))
 							break; /* not more if not explicitly requested */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 			}
 			break;
@@ -412,10 +470,14 @@ void sendf(APPL *appl, word command, dword Id, word Number, byte *format, ...)
 		DBG_ERR(("sendf - controller %d not found, incoming msg dropped",
 			 write[8] & 0x7f))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		diva_os_free_message_buffer(dmb);
 =======
 			diva_os_free_message_buffer(dmb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			diva_os_free_message_buffer(dmb);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	/* send capi msg to capi layer */
@@ -471,10 +533,14 @@ static void clean_adapter(int id, struct list_head *free_mem_q)
  * in the time adapter is removed
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void divacapi_remove_card(DESCRIPTOR * d)
 =======
 static void divacapi_remove_card(DESCRIPTOR *d)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void divacapi_remove_card(DESCRIPTOR *d)
+>>>>>>> refs/remotes/origin/master
 {
 	diva_card *card = NULL;
 	diva_os_spin_lock_magic_t old_irql;
@@ -514,6 +580,7 @@ static void divacapi_remove_card(DESCRIPTOR *d)
 		clean_adapter(card->Id - 1, &free_mem_q);
 		DBG_TRC(("DelAdapterMap (%d) -> (%d)",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ControllerMap[card->Id], card->Id))
 				ControllerMap[card->Id] = 0;
 		DBG_TRC(("adapter remove, max_adapter=%d",
@@ -523,6 +590,8 @@ static void divacapi_remove_card(DESCRIPTOR *d)
 		/* After releasing the lock, we can free the memory */
 		diva_os_free (0, card);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			 ControllerMap[card->Id], card->Id))
 			ControllerMap[card->Id] = 0;
 		DBG_TRC(("adapter remove, max_adapter=%d",
@@ -531,7 +600,10 @@ static void divacapi_remove_card(DESCRIPTOR *d)
 
 		/* After releasing the lock, we can free the memory */
 		diva_os_free(0, card);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* free queued memory areas */
@@ -567,20 +639,28 @@ rescan:
  * sync_callback
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void sync_callback(ENTITY * e)
 =======
 static void sync_callback(ENTITY *e)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void sync_callback(ENTITY *e)
+>>>>>>> refs/remotes/origin/master
 {
 	diva_os_spin_lock_magic_t old_irql;
 
 	DBG_TRC(("cb:Id=%x,Rc=%x,Ind=%x", e->Id, e->Rc, e->Ind))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	diva_os_enter_spin_lock(&api_lock, &old_irql, "sync_callback");
 =======
 		diva_os_enter_spin_lock(&api_lock, &old_irql, "sync_callback");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		diva_os_enter_spin_lock(&api_lock, &old_irql, "sync_callback");
+>>>>>>> refs/remotes/origin/master
 	callback(e);
 	diva_os_leave_spin_lock(&api_lock, &old_irql, "sync_callback");
 }
@@ -589,10 +669,14 @@ static void sync_callback(ENTITY *e)
  * add a new card
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int diva_add_card(DESCRIPTOR * d)
 =======
 static int diva_add_card(DESCRIPTOR *d)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int diva_add_card(DESCRIPTOR *d)
+>>>>>>> refs/remotes/origin/master
 {
 	int k = 0, i = 0;
 	diva_os_spin_lock_magic_t old_irql;
@@ -602,30 +686,42 @@ static int diva_add_card(DESCRIPTOR *d)
 	IDI_SYNC_REQ sync_req;
 	char serial[16];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void* mem_to_free;
 =======
 	void *mem_to_free;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void *mem_to_free;
+>>>>>>> refs/remotes/origin/master
 	LI_CONFIG *new_li_config_table;
 	int j;
 
 	if (!(card = (diva_card *) diva_os_malloc(0, sizeof(diva_card)))) {
 		DBG_ERR(("diva_add_card: failed to allocate card struct."))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    return (0);
 =======
 			return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return (0);
+>>>>>>> refs/remotes/origin/master
 	}
 	memset((char *) card, 0x00, sizeof(diva_card));
 	memcpy(&card->d, d, sizeof(DESCRIPTOR));
 	sync_req.GetName.Req = 0;
 	sync_req.GetName.Rc = IDI_SYNC_REQ_GET_NAME;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	card->d.request((ENTITY *) & sync_req);
 =======
 	card->d.request((ENTITY *)&sync_req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	card->d.request((ENTITY *)&sync_req);
+>>>>>>> refs/remotes/origin/master
 	strlcpy(card->name, sync_req.GetName.name, sizeof(card->name));
 	ctrl = &card->capi_ctrl;
 	strcpy(ctrl->name, card->name);
@@ -639,6 +735,7 @@ static int diva_add_card(DESCRIPTOR *d)
 	if (attach_capi_ctr(ctrl)) {
 		DBG_ERR(("diva_add_card: failed to attach controller."))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    diva_os_free(0, card);
 		return (0);
 	}
@@ -648,6 +745,8 @@ static int diva_add_card(DESCRIPTOR *d)
 	diva_os_leave_spin_lock(&api_lock, &old_irql, "find id");
 	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			diva_os_free(0, card);
 		return (0);
 	}
@@ -656,7 +755,10 @@ static int diva_add_card(DESCRIPTOR *d)
 	card->Id = find_free_id();
 	diva_os_leave_spin_lock(&api_lock, &old_irql, "find id");
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	strlcpy(ctrl->manu, M_COMPANY, sizeof(ctrl->manu));
 	ctrl->version.majorversion = 2;
 	ctrl->version.minorversion = 0;
@@ -666,10 +768,14 @@ static int diva_add_card(DESCRIPTOR *d)
 	sync_req.GetSerial.Rc = IDI_SYNC_REQ_GET_SERIAL;
 	sync_req.GetSerial.serial = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	card->d.request((ENTITY *) & sync_req);
 =======
 	card->d.request((ENTITY *)&sync_req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	card->d.request((ENTITY *)&sync_req);
+>>>>>>> refs/remotes/origin/master
 	if ((i = ((sync_req.GetSerial.serial & 0xff000000) >> 24))) {
 		sprintf(serial, "%ld-%d",
 			sync_req.GetSerial.serial & 0x00ffffff, i + 1);
@@ -687,6 +793,7 @@ static int diva_add_card(DESCRIPTOR *d)
 	DBG_TRC(("AddAdapterMap (%d) -> (%d)", ctrl->cnr, card->Id))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    sync_req.xdi_capi_prms.Req = 0;
 	sync_req.xdi_capi_prms.Rc = IDI_SYNC_REQ_XDI_GET_CAPI_PARAMS;
 	sync_req.xdi_capi_prms.info.structure_length =
@@ -697,6 +804,8 @@ static int diva_add_card(DESCRIPTOR *d)
 	a->group_optimization_enabled =
 	    sync_req.xdi_capi_prms.info.group_optimization_enabled;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		sync_req.xdi_capi_prms.Req = 0;
 	sync_req.xdi_capi_prms.Rc = IDI_SYNC_REQ_XDI_GET_CAPI_PARAMS;
 	sync_req.xdi_capi_prms.info.structure_length =
@@ -706,7 +815,10 @@ static int diva_add_card(DESCRIPTOR *d)
 		sync_req.xdi_capi_prms.info.flag_dynamic_l1_down;
 	a->group_optimization_enabled =
 		sync_req.xdi_capi_prms.info.group_optimization_enabled;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	a->request = DIRequest;	/* card->d.request; */
 	a->max_plci = card->d.channels + 30;
 	a->max_listen = (card->d.channels > 2) ? 8 : 2;
@@ -715,10 +827,14 @@ static int diva_add_card(DESCRIPTOR *d)
 	     (PLCI *) diva_os_malloc(0, sizeof(PLCI) * a->max_plci))) {
 		DBG_ERR(("diva_add_card: failed alloc plci struct."))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    memset(a, 0, sizeof(DIVA_CAPI_ADAPTER));
 =======
 			memset(a, 0, sizeof(DIVA_CAPI_ADAPTER));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			memset(a, 0, sizeof(DIVA_CAPI_ADAPTER));
+>>>>>>> refs/remotes/origin/master
 		return (0);
 	}
 	memset(a->plci, 0, sizeof(PLCI) * a->max_plci);
@@ -778,20 +894,28 @@ static int diva_add_card(DESCRIPTOR *d)
 	if (new_li_config_table == NULL) {
 		DBG_ERR(("diva_add_card: failed alloc li_config table."))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		memset(a, 0, sizeof(DIVA_CAPI_ADAPTER));
 =======
 			memset(a, 0, sizeof(DIVA_CAPI_ADAPTER));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			memset(a, 0, sizeof(DIVA_CAPI_ADAPTER));
+>>>>>>> refs/remotes/origin/master
 		return (0);
 	}
 
 	/* Prevent access to line interconnect table in process update */
 	diva_os_enter_spin_lock(&api_lock, &old_irql, "add card");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	j = 0;
 	for (i = 0; i < k; i++) {
 		if ((i >= a->li_base) && (i < a->li_base + a->li_channels))
@@ -820,18 +944,24 @@ static int diva_add_card(DESCRIPTOR *d)
 			if (a->li_base + a->li_channels < k) {
 				memcpy(&new_li_config_table[i].flag_table[a->li_base +
 <<<<<<< HEAD
+<<<<<<< HEAD
 				       a->li_channels],
 				       &li_config_table[j].flag_table[a->li_base],
 				       k - (a->li_base + a->li_channels));
 				memcpy(&new_li_config_table[i].coef_table[a->li_base +
 				       a->li_channels],
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 									  a->li_channels],
 				       &li_config_table[j].flag_table[a->li_base],
 				       k - (a->li_base + a->li_channels));
 				memcpy(&new_li_config_table[i].coef_table[a->li_base +
 									  a->li_channels],
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				       &li_config_table[j].coef_table[a->li_base],
 				       k - (a->li_base + a->li_channels));
 			}
@@ -858,10 +988,14 @@ static int diva_add_card(DESCRIPTOR *d)
 
 	if (mem_to_free) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		diva_os_free (0, mem_to_free);
 =======
 		diva_os_free(0, mem_to_free);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		diva_os_free(0, mem_to_free);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	i = 0;
@@ -895,10 +1029,14 @@ static int diva_add_card(DESCRIPTOR *d)
  */
 static void diva_register_appl(struct capi_ctr *ctrl, __u16 appl,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			       capi_register_params * rp)
 =======
 			       capi_register_params *rp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       capi_register_params *rp)
+>>>>>>> refs/remotes/origin/master
 {
 	APPL *this;
 	word bnum, xnum;
@@ -914,29 +1052,40 @@ static void diva_register_appl(struct capi_ctr *ctrl, __u16 appl,
 	if (diva_os_in_irq()) {
 		DBG_ERR(("CAPI_REGISTER - in irq context !"))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return;
 =======
 			return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	DBG_TRC(("application register Id=%d", appl))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (appl > MAX_APPL) {
 		DBG_ERR(("CAPI_REGISTER - appl.Id exceeds MAX_APPL"))
 		return;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (appl > MAX_APPL) {
 			DBG_ERR(("CAPI_REGISTER - appl.Id exceeds MAX_APPL"))
 				return;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (nconn <= 0)
 		nconn = ctrl->profile.nbchannel * -nconn;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         if (nconn == 0)
 		nconn = ctrl->profile.nbchannel;
@@ -958,6 +1107,8 @@ static void diva_register_appl(struct capi_ctr *ctrl, __u16 appl,
 		DBG_LOG(("CAPI_REGISTER - appl already registered"))
 		return;	/* appl already registered */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (nconn == 0)
 		nconn = ctrl->profile.nbchannel;
 
@@ -977,7 +1128,10 @@ static void diva_register_appl(struct capi_ctr *ctrl, __u16 appl,
 	if (application[appl - 1].Id == appl) {
 		DBG_LOG(("CAPI_REGISTER - appl already registered"))
 			return;	/* appl already registered */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* alloc memory */
@@ -995,16 +1149,22 @@ static void diva_register_appl(struct capi_ctr *ctrl, __u16 appl,
 
 	DBG_LOG(("  Allocated Memory      = %d", mem_len))
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(p = diva_os_malloc(0, mem_len))) {
 		DBG_ERR(("CAPI_REGISTER - memory allocation failed"))
 		return;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!(p = diva_os_malloc(0, mem_len))) {
 			DBG_ERR(("CAPI_REGISTER - memory allocation failed"))
 				return;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(p, 0, mem_len);
 
 	DataNCCI = (void *)p;
@@ -1070,16 +1230,22 @@ static void diva_release_appl(struct capi_ctr *ctrl, __u16 appl)
 	DBG_TRC(("application %d(%d) cleanup", this->Id, appl))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (diva_os_in_irq()) {
 		DBG_ERR(("CAPI_RELEASE - in irq context !"))
 		return;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (diva_os_in_irq()) {
 			DBG_ERR(("CAPI_RELEASE - in irq context !"))
 				return;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	diva_os_enter_spin_lock(&api_lock, &old_irql, "release_appl");
 	if (this->Id) {
@@ -1100,10 +1266,14 @@ static void diva_release_appl(struct capi_ctr *ctrl, __u16 appl)
  */
 static u16 diva_send_message(struct capi_ctr *ctrl,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     diva_os_message_buffer_s * dmb)
 =======
 			     diva_os_message_buffer_s *dmb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     diva_os_message_buffer_s *dmb)
+>>>>>>> refs/remotes/origin/master
 {
 	int i = 0;
 	word ret = 0;
@@ -1119,6 +1289,7 @@ static u16 diva_send_message(struct capi_ctr *ctrl,
 	if (diva_os_in_irq()) {
 		DBG_ERR(("CAPI_SEND_MSG - in irq context !"))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return CAPI_REGOSRESOURCEERR;
 	}
 	DBG_PRV1(("Write - appl = %d, cmd = 0x%x", this->Id, command))
@@ -1128,6 +1299,8 @@ static u16 diva_send_message(struct capi_ctr *ctrl,
 		return CAPI_REGOSRESOURCEERR;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			return CAPI_REGOSRESOURCEERR;
 	}
 	DBG_PRV1(("Write - appl = %d, cmd = 0x%x", this->Id, command))
@@ -1136,7 +1309,10 @@ static u16 diva_send_message(struct capi_ctr *ctrl,
 			DBG_ERR(("CAPI_SEND_MSG - remove in progress!"))
 				return CAPI_REGOSRESOURCEERR;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	diva_os_enter_spin_lock(&api_lock, &old_irql, "send message");
 
@@ -1148,10 +1324,14 @@ static u16 diva_send_message(struct capi_ctr *ctrl,
 	/* patch controller number */
 	msg->header.controller = ControllerMap[card->Id]
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    | (msg->header.controller & 0x80);	/* preserve external controller bit */
 =======
 		| (msg->header.controller & 0x80);	/* preserve external controller bit */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		| (msg->header.controller & 0x80);	/* preserve external controller bit */
+>>>>>>> refs/remotes/origin/master
 
 	switch (command) {
 	default:
@@ -1180,25 +1360,35 @@ static u16 diva_send_message(struct capi_ctr *ctrl,
 		    (length - clength)) {
 			DBG_ERR(("Write - invalid message size"))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			retval = CAPI_ILLCMDORSUBCMDORMSGTOSMALL;
 =======
 				retval = CAPI_ILLCMDORSUBCMDORMSGTOSMALL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				retval = CAPI_ILLCMDORSUBCMDORMSGTOSMALL;
+>>>>>>> refs/remotes/origin/master
 			goto write_end;
 		}
 
 		for (i = 0; i < (MAX_DATA_B3 * this->MaxNCCI)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		     && this->xbuffer_used[i]; i++);
 		if (i == (MAX_DATA_B3 * this->MaxNCCI)) {
 			DBG_ERR(("Write - too many data pending"))
 			retval = CAPI_SENDQUEUEFULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			     && this->xbuffer_used[i]; i++);
 		if (i == (MAX_DATA_B3 * this->MaxNCCI)) {
 			DBG_ERR(("Write - too many data pending"))
 				retval = CAPI_SENDQUEUEFULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			goto write_end;
 		}
 		msg->info.data_b3_req.Data = i;
@@ -1213,6 +1403,7 @@ static u16 diva_send_message(struct capi_ctr *ctrl,
 			int j;
 			for (j = 0; j <
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     GET_WORD(&msg->info.data_b3_req.Data_Length);
 			     j += 256) {
 				DBG_BLK((((char *) this->xbuffer_ptr[i]) + j,
@@ -1221,6 +1412,8 @@ static u16 diva_send_message(struct capi_ctr *ctrl,
 				if (!(myDriverDebugHandle.dbgMask & DL_PRV0))
 					break;	/* not more if not explicitly requested */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				     GET_WORD(&msg->info.data_b3_req.Data_Length);
 			     j += 256) {
 				DBG_BLK((((char *) this->xbuffer_ptr[i]) + j,
@@ -1228,7 +1421,10 @@ static u16 diva_send_message(struct capi_ctr *ctrl,
 					  256) ? (GET_WORD(&msg->info.data_b3_req.Data_Length) - j) : 256))
 					if (!(myDriverDebugHandle.dbgMask & DL_PRV0))
 						break;	/* not more if not explicitly requested */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 #endif
@@ -1248,6 +1444,7 @@ static u16 diva_send_message(struct capi_ctr *ctrl,
 	case _BAD_MSG:
 		DBG_ERR(("Write - bad message"))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		retval = CAPI_ILLCMDORSUBCMDORMSGTOSMALL;
 		break;
 	case _QUEUE_FULL:
@@ -1262,6 +1459,8 @@ static u16 diva_send_message(struct capi_ctr *ctrl,
 
       write_end:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			retval = CAPI_ILLCMDORSUBCMDORMSGTOSMALL;
 		break;
 	case _QUEUE_FULL:
@@ -1275,7 +1474,10 @@ static u16 diva_send_message(struct capi_ctr *ctrl,
 	}
 
 write_end:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	diva_os_leave_spin_lock(&api_lock, &old_irql, "send message");
 	if (retval == CAPI_NOERROR)
 		diva_os_free_message_buffer(dmb);
@@ -1287,10 +1489,14 @@ write_end:
  * cards request function
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void DIRequest(ENTITY * e)
 =======
 static void DIRequest(ENTITY *e)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void DIRequest(ENTITY *e)
+>>>>>>> refs/remotes/origin/master
 {
 	DIVA_CAPI_ADAPTER *a = &(adapter[(byte) e->user[0]]);
 	diva_card *os_card = (diva_card *) a->os_card;
@@ -1306,10 +1512,14 @@ static void DIRequest(ENTITY *e)
  * callback function from didd
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void didd_callback(void *context, DESCRIPTOR * adapter, int removal)
 =======
 static void didd_callback(void *context, DESCRIPTOR *adapter, int removal)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void didd_callback(void *context, DESCRIPTOR *adapter, int removal)
+>>>>>>> refs/remotes/origin/master
 {
 	if (adapter->type == IDI_DADAPTER) {
 		DBG_ERR(("Notification about IDI_DADAPTER change ! Oops."));
@@ -1359,16 +1569,22 @@ static int divacapi_connect_didd(void)
 			req.didd_notify.e.Req = 0;
 			req.didd_notify.e.Rc =
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    IDI_SYNC_REQ_DIDD_REGISTER_ADAPTER_NOTIFY;
 			req.didd_notify.info.callback = (void *)didd_callback;
 			req.didd_notify.info.context = NULL;
 			DAdapter.request((ENTITY *) & req);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				IDI_SYNC_REQ_DIDD_REGISTER_ADAPTER_NOTIFY;
 			req.didd_notify.info.callback = (void *)didd_callback;
 			req.didd_notify.info.context = NULL;
 			DAdapter.request((ENTITY *)&req);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (req.didd_notify.e.Rc != 0xff) {
 				stop_dbg();
 				return (0);
@@ -1376,10 +1592,14 @@ static int divacapi_connect_didd(void)
 			notify_handle = req.didd_notify.info.handle;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			else if ((DIDD_Table[x].type > 0) && (DIDD_Table[x].type < 16)) {	/* IDI Adapter found */
 =======
 		else if ((DIDD_Table[x].type > 0) && (DIDD_Table[x].type < 16)) {	/* IDI Adapter found */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		else if ((DIDD_Table[x].type > 0) && (DIDD_Table[x].type < 16)) {	/* IDI Adapter found */
+>>>>>>> refs/remotes/origin/master
 			diva_add_card(&DIDD_Table[x]);
 		}
 	}
@@ -1404,19 +1624,27 @@ static void divacapi_disconnect_didd(void)
 	req.didd_notify.e.Rc = IDI_SYNC_REQ_DIDD_REMOVE_ADAPTER_NOTIFY;
 	req.didd_notify.info.handle = notify_handle;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DAdapter.request((ENTITY *) & req);
 =======
 	DAdapter.request((ENTITY *)&req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DAdapter.request((ENTITY *)&req);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * we do not provide date/time here,
 <<<<<<< HEAD
+<<<<<<< HEAD
  * the application should do this. 
 =======
  * the application should do this.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * the application should do this.
+>>>>>>> refs/remotes/origin/master
  */
 int fax_head_line_time(char *buffer)
 {
@@ -1426,6 +1654,7 @@ int fax_head_line_time(char *buffer)
 /*
  * init (alloc) main structures
  */
+<<<<<<< HEAD
 static int DIVA_INIT_FUNCTION init_main_structs(void)
 {
 	if (!(mapped_msg = (CAPI_MSG *) diva_os_malloc(0, MAX_MSG_SIZE))) {
@@ -1435,15 +1664,26 @@ static int DIVA_INIT_FUNCTION init_main_structs(void)
 =======
 			return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init init_main_structs(void)
+{
+	if (!(mapped_msg = (CAPI_MSG *) diva_os_malloc(0, MAX_MSG_SIZE))) {
+		DBG_ERR(("init: failed alloc mapped_msg."))
+			return 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!(adapter = diva_os_malloc(0, sizeof(DIVA_CAPI_ADAPTER) * MAX_DESCRIPTORS))) {
 		DBG_ERR(("init: failed alloc adapter struct."))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		diva_os_free(0, mapped_msg);
 =======
 			diva_os_free(0, mapped_msg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			diva_os_free(0, mapped_msg);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	memset(adapter, 0, sizeof(DIVA_CAPI_ADAPTER) * MAX_DESCRIPTORS);
@@ -1451,10 +1691,14 @@ static int DIVA_INIT_FUNCTION init_main_structs(void)
 	if (!(application = diva_os_malloc(0, sizeof(APPL) * MAX_APPL))) {
 		DBG_ERR(("init: failed alloc application struct."))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		diva_os_free(0, mapped_msg);
 =======
 			diva_os_free(0, mapped_msg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			diva_os_free(0, mapped_msg);
+>>>>>>> refs/remotes/origin/master
 		diva_os_free(0, adapter);
 		return 0;
 	}
@@ -1495,15 +1739,23 @@ static void do_api_remove_start(void)
 	if (ret)
 		DBG_ERR(("could not remove signaling ID's"))
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 =======
 			}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * init
  */
+<<<<<<< HEAD
 int DIVA_INIT_FUNCTION init_capifunc(void)
+=======
+int __init init_capifunc(void)
+>>>>>>> refs/remotes/origin/master
 {
 	diva_os_initialize_spin_lock(&api_lock, "capifunc");
 	memset(ControllerMap, 0, MAX_DESCRIPTORS + 1);
@@ -1513,20 +1765,28 @@ int DIVA_INIT_FUNCTION init_capifunc(void)
 	if (!init_main_structs()) {
 		DBG_ERR(("init: failed to init main structs."))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		diva_os_destroy_spin_lock(&api_lock, "capifunc");
 =======
 			diva_os_destroy_spin_lock(&api_lock, "capifunc");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			diva_os_destroy_spin_lock(&api_lock, "capifunc");
+>>>>>>> refs/remotes/origin/master
 		return (0);
 	}
 
 	if (!divacapi_connect_didd()) {
 		DBG_ERR(("init: failed to connect to DIDD."))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		do_api_remove_start();
 =======
 			do_api_remove_start();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			do_api_remove_start();
+>>>>>>> refs/remotes/origin/master
 		divacapi_remove_cards();
 		remove_main_structs();
 		diva_os_destroy_spin_lock(&api_lock, "capifunc");
@@ -1539,7 +1799,11 @@ int DIVA_INIT_FUNCTION init_capifunc(void)
 /*
  * finit
  */
+<<<<<<< HEAD
 void DIVA_EXIT_FUNCTION finit_capifunc(void)
+=======
+void __exit finit_capifunc(void)
+>>>>>>> refs/remotes/origin/master
 {
 	do_api_remove_start();
 	divacapi_disconnect_didd();

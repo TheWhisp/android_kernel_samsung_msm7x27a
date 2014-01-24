@@ -9,6 +9,7 @@
  * modify it under the terms of the GNU General Public License
  * version 2 as published by the Free Software Foundation.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -28,6 +29,14 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/slab.h>
 #include <linux/kernel.h>
+=======
+ */
+
+#include <linux/mm.h>
+#include <linux/slab.h>
+#include <linux/kernel.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 
 #include <linux/netdevice.h>
@@ -40,6 +49,10 @@
 #include <linux/usb/composite.h>
 
 #include "u_phonet.h"
+<<<<<<< HEAD
+=======
+#include "u_ether.h"
+>>>>>>> refs/remotes/origin/master
 
 #define PN_MEDIA_USB	0x1B
 #define MAXPACKET	512
@@ -314,6 +327,7 @@ static int
 pn_rx_submit(struct f_phonet *fp, struct usb_request *req, gfp_t gfp_flags)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct net_device *dev = fp->dev;
 	struct page *page;
 	int err;
@@ -325,6 +339,12 @@ pn_rx_submit(struct f_phonet *fp, struct usb_request *req, gfp_t gfp_flags)
 
 	page = alloc_page(gfp_flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct page *page;
+	int err;
+
+	page = __skb_alloc_page(gfp_flags | __GFP_NOMEMALLOC, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (!page)
 		return -ENOMEM;
 
@@ -335,10 +355,14 @@ pn_rx_submit(struct f_phonet *fp, struct usb_request *req, gfp_t gfp_flags)
 	err = usb_ep_queue(fp->out_ep, req, gfp_flags);
 	if (unlikely(err))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		netdev_free_page(dev, page);
 =======
 		put_page(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		put_page(page);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -373,10 +397,14 @@ static void pn_rx_complete(struct usb_ep *ep, struct usb_request *req)
 
 		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, page,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				skb->len == 0, req->actual);
 =======
 				skb->len <= 1, req->actual, PAGE_SIZE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				skb->len <= 1, req->actual, PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 		page = NULL;
 
 		if (req->actual < req->length) { /* Last fragment */
@@ -405,6 +433,7 @@ static void pn_rx_complete(struct usb_ep *ep, struct usb_request *req)
 
 	if (page)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		netdev_free_page(dev, page);
 	if (req)
 		pn_rx_submit(fp, req, GFP_ATOMIC);
@@ -413,6 +442,11 @@ static void pn_rx_complete(struct usb_ep *ep, struct usb_request *req)
 	if (req)
 		pn_rx_submit(fp, req, GFP_ATOMIC | __GFP_COLD);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		put_page(page);
+	if (req)
+		pn_rx_submit(fp, req, GFP_ATOMIC | __GFP_COLD);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*-------------------------------------------------------------------------*/
@@ -455,6 +489,7 @@ static int pn_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 		__pn_reset(f);
 		if (alt == 1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			struct usb_endpoint_descriptor *out, *in;
 			int i;
 
@@ -467,6 +502,8 @@ static int pn_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 			usb_ep_enable(fp->out_ep, out);
 			usb_ep_enable(fp->in_ep, in);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			int i;
 
 			if (config_ep_by_speed(gadget, f, fp->in_ep) ||
@@ -478,7 +515,10 @@ static int pn_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 			}
 			usb_ep_enable(fp->out_ep);
 			usb_ep_enable(fp->in_ep);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			port->usb = fp;
 			fp->out_ep->driver_data = fp;
@@ -487,10 +527,14 @@ static int pn_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 			netif_carrier_on(dev);
 			for (i = 0; i < phonet_rxq_size; i++)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				pn_rx_submit(fp, fp->out_reqv[i], GFP_ATOMIC);
 =======
 				pn_rx_submit(fp, fp->out_reqv[i], GFP_ATOMIC | __GFP_COLD);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pn_rx_submit(fp, fp->out_reqv[i], GFP_ATOMIC | __GFP_COLD);
+>>>>>>> refs/remotes/origin/master
 		}
 		spin_unlock(&port->lock);
 		return 0;
@@ -533,8 +577,12 @@ static void pn_disconnect(struct usb_function *f)
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static __init
 int pn_bind(struct usb_configuration *c, struct usb_function *f)
+=======
+static int pn_bind(struct usb_configuration *c, struct usb_function *f)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_composite_dev *cdev = c->cdev;
 	struct usb_gadget *gadget = cdev->gadget;
@@ -542,6 +590,28 @@ int pn_bind(struct usb_configuration *c, struct usb_function *f)
 	struct usb_ep *ep;
 	int status, i;
 
+<<<<<<< HEAD
+=======
+	struct f_phonet_opts *phonet_opts;
+
+	phonet_opts = container_of(f->fi, struct f_phonet_opts, func_inst);
+
+	/*
+	 * in drivers/usb/gadget/configfs.c:configfs_composite_bind()
+	 * configurations are bound in sequence with list_for_each_entry,
+	 * in each configuration its functions are bound in sequence
+	 * with list_for_each_entry, so we assume no race condition
+	 * with regard to phonet_opts->bound access
+	 */
+	if (!phonet_opts->bound) {
+		gphonet_set_gadget(phonet_opts->net, gadget);
+		status = gphonet_register_netdev(phonet_opts->net);
+		if (status)
+			return status;
+		phonet_opts->bound = true;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* Reserve interface IDs */
 	status = usb_interface_id(c, f);
 	if (status < 0)
@@ -570,6 +640,7 @@ int pn_bind(struct usb_configuration *c, struct usb_function *f)
 	fp->in_ep = ep;
 	ep->driver_data = fp; /* Claim */
 
+<<<<<<< HEAD
 	pn_hs_sink_desc.bEndpointAddress =
 		pn_fs_sink_desc.bEndpointAddress;
 	pn_hs_source_desc.bEndpointAddress =
@@ -578,6 +649,16 @@ int pn_bind(struct usb_configuration *c, struct usb_function *f)
 	/* Do not try to bind Phonet twice... */
 	fp->function.descriptors = fs_pn_function;
 	fp->function.hs_descriptors = hs_pn_function;
+=======
+	pn_hs_sink_desc.bEndpointAddress = pn_fs_sink_desc.bEndpointAddress;
+	pn_hs_source_desc.bEndpointAddress = pn_fs_source_desc.bEndpointAddress;
+
+	/* Do not try to bind Phonet twice... */
+	status = usb_assign_descriptors(f, fs_pn_function, hs_pn_function,
+			NULL);
+	if (status)
+		goto err;
+>>>>>>> refs/remotes/origin/master
 
 	/* Incoming USB requests */
 	status = -ENOMEM;
@@ -606,7 +687,11 @@ err_req:
 	for (i = 0; i < phonet_rxq_size && fp->out_reqv[i]; i++)
 		usb_ep_free_request(fp->out_ep, fp->out_reqv[i]);
 err:
+<<<<<<< HEAD
 
+=======
+	usb_free_all_descriptors(f);
+>>>>>>> refs/remotes/origin/master
 	if (fp->out_ep)
 		fp->out_ep->driver_data = NULL;
 	if (fp->in_ep)
@@ -615,8 +700,106 @@ err:
 	return status;
 }
 
+<<<<<<< HEAD
 static void
 pn_unbind(struct usb_configuration *c, struct usb_function *f)
+=======
+static inline struct f_phonet_opts *to_f_phonet_opts(struct config_item *item)
+{
+	return container_of(to_config_group(item), struct f_phonet_opts,
+			func_inst.group);
+}
+
+CONFIGFS_ATTR_STRUCT(f_phonet_opts);
+static ssize_t f_phonet_attr_show(struct config_item *item,
+				struct configfs_attribute *attr,
+				char *page)
+{
+	struct f_phonet_opts *opts = to_f_phonet_opts(item);
+	struct f_phonet_opts_attribute *f_phonet_opts_attr =
+		container_of(attr, struct f_phonet_opts_attribute, attr);
+	ssize_t ret = 0;
+
+	if (f_phonet_opts_attr->show)
+		ret = f_phonet_opts_attr->show(opts, page);
+	return ret;
+}
+
+static void phonet_attr_release(struct config_item *item)
+{
+	struct f_phonet_opts *opts = to_f_phonet_opts(item);
+
+	usb_put_function_instance(&opts->func_inst);
+}
+
+static struct configfs_item_operations phonet_item_ops = {
+	.release		= phonet_attr_release,
+	.show_attribute		= f_phonet_attr_show,
+};
+
+static ssize_t f_phonet_ifname_show(struct f_phonet_opts *opts, char *page)
+{
+	return gether_get_ifname(opts->net, page, PAGE_SIZE);
+}
+
+static struct f_phonet_opts_attribute f_phonet_ifname =
+	__CONFIGFS_ATTR_RO(ifname, f_phonet_ifname_show);
+
+static struct configfs_attribute *phonet_attrs[] = {
+	&f_phonet_ifname.attr,
+	NULL,
+};
+
+static struct config_item_type phonet_func_type = {
+	.ct_item_ops	= &phonet_item_ops,
+	.ct_attrs	= phonet_attrs,
+	.ct_owner	= THIS_MODULE,
+};
+
+static void phonet_free_inst(struct usb_function_instance *f)
+{
+	struct f_phonet_opts *opts;
+
+	opts = container_of(f, struct f_phonet_opts, func_inst);
+	if (opts->bound)
+		gphonet_cleanup(opts->net);
+	else
+		free_netdev(opts->net);
+	kfree(opts);
+}
+
+static struct usb_function_instance *phonet_alloc_inst(void)
+{
+	struct f_phonet_opts *opts;
+
+	opts = kzalloc(sizeof(*opts), GFP_KERNEL);
+	if (!opts)
+		return ERR_PTR(-ENOMEM);
+
+	opts->func_inst.free_func_inst = phonet_free_inst;
+	opts->net = gphonet_setup_default();
+	if (IS_ERR(opts->net)) {
+		struct net_device *net = opts->net;
+		kfree(opts);
+		return ERR_CAST(net);
+	}
+
+	config_group_init_type_name(&opts->func_inst.group, "",
+			&phonet_func_type);
+
+	return &opts->func_inst;
+}
+
+static void phonet_free(struct usb_function *f)
+{
+	struct f_phonet *phonet;
+
+	phonet = func_to_pn(f);
+	kfree(phonet);
+}
+
+static void pn_unbind(struct usb_configuration *c, struct usb_function *f)
+>>>>>>> refs/remotes/origin/master
 {
 	struct f_phonet *fp = func_to_pn(f);
 	int i;
@@ -628,6 +811,7 @@ pn_unbind(struct usb_configuration *c, struct usb_function *f)
 		if (fp->out_reqv[i])
 			usb_ep_free_request(fp->out_ep, fp->out_reqv[i]);
 
+<<<<<<< HEAD
 	kfree(fp);
 }
 
@@ -639,19 +823,38 @@ int __init phonet_bind_config(struct usb_configuration *c)
 {
 	struct f_phonet *fp;
 	int err, size;
+=======
+	usb_free_all_descriptors(f);
+}
+
+static struct usb_function *phonet_alloc(struct usb_function_instance *fi)
+{
+	struct f_phonet *fp;
+	struct f_phonet_opts *opts;
+	int size;
+>>>>>>> refs/remotes/origin/master
 
 	size = sizeof(*fp) + (phonet_rxq_size * sizeof(struct usb_request *));
 	fp = kzalloc(size, GFP_KERNEL);
 	if (!fp)
+<<<<<<< HEAD
 		return -ENOMEM;
 
 	fp->dev = dev;
+=======
+		return ERR_PTR(-ENOMEM);
+
+	opts = container_of(fi, struct f_phonet_opts, func_inst);
+
+	fp->dev = opts->net;
+>>>>>>> refs/remotes/origin/master
 	fp->function.name = "phonet";
 	fp->function.bind = pn_bind;
 	fp->function.unbind = pn_unbind;
 	fp->function.set_alt = pn_set_alt;
 	fp->function.get_alt = pn_get_alt;
 	fp->function.disable = pn_disconnect;
+<<<<<<< HEAD
 	spin_lock_init(&fp->rx.lock);
 
 	err = usb_add_function(c, &fp->function);
@@ -670,10 +873,28 @@ int __init gphonet_setup(struct usb_gadget *gadget)
 	dev = alloc_netdev(sizeof(*port), "upnlink%d", pn_net_setup);
 	if (!dev)
 		return -ENOMEM;
+=======
+	fp->function.free_func = phonet_free;
+	spin_lock_init(&fp->rx.lock);
+
+	return &fp->function;
+}
+
+struct net_device *gphonet_setup_default(void)
+{
+	struct net_device *dev;
+	struct phonet_port *port;
+
+	/* Create net device */
+	dev = alloc_netdev(sizeof(*port), "upnlink%d", pn_net_setup);
+	if (!dev)
+		return ERR_PTR(-ENOMEM);
+>>>>>>> refs/remotes/origin/master
 
 	port = netdev_priv(dev);
 	spin_lock_init(&port->lock);
 	netif_carrier_off(dev);
+<<<<<<< HEAD
 	SET_NETDEV_DEV(dev, &gadget->dev);
 
 	err = register_netdev(dev);
@@ -686,3 +907,33 @@ void gphonet_cleanup(void)
 {
 	unregister_netdev(dev);
 }
+=======
+
+	return dev;
+}
+
+void gphonet_set_gadget(struct net_device *net, struct usb_gadget *g)
+{
+	SET_NETDEV_DEV(net, &g->dev);
+}
+
+int gphonet_register_netdev(struct net_device *net)
+{
+	int status;
+
+	status = register_netdev(net);
+	if (status)
+		free_netdev(net);
+
+	return status;
+}
+
+void gphonet_cleanup(struct net_device *dev)
+{
+	unregister_netdev(dev);
+}
+
+DECLARE_USB_FUNCTION_INIT(phonet, phonet_alloc_inst, phonet_alloc);
+MODULE_AUTHOR("Rémi Denis-Courmont");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

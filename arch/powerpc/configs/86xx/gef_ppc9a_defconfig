@@ -25,7 +25,10 @@ CONFIG_HIGH_RES_TIMERS=y
 CONFIG_HZ_1000=y
 CONFIG_PREEMPT=y
 CONFIG_BINFMT_MISC=m
+<<<<<<< HEAD
 CONFIG_IRQ_ALL_CPUS=y
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_SPARSE_IRQ=y
 CONFIG_PCI=y
 CONFIG_PCIEPORTBUS=y
@@ -132,9 +135,13 @@ CONFIG_I2C_CHARDEV=y
 CONFIG_I2C_MPC=y
 CONFIG_GPIO_SYSFS=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 CONFIG_GPIO_GE_FPGA=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_GPIO_GE_FPGA=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_SENSORS_LM90=y
 CONFIG_SENSORS_LM92=y
 CONFIG_WATCHDOG=y

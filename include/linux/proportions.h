@@ -59,10 +59,14 @@ struct prop_local_percpu {
 	int shift;
 	unsigned long period;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t lock;		/* protect the snapshot state */
 =======
 	raw_spinlock_t lock;		/* protect the snapshot state */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spinlock_t lock;		/* protect the snapshot state */
+>>>>>>> refs/remotes/origin/master
 };
 
 int prop_local_init_percpu(struct prop_local_percpu *pl);
@@ -115,18 +119,24 @@ struct prop_local_single {
 	unsigned long period;
 	int shift;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t lock;		/* protect the snapshot state */
 };
 
 #define INIT_PROP_LOCAL_SINGLE(name)			\
 {	.lock = __SPIN_LOCK_UNLOCKED(name.lock),	\
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	raw_spinlock_t lock;		/* protect the snapshot state */
 };
 
 #define INIT_PROP_LOCAL_SINGLE(name)			\
 {	.lock = __RAW_SPIN_LOCK_UNLOCKED(name.lock),	\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int prop_local_init_single(struct prop_local_single *pl);

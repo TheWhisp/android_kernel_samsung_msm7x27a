@@ -54,7 +54,11 @@ Description:
 		It can be enabled by writing the value stored in
 		/sys/class/backlight/<backlight>/max_brightness to
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/sys/class/backlight/<backlight>/brightness.
 =======
 		/sys/class/backlight/<backlight>/brightness.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/sys/class/backlight/<backlight>/brightness.
+>>>>>>> refs/remotes/origin/master

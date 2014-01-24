@@ -44,14 +44,20 @@ struct ccid2_seq {
 #define CCID2_SEQBUF_MAX 128
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Multiple of congestion window to keep the sequence window at
  * (RFC 4340 7.5.2)
  */
 #define CCID2_WIN_CHANGE_FACTOR 5
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * struct ccid2_hc_tx_sock - CCID2 TX half connection
  * @tx_{cwnd,ssthresh,pipe}: as per RFC 4341, section 5
@@ -63,12 +69,18 @@ struct ccid2_seq {
  * @tx_rto:		     RTO value deriving from SRTT and RTTVAR (RFC 2988)
  * @tx_rtt_seq:		     to decay RTTVAR at most once per flight
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @tx_cwnd_used:	     actually used cwnd, W_used of RFC 2861
  * @tx_expected_wnd:	     moving average of @tx_cwnd_used
  * @tx_cwnd_stamp:	     to track idle periods in CWV
  * @tx_lsndtime:	     last time (in jiffies) a data packet was sent
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @tx_rpseq:		     last consecutive seqno
  * @tx_rpdupack:	     dupacks since rpseq
  * @tx_av_chunks:	     list of Ack Vectors received on current skb
@@ -93,14 +105,20 @@ struct ccid2_hc_tx_sock {
 	struct timer_list	tx_rtotimer;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Congestion Window validation (optional, RFC 2861) */
 	u32			tx_cwnd_used,
 				tx_expected_wnd,
 				tx_cwnd_stamp,
 				tx_lsndtime;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u64			tx_rpseq;
 	int			tx_rpdupack;
 	u32			tx_last_cong;
@@ -114,9 +132,12 @@ static inline bool ccid2_cwnd_network_limited(struct ccid2_hc_tx_sock *hc)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct ccid2_hc_rx_sock {
 	int	rx_data;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Convert RFC 3390 larger initial window into an equivalent number of packets.
  * This is based on the numbers specified in RFC 5681, 3.1.
@@ -132,7 +153,10 @@ static inline u32 rfc3390_bytes_to_packets(const u32 smss)
  */
 struct ccid2_hc_rx_sock {
 	u32	rx_num_data_pkts;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct ccid2_hc_tx_sock *ccid2_hc_tx_sk(const struct sock *sk)

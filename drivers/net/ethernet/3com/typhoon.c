@@ -168,7 +168,11 @@ enum typhoon_cards {
 };
 
 /* directly indexed by enum typhoon_cards, above */
+<<<<<<< HEAD
 static struct typhoon_card_info typhoon_card_info[] __devinitdata = {
+=======
+static struct typhoon_card_info typhoon_card_info[] = {
+>>>>>>> refs/remotes/origin/master
 	{ "3Com Typhoon (3C990-TX)",
 		TYPHOON_CRYPTO_NONE},
 	{ "3Com Typhoon (3CR990-TX-95)",
@@ -364,7 +368,11 @@ typhoon_inc_rxfree_index(u32 *index, const int count)
 static inline void
 typhoon_inc_tx_index(u32 *index, const int count)
 {
+<<<<<<< HEAD
 	/* if we start using the Hi Tx ring, this needs updateing */
+=======
+	/* if we start using the Hi Tx ring, this needs updating */
+>>>>>>> refs/remotes/origin/master
 	typhoon_inc_index(index, count, TXLO_ENTRIES);
 }
 
@@ -1690,7 +1698,11 @@ typhoon_rx(struct typhoon *tp, struct basic_ring *rxRing, volatile __le32 * read
 			skb_checksum_none_assert(new_skb);
 
 		if (rx->rxStatus & TYPHOON_RX_VLAN)
+<<<<<<< HEAD
 			__vlan_hwaccel_put_tag(new_skb,
+=======
+			__vlan_hwaccel_put_tag(new_skb, htons(ETH_P_8021Q),
+>>>>>>> refs/remotes/origin/master
 					       ntohl(rx->vlanTag) & 0xffff);
 		netif_receive_skb(new_skb);
 
@@ -2200,7 +2212,11 @@ need_resume:
 }
 #endif
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 typhoon_test_mmio(struct pci_dev *pdev)
 {
 	void __iomem *ioaddr = pci_iomap(pdev, 1, 128);
@@ -2258,7 +2274,11 @@ static const struct net_device_ops typhoon_netdev_ops = {
 	.ndo_change_mtu		= eth_change_mtu,
 };
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 typhoon_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 	struct net_device *dev;
@@ -2445,9 +2465,15 @@ typhoon_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	 * settings -- so we only allow the user to toggle the TX processing.
 	 */
 	dev->hw_features = NETIF_F_SG | NETIF_F_IP_CSUM | NETIF_F_TSO |
+<<<<<<< HEAD
 		NETIF_F_HW_VLAN_TX;
 	dev->features = dev->hw_features |
 		NETIF_F_HW_VLAN_RX | NETIF_F_RXCSUM;
+=======
+		NETIF_F_HW_VLAN_CTAG_TX;
+	dev->features = dev->hw_features |
+		NETIF_F_HW_VLAN_CTAG_RX | NETIF_F_RXCSUM;
+>>>>>>> refs/remotes/origin/master
 
 	if(register_netdev(dev) < 0) {
 		err_msg = "unable to register netdev";
@@ -2509,7 +2535,11 @@ error_out:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 typhoon_remove_one(struct pci_dev *pdev)
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
@@ -2525,7 +2555,10 @@ typhoon_remove_one(struct pci_dev *pdev)
 	pci_release_regions(pdev);
 	pci_clear_mwi(pdev);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_netdev(dev);
 }
 
@@ -2533,7 +2566,11 @@ static struct pci_driver typhoon_driver = {
 	.name		= KBUILD_MODNAME,
 	.id_table	= typhoon_pci_tbl,
 	.probe		= typhoon_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(typhoon_remove_one),
+=======
+	.remove		= typhoon_remove_one,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= typhoon_suspend,
 	.resume		= typhoon_resume,
@@ -2549,8 +2586,12 @@ typhoon_init(void)
 static void __exit
 typhoon_cleanup(void)
 {
+<<<<<<< HEAD
 	if (typhoon_fw)
 		release_firmware(typhoon_fw);
+=======
+	release_firmware(typhoon_fw);
+>>>>>>> refs/remotes/origin/master
 	pci_unregister_driver(&typhoon_driver);
 }
 

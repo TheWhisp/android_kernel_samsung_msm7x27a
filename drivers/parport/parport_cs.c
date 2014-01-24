@@ -193,6 +193,7 @@ static struct pcmcia_driver parport_cs_driver = {
 	.remove		= parport_detach,
 	.id_table	= parport_ids,
 };
+<<<<<<< HEAD
 
 static int __init init_parport_cs(void)
 {
@@ -206,3 +207,6 @@ static void __exit exit_parport_cs(void)
 
 module_init(init_parport_cs);
 module_exit(exit_parport_cs);
+=======
+module_pcmcia_driver(parport_cs_driver);
+>>>>>>> refs/remotes/origin/master

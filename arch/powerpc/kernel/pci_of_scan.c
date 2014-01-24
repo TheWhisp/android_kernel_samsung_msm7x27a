@@ -16,9 +16,13 @@
 
 #include <linux/pci.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/pci-bridge.h>
 #include <asm/prom.h>
 
@@ -27,12 +31,20 @@
  */
 static u32 get_int_prop(struct device_node *np, const char *name, u32 def)
 {
+<<<<<<< HEAD
 	const u32 *prop;
+=======
+	const __be32 *prop;
+>>>>>>> refs/remotes/origin/master
 	int len;
 
 	prop = of_get_property(np, name, &len);
 	if (prop && len >= 4)
+<<<<<<< HEAD
 		return *prop;
+=======
+		return of_read_number(prop, 1);
+>>>>>>> refs/remotes/origin/master
 	return def;
 }
 
@@ -79,11 +91,17 @@ static void of_pci_parse_addrs(struct device_node *node, struct pci_dev *dev)
 	u64 base, size;
 	unsigned int flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct pci_bus_region region;
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct resource *res;
 	const u32 *addrs;
+=======
+	struct pci_bus_region region;
+	struct resource *res;
+	const __be32 *addrs;
+>>>>>>> refs/remotes/origin/master
 	u32 i;
 	int proplen;
 
@@ -92,14 +110,22 @@ static void of_pci_parse_addrs(struct device_node *node, struct pci_dev *dev)
 		return;
 	pr_debug("    parse addresses (%d bytes) @ %p\n", proplen, addrs);
 	for (; proplen >= 20; proplen -= 20, addrs += 5) {
+<<<<<<< HEAD
 		flags = pci_parse_of_flags(addrs[0], 0);
+=======
+		flags = pci_parse_of_flags(of_read_number(addrs, 1), 0);
+>>>>>>> refs/remotes/origin/master
 		if (!flags)
 			continue;
 		base = of_read_number(&addrs[1], 2);
 		size = of_read_number(&addrs[3], 2);
 		if (!size)
 			continue;
+<<<<<<< HEAD
 		i = addrs[0] & 0xff;
+=======
+		i = of_read_number(addrs, 1) & 0xff;
+>>>>>>> refs/remotes/origin/master
 		pr_debug("  base: %llx, size: %llx, i: %x\n",
 			 (unsigned long long)base,
 			 (unsigned long long)size, i);
@@ -114,17 +140,23 @@ static void of_pci_parse_addrs(struct device_node *node, struct pci_dev *dev)
 			continue;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		res->start = base;
 		res->end = base + size - 1;
 		res->flags = flags;
 		res->name = pci_name(dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		res->flags = flags;
 		res->name = pci_name(dev);
 		region.start = base;
 		region.end = base + size - 1;
 		pcibios_bus_to_resource(dev, res, &region);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -141,7 +173,11 @@ struct pci_dev *of_create_pci_dev(struct device_node *node,
 	const char *type;
 	struct pci_slot *slot;
 
+<<<<<<< HEAD
 	dev = alloc_pci_dev();
+=======
+	dev = pci_alloc_dev(bus);
+>>>>>>> refs/remotes/origin/master
 	if (!dev)
 		return NULL;
 	type = of_get_property(node, "device_type", NULL);
@@ -150,7 +186,10 @@ struct pci_dev *of_create_pci_dev(struct device_node *node,
 
 	pr_debug("    create device, devfn: %x, type: %s\n", devfn, type);
 
+<<<<<<< HEAD
 	dev->bus = bus;
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->dev.of_node = of_node_get(node);
 	dev->dev.parent = bus->bridge;
 	dev->dev.bus = &pci_bus_type;
@@ -178,7 +217,11 @@ struct pci_dev *of_create_pci_dev(struct device_node *node,
 	pr_debug("    class: 0x%x\n", dev->class);
 	pr_debug("    revision: 0x%x\n", dev->revision);
 
+<<<<<<< HEAD
 	dev->current_state = 4;		/* unknown power state */
+=======
+	dev->current_state = PCI_UNKNOWN;	/* unknown power state */
+>>>>>>> refs/remotes/origin/master
 	dev->error_state = pci_channel_io_normal;
 	dev->dma_mask = 0xffffffff;
 
@@ -211,13 +254,17 @@ EXPORT_SYMBOL(of_create_pci_dev);
 
 /**
  * of_scan_pci_bridge - Set up a PCI bridge and scan for child nodes
+<<<<<<< HEAD
  * @node: device tree node of bridge
+=======
+>>>>>>> refs/remotes/origin/master
  * @dev: pci_dev structure for the bridge
  *
  * of_scan_bus() calls this routine for each PCI bridge that it finds, and
  * this routine in turn call of_scan_bus() recusively to scan for more child
  * devices.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 void __devinit of_scan_pci_bridge(struct device_node *node,
 				  struct pci_dev *dev)
@@ -234,6 +281,15 @@ void __devinit of_scan_pci_bridge(struct pci_dev *dev)
 	int len, i, mode;
 	struct pci_bus_region region;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void of_scan_pci_bridge(struct pci_dev *dev)
+{
+	struct device_node *node = dev->dev.of_node;
+	struct pci_bus *bus;
+	const __be32 *busrange, *ranges;
+	int len, i, mode;
+	struct pci_bus_region region;
+>>>>>>> refs/remotes/origin/master
 	struct resource *res;
 	unsigned int flags;
 	u64 size;
@@ -254,6 +310,7 @@ void __devinit of_scan_pci_bridge(struct pci_dev *dev)
 		return;
 	}
 
+<<<<<<< HEAD
 	bus = pci_add_new_bus(dev->bus, dev, busrange[0]);
 	if (!bus) {
 		printk(KERN_ERR "Failed to create pci bus for %s\n",
@@ -268,6 +325,24 @@ void __devinit of_scan_pci_bridge(struct pci_dev *dev)
 	bus->dev.of_node = of_node_get(node);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bus = pci_find_bus(pci_domain_nr(dev->bus),
+			   of_read_number(busrange, 1));
+	if (!bus) {
+		bus = pci_add_new_bus(dev->bus, dev,
+				      of_read_number(busrange, 1));
+		if (!bus) {
+			printk(KERN_ERR "Failed to create pci bus for %s\n",
+			       node->full_name);
+			return;
+		}
+	}
+
+	bus->primary = dev->bus->number;
+	pci_bus_insert_busn_res(bus, of_read_number(busrange, 1),
+				of_read_number(busrange+1, 1));
+	bus->bridge_ctl = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* parse ranges property */
 	/* PCI #address-cells == 3 and #size-cells == 2 always */
@@ -279,7 +354,11 @@ void __devinit of_scan_pci_bridge(struct pci_dev *dev)
 	}
 	i = 1;
 	for (; len >= 32; len -= 32, ranges += 8) {
+<<<<<<< HEAD
 		flags = pci_parse_of_flags(ranges[0], 1);
+=======
+		flags = pci_parse_of_flags(of_read_number(ranges, 1), 1);
+>>>>>>> refs/remotes/origin/master
 		size = of_read_number(&ranges[6], 2);
 		if (flags == 0 || size == 0)
 			continue;
@@ -300,15 +379,21 @@ void __devinit of_scan_pci_bridge(struct pci_dev *dev)
 			++i;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		res->start = of_read_number(&ranges[1], 2);
 		res->end = res->start + size - 1;
 		res->flags = flags;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		res->flags = flags;
 		region.start = of_read_number(&ranges[1], 2);
 		region.end = region.start + size - 1;
 		pcibios_bus_to_resource(dev, res, &region);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	sprintf(bus->name, "PCI Bus %04x:%02x", pci_domain_nr(bus),
 		bus->number);
@@ -326,18 +411,60 @@ void __devinit of_scan_pci_bridge(struct pci_dev *dev)
 }
 EXPORT_SYMBOL(of_scan_pci_bridge);
 
+<<<<<<< HEAD
+=======
+static struct pci_dev *of_scan_pci_dev(struct pci_bus *bus,
+			    struct device_node *dn)
+{
+	struct pci_dev *dev = NULL;
+	const __be32 *reg;
+	int reglen, devfn;
+
+	pr_debug("  * %s\n", dn->full_name);
+	if (!of_device_is_available(dn))
+		return NULL;
+
+	reg = of_get_property(dn, "reg", &reglen);
+	if (reg == NULL || reglen < 20)
+		return NULL;
+	devfn = (of_read_number(reg, 1) >> 8) & 0xff;
+
+	/* Check if the PCI device is already there */
+	dev = pci_get_slot(bus, devfn);
+	if (dev) {
+		pci_dev_put(dev);
+		return dev;
+	}
+
+	/* create a new pci_dev for this device */
+	dev = of_create_pci_dev(dn, bus, devfn);
+	if (!dev)
+		return NULL;
+
+	pr_debug("  dev header type: %x\n", dev->hdr_type);
+	return dev;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * __of_scan_bus - given a PCI bus node, setup bus and scan for child devices
  * @node: device tree node for the PCI bus
  * @bus: pci_bus structure for the PCI bus
  * @rescan_existing: Flag indicating bus has already been set up
  */
+<<<<<<< HEAD
 static void __devinit __of_scan_bus(struct device_node *node,
 				    struct pci_bus *bus, int rescan_existing)
 {
 	struct device_node *child;
 	const u32 *reg;
 	int reglen, devfn;
+=======
+static void __of_scan_bus(struct device_node *node, struct pci_bus *bus,
+			  int rescan_existing)
+{
+	struct device_node *child;
+>>>>>>> refs/remotes/origin/master
 	struct pci_dev *dev;
 
 	pr_debug("of_scan_bus(%s) bus no %d...\n",
@@ -345,6 +472,7 @@ static void __devinit __of_scan_bus(struct device_node *node,
 
 	/* Scan direct children */
 	for_each_child_of_node(node, child) {
+<<<<<<< HEAD
 		pr_debug("  * %s\n", child->full_name);
 		if (!of_device_is_available(child))
 			continue;
@@ -355,6 +483,9 @@ static void __devinit __of_scan_bus(struct device_node *node,
 
 		/* create a new pci_dev for this device */
 		dev = of_create_pci_dev(child, bus, devfn);
+=======
+		dev = of_scan_pci_dev(bus, child);
+>>>>>>> refs/remotes/origin/master
 		if (!dev)
 			continue;
 		pr_debug("    dev header type: %x\n", dev->hdr_type);
@@ -372,12 +503,16 @@ static void __devinit __of_scan_bus(struct device_node *node,
 		if (dev->hdr_type == PCI_HEADER_TYPE_BRIDGE ||
 		    dev->hdr_type == PCI_HEADER_TYPE_CARDBUS) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			struct device_node *child = pci_device_to_OF_node(dev);
 			if (child)
 				of_scan_pci_bridge(child, dev);
 =======
 			of_scan_pci_bridge(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			of_scan_pci_bridge(dev);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
@@ -387,8 +522,12 @@ static void __devinit __of_scan_bus(struct device_node *node,
  * @node: device tree node for the PCI bus
  * @bus: pci_bus structure for the PCI bus
  */
+<<<<<<< HEAD
 void __devinit of_scan_bus(struct device_node *node,
 			   struct pci_bus *bus)
+=======
+void of_scan_bus(struct device_node *node, struct pci_bus *bus)
+>>>>>>> refs/remotes/origin/master
 {
 	__of_scan_bus(node, bus, 0);
 }
@@ -402,8 +541,12 @@ EXPORT_SYMBOL_GPL(of_scan_bus);
  * Same as of_scan_bus, but for a pci_bus structure that has already been
  * setup.
  */
+<<<<<<< HEAD
 void __devinit of_rescan_bus(struct device_node *node,
 			     struct pci_bus *bus)
+=======
+void of_rescan_bus(struct device_node *node, struct pci_bus *bus)
+>>>>>>> refs/remotes/origin/master
 {
 	__of_scan_bus(node, bus, 1);
 }

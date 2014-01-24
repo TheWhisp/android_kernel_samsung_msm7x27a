@@ -179,6 +179,18 @@ static struct usbmix_name_map audigy2nx_map[] = {
 	{ 0 } /* terminator */
 };
 
+<<<<<<< HEAD
+=======
+static struct usbmix_selector_map c400_selectors[] = {
+	{
+		.id = 0x80,
+		.count = 2,
+		.names = (const char*[]) {"Internal", "SPDIF"}
+	},
+	{ 0 } /* terminator */
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct usbmix_selector_map audigy2nx_selectors[] = {
 	{
 		.id = 14, /* Capture Source */
@@ -288,6 +300,18 @@ static struct usbmix_name_map scratch_live_map[] = {
 	{ 0 } /* terminator */
 };
 
+<<<<<<< HEAD
+=======
+static struct usbmix_name_map ebox44_map[] = {
+	{ 4, NULL }, /* FU */
+	{ 6, NULL }, /* MU */
+	{ 7, NULL }, /* FU */
+	{ 10, NULL }, /* FU */
+	{ 11, NULL }, /* MU */
+	{ 0 }
+};
+
+>>>>>>> refs/remotes/origin/master
 /* "Gamesurround Muse Pocket LT" looks same like "Sound Blaster MP3+"
  *  most importand difference is SU[8], it should be set to "Capture Source"
  *  to make alsamixer and PA working properly.
@@ -304,6 +328,15 @@ static struct usbmix_name_map hercules_usb51_map[] = {
 	{ 0 }				/* terminator */
 };
 
+<<<<<<< HEAD
+=======
+/* Plantronics Gamecom 780 has a broken volume control, better to disable it */
+static struct usbmix_name_map gamecom780_map[] = {
+	{ 9, NULL }, /* FU, speaker out */
+	{}
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Control map entries
  */
@@ -332,6 +365,21 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
 		.map = audigy2nx_map,
 		.selector_map = audigy2nx_selectors,
 	},
+<<<<<<< HEAD
+=======
+	{	/* Logitech, Inc. QuickCam Pro for Notebooks */
+		.id = USB_ID(0x046d, 0x0991),
+		.ignore_ctl_error = 1,
+	},
+	{	/* Logitech, Inc. QuickCam E 3500 */
+		.id = USB_ID(0x046d, 0x09a4),
+		.ignore_ctl_error = 1,
+	},
+	{	/* Plantronics GameCom 780 */
+		.id = USB_ID(0x047f, 0xc010),
+		.map = gamecom780_map,
+	},
+>>>>>>> refs/remotes/origin/master
 	{
 		/* Hercules DJ Console (Windows Edition) */
 		.id = USB_ID(0x06f8, 0xb000),
@@ -350,6 +398,17 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
 		.map = hercules_usb51_map,
 	},
 	{
+<<<<<<< HEAD
+=======
+		.id = USB_ID(0x0763, 0x2030),
+		.selector_map = c400_selectors,
+	},
+	{
+		.id = USB_ID(0x0763, 0x2031),
+		.selector_map = c400_selectors,
+	},
+	{
+>>>>>>> refs/remotes/origin/master
 		.id = USB_ID(0x08bb, 0x2702),
 		.map = linex_map,
 		.ignore_ctl_error = 1,
@@ -371,6 +430,13 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
 		.map = scratch_live_map,
 		.ignore_ctl_error = 1,
 	},
+<<<<<<< HEAD
+=======
+	{
+		.id = USB_ID(0x200c, 0x1018),
+		.map = ebox44_map,
+	},
+>>>>>>> refs/remotes/origin/master
 	{ 0 } /* terminator */
 };
 

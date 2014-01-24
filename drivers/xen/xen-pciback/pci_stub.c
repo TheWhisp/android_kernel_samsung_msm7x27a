@@ -4,6 +4,12 @@
  * Ryan Wilson <hap9@epoch.ncsc.mil>
  * Chris Bookholt <hap10@epoch.ncsc.mil>
  */
+<<<<<<< HEAD
+=======
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/rwsem.h>
@@ -17,6 +23,10 @@
 #include <xen/events.h>
 #include <asm/xen/pci.h>
 #include <asm/xen/hypervisor.h>
+<<<<<<< HEAD
+=======
+#include <xen/interface/physdev.h>
+>>>>>>> refs/remotes/origin/master
 #include "pciback.h"
 #include "conf_space.h"
 #include "conf_space_quirks.h"
@@ -85,6 +95,7 @@ static struct pcistub_device *pcistub_device_alloc(struct pci_dev *dev)
 static void pcistub_device_release(struct kref *kref)
 {
 	struct pcistub_device *psdev;
+<<<<<<< HEAD
 	struct xen_pcibk_dev_data *dev_data;
 
 	psdev = container_of(kref, struct pcistub_device, kref);
@@ -93,10 +104,23 @@ static void pcistub_device_release(struct kref *kref)
 	dev_dbg(&psdev->dev->dev, "pcistub_device_release\n");
 
 	xen_unregister_device_domain_owner(psdev->dev);
+=======
+	struct pci_dev *dev;
+	struct xen_pcibk_dev_data *dev_data;
+
+	psdev = container_of(kref, struct pcistub_device, kref);
+	dev = psdev->dev;
+	dev_data = pci_get_drvdata(dev);
+
+	dev_dbg(&dev->dev, "pcistub_device_release\n");
+
+	xen_unregister_device_domain_owner(dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* Call the reset function which does not take lock as this
 	 * is called from "unbind" which takes a device_lock mutex.
 	 */
+<<<<<<< HEAD
 	__pci_reset_function_locked(psdev->dev);
 	if (pci_load_and_free_saved_state(psdev->dev,
 					  &dev_data->pci_saved_state)) {
@@ -116,6 +140,40 @@ static void pcistub_device_release(struct kref *kref)
 
 	psdev->dev->dev_flags &= ~PCI_DEV_FLAGS_ASSIGNED;
 	pci_dev_put(psdev->dev);
+=======
+	__pci_reset_function_locked(dev);
+	if (pci_load_and_free_saved_state(dev, &dev_data->pci_saved_state))
+		dev_dbg(&dev->dev, "Could not reload PCI state\n");
+	else
+		pci_restore_state(dev);
+
+	if (dev->msix_cap) {
+		struct physdev_pci_device ppdev = {
+			.seg = pci_domain_nr(dev->bus),
+			.bus = dev->bus->number,
+			.devfn = dev->devfn
+		};
+		int err = HYPERVISOR_physdev_op(PHYSDEVOP_release_msix,
+						&ppdev);
+
+		if (err)
+			dev_warn(&dev->dev, "MSI-X release failed (%d)\n",
+				 err);
+	}
+
+	/* Disable the device */
+	xen_pcibk_reset_device(dev);
+
+	kfree(dev_data);
+	pci_set_drvdata(dev, NULL);
+
+	/* Clean-up the device */
+	xen_pcibk_config_free_dyn_fields(dev);
+	xen_pcibk_config_free_dev(dev);
+
+	dev->dev_flags &= ~PCI_DEV_FLAGS_ASSIGNED;
+	pci_dev_put(dev);
+>>>>>>> refs/remotes/origin/master
 
 	kfree(psdev);
 }
@@ -142,7 +200,12 @@ static struct pcistub_device *pcistub_device_find(int domain, int bus,
 		if (psdev->dev != NULL
 		    && domain == pci_domain_nr(psdev->dev->bus)
 		    && bus == psdev->dev->bus->number
+<<<<<<< HEAD
 		    && PCI_DEVFN(slot, func) == psdev->dev->devfn) {
+=======
+		    && slot == PCI_SLOT(psdev->dev->devfn)
+		    && func == PCI_FUNC(psdev->dev->devfn)) {
+>>>>>>> refs/remotes/origin/master
 			pcistub_device_get(psdev);
 			goto out;
 		}
@@ -191,7 +254,12 @@ struct pci_dev *pcistub_get_pci_dev_by_slot(struct xen_pcibk_device *pdev,
 		if (psdev->dev != NULL
 		    && domain == pci_domain_nr(psdev->dev->bus)
 		    && bus == psdev->dev->bus->number
+<<<<<<< HEAD
 		    && PCI_DEVFN(slot, func) == psdev->dev->devfn) {
+=======
+		    && slot == PCI_SLOT(psdev->dev->devfn)
+		    && func == PCI_FUNC(psdev->dev->devfn)) {
+>>>>>>> refs/remotes/origin/master
 			found_dev = pcistub_device_get_pci_dev(pdev, psdev);
 			break;
 		}
@@ -270,8 +338,13 @@ void pcistub_put_pci_dev(struct pci_dev *dev)
 	up_write(&pcistub_sem);
 }
 
+<<<<<<< HEAD
 static int __devinit pcistub_match_one(struct pci_dev *dev,
 				       struct pcistub_device_id *pdev_id)
+=======
+static int pcistub_match_one(struct pci_dev *dev,
+			     struct pcistub_device_id *pdev_id)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Match the specified device by domain, bus, slot, func and also if
 	 * any of the device's parent bridges match.
@@ -290,7 +363,11 @@ static int __devinit pcistub_match_one(struct pci_dev *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit pcistub_match(struct pci_dev *dev)
+=======
+static int pcistub_match(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pcistub_device_id *pdev_id;
 	unsigned long flags;
@@ -308,7 +385,11 @@ static int __devinit pcistub_match(struct pci_dev *dev)
 	return found;
 }
 
+<<<<<<< HEAD
 static int __devinit pcistub_init_device(struct pci_dev *dev)
+=======
+static int pcistub_init_device(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct xen_pcibk_dev_data *dev_data;
 	int err = 0;
@@ -353,6 +434,22 @@ static int __devinit pcistub_init_device(struct pci_dev *dev)
 	if (err)
 		goto config_release;
 
+<<<<<<< HEAD
+=======
+	if (dev->msix_cap) {
+		struct physdev_pci_device ppdev = {
+			.seg = pci_domain_nr(dev->bus),
+			.bus = dev->bus->number,
+			.devfn = dev->devfn
+		};
+
+		err = HYPERVISOR_physdev_op(PHYSDEVOP_prepare_msix, &ppdev);
+		if (err)
+			dev_err(&dev->dev, "MSI-X preparation failed (%d)\n",
+				err);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* We need the device active to save the state. */
 	dev_dbg(&dev->dev, "save state of device\n");
 	pci_save_state(dev);
@@ -360,8 +457,14 @@ static int __devinit pcistub_init_device(struct pci_dev *dev)
 	if (!dev_data->pci_saved_state)
 		dev_err(&dev->dev, "Could not store PCI conf saved state!\n");
 	else {
+<<<<<<< HEAD
 		dev_dbg(&dev->dev, "reseting (FLR, D3, etc) the device\n");
 		__pci_reset_function_locked(dev);
+=======
+		dev_dbg(&dev->dev, "resetting (FLR, D3, etc) the device\n");
+		__pci_reset_function_locked(dev);
+		pci_restore_state(dev);
+>>>>>>> refs/remotes/origin/master
 	}
 	/* Now disable the device (this also ensures some private device
 	 * data is setup before we export)
@@ -393,8 +496,11 @@ static int __init pcistub_init_devices_late(void)
 	unsigned long flags;
 	int err = 0;
 
+<<<<<<< HEAD
 	pr_debug(DRV_NAME ": pcistub_init_devices_late\n");
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&pcistub_devices_lock, flags);
 
 	while (!list_empty(&seized_devices)) {
@@ -425,7 +531,11 @@ static int __init pcistub_init_devices_late(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit pcistub_seize(struct pci_dev *dev)
+=======
+static int pcistub_seize(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pcistub_device *psdev;
 	unsigned long flags;
@@ -460,8 +570,12 @@ static int __devinit pcistub_seize(struct pci_dev *dev)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit pcistub_probe(struct pci_dev *dev,
 				   const struct pci_device_id *id)
+=======
+static int pcistub_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = 0;
 
@@ -513,6 +627,7 @@ static void pcistub_remove(struct pci_dev *dev)
 			found_psdev->pdev);
 
 		if (found_psdev->pdev) {
+<<<<<<< HEAD
 			printk(KERN_WARNING DRV_NAME ": ****** removing device "
 			       "%s while still in-use! ******\n",
 			       pci_name(found_psdev->dev));
@@ -522,6 +637,13 @@ static void pcistub_remove(struct pci_dev *dev)
 			       "domain before binding device\n");
 			printk(KERN_WARNING DRV_NAME ": ****** to other drivers "
 			       "or domains\n");
+=======
+			pr_warn("****** removing device %s while still in-use! ******\n",
+			       pci_name(found_psdev->dev));
+			pr_warn("****** driver domain may still access this device's i/o resources!\n");
+			pr_warn("****** shutdown driver domain before binding device\n");
+			pr_warn("****** to other drivers or domains\n");
+>>>>>>> refs/remotes/origin/master
 
 			xen_pcibk_release_pci_dev(found_psdev->pdev,
 						found_psdev->dev);
@@ -681,14 +803,22 @@ static pci_ers_result_t xen_pcibk_slot_reset(struct pci_dev *dev)
 		dev_err(&dev->dev, DRV_NAME " device is not connected or owned"
 			" by HVM, kill it\n");
 		kill_domain_by_device(psdev);
+<<<<<<< HEAD
 		goto release;
+=======
+		goto end;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!test_bit(_XEN_PCIB_AERHANDLER,
 		(unsigned long *)&psdev->pdev->sh_info->flags)) {
 		dev_err(&dev->dev,
 			"guest with no AER driver should have been killed\n");
+<<<<<<< HEAD
 		goto release;
+=======
+		goto end;
+>>>>>>> refs/remotes/origin/master
 	}
 	result = common_process(psdev, 1, XEN_PCI_OP_aer_slotreset, result);
 
@@ -698,9 +828,15 @@ static pci_ers_result_t xen_pcibk_slot_reset(struct pci_dev *dev)
 			"No AER slot_reset service or disconnected!\n");
 		kill_domain_by_device(psdev);
 	}
+<<<<<<< HEAD
 release:
 	pcistub_device_put(psdev);
 end:
+=======
+end:
+	if (psdev)
+		pcistub_device_put(psdev);
+>>>>>>> refs/remotes/origin/master
 	up_write(&pcistub_sem);
 	return result;
 
@@ -739,14 +875,22 @@ static pci_ers_result_t xen_pcibk_mmio_enabled(struct pci_dev *dev)
 		dev_err(&dev->dev, DRV_NAME " device is not connected or owned"
 			" by HVM, kill it\n");
 		kill_domain_by_device(psdev);
+<<<<<<< HEAD
 		goto release;
+=======
+		goto end;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!test_bit(_XEN_PCIB_AERHANDLER,
 		(unsigned long *)&psdev->pdev->sh_info->flags)) {
 		dev_err(&dev->dev,
 			"guest with no AER driver should have been killed\n");
+<<<<<<< HEAD
 		goto release;
+=======
+		goto end;
+>>>>>>> refs/remotes/origin/master
 	}
 	result = common_process(psdev, 1, XEN_PCI_OP_aer_mmio, result);
 
@@ -756,9 +900,15 @@ static pci_ers_result_t xen_pcibk_mmio_enabled(struct pci_dev *dev)
 			"No AER mmio_enabled service or disconnected!\n");
 		kill_domain_by_device(psdev);
 	}
+<<<<<<< HEAD
 release:
 	pcistub_device_put(psdev);
 end:
+=======
+end:
+	if (psdev)
+		pcistub_device_put(psdev);
+>>>>>>> refs/remotes/origin/master
 	up_write(&pcistub_sem);
 	return result;
 }
@@ -797,7 +947,11 @@ static pci_ers_result_t xen_pcibk_error_detected(struct pci_dev *dev,
 		dev_err(&dev->dev, DRV_NAME " device is not connected or owned"
 			" by HVM, kill it\n");
 		kill_domain_by_device(psdev);
+<<<<<<< HEAD
 		goto release;
+=======
+		goto end;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*Guest owns the device yet no aer handler regiested, kill guest*/
@@ -805,7 +959,11 @@ static pci_ers_result_t xen_pcibk_error_detected(struct pci_dev *dev,
 		(unsigned long *)&psdev->pdev->sh_info->flags)) {
 		dev_dbg(&dev->dev, "guest may have no aer driver, kill it\n");
 		kill_domain_by_device(psdev);
+<<<<<<< HEAD
 		goto release;
+=======
+		goto end;
+>>>>>>> refs/remotes/origin/master
 	}
 	result = common_process(psdev, error, XEN_PCI_OP_aer_detected, result);
 
@@ -815,9 +973,15 @@ static pci_ers_result_t xen_pcibk_error_detected(struct pci_dev *dev,
 			"No AER error_detected service or disconnected!\n");
 		kill_domain_by_device(psdev);
 	}
+<<<<<<< HEAD
 release:
 	pcistub_device_put(psdev);
 end:
+=======
+end:
+	if (psdev)
+		pcistub_device_put(psdev);
+>>>>>>> refs/remotes/origin/master
 	up_write(&pcistub_sem);
 	return result;
 }
@@ -851,7 +1015,11 @@ static void xen_pcibk_error_resume(struct pci_dev *dev)
 		dev_err(&dev->dev, DRV_NAME " device is not connected or owned"
 			" by HVM, kill it\n");
 		kill_domain_by_device(psdev);
+<<<<<<< HEAD
 		goto release;
+=======
+		goto end;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!test_bit(_XEN_PCIB_AERHANDLER,
@@ -859,6 +1027,7 @@ static void xen_pcibk_error_resume(struct pci_dev *dev)
 		dev_err(&dev->dev,
 			"guest with no AER driver should have been killed\n");
 		kill_domain_by_device(psdev);
+<<<<<<< HEAD
 		goto release;
 	}
 	common_process(psdev, 1, XEN_PCI_OP_aer_resume,
@@ -866,12 +1035,25 @@ static void xen_pcibk_error_resume(struct pci_dev *dev)
 release:
 	pcistub_device_put(psdev);
 end:
+=======
+		goto end;
+	}
+	common_process(psdev, 1, XEN_PCI_OP_aer_resume,
+		       PCI_ERS_RESULT_RECOVERED);
+end:
+	if (psdev)
+		pcistub_device_put(psdev);
+>>>>>>> refs/remotes/origin/master
 	up_write(&pcistub_sem);
 	return;
 }
 
 /*add xen_pcibk AER handling*/
+<<<<<<< HEAD
 static struct pci_error_handlers xen_pcibk_error_handler = {
+=======
+static const struct pci_error_handlers xen_pcibk_error_handler = {
+>>>>>>> refs/remotes/origin/master
 	.error_detected = xen_pcibk_error_detected,
 	.mmio_enabled = xen_pcibk_mmio_enabled,
 	.slot_reset = xen_pcibk_slot_reset,
@@ -896,6 +1078,7 @@ static struct pci_driver xen_pcibk_pci_driver = {
 static inline int str_to_slot(const char *buf, int *domain, int *bus,
 			      int *slot, int *func)
 {
+<<<<<<< HEAD
 	int err;
 
 	err = sscanf(buf, " %x:%x:%x.%x", domain, bus, slot, func);
@@ -908,6 +1091,37 @@ static inline int str_to_slot(const char *buf, int *domain, int *bus,
 	*domain = 0;
 	err = sscanf(buf, " %x:%x.%x", bus, slot, func);
 	if (err == 3)
+=======
+	int parsed = 0;
+
+	switch (sscanf(buf, " %x:%x:%x.%x %n", domain, bus, slot, func,
+		       &parsed)) {
+	case 3:
+		*func = -1;
+		sscanf(buf, " %x:%x:%x.* %n", domain, bus, slot, &parsed);
+		break;
+	case 2:
+		*slot = *func = -1;
+		sscanf(buf, " %x:%x:*.* %n", domain, bus, &parsed);
+		break;
+	}
+	if (parsed && !buf[parsed])
+		return 0;
+
+	/* try again without domain */
+	*domain = 0;
+	switch (sscanf(buf, " %x:%x.%x %n", bus, slot, func, &parsed)) {
+	case 2:
+		*func = -1;
+		sscanf(buf, " %x:%x.* %n", bus, slot, &parsed);
+		break;
+	case 1:
+		*slot = *func = -1;
+		sscanf(buf, " %x:*.* %n", bus, &parsed);
+		break;
+	}
+	if (parsed && !buf[parsed])
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	return -EINVAL;
@@ -916,6 +1130,7 @@ static inline int str_to_slot(const char *buf, int *domain, int *bus,
 static inline int str_to_quirk(const char *buf, int *domain, int *bus, int
 			       *slot, int *func, int *reg, int *size, int *mask)
 {
+<<<<<<< HEAD
 	int err;
 
 	err =
@@ -923,6 +1138,22 @@ static inline int str_to_quirk(const char *buf, int *domain, int *bus, int
 		   func, reg, size, mask);
 	if (err == 7)
 		return 0;
+=======
+	int parsed = 0;
+
+	sscanf(buf, " %x:%x:%x.%x-%x:%x:%x %n", domain, bus, slot, func,
+	       reg, size, mask, &parsed);
+	if (parsed && !buf[parsed])
+		return 0;
+
+	/* try again without domain */
+	*domain = 0;
+	sscanf(buf, " %x:%x.%x-%x:%x:%x %n", bus, slot, func, reg, size,
+	       mask, &parsed);
+	if (parsed && !buf[parsed])
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	return -EINVAL;
 }
 
@@ -930,6 +1161,33 @@ static int pcistub_device_id_add(int domain, int bus, int slot, int func)
 {
 	struct pcistub_device_id *pci_dev_id;
 	unsigned long flags;
+<<<<<<< HEAD
+=======
+	int rc = 0, devfn = PCI_DEVFN(slot, func);
+
+	if (slot < 0) {
+		for (slot = 0; !rc && slot < 32; ++slot)
+			rc = pcistub_device_id_add(domain, bus, slot, func);
+		return rc;
+	}
+
+	if (func < 0) {
+		for (func = 0; !rc && func < 8; ++func)
+			rc = pcistub_device_id_add(domain, bus, slot, func);
+		return rc;
+	}
+
+	if ((
+#if !defined(MODULE) /* pci_domains_supported is not being exported */ \
+    || !defined(CONFIG_PCI_DOMAINS)
+	     !pci_domains_supported ? domain :
+#endif
+	     domain < 0 || domain > 0xffff)
+	    || bus < 0 || bus > 0xff
+	    || PCI_SLOT(devfn) != slot
+	    || PCI_FUNC(devfn) != func)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	pci_dev_id = kmalloc(sizeof(*pci_dev_id), GFP_KERNEL);
 	if (!pci_dev_id)
@@ -937,9 +1195,15 @@ static int pcistub_device_id_add(int domain, int bus, int slot, int func)
 
 	pci_dev_id->domain = domain;
 	pci_dev_id->bus = bus;
+<<<<<<< HEAD
 	pci_dev_id->devfn = PCI_DEVFN(slot, func);
 
 	pr_debug(DRV_NAME ": wants to seize %04x:%02x:%02x.%d\n",
+=======
+	pci_dev_id->devfn = devfn;
+
+	pr_debug("wants to seize %04x:%02x:%02x.%d\n",
+>>>>>>> refs/remotes/origin/master
 		 domain, bus, slot, func);
 
 	spin_lock_irqsave(&device_ids_lock, flags);
@@ -952,15 +1216,24 @@ static int pcistub_device_id_add(int domain, int bus, int slot, int func)
 static int pcistub_device_id_remove(int domain, int bus, int slot, int func)
 {
 	struct pcistub_device_id *pci_dev_id, *t;
+<<<<<<< HEAD
 	int devfn = PCI_DEVFN(slot, func);
+=======
+>>>>>>> refs/remotes/origin/master
 	int err = -ENOENT;
 	unsigned long flags;
 
 	spin_lock_irqsave(&device_ids_lock, flags);
 	list_for_each_entry_safe(pci_dev_id, t, &pcistub_device_ids,
 				 slot_list) {
+<<<<<<< HEAD
 		if (pci_dev_id->domain == domain
 		    && pci_dev_id->bus == bus && pci_dev_id->devfn == devfn) {
+=======
+		if (pci_dev_id->domain == domain && pci_dev_id->bus == bus
+		    && (slot < 0 || PCI_SLOT(pci_dev_id->devfn) == slot)
+		    && (func < 0 || PCI_FUNC(pci_dev_id->devfn) == func)) {
+>>>>>>> refs/remotes/origin/master
 			/* Don't break; here because it's possible the same
 			 * slot could be in the list more than once
 			 */
@@ -969,8 +1242,13 @@ static int pcistub_device_id_remove(int domain, int bus, int slot, int func)
 
 			err = 0;
 
+<<<<<<< HEAD
 			pr_debug(DRV_NAME ": removed %04x:%02x:%02x.%d from "
 				 "seize list\n", domain, bus, slot, func);
+=======
+			pr_debug("removed %04x:%02x:%02x.%d from seize list\n",
+				 domain, bus, slot, func);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	spin_unlock_irqrestore(&device_ids_lock, flags);
@@ -978,16 +1256,30 @@ static int pcistub_device_id_remove(int domain, int bus, int slot, int func)
 	return err;
 }
 
+<<<<<<< HEAD
 static int pcistub_reg_add(int domain, int bus, int slot, int func, int reg,
 			   int size, int mask)
+=======
+static int pcistub_reg_add(int domain, int bus, int slot, int func,
+			   unsigned int reg, unsigned int size,
+			   unsigned int mask)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = 0;
 	struct pcistub_device *psdev;
 	struct pci_dev *dev;
 	struct config_field *field;
 
+<<<<<<< HEAD
 	psdev = pcistub_device_find(domain, bus, slot, func);
 	if (!psdev || !psdev->dev) {
+=======
+	if (reg > 0xfff || (size < 4 && (mask >> (size * 8))))
+		return -EINVAL;
+
+	psdev = pcistub_device_find(domain, bus, slot, func);
+	if (!psdev) {
+>>>>>>> refs/remotes/origin/master
 		err = -ENODEV;
 		goto out;
 	}
@@ -1011,6 +1303,11 @@ static int pcistub_reg_add(int domain, int bus, int slot, int func, int reg,
 	if (err)
 		kfree(field);
 out:
+<<<<<<< HEAD
+=======
+	if (psdev)
+		pcistub_device_put(psdev);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -1111,6 +1408,7 @@ static ssize_t pcistub_irq_handler_switch(struct device_driver *drv,
 	struct pcistub_device *psdev;
 	struct xen_pcibk_dev_data *dev_data;
 	int domain, bus, slot, func;
+<<<<<<< HEAD
 	int err = -ENOENT;
 
 	err = str_to_slot(buf, &domain, &bus, &slot, &func);
@@ -1125,6 +1423,25 @@ static ssize_t pcistub_irq_handler_switch(struct device_driver *drv,
 	dev_data = pci_get_drvdata(psdev->dev);
 	if (!dev_data)
 		goto out;
+=======
+	int err;
+
+	err = str_to_slot(buf, &domain, &bus, &slot, &func);
+	if (err)
+		return err;
+
+	psdev = pcistub_device_find(domain, bus, slot, func);
+	if (!psdev) {
+		err = -ENOENT;
+		goto out;
+	}
+
+	dev_data = pci_get_drvdata(psdev->dev);
+	if (!dev_data) {
+		err = -ENOENT;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(&psdev->dev->dev, "%s fake irq handler: %d->%d\n",
 		dev_data->irq_name, dev_data->isr_on,
@@ -1134,6 +1451,11 @@ static ssize_t pcistub_irq_handler_switch(struct device_driver *drv,
 	if (dev_data->isr_on)
 		dev_data->ack_intr = 1;
 out:
+<<<<<<< HEAD
+=======
+	if (psdev)
+		pcistub_device_put(psdev);
+>>>>>>> refs/remotes/origin/master
 	if (!err)
 		err = count;
 	return err;
@@ -1213,18 +1535,30 @@ static ssize_t permissive_add(struct device_driver *drv, const char *buf,
 	int err;
 	struct pcistub_device *psdev;
 	struct xen_pcibk_dev_data *dev_data;
+<<<<<<< HEAD
 	err = str_to_slot(buf, &domain, &bus, &slot, &func);
 	if (err)
 		goto out;
+=======
+
+	err = str_to_slot(buf, &domain, &bus, &slot, &func);
+	if (err)
+		goto out;
+
+>>>>>>> refs/remotes/origin/master
 	psdev = pcistub_device_find(domain, bus, slot, func);
 	if (!psdev) {
 		err = -ENODEV;
 		goto out;
 	}
+<<<<<<< HEAD
 	if (!psdev->dev) {
 		err = -ENODEV;
 		goto release;
 	}
+=======
+
+>>>>>>> refs/remotes/origin/master
 	dev_data = pci_get_drvdata(psdev->dev);
 	/* the driver data for a device should never be null at this point */
 	if (!dev_data) {
@@ -1302,22 +1636,68 @@ static int __init pcistub_init(void)
 			err = sscanf(pci_devs_to_hide + pos,
 				     " (%x:%x:%x.%x) %n",
 				     &domain, &bus, &slot, &func, &parsed);
+<<<<<<< HEAD
 			if (err != 4) {
+=======
+			switch (err) {
+			case 3:
+				func = -1;
+				sscanf(pci_devs_to_hide + pos,
+				       " (%x:%x:%x.*) %n",
+				       &domain, &bus, &slot, &parsed);
+				break;
+			case 2:
+				slot = func = -1;
+				sscanf(pci_devs_to_hide + pos,
+				       " (%x:%x:*.*) %n",
+				       &domain, &bus, &parsed);
+				break;
+			}
+
+			if (!parsed) {
+>>>>>>> refs/remotes/origin/master
 				domain = 0;
 				err = sscanf(pci_devs_to_hide + pos,
 					     " (%x:%x.%x) %n",
 					     &bus, &slot, &func, &parsed);
+<<<<<<< HEAD
 				if (err != 3)
 					goto parse_error;
 			}
 
+=======
+				switch (err) {
+				case 2:
+					func = -1;
+					sscanf(pci_devs_to_hide + pos,
+					       " (%x:%x.*) %n",
+					       &bus, &slot, &parsed);
+					break;
+				case 1:
+					slot = func = -1;
+					sscanf(pci_devs_to_hide + pos,
+					       " (%x:*.*) %n",
+					       &bus, &parsed);
+					break;
+				}
+			}
+
+			if (parsed <= 0)
+				goto parse_error;
+
+>>>>>>> refs/remotes/origin/master
 			err = pcistub_device_id_add(domain, bus, slot, func);
 			if (err)
 				goto out;
 
+<<<<<<< HEAD
 			/* if parsed<=0, we've reached the end of the string */
 			pos += parsed;
 		} while (parsed > 0 && pci_devs_to_hide[pos]);
+=======
+			pos += parsed;
+		} while (pci_devs_to_hide[pos]);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* If we're the first PCI Device Driver to register, we're the
@@ -1356,7 +1736,11 @@ out:
 	return err;
 
 parse_error:
+<<<<<<< HEAD
 	printk(KERN_ERR DRV_NAME ": Error parsing pci_devs_to_hide at \"%s\"\n",
+=======
+	pr_err("Error parsing pci_devs_to_hide at \"%s\"\n",
+>>>>>>> refs/remotes/origin/master
 	       pci_devs_to_hide + pos);
 	return -EINVAL;
 }

@@ -49,6 +49,7 @@
 /* GDT_ISA */
 #define GDT2_ID         0x0120941c              /* GDT2000/2020 */
 
+<<<<<<< HEAD
 /* vendor ID, device IDs (PCI) */
 /* these defines should already exist in <linux/pci.h> */
 #ifndef PCI_VENDOR_ID_VORTEX
@@ -58,6 +59,8 @@
 #define PCI_VENDOR_ID_INTEL             0x8086  
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef PCI_DEVICE_ID_VORTEX_GDT60x0
 /* GDT_PCI */
 #define PCI_DEVICE_ID_VORTEX_GDT60x0    0       /* GDT6000/6020/6050 */
@@ -360,10 +363,14 @@ typedef struct {
     u32     cmd_buff_u_addr2;   /* reserved for 64 bit addressing */
     u32     cmd_buff_indx2;     /* cmd buf addr1 unique identifier */
 <<<<<<< HEAD
+<<<<<<< HEAD
     u32     cmd_buff_size;      /* size of each cmd bufer in bytes */
 =======
     u32     cmd_buff_size;      /* size of each cmd buffer in bytes */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    u32     cmd_buff_size;      /* size of each cmd buffer in bytes */
+>>>>>>> refs/remotes/origin/master
     u32     reserved1;
     u32     reserved2;
 } __attribute__((packed)) gdth_perf_modes;
@@ -1020,6 +1027,11 @@ typedef struct {
 
 /* function prototyping */
 
+<<<<<<< HEAD
 int gdth_proc_info(struct Scsi_Host *, char *,char **,off_t,int,int);
+=======
+int gdth_show_info(struct seq_file *, struct Scsi_Host *);
+int gdth_set_info(struct Scsi_Host *, char *, int);
+>>>>>>> refs/remotes/origin/master
 
 #endif

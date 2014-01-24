@@ -16,12 +16,21 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
+<<<<<<< HEAD
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 *****************************************************************
 
+=======
+    PCMCIA support code for this driver is adapted from the dummy_cs.c
+    driver of the Linux PCMCIA Card Services package.
+
+    The initial developer of the original code is David A. Hinds
+    <dahinds@users.sourceforge.net>.  Portions created by David A. Hinds
+    are Copyright (C) 1999 David A. Hinds.  All Rights Reserved.
+>>>>>>> refs/remotes/origin/master
 */
 /*
 Driver: das08_cs
@@ -39,6 +48,7 @@ Options (for pcm-das08):
 Command support does not exist, but could be added for this board.
 */
 
+<<<<<<< HEAD
 #include "../comedidev.h"
 
 #include <linux/delay.h>
@@ -136,10 +146,63 @@ struct local_info_t {
 	struct pcmcia_device *link;
 	int stop;
 	struct bus_operations *bus;
+=======
+#include <linux/module.h>
+
+#include "../comedidev.h"
+
+#include <pcmcia/cistpl.h>
+#include <pcmcia/ds.h>
+
+#include "das08.h"
+
+static const struct das08_board_struct das08_cs_boards[] = {
+	{
+		.name		= "pcm-das08",
+		.ai_nbits	= 12,
+		.ai_pg		= das08_bipolar5,
+		.ai_encoding	= das08_pcm_encode12,
+		.di_nchan	= 3,
+		.do_nchan	= 3,
+		.iosize		= 16,
+	},
+};
+
+static int das08_cs_auto_attach(struct comedi_device *dev,
+				unsigned long context)
+{
+	struct pcmcia_device *link = comedi_to_pcmcia_dev(dev);
+	struct das08_private_struct *devpriv;
+	unsigned long iobase;
+	int ret;
+
+	/* The das08 driver needs the board_ptr */
+	dev->board_ptr = &das08_cs_boards[0];
+
+	link->config_flags |= CONF_AUTO_SET_IO;
+	ret = comedi_pcmcia_enable(dev, NULL);
+	if (ret)
+		return ret;
+	iobase = link->resource[0]->start;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	return das08_common_attach(dev, iobase);
+}
+
+static struct comedi_driver driver_das08_cs = {
+	.driver_name	= "das08_cs",
+	.module		= THIS_MODULE,
+	.auto_attach	= das08_cs_auto_attach,
+	.detach		= comedi_pcmcia_disable,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int das08_pcmcia_attach(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
 	struct local_info_t *local;
 
 	dev_dbg(&link->dev, "das08_pcmcia_attach()\n");
@@ -234,16 +297,36 @@ static int das08_pcmcia_resume(struct pcmcia_device *link)
 
 /*====================================================================*/
 
+=======
+	return comedi_pcmcia_auto_config(link, &driver_das08_cs);
+}
+
+>>>>>>> refs/remotes/origin/master
 static const struct pcmcia_device_id das08_cs_id_table[] = {
 	PCMCIA_DEVICE_MANF_CARD(0x01c5, 0x4001),
 	PCMCIA_DEVICE_NULL
 };
+<<<<<<< HEAD
 
 MODULE_DEVICE_TABLE(pcmcia, das08_cs_id_table);
+=======
+MODULE_DEVICE_TABLE(pcmcia, das08_cs_id_table);
+
+static struct pcmcia_driver das08_cs_driver = {
+	.name		= "pcm-das08",
+	.owner		= THIS_MODULE,
+	.id_table	= das08_cs_id_table,
+	.probe		= das08_pcmcia_attach,
+	.remove		= comedi_pcmcia_auto_unconfig,
+};
+module_comedi_pcmcia_driver(driver_das08_cs, das08_cs_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("David A. Schleef <ds@schleef.org>, "
 	      "Frank Mori Hess <fmhess@users.sourceforge.net>");
 MODULE_DESCRIPTION("Comedi driver for ComputerBoards DAS-08 PCMCIA boards");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 struct pcmcia_driver das08_cs_driver = {
 	.probe = das08_pcmcia_attach,
@@ -286,3 +369,5 @@ static void __exit das08_cs_exit_module(void)
 
 module_init(das08_cs_init_module);
 module_exit(das08_cs_exit_module);
+=======
+>>>>>>> refs/remotes/origin/master

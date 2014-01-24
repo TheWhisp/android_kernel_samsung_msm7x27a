@@ -126,10 +126,14 @@ static inline int route4_hash_wild(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int route4_classify(struct sk_buff *skb, struct tcf_proto *tp,
 =======
 static int route4_classify(struct sk_buff *skb, const struct tcf_proto *tp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int route4_classify(struct sk_buff *skb, const struct tcf_proto *tp,
+>>>>>>> refs/remotes/origin/master
 			   struct tcf_result *res)
 {
 	struct route4_head *head = (struct route4_head *)tp->root;
@@ -147,7 +151,11 @@ static int route4_classify(struct sk_buff *skb, const struct tcf_proto *tp,
 	if (head == NULL)
 		goto old_method;
 
+<<<<<<< HEAD
 	iif = ((struct rtable *)dst)->rt_iif;
+=======
+	iif = inet_iif(skb);
+>>>>>>> refs/remotes/origin/master
 
 	h = route4_fastmap_hash(id, iif);
 	if (id == head->fastmap[h].id &&
@@ -339,9 +347,16 @@ static const struct nla_policy route4_policy[TCA_ROUTE4_MAX + 1] = {
 	[TCA_ROUTE4_IIF]	= { .type = NLA_U32 },
 };
 
+<<<<<<< HEAD
 static int route4_set_parms(struct tcf_proto *tp, unsigned long base,
 	struct route4_filter *f, u32 handle, struct route4_head *head,
 	struct nlattr **tb, struct nlattr *est, int new)
+=======
+static int route4_set_parms(struct net *net, struct tcf_proto *tp,
+			    unsigned long base, struct route4_filter *f,
+			    u32 handle, struct route4_head *head,
+			    struct nlattr **tb, struct nlattr *est, int new)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	u32 id = 0, to = 0, nhandle = 0x8000;
@@ -350,7 +365,11 @@ static int route4_set_parms(struct tcf_proto *tp, unsigned long base,
 	struct route4_bucket *b;
 	struct tcf_exts e;
 
+<<<<<<< HEAD
 	err = tcf_exts_validate(tp, tb, est, &e, &route_ext_map);
+=======
+	err = tcf_exts_validate(net, tp, tb, est, &e, &route_ext_map);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -431,7 +450,12 @@ errout:
 	return err;
 }
 
+<<<<<<< HEAD
 static int route4_change(struct tcf_proto *tp, unsigned long base,
+=======
+static int route4_change(struct net *net, struct sk_buff *in_skb,
+		       struct tcf_proto *tp, unsigned long base,
+>>>>>>> refs/remotes/origin/master
 		       u32 handle,
 		       struct nlattr **tca,
 		       unsigned long *arg)
@@ -460,7 +484,11 @@ static int route4_change(struct tcf_proto *tp, unsigned long base,
 		if (f->bkt)
 			old_handle = f->handle;
 
+<<<<<<< HEAD
 		err = route4_set_parms(tp, base, f, handle, head, tb,
+=======
+		err = route4_set_parms(net, tp, base, f, handle, head, tb,
+>>>>>>> refs/remotes/origin/master
 			tca[TCA_RATE], 0);
 		if (err < 0)
 			return err;
@@ -483,7 +511,11 @@ static int route4_change(struct tcf_proto *tp, unsigned long base,
 	if (f == NULL)
 		goto errout;
 
+<<<<<<< HEAD
 	err = route4_set_parms(tp, base, f, handle, head, tb,
+=======
+	err = route4_set_parms(net, tp, base, f, handle, head, tb,
+>>>>>>> refs/remotes/origin/master
 		tca[TCA_RATE], 1);
 	if (err < 0)
 		goto errout;
@@ -575,6 +607,7 @@ static int route4_dump(struct tcf_proto *tp, unsigned long fh,
 
 	if (!(f->handle & 0x8000)) {
 		id = f->id & 0xFF;
+<<<<<<< HEAD
 		NLA_PUT_U32(skb, TCA_ROUTE4_TO, id);
 	}
 	if (f->handle & 0x80000000) {
@@ -586,6 +619,23 @@ static int route4_dump(struct tcf_proto *tp, unsigned long fh,
 	}
 	if (f->res.classid)
 		NLA_PUT_U32(skb, TCA_ROUTE4_CLASSID, f->res.classid);
+=======
+		if (nla_put_u32(skb, TCA_ROUTE4_TO, id))
+			goto nla_put_failure;
+	}
+	if (f->handle & 0x80000000) {
+		if ((f->handle >> 16) != 0xFFFF &&
+		    nla_put_u32(skb, TCA_ROUTE4_IIF, f->iif))
+			goto nla_put_failure;
+	} else {
+		id = f->id >> 16;
+		if (nla_put_u32(skb, TCA_ROUTE4_FROM, id))
+			goto nla_put_failure;
+	}
+	if (f->res.classid &&
+	    nla_put_u32(skb, TCA_ROUTE4_CLASSID, f->res.classid))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 
 	if (tcf_exts_dump(skb, &f->exts, &route_ext_map) < 0)
 		goto nla_put_failure;

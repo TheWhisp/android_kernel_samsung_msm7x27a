@@ -30,11 +30,18 @@
 
 static struct crypto_shash *shash;
 
+<<<<<<< HEAD
 static int pkcs_1_v1_5_decode_emsa(const unsigned char *msg,
 			unsigned long  msglen,
 			unsigned long  modulus_bitlen,
 			unsigned char *out,
 			unsigned long *outlen)
+=======
+static const char *pkcs_1_v1_5_decode_emsa(const unsigned char *msg,
+						unsigned long  msglen,
+						unsigned long  modulus_bitlen,
+						unsigned long *outlen)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long modulus_len, ps_len, i;
 
@@ -42,11 +49,19 @@ static int pkcs_1_v1_5_decode_emsa(const unsigned char *msg,
 
 	/* test message size */
 	if ((msglen > modulus_len) || (modulus_len < 11))
+<<<<<<< HEAD
 		return -EINVAL;
 
 	/* separate encoded message */
 	if ((msg[0] != 0x00) || (msg[1] != (unsigned char)1))
 		return -EINVAL;
+=======
+		return NULL;
+
+	/* separate encoded message */
+	if (msg[0] != 0x00 || msg[1] != 0x01)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 2; i < modulus_len - 1; i++)
 		if (msg[i] != 0xFF)
@@ -56,6 +71,7 @@ static int pkcs_1_v1_5_decode_emsa(const unsigned char *msg,
 	if (msg[i] != 0)
 		/* There was no octet with hexadecimal value 0x00
 		to separate ps from m. */
+<<<<<<< HEAD
 		return -EINVAL;
 
 	ps_len = i - 2;
@@ -69,6 +85,15 @@ static int pkcs_1_v1_5_decode_emsa(const unsigned char *msg,
 	memcpy(out, &msg[2 + ps_len + 1], *outlen);
 
 	return 0;
+=======
+		return NULL;
+
+	ps_len = i - 2;
+
+	*outlen = (msglen - (2 + ps_len + 1));
+
+	return msg + 2 + ps_len + 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -83,7 +108,12 @@ static int digsig_verify_rsa(struct key *key,
 	unsigned long mlen, mblen;
 	unsigned nret, l;
 	int head, i;
+<<<<<<< HEAD
 	unsigned char *out1 = NULL, *out2 = NULL;
+=======
+	unsigned char *out1 = NULL;
+	const char *m;
+>>>>>>> refs/remotes/origin/master
 	MPI in = NULL, res = NULL, pkey[2];
 	uint8_t *p, *datap, *endp;
 	struct user_key_payload *ukp;
@@ -120,7 +150,11 @@ static int digsig_verify_rsa(struct key *key,
 	}
 
 	mblen = mpi_get_nbits(pkey[0]);
+<<<<<<< HEAD
 	mlen = (mblen + 7)/8;
+=======
+	mlen = DIV_ROUND_UP(mblen, 8);
+>>>>>>> refs/remotes/origin/master
 
 	if (mlen == 0)
 		goto err;
@@ -129,10 +163,13 @@ static int digsig_verify_rsa(struct key *key,
 	if (!out1)
 		goto err;
 
+<<<<<<< HEAD
 	out2 = kzalloc(mlen, GFP_KERNEL);
 	if (!out2)
 		goto err;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	nret = siglen;
 	in = mpi_read_from_buffer(sig, &nret);
 	if (!in)
@@ -164,18 +201,27 @@ static int digsig_verify_rsa(struct key *key,
 
 	kfree(p);
 
+<<<<<<< HEAD
 	err = pkcs_1_v1_5_decode_emsa(out1, len, mblen, out2, &len);
 	if (err)
 		goto err;
 
 	if (len != hlen || memcmp(out2, h, hlen))
+=======
+	m = pkcs_1_v1_5_decode_emsa(out1, len, mblen, &len);
+
+	if (!m || len != hlen || memcmp(m, h, hlen))
+>>>>>>> refs/remotes/origin/master
 		err = -EINVAL;
 
 err:
 	mpi_free(in);
 	mpi_free(res);
 	kfree(out1);
+<<<<<<< HEAD
 	kfree(out2);
+=======
+>>>>>>> refs/remotes/origin/master
 	while (--i >= 0)
 		mpi_free(pkey[i]);
 err1:
@@ -222,7 +268,11 @@ int digsig_verify(struct key *keyring, const char *sig, int siglen,
 		kref = keyring_search(make_key_ref(keyring, 1UL),
 						&key_type_user, name);
 		if (IS_ERR(kref))
+<<<<<<< HEAD
 			key = ERR_PTR(PTR_ERR(kref));
+=======
+			key = ERR_CAST(kref);
+>>>>>>> refs/remotes/origin/master
 		else
 			key = key_ref_to_ptr(kref);
 	} else {

@@ -10,6 +10,7 @@
 
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
@@ -23,10 +24,20 @@
 #include <linux/of_fdt.h>
 #include <linux/of_irq.h>
 #include <linux/of_platform.h>
+=======
+#include <linux/export.h>
+#include <linux/errno.h>
+#include <linux/types.h>
+#include <linux/bootmem.h>
+#include <linux/debugfs.h>
+#include <linux/of.h>
+#include <linux/of_fdt.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/page.h>
 #include <asm/prom.h>
 
+<<<<<<< HEAD
 int __init early_init_dt_scan_memory_arch(unsigned long node,
 					  const char *uname, int depth,
 					  void *data)
@@ -47,6 +58,28 @@ int __init reserve_mem_mach(unsigned long addr, unsigned long size)
 void __init free_mem_mach(unsigned long addr, unsigned long size)
 {
 	return free_bootmem(addr, size);
+=======
+static char mips_machine_name[64] = "Unknown";
+
+__init void mips_set_machine_name(const char *name)
+{
+	if (name == NULL)
+		return;
+
+	strlcpy(mips_machine_name, name, sizeof(mips_machine_name));
+	pr_info("MIPS: machine is %s\n", mips_get_machine_name());
+}
+
+char *mips_get_machine_name(void)
+{
+	return mips_machine_name;
+}
+
+#ifdef CONFIG_OF
+void __init early_init_dt_add_memory_arch(u64 base, u64 size)
+{
+	return add_memory_region(base, size, BOOT_MEM_RAM);
+>>>>>>> refs/remotes/origin/master
 }
 
 void * __init early_init_dt_alloc_memory_arch(u64 size, u64 align)
@@ -54,6 +87,7 @@ void * __init early_init_dt_alloc_memory_arch(u64 size, u64 align)
 	return __alloc_bootmem(size, align, __pa(MAX_DMA_ADDRESS));
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_BLK_DEV_INITRD
 void __init early_init_dt_setup_initrd_arch(unsigned long start,
 					    unsigned long end)
@@ -116,3 +150,13 @@ void __init device_tree_init(void)
 	/* free the space reserved for the dt blob */
 	free_mem_mach(base, size);
 }
+=======
+void __init __dt_setup_arch(struct boot_param_header *bph)
+{
+	if (!early_init_dt_scan(bph))
+		return;
+
+	mips_set_machine_name(of_flat_dt_get_machine_name());
+}
+#endif
+>>>>>>> refs/remotes/origin/master

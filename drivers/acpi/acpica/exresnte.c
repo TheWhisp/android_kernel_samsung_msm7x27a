@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Module Name: exresnte - AML Interpreter object resolution
@@ -7,10 +10,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,8 +69,13 @@ ACPI_MODULE_NAME("exresnte")
  * PARAMETERS:  object_ptr      - Pointer to a location that contains
  *                                a pointer to a NS node, and will receive a
  *                                pointer to the resolved object.
+<<<<<<< HEAD
  *              walk_state      - Current state.  Valid only if executing AML
  *                                code.  NULL if simply resolving an object
+=======
+ *              walk_state      - Current state. Valid only if executing AML
+ *                                code. NULL if simply resolving an object
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -71,7 +83,11 @@ ACPI_MODULE_NAME("exresnte")
  *
  * Note: for some of the data types, the pointer attached to the Node
  * can be either a pointer to an actual internal object or a pointer into the
+<<<<<<< HEAD
  * AML stream itself.  These types are currently:
+=======
+ * AML stream itself. These types are currently:
+>>>>>>> refs/remotes/origin/master
  *
  *      ACPI_TYPE_INTEGER
  *      ACPI_TYPE_STRING
@@ -93,7 +109,11 @@ acpi_ex_resolve_node_to_value(struct acpi_namespace_node **object_ptr,
 	ACPI_FUNCTION_TRACE(ex_resolve_node_to_value);
 
 	/*
+<<<<<<< HEAD
 	 * The stack pointer points to a struct acpi_namespace_node (Node).  Get the
+=======
+	 * The stack pointer points to a struct acpi_namespace_node (Node). Get the
+>>>>>>> refs/remotes/origin/master
 	 * object that is attached to the Node.
 	 */
 	node = *object_ptr;
@@ -253,6 +273,10 @@ acpi_ex_resolve_node_to_value(struct acpi_namespace_node **object_ptr,
 			break;
 
 		default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			/* No named references are allowed here */
 
 			ACPI_ERROR((AE_INFO,

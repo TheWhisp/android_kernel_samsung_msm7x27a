@@ -7,9 +7,13 @@
  */
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/uwb/umc.h>
 
 int __umc_driver_register(struct umc_driver *umc_drv, struct module *module,

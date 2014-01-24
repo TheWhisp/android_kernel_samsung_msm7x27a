@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * k10temp.c - AMD Family 10h/11h/12h/14h/15h processor hardware monitoring
+=======
+ * k10temp.c - AMD Family 10h/11h/12h/14h/15h/16h processor hardware monitoring
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (c) 2009 Clemens Ladisch <clemens@ladisch.de>
  *
@@ -34,11 +38,14 @@ module_param(force, bool, 0444);
 MODULE_PARM_DESC(force, "force loading on processors with erratum 319");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* PCI-IDs for Northbridge devices not used anywhere else */
 #define PCI_DEVICE_ID_AMD_15H_M10H_NB_F3	0x1403
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* CPUID function 0x80000001, ebx */
 #define CPUID_PKGTYPE_MASK	0xf0000000
 #define CPUID_PKGTYPE_F		0x00000000
@@ -101,7 +108,11 @@ static SENSOR_DEVICE_ATTR(temp1_crit, S_IRUGO, show_temp_crit, NULL, 0);
 static SENSOR_DEVICE_ATTR(temp1_crit_hyst, S_IRUGO, show_temp_crit, NULL, 1);
 static DEVICE_ATTR(name, S_IRUGO, show_name, NULL);
 
+<<<<<<< HEAD
 static bool __devinit has_erratum_319(struct pci_dev *pdev)
+=======
+static bool has_erratum_319(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 pkg_type, reg_dram_cfg;
 
@@ -135,7 +146,11 @@ static bool __devinit has_erratum_319(struct pci_dev *pdev)
 	       (boot_cpu_data.x86_model == 4 && boot_cpu_data.x86_mask <= 2);
 }
 
+<<<<<<< HEAD
 static int __devinit k10temp_probe(struct pci_dev *pdev,
+=======
+static int k10temp_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 				   const struct pci_device_id *id)
 {
 	struct device *hwmon_dev;
@@ -198,7 +213,11 @@ exit:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit k10temp_remove(struct pci_dev *pdev)
+=======
+static void k10temp_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	hwmon_device_unregister(pci_get_drvdata(pdev));
 	device_remove_file(&pdev->dev, &dev_attr_name);
@@ -208,6 +227,7 @@ static void __devexit k10temp_remove(struct pci_dev *pdev)
 			   &sensor_dev_attr_temp1_crit.dev_attr);
 	device_remove_file(&pdev->dev,
 			   &sensor_dev_attr_temp1_crit_hyst.dev_attr);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
 }
 
@@ -216,14 +236,25 @@ static const struct pci_device_id k10temp_id_table[] = {
 =======
 static DEFINE_PCI_DEVICE_TABLE(k10temp_id_table) = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+static const struct pci_device_id k10temp_id_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_10H_NB_MISC) },
 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_11H_NB_MISC) },
 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_CNB17H_F3) },
 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_15H_NB_F3) },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_15H_M10H_NB_F3) },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_15H_M10H_F3) },
+	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_15H_M30H_NB_F3) },
+	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_16H_NB_F3) },
+>>>>>>> refs/remotes/origin/master
 	{}
 };
 MODULE_DEVICE_TABLE(pci, k10temp_id_table);
@@ -232,6 +263,7 @@ static struct pci_driver k10temp_driver = {
 	.name = "k10temp",
 	.id_table = k10temp_id_table,
 	.probe = k10temp_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(k10temp_remove),
 };
 
@@ -247,3 +279,9 @@ static void __exit k10temp_exit(void)
 
 module_init(k10temp_init)
 module_exit(k10temp_exit)
+=======
+	.remove = k10temp_remove,
+};
+
+module_pci_driver(k10temp_driver);
+>>>>>>> refs/remotes/origin/master

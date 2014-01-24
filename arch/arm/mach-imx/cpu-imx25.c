@@ -11,8 +11,14 @@
  */
 #include <linux/module.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/iim.h>
+=======
+
+#include "iim.h"
+#include "hardware.h"
+>>>>>>> refs/remotes/origin/master
 
 static int mx25_cpu_rev = -1;
 

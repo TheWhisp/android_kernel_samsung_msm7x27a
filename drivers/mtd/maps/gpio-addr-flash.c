@@ -26,7 +26,12 @@
 #include <linux/slab.h>
 #include <linux/types.h>
 
+<<<<<<< HEAD
 #define pr_devinit(fmt, args...) ({ static const __devinitconst char __fmt[] = fmt; printk(__fmt, ## args); })
+=======
+#define pr_devinit(fmt, args...) \
+	({ static const char __fmt[] = fmt; printk(__fmt, ## args); })
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_NAME "gpio-addr-flash"
 #define PFX DRIVER_NAME ": "
@@ -142,7 +147,12 @@ static void gf_write(struct map_info *map, map_word d1, unsigned long ofs)
  *
  * See gf_copy_from() caveat.
  */
+<<<<<<< HEAD
 static void gf_copy_to(struct map_info *map, unsigned long to, const void *from, ssize_t len)
+=======
+static void gf_copy_to(struct map_info *map, unsigned long to,
+		       const void *from, ssize_t len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct async_state *state = gf_map_info_to_state(map);
 
@@ -155,7 +165,12 @@ static void gf_copy_to(struct map_info *map, unsigned long to, const void *from,
 	memcpy_toio(map->virt + (to % state->win_size), from, len);
 }
 
+<<<<<<< HEAD
 static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
+=======
+static const char * const part_probe_types[] = {
+	"cmdlinepart", "RedBoot", NULL };
+>>>>>>> refs/remotes/origin/master
 
 /**
  * gpio_flash_probe() - setup a mapping for a GPIO assisted flash
@@ -185,19 +200,28 @@ static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
  *	...
  * };
  */
+<<<<<<< HEAD
 static int __devinit gpio_flash_probe(struct platform_device *pdev)
 {
 <<<<<<< HEAD
 	int nr_parts;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int gpio_flash_probe(struct platform_device *pdev)
+{
+>>>>>>> refs/remotes/origin/master
 	size_t i, arr_size;
 	struct physmap_flash_data *pdata;
 	struct resource *memory;
 	struct resource *gpios;
 	struct async_state *state;
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	memory = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	gpios = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
 
@@ -256,6 +280,7 @@ static int __devinit gpio_flash_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nr_parts = parse_mtd_partitions(state->mtd, part_probe_types,
 					&pdata->parts, 0);
 	if (nr_parts > 0) {
@@ -275,11 +300,20 @@ static int __devinit gpio_flash_probe(struct platform_device *pdev)
 	mtd_device_parse_register(state->mtd, part_probe_types, NULL,
 				  pdata->parts, pdata->nr_parts);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	mtd_device_parse_register(state->mtd, part_probe_types, NULL,
+				  pdata->parts, pdata->nr_parts);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit gpio_flash_remove(struct platform_device *pdev)
+=======
+static int gpio_flash_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct async_state *state = platform_get_drvdata(pdev);
 	size_t i = 0;
@@ -294,12 +328,17 @@ static int __devexit gpio_flash_remove(struct platform_device *pdev)
 
 static struct platform_driver gpio_flash_driver = {
 	.probe		= gpio_flash_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(gpio_flash_remove),
+=======
+	.remove		= gpio_flash_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= DRIVER_NAME,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init gpio_flash_init(void)
 {
@@ -315,6 +354,9 @@ module_exit(gpio_flash_exit);
 =======
 module_platform_driver(gpio_flash_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(gpio_flash_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mike Frysinger <vapier@gentoo.org>");
 MODULE_DESCRIPTION("MTD map driver for flashes addressed physically and with gpios");

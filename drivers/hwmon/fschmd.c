@@ -1,9 +1,14 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* fschmd.c
 =======
 /*
  * fschmd.c
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * fschmd.c
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) 2007 - 2009 Hans de Goede <hdegoede@redhat.com>
  *
@@ -58,12 +63,17 @@ static const unsigned short normal_i2c[] = { 0x73, I2C_CLIENT_END };
 
 /* Insmod parameters */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 	__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
@@ -87,6 +97,7 @@ enum chips { fscpos, fscher, fscscy, fschrc, fschmd, fschds, fscsyl };
 
 /* watchdog */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const u8 FSCHMD_REG_WDOG_CONTROL[7] =
 	{ 0x21, 0x21, 0x21, 0x21, 0x21, 0x28, 0x28 };
 static const u8 FSCHMD_REG_WDOG_STATE[7] =
@@ -94,13 +105,18 @@ static const u8 FSCHMD_REG_WDOG_STATE[7] =
 static const u8 FSCHMD_REG_WDOG_PRESET[7] =
 	{ 0x28, 0x28, 0x28, 0x28, 0x28, 0x2a, 0x2a };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const u8 FSCHMD_REG_WDOG_CONTROL[7] = {
 	0x21, 0x21, 0x21, 0x21, 0x21, 0x28, 0x28 };
 static const u8 FSCHMD_REG_WDOG_STATE[7] = {
 	0x23, 0x23, 0x23, 0x23, 0x23, 0x29, 0x29 };
 static const u8 FSCHMD_REG_WDOG_PRESET[7] = {
 	0x28, 0x28, 0x28, 0x28, 0x28, 0x2a, 0x2a };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define FSCHMD_WDOG_CONTROL_TRIGGER	0x10
 #define FSCHMD_WDOG_CONTROL_STARTED	0x10 /* the same as trigger */
@@ -123,18 +139,24 @@ static const u8 FSCHMD_REG_VOLT[7][6] = {
 static const int FSCHMD_NO_VOLT_SENSORS[7] = { 3, 3, 3, 3, 3, 3, 6 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* minimum pwm at which the fan is driven (pwm can by increased depending on
    the temp. Notice that for the scy some fans share there minimum speed.
    Also notice that with the scy the sensor order is different than with the
    other chips, this order was in the 2.4 driver and kept for consistency. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * minimum pwm at which the fan is driven (pwm can by increased depending on
  * the temp. Notice that for the scy some fans share there minimum speed.
  * Also notice that with the scy the sensor order is different than with the
  * other chips, this order was in the 2.4 driver and kept for consistency.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const u8 FSCHMD_REG_FAN_MIN[7][7] = {
 	{ 0x55, 0x65 },					/* pos */
 	{ 0x55, 0x65, 0xb5 },				/* her */
@@ -211,12 +233,15 @@ static const u8 FSCHMD_REG_TEMP_STATE[7][11] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* temperature high limit registers, FSC does not document these. Proven to be
    there with field testing on the fscher and fschrc, already supported / used
    in the fscscy 2.4 driver. FSC has confirmed that the fschmd has registers
    at these addresses, but doesn't want to confirm they are the same as with
    the fscher?? */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * temperature high limit registers, FSC does not document these. Proven to be
  * there with field testing on the fscher and fschrc, already supported / used
@@ -224,7 +249,10 @@ static const u8 FSCHMD_REG_TEMP_STATE[7][11] = {
  * at these addresses, but doesn't want to confirm they are the same as with
  * the fscher??
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const u8 FSCHMD_REG_TEMP_LIMIT[7][11] = {
 	{ 0, 0, 0 },					/* pos */
 	{ 0x76, 0x86, 0x96 },				/* her */
@@ -237,6 +265,7 @@ static const u8 FSCHMD_REG_TEMP_LIMIT[7][11] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* These were found through experimenting with an fscher, currently they are
    not used, but we keep them around for future reference.
    On the fscsyl AUTOP1 lives at 0x#c (so 0x5c for fan1, 0x6c for fan2, etc),
@@ -245,6 +274,8 @@ static const u8 FSCHMD_REG_TEMP_LIMIT[7][11] = {
 static const u8 FSCHER_REG_TEMP_AUTOP1[] =	{ 0x73, 0x83, 0x93 };
 static const u8 FSCHER_REG_TEMP_AUTOP2[] =	{ 0x75, 0x85, 0x95 }; */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * These were found through experimenting with an fscher, currently they are
  * not used, but we keep them around for future reference.
@@ -254,7 +285,10 @@ static const u8 FSCHER_REG_TEMP_AUTOP2[] =	{ 0x75, 0x85, 0x95 }; */
  * static const u8 FSCHER_REG_TEMP_AUTOP1[] =	{ 0x73, 0x83, 0x93 };
  * static const u8 FSCHER_REG_TEMP_AUTOP2[] =	{ 0x75, 0x85, 0x95 };
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static const int FSCHMD_NO_TEMP_SENSORS[7] = { 3, 3, 4, 3, 5, 5, 11 };
 
@@ -341,12 +375,15 @@ struct fschmd_data {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Global variables to hold information read from special DMI tables, which are
    available on FSC machines with an fscher or later chip. There is no need to
    protect these with a lock as they are only modified from our attach function
    which always gets called with the i2c-core lock held and never accessed
    before the attach function is done with them. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Global variables to hold information read from special DMI tables, which are
  * available on FSC machines with an fscher or later chip. There is no need to
@@ -354,35 +391,50 @@ struct fschmd_data {
  * which always gets called with the i2c-core lock held and never accessed
  * before the attach function is done with them.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int dmi_mult[6] = { 490, 200, 100, 100, 200, 100 };
 static int dmi_offset[6] = { 0, 0, 0, 0, 0, 0 };
 static int dmi_vref = -1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Somewhat ugly :( global data pointer list with all fschmd devices, so that
    we can find our device data as when using misc_register there is no other
    method to get to ones device data from the open fop. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Somewhat ugly :( global data pointer list with all fschmd devices, so that
  * we can find our device data as when using misc_register there is no other
  * method to get to ones device data from the open fop.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static LIST_HEAD(watchdog_data_list);
 /* Note this lock not only protect list access, but also data.kref access */
 static DEFINE_MUTEX(watchdog_data_mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Release our data struct when we're detached from the i2c client *and* all
    references to our watchdog device are released */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Release our data struct when we're detached from the i2c client *and* all
  * references to our watchdog device are released
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void fschmd_release_resources(struct kref *ref)
 {
 	struct fschmd_data *data = container_of(ref, struct fschmd_data, kref);
@@ -435,10 +487,13 @@ static ssize_t store_temp_max(struct device *dev, struct device_attribute
 	int index = to_sensor_dev_attr(devattr)->index;
 	struct fschmd_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long v = simple_strtol(buf, NULL, 10) / 1000;
 
 	v = SENSORS_LIMIT(v, -128, 127) + 128;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long v;
 	int err;
 
@@ -446,8 +501,12 @@ static ssize_t store_temp_max(struct device *dev, struct device_attribute
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 	v = SENSORS_LIMIT(v / 1000, -128, 127) + 128;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	v = clamp_val(v / 1000, -128, 127) + 128;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	i2c_smbus_write_byte_data(to_i2c_client(dev),
@@ -514,6 +573,7 @@ static ssize_t store_fan_div(struct device *dev, struct device_attribute
 	struct fschmd_data *data = dev_get_drvdata(dev);
 	/* supported values: 2, 4, 8 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long v = simple_strtoul(buf, NULL, 10);
 
 	switch (v) {
@@ -521,6 +581,8 @@ static ssize_t store_fan_div(struct device *dev, struct device_attribute
 	case 4: v = 2; break;
 	case 8: v = 3; break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long v;
 	int err;
 
@@ -538,10 +600,17 @@ static ssize_t store_fan_div(struct device *dev, struct device_attribute
 	case 8:
 		v = 3;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		dev_err(dev, "fan_div value %lu not supported. "
 			"Choose one of 2, 4 or 8!\n", v);
+=======
+	default:
+		dev_err(dev,
+			"fan_div value %lu not supported. Choose one of 2, 4 or 8!\n",
+			v);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -609,19 +678,29 @@ static ssize_t store_pwm_auto_point1_pwm(struct device *dev,
 	int index = to_sensor_dev_attr(devattr)->index;
 	struct fschmd_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long v = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long v;
 	int err;
 
 	err = kstrtoul(buf, 10, &v);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	/* reg: 0 = allow turning off (except on the syl), 1-255 = 50-100% */
 	if (v || data->kind == fscsyl) {
 		v = SENSORS_LIMIT(v, 128, 255);
+=======
+
+	/* reg: 0 = allow turning off (except on the syl), 1-255 = 50-100% */
+	if (v || data->kind == fscsyl) {
+		v = clamp_val(v, 128, 255);
+>>>>>>> refs/remotes/origin/master
 		v = (v - 128) * 2 + 1;
 	}
 
@@ -638,14 +717,20 @@ static ssize_t store_pwm_auto_point1_pwm(struct device *dev,
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* The FSC hwmon family has the ability to force an attached alert led to flash
    from software, we export this as an alert_led sysfs attr */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The FSC hwmon family has the ability to force an attached alert led to flash
  * from software, we export this as an alert_led sysfs attr
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_alert_led(struct device *dev,
 	struct device_attribute *devattr, char *buf)
 {
@@ -663,15 +748,21 @@ static ssize_t store_alert_led(struct device *dev,
 	u8 reg;
 	struct fschmd_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long v = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long v;
 	int err;
 
 	err = kstrtoul(buf, 10, &v);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 
@@ -886,14 +977,20 @@ static int watchdog_stop(struct fschmd_data *data)
 
 	data->watchdog_control &= ~FSCHMD_WDOG_CONTROL_STARTED;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Don't store the stop flag in our watchdog control register copy, as
 	   its a write only bit (read always returns 0) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Don't store the stop flag in our watchdog control register copy, as
 	 * its a write only bit (read always returns 0)
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	i2c_smbus_write_byte_data(data->client,
 		FSCHMD_REG_WDOG_CONTROL[data->kind],
 		data->watchdog_control | FSCHMD_WDOG_CONTROL_STOP);
@@ -908,18 +1005,24 @@ static int watchdog_open(struct inode *inode, struct file *filp)
 	int watchdog_is_open;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* We get called from drivers/char/misc.c with misc_mtx hold, and we
 	   call misc_register() from fschmd_probe() with watchdog_data_mutex
 	   hold, as misc_register() takes the misc_mtx lock, this is a possible
 	   deadlock, so we use mutex_trylock here. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We get called from drivers/char/misc.c with misc_mtx hold, and we
 	 * call misc_register() from fschmd_probe() with watchdog_data_mutex
 	 * hold, as misc_register() takes the misc_mtx lock, this is a possible
 	 * deadlock, so we use mutex_trylock here.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!mutex_trylock(&watchdog_data_mutex))
 		return -ERESTARTSYS;
 	list_for_each_entry(pos, &watchdog_data_list, list) {
@@ -995,11 +1098,16 @@ static ssize_t watchdog_write(struct file *filp, const char __user *buf,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static long watchdog_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 =======
 static long watchdog_ioctl(struct file *filp, unsigned int cmd,
 			   unsigned long arg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static long watchdog_ioctl(struct file *filp, unsigned int cmd,
+			   unsigned long arg)
+>>>>>>> refs/remotes/origin/master
 {
 	struct watchdog_info ident = {
 		.options = WDIOF_KEEPALIVEPING | WDIOF_SETTIMEOUT |
@@ -1083,37 +1191,50 @@ static const struct file_operations watchdog_fops = {
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* DMI decode routine to read voltage scaling factors from special DMI tables,
    which are available on FSC machines with an fscher or later chip. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * DMI decode routine to read voltage scaling factors from special DMI tables,
  * which are available on FSC machines with an fscher or later chip.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void fschmd_dmi_decode(const struct dmi_header *header, void *dummy)
 {
 	int i, mult[3] = { 0 }, offset[3] = { 0 }, vref = 0, found = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* dmi code ugliness, we get passed the address of the contents of
 	   a complete DMI record, but in the form of a dmi_header pointer, in
 	   reality this address holds header->length bytes of which the header
 	   are the first 4 bytes */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * dmi code ugliness, we get passed the address of the contents of
 	 * a complete DMI record, but in the form of a dmi_header pointer, in
 	 * reality this address holds header->length bytes of which the header
 	 * are the first 4 bytes
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 *dmi_data = (u8 *)header;
 
 	/* We are looking for OEM-specific type 185 */
 	if (header->type != 185)
 		return;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* we are looking for what Siemens calls "subtype" 19, the subtype
 	   is stored in byte 5 of the dmi block */
@@ -1124,6 +1245,8 @@ static void fschmd_dmi_decode(const struct dmi_header *header, void *dummy)
 	   consisting of what Siemens calls an "Entity" number, followed by
 	   2 16-bit words in LSB first order */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * we are looking for what Siemens calls "subtype" 19, the subtype
 	 * is stored in byte 5 of the dmi block
@@ -1136,7 +1259,10 @@ static void fschmd_dmi_decode(const struct dmi_header *header, void *dummy)
 	 * consisting of what Siemens calls an "Entity" number, followed by
 	 * 2 16-bit words in LSB first order
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 6; (i + 4) < header->length; i += 5) {
 		/* entity 1 - 3: voltage multiplier and offset */
 		if (dmi_data[i] >= 1 && dmi_data[i] <= 3) {
@@ -1172,16 +1298,22 @@ static void fschmd_dmi_decode(const struct dmi_header *header, void *dummy)
 			dmi_offset[i] = offset[i] * 10;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* According to the docs there should be separate dmi entries
 		   for the mult's and offsets of in3-5 of the syl, but on
 		   my test machine these are not present */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * According to the docs there should be separate dmi entries
 		 * for the mult's and offsets of in3-5 of the syl, but on
 		 * my test machine these are not present
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dmi_mult[3] = dmi_mult[2];
 		dmi_mult[4] = dmi_mult[1];
 		dmi_mult[5] = dmi_mult[2];
@@ -1250,29 +1382,41 @@ static int fschmd_probe(struct i2c_client *client,
 	INIT_LIST_HEAD(&data->list);
 	kref_init(&data->kref);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Store client pointer in our data struct for watchdog usage
 	   (where the client is found through a data ptr instead of the
 	   otherway around) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Store client pointer in our data struct for watchdog usage
 	 * (where the client is found through a data ptr instead of the
 	 * otherway around)
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	data->client = client;
 	data->kind = kind;
 
 	if (kind == fscpos) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* The Poseidon has hardwired temp limits, fill these
 		   in for the alarm resetting code */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * The Poseidon has hardwired temp limits, fill these
 		 * in for the alarm resetting code
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		data->temp_max[0] = 70 + 128;
 		data->temp_max[1] = 50 + 128;
 		data->temp_max[2] = 50 + 128;
@@ -1364,16 +1508,22 @@ static int fschmd_probe(struct i2c_client *client,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* We take the data_mutex lock early so that watchdog_open() cannot
 	   run when misc_register() has completed, but we've not yet added
 	   our data to the watchdog_data_list (and set the default timeout) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We take the data_mutex lock early so that watchdog_open() cannot
 	 * run when misc_register() has completed, but we've not yet added
 	 * our data to the watchdog_data_list (and set the default timeout)
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&watchdog_data_mutex);
 	for (i = 0; i < ARRAY_SIZE(watchdog_minors); i++) {
 		/* Register our watchdog part */
@@ -1401,8 +1551,13 @@ static int fschmd_probe(struct i2c_client *client,
 	}
 	if (i == ARRAY_SIZE(watchdog_minors)) {
 		data->watchdog_miscdev.minor = 0;
+<<<<<<< HEAD
 		dev_warn(&client->dev, "Couldn't register watchdog chardev "
 			"(due to no free minor)\n");
+=======
+		dev_warn(&client->dev,
+			 "Couldn't register watchdog chardev (due to no free minor)\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&watchdog_data_mutex);
 
@@ -1440,14 +1595,20 @@ static int fschmd_remove(struct i2c_client *client)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Check if registered in case we're called from fschmd_detect
 	   to cleanup after an error */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Check if registered in case we're called from fschmd_detect
 	 * to cleanup after an error
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (data->hwmon_dev)
 		hwmon_device_unregister(data->hwmon_dev);
 
@@ -1491,14 +1652,20 @@ static struct fschmd_data *fschmd_update_device(struct device *dev)
 					FSCHMD_REG_TEMP_LIMIT[data->kind][i]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			/* reset alarm if the alarm condition is gone,
 			   the chip doesn't do this itself */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * reset alarm if the alarm condition is gone,
 			 * the chip doesn't do this itself
 			 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if ((data->temp_status[i] & FSCHMD_TEMP_ALARM_MASK) ==
 					FSCHMD_TEMP_ALARM_MASK &&
 					data->temp_act[i] < data->temp_max[i])
@@ -1543,6 +1710,7 @@ static struct fschmd_data *fschmd_update_device(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init fschmd_init(void)
 {
 	return i2c_add_driver(&fschmd_driver);
@@ -1555,14 +1723,20 @@ static void __exit fschmd_exit(void)
 =======
 module_i2c_driver(fschmd_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(fschmd_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Hans de Goede <hdegoede@redhat.com>");
 MODULE_DESCRIPTION("FSC Poseidon, Hermes, Scylla, Heracles, Heimdall, Hades "
 			"and Syleus driver");
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(fschmd_init);
 module_exit(fschmd_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

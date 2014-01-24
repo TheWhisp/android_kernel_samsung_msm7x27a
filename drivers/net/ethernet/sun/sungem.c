@@ -77,7 +77,11 @@
 #define DRV_VERSION	"1.0"
 #define DRV_AUTHOR	"David S. Miller <davem@redhat.com>"
 
+<<<<<<< HEAD
 static char version[] __devinitdata =
+=======
+static char version[] =
+>>>>>>> refs/remotes/origin/master
         DRV_NAME ".c:v" DRV_VERSION " " DRV_AUTHOR "\n";
 
 MODULE_AUTHOR(DRV_AUTHOR);
@@ -401,7 +405,11 @@ static int gem_rxmac_reset(struct gem *gp)
 		return 1;
 	}
 
+<<<<<<< HEAD
 	udelay(5000);
+=======
+	mdelay(5);
+>>>>>>> refs/remotes/origin/master
 
 	/* Execute RX reset command. */
 	writel(gp->swrst_base | GREG_SWRST_RXRST,
@@ -752,7 +760,10 @@ static __inline__ struct sk_buff *gem_alloc_skb(struct net_device *dev, int size
 	if (likely(skb)) {
 		unsigned long offset = ALIGNED_RX_SKB_ADDR(skb->data);
 		skb_reserve(skb, offset);
+<<<<<<< HEAD
 		skb->dev = dev;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return skb;
 }
@@ -2764,7 +2775,11 @@ static void get_gem_mac_nonobp(struct pci_dev *pdev, unsigned char *dev_addr)
 }
 #endif /* not Sparc and not PPC */
 
+<<<<<<< HEAD
 static int __devinit gem_get_device_address(struct gem *gp)
+=======
+static int gem_get_device_address(struct gem *gp)
+>>>>>>> refs/remotes/origin/master
 {
 #if defined(CONFIG_SPARC) || defined(CONFIG_PPC_PMAC)
 	struct net_device *dev = gp->dev;
@@ -2780,7 +2795,11 @@ static int __devinit gem_get_device_address(struct gem *gp)
 		return -1;
 #endif
 	}
+<<<<<<< HEAD
 	memcpy(dev->dev_addr, addr, 6);
+=======
+	memcpy(dev->dev_addr, addr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 #else
 	get_gem_mac_nonobp(gp->pdev, gp->dev->dev_addr);
 #endif
@@ -2807,8 +2826,11 @@ static void gem_remove_one(struct pci_dev *pdev)
 		iounmap(gp->regs);
 		pci_release_regions(pdev);
 		free_netdev(dev);
+<<<<<<< HEAD
 
 		pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -2828,8 +2850,12 @@ static const struct net_device_ops gem_netdev_ops = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit gem_init_one(struct pci_dev *pdev,
 				  const struct pci_device_id *ent)
+=======
+static int gem_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long gemreg_base, gemreg_len;
 	struct net_device *dev;
@@ -2898,7 +2924,10 @@ static int __devinit gem_init_one(struct pci_dev *pdev,
 	}
 
 	gp->pdev = pdev;
+<<<<<<< HEAD
 	dev->base_addr = (long) pdev;
+=======
+>>>>>>> refs/remotes/origin/master
 	gp->dev = dev;
 
 	gp->msg_enable = DEFAULT_MSG;
@@ -2965,14 +2994,22 @@ static int __devinit gem_init_one(struct pci_dev *pdev,
 		goto err_out_iounmap;
 	}
 
+<<<<<<< HEAD
 	if (gem_get_device_address(gp))
+=======
+	err = gem_get_device_address(gp);
+	if (err)
+>>>>>>> refs/remotes/origin/master
 		goto err_out_free_consistent;
 
 	dev->netdev_ops = &gem_netdev_ops;
 	netif_napi_add(dev, &gp->napi, gem_poll, 64);
 	dev->ethtool_ops = &gem_ethtool_ops;
 	dev->watchdog_timeo = 5 * HZ;
+<<<<<<< HEAD
 	dev->irq = pdev->irq;
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->dma = 0;
 
 	/* Set that now, in case PM kicks in now */
@@ -3031,6 +3068,7 @@ static struct pci_driver gem_driver = {
 #endif /* CONFIG_PM */
 };
 
+<<<<<<< HEAD
 static int __init gem_init(void)
 {
 	return pci_register_driver(&gem_driver);
@@ -3043,3 +3081,6 @@ static void __exit gem_cleanup(void)
 
 module_init(gem_init);
 module_exit(gem_cleanup);
+=======
+module_pci_driver(gem_driver);
+>>>>>>> refs/remotes/origin/master

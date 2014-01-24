@@ -21,4 +21,22 @@ do
 	    p
      }' "Documentation/perf-$cmd.txt"
 done
+<<<<<<< HEAD
+=======
+
+echo "#ifdef HAVE_LIBELF_SUPPORT"
+sed -n -e 's/^perf-\([^ 	]*\)[ 	].* full.*/\1/p' command-list.txt |
+sort |
+while read cmd
+do
+     sed -n '
+     /^NAME/,/perf-'"$cmd"'/H
+     ${
+            x
+            s/.*perf-'"$cmd"' - \(.*\)/  {"'"$cmd"'", "\1"},/
+	    p
+     }' "Documentation/perf-$cmd.txt"
+done
+echo "#endif /* HAVE_LIBELF_SUPPORT */"
+>>>>>>> refs/remotes/origin/master
 echo "};"

@@ -32,7 +32,11 @@ config S2IO
 
 config VXGE
 	tristate "Exar X3100 Series 10GbE PCIe Server Adapter"
+<<<<<<< HEAD
 	depends on PCI && INET
+=======
+	depends on PCI
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This driver supports Exar Corp's X3100 Series 10 GbE PCIe
 	  I/O Virtualized Server Adapter.

@@ -28,6 +28,7 @@
 
 #include <linux/input.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/usb.h>
 #include <linux/hid.h>
 <<<<<<< HEAD
@@ -38,6 +39,13 @@
 
 #ifdef CONFIG_SMARTJOYPLUS_FF
 #include "usbhid/usbhid.h"
+=======
+#include <linux/hid.h>
+#include <linux/module.h>
+#include "hid-ids.h"
+
+#ifdef CONFIG_SMARTJOYPLUS_FF
+>>>>>>> refs/remotes/origin/master
 
 struct sjoyff_device {
 	struct hid_report *report;
@@ -60,7 +68,11 @@ static int hid_sjoyff_play(struct input_dev *dev, void *data,
 	sjoyff->report->field[0]->value[1] = right;
 	sjoyff->report->field[0]->value[2] = left;
 	dev_dbg(&dev->dev, "running with 0x%02x 0x%02x\n", left, right);
+<<<<<<< HEAD
 	usbhid_submit_report(hid, sjoyff->report, USB_DIR_OUT);
+=======
+	hid_hw_request(hid, sjoyff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -70,11 +82,15 @@ static int sjoyff_init(struct hid_device *hid)
 	struct sjoyff_device *sjoyff;
 	struct hid_report *report;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct hid_input *hidinput = list_entry(hid->inputs.next,
 						struct hid_input, list);
 =======
 	struct hid_input *hidinput;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hid_input *hidinput;
+>>>>>>> refs/remotes/origin/master
 	struct list_head *report_list =
 			&hid->report_enum[HID_OUTPUT_REPORT].report_list;
 	struct list_head *report_ptr = report_list;
@@ -86,6 +102,7 @@ static int sjoyff_init(struct hid_device *hid)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	report_ptr = report_ptr->next;
 
@@ -125,6 +142,8 @@ static int sjoyff_init(struct hid_device *hid)
 	sjoyff->report->field[0]->value[2] = 0x00;
 	usbhid_submit_report(hid, sjoyff->report, USB_DIR_OUT);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(hidinput, &hid->inputs, list) {
 		report_ptr = report_ptr->next;
 
@@ -162,9 +181,14 @@ static int sjoyff_init(struct hid_device *hid)
 		sjoyff->report->field[0]->value[0] = 0x01;
 		sjoyff->report->field[0]->value[1] = 0x00;
 		sjoyff->report->field[0]->value[2] = 0x00;
+<<<<<<< HEAD
 		usbhid_submit_report(hid, sjoyff->report, USB_DIR_OUT);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		hid_hw_request(hid, sjoyff->report, HID_REQ_SET_REPORT);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	hid_info(hid, "Force feedback for SmartJoy PLUS PS2/USB adapter\n");
 
@@ -182,10 +206,15 @@ static int sjoy_probe(struct hid_device *hdev, const struct hid_device_id *id)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	hdev->quirks |= id->driver_data;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hdev->quirks |= id->driver_data;
+
+>>>>>>> refs/remotes/origin/master
 	ret = hid_parse(hdev);
 	if (ret) {
 		hid_err(hdev, "parse failed\n");
@@ -207,8 +236,11 @@ err:
 
 static const struct hid_device_id sjoy_devices[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ HID_USB_DEVICE(USB_VENDOR_ID_WISEGROUP, USB_DEVICE_ID_SMARTJOY_PLUS) },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{ HID_USB_DEVICE(USB_VENDOR_ID_WISEGROUP_LTD, USB_DEVICE_ID_SUPER_JOY_BOX_3_PRO),
 		.driver_data = HID_QUIRK_NOGET },
 	{ HID_USB_DEVICE(USB_VENDOR_ID_WISEGROUP_LTD, USB_DEVICE_ID_SUPER_DUAL_BOX_PRO),
@@ -222,7 +254,10 @@ static const struct hid_device_id sjoy_devices[] = {
 	{ HID_USB_DEVICE(USB_VENDOR_ID_WISEGROUP, USB_DEVICE_ID_DUAL_USB_JOYPAD),
 		.driver_data = HID_QUIRK_MULTI_INPUT |
 			       HID_QUIRK_SKIP_OUTPUT_REPORTS },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 MODULE_DEVICE_TABLE(hid, sjoy_devices);
@@ -232,6 +267,7 @@ static struct hid_driver sjoy_driver = {
 	.id_table = sjoy_devices,
 	.probe = sjoy_probe,
 };
+<<<<<<< HEAD
 
 static int __init sjoy_init(void)
 {
@@ -245,6 +281,10 @@ static void __exit sjoy_exit(void)
 
 module_init(sjoy_init);
 module_exit(sjoy_exit);
+=======
+module_hid_driver(sjoy_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Jussi Kivilinna");
 

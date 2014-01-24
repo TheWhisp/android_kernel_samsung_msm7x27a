@@ -10,7 +10,11 @@
 void *memcpy(void *to, const void *from, size_t n)
 {
 	void *xto = to;
+<<<<<<< HEAD
 	size_t temp, temp1;
+=======
+	size_t temp;
+>>>>>>> refs/remotes/origin/master
 
 	if (!n)
 		return xto;
@@ -23,7 +27,10 @@ void *memcpy(void *to, const void *from, size_t n)
 		n--;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_M68000)
 	if ((long)from & 1) {
 		char *cto = to;
@@ -33,7 +40,10 @@ void *memcpy(void *to, const void *from, size_t n)
 		return xto;
 	}
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (n > 2 && (long)to & 2) {
 		short *sto = to;
 		const short *sfrom = from;
@@ -50,6 +60,10 @@ void *memcpy(void *to, const void *from, size_t n)
 		for (; temp; temp--)
 			*lto++ = *lfrom++;
 #else
+<<<<<<< HEAD
+=======
+		size_t temp1;
+>>>>>>> refs/remotes/origin/master
 		asm volatile (
 			"	movel %2,%3\n"
 			"	andw  #7,%3\n"

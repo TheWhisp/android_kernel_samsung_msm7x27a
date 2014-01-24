@@ -1,6 +1,7 @@
 #
 # Core Alchemy code
 #
+<<<<<<< HEAD
 platform-$(CONFIG_MIPS_ALCHEMY)	+= alchemy/common/
 
 
@@ -57,12 +58,20 @@ load-$(CONFIG_MIPS_PB1550)	+= 0xffffffff80100000
 #
 # AMD Alchemy Db1000/Db1500/Db1100 eval boards
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+platform-$(CONFIG_MIPS_ALCHEMY) += alchemy/common/
+
+
+#
+# AMD Alchemy Db1000/Db1500/Pb1500/Db1100/Pb1100 eval boards
+>>>>>>> refs/remotes/origin/master
 #
 platform-$(CONFIG_MIPS_DB1000)	+= alchemy/devboards/
 cflags-$(CONFIG_MIPS_DB1000)	+= -I$(srctree)/arch/mips/include/asm/mach-db1x00
 load-$(CONFIG_MIPS_DB1000)	+= 0xffffffff80100000
 
 #
+<<<<<<< HEAD
 <<<<<<< HEAD
 # AMD Alchemy Db1100 eval board
 #
@@ -122,37 +131,59 @@ platform-$(CONFIG_MIPS_MTX1)	+= alchemy/mtx-1/
 platform-$(CONFIG_MIPS_DB1300)	+= alchemy/devboards/
 cflags-$(CONFIG_MIPS_DB1300)	+= -I$(srctree)/arch/mips/include/asm/mach-db1x00
 load-$(CONFIG_MIPS_DB1300)	+= 0xffffffff80100000
+=======
+# AMD Alchemy Db1200/Pb1200/Db1550/Pb1550/Db1300 eval boards
+#
+platform-$(CONFIG_MIPS_DB1235)	+= alchemy/devboards/
+cflags-$(CONFIG_MIPS_DB1235)	+= -I$(srctree)/arch/mips/include/asm/mach-db1x00
+load-$(CONFIG_MIPS_DB1235)	+= 0xffffffff80100000
+>>>>>>> refs/remotes/origin/master
 
 #
 # 4G-Systems MTX-1 "MeshCube" wireless router
 #
 platform-$(CONFIG_MIPS_MTX1)	+= alchemy/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 load-$(CONFIG_MIPS_MTX1)	+= 0xffffffff80100000
 
 #
 # MyCable eval board
 #
 <<<<<<< HEAD
+<<<<<<< HEAD
 platform-$(CONFIG_MIPS_XXS1500)	+= alchemy/xxs1500/
 =======
 platform-$(CONFIG_MIPS_XXS1500)	+= alchemy/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+platform-$(CONFIG_MIPS_XXS1500) += alchemy/
+>>>>>>> refs/remotes/origin/master
 load-$(CONFIG_MIPS_XXS1500)	+= 0xffffffff80100000
 
 #
 # Trapeze ITS GRP board
 #
 <<<<<<< HEAD
+<<<<<<< HEAD
 platform-$(CONFIG_MIPS_GPR)	+= alchemy/gpr/
 =======
 platform-$(CONFIG_MIPS_GPR)	+= alchemy/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+platform-$(CONFIG_MIPS_GPR)	+= alchemy/
+>>>>>>> refs/remotes/origin/master
 load-$(CONFIG_MIPS_GPR)		+= 0xffffffff80100000
 
 # boards can specify their own <gpio.h> in one of their include dirs.
 # If they do, placing this line here at the end will make sure the
+<<<<<<< HEAD
 # compiler picks the board one.  If they don't, it will make sure
+=======
+# compiler picks the board one.	 If they don't, it will make sure
+>>>>>>> refs/remotes/origin/master
 # the alchemy generic gpio header is picked up.
 
 cflags-$(CONFIG_MIPS_ALCHEMY)	+= -I$(srctree)/arch/mips/include/asm/mach-au1x00

@@ -24,6 +24,15 @@
 
 #define EXYNOS_DP_LANE_MAP			0x35C
 
+<<<<<<< HEAD
+=======
+#define EXYNOS_DP_ANALOG_CTL_1			0x370
+#define EXYNOS_DP_ANALOG_CTL_2			0x374
+#define EXYNOS_DP_ANALOG_CTL_3			0x378
+#define EXYNOS_DP_PLL_FILTER_CTL_1		0x37C
+#define EXYNOS_DP_TX_AMP_TUNING_CTL		0x380
+
+>>>>>>> refs/remotes/origin/master
 #define EXYNOS_DP_AUX_HW_RETRY_CTL		0x390
 
 #define EXYNOS_DP_COMMON_INT_STA_1		0x3C4
@@ -166,6 +175,32 @@
 #define LANE0_MAP_LOGIC_LANE_2			(0x2 << 0)
 #define LANE0_MAP_LOGIC_LANE_3			(0x3 << 0)
 
+<<<<<<< HEAD
+=======
+/* EXYNOS_DP_ANALOG_CTL_1 */
+#define TX_TERMINAL_CTRL_50_OHM			(0x1 << 4)
+
+/* EXYNOS_DP_ANALOG_CTL_2 */
+#define SEL_24M					(0x1 << 3)
+#define TX_DVDD_BIT_1_0625V			(0x4 << 0)
+
+/* EXYNOS_DP_ANALOG_CTL_3 */
+#define DRIVE_DVDD_BIT_1_0625V			(0x4 << 5)
+#define VCO_BIT_600_MICRO			(0x5 << 0)
+
+/* EXYNOS_DP_PLL_FILTER_CTL_1 */
+#define PD_RING_OSC				(0x1 << 6)
+#define AUX_TERMINAL_CTRL_50_OHM		(0x2 << 4)
+#define TX_CUR1_2X				(0x1 << 2)
+#define TX_CUR_16_MA				(0x3 << 0)
+
+/* EXYNOS_DP_TX_AMP_TUNING_CTL */
+#define CH3_AMP_400_MV				(0x0 << 24)
+#define CH2_AMP_400_MV				(0x0 << 16)
+#define CH1_AMP_400_MV				(0x0 << 8)
+#define CH0_AMP_400_MV				(0x0 << 0)
+
+>>>>>>> refs/remotes/origin/master
 /* EXYNOS_DP_AUX_HW_RETRY_CTL */
 #define AUX_BIT_PERIOD_EXPECTED_DELAY(x)	(((x) & 0x7) << 8)
 #define AUX_HW_RETRY_INTERVAL_MASK		(0x3 << 3)
@@ -213,7 +248,12 @@
 
 /* EXYNOS_DP_INT_CTL */
 #define SOFT_INT_CTRL				(0x1 << 2)
+<<<<<<< HEAD
 #define INT_POL					(0x1 << 0)
+=======
+#define INT_POL1				(0x1 << 1)
+#define INT_POL0				(0x1 << 0)
+>>>>>>> refs/remotes/origin/master
 
 /* EXYNOS_DP_SYS_CTL_1 */
 #define DET_STA					(0x1 << 2)
@@ -256,6 +296,10 @@
 #define SW_TRAINING_PATTERN_SET_NORMAL		(0x0 << 0)
 
 /* EXYNOS_DP_LN0_LINK_TRAINING_CTL */
+<<<<<<< HEAD
+=======
+#define PRE_EMPHASIS_SET_MASK			(0x3 << 3)
+>>>>>>> refs/remotes/origin/master
 #define PRE_EMPHASIS_SET_SHIFT			(3)
 
 /* EXYNOS_DP_DEBUG_CTL */

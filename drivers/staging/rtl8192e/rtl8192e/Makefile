@@ -7,7 +7,10 @@ r8192e_pci-objs :=		\
 	r8190P_rtl8256.o	\
 	rtl_cam.o		\
 	rtl_core.o		\
+<<<<<<< HEAD
 	rtl_debug.o		\
+=======
+>>>>>>> refs/remotes/origin/master
 	rtl_dm.o		\
 	rtl_eeprom.o		\
 	rtl_ethtool.o		\

@@ -35,11 +35,17 @@
 #ifndef __NLM_HAL_HALDEFS_H__
 #define __NLM_HAL_HALDEFS_H__
 
+<<<<<<< HEAD
+=======
+#include <linux/irqflags.h>	/* for local_irq_disable */
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This file contains platform specific memory mapped IO implementation
  * and will provide a way to read 32/64 bit memory mapped registers in
  * all ABIs
  */
+<<<<<<< HEAD
 #if !defined(CONFIG_64BIT) && defined(CONFIG_CPU_XLP)
 #error "o32 compile not supported on XLP yet"
 #endif
@@ -71,6 +77,8 @@ static inline void nlm_restore_flags(uint32_t sr)
  * are added, will have to disable interrupts and enable KX before doing
  * 64 bit ops.
  */
+=======
+>>>>>>> refs/remotes/origin/master
 static inline uint32_t
 nlm_read_reg(uint64_t base, uint32_t reg)
 {
@@ -87,13 +95,48 @@ nlm_write_reg(uint64_t base, uint32_t reg, uint32_t val)
 	*addr = val;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * For o32 compilation, we have to disable interrupts to access 64 bit
+ * registers
+ *
+ * We need to disable interrupts because we save just the lower 32 bits of
+ * registers in  interrupt handling. So if we get hit by an interrupt while
+ * using the upper 32 bits of a register, we lose.
+ */
+
+>>>>>>> refs/remotes/origin/master
 static inline uint64_t
 nlm_read_reg64(uint64_t base, uint32_t reg)
 {
 	uint64_t addr = base + (reg >> 1) * sizeof(uint64_t);
 	volatile uint64_t *ptr = (volatile uint64_t *)(long)addr;
+<<<<<<< HEAD
 
 	return *ptr;
+=======
+	uint64_t val;
+
+	if (sizeof(unsigned long) == 4) {
+		unsigned long flags;
+
+		local_irq_save(flags);
+		__asm__ __volatile__(
+			".set	push"			"\n\t"
+			".set	mips64"			"\n\t"
+			"ld	%L0, %1"		"\n\t"
+			"dsra32	%M0, %L0, 0"		"\n\t"
+			"sll	%L0, %L0, 0"		"\n\t"
+			".set	pop"			"\n"
+			: "=r" (val)
+			: "m" (*ptr));
+		local_irq_restore(flags);
+	} else
+		val = *ptr;
+
+	return val;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -102,7 +145,29 @@ nlm_write_reg64(uint64_t base, uint32_t reg, uint64_t val)
 	uint64_t addr = base + (reg >> 1) * sizeof(uint64_t);
 	volatile uint64_t *ptr = (volatile uint64_t *)(long)addr;
 
+<<<<<<< HEAD
 	*ptr = val;
+=======
+	if (sizeof(unsigned long) == 4) {
+		unsigned long flags;
+		uint64_t tmp;
+
+		local_irq_save(flags);
+		__asm__ __volatile__(
+			".set	push"			"\n\t"
+			".set	mips64"			"\n\t"
+			"dsll32	%L0, %L0, 0"		"\n\t"
+			"dsrl32	%L0, %L0, 0"		"\n\t"
+			"dsll32	%M0, %M0, 0"		"\n\t"
+			"or	%L0, %L0, %M0"		"\n\t"
+			"sd	%L0, %2"		"\n\t"
+			".set	pop"			"\n"
+			: "=r" (tmp)
+			: "0" (val), "m" (*ptr));
+		local_irq_restore(flags);
+	} else
+		*ptr = val;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -143,6 +208,7 @@ nlm_pcicfg_base(uint32_t devoffset)
 	return nlm_io_base + devoffset;
 }
 
+<<<<<<< HEAD
 static inline uint64_t
 nlm_xkphys_map_pcibar0(uint64_t pcibase)
 {
@@ -151,6 +217,8 @@ nlm_xkphys_map_pcibar0(uint64_t pcibase)
 	paddr = nlm_read_reg(pcibase, 0x4) & ~0xfu;
 	return (uint64_t)0x9000000000000000 | paddr;
 }
+=======
+>>>>>>> refs/remotes/origin/master
 #elif defined(CONFIG_CPU_XLR)
 
 static inline uint64_t

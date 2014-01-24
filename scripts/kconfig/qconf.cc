@@ -6,6 +6,10 @@
 #include <qglobal.h>
 
 #if QT_VERSION < 0x040000
+<<<<<<< HEAD
+=======
+#include <stddef.h>
+>>>>>>> refs/remotes/origin/master
 #include <qmainwindow.h>
 #include <qvbox.h>
 #include <qvaluelist.h>
@@ -68,6 +72,14 @@ static inline QString qgettext(const QString& str)
 	return QString::fromLocal8Bit(gettext(str.latin1()));
 }
 
+<<<<<<< HEAD
+=======
+ConfigSettings::ConfigSettings()
+	: QSettings("kernel.org", "qconf")
+{
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * Reads a list of integer values from the application settings.
  */
@@ -1479,11 +1491,14 @@ void ConfigMainWindow::loadConfig(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void ConfigMainWindow::saveConfig(void)
 {
 	if (conf_write(NULL))
 		QMessageBox::information(this, "qconf", _("Unable to save configuration!"));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 bool ConfigMainWindow::saveConfig(void)
 {
 	if (conf_write(NULL)) {
@@ -1491,7 +1506,10 @@ bool ConfigMainWindow::saveConfig(void)
 		return false;
 	}
 	return true;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void ConfigMainWindow::saveConfigAs(void)
@@ -1653,14 +1671,20 @@ void ConfigMainWindow::closeEvent(QCloseEvent* e)
 	switch (mb.exec()) {
 	case QMessageBox::Yes:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		saveConfig();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (saveConfig())
 			e->accept();
 		else
 			e->ignore();
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case QMessageBox::No:
 		e->accept();
 		break;
@@ -1764,12 +1788,15 @@ int main(int ac, char** av)
 	textdomain(PACKAGE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef LKC_DIRECT_LINK
 	kconfig_load();
 #endif
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	progname = av[0];
 	configApp = new QApplication(ac, av);
 	if (ac > 1 && av[1][0] == '-') {

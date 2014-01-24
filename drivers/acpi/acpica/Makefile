@@ -9,6 +9,7 @@ ccflags-$(CONFIG_ACPI_DEBUG)	+= -DACPI_DEBUG_OUTPUT
 obj-y	+= acpi.o
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 acpi-y := dsfield.o   dsmthdat.o  dsopcode.o  dswexec.o  dswscope.o \
 	 dsmethod.o  dsobject.o  dsutils.o   dswload.o  dswstate.o \
 	 dsinit.o dsargs.o dscontrol.o dswload2.o
@@ -48,6 +49,8 @@ acpi-y += utalloc.o utdebug.o uteval.o utinit.o utmisc.o utxface.o \
 		utstate.o utmutex.o utobject.o utresrc.o utlock.o utids.o \
 		utosi.o utxferror.o utdecode.o
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 acpi-y :=		\
 	dsargs.o	\
 	dscontrol.o	\
@@ -71,6 +74,10 @@ acpi-y +=		\
 	evgpeinit.o	\
 	evgpeutil.o	\
 	evglock.o	\
+<<<<<<< HEAD
+=======
+	evhandler.o	\
+>>>>>>> refs/remotes/origin/master
 	evmisc.o	\
 	evregion.o	\
 	evrgnini.o	\
@@ -122,6 +129,11 @@ acpi-$(ACPI_FUTURE_USAGE) += hwtimer.o
 acpi-y +=		\
 	nsaccess.o	\
 	nsalloc.o	\
+<<<<<<< HEAD
+=======
+	nsarguments.o	\
+	nsconvert.o	\
+>>>>>>> refs/remotes/origin/master
 	nsdump.o	\
 	nseval.o	\
 	nsinit.o	\
@@ -130,6 +142,10 @@ acpi-y +=		\
 	nsobject.o	\
 	nsparse.o	\
 	nspredef.o	\
+<<<<<<< HEAD
+=======
+	nsprepkg.o	\
+>>>>>>> refs/remotes/origin/master
 	nsrepair.o	\
 	nsrepair2.o	\
 	nssearch.o	\
@@ -144,7 +160,13 @@ acpi-$(ACPI_FUTURE_USAGE) += nsdumpdv.o
 acpi-y +=		\
 	psargs.o	\
 	psloop.o	\
+<<<<<<< HEAD
 	psopcode.o	\
+=======
+	psobject.o	\
+	psopcode.o	\
+	psopinfo.o	\
+>>>>>>> refs/remotes/origin/master
 	psparse.o	\
 	psscope.o	\
 	pstree.o	\
@@ -166,23 +188,44 @@ acpi-y +=		\
 	rsutils.o	\
 	rsxface.o
 
+<<<<<<< HEAD
 acpi-$(ACPI_FUTURE_USAGE) += rsdump.o
+=======
+acpi-$(ACPI_FUTURE_USAGE) += rsdump.o rsdumpinfo.o
+>>>>>>> refs/remotes/origin/master
 
 acpi-y +=		\
 	tbfadt.o	\
 	tbfind.o	\
 	tbinstal.o	\
+<<<<<<< HEAD
 	tbutils.o	\
 	tbxface.o	\
+=======
+	tbprint.o	\
+	tbutils.o	\
+	tbxface.o	\
+	tbxfload.o	\
+>>>>>>> refs/remotes/origin/master
 	tbxfroot.o
 
 acpi-y +=		\
 	utaddress.o	\
 	utalloc.o	\
+<<<<<<< HEAD
 	utcopy.o	\
 	utdebug.o	\
 	utdecode.o	\
 	utdelete.o	\
+=======
+	utbuffer.o	\
+	utcopy.o	\
+	utexcep.o	\
+	utdebug.o	\
+	utdecode.o	\
+	utdelete.o	\
+	uterror.o	\
+>>>>>>> refs/remotes/origin/master
 	uteval.o	\
 	utglobal.o	\
 	utids.o		\
@@ -193,9 +236,24 @@ acpi-y +=		\
 	utmutex.o	\
 	utobject.o	\
 	utosi.o		\
+<<<<<<< HEAD
 	utresrc.o	\
 	utstate.o	\
 	utxface.o	\
 	utxferror.o	\
 	utxfmutex.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	utownerid.o	\
+	utpredef.o	\
+	utresrc.o	\
+	utstate.o	\
+	utstring.o	\
+	utxface.o	\
+	utxfinit.o	\
+	utxferror.o	\
+	utxfmutex.o
+
+acpi-$(ACPI_FUTURE_USAGE) += uttrack.o utcache.o
+
+>>>>>>> refs/remotes/origin/master

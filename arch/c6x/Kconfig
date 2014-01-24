@@ -3,6 +3,7 @@
 # see Documentation/kbuild/kconfig-language.txt.
 #
 
+<<<<<<< HEAD
 config TMS320C6X
 	def_bool y
 	select CLKDEV_LOOKUP
@@ -10,15 +11,30 @@ config TMS320C6X
 	select HAVE_ARCH_TRACEHOOK
 	select HAVE_DMA_API_DEBUG
 	select HAVE_GENERIC_HARDIRQS
+=======
+config C6X
+	def_bool y
+	select CLKDEV_LOOKUP
+	select GENERIC_ATOMIC64
+	select GENERIC_IRQ_SHOW
+	select HAVE_ARCH_TRACEHOOK
+	select HAVE_DMA_API_DEBUG
+>>>>>>> refs/remotes/origin/master
 	select HAVE_MEMBLOCK
 	select SPARSE_IRQ
 	select IRQ_DOMAIN
 	select OF
 	select OF_EARLY_FLATTREE
+<<<<<<< HEAD
+=======
+	select GENERIC_CLOCKEVENTS
+	select MODULES_USE_ELF_RELA
+>>>>>>> refs/remotes/origin/master
 
 config MMU
 	def_bool n
 
+<<<<<<< HEAD
 config ZONE_DMA
 	def_bool y
 
@@ -37,12 +53,21 @@ config RWSEM_GENERIC_SPINLOCK
 config RWSEM_XCHGADD_ALGORITHM
 	def_bool n
 
+=======
+config FPU
+	def_bool n
+
+config RWSEM_GENERIC_SPINLOCK
+	def_bool y
+
+>>>>>>> refs/remotes/origin/master
 config GENERIC_CALIBRATE_DELAY
 	def_bool y
 
 config GENERIC_HWEIGHT
 	def_bool y
 
+<<<<<<< HEAD
 config GENERIC_CLOCKEVENTS
 	def_bool y
 
@@ -55,6 +80,11 @@ config GENERIC_BUG
 config COMMON_CLKDEV
 	def_bool y
 
+=======
+config GENERIC_BUG
+	def_bool y
+
+>>>>>>> refs/remotes/origin/master
 config C6X_BIG_KERNEL
 	bool "Build a big kernel"
 	help
@@ -121,10 +151,13 @@ menu "Processor type and features"
 
 source "arch/c6x/platforms/Kconfig"
 
+<<<<<<< HEAD
 config TMS320C6X_CACHES_ON
 	bool "L2 cache support"
 	default y
 
+=======
+>>>>>>> refs/remotes/origin/master
 config KERNEL_RAM_BASE_ADDRESS
 	hex "Virtual address of memory base"
 	default 0xe0000000 if SOC_TMS320C6455
@@ -137,7 +170,10 @@ source "mm/Kconfig"
 source "kernel/Kconfig.preempt"
 
 source "kernel/Kconfig.hz"
+<<<<<<< HEAD
 source "kernel/time/Kconfig"
+=======
+>>>>>>> refs/remotes/origin/master
 
 endmenu
 

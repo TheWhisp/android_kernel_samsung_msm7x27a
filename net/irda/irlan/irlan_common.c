@@ -41,9 +41,12 @@
 #include <linux/bitops.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/byteorder.h>
 
 #include <net/irda/irda.h>
@@ -71,10 +74,14 @@ static void *skey;
 
 /* Module parameters */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int eth;   /* Use "eth" or "irlan" name for devices */
 =======
 static bool eth;   /* Use "eth" or "irlan" name for devices */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool eth;   /* Use "eth" or "irlan" name for devices */
+>>>>>>> refs/remotes/origin/master
 static int access = ACCESS_PEER; /* PEER, DIRECT or HOSTED */
 
 #ifdef CONFIG_PROC_FS
@@ -325,12 +332,17 @@ static void irlan_connect_indication(void *instance, void *sap,
 	IRDA_DEBUG(2, "%s()\n", __func__ );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	self = (struct irlan_cb *) instance;
 	tsap = (struct tsap_cb *) sap;
 =======
 	self = instance;
 	tsap = sap;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	self = instance;
+	tsap = sap;
+>>>>>>> refs/remotes/origin/master
 
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == IRLAN_MAGIC, return;);
@@ -374,10 +386,14 @@ static void irlan_connect_confirm(void *instance, void *sap,
 	struct irlan_cb *self;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	self = (struct irlan_cb *) instance;
 =======
 	self = instance;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	self = instance;
+>>>>>>> refs/remotes/origin/master
 
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == IRLAN_MAGIC, return;);
@@ -423,12 +439,17 @@ static void irlan_disconnect_indication(void *instance,
 	IRDA_DEBUG(0, "%s(), reason=%d\n", __func__ , reason);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	self = (struct irlan_cb *) instance;
 	tsap = (struct tsap_cb *) sap;
 =======
 	self = instance;
 	tsap = sap;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	self = instance;
+	tsap = sap;
+>>>>>>> refs/remotes/origin/master
 
 	IRDA_ASSERT(self != NULL, return;);
 	IRDA_ASSERT(self->magic == IRLAN_MAGIC, return;);

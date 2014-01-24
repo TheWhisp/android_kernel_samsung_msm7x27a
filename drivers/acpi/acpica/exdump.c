@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -113,9 +117,15 @@ static struct acpi_exdump_info acpi_ex_dump_package[5] = {
 static struct acpi_exdump_info acpi_ex_dump_device[4] = {
 	{ACPI_EXD_INIT, ACPI_EXD_TABLE_SIZE(acpi_ex_dump_device), NULL},
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(device.handler), "Handler"},
+<<<<<<< HEAD
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(device.system_notify),
 	 "System Notify"},
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(device.device_notify),
+=======
+	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(device.notify_list[0]),
+	 "System Notify"},
+	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(device.notify_list[1]),
+>>>>>>> refs/remotes/origin/master
 	 "Device Notify"}
 };
 
@@ -162,9 +172,15 @@ static struct acpi_exdump_info acpi_ex_dump_power[5] = {
 	 "System Level"},
 	{ACPI_EXD_UINT32, ACPI_EXD_OFFSET(power_resource.resource_order),
 	 "Resource Order"},
+<<<<<<< HEAD
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(power_resource.system_notify),
 	 "System Notify"},
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(power_resource.device_notify),
+=======
+	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(power_resource.notify_list[0]),
+	 "System Notify"},
+	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(power_resource.notify_list[1]),
+>>>>>>> refs/remotes/origin/master
 	 "Device Notify"}
 };
 
@@ -173,18 +189,30 @@ static struct acpi_exdump_info acpi_ex_dump_processor[7] = {
 	{ACPI_EXD_UINT8, ACPI_EXD_OFFSET(processor.proc_id), "Processor ID"},
 	{ACPI_EXD_UINT8, ACPI_EXD_OFFSET(processor.length), "Length"},
 	{ACPI_EXD_ADDRESS, ACPI_EXD_OFFSET(processor.address), "Address"},
+<<<<<<< HEAD
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(processor.system_notify),
 	 "System Notify"},
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(processor.device_notify),
+=======
+	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(processor.notify_list[0]),
+	 "System Notify"},
+	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(processor.notify_list[1]),
+>>>>>>> refs/remotes/origin/master
 	 "Device Notify"},
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(processor.handler), "Handler"}
 };
 
 static struct acpi_exdump_info acpi_ex_dump_thermal[4] = {
 	{ACPI_EXD_INIT, ACPI_EXD_TABLE_SIZE(acpi_ex_dump_thermal), NULL},
+<<<<<<< HEAD
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(thermal_zone.system_notify),
 	 "System Notify"},
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(thermal_zone.device_notify),
+=======
+	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(thermal_zone.notify_list[0]),
+	 "System Notify"},
+	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(thermal_zone.notify_list[1]),
+>>>>>>> refs/remotes/origin/master
 	 "Device Notify"},
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(thermal_zone.handler), "Handler"}
 };
@@ -197,11 +225,14 @@ static struct acpi_exdump_info acpi_ex_dump_buffer_field[3] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct acpi_exdump_info acpi_ex_dump_region_field[3] = {
 	{ACPI_EXD_INIT, ACPI_EXD_TABLE_SIZE(acpi_ex_dump_region_field), NULL},
 	{ACPI_EXD_FIELD, 0, NULL},
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(field.region_obj), "Region Object"}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct acpi_exdump_info acpi_ex_dump_region_field[5] = {
 	{ACPI_EXD_INIT, ACPI_EXD_TABLE_SIZE(acpi_ex_dump_region_field), NULL},
 	{ACPI_EXD_FIELD, 0, NULL},
@@ -209,7 +240,10 @@ static struct acpi_exdump_info acpi_ex_dump_region_field[5] = {
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(field.region_obj), "Region Object"},
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(field.resource_buffer),
 	 "ResourceBuffer"}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct acpi_exdump_info acpi_ex_dump_bank_field[5] = {
@@ -252,10 +286,22 @@ static struct acpi_exdump_info acpi_ex_dump_address_handler[6] = {
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(address_space.context), "Context"}
 };
 
+<<<<<<< HEAD
 static struct acpi_exdump_info acpi_ex_dump_notify[3] = {
 	{ACPI_EXD_INIT, ACPI_EXD_TABLE_SIZE(acpi_ex_dump_notify), NULL},
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(notify.node), "Node"},
 	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(notify.context), "Context"}
+=======
+static struct acpi_exdump_info acpi_ex_dump_notify[7] = {
+	{ACPI_EXD_INIT, ACPI_EXD_TABLE_SIZE(acpi_ex_dump_notify), NULL},
+	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(notify.node), "Node"},
+	{ACPI_EXD_UINT32, ACPI_EXD_OFFSET(notify.handler_type), "Handler Type"},
+	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(notify.handler), "Handler"},
+	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(notify.context), "Context"},
+	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(notify.next[0]),
+	 "Next System Notify"},
+	{ACPI_EXD_POINTER, ACPI_EXD_OFFSET(notify.next[1]), "Next Device Notify"}
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Miscellaneous tables */
@@ -329,7 +375,11 @@ static struct acpi_exdump_info *acpi_ex_dump_info[] = {
  * FUNCTION:    acpi_ex_dump_object
  *
  * PARAMETERS:  obj_desc            - Descriptor to dump
+<<<<<<< HEAD
  *              Info                - Info table corresponding to this object
+=======
+ *              info                - Info table corresponding to this object
+>>>>>>> refs/remotes/origin/master
  *                                    type
  *
  * RETURN:      None
@@ -344,6 +394,10 @@ acpi_ex_dump_object(union acpi_operand_object *obj_desc,
 {
 	u8 *target;
 	char *name;
+<<<<<<< HEAD
+=======
+	const char *reference_name;
+>>>>>>> refs/remotes/origin/master
 	u8 count;
 
 	if (!info) {
@@ -363,6 +417,10 @@ acpi_ex_dump_object(union acpi_operand_object *obj_desc,
 
 		switch (info->opcode) {
 		case ACPI_EXD_INIT:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		case ACPI_EXD_TYPE:
@@ -431,10 +489,16 @@ acpi_ex_dump_object(union acpi_operand_object *obj_desc,
 
 		case ACPI_EXD_REFERENCE:
 
+<<<<<<< HEAD
 			acpi_ex_out_string("Class Name",
 					   ACPI_CAST_PTR(char,
 							 acpi_ut_get_reference_name
 							 (obj_desc)));
+=======
+			reference_name = acpi_ut_get_reference_name(obj_desc);
+			acpi_ex_out_string("Class Name",
+					   ACPI_CAST_PTR(char, reference_name));
+>>>>>>> refs/remotes/origin/master
 			acpi_ex_dump_reference_obj(obj_desc);
 			break;
 
@@ -455,7 +519,11 @@ acpi_ex_dump_object(union acpi_operand_object *obj_desc,
  * FUNCTION:    acpi_ex_dump_operand
  *
  * PARAMETERS:  *obj_desc       - Pointer to entry to be dumped
+<<<<<<< HEAD
  *              Depth           - Current nesting depth
+=======
+ *              depth           - Current nesting depth
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -470,8 +538,13 @@ void acpi_ex_dump_operand(union acpi_operand_object *obj_desc, u32 depth)
 
 	ACPI_FUNCTION_NAME(ex_dump_operand)
 
+<<<<<<< HEAD
 	    if (!((ACPI_LV_EXEC & acpi_dbg_level)
 		  && (_COMPONENT & acpi_dbg_layer))) {
+=======
+	    /* Check if debug output enabled */
+	    if (!ACPI_IS_DEBUG_ENABLED(ACPI_LV_EXEC, _COMPONENT)) {
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -724,6 +797,10 @@ void acpi_ex_dump_operand(union acpi_operand_object *obj_desc, u32 depth)
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		/* Unknown Type */
 
 		acpi_os_printf("Unknown Type %X\n", obj_desc->common.type);
@@ -737,7 +814,11 @@ void acpi_ex_dump_operand(union acpi_operand_object *obj_desc, u32 depth)
  *
  * FUNCTION:    acpi_ex_dump_operands
  *
+<<<<<<< HEAD
  * PARAMETERS:	Operands	    - A list of Operand objects
+=======
+ * PARAMETERS:  operands            - A list of Operand objects
+>>>>>>> refs/remotes/origin/master
  *		opcode_name	    - AML opcode name
  *		num_operands	    - Operand count for this opcode
  *
@@ -780,10 +861,17 @@ acpi_ex_dump_operands(union acpi_operand_object **operands,
  *
  * FUNCTION:    acpi_ex_out* functions
  *
+<<<<<<< HEAD
  * PARAMETERS:  Title               - Descriptive text
  *              Value               - Value to be displayed
  *
  * DESCRIPTION: Object dump output formatting functions.  These functions
+=======
+ * PARAMETERS:  title               - Descriptive text
+ *              value               - Value to be displayed
+ *
+ * DESCRIPTION: Object dump output formatting functions. These functions
+>>>>>>> refs/remotes/origin/master
  *              reduce the number of format strings required and keeps them
  *              all in one place for easy modification.
  *
@@ -803,8 +891,13 @@ static void acpi_ex_out_pointer(char *title, void *value)
  *
  * FUNCTION:    acpi_ex_dump_namespace_node
  *
+<<<<<<< HEAD
  * PARAMETERS:  Node                - Descriptor to dump
  *              Flags               - Force display if TRUE
+=======
+ * PARAMETERS:  node                - Descriptor to dump
+ *              flags               - Force display if TRUE
+>>>>>>> refs/remotes/origin/master
  *
  * DESCRIPTION: Dumps the members of the given.Node
  *
@@ -816,8 +909,15 @@ void acpi_ex_dump_namespace_node(struct acpi_namespace_node *node, u32 flags)
 	ACPI_FUNCTION_ENTRY();
 
 	if (!flags) {
+<<<<<<< HEAD
 		if (!((ACPI_LV_OBJECTS & acpi_dbg_level)
 		      && (_COMPONENT & acpi_dbg_layer))) {
+=======
+
+		/* Check if debug output enabled */
+
+		if (!ACPI_IS_DEBUG_ENABLED(ACPI_LV_OBJECTS, _COMPONENT)) {
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 	}
@@ -836,7 +936,11 @@ void acpi_ex_dump_namespace_node(struct acpi_namespace_node *node, u32 flags)
  *
  * FUNCTION:    acpi_ex_dump_reference_obj
  *
+<<<<<<< HEAD
  * PARAMETERS:  Object              - Descriptor to dump
+=======
+ * PARAMETERS:  object              - Descriptor to dump
+>>>>>>> refs/remotes/origin/master
  *
  * DESCRIPTION: Dumps a reference object
  *
@@ -893,8 +997,13 @@ static void acpi_ex_dump_reference_obj(union acpi_operand_object *obj_desc)
  * FUNCTION:    acpi_ex_dump_package_obj
  *
  * PARAMETERS:  obj_desc            - Descriptor to dump
+<<<<<<< HEAD
  *              Level               - Indentation Level
  *              Index               - Package index for this object
+=======
+ *              level               - Indentation Level
+ *              index               - Package index for this object
+>>>>>>> refs/remotes/origin/master
  *
  * DESCRIPTION: Dumps the elements of the package
  *
@@ -937,9 +1046,13 @@ acpi_ex_dump_package_obj(union acpi_operand_object *obj_desc,
 	case ACPI_TYPE_STRING:
 
 		acpi_os_printf("[String] Value: ");
+<<<<<<< HEAD
 		for (i = 0; i < obj_desc->string.length; i++) {
 			acpi_os_printf("%c", obj_desc->string.pointer[i]);
 		}
+=======
+		acpi_ut_print_string(obj_desc->string.pointer, ACPI_UINT8_MAX);
+>>>>>>> refs/remotes/origin/master
 		acpi_os_printf("\n");
 		break;
 
@@ -948,10 +1061,18 @@ acpi_ex_dump_package_obj(union acpi_operand_object *obj_desc,
 		acpi_os_printf("[Buffer] Length %.2X = ",
 			       obj_desc->buffer.length);
 		if (obj_desc->buffer.length) {
+<<<<<<< HEAD
 			acpi_ut_dump_buffer(ACPI_CAST_PTR
 					    (u8, obj_desc->buffer.pointer),
 					    obj_desc->buffer.length,
 					    DB_DWORD_DISPLAY, _COMPONENT);
+=======
+			acpi_ut_debug_dump_buffer(ACPI_CAST_PTR
+						  (u8,
+						   obj_desc->buffer.pointer),
+						  obj_desc->buffer.length,
+						  DB_DWORD_DISPLAY, _COMPONENT);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			acpi_os_printf("\n");
 		}
@@ -988,7 +1109,11 @@ acpi_ex_dump_package_obj(union acpi_operand_object *obj_desc,
  * FUNCTION:    acpi_ex_dump_object_descriptor
  *
  * PARAMETERS:  obj_desc            - Descriptor to dump
+<<<<<<< HEAD
  *              Flags               - Force display if TRUE
+=======
+ *              flags               - Force display if TRUE
+>>>>>>> refs/remotes/origin/master
  *
  * DESCRIPTION: Dumps the members of the object descriptor given.
  *
@@ -1004,8 +1129,15 @@ acpi_ex_dump_object_descriptor(union acpi_operand_object *obj_desc, u32 flags)
 	}
 
 	if (!flags) {
+<<<<<<< HEAD
 		if (!((ACPI_LV_OBJECTS & acpi_dbg_level)
 		      && (_COMPONENT & acpi_dbg_layer))) {
+=======
+
+		/* Check if debug output enabled */
+
+		if (!ACPI_IS_DEBUG_ENABLED(ACPI_LV_OBJECTS, _COMPONENT)) {
+>>>>>>> refs/remotes/origin/master
 			return_VOID;
 		}
 	}

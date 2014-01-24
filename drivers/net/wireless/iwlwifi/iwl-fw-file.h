@@ -5,7 +5,11 @@
  *
  * GPL LICENSE SUMMARY
  *
+<<<<<<< HEAD
  * Copyright(c) 2008 - 2012 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2008 - 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of version 2 of the GNU General Public License as
@@ -22,7 +26,11 @@
  * USA
  *
  * The full GNU General Public License is included in this distribution
+<<<<<<< HEAD
  * in the file called LICENSE.GPL.
+=======
+ * in the file called COPYING.
+>>>>>>> refs/remotes/origin/master
  *
  * Contact Information:
  *  Intel Linux Wireless <ilw@linux.intel.com>
@@ -30,7 +38,11 @@
  *
  * BSD LICENSE
  *
+<<<<<<< HEAD
  * Copyright(c) 2005 - 2012 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2005 - 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -93,6 +105,7 @@ struct iwl_ucode_header {
  * new TLV uCode file layout
  *
  * The new TLV file format contains TLVs, that each specify
+<<<<<<< HEAD
  * some piece of data. To facilitate "groups", for example
  * different instruction image with different capabilities,
  * bundled with the same init image, an alternative mechanism
@@ -102,6 +115,9 @@ struct iwl_ucode_header {
  * valid in conjunction with items of the same alternative,
  * in which case the driver (user) selects one alternative
  * to use.
+=======
+ * some piece of data.
+>>>>>>> refs/remotes/origin/master
  */
 
 enum iwl_ucode_tlv_type {
@@ -129,11 +145,22 @@ enum iwl_ucode_tlv_type {
 	IWL_UCODE_TLV_SEC_WOWLAN	= 21,
 	IWL_UCODE_TLV_DEF_CALIB		= 22,
 	IWL_UCODE_TLV_PHY_SKU		= 23,
+<<<<<<< HEAD
 };
 
 struct iwl_ucode_tlv {
 	__le16 type;		/* see above */
 	__le16 alternative;	/* see comment */
+=======
+	IWL_UCODE_TLV_SECURE_SEC_RT	= 24,
+	IWL_UCODE_TLV_SECURE_SEC_INIT	= 25,
+	IWL_UCODE_TLV_SECURE_SEC_WOWLAN	= 26,
+	IWL_UCODE_TLV_NUM_OF_CPU	= 27,
+};
+
+struct iwl_ucode_tlv {
+	__le32 type;		/* see above */
+>>>>>>> refs/remotes/origin/master
 	__le32 length;		/* not including type/length fields */
 	u8 data[0];
 };
@@ -152,7 +179,11 @@ struct iwl_tlv_ucode_header {
 	u8 human_readable[64];
 	__le32 ver;		/* major/minor/API/serial */
 	__le32 build;
+<<<<<<< HEAD
 	__le64 alternatives;	/* bitmask of valid alternatives */
+=======
+	__le64 ignore;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The data contained herein has a TLV layout,
 	 * see above for the TLV header and types.

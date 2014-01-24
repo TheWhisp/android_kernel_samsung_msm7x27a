@@ -933,6 +933,7 @@ void SMC37c669_display_device_info(
  *
  *--
  */
+<<<<<<< HEAD
 #if 0
 /* $INCLUDE_OPTIONS$ */
 #include    "cp$inc:platform_io.h"
@@ -945,6 +946,8 @@ void SMC37c669_display_device_info(
 /* Platform-specific includes */
 #include    "cp$src:platform.h"
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef TRUE
 #define TRUE 1

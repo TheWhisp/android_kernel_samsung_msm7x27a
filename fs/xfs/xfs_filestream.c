@@ -16,6 +16,7 @@
  * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 #include "xfs.h"
+<<<<<<< HEAD
 #include "xfs_bmap_btree.h"
 #include "xfs_inum.h"
 #include "xfs_dinode.h"
@@ -29,6 +30,21 @@
 #include "xfs_alloc.h"
 #include "xfs_utils.h"
 #include "xfs_mru_cache.h"
+=======
+#include "xfs_format.h"
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+#include "xfs_ag.h"
+#include "xfs_sb.h"
+#include "xfs_mount.h"
+#include "xfs_inum.h"
+#include "xfs_inode.h"
+#include "xfs_bmap.h"
+#include "xfs_bmap_util.h"
+#include "xfs_alloc.h"
+#include "xfs_mru_cache.h"
+#include "xfs_dinode.h"
+>>>>>>> refs/remotes/origin/master
 #include "xfs_filestream.h"
 #include "xfs_trace.h"
 
@@ -345,6 +361,7 @@ _xfs_filestream_update_ag(
 	 * directory and pip is NULL.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ASSERT(ip && (((ip->i_d.di_mode & S_IFREG) && pip &&
 	               (pip->i_d.di_mode & S_IFDIR)) ||
 	              ((ip->i_d.di_mode & S_IFDIR) && !pip)));
@@ -353,6 +370,11 @@ _xfs_filestream_update_ag(
 	               S_ISDIR(pip->i_d.di_mode)) ||
 	              (S_ISDIR(ip->i_d.di_mode) && !pip)));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ASSERT(ip && ((S_ISREG(ip->i_d.di_mode) && pip &&
+	               S_ISDIR(pip->i_d.di_mode)) ||
+	              (S_ISDIR(ip->i_d.di_mode) && !pip)));
+>>>>>>> refs/remotes/origin/master
 
 	mp = ip->i_mount;
 	cache = mp->m_filestream;
@@ -544,10 +566,14 @@ xfs_filestream_lookup_ag(
 	int		ref;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(ip->i_d.di_mode & (S_IFREG | S_IFDIR))) {
 =======
 	if (!S_ISREG(ip->i_d.di_mode) && !S_ISDIR(ip->i_d.di_mode)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!S_ISREG(ip->i_d.di_mode) && !S_ISDIR(ip->i_d.di_mode)) {
+>>>>>>> refs/remotes/origin/master
 		ASSERT(0);
 		return NULLAGNUMBER;
 	}
@@ -590,6 +616,7 @@ xfs_filestream_associate(
 	int		err = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ASSERT(pip->i_d.di_mode & S_IFDIR);
 	ASSERT(ip->i_d.di_mode & S_IFREG);
 	if (!(pip->i_d.di_mode & S_IFDIR) || !(ip->i_d.di_mode & S_IFREG))
@@ -598,6 +625,11 @@ xfs_filestream_associate(
 	ASSERT(S_ISREG(ip->i_d.di_mode));
 	if (!S_ISDIR(pip->i_d.di_mode) || !S_ISREG(ip->i_d.di_mode))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ASSERT(S_ISDIR(pip->i_d.di_mode));
+	ASSERT(S_ISREG(ip->i_d.di_mode));
+	if (!S_ISDIR(pip->i_d.di_mode) || !S_ISREG(ip->i_d.di_mode))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mp = pip->i_mount;
@@ -684,8 +716,13 @@ exit:
  */
 int
 xfs_filestream_new_ag(
+<<<<<<< HEAD
 	xfs_bmalloca_t	*ap,
 	xfs_agnumber_t	*agp)
+=======
+	struct xfs_bmalloca	*ap,
+	xfs_agnumber_t		*agp)
+>>>>>>> refs/remotes/origin/master
 {
 	int		flags, err;
 	xfs_inode_t	*ip, *pip = NULL;
@@ -699,10 +736,14 @@ xfs_filestream_new_ag(
 	mp = ip->i_mount;
 	cache = mp->m_filestream;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	minlen = ap->alen;
 =======
 	minlen = ap->length;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	minlen = ap->length;
+>>>>>>> refs/remotes/origin/master
 	*agp = NULLAGNUMBER;
 
 	/*
@@ -782,10 +823,14 @@ xfs_filestream_new_ag(
 	ag = (ag == NULLAGNUMBER) ? 0 : (ag + 1) % mp->m_sb.sb_agcount;
 	flags = (ap->userdata ? XFS_PICK_USERDATA : 0) |
 <<<<<<< HEAD
+<<<<<<< HEAD
 	        (ap->low ? XFS_PICK_LOWSPACE : 0);
 =======
 	        (ap->flist->xbf_low ? XFS_PICK_LOWSPACE : 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	        (ap->flist->xbf_low ? XFS_PICK_LOWSPACE : 0);
+>>>>>>> refs/remotes/origin/master
 
 	err = _xfs_filestream_pick_ag(mp, ag, agp, flags, minlen);
 	if (err || *agp == NULLAGNUMBER)

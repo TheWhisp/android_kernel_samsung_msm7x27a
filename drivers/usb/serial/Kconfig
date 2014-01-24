@@ -4,7 +4,11 @@
 
 menuconfig USB_SERIAL
 	tristate "USB Serial Converter support"
+<<<<<<< HEAD
 	depends on USB
+=======
+	depends on TTY
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Say Y here if you have a USB device that provides normal serial
 	  ports, or acts like a serial device, and you want to connect it to
@@ -42,11 +46,14 @@ config USB_SERIAL_CONSOLE
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 config USB_EZUSB
 	bool "Functions for loading firmware on EZUSB chips"
 	help
 	    Say Y here if you need EZUSB device support.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config USB_SERIAL_GENERIC
 	bool "USB Generic Serial Driver"
 	help
@@ -56,6 +63,27 @@ config USB_SERIAL_GENERIC
 	  support" be compiled as a module for this driver to be used
 	  properly.
 
+<<<<<<< HEAD
+=======
+config USB_SERIAL_SIMPLE
+	tristate "USB Serial Simple Driver"
+	help
+	  Say Y here to use the USB serial "simple" driver.  This driver
+	  handles a wide range of very simple devices, all in one
+	  driver.  Specifically, it supports:
+		- Suunto ANT+ USB device.
+		- Fundamental Software dongle.
+		- HP4x calculators
+		- a number of Motorola phones
+		- Siemens USB/MPI adapter.
+		- ViVOtech ViVOpay USB device.
+		- Infineon Modem Flashloader USB interface
+		- ZIO Motherboard USB serial interface
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called usb-serial-simple.
+
+>>>>>>> refs/remotes/origin/master
 config USB_SERIAL_AIRCABLE
 	tristate "USB AIRcable Bluetooth Dongle Driver"
 	help
@@ -94,7 +122,11 @@ config USB_SERIAL_CH341
 
 config USB_SERIAL_WHITEHEAT
 	tristate "USB ConnectTech WhiteHEAT Serial Driver"
+<<<<<<< HEAD
 	select USB_EZUSB
+=======
+	select USB_EZUSB_FX2
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to use a ConnectTech WhiteHEAT 4 port
 	  USB to serial converter device.
@@ -163,6 +195,7 @@ config USB_SERIAL_FTDI_SIO
 	  To compile this driver as a module, choose M here: the
 	  module will be called ftdi_sio.
 
+<<<<<<< HEAD
 config USB_SERIAL_FUNSOFT
 	tristate "USB Fundamental Software Dongle Driver"
 	---help---
@@ -171,6 +204,8 @@ config USB_SERIAL_FUNSOFT
 	  To compile this driver as a module, choose M here: the
 	  module will be called funsoft.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config USB_SERIAL_VISOR
 	tristate "USB Handspring Visor / Palm m50x / Sony Clie Driver"
 	help
@@ -239,7 +274,10 @@ config USB_SERIAL_EDGEPORT_TI
 	  module will be called io_ti.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config USB_SERIAL_F81232
 	tristate "USB Fintek F81232 Single Port Serial Driver"
 	help
@@ -249,7 +287,10 @@ config USB_SERIAL_F81232
 	  To compile this driver as a module, choose M here: the
 	  module will be called f81232.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config USB_SERIAL_GARMIN
        tristate "USB Garmin GPS driver"
        help
@@ -265,9 +306,13 @@ config USB_SERIAL_GARMIN
 config USB_SERIAL_IPW
         tristate "USB IPWireless (3G UMTS TDD) Driver"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	select USB_SERIAL_WWAN
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select USB_SERIAL_WWAN
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to use a IPWireless USB modem such as
 	  the ones supplied by Axity3G/Sentech South Africa.
@@ -287,7 +332,11 @@ config USB_SERIAL_IUU
 
 config USB_SERIAL_KEYSPAN_PDA
 	tristate "USB Keyspan PDA Single Port Serial Driver"
+<<<<<<< HEAD
 	select USB_EZUSB
+=======
+	select USB_EZUSB_FX2
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to use a Keyspan PDA single port USB to
 	  serial converter device.  This driver makes use of firmware
@@ -298,7 +347,11 @@ config USB_SERIAL_KEYSPAN_PDA
 
 config USB_SERIAL_KEYSPAN
 	tristate "USB Keyspan USA-xxx Serial Driver"
+<<<<<<< HEAD
 	select USB_EZUSB
+=======
+	select USB_EZUSB_FX2
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Say Y here if you want to use Keyspan USB to serial converter
 	  devices.  This driver makes use of Keyspan's official firmware
@@ -433,7 +486,10 @@ config USB_SERIAL_MCT_U232
 	  module will be called mct_u232.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config USB_SERIAL_METRO
 	tristate "USB Metrologic Instruments USB-POS Barcode Scanner Driver"
 	---help---
@@ -442,7 +498,10 @@ config USB_SERIAL_METRO
 	  To compile this driver as a module, choose M here: the
 	  module will be called metro-usb.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config USB_SERIAL_MOS7720
 	tristate "USB Moschip 7720 Serial Driver"
 	---help---
@@ -476,6 +535,7 @@ config USB_SERIAL_MOS7840
 	  To compile this driver as a module, choose M here: the
 	  module will be called mos7840.  If unsure, choose N.
 
+<<<<<<< HEAD
 config USB_SERIAL_MOTOROLA
 	tristate "USB Motorola Phone modem driver"
 	---help---
@@ -484,6 +544,36 @@ config USB_SERIAL_MOTOROLA
 
 	  To compile this driver as a module, choose M here: the
 	  module will be called moto_modem.  If unsure, choose N.
+=======
+config USB_SERIAL_MXUPORT
+	tristate "USB Moxa UPORT Serial Driver"
+	---help---
+	  Say Y here if you want to use a MOXA UPort Serial hub.
+
+	  This driver supports:
+
+	  [2 Port]
+	  - UPort 1250 :  2 Port RS-232/422/485 USB to Serial Hub
+	  - UPort 1250I : 2 Port RS-232/422/485 USB to Serial Hub with
+			  Isolation
+
+	  [4 Port]
+	  - UPort 1410 :  4 Port RS-232 USB to Serial Hub
+	  - UPort 1450 :  4 Port RS-232/422/485 USB to Serial Hub
+	  - UPort 1450I : 4 Port RS-232/422/485 USB to Serial Hub with
+			  Isolation
+
+	  [8 Port]
+	  - UPort 1610-8 : 8 Port RS-232 USB to Serial Hub
+	  - UPort 1650-8 : 8 Port RS-232/422/485 USB to Serial Hub
+
+	  [16 Port]
+	  - UPort 1610-16 : 16 Port RS-232 USB to Serial Hub
+	  - UPort 1650-16 : 16 Port RS-232/422/485 USB to Serial Hub
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called mxuport.
+>>>>>>> refs/remotes/origin/master
 
 config USB_SERIAL_NAVMAN
 	tristate "USB Navman GPS device"
@@ -539,6 +629,7 @@ config USB_SERIAL_SPCP8X5
 	  To compile this driver as a module, choose M here: the
 	  module will be called spcp8x5.
 
+<<<<<<< HEAD
 config USB_SERIAL_HP4X
         tristate "USB HP4x Calculators support"
         help
@@ -547,6 +638,8 @@ config USB_SERIAL_HP4X
           To compile this driver as a module, choose M here: the
           module will be called hp4x.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config USB_SERIAL_SAFE
 	tristate "USB Safe Serial (Encapsulated) Driver"
 
@@ -554,6 +647,7 @@ config USB_SERIAL_SAFE_PADDED
 	bool "USB Secure Encapsulated Driver - Padded"
 	depends on USB_SERIAL_SAFE
 
+<<<<<<< HEAD
 config USB_SERIAL_SIEMENS_MPI
 	tristate "USB Siemens MPI driver"
 	help
@@ -562,6 +656,8 @@ config USB_SERIAL_SIEMENS_MPI
 	  To compile this driver as a module, choose M here: the
 	  module will be called siemens_mpi.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config USB_SERIAL_SIERRAWIRELESS
 	tristate "USB Sierra Wireless Driver"
 	help
@@ -605,7 +701,11 @@ config USB_SERIAL_CYBERJACK
 
 config USB_SERIAL_XIRCOM
 	tristate "USB Xircom / Entregra Single Port Serial Driver"
+<<<<<<< HEAD
 	select USB_EZUSB
+=======
+	select USB_EZUSB_FX2
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want to use a Xircom or Entregra single port USB to
 	  serial converter device.  This driver makes use of firmware
@@ -653,6 +753,7 @@ config USB_SERIAL_OPTICON
 	  To compile this driver as a module, choose M here: the
 	  module will be called opticon.
 
+<<<<<<< HEAD
 config USB_SERIAL_VIVOPAY_SERIAL
         tristate "USB ViVOpay serial interface driver"
         help
@@ -668,6 +769,44 @@ config USB_SERIAL_ZIO
 
 	  To compile this driver as a module, choose M here: the
 	  module will be called zio.
+=======
+config USB_SERIAL_XSENS_MT
+	tristate "Xsens motion tracker serial interface driver"
+	help
+	  Say Y here if you want to use Xsens motion trackers.
+
+	  This driver supports the new generation of motion trackers
+	  by Xsens. Older devices can be accessed using the FTDI_SIO
+	  driver.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called xsens_mt.
+
+config USB_SERIAL_WISHBONE
+	tristate "USB-Wishbone adapter interface driver"
+	help
+	  Say Y here if you want to use a USB attached Wishbone bus.
+
+	  Wishbone is an open hardware SoC bus commonly used in FPGA
+	  designs. Bus access can be serialized using the Etherbone
+	  protocol <http://www.ohwr.org/projects/etherbone-core>.
+
+	  This driver is intended to be used with devices which attach
+	  their internal Wishbone bus to a USB serial interface using
+	  the Etherbone protocol. A userspace library is required to
+	  speak the protocol made available by this driver as ttyUSBx.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called wishbone-serial.
+
+config USB_SERIAL_ZTE
+	tristate "ZTE USB serial driver"
+	help
+	  Say Y here if you want to use a ZTE USB to serial device.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called zte.
+>>>>>>> refs/remotes/origin/master
 
 config USB_SERIAL_SSU100
 	tristate "USB Quatech SSU-100 Single Port Serial Driver"
@@ -678,6 +817,7 @@ config USB_SERIAL_SSU100
 	  To compile this driver as a module, choose M here: the
 	  module will be called ssu100.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 config USB_SERIAL_CSVT
@@ -690,6 +830,17 @@ config USB_SERIAL_CSVT
 	  module will be called csvt.
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config USB_SERIAL_QT2
+	tristate "USB Quatech Serial Driver for USB 2 devices"
+	help
+	  Say Y here if you want to use the Quatech USB 2
+	  serial adapters.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called quatech-serial.
+
+>>>>>>> refs/remotes/origin/master
 config USB_SERIAL_DEBUG
 	tristate "USB Debugging Device"
 	help

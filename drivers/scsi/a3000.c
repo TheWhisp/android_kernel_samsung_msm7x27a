@@ -7,9 +7,13 @@
 #include <linux/interrupt.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/page.h>
 #include <asm/pgtable.h>
@@ -184,7 +188,12 @@ static int a3000_bus_reset(struct scsi_cmnd *cmd)
 static struct scsi_host_template amiga_a3000_scsi_template = {
 	.module			= THIS_MODULE,
 	.name			= "Amiga 3000 built-in SCSI",
+<<<<<<< HEAD
 	.proc_info		= wd33c93_proc_info,
+=======
+	.show_info		= wd33c93_show_info,
+	.write_info		= wd33c93_write_info,
+>>>>>>> refs/remotes/origin/master
 	.proc_name		= "A3000",
 	.queuecommand		= wd33c93_queuecommand,
 	.eh_abort_handler	= wd33c93_abort,
@@ -222,7 +231,11 @@ static int __init amiga_a3000_scsi_probe(struct platform_device *pdev)
 
 	instance->irq = IRQ_AMIGA_PORTS;
 
+<<<<<<< HEAD
 	regs = (struct a3000_scsiregs *)ZTWO_VADDR(res->start);
+=======
+	regs = ZTWO_VADDR(res->start);
+>>>>>>> refs/remotes/origin/master
 	regs->DAWR = DAWR_A3000;
 
 	wdregs.SASR = &regs->SASR;
@@ -282,6 +295,7 @@ static struct platform_driver amiga_a3000_scsi_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init amiga_a3000_scsi_init(void)
 {
 	return platform_driver_probe(&amiga_a3000_scsi_driver,
@@ -294,6 +308,9 @@ static void __exit amiga_a3000_scsi_exit(void)
 	platform_driver_unregister(&amiga_a3000_scsi_driver);
 }
 module_exit(amiga_a3000_scsi_exit);
+=======
+module_platform_driver_probe(amiga_a3000_scsi_driver, amiga_a3000_scsi_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Amiga 3000 built-in SCSI");
 MODULE_LICENSE("GPL");

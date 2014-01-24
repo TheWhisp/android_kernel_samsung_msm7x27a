@@ -29,12 +29,20 @@
 #include <linux/i2c.h>
 #include <linux/slab.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm.h"
 #include "drm_crtc.h"
 #include "drm_edid.h"
 #include "psb_intel_drv.h"
 #include "gma_drm.h"
+=======
+#include <drm/drmP.h>
+#include <drm/drm_crtc.h>
+#include <drm/drm_edid.h>
+#include "psb_intel_drv.h"
+#include <drm/gma_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "psb_drv.h"
 #include "psb_intel_sdvo_regs.h"
 #include "psb_intel_reg.h"
@@ -66,7 +74,11 @@ static const char *tv_format_names[] = {
 #define TV_FORMAT_NUM  (sizeof(tv_format_names) / sizeof(*tv_format_names))
 
 struct psb_intel_sdvo {
+<<<<<<< HEAD
 	struct psb_intel_encoder base;
+=======
+	struct gma_encoder base;
+>>>>>>> refs/remotes/origin/master
 
 	struct i2c_adapter *i2c;
 	u8 slave_addr;
@@ -135,10 +147,20 @@ struct psb_intel_sdvo {
 
 	/* Input timings for adjusted_mode */
 	struct psb_intel_sdvo_dtd input_dtd;
+<<<<<<< HEAD
 };
 
 struct psb_intel_sdvo_connector {
 	struct psb_intel_connector base;
+=======
+
+	/* Saved SDVO output states */
+	uint32_t saveSDVO; /* Can be SDVOB or SDVOC depending on sdvo_reg */
+};
+
+struct psb_intel_sdvo_connector {
+	struct gma_connector base;
+>>>>>>> refs/remotes/origin/master
 
 	/* Mark the type of connector */
 	uint16_t output_flag;
@@ -198,13 +220,21 @@ static struct psb_intel_sdvo *to_psb_intel_sdvo(struct drm_encoder *encoder)
 
 static struct psb_intel_sdvo *intel_attached_sdvo(struct drm_connector *connector)
 {
+<<<<<<< HEAD
 	return container_of(psb_intel_attached_encoder(connector),
+=======
+	return container_of(gma_attached_encoder(connector),
+>>>>>>> refs/remotes/origin/master
 			    struct psb_intel_sdvo, base);
 }
 
 static struct psb_intel_sdvo_connector *to_psb_intel_sdvo_connector(struct drm_connector *connector)
 {
+<<<<<<< HEAD
 	return container_of(to_psb_intel_connector(connector), struct psb_intel_sdvo_connector, base);
+=======
+	return container_of(to_gma_connector(connector), struct psb_intel_sdvo_connector, base);
+>>>>>>> refs/remotes/origin/master
 }
 
 static bool
@@ -226,6 +256,7 @@ static void psb_intel_sdvo_write_sdvox(struct psb_intel_sdvo *psb_intel_sdvo, u3
 {
 	struct drm_device *dev = psb_intel_sdvo->base.base.dev;
 	u32 bval = val, cval = val;
+<<<<<<< HEAD
 	int i;
 
 	if (psb_intel_sdvo->sdvo_reg == SDVOB) {
@@ -244,6 +275,28 @@ static void psb_intel_sdvo_write_sdvox(struct psb_intel_sdvo *psb_intel_sdvo, u3
 		REG_READ(SDVOB);
 		REG_WRITE(SDVOC, cval);
 		REG_READ(SDVOC);
+=======
+	int i, j;
+	int need_aux = IS_MRST(dev) ? 1 : 0;
+
+	for (j = 0; j <= need_aux; j++) {
+		if (psb_intel_sdvo->sdvo_reg == SDVOB)
+			cval = REG_READ_WITH_AUX(SDVOC, j);
+		else
+			bval = REG_READ_WITH_AUX(SDVOB, j);
+
+		/*
+		* Write the registers twice for luck. Sometimes,
+		* writing them only once doesn't appear to 'stick'.
+		* The BIOS does this too. Yay, magic
+		*/
+		for (i = 0; i < 2; i++) {
+			REG_WRITE_WITH_AUX(SDVOB, bval, j);
+			REG_READ_WITH_AUX(SDVOB, j);
+			REG_WRITE_WITH_AUX(SDVOC, cval, j);
+			REG_READ_WITH_AUX(SDVOC, j);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -498,7 +551,12 @@ static bool psb_intel_sdvo_read_response(struct psb_intel_sdvo *psb_intel_sdvo,
 				  &status))
 		goto log_fail;
 
+<<<<<<< HEAD
 	while (status == SDVO_CMD_STATUS_PENDING && retry--) {
+=======
+	while ((status == SDVO_CMD_STATUS_PENDING ||
+		status == SDVO_CMD_STATUS_TARGET_NOT_SPECIFIED) && retry--) {
+>>>>>>> refs/remotes/origin/master
 		udelay(15);
 		if (!psb_intel_sdvo_read_byte(psb_intel_sdvo,
 					  SDVO_I2C_CMD_STATUS,
@@ -901,7 +959,11 @@ static bool psb_intel_sdvo_set_tv_format(struct psb_intel_sdvo *psb_intel_sdvo)
 
 static bool
 psb_intel_sdvo_set_output_timings_from_mode(struct psb_intel_sdvo *psb_intel_sdvo,
+<<<<<<< HEAD
 					struct drm_display_mode *mode)
+=======
+					const struct drm_display_mode *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct psb_intel_sdvo_dtd output_dtd;
 
@@ -918,7 +980,11 @@ psb_intel_sdvo_set_output_timings_from_mode(struct psb_intel_sdvo *psb_intel_sdv
 
 static bool
 psb_intel_sdvo_set_input_timings_for_mode(struct psb_intel_sdvo *psb_intel_sdvo,
+<<<<<<< HEAD
 					struct drm_display_mode *mode,
+=======
+					const struct drm_display_mode *mode,
+>>>>>>> refs/remotes/origin/master
 					struct drm_display_mode *adjusted_mode)
 {
 	/* Reset the input timing to the screen. Assume always input 0. */
@@ -942,7 +1008,11 @@ psb_intel_sdvo_set_input_timings_for_mode(struct psb_intel_sdvo *psb_intel_sdvo,
 }
 
 static bool psb_intel_sdvo_mode_fixup(struct drm_encoder *encoder,
+<<<<<<< HEAD
 				  struct drm_display_mode *mode,
+=======
+				  const struct drm_display_mode *mode,
+>>>>>>> refs/remotes/origin/master
 				  struct drm_display_mode *adjusted_mode)
 {
 	struct psb_intel_sdvo *psb_intel_sdvo = to_psb_intel_sdvo(encoder);
@@ -985,13 +1055,21 @@ static void psb_intel_sdvo_mode_set(struct drm_encoder *encoder,
 {
 	struct drm_device *dev = encoder->dev;
 	struct drm_crtc *crtc = encoder->crtc;
+<<<<<<< HEAD
 	struct psb_intel_crtc *psb_intel_crtc = to_psb_intel_crtc(crtc);
+=======
+	struct gma_crtc *gma_crtc = to_gma_crtc(crtc);
+>>>>>>> refs/remotes/origin/master
 	struct psb_intel_sdvo *psb_intel_sdvo = to_psb_intel_sdvo(encoder);
 	u32 sdvox;
 	struct psb_intel_sdvo_in_out_map in_out;
 	struct psb_intel_sdvo_dtd input_dtd;
 	int pixel_multiplier = psb_intel_mode_get_pixel_multiplier(adjusted_mode);
 	int rate;
+<<<<<<< HEAD
+=======
+	int need_aux = IS_MRST(dev) ? 1 : 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!mode)
 		return;
@@ -1057,7 +1135,15 @@ static void psb_intel_sdvo_mode_set(struct drm_encoder *encoder,
 		return;
 
 	/* Set the SDVO control regs. */
+<<<<<<< HEAD
 	sdvox = REG_READ(psb_intel_sdvo->sdvo_reg);
+=======
+	if (need_aux)
+		sdvox = REG_READ_AUX(psb_intel_sdvo->sdvo_reg);
+	else
+		sdvox = REG_READ(psb_intel_sdvo->sdvo_reg);
+
+>>>>>>> refs/remotes/origin/master
 	switch (psb_intel_sdvo->sdvo_reg) {
 	case SDVOB:
 		sdvox &= SDVOB_PRESERVE_MASK;
@@ -1068,7 +1154,11 @@ static void psb_intel_sdvo_mode_set(struct drm_encoder *encoder,
 	}
 	sdvox |= (9 << 19) | SDVO_BORDER_ENABLE;
 
+<<<<<<< HEAD
 	if (psb_intel_crtc->pipe == 1)
+=======
+	if (gma_crtc->pipe == 1)
+>>>>>>> refs/remotes/origin/master
 		sdvox |= SDVO_PIPE_B_SELECT;
 	if (psb_intel_sdvo->has_hdmi_audio)
 		sdvox |= SDVO_AUDIO_ENABLE;
@@ -1087,6 +1177,11 @@ static void psb_intel_sdvo_dpms(struct drm_encoder *encoder, int mode)
 	struct drm_device *dev = encoder->dev;
 	struct psb_intel_sdvo *psb_intel_sdvo = to_psb_intel_sdvo(encoder);
 	u32 temp;
+<<<<<<< HEAD
+=======
+	int i;
+	int need_aux = IS_MRST(dev) ? 1 : 0;
+>>>>>>> refs/remotes/origin/master
 
 	switch (mode) {
 	case DRM_MODE_DPMS_ON:
@@ -1105,13 +1200,22 @@ static void psb_intel_sdvo_dpms(struct drm_encoder *encoder, int mode)
 			psb_intel_sdvo_set_encoder_power_state(psb_intel_sdvo, mode);
 
 		if (mode == DRM_MODE_DPMS_OFF) {
+<<<<<<< HEAD
 			temp = REG_READ(psb_intel_sdvo->sdvo_reg);
+=======
+			if (need_aux)
+				temp = REG_READ_AUX(psb_intel_sdvo->sdvo_reg);
+			else
+				temp = REG_READ(psb_intel_sdvo->sdvo_reg);
+
+>>>>>>> refs/remotes/origin/master
 			if ((temp & SDVO_ENABLE) != 0) {
 				psb_intel_sdvo_write_sdvox(psb_intel_sdvo, temp & ~SDVO_ENABLE);
 			}
 		}
 	} else {
 		bool input1, input2;
+<<<<<<< HEAD
 		int i;
 		u8 status;
 
@@ -1120,6 +1224,20 @@ static void psb_intel_sdvo_dpms(struct drm_encoder *encoder, int mode)
 			psb_intel_sdvo_write_sdvox(psb_intel_sdvo, temp | SDVO_ENABLE);
 		for (i = 0; i < 2; i++)
 			psb_intel_wait_for_vblank(dev);
+=======
+		u8 status;
+
+		if (need_aux)
+			temp = REG_READ_AUX(psb_intel_sdvo->sdvo_reg);
+		else
+			temp = REG_READ(psb_intel_sdvo->sdvo_reg);
+
+		if ((temp & SDVO_ENABLE) == 0)
+			psb_intel_sdvo_write_sdvox(psb_intel_sdvo, temp | SDVO_ENABLE);
+
+		for (i = 0; i < 2; i++)
+			gma_wait_for_vblank(dev);
+>>>>>>> refs/remotes/origin/master
 
 		status = psb_intel_sdvo_get_trained_inputs(psb_intel_sdvo, &input1, &input2);
 		/* Warn if the device reported failure to sync.
@@ -1141,7 +1259,10 @@ static void psb_intel_sdvo_dpms(struct drm_encoder *encoder, int mode)
 static int psb_intel_sdvo_mode_valid(struct drm_connector *connector,
 				 struct drm_display_mode *mode)
 {
+<<<<<<< HEAD
 	struct drm_psb_private *dev_priv = connector->dev->dev_private;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct psb_intel_sdvo *psb_intel_sdvo = intel_attached_sdvo(connector);
 
 	if (mode->flags & DRM_MODE_FLAG_DBLSCAN)
@@ -1161,11 +1282,14 @@ static int psb_intel_sdvo_mode_valid(struct drm_connector *connector,
 			return MODE_PANEL;
 	}
 
+<<<<<<< HEAD
 	/* We assume worst case scenario of 32 bpp here, since we don't know */
 	if ((ALIGN(mode->hdisplay * 4, 64) * mode->vdisplay) >
 	    dev_priv->vram_stolen_size)
 		return MODE_MEM;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return MODE_OK;
 }
 
@@ -1298,7 +1422,10 @@ psb_intel_sdvo_get_analog_edid(struct drm_connector *connector)
 
 	return drm_get_edid(connector,
 			    &dev_priv->gmbus[dev_priv->crt_ddc_pin].adapter);
+<<<<<<< HEAD
 	return NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static enum drm_connector_status
@@ -1349,7 +1476,10 @@ psb_intel_sdvo_hdmi_sink_detect(struct drm_connector *connector)
 			}
 		} else
 			status = connector_status_disconnected;
+<<<<<<< HEAD
 		connector->display_info.raw_edid = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(edid);
 	}
 
@@ -1410,7 +1540,10 @@ psb_intel_sdvo_detect(struct drm_connector *connector, bool force)
 				ret = connector_status_disconnected;
 			else
 				ret = connector_status_connected;
+<<<<<<< HEAD
 			connector->display_info.raw_edid = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 			kfree(edid);
 		} else
 			ret = connector_status_connected;
@@ -1459,7 +1592,10 @@ static void psb_intel_sdvo_get_ddc_modes(struct drm_connector *connector)
 			drm_add_edid_modes(connector, edid);
 		}
 
+<<<<<<< HEAD
 		connector->display_info.raw_edid = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(edid);
 	}
 }
@@ -1705,7 +1841,11 @@ psb_intel_sdvo_set_property(struct drm_connector *connector,
 	uint8_t cmd;
 	int ret;
 
+<<<<<<< HEAD
 	ret = drm_connector_property_set_value(connector, property, val);
+=======
+	ret = drm_object_property_set_value(&connector->base, property, val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -1760,7 +1900,11 @@ psb_intel_sdvo_set_property(struct drm_connector *connector,
 	} else if (IS_TV_OR_LVDS(psb_intel_sdvo_connector)) {
 		temp_value = val;
 		if (psb_intel_sdvo_connector->left == property) {
+<<<<<<< HEAD
 			drm_connector_property_set_value(connector,
+=======
+			drm_object_property_set_value(&connector->base,
+>>>>>>> refs/remotes/origin/master
 							 psb_intel_sdvo_connector->right, val);
 			if (psb_intel_sdvo_connector->left_margin == temp_value)
 				return 0;
@@ -1772,7 +1916,11 @@ psb_intel_sdvo_set_property(struct drm_connector *connector,
 			cmd = SDVO_CMD_SET_OVERSCAN_H;
 			goto set_value;
 		} else if (psb_intel_sdvo_connector->right == property) {
+<<<<<<< HEAD
 			drm_connector_property_set_value(connector,
+=======
+			drm_object_property_set_value(&connector->base,
+>>>>>>> refs/remotes/origin/master
 							 psb_intel_sdvo_connector->left, val);
 			if (psb_intel_sdvo_connector->right_margin == temp_value)
 				return 0;
@@ -1784,7 +1932,11 @@ psb_intel_sdvo_set_property(struct drm_connector *connector,
 			cmd = SDVO_CMD_SET_OVERSCAN_H;
 			goto set_value;
 		} else if (psb_intel_sdvo_connector->top == property) {
+<<<<<<< HEAD
 			drm_connector_property_set_value(connector,
+=======
+			drm_object_property_set_value(&connector->base,
+>>>>>>> refs/remotes/origin/master
 							 psb_intel_sdvo_connector->bottom, val);
 			if (psb_intel_sdvo_connector->top_margin == temp_value)
 				return 0;
@@ -1796,7 +1948,11 @@ psb_intel_sdvo_set_property(struct drm_connector *connector,
 			cmd = SDVO_CMD_SET_OVERSCAN_V;
 			goto set_value;
 		} else if (psb_intel_sdvo_connector->bottom == property) {
+<<<<<<< HEAD
 			drm_connector_property_set_value(connector,
+=======
+			drm_object_property_set_value(&connector->base,
+>>>>>>> refs/remotes/origin/master
 							 psb_intel_sdvo_connector->top, val);
 			if (psb_intel_sdvo_connector->bottom_margin == temp_value)
 				return 0;
@@ -1841,16 +1997,55 @@ done:
 #undef CHECK_PROPERTY
 }
 
+<<<<<<< HEAD
 static const struct drm_encoder_helper_funcs psb_intel_sdvo_helper_funcs = {
 	.dpms = psb_intel_sdvo_dpms,
 	.mode_fixup = psb_intel_sdvo_mode_fixup,
 	.prepare = psb_intel_encoder_prepare,
 	.mode_set = psb_intel_sdvo_mode_set,
 	.commit = psb_intel_encoder_commit,
+=======
+static void psb_intel_sdvo_save(struct drm_connector *connector)
+{
+	struct drm_device *dev = connector->dev;
+	struct gma_encoder *gma_encoder = gma_attached_encoder(connector);
+	struct psb_intel_sdvo *sdvo = to_psb_intel_sdvo(&gma_encoder->base);
+
+	sdvo->saveSDVO = REG_READ(sdvo->sdvo_reg);
+}
+
+static void psb_intel_sdvo_restore(struct drm_connector *connector)
+{
+	struct drm_device *dev = connector->dev;
+	struct drm_encoder *encoder = &gma_attached_encoder(connector)->base;
+	struct psb_intel_sdvo *sdvo = to_psb_intel_sdvo(encoder);
+	struct drm_crtc *crtc = encoder->crtc;
+
+	REG_WRITE(sdvo->sdvo_reg, sdvo->saveSDVO);
+
+	/* Force a full mode set on the crtc. We're supposed to have the
+	   mode_config lock already. */
+	if (connector->status == connector_status_connected)
+		drm_crtc_helper_set_mode(crtc, &crtc->mode, crtc->x, crtc->y,
+					 NULL);
+}
+
+static const struct drm_encoder_helper_funcs psb_intel_sdvo_helper_funcs = {
+	.dpms = psb_intel_sdvo_dpms,
+	.mode_fixup = psb_intel_sdvo_mode_fixup,
+	.prepare = gma_encoder_prepare,
+	.mode_set = psb_intel_sdvo_mode_set,
+	.commit = gma_encoder_commit,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct drm_connector_funcs psb_intel_sdvo_connector_funcs = {
 	.dpms = drm_helper_connector_dpms,
+<<<<<<< HEAD
+=======
+	.save = psb_intel_sdvo_save,
+	.restore = psb_intel_sdvo_restore,
+>>>>>>> refs/remotes/origin/master
 	.detect = psb_intel_sdvo_detect,
 	.fill_modes = drm_helper_probe_single_connector_modes,
 	.set_property = psb_intel_sdvo_set_property,
@@ -1860,7 +2055,11 @@ static const struct drm_connector_funcs psb_intel_sdvo_connector_funcs = {
 static const struct drm_connector_helper_funcs psb_intel_sdvo_connector_helper_funcs = {
 	.get_modes = psb_intel_sdvo_get_modes,
 	.mode_valid = psb_intel_sdvo_mode_valid,
+<<<<<<< HEAD
 	.best_encoder = psb_intel_best_encoder,
+=======
+	.best_encoder = gma_best_encoder,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void psb_intel_sdvo_enc_destroy(struct drm_encoder *encoder)
@@ -1872,7 +2071,11 @@ static void psb_intel_sdvo_enc_destroy(struct drm_encoder *encoder)
 				 psb_intel_sdvo->sdvo_lvds_fixed_mode);
 
 	i2c_del_adapter(&psb_intel_sdvo->ddc);
+<<<<<<< HEAD
 	psb_intel_encoder_destroy(encoder);
+=======
+	gma_encoder_destroy(encoder);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct drm_encoder_funcs psb_intel_sdvo_enc_funcs = {
@@ -2033,7 +2236,11 @@ psb_intel_sdvo_connector_init(struct psb_intel_sdvo_connector *connector,
 	connector->base.base.doublescan_allowed = 0;
 	connector->base.base.display_info.subpixel_order = SubPixelHorizontalRGB;
 
+<<<<<<< HEAD
 	psb_intel_connector_attach_encoder(&connector->base, &encoder->base);
+=======
+	gma_connector_attach_encoder(&connector->base, &encoder->base);
+>>>>>>> refs/remotes/origin/master
 	drm_sysfs_connector_add(&connector->base.base);
 }
 
@@ -2044,8 +2251,12 @@ psb_intel_sdvo_add_hdmi_properties(struct psb_intel_sdvo_connector *connector)
 	struct drm_device *dev = connector->base.base.dev;
 
 	intel_attach_force_audio_property(&connector->base.base);
+<<<<<<< HEAD
 	if (INTEL_INFO(dev)->gen >= 4 && IS_MOBILE(dev))
 		intel_attach_broadcast_rgb_property(&connector->base.base);
+=======
+	intel_attach_broadcast_rgb_property(&connector->base.base);
+>>>>>>> refs/remotes/origin/master
 	*/
 }
 
@@ -2054,7 +2265,11 @@ psb_intel_sdvo_dvi_init(struct psb_intel_sdvo *psb_intel_sdvo, int device)
 {
 	struct drm_encoder *encoder = &psb_intel_sdvo->base.base;
 	struct drm_connector *connector;
+<<<<<<< HEAD
 	struct psb_intel_connector *intel_connector;
+=======
+	struct gma_connector *intel_connector;
+>>>>>>> refs/remotes/origin/master
 	struct psb_intel_sdvo_connector *psb_intel_sdvo_connector;
 
 	psb_intel_sdvo_connector = kzalloc(sizeof(struct psb_intel_sdvo_connector), GFP_KERNEL);
@@ -2094,7 +2309,11 @@ psb_intel_sdvo_tv_init(struct psb_intel_sdvo *psb_intel_sdvo, int type)
 {
 	struct drm_encoder *encoder = &psb_intel_sdvo->base.base;
 	struct drm_connector *connector;
+<<<<<<< HEAD
 	struct psb_intel_connector *intel_connector;
+=======
+	struct gma_connector *intel_connector;
+>>>>>>> refs/remotes/origin/master
 	struct psb_intel_sdvo_connector *psb_intel_sdvo_connector;
 
 	psb_intel_sdvo_connector = kzalloc(sizeof(struct psb_intel_sdvo_connector), GFP_KERNEL);
@@ -2133,7 +2352,11 @@ psb_intel_sdvo_analog_init(struct psb_intel_sdvo *psb_intel_sdvo, int device)
 {
 	struct drm_encoder *encoder = &psb_intel_sdvo->base.base;
 	struct drm_connector *connector;
+<<<<<<< HEAD
 	struct psb_intel_connector *intel_connector;
+=======
+	struct gma_connector *intel_connector;
+>>>>>>> refs/remotes/origin/master
 	struct psb_intel_sdvo_connector *psb_intel_sdvo_connector;
 
 	psb_intel_sdvo_connector = kzalloc(sizeof(struct psb_intel_sdvo_connector), GFP_KERNEL);
@@ -2167,7 +2390,11 @@ psb_intel_sdvo_lvds_init(struct psb_intel_sdvo *psb_intel_sdvo, int device)
 {
 	struct drm_encoder *encoder = &psb_intel_sdvo->base.base;
 	struct drm_connector *connector;
+<<<<<<< HEAD
 	struct psb_intel_connector *intel_connector;
+=======
+	struct gma_connector *intel_connector;
+>>>>>>> refs/remotes/origin/master
 	struct psb_intel_sdvo_connector *psb_intel_sdvo_connector;
 
 	psb_intel_sdvo_connector = kzalloc(sizeof(struct psb_intel_sdvo_connector), GFP_KERNEL);
@@ -2298,7 +2525,11 @@ static bool psb_intel_sdvo_tv_create_property(struct psb_intel_sdvo *psb_intel_s
 				i, tv_format_names[psb_intel_sdvo_connector->tv_format_supported[i]]);
 
 	psb_intel_sdvo->tv_format_index = psb_intel_sdvo_connector->tv_format_supported[0];
+<<<<<<< HEAD
 	drm_connector_attach_property(&psb_intel_sdvo_connector->base.base,
+=======
+	drm_object_attach_property(&psb_intel_sdvo_connector->base.base.base,
+>>>>>>> refs/remotes/origin/master
 				      psb_intel_sdvo_connector->tv_format, 0);
 	return true;
 
@@ -2314,7 +2545,11 @@ static bool psb_intel_sdvo_tv_create_property(struct psb_intel_sdvo *psb_intel_s
 		psb_intel_sdvo_connector->name = \
 			drm_property_create_range(dev, 0, #name, 0, data_value[0]); \
 		if (!psb_intel_sdvo_connector->name) return false; \
+<<<<<<< HEAD
 		drm_connector_attach_property(connector, \
+=======
+		drm_object_attach_property(&connector->base, \
+>>>>>>> refs/remotes/origin/master
 					      psb_intel_sdvo_connector->name, \
 					      psb_intel_sdvo_connector->cur_##name); \
 		DRM_DEBUG_KMS(#name ": max %d, default %d, current %d\n", \
@@ -2351,7 +2586,11 @@ psb_intel_sdvo_create_enhance_property_tv(struct psb_intel_sdvo *psb_intel_sdvo,
 		if (!psb_intel_sdvo_connector->left)
 			return false;
 
+<<<<<<< HEAD
 		drm_connector_attach_property(connector,
+=======
+		drm_object_attach_property(&connector->base,
+>>>>>>> refs/remotes/origin/master
 					      psb_intel_sdvo_connector->left,
 					      psb_intel_sdvo_connector->left_margin);
 
@@ -2360,7 +2599,11 @@ psb_intel_sdvo_create_enhance_property_tv(struct psb_intel_sdvo *psb_intel_sdvo,
 		if (!psb_intel_sdvo_connector->right)
 			return false;
 
+<<<<<<< HEAD
 		drm_connector_attach_property(connector,
+=======
+		drm_object_attach_property(&connector->base,
+>>>>>>> refs/remotes/origin/master
 					      psb_intel_sdvo_connector->right,
 					      psb_intel_sdvo_connector->right_margin);
 		DRM_DEBUG_KMS("h_overscan: max %d, "
@@ -2387,7 +2630,11 @@ psb_intel_sdvo_create_enhance_property_tv(struct psb_intel_sdvo *psb_intel_sdvo,
 		if (!psb_intel_sdvo_connector->top)
 			return false;
 
+<<<<<<< HEAD
 		drm_connector_attach_property(connector,
+=======
+		drm_object_attach_property(&connector->base,
+>>>>>>> refs/remotes/origin/master
 					      psb_intel_sdvo_connector->top,
 					      psb_intel_sdvo_connector->top_margin);
 
@@ -2396,7 +2643,11 @@ psb_intel_sdvo_create_enhance_property_tv(struct psb_intel_sdvo *psb_intel_sdvo,
 		if (!psb_intel_sdvo_connector->bottom)
 			return false;
 
+<<<<<<< HEAD
 		drm_connector_attach_property(connector,
+=======
+		drm_object_attach_property(&connector->base,
+>>>>>>> refs/remotes/origin/master
 					      psb_intel_sdvo_connector->bottom,
 					      psb_intel_sdvo_connector->bottom_margin);
 		DRM_DEBUG_KMS("v_overscan: max %d, "
@@ -2428,7 +2679,11 @@ psb_intel_sdvo_create_enhance_property_tv(struct psb_intel_sdvo *psb_intel_sdvo,
 		if (!psb_intel_sdvo_connector->dot_crawl)
 			return false;
 
+<<<<<<< HEAD
 		drm_connector_attach_property(connector,
+=======
+		drm_object_attach_property(&connector->base,
+>>>>>>> refs/remotes/origin/master
 					      psb_intel_sdvo_connector->dot_crawl,
 					      psb_intel_sdvo_connector->cur_dot_crawl);
 		DRM_DEBUG_KMS("dot crawl: current %d\n", response);
@@ -2519,7 +2774,11 @@ psb_intel_sdvo_init_ddc_proxy(struct psb_intel_sdvo *sdvo,
 bool psb_intel_sdvo_init(struct drm_device *dev, int sdvo_reg)
 {
 	struct drm_psb_private *dev_priv = dev->dev_private;
+<<<<<<< HEAD
 	struct psb_intel_encoder *psb_intel_encoder;
+=======
+	struct gma_encoder *gma_encoder;
+>>>>>>> refs/remotes/origin/master
 	struct psb_intel_sdvo *psb_intel_sdvo;
 	int i;
 
@@ -2536,9 +2795,15 @@ bool psb_intel_sdvo_init(struct drm_device *dev, int sdvo_reg)
 	}
 
 	/* encoder type will be decided later */
+<<<<<<< HEAD
 	psb_intel_encoder = &psb_intel_sdvo->base;
 	psb_intel_encoder->type = INTEL_OUTPUT_SDVO;
 	drm_encoder_init(dev, &psb_intel_encoder->base, &psb_intel_sdvo_enc_funcs, 0);
+=======
+	gma_encoder = &psb_intel_sdvo->base;
+	gma_encoder->type = INTEL_OUTPUT_SDVO;
+	drm_encoder_init(dev, &gma_encoder->base, &psb_intel_sdvo_enc_funcs, 0);
+>>>>>>> refs/remotes/origin/master
 
 	/* Read the regs to test if we can talk to the device */
 	for (i = 0; i < 0x40; i++) {
@@ -2556,7 +2821,11 @@ bool psb_intel_sdvo_init(struct drm_device *dev, int sdvo_reg)
 	else
 		dev_priv->hotplug_supported_mask |= SDVOC_HOTPLUG_INT_STATUS;
 
+<<<<<<< HEAD
 	drm_encoder_helper_add(&psb_intel_encoder->base, &psb_intel_sdvo_helper_funcs);
+=======
+	drm_encoder_helper_add(&gma_encoder->base, &psb_intel_sdvo_helper_funcs);
+>>>>>>> refs/remotes/origin/master
 
 	/* In default case sdvo lvds is false */
 	if (!psb_intel_sdvo_get_capabilities(psb_intel_sdvo, &psb_intel_sdvo->caps))
@@ -2599,7 +2868,11 @@ bool psb_intel_sdvo_init(struct drm_device *dev, int sdvo_reg)
 	return true;
 
 err:
+<<<<<<< HEAD
 	drm_encoder_cleanup(&psb_intel_encoder->base);
+=======
+	drm_encoder_cleanup(&gma_encoder->base);
+>>>>>>> refs/remotes/origin/master
 	i2c_del_adapter(&psb_intel_sdvo->ddc);
 	kfree(psb_intel_sdvo);
 

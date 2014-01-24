@@ -27,6 +27,10 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 #include <linux/if_vlan.h>
+<<<<<<< HEAD
+=======
+#include <net/checksum.h>
+>>>>>>> refs/remotes/origin/master
 #include "netxen_nic.h"
 #include "netxen_nic_hw.h"
 
@@ -197,6 +201,7 @@ int netxen_alloc_sw_resources(struct netxen_adapter *adapter)
 	struct nx_host_sds_ring *sds_ring;
 	struct nx_host_tx_ring *tx_ring;
 	struct netxen_rx_buffer *rx_buf;
+<<<<<<< HEAD
 	int ring, i, size;
 
 	struct netxen_cmd_buffer *cmd_buf_arr;
@@ -210,21 +215,39 @@ int netxen_alloc_sw_resources(struct netxen_adapter *adapter)
 		       netdev->name);
 		return -ENOMEM;
 	}
+=======
+	int ring, i;
+
+	struct netxen_cmd_buffer *cmd_buf_arr;
+	struct net_device *netdev = adapter->netdev;
+
+	tx_ring = kzalloc(sizeof(struct nx_host_tx_ring), GFP_KERNEL);
+	if (tx_ring == NULL)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	adapter->tx_ring = tx_ring;
 
 	tx_ring->num_desc = adapter->num_txd;
 	tx_ring->txq = netdev_get_tx_queue(netdev, 0);
 
 	cmd_buf_arr = vzalloc(TX_BUFF_RINGSIZE(tx_ring));
+<<<<<<< HEAD
 	if (cmd_buf_arr == NULL) {
 		dev_err(&pdev->dev, "%s: failed to allocate cmd buffer ring\n",
 		       netdev->name);
 		goto err_out;
 	}
+=======
+	if (cmd_buf_arr == NULL)
+		goto err_out;
+
+>>>>>>> refs/remotes/origin/master
 	tx_ring->cmd_buf_arr = cmd_buf_arr;
 
 	recv_ctx = &adapter->recv_ctx;
 
+<<<<<<< HEAD
 	size = adapter->max_rds_rings * sizeof (struct nx_host_rds_ring);
 	rds_ring = kzalloc(size, GFP_KERNEL);
 	if (rds_ring == NULL) {
@@ -232,6 +255,13 @@ int netxen_alloc_sw_resources(struct netxen_adapter *adapter)
 		       netdev->name);
 		goto err_out;
 	}
+=======
+	rds_ring = kcalloc(adapter->max_rds_rings,
+			   sizeof(struct nx_host_rds_ring), GFP_KERNEL);
+	if (rds_ring == NULL)
+		goto err_out;
+
+>>>>>>> refs/remotes/origin/master
 	recv_ctx->rds_rings = rds_ring;
 
 	for (ring = 0; ring < adapter->max_rds_rings; ring++) {
@@ -1131,7 +1161,10 @@ netxen_validate_firmware(struct netxen_adapter *adapter)
 		 _build(file_fw_ver));
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	val = nx_get_bios_version(adapter);
 	netxen_rom_fast_read(adapter, NX_BIOS_VERSION_OFFSET, (int *)&bios);
 	if ((__force u32)val != bios) {
@@ -1261,8 +1294,12 @@ next:
 void
 netxen_release_firmware(struct netxen_adapter *adapter)
 {
+<<<<<<< HEAD
 	if (adapter->fw)
 		release_firmware(adapter->fw);
+=======
+	release_firmware(adapter->fw);
+>>>>>>> refs/remotes/origin/master
 	adapter->fw = NULL;
 }
 
@@ -1439,8 +1476,11 @@ netxen_handle_linkevent(struct netxen_adapter *adapter, nx_fw_msg_t *msg)
 				netdev->name, cable_len);
 	}
 
+<<<<<<< HEAD
 	netxen_advert_link_change(adapter, link_status);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* update link parameters */
 	if (duplex == LINKEVENT_FULL_DUPLEX)
 		adapter->link_duplex = DUPLEX_FULL;
@@ -1449,6 +1489,11 @@ netxen_handle_linkevent(struct netxen_adapter *adapter, nx_fw_msg_t *msg)
 	adapter->module_type = module;
 	adapter->link_autoneg = autoneg;
 	adapter->link_speed = link_speed;
+<<<<<<< HEAD
+=======
+
+	netxen_advert_link_change(adapter, link_status);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -1534,8 +1579,11 @@ static struct sk_buff *netxen_process_rxbuf(struct netxen_adapter *adapter,
 	} else
 		skb->ip_summed = CHECKSUM_NONE;
 
+<<<<<<< HEAD
 	skb->dev = adapter->netdev;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	buffer->skb = NULL;
 no_skb:
 	buffer->state = NETXEN_BUFFER_FREE;
@@ -1615,13 +1663,21 @@ netxen_process_lro(struct netxen_adapter *adapter,
 	u32 seq_number;
 	u8 vhdr_len = 0;
 
+<<<<<<< HEAD
 	if (unlikely(ring > adapter->max_rds_rings))
+=======
+	if (unlikely(ring >= adapter->max_rds_rings))
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	rds_ring = &recv_ctx->rds_rings[ring];
 
 	index = netxen_get_lro_sts_refhandle(sts_data0);
+<<<<<<< HEAD
 	if (unlikely(index > rds_ring->num_desc))
+=======
+	if (unlikely(index >= rds_ring->num_desc))
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	buffer = &rds_ring->rx_buf_arr[index];
@@ -1653,14 +1709,25 @@ netxen_process_lro(struct netxen_adapter *adapter,
 	th = (struct tcphdr *)((skb->data + vhdr_len) + (iph->ihl << 2));
 
 	length = (iph->ihl << 2) + (th->doff << 2) + lro_length;
+<<<<<<< HEAD
 	iph->tot_len = htons(length);
 	iph->check = 0;
 	iph->check = ip_fast_csum((unsigned char *)iph, iph->ihl);
+=======
+	csum_replace2(&iph->check, iph->tot_len, htons(length));
+	iph->tot_len = htons(length);
+>>>>>>> refs/remotes/origin/master
 	th->psh = push;
 	th->seq = htonl(seq_number);
 
 	length = skb->len;
 
+<<<<<<< HEAD
+=======
+	if (adapter->flags & NETXEN_FW_MSS_CAP)
+		skb_shinfo(skb)->gso_size  =  netxen_get_lro_sts_mss(sts_data1);
+
+>>>>>>> refs/remotes/origin/master
 	netif_receive_skb(skb);
 
 	adapter->stats.lro_pkts++;

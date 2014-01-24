@@ -6,7 +6,11 @@
  *
  */
 
+<<<<<<< HEAD
 #include <libio.h>
+=======
+#include <stddef.h>
+>>>>>>> refs/remotes/origin/master
 #include <dwarf-regs.h>
 
 #define NUM_GPRS 16

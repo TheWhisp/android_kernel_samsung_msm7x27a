@@ -18,6 +18,7 @@
 #include <linux/seq_file.h>
 #include <linux/tick.h>
 #include <linux/threads.h>
+<<<<<<< HEAD
 #include <asm/current.h>
 #include <asm/pgtable.h>
 <<<<<<< HEAD
@@ -33,6 +34,17 @@
 #include "tlb.h"
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/tracehook.h>
+#include <asm/current.h>
+#include <asm/pgtable.h>
+#include <asm/mmu_context.h>
+#include <asm/uaccess.h>
+#include <as-layout.h>
+#include <kern_util.h>
+#include <os.h>
+#include <skas.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is a per-cpu array.  A processor only modifies its entry and it only
@@ -75,6 +87,7 @@ unsigned long alloc_stack(int order, int atomic)
 	return page;
 }
 
+<<<<<<< HEAD
 int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 {
 	int pid;
@@ -90,6 +103,8 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 EXPORT_SYMBOL(kernel_thread);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void set_current(struct task_struct *task)
 {
 	cpu_tasks[task_thread_info(task)->cpu] = ((struct cpu_task)
@@ -98,6 +113,7 @@ static inline void set_current(struct task_struct *task)
 
 extern void arch_switch_to(struct task_struct *to);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void *_switch_to(void *prev, void *next, void *last)
 {
@@ -130,20 +146,39 @@ void *__switch_to(struct task_struct *from, struct task_struct *to)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void *__switch_to(struct task_struct *from, struct task_struct *to)
+{
+	to->thread.prev_sched = from;
+	set_current(to);
+
+	switch_threads(&from->thread.switch_buf, &to->thread.switch_buf);
+	arch_switch_to(current);
+
+	return current->thread.prev_sched;
+>>>>>>> refs/remotes/origin/master
 }
 
 void interrupt_end(void)
 {
 	if (need_resched())
 		schedule();
+<<<<<<< HEAD
 	if (test_tsk_thread_flag(current, TIF_SIGPENDING))
 		do_signal();
+=======
+	if (test_thread_flag(TIF_SIGPENDING))
+		do_signal();
+	if (test_and_clear_thread_flag(TIF_NOTIFY_RESUME))
+		tracehook_notify_resume(&current->thread.regs);
+>>>>>>> refs/remotes/origin/master
 }
 
 void exit_thread(void)
 {
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void *get_current(void)
 {
@@ -153,6 +188,11 @@ int get_current_pid(void)
 {
 	return task_pid_nr(current);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int get_current_pid(void)
+{
+	return task_pid_nr(current);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -172,6 +212,7 @@ void new_thread_handler(void)
 	arg = current->thread.request.u.thread.arg;
 
 	/*
+<<<<<<< HEAD
 	 * The return value is 1 if the kernel thread execs a process,
 	 * 0 if it just exits
 	 */
@@ -182,6 +223,12 @@ void new_thread_handler(void)
 		userspace(&current->thread.regs.regs);
 	}
 	else do_exit(0);
+=======
+	 * callback returns only if the kernel thread execs a process
+	 */
+	n = fn(arg);
+	userspace(&current->thread.regs.regs);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Called magically, see new_thread_handler above */
@@ -200,31 +247,49 @@ void fork_handler(void)
 
 	current->thread.prev_sched = NULL;
 
+<<<<<<< HEAD
 	/* Handle any immediate reschedules or signals */
 	interrupt_end();
 
+=======
+>>>>>>> refs/remotes/origin/master
 	userspace(&current->thread.regs.regs);
 }
 
 int copy_thread(unsigned long clone_flags, unsigned long sp,
+<<<<<<< HEAD
 		unsigned long stack_top, struct task_struct * p,
 		struct pt_regs *regs)
 {
 	void (*handler)(void);
+=======
+		unsigned long arg, struct task_struct * p)
+{
+	void (*handler)(void);
+	int kthread = current->flags & PF_KTHREAD;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	p->thread = (struct thread_struct) INIT_THREAD;
 
+<<<<<<< HEAD
 	if (current->thread.forking) {
 	  	memcpy(&p->thread.regs.regs, &regs->regs,
 		       sizeof(p->thread.regs.regs));
 		REGS_SET_SYSCALL_RETURN(p->thread.regs.regs.gp, 0);
+=======
+	if (!kthread) {
+	  	memcpy(&p->thread.regs.regs, current_pt_regs(),
+		       sizeof(p->thread.regs.regs));
+		PT_REGS_SET_SYSCALL_RETURN(&p->thread.regs, 0);
+>>>>>>> refs/remotes/origin/master
 		if (sp != 0)
 			REGS_SP(p->thread.regs.regs.gp) = sp;
 
 		handler = fork_handler;
 
 		arch_copy_thread(&current->thread.arch, &p->thread.arch);
+<<<<<<< HEAD
 	}
 	else {
 <<<<<<< HEAD
@@ -233,12 +298,22 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
 		get_safe_registers(p->thread.regs.regs.gp, p->thread.regs.regs.fp);
 >>>>>>> refs/remotes/origin/cm-10.0
 		p->thread.request.u.thread = current->thread.request.u.thread;
+=======
+	} else {
+		get_safe_registers(p->thread.regs.regs.gp, p->thread.regs.regs.fp);
+		p->thread.request.u.thread.proc = (int (*)(void *))sp;
+		p->thread.request.u.thread.arg = (void *)arg;
+>>>>>>> refs/remotes/origin/master
 		handler = new_thread_handler;
 	}
 
 	new_thread(task_stack_page(p), &p->thread.switch_buf, handler);
 
+<<<<<<< HEAD
 	if (current->thread.forking) {
+=======
+	if (!kthread) {
+>>>>>>> refs/remotes/origin/master
 		clear_flushed_tls(p);
 
 		/*
@@ -260,6 +335,7 @@ void initial_thread_cb(void (*proc)(void *), void *arg)
 	kmalloc_ok = save_kmalloc_ok;
 }
 
+<<<<<<< HEAD
 void default_idle(void)
 {
 	unsigned long long nsecs;
@@ -294,6 +370,16 @@ void cpu_idle(void)
 {
 	cpu_tasks[current_thread_info()->cpu].pid = os_getpid();
 	default_idle();
+=======
+void arch_cpu_idle(void)
+{
+	unsigned long long nsecs;
+
+	cpu_tasks[current_thread_info()->cpu].pid = os_getpid();
+	nsecs = disable_timer();
+	idle_sleep(nsecs);
+	local_irq_enable();
+>>>>>>> refs/remotes/origin/master
 }
 
 int __cant_sleep(void) {
@@ -325,9 +411,13 @@ char *uml_strdup(const char *string)
 	return kstrdup(string, GFP_KERNEL);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(uml_strdup);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(uml_strdup);
+>>>>>>> refs/remotes/origin/master
 
 int copy_to_user_proc(void __user *to, void *from, int size)
 {

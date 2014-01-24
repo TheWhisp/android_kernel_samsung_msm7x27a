@@ -23,6 +23,7 @@
 # define rmb()	do { barrier(); smp_check_barrier(); } while (0)
 # define wmb()	do { barrier(); smp_mark_barrier(); } while (0)
 # define read_barrier_depends()	do { barrier(); smp_check_barrier(); } while (0)
+<<<<<<< HEAD
 #else
 # define mb()	barrier()
 # define rmb()	barrier()
@@ -44,5 +45,12 @@
 #define smp_wmb() wmb()
 #define set_mb(var, value) do { var = value; mb(); } while (0)
 #define smp_read_barrier_depends()	read_barrier_depends()
+=======
+#endif
+
+#endif /* !CONFIG_SMP */
+
+#include <asm-generic/barrier.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _BLACKFIN_BARRIER_H */

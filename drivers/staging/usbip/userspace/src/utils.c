@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * Copyright (C) 2005-2007 Takahiro Hirofuchi
  */
@@ -255,6 +256,8 @@ int writeline(int sockfd, char *str, int strlen)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2011 matt mooney <mfm@muteddisk.com>
  *               2005-2007 Takahiro Hirofuchi
  *
@@ -330,4 +333,7 @@ int modify_match_busid(char *busid, int add)
 
 	return ret;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

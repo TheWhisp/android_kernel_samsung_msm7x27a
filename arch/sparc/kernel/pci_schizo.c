@@ -9,9 +9,13 @@
 #include <linux/init.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/of_device.h>
 
@@ -1067,8 +1071,12 @@ static void pbm_config_busmastering(struct pci_pbm_info *pbm)
 	pci_config_write8(addr, 64);
 }
 
+<<<<<<< HEAD
 static void __devinit schizo_scan_bus(struct pci_pbm_info *pbm,
 				      struct device *parent)
+=======
+static void schizo_scan_bus(struct pci_pbm_info *pbm, struct device *parent)
+>>>>>>> refs/remotes/origin/master
 {
 	pbm_config_busmastering(pbm);
 	pbm->is_66mhz_capable =
@@ -1310,9 +1318,15 @@ static void schizo_pbm_hw_init(struct pci_pbm_info *pbm)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit schizo_pbm_init(struct pci_pbm_info *pbm,
 				     struct platform_device *op, u32 portid,
 				     int chip_type)
+=======
+static int schizo_pbm_init(struct pci_pbm_info *pbm,
+			   struct platform_device *op, u32 portid,
+			   int chip_type)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct linux_prom64_registers *regs;
 	struct device_node *dp = op->dev.of_node;
@@ -1403,8 +1417,12 @@ static inline int portid_compare(u32 x, u32 y, int chip_type)
 	return (x == y);
 }
 
+<<<<<<< HEAD
 static struct pci_pbm_info * __devinit schizo_find_sibling(u32 portid,
 							   int chip_type)
+=======
+static struct pci_pbm_info *schizo_find_sibling(u32 portid, int chip_type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_pbm_info *pbm;
 
@@ -1415,7 +1433,11 @@ static struct pci_pbm_info * __devinit schizo_find_sibling(u32 portid,
 	return NULL;
 }
 
+<<<<<<< HEAD
 static int __devinit __schizo_init(struct platform_device *op, unsigned long chip_type)
+=======
+static int __schizo_init(struct platform_device *op, unsigned long chip_type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dp = op->dev.of_node;
 	struct pci_pbm_info *pbm;
@@ -1463,7 +1485,11 @@ out_err:
 }
 
 static const struct of_device_id schizo_match[];
+<<<<<<< HEAD
 static int __devinit schizo_probe(struct platform_device *op)
+=======
+static int schizo_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct of_device_id *match;
 

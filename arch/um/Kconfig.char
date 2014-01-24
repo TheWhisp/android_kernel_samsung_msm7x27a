@@ -1,9 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 menu "Character Devices"
 =======
 menu "UML Character Devices"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+menu "UML Character Devices"
+>>>>>>> refs/remotes/origin/master
 
 config STDERR_CONSOLE
 	bool "stderr console"
@@ -11,10 +15,13 @@ config STDERR_CONSOLE
 	help
 	  console driver which dumps all printk messages to stderr.
 
+<<<<<<< HEAD
 config STDIO_CONSOLE
 	bool
 	default y
 
+=======
+>>>>>>> refs/remotes/origin/master
 config SSL
 	bool "Virtual serial line"
 	help
@@ -110,6 +117,7 @@ config SSL_CHAN
           which don't have a set of /dev/pty* devices.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config UNIX98_PTYS
 	bool "Unix98 PTY support"
 	help
@@ -198,6 +206,8 @@ config UML_WATCHDOG
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config UML_SOUND
 	tristate "Sound support"
 	help
@@ -218,6 +228,7 @@ config HOSTAUDIO
 	tristate
 	default UML_SOUND
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #It is selected elsewhere, so kconfig would warn without this.
 config HW_RANDOM
@@ -246,4 +257,6 @@ config MMAPPER
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 endmenu

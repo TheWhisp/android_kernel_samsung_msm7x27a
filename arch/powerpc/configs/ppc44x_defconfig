@@ -53,10 +53,15 @@ CONFIG_MTD_JEDECPROBE=y
 CONFIG_MTD_CFI_AMDSTD=y
 CONFIG_MTD_PHYSMAP_OF=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 CONFIG_MTD_NAND=m
 CONFIG_MTD_NAND_NDFC=m
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_MTD_NAND=m
+CONFIG_MTD_NAND_NDFC=m
+>>>>>>> refs/remotes/origin/master
 CONFIG_MTD_UBI=m
 CONFIG_MTD_UBI_GLUEBI=m
 CONFIG_PROC_DEVICETREE=y
@@ -69,6 +74,7 @@ CONFIG_BLK_DEV_SD=m
 CONFIG_NETDEVICES=y
 CONFIG_TUN=m
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_NET_ETHERNET=y
 CONFIG_IBM_NEW_EMAC=y
 =======
@@ -76,6 +82,11 @@ CONFIG_ETHERNET=y
 CONFIG_NET_VENDOR_IBM=y
 CONFIG_IBM_EMAC=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_ETHERNET=y
+CONFIG_NET_VENDOR_IBM=y
+CONFIG_IBM_EMAC=y
+>>>>>>> refs/remotes/origin/master
 # CONFIG_INPUT is not set
 CONFIG_SERIO=m
 # CONFIG_SERIO_I8042 is not set

@@ -14,6 +14,7 @@
 #include <linux/platform_device.h>
 #include <linux/module.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/usb/otg.h>
 
 #include "xhci.h"
@@ -26,6 +27,15 @@ static void xhci_plat_quirks(struct device *dev, struct xhci_hcd *xhci)
 {
 	struct xhci_plat_data *pdata = dev->platform_data;
 
+=======
+#include <linux/of.h>
+#include <linux/dma-mapping.h>
+
+#include "xhci.h"
+
+static void xhci_plat_quirks(struct device *dev, struct xhci_hcd *xhci)
+{
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * As of now platform drivers don't provide MSI support so we ensure
 	 * here that the generic code does not try to make a pci_dev from our
@@ -74,6 +84,10 @@ static const struct hc_driver xhci_plat_xhci_driver = {
 	.check_bandwidth =	xhci_check_bandwidth,
 	.reset_bandwidth =	xhci_reset_bandwidth,
 	.address_device =	xhci_address_device,
+<<<<<<< HEAD
+=======
+	.enable_device =	xhci_enable_device,
+>>>>>>> refs/remotes/origin/master
 	.update_hub_device =	xhci_update_hub_device,
 	.reset_device =		xhci_discover_or_reset_device,
 
@@ -111,6 +125,18 @@ static int xhci_plat_probe(struct platform_device *pdev)
 	if (!res)
 		return -ENODEV;
 
+<<<<<<< HEAD
+=======
+	/* Initialize dma_mask and coherent_dma_mask to 32-bits */
+	ret = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32));
+	if (ret)
+		return ret;
+	if (!pdev->dev.dma_mask)
+		pdev->dev.dma_mask = &pdev->dev.coherent_dma_mask;
+	else
+		dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+
+>>>>>>> refs/remotes/origin/master
 	hcd = usb_create_hcd(driver, &pdev->dev, dev_name(&pdev->dev));
 	if (!hcd)
 		return -ENOMEM;
@@ -135,9 +161,16 @@ static int xhci_plat_probe(struct platform_device *pdev)
 	ret = usb_add_hcd(hcd, irq, IRQF_SHARED);
 	if (ret)
 		goto unmap_registers;
+<<<<<<< HEAD
 
 	/* USB 2.0 roothub is stored in the platform_device now. */
 	hcd = dev_get_drvdata(&pdev->dev);
+=======
+	device_wakeup_enable(hcd->self.controller);
+
+	/* USB 2.0 roothub is stored in the platform_device now. */
+	hcd = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	xhci = hcd_to_xhci(hcd);
 	xhci->shared_hcd = usb_create_shared_hcd(driver, &pdev->dev,
 			dev_name(&pdev->dev), hcd);
@@ -156,6 +189,7 @@ static int xhci_plat_probe(struct platform_device *pdev)
 	if (ret)
 		goto put_usb3_hcd;
 
+<<<<<<< HEAD
 	phy = usb_get_transceiver();
 	if (phy && phy->otg) {
 		dev_dbg(&pdev->dev, "%s otg support available\n", __func__);
@@ -169,6 +203,8 @@ static int xhci_plat_probe(struct platform_device *pdev)
 		}
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 put_usb3_hcd:
@@ -203,6 +239,7 @@ static int xhci_plat_remove(struct platform_device *dev)
 	usb_put_hcd(hcd);
 	kfree(xhci);
 
+<<<<<<< HEAD
 	if (phy && phy->otg) {
 		otg_set_host(phy->otg, NULL);
 		usb_put_transceiver(phy);
@@ -211,11 +248,54 @@ static int xhci_plat_remove(struct platform_device *dev)
 	return 0;
 }
 
+=======
+	return 0;
+}
+
+#ifdef CONFIG_PM
+static int xhci_plat_suspend(struct device *dev)
+{
+	struct usb_hcd	*hcd = dev_get_drvdata(dev);
+	struct xhci_hcd	*xhci = hcd_to_xhci(hcd);
+
+	return xhci_suspend(xhci);
+}
+
+static int xhci_plat_resume(struct device *dev)
+{
+	struct usb_hcd	*hcd = dev_get_drvdata(dev);
+	struct xhci_hcd	*xhci = hcd_to_xhci(hcd);
+
+	return xhci_resume(xhci, 0);
+}
+
+static const struct dev_pm_ops xhci_plat_pm_ops = {
+	SET_SYSTEM_SLEEP_PM_OPS(xhci_plat_suspend, xhci_plat_resume)
+};
+#define DEV_PM_OPS	(&xhci_plat_pm_ops)
+#else
+#define DEV_PM_OPS	NULL
+#endif /* CONFIG_PM */
+
+#ifdef CONFIG_OF
+static const struct of_device_id usb_xhci_of_match[] = {
+	{ .compatible = "xhci-platform" },
+	{ },
+};
+MODULE_DEVICE_TABLE(of, usb_xhci_of_match);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver usb_xhci_driver = {
 	.probe	= xhci_plat_probe,
 	.remove	= xhci_plat_remove,
 	.driver	= {
 		.name = "xhci-hcd",
+<<<<<<< HEAD
+=======
+		.pm = DEV_PM_OPS,
+		.of_match_table = of_match_ptr(usb_xhci_of_match),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 MODULE_ALIAS("platform:xhci-hcd");

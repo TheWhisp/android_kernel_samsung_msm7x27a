@@ -29,11 +29,17 @@
 #define _RTL871X_CMD_C_
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/compiler.h>
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/init.h>
+=======
+#include <linux/compiler.h>
+#include <linux/kernel.h>
+#include <linux/errno.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/kref.h>
@@ -48,12 +54,18 @@
 #include <linux/semaphore.h>
 #include <linux/rtnetlink.h>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "osdep_service.h"
 #include "drv_types.h"
 #include "recv_osdep.h"
 #include "mlme_osdep.h"
+<<<<<<< HEAD
 #include "rtl871x_byteorder.h"
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
 Caller and the r8712_cmd_thread can protect cmd_q by spin_lock.
@@ -244,10 +256,14 @@ u8 r8712_sitesurvey_cmd(struct _adapter *padapter,
 				   GEN_CMD_CODE(_SiteSurvey));
 	psurveyPara->bsslimit = cpu_to_le32(48);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	psurveyPara->passive_mode = cpu_to_le32(1);
 =======
 	psurveyPara->passive_mode = cpu_to_le32(pmlmepriv->passive_mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	psurveyPara->passive_mode = cpu_to_le32(pmlmepriv->passive_mode);
+>>>>>>> refs/remotes/origin/master
 	psurveyPara->ss_ssidlen = 0;
 	memset(psurveyPara->ss_ssid, 0, IW_ESSID_MAX_SIZE + 1);
 	if ((pssid != NULL) && (pssid->SsidLength)) {
@@ -259,9 +275,13 @@ u8 r8712_sitesurvey_cmd(struct _adapter *padapter,
 	_set_timer(&pmlmepriv->scan_to_timer, SCANNING_TIMEOUT);
 	padapter->ledpriv.LedControlHandler(padapter, LED_CTL_SITE_SURVEY);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	padapter->blnEnableRxFF0Filter = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	padapter->blnEnableRxFF0Filter = 0;
+>>>>>>> refs/remotes/origin/master
 	return _SUCCESS;
 }
 
@@ -289,7 +309,10 @@ u8 r8712_setdatarate_cmd(struct _adapter *padapter, u8 *rateset)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 u8 r8712_set_chplan_cmd(struct _adapter *padapter, int chplan)
 {
 	struct cmd_obj *ph2c;
@@ -312,7 +335,10 @@ u8 r8712_set_chplan_cmd(struct _adapter *padapter, int chplan)
 	return _SUCCESS;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 u8 r8712_setbasicrate_cmd(struct _adapter *padapter, u8 *rateset)
 {
 	struct cmd_obj *ph2c;
@@ -340,15 +366,20 @@ u8 r8712_setptm_cmd(struct _adapter *padapter, u8 type)
 {
 	struct cmd_obj		*ph2c;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct PT_param		*pptparm;
 =======
 	struct writePTM_parm	*pwriteptmparm;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct writePTM_parm	*pwriteptmparm;
+>>>>>>> refs/remotes/origin/master
 	struct cmd_priv		*pcmdpriv = &padapter->cmdpriv;
 
 	ph2c = (struct cmd_obj *)_malloc(sizeof(struct cmd_obj));
 	if (ph2c == NULL)
 		return _FAIL;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pptparm = (struct PT_param *)_malloc(sizeof(struct PT_param));
 	if (pptparm == NULL) {
@@ -359,6 +390,8 @@ u8 r8712_setptm_cmd(struct _adapter *padapter, u8 type)
 				   GEN_CMD_CODE(_SetPowerTracking));
 	pptparm->PT_En = type;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pwriteptmparm = (struct writePTM_parm *)
 		_malloc(sizeof(struct writePTM_parm));
 	if (pwriteptmparm == NULL) {
@@ -409,7 +442,10 @@ u8 r8712_setfwra_cmd(struct _adapter *padapter, u8 type)
 	}
 	init_h2fwcmd_w_parm_no_rsp(ph2c, pwriteptmparm, GEN_CMD_CODE(_SetRA));
 	pwriteptmparm->type = type;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	r8712_enqueue_cmd(pcmdpriv, ph2c);
 	return _SUCCESS;
 }
@@ -465,9 +501,12 @@ void r8712_getbbrfreg_cmdrsp_callback(struct _adapter *padapter,
 				      struct cmd_obj *pcmd)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree((unsigned char *) pcmd->parmbuf);
 	kfree((unsigned char *) pcmd);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(pcmd->parmbuf);
 	kfree(pcmd);
 	padapter->mppriv.workparam.bcompleted = true;
@@ -479,7 +518,10 @@ void r8712_readtssi_cmdrsp_callback(struct _adapter *padapter,
 	kfree(pcmd->parmbuf);
 	kfree(pcmd);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	padapter->mppriv.workparam.bcompleted = true;
 }
 
@@ -559,7 +601,10 @@ u8 r8712_joinbss_cmd(struct _adapter  *padapter, struct wlan_network *pnetwork)
 		kfree(pcmd);
 		return _FAIL;
 	}
+<<<<<<< HEAD
 	memset(psecnetwork, 0, t_len);
+=======
+>>>>>>> refs/remotes/origin/master
 	memcpy(psecnetwork, &pnetwork->network, t_len);
 	auth = &psecuritypriv->authenticator_ie[0];
 	psecuritypriv->authenticator_ie[0] = (unsigned char)
@@ -611,6 +656,7 @@ u8 r8712_joinbss_cmd(struct _adapter  *padapter, struct wlan_network *pnetwork)
 						pnetwork->network.IELength,
 						&psecnetwork->IELength);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (check_fwstate(pmlmepriv, WIFI_ADHOC_STATE))
 				r8712_add_ht_addt_info(padapter,
 						&pnetwork->network.IEs[0],
@@ -619,6 +665,8 @@ u8 r8712_joinbss_cmd(struct _adapter  *padapter, struct wlan_network *pnetwork)
 						&psecnetwork->IELength);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	psecuritypriv->supplicant_ie[0] = (u8)psecnetwork->IELength;
@@ -804,7 +852,10 @@ u8 r8712_setrttbl_cmd(struct _adapter *padapter,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 u8 r8712_gettssi_cmd(struct _adapter *padapter, u8 offset, u8 *pval)
 {
 	struct cmd_priv *pcmdpriv = &padapter->cmdpriv;
@@ -832,7 +883,10 @@ u8 r8712_gettssi_cmd(struct _adapter *padapter, u8 offset, u8 *pval)
 	return _SUCCESS;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 u8 r8712_setMacAddr_cmd(struct _adapter *padapter, u8 *mac_addr)
 {
 	struct cmd_priv	*pcmdpriv = &padapter->cmdpriv;
@@ -860,7 +914,11 @@ u8 r8712_setassocsta_cmd(struct _adapter *padapter, u8 *mac_addr)
 	struct cmd_priv			*pcmdpriv = &padapter->cmdpriv;
 	struct cmd_obj			*ph2c;
 	struct set_assocsta_parm	*psetassocsta_para;
+<<<<<<< HEAD
 	struct set_stakey_rsp		*psetassocsta_rsp = NULL;
+=======
+	struct set_assocsta_rsp		*psetassocsta_rsp = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	ph2c = (struct cmd_obj *)_malloc(sizeof(struct cmd_obj));
 	if (ph2c == NULL)
@@ -871,7 +929,11 @@ u8 r8712_setassocsta_cmd(struct _adapter *padapter, u8 *mac_addr)
 		kfree((u8 *) ph2c);
 		return _FAIL;
 	}
+<<<<<<< HEAD
 	psetassocsta_rsp = (struct set_stakey_rsp *)_malloc(
+=======
+	psetassocsta_rsp = (struct set_assocsta_rsp *)_malloc(
+>>>>>>> refs/remotes/origin/master
 			    sizeof(struct set_assocsta_rsp));
 	if (psetassocsta_rsp == NULL) {
 		kfree((u8 *)ph2c);
@@ -1012,7 +1074,11 @@ void r8712_createbss_cmd_callback(struct _adapter *padapter,
 			psta = r8712_alloc_stainfo(&padapter->stapriv,
 						   pnetwork->MacAddress);
 			if (psta == NULL)
+<<<<<<< HEAD
 				goto createbss_cmd_fail ;
+=======
+				goto createbss_cmd_fail;
+>>>>>>> refs/remotes/origin/master
 		}
 		r8712_indicate_connect(padapter);
 	} else {
@@ -1082,7 +1148,10 @@ void r8712_setassocsta_cmdrsp_callback(struct _adapter *padapter,
 	r8712_free_cmd_obj(pcmd);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 u8 r8712_disconnectCtrlEx_cmd(struct _adapter *adapter, u32 enableDrvCtrl,
 			u32 tryPktCnt, u32 tryPktInterval, u32 firstStageTO)
@@ -1112,4 +1181,7 @@ u8 r8712_disconnectCtrlEx_cmd(struct _adapter *adapter, u32 enableDrvCtrl,
 	r8712_enqueue_cmd(pcmdpriv, ph2c);
 	return _SUCCESS;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

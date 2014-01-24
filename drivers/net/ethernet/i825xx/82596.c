@@ -95,9 +95,12 @@ static char version[] __initdata =
 #if defined(CONFIG_BVME6000_NET) || defined(CONFIG_BVME6000_NET_MODULE)
 #define ENABLE_BVME6000_NET
 #endif
+<<<<<<< HEAD
 #if defined(CONFIG_APRICOT) || defined(CONFIG_APRICOT_MODULE)
 #define ENABLE_APRICOT
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef ENABLE_MVME16x_NET
 #include <asm/mvme16xhw.h>
@@ -120,8 +123,20 @@ static char version[] __initdata =
 #define WSWAPtbd(x)  ((struct i596_tbd *) (((u32)(x)<<16) | ((((u32)(x)))>>16)))
 #define WSWAPchar(x) ((char *)            (((u32)(x)<<16) | ((((u32)(x)))>>16)))
 #define ISCP_BUSY	0x00010000
+<<<<<<< HEAD
 #define MACH_IS_APRICOT	0
 #else
+=======
+#else
+#error 82596.c: unknown architecture
+#endif
+
+/*
+ * These were the intel versions, left here for reference. There
+ * are currently no x86 users of this legacy i82596 chip.
+ */
+#if 0
+>>>>>>> refs/remotes/origin/master
 #define WSWAPrfd(x)     ((struct i596_rfd *)((long)x))
 #define WSWAPrbd(x)     ((struct i596_rbd *)((long)x))
 #define WSWAPiscp(x)    ((struct i596_iscp *)((long)x))
@@ -130,7 +145,10 @@ static char version[] __initdata =
 #define WSWAPtbd(x)     ((struct i596_tbd *)((long)x))
 #define WSWAPchar(x)    ((char *)((long)x))
 #define ISCP_BUSY	0x0001
+<<<<<<< HEAD
 #define MACH_IS_APRICOT	1
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -383,11 +401,14 @@ static inline void CA(struct net_device *dev)
 		i = *(volatile u32 *) (dev->base_addr);
 	}
 #endif
+<<<<<<< HEAD
 #ifdef ENABLE_APRICOT
 	if (MACH_IS_APRICOT) {
 		outw(0, (short) (dev->base_addr) + 4);
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -617,9 +638,12 @@ static void rebuild_rx_bufs(struct net_device *dev)
 static int init_i596_mem(struct net_device *dev)
 {
 	struct i596_private *lp = dev->ml_priv;
+<<<<<<< HEAD
 #if !defined(ENABLE_MVME16x_NET) && !defined(ENABLE_BVME6000_NET) || defined(ENABLE_APRICOT)
 	short ioaddr = dev->base_addr;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	MPU_PORT(dev, PORT_RESET, NULL);
@@ -653,6 +677,7 @@ static int init_i596_mem(struct net_device *dev)
 
 	MPU_PORT(dev, PORT_ALTSCP, (void *)virt_to_bus((void *)&lp->scp));
 
+<<<<<<< HEAD
 #elif defined(ENABLE_APRICOT)
 
 	{
@@ -665,6 +690,8 @@ static int init_i596_mem(struct net_device *dev)
 		outw(scp | 2, ioaddr);
 		outw(scp >> 16, ioaddr);
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	lp->last_cmd = jiffies;
@@ -677,10 +704,13 @@ static int init_i596_mem(struct net_device *dev)
 	if (MACH_IS_BVME6000)
 		lp->scp.sysbus = 0x0000004c;
 #endif
+<<<<<<< HEAD
 #ifdef ENABLE_APRICOT
 	if (MACH_IS_APRICOT)
 		lp->scp.sysbus = 0x00440000;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	lp->scp.iscp = WSWAPiscp(virt_to_bus((void *)&lp->iscp));
 	lp->iscp.scb = WSWAPscb(virt_to_bus((void *)&lp->scb));
@@ -698,10 +728,13 @@ static int init_i596_mem(struct net_device *dev)
 
 	DEB(DEB_INIT,printk(KERN_DEBUG "%s: starting i82596.\n", dev->name));
 
+<<<<<<< HEAD
 #if defined(ENABLE_APRICOT)
 	(void) inb(ioaddr + 0x10);
 	outb(4, ioaddr + 0xf);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	CA(dev);
 
 	if (wait_istat(dev,lp,1000,"initialization timed out"))
@@ -736,7 +769,11 @@ static int init_i596_mem(struct net_device *dev)
 	i596_add_cmd(dev, &lp->cf_cmd.cmd);
 
 	DEB(DEB_INIT,printk(KERN_DEBUG "%s: queuing CmdSASetup\n", dev->name));
+<<<<<<< HEAD
 	memcpy(lp->sa_cmd.eth_addr, dev->dev_addr, 6);
+=======
+	memcpy(lp->sa_cmd.eth_addr, dev->dev_addr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 	lp->sa_cmd.cmd.command = CmdSASetup;
 	i596_add_cmd(dev, &lp->sa_cmd.cmd);
 
@@ -823,6 +860,7 @@ static inline int i596_rx(struct net_device *dev)
 #ifdef __mc68000__
 				cache_clear(virt_to_phys(newskb->data), PKT_BUF_SZ);
 #endif
+<<<<<<< HEAD
 			}
 			else
 				skb = netdev_alloc_skb(dev, pkt_len + 2);
@@ -833,6 +871,16 @@ memory_squeeze:
 				dev->stats.rx_dropped++;
 			}
 			else {
+=======
+			} else {
+				skb = netdev_alloc_skb(dev, pkt_len + 2);
+			}
+memory_squeeze:
+			if (skb == NULL) {
+				/* XXX tulip.c can defer packets here!! */
+				dev->stats.rx_dropped++;
+			} else {
+>>>>>>> refs/remotes/origin/master
 				if (!rx_in_place) {
 					/* 16 byte align the data fields */
 					skb_reserve(skb, 2);
@@ -1182,7 +1230,11 @@ struct net_device * __init i82596_probe(int unit)
 			err = -ENODEV;
 			goto out;
 		}
+<<<<<<< HEAD
 		memcpy(eth_addr, (void *) 0xfffc1f2c, 6);	/* YUCK! Get addr from NOVRAM */
+=======
+		memcpy(eth_addr, (void *) 0xfffc1f2c, ETH_ALEN);	/* YUCK! Get addr from NOVRAM */
+>>>>>>> refs/remotes/origin/master
 		dev->base_addr = MVME_I596_BASE;
 		dev->irq = (unsigned) MVME16x_IRQ_I596;
 		goto found;
@@ -1203,6 +1255,7 @@ struct net_device * __init i82596_probe(int unit)
 		goto found;
 	}
 #endif
+<<<<<<< HEAD
 #ifdef ENABLE_APRICOT
 	{
 		int checksum = 0;
@@ -1240,6 +1293,8 @@ struct net_device * __init i82596_probe(int unit)
 		goto found;
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	err = -ENODEV;
 	goto out;
 
@@ -1296,9 +1351,12 @@ out2:
 #endif
 	free_page ((u32)(dev->mem_start));
 out1:
+<<<<<<< HEAD
 #ifdef ENABLE_APRICOT
 	release_region(dev->base_addr, I596_TOTAL_SIZE);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	free_netdev(dev);
 	return ERR_PTR(err);
@@ -1455,10 +1513,13 @@ static irqreturn_t i596_interrupt(int irq, void *dev_id)
 		*ethirq = 3;
 	}
 #endif
+<<<<<<< HEAD
 #ifdef ENABLE_APRICOT
 	(void) inb(ioaddr + 0x10);
 	outb(4, ioaddr + 0xf);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	CA(dev);
 
 	DEB(DEB_INTS,printk(KERN_DEBUG "%s: exiting interrupt.\n", dev->name));
@@ -1589,11 +1650,14 @@ static void set_multicast_list(struct net_device *dev)
 #ifdef MODULE
 static struct net_device *dev_82596;
 
+<<<<<<< HEAD
 #ifdef ENABLE_APRICOT
 module_param(irq, int, 0);
 MODULE_PARM_DESC(irq, "Apricot IRQ number");
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int debug = -1;
 module_param(debug, int, 0);
 MODULE_PARM_DESC(debug, "i82596 debug mask");
@@ -1603,9 +1667,13 @@ int __init init_module(void)
 	if (debug >= 0)
 		i596_debug = debug;
 	dev_82596 = i82596_probe(-1);
+<<<<<<< HEAD
 	if (IS_ERR(dev_82596))
 		return PTR_ERR(dev_82596);
 	return 0;
+=======
+	return PTR_ERR_OR_ZERO(dev_82596);
+>>>>>>> refs/remotes/origin/master
 }
 
 void __exit cleanup_module(void)
@@ -1620,10 +1688,13 @@ void __exit cleanup_module(void)
 			IOMAP_FULL_CACHING);
 #endif
 	free_page ((u32)(dev_82596->mem_start));
+<<<<<<< HEAD
 #ifdef ENABLE_APRICOT
 	/* If we don't do this, we can't re-insmod it later. */
 	release_region(dev_82596->base_addr, I596_TOTAL_SIZE);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	free_netdev(dev_82596);
 }
 

@@ -1,5 +1,6 @@
 if ARCH_MSM
 
+<<<<<<< HEAD
 menu "MSM SoC Type"
 
 config ARCH_MSM7X01A
@@ -61,10 +62,30 @@ config ARCH_MSM7X27
 	select MIGHT_HAVE_CACHE_L2X0
 	select MSM_MODEM_RESTART
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+comment "Qualcomm MSM SoC Type"
+	depends on ARCH_MSM_DT
+
+choice
+	prompt "Qualcomm MSM SoC Type"
+	default ARCH_MSM7X00A
+	depends on !ARCH_MSM_DT
+
+config ARCH_MSM7X00A
+	bool "MSM7x00A / MSM7x01A"
+	select ARCH_MSM_ARM11
+	select CPU_V6
+	select GPIO_MSM_V1
+	select MACH_TROUT if !MACH_HALIBUT
+	select MSM_PROC_COMM
+	select MSM_SMD
+	select MSM_SMD_PKG3
+>>>>>>> refs/remotes/origin/master
 
 config ARCH_MSM7X30
 	bool "MSM7x30"
 	select ARCH_MSM_SCORPION
+<<<<<<< HEAD
 	select MSM_VIC
 	select CPU_V7
 <<<<<<< HEAD
@@ -94,10 +115,20 @@ config ARCH_MSM7X30
 	select HOLES_IN_ZONE if SPARSEMEM
 	select MSM_MODEM_RESTART
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select CPU_V7
+	select GPIO_MSM_V1
+	select MACH_MSM7X30_SURF # if !
+	select MSM_GPIOMUX
+	select MSM_PROC_COMM
+	select MSM_SMD
+	select MSM_VIC
+>>>>>>> refs/remotes/origin/master
 
 config ARCH_QSD8X50
 	bool "QSD8X50"
 	select ARCH_MSM_SCORPION
+<<<<<<< HEAD
 	select MSM_VIC
 	select CPU_V7
 <<<<<<< HEAD
@@ -470,6 +501,45 @@ config MSM_KRAIT_TBB_ABORT_HANDLER
 	  at the expense of a very small performance penalty.
 
 	  If unsure, say N.
+=======
+	select CPU_V7
+	select GPIO_MSM_V1
+	select MACH_QSD8X50_SURF if !MACH_QSD8X50A_ST1_5
+	select MSM_GPIOMUX
+	select MSM_PROC_COMM
+	select MSM_SMD
+	select MSM_VIC
+
+endchoice
+
+config ARCH_MSM8X60
+	bool "MSM8X60"
+	select ARM_GIC
+	select CPU_V7
+	select GPIO_MSM_V2
+	select HAVE_SMP
+	select MSM_SCM if SMP
+
+config ARCH_MSM8960
+	bool "MSM8960"
+	select ARM_GIC
+	select CPU_V7
+	select HAVE_SMP
+	select GPIO_MSM_V2
+	select MSM_SCM if SMP
+
+config ARCH_MSM_DT
+	def_bool y
+	depends on (ARCH_MSM8X60 || ARCH_MSM8960)
+	select SPARSE_IRQ
+	select USE_OF
+
+config MSM_HAS_DEBUG_UART_HS
+	bool
+
+config MSM_SOC_REV_A
+	bool
+>>>>>>> refs/remotes/origin/master
 
 config  ARCH_MSM_ARM11
 	bool
@@ -477,6 +547,7 @@ config  ARCH_MSM_ARM11
 config  ARCH_MSM_SCORPION
 	bool
 
+<<<<<<< HEAD
 config  ARCH_MSM_KRAIT
 	bool
 	select ARM_L1_CACHE_SHIFT_6
@@ -578,10 +649,22 @@ config MACH_HALIBUT
 	depends on ARCH_MSM7X01A
 	depends on MSM_STACKED_MEMORY
 	default y
+=======
+config  MSM_VIC
+	bool
+
+menu "Qualcomm MSM Board Type"
+	depends on !ARCH_MSM_DT
+
+config MACH_HALIBUT
+	depends on ARCH_MSM
+	depends on ARCH_MSM7X00A
+>>>>>>> refs/remotes/origin/master
 	bool "Halibut Board (QCT SURF7201A)"
 	help
 	  Support for the Qualcomm SURF7201A eval board.
 
+<<<<<<< HEAD
 config MACH_MSM7201A_SURF
 	depends on ARCH_MSM7X01A
 	depends on MSM_STACKED_MEMORY
@@ -806,10 +889,28 @@ config MACH_QSD8X50_SURF
 	depends on MSM_SOC_REV_NONE
 	depends on MSM_STACKED_MEMORY
 	default y
+=======
+config MACH_TROUT
+	depends on ARCH_MSM
+	depends on ARCH_MSM7X00A
+	bool "HTC Dream (aka trout)"
+	help
+	  Support for the HTC Dream, T-Mobile G1, Android ADP1 devices.
+
+config MACH_MSM7X30_SURF
+	depends on ARCH_MSM7X30
+	bool "MSM7x30 SURF"
+	help
+	  Support for the Qualcomm MSM7x30 SURF eval board.
+
+config MACH_QSD8X50_SURF
+	depends on ARCH_QSD8X50
+>>>>>>> refs/remotes/origin/master
 	bool "QSD8x50 SURF"
 	help
 	  Support for the Qualcomm QSD8x50 SURF eval board.
 
+<<<<<<< HEAD
 config MACH_QSD8X50_FFA
 	depends on ARCH_QSD8X50
 	depends on MSM_SOC_REV_NONE
@@ -3002,4 +3103,32 @@ config MSM_PBUS
 	  client address which caused PBUS hang and PBUS
 	  master information at the time of hang.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config MACH_QSD8X50A_ST1_5
+	depends on ARCH_QSD8X50
+	bool "QSD8x50A ST1.5"
+	select MSM_SOC_REV_A
+	help
+	  Support for the Qualcomm ST1.5.
+
+endmenu
+
+config MSM_SMD_PKG3
+	bool
+
+config MSM_PROC_COMM
+	bool
+
+config MSM_SMD
+	bool
+
+config MSM_GPIOMUX
+	bool
+	depends on !ARCH_MSM_DT
+	help
+	  Support for MSM V1 TLMM GPIOMUX architecture.
+
+config MSM_SCM
+	bool
+>>>>>>> refs/remotes/origin/master
 endif

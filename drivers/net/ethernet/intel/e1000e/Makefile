@@ -1,7 +1,11 @@
 ################################################################################
 #
 # Intel PRO/1000 Linux driver
+<<<<<<< HEAD
 # Copyright(c) 1999 - 2012 Intel Corporation.
+=======
+# Copyright(c) 1999 - 2013 Intel Corporation.
+>>>>>>> refs/remotes/origin/master
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms and conditions of the GNU General Public License,
@@ -34,5 +38,9 @@ obj-$(CONFIG_E1000E) += e1000e.o
 
 e1000e-objs := 82571.o ich8lan.o 80003es2lan.o \
 	       mac.o manage.o nvm.o phy.o \
+<<<<<<< HEAD
 	       param.o ethtool.o netdev.o
+=======
+	       param.o ethtool.o netdev.o ptp.o
+>>>>>>> refs/remotes/origin/master
 

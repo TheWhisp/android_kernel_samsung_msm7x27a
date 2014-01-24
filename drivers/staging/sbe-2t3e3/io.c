@@ -12,16 +12,23 @@
 
 #include <linux/ip.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "2t3e3.h"
 #include "ctrl.h"
 
 /* All access to registers done via the 21143 on port 0 must be
  * protected via the card->bootrom_lock. */
 
+<<<<<<< HEAD
 /* priviate define to be used here only - must be protected by card->bootrom_lock */
+=======
+/* private define to be used here only - must be protected by card->bootrom_lock */
+>>>>>>> refs/remotes/origin/master
 #define cpld_write_nolock(channel, reg, val)			\
 	bootrom_write((channel), CPLD_MAP_REG(reg, channel), val)
 
@@ -203,6 +210,7 @@ u32 exar7250_read(struct channel *channel, u32 reg)
 	u32 result;
 	unsigned long flags;
 
+<<<<<<< HEAD
 #if 0
 	switch (reg) {
 	case SBE_2T3E3_FRAMER_REG_OPERATING_MODE:
@@ -212,6 +220,8 @@ u32 exar7250_read(struct channel *channel, u32 reg)
 	}
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&channel->card->bootrom_lock, flags);
 
 	result = bootrom_read(channel, cpld_reg_map[SBE_2T3E3_CPLD_REG_FRAMER_BASE_ADDRESS]
@@ -247,6 +257,7 @@ u32 exar7300_read(struct channel *channel, u32 reg)
 	unsigned long addr = channel->card->bootrom_addr, flags;
 	u32 i, val;
 
+<<<<<<< HEAD
 #if 0
 	switch (reg) {
 	case SBE_2T3E3_LIU_REG_REG1:
@@ -259,6 +270,8 @@ u32 exar7300_read(struct channel *channel, u32 reg)
 	}
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* select correct Serial Chip */
 
 	spin_lock_irqsave(&channel->card->bootrom_lock, flags);

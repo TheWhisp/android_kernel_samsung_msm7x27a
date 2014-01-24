@@ -12,9 +12,17 @@
  * any later version.
  */
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/gfp.h>
 #include <linux/module.h>
+=======
+#include <linux/clk.h>
+#include <linux/kernel.h>
+#include <linux/gfp.h>
+#include <linux/module.h>
+#include <linux/pm.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/device.h>
@@ -24,7 +32,12 @@
 #include "ahci.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+static void ahci_host_stop(struct ata_host *host);
+
+>>>>>>> refs/remotes/origin/master
 enum ahci_type {
 	AHCI,		/* standard platform ahci */
 	IMX53_AHCI,	/* ahci on i.mx53 */
@@ -47,6 +60,19 @@ static struct platform_device_id ahci_devtype[] = {
 };
 MODULE_DEVICE_TABLE(platform, ahci_devtype);
 
+<<<<<<< HEAD
+=======
+struct ata_port_operations ahci_platform_ops = {
+	.inherits	= &ahci_ops,
+	.host_stop	= ahci_host_stop,
+};
+EXPORT_SYMBOL_GPL(ahci_platform_ops);
+
+static struct ata_port_operations ahci_platform_retry_srst_ops = {
+	.inherits	= &ahci_pmp_retry_srst_ops,
+	.host_stop	= ahci_host_stop,
+};
+>>>>>>> refs/remotes/origin/master
 
 static const struct ata_port_info ahci_port_info[] = {
 	/* by features */
@@ -54,28 +80,44 @@ static const struct ata_port_info ahci_port_info[] = {
 		.flags		= AHCI_FLAG_COMMON,
 		.pio_mask	= ATA_PIO4,
 		.udma_mask	= ATA_UDMA6,
+<<<<<<< HEAD
 		.port_ops	= &ahci_ops,
+=======
+		.port_ops	= &ahci_platform_ops,
+>>>>>>> refs/remotes/origin/master
 	},
 	[IMX53_AHCI] = {
 		.flags		= AHCI_FLAG_COMMON,
 		.pio_mask	= ATA_PIO4,
 		.udma_mask	= ATA_UDMA6,
+<<<<<<< HEAD
 		.port_ops	= &ahci_pmp_retry_srst_ops,
+=======
+		.port_ops	= &ahci_platform_retry_srst_ops,
+>>>>>>> refs/remotes/origin/master
 	},
 	[STRICT_AHCI] = {
 		AHCI_HFLAGS	(AHCI_HFLAG_DELAY_ENGINE),
 		.flags		= AHCI_FLAG_COMMON,
 		.pio_mask	= ATA_PIO4,
 		.udma_mask	= ATA_UDMA6,
+<<<<<<< HEAD
 		.port_ops	= &ahci_ops,
 	},
 };
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.port_ops	= &ahci_platform_ops,
+	},
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct scsi_host_template ahci_platform_sht = {
 	AHCI_SHT("ahci_platform"),
 };
 
+<<<<<<< HEAD
 static int __init ahci_probe(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
@@ -92,6 +134,14 @@ static int __init ahci_probe(struct platform_device *pdev)
 	const struct platform_device_id *id = platform_get_device_id(pdev);
 	struct ata_port_info pi = ahci_port_info[id ? id->driver_data : 0];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ahci_probe(struct platform_device *pdev)
+{
+	struct device *dev = &pdev->dev;
+	struct ahci_platform_data *pdata = dev_get_platdata(dev);
+	const struct platform_device_id *id = platform_get_device_id(pdev);
+	struct ata_port_info pi = ahci_port_info[id ? id->driver_data : 0];
+>>>>>>> refs/remotes/origin/master
 	const struct ata_port_info *ppi[] = { &pi, NULL };
 	struct ahci_host_priv *hpriv;
 	struct ata_host *host;
@@ -130,6 +180,20 @@ static int __init ahci_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+=======
+	hpriv->clk = clk_get(dev, NULL);
+	if (IS_ERR(hpriv->clk)) {
+		dev_err(dev, "can't get clock\n");
+	} else {
+		rc = clk_prepare_enable(hpriv->clk);
+		if (rc) {
+			dev_err(dev, "clock prepare enable failed");
+			goto free_clk;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Some platforms might need to prepare for mmio region access,
 	 * which could be done in the following init call. So, the mmio
@@ -139,7 +203,11 @@ static int __init ahci_probe(struct platform_device *pdev)
 	if (pdata && pdata->init) {
 		rc = pdata->init(dev, hpriv->mmio);
 		if (rc)
+<<<<<<< HEAD
 			return rc;
+=======
+			goto disable_unprepare_clk;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ahci_save_initial_config(dev, hpriv,
@@ -165,7 +233,11 @@ static int __init ahci_probe(struct platform_device *pdev)
 	host = ata_host_alloc_pinfo(dev, ppi, n_ports);
 	if (!host) {
 		rc = -ENOMEM;
+<<<<<<< HEAD
 		goto err0;
+=======
+		goto pdata_exit;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	host->private_data = hpriv;
@@ -173,7 +245,11 @@ static int __init ahci_probe(struct platform_device *pdev)
 	if (!(hpriv->cap & HOST_CAP_SSS) || ahci_ignore_sss)
 		host->flags |= ATA_HOST_PARALLEL_SCAN;
 	else
+<<<<<<< HEAD
 		printk(KERN_INFO "ahci: SSS flag set, parallel bus scan disabled\n");
+=======
+		dev_info(dev, "SSS flag set, parallel bus scan disabled\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (pi.flags & ATA_FLAG_EM)
 		ahci_reset_em(host);
@@ -195,7 +271,11 @@ static int __init ahci_probe(struct platform_device *pdev)
 
 	rc = ahci_reset_controller(host);
 	if (rc)
+<<<<<<< HEAD
 		goto err0;
+=======
+		goto pdata_exit;
+>>>>>>> refs/remotes/origin/master
 
 	ahci_init_controller(host);
 	ahci_print_info(host, "platform");
@@ -203,6 +283,7 @@ static int __init ahci_probe(struct platform_device *pdev)
 	rc = ata_host_activate(host, irq, ahci_interrupt, IRQF_SHARED,
 			       &ahci_platform_sht);
 	if (rc)
+<<<<<<< HEAD
 		goto err0;
 
 	return 0;
@@ -223,16 +304,48 @@ static int __devexit ahci_remove(struct platform_device *pdev)
 	struct ata_host *host = dev_get_drvdata(dev);
 
 	ata_host_detach(host);
+=======
+		goto pdata_exit;
+
+	return 0;
+pdata_exit:
+	if (pdata && pdata->exit)
+		pdata->exit(dev);
+disable_unprepare_clk:
+	if (!IS_ERR(hpriv->clk))
+		clk_disable_unprepare(hpriv->clk);
+free_clk:
+	if (!IS_ERR(hpriv->clk))
+		clk_put(hpriv->clk);
+	return rc;
+}
+
+static void ahci_host_stop(struct ata_host *host)
+{
+	struct device *dev = host->dev;
+	struct ahci_platform_data *pdata = dev_get_platdata(dev);
+	struct ahci_host_priv *hpriv = host->private_data;
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata && pdata->exit)
 		pdata->exit(dev);
 
+<<<<<<< HEAD
 	return 0;
 }
 
 <<<<<<< HEAD
 =======
 #ifdef CONFIG_PM
+=======
+	if (!IS_ERR(hpriv->clk)) {
+		clk_disable_unprepare(hpriv->clk);
+		clk_put(hpriv->clk);
+	}
+}
+
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int ahci_suspend(struct device *dev)
 {
 	struct ahci_platform_data *pdata = dev_get_platdata(dev);
@@ -263,6 +376,13 @@ static int ahci_suspend(struct device *dev)
 
 	if (pdata && pdata->suspend)
 		return pdata->suspend(dev);
+<<<<<<< HEAD
+=======
+
+	if (!IS_ERR(hpriv->clk))
+		clk_disable_unprepare(hpriv->clk);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -270,18 +390,40 @@ static int ahci_resume(struct device *dev)
 {
 	struct ahci_platform_data *pdata = dev_get_platdata(dev);
 	struct ata_host *host = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	int rc;
 
 	if (pdata && pdata->resume) {
 		rc = pdata->resume(dev);
 		if (rc)
 			return rc;
+=======
+	struct ahci_host_priv *hpriv = host->private_data;
+	int rc;
+
+	if (!IS_ERR(hpriv->clk)) {
+		rc = clk_prepare_enable(hpriv->clk);
+		if (rc) {
+			dev_err(dev, "clock prepare enable failed");
+			return rc;
+		}
+	}
+
+	if (pdata && pdata->resume) {
+		rc = pdata->resume(dev);
+		if (rc)
+			goto disable_unprepare_clk;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (dev->power.power_state.event == PM_EVENT_SUSPEND) {
 		rc = ahci_reset_controller(host);
 		if (rc)
+<<<<<<< HEAD
 			return rc;
+=======
+			goto disable_unprepare_clk;
+>>>>>>> refs/remotes/origin/master
 
 		ahci_init_controller(host);
 	}
@@ -289,6 +431,7 @@ static int ahci_resume(struct device *dev)
 	ata_host_resume(host);
 
 	return 0;
+<<<<<<< HEAD
 }
 
 static struct dev_pm_ops ahci_pm_ops = {
@@ -300,10 +443,28 @@ static struct dev_pm_ops ahci_pm_ops = {
 static const struct of_device_id ahci_of_match[] = {
 	{ .compatible = "calxeda,hb-ahci", },
 	{ .compatible = "snps,spear-ahci", },
+=======
+
+disable_unprepare_clk:
+	if (!IS_ERR(hpriv->clk))
+		clk_disable_unprepare(hpriv->clk);
+
+	return rc;
+}
+#endif
+
+static SIMPLE_DEV_PM_OPS(ahci_pm_ops, ahci_suspend, ahci_resume);
+
+static const struct of_device_id ahci_of_match[] = {
+	{ .compatible = "snps,spear-ahci", },
+	{ .compatible = "snps,exynos5440-ahci", },
+	{ .compatible = "ibm,476gtr-ahci", },
+>>>>>>> refs/remotes/origin/master
 	{},
 };
 MODULE_DEVICE_TABLE(of, ahci_of_match);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver ahci_driver = {
 	.remove = __devexit_p(ahci_remove),
@@ -333,6 +494,20 @@ static void __exit ahci_exit(void)
 	platform_driver_unregister(&ahci_driver);
 }
 module_exit(ahci_exit);
+=======
+static struct platform_driver ahci_driver = {
+	.probe = ahci_probe,
+	.remove = ata_platform_remove_one,
+	.driver = {
+		.name = "ahci",
+		.owner = THIS_MODULE,
+		.of_match_table = ahci_of_match,
+		.pm = &ahci_pm_ops,
+	},
+	.id_table	= ahci_devtype,
+};
+module_platform_driver(ahci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("AHCI SATA platform driver");
 MODULE_AUTHOR("Anton Vorontsov <avorontsov@ru.mvista.com>");

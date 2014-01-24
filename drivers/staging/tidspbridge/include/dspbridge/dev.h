@@ -479,6 +479,7 @@ extern int dev_get_bridge_context(struct dev_object *hdev_obj,
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== dev_exit ========
  *  Purpose:
  *      Decrement reference count, and free resources when reference count is
@@ -508,6 +509,8 @@ extern bool dev_init(void);
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== dev_insert_proc_object ========
  *  Purpose:
  *      Inserts the Processor Object into the List of PROC Objects

@@ -1,5 +1,9 @@
 /**
+<<<<<<< HEAD
  * Copyright (C) 2005 - 2011 Emulex
+=======
+ * Copyright (C) 2005 - 2013 Emulex
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -28,7 +32,11 @@
 /* BladeEngine Generation numbers */
 #define BE_GEN2 2
 #define BE_GEN3 3
+<<<<<<< HEAD
 
+=======
+#define BE_GEN4	4
+>>>>>>> refs/remotes/origin/master
 struct be_dma_mem {
 	void *va;
 	dma_addr_t dma;
@@ -84,9 +92,18 @@ static inline void queue_tail_inc(struct be_queue_info *q)
 /*ISCSI */
 
 struct be_eq_obj {
+<<<<<<< HEAD
 	struct be_queue_info q;
 	struct beiscsi_hba *phba;
 	struct be_queue_info *cq;
+=======
+	bool todo_mcc_cq;
+	bool todo_cq;
+	struct be_queue_info q;
+	struct beiscsi_hba *phba;
+	struct be_queue_info *cq;
+	struct work_struct work_cqs; /* Work Item */
+>>>>>>> refs/remotes/origin/master
 	struct blk_iopoll	iopoll;
 };
 
@@ -125,17 +142,24 @@ struct be_ctrl_info {
 
 #define PAGE_SHIFT_4K 12
 #define PAGE_SIZE_4K (1 << PAGE_SHIFT_4K)
+<<<<<<< HEAD
 #define mcc_timeout		120000 /* 5s timeout */
+=======
+#define mcc_timeout		120000 /* 12s timeout */
+>>>>>>> refs/remotes/origin/master
 
 /* Returns number of pages spanned by the data starting at the given addr */
 #define PAGES_4K_SPANNED(_address, size)				\
 		((u32)((((size_t)(_address) & (PAGE_SIZE_4K - 1)) +	\
 			(size) + (PAGE_SIZE_4K - 1)) >> PAGE_SHIFT_4K))
 
+<<<<<<< HEAD
 /* Byte offset into the page corresponding to given address */
 #define OFFSET_IN_PAGE(addr)						\
 		((size_t)(addr) & (PAGE_SIZE_4K-1))
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Returns bit offset within a DWORD of a bitfield */
 #define AMAP_BIT_OFFSET(_struct, field)					\
 		(((size_t)&(((_struct *)0)->field))%32)

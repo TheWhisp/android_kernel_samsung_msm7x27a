@@ -3,6 +3,7 @@
  *
  * Include file for the random number generator.
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_RANDOM_H
 #define _LINUX_RANDOM_H
@@ -47,6 +48,13 @@ struct rnd_state {
 /* Exported functions */
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_RANDOM_H
+#define _LINUX_RANDOM_H
+
+#include <uapi/linux/random.h>
+
+>>>>>>> refs/remotes/origin/master
 
 extern void add_device_randomness(const void *, unsigned int);
 extern void add_input_randomness(unsigned int type, unsigned int code,
@@ -65,10 +73,24 @@ extern const struct file_operations random_fops, urandom_fops;
 unsigned int get_random_int(void);
 unsigned long randomize_range(unsigned long start, unsigned long end, unsigned long len);
 
+<<<<<<< HEAD
 u32 random32(void);
 void srandom32(u32 seed);
 
 u32 prandom32(struct rnd_state *);
+=======
+u32 prandom_u32(void);
+void prandom_bytes(void *buf, int nbytes);
+void prandom_seed(u32 seed);
+void prandom_reseed_late(void);
+
+struct rnd_state {
+	__u32 s1, s2, s3, s4;
+};
+
+u32 prandom_u32_state(struct rnd_state *state);
+void prandom_bytes_state(struct rnd_state *state, void *buf, int nbytes);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Handle minimum values for seeds
@@ -79,6 +101,7 @@ static inline u32 __seed(u32 x, u32 m)
 }
 
 /**
+<<<<<<< HEAD
  * prandom32_seed - set seed for prandom32().
  * @state: pointer to state structure to receive the seed.
  * @seed: arbitrary 64-bit value to use as a seed.
@@ -90,6 +113,20 @@ static inline void prandom32_seed(struct rnd_state *state, u64 seed)
 	state->s1 = __seed(i, 1);
 	state->s2 = __seed(i, 7);
 	state->s3 = __seed(i, 15);
+=======
+ * prandom_seed_state - set seed for prandom_u32_state().
+ * @state: pointer to state structure to receive the seed.
+ * @seed: arbitrary 64-bit value to use as a seed.
+ */
+static inline void prandom_seed_state(struct rnd_state *state, u64 seed)
+{
+	u32 i = (seed >> 32) ^ (seed << 10) ^ seed;
+
+	state->s1 = __seed(i,   2U);
+	state->s2 = __seed(i,   8U);
+	state->s3 = __seed(i,  16U);
+	state->s4 = __seed(i, 128U);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_ARCH_RANDOM
@@ -105,6 +142,14 @@ static inline int arch_get_random_int(unsigned int *v)
 }
 #endif
 
+<<<<<<< HEAD
 #endif /* __KERNEL___ */
+=======
+/* Pseudo random number generator from numerical recipes. */
+static inline u32 next_pseudo_random32(u32 seed)
+{
+	return seed * 1664525 + 1013904223;
+}
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _LINUX_RANDOM_H */

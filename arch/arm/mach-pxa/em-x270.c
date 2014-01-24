@@ -30,7 +30,11 @@
 #include <linux/power_supply.h>
 #include <linux/apm-emulation.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/i2c/pca953x.h>
+=======
+#include <linux/platform_data/pca953x.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/i2c/pxa-i2c.h>
 #include <linux/regulator/userspace-consumer.h>
 
@@ -42,11 +46,19 @@
 #include <mach/pxa27x.h>
 #include <mach/pxa27x-udc.h>
 #include <mach/audio.h>
+<<<<<<< HEAD
 #include <mach/pxafb.h>
 #include <mach/ohci.h>
 #include <mach/mmc.h>
 #include <plat/pxa27x_keypad.h>
 #include <mach/camera.h>
+=======
+#include <linux/platform_data/video-pxafb.h>
+#include <linux/platform_data/usb-ohci-pxa27x.h>
+#include <linux/platform_data/mmc-pxamci.h>
+#include <linux/platform_data/keypad-pxa27x.h>
+#include <linux/platform_data/camera-pxa.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "generic.h"
 #include "devices.h"
@@ -71,10 +83,14 @@
 #define GPIO11_NAND_CS		(11)
 #define GPIO41_ETHIRQ		(41)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define EM_X270_ETHIRQ		IRQ_GPIO(GPIO41_ETHIRQ)
 =======
 #define EM_X270_ETHIRQ		PXA_GPIO_TO_IRQ(GPIO41_ETHIRQ)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define EM_X270_ETHIRQ		PXA_GPIO_TO_IRQ(GPIO41_ETHIRQ)
+>>>>>>> refs/remotes/origin/master
 #define GPIO115_WLAN_PWEN	(115)
 #define GPIO19_WLAN_STRAP	(19)
 #define GPIO9_USB_VBUS_EN	(9)
@@ -342,8 +358,11 @@ static struct mtd_partition em_x270_partition_info[] = {
 	},
 };
 
+<<<<<<< HEAD
 static const char *em_x270_part_probes[] = { "cmdlinepart", NULL };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct platform_nand_data em_x270_nand_platdata = {
 	.chip = {
 		.nr_chips = 1,
@@ -351,7 +370,10 @@ struct platform_nand_data em_x270_nand_platdata = {
 		.nr_partitions = ARRAY_SIZE(em_x270_partition_info),
 		.partitions = em_x270_partition_info,
 		.chip_delay = 20,
+<<<<<<< HEAD
 		.part_probe_types = em_x270_part_probes,
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	.ctrl = {
 		.hwcontrol = 0,
@@ -484,16 +506,35 @@ static int em_x270_usb_hub_init(void)
 	/* USB Hub power-on and reset */
 	gpio_direction_output(usb_hub_reset, 1);
 	gpio_direction_output(GPIO9_USB_VBUS_EN, 0);
+<<<<<<< HEAD
 	regulator_enable(em_x270_usb_ldo);
 	gpio_set_value(usb_hub_reset, 0);
 	gpio_set_value(usb_hub_reset, 1);
 	regulator_disable(em_x270_usb_ldo);
 	regulator_enable(em_x270_usb_ldo);
+=======
+	err = regulator_enable(em_x270_usb_ldo);
+	if (err)
+		goto err_free_rst_gpio;
+
+	gpio_set_value(usb_hub_reset, 0);
+	gpio_set_value(usb_hub_reset, 1);
+	regulator_disable(em_x270_usb_ldo);
+	err = regulator_enable(em_x270_usb_ldo);
+	if (err)
+		goto err_free_rst_gpio;
+
+>>>>>>> refs/remotes/origin/master
 	gpio_set_value(usb_hub_reset, 0);
 	gpio_set_value(GPIO9_USB_VBUS_EN, 1);
 
 	return 0;
 
+<<<<<<< HEAD
+=======
+err_free_rst_gpio:
+	gpio_free(usb_hub_reset);
+>>>>>>> refs/remotes/origin/master
 err_free_vbus_gpio:
 	gpio_free(GPIO9_USB_VBUS_EN);
 err_free_usb_ldo:
@@ -599,7 +640,11 @@ err_irq:
 	return err;
 }
 
+<<<<<<< HEAD
 static void em_x270_mci_setpower(struct device *dev, unsigned int vdd)
+=======
+static int em_x270_mci_setpower(struct device *dev, unsigned int vdd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pxamci_platform_data* p_d = dev->platform_data;
 
@@ -607,10 +652,18 @@ static void em_x270_mci_setpower(struct device *dev, unsigned int vdd)
 		int vdd_uV = (2000 + (vdd - __ffs(MMC_VDD_20_21)) * 100) * 1000;
 
 		regulator_set_voltage(em_x270_sdio_ldo, vdd_uV, vdd_uV);
+<<<<<<< HEAD
 		regulator_enable(em_x270_sdio_ldo);
 	} else {
 		regulator_disable(em_x270_sdio_ldo);
 	}
+=======
+		return regulator_enable(em_x270_sdio_ldo);
+	} else {
+		regulator_disable(em_x270_sdio_ldo);
+	}
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void em_x270_mci_exit(struct device *dev, void *data)
@@ -810,10 +863,14 @@ static struct spi_board_info em_x270_spi_devices[] __initdata = {
 		.max_speed_hz		= 13000000,
 		.bus_num		= 2,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq			= IRQ_GPIO(116),
 =======
 		.irq			= PXA_GPIO_TO_IRQ(116),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq			= PXA_GPIO_TO_IRQ(116),
+>>>>>>> refs/remotes/origin/master
 		.chip_select		= 0,
 		.controller_data	= &em_x270_libertas_chip,
 		.platform_data		= &em_x270_libertas_pdata,
@@ -844,21 +901,40 @@ static inline void em_x270_init_ac97(void) {}
 #endif
 
 #if defined(CONFIG_KEYBOARD_PXA27x) || defined(CONFIG_KEYBOARD_PXA27x_MODULE)
+<<<<<<< HEAD
 static unsigned int em_x270_module_matrix_keys[] = {
+=======
+static const unsigned int em_x270_module_matrix_keys[] = {
+>>>>>>> refs/remotes/origin/master
 	KEY(0, 0, KEY_A), KEY(1, 0, KEY_UP), KEY(2, 1, KEY_B),
 	KEY(0, 2, KEY_LEFT), KEY(1, 1, KEY_ENTER), KEY(2, 0, KEY_RIGHT),
 	KEY(0, 1, KEY_C), KEY(1, 2, KEY_DOWN), KEY(2, 2, KEY_D),
 };
 
+<<<<<<< HEAD
+=======
+static struct matrix_keymap_data em_x270_matrix_keymap_data = {
+	.keymap			= em_x270_module_matrix_keys,
+	.keymap_size		= ARRAY_SIZE(em_x270_module_matrix_keys),
+};
+
+>>>>>>> refs/remotes/origin/master
 struct pxa27x_keypad_platform_data em_x270_module_keypad_info = {
 	/* code map for the matrix keys */
 	.matrix_key_rows	= 3,
 	.matrix_key_cols	= 3,
+<<<<<<< HEAD
 	.matrix_key_map		= em_x270_module_matrix_keys,
 	.matrix_key_map_size	= ARRAY_SIZE(em_x270_module_matrix_keys),
 };
 
 static unsigned int em_x270_exeda_matrix_keys[] = {
+=======
+	.matrix_keymap_data	= &em_x270_matrix_keymap_data,
+};
+
+static const unsigned int em_x270_exeda_matrix_keys[] = {
+>>>>>>> refs/remotes/origin/master
 	KEY(0, 0, KEY_RIGHTSHIFT), KEY(0, 1, KEY_RIGHTCTRL),
 	KEY(0, 2, KEY_RIGHTALT), KEY(0, 3, KEY_SPACE),
 	KEY(0, 4, KEY_LEFTALT), KEY(0, 5, KEY_LEFTCTRL),
@@ -900,12 +976,24 @@ static unsigned int em_x270_exeda_matrix_keys[] = {
 	KEY(7, 6, 0), KEY(7, 7, 0),
 };
 
+<<<<<<< HEAD
+=======
+static struct matrix_keymap_data em_x270_exeda_matrix_keymap_data = {
+	.keymap			= em_x270_exeda_matrix_keys,
+	.keymap_size		= ARRAY_SIZE(em_x270_exeda_matrix_keys),
+};
+
+>>>>>>> refs/remotes/origin/master
 struct pxa27x_keypad_platform_data em_x270_exeda_keypad_info = {
 	/* code map for the matrix keys */
 	.matrix_key_rows	= 8,
 	.matrix_key_cols	= 8,
+<<<<<<< HEAD
 	.matrix_key_map		= em_x270_exeda_matrix_keys,
 	.matrix_key_map_size	= ARRAY_SIZE(em_x270_exeda_matrix_keys),
+=======
+	.matrix_keymap_data	= &em_x270_exeda_matrix_keymap_data,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init em_x270_init_keypad(void)
@@ -1092,6 +1180,7 @@ static void __init em_x270_userspace_consumers_init(void)
 
 /* DA9030 related initializations */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define REGULATOR_CONSUMER(_name, _dev, _supply)			       \
 	static struct regulator_consumer_supply _name##_consumers[] = {	\
 		{							\
@@ -1113,12 +1202,22 @@ REGULATOR_CONSUMER(ldo10, &pxa_device_mci.dev, "vcc sdio");
 REGULATOR_CONSUMER(ldo12, NULL, "vcc usb");
 REGULATOR_CONSUMER(ldo19, &em_x270_gprs_userspace_consumer.dev, "vcc gprs");
 =======
+=======
+#define REGULATOR_CONSUMER(_name, _dev_name, _supply)		        \
+	static struct regulator_consumer_supply _name##_consumers[] = {	\
+		REGULATOR_SUPPLY(_supply, _dev_name),			\
+	}
+
+>>>>>>> refs/remotes/origin/master
 REGULATOR_CONSUMER(ldo3, "reg-userspace-consumer.0", "vcc gps");
 REGULATOR_CONSUMER(ldo5, NULL, "vcc cam");
 REGULATOR_CONSUMER(ldo10, "pxa2xx-mci", "vcc sdio");
 REGULATOR_CONSUMER(ldo12, NULL, "vcc usb");
 REGULATOR_CONSUMER(ldo19, "reg-userspace-consumer.1", "vcc gprs");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 REGULATOR_CONSUMER(buck2, NULL, "vcc_core");
 
 #define REGULATOR_INIT(_ldo, _min_uV, _max_uV, _ops_mask)		\
@@ -1227,10 +1326,14 @@ static struct da903x_platform_data em_x270_da9030_info = {
 static struct i2c_board_info em_x270_i2c_pmic_info = {
 	I2C_BOARD_INFO("da9030", 0x49),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.irq = IRQ_GPIO(0),
 =======
 	.irq = PXA_GPIO_TO_IRQ(0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irq = PXA_GPIO_TO_IRQ(0),
+>>>>>>> refs/remotes/origin/master
 	.platform_data = &em_x270_da9030_info,
 };
 
@@ -1327,6 +1430,7 @@ static void __init em_x270_init(void)
 
 MACHINE_START(EM_X270, "Compulab EM-X270")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
 	.map_io		= pxa27x_map_io,
 	.init_irq	= pxa27x_init_irq,
@@ -1341,12 +1445,18 @@ MACHINE_START(EXEDA, "Compulab eXeda")
 	.timer		= &pxa_timer,
 	.init_machine	= em_x270_init,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.map_io		= pxa27x_map_io,
 	.nr_irqs	= PXA_NR_IRQS,
 	.init_irq	= pxa27x_init_irq,
 	.handle_irq	= pxa27x_handle_irq,
+<<<<<<< HEAD
 	.timer		= &pxa_timer,
+=======
+	.init_time	= pxa_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= em_x270_init,
 	.restart	= pxa_restart,
 MACHINE_END
@@ -1357,8 +1467,14 @@ MACHINE_START(EXEDA, "Compulab eXeda")
 	.nr_irqs	= PXA_NR_IRQS,
 	.init_irq	= pxa27x_init_irq,
 	.handle_irq	= pxa27x_handle_irq,
+<<<<<<< HEAD
 	.timer		= &pxa_timer,
 	.init_machine	= em_x270_init,
 	.restart	= pxa_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.init_machine	= em_x270_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

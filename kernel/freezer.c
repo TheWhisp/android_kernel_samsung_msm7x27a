@@ -7,6 +7,7 @@
 #include <linux/interrupt.h>
 #include <linux/suspend.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/syscalls.h>
 #include <linux/freezer.h>
@@ -63,6 +64,8 @@ void refrigerator(void)
 }
 EXPORT_SYMBOL(refrigerator);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/export.h>
 #include <linux/syscalls.h>
 #include <linux/freezer.h>
@@ -76,6 +79,15 @@ EXPORT_SYMBOL(system_freezing_cnt);
 bool pm_freezing;
 bool pm_nosig_freezing;
 
+<<<<<<< HEAD
+=======
+/*
+ * Temporary export for the deadlock workaround in ata_scsi_hotplug().
+ * Remove once the hack becomes unnecessary.
+ */
+EXPORT_SYMBOL_GPL(pm_freezing);
+
+>>>>>>> refs/remotes/origin/master
 /* protects freezing and frozen transitions */
 static DEFINE_SPINLOCK(freezer_lock);
 
@@ -90,7 +102,11 @@ static DEFINE_SPINLOCK(freezer_lock);
  */
 bool freezing_slow_path(struct task_struct *p)
 {
+<<<<<<< HEAD
 	if (p->flags & PF_NOFREEZE)
+=======
+	if (p->flags & (PF_NOFREEZE | PF_SUSPEND_TASK))
+>>>>>>> refs/remotes/origin/master
 		return false;
 
 	if (pm_nosig_freezing || cgroup_freezing(p))
@@ -141,12 +157,16 @@ bool __refrigerator(bool check_kthr_stop)
 	return was_frozen;
 }
 EXPORT_SYMBOL(__refrigerator);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void fake_signal_wake_up(struct task_struct *p)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_irqsave(&p->sighand->siglock, flags);
 	signal_wake_up(p, 0);
@@ -187,6 +207,8 @@ bool freeze_task(struct task_struct *p, bool sig_only)
 
 	if (should_send_signal(p)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (lock_task_sighand(p, &flags)) {
 		signal_wake_up(p, 0);
 		unlock_task_sighand(p, &flags);
@@ -208,12 +230,28 @@ bool freeze_task(struct task_struct *p)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * This check can race with freezer_do_not_count, but worst case that
+	 * will result in an extra wakeup being sent to the task.  It does not
+	 * race with freezer_count(), the barriers in freezer_count() and
+	 * freezer_should_skip() ensure that either freezer_count() sees
+	 * freezing == true in try_to_freeze() and freezes, or
+	 * freezer_should_skip() sees !PF_FREEZE_SKIP and freezes the task
+	 * normally.
+	 */
+	if (freezer_should_skip(p))
+		return false;
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&freezer_lock, flags);
 	if (!freezing(p) || frozen(p)) {
 		spin_unlock_irqrestore(&freezer_lock, flags);
 		return false;
 	}
 
+<<<<<<< HEAD
 	if (!(p->flags & PF_KTHREAD)) {
 >>>>>>> refs/remotes/origin/cm-10.0
 		fake_signal_wake_up(p);
@@ -281,6 +319,13 @@ int thaw_process(struct task_struct *p)
 }
 EXPORT_SYMBOL(thaw_process);
 =======
+=======
+	if (!(p->flags & PF_KTHREAD))
+		fake_signal_wake_up(p);
+	else
+		wake_up_state(p, TASK_INTERRUPTIBLE);
+
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&freezer_lock, flags);
 	return true;
 }
@@ -322,4 +367,7 @@ bool set_freezable(void)
 	return try_to_freeze();
 }
 EXPORT_SYMBOL(set_freezable);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

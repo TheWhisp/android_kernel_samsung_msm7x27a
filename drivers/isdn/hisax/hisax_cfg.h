@@ -55,6 +55,7 @@ typedef struct IsdnCard		IsdnCard_t;
 
 struct IsdnCard {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int		typ;
 	int 		protocol;	/* EDSS1, 1TR6 or NI1 */
 	unsigned long	para[4];
@@ -63,6 +64,11 @@ struct IsdnCard {
 	int protocol;	/* EDSS1, 1TR6 or NI1 */
 	unsigned long para[4];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int typ;
+	int protocol;	/* EDSS1, 1TR6 or NI1 */
+	unsigned long para[4];
+>>>>>>> refs/remotes/origin/master
 	IsdnCardState_t	*cs;
 };
 

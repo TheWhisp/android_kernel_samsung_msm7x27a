@@ -564,12 +564,17 @@ static int qs_set_dma_masks(struct pci_dev *pdev, void __iomem *mmio_base)
 			rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
 			if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				dev_printk(KERN_ERR, &pdev->dev,
 					   "64-bit DMA enable failed\n");
 =======
 				dev_err(&pdev->dev,
 					"64-bit DMA enable failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				dev_err(&pdev->dev,
+					"64-bit DMA enable failed\n");
+>>>>>>> refs/remotes/origin/master
 				return rc;
 			}
 		}
@@ -577,20 +582,28 @@ static int qs_set_dma_masks(struct pci_dev *pdev, void __iomem *mmio_base)
 		rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
 		if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_printk(KERN_ERR, &pdev->dev,
 				"32-bit DMA enable failed\n");
 =======
 			dev_err(&pdev->dev, "32-bit DMA enable failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&pdev->dev, "32-bit DMA enable failed\n");
+>>>>>>> refs/remotes/origin/master
 			return rc;
 		}
 		rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
 		if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_printk(KERN_ERR, &pdev->dev,
 =======
 			dev_err(&pdev->dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&pdev->dev,
+>>>>>>> refs/remotes/origin/master
 				"32-bit consistent DMA enable failed\n");
 			return rc;
 		}
@@ -602,20 +615,27 @@ static int qs_ata_init_one(struct pci_dev *pdev,
 				const struct pci_device_id *ent)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int board_idx = (unsigned int) ent->driver_data;
 	const struct ata_port_info *ppi[] = { &qs_port_info[board_idx], NULL };
 	struct ata_host *host;
 	int rc, port_no;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev, "version " DRV_VERSION "\n");
 =======
 	ata_print_version_once(&pdev->dev, DRV_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	/* alloc host */
 	host = ata_host_alloc_pinfo(&pdev->dev, ppi, QS_PORTS);
@@ -658,6 +678,7 @@ static int qs_ata_init_one(struct pci_dev *pdev,
 				 &qs_ata_sht);
 }
 
+<<<<<<< HEAD
 static int __init qs_ata_init(void)
 {
 	return pci_register_driver(&qs_ata_pci_driver);
@@ -667,12 +688,18 @@ static void __exit qs_ata_exit(void)
 {
 	pci_unregister_driver(&qs_ata_pci_driver);
 }
+=======
+module_pci_driver(qs_ata_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mark Lord");
 MODULE_DESCRIPTION("Pacific Digital Corporation QStor SATA low-level driver");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, qs_ata_pci_tbl);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(qs_ata_init);
 module_exit(qs_ata_exit);
+=======
+>>>>>>> refs/remotes/origin/master

@@ -43,7 +43,11 @@
  *	not real hardware.
  */
 
+<<<<<<< HEAD
 static u8 __devinit mixer_read(unsigned long io, u8 reg)
+=======
+static u8 mixer_read(unsigned long io, u8 reg)
+>>>>>>> refs/remotes/origin/master
 {
 	outb(reg, io + 4);
 	udelay(20);
@@ -52,7 +56,11 @@ static u8 __devinit mixer_read(unsigned long io, u8 reg)
 	return reg;
 }
 
+<<<<<<< HEAD
 static int __devinit probe_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+=======
+static int probe_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct address_info *hw_config;
 	unsigned long base;
@@ -178,16 +186,26 @@ static int __devinit probe_one(struct pci_dev *pdev, const struct pci_device_id 
 	return 0;
 
 err_out_free:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(hw_config);
 	return 1;
 }
 
+<<<<<<< HEAD
 static void __devexit remove_one(struct pci_dev *pdev)
 {
 	struct address_info *hw_config = pci_get_drvdata(pdev);
 	sb_dsp_unload(hw_config, 0);
 	pci_set_drvdata(pdev, NULL);
+=======
+static void remove_one(struct pci_dev *pdev)
+{
+	struct address_info *hw_config = pci_get_drvdata(pdev);
+	sb_dsp_unload(hw_config, 0);
+>>>>>>> refs/remotes/origin/master
 	kfree(hw_config);
 }
 
@@ -210,7 +228,11 @@ static struct pci_driver kahlua_driver = {
 	.name		= "kahlua",
 	.id_table	= id_tbl,
 	.probe		= probe_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(remove_one),
+=======
+	.remove		= remove_one,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -220,7 +242,11 @@ static int __init kahlua_init_module(void)
 	return pci_register_driver(&kahlua_driver);
 }
 
+<<<<<<< HEAD
 static void __devexit kahlua_cleanup_module(void)
+=======
+static void kahlua_cleanup_module(void)
+>>>>>>> refs/remotes/origin/master
 {
 	pci_unregister_driver(&kahlua_driver);
 }

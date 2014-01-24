@@ -77,12 +77,17 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MPT_LINUX_VERSION_COMMON	"3.04.19"
 #define MPT_LINUX_PACKAGE_NAME		"@(#)mptlinux-3.04.19"
 =======
 #define MPT_LINUX_VERSION_COMMON	"3.04.20"
 #define MPT_LINUX_PACKAGE_NAME		"@(#)mptlinux-3.04.20"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MPT_LINUX_VERSION_COMMON	"3.04.20"
+#define MPT_LINUX_PACKAGE_NAME		"@(#)mptlinux-3.04.20"
+>>>>>>> refs/remotes/origin/master
 #define WHAT_MAGIC_STRING		"@" "(" "#" ")"
 
 #define show_mptmod_ver(s,ver)  \
@@ -95,9 +100,13 @@
 #define MPT_MAX_ADAPTERS		18
 #define MPT_MAX_PROTOCOL_DRIVERS	16
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MPT_MAX_CALLBACKNAME_LEN	49
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MPT_MAX_CALLBACKNAME_LEN	49
+>>>>>>> refs/remotes/origin/master
 #define MPT_MAX_BUS			1	/* Do not change */
 #define MPT_MAX_FC_DEVICES		255
 #define MPT_MAX_SCSI_DEVICES		16
@@ -564,7 +573,10 @@ struct mptfc_rport_info
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*/
 
 /*
@@ -601,15 +613,22 @@ typedef struct _MPT_SCSI_HOST {
 	struct list_head	  target_reset_list;
 } MPT_SCSI_HOST;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 typedef void (*MPT_ADD_SGE)(void *pAddr, u32 flagslength, dma_addr_t dma_addr);
 typedef void (*MPT_ADD_CHAIN)(void *pAddr, u8 next, u16 length,
 		dma_addr_t dma_addr);
 typedef void (*MPT_SCHEDULE_TARGET_RESET)(void *ioc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 typedef void (*MPT_FLUSH_RUNNING_CMDS)(MPT_SCSI_HOST *hd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+typedef void (*MPT_FLUSH_RUNNING_CMDS)(MPT_SCSI_HOST *hd);
+>>>>>>> refs/remotes/origin/master
 
 /*
  *  Adapter Structure - pci_dev specific. Maximum: MPT_MAX_ADAPTERS
@@ -769,13 +788,19 @@ typedef struct _MPT_ADAPTER
 	u8			 taskmgmt_quiesce_io;
 	u8			 ioc_reset_in_progress;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MPT_SCHEDULE_TARGET_RESET schedule_target_reset;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8			 reset_status;
 	u8			 wait_on_reset_completion;
 	MPT_SCHEDULE_TARGET_RESET schedule_target_reset;
 	MPT_FLUSH_RUNNING_CMDS schedule_dead_ioc_flush_running_cmds;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct work_struct	 sas_persist_task;
 
 	struct work_struct	 fc_setup_reset_work;
@@ -890,6 +915,7 @@ typedef struct _MPT_LOCAL_REPLY {
 } MPT_LOCAL_REPLY;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MPT_HOST_BUS_UNKNOWN		(0xFF)
 #define MPT_HOST_TOO_MANY_TM		(0x05)
 #define MPT_HOST_NVRAM_INVALID		(0xFFFFFFFF)
@@ -905,6 +931,8 @@ typedef struct _MPT_LOCAL_REPLY {
 #define MPT_NVRAM_BOOT_CHOICE		(0x00200000)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* The TM_STATE variable is used to provide strict single threading of TM
  * requests as well as communicate TM error conditions.
@@ -913,6 +941,7 @@ typedef struct _MPT_LOCAL_REPLY {
 #define	TM_STATE_IN_PROGRESS   (1)
 #define	TM_STATE_ERROR	       (2)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 typedef enum {
 	FC,
@@ -931,6 +960,8 @@ typedef struct _MPT_SCSI_HOST {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*/
 /*
  *	More Dynamic Multi-Pathing stuff...

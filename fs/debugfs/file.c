@@ -16,16 +16,24 @@
 #include <linux/module.h>
 #include <linux/fs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pagemap.h>
 #include <linux/namei.h>
 #include <linux/debugfs.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/seq_file.h>
 #include <linux/pagemap.h>
 #include <linux/namei.h>
 #include <linux/debugfs.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/slab.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t default_read_file(struct file *file, char __user *buf,
 				 size_t count, loff_t *ppos)
@@ -40,6 +48,7 @@ static ssize_t default_write_file(struct file *file, const char __user *buf,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int default_open(struct inode *inode, struct file *file)
 {
 	if (inode->i_private)
@@ -53,11 +62,16 @@ const struct file_operations debugfs_file_operations = {
 	.write =	default_write_file,
 	.open =		default_open,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 const struct file_operations debugfs_file_operations = {
 	.read =		default_read_file,
 	.write =	default_write_file,
 	.open =		simple_open,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.llseek =	noop_llseek,
 };
 
@@ -111,10 +125,14 @@ DEFINE_SIMPLE_ATTRIBUTE(fops_u8_wo, NULL, debugfs_u8_set, "%llu\n");
  * code.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dentry *debugfs_create_u8(const char *name, mode_t mode,
 =======
 struct dentry *debugfs_create_u8(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct dentry *debugfs_create_u8(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				 struct dentry *parent, u8 *value)
 {
 	/* if there are no write bits set, make read only */
@@ -167,10 +185,14 @@ DEFINE_SIMPLE_ATTRIBUTE(fops_u16_wo, NULL, debugfs_u16_set, "%llu\n");
  * code.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dentry *debugfs_create_u16(const char *name, mode_t mode,
 =======
 struct dentry *debugfs_create_u16(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct dentry *debugfs_create_u16(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				  struct dentry *parent, u16 *value)
 {
 	/* if there are no write bits set, make read only */
@@ -223,10 +245,14 @@ DEFINE_SIMPLE_ATTRIBUTE(fops_u32_wo, NULL, debugfs_u32_set, "%llu\n");
  * code.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dentry *debugfs_create_u32(const char *name, mode_t mode,
 =======
 struct dentry *debugfs_create_u32(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct dentry *debugfs_create_u32(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				 struct dentry *parent, u32 *value)
 {
 	/* if there are no write bits set, make read only */
@@ -280,10 +306,14 @@ DEFINE_SIMPLE_ATTRIBUTE(fops_u64_wo, NULL, debugfs_u64_set, "%llu\n");
  * code.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dentry *debugfs_create_u64(const char *name, mode_t mode,
 =======
 struct dentry *debugfs_create_u64(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct dentry *debugfs_create_u64(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				 struct dentry *parent, u64 *value)
 {
 	/* if there are no write bits set, make read only */
@@ -330,10 +360,14 @@ DEFINE_SIMPLE_ATTRIBUTE(fops_x64, debugfs_u64_get, debugfs_u64_set, "0x%016llx\n
  *         from.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dentry *debugfs_create_x8(const char *name, mode_t mode,
 =======
 struct dentry *debugfs_create_x8(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct dentry *debugfs_create_x8(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				 struct dentry *parent, u8 *value)
 {
 	/* if there are no write bits set, make read only */
@@ -358,10 +392,14 @@ EXPORT_SYMBOL_GPL(debugfs_create_x8);
  *         from.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dentry *debugfs_create_x16(const char *name, mode_t mode,
 =======
 struct dentry *debugfs_create_x16(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct dentry *debugfs_create_x16(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				 struct dentry *parent, u16 *value)
 {
 	/* if there are no write bits set, make read only */
@@ -386,10 +424,14 @@ EXPORT_SYMBOL_GPL(debugfs_create_x16);
  *         from.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dentry *debugfs_create_x32(const char *name, mode_t mode,
 =======
 struct dentry *debugfs_create_x32(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct dentry *debugfs_create_x32(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				 struct dentry *parent, u32 *value)
 {
 	/* if there are no write bits set, make read only */
@@ -414,10 +456,14 @@ EXPORT_SYMBOL_GPL(debugfs_create_x32);
  *         from.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dentry *debugfs_create_x64(const char *name, mode_t mode,
 =======
 struct dentry *debugfs_create_x64(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct dentry *debugfs_create_x64(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				 struct dentry *parent, u64 *value)
 {
 	return debugfs_create_file(name, mode, parent, value, &fops_x64);
@@ -449,16 +495,64 @@ DEFINE_SIMPLE_ATTRIBUTE(fops_size_t, debugfs_size_t_get, debugfs_size_t_set,
  *         from.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dentry *debugfs_create_size_t(const char *name, mode_t mode,
 =======
 struct dentry *debugfs_create_size_t(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct dentry *debugfs_create_size_t(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				     struct dentry *parent, size_t *value)
 {
 	return debugfs_create_file(name, mode, parent, value, &fops_size_t);
 }
 EXPORT_SYMBOL_GPL(debugfs_create_size_t);
 
+<<<<<<< HEAD
+=======
+static int debugfs_atomic_t_set(void *data, u64 val)
+{
+	atomic_set((atomic_t *)data, val);
+	return 0;
+}
+static int debugfs_atomic_t_get(void *data, u64 *val)
+{
+	*val = atomic_read((atomic_t *)data);
+	return 0;
+}
+DEFINE_SIMPLE_ATTRIBUTE(fops_atomic_t, debugfs_atomic_t_get,
+			debugfs_atomic_t_set, "%lld\n");
+DEFINE_SIMPLE_ATTRIBUTE(fops_atomic_t_ro, debugfs_atomic_t_get, NULL, "%lld\n");
+DEFINE_SIMPLE_ATTRIBUTE(fops_atomic_t_wo, NULL, debugfs_atomic_t_set, "%lld\n");
+
+/**
+ * debugfs_create_atomic_t - create a debugfs file that is used to read and
+ * write an atomic_t value
+ * @name: a pointer to a string containing the name of the file to create.
+ * @mode: the permission that the file should have
+ * @parent: a pointer to the parent dentry for this file.  This should be a
+ *          directory dentry if set.  If this parameter is %NULL, then the
+ *          file will be created in the root of the debugfs filesystem.
+ * @value: a pointer to the variable that the file should read to and write
+ *         from.
+ */
+struct dentry *debugfs_create_atomic_t(const char *name, umode_t mode,
+				 struct dentry *parent, atomic_t *value)
+{
+	/* if there are no write bits set, make read only */
+	if (!(mode & S_IWUGO))
+		return debugfs_create_file(name, mode, parent, value,
+					&fops_atomic_t_ro);
+	/* if there are no read bits set, make write only */
+	if (!(mode & S_IRUGO))
+		return debugfs_create_file(name, mode, parent, value,
+					&fops_atomic_t_wo);
+
+	return debugfs_create_file(name, mode, parent, value, &fops_atomic_t);
+}
+EXPORT_SYMBOL_GPL(debugfs_create_atomic_t);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t read_file_bool(struct file *file, char __user *user_buf,
 			      size_t count, loff_t *ppos)
@@ -487,6 +581,10 @@ static ssize_t write_file_bool(struct file *file, const char __user *user_buf,
 	if (copy_from_user(buf, user_buf, buf_size))
 		return -EFAULT;
 
+<<<<<<< HEAD
+=======
+	buf[buf_size] = '\0';
+>>>>>>> refs/remotes/origin/master
 	if (strtobool(buf, &bv) == 0)
 		*val = bv;
 
@@ -497,10 +595,14 @@ static const struct file_operations fops_bool = {
 	.read =		read_file_bool,
 	.write =	write_file_bool,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open =		default_open,
 =======
 	.open =		simple_open,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open =		simple_open,
+>>>>>>> refs/remotes/origin/master
 	.llseek =	default_llseek,
 };
 
@@ -529,10 +631,14 @@ static const struct file_operations fops_bool = {
  * code.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dentry *debugfs_create_bool(const char *name, mode_t mode,
 =======
 struct dentry *debugfs_create_bool(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct dentry *debugfs_create_bool(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				   struct dentry *parent, u32 *value)
 {
 	return debugfs_create_file(name, mode, parent, value, &fops_bool);
@@ -550,10 +656,14 @@ static ssize_t read_file_blob(struct file *file, char __user *user_buf,
 static const struct file_operations fops_blob = {
 	.read =		read_file_blob,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open =		default_open,
 =======
 	.open =		simple_open,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open =		simple_open,
+>>>>>>> refs/remotes/origin/master
 	.llseek =	default_llseek,
 };
 
@@ -582,10 +692,14 @@ static const struct file_operations fops_blob = {
  * code.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dentry *debugfs_create_blob(const char *name, mode_t mode,
 =======
 struct dentry *debugfs_create_blob(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct dentry *debugfs_create_blob(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				   struct dentry *parent,
 				   struct debugfs_blob_wrapper *blob)
 {
@@ -593,7 +707,115 @@ struct dentry *debugfs_create_blob(const char *name, umode_t mode,
 }
 EXPORT_SYMBOL_GPL(debugfs_create_blob);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+
+struct array_data {
+	void *array;
+	u32 elements;
+};
+
+static size_t u32_format_array(char *buf, size_t bufsize,
+			       u32 *array, int array_size)
+{
+	size_t ret = 0;
+
+	while (--array_size >= 0) {
+		size_t len;
+		char term = array_size ? ' ' : '\n';
+
+		len = snprintf(buf, bufsize, "%u%c", *array++, term);
+		ret += len;
+
+		buf += len;
+		bufsize -= len;
+	}
+	return ret;
+}
+
+static int u32_array_open(struct inode *inode, struct file *file)
+{
+	struct array_data *data = inode->i_private;
+	int size, elements = data->elements;
+	char *buf;
+
+	/*
+	 * Max size:
+	 *  - 10 digits + ' '/'\n' = 11 bytes per number
+	 *  - terminating NUL character
+	 */
+	size = elements*11;
+	buf = kmalloc(size+1, GFP_KERNEL);
+	if (!buf)
+		return -ENOMEM;
+	buf[size] = 0;
+
+	file->private_data = buf;
+	u32_format_array(buf, size, data->array, data->elements);
+
+	return nonseekable_open(inode, file);
+}
+
+static ssize_t u32_array_read(struct file *file, char __user *buf, size_t len,
+			      loff_t *ppos)
+{
+	size_t size = strlen(file->private_data);
+
+	return simple_read_from_buffer(buf, len, ppos,
+					file->private_data, size);
+}
+
+static int u32_array_release(struct inode *inode, struct file *file)
+{
+	kfree(file->private_data);
+
+	return 0;
+}
+
+static const struct file_operations u32_array_fops = {
+	.owner	 = THIS_MODULE,
+	.open	 = u32_array_open,
+	.release = u32_array_release,
+	.read	 = u32_array_read,
+	.llseek  = no_llseek,
+};
+
+/**
+ * debugfs_create_u32_array - create a debugfs file that is used to read u32
+ * array.
+ * @name: a pointer to a string containing the name of the file to create.
+ * @mode: the permission that the file should have.
+ * @parent: a pointer to the parent dentry for this file.  This should be a
+ *          directory dentry if set.  If this parameter is %NULL, then the
+ *          file will be created in the root of the debugfs filesystem.
+ * @array: u32 array that provides data.
+ * @elements: total number of elements in the array.
+ *
+ * This function creates a file in debugfs with the given name that exports
+ * @array as data. If the @mode variable is so set it can be read from.
+ * Writing is not supported. Seek within the file is also not supported.
+ * Once array is created its size can not be changed.
+ *
+ * The function returns a pointer to dentry on success. If debugfs is not
+ * enabled in the kernel, the value -%ENODEV will be returned.
+ */
+struct dentry *debugfs_create_u32_array(const char *name, umode_t mode,
+					    struct dentry *parent,
+					    u32 *array, u32 elements)
+{
+	struct array_data *data = kmalloc(sizeof(*data), GFP_KERNEL);
+
+	if (data == NULL)
+		return NULL;
+
+	data->array = array;
+	data->elements = elements;
+
+	return debugfs_create_file(name, mode, parent, data, &u32_array_fops);
+}
+EXPORT_SYMBOL_GPL(debugfs_create_u32_array);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_HAS_IOMEM
 
@@ -687,4 +909,7 @@ struct dentry *debugfs_create_regset32(const char *name, umode_t mode,
 EXPORT_SYMBOL_GPL(debugfs_create_regset32);
 
 #endif /* CONFIG_HAS_IOMEM */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -15,6 +15,10 @@ struct plat_lcd_data;
 struct fb_info;
 
 struct plat_lcd_data {
+<<<<<<< HEAD
+=======
+	int	(*probe)(struct plat_lcd_data *);
+>>>>>>> refs/remotes/origin/master
 	void	(*set_power)(struct plat_lcd_data *, unsigned int power);
 	int	(*match_fb)(struct plat_lcd_data *, struct fb_info *);
 };

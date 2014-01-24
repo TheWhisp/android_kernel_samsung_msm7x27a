@@ -2009,10 +2009,14 @@ typedef struct {
  * When a directory is small enough to fit inside the index root then this
  * is the only attribute describing the directory. When the directory is too
 <<<<<<< HEAD
+<<<<<<< HEAD
  * large to fit in the index root, on the other hand, two aditional attributes
 =======
  * large to fit in the index root, on the other hand, two additional attributes
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * large to fit in the index root, on the other hand, two additional attributes
+>>>>>>> refs/remotes/origin/master
  * are present: an index allocation attribute, containing sub-nodes of the B+
  * directory tree (see below), and a bitmap attribute, describing which virtual
  * cluster numbers (vcns) in the index allocation attribute are in use by an
@@ -2020,10 +2024,14 @@ typedef struct {
  *
  * NOTE: The root directory (FILE_root) contains an entry for itself. Other
 <<<<<<< HEAD
+<<<<<<< HEAD
  * dircetories do not contain entries for themselves, though.
 =======
  * directories do not contain entries for themselves, though.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * directories do not contain entries for themselves, though.
+>>>>>>> refs/remotes/origin/master
  */
 typedef struct {
 	ATTR_TYPE type;			/* Type of the indexed attribute. Is

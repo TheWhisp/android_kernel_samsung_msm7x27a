@@ -32,7 +32,11 @@
 #include <asm/mach/flash.h>
 
 #include <mach/pxa930.h>
+<<<<<<< HEAD
 #include <mach/pxafb.h>
+=======
+#include <linux/platform_data/video-pxafb.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "devices.h"
 #include "generic.h"
@@ -97,12 +101,17 @@ static struct resource smc91x_resources[] = {
 	},
 	[1] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= gpio_to_irq(mfp_to_gpio(MFP_PIN_GPIO97)),
 		.end	= gpio_to_irq(mfp_to_gpio(MFP_PIN_GPIO97)),
 =======
 		.start	= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO97)),
 		.end	= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO97)),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start	= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO97)),
+		.end	= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO97)),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE,
 	}
 };
@@ -508,10 +517,14 @@ static struct i2c_board_info saar_i2c_info[] = {
 		.addr		= 0x34,
 		.platform_data	= &saar_da9034_info,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= gpio_to_irq(mfp_to_gpio(MFP_PIN_GPIO83)),
 =======
 		.irq		= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO83)),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq		= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO83)),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -550,10 +563,14 @@ static struct mtd_partition saar_onenand_partitions[] = {
 		.name		= "filesystem",
 		.offset		= MTDPART_OFS_APPEND,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.size		= SZ_48M,
 =======
 		.size		= SZ_32M + SZ_16M,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.size		= SZ_32M + SZ_16M,
+>>>>>>> refs/remotes/origin/master
 		.mask_flags	= 0,
 	}
 };
@@ -610,19 +627,28 @@ static void __init saar_init(void)
 MACHINE_START(SAAR, "PXA930 Handheld Platform (aka SAAR)")
 	/* Maintainer: Eric Miao <eric.miao@marvell.com> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params    = 0xa0000100,
 	.map_io         = pxa3xx_map_io,
 	.init_irq       = pxa3xx_init_irq,
 	.timer          = &pxa_timer,
 	.init_machine   = saar_init,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset    = 0x100,
 	.map_io         = pxa3xx_map_io,
 	.nr_irqs	= PXA_NR_IRQS,
 	.init_irq       = pxa3xx_init_irq,
 	.handle_irq       = pxa3xx_handle_irq,
+<<<<<<< HEAD
 	.timer          = &pxa_timer,
 	.init_machine   = saar_init,
 	.restart	= pxa_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.init_machine   = saar_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

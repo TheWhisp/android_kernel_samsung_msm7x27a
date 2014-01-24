@@ -46,7 +46,11 @@ static int m48t86_rtc_read_time(struct device *dev, struct rtc_time *tm)
 {
 	unsigned char reg;
 	struct platform_device *pdev = to_platform_device(dev);
+<<<<<<< HEAD
 	struct m48t86_ops *ops = pdev->dev.platform_data;
+=======
+	struct m48t86_ops *ops = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	reg = ops->readbyte(M48T86_REG_B);
 
@@ -84,7 +88,11 @@ static int m48t86_rtc_set_time(struct device *dev, struct rtc_time *tm)
 {
 	unsigned char reg;
 	struct platform_device *pdev = to_platform_device(dev);
+<<<<<<< HEAD
 	struct m48t86_ops *ops = pdev->dev.platform_data;
+=======
+	struct m48t86_ops *ops = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	reg = ops->readbyte(M48T86_REG_B);
 
@@ -123,7 +131,11 @@ static int m48t86_rtc_proc(struct device *dev, struct seq_file *seq)
 {
 	unsigned char reg;
 	struct platform_device *pdev = to_platform_device(dev);
+<<<<<<< HEAD
 	struct m48t86_ops *ops = pdev->dev.platform_data;
+=======
+	struct m48t86_ops *ops = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	reg = ops->readbyte(M48T86_REG_B);
 
@@ -144,12 +156,23 @@ static const struct rtc_class_ops m48t86_rtc_ops = {
 	.proc		= m48t86_rtc_proc,
 };
 
+<<<<<<< HEAD
 static int __devinit m48t86_rtc_probe(struct platform_device *dev)
 {
 	unsigned char reg;
 	struct m48t86_ops *ops = dev->dev.platform_data;
 	struct rtc_device *rtc = rtc_device_register("m48t86",
 				&dev->dev, &m48t86_rtc_ops, THIS_MODULE);
+=======
+static int m48t86_rtc_probe(struct platform_device *dev)
+{
+	unsigned char reg;
+	struct m48t86_ops *ops = dev_get_platdata(&dev->dev);
+	struct rtc_device *rtc;
+
+	rtc = devm_rtc_device_register(&dev->dev, "m48t86",
+				&m48t86_rtc_ops, THIS_MODULE);
+>>>>>>> refs/remotes/origin/master
 
 	if (IS_ERR(rtc))
 		return PTR_ERR(rtc);
@@ -164,6 +187,7 @@ static int __devinit m48t86_rtc_probe(struct platform_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit m48t86_rtc_remove(struct platform_device *dev)
 {
 	struct rtc_device *rtc = platform_get_drvdata(dev);
@@ -176,12 +200,15 @@ static int __devexit m48t86_rtc_remove(struct platform_device *dev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver m48t86_rtc_platform_driver = {
 	.driver		= {
 		.name	= "rtc-m48t86",
 		.owner	= THIS_MODULE,
 	},
 	.probe		= m48t86_rtc_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(m48t86_rtc_remove),
 };
 
@@ -198,6 +225,11 @@ static void __exit m48t86_rtc_exit(void)
 =======
 module_platform_driver(m48t86_rtc_platform_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+module_platform_driver(m48t86_rtc_platform_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alessandro Zummo <a.zummo@towertech.it>");
 MODULE_DESCRIPTION("M48T86 RTC driver");
@@ -205,8 +237,11 @@ MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_VERSION);
 MODULE_ALIAS("platform:rtc-m48t86");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(m48t86_rtc_init);
 module_exit(m48t86_rtc_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

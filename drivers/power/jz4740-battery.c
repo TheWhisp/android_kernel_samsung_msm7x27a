@@ -22,6 +22,10 @@
 #include <linux/io.h>
 
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/gpio.h>
 #include <linux/mfd/core.h>
 #include <linux/power_supply.h>
@@ -33,7 +37,10 @@ struct jz_battery {
 	struct jz_battery_platform_data *pdata;
 	struct platform_device *pdev;
 
+<<<<<<< HEAD
 	struct resource *mem;
+=======
+>>>>>>> refs/remotes/origin/master
 	void __iomem *base;
 
 	int irq;
@@ -68,16 +75,24 @@ static irqreturn_t jz_battery_irq_handler(int irq, void *devid)
 static long jz_battery_read_voltage(struct jz_battery *battery)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long t;
 =======
 	long t;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	long t;
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	long voltage;
 
 	mutex_lock(&battery->lock);
 
+<<<<<<< HEAD
 	INIT_COMPLETION(battery->read_completion);
+=======
+	reinit_completion(&battery->read_completion);
+>>>>>>> refs/remotes/origin/master
 
 	enable_irq(battery->irq);
 	battery->cell->enable(battery->pdev);
@@ -177,16 +192,24 @@ static void jz_battery_external_power_changed(struct power_supply *psy)
 {
 	struct jz_battery *jz_battery = psy_to_jz_battery(psy);
 
+<<<<<<< HEAD
 	cancel_delayed_work(&jz_battery->work);
 	schedule_delayed_work(&jz_battery->work, 0);
+=======
+	mod_delayed_work(system_wq, &jz_battery->work, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t jz_battery_charge_irq(int irq, void *data)
 {
 	struct jz_battery *jz_battery = data;
 
+<<<<<<< HEAD
 	cancel_delayed_work(&jz_battery->work);
 	schedule_delayed_work(&jz_battery->work, 0);
+=======
+	mod_delayed_work(system_wq, &jz_battery->work, 0);
+>>>>>>> refs/remotes/origin/master
 
 	return IRQ_HANDLED;
 }
@@ -244,19 +267,31 @@ static void jz_battery_work(struct work_struct *work)
 	schedule_delayed_work(&jz_battery->work, interval);
 }
 
+<<<<<<< HEAD
 static int __devinit jz_battery_probe(struct platform_device *pdev)
+=======
+static int jz_battery_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 	struct jz_battery_platform_data *pdata = pdev->dev.parent->platform_data;
 	struct jz_battery *jz_battery;
 	struct power_supply *battery;
+<<<<<<< HEAD
+=======
+	struct resource *mem;
+>>>>>>> refs/remotes/origin/master
 
 	if (!pdata) {
 		dev_err(&pdev->dev, "No platform_data supplied\n");
 		return -ENXIO;
 	}
 
+<<<<<<< HEAD
 	jz_battery = kzalloc(sizeof(*jz_battery), GFP_KERNEL);
+=======
+	jz_battery = devm_kzalloc(&pdev->dev, sizeof(*jz_battery), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!jz_battery) {
 		dev_err(&pdev->dev, "Failed to allocate driver structure\n");
 		return -ENOMEM;
@@ -266,6 +301,7 @@ static int __devinit jz_battery_probe(struct platform_device *pdev)
 
 	jz_battery->irq = platform_get_irq(pdev, 0);
 	if (jz_battery->irq < 0) {
+<<<<<<< HEAD
 		ret = jz_battery->irq;
 		dev_err(&pdev->dev, "Failed to get platform irq: %d\n", ret);
 		goto err_free;
@@ -293,6 +329,17 @@ static int __devinit jz_battery_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Failed to ioremap mmio memory\n");
 		goto err_release_mem_region;
 	}
+=======
+		dev_err(&pdev->dev, "Failed to get platform irq: %d\n", ret);
+		return jz_battery->irq;
+	}
+
+	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+
+	jz_battery->base = devm_ioremap_resource(&pdev->dev, mem);
+	if (IS_ERR(jz_battery->base))
+		return PTR_ERR(jz_battery->base);
+>>>>>>> refs/remotes/origin/master
 
 	battery = &jz_battery->battery;
 	battery->name = pdata->info.name;
@@ -315,7 +362,11 @@ static int __devinit jz_battery_probe(struct platform_device *pdev)
 			jz_battery);
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to request irq %d\n", ret);
+<<<<<<< HEAD
 		goto err_iounmap;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 	disable_irq(jz_battery->irq);
 
@@ -372,6 +423,7 @@ err_free_gpio:
 		gpio_free(jz_battery->pdata->gpio_charge);
 err_free_irq:
 	free_irq(jz_battery->irq, jz_battery);
+<<<<<<< HEAD
 err_iounmap:
 	platform_set_drvdata(pdev, NULL);
 	iounmap(jz_battery->base);
@@ -383,6 +435,12 @@ err_free:
 }
 
 static int __devexit jz_battery_remove(struct platform_device *pdev)
+=======
+	return ret;
+}
+
+static int jz_battery_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct jz_battery *jz_battery = platform_get_drvdata(pdev);
 
@@ -398,10 +456,13 @@ static int __devexit jz_battery_remove(struct platform_device *pdev)
 
 	free_irq(jz_battery->irq, jz_battery);
 
+<<<<<<< HEAD
 	iounmap(jz_battery->base);
 	release_mem_region(jz_battery->mem->start, resource_size(jz_battery->mem));
 	kfree(jz_battery);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -437,7 +498,11 @@ static const struct dev_pm_ops jz_battery_pm_ops = {
 
 static struct platform_driver jz_battery_driver = {
 	.probe		= jz_battery_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(jz_battery_remove),
+=======
+	.remove		= jz_battery_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "jz4740-battery",
 		.owner = THIS_MODULE,
@@ -445,6 +510,7 @@ static struct platform_driver jz_battery_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init jz_battery_init(void)
 {
@@ -460,6 +526,9 @@ module_exit(jz_battery_exit);
 =======
 module_platform_driver(jz_battery_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(jz_battery_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_ALIAS("platform:jz4740-battery");
 MODULE_LICENSE("GPL");

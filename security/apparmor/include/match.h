@@ -4,7 +4,11 @@
  * This file contains AppArmor policy dfa matching engine definitions.
  *
  * Copyright (C) 1998-2008 Novell/SUSE
+<<<<<<< HEAD
  * Copyright 2009-2010 Canonical Ltd.
+=======
+ * Copyright 2009-2012 Canonical Ltd.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -16,25 +20,48 @@
 #define __AA_MATCH_H
 
 #include <linux/kref.h>
+<<<<<<< HEAD
 #include <linux/workqueue.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define DFA_NOMATCH			0
 #define DFA_START			1
 
+<<<<<<< HEAD
 #define DFA_VALID_PERM_MASK		0xffffffff
 #define DFA_VALID_PERM2_MASK		0xffffffff
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * The format used for transition tables is based on the GNU flex table
  * file format (--tables-file option; see Table File Format in the flex
  * info pages and the flex sources for documentation). The magic number
  * used in the header is 0x1B5E783D instead of 0xF13C57B1 though, because
+<<<<<<< HEAD
  * the YY_ID_CHK (check) and YY_ID_DEF (default) tables are used
  * slightly differently (see the apparmor-parser package).
  */
 
 #define YYTH_MAGIC	0x1B5E783D
 #define YYTH_DEF_RECURSE 0x1			/* DEF Table is recursive */
+=======
+ * new tables have been defined and others YY_ID_CHK (check) and YY_ID_DEF
+ * (default) tables are used slightly differently (see the apparmor-parser
+ * package).
+ *
+ *
+ * The data in the packed dfa is stored in network byte order, and the tables
+ * are arranged for flexibility.  We convert the table data to host native
+ * byte order.
+ *
+ * The dfa begins with a table set header, and is followed by the actual
+ * tables.
+ */
+
+#define YYTH_MAGIC	0x1B5E783D
+>>>>>>> refs/remotes/origin/master
 
 struct table_set_header {
 	u32 th_magic;		/* YYTH_MAGIC */
@@ -63,7 +90,11 @@ struct table_set_header {
 #define YYTD_DATA32	4
 #define YYTD_DATA64	8
 
+<<<<<<< HEAD
 /* Each ACCEPT2 table gets 6 dedicated flags, YYTD_DATAX define the
+=======
+/* ACCEPT & ACCEPT2 tables gets 6 dedicated flags, YYTD_DATAX define the
+>>>>>>> refs/remotes/origin/master
  * first flags
  */
 #define ACCEPT1_FLAGS(X) ((X) & 0x3f)
@@ -117,11 +148,17 @@ unsigned int aa_dfa_match_len(struct aa_dfa *dfa, unsigned int start,
 unsigned int aa_dfa_match(struct aa_dfa *dfa, unsigned int start,
 			  const char *str);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 unsigned int aa_dfa_next(struct aa_dfa *dfa, unsigned int state,
 			 const char c);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned int aa_dfa_next(struct aa_dfa *dfa, unsigned int state,
+			 const char c);
+
+>>>>>>> refs/remotes/origin/master
 void aa_dfa_free_kref(struct kref *kref);
 
 /**

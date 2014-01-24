@@ -4,9 +4,15 @@
  */
 
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include "irq_kern.h"
 #include "os.h"
 #include "sigio.h"
+=======
+#include <irq_kern.h>
+#include <os.h>
+#include <sigio.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Protected by sigio_lock() called from write_sigio_workaround */
 static int sigio_irq_fd = -1;
@@ -26,11 +32,15 @@ int write_sigio_irq(int fd)
 
 	err = um_request_irq(SIGIO_WRITE_IRQ, fd, IRQ_READ, sigio_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     IRQF_DISABLED|IRQF_SAMPLE_RANDOM, "write sigio",
 =======
 			     IRQF_SAMPLE_RANDOM, "write sigio",
 >>>>>>> refs/remotes/origin/cm-10.0
 			     NULL);
+=======
+			     0, "write sigio", NULL);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		printk(KERN_ERR "write_sigio_irq : um_request_irq failed, "
 		       "err = %d\n", err);

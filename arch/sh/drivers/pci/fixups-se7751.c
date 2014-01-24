@@ -4,6 +4,7 @@
 #include <linux/delay.h>
 #include <linux/pci.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include "pci-sh4.h"
 
 <<<<<<< HEAD
@@ -15,6 +16,16 @@ int __init pcibios_map_platform_irq(const struct pci_dev *, u8 slot, u8 pin)
         switch (slot) {
         case 0: return 13;
         case 1: return 13;	/* AMD Ethernet controller */
+=======
+#include <linux/sh_intc.h>
+#include "pci-sh4.h"
+
+int __init pcibios_map_platform_irq(const struct pci_dev *, u8 slot, u8 pin)
+{
+        switch (slot) {
+        case 0: return evt2irq(0x3a0);
+        case 1: return evt2irq(0x3a0);	/* AMD Ethernet controller */
+>>>>>>> refs/remotes/origin/master
         case 2: return -1;
         case 3: return -1;
         case 4: return -1;

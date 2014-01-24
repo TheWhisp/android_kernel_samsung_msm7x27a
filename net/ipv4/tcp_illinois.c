@@ -256,7 +256,12 @@ static void tcp_illinois_state(struct sock *sk, u8 new_state)
 /*
  * Increase window in response to successful acknowledgment.
  */
+<<<<<<< HEAD
 static void tcp_illinois_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
+=======
+static void tcp_illinois_cong_avoid(struct sock *sk, u32 ack, u32 acked,
+				    u32 in_flight)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct illinois *ca = inet_csk_ca(sk);
@@ -270,7 +275,11 @@ static void tcp_illinois_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 
 	/* In slow start */
 	if (tp->snd_cwnd <= tp->snd_ssthresh)
+<<<<<<< HEAD
 		tcp_slow_start(tp);
+=======
+		tcp_slow_start(tp, acked);
+>>>>>>> refs/remotes/origin/master
 
 	else {
 		u32 delta;

@@ -5,8 +5,13 @@
  *
  * Copyright (C) 1994 - 2000, 2001, 2003 Ralf Baechle
  * Copyright (C) 1999, 2000 Silicon Graphics, Inc.
+<<<<<<< HEAD
  * Copyright (C) 2001 MIPS Technologies, Inc.
  * Copyright (C) 2002, 2007  Maciej W. Rozycki
+=======
+ * Copyright (C) 2002, 2007  Maciej W. Rozycki
+ * Copyright (C) 2001, 2012 MIPS Technologies, Inc.  All rights reserved.
+>>>>>>> refs/remotes/origin/master
  */
 #include <linux/init.h>
 
@@ -19,11 +24,20 @@
 #include <asm/mipsregs.h>
 #include <asm/stackframe.h>
 #include <asm/war.h>
+<<<<<<< HEAD
 #include <asm/page.h>
 #include <asm/thread_info.h>
 
 #define PANIC_PIC(msg)					\
 		.set push;				\
+=======
+#include <asm/thread_info.h>
+
+#ifdef CONFIG_MIPS_MT_SMTC
+#define PANIC_PIC(msg)					\
+		.set	push;				\
+		.set	nomicromips;			\
+>>>>>>> refs/remotes/origin/master
 		.set	reorder;			\
 		PTR_LA	a0,8f;				\
 		.set	noat;				\
@@ -32,6 +46,7 @@
 9:		b	9b;				\
 		.set	pop;				\
 		TEXT(msg)
+<<<<<<< HEAD
 
 	__INIT
 
@@ -43,6 +58,12 @@ NESTED(except_vec1_generic, 0, sp)
 	PANIC_PIC("Exception vector 1 called")
 	END(except_vec1_generic)
 
+=======
+#endif
+
+	__INIT
+
+>>>>>>> refs/remotes/origin/master
 /*
  * General exception vector for all other CPUs.
  *
@@ -128,7 +149,11 @@ handle_vcei:
 	__FINIT
 
 	.align	5	/* 32 byte rollback region */
+<<<<<<< HEAD
 LEAF(r4k_wait)
+=======
+LEAF(__r4k_wait)
+>>>>>>> refs/remotes/origin/master
 	.set	push
 	.set	noreorder
 	/* start of rollback region */
@@ -139,6 +164,7 @@ LEAF(r4k_wait)
 	 nop
 	nop
 	nop
+<<<<<<< HEAD
 	.set	mips3
 	wait
 	/* end of rollback region (the region size must be power of two) */
@@ -146,13 +172,33 @@ LEAF(r4k_wait)
 1:
 	jr	ra
 	END(r4k_wait)
+=======
+#ifdef CONFIG_CPU_MICROMIPS
+	nop
+	nop
+	nop
+	nop
+#endif
+	.set	mips3
+	wait
+	/* end of rollback region (the region size must be power of two) */
+1:
+	jr	ra
+	nop
+	.set	pop
+	END(__r4k_wait)
+>>>>>>> refs/remotes/origin/master
 
 	.macro	BUILD_ROLLBACK_PROLOGUE handler
 	FEXPORT(rollback_\handler)
 	.set	push
 	.set	noat
 	MFC0	k0, CP0_EPC
+<<<<<<< HEAD
 	PTR_LA	k1, r4k_wait
+=======
+	PTR_LA	k1, __r4k_wait
+>>>>>>> refs/remotes/origin/master
 	ori	k0, 0x1f	/* 32 byte rollback region */
 	xori	k0, 0x1f
 	bne	k0, k1, 9f
@@ -161,7 +207,11 @@ LEAF(r4k_wait)
 	.set pop
 	.endm
 
+<<<<<<< HEAD
 	.align  5
+=======
+	.align	5
+>>>>>>> refs/remotes/origin/master
 BUILD_ROLLBACK_PROLOGUE handle_int
 NESTED(handle_int, PT_SIZE, sp)
 #ifdef CONFIG_TRACE_IRQFLAGS
@@ -202,7 +252,15 @@ NESTED(handle_int, PT_SIZE, sp)
 	LONG_L	s0, TI_REGS($28)
 	LONG_S	sp, TI_REGS($28)
 	PTR_LA	ra, ret_from_irq
+<<<<<<< HEAD
 	j	plat_irq_dispatch
+=======
+	PTR_LA  v0, plat_irq_dispatch
+	jr	v0
+#ifdef CONFIG_CPU_MICROMIPS
+	nop
+#endif
+>>>>>>> refs/remotes/origin/master
 	END(handle_int)
 
 	__INIT
@@ -223,11 +281,21 @@ NESTED(except_vec4, 0, sp)
 /*
  * EJTAG debug exception handler.
  * The EJTAG debug exception entry point is 0xbfc00480, which
+<<<<<<< HEAD
  * normally is in the boot PROM, so the boot PROM must do a
+=======
+ * normally is in the boot PROM, so the boot PROM must do an
+>>>>>>> refs/remotes/origin/master
  * unconditional jump to this vector.
  */
 NESTED(except_vec_ejtag_debug, 0, sp)
 	j	ejtag_debug_handler
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CPU_MICROMIPS
+	 nop
+#endif
+>>>>>>> refs/remotes/origin/master
 	END(except_vec_ejtag_debug)
 
 	__FINIT
@@ -252,9 +320,16 @@ NESTED(except_vec_vi, 0, sp)
 FEXPORT(except_vec_vi_mori)
 	ori	a0, $0, 0
 #endif /* CONFIG_MIPS_MT_SMTC */
+<<<<<<< HEAD
 FEXPORT(except_vec_vi_lui)
 	lui	v0, 0		/* Patched */
 	j	except_vec_vi_handler
+=======
+	PTR_LA	v1, except_vec_vi_handler
+FEXPORT(except_vec_vi_lui)
+	lui	v0, 0		/* Patched */
+	jr	v1
+>>>>>>> refs/remotes/origin/master
 FEXPORT(except_vec_vi_ori)
 	 ori	v0, 0		/* Patched */
 	.set	pop
@@ -355,6 +430,12 @@ EXPORT(ejtag_debug_buffer)
  */
 NESTED(except_vec_nmi, 0, sp)
 	j	nmi_handler
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CPU_MICROMIPS
+	 nop
+#endif
+>>>>>>> refs/remotes/origin/master
 	END(except_vec_nmi)
 
 	__FINIT
@@ -362,12 +443,29 @@ NESTED(except_vec_nmi, 0, sp)
 NESTED(nmi_handler, PT_SIZE, sp)
 	.set	push
 	.set	noat
+<<<<<<< HEAD
 	SAVE_ALL
  	move	a0, sp
 	jal	nmi_exception_handler
 	RESTORE_ALL
 	.set	mips3
 	eret
+=======
+	/*
+	 * Clear ERL - restore segment mapping
+	 * Clear BEV - required for page fault exception handler to work
+	 */
+	mfc0	k0, CP0_STATUS
+	ori     k0, k0, ST0_EXL
+	li	k1, ~(ST0_BEV | ST0_ERL)
+	and     k0, k0, k1
+	mtc0    k0, CP0_STATUS
+	_ehb
+	SAVE_ALL
+	move	a0, sp
+	jal	nmi_exception_handler
+	/* nmi_exception_handler never returns */
+>>>>>>> refs/remotes/origin/master
 	.set	pop
 	END(nmi_handler)
 
@@ -410,7 +508,11 @@ NESTED(nmi_handler, PT_SIZE, sp)
 	   string escapes and emits bogus warnings if it believes to
 	   recognize an unknown escape code.  So make the arguments
 	   start with an n and gas will believe \n is ok ...  */
+<<<<<<< HEAD
 	.macro	__BUILD_verbose	nexception
+=======
+	.macro	__BUILD_verbose nexception
+>>>>>>> refs/remotes/origin/master
 	LONG_L	a1, PT_EPC(sp)
 #ifdef CONFIG_32BIT
 	PRINT("Got \nexception at %08lx\012")
@@ -443,7 +545,11 @@ NESTED(nmi_handler, PT_SIZE, sp)
 	.endm
 
 	.macro	BUILD_HANDLER exception handler clear verbose
+<<<<<<< HEAD
 	__BUILD_HANDLER	\exception \handler \clear \verbose _int
+=======
+	__BUILD_HANDLER \exception \handler \clear \verbose _int
+>>>>>>> refs/remotes/origin/master
 	.endm
 
 	BUILD_HANDLER adel ade ade silent		/* #4  */
@@ -457,7 +563,11 @@ NESTED(nmi_handler, PT_SIZE, sp)
 	BUILD_HANDLER tr tr sti silent			/* #13 */
 	BUILD_HANDLER fpe fpe fpe silent		/* #15 */
 	BUILD_HANDLER mdmx mdmx sti silent		/* #22 */
+<<<<<<< HEAD
 #ifdef 	CONFIG_HARDWARE_WATCHPOINTS
+=======
+#ifdef	CONFIG_HARDWARE_WATCHPOINTS
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * For watch, interrupts will be enabled after the watch
 	 * registers are read.
@@ -483,8 +593,13 @@ NESTED(nmi_handler, PT_SIZE, sp)
 	MFC0	k1, CP0_ENTRYHI
 	andi	k1, 0xff	/* ASID_MASK */
 	MFC0	k0, CP0_EPC
+<<<<<<< HEAD
 	PTR_SRL	k0, PAGE_SHIFT + 1
 	PTR_SLL	k0, PAGE_SHIFT + 1
+=======
+	PTR_SRL k0, _PAGE_SHIFT + 1
+	PTR_SLL k0, _PAGE_SHIFT + 1
+>>>>>>> refs/remotes/origin/master
 	or	k1, k0
 	MTC0	k1, CP0_ENTRYHI
 	mtc0_tlbw_hazard
@@ -501,6 +616,7 @@ NESTED(nmi_handler, PT_SIZE, sp)
 	.set	push
 	.set	noat
 	.set	noreorder
+<<<<<<< HEAD
 	/* 0x7c03e83b: rdhwr v1,$29 */
 	MFC0	k1, CP0_EPC
 	lui	k0, 0x7c03
@@ -508,6 +624,37 @@ NESTED(nmi_handler, PT_SIZE, sp)
 	ori	k0, 0xe83b
 	.set	reorder
 	bne	k0, k1, handle_ri	/* if not ours */
+=======
+	/* MIPS32:    0x7c03e83b: rdhwr v1,$29 */
+	/* microMIPS: 0x007d6b3c: rdhwr v1,$29 */
+	MFC0	k1, CP0_EPC
+#if defined(CONFIG_CPU_MICROMIPS) || defined(CONFIG_CPU_MIPS32_R2) || defined(CONFIG_CPU_MIPS64_R2)
+	and     k0, k1, 1
+	beqz    k0, 1f
+	xor     k1, k0
+	lhu     k0, (k1)
+	lhu     k1, 2(k1)
+	ins     k1, k0, 16, 16
+	lui     k0, 0x007d
+	b       docheck
+	ori     k0, 0x6b3c
+1:
+	lui     k0, 0x7c03
+	lw      k1, (k1)
+	ori     k0, 0xe83b
+#else
+	andi    k0, k1, 1
+	bnez    k0, handle_ri
+	lui     k0, 0x7c03
+	lw      k1, (k1)
+	ori     k0, 0xe83b
+#endif
+	.set    reorder
+docheck:
+	bne	k0, k1, handle_ri	/* if not ours */
+
+isrdhwr:
+>>>>>>> refs/remotes/origin/master
 	/* The insn is rdhwr.  No need to check CAUSE.BD here. */
 	get_saved_sp	/* k1 := current_thread_info */
 	.set	noreorder

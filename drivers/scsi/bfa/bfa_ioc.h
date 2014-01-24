@@ -86,7 +86,10 @@ struct bfa_sge_s {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * BFA memory resources
  */
 struct bfa_mem_dma_s {
@@ -149,7 +152,10 @@ struct bfa_meminfo_s {
 	 BFI_MEM_SEG_REQ_OFFSET(_tag, _rqsz) * (_rqsz))
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * PCI device information required by IOC
  */
 struct bfa_pcidev_s {
@@ -157,9 +163,13 @@ struct bfa_pcidev_s {
 	u8		pci_func;
 	u16		device_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u16		ssid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16		ssid;
+>>>>>>> refs/remotes/origin/master
 	void __iomem	*pci_bar_kva;
 };
 
@@ -182,6 +192,7 @@ struct bfa_dma_s {
 #define BFI_SMEM_CT_SIZE	0x280000U	/* ! 2.5MB for catapult	*/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define bfa_dma_addr_set(dma_addr, pa)	\
 		__bfa_dma_addr_set(&dma_addr, (u64)pa)
@@ -196,6 +207,8 @@ __bfa_dma_addr_set(union bfi_addr_u *dma_addr, u64 pa)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define bfa_dma_be_addr_set(dma_addr, pa)	\
 		__bfa_dma_be_addr_set(&dma_addr, (u64)pa)
 static inline void
@@ -206,7 +219,10 @@ __bfa_dma_be_addr_set(union bfi_addr_u *dma_addr, u64 pa)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define bfa_alen_set(__alen, __len, __pa)	\
 	__bfa_alen_set(__alen, __len, (u64)__pa)
 
@@ -217,16 +233,23 @@ __bfa_alen_set(struct bfi_alen_s *alen, u32 len, u64 pa)
 	bfa_dma_be_addr_set(alen->al_addr, pa);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct bfa_ioc_regs_s {
 	void __iomem *hfn_mbox_cmd;
 	void __iomem *hfn_mbox;
 	void __iomem *lpu_mbox_cmd;
 	void __iomem *lpu_mbox;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	void __iomem *lpu_read_stat;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void __iomem *lpu_read_stat;
+>>>>>>> refs/remotes/origin/master
 	void __iomem *pss_ctl_reg;
 	void __iomem *pss_err_status_reg;
 	void __iomem *app_pll_fast_ctl_reg;
@@ -289,12 +312,15 @@ struct bfa_ioc_cbfn_s {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Heartbeat failure notification queue element.
  */
 struct bfa_ioc_hbfail_notify_s {
 	struct list_head		qe;
 	bfa_ioc_hbfail_cbfn_t	cbfn;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * IOC event notification mechanism.
  */
 enum bfa_ioc_event_e {
@@ -308,11 +334,15 @@ typedef void (*bfa_ioc_notify_cbfn_t)(void *, enum bfa_ioc_event_e);
 struct bfa_ioc_notify_s {
 	struct list_head		qe;
 	bfa_ioc_notify_cbfn_t	cbfn;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	void			*cbarg;
 };
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Initialize a heartbeat failure notification structure
  */
@@ -322,6 +352,11 @@ struct bfa_ioc_notify_s {
  */
 #define bfa_ioc_notify_init(__notify, __cbfn, __cbarg) do {	\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Initialize a IOC event notification structure
+ */
+#define bfa_ioc_notify_init(__notify, __cbfn, __cbarg) do {	\
+>>>>>>> refs/remotes/origin/master
 	(__notify)->cbfn = (__cbfn);      \
 	(__notify)->cbarg = (__cbarg);      \
 } while (0)
@@ -330,6 +365,7 @@ struct bfa_iocpf_s {
 	bfa_fsm_t		fsm;
 	struct bfa_ioc_s	*ioc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32		retry_count;
 	bfa_boolean_t		auto_recover;
 =======
@@ -337,6 +373,11 @@ struct bfa_iocpf_s {
 	bfa_boolean_t		auto_recover;
 	u32			poll_time;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa_boolean_t		fw_mismatch_notified;
+	bfa_boolean_t		auto_recover;
+	u32			poll_time;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct bfa_ioc_s {
@@ -349,27 +390,36 @@ struct bfa_ioc_s {
 	struct bfa_timer_s	hb_timer;
 	u32		hb_count;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head		hb_notify_q;
 	void			*dbg_fwsave;
 	int			dbg_fwsave_len;
 	bfa_boolean_t		dbg_fwsave_once;
 	enum bfi_mclass		ioc_mc;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head	notify_q;
 	void			*dbg_fwsave;
 	int			dbg_fwsave_len;
 	bfa_boolean_t		dbg_fwsave_once;
 	enum bfi_pcifn_class	clscode;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct bfa_ioc_regs_s	ioc_regs;
 	struct bfa_trc_mod_s	*trcmod;
 	struct bfa_ioc_drv_stats_s	stats;
 	bfa_boolean_t		fcmode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfa_boolean_t		ctdev;
 	bfa_boolean_t		cna;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bfa_boolean_t		pllinit;
 	bfa_boolean_t		stats_busy;	/*  outstanding stats */
 	u8			port_id;
@@ -380,11 +430,14 @@ struct bfa_ioc_s {
 	struct bfa_ioc_hwif_s	*ioc_hwif;
 	struct bfa_iocpf_s	iocpf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 struct bfa_ioc_hwif_s {
 	bfa_status_t (*ioc_pll_init) (void __iomem *rb, bfa_boolean_t fcmode);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	enum bfi_asic_gen	asic_gen;
 	enum bfi_asic_mode	asic_mode;
 	enum bfi_port_mode	port0_mode;
@@ -397,7 +450,10 @@ struct bfa_ioc_hwif_s {
 
 struct bfa_ioc_hwif_s {
 	bfa_status_t (*ioc_pll_init) (void __iomem *rb, enum bfi_asic_mode m);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bfa_boolean_t	(*ioc_firmware_lock)	(struct bfa_ioc_s *ioc);
 	void		(*ioc_firmware_unlock)	(struct bfa_ioc_s *ioc);
 	void		(*ioc_reg_init)	(struct bfa_ioc_s *ioc);
@@ -412,10 +468,20 @@ struct bfa_ioc_hwif_s {
 	void		(*ioc_sync_ack)		(struct bfa_ioc_s *ioc);
 	bfa_boolean_t	(*ioc_sync_complete)	(struct bfa_ioc_s *ioc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 =======
 	bfa_boolean_t	(*ioc_lpu_read_stat)	(struct bfa_ioc_s *ioc);
+=======
+	bfa_boolean_t	(*ioc_lpu_read_stat)	(struct bfa_ioc_s *ioc);
+	void		(*ioc_set_fwstate)	(struct bfa_ioc_s *ioc,
+					enum bfi_ioc_state fwstate);
+	enum bfi_ioc_state	(*ioc_get_fwstate)	(struct bfa_ioc_s *ioc);
+	void		(*ioc_set_alt_fwstate)	(struct bfa_ioc_s *ioc,
+					enum bfi_ioc_state fwstate);
+	enum bfi_ioc_state	(*ioc_get_alt_fwstate)	(struct bfa_ioc_s *ioc);
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -600,7 +666,11 @@ struct bfa_diag_results_fwping {
 
 struct bfa_diag_qtest_result_s {
 	u32	status;
+<<<<<<< HEAD
 	u16	count;	/* sucessful queue test count */
+=======
+	u16	count;	/* successful queue test count */
+>>>>>>> refs/remotes/origin/master
 	u8	queue;
 	u8	rsvd;	/* 64-bit align */
 };
@@ -772,6 +842,59 @@ void bfa_phy_memclaim(struct bfa_phy_s *phy,
 void bfa_phy_intr(void *phyarg, struct bfi_mbmsg_s *msg);
 
 /*
+<<<<<<< HEAD
+=======
+ * FRU module specific
+ */
+typedef void (*bfa_cb_fru_t) (void *cbarg, bfa_status_t status);
+
+struct bfa_fru_s {
+	struct bfa_ioc_s *ioc;		/* back pointer to ioc */
+	struct bfa_trc_mod_s *trcmod;	/* trace module */
+	u8		op_busy;	/* operation busy flag */
+	u8		rsv[3];
+	u32		residue;	/* residual length */
+	u32		offset;		/* offset */
+	bfa_status_t	status;		/* status */
+	u8		*dbuf_kva;	/* dma buf virtual address */
+	u64		dbuf_pa;	/* dma buf physical address */
+	struct bfa_reqq_wait_s reqq_wait; /* to wait for room in reqq */
+	bfa_cb_fru_t	cbfn;		/* user callback function */
+	void		*cbarg;		/* user callback arg */
+	u8		*ubuf;		/* user supplied buffer */
+	struct bfa_cb_qe_s	hcb_qe;	/* comp: BFA callback qelem */
+	u32		addr_off;	/* fru address offset */
+	struct bfa_mbox_cmd_s mb;	/* mailbox */
+	struct bfa_ioc_notify_s ioc_notify; /* ioc event notify */
+	struct bfa_mem_dma_s	fru_dma;
+	u8		trfr_cmpl;
+};
+
+#define BFA_FRU(__bfa)	(&(__bfa)->modules.fru)
+#define BFA_MEM_FRU_DMA(__bfa)	(&(BFA_FRU(__bfa)->fru_dma))
+
+bfa_status_t bfa_fruvpd_update(struct bfa_fru_s *fru,
+			void *buf, u32 len, u32 offset,
+			bfa_cb_fru_t cbfn, void *cbarg, u8 trfr_cmpl);
+bfa_status_t bfa_fruvpd_read(struct bfa_fru_s *fru,
+			void *buf, u32 len, u32 offset,
+			bfa_cb_fru_t cbfn, void *cbarg);
+bfa_status_t bfa_fruvpd_get_max_size(struct bfa_fru_s *fru, u32 *max_size);
+bfa_status_t bfa_tfru_write(struct bfa_fru_s *fru,
+			void *buf, u32 len, u32 offset,
+			bfa_cb_fru_t cbfn, void *cbarg);
+bfa_status_t bfa_tfru_read(struct bfa_fru_s *fru,
+			void *buf, u32 len, u32 offset,
+			bfa_cb_fru_t cbfn, void *cbarg);
+u32	bfa_fru_meminfo(bfa_boolean_t mincfg);
+void bfa_fru_attach(struct bfa_fru_s *fru, struct bfa_ioc_s *ioc,
+		void *dev, struct bfa_trc_mod_s *trcmod, bfa_boolean_t mincfg);
+void bfa_fru_memclaim(struct bfa_fru_s *fru,
+		u8 *dm_kva, u64 dm_pa, bfa_boolean_t mincfg);
+void bfa_fru_intr(void *fruarg, struct bfi_mbmsg_s *msg);
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Driver Config( dconf) specific
  */
 #define BFI_DCONF_SIGNATURE	0xabcdabcd
@@ -786,6 +909,10 @@ struct bfa_dconf_hdr_s {
 struct bfa_dconf_s {
 	struct bfa_dconf_hdr_s		hdr;
 	struct bfa_lunmask_cfg_s	lun_mask;
+<<<<<<< HEAD
+=======
+	struct bfa_throttle_cfg_s	throttle_cfg;
+>>>>>>> refs/remotes/origin/master
 };
 #pragma pack()
 
@@ -808,6 +935,11 @@ struct bfa_dconf_mod_s {
 #define bfa_dconf_read_data_valid(__bfa)	\
 	(BFA_DCONF_MOD(__bfa)->read_data_valid)
 #define BFA_DCONF_UPDATE_TOV	5000	/* memtest timeout in msec */
+<<<<<<< HEAD
+=======
+#define bfa_dconf_get_min_cfg(__bfa)	\
+	(BFA_DCONF_MOD(__bfa)->min_cfg)
+>>>>>>> refs/remotes/origin/master
 
 void	bfa_dconf_modinit(struct bfa_s *bfa);
 void	bfa_dconf_modexit(struct bfa_s *bfa);
@@ -816,18 +948,27 @@ bfa_status_t	bfa_dconf_update(struct bfa_s *bfa);
 /*
  *	IOC specfic macros
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define bfa_ioc_pcifn(__ioc)		((__ioc)->pcidev.pci_func)
 #define bfa_ioc_devid(__ioc)		((__ioc)->pcidev.device_id)
 #define bfa_ioc_bar0(__ioc)		((__ioc)->pcidev.pci_bar_kva)
 #define bfa_ioc_portid(__ioc)		((__ioc)->port_id)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define bfa_ioc_asic_gen(__ioc)		((__ioc)->asic_gen)
 #define bfa_ioc_is_cna(__ioc)	\
 	((bfa_ioc_get_type(__ioc) == BFA_IOC_TYPE_FCoE) ||	\
 	 (bfa_ioc_get_type(__ioc) == BFA_IOC_TYPE_LL))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define bfa_ioc_fetch_stats(__ioc, __stats) \
 		(((__stats)->drv_stats) = (__ioc)->stats)
 #define bfa_ioc_clr_stats(__ioc)	\
@@ -835,12 +976,18 @@ bfa_status_t	bfa_dconf_update(struct bfa_s *bfa);
 #define bfa_ioc_maxfrsize(__ioc)	((__ioc)->attr->maxfrsize)
 #define bfa_ioc_rx_bbcredit(__ioc)	((__ioc)->attr->rx_bbcredit)
 #define bfa_ioc_speed_sup(__ioc)	\
+<<<<<<< HEAD
 	BFI_ADAPTER_GETP(SPEED, (__ioc)->attr->adapter_prop)
+=======
+	((bfa_ioc_is_cna(__ioc)) ? BFA_PORT_SPEED_10GBPS :	\
+	 BFI_ADAPTER_GETP(SPEED, (__ioc)->attr->adapter_prop))
+>>>>>>> refs/remotes/origin/master
 #define bfa_ioc_get_nports(__ioc)	\
 	BFI_ADAPTER_GETP(NPORTS, (__ioc)->attr->adapter_prop)
 
 #define bfa_ioc_stats(_ioc, _stats)	((_ioc)->stats._stats++)
 #define BFA_IOC_FWIMG_MINSZ	(16 * 1024)
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define BFA_IOC_FWIMG_TYPE(__ioc)					\
 	(((__ioc)->ctdev) ?						\
@@ -853,6 +1000,11 @@ bfa_status_t	bfa_dconf_update(struct bfa_s *bfa);
 	((bfa_ioc_asic_gen(__ioc) == BFI_ASIC_GEN_CB)	\
 	 ? BFI_SMEM_CB_SIZE : BFI_SMEM_CT_SIZE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BFA_IOC_FW_SMEM_SIZE(__ioc)			\
+	((bfa_ioc_asic_gen(__ioc) == BFI_ASIC_GEN_CB)	\
+	 ? BFI_SMEM_CB_SIZE : BFI_SMEM_CT_SIZE)
+>>>>>>> refs/remotes/origin/master
 #define BFA_IOC_FLASH_CHUNK_NO(off)		(off / BFI_FLASH_CHUNK_SZ_WORDS)
 #define BFA_IOC_FLASH_OFFSET_IN_CHUNK(off)	(off % BFI_FLASH_CHUNK_SZ_WORDS)
 #define BFA_IOC_FLASH_CHUNK_ADDR(chunkno)  (chunkno * BFI_FLASH_CHUNK_SZ_WORDS)
@@ -866,10 +1018,14 @@ void bfa_ioc_mbox_register(struct bfa_ioc_s *ioc,
 void bfa_ioc_mbox_isr(struct bfa_ioc_s *ioc);
 void bfa_ioc_mbox_send(struct bfa_ioc_s *ioc, void *ioc_msg, int len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void bfa_ioc_msgget(struct bfa_ioc_s *ioc, void *mbmsg);
 =======
 bfa_boolean_t bfa_ioc_msgget(struct bfa_ioc_s *ioc, void *mbmsg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bfa_boolean_t bfa_ioc_msgget(struct bfa_ioc_s *ioc, void *mbmsg);
+>>>>>>> refs/remotes/origin/master
 void bfa_ioc_mbox_regisr(struct bfa_ioc_s *ioc, enum bfi_mclass mc,
 		bfa_ioc_mbox_mcfunc_t cbfn, void *cbarg);
 
@@ -879,6 +1035,7 @@ void bfa_ioc_mbox_regisr(struct bfa_ioc_s *ioc, enum bfi_mclass mc,
 
 #define bfa_ioc_pll_init_asic(__ioc) \
 	((__ioc)->ioc_hwif->ioc_pll_init((__ioc)->pcidev.pci_bar_kva, \
+<<<<<<< HEAD
 <<<<<<< HEAD
 			   (__ioc)->fcmode))
 
@@ -896,6 +1053,8 @@ bfa_status_t bfa_ioc_ct_pll_init(void __iomem *rb, bfa_boolean_t fcmode);
 void bfa_ioc_set_ct_hwif(struct bfa_ioc_s *ioc);
 void bfa_ioc_set_cb_hwif(struct bfa_ioc_s *ioc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			   (__ioc)->asic_mode))
 
 bfa_status_t bfa_ioc_pll_init(struct bfa_ioc_s *ioc);
@@ -919,18 +1078,27 @@ void bfa_ioc_set_cb_hwif(struct bfa_ioc_s *ioc);
 void bfa_ioc_set_ct_hwif(struct bfa_ioc_s *ioc);
 void bfa_ioc_set_ct2_hwif(struct bfa_ioc_s *ioc);
 void bfa_ioc_ct2_poweron(struct bfa_ioc_s *ioc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 void bfa_ioc_attach(struct bfa_ioc_s *ioc, void *bfa,
 		struct bfa_ioc_cbfn_s *cbfn, struct bfa_timer_mod_s *timer_mod);
 void bfa_ioc_auto_recover(bfa_boolean_t auto_recover);
 void bfa_ioc_detach(struct bfa_ioc_s *ioc);
+<<<<<<< HEAD
 void bfa_ioc_pci_init(struct bfa_ioc_s *ioc, struct bfa_pcidev_s *pcidev,
 <<<<<<< HEAD
 		enum bfi_mclass mc);
 =======
 		enum bfi_pcifn_class clscode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void bfa_ioc_suspend(struct bfa_ioc_s *ioc);
+void bfa_ioc_pci_init(struct bfa_ioc_s *ioc, struct bfa_pcidev_s *pcidev,
+		enum bfi_pcifn_class clscode);
+>>>>>>> refs/remotes/origin/master
 void bfa_ioc_mem_claim(struct bfa_ioc_s *ioc,  u8 *dm_kva, u64 dm_pa);
 void bfa_ioc_enable(struct bfa_ioc_s *ioc);
 void bfa_ioc_disable(struct bfa_ioc_s *ioc);
@@ -938,19 +1106,27 @@ bfa_boolean_t bfa_ioc_intx_claim(struct bfa_ioc_s *ioc);
 
 void bfa_ioc_boot(struct bfa_ioc_s *ioc, u32 boot_type,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		u32 boot_param);
 =======
 		u32 boot_env);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		u32 boot_env);
+>>>>>>> refs/remotes/origin/master
 void bfa_ioc_isr(struct bfa_ioc_s *ioc, struct bfi_mbmsg_s *msg);
 void bfa_ioc_error_isr(struct bfa_ioc_s *ioc);
 bfa_boolean_t bfa_ioc_is_operational(struct bfa_ioc_s *ioc);
 bfa_boolean_t bfa_ioc_is_initialized(struct bfa_ioc_s *ioc);
 bfa_boolean_t bfa_ioc_is_disabled(struct bfa_ioc_s *ioc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 bfa_boolean_t bfa_ioc_is_acq_addr(struct bfa_ioc_s *ioc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bfa_boolean_t bfa_ioc_is_acq_addr(struct bfa_ioc_s *ioc);
+>>>>>>> refs/remotes/origin/master
 bfa_boolean_t bfa_ioc_fw_mismatch(struct bfa_ioc_s *ioc);
 bfa_boolean_t bfa_ioc_adapter_is_disabled(struct bfa_ioc_s *ioc);
 void bfa_ioc_reset_fwstate(struct bfa_ioc_s *ioc);
@@ -975,15 +1151,19 @@ bfa_status_t bfa_ioc_debug_fwtrc(struct bfa_ioc_s *ioc, void *trcdata,
 bfa_status_t bfa_ioc_debug_fwcore(struct bfa_ioc_s *ioc, void *buf,
 	u32 *offset, int *buflen);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void bfa_ioc_set_fcmode(struct bfa_ioc_s *ioc);
 bfa_boolean_t bfa_ioc_get_fcmode(struct bfa_ioc_s *ioc);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 bfa_boolean_t bfa_ioc_sem_get(void __iomem *sem_reg);
 void bfa_ioc_fwver_get(struct bfa_ioc_s *ioc,
 			struct bfi_ioc_image_hdr_s *fwhdr);
 bfa_boolean_t bfa_ioc_fwver_cmp(struct bfa_ioc_s *ioc,
 			struct bfi_ioc_image_hdr_s *fwhdr);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 void bfa_ioc_aen_post(struct bfa_ioc_s *ioc, enum bfa_ioc_aen_event event);
@@ -994,6 +1174,14 @@ bfa_status_t bfa_ioc_fw_stats_clear(struct bfa_ioc_s *ioc);
 /*
 <<<<<<< HEAD
 =======
+=======
+void bfa_ioc_aen_post(struct bfa_ioc_s *ioc, enum bfa_ioc_aen_event event);
+bfa_status_t bfa_ioc_fw_stats_get(struct bfa_ioc_s *ioc, void *stats);
+bfa_status_t bfa_ioc_fw_stats_clear(struct bfa_ioc_s *ioc);
+void bfa_ioc_debug_save_ftrc(struct bfa_ioc_s *ioc);
+
+/*
+>>>>>>> refs/remotes/origin/master
  * asic block configuration related APIs
  */
 u32	bfa_ablk_meminfo(void);
@@ -1009,19 +1197,31 @@ bfa_status_t bfa_ablk_port_config(struct bfa_ablk_s *ablk, int port,
 		enum bfa_mode_s mode, int max_pf, int max_vf,
 		bfa_ablk_cbfn_t cbfn, void *cbarg);
 bfa_status_t bfa_ablk_pf_create(struct bfa_ablk_s *ablk, u16 *pcifn,
+<<<<<<< HEAD
 		u8 port, enum bfi_pcifn_class personality, int bw,
 		bfa_ablk_cbfn_t cbfn, void *cbarg);
 bfa_status_t bfa_ablk_pf_delete(struct bfa_ablk_s *ablk, int pcifn,
 		bfa_ablk_cbfn_t cbfn, void *cbarg);
 bfa_status_t bfa_ablk_pf_update(struct bfa_ablk_s *ablk, int pcifn, int bw,
 		bfa_ablk_cbfn_t cbfn, void *cbarg);
+=======
+		u8 port, enum bfi_pcifn_class personality,
+		u16 bw_min, u16 bw_max, bfa_ablk_cbfn_t cbfn, void *cbarg);
+bfa_status_t bfa_ablk_pf_delete(struct bfa_ablk_s *ablk, int pcifn,
+		bfa_ablk_cbfn_t cbfn, void *cbarg);
+bfa_status_t bfa_ablk_pf_update(struct bfa_ablk_s *ablk, int pcifn,
+		u16 bw_min, u16 bw_max, bfa_ablk_cbfn_t cbfn, void *cbarg);
+>>>>>>> refs/remotes/origin/master
 bfa_status_t bfa_ablk_optrom_en(struct bfa_ablk_s *ablk,
 		bfa_ablk_cbfn_t cbfn, void *cbarg);
 bfa_status_t bfa_ablk_optrom_dis(struct bfa_ablk_s *ablk,
 		bfa_ablk_cbfn_t cbfn, void *cbarg);
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * bfa mfg wwn API functions
  */
 mac_t bfa_ioc_get_mac(struct bfa_ioc_s *ioc);
@@ -1030,6 +1230,7 @@ mac_t bfa_ioc_get_mfg_mac(struct bfa_ioc_s *ioc);
 /*
  * F/W Image Size & Chunk
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern u32 bfi_image_ct_fc_size;
 extern u32 bfi_image_ct_cna_size;
@@ -1062,6 +1263,8 @@ bfa_cb_image_get_chunk(int type, u32 off)
 		return bfi_image_cb_fc_get_chunk(off);	break;
 	default: return NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern u32 bfi_image_cb_size;
 extern u32 bfi_image_ct_size;
 extern u32 bfi_image_ct2_size;
@@ -1102,11 +1305,15 @@ bfa_cb_image_get_chunk(enum bfi_asic_gen asic_gen, u32 off)
 		break;
 	default:
 		return NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static inline u32
+<<<<<<< HEAD
 <<<<<<< HEAD
 bfa_cb_image_get_size(int type)
 {
@@ -1119,6 +1326,8 @@ bfa_cb_image_get_size(int type)
 		return bfi_image_cb_fc_size;	break;
 	default: return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 bfa_cb_image_get_size(enum bfi_asic_gen asic_gen)
 {
 	switch (asic_gen) {
@@ -1133,7 +1342,10 @@ bfa_cb_image_get_size(enum bfi_asic_gen asic_gen)
 		break;
 	default:
 		return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

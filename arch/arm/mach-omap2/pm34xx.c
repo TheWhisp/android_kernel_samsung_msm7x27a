@@ -29,6 +29,7 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/console.h>
 #include <trace/events/power.h>
 
@@ -87,6 +88,31 @@ static inline bool is_suspending(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/omap-dma.h>
+#include <linux/platform_data/gpio-omap.h>
+
+#include <trace/events/power.h>
+
+#include <asm/fncpy.h>
+#include <asm/suspend.h>
+#include <asm/system_misc.h>
+
+#include "clockdomain.h"
+#include "powerdomain.h"
+#include "soc.h"
+#include "common.h"
+#include "cm3xxx.h"
+#include "cm-regbits-34xx.h"
+#include "gpmc.h"
+#include "prm-regbits-34xx.h"
+#include "prm3xxx.h"
+#include "pm.h"
+#include "sdrc.h"
+#include "sram.h"
+#include "control.h"
+
+>>>>>>> refs/remotes/origin/master
 /* pm34xx errata defined in pm.h */
 u16 pm34xx_errata;
 
@@ -101,6 +127,7 @@ struct power_state {
 
 static LIST_HEAD(pwrst_list);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void (*_omap_sram_idle)(u32 *addr, int save_state);
 
@@ -179,6 +206,13 @@ static void omap3_disable_io_chain(void)
 				     PM_WKEN);
 >>>>>>> refs/remotes/origin/cm-10.0
 }
+=======
+static int (*_omap_save_secure_sram)(u32 *addr);
+void (*omap3_do_wfi_sram)(void);
+
+static struct powerdomain *mpu_pwrdm, *neon_pwrdm;
+static struct powerdomain *core_pwrdm, *per_pwrdm;
+>>>>>>> refs/remotes/origin/master
 
 static void omap3_core_save_context(void)
 {
@@ -229,17 +263,25 @@ static void omap3_save_secure_ram_context(void)
 		 * will hang the system.
 		 */
 		pwrdm_set_next_pwrst(mpu_pwrdm, PWRDM_POWER_ON);
+<<<<<<< HEAD
 		ret = _omap_save_secure_sram((u32 *)
+=======
+		ret = _omap_save_secure_sram((u32 *)(unsigned long)
+>>>>>>> refs/remotes/origin/master
 				__pa(omap3_secure_ram_storage));
 		pwrdm_set_next_pwrst(mpu_pwrdm, mpu_next_state);
 		/* Following is for error tracking, it should not happen */
 		if (ret) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			printk(KERN_ERR "save_secure_sram() returns %08x\n",
 				ret);
 =======
 			pr_err("save_secure_sram() returns %08x\n", ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("save_secure_sram() returns %08x\n", ret);
+>>>>>>> refs/remotes/origin/master
 			while (1)
 				;
 		}
@@ -257,10 +299,14 @@ static void omap3_save_secure_ram_context(void)
  * clear the PM_WKST_x are detected and cleared.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int prcm_clear_mod_irqs(s16 module, u8 regs)
 =======
 static int prcm_clear_mod_irqs(s16 module, u8 regs, u32 ignore_bits)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int prcm_clear_mod_irqs(s16 module, u8 regs, u32 ignore_bits)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 wkst, fclk, iclk, clken;
 	u16 wkst_off = (regs == 3) ? OMAP3430ES2_PM_WKST3 : PM_WKST1;
@@ -273,9 +319,13 @@ static int prcm_clear_mod_irqs(s16 module, u8 regs, u32 ignore_bits)
 	wkst = omap2_prm_read_mod_reg(module, wkst_off);
 	wkst &= omap2_prm_read_mod_reg(module, grpsel_off);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	wkst &= ~ignore_bits;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wkst &= ~ignore_bits;
+>>>>>>> refs/remotes/origin/master
 	if (wkst) {
 		iclk = omap2_cm_read_mod_reg(module, iclk_off);
 		fclk = omap2_cm_read_mod_reg(module, fclk_off);
@@ -292,9 +342,13 @@ static int prcm_clear_mod_irqs(s16 module, u8 regs, u32 ignore_bits)
 			omap2_prm_write_mod_reg(wkst, module, wkst_off);
 			wkst = omap2_prm_read_mod_reg(module, wkst_off);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			wkst &= ~ignore_bits;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			wkst &= ~ignore_bits;
+>>>>>>> refs/remotes/origin/master
 			c++;
 		}
 		omap2_cm_write_mod_reg(iclk, module, iclk_off);
@@ -304,6 +358,7 @@ static int prcm_clear_mod_irqs(s16 module, u8 regs, u32 ignore_bits)
 	return c;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int _prcm_int_handle_wakeup(void)
 {
@@ -400,6 +455,8 @@ static void restore_table_entry(void)
 	/* This will enable caches and prediction */
 	set_cr(control_reg_value);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static irqreturn_t _prcm_int_handle_io(int irq, void *unused)
 {
 	int c;
@@ -450,7 +507,10 @@ static int omap34xx_do_sram_idle(unsigned long save_state)
 {
 	omap34xx_cpu_suspend(save_state);
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void omap_sram_idle(void)
@@ -466,6 +526,7 @@ void omap_sram_idle(void)
 	int per_next_state = PWRDM_POWER_ON;
 	int core_next_state = PWRDM_POWER_ON;
 	int per_going_off;
+<<<<<<< HEAD
 	int core_prev_state, per_prev_state;
 	u32 sdrc_pwr = 0;
 
@@ -480,6 +541,11 @@ void omap_sram_idle(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int core_prev_state;
+	u32 sdrc_pwr = 0;
+
+>>>>>>> refs/remotes/origin/master
 	mpu_next_state = pwrdm_read_next_pwrst(mpu_pwrdm);
 	switch (mpu_next_state) {
 	case PWRDM_POWER_ON:
@@ -493,6 +559,7 @@ void omap_sram_idle(void)
 	default:
 		/* Invalid state */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "Invalid mpu state in sram_idle\n");
 		return;
 	}
@@ -502,6 +569,11 @@ void omap_sram_idle(void)
 		return;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Invalid mpu state in sram_idle\n");
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* NEON control */
 	if (pwrdm_read_pwrst(neon_pwrdm) == PWRDM_POWER_ON)
@@ -510,6 +582,7 @@ void omap_sram_idle(void)
 	/* Enable IO-PAD and IO-CHAIN wakeups */
 	per_next_state = pwrdm_read_next_pwrst(per_pwrdm);
 	core_next_state = pwrdm_read_next_pwrst(core_pwrdm);
+<<<<<<< HEAD
 	if (omap3_has_io_wakeup() &&
 	    (per_next_state < PWRDM_POWER_ON ||
 	     core_next_state < PWRDM_POWER_ON)) {
@@ -531,10 +604,15 @@ void omap_sram_idle(void)
 
 	pwrdm_pre_transition();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	pwrdm_pre_transition(NULL);
+>>>>>>> refs/remotes/origin/master
 
 	/* PER */
 	if (per_next_state < PWRDM_POWER_ON) {
 		per_going_off = (per_next_state == PWRDM_POWER_OFF) ? 1 : 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		omap_uart_prepare_idle(2);
 		omap_uart_prepare_idle(3);
@@ -544,15 +622,21 @@ void omap_sram_idle(void)
 =======
 		omap2_gpio_prepare_for_idle(per_going_off);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		omap2_gpio_prepare_for_idle(per_going_off);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* CORE */
 	if (core_next_state < PWRDM_POWER_ON) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		omap_uart_prepare_idle(0);
 		omap_uart_prepare_idle(1);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (core_next_state == PWRDM_POWER_OFF) {
 			omap3_core_save_context();
 			omap3_cm_save_context();
@@ -563,6 +647,7 @@ void omap_sram_idle(void)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	* On EMU/HS devices ROM code restores a SRDC value
 	* from scratchpad which has automatic self refresh on timeout
 	* of AUTO_CNT = 1 enabled. This takes care of erratum ID i443.
@@ -571,6 +656,8 @@ void omap_sram_idle(void)
 	if (omap_rev() >= OMAP3430_REV_ES3_0 &&
 	    omap_type() != OMAP2_DEVICE_TYPE_GP &&
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * On EMU/HS devices ROM code restores a SRDC value
 	 * from scratchpad which has automatic self refresh on timeout
 	 * of AUTO_CNT = 1 enabled. This takes care of erratum ID i443.
@@ -579,11 +666,15 @@ void omap_sram_idle(void)
 	if (cpu_is_omap3430() && omap_rev() >= OMAP3430_REV_ES3_0 &&
 	    (omap_type() == OMAP2_DEVICE_TYPE_EMU ||
 	     omap_type() == OMAP2_DEVICE_TYPE_SEC) &&
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	    core_next_state == PWRDM_POWER_OFF)
 		sdrc_pwr = sdrc_read_reg(SDRC_POWER);
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * omap3_arm_context is the location where ARM registers
 	 * get saved. The restore path then reads from this
@@ -603,6 +694,8 @@ void omap_sram_idle(void)
 		restore_table_entry();
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * omap3_arm_context is the location where some ARM context
 	 * get saved. The rest is placed on the stack, and restored
 	 * from there before resuming.
@@ -621,7 +714,10 @@ void omap_sram_idle(void)
 	    core_next_state == PWRDM_POWER_OFF)
 		sdrc_write_reg(sdrc_pwr, SDRC_POWER);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* CORE */
 	if (core_next_state < PWRDM_POWER_ON) {
 		core_prev_state = pwrdm_read_prev_pwrst(core_pwrdm);
@@ -632,10 +728,13 @@ void omap_sram_idle(void)
 			omap2_sms_restore_context();
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		omap_uart_resume_idle(0);
 		omap_uart_resume_idle(1);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (core_next_state == PWRDM_POWER_OFF)
 			omap2_prm_clear_mod_reg_bits(OMAP3430_AUTO_OFF_MASK,
 					       OMAP3430_GR_MOD,
@@ -643,6 +742,7 @@ void omap_sram_idle(void)
 	}
 	omap3_intc_resume_idle();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	pwrdm_post_transition();
@@ -706,10 +806,18 @@ static void omap3_pm_idle(void)
 	}
 
 	clkdm_allow_idle(mpu_pwrdm->pwrdm_clkdms[0]);
+=======
+	pwrdm_post_transition(NULL);
+
+	/* PER */
+	if (per_next_state < PWRDM_POWER_ON)
+		omap2_gpio_resume_after_idle();
+>>>>>>> refs/remotes/origin/master
 }
 
 static void omap3_pm_idle(void)
 {
+<<<<<<< HEAD
 	local_fiq_disable();
 
 	if (omap_irq_pending())
@@ -717,10 +825,16 @@ static void omap3_pm_idle(void)
 		goto out;
 
 	trace_power_start(POWER_CSTATE, 1, smp_processor_id());
+=======
+	if (omap_irq_pending())
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	trace_cpu_idle(1, smp_processor_id());
 
 	omap_sram_idle();
 
+<<<<<<< HEAD
 	trace_power_end(smp_processor_id());
 	trace_cpu_idle(PWR_EVENT_EXIT, smp_processor_id());
 
@@ -730,6 +844,9 @@ out:
 	local_irq_enable();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_cpu_idle(PWR_EVENT_EXIT, smp_processor_id());
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_SUSPEND
@@ -739,12 +856,15 @@ static int omap3_pm_suspend(void)
 	int state, ret = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (wakeup_timer_seconds || wakeup_timer_milliseconds)
 		omap2_pm_wakeup_on_timer(wakeup_timer_seconds,
 					 wakeup_timer_milliseconds);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Read current next_pwrsts */
 	list_for_each_entry(pwrst, &pwrst_list, node)
 		pwrst->saved_state = pwrdm_read_next_pwrst(pwrst->pwrdm);
@@ -757,9 +877,12 @@ static int omap3_pm_suspend(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	omap_uart_prepare_suspend();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	omap3_intc_suspend();
 
 	omap_sram_idle();
@@ -770,6 +893,7 @@ restore:
 		state = pwrdm_read_prev_pwrst(pwrst->pwrdm);
 		if (state > pwrst->next_state) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "Powerdomain (%s) didn't enter "
 			       "target state %d\n",
 =======
@@ -777,11 +901,16 @@ restore:
 				"target state %d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
 			       pwrst->pwrdm->name, pwrst->next_state);
+=======
+			pr_info("Powerdomain (%s) didn't enter target state %d\n",
+				pwrst->pwrdm->name, pwrst->next_state);
+>>>>>>> refs/remotes/origin/master
 			ret = -1;
 		}
 		omap_set_pwrdm_state(pwrst->pwrdm, pwrst->saved_state);
 	}
 	if (ret)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR "Could not enter target state in pm_suspend\n");
 	else
@@ -808,10 +937,16 @@ static int omap3_pm_enter(suspend_state_t unused)
 	else
 		pr_info("Successfully put all powerdomains to target state\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Could not enter target state in pm_suspend\n");
+	else
+		pr_info("Successfully put all powerdomains to target state\n");
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Hooks to enable / disable UART interrupts during suspend */
 static int omap3_pm_begin(suspend_state_t state)
@@ -838,6 +973,8 @@ static const struct platform_suspend_ops omap_pm_ops = {
 };
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_SUSPEND */
 
 
@@ -872,8 +1009,12 @@ static void __init omap3_iva_idle(void)
 			 OMAP3430_IVA2_MOD, CM_FCLKEN);
 
 	/* Set IVA2 boot mode to 'idle' */
+<<<<<<< HEAD
 	omap_ctrl_writel(OMAP3_IVA2_BOOTMOD_IDLE,
 			 OMAP343X_CONTROL_IVA2_BOOTMOD);
+=======
+	omap3_ctrl_set_iva_bootmode_idle();
+>>>>>>> refs/remotes/origin/master
 
 	/* Un-reset IVA2 */
 	omap2_prm_write_mod_reg(0, OMAP3430_IVA2_MOD, OMAP2_RM_RSTCTRL);
@@ -942,12 +1083,15 @@ static void __init prcm_setup_regs(void)
 			  OMAP3430_GRPSEL_GPT12_MASK,
 			  WKUP_MOD, OMAP3430_PM_MPUGRPSEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* For some reason IO doesn't generate wakeup event even if
 	 * it is selected to mpu wakeup goup */
 	omap2_prm_write_mod_reg(OMAP3430_IO_EN_MASK | OMAP3430_WKUP_EN_MASK,
 			  OCP_MOD, OMAP3_PRM_IRQENABLE_MPU_OFFSET);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Enable PM_WKEN to support DSS LPR */
 	omap2_prm_write_mod_reg(OMAP3430_PM_WKEN_DSS_EN_DSS_MASK,
@@ -975,10 +1119,20 @@ static void __init prcm_setup_regs(void)
 			  OMAP3430_PER_MOD, OMAP3430_PM_MPUGRPSEL);
 
 	/* Don't attach IVA interrupts */
+<<<<<<< HEAD
 	omap2_prm_write_mod_reg(0, WKUP_MOD, OMAP3430_PM_IVAGRPSEL);
 	omap2_prm_write_mod_reg(0, CORE_MOD, OMAP3430_PM_IVAGRPSEL1);
 	omap2_prm_write_mod_reg(0, CORE_MOD, OMAP3430ES2_PM_IVAGRPSEL3);
 	omap2_prm_write_mod_reg(0, OMAP3430_PER_MOD, OMAP3430_PM_IVAGRPSEL);
+=======
+	if (omap3_has_iva()) {
+		omap2_prm_write_mod_reg(0, WKUP_MOD, OMAP3430_PM_IVAGRPSEL);
+		omap2_prm_write_mod_reg(0, CORE_MOD, OMAP3430_PM_IVAGRPSEL1);
+		omap2_prm_write_mod_reg(0, CORE_MOD, OMAP3430ES2_PM_IVAGRPSEL3);
+		omap2_prm_write_mod_reg(0, OMAP3430_PER_MOD,
+					OMAP3430_PM_IVAGRPSEL);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Clear any pending 'reset' flags */
 	omap2_prm_write_mod_reg(0xffffffff, MPU_MOD, OMAP2_RM_RSTST);
@@ -992,7 +1146,15 @@ static void __init prcm_setup_regs(void)
 	/* Clear any pending PRCM interrupts */
 	omap2_prm_write_mod_reg(0, OCP_MOD, OMAP3_PRM_IRQSTATUS_MPU_OFFSET);
 
+<<<<<<< HEAD
 	omap3_iva_idle();
+=======
+	/*
+	 * We need to idle iva2_pwrdm even on am3703 with no iva2.
+	 */
+	omap3_iva_idle();
+
+>>>>>>> refs/remotes/origin/master
 	omap3_d2d_idle();
 }
 
@@ -1066,6 +1228,7 @@ static int __init pwrdms_setup(struct powerdomain *pwrdm, void *unused)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Enable hw supervised mode for all clockdomains if it's
  * supported. Initiate sleep transition for other clockdomains, if
  * they are not used
@@ -1085,6 +1248,8 @@ void omap_push_sram_idle(void)
 	_omap_sram_idle = omap_sram_push(omap34xx_cpu_suspend,
 					omap34xx_cpu_suspend_sz);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Push functions to SRAM
  *
  * The minimum set of functions is pushed to SRAM for execution:
@@ -1095,7 +1260,10 @@ void omap_push_sram_idle(void)
 {
 	omap3_do_wfi_sram = omap_sram_push(omap3_do_wfi, omap3_do_wfi_sz);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (omap_type() != OMAP2_DEVICE_TYPE_GP)
 		_omap_save_secure_sram = omap_sram_push(save_secure_ram_context,
 				save_secure_ram_context_sz);
@@ -1108,6 +1276,7 @@ static void __init pm_errata_configure(void)
 		/* Enable the l2 cache toggling in sleep logic */
 		enable_omap3630_toggle_l2_on_restore();
 		if (omap_rev() < OMAP3630_REV_ES1_2)
+<<<<<<< HEAD
 			pm34xx_errata |= PM_SDRC_WAKEUP_ERRATUM_i583;
 	}
 }
@@ -1127,12 +1296,31 @@ static int __init omap3_pm_init(void)
 		pr_warning("PM: no software I/O chain control; some wakeups may be lost\n");
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pm34xx_errata |= (PM_SDRC_WAKEUP_ERRATUM_i583 |
+					  PM_PER_MEMORIES_ERRATUM_i582);
+	} else if (cpu_is_omap34xx()) {
+		pm34xx_errata |= PM_PER_MEMORIES_ERRATUM_i582;
+	}
+}
+
+int __init omap3_pm_init(void)
+{
+	struct power_state *pwrst, *tmp;
+	struct clockdomain *neon_clkdm, *mpu_clkdm, *per_clkdm, *wkup_clkdm;
+	int ret;
+
+	if (!omap3_has_io_chain_ctrl())
+		pr_warning("PM: no software I/O chain control; some wakeups may be lost\n");
+
+>>>>>>> refs/remotes/origin/master
 	pm_errata_configure();
 
 	/* XXX prcm_setup_regs needs to be before enabling hw
 	 * supervised mode for powerdomains */
 	prcm_setup_regs();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = request_irq(INT_34XX_PRCM_MPU_IRQ,
 			  (irq_handler_t)prcm_interrupt_handler,
@@ -1156,6 +1344,8 @@ static int __init omap3_pm_init(void)
 		printk(KERN_ERR "Failed to get mpu_pwrdm\n");
 		goto err2;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = request_irq(omap_prcm_event_to_irq("wkup"),
 		_prcm_int_handle_wakeup, IRQF_NO_SUSPEND, "pm_wkup", NULL);
 
@@ -1168,6 +1358,10 @@ static int __init omap3_pm_init(void)
 	ret = request_irq(omap_prcm_event_to_irq("io"),
 		_prcm_int_handle_io, IRQF_SHARED | IRQF_NO_SUSPEND, "pm_io",
 		omap3_pm_init);
+<<<<<<< HEAD
+=======
+	enable_irq(omap_prcm_event_to_irq("io"));
+>>>>>>> refs/remotes/origin/master
 
 	if (ret) {
 		pr_err("pm: Failed to request pm_io irq\n");
@@ -1187,17 +1381,24 @@ static int __init omap3_pm_init(void)
 		pr_err("Failed to get mpu_pwrdm\n");
 		ret = -EINVAL;
 		goto err3;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	neon_pwrdm = pwrdm_lookup("neon_pwrdm");
 	per_pwrdm = pwrdm_lookup("per_pwrdm");
 	core_pwrdm = pwrdm_lookup("core_pwrdm");
+<<<<<<< HEAD
 	cam_pwrdm = pwrdm_lookup("cam_pwrdm");
+=======
+>>>>>>> refs/remotes/origin/master
 
 	neon_clkdm = clkdm_lookup("neon_clkdm");
 	mpu_clkdm = clkdm_lookup("mpu_clkdm");
 	per_clkdm = clkdm_lookup("per_clkdm");
+<<<<<<< HEAD
 	core_clkdm = clkdm_lookup("core_clkdm");
 
 <<<<<<< HEAD
@@ -1208,12 +1409,19 @@ static int __init omap3_pm_init(void)
 
 	pm_idle = omap3_pm_idle;
 =======
+=======
+	wkup_clkdm = clkdm_lookup("wkup_clkdm");
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SUSPEND
 	omap_pm_suspend = omap3_pm_suspend;
 #endif
 
 	arm_pm_idle = omap3_pm_idle;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	omap3_idle_init();
 
 	/*
@@ -1224,11 +1432,36 @@ static int __init omap3_pm_init(void)
 	if (IS_PM34XX_ERRATUM(PM_RTA_ERRATUM_i608))
 		omap3630_ctrl_disable_rta();
 
+<<<<<<< HEAD
+=======
+	/*
+	 * The UART3/4 FIFO and the sidetone memory in McBSP2/3 are
+	 * not correctly reset when the PER powerdomain comes back
+	 * from OFF or OSWR when the CORE powerdomain is kept active.
+	 * See OMAP36xx Erratum i582 "PER Domain reset issue after
+	 * Domain-OFF/OSWR Wakeup".  This wakeup dependency is not a
+	 * complete workaround.  The kernel must also prevent the PER
+	 * powerdomain from going to OSWR/OFF while the CORE
+	 * powerdomain is not going to OSWR/OFF.  And if PER last
+	 * power state was off while CORE last power state was ON, the
+	 * UART3/4 and McBSP2/3 SIDETONE devices need to run a
+	 * self-test using their loopback tests; if that fails, those
+	 * devices are unusable until the PER/CORE can complete a transition
+	 * from ON to OSWR/OFF and then back to ON.
+	 *
+	 * XXX Technically this workaround is only needed if off-mode
+	 * or OSWR is enabled.
+	 */
+	if (IS_PM34XX_ERRATUM(PM_PER_MEMORIES_ERRATUM_i582))
+		clkdm_add_wkdep(per_clkdm, wkup_clkdm);
+
+>>>>>>> refs/remotes/origin/master
 	clkdm_add_wkdep(neon_clkdm, mpu_clkdm);
 	if (omap_type() != OMAP2_DEVICE_TYPE_GP) {
 		omap3_secure_ram_storage =
 			kmalloc(0x803F, GFP_KERNEL);
 		if (!omap3_secure_ram_storage)
+<<<<<<< HEAD
 <<<<<<< HEAD
 			printk(KERN_ERR "Memory allocation failed when"
 					"allocating for secure sram context\n");
@@ -1239,12 +1472,18 @@ static int __init omap3_pm_init(void)
 
 		local_irq_disable();
 		local_fiq_disable();
+=======
+			pr_err("Memory allocation failed when allocating for secure sram context\n");
+
+		local_irq_disable();
+>>>>>>> refs/remotes/origin/master
 
 		omap_dma_global_context_save();
 		omap3_save_secure_ram_context();
 		omap_dma_global_context_restore();
 
 		local_irq_enable();
+<<<<<<< HEAD
 		local_fiq_enable();
 	}
 
@@ -1259,18 +1498,34 @@ err2:
 
 err3:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+
+	omap3_save_scratchpad_contents();
+	return ret;
+
+err3:
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry_safe(pwrst, tmp, &pwrst_list, node) {
 		list_del(&pwrst->node);
 		kfree(pwrst);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	free_irq(omap_prcm_event_to_irq("io"), omap3_pm_init);
 err2:
 	free_irq(omap_prcm_event_to_irq("wkup"), NULL);
 err1:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
 
 late_initcall(omap3_pm_init);
+=======
+	return ret;
+}
+>>>>>>> refs/remotes/origin/master

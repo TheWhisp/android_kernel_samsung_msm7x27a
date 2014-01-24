@@ -28,6 +28,10 @@
 #define BCMA_MIPS_MIPS74K_GPIOEN	0x0048
 #define BCMA_MIPS_MIPS74K_CLKCTLST	0x01E0
 
+<<<<<<< HEAD
+=======
+#define BCMA_MIPS_OOBSELINA74		0x004
+>>>>>>> refs/remotes/origin/master
 #define BCMA_MIPS_OOBSELOUTA30		0x100
 
 struct bcma_device;
@@ -35,17 +39,38 @@ struct bcma_device;
 struct bcma_drv_mips {
 	struct bcma_device *core;
 	u8 setup_done:1;
+<<<<<<< HEAD
 	unsigned int assigned_irqs;
+=======
+	u8 early_setup_done:1;
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_BCMA_DRIVER_MIPS
 extern void bcma_core_mips_init(struct bcma_drv_mips *mcore);
+<<<<<<< HEAD
 #else
 static inline void bcma_core_mips_init(struct bcma_drv_mips *mcore) { }
+=======
+extern void bcma_core_mips_early_init(struct bcma_drv_mips *mcore);
+
+extern unsigned int bcma_core_irq(struct bcma_device *core);
+#else
+static inline void bcma_core_mips_init(struct bcma_drv_mips *mcore) { }
+static inline void bcma_core_mips_early_init(struct bcma_drv_mips *mcore) { }
+
+static inline unsigned int bcma_core_irq(struct bcma_device *core)
+{
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 extern u32 bcma_cpu_clock(struct bcma_drv_mips *mcore);
 
+<<<<<<< HEAD
 extern unsigned int bcma_core_mips_irq(struct bcma_device *dev);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* LINUX_BCMA_DRIVER_MIPS_H_ */

@@ -4,7 +4,10 @@
 #include <linux/ioport.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SUPERH
 #define INTC_NR_IRQS	512
 #else
@@ -22,7 +25,10 @@
 #define irq2evt(irq)		(irq)
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 typedef unsigned char intc_enum;
 
 struct intc_vect {
@@ -116,9 +122,13 @@ struct intc_desc {
 	intc_enum force_enable;
 	intc_enum force_disable;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool skip_syscore_suspend;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool skip_syscore_suspend;
+>>>>>>> refs/remotes/origin/master
 	struct intc_hw_desc hw;
 };
 
@@ -139,7 +149,10 @@ struct intc_desc symbol __initdata = {					\
 }
 
 int register_intc_controller(struct intc_desc *desc);
+<<<<<<< HEAD
 void reserve_intc_vectors(struct intc_vect *vectors, unsigned int nr_vecs);
+=======
+>>>>>>> refs/remotes/origin/master
 int intc_set_priority(unsigned int irq, unsigned int prio);
 int intc_irq_lookup(const char *chipname, intc_enum enum_id);
 void intc_finalize(void);

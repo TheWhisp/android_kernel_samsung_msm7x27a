@@ -145,6 +145,7 @@ ksection=.kernel:vmlinux.strip
 isection=.kernel:initrd
 link_address='0x400000'
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 make_space=y
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -172,6 +173,37 @@ miboot|uboot)
 =======
 miboot|uboot*)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+make_space=y
+
+case "$platform" in
+of)
+    platformo="$object/of.o $object/epapr.o"
+    make_space=n
+    ;;
+pseries)
+    platformo="$object/of.o $object/epapr.o"
+    link_address='0x4000000'
+    make_space=n
+    ;;
+maple)
+    platformo="$object/of.o $object/epapr.o"
+    link_address='0x400000'
+    make_space=n
+    ;;
+pmac|chrp)
+    platformo="$object/of.o $object/epapr.o"
+    make_space=n
+    ;;
+coff)
+    platformo="$object/crt0.o $object/of.o $object/epapr.o"
+    lds=$object/zImage.coff.lds
+    link_address='0x500000'
+    make_space=n
+    pie=
+    ;;
+miboot|uboot*)
+>>>>>>> refs/remotes/origin/master
     # miboot and U-boot want just the bare bits, not an ELF binary
     ext=bin
     objflags="-O binary"
@@ -219,9 +251,13 @@ ps3)
     isection=.kernel:initrd
     link_address=''
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     make_space=n
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    make_space=n
+>>>>>>> refs/remotes/origin/master
     pie=
     ;;
 ep88xc|ep405|ep8248e)
@@ -257,15 +293,25 @@ gamecube|wii)
     platformo="$object/$platform-head.o $object/$platform.o"
     ;;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 treeboot-currituck)
     link_address='0x1000000'
     ;;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+treeboot-currituck)
+    link_address='0x1000000'
+    ;;
+>>>>>>> refs/remotes/origin/master
 treeboot-iss4xx-mpic)
     platformo="$object/treeboot-iss4xx.o"
     ;;
 epapr)
+<<<<<<< HEAD
+=======
+    platformo="$object/epapr.o $object/epapr-wrapper.o"
+>>>>>>> refs/remotes/origin/master
     link_address='0x20000000'
     pie=-pie
     ;;
@@ -276,10 +322,15 @@ if [ -z "$cacheit" -o ! -f "$vmz$gzip" -o "$vmz$gzip" -ot "$kernel" ]; then
     ${CROSS}objcopy $objflags "$kernel" "$vmz.$$"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     strip_size=$(stat -c %s $vmz.$$)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    strip_size=$(stat -c %s $vmz.$$)
+
+>>>>>>> refs/remotes/origin/master
     if [ -n "$gzip" ]; then
         gzip -n -f -9 "$vmz.$$"
     fi
@@ -290,7 +341,10 @@ if [ -z "$cacheit" -o ! -f "$vmz$gzip" -o "$vmz$gzip" -ot "$kernel" ]; then
 	vmz="$vmz.$$"
     fi
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 else
     # Calculate the vmlinux.strip size
     ${CROSS}objcopy $objflags "$kernel" "$vmz.$$"
@@ -311,7 +365,10 @@ if [ "$make_space" = "y" ]; then
 	    echo "INFO: Fixing the link_address of wrapper to ($round_size)"
 	    link_address=$round_size
 	fi
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 fi
 
 vmz="$vmz$gzip"
@@ -338,7 +395,10 @@ uboot)
     exit 0
     ;;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 uboot-obs600)
     rm -f "$ofile"
     # obs600 wants a multi image with an initrd, so we need to put a fake
@@ -359,7 +419,10 @@ uboot-obs600)
     fi
     exit 0
     ;;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 esac
 
 addsec() {

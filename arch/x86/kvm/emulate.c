@@ -24,13 +24,20 @@
 #include "kvm_cache_regs.h"
 #include <linux/module.h>
 #include <asm/kvm_emulate.h>
+<<<<<<< HEAD
+=======
+#include <linux/stringify.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "x86.h"
 #include "tss.h"
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Operand types
  */
 #define OpNone             0ull
@@ -45,7 +52,11 @@
 #define OpCL               9ull  /* CL register (for shifts) */
 #define OpImmByte         10ull  /* 8-bit sign extended immediate */
 #define OpOne             11ull  /* Implied 1 */
+<<<<<<< HEAD
 #define OpImm             12ull  /* Sign extended immediate */
+=======
+#define OpImm             12ull  /* Sign extended up to 32-bit immediate */
+>>>>>>> refs/remotes/origin/master
 #define OpMem16           13ull  /* Memory operand (16-bit). */
 #define OpMem32           14ull  /* Memory operand (32-bit). */
 #define OpImmU            15ull  /* Immediate operand, zero extended */
@@ -60,12 +71,22 @@
 #define OpFS              24ull  /* FS */
 #define OpGS              25ull  /* GS */
 #define OpMem8            26ull  /* 8-bit zero extended memory operand */
+<<<<<<< HEAD
+=======
+#define OpImm64           27ull  /* Sign extended 16/32/64-bit immediate */
+#define OpXLat            28ull  /* memory at BX/EBX/RBX + zero-extended AL */
+#define OpAccLo           29ull  /* Low part of extended acc (AX/AX/EAX/RAX) */
+#define OpAccHi           30ull  /* High part of extended acc (-/DX/EDX/RDX) */
+>>>>>>> refs/remotes/origin/master
 
 #define OpBits             5  /* Width of operand field */
 #define OpMask             ((1ull << OpBits) - 1)
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Opcode effective-address decode tables.
  * Note that we only emulate instructions that have at least one memory
  * operand (excluding implicit stack references). We assume that stack
@@ -77,6 +98,7 @@
 /* Operand sizes: 8-bit operands or specified/overridden size. */
 #define ByteOp      (1<<0)	/* 8-bit operands. */
 /* Destination operand type. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define ImplicitOps (1<<1)	/* Implicit in opcode. No generic decode. */
 #define DstReg      (2<<1)	/* Register operand. */
@@ -110,6 +132,8 @@
 /* Destination is only written; never read. */
 #define Mov         (1<<10)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define DstShift    1
 #define ImplicitOps (OpImplicit << DstShift)
 #define DstReg      (OpReg << DstShift)
@@ -119,6 +143,10 @@
 #define DstMem64    (OpMem64 << DstShift)
 #define DstImmUByte (OpImmUByte << DstShift)
 #define DstDX       (OpDX << DstShift)
+<<<<<<< HEAD
+=======
+#define DstAccLo    (OpAccLo << DstShift)
+>>>>>>> refs/remotes/origin/master
 #define DstMask     (OpMask << DstShift)
 /* Source operand type. */
 #define SrcShift    6
@@ -133,14 +161,26 @@
 #define SrcImmUByte (OpImmUByte << SrcShift)
 #define SrcImmU     (OpImmU << SrcShift)
 #define SrcSI       (OpSI << SrcShift)
+<<<<<<< HEAD
+=======
+#define SrcXLat     (OpXLat << SrcShift)
+>>>>>>> refs/remotes/origin/master
 #define SrcImmFAddr (OpImmFAddr << SrcShift)
 #define SrcMemFAddr (OpMemFAddr << SrcShift)
 #define SrcAcc      (OpAcc << SrcShift)
 #define SrcImmU16   (OpImmU16 << SrcShift)
+<<<<<<< HEAD
 #define SrcDX       (OpDX << SrcShift)
 #define SrcMem8     (OpMem8 << SrcShift)
 #define SrcMask     (OpMask << SrcShift)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SrcImm64    (OpImm64 << SrcShift)
+#define SrcDX       (OpDX << SrcShift)
+#define SrcMem8     (OpMem8 << SrcShift)
+#define SrcAccHi    (OpAccHi << SrcShift)
+#define SrcMask     (OpMask << SrcShift)
+>>>>>>> refs/remotes/origin/master
 #define BitOp       (1<<11)
 #define MemAbs      (1<<12)      /* Memory operand is absolute displacement */
 #define String      (1<<13)     /* String instruction (rep capable) */
@@ -150,23 +190,35 @@
 #define GroupDual   (2<<15)     /* Alternate decoding of mod == 3 */
 #define Prefix      (3<<15)     /* Instruction varies with 66/f2/f3 prefix */
 #define RMExt       (4<<15)     /* Opcode extension in ModRM r/m if mod == 3 */
+<<<<<<< HEAD
 #define Sse         (1<<18)     /* SSE Vector instruction */
 <<<<<<< HEAD
 =======
+=======
+#define Escape      (5<<15)     /* Escape to coprocessor instruction */
+#define Sse         (1<<18)     /* SSE Vector instruction */
+>>>>>>> refs/remotes/origin/master
 /* Generic ModRM decode. */
 #define ModRM       (1<<19)
 /* Destination is only written; never read. */
 #define Mov         (1<<20)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /* Misc flags */
 #define Prot        (1<<21) /* instruction generates #UD if not in prot-mode */
 #define VendorSpecific (1<<22) /* Vendor specific instruction */
+=======
+/* Misc flags */
+#define Prot        (1<<21) /* instruction generates #UD if not in prot-mode */
+#define EmulateOnUD (1<<22) /* Emulate if unsupported by the host */
+>>>>>>> refs/remotes/origin/master
 #define NoAccess    (1<<23) /* Don't access memory (lea/invlpg/verr etc) */
 #define Op3264      (1<<24) /* Operand is 64b in long mode, 32b otherwise */
 #define Undefined   (1<<25) /* No Such Instruction */
 #define Lock        (1<<26) /* lock prefix is allowed for the instruction */
 #define Priv        (1<<27) /* instruction generates #GP if current CPL != 0 */
 #define No64	    (1<<28)
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Source 2 operand type */
 #define Src2None    (0<<29)
@@ -180,6 +232,14 @@
 /* Source 2 operand type */
 #define Src2Shift   (30)
 #define Src2None    (OpNone << Src2Shift)
+=======
+#define PageTable   (1 << 29)   /* instruction used to write page table */
+#define NotImpl     (1 << 30)   /* instruction is not implemented */
+/* Source 2 operand type */
+#define Src2Shift   (31)
+#define Src2None    (OpNone << Src2Shift)
+#define Src2Mem     (OpMem << Src2Shift)
+>>>>>>> refs/remotes/origin/master
 #define Src2CL      (OpCL << Src2Shift)
 #define Src2ImmByte (OpImmByte << Src2Shift)
 #define Src2One     (OpOne << Src2Shift)
@@ -191,7 +251,19 @@
 #define Src2FS      (OpFS << Src2Shift)
 #define Src2GS      (OpGS << Src2Shift)
 #define Src2Mask    (OpMask << Src2Shift)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define Mmx         ((u64)1 << 40)  /* MMX Vector instruction */
+#define Aligned     ((u64)1 << 41)  /* Explicitly aligned (e.g. MOVDQA) */
+#define Unaligned   ((u64)1 << 42)  /* Explicitly unaligned (e.g. MOVDQU) */
+#define Avx         ((u64)1 << 43)  /* Advanced Vector Extensions */
+#define Fastop      ((u64)1 << 44)  /* Use opcode::u.fastop */
+#define NoWrite     ((u64)1 << 45)  /* No writeback */
+#define SrcWrite    ((u64)1 << 46)  /* Write back src operand */
+
+#define DstXacc     (DstAccLo | SrcAccHi | SrcWrite)
+>>>>>>> refs/remotes/origin/master
 
 #define X2(x...) x, x
 #define X3(x...) X2(x), x
@@ -202,6 +274,7 @@
 #define X8(x...) X4(x), X4(x)
 #define X16(x...) X8(x), X8(x)
 
+<<<<<<< HEAD
 struct opcode {
 <<<<<<< HEAD
 	u32 flags;
@@ -215,6 +288,40 @@ struct opcode {
 		struct opcode *group;
 		struct group_dual *gdual;
 		struct gprefix *gprefix;
+=======
+#define NR_FASTOP (ilog2(sizeof(ulong)) + 1)
+#define FASTOP_SIZE 8
+
+/*
+ * fastop functions have a special calling convention:
+ *
+ * dst:    rax        (in/out)
+ * src:    rdx        (in/out)
+ * src2:   rcx        (in)
+ * flags:  rflags     (in/out)
+ * ex:     rsi        (in:fastop pointer, out:zero if exception)
+ *
+ * Moreover, they are all exactly FASTOP_SIZE bytes long, so functions for
+ * different operand sizes can be reached by calculation, rather than a jump
+ * table (which would be bigger than the code).
+ *
+ * fastop functions are declared as taking a never-defined fastop parameter,
+ * so they can't be called from C directly.
+ */
+
+struct fastop;
+
+struct opcode {
+	u64 flags : 56;
+	u64 intercept : 8;
+	union {
+		int (*execute)(struct x86_emulate_ctxt *ctxt);
+		const struct opcode *group;
+		const struct group_dual *gdual;
+		const struct gprefix *gprefix;
+		const struct escape *esc;
+		void (*fastop)(struct fastop *fake);
+>>>>>>> refs/remotes/origin/master
 	} u;
 	int (*check_perm)(struct x86_emulate_ctxt *ctxt);
 };
@@ -231,6 +338,14 @@ struct gprefix {
 	struct opcode pfx_f3;
 };
 
+<<<<<<< HEAD
+=======
+struct escape {
+	struct opcode op[8];
+	struct opcode high[64];
+};
+
+>>>>>>> refs/remotes/origin/master
 /* EFLAGS bit definitions. */
 #define EFLG_ID (1<<21)
 #define EFLG_VIP (1<<20)
@@ -253,6 +368,7 @@ struct gprefix {
 #define EFLG_RESERVED_ZEROS_MASK 0xffc0802a
 #define EFLG_RESERVED_ONE_MASK 2
 
+<<<<<<< HEAD
 /*
  * Instruction emulation:
  * Most instructions are emulated directly via a fragment of inline assembly
@@ -267,6 +383,43 @@ struct gprefix {
 #define _LO32 ""		/* force 32-bit operand */
 #define _STK  "%%esp"		/* stack pointer */
 #endif
+=======
+static ulong reg_read(struct x86_emulate_ctxt *ctxt, unsigned nr)
+{
+	if (!(ctxt->regs_valid & (1 << nr))) {
+		ctxt->regs_valid |= 1 << nr;
+		ctxt->_regs[nr] = ctxt->ops->read_gpr(ctxt, nr);
+	}
+	return ctxt->_regs[nr];
+}
+
+static ulong *reg_write(struct x86_emulate_ctxt *ctxt, unsigned nr)
+{
+	ctxt->regs_valid |= 1 << nr;
+	ctxt->regs_dirty |= 1 << nr;
+	return &ctxt->_regs[nr];
+}
+
+static ulong *reg_rmw(struct x86_emulate_ctxt *ctxt, unsigned nr)
+{
+	reg_read(ctxt, nr);
+	return reg_write(ctxt, nr);
+}
+
+static void writeback_registers(struct x86_emulate_ctxt *ctxt)
+{
+	unsigned reg;
+
+	for_each_set_bit(reg, (ulong *)&ctxt->regs_dirty, 16)
+		ctxt->ops->write_gpr(ctxt, reg, ctxt->_regs[reg]);
+}
+
+static void invalidate_registers(struct x86_emulate_ctxt *ctxt)
+{
+	ctxt->regs_dirty = 0;
+	ctxt->regs_valid = 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These EFLAGS bits are restored from saved value during emulation, and
@@ -274,6 +427,7 @@ struct gprefix {
  */
 #define EFLAGS_MASK (EFLG_OF|EFLG_SF|EFLG_ZF|EFLG_AF|EFLG_PF|EFLG_CF)
 
+<<<<<<< HEAD
 /* Before executing instruction: restore necessary bits in EFLAGS. */
 #define _PRE_EFLAGS(_sav, _msk, _tmp)					\
 	/* EFLAGS = (_sav & _msk) | (EFLAGS & ~_msk); _sav &= ~_msk; */ \
@@ -299,12 +453,15 @@ struct gprefix {
 	"andl %"_msk",%"_LO32 _tmp"; "		\
 	"orl  %"_LO32 _tmp",%"_sav"; "
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_64
 #define ON64(x) x
 #else
 #define ON64(x)
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define ____emulate_2op(_op, _src, _dst, _eflags, _x, _y, _suffix, _dsttype) \
 =======
@@ -660,12 +817,133 @@ struct gprefix {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int fastop(struct x86_emulate_ctxt *ctxt, void (*fop)(struct fastop *));
+
+#define FOP_ALIGN ".align " __stringify(FASTOP_SIZE) " \n\t"
+#define FOP_RET   "ret \n\t"
+
+#define FOP_START(op) \
+	extern void em_##op(struct fastop *fake); \
+	asm(".pushsection .text, \"ax\" \n\t" \
+	    ".global em_" #op " \n\t" \
+            FOP_ALIGN \
+	    "em_" #op ": \n\t"
+
+#define FOP_END \
+	    ".popsection")
+
+#define FOPNOP() FOP_ALIGN FOP_RET
+
+#define FOP1E(op,  dst) \
+	FOP_ALIGN "10: " #op " %" #dst " \n\t" FOP_RET
+
+#define FOP1EEX(op,  dst) \
+	FOP1E(op, dst) _ASM_EXTABLE(10b, kvm_fastop_exception)
+
+#define FASTOP1(op) \
+	FOP_START(op) \
+	FOP1E(op##b, al) \
+	FOP1E(op##w, ax) \
+	FOP1E(op##l, eax) \
+	ON64(FOP1E(op##q, rax))	\
+	FOP_END
+
+/* 1-operand, using src2 (for MUL/DIV r/m) */
+#define FASTOP1SRC2(op, name) \
+	FOP_START(name) \
+	FOP1E(op, cl) \
+	FOP1E(op, cx) \
+	FOP1E(op, ecx) \
+	ON64(FOP1E(op, rcx)) \
+	FOP_END
+
+/* 1-operand, using src2 (for MUL/DIV r/m), with exceptions */
+#define FASTOP1SRC2EX(op, name) \
+	FOP_START(name) \
+	FOP1EEX(op, cl) \
+	FOP1EEX(op, cx) \
+	FOP1EEX(op, ecx) \
+	ON64(FOP1EEX(op, rcx)) \
+	FOP_END
+
+#define FOP2E(op,  dst, src)	   \
+	FOP_ALIGN #op " %" #src ", %" #dst " \n\t" FOP_RET
+
+#define FASTOP2(op) \
+	FOP_START(op) \
+	FOP2E(op##b, al, dl) \
+	FOP2E(op##w, ax, dx) \
+	FOP2E(op##l, eax, edx) \
+	ON64(FOP2E(op##q, rax, rdx)) \
+	FOP_END
+
+/* 2 operand, word only */
+#define FASTOP2W(op) \
+	FOP_START(op) \
+	FOPNOP() \
+	FOP2E(op##w, ax, dx) \
+	FOP2E(op##l, eax, edx) \
+	ON64(FOP2E(op##q, rax, rdx)) \
+	FOP_END
+
+/* 2 operand, src is CL */
+#define FASTOP2CL(op) \
+	FOP_START(op) \
+	FOP2E(op##b, al, cl) \
+	FOP2E(op##w, ax, cl) \
+	FOP2E(op##l, eax, cl) \
+	ON64(FOP2E(op##q, rax, cl)) \
+	FOP_END
+
+#define FOP3E(op,  dst, src, src2) \
+	FOP_ALIGN #op " %" #src2 ", %" #src ", %" #dst " \n\t" FOP_RET
+
+/* 3-operand, word-only, src2=cl */
+#define FASTOP3WCL(op) \
+	FOP_START(op) \
+	FOPNOP() \
+	FOP3E(op##w, ax, dx, cl) \
+	FOP3E(op##l, eax, edx, cl) \
+	ON64(FOP3E(op##q, rax, rdx, cl)) \
+	FOP_END
+
+/* Special case for SETcc - 1 instruction per cc */
+#define FOP_SETCC(op) ".align 4; " #op " %al; ret \n\t"
+
+asm(".global kvm_fastop_exception \n"
+    "kvm_fastop_exception: xor %esi, %esi; ret");
+
+FOP_START(setcc)
+FOP_SETCC(seto)
+FOP_SETCC(setno)
+FOP_SETCC(setc)
+FOP_SETCC(setnc)
+FOP_SETCC(setz)
+FOP_SETCC(setnz)
+FOP_SETCC(setbe)
+FOP_SETCC(setnbe)
+FOP_SETCC(sets)
+FOP_SETCC(setns)
+FOP_SETCC(setp)
+FOP_SETCC(setnp)
+FOP_SETCC(setl)
+FOP_SETCC(setnl)
+FOP_SETCC(setle)
+FOP_SETCC(setnle)
+FOP_END;
+
+FOP_START(salc) "pushf; sbb %al, %al; popf \n\t" FOP_RET
+FOP_END;
+
+>>>>>>> refs/remotes/origin/master
 static int emulator_check_intercept(struct x86_emulate_ctxt *ctxt,
 				    enum x86_intercept intercept,
 				    enum x86_intercept_stage stage)
 {
 	struct x86_instruction_info info = {
 		.intercept  = intercept,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.rep_prefix = ctxt->decode.rep_prefix,
 		.modrm_mod  = ctxt->decode.modrm_mod,
@@ -676,6 +954,8 @@ static int emulator_check_intercept(struct x86_emulate_ctxt *ctxt,
 		.dst_bytes  = ctxt->decode.dst.bytes,
 		.ad_bytes   = ctxt->decode.ad_bytes,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.rep_prefix = ctxt->rep_prefix,
 		.modrm_mod  = ctxt->modrm_mod,
 		.modrm_reg  = ctxt->modrm_reg,
@@ -684,13 +964,17 @@ static int emulator_check_intercept(struct x86_emulate_ctxt *ctxt,
 		.src_bytes  = ctxt->src.bytes,
 		.dst_bytes  = ctxt->dst.bytes,
 		.ad_bytes   = ctxt->ad_bytes,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.next_rip   = ctxt->eip,
 	};
 
 	return ctxt->ops->intercept(ctxt, &info, stage);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline unsigned long ad_mask(struct decode_cache *c)
 {
@@ -732,6 +1016,36 @@ static inline void jmp_rel(struct decode_cache *c, int rel)
 {
 	register_address_increment(c, &c->eip, rel);
 =======
+=======
+static void assign_masked(ulong *dest, ulong src, ulong mask)
+{
+	*dest = (*dest & ~mask) | (src & mask);
+}
+
+static inline unsigned long ad_mask(struct x86_emulate_ctxt *ctxt)
+{
+	return (1UL << (ctxt->ad_bytes << 3)) - 1;
+}
+
+static ulong stack_mask(struct x86_emulate_ctxt *ctxt)
+{
+	u16 sel;
+	struct desc_struct ss;
+
+	if (ctxt->mode == X86EMUL_MODE_PROT64)
+		return ~0UL;
+	ctxt->ops->get_segment(ctxt, &sel, &ss, NULL, VCPU_SREG_SS);
+	return ~0U >> ((ss.d ^ 1) * 16);  /* d=0: 0xffff; d=1: 0xffffffff */
+}
+
+static int stack_size(struct x86_emulate_ctxt *ctxt)
+{
+	return (__fls(stack_mask(ctxt)) + 1) >> 3;
+}
+
+/* Access/update address held in a register, based on addressing mode. */
+static inline unsigned long
+>>>>>>> refs/remotes/origin/master
 address_mask(struct x86_emulate_ctxt *ctxt, unsigned long reg)
 {
 	if (ctxt->ad_bytes == sizeof(unsigned long))
@@ -746,6 +1060,7 @@ register_address(struct x86_emulate_ctxt *ctxt, unsigned long reg)
 	return address_mask(ctxt, reg);
 }
 
+<<<<<<< HEAD
 static inline void
 register_address_increment(struct x86_emulate_ctxt *ctxt, unsigned long *reg, int inc)
 {
@@ -753,12 +1068,37 @@ register_address_increment(struct x86_emulate_ctxt *ctxt, unsigned long *reg, in
 		*reg += inc;
 	else
 		*reg = (*reg & ~ad_mask(ctxt)) | ((*reg + inc) & ad_mask(ctxt));
+=======
+static void masked_increment(ulong *reg, ulong mask, int inc)
+{
+	assign_masked(reg, *reg + inc, mask);
+}
+
+static inline void
+register_address_increment(struct x86_emulate_ctxt *ctxt, unsigned long *reg, int inc)
+{
+	ulong mask;
+
+	if (ctxt->ad_bytes == sizeof(unsigned long))
+		mask = ~0UL;
+	else
+		mask = ad_mask(ctxt);
+	masked_increment(reg, mask, inc);
+}
+
+static void rsp_increment(struct x86_emulate_ctxt *ctxt, int inc)
+{
+	masked_increment(reg_rmw(ctxt, VCPU_REGS_RSP), stack_mask(ctxt), inc);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void jmp_rel(struct x86_emulate_ctxt *ctxt, int rel)
 {
 	register_address_increment(ctxt, &ctxt->_eip, rel);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static u32 desc_limit_scaled(struct desc_struct *desc)
@@ -769,6 +1109,7 @@ static u32 desc_limit_scaled(struct desc_struct *desc)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void set_seg_override(struct decode_cache *c, int seg)
 {
 	c->has_seg_override = true;
@@ -778,6 +1119,8 @@ static void set_seg_override(struct decode_cache *c, int seg)
 static unsigned long seg_base(struct x86_emulate_ctxt *ctxt,
 			      struct x86_emulate_ops *ops, int seg)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void set_seg_override(struct x86_emulate_ctxt *ctxt, int seg)
 {
 	ctxt->has_seg_override = true;
@@ -785,11 +1128,15 @@ static void set_seg_override(struct x86_emulate_ctxt *ctxt, int seg)
 }
 
 static unsigned long seg_base(struct x86_emulate_ctxt *ctxt, int seg)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	if (ctxt->mode == X86EMUL_MODE_PROT64 && seg < VCPU_SREG_FS)
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return ops->get_cached_segment_base(ctxt, seg);
 }
@@ -802,6 +1149,8 @@ static unsigned seg_override(struct x86_emulate_ctxt *ctxt,
 
 	return c->seg_override;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return ctxt->ops->get_cached_segment_base(ctxt, seg);
 }
 
@@ -811,7 +1160,10 @@ static unsigned seg_override(struct x86_emulate_ctxt *ctxt)
 		return 0;
 
 	return ctxt->seg_override;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int emulate_exception(struct x86_emulate_ctxt *ctxt, int vec,
@@ -878,20 +1230,50 @@ static void set_segment_selector(struct x86_emulate_ctxt *ctxt, u16 selector,
 	ctxt->ops->set_segment(ctxt, selector, &desc, base3, seg);
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * x86 defines three classes of vector instructions: explicitly
+ * aligned, explicitly unaligned, and the rest, which change behaviour
+ * depending on whether they're AVX encoded or not.
+ *
+ * Also included is CMPXCHG16B which is not a vector instruction, yet it is
+ * subject to the same check.
+ */
+static bool insn_aligned(struct x86_emulate_ctxt *ctxt, unsigned size)
+{
+	if (likely(size < 16))
+		return false;
+
+	if (ctxt->d & Aligned)
+		return true;
+	else if (ctxt->d & Unaligned)
+		return false;
+	else if (ctxt->d & Avx)
+		return false;
+	else
+		return true;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int __linearize(struct x86_emulate_ctxt *ctxt,
 		     struct segmented_address addr,
 		     unsigned size, bool write, bool fetch,
 		     ulong *linear)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct desc_struct desc;
 	bool usable;
 	ulong la;
 	u32 lim;
 	u16 sel;
+<<<<<<< HEAD
 	unsigned cpl, rpl;
 
 <<<<<<< HEAD
@@ -902,6 +1284,12 @@ static int __linearize(struct x86_emulate_ctxt *ctxt,
 	switch (ctxt->mode) {
 	case X86EMUL_MODE_REAL:
 		break;
+=======
+	unsigned cpl;
+
+	la = seg_base(ctxt, addr.seg) + addr.ea;
+	switch (ctxt->mode) {
+>>>>>>> refs/remotes/origin/master
 	case X86EMUL_MODE_PROT64:
 		if (((signed long)la << 16) >> 16 != la)
 			return emulate_gp(ctxt, 0);
@@ -911,8 +1299,14 @@ static int __linearize(struct x86_emulate_ctxt *ctxt,
 						addr.seg);
 		if (!usable)
 			goto bad;
+<<<<<<< HEAD
 		/* code segment or read-only data segment */
 		if (((desc.type & 8) || !(desc.type & 2)) && write)
+=======
+		/* code segment in protected mode or read-only data segment */
+		if ((((ctxt->mode != X86EMUL_MODE_REAL) && (desc.type & 8))
+					|| !(desc.type & 2)) && write)
+>>>>>>> refs/remotes/origin/master
 			goto bad;
 		/* unreadable code segment */
 		if (!fetch && (desc.type & 8) && !(desc.type & 2))
@@ -923,7 +1317,11 @@ static int __linearize(struct x86_emulate_ctxt *ctxt,
 			if (addr.ea > lim || (u32)(addr.ea + size - 1) > lim)
 				goto bad;
 		} else {
+<<<<<<< HEAD
 			/* exapand-down segment */
+=======
+			/* expand-down segment */
+>>>>>>> refs/remotes/origin/master
 			if (addr.ea <= lim || (u32)(addr.ea + size - 1) <= lim)
 				goto bad;
 			lim = desc.d ? 0xffffffff : 0xffff;
@@ -931,8 +1329,11 @@ static int __linearize(struct x86_emulate_ctxt *ctxt,
 				goto bad;
 		}
 		cpl = ctxt->ops->cpl(ctxt);
+<<<<<<< HEAD
 		rpl = sel & 3;
 		cpl = max(cpl, rpl);
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!(desc.type & 8)) {
 			/* data segment */
 			if (cpl > desc.dpl)
@@ -949,18 +1350,31 @@ static int __linearize(struct x86_emulate_ctxt *ctxt,
 		break;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (fetch ? ctxt->mode != X86EMUL_MODE_PROT64 : c->ad_bytes != 8)
 =======
 	if (fetch ? ctxt->mode != X86EMUL_MODE_PROT64 : ctxt->ad_bytes != 8)
 >>>>>>> refs/remotes/origin/cm-10.0
 		la &= (u32)-1;
+=======
+	if (fetch ? ctxt->mode != X86EMUL_MODE_PROT64 : ctxt->ad_bytes != 8)
+		la &= (u32)-1;
+	if (insn_aligned(ctxt, size) && ((la & (size - 1)) != 0))
+		return emulate_gp(ctxt, 0);
+>>>>>>> refs/remotes/origin/master
 	*linear = la;
 	return X86EMUL_CONTINUE;
 bad:
 	if (addr.seg == VCPU_SREG_SS)
+<<<<<<< HEAD
 		return emulate_ss(ctxt, addr.seg);
 	else
 		return emulate_gp(ctxt, addr.seg);
+=======
+		return emulate_ss(ctxt, sel);
+	else
+		return emulate_gp(ctxt, sel);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int linearize(struct x86_emulate_ctxt *ctxt,
@@ -987,6 +1401,7 @@ static int segmented_read_std(struct x86_emulate_ctxt *ctxt,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int do_fetch_insn_byte(struct x86_emulate_ctxt *ctxt,
 			      struct x86_emulate_ops *ops,
 			      unsigned long eip, u8 *dest)
@@ -1011,6 +1426,8 @@ static int do_fetch_insn_byte(struct x86_emulate_ctxt *ctxt,
 	}
 	*dest = fc->data[eip - fc->start];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Fetch the next byte of the instruction being emulated which is pointed to
  * by ctxt->_eip, then increment ctxt->_eip.
@@ -1042,32 +1459,45 @@ static int do_insn_fetch_byte(struct x86_emulate_ctxt *ctxt, u8 *dest)
 	}
 	*dest = fc->data[ctxt->_eip - fc->start];
 	ctxt->_eip++;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return X86EMUL_CONTINUE;
 }
 
 static int do_insn_fetch(struct x86_emulate_ctxt *ctxt,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			 struct x86_emulate_ops *ops,
 			 unsigned long eip, void *dest, unsigned size)
 =======
 			 void *dest, unsigned size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 void *dest, unsigned size)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 
 	/* x86 instructions are limited to 15 bytes. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (eip + size - ctxt->eip > 15)
 		return X86EMUL_UNHANDLEABLE;
 	while (size--) {
 		rc = do_fetch_insn_byte(ctxt, ops, eip++, dest++);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(ctxt->_eip + size - ctxt->eip > 15))
 		return X86EMUL_UNHANDLEABLE;
 	while (size--) {
 		rc = do_insn_fetch_byte(ctxt, dest++);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (rc != X86EMUL_CONTINUE)
 			return rc;
 	}
@@ -1075,7 +1505,10 @@ static int do_insn_fetch(struct x86_emulate_ctxt *ctxt,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Fetch next part of the instruction being emulated. */
 #define insn_fetch(_type, _ctxt)					\
 ({	unsigned long _x;						\
@@ -1091,12 +1524,16 @@ static int do_insn_fetch(struct x86_emulate_ctxt *ctxt,
 		goto done;						\
 })
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Given the 'reg' portion of a ModRM byte, and a register block, return a
  * pointer into the block that addresses the relevant register.
  * @highbyte_regs specifies whether to decode AH,CH,DH,BH.
  */
+<<<<<<< HEAD
 static void *decode_register(u8 modrm_reg, unsigned long *regs,
 			     int highbyte_regs)
 {
@@ -1105,6 +1542,18 @@ static void *decode_register(u8 modrm_reg, unsigned long *regs,
 	p = &regs[modrm_reg];
 	if (highbyte_regs && modrm_reg >= 4 && modrm_reg < 8)
 		p = (unsigned char *)&regs[modrm_reg & 3] + 1;
+=======
+static void *decode_register(struct x86_emulate_ctxt *ctxt, u8 modrm_reg,
+			     int byteop)
+{
+	void *p;
+	int highbyte_regs = (ctxt->rex_prefix == 0) && byteop;
+
+	if (highbyte_regs && modrm_reg >= 4 && modrm_reg < 8)
+		p = (unsigned char *)reg_rmw(ctxt, modrm_reg & 3) + 1;
+	else
+		p = reg_rmw(ctxt, modrm_reg);
+>>>>>>> refs/remotes/origin/master
 	return p;
 }
 
@@ -1125,6 +1574,7 @@ static int read_descriptor(struct x86_emulate_ctxt *ctxt,
 	return rc;
 }
 
+<<<<<<< HEAD
 static int test_cc(unsigned int condition, unsigned int flags)
 {
 	int rc = 0;
@@ -1158,6 +1608,59 @@ static int test_cc(unsigned int condition, unsigned int flags)
 
 	/* Odd condition identifiers (lsb == 1) have inverted sense. */
 	return (!!rc ^ (condition & 1));
+=======
+FASTOP2(add);
+FASTOP2(or);
+FASTOP2(adc);
+FASTOP2(sbb);
+FASTOP2(and);
+FASTOP2(sub);
+FASTOP2(xor);
+FASTOP2(cmp);
+FASTOP2(test);
+
+FASTOP1SRC2(mul, mul_ex);
+FASTOP1SRC2(imul, imul_ex);
+FASTOP1SRC2EX(div, div_ex);
+FASTOP1SRC2EX(idiv, idiv_ex);
+
+FASTOP3WCL(shld);
+FASTOP3WCL(shrd);
+
+FASTOP2W(imul);
+
+FASTOP1(not);
+FASTOP1(neg);
+FASTOP1(inc);
+FASTOP1(dec);
+
+FASTOP2CL(rol);
+FASTOP2CL(ror);
+FASTOP2CL(rcl);
+FASTOP2CL(rcr);
+FASTOP2CL(shl);
+FASTOP2CL(shr);
+FASTOP2CL(sar);
+
+FASTOP2W(bsf);
+FASTOP2W(bsr);
+FASTOP2W(bt);
+FASTOP2W(bts);
+FASTOP2W(btr);
+FASTOP2W(btc);
+
+FASTOP2(xadd);
+
+static u8 test_cc(unsigned int condition, unsigned long flags)
+{
+	u8 rc;
+	void (*fop)(void) = (void *)em_setcc + 4 * (condition & 0xf);
+
+	flags = (flags & EFLAGS_MASK) | X86_EFLAGS_IF;
+	asm("push %[flags]; popf; call *%[fastop]"
+	    : "=a"(rc) : [fastop]"r"(fop), [flags]"r"(flags));
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void fetch_register_operand(struct operand *op)
@@ -1182,6 +1685,7 @@ static void read_sse_reg(struct x86_emulate_ctxt *ctxt, sse128_t *data, int reg)
 {
 	ctxt->ops->get_fpu(ctxt);
 	switch (reg) {
+<<<<<<< HEAD
 	case 0: asm("movdqu %%xmm0, %0" : "=m"(*data)); break;
 	case 1: asm("movdqu %%xmm1, %0" : "=m"(*data)); break;
 	case 2: asm("movdqu %%xmm2, %0" : "=m"(*data)); break;
@@ -1199,6 +1703,25 @@ static void read_sse_reg(struct x86_emulate_ctxt *ctxt, sse128_t *data, int reg)
 	case 13: asm("movdqu %%xmm13, %0" : "=m"(*data)); break;
 	case 14: asm("movdqu %%xmm14, %0" : "=m"(*data)); break;
 	case 15: asm("movdqu %%xmm15, %0" : "=m"(*data)); break;
+=======
+	case 0: asm("movdqa %%xmm0, %0" : "=m"(*data)); break;
+	case 1: asm("movdqa %%xmm1, %0" : "=m"(*data)); break;
+	case 2: asm("movdqa %%xmm2, %0" : "=m"(*data)); break;
+	case 3: asm("movdqa %%xmm3, %0" : "=m"(*data)); break;
+	case 4: asm("movdqa %%xmm4, %0" : "=m"(*data)); break;
+	case 5: asm("movdqa %%xmm5, %0" : "=m"(*data)); break;
+	case 6: asm("movdqa %%xmm6, %0" : "=m"(*data)); break;
+	case 7: asm("movdqa %%xmm7, %0" : "=m"(*data)); break;
+#ifdef CONFIG_X86_64
+	case 8: asm("movdqa %%xmm8, %0" : "=m"(*data)); break;
+	case 9: asm("movdqa %%xmm9, %0" : "=m"(*data)); break;
+	case 10: asm("movdqa %%xmm10, %0" : "=m"(*data)); break;
+	case 11: asm("movdqa %%xmm11, %0" : "=m"(*data)); break;
+	case 12: asm("movdqa %%xmm12, %0" : "=m"(*data)); break;
+	case 13: asm("movdqa %%xmm13, %0" : "=m"(*data)); break;
+	case 14: asm("movdqa %%xmm14, %0" : "=m"(*data)); break;
+	case 15: asm("movdqa %%xmm15, %0" : "=m"(*data)); break;
+>>>>>>> refs/remotes/origin/master
 #endif
 	default: BUG();
 	}
@@ -1210,6 +1733,7 @@ static void write_sse_reg(struct x86_emulate_ctxt *ctxt, sse128_t *data,
 {
 	ctxt->ops->get_fpu(ctxt);
 	switch (reg) {
+<<<<<<< HEAD
 	case 0: asm("movdqu %0, %%xmm0" : : "m"(*data)); break;
 	case 1: asm("movdqu %0, %%xmm1" : : "m"(*data)); break;
 	case 2: asm("movdqu %0, %%xmm2" : : "m"(*data)); break;
@@ -1227,12 +1751,32 @@ static void write_sse_reg(struct x86_emulate_ctxt *ctxt, sse128_t *data,
 	case 13: asm("movdqu %0, %%xmm13" : : "m"(*data)); break;
 	case 14: asm("movdqu %0, %%xmm14" : : "m"(*data)); break;
 	case 15: asm("movdqu %0, %%xmm15" : : "m"(*data)); break;
+=======
+	case 0: asm("movdqa %0, %%xmm0" : : "m"(*data)); break;
+	case 1: asm("movdqa %0, %%xmm1" : : "m"(*data)); break;
+	case 2: asm("movdqa %0, %%xmm2" : : "m"(*data)); break;
+	case 3: asm("movdqa %0, %%xmm3" : : "m"(*data)); break;
+	case 4: asm("movdqa %0, %%xmm4" : : "m"(*data)); break;
+	case 5: asm("movdqa %0, %%xmm5" : : "m"(*data)); break;
+	case 6: asm("movdqa %0, %%xmm6" : : "m"(*data)); break;
+	case 7: asm("movdqa %0, %%xmm7" : : "m"(*data)); break;
+#ifdef CONFIG_X86_64
+	case 8: asm("movdqa %0, %%xmm8" : : "m"(*data)); break;
+	case 9: asm("movdqa %0, %%xmm9" : : "m"(*data)); break;
+	case 10: asm("movdqa %0, %%xmm10" : : "m"(*data)); break;
+	case 11: asm("movdqa %0, %%xmm11" : : "m"(*data)); break;
+	case 12: asm("movdqa %0, %%xmm12" : : "m"(*data)); break;
+	case 13: asm("movdqa %0, %%xmm13" : : "m"(*data)); break;
+	case 14: asm("movdqa %0, %%xmm14" : : "m"(*data)); break;
+	case 15: asm("movdqa %0, %%xmm15" : : "m"(*data)); break;
+>>>>>>> refs/remotes/origin/master
 #endif
 	default: BUG();
 	}
 	ctxt->ops->put_fpu(ctxt);
 }
 
+<<<<<<< HEAD
 static void decode_register_operand(struct x86_emulate_ctxt *ctxt,
 <<<<<<< HEAD
 				    struct operand *op,
@@ -1251,18 +1795,109 @@ static void decode_register_operand(struct x86_emulate_ctxt *ctxt,
 {
 	unsigned reg = ctxt->modrm_reg;
 	int highbyte_regs = ctxt->rex_prefix == 0;
+=======
+static void read_mmx_reg(struct x86_emulate_ctxt *ctxt, u64 *data, int reg)
+{
+	ctxt->ops->get_fpu(ctxt);
+	switch (reg) {
+	case 0: asm("movq %%mm0, %0" : "=m"(*data)); break;
+	case 1: asm("movq %%mm1, %0" : "=m"(*data)); break;
+	case 2: asm("movq %%mm2, %0" : "=m"(*data)); break;
+	case 3: asm("movq %%mm3, %0" : "=m"(*data)); break;
+	case 4: asm("movq %%mm4, %0" : "=m"(*data)); break;
+	case 5: asm("movq %%mm5, %0" : "=m"(*data)); break;
+	case 6: asm("movq %%mm6, %0" : "=m"(*data)); break;
+	case 7: asm("movq %%mm7, %0" : "=m"(*data)); break;
+	default: BUG();
+	}
+	ctxt->ops->put_fpu(ctxt);
+}
+
+static void write_mmx_reg(struct x86_emulate_ctxt *ctxt, u64 *data, int reg)
+{
+	ctxt->ops->get_fpu(ctxt);
+	switch (reg) {
+	case 0: asm("movq %0, %%mm0" : : "m"(*data)); break;
+	case 1: asm("movq %0, %%mm1" : : "m"(*data)); break;
+	case 2: asm("movq %0, %%mm2" : : "m"(*data)); break;
+	case 3: asm("movq %0, %%mm3" : : "m"(*data)); break;
+	case 4: asm("movq %0, %%mm4" : : "m"(*data)); break;
+	case 5: asm("movq %0, %%mm5" : : "m"(*data)); break;
+	case 6: asm("movq %0, %%mm6" : : "m"(*data)); break;
+	case 7: asm("movq %0, %%mm7" : : "m"(*data)); break;
+	default: BUG();
+	}
+	ctxt->ops->put_fpu(ctxt);
+}
+
+static int em_fninit(struct x86_emulate_ctxt *ctxt)
+{
+	if (ctxt->ops->get_cr(ctxt, 0) & (X86_CR0_TS | X86_CR0_EM))
+		return emulate_nm(ctxt);
+
+	ctxt->ops->get_fpu(ctxt);
+	asm volatile("fninit");
+	ctxt->ops->put_fpu(ctxt);
+	return X86EMUL_CONTINUE;
+}
+
+static int em_fnstcw(struct x86_emulate_ctxt *ctxt)
+{
+	u16 fcw;
+
+	if (ctxt->ops->get_cr(ctxt, 0) & (X86_CR0_TS | X86_CR0_EM))
+		return emulate_nm(ctxt);
+
+	ctxt->ops->get_fpu(ctxt);
+	asm volatile("fnstcw %0": "+m"(fcw));
+	ctxt->ops->put_fpu(ctxt);
+
+	/* force 2 byte destination */
+	ctxt->dst.bytes = 2;
+	ctxt->dst.val = fcw;
+
+	return X86EMUL_CONTINUE;
+}
+
+static int em_fnstsw(struct x86_emulate_ctxt *ctxt)
+{
+	u16 fsw;
+
+	if (ctxt->ops->get_cr(ctxt, 0) & (X86_CR0_TS | X86_CR0_EM))
+		return emulate_nm(ctxt);
+
+	ctxt->ops->get_fpu(ctxt);
+	asm volatile("fnstsw %0": "+m"(fsw));
+	ctxt->ops->put_fpu(ctxt);
+
+	/* force 2 byte destination */
+	ctxt->dst.bytes = 2;
+	ctxt->dst.val = fsw;
+
+	return X86EMUL_CONTINUE;
+}
+
+static void decode_register_operand(struct x86_emulate_ctxt *ctxt,
+				    struct operand *op)
+{
+	unsigned reg = ctxt->modrm_reg;
+>>>>>>> refs/remotes/origin/master
 
 	if (!(ctxt->d & ModRM))
 		reg = (ctxt->b & 7) | ((ctxt->rex_prefix & 1) << 3);
 
 	if (ctxt->d & Sse) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		op->type = OP_XMM;
 		op->bytes = 16;
 		op->addr.xmm = reg;
 		read_sse_reg(ctxt, &op->vec_val, reg);
 		return;
 	}
+<<<<<<< HEAD
 
 	op->type = OP_REG;
 <<<<<<< HEAD
@@ -1281,10 +1916,25 @@ static void decode_register_operand(struct x86_emulate_ctxt *ctxt,
 		op->bytes = ctxt->op_bytes;
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+	if (ctxt->d & Mmx) {
+		reg &= 7;
+		op->type = OP_MM;
+		op->bytes = 8;
+		op->addr.mm = reg;
+		return;
+	}
+
+	op->type = OP_REG;
+	op->bytes = (ctxt->d & ByteOp) ? 1 : ctxt->op_bytes;
+	op->addr.reg = decode_register(ctxt, reg, ctxt->d & ByteOp);
+
+>>>>>>> refs/remotes/origin/master
 	fetch_register_operand(op);
 	op->orig_val = op->val;
 }
 
+<<<<<<< HEAD
 static int decode_modrm(struct x86_emulate_ctxt *ctxt,
 <<<<<<< HEAD
 			struct x86_emulate_ops *ops,
@@ -1295,11 +1945,23 @@ static int decode_modrm(struct x86_emulate_ctxt *ctxt,
 			struct operand *op)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void adjust_modrm_seg(struct x86_emulate_ctxt *ctxt, int base_reg)
+{
+	if (base_reg == VCPU_REGS_RSP || base_reg == VCPU_REGS_RBP)
+		ctxt->modrm_seg = VCPU_SREG_SS;
+}
+
+static int decode_modrm(struct x86_emulate_ctxt *ctxt,
+			struct operand *op)
+{
+>>>>>>> refs/remotes/origin/master
 	u8 sib;
 	int index_reg = 0, base_reg = 0, scale;
 	int rc = X86EMUL_CONTINUE;
 	ulong modrm_ea = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (c->rex_prefix) {
 		c->modrm_reg = (c->rex_prefix & 4) << 1;	/* REX.R */
@@ -1324,13 +1986,18 @@ static int decode_modrm(struct x86_emulate_ctxt *ctxt,
 			op->addr.xmm = c->modrm_rm;
 			read_sse_reg(ctxt, &op->vec_val, c->modrm_rm);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ctxt->rex_prefix) {
 		ctxt->modrm_reg = (ctxt->rex_prefix & 4) << 1;	/* REX.R */
 		index_reg = (ctxt->rex_prefix & 2) << 2; /* REX.X */
 		ctxt->modrm_rm = base_reg = (ctxt->rex_prefix & 1) << 3; /* REG.B */
 	}
 
+<<<<<<< HEAD
 	ctxt->modrm = insn_fetch(u8, ctxt);
+=======
+>>>>>>> refs/remotes/origin/master
 	ctxt->modrm_mod |= (ctxt->modrm & 0xc0) >> 6;
 	ctxt->modrm_reg |= (ctxt->modrm & 0x38) >> 3;
 	ctxt->modrm_rm |= (ctxt->modrm & 0x07);
@@ -1339,14 +2006,28 @@ static int decode_modrm(struct x86_emulate_ctxt *ctxt,
 	if (ctxt->modrm_mod == 3) {
 		op->type = OP_REG;
 		op->bytes = (ctxt->d & ByteOp) ? 1 : ctxt->op_bytes;
+<<<<<<< HEAD
 		op->addr.reg = decode_register(ctxt->modrm_rm,
 					       ctxt->regs, ctxt->d & ByteOp);
+=======
+		op->addr.reg = decode_register(ctxt, ctxt->modrm_rm,
+				ctxt->d & ByteOp);
+>>>>>>> refs/remotes/origin/master
 		if (ctxt->d & Sse) {
 			op->type = OP_XMM;
 			op->bytes = 16;
 			op->addr.xmm = ctxt->modrm_rm;
 			read_sse_reg(ctxt, &op->vec_val, ctxt->modrm_rm);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return rc;
+		}
+		if (ctxt->d & Mmx) {
+			op->type = OP_MM;
+			op->bytes = 8;
+			op->addr.xmm = ctxt->modrm_rm & 7;
+>>>>>>> refs/remotes/origin/master
 			return rc;
 		}
 		fetch_register_operand(op);
@@ -1355,6 +2036,7 @@ static int decode_modrm(struct x86_emulate_ctxt *ctxt,
 
 	op->type = OP_MEM;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (c->ad_bytes == 2) {
 		unsigned bx = c->regs[VCPU_REGS_RBX];
@@ -1382,6 +2064,13 @@ static int decode_modrm(struct x86_emulate_ctxt *ctxt,
 		unsigned bp = ctxt->regs[VCPU_REGS_RBP];
 		unsigned si = ctxt->regs[VCPU_REGS_RSI];
 		unsigned di = ctxt->regs[VCPU_REGS_RDI];
+=======
+	if (ctxt->ad_bytes == 2) {
+		unsigned bx = reg_read(ctxt, VCPU_REGS_RBX);
+		unsigned bp = reg_read(ctxt, VCPU_REGS_RBP);
+		unsigned si = reg_read(ctxt, VCPU_REGS_RSI);
+		unsigned di = reg_read(ctxt, VCPU_REGS_RDI);
+>>>>>>> refs/remotes/origin/master
 
 		/* 16-bit ModR/M decode. */
 		switch (ctxt->modrm_mod) {
@@ -1397,7 +2086,10 @@ static int decode_modrm(struct x86_emulate_ctxt *ctxt,
 			break;
 		}
 		switch (ctxt->modrm_rm) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		case 0:
 			modrm_ea += bx + si;
 			break;
@@ -1418,16 +2110,21 @@ static int decode_modrm(struct x86_emulate_ctxt *ctxt,
 			break;
 		case 6:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (c->modrm_mod != 0)
 =======
 			if (ctxt->modrm_mod != 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ctxt->modrm_mod != 0)
+>>>>>>> refs/remotes/origin/master
 				modrm_ea += bp;
 			break;
 		case 7:
 			modrm_ea += bx;
 			break;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (c->modrm_rm == 2 || c->modrm_rm == 3 ||
 		    (c->modrm_rm == 6 && c->modrm_mod != 0))
@@ -1438,6 +2135,8 @@ static int decode_modrm(struct x86_emulate_ctxt *ctxt,
 		if ((c->modrm_rm & 7) == 4) {
 			sib = insn_fetch(u8, 1, c->eip);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ctxt->modrm_rm == 2 || ctxt->modrm_rm == 3 ||
 		    (ctxt->modrm_rm == 6 && ctxt->modrm_mod != 0))
 			ctxt->modrm_seg = VCPU_SREG_SS;
@@ -1446,11 +2145,15 @@ static int decode_modrm(struct x86_emulate_ctxt *ctxt,
 		/* 32/64-bit ModR/M decode. */
 		if ((ctxt->modrm_rm & 7) == 4) {
 			sib = insn_fetch(u8, ctxt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			index_reg |= (sib >> 3) & 7;
 			base_reg |= sib & 7;
 			scale = sib >> 6;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if ((base_reg & 7) == 5 && c->modrm_mod == 0)
 				modrm_ea += insn_fetch(s32, 4, c->eip);
@@ -1485,6 +2188,24 @@ static int decode_modrm(struct x86_emulate_ctxt *ctxt,
 				ctxt->rip_relative = 1;
 		} else
 			modrm_ea += ctxt->regs[ctxt->modrm_rm];
+=======
+			if ((base_reg & 7) == 5 && ctxt->modrm_mod == 0)
+				modrm_ea += insn_fetch(s32, ctxt);
+			else {
+				modrm_ea += reg_read(ctxt, base_reg);
+				adjust_modrm_seg(ctxt, base_reg);
+			}
+			if (index_reg != 4)
+				modrm_ea += reg_read(ctxt, index_reg) << scale;
+		} else if ((ctxt->modrm_rm & 7) == 5 && ctxt->modrm_mod == 0) {
+			if (ctxt->mode == X86EMUL_MODE_PROT64)
+				ctxt->rip_relative = 1;
+		} else {
+			base_reg = ctxt->modrm_rm;
+			modrm_ea += reg_read(ctxt, base_reg);
+			adjust_modrm_seg(ctxt, base_reg);
+		}
+>>>>>>> refs/remotes/origin/master
 		switch (ctxt->modrm_mod) {
 		case 0:
 			if (ctxt->modrm_rm == 5)
@@ -1495,7 +2216,10 @@ static int decode_modrm(struct x86_emulate_ctxt *ctxt,
 			break;
 		case 2:
 			modrm_ea += insn_fetch(s32, ctxt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -1505,6 +2229,7 @@ done:
 }
 
 static int decode_abs(struct x86_emulate_ctxt *ctxt,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		      struct x86_emulate_ops *ops,
 		      struct operand *op)
@@ -1523,6 +2248,8 @@ static int decode_abs(struct x86_emulate_ctxt *ctxt,
 	case 8:
 		op->addr.mem.ea = insn_fetch(u64, 8, c->eip);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		      struct operand *op)
 {
 	int rc = X86EMUL_CONTINUE;
@@ -1537,13 +2264,17 @@ static int decode_abs(struct x86_emulate_ctxt *ctxt,
 		break;
 	case 8:
 		op->addr.mem.ea = insn_fetch(u64, ctxt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 done:
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void fetch_bit_operand(struct decode_cache *c)
 {
@@ -1571,6 +2302,8 @@ static int read_emulated(struct x86_emulate_ctxt *ctxt,
 	int rc;
 	struct read_cache *mc = &ctxt->decode.mem_read;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void fetch_bit_operand(struct x86_emulate_ctxt *ctxt)
 {
 	long sv = 0, mask;
@@ -1595,6 +2328,7 @@ static int read_emulated(struct x86_emulate_ctxt *ctxt,
 {
 	int rc;
 	struct read_cache *mc = &ctxt->mem_read;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	while (size) {
@@ -1620,6 +2354,24 @@ static int read_emulated(struct x86_emulate_ctxt *ctxt,
 		dest += n;
 		addr += n;
 	}
+=======
+
+	if (mc->pos < mc->end)
+		goto read_cached;
+
+	WARN_ON((mc->end + size) >= sizeof(mc->data));
+
+	rc = ctxt->ops->read_emulated(ctxt, addr, mc->data + mc->end, size,
+				      &ctxt->exception);
+	if (rc != X86EMUL_CONTINUE)
+		return rc;
+
+	mc->end += size;
+
+read_cached:
+	memcpy(dest, mc->data + mc->pos, size);
+	mc->pos += size;
+>>>>>>> refs/remotes/origin/master
 	return X86EMUL_CONTINUE;
 }
 
@@ -1635,10 +2387,14 @@ static int segmented_read(struct x86_emulate_ctxt *ctxt,
 	if (rc != X86EMUL_CONTINUE)
 		return rc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return read_emulated(ctxt, ctxt->ops, linear, data, size);
 =======
 	return read_emulated(ctxt, linear, data, size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return read_emulated(ctxt, linear, data, size);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int segmented_write(struct x86_emulate_ctxt *ctxt,
@@ -1673,6 +2429,7 @@ static int segmented_cmpxchg(struct x86_emulate_ctxt *ctxt,
 
 static int pio_in_emulated(struct x86_emulate_ctxt *ctxt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			   struct x86_emulate_ops *ops,
 			   unsigned int size, unsigned short port,
 			   void *dest)
@@ -1688,6 +2445,8 @@ static int pio_in_emulated(struct x86_emulate_ctxt *ctxt,
 			offset_in_page(c->regs[VCPU_REGS_RDI]) :
 			PAGE_SIZE - offset_in_page(c->regs[VCPU_REGS_RDI]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			   unsigned int size, unsigned short port,
 			   void *dest)
 {
@@ -1696,25 +2455,37 @@ static int pio_in_emulated(struct x86_emulate_ctxt *ctxt,
 	if (rc->pos == rc->end) { /* refill pio read ahead */
 		unsigned int in_page, n;
 		unsigned int count = ctxt->rep_prefix ?
+<<<<<<< HEAD
 			address_mask(ctxt, ctxt->regs[VCPU_REGS_RCX]) : 1;
 		in_page = (ctxt->eflags & EFLG_DF) ?
 			offset_in_page(ctxt->regs[VCPU_REGS_RDI]) :
 			PAGE_SIZE - offset_in_page(ctxt->regs[VCPU_REGS_RDI]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			address_mask(ctxt, reg_read(ctxt, VCPU_REGS_RCX)) : 1;
+		in_page = (ctxt->eflags & EFLG_DF) ?
+			offset_in_page(reg_read(ctxt, VCPU_REGS_RDI)) :
+			PAGE_SIZE - offset_in_page(reg_read(ctxt, VCPU_REGS_RDI));
+>>>>>>> refs/remotes/origin/master
 		n = min(min(in_page, (unsigned int)sizeof(rc->data)) / size,
 			count);
 		if (n == 0)
 			n = 1;
 		rc->pos = rc->end = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!ops->pio_in_emulated(ctxt, size, port, rc->data, n))
 =======
 		if (!ctxt->ops->pio_in_emulated(ctxt, size, port, rc->data, n))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!ctxt->ops->pio_in_emulated(ctxt, size, port, rc->data, n))
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		rc->end = n * size;
 	}
 
+<<<<<<< HEAD
 	memcpy(dest, rc->data + rc->pos, size);
 	rc->pos += size;
 	return 1;
@@ -1726,6 +2497,20 @@ static void get_descriptor_table_ptr(struct x86_emulate_ctxt *ctxt,
 				     u16 selector, struct desc_ptr *dt)
 {
 =======
+=======
+	if (ctxt->rep_prefix && !(ctxt->eflags & EFLG_DF)) {
+		ctxt->dst.data = rc->data + rc->pos;
+		ctxt->dst.type = OP_MEM_STR;
+		ctxt->dst.count = (rc->end - rc->pos) / size;
+		rc->pos = rc->end;
+	} else {
+		memcpy(dest, rc->data + rc->pos, size);
+		rc->pos += size;
+	}
+	return 1;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int read_interrupt_descriptor(struct x86_emulate_ctxt *ctxt,
 				     u16 index, struct desc_struct *desc)
 {
@@ -1745,9 +2530,14 @@ static int read_interrupt_descriptor(struct x86_emulate_ctxt *ctxt,
 static void get_descriptor_table_ptr(struct x86_emulate_ctxt *ctxt,
 				     u16 selector, struct desc_ptr *dt)
 {
+<<<<<<< HEAD
 	struct x86_emulate_ops *ops = ctxt->ops;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct x86_emulate_ops *ops = ctxt->ops;
+
+>>>>>>> refs/remotes/origin/master
 	if (selector & 1 << 2) {
 		struct desc_struct desc;
 		u16 sel;
@@ -1764,6 +2554,7 @@ static void get_descriptor_table_ptr(struct x86_emulate_ctxt *ctxt,
 
 /* allowed just for 8 bytes segments */
 static int read_segment_descriptor(struct x86_emulate_ctxt *ctxt,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				   struct x86_emulate_ops *ops,
 =======
@@ -1785,6 +2576,13 @@ static int read_segment_descriptor(struct x86_emulate_ctxt *ctxt,
 
        return ret;
 =======
+=======
+				   u16 selector, struct desc_struct *desc,
+				   ulong *desc_addr_p)
+{
+	struct desc_ptr dt;
+	u16 index = selector >> 3;
+>>>>>>> refs/remotes/origin/master
 	ulong addr;
 
 	get_descriptor_table_ptr(ctxt, selector, &dt);
@@ -1792,23 +2590,33 @@ static int read_segment_descriptor(struct x86_emulate_ctxt *ctxt,
 	if (dt.size < index * 8 + 7)
 		return emulate_gp(ctxt, selector & 0xfffc);
 
+<<<<<<< HEAD
 	addr = dt.address + index * 8;
 	return ctxt->ops->read_std(ctxt, addr, desc, sizeof *desc,
 				   &ctxt->exception);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*desc_addr_p = addr = dt.address + index * 8;
+	return ctxt->ops->read_std(ctxt, addr, desc, sizeof *desc,
+				   &ctxt->exception);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* allowed just for 8 bytes segments */
 static int write_segment_descriptor(struct x86_emulate_ctxt *ctxt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    struct x86_emulate_ops *ops,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				    u16 selector, struct desc_struct *desc)
 {
 	struct desc_ptr dt;
 	u16 index = selector >> 3;
 	ulong addr;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int ret;
 
@@ -1817,11 +2625,16 @@ static int write_segment_descriptor(struct x86_emulate_ctxt *ctxt,
 
 	get_descriptor_table_ptr(ctxt, selector, &dt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	get_descriptor_table_ptr(ctxt, selector, &dt);
+>>>>>>> refs/remotes/origin/master
 
 	if (dt.size < index * 8 + 7)
 		return emulate_gp(ctxt, selector & 0xfffc);
 
 	addr = dt.address + index * 8;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = ops->write_std(ctxt, addr, desc, sizeof *desc, &ctxt->exception);
 
@@ -1830,10 +2643,15 @@ static int write_segment_descriptor(struct x86_emulate_ctxt *ctxt,
 	return ctxt->ops->write_std(ctxt, addr, desc, sizeof *desc,
 				    &ctxt->exception);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ctxt->ops->write_std(ctxt, addr, desc, sizeof *desc,
+				    &ctxt->exception);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Does not support long mode */
 static int load_segment_descriptor(struct x86_emulate_ctxt *ctxt,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				   struct x86_emulate_ops *ops,
 =======
@@ -1841,10 +2659,16 @@ static int load_segment_descriptor(struct x86_emulate_ctxt *ctxt,
 				   u16 selector, int seg)
 {
 	struct desc_struct seg_desc;
+=======
+				   u16 selector, int seg)
+{
+	struct desc_struct seg_desc, old_desc;
+>>>>>>> refs/remotes/origin/master
 	u8 dpl, rpl, cpl;
 	unsigned err_vec = GP_VECTOR;
 	u32 err_code = 0;
 	bool null_selector = !(selector & ~0x3); /* 0000-0003 are null */
+<<<<<<< HEAD
 	int ret;
 
 	memset(&seg_desc, 0, sizeof seg_desc);
@@ -1852,11 +2676,28 @@ static int load_segment_descriptor(struct x86_emulate_ctxt *ctxt,
 	if ((seg <= VCPU_SREG_GS && ctxt->mode == X86EMUL_MODE_VM86)
 	    || ctxt->mode == X86EMUL_MODE_REAL) {
 		/* set real mode segment descriptor */
+=======
+	ulong desc_addr;
+	int ret;
+	u16 dummy;
+
+	memset(&seg_desc, 0, sizeof seg_desc);
+
+	if (ctxt->mode == X86EMUL_MODE_REAL) {
+		/* set real mode segment descriptor (keep limit etc. for
+		 * unreal mode) */
+		ctxt->ops->get_segment(ctxt, &dummy, &seg_desc, NULL, seg);
+		set_desc_base(&seg_desc, selector << 4);
+		goto load;
+	} else if (seg <= VCPU_SREG_GS && ctxt->mode == X86EMUL_MODE_VM86) {
+		/* VM86 needs a clean new segment descriptor */
+>>>>>>> refs/remotes/origin/master
 		set_desc_base(&seg_desc, selector << 4);
 		set_desc_limit(&seg_desc, 0xffff);
 		seg_desc.type = 3;
 		seg_desc.p = 1;
 		seg_desc.s = 1;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 		if (ctxt->mode == X86EMUL_MODE_VM86)
@@ -1867,6 +2708,20 @@ static int load_segment_descriptor(struct x86_emulate_ctxt *ctxt,
 
 	/* NULL selector is not valid for TR, CS and SS */
 	if ((seg == VCPU_SREG_CS || seg == VCPU_SREG_SS || seg == VCPU_SREG_TR)
+=======
+		seg_desc.dpl = 3;
+		goto load;
+	}
+
+	rpl = selector & 3;
+	cpl = ctxt->ops->cpl(ctxt);
+
+	/* NULL selector is not valid for TR, CS and SS (except for long mode) */
+	if ((seg == VCPU_SREG_CS
+	     || (seg == VCPU_SREG_SS
+		 && (ctxt->mode != X86EMUL_MODE_PROT64 || rpl != cpl))
+	     || seg == VCPU_SREG_TR)
+>>>>>>> refs/remotes/origin/master
 	    && null_selector)
 		goto exception;
 
@@ -1878,17 +2733,25 @@ static int load_segment_descriptor(struct x86_emulate_ctxt *ctxt,
 		goto load;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = read_segment_descriptor(ctxt, ops, selector, &seg_desc);
 =======
 	ret = read_segment_descriptor(ctxt, selector, &seg_desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = read_segment_descriptor(ctxt, selector, &seg_desc, &desc_addr);
+>>>>>>> refs/remotes/origin/master
 	if (ret != X86EMUL_CONTINUE)
 		return ret;
 
 	err_code = selector & 0xfffc;
 	err_vec = GP_VECTOR;
 
+<<<<<<< HEAD
 	/* can't load system descriptor into segment selecor */
+=======
+	/* can't load system descriptor into segment selector */
+>>>>>>> refs/remotes/origin/master
 	if (seg <= VCPU_SREG_GS && !seg_desc.s)
 		goto exception;
 
@@ -1897,6 +2760,7 @@ static int load_segment_descriptor(struct x86_emulate_ctxt *ctxt,
 		goto exception;
 	}
 
+<<<<<<< HEAD
 	rpl = selector & 3;
 	dpl = seg_desc.dpl;
 <<<<<<< HEAD
@@ -1904,6 +2768,9 @@ static int load_segment_descriptor(struct x86_emulate_ctxt *ctxt,
 =======
 	cpl = ctxt->ops->cpl(ctxt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dpl = seg_desc.dpl;
+>>>>>>> refs/remotes/origin/master
 
 	switch (seg) {
 	case VCPU_SREG_SS:
@@ -1933,6 +2800,15 @@ static int load_segment_descriptor(struct x86_emulate_ctxt *ctxt,
 	case VCPU_SREG_TR:
 		if (seg_desc.s || (seg_desc.type != 1 && seg_desc.type != 9))
 			goto exception;
+<<<<<<< HEAD
+=======
+		old_desc = seg_desc;
+		seg_desc.type |= 2; /* busy */
+		ret = ctxt->ops->cmpxchg_emulated(ctxt, desc_addr, &old_desc, &seg_desc,
+						  sizeof(seg_desc), &ctxt->exception);
+		if (ret != X86EMUL_CONTINUE)
+			return ret;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case VCPU_SREG_LDTR:
 		if (seg_desc.s || seg_desc.type != 2)
@@ -1955,19 +2831,27 @@ static int load_segment_descriptor(struct x86_emulate_ctxt *ctxt,
 		/* mark segment as accessed */
 		seg_desc.type |= 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = write_segment_descriptor(ctxt, ops, selector, &seg_desc);
 =======
 		ret = write_segment_descriptor(ctxt, selector, &seg_desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = write_segment_descriptor(ctxt, selector, &seg_desc);
+>>>>>>> refs/remotes/origin/master
 		if (ret != X86EMUL_CONTINUE)
 			return ret;
 	}
 load:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ops->set_segment(ctxt, selector, &seg_desc, 0, seg);
 =======
 	ctxt->ops->set_segment(ctxt, selector, &seg_desc, 0, seg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->ops->set_segment(ctxt, selector, &seg_desc, 0, seg);
+>>>>>>> refs/remotes/origin/master
 	return X86EMUL_CONTINUE;
 exception:
 	emulate_exception(ctxt, err_vec, err_code, true);
@@ -1993,6 +2877,7 @@ static void write_register_operand(struct operand *op)
 	}
 }
 
+<<<<<<< HEAD
 static int writeback(struct x86_emulate_ctxt *ctxt)
 {
 	int rc;
@@ -2020,10 +2905,20 @@ static int writeback(struct x86_emulate_ctxt *ctxt)
 	switch (ctxt->dst.type) {
 	case OP_REG:
 		write_register_operand(&ctxt->dst);
+=======
+static int writeback(struct x86_emulate_ctxt *ctxt, struct operand *op)
+{
+	int rc;
+
+	switch (op->type) {
+	case OP_REG:
+		write_register_operand(op);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case OP_MEM:
 		if (ctxt->lock_prefix)
 			rc = segmented_cmpxchg(ctxt,
+<<<<<<< HEAD
 					       ctxt->dst.addr.mem,
 					       &ctxt->dst.orig_val,
 					       &ctxt->dst.val,
@@ -2034,15 +2929,41 @@ static int writeback(struct x86_emulate_ctxt *ctxt)
 					     &ctxt->dst.val,
 					     ctxt->dst.bytes);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					       op->addr.mem,
+					       &op->orig_val,
+					       &op->val,
+					       op->bytes);
+		else
+			rc = segmented_write(ctxt,
+					     op->addr.mem,
+					     &op->val,
+					     op->bytes);
+		if (rc != X86EMUL_CONTINUE)
+			return rc;
+		break;
+	case OP_MEM_STR:
+		rc = segmented_write(ctxt,
+				op->addr.mem,
+				op->data,
+				op->bytes * op->count);
+>>>>>>> refs/remotes/origin/master
 		if (rc != X86EMUL_CONTINUE)
 			return rc;
 		break;
 	case OP_XMM:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		write_sse_reg(ctxt, &c->dst.vec_val, c->dst.addr.xmm);
 =======
 		write_sse_reg(ctxt, &ctxt->dst.vec_val, ctxt->dst.addr.xmm);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		write_sse_reg(ctxt, &op->vec_val, op->addr.xmm);
+		break;
+	case OP_MM:
+		write_mmx_reg(ctxt, &op->mm_val, op->addr.mm);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case OP_NONE:
 		/* no writeback */
@@ -2053,6 +2974,7 @@ static int writeback(struct x86_emulate_ctxt *ctxt)
 	return X86EMUL_CONTINUE;
 }
 
+<<<<<<< HEAD
 static int em_push(struct x86_emulate_ctxt *ctxt)
 {
 <<<<<<< HEAD
@@ -2077,11 +2999,30 @@ static int em_push(struct x86_emulate_ctxt *ctxt)
 	ctxt->dst.type = OP_NONE;
 	return segmented_write(ctxt, addr, &ctxt->src.val, ctxt->op_bytes);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int push(struct x86_emulate_ctxt *ctxt, void *data, int bytes)
+{
+	struct segmented_address addr;
+
+	rsp_increment(ctxt, -bytes);
+	addr.ea = reg_read(ctxt, VCPU_REGS_RSP) & stack_mask(ctxt);
+	addr.seg = VCPU_SREG_SS;
+
+	return segmented_write(ctxt, addr, data, bytes);
+}
+
+static int em_push(struct x86_emulate_ctxt *ctxt)
+{
+	/* Disable writeback. */
+	ctxt->dst.type = OP_NONE;
+	return push(ctxt, &ctxt->src.val, ctxt->op_bytes);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int emulate_pop(struct x86_emulate_ctxt *ctxt,
 		       void *dest, int len)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 	int rc;
@@ -2094,21 +3035,32 @@ static int emulate_pop(struct x86_emulate_ctxt *ctxt,
 
 	addr.ea = register_address(ctxt, ctxt->regs[VCPU_REGS_RSP]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rc;
+	struct segmented_address addr;
+
+	addr.ea = reg_read(ctxt, VCPU_REGS_RSP) & stack_mask(ctxt);
+>>>>>>> refs/remotes/origin/master
 	addr.seg = VCPU_SREG_SS;
 	rc = segmented_read(ctxt, addr, dest, len);
 	if (rc != X86EMUL_CONTINUE)
 		return rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	register_address_increment(c, &c->regs[VCPU_REGS_RSP], len);
 =======
 	register_address_increment(ctxt, &ctxt->regs[VCPU_REGS_RSP], len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rsp_increment(ctxt, len);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
 static int em_pop(struct x86_emulate_ctxt *ctxt)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 
@@ -2119,21 +3071,30 @@ static int emulate_popf(struct x86_emulate_ctxt *ctxt,
 		       struct x86_emulate_ops *ops,
 		       void *dest, int len)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return emulate_pop(ctxt, &ctxt->dst.val, ctxt->op_bytes);
 }
 
 static int emulate_popf(struct x86_emulate_ctxt *ctxt,
 			void *dest, int len)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 	unsigned long val, change_mask;
 	int iopl = (ctxt->eflags & X86_EFLAGS_IOPL) >> IOPL_SHIFT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int cpl = ops->cpl(ctxt);
 =======
 	int cpl = ctxt->ops->cpl(ctxt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int cpl = ctxt->ops->cpl(ctxt);
+>>>>>>> refs/remotes/origin/master
 
 	rc = emulate_pop(ctxt, &val, len);
 	if (rc != X86EMUL_CONTINUE)
@@ -2170,6 +3131,7 @@ static int emulate_popf(struct x86_emulate_ctxt *ctxt,
 static int em_popf(struct x86_emulate_ctxt *ctxt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 
 	c->dst.type = OP_REG;
@@ -2185,22 +3147,60 @@ static int emulate_push_sreg(struct x86_emulate_ctxt *ctxt,
 
 	c->src.val = get_segment_selector(ctxt, seg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ctxt->dst.type = OP_REG;
 	ctxt->dst.addr.reg = &ctxt->eflags;
 	ctxt->dst.bytes = ctxt->op_bytes;
 	return emulate_popf(ctxt, &ctxt->dst.val, ctxt->op_bytes);
 }
 
+<<<<<<< HEAD
+=======
+static int em_enter(struct x86_emulate_ctxt *ctxt)
+{
+	int rc;
+	unsigned frame_size = ctxt->src.val;
+	unsigned nesting_level = ctxt->src2.val & 31;
+	ulong rbp;
+
+	if (nesting_level)
+		return X86EMUL_UNHANDLEABLE;
+
+	rbp = reg_read(ctxt, VCPU_REGS_RBP);
+	rc = push(ctxt, &rbp, stack_size(ctxt));
+	if (rc != X86EMUL_CONTINUE)
+		return rc;
+	assign_masked(reg_rmw(ctxt, VCPU_REGS_RBP), reg_read(ctxt, VCPU_REGS_RSP),
+		      stack_mask(ctxt));
+	assign_masked(reg_rmw(ctxt, VCPU_REGS_RSP),
+		      reg_read(ctxt, VCPU_REGS_RSP) - frame_size,
+		      stack_mask(ctxt));
+	return X86EMUL_CONTINUE;
+}
+
+static int em_leave(struct x86_emulate_ctxt *ctxt)
+{
+	assign_masked(reg_rmw(ctxt, VCPU_REGS_RSP), reg_read(ctxt, VCPU_REGS_RBP),
+		      stack_mask(ctxt));
+	return emulate_pop(ctxt, reg_rmw(ctxt, VCPU_REGS_RBP), ctxt->op_bytes);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int em_push_sreg(struct x86_emulate_ctxt *ctxt)
 {
 	int seg = ctxt->src2.val;
 
 	ctxt->src.val = get_segment_selector(ctxt, seg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return em_push(ctxt);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int emulate_pop_sreg(struct x86_emulate_ctxt *ctxt,
 			     struct x86_emulate_ops *ops, int seg)
@@ -2215,6 +3215,8 @@ static int emulate_pop_sreg(struct x86_emulate_ctxt *ctxt,
 
 	rc = load_segment_descriptor(ctxt, ops, (u16)selector, seg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int em_pop_sreg(struct x86_emulate_ctxt *ctxt)
 {
 	int seg = ctxt->src2.val;
@@ -2226,28 +3228,39 @@ static int em_pop_sreg(struct x86_emulate_ctxt *ctxt)
 		return rc;
 
 	rc = load_segment_descriptor(ctxt, (u16)selector, seg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
 static int em_pusha(struct x86_emulate_ctxt *ctxt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 	unsigned long old_esp = c->regs[VCPU_REGS_RSP];
 =======
 	unsigned long old_esp = ctxt->regs[VCPU_REGS_RSP];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long old_esp = reg_read(ctxt, VCPU_REGS_RSP);
+>>>>>>> refs/remotes/origin/master
 	int rc = X86EMUL_CONTINUE;
 	int reg = VCPU_REGS_RAX;
 
 	while (reg <= VCPU_REGS_RDI) {
 		(reg == VCPU_REGS_RSP) ?
 <<<<<<< HEAD
+<<<<<<< HEAD
 		(c->src.val = old_esp) : (c->src.val = c->regs[reg]);
 =======
 		(ctxt->src.val = old_esp) : (ctxt->src.val = ctxt->regs[reg]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(ctxt->src.val = old_esp) : (ctxt->src.val = reg_read(ctxt, reg));
+>>>>>>> refs/remotes/origin/master
 
 		rc = em_push(ctxt);
 		if (rc != X86EMUL_CONTINUE)
@@ -2262,26 +3275,34 @@ static int em_pusha(struct x86_emulate_ctxt *ctxt)
 static int em_pushf(struct x86_emulate_ctxt *ctxt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 
 	c->src.val =  (unsigned long)ctxt->eflags;
 =======
 	ctxt->src.val =  (unsigned long)ctxt->eflags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->src.val =  (unsigned long)ctxt->eflags;
+>>>>>>> refs/remotes/origin/master
 	return em_push(ctxt);
 }
 
 static int em_popa(struct x86_emulate_ctxt *ctxt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc = X86EMUL_CONTINUE;
 	int reg = VCPU_REGS_RDI;
 
 	while (reg >= VCPU_REGS_RAX) {
 		if (reg == VCPU_REGS_RSP) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			register_address_increment(c, &c->regs[VCPU_REGS_RSP],
 							c->op_bytes);
@@ -2297,6 +3318,13 @@ static int em_popa(struct x86_emulate_ctxt *ctxt)
 
 		rc = emulate_pop(ctxt, &ctxt->regs[reg], ctxt->op_bytes);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			rsp_increment(ctxt, ctxt->op_bytes);
+			--reg;
+		}
+
+		rc = emulate_pop(ctxt, reg_rmw(ctxt, reg), ctxt->op_bytes);
+>>>>>>> refs/remotes/origin/master
 		if (rc != X86EMUL_CONTINUE)
 			break;
 		--reg;
@@ -2304,6 +3332,7 @@ static int em_popa(struct x86_emulate_ctxt *ctxt)
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int emulate_int_real(struct x86_emulate_ctxt *ctxt,
 			       struct x86_emulate_ops *ops, int irq)
@@ -2314,6 +3343,11 @@ int emulate_int_real(struct x86_emulate_ctxt *ctxt, int irq)
 {
 	struct x86_emulate_ops *ops = ctxt->ops;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __emulate_int_real(struct x86_emulate_ctxt *ctxt, int irq)
+{
+	const struct x86_emulate_ops *ops = ctxt->ops;
+>>>>>>> refs/remotes/origin/master
 	int rc;
 	struct desc_ptr dt;
 	gva_t cs_addr;
@@ -2322,10 +3356,14 @@ int emulate_int_real(struct x86_emulate_ctxt *ctxt, int irq)
 
 	/* TODO: Add limit checks */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	c->src.val = ctxt->eflags;
 =======
 	ctxt->src.val = ctxt->eflags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->src.val = ctxt->eflags;
+>>>>>>> refs/remotes/origin/master
 	rc = em_push(ctxt);
 	if (rc != X86EMUL_CONTINUE)
 		return rc;
@@ -2333,19 +3371,27 @@ int emulate_int_real(struct x86_emulate_ctxt *ctxt, int irq)
 	ctxt->eflags &= ~(EFLG_IF | EFLG_TF | EFLG_AC);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	c->src.val = get_segment_selector(ctxt, VCPU_SREG_CS);
 =======
 	ctxt->src.val = get_segment_selector(ctxt, VCPU_SREG_CS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->src.val = get_segment_selector(ctxt, VCPU_SREG_CS);
+>>>>>>> refs/remotes/origin/master
 	rc = em_push(ctxt);
 	if (rc != X86EMUL_CONTINUE)
 		return rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	c->src.val = c->eip;
 =======
 	ctxt->src.val = ctxt->_eip;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->src.val = ctxt->_eip;
+>>>>>>> refs/remotes/origin/master
 	rc = em_push(ctxt);
 	if (rc != X86EMUL_CONTINUE)
 		return rc;
@@ -2364,22 +3410,29 @@ int emulate_int_real(struct x86_emulate_ctxt *ctxt, int irq)
 		return rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = load_segment_descriptor(ctxt, ops, cs, VCPU_SREG_CS);
 	if (rc != X86EMUL_CONTINUE)
 		return rc;
 
 	c->eip = eip;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = load_segment_descriptor(ctxt, cs, VCPU_SREG_CS);
 	if (rc != X86EMUL_CONTINUE)
 		return rc;
 
 	ctxt->_eip = eip;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int emulate_int(struct x86_emulate_ctxt *ctxt,
 		       struct x86_emulate_ops *ops, int irq)
@@ -2388,12 +3441,29 @@ static int emulate_int(struct x86_emulate_ctxt *ctxt,
 	case X86EMUL_MODE_REAL:
 		return emulate_int_real(ctxt, ops, irq);
 =======
+=======
+int emulate_int_real(struct x86_emulate_ctxt *ctxt, int irq)
+{
+	int rc;
+
+	invalidate_registers(ctxt);
+	rc = __emulate_int_real(ctxt, irq);
+	if (rc == X86EMUL_CONTINUE)
+		writeback_registers(ctxt);
+	return rc;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int emulate_int(struct x86_emulate_ctxt *ctxt, int irq)
 {
 	switch(ctxt->mode) {
 	case X86EMUL_MODE_REAL:
+<<<<<<< HEAD
 		return emulate_int_real(ctxt, irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return __emulate_int_real(ctxt, irq);
+>>>>>>> refs/remotes/origin/master
 	case X86EMUL_MODE_VM86:
 	case X86EMUL_MODE_PROT16:
 	case X86EMUL_MODE_PROT32:
@@ -2405,6 +3475,7 @@ static int emulate_int(struct x86_emulate_ctxt *ctxt, int irq)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int emulate_iret_real(struct x86_emulate_ctxt *ctxt,
 			     struct x86_emulate_ops *ops)
 {
@@ -2413,6 +3484,10 @@ static int emulate_iret_real(struct x86_emulate_ctxt *ctxt,
 static int emulate_iret_real(struct x86_emulate_ctxt *ctxt)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int emulate_iret_real(struct x86_emulate_ctxt *ctxt)
+{
+>>>>>>> refs/remotes/origin/master
 	int rc = X86EMUL_CONTINUE;
 	unsigned long temp_eip = 0;
 	unsigned long temp_eflags = 0;
@@ -2425,10 +3500,14 @@ static int emulate_iret_real(struct x86_emulate_ctxt *ctxt)
 	/* TODO: Add stack limit check */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = emulate_pop(ctxt, &temp_eip, c->op_bytes);
 =======
 	rc = emulate_pop(ctxt, &temp_eip, ctxt->op_bytes);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = emulate_pop(ctxt, &temp_eip, ctxt->op_bytes);
+>>>>>>> refs/remotes/origin/master
 
 	if (rc != X86EMUL_CONTINUE)
 		return rc;
@@ -2437,32 +3516,45 @@ static int emulate_iret_real(struct x86_emulate_ctxt *ctxt)
 		return emulate_gp(ctxt, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = emulate_pop(ctxt, &cs, c->op_bytes);
 =======
 	rc = emulate_pop(ctxt, &cs, ctxt->op_bytes);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = emulate_pop(ctxt, &cs, ctxt->op_bytes);
+>>>>>>> refs/remotes/origin/master
 
 	if (rc != X86EMUL_CONTINUE)
 		return rc;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	rc = emulate_pop(ctxt, &temp_eflags, c->op_bytes);
 =======
 	rc = emulate_pop(ctxt, &temp_eflags, ctxt->op_bytes);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = emulate_pop(ctxt, &temp_eflags, ctxt->op_bytes);
+>>>>>>> refs/remotes/origin/master
 
 	if (rc != X86EMUL_CONTINUE)
 		return rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = load_segment_descriptor(ctxt, ops, (u16)cs, VCPU_SREG_CS);
 =======
 	rc = load_segment_descriptor(ctxt, (u16)cs, VCPU_SREG_CS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = load_segment_descriptor(ctxt, (u16)cs, VCPU_SREG_CS);
+>>>>>>> refs/remotes/origin/master
 
 	if (rc != X86EMUL_CONTINUE)
 		return rc;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	c->eip = temp_eip;
 
@@ -2471,13 +3563,18 @@ static int emulate_iret_real(struct x86_emulate_ctxt *ctxt)
 		ctxt->eflags = ((temp_eflags & mask) | (ctxt->eflags & vm86_mask));
 	else if (c->op_bytes == 2) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ctxt->_eip = temp_eip;
 
 
 	if (ctxt->op_bytes == 4)
 		ctxt->eflags = ((temp_eflags & mask) | (ctxt->eflags & vm86_mask));
 	else if (ctxt->op_bytes == 2) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ctxt->eflags &= ~0xffff;
 		ctxt->eflags |= temp_eflags;
 	}
@@ -2489,6 +3586,7 @@ static int emulate_iret_real(struct x86_emulate_ctxt *ctxt)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int emulate_iret(struct x86_emulate_ctxt *ctxt,
 				    struct x86_emulate_ops* ops)
 {
@@ -2496,12 +3594,17 @@ static inline int emulate_iret(struct x86_emulate_ctxt *ctxt,
 	case X86EMUL_MODE_REAL:
 		return emulate_iret_real(ctxt, ops);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int em_iret(struct x86_emulate_ctxt *ctxt)
 {
 	switch(ctxt->mode) {
 	case X86EMUL_MODE_REAL:
 		return emulate_iret_real(ctxt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case X86EMUL_MODE_VM86:
 	case X86EMUL_MODE_PROT16:
 	case X86EMUL_MODE_PROT32:
@@ -2514,6 +3617,7 @@ static int em_iret(struct x86_emulate_ctxt *ctxt)
 
 static int em_jmp_far(struct x86_emulate_ctxt *ctxt)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 	int rc;
@@ -2563,6 +3667,8 @@ static int em_grp2(struct x86_emulate_ctxt *ctxt)
 	case 7:	/* sar */
 		emulate_2op_SrcB("sar", c->src, c->dst, ctxt->eflags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc;
 	unsigned short sel;
 
@@ -2577,6 +3683,7 @@ static int em_grp2(struct x86_emulate_ctxt *ctxt)
 	return X86EMUL_CONTINUE;
 }
 
+<<<<<<< HEAD
 static int em_grp2(struct x86_emulate_ctxt *ctxt)
 {
 	switch (ctxt->modrm_reg) {
@@ -2720,21 +3827,35 @@ static int em_grp45(struct x86_emulate_ctxt *ctxt)
 	case 1:	/* dec */
 		emulate_1op(ctxt, "dec");
 		break;
+=======
+static int em_grp45(struct x86_emulate_ctxt *ctxt)
+{
+	int rc = X86EMUL_CONTINUE;
+
+	switch (ctxt->modrm_reg) {
+>>>>>>> refs/remotes/origin/master
 	case 2: /* call near abs */ {
 		long int old_eip;
 		old_eip = ctxt->_eip;
 		ctxt->_eip = ctxt->src.val;
 		ctxt->src.val = old_eip;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		rc = em_push(ctxt);
 		break;
 	}
 	case 4: /* jmp abs */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		c->eip = c->src.val;
 =======
 		ctxt->_eip = ctxt->src.val;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ctxt->_eip = ctxt->src.val;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case 5: /* jmp far */
 		rc = em_jmp_far(ctxt);
@@ -2746,6 +3867,7 @@ static int em_grp45(struct x86_emulate_ctxt *ctxt)
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int em_grp9(struct x86_emulate_ctxt *ctxt)
 {
@@ -2761,10 +3883,13 @@ static int em_grp9(struct x86_emulate_ctxt *ctxt)
 		c->dst.val64 = ((u64)c->regs[VCPU_REGS_RCX] << 32) |
 			(u32) c->regs[VCPU_REGS_RBX];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int em_cmpxchg8b(struct x86_emulate_ctxt *ctxt)
 {
 	u64 old = ctxt->dst.orig_val64;
 
+<<<<<<< HEAD
 	if (((u32) (old >> 0) != (u32) ctxt->regs[VCPU_REGS_RAX]) ||
 	    ((u32) (old >> 32) != (u32) ctxt->regs[VCPU_REGS_RDX])) {
 		ctxt->regs[VCPU_REGS_RAX] = (u32) (old >> 0);
@@ -2774,12 +3899,23 @@ static int em_cmpxchg8b(struct x86_emulate_ctxt *ctxt)
 		ctxt->dst.val64 = ((u64)ctxt->regs[VCPU_REGS_RCX] << 32) |
 			(u32) ctxt->regs[VCPU_REGS_RBX];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (((u32) (old >> 0) != (u32) reg_read(ctxt, VCPU_REGS_RAX)) ||
+	    ((u32) (old >> 32) != (u32) reg_read(ctxt, VCPU_REGS_RDX))) {
+		*reg_write(ctxt, VCPU_REGS_RAX) = (u32) (old >> 0);
+		*reg_write(ctxt, VCPU_REGS_RDX) = (u32) (old >> 32);
+		ctxt->eflags &= ~EFLG_ZF;
+	} else {
+		ctxt->dst.val64 = ((u64)reg_read(ctxt, VCPU_REGS_RCX) << 32) |
+			(u32) reg_read(ctxt, VCPU_REGS_RBX);
+>>>>>>> refs/remotes/origin/master
 
 		ctxt->eflags |= EFLG_ZF;
 	}
 	return X86EMUL_CONTINUE;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int emulate_ret_far(struct x86_emulate_ctxt *ctxt,
 			   struct x86_emulate_ops *ops)
@@ -2822,6 +3958,8 @@ setup_syscalls_segments(struct x86_emulate_ctxt *ctxt,
 			struct x86_emulate_ops *ops, struct desc_struct *cs,
 			struct desc_struct *ss)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int em_ret(struct x86_emulate_ctxt *ctxt)
 {
 	ctxt->dst.type = OP_REG;
@@ -2847,12 +3985,31 @@ static int em_ret_far(struct x86_emulate_ctxt *ctxt)
 	return rc;
 }
 
+<<<<<<< HEAD
+=======
+static int em_ret_far_imm(struct x86_emulate_ctxt *ctxt)
+{
+        int rc;
+
+        rc = em_ret_far(ctxt);
+        if (rc != X86EMUL_CONTINUE)
+                return rc;
+        rsp_increment(ctxt, ctxt->src.val);
+        return X86EMUL_CONTINUE;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int em_cmpxchg(struct x86_emulate_ctxt *ctxt)
 {
 	/* Save real source value, then compare EAX against destination. */
 	ctxt->src.orig_val = ctxt->src.val;
+<<<<<<< HEAD
 	ctxt->src.val = ctxt->regs[VCPU_REGS_RAX];
 	emulate_2op_SrcV(ctxt, "cmp");
+=======
+	ctxt->src.val = reg_read(ctxt, VCPU_REGS_RAX);
+	fastop(ctxt, em_cmp);
+>>>>>>> refs/remotes/origin/master
 
 	if (ctxt->eflags & EFLG_ZF) {
 		/* Success: write back to memory. */
@@ -2860,7 +4017,11 @@ static int em_cmpxchg(struct x86_emulate_ctxt *ctxt)
 	} else {
 		/* Failure: write the value we saw to EAX. */
 		ctxt->dst.type = OP_REG;
+<<<<<<< HEAD
 		ctxt->dst.addr.reg = (unsigned long *)&ctxt->regs[VCPU_REGS_RAX];
+=======
+		ctxt->dst.addr.reg = reg_rmw(ctxt, VCPU_REGS_RAX);
+>>>>>>> refs/remotes/origin/master
 	}
 	return X86EMUL_CONTINUE;
 }
@@ -2884,6 +4045,7 @@ static int em_lseg(struct x86_emulate_ctxt *ctxt)
 static void
 setup_syscalls_segments(struct x86_emulate_ctxt *ctxt,
 			struct desc_struct *cs, struct desc_struct *ss)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	u16 selector;
@@ -2896,6 +4058,9 @@ setup_syscalls_segments(struct x86_emulate_ctxt *ctxt,
 >>>>>>> refs/remotes/origin/cm-10.0
 	memset(ss, 0, sizeof(struct desc_struct));
 
+=======
+{
+>>>>>>> refs/remotes/origin/master
 	cs->l = 0;		/* will be adjusted later */
 	set_desc_base(cs, 0);	/* flat segment */
 	cs->g = 1;		/* 4kb granularity */
@@ -2905,6 +4070,10 @@ setup_syscalls_segments(struct x86_emulate_ctxt *ctxt,
 	cs->dpl = 0;		/* will be adjusted later */
 	cs->p = 1;
 	cs->d = 1;
+<<<<<<< HEAD
+=======
+	cs->avl = 0;
+>>>>>>> refs/remotes/origin/master
 
 	set_desc_base(ss, 0);	/* flat segment */
 	set_desc_limit(ss, 0xfffff);	/* 4GB limit */
@@ -2914,25 +4083,43 @@ setup_syscalls_segments(struct x86_emulate_ctxt *ctxt,
 	ss->d = 1;		/* 32bit stack segment */
 	ss->dpl = 0;
 	ss->p = 1;
+<<<<<<< HEAD
 }
 
 <<<<<<< HEAD
 =======
+=======
+	ss->l = 0;
+	ss->avl = 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static bool vendor_intel(struct x86_emulate_ctxt *ctxt)
 {
 	u32 eax, ebx, ecx, edx;
 
 	eax = ecx = 0;
+<<<<<<< HEAD
 	return ctxt->ops->get_cpuid(ctxt, &eax, &ebx, &ecx, &edx)
 		&& ebx == X86EMUL_CPUID_VENDOR_GenuineIntel_ebx
+=======
+	ctxt->ops->get_cpuid(ctxt, &eax, &ebx, &ecx, &edx);
+	return ebx == X86EMUL_CPUID_VENDOR_GenuineIntel_ebx
+>>>>>>> refs/remotes/origin/master
 		&& ecx == X86EMUL_CPUID_VENDOR_GenuineIntel_ecx
 		&& edx == X86EMUL_CPUID_VENDOR_GenuineIntel_edx;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static bool em_syscall_is_enabled(struct x86_emulate_ctxt *ctxt)
 {
 	struct x86_emulate_ops *ops = ctxt->ops;
+=======
+static bool em_syscall_is_enabled(struct x86_emulate_ctxt *ctxt)
+{
+	const struct x86_emulate_ops *ops = ctxt->ops;
+>>>>>>> refs/remotes/origin/master
 	u32 eax, ebx, ecx, edx;
 
 	/*
@@ -2944,6 +4131,7 @@ static bool em_syscall_is_enabled(struct x86_emulate_ctxt *ctxt)
 
 	eax = 0x00000000;
 	ecx = 0x00000000;
+<<<<<<< HEAD
 	if (ops->get_cpuid(ctxt, &eax, &ebx, &ecx, &edx)) {
 		/*
 		 * Intel ("GenuineIntel")
@@ -2970,11 +4158,39 @@ static bool em_syscall_is_enabled(struct x86_emulate_ctxt *ctxt)
 		    edx == X86EMUL_CPUID_VENDOR_AMDisbetterI_edx)
 			return true;
 	}
+=======
+	ops->get_cpuid(ctxt, &eax, &ebx, &ecx, &edx);
+	/*
+	 * Intel ("GenuineIntel")
+	 * remark: Intel CPUs only support "syscall" in 64bit
+	 * longmode. Also an 64bit guest with a
+	 * 32bit compat-app running will #UD !! While this
+	 * behaviour can be fixed (by emulating) into AMD
+	 * response - CPUs of AMD can't behave like Intel.
+	 */
+	if (ebx == X86EMUL_CPUID_VENDOR_GenuineIntel_ebx &&
+	    ecx == X86EMUL_CPUID_VENDOR_GenuineIntel_ecx &&
+	    edx == X86EMUL_CPUID_VENDOR_GenuineIntel_edx)
+		return false;
+
+	/* AMD ("AuthenticAMD") */
+	if (ebx == X86EMUL_CPUID_VENDOR_AuthenticAMD_ebx &&
+	    ecx == X86EMUL_CPUID_VENDOR_AuthenticAMD_ecx &&
+	    edx == X86EMUL_CPUID_VENDOR_AuthenticAMD_edx)
+		return true;
+
+	/* AMD ("AMDisbetter!") */
+	if (ebx == X86EMUL_CPUID_VENDOR_AMDisbetterI_ebx &&
+	    ecx == X86EMUL_CPUID_VENDOR_AMDisbetterI_ecx &&
+	    edx == X86EMUL_CPUID_VENDOR_AMDisbetterI_edx)
+		return true;
+>>>>>>> refs/remotes/origin/master
 
 	/* default: (not Intel, not AMD), apply Intel's stricter rules... */
 	return false;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int
 emulate_syscall(struct x86_emulate_ctxt *ctxt, struct x86_emulate_ops *ops)
@@ -2985,6 +4201,11 @@ static int em_syscall(struct x86_emulate_ctxt *ctxt)
 {
 	struct x86_emulate_ops *ops = ctxt->ops;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int em_syscall(struct x86_emulate_ctxt *ctxt)
+{
+	const struct x86_emulate_ops *ops = ctxt->ops;
+>>>>>>> refs/remotes/origin/master
 	struct desc_struct cs, ss;
 	u64 msr_data;
 	u16 cs_sel, ss_sel;
@@ -3000,10 +4221,14 @@ static int em_syscall(struct x86_emulate_ctxt *ctxt)
 
 	ops->get_msr(ctxt, MSR_EFER, &efer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	setup_syscalls_segments(ctxt, ops, &cs, &ss);
 =======
 	setup_syscalls_segments(ctxt, &cs, &ss);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	setup_syscalls_segments(ctxt, &cs, &ss);
+>>>>>>> refs/remotes/origin/master
 
 	if (!(efer & EFER_SCE))
 		return emulate_ud(ctxt);
@@ -3021,6 +4246,7 @@ static int em_syscall(struct x86_emulate_ctxt *ctxt)
 	ops->set_segment(ctxt, ss_sel, &ss, 0, VCPU_SREG_SS);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	c->regs[VCPU_REGS_RCX] = c->eip;
 	if (efer & EFER_LMA) {
 #ifdef CONFIG_X86_64
@@ -3031,15 +4257,25 @@ static int em_syscall(struct x86_emulate_ctxt *ctxt)
 #ifdef CONFIG_X86_64
 		ctxt->regs[VCPU_REGS_R11] = ctxt->eflags & ~EFLG_RF;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*reg_write(ctxt, VCPU_REGS_RCX) = ctxt->_eip;
+	if (efer & EFER_LMA) {
+#ifdef CONFIG_X86_64
+		*reg_write(ctxt, VCPU_REGS_R11) = ctxt->eflags & ~EFLG_RF;
+>>>>>>> refs/remotes/origin/master
 
 		ops->get_msr(ctxt,
 			     ctxt->mode == X86EMUL_MODE_PROT64 ?
 			     MSR_LSTAR : MSR_CSTAR, &msr_data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		c->eip = msr_data;
 =======
 		ctxt->_eip = msr_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ctxt->_eip = msr_data;
+>>>>>>> refs/remotes/origin/master
 
 		ops->get_msr(ctxt, MSR_SYSCALL_MASK, &msr_data);
 		ctxt->eflags &= ~(msr_data | EFLG_RF);
@@ -3048,10 +4284,14 @@ static int em_syscall(struct x86_emulate_ctxt *ctxt)
 		/* legacy mode */
 		ops->get_msr(ctxt, MSR_STAR, &msr_data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		c->eip = (u32)msr_data;
 =======
 		ctxt->_eip = (u32)msr_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ctxt->_eip = (u32)msr_data;
+>>>>>>> refs/remotes/origin/master
 
 		ctxt->eflags &= ~(EFLG_VM | EFLG_IF | EFLG_RF);
 	}
@@ -3059,6 +4299,7 @@ static int em_syscall(struct x86_emulate_ctxt *ctxt)
 	return X86EMUL_CONTINUE;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int
 emulate_sysenter(struct x86_emulate_ctxt *ctxt, struct x86_emulate_ops *ops)
@@ -3069,22 +4310,34 @@ static int em_sysenter(struct x86_emulate_ctxt *ctxt)
 {
 	struct x86_emulate_ops *ops = ctxt->ops;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int em_sysenter(struct x86_emulate_ctxt *ctxt)
+{
+	const struct x86_emulate_ops *ops = ctxt->ops;
+>>>>>>> refs/remotes/origin/master
 	struct desc_struct cs, ss;
 	u64 msr_data;
 	u16 cs_sel, ss_sel;
 	u64 efer = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ctxt->ops->get_msr(ctxt, MSR_EFER, &efer);
 =======
 	ops->get_msr(ctxt, MSR_EFER, &efer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ops->get_msr(ctxt, MSR_EFER, &efer);
+>>>>>>> refs/remotes/origin/master
 	/* inject #GP if in real mode */
 	if (ctxt->mode == X86EMUL_MODE_REAL)
 		return emulate_gp(ctxt, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Not recognized on AMD in compat mode (but is recognized in legacy
 	 * mode).
@@ -3093,7 +4346,10 @@ static int em_sysenter(struct x86_emulate_ctxt *ctxt)
 	    && !vendor_intel(ctxt))
 		return emulate_ud(ctxt);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* XXX sysenter/sysexit have not been tested in 64bit mode.
 	* Therefore, we inject an #UD.
 	*/
@@ -3101,10 +4357,14 @@ static int em_sysenter(struct x86_emulate_ctxt *ctxt)
 		return emulate_ud(ctxt);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	setup_syscalls_segments(ctxt, ops, &cs, &ss);
 =======
 	setup_syscalls_segments(ctxt, &cs, &ss);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	setup_syscalls_segments(ctxt, &cs, &ss);
+>>>>>>> refs/remotes/origin/master
 
 	ops->get_msr(ctxt, MSR_IA32_SYSENTER_CS, &msr_data);
 	switch (ctxt->mode) {
@@ -3116,6 +4376,11 @@ static int em_sysenter(struct x86_emulate_ctxt *ctxt)
 		if (msr_data == 0x0)
 			return emulate_gp(ctxt, 0);
 		break;
+<<<<<<< HEAD
+=======
+	default:
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ctxt->eflags &= ~(EFLG_VM | EFLG_IF | EFLG_RF);
@@ -3133,6 +4398,7 @@ static int em_sysenter(struct x86_emulate_ctxt *ctxt)
 
 	ops->get_msr(ctxt, MSR_IA32_SYSENTER_EIP, &msr_data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	c->eip = msr_data;
 
 	ops->get_msr(ctxt, MSR_IA32_SYSENTER_ESP, &msr_data);
@@ -3143,10 +4409,17 @@ static int em_sysenter(struct x86_emulate_ctxt *ctxt)
 	ops->get_msr(ctxt, MSR_IA32_SYSENTER_ESP, &msr_data);
 	ctxt->regs[VCPU_REGS_RSP] = msr_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->_eip = msr_data;
+
+	ops->get_msr(ctxt, MSR_IA32_SYSENTER_ESP, &msr_data);
+	*reg_write(ctxt, VCPU_REGS_RSP) = msr_data;
+>>>>>>> refs/remotes/origin/master
 
 	return X86EMUL_CONTINUE;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int
 emulate_sysexit(struct x86_emulate_ctxt *ctxt, struct x86_emulate_ops *ops)
@@ -3160,17 +4433,26 @@ emulate_sysexit(struct x86_emulate_ctxt *ctxt, struct x86_emulate_ops *ops)
 static int em_sysexit(struct x86_emulate_ctxt *ctxt)
 {
 	struct x86_emulate_ops *ops = ctxt->ops;
+=======
+static int em_sysexit(struct x86_emulate_ctxt *ctxt)
+{
+	const struct x86_emulate_ops *ops = ctxt->ops;
+>>>>>>> refs/remotes/origin/master
 	struct desc_struct cs, ss;
 	u64 msr_data;
 	int usermode;
 	u16 cs_sel = 0, ss_sel = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* inject #GP if in real mode or Virtual 8086 mode */
 	if (ctxt->mode == X86EMUL_MODE_REAL ||
 	    ctxt->mode == X86EMUL_MODE_VM86)
 		return emulate_gp(ctxt, 0);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	setup_syscalls_segments(ctxt, ops, &cs, &ss);
 
@@ -3180,6 +4462,11 @@ static int em_sysexit(struct x86_emulate_ctxt *ctxt)
 
 	if ((ctxt->rex_prefix & 0x8) != 0x0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	setup_syscalls_segments(ctxt, &cs, &ss);
+
+	if ((ctxt->rex_prefix & 0x8) != 0x0)
+>>>>>>> refs/remotes/origin/master
 		usermode = X86EMUL_MODE_PROT64;
 	else
 		usermode = X86EMUL_MODE_PROT32;
@@ -3210,22 +4497,31 @@ static int em_sysexit(struct x86_emulate_ctxt *ctxt)
 	ops->set_segment(ctxt, ss_sel, &ss, 0, VCPU_SREG_SS);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	c->eip = c->regs[VCPU_REGS_RDX];
 	c->regs[VCPU_REGS_RSP] = c->regs[VCPU_REGS_RCX];
 =======
 	ctxt->_eip = ctxt->regs[VCPU_REGS_RDX];
 	ctxt->regs[VCPU_REGS_RSP] = ctxt->regs[VCPU_REGS_RCX];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->_eip = reg_read(ctxt, VCPU_REGS_RDX);
+	*reg_write(ctxt, VCPU_REGS_RSP) = reg_read(ctxt, VCPU_REGS_RCX);
+>>>>>>> refs/remotes/origin/master
 
 	return X86EMUL_CONTINUE;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static bool emulator_bad_iopl(struct x86_emulate_ctxt *ctxt,
 			      struct x86_emulate_ops *ops)
 =======
 static bool emulator_bad_iopl(struct x86_emulate_ctxt *ctxt)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool emulator_bad_iopl(struct x86_emulate_ctxt *ctxt)
+>>>>>>> refs/remotes/origin/master
 {
 	int iopl;
 	if (ctxt->mode == X86EMUL_MODE_REAL)
@@ -3233,6 +4529,7 @@ static bool emulator_bad_iopl(struct x86_emulate_ctxt *ctxt)
 	if (ctxt->mode == X86EMUL_MODE_VM86)
 		return true;
 	iopl = (ctxt->eflags & X86_EFLAGS_IOPL) >> IOPL_SHIFT;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return ops->cpl(ctxt) > iopl;
 }
@@ -3242,14 +4539,20 @@ static bool emulator_io_port_access_allowed(struct x86_emulate_ctxt *ctxt,
 					    u16 port, u16 len)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return ctxt->ops->cpl(ctxt) > iopl;
 }
 
 static bool emulator_io_port_access_allowed(struct x86_emulate_ctxt *ctxt,
 					    u16 port, u16 len)
 {
+<<<<<<< HEAD
 	struct x86_emulate_ops *ops = ctxt->ops;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct x86_emulate_ops *ops = ctxt->ops;
+>>>>>>> refs/remotes/origin/master
 	struct desc_struct tr_seg;
 	u32 base3;
 	int r;
@@ -3281,14 +4584,18 @@ static bool emulator_io_port_access_allowed(struct x86_emulate_ctxt *ctxt,
 
 static bool emulator_io_permited(struct x86_emulate_ctxt *ctxt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 struct x86_emulate_ops *ops,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				 u16 port, u16 len)
 {
 	if (ctxt->perm_ok)
 		return true;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (emulator_bad_iopl(ctxt, ops))
 		if (!emulator_io_port_access_allowed(ctxt, ops, port, len))
@@ -3296,6 +4603,10 @@ static bool emulator_io_permited(struct x86_emulate_ctxt *ctxt,
 	if (emulator_bad_iopl(ctxt))
 		if (!emulator_io_port_access_allowed(ctxt, port, len))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (emulator_bad_iopl(ctxt))
+		if (!emulator_io_port_access_allowed(ctxt, port, len))
+>>>>>>> refs/remotes/origin/master
 			return false;
 
 	ctxt->perm_ok = true;
@@ -3304,6 +4615,7 @@ static bool emulator_io_permited(struct x86_emulate_ctxt *ctxt,
 }
 
 static void save_state_to_tss16(struct x86_emulate_ctxt *ctxt,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				struct x86_emulate_ops *ops,
 				struct tss_segment_16 *tss)
@@ -3321,10 +4633,13 @@ static void save_state_to_tss16(struct x86_emulate_ctxt *ctxt,
 	tss->si = c->regs[VCPU_REGS_RSI];
 	tss->di = c->regs[VCPU_REGS_RDI];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				struct tss_segment_16 *tss)
 {
 	tss->ip = ctxt->_eip;
 	tss->flag = ctxt->eflags;
+<<<<<<< HEAD
 	tss->ax = ctxt->regs[VCPU_REGS_RAX];
 	tss->cx = ctxt->regs[VCPU_REGS_RCX];
 	tss->dx = ctxt->regs[VCPU_REGS_RDX];
@@ -3334,6 +4649,16 @@ static void save_state_to_tss16(struct x86_emulate_ctxt *ctxt,
 	tss->si = ctxt->regs[VCPU_REGS_RSI];
 	tss->di = ctxt->regs[VCPU_REGS_RDI];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tss->ax = reg_read(ctxt, VCPU_REGS_RAX);
+	tss->cx = reg_read(ctxt, VCPU_REGS_RCX);
+	tss->dx = reg_read(ctxt, VCPU_REGS_RDX);
+	tss->bx = reg_read(ctxt, VCPU_REGS_RBX);
+	tss->sp = reg_read(ctxt, VCPU_REGS_RSP);
+	tss->bp = reg_read(ctxt, VCPU_REGS_RBP);
+	tss->si = reg_read(ctxt, VCPU_REGS_RSI);
+	tss->di = reg_read(ctxt, VCPU_REGS_RDI);
+>>>>>>> refs/remotes/origin/master
 
 	tss->es = get_segment_selector(ctxt, VCPU_SREG_ES);
 	tss->cs = get_segment_selector(ctxt, VCPU_SREG_CS);
@@ -3343,6 +4668,7 @@ static void save_state_to_tss16(struct x86_emulate_ctxt *ctxt,
 }
 
 static int load_state_from_tss16(struct x86_emulate_ctxt *ctxt,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				 struct x86_emulate_ops *ops,
 				 struct tss_segment_16 *tss)
@@ -3376,6 +4702,22 @@ static int load_state_from_tss16(struct x86_emulate_ctxt *ctxt,
 	ctxt->regs[VCPU_REGS_RSI] = tss->si;
 	ctxt->regs[VCPU_REGS_RDI] = tss->di;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 struct tss_segment_16 *tss)
+{
+	int ret;
+
+	ctxt->_eip = tss->ip;
+	ctxt->eflags = tss->flag | 2;
+	*reg_write(ctxt, VCPU_REGS_RAX) = tss->ax;
+	*reg_write(ctxt, VCPU_REGS_RCX) = tss->cx;
+	*reg_write(ctxt, VCPU_REGS_RDX) = tss->dx;
+	*reg_write(ctxt, VCPU_REGS_RBX) = tss->bx;
+	*reg_write(ctxt, VCPU_REGS_RSP) = tss->sp;
+	*reg_write(ctxt, VCPU_REGS_RBP) = tss->bp;
+	*reg_write(ctxt, VCPU_REGS_RSI) = tss->si;
+	*reg_write(ctxt, VCPU_REGS_RDI) = tss->di;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * SDM says that segment selectors are loaded before segment
@@ -3388,6 +4730,7 @@ static int load_state_from_tss16(struct x86_emulate_ctxt *ctxt,
 	set_segment_selector(ctxt, tss->ds, VCPU_SREG_DS);
 
 	/*
+<<<<<<< HEAD
 	 * Now load segment descriptors. If fault happenes at this stage
 	 * it is handled in a context of new task
 	 */
@@ -3406,6 +4749,11 @@ static int load_state_from_tss16(struct x86_emulate_ctxt *ctxt,
 		return ret;
 	ret = load_segment_descriptor(ctxt, ops, tss->ds, VCPU_SREG_DS);
 =======
+=======
+	 * Now load segment descriptors. If fault happens at this stage
+	 * it is handled in a context of new task
+	 */
+>>>>>>> refs/remotes/origin/master
 	ret = load_segment_descriptor(ctxt, tss->ldt, VCPU_SREG_LDTR);
 	if (ret != X86EMUL_CONTINUE)
 		return ret;
@@ -3419,7 +4767,10 @@ static int load_state_from_tss16(struct x86_emulate_ctxt *ctxt,
 	if (ret != X86EMUL_CONTINUE)
 		return ret;
 	ret = load_segment_descriptor(ctxt, tss->ds, VCPU_SREG_DS);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret != X86EMUL_CONTINUE)
 		return ret;
 
@@ -3427,6 +4778,7 @@ static int load_state_from_tss16(struct x86_emulate_ctxt *ctxt,
 }
 
 static int task_switch_16(struct x86_emulate_ctxt *ctxt,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			  struct x86_emulate_ops *ops,
 			  u16 tss_selector, u16 old_tss_sel,
@@ -3438,6 +4790,12 @@ static int task_switch_16(struct x86_emulate_ctxt *ctxt,
 {
 	struct x86_emulate_ops *ops = ctxt->ops;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  u16 tss_selector, u16 old_tss_sel,
+			  ulong old_tss_base, struct desc_struct *new_desc)
+{
+	const struct x86_emulate_ops *ops = ctxt->ops;
+>>>>>>> refs/remotes/origin/master
 	struct tss_segment_16 tss_seg;
 	int ret;
 	u32 new_tss_base = get_desc_base(new_desc);
@@ -3449,10 +4807,14 @@ static int task_switch_16(struct x86_emulate_ctxt *ctxt,
 		return ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	save_state_to_tss16(ctxt, ops, &tss_seg);
 =======
 	save_state_to_tss16(ctxt, &tss_seg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	save_state_to_tss16(ctxt, &tss_seg);
+>>>>>>> refs/remotes/origin/master
 
 	ret = ops->write_std(ctxt, old_tss_base, &tss_seg, sizeof tss_seg,
 			     &ctxt->exception);
@@ -3479,6 +4841,7 @@ static int task_switch_16(struct x86_emulate_ctxt *ctxt,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return load_state_from_tss16(ctxt, ops, &tss_seg);
 }
 
@@ -3500,6 +4863,8 @@ static void save_state_to_tss32(struct x86_emulate_ctxt *ctxt,
 	tss->esi = c->regs[VCPU_REGS_RSI];
 	tss->edi = c->regs[VCPU_REGS_RDI];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return load_state_from_tss16(ctxt, &tss_seg);
 }
 
@@ -3509,6 +4874,7 @@ static void save_state_to_tss32(struct x86_emulate_ctxt *ctxt,
 	tss->cr3 = ctxt->ops->get_cr(ctxt, 3);
 	tss->eip = ctxt->_eip;
 	tss->eflags = ctxt->eflags;
+<<<<<<< HEAD
 	tss->eax = ctxt->regs[VCPU_REGS_RAX];
 	tss->ecx = ctxt->regs[VCPU_REGS_RCX];
 	tss->edx = ctxt->regs[VCPU_REGS_RDX];
@@ -3518,6 +4884,16 @@ static void save_state_to_tss32(struct x86_emulate_ctxt *ctxt,
 	tss->esi = ctxt->regs[VCPU_REGS_RSI];
 	tss->edi = ctxt->regs[VCPU_REGS_RDI];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tss->eax = reg_read(ctxt, VCPU_REGS_RAX);
+	tss->ecx = reg_read(ctxt, VCPU_REGS_RCX);
+	tss->edx = reg_read(ctxt, VCPU_REGS_RDX);
+	tss->ebx = reg_read(ctxt, VCPU_REGS_RBX);
+	tss->esp = reg_read(ctxt, VCPU_REGS_RSP);
+	tss->ebp = reg_read(ctxt, VCPU_REGS_RBP);
+	tss->esi = reg_read(ctxt, VCPU_REGS_RSI);
+	tss->edi = reg_read(ctxt, VCPU_REGS_RDI);
+>>>>>>> refs/remotes/origin/master
 
 	tss->es = get_segment_selector(ctxt, VCPU_SREG_ES);
 	tss->cs = get_segment_selector(ctxt, VCPU_SREG_CS);
@@ -3529,6 +4905,7 @@ static void save_state_to_tss32(struct x86_emulate_ctxt *ctxt,
 }
 
 static int load_state_from_tss32(struct x86_emulate_ctxt *ctxt,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				 struct x86_emulate_ops *ops,
 				 struct tss_segment_32 *tss)
@@ -3549,6 +4926,8 @@ static int load_state_from_tss32(struct x86_emulate_ctxt *ctxt,
 	c->regs[VCPU_REGS_RSI] = tss->esi;
 	c->regs[VCPU_REGS_RDI] = tss->edi;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				 struct tss_segment_32 *tss)
 {
 	int ret;
@@ -3559,6 +4938,7 @@ static int load_state_from_tss32(struct x86_emulate_ctxt *ctxt,
 	ctxt->eflags = tss->eflags | 2;
 
 	/* General purpose registers */
+<<<<<<< HEAD
 	ctxt->regs[VCPU_REGS_RAX] = tss->eax;
 	ctxt->regs[VCPU_REGS_RCX] = tss->ecx;
 	ctxt->regs[VCPU_REGS_RDX] = tss->edx;
@@ -3568,6 +4948,16 @@ static int load_state_from_tss32(struct x86_emulate_ctxt *ctxt,
 	ctxt->regs[VCPU_REGS_RSI] = tss->esi;
 	ctxt->regs[VCPU_REGS_RDI] = tss->edi;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*reg_write(ctxt, VCPU_REGS_RAX) = tss->eax;
+	*reg_write(ctxt, VCPU_REGS_RCX) = tss->ecx;
+	*reg_write(ctxt, VCPU_REGS_RDX) = tss->edx;
+	*reg_write(ctxt, VCPU_REGS_RBX) = tss->ebx;
+	*reg_write(ctxt, VCPU_REGS_RSP) = tss->esp;
+	*reg_write(ctxt, VCPU_REGS_RBP) = tss->ebp;
+	*reg_write(ctxt, VCPU_REGS_RSI) = tss->esi;
+	*reg_write(ctxt, VCPU_REGS_RDI) = tss->edi;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * SDM says that segment selectors are loaded before segment
@@ -3582,6 +4972,7 @@ static int load_state_from_tss32(struct x86_emulate_ctxt *ctxt,
 	set_segment_selector(ctxt, tss->gs, VCPU_SREG_GS);
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * Now load segment descriptors. If fault happenes at this stage
 	 * it is handled in a context of new task
@@ -3606,6 +4997,8 @@ static int load_state_from_tss32(struct x86_emulate_ctxt *ctxt,
 		return ret;
 	ret = load_segment_descriptor(ctxt, ops, tss->gs, VCPU_SREG_GS);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * If we're switching between Protected Mode and VM86, we need to make
 	 * sure to update the mode before loading the segment descriptors so
 	 * that the selectors are interpreted correctly.
@@ -3646,7 +5039,10 @@ static int load_state_from_tss32(struct x86_emulate_ctxt *ctxt,
 	if (ret != X86EMUL_CONTINUE)
 		return ret;
 	ret = load_segment_descriptor(ctxt, tss->gs, VCPU_SREG_GS);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret != X86EMUL_CONTINUE)
 		return ret;
 
@@ -3654,6 +5050,7 @@ static int load_state_from_tss32(struct x86_emulate_ctxt *ctxt,
 }
 
 static int task_switch_32(struct x86_emulate_ctxt *ctxt,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			  struct x86_emulate_ops *ops,
 			  u16 tss_selector, u16 old_tss_sel,
@@ -3665,6 +5062,12 @@ static int task_switch_32(struct x86_emulate_ctxt *ctxt,
 {
 	struct x86_emulate_ops *ops = ctxt->ops;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  u16 tss_selector, u16 old_tss_sel,
+			  ulong old_tss_base, struct desc_struct *new_desc)
+{
+	const struct x86_emulate_ops *ops = ctxt->ops;
+>>>>>>> refs/remotes/origin/master
 	struct tss_segment_32 tss_seg;
 	int ret;
 	u32 new_tss_base = get_desc_base(new_desc);
@@ -3676,10 +5079,14 @@ static int task_switch_32(struct x86_emulate_ctxt *ctxt,
 		return ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	save_state_to_tss32(ctxt, ops, &tss_seg);
 =======
 	save_state_to_tss32(ctxt, &tss_seg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	save_state_to_tss32(ctxt, &tss_seg);
+>>>>>>> refs/remotes/origin/master
 
 	ret = ops->write_std(ctxt, old_tss_base, &tss_seg, sizeof tss_seg,
 			     &ctxt->exception);
@@ -3706,6 +5113,7 @@ static int task_switch_32(struct x86_emulate_ctxt *ctxt,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return load_state_from_tss32(ctxt, ops, &tss_seg);
 }
 
@@ -3715,6 +5123,8 @@ static int emulator_do_task_switch(struct x86_emulate_ctxt *ctxt,
 				   bool has_error_code, u32 error_code)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return load_state_from_tss32(ctxt, &tss_seg);
 }
 
@@ -3722,14 +5132,19 @@ static int emulator_do_task_switch(struct x86_emulate_ctxt *ctxt,
 				   u16 tss_selector, int idt_index, int reason,
 				   bool has_error_code, u32 error_code)
 {
+<<<<<<< HEAD
 	struct x86_emulate_ops *ops = ctxt->ops;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct x86_emulate_ops *ops = ctxt->ops;
+>>>>>>> refs/remotes/origin/master
 	struct desc_struct curr_tss_desc, next_tss_desc;
 	int ret;
 	u16 old_tss_sel = get_segment_selector(ctxt, VCPU_SREG_TR);
 	ulong old_tss_base =
 		ops->get_cached_segment_base(ctxt, VCPU_SREG_TR);
 	u32 desc_limit;
+<<<<<<< HEAD
 
 	/* FIXME: old_tss_base == ~0 ? */
 
@@ -3744,11 +5159,22 @@ static int emulator_do_task_switch(struct x86_emulate_ctxt *ctxt,
 		return ret;
 	ret = read_segment_descriptor(ctxt, old_tss_sel, &curr_tss_desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ulong desc_addr;
+
+	/* FIXME: old_tss_base == ~0 ? */
+
+	ret = read_segment_descriptor(ctxt, tss_selector, &next_tss_desc, &desc_addr);
+	if (ret != X86EMUL_CONTINUE)
+		return ret;
+	ret = read_segment_descriptor(ctxt, old_tss_sel, &curr_tss_desc, &desc_addr);
+>>>>>>> refs/remotes/origin/master
 	if (ret != X86EMUL_CONTINUE)
 		return ret;
 
 	/* FIXME: check that next_tss_desc is tss */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (reason != TASK_SWITCH_IRET) {
 		if ((tss_selector & 3) > next_tss_desc.dpl ||
@@ -3757,12 +5183,18 @@ static int emulator_do_task_switch(struct x86_emulate_ctxt *ctxt,
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Check privileges. The three cases are task switch caused by...
 	 *
 	 * 1. jmp/call/int to task gate: Check against DPL of the task gate
 	 * 2. Exception/IRQ/iret: No check is performed
+<<<<<<< HEAD
 	 * 3. jmp/call to TSS: Check agains DPL of the TSS
+=======
+	 * 3. jmp/call to TSS: Check against DPL of the TSS
+>>>>>>> refs/remotes/origin/master
 	 */
 	if (reason == TASK_SWITCH_GATE) {
 		if (idt_index != -1) {
@@ -3786,7 +5218,10 @@ static int emulator_do_task_switch(struct x86_emulate_ctxt *ctxt,
 	}
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	desc_limit = desc_limit_scaled(&next_tss_desc);
 	if (!next_tss_desc.p ||
 	    ((desc_limit < 0x67 && (next_tss_desc.type & 8)) ||
@@ -3798,33 +5233,47 @@ static int emulator_do_task_switch(struct x86_emulate_ctxt *ctxt,
 	if (reason == TASK_SWITCH_IRET || reason == TASK_SWITCH_JMP) {
 		curr_tss_desc.type &= ~(1 << 1); /* clear busy flag */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		write_segment_descriptor(ctxt, ops, old_tss_sel,
 					 &curr_tss_desc);
 =======
 		write_segment_descriptor(ctxt, old_tss_sel, &curr_tss_desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		write_segment_descriptor(ctxt, old_tss_sel, &curr_tss_desc);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (reason == TASK_SWITCH_IRET)
 		ctxt->eflags = ctxt->eflags & ~X86_EFLAGS_NT;
 
 	/* set back link to prev task only if NT bit is set in eflags
+<<<<<<< HEAD
 	   note that old_tss_sel is not used afetr this point */
+=======
+	   note that old_tss_sel is not used after this point */
+>>>>>>> refs/remotes/origin/master
 	if (reason != TASK_SWITCH_CALL && reason != TASK_SWITCH_GATE)
 		old_tss_sel = 0xffff;
 
 	if (next_tss_desc.type & 8)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret = task_switch_32(ctxt, ops, tss_selector, old_tss_sel,
 				     old_tss_base, &next_tss_desc);
 	else
 		ret = task_switch_16(ctxt, ops, tss_selector, old_tss_sel,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = task_switch_32(ctxt, tss_selector, old_tss_sel,
 				     old_tss_base, &next_tss_desc);
 	else
 		ret = task_switch_16(ctxt, tss_selector, old_tss_sel,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				     old_tss_base, &next_tss_desc);
 	if (ret != X86EMUL_CONTINUE)
 		return ret;
@@ -3835,17 +5284,22 @@ static int emulator_do_task_switch(struct x86_emulate_ctxt *ctxt,
 	if (reason != TASK_SWITCH_IRET) {
 		next_tss_desc.type |= (1 << 1); /* set busy flag */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		write_segment_descriptor(ctxt, ops, tss_selector,
 					 &next_tss_desc);
 =======
 		write_segment_descriptor(ctxt, tss_selector, &next_tss_desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		write_segment_descriptor(ctxt, tss_selector, &next_tss_desc);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ops->set_cr(ctxt, 0,  ops->get_cr(ctxt, 0) | X86_CR0_TS);
 	ops->set_segment(ctxt, tss_selector, &next_tss_desc, 0, VCPU_SREG_TR);
 
 	if (has_error_code) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		struct decode_cache *c = &ctxt->decode;
 
@@ -3857,6 +5311,11 @@ static int emulator_do_task_switch(struct x86_emulate_ctxt *ctxt,
 		ctxt->lock_prefix = 0;
 		ctxt->src.val = (unsigned long) error_code;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ctxt->op_bytes = ctxt->ad_bytes = (next_tss_desc.type & 8) ? 4 : 2;
+		ctxt->lock_prefix = 0;
+		ctxt->src.val = (unsigned long) error_code;
+>>>>>>> refs/remotes/origin/master
 		ret = em_push(ctxt);
 	}
 
@@ -3864,6 +5323,7 @@ static int emulator_do_task_switch(struct x86_emulate_ctxt *ctxt,
 }
 
 int emulator_task_switch(struct x86_emulate_ctxt *ctxt,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			 u16 tss_selector, int reason,
 			 bool has_error_code, u32 error_code)
@@ -3881,24 +5341,38 @@ int emulator_task_switch(struct x86_emulate_ctxt *ctxt,
 	if (rc == X86EMUL_CONTINUE)
 		ctxt->eip = c->eip;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			 u16 tss_selector, int idt_index, int reason,
 			 bool has_error_code, u32 error_code)
 {
 	int rc;
 
+<<<<<<< HEAD
+=======
+	invalidate_registers(ctxt);
+>>>>>>> refs/remotes/origin/master
 	ctxt->_eip = ctxt->eip;
 	ctxt->dst.type = OP_NONE;
 
 	rc = emulator_do_task_switch(ctxt, tss_selector, idt_index, reason,
 				     has_error_code, error_code);
 
+<<<<<<< HEAD
 	if (rc == X86EMUL_CONTINUE)
 		ctxt->eip = ctxt->_eip;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rc == X86EMUL_CONTINUE) {
+		ctxt->eip = ctxt->_eip;
+		writeback_registers(ctxt);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return (rc == X86EMUL_UNHANDLEABLE) ? EMULATION_FAILED : EMULATION_OK;
 }
 
+<<<<<<< HEAD
 static void string_addr_inc(struct x86_emulate_ctxt *ctxt, unsigned seg,
 			    int reg, struct operand *op)
 {
@@ -3915,23 +5389,39 @@ static void string_addr_inc(struct x86_emulate_ctxt *ctxt, unsigned seg,
 	op->addr.mem.ea = register_address(ctxt, ctxt->regs[reg]);
 >>>>>>> refs/remotes/origin/cm-10.0
 	op->addr.mem.seg = seg;
+=======
+static void string_addr_inc(struct x86_emulate_ctxt *ctxt, int reg,
+		struct operand *op)
+{
+	int df = (ctxt->eflags & EFLG_DF) ? -op->count : op->count;
+
+	register_address_increment(ctxt, reg_rmw(ctxt, reg), df * op->bytes);
+	op->addr.mem.ea = register_address(ctxt, reg_read(ctxt, reg));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int em_das(struct x86_emulate_ctxt *ctxt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 al, old_al;
 	bool af, cf, old_cf;
 
 	cf = ctxt->eflags & X86_EFLAGS_CF;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	al = c->dst.val;
 =======
 	al = ctxt->dst.val;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	al = ctxt->dst.val;
+>>>>>>> refs/remotes/origin/master
 
 	old_al = al;
 	old_cf = cf;
@@ -3950,6 +5440,7 @@ static int em_das(struct x86_emulate_ctxt *ctxt)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	c->dst.val = al;
 	/* Set PF, ZF, SF */
 	c->src.type = OP_IMM;
@@ -3957,13 +5448,19 @@ static int em_das(struct x86_emulate_ctxt *ctxt)
 	c->src.bytes = 1;
 	emulate_2op_SrcV("or", c->src, c->dst, ctxt->eflags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ctxt->dst.val = al;
 	/* Set PF, ZF, SF */
 	ctxt->src.type = OP_IMM;
 	ctxt->src.val = 0;
 	ctxt->src.bytes = 1;
+<<<<<<< HEAD
 	emulate_2op_SrcV(ctxt, "or");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fastop(ctxt, em_or);
+>>>>>>> refs/remotes/origin/master
 	ctxt->eflags &= ~(X86_EFLAGS_AF | X86_EFLAGS_CF);
 	if (cf)
 		ctxt->eflags |= X86_EFLAGS_CF;
@@ -3973,10 +5470,53 @@ static int em_das(struct x86_emulate_ctxt *ctxt)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int em_call_far(struct x86_emulate_ctxt *ctxt)
 {
 	struct decode_cache *c = &ctxt->decode;
 =======
+=======
+static int em_aam(struct x86_emulate_ctxt *ctxt)
+{
+	u8 al, ah;
+
+	if (ctxt->src.val == 0)
+		return emulate_de(ctxt);
+
+	al = ctxt->dst.val & 0xff;
+	ah = al / ctxt->src.val;
+	al %= ctxt->src.val;
+
+	ctxt->dst.val = (ctxt->dst.val & 0xffff0000) | al | (ah << 8);
+
+	/* Set PF, ZF, SF */
+	ctxt->src.type = OP_IMM;
+	ctxt->src.val = 0;
+	ctxt->src.bytes = 1;
+	fastop(ctxt, em_or);
+
+	return X86EMUL_CONTINUE;
+}
+
+static int em_aad(struct x86_emulate_ctxt *ctxt)
+{
+	u8 al = ctxt->dst.val & 0xff;
+	u8 ah = (ctxt->dst.val >> 8) & 0xff;
+
+	al = (al + (ah * ctxt->src.val)) & 0xff;
+
+	ctxt->dst.val = (ctxt->dst.val & 0xffff0000) | al;
+
+	/* Set PF, ZF, SF */
+	ctxt->src.type = OP_IMM;
+	ctxt->src.val = 0;
+	ctxt->src.bytes = 1;
+	fastop(ctxt, em_or);
+
+	return X86EMUL_CONTINUE;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int em_call(struct x86_emulate_ctxt *ctxt)
 {
 	long rel = ctxt->src.val;
@@ -3988,12 +5528,16 @@ static int em_call(struct x86_emulate_ctxt *ctxt)
 
 static int em_call_far(struct x86_emulate_ctxt *ctxt)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 sel, old_cs;
 	ulong old_eip;
 	int rc;
 
 	old_cs = get_segment_selector(ctxt, VCPU_SREG_CS);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	old_eip = c->eip;
 
@@ -4006,6 +5550,8 @@ static int em_call_far(struct x86_emulate_ctxt *ctxt)
 
 	c->src.val = old_cs;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	old_eip = ctxt->_eip;
 
 	memcpy(&sel, ctxt->src.valptr + ctxt->op_bytes, 2);
@@ -4016,21 +5562,29 @@ static int em_call_far(struct x86_emulate_ctxt *ctxt)
 	memcpy(&ctxt->_eip, ctxt->src.valptr, ctxt->op_bytes);
 
 	ctxt->src.val = old_cs;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = em_push(ctxt);
 	if (rc != X86EMUL_CONTINUE)
 		return rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	c->src.val = old_eip;
 =======
 	ctxt->src.val = old_eip;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->src.val = old_eip;
+>>>>>>> refs/remotes/origin/master
 	return em_push(ctxt);
 }
 
 static int em_ret_near_imm(struct x86_emulate_ctxt *ctxt)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 	int rc;
@@ -4043,6 +5597,8 @@ static int em_ret_near_imm(struct x86_emulate_ctxt *ctxt)
 		return rc;
 	register_address_increment(c, &c->regs[VCPU_REGS_RSP], c->src.val);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	ctxt->dst.type = OP_REG;
@@ -4051,6 +5607,7 @@ static int em_ret_near_imm(struct x86_emulate_ctxt *ctxt)
 	rc = emulate_pop(ctxt, &ctxt->dst.val, ctxt->op_bytes);
 	if (rc != X86EMUL_CONTINUE)
 		return rc;
+<<<<<<< HEAD
 	register_address_increment(ctxt, &ctxt->regs[VCPU_REGS_RSP], ctxt->src.val);
 >>>>>>> refs/remotes/origin/cm-10.0
 	return X86EMUL_CONTINUE;
@@ -4176,6 +5733,9 @@ static int em_test(struct x86_emulate_ctxt *ctxt)
 	emulate_2op_SrcV(ctxt, "test");
 	/* Disable writeback. */
 	ctxt->dst.type = OP_NONE;
+=======
+	rsp_increment(ctxt, ctxt->src.val);
+>>>>>>> refs/remotes/origin/master
 	return X86EMUL_CONTINUE;
 }
 
@@ -4191,6 +5751,7 @@ static int em_xchg(struct x86_emulate_ctxt *ctxt)
 	return X86EMUL_CONTINUE;
 }
 
+<<<<<<< HEAD
 static int em_imul(struct x86_emulate_ctxt *ctxt)
 {
 	emulate_2op_SrcV_nobyte(ctxt, "imul");
@@ -4202,10 +5763,17 @@ static int em_imul_3op(struct x86_emulate_ctxt *ctxt)
 	ctxt->dst.val = ctxt->src2.val;
 >>>>>>> refs/remotes/origin/cm-10.0
 	return em_imul(ctxt);
+=======
+static int em_imul_3op(struct x86_emulate_ctxt *ctxt)
+{
+	ctxt->dst.val = ctxt->src2.val;
+	return fastop(ctxt, em_imul);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int em_cwd(struct x86_emulate_ctxt *ctxt)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 
@@ -4219,12 +5787,19 @@ static int em_cwd(struct x86_emulate_ctxt *ctxt)
 	ctxt->dst.addr.reg = &ctxt->regs[VCPU_REGS_RDX];
 	ctxt->dst.val = ~((ctxt->src.val >> (ctxt->src.bytes * 8 - 1)) - 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->dst.type = OP_REG;
+	ctxt->dst.bytes = ctxt->src.bytes;
+	ctxt->dst.addr.reg = reg_rmw(ctxt, VCPU_REGS_RDX);
+	ctxt->dst.val = ~((ctxt->src.val >> (ctxt->src.bytes * 8 - 1)) - 1);
+>>>>>>> refs/remotes/origin/master
 
 	return X86EMUL_CONTINUE;
 }
 
 static int em_rdtsc(struct x86_emulate_ctxt *ctxt)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 	u64 tsc = 0;
@@ -4238,6 +5813,13 @@ static int em_rdtsc(struct x86_emulate_ctxt *ctxt)
 	ctxt->ops->get_msr(ctxt, MSR_IA32_TSC, &tsc);
 	ctxt->regs[VCPU_REGS_RAX] = (u32)tsc;
 	ctxt->regs[VCPU_REGS_RDX] = tsc >> 32;
+=======
+	u64 tsc = 0;
+
+	ctxt->ops->get_msr(ctxt, MSR_IA32_TSC, &tsc);
+	*reg_write(ctxt, VCPU_REGS_RAX) = (u32)tsc;
+	*reg_write(ctxt, VCPU_REGS_RDX) = tsc >> 32;
+>>>>>>> refs/remotes/origin/master
 	return X86EMUL_CONTINUE;
 }
 
@@ -4245,16 +5827,24 @@ static int em_rdpmc(struct x86_emulate_ctxt *ctxt)
 {
 	u64 pmc;
 
+<<<<<<< HEAD
 	if (ctxt->ops->read_pmc(ctxt, ctxt->regs[VCPU_REGS_RCX], &pmc))
 		return emulate_gp(ctxt, 0);
 	ctxt->regs[VCPU_REGS_RAX] = (u32)pmc;
 	ctxt->regs[VCPU_REGS_RDX] = pmc >> 32;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ctxt->ops->read_pmc(ctxt, reg_read(ctxt, VCPU_REGS_RCX), &pmc))
+		return emulate_gp(ctxt, 0);
+	*reg_write(ctxt, VCPU_REGS_RAX) = (u32)pmc;
+	*reg_write(ctxt, VCPU_REGS_RDX) = pmc >> 32;
+>>>>>>> refs/remotes/origin/master
 	return X86EMUL_CONTINUE;
 }
 
 static int em_mov(struct x86_emulate_ctxt *ctxt)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 	c->dst.val = c->src.val;
@@ -4267,6 +5857,49 @@ static int em_movdqu(struct x86_emulate_ctxt *ctxt)
 	memcpy(&c->dst.vec_val, &c->src.vec_val, c->op_bytes);
 =======
 	ctxt->dst.val = ctxt->src.val;
+=======
+	memcpy(ctxt->dst.valptr, ctxt->src.valptr, ctxt->op_bytes);
+	return X86EMUL_CONTINUE;
+}
+
+#define FFL(x) bit(X86_FEATURE_##x)
+
+static int em_movbe(struct x86_emulate_ctxt *ctxt)
+{
+	u32 ebx, ecx, edx, eax = 1;
+	u16 tmp;
+
+	/*
+	 * Check MOVBE is set in the guest-visible CPUID leaf.
+	 */
+	ctxt->ops->get_cpuid(ctxt, &eax, &ebx, &ecx, &edx);
+	if (!(ecx & FFL(MOVBE)))
+		return emulate_ud(ctxt);
+
+	switch (ctxt->op_bytes) {
+	case 2:
+		/*
+		 * From MOVBE definition: "...When the operand size is 16 bits,
+		 * the upper word of the destination register remains unchanged
+		 * ..."
+		 *
+		 * Both casting ->valptr and ->val to u16 breaks strict aliasing
+		 * rules so we have to do the operation almost per hand.
+		 */
+		tmp = (u16)ctxt->src.val;
+		ctxt->dst.val &= ~0xffffUL;
+		ctxt->dst.val |= (unsigned long)swab16(tmp);
+		break;
+	case 4:
+		ctxt->dst.val = swab32((u32)ctxt->src.val);
+		break;
+	case 8:
+		ctxt->dst.val = swab64(ctxt->src.val);
+		break;
+	default:
+		return X86EMUL_PROPAGATE_FAULT;
+	}
+>>>>>>> refs/remotes/origin/master
 	return X86EMUL_CONTINUE;
 }
 
@@ -4302,9 +5935,15 @@ static int em_wrmsr(struct x86_emulate_ctxt *ctxt)
 {
 	u64 msr_data;
 
+<<<<<<< HEAD
 	msr_data = (u32)ctxt->regs[VCPU_REGS_RAX]
 		| ((u64)ctxt->regs[VCPU_REGS_RDX] << 32);
 	if (ctxt->ops->set_msr(ctxt, ctxt->regs[VCPU_REGS_RCX], msr_data))
+=======
+	msr_data = (u32)reg_read(ctxt, VCPU_REGS_RAX)
+		| ((u64)reg_read(ctxt, VCPU_REGS_RDX) << 32);
+	if (ctxt->ops->set_msr(ctxt, reg_read(ctxt, VCPU_REGS_RCX), msr_data))
+>>>>>>> refs/remotes/origin/master
 		return emulate_gp(ctxt, 0);
 
 	return X86EMUL_CONTINUE;
@@ -4314,11 +5953,19 @@ static int em_rdmsr(struct x86_emulate_ctxt *ctxt)
 {
 	u64 msr_data;
 
+<<<<<<< HEAD
 	if (ctxt->ops->get_msr(ctxt, ctxt->regs[VCPU_REGS_RCX], &msr_data))
 		return emulate_gp(ctxt, 0);
 
 	ctxt->regs[VCPU_REGS_RAX] = (u32)msr_data;
 	ctxt->regs[VCPU_REGS_RDX] = msr_data >> 32;
+=======
+	if (ctxt->ops->get_msr(ctxt, reg_read(ctxt, VCPU_REGS_RCX), &msr_data))
+		return emulate_gp(ctxt, 0);
+
+	*reg_write(ctxt, VCPU_REGS_RAX) = (u32)msr_data;
+	*reg_write(ctxt, VCPU_REGS_RDX) = msr_data >> 32;
+>>>>>>> refs/remotes/origin/master
 	return X86EMUL_CONTINUE;
 }
 
@@ -4346,6 +5993,7 @@ static int em_mov_sreg_rm(struct x86_emulate_ctxt *ctxt)
 	return load_segment_descriptor(ctxt, sel, ctxt->modrm_reg);
 }
 
+<<<<<<< HEAD
 static int em_movdqu(struct x86_emulate_ctxt *ctxt)
 {
 	memcpy(&ctxt->dst.vec_val, &ctxt->src.vec_val, ctxt->op_bytes);
@@ -4366,6 +6014,28 @@ static int em_invlpg(struct x86_emulate_ctxt *ctxt)
 	/* Disable writeback. */
 	c->dst.type = OP_NONE;
 =======
+=======
+static int em_lldt(struct x86_emulate_ctxt *ctxt)
+{
+	u16 sel = ctxt->src.val;
+
+	/* Disable writeback. */
+	ctxt->dst.type = OP_NONE;
+	return load_segment_descriptor(ctxt, sel, VCPU_SREG_LDTR);
+}
+
+static int em_ltr(struct x86_emulate_ctxt *ctxt)
+{
+	u16 sel = ctxt->src.val;
+
+	/* Disable writeback. */
+	ctxt->dst.type = OP_NONE;
+	return load_segment_descriptor(ctxt, sel, VCPU_SREG_TR);
+}
+
+static int em_invlpg(struct x86_emulate_ctxt *ctxt)
+{
+>>>>>>> refs/remotes/origin/master
 	int rc;
 	ulong linear;
 
@@ -4374,7 +6044,10 @@ static int em_invlpg(struct x86_emulate_ctxt *ctxt)
 		ctxt->ops->invlpg(ctxt, linear);
 	/* Disable writeback. */
 	ctxt->dst.type = OP_NONE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return X86EMUL_CONTINUE;
 }
 
@@ -4391,6 +6064,7 @@ static int em_clts(struct x86_emulate_ctxt *ctxt)
 static int em_vmcall(struct x86_emulate_ctxt *ctxt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 	int rc;
 
@@ -4400,6 +6074,11 @@ static int em_vmcall(struct x86_emulate_ctxt *ctxt)
 
 	if (ctxt->modrm_mod != 3 || ctxt->modrm_rm != 1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rc;
+
+	if (ctxt->modrm_mod != 3 || ctxt->modrm_rm != 1)
+>>>>>>> refs/remotes/origin/master
 		return X86EMUL_UNHANDLEABLE;
 
 	rc = ctxt->ops->fix_hypercall(ctxt);
@@ -4407,6 +6086,7 @@ static int em_vmcall(struct x86_emulate_ctxt *ctxt)
 		return rc;
 
 	/* Let the processor re-execute the fixed hypercall */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	c->eip = ctxt->eip;
 	/* Disable writeback. */
@@ -4437,39 +6117,98 @@ static int em_lgdt(struct x86_emulate_ctxt *ctxt)
 			     &desc_ptr.size, &desc_ptr.address,
 			     ctxt->op_bytes);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->_eip = ctxt->eip;
+	/* Disable writeback. */
+	ctxt->dst.type = OP_NONE;
+	return X86EMUL_CONTINUE;
+}
+
+static int emulate_store_desc_ptr(struct x86_emulate_ctxt *ctxt,
+				  void (*get)(struct x86_emulate_ctxt *ctxt,
+					      struct desc_ptr *ptr))
+{
+	struct desc_ptr desc_ptr;
+
+	if (ctxt->mode == X86EMUL_MODE_PROT64)
+		ctxt->op_bytes = 8;
+	get(ctxt, &desc_ptr);
+	if (ctxt->op_bytes == 2) {
+		ctxt->op_bytes = 4;
+		desc_ptr.address &= 0x00ffffff;
+	}
+	/* Disable writeback. */
+	ctxt->dst.type = OP_NONE;
+	return segmented_write(ctxt, ctxt->dst.addr.mem,
+			       &desc_ptr, 2 + ctxt->op_bytes);
+}
+
+static int em_sgdt(struct x86_emulate_ctxt *ctxt)
+{
+	return emulate_store_desc_ptr(ctxt, ctxt->ops->get_gdt);
+}
+
+static int em_sidt(struct x86_emulate_ctxt *ctxt)
+{
+	return emulate_store_desc_ptr(ctxt, ctxt->ops->get_idt);
+}
+
+static int em_lgdt(struct x86_emulate_ctxt *ctxt)
+{
+	struct desc_ptr desc_ptr;
+	int rc;
+
+	if (ctxt->mode == X86EMUL_MODE_PROT64)
+		ctxt->op_bytes = 8;
+	rc = read_descriptor(ctxt, ctxt->src.addr.mem,
+			     &desc_ptr.size, &desc_ptr.address,
+			     ctxt->op_bytes);
+>>>>>>> refs/remotes/origin/master
 	if (rc != X86EMUL_CONTINUE)
 		return rc;
 	ctxt->ops->set_gdt(ctxt, &desc_ptr);
 	/* Disable writeback. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	c->dst.type = OP_NONE;
 =======
 	ctxt->dst.type = OP_NONE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->dst.type = OP_NONE;
+>>>>>>> refs/remotes/origin/master
 	return X86EMUL_CONTINUE;
 }
 
 static int em_vmmcall(struct x86_emulate_ctxt *ctxt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = ctxt->ops->fix_hypercall(ctxt);
 
 	/* Disable writeback. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	c->dst.type = OP_NONE;
 =======
 	ctxt->dst.type = OP_NONE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->dst.type = OP_NONE;
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
 static int em_lidt(struct x86_emulate_ctxt *ctxt)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 	struct desc_ptr desc_ptr;
@@ -4486,20 +6225,35 @@ static int em_lidt(struct x86_emulate_ctxt *ctxt)
 			     &desc_ptr.size, &desc_ptr.address,
 			     ctxt->op_bytes);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct desc_ptr desc_ptr;
+	int rc;
+
+	if (ctxt->mode == X86EMUL_MODE_PROT64)
+		ctxt->op_bytes = 8;
+	rc = read_descriptor(ctxt, ctxt->src.addr.mem,
+			     &desc_ptr.size, &desc_ptr.address,
+			     ctxt->op_bytes);
+>>>>>>> refs/remotes/origin/master
 	if (rc != X86EMUL_CONTINUE)
 		return rc;
 	ctxt->ops->set_idt(ctxt, &desc_ptr);
 	/* Disable writeback. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	c->dst.type = OP_NONE;
 =======
 	ctxt->dst.type = OP_NONE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->dst.type = OP_NONE;
+>>>>>>> refs/remotes/origin/master
 	return X86EMUL_CONTINUE;
 }
 
 static int em_smsw(struct x86_emulate_ctxt *ctxt)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 
@@ -4509,17 +6263,24 @@ static int em_smsw(struct x86_emulate_ctxt *ctxt)
 	ctxt->dst.bytes = 2;
 	ctxt->dst.val = ctxt->ops->get_cr(ctxt, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->dst.bytes = 2;
+	ctxt->dst.val = ctxt->ops->get_cr(ctxt, 0);
+>>>>>>> refs/remotes/origin/master
 	return X86EMUL_CONTINUE;
 }
 
 static int em_lmsw(struct x86_emulate_ctxt *ctxt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 	ctxt->ops->set_cr(ctxt, 0, (ctxt->ops->get_cr(ctxt, 0) & ~0x0eul)
 			  | (c->src.val & 0x0f));
 	c->dst.type = OP_NONE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ctxt->ops->set_cr(ctxt, 0, (ctxt->ops->get_cr(ctxt, 0) & ~0x0eul)
 			  | (ctxt->src.val & 0x0f));
 	ctxt->dst.type = OP_NONE;
@@ -4528,8 +6289,13 @@ static int em_lmsw(struct x86_emulate_ctxt *ctxt)
 
 static int em_loop(struct x86_emulate_ctxt *ctxt)
 {
+<<<<<<< HEAD
 	register_address_increment(ctxt, &ctxt->regs[VCPU_REGS_RCX], -1);
 	if ((address_mask(ctxt, ctxt->regs[VCPU_REGS_RCX]) != 0) &&
+=======
+	register_address_increment(ctxt, reg_rmw(ctxt, VCPU_REGS_RCX), -1);
+	if ((address_mask(ctxt, reg_read(ctxt, VCPU_REGS_RCX)) != 0) &&
+>>>>>>> refs/remotes/origin/master
 	    (ctxt->b == 0xe2 || test_cc(ctxt->b ^ 0x5, ctxt->eflags)))
 		jmp_rel(ctxt, ctxt->src.val);
 
@@ -4538,7 +6304,11 @@ static int em_loop(struct x86_emulate_ctxt *ctxt)
 
 static int em_jcxz(struct x86_emulate_ctxt *ctxt)
 {
+<<<<<<< HEAD
 	if (address_mask(ctxt, ctxt->regs[VCPU_REGS_RCX]) == 0)
+=======
+	if (address_mask(ctxt, reg_read(ctxt, VCPU_REGS_RCX)) == 0)
+>>>>>>> refs/remotes/origin/master
 		jmp_rel(ctxt, ctxt->src.val);
 
 	return X86EMUL_CONTINUE;
@@ -4581,6 +6351,7 @@ static int em_sti(struct x86_emulate_ctxt *ctxt)
 	return X86EMUL_CONTINUE;
 }
 
+<<<<<<< HEAD
 static int em_bt(struct x86_emulate_ctxt *ctxt)
 {
 	/* Disable writeback. */
@@ -4646,6 +6417,57 @@ static int em_bsr(struct x86_emulate_ctxt *ctxt)
 }
 
 static bool valid_cr(int nr)
+=======
+static int em_cpuid(struct x86_emulate_ctxt *ctxt)
+{
+	u32 eax, ebx, ecx, edx;
+
+	eax = reg_read(ctxt, VCPU_REGS_RAX);
+	ecx = reg_read(ctxt, VCPU_REGS_RCX);
+	ctxt->ops->get_cpuid(ctxt, &eax, &ebx, &ecx, &edx);
+	*reg_write(ctxt, VCPU_REGS_RAX) = eax;
+	*reg_write(ctxt, VCPU_REGS_RBX) = ebx;
+	*reg_write(ctxt, VCPU_REGS_RCX) = ecx;
+	*reg_write(ctxt, VCPU_REGS_RDX) = edx;
+	return X86EMUL_CONTINUE;
+}
+
+static int em_sahf(struct x86_emulate_ctxt *ctxt)
+{
+	u32 flags;
+
+	flags = EFLG_CF | EFLG_PF | EFLG_AF | EFLG_ZF | EFLG_SF;
+	flags &= *reg_rmw(ctxt, VCPU_REGS_RAX) >> 8;
+
+	ctxt->eflags &= ~0xffUL;
+	ctxt->eflags |= flags | X86_EFLAGS_FIXED;
+	return X86EMUL_CONTINUE;
+}
+
+static int em_lahf(struct x86_emulate_ctxt *ctxt)
+{
+	*reg_rmw(ctxt, VCPU_REGS_RAX) &= ~0xff00UL;
+	*reg_rmw(ctxt, VCPU_REGS_RAX) |= (ctxt->eflags & 0xff) << 8;
+	return X86EMUL_CONTINUE;
+}
+
+static int em_bswap(struct x86_emulate_ctxt *ctxt)
+{
+	switch (ctxt->op_bytes) {
+#ifdef CONFIG_X86_64
+	case 8:
+		asm("bswap %0" : "+r"(ctxt->dst.val));
+		break;
+#endif
+	default:
+		asm("bswap %0" : "+r"(*(u32 *)&ctxt->dst.val));
+		break;
+	}
+	return X86EMUL_CONTINUE;
+}
+
+static bool valid_cr(int nr)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (nr) {
 	case 0:
@@ -4660,12 +6482,16 @@ static bool valid_cr(int nr)
 static int check_cr_read(struct x86_emulate_ctxt *ctxt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 
 	if (!valid_cr(c->modrm_reg))
 =======
 	if (!valid_cr(ctxt->modrm_reg))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!valid_cr(ctxt->modrm_reg))
+>>>>>>> refs/remotes/origin/master
 		return emulate_ud(ctxt);
 
 	return X86EMUL_CONTINUE;
@@ -4674,6 +6500,7 @@ static int check_cr_read(struct x86_emulate_ctxt *ctxt)
 static int check_cr_write(struct x86_emulate_ctxt *ctxt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 	u64 new_val = c->src.val64;
 	int cr = c->modrm_reg;
@@ -4681,6 +6508,10 @@ static int check_cr_write(struct x86_emulate_ctxt *ctxt)
 	u64 new_val = ctxt->src.val64;
 	int cr = ctxt->modrm_reg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 new_val = ctxt->src.val64;
+	int cr = ctxt->modrm_reg;
+>>>>>>> refs/remotes/origin/master
 	u64 efer = 0;
 
 	static u64 cr_reserved_bits[] = {
@@ -4731,11 +6562,14 @@ static int check_cr_write(struct x86_emulate_ctxt *ctxt)
 		}
 	case 4: {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		u64 cr4;
 
 		cr4 = ctxt->ops->get_cr(ctxt, 4);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ctxt->ops->get_msr(ctxt, MSR_EFER, &efer);
 
 		if ((efer & EFER_LMA) && !(new_val & X86_CR4_PAE))
@@ -4761,11 +6595,15 @@ static int check_dr7_gd(struct x86_emulate_ctxt *ctxt)
 static int check_dr_read(struct x86_emulate_ctxt *ctxt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 	int dr = c->modrm_reg;
 =======
 	int dr = ctxt->modrm_reg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int dr = ctxt->modrm_reg;
+>>>>>>> refs/remotes/origin/master
 	u64 cr4;
 
 	if (dr > 7)
@@ -4784,6 +6622,7 @@ static int check_dr_read(struct x86_emulate_ctxt *ctxt)
 static int check_dr_write(struct x86_emulate_ctxt *ctxt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 	u64 new_val = c->src.val64;
 	int dr = c->modrm_reg;
@@ -4791,6 +6630,10 @@ static int check_dr_write(struct x86_emulate_ctxt *ctxt)
 	u64 new_val = ctxt->src.val64;
 	int dr = ctxt->modrm_reg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 new_val = ctxt->src.val64;
+	int dr = ctxt->modrm_reg;
+>>>>>>> refs/remotes/origin/master
 
 	if ((dr == 6 || dr == 7) && (new_val & 0xffffffff00000000ULL))
 		return emulate_gp(ctxt, 0);
@@ -4813,10 +6656,14 @@ static int check_svme(struct x86_emulate_ctxt *ctxt)
 static int check_svme_pa(struct x86_emulate_ctxt *ctxt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 rax = ctxt->decode.regs[VCPU_REGS_RAX];
 =======
 	u64 rax = ctxt->regs[VCPU_REGS_RAX];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 rax = reg_read(ctxt, VCPU_REGS_RAX);
+>>>>>>> refs/remotes/origin/master
 
 	/* Valid physical address? */
 	if (rax & 0xffff000000000000ULL)
@@ -4839,10 +6686,14 @@ static int check_rdpmc(struct x86_emulate_ctxt *ctxt)
 {
 	u64 cr4 = ctxt->ops->get_cr(ctxt, 4);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 rcx = ctxt->decode.regs[VCPU_REGS_RCX];
 =======
 	u64 rcx = ctxt->regs[VCPU_REGS_RCX];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 rcx = reg_read(ctxt, VCPU_REGS_RCX);
+>>>>>>> refs/remotes/origin/master
 
 	if ((!(cr4 & X86_CR4_PCE) && ctxt->ops->cpl(ctxt)) ||
 	    (rcx > 3))
@@ -4854,6 +6705,7 @@ static int check_rdpmc(struct x86_emulate_ctxt *ctxt)
 static int check_perm_in(struct x86_emulate_ctxt *ctxt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 
 	c->dst.bytes = min(c->dst.bytes, 4u);
@@ -4862,6 +6714,10 @@ static int check_perm_in(struct x86_emulate_ctxt *ctxt)
 	ctxt->dst.bytes = min(ctxt->dst.bytes, 4u);
 	if (!emulator_io_permited(ctxt, ctxt->src.val, ctxt->dst.bytes))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->dst.bytes = min(ctxt->dst.bytes, 4u);
+	if (!emulator_io_permited(ctxt, ctxt->src.val, ctxt->dst.bytes))
+>>>>>>> refs/remotes/origin/master
 		return emulate_gp(ctxt, 0);
 
 	return X86EMUL_CONTINUE;
@@ -4869,6 +6725,7 @@ static int check_perm_in(struct x86_emulate_ctxt *ctxt)
 
 static int check_perm_out(struct x86_emulate_ctxt *ctxt)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 
@@ -4878,6 +6735,10 @@ static int check_perm_out(struct x86_emulate_ctxt *ctxt)
 	ctxt->src.bytes = min(ctxt->src.bytes, 4u);
 	if (!emulator_io_permited(ctxt, ctxt->dst.val, ctxt->src.bytes))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->src.bytes = min(ctxt->src.bytes, 4u);
+	if (!emulator_io_permited(ctxt, ctxt->dst.val, ctxt->src.bytes))
+>>>>>>> refs/remotes/origin/master
 		return emulate_gp(ctxt, 0);
 
 	return X86EMUL_CONTINUE;
@@ -4887,11 +6748,21 @@ static int check_perm_out(struct x86_emulate_ctxt *ctxt)
 #define DI(_y, _i) { .flags = (_y), .intercept = x86_intercept_##_i }
 #define DIP(_y, _i, _p) { .flags = (_y), .intercept = x86_intercept_##_i, \
 		      .check_perm = (_p) }
+<<<<<<< HEAD
 #define N    D(0)
 #define EXT(_f, _e) { .flags = ((_f) | RMExt), .u.group = (_e) }
 #define G(_f, _g) { .flags = ((_f) | Group), .u.group = (_g) }
 #define GD(_f, _g) { .flags = ((_f) | GroupDual), .u.gdual = (_g) }
 #define I(_f, _e) { .flags = (_f), .u.execute = (_e) }
+=======
+#define N    D(NotImpl)
+#define EXT(_f, _e) { .flags = ((_f) | RMExt), .u.group = (_e) }
+#define G(_f, _g) { .flags = ((_f) | Group | ModRM), .u.group = (_g) }
+#define GD(_f, _g) { .flags = ((_f) | GroupDual | ModRM), .u.gdual = (_g) }
+#define E(_f, _e) { .flags = ((_f) | Escape | ModRM), .u.esc = (_e) }
+#define I(_f, _e) { .flags = (_f), .u.execute = (_e) }
+#define F(_f, _e) { .flags = (_f) | Fastop, .u.fastop = (_e) }
+>>>>>>> refs/remotes/origin/master
 #define II(_f, _e, _i) \
 	{ .flags = (_f), .u.execute = (_e), .intercept = x86_intercept_##_i }
 #define IIP(_f, _e, _i, _p) \
@@ -4902,6 +6773,7 @@ static int check_perm_out(struct x86_emulate_ctxt *ctxt)
 #define D2bv(_f)      D((_f) | ByteOp), D(_f)
 #define D2bvIP(_f, _i, _p) DIP((_f) | ByteOp, _i, _p), DIP(_f, _i, _p)
 #define I2bv(_f, _e)  I((_f) | ByteOp, _e), I(_f, _e)
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #define I2bvIP(_f, _e, _i, _p) \
@@ -5049,10 +6921,132 @@ static struct group_dual group9 = { {
 static struct group_dual group9 = { {
 	N, I(DstMem64 | ModRM | Lock | PageTable, em_cmpxchg8b), N, N, N, N, N, N,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define F2bv(_f, _e)  F((_f) | ByteOp, _e), F(_f, _e)
+#define I2bvIP(_f, _e, _i, _p) \
+	IIP((_f) | ByteOp, _e, _i, _p), IIP(_f, _e, _i, _p)
+
+#define F6ALU(_f, _e) F2bv((_f) | DstMem | SrcReg | ModRM, _e),		\
+		F2bv(((_f) | DstReg | SrcMem | ModRM) & ~Lock, _e),	\
+		F2bv(((_f) & ~Lock) | DstAcc | SrcImm, _e)
+
+static const struct opcode group7_rm1[] = {
+	DI(SrcNone | Priv, monitor),
+	DI(SrcNone | Priv, mwait),
+	N, N, N, N, N, N,
+};
+
+static const struct opcode group7_rm3[] = {
+	DIP(SrcNone | Prot | Priv,		vmrun,		check_svme_pa),
+	II(SrcNone  | Prot | EmulateOnUD,	em_vmmcall,	vmmcall),
+	DIP(SrcNone | Prot | Priv,		vmload,		check_svme_pa),
+	DIP(SrcNone | Prot | Priv,		vmsave,		check_svme_pa),
+	DIP(SrcNone | Prot | Priv,		stgi,		check_svme),
+	DIP(SrcNone | Prot | Priv,		clgi,		check_svme),
+	DIP(SrcNone | Prot | Priv,		skinit,		check_svme),
+	DIP(SrcNone | Prot | Priv,		invlpga,	check_svme),
+};
+
+static const struct opcode group7_rm7[] = {
+	N,
+	DIP(SrcNone, rdtscp, check_rdtsc),
+	N, N, N, N, N, N,
+};
+
+static const struct opcode group1[] = {
+	F(Lock, em_add),
+	F(Lock | PageTable, em_or),
+	F(Lock, em_adc),
+	F(Lock, em_sbb),
+	F(Lock | PageTable, em_and),
+	F(Lock, em_sub),
+	F(Lock, em_xor),
+	F(NoWrite, em_cmp),
+};
+
+static const struct opcode group1A[] = {
+	I(DstMem | SrcNone | Mov | Stack, em_pop), N, N, N, N, N, N, N,
+};
+
+static const struct opcode group2[] = {
+	F(DstMem | ModRM, em_rol),
+	F(DstMem | ModRM, em_ror),
+	F(DstMem | ModRM, em_rcl),
+	F(DstMem | ModRM, em_rcr),
+	F(DstMem | ModRM, em_shl),
+	F(DstMem | ModRM, em_shr),
+	F(DstMem | ModRM, em_shl),
+	F(DstMem | ModRM, em_sar),
+};
+
+static const struct opcode group3[] = {
+	F(DstMem | SrcImm | NoWrite, em_test),
+	F(DstMem | SrcImm | NoWrite, em_test),
+	F(DstMem | SrcNone | Lock, em_not),
+	F(DstMem | SrcNone | Lock, em_neg),
+	F(DstXacc | Src2Mem, em_mul_ex),
+	F(DstXacc | Src2Mem, em_imul_ex),
+	F(DstXacc | Src2Mem, em_div_ex),
+	F(DstXacc | Src2Mem, em_idiv_ex),
+};
+
+static const struct opcode group4[] = {
+	F(ByteOp | DstMem | SrcNone | Lock, em_inc),
+	F(ByteOp | DstMem | SrcNone | Lock, em_dec),
+	N, N, N, N, N, N,
+};
+
+static const struct opcode group5[] = {
+	F(DstMem | SrcNone | Lock,		em_inc),
+	F(DstMem | SrcNone | Lock,		em_dec),
+	I(SrcMem | Stack,			em_grp45),
+	I(SrcMemFAddr | ImplicitOps | Stack,	em_call_far),
+	I(SrcMem | Stack,			em_grp45),
+	I(SrcMemFAddr | ImplicitOps,		em_grp45),
+	I(SrcMem | Stack,			em_grp45), D(Undefined),
+};
+
+static const struct opcode group6[] = {
+	DI(Prot,	sldt),
+	DI(Prot,	str),
+	II(Prot | Priv | SrcMem16, em_lldt, lldt),
+	II(Prot | Priv | SrcMem16, em_ltr, ltr),
+	N, N, N, N,
+};
+
+static const struct group_dual group7 = { {
+	II(Mov | DstMem | Priv,			em_sgdt, sgdt),
+	II(Mov | DstMem | Priv,			em_sidt, sidt),
+	II(SrcMem | Priv,			em_lgdt, lgdt),
+	II(SrcMem | Priv,			em_lidt, lidt),
+	II(SrcNone | DstMem | Mov,		em_smsw, smsw), N,
+	II(SrcMem16 | Mov | Priv,		em_lmsw, lmsw),
+	II(SrcMem | ByteOp | Priv | NoAccess,	em_invlpg, invlpg),
+}, {
+	I(SrcNone | Priv | EmulateOnUD,	em_vmcall),
+	EXT(0, group7_rm1),
+	N, EXT(0, group7_rm3),
+	II(SrcNone | DstMem | Mov,		em_smsw, smsw), N,
+	II(SrcMem16 | Mov | Priv,		em_lmsw, lmsw),
+	EXT(0, group7_rm7),
+} };
+
+static const struct opcode group8[] = {
+	N, N, N, N,
+	F(DstMem | SrcImmByte | NoWrite,		em_bt),
+	F(DstMem | SrcImmByte | Lock | PageTable,	em_bts),
+	F(DstMem | SrcImmByte | Lock,			em_btr),
+	F(DstMem | SrcImmByte | Lock | PageTable,	em_btc),
+};
+
+static const struct group_dual group9 = { {
+	N, I(DstMem64 | Lock | PageTable, em_cmpxchg8b), N, N, N, N, N, N,
+>>>>>>> refs/remotes/origin/master
 }, {
 	N, N, N, N, N, N, N, N,
 } };
 
+<<<<<<< HEAD
 static struct opcode group11[] = {
 <<<<<<< HEAD
 	I(DstMem | SrcImm | ModRM | Mov, em_mov), X7(D(Undefined)),
@@ -5108,6 +7102,111 @@ static struct opcode opcode_table[256] = {
 	I6ALU(0, em_cmp), N, N,
 	/* 0x40 - 0x4F */
 	X16(D(DstReg)),
+=======
+static const struct opcode group11[] = {
+	I(DstMem | SrcImm | Mov | PageTable, em_mov),
+	X7(D(Undefined)),
+};
+
+static const struct gprefix pfx_0f_6f_0f_7f = {
+	I(Mmx, em_mov), I(Sse | Aligned, em_mov), N, I(Sse | Unaligned, em_mov),
+};
+
+static const struct gprefix pfx_vmovntpx = {
+	I(0, em_mov), N, N, N,
+};
+
+static const struct escape escape_d9 = { {
+	N, N, N, N, N, N, N, I(DstMem, em_fnstcw),
+}, {
+	/* 0xC0 - 0xC7 */
+	N, N, N, N, N, N, N, N,
+	/* 0xC8 - 0xCF */
+	N, N, N, N, N, N, N, N,
+	/* 0xD0 - 0xC7 */
+	N, N, N, N, N, N, N, N,
+	/* 0xD8 - 0xDF */
+	N, N, N, N, N, N, N, N,
+	/* 0xE0 - 0xE7 */
+	N, N, N, N, N, N, N, N,
+	/* 0xE8 - 0xEF */
+	N, N, N, N, N, N, N, N,
+	/* 0xF0 - 0xF7 */
+	N, N, N, N, N, N, N, N,
+	/* 0xF8 - 0xFF */
+	N, N, N, N, N, N, N, N,
+} };
+
+static const struct escape escape_db = { {
+	N, N, N, N, N, N, N, N,
+}, {
+	/* 0xC0 - 0xC7 */
+	N, N, N, N, N, N, N, N,
+	/* 0xC8 - 0xCF */
+	N, N, N, N, N, N, N, N,
+	/* 0xD0 - 0xC7 */
+	N, N, N, N, N, N, N, N,
+	/* 0xD8 - 0xDF */
+	N, N, N, N, N, N, N, N,
+	/* 0xE0 - 0xE7 */
+	N, N, N, I(ImplicitOps, em_fninit), N, N, N, N,
+	/* 0xE8 - 0xEF */
+	N, N, N, N, N, N, N, N,
+	/* 0xF0 - 0xF7 */
+	N, N, N, N, N, N, N, N,
+	/* 0xF8 - 0xFF */
+	N, N, N, N, N, N, N, N,
+} };
+
+static const struct escape escape_dd = { {
+	N, N, N, N, N, N, N, I(DstMem, em_fnstsw),
+}, {
+	/* 0xC0 - 0xC7 */
+	N, N, N, N, N, N, N, N,
+	/* 0xC8 - 0xCF */
+	N, N, N, N, N, N, N, N,
+	/* 0xD0 - 0xC7 */
+	N, N, N, N, N, N, N, N,
+	/* 0xD8 - 0xDF */
+	N, N, N, N, N, N, N, N,
+	/* 0xE0 - 0xE7 */
+	N, N, N, N, N, N, N, N,
+	/* 0xE8 - 0xEF */
+	N, N, N, N, N, N, N, N,
+	/* 0xF0 - 0xF7 */
+	N, N, N, N, N, N, N, N,
+	/* 0xF8 - 0xFF */
+	N, N, N, N, N, N, N, N,
+} };
+
+static const struct opcode opcode_table[256] = {
+	/* 0x00 - 0x07 */
+	F6ALU(Lock, em_add),
+	I(ImplicitOps | Stack | No64 | Src2ES, em_push_sreg),
+	I(ImplicitOps | Stack | No64 | Src2ES, em_pop_sreg),
+	/* 0x08 - 0x0F */
+	F6ALU(Lock | PageTable, em_or),
+	I(ImplicitOps | Stack | No64 | Src2CS, em_push_sreg),
+	N,
+	/* 0x10 - 0x17 */
+	F6ALU(Lock, em_adc),
+	I(ImplicitOps | Stack | No64 | Src2SS, em_push_sreg),
+	I(ImplicitOps | Stack | No64 | Src2SS, em_pop_sreg),
+	/* 0x18 - 0x1F */
+	F6ALU(Lock, em_sbb),
+	I(ImplicitOps | Stack | No64 | Src2DS, em_push_sreg),
+	I(ImplicitOps | Stack | No64 | Src2DS, em_pop_sreg),
+	/* 0x20 - 0x27 */
+	F6ALU(Lock | PageTable, em_and), N, N,
+	/* 0x28 - 0x2F */
+	F6ALU(Lock, em_sub), N, I(ByteOp | DstAcc | No64, em_das),
+	/* 0x30 - 0x37 */
+	F6ALU(Lock, em_xor), N, N,
+	/* 0x38 - 0x3F */
+	F6ALU(NoWrite, em_cmp), N, N,
+	/* 0x40 - 0x4F */
+	X8(F(DstReg, em_inc)), X8(F(DstReg, em_dec)),
+>>>>>>> refs/remotes/origin/master
 	/* 0x50 - 0x57 */
 	X8(I(SrcReg | Stack, em_push)),
 	/* 0x58 - 0x5F */
@@ -5122,6 +7221,7 @@ static struct opcode opcode_table[256] = {
 	I(DstReg | SrcMem | ModRM | Src2Imm, em_imul_3op),
 	I(SrcImmByte | Mov | Stack, em_push),
 	I(DstReg | SrcMem | ModRM | Src2ImmByte, em_imul_3op),
+<<<<<<< HEAD
 <<<<<<< HEAD
 	D2bvIP(DstDI | SrcDX | Mov | String, ins, check_perm_in), /* insb, insw/insd */
 	D2bvIP(SrcSI | DstDX | String, outs, check_perm_out), /* outsb, outsw/outsd */
@@ -5145,6 +7245,18 @@ static struct opcode opcode_table[256] = {
 	D(ImplicitOps | SrcMem16 | ModRM), G(0, group1A),
 =======
 	I2bv(DstMem | SrcReg | ModRM, em_test),
+=======
+	I2bvIP(DstDI | SrcDX | Mov | String | Unaligned, em_in, ins, check_perm_in), /* insb, insw/insd */
+	I2bvIP(SrcSI | DstDX | String, em_out, outs, check_perm_out), /* outsb, outsw/outsd */
+	/* 0x70 - 0x7F */
+	X16(D(SrcImmByte)),
+	/* 0x80 - 0x87 */
+	G(ByteOp | DstMem | SrcImm, group1),
+	G(DstMem | SrcImm, group1),
+	G(ByteOp | DstMem | SrcImm | No64, group1),
+	G(DstMem | SrcImmByte, group1),
+	F2bv(DstMem | SrcReg | ModRM | NoWrite, em_test),
+>>>>>>> refs/remotes/origin/master
 	I2bv(DstMem | SrcReg | ModRM | Lock | PageTable, em_xchg),
 	/* 0x88 - 0x8F */
 	I2bv(DstMem | SrcReg | ModRM | Mov | PageTable, em_mov),
@@ -5153,13 +7265,17 @@ static struct opcode opcode_table[256] = {
 	D(ModRM | SrcMem | NoAccess | DstReg),
 	I(ImplicitOps | SrcMem16 | ModRM, em_mov_sreg_rm),
 	G(0, group1A),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* 0x90 - 0x97 */
 	DI(SrcAcc | DstReg, pause), X7(D(SrcAcc | DstReg)),
 	/* 0x98 - 0x9F */
 	D(DstAcc | SrcNone), I(ImplicitOps | SrcAcc, em_cwd),
 	I(SrcImmFAddr | No64, em_call_far), N,
 	II(ImplicitOps | Stack, em_pushf, pushf),
+<<<<<<< HEAD
 	II(ImplicitOps | Stack, em_popf, popf), N, N,
 	/* 0xA0 - 0xA7 */
 	I2bv(DstAcc | SrcMem | Mov | MemAbs, em_mov),
@@ -5195,11 +7311,33 @@ static struct opcode opcode_table[256] = {
 	D(ImplicitOps), DI(SrcImmByte, intn),
 	D(ImplicitOps | No64), DI(ImplicitOps, iret),
 =======
+=======
+	II(ImplicitOps | Stack, em_popf, popf),
+	I(ImplicitOps, em_sahf), I(ImplicitOps, em_lahf),
+	/* 0xA0 - 0xA7 */
+	I2bv(DstAcc | SrcMem | Mov | MemAbs, em_mov),
+	I2bv(DstMem | SrcAcc | Mov | MemAbs | PageTable, em_mov),
+	I2bv(SrcSI | DstDI | Mov | String, em_mov),
+	F2bv(SrcSI | DstDI | String | NoWrite, em_cmp),
+	/* 0xA8 - 0xAF */
+	F2bv(DstAcc | SrcImm | NoWrite, em_test),
+	I2bv(SrcAcc | DstDI | Mov | String, em_mov),
+	I2bv(SrcSI | DstAcc | Mov | String, em_mov),
+	F2bv(SrcAcc | DstDI | String | NoWrite, em_cmp),
+	/* 0xB0 - 0xB7 */
+	X8(I(ByteOp | DstReg | SrcImm | Mov, em_mov)),
+	/* 0xB8 - 0xBF */
+	X8(I(DstReg | SrcImm64 | Mov, em_mov)),
+	/* 0xC0 - 0xC7 */
+	G(ByteOp | Src2ImmByte, group2), G(Src2ImmByte, group2),
+	I(ImplicitOps | Stack | SrcImmU16, em_ret_near_imm),
+>>>>>>> refs/remotes/origin/master
 	I(ImplicitOps | Stack, em_ret),
 	I(DstReg | SrcMemFAddr | ModRM | No64 | Src2ES, em_lseg),
 	I(DstReg | SrcMemFAddr | ModRM | No64 | Src2DS, em_lseg),
 	G(ByteOp, group11), G(0, group11),
 	/* 0xC8 - 0xCF */
+<<<<<<< HEAD
 	N, N, N, I(ImplicitOps | Stack, em_ret_far),
 	D(ImplicitOps), DI(SrcImmByte, intn),
 	D(ImplicitOps | No64), II(ImplicitOps, em_iret, iret),
@@ -5220,6 +7358,23 @@ static struct opcode opcode_table[256] = {
 	D2bvIP(SrcDX | DstAcc, in,  check_perm_in),
 	D2bvIP(SrcAcc | DstDX, out, check_perm_out),
 =======
+=======
+	I(Stack | SrcImmU16 | Src2ImmByte, em_enter), I(Stack, em_leave),
+	I(ImplicitOps | Stack | SrcImmU16, em_ret_far_imm),
+	I(ImplicitOps | Stack, em_ret_far),
+	D(ImplicitOps), DI(SrcImmByte, intn),
+	D(ImplicitOps | No64), II(ImplicitOps, em_iret, iret),
+	/* 0xD0 - 0xD7 */
+	G(Src2One | ByteOp, group2), G(Src2One, group2),
+	G(Src2CL | ByteOp, group2), G(Src2CL, group2),
+	I(DstAcc | SrcImmUByte | No64, em_aam),
+	I(DstAcc | SrcImmUByte | No64, em_aad),
+	F(DstAcc | ByteOp | No64, em_salc),
+	I(DstAcc | SrcXLat | ByteOp, em_mov),
+	/* 0xD8 - 0xDF */
+	N, E(0, &escape_d9), N, E(0, &escape_db), N, E(0, &escape_dd), N, N,
+	/* 0xE0 - 0xE7 */
+>>>>>>> refs/remotes/origin/master
 	X3(I(SrcImmByte, em_loop)),
 	I(SrcImmByte, em_jcxz),
 	I2bvIP(SrcImmUByte | DstAcc, em_in,  in,  check_perm_in),
@@ -5229,12 +7384,16 @@ static struct opcode opcode_table[256] = {
 	I(SrcImmFAddr | No64, em_jmp_far), D(SrcImmByte | ImplicitOps),
 	I2bvIP(SrcDX | DstAcc, em_in,  in,  check_perm_in),
 	I2bvIP(SrcAcc | DstDX, em_out, out, check_perm_out),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* 0xF0 - 0xF7 */
 	N, DI(ImplicitOps, icebp), N, N,
 	DI(ImplicitOps | Priv, hlt), D(ImplicitOps),
 	G(ByteOp, group3), G(0, group3),
 	/* 0xF8 - 0xFF */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	D(ImplicitOps), D(ImplicitOps), D(ImplicitOps), D(ImplicitOps),
 =======
@@ -5276,14 +7435,44 @@ static struct opcode twobyte_table[256] = {
 	IIP(ModRM | SrcMem | Priv | Op3264, em_dr_write, dr_write, check_dr_write),
 	N, N, N, N,
 	N, N, N, N, N, N, N, N,
+=======
+	D(ImplicitOps), D(ImplicitOps),
+	I(ImplicitOps, em_cli), I(ImplicitOps, em_sti),
+	D(ImplicitOps), D(ImplicitOps), G(0, group4), G(0, group5),
+};
+
+static const struct opcode twobyte_table[256] = {
+	/* 0x00 - 0x0F */
+	G(0, group6), GD(0, &group7), N, N,
+	N, I(ImplicitOps | EmulateOnUD, em_syscall),
+	II(ImplicitOps | Priv, em_clts, clts), N,
+	DI(ImplicitOps | Priv, invd), DI(ImplicitOps | Priv, wbinvd), N, N,
+	N, D(ImplicitOps | ModRM), N, N,
+	/* 0x10 - 0x1F */
+	N, N, N, N, N, N, N, N,
+	D(ImplicitOps | ModRM), N, N, N, N, N, N, D(ImplicitOps | ModRM),
+	/* 0x20 - 0x2F */
+	DIP(ModRM | DstMem | Priv | Op3264, cr_read, check_cr_read),
+	DIP(ModRM | DstMem | Priv | Op3264, dr_read, check_dr_read),
+	IIP(ModRM | SrcMem | Priv | Op3264, em_cr_write, cr_write, check_cr_write),
+	IIP(ModRM | SrcMem | Priv | Op3264, em_dr_write, dr_write, check_dr_write),
+	N, N, N, N,
+	N, N, N, GP(ModRM | DstMem | SrcReg | Sse | Mov | Aligned, &pfx_vmovntpx),
+	N, N, N, N,
+>>>>>>> refs/remotes/origin/master
 	/* 0x30 - 0x3F */
 	II(ImplicitOps | Priv, em_wrmsr, wrmsr),
 	IIP(ImplicitOps, em_rdtsc, rdtsc, check_rdtsc),
 	II(ImplicitOps | Priv, em_rdmsr, rdmsr),
 	IIP(ImplicitOps, em_rdpmc, rdpmc, check_rdpmc),
+<<<<<<< HEAD
 	I(ImplicitOps | VendorSpecific, em_sysenter),
 	I(ImplicitOps | Priv | VendorSpecific, em_sysexit),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	I(ImplicitOps | EmulateOnUD, em_sysenter),
+	I(ImplicitOps | Priv | EmulateOnUD, em_sysexit),
+>>>>>>> refs/remotes/origin/master
 	N, N,
 	N, N, N, N, N, N, N, N,
 	/* 0x40 - 0x4F */
@@ -5305,6 +7494,7 @@ static struct opcode twobyte_table[256] = {
 	/* 0x90 - 0x9F */
 	X16(D(ByteOp | DstMem | SrcNone | ModRM| Mov)),
 	/* 0xA0 - 0xA7 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	D(ImplicitOps | Stack), D(ImplicitOps | Stack),
 	DI(ImplicitOps, cpuid), D(DstMem | SrcReg | ModRM | BitOp),
@@ -5341,12 +7531,31 @@ static struct opcode twobyte_table[256] = {
 	I2bv(DstMem | SrcReg | ModRM | Lock | PageTable, em_cmpxchg),
 	I(DstReg | SrcMemFAddr | ModRM | Src2SS, em_lseg),
 	I(DstMem | SrcReg | ModRM | BitOp | Lock, em_btr),
+=======
+	I(Stack | Src2FS, em_push_sreg), I(Stack | Src2FS, em_pop_sreg),
+	II(ImplicitOps, em_cpuid, cpuid),
+	F(DstMem | SrcReg | ModRM | BitOp | NoWrite, em_bt),
+	F(DstMem | SrcReg | Src2ImmByte | ModRM, em_shld),
+	F(DstMem | SrcReg | Src2CL | ModRM, em_shld), N, N,
+	/* 0xA8 - 0xAF */
+	I(Stack | Src2GS, em_push_sreg), I(Stack | Src2GS, em_pop_sreg),
+	DI(ImplicitOps, rsm),
+	F(DstMem | SrcReg | ModRM | BitOp | Lock | PageTable, em_bts),
+	F(DstMem | SrcReg | Src2ImmByte | ModRM, em_shrd),
+	F(DstMem | SrcReg | Src2CL | ModRM, em_shrd),
+	D(ModRM), F(DstReg | SrcMem | ModRM, em_imul),
+	/* 0xB0 - 0xB7 */
+	I2bv(DstMem | SrcReg | ModRM | Lock | PageTable, em_cmpxchg),
+	I(DstReg | SrcMemFAddr | ModRM | Src2SS, em_lseg),
+	F(DstMem | SrcReg | ModRM | BitOp | Lock, em_btr),
+>>>>>>> refs/remotes/origin/master
 	I(DstReg | SrcMemFAddr | ModRM | Src2FS, em_lseg),
 	I(DstReg | SrcMemFAddr | ModRM | Src2GS, em_lseg),
 	D(DstReg | SrcMem8 | ModRM | Mov), D(DstReg | SrcMem16 | ModRM | Mov),
 	/* 0xB8 - 0xBF */
 	N, N,
 	G(BitOp, group8),
+<<<<<<< HEAD
 	I(DstMem | SrcReg | ModRM | BitOp | Lock | PageTable, em_btc),
 	I(DstReg | SrcMem | ModRM, em_bsf), I(DstReg | SrcMem | ModRM, em_bsr),
 	D(DstReg | SrcMem8 | ModRM | Mov), D(DstReg | SrcMem16 | ModRM | Mov),
@@ -5356,6 +7565,17 @@ static struct opcode twobyte_table[256] = {
 	N, D(DstMem | SrcReg | ModRM | Mov),
 	N, N, N, GD(0, &group9),
 	N, N, N, N, N, N, N, N,
+=======
+	F(DstMem | SrcReg | ModRM | BitOp | Lock | PageTable, em_btc),
+	F(DstReg | SrcMem | ModRM, em_bsf), F(DstReg | SrcMem | ModRM, em_bsr),
+	D(DstReg | SrcMem8 | ModRM | Mov), D(DstReg | SrcMem16 | ModRM | Mov),
+	/* 0xC0 - 0xC7 */
+	F2bv(DstMem | SrcReg | ModRM | SrcWrite | Lock, em_xadd),
+	N, D(DstMem | SrcReg | ModRM | Mov),
+	N, N, N, GD(0, &group9),
+	/* 0xC8 - 0xCF */
+	X8(I(DstReg, em_bswap)),
+>>>>>>> refs/remotes/origin/master
 	/* 0xD0 - 0xDF */
 	N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N,
 	/* 0xE0 - 0xEF */
@@ -5364,6 +7584,33 @@ static struct opcode twobyte_table[256] = {
 	N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N
 };
 
+<<<<<<< HEAD
+=======
+static const struct gprefix three_byte_0f_38_f0 = {
+	I(DstReg | SrcMem | Mov, em_movbe), N, N, N
+};
+
+static const struct gprefix three_byte_0f_38_f1 = {
+	I(DstMem | SrcReg | Mov, em_movbe), N, N, N
+};
+
+/*
+ * Insns below are selected by the prefix which indexed by the third opcode
+ * byte.
+ */
+static const struct opcode opcode_map_0f_38[256] = {
+	/* 0x00 - 0x7f */
+	X16(N), X16(N), X16(N), X16(N), X16(N), X16(N), X16(N), X16(N),
+	/* 0x80 - 0xef */
+	X16(N), X16(N), X16(N), X16(N), X16(N), X16(N), X16(N),
+	/* 0xf0 - 0xf1 */
+	GP(EmulateOnUD | ModRM | Prefix, &three_byte_0f_38_f0),
+	GP(EmulateOnUD | ModRM | Prefix, &three_byte_0f_38_f1),
+	/* 0xf2 - 0xff */
+	N, N, X4(N), X8(N)
+};
+
+>>>>>>> refs/remotes/origin/master
 #undef D
 #undef N
 #undef G
@@ -5376,6 +7623,7 @@ static struct opcode twobyte_table[256] = {
 #undef D2bvIP
 #undef I2bv
 <<<<<<< HEAD
+<<<<<<< HEAD
 #undef I6ALU
 
 static unsigned imm_size(struct decode_cache *c)
@@ -5384,6 +7632,8 @@ static unsigned imm_size(struct decode_cache *c)
 
 	size = (c->d & ByteOp) ? 1 : c->op_bytes;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #undef I2bvIP
 #undef I6ALU
 
@@ -5392,7 +7642,10 @@ static unsigned imm_size(struct x86_emulate_ctxt *ctxt)
 	unsigned size;
 
 	size = (ctxt->d & ByteOp) ? 1 : ctxt->op_bytes;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (size == 8)
 		size = 4;
 	return size;
@@ -5402,14 +7655,18 @@ static int decode_imm(struct x86_emulate_ctxt *ctxt, struct operand *op,
 		      unsigned size, bool sign_extension)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct decode_cache *c = &ctxt->decode;
 	struct x86_emulate_ops *ops = ctxt->ops;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc = X86EMUL_CONTINUE;
 
 	op->type = OP_IMM;
 	op->bytes = size;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	op->addr.mem.ea = c->eip;
 	/* NB. Immediates are sign-extended as necessary. */
@@ -5423,6 +7680,8 @@ static int decode_imm(struct x86_emulate_ctxt *ctxt, struct operand *op,
 	case 4:
 		op->val = insn_fetch(s32, 4, c->eip);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	op->addr.mem.ea = ctxt->_eip;
 	/* NB. Immediates are sign-extended as necessary. */
 	switch (op->bytes) {
@@ -5434,7 +7693,13 @@ static int decode_imm(struct x86_emulate_ctxt *ctxt, struct operand *op,
 		break;
 	case 4:
 		op->val = insn_fetch(s32, ctxt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+	case 8:
+		op->val = insn_fetch(s64, ctxt);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	if (!sign_extension) {
@@ -5455,12 +7720,15 @@ done:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int
 x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len)
 {
 	struct x86_emulate_ops *ops = ctxt->ops;
 	struct decode_cache *c = &ctxt->decode;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int decode_operand(struct x86_emulate_ctxt *ctxt, struct operand *op,
 			  unsigned d)
 {
@@ -5488,7 +7756,29 @@ static int decode_operand(struct x86_emulate_ctxt *ctxt, struct operand *op,
 	case OpAcc:
 		op->type = OP_REG;
 		op->bytes = (ctxt->d & ByteOp) ? 1 : ctxt->op_bytes;
+<<<<<<< HEAD
 		op->addr.reg = &ctxt->regs[VCPU_REGS_RAX];
+=======
+		op->addr.reg = reg_rmw(ctxt, VCPU_REGS_RAX);
+		fetch_register_operand(op);
+		op->orig_val = op->val;
+		break;
+	case OpAccLo:
+		op->type = OP_REG;
+		op->bytes = (ctxt->d & ByteOp) ? 2 : ctxt->op_bytes;
+		op->addr.reg = reg_rmw(ctxt, VCPU_REGS_RAX);
+		fetch_register_operand(op);
+		op->orig_val = op->val;
+		break;
+	case OpAccHi:
+		if (ctxt->d & ByteOp) {
+			op->type = OP_NONE;
+			break;
+		}
+		op->type = OP_REG;
+		op->bytes = ctxt->op_bytes;
+		op->addr.reg = reg_rmw(ctxt, VCPU_REGS_RDX);
+>>>>>>> refs/remotes/origin/master
 		fetch_register_operand(op);
 		op->orig_val = op->val;
 		break;
@@ -5496,19 +7786,34 @@ static int decode_operand(struct x86_emulate_ctxt *ctxt, struct operand *op,
 		op->type = OP_MEM;
 		op->bytes = (ctxt->d & ByteOp) ? 1 : ctxt->op_bytes;
 		op->addr.mem.ea =
+<<<<<<< HEAD
 			register_address(ctxt, ctxt->regs[VCPU_REGS_RDI]);
 		op->addr.mem.seg = VCPU_SREG_ES;
 		op->val = 0;
+=======
+			register_address(ctxt, reg_read(ctxt, VCPU_REGS_RDI));
+		op->addr.mem.seg = VCPU_SREG_ES;
+		op->val = 0;
+		op->count = 1;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case OpDX:
 		op->type = OP_REG;
 		op->bytes = 2;
+<<<<<<< HEAD
 		op->addr.reg = &ctxt->regs[VCPU_REGS_RDX];
+=======
+		op->addr.reg = reg_rmw(ctxt, VCPU_REGS_RDX);
+>>>>>>> refs/remotes/origin/master
 		fetch_register_operand(op);
 		break;
 	case OpCL:
 		op->bytes = 1;
+<<<<<<< HEAD
 		op->val = ctxt->regs[VCPU_REGS_RCX] & 0xff;
+=======
+		op->val = reg_read(ctxt, VCPU_REGS_RCX) & 0xff;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case OpImmByte:
 		rc = decode_imm(ctxt, op, 1, true);
@@ -5520,8 +7825,21 @@ static int decode_operand(struct x86_emulate_ctxt *ctxt, struct operand *op,
 	case OpImm:
 		rc = decode_imm(ctxt, op, imm_size(ctxt), true);
 		break;
+<<<<<<< HEAD
 	case OpMem8:
 		ctxt->memop.bytes = 1;
+=======
+	case OpImm64:
+		rc = decode_imm(ctxt, op, ctxt->op_bytes, true);
+		break;
+	case OpMem8:
+		ctxt->memop.bytes = 1;
+		if (ctxt->memop.type == OP_REG) {
+			ctxt->memop.addr.reg = decode_register(ctxt,
+					ctxt->modrm_rm, true);
+			fetch_register_operand(&ctxt->memop);
+		}
+>>>>>>> refs/remotes/origin/master
 		goto mem_common;
 	case OpMem16:
 		ctxt->memop.bytes = 2;
@@ -5539,7 +7857,22 @@ static int decode_operand(struct x86_emulate_ctxt *ctxt, struct operand *op,
 		op->type = OP_MEM;
 		op->bytes = (ctxt->d & ByteOp) ? 1 : ctxt->op_bytes;
 		op->addr.mem.ea =
+<<<<<<< HEAD
 			register_address(ctxt, ctxt->regs[VCPU_REGS_RSI]);
+=======
+			register_address(ctxt, reg_read(ctxt, VCPU_REGS_RSI));
+		op->addr.mem.seg = seg_override(ctxt);
+		op->val = 0;
+		op->count = 1;
+		break;
+	case OpXLat:
+		op->type = OP_MEM;
+		op->bytes = (ctxt->d & ByteOp) ? 1 : ctxt->op_bytes;
+		op->addr.mem.ea =
+			register_address(ctxt,
+				reg_read(ctxt, VCPU_REGS_RBX) +
+				(reg_read(ctxt, VCPU_REGS_RAX) & 0xff));
+>>>>>>> refs/remotes/origin/master
 		op->addr.mem.seg = seg_override(ctxt);
 		op->val = 0;
 		break;
@@ -5583,12 +7916,16 @@ done:
 
 int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc = X86EMUL_CONTINUE;
 	int mode = ctxt->mode;
 	int def_op_bytes, def_ad_bytes, goffset, simd_prefix;
 	bool op_prefix = false;
 	struct opcode opcode;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct operand memop = { .type = OP_NONE }, *memopp = NULL;
 
@@ -5598,15 +7935,23 @@ int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len)
 	if (insn_len > 0)
 		memcpy(c->fetch.data, insn, insn_len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ctxt->memop.type = OP_NONE;
 	ctxt->memopp = NULL;
 	ctxt->_eip = ctxt->eip;
 	ctxt->fetch.start = ctxt->_eip;
 	ctxt->fetch.end = ctxt->fetch.start + insn_len;
+<<<<<<< HEAD
 	if (insn_len > 0)
 		memcpy(ctxt->fetch.data, insn, insn_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->opcode_len = 1;
+	if (insn_len > 0)
+		memcpy(ctxt->fetch.data, insn, insn_len);
+>>>>>>> refs/remotes/origin/master
 
 	switch (mode) {
 	case X86EMUL_MODE_REAL:
@@ -5625,6 +7970,7 @@ int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len)
 #endif
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return -1;
 	}
 
@@ -5639,6 +7985,8 @@ int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len)
 			/* switch between 2/4 bytes */
 			c->op_bytes = def_op_bytes ^ 6;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return EMULATION_FAILED;
 	}
 
@@ -5652,27 +8000,37 @@ int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len)
 			op_prefix = true;
 			/* switch between 2/4 bytes */
 			ctxt->op_bytes = def_op_bytes ^ 6;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 0x67:	/* address-size override */
 			if (mode == X86EMUL_MODE_PROT64)
 				/* switch between 4/8 bytes */
+<<<<<<< HEAD
 <<<<<<< HEAD
 				c->ad_bytes = def_ad_bytes ^ 12;
 			else
 				/* switch between 2/4 bytes */
 				c->ad_bytes = def_ad_bytes ^ 6;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				ctxt->ad_bytes = def_ad_bytes ^ 12;
 			else
 				/* switch between 2/4 bytes */
 				ctxt->ad_bytes = def_ad_bytes ^ 6;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 0x26:	/* ES override */
 		case 0x2e:	/* CS override */
 		case 0x36:	/* SS override */
 		case 0x3e:	/* DS override */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			set_seg_override(c, (c->b >> 3) & 3);
 			break;
@@ -5680,16 +8038,22 @@ int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len)
 		case 0x65:	/* GS override */
 			set_seg_override(c, c->b & 7);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			set_seg_override(ctxt, (ctxt->b >> 3) & 3);
 			break;
 		case 0x64:	/* FS override */
 		case 0x65:	/* GS override */
 			set_seg_override(ctxt, ctxt->b & 7);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 0x40 ... 0x4f: /* REX */
 			if (mode != X86EMUL_MODE_PROT64)
 				goto done_prefixes;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			c->rex_prefix = c->b;
 			continue;
@@ -5700,6 +8064,8 @@ int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len)
 		case 0xf3:	/* REP/REPE/REPZ */
 			c->rep_prefix = c->b;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			ctxt->rex_prefix = ctxt->b;
 			continue;
 		case 0xf0:	/* LOCK */
@@ -5708,7 +8074,10 @@ int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len)
 		case 0xf2:	/* REPNE/REPNZ */
 		case 0xf3:	/* REP/REPE/REPZ */
 			ctxt->rep_prefix = ctxt->b;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			goto done_prefixes;
@@ -5717,15 +8086,20 @@ int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len)
 		/* Any legacy prefix after a REX prefix nullifies its effect. */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		c->rex_prefix = 0;
 =======
 		ctxt->rex_prefix = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ctxt->rex_prefix = 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 done_prefixes:
 
 	/* REX prefix. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (c->rex_prefix & 8)
 		c->op_bytes = 8;	/* REX.W */
@@ -5754,6 +8128,8 @@ done_prefixes:
 			goffset = (c->modrm >> 3) & 7;
 			if ((c->modrm >> 6) == 3)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ctxt->rex_prefix & 8)
 		ctxt->op_bytes = 8;	/* REX.W */
 
@@ -5761,6 +8137,7 @@ done_prefixes:
 	opcode = opcode_table[ctxt->b];
 	/* Two-byte opcode? */
 	if (ctxt->b == 0x0f) {
+<<<<<<< HEAD
 		ctxt->twobyte = 1;
 		ctxt->b = insn_fetch(u8, ctxt);
 		opcode = twobyte_table[ctxt->b];
@@ -5772,20 +8149,47 @@ done_prefixes:
 		case Group:
 			ctxt->modrm = insn_fetch(u8, ctxt);
 			--ctxt->_eip;
+=======
+		ctxt->opcode_len = 2;
+		ctxt->b = insn_fetch(u8, ctxt);
+		opcode = twobyte_table[ctxt->b];
+
+		/* 0F_38 opcode map */
+		if (ctxt->b == 0x38) {
+			ctxt->opcode_len = 3;
+			ctxt->b = insn_fetch(u8, ctxt);
+			opcode = opcode_map_0f_38[ctxt->b];
+		}
+	}
+	ctxt->d = opcode.flags;
+
+	if (ctxt->d & ModRM)
+		ctxt->modrm = insn_fetch(u8, ctxt);
+
+	while (ctxt->d & GroupMask) {
+		switch (ctxt->d & GroupMask) {
+		case Group:
+>>>>>>> refs/remotes/origin/master
 			goffset = (ctxt->modrm >> 3) & 7;
 			opcode = opcode.u.group[goffset];
 			break;
 		case GroupDual:
+<<<<<<< HEAD
 			ctxt->modrm = insn_fetch(u8, ctxt);
 			--ctxt->_eip;
 			goffset = (ctxt->modrm >> 3) & 7;
 			if ((ctxt->modrm >> 6) == 3)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goffset = (ctxt->modrm >> 3) & 7;
+			if ((ctxt->modrm >> 6) == 3)
+>>>>>>> refs/remotes/origin/master
 				opcode = opcode.u.gdual->mod3[goffset];
 			else
 				opcode = opcode.u.gdual->mod012[goffset];
 			break;
 		case RMExt:
+<<<<<<< HEAD
 <<<<<<< HEAD
 			goffset = c->modrm & 7;
 			opcode = opcode.u.group[goffset];
@@ -5795,6 +8199,8 @@ done_prefixes:
 				return X86EMUL_UNHANDLEABLE;
 			simd_prefix = op_prefix ? 0x66 : c->rep_prefix;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			goffset = ctxt->modrm & 7;
 			opcode = opcode.u.group[goffset];
 			break;
@@ -5802,7 +8208,10 @@ done_prefixes:
 			if (ctxt->rep_prefix && op_prefix)
 				return EMULATION_FAILED;
 			simd_prefix = op_prefix ? 0x66 : ctxt->rep_prefix;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			switch (simd_prefix) {
 			case 0x00: opcode = opcode.u.gprefix->pfx_no; break;
 			case 0x66: opcode = opcode.u.gprefix->pfx_66; break;
@@ -5810,6 +8219,7 @@ done_prefixes:
 			case 0xf3: opcode = opcode.u.gprefix->pfx_f3; break;
 			}
 			break;
+<<<<<<< HEAD
 		default:
 <<<<<<< HEAD
 			return X86EMUL_UNHANDLEABLE;
@@ -5861,6 +8271,15 @@ done_prefixes:
 	if (memop.type == OP_MEM && c->ad_bytes != 8)
 		memop.addr.mem.ea = (u32)memop.addr.mem.ea;
 =======
+=======
+		case Escape:
+			if (ctxt->modrm > 0xbf)
+				opcode = opcode.u.esc->high[ctxt->modrm - 0xc0];
+			else
+				opcode = opcode.u.esc->op[(ctxt->modrm >> 3) & 7];
+			break;
+		default:
+>>>>>>> refs/remotes/origin/master
 			return EMULATION_FAILED;
 		}
 
@@ -5873,10 +8292,17 @@ done_prefixes:
 	ctxt->intercept = opcode.intercept;
 
 	/* Unrecognised? */
+<<<<<<< HEAD
 	if (ctxt->d == 0 || (ctxt->d & Undefined))
 		return EMULATION_FAILED;
 
 	if (!(ctxt->d & VendorSpecific) && ctxt->only_vendor_specific_insn)
+=======
+	if (ctxt->d == 0 || (ctxt->d & NotImpl))
+		return EMULATION_FAILED;
+
+	if (!(ctxt->d & EmulateOnUD) && ctxt->ud)
+>>>>>>> refs/remotes/origin/master
 		return EMULATION_FAILED;
 
 	if (mode == X86EMUL_MODE_PROT64 && (ctxt->d & Stack))
@@ -5891,6 +8317,11 @@ done_prefixes:
 
 	if (ctxt->d & Sse)
 		ctxt->op_bytes = 16;
+<<<<<<< HEAD
+=======
+	else if (ctxt->d & Mmx)
+		ctxt->op_bytes = 8;
+>>>>>>> refs/remotes/origin/master
 
 	/* ModRM and SIB bytes. */
 	if (ctxt->d & ModRM) {
@@ -5909,12 +8340,16 @@ done_prefixes:
 
 	if (ctxt->memop.type == OP_MEM && ctxt->ad_bytes != 8)
 		ctxt->memop.addr.mem.ea = (u32)ctxt->memop.addr.mem.ea;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Decode and fetch the source operand: register, memory
 	 * or immediate.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch (c->d & SrcMask) {
 	case SrcNone:
@@ -5989,6 +8424,9 @@ done_prefixes:
 =======
 	rc = decode_operand(ctxt, &ctxt->src, (ctxt->d >> SrcShift) & OpMask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = decode_operand(ctxt, &ctxt->src, (ctxt->d >> SrcShift) & OpMask);
+>>>>>>> refs/remotes/origin/master
 	if (rc != X86EMUL_CONTINUE)
 		goto done;
 
@@ -5996,6 +8434,7 @@ done_prefixes:
 	 * Decode and fetch the second source operand: register, memory
 	 * or immediate.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch (c->d & Src2Mask) {
 	case Src2None:
@@ -6019,10 +8458,14 @@ done_prefixes:
 =======
 	rc = decode_operand(ctxt, &ctxt->src2, (ctxt->d >> Src2Shift) & OpMask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = decode_operand(ctxt, &ctxt->src2, (ctxt->d >> Src2Shift) & OpMask);
+>>>>>>> refs/remotes/origin/master
 	if (rc != X86EMUL_CONTINUE)
 		goto done;
 
 	/* Decode and fetch the destination operand: register or memory. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch (c->d & DstMask) {
 	case DstReg:
@@ -6087,6 +8530,8 @@ static bool string_insn_completed(struct x86_emulate_ctxt *ctxt)
 	struct decode_cache *c = &ctxt->decode;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = decode_operand(ctxt, &ctxt->dst, (ctxt->d >> DstShift) & OpMask);
 
 done:
@@ -6103,7 +8548,10 @@ bool x86_page_table_writing_insn(struct x86_emulate_ctxt *ctxt)
 
 static bool string_insn_completed(struct x86_emulate_ctxt *ctxt)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* The second termination condition only applies for REPE
 	 * and REPNE. Test if the repeat string operation prefix is
 	 * REPE/REPZ or REPNE/REPNZ and if it's the case it tests the
@@ -6112,24 +8560,31 @@ static bool string_insn_completed(struct x86_emulate_ctxt *ctxt)
 	 * 	- if REPNE/REPNZ and ZF = 1 then done
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (((c->b == 0xa6) || (c->b == 0xa7) ||
 	     (c->b == 0xae) || (c->b == 0xaf))
 	    && (((c->rep_prefix == REPE_PREFIX) &&
 		 ((ctxt->eflags & EFLG_ZF) == 0))
 		|| ((c->rep_prefix == REPNE_PREFIX) &&
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (((ctxt->b == 0xa6) || (ctxt->b == 0xa7) ||
 	     (ctxt->b == 0xae) || (ctxt->b == 0xaf))
 	    && (((ctxt->rep_prefix == REPE_PREFIX) &&
 		 ((ctxt->eflags & EFLG_ZF) == 0))
 		|| ((ctxt->rep_prefix == REPNE_PREFIX) &&
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		    ((ctxt->eflags & EFLG_ZF) == EFLG_ZF))))
 		return true;
 
 	return false;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int
 x86_emulate_insn(struct x86_emulate_ctxt *ctxt)
@@ -6148,36 +8603,99 @@ x86_emulate_insn(struct x86_emulate_ctxt *ctxt)
 int x86_emulate_insn(struct x86_emulate_ctxt *ctxt)
 {
 	struct x86_emulate_ops *ops = ctxt->ops;
+=======
+static int flush_pending_x87_faults(struct x86_emulate_ctxt *ctxt)
+{
+	bool fault = false;
+
+	ctxt->ops->get_fpu(ctxt);
+	asm volatile("1: fwait \n\t"
+		     "2: \n\t"
+		     ".pushsection .fixup,\"ax\" \n\t"
+		     "3: \n\t"
+		     "movb $1, %[fault] \n\t"
+		     "jmp 2b \n\t"
+		     ".popsection \n\t"
+		     _ASM_EXTABLE(1b, 3b)
+		     : [fault]"+qm"(fault));
+	ctxt->ops->put_fpu(ctxt);
+
+	if (unlikely(fault))
+		return emulate_exception(ctxt, MF_VECTOR, 0, false);
+
+	return X86EMUL_CONTINUE;
+}
+
+static void fetch_possible_mmx_operand(struct x86_emulate_ctxt *ctxt,
+				       struct operand *op)
+{
+	if (op->type == OP_MM)
+		read_mmx_reg(ctxt, &op->mm_val, op->addr.mm);
+}
+
+static int fastop(struct x86_emulate_ctxt *ctxt, void (*fop)(struct fastop *))
+{
+	ulong flags = (ctxt->eflags & EFLAGS_MASK) | X86_EFLAGS_IF;
+	if (!(ctxt->d & ByteOp))
+		fop += __ffs(ctxt->dst.bytes) * FASTOP_SIZE;
+	asm("push %[flags]; popf; call *%[fastop]; pushf; pop %[flags]\n"
+	    : "+a"(ctxt->dst.val), "+d"(ctxt->src.val), [flags]"+D"(flags),
+	      [fastop]"+S"(fop)
+	    : "c"(ctxt->src2.val));
+	ctxt->eflags = (ctxt->eflags & ~EFLAGS_MASK) | (flags & EFLAGS_MASK);
+	if (!fop) /* exception is returned in fop variable */
+		return emulate_de(ctxt);
+	return X86EMUL_CONTINUE;
+}
+
+int x86_emulate_insn(struct x86_emulate_ctxt *ctxt)
+{
+	const struct x86_emulate_ops *ops = ctxt->ops;
+>>>>>>> refs/remotes/origin/master
 	int rc = X86EMUL_CONTINUE;
 	int saved_dst_type = ctxt->dst.type;
 
 	ctxt->mem_read.pos = 0;
 
+<<<<<<< HEAD
 	if (ctxt->mode == X86EMUL_MODE_PROT64 && (ctxt->d & No64)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ctxt->mode == X86EMUL_MODE_PROT64 && (ctxt->d & No64)) ||
+			(ctxt->d & Undefined)) {
+>>>>>>> refs/remotes/origin/master
 		rc = emulate_ud(ctxt);
 		goto done;
 	}
 
 	/* LOCK prefix is allowed only with some instructions */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (c->lock_prefix && (!(c->d & Lock) || c->dst.type != OP_MEM)) {
 =======
 	if (ctxt->lock_prefix && (!(ctxt->d & Lock) || ctxt->dst.type != OP_MEM)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ctxt->lock_prefix && (!(ctxt->d & Lock) || ctxt->dst.type != OP_MEM)) {
+>>>>>>> refs/remotes/origin/master
 		rc = emulate_ud(ctxt);
 		goto done;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((c->d & SrcMask) == SrcMemFAddr && c->src.type != OP_MEM) {
 =======
 	if ((ctxt->d & SrcMask) == SrcMemFAddr && ctxt->src.type != OP_MEM) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ctxt->d & SrcMask) == SrcMemFAddr && ctxt->src.type != OP_MEM) {
+>>>>>>> refs/remotes/origin/master
 		rc = emulate_ud(ctxt);
 		goto done;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((c->d & Sse)
 =======
@@ -6185,19 +8703,28 @@ int x86_emulate_insn(struct x86_emulate_ctxt *ctxt)
 >>>>>>> refs/remotes/origin/cm-10.0
 	    && ((ops->get_cr(ctxt, 0) & X86_CR0_EM)
 		|| !(ops->get_cr(ctxt, 4) & X86_CR4_OSFXSR))) {
+=======
+	if (((ctxt->d & (Sse|Mmx)) && ((ops->get_cr(ctxt, 0) & X86_CR0_EM)))
+	    || ((ctxt->d & Sse) && !(ops->get_cr(ctxt, 4) & X86_CR4_OSFXSR))) {
+>>>>>>> refs/remotes/origin/master
 		rc = emulate_ud(ctxt);
 		goto done;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((c->d & Sse) && (ops->get_cr(ctxt, 0) & X86_CR0_TS)) {
 =======
 	if ((ctxt->d & Sse) && (ops->get_cr(ctxt, 0) & X86_CR0_TS)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ctxt->d & (Sse|Mmx)) && (ops->get_cr(ctxt, 0) & X86_CR0_TS)) {
+>>>>>>> refs/remotes/origin/master
 		rc = emulate_nm(ctxt);
 		goto done;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (unlikely(ctxt->guest_mode) && c->intercept) {
 		rc = emulator_check_intercept(ctxt, c->intercept,
@@ -6205,6 +8732,24 @@ int x86_emulate_insn(struct x86_emulate_ctxt *ctxt)
 	if (unlikely(ctxt->guest_mode) && ctxt->intercept) {
 		rc = emulator_check_intercept(ctxt, ctxt->intercept,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ctxt->d & Mmx) {
+		rc = flush_pending_x87_faults(ctxt);
+		if (rc != X86EMUL_CONTINUE)
+			goto done;
+		/*
+		 * Now that we know the fpu is exception safe, we can fetch
+		 * operands from it.
+		 */
+		fetch_possible_mmx_operand(ctxt, &ctxt->src);
+		fetch_possible_mmx_operand(ctxt, &ctxt->src2);
+		if (!(ctxt->d & Mov))
+			fetch_possible_mmx_operand(ctxt, &ctxt->dst);
+	}
+
+	if (unlikely(ctxt->guest_mode) && ctxt->intercept) {
+		rc = emulator_check_intercept(ctxt, ctxt->intercept,
+>>>>>>> refs/remotes/origin/master
 					      X86_ICPT_PRE_EXCEPT);
 		if (rc != X86EMUL_CONTINUE)
 			goto done;
@@ -6212,25 +8757,34 @@ int x86_emulate_insn(struct x86_emulate_ctxt *ctxt)
 
 	/* Privileged instruction can be executed only in CPL=0 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((c->d & Priv) && ops->cpl(ctxt)) {
 =======
 	if ((ctxt->d & Priv) && ops->cpl(ctxt)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ctxt->d & Priv) && ops->cpl(ctxt)) {
+>>>>>>> refs/remotes/origin/master
 		rc = emulate_gp(ctxt, 0);
 		goto done;
 	}
 
 	/* Instruction can only be executed in protected mode */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((c->d & Prot) && !(ctxt->mode & X86EMUL_MODE_PROT)) {
 =======
 	if ((ctxt->d & Prot) && !(ctxt->mode & X86EMUL_MODE_PROT)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((ctxt->d & Prot) && ctxt->mode < X86EMUL_MODE_PROT16) {
+>>>>>>> refs/remotes/origin/master
 		rc = emulate_ud(ctxt);
 		goto done;
 	}
 
 	/* Do instruction specific permission checks */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (c->check_perm) {
 		rc = c->check_perm(ctxt);
@@ -6238,10 +8792,15 @@ int x86_emulate_insn(struct x86_emulate_ctxt *ctxt)
 	if (ctxt->check_perm) {
 		rc = ctxt->check_perm(ctxt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ctxt->check_perm) {
+		rc = ctxt->check_perm(ctxt);
+>>>>>>> refs/remotes/origin/master
 		if (rc != X86EMUL_CONTINUE)
 			goto done;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (unlikely(ctxt->guest_mode) && c->intercept) {
 		rc = emulator_check_intercept(ctxt, c->intercept,
@@ -6249,11 +8808,16 @@ int x86_emulate_insn(struct x86_emulate_ctxt *ctxt)
 	if (unlikely(ctxt->guest_mode) && ctxt->intercept) {
 		rc = emulator_check_intercept(ctxt, ctxt->intercept,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (unlikely(ctxt->guest_mode) && ctxt->intercept) {
+		rc = emulator_check_intercept(ctxt, ctxt->intercept,
+>>>>>>> refs/remotes/origin/master
 					      X86_ICPT_POST_EXCEPT);
 		if (rc != X86EMUL_CONTINUE)
 			goto done;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (c->rep_prefix && (c->d & String)) {
 		/* All REP prefixes have the same first termination condition */
@@ -6265,10 +8829,17 @@ int x86_emulate_insn(struct x86_emulate_ctxt *ctxt)
 		if (address_mask(ctxt, ctxt->regs[VCPU_REGS_RCX]) == 0) {
 			ctxt->eip = ctxt->_eip;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ctxt->rep_prefix && (ctxt->d & String)) {
+		/* All REP prefixes have the same first termination condition */
+		if (address_mask(ctxt, reg_read(ctxt, VCPU_REGS_RCX)) == 0) {
+			ctxt->eip = ctxt->_eip;
+>>>>>>> refs/remotes/origin/master
 			goto done;
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((c->src.type == OP_MEM) && !(c->d & NoAccess)) {
 		rc = segmented_read(ctxt, c->src.addr.mem,
@@ -6282,6 +8853,8 @@ int x86_emulate_insn(struct x86_emulate_ctxt *ctxt)
 		rc = segmented_read(ctxt, c->src2.addr.mem,
 				    &c->src2.val, c->src2.bytes);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((ctxt->src.type == OP_MEM) && !(ctxt->d & NoAccess)) {
 		rc = segmented_read(ctxt, ctxt->src.addr.mem,
 				    ctxt->src.valptr, ctxt->src.bytes);
@@ -6293,11 +8866,15 @@ int x86_emulate_insn(struct x86_emulate_ctxt *ctxt)
 	if (ctxt->src2.type == OP_MEM) {
 		rc = segmented_read(ctxt, ctxt->src2.addr.mem,
 				    &ctxt->src2.val, ctxt->src2.bytes);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (rc != X86EMUL_CONTINUE)
 			goto done;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((c->d & DstMask) == ImplicitOps)
 		goto special_insn;
@@ -6317,6 +8894,8 @@ special_insn:
 	if (unlikely(ctxt->guest_mode) && c->intercept) {
 		rc = emulator_check_intercept(ctxt, c->intercept,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((ctxt->d & DstMask) == ImplicitOps)
 		goto special_insn;
 
@@ -6334,12 +8913,16 @@ special_insn:
 
 	if (unlikely(ctxt->guest_mode) && ctxt->intercept) {
 		rc = emulator_check_intercept(ctxt, ctxt->intercept,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					      X86_ICPT_POST_MEMACCESS);
 		if (rc != X86EMUL_CONTINUE)
 			goto done;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (c->execute) {
 		rc = c->execute(ctxt);
@@ -6347,11 +8930,23 @@ special_insn:
 	if (ctxt->execute) {
 		rc = ctxt->execute(ctxt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ctxt->execute) {
+		if (ctxt->d & Fastop) {
+			void (*fop)(struct fastop *) = (void *)ctxt->execute;
+			rc = fastop(ctxt, fop);
+			if (rc != X86EMUL_CONTINUE)
+				goto done;
+			goto writeback;
+		}
+		rc = ctxt->execute(ctxt);
+>>>>>>> refs/remotes/origin/master
 		if (rc != X86EMUL_CONTINUE)
 			goto done;
 		goto writeback;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (c->twobyte)
 		goto twobyte_insn;
@@ -6510,6 +9105,17 @@ special_insn:
 	case 0xcf:		/* iret */
 		rc = emulate_iret(ctxt, ops);
 =======
+=======
+	if (ctxt->opcode_len == 2)
+		goto twobyte_insn;
+	else if (ctxt->opcode_len == 3)
+		goto threebyte_insn;
+
+	switch (ctxt->b) {
+	case 0x63:		/* movsxd */
+		if (ctxt->mode != X86EMUL_MODE_PROT64)
+			goto cannot_emulate;
+>>>>>>> refs/remotes/origin/master
 		ctxt->dst.val = (s32) ctxt->src.val;
 		break;
 	case 0x70 ... 0x7f: /* jcc (short) */
@@ -6520,7 +9126,11 @@ special_insn:
 		ctxt->dst.val = ctxt->src.addr.mem.ea;
 		break;
 	case 0x90 ... 0x97: /* nop / xchg reg, rax */
+<<<<<<< HEAD
 		if (ctxt->dst.addr.reg == &ctxt->regs[VCPU_REGS_RAX])
+=======
+		if (ctxt->dst.addr.reg == reg_rmw(ctxt, VCPU_REGS_RAX))
+>>>>>>> refs/remotes/origin/master
 			break;
 		rc = em_xchg(ctxt);
 		break;
@@ -6531,9 +9141,12 @@ special_insn:
 		case 8: ctxt->dst.val = (s32)ctxt->dst.val; break;
 		}
 		break;
+<<<<<<< HEAD
 	case 0xc0 ... 0xc1:
 		rc = em_grp2(ctxt);
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	case 0xcc:		/* int3 */
 		rc = emulate_int(ctxt, 3);
 		break;
@@ -6543,6 +9156,7 @@ special_insn:
 	case 0xce:		/* into */
 		if (ctxt->eflags & EFLG_OF)
 			rc = emulate_int(ctxt, 4);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	case 0xd0 ... 0xd1:	/* Grp2 */
@@ -6602,12 +9216,17 @@ special_insn:
 =======
 		ctxt->src.val = ctxt->regs[VCPU_REGS_RCX];
 		rc = em_grp2(ctxt);
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case 0xe9: /* jmp rel */
 	case 0xeb: /* jmp rel short */
 		jmp_rel(ctxt, ctxt->src.val);
 		ctxt->dst.type = OP_NONE; /* Disable writeback. */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case 0xf4:              /* hlt */
 		ctxt->ops->halt(ctxt);
@@ -6617,17 +9236,21 @@ special_insn:
 		ctxt->eflags ^= EFLG_CF;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case 0xf6 ... 0xf7:	/* Grp3 */
 		rc = em_grp3(ctxt);
 		break;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case 0xf8: /* clc */
 		ctxt->eflags &= ~EFLG_CF;
 		break;
 	case 0xf9: /* stc */
 		ctxt->eflags |= EFLG_CF;
 		break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	case 0xfa: /* cli */
 		if (emulator_bad_iopl(ctxt, ops)) {
@@ -6647,12 +9270,15 @@ special_insn:
 		break;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case 0xfc: /* cld */
 		ctxt->eflags &= ~EFLG_DF;
 		break;
 	case 0xfd: /* std */
 		ctxt->eflags |= EFLG_DF;
 		break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	case 0xfe: /* Grp4 */
 		rc = em_grp45(ctxt);
@@ -6662,6 +9288,8 @@ special_insn:
 		break;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		goto cannot_emulate;
 	}
@@ -6670,14 +9298,29 @@ special_insn:
 		goto done;
 
 writeback:
+<<<<<<< HEAD
 	rc = writeback(ctxt);
 	if (rc != X86EMUL_CONTINUE)
 		goto done;
+=======
+	if (!(ctxt->d & NoWrite)) {
+		rc = writeback(ctxt, &ctxt->dst);
+		if (rc != X86EMUL_CONTINUE)
+			goto done;
+	}
+	if (ctxt->d & SrcWrite) {
+		BUG_ON(ctxt->src.type == OP_MEM || ctxt->src.type == OP_MEM_STR);
+		rc = writeback(ctxt, &ctxt->src);
+		if (rc != X86EMUL_CONTINUE)
+			goto done;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * restore dst type in case the decoding will be reused
 	 * (happens for string instruction )
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	c->dst.type = saved_dst_type;
 
@@ -6707,6 +9350,25 @@ writeback:
 		struct read_cache *r = &ctxt->io_read;
 		register_address_increment(ctxt, &ctxt->regs[VCPU_REGS_RCX], -1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->dst.type = saved_dst_type;
+
+	if ((ctxt->d & SrcMask) == SrcSI)
+		string_addr_inc(ctxt, VCPU_REGS_RSI, &ctxt->src);
+
+	if ((ctxt->d & DstMask) == DstDI)
+		string_addr_inc(ctxt, VCPU_REGS_RDI, &ctxt->dst);
+
+	if (ctxt->rep_prefix && (ctxt->d & String)) {
+		unsigned int count;
+		struct read_cache *r = &ctxt->io_read;
+		if ((ctxt->d & SrcMask) == SrcSI)
+			count = ctxt->src.count;
+		else
+			count = ctxt->dst.count;
+		register_address_increment(ctxt, reg_rmw(ctxt, VCPU_REGS_RCX),
+				-count);
+>>>>>>> refs/remotes/origin/master
 
 		if (!string_insn_completed(ctxt)) {
 			/*
@@ -6714,10 +9376,14 @@ writeback:
 			 * or, if it is not used, after each 1024 iteration.
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if ((r->end != 0 || c->regs[VCPU_REGS_RCX] & 0x3ff) &&
 =======
 			if ((r->end != 0 || ctxt->regs[VCPU_REGS_RCX] & 0x3ff) &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if ((r->end != 0 || reg_read(ctxt, VCPU_REGS_RCX) & 0x3ff) &&
+>>>>>>> refs/remotes/origin/master
 			    (r->end == 0 || r->end != r->pos)) {
 				/*
 				 * Reset read cache. Usually happens before
@@ -6725,10 +9391,15 @@ writeback:
 				 * we have to do it here.
 				 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ctxt->decode.mem_read.end = 0;
 =======
 				ctxt->mem_read.end = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ctxt->mem_read.end = 0;
+				writeback_registers(ctxt);
+>>>>>>> refs/remotes/origin/master
 				return EMULATION_RESTART;
 			}
 			goto done; /* skip rip writeback */
@@ -6736,10 +9407,14 @@ writeback:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ctxt->eip = c->eip;
 =======
 	ctxt->eip = ctxt->_eip;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctxt->eip = ctxt->_eip;
+>>>>>>> refs/remotes/origin/master
 
 done:
 	if (rc == X86EMUL_PROPAGATE_FAULT)
@@ -6747,6 +9422,7 @@ done:
 	if (rc == X86EMUL_INTERCEPTED)
 		return EMULATION_INTERCEPTED;
 
+<<<<<<< HEAD
 	return (rc == X86EMUL_UNHANDLEABLE) ? EMULATION_FAILED : EMULATION_OK;
 
 twobyte_insn:
@@ -6761,12 +9437,22 @@ twobyte_insn:
 =======
 	switch (ctxt->b) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rc == X86EMUL_CONTINUE)
+		writeback_registers(ctxt);
+
+	return (rc == X86EMUL_UNHANDLEABLE) ? EMULATION_FAILED : EMULATION_OK;
+
+twobyte_insn:
+	switch (ctxt->b) {
+>>>>>>> refs/remotes/origin/master
 	case 0x09:		/* wbinvd */
 		(ctxt->ops->wbinvd)(ctxt);
 		break;
 	case 0x08:		/* invd */
 	case 0x0d:		/* GrpP (prefetch) */
 	case 0x18:		/* Grp16 (prefetch/nop) */
+<<<<<<< HEAD
 		break;
 	case 0x20: /* mov cr, reg */
 <<<<<<< HEAD
@@ -6963,6 +9649,11 @@ twobyte_insn:
 	case 0xc7:		/* Grp9 (cmpxchg8b) */
 		rc = em_grp9(ctxt);
 =======
+=======
+	case 0x1f:		/* nop */
+		break;
+	case 0x20: /* mov cr, reg */
+>>>>>>> refs/remotes/origin/master
 		ctxt->dst.val = ops->get_cr(ctxt, ctxt->modrm_reg);
 		break;
 	case 0x21: /* mov from dr to reg */
@@ -6980,6 +9671,7 @@ twobyte_insn:
 	case 0x90 ... 0x9f:     /* setcc r/m8 */
 		ctxt->dst.val = test_cc(ctxt->b, ctxt->eflags);
 		break;
+<<<<<<< HEAD
 	case 0xa4: /* shld imm8, r, r/m */
 	case 0xa5: /* shld cl, r, r/m */
 		emulate_2op_cl(ctxt, "shld");
@@ -6988,15 +9680,22 @@ twobyte_insn:
 	case 0xad: /* shrd cl, r, r/m */
 		emulate_2op_cl(ctxt, "shrd");
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	case 0xae:              /* clflush */
 		break;
 	case 0xb6 ... 0xb7:	/* movzx */
 		ctxt->dst.bytes = ctxt->op_bytes;
+<<<<<<< HEAD
 		ctxt->dst.val = (ctxt->d & ByteOp) ? (u8) ctxt->src.val
+=======
+		ctxt->dst.val = (ctxt->src.bytes == 1) ? (u8) ctxt->src.val
+>>>>>>> refs/remotes/origin/master
 						       : (u16) ctxt->src.val;
 		break;
 	case 0xbe ... 0xbf:	/* movsx */
 		ctxt->dst.bytes = ctxt->op_bytes;
+<<<<<<< HEAD
 		ctxt->dst.val = (ctxt->d & ByteOp) ? (s8) ctxt->src.val :
 							(s16) ctxt->src.val;
 		break;
@@ -7006,16 +9705,29 @@ twobyte_insn:
 		ctxt->src.val = ctxt->dst.orig_val;
 		write_register_operand(&ctxt->src);
 		break;
+=======
+		ctxt->dst.val = (ctxt->src.bytes == 1) ? (s8) ctxt->src.val :
+							(s16) ctxt->src.val;
+		break;
+>>>>>>> refs/remotes/origin/master
 	case 0xc3:		/* movnti */
 		ctxt->dst.bytes = ctxt->op_bytes;
 		ctxt->dst.val = (ctxt->op_bytes == 4) ? (u32) ctxt->src.val :
 							(u64) ctxt->src.val;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		goto cannot_emulate;
 	}
 
+<<<<<<< HEAD
+=======
+threebyte_insn:
+
+>>>>>>> refs/remotes/origin/master
 	if (rc != X86EMUL_CONTINUE)
 		goto done;
 
@@ -7024,3 +9736,16 @@ twobyte_insn:
 cannot_emulate:
 	return EMULATION_FAILED;
 }
+<<<<<<< HEAD
+=======
+
+void emulator_invalidate_register_cache(struct x86_emulate_ctxt *ctxt)
+{
+	invalidate_registers(ctxt);
+}
+
+void emulator_writeback_register_cache(struct x86_emulate_ctxt *ctxt)
+{
+	writeback_registers(ctxt);
+}
+>>>>>>> refs/remotes/origin/master

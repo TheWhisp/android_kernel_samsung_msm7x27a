@@ -11,9 +11,15 @@
 #include <linux/slab.h>
 
 #include <asm/mips_machine.h>
+<<<<<<< HEAD
 
 static struct mips_machine *mips_machine __initdata;
 static char *mips_machine_name = "Unknown";
+=======
+#include <asm/prom.h>
+
+static struct mips_machine *mips_machine __initdata;
+>>>>>>> refs/remotes/origin/master
 
 #define for_each_machine(mach) \
 	for ((mach) = (struct mips_machine *)&__mips_machines_start; \
@@ -21,6 +27,7 @@ static char *mips_machine_name = "Unknown";
 	     (unsigned long)(mach) < (unsigned long)&__mips_machines_end; \
 	     (mach)++)
 
+<<<<<<< HEAD
 __init void mips_set_machine_name(const char *name)
 {
 	char *p;
@@ -40,6 +47,8 @@ char *mips_get_machine_name(void)
 	return mips_machine_name;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 __init int mips_machtype_setup(char *id)
 {
 	struct mips_machine *mach;
@@ -79,7 +88,10 @@ __init void mips_machine_setup(void)
 		return;
 
 	mips_set_machine_name(mips_machine->mach_name);
+<<<<<<< HEAD
 	pr_info("MIPS: machine is %s\n", mips_machine_name);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (mips_machine->mach_setup)
 		mips_machine->mach_setup();

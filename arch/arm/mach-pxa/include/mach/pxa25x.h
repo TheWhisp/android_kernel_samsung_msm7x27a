@@ -5,7 +5,10 @@
 #include <mach/pxa2xx-regs.h>
 #include <mach/mfp-pxa25x.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/irqs.h>
 
 extern void __init pxa25x_map_io(void);
@@ -15,6 +18,9 @@ extern void __init pxa26x_init_irq(void);
 #endif
 
 #define pxa25x_handle_irq	icip_handle_irq
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __MACH_PXA25x_H */

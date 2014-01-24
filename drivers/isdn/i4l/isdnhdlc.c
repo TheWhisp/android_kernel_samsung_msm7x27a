@@ -89,10 +89,14 @@ check_frame(struct isdnhdlc_vars *hdlc)
 	int status;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (hdlc->dstpos < 2) 	/* too small - framing error */
 =======
 	if (hdlc->dstpos < 2)	/* too small - framing error */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (hdlc->dstpos < 2)	/* too small - framing error */
+>>>>>>> refs/remotes/origin/master
 		status = -HDLC_FRAMING_ERROR;
 	else if (hdlc->crc != 0xf0b8)	/* crc error */
 		status = -HDLC_CRC_ERROR;
@@ -132,6 +136,7 @@ check_frame(struct isdnhdlc_vars *hdlc)
   returns - number of decoded bytes in the destination buffer and status
   flag.
 <<<<<<< HEAD
+<<<<<<< HEAD
  */
 int isdnhdlc_decode(struct isdnhdlc_vars *hdlc, const u8 *src, int slen,
 	int *count, u8 *dst, int dsize)
@@ -140,6 +145,11 @@ int isdnhdlc_decode(struct isdnhdlc_vars *hdlc, const u8 *src, int slen,
 int isdnhdlc_decode(struct isdnhdlc_vars *hdlc, const u8 *src, int slen,
 		    int *count, u8 *dst, int dsize)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+*/
+int isdnhdlc_decode(struct isdnhdlc_vars *hdlc, const u8 *src, int slen,
+		    int *count, u8 *dst, int dsize)
+>>>>>>> refs/remotes/origin/master
 {
 	int status = 0;
 
@@ -155,6 +165,7 @@ int isdnhdlc_decode(struct isdnhdlc_vars *hdlc, const u8 *src, int slen,
 		0x00, 0x00, 0x80, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc, 0xfe, 0xff
 	};
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define handle_fast_flag(h) \
 	do {\
@@ -179,6 +190,8 @@ int isdnhdlc_decode(struct isdnhdlc_vars *hdlc, const u8 *src, int slen,
 		h->state = HDLC_GET_DATA;\
 		h->data_received = 0;\
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define handle_fast_flag(h)						\
 	do {								\
 		if (h->cbin == fast_flag[h->bit_shift]) {		\
@@ -201,7 +214,10 @@ int isdnhdlc_decode(struct isdnhdlc_vars *hdlc, const u8 *src, int slen,
 		h->data_bits = h->ffbit_shift - 1;		\
 		h->state = HDLC_GET_DATA;			\
 		h->data_received = 0;				\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} while (0)
 
 	*count = slen;
@@ -240,10 +256,14 @@ int isdnhdlc_decode(struct isdnhdlc_vars *hdlc, const u8 *src, int slen,
 				    (++hdlc->hdlc_bits1 >= 8) &&
 				    (hdlc->bit_shift == 1))
 <<<<<<< HEAD
+<<<<<<< HEAD
 						hdlc->state = HDLC_FAST_IDLE;
 =======
 					hdlc->state = HDLC_FAST_IDLE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					hdlc->state = HDLC_FAST_IDLE;
+>>>>>>> refs/remotes/origin/master
 			}
 			hdlc->cbin <<= 1;
 			hdlc->bit_shift--;
@@ -335,10 +355,14 @@ int isdnhdlc_decode(struct isdnhdlc_vars *hdlc, const u8 *src, int slen,
 				hdlc->data_received = 1;
 				hdlc->crc = crc_ccitt_byte(hdlc->crc,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						hdlc->shift_reg);
 =======
 							   hdlc->shift_reg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+							   hdlc->shift_reg);
+>>>>>>> refs/remotes/origin/master
 
 				/* good byte received */
 				if (hdlc->dstpos < dsize)
@@ -396,10 +420,14 @@ EXPORT_SYMBOL(isdnhdlc_decode);
 */
 int isdnhdlc_encode(struct isdnhdlc_vars *hdlc, const u8 *src, u16 slen,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int *count, u8 *dst, int dsize)
 =======
 		    int *count, u8 *dst, int dsize)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    int *count, u8 *dst, int dsize)
+>>>>>>> refs/remotes/origin/master
 {
 	static const unsigned char xfast_flag_value[] = {
 		0x7e, 0x3f, 0x9f, 0xcf, 0xe7, 0xf3, 0xf9, 0xfc, 0x7e
@@ -526,10 +554,14 @@ int isdnhdlc_encode(struct isdnhdlc_vars *hdlc, const u8 *src, u16 slen,
 			if (hdlc->bit_shift == 8)
 				hdlc->crc = crc_ccitt_byte(hdlc->crc,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					hdlc->shift_reg);
 =======
 							   hdlc->shift_reg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+							   hdlc->shift_reg);
+>>>>>>> refs/remotes/origin/master
 			if (hdlc->shift_reg & 0x01) {
 				hdlc->hdlc_bits1++;
 				hdlc->cbin++;

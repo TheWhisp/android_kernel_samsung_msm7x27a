@@ -35,6 +35,7 @@ void prepare_ftrace_return(unsigned long *parent, unsigned long self_addr)
 	 * happen. This tool is too much intrusive to
 	 * ignore such a protection.
 	 */
+<<<<<<< HEAD
 	asm volatile("	1:	lwi	%0, %2, 0;		\
 			2:	swi	%3, %2, 0;		\
 				addik	%1, r0, 0;		\
@@ -47,6 +48,20 @@ void prepare_ftrace_return(unsigned long *parent, unsigned long self_addr)
 				.word	1b,4b;			\
 				.word	2b,4b;			\
 				.previous;"			\
+=======
+	asm volatile("	1:	lwi	%0, %2, 0;"		\
+			"2:	swi	%3, %2, 0;"		\
+			"	addik	%1, r0, 0;"		\
+			"3:"					\
+			"	.section .fixup, \"ax\";"	\
+			"4:	brid	3b;"			\
+			"	addik	%1, r0, 1;"		\
+			"	.previous;"			\
+			"	.section __ex_table,\"a\";"	\
+			"	.word	1b,4b;"			\
+			"	.word	2b,4b;"			\
+			"	.previous;"			\
+>>>>>>> refs/remotes/origin/master
 			: "=&r" (old), "=r" (faulted)
 			: "r" (parent), "r" (return_hooker)
 	);
@@ -81,6 +96,7 @@ static int ftrace_modify_code(unsigned long addr, unsigned int value)
 {
 	int faulted = 0;
 
+<<<<<<< HEAD
 	__asm__ __volatile__("	1:	swi	%2, %1, 0;		\
 					addik	%0, r0, 0;		\
 				2:					\
@@ -91,6 +107,18 @@ static int ftrace_modify_code(unsigned long addr, unsigned int value)
 					.section __ex_table,\"a\";	\
 					.word	1b,3b;			\
 					.previous;"			\
+=======
+	__asm__ __volatile__("	1:	swi	%2, %1, 0;"		\
+				"	addik	%0, r0, 0;"		\
+				"2:"					\
+				"	.section .fixup, \"ax\";"	\
+				"3:	brid	2b;"			\
+				"	addik	%0, r0, 1;"		\
+				"	.previous;"			\
+				"	.section __ex_table,\"a\";"	\
+				"	.word	1b,3b;"			\
+				"	.previous;"			\
+>>>>>>> refs/remotes/origin/master
 				: "=r" (faulted)
 				: "r" (addr), "r" (value)
 	);

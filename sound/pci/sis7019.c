@@ -26,10 +26,14 @@
 #include <linux/time.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/delay.h>
 #include <sound/core.h>
@@ -45,10 +49,14 @@ MODULE_SUPPORTED_DEVICE("{{SiS,SiS7019 Audio Accelerator}}");
 static int index = SNDRV_DEFAULT_IDX1;	/* Index 0-MAX */
 static char *id = SNDRV_DEFAULT_STR1;	/* ID for this card */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable = 1;
 =======
 static bool enable = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable = 1;
+>>>>>>> refs/remotes/origin/master
 static int codecs = 1;
 
 module_param(index, int, 0444);
@@ -111,7 +119,11 @@ struct voice {
  * we're not doing power management, we still need to allocate a page
  * for the silence buffer.
  */
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 #define SIS_SUSPEND_PAGES	4
 #else
 #define SIS_SUSPEND_PAGES	1
@@ -902,7 +914,11 @@ static struct snd_pcm_ops sis_capture_ops = {
 	.pointer = sis_pcm_pointer,
 };
 
+<<<<<<< HEAD
 static int __devinit sis_pcm_create(struct sis7019 *sis)
+=======
+static int sis_pcm_create(struct sis7019 *sis)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	int rc;
@@ -992,10 +1008,14 @@ timeout:
 
 	if (!count) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "sis7019: ac97 codec %d timeout cmd 0x%08x\n",
 =======
 		dev_err(&sis->pci->dev, "ac97 codec %d timeout cmd 0x%08x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&sis->pci->dev, "ac97 codec %d timeout cmd 0x%08x\n",
+>>>>>>> refs/remotes/origin/master
 					codec, cmd);
 	}
 
@@ -1025,7 +1045,11 @@ static unsigned short sis_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
 					(reg << 8) | cmd[ac97->num]);
 }
 
+<<<<<<< HEAD
 static int __devinit sis_mixer_create(struct sis7019 *sis)
+=======
+static int sis_mixer_create(struct sis7019 *sis)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_ac97_bus *bus;
 	struct snd_ac97_template ac97;
@@ -1155,14 +1179,19 @@ static int sis_chip_init(struct sis7019 *sis)
 	 */
 	if (!sis->codecs_present) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "sis7019: could not find any codecs\n");
 =======
 		dev_err(&sis->pci->dev, "could not find any codecs\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&sis->pci->dev, "could not find any codecs\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
 	if (sis->codecs_present != codecs) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_WARNING "sis7019: missing codecs, found %0x, expected %0x\n",
 		       sis->codecs_present, codecs);
@@ -1170,6 +1199,10 @@ static int sis_chip_init(struct sis7019 *sis)
 		dev_warn(&sis->pci->dev, "missing codecs, found %0x, expected %0x\n",
 					 sis->codecs_present, codecs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_warn(&sis->pci->dev, "missing codecs, found %0x, expected %0x\n",
+					 sis->codecs_present, codecs);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Let the hardware know that the audio driver is alive,
@@ -1192,7 +1225,11 @@ static int sis_chip_init(struct sis7019 *sis)
 	outl(SIS_DMA_CSR_PCI_SETTINGS, io + SIS_DMA_CSR);
 
 	/* Reset the synchronization groups for all of the channels
+<<<<<<< HEAD
 	 * to be asyncronous. If we start doing SPDIF or 5.1 sound, etc.
+=======
+	 * to be asynchronous. If we start doing SPDIF or 5.1 sound, etc.
+>>>>>>> refs/remotes/origin/master
 	 * we'll need to change how we handle these. Until then, we just
 	 * assign sub-mixer 0 to all playback channels, and avoid any
 	 * attenuation on the audio.
@@ -1229,10 +1266,18 @@ static int sis_chip_init(struct sis7019 *sis)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int sis_suspend(struct pci_dev *pci, pm_message_t state)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int sis_suspend(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct sis7019 *sis = card->private_data;
 	void __iomem *ioaddr = sis->ioaddr;
 	int i;
@@ -1262,6 +1307,7 @@ static int sis_suspend(struct pci_dev *pci, pm_message_t state)
 
 	pci_disable_device(pci);
 	pci_save_state(pci);
+<<<<<<< HEAD
 	pci_set_power_state(pci, pci_choose_state(pci, state));
 	return 0;
 }
@@ -1269,6 +1315,16 @@ static int sis_suspend(struct pci_dev *pci, pm_message_t state)
 static int sis_resume(struct pci_dev *pci)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+	pci_set_power_state(pci, PCI_D3hot);
+	return 0;
+}
+
+static int sis_resume(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct sis7019 *sis = card->private_data;
 	void __iomem *ioaddr = sis->ioaddr;
 	int i;
@@ -1278,14 +1334,19 @@ static int sis_resume(struct pci_dev *pci)
 
 	if (pci_enable_device(pci) < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "sis7019: unable to re-enable device\n");
 =======
 		dev_err(&pci->dev, "unable to re-enable device\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pci->dev, "unable to re-enable device\n");
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
 	if (sis_chip_init(sis)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR "sis7019: unable to re-init controller\n");
 		goto error;
@@ -1295,6 +1356,8 @@ static int sis_resume(struct pci_dev *pci)
 				card->shortname, sis)) {
 		printk(KERN_ERR "sis7019: unable to regain IRQ %d\n", pci->irq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dev_err(&pci->dev, "unable to re-init controller\n");
 		goto error;
 	}
@@ -1302,7 +1365,10 @@ static int sis_resume(struct pci_dev *pci)
 	if (request_irq(pci->irq, sis_interrupt, IRQF_SHARED,
 			KBUILD_MODNAME, sis)) {
 		dev_err(&pci->dev, "unable to regain IRQ %d\n", pci->irq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
@@ -1333,7 +1399,16 @@ error:
 	snd_card_disconnect(card);
 	return -EIO;
 }
+<<<<<<< HEAD
 #endif /* CONFIG_PM */
+=======
+
+static SIMPLE_DEV_PM_OPS(sis_pm, sis_suspend, sis_resume);
+#define SIS_PM_OPS	&sis_pm
+#else
+#define SIS_PM_OPS	NULL
+#endif /* CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/master
 
 static int sis_alloc_suspend(struct sis7019 *sis)
 {
@@ -1354,8 +1429,13 @@ static int sis_alloc_suspend(struct sis7019 *sis)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit sis_chip_create(struct snd_card *card,
 					struct pci_dev *pci)
+=======
+static int sis_chip_create(struct snd_card *card,
+			   struct pci_dev *pci)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sis7019 *sis = card->private_data;
 	struct voice *voice;
@@ -1369,6 +1449,7 @@ static int __devinit sis_chip_create(struct snd_card *card,
 	if (rc)
 		goto error_out;
 
+<<<<<<< HEAD
 	if (pci_set_dma_mask(pci, DMA_BIT_MASK(30)) < 0) {
 <<<<<<< HEAD
 		printk(KERN_ERR "sis7019: architecture does not support "
@@ -1376,6 +1457,11 @@ static int __devinit sis_chip_create(struct snd_card *card,
 =======
 		dev_err(&pci->dev, "architecture does not support 30-bit PCI busmaster DMA");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = pci_set_dma_mask(pci, DMA_BIT_MASK(30));
+	if (rc < 0) {
+		dev_err(&pci->dev, "architecture does not support 30-bit PCI busmaster DMA");
+>>>>>>> refs/remotes/origin/master
 		goto error_out_enabled;
 	}
 
@@ -1390,10 +1476,14 @@ static int __devinit sis_chip_create(struct snd_card *card,
 	rc = pci_request_regions(pci, "SiS7019");
 	if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "sis7019: unable request regions\n");
 =======
 		dev_err(&pci->dev, "unable request regions\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pci->dev, "unable request regions\n");
+>>>>>>> refs/remotes/origin/master
 		goto error_out_enabled;
 	}
 
@@ -1401,20 +1491,28 @@ static int __devinit sis_chip_create(struct snd_card *card,
 	sis->ioaddr = ioremap_nocache(pci_resource_start(pci, 1), 0x4000);
 	if (!sis->ioaddr) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "sis7019: unable to remap MMIO, aborting\n");
 =======
 		dev_err(&pci->dev, "unable to remap MMIO, aborting\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pci->dev, "unable to remap MMIO, aborting\n");
+>>>>>>> refs/remotes/origin/master
 		goto error_out_cleanup;
 	}
 
 	rc = sis_alloc_suspend(sis);
 	if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "sis7019: unable to allocate state storage\n");
 =======
 		dev_err(&pci->dev, "unable to allocate state storage\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pci->dev, "unable to allocate state storage\n");
+>>>>>>> refs/remotes/origin/master
 		goto error_out_cleanup;
 	}
 
@@ -1422,6 +1520,7 @@ static int __devinit sis_chip_create(struct snd_card *card,
 	if (rc)
 		goto error_out_cleanup;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (request_irq(pci->irq, sis_interrupt, IRQF_DISABLED|IRQF_SHARED,
 				card->shortname, sis)) {
@@ -1431,6 +1530,12 @@ static int __devinit sis_chip_create(struct snd_card *card,
 			sis)) {
 		dev_err(&pci->dev, "unable to allocate irq %d\n", sis->irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = request_irq(pci->irq, sis_interrupt, IRQF_SHARED, KBUILD_MODNAME,
+			 sis);
+	if (rc) {
+		dev_err(&pci->dev, "unable to allocate irq %d\n", sis->irq);
+>>>>>>> refs/remotes/origin/master
 		goto error_out_cleanup;
 	}
 
@@ -1467,8 +1572,13 @@ error_out:
 	return rc;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_sis7019_probe(struct pci_dev *pci,
 					const struct pci_device_id *pci_id)
+=======
+static int snd_sis7019_probe(struct pci_dev *pci,
+			     const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	struct sis7019 *sis;
@@ -1528,6 +1638,7 @@ error_out:
 	return rc;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_sis7019_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
@@ -1562,3 +1673,21 @@ static void __exit sis7019_exit(void)
 
 module_init(sis7019_init);
 module_exit(sis7019_exit);
+=======
+static void snd_sis7019_remove(struct pci_dev *pci)
+{
+	snd_card_free(pci_get_drvdata(pci));
+}
+
+static struct pci_driver sis7019_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = snd_sis7019_ids,
+	.probe = snd_sis7019_probe,
+	.remove = snd_sis7019_remove,
+	.driver = {
+		.pm = SIS_PM_OPS,
+	},
+};
+
+module_pci_driver(sis7019_driver);
+>>>>>>> refs/remotes/origin/master

@@ -19,6 +19,10 @@
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/cpu.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mtd/physmap.h>
 #include <linux/mtd/mtd.h>
@@ -28,20 +32,32 @@
 #include <linux/spi/flash.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/system_misc.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/system_misc.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 #include <asm/mach/irq.h>
 #include <asm/mach-types.h>
 
 #include <mach/regs-serial.h>
+<<<<<<< HEAD
 #include <mach/nuc900_spi.h>
 #include <mach/map.h>
 #include <mach/fb.h>
 #include <mach/regs-ldm.h>
 #include <mach/w90p910_keypad.h>
+=======
+#include <linux/platform_data/spi-nuc900.h>
+#include <mach/map.h>
+#include <linux/platform_data/video-nuc900fb.h>
+#include <mach/regs-ldm.h>
+#include <linux/platform_data/keypad-w90p910.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "cpu.h"
 
@@ -427,10 +443,14 @@ struct platform_device nuc900_device_kpi = {
 /* LCD controller*/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct nuc900fb_display __initdata nuc900_lcd_info[] = {
 =======
 static struct nuc900fb_display nuc900_lcd_info[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct nuc900fb_display nuc900_lcd_info[] = {
+>>>>>>> refs/remotes/origin/master
 	/* Giantplus Technology GPM1040A0 320x240 Color TFT LCD */
 	[0] = {
 		.type		= LCM_DCCS_VA_SRC_RGB565,
@@ -454,10 +474,14 @@ static struct nuc900fb_display nuc900_lcd_info[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct nuc900fb_mach_info nuc900_fb_info __initdata = {
 =======
 static struct nuc900fb_mach_info nuc900_fb_info = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct nuc900fb_mach_info nuc900_fb_info = {
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_GPM1040A0_320X240)
 	.displays		= &nuc900_lcd_info[0],
 #else
@@ -514,12 +538,17 @@ static struct resource nuc900_ac97_resource[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_device nuc900_device_audio = {
 	.name		= "nuc900-audio",
 =======
 struct platform_device nuc900_device_ac97 = {
 	.name		= "nuc900-ac97",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct platform_device nuc900_device_ac97 = {
+	.name		= "nuc900-ac97",
+>>>>>>> refs/remotes/origin/master
 	.id		= -1,
 	.num_resources	= ARRAY_SIZE(nuc900_ac97_resource),
 	.resource	= nuc900_ac97_resource,
@@ -541,10 +570,14 @@ static struct platform_device *nuc900_public_dev[] __initdata = {
 	&nuc900_device_spi,
 	&nuc900_device_wdt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&nuc900_device_audio,
 =======
 	&nuc900_device_ac97,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&nuc900_device_ac97,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Provide adding specific CPU platform devices API */
@@ -552,9 +585,13 @@ static struct platform_device *nuc900_public_dev[] __initdata = {
 void __init nuc900_board_init(struct platform_device **device, int size)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	disable_hlt();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpu_idle_poll_ctrl(true);
+>>>>>>> refs/remotes/origin/master
 	platform_add_devices(device, size);
 	platform_add_devices(nuc900_public_dev, ARRAY_SIZE(nuc900_public_dev));
 	spi_register_board_info(nuc900_spi_board_info,

@@ -25,6 +25,7 @@
 
 #include <drm/drmP.h>
 #include <drm/drm.h>
+<<<<<<< HEAD
 #include "gma_drm.h"
 #include "psb_drv.h"
 
@@ -37,6 +38,20 @@ void psb_gem_free_object(struct drm_gem_object *obj)
 {
 	struct gtt_range *gtt = container_of(obj, struct gtt_range, gem);
 	drm_gem_object_release_wrap(obj);
+=======
+#include <drm/gma_drm.h>
+#include <drm/drm_vma_manager.h>
+#include "psb_drv.h"
+
+void psb_gem_free_object(struct drm_gem_object *obj)
+{
+	struct gtt_range *gtt = container_of(obj, struct gtt_range, gem);
+
+	/* Remove the list map if one is present */
+	drm_gem_free_mmap_offset(obj);
+	drm_gem_object_release(obj);
+
+>>>>>>> refs/remotes/origin/master
 	/* This must occur last as it frees up the memory of the GEM object */
 	psb_gtt_free_range(obj->dev, gtt);
 }
@@ -76,6 +91,7 @@ int psb_gem_dumb_map_gtt(struct drm_file *file, struct drm_device *dev,
 	/* What validation is needed here ? */
 
 	/* Make it mmapable */
+<<<<<<< HEAD
 	if (!obj->map_list.map) {
 		ret = gem_create_mmap_offset(obj);
 		if (ret)
@@ -83,6 +99,12 @@ int psb_gem_dumb_map_gtt(struct drm_file *file, struct drm_device *dev,
 	}
 	/* GEM should really work out the hash offsets for us */
 	*offset = (u64)obj->map_list.hash.key << PAGE_SHIFT;
+=======
+	ret = drm_gem_create_mmap_offset(obj);
+	if (ret)
+		goto out;
+	*offset = drm_vma_node_offset_addr(&obj->vma_node);
+>>>>>>> refs/remotes/origin/master
 out:
 	drm_gem_object_unreference(obj);
 unlock:
@@ -124,6 +146,11 @@ static int psb_gem_create(struct drm_file *file,
 		dev_err(dev->dev, "GEM init failed for %lld\n", size);
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
+=======
+	/* Limit the object to 32bit mappings */
+	mapping_set_gfp_mask(r->gem.filp->f_mapping, GFP_KERNEL | __GFP_DMA32);
+>>>>>>> refs/remotes/origin/master
 	/* Give the object a handle so we can carry it more easily */
 	ret = drm_gem_handle_create(file, &r->gem, &handle);
 	if (ret) {
@@ -158,6 +185,7 @@ int psb_gem_dumb_create(struct drm_file *file, struct drm_device *dev,
 }
 
 /**
+<<<<<<< HEAD
  *	psb_gem_dumb_destroy	-	destroy a dumb buffer
  *	@file: client file
  *	@dev: our DRM device
@@ -175,6 +203,8 @@ int psb_gem_dumb_destroy(struct drm_file *file, struct drm_device *dev,
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  *	psb_gem_fault		-	pagefault handler for GEM objects
  *	@vma: the VMA of the GEM object
  *	@vmf: fault detail
@@ -254,11 +284,20 @@ static int psb_gem_create_stolen(struct drm_file *file, struct drm_device *dev,
 	struct gtt_range *gtt = psb_gtt_alloc_range(dev, size, "gem", 1);
 	if (gtt == NULL)
 		return -ENOMEM;
+<<<<<<< HEAD
 	if (drm_gem_private_object_init(dev, &gtt->gem, size) != 0)
 		goto free_gtt;
 	if (drm_gem_handle_create(file, &gtt->gem, handle) == 0)
 		return 0;
 free_gtt:
+=======
+
+	drm_gem_private_object_init(dev, &gtt->gem, size);
+	if (drm_gem_handle_create(file, &gtt->gem, handle) == 0)
+		return 0;
+
+	drm_gem_object_release(&gtt->gem);
+>>>>>>> refs/remotes/origin/master
 	psb_gtt_free_range(dev, gtt);
 	return -ENOMEM;
 }

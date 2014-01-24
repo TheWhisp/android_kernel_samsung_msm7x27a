@@ -17,8 +17,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+<<<<<<< HEAD
 #include <linux/version.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include "as102_drv.h"
 #include "as10x_types.h"
 #include "as10x_cmd.h"

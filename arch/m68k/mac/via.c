@@ -29,11 +29,16 @@
 #include <linux/init.h>
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/irq.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/bootinfo.h>
+=======
+#include <linux/irq.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/macintosh.h>
 #include <asm/macints.h>
 #include <asm/mac_via.h>
@@ -67,6 +72,7 @@ static int gIER,gIFR,gBufA,gBufB;
 #define MAC_CLOCK_HIGH		(MAC_CLOCK_TICK>>8)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* To disable a NuBus slot on Quadras we make that slot IRQ line an output set
  * high. On RBV we just use the slot interrupt enable register. On Macs with
  * genuine VIA chips we must use nubus_disabled to keep track of disabled slot
@@ -89,6 +95,8 @@ void via_irq_enable(int irq);
 void via_irq_disable(int irq);
 void via_irq_clear(int irq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * On Macs with a genuine VIA chip there is no way to mask an individual slot
@@ -133,7 +141,10 @@ void via_irq_clear(int irq);
 static u8 nubus_disabled;
 
 void via_debug_dump(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Initialize the VIAs
@@ -154,10 +165,14 @@ void __init via_init(void)
 		/* IIci, IIsi, IIvx, IIvi (P6xx), LC series */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case MAC_VIA_IIci:
 =======
 		case MAC_VIA_IICI:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case MAC_VIA_IICI:
+>>>>>>> refs/remotes/origin/master
 			via1 = (void *) VIA1_BASE;
 			if (macintosh_config->ident == MAC_MODEL_IIFX) {
 				via2 = NULL;
@@ -255,6 +270,7 @@ void __init via_init(void)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Some machines support an alternate IRQ mapping that spreads  */
 	/* Ethernet and Sound out to their own autolevel IRQs and moves */
 	/* VIA1 to level 6. A/UX uses this mapping and we do too.  Note */
@@ -288,6 +304,8 @@ void __init via_init(void)
 			break;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((macintosh_config->via_type == MAC_VIA_QUADRA) &&
 	    (macintosh_config->adb_type != MAC_ADB_PB1) &&
 	    (macintosh_config->adb_type != MAC_ADB_PB2) &&
@@ -299,7 +317,10 @@ void __init via_init(void)
 	} else {
 		via_alt_mapping = 0;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Now initialize VIA2. For RBV we just kill all interrupts;
@@ -320,6 +341,7 @@ void __init via_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Set vPCR for control line interrupts (but not on RBV)
 	 */
@@ -337,6 +359,8 @@ void __init via_init(void)
 			via2[vPCR] = 0x22;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Everything below this point is VIA2 only... */
 
 	if (rbv_present)
@@ -359,7 +383,10 @@ void __init via_init(void)
 	} else {
 		/* CA2 (SCSI DRQ), CB2 (SCSI IRQ): indep. input, neg. edge */
 		via2[vPCR] = 0x22;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -376,14 +403,19 @@ void __init via_init_clock(irq_handler_t func)
 	via1[vT1CH] = MAC_CLOCK_HIGH;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (request_irq(IRQ_MAC_TIMER_1, func, IRQ_FLG_LOCK, "timer", func))
 =======
 	if (request_irq(IRQ_MAC_TIMER_1, func, 0, "timer", func))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (request_irq(IRQ_MAC_TIMER_1, func, 0, "timer", func))
+>>>>>>> refs/remotes/origin/master
 		pr_err("Couldn't register %s interrupt\n", "timer");
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Register the interrupt dispatchers for VIA or RBV machines only.
  */
@@ -416,6 +448,8 @@ void __init via_register_interrupts(void)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Debugging dump, used in various places to see what's going on.
  */
 
@@ -448,7 +482,11 @@ void via_debug_dump(void)
  * TBI: get time offset between scheduling timer ticks
  */
 
+<<<<<<< HEAD
 unsigned long mac_gettimeoffset (void)
+=======
+u32 mac_gettimeoffset(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long ticks, offset = 0;
 
@@ -462,7 +500,11 @@ unsigned long mac_gettimeoffset (void)
 	ticks = MAC_CLOCK_TICK - ticks;
 	ticks = ticks * 10000L / MAC_CLOCK_TICK;
 
+<<<<<<< HEAD
 	return ticks + offset;
+=======
+	return (ticks + offset) * 1000;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -511,6 +553,7 @@ void __init via_nubus_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Disable all the slot interrupts (where possible). */
 
 	switch (macintosh_config->via_type) {
@@ -540,6 +583,8 @@ void __init via_nubus_init(void)
 			via2[vDirA] |= 0x7F;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Disable the slot interrupts. On some hardware that's not possible.
 	 * On some hardware it's unclear what all of these I/O lines do.
@@ -589,7 +634,10 @@ void via_nubus_irq_shutdown(int irq)
 		break;
 	case MAC_VIA_IICI:
 		via_irq_disable(irq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 }
@@ -600,10 +648,14 @@ void via_nubus_irq_shutdown(int irq)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 irqreturn_t via1_irq(int irq, void *dev_id)
 =======
 void via1_irq(unsigned int irq, struct irq_desc *desc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void via1_irq(unsigned int irq, struct irq_desc *desc)
+>>>>>>> refs/remotes/origin/master
 {
 	int irq_num;
 	unsigned char irq_bit, events;
@@ -611,10 +663,14 @@ void via1_irq(unsigned int irq, struct irq_desc *desc)
 	events = via1[vIFR] & via1[vIER] & 0x7F;
 	if (!events)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return IRQ_NONE;
 =======
 		return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	irq_num = VIA1_SOURCE_BASE;
 	irq_bit = 1;
@@ -622,14 +678,19 @@ void via1_irq(unsigned int irq, struct irq_desc *desc)
 		if (events & irq_bit) {
 			via1[vIFR] = irq_bit;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			m68k_handle_int(irq_num);
 =======
 			generic_handle_irq(irq_num);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			generic_handle_irq(irq_num);
+>>>>>>> refs/remotes/origin/master
 		}
 		++irq_num;
 		irq_bit <<= 1;
 	} while (events >= irq_bit);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return IRQ_HANDLED;
 }
@@ -640,6 +701,11 @@ irqreturn_t via2_irq(int irq, void *dev_id)
 
 static void via2_irq(unsigned int irq, struct irq_desc *desc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+static void via2_irq(unsigned int irq, struct irq_desc *desc)
+>>>>>>> refs/remotes/origin/master
 {
 	int irq_num;
 	unsigned char irq_bit, events;
@@ -647,10 +713,14 @@ static void via2_irq(unsigned int irq, struct irq_desc *desc)
 	events = via2[gIFR] & via2[gIER] & 0x7F;
 	if (!events)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return IRQ_NONE;
 =======
 		return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	irq_num = VIA2_SOURCE_BASE;
 	irq_bit = 1;
@@ -658,18 +728,25 @@ static void via2_irq(unsigned int irq, struct irq_desc *desc)
 		if (events & irq_bit) {
 			via2[gIFR] = irq_bit | rbv_clear;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			m68k_handle_int(irq_num);
 =======
 			generic_handle_irq(irq_num);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			generic_handle_irq(irq_num);
+>>>>>>> refs/remotes/origin/master
 		}
 		++irq_num;
 		irq_bit <<= 1;
 	} while (events >= irq_bit);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return IRQ_HANDLED;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -678,10 +755,14 @@ static void via2_irq(unsigned int irq, struct irq_desc *desc)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 irqreturn_t via_nubus_irq(int irq, void *dev_id)
 =======
 void via_nubus_irq(unsigned int irq, struct irq_desc *desc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void via_nubus_irq(unsigned int irq, struct irq_desc *desc)
+>>>>>>> refs/remotes/origin/master
 {
 	int slot_irq;
 	unsigned char slot_bit, events;
@@ -693,10 +774,14 @@ void via_nubus_irq(unsigned int irq, struct irq_desc *desc)
 		events &= ~via2[vDirA];
 	if (!events)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return IRQ_NONE;
 =======
 		return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	do {
 		slot_irq = IRQ_NUBUS_F;
@@ -705,10 +790,14 @@ void via_nubus_irq(unsigned int irq, struct irq_desc *desc)
 			if (events & slot_bit) {
 				events &= ~slot_bit;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				m68k_handle_int(slot_irq);
 =======
 				generic_handle_irq(slot_irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				generic_handle_irq(slot_irq);
+>>>>>>> refs/remotes/origin/master
 			}
 			--slot_irq;
 			slot_bit >>= 1;
@@ -723,8 +812,11 @@ void via_nubus_irq(unsigned int irq, struct irq_desc *desc)
 			events &= ~via2[vDirA];
 	} while (events);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return IRQ_HANDLED;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -743,7 +835,10 @@ void __init via_register_interrupts(void)
 	}
 	irq_set_chained_handler(IRQ_AUTO_2, via2_irq);
 	irq_set_chained_handler(IRQ_MAC_NUBUS, via_nubus_irq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void via_irq_enable(int irq) {
@@ -763,24 +858,33 @@ void via_irq_enable(int irq) {
 		switch (macintosh_config->via_type) {
 		case MAC_VIA_II:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		case MAC_VIA_QUADRA:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case MAC_VIA_QUADRA:
+>>>>>>> refs/remotes/origin/master
 			nubus_disabled &= ~(1 << irq_idx);
 			/* Enable the CA1 interrupt when no slot is disabled. */
 			if (!nubus_disabled)
 				via2[gIER] = IER_SET_BIT(1);
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case MAC_VIA_IIci:
 =======
 		case MAC_VIA_IICI:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case MAC_VIA_IICI:
+>>>>>>> refs/remotes/origin/master
 			/* On RBV, enable the slot interrupt.
 			 * SIER works like IER.
 			 */
 			via2[rSIER] = IER_SET_BIT(irq_idx);
 			break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case MAC_VIA_QUADRA:
 			/* Make the port A line an input to enable the slot irq.
@@ -792,6 +896,8 @@ void via_irq_enable(int irq) {
 			break;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
@@ -812,13 +918,18 @@ void via_irq_disable(int irq) {
 		switch (macintosh_config->via_type) {
 		case MAC_VIA_II:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		case MAC_VIA_QUADRA:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case MAC_VIA_QUADRA:
+>>>>>>> refs/remotes/origin/master
 			nubus_disabled |= 1 << irq_idx;
 			if (nubus_disabled)
 				via2[gIER] = IER_CLR_BIT(1);
 			break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case MAC_VIA_IIci:
 			via2[rSIER] = IER_CLR_BIT(irq_idx);
@@ -833,10 +944,16 @@ void via_irq_disable(int irq) {
 			via2[rSIER] = IER_CLR_BIT(irq_idx);
 			break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case MAC_VIA_IICI:
+			via2[rSIER] = IER_CLR_BIT(irq_idx);
+			break;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void via_irq_clear(int irq) {
 	int irq_src	= IRQ_SRC(irq);
@@ -878,6 +995,8 @@ int via_irq_pending(int irq)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void via1_set_head(int head)
 {
 	if (head == 0)
@@ -887,11 +1006,17 @@ void via1_set_head(int head)
 }
 EXPORT_SYMBOL(via1_set_head);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 int via2_scsi_drq_pending(void)
 {
 	return via2[gIFR] & (1 << IRQ_IDX(IRQ_MAC_SCSIDRQ));
 }
 EXPORT_SYMBOL(via2_scsi_drq_pending);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

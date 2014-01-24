@@ -1,11 +1,18 @@
 /*
  * QLogic Fibre Channel HBA Driver
+<<<<<<< HEAD
  * Copyright (c)  2003-2011 QLogic Corporation
  *
  * See LICENSE.qla2xxx for copyright and licensing details.
  */
 <<<<<<< HEAD
 =======
+=======
+ * Copyright (c)  2003-2013 QLogic Corporation
+ *
+ * See LICENSE.qla2xxx for copyright and licensing details.
+ */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Table for showing the current message id in use for particular level
@@ -13,6 +20,7 @@
  * ----------------------------------------------------------------------
  * |             Level            |   Last Value Used  |     Holes	|
  * ----------------------------------------------------------------------
+<<<<<<< HEAD
  * | Module Init and Probe        |       0x0120       | 0x4b,0xba,0xfa |
  * | Mailbox commands             |       0x113e       | 0x112c-0x112e  |
  * |                              |                    | 0x113a         |
@@ -38,15 +46,77 @@
  */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * | Module Init and Probe        |       0x0159       | 0x4b,0xba,0xfa |
+ * | Mailbox commands             |       0x1181       | 0x111a-0x111b  |
+ * |                              |                    | 0x1155-0x1158  |
+ * |                              |                    | 0x1018-0x1019  |
+ * |                              |                    | 0x1115-0x1116  |
+ * |                              |                    | 0x10ca		|
+ * | Device Discovery             |       0x2095       | 0x2020-0x2022, |
+ * |                              |                    | 0x2011-0x2012, |
+ * |                              |                    | 0x2016         |
+ * | Queue Command and IO tracing |       0x3059       | 0x3006-0x300b  |
+ * |                              |                    | 0x3027-0x3028  |
+ * |                              |                    | 0x303d-0x3041  |
+ * |                              |                    | 0x302d,0x3033  |
+ * |                              |                    | 0x3036,0x3038  |
+ * |                              |                    | 0x303a		|
+ * | DPC Thread                   |       0x4022       | 0x4002,0x4013  |
+ * | Async Events                 |       0x5087       | 0x502b-0x502f  |
+ * |                              |                    | 0x5047,0x5052  |
+ * |                              |                    | 0x5084,0x5075	|
+ * |                              |                    | 0x503d,0x5044  |
+ * | Timer Routines               |       0x6012       |                |
+ * | User Space Interactions      |       0x70e1       | 0x7018,0x702e, |
+ * |                              |                    | 0x7020,0x7024, |
+ * |                              |                    | 0x7039,0x7045, |
+ * |                              |                    | 0x7073-0x7075, |
+ * |                              |                    | 0x707b,0x708c, |
+ * |                              |                    | 0x70a5,0x70a6, |
+ * |                              |                    | 0x70a8,0x70ab, |
+ * |                              |                    | 0x70ad-0x70ae, |
+ * |                              |                    | 0x70d1-0x70db, |
+ * |                              |                    | 0x7047,0x703b	|
+ * |                              |                    | 0x70de-0x70df, |
+ * | Task Management              |       0x803d       | 0x8025-0x8026  |
+ * |                              |                    | 0x800b,0x8039  |
+ * | AER/EEH                      |       0x9011       |		|
+ * | Virtual Port                 |       0xa007       |		|
+ * | ISP82XX Specific             |       0xb14c       | 0xb002,0xb024  |
+ * |                              |                    | 0xb09e,0xb0ae  |
+ * |                              |                    | 0xb0e0-0xb0ef  |
+ * |                              |                    | 0xb085,0xb0dc  |
+ * |                              |                    | 0xb107,0xb108  |
+ * |                              |                    | 0xb111,0xb11e  |
+ * |                              |                    | 0xb12c,0xb12d  |
+ * |                              |                    | 0xb13a,0xb142  |
+ * |                              |                    | 0xb13c-0xb140  |
+ * |                              |                    | 0xb149		|
+ * | MultiQ                       |       0xc00c       |		|
+ * | Misc                         |       0xd010       |		|
+ * | Target Mode		  |	  0xe070       | 0xe021		|
+ * | Target Mode Management	  |	  0xf072       | 0xf002-0xf003	|
+ * |                              |                    | 0xf046-0xf049  |
+ * | Target Mode Task Management  |	  0x1000b      |		|
+ * ----------------------------------------------------------------------
+ */
+
+>>>>>>> refs/remotes/origin/master
 #include "qla_def.h"
 
 #include <linux/delay.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static uint32_t ql_dbg_offset = 0x800;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static uint32_t ql_dbg_offset = 0x800;
+
+>>>>>>> refs/remotes/origin/master
 static inline void
 qla2xxx_prep_dump(struct qla_hw_data *ha, struct qla2xxx_fw_dump *fw_dump)
 {
@@ -96,10 +166,14 @@ qla24xx_dump_ram(struct qla_hw_data *ha, uint32_t addr, uint32_t *ram,
 	clear_bit(MBX_INTERRUPT, &ha->mbx_cmd_flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dwords = GID_LIST_SIZE / 4;
 =======
 	dwords = qla2x00_gid_list_size(ha) / 4;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dwords = qla2x00_gid_list_size(ha) / 4;
+>>>>>>> refs/remotes/origin/master
 	for (cnt = 0; cnt < ram_dwords && rval == QLA_SUCCESS;
 	    cnt += dwords, addr += dwords) {
 		if (cnt + dwords > ram_dwords)
@@ -275,10 +349,14 @@ qla2xxx_dump_ram(struct qla_hw_data *ha, uint32_t addr, uint16_t *ram,
 	clear_bit(MBX_INTERRUPT, &ha->mbx_cmd_flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	words = GID_LIST_SIZE / 2;
 =======
 	words = qla2x00_gid_list_size(ha) / 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	words = qla2x00_gid_list_size(ha) / 2;
+>>>>>>> refs/remotes/origin/master
 	for (cnt = 0; cnt < ram_words && rval == QLA_SUCCESS;
 	    cnt += words, addr += words) {
 		if (cnt + words > ram_words)
@@ -390,12 +468,66 @@ qla25xx_copy_fce(struct qla_hw_data *ha, void *ptr, uint32_t **last_chain)
 	memcpy(iter_reg, ha->fce, ntohl(fcec->size));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return iter_reg;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return (char *)iter_reg + ntohl(fcec->size);
 }
 
 static inline void *
+<<<<<<< HEAD
+=======
+qla2xxx_copy_atioqueues(struct qla_hw_data *ha, void *ptr,
+	uint32_t **last_chain)
+{
+	struct qla2xxx_mqueue_chain *q;
+	struct qla2xxx_mqueue_header *qh;
+	uint32_t num_queues;
+	int que;
+	struct {
+		int length;
+		void *ring;
+	} aq, *aqp;
+
+	if (!ha->tgt.atio_ring)
+		return ptr;
+
+	num_queues = 1;
+	aqp = &aq;
+	aqp->length = ha->tgt.atio_q_length;
+	aqp->ring = ha->tgt.atio_ring;
+
+	for (que = 0; que < num_queues; que++) {
+		/* aqp = ha->atio_q_map[que]; */
+		q = ptr;
+		*last_chain = &q->type;
+		q->type = __constant_htonl(DUMP_CHAIN_QUEUE);
+		q->chain_size = htonl(
+		    sizeof(struct qla2xxx_mqueue_chain) +
+		    sizeof(struct qla2xxx_mqueue_header) +
+		    (aqp->length * sizeof(request_t)));
+		ptr += sizeof(struct qla2xxx_mqueue_chain);
+
+		/* Add header. */
+		qh = ptr;
+		qh->queue = __constant_htonl(TYPE_ATIO_QUEUE);
+		qh->number = htonl(que);
+		qh->size = htonl(aqp->length * sizeof(request_t));
+		ptr += sizeof(struct qla2xxx_mqueue_header);
+
+		/* Add data. */
+		memcpy(ptr, aqp->ring, aqp->length * sizeof(request_t));
+
+		ptr += aqp->length * sizeof(request_t);
+	}
+
+	return ptr;
+}
+
+static inline void *
+>>>>>>> refs/remotes/origin/master
 qla25xx_copy_mqueues(struct qla_hw_data *ha, void *ptr, uint32_t **last_chain)
 {
 	struct qla2xxx_mqueue_chain *q;
@@ -464,7 +596,10 @@ qla25xx_copy_mqueues(struct qla_hw_data *ha, void *ptr, uint32_t **last_chain)
 	}
 
 	return ptr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void *
@@ -473,6 +608,7 @@ qla25xx_copy_mq(struct qla_hw_data *ha, void *ptr, uint32_t **last_chain)
 	uint32_t cnt, que_idx;
 	uint8_t que_cnt;
 	struct qla2xxx_mq_chain *mq = ptr;
+<<<<<<< HEAD
 	struct device_reg_25xxmq __iomem *reg;
 
 <<<<<<< HEAD
@@ -480,6 +616,11 @@ qla25xx_copy_mq(struct qla_hw_data *ha, void *ptr, uint32_t **last_chain)
 =======
 	if (!ha->mqenable || IS_QLA83XX(ha))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	device_reg_t __iomem *reg;
+
+	if (!ha->mqenable || IS_QLA83XX(ha))
+>>>>>>> refs/remotes/origin/master
 		return ptr;
 
 	mq = ptr;
@@ -491,6 +632,7 @@ qla25xx_copy_mq(struct qla_hw_data *ha, void *ptr, uint32_t **last_chain)
 		ha->max_req_queues : ha->max_rsp_queues;
 	mq->count = htonl(que_cnt);
 	for (cnt = 0; cnt < que_cnt; cnt++) {
+<<<<<<< HEAD
 		reg = (struct device_reg_25xxmq *) ((void *)
 			ha->mqiobase + cnt * QLA_QUE_PAGE);
 		que_idx = cnt * 4;
@@ -498,21 +640,38 @@ qla25xx_copy_mq(struct qla_hw_data *ha, void *ptr, uint32_t **last_chain)
 		mq->qregs[que_idx+1] = htonl(RD_REG_DWORD(&reg->req_q_out));
 		mq->qregs[que_idx+2] = htonl(RD_REG_DWORD(&reg->rsp_q_in));
 		mq->qregs[que_idx+3] = htonl(RD_REG_DWORD(&reg->rsp_q_out));
+=======
+		reg = ISP_QUE_REG(ha, cnt);
+		que_idx = cnt * 4;
+		mq->qregs[que_idx] =
+		    htonl(RD_REG_DWORD(&reg->isp25mq.req_q_in));
+		mq->qregs[que_idx+1] =
+		    htonl(RD_REG_DWORD(&reg->isp25mq.req_q_out));
+		mq->qregs[que_idx+2] =
+		    htonl(RD_REG_DWORD(&reg->isp25mq.rsp_q_in));
+		mq->qregs[que_idx+3] =
+		    htonl(RD_REG_DWORD(&reg->isp25mq.rsp_q_out));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ptr + sizeof(struct qla2xxx_mq_chain);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void
 =======
 void
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void
+>>>>>>> refs/remotes/origin/master
 qla2xxx_dump_post_process(scsi_qla_host_t *vha, int rval)
 {
 	struct qla_hw_data *ha = vha->hw;
 
 	if (rval != QLA_SUCCESS) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		qla_printk(KERN_WARNING, ha,
 		    "Failed to dump firmware (%x)!!!\n", rval);
@@ -520,12 +679,17 @@ qla2xxx_dump_post_process(scsi_qla_host_t *vha, int rval)
 	} else {
 		qla_printk(KERN_INFO, ha,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ql_log(ql_log_warn, vha, 0xd000,
 		    "Failed to dump firmware (%x).\n", rval);
 		ha->fw_dumped = 0;
 	} else {
 		ql_log(ql_log_info, vha, 0xd001,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		    "Firmware dump saved to temp buffer (%ld/%p).\n",
 		    vha->host_no, ha->fw_dump);
 		ha->fw_dumped = 1;
@@ -558,26 +722,37 @@ qla2300_fw_dump(scsi_qla_host_t *vha, int hardware_locked)
 
 	if (!ha->fw_dump) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		qla_printk(KERN_WARNING, ha,
 		    "No buffer available for dump!!!\n");
 =======
 		ql_log(ql_log_warn, vha, 0xd002,
 		    "No buffer available for dump.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_log(ql_log_warn, vha, 0xd002,
+		    "No buffer available for dump.\n");
+>>>>>>> refs/remotes/origin/master
 		goto qla2300_fw_dump_failed;
 	}
 
 	if (ha->fw_dumped) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		qla_printk(KERN_WARNING, ha,
 		    "Firmware has been previously dumped (%p) -- ignoring "
 		    "request...\n", ha->fw_dump);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ql_log(ql_log_warn, vha, 0xd003,
 		    "Firmware has been previously dumped (%p) "
 		    "-- ignoring request.\n",
 		    ha->fw_dump);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto qla2300_fw_dump_failed;
 	}
 	fw = &ha->fw_dump->isp.isp23;
@@ -733,26 +908,37 @@ qla2100_fw_dump(scsi_qla_host_t *vha, int hardware_locked)
 
 	if (!ha->fw_dump) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		qla_printk(KERN_WARNING, ha,
 		    "No buffer available for dump!!!\n");
 =======
 		ql_log(ql_log_warn, vha, 0xd004,
 		    "No buffer available for dump.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_log(ql_log_warn, vha, 0xd004,
+		    "No buffer available for dump.\n");
+>>>>>>> refs/remotes/origin/master
 		goto qla2100_fw_dump_failed;
 	}
 
 	if (ha->fw_dumped) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		qla_printk(KERN_WARNING, ha,
 		    "Firmware has been previously dumped (%p) -- ignoring "
 		    "request...\n", ha->fw_dump);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ql_log(ql_log_warn, vha, 0xd005,
 		    "Firmware has been previously dumped (%p) "
 		    "-- ignoring request.\n",
 		    ha->fw_dump);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto qla2100_fw_dump_failed;
 	}
 	fw = &ha->fw_dump->isp.isp21;
@@ -929,9 +1115,17 @@ qla24xx_fw_dump(scsi_qla_host_t *vha, int hardware_locked)
 	struct qla24xx_fw_dump *fw;
 	uint32_t	ext_mem_cnt;
 	void		*nxt;
+<<<<<<< HEAD
 	struct scsi_qla_host *base_vha = pci_get_drvdata(ha->pdev);
 
 	if (IS_QLA82XX(ha))
+=======
+	void		*nxt_chain;
+	uint32_t	*last_chain = NULL;
+	struct scsi_qla_host *base_vha = pci_get_drvdata(ha->pdev);
+
+	if (IS_P3P_TYPE(ha))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	risc_address = ext_mem_cnt = 0;
@@ -942,26 +1136,37 @@ qla24xx_fw_dump(scsi_qla_host_t *vha, int hardware_locked)
 
 	if (!ha->fw_dump) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		qla_printk(KERN_WARNING, ha,
 		    "No buffer available for dump!!!\n");
 =======
 		ql_log(ql_log_warn, vha, 0xd006,
 		    "No buffer available for dump.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_log(ql_log_warn, vha, 0xd006,
+		    "No buffer available for dump.\n");
+>>>>>>> refs/remotes/origin/master
 		goto qla24xx_fw_dump_failed;
 	}
 
 	if (ha->fw_dumped) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		qla_printk(KERN_WARNING, ha,
 		    "Firmware has been previously dumped (%p) -- ignoring "
 		    "request...\n", ha->fw_dump);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ql_log(ql_log_warn, vha, 0xd007,
 		    "Firmware has been previously dumped (%p) "
 		    "-- ignoring request.\n",
 		    ha->fw_dump);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto qla24xx_fw_dump_failed;
 	}
 	fw = &ha->fw_dump->isp.isp24;
@@ -1158,6 +1363,19 @@ qla24xx_fw_dump(scsi_qla_host_t *vha, int hardware_locked)
 
 	qla24xx_copy_eft(ha, nxt);
 
+<<<<<<< HEAD
+=======
+	nxt_chain = (void *)ha->fw_dump + ha->chain_offset;
+	nxt_chain = qla2xxx_copy_atioqueues(ha, nxt_chain, &last_chain);
+	if (last_chain) {
+		ha->fw_dump->version |= __constant_htonl(DUMP_CHAIN_VARIANT);
+		*last_chain |= __constant_htonl(DUMP_CHAIN_LAST);
+	}
+
+	/* Adjust valid length. */
+	ha->fw_dump_len = (nxt_chain - (void *)ha->fw_dump);
+
+>>>>>>> refs/remotes/origin/master
 qla24xx_fw_dump_failed_0:
 	qla2xxx_dump_post_process(base_vha, rval);
 
@@ -1192,26 +1410,37 @@ qla25xx_fw_dump(scsi_qla_host_t *vha, int hardware_locked)
 
 	if (!ha->fw_dump) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		qla_printk(KERN_WARNING, ha,
 		    "No buffer available for dump!!!\n");
 =======
 		ql_log(ql_log_warn, vha, 0xd008,
 		    "No buffer available for dump.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_log(ql_log_warn, vha, 0xd008,
+		    "No buffer available for dump.\n");
+>>>>>>> refs/remotes/origin/master
 		goto qla25xx_fw_dump_failed;
 	}
 
 	if (ha->fw_dumped) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		qla_printk(KERN_WARNING, ha,
 		    "Firmware has been previously dumped (%p) -- ignoring "
 		    "request...\n", ha->fw_dump);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ql_log(ql_log_warn, vha, 0xd009,
 		    "Firmware has been previously dumped (%p) "
 		    "-- ignoring request.\n",
 		    ha->fw_dump);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto qla25xx_fw_dump_failed;
 	}
 	fw = &ha->fw_dump->isp.isp25;
@@ -1472,6 +1701,7 @@ qla25xx_fw_dump(scsi_qla_host_t *vha, int hardware_locked)
 
 	nxt = qla2xxx_copy_queues(ha, nxt);
 
+<<<<<<< HEAD
 	nxt = qla24xx_copy_eft(ha, nxt);
 
 	/* Chain entries -- started with MQ. */
@@ -1481,17 +1711,31 @@ qla25xx_fw_dump(scsi_qla_host_t *vha, int hardware_locked)
 	nxt_chain = qla25xx_copy_fce(ha, nxt_chain, &last_chain);
 	nxt_chain = qla25xx_copy_mqueues(ha, nxt_chain, &last_chain);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	qla24xx_copy_eft(ha, nxt);
+
+	/* Chain entries -- started with MQ. */
+	nxt_chain = qla25xx_copy_fce(ha, nxt_chain, &last_chain);
+	nxt_chain = qla25xx_copy_mqueues(ha, nxt_chain, &last_chain);
+	nxt_chain = qla2xxx_copy_atioqueues(ha, nxt_chain, &last_chain);
+>>>>>>> refs/remotes/origin/master
 	if (last_chain) {
 		ha->fw_dump->version |= __constant_htonl(DUMP_CHAIN_VARIANT);
 		*last_chain |= __constant_htonl(DUMP_CHAIN_LAST);
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Adjust valid length. */
 	ha->fw_dump_len = (nxt_chain - (void *)ha->fw_dump);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Adjust valid length. */
+	ha->fw_dump_len = (nxt_chain - (void *)ha->fw_dump);
+
+>>>>>>> refs/remotes/origin/master
 qla25xx_fw_dump_failed_0:
 	qla2xxx_dump_post_process(base_vha, rval);
 
@@ -1526,26 +1770,37 @@ qla81xx_fw_dump(scsi_qla_host_t *vha, int hardware_locked)
 
 	if (!ha->fw_dump) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		qla_printk(KERN_WARNING, ha,
 		    "No buffer available for dump!!!\n");
 =======
 		ql_log(ql_log_warn, vha, 0xd00a,
 		    "No buffer available for dump.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_log(ql_log_warn, vha, 0xd00a,
+		    "No buffer available for dump.\n");
+>>>>>>> refs/remotes/origin/master
 		goto qla81xx_fw_dump_failed;
 	}
 
 	if (ha->fw_dumped) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		qla_printk(KERN_WARNING, ha,
 		    "Firmware has been previously dumped (%p) -- ignoring "
 		    "request...\n", ha->fw_dump);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ql_log(ql_log_warn, vha, 0xd00b,
 		    "Firmware has been previously dumped (%p) "
 		    "-- ignoring request.\n",
 		    ha->fw_dump);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto qla81xx_fw_dump_failed;
 	}
 	fw = &ha->fw_dump->isp.isp81;
@@ -1808,6 +2063,7 @@ qla81xx_fw_dump(scsi_qla_host_t *vha, int hardware_locked)
 
 	nxt = qla2xxx_copy_queues(ha, nxt);
 
+<<<<<<< HEAD
 	nxt = qla24xx_copy_eft(ha, nxt);
 
 	/* Chain entries -- started with MQ. */
@@ -1817,17 +2073,31 @@ qla81xx_fw_dump(scsi_qla_host_t *vha, int hardware_locked)
 	nxt_chain = qla25xx_copy_fce(ha, nxt_chain, &last_chain);
 	nxt_chain = qla25xx_copy_mqueues(ha, nxt_chain, &last_chain);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	qla24xx_copy_eft(ha, nxt);
+
+	/* Chain entries -- started with MQ. */
+	nxt_chain = qla25xx_copy_fce(ha, nxt_chain, &last_chain);
+	nxt_chain = qla25xx_copy_mqueues(ha, nxt_chain, &last_chain);
+	nxt_chain = qla2xxx_copy_atioqueues(ha, nxt_chain, &last_chain);
+>>>>>>> refs/remotes/origin/master
 	if (last_chain) {
 		ha->fw_dump->version |= __constant_htonl(DUMP_CHAIN_VARIANT);
 		*last_chain |= __constant_htonl(DUMP_CHAIN_LAST);
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Adjust valid length. */
 	ha->fw_dump_len = (nxt_chain - (void *)ha->fw_dump);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Adjust valid length. */
+	ha->fw_dump_len = (nxt_chain - (void *)ha->fw_dump);
+
+>>>>>>> refs/remotes/origin/master
 qla81xx_fw_dump_failed_0:
 	qla2xxx_dump_post_process(base_vha, rval);
 
@@ -1837,7 +2107,10 @@ qla81xx_fw_dump_failed:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void
 qla83xx_fw_dump(scsi_qla_host_t *vha, int hardware_locked)
 {
@@ -2302,7 +2575,11 @@ qla83xx_fw_dump(scsi_qla_host_t *vha, int hardware_locked)
 
 		if (!cnt) {
 			nxt = fw->code_ram;
+<<<<<<< HEAD
 			nxt += sizeof(fw->code_ram),
+=======
+			nxt += sizeof(fw->code_ram);
+>>>>>>> refs/remotes/origin/master
 			nxt += (ha->fw_memory_size - 0x100000 + 1);
 			goto copy_queue;
 		} else
@@ -2318,11 +2595,19 @@ qla83xx_fw_dump(scsi_qla_host_t *vha, int hardware_locked)
 copy_queue:
 	nxt = qla2xxx_copy_queues(ha, nxt);
 
+<<<<<<< HEAD
 	nxt = qla24xx_copy_eft(ha, nxt);
+=======
+	qla24xx_copy_eft(ha, nxt);
+>>>>>>> refs/remotes/origin/master
 
 	/* Chain entries -- started with MQ. */
 	nxt_chain = qla25xx_copy_fce(ha, nxt_chain, &last_chain);
 	nxt_chain = qla25xx_copy_mqueues(ha, nxt_chain, &last_chain);
+<<<<<<< HEAD
+=======
+	nxt_chain = qla2xxx_copy_atioqueues(ha, nxt_chain, &last_chain);
+>>>>>>> refs/remotes/origin/master
 	if (last_chain) {
 		ha->fw_dump->version |= __constant_htonl(DUMP_CHAIN_VARIANT);
 		*last_chain |= __constant_htonl(DUMP_CHAIN_LAST);
@@ -2339,15 +2624,21 @@ qla83xx_fw_dump_failed:
 		spin_unlock_irqrestore(&ha->hardware_lock, flags);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /****************************************************************************/
 /*                         Driver Debug Functions.                          */
 /****************************************************************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void
 qla2x00_dump_regs(scsi_qla_host_t *vha)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int
 ql_mask_match(uint32_t level)
 {
@@ -2400,7 +2691,11 @@ ql_dbg(uint32_t level, scsi_qla_host_t *vha, int32_t id, const char *fmt, ...)
 
 /*
  * This function is for formatting and logging debug information.
+<<<<<<< HEAD
  * It is to be used when vha is not available and pci is availble,
+=======
+ * It is to be used when vha is not available and pci is available,
+>>>>>>> refs/remotes/origin/master
  * i.e., before host allocation. It formats the message and logs it
  * to the messages file.
  * parameters:
@@ -2495,7 +2790,11 @@ ql_log(uint32_t level, scsi_qla_host_t *vha, int32_t id, const char *fmt, ...)
 
 /*
  * This function is for formatting and logging log messages.
+<<<<<<< HEAD
  * It is to be used when vha is not available and pci is availble,
+=======
+ * It is to be used when vha is not available and pci is available,
+>>>>>>> refs/remotes/origin/master
  * i.e., before host allocation. It formats the message and logs
  * it to the messages file. All the messages are logged irrespective
  * of the value of ql2xextended_error_logging.
@@ -2550,12 +2849,16 @@ ql_log_pci(uint32_t level, struct pci_dev *pdev, int32_t id,
 
 void
 ql_dump_regs(uint32_t level, scsi_qla_host_t *vha, int32_t id)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct qla_hw_data *ha = vha->hw;
 	struct device_reg_2xxx __iomem *reg = &ha->iobase->isp;
 	struct device_reg_24xx __iomem *reg24 = &ha->iobase->isp24;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint16_t __iomem *mbx_reg;
 
@@ -2567,13 +2870,19 @@ ql_dump_regs(uint32_t level, scsi_qla_host_t *vha, int32_t id)
 		printk("scsi(%ld): mbox %d 0x%04x \n", vha->host_no, i,
 		    RD_REG_WORD(mbx_reg++));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct device_reg_82xx __iomem *reg82 = &ha->iobase->isp82;
 	uint16_t __iomem *mbx_reg;
 
 	if (!ql_mask_match(level))
 		return;
 
+<<<<<<< HEAD
 	if (IS_QLA82XX(ha))
+=======
+	if (IS_P3P_TYPE(ha))
+>>>>>>> refs/remotes/origin/master
 		mbx_reg = &reg82->mailbox_in[0];
 	else if (IS_FWI2_CAPABLE(ha))
 		mbx_reg = &reg24->mailbox0;
@@ -2584,21 +2893,30 @@ ql_dump_regs(uint32_t level, scsi_qla_host_t *vha, int32_t id)
 	for (i = 0; i < 6; i++)
 		ql_dbg(level, vha, id,
 		    "mbox[%d] 0x%04x\n", i, RD_REG_WORD(mbx_reg++));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 void
+<<<<<<< HEAD
 <<<<<<< HEAD
 qla2x00_dump_buffer(uint8_t * b, uint32_t size)
 =======
 ql_dump_buffer(uint32_t level, scsi_qla_host_t *vha, int32_t id,
 	uint8_t *b, uint32_t size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ql_dump_buffer(uint32_t level, scsi_qla_host_t *vha, int32_t id,
+	uint8_t *b, uint32_t size)
+>>>>>>> refs/remotes/origin/master
 {
 	uint32_t cnt;
 	uint8_t c;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	printk(" 0   1   2   3   4   5   6   7   8   9  "
 	    "Ah  Bh  Ch  Dh  Eh  Fh\n");
@@ -2609,6 +2927,8 @@ ql_dump_buffer(uint32_t level, scsi_qla_host_t *vha, int32_t id,
 		c = *b++;
 		printk("%02x",(uint32_t) c);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!ql_mask_match(level))
 		return;
 
@@ -2621,7 +2941,10 @@ ql_dump_buffer(uint32_t level, scsi_qla_host_t *vha, int32_t id,
 	for (cnt = 0; cnt < size;) {
 		c = *b++;
 		printk("%02x", (uint32_t) c);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		cnt++;
 		if (!(cnt % 16))
 			printk("\n");
@@ -2629,6 +2952,7 @@ ql_dump_buffer(uint32_t level, scsi_qla_host_t *vha, int32_t id,
 			printk("  ");
 	}
 	if (cnt % 16)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk("\n");
 }
@@ -2694,4 +3018,7 @@ qla2x00_dump_buffer_zipped(uint8_t *b, uint32_t size)
 =======
 		ql_dbg(level, vha, id, "\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ql_dbg(level, vha, id, "\n");
+>>>>>>> refs/remotes/origin/master
 }

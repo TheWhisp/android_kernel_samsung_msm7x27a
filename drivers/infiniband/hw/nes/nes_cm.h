@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2006 - 2009 Intel Corporation.  All rights reserved.
 =======
  * Copyright (c) 2006 - 2011 Intel Corporation.  All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2006 - 2011 Intel Corporation.  All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This software is available to you under a choice of one of two
  * licenses.  You may choose to be licensed under the terms of the GNU
@@ -53,8 +57,11 @@
 #define IETF_MPA_VERSION  1
 #define IETF_MAX_PRIV_DATA_LEN 512
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IETF_MPA_FRAME_SIZE     20
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define IETF_MPA_FRAME_SIZE    20
 #define IETF_RTR_MSG_SIZE      4
 #define IETF_MPA_V2_FLAG       0x10
@@ -65,7 +72,10 @@
 #define IETF_RDMA0_WRITE        0x8000
 #define IETF_RDMA0_READ         0x4000
 #define IETF_NO_IRD_ORD         0x3FFF
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 enum ietf_mpa_flags {
 	IETF_MPA_FLAGS_MARKERS = 0x80,	/* receive Markers */
@@ -74,10 +84,14 @@ enum ietf_mpa_flags {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct ietf_mpa_frame {
 =======
 struct ietf_mpa_v1 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct ietf_mpa_v1 {
+>>>>>>> refs/remotes/origin/master
 	u8 key[IETF_MPA_KEY_SIZE];
 	u8 flags;
 	u8 rev;
@@ -88,7 +102,10 @@ struct ietf_mpa_v1 {
 #define ietf_mpa_req_resp_frame ietf_mpa_frame
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct ietf_rtr_msg {
 	__be16 ctrl_ird;
 	__be16 ctrl_ord;
@@ -103,7 +120,10 @@ struct ietf_mpa_v2 {
 	u8 priv_data[0];
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct nes_v4_quad {
 	u32 rsvd0;
 	__le32 DstIpAdrIndex;	/* Only most significant 5 bits are valid */
@@ -210,11 +230,15 @@ struct nes_timer_entry {
 #define NES_CM_DEF_SEQ2      0x18ed5740
 #define NES_CM_DEF_LOCAL_ID2 0xb807
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	MAX_CM_BUFFER	(IETF_MPA_FRAME_SIZE + IETF_MAX_PRIV_DATA_LEN)
 
 =======
 #define	MAX_CM_BUFFER	(IETF_MPA_FRAME_SIZE + IETF_RTR_MSG_SIZE + IETF_MAX_PRIV_DATA_LEN)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	MAX_CM_BUFFER	(IETF_MPA_FRAME_SIZE + IETF_RTR_MSG_SIZE + IETF_MAX_PRIV_DATA_LEN)
+>>>>>>> refs/remotes/origin/master
 
 typedef u32 nes_addr_t;
 
@@ -247,7 +271,10 @@ enum nes_cm_node_state {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum mpa_frame_version {
 	IETF_MPA_V1 = 1,
 	IETF_MPA_V2 = 2
@@ -263,7 +290,10 @@ enum send_rdma0 {
 	SEND_RDMA_WRITE_ZERO = 2
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum nes_tcpip_pkt_type {
 	NES_PKT_TYPE_UNKNOWN,
 	NES_PKT_TYPE_SYN,
@@ -306,6 +336,7 @@ struct nes_cm_tcp_context {
 
 enum nes_cm_listener_state {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	NES_CM_LISTENER_PASSIVE_STATE=1,
 	NES_CM_LISTENER_ACTIVE_STATE=2,
 	NES_CM_LISTENER_EITHER_STATE=3
@@ -314,6 +345,11 @@ enum nes_cm_listener_state {
 	NES_CM_LISTENER_ACTIVE_STATE = 2,
 	NES_CM_LISTENER_EITHER_STATE = 3
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	NES_CM_LISTENER_PASSIVE_STATE = 1,
+	NES_CM_LISTENER_ACTIVE_STATE = 2,
+	NES_CM_LISTENER_EITHER_STATE = 3
+>>>>>>> refs/remotes/origin/master
 };
 
 struct nes_cm_listener {
@@ -350,6 +386,7 @@ struct nes_cm_node {
 	struct nes_cm_node        *loopbackpartner;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nes_timer_entry	*send_entry;
 
 	spinlock_t                retrans_list_lock;
@@ -361,6 +398,8 @@ struct nes_cm_node {
 		u8                    mpa_frame_buf[MAX_CM_BUFFER];
 	};
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct nes_timer_entry	  *send_entry;
 	struct nes_timer_entry    *recv_entry;
 	spinlock_t                retrans_list_lock;
@@ -375,7 +414,10 @@ struct nes_cm_node {
 	u16			  ird_size;
 	u16                       ord_size;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u16                       mpa_frame_size;
 	struct iw_cm_id           *cm_id;
 	struct list_head          list;
@@ -483,6 +525,7 @@ struct nes_cm_ops {
 			struct nes_cm_info *);
 	int (*close)(struct nes_cm_core *, struct nes_cm_node *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int (*accept)(struct nes_cm_core *, struct ietf_mpa_frame *,
 			struct nes_cm_node *);
 	int (*reject)(struct nes_cm_core *, struct ietf_mpa_frame *,
@@ -491,6 +534,10 @@ struct nes_cm_ops {
 	int (*accept)(struct nes_cm_core *, struct nes_cm_node *);
 	int (*reject)(struct nes_cm_core *, struct nes_cm_node *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*accept)(struct nes_cm_core *, struct nes_cm_node *);
+	int (*reject)(struct nes_cm_core *, struct nes_cm_node *);
+>>>>>>> refs/remotes/origin/master
 	int (*recv_pkt)(struct nes_cm_core *, struct nes_vnic *,
 			struct sk_buff *);
 	int (*destroy_cm_core)(struct nes_cm_core *);
@@ -511,9 +558,14 @@ int nes_cm_recv(struct sk_buff *, struct net_device *);
 int nes_cm_start(void);
 int nes_cm_stop(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 int nes_add_ref_cm_node(struct nes_cm_node *cm_node);
 int nes_rem_ref_cm_node(struct nes_cm_node *cm_node);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int nes_add_ref_cm_node(struct nes_cm_node *cm_node);
+int nes_rem_ref_cm_node(struct nes_cm_node *cm_node);
+>>>>>>> refs/remotes/origin/master
 
 #endif			/* NES_CM_H */

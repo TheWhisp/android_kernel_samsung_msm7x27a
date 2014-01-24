@@ -3,8 +3,12 @@
  *
  * This file contains SPC-3 task management infrastructure
  *
+<<<<<<< HEAD
  * Copyright (c) 2009,2010 Rising Tide Systems
  * Copyright (c) 2009,2010 Linux-iSCSI.org
+=======
+ * (c) Copyright 2009-2013 Datera, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Nicholas A. Bellinger <nab@kernel.org>
  *
@@ -25,20 +29,27 @@
  ******************************************************************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/list.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/list.h>
 #include <linux/export.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <scsi/scsi.h>
 #include <scsi/scsi_cmnd.h>
 
 #include <target/target_core_base.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <target/target_core_device.h>
 #include <target/target_core_tmr.h>
@@ -70,6 +81,8 @@ struct se_tmr_req *core_tmr_alloc_req(
 		return ERR_PTR(-ENOMEM);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <target/target_core_backend.h>
 #include <target/target_core_fabric.h>
 #include <target/target_core_configfs.h>
@@ -94,17 +107,24 @@ int core_tmr_alloc_req(
 
 	se_cmd->se_cmd_flags |= SCF_SCSI_TMR_CDB;
 	se_cmd->se_tmr_req = tmr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tmr->task_cmd = se_cmd;
 	tmr->fabric_tmr_ptr = fabric_tmr_ptr;
 	tmr->function = function;
 	INIT_LIST_HEAD(&tmr->tmr_list);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return tmr;
 =======
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(core_tmr_alloc_req);
 
@@ -112,6 +132,7 @@ void core_tmr_release_req(
 	struct se_tmr_req *tmr)
 {
 	struct se_device *dev = tmr->tmr_dev;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	if (!dev) {
@@ -125,6 +146,8 @@ void core_tmr_release_req(
 
 	kmem_cache_free(se_tmr_req_cache, tmr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	if (!dev) {
@@ -137,12 +160,16 @@ void core_tmr_release_req(
 	spin_unlock_irqrestore(&dev->se_tmr_lock, flags);
 
 	kfree(tmr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void core_tmr_handle_tas_abort(
 	struct se_node_acl *tmr_nacl,
 	struct se_cmd *cmd,
+<<<<<<< HEAD
 	int tas,
 	int fe_count)
 {
@@ -162,12 +189,21 @@ static void core_tmr_handle_tas_abort(
 =======
 	if ((tmr_nacl &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int tas)
+{
+	/*
+	 * TASK ABORTED status (TAS) bit support
+	*/
+	if ((tmr_nacl &&
+>>>>>>> refs/remotes/origin/master
 	     (tmr_nacl == cmd->se_sess->se_node_acl)) || tas)
 		transport_send_task_abort(cmd);
 
 	transport_cmd_finish_abort(cmd, 0);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int core_tmr_lun_reset(
 	struct se_device *dev,
@@ -214,6 +250,8 @@ int core_tmr_lun_reset(
 		(preempt_and_abort_list) ? "Preempt" : "TMR",
 		TRANSPORT(dev)->name, tas);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int target_check_cdb_and_preempt(struct list_head *list,
 		struct se_cmd *cmd)
 {
@@ -302,20 +340,28 @@ static void core_tmr_drain_tmr_list(
 	struct se_tmr_req *tmr_p, *tmr_pp;
 	struct se_cmd *cmd;
 	unsigned long flags;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Release all pending and outgoing TMRs aside from the received
 	 * LUN_RESET tmr..
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&dev->se_tmr_lock);
 =======
 	spin_lock_irqsave(&dev->se_tmr_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&dev->se_tmr_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry_safe(tmr_p, tmr_pp, &dev->dev_tmr_list, tmr_list) {
 		/*
 		 * Allow the received TMR to return with FUNCTION_COMPLETE.
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (tmr && (tmr_p == tmr))
 			continue;
@@ -324,13 +370,18 @@ static void core_tmr_drain_tmr_list(
 		if (!(cmd)) {
 			printk(KERN_ERR "Unable to locate struct se_cmd for TMR\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (tmr_p == tmr)
 			continue;
 
 		cmd = tmr_p->task_cmd;
 		if (!cmd) {
 			pr_err("Unable to locate struct se_cmd for TMR\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 		/*
@@ -338,6 +389,7 @@ static void core_tmr_drain_tmr_list(
 		 * parameter (eg: for PROUT PREEMPT_AND_ABORT service action
 		 * skip non regisration key matching TMRs.
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if ((preempt_and_abort_list != NULL) &&
 		    (core_scsi3_check_cdb_abort_and_preempt(
@@ -367,6 +419,8 @@ static void core_tmr_drain_tmr_list(
 	}
 	spin_unlock(&dev->se_tmr_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (target_check_cdb_and_preempt(preempt_and_abort_list, cmd))
 			continue;
 
@@ -398,7 +452,11 @@ static void core_tmr_drain_tmr_list(
 	}
 }
 
+<<<<<<< HEAD
 static void core_tmr_drain_task_list(
+=======
+static void core_tmr_drain_state_list(
+>>>>>>> refs/remotes/origin/master
 	struct se_device *dev,
 	struct se_cmd *prout_cmd,
 	struct se_node_acl *tmr_nacl,
@@ -406,6 +464,7 @@ static void core_tmr_drain_task_list(
 	struct list_head *preempt_and_abort_list)
 {
 	LIST_HEAD(drain_task_list);
+<<<<<<< HEAD
 	struct se_cmd *cmd;
 	struct se_task *task, *task_tmp;
 	unsigned long flags;
@@ -413,6 +472,14 @@ static void core_tmr_drain_task_list(
 >>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	 * Complete outstanding struct se_task CDBs with TASK_ABORTED SAM status.
+=======
+	struct se_cmd *cmd, *next;
+	unsigned long flags;
+
+	/*
+	 * Complete outstanding commands with TASK_ABORTED SAM status.
+	 *
+>>>>>>> refs/remotes/origin/master
 	 * This is following sam4r17, section 5.6 Aborting commands, Table 38
 	 * for TMR LUN_RESET:
 	 *
@@ -433,6 +500,7 @@ static void core_tmr_drain_task_list(
 	 * in the Control Mode Page.
 	 */
 	spin_lock_irqsave(&dev->execute_task_lock, flags);
+<<<<<<< HEAD
 	list_for_each_entry_safe(task, task_tmp, &dev->state_task_list,
 				t_state_list) {
 <<<<<<< HEAD
@@ -456,10 +524,14 @@ static void core_tmr_drain_task_list(
 		cmd = task->task_se_cmd;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	list_for_each_entry_safe(cmd, next, &dev->state_list, state_list) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * For PREEMPT_AND_ABORT usage, only process commands
 		 * with a matching reservation key.
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if ((preempt_and_abort_list != NULL) &&
 		    (core_scsi3_check_cdb_abort_and_preempt(
@@ -468,12 +540,18 @@ static void core_tmr_drain_task_list(
 		if (target_check_cdb_and_preempt(preempt_and_abort_list, cmd))
 >>>>>>> refs/remotes/origin/cm-10.0
 			continue;
+=======
+		if (target_check_cdb_and_preempt(preempt_and_abort_list, cmd))
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Not aborting PROUT PREEMPT_AND_ABORT CDB..
 		 */
 		if (prout_cmd == cmd)
 			continue;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		list_del(&task->t_state_list);
 		atomic_set(&task->task_state_active, 0);
@@ -561,10 +639,15 @@ static void core_tmr_drain_task_list(
 		 */
 		if (!list_empty(&task->t_execute_list))
 			__transport_remove_task_from_execute_queue(task, dev);
+=======
+		list_move_tail(&cmd->state_list, &drain_task_list);
+		cmd->state_active = false;
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_irqrestore(&dev->execute_task_lock, flags);
 
 	while (!list_empty(&drain_task_list)) {
+<<<<<<< HEAD
 		task = list_entry(drain_task_list.next, struct se_task, t_state_list);
 		list_del(&task->t_state_list);
 		cmd = task->task_se_cmd;
@@ -573,10 +656,20 @@ static void core_tmr_drain_task_list(
 			" ITT/CmdSN: 0x%08x/0x%08x, i_state: %d, t_state: %d"
 			"cdb: 0x%02x\n",
 			(preempt_and_abort_list) ? "Preempt" : "", cmd, task,
+=======
+		cmd = list_entry(drain_task_list.next, struct se_cmd, state_list);
+		list_del(&cmd->state_list);
+
+		pr_debug("LUN_RESET: %s cmd: %p"
+			" ITT/CmdSN: 0x%08x/0x%08x, i_state: %d, t_state: %d"
+			"cdb: 0x%02x\n",
+			(preempt_and_abort_list) ? "Preempt" : "", cmd,
+>>>>>>> refs/remotes/origin/master
 			cmd->se_tfo->get_task_tag(cmd), 0,
 			cmd->se_tfo->get_cmd_state(cmd), cmd->t_state,
 			cmd->t_task_cdb[0]);
 		pr_debug("LUN_RESET: ITT[0x%08x] - pr_res_key: 0x%016Lx"
+<<<<<<< HEAD
 			" t_task_cdbs: %d t_task_cdbs_left: %d"
 			" t_task_cdbs_sent: %d -- CMD_T_ACTIVE: %d"
 			" CMD_T_STOP: %d CMD_T_SENT: %d\n",
@@ -584,6 +677,11 @@ static void core_tmr_drain_task_list(
 			cmd->t_task_list_num,
 			atomic_read(&cmd->t_task_cdbs_left),
 			atomic_read(&cmd->t_task_cdbs_sent),
+=======
+			" -- CMD_T_ACTIVE: %d"
+			" CMD_T_STOP: %d CMD_T_SENT: %d\n",
+			cmd->se_tfo->get_task_tag(cmd), cmd->pr_res_key,
+>>>>>>> refs/remotes/origin/master
 			(cmd->transport_state & CMD_T_ACTIVE) != 0,
 			(cmd->transport_state & CMD_T_STOP) != 0,
 			(cmd->transport_state & CMD_T_SENT) != 0);
@@ -599,6 +697,7 @@ static void core_tmr_drain_task_list(
 			cancel_work_sync(&cmd->work);
 
 		spin_lock_irqsave(&cmd->t_state_lock, flags);
+<<<<<<< HEAD
 		target_stop_task(task, &flags);
 
 		if (!atomic_dec_and_test(&cmd->t_task_cdbs_ex_left)) {
@@ -732,6 +831,14 @@ static void core_tmr_drain_cmd_list(
 
 		core_tmr_handle_tas_abort(tmr_nacl, cmd, tas,
 				atomic_read(&cmd->t_fe_count));
+=======
+		target_stop_cmd(cmd, &flags);
+
+		cmd->transport_state |= CMD_T_ABORTED;
+		spin_unlock_irqrestore(&cmd->t_state_lock, flags);
+
+		core_tmr_handle_tas_abort(tmr_nacl, cmd, tas);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -755,7 +862,11 @@ int core_tmr_lun_reset(
 	 * which the command was received shall be completed with TASK ABORTED
 	 * status (see SAM-4).
 	 */
+<<<<<<< HEAD
 	tas = dev->se_sub_dev->se_dev_attrib.emulate_tas;
+=======
+	tas = dev->dev_attrib.emulate_tas;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Determine if this se_tmr is coming from a $FABRIC_MOD
 	 * or struct se_device passthrough..
@@ -775,15 +886,22 @@ int core_tmr_lun_reset(
 		dev->transport->name, tas);
 
 	core_tmr_drain_tmr_list(dev, tmr, preempt_and_abort_list);
+<<<<<<< HEAD
 	core_tmr_drain_task_list(dev, prout_cmd, tmr_nacl, tas,
 				preempt_and_abort_list);
 	core_tmr_drain_cmd_list(dev, prout_cmd, tmr_nacl, tas,
 				preempt_and_abort_list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	core_tmr_drain_state_list(dev, prout_cmd, tmr_nacl, tas,
+				preempt_and_abort_list);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Clear any legacy SPC-2 reservation when called during
 	 * LOGICAL UNIT RESET
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!(preempt_and_abort_list) &&
 =======
@@ -812,10 +930,26 @@ int core_tmr_lun_reset(
 	return 0;
 }
 =======
+=======
+	if (!preempt_and_abort_list &&
+	     (dev->dev_reservation_flags & DRF_SPC2_RESERVATIONS)) {
+		spin_lock(&dev->dev_reservation_lock);
+		dev->dev_reserved_node_acl = NULL;
+		dev->dev_reservation_flags &= ~DRF_SPC2_RESERVATIONS;
+		spin_unlock(&dev->dev_reservation_lock);
+		pr_debug("LUN_RESET: SCSI-2 Released reservation\n");
+	}
+
+	atomic_long_inc(&dev->num_resets);
+
+>>>>>>> refs/remotes/origin/master
 	pr_debug("LUN_RESET: %s for [%s] Complete\n",
 			(preempt_and_abort_list) ? "Preempt" : "TMR",
 			dev->transport->name);
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

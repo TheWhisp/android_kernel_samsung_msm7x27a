@@ -14,6 +14,7 @@
 #include <linux/string.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -24,6 +25,17 @@
 #include <plat/omap_device.h>
 
 #include "mux.h"
+=======
+#include <linux/gpio.h>
+#include <linux/platform_data/gpio-omap.h>
+
+#include "soc.h"
+#include "omap_device.h"
+#include "omap-pm.h"
+
+#include "mux.h"
+#include "mmc.h"
+>>>>>>> refs/remotes/origin/master
 #include "hsmmc.h"
 #include "control.h"
 
@@ -31,7 +43,10 @@
 
 static u16 control_pbias_offset;
 static u16 control_devconf1_offset;
+<<<<<<< HEAD
 static u16 control_mmc1;
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define HSMMC_NAME_LEN	9
 
@@ -123,6 +138,7 @@ static void omap_hsmmc1_after_set_reg(struct device *dev, int slot,
 	}
 }
 
+<<<<<<< HEAD
 static void omap4_hsmmc1_before_set_reg(struct device *dev, int slot,
 				  int power_on, int vdd)
 {
@@ -208,6 +224,8 @@ static void hsmmc23_before_set_reg(struct device *dev, int slot,
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void hsmmc2_select_input_clk_src(struct omap_mmc_platform_data *mmc)
 {
 	u32 reg;
@@ -221,7 +239,10 @@ static void hsmmc2_select_input_clk_src(struct omap_mmc_platform_data *mmc)
 }
 
 static void hsmmc2_before_set_reg(struct device *dev, int slot,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				   int power_on, int vdd)
 {
 	struct omap_mmc_platform_data *mmc = dev->platform_data;
@@ -229,6 +250,7 @@ static void hsmmc2_before_set_reg(struct device *dev, int slot,
 	if (mmc->slots[0].remux)
 		mmc->slots[0].remux(dev, slot, power_on);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (power_on) {
 		/* Only MMC2 supports a CLKIN */
@@ -241,6 +263,8 @@ static void hsmmc2_before_set_reg(struct device *dev, int slot,
 		}
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (power_on)
 		hsmmc2_select_input_clk_src(mmc);
 }
@@ -254,7 +278,10 @@ static int am35x_hsmmc2_set_power(struct device *dev, int slot,
 		hsmmc2_select_input_clk_src(mmc);
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int nop_mmc_set_power(struct device *dev, int slot, int power_on,
@@ -267,18 +294,24 @@ static inline void omap_hsmmc_mux(struct omap_mmc_platform_data *mmc_controller,
 			int controller_nr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((mmc_controller->slots[0].switch_pin > 0) && \
 		(mmc_controller->slots[0].switch_pin < OMAP_MAX_GPIO_LINES))
 		omap_mux_init_gpio(mmc_controller->slots[0].switch_pin,
 					OMAP_PIN_INPUT_PULLUP);
 	if ((mmc_controller->slots[0].gpio_wp > 0) && \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (gpio_is_valid(mmc_controller->slots[0].switch_pin) &&
 		(mmc_controller->slots[0].switch_pin < OMAP_MAX_GPIO_LINES))
 		omap_mux_init_gpio(mmc_controller->slots[0].switch_pin,
 					OMAP_PIN_INPUT_PULLUP);
 	if (gpio_is_valid(mmc_controller->slots[0].gpio_wp) &&
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		(mmc_controller->slots[0].gpio_wp < OMAP_MAX_GPIO_LINES))
 		omap_mux_init_gpio(mmc_controller->slots[0].gpio_wp,
 					OMAP_PIN_INPUT_PULLUP);
@@ -373,6 +406,7 @@ static int __init omap_hsmmc_pdata_init(struct omap2_hsmmc_info *c,
 	mmc->nr_slots = 1;
 	mmc->slots[0].caps = c->caps;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mmc->slots[0].internal_clock = !c->ext_clock;
 	mmc->dma_mask = 0xffffffff;
 =======
@@ -386,6 +420,12 @@ static int __init omap_hsmmc_pdata_init(struct omap2_hsmmc_info *c,
 	else
 		mmc->reg_offset = 0;
 
+=======
+	mmc->slots[0].pm_caps = c->pm_caps;
+	mmc->slots[0].internal_clock = !c->ext_clock;
+	mmc->max_freq = c->max_freq;
+	mmc->reg_offset = 0;
+>>>>>>> refs/remotes/origin/master
 	mmc->get_context_loss_count = hsmmc_get_context_loss;
 
 	mmc->slots[0].switch_pin = c->gpio_cd;
@@ -420,6 +460,7 @@ static int __init omap_hsmmc_pdata_init(struct omap2_hsmmc_info *c,
 	 * temporary HACK: ocr_mask instead of fixed supply
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mmc->slots[0].ocr_mask = c->ocr_mask;
 
 	if (cpu_is_omap3517() || cpu_is_omap3505())
@@ -427,6 +468,9 @@ static int __init omap_hsmmc_pdata_init(struct omap2_hsmmc_info *c,
 	else
 =======
 	if (cpu_is_omap3505() || cpu_is_omap3517())
+=======
+	if (soc_is_am35xx())
+>>>>>>> refs/remotes/origin/master
 		mmc->slots[0].ocr_mask = MMC_VDD_165_195 |
 					 MMC_VDD_26_27 |
 					 MMC_VDD_27_28 |
@@ -436,6 +480,7 @@ static int __init omap_hsmmc_pdata_init(struct omap2_hsmmc_info *c,
 	else
 		mmc->slots[0].ocr_mask = c->ocr_mask;
 
+<<<<<<< HEAD
 	if (!cpu_is_omap3517() && !cpu_is_omap3505())
 >>>>>>> refs/remotes/origin/cm-10.0
 		mmc->slots[0].features |= HSMMC_HAS_PBIAS;
@@ -443,10 +488,16 @@ static int __init omap_hsmmc_pdata_init(struct omap2_hsmmc_info *c,
 	if (cpu_is_omap44xx() && (omap_rev() > OMAP4430_REV_ES1_0))
 		mmc->slots[0].features |= HSMMC_HAS_UPDATED_RESET;
 
+=======
+	if (!soc_is_am35xx())
+		mmc->slots[0].features |= HSMMC_HAS_PBIAS;
+
+>>>>>>> refs/remotes/origin/master
 	switch (c->mmc) {
 	case 1:
 		if (mmc->slots[0].features & HSMMC_HAS_PBIAS) {
 			/* on-chip level shifting via PBIAS0/PBIAS1 */
+<<<<<<< HEAD
 			if (cpu_is_omap44xx()) {
 				mmc->slots[0].before_set_reg =
 						omap4_hsmmc1_before_set_reg;
@@ -466,6 +517,17 @@ static int __init omap_hsmmc_pdata_init(struct omap2_hsmmc_info *c,
 			mmc->slots[0].set_power = nop_mmc_set_power;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mmc->slots[0].before_set_reg =
+					omap_hsmmc1_before_set_reg;
+			mmc->slots[0].after_set_reg =
+					omap_hsmmc1_after_set_reg;
+		}
+
+		if (soc_is_am35xx())
+			mmc->slots[0].set_power = nop_mmc_set_power;
+
+>>>>>>> refs/remotes/origin/master
 		/* OMAP3630 HSMMC1 supports only 4-bit */
 		if (cpu_is_omap3630() &&
 				(c->caps & MMC_CAP_8_BIT_DATA)) {
@@ -476,17 +538,24 @@ static int __init omap_hsmmc_pdata_init(struct omap2_hsmmc_info *c,
 		break;
 	case 2:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (cpu_is_omap3517() || cpu_is_omap3505())
 			mmc->slots[0].set_power = am35x_hsmmc2_set_power;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (soc_is_am35xx())
+			mmc->slots[0].set_power = am35x_hsmmc2_set_power;
+
+>>>>>>> refs/remotes/origin/master
 		if (c->ext_clock)
 			c->transceiver = 1;
 		if (c->transceiver && (c->caps & MMC_CAP_8_BIT_DATA)) {
 			c->caps &= ~MMC_CAP_8_BIT_DATA;
 			c->caps |= MMC_CAP_4_BIT_DATA;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* FALLTHROUGH */
 	case 3:
@@ -497,6 +566,8 @@ static int __init omap_hsmmc_pdata_init(struct omap2_hsmmc_info *c,
 		}
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (mmc->slots[0].features & HSMMC_HAS_PBIAS) {
 			/* off-chip level shifting, or none */
 			mmc->slots[0].before_set_reg = hsmmc2_before_set_reg;
@@ -504,7 +575,10 @@ static int __init omap_hsmmc_pdata_init(struct omap2_hsmmc_info *c,
 		}
 		break;
 	case 3:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case 4:
 	case 5:
 		mmc->slots[0].before_set_reg = NULL;
@@ -518,6 +592,7 @@ static int __init omap_hsmmc_pdata_init(struct omap2_hsmmc_info *c,
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct omap_device_pm_latency omap_hsmmc_latency[] = {
 	[0] = {
@@ -539,6 +614,8 @@ void __init omap_init_hsmmc(struct omap2_hsmmc_info *hsmmcinfo, int ctrl_nr)
 	struct omap_device *od;
 	struct omap_device_pm_latency *ohl;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int omap_hsmmc_done;
 
 void omap_hsmmc_late_init(struct omap2_hsmmc_info *c)
@@ -583,21 +660,29 @@ static void __init omap_hsmmc_init_one(struct omap2_hsmmc_info *hsmmcinfo,
 	struct omap_hwmod *ohs[1];
 	struct omap_device *od;
 	struct platform_device *pdev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	char oh_name[MAX_OMAP_MMC_HWMOD_NAME_LEN];
 	struct omap_mmc_platform_data *mmc_data;
 	struct omap_mmc_dev_attr *mmc_dev_attr;
 	char *name;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int l;
 	int ohl_cnt = 0;
 =======
 	int res;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int res;
+>>>>>>> refs/remotes/origin/master
 
 	mmc_data = kzalloc(sizeof(struct omap_mmc_platform_data), GFP_KERNEL);
 	if (!mmc_data) {
 		pr_err("Cannot allocate memory for mmc device!\n");
+<<<<<<< HEAD
 <<<<<<< HEAD
 		goto done;
 	}
@@ -650,6 +735,8 @@ void __init omap2_hsmmc_init(struct omap2_hsmmc_info *controllers)
 	u32 reg;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -690,8 +777,13 @@ void __init omap2_hsmmc_init(struct omap2_hsmmc_info *controllers)
 	}
 	dev_set_name(&pdev->dev, "%s.%d", pdev->name, pdev->id);
 
+<<<<<<< HEAD
 	od = omap_device_alloc(pdev, ohs, 1, NULL, 0);
 	if (!od) {
+=======
+	od = omap_device_alloc(pdev, ohs, 1);
+	if (IS_ERR(od)) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("Could not allocate od for %s\n", name);
 		goto put_pdev;
 	}
@@ -731,13 +823,17 @@ free_mmc:
 
 void __init omap_hsmmc_init(struct omap2_hsmmc_info *controllers)
 {
+<<<<<<< HEAD
 	u32 reg;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (omap_hsmmc_done)
 		return;
 
 	omap_hsmmc_done = 1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (!cpu_is_omap44xx()) {
 		if (cpu_is_omap2430()) {
@@ -772,6 +868,18 @@ void __init omap_hsmmc_init(struct omap2_hsmmc_info *controllers)
 =======
 		omap_hsmmc_init_one(controllers, controllers->mmc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cpu_is_omap2430()) {
+		control_pbias_offset = OMAP243X_CONTROL_PBIAS_LITE;
+		control_devconf1_offset = OMAP243X_CONTROL_DEVCONF1;
+	} else {
+		control_pbias_offset = OMAP343X_CONTROL_PBIAS_LITE;
+		control_devconf1_offset = OMAP343X_CONTROL_DEVCONF1;
+	}
+
+	for (; controllers->mmc; controllers++)
+		omap_hsmmc_init_one(controllers, controllers->mmc);
+>>>>>>> refs/remotes/origin/master
 
 }
 

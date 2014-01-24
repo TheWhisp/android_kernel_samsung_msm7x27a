@@ -5,8 +5,11 @@
  * (or a CPU, or a PID) into the perf.data output file - for
  * later analysis via perf report.
  */
+<<<<<<< HEAD
 #define _FILE_OFFSET_BITS 64
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include "builtin.h"
 
 #include "perf.h"
@@ -23,17 +26,26 @@
 #include "util/debug.h"
 #include "util/session.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "util/tool.h"
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "util/symbol.h"
 #include "util/cpumap.h"
 #include "util/thread_map.h"
+=======
+#include "util/tool.h"
+#include "util/symbol.h"
+#include "util/cpumap.h"
+#include "util/thread_map.h"
+#include "util/data.h"
+>>>>>>> refs/remotes/origin/master
 
 #include <unistd.h>
 #include <sched.h>
 #include <sys/mman.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define FD(e, x, y) (*(int *)xyarray__entry(e->fd, x, y))
 
@@ -184,6 +196,87 @@ static void perf_record__mmap_read(struct perf_record *rec,
 =======
 	rec->samples++;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef HAVE_ON_EXIT_SUPPORT
+#ifndef ATEXIT_MAX
+#define ATEXIT_MAX 32
+#endif
+static int __on_exit_count = 0;
+typedef void (*on_exit_func_t) (int, void *);
+static on_exit_func_t __on_exit_funcs[ATEXIT_MAX];
+static void *__on_exit_args[ATEXIT_MAX];
+static int __exitcode = 0;
+static void __handle_on_exit_funcs(void);
+static int on_exit(on_exit_func_t function, void *arg);
+#define exit(x) (exit)(__exitcode = (x))
+
+static int on_exit(on_exit_func_t function, void *arg)
+{
+	if (__on_exit_count == ATEXIT_MAX)
+		return -ENOMEM;
+	else if (__on_exit_count == 0)
+		atexit(__handle_on_exit_funcs);
+	__on_exit_funcs[__on_exit_count] = function;
+	__on_exit_args[__on_exit_count++] = arg;
+	return 0;
+}
+
+static void __handle_on_exit_funcs(void)
+{
+	int i;
+	for (i = 0; i < __on_exit_count; i++)
+		__on_exit_funcs[i] (__exitcode, __on_exit_args[i]);
+}
+#endif
+
+struct record {
+	struct perf_tool	tool;
+	struct record_opts	opts;
+	u64			bytes_written;
+	struct perf_data_file	file;
+	struct perf_evlist	*evlist;
+	struct perf_session	*session;
+	const char		*progname;
+	int			realtime_prio;
+	bool			no_buildid;
+	bool			no_buildid_cache;
+	long			samples;
+};
+
+static int record__write(struct record *rec, void *bf, size_t size)
+{
+	if (perf_data_file__write(rec->session->file, bf, size) < 0) {
+		pr_err("failed to write perf data, error: %m\n");
+		return -1;
+	}
+
+	rec->bytes_written += size;
+	return 0;
+}
+
+static int process_synthesized_event(struct perf_tool *tool,
+				     union perf_event *event,
+				     struct perf_sample *sample __maybe_unused,
+				     struct machine *machine __maybe_unused)
+{
+	struct record *rec = container_of(tool, struct record, tool);
+	return record__write(rec, event, event->header.size);
+}
+
+static int record__mmap_read(struct record *rec, struct perf_mmap *md)
+{
+	unsigned int head = perf_mmap__read_head(md);
+	unsigned int old = md->prev;
+	unsigned char *data = md->base + page_size;
+	unsigned long size;
+	void *buf;
+	int rc = 0;
+
+	if (old == head)
+		return 0;
+
+	rec->samples++;
+>>>>>>> refs/remotes/origin/master
 
 	size = head - old;
 
@@ -193,16 +286,24 @@ static void perf_record__mmap_read(struct perf_record *rec,
 		old += size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		write_output(buf, size);
 =======
 		write_output(rec, buf, size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (record__write(rec, buf, size) < 0) {
+			rc = -1;
+			goto out;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	buf = &data[old & md->mask];
 	size = head - old;
 	old += size;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	write_output(buf, size);
 =======
@@ -211,15 +312,30 @@ static void perf_record__mmap_read(struct perf_record *rec,
 
 	md->prev = old;
 	perf_mmap__write_tail(md, old);
+=======
+	if (record__write(rec, buf, size) < 0) {
+		rc = -1;
+		goto out;
+	}
+
+	md->prev = old;
+	perf_mmap__write_tail(md, old);
+
+out:
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 static volatile int done = 0;
 static volatile int signr = -1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static void sig_handler(int sig)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static volatile int child_finished = 0;
 
 static void sig_handler(int sig)
@@ -227,11 +343,15 @@ static void sig_handler(int sig)
 	if (sig == SIGCHLD)
 		child_finished = 1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	done = 1;
 	signr = sig;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void sig_atexit(void)
 {
@@ -241,6 +361,11 @@ static void sig_atexit(void)
 static void perf_record__sig_exit(int exit_status __used, void *arg)
 {
 	struct perf_record *rec = arg;
+=======
+static void record__sig_exit(int exit_status __maybe_unused, void *arg)
+{
+	struct record *rec = arg;
+>>>>>>> refs/remotes/origin/master
 	int status;
 
 	if (rec->evlist->workload.pid > 0) {
@@ -251,12 +376,16 @@ static void perf_record__sig_exit(int exit_status __used, void *arg)
 		if (WIFSIGNALED(status))
 			psignal(WTERMSIG(status), rec->progname);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (signr == -1 || signr == SIGUSR1)
 		return;
 
 	signal(signr, SIG_DFL);
+<<<<<<< HEAD
 	kill(getpid(), signr);
 }
 
@@ -573,15 +702,105 @@ static void perf_record__exit(int status __used, void *arg)
 	struct perf_record *rec = arg;
 
 	if (!rec->opts.pipe_output) {
+=======
+}
+
+static int record__open(struct record *rec)
+{
+	char msg[512];
+	struct perf_evsel *pos;
+	struct perf_evlist *evlist = rec->evlist;
+	struct perf_session *session = rec->session;
+	struct record_opts *opts = &rec->opts;
+	int rc = 0;
+
+	perf_evlist__config(evlist, opts);
+
+	evlist__for_each(evlist, pos) {
+try_again:
+		if (perf_evsel__open(pos, evlist->cpus, evlist->threads) < 0) {
+			if (perf_evsel__fallback(pos, errno, msg, sizeof(msg))) {
+				if (verbose)
+					ui__warning("%s\n", msg);
+				goto try_again;
+			}
+
+			rc = -errno;
+			perf_evsel__open_strerror(pos, &opts->target,
+						  errno, msg, sizeof(msg));
+			ui__error("%s\n", msg);
+			goto out;
+		}
+	}
+
+	if (perf_evlist__apply_filters(evlist)) {
+		error("failed to set filter with %d (%s)\n", errno,
+			strerror(errno));
+		rc = -1;
+		goto out;
+	}
+
+	if (perf_evlist__mmap(evlist, opts->mmap_pages, false) < 0) {
+		if (errno == EPERM) {
+			pr_err("Permission error mapping pages.\n"
+			       "Consider increasing "
+			       "/proc/sys/kernel/perf_event_mlock_kb,\n"
+			       "or try again with a smaller value of -m/--mmap_pages.\n"
+			       "(current value: %u)\n", opts->mmap_pages);
+			rc = -errno;
+		} else {
+			pr_err("failed to mmap with %d (%s)\n", errno, strerror(errno));
+			rc = -errno;
+		}
+		goto out;
+	}
+
+	session->evlist = evlist;
+	perf_session__set_id_hdr_size(session);
+out:
+	return rc;
+}
+
+static int process_buildids(struct record *rec)
+{
+	struct perf_data_file *file  = &rec->file;
+	struct perf_session *session = rec->session;
+	u64 start = session->header.data_offset;
+
+	u64 size = lseek(file->fd, 0, SEEK_CUR);
+	if (size == 0)
+		return 0;
+
+	return __perf_session__process_events(session, start,
+					      size - start,
+					      size, &build_id__mark_dso_hit_ops);
+}
+
+static void record__exit(int status, void *arg)
+{
+	struct record *rec = arg;
+	struct perf_data_file *file = &rec->file;
+
+	if (status != 0)
+		return;
+
+	if (!file->is_pipe) {
+>>>>>>> refs/remotes/origin/master
 		rec->session->header.data_size += rec->bytes_written;
 
 		if (!rec->no_buildid)
 			process_buildids(rec);
 		perf_session__write_header(rec->session, rec->evlist,
+<<<<<<< HEAD
 					   rec->output, true);
 		perf_session__delete(rec->session);
 		perf_evlist__delete(rec->evlist);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					   file->fd, true);
+		perf_session__delete(rec->session);
+		perf_evlist__delete(rec->evlist);
+>>>>>>> refs/remotes/origin/master
 		symbol__exit();
 	}
 }
@@ -589,6 +808,7 @@ static void perf_record__exit(int status __used, void *arg)
 static void perf_event__synthesize_guest_os(struct machine *machine, void *data)
 {
 	int err;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct perf_session *psession = data;
 =======
@@ -598,6 +818,9 @@ static void perf_event__synthesize_guest_os(struct machine *machine, void *data)
 	if (machine__is_host(machine))
 		return;
 
+=======
+	struct perf_tool *tool = data;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *As for guest kernel when processing subcommand record&report,
 	 *we arrange module mmap prior to guest kernel mmap and trigger
@@ -607,12 +830,17 @@ static void perf_event__synthesize_guest_os(struct machine *machine, void *data)
 	 *in module instead of in guest kernel.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = perf_event__synthesize_modules(process_synthesized_event,
 					     psession, machine);
 =======
 	err = perf_event__synthesize_modules(tool, process_synthesized_event,
 					     machine);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = perf_event__synthesize_modules(tool, process_synthesized_event,
+					     machine);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		pr_err("Couldn't record guest kernel [%d]'s reference"
 		       " relocation symbol.\n", machine->pid);
@@ -622,6 +850,7 @@ static void perf_event__synthesize_guest_os(struct machine *machine, void *data)
 	 * have no _text sometimes.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = perf_event__synthesize_kernel_mmap(process_synthesized_event,
 						 psession, machine, "_text");
 	if (err < 0)
@@ -629,12 +858,17 @@ static void perf_event__synthesize_guest_os(struct machine *machine, void *data)
 							 psession, machine,
 							 "_stext");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = perf_event__synthesize_kernel_mmap(tool, process_synthesized_event,
 						 machine, "_text");
 	if (err < 0)
 		err = perf_event__synthesize_kernel_mmap(tool, process_synthesized_event,
 							 machine, "_stext");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		pr_err("Couldn't record guest kernel [%d]'s reference"
 		       " relocation symbol.\n", machine->pid);
@@ -645,6 +879,7 @@ static struct perf_event_header finished_round_event = {
 	.type = PERF_RECORD_FINISHED_ROUND,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void mmap_read_all(void)
 {
@@ -693,10 +928,71 @@ static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 	struct stat st;
 	int flags;
 	int err, output, feat;
+=======
+static int record__mmap_read_all(struct record *rec)
+{
+	int i;
+	int rc = 0;
+
+	for (i = 0; i < rec->evlist->nr_mmaps; i++) {
+		if (rec->evlist->mmap[i].base) {
+			if (record__mmap_read(rec, &rec->evlist->mmap[i]) != 0) {
+				rc = -1;
+				goto out;
+			}
+		}
+	}
+
+	if (perf_header__has_feat(&rec->session->header, HEADER_TRACING_DATA))
+		rc = record__write(rec, &finished_round_event, sizeof(finished_round_event));
+
+out:
+	return rc;
+}
+
+static void record__init_features(struct record *rec)
+{
+	struct perf_session *session = rec->session;
+	int feat;
+
+	for (feat = HEADER_FIRST_FEATURE; feat < HEADER_LAST_FEATURE; feat++)
+		perf_header__set_feat(&session->header, feat);
+
+	if (rec->no_buildid)
+		perf_header__clear_feat(&session->header, HEADER_BUILD_ID);
+
+	if (!have_tracepoints(&rec->evlist->entries))
+		perf_header__clear_feat(&session->header, HEADER_TRACING_DATA);
+
+	if (!rec->opts.branch_stack)
+		perf_header__clear_feat(&session->header, HEADER_BRANCH_STACK);
+}
+
+static volatile int workload_exec_errno;
+
+/*
+ * perf_evlist__prepare_workload will send a SIGUSR1
+ * if the fork fails, since we asked by setting its
+ * want_signal to true.
+ */
+static void workload_exec_failed_signal(int signo, siginfo_t *info,
+					void *ucontext __maybe_unused)
+{
+	workload_exec_errno = info->si_value.sival_int;
+	done = 1;
+	signr = signo;
+	child_finished = 1;
+}
+
+static int __cmd_record(struct record *rec, int argc, const char **argv)
+{
+	int err;
+>>>>>>> refs/remotes/origin/master
 	unsigned long waking = 0;
 	const bool forks = argc > 0;
 	struct machine *machine;
 	struct perf_tool *tool = &rec->tool;
+<<<<<<< HEAD
 	struct perf_record_opts *opts = &rec->opts;
 	struct perf_evlist *evsel_list = rec->evlist;
 	const char *output_name = rec->output_name;
@@ -791,11 +1087,27 @@ static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 	session = perf_session__new(output_name, O_WRONLY,
 				    rec->write_mode == WRITE_FORCE, false, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct record_opts *opts = &rec->opts;
+	struct perf_data_file *file = &rec->file;
+	struct perf_session *session;
+	bool disabled = false;
+
+	rec->progname = argv[0];
+
+	on_exit(record__sig_exit, rec);
+	signal(SIGCHLD, sig_handler);
+	signal(SIGINT, sig_handler);
+	signal(SIGTERM, sig_handler);
+
+	session = perf_session__new(file, false, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (session == NULL) {
 		pr_err("Not enough memory for reading perf file header\n");
 		return -1;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!no_buildid)
 		perf_header__set_feat(&session->header, HEADER_BUILD_ID);
@@ -900,12 +1212,23 @@ static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 =======
 	if (forks) {
 		err = perf_evlist__prepare_workload(evsel_list, opts, argv);
+=======
+	rec->session = session;
+
+	record__init_features(rec);
+
+	if (forks) {
+		err = perf_evlist__prepare_workload(rec->evlist, &opts->target,
+						    argv, file->is_pipe,
+						    workload_exec_failed_signal);
+>>>>>>> refs/remotes/origin/master
 		if (err < 0) {
 			pr_err("Couldn't run the workload!\n");
 			goto out_delete_session;
 		}
 	}
 
+<<<<<<< HEAD
 	perf_record__open(rec);
 
 	/*
@@ -932,10 +1255,37 @@ static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 		err = perf_session__synthesize_attrs(session,
 						     process_synthesized_event);
 =======
+=======
+	if (record__open(rec) != 0) {
+		err = -1;
+		goto out_delete_session;
+	}
+
+	if (!rec->evlist->nr_groups)
+		perf_header__clear_feat(&session->header, HEADER_GROUP_DESC);
+
+	/*
+	 * perf_session__delete(session) will be called at record__exit()
+	 */
+	on_exit(record__exit, rec);
+
+	if (file->is_pipe) {
+		err = perf_header__write_pipe(file->fd);
+		if (err < 0)
+			goto out_delete_session;
+	} else {
+		err = perf_session__write_header(session, rec->evlist,
+						 file->fd, false);
+		if (err < 0)
+			goto out_delete_session;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (!rec->no_buildid
 	    && !perf_header__has_feat(&session->header, HEADER_BUILD_ID)) {
 		pr_err("Couldn't generate buildids. "
 		       "Use --no-buildid to profile anyway.\n");
+<<<<<<< HEAD
 		return -1;
 	}
 
@@ -969,6 +1319,23 @@ static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 		}
 
 		if (have_tracepoints(&evsel_list->entries)) {
+=======
+		err = -1;
+		goto out_delete_session;
+	}
+
+	machine = &session->machines.host;
+
+	if (file->is_pipe) {
+		err = perf_event__synthesize_attrs(tool, session,
+						   process_synthesized_event);
+		if (err < 0) {
+			pr_err("Couldn't synthesize attrs.\n");
+			goto out_delete_session;
+		}
+
+		if (have_tracepoints(&rec->evlist->entries)) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * FIXME err <= 0 here actually means that
 			 * there were no tracepoints so its not really
@@ -977,6 +1344,7 @@ static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 			 * return this more properly and also
 			 * propagate errors that now are calling die()
 			 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			err = perf_event__synthesize_tracing_data(output, evsel_list,
 								  process_synthesized_event,
@@ -1007,6 +1375,15 @@ static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 							 session, machine, "_stext");
 =======
 			advance_output(rec, err);
+=======
+			err = perf_event__synthesize_tracing_data(tool, file->fd, rec->evlist,
+								  process_synthesized_event);
+			if (err <= 0) {
+				pr_err("Couldn't record tracing data.\n");
+				goto out_delete_session;
+			}
+			rec->bytes_written += err;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1015,12 +1392,16 @@ static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 	if (err < 0)
 		err = perf_event__synthesize_kernel_mmap(tool, process_synthesized_event,
 							 machine, "_stext");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		pr_err("Couldn't record kernel reference relocation symbol\n"
 		       "Symbol resolution may be skewed if relocation was used (e.g. kexec).\n"
 		       "Check /proc/kallsyms permission or run as root.\n");
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = perf_event__synthesize_modules(process_synthesized_event,
 					     session, machine);
@@ -1028,11 +1409,16 @@ static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 	err = perf_event__synthesize_modules(tool, process_synthesized_event,
 					     machine);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = perf_event__synthesize_modules(tool, process_synthesized_event,
+					     machine);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		pr_err("Couldn't record kernel module information.\n"
 		       "Symbol resolution may be skewed if relocation was used (e.g. kexec).\n"
 		       "Check /proc/modules permission or run as root.\n");
 
+<<<<<<< HEAD
 	if (perf_guest)
 <<<<<<< HEAD
 		perf_session__process_machines(session,
@@ -1061,11 +1447,23 @@ static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 	else
 		perf_event__synthesize_threads(tool, process_synthesized_event,
 					       machine);
+=======
+	if (perf_guest) {
+		machines__process_guests(&session->machines,
+					 perf_event__synthesize_guest_os, tool);
+	}
+
+	err = __machine__synthesize_threads(machine, tool, &opts->target, rec->evlist->threads,
+					    process_synthesized_event, opts->sample_address);
+	if (err != 0)
+		goto out_delete_session;
+>>>>>>> refs/remotes/origin/master
 
 	if (rec->realtime_prio) {
 		struct sched_param param;
 
 		param.sched_priority = rec->realtime_prio;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (sched_setscheduler(0, SCHED_FIFO, &param)) {
 			pr_err("Could not set realtime priority.\n");
@@ -1078,10 +1476,28 @@ static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 	perf_evlist__enable(evsel_list);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (sched_setscheduler(0, SCHED_FIFO, &param)) {
+			pr_err("Could not set realtime priority.\n");
+			err = -1;
+			goto out_delete_session;
+		}
+	}
+
+	/*
+	 * When perf is starting the traced process, all the events
+	 * (apart from group members) have enable_on_exec=1 set,
+	 * so don't spoil it by prematurely enabling them.
+	 */
+	if (!target__none(&opts->target) && !opts->initial_delay)
+		perf_evlist__enable(rec->evlist);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Let the child rip
 	 */
 	if (forks)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		close(go_pipe[1]);
 
@@ -1094,10 +1510,19 @@ static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 		if (hits == samples) {
 =======
 		perf_evlist__start_workload(evsel_list);
+=======
+		perf_evlist__start_workload(rec->evlist);
+
+	if (opts->initial_delay) {
+		usleep(opts->initial_delay * 1000);
+		perf_evlist__enable(rec->evlist);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	for (;;) {
 		int hits = rec->samples;
 
+<<<<<<< HEAD
 		perf_record__mmap_read_all(rec);
 
 		if (hits == rec->samples) {
@@ -1126,6 +1551,37 @@ static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 		if (done)
 			perf_evlist__disable(evsel_list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (record__mmap_read_all(rec) < 0) {
+			err = -1;
+			goto out_delete_session;
+		}
+
+		if (hits == rec->samples) {
+			if (done)
+				break;
+			err = poll(rec->evlist->pollfd, rec->evlist->nr_fds, -1);
+			waking++;
+		}
+
+		/*
+		 * When perf is starting the traced process, at the end events
+		 * die with the process and we wait for that. Thus no need to
+		 * disable events in this case.
+		 */
+		if (done && !disabled && !target__none(&opts->target)) {
+			perf_evlist__disable(rec->evlist);
+			disabled = true;
+		}
+	}
+
+	if (forks && workload_exec_errno) {
+		char msg[512];
+		const char *emsg = strerror_r(workload_exec_errno, msg, sizeof(msg));
+		pr_err("Workload failed: %s\n", emsg);
+		err = -1;
+		goto out_delete_session;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (quiet || signr == SIGUSR1)
@@ -1139,6 +1595,7 @@ static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 	fprintf(stderr,
 		"[ perf record: Captured and wrote %.3f MB %s (~%" PRIu64 " samples) ]\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		(double)bytes_written / 1024.0 / 1024.0,
 		output_name,
 		bytes_written / 24);
@@ -1147,6 +1604,11 @@ static int __cmd_record(struct perf_record *rec, int argc, const char **argv)
 		output_name,
 		rec->bytes_written / 24);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(double)rec->bytes_written / 1024.0 / 1024.0,
+		file->path,
+		rec->bytes_written / 24);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -1156,7 +1618,10 @@ out_delete_session:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define BRANCH_OPT(n, m) \
 	{ .name = n, .mode = (m) }
 
@@ -1175,6 +1640,12 @@ static const struct branch_mode branch_modes[] = {
 	BRANCH_OPT("any_call", PERF_SAMPLE_BRANCH_ANY_CALL),
 	BRANCH_OPT("any_ret", PERF_SAMPLE_BRANCH_ANY_RETURN),
 	BRANCH_OPT("ind_call", PERF_SAMPLE_BRANCH_IND_CALL),
+<<<<<<< HEAD
+=======
+	BRANCH_OPT("abort_tx", PERF_SAMPLE_BRANCH_ABORT_TX),
+	BRANCH_OPT("in_tx", PERF_SAMPLE_BRANCH_IN_TX),
+	BRANCH_OPT("no_tx", PERF_SAMPLE_BRANCH_NO_TX),
+>>>>>>> refs/remotes/origin/master
 	BRANCH_END
 };
 
@@ -1241,13 +1712,144 @@ error:
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef HAVE_LIBUNWIND_SUPPORT
+static int get_stack_size(char *str, unsigned long *_size)
+{
+	char *endptr;
+	unsigned long size;
+	unsigned long max_size = round_down(USHRT_MAX, sizeof(u64));
+
+	size = strtoul(str, &endptr, 0);
+
+	do {
+		if (*endptr)
+			break;
+
+		size = round_up(size, sizeof(u64));
+		if (!size || size > max_size)
+			break;
+
+		*_size = size;
+		return 0;
+
+	} while (0);
+
+	pr_err("callchain: Incorrect stack dump size (max %ld): %s\n",
+	       max_size, str);
+	return -1;
+}
+#endif /* HAVE_LIBUNWIND_SUPPORT */
+
+int record_parse_callchain(const char *arg, struct record_opts *opts)
+{
+	char *tok, *name, *saveptr = NULL;
+	char *buf;
+	int ret = -1;
+
+	/* We need buffer that we know we can write to. */
+	buf = malloc(strlen(arg) + 1);
+	if (!buf)
+		return -ENOMEM;
+
+	strcpy(buf, arg);
+
+	tok = strtok_r((char *)buf, ",", &saveptr);
+	name = tok ? : (char *)buf;
+
+	do {
+		/* Framepointer style */
+		if (!strncmp(name, "fp", sizeof("fp"))) {
+			if (!strtok_r(NULL, ",", &saveptr)) {
+				opts->call_graph = CALLCHAIN_FP;
+				ret = 0;
+			} else
+				pr_err("callchain: No more arguments "
+				       "needed for -g fp\n");
+			break;
+
+#ifdef HAVE_LIBUNWIND_SUPPORT
+		/* Dwarf style */
+		} else if (!strncmp(name, "dwarf", sizeof("dwarf"))) {
+			const unsigned long default_stack_dump_size = 8192;
+
+			ret = 0;
+			opts->call_graph = CALLCHAIN_DWARF;
+			opts->stack_dump_size = default_stack_dump_size;
+
+			tok = strtok_r(NULL, ",", &saveptr);
+			if (tok) {
+				unsigned long size = 0;
+
+				ret = get_stack_size(tok, &size);
+				opts->stack_dump_size = size;
+			}
+#endif /* HAVE_LIBUNWIND_SUPPORT */
+		} else {
+			pr_err("callchain: Unknown --call-graph option "
+			       "value: %s\n", arg);
+			break;
+		}
+
+	} while (0);
+
+	free(buf);
+	return ret;
+}
+
+static void callchain_debug(struct record_opts *opts)
+{
+	pr_debug("callchain: type %d\n", opts->call_graph);
+
+	if (opts->call_graph == CALLCHAIN_DWARF)
+		pr_debug("callchain: stack dump size %d\n",
+			 opts->stack_dump_size);
+}
+
+int record_parse_callchain_opt(const struct option *opt,
+			       const char *arg,
+			       int unset)
+{
+	struct record_opts *opts = opt->value;
+	int ret;
+
+	/* --no-call-graph */
+	if (unset) {
+		opts->call_graph = CALLCHAIN_NONE;
+		pr_debug("callchain: disabled\n");
+		return 0;
+	}
+
+	ret = record_parse_callchain(arg, opts);
+	if (!ret)
+		callchain_debug(opts);
+
+	return ret;
+}
+
+int record_callchain_opt(const struct option *opt,
+			 const char *arg __maybe_unused,
+			 int unset __maybe_unused)
+{
+	struct record_opts *opts = opt->value;
+
+	if (opts->call_graph == CALLCHAIN_NONE)
+		opts->call_graph = CALLCHAIN_FP;
+
+	callchain_debug(opts);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static const char * const record_usage[] = {
 	"perf record [<options>] [<command>]",
 	"perf record [<options>] -- <command> [<options>]",
 	NULL
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static bool force, append_file;
 
@@ -1287,6 +1889,11 @@ const struct option record_options[] = {
 /*
  * XXX Ideally would be local to cmd_record() and passed to a perf_record__new
  * because we need to have access to it in perf_record__exit, that is called
+=======
+/*
+ * XXX Ideally would be local to cmd_record() and passed to a record__new
+ * because we need to have access to it in record__exit, that is called
+>>>>>>> refs/remotes/origin/master
  * after cmd_record() exits, but since record_options need to be accessible to
  * builtin-script, leave it here.
  *
@@ -1294,11 +1901,16 @@ const struct option record_options[] = {
  *
  * Just say no to tons of global variables, sigh.
  */
+<<<<<<< HEAD
 static struct perf_record record = {
+=======
+static struct record record = {
+>>>>>>> refs/remotes/origin/master
 	.opts = {
 		.mmap_pages	     = UINT_MAX,
 		.user_freq	     = UINT_MAX,
 		.user_interval	     = ULLONG_MAX,
+<<<<<<< HEAD
 		.freq		     = 1000,
 	},
 	.write_mode = WRITE_FORCE,
@@ -1309,6 +1921,28 @@ static struct perf_record record = {
  * XXX Will stay a global variable till we fix builtin-script.c to stop messing
  * with it and switch to use the library functions in perf_evlist that came
  * from builtin-record.c, i.e. use perf_record_opts,
+=======
+		.freq		     = 4000,
+		.target		     = {
+			.uses_mmap   = true,
+			.default_per_cpu = true,
+		},
+	},
+};
+
+#define CALLCHAIN_HELP "setup and enables call-graph (stack chain/backtrace) recording: "
+
+#ifdef HAVE_LIBUNWIND_SUPPORT
+const char record_callchain_help[] = CALLCHAIN_HELP "fp dwarf";
+#else
+const char record_callchain_help[] = CALLCHAIN_HELP "fp";
+#endif
+
+/*
+ * XXX Will stay a global variable till we fix builtin-script.c to stop messing
+ * with it and switch to use the library functions in perf_evlist that came
+ * from builtin-record.c, i.e. use record_opts,
+>>>>>>> refs/remotes/origin/master
  * perf_evlist__prepare_workload, etc instead of fork+exec'in 'perf record',
  * using pipes, etc.
  */
@@ -1318,6 +1952,7 @@ const struct option record_options[] = {
 		     parse_events_option),
 	OPT_CALLBACK(0, "filter", &record.evlist, "filter",
 		     "event filter", parse_filter),
+<<<<<<< HEAD
 	OPT_STRING('p', "pid", &record.opts.target_pid, "pid",
 		    "record events on existing process id"),
 	OPT_STRING('t', "tid", &record.opts.target_tid, "tid",
@@ -1368,6 +2003,43 @@ const struct option record_options[] = {
 		     "monitor event in cgroup name only",
 		     parse_cgroups),
 =======
+=======
+	OPT_STRING('p', "pid", &record.opts.target.pid, "pid",
+		    "record events on existing process id"),
+	OPT_STRING('t', "tid", &record.opts.target.tid, "tid",
+		    "record events on existing thread id"),
+	OPT_INTEGER('r', "realtime", &record.realtime_prio,
+		    "collect data with this RT SCHED_FIFO priority"),
+	OPT_BOOLEAN(0, "no-buffering", &record.opts.no_buffering,
+		    "collect data without buffering"),
+	OPT_BOOLEAN('R', "raw-samples", &record.opts.raw_samples,
+		    "collect raw sample records from all opened counters"),
+	OPT_BOOLEAN('a', "all-cpus", &record.opts.target.system_wide,
+			    "system-wide collection from all CPUs"),
+	OPT_STRING('C', "cpu", &record.opts.target.cpu_list, "cpu",
+		    "list of cpus to monitor"),
+	OPT_U64('c', "count", &record.opts.user_interval, "event period to sample"),
+	OPT_STRING('o', "output", &record.file.path, "file",
+		    "output file name"),
+	OPT_BOOLEAN_SET('i', "no-inherit", &record.opts.no_inherit,
+			&record.opts.no_inherit_set,
+			"child tasks do not inherit counters"),
+	OPT_UINTEGER('F', "freq", &record.opts.user_freq, "profile at this frequency"),
+	OPT_CALLBACK('m', "mmap-pages", &record.opts.mmap_pages, "pages",
+		     "number of mmap data pages",
+		     perf_evlist__parse_mmap_pages),
+	OPT_BOOLEAN(0, "group", &record.opts.group,
+		    "put the counters into a counter group"),
+	OPT_CALLBACK_NOOPT('g', NULL, &record.opts,
+			   NULL, "enables call-graph recording" ,
+			   &record_callchain_opt),
+	OPT_CALLBACK(0, "call-graph", &record.opts,
+		     "mode[,dump_size]", record_callchain_help,
+		     &record_parse_callchain_opt),
+	OPT_INCR('v', "verbose", &verbose,
+		    "be more verbose (show counter open errors, etc)"),
+	OPT_BOOLEAN('q', "quiet", &quiet, "don't print any message"),
+>>>>>>> refs/remotes/origin/master
 	OPT_BOOLEAN('s', "stat", &record.opts.inherit_stat,
 		    "per thread counts"),
 	OPT_BOOLEAN('d', "data", &record.opts.sample_address,
@@ -1383,7 +2055,14 @@ const struct option record_options[] = {
 	OPT_CALLBACK('G', "cgroup", &record.evlist, "name",
 		     "monitor event in cgroup name only",
 		     parse_cgroups),
+<<<<<<< HEAD
 	OPT_STRING('u', "uid", &record.uid_str, "user", "user to profile"),
+=======
+	OPT_UINTEGER('D', "delay", &record.opts.initial_delay,
+		  "ms to wait before starting measurement after program start"),
+	OPT_STRING('u', "uid", &record.opts.target.uid_str, "user",
+		   "user to profile"),
+>>>>>>> refs/remotes/origin/master
 
 	OPT_CALLBACK_NOOPT('b', "branch-any", &record.opts.branch_stack,
 		     "branch any", "sample any taken branches",
@@ -1392,6 +2071,7 @@ const struct option record_options[] = {
 	OPT_CALLBACK('j', "branch-filter", &record.opts.branch_stack,
 		     "branch filter mask", "branch stack filter modes",
 		     parse_branch_stack),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	OPT_END()
 };
@@ -1453,6 +2133,35 @@ int cmd_record(int argc, const char **argv, const char *prefix __used)
 >>>>>>> refs/remotes/origin/cm-10.0
 		fprintf(stderr, "cgroup monitoring only available in"
 			" system-wide mode\n");
+=======
+	OPT_BOOLEAN('W', "weight", &record.opts.sample_weight,
+		    "sample by weight (on special events only)"),
+	OPT_BOOLEAN(0, "transaction", &record.opts.sample_transaction,
+		    "sample transaction flags (special events only)"),
+	OPT_BOOLEAN(0, "per-thread", &record.opts.target.per_thread,
+		    "use per-thread mmaps"),
+	OPT_END()
+};
+
+int cmd_record(int argc, const char **argv, const char *prefix __maybe_unused)
+{
+	int err = -ENOMEM;
+	struct record *rec = &record;
+	char errbuf[BUFSIZ];
+
+	rec->evlist = perf_evlist__new();
+	if (rec->evlist == NULL)
+		return -ENOMEM;
+
+	argc = parse_options(argc, argv, record_options, record_usage,
+			    PARSE_OPT_STOP_AT_NON_OPTION);
+	if (!argc && target__none(&rec->opts.target))
+		usage_with_options(record_usage, record_options);
+
+	if (nr_cgroups && !rec->opts.target.system_wide) {
+		ui__error("cgroup monitoring only available in"
+			  " system-wide mode\n");
+>>>>>>> refs/remotes/origin/master
 		usage_with_options(record_usage, record_options);
 	}
 
@@ -1469,6 +2178,7 @@ int cmd_record(int argc, const char **argv, const char *prefix __used)
 "even with a suitable vmlinux or kallsyms file.\n\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (no_buildid_cache || no_buildid)
 =======
 	if (rec->no_buildid_cache || rec->no_buildid)
@@ -1477,10 +2187,18 @@ int cmd_record(int argc, const char **argv, const char *prefix __used)
 
 	if (evsel_list->nr_entries == 0 &&
 	    perf_evlist__add_default(evsel_list) < 0) {
+=======
+	if (rec->no_buildid_cache || rec->no_buildid)
+		disable_buildid_cache();
+
+	if (rec->evlist->nr_entries == 0 &&
+	    perf_evlist__add_default(rec->evlist) < 0) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("Not enough memory for event selector list\n");
 		goto out_symbol_exit;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (target_pid != -1)
 		target_tid = target_pid;
@@ -1555,6 +2273,38 @@ int cmd_record(int argc, const char **argv, const char *prefix __used)
 >>>>>>> refs/remotes/origin/cm-10.0
 out_free_fd:
 	perf_evlist__delete_maps(evsel_list);
+=======
+	if (rec->opts.target.tid && !rec->opts.no_inherit_set)
+		rec->opts.no_inherit = true;
+
+	err = target__validate(&rec->opts.target);
+	if (err) {
+		target__strerror(&rec->opts.target, err, errbuf, BUFSIZ);
+		ui__warning("%s", errbuf);
+	}
+
+	err = target__parse_uid(&rec->opts.target);
+	if (err) {
+		int saved_errno = errno;
+
+		target__strerror(&rec->opts.target, err, errbuf, BUFSIZ);
+		ui__error("%s", errbuf);
+
+		err = -saved_errno;
+		goto out_symbol_exit;
+	}
+
+	err = -ENOMEM;
+	if (perf_evlist__create_maps(rec->evlist, &rec->opts.target) < 0)
+		usage_with_options(record_usage, record_options);
+
+	if (record_opts__config(&rec->opts)) {
+		err = -EINVAL;
+		goto out_symbol_exit;
+	}
+
+	err = __cmd_record(&record, argc, argv);
+>>>>>>> refs/remotes/origin/master
 out_symbol_exit:
 	symbol__exit();
 	return err;

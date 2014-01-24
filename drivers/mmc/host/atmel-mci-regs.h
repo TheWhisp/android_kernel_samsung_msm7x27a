@@ -18,6 +18,7 @@
 
 /* MCI Register Definitions */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MCI_CR			0x0000	/* Control */
 # define MCI_CR_MCIEN		(  1 <<  0)	/* MCI Enable */
 # define MCI_CR_MCIDIS		(  1 <<  1)	/* MCI Disable */
@@ -126,6 +127,8 @@
 #define mci_writel(port,reg,value)			\
 	__raw_writel((value), (port)->regs + MCI_##reg)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ATMCI_CR			0x0000	/* Control */
 # define ATMCI_CR_MCIEN			(  1 <<  0)	/* MCI Enable */
 # define ATMCI_CR_MCIDIS		(  1 <<  1)	/* MCI Disable */
@@ -248,6 +251,30 @@
 	__raw_readl((port)->regs + reg)
 #define atmci_writel(port,reg,value)			\
 	__raw_writel((value), (port)->regs + reg)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/* On AVR chips the Peripheral DMA Controller is not connected to MCI. */
+#ifdef CONFIG_AVR32
+#	define ATMCI_PDC_CONNECTED	0
+#else
+#	define ATMCI_PDC_CONNECTED	1
+#endif
+
+/*
+ * Fix sconfig's burst size according to atmel MCI. We need to convert them as:
+ * 1 -> 0, 4 -> 1, 8 -> 2, 16 -> 3.
+ *
+ * This can be done by finding most significant bit set.
+ */
+static inline unsigned int atmci_convert_chksize(unsigned int maxburst)
+{
+	if (maxburst > 1)
+		return fls(maxburst) - 2;
+	else
+		return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __DRIVERS_MMC_ATMEL_MCI_H__ */

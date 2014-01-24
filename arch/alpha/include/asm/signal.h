@@ -1,12 +1,17 @@
 #ifndef _ASMAXP_SIGNAL_H
 #define _ASMAXP_SIGNAL_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 /* Avoid too many header ordering problems.  */
 struct siginfo;
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/signal.h>
+
+>>>>>>> refs/remotes/origin/master
 /* Digital Unix defines 64 signals.  Most things should be clean enough
    to redefine this at will, if care is taken to make libc match.  */
 
@@ -20,6 +25,7 @@ typedef struct {
 	unsigned long sig[_NSIG_WORDS];
 } sigset_t;
 
+<<<<<<< HEAD
 #else
 /* Here we must cater to libcs that poke about in kernel headers.  */
 
@@ -114,12 +120,15 @@ typedef unsigned long sigset_t;
 #include <asm-generic/signal-defs.h>
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 struct osf_sigaction {
 	__sighandler_t	sa_handler;
 	old_sigset_t	sa_mask;
 	int		sa_flags;
 };
 
+<<<<<<< HEAD
 struct sigaction {
 	__sighandler_t	sa_handler;
 	unsigned long	sa_flags;
@@ -169,4 +178,8 @@ struct sigstack {
 
 #endif
 
+=======
+#define __ARCH_HAS_KA_RESTORER
+#include <asm/sigcontext.h>
+>>>>>>> refs/remotes/origin/master
 #endif

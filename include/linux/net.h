@@ -18,6 +18,7 @@
 #ifndef _LINUX_NET_H
 #define _LINUX_NET_H
 
+<<<<<<< HEAD
 #include <linux/socket.h>
 #include <asm/socket.h>
 
@@ -55,16 +56,27 @@ typedef enum {
 #define __SO_ACCEPTCON	(1 << 16)	/* performed a listen		*/
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/stringify.h>
 #include <linux/random.h>
 #include <linux/wait.h>
 #include <linux/fcntl.h>	/* For O_CLOEXEC and O_NONBLOCK */
 #include <linux/kmemcheck.h>
 #include <linux/rcupdate.h>
+<<<<<<< HEAD
+=======
+#include <linux/jump_label.h>
+#include <uapi/linux/net.h>
+>>>>>>> refs/remotes/origin/master
 
 struct poll_table_struct;
 struct pipe_inode_info;
 struct inode;
+<<<<<<< HEAD
+=======
+struct file;
+>>>>>>> refs/remotes/origin/master
 struct net;
 
 #define SOCK_ASYNC_NOSPACE	0
@@ -73,9 +85,13 @@ struct net;
 #define SOCK_PASSCRED		3
 #define SOCK_PASSSEC		4
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SOCK_EXTERNALLY_ALLOCATED 5
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SOCK_EXTERNALLY_ALLOCATED 5
+>>>>>>> refs/remotes/origin/master
 
 #ifndef ARCH_HAS_SOCKET_TYPES
 /**
@@ -117,9 +133,15 @@ enum sock_type {
 #endif /* ARCH_HAS_SOCKET_TYPES */
 
 enum sock_shutdown_cmd {
+<<<<<<< HEAD
 	SHUT_RD		= 0,
 	SHUT_WR		= 1,
 	SHUT_RDWR	= 2,
+=======
+	SHUT_RD,
+	SHUT_WR,
+	SHUT_RDWR,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct socket_wq {
@@ -201,6 +223,17 @@ struct proto_ops {
 #endif
 	int		(*sendmsg)   (struct kiocb *iocb, struct socket *sock,
 				      struct msghdr *m, size_t total_len);
+<<<<<<< HEAD
+=======
+	/* Notes for implementing recvmsg:
+	 * ===============================
+	 * msg->msg_namelen should get updated by the recvmsg handlers
+	 * iff msg_name != NULL. It is by default 0 to prevent
+	 * returning uninitialized memory to user space.  The recvfrom
+	 * handlers can assume that msg.msg_name is either NULL or has
+	 * a minimum size of sizeof(struct sockaddr_storage).
+	 */
+>>>>>>> refs/remotes/origin/master
 	int		(*recvmsg)   (struct kiocb *iocb, struct socket *sock,
 				      struct msghdr *m, size_t total_len,
 				      int flags);
@@ -211,9 +244,13 @@ struct proto_ops {
 	ssize_t 	(*splice_read)(struct socket *sock,  loff_t *ppos,
 				       struct pipe_inode_info *pipe, size_t len, unsigned int flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	void		(*set_peek_off)(struct sock *sk, int val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int		(*set_peek_off)(struct sock *sk, int val);
+>>>>>>> refs/remotes/origin/master
 };
 
 #define DECLARE_SOCKADDR(type, dst, src)	\
@@ -236,6 +273,7 @@ enum {
 	SOCK_WAKE_URG,
 };
 
+<<<<<<< HEAD
 extern int	     sock_wake_async(struct socket *sk, int how, int band);
 extern int	     sock_register(const struct net_proto_family *fam);
 extern void	     sock_unregister(int family);
@@ -286,6 +324,98 @@ extern int kernel_sendpage(struct socket *sock, struct page *page, int offset,
 extern int kernel_sock_ioctl(struct socket *sock, int cmd, unsigned long arg);
 extern int kernel_sock_shutdown(struct socket *sock,
 				enum sock_shutdown_cmd how);
+=======
+int sock_wake_async(struct socket *sk, int how, int band);
+int sock_register(const struct net_proto_family *fam);
+void sock_unregister(int family);
+int __sock_create(struct net *net, int family, int type, int proto,
+		  struct socket **res, int kern);
+int sock_create(int family, int type, int proto, struct socket **res);
+int sock_create_kern(int family, int type, int proto, struct socket **res);
+int sock_create_lite(int family, int type, int proto, struct socket **res);
+void sock_release(struct socket *sock);
+int sock_sendmsg(struct socket *sock, struct msghdr *msg, size_t len);
+int sock_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+		 int flags);
+struct file *sock_alloc_file(struct socket *sock, int flags, const char *dname);
+struct socket *sockfd_lookup(int fd, int *err);
+struct socket *sock_from_file(struct file *file, int *err);
+#define		     sockfd_put(sock) fput(sock->file)
+int net_ratelimit(void);
+
+#define net_ratelimited_function(function, ...)			\
+do {								\
+	if (net_ratelimit())					\
+		function(__VA_ARGS__);				\
+} while (0)
+
+#define net_emerg_ratelimited(fmt, ...)				\
+	net_ratelimited_function(pr_emerg, fmt, ##__VA_ARGS__)
+#define net_alert_ratelimited(fmt, ...)				\
+	net_ratelimited_function(pr_alert, fmt, ##__VA_ARGS__)
+#define net_crit_ratelimited(fmt, ...)				\
+	net_ratelimited_function(pr_crit, fmt, ##__VA_ARGS__)
+#define net_err_ratelimited(fmt, ...)				\
+	net_ratelimited_function(pr_err, fmt, ##__VA_ARGS__)
+#define net_notice_ratelimited(fmt, ...)			\
+	net_ratelimited_function(pr_notice, fmt, ##__VA_ARGS__)
+#define net_warn_ratelimited(fmt, ...)				\
+	net_ratelimited_function(pr_warn, fmt, ##__VA_ARGS__)
+#define net_info_ratelimited(fmt, ...)				\
+	net_ratelimited_function(pr_info, fmt, ##__VA_ARGS__)
+#define net_dbg_ratelimited(fmt, ...)				\
+	net_ratelimited_function(pr_debug, fmt, ##__VA_ARGS__)
+
+#define net_random()		prandom_u32()
+#define net_srandom(seed)	prandom_seed((__force u32)(seed))
+
+bool __net_get_random_once(void *buf, int nbytes, bool *done,
+			   struct static_key *done_key);
+
+#ifdef HAVE_JUMP_LABEL
+#define ___NET_RANDOM_STATIC_KEY_INIT ((struct static_key) \
+		{ .enabled = ATOMIC_INIT(0), .entries = (void *)1 })
+#else /* !HAVE_JUMP_LABEL */
+#define ___NET_RANDOM_STATIC_KEY_INIT STATIC_KEY_INIT_FALSE
+#endif /* HAVE_JUMP_LABEL */
+
+#define net_get_random_once(buf, nbytes)				\
+	({								\
+		bool ___ret = false;					\
+		static bool ___done = false;				\
+		static struct static_key ___done_key =			\
+			___NET_RANDOM_STATIC_KEY_INIT;			\
+		if (!static_key_true(&___done_key))			\
+			___ret = __net_get_random_once(buf,		\
+						       nbytes,		\
+						       &___done,	\
+						       &___done_key);	\
+		___ret;							\
+	})
+
+int kernel_sendmsg(struct socket *sock, struct msghdr *msg, struct kvec *vec,
+		   size_t num, size_t len);
+int kernel_recvmsg(struct socket *sock, struct msghdr *msg, struct kvec *vec,
+		   size_t num, size_t len, int flags);
+
+int kernel_bind(struct socket *sock, struct sockaddr *addr, int addrlen);
+int kernel_listen(struct socket *sock, int backlog);
+int kernel_accept(struct socket *sock, struct socket **newsock, int flags);
+int kernel_connect(struct socket *sock, struct sockaddr *addr, int addrlen,
+		   int flags);
+int kernel_getsockname(struct socket *sock, struct sockaddr *addr,
+		       int *addrlen);
+int kernel_getpeername(struct socket *sock, struct sockaddr *addr,
+		       int *addrlen);
+int kernel_getsockopt(struct socket *sock, int level, int optname, char *optval,
+		      int *optlen);
+int kernel_setsockopt(struct socket *sock, int level, int optname, char *optval,
+		      unsigned int optlen);
+int kernel_sendpage(struct socket *sock, struct page *page, int offset,
+		    size_t size, int flags);
+int kernel_sock_ioctl(struct socket *sock, int cmd, unsigned long arg);
+int kernel_sock_shutdown(struct socket *sock, enum sock_shutdown_cmd how);
+>>>>>>> refs/remotes/origin/master
 
 #define MODULE_ALIAS_NETPROTO(proto) \
 	MODULE_ALIAS("net-pf-" __stringify(proto))
@@ -297,5 +427,11 @@ extern int kernel_sock_shutdown(struct socket *sock,
 	MODULE_ALIAS("net-pf-" __stringify(pf) "-proto-" __stringify(proto) \
 		     "-type-" __stringify(type))
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+#define MODULE_ALIAS_NET_PF_PROTO_NAME(pf, proto, name) \
+	MODULE_ALIAS("net-pf-" __stringify(pf) "-proto-" __stringify(proto) \
+		     name)
+>>>>>>> refs/remotes/origin/master
 #endif	/* _LINUX_NET_H */

@@ -99,6 +99,7 @@
 #define XTYPE_UNKNOWN     3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int dpad_to_buttons;
 module_param(dpad_to_buttons, bool, S_IRUGO);
 MODULE_PARM_DESC(dpad_to_buttons, "Map D-PAD to buttons rather than axes for unknown pads");
@@ -109,6 +110,8 @@ MODULE_PARM_DESC(triggers_to_buttons, "Map triggers to buttons rather than axes 
 
 static int sticks_to_null;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool dpad_to_buttons;
 module_param(dpad_to_buttons, bool, S_IRUGO);
 MODULE_PARM_DESC(dpad_to_buttons, "Map D-PAD to buttons rather than axes for unknown pads");
@@ -118,7 +121,10 @@ module_param(triggers_to_buttons, bool, S_IRUGO);
 MODULE_PARM_DESC(triggers_to_buttons, "Map triggers to buttons rather than axes for unknown pads");
 
 static bool sticks_to_null;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(sticks_to_null, bool, S_IRUGO);
 MODULE_PARM_DESC(sticks_to_null, "Do not map sticks at all for unknown pads");
 
@@ -130,11 +136,20 @@ static const struct xpad_device {
 	u8 xtype;
 } xpad_device[] = {
 	{ 0x045e, 0x0202, "Microsoft X-Box pad v1 (US)", 0, XTYPE_XBOX },
+<<<<<<< HEAD
 	{ 0x045e, 0x0289, "Microsoft X-Box pad v2 (US)", 0, XTYPE_XBOX },
 	{ 0x045e, 0x0285, "Microsoft X-Box pad (Japan)", 0, XTYPE_XBOX },
 	{ 0x045e, 0x0287, "Microsoft Xbox Controller S", 0, XTYPE_XBOX },
 	{ 0x045e, 0x0719, "Xbox 360 Wireless Receiver", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360W },
 	{ 0x0c12, 0x8809, "RedOctane Xbox Dance Pad", DANCEPAD_MAP_CONFIG, XTYPE_XBOX },
+=======
+	{ 0x045e, 0x0285, "Microsoft X-Box pad (Japan)", 0, XTYPE_XBOX },
+	{ 0x045e, 0x0287, "Microsoft Xbox Controller S", 0, XTYPE_XBOX },
+	{ 0x045e, 0x0289, "Microsoft X-Box pad v2 (US)", 0, XTYPE_XBOX },
+	{ 0x045e, 0x028e, "Microsoft X-Box 360 pad", 0, XTYPE_XBOX360 },
+	{ 0x045e, 0x0291, "Xbox 360 Wireless Receiver (XBOX)", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360W },
+	{ 0x045e, 0x0719, "Xbox 360 Wireless Receiver", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360W },
+>>>>>>> refs/remotes/origin/master
 	{ 0x044f, 0x0f07, "Thrustmaster, Inc. Controller", 0, XTYPE_XBOX },
 	{ 0x046d, 0xc242, "Logitech Chillstream Controller", 0, XTYPE_XBOX360 },
 	{ 0x046d, 0xca84, "Logitech Xbox Cordless Controller", 0, XTYPE_XBOX },
@@ -148,9 +163,18 @@ static const struct xpad_device {
 	{ 0x0738, 0x4540, "Mad Catz Beat Pad", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX },
 	{ 0x0738, 0x4556, "Mad Catz Lynx Wireless Controller", 0, XTYPE_XBOX },
 	{ 0x0738, 0x4716, "Mad Catz Wired Xbox 360 Controller", 0, XTYPE_XBOX360 },
+<<<<<<< HEAD
 	{ 0x0738, 0x4738, "Mad Catz Wired Xbox 360 Controller (SFIV)", MAP_TRIGGERS_TO_BUTTONS, XTYPE_XBOX360 },
 	{ 0x0738, 0x6040, "Mad Catz Beat Pad Pro", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX },
 	{ 0x0c12, 0x8802, "Zeroplus Xbox Controller", 0, XTYPE_XBOX },
+=======
+	{ 0x0738, 0x4728, "Mad Catz Street Fighter IV FightPad", MAP_TRIGGERS_TO_BUTTONS, XTYPE_XBOX360 },
+	{ 0x0738, 0x4738, "Mad Catz Wired Xbox 360 Controller (SFIV)", MAP_TRIGGERS_TO_BUTTONS, XTYPE_XBOX360 },
+	{ 0x0738, 0x6040, "Mad Catz Beat Pad Pro", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX },
+	{ 0x0738, 0xbeef, "Mad Catz JOYTECH NEO SE Advanced GamePad", XTYPE_XBOX360 },
+	{ 0x0c12, 0x8802, "Zeroplus Xbox Controller", 0, XTYPE_XBOX },
+	{ 0x0c12, 0x8809, "RedOctane Xbox Dance Pad", DANCEPAD_MAP_CONFIG, XTYPE_XBOX },
+>>>>>>> refs/remotes/origin/master
 	{ 0x0c12, 0x880a, "Pelican Eclipse PL-2023", 0, XTYPE_XBOX },
 	{ 0x0c12, 0x8810, "Zeroplus Xbox Controller", 0, XTYPE_XBOX },
 	{ 0x0c12, 0x9902, "HAMA VibraX - *FAULTY HARDWARE*", 0, XTYPE_XBOX },
@@ -160,6 +184,7 @@ static const struct xpad_device {
 	{ 0x0e6f, 0x0003, "Logic3 Freebird wireless Controller", 0, XTYPE_XBOX },
 	{ 0x0e6f, 0x0005, "Eclipse wireless Controller", 0, XTYPE_XBOX },
 	{ 0x0e6f, 0x0006, "Edge wireless Controller", 0, XTYPE_XBOX },
+<<<<<<< HEAD
 	{ 0x0e6f, 0x0006, "Pelican 'TSZ' Wired Xbox 360 Controller", 0, XTYPE_XBOX360 },
 	{ 0x0e6f, 0x0201, "Pelican PL-3601 'TSZ' Wired Xbox 360 Controller", 0, XTYPE_XBOX360 },
 	{ 0x0e8f, 0x0201, "SmartJoy Frag Xpad/PS2 adaptor", 0, XTYPE_XBOX },
@@ -187,6 +212,31 @@ static const struct xpad_device {
 	{ 0x0f0d, 0x000d, "Hori Fighting Stick EX2", MAP_TRIGGERS_TO_BUTTONS, XTYPE_XBOX360 },
 	{ 0x1689, 0xfd00, "Razer Onza Tournament Edition", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360 },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ 0x0e6f, 0x0105, "HSM3 Xbox360 dancepad", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360 },
+	{ 0x0e6f, 0x0201, "Pelican PL-3601 'TSZ' Wired Xbox 360 Controller", 0, XTYPE_XBOX360 },
+	{ 0x0e6f, 0x0213, "Afterglow Gamepad for Xbox 360", 0, XTYPE_XBOX360 },
+	{ 0x0e8f, 0x0201, "SmartJoy Frag Xpad/PS2 adaptor", 0, XTYPE_XBOX },
+	{ 0x0f0d, 0x000d, "Hori Fighting Stick EX2", MAP_TRIGGERS_TO_BUTTONS, XTYPE_XBOX360 },
+	{ 0x0f0d, 0x0016, "Hori Real Arcade Pro.EX", MAP_TRIGGERS_TO_BUTTONS, XTYPE_XBOX360 },
+	{ 0x0f30, 0x0202, "Joytech Advanced Controller", 0, XTYPE_XBOX },
+	{ 0x0f30, 0x8888, "BigBen XBMiniPad Controller", 0, XTYPE_XBOX },
+	{ 0x102c, 0xff0c, "Joytech Wireless Advanced Controller", 0, XTYPE_XBOX },
+	{ 0x12ab, 0x0004, "Honey Bee Xbox360 dancepad", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360 },
+	{ 0x12ab, 0x8809, "Xbox DDR dancepad", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX },
+	{ 0x1430, 0x4748, "RedOctane Guitar Hero X-plorer", 0, XTYPE_XBOX360 },
+	{ 0x1430, 0x8888, "TX6500+ Dance Pad (first generation)", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX },
+	{ 0x146b, 0x0601, "BigBen Interactive XBOX 360 Controller", 0, XTYPE_XBOX360 },
+	{ 0x1689, 0xfd00, "Razer Onza Tournament Edition", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360 },
+	{ 0x1689, 0xfd01, "Razer Onza Classic Edition", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360 },
+	{ 0x1bad, 0x0002, "Harmonix Rock Band Guitar", 0, XTYPE_XBOX360 },
+	{ 0x1bad, 0x0003, "Harmonix Rock Band Drumkit", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360 },
+	{ 0x1bad, 0xf016, "Mad Catz Xbox 360 Controller", 0, XTYPE_XBOX360 },
+	{ 0x1bad, 0xf028, "Street Fighter IV FightPad", 0, XTYPE_XBOX360 },
+	{ 0x1bad, 0xf901, "Gamestop Xbox 360 Controller", 0, XTYPE_XBOX360 },
+	{ 0x1bad, 0xf903, "Tron Xbox 360 controller", 0, XTYPE_XBOX360 },
+	{ 0x24c6, 0x5300, "PowerA MINI PROEX Controller", 0, XTYPE_XBOX360 },
+>>>>>>> refs/remotes/origin/master
 	{ 0xffff, 0xffff, "Chinese-made Xbox Controller", 0, XTYPE_XBOX },
 	{ 0x0000, 0x0000, "Generic X-Box pad", 0, XTYPE_UNKNOWN }
 };
@@ -256,11 +306,16 @@ static const signed short xpad_abs_triggers[] = {
 	{ XPAD_XBOX360_VENDOR_PROTOCOL(vend,1) }, \
 	{ XPAD_XBOX360_VENDOR_PROTOCOL(vend,129) }
 
+<<<<<<< HEAD
 static struct usb_device_id xpad_table [] = {
+=======
+static struct usb_device_id xpad_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{ USB_INTERFACE_INFO('X', 'B', 0) },	/* X-Box USB-IF not approved class */
 	XPAD_XBOX360_VENDOR(0x045e),		/* Microsoft X-Box 360 controllers */
 	XPAD_XBOX360_VENDOR(0x046d),		/* Logitech X-Box 360 style controllers */
 	XPAD_XBOX360_VENDOR(0x0738),		/* Mad Catz X-Box 360 controllers */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	XPAD_XBOX360_VENDOR(0x0e6f),		/* 0x0e6f X-Box 360 controllers */
 	XPAD_XBOX360_VENDOR(0x1430),		/* RedOctane X-Box 360 controllers */
@@ -268,6 +323,8 @@ static struct usb_device_id xpad_table [] = {
 	XPAD_XBOX360_VENDOR(0x1bad),		/* Rock Band Drums */
 	XPAD_XBOX360_VENDOR(0x0f0d),            /* Hori Controllers */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{ USB_DEVICE(0x0738, 0x4540) },		/* Mad Catz Beat Pad */
 	XPAD_XBOX360_VENDOR(0x0e6f),		/* 0x0e6f X-Box 360 controllers */
 	XPAD_XBOX360_VENDOR(0x12ab),		/* X-Box 360 dance pads */
@@ -276,15 +333,27 @@ static struct usb_device_id xpad_table [] = {
 	XPAD_XBOX360_VENDOR(0x1bad),		/* Harminix Rock Band Guitar and Drums */
 	XPAD_XBOX360_VENDOR(0x0f0d),		/* Hori Controllers */
 	XPAD_XBOX360_VENDOR(0x1689),		/* Razer Onza */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	{ }
 };
 
 MODULE_DEVICE_TABLE (usb, xpad_table);
+=======
+	XPAD_XBOX360_VENDOR(0x24c6),		/* PowerA Controllers */
+	{ }
+};
+
+MODULE_DEVICE_TABLE(usb, xpad_table);
+>>>>>>> refs/remotes/origin/master
 
 struct usb_xpad {
 	struct input_dev *dev;		/* input device interface */
 	struct usb_device *udev;	/* usb device */
+<<<<<<< HEAD
+=======
+	struct usb_interface *intf;	/* usb interface */
+>>>>>>> refs/remotes/origin/master
 
 	int pad_present;
 
@@ -490,6 +559,10 @@ static void xpad360w_process_packet(struct usb_xpad *xpad, u16 cmd, unsigned cha
 static void xpad_irq_in(struct urb *urb)
 {
 	struct usb_xpad *xpad = urb->context;
+<<<<<<< HEAD
+=======
+	struct device *dev = &xpad->intf->dev;
+>>>>>>> refs/remotes/origin/master
 	int retval, status;
 
 	status = urb->status;
@@ -502,11 +575,19 @@ static void xpad_irq_in(struct urb *urb)
 	case -ENOENT:
 	case -ESHUTDOWN:
 		/* this urb is terminated, clean up */
+<<<<<<< HEAD
 		dbg("%s - urb shutting down with status: %d",
 			__func__, status);
 		return;
 	default:
 		dbg("%s - nonzero urb status received: %d",
+=======
+		dev_dbg(dev, "%s - urb shutting down with status: %d\n",
+			__func__, status);
+		return;
+	default:
+		dev_dbg(dev, "%s - nonzero urb status received: %d\n",
+>>>>>>> refs/remotes/origin/master
 			__func__, status);
 		goto exit;
 	}
@@ -525,12 +606,23 @@ static void xpad_irq_in(struct urb *urb)
 exit:
 	retval = usb_submit_urb(urb, GFP_ATOMIC);
 	if (retval)
+<<<<<<< HEAD
 		err ("%s - usb_submit_urb failed with result %d",
 		     __func__, retval);
+=======
+		dev_err(dev, "%s - usb_submit_urb failed with result %d\n",
+			__func__, retval);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void xpad_bulk_out(struct urb *urb)
 {
+<<<<<<< HEAD
+=======
+	struct usb_xpad *xpad = urb->context;
+	struct device *dev = &xpad->intf->dev;
+
+>>>>>>> refs/remotes/origin/master
 	switch (urb->status) {
 	case 0:
 		/* success */
@@ -539,16 +631,30 @@ static void xpad_bulk_out(struct urb *urb)
 	case -ENOENT:
 	case -ESHUTDOWN:
 		/* this urb is terminated, clean up */
+<<<<<<< HEAD
 		dbg("%s - urb shutting down with status: %d", __func__, urb->status);
 		break;
 	default:
 		dbg("%s - nonzero urb status received: %d", __func__, urb->status);
+=======
+		dev_dbg(dev, "%s - urb shutting down with status: %d\n",
+			__func__, urb->status);
+		break;
+	default:
+		dev_dbg(dev, "%s - nonzero urb status received: %d\n",
+			__func__, urb->status);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 #if defined(CONFIG_JOYSTICK_XPAD_FF) || defined(CONFIG_JOYSTICK_XPAD_LEDS)
 static void xpad_irq_out(struct urb *urb)
 {
+<<<<<<< HEAD
+=======
+	struct usb_xpad *xpad = urb->context;
+	struct device *dev = &xpad->intf->dev;
+>>>>>>> refs/remotes/origin/master
 	int retval, status;
 
 	status = urb->status;
@@ -562,19 +668,34 @@ static void xpad_irq_out(struct urb *urb)
 	case -ENOENT:
 	case -ESHUTDOWN:
 		/* this urb is terminated, clean up */
+<<<<<<< HEAD
 		dbg("%s - urb shutting down with status: %d", __func__, status);
 		return;
 
 	default:
 		dbg("%s - nonzero urb status received: %d", __func__, status);
+=======
+		dev_dbg(dev, "%s - urb shutting down with status: %d\n",
+			__func__, status);
+		return;
+
+	default:
+		dev_dbg(dev, "%s - nonzero urb status received: %d\n",
+			__func__, status);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
 exit:
 	retval = usb_submit_urb(urb, GFP_ATOMIC);
 	if (retval)
+<<<<<<< HEAD
 		err("%s - usb_submit_urb failed with result %d",
 		    __func__, retval);
+=======
+		dev_err(dev, "%s - usb_submit_urb failed with result %d\n",
+			__func__, retval);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int xpad_init_output(struct usb_interface *intf, struct usb_xpad *xpad)
@@ -583,10 +704,14 @@ static int xpad_init_output(struct usb_interface *intf, struct usb_xpad *xpad)
 	int error;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (xpad->xtype != XTYPE_XBOX360 && xpad->xtype != XTYPE_XBOX)
 =======
 	if (xpad->xtype == XTYPE_UNKNOWN)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (xpad->xtype == XTYPE_UNKNOWN)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	xpad->odata = usb_alloc_coherent(xpad->udev, XPAD_PKT_LEN,
@@ -621,20 +746,28 @@ static int xpad_init_output(struct usb_interface *intf, struct usb_xpad *xpad)
 static void xpad_stop_output(struct usb_xpad *xpad)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (xpad->xtype == XTYPE_XBOX360 || xpad->xtype == XTYPE_XBOX)
 =======
 	if (xpad->xtype != XTYPE_UNKNOWN)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (xpad->xtype != XTYPE_UNKNOWN)
+>>>>>>> refs/remotes/origin/master
 		usb_kill_urb(xpad->irq_out);
 }
 
 static void xpad_deinit_output(struct usb_xpad *xpad)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (xpad->xtype == XTYPE_XBOX360 || xpad->xtype == XTYPE_XBOX) {
 =======
 	if (xpad->xtype != XTYPE_UNKNOWN) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (xpad->xtype != XTYPE_UNKNOWN) {
+>>>>>>> refs/remotes/origin/master
 		usb_free_urb(xpad->irq_out);
 		usb_free_coherent(xpad->udev, XPAD_PKT_LEN,
 				xpad->odata, xpad->odata_dma);
@@ -682,7 +815,10 @@ static int xpad_play_effect(struct input_dev *dev, void *data, struct ff_effect 
 			return usb_submit_urb(xpad->irq_out, GFP_ATOMIC);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case XTYPE_XBOX360W:
 			xpad->odata[0] = 0x00;
 			xpad->odata[1] = 0x01;
@@ -700,9 +836,15 @@ static int xpad_play_effect(struct input_dev *dev, void *data, struct ff_effect 
 
 			return usb_submit_urb(xpad->irq_out, GFP_ATOMIC);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		default:
 			dbg("%s - rumble command sent to unsupported xpad type: %d",
+=======
+		default:
+			dev_dbg(&xpad->dev->dev,
+				"%s - rumble command sent to unsupported xpad type: %d\n",
+>>>>>>> refs/remotes/origin/master
 				__func__, xpad->xtype);
 			return -1;
 		}
@@ -714,10 +856,14 @@ static int xpad_play_effect(struct input_dev *dev, void *data, struct ff_effect 
 static int xpad_init_ff(struct usb_xpad *xpad)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (xpad->xtype != XTYPE_XBOX360 && xpad->xtype != XTYPE_XBOX)
 =======
 	if (xpad->xtype == XTYPE_UNKNOWN)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (xpad->xtype == XTYPE_UNKNOWN)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	input_set_capability(xpad->dev, EV_FF, FF_RUMBLE);
@@ -819,7 +965,11 @@ static int xpad_open(struct input_dev *dev)
 	struct usb_xpad *xpad = input_get_drvdata(dev);
 
 	/* URB was submitted in probe */
+<<<<<<< HEAD
 	if(xpad->xtype == XTYPE_XBOX360W)
+=======
+	if (xpad->xtype == XTYPE_XBOX360W)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	xpad->irq_in->dev = xpad->udev;
@@ -896,6 +1046,10 @@ static int xpad_probe(struct usb_interface *intf, const struct usb_device_id *id
 	}
 
 	xpad->udev = udev;
+<<<<<<< HEAD
+=======
+	xpad->intf = intf;
+>>>>>>> refs/remotes/origin/master
 	xpad->mapping = xpad_device[i].mapping;
 	xpad->xtype = xpad_device[i].xtype;
 
@@ -1094,6 +1248,7 @@ static struct usb_driver xpad_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init usb_xpad_init(void)
 {
 	return usb_register(&xpad_driver);
@@ -1109,6 +1264,9 @@ module_exit(usb_xpad_exit);
 =======
 module_usb_driver(xpad_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(xpad_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

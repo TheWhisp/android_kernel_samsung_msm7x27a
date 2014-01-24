@@ -64,9 +64,13 @@ static int ebt_broute(struct sk_buff *skb)
 static int __net_init broute_net_init(struct net *net)
 {
 	net->xt.broute_table = ebt_register_table(net, &broute_table);
+<<<<<<< HEAD
 	if (IS_ERR(net->xt.broute_table))
 		return PTR_ERR(net->xt.broute_table);
 	return 0;
+=======
+	return PTR_ERR_OR_ZERO(net->xt.broute_table);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __net_exit broute_net_exit(struct net *net)
@@ -88,10 +92,14 @@ static int __init ebtable_broute_init(void)
 		return ret;
 	/* see br_input.c */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_assign_pointer(br_should_route_hook,
 =======
 	RCU_INIT_POINTER(br_should_route_hook,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RCU_INIT_POINTER(br_should_route_hook,
+>>>>>>> refs/remotes/origin/master
 			   (br_should_route_hook_t *)ebt_broute);
 	return 0;
 }
@@ -99,10 +107,14 @@ static int __init ebtable_broute_init(void)
 static void __exit ebtable_broute_fini(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_assign_pointer(br_should_route_hook, NULL);
 =======
 	RCU_INIT_POINTER(br_should_route_hook, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RCU_INIT_POINTER(br_should_route_hook, NULL);
+>>>>>>> refs/remotes/origin/master
 	synchronize_net();
 	unregister_pernet_subsys(&broute_net_ops);
 }

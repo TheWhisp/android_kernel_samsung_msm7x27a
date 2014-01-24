@@ -26,9 +26,13 @@
 #include <linux/timex.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/irq.h>
 #include <asm/oplib.h>
@@ -442,8 +446,12 @@ int pcic_present(void)
 	return pcic0_up;
 }
 
+<<<<<<< HEAD
 static int __devinit pdev_to_pnode(struct linux_pbm_info *pbm,
 				    struct pci_dev *pdev)
+=======
+static int pdev_to_pnode(struct linux_pbm_info *pbm, struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct linux_prom_pci_registers regs[PROMREG_MAX];
 	int err;
@@ -598,7 +606,11 @@ pcic_fill_irq(struct linux_pcic *pcic, struct pci_dev *dev, int node)
 /*
  * Normally called from {do_}pci_scan_bus...
  */
+<<<<<<< HEAD
 void __devinit pcibios_fixup_bus(struct pci_bus *bus)
+=======
+void pcibios_fixup_bus(struct pci_bus *bus)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev;
 	int i, has_io, has_mem;
@@ -706,6 +718,7 @@ static void pcic_clear_clock_irq(void)
 	pcic_timer_dummy = readl(pcic0.pcic_regs+PCI_SYS_LIMIT);
 }
 
+<<<<<<< HEAD
 static irqreturn_t pcic_timer_handler (int irq, void *h)
 {
 	pcic_clear_clock_irq();
@@ -731,6 +744,30 @@ u32 pci_gettimeoffset(void)
 	return count * 1000;
 }
 
+=======
+/* CPU frequency is 100 MHz, timer increments every 4 CPU clocks */
+#define USECS_PER_JIFFY  (1000000 / HZ)
+#define TICK_TIMER_LIMIT ((100 * 1000000 / 4) / HZ)
+
+static unsigned int pcic_cycles_offset(void)
+{
+	u32 value, count;
+
+	value = readl(pcic0.pcic_regs + PCI_SYS_COUNTER);
+	count = value & ~PCI_SYS_COUNTER_OVERFLOW;
+
+	if (value & PCI_SYS_COUNTER_OVERFLOW)
+		count += TICK_TIMER_LIMIT;
+	/*
+	 * We divide all by HZ
+	 * to have microsecond resolution and to avoid overflow
+	 */
+	count = ((count / HZ) * USECS_PER_JIFFY) / (TICK_TIMER_LIMIT / HZ);
+
+	/* Coordinate with the sparc_config.clock_rate setting */
+	return count * 2;
+}
+>>>>>>> refs/remotes/origin/master
 
 void __init pci_time_init(void)
 {
@@ -739,9 +776,22 @@ void __init pci_time_init(void)
 	int timer_irq, irq;
 	int err;
 
+<<<<<<< HEAD
 	do_arch_gettimeoffset = pci_gettimeoffset;
 
 	btfixup();
+=======
+#ifndef CONFIG_SMP
+	/*
+	 * The clock_rate is in SBUS dimension.
+	 * We take into account this in pcic_cycles_offset()
+	 */
+	sparc_config.clock_rate = SBUS_CLOCK_RATE / HZ;
+	sparc_config.features |= FEAT_L10_CLOCKEVENT;
+#endif
+	sparc_config.features |= FEAT_L10_CLOCKSOURCE;
+	sparc_config.get_cycles_offset = pcic_cycles_offset;
+>>>>>>> refs/remotes/origin/master
 
 	writel (TICK_TIMER_LIMIT, pcic->pcic_regs+PCI_SYS_LIMIT);
 	/* PROM should set appropriate irq */
@@ -750,7 +800,11 @@ void __init pci_time_init(void)
 	writel (PCI_COUNTER_IRQ_SET(timer_irq, 0),
 		pcic->pcic_regs+PCI_COUNTER_IRQ);
 	irq = pcic_build_device_irq(NULL, timer_irq);
+<<<<<<< HEAD
 	err = request_irq(irq, pcic_timer_handler,
+=======
+	err = request_irq(irq, timer_interrupt,
+>>>>>>> refs/remotes/origin/master
 			  IRQF_TIMER, "timer", NULL);
 	if (err) {
 		prom_printf("time_init: unable to attach IRQ%d\n", timer_irq);
@@ -766,6 +820,7 @@ static void watchdog_reset() {
 }
 #endif
 
+<<<<<<< HEAD
 /*
  * Other archs parse arguments here.
  */
@@ -774,6 +829,8 @@ char * __devinit pcibios_setup(char *str)
 	return str;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 resource_size_t pcibios_align_resource(void *data, const struct resource *res,
 				resource_size_t size, resource_size_t align)
 {
@@ -878,6 +935,7 @@ static void pcic_load_profile_irq(int cpu, unsigned int limit)
 
 void __init sun4m_pci_init_IRQ(void)
 {
+<<<<<<< HEAD
 	sparc_irq_config.build_device_irq = pcic_build_device_irq;
 
 	BTFIXUPSET_CALL(clear_clock_irq, pcic_clear_clock_irq, BTFIXUPCALL_NORM);
@@ -900,6 +958,13 @@ EXPORT_SYMBOL(pci_device_to_OF_node);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sparc_config.build_device_irq = pcic_build_device_irq;
+	sparc_config.clear_clock_irq  = pcic_clear_clock_irq;
+	sparc_config.load_profile_irq = pcic_load_profile_irq;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This probably belongs here rather than ioport.c because
  * we do not want this crud linked into SBus kernels.

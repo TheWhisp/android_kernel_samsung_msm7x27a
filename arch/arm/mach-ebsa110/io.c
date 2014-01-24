@@ -178,7 +178,10 @@ void writesl(void __iomem *addr, const void *data, int len)
 EXPORT_SYMBOL(writesl);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The EBSA110 has a weird "ISA IO" region:
  *
@@ -199,7 +202,10 @@ EXPORT_SYMBOL(writesl);
  * f0000440 - f000046c  220 - 236  eth0
  * f0000405		203        pnp read data
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define SUPERIO_PORT(p) \
 	(((p) >> 3) == (0x3f8 >> 3) || \
 	 ((p) >> 3) == (0x2f8 >> 3) || \

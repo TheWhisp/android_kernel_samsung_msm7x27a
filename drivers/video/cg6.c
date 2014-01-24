@@ -607,7 +607,11 @@ static int cg6_ioctl(struct fb_info *info, unsigned int cmd, unsigned long arg)
  *  Initialisation
  */
 
+<<<<<<< HEAD
 static void __devinit cg6_init_fix(struct fb_info *info, int linebytes)
+=======
+static void cg6_init_fix(struct fb_info *info, int linebytes)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cg6_par *par = (struct cg6_par *)info->par;
 	const char *cg6_cpu_name, *cg6_card_name;
@@ -624,7 +628,11 @@ static void __devinit cg6_init_fix(struct fb_info *info, int linebytes)
 	default:
 		cg6_cpu_name = "i386";
 		break;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	if (((conf >> CG6_FHC_REV_SHIFT) & CG6_FHC_REV_MASK) >= 11) {
 		if (info->fix.smem_len <= 0x100000)
 			cg6_card_name = "TGX";
@@ -649,7 +657,11 @@ static void __devinit cg6_init_fix(struct fb_info *info, int linebytes)
 }
 
 /* Initialize Brooktree DAC */
+<<<<<<< HEAD
 static void __devinit cg6_bt_init(struct cg6_par *par)
+=======
+static void cg6_bt_init(struct cg6_par *par)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bt_regs __iomem *bt = par->bt;
 
@@ -663,7 +675,11 @@ static void __devinit cg6_bt_init(struct cg6_par *par)
 	sbus_writel(0x00 << 24, &bt->control);
 }
 
+<<<<<<< HEAD
 static void __devinit cg6_chip_init(struct fb_info *info)
+=======
+static void cg6_chip_init(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cg6_par *par = (struct cg6_par *)info->par;
 	struct cg6_tec __iomem *tec = par->tec;
@@ -737,7 +753,11 @@ static void cg6_unmap_regs(struct platform_device *op, struct fb_info *info,
 			   info->fix.smem_len);
 }
 
+<<<<<<< HEAD
 static int __devinit cg6_probe(struct platform_device *op)
+=======
+static int cg6_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dp = op->dev.of_node;
 	struct fb_info *info;
@@ -827,7 +847,11 @@ out_err:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit cg6_remove(struct platform_device *op)
+=======
+static int cg6_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = dev_get_drvdata(&op->dev);
 	struct cg6_par *par = info->par;
@@ -839,8 +863,11 @@ static int __devexit cg6_remove(struct platform_device *op)
 
 	framebuffer_release(info);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -862,7 +889,11 @@ static struct platform_driver cg6_driver = {
 		.of_match_table = cg6_match,
 	},
 	.probe		= cg6_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(cg6_remove),
+=======
+	.remove		= cg6_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init cg6_init(void)

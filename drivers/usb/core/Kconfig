@@ -3,7 +3,10 @@
 #
 config USB_DEBUG
 	bool "USB verbose debug messages"
+<<<<<<< HEAD
 	depends on USB
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want the USB core & hub drivers to produce a bunch
 	  of debug messages to the system log. Select this if you are having a
@@ -11,7 +14,10 @@ config USB_DEBUG
 
 config USB_ANNOUNCE_NEW_DEVICES
 	bool "USB announce new devices"
+<<<<<<< HEAD
 	depends on USB
+=======
+>>>>>>> refs/remotes/origin/master
 	default N
 	help
 	  Say Y here if you want the USB core to always announce the
@@ -25,6 +31,7 @@ config USB_ANNOUNCE_NEW_DEVICES
 	  log, or have any doubts about this, say N here.
 
 comment "Miscellaneous USB options"
+<<<<<<< HEAD
 	depends on USB
 
 config USB_DEVICEFS
@@ -82,6 +89,26 @@ config USB_DEVICE_CLASS
 config USB_DYNAMIC_MINORS
 	bool "Dynamic USB minor allocation"
 	depends on USB
+=======
+
+config USB_DEFAULT_PERSIST
+	bool "Enable USB persist by default"
+	default y
+	help
+	  Say N here if you don't want USB power session persistence
+	  enabled by default.  If you say N it will make suspended USB
+	  devices that lose power get reenumerated as if they had been
+	  unplugged, causing any mounted filesystems to be lost.  The
+	  persist feature can still be enabled for individual devices
+	  through the power/persist sysfs node. See
+	  Documentation/usb/persist.txt for more info.
+
+	  If you have any questions about this, say Y here, only say N
+	  if you know exactly what you are doing.
+
+config USB_DYNAMIC_MINORS
+	bool "Dynamic USB minor allocation"
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you say Y here, the USB subsystem will use dynamic minor
 	  allocation for any device that uses the USB major number.
@@ -90,6 +117,7 @@ config USB_DYNAMIC_MINORS
 
 	  If you are unsure about this, say N here.
 
+<<<<<<< HEAD
 config USB_SUSPEND
 	bool "USB runtime power management (autosuspend) and wakeup"
 	depends on USB && PM_RUNTIME
@@ -110,6 +138,11 @@ config USB_OTG
 	bool "OTG support"
 	depends on USB && EXPERIMENTAL
 	depends on USB_SUSPEND
+=======
+config USB_OTG
+	bool "OTG support"
+	depends on PM_RUNTIME
+>>>>>>> refs/remotes/origin/master
 	default n
 	help
 	  The most notable feature of USB OTG is support for a
@@ -125,7 +158,10 @@ config USB_OTG_WHITELIST
 	bool "Rely on OTG Targeted Peripherals List"
 	depends on USB_OTG || EXPERT
 	default y if USB_OTG
+<<<<<<< HEAD
 	default n if EXPERT
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you say Y here, the "otg_whitelist.h" file will be used as a
 	  product whitelist, so USB peripherals not listed there will be

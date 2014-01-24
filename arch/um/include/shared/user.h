@@ -7,10 +7,14 @@
 #define __USER_H__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "kern_constants.h"
 =======
 #include <generated/asm-offsets.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <generated/asm-offsets.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The usual definition - copied here because the kernel provides its own,
@@ -30,6 +34,20 @@
 extern void panic(const char *fmt, ...)
 	__attribute__ ((format (printf, 1, 2)));
 
+<<<<<<< HEAD
+=======
+/* Requires preincluding include/linux/kern_levels.h */
+#define UM_KERN_EMERG	KERN_EMERG
+#define UM_KERN_ALERT	KERN_ALERT
+#define UM_KERN_CRIT	KERN_CRIT
+#define UM_KERN_ERR	KERN_ERR
+#define UM_KERN_WARNING	KERN_WARNING
+#define UM_KERN_NOTICE	KERN_NOTICE
+#define UM_KERN_INFO	KERN_INFO
+#define UM_KERN_DEBUG	KERN_DEBUG
+#define UM_KERN_CONT	KERN_CONT
+
+>>>>>>> refs/remotes/origin/master
 #ifdef UML_CONFIG_PRINTK
 extern int printk(const char *fmt, ...)
 	__attribute__ ((format (printf, 1, 2)));
@@ -41,6 +59,7 @@ static inline int printk(const char *fmt, ...)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void schedule(void);
 extern int in_aton(char *str);
 extern int open_gdb_chan(void);
@@ -48,6 +67,8 @@ extern size_t strlcpy(char *, const char *, size_t);
 extern size_t strlcat(char *, const char *, size_t);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern int in_aton(char *str);
 extern size_t strlcpy(char *, const char *, size_t);
 extern size_t strlcat(char *, const char *, size_t);
@@ -55,5 +76,8 @@ extern size_t strlcat(char *, const char *, size_t);
 /* Copied from linux/compiler-gcc.h since we can't include it directly */
 #define barrier() __asm__ __volatile__("": : :"memory")
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

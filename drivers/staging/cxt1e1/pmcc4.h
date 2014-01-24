@@ -1,10 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * $Id: pmcc4.h,v 1.4 2005/11/01 19:24:48 rickd PMCC4_3_1B $
  */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef _INC_PMCC4_H_
 #define _INC_PMCC4_H_
 
@@ -26,6 +29,7 @@
  * For further information, contact via email: support@sbei.com
  * SBE, Inc.  San Ramon, California  U.S.A.
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
 <<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 1.4 $
@@ -63,12 +67,18 @@
 
 #include <linux/types.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/master
 
 typedef int status_t;
 
 #define SBE_DRVR_FAIL     0
 #define SBE_DRVR_SUCCESS  1
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef __cplusplus
 extern      "C"
@@ -78,6 +88,8 @@ extern      "C"
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /********************/
 /* PMCC4 memory Map */
 /********************/
@@ -118,12 +130,15 @@ extern      "C"
 #define sbeE1CRC       0x01
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef __cplusplus
 }
 #endif
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef __KERNEL__
 
 /*
@@ -142,6 +157,7 @@ void        c4_cleanup (void);
 status_t    c4_chan_up (ci_t *, int channum);
 status_t    c4_del_chan_stats (int channum);
 status_t    c4_del_chan (int channum);
+<<<<<<< HEAD
 status_t    c4_get_iidinfo (ci_t * ci, struct sbe_iid_info * iip);
 int         c4_is_chan_up (int channum);
 
@@ -151,6 +167,17 @@ void        sbecom_set_loglevel (int debuglevel);
 char       *sbeid_get_bdname (ci_t * ci);
 void        sbeid_set_bdtype (ci_t * ci);
 void        sbeid_set_hdwbid (ci_t * ci);
+=======
+status_t    c4_get_iidinfo (ci_t *ci, struct sbe_iid_info *iip);
+int         c4_is_chan_up (int channum);
+
+void       *getuserbychan (int channum);
+void        pci_flush_write (ci_t *ci);
+void        sbecom_set_loglevel (int debuglevel);
+char       *sbeid_get_bdname (ci_t *ci);
+void        sbeid_set_bdtype (ci_t *ci);
+void        sbeid_set_hdwbid (ci_t *ci);
+>>>>>>> refs/remotes/origin/master
 u_int32_t   sbeCrc (u_int8_t *, u_int32_t, u_int32_t, u_int32_t *);
 
 void        VMETRO_TRACE (void *);       /* put data into 8 LEDs */

@@ -59,6 +59,7 @@ _ENTRY(_stext);
 _ENTRY(_start);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Save parameters we are passed.
 	*/
 	mr	r31,r3
@@ -69,6 +70,9 @@ _ENTRY(_start);
 =======
 	mr	r31,r3			/* save device tree ptr */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mr	r31,r3			/* save device tree ptr */
+>>>>>>> refs/remotes/origin/master
 
 	/* We have to turn on the MMU right away so we get cache modes
 	 * set correctly.
@@ -405,10 +409,14 @@ label:
 	mr	r4,r12			/* Pass SRR0 as arg2 */
 	li	r5,0			/* Pass zero as arg3 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	EXC_XFER_EE_LITE(0x400, handle_page_fault)
 =======
 	EXC_XFER_LITE(0x400, handle_page_fault)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	EXC_XFER_LITE(0x400, handle_page_fault)
+>>>>>>> refs/remotes/origin/master
 
 /* 0x0500 - External Interrupt Exception */
 	EXCEPTION(0x0500, HardwareInterrupt, do_IRQ, EXC_XFER_LITE)
@@ -444,6 +452,7 @@ label:
 	EXCEPTION(0x0F00, Trap_0F, unknown_exception, EXC_XFER_EE)
 
 /* 0x1000 - Programmable Interval Timer (PIT) Exception */
+<<<<<<< HEAD
 	START_EXCEPTION(0x1000, Decrementer)
 	NORMAL_EXCEPTION_PROLOG
 	lis	r0,TSR_PIS@h
@@ -468,6 +477,20 @@ label:
 	CRITICAL_EXCEPTION(0x1020, WDTException, unknown_exception)
 #endif
 #endif
+=======
+	. = 0x1000
+	b Decrementer
+
+/* 0x1010 - Fixed Interval Timer (FIT) Exception
+*/
+	. = 0x1010
+	b FITException
+
+/* 0x1020 - Watchdog Timer (WDT) Exception
+*/
+	. = 0x1020
+	b WDTException
+>>>>>>> refs/remotes/origin/master
 
 /* 0x1100 - Data TLB Miss Exception
  * As the name implies, translation is not in the MMU, so search the
@@ -752,6 +775,32 @@ label:
 		(MSR_KERNEL & ~(MSR_ME|MSR_DE|MSR_CE)), \
 		NOCOPY, crit_transfer_to_handler, ret_from_crit_exc)
 
+<<<<<<< HEAD
+=======
+	/* Programmable Interval Timer (PIT) Exception. (from 0x1000) */
+Decrementer:
+	NORMAL_EXCEPTION_PROLOG
+	lis	r0,TSR_PIS@h
+	mtspr	SPRN_TSR,r0		/* Clear the PIT exception */
+	addi	r3,r1,STACK_FRAME_OVERHEAD
+	EXC_XFER_LITE(0x1000, timer_interrupt)
+
+	/* Fixed Interval Timer (FIT) Exception. (from 0x1010) */
+FITException:
+	NORMAL_EXCEPTION_PROLOG
+	addi	r3,r1,STACK_FRAME_OVERHEAD;
+	EXC_XFER_EE(0x1010, unknown_exception)
+
+	/* Watchdog Timer (WDT) Exception. (from 0x1020) */
+WDTException:
+	CRITICAL_EXCEPTION_PROLOG;
+	addi	r3,r1,STACK_FRAME_OVERHEAD;
+	EXC_XFER_TEMPLATE(WatchdogException, 0x1020+2,
+	                  (MSR_KERNEL & ~(MSR_ME|MSR_DE|MSR_CE)),
+			  NOCOPY, crit_transfer_to_handler,
+			  ret_from_crit_exc)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The other Data TLB exceptions bail out to this point
  * if they can't resolve the lightweight TLB fault.
@@ -762,10 +811,14 @@ DataAccess:
 	stw	r5,_ESR(r11)
 	mfspr	r4,SPRN_DEAR		/* Grab the DEAR, save it, pass arg2 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	EXC_XFER_EE_LITE(0x300, handle_page_fault)
 =======
 	EXC_XFER_LITE(0x300, handle_page_fault)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	EXC_XFER_LITE(0x300, handle_page_fault)
+>>>>>>> refs/remotes/origin/master
 
 /* Other PowerPC processors, namely those derived from the 6xx-series
  * have vectors from 0x2100 through 0x2F00 defined, but marked as reserved.
@@ -829,6 +882,7 @@ finish_tlb_load:
 	rfi			/* Should sync shadow TLBs */
 	b	.		/* prevent prefetch past rfi */
 
+<<<<<<< HEAD
 /* extern void giveup_fpu(struct task_struct *prev)
  *
  * The PowerPC 4xx family of processors do not have an FPU, so this just
@@ -837,6 +891,8 @@ finish_tlb_load:
 _ENTRY(giveup_fpu)
 	blr
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* This is where the main kernel code starts.
  */
 start_here:
@@ -862,6 +918,7 @@ start_here:
  * Decide what sort of machine this is and initialize the MMU.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mr	r3,r31
 	mr	r4,r30
 	mr	r5,r29
@@ -871,6 +928,10 @@ start_here:
 	li	r3,0
 	mr	r4,r31
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	li	r3,0
+	mr	r4,r31
+>>>>>>> refs/remotes/origin/master
 	bl	machine_init
 	bl	MMU_init
 

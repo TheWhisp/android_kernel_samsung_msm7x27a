@@ -9,7 +9,10 @@
 #include <linux/kernel.h>
 #include <linux/of_net.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/phy.h>
 #include <linux/export.h>
 
@@ -24,6 +27,10 @@ static const char *phy_modes[] = {
 	[PHY_INTERFACE_MODE_GMII]	= "gmii",
 	[PHY_INTERFACE_MODE_SGMII]	= "sgmii",
 	[PHY_INTERFACE_MODE_TBI]	= "tbi",
+<<<<<<< HEAD
+=======
+	[PHY_INTERFACE_MODE_REVMII]	= "rev-mii",
+>>>>>>> refs/remotes/origin/master
 	[PHY_INTERFACE_MODE_RMII]	= "rmii",
 	[PHY_INTERFACE_MODE_RGMII]	= "rgmii",
 	[PHY_INTERFACE_MODE_RGMII_ID]	= "rgmii-id",
@@ -40,7 +47,11 @@ static const char *phy_modes[] = {
  * The function gets phy interface string from property 'phy-mode',
  * and return its index in phy_modes table, or errno in error case.
  */
+<<<<<<< HEAD
 const int of_get_phy_mode(struct device_node *np)
+=======
+int of_get_phy_mode(struct device_node *np)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *pm;
 	int err, i;
@@ -56,7 +67,10 @@ const int of_get_phy_mode(struct device_node *np)
 	return -ENODEV;
 }
 EXPORT_SYMBOL_GPL(of_get_phy_mode);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * Search the device tree for the best MAC address to use.  'mac-address' is

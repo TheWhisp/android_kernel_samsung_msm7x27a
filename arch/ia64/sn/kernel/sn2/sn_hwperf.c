@@ -26,9 +26,13 @@
 #include <linux/fs.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/vmalloc.h>
 #include <linux/seq_file.h>
 #include <linux/miscdevice.h>
@@ -620,12 +624,15 @@ static int sn_hwperf_op_cpu(struct sn_hwperf_op_info *op_info)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu == SN_HWPERF_ARG_ANY_CPU || cpu == get_cpu()) {
 		/* don't care, or already on correct cpu */
 		sn_hwperf_call_sal(op_info);
 	}
 	else {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cpu == SN_HWPERF_ARG_ANY_CPU) {
 		/* don't care which cpu */
 		sn_hwperf_call_sal(op_info);
@@ -635,7 +642,10 @@ static int sn_hwperf_op_cpu(struct sn_hwperf_op_info *op_info)
 		put_cpu();
 	} else {
 		put_cpu();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (use_ipi) {
 			/* use an interprocessor interrupt to call SAL */
 			smp_call_function_single(cpu, sn_hwperf_call_sal,
@@ -988,7 +998,11 @@ int sn_hwperf_get_nearest_node(cnodeid_t node,
 	return e;
 }
 
+<<<<<<< HEAD
 static int __devinit sn_hwperf_misc_register_init(void)
+=======
+static int sn_hwperf_misc_register_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int e;
 

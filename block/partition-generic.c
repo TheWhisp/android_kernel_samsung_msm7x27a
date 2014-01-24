@@ -84,7 +84,11 @@ ssize_t part_size_show(struct device *dev,
 		       struct device_attribute *attr, char *buf)
 {
 	struct hd_struct *p = dev_to_part(dev);
+<<<<<<< HEAD
 	return sprintf(buf, "%llu\n",(unsigned long long)p->nr_sects);
+=======
+	return sprintf(buf, "%llu\n",(unsigned long long)part_nr_sects_read(p));
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t part_ro_show(struct device *dev,
@@ -216,6 +220,7 @@ static void part_release(struct device *dev)
 	kfree(p);
 }
 
+<<<<<<< HEAD
 static int part_uevent(struct device *dev, struct kobj_uevent_env *env)
 {
 	struct hd_struct *part = dev_to_part(dev);
@@ -226,11 +231,16 @@ static int part_uevent(struct device *dev, struct kobj_uevent_env *env)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct device_type part_type = {
 	.name		= "partition",
 	.groups		= part_attr_groups,
 	.release	= part_release,
+<<<<<<< HEAD
 	.uevent		= part_uevent,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void delete_partition_rcu_cb(struct rcu_head *head)
@@ -305,6 +315,11 @@ struct hd_struct *add_partition(struct gendisk *disk, int partno,
 		err = -ENOMEM;
 		goto out_free;
 	}
+<<<<<<< HEAD
+=======
+
+	seqcount_init(&p->nr_sects_seq);
+>>>>>>> refs/remotes/origin/master
 	pdev = part_to_dev(p);
 
 	p->start_sect = start;
@@ -427,7 +442,11 @@ int rescan_partitions(struct gendisk *disk, struct block_device *bdev)
 	int p, highest, res;
 rescan:
 	if (state && !IS_ERR(state)) {
+<<<<<<< HEAD
 		kfree(state);
+=======
+		free_partitions(state);
+>>>>>>> refs/remotes/origin/master
 		state = NULL;
 	}
 
@@ -534,7 +553,11 @@ rescan:
 			md_autodetect_dev(part_to_dev(part)->devt);
 #endif
 	}
+<<<<<<< HEAD
 	kfree(state);
+=======
+	free_partitions(state);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

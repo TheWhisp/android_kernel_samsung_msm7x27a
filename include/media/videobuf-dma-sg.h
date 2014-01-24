@@ -35,10 +35,14 @@
  *
  * videobuf_dma_*()
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	see Documentation/PCI/PCI-DMA-mapping.txt, these functions to
 =======
  *	see Documentation/DMA-API-HOWTO.txt, these functions to
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	see Documentation/DMA-API-HOWTO.txt, these functions to
+>>>>>>> refs/remotes/origin/master
  *	basically the same.  The map function does also build a
  *	scatterlist for the buffer (and unmap frees it ...)
  *

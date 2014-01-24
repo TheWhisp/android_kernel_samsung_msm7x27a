@@ -2,10 +2,14 @@
  * AD714X CapTouch Programmable Controller driver (bus interfaces)
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2009 Analog Devices Inc.
 =======
  * Copyright 2009-2011 Analog Devices Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2009-2011 Analog Devices Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Licensed under the GPL-2 or later.
  */
@@ -16,12 +20,15 @@
 #include <linux/types.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct device;
 struct ad714x_chip;
 
 typedef int (*ad714x_read_t)(struct device *, unsigned short, unsigned short *);
 typedef int (*ad714x_write_t)(struct device *, unsigned short, unsigned short);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define STAGE_NUM              12
 
 struct device;
@@ -56,7 +63,10 @@ struct ad714x_chip {
 	__be16 xfer_buf[16] ____cacheline_aligned;
 
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int ad714x_disable(struct ad714x_chip *ad714x);
 int ad714x_enable(struct ad714x_chip *ad714x);

@@ -5,7 +5,12 @@
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
+<<<<<<< HEAD
  *   the Free Software Foundation; only version 2 of the License.
+=======
+ *   the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+>>>>>>> refs/remotes/origin/master
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,16 +25,20 @@
 
 #include <linux/mm.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/file.h>
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/pm_qos_params.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/file.h>
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/pm_qos.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/uio.h>
 #include <linux/dma-mapping.h>
@@ -40,6 +49,12 @@
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <sound/compress_offload.h>
+=======
+#include <linux/aio.h>
+#include <linux/dma-mapping.h>
+#include <sound/core.h>
+#include <sound/control.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/info.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -613,6 +628,11 @@ int snd_pcm_status(struct snd_pcm_substream *substream,
 		snd_pcm_update_hw_ptr(substream);
 		if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE) {
 			status->tstamp = runtime->status->tstamp;
+<<<<<<< HEAD
+=======
+			status->audio_tstamp =
+				runtime->status->audio_tstamp;
+>>>>>>> refs/remotes/origin/master
 			goto _tstamp_end;
 		}
 	}
@@ -862,7 +882,10 @@ static int snd_pcm_pre_start(struct snd_pcm_substream *substream, int state)
 	if (runtime->status->state != SNDRV_PCM_STATE_PREPARED)
 		return -EBADFD;
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
+<<<<<<< HEAD
 	    !substream->hw_no_buffer &&
+=======
+>>>>>>> refs/remotes/origin/master
 	    !snd_pcm_playback_data(substream))
 		return -EPIPE;
 	runtime->trigger_master = substream;
@@ -908,6 +931,11 @@ static struct action_ops snd_pcm_action_start = {
 /**
  * snd_pcm_start - start all linked streams
  * @substream: the PCM substream instance
+<<<<<<< HEAD
+=======
+ *
+ * Return: Zero if successful, or a negative error code.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_pcm_start(struct snd_pcm_substream *substream)
 {
@@ -961,6 +989,11 @@ static struct action_ops snd_pcm_action_stop = {
  * @state: PCM state after stopping the stream
  *
  * The state of each stream is then changed to the given state unconditionally.
+<<<<<<< HEAD
+=======
+ *
+ * Return: Zero if succesful, or a negative error code.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_pcm_stop(struct snd_pcm_substream *substream, snd_pcm_state_t state)
 {
@@ -975,6 +1008,11 @@ EXPORT_SYMBOL(snd_pcm_stop);
  *
  * After stopping, the state is changed to SETUP.
  * Unlike snd_pcm_stop(), this affects only the given stream.
+<<<<<<< HEAD
+=======
+ *
+ * Return: Zero if succesful, or a negative error code.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_pcm_drain_done(struct snd_pcm_substream *substream)
 {
@@ -1108,6 +1146,12 @@ static struct action_ops snd_pcm_action_suspend = {
  * @substream: the PCM substream
  *
  * After this call, all streams are changed to SUSPENDED state.
+<<<<<<< HEAD
+=======
+ *
+ * Return: Zero if successful (or @substream is %NULL), or a negative error
+ * code.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_pcm_suspend(struct snd_pcm_substream *substream)
 {
@@ -1130,6 +1174,11 @@ EXPORT_SYMBOL(snd_pcm_suspend);
  * @pcm: the PCM instance
  *
  * After this call, all streams are changed to SUSPENDED state.
+<<<<<<< HEAD
+=======
+ *
+ * Return: Zero if successful (or @pcm is %NULL), or a negative error code.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_pcm_suspend_all(struct snd_pcm *pcm)
 {
@@ -1353,6 +1402,11 @@ static struct action_ops snd_pcm_action_prepare = {
  * snd_pcm_prepare - prepare the PCM substream to be triggerable
  * @substream: the PCM substream instance
  * @file: file to refer f_flags
+<<<<<<< HEAD
+=======
+ *
+ * Return: Zero if successful, or a negative error code.
+>>>>>>> refs/remotes/origin/master
  */
 static int snd_pcm_prepare(struct snd_pcm_substream *substream,
 			   struct file *file)
@@ -1380,7 +1434,18 @@ static int snd_pcm_prepare(struct snd_pcm_substream *substream,
 
 static int snd_pcm_pre_drain_init(struct snd_pcm_substream *substream, int state)
 {
+<<<<<<< HEAD
 	substream->runtime->trigger_master = substream;
+=======
+	struct snd_pcm_runtime *runtime = substream->runtime;
+	switch (runtime->status->state) {
+	case SNDRV_PCM_STATE_OPEN:
+	case SNDRV_PCM_STATE_DISCONNECTED:
+	case SNDRV_PCM_STATE_SUSPENDED:
+		return -EBADFD;
+	}
+	runtime->trigger_master = substream;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1399,6 +1464,12 @@ static int snd_pcm_do_drain_init(struct snd_pcm_substream *substream, int state)
 		case SNDRV_PCM_STATE_RUNNING:
 			runtime->status->state = SNDRV_PCM_STATE_DRAINING;
 			break;
+<<<<<<< HEAD
+=======
+		case SNDRV_PCM_STATE_XRUN:
+			runtime->status->state = SNDRV_PCM_STATE_SETUP;
+			break;
+>>>>>>> refs/remotes/origin/master
 		default:
 			break;
 		}
@@ -1544,6 +1615,7 @@ static int snd_pcm_drain(struct snd_pcm_substream *substream,
 	return result;
 }
 
+<<<<<<< HEAD
 static int snd_compressed_ioctl(struct snd_pcm_substream *substream,
 				 unsigned int cmd, void __user *arg)
 {
@@ -1561,6 +1633,8 @@ static int snd_compressed_ioctl(struct snd_pcm_substream *substream,
 	err = substream->ops->ioctl(substream, cmd, arg);
 	return err;
 }
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * drop ioctl
  *
@@ -1593,6 +1667,7 @@ static int snd_pcm_drop(struct snd_pcm_substream *substream)
 }
 
 
+<<<<<<< HEAD
 /* WARNING: Don't forget to fput back the file */
 static struct file *snd_pcm_file_fd(int fd)
 {
@@ -1616,6 +1691,18 @@ static struct file *snd_pcm_file_fd(int fd)
 		return NULL;
 	}
 	return file;
+=======
+static bool is_pcm_file(struct file *file)
+{
+	struct inode *inode = file_inode(file);
+	unsigned int minor;
+
+	if (!S_ISCHR(inode->i_mode) || imajor(inode) != snd_major)
+		return false;
+	minor = iminor(inode);
+	return snd_lookup_minor_data(minor, SNDRV_DEVICE_TYPE_PCM_PLAYBACK) ||
+		snd_lookup_minor_data(minor, SNDRV_DEVICE_TYPE_PCM_CAPTURE);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1624,6 +1711,7 @@ static struct file *snd_pcm_file_fd(int fd)
 static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
 {
 	int res = 0;
+<<<<<<< HEAD
 	struct file *file;
 	struct snd_pcm_file *pcm_file;
 	struct snd_pcm_substream *substream1;
@@ -1639,12 +1727,30 @@ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
 	substream1 = pcm_file->substream;
 <<<<<<< HEAD
 =======
+=======
+	struct snd_pcm_file *pcm_file;
+	struct snd_pcm_substream *substream1;
+	struct snd_pcm_group *group;
+	struct fd f = fdget(fd);
+
+	if (!f.file)
+		return -EBADFD;
+	if (!is_pcm_file(f.file)) {
+		res = -EBADFD;
+		goto _badf;
+	}
+	pcm_file = f.file->private_data;
+	substream1 = pcm_file->substream;
+>>>>>>> refs/remotes/origin/master
 	group = kmalloc(sizeof(*group), GFP_KERNEL);
 	if (!group) {
 		res = -ENOMEM;
 		goto _nolock;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	down_write(&snd_pcm_link_rwsem);
 	write_lock_irq(&snd_pcm_link_rwlock);
 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN ||
@@ -1658,6 +1764,7 @@ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
 	}
 	if (!snd_pcm_stream_linked(substream)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		substream->group = kmalloc(sizeof(struct snd_pcm_group), GFP_ATOMIC);
 		if (substream->group == NULL) {
 			res = -ENOMEM;
@@ -1666,6 +1773,10 @@ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
 =======
 		substream->group = group;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		substream->group = group;
+		group = NULL;
+>>>>>>> refs/remotes/origin/master
 		spin_lock_init(&substream->group->lock);
 		INIT_LIST_HEAD(&substream->group->substreams);
 		list_add_tail(&substream->link_list, &substream->group->substreams);
@@ -1678,6 +1789,7 @@ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
 	write_unlock_irq(&snd_pcm_link_rwlock);
 	up_write(&snd_pcm_link_rwsem);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_card_unref(substream1->pcm->card);
 	fput(file);
 =======
@@ -1687,6 +1799,13 @@ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
 	if (res < 0)
 		kfree(group);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ _nolock:
+	snd_card_unref(substream1->pcm->card);
+	kfree(group);
+ _badf:
+	fdput(f);
+>>>>>>> refs/remotes/origin/master
 	return res;
 }
 
@@ -2035,7 +2154,11 @@ int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
 	if (runtime->dma_bytes) {
 		err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 0, runtime->dma_bytes);
 		if (err < 0)
+<<<<<<< HEAD
 			return -EINVAL;
+=======
+			return err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!(hw->rates & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))) {
@@ -2102,12 +2225,15 @@ int snd_pcm_open_substream(struct snd_pcm *pcm, int stream,
 		goto error;
 	}
 
+<<<<<<< HEAD
 	if (substream->ops == NULL) {
 		snd_printd("cannot open back end PCMs directly\n");
 		err = -ENODEV;
 		goto error;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((err = substream->ops->open(substream)) < 0)
 		goto error;
 
@@ -2132,22 +2258,29 @@ EXPORT_SYMBOL(snd_pcm_open_substream);
 static int snd_pcm_open_file(struct file *file,
 			     struct snd_pcm *pcm,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     int stream,
 			     struct snd_pcm_file **rpcm_file)
 =======
 			     int stream)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     int stream)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm_file *pcm_file;
 	struct snd_pcm_substream *substream;
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (rpcm_file)
 		*rpcm_file = NULL;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	err = snd_pcm_open_substream(pcm, stream, file, &substream);
 	if (err < 0)
 		return err;
@@ -2164,11 +2297,15 @@ static int snd_pcm_open_file(struct file *file,
 	}
 	file->private_data = pcm_file;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (rpcm_file)
 		*rpcm_file = pcm_file;
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2204,9 +2341,12 @@ static int snd_pcm_open(struct file *file, struct snd_pcm *pcm, int stream)
 {
 	int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct snd_pcm_file *pcm_file;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	wait_queue_t wait;
 
 	if (pcm == NULL) {
@@ -2225,10 +2365,14 @@ static int snd_pcm_open(struct file *file, struct snd_pcm *pcm, int stream)
 	mutex_lock(&pcm->open_mutex);
 	while (1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = snd_pcm_open_file(file, pcm, stream, &pcm_file);
 =======
 		err = snd_pcm_open_file(file, pcm, stream);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = snd_pcm_open_file(file, pcm, stream);
+>>>>>>> refs/remotes/origin/master
 		if (err >= 0)
 			break;
 		if (err == -EAGAIN) {
@@ -2490,6 +2634,10 @@ static int snd_pcm_hwsync(struct snd_pcm_substream *substream)
 	case SNDRV_PCM_STATE_DRAINING:
 		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
 			goto __badfd;
+<<<<<<< HEAD
+=======
+		/* Fall through */
+>>>>>>> refs/remotes/origin/master
 	case SNDRV_PCM_STATE_RUNNING:
 		if ((err = snd_pcm_update_hw_ptr(substream)) < 0)
 			break;
@@ -2522,6 +2670,10 @@ static int snd_pcm_delay(struct snd_pcm_substream *substream,
 	case SNDRV_PCM_STATE_DRAINING:
 		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
 			goto __badfd;
+<<<<<<< HEAD
+=======
+		/* Fall through */
+>>>>>>> refs/remotes/origin/master
 	case SNDRV_PCM_STATE_RUNNING:
 		if ((err = snd_pcm_update_hw_ptr(substream)) < 0)
 			break;
@@ -2668,12 +2820,15 @@ static int snd_pcm_common_ioctl1(struct file *file,
 		snd_pcm_stream_unlock_irq(substream);
 		return res;
 	}
+<<<<<<< HEAD
 	case SNDRV_COMPRESS_GET_CAPS:
 	case SNDRV_COMPRESS_GET_CODEC_CAPS:
 	case SNDRV_COMPRESS_SET_PARAMS:
 	case SNDRV_COMPRESS_GET_PARAMS:
 	case SNDRV_COMPRESS_TSTAMP:
 		return snd_compressed_ioctl(substream, cmd, arg);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	snd_printd("unknown ioctl = 0x%x\n", cmd);
 	return -ENOTTY;
@@ -2846,7 +3001,11 @@ static long snd_pcm_playback_ioctl(struct file *file, unsigned int cmd,
 
 	pcm_file = file->private_data;
 
+<<<<<<< HEAD
 	if ((((cmd >> 8) & 0xff) != 'A') && (((cmd >> 8) & 0xff) != 'C'))
+=======
+	if (((cmd >> 8) & 0xff) != 'A')
+>>>>>>> refs/remotes/origin/master
 		return -ENOTTY;
 
 	return snd_pcm_playback_ioctl1(file, pcm_file->substream, cmd,
@@ -2861,10 +3020,14 @@ static long snd_pcm_capture_ioctl(struct file *file, unsigned int cmd,
 	pcm_file = file->private_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (((cmd >> 8) & 0xff) != 'A')
 =======
 	if ((((cmd >> 8) & 0xff) != 'A') && (((cmd >> 8) & 0xff) != 'C'))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (((cmd >> 8) & 0xff) != 'A')
+>>>>>>> refs/remotes/origin/master
 		return -ENOTTY;
 
 	return snd_pcm_capture_ioctl1(file, pcm_file->substream, cmd,
@@ -3139,7 +3302,11 @@ static int snd_pcm_mmap_status(struct snd_pcm_substream *substream, struct file 
 		return -EINVAL;
 	area->vm_ops = &snd_pcm_vm_ops_status;
 	area->vm_private_data = substream;
+<<<<<<< HEAD
 	area->vm_flags |= VM_RESERVED;
+=======
+	area->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -3176,7 +3343,11 @@ static int snd_pcm_mmap_control(struct snd_pcm_substream *substream, struct file
 		return -EINVAL;
 	area->vm_ops = &snd_pcm_vm_ops_control;
 	area->vm_private_data = substream;
+<<<<<<< HEAD
 	area->vm_flags |= VM_RESERVED;
+=======
+	area->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 #else /* ! coherent mmap */
@@ -3268,6 +3439,7 @@ static const struct vm_operations_struct snd_pcm_vm_ops_data_fault = {
  * mmap the DMA buffer on RAM
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int snd_pcm_default_mmap(struct snd_pcm_substream *substream,
 				struct vm_area_struct *area)
 =======
@@ -3276,6 +3448,20 @@ int snd_pcm_lib_default_mmap(struct snd_pcm_substream *substream,
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	area->vm_flags |= VM_RESERVED;
+=======
+int snd_pcm_lib_default_mmap(struct snd_pcm_substream *substream,
+			     struct vm_area_struct *area)
+{
+	area->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
+#ifdef CONFIG_GENERIC_ALLOCATOR
+	if (substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV_IRAM) {
+		area->vm_page_prot = pgprot_writecombine(area->vm_page_prot);
+		return remap_pfn_range(area, area->vm_start,
+				substream->dma_buffer.addr >> PAGE_SHIFT,
+				area->vm_end - area->vm_start, area->vm_page_prot);
+	}
+#endif /* CONFIG_GENERIC_ALLOCATOR */
+>>>>>>> refs/remotes/origin/master
 #ifdef ARCH_HAS_DMA_MMAP_COHERENT
 	if (!substream->ops->page &&
 	    substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV)
@@ -3294,9 +3480,13 @@ int snd_pcm_lib_default_mmap(struct snd_pcm_substream *substream,
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(snd_pcm_lib_default_mmap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(snd_pcm_lib_default_mmap);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * mmap the DMA buffer on I/O memory area
@@ -3355,10 +3545,14 @@ int snd_pcm_mmap_data(struct snd_pcm_substream *substream, struct file *file,
 		err = substream->ops->mmap(substream, area);
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = snd_pcm_default_mmap(substream, area);
 =======
 		err = snd_pcm_lib_default_mmap(substream, area);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = snd_pcm_lib_default_mmap(substream, area);
+>>>>>>> refs/remotes/origin/master
 	if (!err)
 		atomic_inc(&substream->mmap_count);
 	return err;

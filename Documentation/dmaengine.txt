@@ -11,6 +11,7 @@ Below is a guide to device driver writers on how to use the Slave-DMA API of the
 DMA Engine. This is applicable only for slave DMA usage only.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 The slave DMA usage consists of following steps
 1. Allocate a DMA slave channel
 2. Set slave and controller specific parameters
@@ -96,6 +97,8 @@ be available for submit prior to callback routine being called. This requirement
 is not a requirement for DMA-slave devices. But they should take care to drop
 the spin-lock they might be holding before calling the callback routine
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 The slave DMA usage consists of following steps:
 1. Allocate a DMA slave channel
 2. Set slave and controller specific parameters
@@ -282,4 +285,7 @@ Further APIs:
 	a running DMA channel.  It is recommended that DMA engine users
 	pause or stop (via dmaengine_terminate_all) the channel before
 	using this API.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

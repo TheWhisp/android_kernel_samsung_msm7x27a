@@ -23,10 +23,14 @@
 #include <linux/mutex.h>
 #include <net/flow.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/security.h>
 
 struct flow_cache_entry {
@@ -35,9 +39,13 @@ struct flow_cache_entry {
 		struct list_head	gc_list;
 	} u;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct net			*net;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net			*net;
+>>>>>>> refs/remotes/origin/master
 	u16				family;
 	u8				dir;
 	u32				genid;
@@ -139,14 +147,22 @@ static void __flow_cache_shrink(struct flow_cache *fc,
 				int shrink_to)
 {
 	struct flow_cache_entry *fle;
+<<<<<<< HEAD
 	struct hlist_node *entry, *tmp;
+=======
+	struct hlist_node *tmp;
+>>>>>>> refs/remotes/origin/master
 	LIST_HEAD(gc_list);
 	int i, deleted = 0;
 
 	for (i = 0; i < flow_cache_hash_size(fc); i++) {
 		int saved = 0;
 
+<<<<<<< HEAD
 		hlist_for_each_entry_safe(fle, entry, tmp,
+=======
+		hlist_for_each_entry_safe(fle, tmp,
+>>>>>>> refs/remotes/origin/master
 					  &fcp->hash_table[i], u.hlist) {
 			if (saved < shrink_to &&
 			    flow_entry_valid(fle)) {
@@ -218,7 +234,10 @@ flow_cache_lookup(struct net *net, const struct flowi *key, u16 family, u8 dir,
 	struct flow_cache *fc = &flow_cache_global;
 	struct flow_cache_percpu *fcp;
 	struct flow_cache_entry *fle, *tfle;
+<<<<<<< HEAD
 	struct hlist_node *entry;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct flow_cache_object *flo;
 	size_t keysize;
 	unsigned int hash;
@@ -242,6 +261,7 @@ flow_cache_lookup(struct net *net, const struct flowi *key, u16 family, u8 dir,
 		flow_new_hash_rnd(fc, fcp);
 
 	hash = flow_hash_code(fc, fcp, key, keysize);
+<<<<<<< HEAD
 	hlist_for_each_entry(tfle, entry, &fcp->hash_table[hash], u.hlist) {
 <<<<<<< HEAD
 		if (tfle->family == family &&
@@ -249,6 +269,11 @@ flow_cache_lookup(struct net *net, const struct flowi *key, u16 family, u8 dir,
 		if (tfle->net == net &&
 		    tfle->family == family &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hlist_for_each_entry(tfle, &fcp->hash_table[hash], u.hlist) {
+		if (tfle->net == net &&
+		    tfle->family == family &&
+>>>>>>> refs/remotes/origin/master
 		    tfle->dir == dir &&
 		    flow_key_compare(key, &tfle->key, keysize) == 0) {
 			fle = tfle;
@@ -263,9 +288,13 @@ flow_cache_lookup(struct net *net, const struct flowi *key, u16 family, u8 dir,
 		fle = kmem_cache_alloc(flow_cachep, GFP_ATOMIC);
 		if (fle) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			fle->net = net;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			fle->net = net;
+>>>>>>> refs/remotes/origin/master
 			fle->family = family;
 			fle->dir = dir;
 			memcpy(&fle->key, key, keysize * sizeof(flow_compare_t));
@@ -300,7 +329,11 @@ nocache:
 		else
 			fle->genid--;
 	} else {
+<<<<<<< HEAD
 		if (flo && !IS_ERR(flo))
+=======
+		if (!IS_ERR_OR_NULL(flo))
+>>>>>>> refs/remotes/origin/master
 			flo->ops->delete(flo);
 	}
 ret_object:
@@ -315,13 +348,21 @@ static void flow_cache_flush_tasklet(unsigned long data)
 	struct flow_cache *fc = info->cache;
 	struct flow_cache_percpu *fcp;
 	struct flow_cache_entry *fle;
+<<<<<<< HEAD
 	struct hlist_node *entry, *tmp;
+=======
+	struct hlist_node *tmp;
+>>>>>>> refs/remotes/origin/master
 	LIST_HEAD(gc_list);
 	int i, deleted = 0;
 
 	fcp = this_cpu_ptr(fc->percpu);
 	for (i = 0; i < flow_cache_hash_size(fc); i++) {
+<<<<<<< HEAD
 		hlist_for_each_entry_safe(fle, entry, tmp,
+=======
+		hlist_for_each_entry_safe(fle, tmp,
+>>>>>>> refs/remotes/origin/master
 					  &fcp->hash_table[i], u.hlist) {
 			if (flow_entry_valid(fle))
 				continue;
@@ -338,6 +379,7 @@ static void flow_cache_flush_tasklet(unsigned long data)
 		complete(&info->completion);
 }
 
+<<<<<<< HEAD
 static void flow_cache_flush_per_cpu(void *data)
 {
 	struct flow_flush_info *info = data;
@@ -346,6 +388,32 @@ static void flow_cache_flush_per_cpu(void *data)
 
 	cpu = smp_processor_id();
 	tasklet = &per_cpu_ptr(info->cache->percpu, cpu)->flush_tasklet;
+=======
+/*
+ * Return whether a cpu needs flushing.  Conservatively, we assume
+ * the presence of any entries means the core may require flushing,
+ * since the flow_cache_ops.check() function may assume it's running
+ * on the same core as the per-cpu cache component.
+ */
+static int flow_cache_percpu_empty(struct flow_cache *fc, int cpu)
+{
+	struct flow_cache_percpu *fcp;
+	int i;
+
+	fcp = per_cpu_ptr(fc->percpu, cpu);
+	for (i = 0; i < flow_cache_hash_size(fc); i++)
+		if (!hlist_empty(&fcp->hash_table[i]))
+			return 0;
+	return 1;
+}
+
+static void flow_cache_flush_per_cpu(void *data)
+{
+	struct flow_flush_info *info = data;
+	struct tasklet_struct *tasklet;
+
+	tasklet = &this_cpu_ptr(info->cache->percpu)->flush_tasklet;
+>>>>>>> refs/remotes/origin/master
 	tasklet->data = (unsigned long)info;
 	tasklet_schedule(tasklet);
 }
@@ -354,11 +422,22 @@ void flow_cache_flush(void)
 {
 	struct flow_flush_info info;
 	static DEFINE_MUTEX(flow_flush_sem);
+<<<<<<< HEAD
+=======
+	cpumask_var_t mask;
+	int i, self;
+
+	/* Track which cpus need flushing to avoid disturbing all cores. */
+	if (!alloc_cpumask_var(&mask, GFP_KERNEL))
+		return;
+	cpumask_clear(mask);
+>>>>>>> refs/remotes/origin/master
 
 	/* Don't want cpus going down or up during this. */
 	get_online_cpus();
 	mutex_lock(&flow_flush_sem);
 	info.cache = &flow_cache_global;
+<<<<<<< HEAD
 	atomic_set(&info.cpuleft, num_online_cpus());
 	init_completion(&info.completion);
 
@@ -374,6 +453,32 @@ void flow_cache_flush(void)
 
 <<<<<<< HEAD
 =======
+=======
+	for_each_online_cpu(i)
+		if (!flow_cache_percpu_empty(info.cache, i))
+			cpumask_set_cpu(i, mask);
+	atomic_set(&info.cpuleft, cpumask_weight(mask));
+	if (atomic_read(&info.cpuleft) == 0)
+		goto done;
+
+	init_completion(&info.completion);
+
+	local_bh_disable();
+	self = cpumask_test_and_clear_cpu(smp_processor_id(), mask);
+	on_each_cpu_mask(mask, flow_cache_flush_per_cpu, &info, 0);
+	if (self)
+		flow_cache_flush_tasklet((unsigned long)&info);
+	local_bh_enable();
+
+	wait_for_completion(&info.completion);
+
+done:
+	mutex_unlock(&flow_flush_sem);
+	put_online_cpus();
+	free_cpumask_var(mask);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void flow_cache_flush_task(struct work_struct *work)
 {
 	flow_cache_flush();
@@ -386,8 +491,12 @@ void flow_cache_flush_deferred(void)
 	schedule_work(&flow_cache_flush_work);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int __cpuinit flow_cache_cpu_prepare(struct flow_cache *fc, int cpu)
+=======
+static int flow_cache_cpu_prepare(struct flow_cache *fc, int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct flow_cache_percpu *fcp = per_cpu_ptr(fc->percpu, cpu);
 	size_t sz = sizeof(struct hlist_head) * flow_cache_hash_size(fc);
@@ -405,7 +514,11 @@ static int __cpuinit flow_cache_cpu_prepare(struct flow_cache *fc, int cpu)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __cpuinit flow_cache_cpu(struct notifier_block *nfb,
+=======
+static int flow_cache_cpu(struct notifier_block *nfb,
+>>>>>>> refs/remotes/origin/master
 			  unsigned long action,
 			  void *hcpu)
 {
@@ -443,10 +556,14 @@ static int __init flow_cache_init(struct flow_cache *fc)
 	for_each_online_cpu(i) {
 		if (flow_cache_cpu_prepare(fc, i))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return -ENOMEM;
 =======
 			goto err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto err;
+>>>>>>> refs/remotes/origin/master
 	}
 	fc->hotcpu_notifier = (struct notifier_block){
 		.notifier_call = flow_cache_cpu,
@@ -460,7 +577,10 @@ static int __init flow_cache_init(struct flow_cache *fc)
 
 	return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 err:
 	for_each_possible_cpu(i) {
@@ -473,7 +593,10 @@ err:
 	fc->percpu = NULL;
 
 	return -ENOMEM;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init flow_cache_init_global(void)

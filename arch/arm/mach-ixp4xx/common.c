@@ -18,9 +18,12 @@
 #include <linux/init.h>
 #include <linux/serial.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sched.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/tty.h>
 #include <linux/platform_device.h>
 #include <linux/serial_core.h>
@@ -32,26 +35,40 @@
 #include <linux/clockchips.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <mach/udc.h>
 #include <mach/hardware.h>
 =======
 #include <linux/export.h>
 #include <linux/gpio.h>
+=======
+#include <linux/export.h>
+#include <linux/gpio.h>
+#include <linux/cpu.h>
+#include <linux/sched_clock.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/udc.h>
 #include <mach/hardware.h>
 #include <mach/io.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <asm/page.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
 #include <asm/sched_clock.h>
 <<<<<<< HEAD
 =======
 #include <asm/system_misc.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/system_misc.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach/map.h>
 #include <asm/mach/irq.h>
@@ -66,16 +83,25 @@ static struct clock_event_device clockevent_ixp4xx;
  *************************************************************************/
 static struct map_desc ixp4xx_io_desc[] __initdata = {
 	{	/* UART, Interrupt ctrl, GPIO, timers, NPEs, MACs, USB .... */
+<<<<<<< HEAD
 		.virtual	= IXP4XX_PERIPHERAL_BASE_VIRT,
+=======
+		.virtual	= (unsigned long)IXP4XX_PERIPHERAL_BASE_VIRT,
+>>>>>>> refs/remotes/origin/master
 		.pfn		= __phys_to_pfn(IXP4XX_PERIPHERAL_BASE_PHYS),
 		.length		= IXP4XX_PERIPHERAL_REGION_SIZE,
 		.type		= MT_DEVICE
 	}, {	/* Expansion Bus Config Registers */
+<<<<<<< HEAD
 		.virtual	= IXP4XX_EXP_CFG_BASE_VIRT,
+=======
+		.virtual	= (unsigned long)IXP4XX_EXP_CFG_BASE_VIRT,
+>>>>>>> refs/remotes/origin/master
 		.pfn		= __phys_to_pfn(IXP4XX_EXP_CFG_BASE_PHYS),
 		.length		= IXP4XX_EXP_CFG_REGION_SIZE,
 		.type		= MT_DEVICE
 	}, {	/* PCI Registers */
+<<<<<<< HEAD
 		.virtual	= IXP4XX_PCI_CFG_BASE_VIRT,
 		.pfn		= __phys_to_pfn(IXP4XX_PCI_CFG_BASE_PHYS),
 		.length		= IXP4XX_PCI_CFG_REGION_SIZE,
@@ -89,6 +115,18 @@ static struct map_desc ixp4xx_io_desc[] __initdata = {
 		.type		= MT_DEVICE
 	}
 #endif
+=======
+		.virtual	= (unsigned long)IXP4XX_PCI_CFG_BASE_VIRT,
+		.pfn		= __phys_to_pfn(IXP4XX_PCI_CFG_BASE_PHYS),
+		.length		= IXP4XX_PCI_CFG_REGION_SIZE,
+		.type		= MT_DEVICE
+	}, {	/* Queue Manager */
+		.virtual	= (unsigned long)IXP4XX_QMGR_BASE_VIRT,
+		.pfn		= __phys_to_pfn(IXP4XX_QMGR_BASE_PHYS),
+		.length		= IXP4XX_QMGR_REGION_SIZE,
+		.type		= MT_DEVICE
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 void __init ixp4xx_map_io(void)
@@ -96,6 +134,47 @@ void __init ixp4xx_map_io(void)
   	iotable_init(ixp4xx_io_desc, ARRAY_SIZE(ixp4xx_io_desc));
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * GPIO-functions
+ */
+/*
+ * The following converted to the real HW bits the gpio_line_config
+ */
+/* GPIO pin types */
+#define IXP4XX_GPIO_OUT 		0x1
+#define IXP4XX_GPIO_IN  		0x2
+
+/* GPIO signal types */
+#define IXP4XX_GPIO_LOW			0
+#define IXP4XX_GPIO_HIGH		1
+
+/* GPIO Clocks */
+#define IXP4XX_GPIO_CLK_0		14
+#define IXP4XX_GPIO_CLK_1		15
+
+static void gpio_line_config(u8 line, u32 direction)
+{
+	if (direction == IXP4XX_GPIO_IN)
+		*IXP4XX_GPIO_GPOER |= (1 << line);
+	else
+		*IXP4XX_GPIO_GPOER &= ~(1 << line);
+}
+
+static void gpio_line_get(u8 line, int *value)
+{
+	*value = (*IXP4XX_GPIO_GPINR >> line) & 0x1;
+}
+
+static void gpio_line_set(u8 line, int value)
+{
+	if (value == IXP4XX_GPIO_HIGH)
+	    *IXP4XX_GPIO_GPOUTR |= (1 << line);
+	else if (value == IXP4XX_GPIO_LOW)
+	    *IXP4XX_GPIO_GPOUTR &= ~(1 << line);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*************************************************************************
  * IXP4xx chipset IRQ handling
@@ -122,10 +201,14 @@ static signed char irq2gpio[32] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int gpio_to_irq(int gpio)
 =======
 static int ixp4xx_gpio_to_irq(struct gpio_chip *chip, unsigned gpio)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ixp4xx_gpio_to_irq(struct gpio_chip *chip, unsigned gpio)
+>>>>>>> refs/remotes/origin/master
 {
 	int irq;
 
@@ -135,6 +218,7 @@ static int ixp4xx_gpio_to_irq(struct gpio_chip *chip, unsigned gpio)
 	}
 	return -EINVAL;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 EXPORT_SYMBOL(gpio_to_irq);
 =======
@@ -150,6 +234,8 @@ int irq_to_gpio(unsigned int irq)
 	return gpio;
 }
 EXPORT_SYMBOL(irq_to_gpio);
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int ixp4xx_set_irq_type(struct irq_data *d, unsigned int type)
 {
@@ -260,14 +346,22 @@ void __init ixp4xx_init_irq(void)
 	int i = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * ixp4xx does not implement the XScale PWRMODE register
 	 * so it must not call cpu_do_idle().
 	 */
+<<<<<<< HEAD
 	disable_hlt();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpu_idle_poll_ctrl(true);
+
+>>>>>>> refs/remotes/origin/master
 	/* Route all sources to IRQ instead of FIQ */
 	*IXP4XX_ICLR = 0x0;
 
@@ -334,10 +428,13 @@ void __init ixp4xx_timer_init(void)
 	ixp4xx_clockevent_init();
 }
 
+<<<<<<< HEAD
 struct sys_timer ixp4xx_timer = {
 	.init		= ixp4xx_timer_init,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct pxa2xx_udc_mach_info ixp4xx_udc_info;
 
 void __init ixp4xx_set_udc_info(struct pxa2xx_udc_mach_info *info)
@@ -408,7 +505,10 @@ unsigned long ixp4xx_exp_bus_size;
 EXPORT_SYMBOL(ixp4xx_exp_bus_size);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int ixp4xx_gpio_direction_input(struct gpio_chip *chip, unsigned gpio)
 {
 	gpio_line_config(gpio, IXP4XX_GPIO_IN);
@@ -451,7 +551,10 @@ static struct gpio_chip ixp4xx_gpio_chip = {
 	.ngpio			= 16,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void __init ixp4xx_sys_init(void)
 {
 	ixp4xx_exp_bus_size = SZ_16M;
@@ -459,10 +562,15 @@ void __init ixp4xx_sys_init(void)
 	platform_add_devices(ixp4xx_devices, ARRAY_SIZE(ixp4xx_devices));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	gpiochip_add(&ixp4xx_gpio_chip);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpiochip_add(&ixp4xx_gpio_chip);
+
+>>>>>>> refs/remotes/origin/master
 	if (cpu_is_ixp46x()) {
 		int region;
 
@@ -485,6 +593,7 @@ void __init ixp4xx_sys_init(void)
  * sched_clock()
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_CLOCK_DATA(cd);
 
 unsigned long long notrace sched_clock(void)
@@ -502,6 +611,11 @@ static u32 notrace ixp4xx_read_sched_clock(void)
 {
 	return *IXP4XX_OSTS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u32 notrace ixp4xx_read_sched_clock(void)
+{
+	return *IXP4XX_OSTS;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -518,10 +632,14 @@ EXPORT_SYMBOL(ixp4xx_timer_freq);
 static void __init ixp4xx_clocksource_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	init_sched_clock(&cd, ixp4xx_update_sched_clock, 32, ixp4xx_timer_freq);
 =======
 	setup_sched_clock(ixp4xx_read_sched_clock, 32, ixp4xx_timer_freq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	setup_sched_clock(ixp4xx_read_sched_clock, 32, ixp4xx_timer_freq);
+>>>>>>> refs/remotes/origin/master
 
 	clocksource_mmio_init(NULL, "OSTS", ixp4xx_timer_freq, 200, 32,
 			ixp4xx_clocksource_read);
@@ -575,13 +693,17 @@ static struct clock_event_device clockevent_ixp4xx = {
 	.name		= "ixp4xx timer1",
 	.features       = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
 	.rating         = 200,
+<<<<<<< HEAD
 	.shift		= 24,
+=======
+>>>>>>> refs/remotes/origin/master
 	.set_mode	= ixp4xx_set_mode,
 	.set_next_event	= ixp4xx_set_next_event,
 };
 
 static void __init ixp4xx_clockevent_init(void)
 {
+<<<<<<< HEAD
 	clockevent_ixp4xx.mult = div_sc(IXP4XX_TIMER_FREQ, NSEC_PER_SEC,
 					clockevent_ixp4xx.shift);
 	clockevent_ixp4xx.max_delta_ns =
@@ -598,6 +720,16 @@ static void __init ixp4xx_clockevent_init(void)
 void ixp4xx_restart(char mode, const char *cmd)
 {
 	if ( 1 && mode == 's') {
+=======
+	clockevent_ixp4xx.cpumask = cpumask_of(0);
+	clockevents_config_and_register(&clockevent_ixp4xx, IXP4XX_TIMER_FREQ,
+					0xf, 0xfffffffe);
+}
+
+void ixp4xx_restart(enum reboot_mode mode, const char *cmd)
+{
+	if ( 1 && mode == REBOOT_SOFT) {
+>>>>>>> refs/remotes/origin/master
 		/* Jump into ROM at address 0 */
 		soft_restart(0);
 	} else {
@@ -623,7 +755,11 @@ void ixp4xx_restart(char mode, const char *cmd)
  * fallback to the default.
  */
 
+<<<<<<< HEAD
 static void __iomem *ixp4xx_ioremap_caller(unsigned long addr, size_t size,
+=======
+static void __iomem *ixp4xx_ioremap_caller(phys_addr_t addr, size_t size,
+>>>>>>> refs/remotes/origin/master
 					   unsigned int mtype, void *caller)
 {
 	if (!is_pci_memory(addr))
@@ -646,4 +782,7 @@ void __init ixp4xx_init_early(void)
 #else
 void __init ixp4xx_init_early(void) {}
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

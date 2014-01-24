@@ -17,6 +17,7 @@ Compile Time Flags
 ==================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 The driver may be either io mapped or memory mapped.  This is
 selectable by configuration flags:
 
@@ -34,12 +35,16 @@ Other flags are:
 =======
 A compile time flag is:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+A compile time flag is:
+>>>>>>> refs/remotes/origin/master
 
 CONFIG_53C700_LE_ON_BE
 
 define if the chipset must be supported in little endian mode on a big
 endian architecture (used for the 700 on parisc).
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 CONFIG_53C700_USE_CONSISTENT
 
@@ -49,6 +54,8 @@ consistent or fully inconsistent architectures should not define this.
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 Using the Chip Core Driver
 ==========================

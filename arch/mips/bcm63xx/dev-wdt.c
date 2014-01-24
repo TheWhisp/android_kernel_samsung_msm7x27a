@@ -21,7 +21,11 @@ static struct resource wdt_resources[] = {
 
 static struct platform_device bcm63xx_wdt_device = {
 	.name		= "bcm63xx-wdt",
+<<<<<<< HEAD
 	.id		= 0,
+=======
+	.id		= -1,
+>>>>>>> refs/remotes/origin/master
 	.num_resources	= ARRAY_SIZE(wdt_resources),
 	.resource	= wdt_resources,
 };

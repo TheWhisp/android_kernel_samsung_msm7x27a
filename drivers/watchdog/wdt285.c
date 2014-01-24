@@ -17,10 +17,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -38,9 +43,13 @@
 
 #include <asm/mach-types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/system_info.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/system_info.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/hardware/dec21285.h>
 
 /*
@@ -59,10 +68,14 @@ static unsigned long timer_alive;
 static void watchdog_fire(int irq, void *dev_id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_CRIT "Watchdog: Would Reboot.\n");
 =======
 	pr_crit("Would Reboot\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_crit("Would Reboot\n");
+>>>>>>> refs/remotes/origin/master
 	*CSR_TIMER4_CNTL = 0;
 	*CSR_TIMER4_CLR = 0;
 }
@@ -219,6 +232,7 @@ static int __init footbridge_watchdog_init(void)
 		return retval;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO
 		"Footbridge Watchdog Timer: 0.01, timer margin: %d sec\n",
 								soft_margin);
@@ -227,12 +241,17 @@ static int __init footbridge_watchdog_init(void)
 		printk(KERN_WARNING
 		  "Warning: Watchdog reset may not work on this machine.\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_info("Footbridge Watchdog Timer: 0.01, timer margin: %d sec\n",
 		soft_margin);
 
 	if (machine_is_cats())
 		pr_warn("Warning: Watchdog reset may not work on this machine\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -244,7 +263,10 @@ static void __exit footbridge_watchdog_exit(void)
 MODULE_AUTHOR("Phil Blundell <pb@nexus.co.uk>");
 MODULE_DESCRIPTION("Footbridge watchdog driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 
 module_param(soft_margin, int, 0);
 MODULE_PARM_DESC(soft_margin, "Watchdog timeout in seconds");

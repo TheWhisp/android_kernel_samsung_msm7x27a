@@ -26,17 +26,25 @@
 
 int sunrpc_net_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(sunrpc_net_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(sunrpc_net_id);
+>>>>>>> refs/remotes/origin/master
 
 static __net_init int sunrpc_init_net(struct net *net)
 {
 	int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct sunrpc_net *sn = net_generic(net, sunrpc_net_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sunrpc_net *sn = net_generic(net, sunrpc_net_id);
+>>>>>>> refs/remotes/origin/master
 
 	err = rpc_proc_init(net);
 	if (err)
@@ -47,9 +55,12 @@ static __net_init int sunrpc_init_net(struct net *net)
 		goto err_ipmap;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = unix_gid_cache_create(net);
 	if (err)
 		goto err_unixgid;
@@ -62,7 +73,10 @@ static __net_init int sunrpc_init_net(struct net *net)
 
 err_unixgid:
 	ip_map_cache_destroy(net);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 err_ipmap:
 	rpc_proc_exit(net);
 err_proc:
@@ -72,9 +86,13 @@ err_proc:
 static __net_exit void sunrpc_exit_net(struct net *net)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unix_gid_cache_destroy(net);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unix_gid_cache_destroy(net);
+>>>>>>> refs/remotes/origin/master
 	ip_map_cache_destroy(net);
 	rpc_proc_exit(net);
 }
@@ -86,6 +104,7 @@ static struct pernet_operations sunrpc_net_ops = {
 	.size = sizeof(struct sunrpc_net),
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern struct cache_detail unix_gid_cache;
 
@@ -104,6 +123,8 @@ init_sunrpc(void)
 	if (err)
 		goto out3;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init
 init_sunrpc(void)
 {
@@ -113,32 +134,45 @@ init_sunrpc(void)
 	err = rpcauth_init_module();
 	if (err)
 		goto out2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cache_initialize();
 
 	err = register_pernet_subsys(&sunrpc_net_ops);
 	if (err)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out3;
 
 	err = register_rpc_pipefs();
 	if (err)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out4;
 #ifdef RPC_DEBUG
 	rpc_register_sysctl();
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cache_register(&unix_gid_cache);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	svc_init_xprt_sock();	/* svc sock transport */
 	init_socket_xprt();	/* clnt sock transport */
 	return 0;
 
 out4:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	rpcauth_remove_module();
 out3:
@@ -146,12 +180,17 @@ out3:
 out2:
 	unregister_rpc_pipefs();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unregister_pernet_subsys(&sunrpc_net_ops);
 out3:
 	rpcauth_remove_module();
 out2:
 	rpc_destroy_mempool();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	return err;
 }
@@ -160,18 +199,24 @@ static void __exit
 cleanup_sunrpc(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cleanup_rpcb_clnt();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rpcauth_remove_module();
 	cleanup_socket_xprt();
 	svc_cleanup_xprt_sock();
 	unregister_rpc_pipefs();
 	rpc_destroy_mempool();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cache_unregister(&unix_gid_cache);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unregister_pernet_subsys(&sunrpc_net_ops);
 #ifdef RPC_DEBUG
 	rpc_unregister_sysctl();

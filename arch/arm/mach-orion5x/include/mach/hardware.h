@@ -12,6 +12,7 @@
 #include "orion5x.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define pcibios_assign_all_busses()	1
 
 #define PCIBIOS_MIN_IO		0x00001000
@@ -21,4 +22,6 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -1,12 +1,26 @@
+<<<<<<< HEAD
+=======
+/*
+ * IPv6 specific functions of netfilter core
+ *
+ * Rusty Russell (C) 2000 -- This code is GPL.
+ * Patrick McHardy (C) 2006-2012
+ */
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/ipv6.h>
 #include <linux/netfilter.h>
 #include <linux/netfilter_ipv6.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <net/addrconf.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/dst.h>
 #include <net/ipv6.h>
 #include <net/ip6_route.h>
@@ -18,6 +32,10 @@ int ip6_route_me_harder(struct sk_buff *skb)
 {
 	struct net *net = dev_net(skb_dst(skb)->dev);
 	const struct ipv6hdr *iph = ipv6_hdr(skb);
+<<<<<<< HEAD
+=======
+	unsigned int hh_len;
+>>>>>>> refs/remotes/origin/master
 	struct dst_entry *dst;
 	struct flowi6 fl6 = {
 		.flowi6_oif = skb->sk ? skb->sk->sk_bound_dev_if : 0,
@@ -31,7 +49,11 @@ int ip6_route_me_harder(struct sk_buff *skb)
 		IP6_INC_STATS(net, ip6_dst_idev(dst), IPSTATS_MIB_OUTNOROUTES);
 		LIMIT_NETDEBUG(KERN_DEBUG "ip6_route_me_harder: No more route.\n");
 		dst_release(dst);
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		return dst->error;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Drop old route. */
@@ -45,11 +67,25 @@ int ip6_route_me_harder(struct sk_buff *skb)
 		skb_dst_set(skb, NULL);
 		dst = xfrm_lookup(net, dst, flowi6_to_flowi(&fl6), skb->sk, 0);
 		if (IS_ERR(dst))
+<<<<<<< HEAD
 			return -1;
+=======
+			return PTR_ERR(dst);
+>>>>>>> refs/remotes/origin/master
 		skb_dst_set(skb, dst);
 	}
 #endif
 
+<<<<<<< HEAD
+=======
+	/* Change in oif may mean change in hh_len. */
+	hh_len = skb_dst(skb)->dev->hard_header_len;
+	if (skb_headroom(skb) < hh_len &&
+	    pskb_expand_head(skb, HH_DATA_ALIGN(hh_len - skb_headroom(skb)),
+			     0, GFP_ATOMIC))
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL(ip6_route_me_harder);
@@ -105,10 +141,13 @@ static int nf_ip6_route(struct net *net, struct dst_entry **dst,
 	};
 	const void *sk = strict ? &fake_sk : NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	*dst = ip6_route_output(net, sk, &fl->u.ip6);
 	return (*dst)->error;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dst_entry *result;
 	int err;
 
@@ -119,7 +158,10 @@ static int nf_ip6_route(struct net *net, struct dst_entry **dst,
 	else
 		*dst = result;
 	return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 __sum16 nf_ip6_checksum(struct sk_buff *skb, unsigned int hook,
@@ -181,6 +223,13 @@ static __sum16 nf_ip6_checksum_partial(struct sk_buff *skb, unsigned int hook,
 	return csum;
 };
 
+<<<<<<< HEAD
+=======
+static const struct nf_ipv6_ops ipv6ops = {
+	.chk_addr	= ipv6_chk_addr,
+};
+
+>>>>>>> refs/remotes/origin/master
 static const struct nf_afinfo nf_ip6_afinfo = {
 	.family			= AF_INET6,
 	.checksum		= nf_ip6_checksum,
@@ -193,6 +242,10 @@ static const struct nf_afinfo nf_ip6_afinfo = {
 
 int __init ipv6_netfilter_init(void)
 {
+<<<<<<< HEAD
+=======
+	RCU_INIT_POINTER(nf_ipv6_ops, &ipv6ops);
+>>>>>>> refs/remotes/origin/master
 	return nf_register_afinfo(&nf_ip6_afinfo);
 }
 
@@ -201,5 +254,9 @@ int __init ipv6_netfilter_init(void)
  */
 void ipv6_netfilter_fini(void)
 {
+<<<<<<< HEAD
+=======
+	RCU_INIT_POINTER(nf_ipv6_ops, NULL);
+>>>>>>> refs/remotes/origin/master
 	nf_unregister_afinfo(&nf_ip6_afinfo);
 }

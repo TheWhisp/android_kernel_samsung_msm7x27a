@@ -5,9 +5,18 @@ Required properties:
 
 - reg : the I2C address of the device
 
+<<<<<<< HEAD
+=======
+- clocks : the clock provider of SYS_MCLK
+
+>>>>>>> refs/remotes/origin/master
 Example:
 
 codec: sgtl5000@0a {
 	compatible = "fsl,sgtl5000";
 	reg = <0x0a>;
+<<<<<<< HEAD
+=======
+	clocks = <&clks 150>;
+>>>>>>> refs/remotes/origin/master
 };

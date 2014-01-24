@@ -70,7 +70,11 @@ ssize_t nfs3_getxattr(struct dentry *dentry, const char *name,
 		if (type == ACL_TYPE_ACCESS && acl->a_count == 0)
 			error = -ENODATA;
 		else
+<<<<<<< HEAD
 			error = posix_acl_to_xattr(acl, buffer, size);
+=======
+			error = posix_acl_to_xattr(&init_user_ns, acl, buffer, size);
+>>>>>>> refs/remotes/origin/master
 		posix_acl_release(acl);
 	} else
 		error = -ENODATA;
@@ -92,7 +96,11 @@ int nfs3_setxattr(struct dentry *dentry, const char *name,
 	else
 		return -EOPNOTSUPP;
 
+<<<<<<< HEAD
 	acl = posix_acl_from_xattr(value, size);
+=======
+	acl = posix_acl_from_xattr(&init_user_ns, value, size);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(acl))
 		return PTR_ERR(acl);
 	error = nfs3_proc_setacl(inode, type, acl);
@@ -193,10 +201,14 @@ struct posix_acl *nfs3_proc_getacl(struct inode *inode, int type)
 	};
 	struct nfs3_getaclres res = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		0
 =======
 		NULL,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		NULL,
+>>>>>>> refs/remotes/origin/master
 	};
 	struct rpc_message msg = {
 		.rpc_argp	= &args,
@@ -420,10 +432,14 @@ fail:
 
 int nfs3_proc_set_default_acl(struct inode *dir, struct inode *inode,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mode_t mode)
 =======
 		umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct posix_acl *dfacl, *acl;
 	int error = 0;
@@ -436,6 +452,7 @@ int nfs3_proc_set_default_acl(struct inode *dir, struct inode *inode,
 	if (!dfacl)
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	acl = posix_acl_clone(dfacl, GFP_KERNEL);
 	error = -ENOMEM;
 	if (!acl)
@@ -447,13 +464,18 @@ int nfs3_proc_set_default_acl(struct inode *dir, struct inode *inode,
 						      dfacl : NULL);
 out_release_acl:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	acl = posix_acl_dup(dfacl);
 	error = posix_acl_create(&acl, GFP_KERNEL, &mode);
 	if (error < 0)
 		goto out_release_dfacl;
 	error = nfs3_proc_setacls(inode, acl, S_ISDIR(inode->i_mode) ?
 						      dfacl : NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	posix_acl_release(acl);
 out_release_dfacl:
 	posix_acl_release(dfacl);

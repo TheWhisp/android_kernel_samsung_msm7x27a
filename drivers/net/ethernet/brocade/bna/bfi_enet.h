@@ -16,12 +16,18 @@
  * www.brocade.com
  */
 
+<<<<<<< HEAD
 /**
  * @file bfi_enet.h BNA Hardware and Firmware Interface
  */
 
 /**
  * Skipping statistics collection to avoid clutter.
+=======
+/* BNA Hardware and Firmware Interface */
+
+/* Skipping statistics collection to avoid clutter.
+>>>>>>> refs/remotes/origin/master
  * Command is no longer needed:
  *	MTU
  *	TxQ Stop
@@ -64,9 +70,13 @@ union bfi_addr_be_u {
 	} a32;
 };
 
+<<<<<<< HEAD
 /**
  *	T X   Q U E U E   D E F I N E S
  */
+=======
+/*	T X   Q U E U E   D E F I N E S      */
+>>>>>>> refs/remotes/origin/master
 /* TxQ Vector (a.k.a. Tx-Buffer Descriptor) */
 /* TxQ Entry Opcodes */
 #define BFI_ENET_TXQ_WI_SEND		(0x402)	/* Single Frame Transmission */
@@ -106,10 +116,14 @@ struct bfi_enet_txq_wi_vector {			/* Tx Buffer Descriptor */
 	union bfi_addr_be_u	addr;
 };
 
+<<<<<<< HEAD
 /**
  *  TxQ Entry Structure
  *
  */
+=======
+/*  TxQ Entry Structure  */
+>>>>>>> refs/remotes/origin/master
 struct bfi_enet_txq_entry {
 	union {
 		struct bfi_enet_txq_wi_base	base;
@@ -124,16 +138,24 @@ struct bfi_enet_txq_entry {
 #define BFI_ENET_TXQ_WI_L4_HDR_N_OFFSET(_hdr_size, _offset) \
 		(((_hdr_size) << 10) | ((_offset) & 0x3FF))
 
+<<<<<<< HEAD
 /**
  *   R X   Q U E U E   D E F I N E S
  */
+=======
+/*   R X   Q U E U E   D E F I N E S   */
+>>>>>>> refs/remotes/origin/master
 struct bfi_enet_rxq_entry {
 	union bfi_addr_be_u  rx_buffer;
 };
 
+<<<<<<< HEAD
 /**
  *   R X   C O M P L E T I O N   Q U E U E   D E F I N E S
  */
+=======
+/*   R X   C O M P L E T I O N   Q U E U E   D E F I N E S   */
+>>>>>>> refs/remotes/origin/master
 /* CQ Entry Flags */
 #define	BFI_ENET_CQ_EF_MAC_ERROR	(1 <<  0)
 #define	BFI_ENET_CQ_EF_FCS_ERROR	(1 <<  1)
@@ -174,9 +196,13 @@ struct bfi_enet_cq_entry {
 	u8	rxq_id;
 };
 
+<<<<<<< HEAD
 /**
  *   E N E T   C O N T R O L   P A T H   C O M M A N D S
  */
+=======
+/*   E N E T   C O N T R O L   P A T H   C O M M A N D S   */
+>>>>>>> refs/remotes/origin/master
 struct bfi_enet_q {
 	union bfi_addr_u	pg_tbl;
 	union bfi_addr_u	first_entry;
@@ -222,9 +248,13 @@ struct bfi_enet_ib {
 	u16		rsvd;
 };
 
+<<<<<<< HEAD
 /**
  * ENET command messages
  */
+=======
+/* ENET command messages */
+>>>>>>> refs/remotes/origin/master
 enum bfi_enet_h2i_msgs {
 	/* Rx Commands */
 	BFI_ENET_H2I_RX_CFG_SET_REQ = 1,
@@ -350,9 +380,13 @@ enum bfi_enet_i2h_msgs {
 	BFI_ENET_I2H_BW_UPDATE_AEN = BFA_I2HM(BFI_ENET_H2I_MAX + 4),
 };
 
+<<<<<<< HEAD
 /**
  *  The following error codes can be returned by the enet commands
  */
+=======
+/* The following error codes can be returned by the enet commands */
+>>>>>>> refs/remotes/origin/master
 enum bfi_enet_err {
 	BFI_ENET_CMD_OK		= 0,
 	BFI_ENET_CMD_FAIL	= 1,
@@ -364,8 +398,12 @@ enum bfi_enet_err {
 	BFI_ENET_CMD_PORT_DISABLED = 7,	/* !< port in disabled state */
 };
 
+<<<<<<< HEAD
 /**
  * Generic Request
+=======
+/* Generic Request
+>>>>>>> refs/remotes/origin/master
  *
  * bfi_enet_req is used by:
  *	BFI_ENET_H2I_RX_CFG_CLR_REQ
@@ -375,8 +413,12 @@ struct bfi_enet_req {
 	struct bfi_msgq_mhdr mh;
 };
 
+<<<<<<< HEAD
 /**
  * Enable/Disable Request
+=======
+/* Enable/Disable Request
+>>>>>>> refs/remotes/origin/master
  *
  * bfi_enet_enable_req is used by:
  *	BFI_ENET_H2I_RSS_ENABLE_REQ	(enet_id must be zero)
@@ -391,9 +433,13 @@ struct bfi_enet_enable_req {
 	u8		rsvd[3];
 };
 
+<<<<<<< HEAD
 /**
  * Generic Response
  */
+=======
+/* Generic Response */
+>>>>>>> refs/remotes/origin/master
 struct bfi_enet_rsp {
 	struct bfi_msgq_mhdr mh;
 	u8		error;		/*!< if error see cmd_offset */
@@ -401,20 +447,30 @@ struct bfi_enet_rsp {
 	u16		cmd_offset;	/*!< offset to invalid parameter */
 };
 
+<<<<<<< HEAD
 /**
  * GLOBAL CONFIGURATION
  */
 
 /**
  * bfi_enet_attr_req is used by:
+=======
+/* GLOBAL CONFIGURATION */
+
+/* bfi_enet_attr_req is used by:
+>>>>>>> refs/remotes/origin/master
  *	BFI_ENET_H2I_GET_ATTR_REQ
  */
 struct bfi_enet_attr_req {
 	struct bfi_msgq_mhdr	mh;
 };
 
+<<<<<<< HEAD
 /**
  * bfi_enet_attr_rsp is used by:
+=======
+/* bfi_enet_attr_rsp is used by:
+>>>>>>> refs/remotes/origin/master
  *	BFI_ENET_I2H_GET_ATTR_RSP
  */
 struct bfi_enet_attr_rsp {
@@ -427,8 +483,12 @@ struct bfi_enet_attr_rsp {
 	u32		rit_size;
 };
 
+<<<<<<< HEAD
 /**
  * Tx Configuration
+=======
+/* Tx Configuration
+>>>>>>> refs/remotes/origin/master
  *
  * bfi_enet_tx_cfg is used by:
  *	BFI_ENET_H2I_TX_CFG_SET_REQ
@@ -477,8 +537,12 @@ struct bfi_enet_tx_cfg_rsp {
 	} q_handles[BFI_ENET_TXQ_PRIO_MAX];
 };
 
+<<<<<<< HEAD
 /**
  * Rx Configuration
+=======
+/* Rx Configuration
+>>>>>>> refs/remotes/origin/master
  *
  * bfi_enet_rx_cfg is used by:
  *	BFI_ENET_H2I_RX_CFG_SET_REQ
@@ -553,8 +617,12 @@ struct bfi_enet_rx_cfg_rsp {
 	} q_handles[BFI_ENET_RX_QSET_MAX];
 };
 
+<<<<<<< HEAD
 /**
  * RIT
+=======
+/* RIT
+>>>>>>> refs/remotes/origin/master
  *
  * bfi_enet_rit_req is used by:
  *	BFI_ENET_H2I_RIT_CFG_REQ
@@ -566,8 +634,12 @@ struct bfi_enet_rit_req {
 	u8	table[BFI_ENET_RSS_RIT_MAX];
 };
 
+<<<<<<< HEAD
 /**
  * RSS
+=======
+/* RSS
+>>>>>>> refs/remotes/origin/master
  *
  * bfi_enet_rss_cfg_req is used by:
  *	BFI_ENET_H2I_RSS_CFG_REQ
@@ -591,8 +663,12 @@ struct bfi_enet_rss_cfg_req {
 	struct bfi_enet_rss_cfg	cfg;
 };
 
+<<<<<<< HEAD
 /**
  * MAC Unicast
+=======
+/* MAC Unicast
+>>>>>>> refs/remotes/origin/master
  *
  * bfi_enet_rx_vlan_req is used by:
  *	BFI_ENET_H2I_MAC_UCAST_SET_REQ
@@ -606,17 +682,25 @@ struct bfi_enet_ucast_req {
 	u8			rsvd[2];
 };
 
+<<<<<<< HEAD
 /**
  * MAC Unicast + VLAN
  */
+=======
+/* MAC Unicast + VLAN */
+>>>>>>> refs/remotes/origin/master
 struct bfi_enet_mac_n_vlan_req {
 	struct bfi_msgq_mhdr	mh;
 	u16			vlan_id;
 	mac_t			mac_addr;
 };
 
+<<<<<<< HEAD
 /**
  * MAC Multicast
+=======
+/* MAC Multicast
+>>>>>>> refs/remotes/origin/master
  *
  * bfi_enet_mac_mfilter_add_req is used by:
  *	BFI_ENET_H2I_MAC_MCAST_ADD_REQ
@@ -627,8 +711,12 @@ struct bfi_enet_mcast_add_req {
 	u8			rsvd[2];
 };
 
+<<<<<<< HEAD
 /**
  * bfi_enet_mac_mfilter_add_rsp is used by:
+=======
+/* bfi_enet_mac_mfilter_add_rsp is used by:
+>>>>>>> refs/remotes/origin/master
  *	BFI_ENET_I2H_MAC_MCAST_ADD_RSP
  */
 struct bfi_enet_mcast_add_rsp {
@@ -640,8 +728,12 @@ struct bfi_enet_mcast_add_rsp {
 	u8			rsvd1[2];
 };
 
+<<<<<<< HEAD
 /**
  * bfi_enet_mac_mfilter_del_req is used by:
+=======
+/* bfi_enet_mac_mfilter_del_req is used by:
+>>>>>>> refs/remotes/origin/master
  *	BFI_ENET_H2I_MAC_MCAST_DEL_REQ
  */
 struct bfi_enet_mcast_del_req {
@@ -650,8 +742,12 @@ struct bfi_enet_mcast_del_req {
 	u8			rsvd[2];
 };
 
+<<<<<<< HEAD
 /**
  * VLAN
+=======
+/* VLAN
+>>>>>>> refs/remotes/origin/master
  *
  * bfi_enet_rx_vlan_req is used by:
  *	BFI_ENET_H2I_RX_VLAN_SET_REQ
@@ -663,8 +759,12 @@ struct bfi_enet_rx_vlan_req {
 	u32			bit_mask[BFI_ENET_VLAN_WORDS_MAX];
 };
 
+<<<<<<< HEAD
 /**
  * PAUSE
+=======
+/* PAUSE
+>>>>>>> refs/remotes/origin/master
  *
  * bfi_enet_set_pause_req is used by:
  *	BFI_ENET_H2I_SET_PAUSE_REQ
@@ -676,8 +776,12 @@ struct bfi_enet_set_pause_req {
 	u8			rx_pause;	/* 1 = enable;  0 = disable */
 };
 
+<<<<<<< HEAD
 /**
  * DIAGNOSTICS
+=======
+/* DIAGNOSTICS
+>>>>>>> refs/remotes/origin/master
  *
  * bfi_enet_diag_lb_req is used by:
  *      BFI_ENET_H2I_DIAG_LOOPBACK
@@ -689,16 +793,24 @@ struct bfi_enet_diag_lb_req {
 	u8			enable;		/* 1 = enable;  0 = disable */
 };
 
+<<<<<<< HEAD
 /**
  * enum for Loopback opmodes
  */
+=======
+/* enum for Loopback opmodes */
+>>>>>>> refs/remotes/origin/master
 enum {
 	BFI_ENET_DIAG_LB_OPMODE_EXT = 0,
 	BFI_ENET_DIAG_LB_OPMODE_CBL = 1,
 };
 
+<<<<<<< HEAD
 /**
  * STATISTICS
+=======
+/* STATISTICS
+>>>>>>> refs/remotes/origin/master
  *
  * bfi_enet_stats_req is used by:
  *    BFI_ENET_H2I_STATS_GET_REQ
@@ -713,9 +825,13 @@ struct bfi_enet_stats_req {
 	union bfi_addr_u	host_buffer;
 };
 
+<<<<<<< HEAD
 /**
  * defines for "stats_mask" above.
  */
+=======
+/* defines for "stats_mask" above. */
+>>>>>>> refs/remotes/origin/master
 #define BFI_ENET_STATS_MAC    (1 << 0)    /* !< MAC Statistics */
 #define BFI_ENET_STATS_BPC    (1 << 1)    /* !< Pause Stats from BPC */
 #define BFI_ENET_STATS_RAD    (1 << 2)    /* !< Rx Admission Statistics */
@@ -831,6 +947,10 @@ struct bfi_enet_stats_bpc {
 
 /* MAC Rx Statistics */
 struct bfi_enet_stats_mac {
+<<<<<<< HEAD
+=======
+	u64 stats_clr_cnt;	/* times this stats cleared */
+>>>>>>> refs/remotes/origin/master
 	u64 frame_64;		/* both rx and tx counter */
 	u64 frame_65_127;		/* both rx and tx counter */
 	u64 frame_128_255;		/* both rx and tx counter */
@@ -881,8 +1001,12 @@ struct bfi_enet_stats_mac {
 	u64 tx_fragments;
 };
 
+<<<<<<< HEAD
 /**
  * Complete statistics, DMAed from fw to host followed by
+=======
+/* Complete statistics, DMAed from fw to host followed by
+>>>>>>> refs/remotes/origin/master
  * BFI_ENET_I2H_STATS_GET_RSP
  */
 struct bfi_enet_stats {

@@ -26,6 +26,7 @@ static struct vfsmount *mount;
 static int mount_count;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * TODO:
  *   I think I can get rid of these default_file_ops, but not quite sure...
@@ -122,6 +123,8 @@ static int create(struct inode *dir, struct dentry *dentry, int mode)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int positive(struct dentry *dentry)
 {
 	return dentry->d_inode && !d_unhashed(dentry);
@@ -148,6 +151,7 @@ static struct file_system_type fs_type = {
 	.kill_sb =	kill_litter_super,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int create_by_name(const char *name, mode_t mode,
 			  struct dentry *parent,
@@ -183,6 +187,8 @@ static int create_by_name(const char *name, mode_t mode,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * securityfs_create_file - create a file in the securityfs filesystem
  *
@@ -211,6 +217,7 @@ static int create_by_name(const char *name, mode_t mode,
  * If securityfs is not enabled in the kernel, the value %-ENODEV is
  * returned.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct dentry *securityfs_create_file(const char *name, mode_t mode,
 				   struct dentry *parent, void *data,
@@ -242,6 +249,8 @@ struct dentry *securityfs_create_file(const char *name, mode_t mode,
 	}
 exit:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct dentry *securityfs_create_file(const char *name, umode_t mode,
 				   struct dentry *parent, void *data,
 				   const struct file_operations *fops)
@@ -306,7 +315,10 @@ out1:
 out:
 	mutex_unlock(&dir->i_mutex);
 	simple_release_fs(&mount, &mount_count);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return dentry;
 }
 EXPORT_SYMBOL_GPL(securityfs_create_file);

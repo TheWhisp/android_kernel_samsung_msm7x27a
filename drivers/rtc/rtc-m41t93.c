@@ -48,6 +48,10 @@ static inline int m41t93_set_reg(struct spi_device *spi, u8 addr, u8 data)
 static int m41t93_set_time(struct device *dev, struct rtc_time *tm)
 {
 	struct spi_device *spi = to_spi_device(dev);
+<<<<<<< HEAD
+=======
+	int tmp;
+>>>>>>> refs/remotes/origin/master
 	u8 buf[9] = {0x80};        /* write cmd + 8 data bytes */
 	u8 * const data = &buf[1]; /* ptr to first data byte */
 
@@ -62,6 +66,33 @@ static int m41t93_set_time(struct device *dev, struct rtc_time *tm)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+=======
+	tmp = spi_w8r8(spi, M41T93_REG_FLAGS);
+	if (tmp < 0)
+		return tmp;
+
+	if (tmp & M41T93_FLAG_OF) {
+		dev_warn(&spi->dev, "OF bit is set, resetting.\n");
+		m41t93_set_reg(spi, M41T93_REG_FLAGS, tmp & ~M41T93_FLAG_OF);
+
+		tmp = spi_w8r8(spi, M41T93_REG_FLAGS);
+		if (tmp < 0) {
+			return tmp;
+		} else if (tmp & M41T93_FLAG_OF) {
+			/* OF cannot be immediately reset: oscillator has to be
+			 * restarted. */
+			u8 reset_osc = buf[M41T93_REG_ST_SEC] | M41T93_FLAG_ST;
+
+			dev_warn(&spi->dev,
+				 "OF bit is still set, kickstarting clock.\n");
+			m41t93_set_reg(spi, M41T93_REG_ST_SEC, reset_osc);
+			reset_osc &= ~M41T93_FLAG_ST;
+			m41t93_set_reg(spi, M41T93_REG_ST_SEC, reset_osc);
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	data[M41T93_REG_SSEC]		= 0;
 	data[M41T93_REG_ST_SEC]		= bin2bcd(tm->tm_sec);
 	data[M41T93_REG_MIN]		= bin2bcd(tm->tm_min);
@@ -89,10 +120,14 @@ static int m41t93_get_time(struct device *dev, struct rtc_time *tm)
 	   1. halt bit (HT) is set: the clock is running but update of readout
 	      registers has been disabled due to power failure. This is normal
 	      case after poweron. Time is valid after resetting HT bit.
+<<<<<<< HEAD
 	   2. oscillator fail bit (OF) is set. Oscillator has be stopped and
 	      time is invalid:
 	      a) OF can be immeditely reset.
 	      b) OF cannot be immediately reset: oscillator has to be restarted.
+=======
+	   2. oscillator fail bit (OF) is set: time is invalid.
+>>>>>>> refs/remotes/origin/master
 	*/
 	tmp = spi_w8r8(spi, M41T93_REG_ALM_HOUR_HT);
 	if (tmp < 0)
@@ -110,6 +145,7 @@ static int m41t93_get_time(struct device *dev, struct rtc_time *tm)
 
 	if (tmp & M41T93_FLAG_OF) {
 		ret = -EINVAL;
+<<<<<<< HEAD
 		dev_warn(&spi->dev, "OF bit is set, resetting.\n");
 		m41t93_set_reg(spi, M41T93_REG_FLAGS, tmp & ~M41T93_FLAG_OF);
 
@@ -125,6 +161,9 @@ static int m41t93_get_time(struct device *dev, struct rtc_time *tm)
 			reset_osc &= ~M41T93_FLAG_ST;
 			m41t93_set_reg(spi, M41T93_REG_ST_SEC, reset_osc);
 		}
+=======
+		dev_warn(&spi->dev, "OF bit is set, write time to restart.\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (tmp & M41T93_FLAG_BL)
@@ -162,7 +201,11 @@ static const struct rtc_class_ops m41t93_rtc_ops = {
 
 static struct spi_driver m41t93_driver;
 
+<<<<<<< HEAD
 static int __devinit m41t93_probe(struct spi_device *spi)
+=======
+static int m41t93_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtc_device *rtc;
 	int res;
@@ -176,6 +219,7 @@ static int __devinit m41t93_probe(struct spi_device *spi)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	rtc = rtc_device_register(m41t93_driver.driver.name,
 		&spi->dev, &m41t93_rtc_ops, THIS_MODULE);
 	if (IS_ERR(rtc))
@@ -193,6 +237,14 @@ static int __devexit m41t93_remove(struct spi_device *spi)
 
 	if (rtc)
 		rtc_device_unregister(rtc);
+=======
+	rtc = devm_rtc_device_register(&spi->dev, m41t93_driver.driver.name,
+					&m41t93_rtc_ops, THIS_MODULE);
+	if (IS_ERR(rtc))
+		return PTR_ERR(rtc);
+
+	spi_set_drvdata(spi, rtc);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -200,6 +252,7 @@ static int __devexit m41t93_remove(struct spi_device *spi)
 static struct spi_driver m41t93_driver = {
 	.driver = {
 		.name	= "rtc-m41t93",
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.bus	= &spi_bus_type,
 =======
@@ -225,6 +278,14 @@ module_exit(m41t93_exit);
 =======
 module_spi_driver(m41t93_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.owner	= THIS_MODULE,
+	},
+	.probe	= m41t93_probe,
+};
+
+module_spi_driver(m41t93_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Nikolaus Voss <n.voss@weinmann.de>");
 MODULE_DESCRIPTION("Driver for ST M41T93 SPI RTC");

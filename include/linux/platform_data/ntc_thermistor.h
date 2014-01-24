@@ -21,6 +21,11 @@
 #ifndef _LINUX_NTC_H
 #define _LINUX_NTC_H
 
+<<<<<<< HEAD
+=======
+struct iio_channel;
+
+>>>>>>> refs/remotes/origin/master
 enum ntc_thermistor_type {
 	TYPE_NCPXXWB473,
 	TYPE_NCPXXWL333,
@@ -39,13 +44,26 @@ struct ntc_thermistor_platform_data {
 	 * described at Documentation/hwmon/ntc_thermistor
 	 *
 	 * pullup/down_ohm: 0 for infinite / not-connected
+<<<<<<< HEAD
 	 */
 	int (*read_uV)(void);
 	unsigned int pullup_uV;
+=======
+	 *
+	 * chan: iio_channel pointer to communicate with the ADC which the
+	 * thermistor is using for conversion of the analog values.
+	 */
+	int (*read_uv)(struct ntc_thermistor_platform_data *);
+	unsigned int pullup_uv;
+>>>>>>> refs/remotes/origin/master
 
 	unsigned int pullup_ohm;
 	unsigned int pulldown_ohm;
 	enum { NTC_CONNECTED_POSITIVE, NTC_CONNECTED_GROUND } connect;
+<<<<<<< HEAD
+=======
+	struct iio_channel *chan;
+>>>>>>> refs/remotes/origin/master
 
 	int (*read_ohm)(void);
 };

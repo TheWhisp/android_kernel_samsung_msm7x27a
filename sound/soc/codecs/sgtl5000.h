@@ -12,7 +12,11 @@
 #define _SGTL5000_H
 
 /*
+<<<<<<< HEAD
  * Register values.
+=======
+ * Registers addresses
+>>>>>>> refs/remotes/origin/master
  */
 #define SGTL5000_CHIP_ID			0x0000
 #define SGTL5000_CHIP_DIG_POWER			0x0002
@@ -281,10 +285,14 @@
  * SGTL5000_CHIP_MIC_CTRL
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SGTL5000_BIAS_R_MASK			0x0200
 =======
 #define SGTL5000_BIAS_R_MASK			0x0300
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SGTL5000_BIAS_R_MASK			0x0300
+>>>>>>> refs/remotes/origin/master
 #define SGTL5000_BIAS_R_SHIFT			8
 #define SGTL5000_BIAS_R_WIDTH			2
 #define SGTL5000_BIAS_R_off			0x0

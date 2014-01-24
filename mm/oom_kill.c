@@ -27,30 +27,41 @@
 #include <linux/jiffies.h>
 #include <linux/cpuset.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/notifier.h>
 #include <linux/memcontrol.h>
 #include <linux/mempolicy.h>
 #include <linux/security.h>
 #include <linux/ptrace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/freezer.h>
 #include <linux/ftrace.h>
 #include <linux/ratelimit.h>
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/oom.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int sysctl_panic_on_oom;
 int sysctl_oom_kill_allocating_task;
 int sysctl_oom_dump_tasks = 1;
 static DEFINE_SPINLOCK(zone_scan_lock);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 /*
@@ -110,18 +121,35 @@ int test_set_oom_score_adj(int new_val)
 /**
  * has_intersects_mems_allowed() - check task eligiblity for kill
  * @tsk: task struct of which task to consider
+=======
+#ifdef CONFIG_NUMA
+/**
+ * has_intersects_mems_allowed() - check task eligiblity for kill
+ * @start: task struct of which task to consider
+>>>>>>> refs/remotes/origin/master
  * @mask: nodemask passed to page allocator for mempolicy ooms
  *
  * Task eligibility is determined by whether or not a candidate task, @tsk,
  * shares the same mempolicy nodes as current if it is bound by such a policy
  * and whether or not it has the same set of allowed cpuset nodes.
  */
+<<<<<<< HEAD
 static bool has_intersects_mems_allowed(struct task_struct *tsk,
 					const nodemask_t *mask)
 {
 	struct task_struct *start = tsk;
 
 	do {
+=======
+static bool has_intersects_mems_allowed(struct task_struct *start,
+					const nodemask_t *mask)
+{
+	struct task_struct *tsk;
+	bool ret = false;
+
+	rcu_read_lock();
+	for_each_thread(start, tsk) {
+>>>>>>> refs/remotes/origin/master
 		if (mask) {
 			/*
 			 * If this is a mempolicy constrained oom, tsk's
@@ -129,19 +157,34 @@ static bool has_intersects_mems_allowed(struct task_struct *tsk,
 			 * mempolicy intersects current, otherwise it may be
 			 * needlessly killed.
 			 */
+<<<<<<< HEAD
 			if (mempolicy_nodemask_intersects(tsk, mask))
 				return true;
+=======
+			ret = mempolicy_nodemask_intersects(tsk, mask);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			/*
 			 * This is not a mempolicy constrained oom, so only
 			 * check the mems of tsk's cpuset.
 			 */
+<<<<<<< HEAD
 			if (cpuset_mems_allowed_intersects(current, tsk))
 				return true;
 		}
 	} while_each_thread(start, tsk);
 
 	return false;
+=======
+			ret = cpuset_mems_allowed_intersects(current, tsk);
+		}
+		if (ret)
+			break;
+	}
+	rcu_read_unlock();
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 #else
 static bool has_intersects_mems_allowed(struct task_struct *tsk,
@@ -159,6 +202,7 @@ static bool has_intersects_mems_allowed(struct task_struct *tsk,
  */
 struct task_struct *find_lock_task_mm(struct task_struct *p)
 {
+<<<<<<< HEAD
 	struct task_struct *t = p;
 
 	do {
@@ -169,15 +213,36 @@ struct task_struct *find_lock_task_mm(struct task_struct *p)
 	} while_each_thread(p, t);
 
 	return NULL;
+=======
+	struct task_struct *t;
+
+	rcu_read_lock();
+
+	for_each_thread(p, t) {
+		task_lock(t);
+		if (likely(t->mm))
+			goto found;
+		task_unlock(t);
+	}
+	t = NULL;
+found:
+	rcu_read_unlock();
+
+	return t;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* return true if the task is not adequate as candidate victim task. */
 static bool oom_unkillable_task(struct task_struct *p,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		const struct mem_cgroup *mem, const nodemask_t *nodemask)
 =======
 		const struct mem_cgroup *memcg, const nodemask_t *nodemask)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		const struct mem_cgroup *memcg, const nodemask_t *nodemask)
+>>>>>>> refs/remotes/origin/master
 {
 	if (is_global_init(p))
 		return true;
@@ -186,10 +251,14 @@ static bool oom_unkillable_task(struct task_struct *p,
 
 	/* When mem_cgroup_out_of_memory() and p is not member of the group */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mem && !task_in_mem_cgroup(p, mem))
 =======
 	if (memcg && !task_in_mem_cgroup(p, memcg))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (memcg && !task_in_mem_cgroup(p, memcg))
+>>>>>>> refs/remotes/origin/master
 		return true;
 
 	/* p may not have freeable memory in nodemask */
@@ -209,6 +278,7 @@ static bool oom_unkillable_task(struct task_struct *p,
  * task consuming the most memory to avoid subsequent oom failures.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned int oom_badness(struct task_struct *p, struct mem_cgroup *mem,
 =======
 unsigned int oom_badness(struct task_struct *p, struct mem_cgroup *memcg,
@@ -222,12 +292,22 @@ unsigned int oom_badness(struct task_struct *p, struct mem_cgroup *memcg,
 =======
 	if (oom_unkillable_task(p, memcg, nodemask))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned long oom_badness(struct task_struct *p, struct mem_cgroup *memcg,
+			  const nodemask_t *nodemask, unsigned long totalpages)
+{
+	long points;
+	long adj;
+
+	if (oom_unkillable_task(p, memcg, nodemask))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	p = find_lock_task_mm(p);
 	if (!p)
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*
 	 * Shortcut check for a thread sharing p->mm that is OOM_SCORE_ADJ_MIN
@@ -238,11 +318,16 @@ unsigned int oom_badness(struct task_struct *p, struct mem_cgroup *memcg,
 =======
 	if (p->signal->oom_score_adj == OOM_SCORE_ADJ_MIN) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	adj = (long)p->signal->oom_score_adj;
+	if (adj == OOM_SCORE_ADJ_MIN) {
+>>>>>>> refs/remotes/origin/master
 		task_unlock(p);
 		return 0;
 	}
 
 	/*
+<<<<<<< HEAD
 	 * The memory controller may have a limit of 0 bytes, so avoid a divide
 	 * by zero, if necessary.
 	 */
@@ -258,6 +343,13 @@ unsigned int oom_badness(struct task_struct *p, struct mem_cgroup *memcg,
 
 	points *= 1000;
 	points /= totalpages;
+=======
+	 * The baseline for the badness score is the proportion of RAM that each
+	 * task's rss, pagetable and swap space use.
+	 */
+	points = get_mm_rss(p->mm) + atomic_long_read(&p->mm->nr_ptes) +
+		 get_mm_counter(p->mm, MM_SWAPENTS);
+>>>>>>> refs/remotes/origin/master
 	task_unlock(p);
 
 	/*
@@ -265,6 +357,7 @@ unsigned int oom_badness(struct task_struct *p, struct mem_cgroup *memcg,
 	 * implementation used by LSMs.
 	 */
 	if (has_capability_noaudit(p, CAP_SYS_ADMIN))
+<<<<<<< HEAD
 		points -= 30;
 
 	/*
@@ -282,6 +375,19 @@ unsigned int oom_badness(struct task_struct *p, struct mem_cgroup *memcg,
 	if (points <= 0)
 		return 1;
 	return (points < 1000) ? points : 1000;
+=======
+		adj -= 30;
+
+	/* Normalize to oom_score_adj units */
+	adj *= totalpages / 1000;
+	points += adj;
+
+	/*
+	 * Never return 0 for an eligible task regardless of the root bonus and
+	 * oom_score_adj (oom_score_adj can't be OOM_SCORE_ADJ_MIN here).
+	 */
+	return points > 0 ? points : 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -316,7 +422,11 @@ static enum oom_constraint constrained_alloc(struct zonelist *zonelist,
 	 * the page allocator means a mempolicy is in effect.  Cpuset policy
 	 * is enforced in get_page_from_freelist().
 	 */
+<<<<<<< HEAD
 	if (nodemask && !nodes_subset(node_states[N_HIGH_MEMORY], *nodemask)) {
+=======
+	if (nodemask && !nodes_subset(node_states[N_MEMORY], *nodemask)) {
+>>>>>>> refs/remotes/origin/master
 		*totalpages = total_swap_pages;
 		for_each_node_mask(nid, *nodemask)
 			*totalpages += node_spanned_pages(nid);
@@ -347,13 +457,60 @@ static enum oom_constraint constrained_alloc(struct zonelist *zonelist,
 }
 #endif
 
+<<<<<<< HEAD
 /*
  * Simple selection loop. We chose the process with the highest
  * number of 'points'. We expect the caller will lock the tasklist.
+=======
+enum oom_scan_t oom_scan_process_thread(struct task_struct *task,
+		unsigned long totalpages, const nodemask_t *nodemask,
+		bool force_kill)
+{
+	if (task->exit_state)
+		return OOM_SCAN_CONTINUE;
+	if (oom_unkillable_task(task, NULL, nodemask))
+		return OOM_SCAN_CONTINUE;
+
+	/*
+	 * This task already has access to memory reserves and is being killed.
+	 * Don't allow any other task to have access to the reserves.
+	 */
+	if (test_tsk_thread_flag(task, TIF_MEMDIE)) {
+		if (unlikely(frozen(task)))
+			__thaw_task(task);
+		if (!force_kill)
+			return OOM_SCAN_ABORT;
+	}
+	if (!task->mm)
+		return OOM_SCAN_CONTINUE;
+
+	/*
+	 * If task is allocating a lot of memory and has been marked to be
+	 * killed first if it triggers an oom, then select it.
+	 */
+	if (oom_task_origin(task))
+		return OOM_SCAN_SELECT;
+
+	if (task->flags & PF_EXITING && !force_kill) {
+		/*
+		 * If this task is not being ptraced on exit, then wait for it
+		 * to finish before killing some other task unnecessarily.
+		 */
+		if (!(task->group_leader->ptrace & PT_TRACE_EXIT))
+			return OOM_SCAN_ABORT;
+	}
+	return OOM_SCAN_OK;
+}
+
+/*
+ * Simple selection loop. We chose the process with the highest
+ * number of 'points'.  Returns -1 on scan abort.
+>>>>>>> refs/remotes/origin/master
  *
  * (not docbooked, we don't want this one cluttering up the manual)
  */
 static struct task_struct *select_bad_process(unsigned int *ppoints,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		unsigned long totalpages, struct mem_cgroup *mem,
 		const nodemask_t *nodemask)
@@ -445,17 +602,60 @@ static struct task_struct *select_bad_process(unsigned int *ppoints,
 		}
 	} while_each_thread(g, p);
 
+=======
+		unsigned long totalpages, const nodemask_t *nodemask,
+		bool force_kill)
+{
+	struct task_struct *g, *p;
+	struct task_struct *chosen = NULL;
+	unsigned long chosen_points = 0;
+
+	rcu_read_lock();
+	for_each_process_thread(g, p) {
+		unsigned int points;
+
+		switch (oom_scan_process_thread(p, totalpages, nodemask,
+						force_kill)) {
+		case OOM_SCAN_SELECT:
+			chosen = p;
+			chosen_points = ULONG_MAX;
+			/* fall through */
+		case OOM_SCAN_CONTINUE:
+			continue;
+		case OOM_SCAN_ABORT:
+			rcu_read_unlock();
+			return (struct task_struct *)(-1UL);
+		case OOM_SCAN_OK:
+			break;
+		};
+		points = oom_badness(p, NULL, nodemask, totalpages);
+		if (points > chosen_points) {
+			chosen = p;
+			chosen_points = points;
+		}
+	}
+	if (chosen)
+		get_task_struct(chosen);
+	rcu_read_unlock();
+
+	*ppoints = chosen_points * 1000 / totalpages;
+>>>>>>> refs/remotes/origin/master
 	return chosen;
 }
 
 /**
  * dump_tasks - dump current memory state of all system tasks
+<<<<<<< HEAD
  * @mem: current's memory controller, if constrained
+=======
+ * @memcg: current's memory controller, if constrained
+>>>>>>> refs/remotes/origin/master
  * @nodemask: nodemask passed to page allocator for mempolicy ooms
  *
  * Dumps the current memory state of all eligible tasks.  Tasks not in the same
  * memcg, not in the same cpuset, or bound to a disjoint set of mempolicy nodes
  * are not shown.
+<<<<<<< HEAD
  * State information includes task's pid, uid, tgid, vm size, rss, cpu, oom_adj
  * value, oom_score_adj value, and name.
  *
@@ -466,10 +666,17 @@ static void dump_tasks(const struct mem_cgroup *mem, const nodemask_t *nodemask)
 =======
 static void dump_tasks(const struct mem_cgroup *memcg, const nodemask_t *nodemask)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * State information includes task's pid, uid, tgid, vm size, rss, nr_ptes,
+ * swapents, oom_score_adj value, and name.
+ */
+static void dump_tasks(const struct mem_cgroup *memcg, const nodemask_t *nodemask)
+>>>>>>> refs/remotes/origin/master
 {
 	struct task_struct *p;
 	struct task_struct *task;
 
+<<<<<<< HEAD
 	pr_info("[ pid ]   uid  tgid total_vm      rss cpu oom_adj oom_score_adj name\n");
 	for_each_process(p) {
 <<<<<<< HEAD
@@ -477,6 +684,12 @@ static void dump_tasks(const struct mem_cgroup *memcg, const nodemask_t *nodemas
 =======
 		if (oom_unkillable_task(p, memcg, nodemask))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("[ pid ]   uid  tgid total_vm      rss nr_ptes swapents oom_score_adj name\n");
+	rcu_read_lock();
+	for_each_process(p) {
+		if (oom_unkillable_task(p, memcg, nodemask))
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		task = find_lock_task_mm(p);
@@ -489,6 +702,7 @@ static void dump_tasks(const struct mem_cgroup *memcg, const nodemask_t *nodemas
 			continue;
 		}
 
+<<<<<<< HEAD
 		pr_info("[%5d] %5d %5d %8lu %8lu %3u     %3d         %5d %s\n",
 			task->pid, task_uid(task), task->tgid,
 			task->mm->total_vm, get_mm_rss(task->mm),
@@ -509,10 +723,31 @@ static void dump_header(struct task_struct *p, gfp_t gfp_mask, int order,
 	pr_warning("%s invoked oom-killer: gfp_mask=0x%x, order=%d, "
 		"oom_adj=%d, oom_score_adj=%d\n",
 		current->comm, gfp_mask, order, current->signal->oom_adj,
+=======
+		pr_info("[%5d] %5d %5d %8lu %8lu %7ld %8lu         %5hd %s\n",
+			task->pid, from_kuid(&init_user_ns, task_uid(task)),
+			task->tgid, task->mm->total_vm, get_mm_rss(task->mm),
+			atomic_long_read(&task->mm->nr_ptes),
+			get_mm_counter(task->mm, MM_SWAPENTS),
+			task->signal->oom_score_adj, task->comm);
+		task_unlock(task);
+	}
+	rcu_read_unlock();
+}
+
+static void dump_header(struct task_struct *p, gfp_t gfp_mask, int order,
+			struct mem_cgroup *memcg, const nodemask_t *nodemask)
+{
+	task_lock(current);
+	pr_warning("%s invoked oom-killer: gfp_mask=0x%x, order=%d, "
+		"oom_score_adj=%hd\n",
+		current->comm, gfp_mask, order,
+>>>>>>> refs/remotes/origin/master
 		current->signal->oom_score_adj);
 	cpuset_print_task_mems_allowed(current);
 	task_unlock(current);
 	dump_stack();
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mem_cgroup_print_oom_info(mem, p);
 	show_mem(SHOW_MEM_FILTER_NODES);
@@ -572,11 +807,18 @@ static int oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 =======
 	mem_cgroup_print_oom_info(memcg, p);
 	show_mem(SHOW_MEM_FILTER_NODES);
+=======
+	if (memcg)
+		mem_cgroup_print_oom_info(memcg, p);
+	else
+		show_mem(SHOW_MEM_FILTER_NODES);
+>>>>>>> refs/remotes/origin/master
 	if (sysctl_oom_dump_tasks)
 		dump_tasks(memcg, nodemask);
 }
 
 #define K(x) ((x) << (PAGE_SHIFT-10))
+<<<<<<< HEAD
 static void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 			     unsigned int points, unsigned long totalpages,
 			     struct mem_cgroup *memcg, nodemask_t *nodemask,
@@ -592,11 +834,28 @@ static void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 	if (printk_ratelimit())
 		dump_header(p, gfp_mask, order, mem, nodemask);
 =======
+=======
+/*
+ * Must be called while holding a reference to p, which will be released upon
+ * returning.
+ */
+void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
+		      unsigned int points, unsigned long totalpages,
+		      struct mem_cgroup *memcg, nodemask_t *nodemask,
+		      const char *message)
+{
+	struct task_struct *victim = p;
+	struct task_struct *child;
+	struct task_struct *t;
+>>>>>>> refs/remotes/origin/master
 	struct mm_struct *mm;
 	unsigned int victim_points = 0;
 	static DEFINE_RATELIMIT_STATE(oom_rs, DEFAULT_RATELIMIT_INTERVAL,
 					      DEFAULT_RATELIMIT_BURST);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If the task is already exiting, don't alarm the sysadmin or kill
@@ -605,17 +864,24 @@ static void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 	if (p->flags & PF_EXITING) {
 		set_tsk_thread_flag(p, TIF_MEMDIE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
 	}
 
 =======
+=======
+		put_task_struct(p);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	if (__ratelimit(&oom_rs))
 		dump_header(p, gfp_mask, order, memcg, nodemask);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	task_lock(p);
 	pr_err("%s: Kill process %d (%s) score %d or sacrifice child\n",
 		message, task_pid_nr(p), p->comm, points);
@@ -623,6 +889,7 @@ static void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 
 	/*
 	 * If any of p's children has a different mm and is eligible for kill,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * the one with the highest badness() score is sacrificed for its
 =======
@@ -632,6 +899,14 @@ static void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 	 * still freeing memory.
 	 */
 	do {
+=======
+	 * the one with the highest oom_badness() score is sacrificed for its
+	 * parent.  This attempts to lose the minimal amount of work done while
+	 * still freeing memory.
+	 */
+	read_lock(&tasklist_lock);
+	for_each_thread(p, t) {
+>>>>>>> refs/remotes/origin/master
 		list_for_each_entry(child, &t->children, sibling) {
 			unsigned int child_points;
 
@@ -640,6 +915,7 @@ static void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 			/*
 			 * oom_badness() returns 0 if the thread is unkillable
 			 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			child_points = oom_badness(child, mem, nodemask,
 =======
@@ -660,6 +936,29 @@ static void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 	victim = find_lock_task_mm(victim);
 	if (!victim)
 		return;
+=======
+			child_points = oom_badness(child, memcg, nodemask,
+								totalpages);
+			if (child_points > victim_points) {
+				put_task_struct(victim);
+				victim = child;
+				victim_points = child_points;
+				get_task_struct(victim);
+			}
+		}
+	}
+	read_unlock(&tasklist_lock);
+
+	p = find_lock_task_mm(victim);
+	if (!p) {
+		put_task_struct(victim);
+		return;
+	} else if (victim != p) {
+		get_task_struct(p);
+		put_task_struct(victim);
+		victim = p;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* mm cannot safely be dereferenced after task_unlock(victim) */
 	mm = victim->mm;
@@ -678,6 +977,10 @@ static void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 	 * That thread will now get access to memory reserves since it has a
 	 * pending fatal signal.
 	 */
+<<<<<<< HEAD
+=======
+	rcu_read_lock();
+>>>>>>> refs/remotes/origin/master
 	for_each_process(p)
 		if (p->mm == mm && !same_thread_group(p, victim) &&
 		    !(p->flags & PF_KTHREAD)) {
@@ -690,18 +993,33 @@ static void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 			task_unlock(p);
 			do_send_sig_info(SIGKILL, SEND_SIG_FORCED, p, true);
 		}
+<<<<<<< HEAD
 
 	set_tsk_thread_flag(victim, TIF_MEMDIE);
 	do_send_sig_info(SIGKILL, SEND_SIG_FORCED, victim, true);
 }
 #undef K
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rcu_read_unlock();
+
+	set_tsk_thread_flag(victim, TIF_MEMDIE);
+	do_send_sig_info(SIGKILL, SEND_SIG_FORCED, victim, true);
+	put_task_struct(victim);
+}
+#undef K
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Determines whether the kernel must panic because of the panic_on_oom sysctl.
  */
+<<<<<<< HEAD
 static void check_panic_on_oom(enum oom_constraint constraint, gfp_t gfp_mask,
 				int order, const nodemask_t *nodemask)
+=======
+void check_panic_on_oom(enum oom_constraint constraint, gfp_t gfp_mask,
+			int order, const nodemask_t *nodemask)
+>>>>>>> refs/remotes/origin/master
 {
 	if (likely(!sysctl_panic_on_oom))
 		return;
@@ -714,13 +1032,18 @@ static void check_panic_on_oom(enum oom_constraint constraint, gfp_t gfp_mask,
 		if (constraint != CONSTRAINT_NONE)
 			return;
 	}
+<<<<<<< HEAD
 	read_lock(&tasklist_lock);
 	dump_header(NULL, gfp_mask, order, NULL, nodemask);
 	read_unlock(&tasklist_lock);
+=======
+	dump_header(NULL, gfp_mask, order, NULL, nodemask);
+>>>>>>> refs/remotes/origin/master
 	panic("Out of memory: %s panic_on_oom is enabled\n",
 		sysctl_panic_on_oom == 2 ? "compulsory" : "system-wide");
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_CGROUP_MEM_RES_CTLR
 <<<<<<< HEAD
 void mem_cgroup_out_of_memory(struct mem_cgroup *mem, gfp_t gfp_mask)
@@ -777,6 +1100,8 @@ out:
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static BLOCKING_NOTIFIER_HEAD(oom_notify_list);
 
 int register_oom_notifier(struct notifier_block *nb)
@@ -841,6 +1166,7 @@ void clear_zonelist_oom(struct zonelist *zonelist, gfp_t gfp_mask)
 	spin_unlock(&zone_scan_lock);
 }
 
+<<<<<<< HEAD
 /*
  * Try to acquire the oom killer lock for all system zones.  Returns zero if a
  * parallel oom killing is taking place, otherwise locks all zones and returns
@@ -878,6 +1204,8 @@ static void clear_system_oom(void)
 	spin_unlock(&zone_scan_lock);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * out_of_memory - kill the "best" process when we run out of memory
  * @zonelist: zonelist pointer
@@ -885,9 +1213,13 @@ static void clear_system_oom(void)
  * @order: amount of memory being requested as a power of 2
  * @nodemask: nodemask passed to page allocator
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @force_kill: true if a task must be killed, even if others are exiting
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @force_kill: true if a task must be killed, even if others are exiting
+>>>>>>> refs/remotes/origin/master
  *
  * If we run out of memory, we have the choice between either
  * killing a random task (bad), letting the system crash (worse)
@@ -896,16 +1228,24 @@ static void clear_system_oom(void)
  */
 void out_of_memory(struct zonelist *zonelist, gfp_t gfp_mask,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int order, nodemask_t *nodemask)
 =======
 		int order, nodemask_t *nodemask, bool force_kill)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		int order, nodemask_t *nodemask, bool force_kill)
+>>>>>>> refs/remotes/origin/master
 {
 	const nodemask_t *mpol_mask;
 	struct task_struct *p;
 	unsigned long totalpages;
 	unsigned long freed = 0;
+<<<<<<< HEAD
 	unsigned int points;
+=======
+	unsigned int uninitialized_var(points);
+>>>>>>> refs/remotes/origin/master
 	enum oom_constraint constraint = CONSTRAINT_NONE;
 	int killed = 0;
 
@@ -915,11 +1255,19 @@ void out_of_memory(struct zonelist *zonelist, gfp_t gfp_mask,
 		return;
 
 	/*
+<<<<<<< HEAD
 	 * If current has a pending SIGKILL, then automatically select it.  The
 	 * goal is to allow it to allocate so that it may quickly exit and free
 	 * its memory.
 	 */
 	if (fatal_signal_pending(current)) {
+=======
+	 * If current has a pending SIGKILL or is exiting, then automatically
+	 * select it.  The goal is to allow it to allocate so that it may
+	 * quickly exit and free its memory.
+	 */
+	if (fatal_signal_pending(current) || current->flags & PF_EXITING) {
+>>>>>>> refs/remotes/origin/master
 		set_thread_flag(TIF_MEMDIE);
 		return;
 	}
@@ -933,6 +1281,7 @@ void out_of_memory(struct zonelist *zonelist, gfp_t gfp_mask,
 	mpol_mask = (constraint == CONSTRAINT_MEMORY_POLICY) ? nodemask : NULL;
 	check_panic_on_oom(constraint, gfp_mask, order, mpol_mask);
 
+<<<<<<< HEAD
 	read_lock(&tasklist_lock);
 	if (sysctl_oom_kill_allocating_task &&
 	    !oom_unkillable_task(current, NULL, nodemask) &&
@@ -956,12 +1305,19 @@ retry:
 
 =======
 	    current->mm) {
+=======
+	if (sysctl_oom_kill_allocating_task && current->mm &&
+	    !oom_unkillable_task(current, NULL, nodemask) &&
+	    current->signal->oom_score_adj != OOM_SCORE_ADJ_MIN) {
+		get_task_struct(current);
+>>>>>>> refs/remotes/origin/master
 		oom_kill_process(current, gfp_mask, order, 0, totalpages, NULL,
 				 nodemask,
 				 "Out of memory (oom_kill_allocating_task)");
 		goto out;
 	}
 
+<<<<<<< HEAD
 	p = select_bad_process(&points, totalpages, NULL, mpol_mask,
 			       force_kill);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -979,10 +1335,20 @@ retry:
 	killed = 1;
 =======
 	if (PTR_ERR(p) != -1UL) {
+=======
+	p = select_bad_process(&points, totalpages, mpol_mask, force_kill);
+	/* Found nothing?!?! Either we hang forever, or we panic. */
+	if (!p) {
+		dump_header(NULL, gfp_mask, order, NULL, mpol_mask);
+		panic("Out of memory and no killable processes...\n");
+	}
+	if (p != (void *)-1UL) {
+>>>>>>> refs/remotes/origin/master
 		oom_kill_process(p, gfp_mask, order, points, totalpages, NULL,
 				 nodemask, "Out of memory");
 		killed = 1;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 out:
 	read_unlock(&tasklist_lock);
@@ -993,10 +1359,20 @@ out:
 	 */
 	if (killed && !test_thread_flag(TIF_MEMDIE))
 		schedule_timeout_uninterruptible(1);
+=======
+out:
+	/*
+	 * Give the killed threads a good chance of exiting before trying to
+	 * allocate memory again.
+	 */
+	if (killed)
+		schedule_timeout_killable(1);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * The pagefault handler calls here because it is out of memory, so kill a
+<<<<<<< HEAD
  * memory-hogging task.  If a populated zone has ZONE_OOM_LOCKED set, a parallel
  * oom killing is already in progress so do nothing.  If a task is found with
  * TIF_MEMDIE set, it has been killed so do nothing and allow it to exit.
@@ -1013,4 +1389,21 @@ void pagefault_out_of_memory(void)
 	}
 	if (!test_thread_flag(TIF_MEMDIE))
 		schedule_timeout_uninterruptible(1);
+=======
+ * memory-hogging task.  If any populated zone has ZONE_OOM_LOCKED set, a
+ * parallel oom killing is already in progress so do nothing.
+ */
+void pagefault_out_of_memory(void)
+{
+	struct zonelist *zonelist;
+
+	if (mem_cgroup_oom_synchronize(true))
+		return;
+
+	zonelist = node_zonelist(first_online_node, GFP_KERNEL);
+	if (try_set_zonelist_oom(zonelist, GFP_KERNEL)) {
+		out_of_memory(NULL, 0, 0, NULL, false);
+		clear_zonelist_oom(zonelist, GFP_KERNEL);
+	}
+>>>>>>> refs/remotes/origin/master
 }

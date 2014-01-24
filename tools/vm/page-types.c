@@ -34,9 +34,15 @@
 #include <sys/fcntl.h>
 #include <sys/mount.h>
 #include <sys/statfs.h>
+<<<<<<< HEAD
 #include "../../include/linux/magic.h"
 #include "../../include/linux/kernel-page-flags.h"
 
+=======
+#include "../../include/uapi/linux/magic.h"
+#include "../../include/uapi/linux/kernel-page-flags.h"
+#include <api/fs/debugfs.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifndef MAX_PATH
 # define MAX_PATH 256
@@ -59,12 +65,23 @@
 #define PM_PSHIFT_BITS      6
 #define PM_PSHIFT_OFFSET    (PM_STATUS_OFFSET - PM_PSHIFT_BITS)
 #define PM_PSHIFT_MASK      (((1LL << PM_PSHIFT_BITS) - 1) << PM_PSHIFT_OFFSET)
+<<<<<<< HEAD
 #define PM_PSHIFT(x)        (((u64) (x) << PM_PSHIFT_OFFSET) & PM_PSHIFT_MASK)
 #define PM_PFRAME_MASK      ((1LL << PM_PSHIFT_OFFSET) - 1)
 #define PM_PFRAME(x)        ((x) & PM_PFRAME_MASK)
 
 #define PM_PRESENT          PM_STATUS(4LL)
 #define PM_SWAP             PM_STATUS(2LL)
+=======
+#define __PM_PSHIFT(x)      (((uint64_t) (x) << PM_PSHIFT_OFFSET) & PM_PSHIFT_MASK)
+#define PM_PFRAME_MASK      ((1LL << PM_PSHIFT_OFFSET) - 1)
+#define PM_PFRAME(x)        ((x) & PM_PFRAME_MASK)
+
+#define __PM_SOFT_DIRTY      (1LL)
+#define PM_PRESENT          PM_STATUS(4LL)
+#define PM_SWAP             PM_STATUS(2LL)
+#define PM_SOFT_DIRTY       __PM_PSHIFT(__PM_SOFT_DIRTY)
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -83,6 +100,10 @@
 #define KPF_OWNER_PRIVATE	37
 #define KPF_ARCH		38
 #define KPF_UNCACHED		39
+<<<<<<< HEAD
+=======
+#define KPF_SOFTDIRTY		40
+>>>>>>> refs/remotes/origin/master
 
 /* [48-] take some arbitrary free slots for expanding overloaded flags
  * not part of kernel API
@@ -132,6 +153,10 @@ static const char * const page_flag_names[] = {
 	[KPF_OWNER_PRIVATE]	= "O:owner_private",
 	[KPF_ARCH]		= "h:arch",
 	[KPF_UNCACHED]		= "c:uncached",
+<<<<<<< HEAD
+=======
+	[KPF_SOFTDIRTY]		= "f:softdirty",
+>>>>>>> refs/remotes/origin/master
 
 	[KPF_READAHEAD]		= "I:readahead",
 	[KPF_SLOB_FREE]		= "P:slob_free",
@@ -178,7 +203,11 @@ static int		kpageflags_fd;
 static int		opt_hwpoison;
 static int		opt_unpoison;
 
+<<<<<<< HEAD
 static char		hwpoison_debug_fs[MAX_PATH+1];
+=======
+static char		*hwpoison_debug_fs;
+>>>>>>> refs/remotes/origin/master
 static int		hwpoison_inject_fd;
 static int		hwpoison_forget_fd;
 
@@ -300,7 +329,11 @@ static char *page_flag_name(uint64_t flags)
 {
 	static char buf[65];
 	int present;
+<<<<<<< HEAD
 	int i, j;
+=======
+	size_t i, j;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0, j = 0; i < ARRAY_SIZE(page_flag_names); i++) {
 		present = (flags >> i) & 1;
@@ -318,7 +351,11 @@ static char *page_flag_name(uint64_t flags)
 static char *page_flag_longname(uint64_t flags)
 {
 	static char buf[1024];
+<<<<<<< HEAD
 	int i, n;
+=======
+	size_t i, n;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0, n = 0; i < ARRAY_SIZE(page_flag_names); i++) {
 		if (!page_flag_names[i])
@@ -376,7 +413,11 @@ static void show_page(unsigned long voffset,
 
 static void show_summary(void)
 {
+<<<<<<< HEAD
 	int i;
+=======
+	size_t i;
+>>>>>>> refs/remotes/origin/master
 
 	printf("             flags\tpage-count       MB"
 		"  symbolic-flags\t\t\tlong-symbolic-flags\n");
@@ -417,7 +458,11 @@ static int bit_mask_ok(uint64_t flags)
 	return 1;
 }
 
+<<<<<<< HEAD
 static uint64_t expand_overloaded_flags(uint64_t flags)
+=======
+static uint64_t expand_overloaded_flags(uint64_t flags, uint64_t pme)
+>>>>>>> refs/remotes/origin/master
 {
 	/* SLOB/SLUB overload several page flags */
 	if (flags & BIT(SLAB)) {
@@ -433,6 +478,12 @@ static uint64_t expand_overloaded_flags(uint64_t flags)
 	if ((flags & (BIT(RECLAIM) | BIT(WRITEBACK))) == BIT(RECLAIM))
 		flags ^= BIT(RECLAIM) | BIT(READAHEAD);
 
+<<<<<<< HEAD
+=======
+	if (pme & PM_SOFT_DIRTY)
+		flags |= BIT(SOFTDIRTY);
+
+>>>>>>> refs/remotes/origin/master
 	return flags;
 }
 
@@ -448,16 +499,25 @@ static uint64_t well_known_flags(uint64_t flags)
 	return flags;
 }
 
+<<<<<<< HEAD
 static uint64_t kpageflags_flags(uint64_t flags)
 {
 	flags = expand_overloaded_flags(flags);
 
 	if (!opt_raw)
+=======
+static uint64_t kpageflags_flags(uint64_t flags, uint64_t pme)
+{
+	if (opt_raw)
+		flags = expand_overloaded_flags(flags, pme);
+	else
+>>>>>>> refs/remotes/origin/master
 		flags = well_known_flags(flags);
 
 	return flags;
 }
 
+<<<<<<< HEAD
 /* verify that a mountpoint is actually a debugfs instance */
 static int debugfs_valid_mountpoint(const char *debugfs)
 {
@@ -533,6 +593,8 @@ static void debugfs_mount(void)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * page actions
  */
@@ -541,7 +603,15 @@ static void prepare_hwpoison_fd(void)
 {
 	char buf[MAX_PATH + 1];
 
+<<<<<<< HEAD
 	debugfs_mount();
+=======
+	hwpoison_debug_fs = debugfs_mount(NULL);
+	if (!hwpoison_debug_fs) {
+		perror("mount debugfs");
+		exit(EXIT_FAILURE);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (opt_hwpoison && !hwpoison_inject_fd) {
 		snprintf(buf, MAX_PATH, "%s/hwpoison/corrupt-pfn",
@@ -588,10 +658,17 @@ static int unpoison_page(unsigned long offset)
  * page frame walker
  */
 
+<<<<<<< HEAD
 static int hash_slot(uint64_t flags)
 {
 	int k = HASH_KEY(flags);
 	int i;
+=======
+static size_t hash_slot(uint64_t flags)
+{
+	size_t k = HASH_KEY(flags);
+	size_t i;
+>>>>>>> refs/remotes/origin/master
 
 	/* Explicitly reserve slot 0 for flags 0: the following logic
 	 * cannot distinguish an unoccupied slot from slot (flags==0).
@@ -616,9 +693,15 @@ static int hash_slot(uint64_t flags)
 }
 
 static void add_page(unsigned long voffset,
+<<<<<<< HEAD
 		     unsigned long offset, uint64_t flags)
 {
 	flags = kpageflags_flags(flags);
+=======
+		     unsigned long offset, uint64_t flags, uint64_t pme)
+{
+	flags = kpageflags_flags(flags, pme);
+>>>>>>> refs/remotes/origin/master
 
 	if (!bit_mask_ok(flags))
 		return;
@@ -640,11 +723,20 @@ static void add_page(unsigned long voffset,
 #define KPAGEFLAGS_BATCH	(64 << 10)	/* 64k pages */
 static void walk_pfn(unsigned long voffset,
 		     unsigned long index,
+<<<<<<< HEAD
 		     unsigned long count)
 {
 	uint64_t buf[KPAGEFLAGS_BATCH];
 	unsigned long batch;
 	long pages;
+=======
+		     unsigned long count,
+		     uint64_t pme)
+{
+	uint64_t buf[KPAGEFLAGS_BATCH];
+	unsigned long batch;
+	unsigned long pages;
+>>>>>>> refs/remotes/origin/master
 	unsigned long i;
 
 	while (count) {
@@ -654,7 +746,11 @@ static void walk_pfn(unsigned long voffset,
 			break;
 
 		for (i = 0; i < pages; i++)
+<<<<<<< HEAD
 			add_page(voffset + i, index + i, buf[i]);
+=======
+			add_page(voffset + i, index + i, buf[i], pme);
+>>>>>>> refs/remotes/origin/master
 
 		index += pages;
 		count -= pages;
@@ -679,7 +775,11 @@ static void walk_vma(unsigned long index, unsigned long count)
 		for (i = 0; i < pages; i++) {
 			pfn = pagemap_pfn(buf[i]);
 			if (pfn)
+<<<<<<< HEAD
 				walk_pfn(index + i, pfn, 1);
+=======
+				walk_pfn(index + i, pfn, 1, buf[i]);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		index += pages;
@@ -730,7 +830,11 @@ static void walk_addr_ranges(void)
 
 	for (i = 0; i < nr_addr_ranges; i++)
 		if (!opt_pid)
+<<<<<<< HEAD
 			walk_pfn(0, opt_offset[i], opt_size[i]);
+=======
+			walk_pfn(0, opt_offset[i], opt_size[i], 0);
+>>>>>>> refs/remotes/origin/master
 		else
 			walk_task(opt_offset[i], opt_size[i]);
 
@@ -753,7 +857,11 @@ static const char *page_flag_type(uint64_t flag)
 
 static void usage(void)
 {
+<<<<<<< HEAD
 	int i, j;
+=======
+	size_t i, j;
+>>>>>>> refs/remotes/origin/master
 
 	printf(
 "page-types [options]\n"
@@ -912,7 +1020,11 @@ static void add_bits_filter(uint64_t mask, uint64_t bits)
 
 static uint64_t parse_flag_name(const char *str, int len)
 {
+<<<<<<< HEAD
 	int i;
+=======
+	size_t i;
+>>>>>>> refs/remotes/origin/master
 
 	if (!*str || !len)
 		return 0;

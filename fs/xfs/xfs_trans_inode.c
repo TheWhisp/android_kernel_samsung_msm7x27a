@@ -17,6 +17,7 @@
  */
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_types.h"
 #include "xfs_bit.h"
 #include "xfs_log.h"
@@ -31,10 +32,22 @@
 #include "xfs_dinode.h"
 #include "xfs_inode.h"
 #include "xfs_btree.h"
+=======
+#include "xfs_shared.h"
+#include "xfs_format.h"
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+#include "xfs_sb.h"
+#include "xfs_ag.h"
+#include "xfs_mount.h"
+#include "xfs_inode.h"
+#include "xfs_trans.h"
+>>>>>>> refs/remotes/origin/master
 #include "xfs_trans_priv.h"
 #include "xfs_inode_item.h"
 #include "xfs_trace.h"
 
+<<<<<<< HEAD
 #ifdef XFS_TRANS_DEBUG
 STATIC void
 xfs_trans_inode_broot_debug(
@@ -43,18 +56,25 @@ xfs_trans_inode_broot_debug(
 #define	xfs_trans_inode_broot_debug(ip)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Add a locked inode to the transaction.
  *
  * The inode must be locked, and it cannot be associated with any transaction.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * If lock_flags is non-zero the inode will be unlocked on transaction commit.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * If lock_flags is non-zero the inode will be unlocked on transaction commit.
+>>>>>>> refs/remotes/origin/master
  */
 void
 xfs_trans_ijoin(
 	struct xfs_trans	*tp,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct xfs_inode	*ip)
 {
@@ -62,16 +82,22 @@ xfs_trans_ijoin(
 
 	ASSERT(ip->i_transp == NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct xfs_inode	*ip,
 	uint			lock_flags)
 {
 	xfs_inode_log_item_t	*iip;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
 	if (ip->i_itemp == NULL)
 		xfs_inode_item_init(ip, ip->i_mount);
 	iip = ip->i_itemp;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ASSERT(iip->ili_lock_flags == 0);
 =======
@@ -79,11 +105,17 @@ xfs_trans_ijoin(
 	ASSERT(iip->ili_lock_flags == 0);
 	iip->ili_lock_flags = lock_flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	ASSERT(iip->ili_lock_flags == 0);
+	iip->ili_lock_flags = lock_flags;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Get a log_item_desc to point at the new item.
 	 */
 	xfs_trans_add_item(tp, &iip->ili_item);
+<<<<<<< HEAD
 
 	xfs_trans_inode_broot_debug(ip);
 <<<<<<< HEAD
@@ -114,6 +146,8 @@ xfs_trans_ijoin_ref(
 	ip->i_itemp->ili_lock_flags = lock_flags;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -133,9 +167,12 @@ xfs_trans_ichgtime(
 	ASSERT(tp);
 	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ASSERT(ip->i_transp == tp);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	tv = current_fs_time(inode->i_sb);
 
@@ -143,19 +180,29 @@ xfs_trans_ichgtime(
 	    !timespec_equal(&inode->i_mtime, &tv)) {
 		inode->i_mtime = tv;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		ip->i_d.di_mtime.t_sec = tv.tv_sec;
 		ip->i_d.di_mtime.t_nsec = tv.tv_nsec;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ip->i_d.di_mtime.t_sec = tv.tv_sec;
+		ip->i_d.di_mtime.t_nsec = tv.tv_nsec;
+>>>>>>> refs/remotes/origin/master
 	}
 	if ((flags & XFS_ICHGTIME_CHG) &&
 	    !timespec_equal(&inode->i_ctime, &tv)) {
 		inode->i_ctime = tv;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		ip->i_d.di_ctime.t_sec = tv.tv_sec;
 		ip->i_d.di_ctime.t_nsec = tv.tv_nsec;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ip->i_d.di_ctime.t_sec = tv.tv_sec;
+		ip->i_d.di_ctime.t_nsec = tv.tv_nsec;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -175,12 +222,31 @@ xfs_trans_log_inode(
 	uint		flags)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ASSERT(ip->i_transp == tp);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	ASSERT(ip->i_itemp != NULL);
 	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
 
+=======
+	ASSERT(ip->i_itemp != NULL);
+	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
+
+	/*
+	 * First time we log the inode in a transaction, bump the inode change
+	 * counter if it is configured for this to occur. We don't use
+	 * inode_inc_version() because there is no need for extra locking around
+	 * i_version as we already hold the inode locked exclusively for
+	 * metadata modification.
+	 */
+	if (!(ip->i_itemp->ili_item.li_desc->lid_flags & XFS_LID_DIRTY) &&
+	    IS_I_VERSION(VFS_I(ip))) {
+		ip->i_d.di_changecount = ++VFS_I(ip)->i_version;
+		flags |= XFS_ILOG_CORE;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	tp->t_flags |= XFS_TRANS_DIRTY;
 	ip->i_itemp->ili_item.li_desc->lid_flags |= XFS_LID_DIRTY;
 
@@ -188,14 +254,19 @@ xfs_trans_log_inode(
 	 * Always OR in the bits from the ili_last_fields field.
 	 * This is to coordinate with the xfs_iflush() and xfs_iflush_done()
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * routines in the eventual clearing of the ilf_fields bits.
 =======
 	 * routines in the eventual clearing of the ili_fields bits.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * routines in the eventual clearing of the ili_fields bits.
+>>>>>>> refs/remotes/origin/master
 	 * See the big comment in xfs_iflush() for an explanation of
 	 * this coordination mechanism.
 	 */
 	flags |= ip->i_itemp->ili_last_fields;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ip->i_itemp->ili_format.ilf_fields |= flags;
 =======
@@ -233,3 +304,7 @@ xfs_trans_inode_broot_debug(
 	}
 }
 #endif
+=======
+	ip->i_itemp->ili_fields |= flags;
+}
+>>>>>>> refs/remotes/origin/master

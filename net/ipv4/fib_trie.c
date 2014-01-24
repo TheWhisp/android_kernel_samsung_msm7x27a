@@ -52,9 +52,12 @@
 
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/bitops.h>
 #include <linux/types.h>
 #include <linux/kernel.h>
@@ -76,9 +79,13 @@
 #include <linux/list.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/net_namespace.h>
 #include <net/ip.h>
 #include <net/protocol.h>
@@ -117,15 +124,21 @@ struct leaf {
 struct leaf_info {
 	struct hlist_node hlist;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct rcu_head rcu;
 	int plen;
 	struct list_head falh;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int plen;
 	u32 mask_plen; /* ntohl(inet_make_mask(plen)) */
 	struct list_head falh;
 	struct rcu_head rcu;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct tnode {
@@ -137,7 +150,10 @@ struct tnode {
 	unsigned int empty_children;	/* KEYLENGTH bits needed */
 	union {
 		struct rcu_head rcu;
+<<<<<<< HEAD
 		struct work_struct work;
+=======
+>>>>>>> refs/remotes/origin/master
 		struct tnode *tnode_free;
 	};
 	struct rt_trie_node __rcu *child[0];
@@ -171,7 +187,10 @@ struct trie {
 #endif
 };
 
+<<<<<<< HEAD
 static void put_child(struct trie *t, struct tnode *tn, int i, struct rt_trie_node *n);
+=======
+>>>>>>> refs/remotes/origin/master
 static void tnode_put_child_reorg(struct tnode *tn, int i, struct rt_trie_node *n,
 				  int wasfull);
 static struct rt_trie_node *resize(struct trie *t, struct tnode *tn);
@@ -380,7 +399,11 @@ static void __leaf_free_rcu(struct rcu_head *head)
 
 static inline void free_leaf(struct leaf *l)
 {
+<<<<<<< HEAD
 	call_rcu_bh(&l->rcu, __leaf_free_rcu);
+=======
+	call_rcu(&l->rcu, __leaf_free_rcu);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void free_leaf_info(struct leaf_info *leaf)
@@ -396,12 +419,15 @@ static struct tnode *tnode_alloc(size_t size)
 		return vzalloc(size);
 }
 
+<<<<<<< HEAD
 static void __tnode_vfree(struct work_struct *arg)
 {
 	struct tnode *tn = container_of(arg, struct tnode, work);
 	vfree(tn);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void __tnode_free_rcu(struct rcu_head *head)
 {
 	struct tnode *tn = container_of(head, struct tnode, rcu);
@@ -410,10 +436,15 @@ static void __tnode_free_rcu(struct rcu_head *head)
 
 	if (size <= PAGE_SIZE)
 		kfree(tn);
+<<<<<<< HEAD
 	else {
 		INIT_WORK(&tn->work, __tnode_vfree);
 		schedule_work(&tn->work);
 	}
+=======
+	else
+		vfree(tn);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void tnode_free(struct tnode *tn)
@@ -465,9 +496,13 @@ static struct leaf_info *leaf_info_new(int plen)
 	if (li) {
 		li->plen = plen;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		li->mask_plen = ntohl(inet_make_mask(plen));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		li->mask_plen = ntohl(inet_make_mask(plen));
+>>>>>>> refs/remotes/origin/master
 		INIT_LIST_HEAD(&li->falh);
 	}
 	return li;
@@ -488,7 +523,11 @@ static struct tnode *tnode_new(t_key key, int pos, int bits)
 	}
 
 	pr_debug("AT %p s=%zu %zu\n", tn, sizeof(struct tnode),
+<<<<<<< HEAD
 		 sizeof(struct rt_trie_node) << bits);
+=======
+		 sizeof(struct rt_trie_node *) << bits);
+>>>>>>> refs/remotes/origin/master
 	return tn;
 }
 
@@ -505,7 +544,11 @@ static inline int tnode_full(const struct tnode *tn, const struct rt_trie_node *
 	return ((struct tnode *) n)->pos == tn->pos + tn->bits;
 }
 
+<<<<<<< HEAD
 static inline void put_child(struct trie *t, struct tnode *tn, int i,
+=======
+static inline void put_child(struct tnode *tn, int i,
+>>>>>>> refs/remotes/origin/master
 			     struct rt_trie_node *n)
 {
 	tnode_put_child_reorg(tn, i, n, -1);
@@ -769,8 +812,13 @@ static struct tnode *inflate(struct trie *t, struct tnode *tn)
 				goto nomem;
 			}
 
+<<<<<<< HEAD
 			put_child(t, tn, 2*i, (struct rt_trie_node *) left);
 			put_child(t, tn, 2*i+1, (struct rt_trie_node *) right);
+=======
+			put_child(tn, 2*i, (struct rt_trie_node *) left);
+			put_child(tn, 2*i+1, (struct rt_trie_node *) right);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -788,12 +836,18 @@ static struct tnode *inflate(struct trie *t, struct tnode *tn)
 
 		if (IS_LEAF(node) || ((struct tnode *) node)->pos >
 		   tn->pos + tn->bits - 1) {
+<<<<<<< HEAD
 			if (tkey_extract_bits(node->key,
 					      oldtnode->pos + oldtnode->bits,
 					      1) == 0)
 				put_child(t, tn, 2*i, node);
 			else
 				put_child(t, tn, 2*i+1, node);
+=======
+			put_child(tn,
+				tkey_extract_bits(node->key, oldtnode->pos, oldtnode->bits + 1),
+				node);
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
@@ -801,8 +855,13 @@ static struct tnode *inflate(struct trie *t, struct tnode *tn)
 		inode = (struct tnode *) node;
 
 		if (inode->bits == 1) {
+<<<<<<< HEAD
 			put_child(t, tn, 2*i, rtnl_dereference(inode->child[0]));
 			put_child(t, tn, 2*i+1, rtnl_dereference(inode->child[1]));
+=======
+			put_child(tn, 2*i, rtnl_dereference(inode->child[0]));
+			put_child(tn, 2*i+1, rtnl_dereference(inode->child[1]));
+>>>>>>> refs/remotes/origin/master
 
 			tnode_free_safe(inode);
 			continue;
@@ -832,22 +891,38 @@ static struct tnode *inflate(struct trie *t, struct tnode *tn)
 		 */
 
 		left = (struct tnode *) tnode_get_child(tn, 2*i);
+<<<<<<< HEAD
 		put_child(t, tn, 2*i, NULL);
+=======
+		put_child(tn, 2*i, NULL);
+>>>>>>> refs/remotes/origin/master
 
 		BUG_ON(!left);
 
 		right = (struct tnode *) tnode_get_child(tn, 2*i+1);
+<<<<<<< HEAD
 		put_child(t, tn, 2*i+1, NULL);
+=======
+		put_child(tn, 2*i+1, NULL);
+>>>>>>> refs/remotes/origin/master
 
 		BUG_ON(!right);
 
 		size = tnode_child_length(left);
 		for (j = 0; j < size; j++) {
+<<<<<<< HEAD
 			put_child(t, left, j, rtnl_dereference(inode->child[j]));
 			put_child(t, right, j, rtnl_dereference(inode->child[j + size]));
 		}
 		put_child(t, tn, 2*i, resize(t, left));
 		put_child(t, tn, 2*i+1, resize(t, right));
+=======
+			put_child(left, j, rtnl_dereference(inode->child[j]));
+			put_child(right, j, rtnl_dereference(inode->child[j + size]));
+		}
+		put_child(tn, 2*i, resize(t, left));
+		put_child(tn, 2*i+1, resize(t, right));
+>>>>>>> refs/remotes/origin/master
 
 		tnode_free_safe(inode);
 	}
@@ -892,7 +967,11 @@ static struct tnode *halve(struct trie *t, struct tnode *tn)
 			if (!newn)
 				goto nomem;
 
+<<<<<<< HEAD
 			put_child(t, tn, i/2, (struct rt_trie_node *)newn);
+=======
+			put_child(tn, i/2, (struct rt_trie_node *)newn);
+>>>>>>> refs/remotes/origin/master
 		}
 
 	}
@@ -907,21 +986,36 @@ static struct tnode *halve(struct trie *t, struct tnode *tn)
 		if (left == NULL) {
 			if (right == NULL)    /* Both are empty */
 				continue;
+<<<<<<< HEAD
 			put_child(t, tn, i/2, right);
+=======
+			put_child(tn, i/2, right);
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
 		if (right == NULL) {
+<<<<<<< HEAD
 			put_child(t, tn, i/2, left);
+=======
+			put_child(tn, i/2, left);
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
 		/* Two nonempty children */
 		newBinNode = (struct tnode *) tnode_get_child(tn, i/2);
+<<<<<<< HEAD
 		put_child(t, tn, i/2, NULL);
 		put_child(t, newBinNode, 0, left);
 		put_child(t, newBinNode, 1, right);
 		put_child(t, tn, i/2, resize(t, newBinNode));
+=======
+		put_child(tn, i/2, NULL);
+		put_child(newBinNode, 0, left);
+		put_child(newBinNode, 1, right);
+		put_child(tn, i/2, resize(t, newBinNode));
+>>>>>>> refs/remotes/origin/master
 	}
 	tnode_free_safe(oldtnode);
 	return tn;
@@ -936,10 +1030,16 @@ nomem:
 static struct leaf_info *find_leaf_info(struct leaf *l, int plen)
 {
 	struct hlist_head *head = &l->list;
+<<<<<<< HEAD
 	struct hlist_node *node;
 	struct leaf_info *li;
 
 	hlist_for_each_entry_rcu(li, node, head, hlist)
+=======
+	struct leaf_info *li;
+
+	hlist_for_each_entry_rcu(li, head, hlist)
+>>>>>>> refs/remotes/origin/master
 		if (li->plen == plen)
 			return li;
 
@@ -959,12 +1059,19 @@ static inline struct list_head *get_fa_head(struct leaf *l, int plen)
 static void insert_leaf_info(struct hlist_head *head, struct leaf_info *new)
 {
 	struct leaf_info *li = NULL, *last = NULL;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (hlist_empty(head)) {
 		hlist_add_head_rcu(&new->hlist, head);
 	} else {
+<<<<<<< HEAD
 		hlist_for_each_entry(li, node, head, hlist) {
+=======
+		hlist_for_each_entry(li, head, hlist) {
+>>>>>>> refs/remotes/origin/master
 			if (new->plen > li->plen)
 				break;
 
@@ -1022,9 +1129,15 @@ static void trie_rebalance(struct trie *t, struct tnode *tn)
 	while (tn != NULL && (tp = node_parent((struct rt_trie_node *)tn)) != NULL) {
 		cindex = tkey_extract_bits(key, tp->pos, tp->bits);
 		wasfull = tnode_full(tp, tnode_get_child(tp, cindex));
+<<<<<<< HEAD
 		tn = (struct tnode *) resize(t, (struct tnode *)tn);
 
 		tnode_put_child_reorg((struct tnode *)tp, cindex,
+=======
+		tn = (struct tnode *)resize(t, tn);
+
+		tnode_put_child_reorg(tp, cindex,
+>>>>>>> refs/remotes/origin/master
 				      (struct rt_trie_node *)tn, wasfull);
 
 		tp = node_parent((struct rt_trie_node *) tn);
@@ -1039,7 +1152,11 @@ static void trie_rebalance(struct trie *t, struct tnode *tn)
 
 	/* Handle last (top) tnode */
 	if (IS_TNODE(tn))
+<<<<<<< HEAD
 		tn = (struct tnode *)resize(t, (struct tnode *)tn);
+=======
+		tn = (struct tnode *)resize(t, tn);
+>>>>>>> refs/remotes/origin/master
 
 	rcu_assign_pointer(t->trie, (struct rt_trie_node *)tn);
 	tnode_free_flush();
@@ -1140,7 +1257,11 @@ static struct list_head *fib_insert_node(struct trie *t, u32 key, int plen)
 		node_set_parent((struct rt_trie_node *)l, tp);
 
 		cindex = tkey_extract_bits(key, tp->pos, tp->bits);
+<<<<<<< HEAD
 		put_child(t, (struct tnode *)tp, cindex, (struct rt_trie_node *)l);
+=======
+		put_child(tp, cindex, (struct rt_trie_node *)l);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* Case 3: n is a LEAF or a TNODE and the key doesn't match. */
 		/*
@@ -1148,12 +1269,17 @@ static struct list_head *fib_insert_node(struct trie *t, u32 key, int plen)
 		 *  first tnode need some special handling
 		 */
 
+<<<<<<< HEAD
 		if (tp)
 			pos = tp->pos+tp->bits;
 		else
 			pos = 0;
 
 		if (n) {
+=======
+		if (n) {
+			pos = tp ? tp->pos+tp->bits : 0;
+>>>>>>> refs/remotes/origin/master
 			newpos = tkey_mismatch(key, pos, n->key);
 			tn = tnode_new(n->key, newpos, 1);
 		} else {
@@ -1170,6 +1296,7 @@ static struct list_head *fib_insert_node(struct trie *t, u32 key, int plen)
 		node_set_parent((struct rt_trie_node *)tn, tp);
 
 		missbit = tkey_extract_bits(key, newpos, 1);
+<<<<<<< HEAD
 		put_child(t, tn, missbit, (struct rt_trie_node *)l);
 		put_child(t, tn, 1-missbit, n);
 
@@ -1177,6 +1304,14 @@ static struct list_head *fib_insert_node(struct trie *t, u32 key, int plen)
 			cindex = tkey_extract_bits(key, tp->pos, tp->bits);
 			put_child(t, (struct tnode *)tp, cindex,
 				  (struct rt_trie_node *)tn);
+=======
+		put_child(tn, missbit, (struct rt_trie_node *)l);
+		put_child(tn, 1-missbit, n);
+
+		if (tp) {
+			cindex = tkey_extract_bits(key, tp->pos, tp->bits);
+			put_child(tp, cindex, (struct rt_trie_node *)tn);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			rcu_assign_pointer(t->trie, (struct rt_trie_node *)tn);
 			tp = tn;
@@ -1185,6 +1320,7 @@ static struct list_head *fib_insert_node(struct trie *t, u32 key, int plen)
 
 	if (tp && tp->pos + tp->bits > 32)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_warning("fib_trie"
 			   " tp=%p pos=%d, bits=%d, key=%0x plen=%d\n",
 			   tp, tp->pos, tp->bits, key, plen);
@@ -1192,6 +1328,10 @@ static struct list_head *fib_insert_node(struct trie *t, u32 key, int plen)
 		pr_warn("fib_trie tp=%p pos=%d, bits=%d, key=%0x plen=%d\n",
 			tp, tp->pos, tp->bits, key, plen);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("fib_trie tp=%p pos=%d, bits=%d, key=%0x plen=%d\n",
+			tp, tp->pos, tp->bits, key, plen);
+>>>>>>> refs/remotes/origin/master
 
 	/* Rebalance the trie */
 
@@ -1309,7 +1449,11 @@ int fib_table_insert(struct fib_table *tb, struct fib_config *cfg)
 
 			fib_release_info(fi_drop);
 			if (state & FA_S_ACCESSED)
+<<<<<<< HEAD
 				rt_cache_flush(cfg->fc_nlinfo.nl_net, -1);
+=======
+				rt_cache_flush(cfg->fc_nlinfo.nl_net);
+>>>>>>> refs/remotes/origin/master
 			rtmsg_fib(RTM_NEWROUTE, htonl(key), new_fa, plen,
 				tb->tb_id, &cfg->fc_nlinfo, NLM_F_REPLACE);
 
@@ -1356,7 +1500,11 @@ int fib_table_insert(struct fib_table *tb, struct fib_config *cfg)
 	list_add_tail_rcu(&new_fa->fa_list,
 			  (fa ? &fa->fa_list : fa_head));
 
+<<<<<<< HEAD
 	rt_cache_flush(cfg->fc_nlinfo.nl_net, -1);
+=======
+	rt_cache_flush(cfg->fc_nlinfo.nl_net);
+>>>>>>> refs/remotes/origin/master
 	rtmsg_fib(RTM_NEWROUTE, htonl(key), new_fa, plen, tb->tb_id,
 		  &cfg->fc_nlinfo, 0);
 succeeded:
@@ -1377,6 +1525,7 @@ static int check_leaf(struct fib_table *tb, struct trie *t, struct leaf *l,
 {
 	struct leaf_info *li;
 	struct hlist_head *hhead = &l->list;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	hlist_for_each_entry_rcu(li, node, hhead, hlist) {
@@ -1390,6 +1539,13 @@ static int check_leaf(struct fib_table *tb, struct trie *t, struct leaf *l,
 
 		if (l->key != (key & li->mask_plen))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	hlist_for_each_entry_rcu(li, hhead, hlist) {
+		struct fib_alias *fa;
+
+		if (l->key != (key & li->mask_plen))
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		list_for_each_entry_rcu(fa, &li->falh, fa_list) {
@@ -1424,10 +1580,14 @@ static int check_leaf(struct fib_table *tb, struct trie *t, struct leaf *l,
 				t->stats.semantic_match_passed++;
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 				res->prefixlen = plen;
 =======
 				res->prefixlen = li->plen;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				res->prefixlen = li->plen;
+>>>>>>> refs/remotes/origin/master
 				res->nh_sel = nhsel;
 				res->type = fa->fa_type;
 				res->scope = fa->fa_info->fib_scope;
@@ -1436,10 +1596,14 @@ static int check_leaf(struct fib_table *tb, struct trie *t, struct leaf *l,
 				res->fa_head = &li->falh;
 				if (!(fib_flags & FIB_LOOKUP_NOREF))
 <<<<<<< HEAD
+<<<<<<< HEAD
 					atomic_inc(&res->fi->fib_clntref);
 =======
 					atomic_inc(&fi->fib_clntref);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					atomic_inc(&fi->fib_clntref);
+>>>>>>> refs/remotes/origin/master
 				return 0;
 			}
 		}
@@ -1588,7 +1752,12 @@ int fib_table_lookup(struct fib_table *tb, const struct flowi4 *flp,
 		 * state.directly.
 		 */
 		if (pref_mismatch) {
+<<<<<<< HEAD
 			int mp = KEYLENGTH - fls(pref_mismatch);
+=======
+			/* fls(x) = __fls(x) + 1 */
+			int mp = KEYLENGTH - __fls(pref_mismatch) - 1;
+>>>>>>> refs/remotes/origin/master
 
 			if (tkey_extract_bits(cn->key, mp, cn->pos - mp) != 0)
 				goto backtrace;
@@ -1644,9 +1813,13 @@ found:
 	return ret;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(fib_table_lookup);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(fib_table_lookup);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Remove the leaf and return parent.
@@ -1659,6 +1832,7 @@ static void trie_leaf_remove(struct trie *t, struct leaf *l)
 
 	if (tp) {
 		t_key cindex = tkey_extract_bits(l->key, tp->pos, tp->bits);
+<<<<<<< HEAD
 		put_child(t, (struct tnode *)tp, cindex, NULL);
 		trie_rebalance(t, tp);
 	} else
@@ -1667,6 +1841,12 @@ static void trie_leaf_remove(struct trie *t, struct leaf *l)
 =======
 		RCU_INIT_POINTER(t->trie, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		put_child(tp, cindex, NULL);
+		trie_rebalance(t, tp);
+	} else
+		RCU_INIT_POINTER(t->trie, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	free_leaf(l);
 }
@@ -1700,7 +1880,16 @@ int fib_table_delete(struct fib_table *tb, struct fib_config *cfg)
 	if (!l)
 		return -ESRCH;
 
+<<<<<<< HEAD
 	fa_head = get_fa_head(l, plen);
+=======
+	li = find_leaf_info(l, plen);
+
+	if (!li)
+		return -ESRCH;
+
+	fa_head = &li->falh;
+>>>>>>> refs/remotes/origin/master
 	fa = fib_find_alias(fa_head, tos, 0);
 
 	if (!fa)
@@ -1736,9 +1925,12 @@ int fib_table_delete(struct fib_table *tb, struct fib_config *cfg)
 	rtmsg_fib(RTM_DELROUTE, htonl(key), fa, plen, tb->tb_id,
 		  &cfg->fc_nlinfo, 0);
 
+<<<<<<< HEAD
 	l = fib_find_node(t, key);
 	li = find_leaf_info(l, plen);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	list_del_rcu(&fa->fa_list);
 
 	if (!plen)
@@ -1753,7 +1945,11 @@ int fib_table_delete(struct fib_table *tb, struct fib_config *cfg)
 		trie_leaf_remove(t, l);
 
 	if (fa->fa_state & FA_S_ACCESSED)
+<<<<<<< HEAD
 		rt_cache_flush(cfg->fc_nlinfo.nl_net, -1);
+=======
+		rt_cache_flush(cfg->fc_nlinfo.nl_net);
+>>>>>>> refs/remotes/origin/master
 
 	fib_release_info(fa->fa_info);
 	alias_free_mem_rcu(fa);
@@ -1782,10 +1978,17 @@ static int trie_flush_leaf(struct leaf *l)
 {
 	int found = 0;
 	struct hlist_head *lih = &l->list;
+<<<<<<< HEAD
 	struct hlist_node *node, *tmp;
 	struct leaf_info *li = NULL;
 
 	hlist_for_each_entry_safe(li, node, tmp, lih, hlist) {
+=======
+	struct hlist_node *tmp;
+	struct leaf_info *li = NULL;
+
+	hlist_for_each_entry_safe(li, tmp, lih, hlist) {
+>>>>>>> refs/remotes/origin/master
 		found += trie_flush_list(&li->falh);
 
 		if (list_empty(&li->falh)) {
@@ -1913,7 +2116,11 @@ static int fn_trie_dump_fa(t_key key, int plen, struct list_head *fah,
 			continue;
 		}
 
+<<<<<<< HEAD
 		if (fib_dump_info(skb, NETLINK_CB(cb->skb).pid,
+=======
+		if (fib_dump_info(skb, NETLINK_CB(cb->skb).portid,
+>>>>>>> refs/remotes/origin/master
 				  cb->nlh->nlmsg_seq,
 				  RTM_NEWROUTE,
 				  tb->tb_id,
@@ -1935,14 +2142,21 @@ static int fn_trie_dump_leaf(struct leaf *l, struct fib_table *tb,
 			struct sk_buff *skb, struct netlink_callback *cb)
 {
 	struct leaf_info *li;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 	int i, s_i;
 
 	s_i = cb->args[4];
 	i = 0;
 
 	/* rcu_read_lock is hold by caller */
+<<<<<<< HEAD
 	hlist_for_each_entry_rcu(li, node, &l->list, hlist) {
+=======
+	hlist_for_each_entry_rcu(li, &l->list, hlist) {
+>>>>>>> refs/remotes/origin/master
 		if (i < s_i) {
 			i++;
 			continue;
@@ -2132,14 +2346,21 @@ static void trie_collect_stats(struct trie *t, struct trie_stat *s)
 		if (IS_LEAF(n)) {
 			struct leaf *l = (struct leaf *)n;
 			struct leaf_info *li;
+<<<<<<< HEAD
 			struct hlist_node *tmp;
+=======
+>>>>>>> refs/remotes/origin/master
 
 			s->leaves++;
 			s->totdepth += iter.depth;
 			if (iter.depth > s->maxdepth)
 				s->maxdepth = iter.depth;
 
+<<<<<<< HEAD
 			hlist_for_each_entry_rcu(li, tmp, &l->list, hlist)
+=======
+			hlist_for_each_entry_rcu(li, &l->list, hlist)
+>>>>>>> refs/remotes/origin/master
 				++s->prefixes;
 		} else {
 			const struct tnode *tn = (const struct tnode *) n;
@@ -2187,7 +2408,11 @@ static void trie_show_stats(struct seq_file *seq, struct trie_stat *stat)
 		max--;
 
 	pointers = 0;
+<<<<<<< HEAD
 	for (i = 1; i <= max; i++)
+=======
+	for (i = 1; i < max; i++)
+>>>>>>> refs/remotes/origin/master
 		if (stat->nodesizes[i] != 0) {
 			seq_printf(seq, "  %u: %u",  i, stat->nodesizes[i]);
 			pointers += (1<<i) * stat->nodesizes[i];
@@ -2240,10 +2465,16 @@ static int fib_triestat_seq_show(struct seq_file *seq, void *v)
 
 	for (h = 0; h < FIB_TABLE_HASHSZ; h++) {
 		struct hlist_head *head = &net->ipv4.fib_table_hash[h];
+<<<<<<< HEAD
 		struct hlist_node *node;
 		struct fib_table *tb;
 
 		hlist_for_each_entry_rcu(tb, node, head, tb_hlist) {
+=======
+		struct fib_table *tb;
+
+		hlist_for_each_entry_rcu(tb, head, tb_hlist) {
+>>>>>>> refs/remotes/origin/master
 			struct trie *t = (struct trie *) tb->tb_data;
 			struct trie_stat stat;
 
@@ -2285,10 +2516,16 @@ static struct rt_trie_node *fib_trie_get_idx(struct seq_file *seq, loff_t pos)
 
 	for (h = 0; h < FIB_TABLE_HASHSZ; h++) {
 		struct hlist_head *head = &net->ipv4.fib_table_hash[h];
+<<<<<<< HEAD
 		struct hlist_node *node;
 		struct fib_table *tb;
 
 		hlist_for_each_entry_rcu(tb, node, head, tb_hlist) {
+=======
+		struct fib_table *tb;
+
+		hlist_for_each_entry_rcu(tb, head, tb_hlist) {
+>>>>>>> refs/remotes/origin/master
 			struct rt_trie_node *n;
 
 			for (n = fib_trie_get_first(iter,
@@ -2338,7 +2575,11 @@ static void *fib_trie_seq_next(struct seq_file *seq, void *v, loff_t *pos)
 	/* new hash chain */
 	while (++h < FIB_TABLE_HASHSZ) {
 		struct hlist_head *head = &net->ipv4.fib_table_hash[h];
+<<<<<<< HEAD
 		hlist_for_each_entry_rcu(tb, tb_node, head, tb_hlist) {
+=======
+		hlist_for_each_entry_rcu(tb, head, tb_hlist) {
+>>>>>>> refs/remotes/origin/master
 			n = fib_trie_get_first(iter, (struct trie *) tb->tb_data);
 			if (n)
 				goto found;
@@ -2421,13 +2662,20 @@ static int fib_trie_seq_show(struct seq_file *seq, void *v)
 	} else {
 		struct leaf *l = (struct leaf *) n;
 		struct leaf_info *li;
+<<<<<<< HEAD
 		struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 		__be32 val = htonl(l->key);
 
 		seq_indent(seq, iter->depth);
 		seq_printf(seq, "  |-- %pI4\n", &val);
 
+<<<<<<< HEAD
 		hlist_for_each_entry_rcu(li, node, &l->list, hlist) {
+=======
+		hlist_for_each_entry_rcu(li, &l->list, hlist) {
+>>>>>>> refs/remotes/origin/master
 			struct fib_alias *fa;
 
 			list_for_each_entry_rcu(fa, &li->falh, fa_list) {
@@ -2572,7 +2820,10 @@ static int fib_route_seq_show(struct seq_file *seq, void *v)
 {
 	struct leaf *l = v;
 	struct leaf_info *li;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (v == SEQ_START_TOKEN) {
 		seq_printf(seq, "%-127s\n", "Iface\tDestination\tGateway "
@@ -2581,7 +2832,11 @@ static int fib_route_seq_show(struct seq_file *seq, void *v)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	hlist_for_each_entry_rcu(li, node, &l->list, hlist) {
+=======
+	hlist_for_each_entry_rcu(li, &l->list, hlist) {
+>>>>>>> refs/remotes/origin/master
 		struct fib_alias *fa;
 		__be32 mask, prefix;
 
@@ -2591,16 +2846,28 @@ static int fib_route_seq_show(struct seq_file *seq, void *v)
 		list_for_each_entry_rcu(fa, &li->falh, fa_list) {
 			const struct fib_info *fi = fa->fa_info;
 			unsigned int flags = fib_flag_trans(fa->fa_type, mask, fi);
+<<<<<<< HEAD
 			int len;
+=======
+>>>>>>> refs/remotes/origin/master
 
 			if (fa->fa_type == RTN_BROADCAST
 			    || fa->fa_type == RTN_MULTICAST)
 				continue;
 
+<<<<<<< HEAD
 			if (fi)
 				seq_printf(seq,
 					 "%s\t%08X\t%08X\t%04X\t%d\t%u\t"
 					 "%d\t%08X\t%d\t%u\t%u%n",
+=======
+			seq_setwidth(seq, 127);
+
+			if (fi)
+				seq_printf(seq,
+					 "%s\t%08X\t%08X\t%04X\t%d\t%u\t"
+					 "%d\t%08X\t%d\t%u\t%u",
+>>>>>>> refs/remotes/origin/master
 					 fi->fib_dev ? fi->fib_dev->name : "*",
 					 prefix,
 					 fi->fib_nh->nh_gw, flags, 0, 0,
@@ -2609,6 +2876,7 @@ static int fib_route_seq_show(struct seq_file *seq, void *v)
 					 (fi->fib_advmss ?
 					  fi->fib_advmss + 40 : 0),
 					 fi->fib_window,
+<<<<<<< HEAD
 					 fi->fib_rtt >> 3, &len);
 			else
 				seq_printf(seq,
@@ -2618,6 +2886,17 @@ static int fib_route_seq_show(struct seq_file *seq, void *v)
 					 mask, 0, 0, 0, &len);
 
 			seq_printf(seq, "%*s\n", 127 - len, "");
+=======
+					 fi->fib_rtt >> 3);
+			else
+				seq_printf(seq,
+					 "*\t%08X\t%08X\t%04X\t%d\t%u\t"
+					 "%d\t%08X\t%d\t%u\t%u",
+					 prefix, 0, flags, 0, 0, 0,
+					 mask, 0, 0, 0);
+
+			seq_pad(seq, '\n');
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -2647,6 +2926,7 @@ static const struct file_operations fib_route_fops = {
 
 int __net_init fib_proc_init(struct net *net)
 {
+<<<<<<< HEAD
 	if (!proc_net_fops_create(net, "fib_trie", S_IRUGO, &fib_trie_fops))
 		goto out1;
 
@@ -2655,23 +2935,45 @@ int __net_init fib_proc_init(struct net *net)
 		goto out2;
 
 	if (!proc_net_fops_create(net, "route", S_IRUGO, &fib_route_fops))
+=======
+	if (!proc_create("fib_trie", S_IRUGO, net->proc_net, &fib_trie_fops))
+		goto out1;
+
+	if (!proc_create("fib_triestat", S_IRUGO, net->proc_net,
+			 &fib_triestat_fops))
+		goto out2;
+
+	if (!proc_create("route", S_IRUGO, net->proc_net, &fib_route_fops))
+>>>>>>> refs/remotes/origin/master
 		goto out3;
 
 	return 0;
 
 out3:
+<<<<<<< HEAD
 	proc_net_remove(net, "fib_triestat");
 out2:
 	proc_net_remove(net, "fib_trie");
+=======
+	remove_proc_entry("fib_triestat", net->proc_net);
+out2:
+	remove_proc_entry("fib_trie", net->proc_net);
+>>>>>>> refs/remotes/origin/master
 out1:
 	return -ENOMEM;
 }
 
 void __net_exit fib_proc_exit(struct net *net)
 {
+<<<<<<< HEAD
 	proc_net_remove(net, "fib_trie");
 	proc_net_remove(net, "fib_triestat");
 	proc_net_remove(net, "route");
+=======
+	remove_proc_entry("fib_trie", net->proc_net);
+	remove_proc_entry("fib_triestat", net->proc_net);
+	remove_proc_entry("route", net->proc_net);
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* CONFIG_PROC_FS */

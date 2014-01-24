@@ -85,6 +85,10 @@
 #include <linux/gpio.h>
 #include <linux/workqueue.h>
 #include <linux/leds-tca6507.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 
 /* LED select registers determine the source that drives LED outputs */
 #define TCA6507_LS_LED_OFF	0x0	/* Output HI-Z (off) */
@@ -667,8 +671,72 @@ static void tca6507_remove_gpio(struct tca6507_chip *tca)
 }
 #endif /* CONFIG_GPIOLIB */
 
+<<<<<<< HEAD
 static int __devinit tca6507_probe(struct i2c_client *client,
 				   const struct i2c_device_id *id)
+=======
+#ifdef CONFIG_OF
+static struct tca6507_platform_data *
+tca6507_led_dt_init(struct i2c_client *client)
+{
+	struct device_node *np = client->dev.of_node, *child;
+	struct tca6507_platform_data *pdata;
+	struct led_info *tca_leds;
+	int count;
+
+	count = of_get_child_count(np);
+	if (!count || count > NUM_LEDS)
+		return ERR_PTR(-ENODEV);
+
+	tca_leds = devm_kzalloc(&client->dev,
+			sizeof(struct led_info) * count, GFP_KERNEL);
+	if (!tca_leds)
+		return ERR_PTR(-ENOMEM);
+
+	for_each_child_of_node(np, child) {
+		struct led_info led;
+		u32 reg;
+		int ret;
+
+		led.name =
+			of_get_property(child, "label", NULL) ? : child->name;
+		led.default_trigger =
+			of_get_property(child, "linux,default-trigger", NULL);
+
+		ret = of_property_read_u32(child, "reg", &reg);
+		if (ret != 0)
+			continue;
+
+		tca_leds[reg] = led;
+	}
+	pdata = devm_kzalloc(&client->dev,
+			sizeof(struct tca6507_platform_data), GFP_KERNEL);
+	if (!pdata)
+		return ERR_PTR(-ENOMEM);
+
+	pdata->leds.leds = tca_leds;
+	pdata->leds.num_leds = count;
+
+	return pdata;
+}
+
+static const struct of_device_id of_tca6507_leds_match[] = {
+	{ .compatible = "ti,tca6507", },
+	{},
+};
+
+#else
+static struct tca6507_platform_data *
+tca6507_led_dt_init(struct i2c_client *client)
+{
+	return ERR_PTR(-ENODEV);
+}
+
+#endif
+
+static int tca6507_probe(struct i2c_client *client,
+		const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tca6507_chip *tca;
 	struct i2c_adapter *adapter;
@@ -677,17 +745,32 @@ static int __devinit tca6507_probe(struct i2c_client *client,
 	int i = 0;
 
 	adapter = to_i2c_adapter(client->dev.parent);
+<<<<<<< HEAD
 	pdata = client->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C))
 		return -EIO;
 
 	if (!pdata || pdata->leds.num_leds != NUM_LEDS) {
+<<<<<<< HEAD
 		dev_err(&client->dev, "Need %d entries in platform-data list\n",
 			NUM_LEDS);
 		return -ENODEV;
 	}
 	tca = kzalloc(sizeof(*tca), GFP_KERNEL);
+=======
+		pdata = tca6507_led_dt_init(client);
+		if (IS_ERR(pdata)) {
+			dev_err(&client->dev, "Need %d entries in platform-data list\n",
+				NUM_LEDS);
+			return PTR_ERR(pdata);
+		}
+	}
+	tca = devm_kzalloc(&client->dev, sizeof(*tca), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!tca)
 		return -ENOMEM;
 
@@ -727,11 +810,18 @@ exit:
 		if (tca->leds[i].led_cdev.name)
 			led_classdev_unregister(&tca->leds[i].led_cdev);
 	}
+<<<<<<< HEAD
 	kfree(tca);
 	return err;
 }
 
 static int __devexit tca6507_remove(struct i2c_client *client)
+=======
+	return err;
+}
+
+static int tca6507_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct tca6507_chip *tca = i2c_get_clientdata(client);
@@ -743,7 +833,10 @@ static int __devexit tca6507_remove(struct i2c_client *client)
 	}
 	tca6507_remove_gpio(tca);
 	cancel_work_sync(&tca->work);
+<<<<<<< HEAD
 	kfree(tca);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -752,6 +845,7 @@ static struct i2c_driver tca6507_driver = {
 	.driver   = {
 		.name    = "leds-tca6507",
 		.owner   = THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe    = tca6507_probe,
 	.remove   = __devexit_p(tca6507_remove),
@@ -770,6 +864,16 @@ static void __exit tca6507_leds_exit(void)
 
 module_init(tca6507_leds_init);
 module_exit(tca6507_leds_exit);
+=======
+		.of_match_table = of_match_ptr(of_tca6507_leds_match),
+	},
+	.probe    = tca6507_probe,
+	.remove   = tca6507_remove,
+	.id_table = tca6507_id,
+};
+
+module_i2c_driver(tca6507_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("NeilBrown <neilb@suse.de>");
 MODULE_DESCRIPTION("TCA6507 LED/GPO driver");

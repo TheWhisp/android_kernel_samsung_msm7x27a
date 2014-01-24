@@ -172,10 +172,14 @@ int mpc831x_usb_cfg(void)
 		return ret;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	usb_regs = ioremap(res.start, res.end - res.start + 1);
 =======
 	usb_regs = ioremap(res.start, resource_size(&res));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_regs = ioremap(res.start, resource_size(&res));
+>>>>>>> refs/remotes/origin/master
 
 	/* Using on-chip PHY */
 	if (prop && (!strcmp(prop, "utmi_wide") ||

@@ -23,6 +23,7 @@
 #include <linux/lockdep.h>
 #include <linux/percpu.h>
 #include <linux/cpu.h>
+<<<<<<< HEAD
 
 /* can make br locks by using local lock for read side, global lock for write */
 #define br_lock_init(name)	name##_lock_init()
@@ -197,4 +198,40 @@
 	preempt_enable();						\
  }									\
  EXPORT_SYMBOL(name##_global_unlock);
+=======
+#include <linux/notifier.h>
+
+#ifdef CONFIG_DEBUG_LOCK_ALLOC
+#define LOCKDEP_INIT_MAP lockdep_init_map
+#else
+#define LOCKDEP_INIT_MAP(a, b, c, d)
+#endif
+
+struct lglock {
+	arch_spinlock_t __percpu *lock;
+#ifdef CONFIG_DEBUG_LOCK_ALLOC
+	struct lock_class_key lock_key;
+	struct lockdep_map    lock_dep_map;
+#endif
+};
+
+#define DEFINE_LGLOCK(name)						\
+	static DEFINE_PER_CPU(arch_spinlock_t, name ## _lock)		\
+	= __ARCH_SPIN_LOCK_UNLOCKED;					\
+	struct lglock name = { .lock = &name ## _lock }
+
+#define DEFINE_STATIC_LGLOCK(name)					\
+	static DEFINE_PER_CPU(arch_spinlock_t, name ## _lock)		\
+	= __ARCH_SPIN_LOCK_UNLOCKED;					\
+	static struct lglock name = { .lock = &name ## _lock }
+
+void lg_lock_init(struct lglock *lg, char *name);
+void lg_local_lock(struct lglock *lg);
+void lg_local_unlock(struct lglock *lg);
+void lg_local_lock_cpu(struct lglock *lg, int cpu);
+void lg_local_unlock_cpu(struct lglock *lg, int cpu);
+void lg_global_lock(struct lglock *lg);
+void lg_global_unlock(struct lglock *lg);
+
+>>>>>>> refs/remotes/origin/master
 #endif

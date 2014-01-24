@@ -1,6 +1,10 @@
 /*
  * Copyright (C) ST-Ericsson AB 2010
+<<<<<<< HEAD
  * Author:	Sjur Brendeland/sjur.brandeland@stericsson.com
+=======
+ * Author:	Sjur Brendeland
+>>>>>>> refs/remotes/origin/master
  * License terms: GNU General Public License (GPL) version 2
  */
 
@@ -27,6 +31,7 @@ static int cfdgml_transmit(struct cflayer *layr, struct cfpkt *pkt);
 struct cflayer *cfdgml_create(u8 channel_id, struct dev_info *dev_info)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cfsrvl *dgm = kmalloc(sizeof(struct cfsrvl), GFP_ATOMIC);
 	if (!dgm) {
 		pr_warn("Out of memory\n");
@@ -35,11 +40,16 @@ struct cflayer *cfdgml_create(u8 channel_id, struct dev_info *dev_info)
 	caif_assert(offsetof(struct cfsrvl, layer) == 0);
 	memset(dgm, 0, sizeof(struct cfsrvl));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct cfsrvl *dgm = kzalloc(sizeof(struct cfsrvl), GFP_ATOMIC);
 	if (!dgm)
 		return NULL;
 	caif_assert(offsetof(struct cfsrvl, layer) == 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cfsrvl_init(dgm, channel_id, dev_info, true);
 	dgm->layer.receive = cfdgml_receive;
 	dgm->layer.transmit = cfdgml_transmit;
@@ -97,6 +107,7 @@ static int cfdgml_transmit(struct cflayer *layr, struct cfpkt *pkt)
 	struct cfsrvl *service = container_obj(layr);
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cfsrvl_ready(service, &ret))
 		return ret;
 
@@ -104,6 +115,8 @@ static int cfdgml_transmit(struct cflayer *layr, struct cfpkt *pkt)
 	if (cfpkt_getlen(pkt) > DGM_MTU)
 		return -EMSGSIZE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!cfsrvl_ready(service, &ret)) {
 		cfpkt_destroy(pkt);
@@ -115,7 +128,10 @@ static int cfdgml_transmit(struct cflayer *layr, struct cfpkt *pkt)
 		cfpkt_destroy(pkt);
 		return -EMSGSIZE;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cfpkt_add_head(pkt, &zero, 3);
 	packet_type = 0x08; /* B9 set - UNCLASSIFIED */

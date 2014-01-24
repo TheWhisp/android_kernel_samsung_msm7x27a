@@ -6,6 +6,7 @@
  * Authors: Felipe Balbi <balbi@ti.com>,
  *	    Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  *
+<<<<<<< HEAD
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -34,6 +35,16 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+=======
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2  of
+ * the License as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef __DRIVERS_USB_DWC3_IO_H
@@ -50,7 +61,11 @@ static inline u32 dwc3_readl(void __iomem *base, u32 offset)
 	 * space, see dwc3_probe in core.c.
 	 * However, the offsets are given starting from xHCI address space.
 	 */
+<<<<<<< HEAD
 	return readl_relaxed(base + (offset - DWC3_GLOBALS_REGS_START));
+=======
+	return readl(base + (offset - DWC3_GLOBALS_REGS_START));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void dwc3_writel(void __iomem *base, u32 offset, u32 value)
@@ -60,7 +75,11 @@ static inline void dwc3_writel(void __iomem *base, u32 offset, u32 value)
 	 * space, see dwc3_probe in core.c.
 	 * However, the offsets are given starting from xHCI address space.
 	 */
+<<<<<<< HEAD
 	writel_relaxed(value, base + (offset - DWC3_GLOBALS_REGS_START));
+=======
+	writel(value, base + (offset - DWC3_GLOBALS_REGS_START));
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* __DRIVERS_USB_DWC3_IO_H */

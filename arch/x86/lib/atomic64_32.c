@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/compiler.h>
 #include <linux/module.h>
 #include <linux/types.h>
@@ -59,8 +60,13 @@ int atomic64_add_unless_386(atomic64_t *v, long long a, long long u);
 EXPORT_SYMBOL(atomic64_add_unless_386);
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ATOMIC64_EXPORT EXPORT_SYMBOL
 
 #include <linux/export.h>
 #include <linux/atomic.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

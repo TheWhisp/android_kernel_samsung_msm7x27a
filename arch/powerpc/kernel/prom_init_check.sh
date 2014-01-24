@@ -21,12 +21,19 @@ _end enter_prom memcpy memset reloc_offset __secondary_hold
 __secondary_hold_acknowledge __secondary_hold_spinloop __start
 strcmp strcpy strlcpy strlen strncmp strstr logo_linux_clut224
 <<<<<<< HEAD
+<<<<<<< HEAD
 reloc_got2 kernstart_addr memstart_addr linux_banner"
 =======
 reloc_got2 kernstart_addr memstart_addr linux_banner _stext
 opal_query_takeover opal_do_takeover opal_enter_rtas opal_secondary_entry
 boot_command_line"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+reloc_got2 kernstart_addr memstart_addr linux_banner _stext
+opal_query_takeover opal_do_takeover opal_enter_rtas opal_secondary_entry
+boot_command_line __prom_init_toc_start __prom_init_toc_end
+btext_setup_display"
+>>>>>>> refs/remotes/origin/master
 
 NM="$1"
 OBJ="$2"

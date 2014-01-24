@@ -14,9 +14,12 @@
 #include <linux/interrupt.h>
 #include <linux/kernel_stat.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/proc_fs.h>
 #include <linux/mm.h>
 #include <linux/random.h>
@@ -27,11 +30,15 @@
 #include <linux/ftrace.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/system.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 #ifdef CONFIG_KGDB
@@ -57,7 +64,11 @@ again:
 }
 
 /*
+<<<<<<< HEAD
  * Allocate the 16 legacy interrupts for i8259 devices.  This happens early
+=======
+ * Allocate the 16 legacy interrupts for i8259 devices.	 This happens early
+>>>>>>> refs/remotes/origin/master
  * in the kernel initialization so treating allocation failure as BUG() is
  * ok.
  */

@@ -10,6 +10,7 @@
 
 #include <asm/atarihw.h>
 
+<<<<<<< HEAD
 #define RTC_PORT(x)	(TT_RTC_BAS + 2*(x))
 #define RTC_ALWAYS_BCD	0
 
@@ -20,6 +21,18 @@ atari_inb_p(RTC_PORT(1)); \
 #define CMOS_WRITE(val, addr) ({ \
 atari_outb_p((addr),RTC_PORT(0)); \
 atari_outb_p((val),RTC_PORT(1)); \
+=======
+#define ATARI_RTC_PORT(x)	(TT_RTC_BAS + 2*(x))
+#define RTC_ALWAYS_BCD	0
+
+#define CMOS_READ(addr) ({ \
+atari_outb_p((addr), ATARI_RTC_PORT(0)); \
+atari_inb_p(ATARI_RTC_PORT(1)); \
+})
+#define CMOS_WRITE(val, addr) ({ \
+atari_outb_p((addr), ATARI_RTC_PORT(0)); \
+atari_outb_p((val), ATARI_RTC_PORT(1)); \
+>>>>>>> refs/remotes/origin/master
 })
 #endif /* CONFIG_ATARI */
 

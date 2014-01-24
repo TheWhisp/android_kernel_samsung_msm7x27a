@@ -10,9 +10,12 @@
 #include <sys/utsname.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define LKC_DIRECT_LINK
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "lkc.h"
 
 struct symbol symbol_yes = {
@@ -140,7 +143,11 @@ static struct property *sym_get_range_prop(struct symbol *sym)
 	return NULL;
 }
 
+<<<<<<< HEAD
 static int sym_get_range_val(struct symbol *sym, int base)
+=======
+static long long sym_get_range_val(struct symbol *sym, int base)
+>>>>>>> refs/remotes/origin/master
 {
 	sym_calc_value(sym);
 	switch (sym->type) {
@@ -153,13 +160,22 @@ static int sym_get_range_val(struct symbol *sym, int base)
 	default:
 		break;
 	}
+<<<<<<< HEAD
 	return strtol(sym->curr.val, NULL, base);
+=======
+	return strtoll(sym->curr.val, NULL, base);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sym_validate_range(struct symbol *sym)
 {
 	struct property *prop;
+<<<<<<< HEAD
 	int base, val, val2;
+=======
+	int base;
+	long long val, val2;
+>>>>>>> refs/remotes/origin/master
 	char str[64];
 
 	switch (sym->type) {
@@ -175,7 +191,11 @@ static void sym_validate_range(struct symbol *sym)
 	prop = sym_get_range_prop(sym);
 	if (!prop)
 		return;
+<<<<<<< HEAD
 	val = strtol(sym->curr.val, NULL, base);
+=======
+	val = strtoll(sym->curr.val, NULL, base);
+>>>>>>> refs/remotes/origin/master
 	val2 = sym_get_range_val(prop->expr->left.sym, base);
 	if (val >= val2) {
 		val2 = sym_get_range_val(prop->expr->right.sym, base);
@@ -183,9 +203,15 @@ static void sym_validate_range(struct symbol *sym)
 			return;
 	}
 	if (sym->type == S_INT)
+<<<<<<< HEAD
 		sprintf(str, "%d", val2);
 	else
 		sprintf(str, "0x%x", val2);
+=======
+		sprintf(str, "%lld", val2);
+	else
+		sprintf(str, "0x%llx", val2);
+>>>>>>> refs/remotes/origin/master
 	sym->curr.val = strdup(str);
 }
 
@@ -267,12 +293,15 @@ static struct symbol *sym_calc_choice(struct symbol *sym)
 	struct property *prop;
 	struct expr *e;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* first calculate all choice values' visibilities */
 	prop = sym_get_choice_prop(sym);
 	expr_list_for_each_sym(prop->expr, e, def_sym)
 		sym_calc_visibility(def_sym);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int flags;
 
 	/* first calculate all choice values' visibilities */
@@ -285,7 +314,10 @@ static struct symbol *sym_calc_choice(struct symbol *sym)
 	}
 
 	sym->flags &= flags | ~SYMBOL_DEF_USER;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* is the user choice visible? */
 	def_sym = sym->def[S_DEF_USER].val;
@@ -312,6 +344,17 @@ void sym_calc_value(struct symbol *sym)
 
 	if (sym->flags & SYMBOL_VALID)
 		return;
+<<<<<<< HEAD
+=======
+
+	if (sym_is_choice_value(sym) &&
+	    sym->flags & SYMBOL_NEED_SET_CHOICE_VALUES) {
+		sym->flags &= ~SYMBOL_NEED_SET_CHOICE_VALUES;
+		prop = sym_get_choice_prop(sym);
+		sym_calc_value(prop_get_symbol(prop));
+	}
+
+>>>>>>> refs/remotes/origin/master
 	sym->flags |= SYMBOL_VALID;
 
 	oldval = sym->curr;
@@ -437,6 +480,12 @@ void sym_calc_value(struct symbol *sym)
 
 	if (sym->flags & SYMBOL_AUTO)
 		sym->flags &= ~SYMBOL_WRITE;
+<<<<<<< HEAD
+=======
+
+	if (sym->flags & SYMBOL_NEED_SET_CHOICE_VALUES)
+		set_all_choice_values(sym);
+>>>>>>> refs/remotes/origin/master
 }
 
 void sym_clear_all_valid(void)
@@ -595,7 +644,11 @@ bool sym_string_valid(struct symbol *sym, const char *str)
 bool sym_string_within_range(struct symbol *sym, const char *str)
 {
 	struct property *prop;
+<<<<<<< HEAD
 	int val;
+=======
+	long long val;
+>>>>>>> refs/remotes/origin/master
 
 	switch (sym->type) {
 	case S_STRING:
@@ -606,7 +659,11 @@ bool sym_string_within_range(struct symbol *sym, const char *str)
 		prop = sym_get_range_prop(sym);
 		if (!prop)
 			return true;
+<<<<<<< HEAD
 		val = strtol(str, NULL, 10);
+=======
+		val = strtoll(str, NULL, 10);
+>>>>>>> refs/remotes/origin/master
 		return val >= sym_get_range_val(prop->expr->left.sym, 10) &&
 		       val <= sym_get_range_val(prop->expr->right.sym, 10);
 	case S_HEX:
@@ -615,7 +672,11 @@ bool sym_string_within_range(struct symbol *sym, const char *str)
 		prop = sym_get_range_prop(sym);
 		if (!prop)
 			return true;
+<<<<<<< HEAD
 		val = strtol(str, NULL, 16);
+=======
+		val = strtoll(str, NULL, 16);
+>>>>>>> refs/remotes/origin/master
 		return val >= sym_get_range_val(prop->expr->left.sym, 16) &&
 		       val <= sym_get_range_val(prop->expr->right.sym, 16);
 	case S_BOOLEAN:
@@ -668,11 +729,19 @@ bool sym_set_string_value(struct symbol *sym, const char *newval)
 	size = strlen(newval) + 1;
 	if (sym->type == S_HEX && (newval[0] != '0' || (newval[1] != 'x' && newval[1] != 'X'))) {
 		size += 2;
+<<<<<<< HEAD
 		sym->def[S_DEF_USER].val = val = malloc(size);
 		*val++ = '0';
 		*val++ = 'x';
 	} else if (!oldval || strcmp(oldval, newval))
 		sym->def[S_DEF_USER].val = val = malloc(size);
+=======
+		sym->def[S_DEF_USER].val = val = xmalloc(size);
+		*val++ = '0';
+		*val++ = 'x';
+	} else if (!oldval || strcmp(oldval, newval))
+		sym->def[S_DEF_USER].val = val = xmalloc(size);
+>>>>>>> refs/remotes/origin/master
 	else
 		return true;
 
@@ -770,11 +839,16 @@ const char *sym_get_string_value(struct symbol *sym)
 			return "n";
 		case mod:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return "m";
 =======
 			sym_calc_value(modules_sym);
 			return (modules_sym->curr.tri == no) ? "n" : "m";
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			sym_calc_value(modules_sym);
+			return (modules_sym->curr.tri == no) ? "n" : "m";
+>>>>>>> refs/remotes/origin/master
 		case yes:
 			return "y";
 		}
@@ -828,7 +902,11 @@ struct symbol *sym_lookup(const char *name, int flags)
 		hash = 0;
 	}
 
+<<<<<<< HEAD
 	symbol = malloc(sizeof(*symbol));
+=======
+	symbol = xmalloc(sizeof(*symbol));
+>>>>>>> refs/remotes/origin/master
 	memset(symbol, 0, sizeof(*symbol));
 	symbol->name = new_name;
 	symbol->type = S_UNKNOWN;
@@ -879,7 +957,11 @@ const char *sym_expand_string_value(const char *in)
 	size_t reslen;
 
 	reslen = strlen(in) + 1;
+<<<<<<< HEAD
 	res = malloc(reslen);
+=======
+	res = xmalloc(reslen);
+>>>>>>> refs/remotes/origin/master
 	res[0] = '\0';
 
 	while ((src = strchr(in, '$'))) {
@@ -917,7 +999,10 @@ const char *sym_expand_string_value(const char *in)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 const char *sym_escape_string_value(const char *in)
 {
 	const char *p;
@@ -939,7 +1024,11 @@ const char *sym_escape_string_value(const char *in)
 		p++;
 	}
 
+<<<<<<< HEAD
 	res = malloc(reslen);
+=======
+	res = xmalloc(reslen);
+>>>>>>> refs/remotes/origin/master
 	res[0] = '\0';
 
 	strcat(res, "\"");
@@ -961,23 +1050,73 @@ const char *sym_escape_string_value(const char *in)
 	return res;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 struct symbol **sym_re_search(const char *pattern)
 {
 	struct symbol *sym, **sym_arr = NULL;
 	int i, cnt, size;
 	regex_t re;
+=======
+struct sym_match {
+	struct symbol	*sym;
+	off_t		so, eo;
+};
+
+/* Compare matched symbols as thus:
+ * - first, symbols that match exactly
+ * - then, alphabetical sort
+ */
+static int sym_rel_comp(const void *sym1, const void *sym2)
+{
+	const struct sym_match *s1 = sym1;
+	const struct sym_match *s2 = sym2;
+	int exact1, exact2;
+
+	/* Exact match:
+	 * - if matched length on symbol s1 is the length of that symbol,
+	 *   then this symbol should come first;
+	 * - if matched length on symbol s2 is the length of that symbol,
+	 *   then this symbol should come first.
+	 * Note: since the search can be a regexp, both symbols may match
+	 * exactly; if this is the case, we can't decide which comes first,
+	 * and we fallback to sorting alphabetically.
+	 */
+	exact1 = (s1->eo - s1->so) == strlen(s1->sym->name);
+	exact2 = (s2->eo - s2->so) == strlen(s2->sym->name);
+	if (exact1 && !exact2)
+		return -1;
+	if (!exact1 && exact2)
+		return 1;
+
+	/* As a fallback, sort symbols alphabetically */
+	return strcmp(s1->sym->name, s2->sym->name);
+}
+
+struct symbol **sym_re_search(const char *pattern)
+{
+	struct symbol *sym, **sym_arr = NULL;
+	struct sym_match *sym_match_arr = NULL;
+	int i, cnt, size;
+	regex_t re;
+	regmatch_t match[1];
+>>>>>>> refs/remotes/origin/master
 
 	cnt = size = 0;
 	/* Skip if empty */
 	if (strlen(pattern) == 0)
 		return NULL;
+<<<<<<< HEAD
 	if (regcomp(&re, pattern, REG_EXTENDED|REG_NOSUB|REG_ICASE))
+=======
+	if (regcomp(&re, pattern, REG_EXTENDED|REG_ICASE))
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	for_all_symbols(i, sym) {
 		if (sym->flags & SYMBOL_CONST || !sym->name)
 			continue;
+<<<<<<< HEAD
 		if (regexec(&re, sym->name, 0, NULL, 0))
 			continue;
 		if (cnt + 1 >= size) {
@@ -994,6 +1133,38 @@ struct symbol **sym_re_search(const char *pattern)
 	}
 	if (sym_arr)
 		sym_arr[cnt] = NULL;
+=======
+		if (regexec(&re, sym->name, 1, match, 0))
+			continue;
+		if (cnt >= size) {
+			void *tmp;
+			size += 16;
+			tmp = realloc(sym_match_arr, size * sizeof(struct sym_match));
+			if (!tmp)
+				goto sym_re_search_free;
+			sym_match_arr = tmp;
+		}
+		sym_calc_value(sym);
+		/* As regexec returned 0, we know we have a match, so
+		 * we can use match[0].rm_[se]o without further checks
+		 */
+		sym_match_arr[cnt].so = match[0].rm_so;
+		sym_match_arr[cnt].eo = match[0].rm_eo;
+		sym_match_arr[cnt++].sym = sym;
+	}
+	if (sym_match_arr) {
+		qsort(sym_match_arr, cnt, sizeof(struct sym_match), sym_rel_comp);
+		sym_arr = malloc((cnt+1) * sizeof(struct symbol));
+		if (!sym_arr)
+			goto sym_re_search_free;
+		for (i = 0; i < cnt; i++)
+			sym_arr[i] = sym_match_arr[i].sym;
+		sym_arr[cnt] = NULL;
+	}
+sym_re_search_free:
+	/* sym_match_arr can be NULL if no match, but free(NULL) is OK */
+	free(sym_match_arr);
+>>>>>>> refs/remotes/origin/master
 	regfree(&re);
 
 	return sym_arr;
@@ -1003,7 +1174,11 @@ struct symbol **sym_re_search(const char *pattern)
  * When we check for recursive dependencies we use a stack to save
  * current state so we can print out relevant info to user.
  * The entries are located on the call stack so no need to free memory.
+<<<<<<< HEAD
  * Note inser() remove() must always match to properly clear the stack.
+=======
+ * Note insert() remove() must always match to properly clear the stack.
+>>>>>>> refs/remotes/origin/master
  */
 static struct dep_stack {
 	struct dep_stack *prev, *next;
@@ -1247,7 +1422,11 @@ struct property *prop_alloc(enum prop_type type, struct symbol *sym)
 	struct property *prop;
 	struct property **propp;
 
+<<<<<<< HEAD
 	prop = malloc(sizeof(*prop));
+=======
+	prop = xmalloc(sizeof(*prop));
+>>>>>>> refs/remotes/origin/master
 	memset(prop, 0, sizeof(*prop));
 	prop->type = type;
 	prop->sym = sym;

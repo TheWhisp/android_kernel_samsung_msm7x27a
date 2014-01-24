@@ -20,6 +20,7 @@
 #include <net/inet_ecn.h>
 #include <net/red.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/ip.h>
 #include <net/ip.h>
 #include <linux/ipv6.h>
@@ -27,6 +28,9 @@
 =======
 #include <net/flow_keys.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/flow_keys.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
    CHOKe stateless AQM for fair bandwidth allocation
@@ -65,9 +69,13 @@ struct choke_sched_data {
 
 /* Variables */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct red_vars  vars;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct red_vars  vars;
+>>>>>>> refs/remotes/origin/master
 	struct tcf_proto *filter_list;
 	struct {
 		u32	prob_drop;	/* Early probability drops */
@@ -90,7 +98,11 @@ struct choke_sched_data {
 /* deliver a random number between 0 and N - 1 */
 static u32 random_N(unsigned int N)
 {
+<<<<<<< HEAD
 	return reciprocal_divide(random32(), N);
+=======
+	return reciprocal_divide(prandom_u32(), N);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* number of elements in queue including holes */
@@ -150,6 +162,7 @@ static void choke_drop_by_idx(struct Qdisc *sch, unsigned int idx)
 	--sch->q.qlen;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Compare flow of two packets
@@ -231,11 +244,16 @@ static bool choke_match_flow(struct sk_buff *skb1,
 struct choke_skb_cb {
 	u16 classid;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct choke_skb_cb {
 	u16			classid;
 	u8			keys_valid;
 	struct flow_keys	keys;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct choke_skb_cb *choke_skb_cb(const struct sk_buff *skb)
@@ -256,7 +274,10 @@ static u16 choke_get_classid(const struct sk_buff *skb)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Compare flow of two packets
  *  Returns true only if source and destination address and port match.
  *          false for special cases
@@ -283,7 +304,10 @@ static bool choke_match_flow(struct sk_buff *skb1,
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Classify flow using either:
  *  1. pre-existing classification result in skb
  *  2. fast internal classification
@@ -361,10 +385,14 @@ static int choke_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 {
 	struct choke_sched_data *q = qdisc_priv(sch);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct red_parms *p = &q->parms;
 =======
 	const struct red_parms *p = &q->parms;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct red_parms *p = &q->parms;
+>>>>>>> refs/remotes/origin/master
 	int ret = NET_XMIT_SUCCESS | __NET_XMIT_BYPASS;
 
 	if (q->filter_list) {
@@ -373,6 +401,7 @@ static int choke_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 			goto other_drop;	/* Packet was eaten by filter */
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Compute average queue usage (see RED) */
 	p->qavg = red_calc_qavg(p, sch->q.qlen);
@@ -383,6 +412,8 @@ static int choke_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 	if (p->qavg <= p->qth_min)
 		p->qcount = -1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	choke_skb_cb(skb)->keys_valid = 0;
 	/* Compute average queue usage (see RED) */
 	q->vars.qavg = red_calc_qavg(p, &q->vars, sch->q.qlen);
@@ -392,7 +423,10 @@ static int choke_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 	/* Is queue small? */
 	if (q->vars.qavg <= p->qth_min)
 		q->vars.qcount = -1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	else {
 		unsigned int idx;
 
@@ -405,12 +439,17 @@ static int choke_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 
 		/* Queue is large, always mark/drop */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (p->qavg > p->qth_max) {
 			p->qcount = -1;
 =======
 		if (q->vars.qavg > p->qth_max) {
 			q->vars.qcount = -1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (q->vars.qavg > p->qth_max) {
+			q->vars.qcount = -1;
+>>>>>>> refs/remotes/origin/master
 
 			sch->qstats.overlimits++;
 			if (use_harddrop(q) || !use_ecn(q) ||
@@ -421,16 +460,22 @@ static int choke_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 
 			q->stats.forced_mark++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else if (++p->qcount) {
 			if (red_mark_probability(p, p->qavg)) {
 				p->qcount = 0;
 				p->qR = red_random(p);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		} else if (++q->vars.qcount) {
 			if (red_mark_probability(p, &q->vars, q->vars.qavg)) {
 				q->vars.qcount = 0;
 				q->vars.qR = red_random(p);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 				sch->qstats.overlimits++;
 				if (!use_ecn(q) || !INET_ECN_set_ce(skb)) {
@@ -442,10 +487,14 @@ static int choke_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 			}
 		} else
 <<<<<<< HEAD
+<<<<<<< HEAD
 			p->qR = red_random(p);
 =======
 			q->vars.qR = red_random(p);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			q->vars.qR = red_random(p);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Admit new packet */
@@ -458,6 +507,7 @@ static int choke_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 	}
 
 	q->stats.pdrop++;
+<<<<<<< HEAD
 	sch->qstats.drops++;
 	kfree_skb(skb);
 	return NET_XMIT_DROP;
@@ -467,6 +517,15 @@ static int choke_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 	return NET_XMIT_CN;
 
  other_drop:
+=======
+	return qdisc_drop(skb, sch);
+
+congestion_drop:
+	qdisc_drop(skb, sch);
+	return NET_XMIT_CN;
+
+other_drop:
+>>>>>>> refs/remotes/origin/master
 	if (ret & __NET_XMIT_BYPASS)
 		sch->qstats.drops++;
 	kfree_skb(skb);
@@ -480,12 +539,17 @@ static struct sk_buff *choke_dequeue(struct Qdisc *sch)
 
 	if (q->head == q->tail) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!red_is_idling(&q->parms))
 			red_start_of_idle_period(&q->parms);
 =======
 		if (!red_is_idling(&q->vars))
 			red_start_of_idle_period(&q->vars);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!red_is_idling(&q->vars))
+			red_start_of_idle_period(&q->vars);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
@@ -509,12 +573,17 @@ static unsigned int choke_drop(struct Qdisc *sch)
 		q->stats.other++;
 	else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!red_is_idling(&q->parms))
 			red_start_of_idle_period(&q->parms);
 =======
 		if (!red_is_idling(&q->vars))
 			red_start_of_idle_period(&q->vars);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!red_is_idling(&q->vars))
+			red_start_of_idle_period(&q->vars);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return len;
@@ -525,19 +594,27 @@ static void choke_reset(struct Qdisc *sch)
 	struct choke_sched_data *q = qdisc_priv(sch);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	red_restart(&q->parms);
 =======
 	red_restart(&q->vars);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	red_restart(&q->vars);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct nla_policy choke_policy[TCA_CHOKE_MAX + 1] = {
 	[TCA_CHOKE_PARMS]	= { .len = sizeof(struct tc_red_qopt) },
 	[TCA_CHOKE_STAB]	= { .len = RED_STAB_SIZE },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	[TCA_CHOKE_MAX_P]	= { .type = NLA_U32 },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[TCA_CHOKE_MAX_P]	= { .type = NLA_U32 },
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -560,9 +637,13 @@ static int choke_change(struct Qdisc *sch, struct nlattr *opt)
 	struct sk_buff **old = NULL;
 	unsigned int mask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 max_P;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 max_P;
+>>>>>>> refs/remotes/origin/master
 
 	if (opt == NULL)
 		return -EINVAL;
@@ -576,10 +657,15 @@ static int choke_change(struct Qdisc *sch, struct nlattr *opt)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	max_P = tb[TCA_CHOKE_MAX_P] ? nla_get_u32(tb[TCA_CHOKE_MAX_P]) : 0;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	max_P = tb[TCA_CHOKE_MAX_P] ? nla_get_u32(tb[TCA_CHOKE_MAX_P]) : 0;
+
+>>>>>>> refs/remotes/origin/master
 	ctl = nla_data(tb[TCA_CHOKE_PARMS]);
 
 	if (ctl->limit > CHOKE_MAX_QUEUE)
@@ -589,7 +675,12 @@ static int choke_change(struct Qdisc *sch, struct nlattr *opt)
 	if (mask != q->tab_mask) {
 		struct sk_buff **ntab;
 
+<<<<<<< HEAD
 		ntab = kcalloc(mask + 1, sizeof(struct sk_buff *), GFP_KERNEL);
+=======
+		ntab = kcalloc(mask + 1, sizeof(struct sk_buff *),
+			       GFP_KERNEL | __GFP_NOWARN);
+>>>>>>> refs/remotes/origin/master
 		if (!ntab)
 			ntab = vzalloc((mask + 1) * sizeof(struct sk_buff *));
 		if (!ntab)
@@ -630,18 +721,24 @@ static int choke_change(struct Qdisc *sch, struct nlattr *opt)
 	red_set_parms(&q->parms, ctl->qth_min, ctl->qth_max, ctl->Wlog,
 		      ctl->Plog, ctl->Scell_log,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		      nla_data(tb[TCA_CHOKE_STAB]));
 
 	if (q->head == q->tail)
 		red_end_of_idle_period(&q->parms);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		      nla_data(tb[TCA_CHOKE_STAB]),
 		      max_P);
 	red_set_vars(&q->vars);
 
 	if (q->head == q->tail)
 		red_end_of_idle_period(&q->vars);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	sch_tree_unlock(sch);
 	choke_free(old);
@@ -671,11 +768,17 @@ static int choke_dump(struct Qdisc *sch, struct sk_buff *skb)
 	if (opts == NULL)
 		goto nla_put_failure;
 
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_CHOKE_PARMS, sizeof(opt), &opt);
 <<<<<<< HEAD
 =======
 	NLA_PUT_U32(skb, TCA_CHOKE_MAX_P, q->parms.max_P);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (nla_put(skb, TCA_CHOKE_PARMS, sizeof(opt), &opt) ||
+	    nla_put_u32(skb, TCA_CHOKE_MAX_P, q->parms.max_P))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return nla_nest_end(skb, opts);
 
 nla_put_failure:

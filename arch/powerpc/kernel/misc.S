@@ -6,9 +6,12 @@
  * and Paul Mackerras.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Adapted for iSeries by Mike Corrigan (mikejc@us.ibm.com)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * PPC64 updates by Dave Engebretsen (engebret@us.ibm.com)
  *
  * setjmp/longjmp code by Paul Mackerras.
@@ -58,6 +61,7 @@ _GLOBAL(add_reloc_offset)
 	.align	3
 2:	PPC_LONG 1b
 
+<<<<<<< HEAD
 _GLOBAL(kernel_execve)
 	li	r0,__NR_execve
 	sc
@@ -65,6 +69,8 @@ _GLOBAL(kernel_execve)
 	neg	r3,r3
 	blr
 
+=======
+>>>>>>> refs/remotes/origin/master
 _GLOBAL(setjmp)
 	mflr	r0
 	PPC_STL	r0,0(r3)

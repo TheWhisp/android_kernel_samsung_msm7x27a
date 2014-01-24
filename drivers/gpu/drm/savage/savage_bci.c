@@ -22,8 +22,13 @@
  * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+<<<<<<< HEAD
 #include "drmP.h"
 #include "savage_drm.h"
+=======
+#include <drm/drmP.h>
+#include <drm/savage_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "savage_drv.h"
 
 /* Need a long timeout for shadow status updates can take a while
@@ -548,10 +553,15 @@ int savage_driver_load(struct drm_device *dev, unsigned long chipset)
 	dev_priv->chipset = (enum savage_family)chipset;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pci_set_master(dev->pdev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_set_master(dev->pdev);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -573,9 +583,12 @@ int savage_driver_firstopen(struct drm_device *dev)
 	unsigned int fb_rsrc, aper_rsrc;
 	int ret = 0;
 
+<<<<<<< HEAD
 	dev_priv->mtrr[0].handle = -1;
 	dev_priv->mtrr[1].handle = -1;
 	dev_priv->mtrr[2].handle = -1;
+=======
+>>>>>>> refs/remotes/origin/master
 	if (S3_SAVAGE3D_SERIES(dev_priv->chipset)) {
 		fb_rsrc = 0;
 		fb_base = pci_resource_start(dev->pdev, 0);
@@ -587,6 +600,7 @@ int savage_driver_firstopen(struct drm_device *dev)
 		if (pci_resource_len(dev->pdev, 0) == 0x08000000) {
 			/* Don't make MMIO write-cobining! We need 3
 			 * MTRRs. */
+<<<<<<< HEAD
 			dev_priv->mtrr[0].base = fb_base;
 			dev_priv->mtrr[0].size = 0x01000000;
 			dev_priv->mtrr[0].handle =
@@ -602,6 +616,16 @@ int savage_driver_firstopen(struct drm_device *dev)
 			dev_priv->mtrr[2].handle =
 			    drm_mtrr_add(dev_priv->mtrr[2].base,
 					 dev_priv->mtrr[2].size, DRM_MTRR_WC);
+=======
+			dev_priv->mtrr_handles[0] =
+				arch_phys_wc_add(fb_base, 0x01000000);
+			dev_priv->mtrr_handles[1] =
+				arch_phys_wc_add(fb_base + 0x02000000,
+						 0x02000000);
+			dev_priv->mtrr_handles[2] =
+				arch_phys_wc_add(fb_base + 0x04000000,
+						0x04000000);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			DRM_ERROR("strange pci_resource_len %08llx\n",
 				  (unsigned long long)
@@ -619,11 +643,17 @@ int savage_driver_firstopen(struct drm_device *dev)
 		if (pci_resource_len(dev->pdev, 1) == 0x08000000) {
 			/* Can use one MTRR to cover both fb and
 			 * aperture. */
+<<<<<<< HEAD
 			dev_priv->mtrr[0].base = fb_base;
 			dev_priv->mtrr[0].size = 0x08000000;
 			dev_priv->mtrr[0].handle =
 			    drm_mtrr_add(dev_priv->mtrr[0].base,
 					 dev_priv->mtrr[0].size, DRM_MTRR_WC);
+=======
+			dev_priv->mtrr_handles[0] =
+				arch_phys_wc_add(fb_base,
+						 0x08000000);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			DRM_ERROR("strange pci_resource_len %08llx\n",
 				  (unsigned long long)
@@ -663,11 +693,18 @@ void savage_driver_lastclose(struct drm_device *dev)
 	drm_savage_private_t *dev_priv = dev->dev_private;
 	int i;
 
+<<<<<<< HEAD
 	for (i = 0; i < 3; ++i)
 		if (dev_priv->mtrr[i].handle >= 0)
 			drm_mtrr_del(dev_priv->mtrr[i].handle,
 				 dev_priv->mtrr[i].base,
 				 dev_priv->mtrr[i].size, DRM_MTRR_WC);
+=======
+	for (i = 0; i < 3; ++i) {
+		arch_phys_wc_del(dev_priv->mtrr_handles[i]);
+		dev_priv->mtrr_handles[i] = 0;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 int savage_driver_unload(struct drm_device *dev)
@@ -740,7 +777,11 @@ static int savage_do_init_bci(struct drm_device * dev, drm_savage_init_t * init)
 			return -EINVAL;
 		}
 		drm_core_ioremap(dev->agp_buffer_map, dev);
+<<<<<<< HEAD
 		if (!dev->agp_buffer_map) {
+=======
+		if (!dev->agp_buffer_map->handle) {
+>>>>>>> refs/remotes/origin/master
 			DRM_ERROR("failed to ioremap DMA buffer region!\n");
 			savage_do_cleanup_bci(dev);
 			return -ENOMEM;
@@ -1055,6 +1096,10 @@ void savage_reclaim_buffers(struct drm_device *dev, struct drm_file *file_priv)
 {
 	struct drm_device_dma *dma = dev->dma;
 	drm_savage_private_t *dev_priv = dev->dev_private;
+<<<<<<< HEAD
+=======
+	int release_idlelock = 0;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	if (!dma)
@@ -1064,7 +1109,14 @@ void savage_reclaim_buffers(struct drm_device *dev, struct drm_file *file_priv)
 	if (!dma->buflist)
 		return;
 
+<<<<<<< HEAD
 	/*i830_flush_queue(dev); */
+=======
+	if (file_priv->master && file_priv->master->lock.hw_lock) {
+		drm_idlelock_take(&file_priv->master->lock);
+		release_idlelock = 1;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < dma->buf_count; i++) {
 		struct drm_buf *buf = dma->buflist[i];
@@ -1080,10 +1132,18 @@ void savage_reclaim_buffers(struct drm_device *dev, struct drm_file *file_priv)
 		}
 	}
 
+<<<<<<< HEAD
 	drm_core_reclaim_buffers(dev, file_priv);
 }
 
 struct drm_ioctl_desc savage_ioctls[] = {
+=======
+	if (release_idlelock)
+		drm_idlelock_release(&file_priv->master->lock);
+}
+
+const struct drm_ioctl_desc savage_ioctls[] = {
+>>>>>>> refs/remotes/origin/master
 	DRM_IOCTL_DEF_DRV(SAVAGE_BCI_INIT, savage_bci_init, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
 	DRM_IOCTL_DEF_DRV(SAVAGE_BCI_CMDBUF, savage_bci_cmdbuf, DRM_AUTH),
 	DRM_IOCTL_DEF_DRV(SAVAGE_BCI_EVENT_EMIT, savage_bci_event_emit, DRM_AUTH),

@@ -81,10 +81,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/sched.h>
 #include <linux/types.h>
@@ -97,9 +102,12 @@
 #include <linux/slab.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/cache.h>
 #include <asm/byteorder.h>
 #include <asm/uaccess.h>
@@ -108,9 +116,13 @@
 
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/interrupt.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 
 #include <linux/if_arp.h>
@@ -565,10 +577,14 @@ static int dscc4_wait_ack_cec(struct dscc4_dev_priv *dpriv,
 		rmb();
 	} while (++i > 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_ERR "%s: %s timeout\n", dev->name, msg);
 =======
 	netdev_err(dev, "%s timeout\n", msg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netdev_err(dev, "%s timeout\n", msg);
+>>>>>>> refs/remotes/origin/master
 done:
 	return (i >= 0) ? i : -EAGAIN;
 }
@@ -585,18 +601,24 @@ static int dscc4_do_action(struct net_device *dev, char *msg)
 
 		if (state & ArAck) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_DEBUG "%s: %s ack\n", dev->name, msg);
 			writel(ArAck, ioaddr);
 			goto done;
 		} else if (state & Arf) {
 			printk(KERN_ERR "%s: %s failed\n", dev->name, msg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			netdev_dbg(dev, "%s ack\n", msg);
 			writel(ArAck, ioaddr);
 			goto done;
 		} else if (state & Arf) {
 			netdev_err(dev, "%s failed\n", msg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			writel(Arf, ioaddr);
 			i = -1;
 			goto done;
@@ -604,10 +626,14 @@ static int dscc4_do_action(struct net_device *dev, char *msg)
 		rmb();
 	} while (++i > 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_ERR "%s: %s timeout\n", dev->name, msg);
 =======
 	netdev_err(dev, "%s timeout\n", msg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netdev_err(dev, "%s timeout\n", msg);
+>>>>>>> refs/remotes/origin/master
 done:
 	return i;
 }
@@ -664,10 +690,14 @@ static void dscc4_tx_reset(struct dscc4_dev_priv *dpriv, struct net_device *dev)
 	writel(MTFi|Rdt, dpriv->base_addr + dpriv->dev_id*0x0c + CH0CFG);
 	if (dscc4_do_action(dev, "Rdt") < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Tx reset failed\n", dev->name);
 =======
 		netdev_err(dev, "Tx reset failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(dev, "Tx reset failed\n");
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -737,8 +767,12 @@ static void dscc4_free1(struct pci_dev *pdev)
 	kfree(ppriv);
 }
 
+<<<<<<< HEAD
 static int __devinit dscc4_init_one(struct pci_dev *pdev,
 				  const struct pci_device_id *ent)
+=======
+static int dscc4_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dscc4_pci_priv *priv;
 	struct dscc4_dev_priv *dpriv;
@@ -754,26 +788,35 @@ static int __devinit dscc4_init_one(struct pci_dev *pdev,
 	rc = pci_request_region(pdev, 0, "registers");
 	if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	        printk(KERN_ERR "%s: can't reserve MMIO region (regs)\n",
 			DRV_NAME);
 =======
 		pr_err("can't reserve MMIO region (regs)\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("can't reserve MMIO region (regs)\n");
+>>>>>>> refs/remotes/origin/master
 	        goto err_disable_0;
 	}
 	rc = pci_request_region(pdev, 1, "LBI interface");
 	if (rc < 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	        printk(KERN_ERR "%s: can't reserve MMIO region (lbi)\n",
 			DRV_NAME);
 =======
 		pr_err("can't reserve MMIO region (lbi)\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("can't reserve MMIO region (lbi)\n");
+>>>>>>> refs/remotes/origin/master
 	        goto err_free_mmio_region_1;
 	}
 
 	ioaddr = pci_ioremap_bar(pdev, 0);
 	if (!ioaddr) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR "%s: cannot remap MMIO region %llx @ %llx\n",
 			DRV_NAME, (unsigned long long)pci_resource_len(pdev, 0),
@@ -783,6 +826,11 @@ static int __devinit dscc4_init_one(struct pci_dev *pdev,
 		       (unsigned long long)pci_resource_len(pdev, 0),
 		       (unsigned long long)pci_resource_start(pdev, 0));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot remap MMIO region %llx @ %llx\n",
+		       (unsigned long long)pci_resource_len(pdev, 0),
+		       (unsigned long long)pci_resource_start(pdev, 0));
+>>>>>>> refs/remotes/origin/master
 		rc = -EIO;
 		goto err_free_mmio_regions_2;
 	}
@@ -803,10 +851,14 @@ static int __devinit dscc4_init_one(struct pci_dev *pdev,
 	rc = request_irq(pdev->irq, dscc4_irq, IRQF_SHARED, DRV_NAME, priv->root);
 	if (rc < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: IRQ %d busy\n", DRV_NAME, pdev->irq);
 =======
 		pr_warn("IRQ %d busy\n", pdev->irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("IRQ %d busy\n", pdev->irq);
+>>>>>>> refs/remotes/origin/master
 		goto err_release_4;
 	}
 
@@ -824,14 +876,23 @@ static int __devinit dscc4_init_one(struct pci_dev *pdev,
 	}
 	/* Global interrupt queue */
 	writel((u32)(((IRQ_RING_SIZE >> 5) - 1) << 20), ioaddr + IQLENR1);
+<<<<<<< HEAD
+=======
+
+	rc = -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	priv->iqcfg = (__le32 *) pci_alloc_consistent(pdev,
 		IRQ_RING_SIZE*sizeof(__le32), &priv->iqcfg_dma);
 	if (!priv->iqcfg)
 		goto err_free_irq_5;
 	writel(priv->iqcfg_dma, ioaddr + IQCFG);
 
+<<<<<<< HEAD
 	rc = -ENOMEM;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * SCC 0-3 private rx/tx irq structures
 	 * IQRX/TXi needs to be set soon. Learned it the hard way...
@@ -953,6 +1014,7 @@ static int dscc4_found1(struct pci_dev *pdev, void __iomem *ioaddr)
 
 	root = kcalloc(dev_per_card, sizeof(*root), GFP_KERNEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!root) {
 		printk(KERN_ERR "%s: can't allocate data\n", DRV_NAME);
 		goto err_out;
@@ -961,6 +1023,10 @@ static int dscc4_found1(struct pci_dev *pdev, void __iomem *ioaddr)
 	if (!root)
 		goto err_out;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!root)
+		goto err_out;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < dev_per_card; i++) {
 		root[i].dev = alloc_hdlcdev(root + i);
@@ -970,6 +1036,7 @@ static int dscc4_found1(struct pci_dev *pdev, void __iomem *ioaddr)
 
 	ppriv = kzalloc(sizeof(*ppriv), GFP_KERNEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ppriv) {
 		printk(KERN_ERR "%s: can't allocate private data\n", DRV_NAME);
 		goto err_free_dev;
@@ -978,6 +1045,10 @@ static int dscc4_found1(struct pci_dev *pdev, void __iomem *ioaddr)
 	if (!ppriv)
 		goto err_free_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ppriv)
+		goto err_free_dev;
+>>>>>>> refs/remotes/origin/master
 
 	ppriv->root = root;
 	spin_lock_init(&ppriv->lock);
@@ -1012,10 +1083,14 @@ static int dscc4_found1(struct pci_dev *pdev, void __iomem *ioaddr)
 		ret = register_hdlc_device(d);
 		if (ret < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: unable to register\n", DRV_NAME);
 =======
 			pr_err("unable to register\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("unable to register\n");
+>>>>>>> refs/remotes/origin/master
 			dscc4_release_ring(dpriv);
 			goto err_unregister;
 	        }
@@ -1069,10 +1144,14 @@ static int dscc4_loopback_check(struct dscc4_dev_priv *dpriv)
 		struct net_device *dev = dscc4_to_dev(dpriv);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: loopback requires clock\n", dev->name);
 =======
 		netdev_info(dev, "loopback requires clock\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(dev, "loopback requires clock\n");
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 	return 0;
@@ -1146,10 +1225,14 @@ static int dscc4_open(struct net_device *dev)
 		scc_patchl(0, 0x00050000, dpriv, dev, CCR2);
 		scc_writel(EventsMask, dpriv, dev, IMR);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: up again.\n", dev->name);
 =======
 		netdev_info(dev, "up again\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(dev, "up again\n");
+>>>>>>> refs/remotes/origin/master
 		goto done;
 	}
 
@@ -1167,18 +1250,24 @@ static int dscc4_open(struct net_device *dev)
 	 */
 	if (scc_readl_star(dpriv, dev) & SccBusy) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "%s busy. Try later\n", dev->name);
 		ret = -EAGAIN;
 		goto err_out;
 	} else
 		printk(KERN_INFO "%s: available. Good\n", dev->name);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		netdev_err(dev, "busy - try later\n");
 		ret = -EAGAIN;
 		goto err_out;
 	} else
 		netdev_info(dev, "available - good\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	scc_writel(EventsMask, dpriv, dev, IMR);
 
@@ -1197,10 +1286,14 @@ static int dscc4_open(struct net_device *dev)
 	 */
 	if ((ret = dscc4_xpr_ack(dpriv)) < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: %s timeout\n", DRV_NAME, "XPR");
 =======
 		pr_err("XPR timeout\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("XPR timeout\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_disable_scc_events;
 	}
 	
@@ -1426,11 +1519,15 @@ static int dscc4_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 
 		if (dpriv->flags & FakeReset) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: please reset the device"
 			       " before this command\n", dev->name);
 =======
 			netdev_info(dev, "please reset the device before this command\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_info(dev, "please reset the device before this command\n");
+>>>>>>> refs/remotes/origin/master
 			return -EPERM;
 		}
 		if (copy_from_user(&dpriv->settings, line, size))
@@ -1594,11 +1691,15 @@ static irqreturn_t dscc4_irq(int irq, void *token)
 
 	if (state & Arf) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: failure (Arf). Harass the maintener\n",
 		       dev->name);
 =======
 		netdev_err(dev, "failure (Arf). Harass the maintainer\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(dev, "failure (Arf). Harass the maintainer\n");
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 	state &= ~ArAck;
@@ -1607,10 +1708,14 @@ static irqreturn_t dscc4_irq(int irq, void *token)
 			printk(KERN_DEBUG "%s: CfgIV\n", DRV_NAME);
 		if (priv->iqcfg[priv->cfg_cur++%IRQ_RING_SIZE] & cpu_to_le32(Arf))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: %s failed\n", dev->name, "CFG");
 =======
 			netdev_err(dev, "CFG failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_err(dev, "CFG failed\n");
+>>>>>>> refs/remotes/origin/master
 		if (!(state &= ~Cfg))
 			goto out;
 	}
@@ -1692,12 +1797,17 @@ try:
 			} else {
 				if (debug > 1)
 <<<<<<< HEAD
+<<<<<<< HEAD
 					printk(KERN_ERR "%s Tx: NULL skb %d\n",
 						dev->name, cur);
 =======
 					netdev_err(dev, "Tx: NULL skb %d\n",
 						   cur);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					netdev_err(dev, "Tx: NULL skb %d\n",
+						   cur);
+>>>>>>> refs/remotes/origin/master
 			}
 			/*
 			 * If the driver ends sending crap on the wire, it
@@ -1717,10 +1827,14 @@ try:
 		 */
 		if (state & Xdu) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: XDU. Ask maintainer\n", DRV_NAME);
 =======
 			netdev_err(dev, "Tx Data Underrun. Ask maintainer\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_err(dev, "Tx Data Underrun. Ask maintainer\n");
+>>>>>>> refs/remotes/origin/master
 			dpriv->flags = NeedIDT;
 			/* Tx reset */
 			writel(MTFi | Rdt,
@@ -1730,20 +1844,28 @@ try:
 		}
 		if (state & Cts) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: CTS transition\n", dev->name);
 =======
 			netdev_info(dev, "CTS transition\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_info(dev, "CTS transition\n");
+>>>>>>> refs/remotes/origin/master
 			if (!(state &= ~Cts)) /* DEBUG */
 				goto try;
 		}
 		if (state & Xmr) {
 			/* Frame needs to be sent again - FIXME */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: Xmr. Ask maintainer\n", DRV_NAME);
 =======
 			netdev_err(dev, "Tx ReTx. Ask maintainer\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_err(dev, "Tx ReTx. Ask maintainer\n");
+>>>>>>> refs/remotes/origin/master
 			if (!(state &= ~Xmr)) /* DEBUG */
 				goto try;
 		}
@@ -1762,10 +1884,14 @@ try:
 			}
 			if (!i)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_INFO "%s busy in irq\n", dev->name);
 =======
 				netdev_info(dev, "busy in irq\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				netdev_info(dev, "busy in irq\n");
+>>>>>>> refs/remotes/origin/master
 
 			scc_addr = dpriv->base_addr + 0x0c*dpriv->dev_id;
 			/* Keep this order: IDT before IDR */
@@ -1803,10 +1929,14 @@ try:
 		if (state & Cd) {
 			if (debug > 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_INFO "%s: CD transition\n", dev->name);
 =======
 				netdev_info(dev, "CD transition\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				netdev_info(dev, "CD transition\n");
+>>>>>>> refs/remotes/origin/master
 			if (!(state &= ~Cd)) /* DEBUG */
 				goto try;
 		}
@@ -1816,18 +1946,24 @@ try:
 			while (!dscc4_tx_poll(dpriv, dev));
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: Tx Hi\n", dev->name);
 			state &= ~Hi;
 		}
 		if (state & Err) {
 			printk(KERN_INFO "%s: Tx ERR\n", dev->name);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			netdev_info(dev, "Tx Hi\n");
 			state &= ~Hi;
 		}
 		if (state & Err) {
 			netdev_info(dev, "Tx ERR\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			dev->stats.tx_errors++;
 			state &= ~Err;
 		}
@@ -1898,10 +2034,14 @@ try:
 		}
 		if (state & Hi ) { /* HI bit */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: Rx Hi\n", dev->name);
 =======
 			netdev_info(dev, "Rx Hi\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_info(dev, "Rx Hi\n");
+>>>>>>> refs/remotes/origin/master
 			state &= ~Hi;
 			goto try;
 		}
@@ -1933,10 +2073,14 @@ try:
 		}
 		if (state & Cts) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: CTS transition\n", dev->name);
 =======
 			netdev_info(dev, "CTS transition\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_info(dev, "CTS transition\n");
+>>>>>>> refs/remotes/origin/master
 			if (!(state &= ~Cts)) /* DEBUG */
 				goto try;
 		}
@@ -1996,21 +2140,29 @@ try:
 			writel(MTFi|Rdr|Idr, scc_addr + CH0CFG);
 			if (dscc4_do_action(dev, "RDR") < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_ERR "%s: RDO recovery failed(%s)\n",
 				       dev->name, "RDR");
 =======
 				netdev_err(dev, "RDO recovery failed(RDR)\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				netdev_err(dev, "RDO recovery failed(RDR)\n");
+>>>>>>> refs/remotes/origin/master
 				goto rdo_end;
 			}
 			writel(MTFi|Idr, scc_addr + CH0CFG);
 			if (dscc4_do_action(dev, "IDR") < 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				printk(KERN_ERR "%s: RDO recovery failed(%s)\n",
 				       dev->name, "IDR");
 =======
 				netdev_err(dev, "RDO recovery failed(IDR)\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				netdev_err(dev, "RDO recovery failed(IDR)\n");
+>>>>>>> refs/remotes/origin/master
 				goto rdo_end;
 			}
 		rdo_end:
@@ -2020,10 +2172,14 @@ try:
 		}
 		if (state & Cd) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: CD transition\n", dev->name);
 =======
 			netdev_info(dev, "CD transition\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_info(dev, "CD transition\n");
+>>>>>>> refs/remotes/origin/master
 			if (!(state &= ~Cd)) /* DEBUG */
 				goto try;
 		}
@@ -2124,7 +2280,11 @@ err_out:
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 static void __devexit dscc4_remove_one(struct pci_dev *pdev)
+=======
+static void dscc4_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dscc4_pci_priv *ppriv;
 	struct dscc4_dev_priv *root;
@@ -2209,6 +2369,7 @@ static struct pci_driver dscc4_driver = {
 	.name		= DRV_NAME,
 	.id_table	= dscc4_pci_tbl,
 	.probe		= dscc4_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(dscc4_remove_one),
 };
 
@@ -2224,3 +2385,9 @@ static void __exit dscc4_cleanup_module(void)
 
 module_init(dscc4_init_module);
 module_exit(dscc4_cleanup_module);
+=======
+	.remove		= dscc4_remove_one,
+};
+
+module_pci_driver(dscc4_driver);
+>>>>>>> refs/remotes/origin/master

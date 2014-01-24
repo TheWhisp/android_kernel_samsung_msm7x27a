@@ -3,10 +3,14 @@
 
 #include <asm/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 #include <linux/irqflags.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/irqflags.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SMP
 #include <asm/spinlock.h>

@@ -21,13 +21,24 @@
 
 #include <linux/dma-mapping.h>
 #include <linux/dma-debug.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+#include <linux/dma-attrs.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/cpuinfo.h>
 #include <asm/spr_defs.h>
 #include <asm/tlbflush.h>
 
+<<<<<<< HEAD
 static int page_set_nocache(pte_t *pte, unsigned long addr,
 			    unsigned long next, struct mm_walk *walk)
+=======
+static int
+page_set_nocache(pte_t *pte, unsigned long addr,
+		 unsigned long next, struct mm_walk *walk)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long cl;
 
@@ -46,8 +57,14 @@ static int page_set_nocache(pte_t *pte, unsigned long addr,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int page_clear_nocache(pte_t *pte, unsigned long addr,
 			      unsigned long next, struct mm_walk *walk)
+=======
+static int
+page_clear_nocache(pte_t *pte, unsigned long addr,
+		   unsigned long next, struct mm_walk *walk)
+>>>>>>> refs/remotes/origin/master
 {
 	pte_val(*pte) &= ~_PAGE_CI;
 
@@ -67,9 +84,25 @@ static int page_clear_nocache(pte_t *pte, unsigned long addr,
  * cache-inhibit bit on those pages, and makes sure that the pages are
  * flushed out of the cache before they are used.
  *
+<<<<<<< HEAD
  */
 void *or1k_dma_alloc_coherent(struct device *dev, size_t size,
 			      dma_addr_t *dma_handle, gfp_t gfp)
+=======
+ * If the NON_CONSISTENT attribute is set, then this function just
+ * returns "normal", cachable memory.
+ *
+ * There are additional flags WEAK_ORDERING and WRITE_COMBINE to take
+ * into consideration here, too.  All current known implementations of
+ * the OR1K support only strongly ordered memory accesses, so that flag
+ * is being ignored for now; uncached but write-combined memory is a
+ * missing feature of the OR1K.
+ */
+static void *
+or1k_dma_alloc(struct device *dev, size_t size,
+	       dma_addr_t *dma_handle, gfp_t gfp,
+	       struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long va;
 	void *page;
@@ -87,6 +120,7 @@ void *or1k_dma_alloc_coherent(struct device *dev, size_t size,
 
 	va = (unsigned long)page;
 
+<<<<<<< HEAD
 	/*
 	 * We need to iterate through the pages, clearing the dcache for
 	 * them and setting the cache-inhibit bit.
@@ -94,13 +128,30 @@ void *or1k_dma_alloc_coherent(struct device *dev, size_t size,
 	if (walk_page_range(va, va + size, &walk)) {
 		free_pages_exact(page, size);
 		return NULL;
+=======
+	if (!dma_get_attr(DMA_ATTR_NON_CONSISTENT, attrs)) {
+		/*
+		 * We need to iterate through the pages, clearing the dcache for
+		 * them and setting the cache-inhibit bit.
+		 */
+		if (walk_page_range(va, va + size, &walk)) {
+			free_pages_exact(page, size);
+			return NULL;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return (void *)va;
 }
 
+<<<<<<< HEAD
 void or1k_dma_free_coherent(struct device *dev, size_t size, void *vaddr,
 			    dma_addr_t dma_handle)
+=======
+static void
+or1k_dma_free(struct device *dev, size_t size, void *vaddr,
+	      dma_addr_t dma_handle, struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long va = (unsigned long)vaddr;
 	struct mm_walk walk = {
@@ -108,16 +159,31 @@ void or1k_dma_free_coherent(struct device *dev, size_t size, void *vaddr,
 		.mm = &init_mm
 	};
 
+<<<<<<< HEAD
 	/* walk_page_range shouldn't be able to fail here */
 	WARN_ON(walk_page_range(va, va + size, &walk));
+=======
+	if (!dma_get_attr(DMA_ATTR_NON_CONSISTENT, attrs)) {
+		/* walk_page_range shouldn't be able to fail here */
+		WARN_ON(walk_page_range(va, va + size, &walk));
+	}
+>>>>>>> refs/remotes/origin/master
 
 	free_pages_exact(vaddr, size);
 }
 
+<<<<<<< HEAD
 dma_addr_t or1k_map_page(struct device *dev, struct page *page,
 			 unsigned long offset, size_t size,
 			 enum dma_data_direction dir,
 			 struct dma_attrs *attrs)
+=======
+static dma_addr_t
+or1k_map_page(struct device *dev, struct page *page,
+	      unsigned long offset, size_t size,
+	      enum dma_data_direction dir,
+	      struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long cl;
 	dma_addr_t addr = page_to_phys(page) + offset;
@@ -147,16 +213,30 @@ dma_addr_t or1k_map_page(struct device *dev, struct page *page,
 	return addr;
 }
 
+<<<<<<< HEAD
 void or1k_unmap_page(struct device *dev, dma_addr_t dma_handle,
 		     size_t size, enum dma_data_direction dir,
 		     struct dma_attrs *attrs)
+=======
+static void
+or1k_unmap_page(struct device *dev, dma_addr_t dma_handle,
+		size_t size, enum dma_data_direction dir,
+		struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Nothing special to do here... */
 }
 
+<<<<<<< HEAD
 int or1k_map_sg(struct device *dev, struct scatterlist *sg,
 		int nents, enum dma_data_direction dir,
 		struct dma_attrs *attrs)
+=======
+static int
+or1k_map_sg(struct device *dev, struct scatterlist *sg,
+	    int nents, enum dma_data_direction dir,
+	    struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct scatterlist *s;
 	int i;
@@ -169,9 +249,16 @@ int or1k_map_sg(struct device *dev, struct scatterlist *sg,
 	return nents;
 }
 
+<<<<<<< HEAD
 void or1k_unmap_sg(struct device *dev, struct scatterlist *sg,
 		   int nents, enum dma_data_direction dir,
 		   struct dma_attrs *attrs)
+=======
+static void
+or1k_unmap_sg(struct device *dev, struct scatterlist *sg,
+	      int nents, enum dma_data_direction dir,
+	      struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct scatterlist *s;
 	int i;
@@ -181,9 +268,16 @@ void or1k_unmap_sg(struct device *dev, struct scatterlist *sg,
 	}
 }
 
+<<<<<<< HEAD
 void or1k_sync_single_for_cpu(struct device *dev,
 			      dma_addr_t dma_handle, size_t size,
 			      enum dma_data_direction dir)
+=======
+static void
+or1k_sync_single_for_cpu(struct device *dev,
+			 dma_addr_t dma_handle, size_t size,
+			 enum dma_data_direction dir)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long cl;
 	dma_addr_t addr = dma_handle;
@@ -193,9 +287,16 @@ void or1k_sync_single_for_cpu(struct device *dev,
 		mtspr(SPR_DCBIR, cl);
 }
 
+<<<<<<< HEAD
 void or1k_sync_single_for_device(struct device *dev,
 			         dma_addr_t dma_handle, size_t size,
 			         enum dma_data_direction dir)
+=======
+static void
+or1k_sync_single_for_device(struct device *dev,
+			    dma_addr_t dma_handle, size_t size,
+			    enum dma_data_direction dir)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long cl;
 	dma_addr_t addr = dma_handle;
@@ -205,6 +306,21 @@ void or1k_sync_single_for_device(struct device *dev,
 		mtspr(SPR_DCBFR, cl);
 }
 
+<<<<<<< HEAD
+=======
+struct dma_map_ops or1k_dma_map_ops = {
+	.alloc = or1k_dma_alloc,
+	.free = or1k_dma_free,
+	.map_page = or1k_map_page,
+	.unmap_page = or1k_unmap_page,
+	.map_sg = or1k_map_sg,
+	.unmap_sg = or1k_unmap_sg,
+	.sync_single_for_cpu = or1k_sync_single_for_cpu,
+	.sync_single_for_device = or1k_sync_single_for_device,
+};
+EXPORT_SYMBOL(or1k_dma_map_ops);
+
+>>>>>>> refs/remotes/origin/master
 /* Number of entries preallocated for DMA-API debugging */
 #define PREALLOC_DMA_DEBUG_ENTRIES (1 << 16)
 

@@ -54,6 +54,10 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long address,
 	struct vm_area_struct *vma;
 	siginfo_t info;
 	int fault;
+<<<<<<< HEAD
+=======
+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+>>>>>>> refs/remotes/origin/master
 
 	tsk = current;
 
@@ -85,6 +89,10 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long address,
 	if (user_mode(regs)) {
 		/* Exception was in userspace: reenable interrupts */
 		local_irq_enable();
+<<<<<<< HEAD
+=======
+		flags |= FAULT_FLAG_USER;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* If exception was in a syscall, then IRQ's may have
 		 * been enabled or disabled.  If they were enabled,
@@ -105,6 +113,10 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long address,
 	if (in_interrupt() || !mm)
 		goto no_context;
 
+<<<<<<< HEAD
+=======
+retry:
+>>>>>>> refs/remotes/origin/master
 	down_read(&mm->mmap_sem);
 	vma = find_vma(mm, address);
 
@@ -143,6 +155,10 @@ good_area:
 	if (write_acc) {
 		if (!(vma->vm_flags & VM_WRITE))
 			goto bad_area;
+<<<<<<< HEAD
+=======
+		flags |= FAULT_FLAG_WRITE;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* not present */
 		if (!(vma->vm_flags & (VM_READ | VM_EXEC)))
@@ -159,7 +175,15 @@ good_area:
 	 * the fault.
 	 */
 
+<<<<<<< HEAD
 	fault = handle_mm_fault(mm, vma, address, write_acc);
+=======
+	fault = handle_mm_fault(mm, vma, address, flags);
+
+	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;
@@ -167,11 +191,33 @@ good_area:
 			goto do_sigbus;
 		BUG();
 	}
+<<<<<<< HEAD
 	/*RGD modeled on Cris */
 	if (fault & VM_FAULT_MAJOR)
 		tsk->maj_flt++;
 	else
 		tsk->min_flt++;
+=======
+
+	if (flags & FAULT_FLAG_ALLOW_RETRY) {
+		/*RGD modeled on Cris */
+		if (fault & VM_FAULT_MAJOR)
+			tsk->maj_flt++;
+		else
+			tsk->min_flt++;
+		if (fault & VM_FAULT_RETRY) {
+			flags &= ~FAULT_FLAG_ALLOW_RETRY;
+			flags |= FAULT_FLAG_TRIED;
+
+			 /* No need to up_read(&mm->mmap_sem) as we would
+			 * have already released it in __lock_page_or_retry
+			 * in mm/filemap.c.
+			 */
+
+			goto retry;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	up_read(&mm->mmap_sem);
 	return;
@@ -246,10 +292,17 @@ out_of_memory:
 	__asm__ __volatile__("l.nop 1");
 
 	up_read(&mm->mmap_sem);
+<<<<<<< HEAD
 	printk("VM: killing process %s\n", tsk->comm);
 	if (user_mode(regs))
 		do_exit(SIGKILL);
 	goto no_context;
+=======
+	if (!user_mode(regs))
+		goto no_context;
+	pagefault_out_of_memory();
+	return;
+>>>>>>> refs/remotes/origin/master
 
 do_sigbus:
 	up_read(&mm->mmap_sem);

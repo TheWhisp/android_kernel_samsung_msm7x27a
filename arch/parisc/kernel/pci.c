@@ -17,9 +17,12 @@
 
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/superio.h>
 
 #define DEBUG_RESOURCES 0
@@ -143,11 +146,14 @@ void pcibios_fixup_bus(struct pci_bus *bus)
 }
 
 
+<<<<<<< HEAD
 char *pcibios_setup(char *str)
 {
 	return str;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Called by pci_set_master() - a driver interface.
  *
@@ -198,6 +204,7 @@ void __init pcibios_init_bus(struct pci_bus *bus)
 	pci_write_config_word(dev, PCI_BRIDGE_CONTROL, bridge_ctl);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* called by drivers/pci/setup-bus.c:pci_setup_bridge().  */
 void __devinit pcibios_resource_to_bus(struct pci_dev *dev,
@@ -253,6 +260,8 @@ EXPORT_SYMBOL(pcibios_bus_to_resource);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * pcibios align resources() is called every time generic PCI code
  * wants to generate a new address. The process of looking for
@@ -284,6 +293,36 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
 }
 
 
+<<<<<<< HEAD
+=======
+int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
+			enum pci_mmap_state mmap_state, int write_combine)
+{
+	unsigned long prot;
+
+	/*
+	 * I/O space can be accessed via normal processor loads and stores on
+	 * this platform but for now we elect not to do this and portable
+	 * drivers should not do this anyway.
+	 */
+	if (mmap_state == pci_mmap_io)
+		return -EINVAL;
+
+	if (write_combine)
+		return -EINVAL;
+
+	/*
+	 * Ignore write-combine; for now only return uncached mappings.
+	 */
+	prot = pgprot_val(vma->vm_page_prot);
+	prot |= _PAGE_NO_CACHE;
+	vma->vm_page_prot = __pgprot(prot);
+
+	return remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
+		vma->vm_end - vma->vm_start, vma->vm_page_prot);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * A driver is enabling the device.  We make sure that all the appropriate
  * bits are set to allow the device to operate as the driver is expecting.

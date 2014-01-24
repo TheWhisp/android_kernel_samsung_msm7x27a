@@ -20,6 +20,7 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Valid flags for the radix tree
  */
 #define NFS_PAGE_TAG_LOCKED	0
@@ -28,6 +29,8 @@
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Valid flags for a dirty buffer
  */
 enum {
@@ -37,15 +40,20 @@ enum {
 	PG_NEED_COMMIT,
 	PG_NEED_RESCHED,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	PG_PNFS_COMMIT,
 =======
 	PG_PARTIAL_READ_FAILED,
 	PG_COMMIT_TO_DS,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	PG_COMMIT_TO_DS,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct nfs_inode;
 struct nfs_page {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	union {
 		struct list_head	wb_list;	/* Defines state of page: */
@@ -58,17 +66,29 @@ struct nfs_page {
 	struct nfs_open_context	*wb_context;	/* File state context info */
 	struct nfs_lock_context	*wb_lock_context;	/* lock context info */
 	atomic_t		wb_complete;	/* i/os we're waiting for */
+=======
+	struct list_head	wb_list;	/* Defines state of page: */
+	struct page		*wb_page;	/* page to read in/write out */
+	struct nfs_open_context	*wb_context;	/* File state context info */
+	struct nfs_lock_context	*wb_lock_context;	/* lock context info */
+>>>>>>> refs/remotes/origin/master
 	pgoff_t			wb_index;	/* Offset >> PAGE_CACHE_SHIFT */
 	unsigned int		wb_offset,	/* Offset & ~PAGE_CACHE_MASK */
 				wb_pgbase,	/* Start of page data */
 				wb_bytes;	/* Length of request */
 	struct kref		wb_kref;	/* reference count */
 	unsigned long		wb_flags;
+<<<<<<< HEAD
 	struct nfs_writeverf	wb_verf;	/* Commit cookie */
 };
 
 <<<<<<< HEAD
 =======
+=======
+	struct nfs_write_verifier	wb_verf;	/* Commit cookie */
+};
+
+>>>>>>> refs/remotes/origin/master
 struct nfs_pageio_descriptor;
 struct nfs_pageio_ops {
 	void	(*pg_init)(struct nfs_pageio_descriptor *, struct nfs_page *);
@@ -76,13 +96,17 @@ struct nfs_pageio_ops {
 	int	(*pg_doio)(struct nfs_pageio_descriptor *);
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct nfs_pageio_descriptor {
 	struct list_head	pg_list;
 	unsigned long		pg_bytes_written;
 	size_t			pg_count;
 	size_t			pg_bsize;
 	unsigned int		pg_base;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	char			pg_moreio;
 
@@ -93,6 +117,8 @@ struct nfs_pageio_descriptor {
 	struct pnfs_layout_segment *pg_lseg;
 	bool			(*pg_test)(struct nfs_pageio_descriptor *, struct nfs_page *, struct nfs_page *);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char		pg_moreio : 1,
 				pg_recoalesce : 1;
 
@@ -101,8 +127,15 @@ struct nfs_pageio_descriptor {
 	int 			pg_ioflags;
 	int			pg_error;
 	const struct rpc_call_ops *pg_rpc_callops;
+<<<<<<< HEAD
 	struct pnfs_layout_segment *pg_lseg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct nfs_pgio_completion_ops *pg_completion_ops;
+	struct pnfs_layout_segment *pg_lseg;
+	struct nfs_direct_req	*pg_dreq;
+	void			*pg_layout_private;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define NFS_WBACK_BUSY(req)	(test_bit(PG_BUSY,&(req)->wb_flags))
@@ -116,6 +149,7 @@ extern	void nfs_release_request(struct nfs_page *req);
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern	int nfs_scan_list(struct nfs_inode *nfsi, struct list_head *dst,
 			  pgoff_t idx_start, unsigned int npages, int tag);
 extern	void nfs_pageio_init(struct nfs_pageio_descriptor *desc,
@@ -126,6 +160,12 @@ extern	void nfs_pageio_init(struct nfs_pageio_descriptor *desc,
 			     struct inode *inode,
 			     const struct nfs_pageio_ops *pg_ops,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern	void nfs_pageio_init(struct nfs_pageio_descriptor *desc,
+			     struct inode *inode,
+			     const struct nfs_pageio_ops *pg_ops,
+			     const struct nfs_pgio_completion_ops *compl_ops,
+>>>>>>> refs/remotes/origin/master
 			     size_t bsize,
 			     int how);
 extern	int nfs_pageio_add_request(struct nfs_pageio_descriptor *,
@@ -137,6 +177,7 @@ extern bool nfs_generic_pg_test(struct nfs_pageio_descriptor *desc,
 				struct nfs_page *req);
 extern  int nfs_wait_on_request(struct nfs_page *);
 extern	void nfs_unlock_request(struct nfs_page *req);
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern	int nfs_set_page_tag_locked(struct nfs_page *req);
 extern  void nfs_clear_page_tag_locked(struct nfs_page *req);
@@ -166,6 +207,19 @@ nfs_lock_request(struct nfs_page *req)
 
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern	void nfs_unlock_and_release_request(struct nfs_page *req);
+
+/*
+ * Lock the page of an asynchronous request
+ */
+static inline int
+nfs_lock_request(struct nfs_page *req)
+{
+	return !test_and_set_bit(PG_BUSY, &req->wb_flags);
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * nfs_list_add_request - Insert a request into a list
  * @req: request

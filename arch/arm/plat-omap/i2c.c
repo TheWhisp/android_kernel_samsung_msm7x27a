@@ -31,6 +31,7 @@
 #include <linux/err.h>
 #include <linux/clk.h>
 
+<<<<<<< HEAD
 #include <mach/irqs.h>
 #include <plat/mux.h>
 #include <plat/i2c.h>
@@ -233,6 +234,15 @@ static int __init omap_i2c_add_bus(int bus_id)
 		return omap2_i2c_add_bus(bus_id);
 }
 
+=======
+#include <plat/i2c.h>
+
+#define OMAP_I2C_MAX_CONTROLLERS 4
+static struct omap_i2c_bus_platform_data i2c_pdata[OMAP_I2C_MAX_CONTROLLERS];
+
+#define OMAP_I2C_CMDLINE_SETUP	(BIT(31))
+
+>>>>>>> refs/remotes/origin/master
 /**
  * omap_i2c_bus_setup - Process command line options for the I2C bus speed
  * @str: String of options
@@ -246,12 +256,20 @@ static int __init omap_i2c_add_bus(int bus_id)
  */
 static int __init omap_i2c_bus_setup(char *str)
 {
+<<<<<<< HEAD
 	int ports;
 	int ints[3];
 
 	ports = omap_i2c_nr_ports();
 	get_options(str, 3, ints);
 	if (ints[0] < 2 || ints[1] < 1 || ints[1] > ports)
+=======
+	int ints[3];
+
+	get_options(str, 3, ints);
+	if (ints[0] < 2 || ints[1] < 1 ||
+			ints[1] > OMAP_I2C_MAX_CONTROLLERS)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	i2c_pdata[ints[1] - 1].clkrate = ints[2];
 	i2c_pdata[ints[1] - 1].clkrate |= OMAP_I2C_CMDLINE_SETUP;
@@ -264,14 +282,22 @@ __setup("i2c_bus=", omap_i2c_bus_setup);
  * Register busses defined in command line but that are not registered with
  * omap_register_i2c_bus from board initialization code.
  */
+<<<<<<< HEAD
 static int __init omap_register_i2c_bus_cmdline(void)
+=======
+int __init omap_register_i2c_bus_cmdline(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, err = 0;
 
 	for (i = 0; i < ARRAY_SIZE(i2c_pdata); i++)
 		if (i2c_pdata[i].clkrate & OMAP_I2C_CMDLINE_SETUP) {
 			i2c_pdata[i].clkrate &= ~OMAP_I2C_CMDLINE_SETUP;
+<<<<<<< HEAD
 			err = omap_i2c_add_bus(i + 1);
+=======
+			err = omap_i2c_add_bus(&i2c_pdata[i], i + 1);
+>>>>>>> refs/remotes/origin/master
 			if (err)
 				goto out;
 		}
@@ -279,7 +305,10 @@ static int __init omap_register_i2c_bus_cmdline(void)
 out:
 	return err;
 }
+<<<<<<< HEAD
 subsys_initcall(omap_register_i2c_bus_cmdline);
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * omap_register_i2c_bus - register I2C bus with device descriptors
@@ -296,7 +325,11 @@ int __init omap_register_i2c_bus(int bus_id, u32 clkrate,
 {
 	int err;
 
+<<<<<<< HEAD
 	BUG_ON(bus_id < 1 || bus_id > omap_i2c_nr_ports());
+=======
+	BUG_ON(bus_id < 1 || bus_id > OMAP_I2C_MAX_CONTROLLERS);
+>>>>>>> refs/remotes/origin/master
 
 	if (info) {
 		err = i2c_register_board_info(bus_id, info, len);
@@ -309,5 +342,9 @@ int __init omap_register_i2c_bus(int bus_id, u32 clkrate,
 
 	i2c_pdata[bus_id - 1].clkrate &= ~OMAP_I2C_CMDLINE_SETUP;
 
+<<<<<<< HEAD
 	return omap_i2c_add_bus(bus_id);
+=======
+	return omap_i2c_add_bus(&i2c_pdata[bus_id - 1], bus_id);
+>>>>>>> refs/remotes/origin/master
 }

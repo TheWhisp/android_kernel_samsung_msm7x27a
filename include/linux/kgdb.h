@@ -13,6 +13,7 @@
 #ifndef _KGDB_H_
 #define _KGDB_H_
 
+<<<<<<< HEAD
 #include <linux/serial_8250.h>
 #include <linux/linkage.h>
 #include <linux/init.h>
@@ -21,6 +22,11 @@
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/linkage.h>
+#include <linux/init.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HAVE_ARCH_KGDB
 #include <asm/kgdb.h>
 #endif
@@ -244,6 +250,10 @@ extern void kgdb_arch_late(void);
  * hardware breakpoints.
  * @correct_hw_break: Allow an architecture to specify how to correct the
  * hardware debug registers.
+<<<<<<< HEAD
+=======
+ * @enable_nmi: Manage NMI-triggered entry to KGDB
+>>>>>>> refs/remotes/origin/master
  */
 struct kgdb_arch {
 	unsigned char		gdb_bpt_instr[BREAK_INSTR_SIZE];
@@ -256,6 +266,11 @@ struct kgdb_arch {
 	void	(*disable_hw_break)(struct pt_regs *regs);
 	void	(*remove_all_hw_break)(void);
 	void	(*correct_hw_break)(void);
+<<<<<<< HEAD
+=======
+
+	void	(*enable_nmi)(bool on);
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -287,6 +302,19 @@ extern struct kgdb_arch		arch_kgdb_ops;
 
 extern unsigned long __weak kgdb_arch_pc(int exception, struct pt_regs *regs);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SERIAL_KGDB_NMI
+extern int kgdb_register_nmi_console(void);
+extern int kgdb_unregister_nmi_console(void);
+extern bool kgdb_nmi_poll_knock(void);
+#else
+static inline int kgdb_register_nmi_console(void) { return 0; }
+static inline int kgdb_unregister_nmi_console(void) { return 0; }
+static inline bool kgdb_nmi_poll_knock(void) { return 1; }
+#endif
+
+>>>>>>> refs/remotes/origin/master
 extern int kgdb_register_io_module(struct kgdb_io *local_kgdb_io_ops);
 extern void kgdb_unregister_io_module(struct kgdb_io *local_kgdb_io_ops);
 extern struct kgdb_io *dbg_io_ops;
@@ -302,6 +330,10 @@ extern int
 kgdb_handle_exception(int ex_vector, int signo, int err_code,
 		      struct pt_regs *regs);
 extern int kgdb_nmicallback(int cpu, void *regs);
+<<<<<<< HEAD
+=======
+extern int kgdb_nmicallin(int cpu, int trapnr, void *regs, atomic_t *snd_rdy);
+>>>>>>> refs/remotes/origin/master
 extern void gdbstub_exit(int status);
 
 extern int			kgdb_single_step;

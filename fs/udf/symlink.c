@@ -42,11 +42,14 @@ static void udf_pc_to_char(struct super_block *sb, unsigned char *from,
 		switch (pc->componentType) {
 		case 1:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (pc->lengthComponentIdent == 0) {
 				p = to;
 				*p++ = '/';
 			}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Symlink points to some place which should be agreed
  			 * upon between originator and receiver of the media. Ignore.
@@ -57,7 +60,10 @@ static void udf_pc_to_char(struct super_block *sb, unsigned char *from,
 		case 2:
 			p = to;
 			*p++ = '/';
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 3:
 			memcpy(p, "../", 3);

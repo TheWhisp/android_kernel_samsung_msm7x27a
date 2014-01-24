@@ -2,9 +2,15 @@
 # Makefile for the PCI bus specific drivers.
 #
 
+<<<<<<< HEAD
 obj-y		+= access.o bus.o probe.o remove.o pci.o \
 			pci-driver.o search.o pci-sysfs.o rom.o setup-res.o \
 			irq.o vpd.o
+=======
+obj-y		+= access.o bus.o probe.o host-bridge.o remove.o pci.o \
+			pci-driver.o search.o pci-sysfs.o rom.o setup-res.o \
+			irq.o vpd.o setup-bus.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_PROC_FS) += proc.o
 obj-$(CONFIG_SYSFS) += slot.o
 
@@ -15,8 +21,11 @@ obj-$(CONFIG_PCIEPORTBUS) += pcie/
 
 obj-$(CONFIG_PCI_IOAPIC) += ioapic.o
 
+<<<<<<< HEAD
 obj-$(CONFIG_HOTPLUG) += hotplug.o
 
+=======
+>>>>>>> refs/remotes/origin/master
 # Build the PCI Hotplug drivers if we were asked to
 obj-$(CONFIG_HOTPLUG_PCI) += hotplug/
 ifdef CONFIG_HOTPLUG_PCI
@@ -30,6 +39,7 @@ obj-$(CONFIG_PCI_MSI) += msi.o
 obj-$(CONFIG_HT_IRQ) += htirq.o
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Build Intel IOMMU support
 obj-$(CONFIG_DMAR) += dmar.o iova.o intel-iommu.o
 
@@ -38,6 +48,9 @@ obj-$(CONFIG_INTR_REMAP) += dmar.o intr_remapping.o
 =======
 obj-$(CONFIG_PCI_ATS) += ats.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_PCI_ATS) += ats.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_PCI_IOV) += iov.o
 
 #
@@ -57,6 +70,10 @@ obj-$(CONFIG_MN10300) += setup-bus.o
 obj-$(CONFIG_MICROBLAZE) += setup-bus.o
 obj-$(CONFIG_TILE) += setup-bus.o setup-irq.o
 obj-$(CONFIG_SPARC_LEON) += setup-bus.o setup-irq.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_M68K) += setup-bus.o setup-irq.o
+>>>>>>> refs/remotes/origin/master
 
 #
 # ACPI Related PCI FW Functions
@@ -67,9 +84,12 @@ obj-$(CONFIG_ACPI)    += pci-acpi.o
 # SMBIOS provided firmware instance and labels
 obj-$(CONFIG_PCI_LABEL) += pci-label.o
 
+<<<<<<< HEAD
 # Cardbus & CompactPCI use setup-bus
 obj-$(CONFIG_HOTPLUG) += setup-bus.o
 
+=======
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_PCI_SYSCALL) += syscall.o
 
 obj-$(CONFIG_PCI_STUB) += pci-stub.o
@@ -77,8 +97,17 @@ obj-$(CONFIG_PCI_STUB) += pci-stub.o
 obj-$(CONFIG_XEN_PCIDEV_FRONTEND) += xen-pcifront.o
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_OF) += of.o
 
 >>>>>>> refs/remotes/origin/cm-10.0
 ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
+=======
+obj-$(CONFIG_OF) += of.o
+
+ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
+
+# PCI host controller drivers
+obj-y += host/
+>>>>>>> refs/remotes/origin/master

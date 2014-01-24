@@ -239,10 +239,13 @@ struct fsl_lbc_regs {
 	__be32 fbcr;            /**< Flash Byte Count Register */
 #define FBCR_BC      0x00000FFF
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 res11[0x8];
 	u8 res8[0xF00];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -298,13 +301,19 @@ struct fsl_lbc_ctrl {
 	/* status read from LTESR by irq handler */
 	unsigned int			irq_status;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SUSPEND
 	/* save regs when system go to deep-sleep */
 	struct fsl_lbc_regs		*saved_regs;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 extern int fsl_upm_run_pattern(struct fsl_upm *upm, void __iomem *io_base,

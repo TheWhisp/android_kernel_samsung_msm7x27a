@@ -191,7 +191,11 @@ static int pasemi_get_mac_addr(struct pasemi_mac *mac)
 	struct device_node *dn = pci_device_to_OF_node(pdev);
 	int len;
 	const u8 *maddr;
+<<<<<<< HEAD
 	u8 addr[6];
+=======
+	u8 addr[ETH_ALEN];
+>>>>>>> refs/remotes/origin/master
 
 	if (!dn) {
 		dev_dbg(&pdev->dev,
@@ -201,8 +205,13 @@ static int pasemi_get_mac_addr(struct pasemi_mac *mac)
 
 	maddr = of_get_property(dn, "local-mac-address", &len);
 
+<<<<<<< HEAD
 	if (maddr && len == 6) {
 		memcpy(mac->mac_addr, maddr, 6);
+=======
+	if (maddr && len == ETH_ALEN) {
+		memcpy(mac->mac_addr, maddr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -219,14 +228,24 @@ static int pasemi_get_mac_addr(struct pasemi_mac *mac)
 		return -ENOENT;
 	}
 
+<<<<<<< HEAD
 	if (sscanf(maddr, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &addr[0],
 		   &addr[1], &addr[2], &addr[3], &addr[4], &addr[5]) != 6) {
+=======
+	if (sscanf(maddr, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
+		   &addr[0], &addr[1], &addr[2], &addr[3], &addr[4], &addr[5])
+	    != ETH_ALEN) {
+>>>>>>> refs/remotes/origin/master
 		dev_warn(&pdev->dev,
 			 "can't parse mac address, not configuring\n");
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	memcpy(mac->mac_addr, addr, 6);
+=======
+	memcpy(mac->mac_addr, addr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -439,6 +458,7 @@ static int pasemi_mac_setup_rx_resources(const struct net_device *dev)
 	if (pasemi_dma_alloc_ring(&ring->chan, RX_RING_SIZE))
 		goto out_ring_desc;
 
+<<<<<<< HEAD
 	ring->buffers = dma_alloc_coherent(&mac->dma_pdev->dev,
 					   RX_RING_SIZE * sizeof(u64),
 					   &ring->buf_dma, GFP_KERNEL);
@@ -447,6 +467,14 @@ static int pasemi_mac_setup_rx_resources(const struct net_device *dev)
 
 	memset(ring->buffers, 0, RX_RING_SIZE * sizeof(u64));
 
+=======
+	ring->buffers = dma_zalloc_coherent(&mac->dma_pdev->dev,
+					    RX_RING_SIZE * sizeof(u64),
+					    &ring->buf_dma, GFP_KERNEL);
+	if (!ring->buffers)
+		goto out_ring_desc;
+
+>>>>>>> refs/remotes/origin/master
 	write_dma_reg(PAS_DMA_RXCHAN_BASEL(chno),
 		      PAS_DMA_RXCHAN_BASEL_BRBL(ring->chan.ring_dma));
 
@@ -579,8 +607,14 @@ static void pasemi_mac_free_tx_resources(struct pasemi_mac *mac)
 						(TX_RING_SIZE-1)].dma;
 			freed = pasemi_mac_unmap_tx_skb(mac, nfrags,
 							info->skb, dmas);
+<<<<<<< HEAD
 		} else
 			freed = 2;
+=======
+		} else {
+			freed = 2;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	kfree(txring->ring_info);
@@ -623,7 +657,11 @@ static void pasemi_mac_free_rx_resources(struct pasemi_mac *mac)
 	mac->rx = NULL;
 }
 
+<<<<<<< HEAD
 static void pasemi_mac_replenish_rx_ring(const struct net_device *dev,
+=======
+static void pasemi_mac_replenish_rx_ring(struct net_device *dev,
+>>>>>>> refs/remotes/origin/master
 					 const int limit)
 {
 	const struct pasemi_mac *mac = netdev_priv(dev);
@@ -808,8 +846,14 @@ static int pasemi_mac_clean_rx(struct pasemi_mac_rxring *rx,
 			skb->ip_summed = CHECKSUM_UNNECESSARY;
 			skb->csum = (macrx & XCT_MACRX_CSUM_M) >>
 					   XCT_MACRX_CSUM_S;
+<<<<<<< HEAD
 		} else
 			skb_checksum_none_assert(skb);
+=======
+		} else {
+			skb_checksum_none_assert(skb);
+		}
+>>>>>>> refs/remotes/origin/master
 
 		packets++;
 		tot_bytes += len;
@@ -1101,9 +1145,15 @@ static int pasemi_mac_phy_init(struct net_device *dev)
 	phydev = of_phy_connect(dev, phy_dn, &pasemi_adjust_link, 0,
 				PHY_INTERFACE_MODE_SGMII);
 
+<<<<<<< HEAD
 	if (IS_ERR(phydev)) {
 		printk(KERN_ERR "%s: Could not attach to phy\n", dev->name);
 		return PTR_ERR(phydev);
+=======
+	if (!phydev) {
+		printk(KERN_ERR "%s: Could not attach to phy\n", dev->name);
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mac->phydev = phydev;
@@ -1218,7 +1268,11 @@ static int pasemi_mac_open(struct net_device *dev)
 	snprintf(mac->tx_irq_name, sizeof(mac->tx_irq_name), "%s tx",
 		 dev->name);
 
+<<<<<<< HEAD
 	ret = request_irq(mac->tx->chan.irq, pasemi_mac_tx_intr, IRQF_DISABLED,
+=======
+	ret = request_irq(mac->tx->chan.irq, pasemi_mac_tx_intr, 0,
+>>>>>>> refs/remotes/origin/master
 			  mac->tx_irq_name, mac->tx);
 	if (ret) {
 		dev_err(&mac->pdev->dev, "request_irq of irq %d failed: %d\n",
@@ -1229,7 +1283,11 @@ static int pasemi_mac_open(struct net_device *dev)
 	snprintf(mac->rx_irq_name, sizeof(mac->rx_irq_name), "%s rx",
 		 dev->name);
 
+<<<<<<< HEAD
 	ret = request_irq(mac->rx->chan.irq, pasemi_mac_rx_intr, IRQF_DISABLED,
+=======
+	ret = request_irq(mac->rx->chan.irq, pasemi_mac_rx_intr, 0,
+>>>>>>> refs/remotes/origin/master
 			  mac->rx_irq_name, mac->rx);
 	if (ret) {
 		dev_err(&mac->pdev->dev, "request_irq of irq %d failed: %d\n",
@@ -1727,7 +1785,11 @@ static const struct net_device_ops pasemi_netdev_ops = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 pasemi_mac_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 	struct net_device *dev;
@@ -1829,10 +1891,18 @@ pasemi_mac_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		dev_err(&mac->pdev->dev, "register_netdev failed with error %d\n",
 			err);
 		goto out;
+<<<<<<< HEAD
 	} else if netif_msg_probe(mac)
 		printk(KERN_INFO "%s: PA Semi %s: intf %d, hw addr %pM\n",
 		       dev->name, mac->type == MAC_TYPE_GMAC ? "GMAC" : "XAUI",
 		       mac->dma_if, dev->dev_addr);
+=======
+	} else if (netif_msg_probe(mac)) {
+		printk(KERN_INFO "%s: PA Semi %s: intf %d, hw addr %pM\n",
+		       dev->name, mac->type == MAC_TYPE_GMAC ? "GMAC" : "XAUI",
+		       mac->dma_if, dev->dev_addr);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 
@@ -1849,7 +1919,11 @@ out_disable_device:
 
 }
 
+<<<<<<< HEAD
 static void __devexit pasemi_mac_remove(struct pci_dev *pdev)
+=======
+static void pasemi_mac_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *netdev = pci_get_drvdata(pdev);
 	struct pasemi_mac *mac;
@@ -1868,7 +1942,10 @@ static void __devexit pasemi_mac_remove(struct pci_dev *pdev)
 	pasemi_dma_free_chan(&mac->tx->chan);
 	pasemi_dma_free_chan(&mac->rx->chan);
 
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_netdev(netdev);
 }
 
@@ -1884,7 +1961,11 @@ static struct pci_driver pasemi_mac_driver = {
 	.name		= "pasemi_mac",
 	.id_table	= pasemi_mac_pci_tbl,
 	.probe		= pasemi_mac_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(pasemi_mac_remove),
+=======
+	.remove		= pasemi_mac_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __exit pasemi_mac_cleanup_module(void)

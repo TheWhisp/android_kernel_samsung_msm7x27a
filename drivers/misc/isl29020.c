@@ -90,8 +90,15 @@ static ssize_t als_sensing_range_store(struct device *dev,
 	int ret_val;
 	unsigned long val;
 
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 10, &val))
 		return -EINVAL;
+=======
+	ret_val = kstrtoul(buf, 10, &val);
+	if (ret_val)
+		return ret_val;
+
+>>>>>>> refs/remotes/origin/master
 	if (val < 1 || val > 64000)
 		return -EINVAL;
 
@@ -159,10 +166,14 @@ static int als_set_default_config(struct i2c_client *client)
 		return retval;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;;
 =======
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int  isl29020_probe(struct i2c_client *client,
@@ -235,6 +246,7 @@ static struct i2c_driver isl29020_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensor_isl29020_init(void)
 {
 	return i2c_add_driver(&isl29020_driver);
@@ -250,6 +262,9 @@ module_exit(sensor_isl29020_exit);
 =======
 module_i2c_driver(isl29020_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(isl29020_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Kalhan Trisal <kalhan.trisal@intel.com>");
 MODULE_DESCRIPTION("Intersil isl29020 ALS Driver");

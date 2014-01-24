@@ -58,16 +58,22 @@ static const PCI_ENTRY id_list[] =
 	{PCI_VENDOR_ID_ANIGMA, PCI_DEVICE_ID_ANIGMA_MC145575, "Motorola MC145575", "MC145575"},
 	{PCI_VENDOR_ID_ZOLTRIX, PCI_DEVICE_ID_ZOLTRIX_2BD0, "Zoltrix", "2BD0"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{PCI_VENDOR_ID_DIGI, PCI_DEVICE_ID_DIGI_DF_M_IOM2_E,"Digi International", "Digi DataFire Micro V IOM2 (Europe)"},
 	{PCI_VENDOR_ID_DIGI, PCI_DEVICE_ID_DIGI_DF_M_E,"Digi International", "Digi DataFire Micro V (Europe)"},
 	{PCI_VENDOR_ID_DIGI, PCI_DEVICE_ID_DIGI_DF_M_IOM2_A,"Digi International", "Digi DataFire Micro V IOM2 (North America)"},
 	{PCI_VENDOR_ID_DIGI, PCI_DEVICE_ID_DIGI_DF_M_A,"Digi International", "Digi DataFire Micro V (North America)"},
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{PCI_VENDOR_ID_DIGI, PCI_DEVICE_ID_DIGI_DF_M_IOM2_E, "Digi International", "Digi DataFire Micro V IOM2 (Europe)"},
 	{PCI_VENDOR_ID_DIGI, PCI_DEVICE_ID_DIGI_DF_M_E, "Digi International", "Digi DataFire Micro V (Europe)"},
 	{PCI_VENDOR_ID_DIGI, PCI_DEVICE_ID_DIGI_DF_M_IOM2_A, "Digi International", "Digi DataFire Micro V IOM2 (North America)"},
 	{PCI_VENDOR_ID_DIGI, PCI_DEVICE_ID_DIGI_DF_M_A, "Digi International", "Digi DataFire Micro V (North America)"},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{PCI_VENDOR_ID_SITECOM, PCI_DEVICE_ID_SITECOM_DC105V2, "Sitecom Europe", "DC-105 ISDN PCI"},
 	{0, 0, NULL, NULL},
 };
@@ -81,10 +87,14 @@ release_io_hfcpci(struct IsdnCardState *cs)
 {
 	printk(KERN_INFO "HiSax: release hfcpci at %p\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cs->hw.hfcpci.pci_io);
 =======
 	       cs->hw.hfcpci.pci_io);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       cs->hw.hfcpci.pci_io);
+>>>>>>> refs/remotes/origin/master
 	cs->hw.hfcpci.int_m2 = 0;					/* interrupt output off ! */
 	Write_hfc(cs, HFCPCI_INT_M2, cs->hw.hfcpci.int_m2);
 	Write_hfc(cs, HFCPCI_CIRM, HFCPCI_RESET);			/* Reset On */
@@ -96,10 +106,14 @@ release_io_hfcpci(struct IsdnCardState *cs)
 	del_timer(&cs->hw.hfcpci.timer);
 	pci_free_consistent(cs->hw.hfcpci.dev, 0x8000,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cs->hw.hfcpci.fifos, cs->hw.hfcpci.dma);
 =======
 			    cs->hw.hfcpci.fifos, cs->hw.hfcpci.dma);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    cs->hw.hfcpci.fifos, cs->hw.hfcpci.dma);
+>>>>>>> refs/remotes/origin/master
 	cs->hw.hfcpci.fifos = NULL;
 	iounmap((void *)cs->hw.hfcpci.pci_io);
 }
@@ -140,10 +154,14 @@ reset_hfcpci(struct IsdnCardState *cs)
 
 	cs->hw.hfcpci.int_m1 = HFCPCI_INTS_DTRANS | HFCPCI_INTS_DREC |
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    HFCPCI_INTS_L1STATE | HFCPCI_INTS_TIMER;
 =======
 		HFCPCI_INTS_L1STATE | HFCPCI_INTS_TIMER;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		HFCPCI_INTS_L1STATE | HFCPCI_INTS_TIMER;
+>>>>>>> refs/remotes/origin/master
 	Write_hfc(cs, HFCPCI_INT_M1, cs->hw.hfcpci.int_m1);
 
 	/* Clear already pending ints */
@@ -190,12 +208,17 @@ hfcpci_Timer(struct IsdnCardState *cs)
 	/* WD RESET */
 /*      WriteReg(cs, HFCD_DATA, HFCD_CTMT, cs->hw.hfcpci.ctmt | 0x80);
 <<<<<<< HEAD
+<<<<<<< HEAD
    add_timer(&cs->hw.hfcpci.timer);
  */
 =======
 	add_timer(&cs->hw.hfcpci.timer);
 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	add_timer(&cs->hw.hfcpci.timer);
+*/
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -240,6 +263,7 @@ Sel_BCS(struct IsdnCardState *cs, int channel)
 static void hfcpci_clear_fifo_rx(struct IsdnCardState *cs, int fifo)
 {       u_char fifo_state;
 <<<<<<< HEAD
+<<<<<<< HEAD
         bzfifo_type *bzr;
 
 	if (fifo) {
@@ -252,6 +276,8 @@ static void hfcpci_clear_fifo_rx(struct IsdnCardState *cs, int fifo)
 	if (fifo_state)
 	        cs->hw.hfcpci.fifo_en ^= fifo_state;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bzfifo_type *bzr;
 
 	if (fifo) {
@@ -263,7 +289,10 @@ static void hfcpci_clear_fifo_rx(struct IsdnCardState *cs, int fifo)
 	}
 	if (fifo_state)
 		cs->hw.hfcpci.fifo_en ^= fifo_state;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	Write_hfc(cs, HFCPCI_FIFO_EN, cs->hw.hfcpci.fifo_en);
 	cs->hw.hfcpci.last_bfifo_cnt[fifo] = 0;
 	bzr->za[MAX_B_FRAMES].z1 = B_FIFO_SIZE + B_SUB_VAL - 1;
@@ -272,10 +301,14 @@ static void hfcpci_clear_fifo_rx(struct IsdnCardState *cs, int fifo)
 	bzr->f2 = bzr->f1;	/* init F pointers to remain constant */
 	if (fifo_state)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	        cs->hw.hfcpci.fifo_en |= fifo_state;
 =======
 		cs->hw.hfcpci.fifo_en |= fifo_state;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cs->hw.hfcpci.fifo_en |= fifo_state;
+>>>>>>> refs/remotes/origin/master
 	Write_hfc(cs, HFCPCI_FIFO_EN, cs->hw.hfcpci.fifo_en);
 }
 
@@ -284,6 +317,7 @@ static void hfcpci_clear_fifo_rx(struct IsdnCardState *cs, int fifo)
 /***************************************/
 static void hfcpci_clear_fifo_tx(struct IsdnCardState *cs, int fifo)
 {       u_char fifo_state;
+<<<<<<< HEAD
 <<<<<<< HEAD
         bzfifo_type *bzt;
 
@@ -297,6 +331,8 @@ static void hfcpci_clear_fifo_tx(struct IsdnCardState *cs, int fifo)
 	if (fifo_state)
 	        cs->hw.hfcpci.fifo_en ^= fifo_state;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bzfifo_type *bzt;
 
 	if (fifo) {
@@ -308,7 +344,10 @@ static void hfcpci_clear_fifo_tx(struct IsdnCardState *cs, int fifo)
 	}
 	if (fifo_state)
 		cs->hw.hfcpci.fifo_en ^= fifo_state;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	Write_hfc(cs, HFCPCI_FIFO_EN, cs->hw.hfcpci.fifo_en);
 	bzt->za[MAX_B_FRAMES].z1 = B_FIFO_SIZE + B_SUB_VAL - 1;
 	bzt->za[MAX_B_FRAMES].z2 = bzt->za[MAX_B_FRAMES].z1;
@@ -316,10 +355,14 @@ static void hfcpci_clear_fifo_tx(struct IsdnCardState *cs, int fifo)
 	bzt->f2 = bzt->f1;	/* init F pointers to remain constant */
 	if (fifo_state)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	        cs->hw.hfcpci.fifo_en |= fifo_state;
 =======
 		cs->hw.hfcpci.fifo_en |= fifo_state;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cs->hw.hfcpci.fifo_en |= fifo_state;
+>>>>>>> refs/remotes/origin/master
 	Write_hfc(cs, HFCPCI_FIFO_EN, cs->hw.hfcpci.fifo_en);
 }
 
@@ -329,10 +372,14 @@ static void hfcpci_clear_fifo_tx(struct IsdnCardState *cs, int fifo)
 static struct sk_buff
 *
 <<<<<<< HEAD
+<<<<<<< HEAD
 hfcpci_empty_fifo(struct BCState *bcs, bzfifo_type * bz, u_char * bdata, int count)
 =======
 hfcpci_empty_fifo(struct BCState *bcs, bzfifo_type *bz, u_char *bdata, int count)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+hfcpci_empty_fifo(struct BCState *bcs, bzfifo_type *bz, u_char *bdata, int count)
+>>>>>>> refs/remotes/origin/master
 {
 	u_char *ptr, *ptr1, new_f2;
 	struct sk_buff *skb;
@@ -418,7 +465,11 @@ receive_dmsg(struct IsdnCardState *cs)
 		if ((rcnt > MAX_DFRAME_LEN + 3) || (rcnt < 4) ||
 		    (df->data[zp->z1])) {
 			if (cs->debug & L1_DEB_WARN)
+<<<<<<< HEAD
 				debugl1(cs, "empty_fifo hfcpci paket inv. len %d or crc %d", rcnt, df->data[zp->z1]);
+=======
+				debugl1(cs, "empty_fifo hfcpci packet inv. len %d or crc %d", rcnt, df->data[zp->z1]);
+>>>>>>> refs/remotes/origin/master
 #ifdef ERROR_STATISTIC
 			cs->err_rx++;
 #endif
@@ -460,10 +511,14 @@ receive_dmsg(struct IsdnCardState *cs)
 /*******************************************************************************/
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 hfcpci_empty_fifo_trans(struct BCState *bcs, bzfifo_type * bz, u_char * bdata)
 =======
 hfcpci_empty_fifo_trans(struct BCState *bcs, bzfifo_type *bz, u_char *bdata)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+hfcpci_empty_fifo_trans(struct BCState *bcs, bzfifo_type *bz, u_char *bdata)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned short *z1r, *z2r;
 	int new_z2, fcnt, maxlen;
@@ -536,10 +591,14 @@ main_rec_hfcpci(struct BCState *bcs)
 		real_fifo = 0;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
       Begin:
 =======
 Begin:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Begin:
+>>>>>>> refs/remotes/origin/master
 	count--;
 	if (test_and_set_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags)) {
 		debugl1(cs, "rec_data %d blocked", bcs->channel);
@@ -567,10 +626,14 @@ Begin:
 			rcnt += MAX_B_FRAMES + 1;
 		if (cs->hw.hfcpci.last_bfifo_cnt[real_fifo] > rcnt + 1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		        rcnt = 0;
 =======
 			rcnt = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			rcnt = 0;
+>>>>>>> refs/remotes/origin/master
 			hfcpci_clear_fifo_rx(cs, real_fifo);
 		}
 		cs->hw.hfcpci.last_bfifo_cnt[real_fifo] = rcnt;
@@ -724,12 +787,17 @@ hfcpci_fill_fifo(struct BCState *bcs)
 					bcs->channel, bcs->tx_skb->len);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (test_bit(FLG_LLI_L1WAKEUP,&bcs->st->lli.flag) &&
 				(PACKET_NOACK != bcs->tx_skb->pkt_type)) {
 =======
 			if (test_bit(FLG_LLI_L1WAKEUP, &bcs->st->lli.flag) &&
 			    (PACKET_NOACK != bcs->tx_skb->pkt_type)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (test_bit(FLG_LLI_L1WAKEUP, &bcs->st->lli.flag) &&
+			    (PACKET_NOACK != bcs->tx_skb->pkt_type)) {
+>>>>>>> refs/remotes/origin/master
 				u_long	flags;
 				spin_lock_irqsave(&bcs->aclock, flags);
 				bcs->ackcnt += bcs->tx_skb->len;
@@ -792,12 +860,17 @@ hfcpci_fill_fifo(struct BCState *bcs)
 	}
 	bcs->tx_cnt -= bcs->tx_skb->len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (test_bit(FLG_LLI_L1WAKEUP,&bcs->st->lli.flag) &&
 		(PACKET_NOACK != bcs->tx_skb->pkt_type)) {
 =======
 	if (test_bit(FLG_LLI_L1WAKEUP, &bcs->st->lli.flag) &&
 	    (PACKET_NOACK != bcs->tx_skb->pkt_type)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_bit(FLG_LLI_L1WAKEUP, &bcs->st->lli.flag) &&
+	    (PACKET_NOACK != bcs->tx_skb->pkt_type)) {
+>>>>>>> refs/remotes/origin/master
 		u_long	flags;
 		spin_lock_irqsave(&bcs->aclock, flags);
 		bcs->ackcnt += bcs->tx_skb->len;
@@ -823,6 +896,7 @@ dch_nt_l2l1(struct PStack *st, int pr, void *arg)
 
 	switch (pr) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case (PH_DATA | REQUEST):
 		case (PH_PULL | REQUEST):
 		case (PH_PULL | INDICATION):
@@ -845,6 +919,8 @@ dch_nt_l2l1(struct PStack *st, int pr, void *arg)
 				debugl1(cs, "dch_nt_l2l1 msg %04X unhandled", pr);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (PH_DATA | REQUEST):
 	case (PH_PULL | REQUEST):
 	case (PH_PULL | INDICATION):
@@ -866,7 +942,10 @@ dch_nt_l2l1(struct PStack *st, int pr, void *arg)
 		if (cs->debug)
 			debugl1(cs, "dch_nt_l2l1 msg %04X unhandled", pr);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -877,10 +956,14 @@ dch_nt_l2l1(struct PStack *st, int pr, void *arg)
 /***********************/
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 hfcpci_auxcmd(struct IsdnCardState *cs, isdn_ctrl * ic)
 =======
 hfcpci_auxcmd(struct IsdnCardState *cs, isdn_ctrl *ic)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+hfcpci_auxcmd(struct IsdnCardState *cs, isdn_ctrl *ic)
+>>>>>>> refs/remotes/origin/master
 {
 	u_long	flags;
 	int	i = *(unsigned int *) ic->parm.num;
@@ -888,10 +971,14 @@ hfcpci_auxcmd(struct IsdnCardState *cs, isdn_ctrl *ic)
 	if ((ic->arg == 98) &&
 	    (!(cs->hw.hfcpci.int_m1 & (HFCPCI_INTS_B2TRANS + HFCPCI_INTS_B2REC + HFCPCI_INTS_B1TRANS + HFCPCI_INTS_B1REC)))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    	spin_lock_irqsave(&cs->lock, flags);
 =======
 		spin_lock_irqsave(&cs->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_lock_irqsave(&cs->lock, flags);
+>>>>>>> refs/remotes/origin/master
 		Write_hfc(cs, HFCPCI_CLKDEL, CLKDEL_NT); /* ST-Bit delay for NT-Mode */
 		Write_hfc(cs, HFCPCI_STATES, HFCPCI_LOAD_STATE | 0);	/* HFC ST G0 */
 		udelay(10);
@@ -958,10 +1045,14 @@ receive_emsg(struct IsdnCardState *cs)
 	bz = &((fifo_area *) (cs->hw.hfcpci.fifos))->b_chans.rxbz_b2;
 	bdata = ((fifo_area *) (cs->hw.hfcpci.fifos))->b_chans.rxdat_b2;
 <<<<<<< HEAD
+<<<<<<< HEAD
       Begin:
 =======
 Begin:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Begin:
+>>>>>>> refs/remotes/origin/master
 	count--;
 	if (test_and_set_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags)) {
 		debugl1(cs, "echo_rec_data blocked");
@@ -1023,7 +1114,11 @@ Begin:
 					ptr--;
 					*ptr++ = '\n';
 					*ptr = 0;
+<<<<<<< HEAD
 					HiSax_putstatus(cs, NULL, cs->dlog);
+=======
+					HiSax_putstatus(cs, NULL, "%s", cs->dlog);
+>>>>>>> refs/remotes/origin/master
 				} else
 					HiSax_putstatus(cs, "LogEcho: ", "warning Frame too big (%d)", total - 3);
 			}
@@ -1201,10 +1296,14 @@ hfcpci_interrupt(int intno, void *dev_id)
 				sched_event_D_pci(cs, D_XMTBUFREADY);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	      afterXPR:
 =======
 	afterXPR:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	afterXPR:
+>>>>>>> refs/remotes/origin/master
 		if (cs->hw.hfcpci.int_s1 && count--) {
 			val = cs->hw.hfcpci.int_s1;
 			cs->hw.hfcpci.int_s1 = 0;
@@ -1236,6 +1335,7 @@ HFCPCI_l1hw(struct PStack *st, int pr, void *arg)
 	struct sk_buff *skb = arg;
 
 	switch (pr) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (PH_DATA | REQUEST):
 			if (cs->debug & DEB_DLOG_HEX)
@@ -1279,6 +1379,8 @@ HFCPCI_l1hw(struct PStack *st, int pr, void *arg)
 			if (cs->debug & DEB_DLOG_VERBOSE)
 				dlogframe(cs, skb, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (PH_DATA | REQUEST):
 		if (cs->debug & DEB_DLOG_HEX)
 			LogFrame(cs, skb->data, skb->len);
@@ -1292,22 +1394,30 @@ HFCPCI_l1hw(struct PStack *st, int pr, void *arg)
 				Logl2Frame(cs, skb, "PH_DATA Queued", 0);
 #endif
 		} else {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			cs->tx_skb = skb;
 			cs->tx_cnt = 0;
 #ifdef L2FRAME_DEBUG		/* psa */
 			if (cs->debug & L1_DEB_LAPD)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				Logl2Frame(cs, skb, "PH_DATA_PULLED", 0);
 =======
 				Logl2Frame(cs, skb, "PH_DATA", 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				Logl2Frame(cs, skb, "PH_DATA", 0);
+>>>>>>> refs/remotes/origin/master
 #endif
 			if (!test_and_set_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags)) {
 				hfcpci_fill_dfifo(cs);
 				test_and_clear_bit(FLG_LOCK_ATOMIC, &cs->HW_Flags);
 			} else
 				debugl1(cs, "hfcpci_fill_dfifo blocked");
+<<<<<<< HEAD
 <<<<<<< HEAD
 			spin_unlock_irqrestore(&cs->lock, flags);
 			break;
@@ -1382,6 +1492,8 @@ HFCPCI_l1hw(struct PStack *st, int pr, void *arg)
 				debugl1(cs, "hfcpci_l1hw unknown pr %4x", pr);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		}
 		spin_unlock_irqrestore(&cs->lock, flags);
@@ -1482,7 +1594,10 @@ HFCPCI_l1hw(struct PStack *st, int pr, void *arg)
 		if (cs->debug & L1_DEB_WARN)
 			debugl1(cs, "hfcpci_l1hw unknown pr %4x", pr);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1544,6 +1659,7 @@ mode_hfcpci(struct BCState *bcs, int mode, int bc)
 		}
 	}
 	switch (mode) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (L1_MODE_NULL):
 			if (bc) {
@@ -1623,6 +1739,8 @@ mode_hfcpci(struct BCState *bcs, int mode, int bc)
 			}
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (L1_MODE_NULL):
 		if (bc) {
 			cs->hw.hfcpci.sctrl &= ~SCTRL_B2_ENA;
@@ -1700,7 +1818,10 @@ mode_hfcpci(struct BCState *bcs, int mode, int bc)
 			cs->hw.hfcpci.int_m1 &= ~(HFCPCI_INTS_B1TRANS + HFCPCI_INTS_B1REC);
 		}
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	Write_hfc(cs, HFCPCI_SCTRL_E, cs->hw.hfcpci.sctrl_e);
 	Write_hfc(cs, HFCPCI_INT_M1, cs->hw.hfcpci.int_m1);
@@ -1722,6 +1843,7 @@ hfcpci_l2l1(struct PStack *st, int pr, void *arg)
 	struct sk_buff	*skb = arg;
 
 	switch (pr) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (PH_DATA | REQUEST):
 			spin_lock_irqsave(&bcs->cs->lock, flags);
@@ -1772,6 +1894,8 @@ hfcpci_l2l1(struct PStack *st, int pr, void *arg)
 			st->l1.l1l2(st, PH_DEACTIVATE | CONFIRM, NULL);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (PH_DATA | REQUEST):
 		spin_lock_irqsave(&bcs->cs->lock, flags);
 		if (bcs->tx_skb) {
@@ -1820,7 +1944,10 @@ hfcpci_l2l1(struct PStack *st, int pr, void *arg)
 		spin_unlock_irqrestore(&bcs->cs->lock, flags);
 		st->l1.l1l2(st, PH_DEACTIVATE | CONFIRM, NULL);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1891,6 +2018,7 @@ hfcpci_bh(struct work_struct *work)
 		if (!cs->hw.hfcpci.nt_mode)
 			switch (cs->dc.hfcpci.ph_state) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				case (0):
 					l1_msg(cs, HW_RESET | INDICATION, NULL);
 					break;
@@ -1943,6 +2071,8 @@ hfcpci_bh(struct work_struct *work)
 				default:
 					break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			case (0):
 				l1_msg(cs, HW_RESET | INDICATION, NULL);
 				break;
@@ -1994,7 +2124,10 @@ hfcpci_bh(struct work_struct *work)
 				break;
 			default:
 				break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			spin_unlock_irqrestore(&cs->lock, flags);
 		}
@@ -2037,6 +2170,7 @@ hfcpci_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 		debugl1(cs, "HFCPCI: card_msg %x", mt);
 	switch (mt) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case CARD_RESET:
 			spin_lock_irqsave(&cs->lock, flags);
 			reset_hfcpci(cs);
@@ -2062,6 +2196,8 @@ hfcpci_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 		case CARD_TEST:
 			return (0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case CARD_RESET:
 		spin_lock_irqsave(&cs->lock, flags);
 		reset_hfcpci(cs);
@@ -2086,16 +2222,25 @@ hfcpci_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 		return (0);
 	case CARD_TEST:
 		return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return (0);
 }
 
 
 /* this variable is used as card index when more than one cards are present */
+<<<<<<< HEAD
 static struct pci_dev *dev_hfcpci __devinitdata = NULL;
 
 int __devinit
+=======
+static struct pci_dev *dev_hfcpci = NULL;
+
+int
+>>>>>>> refs/remotes/origin/master
 setup_hfcpci(struct IsdnCard *card)
 {
 	u_long flags;
@@ -2104,10 +2249,13 @@ setup_hfcpci(struct IsdnCard *card)
 	int i;
 	struct pci_dev *tmp_hfcpci = NULL;
 
+<<<<<<< HEAD
 #ifdef __BIG_ENDIAN
 #error "not running on big endian machines now"
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	strcpy(tmp, hfcpci_revision);
 	printk(KERN_INFO "HiSax: HFC-PCI driver Rev. %s\n", HiSax_getrev(tmp));
 
@@ -2116,14 +2264,19 @@ setup_hfcpci(struct IsdnCard *card)
 	cs->hw.hfcpci.fifo = 255;
 	if (cs->typ != ISDN_CTYPE_HFC_PCI)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return(0);
 =======
 		return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return (0);
+>>>>>>> refs/remotes/origin/master
 
 	i = 0;
 	while (id_list[i].vendor_id) {
 		tmp_hfcpci = hisax_find_pci_device(id_list[i].vendor_id,
+<<<<<<< HEAD
 <<<<<<< HEAD
 					     id_list[i].device_id,
 					     dev_hfcpci);
@@ -2131,6 +2284,10 @@ setup_hfcpci(struct IsdnCard *card)
 						   id_list[i].device_id,
 						   dev_hfcpci);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						   id_list[i].device_id,
+						   dev_hfcpci);
+>>>>>>> refs/remotes/origin/master
 		i++;
 		if (tmp_hfcpci) {
 			dma_addr_t	dma_mask = DMA_BIT_MASK(32) & ~0x7fffUL;
@@ -2139,14 +2296,19 @@ setup_hfcpci(struct IsdnCard *card)
 			if (pci_set_dma_mask(tmp_hfcpci, dma_mask)) {
 				printk(KERN_WARNING
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"HiSax hfc_pci: No suitable DMA available.\n");
 =======
 				       "HiSax hfc_pci: No suitable DMA available.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       "HiSax hfc_pci: No suitable DMA available.\n");
+>>>>>>> refs/remotes/origin/master
 				continue;
 			}
 			if (pci_set_consistent_dma_mask(tmp_hfcpci, dma_mask)) {
 				printk(KERN_WARNING
+<<<<<<< HEAD
 <<<<<<< HEAD
 					"HiSax hfc_pci: No suitable consistent DMA available.\n");
 				continue;
@@ -2154,12 +2316,17 @@ setup_hfcpci(struct IsdnCard *card)
 			pci_set_master(tmp_hfcpci);
 			if ((card->para[0]) && (card->para[0] != (tmp_hfcpci->resource[ 0].start & PCI_BASE_ADDRESS_IO_MASK)))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				       "HiSax hfc_pci: No suitable consistent DMA available.\n");
 				continue;
 			}
 			pci_set_master(tmp_hfcpci);
 			if ((card->para[0]) && (card->para[0] != (tmp_hfcpci->resource[0].start & PCI_BASE_ADDRESS_IO_MASK)))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				continue;
 			else
 				break;
@@ -2190,10 +2357,14 @@ setup_hfcpci(struct IsdnCard *card)
 	/* Allocate memory for FIFOS */
 	cs->hw.hfcpci.fifos = pci_alloc_consistent(cs->hw.hfcpci.dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					0x8000, &cs->hw.hfcpci.dma);
 =======
 						   0x8000, &cs->hw.hfcpci.dma);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						   0x8000, &cs->hw.hfcpci.dma);
+>>>>>>> refs/remotes/origin/master
 	if (!cs->hw.hfcpci.fifos) {
 		printk(KERN_WARNING "HFC-PCI: Error allocating FIFO memory!\n");
 		return 0;
@@ -2201,16 +2372,22 @@ setup_hfcpci(struct IsdnCard *card)
 	if (cs->hw.hfcpci.dma & 0x7fff) {
 		printk(KERN_WARNING
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    "HFC-PCI: Error DMA memory not on 32K boundary (%lx)\n",
 		    (u_long)cs->hw.hfcpci.dma);
 		pci_free_consistent(cs->hw.hfcpci.dev, 0x8000,
 			cs->hw.hfcpci.fifos, cs->hw.hfcpci.dma);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		       "HFC-PCI: Error DMA memory not on 32K boundary (%lx)\n",
 		       (u_long)cs->hw.hfcpci.dma);
 		pci_free_consistent(cs->hw.hfcpci.dev, 0x8000,
 				    cs->hw.hfcpci.fifos, cs->hw.hfcpci.dma);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	pci_write_config_dword(cs->hw.hfcpci.dev, 0x80, (u32)cs->hw.hfcpci.dma);

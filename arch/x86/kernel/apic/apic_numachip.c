@@ -22,15 +22,27 @@
 #include <linux/hardirq.h>
 #include <linux/delay.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/numachip/numachip.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/numachip/numachip_csr.h>
 #include <asm/smp.h>
 #include <asm/apic.h>
 #include <asm/ipi.h>
 #include <asm/apic_flat_64.h>
+<<<<<<< HEAD
 
 static int numachip_system __read_mostly;
 
 static struct apic apic_numachip __read_mostly;
+=======
+#include <asm/pgtable.h>
+
+static int numachip_system __read_mostly;
+
+static const struct apic apic_numachip __read_mostly;
+>>>>>>> refs/remotes/origin/master
 
 static unsigned int get_apic_id(unsigned long x)
 {
@@ -72,6 +84,7 @@ static int numachip_phys_pkg_id(int initial_apic_id, int index_msb)
 	return initial_apic_id >> index_msb;
 }
 
+<<<<<<< HEAD
 static const struct cpumask *numachip_target_cpus(void)
 {
 	return cpu_online_mask;
@@ -84,6 +97,9 @@ static void numachip_vector_allocation_domain(int cpu, struct cpumask *retmask)
 }
 
 static int __cpuinit numachip_wakeup_secondary(int phys_apicid, unsigned long start_rip)
+=======
+static int numachip_wakeup_secondary(int phys_apicid, unsigned long start_rip)
+>>>>>>> refs/remotes/origin/master
 {
 	union numachip_csr_g3_ext_irq_gen int_gen;
 
@@ -157,6 +173,7 @@ static void numachip_send_IPI_self(int vector)
 	__default_send_IPI_shortcut(APIC_DEST_SELF, vector, APIC_DEST_PHYSICAL);
 }
 
+<<<<<<< HEAD
 static unsigned int numachip_cpu_mask_to_apicid(const struct cpumask *cpumask)
 {
 	int cpu;
@@ -189,6 +206,8 @@ numachip_cpu_mask_to_apicid_and(const struct cpumask *cpumask,
 	return per_cpu(x86_cpu_to_apicid, cpu);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init numachip_probe(void)
 {
 	return apic == &apic_numachip;
@@ -222,6 +241,10 @@ static int __init numachip_system_init(void)
 		return 0;
 
 	x86_cpuinit.fixup_cpu_id = fixup_cpu_id;
+<<<<<<< HEAD
+=======
+	x86_init.pci.arch_init = pci_numachip_init;
+>>>>>>> refs/remotes/origin/master
 
 	map_csrs();
 
@@ -242,7 +265,11 @@ static int numachip_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct apic apic_numachip __refconst = {
+=======
+static const struct apic apic_numachip __refconst = {
+>>>>>>> refs/remotes/origin/master
 
 	.name				= "NumaConnect system",
 	.probe				= numachip_probe,
@@ -253,13 +280,21 @@ static struct apic apic_numachip __refconst = {
 	.irq_delivery_mode		= dest_Fixed,
 	.irq_dest_mode			= 0, /* physical */
 
+<<<<<<< HEAD
 	.target_cpus			= numachip_target_cpus,
+=======
+	.target_cpus			= online_target_cpus,
+>>>>>>> refs/remotes/origin/master
 	.disable_esr			= 0,
 	.dest_logical			= 0,
 	.check_apicid_used		= NULL,
 	.check_apicid_present		= NULL,
 
+<<<<<<< HEAD
 	.vector_allocation_domain	= numachip_vector_allocation_domain,
+=======
+	.vector_allocation_domain	= default_vector_allocation_domain,
+>>>>>>> refs/remotes/origin/master
 	.init_apic_ldr			= flat_init_apic_ldr,
 
 	.ioapic_phys_id_map		= NULL,
@@ -277,8 +312,12 @@ static struct apic apic_numachip __refconst = {
 	.set_apic_id			= set_apic_id,
 	.apic_id_mask			= 0xffU << 24,
 
+<<<<<<< HEAD
 	.cpu_mask_to_apicid		= numachip_cpu_mask_to_apicid,
 	.cpu_mask_to_apicid_and		= numachip_cpu_mask_to_apicid_and,
+=======
+	.cpu_mask_to_apicid_and		= default_cpu_mask_to_apicid_and,
+>>>>>>> refs/remotes/origin/master
 
 	.send_IPI_mask			= numachip_send_IPI_mask,
 	.send_IPI_mask_allbutself	= numachip_send_IPI_mask_allbutself,
@@ -295,6 +334,10 @@ static struct apic apic_numachip __refconst = {
 
 	.read				= native_apic_mem_read,
 	.write				= native_apic_mem_write,
+<<<<<<< HEAD
+=======
+	.eoi_write			= native_apic_mem_write,
+>>>>>>> refs/remotes/origin/master
 	.icr_read			= native_apic_icr_read,
 	.icr_write			= native_apic_icr_write,
 	.wait_icr_idle			= native_apic_wait_icr_idle,

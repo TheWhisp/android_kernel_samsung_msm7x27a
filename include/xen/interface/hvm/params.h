@@ -21,7 +21,11 @@
 #ifndef __XEN_PUBLIC_HVM_PARAMS_H__
 #define __XEN_PUBLIC_HVM_PARAMS_H__
 
+<<<<<<< HEAD
 #include "hvm_op.h"
+=======
+#include <xen/interface/hvm/hvm_op.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Parameter space for HVMOP_{set,get}_param.
@@ -91,13 +95,19 @@
 #define HVM_PARAM_VPT_ALIGN    16
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HVM_NR_PARAMS          17
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Console debug shared memory ring and event channel */
 #define HVM_PARAM_CONSOLE_PFN    17
 #define HVM_PARAM_CONSOLE_EVTCHN 18
 
 #define HVM_NR_PARAMS          19
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __XEN_PUBLIC_HVM_PARAMS_H__ */

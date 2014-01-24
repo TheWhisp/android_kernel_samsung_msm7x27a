@@ -41,10 +41,15 @@
 #define JFFS2_COMPR_MODE_SIZE       2
 #define JFFS2_COMPR_MODE_FAVOURLZO  3
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define JFFS2_COMPR_MODE_FORCELZO   4
 #define JFFS2_COMPR_MODE_FORCEZLIB  5
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define JFFS2_COMPR_MODE_FORCELZO   4
+#define JFFS2_COMPR_MODE_FORCEZLIB  5
+>>>>>>> refs/remotes/origin/master
 
 #define FAVOUR_LZO_PERCENT 80
 

@@ -108,9 +108,12 @@
 #include <asm/machdep.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/sections.h>
 #include <asm/smu.h>
 
@@ -153,6 +156,10 @@ static int wf_smu_all_controls_ok, wf_smu_all_sensors_ok, wf_smu_started;
 
 static unsigned int wf_smu_failure_state;
 static int wf_smu_readjust, wf_smu_skipping;
+<<<<<<< HEAD
+=======
+static bool wf_smu_overtemp;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * ****** System Fans Control Loop ******
@@ -306,6 +313,7 @@ static void wf_smu_create_sys_fans(void)
 	pid_param.interval = WF_SMU_SYS_FANS_INTERVAL;
 	pid_param.history_len = WF_SMU_SYS_FANS_HISTORY_SIZE;
 	pid_param.itarget = param->itarget;
+<<<<<<< HEAD
 	pid_param.min = fan_system->ops->get_min(fan_system);
 	pid_param.max = fan_system->ops->get_max(fan_system);
 	if (fan_hd) {
@@ -313,6 +321,15 @@ static void wf_smu_create_sys_fans(void)
 			max(pid_param.min,fan_hd->ops->get_min(fan_hd));
 		pid_param.max =
 			min(pid_param.max,fan_hd->ops->get_max(fan_hd));
+=======
+	pid_param.min = wf_control_get_min(fan_system);
+	pid_param.max = wf_control_get_max(fan_system);
+	if (fan_hd) {
+		pid_param.min =
+			max(pid_param.min, wf_control_get_min(fan_hd));
+		pid_param.max =
+			min(pid_param.max, wf_control_get_max(fan_hd));
+>>>>>>> refs/remotes/origin/master
 	}
 	wf_pid_init(&wf_smu_sys_fans->pid, &pid_param);
 
@@ -341,7 +358,11 @@ static void wf_smu_sys_fans_tick(struct wf_smu_sys_fans_state *st)
 	}
 	st->ticks = WF_SMU_SYS_FANS_INTERVAL;
 
+<<<<<<< HEAD
 	rc = sensor_hd_temp->ops->get_value(sensor_hd_temp, &temp);
+=======
+	rc = wf_sensor_get(sensor_hd_temp, &temp);
+>>>>>>> refs/remotes/origin/master
 	if (rc) {
 		printk(KERN_WARNING "windfarm: HD temp sensor error %d\n",
 		       rc);
@@ -377,7 +398,11 @@ static void wf_smu_sys_fans_tick(struct wf_smu_sys_fans_state *st)
 	st->hd_setpoint = new_setpoint;
  readjust:
 	if (fan_system && wf_smu_failure_state == 0) {
+<<<<<<< HEAD
 		rc = fan_system->ops->set_value(fan_system, st->sys_setpoint);
+=======
+		rc = wf_control_set(fan_system, st->sys_setpoint);
+>>>>>>> refs/remotes/origin/master
 		if (rc) {
 			printk(KERN_WARNING "windfarm: Sys fan error %d\n",
 			       rc);
@@ -385,7 +410,11 @@ static void wf_smu_sys_fans_tick(struct wf_smu_sys_fans_state *st)
 		}
 	}
 	if (fan_hd && wf_smu_failure_state == 0) {
+<<<<<<< HEAD
 		rc = fan_hd->ops->set_value(fan_hd, st->hd_setpoint);
+=======
+		rc = wf_control_set(fan_hd, st->hd_setpoint);
+>>>>>>> refs/remotes/origin/master
 		if (rc) {
 			printk(KERN_WARNING "windfarm: HD fan error %d\n",
 			       rc);
@@ -451,8 +480,13 @@ static void wf_smu_create_cpu_fans(void)
 	pid_param.ttarget = tmax - tdelta;
 	pid_param.pmaxadj = maxpow - powadj;
 
+<<<<<<< HEAD
 	pid_param.min = fan_cpu_main->ops->get_min(fan_cpu_main);
 	pid_param.max = fan_cpu_main->ops->get_max(fan_cpu_main);
+=======
+	pid_param.min = wf_control_get_min(fan_cpu_main);
+	pid_param.max = wf_control_get_max(fan_cpu_main);
+>>>>>>> refs/remotes/origin/master
 
 	wf_cpu_pid_init(&wf_smu_cpu_fans->pid, &pid_param);
 
@@ -485,7 +519,11 @@ static void wf_smu_cpu_fans_tick(struct wf_smu_cpu_fans_state *st)
 	}
 	st->ticks = WF_SMU_CPU_FANS_INTERVAL;
 
+<<<<<<< HEAD
 	rc = sensor_cpu_temp->ops->get_value(sensor_cpu_temp, &temp);
+=======
+	rc = wf_sensor_get(sensor_cpu_temp, &temp);
+>>>>>>> refs/remotes/origin/master
 	if (rc) {
 		printk(KERN_WARNING "windfarm: CPU temp sensor error %d\n",
 		       rc);
@@ -493,7 +531,11 @@ static void wf_smu_cpu_fans_tick(struct wf_smu_cpu_fans_state *st)
 		return;
 	}
 
+<<<<<<< HEAD
 	rc = sensor_cpu_power->ops->get_value(sensor_cpu_power, &power);
+=======
+	rc = wf_sensor_get(sensor_cpu_power, &power);
+>>>>>>> refs/remotes/origin/master
 	if (rc) {
 		printk(KERN_WARNING "windfarm: CPU power sensor error %d\n",
 		       rc);
@@ -529,8 +571,12 @@ static void wf_smu_cpu_fans_tick(struct wf_smu_cpu_fans_state *st)
 	st->cpu_setpoint = new_setpoint;
  readjust:
 	if (fan_cpu_main && wf_smu_failure_state == 0) {
+<<<<<<< HEAD
 		rc = fan_cpu_main->ops->set_value(fan_cpu_main,
 						  st->cpu_setpoint);
+=======
+		rc = wf_control_set(fan_cpu_main, st->cpu_setpoint);
+>>>>>>> refs/remotes/origin/master
 		if (rc) {
 			printk(KERN_WARNING "windfarm: CPU main fan"
 			       " error %d\n", rc);
@@ -598,6 +644,10 @@ static void wf_smu_tick(void)
 	if (new_failure & FAILURE_OVERTEMP) {
 		wf_set_overtemp();
 		wf_smu_skipping = 2;
+<<<<<<< HEAD
+=======
+		wf_smu_overtemp = true;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* We only clear the overtemp condition if overtemp is cleared
@@ -606,8 +656,15 @@ static void wf_smu_tick(void)
 	 * the control loop levels, but we don't want to keep it clear
 	 * here in this case
 	 */
+<<<<<<< HEAD
 	if (new_failure == 0 && last_failure & FAILURE_OVERTEMP)
 		wf_clear_overtemp();
+=======
+	if (!wf_smu_failure_state && wf_smu_overtemp) {
+		wf_clear_overtemp();
+		wf_smu_overtemp = false;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static void wf_smu_new_control(struct wf_control *ct)
@@ -725,7 +782,11 @@ static int wf_smu_probe(struct platform_device *ddev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit wf_smu_remove(struct platform_device *ddev)
+=======
+static int wf_smu_remove(struct platform_device *ddev)
+>>>>>>> refs/remotes/origin/master
 {
 	wf_unregister_client(&wf_smu_events);
 
@@ -768,7 +829,11 @@ static int __devexit wf_smu_remove(struct platform_device *ddev)
 
 static struct platform_driver wf_smu_driver = {
         .probe = wf_smu_probe,
+<<<<<<< HEAD
         .remove = __devexit_p(wf_smu_remove),
+=======
+        .remove = wf_smu_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "windfarm",
 		.owner	= THIS_MODULE,

@@ -35,8 +35,11 @@
 #define	HPET_ID_NUMBER_SHIFT	8
 #define HPET_ID_VENDOR_SHIFT	16
 
+<<<<<<< HEAD
 #define HPET_ID_VENDOR_8086	0x8086
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define HPET_CFG_ENABLE		0x001
 #define HPET_CFG_LEGACY		0x002
 #define	HPET_LEGACY_8254	2
@@ -82,9 +85,15 @@ extern void hpet_msi_write(struct hpet_dev *hdev, struct msi_msg *msg);
 extern void hpet_msi_read(struct hpet_dev *hdev, struct msi_msg *msg);
 
 #ifdef CONFIG_PCI_MSI
+<<<<<<< HEAD
 extern int arch_setup_hpet_msi(unsigned int irq, unsigned int id);
 #else
 static inline int arch_setup_hpet_msi(unsigned int irq, unsigned int id)
+=======
+extern int default_setup_hpet_msi(unsigned int irq, unsigned int id);
+#else
+static inline int default_setup_hpet_msi(unsigned int irq, unsigned int id)
+>>>>>>> refs/remotes/origin/master
 {
 	return -EINVAL;
 }
@@ -113,6 +122,10 @@ extern void hpet_unregister_irq_handler(rtc_irq_handler handler);
 static inline int hpet_enable(void) { return 0; }
 static inline int is_hpet_enabled(void) { return 0; }
 #define hpet_readl(a) 0
+<<<<<<< HEAD
+=======
+#define default_setup_hpet_msi	NULL
+>>>>>>> refs/remotes/origin/master
 
 #endif
 #endif /* _ASM_X86_HPET_H */

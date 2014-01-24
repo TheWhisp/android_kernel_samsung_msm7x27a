@@ -16,12 +16,17 @@
 
 #include <asm/mmu_context.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/time.h>
 =======
 #include <asm/time.h>
 #include <asm/setup.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/time.h>
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/octeon/octeon.h>
 
@@ -60,7 +65,11 @@ static irqreturn_t mailbox_interrupt(int irq, void *dev_id)
 
 /**
  * Cause the function described by call_data to be executed on the passed
+<<<<<<< HEAD
  * cpu.  When the function has finished, increment the finished field of
+=======
+ * cpu.	 When the function has finished, increment the finished field of
+>>>>>>> refs/remotes/origin/master
  * call_data.
  */
 void octeon_send_ipi_single(int cpu, unsigned int action)
@@ -84,10 +93,14 @@ static inline void octeon_send_ipi_mask(const struct cpumask *mask,
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Detect available CPUs, populate cpu_possible_map
 =======
  * Detect available CPUs, populate cpu_possible_mask
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Detect available CPUs, populate cpu_possible_mask
+>>>>>>> refs/remotes/origin/master
  */
 static void octeon_smp_hotplug_setup(void)
 {
@@ -135,8 +148,13 @@ static void octeon_smp_setup(void)
 
 #ifdef CONFIG_HOTPLUG_CPU
 	/*
+<<<<<<< HEAD
 	 * The possible CPUs are all those present on the chip.  We
 	 * will assign CPU numbers for possible cores as well.  Cores
+=======
+	 * The possible CPUs are all those present on the chip.	 We
+	 * will assign CPU numbers for possible cores as well.	Cores
+>>>>>>> refs/remotes/origin/master
 	 * are always consecutively numberd from 0.
 	 */
 	for (id = 0; id < num_cores && id < NR_CPUS; id++) {
@@ -182,7 +200,11 @@ static void octeon_boot_secondary(int cpu, struct task_struct *idle)
  * After we've done initial boot, this function is called to allow the
  * board code to clean up state, if needed
  */
+<<<<<<< HEAD
 static void __cpuinit octeon_init_secondary(void)
+=======
+static void octeon_init_secondary(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int sr;
 
@@ -194,7 +216,10 @@ static void __cpuinit octeon_init_secondary(void)
 	octeon_init_cvmcount();
 
 	octeon_irq_setup_secondary();
+<<<<<<< HEAD
 	raw_local_irq_enable();
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -217,15 +242,21 @@ void octeon_prepare_cpus(unsigned int max_cpus)
 	 */
 	cvmx_write_csr(CVMX_CIU_MBOX_CLRX(cvmx_get_core_num()), 0xffff);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (request_irq(OCTEON_IRQ_MBOX0, mailbox_interrupt, IRQF_DISABLED,
 			"SMP-IPI", mailbox_interrupt)) {
 		panic("Cannot request_irq(OCTEON_IRQ_MBOX0)\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (request_irq(OCTEON_IRQ_MBOX0, mailbox_interrupt,
 			IRQF_PERCPU | IRQF_NO_THREAD, "SMP-IPI",
 			mailbox_interrupt)) {
 		panic("Cannot request_irq(OCTEON_IRQ_MBOX0)");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -248,6 +279,10 @@ static void octeon_smp_finish(void)
 
 	/* to generate the first CPU timer interrupt */
 	write_c0_compare(read_c0_count() + mips_hpt_frequency / HZ);
+<<<<<<< HEAD
+=======
+	local_irq_enable();
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -270,10 +305,13 @@ static void octeon_cpus_done(void)
 /* State of each CPU. */
 DEFINE_PER_CPU(int, cpu_state);
 
+<<<<<<< HEAD
 extern void fixup_irqs(void);
 
 static DEFINE_SPINLOCK(smp_reserve_lock);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int octeon_cpu_disable(void)
 {
 	unsigned int cpu = smp_processor_id();
@@ -281,6 +319,7 @@ static int octeon_cpu_disable(void)
 	if (cpu == 0)
 		return -EBUSY;
 
+<<<<<<< HEAD
 	spin_lock(&smp_reserve_lock);
 
 <<<<<<< HEAD
@@ -291,13 +330,22 @@ static int octeon_cpu_disable(void)
 	cpu_clear(cpu, cpu_callin_map);
 	local_irq_disable();
 	fixup_irqs();
+=======
+	set_cpu_online(cpu, false);
+	cpu_clear(cpu, cpu_callin_map);
+	local_irq_disable();
+	octeon_fixup_irqs();
+>>>>>>> refs/remotes/origin/master
 	local_irq_enable();
 
 	flush_cache_all();
 	local_flush_tlb_all();
 
+<<<<<<< HEAD
 	spin_unlock(&smp_reserve_lock);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -357,7 +405,11 @@ extern void kernel_entry(unsigned long arg1, ...);
 
 static void start_after_reset(void)
 {
+<<<<<<< HEAD
 	kernel_entry(0, 0, 0);  /* set a2 = 0 for secondary core */
+=======
+	kernel_entry(0, 0, 0);	/* set a2 = 0 for secondary core */
+>>>>>>> refs/remotes/origin/master
 }
 
 static int octeon_update_boot_vector(unsigned int cpu)
@@ -400,7 +452,11 @@ static int octeon_update_boot_vector(unsigned int cpu)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __cpuinit octeon_cpu_callback(struct notifier_block *nfb,
+=======
+static int octeon_cpu_callback(struct notifier_block *nfb,
+>>>>>>> refs/remotes/origin/master
 	unsigned long action, void *hcpu)
 {
 	unsigned int cpu = (unsigned long)hcpu;
@@ -419,14 +475,22 @@ static int __cpuinit octeon_cpu_callback(struct notifier_block *nfb,
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 static int __cpuinit register_cavium_notifier(void)
+=======
+static int register_cavium_notifier(void)
+>>>>>>> refs/remotes/origin/master
 {
 	hotcpu_notifier(octeon_cpu_callback, 0);
 	return 0;
 }
 late_initcall(register_cavium_notifier);
 
+<<<<<<< HEAD
 #endif  /* CONFIG_HOTPLUG_CPU */
+=======
+#endif	/* CONFIG_HOTPLUG_CPU */
+>>>>>>> refs/remotes/origin/master
 
 struct plat_smp_ops octeon_smp_ops = {
 	.send_ipi_single	= octeon_send_ipi_single,

@@ -27,6 +27,7 @@
 #include <linux/device.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <asm/mach-types.h>
 
 #include <mach/hardware.h>
@@ -43,11 +44,24 @@
 #if 0
 #include <asm/debug-ll.h>
 #endif
+=======
+#include <asm/irq.h>
+#include <asm/mach-types.h>
+#include <asm/mach/irq.h>
+
+#include <mach/hardware.h>
+#include <mach/regs-irq.h>
+
+#include "bast.h"
+>>>>>>> refs/remotes/origin/master
 
 #define irqdbf(x...)
 #define irqdbf2(x...)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* handle PC104 ISA interrupts from the system CPLD */
 
 /* table of ISA irq nos to the relevant mask... zero means
@@ -87,7 +101,11 @@ bast_pc104_mask(struct irq_data *data)
 static void
 bast_pc104_maskack(struct irq_data *data)
 {
+<<<<<<< HEAD
 	struct irq_desc *desc = irq_desc + IRQ_ISA;
+=======
+	struct irq_desc *desc = irq_desc + BAST_IRQ_ISA;
+>>>>>>> refs/remotes/origin/master
 
 	bast_pc104_mask(data);
 	desc->irq_data.chip->irq_ack(&desc->irq_data);
@@ -122,7 +140,11 @@ bast_irq_pc104_demux(unsigned int irq,
 	if (unlikely(stat == 0)) {
 		/* ack if we get an irq with nothing (ie, startup) */
 
+<<<<<<< HEAD
 		desc = irq_desc + IRQ_ISA;
+=======
+		desc = irq_desc + BAST_IRQ_ISA;
+>>>>>>> refs/remotes/origin/master
 		desc->irq_data.chip->irq_ack(&desc->irq_data);
 	} else {
 		/* handle the IRQ */
@@ -147,7 +169,11 @@ static __init int bast_irq_init(void)
 
 		__raw_writeb(0x0, BAST_VA_PC104_IRQMASK);
 
+<<<<<<< HEAD
 		irq_set_chained_handler(IRQ_ISA, bast_irq_pc104_demux);
+=======
+		irq_set_chained_handler(BAST_IRQ_ISA, bast_irq_pc104_demux);
+>>>>>>> refs/remotes/origin/master
 
 		/* register our IRQs */
 

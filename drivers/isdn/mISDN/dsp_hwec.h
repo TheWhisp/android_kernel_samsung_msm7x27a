@@ -8,6 +8,9 @@ extern void dsp_hwec_disable(struct dsp *dsp);
 extern int  dsp_hwec_init(void);
 extern void dsp_hwec_exit(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

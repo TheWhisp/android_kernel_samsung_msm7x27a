@@ -172,6 +172,10 @@
 #define SSB_SPROMSIZE_WORDS_R4		220
 #define SSB_SPROMSIZE_BYTES_R123	(SSB_SPROMSIZE_WORDS_R123 * sizeof(u16))
 #define SSB_SPROMSIZE_BYTES_R4		(SSB_SPROMSIZE_WORDS_R4 * sizeof(u16))
+<<<<<<< HEAD
+=======
+#define SSB_SPROMSIZE_WORDS_R10		230
+>>>>>>> refs/remotes/origin/master
 #define SSB_SPROM_BASE1			0x1000
 #define SSB_SPROM_BASE31		0x0800
 #define SSB_SPROM_REVISION		0x007E
@@ -228,6 +232,10 @@
 #define  SSB_SPROM1_AGAIN_BG_SHIFT	0
 #define  SSB_SPROM1_AGAIN_A		0xFF00	/* A-PHY */
 #define  SSB_SPROM1_AGAIN_A_SHIFT	8
+<<<<<<< HEAD
+=======
+#define SSB_SPROM1_CCODE		0x0076
+>>>>>>> refs/remotes/origin/master
 
 /* SPROM Revision 2 (inherits from rev 1) */
 #define SSB_SPROM2_BFLHI		0x0038	/* Boardflags (high 16 bits) */
@@ -267,6 +275,10 @@
 #define  SSB_SPROM3_OFDMGPO		0x107A	/* G-PHY OFDM Power Offset (4 bytes, BigEndian) */
 
 /* SPROM Revision 4 */
+<<<<<<< HEAD
+=======
+#define SSB_SPROM4_BOARDREV		0x0042	/* Board revision */
+>>>>>>> refs/remotes/origin/master
 #define SSB_SPROM4_BFLLO		0x0044	/* Boardflags (low 16 bits) */
 #define SSB_SPROM4_BFLHI		0x0046  /* Board Flags Hi */
 #define SSB_SPROM4_BFL2LO		0x0048	/* Board flags 2 (low 16 bits) */
@@ -287,11 +299,19 @@
 #define  SSB_SPROM4_ETHPHY_ET1A_SHIFT	5
 #define  SSB_SPROM4_ETHPHY_ET0M		(1<<14)	/* MDIO for enet0 */
 #define  SSB_SPROM4_ETHPHY_ET1M		(1<<15)	/* MDIO for enet1 */
+<<<<<<< HEAD
 #define SSB_SPROM4_ANTAVAIL		0x005D  /* Antenna available bitfields */
 #define  SSB_SPROM4_ANTAVAIL_A		0x00FF	/* A-PHY bitfield */
 #define  SSB_SPROM4_ANTAVAIL_A_SHIFT	0
 #define  SSB_SPROM4_ANTAVAIL_BG		0xFF00	/* B-PHY and G-PHY bitfield */
 #define  SSB_SPROM4_ANTAVAIL_BG_SHIFT	8
+=======
+#define SSB_SPROM4_ANTAVAIL		0x005C  /* Antenna available bitfields */
+#define  SSB_SPROM4_ANTAVAIL_BG		0x00FF	/* B-PHY and G-PHY bitfield */
+#define  SSB_SPROM4_ANTAVAIL_BG_SHIFT	0
+#define  SSB_SPROM4_ANTAVAIL_A		0xFF00	/* A-PHY bitfield */
+#define  SSB_SPROM4_ANTAVAIL_A_SHIFT	8
+>>>>>>> refs/remotes/origin/master
 #define SSB_SPROM4_AGAIN01		0x005E	/* Antenna Gain (in dBm Q5.2) */
 #define  SSB_SPROM4_AGAIN0		0x00FF	/* Antenna 0 */
 #define  SSB_SPROM4_AGAIN0_SHIFT	0
@@ -389,6 +409,14 @@
 #define  SSB_SPROM8_GPIOB_P2		0x00FF	/* Pin 2 */
 #define  SSB_SPROM8_GPIOB_P3		0xFF00	/* Pin 3 */
 #define  SSB_SPROM8_GPIOB_P3_SHIFT	8
+<<<<<<< HEAD
+=======
+#define SSB_SPROM8_LEDDC		0x009A
+#define  SSB_SPROM8_LEDDC_ON		0xFF00	/* oncount */
+#define  SSB_SPROM8_LEDDC_ON_SHIFT	8
+#define  SSB_SPROM8_LEDDC_OFF		0x00FF	/* offcount */
+#define  SSB_SPROM8_LEDDC_OFF_SHIFT	0
+>>>>>>> refs/remotes/origin/master
 #define SSB_SPROM8_ANTAVAIL		0x009C  /* Antenna available bitfields*/
 #define  SSB_SPROM8_ANTAVAIL_A		0xFF00	/* A-PHY bitfield */
 #define  SSB_SPROM8_ANTAVAIL_A_SHIFT	8
@@ -404,6 +432,16 @@
 #define  SSB_SPROM8_AGAIN2_SHIFT	0
 #define  SSB_SPROM8_AGAIN3		0xFF00	/* Antenna 3 */
 #define  SSB_SPROM8_AGAIN3_SHIFT	8
+<<<<<<< HEAD
+=======
+#define SSB_SPROM8_TXRXC		0x00A2
+#define  SSB_SPROM8_TXRXC_TXCHAIN	0x000f
+#define  SSB_SPROM8_TXRXC_TXCHAIN_SHIFT	0
+#define  SSB_SPROM8_TXRXC_RXCHAIN	0x00f0
+#define  SSB_SPROM8_TXRXC_RXCHAIN_SHIFT	4
+#define  SSB_SPROM8_TXRXC_SWITCH	0xff00
+#define  SSB_SPROM8_TXRXC_SWITCH_SHIFT	8
+>>>>>>> refs/remotes/origin/master
 #define SSB_SPROM8_RSSIPARM2G		0x00A4	/* RSSI params for 2GHz */
 #define  SSB_SPROM8_RSSISMF2G		0x000F
 #define  SSB_SPROM8_RSSISMC2G		0x00F0
@@ -430,10 +468,16 @@
 #define  SSB_SPROM8_TRI5GH_SHIFT	8
 #define SSB_SPROM8_RXPO			0x00AC  /* RX power offsets */
 #define  SSB_SPROM8_RXPO2G		0x00FF	/* 2GHz RX power offset */
+<<<<<<< HEAD
 #define  SSB_SPROM8_RXPO5G		0xFF00	/* 5GHz RX power offset */
 #define  SSB_SPROM8_RXPO5G_SHIFT	8
 <<<<<<< HEAD
 =======
+=======
+#define  SSB_SPROM8_RXPO2G_SHIFT	0
+#define  SSB_SPROM8_RXPO5G		0xFF00	/* 5GHz RX power offset */
+#define  SSB_SPROM8_RXPO5G_SHIFT	8
+>>>>>>> refs/remotes/origin/master
 #define SSB_SPROM8_FEM2G		0x00AE
 #define SSB_SPROM8_FEM5G		0x00B0
 #define  SSB_SROM8_FEM_TSSIPOS		0x0001
@@ -447,10 +491,45 @@
 #define  SSB_SROM8_FEM_ANTSWLUT		0xF800
 #define  SSB_SROM8_FEM_ANTSWLUT_SHIFT	11
 #define SSB_SPROM8_THERMAL		0x00B2
+<<<<<<< HEAD
 #define SSB_SPROM8_MPWR_RAWTS		0x00B4
 #define SSB_SPROM8_TS_SLP_OPT_CORRX	0x00B6
 #define SSB_SPROM8_FOC_HWIQ_IQSWP	0x00B8
 #define SSB_SPROM8_PHYCAL_TEMPDELTA	0x00BA
+=======
+#define  SSB_SPROM8_THERMAL_OFFSET	0x00ff
+#define  SSB_SPROM8_THERMAL_OFFSET_SHIFT	0
+#define  SSB_SPROM8_THERMAL_TRESH	0xff00
+#define  SSB_SPROM8_THERMAL_TRESH_SHIFT	8
+/* Temp sense related entries */
+#define SSB_SPROM8_RAWTS		0x00B4
+#define  SSB_SPROM8_RAWTS_RAWTEMP	0x01ff
+#define  SSB_SPROM8_RAWTS_RAWTEMP_SHIFT	0
+#define  SSB_SPROM8_RAWTS_MEASPOWER	0xfe00
+#define  SSB_SPROM8_RAWTS_MEASPOWER_SHIFT	9
+#define SSB_SPROM8_OPT_CORRX		0x00B6
+#define  SSB_SPROM8_OPT_CORRX_TEMP_SLOPE	0x00ff
+#define  SSB_SPROM8_OPT_CORRX_TEMP_SLOPE_SHIFT	0
+#define  SSB_SPROM8_OPT_CORRX_TEMPCORRX	0xfc00
+#define  SSB_SPROM8_OPT_CORRX_TEMPCORRX_SHIFT	10
+#define  SSB_SPROM8_OPT_CORRX_TEMP_OPTION	0x0300
+#define  SSB_SPROM8_OPT_CORRX_TEMP_OPTION_SHIFT	8
+/* FOC: freiquency offset correction, HWIQ: H/W IOCAL enable, IQSWP: IQ CAL swap disable */
+#define SSB_SPROM8_HWIQ_IQSWP		0x00B8
+#define  SSB_SPROM8_HWIQ_IQSWP_FREQ_CORR	0x000f
+#define  SSB_SPROM8_HWIQ_IQSWP_FREQ_CORR_SHIFT	0
+#define  SSB_SPROM8_HWIQ_IQSWP_IQCAL_SWP	0x0010
+#define  SSB_SPROM8_HWIQ_IQSWP_IQCAL_SWP_SHIFT	4
+#define  SSB_SPROM8_HWIQ_IQSWP_HW_IQCAL	0x0020
+#define  SSB_SPROM8_HWIQ_IQSWP_HW_IQCAL_SHIFT	5
+#define SSB_SPROM8_TEMPDELTA		0x00BC
+#define  SSB_SPROM8_TEMPDELTA_PHYCAL	0x00ff
+#define  SSB_SPROM8_TEMPDELTA_PHYCAL_SHIFT	0
+#define  SSB_SPROM8_TEMPDELTA_PERIOD	0x0f00
+#define  SSB_SPROM8_TEMPDELTA_PERIOD_SHIFT	8
+#define  SSB_SPROM8_TEMPDELTA_HYSTERESIS	0xf000
+#define  SSB_SPROM8_TEMPDELTA_HYSTERESIS_SHIFT	12
+>>>>>>> refs/remotes/origin/master
 
 /* There are 4 blocks with power info sharing the same layout */
 #define SSB_SROM8_PWR_INFO_CORE0	0x00C0
@@ -484,7 +563,10 @@
 #define SSB_SROM8_5GH_PA_2		0x1C
 
 /* TODO: Make it deprecated */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define SSB_SPROM8_MAXP_BG		0x00C0  /* Max Power 2GHz in path 1 */
 #define  SSB_SPROM8_MAXP_BG_MASK	0x00FF  /* Mask for Max Power 2GHz */
 #define  SSB_SPROM8_ITSSI_BG		0xFF00	/* Mask for path 1 itssi_bg */
@@ -510,9 +592,13 @@
 #define SSB_SPROM8_PA1HIB1		0x00DA
 #define SSB_SPROM8_PA1HIB2		0x00DC
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 #define SSB_SPROM8_CCK2GPO		0x0140	/* CCK power offset */
 #define SSB_SPROM8_OFDM2GPO		0x0142	/* 2.4GHz OFDM power offset */
 #define SSB_SPROM8_OFDM5GPO		0x0146	/* 5.3GHz OFDM power offset */
@@ -520,7 +606,20 @@
 #define SSB_SPROM8_OFDM5GHPO		0x014E	/* 5.8GHz OFDM power offset */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+#define SSB_SPROM8_2G_MCSPO		0x0152
+#define SSB_SPROM8_5G_MCSPO		0x0162
+#define SSB_SPROM8_5GL_MCSPO		0x0172
+#define SSB_SPROM8_5GH_MCSPO		0x0182
+
+#define SSB_SPROM8_CDDPO		0x0192
+#define SSB_SPROM8_STBCPO		0x0194
+#define SSB_SPROM8_BW40PO		0x0196
+#define SSB_SPROM8_BWDUPPO		0x0198
+
+>>>>>>> refs/remotes/origin/master
 /* Values for boardflags_lo read from SPROM */
 #define SSB_BFL_BTCOEXIST		0x0001	/* implements Bluetooth coexistance */
 #define SSB_BFL_PACTRL			0x0002	/* GPIO 9 controlling the PA */
@@ -561,7 +660,10 @@
 #define SSB_BFL2_SPUR_WAR		0x0200	/* has a workaround for clock-harmonic spurs */
 #define SSB_BFL2_GPLL_WAR		0x0400	/* altenative G-band PLL settings implemented */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Values for SSB_SPROM1_BINF_CCODE */
 enum {
 	SSB_SPROM1CCODE_WORLD = 0,

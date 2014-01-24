@@ -2,7 +2,11 @@
  * EHCI-compliant USB host controller driver for NVIDIA Tegra SoCs
  *
  * Copyright (C) 2010 Google, Inc.
+<<<<<<< HEAD
  * Copyright (C) 2009 NVIDIA Corporation
+=======
+ * Copyright (C) 2009 - 2013 NVIDIA Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -17,6 +21,7 @@
  */
 
 #include <linux/clk.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/platform_data/tegra_usb.h>
 #include <linux/irq.h>
@@ -74,6 +79,58 @@ static void tegra_ehci_power_down(struct usb_hcd *hcd)
 	clk_disable(tegra->emc_clk);
 }
 
+=======
+#include <linux/clk/tegra.h>
+#include <linux/dma-mapping.h>
+#include <linux/err.h>
+#include <linux/gpio.h>
+#include <linux/io.h>
+#include <linux/irq.h>
+#include <linux/module.h>
+#include <linux/of.h>
+#include <linux/of_device.h>
+#include <linux/of_gpio.h>
+#include <linux/platform_device.h>
+#include <linux/pm_runtime.h>
+#include <linux/slab.h>
+#include <linux/usb/ehci_def.h>
+#include <linux/usb/tegra_usb_phy.h>
+#include <linux/usb.h>
+#include <linux/usb/hcd.h>
+#include <linux/usb/otg.h>
+
+#include "ehci.h"
+
+#define TEGRA_USB_BASE			0xC5000000
+#define TEGRA_USB2_BASE			0xC5004000
+#define TEGRA_USB3_BASE			0xC5008000
+
+#define PORT_WAKE_BITS (PORT_WKOC_E|PORT_WKDISC_E|PORT_WKCONN_E)
+
+#define TEGRA_USB_DMA_ALIGN 32
+
+#define DRIVER_DESC "Tegra EHCI driver"
+#define DRV_NAME "tegra-ehci"
+
+static struct hc_driver __read_mostly tegra_ehci_hc_driver;
+
+struct tegra_ehci_soc_config {
+	bool has_hostpc;
+};
+
+static int (*orig_hub_control)(struct usb_hcd *hcd,
+				u16 typeReq, u16 wValue, u16 wIndex,
+				char *buf, u16 wLength);
+
+struct tegra_ehci_hcd {
+	struct tegra_usb_phy *phy;
+	struct clk *clk;
+	int port_resuming;
+	bool needs_double_reset;
+	enum tegra_usb_phy_port_speed port_speed;
+};
+
+>>>>>>> refs/remotes/origin/master
 static int tegra_ehci_internal_port_reset(
 	struct ehci_hcd	*ehci,
 	u32 __iomem	*portsc_reg
@@ -148,8 +205,13 @@ static int tegra_ehci_hub_control(
 	u16		wLength
 )
 {
+<<<<<<< HEAD
 	struct ehci_hcd	*ehci = hcd_to_ehci(hcd);
 	struct tegra_ehci_hcd *tegra = dev_get_drvdata(hcd->self.controller);
+=======
+	struct ehci_hcd *ehci = hcd_to_ehci(hcd);
+	struct tegra_ehci_hcd *tegra = (struct tegra_ehci_hcd *)ehci->priv;
+>>>>>>> refs/remotes/origin/master
 	u32 __iomem	*status_reg;
 	u32		temp;
 	unsigned long	flags;
@@ -159,6 +221,7 @@ static int tegra_ehci_hub_control(
 
 	spin_lock_irqsave(&ehci->lock, flags);
 
+<<<<<<< HEAD
 	/*
 	 * In ehci_hub_control() for USB_PORT_FEAT_ENABLE clears the other bits
 	 * that are write on clear, by writing back the register read value, so
@@ -171,11 +234,18 @@ static int tegra_ehci_hub_control(
 	}
 
 	else if (typeReq == GetPortStatus) {
+=======
+	if (typeReq == GetPortStatus) {
+>>>>>>> refs/remotes/origin/master
 		temp = ehci_readl(ehci, status_reg);
 		if (tegra->port_resuming && !(temp & PORT_SUSPEND)) {
 			/* Resume completed, re-enable disconnect detection */
 			tegra->port_resuming = 0;
+<<<<<<< HEAD
 			tegra_usb_phy_postresume(tegra->phy);
+=======
+			tegra_usb_phy_postresume(hcd->phy);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -186,7 +256,11 @@ static int tegra_ehci_hub_control(
 			goto done;
 		}
 
+<<<<<<< HEAD
 		temp &= ~PORT_WKCONN_E;
+=======
+		temp &= ~(PORT_RWC_BITS | PORT_WKCONN_E);
+>>>>>>> refs/remotes/origin/master
 		temp |= PORT_WKDISC_E | PORT_WKOC_E;
 		ehci_writel(ehci, temp | PORT_SUSPEND, status_reg);
 
@@ -194,7 +268,11 @@ static int tegra_ehci_hub_control(
 		 * If a transaction is in progress, there may be a delay in
 		 * suspending the port. Poll until the port is suspended.
 		 */
+<<<<<<< HEAD
 		if (handshake(ehci, status_reg, PORT_SUSPEND,
+=======
+		if (ehci_handshake(ehci, status_reg, PORT_SUSPEND,
+>>>>>>> refs/remotes/origin/master
 						PORT_SUSPEND, 5000))
 			pr_err("%s: timeout waiting for SUSPEND\n", __func__);
 
@@ -203,7 +281,11 @@ static int tegra_ehci_hub_control(
 	}
 
 	/* For USB1 port we need to issue Port Reset twice internally */
+<<<<<<< HEAD
 	if (tegra->phy->instance == 0 &&
+=======
+	if (tegra->needs_double_reset &&
+>>>>>>> refs/remotes/origin/master
 	   (typeReq == SetPortFeature && wValue == USB_PORT_FEAT_RESET)) {
 		spin_unlock_irqrestore(&ehci->lock, flags);
 		return tegra_ehci_internal_port_reset(ehci, status_reg);
@@ -228,7 +310,11 @@ static int tegra_ehci_hub_control(
 			goto done;
 
 		/* Disable disconnect detection during port resume */
+<<<<<<< HEAD
 		tegra_usb_phy_preresume(tegra->phy);
+=======
+		tegra_usb_phy_preresume(hcd->phy);
+>>>>>>> refs/remotes/origin/master
 
 		ehci->reset_done[wIndex-1] = jiffies + msecs_to_jiffies(25);
 
@@ -236,15 +322,20 @@ static int tegra_ehci_hub_control(
 		/* start resume signalling */
 		ehci_writel(ehci, temp | PORT_RESUME, status_reg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		set_bit(wIndex-1, &ehci->resuming_ports);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_bit(wIndex-1, &ehci->resuming_ports);
+>>>>>>> refs/remotes/origin/master
 
 		spin_unlock_irqrestore(&ehci->lock, flags);
 		msleep(20);
 		spin_lock_irqsave(&ehci->lock, flags);
 
 		/* Poll until the controller clears RESUME and SUSPEND */
+<<<<<<< HEAD
 		if (handshake(ehci, status_reg, PORT_RESUME, 0, 2000))
 			pr_err("%s: timeout waiting for RESUME\n", __func__);
 		if (handshake(ehci, status_reg, PORT_SUSPEND, 0, 2000))
@@ -255,6 +346,15 @@ static int tegra_ehci_hub_control(
 =======
 		clear_bit(wIndex-1, &ehci->resuming_ports);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ehci_handshake(ehci, status_reg, PORT_RESUME, 0, 2000))
+			pr_err("%s: timeout waiting for RESUME\n", __func__);
+		if (ehci_handshake(ehci, status_reg, PORT_SUSPEND, 0, 2000))
+			pr_err("%s: timeout waiting for SUSPEND\n", __func__);
+
+		ehci->reset_done[wIndex-1] = 0;
+		clear_bit(wIndex-1, &ehci->resuming_ports);
+>>>>>>> refs/remotes/origin/master
 
 		tegra->port_resuming = 1;
 		goto done;
@@ -263,12 +363,18 @@ static int tegra_ehci_hub_control(
 	spin_unlock_irqrestore(&ehci->lock, flags);
 
 	/* Handle the hub control events here */
+<<<<<<< HEAD
 	return ehci_hub_control(hcd, typeReq, wValue, wIndex, buf, wLength);
+=======
+	return orig_hub_control(hcd, typeReq, wValue, wIndex, buf, wLength);
+
+>>>>>>> refs/remotes/origin/master
 done:
 	spin_unlock_irqrestore(&ehci->lock, flags);
 	return retval;
 }
 
+<<<<<<< HEAD
 static void tegra_ehci_restart(struct usb_hcd *hcd)
 {
 	struct ehci_hcd *ehci = hcd_to_ehci(hcd);
@@ -488,25 +594,41 @@ static int tegra_ehci_bus_resume(struct usb_hcd *hcd)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 struct temp_buffer {
+=======
+struct dma_aligned_buffer {
+>>>>>>> refs/remotes/origin/master
 	void *kmalloc_ptr;
 	void *old_xfer_buffer;
 	u8 data[0];
 };
 
+<<<<<<< HEAD
 static void free_temp_buffer(struct urb *urb)
 {
 	enum dma_data_direction dir;
 	struct temp_buffer *temp;
+=======
+static void free_dma_aligned_buffer(struct urb *urb)
+{
+	struct dma_aligned_buffer *temp;
+>>>>>>> refs/remotes/origin/master
 
 	if (!(urb->transfer_flags & URB_ALIGNED_TEMP_BUFFER))
 		return;
 
+<<<<<<< HEAD
 	dir = usb_urb_dir_in(urb) ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
 
 	temp = container_of(urb->transfer_buffer, struct temp_buffer,
 			    data);
 
 	if (dir == DMA_FROM_DEVICE)
+=======
+	temp = container_of(urb->transfer_buffer,
+		struct dma_aligned_buffer, data);
+
+	if (usb_urb_dir_in(urb))
+>>>>>>> refs/remotes/origin/master
 		memcpy(temp->old_xfer_buffer, temp->data,
 		       urb->transfer_buffer_length);
 	urb->transfer_buffer = temp->old_xfer_buffer;
@@ -515,10 +637,16 @@ static void free_temp_buffer(struct urb *urb)
 	urb->transfer_flags &= ~URB_ALIGNED_TEMP_BUFFER;
 }
 
+<<<<<<< HEAD
 static int alloc_temp_buffer(struct urb *urb, gfp_t mem_flags)
 {
 	enum dma_data_direction dir;
 	struct temp_buffer *temp, *kmalloc_ptr;
+=======
+static int alloc_dma_aligned_buffer(struct urb *urb, gfp_t mem_flags)
+{
+	struct dma_aligned_buffer *temp, *kmalloc_ptr;
+>>>>>>> refs/remotes/origin/master
 	size_t kmalloc_size;
 
 	if (urb->num_sgs || urb->sg ||
@@ -526,22 +654,36 @@ static int alloc_temp_buffer(struct urb *urb, gfp_t mem_flags)
 	    !((uintptr_t)urb->transfer_buffer & (TEGRA_USB_DMA_ALIGN - 1)))
 		return 0;
 
+<<<<<<< HEAD
 	dir = usb_urb_dir_in(urb) ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
 
 	/* Allocate a buffer with enough padding for alignment */
 	kmalloc_size = urb->transfer_buffer_length +
 		sizeof(struct temp_buffer) + TEGRA_USB_DMA_ALIGN - 1;
+=======
+	/* Allocate a buffer with enough padding for alignment */
+	kmalloc_size = urb->transfer_buffer_length +
+		sizeof(struct dma_aligned_buffer) + TEGRA_USB_DMA_ALIGN - 1;
+>>>>>>> refs/remotes/origin/master
 
 	kmalloc_ptr = kmalloc(kmalloc_size, mem_flags);
 	if (!kmalloc_ptr)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	/* Position our struct temp_buffer such that data is aligned */
 	temp = PTR_ALIGN(kmalloc_ptr + 1, TEGRA_USB_DMA_ALIGN) - 1;
 
 	temp->kmalloc_ptr = kmalloc_ptr;
 	temp->old_xfer_buffer = urb->transfer_buffer;
 	if (dir == DMA_TO_DEVICE)
+=======
+	/* Position our struct dma_aligned_buffer such that data is aligned */
+	temp = PTR_ALIGN(kmalloc_ptr + 1, TEGRA_USB_DMA_ALIGN) - 1;
+	temp->kmalloc_ptr = kmalloc_ptr;
+	temp->old_xfer_buffer = urb->transfer_buffer;
+	if (usb_urb_dir_out(urb))
+>>>>>>> refs/remotes/origin/master
 		memcpy(temp->data, urb->transfer_buffer,
 		       urb->transfer_buffer_length);
 	urb->transfer_buffer = temp->data;
@@ -556,13 +698,21 @@ static int tegra_ehci_map_urb_for_dma(struct usb_hcd *hcd, struct urb *urb,
 {
 	int ret;
 
+<<<<<<< HEAD
 	ret = alloc_temp_buffer(urb, mem_flags);
+=======
+	ret = alloc_dma_aligned_buffer(urb, mem_flags);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
 	ret = usb_hcd_map_urb_for_dma(hcd, urb, mem_flags);
 	if (ret)
+<<<<<<< HEAD
 		free_temp_buffer(urb);
+=======
+		free_dma_aligned_buffer(urb);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -570,6 +720,7 @@ static int tegra_ehci_map_urb_for_dma(struct usb_hcd *hcd, struct urb *urb,
 static void tegra_ehci_unmap_urb_for_dma(struct usb_hcd *hcd, struct urb *urb)
 {
 	usb_hcd_unmap_urb_for_dma(hcd, urb);
+<<<<<<< HEAD
 	free_temp_buffer(urb);
 }
 
@@ -835,10 +986,49 @@ static int tegra_ehci_probe(struct platform_device *pdev)
 
 <<<<<<< HEAD
 =======
+=======
+	free_dma_aligned_buffer(urb);
+}
+
+static const struct tegra_ehci_soc_config tegra30_soc_config = {
+	.has_hostpc = true,
+};
+
+static const struct tegra_ehci_soc_config tegra20_soc_config = {
+	.has_hostpc = false,
+};
+
+static struct of_device_id tegra_ehci_of_match[] = {
+	{ .compatible = "nvidia,tegra30-ehci", .data = &tegra30_soc_config },
+	{ .compatible = "nvidia,tegra20-ehci", .data = &tegra20_soc_config },
+	{ },
+};
+
+static int tegra_ehci_probe(struct platform_device *pdev)
+{
+	const struct of_device_id *match;
+	const struct tegra_ehci_soc_config *soc_config;
+	struct resource *res;
+	struct usb_hcd *hcd;
+	struct ehci_hcd *ehci;
+	struct tegra_ehci_hcd *tegra;
+	int err = 0;
+	int irq;
+	struct usb_phy *u_phy;
+
+	match = of_match_device(tegra_ehci_of_match, &pdev->dev);
+	if (!match) {
+		dev_err(&pdev->dev, "Error: No device match found\n");
+		return -ENODEV;
+	}
+	soc_config = match->data;
+
+>>>>>>> refs/remotes/origin/master
 	/* Right now device-tree probed devices don't get dma_mask set.
 	 * Since shared usb code relies on it, set it here for now.
 	 * Once we have dma capability bindings this can go away.
 	 */
+<<<<<<< HEAD
 	if (!pdev->dev.dma_mask)
 		pdev->dev.dma_mask = &tegra_ehci_dma_mask;
 
@@ -848,11 +1038,17 @@ static int tegra_ehci_probe(struct platform_device *pdev)
 	tegra = kzalloc(sizeof(struct tegra_ehci_hcd), GFP_KERNEL);
 	if (!tegra)
 		return -ENOMEM;
+=======
+	err = dma_coerce_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	hcd = usb_create_hcd(&tegra_ehci_hc_driver, &pdev->dev,
 					dev_name(&pdev->dev));
 	if (!hcd) {
 		dev_err(&pdev->dev, "Unable to create HCD\n");
+<<<<<<< HEAD
 		err = -ENOMEM;
 		goto fail_hcd;
 	}
@@ -879,11 +1075,46 @@ static int tegra_ehci_probe(struct platform_device *pdev)
 
 	clk_enable(tegra->emc_clk);
 	clk_set_rate(tegra->emc_clk, 400000000);
+=======
+		return -ENOMEM;
+	}
+	platform_set_drvdata(pdev, hcd);
+	ehci = hcd_to_ehci(hcd);
+	tegra = (struct tegra_ehci_hcd *)ehci->priv;
+
+	hcd->has_tt = 1;
+
+	tegra->clk = devm_clk_get(&pdev->dev, NULL);
+	if (IS_ERR(tegra->clk)) {
+		dev_err(&pdev->dev, "Can't get ehci clock\n");
+		err = PTR_ERR(tegra->clk);
+		goto cleanup_hcd_create;
+	}
+
+	err = clk_prepare_enable(tegra->clk);
+	if (err)
+		goto cleanup_hcd_create;
+
+	tegra_periph_reset_assert(tegra->clk);
+	udelay(1);
+	tegra_periph_reset_deassert(tegra->clk);
+
+	u_phy = devm_usb_get_phy_by_phandle(&pdev->dev, "nvidia,phy", 0);
+	if (IS_ERR(u_phy)) {
+		err = PTR_ERR(u_phy);
+		goto cleanup_clk_en;
+	}
+	hcd->phy = u_phy;
+
+	tegra->needs_double_reset = of_property_read_bool(pdev->dev.of_node,
+		"nvidia,needs-double-reset");
+>>>>>>> refs/remotes/origin/master
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res) {
 		dev_err(&pdev->dev, "Failed to get I/O memory\n");
 		err = -ENXIO;
+<<<<<<< HEAD
 		goto fail_io;
 	}
 	hcd->rsrc_start = res->start;
@@ -941,10 +1172,47 @@ static int tegra_ehci_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 	tegra->ehci = hcd_to_ehci(hcd);
 
+=======
+		goto cleanup_clk_en;
+	}
+	hcd->rsrc_start = res->start;
+	hcd->rsrc_len = resource_size(res);
+	hcd->regs = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+	if (!hcd->regs) {
+		dev_err(&pdev->dev, "Failed to remap I/O memory\n");
+		err = -ENOMEM;
+		goto cleanup_clk_en;
+	}
+	ehci->caps = hcd->regs + 0x100;
+	ehci->has_hostpc = soc_config->has_hostpc;
+
+	err = usb_phy_init(hcd->phy);
+	if (err) {
+		dev_err(&pdev->dev, "Failed to initialize phy\n");
+		goto cleanup_clk_en;
+	}
+
+	u_phy->otg = devm_kzalloc(&pdev->dev, sizeof(struct usb_otg),
+			     GFP_KERNEL);
+	if (!u_phy->otg) {
+		dev_err(&pdev->dev, "Failed to alloc memory for otg\n");
+		err = -ENOMEM;
+		goto cleanup_phy;
+	}
+	u_phy->otg->host = hcd_to_bus(hcd);
+
+	err = usb_phy_set_suspend(hcd->phy, 0);
+	if (err) {
+		dev_err(&pdev->dev, "Failed to power on the phy\n");
+		goto cleanup_phy;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	irq = platform_get_irq(pdev, 0);
 	if (!irq) {
 		dev_err(&pdev->dev, "Failed to get IRQ\n");
 		err = -ENODEV;
+<<<<<<< HEAD
 		goto fail;
 	}
 <<<<<<< HEAD
@@ -1087,18 +1355,64 @@ static int tegra_ehci_remove(struct platform_device *pdev)
 	clk_put(tegra->emc_clk);
 
 	kfree(tegra);
+=======
+		goto cleanup_phy;
+	}
+
+	otg_set_host(u_phy->otg, &hcd->self);
+
+	err = usb_add_hcd(hcd, irq, IRQF_SHARED);
+	if (err) {
+		dev_err(&pdev->dev, "Failed to add USB HCD\n");
+		goto cleanup_otg_set_host;
+	}
+	device_wakeup_enable(hcd->self.controller);
+
+	return err;
+
+cleanup_otg_set_host:
+	otg_set_host(u_phy->otg, NULL);
+cleanup_phy:
+	usb_phy_shutdown(hcd->phy);
+cleanup_clk_en:
+	clk_disable_unprepare(tegra->clk);
+cleanup_hcd_create:
+	usb_put_hcd(hcd);
+	return err;
+}
+
+static int tegra_ehci_remove(struct platform_device *pdev)
+{
+	struct usb_hcd *hcd = platform_get_drvdata(pdev);
+	struct tegra_ehci_hcd *tegra =
+		(struct tegra_ehci_hcd *)hcd_to_ehci(hcd)->priv;
+
+	otg_set_host(hcd->phy->otg, NULL);
+
+	usb_phy_shutdown(hcd->phy);
+	usb_remove_hcd(hcd);
+	usb_put_hcd(hcd);
+
+	clk_disable_unprepare(tegra->clk);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static void tegra_ehci_hcd_shutdown(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct tegra_ehci_hcd *tegra = platform_get_drvdata(pdev);
 	struct usb_hcd *hcd = ehci_to_hcd(tegra->ehci);
+=======
+	struct usb_hcd *hcd = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 
 	if (hcd->driver->shutdown)
 		hcd->driver->shutdown(hcd);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct platform_driver tegra_ehci_driver = {
 	.probe		= tegra_ehci_probe,
@@ -1129,3 +1443,57 @@ static struct platform_driver tegra_ehci_driver = {
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 };
+=======
+static struct platform_driver tegra_ehci_driver = {
+	.probe		= tegra_ehci_probe,
+	.remove		= tegra_ehci_remove,
+	.shutdown	= tegra_ehci_hcd_shutdown,
+	.driver		= {
+		.name	= DRV_NAME,
+		.of_match_table = tegra_ehci_of_match,
+	}
+};
+
+static const struct ehci_driver_overrides tegra_overrides __initconst = {
+	.extra_priv_size	= sizeof(struct tegra_ehci_hcd),
+};
+
+static int __init ehci_tegra_init(void)
+{
+	if (usb_disabled())
+		return -ENODEV;
+
+	pr_info(DRV_NAME ": " DRIVER_DESC "\n");
+
+	ehci_init_driver(&tegra_ehci_hc_driver, &tegra_overrides);
+
+	/*
+	 * The Tegra HW has some unusual quirks, which require Tegra-specific
+	 * workarounds. We override certain hc_driver functions here to
+	 * achieve that. We explicitly do not enhance ehci_driver_overrides to
+	 * allow this more easily, since this is an unusual case, and we don't
+	 * want to encourage others to override these functions by making it
+	 * too easy.
+	 */
+
+	orig_hub_control = tegra_ehci_hc_driver.hub_control;
+
+	tegra_ehci_hc_driver.map_urb_for_dma = tegra_ehci_map_urb_for_dma;
+	tegra_ehci_hc_driver.unmap_urb_for_dma = tegra_ehci_unmap_urb_for_dma;
+	tegra_ehci_hc_driver.hub_control = tegra_ehci_hub_control;
+
+	return platform_driver_register(&tegra_ehci_driver);
+}
+module_init(ehci_tegra_init);
+
+static void __exit ehci_tegra_cleanup(void)
+{
+	platform_driver_unregister(&tegra_ehci_driver);
+}
+module_exit(ehci_tegra_cleanup);
+
+MODULE_DESCRIPTION(DRIVER_DESC);
+MODULE_LICENSE("GPL");
+MODULE_ALIAS("platform:" DRV_NAME);
+MODULE_DEVICE_TABLE(of, tegra_ehci_of_match);
+>>>>>>> refs/remotes/origin/master

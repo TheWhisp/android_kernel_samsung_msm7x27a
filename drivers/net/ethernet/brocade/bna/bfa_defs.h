@@ -26,6 +26,7 @@
 #define BFA_STRING_32	32
 #define BFA_VERSION_LEN 64
 
+<<<<<<< HEAD
 /**
  * ---------------------- adapter definitions ------------
  */
@@ -33,6 +34,11 @@
 /**
  * BFA adapter level attributes.
  */
+=======
+/* ---------------------- adapter definitions ------------ */
+
+/* BFA adapter level attributes. */
+>>>>>>> refs/remotes/origin/master
 enum {
 	BFA_ADAPTER_SERIAL_NUM_LEN = STRSZ(BFA_MFG_SERIALNUM_SIZE),
 					/*
@@ -74,18 +80,26 @@ struct bfa_adapter_attr {
 	u8		trunk_capable;
 };
 
+<<<<<<< HEAD
 /**
  * ---------------------- IOC definitions ------------
  */
+=======
+/* ---------------------- IOC definitions ------------ */
+>>>>>>> refs/remotes/origin/master
 
 enum {
 	BFA_IOC_DRIVER_LEN	= 16,
 	BFA_IOC_CHIP_REV_LEN	= 8,
 };
 
+<<<<<<< HEAD
 /**
  * Driver and firmware versions.
  */
+=======
+/* Driver and firmware versions. */
+>>>>>>> refs/remotes/origin/master
 struct bfa_ioc_driver_attr {
 	char		driver[BFA_IOC_DRIVER_LEN];	/*!< driver name */
 	char		driver_ver[BFA_VERSION_LEN];	/*!< driver version */
@@ -95,9 +109,13 @@ struct bfa_ioc_driver_attr {
 	char		ob_ver[BFA_VERSION_LEN];	/*!< openboot version */
 };
 
+<<<<<<< HEAD
 /**
  * IOC PCI device attributes
  */
+=======
+/* IOC PCI device attributes */
+>>>>>>> refs/remotes/origin/master
 struct bfa_ioc_pci_attr {
 	u16	vendor_id;	/*!< PCI vendor ID */
 	u16	device_id;	/*!< PCI device ID */
@@ -108,9 +126,13 @@ struct bfa_ioc_pci_attr {
 	char		chip_rev[BFA_IOC_CHIP_REV_LEN];	 /*!< chip revision */
 };
 
+<<<<<<< HEAD
 /**
  * IOC states
  */
+=======
+/* IOC states */
+>>>>>>> refs/remotes/origin/master
 enum bfa_ioc_state {
 	BFA_IOC_UNINIT		= 1,	/*!< IOC is in uninit state */
 	BFA_IOC_RESET		= 2,	/*!< IOC is in reset state */
@@ -127,9 +149,13 @@ enum bfa_ioc_state {
 	BFA_IOC_HWFAIL		= 13,	/*!< PCI mapping doesn't exist */
 };
 
+<<<<<<< HEAD
 /**
  * IOC firmware stats
  */
+=======
+/* IOC firmware stats */
+>>>>>>> refs/remotes/origin/master
 struct bfa_fw_ioc_stats {
 	u32	enable_reqs;
 	u32	disable_reqs;
@@ -139,9 +165,13 @@ struct bfa_fw_ioc_stats {
 	u32	unknown_reqs;
 };
 
+<<<<<<< HEAD
 /**
  * IOC driver stats
  */
+=======
+/* IOC driver stats */
+>>>>>>> refs/remotes/origin/master
 struct bfa_ioc_drv_stats {
 	u32	ioc_isrs;
 	u32	ioc_enables;
@@ -157,9 +187,13 @@ struct bfa_ioc_drv_stats {
 	u32	rsvd;
 };
 
+<<<<<<< HEAD
 /**
  * IOC statistics
  */
+=======
+/* IOC statistics */
+>>>>>>> refs/remotes/origin/master
 struct bfa_ioc_stats {
 	struct bfa_ioc_drv_stats drv_stats; /*!< driver IOC stats */
 	struct bfa_fw_ioc_stats fw_stats;  /*!< firmware IOC stats */
@@ -171,9 +205,13 @@ enum bfa_ioc_type {
 	BFA_IOC_TYPE_LL		= 3,
 };
 
+<<<<<<< HEAD
 /**
  * IOC attributes returned in queries
  */
+=======
+/* IOC attributes returned in queries */
+>>>>>>> refs/remotes/origin/master
 struct bfa_ioc_attr {
 	enum bfa_ioc_type ioc_type;
 	enum bfa_ioc_state		state;		/*!< IOC state      */
@@ -184,18 +222,27 @@ struct bfa_ioc_attr {
 	u8				port_mode;	/*!< enum bfa_mode */
 	u8				cap_bm;		/*!< capability */
 	u8				port_mode_cfg;	/*!< enum bfa_mode */
+<<<<<<< HEAD
 	u8				rsvd[4];	/*!< 64bit align */
 };
 
 /**
  * Adapter capability mask definition
  */
+=======
+	u8				def_fn;		/*!< 1 if default fn */
+	u8				rsvd[3];	/*!< 64bit align */
+};
+
+/* Adapter capability mask definition */
+>>>>>>> refs/remotes/origin/master
 enum {
 	BFA_CM_HBA	=	0x01,
 	BFA_CM_CNA	=	0x02,
 	BFA_CM_NIC	=	0x04,
 };
 
+<<<<<<< HEAD
 /**
  * ---------------------- mfg definitions ------------
  */
@@ -203,6 +250,11 @@ enum {
 /**
  * Checksum size
  */
+=======
+/* ---------------------- mfg definitions ------------ */
+
+/* Checksum size */
+>>>>>>> refs/remotes/origin/master
 #define BFA_MFG_CHKSUM_SIZE			16
 
 #define BFA_MFG_PARTNUM_SIZE			14
@@ -213,8 +265,12 @@ enum {
 
 #pragma pack(1)
 
+<<<<<<< HEAD
 /**
  * @brief BFA adapter manufacturing block definition.
+=======
+/* BFA adapter manufacturing block definition.
+>>>>>>> refs/remotes/origin/master
  *
  * All numerical fields are in big-endian format.
  */
@@ -256,9 +312,13 @@ struct bfa_mfg_block {
 
 #pragma pack()
 
+<<<<<<< HEAD
 /**
  * ---------------------- pci definitions ------------
  */
+=======
+/* ---------------------- pci definitions ------------ */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * PCI device ID information
@@ -275,9 +335,13 @@ enum {
 #define bfa_asic_id_ctc(device)			\
 	(bfa_asic_id_ct(device) || bfa_asic_id_ct2(device))
 
+<<<<<<< HEAD
 /**
  * PCI sub-system device and vendor ID information
  */
+=======
+/* PCI sub-system device and vendor ID information */
+>>>>>>> refs/remotes/origin/master
 enum {
 	BFA_PCI_FCOE_SSDEVICE_ID	= 0x14,
 	BFA_PCI_CT2_SSID_FCoE		= 0x22,

@@ -8,9 +8,12 @@
 #include <string.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define LKC_DIRECT_LINK
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "lkc.h"
 
 #define DEBUG_EXPR	0
@@ -18,11 +21,15 @@
 struct expr *expr_alloc_symbol(struct symbol *sym)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct expr *e = malloc(sizeof(*e));
 	memset(e, 0, sizeof(*e));
 =======
 	struct expr *e = calloc(1, sizeof(*e));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct expr *e = xcalloc(1, sizeof(*e));
+>>>>>>> refs/remotes/origin/master
 	e->type = E_SYMBOL;
 	e->left.sym = sym;
 	return e;
@@ -31,11 +38,15 @@ struct expr *expr_alloc_symbol(struct symbol *sym)
 struct expr *expr_alloc_one(enum expr_type type, struct expr *ce)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct expr *e = malloc(sizeof(*e));
 	memset(e, 0, sizeof(*e));
 =======
 	struct expr *e = calloc(1, sizeof(*e));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct expr *e = xcalloc(1, sizeof(*e));
+>>>>>>> refs/remotes/origin/master
 	e->type = type;
 	e->left.expr = ce;
 	return e;
@@ -44,11 +55,15 @@ struct expr *expr_alloc_one(enum expr_type type, struct expr *ce)
 struct expr *expr_alloc_two(enum expr_type type, struct expr *e1, struct expr *e2)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct expr *e = malloc(sizeof(*e));
 	memset(e, 0, sizeof(*e));
 =======
 	struct expr *e = calloc(1, sizeof(*e));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct expr *e = xcalloc(1, sizeof(*e));
+>>>>>>> refs/remotes/origin/master
 	e->type = type;
 	e->left.expr = e1;
 	e->right.expr = e2;
@@ -58,11 +73,15 @@ struct expr *expr_alloc_two(enum expr_type type, struct expr *e1, struct expr *e
 struct expr *expr_alloc_comp(enum expr_type type, struct symbol *s1, struct symbol *s2)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct expr *e = malloc(sizeof(*e));
 	memset(e, 0, sizeof(*e));
 =======
 	struct expr *e = calloc(1, sizeof(*e));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct expr *e = xcalloc(1, sizeof(*e));
+>>>>>>> refs/remotes/origin/master
 	e->type = type;
 	e->left.sym = s1;
 	e->right.sym = s2;
@@ -90,7 +109,11 @@ struct expr *expr_copy(const struct expr *org)
 	if (!org)
 		return NULL;
 
+<<<<<<< HEAD
 	e = malloc(sizeof(*org));
+=======
+	e = xmalloc(sizeof(*org));
+>>>>>>> refs/remotes/origin/master
 	memcpy(e, org, sizeof(*org));
 	switch (org->type) {
 	case E_SYMBOL:

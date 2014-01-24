@@ -28,6 +28,7 @@
 #include <asm/mach/map.h>
 #include <asm/mach/irq.h>
 
+<<<<<<< HEAD
 #include <mach/bast-map.h>
 #include <mach/bast-irq.h>
 
@@ -37,6 +38,16 @@
 #include <plat/usb-control.h>
 #include <plat/devs.h>
 
+=======
+#include <mach/hardware.h>
+#include <mach/gpio-samsung.h>
+#include <asm/irq.h>
+
+#include <linux/platform_data/usb-ohci-s3c2410.h>
+#include <plat/devs.h>
+
+#include "bast.h"
+>>>>>>> refs/remotes/origin/master
 #include "simtec.h"
 
 /* control power and monitor over-current events on various Simtec
@@ -79,7 +90,11 @@ static void usb_simtec_enableoc(struct s3c2410_hcd_info *info, int on)
 	int ret;
 
 	if (on) {
+<<<<<<< HEAD
 		ret = request_irq(IRQ_USBOC, usb_simtec_ocirq,
+=======
+		ret = request_irq(BAST_IRQ_USBOC, usb_simtec_ocirq,
+>>>>>>> refs/remotes/origin/master
 				  IRQF_DISABLED | IRQF_TRIGGER_RISING |
 				   IRQF_TRIGGER_FALLING,
 				  "USB Over-current", info);
@@ -87,7 +102,11 @@ static void usb_simtec_enableoc(struct s3c2410_hcd_info *info, int on)
 			printk(KERN_ERR "failed to request usb oc irq\n");
 		}
 	} else {
+<<<<<<< HEAD
 		free_irq(IRQ_USBOC, info);
+=======
+		free_irq(BAST_IRQ_USBOC, info);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -104,7 +123,11 @@ static struct s3c2410_hcd_info usb_simtec_info __initdata = {
 };
 
 
+<<<<<<< HEAD
 int usb_simtec_init(void)
+=======
+int __init usb_simtec_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 

@@ -21,6 +21,10 @@
 #include <linux/kprobes.h>
 #include <linux/kdebug.h>
 #include <linux/percpu.h>
+<<<<<<< HEAD
+=======
+#include <linux/context_tracking.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/page.h>
 #include <asm/pgtable.h>
@@ -151,8 +155,11 @@ show_signal_msg(struct pt_regs *regs, int sig, int code,
 	printk(KERN_CONT "\n");
 }
 
+<<<<<<< HEAD
 extern unsigned long compute_effective_address(struct pt_regs *, unsigned int, unsigned int);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void do_fault_siginfo(int code, int sig, struct pt_regs *regs,
 			     unsigned int insn, int fault_code)
 {
@@ -274,20 +281,32 @@ static void noinline __kprobes bogus_32bit_fault_address(struct pt_regs *regs,
 
 asmlinkage void __kprobes do_sparc64_fault(struct pt_regs *regs)
 {
+<<<<<<< HEAD
+=======
+	enum ctx_state prev_state = exception_enter();
+>>>>>>> refs/remotes/origin/master
 	struct mm_struct *mm = current->mm;
 	struct vm_area_struct *vma;
 	unsigned int insn = 0;
 	int si_code, fault_code, fault;
 	unsigned long address, mm_rss;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+>>>>>>> refs/remotes/origin/master
 
 	fault_code = get_thread_fault_code();
 
 	if (notify_page_fault(regs))
+<<<<<<< HEAD
 		return;
+=======
+		goto exit_exception;
+>>>>>>> refs/remotes/origin/master
 
 	si_code = SEGV_MAPERR;
 	address = current_thread_info()->fault_address;
@@ -318,9 +337,16 @@ asmlinkage void __kprobes do_sparc64_fault(struct pt_regs *regs)
 			/* Valid, no problems... */
 		} else {
 			bad_kernel_pc(regs, address);
+<<<<<<< HEAD
 			return;
 		}
 	}
+=======
+			goto exit_exception;
+		}
+	} else
+		flags |= FAULT_FLAG_USER;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If we're in an interrupt or have no user
@@ -330,10 +356,14 @@ asmlinkage void __kprobes do_sparc64_fault(struct pt_regs *regs)
 		goto intr_or_no_mm;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, 0, regs, address);
 =======
 	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+>>>>>>> refs/remotes/origin/master
 
 	if (!down_read_trylock(&mm->mmap_sem)) {
 		if ((regs->tstate & TSTATE_PRIV) &&
@@ -342,10 +372,15 @@ asmlinkage void __kprobes do_sparc64_fault(struct pt_regs *regs)
 			goto handle_kernel_fault;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 retry:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+retry:
+>>>>>>> refs/remotes/origin/master
 		down_read(&mm->mmap_sem);
 	}
 
@@ -430,12 +465,18 @@ good_area:
 		    vma->vm_file != NULL)
 			set_thread_fault_code(fault_code |
 					      FAULT_CODE_BLKCOMMIT);
+<<<<<<< HEAD
+=======
+
+		flags |= FAULT_FLAG_WRITE;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* Allow reads even for write-only mappings */
 		if (!(vma->vm_flags & (VM_READ | VM_EXEC)))
 			goto bad_area;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	fault = handle_mm_fault(mm, vma, address, (fault_code & FAULT_CODE_WRITE) ? FAULT_FLAG_WRITE : 0);
 =======
@@ -446,6 +487,13 @@ good_area:
 		return;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fault = handle_mm_fault(mm, vma, address, flags);
+
+	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
+		goto exit_exception;
+
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;
@@ -453,6 +501,7 @@ good_area:
 			goto do_sigbus;
 		BUG();
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (fault & VM_FAULT_MAJOR) {
 		current->maj_flt++;
@@ -463,6 +512,8 @@ good_area:
 		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1, 0,
 			      regs, address);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (flags & FAULT_FLAG_ALLOW_RETRY) {
 		if (fault & VM_FAULT_MAJOR) {
@@ -476,6 +527,10 @@ good_area:
 		}
 		if (fault & VM_FAULT_RETRY) {
 			flags &= ~FAULT_FLAG_ALLOW_RETRY;
+<<<<<<< HEAD
+=======
+			flags |= FAULT_FLAG_TRIED;
+>>>>>>> refs/remotes/origin/master
 
 			/* No need to up_read(&mm->mmap_sem) as we would
 			 * have already released it in __lock_page_or_retry
@@ -484,23 +539,46 @@ good_area:
 
 			goto retry;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	up_read(&mm->mmap_sem);
 
 	mm_rss = get_mm_rss(mm);
+<<<<<<< HEAD
 #ifdef CONFIG_HUGETLB_PAGE
+=======
+#if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
+>>>>>>> refs/remotes/origin/master
 	mm_rss -= (mm->context.huge_pte_count * (HPAGE_SIZE / PAGE_SIZE));
 #endif
 	if (unlikely(mm_rss >
 		     mm->context.tsb_block[MM_TSB_BASE].tsb_rss_limit))
 		tsb_grow(mm, MM_TSB_BASE, mm_rss);
+<<<<<<< HEAD
 #ifdef CONFIG_HUGETLB_PAGE
 	mm_rss = mm->context.huge_pte_count;
 	if (unlikely(mm_rss >
 		     mm->context.tsb_block[MM_TSB_HUGE].tsb_rss_limit))
 		tsb_grow(mm, MM_TSB_HUGE, mm_rss);
 #endif
+=======
+#if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
+	mm_rss = mm->context.huge_pte_count;
+	if (unlikely(mm_rss >
+		     mm->context.tsb_block[MM_TSB_HUGE].tsb_rss_limit)) {
+		if (mm->context.tsb_block[MM_TSB_HUGE].tsb)
+			tsb_grow(mm, MM_TSB_HUGE, mm_rss);
+		else
+			hugetlb_setup(regs);
+
+	}
+#endif
+exit_exception:
+	exception_exit(prev_state);
+>>>>>>> refs/remotes/origin/master
 	return;
 
 	/*
@@ -513,7 +591,11 @@ bad_area:
 
 handle_kernel_fault:
 	do_kernel_fault(regs, si_code, fault_code, insn, address);
+<<<<<<< HEAD
 	return;
+=======
+	goto exit_exception;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * We ran out of memory, or some other thing happened to us that made
@@ -524,7 +606,11 @@ out_of_memory:
 	up_read(&mm->mmap_sem);
 	if (!(regs->tstate & TSTATE_PRIV)) {
 		pagefault_out_of_memory();
+<<<<<<< HEAD
 		return;
+=======
+		goto exit_exception;
+>>>>>>> refs/remotes/origin/master
 	}
 	goto handle_kernel_fault;
 

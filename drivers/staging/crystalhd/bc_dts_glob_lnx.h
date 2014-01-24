@@ -49,11 +49,15 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "bc_dts_defs.h"
 #include "bcm_70012_regs.h"	/* Link Register defs */
 =======
 #include "crystalhd.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "crystalhd.h"
+>>>>>>> refs/remotes/origin/master
 
 #define CRYSTALHD_API_NAME	"crystalhd"
 #define CRYSTALHD_API_DEV_NAME	"/dev/crystalhd"
@@ -63,11 +67,19 @@
  * between the driver and the application.
  */
 enum BC_DTS_GLOBALS {
+<<<<<<< HEAD
 	BC_MAX_FW_CMD_BUFF_SZ	= 0x40,		/* FW passthrough cmd/rsp buffer size */
 	PCI_CFG_SIZE		= 256,		/* PCI config size buffer */
 	BC_IOCTL_DATA_POOL_SIZE	= 8,		/* BC_IOCTL_DATA Pool size */
 	BC_LINK_MAX_OPENS	= 3,		/* Maximum simultaneous opens*/
 	BC_LINK_MAX_SGLS	= 1024,		/* Maximum SG elements 4M/4K */
+=======
+	BC_MAX_FW_CMD_BUFF_SZ = 0x40, /* FW passthrough cmd/rsp buffer size */
+	PCI_CFG_SIZE		= 256,		/* PCI config size buffer */
+	BC_IOCTL_DATA_POOL_SIZE	= 8,		/* BC_IOCTL_DATA Pool size */
+	BC_LINK_MAX_OPENS	= 3,	/* Maximum simultaneous opens*/
+	BC_LINK_MAX_SGLS	= 1024,	/* Maximum SG elements 4M/4K */
+>>>>>>> refs/remotes/origin/master
 	BC_TX_LIST_CNT		= 2,		/* Max Tx DMA Rings */
 	BC_RX_LIST_CNT		= 8,		/* Max Rx DMA Rings*/
 	BC_PROC_OUTPUT_TIMEOUT	= 3000,		/* Milliseconds */
@@ -180,10 +192,14 @@ struct BC_DEC_YUV_BUFFS {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum DECOUT_COMPLETION_FLAGS{
 =======
 enum DECOUT_COMPLETION_FLAGS {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum DECOUT_COMPLETION_FLAGS {
+>>>>>>> refs/remotes/origin/master
 	COMP_FLAG_NO_INFO	= 0x00,
 	COMP_FLAG_FMT_CHANGE	= 0x01,
 	COMP_FLAG_PIB_VALID	= 0x02,
@@ -193,10 +209,14 @@ enum DECOUT_COMPLETION_FLAGS {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct BC_DEC_OUT_BUFF{
 =======
 struct BC_DEC_OUT_BUFF {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct BC_DEC_OUT_BUFF {
+>>>>>>> refs/remotes/origin/master
 	struct BC_DEC_YUV_BUFFS	OutPutBuffs;
 	struct BC_PIC_INFO_BLOCK PibInfo;
 	uint32_t		Flags;
@@ -242,7 +262,11 @@ enum BC_DRV_CMD {
 	DRV_CMD_REG_RD,		/* Read Device Register */
 	DRV_CMD_REG_WR,		/* Write Device Register */
 	DRV_CMD_FPGA_RD,	/* Read FPGA Register */
+<<<<<<< HEAD
 	DRV_CMD_FPGA_WR,	/* Wrtie FPGA Reister */
+=======
+	DRV_CMD_FPGA_WR,	/* Write FPGA Register */
+>>>>>>> refs/remotes/origin/master
 	DRV_CMD_MEM_RD,		/* Read Device Memory */
 	DRV_CMD_MEM_WR,		/* Write Device Memory */
 	DRV_CMD_RD_PCI_CFG,	/* Read PCI Config Space */
@@ -253,11 +277,22 @@ enum BC_DRV_CMD {
 	DRV_CMD_ADD_RXBUFFS,	/* Add Rx side buffers to driver pool */
 	DRV_CMD_FETCH_RXBUFF,	/* Get Rx DMAed buffer */
 	DRV_CMD_START_RX_CAP,	/* Start Rx Buffer Capture */
+<<<<<<< HEAD
 	DRV_CMD_FLUSH_RX_CAP,	/* Stop the capture for now...we will enhance this later*/
 	DRV_CMD_GET_DRV_STAT,	/* Get Driver Internal Statistics */
 	DRV_CMD_RST_DRV_STAT,	/* Reset Driver Internal Statistics */
 	DRV_CMD_NOTIFY_MODE,	/* Notify the Mode to driver in which the application is Operating*/
 	DRV_CMD_CHANGE_CLOCK,	/* Change the core clock to either save power or improve performance */
+=======
+	DRV_CMD_FLUSH_RX_CAP,	/* Stop the capture for now...
+			we will enhance this later*/
+	DRV_CMD_GET_DRV_STAT,	/* Get Driver Internal Statistics */
+	DRV_CMD_RST_DRV_STAT,	/* Reset Driver Internal Statistics */
+	DRV_CMD_NOTIFY_MODE,	/* Notify the Mode to driver
+			in which the application is Operating*/
+	DRV_CMD_CHANGE_CLOCK,	/* Change the core clock to either save power
+			or improve performance */
+>>>>>>> refs/remotes/origin/master
 
 	/* MUST be the last one.. */
 	DRV_CMD_END,			/* End of the List.. */
@@ -296,6 +331,7 @@ struct crystalhd_ioctl_data {
 	struct BC_IOCTL_DATA	udata;		/* IOCTL from App..*/
 	uint32_t		u_id;		/* Driver specific user ID */
 	uint32_t		cmd;		/* Cmd ID for driver's use. */
+<<<<<<< HEAD
 	void			*add_cdata;	/* Additional command specific data..*/
 	uint32_t		add_cdata_sz;	/* Additional command specific data size */
 	struct crystalhd_ioctl_data *next;	/* List/Fifo management */
@@ -306,6 +342,14 @@ enum crystalhd_kmod_ver{
 =======
 enum crystalhd_kmod_ver {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void	 *add_cdata;	/* Additional command specific data..*/
+	uint32_t add_cdata_sz;	/* Additional command specific data size */
+	struct crystalhd_ioctl_data *next;	/* List/Fifo management */
+};
+
+enum crystalhd_kmod_ver {
+>>>>>>> refs/remotes/origin/master
 	crystalhd_kmod_major	= 0,
 	crystalhd_kmod_minor	= 9,
 	crystalhd_kmod_rev	= 27,

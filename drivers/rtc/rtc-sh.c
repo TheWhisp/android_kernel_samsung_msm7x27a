@@ -593,7 +593,11 @@ static int __init sh_rtc_probe(struct platform_device *pdev)
 	char clk_name[6];
 	int clk_id, ret;
 
+<<<<<<< HEAD
 	rtc = kzalloc(sizeof(struct sh_rtc), GFP_KERNEL);
+=======
+	rtc = devm_kzalloc(&pdev->dev, sizeof(*rtc), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(!rtc))
 		return -ENOMEM;
 
@@ -602,9 +606,14 @@ static int __init sh_rtc_probe(struct platform_device *pdev)
 	/* get periodic/carry/alarm irqs */
 	ret = platform_get_irq(pdev, 0);
 	if (unlikely(ret <= 0)) {
+<<<<<<< HEAD
 		ret = -ENOENT;
 		dev_err(&pdev->dev, "No IRQ resource\n");
 		goto err_badres;
+=======
+		dev_err(&pdev->dev, "No IRQ resource\n");
+		return -ENOENT;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rtc->periodic_irq = ret;
@@ -613,13 +622,19 @@ static int __init sh_rtc_probe(struct platform_device *pdev)
 
 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
 	if (unlikely(res == NULL)) {
+<<<<<<< HEAD
 		ret = -ENOENT;
 		dev_err(&pdev->dev, "No IO resource\n");
 		goto err_badres;
+=======
+		dev_err(&pdev->dev, "No IO resource\n");
+		return -ENOENT;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rtc->regsize = resource_size(res);
 
+<<<<<<< HEAD
 	rtc->res = request_mem_region(res->start, rtc->regsize, pdev->name);
 	if (unlikely(!rtc->res)) {
 		ret = -EBUSY;
@@ -631,6 +646,17 @@ static int __init sh_rtc_probe(struct platform_device *pdev)
 		ret = -EINVAL;
 		goto err_badmap;
 	}
+=======
+	rtc->res = devm_request_mem_region(&pdev->dev, res->start,
+					rtc->regsize, pdev->name);
+	if (unlikely(!rtc->res))
+		return -EBUSY;
+
+	rtc->regbase = devm_ioremap_nocache(&pdev->dev, rtc->res->start,
+					rtc->regsize);
+	if (unlikely(!rtc->regbase))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	clk_id = pdev->id;
 	/* With a single device, the clock id is still "rtc0" */
@@ -639,7 +665,11 @@ static int __init sh_rtc_probe(struct platform_device *pdev)
 
 	snprintf(clk_name, sizeof(clk_name), "rtc%d", clk_id);
 
+<<<<<<< HEAD
 	rtc->clk = clk_get(&pdev->dev, clk_name);
+=======
+	rtc->clk = devm_clk_get(&pdev->dev, clk_name);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(rtc->clk)) {
 		/*
 		 * No error handling for rtc->clk intentionally, not all
@@ -653,8 +683,14 @@ static int __init sh_rtc_probe(struct platform_device *pdev)
 	clk_enable(rtc->clk);
 
 	rtc->capabilities = RTC_DEF_CAPABILITIES;
+<<<<<<< HEAD
 	if (pdev->dev.platform_data) {
 		struct sh_rtc_platform_info *pinfo = pdev->dev.platform_data;
+=======
+	if (dev_get_platdata(&pdev->dev)) {
+		struct sh_rtc_platform_info *pinfo =
+			dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Some CPUs have special capabilities in addition to the
@@ -665,12 +701,17 @@ static int __init sh_rtc_probe(struct platform_device *pdev)
 
 	if (rtc->carry_irq <= 0) {
 		/* register shared periodic/carry/alarm irq */
+<<<<<<< HEAD
 		ret = request_irq(rtc->periodic_irq, sh_rtc_shared,
 <<<<<<< HEAD
 				  IRQF_DISABLED, "sh-rtc", rtc);
 =======
 				  0, "sh-rtc", rtc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = devm_request_irq(&pdev->dev, rtc->periodic_irq,
+				sh_rtc_shared, 0, "sh-rtc", rtc);
+>>>>>>> refs/remotes/origin/master
 		if (unlikely(ret)) {
 			dev_err(&pdev->dev,
 				"request IRQ failed with %d, IRQ %d\n", ret,
@@ -679,12 +720,17 @@ static int __init sh_rtc_probe(struct platform_device *pdev)
 		}
 	} else {
 		/* register periodic/carry/alarm irqs */
+<<<<<<< HEAD
 		ret = request_irq(rtc->periodic_irq, sh_rtc_periodic,
 <<<<<<< HEAD
 				  IRQF_DISABLED, "sh-rtc period", rtc);
 =======
 				  0, "sh-rtc period", rtc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = devm_request_irq(&pdev->dev, rtc->periodic_irq,
+				sh_rtc_periodic, 0, "sh-rtc period", rtc);
+>>>>>>> refs/remotes/origin/master
 		if (unlikely(ret)) {
 			dev_err(&pdev->dev,
 				"request period IRQ failed with %d, IRQ %d\n",
@@ -692,16 +738,22 @@ static int __init sh_rtc_probe(struct platform_device *pdev)
 			goto err_unmap;
 		}
 
+<<<<<<< HEAD
 		ret = request_irq(rtc->carry_irq, sh_rtc_interrupt,
 <<<<<<< HEAD
 				  IRQF_DISABLED, "sh-rtc carry", rtc);
 =======
 				  0, "sh-rtc carry", rtc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = devm_request_irq(&pdev->dev, rtc->carry_irq,
+				sh_rtc_interrupt, 0, "sh-rtc carry", rtc);
+>>>>>>> refs/remotes/origin/master
 		if (unlikely(ret)) {
 			dev_err(&pdev->dev,
 				"request carry IRQ failed with %d, IRQ %d\n",
 				ret, rtc->carry_irq);
+<<<<<<< HEAD
 			free_irq(rtc->periodic_irq, rtc);
 			goto err_unmap;
 		}
@@ -712,12 +764,22 @@ static int __init sh_rtc_probe(struct platform_device *pdev)
 =======
 				  0, "sh-rtc alarm", rtc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto err_unmap;
+		}
+
+		ret = devm_request_irq(&pdev->dev, rtc->alarm_irq,
+				sh_rtc_alarm, 0, "sh-rtc alarm", rtc);
+>>>>>>> refs/remotes/origin/master
 		if (unlikely(ret)) {
 			dev_err(&pdev->dev,
 				"request alarm IRQ failed with %d, IRQ %d\n",
 				ret, rtc->alarm_irq);
+<<<<<<< HEAD
 			free_irq(rtc->carry_irq, rtc);
 			free_irq(rtc->periodic_irq, rtc);
+=======
+>>>>>>> refs/remotes/origin/master
 			goto err_unmap;
 		}
 	}
@@ -730,6 +792,7 @@ static int __init sh_rtc_probe(struct platform_device *pdev)
 	sh_rtc_setaie(&pdev->dev, 0);
 	sh_rtc_setcie(&pdev->dev, 0);
 
+<<<<<<< HEAD
 	rtc->rtc_dev = rtc_device_register("sh", &pdev->dev,
 					   &sh_rtc_ops, THIS_MODULE);
 	if (IS_ERR(rtc->rtc_dev)) {
@@ -737,6 +800,12 @@ static int __init sh_rtc_probe(struct platform_device *pdev)
 		free_irq(rtc->periodic_irq, rtc);
 		free_irq(rtc->carry_irq, rtc);
 		free_irq(rtc->alarm_irq, rtc);
+=======
+	rtc->rtc_dev = devm_rtc_device_register(&pdev->dev, "sh",
+					   &sh_rtc_ops, THIS_MODULE);
+	if (IS_ERR(rtc->rtc_dev)) {
+		ret = PTR_ERR(rtc->rtc_dev);
+>>>>>>> refs/remotes/origin/master
 		goto err_unmap;
 	}
 
@@ -753,12 +822,15 @@ static int __init sh_rtc_probe(struct platform_device *pdev)
 
 err_unmap:
 	clk_disable(rtc->clk);
+<<<<<<< HEAD
 	clk_put(rtc->clk);
 	iounmap(rtc->regbase);
 err_badmap:
 	release_mem_region(rtc->res->start, rtc->regsize);
 err_badres:
 	kfree(rtc);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -767,12 +839,16 @@ static int __exit sh_rtc_remove(struct platform_device *pdev)
 {
 	struct sh_rtc *rtc = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	rtc_device_unregister(rtc->rtc_dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	sh_rtc_irq_set_state(&pdev->dev, 0);
 
 	sh_rtc_setaie(&pdev->dev, 0);
 	sh_rtc_setcie(&pdev->dev, 0);
 
+<<<<<<< HEAD
 	free_irq(rtc->periodic_irq, rtc);
 
 	if (rtc->carry_irq > 0) {
@@ -789,6 +865,9 @@ static int __exit sh_rtc_remove(struct platform_device *pdev)
 	platform_set_drvdata(pdev, NULL);
 
 	kfree(rtc);
+=======
+	clk_disable(rtc->clk);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -806,6 +885,10 @@ static void sh_rtc_set_irq_wake(struct device *dev, int enabled)
 	}
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int sh_rtc_suspend(struct device *dev)
 {
 	if (device_may_wakeup(dev))
@@ -821,21 +904,32 @@ static int sh_rtc_resume(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 
 static const struct dev_pm_ops sh_rtc_dev_pm_ops = {
 	.suspend = sh_rtc_suspend,
 	.resume = sh_rtc_resume,
 };
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(sh_rtc_pm_ops, sh_rtc_suspend, sh_rtc_resume);
+>>>>>>> refs/remotes/origin/master
 
 static struct platform_driver sh_rtc_platform_driver = {
 	.driver		= {
 		.name	= DRV_NAME,
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 		.pm	= &sh_rtc_dev_pm_ops,
+=======
+		.pm	= &sh_rtc_pm_ops,
+>>>>>>> refs/remotes/origin/master
 	},
 	.remove		= __exit_p(sh_rtc_remove),
 };
 
+<<<<<<< HEAD
 static int __init sh_rtc_init(void)
 {
 	return platform_driver_probe(&sh_rtc_platform_driver, sh_rtc_probe);
@@ -848,6 +942,9 @@ static void __exit sh_rtc_exit(void)
 
 module_init(sh_rtc_init);
 module_exit(sh_rtc_exit);
+=======
+module_platform_driver_probe(sh_rtc_platform_driver, sh_rtc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("SuperH on-chip RTC driver");
 MODULE_VERSION(DRV_VERSION);

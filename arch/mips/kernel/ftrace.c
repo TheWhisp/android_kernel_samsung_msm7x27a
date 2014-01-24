@@ -11,22 +11,48 @@
 #include <linux/uaccess.h>
 #include <linux/init.h>
 #include <linux/ftrace.h>
+<<<<<<< HEAD
+=======
+#include <linux/syscalls.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/asm.h>
 #include <asm/asm-offsets.h>
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
 #include <asm/uasm.h>
 
 #include <asm-generic/sections.h>
 
 <<<<<<< HEAD
 =======
+=======
+#include <asm/syscall.h>
+#include <asm/uasm.h>
+#include <asm/unistd.h>
+
+#include <asm-generic/sections.h>
+
+>>>>>>> refs/remotes/origin/master
 #if defined(KBUILD_MCOUNT_RA_ADDRESS) && defined(CONFIG_32BIT)
 #define MCOUNT_OFFSET_INSNS 5
 #else
 #define MCOUNT_OFFSET_INSNS 4
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_DYNAMIC_FTRACE
+
+/* Arch override because MIPS doesn't need to run this from stop_machine() */
+void arch_ftrace_update_code(int command)
+{
+	ftrace_modify_all_code(command);
+}
+
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Check if the address is in kernel space
  *
@@ -41,7 +67,10 @@ static inline int in_kernel_space(unsigned long ip)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_DYNAMIC_FTRACE
 
 #define JAL 0x0c000000		/* jump & link: ip --> ra, jump to target */
@@ -78,6 +107,7 @@ static inline void ftrace_dyn_arch_init_insns(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Check if the address is in kernel space
  *
@@ -94,6 +124,8 @@ static inline int in_kernel_space(unsigned long ip)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ftrace_modify_code(unsigned long ip, unsigned int new_code)
 {
 	int faulted;
@@ -109,6 +141,27 @@ static int ftrace_modify_code(unsigned long ip, unsigned int new_code)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_64BIT
+static int ftrace_modify_code_2(unsigned long ip, unsigned int new_code1,
+				unsigned int new_code2)
+{
+	int faulted;
+
+	safe_store_code(new_code1, ip, faulted);
+	if (unlikely(faulted))
+		return -EFAULT;
+	ip += 4;
+	safe_store_code(new_code2, ip, faulted);
+	if (unlikely(faulted))
+		return -EFAULT;
+	flush_icache_range(ip, ip + 8); /* original ip + 12 */
+	return 0;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The details about the calling site of mcount on MIPS
  *
@@ -121,20 +174,32 @@ static int ftrace_modify_code(unsigned long ip, unsigned int new_code)
  *
  * 2.1 For KBUILD_MCOUNT_RA_ADDRESS and CONFIG_32BIT
  *
+<<<<<<< HEAD
  * lui v1, hi_16bit_of_mcount        --> b 1f (0x10000005)
+=======
+ * lui v1, hi_16bit_of_mcount	     --> b 1f (0x10000005)
+>>>>>>> refs/remotes/origin/master
  * addiu v1, v1, low_16bit_of_mcount
  * move at, ra
  * move $12, ra_address
  * jalr v1
  *  sub sp, sp, 8
+<<<<<<< HEAD
  *                                  1: offset = 5 instructions
  * 2.2 For the Other situations
  *
  * lui v1, hi_16bit_of_mcount        --> b 1f (0x10000004)
+=======
+ *				    1: offset = 5 instructions
+ * 2.2 For the Other situations
+ *
+ * lui v1, hi_16bit_of_mcount	     --> b 1f (0x10000004)
+>>>>>>> refs/remotes/origin/master
  * addiu v1, v1, low_16bit_of_mcount
  * move at, ra
  * jalr v1
  *  nop | move $12, ra_address | sub sp, sp, 8
+<<<<<<< HEAD
  *                                  1: offset = 4 instructions
  */
 
@@ -146,6 +211,11 @@ static int ftrace_modify_code(unsigned long ip, unsigned int new_code)
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *				    1: offset = 4 instructions
+ */
+
+>>>>>>> refs/remotes/origin/master
 #define INSN_B_1F (0x10000000 | MCOUNT_OFFSET_INSNS)
 
 int ftrace_make_nop(struct module *mod,
@@ -159,8 +229,23 @@ int ftrace_make_nop(struct module *mod,
 	 * needed.
 	 */
 	new = in_kernel_space(ip) ? INSN_NOP : INSN_B_1F;
+<<<<<<< HEAD
 
 	return ftrace_modify_code(ip, new);
+=======
+#ifdef CONFIG_64BIT
+	return ftrace_modify_code(ip, new);
+#else
+	/*
+	 * On 32 bit MIPS platforms, gcc adds a stack adjust
+	 * instruction in the delay slot after the branch to
+	 * mcount and expects mcount to restore the sp on return.
+	 * This is based on a legacy API and does nothing but
+	 * waste instructions so it's being removed at runtime.
+	 */
+	return ftrace_modify_code_2(ip, new, INSN_NOP);
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
@@ -222,8 +307,13 @@ int ftrace_disable_ftrace_graph_caller(void)
 
 #ifndef KBUILD_MCOUNT_RA_ADDRESS
 
+<<<<<<< HEAD
 #define S_RA_SP	(0xafbf << 16)	/* s{d,w} ra, offset(sp) */
 #define S_R_SP	(0xafb0 << 16)  /* s{d,w} R, offset(sp) */
+=======
+#define S_RA_SP (0xafbf << 16)	/* s{d,w} ra, offset(sp) */
+#define S_R_SP	(0xafb0 << 16)	/* s{d,w} R, offset(sp) */
+>>>>>>> refs/remotes/origin/master
 #define OFFSET_MASK	0xffff	/* stack offset range: 0 ~ PT_SIZE */
 
 unsigned long ftrace_get_parent_ra_addr(unsigned long self_ra, unsigned long
@@ -354,3 +444,36 @@ out:
 	WARN_ON(1);
 }
 #endif	/* CONFIG_FUNCTION_GRAPH_TRACER */
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_FTRACE_SYSCALLS
+
+#ifdef CONFIG_32BIT
+unsigned long __init arch_syscall_addr(int nr)
+{
+	return (unsigned long)sys_call_table[nr - __NR_O32_Linux];
+}
+#endif
+
+#ifdef CONFIG_64BIT
+
+unsigned long __init arch_syscall_addr(int nr)
+{
+#ifdef CONFIG_MIPS32_N32
+	if (nr >= __NR_N32_Linux && nr <= __NR_N32_Linux + __NR_N32_Linux_syscalls)
+		return (unsigned long)sysn32_call_table[nr - __NR_N32_Linux];
+#endif
+	if (nr >= __NR_64_Linux  && nr <= __NR_64_Linux + __NR_64_Linux_syscalls)
+		return (unsigned long)sys_call_table[nr - __NR_64_Linux];
+#ifdef CONFIG_MIPS32_O32
+	if (nr >= __NR_O32_Linux && nr <= __NR_O32_Linux + __NR_O32_Linux_syscalls)
+		return (unsigned long)sys32_call_table[nr - __NR_O32_Linux];
+#endif
+
+	return (unsigned long) &sys_ni_syscall;
+}
+#endif
+
+#endif /* CONFIG_FTRACE_SYSCALLS */
+>>>>>>> refs/remotes/origin/master

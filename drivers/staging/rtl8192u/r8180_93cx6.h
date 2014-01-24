@@ -1,13 +1,21 @@
 /*
 	This is part of rtl8187 OpenSource driver
+<<<<<<< HEAD
 	Copyright (C) Andrea Merello 2004-2005  <andreamrl@tiscali.it>
+=======
+	Copyright (C) Andrea Merello 2004-2005  <andrea.merello@gmail.com>
+>>>>>>> refs/remotes/origin/master
 	Released under the terms of GPL (General Public Licence)
 
 	Parts of this driver are based on the GPL part of the official realtek driver
 	Parts of this driver are based on the rtl8180 driver skeleton from Patric Schenke & Andres Salomon
 	Parts of this driver are based on the Intel Pro Wireless 2100 GPL driver
 
+<<<<<<< HEAD
 	We want to tanks the Authors of such projects and the Ndiswrapper project Authors.
+=======
+	We want to thank the Authors of such projects and the Ndiswrapper project Authors.
+>>>>>>> refs/remotes/origin/master
 */
 
 /*This files contains card eeprom (93c46 or 93c56) programming routines*/

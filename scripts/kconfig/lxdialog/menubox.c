@@ -26,7 +26,11 @@
  *
  *    *)  A bugfix for the Page-Down problem
  *
+<<<<<<< HEAD
  *    *)  Formerly when I used Page Down and Page Up, the cursor would be set 
+=======
+ *    *)  Formerly when I used Page Down and Page Up, the cursor would be set
+>>>>>>> refs/remotes/origin/master
  *        to the first position in the menu box.  Now lxdialog is a bit
  *        smarter and works more like other menu systems (just have a look at
  *        it).
@@ -154,12 +158,21 @@ static void print_arrows(WINDOW * win, int item_no, int scroll, int y, int x,
  */
 static void print_buttons(WINDOW * win, int height, int width, int selected)
 {
+<<<<<<< HEAD
 	int x = width / 2 - 16;
+=======
+	int x = width / 2 - 28;
+>>>>>>> refs/remotes/origin/master
 	int y = height - 2;
 
 	print_button(win, gettext("Select"), y, x, selected == 0);
 	print_button(win, gettext(" Exit "), y, x + 12, selected == 1);
 	print_button(win, gettext(" Help "), y, x + 24, selected == 2);
+<<<<<<< HEAD
+=======
+	print_button(win, gettext(" Save "), y, x + 36, selected == 3);
+	print_button(win, gettext(" Load "), y, x + 48, selected == 4);
+>>>>>>> refs/remotes/origin/master
 
 	wmove(win, y, x + 1 + 12 * selected);
 	wrefresh(win);
@@ -191,7 +204,11 @@ int dialog_menu(const char *title, const char *prompt,
 do_resize:
 	height = getmaxy(stdscr);
 	width = getmaxx(stdscr);
+<<<<<<< HEAD
 	if (height < 15 || width < 65)
+=======
+	if (height < MENUBOX_HEIGTH_MIN || width < MENUBOX_WIDTH_MIN)
+>>>>>>> refs/remotes/origin/master
 		return -ERRDISPLAYTOOSMALL;
 
 	height -= 4;
@@ -201,8 +218,13 @@ do_resize:
 	max_choice = MIN(menu_height, item_count());
 
 	/* center dialog box on screen */
+<<<<<<< HEAD
 	x = (COLS - width) / 2;
 	y = (LINES - height) / 2;
+=======
+	x = (getmaxx(stdscr) - width) / 2;
+	y = (getmaxy(stdscr) - height) / 2;
+>>>>>>> refs/remotes/origin/master
 
 	draw_shadow(stdscr, y, x, height, width);
 
@@ -301,10 +323,18 @@ do_resize:
 				}
 		}
 
+<<<<<<< HEAD
 		if (i < max_choice ||
 		    key == KEY_UP || key == KEY_DOWN ||
 		    key == '-' || key == '+' ||
 		    key == KEY_PPAGE || key == KEY_NPAGE) {
+=======
+		if (item_count() != 0 &&
+		    (i < max_choice ||
+		     key == KEY_UP || key == KEY_DOWN ||
+		     key == '-' || key == '+' ||
+		     key == KEY_PPAGE || key == KEY_NPAGE)) {
+>>>>>>> refs/remotes/origin/master
 			/* Remove highligt of current item */
 			print_item(scroll + choice, choice, FALSE);
 
@@ -372,7 +402,11 @@ do_resize:
 		case TAB:
 		case KEY_RIGHT:
 			button = ((key == KEY_LEFT ? --button : ++button) < 0)
+<<<<<<< HEAD
 			    ? 2 : (button > 2 ? 0 : button);
+=======
+			    ? 4 : (button > 4 ? 0 : button);
+>>>>>>> refs/remotes/origin/master
 
 			print_buttons(dialog, height, width, button);
 			wrefresh(menu);
@@ -399,6 +433,7 @@ do_resize:
 				return 2;
 			case 's':
 			case 'y':
+<<<<<<< HEAD
 				return 3;
 			case 'n':
 				return 4;
@@ -410,6 +445,19 @@ do_resize:
 				return 7;
 			case 'z':
 				return 8;
+=======
+				return 5;
+			case 'n':
+				return 6;
+			case 'm':
+				return 7;
+			case ' ':
+				return 8;
+			case '/':
+				return 9;
+			case 'z':
+				return 10;
+>>>>>>> refs/remotes/origin/master
 			case '\n':
 				return button;
 			}

@@ -11,10 +11,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define pr_fmt(fmt) KBUILD_BASENAME ": " fmt
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/slab.h>
 #include <linux/module.h>
@@ -29,6 +32,7 @@
 	do {								\
 		if (etd->debug)						\
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__);	\
 	} while (0)
 
@@ -37,11 +41,16 @@ module_param_named(force_elantech, force_elantech, bool, 0644);
 MODULE_PARM_DESC(force_elantech, "Force the Elantech PS/2 protocol extension to be used, 1 = enabled, 0 = disabled (default).");
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			psmouse_printk(KERN_DEBUG, psmouse,		\
 					fmt, ##__VA_ARGS__);		\
 	} while (0)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Send a Synaptics style sliced query command
  */
@@ -51,8 +60,11 @@ static int synaptics_send_cmd(struct psmouse *psmouse, unsigned char c,
 	if (psmouse_sliced_command(psmouse, c) ||
 	    ps2_command(&psmouse->ps2dev, param, PSMOUSE_CMD_GETINFO)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("synaptics_send_cmd query 0x%02x failed.\n", c);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		psmouse_err(psmouse, "%s query 0x%02x failed.\n", __func__, c);
 		return -1;
 	}
@@ -72,7 +84,10 @@ static int elantech_send_cmd(struct psmouse *psmouse, unsigned char c,
 	    ps2_command(ps2dev, NULL, c) ||
 	    ps2_command(ps2dev, param, PSMOUSE_CMD_GETINFO)) {
 		psmouse_err(psmouse, "%s query 0x%02x failed.\n", __func__, c);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -102,10 +117,14 @@ static int elantech_ps2_command(struct psmouse *psmouse,
 
 	if (rc)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("ps2 command 0x%02x failed.\n", command);
 =======
 		psmouse_err(psmouse, "ps2 command 0x%02x failed.\n", command);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		psmouse_err(psmouse, "ps2 command 0x%02x failed.\n", command);
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
@@ -121,10 +140,14 @@ static int elantech_read_reg(struct psmouse *psmouse, unsigned char reg,
 	int rc = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (reg < 0x10 || reg > 0x26)
 =======
 	if (reg < 0x07 || reg > 0x26)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (reg < 0x07 || reg > 0x26)
+>>>>>>> refs/remotes/origin/master
 		return -1;
 
 	if (reg > 0x11 && reg < 0x20)
@@ -149,6 +172,7 @@ static int elantech_read_reg(struct psmouse *psmouse, unsigned char reg,
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 	if (rc)
@@ -156,6 +180,8 @@ static int elantech_read_reg(struct psmouse *psmouse, unsigned char reg,
 	else
 		*val = param[0];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	case 3 ... 4:
 		if (elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
@@ -174,7 +200,10 @@ static int elantech_read_reg(struct psmouse *psmouse, unsigned char reg,
 		*val = param[0];
 	else
 		*val = param[1];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
@@ -189,10 +218,14 @@ static int elantech_write_reg(struct psmouse *psmouse, unsigned char reg,
 	int rc = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (reg < 0x10 || reg > 0x26)
 =======
 	if (reg < 0x07 || reg > 0x26)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (reg < 0x07 || reg > 0x26)
+>>>>>>> refs/remotes/origin/master
 		return -1;
 
 	if (reg > 0x11 && reg < 0x20)
@@ -220,12 +253,15 @@ static int elantech_write_reg(struct psmouse *psmouse, unsigned char reg,
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 	if (rc)
 		pr_err("failed to write register 0x%02x with value 0x%02x.\n",
 			reg, val);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	case 3:
 		if (elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
@@ -258,7 +294,10 @@ static int elantech_write_reg(struct psmouse *psmouse, unsigned char reg,
 		psmouse_err(psmouse,
 			    "failed to write register 0x%02x with value 0x%02x.\n",
 			    reg, val);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
@@ -266,6 +305,7 @@ static int elantech_write_reg(struct psmouse *psmouse, unsigned char reg,
 /*
  * Dump a complete mouse movement packet to the syslog
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void elantech_packet_dump(unsigned char *packet, int size)
 {
@@ -275,6 +315,8 @@ static void elantech_packet_dump(unsigned char *packet, int size)
 	for (i = 0; i < size; i++)
 		printk("%s0x%02x ", (i) ? ", " : " ", packet[i]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void elantech_packet_dump(struct psmouse *psmouse)
 {
 	int	i;
@@ -282,7 +324,10 @@ static void elantech_packet_dump(struct psmouse *psmouse)
 	psmouse_printk(KERN_DEBUG, psmouse, "PS/2 packet [");
 	for (i = 0; i < psmouse->pktsize; i++)
 		printk("%s0x%02x ", i ? ", " : " ", psmouse->packet[i]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	printk("]\n");
 }
 
@@ -334,10 +379,14 @@ static void elantech_report_absolute_v1(struct psmouse *psmouse)
 			((packet[1] & 0x0c) << 6) | packet[2]);
 		input_report_abs(dev, ABS_Y,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ETP_YMAX_V1 - (((packet[1] & 0x03) << 8) | packet[3]));
 =======
 			etd->y_max - (((packet[1] & 0x03) << 8) | packet[3]));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			etd->y_max - (((packet[1] & 0x03) << 8) | packet[3]));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	input_report_key(dev, BTN_TOOL_FINGER, fingers == 1);
@@ -348,10 +397,14 @@ static void elantech_report_absolute_v1(struct psmouse *psmouse)
 
 	if (etd->fw_version < 0x020000 &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    (etd->capabilities & ETP_CAP_HAS_ROCKER)) {
 =======
 	    (etd->capabilities[0] & ETP_CAP_HAS_ROCKER)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    (etd->capabilities[0] & ETP_CAP_HAS_ROCKER)) {
+>>>>>>> refs/remotes/origin/master
 		/* rocker up */
 		input_report_key(dev, BTN_FORWARD, packet[0] & 0x40);
 		/* rocker down */
@@ -392,18 +445,24 @@ static void elantech_report_absolute_v2(struct psmouse *psmouse)
 	struct input_dev *dev = psmouse->dev;
 	unsigned char *packet = psmouse->packet;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int fingers, x1 = 0, y1 = 0, x2 = 0, y2 = 0, width = 0, pres = 0;
 
 	/* byte 0: n1  n0   .   .   .   .   R   L */
 	fingers = (packet[0] & 0xc0) >> 6;
 	input_report_key(dev, BTN_TOUCH, fingers != 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int fingers, x1 = 0, y1 = 0, x2 = 0, y2 = 0;
 	unsigned int width = 0, pres = 0;
 
 	/* byte 0: n1  n0   .   .   .   .   R   L */
 	fingers = (packet[0] & 0xc0) >> 6;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (fingers) {
 	case 3:
@@ -416,6 +475,7 @@ static void elantech_report_absolute_v2(struct psmouse *psmouse)
 		/* pass through... */
 	case 1:
 		/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 		 * byte 1:  .   .   .   .   .  x10 x9  x8
 		 * byte 2: x7  x6  x5  x4  x4  x2  x1  x0
@@ -430,6 +490,8 @@ static void elantech_report_absolute_v2(struct psmouse *psmouse)
 		input_report_abs(dev, ABS_X, x1);
 		input_report_abs(dev, ABS_Y, y1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 * byte 1:  .   .   .   .  x11 x10 x9  x8
 		 * byte 2: x7  x6  x5  x4  x4  x2  x1  x0
 		 */
@@ -439,7 +501,10 @@ static void elantech_report_absolute_v2(struct psmouse *psmouse)
 		 * byte 5: y7  y6  y5  y4  y3  y2  y1  y0
 		 */
 		y1 = etd->y_max - (((packet[4] & 0x0f) << 8) | packet[5]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		pres = (packet[1] & 0xf0) | ((packet[4] & 0xf0) >> 4);
 		width = ((packet[0] & 0x30) >> 2) | ((packet[3] & 0x30) >> 4);
@@ -453,19 +518,26 @@ static void elantech_report_absolute_v2(struct psmouse *psmouse)
 		 * byte 1: ax7 ax6 ax5 ax4 ax3 ax2 ax1 ax0
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		x1 = ((packet[0] & 0x10) << 4) | packet[1];
 		/* byte 2: ay7 ay6 ay5 ay4 ay3 ay2 ay1 ay0 */
 		y1 = ETP_2FT_YMAX - (((packet[0] & 0x20) << 3) | packet[2]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		x1 = (((packet[0] & 0x10) << 4) | packet[1]) << 2;
 		/* byte 2: ay7 ay6 ay5 ay4 ay3 ay2 ay1 ay0 */
 		y1 = etd->y_max -
 			((((packet[0] & 0x20) << 3) | packet[2]) << 2);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * byte 3:  .   .  by8 bx8  .   .   .   .
 		 * byte 4: bx7 bx6 bx5 bx4 bx3 bx2 bx1 bx0
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		x2 = ((packet[3] & 0x10) << 4) | packet[4];
 		/* byte 5: by7 by8 by5 by4 by3 by2 by1 by0 */
@@ -477,11 +549,16 @@ static void elantech_report_absolute_v2(struct psmouse *psmouse)
 		input_report_abs(dev, ABS_X, x1 << 2);
 		input_report_abs(dev, ABS_Y, y1 << 2);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		x2 = (((packet[3] & 0x10) << 4) | packet[4]) << 2;
 		/* byte 5: by7 by8 by5 by4 by3 by2 by1 by0 */
 		y2 = etd->y_max -
 			((((packet[3] & 0x20) << 3) | packet[5]) << 2);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* Unknown so just report sensible values */
 		pres = 127;
@@ -490,13 +567,19 @@ static void elantech_report_absolute_v2(struct psmouse *psmouse)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	input_report_key(dev, BTN_TOUCH, fingers != 0);
 	if (fingers != 0) {
 		input_report_abs(dev, ABS_X, x1);
 		input_report_abs(dev, ABS_Y, y1);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	elantech_report_semi_mt_data(dev, fingers, x1, y1, x2, y2);
 	input_report_key(dev, BTN_TOOL_FINGER, fingers == 1);
 	input_report_key(dev, BTN_TOOL_DOUBLETAP, fingers == 2);
@@ -513,8 +596,11 @@ static void elantech_report_absolute_v2(struct psmouse *psmouse)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int elantech_check_parity_v1(struct psmouse *psmouse)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Interpret complete data packets and report absolute mode input events for
  * hardware version 3. (12 byte packets for two fingers)
@@ -716,7 +802,10 @@ static void elantech_report_absolute_v4(struct psmouse *psmouse,
 }
 
 static int elantech_packet_check_v1(struct psmouse *psmouse)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct elantech_data *etd = psmouse->private;
 	unsigned char *packet = psmouse->packet;
@@ -741,7 +830,10 @@ static int elantech_packet_check_v1(struct psmouse *psmouse)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int elantech_debounce_check_v2(struct psmouse *psmouse)
 {
         /*
@@ -788,6 +880,10 @@ static int elantech_packet_check_v2(struct psmouse *psmouse)
  */
 static int elantech_packet_check_v3(struct psmouse *psmouse)
 {
+<<<<<<< HEAD
+=======
+	struct elantech_data *etd = psmouse->private;
+>>>>>>> refs/remotes/origin/master
 	const u8 debounce_packet[] = { 0xc4, 0xff, 0xff, 0x02, 0xff, 0xff };
 	unsigned char *packet = psmouse->packet;
 
@@ -798,17 +894,38 @@ static int elantech_packet_check_v3(struct psmouse *psmouse)
 	if (!memcmp(packet, debounce_packet, sizeof(debounce_packet)))
 		return PACKET_DEBOUNCE;
 
+<<<<<<< HEAD
 	if ((packet[0] & 0x0c) == 0x04 && (packet[3] & 0xcf) == 0x02)
 		return PACKET_V3_HEAD;
 
 	if ((packet[0] & 0x0c) == 0x0c && (packet[3] & 0xce) == 0x0c)
 		return PACKET_V3_TAIL;
+=======
+	/*
+	 * If the hardware flag 'crc_enabled' is set the packets have
+	 * different signatures.
+	 */
+	if (etd->crc_enabled) {
+		if ((packet[3] & 0x09) == 0x08)
+			return PACKET_V3_HEAD;
+
+		if ((packet[3] & 0x09) == 0x09)
+			return PACKET_V3_TAIL;
+	} else {
+		if ((packet[0] & 0x0c) == 0x04 && (packet[3] & 0xcf) == 0x02)
+			return PACKET_V3_HEAD;
+
+		if ((packet[0] & 0x0c) == 0x0c && (packet[3] & 0xce) == 0x0c)
+			return PACKET_V3_TAIL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return PACKET_UNKNOWN;
 }
 
 static int elantech_packet_check_v4(struct psmouse *psmouse)
 {
+<<<<<<< HEAD
 	unsigned char *packet = psmouse->packet;
 
 	if ((packet[0] & 0x0c) == 0x04 &&
@@ -827,6 +944,42 @@ static int elantech_packet_check_v4(struct psmouse *psmouse)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct elantech_data *etd = psmouse->private;
+	unsigned char *packet = psmouse->packet;
+	unsigned char packet_type = packet[3] & 0x03;
+	bool sanity_check;
+
+	/*
+	 * Sanity check based on the constant bits of a packet.
+	 * The constant bits change depending on the value of
+	 * the hardware flag 'crc_enabled' but are the same for
+	 * every packet, regardless of the type.
+	 */
+	if (etd->crc_enabled)
+		sanity_check = ((packet[3] & 0x08) == 0x00);
+	else
+		sanity_check = ((packet[0] & 0x0c) == 0x04 &&
+				(packet[3] & 0x1c) == 0x10);
+
+	if (!sanity_check)
+		return PACKET_UNKNOWN;
+
+	switch (packet_type) {
+	case 0:
+		return PACKET_V4_STATUS;
+
+	case 1:
+		return PACKET_V4_HEAD;
+
+	case 2:
+		return PACKET_V4_MOTION;
+	}
+
+	return PACKET_UNKNOWN;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Process byte stream from mouse and handle complete packets
  */
@@ -834,14 +987,19 @@ static psmouse_ret_t elantech_process_byte(struct psmouse *psmouse)
 {
 	struct elantech_data *etd = psmouse->private;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int packet_type;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int packet_type;
+>>>>>>> refs/remotes/origin/master
 
 	if (psmouse->pktcnt < psmouse->pktsize)
 		return PSMOUSE_GOOD_DATA;
 
 	if (etd->debug > 1)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		elantech_packet_dump(psmouse->packet, psmouse->pktsize);
 
@@ -849,12 +1007,17 @@ static psmouse_ret_t elantech_process_byte(struct psmouse *psmouse)
 	case 1:
 		if (etd->paritycheck && !elantech_check_parity_v1(psmouse))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		elantech_packet_dump(psmouse);
 
 	switch (etd->hw_version) {
 	case 1:
 		if (etd->paritycheck && !elantech_packet_check_v1(psmouse))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return PSMOUSE_BAD_DATA;
 
 		elantech_report_absolute_v1(psmouse);
@@ -862,10 +1025,13 @@ static psmouse_ret_t elantech_process_byte(struct psmouse *psmouse)
 
 	case 2:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* We don't know how to check parity in protocol v2 */
 		elantech_report_absolute_v2(psmouse);
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* ignore debounce */
 		if (elantech_debounce_check_v2(psmouse))
 			return PSMOUSE_FULL_PACKET;
@@ -895,7 +1061,10 @@ static psmouse_ret_t elantech_process_byte(struct psmouse *psmouse)
 
 		elantech_report_absolute_v4(psmouse, packet_type);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return PSMOUSE_FULL_PACKET;
@@ -931,9 +1100,12 @@ static int elantech_set_absolute_mode(struct psmouse *psmouse)
 		    elantech_write_reg(psmouse, 0x21, etd->reg_21)) {
 			rc = -1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			break;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
@@ -950,7 +1122,10 @@ static int elantech_set_absolute_mode(struct psmouse *psmouse)
 			rc = -1;
 
 		goto skip_readback_reg_10; /* v4 has no reg 0x10 to read */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (rc == 0) {
@@ -958,10 +1133,14 @@ static int elantech_set_absolute_mode(struct psmouse *psmouse)
 		 * Read back reg 0x10. For hardware version 1 we must make
 		 * sure the absolute mode bit is set. For hardware version 2
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * the touchpad is probably initalising and not ready until
 =======
 		 * the touchpad is probably initializing and not ready until
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * the touchpad is probably initializing and not ready until
+>>>>>>> refs/remotes/origin/master
 		 * we read back the value we just wrote.
 		 */
 		do {
@@ -975,22 +1154,29 @@ static int elantech_set_absolute_mode(struct psmouse *psmouse)
 
 		if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_err("failed to read back register 0x10.\n");
 		} else if (etd->hw_version == 1 &&
 			   !(val & ETP_R10_ABSOLUTE_MODE)) {
 			pr_err("touchpad refuses to switch to absolute mode.\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			psmouse_err(psmouse,
 				    "failed to read back register 0x10.\n");
 		} else if (etd->hw_version == 1 &&
 			   !(val & ETP_R10_ABSOLUTE_MODE)) {
 			psmouse_err(psmouse,
 				    "touchpad refuses to switch to absolute mode.\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			rc = -1;
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (rc)
 		pr_err("failed to initialise registers.\n");
@@ -999,10 +1185,16 @@ static int elantech_set_absolute_mode(struct psmouse *psmouse)
 	if (rc)
 		psmouse_err(psmouse, "failed to initialise registers.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ skip_readback_reg_10:
+	if (rc)
+		psmouse_err(psmouse, "failed to initialise registers.\n");
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Set the appropriate event bits for the input subsystem
@@ -1013,6 +1205,8 @@ static void elantech_set_input_params(struct psmouse *psmouse)
 	struct elantech_data *etd = psmouse->private;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int elantech_set_range(struct psmouse *psmouse,
 			      unsigned int *x_min, unsigned int *y_min,
 			      unsigned int *x_max, unsigned int *y_max,
@@ -1132,7 +1326,10 @@ static int elantech_set_input_params(struct psmouse *psmouse)
 		return -1;
 
 	__set_bit(INPUT_PROP_POINTER, dev->propbit);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	__set_bit(EV_KEY, dev->evbit);
 	__set_bit(EV_ABS, dev->evbit);
 	__clear_bit(EV_REL, dev->evbit);
@@ -1150,6 +1347,7 @@ static int elantech_set_input_params(struct psmouse *psmouse)
 		/* Rocker button */
 		if (etd->fw_version < 0x020000 &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    (etd->capabilities & ETP_CAP_HAS_ROCKER)) {
 			__set_bit(BTN_FORWARD, dev->keybit);
 			__set_bit(BTN_BACK, dev->keybit);
@@ -1157,33 +1355,45 @@ static int elantech_set_input_params(struct psmouse *psmouse)
 		input_set_abs_params(dev, ABS_X, ETP_XMIN_V1, ETP_XMAX_V1, 0, 0);
 		input_set_abs_params(dev, ABS_Y, ETP_YMIN_V1, ETP_YMAX_V1, 0, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		    (etd->capabilities[0] & ETP_CAP_HAS_ROCKER)) {
 			__set_bit(BTN_FORWARD, dev->keybit);
 			__set_bit(BTN_BACK, dev->keybit);
 		}
 		input_set_abs_params(dev, ABS_X, x_min, x_max, 0, 0);
 		input_set_abs_params(dev, ABS_Y, y_min, y_max, 0, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case 2:
 		__set_bit(BTN_TOOL_QUADTAP, dev->keybit);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		input_set_abs_params(dev, ABS_X, ETP_XMIN_V2, ETP_XMAX_V2, 0, 0);
 		input_set_abs_params(dev, ABS_Y, ETP_YMIN_V2, ETP_YMAX_V2, 0, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		__set_bit(INPUT_PROP_SEMI_MT, dev->propbit);
 		/* fall through */
 	case 3:
 		input_set_abs_params(dev, ABS_X, x_min, x_max, 0, 0);
 		input_set_abs_params(dev, ABS_Y, y_min, y_max, 0, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (etd->reports_pressure) {
 			input_set_abs_params(dev, ABS_PRESSURE, ETP_PMIN_V2,
 					     ETP_PMAX_V2, 0, 0);
 			input_set_abs_params(dev, ABS_TOOL_WIDTH, ETP_WMIN_V2,
 					     ETP_WMAX_V2, 0, 0);
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		__set_bit(INPUT_PROP_SEMI_MT, dev->propbit);
 		input_mt_init_slots(dev, 2);
@@ -1193,6 +1403,9 @@ static int elantech_set_input_params(struct psmouse *psmouse)
 	}
 =======
 		input_mt_init_slots(dev, 2);
+=======
+		input_mt_init_slots(dev, 2, 0);
+>>>>>>> refs/remotes/origin/master
 		input_set_abs_params(dev, ABS_MT_POSITION_X, x_min, x_max, 0, 0);
 		input_set_abs_params(dev, ABS_MT_POSITION_Y, y_min, y_max, 0, 0);
 		break;
@@ -1223,7 +1436,11 @@ static int elantech_set_input_params(struct psmouse *psmouse)
 		input_set_abs_params(dev, ABS_TOOL_WIDTH, ETP_WMIN_V2,
 				     ETP_WMAX_V2, 0, 0);
 		/* Multitouch capable pad, up to 5 fingers. */
+<<<<<<< HEAD
 		input_mt_init_slots(dev, ETP_MAX_FINGERS);
+=======
+		input_mt_init_slots(dev, ETP_MAX_FINGERS, 0);
+>>>>>>> refs/remotes/origin/master
 		input_set_abs_params(dev, ABS_MT_POSITION_X, x_min, x_max, 0, 0);
 		input_set_abs_params(dev, ABS_MT_POSITION_Y, y_min, y_max, 0, 0);
 		input_abs_set_res(dev, ABS_MT_POSITION_X, x_res);
@@ -1243,7 +1460,10 @@ static int elantech_set_input_params(struct psmouse *psmouse)
 	etd->width = width;
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 struct elantech_attr_data {
@@ -1278,6 +1498,7 @@ static ssize_t elantech_set_int_attr(struct psmouse *psmouse,
 	struct elantech_attr_data *attr = data;
 	unsigned char *reg = (unsigned char *) etd + attr->field_offset;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long value;
 	int err;
 
@@ -1289,6 +1510,8 @@ static ssize_t elantech_set_int_attr(struct psmouse *psmouse,
 		return -EINVAL;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char value;
 	int err;
 
@@ -1296,7 +1519,10 @@ static ssize_t elantech_set_int_attr(struct psmouse *psmouse,
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Do we need to preserve some bits for version 2 hardware too? */
 	if (etd->hw_version == 1) {
 		if (attr->reg == 0x10)
@@ -1324,9 +1550,13 @@ static ssize_t elantech_set_int_attr(struct psmouse *psmouse,
 			    elantech_set_int_attr)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 ELANTECH_INT_ATTR(reg_07, 0x07);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ELANTECH_INT_ATTR(reg_07, 0x07);
+>>>>>>> refs/remotes/origin/master
 ELANTECH_INT_ATTR(reg_10, 0x10);
 ELANTECH_INT_ATTR(reg_11, 0x11);
 ELANTECH_INT_ATTR(reg_20, 0x20);
@@ -1341,9 +1571,13 @@ ELANTECH_INT_ATTR(paritycheck, 0);
 
 static struct attribute *elantech_attrs[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&psmouse_attr_reg_07.dattr.attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&psmouse_attr_reg_07.dattr.attr,
+>>>>>>> refs/remotes/origin/master
 	&psmouse_attr_reg_10.dattr.attr,
 	&psmouse_attr_reg_11.dattr.attr,
 	&psmouse_attr_reg_20.dattr.attr,
@@ -1396,10 +1630,14 @@ int elantech_detect(struct psmouse *psmouse, bool set_properties)
 	    ps2_command(ps2dev,  NULL, PSMOUSE_CMD_SETSCALE11) ||
 	    ps2_command(ps2dev, param, PSMOUSE_CMD_GETINFO)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("sending Elantech magic knock failed.\n");
 =======
 		psmouse_dbg(psmouse, "sending Elantech magic knock failed.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		psmouse_dbg(psmouse, "sending Elantech magic knock failed.\n");
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -1408,16 +1646,22 @@ int elantech_detect(struct psmouse *psmouse, bool set_properties)
 	 * set of magic numbers
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (param[0] != 0x3c || param[1] != 0x03 || param[2] != 0xc8) {
 		pr_debug("unexpected magic knock result 0x%02x, 0x%02x, 0x%02x.\n",
 			 param[0], param[1], param[2]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (param[0] != 0x3c || param[1] != 0x03 ||
 	    (param[2] != 0xc8 && param[2] != 0x00)) {
 		psmouse_dbg(psmouse,
 			    "unexpected magic knock result 0x%02x, 0x%02x, 0x%02x.\n",
 			    param[0], param[1], param[2]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -1427,6 +1671,7 @@ int elantech_detect(struct psmouse *psmouse, bool set_properties)
 	 * to Elantech magic knock and there might be more.
 	 */
 	if (synaptics_send_cmd(psmouse, ETP_FW_VERSION_QUERY, param)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		pr_debug("failed to query firmware version.\n");
 		return -1;
@@ -1443,6 +1688,8 @@ int elantech_detect(struct psmouse *psmouse, bool set_properties)
 
 		pr_debug("Probably not a real Elantech touchpad. Enabling anyway due to force_elantech.\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		psmouse_dbg(psmouse, "failed to query firmware version.\n");
 		return -1;
 	}
@@ -1455,7 +1702,10 @@ int elantech_detect(struct psmouse *psmouse, bool set_properties)
 		psmouse_dbg(psmouse,
 			    "Probably not a real Elantech touchpad. Aborting.\n");
 		return -1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (set_properties) {
@@ -1483,20 +1733,30 @@ static void elantech_disconnect(struct psmouse *psmouse)
 static int elantech_reconnect(struct psmouse *psmouse)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	psmouse_reset(psmouse);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	psmouse_reset(psmouse);
+
+>>>>>>> refs/remotes/origin/master
 	if (elantech_detect(psmouse, 0))
 		return -1;
 
 	if (elantech_set_absolute_mode(psmouse)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		pr_err("failed to put touchpad back into absolute mode.\n");
 =======
 		psmouse_err(psmouse,
 			    "failed to put touchpad back into absolute mode.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		psmouse_err(psmouse,
+			    "failed to put touchpad back into absolute mode.\n");
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -1505,7 +1765,10 @@ static int elantech_reconnect(struct psmouse *psmouse)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * determine hardware version and set some properties according to it.
  */
 static int elantech_set_properties(struct elantech_data *etd)
@@ -1526,6 +1789,11 @@ static int elantech_set_properties(struct elantech_data *etd)
 			etd->hw_version = 3;
 			break;
 		case 6:
+<<<<<<< HEAD
+=======
+		case 7:
+		case 8:
+>>>>>>> refs/remotes/origin/master
 			etd->hw_version = 4;
 			break;
 		default:
@@ -1556,11 +1824,23 @@ static int elantech_set_properties(struct elantech_data *etd)
 			etd->reports_pressure = true;
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * The signatures of v3 and v4 packets change depending on the
+	 * value of this hardware flag.
+	 */
+	etd->crc_enabled = ((etd->fw_version & 0x4000) == 0x4000);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Initialize the touchpad and create sysfs entries
  */
 int elantech_init(struct psmouse *psmouse)
@@ -1574,10 +1854,15 @@ int elantech_init(struct psmouse *psmouse)
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	psmouse_reset(psmouse);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	psmouse_reset(psmouse);
+
+>>>>>>> refs/remotes/origin/master
 	etd->parity[0] = 1;
 	for (i = 1; i < 256; i++)
 		etd->parity[i] = etd->parity[i & (i - 1)] ^ 1;
@@ -1586,6 +1871,7 @@ int elantech_init(struct psmouse *psmouse)
 	 * Do the version query again so we can store the result
 	 */
 	if (synaptics_send_cmd(psmouse, ETP_FW_VERSION_QUERY, param)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		pr_err("failed to query firmware version.\n");
 		goto init_fail;
@@ -1640,6 +1926,8 @@ int elantech_init(struct psmouse *psmouse)
 
 	elantech_set_input_params(psmouse);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		psmouse_err(psmouse, "failed to query firmware version.\n");
 		goto init_fail;
 	}
@@ -1673,11 +1961,15 @@ int elantech_init(struct psmouse *psmouse)
 		psmouse_err(psmouse, "failed to query touchpad range.\n");
 		goto init_fail;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	error = sysfs_create_group(&psmouse->ps2dev.serio->dev.kobj,
 				   &elantech_attr_group);
 	if (error) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		pr_err("failed to create sysfs attributes, error: %d.\n", error);
 =======
@@ -1685,6 +1977,11 @@ int elantech_init(struct psmouse *psmouse)
 			    "failed to create sysfs attributes, error: %d.\n",
 			    error);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		psmouse_err(psmouse,
+			    "failed to create sysfs attributes, error: %d.\n",
+			    error);
+>>>>>>> refs/remotes/origin/master
 		goto init_fail;
 	}
 
@@ -1692,10 +1989,14 @@ int elantech_init(struct psmouse *psmouse)
 	psmouse->disconnect = elantech_disconnect;
 	psmouse->reconnect = elantech_reconnect;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	psmouse->pktsize = etd->hw_version == 2 ? 6 : 4;
 =======
 	psmouse->pktsize = etd->hw_version > 1 ? 6 : 4;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	psmouse->pktsize = etd->hw_version > 1 ? 6 : 4;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 

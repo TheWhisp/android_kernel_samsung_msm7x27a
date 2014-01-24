@@ -281,7 +281,11 @@ static void t7l66xb_detach_irq(struct platform_device *dev)
 static int t7l66xb_suspend(struct platform_device *dev, pm_message_t state)
 {
 	struct t7l66xb *t7l66xb = platform_get_drvdata(dev);
+<<<<<<< HEAD
 	struct t7l66xb_platform_data *pdata = dev->dev.platform_data;
+=======
+	struct t7l66xb_platform_data *pdata = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata && pdata->suspend)
 		pdata->suspend(dev);
@@ -293,7 +297,11 @@ static int t7l66xb_suspend(struct platform_device *dev, pm_message_t state)
 static int t7l66xb_resume(struct platform_device *dev)
 {
 	struct t7l66xb *t7l66xb = platform_get_drvdata(dev);
+<<<<<<< HEAD
 	struct t7l66xb_platform_data *pdata = dev->dev.platform_data;
+=======
+	struct t7l66xb_platform_data *pdata = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	clk_enable(t7l66xb->clk48m);
 	if (pdata && pdata->resume)
@@ -313,7 +321,11 @@ static int t7l66xb_resume(struct platform_device *dev)
 
 static int t7l66xb_probe(struct platform_device *dev)
 {
+<<<<<<< HEAD
 	struct t7l66xb_platform_data *pdata = dev->dev.platform_data;
+=======
+	struct t7l66xb_platform_data *pdata = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct t7l66xb *t7l66xb;
 	struct resource *iomem, *rscr;
 	int ret;
@@ -388,7 +400,11 @@ static int t7l66xb_probe(struct platform_device *dev)
 
 	ret = mfd_add_devices(&dev->dev, dev->id,
 			      t7l66xb_cells, ARRAY_SIZE(t7l66xb_cells),
+<<<<<<< HEAD
 			      iomem, t7l66xb->irq_base);
+=======
+			      iomem, t7l66xb->irq_base, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	if (!ret)
 		return 0;
@@ -409,7 +425,11 @@ err_noirq:
 
 static int t7l66xb_remove(struct platform_device *dev)
 {
+<<<<<<< HEAD
 	struct t7l66xb_platform_data *pdata = dev->dev.platform_data;
+=======
+	struct t7l66xb_platform_data *pdata = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct t7l66xb *t7l66xb = platform_get_drvdata(dev);
 	int ret;
 
@@ -422,7 +442,10 @@ static int t7l66xb_remove(struct platform_device *dev)
 	iounmap(t7l66xb->scr);
 	release_resource(&t7l66xb->rscr);
 	mfd_remove_devices(&dev->dev);
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(t7l66xb);
 
 	return ret;
@@ -443,6 +466,7 @@ static struct platform_driver t7l66xb_platform_driver = {
 /*--------------------------------------------------------------------------*/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init t7l66xb_init(void)
 {
 	int retval = 0;
@@ -461,6 +485,9 @@ module_exit(t7l66xb_exit);
 =======
 module_platform_driver(t7l66xb_platform_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(t7l66xb_platform_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Toshiba T7L66XB core driver");
 MODULE_LICENSE("GPL v2");

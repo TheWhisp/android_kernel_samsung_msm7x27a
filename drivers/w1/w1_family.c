@@ -2,10 +2,14 @@
  *	w1_family.c
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2004 Evgeniy Polyakov <johnpol@2ka.mipt.ru>
 =======
  * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
+>>>>>>> refs/remotes/origin/master
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -28,9 +32,13 @@
 #include <linux/sched.h>	/* schedule_timeout() */
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "w1_family.h"
 #include "w1.h"

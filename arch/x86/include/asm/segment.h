@@ -163,10 +163,14 @@
 #define GDT_ENTRY_DEFAULT_USER_DS 5
 #define GDT_ENTRY_DEFAULT_USER_CS 6
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define __USER32_CS   (GDT_ENTRY_DEFAULT_USER32_CS * 8 + 3)
 =======
 #define __USER32_CS   (GDT_ENTRY_DEFAULT_USER32_CS*8+3)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define __USER32_CS   (GDT_ENTRY_DEFAULT_USER32_CS*8+3)
+>>>>>>> refs/remotes/origin/master
 #define __USER32_DS	__USER_DS
 
 #define GDT_ENTRY_TSS 8	/* needs two entries */
@@ -209,17 +213,29 @@
 
 #define IDT_ENTRIES 256
 #define NUM_EXCEPTION_VECTORS 32
+<<<<<<< HEAD
+=======
+/* Bitmask of exception vectors which push an error code on the stack */
+#define EXCEPTION_ERRCODE_MASK  0x00027d00
+>>>>>>> refs/remotes/origin/master
 #define GDT_SIZE (GDT_ENTRIES * 8)
 #define GDT_ENTRY_TLS_ENTRIES 3
 #define TLS_SIZE (GDT_ENTRY_TLS_ENTRIES * 8)
 
 #ifdef __KERNEL__
 #ifndef __ASSEMBLY__
+<<<<<<< HEAD
 extern const char early_idt_handlers[NUM_EXCEPTION_VECTORS][10];
 <<<<<<< HEAD
 #endif
 #endif
 =======
+=======
+extern const char early_idt_handlers[NUM_EXCEPTION_VECTORS][2+2+5];
+#ifdef CONFIG_TRACING
+#define trace_early_idt_handlers early_idt_handlers
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Load a segment. Fall back on loading the zero
@@ -276,6 +292,9 @@ static inline unsigned long get_limit(unsigned long segment)
 
 #endif /* !__ASSEMBLY__ */
 #endif /* __KERNEL__ */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_X86_SEGMENT_H */

@@ -7,4 +7,10 @@
 /* sparc entry point */
 extern char _start[];
 
+<<<<<<< HEAD
+=======
+extern char __leon_1insn_patch[];
+extern char __leon_1insn_patch_end[];
+
+>>>>>>> refs/remotes/origin/master
 #endif

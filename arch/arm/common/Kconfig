@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 config ARM_GIC
 	select IRQ_DOMAIN
 <<<<<<< HEAD
@@ -44,6 +45,11 @@ config PL330
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config ICST
+	bool
+
+>>>>>>> refs/remotes/origin/master
 config SA1111
 	bool
 	select DMABOUNCE if !ARCH_PXA
@@ -53,11 +59,14 @@ config DMABOUNCE
 	select ZONE_DMA
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config TIMER_ACORN
 	bool
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config SHARP_LOCOMO
 	bool
 
@@ -67,6 +76,7 @@ config SHARP_PARAM
 config SHARP_SCOOP
 	bool
 
+<<<<<<< HEAD
 config FIQ_GLUE
 	bool
 	select FIQ
@@ -116,3 +126,7 @@ config FIQ_DEBUGGER_CONSOLE_DEFAULT_ENABLE
 	help
 	  If enabled, this puts the fiq debugger into console mode by default.
 	  Otherwise, the fiq debugger will start out in debug mode.
+=======
+config TI_PRIV_EDMA
+	bool
+>>>>>>> refs/remotes/origin/master

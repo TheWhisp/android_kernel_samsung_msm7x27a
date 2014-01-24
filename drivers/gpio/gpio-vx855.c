@@ -214,12 +214,20 @@ static void vx855gpio_gpio_setup(struct vx855_gpio *vg)
 	c->dbg_show = NULL;
 	c->base = 0;
 	c->ngpio = NR_VX855_GP;
+<<<<<<< HEAD
 	c->can_sleep = 0;
+=======
+	c->can_sleep = false;
+>>>>>>> refs/remotes/origin/master
 	c->names = vx855gpio_names;
 }
 
 /* This platform device is ordinarily registered by the vx855 mfd driver */
+<<<<<<< HEAD
 static __devinit int vx855gpio_probe(struct platform_device *pdev)
+=======
+static int vx855gpio_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res_gpi;
 	struct resource *res_gpo;
@@ -279,12 +287,19 @@ out_release:
 		release_region(res_gpi->start, resource_size(res_gpi));
 	if (vg->gpo_reserved)
 		release_region(res_gpi->start, resource_size(res_gpo));
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(vg);
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit vx855gpio_remove(struct platform_device *pdev)
+=======
+static int vx855gpio_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vx855_gpio *vg = platform_get_drvdata(pdev);
 	struct resource *res;
@@ -301,7 +316,10 @@ static int __devexit vx855gpio_remove(struct platform_device *pdev)
 		release_region(res->start, resource_size(res));
 	}
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(vg);
 	return 0;
 }
@@ -312,7 +330,11 @@ static struct platform_driver vx855gpio_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= vx855gpio_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(vx855gpio_remove),
+=======
+	.remove		= vx855gpio_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 module_platform_driver(vx855gpio_driver);

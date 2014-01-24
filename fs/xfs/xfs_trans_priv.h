@@ -25,6 +25,11 @@ struct xfs_trans;
 struct xfs_ail;
 struct xfs_log_vec;
 
+<<<<<<< HEAD
+=======
+
+void	xfs_trans_init(struct xfs_mount *);
+>>>>>>> refs/remotes/origin/master
 void	xfs_trans_add_item(struct xfs_trans *, struct xfs_log_item *);
 void	xfs_trans_del_item(struct xfs_log_item *);
 void	xfs_trans_free_items(struct xfs_trans *tp, xfs_lsn_t commit_lsn,
@@ -54,10 +59,14 @@ void	xfs_trans_committed_bulk(struct xfs_ail *ailp, struct xfs_log_vec *lv,
  */
 struct xfs_ail_cursor {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct xfs_ail_cursor	*next;
 =======
 	struct list_head	list;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct list_head	list;
+>>>>>>> refs/remotes/origin/master
 	struct xfs_log_item	*item;
 };
 
@@ -72,15 +81,24 @@ struct xfs_ail {
 	struct list_head	xa_ail;
 	xfs_lsn_t		xa_target;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct xfs_ail_cursor	xa_cursors;
 	spinlock_t		xa_lock;
 	xfs_lsn_t		xa_last_pushed_lsn;
 =======
+=======
+	xfs_lsn_t		xa_target_prev;
+>>>>>>> refs/remotes/origin/master
 	struct list_head	xa_cursors;
 	spinlock_t		xa_lock;
 	xfs_lsn_t		xa_last_pushed_lsn;
 	int			xa_log_flush;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct list_head	xa_buf_list;
+	wait_queue_head_t	xa_empty;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -90,6 +108,21 @@ void	xfs_trans_ail_update_bulk(struct xfs_ail *ailp,
 				struct xfs_ail_cursor *cur,
 				struct xfs_log_item **log_items, int nr_items,
 				xfs_lsn_t lsn) __releases(ailp->xa_lock);
+<<<<<<< HEAD
+=======
+/*
+ * Return a pointer to the first item in the AIL.  If the AIL is empty, then
+ * return NULL.
+ */
+static inline struct xfs_log_item *
+xfs_ail_min(
+	struct xfs_ail  *ailp)
+{
+	return list_first_entry_or_null(&ailp->xa_ail, struct xfs_log_item,
+					li_ail);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void
 xfs_trans_ail_update(
 	struct xfs_ail		*ailp,
@@ -100,18 +133,31 @@ xfs_trans_ail_update(
 }
 
 void	xfs_trans_ail_delete_bulk(struct xfs_ail *ailp,
+<<<<<<< HEAD
 				struct xfs_log_item **log_items, int nr_items)
+=======
+				struct xfs_log_item **log_items, int nr_items,
+				int shutdown_type)
+>>>>>>> refs/remotes/origin/master
 				__releases(ailp->xa_lock);
 static inline void
 xfs_trans_ail_delete(
 	struct xfs_ail	*ailp,
+<<<<<<< HEAD
 	xfs_log_item_t	*lip) __releases(ailp->xa_lock)
 {
 	xfs_trans_ail_delete_bulk(ailp, &lip, 1);
+=======
+	xfs_log_item_t	*lip,
+	int		shutdown_type) __releases(ailp->xa_lock)
+{
+	xfs_trans_ail_delete_bulk(ailp, &lip, 1, shutdown_type);
+>>>>>>> refs/remotes/origin/master
 }
 
 void			xfs_ail_push(struct xfs_ail *, xfs_lsn_t);
 void			xfs_ail_push_all(struct xfs_ail *);
+<<<<<<< HEAD
 xfs_lsn_t		xfs_ail_min_lsn(struct xfs_ail *ailp);
 
 <<<<<<< HEAD
@@ -120,6 +166,12 @@ void			xfs_trans_unlocked_item(struct xfs_ail *,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void			xfs_ail_push_all_sync(struct xfs_ail *);
+struct xfs_log_item	*xfs_ail_min(struct xfs_ail  *ailp);
+xfs_lsn_t		xfs_ail_min_lsn(struct xfs_ail *ailp);
+
+>>>>>>> refs/remotes/origin/master
 struct xfs_log_item *	xfs_trans_ail_cursor_first(struct xfs_ail *ailp,
 					struct xfs_ail_cursor *cur,
 					xfs_lsn_t lsn);

@@ -30,15 +30,20 @@ int sndpkt(int devId, int channel, int ack, struct sk_buff *data)
 	card = get_card_from_id(devId);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(!IS_VALID_CARD(card)) {
 =======
 	if (!IS_VALID_CARD(card)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_VALID_CARD(card)) {
+>>>>>>> refs/remotes/origin/master
 		pr_debug("invalid param: %d is not a valid card id\n", card);
 		return -ENODEV;
 	}
 
 	pr_debug("%s: sndpkt: frst = 0x%lx nxt = %d  f = %d n = %d\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 		sc_adapter[card]->devicename,
 		sc_adapter[card]->channel[channel].first_sendbuf,
@@ -56,6 +61,8 @@ int sndpkt(int devId, int channel, int ack, struct sk_buff *data)
 		pr_debug("%s: data overflows buffer size (data > buffer)\n",
 			sc_adapter[card]->devicename);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 sc_adapter[card]->devicename,
 		 sc_adapter[card]->channel[channel].first_sendbuf,
 		 sc_adapter[card]->channel[channel].next_sendbuf,
@@ -71,7 +78,10 @@ int sndpkt(int devId, int channel, int ack, struct sk_buff *data)
 	if (data->len > BUFFER_SIZE) {
 		pr_debug("%s: data overflows buffer size (data > buffer)\n",
 			 sc_adapter[card]->devicename);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -80,18 +90,24 @@ int sndpkt(int devId, int channel, int ack, struct sk_buff *data)
 	ReqLnkWrite.msg_len = data->len; /* sk_buff size */
 	pr_debug("%s: writing %d bytes to buffer offset 0x%lx\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sc_adapter[card]->devicename,
 			ReqLnkWrite.msg_len, ReqLnkWrite.buff_offset);
 =======
 		 sc_adapter[card]->devicename,
 		 ReqLnkWrite.msg_len, ReqLnkWrite.buff_offset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 sc_adapter[card]->devicename,
+		 ReqLnkWrite.msg_len, ReqLnkWrite.buff_offset);
+>>>>>>> refs/remotes/origin/master
 	memcpy_toshmem(card, (char *)ReqLnkWrite.buff_offset, data->data, ReqLnkWrite.msg_len);
 
 	/*
 	 * sendmessage
 	 */
 	pr_debug("%s: sndpkt size=%d, buf_offset=0x%lx buf_indx=%d\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 		sc_adapter[card]->devicename,
 		ReqLnkWrite.msg_len, ReqLnkWrite.buff_offset,
@@ -104,6 +120,8 @@ int sndpkt(int devId, int channel, int ack, struct sk_buff *data)
 		pr_debug("%s: failed to send packet, status = %d\n",
 				sc_adapter[card]->devicename, status);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 sc_adapter[card]->devicename,
 		 ReqLnkWrite.msg_len, ReqLnkWrite.buff_offset,
 		 sc_adapter[card]->channel[channel].next_sendbuf);
@@ -114,7 +132,10 @@ int sndpkt(int devId, int channel, int ack, struct sk_buff *data)
 	if (status) {
 		pr_debug("%s: failed to send packet, status = %d\n",
 			 sc_adapter[card]->devicename, status);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 	else {
@@ -124,6 +145,7 @@ int sndpkt(int devId, int channel, int ack, struct sk_buff *data)
 			sc_adapter[card]->channel[channel].num_sendbufs ? 0 :
 			sc_adapter[card]->channel[channel].next_sendbuf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_debug("%s: packet sent successfully\n", sc_adapter[card]->devicename);
 		dev_kfree_skb(data);
 		indicate_status(card,ISDN_STAT_BSENT,channel, (char *)&len);
@@ -132,6 +154,11 @@ int sndpkt(int devId, int channel, int ack, struct sk_buff *data)
 		dev_kfree_skb(data);
 		indicate_status(card, ISDN_STAT_BSENT, channel, (char *)&len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("%s: packet sent successfully\n", sc_adapter[card]->devicename);
+		dev_kfree_skb(data);
+		indicate_status(card, ISDN_STAT_BSENT, channel, (char *)&len);
+>>>>>>> refs/remotes/origin/master
 	}
 	return len;
 }
@@ -142,23 +169,32 @@ void rcvpkt(int card, RspMessage *rcvmsg)
 	struct sk_buff *skb;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(!IS_VALID_CARD(card)) {
 =======
 	if (!IS_VALID_CARD(card)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_VALID_CARD(card)) {
+>>>>>>> refs/remotes/origin/master
 		pr_debug("invalid param: %d is not a valid card id\n", card);
 		return;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch(rcvmsg->rsp_status){
 =======
 	switch (rcvmsg->rsp_status) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	switch (rcvmsg->rsp_status) {
+>>>>>>> refs/remotes/origin/master
 	case 0x01:
 	case 0x02:
 	case 0x70:
 		pr_debug("%s: error status code: 0x%x\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 			sc_adapter[card]->devicename, rcvmsg->rsp_status);
 		return;
@@ -167,17 +203,23 @@ void rcvpkt(int card, RspMessage *rcvmsg)
 			printk(KERN_WARNING "%s: rcvpkt out of memory, dropping packet\n",
 				sc_adapter[card]->devicename);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			 sc_adapter[card]->devicename, rcvmsg->rsp_status);
 		return;
 	case 0x00:
 		if (!(skb = dev_alloc_skb(rcvmsg->msg_data.response.msg_len))) {
 			printk(KERN_WARNING "%s: rcvpkt out of memory, dropping packet\n",
 			       sc_adapter[card]->devicename);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 		skb_put(skb, rcvmsg->msg_data.response.msg_len);
 		pr_debug("%s: getting data from offset: 0x%lx\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 			sc_adapter[card]->devicename,
 			rcvmsg->msg_data.response.buff_offset);
@@ -195,6 +237,8 @@ void rcvpkt(int card, RspMessage *rcvmsg)
 		pr_debug("%s: buffer size : %d\n",
 				sc_adapter[card]->devicename, BUFFER_SIZE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			 sc_adapter[card]->devicename,
 			 rcvmsg->msg_data.response.buff_offset);
 		memcpy_fromshmem(card,
@@ -210,22 +254,31 @@ void rcvpkt(int card, RspMessage *rcvmsg)
 		 */
 		pr_debug("%s: buffer size : %d\n",
 			 sc_adapter[card]->devicename, BUFFER_SIZE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*		memset_shmem(card, rcvmsg->msg_data.response.buff_offset, 0, BUFFER_SIZE); */
 		newll.buff_offset = rcvmsg->msg_data.response.buff_offset;
 		newll.msg_len = BUFFER_SIZE;
 		pr_debug("%s: recycled buffer at offset 0x%lx size %d\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 			sc_adapter[card]->devicename,
 			newll.buff_offset, newll.msg_len);
 		sendmessage(card, CEPID, ceReqTypeLnk, ceReqClass1, ceReqLnkRead,
 			rcvmsg->phy_link_no, sizeof(LLData), (unsigned int *)&newll);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			 sc_adapter[card]->devicename,
 			 newll.buff_offset, newll.msg_len);
 		sendmessage(card, CEPID, ceReqTypeLnk, ceReqClass1, ceReqLnkRead,
 			    rcvmsg->phy_link_no, sizeof(LLData), (unsigned int *)&newll);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 }
@@ -237,10 +290,14 @@ int setup_buffers(int card, int c)
 	LLData	RcvBuffOffset;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(!IS_VALID_CARD(card)) {
 =======
 	if (!IS_VALID_CARD(card)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_VALID_CARD(card)) {
+>>>>>>> refs/remotes/origin/master
 		pr_debug("invalid param: %d is not a valid card id\n", card);
 		return -ENODEV;
 	}
@@ -250,14 +307,19 @@ int setup_buffers(int card, int c)
 	 */
 	pr_debug("%s: setting up channel buffer space in shared RAM\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sc_adapter[card]->devicename);
 =======
 		 sc_adapter[card]->devicename);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 sc_adapter[card]->devicename);
+>>>>>>> refs/remotes/origin/master
 	buffer_size = BUFFER_SIZE;
 	nBuffers = ((sc_adapter[card]->ramsize - BUFFER_BASE) / buffer_size) / 2;
 	nBuffers = nBuffers > BUFFERS_MAX ? BUFFERS_MAX : nBuffers;
 	pr_debug("%s: calculating buffer space: %d buffers, %d big\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 		sc_adapter[card]->devicename,
 		nBuffers, buffer_size);
@@ -265,16 +327,22 @@ int setup_buffers(int card, int c)
 		pr_debug("%s: not enough buffer space\n",
 			sc_adapter[card]->devicename);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 sc_adapter[card]->devicename,
 		 nBuffers, buffer_size);
 	if (nBuffers < 2) {
 		pr_debug("%s: not enough buffer space\n",
 			 sc_adapter[card]->devicename);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 	cBase = (nBuffers * buffer_size) * (c - 1);
 	pr_debug("%s: channel buffer offset from shared RAM: 0x%x\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 			sc_adapter[card]->devicename, cBase);
 	sc_adapter[card]->channel[c-1].first_sendbuf = BUFFER_BASE + cBase;
@@ -288,6 +356,8 @@ int setup_buffers(int card, int c)
 				sc_adapter[card]->channel[c-1].free_sendbufs,
 				sc_adapter[card]->channel[c-1].next_sendbuf);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 sc_adapter[card]->devicename, cBase);
 	sc_adapter[card]->channel[c - 1].first_sendbuf = BUFFER_BASE + cBase;
 	sc_adapter[card]->channel[c - 1].num_sendbufs = nBuffers / 2;
@@ -299,12 +369,16 @@ int setup_buffers(int card, int c)
 		 sc_adapter[card]->channel[c - 1].num_sendbufs,
 		 sc_adapter[card]->channel[c - 1].free_sendbufs,
 		 sc_adapter[card]->channel[c - 1].next_sendbuf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Prep the receive buffers
 	 */
 	pr_debug("%s: adding %d RecvBuffers:\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 			sc_adapter[card]->devicename, nBuffers /2);
 	for (i = 0 ; i < nBuffers / 2; i++) {
@@ -323,6 +397,8 @@ int setup_buffers(int card, int c)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 sc_adapter[card]->devicename, nBuffers / 2);
 	for (i = 0; i < nBuffers / 2; i++) {
 		RcvBuffOffset.buff_offset =
@@ -338,4 +414,7 @@ int setup_buffers(int card, int c)
 	}
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

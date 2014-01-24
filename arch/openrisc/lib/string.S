@@ -103,6 +103,7 @@ __clear_user:
 	.section __ex_table, "a"
 		.long 9b, 99b		// write fault
 	.previous
+<<<<<<< HEAD
 
 /*
  * long strncpy_from_user(char *dst, const char *src, long count)
@@ -202,3 +203,5 @@ __strnlen_user:
 	.section __ex_table, "a"
 		.long 8b, 99b		// read fault
 	.previous
+=======
+>>>>>>> refs/remotes/origin/master

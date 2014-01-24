@@ -15,6 +15,10 @@
 #include <linux/notifier.h>
 #include <linux/module.h>
 #include <linux/random.h>
+<<<<<<< HEAD
+=======
+#include <linux/ftrace.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/reboot.h>
 #include <linux/delay.h>
 #include <linux/kexec.h>
@@ -22,27 +26,37 @@
 #include <linux/sysrq.h>
 #include <linux/init.h>
 #include <linux/nmi.h>
+<<<<<<< HEAD
 #include <linux/dmi.h>
 <<<<<<< HEAD
 #include <asm/cacheflush.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define PANIC_TIMER_STEP 100
 #define PANIC_BLINK_SPD 18
 
+<<<<<<< HEAD
 /* Machine specific panic information string */
 char *mach_panic_string;
 
 int panic_on_oops;
+=======
+int panic_on_oops = CONFIG_PANIC_ON_OOPS_VALUE;
+>>>>>>> refs/remotes/origin/master
 static unsigned long tainted_mask;
 static int pause_on_oops;
 static int pause_on_oops_flag;
 static DEFINE_SPINLOCK(pause_on_oops_lock);
 
+<<<<<<< HEAD
 #ifndef CONFIG_PANIC_TIMEOUT
 #define CONFIG_PANIC_TIMEOUT 0
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 int panic_timeout = CONFIG_PANIC_TIMEOUT;
 EXPORT_SYMBOL_GPL(panic_timeout);
 
@@ -60,6 +74,7 @@ long (*panic_blink)(int state);
 EXPORT_SYMBOL(panic_blink);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_MACH_TREBON) || defined(CONFIG_MACH_GEIM) || defined(CONFIG_MACH_JENA)
 #include "../arch/arm/mach-msm/smd_private.h"
 #include "../arch/arm/mach-msm/proc_comm.h"
@@ -69,6 +84,8 @@ EXPORT_SYMBOL(panic_blink);
 
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Stop ourself in panic -- architecture code may override this
  */
@@ -78,7 +95,10 @@ void __weak panic_smp_self_stop(void)
 		cpu_relax();
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  *	panic - halt the system
  *	@fmt: The text string to print
@@ -87,6 +107,7 @@ void __weak panic_smp_self_stop(void)
  *
  *	This function never returns.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_APPLY_GA_SOLUTION
 extern void dump_all_task_info();
@@ -99,6 +120,11 @@ void panic(const char *fmt, ...)
 {
 	static DEFINE_SPINLOCK(panic_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void panic(const char *fmt, ...)
+{
+	static DEFINE_SPINLOCK(panic_lock);
+>>>>>>> refs/remotes/origin/master
 	static char buf[1024];
 	va_list args;
 	long i, i_next = 0;
@@ -106,12 +132,15 @@ void panic(const char *fmt, ...)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * It's possible to come here directly from a panic-assertion and
 	 * not have preempt disabled. Some functions called from here want
 	 * preempt to be disabled. No point enabling it later though...
 	 */
 	preempt_disable();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Disable local interrupts. This will prevent panic_smp_self_stop
 	 * from deadlocking the first cpu that invokes the panic, since
 	 * there is nothing to prevent an interrupt handler (that runs
@@ -131,7 +160,10 @@ void panic(const char *fmt, ...)
 	 */
 	if (!spin_trylock(&panic_lock))
 		panic_smp_self_stop();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	console_verbose();
 	bust_spinlocks(1);
@@ -140,6 +172,7 @@ void panic(const char *fmt, ...)
 	va_end(args);
 	printk(KERN_EMERG "Kernel panic - not syncing: %s\n",buf);
 #ifdef CONFIG_DEBUG_BUGVERBOSE
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dump_stack();
 #endif
@@ -183,6 +216,8 @@ void panic(const char *fmt, ...)
 	msm_proc_comm_reset_modem_now();
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Avoid nested stack-dumping if a panic occurs during oops processing
 	 */
@@ -190,7 +225,10 @@ void panic(const char *fmt, ...)
 		dump_stack();
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If we have crashed and we have a crash kernel loaded let it handle
 	 * everything else.
@@ -199,10 +237,13 @@ void panic(const char *fmt, ...)
 	crash_kexec(NULL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kmsg_dump(KMSG_DUMP_PANIC);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Note smp_send_stop is the usual smp shutdown function, which
 	 * unfortunately means it may not be hardened to work in a panic
@@ -211,12 +252,23 @@ void panic(const char *fmt, ...)
 	smp_send_stop();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kmsg_dump(KMSG_DUMP_PANIC);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	atomic_notifier_call_chain(&panic_notifier_list, 0, buf);
 
+=======
+	/*
+	 * Run any panic handlers, including those that might need to
+	 * add information to the kmsg dump output.
+	 */
+	atomic_notifier_call_chain(&panic_notifier_list, 0, buf);
+
+	kmsg_dump(KMSG_DUMP_PANIC);
+
+>>>>>>> refs/remotes/origin/master
 	bust_spinlocks(0);
 
 	if (!panic_blink)
@@ -238,10 +290,15 @@ void panic(const char *fmt, ...)
 			mdelay(PANIC_TIMER_STEP);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	}
 	if (panic_timeout != 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+	if (panic_timeout != 0) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * This will not be a clean reboot, with everything
 		 * shutting down.  But if there is a chance of
@@ -299,9 +356,13 @@ static const struct tnt tnts[] = {
 	{ TAINT_CRAP,			'C', ' ' },
 	{ TAINT_FIRMWARE_WORKAROUND,	'I', ' ' },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ TAINT_OOT_MODULE,		'O', ' ' },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ TAINT_OOT_MODULE,		'O', ' ' },
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -320,15 +381,23 @@ static const struct tnt tnts[] = {
  *  'C' - modules from drivers/staging are loaded.
  *  'I' - Working around severe firmware bug.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *  'O' - Out-of-tree module has been loaded.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  'O' - Out-of-tree module has been loaded.
+>>>>>>> refs/remotes/origin/master
  *
  *	The string is overwritten by the next call to print_tainted().
  */
 const char *print_tainted(void)
 {
+<<<<<<< HEAD
 	static char buf[ARRAY_SIZE(tnts) + sizeof("Tainted: ") + 1];
+=======
+	static char buf[ARRAY_SIZE(tnts) + sizeof("Tainted: ")];
+>>>>>>> refs/remotes/origin/master
 
 	if (tainted_mask) {
 		char *s;
@@ -358,6 +427,7 @@ unsigned long get_taint(void)
 	return tainted_mask;
 }
 
+<<<<<<< HEAD
 void add_taint(unsigned flag)
 {
 	/*
@@ -386,6 +456,21 @@ void add_taint(unsigned flag)
 		if (__debug_locks_off())
 			printk(KERN_WARNING "Disabling lock debugging due to kernel taint\n");
 	}
+=======
+/**
+ * add_taint: add a taint flag if not already set.
+ * @flag: one of the TAINT_* constants.
+ * @lockdep_ok: whether lock debugging is still OK.
+ *
+ * If something bad has gone wrong, you'll want @lockdebug_ok = false, but for
+ * some notewortht-but-not-corrupting cases, it can be set to true.
+ */
+void add_taint(unsigned flag, enum lockdep_ok lockdep_ok)
+{
+	if (lockdep_ok == LOCKDEP_NOW_UNRELIABLE && __debug_locks_off())
+		printk(KERN_WARNING
+		       "Disabling lock debugging due to kernel taint\n");
+>>>>>>> refs/remotes/origin/master
 
 	set_bit(flag, &tainted_mask);
 }
@@ -490,11 +575,14 @@ late_initcall(init_oops_id);
 void print_oops_end_marker(void)
 {
 	init_oops_id();
+<<<<<<< HEAD
 
 	if (mach_panic_string)
 		printk(KERN_WARNING "Board Information: %s\n",
 		       mach_panic_string);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_WARNING "---[ end trace %016llx ]---\n",
 		(unsigned long long)oops_id);
 }
@@ -519,6 +607,7 @@ struct slowpath_args {
 static void warn_slowpath_common(const char *file, int line, void *caller,
 				 unsigned taint, struct slowpath_args *args)
 {
+<<<<<<< HEAD
 	const char *board;
 
 	printk(KERN_WARNING "------------[ cut here ]------------\n");
@@ -526,6 +615,13 @@ static void warn_slowpath_common(const char *file, int line, void *caller,
 	board = dmi_get_system_info(DMI_PRODUCT_NAME);
 	if (board)
 		printk(KERN_WARNING "Hardware name: %s\n", board);
+=======
+	disable_trace_on_warning();
+
+	pr_warn("------------[ cut here ]------------\n");
+	pr_warn("WARNING: CPU: %d PID: %d at %s:%d %pS()\n",
+		raw_smp_processor_id(), current->pid, file, line, caller);
+>>>>>>> refs/remotes/origin/master
 
 	if (args)
 		vprintk(args->fmt, args->args);
@@ -533,7 +629,12 @@ static void warn_slowpath_common(const char *file, int line, void *caller,
 	print_modules();
 	dump_stack();
 	print_oops_end_marker();
+<<<<<<< HEAD
 	add_taint(taint);
+=======
+	/* Just a warning, don't kill lockdep. */
+	add_taint(taint, LOCKDEP_STILL_OK);
+>>>>>>> refs/remotes/origin/master
 }
 
 void warn_slowpath_fmt(const char *file, int line, const char *fmt, ...)

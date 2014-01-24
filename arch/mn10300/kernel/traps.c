@@ -26,6 +26,7 @@
 #include <linux/kdebug.h>
 #include <linux/bug.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 #include <asm/processor.h>
 <<<<<<< HEAD
 #include <asm/system.h>
@@ -37,6 +38,13 @@
 #include <asm/io.h>
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <asm/processor.h>
+#include <linux/uaccess.h>
+#include <asm/io.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/smp.h>
 #include <asm/pgalloc.h>
 #include <asm/cacheflush.h>
@@ -300,6 +308,7 @@ void show_stack(struct task_struct *task, unsigned long *sp)
 }
 
 /*
+<<<<<<< HEAD
  * the architecture-independent dump_stack generator
  */
 void dump_stack(void)
@@ -311,6 +320,8 @@ void dump_stack(void)
 EXPORT_SYMBOL(dump_stack);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * dump the register file in the specified exception frame
  */
 void show_registers_only(struct pt_regs *regs)

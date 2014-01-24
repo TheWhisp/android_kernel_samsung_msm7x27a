@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2007-2011 Nicira Networks.
+=======
+ * Copyright (c) 2007-2012 Nicira, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -25,6 +29,10 @@
 #include <linux/llc.h>
 #include <linux/rtnetlink.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
+=======
+#include <linux/openvswitch.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/llc.h>
 
@@ -35,6 +43,7 @@
 /* Must be called with rcu_read_lock. */
 static void netdev_port_receive(struct vport *vport, struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	if (unlikely(!vport)) {
 		kfree_skb(skb);
 		return;
@@ -44,12 +53,33 @@ static void netdev_port_receive(struct vport *vport, struct sk_buff *skb)
 	 * packet for anyone who came before us (e.g. tcpdump via AF_PACKET).
 	 * (No one comes after us, since we tell handle_bridge() that we took
 	 * the packet.) */
+=======
+	if (unlikely(!vport))
+		goto error;
+
+	if (unlikely(skb_warn_if_lro(skb)))
+		goto error;
+
+	/* Make our own copy of the packet.  Otherwise we will mangle the
+	 * packet for anyone who came before us (e.g. tcpdump via AF_PACKET).
+	 */
+>>>>>>> refs/remotes/origin/master
 	skb = skb_share_check(skb, GFP_ATOMIC);
 	if (unlikely(!skb))
 		return;
 
 	skb_push(skb, ETH_HLEN);
+<<<<<<< HEAD
 	ovs_vport_receive(vport, skb);
+=======
+	ovs_skb_postpush_rcsum(skb, skb->data, ETH_HLEN);
+
+	ovs_vport_receive(vport, skb, NULL);
+	return;
+
+error:
+	kfree_skb(skb);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Called with rcu_read_lock and bottom-halves disabled. */
@@ -68,6 +98,18 @@ static rx_handler_result_t netdev_frame_hook(struct sk_buff **pskb)
 	return RX_HANDLER_CONSUMED;
 }
 
+<<<<<<< HEAD
+=======
+static struct net_device *get_dpdev(struct datapath *dp)
+{
+	struct vport *local;
+
+	local = ovs_vport_ovsl(dp, OVSP_LOCAL);
+	BUG_ON(!local);
+	return netdev_vport_priv(local)->dev;
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct vport *netdev_create(const struct vport_parms *parms)
 {
 	struct vport *vport;
@@ -83,7 +125,11 @@ static struct vport *netdev_create(const struct vport_parms *parms)
 
 	netdev_vport = netdev_vport_priv(vport);
 
+<<<<<<< HEAD
 	netdev_vport->dev = dev_get_by_name(&init_net, parms->name);
+=======
+	netdev_vport->dev = dev_get_by_name(ovs_dp_get_net(vport->dp), parms->name);
+>>>>>>> refs/remotes/origin/master
 	if (!netdev_vport->dev) {
 		err = -ENODEV;
 		goto error_free_vport;
@@ -96,6 +142,7 @@ static struct vport *netdev_create(const struct vport_parms *parms)
 		goto error_put;
 	}
 
+<<<<<<< HEAD
 	err = netdev_rx_handler_register(netdev_vport->dev, netdev_frame_hook,
 					 vport);
 	if (err)
@@ -106,6 +153,29 @@ static struct vport *netdev_create(const struct vport_parms *parms)
 
 	return vport;
 
+=======
+	rtnl_lock();
+	err = netdev_master_upper_dev_link(netdev_vport->dev,
+					   get_dpdev(vport->dp));
+	if (err)
+		goto error_unlock;
+
+	err = netdev_rx_handler_register(netdev_vport->dev, netdev_frame_hook,
+					 vport);
+	if (err)
+		goto error_master_upper_dev_unlink;
+
+	dev_set_promiscuity(netdev_vport->dev, 1);
+	netdev_vport->dev->priv_flags |= IFF_OVS_DATAPATH;
+	rtnl_unlock();
+
+	return vport;
+
+error_master_upper_dev_unlink:
+	netdev_upper_dev_unlink(netdev_vport->dev, get_dpdev(vport->dp));
+error_unlock:
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
 error_put:
 	dev_put(netdev_vport->dev);
 error_free_vport:
@@ -114,6 +184,7 @@ error:
 	return ERR_PTR(err);
 }
 
+<<<<<<< HEAD
 static void netdev_destroy(struct vport *vport)
 {
 	struct netdev_vport *netdev_vport = netdev_vport_priv(vport);
@@ -126,6 +197,39 @@ static void netdev_destroy(struct vport *vport)
 
 	dev_put(netdev_vport->dev);
 	ovs_vport_free(vport);
+=======
+static void free_port_rcu(struct rcu_head *rcu)
+{
+	struct netdev_vport *netdev_vport = container_of(rcu,
+					struct netdev_vport, rcu);
+
+	dev_put(netdev_vport->dev);
+	ovs_vport_free(vport_from_priv(netdev_vport));
+}
+
+void ovs_netdev_detach_dev(struct vport *vport)
+{
+	struct netdev_vport *netdev_vport = netdev_vport_priv(vport);
+
+	ASSERT_RTNL();
+	netdev_vport->dev->priv_flags &= ~IFF_OVS_DATAPATH;
+	netdev_rx_handler_unregister(netdev_vport->dev);
+	netdev_upper_dev_unlink(netdev_vport->dev,
+				netdev_master_upper_dev_get(netdev_vport->dev));
+	dev_set_promiscuity(netdev_vport->dev, -1);
+}
+
+static void netdev_destroy(struct vport *vport)
+{
+	struct netdev_vport *netdev_vport = netdev_vport_priv(vport);
+
+	rtnl_lock();
+	if (netdev_vport->dev->priv_flags & IFF_OVS_DATAPATH)
+		ovs_netdev_detach_dev(vport);
+	rtnl_unlock();
+
+	call_rcu(&netdev_vport->rcu, free_port_rcu);
+>>>>>>> refs/remotes/origin/master
 }
 
 const char *ovs_netdev_get_name(const struct vport *vport)
@@ -134,6 +238,7 @@ const char *ovs_netdev_get_name(const struct vport *vport)
 	return netdev_vport->dev->name;
 }
 
+<<<<<<< HEAD
 int ovs_netdev_get_ifindex(const struct vport *vport)
 {
 	const struct netdev_vport *netdev_vport = netdev_vport_priv(vport);
@@ -143,6 +248,11 @@ int ovs_netdev_get_ifindex(const struct vport *vport)
 static unsigned packet_length(const struct sk_buff *skb)
 {
 	unsigned length = skb->len - ETH_HLEN;
+=======
+static unsigned int packet_length(const struct sk_buff *skb)
+{
+	unsigned int length = skb->len - ETH_HLEN;
+>>>>>>> refs/remotes/origin/master
 
 	if (skb->protocol == htons(ETH_P_8021Q))
 		length -= VLAN_HLEN;
@@ -157,6 +267,7 @@ static int netdev_send(struct vport *vport, struct sk_buff *skb)
 	int len;
 
 	if (unlikely(packet_length(skb) > mtu && !skb_is_gso(skb))) {
+<<<<<<< HEAD
 		if (net_ratelimit())
 			pr_warn("%s: dropped over-mtu packet: %d > %d\n",
 				ovs_dp_name(vport->dp), packet_length(skb), mtu);
@@ -166,15 +277,28 @@ static int netdev_send(struct vport *vport, struct sk_buff *skb)
 	if (unlikely(skb_warn_if_lro(skb)))
 		goto error;
 
+=======
+		net_warn_ratelimited("%s: dropped over-mtu packet: %d > %d\n",
+				     netdev_vport->dev->name,
+				     packet_length(skb), mtu);
+		goto drop;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	skb->dev = netdev_vport->dev;
 	len = skb->len;
 	dev_queue_xmit(skb);
 
 	return len;
 
+<<<<<<< HEAD
 error:
 	kfree_skb(skb);
 	ovs_vport_record_error(vport, VPORT_E_TX_DROPPED);
+=======
+drop:
+	kfree_skb(skb);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -193,6 +317,9 @@ const struct vport_ops ovs_netdev_vport_ops = {
 	.create		= netdev_create,
 	.destroy	= netdev_destroy,
 	.get_name	= ovs_netdev_get_name,
+<<<<<<< HEAD
 	.get_ifindex	= ovs_netdev_get_ifindex,
+=======
+>>>>>>> refs/remotes/origin/master
 	.send		= netdev_send,
 };

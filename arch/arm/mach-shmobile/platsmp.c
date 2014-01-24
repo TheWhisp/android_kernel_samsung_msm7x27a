@@ -11,6 +11,7 @@
  * published by the Free Software Foundation.
  */
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/errno.h>
 #include <linux/delay.h>
 #include <linux/device.h>
@@ -133,3 +134,30 @@ void __init platform_smp_prepare_cpus(unsigned int max_cpus)
 >>>>>>> refs/remotes/origin/cm-10.0
 	shmobile_smp_prepare_cpus();
 }
+=======
+#include <asm/cacheflush.h>
+#include <asm/smp_plat.h>
+#include <mach/common.h>
+
+extern unsigned long shmobile_smp_fn[];
+extern unsigned long shmobile_smp_arg[];
+extern unsigned long shmobile_smp_mpidr[];
+
+void shmobile_smp_hook(unsigned int cpu, unsigned long fn, unsigned long arg)
+{
+	shmobile_smp_fn[cpu] = 0;
+	flush_cache_all();
+
+	shmobile_smp_mpidr[cpu] = cpu_logical_map(cpu);
+	shmobile_smp_fn[cpu] = fn;
+	shmobile_smp_arg[cpu] = arg;
+	flush_cache_all();
+}
+
+#ifdef CONFIG_HOTPLUG_CPU
+int shmobile_smp_cpu_disable(unsigned int cpu)
+{
+	return 0; /* Hotplug of any CPU is supported */
+}
+#endif
+>>>>>>> refs/remotes/origin/master

@@ -101,6 +101,10 @@ static const struct lcd_segment_map {
 struct yealink_dev {
 	struct input_dev *idev;		/* input device */
 	struct usb_device *udev;	/* usb device */
+<<<<<<< HEAD
+=======
+	struct usb_interface *intf;	/* usb interface */
+>>>>>>> refs/remotes/origin/master
 
 	/* irq input channel */
 	struct yld_ctl_packet	*irq_data;
@@ -428,7 +432,12 @@ static void urb_irq_callback(struct urb *urb)
 	int ret, status = urb->status;
 
 	if (status)
+<<<<<<< HEAD
 		err("%s - urb status %d", __func__, status);
+=======
+		dev_err(&yld->intf->dev, "%s - urb status %d\n",
+			__func__, status);
+>>>>>>> refs/remotes/origin/master
 
 	switch (yld->irq_data->cmd) {
 	case CMD_KEYPRESS:
@@ -437,13 +446,23 @@ static void urb_irq_callback(struct urb *urb)
 		break;
 
 	case CMD_SCANCODE:
+<<<<<<< HEAD
 		dbg("get scancode %x", yld->irq_data->data[0]);
+=======
+		dev_dbg(&yld->intf->dev, "get scancode %x\n",
+			yld->irq_data->data[0]);
+>>>>>>> refs/remotes/origin/master
 
 		report_key(yld, map_p1k_to_key(yld->irq_data->data[0]));
 		break;
 
 	default:
+<<<<<<< HEAD
 		err("unexpected response %x", yld->irq_data->cmd);
+=======
+		dev_err(&yld->intf->dev, "unexpected response %x\n",
+			yld->irq_data->cmd);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	yealink_do_idle_tasks(yld);
@@ -451,7 +470,13 @@ static void urb_irq_callback(struct urb *urb)
 	if (!yld->shutdown) {
 		ret = usb_submit_urb(yld->urb_ctl, GFP_ATOMIC);
 		if (ret && ret != -EPERM)
+<<<<<<< HEAD
 			err("%s - usb_submit_urb failed %d", __func__, ret);
+=======
+			dev_err(&yld->intf->dev,
+				"%s - usb_submit_urb failed %d\n",
+				__func__, ret);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -461,7 +486,12 @@ static void urb_ctl_callback(struct urb *urb)
 	int ret = 0, status = urb->status;
 
 	if (status)
+<<<<<<< HEAD
 		err("%s - urb status %d", __func__, status);
+=======
+		dev_err(&yld->intf->dev, "%s - urb status %d\n",
+			__func__, status);
+>>>>>>> refs/remotes/origin/master
 
 	switch (yld->ctl_data->cmd) {
 	case CMD_KEYPRESS:
@@ -479,7 +509,12 @@ static void urb_ctl_callback(struct urb *urb)
 	}
 
 	if (ret && ret != -EPERM)
+<<<<<<< HEAD
 		err("%s - usb_submit_urb failed %d", __func__, ret);
+=======
+		dev_err(&yld->intf->dev, "%s - usb_submit_urb failed %d\n",
+			__func__, ret);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*******************************************************************************
@@ -511,7 +546,11 @@ static int input_open(struct input_dev *dev)
 	struct yealink_dev *yld = input_get_drvdata(dev);
 	int i, ret;
 
+<<<<<<< HEAD
 	dbg("%s", __func__);
+=======
+	dev_dbg(&yld->intf->dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	/* force updates to device */
 	for (i = 0; i<sizeof(yld->master); i++)
@@ -526,8 +565,14 @@ static int input_open(struct input_dev *dev)
 	yld->ctl_data->size	= 10;
 	yld->ctl_data->sum	= 0x100-CMD_INIT-10;
 	if ((ret = usb_submit_urb(yld->urb_ctl, GFP_KERNEL)) != 0) {
+<<<<<<< HEAD
 		dbg("%s - usb_submit_urb failed with result %d",
 		     __func__, ret);
+=======
+		dev_dbg(&yld->intf->dev,
+			"%s - usb_submit_urb failed with result %d\n",
+			__func__, ret);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 	return 0;
@@ -876,6 +921,10 @@ static int usb_probe(struct usb_interface *intf, const struct usb_device_id *id)
 		return -ENOMEM;
 
 	yld->udev = udev;
+<<<<<<< HEAD
+=======
+	yld->intf = intf;
+>>>>>>> refs/remotes/origin/master
 
 	yld->idev = input_dev = input_allocate_device();
 	if (!input_dev)
@@ -909,7 +958,12 @@ static int usb_probe(struct usb_interface *intf, const struct usb_device_id *id)
 	pipe = usb_rcvintpipe(udev, endpoint->bEndpointAddress);
 	ret = usb_maxpacket(udev, pipe, usb_pipeout(pipe));
 	if (ret != USB_PKT_LEN)
+<<<<<<< HEAD
 		err("invalid payload size %d, expected %zd", ret, USB_PKT_LEN);
+=======
+		dev_err(&intf->dev, "invalid payload size %d, expected %zd\n",
+			ret, USB_PKT_LEN);
+>>>>>>> refs/remotes/origin/master
 
 	/* initialise irq urb */
 	usb_fill_int_urb(yld->urb_irq, udev, pipe, yld->irq_data,
@@ -989,6 +1043,7 @@ static struct usb_driver yealink_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init yealink_dev_init(void)
 {
 	int ret = usb_register(&yealink_driver);
@@ -1008,6 +1063,9 @@ module_exit(yealink_dev_exit);
 =======
 module_usb_driver(yealink_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(yealink_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DEVICE_TABLE (usb, usb_table);
 

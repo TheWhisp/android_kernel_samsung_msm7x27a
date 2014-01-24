@@ -177,7 +177,11 @@ static void pcap_msr_work(struct work_struct *work)
 static void pcap_isr_work(struct work_struct *work)
 {
 	struct pcap_chip *pcap = container_of(work, struct pcap_chip, isr_work);
+<<<<<<< HEAD
 	struct pcap_platform_data *pdata = pcap->spi->dev.platform_data;
+=======
+	struct pcap_platform_data *pdata = dev_get_platdata(&pcap->spi->dev);
+>>>>>>> refs/remotes/origin/master
 	u32 msr, isr, int_sel, service;
 	int irq;
 
@@ -371,7 +375,11 @@ static int pcap_remove_subdev(struct device *dev, void *unused)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit pcap_add_subdev(struct pcap_chip *pcap,
+=======
+static int pcap_add_subdev(struct pcap_chip *pcap,
+>>>>>>> refs/remotes/origin/master
 						struct pcap_subdev *subdev)
 {
 	struct platform_device *pdev;
@@ -391,19 +399,29 @@ static int __devinit pcap_add_subdev(struct pcap_chip *pcap,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit ezx_pcap_remove(struct spi_device *spi)
 {
 	struct pcap_chip *pcap = dev_get_drvdata(&spi->dev);
 	struct pcap_platform_data *pdata = spi->dev.platform_data;
 	int i, adc_irq;
+=======
+static int ezx_pcap_remove(struct spi_device *spi)
+{
+	struct pcap_chip *pcap = spi_get_drvdata(spi);
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	/* remove all registered subdevs */
 	device_for_each_child(&spi->dev, NULL, pcap_remove_subdev);
 
 	/* cleanup ADC */
+<<<<<<< HEAD
 	adc_irq = pcap_to_irq(pcap, (pdata->config & PCAP_SECOND_PORT) ?
 				PCAP_IRQ_ADCDONE2 : PCAP_IRQ_ADCDONE);
 	free_irq(adc_irq, pcap);
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&pcap->adc_mutex);
 	for (i = 0; i < PCAP_ADC_MAXQ; i++)
 		kfree(pcap->adc_queue[i]);
@@ -415,6 +433,7 @@ static int __devexit ezx_pcap_remove(struct spi_device *spi)
 
 	destroy_workqueue(pcap->workqueue);
 
+<<<<<<< HEAD
 	kfree(pcap);
 
 	return 0;
@@ -423,6 +442,14 @@ static int __devexit ezx_pcap_remove(struct spi_device *spi)
 static int __devinit ezx_pcap_probe(struct spi_device *spi)
 {
 	struct pcap_platform_data *pdata = spi->dev.platform_data;
+=======
+	return 0;
+}
+
+static int ezx_pcap_probe(struct spi_device *spi)
+{
+	struct pcap_platform_data *pdata = dev_get_platdata(&spi->dev);
+>>>>>>> refs/remotes/origin/master
 	struct pcap_chip *pcap;
 	int i, adc_irq;
 	int ret = -ENODEV;
@@ -431,7 +458,11 @@ static int __devinit ezx_pcap_probe(struct spi_device *spi)
 	if (!pdata)
 		goto ret;
 
+<<<<<<< HEAD
 	pcap = kzalloc(sizeof(*pcap), GFP_KERNEL);
+=======
+	pcap = devm_kzalloc(&spi->dev, sizeof(*pcap), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!pcap) {
 		ret = -ENOMEM;
 		goto ret;
@@ -441,14 +472,22 @@ static int __devinit ezx_pcap_probe(struct spi_device *spi)
 	mutex_init(&pcap->adc_mutex);
 	INIT_WORK(&pcap->isr_work, pcap_isr_work);
 	INIT_WORK(&pcap->msr_work, pcap_msr_work);
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, pcap);
+=======
+	spi_set_drvdata(spi, pcap);
+>>>>>>> refs/remotes/origin/master
 
 	/* setup spi */
 	spi->bits_per_word = 32;
 	spi->mode = SPI_MODE_0 | (pdata->config & PCAP_CS_AH ? SPI_CS_HIGH : 0);
 	ret = spi_setup(spi);
 	if (ret)
+<<<<<<< HEAD
 		goto free_pcap;
+=======
+		goto ret;
+>>>>>>> refs/remotes/origin/master
 
 	pcap->spi = spi;
 
@@ -458,7 +497,11 @@ static int __devinit ezx_pcap_probe(struct spi_device *spi)
 	if (!pcap->workqueue) {
 		ret = -ENOMEM;
 		dev_err(&spi->dev, "can't create pcap thread\n");
+<<<<<<< HEAD
 		goto free_pcap;
+=======
+		goto ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* redirect interrupts to AP, except adcdone2 */
@@ -491,7 +534,12 @@ static int __devinit ezx_pcap_probe(struct spi_device *spi)
 	adc_irq = pcap_to_irq(pcap, (pdata->config & PCAP_SECOND_PORT) ?
 					PCAP_IRQ_ADCDONE2 : PCAP_IRQ_ADCDONE);
 
+<<<<<<< HEAD
 	ret = request_irq(adc_irq, pcap_adc_irq, 0, "ADC", pcap);
+=======
+	ret = devm_request_irq(&spi->dev, adc_irq, pcap_adc_irq, 0, "ADC",
+				pcap);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto free_irqchip;
 
@@ -510,22 +558,32 @@ static int __devinit ezx_pcap_probe(struct spi_device *spi)
 
 remove_subdevs:
 	device_for_each_child(&spi->dev, NULL, pcap_remove_subdev);
+<<<<<<< HEAD
 /* free_adc: */
 	free_irq(adc_irq, pcap);
+=======
+>>>>>>> refs/remotes/origin/master
 free_irqchip:
 	for (i = pcap->irq_base; i < (pcap->irq_base + PCAP_NIRQS); i++)
 		irq_set_chip_and_handler(i, NULL, NULL);
 /* destroy_workqueue: */
 	destroy_workqueue(pcap->workqueue);
+<<<<<<< HEAD
 free_pcap:
 	kfree(pcap);
+=======
+>>>>>>> refs/remotes/origin/master
 ret:
 	return ret;
 }
 
 static struct spi_driver ezxpcap_driver = {
 	.probe	= ezx_pcap_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ezx_pcap_remove),
+=======
+	.remove = ezx_pcap_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name	= "ezx-pcap",
 		.owner	= THIS_MODULE,

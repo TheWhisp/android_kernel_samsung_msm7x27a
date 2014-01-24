@@ -19,9 +19,13 @@
 #include <linux/memblock.h>
 #include <linux/dma-mapping.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mmu_context.h>
 #include <asm/mmzone.h>
 #include <asm/kexec.h>
@@ -234,7 +238,11 @@ static void __init bootmem_init_one_node(unsigned int nid)
 	if (!p->node_spanned_pages)
 		return;
 
+<<<<<<< HEAD
 	end_pfn = p->node_start_pfn + p->node_spanned_pages;
+=======
+	end_pfn = pgdat_end_pfn(p);
+>>>>>>> refs/remotes/origin/master
 
 	total_pages = bootmem_bootmap_pages(p->node_spanned_pages);
 
@@ -292,10 +300,15 @@ static void __init early_reserve_mem(void)
 {
 	unsigned long start_pfn;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 zero_base = (u32)__MEMORY_START + (u32)PHYSICAL_OFFSET;
 	u32 start = zero_base + (u32)CONFIG_ZERO_PAGE_OFFSET;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 zero_base = (u32)__MEMORY_START + (u32)PHYSICAL_OFFSET;
+	u32 start = zero_base + (u32)CONFIG_ZERO_PAGE_OFFSET;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Partially used pages are not usable - thus
@@ -310,22 +323,30 @@ static void __init early_reserve_mem(void)
 	 * initializing the bootmem allocator with an invalid RAM area.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_reserve(__MEMORY_START + CONFIG_ZERO_PAGE_OFFSET,
 		    (PFN_PHYS(start_pfn) + PAGE_SIZE - 1) -
 		    (__MEMORY_START + CONFIG_ZERO_PAGE_OFFSET));
 =======
 	memblock_reserve(start, (PFN_PHYS(start_pfn) + PAGE_SIZE - 1) - start);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memblock_reserve(start, (PFN_PHYS(start_pfn) + PAGE_SIZE - 1) - start);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Reserve physical pages below CONFIG_ZERO_PAGE_OFFSET.
 	 */
 	if (CONFIG_ZERO_PAGE_OFFSET != 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		memblock_reserve(__MEMORY_START, CONFIG_ZERO_PAGE_OFFSET);
 =======
 		memblock_reserve(zero_base, CONFIG_ZERO_PAGE_OFFSET);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memblock_reserve(zero_base, CONFIG_ZERO_PAGE_OFFSET);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Handle additional early reservations
@@ -341,9 +362,12 @@ void __init paging_init(void)
 	int nid;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_init();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	sh_mv.mv_mem_init();
 
 	early_reserve_mem();
@@ -357,10 +381,14 @@ void __init paging_init(void)
 
 	memblock_enforce_memory_limit(memory_limit);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_analyze();
 =======
 	memblock_allow_resize();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memblock_allow_resize();
+>>>>>>> refs/remotes/origin/master
 
 	memblock_dump_all();
 
@@ -431,6 +459,7 @@ unsigned int mem_init_done = 0;
 
 void __init mem_init(void)
 {
+<<<<<<< HEAD
 	int codesize, datasize, initsize;
 	int nid;
 
@@ -457,6 +486,18 @@ void __init mem_init(void)
 		if (node_high_memory > high_memory)
 			high_memory = node_high_memory;
 	}
+=======
+	pg_data_t *pgdat;
+
+	iommu_init();
+
+	high_memory = NULL;
+	for_each_online_pgdat(pgdat)
+		high_memory = max_t(void *, high_memory,
+				    __va(pgdat_end_pfn(pgdat) << PAGE_SHIFT));
+
+	free_all_bootmem();
+>>>>>>> refs/remotes/origin/master
 
 	/* Set this up early, so we can take care of the zero page */
 	cpu_cache_init();
@@ -467,6 +508,7 @@ void __init mem_init(void)
 
 	vsyscall_init();
 
+<<<<<<< HEAD
 	codesize =  (unsigned long) &_etext - (unsigned long) &_text;
 	datasize =  (unsigned long) &_edata - (unsigned long) &_etext;
 	initsize =  (unsigned long) &__init_end - (unsigned long) &__init_begin;
@@ -480,6 +522,10 @@ void __init mem_init(void)
 		initsize >> 10);
 
 	printk(KERN_INFO "virtual kernel memory layout:\n"
+=======
+	mem_init_print_info(NULL);
+	pr_info("virtual kernel memory layout:\n"
+>>>>>>> refs/remotes/origin/master
 		"    fixmap  : 0x%08lx - 0x%08lx   (%4ld kB)\n"
 #ifdef CONFIG_HIGHMEM
 		"    pkmap   : 0x%08lx - 0x%08lx   (%4ld kB)\n"
@@ -525,6 +571,7 @@ void __init mem_init(void)
 
 void free_initmem(void)
 {
+<<<<<<< HEAD
 	unsigned long addr;
 
 	addr = (unsigned long)(&__init_begin);
@@ -537,11 +584,15 @@ void free_initmem(void)
 	printk("Freeing unused kernel memory: %ldk freed\n",
 	       ((unsigned long)&__init_end -
 	        (unsigned long)&__init_begin) >> 10);
+=======
+	free_initmem_default(-1);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_BLK_DEV_INITRD
 void free_initrd_mem(unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 	unsigned long p;
 	for (p = start; p < end; p += PAGE_SIZE) {
 		ClearPageReserved(virt_to_page(p));
@@ -550,6 +601,9 @@ void free_initrd_mem(unsigned long start, unsigned long end)
 		totalram_pages++;
 	}
 	printk("Freeing initrd memory: %ldk freed\n", (end - start) >> 10);
+=======
+	free_reserved_area((void *)start, (void *)end, -1, "initrd");
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -582,4 +636,24 @@ int memory_add_physaddr_to_nid(u64 addr)
 EXPORT_SYMBOL_GPL(memory_add_physaddr_to_nid);
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MEMORY_HOTREMOVE
+int arch_remove_memory(u64 start, u64 size)
+{
+	unsigned long start_pfn = start >> PAGE_SHIFT;
+	unsigned long nr_pages = size >> PAGE_SHIFT;
+	struct zone *zone;
+	int ret;
+
+	zone = page_zone(pfn_to_page(start_pfn));
+	ret = __remove_pages(zone, start_pfn, nr_pages);
+	if (unlikely(ret))
+		pr_warn("%s: Failed, __remove_pages() == %d\n", __func__,
+			ret);
+
+	return ret;
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_MEMORY_HOTPLUG */

@@ -25,11 +25,14 @@ static int coalesced_mmio_in_range(struct kvm_coalesced_mmio_dev *dev,
 				   gpa_t addr, int len)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct kvm_coalesced_mmio_zone *zone;
 	struct kvm_coalesced_mmio_ring *ring;
 	unsigned avail;
 	int i;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* is it in a batchable area ?
 	 * (addr,len) is fully included in
 	 * (zone->addr, zone->size)
@@ -49,7 +52,10 @@ static int coalesced_mmio_has_room(struct kvm_coalesced_mmio_dev *dev)
 {
 	struct kvm_coalesced_mmio_ring *ring;
 	unsigned avail;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Are we able to batch it ? */
 
@@ -60,14 +66,19 @@ static int coalesced_mmio_has_room(struct kvm_coalesced_mmio_dev *dev)
 	ring = dev->kvm->coalesced_mmio_ring;
 	avail = (ring->first - ring->last - 1) % KVM_COALESCED_MMIO_MAX;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (avail < KVM_MAX_VCPUS) {
 =======
 	if (avail == 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (avail == 0) {
+>>>>>>> refs/remotes/origin/master
 		/* full */
 		return 0;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* is it in a batchable area ? */
 
@@ -86,6 +97,9 @@ static int coalesced_mmio_has_room(struct kvm_coalesced_mmio_dev *dev)
 =======
 	return 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int coalesced_mmio_write(struct kvm_io_device *this,
@@ -94,11 +108,14 @@ static int coalesced_mmio_write(struct kvm_io_device *this,
 	struct kvm_coalesced_mmio_dev *dev = to_mmio(this);
 	struct kvm_coalesced_mmio_ring *ring = dev->kvm->coalesced_mmio_ring;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!coalesced_mmio_in_range(dev, addr, len))
 		return -EOPNOTSUPP;
 
 	spin_lock(&dev->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!coalesced_mmio_in_range(dev, addr, len))
 		return -EOPNOTSUPP;
@@ -109,7 +126,10 @@ static int coalesced_mmio_write(struct kvm_io_device *this,
 		spin_unlock(&dev->kvm->ring_lock);
 		return -EOPNOTSUPP;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* copy data in first free entry of the ring */
 
@@ -119,10 +139,14 @@ static int coalesced_mmio_write(struct kvm_io_device *this,
 	smp_wmb();
 	ring->last = (ring->last + 1) % KVM_COALESCED_MMIO_MAX;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&dev->lock);
 =======
 	spin_unlock(&dev->kvm->ring_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&dev->kvm->ring_lock);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -131,10 +155,15 @@ static void coalesced_mmio_destructor(struct kvm_io_device *this)
 	struct kvm_coalesced_mmio_dev *dev = to_mmio(this);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	list_del(&dev->list);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	list_del(&dev->list);
+
+>>>>>>> refs/remotes/origin/master
 	kfree(dev);
 }
 
@@ -146,9 +175,12 @@ static const struct kvm_io_device_ops coalesced_mmio_ops = {
 int kvm_coalesced_mmio_init(struct kvm *kvm)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct kvm_coalesced_mmio_dev *dev;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct page *page;
 	int ret;
 
@@ -156,6 +188,7 @@ int kvm_coalesced_mmio_init(struct kvm *kvm)
 	page = alloc_page(GFP_KERNEL | __GFP_ZERO);
 	if (!page)
 		goto out_err;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	kvm->coalesced_mmio_ring = page_address(page);
 
@@ -183,6 +216,8 @@ out_free_page:
 	kvm->coalesced_mmio_ring = NULL;
 	__free_page(page);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = 0;
 	kvm->coalesced_mmio_ring = page_address(page);
@@ -195,7 +230,10 @@ out_free_page:
 	spin_lock_init(&kvm->ring_lock);
 	INIT_LIST_HEAD(&kvm->coalesced_zones);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out_err:
 	return ret;
 }
@@ -209,6 +247,7 @@ void kvm_coalesced_mmio_free(struct kvm *kvm)
 int kvm_vm_ioctl_register_coalesced_mmio(struct kvm *kvm,
 					 struct kvm_coalesced_mmio_zone *zone)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct kvm_coalesced_mmio_dev *dev = kvm->coalesced_mmio_dev;
 
@@ -226,6 +265,8 @@ int kvm_vm_ioctl_register_coalesced_mmio(struct kvm *kvm,
 
 	mutex_unlock(&kvm->slots_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	struct kvm_coalesced_mmio_dev *dev;
 
@@ -255,13 +296,17 @@ out_free_dev:
 	if (dev == NULL)
 		return -ENXIO;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 int kvm_vm_ioctl_unregister_coalesced_mmio(struct kvm *kvm,
 					   struct kvm_coalesced_mmio_zone *zone)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i;
 	struct kvm_coalesced_mmio_dev *dev = kvm->coalesced_mmio_dev;
@@ -288,6 +333,8 @@ int kvm_vm_ioctl_unregister_coalesced_mmio(struct kvm *kvm,
 		i--;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct kvm_coalesced_mmio_dev *dev, *tmp;
 
 	mutex_lock(&kvm->slots_lock);
@@ -297,7 +344,10 @@ int kvm_vm_ioctl_unregister_coalesced_mmio(struct kvm *kvm,
 			kvm_io_bus_unregister_dev(kvm, KVM_MMIO_BUS, &dev->dev);
 			kvm_iodevice_destructor(&dev->dev);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&kvm->slots_lock);
 

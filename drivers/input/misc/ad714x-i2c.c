@@ -2,10 +2,14 @@
  * AD714X CapTouch Programmable Controller driver (I2C bus)
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2009 Analog Devices Inc.
 =======
  * Copyright 2009-2011 Analog Devices Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2009-2011 Analog Devices Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Licensed under the GPL-2 or later.
  */
@@ -17,7 +21,11 @@
 #include <linux/pm.h>
 #include "ad714x.h"
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int ad714x_i2c_suspend(struct device *dev)
 {
 	return ad714x_disable(i2c_get_clientdata(to_i2c_client(dev)));
@@ -31,6 +39,7 @@ static int ad714x_i2c_resume(struct device *dev)
 
 static SIMPLE_DEV_PM_OPS(ad714x_i2c_pm, ad714x_i2c_suspend, ad714x_i2c_resume);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int ad714x_i2c_write(struct device *dev, unsigned short reg,
 				unsigned short data)
@@ -81,6 +90,8 @@ static int ad714x_i2c_read(struct device *dev, unsigned short reg,
 
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int ad714x_i2c_write(struct ad714x_chip *chip,
 			    unsigned short reg, unsigned short data)
 {
@@ -124,10 +135,16 @@ static int ad714x_i2c_read(struct ad714x_chip *chip,
 		data[i] = be16_to_cpu(chip->xfer_buf[i]);
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __devinit ad714x_i2c_probe(struct i2c_client *client,
+=======
+}
+
+static int ad714x_i2c_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 					const struct i2c_device_id *id)
 {
 	struct ad714x_chip *chip;
@@ -142,7 +159,11 @@ static int __devinit ad714x_i2c_probe(struct i2c_client *client,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit ad714x_i2c_remove(struct i2c_client *client)
+=======
+static int ad714x_i2c_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ad714x_chip *chip = i2c_get_clientdata(client);
 
@@ -167,6 +188,7 @@ static struct i2c_driver ad714x_i2c_driver = {
 		.pm   = &ad714x_i2c_pm,
 	},
 	.probe    = ad714x_i2c_probe,
+<<<<<<< HEAD
 	.remove   = __devexit_p(ad714x_i2c_remove),
 	.id_table = ad714x_id,
 };
@@ -186,6 +208,13 @@ module_exit(ad714x_i2c_exit);
 =======
 module_i2c_driver(ad714x_i2c_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove   = ad714x_i2c_remove,
+	.id_table = ad714x_id,
+};
+
+module_i2c_driver(ad714x_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Analog Devices AD714X Capacitance Touch Sensor I2C Bus Driver");
 MODULE_AUTHOR("Barry Song <21cnbao@gmail.com>");

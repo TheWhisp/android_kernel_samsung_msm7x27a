@@ -3,7 +3,11 @@
    memory is addressed by 16 bits words.
 
    This is part of rtl8180 OpenSource driver.
+<<<<<<< HEAD
    Copyright (C) Andrea Merello 2004  <andreamrl@tiscali.it>
+=======
+   Copyright (C) Andrea Merello 2004  <andrea.merello@gmail.com>
+>>>>>>> refs/remotes/origin/master
    Released under the terms of GPL (General Public Licence)
 
    Parts of this driver are based on the GPL part of the
@@ -14,7 +18,11 @@
 
    Parts of this driver are based on the Intel Pro Wireless 2100 GPL driver.
 
+<<<<<<< HEAD
    We want to tanks the Authors of those projects and the Ndiswrapper
+=======
+   We want to thank the Authors of those projects and the Ndiswrapper
+>>>>>>> refs/remotes/origin/master
    project Authors.
 */
 
@@ -22,6 +30,7 @@
 
 void eprom_cs(struct net_device *dev, short bit)
 {
+<<<<<<< HEAD
 	if(bit)
 		write_nic_byte_E(dev, EPROM_CMD,
 			       (1<<EPROM_CS_SHIFT) | \
@@ -29,6 +38,17 @@ void eprom_cs(struct net_device *dev, short bit)
 	else
 		write_nic_byte_E(dev, EPROM_CMD, read_nic_byte_E(dev, EPROM_CMD)\
 			       &~(1<<EPROM_CS_SHIFT)); //disable EPROM
+=======
+	u8 cmdreg;
+
+	read_nic_byte_E(dev, EPROM_CMD, &cmdreg);
+	if (bit)
+		/* enable EPROM */
+		write_nic_byte_E(dev, EPROM_CMD, cmdreg | EPROM_CS_BIT);
+	else
+		/* disable EPROM */
+		write_nic_byte_E(dev, EPROM_CMD, cmdreg & ~EPROM_CS_BIT);
+>>>>>>> refs/remotes/origin/master
 
 	force_pci_posting(dev);
 	udelay(EPROM_DELAY);
@@ -37,12 +57,24 @@ void eprom_cs(struct net_device *dev, short bit)
 
 void eprom_ck_cycle(struct net_device *dev)
 {
+<<<<<<< HEAD
 	write_nic_byte_E(dev, EPROM_CMD,
 		       (1<<EPROM_CK_SHIFT) | read_nic_byte_E(dev,EPROM_CMD));
 	force_pci_posting(dev);
 	udelay(EPROM_DELAY);
 	write_nic_byte_E(dev, EPROM_CMD,
 		       read_nic_byte_E(dev, EPROM_CMD) &~ (1<<EPROM_CK_SHIFT));
+=======
+	u8 cmdreg;
+
+	read_nic_byte_E(dev, EPROM_CMD, &cmdreg);
+	write_nic_byte_E(dev, EPROM_CMD, cmdreg | EPROM_CK_BIT);
+	force_pci_posting(dev);
+	udelay(EPROM_DELAY);
+
+	read_nic_byte_E(dev, EPROM_CMD, &cmdreg);
+	write_nic_byte_E(dev, EPROM_CMD, cmdreg & ~EPROM_CK_BIT);
+>>>>>>> refs/remotes/origin/master
 	force_pci_posting(dev);
 	udelay(EPROM_DELAY);
 }
@@ -50,12 +82,22 @@ void eprom_ck_cycle(struct net_device *dev)
 
 void eprom_w(struct net_device *dev,short bit)
 {
+<<<<<<< HEAD
 	if(bit)
 		write_nic_byte_E(dev, EPROM_CMD, (1<<EPROM_W_SHIFT) | \
 			       read_nic_byte_E(dev,EPROM_CMD));
 	else
 		write_nic_byte_E(dev, EPROM_CMD, read_nic_byte_E(dev,EPROM_CMD)\
 			       &~(1<<EPROM_W_SHIFT));
+=======
+	u8 cmdreg;
+
+	read_nic_byte_E(dev, EPROM_CMD, &cmdreg);
+	if (bit)
+		write_nic_byte_E(dev, EPROM_CMD, cmdreg | EPROM_W_BIT);
+	else
+		write_nic_byte_E(dev, EPROM_CMD, cmdreg & ~EPROM_W_BIT);
+>>>>>>> refs/remotes/origin/master
 
 	force_pci_posting(dev);
 	udelay(EPROM_DELAY);
@@ -64,12 +106,23 @@ void eprom_w(struct net_device *dev,short bit)
 
 short eprom_r(struct net_device *dev)
 {
+<<<<<<< HEAD
 	short bit;
 
 	bit=(read_nic_byte_E(dev, EPROM_CMD) & (1<<EPROM_R_SHIFT) );
 	udelay(EPROM_DELAY);
 
 	if(bit) return 1;
+=======
+	u8 bit;
+
+	read_nic_byte_E(dev, EPROM_CMD, &bit);
+	udelay(EPROM_DELAY);
+
+	if (bit & EPROM_R_BIT)
+		return 1;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -95,7 +148,11 @@ u32 eprom_read(struct net_device *dev, u32 addr)
 	u32 ret;
 
 	ret=0;
+<<<<<<< HEAD
         //enable EPROM programming
+=======
+	//enable EPROM programming
+>>>>>>> refs/remotes/origin/master
 	write_nic_byte_E(dev, EPROM_CMD,
 		       (EPROM_CMD_PROGRAM<<EPROM_CMD_OPERATING_MODE_SHIFT));
 	force_pci_posting(dev);

@@ -11,9 +11,12 @@
 #include <asm/openprom.h>
 #include <asm/oplib.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 
 static int __prom_console_write_buf(const char *buf, int len)

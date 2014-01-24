@@ -15,6 +15,7 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <linux/io.h>
 
@@ -22,6 +23,16 @@ static int mx5_cpu_rev = -1;
 
 #define IIM_SREV 0x24
 #define MX50_HW_ADADIG_DIGPROG	0xB0
+=======
+#include <linux/io.h>
+
+#include "hardware.h"
+#include "common.h"
+
+static int mx5_cpu_rev = -1;
+
+#define IIM_SREV 0x24
+>>>>>>> refs/remotes/origin/master
 
 static int get_mx51_srev(void)
 {
@@ -62,11 +73,16 @@ EXPORT_SYMBOL(mx51_revision);
  * Dependent on link order - so the assumption is that vfp_init is called
  * before us.
  */
+<<<<<<< HEAD
 static int __init mx51_neon_fixup(void)
 {
 	if (!cpu_is_mx51())
 		return 0;
 
+=======
+int __init mx51_neon_fixup(void)
+{
+>>>>>>> refs/remotes/origin/master
 	if (mx51_revision() < IMX_CHIP_REVISION_3_0 &&
 			(elf_hwcap & HWCAP_NEON)) {
 		elf_hwcap &= ~HWCAP_NEON;
@@ -75,7 +91,10 @@ static int __init mx51_neon_fixup(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 late_initcall(mx51_neon_fixup);
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static int get_mx53_srev(void)
@@ -111,6 +130,7 @@ int mx53_revision(void)
 	return mx5_cpu_rev;
 }
 EXPORT_SYMBOL(mx53_revision);
+<<<<<<< HEAD
 
 static int get_mx50_srev(void)
 {
@@ -149,3 +169,5 @@ int mx50_revision(void)
 	return mx5_cpu_rev;
 }
 EXPORT_SYMBOL(mx50_revision);
+=======
+>>>>>>> refs/remotes/origin/master

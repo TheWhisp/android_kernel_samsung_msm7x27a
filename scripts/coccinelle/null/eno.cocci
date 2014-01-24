@@ -2,6 +2,7 @@
 ///
 // Confidence: High
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Copyright: (C) 2010 Nicolas Palix, DIKU.  GPLv2.
 // Copyright: (C) 2010 Julia Lawall, DIKU.  GPLv2.
 // Copyright: (C) 2010 Gilles Muller, INRIA/LiP6.  GPLv2.
@@ -19,12 +20,25 @@ virtual patch
 
 @@
 =======
+=======
+// Copyright: (C) 2010-2012 Nicolas Palix.  GPLv2.
+// Copyright: (C) 2010-2012 Julia Lawall, INRIA/LIP6.  GPLv2.
+// Copyright: (C) 2010-2012 Gilles Muller, INRIA/LiP6.  GPLv2.
+// URL: http://coccinelle.lip6.fr/
+// Comments:
+// Options: --no-includes --include-headers
+
+virtual patch
+>>>>>>> refs/remotes/origin/master
 virtual context
 virtual org
 virtual report
 
 @depends on patch@
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 expression x,E;
 @@
 
@@ -33,7 +47,10 @@ x = \(kmalloc\|kzalloc\|kcalloc\|kmem_cache_alloc\|kmem_cache_zalloc\|kmem_cache
 - IS_ERR(x)
 + !x
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 @r depends on !patch exists@
 expression x,E;
@@ -59,4 +76,7 @@ p2 << r.p2;
 
 msg = "ERROR: allocation function on line %s returns NULL not ERR_PTR on failure" % (p1[0].line)
 coccilib.report.print_report(p2[0], msg)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

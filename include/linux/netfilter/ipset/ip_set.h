@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef _IP_SET_H
 #define _IP_SET_H
 
@@ -5,11 +6,18 @@
  *                         Patrick Schaaf <bof@bof.de>
  *                         Martin Josefsson <gandalf@wlug.westbo.se>
  * Copyright (C) 2003-2011 Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+=======
+/* Copyright (C) 2000-2002 Joakim Axelsson <gozem@linux.nu>
+ *                         Patrick Schaaf <bof@bof.de>
+ *                         Martin Josefsson <gandalf@wlug.westbo.se>
+ * Copyright (C) 2003-2013 Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
@@ -230,15 +238,33 @@ enum ip_set_kopt {
 <<<<<<< HEAD
 =======
 #ifdef __KERNEL__
+=======
+#ifndef _IP_SET_H
+#define _IP_SET_H
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/ip.h>
 #include <linux/ipv6.h>
 #include <linux/netlink.h>
 #include <linux/netfilter.h>
 #include <linux/netfilter/x_tables.h>
+<<<<<<< HEAD
 #include <linux/vmalloc.h>
 #include <net/netlink.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/stringify.h>
+#include <linux/vmalloc.h>
+#include <net/netlink.h>
+#include <uapi/linux/netfilter/ipset/ip_set.h>
+
+#define _IP_SET_MODULE_DESC(a, b, c)		\
+	MODULE_DESCRIPTION(a " type of IP sets, revisions " b "-" c)
+#define IP_SET_MODULE_DESC(a, b, c)		\
+	_IP_SET_MODULE_DESC(a, __stringify(b), __stringify(c))
+
+>>>>>>> refs/remotes/origin/master
 /* Set features */
 enum ip_set_feature {
 	IPSET_TYPE_IP_FLAG = 0,
@@ -252,16 +278,24 @@ enum ip_set_feature {
 	IPSET_TYPE_NAME_FLAG = 4,
 	IPSET_TYPE_NAME = (1 << IPSET_TYPE_NAME_FLAG),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	IPSET_TYPE_IFACE_FLAG = 5,
 	IPSET_TYPE_IFACE = (1 << IPSET_TYPE_IFACE_FLAG),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	IPSET_TYPE_IFACE_FLAG = 5,
+	IPSET_TYPE_IFACE = (1 << IPSET_TYPE_IFACE_FLAG),
+	IPSET_TYPE_NOMATCH_FLAG = 6,
+	IPSET_TYPE_NOMATCH = (1 << IPSET_TYPE_NOMATCH_FLAG),
+>>>>>>> refs/remotes/origin/master
 	/* Strictly speaking not a feature, but a flag for dumping:
 	 * this settype must be dumped last */
 	IPSET_DUMP_LAST_FLAG = 7,
 	IPSET_DUMP_LAST = (1 << IPSET_DUMP_LAST_FLAG),
 };
 
+<<<<<<< HEAD
 struct ip_set;
 
 <<<<<<< HEAD
@@ -269,6 +303,75 @@ typedef int (*ipset_adtfn)(struct ip_set *set, void *value, u32 timeout);
 =======
 typedef int (*ipset_adtfn)(struct ip_set *set, void *value,
 			   u32 timeout, u32 flags);
+=======
+/* Set extensions */
+enum ip_set_extension {
+	IPSET_EXT_BIT_TIMEOUT = 0,
+	IPSET_EXT_TIMEOUT = (1 << IPSET_EXT_BIT_TIMEOUT),
+	IPSET_EXT_BIT_COUNTER = 1,
+	IPSET_EXT_COUNTER = (1 << IPSET_EXT_BIT_COUNTER),
+	IPSET_EXT_BIT_COMMENT = 2,
+	IPSET_EXT_COMMENT = (1 << IPSET_EXT_BIT_COMMENT),
+	/* Mark set with an extension which needs to call destroy */
+	IPSET_EXT_BIT_DESTROY = 7,
+	IPSET_EXT_DESTROY = (1 << IPSET_EXT_BIT_DESTROY),
+};
+
+#define SET_WITH_TIMEOUT(s)	((s)->extensions & IPSET_EXT_TIMEOUT)
+#define SET_WITH_COUNTER(s)	((s)->extensions & IPSET_EXT_COUNTER)
+#define SET_WITH_COMMENT(s)	((s)->extensions & IPSET_EXT_COMMENT)
+
+/* Extension id, in size order */
+enum ip_set_ext_id {
+	IPSET_EXT_ID_COUNTER = 0,
+	IPSET_EXT_ID_TIMEOUT,
+	IPSET_EXT_ID_COMMENT,
+	IPSET_EXT_ID_MAX,
+};
+
+/* Extension type */
+struct ip_set_ext_type {
+	/* Destroy extension private data (can be NULL) */
+	void (*destroy)(void *ext);
+	enum ip_set_extension type;
+	enum ipset_cadt_flags flag;
+	/* Size and minimal alignment */
+	u8 len;
+	u8 align;
+};
+
+extern const struct ip_set_ext_type ip_set_extensions[];
+
+struct ip_set_ext {
+	u64 packets;
+	u64 bytes;
+	u32 timeout;
+	char *comment;
+};
+
+struct ip_set_counter {
+	atomic64_t bytes;
+	atomic64_t packets;
+};
+
+struct ip_set_comment {
+	char *str;
+};
+
+struct ip_set;
+
+#define ext_timeout(e, s)	\
+(unsigned long *)(((void *)(e)) + (s)->offset[IPSET_EXT_ID_TIMEOUT])
+#define ext_counter(e, s)	\
+(struct ip_set_counter *)(((void *)(e)) + (s)->offset[IPSET_EXT_ID_COUNTER])
+#define ext_comment(e, s)	\
+(struct ip_set_comment *)(((void *)(e)) + (s)->offset[IPSET_EXT_ID_COMMENT])
+
+
+typedef int (*ipset_adtfn)(struct ip_set *set, void *value,
+			   const struct ip_set_ext *ext,
+			   struct ip_set_ext *mext, u32 cmdflags);
+>>>>>>> refs/remotes/origin/master
 
 /* Kernel API function options */
 struct ip_set_adt_opt {
@@ -276,9 +379,14 @@ struct ip_set_adt_opt {
 	u8 dim;			/* Dimension of match/target */
 	u8 flags;		/* Direction and negation flags */
 	u32 cmdflags;		/* Command-like flags */
+<<<<<<< HEAD
 	u32 timeout;		/* Timeout value */
 };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ip_set_ext ext;	/* Extensions */
+};
+>>>>>>> refs/remotes/origin/master
 
 /* Set type, variant-specific part */
 struct ip_set_type_variant {
@@ -286,6 +394,7 @@ struct ip_set_type_variant {
 	 *		returns negative error code,
 	 *			zero for no match/success to add/delete
 	 *			positive for matching element */
+<<<<<<< HEAD
 	int (*kadt)(struct ip_set *set, const struct sk_buff * skb,
 <<<<<<< HEAD
 		    enum ipset_adt adt, u8 pf, u8 dim, u8 flags);
@@ -293,6 +402,11 @@ struct ip_set_type_variant {
 		    const struct xt_action_param *par,
 		    enum ipset_adt adt, const struct ip_set_adt_opt *opt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*kadt)(struct ip_set *set, const struct sk_buff *skb,
+		    const struct xt_action_param *par,
+		    enum ipset_adt adt, struct ip_set_adt_opt *opt);
+>>>>>>> refs/remotes/origin/master
 
 	/* Userspace: test/add/del entries
 	 *		returns negative error code,
@@ -300,10 +414,14 @@ struct ip_set_type_variant {
 	 *			positive for matching element */
 	int (*uadt)(struct ip_set *set, struct nlattr *tb[],
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    enum ipset_adt adt, u32 *lineno, u32 flags);
 =======
 		    enum ipset_adt adt, u32 *lineno, u32 flags, bool retried);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    enum ipset_adt adt, u32 *lineno, u32 flags, bool retried);
+>>>>>>> refs/remotes/origin/master
 
 	/* Low level add/del/test functions */
 	ipset_adtfn adt[IPSET_ADT_MAX];
@@ -340,11 +458,14 @@ struct ip_set_type {
 	/* Set type dimension */
 	u8 dimension;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Supported family: may be AF_UNSPEC for both AF_INET/AF_INET6 */
 	u8 family;
 	/* Type revision */
 	u8 revision;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Supported family: may be NFPROTO_UNSPEC for both
 	 * NFPROTO_IPV4/NFPROTO_IPV6.
@@ -352,10 +473,17 @@ struct ip_set_type {
 	u8 family;
 	/* Type revisions */
 	u8 revision_min, revision_max;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	/* Create set */
 	int (*create)(struct ip_set *set, struct nlattr *tb[], u32 flags);
+=======
+
+	/* Create set */
+	int (*create)(struct net *net, struct ip_set *set,
+		      struct nlattr *tb[], u32 flags);
+>>>>>>> refs/remotes/origin/master
 
 	/* Attribute policies */
 	const struct nla_policy create_policy[IPSET_ATTR_CREATE_MAX + 1];
@@ -384,14 +512,28 @@ struct ip_set {
 	/* The actual INET family of the set */
 	u8 family;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* The type revision */
 	u8 revision;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* The type revision */
+	u8 revision;
+	/* Extensions */
+	u8 extensions;
+	/* Default timeout value, if enabled */
+	u32 timeout;
+	/* Element data size */
+	size_t dsize;
+	/* Offsets to extensions in elements */
+	size_t offset[IPSET_EXT_ID_MAX];
+>>>>>>> refs/remotes/origin/master
 	/* The type specific data */
 	void *data;
 };
 
+<<<<<<< HEAD
 /* register and unregister set references */
 extern ip_set_id_t ip_set_get_byname(const char *name, struct ip_set **set);
 extern void ip_set_put_byindex(ip_set_id_t index);
@@ -433,6 +575,137 @@ extern void *ip_set_alloc(size_t size);
 extern void ip_set_free(void *members);
 extern int ip_set_get_ipaddr4(struct nlattr *nla,  __be32 *ipaddr);
 extern int ip_set_get_ipaddr6(struct nlattr *nla, union nf_inet_addr *ipaddr);
+=======
+static inline void
+ip_set_ext_destroy(struct ip_set *set, void *data)
+{
+	/* Check that the extension is enabled for the set and
+	 * call it's destroy function for its extension part in data.
+	 */
+	if (SET_WITH_COMMENT(set))
+		ip_set_extensions[IPSET_EXT_ID_COMMENT].destroy(
+			ext_comment(data, set));
+}
+
+static inline int
+ip_set_put_flags(struct sk_buff *skb, struct ip_set *set)
+{
+	u32 cadt_flags = 0;
+
+	if (SET_WITH_TIMEOUT(set))
+		if (unlikely(nla_put_net32(skb, IPSET_ATTR_TIMEOUT,
+					   htonl(set->timeout))))
+			return -EMSGSIZE;
+	if (SET_WITH_COUNTER(set))
+		cadt_flags |= IPSET_FLAG_WITH_COUNTERS;
+	if (SET_WITH_COMMENT(set))
+		cadt_flags |= IPSET_FLAG_WITH_COMMENT;
+
+	if (!cadt_flags)
+		return 0;
+	return nla_put_net32(skb, IPSET_ATTR_CADT_FLAGS, htonl(cadt_flags));
+}
+
+static inline void
+ip_set_add_bytes(u64 bytes, struct ip_set_counter *counter)
+{
+	atomic64_add((long long)bytes, &(counter)->bytes);
+}
+
+static inline void
+ip_set_add_packets(u64 packets, struct ip_set_counter *counter)
+{
+	atomic64_add((long long)packets, &(counter)->packets);
+}
+
+static inline u64
+ip_set_get_bytes(const struct ip_set_counter *counter)
+{
+	return (u64)atomic64_read(&(counter)->bytes);
+}
+
+static inline u64
+ip_set_get_packets(const struct ip_set_counter *counter)
+{
+	return (u64)atomic64_read(&(counter)->packets);
+}
+
+static inline void
+ip_set_update_counter(struct ip_set_counter *counter,
+		      const struct ip_set_ext *ext,
+		      struct ip_set_ext *mext, u32 flags)
+{
+	if (ext->packets != ULLONG_MAX &&
+	    !(flags & IPSET_FLAG_SKIP_COUNTER_UPDATE)) {
+		ip_set_add_bytes(ext->bytes, counter);
+		ip_set_add_packets(ext->packets, counter);
+	}
+	if (flags & IPSET_FLAG_MATCH_COUNTERS) {
+		mext->packets = ip_set_get_packets(counter);
+		mext->bytes = ip_set_get_bytes(counter);
+	}
+}
+
+static inline bool
+ip_set_put_counter(struct sk_buff *skb, struct ip_set_counter *counter)
+{
+	return nla_put_net64(skb, IPSET_ATTR_BYTES,
+			     cpu_to_be64(ip_set_get_bytes(counter))) ||
+	       nla_put_net64(skb, IPSET_ATTR_PACKETS,
+			     cpu_to_be64(ip_set_get_packets(counter)));
+}
+
+static inline void
+ip_set_init_counter(struct ip_set_counter *counter,
+		    const struct ip_set_ext *ext)
+{
+	if (ext->bytes != ULLONG_MAX)
+		atomic64_set(&(counter)->bytes, (long long)(ext->bytes));
+	if (ext->packets != ULLONG_MAX)
+		atomic64_set(&(counter)->packets, (long long)(ext->packets));
+}
+
+/* Netlink CB args */
+enum {
+	IPSET_CB_NET = 0,
+	IPSET_CB_DUMP,
+	IPSET_CB_INDEX,
+	IPSET_CB_ARG0,
+	IPSET_CB_ARG1,
+	IPSET_CB_ARG2,
+};
+
+/* register and unregister set references */
+extern ip_set_id_t ip_set_get_byname(struct net *net,
+				     const char *name, struct ip_set **set);
+extern void ip_set_put_byindex(struct net *net, ip_set_id_t index);
+extern const char *ip_set_name_byindex(struct net *net, ip_set_id_t index);
+extern ip_set_id_t ip_set_nfnl_get(struct net *net, const char *name);
+extern ip_set_id_t ip_set_nfnl_get_byindex(struct net *net, ip_set_id_t index);
+extern void ip_set_nfnl_put(struct net *net, ip_set_id_t index);
+
+/* API for iptables set match, and SET target */
+
+extern int ip_set_add(ip_set_id_t id, const struct sk_buff *skb,
+		      const struct xt_action_param *par,
+		      struct ip_set_adt_opt *opt);
+extern int ip_set_del(ip_set_id_t id, const struct sk_buff *skb,
+		      const struct xt_action_param *par,
+		      struct ip_set_adt_opt *opt);
+extern int ip_set_test(ip_set_id_t id, const struct sk_buff *skb,
+		       const struct xt_action_param *par,
+		       struct ip_set_adt_opt *opt);
+
+/* Utility functions */
+extern void *ip_set_alloc(size_t size);
+extern void ip_set_free(void *members);
+extern int ip_set_get_ipaddr4(struct nlattr *nla,  __be32 *ipaddr);
+extern int ip_set_get_ipaddr6(struct nlattr *nla, union nf_inet_addr *ipaddr);
+extern size_t ip_set_elem_len(struct ip_set *set, struct nlattr *tb[],
+			      size_t len);
+extern int ip_set_get_extensions(struct ip_set *set, struct nlattr *tb[],
+				 struct ip_set_ext *ext);
+>>>>>>> refs/remotes/origin/master
 
 static inline int
 ip_set_get_hostipaddr4(struct nlattr *nla, u32 *ipaddr)
@@ -440,10 +713,14 @@ ip_set_get_hostipaddr4(struct nlattr *nla, u32 *ipaddr)
 	__be32 ip;
 	int ret = ip_set_get_ipaddr4(nla, &ip);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 	*ipaddr = ntohl(ip);
@@ -457,6 +734,19 @@ ip_set_eexist(int ret, u32 flags)
 	return ret == -IPSET_ERR_EXIST && (flags & IPSET_FLAG_EXIST);
 }
 
+<<<<<<< HEAD
+=======
+/* Match elements marked with nomatch */
+static inline bool
+ip_set_enomatch(int ret, u32 flags, enum ipset_adt adt, struct ip_set *set)
+{
+	return adt == IPSET_TEST &&
+	       (set->type->features & IPSET_TYPE_NOMATCH) &&
+	       ((flags >> 16) & IPSET_FLAG_NOMATCH) &&
+	       (ret > 0 || ret == -ENOTEMPTY);
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Check the NLA_F_NET_BYTEORDER flag */
 static inline bool
 ip_set_attr_netorder(struct nlattr *tb[], int type)
@@ -486,6 +776,7 @@ ip_set_get_h16(const struct nlattr *attr)
 #define ipset_nest_start(skb, attr) nla_nest_start(skb, attr | NLA_F_NESTED)
 #define ipset_nest_end(skb, start)  nla_nest_end(skb, start)
 
+<<<<<<< HEAD
 #define NLA_PUT_IPADDR4(skb, type, ipaddr)			\
 do {								\
 	struct nlattr *__nested = ipset_nest_start(skb, type);	\
@@ -506,6 +797,35 @@ do {								\
 		sizeof(struct in6_addr), ipaddrptr);		\
 	ipset_nest_end(skb, __nested);				\
 } while (0)
+=======
+static inline int nla_put_ipaddr4(struct sk_buff *skb, int type, __be32 ipaddr)
+{
+	struct nlattr *__nested = ipset_nest_start(skb, type);
+	int ret;
+
+	if (!__nested)
+		return -EMSGSIZE;
+	ret = nla_put_net32(skb, IPSET_ATTR_IPADDR_IPV4, ipaddr);
+	if (!ret)
+		ipset_nest_end(skb, __nested);
+	return ret;
+}
+
+static inline int nla_put_ipaddr6(struct sk_buff *skb, int type,
+				  const struct in6_addr *ipaddrptr)
+{
+	struct nlattr *__nested = ipset_nest_start(skb, type);
+	int ret;
+
+	if (!__nested)
+		return -EMSGSIZE;
+	ret = nla_put(skb, IPSET_ATTR_IPADDR_IPV6,
+		      sizeof(struct in6_addr), ipaddrptr);
+	if (!ret)
+		ipset_nest_end(skb, __nested);
+	return ret;
+}
+>>>>>>> refs/remotes/origin/master
 
 /* Get address from skbuff */
 static inline __be32
@@ -534,6 +854,7 @@ bitmap_bytes(u32 a, u32 b)
 	return 4 * ((((b - a + 8) / 8) + 3) / 4);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #endif /* __KERNEL__ */
@@ -569,4 +890,43 @@ struct ip_set_req_version {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/netfilter/ipset/ip_set_timeout.h>
+#include <linux/netfilter/ipset/ip_set_comment.h>
+
+static inline int
+ip_set_put_extensions(struct sk_buff *skb, const struct ip_set *set,
+		      const void *e, bool active)
+{
+	if (SET_WITH_TIMEOUT(set)) {
+		unsigned long *timeout = ext_timeout(e, set);
+
+		if (nla_put_net32(skb, IPSET_ATTR_TIMEOUT,
+			htonl(active ? ip_set_timeout_get(timeout)
+				: *timeout)))
+			return -EMSGSIZE;
+	}
+	if (SET_WITH_COUNTER(set) &&
+	    ip_set_put_counter(skb, ext_counter(e, set)))
+		return -EMSGSIZE;
+	if (SET_WITH_COMMENT(set) &&
+	    ip_set_put_comment(skb, ext_comment(e, set)))
+		return -EMSGSIZE;
+	return 0;
+}
+
+#define IP_SET_INIT_KEXT(skb, opt, set)			\
+	{ .bytes = (skb)->len, .packets = 1,		\
+	  .timeout = ip_set_adt_opt_timeout(opt, set) }
+
+#define IP_SET_INIT_UEXT(set)				\
+	{ .bytes = ULLONG_MAX, .packets = ULLONG_MAX,	\
+	  .timeout = (set)->timeout }
+
+#define IP_SET_INIT_CIDR(a, b) ((a) ? (a) : (b))
+
+#define IPSET_CONCAT(a, b)		a##b
+#define IPSET_TOKEN(a, b)		IPSET_CONCAT(a, b)
+
+>>>>>>> refs/remotes/origin/master
 #endif /*_IP_SET_H */

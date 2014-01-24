@@ -91,10 +91,16 @@ static int mc9s08dz60_direction_output(struct gpio_chip *gc,
 static int mc9s08dz60_probe(struct i2c_client *client,
 			    const struct i2c_device_id *id)
 {
+<<<<<<< HEAD
 	int ret = 0;
 	struct mc9s08dz60 *mc9s;
 
 	mc9s = kzalloc(sizeof(*mc9s), GFP_KERNEL);
+=======
+	struct mc9s08dz60 *mc9s;
+
+	mc9s = devm_kzalloc(&client->dev, sizeof(*mc9s), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!mc9s)
 		return -ENOMEM;
 
@@ -103,13 +109,18 @@ static int mc9s08dz60_probe(struct i2c_client *client,
 	mc9s->chip.dev = &client->dev;
 	mc9s->chip.owner = THIS_MODULE;
 	mc9s->chip.ngpio = GPIO_NUM;
+<<<<<<< HEAD
 	mc9s->chip.can_sleep = 1;
+=======
+	mc9s->chip.can_sleep = true;
+>>>>>>> refs/remotes/origin/master
 	mc9s->chip.get = mc9s08dz60_get_value;
 	mc9s->chip.set = mc9s08dz60_set_value;
 	mc9s->chip.direction_output = mc9s08dz60_direction_output;
 	mc9s->client = client;
 	i2c_set_clientdata(client, mc9s);
 
+<<<<<<< HEAD
 	ret = gpiochip_add(&mc9s->chip);
 	if (ret)
 		goto error;
@@ -119,11 +130,15 @@ static int mc9s08dz60_probe(struct i2c_client *client,
  error:
 	kfree(mc9s);
 	return ret;
+=======
+	return gpiochip_add(&mc9s->chip);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mc9s08dz60_remove(struct i2c_client *client)
 {
 	struct mc9s08dz60 *mc9s;
+<<<<<<< HEAD
 	int ret;
 
 	mc9s = i2c_get_clientdata(client);
@@ -134,6 +149,12 @@ static int mc9s08dz60_remove(struct i2c_client *client)
 
 	return ret;
 
+=======
+
+	mc9s = i2c_get_clientdata(client);
+
+	return gpiochip_remove(&mc9s->chip);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct i2c_device_id mc9s08dz60_id[] = {

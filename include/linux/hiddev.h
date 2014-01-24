@@ -1,12 +1,18 @@
+<<<<<<< HEAD
 #ifndef _HIDDEV_H
 #define _HIDDEV_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  Copyright (c) 1999-2000 Vojtech Pavlik
  *
  *  Sponsored by SuSE
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +32,7 @@
  * e-mail - mail your message to <vojtech@suse.cz>, or by paper mail:
  * Vojtech Pavlik, Ucitelska 1576, Prague 8, 182 00 Czech Republic
  */
+<<<<<<< HEAD
 
 #include <linux/types.h>
 
@@ -210,6 +217,13 @@ struct hiddev_usage_ref_multi {
 
 
 #ifdef __KERNEL__
+=======
+#ifndef _HIDDEV_H
+#define _HIDDEV_H
+
+#include <uapi/linux/hiddev.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /*
  * In-kernel definitions.
@@ -237,4 +251,7 @@ static inline void hiddev_report_event(struct hid_device *hid, struct hid_report
 #endif
 
 #endif
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

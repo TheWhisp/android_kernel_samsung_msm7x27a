@@ -52,7 +52,10 @@ static int nubus_devices_proc_open(struct inode *inode, struct file *file)
 }
 
 static const struct file_operations nubus_devices_proc_fops = {
+<<<<<<< HEAD
 	.owner		= THIS_MODULE,
+=======
+>>>>>>> refs/remotes/origin/master
 	.open		= nubus_devices_proc_open,
 	.read		= seq_read,
 	.llseek		= seq_lseek,
@@ -61,6 +64,13 @@ static const struct file_operations nubus_devices_proc_fops = {
 
 static struct proc_dir_entry *proc_bus_nubus_dir;
 
+<<<<<<< HEAD
+=======
+static const struct file_operations nubus_proc_subdir_fops = {
+#warning Need to set some I/O handlers here
+};
+
+>>>>>>> refs/remotes/origin/master
 static void nubus_proc_subdir(struct nubus_dev* dev,
 			      struct proc_dir_entry* parent,
 			      struct nubus_dir* dir)
@@ -73,9 +83,16 @@ static void nubus_proc_subdir(struct nubus_dev* dev,
 		struct proc_dir_entry* e;
 		
 		sprintf(name, "%x", ent.type);
+<<<<<<< HEAD
 		e = create_proc_entry(name, S_IFREG | S_IRUGO |
 				      S_IWUSR, parent);
 		if (!e) return;
+=======
+		e = proc_create(name, S_IFREG | S_IRUGO | S_IWUSR, parent,
+				&nubus_proc_subdir_fops);
+		if (!e)
+			return;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -143,6 +160,7 @@ int nubus_proc_attach_device(struct nubus_dev *dev)
 }
 EXPORT_SYMBOL(nubus_proc_attach_device);
 
+<<<<<<< HEAD
 /* FIXME: this is certainly broken! */
 int nubus_proc_detach_device(struct nubus_dev *dev)
 {
@@ -157,6 +175,74 @@ int nubus_proc_detach_device(struct nubus_dev *dev)
 	return 0;
 }
 EXPORT_SYMBOL(nubus_proc_detach_device);
+=======
+/*
+ * /proc/nubus stuff
+ */
+static int nubus_proc_show(struct seq_file *m, void *v)
+{
+	const struct nubus_board *board = v;
+
+	/* Display header on line 1 */
+	if (v == SEQ_START_TOKEN)
+		seq_puts(m, "Nubus devices found:\n");
+	else
+		seq_printf(m, "Slot %X: %s\n", board->slot, board->name);
+	return 0;
+}
+
+static void *nubus_proc_start(struct seq_file *m, loff_t *_pos)
+{
+	struct nubus_board *board;
+	unsigned pos;
+
+	if (*_pos > LONG_MAX)
+		return NULL;
+	pos = *_pos;
+	if (pos == 0)
+		return SEQ_START_TOKEN;
+	for (board = nubus_boards; board; board = board->next)
+		if (--pos == 0)
+			break;
+	return board;
+}
+
+static void *nubus_proc_next(struct seq_file *p, void *v, loff_t *_pos)
+{
+	/* Walk the list of NuBus boards */
+	struct nubus_board *board = v;
+
+	++*_pos;
+	if (v == SEQ_START_TOKEN)
+		board = nubus_boards;
+	else if (board)
+		board = board->next;
+	return board;
+}
+
+static void nubus_proc_stop(struct seq_file *p, void *v)
+{
+}
+
+static const struct seq_operations nubus_proc_seqops = {
+	.start	= nubus_proc_start,
+	.next	= nubus_proc_next,
+	.stop	= nubus_proc_stop,
+	.show	= nubus_proc_show,
+};
+
+static int nubus_proc_open(struct inode *inode, struct file *file)
+{
+	return seq_open(file, &nubus_proc_seqops);
+}
+
+static const struct file_operations nubus_proc_fops = {
+	.open		= nubus_proc_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= seq_release,
+};
+>>>>>>> refs/remotes/origin/master
 
 void __init proc_bus_nubus_add_devices(void)
 {
@@ -168,6 +254,10 @@ void __init proc_bus_nubus_add_devices(void)
 
 void __init nubus_proc_init(void)
 {
+<<<<<<< HEAD
+=======
+	proc_create("nubus", 0, NULL, &nubus_proc_fops);
+>>>>>>> refs/remotes/origin/master
 	if (!MACH_IS_MAC)
 		return;
 	proc_bus_nubus_dir = proc_mkdir("bus/nubus", NULL);

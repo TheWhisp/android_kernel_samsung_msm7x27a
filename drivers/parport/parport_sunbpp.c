@@ -82,6 +82,7 @@ static unsigned char parport_sunbpp_read_data(struct parport *p)
 	return sbus_readb(&regs->p_dr);
 }
 
+<<<<<<< HEAD
 #if 0
 static void control_pc_to_sunbpp(struct parport *p, unsigned char status)
 {
@@ -103,6 +104,8 @@ static void control_pc_to_sunbpp(struct parport *p, unsigned char status)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned char status_sunbpp_to_pc(struct parport *p)
 {
 	struct bpp_regs __iomem *regs = (struct bpp_regs __iomem *)p->base;
@@ -286,7 +289,11 @@ static struct parport_operations parport_sunbpp_ops =
 	.owner		= THIS_MODULE,
 };
 
+<<<<<<< HEAD
 static int __devinit bpp_probe(struct platform_device *op)
+=======
+static int bpp_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct parport_operations *ops;
 	struct bpp_regs __iomem *regs;
@@ -305,12 +312,20 @@ static int __devinit bpp_probe(struct platform_device *op)
 	size = resource_size(&op->resource[0]);
 	dma = PARPORT_DMA_NONE;
 
+<<<<<<< HEAD
 	ops = kmalloc(sizeof(struct parport_operations), GFP_KERNEL);
         if (!ops)
 		goto out_unmap;
 
         memcpy (ops, &parport_sunbpp_ops, sizeof(struct parport_operations));
 
+=======
+	ops = kmemdup(&parport_sunbpp_ops, sizeof(struct parport_operations),
+		      GFP_KERNEL);
+        if (!ops)
+		goto out_unmap;
+
+>>>>>>> refs/remotes/origin/master
 	dprintk(("register_port\n"));
 	if (!(p = parport_register_port((unsigned long)base, irq, dma, ops)))
 		goto out_free_ops;
@@ -351,7 +366,11 @@ out_unmap:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit bpp_remove(struct platform_device *op)
+=======
+static int bpp_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct parport *p = dev_get_drvdata(&op->dev);
 	struct parport_operations *ops = p->ops;
@@ -388,6 +407,7 @@ static struct platform_driver bpp_sbus_driver = {
 		.of_match_table = bpp_match,
 	},
 	.probe		= bpp_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(bpp_remove),
 };
 
@@ -404,6 +424,12 @@ static void __exit parport_sunbpp_exit(void)
 =======
 module_platform_driver(bpp_sbus_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= bpp_remove,
+};
+
+module_platform_driver(bpp_sbus_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Derrick J Brashear");
 MODULE_DESCRIPTION("Parport Driver for Sparc bidirectional Port");
@@ -411,8 +437,11 @@ MODULE_SUPPORTED_DEVICE("Sparc Bidirectional Parallel Port");
 MODULE_VERSION("2.0");
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(parport_sunbpp_init)
 module_exit(parport_sunbpp_exit)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

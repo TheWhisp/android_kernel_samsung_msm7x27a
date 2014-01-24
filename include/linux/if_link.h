@@ -1,6 +1,7 @@
 #ifndef _LINUX_IF_LINK_H
 #define _LINUX_IF_LINK_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/netlink.h>
 
@@ -315,12 +316,19 @@ struct ifla_vf_spoofchk {
 
 /* We don't want this structure exposed to user space */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <uapi/linux/if_link.h>
+
+
+/* We don't want this structure exposed to user space */
+>>>>>>> refs/remotes/origin/master
 struct ifla_vf_info {
 	__u32 vf;
 	__u8 mac[32];
 	__u32 vlan;
 	__u32 qos;
 	__u32 tx_rate;
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 =======
@@ -401,4 +409,9 @@ struct ifla_port_vsi {
 	__u8 pad[3];
 };
 
+=======
+	__u32 spoofchk;
+	__u32 linkstate;
+};
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_IF_LINK_H */

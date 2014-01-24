@@ -25,10 +25,14 @@
 
 /* pioctl ops */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int coda_ioctl_permission(struct inode *inode, int mask, unsigned int flags);
 =======
 static int coda_ioctl_permission(struct inode *inode, int mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int coda_ioctl_permission(struct inode *inode, int mask);
+>>>>>>> refs/remotes/origin/master
 static long coda_pioctl(struct file *filp, unsigned int cmd,
 			unsigned long user_data);
 
@@ -46,10 +50,14 @@ const struct file_operations coda_ioctl_operations = {
 
 /* the coda pioctl inode ops */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int coda_ioctl_permission(struct inode *inode, int mask, unsigned int flags)
 =======
 static int coda_ioctl_permission(struct inode *inode, int mask)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int coda_ioctl_permission(struct inode *inode, int mask)
+>>>>>>> refs/remotes/origin/master
 {
 	return (mask & MAY_EXEC) ? -EACCES : 0;
 }
@@ -60,7 +68,11 @@ static long coda_pioctl(struct file *filp, unsigned int cmd,
 	struct path path;
 	int error;
 	struct PioctlData data;
+<<<<<<< HEAD
 	struct inode *inode = filp->f_dentry->d_inode;
+=======
+	struct inode *inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 	struct inode *target_inode = NULL;
 	struct coda_inode_info *cnp;
 

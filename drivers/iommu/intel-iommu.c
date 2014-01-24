@@ -42,9 +42,19 @@
 #include <linux/dmi.h>
 #include <linux/pci-ats.h>
 #include <linux/memblock.h>
+<<<<<<< HEAD
 #include <asm/cacheflush.h>
 #include <asm/iommu.h>
 
+=======
+#include <asm/irq_remapping.h>
+#include <asm/cacheflush.h>
+#include <asm/iommu.h>
+
+#include "irq_remapping.h"
+#include "pci.h"
+
+>>>>>>> refs/remotes/origin/master
 #define ROOT_SIZE		VTD_PAGE_SIZE
 #define CONTEXT_SIZE		VTD_PAGE_SIZE
 
@@ -662,7 +672,11 @@ static struct intel_iommu *device_to_iommu(int segment, u8 bus, u8 devfn)
 			if (drhd->devices[i] &&
 			    drhd->devices[i]->subordinate &&
 			    drhd->devices[i]->subordinate->number <= bus &&
+<<<<<<< HEAD
 			    drhd->devices[i]->subordinate->subordinate >= bus)
+=======
+			    drhd->devices[i]->subordinate->busn_res.end >= bus)
+>>>>>>> refs/remotes/origin/master
 				return drhd->iommu;
 		}
 
@@ -778,7 +792,15 @@ static struct dma_pte *pfn_to_dma_pte(struct dmar_domain *domain,
 	int offset;
 
 	BUG_ON(!domain->pgd);
+<<<<<<< HEAD
 	BUG_ON(addr_width < BITS_PER_LONG && pfn >> addr_width);
+=======
+
+	if (addr_width < BITS_PER_LONG && pfn >> addr_width)
+		/* Address beyond IOMMU's addressing capabilities. */
+		return NULL;
+
+>>>>>>> refs/remotes/origin/master
 	parent = domain->pgd;
 
 	while (level > 0) {
@@ -909,7 +931,11 @@ static void dma_pte_free_level(struct dmar_domain *domain, int level,
 
 		/* If range covers entire pagetable, free it */
 		if (!(start_pfn > level_pfn ||
+<<<<<<< HEAD
 		      last_pfn < level_pfn + level_size(level))) {
+=======
+		      last_pfn < level_pfn + level_size(level) - 1)) {
+>>>>>>> refs/remotes/origin/master
 			dma_clear_pte(pte);
 			domain_flush_cache(domain, pte, sizeof(*pte));
 			free_pgtable_page(level_pte);
@@ -1913,6 +1939,18 @@ static void iommu_detach_dev(struct intel_iommu *iommu, u8 bus, u8 devfn)
 	iommu->flush.flush_iotlb(iommu, 0, 0, 0, DMA_TLB_GLOBAL_FLUSH);
 }
 
+<<<<<<< HEAD
+=======
+static inline void unlink_domain_info(struct device_domain_info *info)
+{
+	assert_spin_locked(&device_domain_lock);
+	list_del(&info->link);
+	list_del(&info->global);
+	if (info->dev)
+		info->dev->dev.archdata.iommu = NULL;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void domain_remove_dev_info(struct dmar_domain *domain)
 {
 	struct device_domain_info *info;
@@ -1923,10 +1961,14 @@ static void domain_remove_dev_info(struct dmar_domain *domain)
 	while (!list_empty(&domain->devices)) {
 		info = list_entry(domain->devices.next,
 			struct device_domain_info, link);
+<<<<<<< HEAD
 		list_del(&info->link);
 		list_del(&info->global);
 		if (info->dev)
 			info->dev->dev.archdata.iommu = NULL;
+=======
+		unlink_domain_info(info);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&device_domain_lock, flags);
 
 		iommu_disable_dev_iotlb(info);
@@ -2008,6 +2050,10 @@ static struct dmar_domain *get_domain_for_dev(struct pci_dev *pdev, int gaw)
 	if (!drhd) {
 		printk(KERN_ERR "IOMMU: can't find DMAR for device %s\n",
 			pci_name(pdev));
+<<<<<<< HEAD
+=======
+		free_domain_mem(domain);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 	iommu = drhd->iommu;
@@ -2293,12 +2339,15 @@ static int domain_add_dev_info(struct dmar_domain *domain,
 	if (!info)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	ret = domain_context_mapping(domain, pdev, translation);
 	if (ret) {
 		free_devinfo_mem(info);
 		return ret;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	info->segment = pci_domain_nr(pdev->bus);
 	info->bus = pdev->bus->number;
 	info->devfn = pdev->devfn;
@@ -2311,6 +2360,18 @@ static int domain_add_dev_info(struct dmar_domain *domain,
 	pdev->dev.archdata.iommu = info;
 	spin_unlock_irqrestore(&device_domain_lock, flags);
 
+<<<<<<< HEAD
+=======
+	ret = domain_context_mapping(domain, pdev, translation);
+	if (ret) {
+		spin_lock_irqsave(&device_domain_lock, flags);
+		unlink_domain_info(info);
+		spin_unlock_irqrestore(&device_domain_lock, flags);
+		free_devinfo_mem(info);
+		return ret;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2378,7 +2439,11 @@ static int iommu_should_identity_map(struct pci_dev *pdev, int startup)
 			return 0;
 		if (pdev->class >> 8 == PCI_CLASS_BRIDGE_PCI)
 			return 0;
+<<<<<<< HEAD
 	} else if (pdev->pcie_type == PCI_EXP_TYPE_PCI_BRIDGE)
+=======
+	} else if (pci_pcie_type(pdev) == PCI_EXP_TYPE_PCI_BRIDGE)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	/* 
@@ -3573,10 +3638,17 @@ found:
 		struct pci_dev *bridge = bus->self;
 
 		if (!bridge || !pci_is_pcie(bridge) ||
+<<<<<<< HEAD
 		    bridge->pcie_type == PCI_EXP_TYPE_PCI_BRIDGE)
 			return 0;
 
 		if (bridge->pcie_type == PCI_EXP_TYPE_ROOT_PORT) {
+=======
+		    pci_pcie_type(bridge) == PCI_EXP_TYPE_PCI_BRIDGE)
+			return 0;
+
+		if (pci_pcie_type(bridge) == PCI_EXP_TYPE_ROOT_PORT) {
+>>>>>>> refs/remotes/origin/master
 			for (i = 0; i < atsru->devices_cnt; i++)
 				if (atsru->devices[i] == bridge)
 					return 1;
@@ -3650,6 +3722,10 @@ static struct notifier_block device_nb = {
 int __init intel_iommu_init(void)
 {
 	int ret = 0;
+<<<<<<< HEAD
+=======
+	struct dmar_drhd_unit *drhd;
+>>>>>>> refs/remotes/origin/master
 
 	/* VT-d is required for a TXT/tboot launch, so enforce that */
 	force_on = tboot_force_iommu();
@@ -3660,6 +3736,23 @@ int __init intel_iommu_init(void)
 		return 	-ENODEV;
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Disable translation if already enabled prior to OS handover.
+	 */
+	for_each_drhd_unit(drhd) {
+		struct intel_iommu *iommu;
+
+		if (drhd->ignored)
+			continue;
+
+		iommu = drhd->iommu;
+		if (iommu->gcmd & DMA_GCMD_TE)
+			iommu_disable_translation(iommu);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (dmar_dev_scope_init() < 0) {
 		if (force_on)
 			panic("tboot: Failed to initialize DMAR device scope\n");
@@ -3748,11 +3841,18 @@ static void iommu_detach_dependent_devices(struct intel_iommu *iommu,
 static void domain_remove_one_dev_info(struct dmar_domain *domain,
 					  struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct device_domain_info *info;
 	struct intel_iommu *iommu;
 	unsigned long flags;
 	int found = 0;
 	struct list_head *entry, *tmp;
+=======
+	struct device_domain_info *info, *tmp;
+	struct intel_iommu *iommu;
+	unsigned long flags;
+	int found = 0;
+>>>>>>> refs/remotes/origin/master
 
 	iommu = device_to_iommu(pci_domain_nr(pdev->bus), pdev->bus->number,
 				pdev->devfn);
@@ -3760,6 +3860,7 @@ static void domain_remove_one_dev_info(struct dmar_domain *domain,
 		return;
 
 	spin_lock_irqsave(&device_domain_lock, flags);
+<<<<<<< HEAD
 	list_for_each_safe(entry, tmp, &domain->devices) {
 		info = list_entry(entry, struct device_domain_info, link);
 		if (info->segment == pci_domain_nr(pdev->bus) &&
@@ -3769,6 +3870,13 @@ static void domain_remove_one_dev_info(struct dmar_domain *domain,
 			list_del(&info->global);
 			if (info->dev)
 				info->dev->dev.archdata.iommu = NULL;
+=======
+	list_for_each_entry_safe(info, tmp, &domain->devices, link) {
+		if (info->segment == pci_domain_nr(pdev->bus) &&
+		    info->bus == pdev->bus->number &&
+		    info->devfn == pdev->devfn) {
+			unlink_domain_info(info);
+>>>>>>> refs/remotes/origin/master
 			spin_unlock_irqrestore(&device_domain_lock, flags);
 
 			iommu_disable_dev_iotlb(info);
@@ -3823,11 +3931,15 @@ static void vm_domain_remove_all_dev_info(struct dmar_domain *domain)
 	while (!list_empty(&domain->devices)) {
 		info = list_entry(domain->devices.next,
 			struct device_domain_info, link);
+<<<<<<< HEAD
 		list_del(&info->link);
 		list_del(&info->global);
 		if (info->dev)
 			info->dev->dev.archdata.iommu = NULL;
 
+=======
+		unlink_domain_info(info);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&device_domain_lock, flags1);
 
 		iommu_disable_dev_iotlb(info);
@@ -3967,6 +4079,13 @@ static int intel_iommu_domain_init(struct iommu_domain *domain)
 	domain_update_iommu_cap(dmar_domain);
 	domain->priv = dmar_domain;
 
+<<<<<<< HEAD
+=======
+	domain->geometry.aperture_start = 0;
+	domain->geometry.aperture_end   = __DOMAIN_MAX_ADDR(dmar_domain->gaw);
+	domain->geometry.force_aperture = true;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -4099,7 +4218,11 @@ static size_t intel_iommu_unmap(struct iommu_domain *domain,
 }
 
 static phys_addr_t intel_iommu_iova_to_phys(struct iommu_domain *domain,
+<<<<<<< HEAD
 					    unsigned long iova)
+=======
+					    dma_addr_t iova)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dmar_domain *dmar_domain = domain->priv;
 	struct dma_pte *pte;
@@ -4120,11 +4243,16 @@ static int intel_iommu_domain_has_cap(struct iommu_domain *domain,
 	if (cap == IOMMU_CAP_CACHE_COHERENCY)
 		return dmar_domain->iommu_snooping;
 	if (cap == IOMMU_CAP_INTR_REMAP)
+<<<<<<< HEAD
 		return intr_remapping_enabled;
+=======
+		return irq_remapping_enabled;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * Group numbers are arbitrary.  Device with the same group number
  * indicate the iommu cannot differentiate between them.  To avoid
@@ -4152,10 +4280,24 @@ static int intel_iommu_device_group(struct device *dev, unsigned int *groupid)
 	id.pci.devfn = pdev->devfn;
 
 	if (!device_to_iommu(id.pci.segment, id.pci.bus, id.pci.devfn))
+=======
+#define REQ_ACS_FLAGS	(PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF)
+
+static int intel_iommu_add_device(struct device *dev)
+{
+	struct pci_dev *pdev = to_pci_dev(dev);
+	struct pci_dev *bridge, *dma_pdev = NULL;
+	struct iommu_group *group;
+	int ret;
+
+	if (!device_to_iommu(pci_domain_nr(pdev->bus),
+			     pdev->bus->number, pdev->devfn))
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	bridge = pci_find_upstream_pcie_bridge(pdev);
 	if (bridge) {
+<<<<<<< HEAD
 		if (pci_is_pcie(bridge)) {
 			id.pci.bus = bridge->subordinate->number;
 			id.pci.devfn = 0;
@@ -4171,6 +4313,83 @@ static int intel_iommu_device_group(struct device *dev, unsigned int *groupid)
 	*groupid = id.group;
 
 	return 0;
+=======
+		if (pci_is_pcie(bridge))
+			dma_pdev = pci_get_domain_bus_and_slot(
+						pci_domain_nr(pdev->bus),
+						bridge->subordinate->number, 0);
+		if (!dma_pdev)
+			dma_pdev = pci_dev_get(bridge);
+	} else
+		dma_pdev = pci_dev_get(pdev);
+
+	/* Account for quirked devices */
+	swap_pci_ref(&dma_pdev, pci_get_dma_source(dma_pdev));
+
+	/*
+	 * If it's a multifunction device that does not support our
+	 * required ACS flags, add to the same group as lowest numbered
+	 * function that also does not suport the required ACS flags.
+	 */
+	if (dma_pdev->multifunction &&
+	    !pci_acs_enabled(dma_pdev, REQ_ACS_FLAGS)) {
+		u8 i, slot = PCI_SLOT(dma_pdev->devfn);
+
+		for (i = 0; i < 8; i++) {
+			struct pci_dev *tmp;
+
+			tmp = pci_get_slot(dma_pdev->bus, PCI_DEVFN(slot, i));
+			if (!tmp)
+				continue;
+
+			if (!pci_acs_enabled(tmp, REQ_ACS_FLAGS)) {
+				swap_pci_ref(&dma_pdev, tmp);
+				break;
+			}
+			pci_dev_put(tmp);
+		}
+	}
+
+	/*
+	 * Devices on the root bus go through the iommu.  If that's not us,
+	 * find the next upstream device and test ACS up to the root bus.
+	 * Finding the next device may require skipping virtual buses.
+	 */
+	while (!pci_is_root_bus(dma_pdev->bus)) {
+		struct pci_bus *bus = dma_pdev->bus;
+
+		while (!bus->self) {
+			if (!pci_is_root_bus(bus))
+				bus = bus->parent;
+			else
+				goto root_bus;
+		}
+
+		if (pci_acs_path_enabled(bus->self, NULL, REQ_ACS_FLAGS))
+			break;
+
+		swap_pci_ref(&dma_pdev, pci_dev_get(bus->self));
+	}
+
+root_bus:
+	group = iommu_group_get(&dma_pdev->dev);
+	pci_dev_put(dma_pdev);
+	if (!group) {
+		group = iommu_group_alloc();
+		if (IS_ERR(group))
+			return PTR_ERR(group);
+	}
+
+	ret = iommu_group_add_device(group, dev);
+
+	iommu_group_put(group);
+	return ret;
+}
+
+static void intel_iommu_remove_device(struct device *dev)
+{
+	iommu_group_remove_device(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct iommu_ops intel_iommu_ops = {
@@ -4182,11 +4401,20 @@ static struct iommu_ops intel_iommu_ops = {
 	.unmap		= intel_iommu_unmap,
 	.iova_to_phys	= intel_iommu_iova_to_phys,
 	.domain_has_cap = intel_iommu_domain_has_cap,
+<<<<<<< HEAD
 	.device_group	= intel_iommu_device_group,
 	.pgsize_bitmap	= INTEL_IOMMU_PGSIZES,
 };
 
 static void __devinit quirk_iommu_g4x_gfx(struct pci_dev *dev)
+=======
+	.add_device	= intel_iommu_add_device,
+	.remove_device	= intel_iommu_remove_device,
+	.pgsize_bitmap	= INTEL_IOMMU_PGSIZES,
+};
+
+static void quirk_iommu_g4x_gfx(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	/* G4x/GM45 integrated gfx dmar support is totally busted. */
 	printk(KERN_INFO "DMAR: Disabling IOMMU for graphics on this chipset\n");
@@ -4201,7 +4429,11 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2e30, quirk_iommu_g4x_gfx);
 DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2e40, quirk_iommu_g4x_gfx);
 DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2e90, quirk_iommu_g4x_gfx);
 
+<<<<<<< HEAD
 static void __devinit quirk_iommu_rwbf(struct pci_dev *dev)
+=======
+static void quirk_iommu_rwbf(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Mobile 4 Series Chipset neglects to set RWBF capability,
@@ -4229,7 +4461,11 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2e90, quirk_iommu_rwbf);
 #define GGC_MEMORY_SIZE_3M_VT	(0xa << 8)
 #define GGC_MEMORY_SIZE_4M_VT	(0xb << 8)
 
+<<<<<<< HEAD
 static void __devinit quirk_calpella_no_shadow_gtt(struct pci_dev *dev)
+=======
+static void quirk_calpella_no_shadow_gtt(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned short ggc;
 

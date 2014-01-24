@@ -41,15 +41,23 @@ enum {
 	BFA_MFG_TYPE_LIGHTNING_P0 = 902, /*  Lightning mezz card - old  */
 	BFA_MFG_TYPE_LIGHTNING = 1741,   /*  Lightning mezz card        */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BFA_MFG_TYPE_INVALID = 0,        /*  Invalid card type          */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	BFA_MFG_TYPE_PROWLER_F = 1560,	 /*  Prowler FC only cards	*/
 	BFA_MFG_TYPE_PROWLER_N = 1410,	 /*  Prowler NIC only cards	*/
 	BFA_MFG_TYPE_PROWLER_C = 1710,   /*  Prowler CNA only cards	*/
 	BFA_MFG_TYPE_PROWLER_D = 1860,   /*  Prowler Dual cards		*/
 	BFA_MFG_TYPE_CHINOOK   = 1867,   /*  Chinook cards		*/
+<<<<<<< HEAD
 	BFA_MFG_TYPE_INVALID = 0,        /*  Invalid card type		*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BFA_MFG_TYPE_CHINOOK2   = 1869,	 /*!< Chinook2 cards		*/
+	BFA_MFG_TYPE_INVALID = 0,        /*  Invalid card type		*/
+>>>>>>> refs/remotes/origin/master
 };
 
 #pragma pack(1)
@@ -63,11 +71,17 @@ enum {
 	(type) == BFA_MFG_TYPE_ASTRA || \
 	(type) == BFA_MFG_TYPE_LIGHTNING_P0 || \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	(type) == BFA_MFG_TYPE_LIGHTNING))
 =======
 	(type) == BFA_MFG_TYPE_LIGHTNING || \
 	(type) == BFA_MFG_TYPE_CHINOOK))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	(type) == BFA_MFG_TYPE_LIGHTNING || \
+	(type) == BFA_MFG_TYPE_CHINOOK || \
+	(type) == BFA_MFG_TYPE_CHINOOK2))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Check if the card having old wwn/mac handling
@@ -139,15 +153,21 @@ enum bfa_status {
 					 *  contact support */
 	BFA_STATUS_EPROTOCOL	= 6,	/*  Protocol error */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BFA_STATUS_DEVBUSY	= 13,	/*  Device busy - Retry operation */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	BFA_STATUS_SFP_UNSUPP	= 10,	/*  Unsupported SFP - Replace SFP */
 	BFA_STATUS_UNKNOWN_VFID = 11,	/*  VF_ID not found */
 	BFA_STATUS_DATACORRUPTED = 12,  /*  Diag returned data corrupted */
 	BFA_STATUS_DEVBUSY	= 13,	/*  Device busy - Retry operation */
 	BFA_STATUS_HDMA_FAILED  = 16,   /* Host dma failed contact support */
 	BFA_STATUS_FLASH_BAD_LEN = 17,	/*  Flash bad length */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	BFA_STATUS_UNKNOWN_LWWN = 18,	/*  LPORT PWWN not found */
 	BFA_STATUS_UNKNOWN_RWWN = 19,	/*  RPORT PWWN not found */
 	BFA_STATUS_VPORT_EXISTS = 21,	/*  VPORT already exists */
@@ -155,20 +175,27 @@ enum bfa_status {
 	BFA_STATUS_UNSUPP_SPEED	= 23,	/*  Invalid Speed Check speed setting */
 	BFA_STATUS_INVLD_DFSZ	= 24,	/*  Invalid Max data field size */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BFA_STATUS_FABRIC_RJT	= 29,	/*  Reject from attached fabric */
 	BFA_STATUS_VPORT_WWN_BP	= 46,	/*  WWN is same as base port's WWN */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	BFA_STATUS_CMD_NOTSUPP  = 26,   /*  Command/API not supported */
 	BFA_STATUS_FABRIC_RJT	= 29,	/*  Reject from attached fabric */
 	BFA_STATUS_UNKNOWN_VWWN = 30,	/*  VPORT PWWN not found */
 	BFA_STATUS_PORT_OFFLINE = 34,	/*  Port is not online */
 	BFA_STATUS_VPORT_WWN_BP	= 46,	/*  WWN is same as base port's WWN */
 	BFA_STATUS_PORT_NOT_DISABLED = 47, /* Port not disabled disable port */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	BFA_STATUS_NO_FCPIM_NEXUS = 52,	/* No FCP Nexus exists with the rport */
 	BFA_STATUS_IOC_FAILURE	= 56,	/* IOC failure - Retry, if persists
 					 * contact support */
 	BFA_STATUS_INVALID_WWN	= 57,	/*  Invalid WWN */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	BFA_STATUS_DIAG_BUSY	= 71,	/*  diag busy */
 	BFA_STATUS_ENOFSAVE	= 78,	/*  No saved firmware trace */
@@ -177,6 +204,8 @@ enum bfa_status {
 	BFA_STATUS_PBC		= 154, /*  Operation not allowed for pre-boot
 					*  configuration */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	BFA_STATUS_ADAPTER_ENABLED = 60, /* Adapter is not disabled */
 	BFA_STATUS_IOC_NON_OP   = 61,	/* IOC is not operational */
 	BFA_STATUS_VERSION_FAIL = 70, /* Application/Driver version mismatch */
@@ -184,23 +213,38 @@ enum bfa_status {
 	BFA_STATUS_BEACON_ON    = 72,   /* Port Beacon already on */
 	BFA_STATUS_ENOFSAVE	= 78,	/*  No saved firmware trace */
 	BFA_STATUS_IOC_DISABLED = 82,   /* IOC is already disabled */
+<<<<<<< HEAD
+=======
+	BFA_STATUS_ERROR_TRL_ENABLED  = 87,   /* TRL is enabled */
+	BFA_STATUS_ERROR_QOS_ENABLED  = 88,   /* QoS is enabled */
+>>>>>>> refs/remotes/origin/master
 	BFA_STATUS_NO_SFP_DEV = 89,	/* No SFP device check or replace SFP */
 	BFA_STATUS_MEMTEST_FAILED = 90, /* Memory test failed contact support */
 	BFA_STATUS_LEDTEST_OP = 109, /* LED test is operating */
 	BFA_STATUS_INVALID_MAC  = 134, /*  Invalid MAC address */
+<<<<<<< HEAD
+=======
+	BFA_STATUS_CMD_NOTSUPP_CNA = 146, /* Command not supported for CNA */
+>>>>>>> refs/remotes/origin/master
 	BFA_STATUS_PBC		= 154, /*  Operation not allowed for pre-boot
 					*  configuration */
 	BFA_STATUS_BAD_FWCFG = 156,	/* Bad firmware configuration */
 	BFA_STATUS_INVALID_VENDOR = 158, /* Invalid switch vendor */
 	BFA_STATUS_SFP_NOT_READY = 159,	/* SFP info is not ready. Retry */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	BFA_STATUS_TRUNK_ENABLED = 164, /* Trunk is already enabled on
 					 * this adapter */
 	BFA_STATUS_TRUNK_DISABLED  = 165, /* Trunking is disabled on
 					   * the adapter */
 	BFA_STATUS_IOPROFILE_OFF = 175, /* IO profile OFF */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	BFA_STATUS_PHY_NOT_PRESENT = 183, /* PHY module not present */
 	BFA_STATUS_FEATURE_NOT_SUPPORTED = 192,	/* Feature not supported */
 	BFA_STATUS_ENTRY_EXISTS = 193,	/* Entry already exists */
@@ -210,9 +254,54 @@ enum bfa_status {
 	BFA_STATUS_FAA_DISABLED = 198,	/* FAA is already disabled */
 	BFA_STATUS_FAA_ACQUIRED = 199,	/* FAA is already acquired */
 	BFA_STATUS_FAA_ACQ_ADDR = 200,	/* Acquiring addr */
+<<<<<<< HEAD
 	BFA_STATUS_ERROR_TRUNK_ENABLED = 203,	/* Trunk enabled on adapter */
 	BFA_STATUS_MAX_ENTRY_REACHED = 212,	/* MAX entry reached */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BFA_STATUS_BBCR_FC_ONLY = 201, /*!< BBCredit Recovery is supported for *
+					* FC mode only */
+	BFA_STATUS_ERROR_TRUNK_ENABLED = 203,	/* Trunk enabled on adapter */
+	BFA_STATUS_MAX_ENTRY_REACHED = 212,	/* MAX entry reached */
+	BFA_STATUS_TOPOLOGY_LOOP = 230, /* Topology is set to Loop */
+	BFA_STATUS_LOOP_UNSUPP_MEZZ = 231, /* Loop topology is not supported
+					    * on mezz cards */
+	BFA_STATUS_INVALID_BW = 233,	/* Invalid bandwidth value */
+	BFA_STATUS_QOS_BW_INVALID = 234,   /* Invalid QOS bandwidth
+					    * configuration */
+	BFA_STATUS_DPORT_ENABLED = 235, /* D-port mode is already enabled */
+	BFA_STATUS_DPORT_DISABLED = 236, /* D-port mode is already disabled */
+	BFA_STATUS_CMD_NOTSUPP_MEZZ = 239, /* Cmd not supported for MEZZ card */
+	BFA_STATUS_FRU_NOT_PRESENT = 240, /* fru module not present */
+	BFA_STATUS_DPORT_NO_SFP = 243, /* SFP is not present.\n D-port will be
+					* enabled but it will be operational
+					* only after inserting a valid SFP. */
+	BFA_STATUS_DPORT_ERR = 245,	/* D-port mode is enabled */
+	BFA_STATUS_DPORT_ENOSYS = 254, /* Switch has no D_Port functionality */
+	BFA_STATUS_DPORT_CANT_PERF = 255, /* Switch port is not D_Port capable
+					* or D_Port is disabled */
+	BFA_STATUS_DPORT_LOGICALERR = 256, /* Switch D_Port fail */
+	BFA_STATUS_DPORT_SWBUSY = 257, /* Switch port busy */
+	BFA_STATUS_ERR_BBCR_SPEED_UNSUPPORT = 258, /*!< BB credit recovery is
+					* supported at max port speed alone */
+	BFA_STATUS_ERROR_BBCR_ENABLED  = 259, /*!< BB credit recovery
+					* is enabled */
+	BFA_STATUS_INVALID_BBSCN = 260, /*!< Invalid BBSCN value.
+					 * Valid range is [1-15] */
+	BFA_STATUS_DDPORT_ERR = 261, /* Dynamic D_Port mode is active.\n To
+					* exit dynamic mode, disable D_Port on
+					* the remote port */
+	BFA_STATUS_DPORT_SFPWRAP_ERR = 262, /* Clear e/o_wrap fail, check or
+						* replace SFP */
+	BFA_STATUS_BBCR_CFG_NO_CHANGE = 265, /*!< BBCR is operational.
+			* Disable BBCR and try this operation again. */
+	BFA_STATUS_DPORT_SW_NOTREADY = 268, /* Remote port is not ready to
+					* start dport test. Check remote
+					* port status. */
+	BFA_STATUS_DPORT_INV_SFP = 271, /* Invalid SFP for D-PORT mode. */
+	BFA_STATUS_DPORT_CMD_NOTSUPP    = 273, /* Dport is not supported by
+					* remote port */
+>>>>>>> refs/remotes/origin/master
 	BFA_STATUS_MAX_VAL		/* Unknown error code */
 };
 #define bfa_status_t enum bfa_status
@@ -249,6 +338,10 @@ enum {
 	BFA_ADAPTER_MFG_NAME_LEN    = 8,   /*  manufacturer name length */
 	BFA_ADAPTER_SYM_NAME_LEN    = 64,  /*  adapter symbolic name length */
 	BFA_ADAPTER_OS_TYPE_LEN	    = 64,  /*  adapter os type length */
+<<<<<<< HEAD
+=======
+	BFA_ADAPTER_UUID_LEN	    = 16,  /* adapter uuid length */
+>>>>>>> refs/remotes/origin/master
 };
 
 struct bfa_adapter_attr_s {
@@ -278,6 +371,14 @@ struct bfa_adapter_attr_s {
 
 	u8		is_mezz;
 	u8		trunk_capable;
+<<<<<<< HEAD
+=======
+	u8		mfg_day;	/* manufacturing day */
+	u8		mfg_month;	/* manufacturing month */
+	u16		mfg_year;	/* manufacturing year */
+	u16		rsvd;
+	u8		uuid[BFA_ADAPTER_UUID_LEN];
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -331,10 +432,15 @@ enum bfa_ioc_state {
 	BFA_IOC_FWMISMATCH	= 11,	/*  IOC f/w different from drivers */
 	BFA_IOC_ENABLING	= 12,	/*  IOC is being enabled */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BFA_IOC_HWFAIL		= 13,	/*  PCI mapping doesn't exist */
 	BFA_IOC_ACQ_ADDR	= 14,	/*  Acquiring addr from fabric */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BFA_IOC_HWFAIL		= 13,	/*  PCI mapping doesn't exist */
+	BFA_IOC_ACQ_ADDR	= 14,	/*  Acquiring addr from fabric */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -365,9 +471,13 @@ struct bfa_ioc_drv_stats_s {
 	u32	disable_replies;
 	u32	enable_replies;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32	rsvd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32	rsvd;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -395,12 +505,20 @@ struct bfa_ioc_attr_s {
 	struct bfa_ioc_pci_attr_s	pci_attr;
 	u8				port_id;	/*  port number    */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8				rsvd[7];	/*  64bit align    */
 =======
 	u8				port_mode;	/*  bfa_mode_s	*/
 	u8				cap_bm;		/*  capability	*/
 	u8				port_mode_cfg;	/*  bfa_mode_s	*/
 	u8				rsvd[4];	/*  64bit align	*/
+=======
+	u8				port_mode;	/*  bfa_mode_s	*/
+	u8				cap_bm;		/*  capability	*/
+	u8				port_mode_cfg;	/*  bfa_mode_s	*/
+	u8				def_fn;		/* 1 if default fn */
+	u8				rsvd[3];	/*  64bit align	*/
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -534,7 +652,10 @@ struct bfa_ioc_aen_data_s {
 	wwn_t	pwwn;
 	u16	ioc_type;
 	mac_t	mac;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -552,7 +673,10 @@ struct bfa_ioc_aen_data_s {
 #define BFA_MFG_SUPPLIER_SERIALNUM_SIZE		20
 #define BFA_MFG_SUPPLIER_REVISION_SIZE		4
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Initial capability definition
  */
@@ -568,7 +692,10 @@ struct bfa_ioc_aen_data_s {
 #define BFA_CM_FC16G	0x08
 #define BFA_CM_SRIOV	0x10
 #define BFA_CM_MEZZ	0x20
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #pragma pack(1)
 
@@ -576,6 +703,7 @@ struct bfa_ioc_aen_data_s {
  * All numerical fields are in big-endian format.
  */
 struct bfa_mfg_block_s {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u8		version;	/*  manufacturing block version */
 	u8		mfg_sig[3];	/*  characters 'M', 'F', 'G' */
@@ -603,6 +731,8 @@ struct bfa_mfg_block_s {
 	u8		rsv3[108];
 	u8		md5_chksum[BFA_MFG_CHKSUM_SIZE]; /*  md5 checksum */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8	version;    /*!< manufacturing block version */
 	u8     mfg_sig[3]; /*!< characters 'M', 'F', 'G' */
 	u16    mfgsize;    /*!< mfg block size */
@@ -636,7 +766,10 @@ struct bfa_mfg_block_s {
 	char        initial_mode[8]; /*!< initial mode: hba/cna/nic */
 	u8     rsv4[84];
 	u8     md5_chksum[BFA_MFG_CHKSUM_SIZE]; /*!< md5 checksum */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #pragma pack()
@@ -655,6 +788,7 @@ enum {
 	BFA_PCI_DEVICE_ID_CT		= 0x14,
 	BFA_PCI_DEVICE_ID_CT_FC		= 0x21,
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 #define bfa_asic_id_ct(devid)			\
@@ -662,6 +796,10 @@ enum {
 	 (devid) == BFA_PCI_DEVICE_ID_CT_FC)
 =======
 	BFA_PCI_DEVICE_ID_CT2		= 0x22,
+=======
+	BFA_PCI_DEVICE_ID_CT2		= 0x22,
+	BFA_PCI_DEVICE_ID_CT2_QUAD	= 0x23,
+>>>>>>> refs/remotes/origin/master
 };
 
 #define bfa_asic_id_cb(__d)			\
@@ -670,10 +808,18 @@ enum {
 #define bfa_asic_id_ct(__d)			\
 	((__d) == BFA_PCI_DEVICE_ID_CT ||	\
 	 (__d) == BFA_PCI_DEVICE_ID_CT_FC)
+<<<<<<< HEAD
 #define bfa_asic_id_ct2(__d)	((__d) == BFA_PCI_DEVICE_ID_CT2)
 #define bfa_asic_id_ctc(__d)	\
 	(bfa_asic_id_ct(__d) || bfa_asic_id_ct2(__d))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define bfa_asic_id_ct2(__d)			\
+	((__d) == BFA_PCI_DEVICE_ID_CT2 ||	\
+	(__d) == BFA_PCI_DEVICE_ID_CT2_QUAD)
+#define bfa_asic_id_ctc(__d)	\
+	(bfa_asic_id_ct(__d) || bfa_asic_id_ct2(__d))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * PCI sub-system device and vendor ID information
@@ -681,11 +827,17 @@ enum {
 enum {
 	BFA_PCI_FCOE_SSDEVICE_ID	= 0x14,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BFA_PCI_CT2_SSID_FCoE		= 0x22,
 	BFA_PCI_CT2_SSID_ETH		= 0x23,
 	BFA_PCI_CT2_SSID_FC		= 0x24,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BFA_PCI_CT2_SSID_FCoE		= 0x22,
+	BFA_PCI_CT2_SSID_ETH		= 0x23,
+	BFA_PCI_CT2_SSID_FC		= 0x24,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -706,12 +858,16 @@ enum bfa_port_speed {
 	BFA_PORT_SPEED_10GBPS	= 10,
 	BFA_PORT_SPEED_16GBPS	= 16,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BFA_PORT_SPEED_AUTO =
 		(BFA_PORT_SPEED_1GBPS | BFA_PORT_SPEED_2GBPS |
 		 BFA_PORT_SPEED_4GBPS | BFA_PORT_SPEED_8GBPS),
 =======
 	BFA_PORT_SPEED_AUTO	= 0xf,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BFA_PORT_SPEED_AUTO	= 0xf,
+>>>>>>> refs/remotes/origin/master
 };
 #define bfa_port_speed_t enum bfa_port_speed
 
@@ -748,7 +904,10 @@ struct bfa_boot_bootlun_s {
  * BOOT boot configuraton
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct bfa_boot_cfg_s {
 	u8		version;
 	u8		rsvd1;
@@ -763,7 +922,10 @@ struct bfa_boot_cfg_s {
 	struct bfa_boot_bootlun_s blun_disc[BFA_BOOT_BOOTLUN_MAX];
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct bfa_boot_pbc_s {
 	u8              enable;         /*  enable/disable SAN boot */
 	u8              speed;          /*  boot speed settings */
@@ -774,7 +936,10 @@ struct bfa_boot_pbc_s {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct bfa_ethboot_cfg_s {
 	u8		version;
 	u8		rsvd1;
@@ -814,7 +979,12 @@ struct bfa_ablk_cfg_pf_s {
 	u8	rsvd[1];
 	u16	num_qpairs;
 	u16	num_vectors;
+<<<<<<< HEAD
 	u32	bw;
+=======
+	u16	bw_min;
+	u16	bw_max;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct bfa_ablk_cfg_port_s {
@@ -981,11 +1151,46 @@ struct sfp_diag_ext_s {
 	u8	ext_status_ctl[2];
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * Diagnostic: Data Fields -- Address A2h
+ * General Use Fields: User Writable Table - Features's Control Registers
+ * Total 32 bytes
+ */
+struct sfp_usr_eeprom_s {
+	u8	rsvd1[2];       /* 128-129 */
+	u8	ewrap;          /* 130 */
+	u8	rsvd2[2];       /*  */
+	u8	owrap;          /* 133 */
+	u8	rsvd3[2];       /*  */
+	u8	prbs;           /* 136: PRBS 7 generator */
+	u8	rsvd4[2];       /*  */
+	u8	tx_eqz_16;      /* 139: TX Equalizer (16xFC) */
+	u8	tx_eqz_8;       /* 140: TX Equalizer (8xFC) */
+	u8	rsvd5[2];       /*  */
+	u8	rx_emp_16;      /* 143: RX Emphasis (16xFC) */
+	u8	rx_emp_8;       /* 144: RX Emphasis (8xFC) */
+	u8	rsvd6[2];       /*  */
+	u8	tx_eye_adj;     /* 147: TX eye Threshold Adjust */
+	u8	rsvd7[3];       /*  */
+	u8	tx_eye_qctl;    /* 151: TX eye Quality Control */
+	u8	tx_eye_qres;    /* 152: TX eye Quality Result */
+	u8	rsvd8[2];       /*  */
+	u8	poh[3];         /* 155-157: Power On Hours */
+	u8	rsvd9[2];       /*  */
+};
+
+>>>>>>> refs/remotes/origin/master
 struct sfp_mem_s {
 	struct sfp_srlid_base_s	srlid_base;
 	struct sfp_srlid_ext_s	srlid_ext;
 	struct sfp_diag_base_s	diag_base;
 	struct sfp_diag_ext_s	diag_ext;
+<<<<<<< HEAD
+=======
+	struct sfp_usr_eeprom_s usr_eeprom;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -1159,6 +1364,10 @@ struct bfa_flash_attr_s {
 #define LB_PATTERN_DEFAULT	0xB5B5B5B5
 #define QTEST_CNT_DEFAULT	10
 #define QTEST_PAT_DEFAULT	LB_PATTERN_DEFAULT
+<<<<<<< HEAD
+=======
+#define DPORT_ENABLE_LOOPCNT_DEFAULT (1024 * 1024)
+>>>>>>> refs/remotes/origin/master
 
 struct bfa_diag_memtest_s {
 	u8	algo;
@@ -1187,6 +1396,57 @@ struct bfa_diag_loopback_result_s {
 	u8	rsvd[3];
 };
 
+<<<<<<< HEAD
+=======
+enum bfa_diag_dport_test_status {
+	DPORT_TEST_ST_IDLE	= 0,    /* the test has not started yet. */
+	DPORT_TEST_ST_FINAL	= 1,    /* the test done successfully */
+	DPORT_TEST_ST_SKIP	= 2,    /* the test skipped */
+	DPORT_TEST_ST_FAIL	= 3,    /* the test failed */
+	DPORT_TEST_ST_INPRG	= 4,    /* the testing is in progress */
+	DPORT_TEST_ST_RESPONDER	= 5,    /* test triggered from remote port */
+	DPORT_TEST_ST_STOPPED	= 6,    /* the test stopped by user. */
+	DPORT_TEST_ST_MAX
+};
+
+enum bfa_diag_dport_test_type {
+	DPORT_TEST_ELOOP	= 0,
+	DPORT_TEST_OLOOP	= 1,
+	DPORT_TEST_ROLOOP	= 2,
+	DPORT_TEST_LINK		= 3,
+	DPORT_TEST_MAX
+};
+
+enum bfa_diag_dport_test_opmode {
+	BFA_DPORT_OPMODE_AUTO	= 0,
+	BFA_DPORT_OPMODE_MANU	= 1,
+};
+
+struct bfa_diag_dport_subtest_result_s {
+	u8	status;		/* bfa_diag_dport_test_status */
+	u8	rsvd[7];	/* 64bit align */
+	u64	start_time;	/* timestamp  */
+};
+
+struct bfa_diag_dport_result_s {
+	wwn_t	rp_pwwn;	/* switch port wwn  */
+	wwn_t	rp_nwwn;	/* switch node wwn  */
+	u64	start_time;	/* user/sw start time */
+	u64	end_time;	/* timestamp  */
+	u8	status;		/* bfa_diag_dport_test_status */
+	u8	mode;		/* bfa_diag_dport_test_opmode */
+	u8	rsvd;		/* 64bit align */
+	u8	speed;		/* link speed for buf_reqd */
+	u16	buffer_required;
+	u16	frmsz;		/* frame size for buf_reqd */
+	u32	lpcnt;		/* Frame count */
+	u32	pat;		/* Pattern */
+	u32	roundtrip_latency;	/* in nano sec */
+	u32	est_cable_distance;	/* in meter */
+	struct bfa_diag_dport_subtest_result_s subtest[DPORT_TEST_MAX];
+};
+
+>>>>>>> refs/remotes/origin/master
 struct bfa_diag_ledtest_s {
 	u32	cmd;    /* bfa_led_op_t */
 	u32	color;  /* bfa_led_color_t */
@@ -1241,5 +1501,8 @@ struct bfa_phy_stats_s {
 
 #pragma pack()
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __BFA_DEFS_H__ */

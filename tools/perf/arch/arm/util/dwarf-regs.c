@@ -9,6 +9,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <libio.h>
 =======
 #include <stdlib.h>
@@ -16,6 +17,9 @@
 #include <libio.h>
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <stddef.h>
+>>>>>>> refs/remotes/origin/master
 #include <dwarf-regs.h>
 
 struct pt_regs_dwarfnum {

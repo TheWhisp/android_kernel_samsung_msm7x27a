@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Module Name: hwxface - Public ACPICA hardware interfaces
@@ -7,10 +10,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,9 +54,14 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define EXPORT_ACPI_INTERFACES
+
+>>>>>>> refs/remotes/origin/master
 #include <acpi/acpi.h>
 #include "accommon.h"
 #include "acnamesp.h"
@@ -88,6 +100,7 @@ acpi_status acpi_reset(void)
 
 	if (reset_reg->space_id == ACPI_ADR_SPACE_SYSTEM_IO) {
 		/*
+<<<<<<< HEAD
 		 * For I/O space, write directly to the OSL. This
 		 * bypasses the port validation mechanism, which may
 		 * block a valid write to the reset register. Spec
@@ -96,6 +109,22 @@ acpi_status acpi_reset(void)
 		status =
 		    acpi_os_write_port((acpi_io_address) reset_reg->address,
 				       acpi_gbl_FADT.reset_value, 8);
+=======
+		 * For I/O space, write directly to the OSL. This bypasses the port
+		 * validation mechanism, which may block a valid write to the reset
+		 * register.
+		 *
+		 * NOTE:
+		 * The ACPI spec requires the reset register width to be 8, so we
+		 * hardcode it here and ignore the FADT value. This maintains
+		 * compatibility with other ACPI implementations that have allowed
+		 * BIOS code with bad register width values to go unnoticed.
+		 */
+		status =
+		    acpi_os_write_port((acpi_io_address) reset_reg->address,
+				       acpi_gbl_FADT.reset_value,
+				       ACPI_RESET_REGISTER_WIDTH);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* Write the reset value to the reset register */
 
@@ -111,8 +140,13 @@ ACPI_EXPORT_SYMBOL(acpi_reset)
  *
  * FUNCTION:    acpi_read
  *
+<<<<<<< HEAD
  * PARAMETERS:  Value               - Where the value is returned
  *              Reg                 - GAS register structure
+=======
+ * PARAMETERS:  value               - Where the value is returned
+ *              reg                 - GAS register structure
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -120,14 +154,23 @@ ACPI_EXPORT_SYMBOL(acpi_reset)
  *
  * LIMITATIONS: <These limitations also apply to acpi_write>
  *      bit_width must be exactly 8, 16, 32, or 64.
+<<<<<<< HEAD
  *      space_iD must be system_memory or system_iO.
+=======
+ *      space_ID must be system_memory or system_IO.
+>>>>>>> refs/remotes/origin/master
  *      bit_offset and access_width are currently ignored, as there has
  *          not been a need to implement these.
  *
  ******************************************************************************/
 acpi_status acpi_read(u64 *return_value, struct acpi_generic_address *reg)
 {
+<<<<<<< HEAD
 	u32 value;
+=======
+	u32 value_lo;
+	u32 value_hi;
+>>>>>>> refs/remotes/origin/master
 	u32 width;
 	u64 address;
 	acpi_status status;
@@ -146,6 +189,7 @@ acpi_status acpi_read(u64 *return_value, struct acpi_generic_address *reg)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	width = reg->bit_width;
 	if (width == 64) {
 		width = 32;	/* Break into two 32-bit transfers */
@@ -160,10 +204,15 @@ acpi_status acpi_read(u64 *return_value, struct acpi_generic_address *reg)
 
 	/*
 	 * Two address spaces supported: Memory or IO. PCI_Config is
+=======
+	/*
+	 * Two address spaces supported: Memory or I/O. PCI_Config is
+>>>>>>> refs/remotes/origin/master
 	 * not supported here because the GAS structure is insufficient
 	 */
 	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
 		status = acpi_os_read_memory((acpi_physical_address)
+<<<<<<< HEAD
 <<<<<<< HEAD
 					     address, &value, width);
 		if (ACPI_FAILURE(status)) {
@@ -184,6 +233,8 @@ acpi_status acpi_read(u64 *return_value, struct acpi_generic_address *reg)
 		}
 	} else {		/* ACPI_ADR_SPACE_SYSTEM_IO, validated earlier */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					     address, return_value,
 					     reg->bit_width);
 		if (ACPI_FAILURE(status)) {
@@ -191,10 +242,17 @@ acpi_status acpi_read(u64 *return_value, struct acpi_generic_address *reg)
 		}
 	} else {		/* ACPI_ADR_SPACE_SYSTEM_IO, validated earlier */
 
+<<<<<<< HEAD
+=======
+		value_lo = 0;
+		value_hi = 0;
+
+>>>>>>> refs/remotes/origin/master
 		width = reg->bit_width;
 		if (width == 64) {
 			width = 32;	/* Break into two 32-bit transfers */
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 		status = acpi_hw_read_port((acpi_io_address)
@@ -203,18 +261,39 @@ acpi_status acpi_read(u64 *return_value, struct acpi_generic_address *reg)
 			return (status);
 		}
 		*return_value = value;
+=======
+
+		status = acpi_hw_read_port((acpi_io_address)
+					   address, &value_lo, width);
+		if (ACPI_FAILURE(status)) {
+			return (status);
+		}
+>>>>>>> refs/remotes/origin/master
 
 		if (reg->bit_width == 64) {
 
 			/* Read the top 32 bits */
 
 			status = acpi_hw_read_port((acpi_io_address)
+<<<<<<< HEAD
 						   (address + 4), &value, 32);
 			if (ACPI_FAILURE(status)) {
 				return (status);
 			}
 			*return_value |= ((u64)value << 32);
 		}
+=======
+						   (address + 4), &value_hi,
+						   32);
+			if (ACPI_FAILURE(status)) {
+				return (status);
+			}
+		}
+
+		/* Set the return value only if status is AE_OK */
+
+		*return_value = (value_lo | ((u64)value_hi << 32));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ACPI_DEBUG_PRINT((ACPI_DB_IO,
@@ -223,7 +302,11 @@ acpi_status acpi_read(u64 *return_value, struct acpi_generic_address *reg)
 			  ACPI_FORMAT_UINT64(address),
 			  acpi_ut_get_region_name(reg->space_id)));
 
+<<<<<<< HEAD
 	return (status);
+=======
+	return (AE_OK);
+>>>>>>> refs/remotes/origin/master
 }
 
 ACPI_EXPORT_SYMBOL(acpi_read)
@@ -232,8 +315,13 @@ ACPI_EXPORT_SYMBOL(acpi_read)
  *
  * FUNCTION:    acpi_write
  *
+<<<<<<< HEAD
  * PARAMETERS:  Value               - Value to be written
  *              Reg                 - GAS register structure
+=======
+ * PARAMETERS:  value               - Value to be written
+ *              reg                 - GAS register structure
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -256,6 +344,7 @@ acpi_status acpi_write(u64 value, struct acpi_generic_address *reg)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	width = reg->bit_width;
 	if (width == 64) {
 		width = 32;	/* Break into two 32-bit transfers */
@@ -263,12 +352,15 @@ acpi_status acpi_write(u64 value, struct acpi_generic_address *reg)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Two address spaces supported: Memory or IO. PCI_Config is
 	 * not supported here because the GAS structure is insufficient
 	 */
 	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
 		status = acpi_os_write_memory((acpi_physical_address)
+<<<<<<< HEAD
 <<<<<<< HEAD
 					      address, ACPI_LODWORD(value),
 					      width);
@@ -286,6 +378,8 @@ acpi_status acpi_write(u64 value, struct acpi_generic_address *reg)
 		}
 	} else {		/* ACPI_ADR_SPACE_SYSTEM_IO, validated earlier */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					      address, value, reg->bit_width);
 		if (ACPI_FAILURE(status)) {
 			return (status);
@@ -296,7 +390,10 @@ acpi_status acpi_write(u64 value, struct acpi_generic_address *reg)
 		if (width == 64) {
 			width = 32;	/* Break into two 32-bit transfers */
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		status = acpi_hw_write_port((acpi_io_address)
 					    address, ACPI_LODWORD(value),
@@ -327,9 +424,13 @@ acpi_status acpi_write(u64 value, struct acpi_generic_address *reg)
 ACPI_EXPORT_SYMBOL(acpi_write)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if (!ACPI_REDUCED_HARDWARE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if (!ACPI_REDUCED_HARDWARE)
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_read_bit_register
@@ -399,12 +500,17 @@ ACPI_EXPORT_SYMBOL(acpi_read_bit_register)
  * FUNCTION:    acpi_write_bit_register
  *
  * PARAMETERS:  register_id     - ID of ACPI Bit Register to access
+<<<<<<< HEAD
  *              Value           - Value to write to the register, in bit
 <<<<<<< HEAD
  *                                position zero. The bit is automaticallly
 =======
  *                                position zero. The bit is automatically
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *              value           - Value to write to the register, in bit
+ *                                position zero. The bit is automatically
+>>>>>>> refs/remotes/origin/master
  *                                shifted to the correct position.
  *
  * RETURN:      Status
@@ -502,10 +608,14 @@ unlock_and_exit:
 
 ACPI_EXPORT_SYMBOL(acpi_write_bit_register)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #endif				/* !ACPI_REDUCED_HARDWARE */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_get_sleep_type_data
@@ -514,17 +624,53 @@ ACPI_EXPORT_SYMBOL(acpi_write_bit_register)
  *              *sleep_type_a        - Where SLP_TYPa is returned
  *              *sleep_type_b        - Where SLP_TYPb is returned
  *
+<<<<<<< HEAD
  * RETURN:      Status - ACPI status
  *
  * DESCRIPTION: Obtain the SLP_TYPa and SLP_TYPb values for the requested sleep
  *              state.
+=======
+ * RETURN:      Status
+ *
+ * DESCRIPTION: Obtain the SLP_TYPa and SLP_TYPb values for the requested
+ *              sleep state via the appropriate \_Sx object.
+ *
+ *  The sleep state package returned from the corresponding \_Sx_ object
+ *  must contain at least one integer.
+ *
+ *  March 2005:
+ *  Added support for a package that contains two integers. This
+ *  goes against the ACPI specification which defines this object as a
+ *  package with one encoded DWORD integer. However, existing practice
+ *  by many BIOS vendors is to return a package with 2 or more integer
+ *  elements, at least one per sleep type (A/B).
+ *
+ *  January 2013:
+ *  Therefore, we must be prepared to accept a package with either a
+ *  single integer or multiple integers.
+ *
+ *  The single integer DWORD format is as follows:
+ *      BYTE 0 - Value for the PM1A SLP_TYP register
+ *      BYTE 1 - Value for the PM1B SLP_TYP register
+ *      BYTE 2-3 - Reserved
+ *
+ *  The dual integer format is as follows:
+ *      Integer 0 - Value for the PM1A SLP_TYP register
+ *      Integer 1 - Value for the PM1A SLP_TYP register
+>>>>>>> refs/remotes/origin/master
  *
  ******************************************************************************/
 acpi_status
 acpi_get_sleep_type_data(u8 sleep_state, u8 *sleep_type_a, u8 *sleep_type_b)
 {
+<<<<<<< HEAD
 	acpi_status status = AE_OK;
 	struct acpi_evaluate_info *info;
+=======
+	acpi_status status;
+	struct acpi_evaluate_info *info;
+	union acpi_operand_object **elements;
+>>>>>>> refs/remotes/origin/master
 
 	ACPI_FUNCTION_TRACE(acpi_get_sleep_type_data);
 
@@ -541,6 +687,7 @@ acpi_get_sleep_type_data(u8 sleep_state, u8 *sleep_type_a, u8 *sleep_type_b)
 		return_ACPI_STATUS(AE_NO_MEMORY);
 	}
 
+<<<<<<< HEAD
 	info->pathname =
 	    ACPI_CAST_PTR(char, acpi_gbl_sleep_state_names[sleep_state]);
 
@@ -553,6 +700,16 @@ acpi_get_sleep_type_data(u8 sleep_state, u8 *sleep_type_a, u8 *sleep_type_b)
 				  acpi_format_exception(status),
 				  info->pathname));
 
+=======
+	/*
+	 * Evaluate the \_Sx namespace object containing the register values
+	 * for this state
+	 */
+	info->relative_pathname =
+	    ACPI_CAST_PTR(char, acpi_gbl_sleep_state_names[sleep_state]);
+	status = acpi_ns_evaluate(info);
+	if (ACPI_FAILURE(status)) {
+>>>>>>> refs/remotes/origin/master
 		goto cleanup;
 	}
 
@@ -560,6 +717,7 @@ acpi_get_sleep_type_data(u8 sleep_state, u8 *sleep_type_a, u8 *sleep_type_b)
 
 	if (!info->return_object) {
 		ACPI_ERROR((AE_INFO, "No Sleep State object returned from [%s]",
+<<<<<<< HEAD
 			    info->pathname));
 		status = AE_NOT_EXIST;
 	}
@@ -619,6 +777,73 @@ acpi_get_sleep_type_data(u8 sleep_state, u8 *sleep_type_a, u8 *sleep_type_b)
 	acpi_ut_remove_reference(info->return_object);
 
       cleanup:
+=======
+			    info->relative_pathname));
+		status = AE_AML_NO_RETURN_VALUE;
+		goto cleanup;
+	}
+
+	/* Return object must be of type Package */
+
+	if (info->return_object->common.type != ACPI_TYPE_PACKAGE) {
+		ACPI_ERROR((AE_INFO,
+			    "Sleep State return object is not a Package"));
+		status = AE_AML_OPERAND_TYPE;
+		goto cleanup1;
+	}
+
+	/*
+	 * Any warnings about the package length or the object types have
+	 * already been issued by the predefined name module -- there is no
+	 * need to repeat them here.
+	 */
+	elements = info->return_object->package.elements;
+	switch (info->return_object->package.count) {
+	case 0:
+
+		status = AE_AML_PACKAGE_LIMIT;
+		break;
+
+	case 1:
+
+		if (elements[0]->common.type != ACPI_TYPE_INTEGER) {
+			status = AE_AML_OPERAND_TYPE;
+			break;
+		}
+
+		/* A valid _Sx_ package with one integer */
+
+		*sleep_type_a = (u8)elements[0]->integer.value;
+		*sleep_type_b = (u8)(elements[0]->integer.value >> 8);
+		break;
+
+	case 2:
+	default:
+
+		if ((elements[0]->common.type != ACPI_TYPE_INTEGER) ||
+		    (elements[1]->common.type != ACPI_TYPE_INTEGER)) {
+			status = AE_AML_OPERAND_TYPE;
+			break;
+		}
+
+		/* A valid _Sx_ package with two integers */
+
+		*sleep_type_a = (u8)elements[0]->integer.value;
+		*sleep_type_b = (u8)elements[1]->integer.value;
+		break;
+	}
+
+cleanup1:
+	acpi_ut_remove_reference(info->return_object);
+
+cleanup:
+	if (ACPI_FAILURE(status)) {
+		ACPI_EXCEPTION((AE_INFO, status,
+				"While evaluating Sleep State [%s]",
+				info->relative_pathname));
+	}
+
+>>>>>>> refs/remotes/origin/master
 	ACPI_FREE(info);
 	return_ACPI_STATUS(status);
 }

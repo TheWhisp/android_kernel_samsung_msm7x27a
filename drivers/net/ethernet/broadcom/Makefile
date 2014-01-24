@@ -9,3 +9,7 @@ obj-$(CONFIG_CNIC) += cnic.o
 obj-$(CONFIG_BNX2X) += bnx2x/
 obj-$(CONFIG_SB1250_MAC) += sb1250-mac.o
 obj-$(CONFIG_TIGON3) += tg3.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_BGMAC) += bgmac.o
+>>>>>>> refs/remotes/origin/master

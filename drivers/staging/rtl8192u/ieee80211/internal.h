@@ -24,6 +24,7 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern enum km_type crypto_km_types[];
 
 static inline enum km_type crypto_kmap_type(int out)
@@ -43,6 +44,8 @@ static inline void crypto_kunmap(void *vaddr, int out)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void crypto_yield(struct crypto_tfm *tfm)
 {
 	if (!in_softirq())
@@ -99,4 +102,7 @@ void crypto_exit_cipher_ops(struct crypto_tfm *tfm);
 void crypto_exit_compress_ops(struct crypto_tfm *tfm);
 
 #endif	/* _CRYPTO_INTERNAL_H */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

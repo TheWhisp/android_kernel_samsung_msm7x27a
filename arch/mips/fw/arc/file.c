@@ -15,7 +15,11 @@
 
 LONG
 ArcGetDirectoryEntry(ULONG FileID, struct linux_vdirent *Buffer,
+<<<<<<< HEAD
                      ULONG N, ULONG *Count)
+=======
+		     ULONG N, ULONG *Count)
+>>>>>>> refs/remotes/origin/master
 {
 	return ARC_CALL4(get_vdirent, FileID, Buffer, N, Count);
 }
@@ -69,7 +73,11 @@ ArcGetFileInformation(ULONG FileID, struct linux_finfo *Information)
 }
 
 LONG ArcSetFileInformation(ULONG FileID, ULONG AttributeFlags,
+<<<<<<< HEAD
                            ULONG AttributeMask)
+=======
+			   ULONG AttributeMask)
+>>>>>>> refs/remotes/origin/master
 {
 	return ARC_CALL3(set_finfo, FileID, AttributeFlags, AttributeMask);
 }

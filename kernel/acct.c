@@ -85,17 +85,23 @@ static void do_acct_process(struct bsd_acct_struct *acct,
  */
 struct bsd_acct_struct {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	volatile int		active;
 	volatile int		needcheck;
 	struct file		*file;
 	struct pid_namespace	*ns;
 	struct timer_list	timer;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int			active;
 	unsigned long		needcheck;
 	struct file		*file;
 	struct pid_namespace	*ns;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head	list;
 };
 
@@ -103,6 +109,7 @@ static DEFINE_SPINLOCK(acct_lock);
 static LIST_HEAD(acct_list);
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Called whenever the timer says to check the free space.
  */
@@ -115,6 +122,8 @@ static void acct_timeout(unsigned long x)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Check the amount of free space and suspend/resume accordingly.
  */
 static int check_free_space(struct bsd_acct_struct *acct, struct file *file)
@@ -123,6 +132,7 @@ static int check_free_space(struct bsd_acct_struct *acct, struct file *file)
 	int res;
 	int act;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sector_t resume;
 	sector_t suspend;
 
@@ -130,13 +140,18 @@ static int check_free_space(struct bsd_acct_struct *acct, struct file *file)
 	res = acct->active;
 	if (!file || !acct->needcheck)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u64 resume;
 	u64 suspend;
 
 	spin_lock(&acct_lock);
 	res = acct->active;
 	if (!file || time_is_before_jiffies(acct->needcheck))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	spin_unlock(&acct_lock);
 
@@ -147,12 +162,17 @@ static int check_free_space(struct bsd_acct_struct *acct, struct file *file)
 	resume = sbuf.f_blocks * RESUME;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sector_div(suspend, 100);
 	sector_div(resume, 100);
 =======
 	do_div(suspend, 100);
 	do_div(resume, 100);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	do_div(suspend, 100);
+	do_div(resume, 100);
+>>>>>>> refs/remotes/origin/master
 
 	if (sbuf.f_bavail <= suspend)
 		act = -1;
@@ -185,6 +205,7 @@ static int check_free_space(struct bsd_acct_struct *acct, struct file *file)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	del_timer(&acct->timer);
 	acct->needcheck = 0;
 	acct->timer.expires = jiffies + ACCT_TIMEOUT*HZ;
@@ -192,6 +213,9 @@ static int check_free_space(struct bsd_acct_struct *acct, struct file *file)
 =======
 	acct->needcheck = jiffies + ACCT_TIMEOUT*HZ;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	acct->needcheck = jiffies + ACCT_TIMEOUT*HZ;
+>>>>>>> refs/remotes/origin/master
 	res = acct->active;
 out:
 	spin_unlock(&acct_lock);
@@ -214,12 +238,16 @@ static void acct_file_reopen(struct bsd_acct_struct *acct, struct file *file,
 		old_acct = acct->file;
 		old_ns = acct->ns;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		del_timer(&acct->timer);
 		acct->active = 0;
 		acct->needcheck = 0;
 =======
 		acct->active = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		acct->active = 0;
+>>>>>>> refs/remotes/origin/master
 		acct->file = NULL;
 		acct->ns = NULL;
 		list_del(&acct->list);
@@ -227,6 +255,7 @@ static void acct_file_reopen(struct bsd_acct_struct *acct, struct file *file,
 	if (file) {
 		acct->file = file;
 		acct->ns = ns;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		acct->needcheck = 0;
 		acct->active = 1;
@@ -240,6 +269,11 @@ static void acct_file_reopen(struct bsd_acct_struct *acct, struct file *file,
 		acct->active = 1;
 		list_add(&acct->list, &acct_list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		acct->needcheck = jiffies + ACCT_TIMEOUT*HZ;
+		acct->active = 1;
+		list_add(&acct->list, &acct_list);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (old_acct) {
 		mnt_unpin(old_acct->f_path.mnt);
@@ -250,7 +284,11 @@ static void acct_file_reopen(struct bsd_acct_struct *acct, struct file *file,
 	}
 }
 
+<<<<<<< HEAD
 static int acct_on(char *name)
+=======
+static int acct_on(struct filename *pathname)
+>>>>>>> refs/remotes/origin/master
 {
 	struct file *file;
 	struct vfsmount *mnt;
@@ -258,11 +296,19 @@ static int acct_on(char *name)
 	struct bsd_acct_struct *acct = NULL;
 
 	/* Difference from BSD - they don't do O_APPEND */
+<<<<<<< HEAD
 	file = filp_open(name, O_WRONLY|O_APPEND|O_LARGEFILE, 0);
 	if (IS_ERR(file))
 		return PTR_ERR(file);
 
 	if (!S_ISREG(file->f_path.dentry->d_inode->i_mode)) {
+=======
+	file = file_open_name(pathname, O_WRONLY|O_APPEND|O_LARGEFILE, 0);
+	if (IS_ERR(file))
+		return PTR_ERR(file);
+
+	if (!S_ISREG(file_inode(file)->i_mode)) {
+>>>>>>> refs/remotes/origin/master
 		filp_close(file, NULL);
 		return -EACCES;
 	}
@@ -317,7 +363,11 @@ SYSCALL_DEFINE1(acct, const char __user *, name)
 		return -EPERM;
 
 	if (name) {
+<<<<<<< HEAD
 		char *tmp = getname(name);
+=======
+		struct filename *tmp = getname(name);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(tmp))
 			return (PTR_ERR(tmp));
 		error = acct_on(tmp);
@@ -373,10 +423,14 @@ void acct_auto_close(struct super_block *sb)
 restart:
 	list_for_each_entry(acct, &acct_list, list)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (acct->file && acct->file->f_path.mnt->mnt_sb == sb) {
 =======
 		if (acct->file && acct->file->f_path.dentry->d_sb == sb) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (acct->file && acct->file->f_path.dentry->d_sb == sb) {
+>>>>>>> refs/remotes/origin/master
 			acct_file_reopen(acct, NULL, NULL);
 			goto restart;
 		}
@@ -391,9 +445,12 @@ void acct_exit_ns(struct pid_namespace *ns)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	del_timer_sync(&acct->timer);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&acct_lock);
 	if (acct->file != NULL)
 		acct_file_reopen(acct, NULL, NULL);
@@ -544,10 +601,14 @@ static void do_acct_process(struct bsd_acct_struct *acct,
 	 * by the different kernel functions.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memset((caddr_t)&ac, 0, sizeof(acct_t));
 =======
 	memset(&ac, 0, sizeof(acct_t));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memset(&ac, 0, sizeof(acct_t));
+>>>>>>> refs/remotes/origin/master
 
 	ac.ac_version = ACCT_VERSION | ACCT_BYTEORDER;
 	strlcpy(ac.ac_comm, current->comm, sizeof(ac.ac_comm));
@@ -576,8 +637,13 @@ static void do_acct_process(struct bsd_acct_struct *acct,
 	do_div(elapsed, AHZ);
 	ac.ac_btime = get_seconds() - elapsed;
 	/* we really need to bite the bullet and change layout */
+<<<<<<< HEAD
 	ac.ac_uid = orig_cred->uid;
 	ac.ac_gid = orig_cred->gid;
+=======
+	ac.ac_uid = from_kuid_munged(file->f_cred->user_ns, orig_cred->uid);
+	ac.ac_gid = from_kgid_munged(file->f_cred->user_ns, orig_cred->gid);
+>>>>>>> refs/remotes/origin/master
 #if ACCT_VERSION==2
 	ac.ac_ahz = AHZ;
 #endif
@@ -609,6 +675,15 @@ static void do_acct_process(struct bsd_acct_struct *acct,
 	ac.ac_swaps = encode_comp_t(0);
 
 	/*
+<<<<<<< HEAD
+=======
+	 * Get freeze protection. If the fs is frozen, just skip the write
+	 * as we could deadlock the system otherwise.
+	 */
+	if (!file_start_write_trylock(file))
+		goto out;
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * Kernel segment override to datasegment and write it
 	 * to the accounting file.
 	 */
@@ -623,6 +698,10 @@ static void do_acct_process(struct bsd_acct_struct *acct,
 			       sizeof(acct_t), &file->f_pos);
 	current->signal->rlim[RLIMIT_FSIZE].rlim_cur = flim;
 	set_fs(fs);
+<<<<<<< HEAD
+=======
+	file_end_write(file);
+>>>>>>> refs/remotes/origin/master
 out:
 	revert_creds(orig_cred);
 }
@@ -635,6 +714,10 @@ out:
 void acct_collect(long exitcode, int group_dead)
 {
 	struct pacct_struct *pacct = &current->signal->pacct;
+<<<<<<< HEAD
+=======
+	cputime_t utime, stime;
+>>>>>>> refs/remotes/origin/master
 	unsigned long vsize = 0;
 
 	if (group_dead && current->mm) {
@@ -663,12 +746,18 @@ void acct_collect(long exitcode, int group_dead)
 	if (current->flags & PF_SIGNALED)
 		pacct->ac_flag |= AXSIG;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pacct->ac_utime = cputime_add(pacct->ac_utime, current->utime);
 	pacct->ac_stime = cputime_add(pacct->ac_stime, current->stime);
 =======
 	pacct->ac_utime += current->utime;
 	pacct->ac_stime += current->stime;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	task_cputime(current, &utime, &stime);
+	pacct->ac_utime += utime;
+	pacct->ac_stime += stime;
+>>>>>>> refs/remotes/origin/master
 	pacct->ac_minflt += current->min_flt;
 	pacct->ac_majflt += current->maj_flt;
 	spin_unlock_irq(&current->sighand->siglock);

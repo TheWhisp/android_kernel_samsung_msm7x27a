@@ -338,9 +338,16 @@ struct ring_info {
  * the layout
  */
 struct b44_hw_stats {
+<<<<<<< HEAD
 #define _B44(x)	u32 x;
 B44_STAT_REG_DECLARE
 #undef _B44
+=======
+#define _B44(x)	u64 x;
+B44_STAT_REG_DECLARE
+#undef _B44
+	struct u64_stats_sync	syncp;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ssb_device;

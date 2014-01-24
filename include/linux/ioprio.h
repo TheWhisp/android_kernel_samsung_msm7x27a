@@ -42,6 +42,7 @@ enum {
 };
 
 /*
+<<<<<<< HEAD
  * if process has set io priority explicitly, use that. if not, convert
  * the cpu scheduler nice value to an io priority
  */
@@ -62,6 +63,16 @@ static inline int task_ioprio_class(struct io_context *ioc)
 	return IOPRIO_CLASS_BE;
 }
 
+=======
+ * Fallback BE priority
+ */
+#define IOPRIO_NORM	(4)
+
+/*
+ * if process has set io priority explicitly, use that. if not, convert
+ * the cpu scheduler nice value to an io priority
+ */
+>>>>>>> refs/remotes/origin/master
 static inline int task_nice_ioprio(struct task_struct *task)
 {
 	return (task_nice(task) + 20) / 5;

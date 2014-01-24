@@ -2,16 +2,22 @@
 #include <linux/debugfs.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/mm.h>
 #include <linux/string.h>
 #include <linux/slab.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/hardirq.h>
 #include <linux/mm.h>
 #include <linux/string.h>
 #include <linux/slab.h>
 #include <linux/export.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "decl.h"
 #include "cmd.h"
@@ -28,6 +34,7 @@ static void lbs_debug_init(struct lbs_private *priv);
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int open_file_generic(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
@@ -36,6 +43,8 @@ static int open_file_generic(struct inode *inode, struct file *file)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t write_file_dummy(struct file *file, const char __user *buf,
                                 size_t count, loff_t *ppos)
 {
@@ -498,7 +507,11 @@ static ssize_t lbs_rdmac_write(struct file *file,
 		res = -EFAULT;
 		goto out_unlock;
 	}
+<<<<<<< HEAD
 	priv->mac_offset = simple_strtoul((char *)buf, NULL, 16);
+=======
+	priv->mac_offset = simple_strtoul(buf, NULL, 16);
+>>>>>>> refs/remotes/origin/master
 	res = count;
 out_unlock:
 	free_page(addr);
@@ -580,7 +593,11 @@ static ssize_t lbs_rdbbp_write(struct file *file,
 		res = -EFAULT;
 		goto out_unlock;
 	}
+<<<<<<< HEAD
 	priv->bbp_offset = simple_strtoul((char *)buf, NULL, 16);
+=======
+	priv->bbp_offset = simple_strtoul(buf, NULL, 16);
+>>>>>>> refs/remotes/origin/master
 	res = count;
 out_unlock:
 	free_page(addr);
@@ -706,10 +723,14 @@ out_unlock:
 #define FOPS(fread, fwrite) { \
 	.owner = THIS_MODULE, \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = open_file_generic, \
 =======
 	.open = simple_open, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open = simple_open, \
+>>>>>>> refs/remotes/origin/master
 	.read = (fread), \
 	.write = (fwrite), \
 	.llseek = generic_file_llseek, \
@@ -718,10 +739,14 @@ out_unlock:
 struct lbs_debugfs_files {
 	const char *name;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int perm;
 =======
 	umode_t perm;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t perm;
+>>>>>>> refs/remotes/origin/master
 	struct file_operations fops;
 };
 
@@ -936,7 +961,14 @@ static ssize_t lbs_debugfs_write(struct file *f, const char __user *buf,
 	char *p2;
 	struct debug_data *d = f->private_data;
 
+<<<<<<< HEAD
 	pdata = kmalloc(cnt, GFP_KERNEL);
+=======
+	if (cnt == 0)
+		return 0;
+
+	pdata = kmalloc(cnt + 1, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (pdata == NULL)
 		return 0;
 
@@ -945,6 +977,10 @@ static ssize_t lbs_debugfs_write(struct file *f, const char __user *buf,
 		kfree(pdata);
 		return 0;
 	}
+<<<<<<< HEAD
+=======
+	pdata[cnt] = '\0';
+>>>>>>> refs/remotes/origin/master
 
 	p0 = pdata;
 	for (i = 0; i < num_of_items; i++) {
@@ -980,10 +1016,14 @@ static ssize_t lbs_debugfs_write(struct file *f, const char __user *buf,
 static const struct file_operations lbs_debug_fops = {
 	.owner = THIS_MODULE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = open_file_generic,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open = simple_open,
+>>>>>>> refs/remotes/origin/master
 	.write = lbs_debugfs_write,
 	.read = lbs_debugfs_read,
 	.llseek = default_llseek,

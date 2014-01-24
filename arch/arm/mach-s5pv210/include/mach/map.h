@@ -60,10 +60,15 @@
 #define S5PV210_PA_CFCON		0xE8200000
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define S5PV210_PA_MFC			0xF1700000
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define S5PV210_PA_MFC			0xF1700000
+
+>>>>>>> refs/remotes/origin/master
 #define S5PV210_PA_HSMMC(x)		(0xEB000000 + ((x) * 0x100000))
 
 #define S5PV210_PA_HSOTG		0xEC000000
@@ -94,7 +99,10 @@
 #define S5PV210_PA_FIMC2		0xFB400000
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define S5PV210_PA_JPEG			0xFB600000
 
 #define S5PV210_PA_SDO			0xF9000000
@@ -103,7 +111,10 @@
 #define S5PV210_PA_HDMI			0xFA100000
 #define S5PV210_PA_IIC_HDMIPHY		0xFA900000
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Compatibiltiy Defines */
 
 #define S3C_PA_FB			S5PV210_PA_FB
@@ -118,10 +129,15 @@
 #define S3C_PA_USB_HSOTG		S5PV210_PA_HSOTG
 #define S3C_PA_WDT			S5PV210_PA_WATCHDOG
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define S3C_PA_SPI0			S5PV210_PA_SPI0
 #define S3C_PA_SPI1			S5PV210_PA_SPI1
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define S3C_PA_SPI0			S5PV210_PA_SPI0
+#define S3C_PA_SPI1			S5PV210_PA_SPI1
+>>>>>>> refs/remotes/origin/master
 
 #define S5P_PA_CHIPID			S5PV210_PA_CHIPID
 #define S5P_PA_FIMC0			S5PV210_PA_FIMC0
@@ -129,7 +145,10 @@
 #define S5P_PA_FIMC2			S5PV210_PA_FIMC2
 #define S5P_PA_MIPI_CSIS0		S5PV210_PA_MIPI_CSIS
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define S5P_PA_MFC			S5PV210_PA_MFC
 #define S5P_PA_IIC_HDMIPHY		S5PV210_PA_IIC_HDMIPHY
 
@@ -138,7 +157,10 @@
 #define S5P_PA_MIXER			S5PV210_PA_MIXER
 #define S5P_PA_HDMI			S5PV210_PA_HDMI
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define S5P_PA_ONENAND			S5PC110_PA_ONENAND
 #define S5P_PA_ONENAND_DMA		S5PC110_PA_ONENAND_DMA
 #define S5P_PA_SDRAM			S5PV210_PA_SDRAM
@@ -147,6 +169,7 @@
 #define S5P_PA_TIMER			S5PV210_PA_TIMER
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define S5P_PA_JPEG			S5PV210_PA_JPEG
 
@@ -154,6 +177,14 @@
 #define SAMSUNG_PA_ADC			S5PV210_PA_ADC
 #define SAMSUNG_PA_CFCON		S5PV210_PA_CFCON
 #define SAMSUNG_PA_KEYPAD		S5PV210_PA_KEYPAD
+=======
+#define S5P_PA_JPEG			S5PV210_PA_JPEG
+
+#define SAMSUNG_PA_ADC			S5PV210_PA_ADC
+#define SAMSUNG_PA_CFCON		S5PV210_PA_CFCON
+#define SAMSUNG_PA_KEYPAD		S5PV210_PA_KEYPAD
+#define SAMSUNG_PA_TIMER		S5PV210_PA_TIMER
+>>>>>>> refs/remotes/origin/master
 
 /* UART */
 

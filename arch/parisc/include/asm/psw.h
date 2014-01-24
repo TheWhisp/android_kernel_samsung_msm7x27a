@@ -60,7 +60,10 @@
 #define USER_PSW      (PSW_C | PSW_Q | PSW_P | PSW_D | PSW_I)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 
 /* The program status word as bitfields.  */
@@ -102,5 +105,8 @@ struct pa_psw {
 
 #endif /* !__ASSEMBLY__ */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

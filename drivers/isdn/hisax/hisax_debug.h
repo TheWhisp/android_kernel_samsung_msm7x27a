@@ -5,19 +5,27 @@
  * Copyright    2001 by Frode Isaksen      <fisaksen@bewan.com>
  *              2001 by Kai Germaschewski  <kai.germaschewski@gmx.de>
 <<<<<<< HEAD
- * 
-=======
- *
->>>>>>> refs/remotes/origin/cm-10.0
- * This software may be used and distributed according to the terms
- * of the GNU General Public License, incorporated herein by reference.
- *
- * How to use:
 <<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
+ * This software may be used and distributed according to the terms
+ * of the GNU General Public License, incorporated herein by reference.
+ *
+ * How to use:
+<<<<<<< HEAD
+<<<<<<< HEAD
+ * 
+=======
+ *
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * Before including this file, you need to
  *   #define __debug_variable my_debug
  * where my_debug is a variable in your code which
@@ -34,6 +42,7 @@
 #ifdef CONFIG_HISAX_DEBUG
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DBG(level, format, arg...) do { \
 if (level & __debug_variable) \
 printk(KERN_DEBUG "%s: " format "\n" , __func__ , ## arg); \
@@ -49,6 +58,8 @@ printk(KERN_DEBUG "%s: " format "\n" , __func__ , ## arg); \
 static void __attribute__((unused))
 dump_packet(const char *name,const u_char *data,int pkt_len)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define DBG(level, format, arg...) do {					\
 		if (level & __debug_variable)				\
 			printk(KERN_DEBUG "%s: " format "\n" , __func__ , ## arg); \
@@ -63,11 +74,15 @@ dump_packet(const char *name,const u_char *data,int pkt_len)
 
 static void __attribute__((unused))
 dump_packet(const char *name, const u_char *data, int pkt_len)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 #define DUMP_HDR_SIZE 20
 #define DUMP_TLR_SIZE 8
 	if (pkt_len) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		int i,len1,len2;
 
@@ -75,16 +90,22 @@ dump_packet(const char *name, const u_char *data, int pkt_len)
 
 		if (pkt_len >  DUMP_HDR_SIZE+ DUMP_TLR_SIZE) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		int i, len1, len2;
 
 		printk(KERN_DEBUG "%s: length=%d,data=", name, pkt_len);
 
 		if (pkt_len > DUMP_HDR_SIZE + DUMP_TLR_SIZE) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			len1 = DUMP_HDR_SIZE;
 			len2 = DUMP_TLR_SIZE;
 		} else {
 			len1 = pkt_len > DUMP_HDR_SIZE ? DUMP_HDR_SIZE : pkt_len;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			len2 = 0;			
 		}
@@ -99,6 +120,8 @@ dump_packet(const char *name, const u_char *data, int pkt_len)
 		}
 		printk ("\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			len2 = 0;
 		}
 		for (i = 0; i < len1; ++i) {
@@ -111,7 +134,10 @@ dump_packet(const char *name, const u_char *data, int pkt_len)
 			}
 		}
 		printk("\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 #undef DUMP_HDR_SIZE
 #undef DUMP_TLR_SIZE
@@ -121,12 +147,17 @@ dump_packet(const char *name, const u_char *data, int pkt_len)
 
 #define DBG(level, format, arg...) do {} while (0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DBG_PACKET(level,data,count) do {} while (0)
 #define DBG_SKB(level,skb) do {} while (0)
 =======
 #define DBG_PACKET(level, data, count) do {} while (0)
 #define DBG_SKB(level, skb) do {} while (0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DBG_PACKET(level, data, count) do {} while (0)
+#define DBG_SKB(level, skb) do {} while (0)
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

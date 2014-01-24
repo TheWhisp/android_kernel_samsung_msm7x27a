@@ -28,9 +28,13 @@
 #include <linux/elfcore.h>
 #include <linux/pm.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/rcupdate.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/master
 
 void (*pm_power_off)(void);
 EXPORT_SYMBOL(pm_power_off);
@@ -44,6 +48,7 @@ void machine_halt(void) {}
 /* If or when software machine-power-off is implemented, add code here. */
 void machine_power_off(void) {}
 
+<<<<<<< HEAD
 /*
  * The idle thread. There's no useful work to be
  * done, so just try to conserve power and have a
@@ -72,6 +77,10 @@ void __noreturn cpu_idle(void)
 }
 
 void ret_from_fork(void);
+=======
+void ret_from_fork(void);
+void ret_from_kernel_thread(void);
+>>>>>>> refs/remotes/origin/master
 
 void start_thread(struct pt_regs *regs, unsigned long pc, unsigned long sp)
 {
@@ -98,6 +107,7 @@ void flush_thread(void) {}
  * set up the kernel stack and exception frames for a new process
  */
 int copy_thread(unsigned long clone_flags, unsigned long usp,
+<<<<<<< HEAD
 		unsigned long unused,
 		struct task_struct *p, struct pt_regs *regs)
 {
@@ -121,6 +131,29 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 
 	p->thread.reg0 = (unsigned long) childregs;
 	p->thread.reg3 = (unsigned long) ret_from_fork;
+=======
+		unsigned long arg, struct task_struct *p)
+{
+	struct thread_info *ti = task_thread_info(p);
+	struct pt_regs *childregs = task_pt_regs(p);
+	struct pt_regs *regs = current_pt_regs();
+
+	p->thread.reg0 = (unsigned long) childregs;
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		memset(childregs, 0, sizeof(struct pt_regs));
+		p->thread.reg12 = usp;
+		p->thread.reg13 = arg;
+		p->thread.reg3 = (unsigned long) ret_from_kernel_thread;
+	} else {
+		*childregs = *current_pt_regs();
+		childregs->regs[7] = 0;		/* Clear error flag */
+		childregs->regs[4] = 0;		/* Child gets zero as return value */
+		if (usp)
+			childregs->regs[0] = usp;	/* user fork */
+		p->thread.reg3 = (unsigned long) ret_from_fork;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	p->thread.cp0_psr = 0;
 
 	return 0;
@@ -132,6 +165,7 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *r)
 	return 1;
 }
 
+<<<<<<< HEAD
 static void __noreturn
 kernel_thread_helper(void *unused0, int (*fn)(void *),
 		 void *arg, void *unused1)
@@ -158,6 +192,8 @@ long kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
 			0, &regs, 0, NULL, NULL);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long thread_saved_pc(struct task_struct *tsk)
 {
 	return task_pt_regs(tsk)->cp0_epc;

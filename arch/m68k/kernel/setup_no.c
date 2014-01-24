@@ -32,18 +32,26 @@
 #include <linux/initrd.h>
 #include <linux/root_dev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/rtc.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/rtc.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/setup.h>
 #include <asm/irq.h>
 #include <asm/machdep.h>
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/sections.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/sections.h>
+>>>>>>> refs/remotes/origin/master
 
 unsigned long memory_start;
 unsigned long memory_end;
@@ -55,6 +63,7 @@ char __initdata command_line[COMMAND_LINE_SIZE];
 
 /* machine dependent timer functions */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void (*mach_gettod)(int*, int*, int*, int*, int*, int*);
 int (*mach_set_clock_mmss)(unsigned long);
 =======
@@ -62,12 +71,23 @@ void (*mach_sched_init)(irq_handler_t handler) __initdata = NULL;
 int (*mach_set_clock_mmss)(unsigned long);
 int (*mach_hwclk) (int, struct rtc_time*);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void (*mach_sched_init)(irq_handler_t handler) __initdata = NULL;
+int (*mach_set_clock_mmss)(unsigned long);
+int (*mach_hwclk) (int, struct rtc_time*);
+>>>>>>> refs/remotes/origin/master
 
 /* machine dependent reboot functions */
 void (*mach_reset)(void);
 void (*mach_halt)(void);
 void (*mach_power_off)(void);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_M68000
+#define CPU_NAME	"MC68000"
+#endif
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_M68328
 #define CPU_NAME	"MC68328"
 #endif
@@ -95,11 +115,14 @@ void (*mach_power_off)(void);
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int _stext, _etext, _sdata, _edata, _sbss, _ebss, _end;
 extern int _ramstart, _ramend;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_UBOOT)
 /*
  * parse_uboot_commandline
@@ -132,7 +155,11 @@ extern int _ramstart, _ramend;
  *
  * Returns:
  */
+<<<<<<< HEAD
 void parse_uboot_commandline(char *commandp, int size)
+=======
+static void __init parse_uboot_commandline(char *commandp, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	extern unsigned long _init_sp;
 	unsigned long *sp;
@@ -235,6 +262,7 @@ void __init setup_arch(char **cmdline_p)
 	printk(KERN_INFO "Motorola M5235EVB support (C)2005 Syn-tech Systems, Inc. (Jate Sujjavanich)\n");
 #endif
 
+<<<<<<< HEAD
 	pr_debug("KERNEL -> TEXT=0x%06x-0x%06x DATA=0x%06x-0x%06x "
 		 "BSS=0x%06x-0x%06x\n", (int) &_stext, (int) &_etext,
 		 (int) &_sdata, (int) &_edata,
@@ -242,6 +270,12 @@ void __init setup_arch(char **cmdline_p)
 	pr_debug("MEMORY -> ROMFS=0x%06x-0x%06x MEM=0x%06x-0x%06x\n ",
 		 (int) &_ebss, (int) memory_start,
 		 (int) memory_start, (int) memory_end);
+=======
+	pr_debug("KERNEL -> TEXT=0x%p-0x%p DATA=0x%p-0x%p BSS=0x%p-0x%p\n",
+		 _stext, _etext, _sdata, _edata, __bss_start, __bss_stop);
+	pr_debug("MEMORY -> ROMFS=0x%p-0x%06lx MEM=0x%06lx-0x%06lx\n ",
+		 __bss_stop, memory_start, memory_start, memory_end);
+>>>>>>> refs/remotes/origin/master
 
 	/* Keep a copy of command line */
 	*cmdline_p = &command_line[0];

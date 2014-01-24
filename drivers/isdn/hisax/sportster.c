@@ -5,10 +5,14 @@
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -25,10 +29,14 @@
 static const char *sportster_revision = "$Revision: 1.16.2.4 $";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define byteout(addr,val) outb(val,addr)
 =======
 #define byteout(addr, val) outb(val, addr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define byteout(addr, val) outb(val, addr)
+>>>>>>> refs/remotes/origin/master
 #define bytein(addr) inb(addr)
 
 #define	 SPORTSTER_ISAC		0xC000
@@ -42,28 +50,38 @@ static inline int
 calc_off(unsigned int base, unsigned int off)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return(base + ((off & 0xfc)<<8) + ((off & 3)<<1));
 }
 
 static inline void
 read_fifo(unsigned int adr, u_char * data, int size)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return (base + ((off & 0xfc) << 8) + ((off & 3) << 1));
 }
 
 static inline void
 read_fifo(unsigned int adr, u_char *data, int size)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	insb(adr, data, size);
 }
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 write_fifo(unsigned int adr, u_char * data, int size)
 =======
 write_fifo(unsigned int adr, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+write_fifo(unsigned int adr, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	outsb(adr, data, size);
 }
@@ -84,20 +102,28 @@ WriteISAC(struct IsdnCardState *cs, u_char offset, u_char value)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 ReadISACfifo(struct IsdnCardState *cs, u_char * data, int size)
 =======
 ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	read_fifo(cs->hw.spt.isac, data, size);
 }
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 WriteISACfifo(struct IsdnCardState *cs, u_char * data, int size)
 =======
 WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	write_fifo(cs->hw.spt.isac, data, size);
 }
@@ -135,18 +161,24 @@ sportster_interrupt(int intno, void *dev_id)
 	spin_lock_irqsave(&cs->lock, flags);
 	val = READHSCX(cs, 1, HSCX_ISTA);
 <<<<<<< HEAD
+<<<<<<< HEAD
       Start_HSCX:
 	if (val)
 		hscx_int_main(cs, val);
 	val = ReadISAC(cs, ISAC_ISTA);
       Start_ISAC:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 Start_HSCX:
 	if (val)
 		hscx_int_main(cs, val);
 	val = ReadISAC(cs, ISAC_ISTA);
 Start_ISAC:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (val)
 		isac_interrupt(cs, val);
 	val = READHSCX(cs, 1, HSCX_ISTA);
@@ -163,10 +195,14 @@ Start_ISAC:
 	}
 	/* get a new irq impulse if there any pending */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bytein(cs->hw.spt.cfg_reg + SPORTSTER_RES_IRQ +1);
 =======
 	bytein(cs->hw.spt.cfg_reg + SPORTSTER_RES_IRQ + 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bytein(cs->hw.spt.cfg_reg + SPORTSTER_RES_IRQ + 1);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&cs->lock, flags);
 	return IRQ_HANDLED;
 }
@@ -178,12 +214,17 @@ release_io_sportster(struct IsdnCardState *cs)
 
 	byteout(cs->hw.spt.cfg_reg + SPORTSTER_RES_IRQ, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i=0; i<64; i++) {
 		adr = cs->hw.spt.cfg_reg + i *1024;
 =======
 	for (i = 0; i < 64; i++) {
 		adr = cs->hw.spt.cfg_reg + i * 1024;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < 64; i++) {
+		adr = cs->hw.spt.cfg_reg + i * 1024;
+>>>>>>> refs/remotes/origin/master
 		release_region(adr, 8);
 	}
 }
@@ -205,6 +246,7 @@ Sportster_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 	u_long flags;
 
 	switch (mt) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case CARD_RESET:
 			spin_lock_irqsave(&cs->lock, flags);
@@ -228,6 +270,8 @@ Sportster_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 	}
 	return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case CARD_RESET:
 		spin_lock_irqsave(&cs->lock, flags);
 		reset_sportster(cs);
@@ -249,6 +293,7 @@ Sportster_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 		return (0);
 	}
 	return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -276,6 +321,13 @@ get_io_range(struct IsdnCardState *cs)
 		}
 		return(0);
 =======
+=======
+}
+
+static int get_io_range(struct IsdnCardState *cs)
+{
+	int i, j, adr;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < 64; i++) {
 		adr = cs->hw.spt.cfg_reg + i * 1024;
@@ -294,12 +346,19 @@ get_io_range(struct IsdnCardState *cs)
 			release_region(adr, 8);
 		}
 		return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
 int __devinit
 setup_sportster(struct IsdnCard *card)
+=======
+	}
+}
+
+int setup_sportster(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct IsdnCardState *cs = card->cs;
 	char tmp[64];
@@ -316,6 +375,7 @@ setup_sportster(struct IsdnCard *card)
 	cs->hw.spt.isac = cs->hw.spt.cfg_reg + SPORTSTER_ISAC;
 	cs->hw.spt.hscx[0] = cs->hw.spt.cfg_reg + SPORTSTER_HSCXA;
 	cs->hw.spt.hscx[1] = cs->hw.spt.cfg_reg + SPORTSTER_HSCXB;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
 	switch(cs->irq) {
@@ -340,6 +400,8 @@ setup_sportster(struct IsdnCard *card)
 	printk(KERN_INFO "HiSax: USR Sportster config irq:%d cfg:0x%X\n",
 		cs->irq, cs->hw.spt.cfg_reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (cs->irq) {
 	case 5:	cs->hw.spt.res_irq = 1;
@@ -362,7 +424,10 @@ setup_sportster(struct IsdnCard *card)
 	}
 	printk(KERN_INFO "HiSax: USR Sportster config irq:%d cfg:0x%X\n",
 	       cs->irq, cs->hw.spt.cfg_reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	setup_isac(cs);
 	cs->readisac = &ReadISAC;
 	cs->writeisac = &WriteISAC;

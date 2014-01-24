@@ -30,6 +30,7 @@
 #ifndef _TTM_BO_DRIVER_H_
 #define _TTM_BO_DRIVER_H_
 
+<<<<<<< HEAD
 #include "ttm/ttm_bo_api.h"
 #include "ttm/ttm_memory.h"
 #include "ttm/ttm_module.h"
@@ -79,11 +80,31 @@ struct ttm_backend_func {
 	 *
 	 * @ttm: Pointer to a struct ttm_tt.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <ttm/ttm_bo_api.h>
+#include <ttm/ttm_memory.h>
+#include <ttm/ttm_module.h>
+#include <ttm/ttm_placement.h>
+#include <drm/drm_mm.h>
+#include <drm/drm_global.h>
+#include <drm/drm_vma_manager.h>
+#include <linux/workqueue.h>
+#include <linux/fs.h>
+#include <linux/spinlock.h>
+#include <linux/reservation.h>
+
+struct ttm_backend_func {
+	/**
+	 * struct ttm_backend_func member bind
+	 *
+	 * @ttm: Pointer to a struct ttm_tt.
+>>>>>>> refs/remotes/origin/master
 	 * @bo_mem: Pointer to a struct ttm_mem_reg describing the
 	 * memory type and location for binding.
 	 *
 	 * Bind the backend pages into the aperture in the location
 	 * indicated by @bo_mem. This function should be able to handle
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * differences between aperture- and system page sizes.
 	 */
@@ -93,10 +114,16 @@ struct ttm_backend_func {
 	 */
 	int (*bind) (struct ttm_tt *ttm, struct ttm_mem_reg *bo_mem);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * differences between aperture and system page sizes.
+	 */
+	int (*bind) (struct ttm_tt *ttm, struct ttm_mem_reg *bo_mem);
+>>>>>>> refs/remotes/origin/master
 
 	/**
 	 * struct ttm_backend_func member unbind
 	 *
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * @backend: Pointer to a struct ttm_backend.
 	 *
@@ -105,17 +132,23 @@ struct ttm_backend_func {
 	 */
 	int (*unbind) (struct ttm_backend *backend);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * @ttm: Pointer to a struct ttm_tt.
 	 *
 	 * Unbind previously bound backend pages. This function should be
 	 * able to handle differences between aperture and system page sizes.
 	 */
 	int (*unbind) (struct ttm_tt *ttm);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/**
 	 * struct ttm_backend_func member destroy
 	 *
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * @backend: Pointer to a struct ttm_backend.
 	 *
@@ -143,6 +176,8 @@ struct ttm_backend {
 #define TTM_PAGE_FLAG_USER            (1 << 1)
 #define TTM_PAGE_FLAG_USER_DIRTY      (1 << 2)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * @ttm: Pointer to a struct ttm_tt.
 	 *
 	 * Destroy the backend. This will be call back from ttm_tt_destroy so
@@ -151,12 +186,19 @@ struct ttm_backend {
 	void (*destroy) (struct ttm_tt *ttm);
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define TTM_PAGE_FLAG_WRITE           (1 << 3)
 #define TTM_PAGE_FLAG_SWAPPED         (1 << 4)
 #define TTM_PAGE_FLAG_PERSISTENT_SWAP (1 << 5)
 #define TTM_PAGE_FLAG_ZERO_ALLOC      (1 << 6)
 #define TTM_PAGE_FLAG_DMA32           (1 << 7)
+<<<<<<< HEAD
+=======
+#define TTM_PAGE_FLAG_SG              (1 << 8)
+>>>>>>> refs/remotes/origin/master
 
 enum ttm_caching_state {
 	tt_uncached,
@@ -167,6 +209,7 @@ enum ttm_caching_state {
 /**
  * struct ttm_tt
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @dummy_read_page: Page to map where the ttm_tt page array contains a NULL
  * pointer.
@@ -186,6 +229,8 @@ enum ttm_caching_state {
  * @state: The current binding state of the pages.
  * @dma_address: The DMA (bus) addresses of the pages (if TTM_PAGE_FLAG_DMA32)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @bdev: Pointer to a struct ttm_bo_device.
  * @func: Pointer to a struct ttm_backend_func that describes
  * the backend methods.
@@ -198,7 +243,10 @@ enum ttm_caching_state {
  * @swap_storage: Pointer to shmem struct file for swap storage.
  * @caching_state: The current caching state of the pages.
  * @state: The current binding state of the pages.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This is a structure holding the pages, caching- and aperture binding
  * status for a buffer object that isn't backed by fixed (VRAM / AGP)
@@ -207,15 +255,19 @@ enum ttm_caching_state {
 
 struct ttm_tt {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct page *dummy_read_page;
 	struct page **pages;
 	long first_himem_page;
 	long last_lomem_page;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ttm_bo_device *bdev;
 	struct ttm_backend_func *func;
 	struct page *dummy_read_page;
 	struct page **pages;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	uint32_t page_flags;
 	unsigned long num_pages;
@@ -226,6 +278,12 @@ struct ttm_tt {
 	unsigned long start;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t page_flags;
+	unsigned long num_pages;
+	struct sg_table *sg; /* for SG objects via dma-buf */
+	struct ttm_bo_global *glob;
+>>>>>>> refs/remotes/origin/master
 	struct file *swap_storage;
 	enum ttm_caching_state caching_state;
 	enum {
@@ -234,8 +292,11 @@ struct ttm_tt {
 		tt_unpopulated,
 	} state;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dma_addr_t *dma_address;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -253,7 +314,10 @@ struct ttm_dma_tt {
 	struct ttm_tt ttm;
 	dma_addr_t *dma_address;
 	struct list_head pages_list;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define TTM_MEMTYPE_FLAG_FIXED         (1 << 0)	/* Fixed (on-card) PCI memory */
@@ -429,6 +493,7 @@ struct ttm_mem_type_manager {
 struct ttm_bo_driver {
 	/**
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * struct ttm_bo_driver member create_ttm_backend_entry
 	 *
 	 * @bdev: The buffer object device.
@@ -439,6 +504,8 @@ struct ttm_bo_driver {
 	struct ttm_backend *(*create_ttm_backend_entry)
 	 (struct ttm_bo_device *bdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * ttm_tt_create
 	 *
 	 * @bdev: pointer to a struct ttm_bo_device:
@@ -475,7 +542,10 @@ struct ttm_bo_driver {
 	 * Free all backing page
 	 */
 	void (*ttm_tt_unpopulate)(struct ttm_tt *ttm);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/**
 	 * struct ttm_bo_driver member invalidate_caches
@@ -519,7 +589,11 @@ struct ttm_bo_driver {
 	 */
 	int (*move) (struct ttm_buffer_object *bo,
 		     bool evict, bool interruptible,
+<<<<<<< HEAD
 		     bool no_wait_reserve, bool no_wait_gpu,
+=======
+		     bool no_wait_gpu,
+>>>>>>> refs/remotes/origin/master
 		     struct ttm_mem_reg *new_mem);
 
 	/**
@@ -547,10 +621,17 @@ struct ttm_bo_driver {
 	 * documentation.
 	 */
 
+<<<<<<< HEAD
 	bool (*sync_obj_signaled) (void *sync_obj, void *sync_arg);
 	int (*sync_obj_wait) (void *sync_obj, void *sync_arg,
 			      bool lazy, bool interruptible);
 	int (*sync_obj_flush) (void *sync_obj, void *sync_arg);
+=======
+	bool (*sync_obj_signaled) (void *sync_obj);
+	int (*sync_obj_wait) (void *sync_obj,
+			      bool lazy, bool interruptible);
+	int (*sync_obj_flush) (void *sync_obj);
+>>>>>>> refs/remotes/origin/master
 	void (*sync_obj_unref) (void **sync_obj);
 	void *(*sync_obj_ref) (void *sync_obj);
 
@@ -594,11 +675,14 @@ struct ttm_bo_global_ref {
  * of unpopulated pages.
  * @shrink: A shrink callback object used for buffer object swap.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @ttm_bo_extra_size: Extra size (sizeof(struct ttm_buffer_object) excluded)
  * used by a buffer object. This is excluding page arrays and backing pages.
  * @ttm_bo_size: This is @ttm_bo_extra_size + sizeof(struct ttm_buffer_object).
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @device_list_mutex: Mutex protecting the device list.
  * This mutex is held while traversing the device list for pm options.
  * @lru_lock: Spinlock protecting the bo subsystem lru lists.
@@ -617,10 +701,13 @@ struct ttm_bo_global {
 	struct page *dummy_read_page;
 	struct ttm_mem_shrink shrink;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	size_t ttm_bo_extra_size;
 	size_t ttm_bo_size;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mutex device_list_mutex;
 	spinlock_t lru_lock;
 
@@ -653,12 +740,19 @@ struct ttm_bo_global {
  * @man: An array of mem_type_managers.
  * @fence_lock: Protects the synchronizing members on *all* bos belonging
  * to this device.
+<<<<<<< HEAD
  * @addr_space_mm: Range manager for the device address space.
  * lru_lock: Spinlock that protects the buffer+device lru lists and
  * ddestroy lists.
  * @val_seq: Current validation sequence.
  * @nice_mode: Try nicely to wait for buffer idle when cleaning a manager.
  * If a GPU lockup has been detected, this is forced to 0.
+=======
+ * @vma_manager: Address space manager
+ * lru_lock: Spinlock that protects the buffer+device lru lists and
+ * ddestroy lists.
+ * @val_seq: Current validation sequence.
+>>>>>>> refs/remotes/origin/master
  * @dev_mapping: A pointer to the struct address_space representing the
  * device address space.
  * @wq: Work queue structure for the delayed delete workqueue.
@@ -673,6 +767,7 @@ struct ttm_bo_device {
 	struct list_head device_list;
 	struct ttm_bo_global *glob;
 	struct ttm_bo_driver *driver;
+<<<<<<< HEAD
 	rwlock_t vm_lock;
 	struct ttm_mem_type_manager man[TTM_NUM_MEM_TYPES];
 	spinlock_t fence_lock;
@@ -681,6 +776,15 @@ struct ttm_bo_device {
 	 */
 	struct rb_root addr_space_rb;
 	struct drm_mm addr_space_mm;
+=======
+	struct ttm_mem_type_manager man[TTM_NUM_MEM_TYPES];
+	spinlock_t fence_lock;
+
+	/*
+	 * Protected by internal locks.
+	 */
+	struct drm_vma_offset_manager vma_manager;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Protected by the global:lru lock.
@@ -692,7 +796,10 @@ struct ttm_bo_device {
 	 * Protected by load / firstopen / lastclose /unload sync.
 	 */
 
+<<<<<<< HEAD
 	bool nice_mode;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct address_space *dev_mapping;
 
 	/*
@@ -723,6 +830,7 @@ ttm_flag_masked(uint32_t *old, uint32_t new, uint32_t mask)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * ttm_tt_create
  *
 =======
@@ -730,6 +838,11 @@ ttm_flag_masked(uint32_t *old, uint32_t new, uint32_t mask)
  *
  * @ttm: The struct ttm_tt.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ttm_tt_init
+ *
+ * @ttm: The struct ttm_tt.
+>>>>>>> refs/remotes/origin/master
  * @bdev: pointer to a struct ttm_bo_device:
  * @size: Size of the data needed backing.
  * @page_flags: Page flags as identified by TTM_PAGE_FLAG_XX flags.
@@ -740,6 +853,7 @@ ttm_flag_masked(uint32_t *old, uint32_t new, uint32_t mask)
  * Returns:
  * NULL: Out of memory.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern struct ttm_tt *ttm_tt_create(struct ttm_bo_device *bdev,
 				    unsigned long size,
@@ -764,6 +878,8 @@ extern int ttm_tt_set_user(struct ttm_tt *ttm,
 			   struct task_struct *tsk,
 			   unsigned long start, unsigned long num_pages);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern int ttm_tt_init(struct ttm_tt *ttm, struct ttm_bo_device *bdev,
 			unsigned long size, uint32_t page_flags,
 			struct page *dummy_read_page);
@@ -780,7 +896,10 @@ extern int ttm_dma_tt_init(struct ttm_dma_tt *ttm_dma, struct ttm_bo_device *bde
  */
 extern void ttm_tt_fini(struct ttm_tt *ttm);
 extern void ttm_dma_tt_fini(struct ttm_dma_tt *ttm_dma);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ttm_ttm_bind:
@@ -794,6 +913,7 @@ extern int ttm_tt_bind(struct ttm_tt *ttm, struct ttm_mem_reg *bo_mem);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * ttm_tt_populate:
  *
  * @ttm: The struct ttm_tt to contain the backing pages.
@@ -805,15 +925,21 @@ extern int ttm_tt_populate(struct ttm_tt *ttm);
 /**
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * ttm_ttm_destroy:
  *
  * @ttm: The struct ttm_tt.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Unbind, unpopulate and destroy a struct ttm_tt.
 =======
  * Unbind, unpopulate and destroy common struct ttm_tt.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Unbind, unpopulate and destroy common struct ttm_tt.
+>>>>>>> refs/remotes/origin/master
  */
 extern void ttm_tt_destroy(struct ttm_tt *ttm);
 
@@ -827,6 +953,7 @@ extern void ttm_tt_destroy(struct ttm_tt *ttm);
 extern void ttm_tt_unbind(struct ttm_tt *ttm);
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * ttm_ttm_destroy:
  *
@@ -842,6 +969,8 @@ extern void ttm_tt_unbind(struct ttm_tt *ttm);
  */
 extern struct page *ttm_tt_get_page(struct ttm_tt *ttm, int index);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * ttm_tt_swapin:
  *
  * @ttm: The struct ttm_tt.
@@ -849,7 +978,10 @@ extern struct page *ttm_tt_get_page(struct ttm_tt *ttm, int index);
  * Swap in a previously swap out ttm_tt.
  */
 extern int ttm_tt_swapin(struct ttm_tt *ttm);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ttm_tt_cache_flush:
@@ -904,7 +1036,10 @@ extern bool ttm_mem_reg_is_pci(struct ttm_bo_device *bdev,
  * @proposed_placement: Proposed new placement for the buffer object.
  * @mem: A struct ttm_mem_reg.
  * @interruptible: Sleep interruptible when sliping.
+<<<<<<< HEAD
  * @no_wait_reserve: Return immediately if other buffers are busy.
+=======
+>>>>>>> refs/remotes/origin/master
  * @no_wait_gpu: Return immediately if the GPU is busy.
  *
  * Allocate memory space for the buffer object pointed to by @bo, using
@@ -920,13 +1055,18 @@ extern int ttm_bo_mem_space(struct ttm_buffer_object *bo,
 				struct ttm_placement *placement,
 				struct ttm_mem_reg *mem,
 				bool interruptible,
+<<<<<<< HEAD
 				bool no_wait_reserve, bool no_wait_gpu);
+=======
+				bool no_wait_gpu);
+>>>>>>> refs/remotes/origin/master
 
 extern void ttm_bo_mem_put(struct ttm_buffer_object *bo,
 			   struct ttm_mem_reg *mem);
 extern void ttm_bo_mem_put_locked(struct ttm_buffer_object *bo,
 				  struct ttm_mem_reg *mem);
 
+<<<<<<< HEAD
 /**
  * ttm_bo_wait_for_cpu
  *
@@ -941,6 +1081,8 @@ extern void ttm_bo_mem_put_locked(struct ttm_buffer_object *bo,
 
 extern int ttm_bo_wait_cpu(struct ttm_buffer_object *bo, bool no_wait);
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern void ttm_bo_global_release(struct drm_global_reference *ref);
 extern int ttm_bo_global_init(struct drm_global_reference *ref);
 
@@ -951,10 +1093,14 @@ extern int ttm_bo_device_release(struct ttm_bo_device *bdev);
  *
  * @bdev: A pointer to a struct ttm_bo_device to initialize.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @mem_global: A pointer to an initialized struct ttm_mem_global.
 =======
  * @glob: A pointer to an initialized struct ttm_bo_global.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @glob: A pointer to an initialized struct ttm_bo_global.
+>>>>>>> refs/remotes/origin/master
  * @driver: A pointer to a struct ttm_bo_driver set up by the caller.
  * @file_page_offset: Offset into the device address space that is available
  * for buffer data. This ensures compatibility with other users of the
@@ -991,6 +1137,58 @@ extern int ttm_mem_io_lock(struct ttm_mem_type_manager *man,
 			   bool interruptible);
 extern void ttm_mem_io_unlock(struct ttm_mem_type_manager *man);
 
+<<<<<<< HEAD
+=======
+extern void ttm_bo_del_sub_from_lru(struct ttm_buffer_object *bo);
+extern void ttm_bo_add_to_lru(struct ttm_buffer_object *bo);
+
+/**
+ * ttm_bo_reserve_nolru:
+ *
+ * @bo: A pointer to a struct ttm_buffer_object.
+ * @interruptible: Sleep interruptible if waiting.
+ * @no_wait: Don't sleep while trying to reserve, rather return -EBUSY.
+ * @use_ticket: If @bo is already reserved, Only sleep waiting for
+ * it to become unreserved if @ticket->stamp is older.
+ *
+ * Will not remove reserved buffers from the lru lists.
+ * Otherwise identical to ttm_bo_reserve.
+ *
+ * Returns:
+ * -EDEADLK: The reservation may cause a deadlock.
+ * Release all buffer reservations, wait for @bo to become unreserved and
+ * try again. (only if use_sequence == 1).
+ * -ERESTARTSYS: A wait for the buffer to become unreserved was interrupted by
+ * a signal. Release all buffer reservations and return to user-space.
+ * -EBUSY: The function needed to sleep, but @no_wait was true
+ * -EALREADY: Bo already reserved using @ticket. This error code will only
+ * be returned if @use_ticket is set to true.
+ */
+static inline int ttm_bo_reserve_nolru(struct ttm_buffer_object *bo,
+				       bool interruptible,
+				       bool no_wait, bool use_ticket,
+				       struct ww_acquire_ctx *ticket)
+{
+	int ret = 0;
+
+	if (no_wait) {
+		bool success;
+		if (WARN_ON(ticket))
+			return -EBUSY;
+
+		success = ww_mutex_trylock(&bo->resv->lock);
+		return success ? 0 : -EBUSY;
+	}
+
+	if (interruptible)
+		ret = ww_mutex_lock_interruptible(&bo->resv->lock, ticket);
+	else
+		ret = ww_mutex_lock(&bo->resv->lock, ticket);
+	if (ret == -EINTR)
+		return -ERESTARTSYS;
+	return ret;
+}
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ttm_bo_reserve:
@@ -998,8 +1196,13 @@ extern void ttm_mem_io_unlock(struct ttm_mem_type_manager *man);
  * @bo: A pointer to a struct ttm_buffer_object.
  * @interruptible: Sleep interruptible if waiting.
  * @no_wait: Don't sleep while trying to reserve, rather return -EBUSY.
+<<<<<<< HEAD
  * @use_sequence: If @bo is already reserved, Only sleep waiting for
  * it to become unreserved if @sequence < (@bo)->sequence.
+=======
+ * @use_ticket: If @bo is already reserved, Only sleep waiting for
+ * it to become unreserved if @ticket->stamp is older.
+>>>>>>> refs/remotes/origin/master
  *
  * Locks a buffer object for validation. (Or prevents other processes from
  * locking it for validation) and removes it from lru lists, while taking
@@ -1010,6 +1213,7 @@ extern void ttm_mem_io_unlock(struct ttm_mem_type_manager *man);
  * to make room for a buffer already reserved. (Buffers are reserved before
  * they are evicted). The following algorithm prevents such deadlocks from
  * occurring:
+<<<<<<< HEAD
  * 1) Buffers are reserved with the lru spinlock held. Upon successful
  * reservation they are removed from the lru list. This stops a reserved buffer
  * from being evicted. However the lru spinlock is released between the time
@@ -1023,6 +1227,12 @@ extern void ttm_mem_io_unlock(struct ttm_mem_type_manager *man);
  * (typically execbuf), should first obtain a unique 32-bit
  * validation sequence number,
  * and call this function with @use_sequence == 1 and @sequence == the unique
+=======
+ * Processes attempting to reserve multiple buffers other than for eviction,
+ * (typically execbuf), should first obtain a unique 32-bit
+ * validation sequence number,
+ * and call this function with @use_ticket == 1 and @ticket->stamp == the unique
+>>>>>>> refs/remotes/origin/master
  * sequence number. If upon call of this function, the buffer object is already
  * reserved, the validation sequence is checked against the validation
  * sequence of the process currently reserving the buffer,
@@ -1037,12 +1247,17 @@ extern void ttm_mem_io_unlock(struct ttm_mem_type_manager *man);
  * will eventually succeed, preventing both deadlocks and starvation.
  *
  * Returns:
+<<<<<<< HEAD
  * -EAGAIN: The reservation may cause a deadlock.
+=======
+ * -EDEADLK: The reservation may cause a deadlock.
+>>>>>>> refs/remotes/origin/master
  * Release all buffer reservations, wait for @bo to become unreserved and
  * try again. (only if use_sequence == 1).
  * -ERESTARTSYS: A wait for the buffer to become unreserved was interrupted by
  * a signal. Release all buffer reservations and return to user-space.
  * -EBUSY: The function needed to sleep, but @no_wait was true
+<<<<<<< HEAD
  * -EDEADLK: Bo already reserved using @sequence. This error code will only
  * be returned if @use_sequence is set to true.
  */
@@ -1110,17 +1325,110 @@ extern void ttm_bo_unreserve_locked(struct ttm_buffer_object *bo);
  */
 extern int ttm_bo_wait_unreserved(struct ttm_buffer_object *bo,
 				  bool interruptible);
+=======
+ * -EALREADY: Bo already reserved using @ticket. This error code will only
+ * be returned if @use_ticket is set to true.
+ */
+static inline int ttm_bo_reserve(struct ttm_buffer_object *bo,
+				 bool interruptible,
+				 bool no_wait, bool use_ticket,
+				 struct ww_acquire_ctx *ticket)
+{
+	int ret;
+
+	WARN_ON(!atomic_read(&bo->kref.refcount));
+
+	ret = ttm_bo_reserve_nolru(bo, interruptible, no_wait, use_ticket,
+				    ticket);
+	if (likely(ret == 0))
+		ttm_bo_del_sub_from_lru(bo);
+
+	return ret;
+}
+
+/**
+ * ttm_bo_reserve_slowpath:
+ * @bo: A pointer to a struct ttm_buffer_object.
+ * @interruptible: Sleep interruptible if waiting.
+ * @sequence: Set (@bo)->sequence to this value after lock
+ *
+ * This is called after ttm_bo_reserve returns -EAGAIN and we backed off
+ * from all our other reservations. Because there are no other reservations
+ * held by us, this function cannot deadlock any more.
+ */
+static inline int ttm_bo_reserve_slowpath(struct ttm_buffer_object *bo,
+					  bool interruptible,
+					  struct ww_acquire_ctx *ticket)
+{
+	int ret = 0;
+
+	WARN_ON(!atomic_read(&bo->kref.refcount));
+
+	if (interruptible)
+		ret = ww_mutex_lock_slow_interruptible(&bo->resv->lock,
+						       ticket);
+	else
+		ww_mutex_lock_slow(&bo->resv->lock, ticket);
+
+	if (likely(ret == 0))
+		ttm_bo_del_sub_from_lru(bo);
+	else if (ret == -EINTR)
+		ret = -ERESTARTSYS;
+
+	return ret;
+}
+
+/**
+ * ttm_bo_unreserve_ticket
+ * @bo: A pointer to a struct ttm_buffer_object.
+ * @ticket: ww_acquire_ctx used for reserving
+ *
+ * Unreserve a previous reservation of @bo made with @ticket.
+ */
+static inline void ttm_bo_unreserve_ticket(struct ttm_buffer_object *bo,
+					   struct ww_acquire_ctx *t)
+{
+	if (!(bo->mem.placement & TTM_PL_FLAG_NO_EVICT)) {
+		spin_lock(&bo->glob->lru_lock);
+		ttm_bo_add_to_lru(bo);
+		spin_unlock(&bo->glob->lru_lock);
+	}
+	ww_mutex_unlock(&bo->resv->lock);
+}
+
+/**
+ * ttm_bo_unreserve
+ *
+ * @bo: A pointer to a struct ttm_buffer_object.
+ *
+ * Unreserve a previous reservation of @bo.
+ */
+static inline void ttm_bo_unreserve(struct ttm_buffer_object *bo)
+{
+	ttm_bo_unreserve_ticket(bo, NULL);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * ttm_bo_util.c
  */
 
+<<<<<<< HEAD
+=======
+int ttm_mem_io_reserve(struct ttm_bo_device *bdev,
+		       struct ttm_mem_reg *mem);
+void ttm_mem_io_free(struct ttm_bo_device *bdev,
+		     struct ttm_mem_reg *mem);
+>>>>>>> refs/remotes/origin/master
 /**
  * ttm_bo_move_ttm
  *
  * @bo: A pointer to a struct ttm_buffer_object.
  * @evict: 1: This is an eviction. Don't try to pipeline.
+<<<<<<< HEAD
  * @no_wait_reserve: Return immediately if other buffers are busy.
+=======
+>>>>>>> refs/remotes/origin/master
  * @no_wait_gpu: Return immediately if the GPU is busy.
  * @new_mem: struct ttm_mem_reg indicating where to move.
  *
@@ -1135,15 +1443,23 @@ extern int ttm_bo_wait_unreserved(struct ttm_buffer_object *bo,
  */
 
 extern int ttm_bo_move_ttm(struct ttm_buffer_object *bo,
+<<<<<<< HEAD
 			   bool evict, bool no_wait_reserve,
 			   bool no_wait_gpu, struct ttm_mem_reg *new_mem);
+=======
+			   bool evict, bool no_wait_gpu,
+			   struct ttm_mem_reg *new_mem);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ttm_bo_move_memcpy
  *
  * @bo: A pointer to a struct ttm_buffer_object.
  * @evict: 1: This is an eviction. Don't try to pipeline.
+<<<<<<< HEAD
  * @no_wait_reserve: Return immediately if other buffers are busy.
+=======
+>>>>>>> refs/remotes/origin/master
  * @no_wait_gpu: Return immediately if the GPU is busy.
  * @new_mem: struct ttm_mem_reg indicating where to move.
  *
@@ -1158,8 +1474,13 @@ extern int ttm_bo_move_ttm(struct ttm_buffer_object *bo,
  */
 
 extern int ttm_bo_move_memcpy(struct ttm_buffer_object *bo,
+<<<<<<< HEAD
 			      bool evict, bool no_wait_reserve,
 			      bool no_wait_gpu, struct ttm_mem_reg *new_mem);
+=======
+			      bool evict, bool no_wait_gpu,
+			      struct ttm_mem_reg *new_mem);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ttm_bo_free_old_node
@@ -1175,10 +1496,14 @@ extern void ttm_bo_free_old_node(struct ttm_buffer_object *bo);
  *
  * @bo: A pointer to a struct ttm_buffer_object.
  * @sync_obj: A sync object that signals when moving is complete.
+<<<<<<< HEAD
  * @sync_obj_arg: An argument to pass to the sync object idle / wait
  * functions.
  * @evict: This is an evict move. Don't return until the buffer is idle.
  * @no_wait_reserve: Return immediately if other buffers are busy.
+=======
+ * @evict: This is an evict move. Don't return until the buffer is idle.
+>>>>>>> refs/remotes/origin/master
  * @no_wait_gpu: Return immediately if the GPU is busy.
  * @new_mem: struct ttm_mem_reg indicating where to move.
  *
@@ -1192,9 +1517,13 @@ extern void ttm_bo_free_old_node(struct ttm_buffer_object *bo);
 
 extern int ttm_bo_move_accel_cleanup(struct ttm_buffer_object *bo,
 				     void *sync_obj,
+<<<<<<< HEAD
 				     void *sync_obj_arg,
 				     bool evict, bool no_wait_reserve,
 				     bool no_wait_gpu,
+=======
+				     bool evict, bool no_wait_gpu,
+>>>>>>> refs/remotes/origin/master
 				     struct ttm_mem_reg *new_mem);
 /**
  * ttm_io_prot
@@ -1215,11 +1544,14 @@ extern const struct ttm_mem_type_manager_func ttm_bo_manager_func;
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * ttm_agp_backend_init
  *
  * @bdev: Pointer to a struct ttm_bo_device.
  * @bridge: The agp bridge this device is sitting on.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * ttm_agp_tt_create
  *
  * @bdev: Pointer to a struct ttm_bo_device.
@@ -1228,23 +1560,32 @@ extern const struct ttm_mem_type_manager_func ttm_bo_manager_func;
  * @page_flags: Page flags as identified by TTM_PAGE_FLAG_XX flags.
  * @dummy_read_page: See struct ttm_bo_device.
  *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Create a TTM backend that uses the indicated AGP bridge as an aperture
  * for TT memory. This function uses the linux agpgart interface to
  * bind and unbind memory backing a ttm_tt.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct ttm_backend *ttm_agp_backend_init(struct ttm_bo_device *bdev,
 						struct agp_bridge_data *bridge);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct ttm_tt *ttm_agp_tt_create(struct ttm_bo_device *bdev,
 					struct agp_bridge_data *bridge,
 					unsigned long size, uint32_t page_flags,
 					struct page *dummy_read_page);
 int ttm_agp_tt_populate(struct ttm_tt *ttm);
 void ttm_agp_tt_unpopulate(struct ttm_tt *ttm);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif

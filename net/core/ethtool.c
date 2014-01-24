@@ -17,6 +17,11 @@
 #include <linux/errno.h>
 #include <linux/ethtool.h>
 #include <linux/netdevice.h>
+<<<<<<< HEAD
+=======
+#include <linux/net_tstamp.h>
+#include <linux/phy.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bitops.h>
 #include <linux/uaccess.h>
 #include <linux/vmalloc.h>
@@ -36,6 +41,7 @@ u32 ethtool_op_get_link(struct net_device *dev)
 }
 EXPORT_SYMBOL(ethtool_op_get_link);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 u32 ethtool_op_get_tx_csum(struct net_device *dev)
 {
@@ -279,6 +285,19 @@ static int ethtool_set_features_compat(struct net_device *dev,
 	return compat;
 }
 =======
+=======
+int ethtool_op_get_ts_info(struct net_device *dev, struct ethtool_ts_info *info)
+{
+	info->so_timestamping =
+		SOF_TIMESTAMPING_TX_SOFTWARE |
+		SOF_TIMESTAMPING_RX_SOFTWARE |
+		SOF_TIMESTAMPING_SOFTWARE;
+	info->phc_index = -1;
+	return 0;
+}
+EXPORT_SYMBOL(ethtool_op_get_ts_info);
+
+>>>>>>> refs/remotes/origin/master
 /* Handlers for each ethtool command */
 
 #define ETHTOOL_DEV_FEATURE_WORDS	((NETDEV_FEATURE_COUNT + 31) / 32)
@@ -290,10 +309,20 @@ static const char netdev_features_strings[NETDEV_FEATURE_COUNT][ETH_GSTRING_LEN]
 	[NETIF_F_IPV6_CSUM_BIT] =        "tx-checksum-ipv6",
 	[NETIF_F_HIGHDMA_BIT] =          "highdma",
 	[NETIF_F_FRAGLIST_BIT] =         "tx-scatter-gather-fraglist",
+<<<<<<< HEAD
 	[NETIF_F_HW_VLAN_TX_BIT] =       "tx-vlan-hw-insert",
 
 	[NETIF_F_HW_VLAN_RX_BIT] =       "rx-vlan-hw-parse",
 	[NETIF_F_HW_VLAN_FILTER_BIT] =   "rx-vlan-filter",
+=======
+	[NETIF_F_HW_VLAN_CTAG_TX_BIT] =  "tx-vlan-hw-insert",
+
+	[NETIF_F_HW_VLAN_CTAG_RX_BIT] =  "rx-vlan-hw-parse",
+	[NETIF_F_HW_VLAN_CTAG_FILTER_BIT] = "rx-vlan-filter",
+	[NETIF_F_HW_VLAN_STAG_TX_BIT] =  "tx-vlan-stag-hw-insert",
+	[NETIF_F_HW_VLAN_STAG_RX_BIT] =  "rx-vlan-stag-hw-parse",
+	[NETIF_F_HW_VLAN_STAG_FILTER_BIT] = "rx-vlan-stag-filter",
+>>>>>>> refs/remotes/origin/master
 	[NETIF_F_VLAN_CHALLENGED_BIT] =  "vlan-challenged",
 	[NETIF_F_GSO_BIT] =              "tx-generic-segmentation",
 	[NETIF_F_LLTX_BIT] =             "tx-lockless",
@@ -307,6 +336,14 @@ static const char netdev_features_strings[NETDEV_FEATURE_COUNT][ETH_GSTRING_LEN]
 	[NETIF_F_TSO_ECN_BIT] =          "tx-tcp-ecn-segmentation",
 	[NETIF_F_TSO6_BIT] =             "tx-tcp6-segmentation",
 	[NETIF_F_FSO_BIT] =              "tx-fcoe-segmentation",
+<<<<<<< HEAD
+=======
+	[NETIF_F_GSO_GRE_BIT] =		 "tx-gre-segmentation",
+	[NETIF_F_GSO_IPIP_BIT] =	 "tx-ipip-segmentation",
+	[NETIF_F_GSO_SIT_BIT] =		 "tx-sit-segmentation",
+	[NETIF_F_GSO_UDP_TUNNEL_BIT] =	 "tx-udp_tnl-segmentation",
+	[NETIF_F_GSO_MPLS_BIT] =	 "tx-mpls-segmentation",
+>>>>>>> refs/remotes/origin/master
 
 	[NETIF_F_FCOE_CRC_BIT] =         "tx-checksum-fcoe-crc",
 	[NETIF_F_SCTP_CSUM_BIT] =        "tx-checksum-sctp",
@@ -318,8 +355,13 @@ static const char netdev_features_strings[NETDEV_FEATURE_COUNT][ETH_GSTRING_LEN]
 	[NETIF_F_LOOPBACK_BIT] =         "loopback",
 	[NETIF_F_RXFCS_BIT] =            "rx-fcs",
 	[NETIF_F_RXALL_BIT] =            "rx-all",
+<<<<<<< HEAD
 };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[NETIF_F_HW_L2FW_DOFFLOAD_BIT] = "l2-fwd-offload",
+};
+>>>>>>> refs/remotes/origin/master
 
 static int ethtool_get_features(struct net_device *dev, void __user *useraddr)
 {
@@ -327,6 +369,7 @@ static int ethtool_get_features(struct net_device *dev, void __user *useraddr)
 		.cmd = ETHTOOL_GFEATURES,
 		.size = ETHTOOL_DEV_FEATURE_WORDS,
 	};
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct ethtool_get_features_block features[ETHTOOL_DEV_FEATURE_WORDS] = {
 		{
@@ -341,6 +384,8 @@ static int ethtool_get_features(struct net_device *dev, void __user *useraddr)
 
 	ethtool_get_features_compat(dev, features);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ethtool_get_features_block features[ETHTOOL_DEV_FEATURE_WORDS];
 	u32 __user *sizeaddr;
 	u32 copy_size;
@@ -356,7 +401,10 @@ static int ethtool_get_features(struct net_device *dev, void __user *useraddr)
 		features[i].never_changed =
 			(u32)(NETIF_F_NEVER_CHANGE >> (32 * i));
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	sizeaddr = useraddr + offsetof(struct ethtool_gfeatures, size);
 	if (get_user(copy_size, sizeaddr))
@@ -379,11 +427,16 @@ static int ethtool_set_features(struct net_device *dev, void __user *useraddr)
 	struct ethtool_sfeatures cmd;
 	struct ethtool_set_features_block features[ETHTOOL_DEV_FEATURE_WORDS];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = 0;
 =======
 	netdev_features_t wanted = 0, valid = 0;
 	int i, ret = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netdev_features_t wanted = 0, valid = 0;
+	int i, ret = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (copy_from_user(&cmd, useraddr, sizeof(cmd)))
 		return -EFAULT;
@@ -395,6 +448,7 @@ static int ethtool_set_features(struct net_device *dev, void __user *useraddr)
 	if (copy_from_user(features, useraddr, sizeof(features)))
 		return -EFAULT;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (features[0].valid & ~NETIF_F_ETHTOOL_BITS)
 		return -EINVAL;
@@ -413,6 +467,8 @@ static int ethtool_set_features(struct net_device *dev, void __user *useraddr)
 
 	if ((dev->wanted_features ^ dev->features) & features[0].valid)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ETHTOOL_DEV_FEATURE_WORDS; ++i) {
 		valid |= (netdev_features_t)features[i].valid << (32 * i);
 		wanted |= (netdev_features_t)features[i].requested << (32 * i);
@@ -431,12 +487,16 @@ static int ethtool_set_features(struct net_device *dev, void __user *useraddr)
 	__netdev_update_features(dev);
 
 	if ((dev->wanted_features ^ dev->features) & valid)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret |= ETHTOOL_F_WISH;
 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const char netdev_features_strings[ETHTOOL_DEV_FEATURE_WORDS * 32][ETH_GSTRING_LEN] = {
 	/* NETIF_F_SG */              "tx-scatter-gather",
@@ -478,6 +538,8 @@ static const char netdev_features_strings[ETHTOOL_DEV_FEATURE_WORDS * 32][ETH_GS
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __ethtool_get_sset_count(struct net_device *dev, int sset)
 {
 	const struct ethtool_ops *ops = dev->ethtool_ops;
@@ -485,7 +547,11 @@ static int __ethtool_get_sset_count(struct net_device *dev, int sset)
 	if (sset == ETH_SS_FEATURES)
 		return ARRAY_SIZE(netdev_features_strings);
 
+<<<<<<< HEAD
 	if (ops && ops->get_sset_count && ops->get_strings)
+=======
+	if (ops->get_sset_count && ops->get_strings)
+>>>>>>> refs/remotes/origin/master
 		return ops->get_sset_count(dev, sset);
 	else
 		return -EOPNOTSUPP;
@@ -505,10 +571,14 @@ static void __ethtool_get_strings(struct net_device *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u32 ethtool_get_feature_mask(u32 eth_cmd)
 =======
 static netdev_features_t ethtool_get_feature_mask(u32 eth_cmd)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static netdev_features_t ethtool_get_feature_mask(u32 eth_cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	/* feature masks of legacy discrete ethtool ops */
 
@@ -539,6 +609,7 @@ static netdev_features_t ethtool_get_feature_mask(u32 eth_cmd)
 	}
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void *__ethtool_get_one_feature_actor(struct net_device *dev, u32 ethcmd)
 {
@@ -573,16 +644,22 @@ static int ethtool_get_one_feature(struct net_device *dev,
 {
 	u32 mask = ethtool_get_feature_mask(ethcmd);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int ethtool_get_one_feature(struct net_device *dev,
 	char __user *useraddr, u32 ethcmd)
 {
 	netdev_features_t mask = ethtool_get_feature_mask(ethcmd);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ethtool_value edata = {
 		.cmd = ethcmd,
 		.data = !!(dev->features & mask),
 	};
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* compatibility with discrete get_ ops */
 	if (!(dev->hw_features & mask)) {
@@ -600,11 +677,14 @@ static int ethtool_get_one_feature(struct net_device *dev,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (copy_to_user(useraddr, &edata, sizeof(edata)))
 		return -EFAULT;
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __ethtool_set_tx_csum(struct net_device *dev, u32 data);
 static int __ethtool_set_rx_csum(struct net_device *dev, u32 data);
@@ -614,21 +694,28 @@ static int __ethtool_set_ufo(struct net_device *dev, u32 data);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ethtool_set_one_feature(struct net_device *dev,
 	void __user *useraddr, u32 ethcmd)
 {
 	struct ethtool_value edata;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 mask;
 =======
 	netdev_features_t mask;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netdev_features_t mask;
+>>>>>>> refs/remotes/origin/master
 
 	if (copy_from_user(&edata, useraddr, sizeof(edata)))
 		return -EFAULT;
 
 	mask = ethtool_get_feature_mask(ethcmd);
 	mask &= dev->hw_features;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (mask) {
 		if (edata.data)
@@ -683,6 +770,8 @@ int __ethtool_set_flags(struct net_device *dev, u32 data)
 	/* allow changing only bits set in hw_features */
 	changed = (data ^ dev->features) & flags_dup_features;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!mask)
 		return -EOPNOTSUPP;
 
@@ -698,18 +787,37 @@ int __ethtool_set_flags(struct net_device *dev, u32 data)
 
 #define ETH_ALL_FLAGS    (ETH_FLAG_LRO | ETH_FLAG_RXVLAN | ETH_FLAG_TXVLAN | \
 			  ETH_FLAG_NTUPLE | ETH_FLAG_RXHASH)
+<<<<<<< HEAD
 #define ETH_ALL_FEATURES (NETIF_F_LRO | NETIF_F_HW_VLAN_RX | \
 			  NETIF_F_HW_VLAN_TX | NETIF_F_NTUPLE | NETIF_F_RXHASH)
+=======
+#define ETH_ALL_FEATURES (NETIF_F_LRO | NETIF_F_HW_VLAN_CTAG_RX | \
+			  NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_NTUPLE | \
+			  NETIF_F_RXHASH)
+>>>>>>> refs/remotes/origin/master
 
 static u32 __ethtool_get_flags(struct net_device *dev)
 {
 	u32 flags = 0;
 
+<<<<<<< HEAD
 	if (dev->features & NETIF_F_LRO)	flags |= ETH_FLAG_LRO;
 	if (dev->features & NETIF_F_HW_VLAN_RX)	flags |= ETH_FLAG_RXVLAN;
 	if (dev->features & NETIF_F_HW_VLAN_TX)	flags |= ETH_FLAG_TXVLAN;
 	if (dev->features & NETIF_F_NTUPLE)	flags |= ETH_FLAG_NTUPLE;
 	if (dev->features & NETIF_F_RXHASH)	flags |= ETH_FLAG_RXHASH;
+=======
+	if (dev->features & NETIF_F_LRO)
+		flags |= ETH_FLAG_LRO;
+	if (dev->features & NETIF_F_HW_VLAN_CTAG_RX)
+		flags |= ETH_FLAG_RXVLAN;
+	if (dev->features & NETIF_F_HW_VLAN_CTAG_TX)
+		flags |= ETH_FLAG_TXVLAN;
+	if (dev->features & NETIF_F_NTUPLE)
+		flags |= ETH_FLAG_NTUPLE;
+	if (dev->features & NETIF_F_RXHASH)
+		flags |= ETH_FLAG_RXHASH;
+>>>>>>> refs/remotes/origin/master
 
 	return flags;
 }
@@ -721,6 +829,7 @@ static int __ethtool_set_flags(struct net_device *dev, u32 data)
 	if (data & ~ETH_ALL_FLAGS)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (data & ETH_FLAG_LRO)	features |= NETIF_F_LRO;
 	if (data & ETH_FLAG_RXVLAN)	features |= NETIF_F_HW_VLAN_RX;
 	if (data & ETH_FLAG_TXVLAN)	features |= NETIF_F_HW_VLAN_TX;
@@ -730,21 +839,41 @@ static int __ethtool_set_flags(struct net_device *dev, u32 data)
 	/* allow changing only bits set in hw_features */
 	changed = (features ^ dev->features) & ETH_ALL_FEATURES;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (data & ETH_FLAG_LRO)
+		features |= NETIF_F_LRO;
+	if (data & ETH_FLAG_RXVLAN)
+		features |= NETIF_F_HW_VLAN_CTAG_RX;
+	if (data & ETH_FLAG_TXVLAN)
+		features |= NETIF_F_HW_VLAN_CTAG_TX;
+	if (data & ETH_FLAG_NTUPLE)
+		features |= NETIF_F_NTUPLE;
+	if (data & ETH_FLAG_RXHASH)
+		features |= NETIF_F_RXHASH;
+
+	/* allow changing only bits set in hw_features */
+	changed = (features ^ dev->features) & ETH_ALL_FEATURES;
+>>>>>>> refs/remotes/origin/master
 	if (changed & ~dev->hw_features)
 		return (changed & dev->hw_features) ? -EINVAL : -EOPNOTSUPP;
 
 	dev->wanted_features =
 <<<<<<< HEAD
+<<<<<<< HEAD
 		(dev->wanted_features & ~changed) | (data & dev->hw_features);
 =======
 		(dev->wanted_features & ~changed) | (features & changed);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(dev->wanted_features & ~changed) | (features & changed);
+>>>>>>> refs/remotes/origin/master
 
 	__netdev_update_features(dev);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int ethtool_get_settings(struct net_device *dev, void __user *useraddr)
 {
@@ -756,11 +885,17 @@ static int ethtool_get_settings(struct net_device *dev, void __user *useraddr)
 
 	err = dev->ethtool_ops->get_settings(dev, &cmd);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int __ethtool_get_settings(struct net_device *dev, struct ethtool_cmd *cmd)
 {
 	ASSERT_RTNL();
 
+<<<<<<< HEAD
 	if (!dev->ethtool_ops || !dev->ethtool_ops->get_settings)
+=======
+	if (!dev->ethtool_ops->get_settings)
+>>>>>>> refs/remotes/origin/master
 		return -EOPNOTSUPP;
 
 	memset(cmd, 0, sizeof(struct ethtool_cmd));
@@ -775,7 +910,10 @@ static int ethtool_get_settings(struct net_device *dev, void __user *useraddr)
 	struct ethtool_cmd cmd;
 
 	err = __ethtool_get_settings(dev, &cmd);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -805,7 +943,11 @@ static noinline_for_stack int ethtool_get_drvinfo(struct net_device *dev,
 
 	memset(&info, 0, sizeof(info));
 	info.cmd = ETHTOOL_GDRVINFO;
+<<<<<<< HEAD
 	if (ops && ops->get_drvinfo) {
+=======
+	if (ops->get_drvinfo) {
+>>>>>>> refs/remotes/origin/master
 		ops->get_drvinfo(dev, &info);
 	} else if (dev->dev.parent && dev->dev.parent->driver) {
 		strlcpy(info.bus_info, dev_name(dev->dev.parent),
@@ -820,7 +962,11 @@ static noinline_for_stack int ethtool_get_drvinfo(struct net_device *dev,
 	 * this method of obtaining string set info is deprecated;
 	 * Use ETHTOOL_GSSET_INFO instead.
 	 */
+<<<<<<< HEAD
 	if (ops && ops->get_sset_count) {
+=======
+	if (ops->get_sset_count) {
+>>>>>>> refs/remotes/origin/master
 		int rc;
 
 		rc = ops->get_sset_count(dev, ETH_SS_TEST);
@@ -833,9 +979,15 @@ static noinline_for_stack int ethtool_get_drvinfo(struct net_device *dev,
 		if (rc >= 0)
 			info.n_priv_flags = rc;
 	}
+<<<<<<< HEAD
 	if (ops && ops->get_regs_len)
 		info.regdump_len = ops->get_regs_len(dev);
 	if (ops && ops->get_eeprom_len)
+=======
+	if (ops->get_regs_len)
+		info.regdump_len = ops->get_regs_len(dev);
+	if (ops->get_eeprom_len)
+>>>>>>> refs/remotes/origin/master
 		info.eedump_len = ops->get_eeprom_len(dev);
 
 	if (copy_to_user(useraddr, &info, sizeof(info)))
@@ -905,9 +1057,13 @@ static noinline_for_stack int ethtool_set_rxnfc(struct net_device *dev,
 	struct ethtool_rxnfc info;
 	size_t info_size = sizeof(info);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int rc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rc;
+>>>>>>> refs/remotes/origin/master
 
 	if (!dev->ethtool_ops->set_rxnfc)
 		return -EOPNOTSUPP;
@@ -924,8 +1080,11 @@ static noinline_for_stack int ethtool_set_rxnfc(struct net_device *dev,
 		return -EFAULT;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return dev->ethtool_ops->set_rxnfc(dev, &info);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = dev->ethtool_ops->set_rxnfc(dev, &info);
 	if (rc)
 		return rc;
@@ -935,7 +1094,10 @@ static noinline_for_stack int ethtool_set_rxnfc(struct net_device *dev,
 		return -EFAULT;
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static noinline_for_stack int ethtool_get_rxnfc(struct net_device *dev,
@@ -997,6 +1159,7 @@ static noinline_for_stack int ethtool_get_rxfh_indir(struct net_device *dev,
 						     void __user *useraddr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ethtool_rxfh_indir *indir;
 	u32 table_size;
 	size_t full_size;
@@ -1021,6 +1184,8 @@ static noinline_for_stack int ethtool_get_rxfh_indir(struct net_device *dev,
 	indir->cmd = ETHTOOL_GRXFHINDIR;
 	indir->size = table_size;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 user_size, dev_size;
 	u32 *indir;
 	int ret;
@@ -1052,11 +1217,15 @@ static noinline_for_stack int ethtool_get_rxfh_indir(struct net_device *dev,
 	if (!indir)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = dev->ethtool_ops->get_rxfh_indir(dev, indir);
 	if (ret)
 		goto out;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (copy_to_user(useraddr, indir, full_size))
 =======
@@ -1064,6 +1233,11 @@ static noinline_for_stack int ethtool_get_rxfh_indir(struct net_device *dev,
 			 offsetof(struct ethtool_rxfh_indir, ring_index[0]),
 			 indir, dev_size * sizeof(indir[0])))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (copy_to_user(useraddr +
+			 offsetof(struct ethtool_rxfh_indir, ring_index[0]),
+			 indir, dev_size * sizeof(indir[0])))
+>>>>>>> refs/remotes/origin/master
 		ret = -EFAULT;
 
 out:
@@ -1074,6 +1248,7 @@ out:
 static noinline_for_stack int ethtool_set_rxfh_indir(struct net_device *dev,
 						     void __user *useraddr)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct ethtool_rxfh_indir *indir;
 	u32 table_size;
@@ -1460,6 +1635,19 @@ out:
 	    !dev->ethtool_ops->get_rxnfc)
 		return -EOPNOTSUPP;
 	dev_size = dev->ethtool_ops->get_rxfh_indir_size(dev);
+=======
+	struct ethtool_rxnfc rx_rings;
+	u32 user_size, dev_size, i;
+	u32 *indir;
+	const struct ethtool_ops *ops = dev->ethtool_ops;
+	int ret;
+
+	if (!ops->get_rxfh_indir_size || !ops->set_rxfh_indir ||
+	    !ops->get_rxnfc)
+		return -EOPNOTSUPP;
+
+	dev_size = ops->get_rxfh_indir_size(dev);
+>>>>>>> refs/remotes/origin/master
 	if (dev_size == 0)
 		return -EOPNOTSUPP;
 
@@ -1476,7 +1664,11 @@ out:
 		return -ENOMEM;
 
 	rx_rings.cmd = ETHTOOL_GRXRINGS;
+<<<<<<< HEAD
 	ret = dev->ethtool_ops->get_rxnfc(dev, &rx_rings, NULL);
+=======
+	ret = ops->get_rxnfc(dev, &rx_rings, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto out;
 
@@ -1502,11 +1694,18 @@ out:
 		}
 	}
 
+<<<<<<< HEAD
 	ret = dev->ethtool_ops->set_rxfh_indir(dev, indir);
 
 out:
 	kfree(indir);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = ops->set_rxfh_indir(dev, indir);
+
+out:
+	kfree(indir);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1593,6 +1792,43 @@ static int ethtool_set_wol(struct net_device *dev, char __user *useraddr)
 	return dev->ethtool_ops->set_wol(dev, &wol);
 }
 
+<<<<<<< HEAD
+=======
+static int ethtool_get_eee(struct net_device *dev, char __user *useraddr)
+{
+	struct ethtool_eee edata;
+	int rc;
+
+	if (!dev->ethtool_ops->get_eee)
+		return -EOPNOTSUPP;
+
+	memset(&edata, 0, sizeof(struct ethtool_eee));
+	edata.cmd = ETHTOOL_GEEE;
+	rc = dev->ethtool_ops->get_eee(dev, &edata);
+
+	if (rc)
+		return rc;
+
+	if (copy_to_user(useraddr, &edata, sizeof(edata)))
+		return -EFAULT;
+
+	return 0;
+}
+
+static int ethtool_set_eee(struct net_device *dev, char __user *useraddr)
+{
+	struct ethtool_eee edata;
+
+	if (!dev->ethtool_ops->set_eee)
+		return -EOPNOTSUPP;
+
+	if (copy_from_user(&edata, useraddr, sizeof(edata)))
+		return -EFAULT;
+
+	return dev->ethtool_ops->set_eee(dev, &edata);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int ethtool_nway_reset(struct net_device *dev)
 {
 	if (!dev->ethtool_ops->nway_reset)
@@ -1615,18 +1851,30 @@ static int ethtool_get_link(struct net_device *dev, char __user *useraddr)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ethtool_get_eeprom(struct net_device *dev, void __user *useraddr)
 {
 	struct ethtool_eeprom eeprom;
 	const struct ethtool_ops *ops = dev->ethtool_ops;
+=======
+static int ethtool_get_any_eeprom(struct net_device *dev, void __user *useraddr,
+				  int (*getter)(struct net_device *,
+						struct ethtool_eeprom *, u8 *),
+				  u32 total_len)
+{
+	struct ethtool_eeprom eeprom;
+>>>>>>> refs/remotes/origin/master
 	void __user *userbuf = useraddr + sizeof(eeprom);
 	u32 bytes_remaining;
 	u8 *data;
 	int ret = 0;
 
+<<<<<<< HEAD
 	if (!ops->get_eeprom || !ops->get_eeprom_len)
 		return -EOPNOTSUPP;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (copy_from_user(&eeprom, useraddr, sizeof(eeprom)))
 		return -EFAULT;
 
@@ -1635,7 +1883,11 @@ static int ethtool_get_eeprom(struct net_device *dev, void __user *useraddr)
 		return -EINVAL;
 
 	/* Check for exceeding total eeprom len */
+<<<<<<< HEAD
 	if (eeprom.offset + eeprom.len > ops->get_eeprom_len(dev))
+=======
+	if (eeprom.offset + eeprom.len > total_len)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	data = kmalloc(PAGE_SIZE, GFP_USER);
@@ -1646,7 +1898,11 @@ static int ethtool_get_eeprom(struct net_device *dev, void __user *useraddr)
 	while (bytes_remaining > 0) {
 		eeprom.len = min(bytes_remaining, (u32)PAGE_SIZE);
 
+<<<<<<< HEAD
 		ret = ops->get_eeprom(dev, &eeprom, data);
+=======
+		ret = getter(dev, &eeprom, data);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			break;
 		if (copy_to_user(userbuf, data, eeprom.len)) {
@@ -1667,6 +1923,20 @@ static int ethtool_get_eeprom(struct net_device *dev, void __user *useraddr)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static int ethtool_get_eeprom(struct net_device *dev, void __user *useraddr)
+{
+	const struct ethtool_ops *ops = dev->ethtool_ops;
+
+	if (!ops->get_eeprom || !ops->get_eeprom_len)
+		return -EOPNOTSUPP;
+
+	return ethtool_get_any_eeprom(dev, useraddr, ops->get_eeprom,
+				      ops->get_eeprom_len(dev));
+}
+
+>>>>>>> refs/remotes/origin/master
 static int ethtool_set_eeprom(struct net_device *dev, void __user *useraddr)
 {
 	struct ethtool_eeprom eeprom;
@@ -1827,6 +2097,7 @@ static int ethtool_set_pauseparam(struct net_device *dev, void __user *useraddr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __ethtool_set_sg(struct net_device *dev, u32 data)
 {
 	int err;
@@ -1904,6 +2175,8 @@ static int __ethtool_set_ufo(struct net_device *dev, u32 data)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ethtool_self_test(struct net_device *dev, char __user *useraddr)
 {
 	struct ethtool_test test;
@@ -1980,9 +2253,16 @@ static int ethtool_phys_id(struct net_device *dev, void __user *useraddr)
 {
 	struct ethtool_value id;
 	static bool busy;
+<<<<<<< HEAD
 	int rc;
 
 	if (!dev->ethtool_ops->set_phys_id)
+=======
+	const struct ethtool_ops *ops = dev->ethtool_ops;
+	int rc;
+
+	if (!ops->set_phys_id)
+>>>>>>> refs/remotes/origin/master
 		return -EOPNOTSUPP;
 
 	if (busy)
@@ -1991,7 +2271,11 @@ static int ethtool_phys_id(struct net_device *dev, void __user *useraddr)
 	if (copy_from_user(&id, useraddr, sizeof(id)))
 		return -EFAULT;
 
+<<<<<<< HEAD
 	rc = dev->ethtool_ops->set_phys_id(dev, ETHTOOL_ID_ACTIVE);
+=======
+	rc = ops->set_phys_id(dev, ETHTOOL_ID_ACTIVE);
+>>>>>>> refs/remotes/origin/master
 	if (rc < 0)
 		return rc;
 
@@ -2016,7 +2300,11 @@ static int ethtool_phys_id(struct net_device *dev, void __user *useraddr)
 			i = n;
 			do {
 				rtnl_lock();
+<<<<<<< HEAD
 				rc = dev->ethtool_ops->set_phys_id(dev,
+=======
+				rc = ops->set_phys_id(dev,
+>>>>>>> refs/remotes/origin/master
 				    (i & 1) ? ETHTOOL_ID_OFF : ETHTOOL_ID_ON);
 				rtnl_unlock();
 				if (rc)
@@ -2031,7 +2319,11 @@ static int ethtool_phys_id(struct net_device *dev, void __user *useraddr)
 	dev_put(dev);
 	busy = false;
 
+<<<<<<< HEAD
 	(void)dev->ethtool_ops->set_phys_id(dev, ETHTOOL_ID_INACTIVE);
+=======
+	(void) ops->set_phys_id(dev, ETHTOOL_ID_INACTIVE);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -2148,10 +2440,15 @@ static noinline_for_stack int ethtool_flash_device(struct net_device *dev,
 		return -EOPNOTSUPP;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	efl.data[ETHTOOL_FLASH_MAX_FILENAME - 1] = 0;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	efl.data[ETHTOOL_FLASH_MAX_FILENAME - 1] = 0;
+
+>>>>>>> refs/remotes/origin/master
 	return dev->ethtool_ops->flash_device(dev, &efl);
 }
 
@@ -2176,7 +2473,11 @@ static int ethtool_get_dump_flag(struct net_device *dev,
 	struct ethtool_dump dump;
 	const struct ethtool_ops *ops = dev->ethtool_ops;
 
+<<<<<<< HEAD
 	if (!dev->ethtool_ops->get_dump_flag)
+=======
+	if (!ops->get_dump_flag)
+>>>>>>> refs/remotes/origin/master
 		return -EOPNOTSUPP;
 
 	if (copy_from_user(&dump, useraddr, sizeof(dump)))
@@ -2200,8 +2501,12 @@ static int ethtool_get_dump_data(struct net_device *dev,
 	const struct ethtool_ops *ops = dev->ethtool_ops;
 	void *data = NULL;
 
+<<<<<<< HEAD
 	if (!dev->ethtool_ops->get_dump_data ||
 		!dev->ethtool_ops->get_dump_flag)
+=======
+	if (!ops->get_dump_data || !ops->get_dump_flag)
+>>>>>>> refs/remotes/origin/master
 		return -EOPNOTSUPP;
 
 	if (copy_from_user(&dump, useraddr, sizeof(dump)))
@@ -2213,10 +2518,26 @@ static int ethtool_get_dump_data(struct net_device *dev,
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	len = (tmp.len > dump.len) ? dump.len : tmp.len;
 	if (!len)
 		return -EFAULT;
 
+=======
+	len = min(tmp.len, dump.len);
+	if (!len)
+		return -EFAULT;
+
+	/* Don't ever let the driver think there's more space available
+	 * than it requested with .get_dump_flag().
+	 */
+	dump.len = len;
+
+	/* Always allocate enough space to hold the whole thing so that the
+	 * driver does not need to check the length and bother with partial
+	 * dumping.
+	 */
+>>>>>>> refs/remotes/origin/master
 	data = vzalloc(tmp.len);
 	if (!data)
 		return -ENOMEM;
@@ -2224,6 +2545,19 @@ static int ethtool_get_dump_data(struct net_device *dev,
 	if (ret)
 		goto out;
 
+<<<<<<< HEAD
+=======
+	/* There are two sane possibilities:
+	 * 1. The driver's .get_dump_data() does not touch dump.len.
+	 * 2. Or it may set dump.len to how much it really writes, which
+	 *    should be tmp.len (or len if it can do a partial dump).
+	 * In any case respond to userspace with the actual length of data
+	 * it's receiving.
+	 */
+	WARN_ON(dump.len != len && dump.len != tmp.len);
+	dump.len = len;
+
+>>>>>>> refs/remotes/origin/master
 	if (copy_to_user(useraddr, &dump, sizeof(dump))) {
 		ret = -EFAULT;
 		goto out;
@@ -2236,7 +2570,82 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 /* The main entry point in this file.  Called from net/core/dev.c */
+=======
+static int ethtool_get_ts_info(struct net_device *dev, void __user *useraddr)
+{
+	int err = 0;
+	struct ethtool_ts_info info;
+	const struct ethtool_ops *ops = dev->ethtool_ops;
+	struct phy_device *phydev = dev->phydev;
+
+	memset(&info, 0, sizeof(info));
+	info.cmd = ETHTOOL_GET_TS_INFO;
+
+	if (phydev && phydev->drv && phydev->drv->ts_info) {
+		err = phydev->drv->ts_info(phydev, &info);
+	} else if (ops->get_ts_info) {
+		err = ops->get_ts_info(dev, &info);
+	} else {
+		info.so_timestamping =
+			SOF_TIMESTAMPING_RX_SOFTWARE |
+			SOF_TIMESTAMPING_SOFTWARE;
+		info.phc_index = -1;
+	}
+
+	if (err)
+		return err;
+
+	if (copy_to_user(useraddr, &info, sizeof(info)))
+		err = -EFAULT;
+
+	return err;
+}
+
+static int ethtool_get_module_info(struct net_device *dev,
+				   void __user *useraddr)
+{
+	int ret;
+	struct ethtool_modinfo modinfo;
+	const struct ethtool_ops *ops = dev->ethtool_ops;
+
+	if (!ops->get_module_info)
+		return -EOPNOTSUPP;
+
+	if (copy_from_user(&modinfo, useraddr, sizeof(modinfo)))
+		return -EFAULT;
+
+	ret = ops->get_module_info(dev, &modinfo);
+	if (ret)
+		return ret;
+
+	if (copy_to_user(useraddr, &modinfo, sizeof(modinfo)))
+		return -EFAULT;
+
+	return 0;
+}
+
+static int ethtool_get_module_eeprom(struct net_device *dev,
+				     void __user *useraddr)
+{
+	int ret;
+	struct ethtool_modinfo modinfo;
+	const struct ethtool_ops *ops = dev->ethtool_ops;
+
+	if (!ops->get_module_info || !ops->get_module_eeprom)
+		return -EOPNOTSUPP;
+
+	ret = ops->get_module_info(dev, &modinfo);
+	if (ret)
+		return ret;
+
+	return ethtool_get_any_eeprom(dev, useraddr, ops->get_module_eeprom,
+				      modinfo.eeprom_len);
+}
+
+/* The main entry point in this file.  Called from net/core/dev_ioctl.c */
+>>>>>>> refs/remotes/origin/master
 
 int dev_ethtool(struct net *net, struct ifreq *ifr)
 {
@@ -2245,10 +2654,14 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
 	u32 ethcmd;
 	int rc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 old_features;
 =======
 	netdev_features_t old_features;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netdev_features_t old_features;
+>>>>>>> refs/remotes/origin/master
 
 	if (!dev || !netif_device_present(dev))
 		return -ENODEV;
@@ -2256,6 +2669,7 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
 	if (copy_from_user(&ethcmd, useraddr, sizeof(ethcmd)))
 		return -EFAULT;
 
+<<<<<<< HEAD
 	if (!dev->ethtool_ops) {
 		/* ETHTOOL_GDRVINFO does not require any driver support.
 		 * It is also unprivileged and does not change anything,
@@ -2266,11 +2680,17 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
 			return -EOPNOTSUPP;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Allow some commands to be done by anyone */
 	switch (ethcmd) {
 	case ETHTOOL_GSET:
 	case ETHTOOL_GDRVINFO:
 	case ETHTOOL_GMSGLVL:
+<<<<<<< HEAD
+=======
+	case ETHTOOL_GLINK:
+>>>>>>> refs/remotes/origin/master
 	case ETHTOOL_GCOALESCE:
 	case ETHTOOL_GRINGPARAM:
 	case ETHTOOL_GPAUSEPARAM:
@@ -2279,6 +2699,10 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
 	case ETHTOOL_GSG:
 	case ETHTOOL_GSSET_INFO:
 	case ETHTOOL_GSTRINGS:
+<<<<<<< HEAD
+=======
+	case ETHTOOL_GSTATS:
+>>>>>>> refs/remotes/origin/master
 	case ETHTOOL_GTSO:
 	case ETHTOOL_GPERMADDR:
 	case ETHTOOL_GUFO:
@@ -2291,10 +2715,21 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
 	case ETHTOOL_GRXCLSRLCNT:
 	case ETHTOOL_GRXCLSRULE:
 	case ETHTOOL_GRXCLSRLALL:
+<<<<<<< HEAD
 	case ETHTOOL_GFEATURES:
 		break;
 	default:
 		if (!capable(CAP_NET_ADMIN))
+=======
+	case ETHTOOL_GRXFHINDIR:
+	case ETHTOOL_GFEATURES:
+	case ETHTOOL_GCHANNELS:
+	case ETHTOOL_GET_TS_INFO:
+	case ETHTOOL_GEEE:
+		break;
+	default:
+		if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
+>>>>>>> refs/remotes/origin/master
 			return -EPERM;
 	}
 
@@ -2332,6 +2767,15 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
 		rc = ethtool_set_value_void(dev, useraddr,
 				       dev->ethtool_ops->set_msglevel);
 		break;
+<<<<<<< HEAD
+=======
+	case ETHTOOL_GEEE:
+		rc = ethtool_get_eee(dev, useraddr);
+		break;
+	case ETHTOOL_SEEE:
+		rc = ethtool_set_eee(dev, useraddr);
+		break;
+>>>>>>> refs/remotes/origin/master
 	case ETHTOOL_NWAY_RST:
 		rc = ethtool_nway_reset(dev);
 		break;
@@ -2380,12 +2824,16 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
 	case ETHTOOL_GFLAGS:
 		rc = ethtool_get_value(dev, useraddr, ethcmd,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				       (dev->ethtool_ops->get_flags ?
 					dev->ethtool_ops->get_flags :
 					ethtool_op_get_flags));
 =======
 					__ethtool_get_flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					__ethtool_get_flags);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case ETHTOOL_SFLAGS:
 		rc = ethtool_set_value(dev, useraddr, __ethtool_set_flags);
@@ -2417,6 +2865,7 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
 		rc = ethtool_reset(dev, useraddr);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case ETHTOOL_SRXNTUPLE:
 		rc = ethtool_set_rx_ntuple(dev, useraddr);
 		break;
@@ -2425,6 +2874,8 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
 		break;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case ETHTOOL_GSSET_INFO:
 		rc = ethtool_get_sset_info(dev, useraddr);
 		break;
@@ -2473,6 +2924,18 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
 	case ETHTOOL_GET_DUMP_DATA:
 		rc = ethtool_get_dump_data(dev, useraddr);
 		break;
+<<<<<<< HEAD
+=======
+	case ETHTOOL_GET_TS_INFO:
+		rc = ethtool_get_ts_info(dev, useraddr);
+		break;
+	case ETHTOOL_GMODULEINFO:
+		rc = ethtool_get_module_info(dev, useraddr);
+		break;
+	case ETHTOOL_GMODULEEEPROM:
+		rc = ethtool_get_module_eeprom(dev, useraddr);
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		rc = -EOPNOTSUPP;
 	}

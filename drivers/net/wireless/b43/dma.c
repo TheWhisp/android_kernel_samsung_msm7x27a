@@ -5,10 +5,14 @@
   DMA ringbuffer and descriptor allocation/management
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) 2005, 2006 Michael Buesch <mb@bu3sch.de>
 =======
   Copyright (c) 2005, 2006 Michael Buesch <m@bues.ch>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  Copyright (c) 2005, 2006 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
 
   Some code in this file is derived from the b44.c driver
   Copyright (C) 2002 David S. Miller
@@ -52,7 +56,10 @@
 #define TX_SLOTS_PER_FRAME	2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 b43_dma_address(struct b43_dma *dma, dma_addr_t dmaaddr,
 			   enum b43_addrtype addrtype)
 {
@@ -85,7 +92,10 @@ static u32 b43_dma_address(struct b43_dma *dma, dma_addr_t dmaaddr,
 
 	return addr;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* 32bit DMA ops. */
 static
@@ -117,6 +127,7 @@ static void op32_fill_descriptor(struct b43_dmaring *ring,
 	B43_WARN_ON(!(slot >= 0 && slot < ring->nr_slots));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	addr = (u32) (dmaaddr & ~SSB_DMA_TRANSLATION_MASK);
 	addrext = (u32) (dmaaddr & SSB_DMA_TRANSLATION_MASK)
 	    >> SSB_DMA_TRANSLATION_SHIFT;
@@ -126,6 +137,11 @@ static void op32_fill_descriptor(struct b43_dmaring *ring,
 	addrext = b43_dma_address(&ring->dev->dma, dmaaddr, B43_DMA_ADDR_EXT);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	addr = b43_dma_address(&ring->dev->dma, dmaaddr, B43_DMA_ADDR_LOW);
+	addrext = b43_dma_address(&ring->dev->dma, dmaaddr, B43_DMA_ADDR_EXT);
+
+>>>>>>> refs/remotes/origin/master
 	ctl = bufsize & B43_DMA32_DCTL_BYTECNT;
 	if (slot == ring->nr_slots - 1)
 		ctl |= B43_DMA32_DCTL_DTABLEEND;
@@ -216,17 +232,23 @@ static void op64_fill_descriptor(struct b43_dmaring *ring,
 	B43_WARN_ON(!(slot >= 0 && slot < ring->nr_slots));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	addrlo = (u32) (dmaaddr & 0xFFFFFFFF);
 	addrhi = (((u64) dmaaddr >> 32) & ~SSB_DMA_TRANSLATION_MASK);
 	addrext = (((u64) dmaaddr >> 32) & SSB_DMA_TRANSLATION_MASK)
 	    >> SSB_DMA_TRANSLATION_SHIFT;
 	addrhi |= (ring->dev->dma.translation << 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	addrlo = b43_dma_address(&ring->dev->dma, dmaaddr, B43_DMA_ADDR_LOW);
 	addrhi = b43_dma_address(&ring->dev->dma, dmaaddr, B43_DMA_ADDR_HIGH);
 	addrext = b43_dma_address(&ring->dev->dma, dmaaddr, B43_DMA_ADDR_EXT);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (slot == ring->nr_slots - 1)
 		ctl0 |= B43_DMA64_DCTL0_DTABLEEND;
 	if (start)
@@ -386,16 +408,22 @@ static inline
 
 	if (tx) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dmaaddr = dma_map_single(ring->dev->sdev->dma_dev,
 					 buf, len, DMA_TO_DEVICE);
 	} else {
 		dmaaddr = dma_map_single(ring->dev->sdev->dma_dev,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dmaaddr = dma_map_single(ring->dev->dev->dma_dev,
 					 buf, len, DMA_TO_DEVICE);
 	} else {
 		dmaaddr = dma_map_single(ring->dev->dev->dma_dev,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					 buf, len, DMA_FROM_DEVICE);
 	}
 
@@ -408,16 +436,22 @@ static inline
 {
 	if (tx) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dma_unmap_single(ring->dev->sdev->dma_dev,
 				 addr, len, DMA_TO_DEVICE);
 	} else {
 		dma_unmap_single(ring->dev->sdev->dma_dev,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dma_unmap_single(ring->dev->dev->dma_dev,
 				 addr, len, DMA_TO_DEVICE);
 	} else {
 		dma_unmap_single(ring->dev->dev->dma_dev,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				 addr, len, DMA_FROM_DEVICE);
 	}
 }
@@ -428,10 +462,14 @@ static inline
 {
 	B43_WARN_ON(ring->tx);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dma_sync_single_for_cpu(ring->dev->sdev->dma_dev,
 =======
 	dma_sync_single_for_cpu(ring->dev->dev->dma_dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_sync_single_for_cpu(ring->dev->dev->dma_dev,
+>>>>>>> refs/remotes/origin/master
 				    addr, len, DMA_FROM_DEVICE);
 }
 
@@ -441,10 +479,14 @@ static inline
 {
 	B43_WARN_ON(ring->tx);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dma_sync_single_for_device(ring->dev->sdev->dma_dev,
 =======
 	dma_sync_single_for_device(ring->dev->dev->dma_dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_sync_single_for_device(ring->dev->dev->dma_dev,
+>>>>>>> refs/remotes/origin/master
 				   addr, len, DMA_FROM_DEVICE);
 }
 
@@ -454,19 +496,26 @@ static inline
 {
 	if (meta->skb) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_kfree_skb_any(meta->skb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ring->tx)
 			ieee80211_free_txskb(ring->dev->wl->hw, meta->skb);
 		else
 			dev_kfree_skb_any(meta->skb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		meta->skb = NULL;
 	}
 }
 
 static int alloc_ringmemory(struct b43_dmaring *ring)
 {
+<<<<<<< HEAD
 	gfp_t flags = GFP_KERNEL;
 
 	/* The specs call for 4K buffers for 30- and 32-bit DMA with 4K
@@ -487,6 +536,9 @@ static int alloc_ringmemory(struct b43_dmaring *ring)
 					    B43_DMA_RINGMEMSIZE,
 					    &(ring->dmabase), flags);
 =======
+=======
+	/* The specs call for 4K buffers for 30- and 32-bit DMA with 4K
+>>>>>>> refs/remotes/origin/master
 	 * alignment and 8K buffers for 64-bit DMA with 8K alignment.
 	 * In practice we could use smaller buffers for the latter, but the
 	 * alignment is really important because of the hardware bug. If bit
@@ -498,6 +550,7 @@ static int alloc_ringmemory(struct b43_dmaring *ring)
 	u16 ring_mem_size = (ring->type == B43_DMA_64BIT) ?
 				B43_DMA64_RINGMEMSIZE : B43_DMA32_RINGMEMSIZE;
 
+<<<<<<< HEAD
 	ring->descbase = dma_alloc_coherent(ring->dev->dev->dma_dev,
 					    ring_mem_size, &(ring->dmabase),
 					    flags);
@@ -511,6 +564,13 @@ static int alloc_ringmemory(struct b43_dmaring *ring)
 =======
 	memset(ring->descbase, 0, ring_mem_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ring->descbase = dma_zalloc_coherent(ring->dev->dev->dma_dev,
+					     ring_mem_size, &(ring->dmabase),
+					     GFP_KERNEL);
+	if (!ring->descbase)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -518,12 +578,18 @@ static int alloc_ringmemory(struct b43_dmaring *ring)
 static void free_ringmemory(struct b43_dmaring *ring)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dma_free_coherent(ring->dev->sdev->dma_dev, B43_DMA_RINGMEMSIZE,
 =======
 	u16 ring_mem_size = (ring->type == B43_DMA_64BIT) ?
 				B43_DMA64_RINGMEMSIZE : B43_DMA32_RINGMEMSIZE;
 	dma_free_coherent(ring->dev->dev->dma_dev, ring_mem_size,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 ring_mem_size = (ring->type == B43_DMA_64BIT) ?
+				B43_DMA64_RINGMEMSIZE : B43_DMA32_RINGMEMSIZE;
+	dma_free_coherent(ring->dev->dev->dma_dev, ring_mem_size,
+>>>>>>> refs/remotes/origin/master
 			  ring->descbase, ring->dmabase);
 }
 
@@ -632,10 +698,14 @@ static bool b43_dma_mapping_error(struct b43_dmaring *ring,
 				  size_t buffersize, bool dma_to_device)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(dma_mapping_error(ring->dev->sdev->dma_dev, addr)))
 =======
 	if (unlikely(dma_mapping_error(ring->dev->dev->dma_dev, addr)))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (unlikely(dma_mapping_error(ring->dev->dev->dma_dev, addr)))
+>>>>>>> refs/remotes/origin/master
 		return 1;
 
 	switch (ring->type) {
@@ -771,16 +841,23 @@ static int dmacontroller_setup(struct b43_dmaring *ring)
 	u32 value;
 	u32 addrext;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 trans = ring->dev->dma.translation;
 =======
 	bool parity = ring->dev->dma.parity;
 	u32 addrlo;
 	u32 addrhi;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool parity = ring->dev->dma.parity;
+	u32 addrlo;
+	u32 addrhi;
+>>>>>>> refs/remotes/origin/master
 
 	if (ring->tx) {
 		if (ring->type == B43_DMA_64BIT) {
 			u64 ringbase = (u64) (ring->dmabase);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 			addrext = ((ringbase >> 32) & SSB_DMA_TRANSLATION_MASK)
@@ -808,6 +885,8 @@ static int dmacontroller_setup(struct b43_dmaring *ring)
 				      (ringbase & ~SSB_DMA_TRANSLATION_MASK)
 				      | trans);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			addrext = b43_dma_address(&ring->dev->dma, ringbase, B43_DMA_ADDR_EXT);
 			addrlo = b43_dma_address(&ring->dev->dma, ringbase, B43_DMA_ADDR_LOW);
 			addrhi = b43_dma_address(&ring->dev->dma, ringbase, B43_DMA_ADDR_HIGH);
@@ -832,7 +911,10 @@ static int dmacontroller_setup(struct b43_dmaring *ring)
 				value |= B43_DMA32_TXPARITYDISABLE;
 			b43_dma_write(ring, B43_DMA32_TXCTL, value);
 			b43_dma_write(ring, B43_DMA32_TXRING, addrlo);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		err = alloc_initial_descbuffers(ring);
@@ -841,19 +923,26 @@ static int dmacontroller_setup(struct b43_dmaring *ring)
 		if (ring->type == B43_DMA_64BIT) {
 			u64 ringbase = (u64) (ring->dmabase);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 			addrext = ((ringbase >> 32) & SSB_DMA_TRANSLATION_MASK)
 			    >> SSB_DMA_TRANSLATION_SHIFT;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			addrext = b43_dma_address(&ring->dev->dma, ringbase, B43_DMA_ADDR_EXT);
 			addrlo = b43_dma_address(&ring->dev->dma, ringbase, B43_DMA_ADDR_LOW);
 			addrhi = b43_dma_address(&ring->dev->dma, ringbase, B43_DMA_ADDR_HIGH);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			value = (ring->frameoffset << B43_DMA64_RXFROFF_SHIFT);
 			value |= B43_DMA64_RXENABLE;
 			value |= (addrext << B43_DMA64_RXADDREXT_SHIFT)
 			    & B43_DMA64_RXADDREXT_MASK;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			b43_dma_write(ring, B43_DMA64_RXCTL, value);
 			b43_dma_write(ring, B43_DMA64_RXRINGLO,
@@ -863,16 +952,22 @@ static int dmacontroller_setup(struct b43_dmaring *ring)
 				       ~SSB_DMA_TRANSLATION_MASK)
 				      | (trans << 1));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!parity)
 				value |= B43_DMA64_RXPARITYDISABLE;
 			b43_dma_write(ring, B43_DMA64_RXCTL, value);
 			b43_dma_write(ring, B43_DMA64_RXRINGLO, addrlo);
 			b43_dma_write(ring, B43_DMA64_RXRINGHI, addrhi);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			b43_dma_write(ring, B43_DMA64_RXINDEX, ring->nr_slots *
 				      sizeof(struct b43_dmadesc64));
 		} else {
 			u32 ringbase = (u32) (ring->dmabase);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 			addrext = (ringbase & SSB_DMA_TRANSLATION_MASK)
@@ -882,21 +977,32 @@ static int dmacontroller_setup(struct b43_dmaring *ring)
 			addrlo = b43_dma_address(&ring->dev->dma, ringbase, B43_DMA_ADDR_LOW);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			addrext = b43_dma_address(&ring->dev->dma, ringbase, B43_DMA_ADDR_EXT);
+			addrlo = b43_dma_address(&ring->dev->dma, ringbase, B43_DMA_ADDR_LOW);
+
+>>>>>>> refs/remotes/origin/master
 			value = (ring->frameoffset << B43_DMA32_RXFROFF_SHIFT);
 			value |= B43_DMA32_RXENABLE;
 			value |= (addrext << B43_DMA32_RXADDREXT_SHIFT)
 			    & B43_DMA32_RXADDREXT_MASK;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			b43_dma_write(ring, B43_DMA32_RXCTL, value);
 			b43_dma_write(ring, B43_DMA32_RXRING,
 				      (ringbase & ~SSB_DMA_TRANSLATION_MASK)
 				      | trans);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!parity)
 				value |= B43_DMA32_RXPARITYDISABLE;
 			b43_dma_write(ring, B43_DMA32_RXCTL, value);
 			b43_dma_write(ring, B43_DMA32_RXRING, addrlo);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			b43_dma_write(ring, B43_DMA32_RXINDEX, ring->nr_slots *
 				      sizeof(struct b43_dmadesc32));
 		}
@@ -931,9 +1037,12 @@ static void dmacontroller_cleanup(struct b43_dmaring *ring)
 static void free_all_descbuffers(struct b43_dmaring *ring)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct b43_dmadesc_generic *desc;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct b43_dmadesc_meta *meta;
 	int i;
 
@@ -941,11 +1050,16 @@ static void free_all_descbuffers(struct b43_dmaring *ring)
 		return;
 	for (i = 0; i < ring->nr_slots; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		desc = ring->ops->idx2desc(ring, i, &meta);
 =======
 		/* get meta - ignore returned value */
 		ring->ops->idx2desc(ring, i, &meta);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* get meta - ignore returned value */
+		ring->ops->idx2desc(ring, i, &meta);
+>>>>>>> refs/remotes/origin/master
 
 		if (!meta->skb || b43_dma_ptr_is_poisoned(meta->skb)) {
 			B43_WARN_ON(!ring->tx);
@@ -968,10 +1082,13 @@ static u64 supported_dma_mask(struct b43_wldev *dev)
 	u16 mmio_base;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tmp = b43_read32(dev, SSB_TMSHIGH);
 	if (tmp & SSB_TMSHIGH_DMA64)
 		return DMA_BIT_MASK(64);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (dev->dev->bus_type) {
 #ifdef CONFIG_B43_BCMA
 	case B43_BUS_BCMA:
@@ -989,7 +1106,10 @@ static u64 supported_dma_mask(struct b43_wldev *dev)
 #endif
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mmio_base = b43_dmacontroller_base(0, 0);
 	b43_write32(dev, mmio_base + B43_DMA32_TXCTL, B43_DMA32_TXADDREXT_MASK);
 	tmp = b43_read32(dev, mmio_base + B43_DMA32_TXCTL);
@@ -1047,6 +1167,7 @@ struct b43_dmaring *b43_setup_dmaring(struct b43_wldev *dev,
 		ring->ops = &dma32_ops;
 	if (for_tx) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ring->tx = 1;
 		ring->current_slot = -1;
 	} else {
@@ -1054,6 +1175,8 @@ struct b43_dmaring *b43_setup_dmaring(struct b43_wldev *dev,
 			ring->rx_buffersize = B43_DMA0_RX_BUFFERSIZE;
 			ring->frameoffset = B43_DMA0_RX_FRAMEOFFSET;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ring->tx = true;
 		ring->current_slot = -1;
 	} else {
@@ -1069,7 +1192,10 @@ struct b43_dmaring *b43_setup_dmaring(struct b43_wldev *dev,
 				ring->frameoffset = B43_DMA0_RX_FW351_FO;
 				break;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else
 			B43_WARN_ON(1);
 	}
@@ -1089,10 +1215,14 @@ struct b43_dmaring *b43_setup_dmaring(struct b43_wldev *dev,
 
 		/* test for ability to dma to txhdr_cache */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dma_test = dma_map_single(dev->sdev->dma_dev,
 =======
 		dma_test = dma_map_single(dev->dev->dma_dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dma_test = dma_map_single(dev->dev->dma_dev,
+>>>>>>> refs/remotes/origin/master
 					  ring->txhdr_cache,
 					  b43_txhdr_size(dev),
 					  DMA_TO_DEVICE);
@@ -1108,10 +1238,14 @@ struct b43_dmaring *b43_setup_dmaring(struct b43_wldev *dev,
 				goto err_kfree_meta;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dma_test = dma_map_single(dev->sdev->dma_dev,
 =======
 			dma_test = dma_map_single(dev->dev->dma_dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dma_test = dma_map_single(dev->dev->dma_dev,
+>>>>>>> refs/remotes/origin/master
 						  ring->txhdr_cache,
 						  b43_txhdr_size(dev),
 						  DMA_TO_DEVICE);
@@ -1126,10 +1260,14 @@ struct b43_dmaring *b43_setup_dmaring(struct b43_wldev *dev,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dma_unmap_single(dev->sdev->dma_dev,
 =======
 		dma_unmap_single(dev->dev->dma_dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dma_unmap_single(dev->dev->dma_dev,
+>>>>>>> refs/remotes/origin/master
 				 dma_test, b43_txhdr_size(dev),
 				 DMA_TO_DEVICE);
 	}
@@ -1239,15 +1377,20 @@ static int b43_dma_set_mask(struct b43_wldev *dev, u64 mask)
 {
 	u64 orig_mask = mask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool fallback = 0;
 =======
 	bool fallback = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool fallback = false;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	/* Try to set the DMA mask. If it fails, try falling back to a
 	 * lower mask, as we can always also support a lower one. */
 	while (1) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		err = dma_set_mask(dev->sdev->dma_dev, mask);
 		if (!err) {
@@ -1267,15 +1410,27 @@ static int b43_dma_set_mask(struct b43_wldev *dev, u64 mask)
 =======
 			fallback = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = dma_set_mask_and_coherent(dev->dev->dma_dev, mask);
+		if (!err)
+			break;
+		if (mask == DMA_BIT_MASK(64)) {
+			mask = DMA_BIT_MASK(32);
+			fallback = true;
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 		if (mask == DMA_BIT_MASK(32)) {
 			mask = DMA_BIT_MASK(30);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			fallback = 1;
 =======
 			fallback = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			fallback = true;
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 		b43err(dev->wl, "The machine/kernel does not support "
@@ -1293,7 +1448,10 @@ static int b43_dma_set_mask(struct b43_wldev *dev, u64 mask)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Some hardware with 64-bit DMA seems to be bugged and looks for translation
  * bit in low address word instead of high one.
  */
@@ -1306,14 +1464,21 @@ static bool b43_dma_translation_in_low_word(struct b43_wldev *dev,
 #ifdef CONFIG_B43_SSB
 	if (dev->dev->bus_type == B43_BUS_SSB &&
 	    dev->dev->sdev->bus->bustype == SSB_BUSTYPE_PCI &&
+<<<<<<< HEAD
 	    !(dev->dev->sdev->bus->host_pci->is_pcie &&
+=======
+	    !(pci_is_pcie(dev->dev->sdev->bus->host_pci) &&
+>>>>>>> refs/remotes/origin/master
 	      ssb_read32(dev->dev->sdev, SSB_TMSHIGH) & SSB_TMSHIGH_DMA64))
 			return 1;
 #endif
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int b43_dma_init(struct b43_wldev *dev)
 {
 	struct b43_dma *dma = &dev->dma;
@@ -1327,8 +1492,11 @@ int b43_dma_init(struct b43_wldev *dev)
 	if (err)
 		return err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dma->translation = ssb_dma_translation(dev->sdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (dev->dev->bus_type) {
 #ifdef CONFIG_B43_BCMA
@@ -1350,7 +1518,10 @@ int b43_dma_init(struct b43_wldev *dev)
 	if (dev->dev->bus_type == B43_BUS_BCMA)
 		dma->parity = false;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	err = -ENOMEM;
 	/* setup TX DMA channels. */
@@ -1381,10 +1552,14 @@ int b43_dma_init(struct b43_wldev *dev)
 
 	/* No support for the TX status DMA ring. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	B43_WARN_ON(dev->sdev->id.revision < 5);
 =======
 	B43_WARN_ON(dev->dev->core_rev < 5);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	B43_WARN_ON(dev->dev->core_rev < 5);
+>>>>>>> refs/remotes/origin/master
 
 	b43dbg(dev->wl, "%u-bit DMA initialized\n",
 	       (unsigned int)type);
@@ -1514,10 +1689,14 @@ static int dma_tx_fragment(struct b43_dmaring *ring,
 
 	meta->skb = skb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	meta->is_last_fragment = 1;
 =======
 	meta->is_last_fragment = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	meta->is_last_fragment = true;
+>>>>>>> refs/remotes/origin/master
 	priv_info->bouncebuffer = NULL;
 
 	meta->dmaaddr = map_descbuffer(ring, skb->data, skb->len, 1);
@@ -1665,10 +1844,14 @@ int b43_dma_tx(struct b43_wldev *dev, struct sk_buff *skb)
 		/* Drop this packet, as we don't have the encryption key
 		 * anymore and must not transmit it unencrypted. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_kfree_skb_any(skb);
 =======
 		ieee80211_free_txskb(dev->wl->hw, skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ieee80211_free_txskb(dev->wl->hw, skb);
+>>>>>>> refs/remotes/origin/master
 		err = 0;
 		goto out;
 	}
@@ -1680,14 +1863,20 @@ int b43_dma_tx(struct b43_wldev *dev, struct sk_buff *skb)
 	    should_inject_overflow(ring)) {
 		/* This TX ring is full. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ieee80211_stop_queue(dev->wl->hw, skb_get_queue_mapping(skb));
 		ring->stopped = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		unsigned int skb_mapping = skb_get_queue_mapping(skb);
 		ieee80211_stop_queue(dev->wl->hw, skb_mapping);
 		dev->wl->tx_queue_stopped[skb_mapping] = 1;
 		ring->stopped = true;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (b43_debug(dev, B43_DBG_DMAVERBOSE)) {
 			b43dbg(dev->wl, "Stopped TX ring %d\n", ring->index);
 		}
@@ -1703,9 +1892,12 @@ void b43_dma_handle_txstatus(struct b43_wldev *dev,
 	const struct b43_dma_ops *ops;
 	struct b43_dmaring *ring;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct b43_dmadesc_generic *desc;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct b43_dmadesc_meta *meta;
 	static const struct b43_txstatus fake; /* filled with 0 */
 	const struct b43_txstatus *txstat;
@@ -1761,11 +1953,16 @@ void b43_dma_handle_txstatus(struct b43_wldev *dev,
 	while (1) {
 		B43_WARN_ON(slot < 0 || slot >= ring->nr_slots);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		desc = ops->idx2desc(ring, slot, &meta);
 =======
 		/* get meta - ignore returned value */
 		ops->idx2desc(ring, slot, &meta);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* get meta - ignore returned value */
+		ops->idx2desc(ring, slot, &meta);
+>>>>>>> refs/remotes/origin/master
 
 		if (b43_dma_ptr_is_poisoned(meta->skb)) {
 			b43dbg(dev->wl, "Poisoned TX slot %d (first=%d) "
@@ -1855,9 +2052,12 @@ void b43_dma_handle_txstatus(struct b43_wldev *dev,
 	if (ring->stopped) {
 		B43_WARN_ON(free_slots(ring) < TX_SLOTS_PER_FRAME);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ieee80211_wake_queue(dev->wl->hw, ring->queue_prio);
 		ring->stopped = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ring->stopped = false;
 	}
 
@@ -1867,16 +2067,24 @@ void b43_dma_handle_txstatus(struct b43_wldev *dev,
 		/* If the driver queue is running wake the corresponding
 		 * mac80211 queue. */
 		ieee80211_wake_queue(dev->wl->hw, ring->queue_prio);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (b43_debug(dev, B43_DBG_DMAVERBOSE)) {
 			b43dbg(dev->wl, "Woke up TX ring %d\n", ring->index);
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Add work to the queue. */
 	ieee80211_queue_work(dev->wl->hw, &dev->wl->tx_work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Add work to the queue. */
+	ieee80211_queue_work(dev->wl->hw, &dev->wl->tx_work);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void dma_rx(struct b43_dmaring *ring, int *slot)
@@ -1966,7 +2174,10 @@ drop_recycle_buffer:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void b43_dma_handle_rx_overflow(struct b43_dmaring *ring)
 {
 	int current_slot, previous_slot;
@@ -1986,7 +2197,10 @@ void b43_dma_handle_rx_overflow(struct b43_dmaring *ring)
 	ring->ops->set_current_rxslot(ring, previous_slot);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void b43_dma_rx(struct b43_dmaring *ring)
 {
 	const struct b43_dma_ops *ops = ring->ops;
@@ -2003,9 +2217,13 @@ void b43_dma_rx(struct b43_dmaring *ring)
 		update_max_used_slots(ring, ++used_slots);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	wmb();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wmb();
+>>>>>>> refs/remotes/origin/master
 	ops->set_current_rxslot(ring, slot);
 	ring->current_slot = slot;
 }

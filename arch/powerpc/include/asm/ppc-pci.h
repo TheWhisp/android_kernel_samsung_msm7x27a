@@ -46,6 +46,7 @@ extern unsigned long get_phb_buid (struct device_node *);
 extern int rtas_setup_phb(struct pci_controller *phb);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern unsigned long pci_probe_only;
 
 /* ---- EEH internal-use-only related routines ---- */
@@ -151,6 +152,21 @@ void eeh_mark_slot(struct device_node *dn, int mode_flag);
 void eeh_clear_slot(struct device_node *dn, int mode_flag);
 struct device_node *eeh_find_device_pe(struct device_node *dn);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_EEH
+
+void eeh_addr_cache_insert_dev(struct pci_dev *dev);
+void eeh_addr_cache_rmv_dev(struct pci_dev *dev);
+struct eeh_dev *eeh_addr_cache_get_dev(unsigned long addr);
+void eeh_slot_error_detail(struct eeh_pe *pe, int severity);
+int eeh_pci_enable(struct eeh_pe *pe, int function);
+int eeh_reset_pe(struct eeh_pe *);
+void eeh_save_bars(struct eeh_dev *edev);
+int rtas_write_config(struct pci_dn *, int where, int size, u32 val);
+int rtas_read_config(struct pci_dn *, int where, int size, u32 *val);
+void eeh_pe_state_mark(struct eeh_pe *pe, int state);
+void eeh_pe_state_clear(struct eeh_pe *pe, int state);
+>>>>>>> refs/remotes/origin/master
 
 void eeh_sysfs_add_device(struct pci_dev *pdev);
 void eeh_sysfs_remove_device(struct pci_dev *pdev);
@@ -161,13 +177,19 @@ static inline const char *eeh_pci_name(struct pci_dev *pdev)
 } 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline const char *eeh_driver_name(struct pci_dev *pdev)
 {
 	return (pdev && pdev->driver) ? pdev->driver->name : "<null>";
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_EEH */
 
 #else /* CONFIG_PCI */

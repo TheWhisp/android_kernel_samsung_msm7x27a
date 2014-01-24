@@ -30,12 +30,26 @@
 
 #include <linux/nfs_fs.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
 
 #include "internal.h"
+=======
+#include <linux/module.h>
+#include <linux/sunrpc/addr.h>
+
+#include "internal.h"
+#include "nfs4session.h"
+>>>>>>> refs/remotes/origin/master
 #include "nfs4filelayout.h"
 
 #define NFSDBG_FACILITY		NFSDBG_PNFS_LD
 
+<<<<<<< HEAD
+=======
+static unsigned int dataserver_timeo = NFS4_DEF_DS_TIMEO;
+static unsigned int dataserver_retrans = NFS4_DEF_DS_RETRANS;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Data server cache
  *
@@ -46,10 +60,14 @@
  *   - decremented when deviceid is removed from the cache.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 DEFINE_SPINLOCK(nfs4_ds_cache_lock);
 =======
 static DEFINE_SPINLOCK(nfs4_ds_cache_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_SPINLOCK(nfs4_ds_cache_lock);
+>>>>>>> refs/remotes/origin/master
 static LIST_HEAD(nfs4_data_server_cache);
 
 /* Debug routines */
@@ -61,22 +79,29 @@ print_ds(struct nfs4_pnfs_ds *ds)
 		return;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk("        ip_addr %x port %hu\n"
 		"        ref count %d\n"
 		"        client %p\n"
 		"        cl_exchange_flags %x\n",
 		ntohl(ds->ds_ip_addr), ntohs(ds->ds_port),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	printk("        ds %s\n"
 		"        ref count %d\n"
 		"        client %p\n"
 		"        cl_exchange_flags %x\n",
 		ds->ds_remotestr,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		atomic_read(&ds->ds_count), ds->ds_clp,
 		ds->ds_clp ? ds->ds_clp->cl_exchange_flags : 0);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* nfs4_ds_cache_lock is held */
 static struct nfs4_pnfs_ds *
@@ -94,6 +119,8 @@ _data_server_lookup_locked(u32 ip_addr, u32 port)
 		}
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool
 same_sockaddr(struct sockaddr *addr1, struct sockaddr *addr2)
 {
@@ -170,21 +197,29 @@ _data_server_lookup_locked(const struct list_head *dsaddrs)
 	list_for_each_entry(ds, &nfs4_data_server_cache, ds_node)
 		if (_same_data_server_addrs_locked(&ds->ds_addrs, dsaddrs))
 			return ds;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return NULL;
 }
 
 /*
  * Create an rpc connection to the nfs4_pnfs_ds data server
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Currently only support IPv4
 =======
  * Currently only supports IPv4 and IPv6 addresses
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Currently only supports IPv4 and IPv6 addresses
+>>>>>>> refs/remotes/origin/master
  */
 static int
 nfs4_ds_connect(struct nfs_server *mds_srv, struct nfs4_pnfs_ds *ds)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct nfs_client *clp;
 	struct sockaddr_in sin;
@@ -201,6 +236,8 @@ nfs4_ds_connect(struct nfs_server *mds_srv, struct nfs4_pnfs_ds *ds)
 	clp = nfs4_set_ds_client(mds_srv->nfs_client, (struct sockaddr *)&sin,
 				 sizeof(sin), IPPROTO_TCP);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct nfs_client *clp = ERR_PTR(-EIO);
 	struct nfs4_pnfs_ds_addr *da;
 	int status = 0;
@@ -208,25 +245,38 @@ nfs4_ds_connect(struct nfs_server *mds_srv, struct nfs4_pnfs_ds *ds)
 	dprintk("--> %s DS %s au_flavor %d\n", __func__, ds->ds_remotestr,
 		mds_srv->nfs_client->cl_rpcclient->cl_auth->au_flavor);
 
+<<<<<<< HEAD
 	BUG_ON(list_empty(&ds->ds_addrs));
 
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(da, &ds->ds_addrs, da_node) {
 		dprintk("%s: DS %s: trying address %s\n",
 			__func__, ds->ds_remotestr, da->da_remotestr);
 
 		clp = nfs4_set_ds_client(mds_srv->nfs_client,
+<<<<<<< HEAD
 				 (struct sockaddr *)&da->da_addr,
 				 da->da_addrlen, IPPROTO_TCP);
+=======
+					(struct sockaddr *)&da->da_addr,
+					da->da_addrlen, IPPROTO_TCP,
+					dataserver_timeo, dataserver_retrans);
+>>>>>>> refs/remotes/origin/master
 		if (!IS_ERR(clp))
 			break;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(clp)) {
 		status = PTR_ERR(clp);
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if ((clp->cl_exchange_flags & EXCHGID4_FLAG_MASK_PNFS) != 0) {
 		if (!is_ds_client(clp)) {
 			status = -ENODEV;
@@ -264,6 +314,15 @@ nfs4_ds_connect(struct nfs_server *mds_srv, struct nfs4_pnfs_ds *ds)
 =======
 	dprintk("%s [new] addr: %s\n", __func__, ds->ds_remotestr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = nfs4_init_ds_session(clp, mds_srv->nfs_client->cl_lease_time);
+	if (status)
+		goto out_put;
+
+	smp_wmb();
+	ds->ds_clp = clp;
+	dprintk("%s [new] addr: %s\n", __func__, ds->ds_remotestr);
+>>>>>>> refs/remotes/origin/master
 out:
 	return status;
 out_put:
@@ -275,10 +334,15 @@ static void
 destroy_ds(struct nfs4_pnfs_ds *ds)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct nfs4_pnfs_ds_addr *da;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nfs4_pnfs_ds_addr *da;
+
+>>>>>>> refs/remotes/origin/master
 	dprintk("--> %s\n", __func__);
 	ifdebug(FACILITY)
 		print_ds(ds);
@@ -286,7 +350,10 @@ destroy_ds(struct nfs4_pnfs_ds *ds)
 	if (ds->ds_clp)
 		nfs_put_client(ds->ds_clp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	while (!list_empty(&ds->ds_addrs)) {
 		da = list_first_entry(&ds->ds_addrs,
@@ -298,7 +365,10 @@ destroy_ds(struct nfs4_pnfs_ds *ds)
 	}
 
 	kfree(ds->ds_remotestr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(ds);
 }
 
@@ -326,6 +396,7 @@ nfs4_fl_free_deviceid(struct nfs4_file_layout_dsaddr *dsaddr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct nfs4_pnfs_ds *
 nfs4_pnfs_ds_add(struct inode *inode, u32 ip_addr, u32 port, gfp_t gfp_flags)
 {
@@ -341,6 +412,8 @@ nfs4_pnfs_ds_add(struct inode *inode, u32 ip_addr, u32 port, gfp_t gfp_flags)
 		ds->ds_ip_addr = ip_addr;
 		ds->ds_port = port;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Create a string with a human readable address and port to avoid
  * complicated setup around many dprinks.
@@ -414,11 +487,15 @@ nfs4_pnfs_ds_add(struct list_head *dsaddrs, gfp_t gfp_flags)
 		INIT_LIST_HEAD(&ds->ds_addrs);
 		list_splice_init(dsaddrs, &ds->ds_addrs);
 		ds->ds_remotestr = remotestr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		atomic_set(&ds->ds_count, 1);
 		INIT_LIST_HEAD(&ds->ds_node);
 		ds->ds_clp = NULL;
 		list_add(&ds->ds_node, &nfs4_data_server_cache);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		dprintk("%s add new data server ip 0x%x\n", __func__,
 			ds->ds_ip_addr);
@@ -428,6 +505,8 @@ nfs4_pnfs_ds_add(struct list_head *dsaddrs, gfp_t gfp_flags)
 		dprintk("%s data server found ip 0x%x, inc'ed ds_count to %d\n",
 			__func__, tmp_ds->ds_ip_addr,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dprintk("%s add new data server %s\n", __func__,
 			ds->ds_remotestr);
 	} else {
@@ -436,7 +515,10 @@ nfs4_pnfs_ds_add(struct list_head *dsaddrs, gfp_t gfp_flags)
 		atomic_inc(&tmp_ds->ds_count);
 		dprintk("%s data server %s found, inc'ed ds_count to %d\n",
 			__func__, tmp_ds->ds_remotestr,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			atomic_read(&tmp_ds->ds_count));
 		ds = tmp_ds;
 	}
@@ -446,6 +528,7 @@ out:
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Currently only support ipv4, and one multi-path address.
  */
@@ -460,6 +543,8 @@ decode_and_add_ds(struct xdr_stream *streamp, struct inode *inode, gfp_t gfp_fla
 	int tmp[2];
 	__be32 *p;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Currently only supports ipv4, ipv6 and one multi-path address.
  */
 static struct nfs4_pnfs_ds_addr *
@@ -476,7 +561,10 @@ decode_ds_addr(struct net *net, struct xdr_stream *streamp, gfp_t gfp_flags)
 	char *startsep = "";
 	char *endsep = "";
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* r_netid */
 	p = xdr_inline_decode(streamp, 4);
@@ -489,6 +577,7 @@ decode_ds_addr(struct net *net, struct xdr_stream *streamp, gfp_t gfp_flags)
 		goto out_err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Check that netid is "tcp" */
 	if (nlen != 3 ||  memcmp((char *)p, "tcp", 3)) {
 		dprintk("%s: ERROR: non ipv4 TCP r_netid\n", __func__);
@@ -500,6 +589,8 @@ decode_ds_addr(struct net *net, struct xdr_stream *streamp, gfp_t gfp_flags)
 	if (unlikely(!p))
 		goto out_err;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	netid = kmalloc(nlen+1, gfp_flags);
 	if (unlikely(!netid))
 		goto out_err;
@@ -511,11 +602,15 @@ decode_ds_addr(struct net *net, struct xdr_stream *streamp, gfp_t gfp_flags)
 	p = xdr_inline_decode(streamp, 4);
 	if (unlikely(!p))
 		goto out_free_netid;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rlen = be32_to_cpup(p);
 
 	p = xdr_inline_decode(streamp, rlen);
 	if (unlikely(!p))
+<<<<<<< HEAD
 <<<<<<< HEAD
 		goto out_err;
 
@@ -525,6 +620,8 @@ decode_ds_addr(struct net *net, struct xdr_stream *streamp, gfp_t gfp_flags)
 			rlen);
 		goto out_err;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out_free_netid;
 
 	/* port is ".ABC.DEF", 8 chars max */
@@ -532,20 +629,28 @@ decode_ds_addr(struct net *net, struct xdr_stream *streamp, gfp_t gfp_flags)
 		dprintk("%s: Invalid address, length %d\n", __func__,
 			rlen);
 		goto out_free_netid;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	buf = kmalloc(rlen + 1, gfp_flags);
 	if (!buf) {
 		dprintk("%s: Not enough memory\n", __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto out_err;
 =======
 		goto out_free_netid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out_free_netid;
+>>>>>>> refs/remotes/origin/master
 	}
 	buf[rlen] = '\0';
 	memcpy(buf, p, rlen);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* replace the port dots with dashes for the in4_pton() delimiter*/
 	for (i = 0; i < 2; i++) {
@@ -576,6 +681,8 @@ out_free:
 out_err:
 	return ds;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* replace port '.' with '-' */
 	portstr = strrchr(buf, '.');
 	if (!portstr) {
@@ -662,7 +769,10 @@ out_free_netid:
 	kfree(netid);
 out_err:
 	return NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Decode opaque device data and return the result */
@@ -680,10 +790,15 @@ decode_device(struct inode *ino, struct pnfs_device *pdev, gfp_t gfp_flags)
 	struct xdr_buf buf;
 	struct page *scratch;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct list_head dsaddrs;
 	struct nfs4_pnfs_ds_addr *da;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct list_head dsaddrs;
+	struct nfs4_pnfs_ds_addr *da;
+>>>>>>> refs/remotes/origin/master
 
 	/* set up xdr stream */
 	scratch = alloc_page(gfp_flags);
@@ -702,10 +817,14 @@ decode_device(struct inode *ino, struct pnfs_device *pdev, gfp_t gfp_flags)
 	dprintk("%s stripe count  %d\n", __func__, cnt);
 	if (cnt > NFS4_PNFS_MAX_STRIPE_CNT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: stripe count %d greater than "
 =======
 		printk(KERN_WARNING "NFS: %s: stripe count %d greater than "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_WARNING "NFS: %s: stripe count %d greater than "
+>>>>>>> refs/remotes/origin/master
 		       "supported maximum %d\n", __func__,
 			cnt, NFS4_PNFS_MAX_STRIPE_CNT);
 		goto out_err_free_scratch;
@@ -737,10 +856,14 @@ decode_device(struct inode *ino, struct pnfs_device *pdev, gfp_t gfp_flags)
 	dprintk("%s ds_num %u\n", __func__, num);
 	if (num > NFS4_PNFS_MAX_MULTI_CNT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: multipath count %d greater than "
 =======
 		printk(KERN_WARNING "NFS: %s: multipath count %d greater than "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_WARNING "NFS: %s: multipath count %d greater than "
+>>>>>>> refs/remotes/origin/master
 			"supported maximum %d\n", __func__,
 			num, NFS4_PNFS_MAX_MULTI_CNT);
 		goto out_err_free_stripe_indices;
@@ -749,10 +872,14 @@ decode_device(struct inode *ino, struct pnfs_device *pdev, gfp_t gfp_flags)
 	/* validate stripe indices are all < num */
 	if (max_stripe_index >= num) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: stripe index %u >= num ds %u\n",
 =======
 		printk(KERN_WARNING "NFS: %s: stripe index %u >= num ds %u\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_WARNING "NFS: %s: stripe index %u >= num ds %u\n",
+>>>>>>> refs/remotes/origin/master
 			__func__, max_stripe_index, num);
 		goto out_err_free_stripe_indices;
 	}
@@ -773,10 +900,15 @@ decode_device(struct inode *ino, struct pnfs_device *pdev, gfp_t gfp_flags)
 				&pdev->dev_id);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	INIT_LIST_HEAD(&dsaddrs);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_LIST_HEAD(&dsaddrs);
+
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < dsaddr->ds_num; i++) {
 		int j;
 		u32 mp_count;
@@ -786,6 +918,7 @@ decode_device(struct inode *ino, struct pnfs_device *pdev, gfp_t gfp_flags)
 			goto out_err_free_deviceid;
 
 		mp_count = be32_to_cpup(p); /* multipath count */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (mp_count > 1) {
 			printk(KERN_WARNING
@@ -826,6 +959,10 @@ decode_device(struct inode *ino, struct pnfs_device *pdev, gfp_t gfp_flags)
 =======
 		for (j = 0; j < mp_count; j++) {
 			da = decode_ds_addr(NFS_SERVER(ino)->nfs_client->net,
+=======
+		for (j = 0; j < mp_count; j++) {
+			da = decode_ds_addr(NFS_SERVER(ino)->nfs_client->cl_net,
+>>>>>>> refs/remotes/origin/master
 					    &stream, gfp_flags);
 			if (da)
 				list_add_tail(&da->da_node, &dsaddrs);
@@ -848,7 +985,10 @@ decode_device(struct inode *ino, struct pnfs_device *pdev, gfp_t gfp_flags)
 			list_del_init(&da->da_node);
 			kfree(da->da_remotestr);
 			kfree(da);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -856,7 +996,10 @@ decode_device(struct inode *ino, struct pnfs_device *pdev, gfp_t gfp_flags)
 	return dsaddr;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 out_err_drain_dsaddrs:
 	while (!list_empty(&dsaddrs)) {
 		da = list_first_entry(&dsaddrs, struct nfs4_pnfs_ds_addr,
@@ -865,7 +1008,10 @@ out_err_drain_dsaddrs:
 		kfree(da->da_remotestr);
 		kfree(da);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out_err_free_deviceid:
 	nfs4_fl_free_deviceid(dsaddr);
 	/* stripe_indicies was part of dsaddr */
@@ -892,10 +1038,14 @@ decode_and_add_device(struct inode *inode, struct pnfs_device *dev, gfp_t gfp_fl
 	new = decode_device(inode, dev, gfp_flags);
 	if (!new) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: Could not decode or add device\n",
 =======
 		printk(KERN_WARNING "NFS: %s: Could not decode or add device\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_WARNING "NFS: %s: Could not decode or add device\n",
+>>>>>>> refs/remotes/origin/master
 			__func__);
 		return NULL;
 	}
@@ -915,7 +1065,14 @@ decode_and_add_device(struct inode *inode, struct pnfs_device *dev, gfp_t gfp_fl
  * of available devices, and return it.
  */
 struct nfs4_file_layout_dsaddr *
+<<<<<<< HEAD
 get_device_info(struct inode *inode, struct nfs4_deviceid *dev_id, gfp_t gfp_flags)
+=======
+filelayout_get_device_info(struct inode *inode,
+		struct nfs4_deviceid *dev_id,
+		struct rpc_cred *cred,
+		gfp_t gfp_flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pnfs_device *pdev = NULL;
 	u32 max_resp_sz;
@@ -931,10 +1088,14 @@ get_device_info(struct inode *inode, struct nfs4_deviceid *dev_id, gfp_t gfp_fla
 	 */
 	max_resp_sz = server->nfs_client->cl_session->fc_attrs.max_resp_sz;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	max_pages = max_resp_sz >> PAGE_SHIFT;
 =======
 	max_pages = nfs_page_array_len(0, max_resp_sz);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	max_pages = nfs_page_array_len(0, max_resp_sz);
+>>>>>>> refs/remotes/origin/master
 	dprintk("%s inode %p max_resp_sz %u max_pages %d\n",
 		__func__, inode, max_resp_sz, max_pages);
 
@@ -957,10 +1118,18 @@ get_device_info(struct inode *inode, struct nfs4_deviceid *dev_id, gfp_t gfp_fla
 	pdev->layout_type = LAYOUT_NFSV4_1_FILES;
 	pdev->pages = pages;
 	pdev->pgbase = 0;
+<<<<<<< HEAD
 	pdev->pglen = PAGE_SIZE * max_pages;
 	pdev->mincount = 0;
 
 	rc = nfs4_proc_getdeviceinfo(server, pdev);
+=======
+	pdev->pglen = max_resp_sz;
+	pdev->mincount = 0;
+	pdev->maxcount = max_resp_sz - nfs41_maxgetdevinfo_overhead;
+
+	rc = nfs4_proc_getdeviceinfo(server, pdev, cred);
+>>>>>>> refs/remotes/origin/master
 	dprintk("%s getdevice info returns %d\n", __func__, rc);
 	if (rc)
 		goto out_free;
@@ -1026,6 +1195,7 @@ nfs4_fl_select_ds_fh(struct pnfs_layout_segment *lseg, u32 j)
 	return flseg->fh_array[i];
 }
 
+<<<<<<< HEAD
 static void
 filelayout_mark_devid_negative(struct nfs4_file_layout_dsaddr *dsaddr,
 <<<<<<< HEAD
@@ -1051,11 +1221,30 @@ filelayout_mark_devid_negative(struct nfs4_file_layout_dsaddr *dsaddr,
 	spin_unlock(&nfs4_ds_cache_lock);
 }
 
+=======
+static void nfs4_wait_ds_connect(struct nfs4_pnfs_ds *ds)
+{
+	might_sleep();
+	wait_on_bit(&ds->ds_state, NFS4DS_CONNECTING,
+			nfs_wait_bit_killable, TASK_KILLABLE);
+}
+
+static void nfs4_clear_ds_conn_bit(struct nfs4_pnfs_ds *ds)
+{
+	smp_mb__before_clear_bit();
+	clear_bit(NFS4DS_CONNECTING, &ds->ds_state);
+	smp_mb__after_clear_bit();
+	wake_up_bit(&ds->ds_state, NFS4DS_CONNECTING);
+}
+
+
+>>>>>>> refs/remotes/origin/master
 struct nfs4_pnfs_ds *
 nfs4_fl_prepare_ds(struct pnfs_layout_segment *lseg, u32 ds_idx)
 {
 	struct nfs4_file_layout_dsaddr *dsaddr = FILELAYOUT_LSEG(lseg)->dsaddr;
 	struct nfs4_pnfs_ds *ds = dsaddr->ds_list[ds_idx];
+<<<<<<< HEAD
 
 	if (ds == NULL) {
 <<<<<<< HEAD
@@ -1089,3 +1278,45 @@ nfs4_fl_prepare_ds(struct pnfs_layout_segment *lseg, u32 ds_idx)
 	}
 	return ds;
 }
+=======
+	struct nfs4_deviceid_node *devid = FILELAYOUT_DEVID_NODE(lseg);
+	struct nfs4_pnfs_ds *ret = ds;
+
+	if (ds == NULL) {
+		printk(KERN_ERR "NFS: %s: No data server for offset index %d\n",
+			__func__, ds_idx);
+		filelayout_mark_devid_invalid(devid);
+		goto out;
+	}
+	smp_rmb();
+	if (ds->ds_clp)
+		goto out_test_devid;
+
+	if (test_and_set_bit(NFS4DS_CONNECTING, &ds->ds_state) == 0) {
+		struct nfs_server *s = NFS_SERVER(lseg->pls_layout->plh_inode);
+		int err;
+
+		err = nfs4_ds_connect(s, ds);
+		if (err)
+			nfs4_mark_deviceid_unavailable(devid);
+		nfs4_clear_ds_conn_bit(ds);
+	} else {
+		/* Either ds is connected, or ds is NULL */
+		nfs4_wait_ds_connect(ds);
+	}
+out_test_devid:
+	if (filelayout_test_devid_unavailable(devid))
+		ret = NULL;
+out:
+	return ret;
+}
+
+module_param(dataserver_retrans, uint, 0644);
+MODULE_PARM_DESC(dataserver_retrans, "The  number of times the NFSv4.1 client "
+			"retries a request before it attempts further "
+			" recovery  action.");
+module_param(dataserver_timeo, uint, 0644);
+MODULE_PARM_DESC(dataserver_timeo, "The time (in tenths of a second) the "
+			"NFSv4.1  client  waits for a response from a "
+			" data server before it retries an NFS request.");
+>>>>>>> refs/remotes/origin/master

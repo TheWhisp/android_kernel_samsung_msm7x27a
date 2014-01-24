@@ -26,11 +26,15 @@
 #include <linux/of_platform.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/io.h>
 #include <asm/machdep.h>
@@ -46,19 +50,26 @@
 static struct of_device_id __initdata mpc834x_itx_ids[] = {
 	{ .compatible = "fsl,pq2pro-localbus", },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ .compatible = "simple-bus", },
 	{ .compatible = "gianfar", },
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{},
 };
 
 static int __init mpc834x_itx_declare_of_platform_devices(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mpc83xx_declare_of_platform_devices();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mpc83xx_declare_of_platform_devices();
+>>>>>>> refs/remotes/origin/master
 	return of_platform_bus_probe(NULL, mpc834x_itx_ids, NULL);
 }
 machine_device_initcall(mpc834x_itx, mpc834x_itx_declare_of_platform_devices);
@@ -70,6 +81,7 @@ machine_device_initcall(mpc834x_itx, mpc834x_itx_declare_of_platform_devices);
  */
 static void __init mpc834x_itx_setup_arch(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_PCI
 	struct device_node *np;
@@ -83,15 +95,21 @@ static void __init mpc834x_itx_setup_arch(void)
 		mpc83xx_add_bridge(np);
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ppc_md.progress)
 		ppc_md.progress("mpc834x_itx_setup_arch()", 0);
 
 	mpc83xx_setup_pci();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mpc834x_usb_cfg();
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __init mpc834x_itx_init_IRQ(void)
 {
@@ -111,6 +129,8 @@ static void __init mpc834x_itx_init_IRQ(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Called very early, MMU is off, device-tree isn't unflattened
  */
@@ -126,10 +146,14 @@ define_machine(mpc834x_itx) {
 	.probe			= mpc834x_itx_probe,
 	.setup_arch		= mpc834x_itx_setup_arch,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.init_IRQ		= mpc834x_itx_init_IRQ,
 =======
 	.init_IRQ		= mpc83xx_ipic_init_IRQ,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_IRQ		= mpc83xx_ipic_init_IRQ,
+>>>>>>> refs/remotes/origin/master
 	.get_irq		= ipic_get_irq,
 	.restart		= mpc83xx_restart,
 	.time_init		= mpc83xx_time_init,

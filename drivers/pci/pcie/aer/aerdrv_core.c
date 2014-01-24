@@ -25,16 +25,20 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "aerdrv.h"
 
 static int forceload;
 static int nosourceid;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kfifo.h>
 #include "aerdrv.h"
 
 static bool forceload;
 static bool nosourceid;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 module_param(forceload, bool, 0);
 module_param(nosourceid, bool, 0);
@@ -63,11 +67,29 @@ int pci_enable_pcie_error_reporting(struct pci_dev *dev)
 	pci_write_config_word(dev, pos + PCI_EXP_DEVCTL, reg16);
 
 	return 0;
+=======
+module_param(forceload, bool, 0);
+module_param(nosourceid, bool, 0);
+
+#define	PCI_EXP_AER_FLAGS	(PCI_EXP_DEVCTL_CERE | PCI_EXP_DEVCTL_NFERE | \
+				 PCI_EXP_DEVCTL_FERE | PCI_EXP_DEVCTL_URRE)
+
+int pci_enable_pcie_error_reporting(struct pci_dev *dev)
+{
+	if (pcie_aer_get_firmware_first(dev))
+		return -EIO;
+
+	if (!pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR))
+		return -EIO;
+
+	return pcie_capability_set_word(dev, PCI_EXP_DEVCTL, PCI_EXP_AER_FLAGS);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(pci_enable_pcie_error_reporting);
 
 int pci_disable_pcie_error_reporting(struct pci_dev *dev)
 {
+<<<<<<< HEAD
 	u16 reg16 = 0;
 	int pos;
 
@@ -86,6 +108,13 @@ int pci_disable_pcie_error_reporting(struct pci_dev *dev)
 	pci_write_config_word(dev, pos + PCI_EXP_DEVCTL, reg16);
 
 	return 0;
+=======
+	if (pcie_aer_get_firmware_first(dev))
+		return -EIO;
+
+	return pcie_capability_clear_word(dev, PCI_EXP_DEVCTL,
+					  PCI_EXP_AER_FLAGS);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(pci_disable_pcie_error_reporting);
 
@@ -121,8 +150,11 @@ static int add_error_device(struct aer_err_info *e_info, struct pci_dev *dev)
 	return -ENOSPC;
 }
 
+<<<<<<< HEAD
 #define	PCI_BUS(x)	(((x) >> 8) & 0xff)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * is_error_source - check whether the device is source of reported error
  * @dev: pointer to pci_dev to be checked
@@ -138,7 +170,11 @@ static bool is_error_source(struct pci_dev *dev, struct aer_err_info *e_info)
 	 * When bus id is equal to 0, it might be a bad id
 	 * reported by root port.
 	 */
+<<<<<<< HEAD
 	if (!nosourceid && (PCI_BUS(e_info->id) != 0)) {
+=======
+	if (!nosourceid && (PCI_BUS_NUM(e_info->id) != 0)) {
+>>>>>>> refs/remotes/origin/master
 		/* Device ID match? */
 		if (e_info->id == ((dev->bus->number << 8) | dev->devfn))
 			return true;
@@ -158,6 +194,7 @@ static bool is_error_source(struct pci_dev *dev, struct aer_err_info *e_info)
 	 */
 	if (atomic_read(&dev->enable_cnt) == 0)
 		return false;
+<<<<<<< HEAD
 	pos = pci_pcie_cap(dev);
 	if (!pos)
 		return false;
@@ -170,6 +207,14 @@ static bool is_error_source(struct pci_dev *dev, struct aer_err_info *e_info)
 		PCI_EXP_DEVCTL_FERE |
 		PCI_EXP_DEVCTL_URRE)))
 		return false;
+=======
+
+	/* Check if AER is enabled */
+	pcie_capability_read_word(dev, PCI_EXP_DEVCTL, &reg16);
+	if (!(reg16 & PCI_EXP_AER_FLAGS))
+		return false;
+
+>>>>>>> refs/remotes/origin/master
 	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR);
 	if (!pos)
 		return false;
@@ -247,10 +292,18 @@ static bool find_source_device(struct pci_dev *parent,
 static int report_error_detected(struct pci_dev *dev, void *data)
 {
 	pci_ers_result_t vote;
+<<<<<<< HEAD
 	struct pci_error_handlers *err_handler;
 	struct aer_broadcast_data *result_data;
 	result_data = (struct aer_broadcast_data *) data;
 
+=======
+	const struct pci_error_handlers *err_handler;
+	struct aer_broadcast_data *result_data;
+	result_data = (struct aer_broadcast_data *) data;
+
+	device_lock(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	dev->error_state = result_data->state;
 
 	if (!dev->driver ||
@@ -269,18 +322,44 @@ static int report_error_detected(struct pci_dev *dev, void *data)
 				   dev->driver ?
 				   "no AER-aware driver" : "no driver");
 		}
+<<<<<<< HEAD
 		return 0;
 	}
 
 	err_handler = dev->driver->err_handler;
 	vote = err_handler->error_detected(dev, result_data->state);
 	result_data->result = merge_result(result_data->result, vote);
+=======
+
+		/*
+		 * If there's any device in the subtree that does not
+		 * have an error_detected callback, returning
+		 * PCI_ERS_RESULT_NO_AER_DRIVER prevents calling of
+		 * the subsequent mmio_enabled/slot_reset/resume
+		 * callbacks of "any" device in the subtree. All the
+		 * devices in the subtree are left in the error state
+		 * without recovery.
+		 */
+
+		if (!(dev->hdr_type & PCI_HEADER_TYPE_BRIDGE))
+			vote = PCI_ERS_RESULT_NO_AER_DRIVER;
+		else
+			vote = PCI_ERS_RESULT_NONE;
+	} else {
+		err_handler = dev->driver->err_handler;
+		vote = err_handler->error_detected(dev, result_data->state);
+	}
+
+	result_data->result = merge_result(result_data->result, vote);
+	device_unlock(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int report_mmio_enabled(struct pci_dev *dev, void *data)
 {
 	pci_ers_result_t vote;
+<<<<<<< HEAD
 	struct pci_error_handlers *err_handler;
 	struct aer_broadcast_data *result_data;
 	result_data = (struct aer_broadcast_data *) data;
@@ -289,16 +368,33 @@ static int report_mmio_enabled(struct pci_dev *dev, void *data)
 		!dev->driver->err_handler ||
 		!dev->driver->err_handler->mmio_enabled)
 		return 0;
+=======
+	const struct pci_error_handlers *err_handler;
+	struct aer_broadcast_data *result_data;
+	result_data = (struct aer_broadcast_data *) data;
+
+	device_lock(&dev->dev);
+	if (!dev->driver ||
+		!dev->driver->err_handler ||
+		!dev->driver->err_handler->mmio_enabled)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	err_handler = dev->driver->err_handler;
 	vote = err_handler->mmio_enabled(dev);
 	result_data->result = merge_result(result_data->result, vote);
+<<<<<<< HEAD
+=======
+out:
+	device_unlock(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int report_slot_reset(struct pci_dev *dev, void *data)
 {
 	pci_ers_result_t vote;
+<<<<<<< HEAD
 	struct pci_error_handlers *err_handler;
 	struct aer_broadcast_data *result_data;
 	result_data = (struct aer_broadcast_data *) data;
@@ -307,26 +403,57 @@ static int report_slot_reset(struct pci_dev *dev, void *data)
 		!dev->driver->err_handler ||
 		!dev->driver->err_handler->slot_reset)
 		return 0;
+=======
+	const struct pci_error_handlers *err_handler;
+	struct aer_broadcast_data *result_data;
+	result_data = (struct aer_broadcast_data *) data;
+
+	device_lock(&dev->dev);
+	if (!dev->driver ||
+		!dev->driver->err_handler ||
+		!dev->driver->err_handler->slot_reset)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	err_handler = dev->driver->err_handler;
 	vote = err_handler->slot_reset(dev);
 	result_data->result = merge_result(result_data->result, vote);
+<<<<<<< HEAD
+=======
+out:
+	device_unlock(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int report_resume(struct pci_dev *dev, void *data)
 {
+<<<<<<< HEAD
 	struct pci_error_handlers *err_handler;
 
+=======
+	const struct pci_error_handlers *err_handler;
+
+	device_lock(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	dev->error_state = pci_channel_io_normal;
 
 	if (!dev->driver ||
 		!dev->driver->err_handler ||
 		!dev->driver->err_handler->resume)
+<<<<<<< HEAD
 		return 0;
 
 	err_handler = dev->driver->err_handler;
 	err_handler->resume(dev);
+=======
+		goto out;
+
+	err_handler = dev->driver->err_handler;
+	err_handler->resume(dev);
+out:
+	device_unlock(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -381,6 +508,7 @@ static pci_ers_result_t broadcast_error_message(struct pci_dev *dev,
 }
 
 /**
+<<<<<<< HEAD
  * aer_do_secondary_bus_reset - perform secondary bus reset
  * @dev: pointer to bridge's pci_dev data structure
  *
@@ -424,6 +552,18 @@ static pci_ers_result_t default_downstream_reset_link(struct pci_dev *dev)
 	aer_do_secondary_bus_reset(dev);
 	dev_printk(KERN_DEBUG, &dev->dev,
 		"Downstream Port link has been reset\n");
+=======
+ * default_reset_link - default reset function
+ * @dev: pointer to pci_dev data structure
+ *
+ * Invoked when performing link reset on a Downstream Port or a
+ * Root Port with no aer driver.
+ */
+static pci_ers_result_t default_reset_link(struct pci_dev *dev)
+{
+	pci_reset_bridge_secondary_bus(dev);
+	dev_printk(KERN_DEBUG, &dev->dev, "downstream link has been reset\n");
+>>>>>>> refs/remotes/origin/master
 	return PCI_ERS_RESULT_RECOVERED;
 }
 
@@ -454,11 +594,15 @@ static struct pcie_port_service_driver *find_aer_service(struct pci_dev *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static pci_ers_result_t reset_link(struct pcie_device *aerdev,
 		struct pci_dev *dev)
 =======
 static pci_ers_result_t reset_link(struct pci_dev *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static pci_ers_result_t reset_link(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *udev;
 	pci_ers_result_t status;
@@ -477,8 +621,14 @@ static pci_ers_result_t reset_link(struct pci_dev *dev)
 
 	if (driver && driver->reset_link) {
 		status = driver->reset_link(udev);
+<<<<<<< HEAD
 	} else if (udev->pcie_type == PCI_EXP_TYPE_DOWNSTREAM) {
 		status = default_downstream_reset_link(udev);
+=======
+	} else if (pci_pcie_type(udev) == PCI_EXP_TYPE_DOWNSTREAM ||
+		pci_pcie_type(udev) == PCI_EXP_TYPE_ROOT_PORT) {
+		status = default_reset_link(udev);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		dev_printk(KERN_DEBUG, &dev->dev,
 			"no link-reset support at upstream device %s\n",
@@ -499,9 +649,12 @@ static pci_ers_result_t reset_link(struct pci_dev *dev)
 /**
  * do_recovery - handle nonfatal/fatal error recovery process
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @aerdev: pointer to a pcie_device data structure of root port
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @dev: pointer to a pci_dev data structure of agent detecting an error
  * @severity: error severity type
  *
@@ -510,11 +663,15 @@ static pci_ers_result_t reset_link(struct pci_dev *dev)
  * question and return the returned code.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void do_recovery(struct pcie_device *aerdev, struct pci_dev *dev,
 		int severity)
 =======
 static void do_recovery(struct pci_dev *dev, int severity)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void do_recovery(struct pci_dev *dev, int severity)
+>>>>>>> refs/remotes/origin/master
 {
 	pci_ers_result_t status, result = PCI_ERS_RESULT_RECOVERED;
 	enum pci_channel_state state;
@@ -531,10 +688,14 @@ static void do_recovery(struct pci_dev *dev, int severity)
 
 	if (severity == AER_FATAL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		result = reset_link(aerdev, dev);
 =======
 		result = reset_link(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		result = reset_link(dev);
+>>>>>>> refs/remotes/origin/master
 		if (result != PCI_ERS_RESULT_RECOVERED)
 			goto failed;
 	}
@@ -565,14 +726,22 @@ static void do_recovery(struct pci_dev *dev, int severity)
 				"resume",
 				report_resume);
 
+<<<<<<< HEAD
 	dev_printk(KERN_DEBUG, &dev->dev,
 		"AER driver successfully recovered\n");
+=======
+	dev_info(&dev->dev, "AER: Device recovery successful\n");
+>>>>>>> refs/remotes/origin/master
 	return;
 
 failed:
 	/* TODO: Should kernel panic here? */
+<<<<<<< HEAD
 	dev_printk(KERN_DEBUG, &dev->dev,
 		"AER driver didn't recover\n");
+=======
+	dev_info(&dev->dev, "AER: Device recovery failed\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -591,7 +760,11 @@ static void handle_error_source(struct pcie_device *aerdev,
 
 	if (info->severity == AER_CORRECTABLE) {
 		/*
+<<<<<<< HEAD
 		 * Correctable error does not need software intevention.
+=======
+		 * Correctable error does not need software intervention.
+>>>>>>> refs/remotes/origin/master
 		 * No need to go through error recovery process.
 		 */
 		pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR);
@@ -600,10 +773,13 @@ static void handle_error_source(struct pcie_device *aerdev,
 					info->status);
 	} else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		do_recovery(aerdev, dev, info->severity);
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		do_recovery(dev, info->severity);
 }
 
@@ -619,6 +795,10 @@ struct aer_recover_entry
 	u8	devfn;
 	u16	domain;
 	int	severity;
+<<<<<<< HEAD
+=======
+	struct aer_capability_regs *regs;
+>>>>>>> refs/remotes/origin/master
 };
 
 static DEFINE_KFIFO(aer_recover_ring, struct aer_recover_entry,
@@ -632,7 +812,11 @@ static DEFINE_SPINLOCK(aer_recover_ring_lock);
 static DECLARE_WORK(aer_recover_work, aer_recover_work_func);
 
 void aer_recover_queue(int domain, unsigned int bus, unsigned int devfn,
+<<<<<<< HEAD
 		       int severity)
+=======
+		       int severity, struct aer_capability_regs *aer_regs)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	struct aer_recover_entry entry = {
@@ -640,10 +824,18 @@ void aer_recover_queue(int domain, unsigned int bus, unsigned int devfn,
 		.devfn		= devfn,
 		.domain		= domain,
 		.severity	= severity,
+<<<<<<< HEAD
 	};
 
 	spin_lock_irqsave(&aer_recover_ring_lock, flags);
 	if (kfifo_put(&aer_recover_ring, &entry))
+=======
+		.regs		= aer_regs,
+	};
+
+	spin_lock_irqsave(&aer_recover_ring_lock, flags);
+	if (kfifo_put(&aer_recover_ring, entry))
+>>>>>>> refs/remotes/origin/master
 		schedule_work(&aer_recover_work);
 	else
 		pr_err("AER recover: Buffer overflow when recovering AER for %04x:%02x:%02x:%x\n",
@@ -666,13 +858,20 @@ static void aer_recover_work_func(struct work_struct *work)
 			       PCI_SLOT(entry.devfn), PCI_FUNC(entry.devfn));
 			continue;
 		}
+<<<<<<< HEAD
+=======
+		cper_print_aer(pdev, entry.severity, entry.regs);
+>>>>>>> refs/remotes/origin/master
 		do_recovery(pdev, entry.severity);
 		pci_dev_put(pdev);
 	}
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * get_device_error_info - read error status from dev and store it to info
  * @dev: pointer to the device expected to have a error record

@@ -12,6 +12,7 @@
  */
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/io.h>
@@ -19,6 +20,8 @@
 #include <asm/mach/irq.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/interrupt.h>
@@ -29,11 +32,19 @@
 #include <linux/irqdomain.h>
 #include <linux/of.h>
 #include <linux/of_address.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 
 #include "iomap.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of_irq.h>
+
+#include "soc.h"
+#include "iomap.h"
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 /* selected INTC register offsets */
 
@@ -53,13 +64,22 @@
 #define IRQ_BITS_PER_REG	32
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define OMAP2_IRQ_BASE		OMAP2_L4_IO_ADDRESS(OMAP24XX_IC_BASE)
 #define OMAP3_IRQ_BASE		OMAP2_L4_IO_ADDRESS(OMAP34XX_IC_BASE)
 #define INTCPS_SIR_IRQ_OFFSET	0x0040	/* omap2/3 active interrupt offset */
 #define ACTIVEIRQ_MASK		0x7f	/* omap2/3 active interrupt bits */
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define INTCPS_NR_MIR_REGS	3
+#define INTCPS_NR_IRQS		96
+
+>>>>>>> refs/remotes/origin/master
 /*
  * OMAP2 has a number of different interrupt controllers, each interrupt
  * controller is identified as its own "bank". Register definitions are
@@ -77,10 +97,15 @@ static struct omap_irq_bank {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct irq_domain *domain;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct irq_domain *domain;
+
+>>>>>>> refs/remotes/origin/master
 /* Structure to save interrupt controller context */
 struct omap3_intc_regs {
 	u32 sysconfig;
@@ -120,9 +145,14 @@ static void __init omap_irq_bank_init_one(struct omap_irq_bank *bank)
 	unsigned long tmp;
 
 	tmp = intc_bank_read_reg(bank, INTC_REVISION) & 0xff;
+<<<<<<< HEAD
 	printk(KERN_INFO "IRQ: Found an INTC at 0x%p "
 			 "(revision %ld.%ld) with %d interrupts\n",
 			 bank->base_reg, tmp >> 4, tmp & 0xf, bank->nr_irqs);
+=======
+	pr_info("IRQ: Found an INTC at 0x%p (revision %ld.%ld) with %d interrupts\n",
+		bank->base_reg, tmp >> 4, tmp & 0xf, bank->nr_irqs);
+>>>>>>> refs/remotes/origin/master
 
 	tmp = intc_bank_read_reg(bank, INTC_SYSCONFIG);
 	tmp |= 1 << 1;	/* soft reset */
@@ -163,14 +193,20 @@ omap_alloc_gc(void __iomem *base, unsigned int irq_start, unsigned int num)
 	ct->chip.irq_ack = omap_mask_ack_irq;
 	ct->chip.irq_mask = irq_gc_mask_disable_reg;
 	ct->chip.irq_unmask = irq_gc_unmask_enable_reg;
+<<<<<<< HEAD
 
 	ct->regs.ack = INTC_CONTROL;
+=======
+	ct->chip.flags |= IRQCHIP_SKIP_SET_WAKE;
+
+>>>>>>> refs/remotes/origin/master
 	ct->regs.enable = INTC_MIR_CLEAR0;
 	ct->regs.disable = INTC_MIR_SET0;
 	irq_setup_generic_chip(gc, IRQ_MSK(num), IRQ_GC_INIT_MASK_CACHE,
 				IRQ_NOREQUEST | IRQ_NOPROBE, 0);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void __init omap_init_irq(void)
 {
@@ -192,6 +228,8 @@ void __init omap_init_irq(void)
 		if (cpu_is_ti816x())
 			bank->nr_irqs = 128;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init omap_init_irq(u32 base, int nr_irqs,
 				 struct device_node *node)
 {
@@ -217,21 +255,29 @@ static void __init omap_init_irq(u32 base, int nr_irqs,
 		struct omap_irq_bank *bank = irq_banks + i;
 
 		bank->nr_irqs = nr_irqs;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* Static mapping, never released */
 		bank->base_reg = ioremap(base, SZ_4K);
 		if (!bank->base_reg) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "Could not ioremap irq bank%i\n", i);
 =======
 			pr_err("Could not ioremap irq bank%i\n", i);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("Could not ioremap irq bank%i\n", i);
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
 		omap_irq_bank_init_one(bank);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		for (i = 0, j = 0; i < bank->nr_irqs; i += 32, j += 0x20)
 			omap_alloc_gc(bank->base_reg + j, i, 32);
@@ -239,15 +285,22 @@ static void __init omap_init_irq(u32 base, int nr_irqs,
 		for (j = 0; j < bank->nr_irqs; j += 32)
 			omap_alloc_gc(bank->base_reg + j, j + irq_base, 32);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (j = 0; j < bank->nr_irqs; j += 32)
+			omap_alloc_gc(bank->base_reg + j, j + irq_base, 32);
+>>>>>>> refs/remotes/origin/master
 
 		nr_of_irqs += bank->nr_irqs;
 		nr_banks++;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Total of %ld interrupts on %d active controller%s\n",
 	       nr_of_irqs, nr_banks, nr_banks > 1 ? "s" : "");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_info("Total of %ld interrupts on %d active controller%s\n",
 		nr_of_irqs, nr_banks, nr_banks > 1 ? "s" : "");
 }
@@ -281,7 +334,11 @@ static inline void omap_intc_handle_irq(void __iomem *base_addr, struct pt_regs 
 			goto out;
 
 		irqnr = readl_relaxed(base_addr + 0xd8);
+<<<<<<< HEAD
 #ifdef CONFIG_SOC_OMAPTI816X
+=======
+#if IS_ENABLED(CONFIG_SOC_TI81XX) || IS_ENABLED(CONFIG_SOC_AM33XX)
+>>>>>>> refs/remotes/origin/master
 		if (irqnr)
 			goto out;
 		irqnr = readl_relaxed(base_addr + 0xf8);
@@ -307,11 +364,19 @@ asmlinkage void __exception_irq_entry omap2_intc_handle_irq(struct pt_regs *regs
 	omap_intc_handle_irq(base_addr, regs);
 }
 
+<<<<<<< HEAD
 int __init omap_intc_of_init(struct device_node *node,
 			     struct device_node *parent)
 {
 	struct resource res;
 	u32 nr_irqs = 96;
+=======
+int __init intc_of_init(struct device_node *node,
+			     struct device_node *parent)
+{
+	struct resource res;
+	u32 nr_irq = 96;
+>>>>>>> refs/remotes/origin/master
 
 	if (WARN_ON(!node))
 		return -ENODEV;
@@ -321,6 +386,7 @@ int __init omap_intc_of_init(struct device_node *node,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (of_property_read_u32(node, "ti,intc-size", &nr_irqs))
 		pr_warn("unable to get intc-size, default to %d\n", nr_irqs);
 
@@ -331,6 +397,27 @@ int __init omap_intc_of_init(struct device_node *node,
 }
 
 #ifdef CONFIG_ARCH_OMAP3
+=======
+	if (of_property_read_u32(node, "ti,intc-size", &nr_irq))
+		pr_warn("unable to get intc-size, default to %d\n", nr_irq);
+
+	omap_init_irq(res.start, nr_irq, of_node_get(node));
+
+	return 0;
+}
+
+static struct of_device_id irq_match[] __initdata = {
+	{ .compatible = "ti,omap2-intc", .data = intc_of_init, },
+	{ }
+};
+
+void __init omap_intc_of_init(void)
+{
+	of_irq_init(irq_match);
+}
+
+#if defined(CONFIG_ARCH_OMAP3) || defined(CONFIG_SOC_AM33XX)
+>>>>>>> refs/remotes/origin/master
 static struct omap3_intc_regs intc_context[ARRAY_SIZE(irq_banks)];
 
 void omap_intc_save_context(void)
@@ -385,7 +472,11 @@ void omap_intc_restore_context(void)
 void omap3_intc_suspend(void)
 {
 	/* A pending interrupt would prevent OMAP from entering suspend */
+<<<<<<< HEAD
 	omap_ack_irq(0);
+=======
+	omap_ack_irq(NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 void omap3_intc_prepare_idle(void)
@@ -403,12 +494,18 @@ void omap3_intc_resume_idle(void)
 	intc_bank_write_reg(1, &irq_banks[0], INTC_SYSCONFIG);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 asmlinkage void __exception_irq_entry omap3_intc_handle_irq(struct pt_regs *regs)
 {
 	void __iomem *base_addr = OMAP3_IRQ_BASE;
 	omap_intc_handle_irq(base_addr, regs);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_ARCH_OMAP3 */

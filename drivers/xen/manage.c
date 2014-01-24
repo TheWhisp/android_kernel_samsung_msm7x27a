@@ -1,6 +1,12 @@
 /*
  * Handle extern requests for shutdown, reboot and sysrq
  */
+<<<<<<< HEAD
+=======
+
+#define pr_fmt(fmt) "xen:" KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/err.h>
 #include <linux/slab.h>
@@ -10,9 +16,13 @@
 #include <linux/freezer.h>
 #include <linux/syscore_ops.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <xen/xen.h>
 #include <xen/xenbus.h>
@@ -46,6 +56,10 @@ struct suspend_info {
 	void (*post)(int cancelled);
 };
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_HIBERNATE_CALLBACKS
+>>>>>>> refs/remotes/origin/master
 static void xen_hvm_post_suspend(int cancelled)
 {
 	xen_arch_hvm_post_suspend(cancelled);
@@ -66,7 +80,10 @@ static void xen_post_suspend(int cancelled)
 	xen_mm_unpin_all();
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_HIBERNATE_CALLBACKS
+=======
+>>>>>>> refs/remotes/origin/master
 static int xen_suspend(void *data)
 {
 	struct suspend_info *si = data;
@@ -76,8 +93,12 @@ static int xen_suspend(void *data)
 
 	err = syscore_suspend();
 	if (err) {
+<<<<<<< HEAD
 		printk(KERN_ERR "xen_suspend: system core suspend failed: %d\n",
 			err);
+=======
+		pr_err("%s: system core suspend failed: %d\n", __func__, err);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 
@@ -118,20 +139,29 @@ static void do_suspend(void)
 	   during suspend. */
 	err = freeze_processes();
 	if (err) {
+<<<<<<< HEAD
 		printk(KERN_ERR "xen suspend: freeze failed %d\n", err);
+=======
+		pr_err("%s: freeze failed %d\n", __func__, err);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 #endif
 
 	err = dpm_suspend_start(PMSG_FREEZE);
 	if (err) {
+<<<<<<< HEAD
 		printk(KERN_ERR "xen suspend: dpm_suspend_start %d\n", err);
+=======
+		pr_err("%s: dpm_suspend_start %d\n", __func__, err);
+>>>>>>> refs/remotes/origin/master
 		goto out_thaw;
 	}
 
 	printk(KERN_DEBUG "suspending xenstore...\n");
 	xs_suspend();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = dpm_suspend_noirq(PMSG_FREEZE);
 	if (err) {
@@ -142,6 +172,12 @@ static void do_suspend(void)
 		printk(KERN_ERR "dpm_suspend_end failed: %d\n", err);
 		si.cancelled = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = dpm_suspend_end(PMSG_FREEZE);
+	if (err) {
+		pr_err("dpm_suspend_end failed: %d\n", err);
+		si.cancelled = 0;
+>>>>>>> refs/remotes/origin/master
 		goto out_resume;
 	}
 
@@ -160,6 +196,7 @@ static void do_suspend(void)
 	err = stop_machine(xen_suspend, &si, cpumask_of(0));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dpm_resume_noirq(si.cancelled ? PMSG_THAW : PMSG_RESTORE);
 =======
 	dpm_resume_start(si.cancelled ? PMSG_THAW : PMSG_RESTORE);
@@ -167,6 +204,12 @@ static void do_suspend(void)
 
 	if (err) {
 		printk(KERN_ERR "failed to start xen_suspend: %d\n", err);
+=======
+	dpm_resume_start(si.cancelled ? PMSG_THAW : PMSG_RESTORE);
+
+	if (err) {
+		pr_err("failed to start xen_suspend: %d\n", err);
+>>>>>>> refs/remotes/origin/master
 		si.cancelled = 1;
 	}
 
@@ -179,9 +222,12 @@ out_resume:
 
 	dpm_resume_end(si.cancelled ? PMSG_THAW : PMSG_RESTORE);
 
+<<<<<<< HEAD
 	/* Make sure timer events get retriggered on all CPUs */
 	clock_was_set();
 
+=======
+>>>>>>> refs/remotes/origin/master
 out_thaw:
 #ifdef CONFIG_PREEMPT
 	thaw_processes();
@@ -258,7 +304,11 @@ static void shutdown_handler(struct xenbus_watch *watch,
 	if (handler->cb) {
 		handler->cb();
 	} else {
+<<<<<<< HEAD
 		printk(KERN_INFO "Ignoring shutdown request: %s\n", str);
+=======
+		pr_info("Ignoring shutdown request: %s\n", str);
+>>>>>>> refs/remotes/origin/master
 		shutting_down = SHUTDOWN_INVALID;
 	}
 
@@ -278,8 +328,12 @@ static void sysrq_handler(struct xenbus_watch *watch, const char **vec,
 	if (err)
 		return;
 	if (!xenbus_scanf(xbt, "control", "sysrq", "%c", &sysrq_key)) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Unable to read sysrq code in "
 		       "control/sysrq\n");
+=======
+		pr_err("Unable to read sysrq code in control/sysrq\n");
+>>>>>>> refs/remotes/origin/master
 		xenbus_transaction_end(xbt, 1);
 		return;
 	}
@@ -312,14 +366,22 @@ static int setup_shutdown_watcher(void)
 
 	err = register_xenbus_watch(&shutdown_watch);
 	if (err) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Failed to set shutdown watcher\n");
+=======
+		pr_err("Failed to set shutdown watcher\n");
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 
 #ifdef CONFIG_MAGIC_SYSRQ
 	err = register_xenbus_watch(&sysrq_watch);
 	if (err) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Failed to set sysrq watcher\n");
+=======
+		pr_err("Failed to set sysrq watcher\n");
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 #endif

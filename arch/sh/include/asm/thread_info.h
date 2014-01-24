@@ -10,8 +10,23 @@
  *  - Incorporating suggestions made by Linus Torvalds and Dave Miller
  */
 #ifdef __KERNEL__
+<<<<<<< HEAD
 #include <asm/page.h>
 
+=======
+
+#include <asm/page.h>
+
+/*
+ * Page fault error code bits
+ */
+#define FAULT_CODE_WRITE	(1 << 0)	/* write access */
+#define FAULT_CODE_INITIAL	(1 << 1)	/* initial page write */
+#define FAULT_CODE_ITLB		(1 << 2)	/* ITLB miss */
+#define FAULT_CODE_PROT		(1 << 3)	/* protection fault */
+#define FAULT_CODE_USER		(1 << 4)	/* user-mode access */
+
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 #include <asm/processor.h>
 
@@ -31,8 +46,11 @@ struct thread_info {
 
 #endif
 
+<<<<<<< HEAD
 #define PREEMPT_ACTIVE		0x10000000
 
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_4KSTACKS)
 #define THREAD_SHIFT	12
 #else
@@ -88,6 +106,7 @@ static inline struct thread_info *current_thread_info(void)
 	return ti;
 }
 
+<<<<<<< HEAD
 /* thread information allocation */
 #if THREAD_SHIFT >= PAGE_SHIFT
 
@@ -111,6 +130,25 @@ extern void init_thread_xstate(void);
  * - these are process state flags that various assembly files may need to access
  * - pending work-to-be-done flags are in LSW
  * - other flags in MSW
+=======
+#define THREAD_SIZE_ORDER	(THREAD_SHIFT - PAGE_SHIFT)
+
+extern void arch_task_cache_init(void);
+extern int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src);
+extern void arch_release_task_struct(struct task_struct *tsk);
+extern void init_thread_xstate(void);
+
+#endif /* __ASSEMBLY__ */
+
+/*
+ * Thread information flags
+ *
+ * - Limited to 24 bits, upper byte used for fault code encoding.
+ *
+ * - _TIF_ALLWORK_MASK and _TIF_WORK_MASK need to fit within 2 bytes, or
+ *   we blow the tst immediate size constraints and need to fix up
+ *   arch/sh/kernel/entry-common.S.
+>>>>>>> refs/remotes/origin/master
  */
 #define TIF_SYSCALL_TRACE	0	/* syscall trace active */
 #define TIF_SIGPENDING		1	/* signal pending */
@@ -123,9 +161,12 @@ extern void init_thread_xstate(void);
 #define TIF_POLLING_NRFLAG	17	/* true if poll_idle() is polling TIF_NEED_RESCHED */
 #define TIF_MEMDIE		18	/* is terminating due to OOM killer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TIF_FREEZE		19	/* Freezing for suspend */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
 #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
@@ -137,6 +178,7 @@ extern void init_thread_xstate(void);
 #define _TIF_SYSCALL_TRACEPOINT	(1 << TIF_SYSCALL_TRACEPOINT)
 #define _TIF_POLLING_NRFLAG	(1 << TIF_POLLING_NRFLAG)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define _TIF_FREEZE		(1 << TIF_FREEZE)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -146,6 +188,8 @@ extern void init_thread_xstate(void);
  * blow the tst immediate size constraints and need to fix up
  * arch/sh/kernel/entry-common.S.
  */
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* work to do in syscall trace */
 #define _TIF_WORK_SYSCALL_MASK	(_TIF_SYSCALL_TRACE | _TIF_SINGLESTEP | \
@@ -173,13 +217,58 @@ extern void init_thread_xstate(void);
 #define TS_USEDFPU		0x0002	/* FPU used by this task this quantum */
 
 #ifndef __ASSEMBLY__
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 #define HAVE_SET_RESTORE_SIGMASK	1
 static inline void set_restore_sigmask(void)
 {
 	struct thread_info *ti = current_thread_info();
 	ti->status |= TS_RESTORE_SIGMASK;
+<<<<<<< HEAD
 	set_bit(TIF_SIGPENDING, (unsigned long *)&ti->flags);
 }
+=======
+	WARN_ON(!test_bit(TIF_SIGPENDING, (unsigned long *)&ti->flags));
+}
+
+#define TI_FLAG_FAULT_CODE_SHIFT	24
+
+/*
+ * Additional thread flag encoding
+ */
+static inline void set_thread_fault_code(unsigned int val)
+{
+	struct thread_info *ti = current_thread_info();
+	ti->flags = (ti->flags & (~0 >> (32 - TI_FLAG_FAULT_CODE_SHIFT)))
+		| (val << TI_FLAG_FAULT_CODE_SHIFT);
+}
+
+static inline unsigned int get_thread_fault_code(void)
+{
+	struct thread_info *ti = current_thread_info();
+	return ti->flags >> TI_FLAG_FAULT_CODE_SHIFT;
+}
+
+static inline void clear_restore_sigmask(void)
+{
+	current_thread_info()->status &= ~TS_RESTORE_SIGMASK;
+}
+static inline bool test_restore_sigmask(void)
+{
+	return current_thread_info()->status & TS_RESTORE_SIGMASK;
+}
+static inline bool test_and_clear_restore_sigmask(void)
+{
+	struct thread_info *ti = current_thread_info();
+	if (!(ti->status & TS_RESTORE_SIGMASK))
+		return false;
+	ti->status &= ~TS_RESTORE_SIGMASK;
+	return true;
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif	/* !__ASSEMBLY__ */
 
 #endif /* __KERNEL__ */

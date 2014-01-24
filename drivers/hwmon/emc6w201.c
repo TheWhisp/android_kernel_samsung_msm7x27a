@@ -18,7 +18,10 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/delay.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/jiffies.h>
@@ -50,7 +53,11 @@ static const unsigned short normal_i2c[] = { 0x2c, 0x2d, 0x2e, I2C_CLIENT_END };
 #define EMC6W201_REG_TEMP_HIGH(nr)	(0x57 + (nr) * 2)
 #define EMC6W201_REG_FAN_MIN(nr)	(0x62 + (nr) * 2)
 
+<<<<<<< HEAD
 enum { input, min, max } subfeature;
+=======
+enum subfeature { input, min, max };
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Per-device data
@@ -188,7 +195,11 @@ static struct emc6w201_data *emc6w201_update_device(struct device *dev)
  * Sysfs callback functions
  */
 
+<<<<<<< HEAD
 static const u16 nominal_mv[6] = { 2500, 1500, 3300, 5000, 1500, 1500 };
+=======
+static const s16 nominal_mv[6] = { 2500, 1500, 3300, 5000, 1500, 1500 };
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t show_in(struct device *dev, struct device_attribute *devattr,
 	char *buf)
@@ -213,10 +224,14 @@ static ssize_t set_in(struct device *dev, struct device_attribute *devattr,
 	u8 reg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
 =======
 	err = kstrtol(buf, 10, &val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -225,7 +240,11 @@ static ssize_t set_in(struct device *dev, struct device_attribute *devattr,
 			  : EMC6W201_REG_IN_HIGH(nr);
 
 	mutex_lock(&data->update_lock);
+<<<<<<< HEAD
 	data->in[sf][nr] = SENSORS_LIMIT(val, 0, 255);
+=======
+	data->in[sf][nr] = clamp_val(val, 0, 255);
+>>>>>>> refs/remotes/origin/master
 	err = emc6w201_write8(client, reg, data->in[sf][nr]);
 	mutex_unlock(&data->update_lock);
 
@@ -254,10 +273,14 @@ static ssize_t set_temp(struct device *dev, struct device_attribute *devattr,
 	u8 reg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
 =======
 	err = kstrtol(buf, 10, &val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -266,7 +289,11 @@ static ssize_t set_temp(struct device *dev, struct device_attribute *devattr,
 			  : EMC6W201_REG_TEMP_HIGH(nr);
 
 	mutex_lock(&data->update_lock);
+<<<<<<< HEAD
 	data->temp[sf][nr] = SENSORS_LIMIT(val, -127, 128);
+=======
+	data->temp[sf][nr] = clamp_val(val, -127, 128);
+>>>>>>> refs/remotes/origin/master
 	err = emc6w201_write8(client, reg, data->temp[sf][nr]);
 	mutex_unlock(&data->update_lock);
 
@@ -300,10 +327,14 @@ static ssize_t set_fan(struct device *dev, struct device_attribute *devattr,
 	unsigned long val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
 =======
 	err = kstrtoul(buf, 10, &val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -311,7 +342,11 @@ static ssize_t set_fan(struct device *dev, struct device_attribute *devattr,
 		val = 0xFFFF;
 	} else {
 		val = DIV_ROUND_CLOSEST(5400000U, val);
+<<<<<<< HEAD
 		val = SENSORS_LIMIT(val, 0, 0xFFFE);
+=======
+		val = clamp_val(val, 0, 0xFFFE);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_lock(&data->update_lock);
@@ -504,11 +539,18 @@ static int emc6w201_probe(struct i2c_client *client,
 	struct emc6w201_data *data;
 	int err;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct emc6w201_data), GFP_KERNEL);
 	if (!data) {
 		err = -ENOMEM;
 		goto exit;
 	}
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct emc6w201_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(client, data);
 	mutex_init(&data->update_lock);
@@ -516,7 +558,11 @@ static int emc6w201_probe(struct i2c_client *client,
 	/* Create sysfs attribute */
 	err = sysfs_create_group(&client->dev.kobj, &emc6w201_group);
 	if (err)
+<<<<<<< HEAD
 		goto exit_free;
+=======
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	/* Expose as a hwmon device */
 	data->hwmon_dev = hwmon_device_register(&client->dev);
@@ -529,9 +575,12 @@ static int emc6w201_probe(struct i2c_client *client,
 
  exit_remove:
 	sysfs_remove_group(&client->dev.kobj, &emc6w201_group);
+<<<<<<< HEAD
  exit_free:
 	kfree(data);
  exit:
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -541,7 +590,10 @@ static int emc6w201_remove(struct i2c_client *client)
 
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &emc6w201_group);
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -565,6 +617,7 @@ static struct i2c_driver emc6w201_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensors_emc6w201_init(void)
 {
 	return i2c_add_driver(&emc6w201_driver);
@@ -579,6 +632,9 @@ module_exit(sensors_emc6w201_exit);
 =======
 module_i2c_driver(emc6w201_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(emc6w201_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jean Delvare <khali@linux-fr.org>");
 MODULE_DESCRIPTION("SMSC EMC6W201 hardware monitoring driver");

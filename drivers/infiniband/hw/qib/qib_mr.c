@@ -47,6 +47,46 @@ static inline struct qib_fmr *to_ifmr(struct ib_fmr *ibfmr)
 	return container_of(ibfmr, struct qib_fmr, ibfmr);
 }
 
+<<<<<<< HEAD
+=======
+static int init_qib_mregion(struct qib_mregion *mr, struct ib_pd *pd,
+	int count)
+{
+	int m, i = 0;
+	int rval = 0;
+
+	m = (count + QIB_SEGSZ - 1) / QIB_SEGSZ;
+	for (; i < m; i++) {
+		mr->map[i] = kzalloc(sizeof *mr->map[0], GFP_KERNEL);
+		if (!mr->map[i])
+			goto bail;
+	}
+	mr->mapsz = m;
+	init_completion(&mr->comp);
+	/* count returning the ptr to user */
+	atomic_set(&mr->refcount, 1);
+	mr->pd = pd;
+	mr->max_segs = count;
+out:
+	return rval;
+bail:
+	while (i)
+		kfree(mr->map[--i]);
+	rval = -ENOMEM;
+	goto out;
+}
+
+static void deinit_qib_mregion(struct qib_mregion *mr)
+{
+	int i = mr->mapsz;
+
+	mr->mapsz = 0;
+	while (i)
+		kfree(mr->map[--i]);
+}
+
+
+>>>>>>> refs/remotes/origin/master
 /**
  * qib_get_dma_mr - get a DMA memory region
  * @pd: protection domain for this memory region
@@ -58,10 +98,16 @@ static inline struct qib_fmr *to_ifmr(struct ib_fmr *ibfmr)
  */
 struct ib_mr *qib_get_dma_mr(struct ib_pd *pd, int acc)
 {
+<<<<<<< HEAD
 	struct qib_ibdev *dev = to_idev(pd->device);
 	struct qib_mr *mr;
 	struct ib_mr *ret;
 	unsigned long flags;
+=======
+	struct qib_mr *mr = NULL;
+	struct ib_mr *ret;
+	int rval;
+>>>>>>> refs/remotes/origin/master
 
 	if (to_ipd(pd)->user) {
 		ret = ERR_PTR(-EPERM);
@@ -74,6 +120,7 @@ struct ib_mr *qib_get_dma_mr(struct ib_pd *pd, int acc)
 		goto bail;
 	}
 
+<<<<<<< HEAD
 	mr->mr.access_flags = acc;
 	atomic_set(&mr->mr.refcount, 0);
 
@@ -109,10 +156,53 @@ static struct qib_mr *alloc_mr(int count, struct qib_lkey_table *lk_table)
 	mr->mr.page_shift = 0;
 	mr->mr.max_segs = count;
 
+=======
+	rval = init_qib_mregion(&mr->mr, pd, 0);
+	if (rval) {
+		ret = ERR_PTR(rval);
+		goto bail;
+	}
+
+
+	rval = qib_alloc_lkey(&mr->mr, 1);
+	if (rval) {
+		ret = ERR_PTR(rval);
+		goto bail_mregion;
+	}
+
+	mr->mr.access_flags = acc;
+	ret = &mr->ibmr;
+done:
+	return ret;
+
+bail_mregion:
+	deinit_qib_mregion(&mr->mr);
+bail:
+	kfree(mr);
+	goto done;
+}
+
+static struct qib_mr *alloc_mr(int count, struct ib_pd *pd)
+{
+	struct qib_mr *mr;
+	int rval = -ENOMEM;
+	int m;
+
+	/* Allocate struct plus pointers to first level page tables. */
+	m = (count + QIB_SEGSZ - 1) / QIB_SEGSZ;
+	mr = kzalloc(sizeof *mr + m * sizeof mr->mr.map[0], GFP_KERNEL);
+	if (!mr)
+		goto bail;
+
+	rval = init_qib_mregion(&mr->mr, pd, count);
+	if (rval)
+		goto bail;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * ib_reg_phys_mr() will initialize mr->ibmr except for
 	 * lkey and rkey.
 	 */
+<<<<<<< HEAD
 	if (!qib_alloc_lkey(lk_table, &mr->mr))
 		goto bail;
 	mr->ibmr.lkey = mr->mr.lkey;
@@ -129,6 +219,22 @@ bail:
 
 done:
 	return mr;
+=======
+	rval = qib_alloc_lkey(&mr->mr, 0);
+	if (rval)
+		goto bail_mregion;
+	mr->ibmr.lkey = mr->mr.lkey;
+	mr->ibmr.rkey = mr->mr.lkey;
+done:
+	return mr;
+
+bail_mregion:
+	deinit_qib_mregion(&mr->mr);
+bail:
+	kfree(mr);
+	mr = ERR_PTR(rval);
+	goto done;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -148,6 +254,7 @@ struct ib_mr *qib_reg_phys_mr(struct ib_pd *pd,
 	int n, m, i;
 	struct ib_mr *ret;
 
+<<<<<<< HEAD
 	mr = alloc_mr(num_phys_buf, &to_idev(pd->device)->lk_table);
 	if (mr == NULL) {
 		ret = ERR_PTR(-ENOMEM);
@@ -161,6 +268,17 @@ struct ib_mr *qib_reg_phys_mr(struct ib_pd *pd,
 	mr->mr.offset = 0;
 	mr->mr.access_flags = acc;
 	mr->umem = NULL;
+=======
+	mr = alloc_mr(num_phys_buf, pd);
+	if (IS_ERR(mr)) {
+		ret = (struct ib_mr *)mr;
+		goto bail;
+	}
+
+	mr->mr.user_base = *iova_start;
+	mr->mr.iova = *iova_start;
+	mr->mr.access_flags = acc;
+>>>>>>> refs/remotes/origin/master
 
 	m = 0;
 	n = 0;
@@ -186,7 +304,10 @@ bail:
  * @pd: protection domain for this memory region
  * @start: starting userspace address
  * @length: length of region to register
+<<<<<<< HEAD
  * @virt_addr: virtual address to use (from HCA's point of view)
+=======
+>>>>>>> refs/remotes/origin/master
  * @mr_access_flags: access flags for this memory region
  * @udata: unused by the QLogic_IB driver
  *
@@ -216,14 +337,23 @@ struct ib_mr *qib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
 	list_for_each_entry(chunk, &umem->chunk_list, list)
 		n += chunk->nents;
 
+<<<<<<< HEAD
 	mr = alloc_mr(n, &to_idev(pd->device)->lk_table);
 	if (!mr) {
 		ret = ERR_PTR(-ENOMEM);
+=======
+	mr = alloc_mr(n, pd);
+	if (IS_ERR(mr)) {
+		ret = (struct ib_mr *)mr;
+>>>>>>> refs/remotes/origin/master
 		ib_umem_release(umem);
 		goto bail;
 	}
 
+<<<<<<< HEAD
 	mr->mr.pd = pd;
+=======
+>>>>>>> refs/remotes/origin/master
 	mr->mr.user_base = start;
 	mr->mr.iova = virt_addr;
 	mr->mr.length = length;
@@ -271,6 +401,7 @@ bail:
 int qib_dereg_mr(struct ib_mr *ibmr)
 {
 	struct qib_mr *mr = to_imr(ibmr);
+<<<<<<< HEAD
 	struct qib_ibdev *dev = to_idev(ibmr->device);
 	int ret;
 	int i;
@@ -286,6 +417,27 @@ int qib_dereg_mr(struct ib_mr *ibmr)
 		ib_umem_release(mr->umem);
 	kfree(mr);
 	return 0;
+=======
+	int ret = 0;
+	unsigned long timeout;
+
+	qib_free_lkey(&mr->mr);
+
+	qib_put_mr(&mr->mr); /* will set completion if last */
+	timeout = wait_for_completion_timeout(&mr->mr.comp,
+		5 * HZ);
+	if (!timeout) {
+		qib_get_mr(&mr->mr);
+		ret = -EBUSY;
+		goto out;
+	}
+	deinit_qib_mregion(&mr->mr);
+	if (mr->umem)
+		ib_umem_release(mr->umem);
+	kfree(mr);
+out:
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -298,6 +450,7 @@ struct ib_mr *qib_alloc_fast_reg_mr(struct ib_pd *pd, int max_page_list_len)
 {
 	struct qib_mr *mr;
 
+<<<<<<< HEAD
 	mr = alloc_mr(max_page_list_len, &to_idev(pd->device)->lk_table);
 	if (mr == NULL)
 		return ERR_PTR(-ENOMEM);
@@ -309,6 +462,11 @@ struct ib_mr *qib_alloc_fast_reg_mr(struct ib_pd *pd, int max_page_list_len)
 	mr->mr.offset = 0;
 	mr->mr.access_flags = 0;
 	mr->umem = NULL;
+=======
+	mr = alloc_mr(max_page_list_len, pd);
+	if (IS_ERR(mr))
+		return (struct ib_mr *)mr;
+>>>>>>> refs/remotes/origin/master
 
 	return &mr->ibmr;
 }
@@ -322,11 +480,19 @@ qib_alloc_fast_reg_page_list(struct ib_device *ibdev, int page_list_len)
 	if (size > PAGE_SIZE)
 		return ERR_PTR(-EINVAL);
 
+<<<<<<< HEAD
 	pl = kmalloc(sizeof *pl, GFP_KERNEL);
 	if (!pl)
 		return ERR_PTR(-ENOMEM);
 
 	pl->page_list = kmalloc(size, GFP_KERNEL);
+=======
+	pl = kzalloc(sizeof *pl, GFP_KERNEL);
+	if (!pl)
+		return ERR_PTR(-ENOMEM);
+
+	pl->page_list = kzalloc(size, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!pl->page_list)
 		goto err_free;
 
@@ -355,6 +521,7 @@ struct ib_fmr *qib_alloc_fmr(struct ib_pd *pd, int mr_access_flags,
 			     struct ib_fmr_attr *fmr_attr)
 {
 	struct qib_fmr *fmr;
+<<<<<<< HEAD
 	int m, i = 0;
 	struct ib_fmr *ret;
 
@@ -372,28 +539,53 @@ struct ib_fmr *qib_alloc_fmr(struct ib_pd *pd, int mr_access_flags,
 			goto bail;
 	}
 	fmr->mr.mapsz = m;
+=======
+	int m;
+	struct ib_fmr *ret;
+	int rval = -ENOMEM;
+
+	/* Allocate struct plus pointers to first level page tables. */
+	m = (fmr_attr->max_pages + QIB_SEGSZ - 1) / QIB_SEGSZ;
+	fmr = kzalloc(sizeof *fmr + m * sizeof fmr->mr.map[0], GFP_KERNEL);
+	if (!fmr)
+		goto bail;
+
+	rval = init_qib_mregion(&fmr->mr, pd, fmr_attr->max_pages);
+	if (rval)
+		goto bail;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * ib_alloc_fmr() will initialize fmr->ibfmr except for lkey &
 	 * rkey.
 	 */
+<<<<<<< HEAD
 	if (!qib_alloc_lkey(&to_idev(pd->device)->lk_table, &fmr->mr))
 		goto bail;
+=======
+	rval = qib_alloc_lkey(&fmr->mr, 0);
+	if (rval)
+		goto bail_mregion;
+>>>>>>> refs/remotes/origin/master
 	fmr->ibfmr.rkey = fmr->mr.lkey;
 	fmr->ibfmr.lkey = fmr->mr.lkey;
 	/*
 	 * Resources are allocated but no valid mapping (RKEY can't be
 	 * used).
 	 */
+<<<<<<< HEAD
 	fmr->mr.pd = pd;
 	fmr->mr.user_base = 0;
 	fmr->mr.iova = 0;
 	fmr->mr.length = 0;
 	fmr->mr.offset = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	fmr->mr.access_flags = mr_access_flags;
 	fmr->mr.max_segs = fmr_attr->max_pages;
 	fmr->mr.page_shift = fmr_attr->page_shift;
 
+<<<<<<< HEAD
 	atomic_set(&fmr->mr.refcount, 0);
 	ret = &fmr->ibfmr;
 	goto done;
@@ -406,6 +598,18 @@ bail:
 
 done:
 	return ret;
+=======
+	ret = &fmr->ibfmr;
+done:
+	return ret;
+
+bail_mregion:
+	deinit_qib_mregion(&fmr->mr);
+bail:
+	kfree(fmr);
+	ret = ERR_PTR(rval);
+	goto done;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -428,7 +632,12 @@ int qib_map_phys_fmr(struct ib_fmr *ibfmr, u64 *page_list,
 	u32 ps;
 	int ret;
 
+<<<<<<< HEAD
 	if (atomic_read(&fmr->mr.refcount))
+=======
+	i = atomic_read(&fmr->mr.refcount);
+	if (i > 2)
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 
 	if (list_len > fmr->mr.max_segs) {
@@ -490,6 +699,7 @@ int qib_unmap_fmr(struct list_head *fmr_list)
 int qib_dealloc_fmr(struct ib_fmr *ibfmr)
 {
 	struct qib_fmr *fmr = to_ifmr(ibfmr);
+<<<<<<< HEAD
 	int ret;
 	int i;
 
@@ -502,4 +712,29 @@ int qib_dealloc_fmr(struct ib_fmr *ibfmr)
 		kfree(fmr->mr.map[--i]);
 	kfree(fmr);
 	return 0;
+=======
+	int ret = 0;
+	unsigned long timeout;
+
+	qib_free_lkey(&fmr->mr);
+	qib_put_mr(&fmr->mr); /* will set completion if last */
+	timeout = wait_for_completion_timeout(&fmr->mr.comp,
+		5 * HZ);
+	if (!timeout) {
+		qib_get_mr(&fmr->mr);
+		ret = -EBUSY;
+		goto out;
+	}
+	deinit_qib_mregion(&fmr->mr);
+	kfree(fmr);
+out:
+	return ret;
+}
+
+void mr_rcu_callback(struct rcu_head *list)
+{
+	struct qib_mregion *mr = container_of(list, struct qib_mregion, list);
+
+	complete(&mr->comp);
+>>>>>>> refs/remotes/origin/master
 }

@@ -15,7 +15,11 @@
 #include <linux/io.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
 #include <mach/pxa930_rotary.h>
+=======
+#include <linux/platform_data/keyboard-pxa930_rotary.h>
+>>>>>>> refs/remotes/origin/master
 
 #define SBCR	(0x04)
 #define ERCR	(0x0c)
@@ -82,7 +86,11 @@ static void pxa930_rotary_close(struct input_dev *dev)
 	clear_sbcr(r);
 }
 
+<<<<<<< HEAD
 static int __devinit pxa930_rotary_probe(struct platform_device *pdev)
+=======
+static int pxa930_rotary_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pxa930_rotary_platform_data *pdata = pdev->dev.platform_data;
 	struct pxa930_rotary *r;
@@ -149,10 +157,14 @@ static int __devinit pxa930_rotary_probe(struct platform_device *pdev)
 	input_set_drvdata(input_dev, r);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = request_irq(irq, rotary_irq, IRQF_DISABLED,
 =======
 	err = request_irq(irq, rotary_irq, 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = request_irq(irq, rotary_irq, 0,
+>>>>>>> refs/remotes/origin/master
 			"enhanced rotary", r);
 	if (err) {
 		dev_err(&pdev->dev, "failed to request IRQ\n");
@@ -178,14 +190,21 @@ failed_free:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit pxa930_rotary_remove(struct platform_device *pdev)
+=======
+static int pxa930_rotary_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pxa930_rotary *r = platform_get_drvdata(pdev);
 
 	free_irq(platform_get_irq(pdev, 0), r);
 	input_unregister_device(r->input_dev);
 	iounmap(r->mmio_base);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(r);
 
 	return 0;
@@ -197,6 +216,7 @@ static struct platform_driver pxa930_rotary_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= pxa930_rotary_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(pxa930_rotary_remove),
 };
 <<<<<<< HEAD
@@ -215,6 +235,11 @@ module_exit(pxa930_rotary_exit);
 =======
 module_platform_driver(pxa930_rotary_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= pxa930_rotary_remove,
+};
+module_platform_driver(pxa930_rotary_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Driver for PXA93x Enhanced Rotary Controller");

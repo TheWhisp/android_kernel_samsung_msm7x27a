@@ -1,7 +1,11 @@
 /*
  * Signal support for Hexagon processor
  *
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -20,7 +24,10 @@
 
 #include <linux/linkage.h>
 #include <linux/syscalls.h>
+<<<<<<< HEAD
 #include <linux/freezer.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/tracehook.h>
 #include <asm/registers.h>
 #include <asm/thread_info.h>
@@ -31,8 +38,11 @@
 #include <asm/signal.h>
 #include <asm/vdso.h>
 
+<<<<<<< HEAD
 #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct rt_sigframe {
 	unsigned long tramp[2];
 	struct siginfo info;
@@ -44,6 +54,13 @@ static void __user *get_sigframe(struct k_sigaction *ka, struct pt_regs *regs,
 {
 	unsigned long sp = regs->r29;
 
+<<<<<<< HEAD
+=======
+	/* check if we would overflow the alt stack */
+	if (on_sig_stack(sp) && !likely(on_sig_stack(sp - frame_size)))
+		return (void __user __force *)-1UL;
+
+>>>>>>> refs/remotes/origin/master
 	/* Switch to signal stack if appropriate */
 	if ((ka->sa.sa_flags & SA_ONSTACK) && (sas_ss_flags(sp) == 0))
 		sp = current->sas_ss_sp + current->sas_ss_size;
@@ -69,7 +86,14 @@ static int setup_sigcontext(struct pt_regs *regs, struct sigcontext __user *sc)
 	err |= __put_user(regs->preds, &sc->sc_regs.p3_0);
 	err |= __put_user(regs->gp, &sc->sc_regs.gp);
 	err |= __put_user(regs->ugp, &sc->sc_regs.ugp);
+<<<<<<< HEAD
 
+=======
+#if CONFIG_HEXAGON_ARCH_VERSION >= 4
+	err |= __put_user(regs->cs0, &sc->sc_regs.cs0);
+	err |= __put_user(regs->cs1, &sc->sc_regs.cs1);
+#endif
+>>>>>>> refs/remotes/origin/master
 	tmp = pt_elr(regs); err |= __put_user(tmp, &sc->sc_regs.pc);
 	tmp = pt_cause(regs); err |= __put_user(tmp, &sc->sc_regs.cause);
 	tmp = pt_badva(regs); err |= __put_user(tmp, &sc->sc_regs.badva);
@@ -96,7 +120,14 @@ static int restore_sigcontext(struct pt_regs *regs,
 	err |= __get_user(regs->preds, &sc->sc_regs.p3_0);
 	err |= __get_user(regs->gp, &sc->sc_regs.gp);
 	err |= __get_user(regs->ugp, &sc->sc_regs.ugp);
+<<<<<<< HEAD
 
+=======
+#if CONFIG_HEXAGON_ARCH_VERSION >= 4
+	err |= __get_user(regs->cs0, &sc->sc_regs.cs0);
+	err |= __get_user(regs->cs1, &sc->sc_regs.cs1);
+#endif
+>>>>>>> refs/remotes/origin/master
 	err |= __get_user(tmp, &sc->sc_regs.pc); pt_set_elr(regs, tmp);
 
 	return err;
@@ -128,6 +159,10 @@ static int setup_rt_frame(int signr, struct k_sigaction *ka, siginfo_t *info,
 	err |= __put_user(0x5400c004, &frame->tramp[1]);
 	err |= setup_sigcontext(regs, &frame->uc.uc_mcontext);
 	err |= __copy_to_user(&frame->uc.uc_sigmask, set, sizeof(*set));
+<<<<<<< HEAD
+=======
+	err |= __save_altstack(&frame->uc.uc_stack, user_stack_pointer(regs));
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto sigsegv;
 
@@ -149,11 +184,17 @@ sigsegv:
 /*
  * Setup invocation of signal handler
  */
+<<<<<<< HEAD
 static int handle_signal(int sig, siginfo_t *info, struct k_sigaction *ka,
 			 sigset_t *oldset, struct pt_regs *regs)
 {
 	int rc;
 
+=======
+static void handle_signal(int sig, siginfo_t *info, struct k_sigaction *ka,
+			 struct pt_regs *regs)
+{
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If we're handling a signal that aborted a system call,
 	 * set up the error return value before adding the signal
@@ -186,6 +227,7 @@ static int handle_signal(int sig, siginfo_t *info, struct k_sigaction *ka,
 	 * Set up the stack frame; not doing the SA_SIGINFO thing.  We
 	 * only set up the rt_frame flavor.
 	 */
+<<<<<<< HEAD
 	rc = setup_rt_frame(sig, ka, info, oldset, regs);
 
 	/* If there was an error on setup, no signal was delivered. */
@@ -195,12 +237,24 @@ static int handle_signal(int sig, siginfo_t *info, struct k_sigaction *ka,
 	block_sigmask(ka, sig);
 
 	return 0;
+=======
+	/* If there was an error on setup, no signal was delivered. */
+	if (setup_rt_frame(sig, ka, info, sigmask_to_save(), regs) < 0)
+		return;
+
+	signal_delivered(sig, info, ka, regs,
+			test_thread_flag(TIF_SINGLESTEP));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Called from return-from-event code.
  */
+<<<<<<< HEAD
 static void do_signal(struct pt_regs *regs)
+=======
+void do_signal(struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct k_sigaction sigact;
 	siginfo_t info;
@@ -209,6 +263,7 @@ static void do_signal(struct pt_regs *regs)
 	if (!user_mode(regs))
 		return;
 
+<<<<<<< HEAD
 	if (try_to_freeze())
 		goto no_signal;
 
@@ -240,6 +295,19 @@ no_signal:
 	/*
 	 * If we came from a system call, handle the restart.
 	 */
+=======
+	signo = get_signal_to_deliver(&info, &sigact, regs, NULL);
+
+	if (signo > 0) {
+		handle_signal(signo, &info, &sigact, regs);
+		return;
+	}
+
+	/*
+	 * No (more) signals; if we came from a system call, handle the restart.
+	 */
+
+>>>>>>> refs/remotes/origin/master
 	if (regs->syscall_nr >= 0) {
 		switch (regs->r00) {
 		case -ERESTARTNOHAND:
@@ -259,6 +327,7 @@ no_signal:
 
 no_restart:
 	/* If there's no signal to deliver, put the saved sigmask back */
+<<<<<<< HEAD
 	if (test_thread_flag(TIF_RESTORE_SIGMASK)) {
 		clear_thread_flag(TIF_RESTORE_SIGMASK);
 		sigprocmask(SIG_SETMASK, &current->saved_sigmask, NULL);
@@ -275,11 +344,15 @@ void do_notify_resume(struct pt_regs *regs, unsigned long thread_info_flags)
 		if (current->replacement_session_keyring)
 			key_replace_session_keyring();
 	}
+=======
+	restore_saved_sigmask();
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Architecture-specific wrappers for signal-related system calls
  */
+<<<<<<< HEAD
 asmlinkage int sys_sigaltstack(const stack_t __user *uss, stack_t __user *uoss)
 {
 	struct pt_regs *regs = current_thread_info()->regs;
@@ -293,13 +366,28 @@ asmlinkage int sys_rt_sigreturn(void)
 	struct rt_sigframe __user *frame;
 	sigset_t blocked;
 
+=======
+
+asmlinkage int sys_rt_sigreturn(void)
+{
+	struct pt_regs *regs = current_pt_regs();
+	struct rt_sigframe __user *frame;
+	sigset_t blocked;
+
+	/* Always make any pending restarted system calls return -EINTR */
+	current_thread_info()->restart_block.fn = do_no_restart_syscall;
+
+>>>>>>> refs/remotes/origin/master
 	frame = (struct rt_sigframe __user *)pt_psp(regs);
 	if (!access_ok(VERIFY_READ, frame, sizeof(*frame)))
 		goto badframe;
 	if (__copy_from_user(&blocked, &frame->uc.uc_sigmask, sizeof(blocked)))
 		goto badframe;
 
+<<<<<<< HEAD
 	sigdelsetmask(&blocked, ~_BLOCKABLE);
+=======
+>>>>>>> refs/remotes/origin/master
 	set_current_blocked(&blocked);
 
 	if (restore_sigcontext(regs, &frame->uc.uc_mcontext))
@@ -308,6 +396,7 @@ asmlinkage int sys_rt_sigreturn(void)
 	/* Restore the user's stack as well */
 	pt_psp(regs) = regs->r29;
 
+<<<<<<< HEAD
 	/*
 	 * Leave a trace in the stack frame that this was a sigreturn.
 	 * If the system call is to replay, we've already restored the
@@ -330,6 +419,14 @@ asmlinkage int sys_rt_sigreturn(void)
 		goto badframe;
 
 	return 0;
+=======
+	regs->syscall_nr = -1;
+
+	if (restore_altstack(&frame->uc.uc_stack))
+		goto badframe;
+
+	return regs->r00;
+>>>>>>> refs/remotes/origin/master
 
 badframe:
 	force_sig(SIGSEGV, current);

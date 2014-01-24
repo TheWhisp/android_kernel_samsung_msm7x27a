@@ -108,6 +108,10 @@ static int tsi721_maint_dma(struct tsi721_device *priv, u32 sys_size,
 			u16 destid, u8 hopcount, u32 offset, int len,
 			u32 *data, int do_wr)
 {
+<<<<<<< HEAD
+=======
+	void __iomem *regs = priv->regs + TSI721_DMAC_BASE(priv->mdma.ch_id);
+>>>>>>> refs/remotes/origin/master
 	struct tsi721_dma_desc *bd_ptr;
 	u32 rd_count, swr_ptr, ch_stat;
 	int i, err = 0;
@@ -116,10 +120,16 @@ static int tsi721_maint_dma(struct tsi721_device *priv, u32 sys_size,
 	if (offset > (RIO_MAINT_SPACE_SZ - len) || (len != sizeof(u32)))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	bd_ptr = priv->bdma[TSI721_DMACH_MAINT].bd_base;
 
 	rd_count = ioread32(
 			priv->regs + TSI721_DMAC_DRDCNT(TSI721_DMACH_MAINT));
+=======
+	bd_ptr = priv->mdma.bd_base;
+
+	rd_count = ioread32(regs + TSI721_DMAC_DRDCNT);
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize DMA descriptor */
 	bd_ptr[0].type_id = cpu_to_le32((DTYPE2 << 29) | (op << 19) | destid);
@@ -134,6 +144,7 @@ static int tsi721_maint_dma(struct tsi721_device *priv, u32 sys_size,
 	mb();
 
 	/* Start DMA operation */
+<<<<<<< HEAD
 	iowrite32(rd_count + 2,
 		priv->regs + TSI721_DMAC_DWRCNT(TSI721_DMACH_MAINT));
 	ioread32(priv->regs + TSI721_DMAC_DWRCNT(TSI721_DMACH_MAINT));
@@ -142,11 +153,24 @@ static int tsi721_maint_dma(struct tsi721_device *priv, u32 sys_size,
 	/* Wait until DMA transfer is finished */
 	while ((ch_stat = ioread32(priv->regs +
 		TSI721_DMAC_STS(TSI721_DMACH_MAINT))) & TSI721_DMAC_STS_RUN) {
+=======
+	iowrite32(rd_count + 2,	regs + TSI721_DMAC_DWRCNT);
+	ioread32(regs + TSI721_DMAC_DWRCNT);
+	i = 0;
+
+	/* Wait until DMA transfer is finished */
+	while ((ch_stat = ioread32(regs + TSI721_DMAC_STS))
+							& TSI721_DMAC_STS_RUN) {
+>>>>>>> refs/remotes/origin/master
 		udelay(1);
 		if (++i >= 5000000) {
 			dev_dbg(&priv->pdev->dev,
 				"%s : DMA[%d] read timeout ch_status=%x\n",
+<<<<<<< HEAD
 				__func__, TSI721_DMACH_MAINT, ch_stat);
+=======
+				__func__, priv->mdma.ch_id, ch_stat);
+>>>>>>> refs/remotes/origin/master
 			if (!do_wr)
 				*data = 0xffffffff;
 			err = -EIO;
@@ -162,6 +186,7 @@ static int tsi721_maint_dma(struct tsi721_device *priv, u32 sys_size,
 			__func__, ch_stat);
 		dev_dbg(&priv->pdev->dev, "OP=%d : destid=%x hc=%x off=%x\n",
 			do_wr ? MAINT_WR : MAINT_RD, destid, hopcount, offset);
+<<<<<<< HEAD
 		iowrite32(TSI721_DMAC_INT_ALL,
 			priv->regs + TSI721_DMAC_INT(TSI721_DMACH_MAINT));
 		iowrite32(TSI721_DMAC_CTL_INIT,
@@ -169,6 +194,12 @@ static int tsi721_maint_dma(struct tsi721_device *priv, u32 sys_size,
 		udelay(10);
 		iowrite32(0, priv->regs +
 				TSI721_DMAC_DWRCNT(TSI721_DMACH_MAINT));
+=======
+		iowrite32(TSI721_DMAC_INT_ALL, regs + TSI721_DMAC_INT);
+		iowrite32(TSI721_DMAC_CTL_INIT, regs + TSI721_DMAC_CTL);
+		udelay(10);
+		iowrite32(0, regs + TSI721_DMAC_DWRCNT);
+>>>>>>> refs/remotes/origin/master
 		udelay(1);
 		if (!do_wr)
 			*data = 0xffffffff;
@@ -184,8 +215,13 @@ static int tsi721_maint_dma(struct tsi721_device *priv, u32 sys_size,
 	 * NOTE: Skipping check and clear FIFO entries because we are waiting
 	 * for transfer to be completed.
 	 */
+<<<<<<< HEAD
 	swr_ptr = ioread32(priv->regs + TSI721_DMAC_DSWP(TSI721_DMACH_MAINT));
 	iowrite32(swr_ptr, priv->regs + TSI721_DMAC_DSRP(TSI721_DMACH_MAINT));
+=======
+	swr_ptr = ioread32(regs + TSI721_DMAC_DSWP);
+	iowrite32(swr_ptr, regs + TSI721_DMAC_DSRP);
+>>>>>>> refs/remotes/origin/master
 err_out:
 
 	return err;
@@ -475,6 +511,13 @@ static irqreturn_t tsi721_irqhandler(int irq, void *ptr)
 	u32 intval;
 	u32 ch_inte;
 
+<<<<<<< HEAD
+=======
+	/* For MSI mode disable all device-level interrupts */
+	if (priv->flags & TSI721_USING_MSI)
+		iowrite32(0, priv->regs + TSI721_DEV_INTE);
+
+>>>>>>> refs/remotes/origin/master
 	dev_int = ioread32(priv->regs + TSI721_DEV_INT);
 	if (!dev_int)
 		return IRQ_NONE;
@@ -548,6 +591,33 @@ static irqreturn_t tsi721_irqhandler(int irq, void *ptr)
 			tsi721_pw_handler(mport);
 	}
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_RAPIDIO_DMA_ENGINE
+	if (dev_int & TSI721_DEV_INT_BDMA_CH) {
+		int ch;
+
+		if (dev_ch_int & TSI721_INT_BDMA_CHAN_M) {
+			dev_dbg(&priv->pdev->dev,
+				"IRQ from DMA channel 0x%08x\n", dev_ch_int);
+
+			for (ch = 0; ch < TSI721_DMA_MAXCH; ch++) {
+				if (!(dev_ch_int & TSI721_INT_BDMA_CHAN(ch)))
+					continue;
+				tsi721_bdma_handler(&priv->bdma[ch]);
+			}
+		}
+	}
+#endif
+
+	/* For MSI mode re-enable device-level interrupts */
+	if (priv->flags & TSI721_USING_MSI) {
+		dev_int = TSI721_DEV_INT_SR2PC_CH | TSI721_DEV_INT_SRIO |
+			TSI721_DEV_INT_SMSG_CH | TSI721_DEV_INT_BDMA_CH;
+		iowrite32(dev_int, priv->regs + TSI721_DEV_INTE);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
@@ -560,18 +630,38 @@ static void tsi721_interrupts_init(struct tsi721_device *priv)
 		priv->regs + TSI721_SR_CHINT(IDB_QUEUE));
 	iowrite32(TSI721_SR_CHINT_IDBQRCV,
 		priv->regs + TSI721_SR_CHINTE(IDB_QUEUE));
+<<<<<<< HEAD
 	iowrite32(TSI721_INT_SR2PC_CHAN(IDB_QUEUE),
 		priv->regs + TSI721_DEV_CHAN_INTE);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Enable SRIO MAC interrupts */
 	iowrite32(TSI721_RIO_EM_DEV_INT_EN_INT,
 		priv->regs + TSI721_RIO_EM_DEV_INT_EN);
 
+<<<<<<< HEAD
+=======
+	/* Enable interrupts from channels in use */
+#ifdef CONFIG_RAPIDIO_DMA_ENGINE
+	intr = TSI721_INT_SR2PC_CHAN(IDB_QUEUE) |
+		(TSI721_INT_BDMA_CHAN_M &
+		 ~TSI721_INT_BDMA_CHAN(TSI721_DMACH_MAINT));
+#else
+	intr = TSI721_INT_SR2PC_CHAN(IDB_QUEUE);
+#endif
+	iowrite32(intr,	priv->regs + TSI721_DEV_CHAN_INTE);
+
+>>>>>>> refs/remotes/origin/master
 	if (priv->flags & TSI721_USING_MSIX)
 		intr = TSI721_DEV_INT_SRIO;
 	else
 		intr = TSI721_DEV_INT_SR2PC_CH | TSI721_DEV_INT_SRIO |
+<<<<<<< HEAD
 			TSI721_DEV_INT_SMSG_CH;
+=======
+			TSI721_DEV_INT_SMSG_CH | TSI721_DEV_INT_BDMA_CH;
+>>>>>>> refs/remotes/origin/master
 
 	iowrite32(intr, priv->regs + TSI721_DEV_INTE);
 	ioread32(priv->regs + TSI721_DEV_INTE);
@@ -722,12 +812,35 @@ static int tsi721_enable_msix(struct tsi721_device *priv)
 					TSI721_MSIX_OMSG_INT(i);
 	}
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_RAPIDIO_DMA_ENGINE
+	/*
+	 * Initialize MSI-X entries for Block DMA Engine:
+	 * this driver supports XXX DMA channels
+	 * (one is reserved for SRIO maintenance transactions)
+	 */
+	for (i = 0; i < TSI721_DMA_CHNUM; i++) {
+		entries[TSI721_VECT_DMA0_DONE + i].entry =
+					TSI721_MSIX_DMACH_DONE(i);
+		entries[TSI721_VECT_DMA0_INT + i].entry =
+					TSI721_MSIX_DMACH_INT(i);
+	}
+#endif /* CONFIG_RAPIDIO_DMA_ENGINE */
+
+>>>>>>> refs/remotes/origin/master
 	err = pci_enable_msix(priv->pdev, entries, ARRAY_SIZE(entries));
 	if (err) {
 		if (err > 0)
 			dev_info(&priv->pdev->dev,
 				 "Only %d MSI-X vectors available, "
 				 "not using MSI-X\n", err);
+<<<<<<< HEAD
+=======
+		else
+			dev_err(&priv->pdev->dev,
+				"Failed to enable MSI-X (err=%d)\n", err);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 
@@ -767,6 +880,25 @@ static int tsi721_enable_msix(struct tsi721_device *priv)
 			 i, pci_name(priv->pdev));
 	}
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_RAPIDIO_DMA_ENGINE
+	for (i = 0; i < TSI721_DMA_CHNUM; i++) {
+		priv->msix[TSI721_VECT_DMA0_DONE + i].vector =
+				entries[TSI721_VECT_DMA0_DONE + i].vector;
+		snprintf(priv->msix[TSI721_VECT_DMA0_DONE + i].irq_name,
+			 IRQ_DEVICE_NAME_MAX, DRV_NAME "-dmad%d@pci:%s",
+			 i, pci_name(priv->pdev));
+
+		priv->msix[TSI721_VECT_DMA0_INT + i].vector =
+				entries[TSI721_VECT_DMA0_INT + i].vector;
+		snprintf(priv->msix[TSI721_VECT_DMA0_INT + i].irq_name,
+			 IRQ_DEVICE_NAME_MAX, DRV_NAME "-dmai%d@pci:%s",
+			 i, pci_name(priv->pdev));
+	}
+#endif /* CONFIG_RAPIDIO_DMA_ENGINE */
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 #endif /* CONFIG_PCI_MSI */
@@ -809,6 +941,93 @@ static void tsi721_init_pc2sr_mapping(struct tsi721_device *priv)
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * tsi721_rio_map_inb_mem -- Mapping inbound memory region.
+ * @mport: RapidIO master port
+ * @lstart: Local memory space start address.
+ * @rstart: RapidIO space start address.
+ * @size: The mapping region size.
+ * @flags: Flags for mapping. 0 for using default flags.
+ *
+ * Return: 0 -- Success.
+ *
+ * This function will create the inbound mapping
+ * from rstart to lstart.
+ */
+static int tsi721_rio_map_inb_mem(struct rio_mport *mport, dma_addr_t lstart,
+		u64 rstart, u32 size, u32 flags)
+{
+	struct tsi721_device *priv = mport->priv;
+	int i;
+	u32 regval;
+
+	if (!is_power_of_2(size) || size < 0x1000 ||
+	    ((u64)lstart & (size - 1)) || (rstart & (size - 1)))
+		return -EINVAL;
+
+	/* Search for free inbound translation window */
+	for (i = 0; i < TSI721_IBWIN_NUM; i++) {
+		regval = ioread32(priv->regs + TSI721_IBWIN_LB(i));
+		if (!(regval & TSI721_IBWIN_LB_WEN))
+			break;
+	}
+
+	if (i >= TSI721_IBWIN_NUM) {
+		dev_err(&priv->pdev->dev,
+			"Unable to find free inbound window\n");
+		return -EBUSY;
+	}
+
+	iowrite32(TSI721_IBWIN_SIZE(size) << 8,
+			priv->regs + TSI721_IBWIN_SZ(i));
+
+	iowrite32(((u64)lstart >> 32), priv->regs + TSI721_IBWIN_TUA(i));
+	iowrite32(((u64)lstart & TSI721_IBWIN_TLA_ADD),
+		  priv->regs + TSI721_IBWIN_TLA(i));
+
+	iowrite32(rstart >> 32, priv->regs + TSI721_IBWIN_UB(i));
+	iowrite32((rstart & TSI721_IBWIN_LB_BA) | TSI721_IBWIN_LB_WEN,
+		priv->regs + TSI721_IBWIN_LB(i));
+	dev_dbg(&priv->pdev->dev,
+		"Configured IBWIN%d mapping (RIO_0x%llx -> PCIe_0x%llx)\n",
+		i, rstart, (unsigned long long)lstart);
+
+	return 0;
+}
+
+/**
+ * fsl_rio_unmap_inb_mem -- Unmapping inbound memory region.
+ * @mport: RapidIO master port
+ * @lstart: Local memory space start address.
+ */
+static void tsi721_rio_unmap_inb_mem(struct rio_mport *mport,
+				dma_addr_t lstart)
+{
+	struct tsi721_device *priv = mport->priv;
+	int i;
+	u64 addr;
+	u32 regval;
+
+	/* Search for matching active inbound translation window */
+	for (i = 0; i < TSI721_IBWIN_NUM; i++) {
+		regval = ioread32(priv->regs + TSI721_IBWIN_LB(i));
+		if (regval & TSI721_IBWIN_LB_WEN) {
+			regval = ioread32(priv->regs + TSI721_IBWIN_TUA(i));
+			addr = (u64)regval << 32;
+			regval = ioread32(priv->regs + TSI721_IBWIN_TLA(i));
+			addr |= regval & TSI721_IBWIN_TLA_ADD;
+
+			if (addr == (u64)lstart) {
+				iowrite32(0, priv->regs + TSI721_IBWIN_LB(i));
+				break;
+			}
+		}
+	}
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  * tsi721_init_sr2pc_mapping - initializes inbound (SRIO->PCIe)
  * translation regions.
  * @priv: pointer to tsi721 private data
@@ -821,7 +1040,11 @@ static void tsi721_init_sr2pc_mapping(struct tsi721_device *priv)
 
 	/* Disable all SR2PC inbound windows */
 	for (i = 0; i < TSI721_IBWIN_NUM; i++)
+<<<<<<< HEAD
 		iowrite32(0, priv->regs + TSI721_IBWINLB(i));
+=======
+		iowrite32(0, priv->regs + TSI721_IBWIN_LB(i));
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -895,20 +1118,47 @@ static void tsi721_doorbell_free(struct tsi721_device *priv)
 	priv->idb_base = NULL;
 }
 
+<<<<<<< HEAD
 static int tsi721_bdma_ch_init(struct tsi721_device *priv, int chnum)
+=======
+/**
+ * tsi721_bdma_maint_init - Initialize maintenance request BDMA channel.
+ * @priv: pointer to tsi721 private data
+ *
+ * Initialize BDMA channel allocated for RapidIO maintenance read/write
+ * request generation
+ * Returns %0 on success or %-ENOMEM on failure.
+ */
+static int tsi721_bdma_maint_init(struct tsi721_device *priv)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tsi721_dma_desc *bd_ptr;
 	u64		*sts_ptr;
 	dma_addr_t	bd_phys, sts_phys;
 	int		sts_size;
+<<<<<<< HEAD
 	int		bd_num = priv->bdma[chnum].bd_num;
 
 	dev_dbg(&priv->pdev->dev, "Init Block DMA Engine, CH%d\n", chnum);
+=======
+	int		bd_num = 2;
+	void __iomem	*regs;
+
+	dev_dbg(&priv->pdev->dev,
+		"Init Block DMA Engine for Maintenance requests, CH%d\n",
+		TSI721_DMACH_MAINT);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Initialize DMA channel for maintenance requests
 	 */
 
+<<<<<<< HEAD
+=======
+	priv->mdma.ch_id = TSI721_DMACH_MAINT;
+	regs = priv->regs + TSI721_DMAC_BASE(TSI721_DMACH_MAINT);
+
+>>>>>>> refs/remotes/origin/master
 	/* Allocate space for DMA descriptors */
 	bd_ptr = dma_zalloc_coherent(&priv->pdev->dev,
 					bd_num * sizeof(struct tsi721_dma_desc),
@@ -916,8 +1166,14 @@ static int tsi721_bdma_ch_init(struct tsi721_device *priv, int chnum)
 	if (!bd_ptr)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	priv->bdma[chnum].bd_phys = bd_phys;
 	priv->bdma[chnum].bd_base = bd_ptr;
+=======
+	priv->mdma.bd_num = bd_num;
+	priv->mdma.bd_phys = bd_phys;
+	priv->mdma.bd_base = bd_ptr;
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(&priv->pdev->dev, "DMA descriptors @ %p (phys = %llx)\n",
 		bd_ptr, (unsigned long long)bd_phys);
@@ -934,6 +1190,7 @@ static int tsi721_bdma_ch_init(struct tsi721_device *priv, int chnum)
 		dma_free_coherent(&priv->pdev->dev,
 				  bd_num * sizeof(struct tsi721_dma_desc),
 				  bd_ptr, bd_phys);
+<<<<<<< HEAD
 		priv->bdma[chnum].bd_base = NULL;
 		return -ENOMEM;
 	}
@@ -941,6 +1198,15 @@ static int tsi721_bdma_ch_init(struct tsi721_device *priv, int chnum)
 	priv->bdma[chnum].sts_phys = sts_phys;
 	priv->bdma[chnum].sts_base = sts_ptr;
 	priv->bdma[chnum].sts_size = sts_size;
+=======
+		priv->mdma.bd_base = NULL;
+		return -ENOMEM;
+	}
+
+	priv->mdma.sts_phys = sts_phys;
+	priv->mdma.sts_base = sts_ptr;
+	priv->mdma.sts_size = sts_size;
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(&priv->pdev->dev,
 		"desc status FIFO @ %p (phys = %llx) size=0x%x\n",
@@ -953,6 +1219,7 @@ static int tsi721_bdma_ch_init(struct tsi721_device *priv, int chnum)
 	bd_ptr[bd_num - 1].next_hi = cpu_to_le32((u64)bd_phys >> 32);
 
 	/* Setup DMA descriptor pointers */
+<<<<<<< HEAD
 	iowrite32(((u64)bd_phys >> 32),
 		priv->regs + TSI721_DMAC_DPTRH(chnum));
 	iowrite32(((u64)bd_phys & TSI721_DMAC_DPTRL_MASK),
@@ -975,11 +1242,33 @@ static int tsi721_bdma_ch_init(struct tsi721_device *priv, int chnum)
 	/* Toggle DMA channel initialization */
 	iowrite32(TSI721_DMAC_CTL_INIT,	priv->regs + TSI721_DMAC_CTL(chnum));
 	ioread32(priv->regs + TSI721_DMAC_CTL(chnum));
+=======
+	iowrite32(((u64)bd_phys >> 32),	regs + TSI721_DMAC_DPTRH);
+	iowrite32(((u64)bd_phys & TSI721_DMAC_DPTRL_MASK),
+		regs + TSI721_DMAC_DPTRL);
+
+	/* Setup descriptor status FIFO */
+	iowrite32(((u64)sts_phys >> 32), regs + TSI721_DMAC_DSBH);
+	iowrite32(((u64)sts_phys & TSI721_DMAC_DSBL_MASK),
+		regs + TSI721_DMAC_DSBL);
+	iowrite32(TSI721_DMAC_DSSZ_SIZE(sts_size),
+		regs + TSI721_DMAC_DSSZ);
+
+	/* Clear interrupt bits */
+	iowrite32(TSI721_DMAC_INT_ALL, regs + TSI721_DMAC_INT);
+
+	ioread32(regs + TSI721_DMAC_INT);
+
+	/* Toggle DMA channel initialization */
+	iowrite32(TSI721_DMAC_CTL_INIT,	regs + TSI721_DMAC_CTL);
+	ioread32(regs + TSI721_DMAC_CTL);
+>>>>>>> refs/remotes/origin/master
 	udelay(10);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int tsi721_bdma_ch_free(struct tsi721_device *priv, int chnum)
 {
 	u32 ch_stat;
@@ -989,10 +1278,24 @@ static int tsi721_bdma_ch_free(struct tsi721_device *priv, int chnum)
 
 	/* Check if DMA channel still running */
 	ch_stat = ioread32(priv->regs +	TSI721_DMAC_STS(chnum));
+=======
+static int tsi721_bdma_maint_free(struct tsi721_device *priv)
+{
+	u32 ch_stat;
+	struct tsi721_bdma_maint *mdma = &priv->mdma;
+	void __iomem *regs = priv->regs + TSI721_DMAC_BASE(mdma->ch_id);
+
+	if (mdma->bd_base == NULL)
+		return 0;
+
+	/* Check if DMA channel still running */
+	ch_stat = ioread32(regs + TSI721_DMAC_STS);
+>>>>>>> refs/remotes/origin/master
 	if (ch_stat & TSI721_DMAC_STS_RUN)
 		return -EFAULT;
 
 	/* Put DMA channel into init state */
+<<<<<<< HEAD
 	iowrite32(TSI721_DMAC_CTL_INIT,
 		priv->regs + TSI721_DMAC_CTL(chnum));
 
@@ -1030,6 +1333,24 @@ static void tsi721_bdma_free(struct tsi721_device *priv)
 	tsi721_bdma_ch_free(priv, TSI721_DMACH_MAINT);
 }
 
+=======
+	iowrite32(TSI721_DMAC_CTL_INIT,	regs + TSI721_DMAC_CTL);
+
+	/* Free space allocated for DMA descriptors */
+	dma_free_coherent(&priv->pdev->dev,
+		mdma->bd_num * sizeof(struct tsi721_dma_desc),
+		mdma->bd_base, mdma->bd_phys);
+	mdma->bd_base = NULL;
+
+	/* Free space allocated for status FIFO */
+	dma_free_coherent(&priv->pdev->dev,
+		mdma->sts_size * sizeof(struct tsi721_dma_sts),
+		mdma->sts_base, mdma->sts_phys);
+	mdma->sts_base = NULL;
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Enable Inbound Messaging Interrupts */
 static void
 tsi721_imsg_interrupt_enable(struct tsi721_device *priv, int ch,
@@ -2042,7 +2363,12 @@ static void tsi721_disable_ints(struct tsi721_device *priv)
 
 	/* Disable all BDMA Channel interrupts */
 	for (ch = 0; ch < TSI721_DMA_MAXCH; ch++)
+<<<<<<< HEAD
 		iowrite32(0, priv->regs + TSI721_DMAC_INTE(ch));
+=======
+		iowrite32(0,
+			priv->regs + TSI721_DMAC_BASE(ch) + TSI721_DMAC_INTE);
+>>>>>>> refs/remotes/origin/master
 
 	/* Disable all general BDMA interrupts */
 	iowrite32(0, priv->regs + TSI721_BDMA_INTE);
@@ -2071,7 +2397,11 @@ static void tsi721_disable_ints(struct tsi721_device *priv)
  *
  * Configures Tsi721 as RapidIO master port.
  */
+<<<<<<< HEAD
 static int __devinit tsi721_setup_mport(struct tsi721_device *priv)
+=======
+static int tsi721_setup_mport(struct tsi721_device *priv)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *pdev = priv->pdev;
 	int err = 0;
@@ -2097,6 +2427,11 @@ static int __devinit tsi721_setup_mport(struct tsi721_device *priv)
 	ops->add_outb_message = tsi721_add_outb_message;
 	ops->add_inb_buffer = tsi721_add_inb_buffer;
 	ops->get_inb_message = tsi721_get_inb_message;
+<<<<<<< HEAD
+=======
+	ops->map_inb = tsi721_rio_map_inb_mem;
+	ops->unmap_inb = tsi721_rio_unmap_inb_mem;
+>>>>>>> refs/remotes/origin/master
 
 	mport = kzalloc(sizeof(struct rio_mport), GFP_KERNEL);
 	if (!mport) {
@@ -2111,13 +2446,22 @@ static int __devinit tsi721_setup_mport(struct tsi721_device *priv)
 	mport->phy_type = RIO_PHY_SERIAL;
 	mport->priv = (void *)priv;
 	mport->phys_efptr = 0x100;
+<<<<<<< HEAD
+=======
+	priv->mport = mport;
+>>>>>>> refs/remotes/origin/master
 
 	INIT_LIST_HEAD(&mport->dbells);
 
 	rio_init_dbell_res(&mport->riores[RIO_DOORBELL_RESOURCE], 0, 0xffff);
 	rio_init_mbox_res(&mport->riores[RIO_INB_MBOX_RESOURCE], 0, 3);
 	rio_init_mbox_res(&mport->riores[RIO_OUTB_MBOX_RESOURCE], 0, 3);
+<<<<<<< HEAD
 	strcpy(mport->name, "Tsi721 mport");
+=======
+	snprintf(mport->name, RIO_MAX_MPORT_NAME, "%s(%s)",
+		 dev_driver_string(&pdev->dev), dev_name(&pdev->dev));
+>>>>>>> refs/remotes/origin/master
 
 	/* Hook up interrupt handler */
 
@@ -2136,17 +2480,32 @@ static int __devinit tsi721_setup_mport(struct tsi721_device *priv)
 	if (!err) {
 		tsi721_interrupts_init(priv);
 		ops->pwenable = tsi721_pw_enable;
+<<<<<<< HEAD
 	} else
 		dev_err(&pdev->dev, "Unable to get assigned PCI IRQ "
 			"vector %02X err=0x%x\n", pdev->irq, err);
 
+=======
+	} else {
+		dev_err(&pdev->dev, "Unable to get assigned PCI IRQ "
+			"vector %02X err=0x%x\n", pdev->irq, err);
+		goto err_exit;
+	}
+
+#ifdef CONFIG_RAPIDIO_DMA_ENGINE
+	tsi721_register_dma(priv);
+#endif
+>>>>>>> refs/remotes/origin/master
 	/* Enable SRIO link */
 	iowrite32(ioread32(priv->regs + TSI721_DEVCTL) |
 		  TSI721_DEVCTL_SRBOOT_CMPL,
 		  priv->regs + TSI721_DEVCTL);
 
 	rio_register_mport(mport);
+<<<<<<< HEAD
 	priv->mport = mport;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (mport->host_deviceid >= 0)
 		iowrite32(RIO_PORT_GEN_HOST | RIO_PORT_GEN_MASTER |
@@ -2156,6 +2515,7 @@ static int __devinit tsi721_setup_mport(struct tsi721_device *priv)
 		iowrite32(0, priv->regs + (0x100 + RIO_PORT_GEN_CTL_CSR));
 
 	return 0;
+<<<<<<< HEAD
 }
 
 static int __devinit tsi721_probe(struct pci_dev *pdev,
@@ -2165,6 +2525,20 @@ static int __devinit tsi721_probe(struct pci_dev *pdev,
 	int cap;
 	int err;
 	u32 regval;
+=======
+
+err_exit:
+	kfree(mport);
+	kfree(ops);
+	return err;
+}
+
+static int tsi721_probe(struct pci_dev *pdev,
+				  const struct pci_device_id *id)
+{
+	struct tsi721_device *priv;
+	int err;
+>>>>>>> refs/remotes/origin/master
 
 	priv = kzalloc(sizeof(struct tsi721_device), GFP_KERNEL);
 	if (priv == NULL) {
@@ -2260,7 +2634,12 @@ static int __devinit tsi721_probe(struct pci_dev *pdev,
 
 	/* Configure DMA attributes. */
 	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(64))) {
+<<<<<<< HEAD
 		if (pci_set_dma_mask(pdev, DMA_BIT_MASK(32))) {
+=======
+		err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
+		if (err) {
+>>>>>>> refs/remotes/origin/master
 			dev_info(&pdev->dev, "Unable to set DMA mask\n");
 			goto err_unmap_bars;
 		}
@@ -2273,6 +2652,7 @@ static int __devinit tsi721_probe(struct pci_dev *pdev,
 			dev_info(&pdev->dev, "Unable to set consistent DMA mask\n");
 	}
 
+<<<<<<< HEAD
 	cap = pci_pcie_cap(pdev);
 	BUG_ON(cap == 0);
 
@@ -2287,6 +2667,18 @@ static int __devinit tsi721_probe(struct pci_dev *pdev,
 	pci_read_config_dword(pdev, cap + PCI_EXP_DEVCTL2, &regval);
 	regval &= ~(0x0f);
 	pci_write_config_dword(pdev, cap + PCI_EXP_DEVCTL2, regval | 0x2);
+=======
+	BUG_ON(!pci_is_pcie(pdev));
+
+	/* Clear "no snoop" and "relaxed ordering" bits, use default MRRS. */
+	pcie_capability_clear_and_set_word(pdev, PCI_EXP_DEVCTL,
+		PCI_EXP_DEVCTL_READRQ | PCI_EXP_DEVCTL_RELAX_EN |
+		PCI_EXP_DEVCTL_NOSNOOP_EN,
+		0x2 << MAX_READ_REQUEST_SZ_SHIFT);
+
+	/* Adjust PCIe completion timeout. */
+	pcie_capability_clear_and_set_word(pdev, PCI_EXP_DEVCTL2, 0xf, 0x2);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * FIXUP: correct offsets of MSI-X tables in the MSI-X Capability Block
@@ -2304,7 +2696,11 @@ static int __devinit tsi721_probe(struct pci_dev *pdev,
 	tsi721_init_pc2sr_mapping(priv);
 	tsi721_init_sr2pc_mapping(priv);
 
+<<<<<<< HEAD
 	if (tsi721_bdma_init(priv)) {
+=======
+	if (tsi721_bdma_maint_init(priv)) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&pdev->dev, "BDMA initialization failed, aborting\n");
 		err = -ENOMEM;
 		goto err_unmap_bars;
@@ -2329,7 +2725,11 @@ static int __devinit tsi721_probe(struct pci_dev *pdev,
 err_free_consistent:
 	tsi721_doorbell_free(priv);
 err_free_bdma:
+<<<<<<< HEAD
 	tsi721_bdma_free(priv);
+=======
+	tsi721_bdma_maint_free(priv);
+>>>>>>> refs/remotes/origin/master
 err_unmap_bars:
 	if (priv->regs)
 		iounmap(priv->regs);
@@ -2364,9 +2764,17 @@ static int __init tsi721_init(void)
 	return pci_register_driver(&tsi721_driver);
 }
 
+<<<<<<< HEAD
 static void __exit tsi721_exit(void)
 {
 	pci_unregister_driver(&tsi721_driver);
 }
 
 device_initcall(tsi721_init);
+=======
+device_initcall(tsi721_init);
+
+MODULE_DESCRIPTION("IDT Tsi721 PCIExpress-to-SRIO bridge driver");
+MODULE_AUTHOR("Integrated Device Technology, Inc.");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

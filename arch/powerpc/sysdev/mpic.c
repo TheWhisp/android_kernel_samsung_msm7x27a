@@ -6,7 +6,11 @@
  *  with various broken implementations of this HW.
  *
  *  Copyright (C) 2004 Benjamin Herrenschmidt, IBM Corp.
+<<<<<<< HEAD
  *  Copyright 2010-2011 Freescale Semiconductor, Inc.
+=======
+ *  Copyright 2010-2012 Freescale Semiconductor, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  *  This file is subject to the terms and conditions of the GNU General Public
  *  License.  See the file COPYING in the main directory of this archive
@@ -48,6 +52,15 @@
 #define DBG(fmt...)
 #endif
 
+<<<<<<< HEAD
+=======
+struct bus_type mpic_subsys = {
+	.name = "mpic",
+	.dev_name = "mpic",
+};
+EXPORT_SYMBOL_GPL(mpic_subsys);
+
+>>>>>>> refs/remotes/origin/master
 static struct mpic *mpics;
 static struct mpic *mpic_primary;
 static DEFINE_RAW_SPINLOCK(mpic_lock);
@@ -155,10 +168,14 @@ static inline unsigned int mpic_processor_id(struct mpic *mpic)
 	unsigned int cpu = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mpic->flags & MPIC_PRIMARY)
 =======
 	if (!(mpic->flags & MPIC_SECONDARY))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(mpic->flags & MPIC_SECONDARY))
+>>>>>>> refs/remotes/origin/master
 		cpu = hard_smp_processor_id();
 
 	return cpu;
@@ -225,6 +242,7 @@ static inline void _mpic_ipi_write(struct mpic *mpic, unsigned int ipi, u32 valu
 	_mpic_write(mpic->reg_type, &mpic->gregs, offset, value);
 }
 
+<<<<<<< HEAD
 static inline u32 _mpic_tm_read(struct mpic *mpic, unsigned int tm)
 {
 	unsigned int offset = MPIC_INFO(TIMER_VECTOR_PRI) +
@@ -232,17 +250,34 @@ static inline u32 _mpic_tm_read(struct mpic *mpic, unsigned int tm)
 
 	if (tm >= 4)
 		offset += 0x1000 / 4;
+=======
+static inline unsigned int mpic_tm_offset(struct mpic *mpic, unsigned int tm)
+{
+	return (tm >> 2) * MPIC_TIMER_GROUP_STRIDE +
+	       (tm & 3) * MPIC_INFO(TIMER_STRIDE);
+}
+
+static inline u32 _mpic_tm_read(struct mpic *mpic, unsigned int tm)
+{
+	unsigned int offset = mpic_tm_offset(mpic, tm) +
+			      MPIC_INFO(TIMER_VECTOR_PRI);
+>>>>>>> refs/remotes/origin/master
 
 	return _mpic_read(mpic->reg_type, &mpic->tmregs, offset);
 }
 
 static inline void _mpic_tm_write(struct mpic *mpic, unsigned int tm, u32 value)
 {
+<<<<<<< HEAD
 	unsigned int offset = MPIC_INFO(TIMER_VECTOR_PRI) +
 			      ((tm & 3) * MPIC_INFO(TIMER_STRIDE));
 
 	if (tm >= 4)
 		offset += 0x1000 / 4;
+=======
+	unsigned int offset = mpic_tm_offset(mpic, tm) +
+			      MPIC_INFO(TIMER_VECTOR_PRI);
+>>>>>>> refs/remotes/origin/master
 
 	_mpic_write(mpic->reg_type, &mpic->tmregs, offset, value);
 }
@@ -320,6 +355,7 @@ static void _mpic_map_mmio(struct mpic *mpic, phys_addr_t phys_addr,
 
 #ifdef CONFIG_PPC_DCR
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void _mpic_map_dcr(struct mpic *mpic, struct device_node *node,
 			  struct mpic_reg_bank *rb,
 			  unsigned int offset, unsigned int size)
@@ -334,6 +370,8 @@ static void _mpic_map_dcr(struct mpic *mpic, struct device_node *node,
 
 static inline void mpic_map(struct mpic *mpic, struct device_node *node,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void _mpic_map_dcr(struct mpic *mpic, struct mpic_reg_bank *rb,
 			  unsigned int offset, unsigned int size)
 {
@@ -343,25 +381,36 @@ static void _mpic_map_dcr(struct mpic *mpic, struct mpic_reg_bank *rb,
 }
 
 static inline void mpic_map(struct mpic *mpic,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			    phys_addr_t phys_addr, struct mpic_reg_bank *rb,
 			    unsigned int offset, unsigned int size)
 {
 	if (mpic->flags & MPIC_USES_DCR)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		_mpic_map_dcr(mpic, node, rb, offset, size);
 =======
 		_mpic_map_dcr(mpic, rb, offset, size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		_mpic_map_dcr(mpic, rb, offset, size);
+>>>>>>> refs/remotes/origin/master
 	else
 		_mpic_map_mmio(mpic, phys_addr, rb, offset, size);
 }
 #else /* CONFIG_PPC_DCR */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define mpic_map(m,n,p,b,o,s)	_mpic_map_mmio(m,p,b,o,s)
 =======
 #define mpic_map(m,p,b,o,s)	_mpic_map_mmio(m,p,b,o,s)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define mpic_map(m,p,b,o,s)	_mpic_map_mmio(m,p,b,o,s)
+>>>>>>> refs/remotes/origin/master
 #endif /* !CONFIG_PPC_DCR */
 
 
@@ -557,7 +606,11 @@ static void __init mpic_scan_ht_pic(struct mpic *mpic, u8 __iomem *devbase,
 		mpic->fixups[irq].data = readl(base + 4) | 0x80000000;
 	}
 }
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> refs/remotes/origin/master
 
 static void __init mpic_scan_ht_pics(struct mpic *mpic)
 {
@@ -623,6 +676,7 @@ static void __init mpic_scan_ht_pics(struct mpic *mpic)
 #endif /* CONFIG_MPIC_U3_HT_IRQS */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 static int irq_choose_cpu(const struct cpumask *mask)
 {
@@ -661,6 +715,8 @@ static int irq_choose_cpu(const struct cpumask *mask)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Find an mpic associated with a given linux interrupt */
 static struct mpic *mpic_find(unsigned int irq)
 {
@@ -672,6 +728,7 @@ static struct mpic *mpic_find(unsigned int irq)
 
 /* Determine if the linux irq is an IPI */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int mpic_is_ipi(struct mpic *mpic, unsigned int irq)
 {
 	unsigned int src = virq_to_hw(irq);
@@ -680,10 +737,15 @@ static unsigned int mpic_is_ipi(struct mpic *mpic, unsigned int irq)
 static unsigned int mpic_is_ipi(struct mpic *mpic, unsigned int src)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int mpic_is_ipi(struct mpic *mpic, unsigned int src)
+{
+>>>>>>> refs/remotes/origin/master
 	return (src >= mpic->ipi_vecs[0] && src <= mpic->ipi_vecs[3]);
 }
 
 /* Determine if the linux irq is a timer */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static unsigned int mpic_is_tm(struct mpic *mpic, unsigned int irq)
 {
@@ -693,6 +755,10 @@ static unsigned int mpic_is_tm(struct mpic *mpic, unsigned int irq)
 static unsigned int mpic_is_tm(struct mpic *mpic, unsigned int src)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int mpic_is_tm(struct mpic *mpic, unsigned int src)
+{
+>>>>>>> refs/remotes/origin/master
 	return (src >= mpic->timer_vecs[0] && src <= mpic->timer_vecs[7]);
 }
 
@@ -874,10 +940,13 @@ static void mpic_end_ipi(struct irq_data *d)
 	 * preventing the IRQ_PENDING/IRQ_INPROGRESS logic from
 	 * applying to them. We EOI them late to avoid re-entering.
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * We mark IPI's with IRQF_DISABLED as they must run with
 	 * irqs disabled.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 */
 	mpic_eoi(mpic);
 }
@@ -890,10 +959,14 @@ static void mpic_unmask_tm(struct irq_data *d)
 	unsigned int src = virq_to_hw(d->irq) - mpic->timer_vecs[0];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG("%s: enable_tm: %d (tm %d)\n", mpic->name, irq, src);
 =======
 	DBG("%s: enable_tm: %d (tm %d)\n", mpic->name, d->irq, src);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG("%s: enable_tm: %d (tm %d)\n", mpic->name, d->irq, src);
+>>>>>>> refs/remotes/origin/master
 	mpic_tm_write(src, mpic_tm_read(src) & ~MPIC_VECPRI_MASK);
 	mpic_tm_read(src);
 }
@@ -926,7 +999,11 @@ int mpic_set_affinity(struct irq_data *d, const struct cpumask *cpumask,
 			       mpic_physmask(mask));
 	}
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return IRQ_SET_MASK_OK;
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned int mpic_type_to_vecpri(struct mpic *mpic, unsigned int type)
@@ -960,6 +1037,7 @@ int mpic_set_irq_type(struct irq_data *d, unsigned int flow_type)
 	    mpic, d->irq, src, flow_type);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (src >= mpic->irq_count)
 		return -EINVAL;
 
@@ -972,6 +1050,8 @@ int mpic_set_irq_type(struct irq_data *d, unsigned int flow_type)
 	irqd_set_trigger_type(d, flow_type);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (src >= mpic->num_sources)
 		return -EINVAL;
 
@@ -1008,7 +1088,10 @@ int mpic_set_irq_type(struct irq_data *d, unsigned int flow_type)
 	irqd_set_trigger_type(d, flow_type);
 
 	/* Apply to HW */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (mpic_is_ht_interrupt(mpic, src))
 		vecpri = MPIC_VECPRI_POLARITY_POSITIVE |
 			MPIC_VECPRI_SENSE_EDGE;
@@ -1016,9 +1099,12 @@ int mpic_set_irq_type(struct irq_data *d, unsigned int flow_type)
 		vecpri = mpic_type_to_vecpri(mpic, flow_type);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vold = mpic_irq_read(src, MPIC_INFO(IRQ_VECTOR_PRI));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	vnew = vold & ~(MPIC_INFO(VECPRI_POLARITY_MASK) |
 			MPIC_INFO(VECPRI_SENSE_MASK));
 	vnew |= vecpri;
@@ -1026,10 +1112,30 @@ int mpic_set_irq_type(struct irq_data *d, unsigned int flow_type)
 		mpic_irq_write(src, MPIC_INFO(IRQ_VECTOR_PRI), vnew);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return IRQ_SET_MASK_OK_NOCOPY;;
 =======
 	return IRQ_SET_MASK_OK_NOCOPY;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return IRQ_SET_MASK_OK_NOCOPY;
+}
+
+static int mpic_irq_set_wake(struct irq_data *d, unsigned int on)
+{
+	struct irq_desc *desc = container_of(d, struct irq_desc, irq_data);
+	struct mpic *mpic = mpic_from_irq_data(d);
+
+	if (!(mpic->flags & MPIC_FSL))
+		return -ENXIO;
+
+	if (on)
+		desc->action->flags |= IRQF_NO_SUSPEND;
+	else
+		desc->action->flags &= ~IRQF_NO_SUSPEND;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 void mpic_set_vector(unsigned int virq, unsigned int vector)
@@ -1042,10 +1148,14 @@ void mpic_set_vector(unsigned int virq, unsigned int vector)
 	    mpic, virq, src, vector);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (src >= mpic->irq_count)
 =======
 	if (src >= mpic->num_sources)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (src >= mpic->num_sources)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	vecpri = mpic_irq_read(src, MPIC_INFO(IRQ_VECTOR_PRI));
@@ -1063,10 +1173,14 @@ void mpic_set_destination(unsigned int virq, unsigned int cpuid)
 	    mpic, virq, src, cpuid);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (src >= mpic->irq_count)
 =======
 	if (src >= mpic->num_sources)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (src >= mpic->num_sources)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	mpic_irq_write(src, MPIC_INFO(IRQ_DESTINATION), 1 << cpuid);
@@ -1077,6 +1191,10 @@ static struct irq_chip mpic_irq_chip = {
 	.irq_unmask	= mpic_unmask_irq,
 	.irq_eoi	= mpic_end_irq,
 	.irq_set_type	= mpic_set_irq_type,
+<<<<<<< HEAD
+=======
+	.irq_set_wake	= mpic_irq_set_wake,
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_SMP
@@ -1091,6 +1209,10 @@ static struct irq_chip mpic_tm_chip = {
 	.irq_mask	= mpic_mask_tm,
 	.irq_unmask	= mpic_unmask_tm,
 	.irq_eoi	= mpic_end_irq,
+<<<<<<< HEAD
+=======
+	.irq_set_wake	= mpic_irq_set_wake,
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_MPIC_U3_HT_IRQS
@@ -1106,20 +1228,28 @@ static struct irq_chip mpic_irq_ht_chip = {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int mpic_host_match(struct irq_host *h, struct device_node *node)
 =======
 static int mpic_host_match(struct irq_domain *h, struct device_node *node)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int mpic_host_match(struct irq_domain *h, struct device_node *node)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Exact match, unless mpic node is NULL */
 	return h->of_node == NULL || h->of_node == node;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int mpic_host_map(struct irq_host *h, unsigned int virq,
 =======
 static int mpic_host_map(struct irq_domain *h, unsigned int virq,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int mpic_host_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/master
 			 irq_hw_number_t hw)
 {
 	struct mpic *mpic = h->host_data;
@@ -1129,6 +1259,7 @@ static int mpic_host_map(struct irq_domain *h, unsigned int virq,
 
 	if (hw == mpic->spurious_vec)
 		return -EINVAL;
+<<<<<<< HEAD
 	if (mpic->protected && test_bit(hw, mpic->protected))
 		return -EINVAL;
 
@@ -1139,6 +1270,18 @@ static int mpic_host_map(struct irq_domain *h, unsigned int virq,
 =======
 		WARN_ON(mpic->flags & MPIC_SECONDARY);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mpic->protected && test_bit(hw, mpic->protected)) {
+		pr_warning("mpic: Mapping of source 0x%x failed, "
+			   "source protected by firmware !\n",\
+			   (unsigned int)hw);
+		return -EPERM;
+	}
+
+#ifdef CONFIG_SMP
+	else if (hw >= mpic->ipi_vecs[0]) {
+		WARN_ON(mpic->flags & MPIC_SECONDARY);
+>>>>>>> refs/remotes/origin/master
 
 		DBG("mpic: mapping as IPI\n");
 		irq_set_chip_data(virq, mpic);
@@ -1150,10 +1293,14 @@ static int mpic_host_map(struct irq_domain *h, unsigned int virq,
 
 	if (hw >= mpic->timer_vecs[0] && hw <= mpic->timer_vecs[7]) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		WARN_ON(!(mpic->flags & MPIC_PRIMARY));
 =======
 		WARN_ON(mpic->flags & MPIC_SECONDARY);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		WARN_ON(mpic->flags & MPIC_SECONDARY);
+>>>>>>> refs/remotes/origin/master
 
 		DBG("mpic: mapping as timer\n");
 		irq_set_chip_data(virq, mpic);
@@ -1163,11 +1310,23 @@ static int mpic_host_map(struct irq_domain *h, unsigned int virq,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (hw >= mpic->irq_count)
 =======
 	if (hw >= mpic->num_sources)
 >>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
+=======
+	if (mpic_map_error_int(mpic, virq, hw))
+		return 0;
+
+	if (hw >= mpic->num_sources) {
+		pr_warning("mpic: Mapping of source 0x%x failed, "
+			   "source out of range !\n",\
+			   (unsigned int)hw);
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	mpic_msi_reserve_hwirq(mpic, hw);
 
@@ -1187,18 +1346,33 @@ static int mpic_host_map(struct irq_domain *h, unsigned int virq,
 
 	/* Set default irq type */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	irq_set_irq_type(virq, IRQ_TYPE_NONE);
 =======
 	irq_set_irq_type(virq, IRQ_TYPE_DEFAULT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq_set_irq_type(virq, IRQ_TYPE_DEFAULT);
+>>>>>>> refs/remotes/origin/master
 
 	/* If the MPIC was reset, then all vectors have already been
 	 * initialized.  Otherwise, a per source lazy initialization
 	 * is done here.
 	 */
 	if (!mpic_is_ipi(mpic, hw) && (mpic->flags & MPIC_NO_RESET)) {
+<<<<<<< HEAD
 		mpic_set_vector(virq, hw);
 		mpic_set_destination(virq, mpic_processor_id(mpic));
+=======
+		int cpu;
+
+		preempt_disable();
+		cpu = mpic_processor_id(mpic);
+		preempt_enable();
+
+		mpic_set_vector(virq, hw);
+		mpic_set_destination(virq, cpu);
+>>>>>>> refs/remotes/origin/master
 		mpic_irq_set_priority(virq, 8);
 	}
 
@@ -1206,10 +1380,14 @@ static int mpic_host_map(struct irq_domain *h, unsigned int virq,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int mpic_host_xlate(struct irq_host *h, struct device_node *ct,
 =======
 static int mpic_host_xlate(struct irq_domain *h, struct device_node *ct,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int mpic_host_xlate(struct irq_domain *h, struct device_node *ct,
+>>>>>>> refs/remotes/origin/master
 			   const u32 *intspec, unsigned int intsize,
 			   irq_hw_number_t *out_hwirq, unsigned int *out_flags)
 
@@ -1233,7 +1411,20 @@ static int mpic_host_xlate(struct irq_domain *h, struct device_node *ct,
 		 */
 		switch (intspec[2]) {
 		case 0:
+<<<<<<< HEAD
 		case 1: /* no EISR/EIMR support for now, treat as shared IRQ */
+=======
+			break;
+		case 1:
+			if (!(mpic->flags & MPIC_FSL_HAS_EIMR))
+				break;
+
+			if (intspec[3] >= ARRAY_SIZE(mpic->err_int_vecs))
+				return -EINVAL;
+
+			*out_hwirq = mpic->err_int_vecs[intspec[3]];
+
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 2:
 			if (intspec[0] >= ARRAY_SIZE(mpic->ipi_vecs))
@@ -1280,8 +1471,11 @@ static int mpic_host_xlate(struct irq_domain *h, struct device_node *ct,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct irq_host_ops mpic_host_ops = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* IRQ handler for a secondary MPIC cascaded from another IRQ controller */
 static void mpic_cascade(unsigned int irq, struct irq_desc *desc)
 {
@@ -1299,12 +1493,16 @@ static void mpic_cascade(unsigned int irq, struct irq_desc *desc)
 }
 
 static struct irq_domain_ops mpic_host_ops = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.match = mpic_host_match,
 	.map = mpic_host_map,
 	.xlate = mpic_host_xlate,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int mpic_reset_prohibited(struct device_node *node)
 {
@@ -1313,10 +1511,38 @@ static int mpic_reset_prohibited(struct device_node *node)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u32 fsl_mpic_get_version(struct mpic *mpic)
+{
+	u32 brr1;
+
+	if (!(mpic->flags & MPIC_FSL))
+		return 0;
+
+	brr1 = _mpic_read(mpic->reg_type, &mpic->thiscpuregs,
+			MPIC_FSL_BRR1);
+
+	return brr1 & MPIC_FSL_BRR1_VER;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Exported functions
  */
 
+<<<<<<< HEAD
+=======
+u32 fsl_mpic_primary_get_version(void)
+{
+	struct mpic *mpic = mpic_primary;
+
+	if (mpic)
+		return fsl_mpic_get_version(mpic);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 struct mpic * __init mpic_alloc(struct device_node *node,
 				phys_addr_t phys_addr,
 				unsigned int flags,
@@ -1324,6 +1550,7 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 				unsigned int irq_count,
 				const char *name)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct mpic	*mpic;
 	u32		greg_feature;
@@ -1342,12 +1569,18 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 	mpic->hc_irq.name = name;
 	if (flags & MPIC_PRIMARY)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int i, psize, intvec_top;
 	struct mpic *mpic;
 	u32 greg_feature;
 	const char *vers;
 	const u32 *psrc;
 	u32 last_irq;
+<<<<<<< HEAD
+=======
+	u32 fsl_version = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* Default MPIC search parameters */
 	static const struct of_device_id __initconst mpic_device_id[] = {
@@ -1389,7 +1622,11 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 	if (of_get_property(node, "single-cpu-affinity", NULL))
 		flags |= MPIC_SINGLE_DEST_CPU;
 	if (of_device_is_compatible(node, "fsl,mpic"))
+<<<<<<< HEAD
 		flags |= MPIC_FSL;
+=======
+		flags |= MPIC_FSL | MPIC_LARGE_VECTORS;
+>>>>>>> refs/remotes/origin/master
 
 	mpic = kzalloc(sizeof(struct mpic), GFP_KERNEL);
 	if (mpic == NULL)
@@ -1403,16 +1640,23 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 	mpic->hc_irq = mpic_irq_chip;
 	mpic->hc_irq.name = name;
 	if (!(mpic->flags & MPIC_SECONDARY))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		mpic->hc_irq.irq_set_affinity = mpic_set_affinity;
 #ifdef CONFIG_MPIC_U3_HT_IRQS
 	mpic->hc_ht_irq = mpic_irq_ht_chip;
 	mpic->hc_ht_irq.name = name;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (flags & MPIC_PRIMARY)
 =======
 	if (!(mpic->flags & MPIC_SECONDARY))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(mpic->flags & MPIC_SECONDARY))
+>>>>>>> refs/remotes/origin/master
 		mpic->hc_ht_irq.irq_set_affinity = mpic_set_affinity;
 #endif /* CONFIG_MPIC_U3_HT_IRQS */
 
@@ -1425,6 +1669,7 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 	mpic->hc_tm.name = name;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mpic->flags = flags;
 	mpic->isu_size = isu_size;
 	mpic->irq_count = irq_count;
@@ -1436,6 +1681,11 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 
 	if (mpic->flags & MPIC_LARGE_VECTORS)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mpic->num_sources = 0; /* so far */
+
+	if (mpic->flags & MPIC_LARGE_VECTORS)
+>>>>>>> refs/remotes/origin/master
 		intvec_top = 2047;
 	else
 		intvec_top = 255;
@@ -1454,6 +1704,7 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 	mpic->ipi_vecs[3]   = intvec_top - 1;
 	mpic->spurious_vec  = intvec_top;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Check for "big-endian" in device-tree */
 	if (node && of_get_property(node, "big-endian", NULL) != NULL)
@@ -1479,6 +1730,8 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 				__set_bit(psrc[i], mpic->protected);
 			}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Look for protected sources */
 	psrc = of_get_property(mpic->node, "protected-sources", &psize);
 	if (psrc) {
@@ -1490,11 +1743,15 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 			if (psrc[i] > intvec_top)
 				continue;
 			__set_bit(psrc[i], mpic->protected);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 #ifdef CONFIG_MPIC_WEIRD
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mpic->hw_set = mpic_infos[MPIC_GET_REGSET(flags)];
 #endif
@@ -1530,6 +1787,8 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 	mpic_map(mpic, node, paddr, &mpic->gregs, MPIC_INFO(GREG_BASE), 0x1000);
 	mpic_map(mpic, node, paddr, &mpic->tmregs, MPIC_INFO(TIMER_BASE), 0x1000);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mpic->hw_set = mpic_infos[MPIC_GET_REGSET(mpic->flags)];
 #endif
 
@@ -1553,13 +1812,69 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 	/* Map the global registers */
 	mpic_map(mpic, mpic->paddr, &mpic->gregs, MPIC_INFO(GREG_BASE), 0x1000);
 	mpic_map(mpic, mpic->paddr, &mpic->tmregs, MPIC_INFO(TIMER_BASE), 0x1000);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (mpic->flags & MPIC_FSL) {
+		int ret;
+
+		/*
+		 * Yes, Freescale really did put global registers in the
+		 * magic per-cpu area -- and they don't even show up in the
+		 * non-magic per-cpu copies that this driver normally uses.
+		 */
+		mpic_map(mpic, mpic->paddr, &mpic->thiscpuregs,
+			 MPIC_CPU_THISBASE, 0x1000);
+
+		fsl_version = fsl_mpic_get_version(mpic);
+
+		/* Error interrupt mask register (EIMR) is required for
+		 * handling individual device error interrupts. EIMR
+		 * was added in MPIC version 4.1.
+		 *
+		 * Over here we reserve vector number space for error
+		 * interrupt vectors. This space is stolen from the
+		 * global vector number space, as in case of ipis
+		 * and timer interrupts.
+		 *
+		 * Available vector space = intvec_top - 12, where 12
+		 * is the number of vectors which have been consumed by
+		 * ipis and timer interrupts.
+		 */
+		if (fsl_version >= 0x401) {
+			ret = mpic_setup_error_int(mpic, intvec_top - 12);
+			if (ret)
+				return NULL;
+		}
+
+	}
+
+	/*
+	 * EPR is only available starting with v4.0.  To support
+	 * platforms that don't know the MPIC version at compile-time,
+	 * such as qemu-e500, turn off coreint if this MPIC doesn't
+	 * support it.  Note that we never enable it if it wasn't
+	 * requested in the first place.
+	 *
+	 * This is done outside the MPIC_FSL check, so that we
+	 * also disable coreint if the MPIC node doesn't have
+	 * an "fsl,mpic" compatible at all.  This will be the case
+	 * with device trees generated by older versions of QEMU.
+	 * fsl_version will be zero if MPIC_FSL is not set.
+	 */
+	if (fsl_version < 0x400 && (flags & MPIC_ENABLE_COREINT)) {
+		WARN_ON(ppc_md.get_irq != mpic_get_coreint_irq);
+		ppc_md.get_irq = mpic_get_irq;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Reset */
 
 	/* When using a device-node, reset requests are only honored if the MPIC
 	 * is allowed to reset.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (mpic_reset_prohibited(node))
 		mpic->flags |= MPIC_NO_RESET;
@@ -1568,6 +1883,9 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 =======
 	if (!(mpic->flags & MPIC_NO_RESET)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(mpic->flags & MPIC_NO_RESET)) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_DEBUG "mpic: Resetting\n");
 		mpic_write(mpic->gregs, MPIC_INFO(GREG_GLOBAL_CONF_0),
 			   mpic_read(mpic->gregs, MPIC_INFO(GREG_GLOBAL_CONF_0))
@@ -1579,23 +1897,32 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 
 	/* CoreInt */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (flags & MPIC_ENABLE_COREINT)
 =======
 	if (mpic->flags & MPIC_ENABLE_COREINT)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mpic->flags & MPIC_ENABLE_COREINT)
+>>>>>>> refs/remotes/origin/master
 		mpic_write(mpic->gregs, MPIC_INFO(GREG_GLOBAL_CONF_0),
 			   mpic_read(mpic->gregs, MPIC_INFO(GREG_GLOBAL_CONF_0))
 			   | MPIC_GREG_GCONF_COREINT);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (flags & MPIC_ENABLE_MCK)
 =======
 	if (mpic->flags & MPIC_ENABLE_MCK)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mpic->flags & MPIC_ENABLE_MCK)
+>>>>>>> refs/remotes/origin/master
 		mpic_write(mpic->gregs, MPIC_INFO(GREG_GLOBAL_CONF_0),
 			   mpic_read(mpic->gregs, MPIC_INFO(GREG_GLOBAL_CONF_0))
 			   | MPIC_GREG_GCONF_MCK);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Read feature register, calculate num CPUs and, for non-ISU
 	 * MPICs, num sources as well. On ISU MPICs, sources are counted
@@ -1639,6 +1966,8 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 	mpic->irqhost->host_data = mpic;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The MPIC driver will crash if there are more cores than we
 	 * can initialize, so we may as well catch that problem here.
@@ -1667,7 +1996,11 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 	 * as a default instead of the value read from the HW.
 	 */
 	last_irq = (greg_feature & MPIC_GREG_FEATURE_LAST_SRC_MASK)
+<<<<<<< HEAD
 				>> MPIC_GREG_FEATURE_LAST_SRC_SHIFT;	
+=======
+				>> MPIC_GREG_FEATURE_LAST_SRC_SHIFT;
+>>>>>>> refs/remotes/origin/master
 	if (isu_size)
 		last_irq = isu_size  * MPIC_MAX_ISU - 1;
 	of_property_read_u32(mpic->node, "last-interrupt-source", &last_irq);
@@ -1688,7 +2021,11 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 	mpic->isu_mask = (1 << mpic->isu_shift) - 1;
 
 	mpic->irqhost = irq_domain_add_linear(mpic->node,
+<<<<<<< HEAD
 				       last_irq + 1,
+=======
+				       intvec_top,
+>>>>>>> refs/remotes/origin/master
 				       &mpic_host_ops, mpic);
 
 	/*
@@ -1698,7 +2035,10 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 	if (mpic->irqhost == NULL)
 		return NULL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Display version */
 	switch (greg_feature & MPIC_GREG_FEATURE_VERSION_MASK) {
 	case 1:
@@ -1717,10 +2057,14 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 	printk(KERN_INFO "mpic: Setting up MPIC \"%s\" version %s at %llx,"
 	       " max %d CPUs\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	       name, vers, (unsigned long long)paddr, mpic->num_cpus);
 =======
 	       name, vers, (unsigned long long)mpic->paddr, num_possible_cpus());
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       name, vers, (unsigned long long)mpic->paddr, num_possible_cpus());
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_INFO "mpic: ISU size: %d, shift: %d, mask: %x\n",
 	       mpic->isu_size, mpic->isu_shift, mpic->isu_mask);
 
@@ -1728,22 +2072,32 @@ struct mpic * __init mpic_alloc(struct device_node *node,
 	mpics = mpic;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (flags & MPIC_PRIMARY) {
 =======
 	if (!(mpic->flags & MPIC_SECONDARY)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(mpic->flags & MPIC_SECONDARY)) {
+>>>>>>> refs/remotes/origin/master
 		mpic_primary = mpic;
 		irq_set_default_host(mpic->irqhost);
 	}
 
 	return mpic;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 err_of_node_put:
 	of_node_put(node);
 	return NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init mpic_assign_isu(struct mpic *mpic, unsigned int isu_num,
@@ -1754,10 +2108,14 @@ void __init mpic_assign_isu(struct mpic *mpic, unsigned int isu_num,
 	BUG_ON(isu_num >= MPIC_MAX_ISU);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mpic_map(mpic, mpic->irqhost->of_node,
 =======
 	mpic_map(mpic,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mpic_map(mpic,
+>>>>>>> refs/remotes/origin/master
 		 paddr, &mpic->isus[isu_num], 0,
 		 MPIC_INFO(IRQ_STRIDE) * mpic->isu_size);
 
@@ -1765,6 +2123,7 @@ void __init mpic_assign_isu(struct mpic *mpic, unsigned int isu_num,
 		mpic->num_sources = isu_first + mpic->isu_size;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void __init mpic_set_default_senses(struct mpic *mpic, u8 *senses, int count)
 {
@@ -1781,6 +2140,12 @@ void __init mpic_init(struct mpic *mpic)
 {
 	int i, cpu;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __init mpic_init(struct mpic *mpic)
+{
+	int i, cpu;
+	int num_timers = 4;
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(mpic->num_sources == 0);
 
@@ -1789,6 +2154,7 @@ void __init mpic_init(struct mpic *mpic)
 	/* Set current processor priority to max */
 	mpic_cpu_write(MPIC_INFO(CPU_CURRENT_TASK_PRI), 0xf);
 
+<<<<<<< HEAD
 	/* Initialize timers to our reserved vectors and mask them for now */
 	for (i = 0; i < 4; i++) {
 		mpic_write(mpic->tmregs,
@@ -1798,6 +2164,34 @@ void __init mpic_init(struct mpic *mpic)
 		mpic_write(mpic->tmregs,
 			   i * MPIC_INFO(TIMER_STRIDE) +
 			   MPIC_INFO(TIMER_VECTOR_PRI),
+=======
+	if (mpic->flags & MPIC_FSL) {
+		u32 version = fsl_mpic_get_version(mpic);
+
+		/*
+		 * Timer group B is present at the latest in MPIC 3.1 (e.g.
+		 * mpc8536).  It is not present in MPIC 2.0 (e.g. mpc8544).
+		 * I don't know about the status of intermediate versions (or
+		 * whether they even exist).
+		 */
+		if (version >= 0x0301)
+			num_timers = 8;
+	}
+
+	/* FSL mpic error interrupt intialization */
+	if (mpic->flags & MPIC_FSL_HAS_EIMR)
+		mpic_err_int_init(mpic, MPIC_FSL_ERR_INT);
+
+	/* Initialize timers to our reserved vectors and mask them for now */
+	for (i = 0; i < num_timers; i++) {
+		unsigned int offset = mpic_tm_offset(mpic, i);
+
+		mpic_write(mpic->tmregs,
+			   offset + MPIC_INFO(TIMER_DESTINATION),
+			   1 << hard_smp_processor_id());
+		mpic_write(mpic->tmregs,
+			   offset + MPIC_INFO(TIMER_VECTOR_PRI),
+>>>>>>> refs/remotes/origin/master
 			   MPIC_VECPRI_MASK |
 			   (9 << MPIC_VECPRI_PRIORITY_SHIFT) |
 			   (mpic->timer_vecs[0] + i));
@@ -1813,6 +2207,7 @@ void __init mpic_init(struct mpic *mpic)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Initialize interrupt sources */
 	if (mpic->irq_count == 0)
 		mpic->irq_count = mpic->num_sources;
@@ -1825,6 +2220,11 @@ void __init mpic_init(struct mpic *mpic)
 	DBG("MPIC flags: %x\n", mpic->flags);
 	if ((mpic->flags & MPIC_U3_HT_IRQS) && !(mpic->flags & MPIC_SECONDARY)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Do the HT PIC fixups on U3 broken mpic */
+	DBG("MPIC flags: %x\n", mpic->flags);
+	if ((mpic->flags & MPIC_U3_HT_IRQS) && !(mpic->flags & MPIC_SECONDARY)) {
+>>>>>>> refs/remotes/origin/master
 		mpic_scan_ht_pics(mpic);
 		mpic_u3msi_init(mpic);
 	}
@@ -1838,7 +2238,11 @@ void __init mpic_init(struct mpic *mpic)
 			/* start with vector = source number, and masked */
 			u32 vecpri = MPIC_VECPRI_MASK | i |
 				(8 << MPIC_VECPRI_PRIORITY_SHIFT);
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> refs/remotes/origin/master
 			/* check if protected */
 			if (mpic->protected && test_bit(i, mpic->protected))
 				continue;
@@ -1847,7 +2251,11 @@ void __init mpic_init(struct mpic *mpic)
 			mpic_irq_write(i, MPIC_INFO(IRQ_DESTINATION), 1 << cpu);
 		}
 	}
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/* Init spurious vector */
 	mpic_write(mpic->gregs, MPIC_INFO(GREG_SPURIOUS), mpic->spurious_vec);
 
@@ -1872,7 +2280,10 @@ void __init mpic_init(struct mpic *mpic)
 	BUG_ON(mpic->save_data == NULL);
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Check if this MPIC is chained from a parent interrupt controller */
 	if (mpic->flags & MPIC_SECONDARY) {
@@ -1884,7 +2295,10 @@ void __init mpic_init(struct mpic *mpic)
 			irq_set_chained_handler(virq, &mpic_cascade);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init mpic_set_clk_ratio(struct mpic *mpic, u32 clock_ratio)
@@ -1924,19 +2338,27 @@ void mpic_irq_set_priority(unsigned int irq, unsigned int pri)
 
 	raw_spin_lock_irqsave(&mpic_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mpic_is_ipi(mpic, irq)) {
 =======
 	if (mpic_is_ipi(mpic, src)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mpic_is_ipi(mpic, src)) {
+>>>>>>> refs/remotes/origin/master
 		reg = mpic_ipi_read(src - mpic->ipi_vecs[0]) &
 			~MPIC_VECPRI_PRIORITY_MASK;
 		mpic_ipi_write(src - mpic->ipi_vecs[0],
 			       reg | (pri << MPIC_VECPRI_PRIORITY_SHIFT));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (mpic_is_tm(mpic, irq)) {
 =======
 	} else if (mpic_is_tm(mpic, src)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (mpic_is_tm(mpic, src)) {
+>>>>>>> refs/remotes/origin/master
 		reg = mpic_tm_read(src - mpic->timer_vecs[0]) &
 			~MPIC_VECPRI_PRIORITY_MASK;
 		mpic_tm_write(src - mpic->timer_vecs[0],
@@ -1969,7 +2391,11 @@ void mpic_setup_this_cpu(void)
 	 * it differently, then we should make sure we also change the default
 	 * values of irq_desc[].affinity in irq.c.
  	 */
+<<<<<<< HEAD
 	if (distribute_irqs) {
+=======
+	if (distribute_irqs && !(mpic->flags & MPIC_SINGLE_DEST_CPU)) {
+>>>>>>> refs/remotes/origin/master
 	 	for (i = 0; i < mpic->num_sources ; i++)
 			mpic_irq_write(i, MPIC_INFO(IRQ_DESTINATION),
 				mpic_irq_read(i, MPIC_INFO(IRQ_DESTINATION)) | msk);
@@ -2158,7 +2584,11 @@ int __init smp_mpic_probe(void)
 	return nr_cpus;
 }
 
+<<<<<<< HEAD
 void __devinit smp_mpic_setup_cpu(int cpu)
+=======
+void smp_mpic_setup_cpu(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	mpic_setup_this_cpu();
 }
@@ -2169,9 +2599,13 @@ void mpic_reset_core(int cpu)
 	u32 pir;
 	int cpuid = get_hard_smp_processor_id(cpu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int i;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	/* Set target bit for core reset */
 	pir = mpic_read(mpic->gregs, MPIC_INFO(GREG_PROCESSOR_INIT));
@@ -2184,7 +2618,10 @@ void mpic_reset_core(int cpu)
 	mpic_write(mpic->gregs, MPIC_INFO(GREG_PROCESSOR_INIT), pir);
 	mpic_read(mpic->gregs, MPIC_INFO(GREG_PROCESSOR_INIT));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Perform 15 EOI on each reset core to clear pending interrupts.
 	 * This is required for FSL CoreNet based devices */
@@ -2194,7 +2631,10 @@ void mpic_reset_core(int cpu)
 				      MPIC_CPU_EOI, 0);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* CONFIG_SMP */
 
@@ -2271,6 +2711,11 @@ static struct syscore_ops mpic_syscore_ops = {
 static int mpic_init_sys(void)
 {
 	register_syscore_ops(&mpic_syscore_ops);
+<<<<<<< HEAD
+=======
+	subsys_system_register(&mpic_subsys, NULL);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

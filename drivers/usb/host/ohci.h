@@ -345,14 +345,20 @@ typedef struct urb_priv {
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum ohci_rh_state {
 	OHCI_RH_HALTED,
 	OHCI_RH_SUSPENDED,
 	OHCI_RH_RUNNING
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct ohci_hcd {
 	spinlock_t		lock;
 
@@ -375,6 +381,7 @@ struct ohci_hcd {
 	struct ed		*ed_controltail;	/* last in ctrl list */
 	struct ed		*periodic [NUM_INTS];	/* shadow int_table */
 
+<<<<<<< HEAD
 	/*
 	 * OTG controllers and transceivers need software interaction;
 	 * other external transceivers should be software-transparent
@@ -384,6 +391,8 @@ struct ohci_hcd {
 =======
 	struct usb_phy	*transceiver;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	void (*start_hnp)(struct ohci_hcd *ohci);
 
 	/*
@@ -398,9 +407,13 @@ struct ohci_hcd {
 	 * driver state
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	enum ohci_rh_state	rh_state;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum ohci_rh_state	rh_state;
+>>>>>>> refs/remotes/origin/master
 	int			num_ports;
 	int			load [NUM_INTS];
 	u32			hc_control;	/* copy of hc control reg */
@@ -430,12 +443,22 @@ struct ohci_hcd {
 	struct ed		*ed_to_check;
 	unsigned		zf_delay;
 
+<<<<<<< HEAD
 #ifdef DEBUG
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dentry		*debug_dir;
 	struct dentry		*debug_async;
 	struct dentry		*debug_periodic;
 	struct dentry		*debug_registers;
+<<<<<<< HEAD
 #endif
+=======
+
+	/* platform-specific data -- must come last */
+	unsigned long           priv[0] __aligned(sizeof(s64));
+
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_PCI
@@ -486,10 +509,13 @@ static inline struct usb_hcd *ohci_to_hcd (const struct ohci_hcd *ohci)
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 #ifndef DEBUG
 #define STUB_DEBUG_FILES
 #endif	/* DEBUG */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define ohci_dbg(ohci, fmt, args...) \
 	dev_dbg (ohci_to_hcd(ohci)->self.controller , fmt , ## args )
 #define ohci_err(ohci, fmt, args...) \
@@ -499,12 +525,15 @@ static inline struct usb_hcd *ohci_to_hcd (const struct ohci_hcd *ohci)
 #define ohci_warn(ohci, fmt, args...) \
 	dev_warn (ohci_to_hcd(ohci)->self.controller , fmt , ## args )
 
+<<<<<<< HEAD
 #ifdef OHCI_VERBOSE_DEBUG
 #	define ohci_vdbg ohci_dbg
 #else
 #	define ohci_vdbg(ohci, fmt, args...) do { } while (0)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*-------------------------------------------------------------------------*/
 
 /*
@@ -697,6 +726,7 @@ static inline u16 ohci_hwPSW(const struct ohci_hcd *ohci,
 /*-------------------------------------------------------------------------*/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void disable (struct ohci_hcd *ohci)
 {
 	ohci_to_hcd(ohci)->state = HC_STATE_HALT;
@@ -704,6 +734,8 @@ static inline void disable (struct ohci_hcd *ohci)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define	FI			0x2edf		/* 12000 bits per frame (-1) */
 #define	FSMP(fi)		(0x7fff & ((6 * ((fi) - 210)) / 7))
 #define	FIT			(1 << 31)
@@ -728,10 +760,14 @@ static inline void periodic_reinit (struct ohci_hcd *ohci)
 	u32 temp = ohci_readl (hc, &hc->regs->roothub.register); \
 	if (temp == -1) \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		disable (hc); \
 =======
 		hc->rh_state = OHCI_RH_HALTED; \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		hc->rh_state = OHCI_RH_HALTED; \
+>>>>>>> refs/remotes/origin/master
 	else if (hc->flags & OHCI_QUIRK_AMD756) \
 		while (temp & mask) \
 			temp = ohci_readl (hc, &hc->regs->roothub.register); \
@@ -745,3 +781,23 @@ static inline u32 roothub_status (struct ohci_hcd *hc)
 	{ return ohci_readl (hc, &hc->regs->roothub.status); }
 static inline u32 roothub_portstatus (struct ohci_hcd *hc, int i)
 	{ return read_roothub (hc, portstatus [i], 0xffe0fce0); }
+<<<<<<< HEAD
+=======
+
+/* Declarations of things exported for use by ohci platform drivers */
+
+struct ohci_driver_overrides {
+	const char	*product_desc;
+	size_t		extra_priv_size;
+	int		(*reset)(struct usb_hcd *hcd);
+};
+
+extern void	ohci_init_driver(struct hc_driver *drv,
+				const struct ohci_driver_overrides *over);
+extern int	ohci_restart(struct ohci_hcd *ohci);
+extern int	ohci_setup(struct usb_hcd *hcd);
+#ifdef CONFIG_PM
+extern int	ohci_suspend(struct usb_hcd *hcd, bool do_wakeup);
+extern int	ohci_resume(struct usb_hcd *hcd, bool hibernated);
+#endif
+>>>>>>> refs/remotes/origin/master

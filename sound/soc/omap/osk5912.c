@@ -28,6 +28,7 @@
 #include <sound/soc.h>
 
 #include <asm/mach-types.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <linux/gpio.h>
 <<<<<<< HEAD
@@ -38,6 +39,13 @@
 
 #include "omap-mcbsp.h"
 #include "omap-pcm.h"
+=======
+#include <linux/gpio.h>
+#include <linux/module.h>
+#include <linux/platform_data/asoc-ti-mcbsp.h>
+
+#include "omap-mcbsp.h"
+>>>>>>> refs/remotes/origin/master
 #include "../codecs/tlv320aic23.h"
 
 #define CODEC_CLOCK 	12000000
@@ -59,6 +67,7 @@ static int osk_hw_params(struct snd_pcm_substream *substream,
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
 	int err;
@@ -87,6 +96,10 @@ static int osk_hw_params(struct snd_pcm_substream *substream,
 	int err;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err;
+
+>>>>>>> refs/remotes/origin/master
 	/* Set the codec system clock for DAC and ADC */
 	err =
 	    snd_soc_dai_set_sysclk(codec_dai, 0, CODEC_CLOCK, SND_SOC_CLOCK_IN);
@@ -122,6 +135,7 @@ static const struct snd_soc_dapm_route audio_map[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int osk_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_soc_codec *codec = rtd->codec;
@@ -145,10 +159,13 @@ static int osk_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Digital audio interface glue - connects codec <--> CPU */
 static struct snd_soc_dai_link osk_dai = {
 	.name = "TLV320AIC23",
 	.stream_name = "AIC23",
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.cpu_dai_name = "omap-mcbsp-dai.0",
 	.codec_dai_name = "tlv320aic23-hifi",
@@ -156,13 +173,18 @@ static struct snd_soc_dai_link osk_dai = {
 	.codec_name = "tlv320aic23-codec",
 	.init = osk_tlv320aic23_init,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.cpu_dai_name = "omap-mcbsp.1",
 	.codec_dai_name = "tlv320aic23-hifi",
 	.platform_name = "omap-pcm-audio",
 	.codec_name = "tlv320aic23-codec",
 	.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF |
 		   SND_SOC_DAIFMT_CBM_CFM,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.ops = &osk_ops,
 };
 
@@ -170,9 +192,12 @@ static struct snd_soc_dai_link osk_dai = {
 static struct snd_soc_card snd_soc_card_osk = {
 	.name = "OSK5912",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.dai_link = &osk_dai,
 	.num_links = 1,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.owner = THIS_MODULE,
 	.dai_link = &osk_dai,
 	.num_links = 1,
@@ -181,7 +206,10 @@ static struct snd_soc_card snd_soc_card_osk = {
 	.num_dapm_widgets = ARRAY_SIZE(tlv320aic23_dapm_widgets),
 	.dapm_routes = audio_map,
 	.num_dapm_routes = ARRAY_SIZE(audio_map),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *osk_snd_device;

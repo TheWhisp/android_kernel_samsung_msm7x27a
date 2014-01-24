@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
     adm1021.c - Part of lm_sensors, Linux kernel modules for hardware
 		monitoring
     Copyright (c) 1998, 1999  Frodo Looijaard <frodol@dds.nl> and
@@ -20,6 +21,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * adm1021.c - Part of lm_sensors, Linux kernel modules for hardware
  *	       monitoring
  * Copyright (c) 1998, 1999  Frodo Looijaard <frodol@dds.nl> and
@@ -39,7 +42,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/module.h>
 #include <linux/init.h>
@@ -93,18 +99,24 @@ enum chips {
 /* Initial values */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Note: Even though I left the low and high limits named os and hyst,
 they don't quite work like a thermostat the way the LM75 does.  I.e.,
 a lower temp than THYST actually triggers an alarm instead of
 clearing it.  Weird, ey?   --Phil  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Note: Even though I left the low and high limits named os and hyst,
  * they don't quite work like a thermostat the way the LM75 does.  I.e.,
  * a lower temp than THYST actually triggers an alarm instead of
  * clearing it.  Weird, ey?   --Phil
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Each client has this additional data */
 struct adm1021_data {
@@ -135,10 +147,14 @@ static struct adm1021_data *adm1021_update_device(struct device *dev);
 
 /* (amalysh) read only mode, otherwise any limit's writing confuse BIOS */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int read_only;
 =======
 static bool read_only;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool read_only;
+>>>>>>> refs/remotes/origin/master
 
 
 static const struct i2c_device_id adm1021_id[] = {
@@ -218,8 +234,11 @@ static ssize_t set_temp_max(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1021_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long temp = simple_strtol(buf, NULL, 10) / 1000;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long temp;
 	int err;
 
@@ -227,10 +246,16 @@ static ssize_t set_temp_max(struct device *dev,
 	if (err)
 		return err;
 	temp /= 1000;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->temp_max[index] = SENSORS_LIMIT(temp, -128, 127);
+=======
+
+	mutex_lock(&data->update_lock);
+	data->temp_max[index] = clamp_val(temp, -128, 127);
+>>>>>>> refs/remotes/origin/master
 	if (!read_only)
 		i2c_smbus_write_byte_data(client, ADM1021_REG_TOS_W(index),
 					  data->temp_max[index]);
@@ -247,8 +272,11 @@ static ssize_t set_temp_min(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1021_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long temp = simple_strtol(buf, NULL, 10) / 1000;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long temp;
 	int err;
 
@@ -256,10 +284,16 @@ static ssize_t set_temp_min(struct device *dev,
 	if (err)
 		return err;
 	temp /= 1000;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->temp_min[index] = SENSORS_LIMIT(temp, -128, 127);
+=======
+
+	mutex_lock(&data->update_lock);
+	data->temp_min[index] = clamp_val(temp, -128, 127);
+>>>>>>> refs/remotes/origin/master
 	if (!read_only)
 		i2c_smbus_write_byte_data(client, ADM1021_REG_THYST_W(index),
 					  data->temp_min[index]);
@@ -282,8 +316,11 @@ static ssize_t set_low_power(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1021_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int low_power = simple_strtol(buf, NULL, 10) != 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	char low_power;
 	unsigned long val;
 	int err;
@@ -292,7 +329,10 @@ static ssize_t set_low_power(struct device *dev,
 	if (err)
 		return err;
 	low_power = val != 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	if (low_power != data->low_power) {
@@ -329,6 +369,7 @@ static DEVICE_ATTR(low_power, S_IWUSR | S_IRUGO, show_low_power, set_low_power);
 
 static struct attribute *adm1021_attributes[] = {
 	&sensor_dev_attr_temp1_max.dev_attr.attr,
+<<<<<<< HEAD
 	&sensor_dev_attr_temp1_min.dev_attr.attr,
 	&sensor_dev_attr_temp1_input.dev_attr.attr,
 	&sensor_dev_attr_temp2_max.dev_attr.attr,
@@ -338,6 +379,13 @@ static struct attribute *adm1021_attributes[] = {
 	&sensor_dev_attr_temp1_min_alarm.dev_attr.attr,
 	&sensor_dev_attr_temp2_max_alarm.dev_attr.attr,
 	&sensor_dev_attr_temp2_min_alarm.dev_attr.attr,
+=======
+	&sensor_dev_attr_temp1_input.dev_attr.attr,
+	&sensor_dev_attr_temp2_max.dev_attr.attr,
+	&sensor_dev_attr_temp2_input.dev_attr.attr,
+	&sensor_dev_attr_temp1_max_alarm.dev_attr.attr,
+	&sensor_dev_attr_temp2_max_alarm.dev_attr.attr,
+>>>>>>> refs/remotes/origin/master
 	&sensor_dev_attr_temp2_fault.dev_attr.attr,
 	&dev_attr_alarms.attr,
 	&dev_attr_low_power.attr,
@@ -348,6 +396,21 @@ static const struct attribute_group adm1021_group = {
 	.attrs = adm1021_attributes,
 };
 
+<<<<<<< HEAD
+=======
+static struct attribute *adm1021_min_attributes[] = {
+	&sensor_dev_attr_temp1_min.dev_attr.attr,
+	&sensor_dev_attr_temp2_min.dev_attr.attr,
+	&sensor_dev_attr_temp1_min_alarm.dev_attr.attr,
+	&sensor_dev_attr_temp2_min_alarm.dev_attr.attr,
+	NULL
+};
+
+static const struct attribute_group adm1021_min_group = {
+	.attrs = adm1021_min_attributes,
+};
+
+>>>>>>> refs/remotes/origin/master
 /* Return 0 if detection is successful, -ENODEV otherwise */
 static int adm1021_detect(struct i2c_client *client,
 			  struct i2c_board_info *info)
@@ -357,8 +420,12 @@ static int adm1021_detect(struct i2c_client *client,
 	int conv_rate, status, config, man_id, dev_id;
 
 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA)) {
+<<<<<<< HEAD
 		pr_debug("adm1021: detect failed, "
 			 "smbus byte data not supported!\n");
+=======
+		pr_debug("detect failed, smbus byte data not supported!\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -369,7 +436,11 @@ static int adm1021_detect(struct i2c_client *client,
 
 	/* Check unused bits */
 	if ((status & 0x03) || (config & 0x3F) || (conv_rate & 0xF8)) {
+<<<<<<< HEAD
 		pr_debug("adm1021: detect failed, chip not detected!\n");
+=======
+		pr_debug("detect failed, chip not detected!\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -440,7 +511,11 @@ static int adm1021_detect(struct i2c_client *client,
 		}
 	}
 
+<<<<<<< HEAD
 	pr_debug("adm1021: Detected chip %s at adapter %d, address 0x%02x.\n",
+=======
+	pr_debug("Detected chip %s at adapter %d, address 0x%02x.\n",
+>>>>>>> refs/remotes/origin/master
 		 type_name, i2c_adapter_id(adapter), client->addr);
 	strlcpy(info->type, type_name, I2C_NAME_SIZE);
 
@@ -453,12 +528,19 @@ static int adm1021_probe(struct i2c_client *client,
 	struct adm1021_data *data;
 	int err;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct adm1021_data), GFP_KERNEL);
 	if (!data) {
 		pr_debug("adm1021: detect failed, kzalloc failed!\n");
 		err = -ENOMEM;
 		goto error0;
 	}
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct adm1021_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(client, data);
 	data->type = id->driver_data;
@@ -470,26 +552,48 @@ static int adm1021_probe(struct i2c_client *client,
 
 	/* Register sysfs hooks */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((err = sysfs_create_group(&client->dev.kobj, &adm1021_group)))
 =======
 	err = sysfs_create_group(&client->dev.kobj, &adm1021_group);
 	if (err)
 >>>>>>> refs/remotes/origin/cm-10.0
 		goto error1;
+=======
+	err = sysfs_create_group(&client->dev.kobj, &adm1021_group);
+	if (err)
+		return err;
+
+	if (data->type != lm84) {
+		err = sysfs_create_group(&client->dev.kobj, &adm1021_min_group);
+		if (err)
+			goto error;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
 		err = PTR_ERR(data->hwmon_dev);
+<<<<<<< HEAD
 		goto error3;
+=======
+		goto error;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 
+<<<<<<< HEAD
 error3:
 	sysfs_remove_group(&client->dev.kobj, &adm1021_group);
 error1:
 	kfree(data);
 error0:
+=======
+error:
+	sysfs_remove_group(&client->dev.kobj, &adm1021_min_group);
+	sysfs_remove_group(&client->dev.kobj, &adm1021_group);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -507,9 +611,15 @@ static int adm1021_remove(struct i2c_client *client)
 	struct adm1021_data *data = i2c_get_clientdata(client);
 
 	hwmon_device_unregister(data->hwmon_dev);
+<<<<<<< HEAD
 	sysfs_remove_group(&client->dev.kobj, &adm1021_group);
 
 	kfree(data);
+=======
+	sysfs_remove_group(&client->dev.kobj, &adm1021_min_group);
+	sysfs_remove_group(&client->dev.kobj, &adm1021_group);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -533,22 +643,36 @@ static struct adm1021_data *adm1021_update_device(struct device *dev)
 			data->temp_max[i] = 1000 *
 				(s8) i2c_smbus_read_byte_data(
 					client, ADM1021_REG_TOS_R(i));
+<<<<<<< HEAD
 			data->temp_min[i] = 1000 *
 				(s8) i2c_smbus_read_byte_data(
 					client, ADM1021_REG_THYST_R(i));
+=======
+			if (data->type != lm84) {
+				data->temp_min[i] = 1000 *
+				  (s8) i2c_smbus_read_byte_data(client,
+							ADM1021_REG_THYST_R(i));
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 		data->alarms = i2c_smbus_read_byte_data(client,
 						ADM1021_REG_STATUS) & 0x7c;
 		if (data->type == adm1023) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			/* The ADM1023 provides 3 extra bits of precision for
 			 * the remote sensor in extra registers. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * The ADM1023 provides 3 extra bits of precision for
 			 * the remote sensor in extra registers.
 			 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			data->temp[1] += 125 * (i2c_smbus_read_byte_data(
 				client, ADM1023_REG_REM_TEMP_PREC) >> 5);
 			data->temp_max[1] += 125 * (i2c_smbus_read_byte_data(
@@ -572,6 +696,7 @@ static struct adm1021_data *adm1021_update_device(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensors_adm1021_init(void)
 {
 	return i2c_add_driver(&adm1021_driver);
@@ -588,6 +713,11 @@ module_i2c_driver(adm1021_driver);
 
 MODULE_AUTHOR("Frodo Looijaard <frodol@dds.nl> and "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(adm1021_driver);
+
+MODULE_AUTHOR("Frodo Looijaard <frodol@dds.nl> and "
+>>>>>>> refs/remotes/origin/master
 		"Philip Edelbrock <phil@netroedge.com>");
 MODULE_DESCRIPTION("adm1021 driver");
 MODULE_LICENSE("GPL");
@@ -595,8 +725,11 @@ MODULE_LICENSE("GPL");
 module_param(read_only, bool, 0);
 MODULE_PARM_DESC(read_only, "Don't set any values, read only mode");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(sensors_adm1021_init)
 module_exit(sensors_adm1021_exit)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

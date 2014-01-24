@@ -13,6 +13,7 @@
 #include <linux/smp.h>
 #include <linux/mm.h>
 #include <linux/hugetlb.h>
+<<<<<<< HEAD
 
 #include <asm/cpu.h>
 #include <asm/bootinfo.h>
@@ -23,6 +24,16 @@
 =======
 #include <asm/tlbmisc.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+
+#include <asm/cpu.h>
+#include <asm/cpu-type.h>
+#include <asm/bootinfo.h>
+#include <asm/mmu_context.h>
+#include <asm/pgtable.h>
+#include <asm/tlbmisc.h>
+>>>>>>> refs/remotes/origin/master
 
 extern void build_tlb_refill_handler(void);
 
@@ -54,11 +65,15 @@ extern void build_tlb_refill_handler(void);
 
 #endif /* CONFIG_MIPS_MT_SMTC */
 
+<<<<<<< HEAD
 #if defined(CONFIG_CPU_LOONGSON2)
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * LOONGSON2 has a 4 entry itlb which is a subset of dtlb,
  * unfortrunately, itlb is not totally transparent to software.
  */
+<<<<<<< HEAD
 #define FLUSH_ITLB write_c0_diag(4);
 
 #define FLUSH_ITLB_VM(vma) { if ((vma)->vm_flags & VM_EXEC)  write_c0_diag(4); }
@@ -69,6 +84,24 @@ extern void build_tlb_refill_handler(void);
 #define FLUSH_ITLB_VM(vma)
 
 #endif
+=======
+static inline void flush_itlb(void)
+{
+	switch (current_cpu_type()) {
+	case CPU_LOONGSON2:
+		write_c0_diag(4);
+		break;
+	default:
+		break;
+	}
+}
+
+static inline void flush_itlb_vm(struct vm_area_struct *vma)
+{
+	if (vma->vm_flags & VM_EXEC)
+		flush_itlb();
+}
+>>>>>>> refs/remotes/origin/master
 
 void local_flush_tlb_all(void)
 {
@@ -95,9 +128,16 @@ void local_flush_tlb_all(void)
 	}
 	tlbw_use_hazard();
 	write_c0_entryhi(old_ctx);
+<<<<<<< HEAD
 	FLUSH_ITLB;
 	EXIT_CRITICAL(flags);
 }
+=======
+	flush_itlb();
+	EXIT_CRITICAL(flags);
+}
+EXPORT_SYMBOL(local_flush_tlb_all);
+>>>>>>> refs/remotes/origin/master
 
 /* All entries common to a mm share an asid.  To effectively flush
    these entries, we just bump the asid. */
@@ -125,6 +165,7 @@ void local_flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
 	if (cpu_context(cpu, mm) != 0) {
 		unsigned long size, flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		ENTER_CRITICAL(flags);
 		size = (end - start + (PAGE_SIZE - 1)) >> PAGE_SHIFT;
@@ -143,20 +184,31 @@ void local_flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
 			size = (end - start) >> (PAGE_SHIFT + 1);
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		ENTER_CRITICAL(flags);
+		start = round_down(start, PAGE_SIZE << 1);
+		end = round_up(end, PAGE_SIZE << 1);
+		size = (end - start) >> (PAGE_SHIFT + 1);
+>>>>>>> refs/remotes/origin/master
 		if (size <= current_cpu_data.tlbsize/2) {
 			int oldpid = read_c0_entryhi();
 			int newpid = cpu_asid(cpu, mm);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 			start &= (PAGE_MASK << 1);
 			end += ((PAGE_SIZE << 1) - 1);
 			end &= (PAGE_MASK << 1);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			while (start < end) {
 				int idx;
 
 				write_c0_entryhi(start | newpid);
+<<<<<<< HEAD
 <<<<<<< HEAD
 				start += (PAGE_SIZE << 1);
 =======
@@ -165,6 +217,9 @@ void local_flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
 				else
 					start += (PAGE_SIZE << 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				start += (PAGE_SIZE << 1);
+>>>>>>> refs/remotes/origin/master
 				mtc0_tlbw_hazard();
 				tlb_probe();
 				tlb_probe_hazard();
@@ -183,7 +238,11 @@ void local_flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
 		} else {
 			drop_mmu_context(mm, cpu);
 		}
+<<<<<<< HEAD
 		FLUSH_ITLB;
+=======
+		flush_itlb();
+>>>>>>> refs/remotes/origin/master
 		EXIT_CRITICAL(flags);
 	}
 }
@@ -225,7 +284,11 @@ void local_flush_tlb_kernel_range(unsigned long start, unsigned long end)
 	} else {
 		local_flush_tlb_all();
 	}
+<<<<<<< HEAD
 	FLUSH_ITLB;
+=======
+	flush_itlb();
+>>>>>>> refs/remotes/origin/master
 	EXIT_CRITICAL(flags);
 }
 
@@ -258,7 +321,11 @@ void local_flush_tlb_page(struct vm_area_struct *vma, unsigned long page)
 
 	finish:
 		write_c0_entryhi(oldpid);
+<<<<<<< HEAD
 		FLUSH_ITLB_VM(vma);
+=======
+		flush_itlb_vm(vma);
+>>>>>>> refs/remotes/origin/master
 		EXIT_CRITICAL(flags);
 	}
 }
@@ -290,7 +357,11 @@ void local_flush_tlb_one(unsigned long page)
 		tlbw_use_hazard();
 	}
 	write_c0_entryhi(oldpid);
+<<<<<<< HEAD
 	FLUSH_ITLB;
+=======
+	flush_itlb();
+>>>>>>> refs/remotes/origin/master
 	EXIT_CRITICAL(flags);
 }
 
@@ -326,7 +397,11 @@ void __update_tlb(struct vm_area_struct * vma, unsigned long address, pte_t pte)
 	pudp = pud_offset(pgdp, address);
 	pmdp = pmd_offset(pudp, address);
 	idx = read_c0_index();
+<<<<<<< HEAD
 #ifdef CONFIG_HUGETLB_PAGE
+=======
+#ifdef CONFIG_MIPS_HUGE_TLB_SUPPORT
+>>>>>>> refs/remotes/origin/master
 	/* this could be a huge page  */
 	if (pmd_huge(*pmdp)) {
 		unsigned long lo;
@@ -341,6 +416,10 @@ void __update_tlb(struct vm_area_struct * vma, unsigned long address, pte_t pte)
 			tlb_write_random();
 		else
 			tlb_write_indexed();
+<<<<<<< HEAD
+=======
+		tlbw_use_hazard();
+>>>>>>> refs/remotes/origin/master
 		write_c0_pagemask(PM_DEFAULT_MASK);
 	} else
 #endif
@@ -362,6 +441,7 @@ void __update_tlb(struct vm_area_struct * vma, unsigned long address, pte_t pte)
 			tlb_write_indexed();
 	}
 	tlbw_use_hazard();
+<<<<<<< HEAD
 	FLUSH_ITLB_VM(vma);
 	EXIT_CRITICAL(flags);
 }
@@ -373,6 +453,14 @@ void __init add_wired_entry(unsigned long entrylo0, unsigned long entrylo1,
 void add_wired_entry(unsigned long entrylo0, unsigned long entrylo1,
 		     unsigned long entryhi, unsigned long pagemask)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	flush_itlb_vm(vma);
+	EXIT_CRITICAL(flags);
+}
+
+void add_wired_entry(unsigned long entrylo0, unsigned long entrylo1,
+		     unsigned long entryhi, unsigned long pagemask)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	unsigned long wired;
@@ -402,6 +490,7 @@ void add_wired_entry(unsigned long entrylo0, unsigned long entrylo1,
 	EXIT_CRITICAL(flags);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Used for loading TLB entries before trap_init() has started, when we
@@ -451,6 +540,29 @@ out:
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 static int __cpuinitdata ntlb;
+=======
+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+
+int __init has_transparent_hugepage(void)
+{
+	unsigned int mask;
+	unsigned long flags;
+
+	ENTER_CRITICAL(flags);
+	write_c0_pagemask(PM_HUGE_MASK);
+	back_to_back_c0_hazard();
+	mask = read_c0_pagemask();
+	write_c0_pagemask(PM_DEFAULT_MASK);
+
+	EXIT_CRITICAL(flags);
+
+	return mask == PM_HUGE_MASK;
+}
+
+#endif /* CONFIG_TRANSPARENT_HUGEPAGE  */
+
+static int ntlb;
+>>>>>>> refs/remotes/origin/master
 static int __init set_ntlb(char *str)
 {
 	get_option(&str, &ntlb);
@@ -459,7 +571,11 @@ static int __init set_ntlb(char *str)
 
 __setup("ntlb=", set_ntlb);
 
+<<<<<<< HEAD
 void __cpuinit tlb_init(void)
+=======
+void tlb_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * You should never change this register:
@@ -475,7 +591,11 @@ void __cpuinit tlb_init(void)
 	    current_cpu_type() == CPU_R14000)
 		write_c0_framemask(0);
 
+<<<<<<< HEAD
 	if (kernel_uses_smartmips_rixi) {
+=======
+	if (cpu_has_rixi) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Enable the no read, no exec bits, and enable large virtual
 		 * address.
@@ -488,11 +608,15 @@ void __cpuinit tlb_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	temp_tlb_entry = current_cpu_data.tlbsize - 1;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
         /* From this point on the ARC firmware is dead.  */
+=======
+	/* From this point on the ARC firmware is dead.	 */
+>>>>>>> refs/remotes/origin/master
 	local_flush_tlb_all();
 
 	/* Did I tell you that ARC SUCKS?  */

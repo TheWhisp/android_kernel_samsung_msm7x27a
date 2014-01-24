@@ -35,22 +35,34 @@ const struct inode_operations ext4_symlink_inode_operations = {
 	.follow_link	= page_follow_link_light,
 	.put_link	= page_put_link,
 	.setattr	= ext4_setattr,
+<<<<<<< HEAD
 #ifdef CONFIG_EXT4_FS_XATTR
+=======
+>>>>>>> refs/remotes/origin/master
 	.setxattr	= generic_setxattr,
 	.getxattr	= generic_getxattr,
 	.listxattr	= ext4_listxattr,
 	.removexattr	= generic_removexattr,
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 const struct inode_operations ext4_fast_symlink_inode_operations = {
 	.readlink	= generic_readlink,
 	.follow_link	= ext4_follow_link,
 	.setattr	= ext4_setattr,
+<<<<<<< HEAD
 #ifdef CONFIG_EXT4_FS_XATTR
+=======
+>>>>>>> refs/remotes/origin/master
 	.setxattr	= generic_setxattr,
 	.getxattr	= generic_getxattr,
 	.listxattr	= ext4_listxattr,
 	.removexattr	= generic_removexattr,
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 };

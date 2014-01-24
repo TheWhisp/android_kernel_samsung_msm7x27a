@@ -13,6 +13,7 @@
 #include <linux/io.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/delay.h>
 #include <linux/gfp.h>
 =======
@@ -21,6 +22,13 @@
 #include <linux/gfp.h>
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of.h>
+#include <linux/delay.h>
+#include <linux/clk.h>
+#include <linux/gfp.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 
 #define RTC_TIME_REG_OFFS	0
@@ -46,6 +54,10 @@ struct rtc_plat_data {
 	struct rtc_device *rtc;
 	void __iomem *ioaddr;
 	int		irq;
+<<<<<<< HEAD
+=======
+	struct clk	*clk;
+>>>>>>> refs/remotes/origin/master
 };
 
 static int mv_rtc_set_time(struct device *dev, struct rtc_time *tm)
@@ -220,6 +232,7 @@ static const struct rtc_class_ops mv_rtc_alarm_ops = {
 	.alarm_irq_enable = mv_rtc_alarm_irq_enable,
 };
 
+<<<<<<< HEAD
 static int __devinit mv_rtc_probe(struct platform_device *pdev)
 {
 	struct resource *res;
@@ -230,11 +243,20 @@ static int __devinit mv_rtc_probe(struct platform_device *pdev)
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res)
 		return -ENODEV;
+=======
+static int __init mv_rtc_probe(struct platform_device *pdev)
+{
+	struct resource *res;
+	struct rtc_plat_data *pdata;
+	u32 rtc_time;
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 
 	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
 	if (!pdata)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	size = resource_size(res);
 	if (!devm_request_mem_region(&pdev->dev, res->start, size,
 				     pdev->name))
@@ -243,12 +265,28 @@ static int __devinit mv_rtc_probe(struct platform_device *pdev)
 	pdata->ioaddr = devm_ioremap(&pdev->dev, res->start, size);
 	if (!pdata->ioaddr)
 		return -ENOMEM;
+=======
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	pdata->ioaddr = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(pdata->ioaddr))
+		return PTR_ERR(pdata->ioaddr);
+
+	pdata->clk = devm_clk_get(&pdev->dev, NULL);
+	/* Not all SoCs require a clock.*/
+	if (!IS_ERR(pdata->clk))
+		clk_prepare_enable(pdata->clk);
+>>>>>>> refs/remotes/origin/master
 
 	/* make sure the 24 hours mode is enabled */
 	rtc_time = readl(pdata->ioaddr + RTC_TIME_REG_OFFS);
 	if (rtc_time & RTC_HOURS_12H_MODE) {
 		dev_err(&pdev->dev, "24 Hours mode not supported.\n");
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		ret = -EINVAL;
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* make sure it is actually functional */
@@ -257,7 +295,12 @@ static int __devinit mv_rtc_probe(struct platform_device *pdev)
 		rtc_time = readl(pdata->ioaddr + RTC_TIME_REG_OFFS);
 		if (rtc_time == 0x01000000) {
 			dev_err(&pdev->dev, "internal RTC not ticking\n");
+<<<<<<< HEAD
 			return -ENODEV;
+=======
+			ret = -ENODEV;
+			goto out;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -267,6 +310,7 @@ static int __devinit mv_rtc_probe(struct platform_device *pdev)
 
 	if (pdata->irq >= 0) {
 		device_init_wakeup(&pdev->dev, 1);
+<<<<<<< HEAD
 		pdata->rtc = rtc_device_register(pdev->name, &pdev->dev,
 						 &mv_rtc_alarm_ops,
 						 THIS_MODULE);
@@ -275,15 +319,32 @@ static int __devinit mv_rtc_probe(struct platform_device *pdev)
 						 &mv_rtc_ops, THIS_MODULE);
 	if (IS_ERR(pdata->rtc))
 		return PTR_ERR(pdata->rtc);
+=======
+		pdata->rtc = devm_rtc_device_register(&pdev->dev, pdev->name,
+						 &mv_rtc_alarm_ops,
+						 THIS_MODULE);
+	} else {
+		pdata->rtc = devm_rtc_device_register(&pdev->dev, pdev->name,
+						 &mv_rtc_ops, THIS_MODULE);
+	}
+	if (IS_ERR(pdata->rtc)) {
+		ret = PTR_ERR(pdata->rtc);
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata->irq >= 0) {
 		writel(0, pdata->ioaddr + RTC_ALARM_INTERRUPT_MASK_REG_OFFS);
 		if (devm_request_irq(&pdev->dev, pdata->irq, mv_rtc_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				     IRQF_DISABLED | IRQF_SHARED,
 =======
 				     IRQF_SHARED,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     IRQF_SHARED,
+>>>>>>> refs/remotes/origin/master
 				     pdev->name, pdata) < 0) {
 			dev_warn(&pdev->dev, "interrupt not available.\n");
 			pdata->irq = -1;
@@ -291,6 +352,14 @@ static int __devinit mv_rtc_probe(struct platform_device *pdev)
 	}
 
 	return 0;
+<<<<<<< HEAD
+=======
+out:
+	if (!IS_ERR(pdata->clk))
+		clk_disable_unprepare(pdata->clk);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __exit mv_rtc_remove(struct platform_device *pdev)
@@ -300,6 +369,7 @@ static int __exit mv_rtc_remove(struct platform_device *pdev)
 	if (pdata->irq >= 0)
 		device_init_wakeup(&pdev->dev, 0);
 
+<<<<<<< HEAD
 	rtc_device_unregister(pdata->rtc);
 	return 0;
 }
@@ -309,16 +379,31 @@ static int __exit mv_rtc_remove(struct platform_device *pdev)
 #ifdef CONFIG_OF
 static struct of_device_id rtc_mv_of_match_table[] = {
 	{ .compatible = "mrvl,orion-rtc", },
+=======
+	if (!IS_ERR(pdata->clk))
+		clk_disable_unprepare(pdata->clk);
+
+	return 0;
+}
+
+#ifdef CONFIG_OF
+static struct of_device_id rtc_mv_of_match_table[] = {
+	{ .compatible = "marvell,orion-rtc", },
+>>>>>>> refs/remotes/origin/master
 	{}
 };
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver mv_rtc_driver = {
 	.remove		= __exit_p(mv_rtc_remove),
 	.driver		= {
 		.name	= "rtc-mv",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 		.of_match_table = of_match_ptr(rtc_mv_of_match_table),
@@ -338,6 +423,13 @@ static __exit void mv_exit(void)
 
 module_init(mv_init);
 module_exit(mv_exit);
+=======
+		.of_match_table = of_match_ptr(rtc_mv_of_match_table),
+	},
+};
+
+module_platform_driver_probe(mv_rtc_driver, mv_rtc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Saeed Bishara <saeed@marvell.com>");
 MODULE_DESCRIPTION("Marvell RTC driver");

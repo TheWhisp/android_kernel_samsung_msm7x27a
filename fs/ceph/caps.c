@@ -10,6 +10,10 @@
 
 #include "super.h"
 #include "mds_client.h"
+<<<<<<< HEAD
+=======
+#include "cache.h"
+>>>>>>> refs/remotes/origin/master
 #include <linux/ceph/decode.h>
 #include <linux/ceph/messenger.h>
 
@@ -147,7 +151,11 @@ void ceph_adjust_min_caps(struct ceph_mds_client *mdsc, int delta)
 	spin_unlock(&mdsc->caps_list_lock);
 }
 
+<<<<<<< HEAD
 int ceph_reserve_caps(struct ceph_mds_client *mdsc,
+=======
+void ceph_reserve_caps(struct ceph_mds_client *mdsc,
+>>>>>>> refs/remotes/origin/master
 		      struct ceph_cap_reservation *ctx, int need)
 {
 	int i;
@@ -155,7 +163,10 @@ int ceph_reserve_caps(struct ceph_mds_client *mdsc,
 	int have;
 	int alloc = 0;
 	LIST_HEAD(newcaps);
+<<<<<<< HEAD
 	int ret = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dout("reserve caps ctx=%p need=%d\n", ctx, need);
 
@@ -174,6 +185,7 @@ int ceph_reserve_caps(struct ceph_mds_client *mdsc,
 
 	for (i = have; i < need; i++) {
 		cap = kmem_cache_alloc(ceph_cap_cachep, GFP_NOFS);
+<<<<<<< HEAD
 		if (!cap) {
 			ret = -ENOMEM;
 			goto out_alloc_count;
@@ -182,6 +194,17 @@ int ceph_reserve_caps(struct ceph_mds_client *mdsc,
 		alloc++;
 	}
 	BUG_ON(have + alloc != need);
+=======
+		if (!cap)
+			break;
+		list_add(&cap->caps_item, &newcaps);
+		alloc++;
+	}
+	/* we didn't manage to reserve as much as we needed */
+	if (have + alloc != need)
+		pr_warn("reserve caps ctx=%p ENOMEM need=%d got=%d\n",
+			ctx, need, have + alloc);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&mdsc->caps_list_lock);
 	mdsc->caps_total_count += alloc;
@@ -197,6 +220,7 @@ int ceph_reserve_caps(struct ceph_mds_client *mdsc,
 	dout("reserve caps ctx=%p %d = %d used + %d resv + %d avail\n",
 	     ctx, mdsc->caps_total_count, mdsc->caps_use_count,
 	     mdsc->caps_reserve_count, mdsc->caps_avail_count);
+<<<<<<< HEAD
 	return 0;
 
 out_alloc_count:
@@ -204,6 +228,8 @@ out_alloc_count:
 	pr_warning("reserve caps ctx=%p ENOMEM need=%d got=%d\n",
 		   ctx, need, have);
 	return ret;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int ceph_unreserve_caps(struct ceph_mds_client *mdsc,
@@ -236,8 +262,15 @@ static struct ceph_cap *get_cap(struct ceph_mds_client *mdsc,
 	if (!ctx) {
 		cap = kmem_cache_alloc(ceph_cap_cachep, GFP_NOFS);
 		if (cap) {
+<<<<<<< HEAD
 			mdsc->caps_use_count++;
 			mdsc->caps_total_count++;
+=======
+			spin_lock(&mdsc->caps_list_lock);
+			mdsc->caps_use_count++;
+			mdsc->caps_total_count++;
+			spin_unlock(&mdsc->caps_list_lock);
+>>>>>>> refs/remotes/origin/master
 		}
 		return cap;
 	}
@@ -310,10 +343,14 @@ void ceph_reservation_status(struct ceph_fs_client *fsc,
  * Find ceph_cap for given mds, if any.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Called with i_lock held.
 =======
  * Called with i_ceph_lock held.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Called with i_ceph_lock held.
+>>>>>>> refs/remotes/origin/master
  */
 static struct ceph_cap *__get_cap_for_mds(struct ceph_inode_info *ci, int mds)
 {
@@ -337,6 +374,7 @@ struct ceph_cap *ceph_get_cap_for_mds(struct ceph_inode_info *ci, int mds)
 	struct ceph_cap *cap;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&ci->vfs_inode.i_lock);
 	cap = __get_cap_for_mds(ci, mds);
 	spin_unlock(&ci->vfs_inode.i_lock);
@@ -345,6 +383,11 @@ struct ceph_cap *ceph_get_cap_for_mds(struct ceph_inode_info *ci, int mds)
 	cap = __get_cap_for_mds(ci, mds);
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+	cap = __get_cap_for_mds(ci, mds);
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	return cap;
 }
 
@@ -372,26 +415,36 @@ static int __ceph_get_cap_mds(struct ceph_inode_info *ci)
 int ceph_get_cap_mds(struct inode *inode)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int mds;
 	spin_lock(&inode->i_lock);
 	mds = __ceph_get_cap_mds(ceph_inode(inode));
 	spin_unlock(&inode->i_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ceph_inode_info *ci = ceph_inode(inode);
 	int mds;
 	spin_lock(&ci->i_ceph_lock);
 	mds = __ceph_get_cap_mds(ceph_inode(inode));
 	spin_unlock(&ci->i_ceph_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return mds;
 }
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Called under i_lock.
 =======
  * Called under i_ceph_lock.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Called under i_ceph_lock.
+>>>>>>> refs/remotes/origin/master
  */
 static void __insert_cap_node(struct ceph_inode_info *ci,
 			      struct ceph_cap *new)
@@ -438,10 +491,14 @@ static void __cap_set_timeouts(struct ceph_mds_client *mdsc,
  * If I_FLUSH is set, leave the inode at the front of the list.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Caller holds i_lock
 =======
  * Caller holds i_ceph_lock
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Caller holds i_ceph_lock
+>>>>>>> refs/remotes/origin/master
  *    -> we take mdsc->cap_delay_lock
  */
 static void __cap_delay_requeue(struct ceph_mds_client *mdsc,
@@ -484,10 +541,14 @@ static void __cap_delay_requeue_front(struct ceph_mds_client *mdsc,
  * Cancel delayed work on cap.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Caller must hold i_lock.
 =======
  * Caller must hold i_ceph_lock.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Caller must hold i_ceph_lock.
+>>>>>>> refs/remotes/origin/master
  */
 static void __cap_delay_cancel(struct ceph_mds_client *mdsc,
 			       struct ceph_inode_info *ci)
@@ -513,6 +574,7 @@ static void __check_cap_issue(struct ceph_inode_info *ci, struct ceph_cap *cap,
 	 * i_rdcache_gen.
 	 */
 	if ((issued & (CEPH_CAP_FILE_CACHE|CEPH_CAP_FILE_LAZYIO)) &&
+<<<<<<< HEAD
 	    (had & (CEPH_CAP_FILE_CACHE|CEPH_CAP_FILE_LAZYIO)) == 0)
 		ci->i_rdcache_gen++;
 
@@ -522,12 +584,21 @@ static void __check_cap_issue(struct ceph_inode_info *ci, struct ceph_cap *cap,
 =======
 	 * if we are newly issued FILE_SHARED, clear D_COMPLETE; we
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    (had & (CEPH_CAP_FILE_CACHE|CEPH_CAP_FILE_LAZYIO)) == 0) {
+		ci->i_rdcache_gen++;
+	}
+
+	/*
+	 * if we are newly issued FILE_SHARED, mark dir not complete; we
+>>>>>>> refs/remotes/origin/master
 	 * don't know what happened to this directory while we didn't
 	 * have the cap.
 	 */
 	if ((issued & CEPH_CAP_FILE_SHARED) &&
 	    (had & CEPH_CAP_FILE_SHARED) == 0) {
 		ci->i_shared_gen++;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (S_ISDIR(ci->vfs_inode.i_mode)) {
 			dout(" marking %p NOT complete\n", &ci->vfs_inode);
@@ -537,6 +608,12 @@ static void __check_cap_issue(struct ceph_inode_info *ci, struct ceph_cap *cap,
 		if (S_ISDIR(ci->vfs_inode.i_mode))
 			ceph_dir_clear_complete(&ci->vfs_inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (S_ISDIR(ci->vfs_inode.i_mode)) {
+			dout(" marking %p NOT complete\n", &ci->vfs_inode);
+			__ceph_dir_clear_complete(ci);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -574,10 +651,14 @@ int ceph_add_cap(struct inode *inode,
 
 retry:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	cap = __get_cap_for_mds(ci, mds);
 	if (!cap) {
 		if (new_cap) {
@@ -585,10 +666,14 @@ retry:
 			new_cap = NULL;
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			spin_unlock(&inode->i_lock);
 =======
 			spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 			new_cap = get_cap(mdsc, caps_reservation);
 			if (new_cap == NULL)
 				return -ENOMEM;
@@ -599,6 +684,10 @@ retry:
 		cap->implemented = 0;
 		cap->mds = mds;
 		cap->mds_wanted = 0;
+<<<<<<< HEAD
+=======
+		cap->mseq = 0;
+>>>>>>> refs/remotes/origin/master
 
 		cap->ci = ci;
 		__insert_cap_node(ci, cap);
@@ -655,10 +744,27 @@ retry:
 		__cap_delay_requeue(mdsc, ci);
 	}
 
+<<<<<<< HEAD
 	if (flags & CEPH_CAP_FLAG_AUTH)
 		ci->i_auth_cap = cap;
 	else if (ci->i_auth_cap == cap)
 		ci->i_auth_cap = NULL;
+=======
+	if (flags & CEPH_CAP_FLAG_AUTH) {
+		if (ci->i_auth_cap == NULL ||
+		    ceph_seq_cmp(ci->i_auth_cap->mseq, mseq) < 0)
+			ci->i_auth_cap = cap;
+	} else if (ci->i_auth_cap == cap) {
+		ci->i_auth_cap = NULL;
+		spin_lock(&mdsc->cap_dirty_lock);
+		if (!list_empty(&ci->i_dirty_item)) {
+			dout(" moving %p to cap_dirty_migrating\n", inode);
+			list_move(&ci->i_dirty_item,
+				  &mdsc->cap_dirty_migrating);
+		}
+		spin_unlock(&mdsc->cap_dirty_lock);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	dout("add_cap inode %p (%llx.%llx) cap %p %s now %s seq %d mds%d\n",
 	     inode, ceph_vinop(inode), cap, ceph_cap_string(issued),
@@ -666,7 +772,14 @@ retry:
 	cap->cap_id = cap_id;
 	cap->issued = issued;
 	cap->implemented |= issued;
+<<<<<<< HEAD
 	cap->mds_wanted |= wanted;
+=======
+	if (mseq > cap->mseq)
+		cap->mds_wanted = wanted;
+	else
+		cap->mds_wanted |= wanted;
+>>>>>>> refs/remotes/origin/master
 	cap->seq = seq;
 	cap->issue_seq = seq;
 	cap->mseq = mseq;
@@ -675,10 +788,14 @@ retry:
 	if (fmode >= 0)
 		__ceph_get_fmode(ci, fmode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	wake_up_all(&ci->i_cap_wq);
 	return 0;
 }
@@ -694,16 +811,22 @@ static int __cap_is_valid(struct ceph_cap *cap)
 	u32 gen;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&cap->session->s_cap_lock);
 	gen = cap->session->s_cap_gen;
 	ttl = cap->session->s_cap_ttl;
 	spin_unlock(&cap->session->s_cap_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&cap->session->s_gen_ttl_lock);
 	gen = cap->session->s_cap_gen;
 	ttl = cap->session->s_cap_ttl;
 	spin_unlock(&cap->session->s_gen_ttl_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (cap->cap_gen < gen || time_after_eq(jiffies, ttl)) {
 		dout("__cap_is_valid %p cap %p issued %s "
@@ -738,6 +861,18 @@ int __ceph_caps_issued(struct ceph_inode_info *ci, int *implemented)
 		if (implemented)
 			*implemented |= cap->implemented;
 	}
+<<<<<<< HEAD
+=======
+	/*
+	 * exclude caps issued by non-auth MDS, but are been revoking
+	 * by the auth MDS. The non-auth MDS should be revoking/exporting
+	 * these caps, but the message is delayed.
+	 */
+	if (ci->i_auth_cap) {
+		cap = ci->i_auth_cap;
+		have &= ~cap->implemented | cap->issued;
+	}
+>>>>>>> refs/remotes/origin/master
 	return have;
 }
 
@@ -845,6 +980,7 @@ int __ceph_caps_issued_mask(struct ceph_inode_info *ci, int mask, int touch)
 /*
  * Return true if mask caps are currently being revoked by an MDS.
  */
+<<<<<<< HEAD
 int ceph_caps_revoking(struct ceph_inode_info *ci, int mask)
 {
 	struct inode *inode = &ci->vfs_inode;
@@ -870,6 +1006,31 @@ int ceph_caps_revoking(struct ceph_inode_info *ci, int mask)
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __ceph_caps_revoking_other(struct ceph_inode_info *ci,
+			       struct ceph_cap *ocap, int mask)
+{
+	struct ceph_cap *cap;
+	struct rb_node *p;
+
+	for (p = rb_first(&ci->i_caps); p; p = rb_next(p)) {
+		cap = rb_entry(p, struct ceph_cap, ci_node);
+		if (cap != ocap && __cap_is_valid(cap) &&
+		    (cap->implemented & ~cap->issued & mask))
+			return 1;
+	}
+	return 0;
+}
+
+int ceph_caps_revoking(struct ceph_inode_info *ci, int mask)
+{
+	struct inode *inode = &ci->vfs_inode;
+	int ret;
+
+	spin_lock(&ci->i_ceph_lock);
+	ret = __ceph_caps_revoking_other(ci, NULL, mask);
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	dout("ceph_caps_revoking %p %s = %d\n", inode,
 	     ceph_cap_string(mask), ret);
 	return ret;
@@ -924,10 +1085,14 @@ int __ceph_caps_mds_wanted(struct ceph_inode_info *ci)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * called under i_lock
 =======
  * called under i_ceph_lock
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * called under i_ceph_lock
+>>>>>>> refs/remotes/origin/master
  */
 static int __ceph_is_any_caps(struct ceph_inode_info *ci)
 {
@@ -938,6 +1103,7 @@ static int __ceph_is_any_caps(struct ceph_inode_info *ci)
  * Remove a cap.  Take steps to deal with a racing iterate_session_caps.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * caller should hold i_lock.
 =======
  * caller should hold i_ceph_lock.
@@ -945,6 +1111,12 @@ static int __ceph_is_any_caps(struct ceph_inode_info *ci)
  * caller will not hold session s_mutex if called from destroy_inode.
  */
 void __ceph_remove_cap(struct ceph_cap *cap)
+=======
+ * caller should hold i_ceph_lock.
+ * caller will not hold session s_mutex if called from destroy_inode.
+ */
+void __ceph_remove_cap(struct ceph_cap *cap, bool queue_release)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ceph_mds_session *session = cap->session;
 	struct ceph_inode_info *ci = cap->ci;
@@ -956,6 +1128,19 @@ void __ceph_remove_cap(struct ceph_cap *cap)
 
 	/* remove from session list */
 	spin_lock(&session->s_cap_lock);
+<<<<<<< HEAD
+=======
+	/*
+	 * s_cap_reconnect is protected by s_cap_lock. no one changes
+	 * s_cap_gen while session is in the reconnect state.
+	 */
+	if (queue_release &&
+	    (!session->s_cap_reconnect ||
+	     cap->cap_gen == session->s_cap_gen))
+		__queue_cap_release(session, ci->i_vino.ino, cap->cap_id,
+				    cap->mseq, cap->issue_seq);
+
+>>>>>>> refs/remotes/origin/master
 	if (session->s_cap_iterator == cap) {
 		/* not yet, we are iterating over this very cap */
 		dout("__ceph_remove_cap  delaying %p removal from session %p\n",
@@ -1004,10 +1189,14 @@ static int send_cap_msg(struct ceph_mds_session *session,
 			struct timespec *mtime, struct timespec *atime,
 			u64 time_warp_seq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			uid_t uid, gid_t gid, mode_t mode,
 =======
 			uid_t uid, gid_t gid, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kuid_t uid, kgid_t gid, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 			u64 xattr_version,
 			struct ceph_buffer *xattrs_buf,
 			u64 follows)
@@ -1024,10 +1213,14 @@ static int send_cap_msg(struct ceph_mds_session *session,
 	     xattr_version, xattrs_buf ? (int)xattrs_buf->vec.iov_len : 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg = ceph_msg_new(CEPH_MSG_CLIENT_CAPS, sizeof(*fc), GFP_NOFS);
 =======
 	msg = ceph_msg_new(CEPH_MSG_CLIENT_CAPS, sizeof(*fc), GFP_NOFS, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msg = ceph_msg_new(CEPH_MSG_CLIENT_CAPS, sizeof(*fc), GFP_NOFS, false);
+>>>>>>> refs/remotes/origin/master
 	if (!msg)
 		return -ENOMEM;
 
@@ -1055,8 +1248,13 @@ static int send_cap_msg(struct ceph_mds_session *session,
 		ceph_encode_timespec(&fc->atime, atime);
 	fc->time_warp_seq = cpu_to_le32(time_warp_seq);
 
+<<<<<<< HEAD
 	fc->uid = cpu_to_le32(uid);
 	fc->gid = cpu_to_le32(gid);
+=======
+	fc->uid = cpu_to_le32(from_kuid(&init_user_ns, uid));
+	fc->gid = cpu_to_le32(from_kgid(&init_user_ns, gid));
+>>>>>>> refs/remotes/origin/master
 	fc->mode = cpu_to_le32(mode);
 
 	fc->xattr_version = cpu_to_le64(xattr_version);
@@ -1070,15 +1268,24 @@ static int send_cap_msg(struct ceph_mds_session *session,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __queue_cap_release(struct ceph_mds_session *session,
 				u64 ino, u64 cap_id, u32 migrate_seq,
 				u32 issue_seq)
+=======
+void __queue_cap_release(struct ceph_mds_session *session,
+			 u64 ino, u64 cap_id, u32 migrate_seq,
+			 u32 issue_seq)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ceph_msg *msg;
 	struct ceph_mds_cap_release *head;
 	struct ceph_mds_cap_item *item;
 
+<<<<<<< HEAD
 	spin_lock(&session->s_cap_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(!session->s_num_cap_releases);
 	msg = list_first_entry(&session->s_cap_releases,
 			       struct ceph_msg, list_head);
@@ -1088,7 +1295,11 @@ static void __queue_cap_release(struct ceph_mds_session *session,
 
 	BUG_ON(msg->front.iov_len + sizeof(*item) > PAGE_CACHE_SIZE);
 	head = msg->front.iov_base;
+<<<<<<< HEAD
 	head->num = cpu_to_le32(le32_to_cpu(head->num) + 1);
+=======
+	le32_add_cpu(&head->num, 1);
+>>>>>>> refs/remotes/origin/master
 	item = msg->front.iov_base + msg->front.iov_len;
 	item->ino = cpu_to_le64(ino);
 	item->cap_id = cpu_to_le64(cap_id);
@@ -1107,16 +1318,23 @@ static void __queue_cap_release(struct ceph_mds_session *session,
 		     (int)CEPH_CAPS_PER_RELEASE,
 		     (int)msg->front.iov_len);
 	}
+<<<<<<< HEAD
 	spin_unlock(&session->s_cap_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Queue cap releases when an inode is dropped from our cache.  Since
 <<<<<<< HEAD
+<<<<<<< HEAD
  * inode is about to be destroyed, there is no need for i_lock.
 =======
  * inode is about to be destroyed, there is no need for i_ceph_lock.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * inode is about to be destroyed, there is no need for i_ceph_lock.
+>>>>>>> refs/remotes/origin/master
  */
 void ceph_queue_caps_release(struct inode *inode)
 {
@@ -1126,22 +1344,31 @@ void ceph_queue_caps_release(struct inode *inode)
 	p = rb_first(&ci->i_caps);
 	while (p) {
 		struct ceph_cap *cap = rb_entry(p, struct ceph_cap, ci_node);
+<<<<<<< HEAD
 		struct ceph_mds_session *session = cap->session;
 
 		__queue_cap_release(session, ceph_ino(inode), cap->cap_id,
 				    cap->mseq, cap->issue_seq);
 		p = rb_next(p);
 		__ceph_remove_cap(cap);
+=======
+		p = rb_next(p);
+		__ceph_remove_cap(cap, true);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 /*
  * Send a cap msg on the given inode.  Update our caps state, then
 <<<<<<< HEAD
+<<<<<<< HEAD
  * drop i_lock and send the message.
 =======
  * drop i_ceph_lock and send the message.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * drop i_ceph_lock and send the message.
+>>>>>>> refs/remotes/origin/master
  *
  * Make note of max_size reported/requested from mds, revoked caps
  * that have now been implemented.
@@ -1154,20 +1381,28 @@ void ceph_queue_caps_release(struct inode *inode)
  * such that the caller should requeue + retry later.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * called with i_lock, then drops it.
 =======
  * called with i_ceph_lock, then drops it.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * called with i_ceph_lock, then drops it.
+>>>>>>> refs/remotes/origin/master
  * caller should hold snap_rwsem (read), s_mutex.
  */
 static int __send_cap(struct ceph_mds_client *mdsc, struct ceph_cap *cap,
 		      int op, int used, int want, int retain, int flushing,
 		      unsigned *pflush_tid)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__releases(cap->ci->vfs_inode->i_lock)
 =======
 	__releases(cap->ci->i_ceph_lock)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__releases(cap->ci->i_ceph_lock)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ceph_inode_info *ci = cap->ci;
 	struct inode *inode = &ci->vfs_inode;
@@ -1178,12 +1413,18 @@ static int __send_cap(struct ceph_mds_client *mdsc, struct ceph_cap *cap,
 	struct timespec mtime, atime;
 	int wake = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mode;
 =======
 	umode_t mode;
 >>>>>>> refs/remotes/origin/cm-10.0
 	uid_t uid;
 	gid_t gid;
+=======
+	umode_t mode;
+	kuid_t uid;
+	kgid_t gid;
+>>>>>>> refs/remotes/origin/master
 	struct ceph_mds_session *session;
 	u64 xattr_version = 0;
 	struct ceph_buffer *xattr_blob = NULL;
@@ -1275,10 +1516,14 @@ static int __send_cap(struct ceph_mds_client *mdsc, struct ceph_cap *cap,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 
 	ret = send_cap_msg(session, ceph_vino(inode).ino, cap_id,
 		op, keep, want, flushing, seq, flush_tid, issue_seq, mseq,
@@ -1307,14 +1552,19 @@ static int __send_cap(struct ceph_mds_client *mdsc, struct ceph_cap *cap,
  * the MDS (i.e., during this session).
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Called under i_lock.  Takes s_mutex as needed.
 =======
  * Called under i_ceph_lock.  Takes s_mutex as needed.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Called under i_ceph_lock.  Takes s_mutex as needed.
+>>>>>>> refs/remotes/origin/master
  */
 void __ceph_flush_snaps(struct ceph_inode_info *ci,
 			struct ceph_mds_session **psession,
 			int again)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		__releases(ci->vfs_inode->i_lock)
 		__acquires(ci->vfs_inode->i_lock)
@@ -1322,6 +1572,10 @@ void __ceph_flush_snaps(struct ceph_inode_info *ci,
 		__releases(ci->i_ceph_lock)
 		__acquires(ci->i_ceph_lock)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__releases(ci->i_ceph_lock)
+		__acquires(ci->i_ceph_lock)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode = &ci->vfs_inode;
 	int mds;
@@ -1379,10 +1633,14 @@ retry:
 		}
 		if (!session) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			spin_unlock(&inode->i_lock);
 =======
 			spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 			mutex_lock(&mdsc->mutex);
 			session = __ceph_lookup_mds_session(mdsc, mds);
 			mutex_unlock(&mdsc->mutex);
@@ -1397,10 +1655,14 @@ retry:
 			 * get a better @mds value next time.
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			spin_lock(&inode->i_lock);
 =======
 			spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 			goto retry;
 		}
 
@@ -1411,10 +1673,14 @@ retry:
 		list_add_tail(&capsnap->flushing_item,
 			      &session->s_cap_snaps_flushing);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock(&inode->i_lock);
 =======
 		spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 
 		dout("flush_snaps %p cap_snap %p follows %lld tid %llu\n",
 		     inode, capsnap, capsnap->follows, capsnap->flush_tid);
@@ -1432,10 +1698,14 @@ retry:
 		ceph_put_cap_snap(capsnap);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock(&inode->i_lock);
 =======
 		spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 		goto retry;
 	}
 
@@ -1456,6 +1726,7 @@ out:
 static void ceph_flush_snaps(struct ceph_inode_info *ci)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct inode *inode = &ci->vfs_inode;
 
 	spin_lock(&inode->i_lock);
@@ -1466,6 +1737,11 @@ static void ceph_flush_snaps(struct ceph_inode_info *ci)
 	__ceph_flush_snaps(ci, NULL, 0);
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+	__ceph_flush_snaps(ci, NULL, 0);
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1490,12 +1766,15 @@ int __ceph_mark_dirty_caps(struct ceph_inode_info *ci, int mask)
 			ci->i_head_snapc = ceph_get_snap_context(
 				ci->i_snap_realm->cached_context);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dout(" inode %p now dirty snapc %p\n", &ci->vfs_inode,
 			ci->i_head_snapc);
 		BUG_ON(!list_empty(&ci->i_dirty_item));
 		spin_lock(&mdsc->cap_dirty_lock);
 		list_add(&ci->i_dirty_item, &mdsc->cap_dirty);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dout(" inode %p now dirty snapc %p auth cap %p\n",
 		     &ci->vfs_inode, ci->i_head_snapc, ci->i_auth_cap);
 		BUG_ON(!list_empty(&ci->i_dirty_item));
@@ -1505,7 +1784,10 @@ int __ceph_mark_dirty_caps(struct ceph_inode_info *ci, int mask)
 		else
 			list_add(&ci->i_dirty_item,
 				 &mdsc->cap_dirty_migrating);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&mdsc->cap_dirty_lock);
 		if (ci->i_flushing_caps == 0) {
 			ihold(inode);
@@ -1525,10 +1807,14 @@ int __ceph_mark_dirty_caps(struct ceph_inode_info *ci, int mask)
  * can wait for caps to flush without starving.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Called under i_lock.
 =======
  * Called under i_ceph_lock.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Called under i_ceph_lock.
+>>>>>>> refs/remotes/origin/master
  */
 static int __mark_caps_flushing(struct inode *inode,
 				 struct ceph_mds_session *session)
@@ -1577,6 +1863,7 @@ static int try_nonblocking_invalidate(struct inode *inode)
 	u32 invalidating_gen = ci->i_rdcache_gen;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 	invalidate_mapping_pages(&inode->i_data, 0, -1);
 	spin_lock(&inode->i_lock);
@@ -1585,6 +1872,11 @@ static int try_nonblocking_invalidate(struct inode *inode)
 	invalidate_mapping_pages(&inode->i_data, 0, -1);
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+	invalidate_mapping_pages(&inode->i_data, 0, -1);
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 
 	if (inode->i_data.nrpages == 0 &&
 	    invalidating_gen == ci->i_rdcache_gen) {
@@ -1616,7 +1908,11 @@ void ceph_check_caps(struct ceph_inode_info *ci, int flags,
 	struct ceph_mds_client *mdsc = fsc->mdsc;
 	struct inode *inode = &ci->vfs_inode;
 	struct ceph_cap *cap;
+<<<<<<< HEAD
 	int file_wanted, used;
+=======
+	int file_wanted, used, cap_used;
+>>>>>>> refs/remotes/origin/master
 	int took_snap_rwsem = 0;             /* true if mdsc->snap_rwsem held */
 	int issued, implemented, want, retain, revoking, flushing = 0;
 	int mds = -1;   /* keep track of how far we've gone through i_caps list
@@ -1632,10 +1928,14 @@ void ceph_check_caps(struct ceph_inode_info *ci, int flags,
 		is_delayed = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 
 	if (ci->i_ceph_flags & CEPH_I_FLUSH)
 		flags |= CHECK_CAPS_FLUSH;
@@ -1646,10 +1946,14 @@ void ceph_check_caps(struct ceph_inode_info *ci, int flags,
 	goto retry_locked;
 retry:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 retry_locked:
 	file_wanted = __ceph_caps_file_wanted(ci);
 	used = __ceph_caps_used(ci);
@@ -1727,9 +2031,20 @@ retry_locked:
 
 		/* NOTE: no side-effects allowed, until we take s_mutex */
 
+<<<<<<< HEAD
 		revoking = cap->implemented & ~cap->issued;
 		dout(" mds%d cap %p issued %s implemented %s revoking %s\n",
 		     cap->mds, cap, ceph_cap_string(cap->issued),
+=======
+		cap_used = used;
+		if (ci->i_auth_cap && cap != ci->i_auth_cap)
+			cap_used &= ~ci->i_auth_cap->issued;
+
+		revoking = cap->implemented & ~cap->issued;
+		dout(" mds%d cap %p used %s issued %s implemented %s revoking %s\n",
+		     cap->mds, cap, ceph_cap_string(cap->issued),
+		     ceph_cap_string(cap_used),
+>>>>>>> refs/remotes/origin/master
 		     ceph_cap_string(cap->implemented),
 		     ceph_cap_string(revoking));
 
@@ -1757,7 +2072,11 @@ retry_locked:
 		}
 
 		/* completed revocation? going down and there are no caps? */
+<<<<<<< HEAD
 		if (revoking && (revoking & used) == 0) {
+=======
+		if (revoking && (revoking & cap_used) == 0) {
+>>>>>>> refs/remotes/origin/master
 			dout("completed revocation of %s\n",
 			     ceph_cap_string(cap->implemented & ~cap->issued));
 			goto ack;
@@ -1804,10 +2123,14 @@ ack:
 				dout("inverting session/ino locks on %p\n",
 				     session);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				spin_unlock(&inode->i_lock);
 =======
 				spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 				if (took_snap_rwsem) {
 					up_read(&mdsc->snap_rwsem);
 					took_snap_rwsem = 0;
@@ -1822,10 +2145,14 @@ ack:
 				dout("inverting snap/in locks on %p\n",
 				     inode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				spin_unlock(&inode->i_lock);
 =======
 				spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 				down_read(&mdsc->snap_rwsem);
 				took_snap_rwsem = 1;
 				goto retry;
@@ -1842,6 +2169,7 @@ ack:
 		sent++;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* __send_cap drops i_lock */
 		delayed += __send_cap(mdsc, cap, CEPH_CAP_OP_UPDATE, used, want,
 				      retain, flushing, NULL);
@@ -1852,6 +2180,12 @@ ack:
 				      retain, flushing, NULL);
 		goto retry; /* retake i_ceph_lock and restart our cap scan. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* __send_cap drops i_ceph_lock */
+		delayed += __send_cap(mdsc, cap, CEPH_CAP_OP_UPDATE, cap_used,
+				      want, retain, flushing, NULL);
+		goto retry; /* retake i_ceph_lock and restart our cap scan. */
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1866,10 +2200,14 @@ ack:
 		__cap_delay_requeue(mdsc, ci);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 
 	if (queue_invalidate)
 		ceph_queue_invalidate(inode);
@@ -1893,10 +2231,14 @@ static int try_flush_caps(struct inode *inode, struct ceph_mds_session *session,
 
 retry:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	if (ci->i_ceph_flags & CEPH_I_NOFLUSH) {
 		dout("try_flush_caps skipping %p I_NOFLUSH set\n", inode);
 		goto out;
@@ -1909,10 +2251,14 @@ retry:
 
 		if (!session) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			spin_unlock(&inode->i_lock);
 =======
 			spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 			session = cap->session;
 			mutex_lock(&session->s_mutex);
 			goto retry;
@@ -1924,10 +2270,14 @@ retry:
 		flushing = __mark_caps_flushing(inode, session);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* __send_cap drops i_lock */
 =======
 		/* __send_cap drops i_ceph_lock */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* __send_cap drops i_ceph_lock */
+>>>>>>> refs/remotes/origin/master
 		delayed = __send_cap(mdsc, cap, CEPH_CAP_OP_FLUSH, used, want,
 				     cap->issued | cap->implemented, flushing,
 				     flush_tid);
@@ -1935,18 +2285,24 @@ retry:
 			goto out_unlocked;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock(&inode->i_lock);
 		__cap_delay_requeue(mdsc, ci);
 	}
 out:
 	spin_unlock(&inode->i_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_lock(&ci->i_ceph_lock);
 		__cap_delay_requeue(mdsc, ci);
 	}
 out:
 	spin_unlock(&ci->i_ceph_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out_unlocked:
 	if (session && unlock_session)
 		mutex_unlock(&session->s_mutex);
@@ -1962,10 +2318,14 @@ static int caps_are_flushed(struct inode *inode, unsigned tid)
 	int i, ret = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < CEPH_CAP_BITS; i++)
 		if ((ci->i_flushing_caps & (1 << i)) &&
 		    ci->i_cap_flush_tid[i] <= tid) {
@@ -1974,10 +2334,14 @@ static int caps_are_flushed(struct inode *inode, unsigned tid)
 			break;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -2026,10 +2390,14 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ceph_fsync(struct file *file, int datasync)
 =======
 int ceph_fsync(struct file *file, loff_t start, loff_t end, int datasync)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ceph_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode = file->f_mapping->host;
 	struct ceph_inode_info *ci = ceph_inode(inode);
@@ -2041,15 +2409,21 @@ int ceph_fsync(struct file *file, loff_t start, loff_t end, int datasync)
 	sync_write_wait(inode);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = filemap_write_and_wait(inode->i_mapping);
 	if (ret < 0)
 		return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
 	if (ret < 0)
 		return ret;
 	mutex_lock(&inode->i_mutex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dirty = try_flush_caps(inode, NULL, &flush_tid);
 	dout("fsync dirty caps are %s\n", ceph_cap_string(dirty));
@@ -2067,9 +2441,13 @@ int ceph_fsync(struct file *file, loff_t start, loff_t end, int datasync)
 
 	dout("fsync %p%s done\n", inode, datasync ? " datasync" : "");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_unlock(&inode->i_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -2098,16 +2476,22 @@ int ceph_write_inode(struct inode *inode, struct writeback_control *wbc)
 			ceph_sb_to_client(inode->i_sb)->mdsc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock(&inode->i_lock);
 		if (__ceph_caps_dirty(ci))
 			__cap_delay_requeue_front(mdsc, ci);
 		spin_unlock(&inode->i_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_lock(&ci->i_ceph_lock);
 		if (__ceph_caps_dirty(ci))
 			__cap_delay_requeue_front(mdsc, ci);
 		spin_unlock(&ci->i_ceph_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return err;
 }
@@ -2131,10 +2515,14 @@ static void kick_flushing_capsnaps(struct ceph_mds_client *mdsc,
 		struct ceph_cap *cap;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock(&inode->i_lock);
 =======
 		spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 		cap = ci->i_auth_cap;
 		if (cap && cap->session == session) {
 			dout("kick_flushing_caps %p cap %p capsnap %p\n", inode,
@@ -2145,10 +2533,14 @@ static void kick_flushing_capsnaps(struct ceph_mds_client *mdsc,
 			       cap, session->s_mds);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock(&inode->i_lock);
 =======
 		spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -2166,10 +2558,14 @@ void ceph_kick_flushing_caps(struct ceph_mds_client *mdsc,
 		int delayed = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock(&inode->i_lock);
 =======
 		spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 		cap = ci->i_auth_cap;
 		if (cap && cap->session == session) {
 			dout("kick_flushing_caps %p cap %p %s\n", inode,
@@ -2181,6 +2577,7 @@ void ceph_kick_flushing_caps(struct ceph_mds_client *mdsc,
 					     ci->i_flushing_caps, NULL);
 			if (delayed) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				spin_lock(&inode->i_lock);
 				__cap_delay_requeue(mdsc, ci);
 				spin_unlock(&inode->i_lock);
@@ -2189,15 +2586,24 @@ void ceph_kick_flushing_caps(struct ceph_mds_client *mdsc,
 				__cap_delay_requeue(mdsc, ci);
 				spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				spin_lock(&ci->i_ceph_lock);
+				__cap_delay_requeue(mdsc, ci);
+				spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 			}
 		} else {
 			pr_err("%p auth cap %p not mds%d ???\n", inode,
 			       cap, session->s_mds);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			spin_unlock(&inode->i_lock);
 =======
 			spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
@@ -2211,6 +2617,7 @@ static void kick_flushing_inode_caps(struct ceph_mds_client *mdsc,
 	int delayed = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
@@ -2220,12 +2627,28 @@ static void kick_flushing_inode_caps(struct ceph_mds_client *mdsc,
 	     ceph_cap_string(ci->i_flushing_caps), ci->i_cap_flush_seq);
 	__ceph_flush_snaps(ci, &session, 1);
 	if (ci->i_flushing_caps) {
+=======
+	spin_lock(&ci->i_ceph_lock);
+	cap = ci->i_auth_cap;
+	dout("kick_flushing_inode_caps %p flushing %s flush_seq %lld\n", inode,
+	     ceph_cap_string(ci->i_flushing_caps), ci->i_cap_flush_seq);
+
+	__ceph_flush_snaps(ci, &session, 1);
+
+	if (ci->i_flushing_caps) {
+		spin_lock(&mdsc->cap_dirty_lock);
+		list_move_tail(&ci->i_flushing_item,
+			       &cap->session->s_cap_flushing);
+		spin_unlock(&mdsc->cap_dirty_lock);
+
+>>>>>>> refs/remotes/origin/master
 		delayed = __send_cap(mdsc, cap, CEPH_CAP_OP_FLUSH,
 				     __ceph_caps_used(ci),
 				     __ceph_caps_wanted(ci),
 				     cap->issued | cap->implemented,
 				     ci->i_flushing_caps, NULL);
 		if (delayed) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			spin_lock(&inode->i_lock);
 			__cap_delay_requeue(mdsc, ci);
@@ -2234,13 +2657,18 @@ static void kick_flushing_inode_caps(struct ceph_mds_client *mdsc,
 	} else {
 		spin_unlock(&inode->i_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			spin_lock(&ci->i_ceph_lock);
 			__cap_delay_requeue(mdsc, ci);
 			spin_unlock(&ci->i_ceph_lock);
 		}
 	} else {
 		spin_unlock(&ci->i_ceph_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -2250,10 +2678,14 @@ static void kick_flushing_inode_caps(struct ceph_mds_client *mdsc,
  * them to the MDS prematurely.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Protected by i_lock.
 =======
  * Protected by i_ceph_lock.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Protected by i_ceph_lock.
+>>>>>>> refs/remotes/origin/master
  */
 static void __take_cap_refs(struct ceph_inode_info *ci, int got)
 {
@@ -2292,10 +2724,14 @@ static int try_get_cap_refs(struct ceph_inode_info *ci, int need, int want,
 	dout("get_cap_refs %p need %s want %s\n", inode,
 	     ceph_cap_string(need), ceph_cap_string(want));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 
 	/* make sure file is actually open */
 	file_wanted = __ceph_caps_file_wanted(ci);
@@ -2307,11 +2743,28 @@ static int try_get_cap_refs(struct ceph_inode_info *ci, int need, int want,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (need & CEPH_CAP_FILE_WR) {
 		if (endoff >= 0 && endoff > (loff_t)ci->i_max_size) {
 			dout("get_cap_refs %p endoff %llu > maxsize %llu\n",
 			     inode, endoff, ci->i_max_size);
 			if (endoff > ci->i_wanted_max_size) {
+=======
+	/* finish pending truncate */
+	while (ci->i_truncate_pending) {
+		spin_unlock(&ci->i_ceph_lock);
+		__ceph_do_pending_vmtruncate(inode);
+		spin_lock(&ci->i_ceph_lock);
+	}
+
+	have = __ceph_caps_issued(ci, &implemented);
+
+	if (have & need & CEPH_CAP_FILE_WR) {
+		if (endoff >= 0 && endoff > (loff_t)ci->i_max_size) {
+			dout("get_cap_refs %p endoff %llu > maxsize %llu\n",
+			     inode, endoff, ci->i_max_size);
+			if (endoff > ci->i_requested_max_size) {
+>>>>>>> refs/remotes/origin/master
 				*check_max = 1;
 				ret = 1;
 			}
@@ -2326,6 +2779,7 @@ static int try_get_cap_refs(struct ceph_inode_info *ci, int need, int want,
 			goto out;
 		}
 	}
+<<<<<<< HEAD
 	have = __ceph_caps_issued(ci, &implemented);
 
 	/*
@@ -2333,6 +2787,8 @@ static int try_get_cap_refs(struct ceph_inode_info *ci, int need, int want,
 	 */
 	if (ci->i_truncate_pending)
 		have &= ~CEPH_CAP_FILE_WR;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if ((have & need) == need) {
 		/*
@@ -2357,10 +2813,14 @@ static int try_get_cap_refs(struct ceph_inode_info *ci, int need, int want,
 	}
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	dout("get_cap_refs %p ret %d got %s\n", inode,
 	     ret, ceph_cap_string(*got));
 	return ret;
@@ -2377,6 +2837,7 @@ static void check_max_size(struct inode *inode, loff_t endoff)
 	int check = 0;
 
 	/* do we need to explicitly request a larger max_size? */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
@@ -2395,6 +2856,21 @@ static void check_max_size(struct inode *inode, loff_t endoff)
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+	if (endoff >= ci->i_max_size && endoff > ci->i_wanted_max_size) {
+		dout("write %p at large endoff %llu, req max_size\n",
+		     inode, endoff);
+		ci->i_wanted_max_size = endoff;
+	}
+	/* duplicate ceph_check_caps()'s logic */
+	if (ci->i_auth_cap &&
+	    (ci->i_auth_cap->issued & CEPH_CAP_FILE_WR) &&
+	    ci->i_wanted_max_size > ci->i_max_size &&
+	    ci->i_wanted_max_size > ci->i_requested_max_size)
+		check = 1;
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	if (check)
 		ceph_check_caps(ci, CHECK_CAPS_AUTHONLY, NULL);
 }
@@ -2432,6 +2908,7 @@ retry:
 void ceph_get_cap_refs(struct ceph_inode_info *ci, int caps)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&ci->vfs_inode.i_lock);
 	__take_cap_refs(ci, caps);
 	spin_unlock(&ci->vfs_inode.i_lock);
@@ -2440,6 +2917,11 @@ void ceph_get_cap_refs(struct ceph_inode_info *ci, int caps)
 	__take_cap_refs(ci, caps);
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+	__take_cap_refs(ci, caps);
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2458,10 +2940,14 @@ void ceph_put_cap_refs(struct ceph_inode_info *ci, int had)
 	struct ceph_cap_snap *capsnap;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	if (had & CEPH_CAP_PIN)
 		--ci->i_pin_ref;
 	if (had & CEPH_CAP_FILE_RD)
@@ -2495,10 +2981,14 @@ void ceph_put_cap_refs(struct ceph_inode_info *ci, int had)
 			}
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 
 	dout("put_cap_refs %p had %s%s%s\n", inode, ceph_cap_string(had),
 	     last ? " last" : "", put ? " put" : "");
@@ -2531,10 +3021,14 @@ void ceph_put_wrbuffer_cap_refs(struct ceph_inode_info *ci, int nr,
 	struct ceph_cap_snap *capsnap = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	ci->i_wrbuffer_ref -= nr;
 	last = !ci->i_wrbuffer_ref;
 
@@ -2584,10 +3078,14 @@ void ceph_put_wrbuffer_cap_refs(struct ceph_inode_info *ci, int nr,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 
 	if (last) {
 		ceph_check_caps(ci, CHECK_CAPS_AUTHONLY, NULL);
@@ -2601,6 +3099,7 @@ void ceph_put_wrbuffer_cap_refs(struct ceph_inode_info *ci, int nr,
 }
 
 /*
+<<<<<<< HEAD
  * Handle a cap GRANT message from the MDS.  (Note that a GRANT may
  * actually be a revocation if it specifies a smaller cap set.)
  *
@@ -2609,6 +3108,44 @@ void ceph_put_wrbuffer_cap_refs(struct ceph_inode_info *ci, int nr,
 =======
  * caller holds s_mutex and i_ceph_lock, we drop both.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Invalidate unlinked inode's aliases, so we can drop the inode ASAP.
+ */
+static void invalidate_aliases(struct inode *inode)
+{
+	struct dentry *dn, *prev = NULL;
+
+	dout("invalidate_aliases inode %p\n", inode);
+	d_prune_aliases(inode);
+	/*
+	 * For non-directory inode, d_find_alias() only returns
+	 * connected dentry. After calling d_invalidate(), the
+	 * dentry become disconnected.
+	 *
+	 * For directory inode, d_find_alias() can return
+	 * disconnected dentry. But directory inode should have
+	 * one alias at most.
+	 */
+	while ((dn = d_find_alias(inode))) {
+		if (dn == prev) {
+			dput(dn);
+			break;
+		}
+		d_invalidate(dn);
+		if (prev)
+			dput(prev);
+		prev = dn;
+	}
+	if (prev)
+		dput(prev);
+}
+
+/*
+ * Handle a cap GRANT message from the MDS.  (Note that a GRANT may
+ * actually be a revocation if it specifies a smaller cap set.)
+ *
+ * caller holds s_mutex and i_ceph_lock, we drop both.
+>>>>>>> refs/remotes/origin/master
  *
  * return value:
  *  0 - ok
@@ -2620,10 +3157,14 @@ static void handle_cap_grant(struct inode *inode, struct ceph_mds_caps *grant,
 			     struct ceph_cap *cap,
 			     struct ceph_buffer *xattr_buf)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__releases(inode->i_lock)
 =======
 		__releases(ci->i_ceph_lock)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__releases(ci->i_ceph_lock)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ceph_inode_info *ci = ceph_inode(inode);
 	int mds = session->s_mds;
@@ -2636,8 +3177,14 @@ static void handle_cap_grant(struct inode *inode, struct ceph_mds_caps *grant,
 	int check_caps = 0;
 	int wake = 0;
 	int writeback = 0;
+<<<<<<< HEAD
 	int revoked_rdcache = 0;
 	int queue_invalidate = 0;
+=======
+	int queue_invalidate = 0;
+	int deleted_inode = 0;
+	int queue_revalidate = 0;
+>>>>>>> refs/remotes/origin/master
 
 	dout("handle_cap_grant inode %p cap %p mds%d seq %d %s\n",
 	     inode, cap, mds, seq, ceph_cap_string(newcaps));
@@ -2652,9 +3199,13 @@ static void handle_cap_grant(struct inode *inode, struct ceph_mds_caps *grant,
 	if (((cap->issued & ~newcaps) & CEPH_CAP_FILE_CACHE) &&
 	    (newcaps & CEPH_CAP_FILE_LAZYIO) == 0 &&
 	    !ci->i_wrbuffer_ref) {
+<<<<<<< HEAD
 		if (try_nonblocking_invalidate(inode) == 0) {
 			revoked_rdcache = 1;
 		} else {
+=======
+		if (try_nonblocking_invalidate(inode)) {
+>>>>>>> refs/remotes/origin/master
 			/* there were locked pages.. invalidate later
 			   in a separate thread. */
 			if (ci->i_rdcache_revoking != ci->i_rdcache_gen) {
@@ -2662,6 +3213,11 @@ static void handle_cap_grant(struct inode *inode, struct ceph_mds_caps *grant,
 				ci->i_rdcache_revoking = ci->i_rdcache_gen;
 			}
 		}
+<<<<<<< HEAD
+=======
+
+		ceph_fscache_invalidate(inode);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* side effects now are allowed */
@@ -2675,6 +3231,7 @@ static void handle_cap_grant(struct inode *inode, struct ceph_mds_caps *grant,
 
 	if ((issued & CEPH_CAP_AUTH_EXCL) == 0) {
 		inode->i_mode = le32_to_cpu(grant->mode);
+<<<<<<< HEAD
 		inode->i_uid = le32_to_cpu(grant->uid);
 		inode->i_gid = le32_to_cpu(grant->gid);
 		dout("%p mode 0%o uid.gid %d.%d\n", inode, inode->i_mode,
@@ -2687,6 +3244,21 @@ static void handle_cap_grant(struct inode *inode, struct ceph_mds_caps *grant,
 =======
 		set_nlink(inode, le32_to_cpu(grant->nlink));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		inode->i_uid = make_kuid(&init_user_ns, le32_to_cpu(grant->uid));
+		inode->i_gid = make_kgid(&init_user_ns, le32_to_cpu(grant->gid));
+		dout("%p mode 0%o uid.gid %d.%d\n", inode, inode->i_mode,
+		     from_kuid(&init_user_ns, inode->i_uid),
+		     from_kgid(&init_user_ns, inode->i_gid));
+	}
+
+	if ((issued & CEPH_CAP_LINK_EXCL) == 0) {
+		set_nlink(inode, le32_to_cpu(grant->nlink));
+		if (inode->i_nlink == 0 &&
+		    (newcaps & (CEPH_CAP_LINK_SHARED | CEPH_CAP_LINK_EXCL)))
+			deleted_inode = 1;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if ((issued & CEPH_CAP_XATTR_EXCL) == 0 && grant->xattr_len) {
 		int len = le32_to_cpu(grant->xattr_len);
@@ -2702,6 +3274,14 @@ static void handle_cap_grant(struct inode *inode, struct ceph_mds_caps *grant,
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	/* Do we need to revalidate our fscache cookie. Don't bother on the
+	 * first cache cap as we already validate at cookie creation time. */
+	if ((issued & CEPH_CAP_FILE_CACHE) && ci->i_rdcache_gen > 1)
+		queue_revalidate = 1;
+
+>>>>>>> refs/remotes/origin/master
 	/* size/ctime/mtime/atime? */
 	ceph_fill_file_size(inode, issued,
 			    le32_to_cpu(grant->truncate_seq),
@@ -2715,10 +3295,14 @@ static void handle_cap_grant(struct inode *inode, struct ceph_mds_caps *grant,
 
 	/* max size increase? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (max_size != ci->i_max_size) {
 =======
 	if (ci->i_auth_cap == cap && max_size != ci->i_max_size) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ci->i_auth_cap == cap && max_size != ci->i_max_size) {
+>>>>>>> refs/remotes/origin/master
 		dout("max_size %lld -> %llu\n", ci->i_max_size, max_size);
 		ci->i_max_size = max_size;
 		if (max_size >= ci->i_wanted_max_size) {
@@ -2740,7 +3324,13 @@ static void handle_cap_grant(struct inode *inode, struct ceph_mds_caps *grant,
 		dout("mds wanted %s -> %s\n",
 		     ceph_cap_string(le32_to_cpu(grant->wanted)),
 		     ceph_cap_string(wanted));
+<<<<<<< HEAD
 		grant->wanted = cpu_to_le32(wanted);
+=======
+		/* imported cap may not have correct mds_wanted */
+		if (le32_to_cpu(grant->op) == CEPH_CAP_OP_IMPORT)
+			check_caps = 1;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	cap->seq = seq;
@@ -2774,6 +3364,14 @@ static void handle_cap_grant(struct inode *inode, struct ceph_mds_caps *grant,
 	} else {
 		dout("grant: %s -> %s\n", ceph_cap_string(cap->issued),
 		     ceph_cap_string(newcaps));
+<<<<<<< HEAD
+=======
+		/* non-auth MDS is revoking the newly grant caps ? */
+		if (cap == ci->i_auth_cap &&
+		    __ceph_caps_revoking_other(ci, cap, newcaps))
+		    check_caps = 2;
+
+>>>>>>> refs/remotes/origin/master
 		cap->issued = newcaps;
 		cap->implemented |= newcaps; /* add bits only, to
 					      * avoid stepping on a
@@ -2783,10 +3381,15 @@ static void handle_cap_grant(struct inode *inode, struct ceph_mds_caps *grant,
 	BUG_ON(cap->issued & ~cap->implemented);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+
+>>>>>>> refs/remotes/origin/master
 	if (writeback)
 		/*
 		 * queue inode for writeback: we can't actually call
@@ -2796,6 +3399,13 @@ static void handle_cap_grant(struct inode *inode, struct ceph_mds_caps *grant,
 		ceph_queue_writeback(inode);
 	if (queue_invalidate)
 		ceph_queue_invalidate(inode);
+<<<<<<< HEAD
+=======
+	if (deleted_inode)
+		invalidate_aliases(inode);
+	if (queue_revalidate)
+		ceph_queue_revalidate(inode);
+>>>>>>> refs/remotes/origin/master
 	if (wake)
 		wake_up_all(&ci->i_cap_wq);
 
@@ -2817,10 +3427,14 @@ static void handle_cap_flush_ack(struct inode *inode, u64 flush_tid,
 				 struct ceph_mds_session *session,
 				 struct ceph_cap *cap)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__releases(inode->i_lock)
 =======
 	__releases(ci->i_ceph_lock)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__releases(ci->i_ceph_lock)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ceph_inode_info *ci = ceph_inode(inode);
 	struct ceph_mds_client *mdsc = ceph_sb_to_client(inode->i_sb)->mdsc;
@@ -2877,10 +3491,14 @@ static void handle_cap_flush_ack(struct inode *inode, u64 flush_tid,
 
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	if (drop)
 		iput(inode);
 }
@@ -2904,10 +3522,14 @@ static void handle_cap_flushsnap_ack(struct inode *inode, u64 flush_tid,
 	     inode, ci, session->s_mds, follows);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(capsnap, &ci->i_cap_snaps, ci_item) {
 		if (capsnap->follows == follows) {
 			if (capsnap->flush_tid != flush_tid) {
@@ -2931,10 +3553,14 @@ static void handle_cap_flushsnap_ack(struct inode *inode, u64 flush_tid,
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	if (drop)
 		iput(inode);
 }
@@ -2948,10 +3574,14 @@ static void handle_cap_trunc(struct inode *inode,
 			     struct ceph_mds_caps *trunc,
 			     struct ceph_mds_session *session)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__releases(inode->i_lock)
 =======
 	__releases(ci->i_ceph_lock)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__releases(ci->i_ceph_lock)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ceph_inode_info *ci = ceph_inode(inode);
 	int mds = session->s_mds;
@@ -2971,6 +3601,7 @@ static void handle_cap_trunc(struct inode *inode,
 	queue_trunc = ceph_fill_file_size(inode, issued,
 					  truncate_seq, truncate_size, size);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
@@ -2978,6 +3609,14 @@ static void handle_cap_trunc(struct inode *inode,
 
 	if (queue_trunc)
 		ceph_queue_vmtruncate(inode);
+=======
+	spin_unlock(&ci->i_ceph_lock);
+
+	if (queue_trunc) {
+		ceph_queue_vmtruncate(inode);
+		ceph_fscache_invalidate(inode);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -3004,10 +3643,14 @@ static void handle_cap_export(struct inode *inode, struct ceph_mds_caps *ex,
 	     inode, ci, mds, mseq);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 
 	/* make sure we haven't seen a higher mseq */
 	for (p = rb_first(&ci->i_caps); p; p = rb_next(p)) {
@@ -3047,6 +3690,7 @@ static void handle_cap_export(struct inode *inode, struct ceph_mds_caps *ex,
 			}
 			spin_unlock(&mdsc->cap_dirty_lock);
 		}
+<<<<<<< HEAD
 		__ceph_remove_cap(cap);
 	}
 	/* else, we already released it */
@@ -3056,6 +3700,13 @@ static void handle_cap_export(struct inode *inode, struct ceph_mds_caps *ex,
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__ceph_remove_cap(cap, false);
+	}
+	/* else, we already released it */
+
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -3111,15 +3762,21 @@ static void handle_cap_import(struct ceph_mds_client *mdsc,
 
 	/* make sure we re-request max_size, if necessary */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 	ci->i_requested_max_size = 0;
 	spin_unlock(&inode->i_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&ci->i_ceph_lock);
 	ci->i_wanted_max_size = 0;  /* reset */
 	ci->i_requested_max_size = 0;
 	spin_unlock(&ci->i_ceph_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -3135,9 +3792,13 @@ void ceph_handle_caps(struct ceph_mds_session *session,
 	struct super_block *sb = mdsc->fsc->sb;
 	struct inode *inode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct ceph_inode_info *ci;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ceph_inode_info *ci;
+>>>>>>> refs/remotes/origin/master
 	struct ceph_cap *cap;
 	struct ceph_mds_caps *h;
 	int mds = session->s_mds;
@@ -3189,20 +3850,38 @@ void ceph_handle_caps(struct ceph_mds_session *session,
 	dout(" mds%d seq %lld cap seq %u\n", session->s_mds, session->s_seq,
 	     (unsigned)seq);
 
+<<<<<<< HEAD
 	/* lookup ino */
 	inode = ceph_find_inode(sb, vino);
 <<<<<<< HEAD
 =======
 	ci = ceph_inode(inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (op == CEPH_CAP_OP_IMPORT)
+		ceph_add_cap_releases(mdsc, session);
+
+	/* lookup ino */
+	inode = ceph_find_inode(sb, vino);
+	ci = ceph_inode(inode);
+>>>>>>> refs/remotes/origin/master
 	dout(" op %s ino %llx.%llx inode %p\n", ceph_cap_op_name(op), vino.ino,
 	     vino.snap, inode);
 	if (!inode) {
 		dout(" i don't have ino %llx\n", vino.ino);
 
+<<<<<<< HEAD
 		if (op == CEPH_CAP_OP_IMPORT)
 			__queue_cap_release(session, vino.ino, cap_id,
 					    mseq, seq);
+=======
+		if (op == CEPH_CAP_OP_IMPORT) {
+			spin_lock(&session->s_cap_lock);
+			__queue_cap_release(session, vino.ino, cap_id,
+					    mseq, seq);
+			spin_unlock(&session->s_cap_lock);
+		}
+>>>>>>> refs/remotes/origin/master
 		goto flush_cap_releases;
 	}
 
@@ -3220,6 +3899,7 @@ void ceph_handle_caps(struct ceph_mds_session *session,
 		handle_cap_import(mdsc, inode, h, session,
 				  snaptrace, snaptrace_len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ceph_check_caps(ceph_inode(inode), 0, session);
 		goto done_unlocked;
 	}
@@ -3227,15 +3907,21 @@ void ceph_handle_caps(struct ceph_mds_session *session,
 	/* the rest require a cap */
 	spin_lock(&inode->i_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* the rest require a cap */
 	spin_lock(&ci->i_ceph_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cap = __get_cap_for_mds(ceph_inode(inode), mds);
 	if (!cap) {
 		dout(" no cap on %p ino %llx.%llx from mds%d\n",
 		     inode, ceph_ino(inode), ceph_snap(inode), mds);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		spin_unlock(&inode->i_lock);
 		goto flush_cap_releases;
@@ -3246,6 +3932,8 @@ void ceph_handle_caps(struct ceph_mds_session *session,
 	case CEPH_CAP_OP_REVOKE:
 	case CEPH_CAP_OP_GRANT:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&ci->i_ceph_lock);
 		goto flush_cap_releases;
 	}
@@ -3255,7 +3943,10 @@ void ceph_handle_caps(struct ceph_mds_session *session,
 	case CEPH_CAP_OP_REVOKE:
 	case CEPH_CAP_OP_GRANT:
 	case CEPH_CAP_OP_IMPORT:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		handle_cap_grant(inode, h, session, cap, msg->middle);
 		goto done_unlocked;
 
@@ -3269,10 +3960,14 @@ void ceph_handle_caps(struct ceph_mds_session *session,
 
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock(&inode->i_lock);
 =======
 		spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 		pr_err("ceph_handle_caps: unknown cap op %d %s\n", op,
 		       ceph_cap_op_name(op));
 	}
@@ -3366,20 +4061,28 @@ void ceph_put_fmode(struct ceph_inode_info *ci, int fmode)
 	int last = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	dout("put_fmode %p fmode %d %d -> %d\n", inode, fmode,
 	     ci->i_nr_by_mode[fmode], ci->i_nr_by_mode[fmode]-1);
 	BUG_ON(ci->i_nr_by_mode[fmode] == 0);
 	if (--ci->i_nr_by_mode[fmode] == 0)
 		last++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 
 	if (last && ci->i_vino.snap == CEPH_NOSNAP)
 		ceph_check_caps(ci, 0, NULL);
@@ -3403,10 +4106,14 @@ int ceph_encode_inode_release(void **p, struct inode *inode,
 	int ret = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&inode->i_lock);
 =======
 	spin_lock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	used = __ceph_caps_used(ci);
 	dirty = __ceph_caps_dirty(ci);
 
@@ -3424,6 +4131,7 @@ int ceph_encode_inode_release(void **p, struct inode *inode,
 		     (cap->issued & unless) == 0)) {
 			if ((cap->issued & drop) &&
 			    (cap->issued & unless) == 0) {
+<<<<<<< HEAD
 				dout("encode_inode_release %p cap %p %s -> "
 				     "%s\n", inode, cap,
 				     ceph_cap_string(cap->issued),
@@ -3439,6 +4147,21 @@ int ceph_encode_inode_release(void **p, struct inode *inode,
 					     ceph_cap_string(wanted));
 					cap->mds_wanted &= wanted;
 				}
+=======
+				int wanted = __ceph_caps_wanted(ci);
+				if ((ci->i_ceph_flags & CEPH_I_NODELAY) == 0)
+					wanted |= cap->mds_wanted;
+				dout("encode_inode_release %p cap %p "
+				     "%s -> %s, wanted %s -> %s\n", inode, cap,
+				     ceph_cap_string(cap->issued),
+				     ceph_cap_string(cap->issued & ~drop),
+				     ceph_cap_string(cap->mds_wanted),
+				     ceph_cap_string(wanted));
+
+				cap->issued &= ~drop;
+				cap->implemented &= ~drop;
+				cap->mds_wanted = wanted;
+>>>>>>> refs/remotes/origin/master
 			} else {
 				dout("encode_inode_release %p cap %p %s"
 				     " (force)\n", inode, cap,
@@ -3462,10 +4185,14 @@ int ceph_encode_inode_release(void **p, struct inode *inode,
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&inode->i_lock);
 =======
 	spin_unlock(&ci->i_ceph_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&ci->i_ceph_lock);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -3481,10 +4208,14 @@ int ceph_encode_dentry_release(void **p, struct dentry *dentry,
 	/*
 	 * force an record for the directory caps if we have a dentry lease.
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * this is racy (can't take i_lock and d_lock together), but it
 =======
 	 * this is racy (can't take i_ceph_lock and d_lock together), but it
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * this is racy (can't take i_ceph_lock and d_lock together), but it
+>>>>>>> refs/remotes/origin/master
 	 * doesn't have to be perfect; the mds will revoke anything we don't
 	 * release.
 	 */

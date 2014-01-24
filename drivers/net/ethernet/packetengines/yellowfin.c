@@ -106,7 +106,11 @@ static int gx_fix;
 #include <asm/io.h>
 
 /* These identify the driver base version and may not be removed. */
+<<<<<<< HEAD
 static const char version[] __devinitconst =
+=======
+static const char version[] =
+>>>>>>> refs/remotes/origin/master
   KERN_INFO DRV_NAME ".c:v1.05  1/09/2001  Written by Donald Becker <becker@scyld.com>\n"
   "  (unofficial 2.4.x port, " DRV_VERSION ", " DRV_RELDATE ")\n";
 
@@ -367,8 +371,13 @@ static const struct net_device_ops netdev_ops = {
 	.ndo_tx_timeout 	= yellowfin_tx_timeout,
 };
 
+<<<<<<< HEAD
 static int __devinit yellowfin_init_one(struct pci_dev *pdev,
 					const struct pci_device_id *ent)
+=======
+static int yellowfin_init_one(struct pci_dev *pdev,
+			      const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	struct yellowfin_private *np;
@@ -427,9 +436,12 @@ static int __devinit yellowfin_init_one(struct pci_dev *pdev,
 	/* Reset the chip. */
 	iowrite32(0x80000000, ioaddr + DMACtrl);
 
+<<<<<<< HEAD
 	dev->base_addr = (unsigned long)ioaddr;
 	dev->irq = irq;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_set_drvdata(pdev, dev);
 	spin_lock_init(&np->lock);
 
@@ -516,7 +528,10 @@ err_out_unmap_rx:
 err_out_unmap_tx:
         pci_free_consistent(pdev, TX_TOTAL_SIZE, np->tx_ring, np->tx_ring_dma);
 err_out_cleardev:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_iounmap(pdev, ioaddr);
 err_out_free_res:
 	pci_release_regions(pdev);
@@ -525,7 +540,11 @@ err_out_free_netdev:
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static int __devinit read_eeprom(void __iomem *ioaddr, int location)
+=======
+static int read_eeprom(void __iomem *ioaddr, int location)
+>>>>>>> refs/remotes/origin/master
 {
 	int bogus_cnt = 10000;		/* Typical 33Mhz: 1050 ticks */
 
@@ -569,12 +588,19 @@ static void mdio_write(void __iomem *ioaddr, int phy_id, int location, int value
 static int yellowfin_open(struct net_device *dev)
 {
 	struct yellowfin_private *yp = netdev_priv(dev);
+<<<<<<< HEAD
 	void __iomem *ioaddr = yp->base;
 	int i, ret;
+=======
+	const int irq = yp->pci_dev->irq;
+	void __iomem *ioaddr = yp->base;
+	int i, rc;
+>>>>>>> refs/remotes/origin/master
 
 	/* Reset the chip. */
 	iowrite32(0x80000000, ioaddr + DMACtrl);
 
+<<<<<<< HEAD
 	ret = request_irq(dev->irq, yellowfin_interrupt, IRQF_SHARED, dev->name, dev);
 	if (ret)
 		return ret;
@@ -588,6 +614,15 @@ static int yellowfin_open(struct net_device *dev)
 		free_irq(dev->irq, dev);
 		return ret;
 	}
+=======
+	rc = request_irq(irq, yellowfin_interrupt, IRQF_SHARED, dev->name, dev);
+	if (rc)
+		return rc;
+
+	rc = yellowfin_init_ring(dev);
+	if (rc < 0)
+		goto err_free_irq;
+>>>>>>> refs/remotes/origin/master
 
 	iowrite32(yp->rx_ring_dma, ioaddr + RxPtr);
 	iowrite32(yp->tx_ring_dma, ioaddr + TxPtr);
@@ -647,8 +682,17 @@ static int yellowfin_open(struct net_device *dev)
 	yp->timer.data = (unsigned long)dev;
 	yp->timer.function = yellowfin_timer;				/* timer handler */
 	add_timer(&yp->timer);
+<<<<<<< HEAD
 
 	return 0;
+=======
+out:
+	return rc;
+
+err_free_irq:
+	free_irq(irq, dev);
+	goto out;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void yellowfin_timer(unsigned long data)
@@ -1251,7 +1295,11 @@ static int yellowfin_close(struct net_device *dev)
 	}
 #endif /* __i386__ debugging only */
 
+<<<<<<< HEAD
 	free_irq(dev->irq, dev);
+=======
+	free_irq(yp->pci_dev->irq, dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* Free all the skbuffs in the Rx queue. */
 	for (i = 0; i < RX_RING_SIZE; i++) {
@@ -1330,9 +1378,16 @@ static void set_rx_mode(struct net_device *dev)
 static void yellowfin_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
 {
 	struct yellowfin_private *np = netdev_priv(dev);
+<<<<<<< HEAD
 	strcpy(info->driver, DRV_NAME);
 	strcpy(info->version, DRV_VERSION);
 	strcpy(info->bus_info, pci_name(np->pci_dev));
+=======
+
+	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+	strlcpy(info->bus_info, pci_name(np->pci_dev), sizeof(info->bus_info));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct ethtool_ops ethtool_ops = {
@@ -1376,7 +1431,11 @@ static int netdev_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
 }
 
 
+<<<<<<< HEAD
 static void __devexit yellowfin_remove_one (struct pci_dev *pdev)
+=======
+static void yellowfin_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 	struct yellowfin_private *np;
@@ -1395,7 +1454,10 @@ static void __devexit yellowfin_remove_one (struct pci_dev *pdev)
 	pci_release_regions (pdev);
 
 	free_netdev (dev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1403,7 +1465,11 @@ static struct pci_driver yellowfin_driver = {
 	.name		= DRV_NAME,
 	.id_table	= yellowfin_pci_tbl,
 	.probe		= yellowfin_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(yellowfin_remove_one),
+=======
+	.remove		= yellowfin_remove_one,
+>>>>>>> refs/remotes/origin/master
 };
 
 

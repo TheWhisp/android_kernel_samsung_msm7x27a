@@ -9,6 +9,7 @@
 #include <errno.h>
 #include <sys/time.h>
 #include <asm/unistd.h>
+<<<<<<< HEAD
 #include "aio.h"
 #include "init.h"
 <<<<<<< HEAD
@@ -20,6 +21,12 @@
 #include "kern_util.h"
 #include "os.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <aio.h>
+#include <init.h>
+#include <kern_util.h>
+#include <os.h>
+>>>>>>> refs/remotes/origin/master
 
 struct aio_thread_req {
 	enum aio_type type;
@@ -111,8 +118,12 @@ static int aio_thread(void *arg)
 	struct io_event event;
 	int err, n, reply_fd;
 
+<<<<<<< HEAD
 	signal(SIGWINCH, SIG_IGN);
 
+=======
+	os_fix_helper_signals();
+>>>>>>> refs/remotes/origin/master
 	while (1) {
 		n = io_getevents(ctx, 1, 1, &event, NULL);
 		if (n < 0) {
@@ -180,7 +191,11 @@ static int not_aio_thread(void *arg)
 	struct aio_thread_reply reply;
 	int err;
 
+<<<<<<< HEAD
 	signal(SIGWINCH, SIG_IGN);
+=======
+	os_fix_helper_signals();
+>>>>>>> refs/remotes/origin/master
 	while (1) {
 		err = read(aio_req_fd_r, &req, sizeof(req));
 		if (err != sizeof(req)) {

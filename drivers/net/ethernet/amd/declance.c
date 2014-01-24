@@ -72,7 +72,11 @@
 #include <asm/dec/machtype.h>
 #include <asm/dec/system.h>
 
+<<<<<<< HEAD
 static char version[] __devinitdata =
+=======
+static char version[] =
+>>>>>>> refs/remotes/origin/master
 "declance.c: v0.011 by Linux MIPS DECstation task force\n";
 
 MODULE_AUTHOR("Linux MIPS DECstation task force");
@@ -344,8 +348,13 @@ static void cp_to_buf(const int type, void *to, const void *from, int len)
 		}
 
 		clen = len & 1;
+<<<<<<< HEAD
 		rtp = tp;
 		rfp = fp;
+=======
+		rtp = (unsigned char *)tp;
+		rfp = (const unsigned char *)fp;
+>>>>>>> refs/remotes/origin/master
 		while (clen--) {
 			*rtp++ = *rfp++;
 		}
@@ -372,8 +381,13 @@ static void cp_to_buf(const int type, void *to, const void *from, int len)
 		 * do the rest, if any.
 		 */
 		clen = len & 15;
+<<<<<<< HEAD
 		rtp = (unsigned char *) tp;
 		rfp = (unsigned char *) fp;
+=======
+		rtp = (unsigned char *)tp;
+		rfp = (const unsigned char *)fp;
+>>>>>>> refs/remotes/origin/master
 		while (clen--) {
 			*rtp++ = *rfp++;
 		}
@@ -403,8 +417,13 @@ static void cp_from_buf(const int type, void *to, const void *from, int len)
 
 		clen = len & 1;
 
+<<<<<<< HEAD
 		rtp = tp;
 		rfp = fp;
+=======
+		rtp = (unsigned char *)tp;
+		rfp = (const unsigned char *)fp;
+>>>>>>> refs/remotes/origin/master
 
 		while (clen--) {
 			*rtp++ = *rfp++;
@@ -433,8 +452,13 @@ static void cp_from_buf(const int type, void *to, const void *from, int len)
 		 * do the rest, if any.
 		 */
 		clen = len & 15;
+<<<<<<< HEAD
 		rtp = (unsigned char *) tp;
 		rfp = (unsigned char *) fp;
+=======
+		rtp = (unsigned char *)tp;
+		rfp = (const unsigned char *)fp;
+>>>>>>> refs/remotes/origin/master
 		while (clen--) {
 			*rtp++ = *rfp++;
 		}
@@ -607,8 +631,11 @@ static int lance_rx(struct net_device *dev)
 			skb = netdev_alloc_skb(dev, len + 2);
 
 			if (skb == 0) {
+<<<<<<< HEAD
 				printk("%s: Memory squeeze, deferring packet.\n",
 				       dev->name);
+=======
+>>>>>>> refs/remotes/origin/master
 				dev->stats.rx_dropped++;
 				*rds_ptr(rd, mblength, lp->type) = 0;
 				*rds_ptr(rd, rmd1, lp->type) =
@@ -623,7 +650,11 @@ static int lance_rx(struct net_device *dev)
 			skb_put(skb, len);	/* make room */
 
 			cp_from_buf(lp->type, skb->data,
+<<<<<<< HEAD
 				    (char *)lp->rx_buf_ptr_cpu[entry], len);
+=======
+				    lp->rx_buf_ptr_cpu[entry], len);
+>>>>>>> refs/remotes/origin/master
 
 			skb->protocol = eth_type_trans(skb, dev);
 			netif_rx(skb);
@@ -813,7 +844,11 @@ static int lance_open(struct net_device *dev)
 	if (lp->dma_irq >= 0) {
 		unsigned long flags;
 
+<<<<<<< HEAD
 		if (request_irq(lp->dma_irq, lance_dma_merr_int, 0,
+=======
+		if (request_irq(lp->dma_irq, lance_dma_merr_int, IRQF_ONESHOT,
+>>>>>>> refs/remotes/origin/master
 				"lance error", dev)) {
 			free_irq(dev->irq, dev);
 			printk("%s: Can't get DMA IRQ %d\n", dev->name,
@@ -919,7 +954,11 @@ static int lance_start_xmit(struct sk_buff *skb, struct net_device *dev)
 	*lib_ptr(ib, btx_ring[entry].length, lp->type) = (-len);
 	*lib_ptr(ib, btx_ring[entry].misc, lp->type) = 0;
 
+<<<<<<< HEAD
 	cp_to_buf(lp->type, (char *)lp->tx_buf_ptr_cpu[entry], skb->data, len);
+=======
+	cp_to_buf(lp->type, lp->tx_buf_ptr_cpu[entry], skb->data, len);
+>>>>>>> refs/remotes/origin/master
 
 	/* Now, give the packet to the lance */
 	*lib_ptr(ib, btx_ring[entry].tmd1, lp->type) =
@@ -1020,7 +1059,11 @@ static const struct net_device_ops lance_netdev_ops = {
 	.ndo_set_mac_address	= eth_mac_addr,
 };
 
+<<<<<<< HEAD
 static int __devinit dec_lance_probe(struct device *bdev, const int type)
+=======
+static int dec_lance_probe(struct device *bdev, const int type)
+>>>>>>> refs/remotes/origin/master
 {
 	static unsigned version_printed;
 	static const char fmt[] = "declance%d";
@@ -1322,7 +1365,11 @@ static void __exit dec_lance_platform_remove(void)
 }
 
 #ifdef CONFIG_TC
+<<<<<<< HEAD
 static int __devinit dec_lance_tc_probe(struct device *dev);
+=======
+static int dec_lance_tc_probe(struct device *dev);
+>>>>>>> refs/remotes/origin/master
 static int __exit dec_lance_tc_remove(struct device *dev);
 
 static const struct tc_device_id dec_lance_tc_table[] = {
@@ -1341,7 +1388,11 @@ static struct tc_driver dec_lance_tc_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit dec_lance_tc_probe(struct device *dev)
+=======
+static int dec_lance_tc_probe(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
         int status = dec_lance_probe(dev, PMAD_LANCE);
         if (!status)

@@ -12,7 +12,10 @@
 #define __ASM_GENERIC_IO_H
 
 #include <asm/page.h> /* I/O is all done through memory accesses */
+<<<<<<< HEAD
 #include <asm/cacheflush.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 
 #ifdef CONFIG_GENERIC_IOMAP
@@ -20,10 +23,15 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm-generic/pci_iomap.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm-generic/pci_iomap.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifndef mmiowb
 #define mmiowb() do {} while (0)
 #endif
@@ -57,8 +65,23 @@ static inline u32 __raw_readl(const volatile void __iomem *addr)
 #endif
 
 #define readb __raw_readb
+<<<<<<< HEAD
 #define readw(addr) __le16_to_cpu(__raw_readw(addr))
 #define readl(addr) __le32_to_cpu(__raw_readl(addr))
+=======
+
+#define readw readw
+static inline u16 readw(const volatile void __iomem *addr)
+{
+	return __le16_to_cpu(__raw_readw(addr));
+}
+
+#define readl readl
+static inline u32 readl(const volatile void __iomem *addr)
+{
+	return __le32_to_cpu(__raw_readl(addr));
+}
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __raw_writeb
 static inline void __raw_writeb(u8 b, volatile void __iomem *addr)
@@ -86,19 +109,43 @@ static inline void __raw_writel(u32 b, volatile void __iomem *addr)
 #define writel(b,addr) __raw_writel(__cpu_to_le32(b),addr)
 
 #ifdef CONFIG_64BIT
+<<<<<<< HEAD
+=======
+#ifndef __raw_readq
+>>>>>>> refs/remotes/origin/master
 static inline u64 __raw_readq(const volatile void __iomem *addr)
 {
 	return *(const volatile u64 __force *) addr;
 }
+<<<<<<< HEAD
 #define readq(addr) __le64_to_cpu(__raw_readq(addr))
 
+=======
+#endif
+
+#define readq readq
+static inline u64 readq(const volatile void __iomem *addr)
+{
+	return __le64_to_cpu(__raw_readq(addr));
+}
+
+#ifndef __raw_writeq
+>>>>>>> refs/remotes/origin/master
 static inline void __raw_writeq(u64 b, volatile void __iomem *addr)
 {
 	*(volatile u64 __force *) addr = b;
 }
+<<<<<<< HEAD
 #define writeq(b,addr) __raw_writeq(__cpu_to_le64(b),addr)
 #endif
 
+=======
+#endif
+
+#define writeq(b, addr) __raw_writeq(__cpu_to_le64(b), addr)
+#endif /* CONFIG_64BIT */
+
+>>>>>>> refs/remotes/origin/master
 #ifndef PCI_IOBASE
 #define PCI_IOBASE ((void __iomem *) 0)
 #endif
@@ -151,7 +198,11 @@ static inline void insb(unsigned long addr, void *buffer, int count)
 	if (count) {
 		u8 *buf = buffer;
 		do {
+<<<<<<< HEAD
 			u8 x = inb(addr);
+=======
+			u8 x = __raw_readb(addr + PCI_IOBASE);
+>>>>>>> refs/remotes/origin/master
 			*buf++ = x;
 		} while (--count);
 	}
@@ -164,7 +215,11 @@ static inline void insw(unsigned long addr, void *buffer, int count)
 	if (count) {
 		u16 *buf = buffer;
 		do {
+<<<<<<< HEAD
 			u16 x = inw(addr);
+=======
+			u16 x = __raw_readw(addr + PCI_IOBASE);
+>>>>>>> refs/remotes/origin/master
 			*buf++ = x;
 		} while (--count);
 	}
@@ -177,7 +232,11 @@ static inline void insl(unsigned long addr, void *buffer, int count)
 	if (count) {
 		u32 *buf = buffer;
 		do {
+<<<<<<< HEAD
 			u32 x = inl(addr);
+=======
+			u32 x = __raw_readl(addr + PCI_IOBASE);
+>>>>>>> refs/remotes/origin/master
 			*buf++ = x;
 		} while (--count);
 	}
@@ -190,7 +249,11 @@ static inline void outsb(unsigned long addr, const void *buffer, int count)
 	if (count) {
 		const u8 *buf = buffer;
 		do {
+<<<<<<< HEAD
 			outb(*buf++, addr);
+=======
+			__raw_writeb(*buf++, addr + PCI_IOBASE);
+>>>>>>> refs/remotes/origin/master
 		} while (--count);
 	}
 }
@@ -202,7 +265,11 @@ static inline void outsw(unsigned long addr, const void *buffer, int count)
 	if (count) {
 		const u16 *buf = buffer;
 		do {
+<<<<<<< HEAD
 			outw(*buf++, addr);
+=======
+			__raw_writew(*buf++, addr + PCI_IOBASE);
+>>>>>>> refs/remotes/origin/master
 		} while (--count);
 	}
 }
@@ -214,12 +281,17 @@ static inline void outsl(unsigned long addr, const void *buffer, int count)
 	if (count) {
 		const u32 *buf = buffer;
 		do {
+<<<<<<< HEAD
 			outl(*buf++, addr);
+=======
+			__raw_writel(*buf++, addr + PCI_IOBASE);
+>>>>>>> refs/remotes/origin/master
 		} while (--count);
 	}
 }
 #endif
 
+<<<<<<< HEAD
 static inline void readsl(const void __iomem *addr, void *buf, int len)
 {
 	insl(addr - PCI_IOBASE, buf, len);
@@ -262,6 +334,20 @@ static inline void writesb(const void __iomem *addr, const void *buf, int len)
 #define iowrite16be(v, addr)	iowrite16(be16_to_cpu(v), (addr))
 #define iowrite32(v, addr)	writel((v), (addr))
 #define iowrite32be(v, addr)	iowrite32(be32_to_cpu(v), (addr))
+=======
+#ifndef CONFIG_GENERIC_IOMAP
+#define ioread8(addr)		readb(addr)
+#define ioread16(addr)		readw(addr)
+#define ioread16be(addr)	__be16_to_cpu(__raw_readw(addr))
+#define ioread32(addr)		readl(addr)
+#define ioread32be(addr)	__be32_to_cpu(__raw_readl(addr))
+
+#define iowrite8(v, addr)	writeb((v), (addr))
+#define iowrite16(v, addr)	writew((v), (addr))
+#define iowrite16be(v, addr)	__raw_writew(__cpu_to_be16(v), addr)
+#define iowrite32(v, addr)	writel((v), (addr))
+#define iowrite32be(v, addr)	__raw_writel(__cpu_to_be32(v), addr)
+>>>>>>> refs/remotes/origin/master
 
 #define ioread8_rep(p, dst, count) \
 	insb((unsigned long) (p), (dst), (count))
@@ -289,6 +375,7 @@ static inline void writesb(const void __iomem *addr, const void *buf, int len)
 
 #ifndef CONFIG_GENERIC_IOMAP
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Create a virtual mapping cookie for a PCI BAR (memory or IO) */
 struct pci_dev;
 extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max);
@@ -298,12 +385,26 @@ struct pci_dev;
 static inline void pci_iounmap(struct pci_dev *dev, void __iomem *p)
 {
 }
+=======
+struct pci_dev;
+extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max);
+
+#ifndef pci_iounmap
+static inline void pci_iounmap(struct pci_dev *dev, void __iomem *p)
+{
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_GENERIC_IOMAP */
 
 /*
  * Change virtual addresses to physical addresses and vv.
  * These are pretty trivial
  */
+<<<<<<< HEAD
+=======
+#ifndef virt_to_phys
+>>>>>>> refs/remotes/origin/master
 static inline unsigned long virt_to_phys(volatile void *address)
 {
 	return __pa((unsigned long)address);
@@ -313,18 +414,28 @@ static inline void *phys_to_virt(unsigned long address)
 {
 	return __va(address);
 }
+<<<<<<< HEAD
 
 /*
  * Change "struct page" to physical address.
 <<<<<<< HEAD
  */
 =======
+=======
+#endif
+
+/*
+ * Change "struct page" to physical address.
+>>>>>>> refs/remotes/origin/master
  *
  * This implementation is for the no-MMU case only... if you have an MMU
  * you'll need to provide your own definitions.
  */
 #ifndef CONFIG_MMU
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void __iomem *ioremap(phys_addr_t offset, unsigned long size)
 {
 	return (void __iomem*) (unsigned long)offset;
@@ -341,18 +452,24 @@ static inline void __iomem *ioremap(phys_addr_t offset, unsigned long size)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void iounmap(void *addr)
 {
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void iounmap(void __iomem *addr)
 {
 }
 #endif /* CONFIG_MMU */
 
 #ifdef CONFIG_HAS_IOPORT
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_GENERIC_IOMAP
 static inline void __iomem *ioport_map(unsigned long port, unsigned int nr)
 {
@@ -367,6 +484,7 @@ extern void __iomem *ioport_map(unsigned long port, unsigned int nr);
 extern void ioport_unmap(void __iomem *p);
 #endif /* CONFIG_GENERIC_IOMAP */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define xlate_dev_kmem_ptr(p)	p
 #define xlate_dev_mem_ptr(p)	((void *) (p))
@@ -377,6 +495,18 @@ extern void ioport_unmap(void __iomem *p);
 #define xlate_dev_mem_ptr(p)	__va(p)
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+#endif /* CONFIG_HAS_IOPORT */
+
+#ifndef xlate_dev_kmem_ptr
+#define xlate_dev_kmem_ptr(p)	p
+#endif
+#ifndef xlate_dev_mem_ptr
+#define xlate_dev_mem_ptr(p)	__va(p)
+#endif
+
+#ifdef CONFIG_VIRT_TO_BUS
+>>>>>>> refs/remotes/origin/master
 #ifndef virt_to_bus
 static inline unsigned long virt_to_bus(volatile void *address)
 {
@@ -388,10 +518,25 @@ static inline void *bus_to_virt(unsigned long address)
 	return (void *) address;
 }
 #endif
+<<<<<<< HEAD
 
 #define memset_io(a, b, c)	memset(__io_virt(a), (b), (c))
 #define memcpy_fromio(a, b, c)	memcpy((a), __io_virt(b), (c))
 #define memcpy_toio(a, b, c)	memcpy(__io_virt(a), (b), (c))
+=======
+#endif
+
+#ifndef memset_io
+#define memset_io(a, b, c)	memset(__io_virt(a), (b), (c))
+#endif
+
+#ifndef memcpy_fromio
+#define memcpy_fromio(a, b, c)	memcpy((a), __io_virt(b), (c))
+#endif
+#ifndef memcpy_toio
+#define memcpy_toio(a, b, c)	memcpy(__io_virt(a), (b), (c))
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __KERNEL__ */
 

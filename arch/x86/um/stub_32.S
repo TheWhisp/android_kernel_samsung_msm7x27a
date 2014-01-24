@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #include "as-layout.h"
+=======
+#include <as-layout.h>
+>>>>>>> refs/remotes/origin/master
 
 	.globl syscall_stub
 .section .__syscall_stub, "ax"

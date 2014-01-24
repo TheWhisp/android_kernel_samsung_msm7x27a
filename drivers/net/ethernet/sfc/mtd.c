@@ -1,21 +1,33 @@
 /****************************************************************************
+<<<<<<< HEAD
  * Driver for Solarflare Solarstorm network controllers and boards
  * Copyright 2005-2006 Fen Systems Ltd.
  * Copyright 2006-2010 Solarflare Communications Inc.
+=======
+ * Driver for Solarflare network controllers and boards
+ * Copyright 2005-2006 Fen Systems Ltd.
+ * Copyright 2006-2013 Solarflare Communications Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published
  * by the Free Software Foundation, incorporated herein by reference.
  */
 
+<<<<<<< HEAD
 #include <linux/bitops.h>
 #include <linux/module.h>
 #include <linux/mtd/mtd.h>
 #include <linux/delay.h>
+=======
+#include <linux/module.h>
+#include <linux/mtd/mtd.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/rtnetlink.h>
 
 #include "net_driver.h"
+<<<<<<< HEAD
 #include "spi.h"
 #include "efx.h"
 #include "nic.h"
@@ -61,10 +73,14 @@ struct efx_mtd {
 	for ((part) = &(efx_mtd)->part[0];			\
 	     (part) != &(efx_mtd)->part[(efx_mtd)->n_parts];	\
 	     (part)++)
+=======
+#include "efx.h"
+>>>>>>> refs/remotes/origin/master
 
 #define to_efx_mtd_partition(mtd)				\
 	container_of(mtd, struct efx_mtd_partition, mtd)
 
+<<<<<<< HEAD
 static int falcon_mtd_probe(struct efx_nic *efx);
 static int siena_mtd_probe(struct efx_nic *efx);
 
@@ -181,14 +197,23 @@ efx_spi_erase(struct efx_mtd_partition *part, loff_t start, size_t len)
 	return rc;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* MTD interface */
 
 static int efx_mtd_erase(struct mtd_info *mtd, struct erase_info *erase)
 {
+<<<<<<< HEAD
 	struct efx_mtd *efx_mtd = mtd->priv;
 	int rc;
 
 	rc = efx_mtd->ops->erase(mtd, erase->addr, erase->len);
+=======
+	struct efx_nic *efx = mtd->priv;
+	int rc;
+
+	rc = efx->type->mtd_erase(mtd, erase->addr, erase->len);
+>>>>>>> refs/remotes/origin/master
 	if (rc == 0) {
 		erase->state = MTD_ERASE_DONE;
 	} else {
@@ -202,6 +227,7 @@ static int efx_mtd_erase(struct mtd_info *mtd, struct erase_info *erase)
 static void efx_mtd_sync(struct mtd_info *mtd)
 {
 	struct efx_mtd_partition *part = to_efx_mtd_partition(mtd);
+<<<<<<< HEAD
 	struct efx_mtd *efx_mtd = mtd->priv;
 	int rc;
 
@@ -209,6 +235,15 @@ static void efx_mtd_sync(struct mtd_info *mtd)
 	if (rc)
 		pr_err("%s: %s sync failed (%d)\n",
 		       part->name, efx_mtd->name, rc);
+=======
+	struct efx_nic *efx = mtd->priv;
+	int rc;
+
+	rc = efx->type->mtd_sync(mtd);
+	if (rc)
+		pr_err("%s: %s sync failed (%d)\n",
+		       part->name, part->dev_type_name, rc);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void efx_mtd_remove_partition(struct efx_mtd_partition *part)
@@ -222,6 +257,7 @@ static void efx_mtd_remove_partition(struct efx_mtd_partition *part)
 		ssleep(1);
 	}
 	WARN_ON(rc);
+<<<<<<< HEAD
 }
 
 static void efx_mtd_remove_device(struct efx_mtd *efx_mtd)
@@ -278,6 +314,46 @@ static int efx_mtd_probe_device(struct efx_nic *efx, struct efx_mtd *efx_mtd)
 fail:
 	while (part != &efx_mtd->part[0]) {
 		--part;
+=======
+	list_del(&part->node);
+}
+
+int efx_mtd_add(struct efx_nic *efx, struct efx_mtd_partition *parts,
+		size_t n_parts, size_t sizeof_part)
+{
+	struct efx_mtd_partition *part;
+	size_t i;
+
+	for (i = 0; i < n_parts; i++) {
+		part = (struct efx_mtd_partition *)((char *)parts +
+						    i * sizeof_part);
+
+		part->mtd.writesize = 1;
+
+		part->mtd.owner = THIS_MODULE;
+		part->mtd.priv = efx;
+		part->mtd.name = part->name;
+		part->mtd._erase = efx_mtd_erase;
+		part->mtd._read = efx->type->mtd_read;
+		part->mtd._write = efx->type->mtd_write;
+		part->mtd._sync = efx_mtd_sync;
+
+		efx->type->mtd_rename(part);
+
+		if (mtd_device_register(&part->mtd, NULL, 0))
+			goto fail;
+
+		/* Add to list in order - efx_mtd_remove() depends on this */
+		list_add_tail(&part->node, &efx->mtd_list);
+	}
+
+	return 0;
+
+fail:
+	while (i--) {
+		part = (struct efx_mtd_partition *)((char *)parts +
+						    i * sizeof_part);
+>>>>>>> refs/remotes/origin/master
 		efx_mtd_remove_partition(part);
 	}
 	/* Failure is unlikely here, but probably means we're out of memory */
@@ -286,6 +362,7 @@ fail:
 
 void efx_mtd_remove(struct efx_nic *efx)
 {
+<<<<<<< HEAD
 	struct efx_mtd *efx_mtd, *next;
 
 	WARN_ON(efx_dev_registered(efx));
@@ -690,3 +767,30 @@ fail:
 	return rc;
 }
 
+=======
+	struct efx_mtd_partition *parts, *part, *next;
+
+	WARN_ON(efx_dev_registered(efx));
+
+	if (list_empty(&efx->mtd_list))
+		return;
+
+	parts = list_first_entry(&efx->mtd_list, struct efx_mtd_partition,
+				 node);
+
+	list_for_each_entry_safe(part, next, &efx->mtd_list, node)
+		efx_mtd_remove_partition(part);
+
+	kfree(parts);
+}
+
+void efx_mtd_rename(struct efx_nic *efx)
+{
+	struct efx_mtd_partition *part;
+
+	ASSERT_RTNL();
+
+	list_for_each_entry(part, &efx->mtd_list, node)
+		efx->type->mtd_rename(part);
+}
+>>>>>>> refs/remotes/origin/master

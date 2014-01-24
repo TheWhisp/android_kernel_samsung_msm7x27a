@@ -27,7 +27,11 @@
  * Return the "current" portion of a ticket lock value,
  * i.e. the number that currently owns the lock.
  */
+<<<<<<< HEAD
 static inline int arch_spin_current(u32 val)
+=======
+static inline u32 arch_spin_current(u32 val)
+>>>>>>> refs/remotes/origin/master
 {
 	return val >> __ARCH_SPIN_CURRENT_SHIFT;
 }
@@ -36,7 +40,11 @@ static inline int arch_spin_current(u32 val)
  * Return the "next" portion of a ticket lock value,
  * i.e. the number that the next task to try to acquire the lock will get.
  */
+<<<<<<< HEAD
 static inline int arch_spin_next(u32 val)
+=======
+static inline u32 arch_spin_next(u32 val)
+>>>>>>> refs/remotes/origin/master
 {
 	return val & __ARCH_SPIN_NEXT_MASK;
 }
@@ -138,10 +146,14 @@ static inline void arch_write_unlock(arch_rwlock_t *rw)
 {
 	__insn_mf();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rw->lock = 0;
 =======
 	__insn_exch4(&rw->lock, 0);  /* Avoid waiting in the write buffer. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__insn_exch4(&rw->lock, 0);  /* Avoid waiting in the write buffer. */
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int arch_read_trylock(arch_rwlock_t *rw)

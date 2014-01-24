@@ -22,10 +22,16 @@
 #include <asm/module.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <trace/events/module.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* In stripped ARM and x86-64 modules, ~ is surprisingly rare. */
+#define MODULE_SIG_STRING "~Module signature appended~\n"
+
+>>>>>>> refs/remotes/origin/master
 /* Not Yet Implemented */
 #define MODULE_SUPPORTED_DEVICE(name)
 
@@ -40,16 +46,23 @@ struct modversion_info
 struct module;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct module_attribute {
         struct attribute attr;
         ssize_t (*show)(struct module_attribute *, struct module *, char *);
         ssize_t (*store)(struct module_attribute *, struct module *,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct module_kobject {
 	struct kobject kobj;
 	struct module *mod;
 	struct kobject *drivers_dir;
 	struct module_param_attrs *mp;
+<<<<<<< HEAD
+=======
+	struct completion *kobj_completion;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct module_attribute {
@@ -57,7 +70,10 @@ struct module_attribute {
 	ssize_t (*show)(struct module_attribute *, struct module_kobject *,
 			char *);
 	ssize_t (*store)(struct module_attribute *, struct module_kobject *,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			 const char *, size_t count);
 	void (*setup)(struct module *, const char *);
 	int (*test)(struct module *);
@@ -71,6 +87,7 @@ struct module_version_attribute {
 } __attribute__ ((__aligned__(sizeof(void *))));
 
 extern ssize_t __modver_version_show(struct module_attribute *,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				     struct module *, char *);
 
@@ -86,6 +103,11 @@ struct module_kobject
 
 extern struct module_attribute module_uevent;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     struct module_kobject *, char *);
+
+extern struct module_attribute module_uevent;
+>>>>>>> refs/remotes/origin/master
 
 /* These are either module local, or the kernel's dummy ones. */
 extern int init_module(void);
@@ -118,6 +140,14 @@ extern const struct gtype##_id __mod_##gtype##_table		\
 /* For userspace: you can also call me... */
 #define MODULE_ALIAS(_alias) MODULE_INFO(alias, _alias)
 
+<<<<<<< HEAD
+=======
+/* Soft module dependencies. See man modprobe.d for details.
+ * Example: MODULE_SOFTDEP("pre: module-foo module-bar post: module-baz")
+ */
+#define MODULE_SOFTDEP(_softdep) MODULE_INFO(softdep, _softdep)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The following license idents are currently accepted as indicating free
  * software modules
@@ -158,6 +188,7 @@ extern const struct gtype##_id __mod_##gtype##_table		\
 #define MODULE_DESCRIPTION(_description) MODULE_INFO(description, _description)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* One for each parameter, describing how to use it.  Some files do
    multiple of these per line, so can't just use MODULE_INFO. */
 #define MODULE_PARM_DESC(_parm, desc) \
@@ -165,6 +196,8 @@ extern const struct gtype##_id __mod_##gtype##_table		\
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define MODULE_DEVICE_TABLE(type,name)		\
   MODULE_GENERIC_TABLE(type##_device,name)
 
@@ -219,7 +252,11 @@ extern int modules_disabled; /* for sysctl */
 /* Get/put a kernel symbol (calls must be symmetric) */
 void *__symbol_get(const char *symbol);
 void *__symbol_get_gpl(const char *symbol);
+<<<<<<< HEAD
 #define symbol_get(x) ((typeof(&x))(__symbol_get(MODULE_SYMBOL_PREFIX #x)))
+=======
+#define symbol_get(x) ((typeof(&x))(__symbol_get(VMLINUX_SYMBOL_STR(x))))
+>>>>>>> refs/remotes/origin/master
 
 /* modules using other modules: kdb wants to see this. */
 struct module_use {
@@ -228,6 +265,7 @@ struct module_use {
 	struct module *source, *target;
 };
 
+<<<<<<< HEAD
 enum module_state
 {
 	MODULE_STATE_LIVE,
@@ -237,6 +275,15 @@ enum module_state
 
 <<<<<<< HEAD
 =======
+=======
+enum module_state {
+	MODULE_STATE_LIVE,	/* Normal state. */
+	MODULE_STATE_COMING,	/* Full formed, running module_init. */
+	MODULE_STATE_GOING,	/* Going away. */
+	MODULE_STATE_UNFORMED,	/* Still setting it up. */
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct module_ref - per cpu module reference counts
  * @incs: number of module get on this cpu
@@ -251,7 +298,10 @@ struct module_ref {
 	unsigned long decs;
 } __attribute((aligned(2 * sizeof(unsigned long))));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct module
 {
 	enum module_state state;
@@ -295,6 +345,14 @@ struct module
 	const unsigned long *unused_gpl_crcs;
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MODULE_SIG
+	/* Signature was verified. */
+	bool sig_ok;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	/* symbols that will be GPL-only in the near future. */
 	const struct kernel_symbol *gpl_future_syms;
 	const unsigned long *gpl_future_crcs;
@@ -388,6 +446,7 @@ struct module
 	/* What modules do I depend on? */
 	struct list_head target_list;
 
+<<<<<<< HEAD
 	/* Who is waiting for us to be unloaded */
 	struct task_struct *waiter;
 
@@ -402,6 +461,12 @@ struct module
 =======
 	struct module_ref __percpu *refptr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Destruction function. */
+	void (*exit)(void);
+
+	struct module_ref __percpu *refptr;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_CONSTRUCTORS
@@ -430,13 +495,21 @@ bool is_module_address(unsigned long addr);
 bool is_module_percpu_address(unsigned long addr);
 bool is_module_text_address(unsigned long addr);
 
+<<<<<<< HEAD
 static inline int within_module_core(unsigned long addr, struct module *mod)
+=======
+static inline int within_module_core(unsigned long addr, const struct module *mod)
+>>>>>>> refs/remotes/origin/master
 {
 	return (unsigned long)mod->module_core <= addr &&
 	       addr < (unsigned long)mod->module_core + mod->core_size;
 }
 
+<<<<<<< HEAD
 static inline int within_module_init(unsigned long addr, struct module *mod)
+=======
+static inline int within_module_init(unsigned long addr, const struct module *mod)
+>>>>>>> refs/remotes/origin/master
 {
 	return (unsigned long)mod->module_init <= addr &&
 	       addr < (unsigned long)mod->module_init + mod->init_size;
@@ -486,16 +559,23 @@ extern void __module_put_and_exit(struct module *mod, long code)
 
 #ifdef CONFIG_MODULE_UNLOAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned int module_refcount(struct module *mod);
 =======
 unsigned long module_refcount(struct module *mod);
 >>>>>>> refs/remotes/origin/cm-10.0
 void __symbol_put(const char *symbol);
 #define symbol_put(x) __symbol_put(MODULE_SYMBOL_PREFIX #x)
+=======
+unsigned long module_refcount(struct module *mod);
+void __symbol_put(const char *symbol);
+#define symbol_put(x) __symbol_put(VMLINUX_SYMBOL_STR(x))
+>>>>>>> refs/remotes/origin/master
 void symbol_put_addr(void *addr);
 
 /* Sometimes we know we already have a refcount, and it's easier not
    to handle the error case (which only happens with rmmod --wait). */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline void __module_get(struct module *module)
 {
@@ -525,12 +605,17 @@ static inline int try_module_get(struct module *module)
 	return ret;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern void __module_get(struct module *module);
 
 /* This is the Right Way to get a module: if it fails, it's being removed,
  * so pretend it's not there. */
 extern bool try_module_get(struct module *module);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern void module_put(struct module *module);
 
@@ -578,11 +663,14 @@ int unregister_module_notifier(struct notifier_block * nb);
 extern void print_modules(void);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void module_update_tracepoints(void);
 extern int module_get_iter_tracepoints(struct tracepoint_iter *iter);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else /* !CONFIG_MODULES... */
 
 /* Given an address, look for it in the exception tables. */
@@ -694,6 +782,7 @@ static inline void print_modules(void)
 {
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static inline void module_update_tracepoints(void)
 {
@@ -705,6 +794,8 @@ static inline int module_get_iter_tracepoints(struct tracepoint_iter *iter)
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_MODULES */
 
 #ifdef CONFIG_SYSFS

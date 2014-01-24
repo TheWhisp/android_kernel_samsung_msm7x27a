@@ -16,6 +16,7 @@
 #include <mach/hardware.h>
 #include <mach/at91_pmc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #if defined(CONFIG_ARCH_AT91RM9200)
 #include <mach/at91rm9200_mc.h>
@@ -32,6 +33,12 @@
 
 
 #ifdef CONFIG_ARCH_AT91SAM9263
+=======
+#include <mach/at91_ramc.h>
+
+
+#ifdef CONFIG_SOC_AT91SAM9263
+>>>>>>> refs/remotes/origin/master
 /*
  * FIXME either or both the SDRAM controllers (EB0, EB1) might be in use;
  * handle those cases both here and in the Suspend-To-RAM support.
@@ -53,19 +60,26 @@
 #define PLLBLOCK_TIMEOUT	1000
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 pmc	.req	r0
 sdramc	.req	r1
 ramc1	.req	r2
 memctrl	.req	r3
 tmp1	.req	r4
 tmp2	.req	r5
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Wait until master clock is ready (after switching master clock source)
  */
 	.macro wait_mckrdy
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mov	r4, #MCKRDY_TIMEOUT
 1:	sub	r4, r4, #1
@@ -74,13 +88,18 @@ tmp2	.req	r5
 	ldr	r3, [r1, #(AT91_PMC_SR - AT91_PMC)]
 	tst	r3, #AT91_PMC_MCKRDY
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mov	tmp2, #MCKRDY_TIMEOUT
 1:	sub	tmp2, tmp2, #1
 	cmp	tmp2, #0
 	beq	2f
 	ldr	tmp1, [pmc, #AT91_PMC_SR]
 	tst	tmp1, #AT91_PMC_MCKRDY
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	beq	1b
 2:
 	.endm
@@ -90,6 +109,7 @@ tmp2	.req	r5
  */
 	.macro wait_moscrdy
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mov	r4, #MOSCRDY_TIMEOUT
 1:	sub	r4, r4, #1
 	cmp	r4, #0
@@ -97,13 +117,18 @@ tmp2	.req	r5
 	ldr	r3, [r1, #(AT91_PMC_SR - AT91_PMC)]
 	tst	r3, #AT91_PMC_MOSCS
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mov	tmp2, #MOSCRDY_TIMEOUT
 1:	sub	tmp2, tmp2, #1
 	cmp	tmp2, #0
 	beq	2f
 	ldr	tmp1, [pmc, #AT91_PMC_SR]
 	tst	tmp1, #AT91_PMC_MOSCS
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	beq	1b
 2:
 	.endm
@@ -113,6 +138,7 @@ tmp2	.req	r5
  */
 	.macro wait_pllalock
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mov	r4, #PLLALOCK_TIMEOUT
 1:	sub	r4, r4, #1
 	cmp	r4, #0
@@ -120,13 +146,18 @@ tmp2	.req	r5
 	ldr	r3, [r1, #(AT91_PMC_SR - AT91_PMC)]
 	tst	r3, #AT91_PMC_LOCKA
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mov	tmp2, #PLLALOCK_TIMEOUT
 1:	sub	tmp2, tmp2, #1
 	cmp	tmp2, #0
 	beq	2f
 	ldr	tmp1, [pmc, #AT91_PMC_SR]
 	tst	tmp1, #AT91_PMC_LOCKA
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	beq	1b
 2:
 	.endm
@@ -136,6 +167,7 @@ tmp2	.req	r5
  */
 	.macro wait_pllblock
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mov	r4, #PLLBLOCK_TIMEOUT
 1:	sub	r4, r4, #1
 	cmp	r4, #0
@@ -143,19 +175,25 @@ tmp2	.req	r5
 	ldr	r3, [r1, #(AT91_PMC_SR - AT91_PMC)]
 	tst	r3, #AT91_PMC_LOCKB
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mov	tmp2, #PLLBLOCK_TIMEOUT
 1:	sub	tmp2, tmp2, #1
 	cmp	tmp2, #0
 	beq	2f
 	ldr	tmp1, [pmc, #AT91_PMC_SR]
 	tst	tmp1, #AT91_PMC_LOCKB
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	beq	1b
 2:
 	.endm
 
 	.text
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 ENTRY(at91_slow_clock)
 	/* Save registers on stack */
@@ -214,6 +252,8 @@ ENTRY(at91_slow_clock)
 	ldr	r3, [r1, #(AT91_PMC_MCKR - AT91_PMC)]
 	str	r3, .saved_mckr
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* void at91_slow_clock(void __iomem *pmc, void __iomem *sdramc,
  *			void __iomem *ramc1, int memctrl)
  */
@@ -288,11 +328,15 @@ sdr_sr_done:
 	/* Save Master clock setting */
 	ldr	tmp1, [pmc, #AT91_PMC_MCKR]
 	str	tmp1, .saved_mckr
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Set the Master clock source to slow clock
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	bic	r3, r3, #AT91_PMC_CSS
 	str	r3, [r1, #(AT91_PMC_MCKR - AT91_PMC)]
@@ -300,6 +344,10 @@ sdr_sr_done:
 	bic	tmp1, tmp1, #AT91_PMC_CSS
 	str	tmp1, [pmc, #AT91_PMC_MCKR]
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bic	tmp1, tmp1, #AT91_PMC_CSS
+	str	tmp1, [pmc, #AT91_PMC_MCKR]
+>>>>>>> refs/remotes/origin/master
 
 	wait_mckrdy
 
@@ -310,17 +358,23 @@ sdr_sr_done:
 	 * See AT91RM9200 errata #27 and #28 for details.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mov	r3, #0
 	str	r3, [r1, #(AT91_PMC_MCKR - AT91_PMC)]
 =======
 	mov	tmp1, #0
 	str	tmp1, [pmc, #AT91_PMC_MCKR]
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mov	tmp1, #0
+	str	tmp1, [pmc, #AT91_PMC_MCKR]
+>>>>>>> refs/remotes/origin/master
 
 	wait_mckrdy
 #endif
 
 	/* Save PLLA setting and disable it */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ldr	r3, [r1, #(AT91_CKGR_PLLAR - AT91_PMC)]
 	str	r3, .saved_pllar
@@ -349,6 +403,8 @@ sdr_sr_done:
 	orr	r3, r3, #AT91_PMC_MOSCEN
 	str	r3, [r1, #(AT91_CKGR_MOR - AT91_PMC)]
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ldr	tmp1, [pmc, #AT91_CKGR_PLLAR]
 	str	tmp1, .saved_pllar
 
@@ -375,11 +431,15 @@ sdr_sr_done:
 	ldr	tmp1, [pmc, #AT91_CKGR_MOR]
 	orr	tmp1, tmp1, #AT91_PMC_MOSCEN
 	str	tmp1, [pmc, #AT91_CKGR_MOR]
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	wait_moscrdy
 
 	/* Restore PLLB setting */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ldr	r3, .saved_pllbr
 	str	r3, [r1, #(AT91_CKGR_PLLBR - AT91_PMC)]
@@ -388,19 +448,25 @@ sdr_sr_done:
 	bne	1f
 	tst	r3, #(AT91_PMC_MUL & ~0xff0000)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ldr	tmp1, .saved_pllbr
 	str	tmp1, [pmc, #AT91_CKGR_PLLBR]
 
 	tst	tmp1, #(AT91_PMC_MUL &  0xff0000)
 	bne	1f
 	tst	tmp1, #(AT91_PMC_MUL & ~0xff0000)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	beq	2f
 1:
 	wait_pllblock
 2:
 
 	/* Restore PLLA setting */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ldr	r3, .saved_pllar
 	str	r3, [r1, #(AT91_CKGR_PLLAR - AT91_PMC)]
@@ -409,13 +475,18 @@ sdr_sr_done:
 	bne	3f
 	tst	r3, #(AT91_PMC_MUL & ~0xff0000)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ldr	tmp1, .saved_pllar
 	str	tmp1, [pmc, #AT91_CKGR_PLLAR]
 
 	tst	tmp1, #(AT91_PMC_MUL &  0xff0000)
 	bne	3f
 	tst	tmp1, #(AT91_PMC_MUL & ~0xff0000)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	beq	4f
 3:
 	wait_pllalock
@@ -429,18 +500,24 @@ sdr_sr_done:
 	 * See AT91RM9200 errata #27 and #28 for details.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ldr	r3, .saved_mckr
 	tst	r3, #AT91_PMC_PRES
 	beq	2f
 	and	r3, r3, #AT91_PMC_PRES
 	str	r3, [r1, #(AT91_PMC_MCKR - AT91_PMC)]
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ldr	tmp1, .saved_mckr
 	tst	tmp1, #AT91_PMC_PRES
 	beq	2f
 	and	tmp1, tmp1, #AT91_PMC_PRES
 	str	tmp1, [pmc, #AT91_PMC_MCKR]
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	wait_mckrdy
 #endif
@@ -448,6 +525,7 @@ sdr_sr_done:
 	/*
 	 * Restore master clock setting
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 2:	ldr	r3, .saved_mckr
 	str	r3, [r1, #(AT91_PMC_MCKR - AT91_PMC)]
@@ -476,6 +554,8 @@ sdr_sr_done:
 	/* Restore registers, and return */
 	ldmfd	sp!, {r0 - r12, pc}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 2:	ldr	tmp1, .saved_mckr
 	str	tmp1, [pmc, #AT91_PMC_MCKR]
 
@@ -515,7 +595,10 @@ sdr_en_restore:
 ram_restored:
 	/* Restore registers, and return */
 	ldmfd	sp!, {r4 - r12, pc}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 .saved_mckr:
@@ -533,6 +616,7 @@ ram_restored:
 .saved_sam9_lpr1:
 	.word 0
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 .at91_va_base_pmc:
 	.word AT91_VA_BASE_SYS + AT91_PMC
@@ -558,5 +642,7 @@ ram_restored:
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(at91_slow_clock_sz)
 	.word .-at91_slow_clock

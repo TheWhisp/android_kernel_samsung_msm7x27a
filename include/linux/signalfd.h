@@ -4,6 +4,7 @@
  *  Copyright (C) 2007  Davide Libenzi <davidel@xmailserver.org>
  *
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_SIGNALFD_H
 #define _LINUX_SIGNALFD_H
@@ -49,6 +50,13 @@ struct signalfd_siginfo {
 
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_SIGNALFD_H
+#define _LINUX_SIGNALFD_H
+
+#include <uapi/linux/signalfd.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SIGNALFD
 
@@ -71,6 +79,9 @@ static inline void signalfd_cleanup(struct sighand_struct *sighand) { }
 
 #endif /* CONFIG_SIGNALFD */
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_SIGNALFD_H */

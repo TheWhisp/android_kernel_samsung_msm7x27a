@@ -18,17 +18,27 @@
 #include <linux/clk.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/io.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/initval.h>
 #include <sound/soc.h>
 #include <sound/pxa2xx-lib.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 #include <mach/dma.h>
+=======
+#include <sound/dmaengine_pcm.h>
+
+#include <mach/hardware.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/audio.h>
 
 #include "pxa2xx-i2s.h"
@@ -85,6 +95,7 @@ static struct pxa_i2s_port pxa_i2s;
 static struct clk *clk_i2s;
 static int clk_ena = 0;
 
+<<<<<<< HEAD
 static struct pxa2xx_pcm_dma_params pxa2xx_i2s_pcm_stereo_out = {
 	.name			= "I2S PCM Stereo out",
 	.dev_addr		= __PREG(SADR),
@@ -99,6 +110,22 @@ static struct pxa2xx_pcm_dma_params pxa2xx_i2s_pcm_stereo_in = {
 	.drcmr			= &DRCMR(2),
 	.dcmd			= DCMD_INCTRGADDR | DCMD_FLOWSRC |
 				  DCMD_BURST32 | DCMD_WIDTH4,
+=======
+static unsigned long pxa2xx_i2s_pcm_stereo_out_req = 3;
+static struct snd_dmaengine_dai_dma_data pxa2xx_i2s_pcm_stereo_out = {
+	.addr		= __PREG(SADR),
+	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
+	.maxburst	= 32,
+	.filter_data	= &pxa2xx_i2s_pcm_stereo_out_req,
+};
+
+static unsigned long pxa2xx_i2s_pcm_stereo_in_req = 2;
+static struct snd_dmaengine_dai_dma_data pxa2xx_i2s_pcm_stereo_in = {
+	.addr		= __PREG(SADR),
+	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
+	.maxburst	= 32,
+	.filter_data	= &pxa2xx_i2s_pcm_stereo_in_req,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int pxa2xx_i2s_startup(struct snd_pcm_substream *substream,
@@ -166,10 +193,18 @@ static int pxa2xx_i2s_hw_params(struct snd_pcm_substream *substream,
 				struct snd_pcm_hw_params *params,
 				struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct pxa2xx_pcm_dma_params *dma_data;
 
 	BUG_ON(IS_ERR(clk_i2s));
 	clk_enable(clk_i2s);
+=======
+	struct snd_dmaengine_dai_dma_data *dma_data;
+
+	if (WARN_ON(IS_ERR(clk_i2s)))
+		return -EINVAL;
+	clk_prepare_enable(clk_i2s);
+>>>>>>> refs/remotes/origin/master
 	clk_ena = 1;
 	pxa_i2s_wait();
 
@@ -262,7 +297,11 @@ static void pxa2xx_i2s_shutdown(struct snd_pcm_substream *substream,
 		SACR0 &= ~SACR0_ENB;
 		pxa_i2s_wait();
 		if (clk_ena) {
+<<<<<<< HEAD
 			clk_disable(clk_i2s);
+=======
+			clk_disable_unprepare(clk_i2s);
+>>>>>>> refs/remotes/origin/master
 			clk_ena = 0;
 		}
 	}
@@ -336,10 +375,14 @@ static int  pxa2xx_i2s_remove(struct snd_soc_dai *dai)
 		SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops pxa_i2s_dai_ops = {
 =======
 static const struct snd_soc_dai_ops pxa_i2s_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops pxa_i2s_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.startup	= pxa2xx_i2s_startup,
 	.shutdown	= pxa2xx_i2s_shutdown,
 	.trigger	= pxa2xx_i2s_trigger,
@@ -367,6 +410,7 @@ static struct snd_soc_dai_driver pxa_i2s_dai = {
 	.symmetric_rates = 1,
 };
 
+<<<<<<< HEAD
 static int pxa2xx_i2s_drv_probe(struct platform_device *pdev)
 {
 	return snd_soc_register_dai(&pdev->dev, &pxa_i2s_dai);
@@ -375,12 +419,31 @@ static int pxa2xx_i2s_drv_probe(struct platform_device *pdev)
 static int __devexit pxa2xx_i2s_drv_remove(struct platform_device *pdev)
 {
 	snd_soc_unregister_dai(&pdev->dev);
+=======
+static const struct snd_soc_component_driver pxa_i2s_component = {
+	.name		= "pxa-i2s",
+};
+
+static int pxa2xx_i2s_drv_probe(struct platform_device *pdev)
+{
+	return snd_soc_register_component(&pdev->dev, &pxa_i2s_component,
+					  &pxa_i2s_dai, 1);
+}
+
+static int pxa2xx_i2s_drv_remove(struct platform_device *pdev)
+{
+	snd_soc_unregister_component(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver pxa2xx_i2s_driver = {
 	.probe = pxa2xx_i2s_drv_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(pxa2xx_i2s_drv_remove),
+=======
+	.remove = pxa2xx_i2s_drv_remove,
+>>>>>>> refs/remotes/origin/master
 
 	.driver = {
 		.name = "pxa2xx-i2s",

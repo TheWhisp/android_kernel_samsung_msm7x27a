@@ -1,7 +1,11 @@
 /*******************************************************************************
 
   Intel 10 Gigabit PCI Express Linux driver
+<<<<<<< HEAD
   Copyright(c) 1999 - 2012 Intel Corporation.
+=======
+  Copyright(c) 1999 - 2013 Intel Corporation.
+>>>>>>> refs/remotes/origin/master
 
   This program is free software; you can redistribute it and/or modify it
   under the terms and conditions of the GNU General Public License,
@@ -35,6 +39,14 @@
 #include <linux/cpumask.h>
 #include <linux/aer.h>
 #include <linux/if_vlan.h>
+<<<<<<< HEAD
+=======
+#include <linux/jiffies.h>
+
+#include <linux/clocksource.h>
+#include <linux/net_tstamp.h>
+#include <linux/ptp_clock_kernel.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "ixgbe_type.h"
 #include "ixgbe_common.h"
@@ -47,6 +59,14 @@
 #include <linux/dca.h>
 #endif
 
+<<<<<<< HEAD
+=======
+#include <net/busy_poll.h>
+
+#ifdef CONFIG_NET_RX_BUSY_POLL
+#define BP_EXTENDED_STATS
+#endif
+>>>>>>> refs/remotes/origin/master
 /* common prefix used by pr_<> macros */
 #undef pr_fmt
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
@@ -57,7 +77,15 @@
 #define IXGBE_MAX_TXD			   4096
 #define IXGBE_MIN_TXD			     64
 
+<<<<<<< HEAD
 #define IXGBE_DEFAULT_RXD		    512
+=======
+#if (PAGE_SIZE < 8192)
+#define IXGBE_DEFAULT_RXD		    512
+#else
+#define IXGBE_DEFAULT_RXD		    128
+#endif
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_MAX_RXD			   4096
 #define IXGBE_MIN_RXD			     64
 
@@ -71,6 +99,7 @@
 #define IXGBE_MAX_FCPAUSE		 0xFFFF
 
 /* Supported Rx Buffer Sizes */
+<<<<<<< HEAD
 #define IXGBE_RXBUFFER_512   512    /* Used for packet split */
 #define IXGBE_MAX_RXBUFFER  16384  /* largest size for a single descriptor */
 
@@ -84,10 +113,28 @@
 #define IXGBE_RX_HDR_SIZE IXGBE_RXBUFFER_512
 
 #define MAXIMUM_ETHERNET_VLAN_SIZE (ETH_FRAME_LEN + ETH_FCS_LEN + VLAN_HLEN)
+=======
+#define IXGBE_RXBUFFER_256    256  /* Used for skb receive header */
+#define IXGBE_RXBUFFER_2K    2048
+#define IXGBE_RXBUFFER_3K    3072
+#define IXGBE_RXBUFFER_4K    4096
+#define IXGBE_MAX_RXBUFFER  16384  /* largest size for a single descriptor */
+
+/*
+ * NOTE: netdev_alloc_skb reserves up to 64 bytes, NET_IP_ALIGN means we
+ * reserve 64 more, and skb_shared_info adds an additional 320 bytes more,
+ * this adds up to 448 bytes of extra data.
+ *
+ * Since netdev_alloc_skb now allocates a page fragment we can use a value
+ * of 256 and the resultant skb will have a truesize of 960 or less.
+ */
+#define IXGBE_RX_HDR_SIZE IXGBE_RXBUFFER_256
+>>>>>>> refs/remotes/origin/master
 
 /* How many Rx Buffers do we bundle into one write to the hardware ? */
 #define IXGBE_RX_BUFFER_WRITE	16	/* Must be power of 2 */
 
+<<<<<<< HEAD
 #define IXGBE_TX_FLAGS_CSUM		(u32)(1)
 #define IXGBE_TX_FLAGS_HW_VLAN		(u32)(1 << 1)
 #define IXGBE_TX_FLAGS_SW_VLAN		(u32)(1 << 2)
@@ -96,6 +143,25 @@
 #define IXGBE_TX_FLAGS_FCOE		(u32)(1 << 5)
 #define IXGBE_TX_FLAGS_FSO		(u32)(1 << 6)
 #define IXGBE_TX_FLAGS_TXSW		(u32)(1 << 7)
+=======
+enum ixgbe_tx_flags {
+	/* cmd_type flags */
+	IXGBE_TX_FLAGS_HW_VLAN	= 0x01,
+	IXGBE_TX_FLAGS_TSO	= 0x02,
+	IXGBE_TX_FLAGS_TSTAMP	= 0x04,
+
+	/* olinfo flags */
+	IXGBE_TX_FLAGS_CC	= 0x08,
+	IXGBE_TX_FLAGS_IPV4	= 0x10,
+	IXGBE_TX_FLAGS_CSUM	= 0x20,
+
+	/* software defined flags */
+	IXGBE_TX_FLAGS_SW_VLAN	= 0x40,
+	IXGBE_TX_FLAGS_FCOE	= 0x80,
+};
+
+/* VLAN info */
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_TX_FLAGS_VLAN_MASK	0xffff0000
 #define IXGBE_TX_FLAGS_VLAN_PRIO_MASK	0xe0000000
 #define IXGBE_TX_FLAGS_VLAN_PRIO_SHIFT  29
@@ -106,7 +172,11 @@
 #define IXGBE_MAX_VFTA_ENTRIES          128
 #define MAX_EMULATION_MAC_ADDRS         16
 #define IXGBE_MAX_PF_MACVLANS           15
+<<<<<<< HEAD
 #define VMDQ_P(p)   ((p) + adapter->num_vfs)
+=======
+#define VMDQ_P(p)   ((p) + adapter->ring_feature[RING_F_VMDQ].offset)
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_82599_VF_DEVICE_ID        0x10ED
 #define IXGBE_X540_VF_DEVICE_ID         0x1515
 
@@ -123,7 +193,11 @@ struct vf_data_storage {
 	u16 tx_rate;
 	u16 vlan_count;
 	u8 spoofchk_enabled;
+<<<<<<< HEAD
 	struct pci_dev *vfdev;
+=======
+	unsigned int vf_api;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct vf_macvlans {
@@ -140,7 +214,11 @@ struct vf_macvlans {
 
 /* Tx Descriptors needed, worst case */
 #define TXD_USE_COUNT(S) DIV_ROUND_UP((S), IXGBE_MAX_DATA_PER_TXD)
+<<<<<<< HEAD
 #define DESC_NEEDED ((MAX_SKB_FRAGS * TXD_USE_COUNT(PAGE_SIZE)) + 4)
+=======
+#define DESC_NEEDED (MAX_SKB_FRAGS + 4)
+>>>>>>> refs/remotes/origin/master
 
 /* wrapper around a pointer to a socket buffer,
  * so a DMA handle can be stored along with the buffer */
@@ -166,6 +244,14 @@ struct ixgbe_rx_buffer {
 struct ixgbe_queue_stats {
 	u64 packets;
 	u64 bytes;
+<<<<<<< HEAD
+=======
+#ifdef BP_EXTENDED_STATS
+	u64 yields;
+	u64 misses;
+	u64 cleaned;
+#endif  /* BP_EXTENDED_STATS */
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ixgbe_tx_queue_stats {
@@ -185,6 +271,10 @@ struct ixgbe_rx_queue_stats {
 
 enum ixgbe_ring_state_t {
 	__IXGBE_TX_FDIR_INIT_DONE,
+<<<<<<< HEAD
+=======
+	__IXGBE_TX_XPS_INIT_DONE,
+>>>>>>> refs/remotes/origin/master
 	__IXGBE_TX_DETECT_HANG,
 	__IXGBE_HANG_CHECK_ARMED,
 	__IXGBE_RX_RSC_ENABLED,
@@ -192,6 +282,18 @@ enum ixgbe_ring_state_t {
 	__IXGBE_RX_FCOE,
 };
 
+<<<<<<< HEAD
+=======
+struct ixgbe_fwd_adapter {
+	unsigned long active_vlans[BITS_TO_LONGS(VLAN_N_VID)];
+	struct net_device *netdev;
+	struct ixgbe_adapter *real_adapter;
+	unsigned int tx_base_queue;
+	unsigned int rx_base_queue;
+	int pool;
+};
+
+>>>>>>> refs/remotes/origin/master
 #define check_for_tx_hang(ring) \
 	test_bit(__IXGBE_TX_DETECT_HANG, &(ring)->state)
 #define set_check_for_tx_hang(ring) \
@@ -209,11 +311,19 @@ struct ixgbe_ring {
 	struct ixgbe_q_vector *q_vector; /* backpointer to host q_vector */
 	struct net_device *netdev;	/* netdev ring belongs to */
 	struct device *dev;		/* device for DMA mapping */
+<<<<<<< HEAD
+=======
+	struct ixgbe_fwd_adapter *l2_accel_priv;
+>>>>>>> refs/remotes/origin/master
 	void *desc;			/* descriptor ring memory */
 	union {
 		struct ixgbe_tx_buffer *tx_buffer_info;
 		struct ixgbe_rx_buffer *rx_buffer_info;
 	};
+<<<<<<< HEAD
+=======
+	unsigned long last_rx_timestamp;
+>>>>>>> refs/remotes/origin/master
 	unsigned long state;
 	u8 __iomem *tail;
 	dma_addr_t dma;			/* phys. address of descriptor ring */
@@ -261,6 +371,7 @@ enum ixgbe_ring_f_enum {
 
 #define IXGBE_MAX_RSS_INDICES  16
 #define IXGBE_MAX_VMDQ_INDICES 64
+<<<<<<< HEAD
 #define IXGBE_MAX_FDIR_INDICES 64
 #ifdef IXGBE_FCOE
 #define IXGBE_MAX_FCOE_INDICES  8
@@ -275,11 +386,35 @@ struct ixgbe_ring_feature {
 	int mask;
 } ____cacheline_internodealigned_in_smp;
 
+=======
+#define IXGBE_MAX_FDIR_INDICES 63	/* based on q_vector limit */
+#define IXGBE_MAX_FCOE_INDICES  8
+#define MAX_RX_QUEUES (IXGBE_MAX_FDIR_INDICES + 1)
+#define MAX_TX_QUEUES (IXGBE_MAX_FDIR_INDICES + 1)
+#define IXGBE_MAX_L2A_QUEUES 4
+#define IXGBE_MAX_L2A_QUEUES 4
+#define IXGBE_BAD_L2A_QUEUE 3
+#define IXGBE_MAX_MACVLANS	31
+#define IXGBE_MAX_DCBMACVLANS	8
+
+struct ixgbe_ring_feature {
+	u16 limit;	/* upper limit on feature indices */
+	u16 indices;	/* current value of indices */
+	u16 mask;	/* Mask used for feature to ring mapping */
+	u16 offset;	/* offset to start of feature */
+} ____cacheline_internodealigned_in_smp;
+
+#define IXGBE_82599_VMDQ_8Q_MASK 0x78
+#define IXGBE_82599_VMDQ_4Q_MASK 0x7C
+#define IXGBE_82599_VMDQ_2Q_MASK 0x7E
+
+>>>>>>> refs/remotes/origin/master
 /*
  * FCoE requires that all Rx buffers be over 2200 bytes in length.  Since
  * this is twice the size of a half page we need to double the page order
  * for FCoE enabled Rx queues.
  */
+<<<<<<< HEAD
 #if defined(IXGBE_FCOE) && (PAGE_SIZE < 8192)
 static inline unsigned int ixgbe_rx_pg_order(struct ixgbe_ring *ring)
 {
@@ -290,6 +425,27 @@ static inline unsigned int ixgbe_rx_pg_order(struct ixgbe_ring *ring)
 #endif
 #define ixgbe_rx_pg_size(_ring) (PAGE_SIZE << ixgbe_rx_pg_order(_ring))
 #define ixgbe_rx_bufsz(_ring) ((PAGE_SIZE / 2) << ixgbe_rx_pg_order(_ring))
+=======
+static inline unsigned int ixgbe_rx_bufsz(struct ixgbe_ring *ring)
+{
+#ifdef IXGBE_FCOE
+	if (test_bit(__IXGBE_RX_FCOE, &ring->state))
+		return (PAGE_SIZE < 8192) ? IXGBE_RXBUFFER_4K :
+					    IXGBE_RXBUFFER_3K;
+#endif
+	return IXGBE_RXBUFFER_2K;
+}
+
+static inline unsigned int ixgbe_rx_pg_order(struct ixgbe_ring *ring)
+{
+#ifdef IXGBE_FCOE
+	if (test_bit(__IXGBE_RX_FCOE, &ring->state))
+		return (PAGE_SIZE < 8192) ? 1 : 0;
+#endif
+	return 0;
+}
+#define ixgbe_rx_pg_size(_ring) (PAGE_SIZE << ixgbe_rx_pg_order(_ring))
+>>>>>>> refs/remotes/origin/master
 
 struct ixgbe_ring_container {
 	struct ixgbe_ring *ring;	/* pointer to linked list of rings */
@@ -308,7 +464,11 @@ struct ixgbe_ring_container {
                               ? 8 : 1)
 #define MAX_TX_PACKET_BUFFERS MAX_RX_PACKET_BUFFERS
 
+<<<<<<< HEAD
 /* MAX_MSIX_Q_VECTORS of these are allocated,
+=======
+/* MAX_Q_VECTORS of these are allocated,
+>>>>>>> refs/remotes/origin/master
  * but we only use one per queue-specific vector.
  */
 struct ixgbe_q_vector {
@@ -328,9 +488,183 @@ struct ixgbe_q_vector {
 	struct rcu_head rcu;	/* to avoid race with update stats on free */
 	char name[IFNAMSIZ + 9];
 
+<<<<<<< HEAD
 	/* for dynamic allocation of rings associated with this q_vector */
 	struct ixgbe_ring ring[0] ____cacheline_internodealigned_in_smp;
 };
+=======
+#ifdef CONFIG_NET_RX_BUSY_POLL
+	unsigned int state;
+#define IXGBE_QV_STATE_IDLE        0
+#define IXGBE_QV_STATE_NAPI	   1     /* NAPI owns this QV */
+#define IXGBE_QV_STATE_POLL	   2     /* poll owns this QV */
+#define IXGBE_QV_STATE_DISABLED	   4     /* QV is disabled */
+#define IXGBE_QV_OWNED (IXGBE_QV_STATE_NAPI | IXGBE_QV_STATE_POLL)
+#define IXGBE_QV_LOCKED (IXGBE_QV_OWNED | IXGBE_QV_STATE_DISABLED)
+#define IXGBE_QV_STATE_NAPI_YIELD  8     /* NAPI yielded this QV */
+#define IXGBE_QV_STATE_POLL_YIELD  16    /* poll yielded this QV */
+#define IXGBE_QV_YIELD (IXGBE_QV_STATE_NAPI_YIELD | IXGBE_QV_STATE_POLL_YIELD)
+#define IXGBE_QV_USER_PEND (IXGBE_QV_STATE_POLL | IXGBE_QV_STATE_POLL_YIELD)
+	spinlock_t lock;
+#endif  /* CONFIG_NET_RX_BUSY_POLL */
+
+	/* for dynamic allocation of rings associated with this q_vector */
+	struct ixgbe_ring ring[0] ____cacheline_internodealigned_in_smp;
+};
+#ifdef CONFIG_NET_RX_BUSY_POLL
+static inline void ixgbe_qv_init_lock(struct ixgbe_q_vector *q_vector)
+{
+
+	spin_lock_init(&q_vector->lock);
+	q_vector->state = IXGBE_QV_STATE_IDLE;
+}
+
+/* called from the device poll routine to get ownership of a q_vector */
+static inline bool ixgbe_qv_lock_napi(struct ixgbe_q_vector *q_vector)
+{
+	int rc = true;
+	spin_lock_bh(&q_vector->lock);
+	if (q_vector->state & IXGBE_QV_LOCKED) {
+		WARN_ON(q_vector->state & IXGBE_QV_STATE_NAPI);
+		q_vector->state |= IXGBE_QV_STATE_NAPI_YIELD;
+		rc = false;
+#ifdef BP_EXTENDED_STATS
+		q_vector->tx.ring->stats.yields++;
+#endif
+	} else
+		/* we don't care if someone yielded */
+		q_vector->state = IXGBE_QV_STATE_NAPI;
+	spin_unlock_bh(&q_vector->lock);
+	return rc;
+}
+
+/* returns true is someone tried to get the qv while napi had it */
+static inline bool ixgbe_qv_unlock_napi(struct ixgbe_q_vector *q_vector)
+{
+	int rc = false;
+	spin_lock_bh(&q_vector->lock);
+	WARN_ON(q_vector->state & (IXGBE_QV_STATE_POLL |
+			       IXGBE_QV_STATE_NAPI_YIELD));
+
+	if (q_vector->state & IXGBE_QV_STATE_POLL_YIELD)
+		rc = true;
+	/* will reset state to idle, unless QV is disabled */
+	q_vector->state &= IXGBE_QV_STATE_DISABLED;
+	spin_unlock_bh(&q_vector->lock);
+	return rc;
+}
+
+/* called from ixgbe_low_latency_poll() */
+static inline bool ixgbe_qv_lock_poll(struct ixgbe_q_vector *q_vector)
+{
+	int rc = true;
+	spin_lock_bh(&q_vector->lock);
+	if ((q_vector->state & IXGBE_QV_LOCKED)) {
+		q_vector->state |= IXGBE_QV_STATE_POLL_YIELD;
+		rc = false;
+#ifdef BP_EXTENDED_STATS
+		q_vector->rx.ring->stats.yields++;
+#endif
+	} else
+		/* preserve yield marks */
+		q_vector->state |= IXGBE_QV_STATE_POLL;
+	spin_unlock_bh(&q_vector->lock);
+	return rc;
+}
+
+/* returns true if someone tried to get the qv while it was locked */
+static inline bool ixgbe_qv_unlock_poll(struct ixgbe_q_vector *q_vector)
+{
+	int rc = false;
+	spin_lock_bh(&q_vector->lock);
+	WARN_ON(q_vector->state & (IXGBE_QV_STATE_NAPI));
+
+	if (q_vector->state & IXGBE_QV_STATE_POLL_YIELD)
+		rc = true;
+	/* will reset state to idle, unless QV is disabled */
+	q_vector->state &= IXGBE_QV_STATE_DISABLED;
+	spin_unlock_bh(&q_vector->lock);
+	return rc;
+}
+
+/* true if a socket is polling, even if it did not get the lock */
+static inline bool ixgbe_qv_busy_polling(struct ixgbe_q_vector *q_vector)
+{
+	WARN_ON(!(q_vector->state & IXGBE_QV_OWNED));
+	return q_vector->state & IXGBE_QV_USER_PEND;
+}
+
+/* false if QV is currently owned */
+static inline bool ixgbe_qv_disable(struct ixgbe_q_vector *q_vector)
+{
+	int rc = true;
+	spin_lock_bh(&q_vector->lock);
+	if (q_vector->state & IXGBE_QV_OWNED)
+		rc = false;
+	q_vector->state |= IXGBE_QV_STATE_DISABLED;
+	spin_unlock_bh(&q_vector->lock);
+
+	return rc;
+}
+
+#else /* CONFIG_NET_RX_BUSY_POLL */
+static inline void ixgbe_qv_init_lock(struct ixgbe_q_vector *q_vector)
+{
+}
+
+static inline bool ixgbe_qv_lock_napi(struct ixgbe_q_vector *q_vector)
+{
+	return true;
+}
+
+static inline bool ixgbe_qv_unlock_napi(struct ixgbe_q_vector *q_vector)
+{
+	return false;
+}
+
+static inline bool ixgbe_qv_lock_poll(struct ixgbe_q_vector *q_vector)
+{
+	return false;
+}
+
+static inline bool ixgbe_qv_unlock_poll(struct ixgbe_q_vector *q_vector)
+{
+	return false;
+}
+
+static inline bool ixgbe_qv_busy_polling(struct ixgbe_q_vector *q_vector)
+{
+	return false;
+}
+
+static inline bool ixgbe_qv_disable(struct ixgbe_q_vector *q_vector)
+{
+	return true;
+}
+
+#endif /* CONFIG_NET_RX_BUSY_POLL */
+
+#ifdef CONFIG_IXGBE_HWMON
+
+#define IXGBE_HWMON_TYPE_LOC		0
+#define IXGBE_HWMON_TYPE_TEMP		1
+#define IXGBE_HWMON_TYPE_CAUTION	2
+#define IXGBE_HWMON_TYPE_MAX		3
+
+struct hwmon_attr {
+	struct device_attribute dev_attr;
+	struct ixgbe_hw *hw;
+	struct ixgbe_thermal_diode_data *sensor;
+	char name[12];
+};
+
+struct hwmon_buff {
+	struct device *device;
+	struct hwmon_attr *hwmon_list;
+	unsigned int n_hwmon;
+};
+#endif /* CONFIG_IXGBE_HWMON */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * microsecond values for various ITR rates shifted by 2 to fit itr register
@@ -364,7 +698,11 @@ static inline u16 ixgbe_desc_unused(struct ixgbe_ring *ring)
 #define IXGBE_TX_CTXTDESC(R, i)	    \
 	(&(((struct ixgbe_adv_tx_context_desc *)((R)->desc))[i]))
 
+<<<<<<< HEAD
 #define IXGBE_MAX_JUMBO_FRAME_SIZE        16128
+=======
+#define IXGBE_MAX_JUMBO_FRAME_SIZE	9728 /* Maximum Supported Size 9.5KB */
+>>>>>>> refs/remotes/origin/master
 #ifdef IXGBE_FCOE
 /* Use 3K as the baby jumbo frame size for FCoE */
 #define IXGBE_FCOE_JUMBO_FRAME_SIZE       3072
@@ -374,11 +712,19 @@ static inline u16 ixgbe_desc_unused(struct ixgbe_ring *ring)
 #define NON_Q_VECTORS (OTHER_VECTOR)
 
 #define MAX_MSIX_VECTORS_82599 64
+<<<<<<< HEAD
 #define MAX_MSIX_Q_VECTORS_82599 64
 #define MAX_MSIX_VECTORS_82598 18
 #define MAX_MSIX_Q_VECTORS_82598 16
 
 #define MAX_MSIX_Q_VECTORS MAX_MSIX_Q_VECTORS_82599
+=======
+#define MAX_Q_VECTORS_82599 64
+#define MAX_MSIX_VECTORS_82598 18
+#define MAX_Q_VECTORS_82598 16
+
+#define MAX_Q_VECTORS MAX_Q_VECTORS_82599
+>>>>>>> refs/remotes/origin/master
 #define MAX_MSIX_COUNT MAX_MSIX_VECTORS_82599
 
 #define MIN_MSIX_Q_VECTORS 1
@@ -400,6 +746,7 @@ struct ixgbe_adapter {
 	 * thus the additional *_CAPABLE flags.
 	 */
 	u32 flags;
+<<<<<<< HEAD
 #define IXGBE_FLAG_MSI_CAPABLE                  (u32)(1 << 1)
 #define IXGBE_FLAG_MSI_ENABLED                  (u32)(1 << 2)
 #define IXGBE_FLAG_MSIX_CAPABLE                 (u32)(1 << 3)
@@ -429,6 +776,35 @@ struct ixgbe_adapter {
 
 	u32 flags2;
 #define IXGBE_FLAG2_RSC_CAPABLE                 (u32)(1)
+=======
+#define IXGBE_FLAG_MSI_CAPABLE                  (u32)(1 << 0)
+#define IXGBE_FLAG_MSI_ENABLED                  (u32)(1 << 1)
+#define IXGBE_FLAG_MSIX_CAPABLE                 (u32)(1 << 2)
+#define IXGBE_FLAG_MSIX_ENABLED                 (u32)(1 << 3)
+#define IXGBE_FLAG_RX_1BUF_CAPABLE              (u32)(1 << 4)
+#define IXGBE_FLAG_RX_PS_CAPABLE                (u32)(1 << 5)
+#define IXGBE_FLAG_RX_PS_ENABLED                (u32)(1 << 6)
+#define IXGBE_FLAG_IN_NETPOLL                   (u32)(1 << 7)
+#define IXGBE_FLAG_DCA_ENABLED                  (u32)(1 << 8)
+#define IXGBE_FLAG_DCA_CAPABLE                  (u32)(1 << 9)
+#define IXGBE_FLAG_IMIR_ENABLED                 (u32)(1 << 10)
+#define IXGBE_FLAG_MQ_CAPABLE                   (u32)(1 << 11)
+#define IXGBE_FLAG_DCB_ENABLED                  (u32)(1 << 12)
+#define IXGBE_FLAG_VMDQ_CAPABLE                 (u32)(1 << 13)
+#define IXGBE_FLAG_VMDQ_ENABLED                 (u32)(1 << 14)
+#define IXGBE_FLAG_FAN_FAIL_CAPABLE             (u32)(1 << 15)
+#define IXGBE_FLAG_NEED_LINK_UPDATE             (u32)(1 << 16)
+#define IXGBE_FLAG_NEED_LINK_CONFIG             (u32)(1 << 17)
+#define IXGBE_FLAG_FDIR_HASH_CAPABLE            (u32)(1 << 18)
+#define IXGBE_FLAG_FDIR_PERFECT_CAPABLE         (u32)(1 << 19)
+#define IXGBE_FLAG_FCOE_CAPABLE                 (u32)(1 << 20)
+#define IXGBE_FLAG_FCOE_ENABLED                 (u32)(1 << 21)
+#define IXGBE_FLAG_SRIOV_CAPABLE                (u32)(1 << 22)
+#define IXGBE_FLAG_SRIOV_ENABLED                (u32)(1 << 23)
+
+	u32 flags2;
+#define IXGBE_FLAG2_RSC_CAPABLE                 (u32)(1 << 0)
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_FLAG2_RSC_ENABLED                 (u32)(1 << 1)
 #define IXGBE_FLAG2_TEMP_SENSOR_CAPABLE         (u32)(1 << 2)
 #define IXGBE_FLAG2_TEMP_SENSOR_EVENT           (u32)(1 << 3)
@@ -438,6 +814,11 @@ struct ixgbe_adapter {
 #define IXGBE_FLAG2_FDIR_REQUIRES_REINIT        (u32)(1 << 7)
 #define IXGBE_FLAG2_RSS_FIELD_IPV4_UDP		(u32)(1 << 8)
 #define IXGBE_FLAG2_RSS_FIELD_IPV6_UDP		(u32)(1 << 9)
+<<<<<<< HEAD
+=======
+#define IXGBE_FLAG2_PTP_PPS_ENABLED		(u32)(1 << 10)
+#define IXGBE_FLAG2_BRIDGE_MODE_VEB		(u32)(1 << 11)
+>>>>>>> refs/remotes/origin/master
 
 	/* Tx fast path data */
 	int num_tx_queues;
@@ -467,7 +848,11 @@ struct ixgbe_adapter {
 	u32 alloc_rx_page_failed;
 	u32 alloc_rx_buff_failed;
 
+<<<<<<< HEAD
 	struct ixgbe_q_vector *q_vector[MAX_MSIX_Q_VECTORS];
+=======
+	struct ixgbe_q_vector *q_vector[MAX_Q_VECTORS];
+>>>>>>> refs/remotes/origin/master
 
 	/* DCB parameters */
 	struct ieee_pfc *ixgbe_ieee_pfc;
@@ -478,8 +863,13 @@ struct ixgbe_adapter {
 	u8 dcbx_cap;
 	enum ixgbe_fc_mode last_lfc_mode;
 
+<<<<<<< HEAD
 	int num_msix_vectors;
 	int max_msix_q_vectors;         /* true count of q_vectors for device */
+=======
+	int num_q_vectors;	/* current number of q_vectors for device */
+	int max_q_vectors;	/* true count of q_vectors for device */
+>>>>>>> refs/remotes/origin/master
 	struct ixgbe_ring_feature ring_feature[RING_F_ARRAY_SIZE];
 	struct msix_entry *msix_entries;
 
@@ -525,6 +915,21 @@ struct ixgbe_adapter {
 	u32 interrupt_event;
 	u32 led_reg;
 
+<<<<<<< HEAD
+=======
+	struct ptp_clock *ptp_clock;
+	struct ptp_clock_info ptp_caps;
+	struct work_struct ptp_tx_work;
+	struct sk_buff *ptp_tx_skb;
+	unsigned long ptp_tx_start;
+	unsigned long last_overflow_check;
+	unsigned long last_rx_ptp_check;
+	spinlock_t tmreg_lock;
+	struct cyclecounter cc;
+	struct timecounter tc;
+	u32 base_incval;
+
+>>>>>>> refs/remotes/origin/master
 	/* SR-IOV */
 	DECLARE_BITMAP(active_vfs, IXGBE_MAX_VF_FUNCTIONS);
 	unsigned int num_vfs;
@@ -535,6 +940,19 @@ struct ixgbe_adapter {
 
 	u32 timer_event_accumulator;
 	u32 vferr_refcount;
+<<<<<<< HEAD
+=======
+	struct kobject *info_kobj;
+#ifdef CONFIG_IXGBE_HWMON
+	struct hwmon_buff ixgbe_hwmon_buff;
+#endif /* CONFIG_IXGBE_HWMON */
+#ifdef CONFIG_DEBUG_FS
+	struct dentry *ixgbe_dbg_adapter;
+#endif /*CONFIG_DEBUG_FS*/
+
+	u8 default_up;
+	unsigned long fwd_bitmask; /* Bitmask indicating in use pools */
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ixgbe_fdir_filter {
@@ -550,6 +968,10 @@ enum ixgbe_state_t {
 	__IXGBE_DOWN,
 	__IXGBE_SERVICE_SCHED,
 	__IXGBE_IN_SFP_INIT,
+<<<<<<< HEAD
+=======
+	__IXGBE_PTP_RUNNING,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ixgbe_cb {
@@ -582,6 +1004,7 @@ extern const char ixgbe_driver_version[];
 extern char ixgbe_default_device_descr[];
 #endif /* IXGBE_FCOE */
 
+<<<<<<< HEAD
 extern void ixgbe_up(struct ixgbe_adapter *adapter);
 extern void ixgbe_down(struct ixgbe_adapter *adapter);
 extern void ixgbe_reinit_locked(struct ixgbe_adapter *adapter);
@@ -655,9 +1078,137 @@ extern int ixgbe_fcoe_get_hbainfo(struct net_device *netdev,
 				  struct netdev_fcoe_hbainfo *info);
 #endif /* IXGBE_FCOE */
 
+=======
+void ixgbe_up(struct ixgbe_adapter *adapter);
+void ixgbe_down(struct ixgbe_adapter *adapter);
+void ixgbe_reinit_locked(struct ixgbe_adapter *adapter);
+void ixgbe_reset(struct ixgbe_adapter *adapter);
+void ixgbe_set_ethtool_ops(struct net_device *netdev);
+int ixgbe_setup_rx_resources(struct ixgbe_ring *);
+int ixgbe_setup_tx_resources(struct ixgbe_ring *);
+void ixgbe_free_rx_resources(struct ixgbe_ring *);
+void ixgbe_free_tx_resources(struct ixgbe_ring *);
+void ixgbe_configure_rx_ring(struct ixgbe_adapter *, struct ixgbe_ring *);
+void ixgbe_configure_tx_ring(struct ixgbe_adapter *, struct ixgbe_ring *);
+void ixgbe_disable_rx_queue(struct ixgbe_adapter *adapter, struct ixgbe_ring *);
+void ixgbe_update_stats(struct ixgbe_adapter *adapter);
+int ixgbe_init_interrupt_scheme(struct ixgbe_adapter *adapter);
+int ixgbe_wol_supported(struct ixgbe_adapter *adapter, u16 device_id,
+			       u16 subdevice_id);
+void ixgbe_clear_interrupt_scheme(struct ixgbe_adapter *adapter);
+netdev_tx_t ixgbe_xmit_frame_ring(struct sk_buff *, struct ixgbe_adapter *,
+				  struct ixgbe_ring *);
+void ixgbe_unmap_and_free_tx_resource(struct ixgbe_ring *,
+				      struct ixgbe_tx_buffer *);
+void ixgbe_alloc_rx_buffers(struct ixgbe_ring *, u16);
+void ixgbe_write_eitr(struct ixgbe_q_vector *);
+int ixgbe_poll(struct napi_struct *napi, int budget);
+int ethtool_ioctl(struct ifreq *ifr);
+s32 ixgbe_reinit_fdir_tables_82599(struct ixgbe_hw *hw);
+s32 ixgbe_init_fdir_signature_82599(struct ixgbe_hw *hw, u32 fdirctrl);
+s32 ixgbe_init_fdir_perfect_82599(struct ixgbe_hw *hw, u32 fdirctrl);
+s32 ixgbe_fdir_add_signature_filter_82599(struct ixgbe_hw *hw,
+					  union ixgbe_atr_hash_dword input,
+					  union ixgbe_atr_hash_dword common,
+					  u8 queue);
+s32 ixgbe_fdir_set_input_mask_82599(struct ixgbe_hw *hw,
+				    union ixgbe_atr_input *input_mask);
+s32 ixgbe_fdir_write_perfect_filter_82599(struct ixgbe_hw *hw,
+					  union ixgbe_atr_input *input,
+					  u16 soft_id, u8 queue);
+s32 ixgbe_fdir_erase_perfect_filter_82599(struct ixgbe_hw *hw,
+					  union ixgbe_atr_input *input,
+					  u16 soft_id);
+void ixgbe_atr_compute_perfect_hash_82599(union ixgbe_atr_input *input,
+					  union ixgbe_atr_input *mask);
+bool ixgbe_verify_lesm_fw_enabled_82599(struct ixgbe_hw *hw);
+void ixgbe_set_rx_mode(struct net_device *netdev);
+#ifdef CONFIG_IXGBE_DCB
+void ixgbe_set_rx_drop_en(struct ixgbe_adapter *adapter);
+#endif
+int ixgbe_setup_tc(struct net_device *dev, u8 tc);
+void ixgbe_tx_ctxtdesc(struct ixgbe_ring *, u32, u32, u32, u32);
+void ixgbe_do_reset(struct net_device *netdev);
+#ifdef CONFIG_IXGBE_HWMON
+void ixgbe_sysfs_exit(struct ixgbe_adapter *adapter);
+int ixgbe_sysfs_init(struct ixgbe_adapter *adapter);
+#endif /* CONFIG_IXGBE_HWMON */
+#ifdef IXGBE_FCOE
+void ixgbe_configure_fcoe(struct ixgbe_adapter *adapter);
+int ixgbe_fso(struct ixgbe_ring *tx_ring, struct ixgbe_tx_buffer *first,
+	      u8 *hdr_len);
+int ixgbe_fcoe_ddp(struct ixgbe_adapter *adapter,
+		   union ixgbe_adv_rx_desc *rx_desc, struct sk_buff *skb);
+int ixgbe_fcoe_ddp_get(struct net_device *netdev, u16 xid,
+		       struct scatterlist *sgl, unsigned int sgc);
+int ixgbe_fcoe_ddp_target(struct net_device *netdev, u16 xid,
+			  struct scatterlist *sgl, unsigned int sgc);
+int ixgbe_fcoe_ddp_put(struct net_device *netdev, u16 xid);
+int ixgbe_setup_fcoe_ddp_resources(struct ixgbe_adapter *adapter);
+void ixgbe_free_fcoe_ddp_resources(struct ixgbe_adapter *adapter);
+int ixgbe_fcoe_enable(struct net_device *netdev);
+int ixgbe_fcoe_disable(struct net_device *netdev);
+#ifdef CONFIG_IXGBE_DCB
+u8 ixgbe_fcoe_getapp(struct ixgbe_adapter *adapter);
+u8 ixgbe_fcoe_setapp(struct ixgbe_adapter *adapter, u8 up);
+#endif /* CONFIG_IXGBE_DCB */
+int ixgbe_fcoe_get_wwn(struct net_device *netdev, u64 *wwn, int type);
+int ixgbe_fcoe_get_hbainfo(struct net_device *netdev,
+			   struct netdev_fcoe_hbainfo *info);
+u8 ixgbe_fcoe_get_tc(struct ixgbe_adapter *adapter);
+#endif /* IXGBE_FCOE */
+#ifdef CONFIG_DEBUG_FS
+void ixgbe_dbg_adapter_init(struct ixgbe_adapter *adapter);
+void ixgbe_dbg_adapter_exit(struct ixgbe_adapter *adapter);
+void ixgbe_dbg_init(void);
+void ixgbe_dbg_exit(void);
+#else
+static inline void ixgbe_dbg_adapter_init(struct ixgbe_adapter *adapter) {}
+static inline void ixgbe_dbg_adapter_exit(struct ixgbe_adapter *adapter) {}
+static inline void ixgbe_dbg_init(void) {}
+static inline void ixgbe_dbg_exit(void) {}
+#endif /* CONFIG_DEBUG_FS */
+>>>>>>> refs/remotes/origin/master
 static inline struct netdev_queue *txring_txq(const struct ixgbe_ring *ring)
 {
 	return netdev_get_tx_queue(ring->netdev, ring->queue_index);
 }
 
+<<<<<<< HEAD
+=======
+void ixgbe_ptp_init(struct ixgbe_adapter *adapter);
+void ixgbe_ptp_stop(struct ixgbe_adapter *adapter);
+void ixgbe_ptp_overflow_check(struct ixgbe_adapter *adapter);
+void ixgbe_ptp_rx_hang(struct ixgbe_adapter *adapter);
+void __ixgbe_ptp_rx_hwtstamp(struct ixgbe_q_vector *q_vector,
+			     struct sk_buff *skb);
+static inline void ixgbe_ptp_rx_hwtstamp(struct ixgbe_ring *rx_ring,
+					 union ixgbe_adv_rx_desc *rx_desc,
+					 struct sk_buff *skb)
+{
+	if (unlikely(!ixgbe_test_staterr(rx_desc, IXGBE_RXDADV_STAT_TS)))
+		return;
+
+	__ixgbe_ptp_rx_hwtstamp(rx_ring->q_vector, skb);
+
+	/*
+	 * Update the last_rx_timestamp timer in order to enable watchdog check
+	 * for error case of latched timestamp on a dropped packet.
+	 */
+	rx_ring->last_rx_timestamp = jiffies;
+}
+
+int ixgbe_ptp_hwtstamp_ioctl(struct ixgbe_adapter *adapter, struct ifreq *ifr,
+			     int cmd);
+void ixgbe_ptp_start_cyclecounter(struct ixgbe_adapter *adapter);
+void ixgbe_ptp_reset(struct ixgbe_adapter *adapter);
+void ixgbe_ptp_check_pps_event(struct ixgbe_adapter *adapter, u32 eicr);
+#ifdef CONFIG_PCI_IOV
+void ixgbe_sriov_reinit(struct ixgbe_adapter *adapter);
+#endif
+
+netdev_tx_t ixgbe_xmit_frame_ring(struct sk_buff *skb,
+				  struct ixgbe_adapter *adapter,
+				  struct ixgbe_ring *tx_ring);
+>>>>>>> refs/remotes/origin/master
 #endif /* _IXGBE_H_ */

@@ -93,10 +93,14 @@ static void do_unlock_close(struct dlm_ls *ls, u64 number,
 	op->info.start		= 0;
 	op->info.end		= OFFSET_MAX;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (fl->fl_lmops && fl->fl_lmops->fl_grant)
 =======
 	if (fl->fl_lmops && fl->fl_lmops->lm_grant)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (fl->fl_lmops && fl->fl_lmops->lm_grant)
+>>>>>>> refs/remotes/origin/master
 		op->info.owner	= (__u64) fl->fl_pid;
 	else
 		op->info.owner	= (__u64)(long) fl->fl_owner;
@@ -133,18 +137,24 @@ int dlm_posix_lock(dlm_lockspace_t *lockspace, u64 number, struct file *file,
 	op->info.start		= fl->fl_start;
 	op->info.end		= fl->fl_end;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (fl->fl_lmops && fl->fl_lmops->fl_grant) {
 		/* fl_owner is lockd which doesn't distinguish
 		   processes on the nfs client */
 		op->info.owner	= (__u64) fl->fl_pid;
 		xop->callback	= fl->fl_lmops->fl_grant;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (fl->fl_lmops && fl->fl_lmops->lm_grant) {
 		/* fl_owner is lockd which doesn't distinguish
 		   processes on the nfs client */
 		op->info.owner	= (__u64) fl->fl_pid;
 		xop->callback	= fl->fl_lmops->lm_grant;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		locks_init_lock(&xop->flc);
 		locks_copy_lock(&xop->flc, fl);
 		xop->fl		= fl;
@@ -259,6 +269,10 @@ int dlm_posix_unlock(dlm_lockspace_t *lockspace, u64 number, struct file *file,
 	struct dlm_ls *ls;
 	struct plock_op *op;
 	int rv;
+<<<<<<< HEAD
+=======
+	unsigned char fl_flags = fl->fl_flags;
+>>>>>>> refs/remotes/origin/master
 
 	ls = dlm_find_lockspace_local(lockspace);
 	if (!ls)
@@ -270,9 +284,24 @@ int dlm_posix_unlock(dlm_lockspace_t *lockspace, u64 number, struct file *file,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (posix_lock_file_wait(file, fl) < 0)
 		log_error(ls, "dlm_posix_unlock: vfs unlock error %llx",
 			  (unsigned long long)number);
+=======
+	/* cause the vfs unlock to return ENOENT if lock is not found */
+	fl->fl_flags |= FL_EXISTS;
+
+	rv = posix_lock_file_wait(file, fl);
+	if (rv == -ENOENT) {
+		rv = 0;
+		goto out_free;
+	}
+	if (rv < 0) {
+		log_error(ls, "dlm_posix_unlock: vfs unlock error %d %llx",
+			  rv, (unsigned long long)number);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	op->info.optype		= DLM_PLOCK_OP_UNLOCK;
 	op->info.pid		= fl->fl_pid;
@@ -281,10 +310,14 @@ int dlm_posix_unlock(dlm_lockspace_t *lockspace, u64 number, struct file *file,
 	op->info.start		= fl->fl_start;
 	op->info.end		= fl->fl_end;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (fl->fl_lmops && fl->fl_lmops->fl_grant)
 =======
 	if (fl->fl_lmops && fl->fl_lmops->lm_grant)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (fl->fl_lmops && fl->fl_lmops->lm_grant)
+>>>>>>> refs/remotes/origin/master
 		op->info.owner	= (__u64) fl->fl_pid;
 	else
 		op->info.owner	= (__u64)(long) fl->fl_owner;
@@ -312,9 +345,17 @@ int dlm_posix_unlock(dlm_lockspace_t *lockspace, u64 number, struct file *file,
 	if (rv == -ENOENT)
 		rv = 0;
 
+<<<<<<< HEAD
 	kfree(op);
 out:
 	dlm_put_lockspace(ls);
+=======
+out_free:
+	kfree(op);
+out:
+	dlm_put_lockspace(ls);
+	fl->fl_flags = fl_flags;
+>>>>>>> refs/remotes/origin/master
 	return rv;
 }
 EXPORT_SYMBOL_GPL(dlm_posix_unlock);
@@ -344,10 +385,14 @@ int dlm_posix_get(dlm_lockspace_t *lockspace, u64 number, struct file *file,
 	op->info.start		= fl->fl_start;
 	op->info.end		= fl->fl_end;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (fl->fl_lmops && fl->fl_lmops->fl_grant)
 =======
 	if (fl->fl_lmops && fl->fl_lmops->lm_grant)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (fl->fl_lmops && fl->fl_lmops->lm_grant)
+>>>>>>> refs/remotes/origin/master
 		op->info.owner	= (__u64) fl->fl_pid;
 	else
 		op->info.owner	= (__u64)(long) fl->fl_owner;

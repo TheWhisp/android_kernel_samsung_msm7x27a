@@ -27,21 +27,45 @@ static int num_scan_areas;
 
 static __init int set_corruption_check(char *arg)
 {
+<<<<<<< HEAD
 	char *end;
 
 	memory_corruption_check = simple_strtol(arg, &end, 10);
 
 	return (*end == 0) ? 0 : -EINVAL;
+=======
+	ssize_t ret;
+	unsigned long val;
+
+	ret = kstrtoul(arg, 10, &val);
+	if (ret)
+		return ret;
+
+	memory_corruption_check = val;
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 early_param("memory_corruption_check", set_corruption_check);
 
 static __init int set_corruption_check_period(char *arg)
 {
+<<<<<<< HEAD
 	char *end;
 
 	corruption_check_period = simple_strtoul(arg, &end, 10);
 
 	return (*end == 0) ? 0 : -EINVAL;
+=======
+	ssize_t ret;
+	unsigned long val;
+
+	ret = kstrtoul(arg, 10, &val);
+	if (ret)
+		return ret;
+
+	corruption_check_period = val;
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 early_param("memory_corruption_check_period", set_corruption_check_period);
 
@@ -63,11 +87,16 @@ early_param("memory_corruption_check_size", set_corruption_check_size);
 void __init setup_bios_corruption_check(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 addr = PAGE_SIZE;	/* assume first page is reserved anyway */
 =======
 	phys_addr_t start, end;
 	u64 i;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	phys_addr_t start, end;
+	u64 i;
+>>>>>>> refs/remotes/origin/master
 
 	if (memory_corruption_check == -1) {
 		memory_corruption_check =
@@ -87,6 +116,7 @@ void __init setup_bios_corruption_check(void)
 
 	corruption_check_size = round_up(corruption_check_size, PAGE_SIZE);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while (addr < corruption_check_size && num_scan_areas < MAX_SCAN_AREAS) {
 		u64 size;
@@ -112,6 +142,9 @@ void __init setup_bios_corruption_check(void)
 		addr += size;
 =======
 	for_each_free_mem_range(i, MAX_NUMNODES, &start, &end, NULL) {
+=======
+	for_each_free_mem_range(i, NUMA_NO_NODE, &start, &end, NULL) {
+>>>>>>> refs/remotes/origin/master
 		start = clamp_t(phys_addr_t, round_up(start, PAGE_SIZE),
 				PAGE_SIZE, corruption_check_size);
 		end = clamp_t(phys_addr_t, round_down(end, PAGE_SIZE),
@@ -128,7 +161,10 @@ void __init setup_bios_corruption_check(void)
 
 		if (++num_scan_areas >= MAX_SCAN_AREAS)
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (num_scan_areas)

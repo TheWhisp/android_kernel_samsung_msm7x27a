@@ -23,9 +23,13 @@
 #include <linux/uaccess.h>
 #include <linux/seq_file.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define RESULT_OK		0
 #define RESULT_FAIL		1
@@ -153,7 +157,10 @@ struct mmc_test_card {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum mmc_test_prep_media {
 	MMC_TEST_PREP_NONE = 0,
 	MMC_TEST_PREP_WRITE_FULL = 1 << 0,
@@ -175,7 +182,10 @@ struct mmc_test_async_req {
 	struct mmc_test_card *test;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************/
 /*  General helper functions                                       */
 /*******************************************************************/
@@ -232,10 +242,14 @@ static int mmc_test_busy(struct mmc_command *cmd)
 {
 	return !(cmd->resp[0] & R1_READY_FOR_DATA) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 		(R1_CURRENT_STATE(cmd->resp[0]) == 7);
 =======
 		(R1_CURRENT_STATE(cmd->resp[0]) == R1_STATE_PRG);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(R1_CURRENT_STATE(cmd->resp[0]) == R1_STATE_PRG);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -262,10 +276,14 @@ static int mmc_test_wait_busy(struct mmc_test_card *test)
 			busy = 1;
 			if (test->card->host->caps & MMC_CAP_WAIT_WHILE_BUSY)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_INFO "%s: Warning: Host did not "
 =======
 				pr_info("%s: Warning: Host did not "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_info("%s: Warning: Host did not "
+>>>>>>> refs/remotes/origin/master
 					"wait for busy state to end.\n",
 					mmc_hostname(test->card->host));
 		}
@@ -404,6 +422,7 @@ out_free:
  * mapped more than once.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int mmc_test_map_sg(struct mmc_test_mem *mem, unsigned long sz,
 			   struct scatterlist *sglist, int repeat,
 			   unsigned int max_segs, unsigned int max_seg_sz,
@@ -414,6 +433,8 @@ static int mmc_test_map_sg(struct mmc_test_mem *mem, unsigned long sz,
 
 	sg_init_table(sglist, max_segs);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int mmc_test_map_sg(struct mmc_test_mem *mem, unsigned long size,
 			   struct scatterlist *sglist, int repeat,
 			   unsigned int max_segs, unsigned int max_seg_sz,
@@ -426,7 +447,10 @@ static int mmc_test_map_sg(struct mmc_test_mem *mem, unsigned long size,
 	sg_init_table(sglist, max_segs);
 	if (min_sg_len > max_segs)
 		min_sg_len = max_segs;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	*sg_len = 0;
 	do {
@@ -434,10 +458,15 @@ static int mmc_test_map_sg(struct mmc_test_mem *mem, unsigned long size,
 			unsigned long len = PAGE_SIZE << mem->arr[i].order;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (min_sg_len && (size / min_sg_len < len))
 				len = ALIGN(size / min_sg_len, 512);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (min_sg_len && (size / min_sg_len < len))
+				len = ALIGN(size / min_sg_len, 512);
+>>>>>>> refs/remotes/origin/master
 			if (len > sz)
 				len = sz;
 			if (len > max_seg_sz)
@@ -583,10 +612,14 @@ static void mmc_test_print_rate(struct mmc_test_card *test, uint64_t bytes,
 	iops = mmc_test_rate(100, &ts); /* I/O ops per sec x 100 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: Transfer of %u sectors (%u%s KiB) took %lu.%09lu "
 =======
 	pr_info("%s: Transfer of %u sectors (%u%s KiB) took %lu.%09lu "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("%s: Transfer of %u sectors (%u%s KiB) took %lu.%09lu "
+>>>>>>> refs/remotes/origin/master
 			 "seconds (%u kB/s, %u KiB/s, %u.%02u IOPS)\n",
 			 mmc_hostname(test->card->host), sectors, sectors >> 1,
 			 (sectors & 1 ? ".5" : ""), (unsigned long)ts.tv_sec,
@@ -613,6 +646,7 @@ static void mmc_test_print_avg_rate(struct mmc_test_card *test, uint64_t bytes,
 	iops = mmc_test_rate(count * 100, &ts); /* I/O ops per sec x 100 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: Transfer of %u x %u sectors (%u x %u%s KiB) took "
 			 "%lu.%09lu seconds (%u kB/s, %u KiB/s, "
 			 "%u.%02u IOPS)\n",
@@ -621,6 +655,8 @@ static void mmc_test_print_avg_rate(struct mmc_test_card *test, uint64_t bytes,
 			 (unsigned long)ts.tv_sec, (unsigned long)ts.tv_nsec,
 			 rate / 1000, rate / 1024, iops / 100, iops % 100);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_info("%s: Transfer of %u x %u sectors (%u x %u%s KiB) took "
 			 "%lu.%09lu seconds (%u kB/s, %u KiB/s, "
 			 "%u.%02u IOPS, sg_len %d)\n",
@@ -629,7 +665,10 @@ static void mmc_test_print_avg_rate(struct mmc_test_card *test, uint64_t bytes,
 			 (unsigned long)ts.tv_sec, (unsigned long)ts.tv_nsec,
 			 rate / 1000, rate / 1024, iops / 100, iops % 100,
 			 test->area.sg_len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mmc_test_save_transfer_result(test, count, sectors, ts, rate, iops);
 }
@@ -733,10 +772,14 @@ static void mmc_test_prepare_broken_mrq(struct mmc_test_card *test,
  */
 static int mmc_test_check_result(struct mmc_test_card *test,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mmc_request *mrq)
 =======
 				 struct mmc_request *mrq)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 struct mmc_request *mrq)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
@@ -761,7 +804,10 @@ static int mmc_test_check_result(struct mmc_test_card *test,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int mmc_test_check_result_async(struct mmc_card *card,
 				       struct mmc_async_req *areq)
 {
@@ -773,7 +819,10 @@ static int mmc_test_check_result_async(struct mmc_card *card,
 	return mmc_test_check_result(test_async->test, areq->mrq);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Checks that a "short transfer" behaved as expected
  */
@@ -810,7 +859,10 @@ static int mmc_test_check_broken_result(struct mmc_test_card *test,
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Tests nonblock transfer with certain parameters
  */
 static void mmc_test_nonblock_reset(struct mmc_request *mrq,
@@ -890,7 +942,10 @@ err:
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Tests a basic transfer with certain parameters
  */
 static int mmc_test_simple_transfer(struct mmc_test_card *test,
@@ -1463,10 +1518,14 @@ static int mmc_test_multi_read_high(struct mmc_test_card *test)
 static int mmc_test_no_highmem(struct mmc_test_card *test)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: Highmem not configured - test skipped\n",
 =======
 	pr_info("%s: Highmem not configured - test skipped\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("%s: Highmem not configured - test skipped\n",
+>>>>>>> refs/remotes/origin/master
 	       mmc_hostname(test->card->host));
 	return 0;
 }
@@ -1478,10 +1537,14 @@ static int mmc_test_no_highmem(struct mmc_test_card *test)
  */
 static int mmc_test_area_map(struct mmc_test_card *test, unsigned long sz,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     int max_scatter)
 =======
 			     int max_scatter, int min_sg_len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     int max_scatter, int min_sg_len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mmc_test_area *t = &test->area;
 	int err;
@@ -1495,16 +1558,22 @@ static int mmc_test_area_map(struct mmc_test_card *test, unsigned long sz,
 	} else {
 		err = mmc_test_map_sg(t->mem, sz, t->sg, 1, t->max_segs,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				      t->max_seg_sz, &t->sg_len);
 	}
 	if (err)
 		printk(KERN_INFO "%s: Failed to map sg list\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				      t->max_seg_sz, &t->sg_len, min_sg_len);
 	}
 	if (err)
 		pr_info("%s: Failed to map sg list\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		       mmc_hostname(test->card->host));
 	return err;
 }
@@ -1523,6 +1592,7 @@ static int mmc_test_area_transfer(struct mmc_test_card *test,
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Map and transfer bytes.
  */
 static int mmc_test_area_io(struct mmc_test_card *test, unsigned long sz,
@@ -1532,6 +1602,8 @@ static int mmc_test_area_io(struct mmc_test_card *test, unsigned long sz,
 	struct timespec ts1, ts2;
 	int ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Map and transfer bytes for multiple transfers.
  */
 static int mmc_test_area_io_seq(struct mmc_test_card *test, unsigned long sz,
@@ -1543,7 +1615,10 @@ static int mmc_test_area_io_seq(struct mmc_test_card *test, unsigned long sz,
 	int ret = 0;
 	int i;
 	struct mmc_test_area *t = &test->area;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * In the case of a maximally scattered transfer, the maximum transfer
@@ -1562,19 +1637,26 @@ static int mmc_test_area_io_seq(struct mmc_test_card *test, unsigned long sz,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = mmc_test_area_map(test, sz, max_scatter);
 =======
 	ret = mmc_test_area_map(test, sz, max_scatter, min_sg_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = mmc_test_area_map(test, sz, max_scatter, min_sg_len);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
 	if (timed)
 		getnstimeofday(&ts1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	ret = mmc_test_area_transfer(test, dev_addr, write);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (nonblock)
 		ret = mmc_test_nonblock_transfer(test, t->sg, t->sg_len,
 				 dev_addr, t->blocks, 512, write, count);
@@ -1584,7 +1666,10 @@ static int mmc_test_area_io_seq(struct mmc_test_card *test, unsigned long sz,
 			dev_addr += sz >> 9;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -1593,16 +1678,23 @@ static int mmc_test_area_io_seq(struct mmc_test_card *test, unsigned long sz,
 
 	if (timed)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mmc_test_print_rate(test, sz, &ts1, &ts2);
 =======
 		mmc_test_print_avg_rate(test, sz, count, &ts1, &ts2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mmc_test_print_avg_rate(test, sz, count, &ts1, &ts2);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int mmc_test_area_io(struct mmc_test_card *test, unsigned long sz,
 			    unsigned int dev_addr, int write, int max_scatter,
 			    int timed)
@@ -1611,7 +1703,10 @@ static int mmc_test_area_io(struct mmc_test_card *test, unsigned long sz,
 				    timed, 1, false, 0);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Write the test area entirely.
  */
@@ -1677,9 +1772,13 @@ static int mmc_test_area_init(struct mmc_test_card *test, int erase, int fill)
 	t->max_segs = test->card->host->max_segs;
 	t->max_seg_sz = test->card->host->max_seg_size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	t->max_seg_sz -= t->max_seg_sz % 512;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	t->max_seg_sz -= t->max_seg_sz % 512;
+>>>>>>> refs/remotes/origin/master
 
 	t->max_tfr = t->max_sz;
 	if (t->max_tfr >> 9 > test->card->host->max_blk_count)
@@ -2190,7 +2289,10 @@ static int mmc_test_large_seq_write_perf(struct mmc_test_card *test)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int mmc_test_rw_multiple(struct mmc_test_card *test,
 				struct mmc_test_multiple_rw *tdata,
 				unsigned int reqsize, unsigned int size,
@@ -2455,7 +2557,10 @@ static int mmc_test_hw_reset(struct mmc_test_card *test)
 	return RESULT_UNSUP_HOST;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct mmc_test_case mmc_test_cases[] = {
 	{
 		.name = "Basic write (no data verification)",
@@ -2724,7 +2829,10 @@ static const struct mmc_test_case mmc_test_cases[] = {
 	},
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "Write performance with blocking req 4k to 4MB",
 		.prepare = mmc_test_area_prepare,
@@ -2785,7 +2893,10 @@ static const struct mmc_test_case mmc_test_cases[] = {
 		.name = "eMMC hardware reset",
 		.run = mmc_test_hw_reset,
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static DEFINE_MUTEX(mmc_test_lock);
@@ -2797,10 +2908,14 @@ static void mmc_test_run(struct mmc_test_card *test, int testcase)
 	int i, ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: Starting tests of card %s...\n",
 =======
 	pr_info("%s: Starting tests of card %s...\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("%s: Starting tests of card %s...\n",
+>>>>>>> refs/remotes/origin/master
 		mmc_hostname(test->card->host), mmc_card_id(test->card));
 
 	mmc_claim_host(test->card->host);
@@ -2812,10 +2927,14 @@ static void mmc_test_run(struct mmc_test_card *test, int testcase)
 			continue;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: Test case %d. %s...\n",
 =======
 		pr_info("%s: Test case %d. %s...\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("%s: Test case %d. %s...\n",
+>>>>>>> refs/remotes/origin/master
 			mmc_hostname(test->card->host), i + 1,
 			mmc_test_cases[i].name);
 
@@ -2823,10 +2942,14 @@ static void mmc_test_run(struct mmc_test_card *test, int testcase)
 			ret = mmc_test_cases[i].prepare(test);
 			if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_INFO "%s: Result: Prepare "
 =======
 				pr_info("%s: Result: Prepare "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_info("%s: Result: Prepare "
+>>>>>>> refs/remotes/origin/master
 					"stage failed! (%d)\n",
 					mmc_hostname(test->card->host),
 					ret);
@@ -2857,6 +2980,7 @@ static void mmc_test_run(struct mmc_test_card *test, int testcase)
 		switch (ret) {
 		case RESULT_OK:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: Result: OK\n",
 				mmc_hostname(test->card->host));
 			break;
@@ -2867,6 +2991,8 @@ static void mmc_test_run(struct mmc_test_card *test, int testcase)
 		case RESULT_UNSUP_HOST:
 			printk(KERN_INFO "%s: Result: UNSUPPORTED "
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			pr_info("%s: Result: OK\n",
 				mmc_hostname(test->card->host));
 			break;
@@ -2876,25 +3002,36 @@ static void mmc_test_run(struct mmc_test_card *test, int testcase)
 			break;
 		case RESULT_UNSUP_HOST:
 			pr_info("%s: Result: UNSUPPORTED "
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				"(by host)\n",
 				mmc_hostname(test->card->host));
 			break;
 		case RESULT_UNSUP_CARD:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: Result: UNSUPPORTED "
 =======
 			pr_info("%s: Result: UNSUPPORTED "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_info("%s: Result: UNSUPPORTED "
+>>>>>>> refs/remotes/origin/master
 				"(by card)\n",
 				mmc_hostname(test->card->host));
 			break;
 		default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: Result: ERROR (%d)\n",
 =======
 			pr_info("%s: Result: ERROR (%d)\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_info("%s: Result: ERROR (%d)\n",
+>>>>>>> refs/remotes/origin/master
 				mmc_hostname(test->card->host), ret);
 		}
 
@@ -2906,10 +3043,14 @@ static void mmc_test_run(struct mmc_test_card *test, int testcase)
 			ret = mmc_test_cases[i].cleanup(test);
 			if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_INFO "%s: Warning: Cleanup "
 =======
 				pr_info("%s: Warning: Cleanup "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_info("%s: Warning: Cleanup "
+>>>>>>> refs/remotes/origin/master
 					"stage failed! (%d)\n",
 					mmc_hostname(test->card->host),
 					ret);
@@ -2920,10 +3061,14 @@ static void mmc_test_run(struct mmc_test_card *test, int testcase)
 	mmc_release_host(test->card->host);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: Tests completed.\n",
 =======
 	pr_info("%s: Tests completed.\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("%s: Tests completed.\n",
+>>>>>>> refs/remotes/origin/master
 		mmc_hostname(test->card->host));
 }
 
@@ -2993,6 +3138,7 @@ static ssize_t mtf_test_write(struct file *file, const char __user *buf,
 	struct seq_file *sf = (struct seq_file *)file->private_data;
 	struct mmc_card *card = (struct mmc_card *)sf->private;
 	struct mmc_test_card *test;
+<<<<<<< HEAD
 	char lbuf[12];
 	long testcase;
 
@@ -3005,6 +3151,14 @@ static ssize_t mtf_test_write(struct file *file, const char __user *buf,
 
 	if (strict_strtol(lbuf, 10, &testcase))
 		return -EINVAL;
+=======
+	long testcase;
+	int ret;
+
+	ret = kstrtol_from_user(buf, count, 10, &testcase);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	test = kzalloc(sizeof(struct mmc_test_card), GFP_KERNEL);
 	if (!test)
@@ -3035,11 +3189,15 @@ static ssize_t mtf_test_write(struct file *file, const char __user *buf,
 
 #ifdef CONFIG_HIGHMEM
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__free_pages(test->highmem, BUFFER_ORDER);
 =======
 	if (test->highmem)
 		__free_pages(test->highmem, BUFFER_ORDER);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__free_pages(test->highmem, BUFFER_ORDER);
+>>>>>>> refs/remotes/origin/master
 #endif
 	kfree(test->buffer);
 	kfree(test);
@@ -3056,8 +3214,11 @@ static const struct file_operations mmc_test_fops_test = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void mmc_test_free_file_test(struct mmc_card *card)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int mtf_testlist_show(struct seq_file *sf, void *data)
 {
 	int i;
@@ -3085,7 +3246,10 @@ static const struct file_operations mmc_test_fops_testlist = {
 };
 
 static void mmc_test_free_dbgfs_file(struct mmc_card *card)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct mmc_test_dbgfs_file *df, *dfs;
 
@@ -3102,6 +3266,7 @@ static void mmc_test_free_dbgfs_file(struct mmc_card *card)
 	mutex_unlock(&mmc_test_lock);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int mmc_test_register_file_test(struct mmc_card *card)
 {
@@ -3121,6 +3286,8 @@ static int mmc_test_register_file_test(struct mmc_card *card)
 		ret = -ENODEV;
 		goto err;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int __mmc_test_register_dbgfs_file(struct mmc_card *card,
 	const char *name, umode_t mode, const struct file_operations *fops)
 {
@@ -3136,7 +3303,10 @@ static int __mmc_test_register_dbgfs_file(struct mmc_card *card,
 			"Can't create %s. Perhaps debugfs is disabled.\n",
 			name);
 		return -ENODEV;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	df = kmalloc(sizeof(struct mmc_test_dbgfs_file), GFP_KERNEL);
@@ -3145,11 +3315,15 @@ static int __mmc_test_register_dbgfs_file(struct mmc_card *card,
 		dev_err(&card->dev,
 			"Can't allocate memory for internal usage.\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = -ENOMEM;
 		goto err;
 =======
 		return -ENOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	df->card = card;
@@ -3157,7 +3331,10 @@ static int __mmc_test_register_dbgfs_file(struct mmc_card *card,
 
 	list_add(&df->link, &mmc_test_file_test);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -3176,7 +3353,10 @@ static int mmc_test_register_dbgfs_file(struct mmc_card *card)
 		&mmc_test_fops_testlist);
 	if (ret)
 		goto err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 err:
 	mutex_unlock(&mmc_test_lock);
@@ -3192,10 +3372,14 @@ static int mmc_test_probe(struct mmc_card *card)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = mmc_test_register_file_test(card);
 =======
 	ret = mmc_test_register_dbgfs_file(card);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = mmc_test_register_dbgfs_file(card);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -3208,10 +3392,18 @@ static void mmc_test_remove(struct mmc_card *card)
 {
 	mmc_test_free_result(card);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mmc_test_free_file_test(card);
 =======
 	mmc_test_free_dbgfs_file(card);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mmc_test_free_dbgfs_file(card);
+}
+
+static void mmc_test_shutdown(struct mmc_card *card)
+{
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct mmc_driver mmc_driver = {
@@ -3220,6 +3412,10 @@ static struct mmc_driver mmc_driver = {
 	},
 	.probe		= mmc_test_probe,
 	.remove		= mmc_test_remove,
+<<<<<<< HEAD
+=======
+	.shutdown	= mmc_test_shutdown,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init mmc_test_init(void)
@@ -3232,10 +3428,14 @@ static void __exit mmc_test_exit(void)
 	/* Clear stalled data if card is still plugged */
 	mmc_test_free_result(NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mmc_test_free_file_test(NULL);
 =======
 	mmc_test_free_dbgfs_file(NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mmc_test_free_dbgfs_file(NULL);
+>>>>>>> refs/remotes/origin/master
 
 	mmc_unregister_driver(&mmc_driver);
 }

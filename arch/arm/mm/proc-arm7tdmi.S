@@ -18,10 +18,15 @@
 #include <asm/ptrace.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "proc-macros.S"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "proc-macros.S"
+
+>>>>>>> refs/remotes/origin/master
 	.text
 /*
  * cpu_arm7tdmi_proc_init()
@@ -49,17 +54,23 @@ ENTRY(cpu_arm7tdmi_proc_fin)
  * Purpose : Sets up everything for a reset and jump to the location for soft reset.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(cpu_arm7tdmi_reset)
 		mov	pc, r0
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.pushsection	.idmap.text, "ax"
 ENTRY(cpu_arm7tdmi_reset)
 		mov	pc, r0
 ENDPROC(cpu_arm7tdmi_reset)
 		.popsection
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 		__CPUINIT
+=======
+>>>>>>> refs/remotes/origin/master
 
 		.type	__arm7tdmi_setup, #function
 __arm7tdmi_setup:
@@ -68,6 +79,7 @@ __arm7tdmi_setup:
 
 		__INITDATA
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Purpose : Function pointers used to access above functions - all calls
@@ -141,6 +153,8 @@ cpu_netarm_name:
 		.asciz	"NETARM"
 		.size	cpu_netarm_name, . - cpu_netarm_name
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
 		define_processor_functions arm7tdmi, dabort=v4t_late_abort, pabort=legacy_pabort, nommu=1
 
@@ -156,12 +170,16 @@ cpu_netarm_name:
 		string	cpu_s3c4510b_name, "Samsung-S3C4510B"
 		string	cpu_s3c4530_name, "Samsung-S3C4530"
 		string	cpu_netarm_name, "NETARM"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		.align
 
 		.section ".proc.info.init", #alloc, #execinstr
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.type	__arm7tdmi_proc_info, #object
 __arm7tdmi_proc_info:
@@ -270,18 +288,24 @@ __s3c44b0x_proc_info:
 		.long	0x44b00000
 		.long	0xffff0000
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 .macro arm7tdmi_proc_info name:req, cpu_val:req, cpu_mask:req, cpu_name:req, \
 	extra_hwcaps=0
 		.type	__\name\()_proc_info, #object
 __\name\()_proc_info:
 		.long	\cpu_val
 		.long	\cpu_mask
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.long	0
 		.long	0
 		b	__arm7tdmi_setup
 		.long	cpu_arch_name
 		.long	cpu_elf_name
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.long	HWCAP_SWP | HWCAP_THUMB | HWCAP_26BIT
 		.long	cpu_s3c44b0x_name
@@ -289,13 +313,20 @@ __\name\()_proc_info:
 		.long	HWCAP_SWP | HWCAP_26BIT | ( \extra_hwcaps )
 		.long	\cpu_name
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.long	HWCAP_SWP | HWCAP_26BIT | ( \extra_hwcaps )
+		.long	\cpu_name
+>>>>>>> refs/remotes/origin/master
 		.long	arm7tdmi_processor_functions
 		.long	0
 		.long	0
 		.long	v4_cache_fns
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.size	__s3c44b0x_proc_info, . - __s3c44b0x_proc_info
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.size	__\name\()_proc_info, . - __\name\()_proc_info
 .endm
 
@@ -313,4 +344,7 @@ __\name\()_proc_info:
 			cpu_s3c3410_name, extra_hwcaps=HWCAP_THUMB
 		arm7tdmi_proc_info s3c44b0x, 0x44b00000, 0xffff0000, \
 			cpu_s3c44b0x_name, extra_hwcaps=HWCAP_THUMB
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -5,6 +5,7 @@
 #include <linux/kernel.h>
 #include <linux/reboot.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/pm.h>
 
@@ -12,13 +13,18 @@
 #include <asm/oplib.h>
 #include <asm/prom.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/export.h>
 #include <linux/pm.h>
 
 #include <asm/oplib.h>
 #include <asm/prom.h>
 #include <asm/setup.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* sysctl - toggle power-off restriction for serial console
  * systems in machine_power_off()

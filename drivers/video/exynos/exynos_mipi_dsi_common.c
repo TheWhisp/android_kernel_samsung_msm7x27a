@@ -25,13 +25,20 @@
 #include <linux/io.h>
 #include <linux/memory.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/irqreturn.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kthread.h>
 
 #include <video/mipi_display.h>
 #include <video/exynos_mipi_dsim.h>
 
+<<<<<<< HEAD
 #include <mach/map.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include "exynos_mipi_dsi_regs.h"
 #include "exynos_mipi_dsi_lowlevel.h"
 #include "exynos_mipi_dsi_common.h"
@@ -76,6 +83,7 @@ static unsigned int dpll_table[15] = {
 
 irqreturn_t exynos_mipi_dsi_interrupt_handler(int irq, void *dev_id)
 {
+<<<<<<< HEAD
 	unsigned int intsrc = 0;
 	unsigned int intmsk = 0;
 	struct mipi_dsim_device *dsim = NULL;
@@ -103,6 +111,22 @@ irqreturn_t exynos_mipi_dsi_interrupt_handler(int irq, void *dev_id)
 		break;
 	default:
 		break;
+=======
+	struct mipi_dsim_device *dsim = dev_id;
+	unsigned int intsrc, intmsk;
+
+	intsrc = exynos_mipi_dsi_read_interrupt(dsim);
+	intmsk = exynos_mipi_dsi_read_interrupt_mask(dsim);
+	intmsk = ~intmsk & intsrc;
+
+	if (intsrc & INTMSK_RX_DONE) {
+		complete(&dsim_rd_comp);
+		dev_dbg(dsim->dev, "MIPI INTMSK_RX_DONE\n");
+	}
+	if (intsrc & INTMSK_FIFO_EMPTY) {
+		complete(&dsim_wr_comp);
+		dev_dbg(dsim->dev, "MIPI INTMSK_FIFO_EMPTY\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	exynos_mipi_dsi_clear_interrupt(dsim, intmsk);
@@ -234,7 +258,11 @@ int exynos_mipi_dsi_wr_data(struct mipi_dsim_device *dsim, unsigned int data_id,
 	case MIPI_DSI_DCS_LONG_WRITE:
 	{
 		unsigned int size, payload = 0;
+<<<<<<< HEAD
 		INIT_COMPLETION(dsim_wr_comp);
+=======
+		reinit_completion(&dsim_wr_comp);
+>>>>>>> refs/remotes/origin/master
 
 		size = data_size * 4;
 
@@ -296,9 +324,12 @@ int exynos_mipi_dsi_wr_data(struct mipi_dsim_device *dsim, unsigned int data_id,
 		mutex_unlock(&dsim->lock);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 
 	mutex_unlock(&dsim->lock);
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned int exynos_mipi_dsi_long_data_rd(struct mipi_dsim_device *dsim,
@@ -373,7 +404,11 @@ int exynos_mipi_dsi_rd_data(struct mipi_dsim_device *dsim, unsigned int data_id,
 	msleep(20);
 
 	mutex_lock(&dsim->lock);
+<<<<<<< HEAD
 	INIT_COMPLETION(dsim_rd_comp);
+=======
+	reinit_completion(&dsim_rd_comp);
+>>>>>>> refs/remotes/origin/master
 	exynos_mipi_dsi_rd_tx_header(dsim,
 		MIPI_DSI_SET_MAXIMUM_RETURN_PACKET_SIZE, req_size);
 
@@ -393,6 +428,10 @@ int exynos_mipi_dsi_rd_data(struct mipi_dsim_device *dsim, unsigned int data_id,
 			"data id %x is not supported current DSI spec.\n",
 			data_id);
 
+<<<<<<< HEAD
+=======
+		mutex_unlock(&dsim->lock);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -684,7 +723,11 @@ int exynos_mipi_dsi_init_dsim(struct mipi_dsim_device *dsim)
 	default:
 		dev_info(dsim->dev, "data lane is invalid.\n");
 		return -EINVAL;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	exynos_mipi_dsi_sw_reset(dsim);
 	exynos_mipi_dsi_func_reset(dsim);
@@ -738,11 +781,19 @@ int exynos_mipi_dsi_set_display_mode(struct mipi_dsim_device *dsim,
 		if (dsim_config->auto_vertical_cnt == 0) {
 			exynos_mipi_dsi_set_main_disp_vporch(dsim,
 				dsim_config->cmd_allow,
+<<<<<<< HEAD
 				timing->upper_margin,
 				timing->lower_margin);
 			exynos_mipi_dsi_set_main_disp_hporch(dsim,
 				timing->left_margin,
 				timing->right_margin);
+=======
+				timing->lower_margin,
+				timing->upper_margin);
+			exynos_mipi_dsi_set_main_disp_hporch(dsim,
+				timing->right_margin,
+				timing->left_margin);
+>>>>>>> refs/remotes/origin/master
 			exynos_mipi_dsi_set_main_disp_sync_area(dsim,
 				timing->vsync_len,
 				timing->hsync_len);

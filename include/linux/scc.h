@@ -1,4 +1,5 @@
 /* $Id: scc.h,v 1.29 1997/04/02 14:56:45 jreuter Exp jreuter $ */
+<<<<<<< HEAD
 
 #ifndef	_SCC_H
 #define	_SCC_H
@@ -170,6 +171,13 @@ struct scc_calibrate {
 };
 
 #ifdef __KERNEL__
+=======
+#ifndef	_SCC_H
+#define	_SCC_H
+
+#include <uapi/linux/scc.h>
+
+>>>>>>> refs/remotes/origin/master
 
 enum {TX_OFF, TX_ON};	/* command for scc_key_trx() */
 
@@ -248,5 +256,8 @@ struct scc_channel {
 	spinlock_t	lock;		/* Channel guard lock */
 };
 
+<<<<<<< HEAD
 #endif /* defined(__KERNEL__) */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* defined(_SCC_H) */

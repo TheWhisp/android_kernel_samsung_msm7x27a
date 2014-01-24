@@ -2,6 +2,7 @@
  * security/tomoyo/realpath.c
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Pathname calculation functions for TOMOYO.
  *
  * Copyright (C) 2005-2010  NTT DATA CORPORATION
@@ -22,6 +23,8 @@
  *
  * @str: String in binary format.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2005-2011  NTT DATA CORPORATION
  */
 
@@ -33,13 +36,17 @@
  *
  * @str:     String in binary format.
  * @str_len: Size of @str in byte.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Returns pointer to @str in ascii format on success, NULL otherwise.
  *
  * This function uses kzalloc(), so caller must kfree() if this function
  * didn't return NULL.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 char *tomoyo_encode(const char *str)
 {
@@ -48,6 +55,11 @@ char *tomoyo_encode2(const char *str, int str_len)
 {
 	int i;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+char *tomoyo_encode2(const char *str, int str_len)
+{
+	int i;
+>>>>>>> refs/remotes/origin/master
 	int len = 0;
 	const char *p = str;
 	char *cp;
@@ -56,6 +68,7 @@ char *tomoyo_encode2(const char *str, int str_len)
 	if (!p)
 		return NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while (*p) {
 		const unsigned char c = *p++;
 =======
@@ -63,6 +76,11 @@ char *tomoyo_encode2(const char *str, int str_len)
 		const unsigned char c = p[i];
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < str_len; i++) {
+		const unsigned char c = p[i];
+
+>>>>>>> refs/remotes/origin/master
 		if (c == '\\')
 			len += 2;
 		else if (c > ' ' && c < 127)
@@ -78,12 +96,17 @@ char *tomoyo_encode2(const char *str, int str_len)
 	cp0 = cp;
 	p = str;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while (*p) {
 		const unsigned char c = *p++;
 =======
 	for (i = 0; i < str_len; i++) {
 		const unsigned char c = p[i];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < str_len; i++) {
+		const unsigned char c = p[i];
+>>>>>>> refs/remotes/origin/master
 
 		if (c == '\\') {
 			*cp++ = '\\';
@@ -102,7 +125,10 @@ char *tomoyo_encode2(const char *str, int str_len)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * tomoyo_encode - Encode binary string to ascii string.
  *
  * @str: String in binary format.
@@ -272,7 +298,10 @@ static char *tomoyo_get_socket_name(struct path *path, char * const buffer,
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * tomoyo_realpath_from_path - Returns realpath(3) of the given pathname but ignores chroot'ed root.
  *
  * @path: Pointer to "struct path".
@@ -294,6 +323,7 @@ char *tomoyo_realpath_from_path(struct path *path)
 	unsigned int buf_len = PAGE_SIZE / 2;
 	struct dentry *dentry = path->dentry;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool is_dir;
 	if (!dentry)
 		return NULL;
@@ -301,6 +331,8 @@ char *tomoyo_realpath_from_path(struct path *path)
 	while (1) {
 		char *pos;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct super_block *sb;
 	if (!dentry)
 		return NULL;
@@ -308,12 +340,16 @@ char *tomoyo_realpath_from_path(struct path *path)
 	while (1) {
 		char *pos;
 		struct inode *inode;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		buf_len <<= 1;
 		kfree(buf);
 		buf = kmalloc(buf_len, GFP_NOFS);
 		if (!buf)
 			break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* Get better name for socket. */
 		if (dentry->d_sb && dentry->d_sb->s_magic == SOCKFS_MAGIC) {
@@ -357,6 +393,8 @@ char *tomoyo_realpath_from_path(struct path *path)
 				pos = ERR_PTR(-ENOMEM);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* To make sure that pos is '\0' terminated. */
 		buf[buf_len - 1] = '\0';
 		/* Get better name for socket. */
@@ -389,7 +427,10 @@ char *tomoyo_realpath_from_path(struct path *path)
 							    buf_len - 1);
 		}
 encode:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(pos))
 			continue;
 		name = tomoyo_encode(pos);
@@ -398,6 +439,7 @@ encode:
 	kfree(buf);
 	if (!name)
 		tomoyo_warn_oom(__func__);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	else if (is_dir && *name) {
 		/* Append trailing '/' if dentry is a directory. */
@@ -411,6 +453,8 @@ encode:
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return name;
 }
 

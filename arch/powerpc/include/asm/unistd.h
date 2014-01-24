@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 #ifndef _ASM_POWERPC_UNISTD_H_
 #define _ASM_POWERPC_UNISTD_H_
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This file contains the system call numbers.
  *
@@ -9,6 +12,7 @@
  * as published by the Free Software Foundation; either version
  * 2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #define __NR_restart_syscall	  0
 #define __NR_exit		  1
@@ -386,6 +390,15 @@
 
 #define __NR_syscalls		353
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef _ASM_POWERPC_UNISTD_H_
+#define _ASM_POWERPC_UNISTD_H_
+
+#include <uapi/asm/unistd.h>
+
+
+#define __NR_syscalls		355
+>>>>>>> refs/remotes/origin/master
 
 #define __NR__exit __NR_exit
 #define NR_syscalls	__NR_syscalls
@@ -396,7 +409,10 @@
 #include <linux/compiler.h>
 #include <linux/linkage.h>
 
+<<<<<<< HEAD
 #define __ARCH_WANT_IPC_PARSE_VERSION
+=======
+>>>>>>> refs/remotes/origin/master
 #define __ARCH_WANT_OLD_READDIR
 #define __ARCH_WANT_STAT64
 #define __ARCH_WANT_SYS_ALARM
@@ -418,13 +434,17 @@
 #define __ARCH_WANT_SYS_OLDUMOUNT
 #define __ARCH_WANT_SYS_SIGPENDING
 #define __ARCH_WANT_SYS_SIGPROCMASK
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGACTION
 #define __ARCH_WANT_SYS_RT_SIGSUSPEND
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC32
 #define __ARCH_WANT_OLD_STAT
 #endif
 #ifdef CONFIG_PPC64
 #define __ARCH_WANT_COMPAT_SYS_TIME
+<<<<<<< HEAD
 #define __ARCH_WANT_COMPAT_SYS_RT_SIGSUSPEND
 #define __ARCH_WANT_SYS_NEWFSTATAT
 #endif
@@ -438,4 +458,14 @@
 #endif		/* __ASSEMBLY__ */
 #endif		/* __KERNEL__ */
 
+=======
+#define __ARCH_WANT_SYS_NEWFSTATAT
+#define __ARCH_WANT_COMPAT_SYS_SENDFILE
+#endif
+#define __ARCH_WANT_SYS_FORK
+#define __ARCH_WANT_SYS_VFORK
+#define __ARCH_WANT_SYS_CLONE
+
+#endif		/* __ASSEMBLY__ */
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_POWERPC_UNISTD_H_ */

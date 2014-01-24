@@ -9,6 +9,7 @@
 #ifndef _ASM_TERMIOS_H
 #define _ASM_TERMIOS_H
 
+<<<<<<< HEAD
 #include <linux/errno.h>
 #include <asm/termbits.h>
 #include <asm/ioctls.h>
@@ -61,6 +62,10 @@ struct termio {
 
 #ifdef __KERNEL__
 #include <linux/module.h>
+=======
+#include <asm/uaccess.h>
+#include <uapi/asm/termios.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	intr=^C		quit=^\		erase=del	kill=^U
@@ -70,6 +75,7 @@ struct termio {
  *	eof=^D		eol=\0
  */
 #define INIT_C_CC "\003\034\177\025\1\0\0\0\021\023\032\0\022\017\027\026\004\0"
+<<<<<<< HEAD
 #endif
 
 /* modem lines */
@@ -89,6 +95,8 @@ struct termio {
 #define TIOCM_LOOP	0x8000
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/string.h>
 
@@ -171,6 +179,9 @@ static inline int kernel_termios_to_user_termios_1(struct termios __user *u,
 	return copy_to_user(u, k, sizeof(struct termios)) ? -EFAULT : 0;
 }
 
+<<<<<<< HEAD
 #endif /* defined(__KERNEL__) */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_TERMIOS_H */

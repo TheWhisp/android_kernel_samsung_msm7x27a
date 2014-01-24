@@ -10,6 +10,7 @@
 
 #include <linux/list.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/mount.h>
 
 #define IS_MNT_SHARED(mnt) (mnt->mnt_flags & MNT_SHARED)
@@ -18,6 +19,8 @@
 #define CLEAR_MNT_SHARED(mnt) (mnt->mnt_flags &= ~MNT_SHARED)
 #define IS_MNT_UNBINDABLE(mnt) (mnt->mnt_flags & MNT_UNBINDABLE)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include "mount.h"
 
 #define IS_MNT_SHARED(m) ((m)->mnt.mnt_flags & MNT_SHARED)
@@ -25,6 +28,7 @@
 #define IS_MNT_NEW(m)  (!(m)->mnt_ns)
 #define CLEAR_MNT_SHARED(m) ((m)->mnt.mnt_flags &= ~MNT_SHARED)
 #define IS_MNT_UNBINDABLE(m) ((m)->mnt.mnt_flags & MNT_UNBINDABLE)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #define CL_EXPIRE    		0x01
@@ -48,6 +52,20 @@ int propagate_mount_busy(struct vfsmount *, int);
 void mnt_release_group_id(struct vfsmount *);
 int get_dominating_id(struct vfsmount *mnt, const struct path *root);
 =======
+=======
+
+#define CL_EXPIRE    		0x01
+#define CL_SLAVE     		0x02
+#define CL_COPY_UNBINDABLE	0x04
+#define CL_MAKE_SHARED 		0x08
+#define CL_PRIVATE 		0x10
+#define CL_SHARED_TO_SLAVE	0x20
+#define CL_UNPRIVILEGED		0x40
+#define CL_COPY_MNT_NS_FILE	0x80
+
+#define CL_COPY_ALL		(CL_COPY_UNBINDABLE | CL_COPY_MNT_NS_FILE)
+
+>>>>>>> refs/remotes/origin/master
 static inline void set_mnt_shared(struct mount *mnt)
 {
 	mnt->mnt.mnt_flags &= ~MNT_SHARED_MASK;
@@ -55,13 +73,18 @@ static inline void set_mnt_shared(struct mount *mnt)
 }
 
 void change_mnt_propagation(struct mount *, int);
+<<<<<<< HEAD
 int propagate_mnt(struct mount *, struct dentry *, struct mount *,
+=======
+int propagate_mnt(struct mount *, struct mountpoint *, struct mount *,
+>>>>>>> refs/remotes/origin/master
 		struct list_head *);
 int propagate_umount(struct list_head *);
 int propagate_mount_busy(struct mount *, int);
 void mnt_release_group_id(struct mount *);
 int get_dominating_id(struct mount *mnt, const struct path *root);
 unsigned int mnt_get_count(struct mount *mnt);
+<<<<<<< HEAD
 void mnt_set_mountpoint(struct mount *, struct dentry *,
 			struct mount *);
 void release_mounts(struct list_head *);
@@ -70,4 +93,12 @@ struct mount *copy_tree(struct mount *, struct dentry *, int);
 bool is_path_reachable(struct mount *, struct dentry *,
 			 const struct path *root);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void mnt_set_mountpoint(struct mount *, struct mountpoint *,
+			struct mount *);
+void umount_tree(struct mount *, int);
+struct mount *copy_tree(struct mount *, struct dentry *, int);
+bool is_path_reachable(struct mount *, struct dentry *,
+			 const struct path *root);
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_PNODE_H */

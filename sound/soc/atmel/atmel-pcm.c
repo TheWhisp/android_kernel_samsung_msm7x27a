@@ -19,11 +19,16 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
 <<<<<<< HEAD
+<<<<<<< HEAD
  * the Free Software Foundation; only version 2 of the License.
 =======
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -36,6 +41,7 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
@@ -93,23 +99,40 @@ struct atmel_runtime_data {
 /*--------------------------------------------------------------------------*\
  * Helper functions
 \*--------------------------------------------------------------------------*/
+=======
+#include <linux/dma-mapping.h>
+#include <sound/pcm.h>
+#include <sound/soc.h>
+#include "atmel-pcm.h"
+
+>>>>>>> refs/remotes/origin/master
 static int atmel_pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
 	int stream)
 {
 	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
 	struct snd_dma_buffer *buf = &substream->dma_buffer;
+<<<<<<< HEAD
 	size_t size = atmel_pcm_hardware.buffer_bytes_max;
+=======
+	size_t size = ATMEL_SSC_DMABUF_SIZE;
+>>>>>>> refs/remotes/origin/master
 
 	buf->dev.type = SNDRV_DMA_TYPE_DEV;
 	buf->dev.dev = pcm->card->dev;
 	buf->private_data = NULL;
 	buf->area = dma_alloc_coherent(pcm->card->dev, size,
+<<<<<<< HEAD
 					  &buf->addr, GFP_KERNEL);
 	pr_debug("atmel-pcm:"
 		"preallocate_dma_buffer: area=%p, addr=%p, size=%d\n",
 		(void *) buf->area,
 		(void *) buf->addr,
 		size);
+=======
+			&buf->addr, GFP_KERNEL);
+	pr_debug("atmel-pcm: alloc dma buffer: area=%p, addr=%p, size=%zu\n",
+			(void *)buf->area, (void *)(long)buf->addr, size);
+>>>>>>> refs/remotes/origin/master
 
 	if (!buf->area)
 		return -ENOMEM;
@@ -117,6 +140,7 @@ static int atmel_pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
 	buf->bytes = size;
 	return 0;
 }
+<<<<<<< HEAD
 /*--------------------------------------------------------------------------*\
  * ISR
 \*--------------------------------------------------------------------------*/
@@ -343,12 +367,17 @@ static int atmel_pcm_close(struct snd_pcm_substream *substream)
 }
 
 static int atmel_pcm_mmap(struct snd_pcm_substream *substream,
+=======
+
+int atmel_pcm_mmap(struct snd_pcm_substream *substream,
+>>>>>>> refs/remotes/origin/master
 	struct vm_area_struct *vma)
 {
 	return remap_pfn_range(vma, vma->vm_start,
 		       substream->dma_buffer.addr >> PAGE_SHIFT,
 		       vma->vm_end - vma->vm_start, vma->vm_page_prot);
 }
+<<<<<<< HEAD
 
 static struct snd_pcm_ops atmel_pcm_ops = {
 	.open		= atmel_pcm_open,
@@ -394,12 +423,29 @@ static int atmel_pcm_new(struct snd_soc_pcm_runtime *rtd)
 
 	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(atmel_pcm_mmap);
+
+int atmel_pcm_new(struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_card *card = rtd->card->snd_card;
+	struct snd_pcm *pcm = rtd->pcm;
+	int ret;
+
+	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
+	if (ret)
+		return ret;
+
+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+		pr_debug("atmel-pcm: allocating PCM playback DMA buffer\n");
+>>>>>>> refs/remotes/origin/master
 		ret = atmel_pcm_preallocate_dma_buffer(pcm,
 			SNDRV_PCM_STREAM_PLAYBACK);
 		if (ret)
 			goto out;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (dai->driver->capture.channels_min) {
 		pr_debug("at32-pcm:"
@@ -408,6 +454,10 @@ static int atmel_pcm_new(struct snd_soc_pcm_runtime *rtd)
 		pr_debug("atmel-pcm:"
 >>>>>>> refs/remotes/origin/cm-10.0
 				"Allocating PCM capture DMA buffer\n");
+=======
+	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+		pr_debug("atmel-pcm: allocating PCM capture DMA buffer\n");
+>>>>>>> refs/remotes/origin/master
 		ret = atmel_pcm_preallocate_dma_buffer(pcm,
 			SNDRV_PCM_STREAM_CAPTURE);
 		if (ret)
@@ -416,8 +466,14 @@ static int atmel_pcm_new(struct snd_soc_pcm_runtime *rtd)
  out:
 	return ret;
 }
+<<<<<<< HEAD
 
 static void atmel_pcm_free_dma_buffers(struct snd_pcm *pcm)
+=======
+EXPORT_SYMBOL_GPL(atmel_pcm_new);
+
+void atmel_pcm_free(struct snd_pcm *pcm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm_substream *substream;
 	struct snd_dma_buffer *buf;
@@ -436,6 +492,7 @@ static void atmel_pcm_free_dma_buffers(struct snd_pcm *pcm)
 		buf->area = NULL;
 	}
 }
+<<<<<<< HEAD
 
 #ifdef CONFIG_PM
 static int atmel_pcm_suspend(struct snd_soc_dai *dai)
@@ -540,3 +597,7 @@ MODULE_AUTHOR("Sedji Gaouaou <sedji.gaouaou@atmel.com>");
 MODULE_DESCRIPTION("Atmel PCM module");
 MODULE_LICENSE("GPL");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(atmel_pcm_free);
+
+>>>>>>> refs/remotes/origin/master

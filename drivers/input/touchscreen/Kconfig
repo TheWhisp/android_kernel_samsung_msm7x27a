@@ -56,6 +56,7 @@ config TOUCHSCREEN_AD7877
 	  module will be called ad7877.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config TOUCHSCREEN_AD7879
 	tristate
 	default n
@@ -74,6 +75,8 @@ config TOUCHSCREEN_ATMEL_MAXTOUCH
          To compile this driver as a module, choose M here: the
          module will be called maXTouch.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_AD7879
 	tristate "Analog Devices AD7879-1/AD7889-1 touchscreen interface"
 	help
@@ -118,7 +121,10 @@ config TOUCHSCREEN_ATMEL_MXT
 	  module will be called atmel_mxt_ts.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_AUO_PIXCIR
 	tristate "AUO in-cell touchscreen using Pixcir ICs"
 	depends on I2C
@@ -132,6 +138,7 @@ config TOUCHSCREEN_AUO_PIXCIR
 	  To compile this driver as a module, choose M here: the
 	  module will be called auo-pixcir-ts.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 config TOUCHSCREEN_BITSY
 	tristate "Compaq iPAQ H3600 (Bitsy) touchscreen"
@@ -145,6 +152,8 @@ config TOUCHSCREEN_BITSY
 	  To compile this driver as a module, choose M here: the
 	  module will be called h3600_ts_input.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_BU21013
 	tristate "BU21013 based touch panel controllers"
 	depends on I2C
@@ -162,9 +171,12 @@ config TOUCHSCREEN_CY8CTMG110
 	depends on I2C
 	depends on GPIOLIB
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you have a cy8ctmg110 capacitive touchscreen on
 	  an AAVA device.
@@ -175,7 +187,10 @@ config TOUCHSCREEN_CY8CTMG110
 	  module will be called cy8ctmg110_ts.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_CYTTSP_CORE
 	tristate "Cypress TTSP touchscreen"
 	help
@@ -207,7 +222,40 @@ config TOUCHSCREEN_CYTTSP_SPI
 	  To compile this driver as a module, choose M here: the
 	  module will be called cyttsp_spi.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config TOUCHSCREEN_CYTTSP4_CORE
+	tristate "Cypress TrueTouch Gen4 Touchscreen Driver"
+	help
+	  Core driver for Cypress TrueTouch(tm) Standard Product
+	  Generation4 touchscreen controllers.
+
+	  Say Y here if you have a Cypress Gen4 touchscreen.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here.
+
+config TOUCHSCREEN_CYTTSP4_I2C
+	tristate "support I2C bus connection"
+	depends on TOUCHSCREEN_CYTTSP4_CORE && I2C
+	help
+	  Say Y here if the touchscreen is connected via I2C bus.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called cyttsp4_i2c.
+
+config TOUCHSCREEN_CYTTSP4_SPI
+	tristate "support SPI bus connection"
+	depends on TOUCHSCREEN_CYTTSP4_CORE && SPI_MASTER
+	help
+	  Say Y here if the touchscreen is connected via SPI bus.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called cyttsp4_spi.
+
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_DA9034
 	tristate "Touchscreen support for Dialog Semiconductor DA9034"
 	depends on PMIC_DA903X
@@ -216,6 +264,26 @@ config TOUCHSCREEN_DA9034
 	  Say Y here to enable the support for the touchscreen found
 	  on Dialog Semiconductor DA9034 PMIC.
 
+<<<<<<< HEAD
+=======
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called da9034-ts.
+
+config TOUCHSCREEN_DA9052
+	tristate "Dialog DA9052/DA9053 TSI"
+	depends on PMIC_DA9052
+	help
+	  Say Y here to support the touchscreen found on Dialog Semiconductor
+	  DA9052-BC and DA9053-AA/Bx PMICs.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called da9052_tsi.
+
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_DYNAPRO
 	tristate "Dynapro serial touchscreen"
 	select SERIO
@@ -250,10 +318,16 @@ config TOUCHSCREEN_EETI
 	  module will be called eeti_ts.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config TOUCHSCREEN_EGALAX
 	tristate "EETI eGalax multi-touch panel support"
 	depends on I2C
+=======
+config TOUCHSCREEN_EGALAX
+	tristate "EETI eGalax multi-touch panel support"
+	depends on I2C && OF
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here to enable support for I2C connected EETI
 	  eGalax multi-touch panels.
@@ -261,7 +335,10 @@ config TOUCHSCREEN_EGALAX
 	  To compile this driver as a module, choose M here: the
 	  module will be called egalax_ts.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_FUJITSU
 	tristate "Fujitsu serial touchscreen"
 	select SERIO
@@ -276,10 +353,13 @@ config TOUCHSCREEN_FUJITSU
 	  module will be called fujitsu-ts.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config TOUCHSCREEN_S3C2410
 	tristate "Samsung S3C2410/generic touchscreen input driver"
 	depends on ARCH_S3C2410 || SAMSUNG_DEV_TS
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_ILI210X
 	tristate "Ilitek ILI210X based touchscreen"
 	depends on I2C
@@ -298,7 +378,10 @@ config TOUCHSCREEN_ILI210X
 config TOUCHSCREEN_S3C2410
 	tristate "Samsung S3C2410/generic touchscreen input driver"
 	depends on ARCH_S3C24XX || SAMSUNG_DEV_TS
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	select S3C_ADC
 	help
 	  Say Y here if you have the s3c2410 touchscreen.
@@ -344,6 +427,21 @@ config TOUCHSCREEN_WACOM_W8001
 	  To compile this driver as a module, choose M here: the
 	  module will be called wacom_w8001.
 
+<<<<<<< HEAD
+=======
+config TOUCHSCREEN_WACOM_I2C
+	tristate "Wacom Tablet support (I2C)"
+	depends on I2C
+	help
+	  Say Y here if you want to use the I2C version of the Wacom
+	  Pen Tablet.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called wacom_i2c.
+
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_LPC32XX
 	tristate "LPC32XX touchscreen controller"
 	depends on ARCH_LPC32XX
@@ -378,6 +476,21 @@ config TOUCHSCREEN_MCS5000
 	  To compile this driver as a module, choose M here: the
 	  module will be called mcs5000_ts.
 
+<<<<<<< HEAD
+=======
+config TOUCHSCREEN_MMS114
+	tristate "MELFAS MMS114 touchscreen"
+	depends on I2C
+	help
+	  Say Y here if you have the MELFAS MMS114 touchscreen controller
+	  chip in your system.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called mms114.
+
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_MTOUCH
 	tristate "MicroTouch serial touchscreens"
 	select SERIO
@@ -469,6 +582,7 @@ config TOUCHSCREEN_PENMOUNT
 	  To compile this driver as a module, choose M here: the
 	  module will be called penmount.
 
+<<<<<<< HEAD
 config TOUCHSCREEN_MSM
 	bool "Qualcomm MSM touchscreen controller"
 	depends on ARCH_MSM7X30 && MARIMBA_TSADC
@@ -477,6 +591,20 @@ config TOUCHSCREEN_MSM
 	  Say Y here if you have a 4-wire resistive touchscreen panel
 	  connected to the TSSC touchscreen controller on a
 	  Qualcomm MSM/QSD based SoC.
+=======
+config TOUCHSCREEN_EDT_FT5X06
+	tristate "EDT FocalTech FT5x06 I2C Touchscreen support"
+	depends on I2C
+	help
+	  Say Y here if you have an EDT "Polytouch" touchscreen based
+	  on the FocalTech FT5x06 family of controllers connected to
+	  your system.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called edt-ft5x06.
+>>>>>>> refs/remotes/origin/master
 
 config TOUCHSCREEN_MIGOR
 	tristate "Renesas MIGO-R touchscreen"
@@ -498,6 +626,7 @@ config TOUCHSCREEN_TNETV107X
 	  To compile this driver as a module, choose M here: the
 	  module will be called tnetv107x-ts.
 
+<<<<<<< HEAD
 config TOUCHSCREEN_SYNAPTICS_I2C_RMI
 	tristate "Synaptics i2c touchscreen"
 	depends on I2C
@@ -531,6 +660,8 @@ config TOUCHSCREEN_MELFAS
 	help
 		This enable support for Melfas over I2C based touchscreen.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_TOUCHRIGHT
 	tristate "Touchright serial touchscreen"
 	select SERIO
@@ -556,10 +687,16 @@ config TOUCHSCREEN_TOUCHWIN
 	  module will be called touchwin.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config TOUCHSCREEN_TI_TSCADC
 	tristate "TI Touchscreen Interface"
 	depends on ARCH_OMAP2PLUS
+=======
+config TOUCHSCREEN_TI_AM335X_TSC
+	tristate "TI Touchscreen Interface"
+	depends on MFD_TI_AM335X_TSCADC
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you have 4/5/8 wire touchscreen controller
 	  to be connected to the ADC controller on your TI AM335x SoC.
@@ -567,6 +704,7 @@ config TOUCHSCREEN_TI_TSCADC
 	  If unsure, say N.
 
 	  To compile this driver as a module, choose M here: the
+<<<<<<< HEAD
 	  module will be called ti_tscadc.
 
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -576,6 +714,16 @@ config TOUCHSCREEN_ATMEL_TSADCC
 	help
 	  Say Y here if you have a 4-wire touchscreen connected to the
           ADC Controller on your Atmel SoC (such as the AT91SAM9RL).
+=======
+	  module will be called ti_am335x_tsc.
+
+config TOUCHSCREEN_ATMEL_TSADCC
+	tristate "Atmel Touchscreen Interface"
+	depends on ARCH_AT91
+	help
+	  Say Y here if you have a 4-wire touchscreen connected to the
+          ADC Controller on your Atmel SoC.
+>>>>>>> refs/remotes/origin/master
 
 	  If unsure, say N.
 
@@ -599,7 +747,10 @@ config TOUCHSCREEN_UCB1400
 	  module will be called ucb1400_ts.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_PIXCIR
 	tristate "PIXCIR I2C touchscreens"
 	depends on I2C
@@ -612,7 +763,10 @@ config TOUCHSCREEN_PIXCIR
 	  To compile this driver as a module, choose M here: the
 	  module will be called pixcir_i2c_ts.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_WM831X
 	tristate "Support for WM831x touchscreen controllers"
 	depends on MFD_WM831X
@@ -720,10 +874,16 @@ config TOUCHSCREEN_USB_COMPOSITE
 	  - JASTEC USB Touch Controller/DigiTech DTR-02U
 	  - Zytronic controllers
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	  - Elo TouchSystems 2700 IntelliTouch
 	  - EasyTouch USB Touch Controller from Data Modul
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  - Elo TouchSystems 2700 IntelliTouch
+	  - EasyTouch USB Touch Controller from Data Modul
+	  - e2i (Mimo monitors)
+>>>>>>> refs/remotes/origin/master
 
 	  Have a look at <http://linux.chapter7.ch/touchkit/> for
 	  a usage description and the required user-space stuff.
@@ -733,7 +893,11 @@ config TOUCHSCREEN_USB_COMPOSITE
 
 config TOUCHSCREEN_MC13783
 	tristate "Freescale MC13783 touchscreen input driver"
+<<<<<<< HEAD
 	depends on MFD_MC13783
+=======
+	depends on MFD_MC13XXX
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you have an Freescale MC13783 PMIC on your
 	  board and want to use its touchscreen
@@ -804,16 +968,25 @@ config TOUCHSCREEN_USB_JASTEC
 	depends on TOUCHSCREEN_USB_COMPOSITE
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_USB_ELO
 	default y
 	bool "Elo TouchSystems 2700 IntelliTouch controller device support" if EXPERT
 	depends on TOUCHSCREEN_USB_COMPOSITE
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 config TOUCHSCREEN_USB_E2I
 	default y
 	bool "e2i Touchscreen controller (e.g. from Mimo 740)"
+=======
+config TOUCHSCREEN_USB_E2I
+	default y
+	bool "e2i Touchscreen controller (e.g. from Mimo 740)" if EXPERT
+>>>>>>> refs/remotes/origin/master
 	depends on TOUCHSCREEN_USB_COMPOSITE
 
 config TOUCHSCREEN_USB_ZYTRONIC
@@ -832,16 +1005,25 @@ config TOUCHSCREEN_USB_NEXIO
 	depends on TOUCHSCREEN_USB_COMPOSITE
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_USB_EASYTOUCH
 	default y
 	bool "EasyTouch USB Touch controller device support" if EMBEDDED
 	depends on TOUCHSCREEN_USB_COMPOSITE
 	help
+<<<<<<< HEAD
 	  Say Y here if you have a EasyTouch USB Touch controller device support.
 	  If unsure, say N.
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Say Y here if you have an EasyTouch USB Touch controller.
+	  If unsure, say N.
+
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_TOUCHIT213
 	tristate "Sahara TouchIT-213 touchscreen"
 	select SERIO
@@ -854,7 +1036,10 @@ config TOUCHSCREEN_TOUCHIT213
 	  module will be called touchit213.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_TSC_SERIO
 	tristate "TSC-10/25/40 serial touchscreen support"
 	select SERIO
@@ -867,10 +1052,16 @@ config TOUCHSCREEN_TSC_SERIO
 	  To compile this driver as a module, choose M here: the
 	  module will be called tsc40.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 config TOUCHSCREEN_TSC2005
         tristate "TSC2005 based touchscreens"
         depends on SPI_MASTER && GENERIC_HARDIRQS
+=======
+config TOUCHSCREEN_TSC2005
+        tristate "TSC2005 based touchscreens"
+        depends on SPI_MASTER
+>>>>>>> refs/remotes/origin/master
         help
           Say Y here if you have a TSC2005 based touchscreen.
 
@@ -890,6 +1081,7 @@ config TOUCHSCREEN_TSC2007
 	  To compile this driver as a module, choose M here: the
 	  module will be called tsc2007.
 
+<<<<<<< HEAD
 config TOUCHSCREEN_MSM_LEGACY
 	default n
 	tristate "MSM Touchscreen"
@@ -911,6 +1103,8 @@ config ANDROID_TOUCHSCREEN_MSM_HACKS
 	  to Android framework to receive adjusted x, y co-ordinates
 	  until proper calibration framework is in place.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config TOUCHSCREEN_W90X900
 	tristate "W90P910 touchscreen driver"
 	depends on HAVE_CLK
@@ -952,9 +1146,27 @@ config TOUCHSCREEN_STMPE
 	  To compile this driver as a module, choose M here: the
 	  module will be called stmpe-ts.
 
+<<<<<<< HEAD
 config TOUCHSCREEN_TPS6507X
 	tristate "TPS6507x based touchscreens"
 	depends on I2C
+=======
+config TOUCHSCREEN_SUR40
+	tristate "Samsung SUR40 (Surface 2.0/PixelSense) touchscreen"
+	depends on USB
+	select INPUT_POLLDEV
+	help
+	  Say Y here if you want support for the Samsung SUR40 touchscreen
+	  (also known as Microsoft Surface 2.0 or Microsoft PixelSense).
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called sur40.
+
+config TOUCHSCREEN_TPS6507X
+	tristate "TPS6507x based touchscreens"
+	depends on I2C
+	select INPUT_POLLDEV
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you have a TPS6507x based touchscreen
 	  controller.
@@ -964,6 +1176,7 @@ config TOUCHSCREEN_TPS6507X
 	  To compile this driver as a module, choose M here: the
 	  module will be called tps6507x_ts.
 
+<<<<<<< HEAD
 config TOUCHSCREEN_CY8C_TS
 	tristate "Cypress TMA300-TMG200 based touchscreens"
 	depends on I2C
@@ -1047,11 +1260,25 @@ config TOUCHSCREEN_SYNAPTICS_DSX_FW_UPDATE
 
 	  Say Y here if you have a Synaptics DSX I2C touchscreen
 	  connected to your system.
+=======
+config TOUCHSCREEN_ZFORCE
+	tristate "Neonode zForce infrared touchscreens"
+	depends on I2C
+	depends on GPIOLIB
+	help
+	  Say Y here if you have a touchscreen using the zforce
+	  infraread technology from Neonode.
+>>>>>>> refs/remotes/origin/master
 
 	  If unsure, say N.
 
 	  To compile this driver as a module, choose M here: the
+<<<<<<< HEAD
 	  module will be called synaptics_dsx_fw_update.
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  module will be called zforce_ts.
+
+>>>>>>> refs/remotes/origin/master
 endif

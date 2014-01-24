@@ -107,9 +107,12 @@ struct thread_struct {
 #define start_thread(regs, new_pc, new_spu) 				\
 	do {								\
 <<<<<<< HEAD
+<<<<<<< HEAD
 		set_fs(USER_DS); 					\
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		regs->psw = (regs->psw | USERPS_BPSW) & 0x0000FFFFUL;	\
 		regs->bpc = new_pc;					\
 		regs->spu = new_spu;					\
@@ -122,6 +125,7 @@ struct mm_struct;
 /* Free all resources held by a thread. */
 extern void release_thread(struct task_struct *);
 
+<<<<<<< HEAD
 #define prepare_to_copy(tsk)	do { } while (0)
 
 /*
@@ -129,6 +133,8 @@ extern void release_thread(struct task_struct *);
  */
 extern int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Copy and release all segment info associated with a VM */
 extern void copy_segments(struct task_struct *p, struct mm_struct * mm);
 extern void release_segments(struct mm_struct * mm);

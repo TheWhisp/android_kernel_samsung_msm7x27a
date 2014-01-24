@@ -43,11 +43,17 @@ static inline void ipv4_change_dsfield(struct iphdr *iph,__u8 mask,
 static inline void ipv6_change_dsfield(struct ipv6hdr *ipv6h,__u8 mask,
     __u8 value)
 {
+<<<<<<< HEAD
         __u16 tmp;
 
 	tmp = ntohs(*(__be16 *) ipv6h);
 	tmp = (tmp & ((mask << 4) | 0xf00f)) | (value << 4);
 	*(__be16 *) ipv6h = htons(tmp);
+=======
+	__be16 *p = (__force __be16 *)ipv6h;
+
+	*p = (*p & htons((((u16)mask << 4) | 0xf00f))) | htons((u16)value << 4);
+>>>>>>> refs/remotes/origin/master
 }
 
 

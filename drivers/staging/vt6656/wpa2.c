@@ -31,6 +31,7 @@
  *
  */
 
+<<<<<<< HEAD
 #include "wpa2.h"
 #include "device.h"
 
@@ -56,6 +57,22 @@ const BYTE abyOUIPSK[4]     = { 0x00, 0x0F, 0xAC, 0x02 };
 /*---------------------  Export Variables  --------------------------*/
 
 /*---------------------  Export Functions  --------------------------*/
+=======
+#include "device.h"
+#include "wpa2.h"
+
+static int          msglevel                =MSG_LEVEL_INFO;
+//static int          msglevel                =MSG_LEVEL_DEBUG;
+
+static const u8 abyOUIGK[4]      = { 0x00, 0x0F, 0xAC, 0x00 };
+static const u8 abyOUIWEP40[4]   = { 0x00, 0x0F, 0xAC, 0x01 };
+static const u8 abyOUIWEP104[4]  = { 0x00, 0x0F, 0xAC, 0x05 };
+static const u8 abyOUITKIP[4]    = { 0x00, 0x0F, 0xAC, 0x02 };
+static const u8 abyOUICCMP[4]    = { 0x00, 0x0F, 0xAC, 0x04 };
+
+static const u8 abyOUI8021X[4]   = { 0x00, 0x0F, 0xAC, 0x01 };
+static const u8 abyOUIPSK[4]     = { 0x00, 0x0F, 0xAC, 0x02 };
+>>>>>>> refs/remotes/origin/master
 
 /*+
  *
@@ -78,7 +95,11 @@ WPA2_ClearRSN (
 {
     int ii;
 
+<<<<<<< HEAD
     pBSSNode->bWPA2Valid = FALSE;
+=======
+    pBSSNode->bWPA2Valid = false;
+>>>>>>> refs/remotes/origin/master
 
     pBSSNode->byCSSGK = WLAN_11i_CSS_CCMP;
     for (ii=0; ii < 4; ii ++)
@@ -87,7 +108,11 @@ WPA2_ClearRSN (
     for (ii=0; ii < 4; ii ++)
         pBSSNode->abyAKMSSAuthType[ii] = WLAN_11i_AKMSS_802_1X;
     pBSSNode->wAKMSSAuthCount = 1;
+<<<<<<< HEAD
     pBSSNode->sRSNCapObj.bRSNCapExist = FALSE;
+=======
+    pBSSNode->sRSNCapObj.bRSNCapExist = false;
+>>>>>>> refs/remotes/origin/master
     pBSSNode->sRSNCapObj.wRSNCap = 0;
 }
 
@@ -113,9 +138,15 @@ WPA2vParseRSN (
     )
 {
     int                 i, j;
+<<<<<<< HEAD
     WORD                m = 0, n = 0;
     PBYTE               pbyOUI;
     BOOL                bUseGK = FALSE;
+=======
+    u16                m = 0, n = 0;
+    u8 *               pbyOUI;
+    bool                bUseGK = false;
+>>>>>>> refs/remotes/origin/master
 
     DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"WPA2_ParseRSN: [%d]\n", pRSN->len);
 
@@ -123,7 +154,11 @@ WPA2vParseRSN (
 
     if (pRSN->len == 2) { // ver(2)
         if ((pRSN->byElementID == WLAN_EID_RSN) && (pRSN->wVersion == 1)) {
+<<<<<<< HEAD
             pBSSNode->bWPA2Valid = TRUE;
+=======
+            pBSSNode->bWPA2Valid = true;
+>>>>>>> refs/remotes/origin/master
         }
         return;
     }
@@ -158,32 +193,58 @@ WPA2vParseRSN (
         DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"802.11i CSS: %X\n", pBSSNode->byCSSGK);
 
         if (pRSN->len == 6) {
+<<<<<<< HEAD
             pBSSNode->bWPA2Valid = TRUE;
+=======
+            pBSSNode->bWPA2Valid = true;
+>>>>>>> refs/remotes/origin/master
             return;
         }
 
         if (pRSN->len >= 8) { // ver(2) + GK(4) + PK count(2)
+<<<<<<< HEAD
             pBSSNode->wCSSPKCount = *((PWORD) &(pRSN->abyRSN[4]));
             j = 0;
             pbyOUI = &(pRSN->abyRSN[6]);
 
             for (i = 0; (i < pBSSNode->wCSSPKCount) && (j < sizeof(pBSSNode->abyCSSPK)/sizeof(BYTE)); i++) {
+=======
+            pBSSNode->wCSSPKCount = *((u16 *) &(pRSN->abyRSN[4]));
+            j = 0;
+            pbyOUI = &(pRSN->abyRSN[6]);
+
+            for (i = 0; (i < pBSSNode->wCSSPKCount) && (j < sizeof(pBSSNode->abyCSSPK)/sizeof(u8)); i++) {
+>>>>>>> refs/remotes/origin/master
 
                 if (pRSN->len >= 8+i*4+4) { // ver(2)+GK(4)+PKCnt(2)+PKS(4*i)
                     if ( !memcmp(pbyOUI, abyOUIGK, 4)) {
                         pBSSNode->abyCSSPK[j++] = WLAN_11i_CSS_USE_GROUP;
+<<<<<<< HEAD
                         bUseGK = TRUE;
                     } else if ( !memcmp(pbyOUI, abyOUIWEP40, 4)) {
                         // Invialid CSS, continue to parsing
+=======
+                        bUseGK = true;
+                    } else if ( !memcmp(pbyOUI, abyOUIWEP40, 4)) {
+                        // Invalid CSS, continue parsing
+>>>>>>> refs/remotes/origin/master
                     } else if ( !memcmp(pbyOUI, abyOUITKIP, 4)) {
                         if (pBSSNode->byCSSGK != WLAN_11i_CSS_CCMP)
                             pBSSNode->abyCSSPK[j++] = WLAN_11i_CSS_TKIP;
                         else
+<<<<<<< HEAD
                             ; // Invialid CSS, continue to parsing
                     } else if ( !memcmp(pbyOUI, abyOUICCMP, 4)) {
                         pBSSNode->abyCSSPK[j++] = WLAN_11i_CSS_CCMP;
                     } else if ( !memcmp(pbyOUI, abyOUIWEP104, 4)) {
                         // Invialid CSS, continue to parsing
+=======
+                            ; // Invalid CSS, continue parsing
+                    } else if ( !memcmp(pbyOUI, abyOUICCMP, 4)) {
+                        pBSSNode->abyCSSPK[j++] = WLAN_11i_CSS_CCMP;
+                    } else if ( !memcmp(pbyOUI, abyOUIWEP104, 4)) {
+                        // Invalid CSS, continue parsing
+>>>>>>> refs/remotes/origin/master
                     } else {
                         // any vendor checks here
                         pBSSNode->abyCSSPK[j++] = WLAN_11i_CSS_UNKNOWN;
@@ -194,7 +255,11 @@ WPA2vParseRSN (
                     break;
             } //for
 
+<<<<<<< HEAD
             if (bUseGK == TRUE) {
+=======
+            if (bUseGK == true) {
+>>>>>>> refs/remotes/origin/master
                 if (j != 1) {
                     // invalid CSS, This should be only PK CSS.
                     return;
@@ -208,6 +273,7 @@ WPA2vParseRSN (
                 // invalid CSS, No valid PK.
                 return;
             }
+<<<<<<< HEAD
             pBSSNode->wCSSPKCount = (WORD)j;
             DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"wCSSPKCount: %d\n", pBSSNode->wCSSPKCount);
         }
@@ -219,6 +285,19 @@ WPA2vParseRSN (
             j = 0;
             pbyOUI = &(pRSN->abyRSN[8+4*m]);
             for (i = 0; (i < pBSSNode->wAKMSSAuthCount) && (j < sizeof(pBSSNode->abyAKMSSAuthType)/sizeof(BYTE)); i++) {
+=======
+            pBSSNode->wCSSPKCount = (u16)j;
+            DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"wCSSPKCount: %d\n", pBSSNode->wCSSPKCount);
+        }
+
+        m = *((u16 *) &(pRSN->abyRSN[4]));
+
+        if (pRSN->len >= 10+m*4) { // ver(2) + GK(4) + PK count(2) + PKS(4*m) + AKMSS count(2)
+            pBSSNode->wAKMSSAuthCount = *((u16 *) &(pRSN->abyRSN[6+4*m]));
+            j = 0;
+            pbyOUI = &(pRSN->abyRSN[8+4*m]);
+            for (i = 0; (i < pBSSNode->wAKMSSAuthCount) && (j < sizeof(pBSSNode->abyAKMSSAuthType)/sizeof(u8)); i++) {
+>>>>>>> refs/remotes/origin/master
                 if (pRSN->len >= 10+(m+i)*4+4) { // ver(2)+GK(4)+PKCnt(2)+PKS(4*m)+AKMSS(2)+AKS(4*i)
                     if ( !memcmp(pbyOUI, abyOUI8021X, 4))
                         pBSSNode->abyAKMSSAuthType[j++] = WLAN_11i_AKMSS_802_1X;
@@ -231,6 +310,7 @@ WPA2vParseRSN (
                 } else
                     break;
             }
+<<<<<<< HEAD
             pBSSNode->wAKMSSAuthCount = (WORD)j;
             DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"wAKMSSAuthCount: %d\n", pBSSNode->wAKMSSAuthCount);
 
@@ -364,4 +444,18 @@ WPA2uSetIEs(void *pMgmtHandle,
         return(pRSNIEs->len + WLAN_IEHDR_LEN);
     }
     return(0);
+=======
+            pBSSNode->wAKMSSAuthCount = (u16)j;
+            DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"wAKMSSAuthCount: %d\n", pBSSNode->wAKMSSAuthCount);
+
+            n = *((u16 *) &(pRSN->abyRSN[6+4*m]));
+            if (pRSN->len >= 12+4*m+4*n) { // ver(2)+GK(4)+PKCnt(2)+PKS(4*m)+AKMSSCnt(2)+AKMSS(4*n)+Cap(2)
+                pBSSNode->sRSNCapObj.bRSNCapExist = true;
+                pBSSNode->sRSNCapObj.wRSNCap = *((u16 *) &(pRSN->abyRSN[8+4*m+4*n]));
+            }
+        }
+        //ignore PMKID lists bcs only (Re)Assocrequest has this field
+        pBSSNode->bWPA2Valid = true;
+    }
+>>>>>>> refs/remotes/origin/master
 }

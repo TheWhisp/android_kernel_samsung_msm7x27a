@@ -1493,7 +1493,11 @@ il4965_hw_channel_switch(struct il_priv *il,
 
 	cmd.band = band;
 	cmd.expect_beacon = 0;
+<<<<<<< HEAD
 	ch = ch_switch->channel->hw_value;
+=======
+	ch = ch_switch->chandef.chan->hw_value;
+>>>>>>> refs/remotes/origin/master
 	cmd.channel = cpu_to_le16(ch);
 	cmd.rxon_flags = il->staging.flags;
 	cmd.rxon_filter_flags = il->staging.filter_flags;
@@ -1748,7 +1752,10 @@ static void
 il4965_post_associate(struct il_priv *il)
 {
 	struct ieee80211_vif *vif = il->vif;
+<<<<<<< HEAD
 	struct ieee80211_conf *conf = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	if (!vif || !il->is_open)
@@ -1759,8 +1766,11 @@ il4965_post_associate(struct il_priv *il)
 
 	il_scan_cancel_timeout(il, 200);
 
+<<<<<<< HEAD
 	conf = &il->hw->conf;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	il->staging.filter_flags &= ~RXON_FILTER_ASSOC_MSK;
 	il_commit_rxon(il);
 

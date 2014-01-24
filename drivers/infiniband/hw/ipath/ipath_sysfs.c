@@ -33,9 +33,13 @@
 
 #include <linux/ctype.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/stat.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/stat.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "ipath_kernel.h"
 #include "ipath_verbs.h"

@@ -18,6 +18,7 @@
 #include <linux/delay.h>
 #include <linux/i2c.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 =======
@@ -25,6 +26,12 @@
 #include <linux/slab.h>
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/spi/spi.h>
+#include <linux/regmap.h>
+#include <linux/slab.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
 #include <sound/soc.h>
@@ -33,11 +40,15 @@
 
 /* DA7210 register space */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DA7210_STATUS			0x02
 #define DA7210_STARTUP1			0x03
 #define DA7210_MIC_L			0x07
 #define DA7210_MIC_R			0x08
 =======
+=======
+#define DA7210_PAGE_CONTROL		0x00
+>>>>>>> refs/remotes/origin/master
 #define DA7210_CONTROL			0x01
 #define DA7210_STATUS			0x02
 #define DA7210_STARTUP1			0x03
@@ -49,21 +60,31 @@
 #define DA7210_AUX1_R			0x0A
 #define DA7210_AUX2			0x0B
 #define DA7210_IN_GAIN			0x0C
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DA7210_INMIX_L			0x0D
 #define DA7210_INMIX_R			0x0E
 #define DA7210_ADC_HPF			0x0F
 #define DA7210_ADC			0x10
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #define DA7210_ADC_EQ1_2		0X11
 #define DA7210_ADC_EQ3_4		0x12
 #define DA7210_ADC_EQ5			0x13
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DA7210_ADC_EQ1_2		0X11
+#define DA7210_ADC_EQ3_4		0x12
+#define DA7210_ADC_EQ5			0x13
+>>>>>>> refs/remotes/origin/master
 #define DA7210_DAC_HPF			0x14
 #define DA7210_DAC_L			0x15
 #define DA7210_DAC_R			0x16
 #define DA7210_DAC_SEL			0x17
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define DA7210_OUTMIX_L			0x1C
 #define DA7210_OUTMIX_R			0x1D
@@ -71,6 +92,8 @@
 #define DA7210_HP_R_VOL			0x22
 #define DA7210_HP_CFG			0x23
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define DA7210_SOFTMUTE			0x18
 #define DA7210_DAC_EQ1_2		0x19
 #define DA7210_DAC_EQ3_4		0x1A
@@ -84,7 +107,10 @@
 #define DA7210_HP_R_VOL			0x22
 #define DA7210_HP_CFG			0x23
 #define DA7210_ZERO_CROSS		0x24
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DA7210_DAI_SRC_SEL		0x25
 #define DA7210_DAI_CFG1			0x26
 #define DA7210_DAI_CFG3			0x28
@@ -93,14 +119,20 @@
 #define DA7210_PLL_DIV3			0x2B
 #define DA7210_PLL			0x2C
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define DA7210_ALC_MAX			0x83
 #define DA7210_ALC_MIN			0x84
 #define DA7210_ALC_NOIS			0x85
 #define DA7210_ALC_ATT			0x86
 #define DA7210_ALC_REL			0x87
 #define DA7210_ALC_DEL			0x88
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DA7210_A_HID_UNLOCK		0x8A
 #define DA7210_A_TEST_UNLOCK		0x8B
 #define DA7210_A_PLL1			0x90
@@ -124,9 +156,13 @@
 
 /* ADC bit fields */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define DA7210_ADC_ALC_EN		(1 << 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DA7210_ADC_ALC_EN		(1 << 0)
+>>>>>>> refs/remotes/origin/master
 #define DA7210_ADC_L_EN			(1 << 3)
 #define DA7210_ADC_R_EN			(1 << 7)
 
@@ -161,28 +197,43 @@
 /* DAI_CFG1 bit fields */
 #define DA7210_DAI_WORD_S16_LE		(0 << 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DA7210_DAI_WORD_S24_LE		(2 << 0)
 #define DA7210_DAI_FLEN_64BIT		(1 << 2)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define DA7210_DAI_WORD_S20_3LE		(1 << 0)
 #define DA7210_DAI_WORD_S24_LE		(2 << 0)
 #define DA7210_DAI_WORD_S32_LE		(3 << 0)
 #define DA7210_DAI_FLEN_64BIT		(1 << 2)
 #define DA7210_DAI_MODE_SLAVE		(0 << 7)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DA7210_DAI_MODE_MASTER		(1 << 7)
 
 /* DAI_CFG3 bit fields */
 #define DA7210_DAI_FORMAT_I2SMODE	(0 << 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define DA7210_DAI_FORMAT_LEFT_J	(1 << 0)
 #define DA7210_DAI_FORMAT_RIGHT_J	(2 << 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DA7210_DAI_FORMAT_LEFT_J	(1 << 0)
+#define DA7210_DAI_FORMAT_RIGHT_J	(2 << 0)
+>>>>>>> refs/remotes/origin/master
 #define DA7210_DAI_OE			(1 << 3)
 #define DA7210_DAI_EN			(1 << 7)
 
 /*PLL_DIV3 bit fields */
+<<<<<<< HEAD
+=======
+#define DA7210_PLL_DIV_L_MASK		(0xF << 0)
+>>>>>>> refs/remotes/origin/master
 #define DA7210_MCLK_RANGE_10_20_MHZ	(1 << 4)
 #define DA7210_PLL_BYP			(1 << 6)
 
@@ -199,14 +250,26 @@
 #define DA7210_PLL_FS_48000		(0xB << 0)
 #define DA7210_PLL_FS_88200		(0xE << 0)
 #define DA7210_PLL_FS_96000		(0xF << 0)
+<<<<<<< HEAD
 #define DA7210_PLL_EN			(0x1 << 7)
 
 <<<<<<< HEAD
 =======
+=======
+#define DA7210_MCLK_DET_EN		(0x1 << 5)
+#define DA7210_MCLK_SRM_EN		(0x1 << 6)
+#define DA7210_PLL_EN			(0x1 << 7)
+
+>>>>>>> refs/remotes/origin/master
 /* SOFTMUTE bit fields */
 #define DA7210_RAMP_EN			(1 << 6)
 
 /* CONTROL bit fields */
+<<<<<<< HEAD
+=======
+#define DA7210_REG_EN			(1 << 0)
+#define DA7210_BIAS_EN			(1 << 2)
+>>>>>>> refs/remotes/origin/master
 #define DA7210_NOISE_SUP_EN		(1 << 3)
 
 /* IN_GAIN bit fields */
@@ -245,7 +308,51 @@
 #define DA7210_OUT2_OUTMIX_L		(1 << 6)
 #define DA7210_OUT2_EN			(1 << 7)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct pll_div {
+	int fref;
+	int fout;
+	u8 div1;
+	u8 div2;
+	u8 div3;
+	u8 mode;	/* 0 = slave, 1 = master */
+};
+
+/* PLL dividers table */
+static const struct pll_div da7210_pll_div[] = {
+	/* for MASTER mode, fs = 44.1Khz */
+	{ 12000000, 2822400, 0xE8, 0x6C, 0x2, 1},	/* MCLK=12Mhz */
+	{ 13000000, 2822400, 0xDF, 0x28, 0xC, 1},	/* MCLK=13Mhz */
+	{ 13500000, 2822400, 0xDB, 0x0A, 0xD, 1},	/* MCLK=13.5Mhz */
+	{ 14400000, 2822400, 0xD4, 0x5A, 0x2, 1},	/* MCLK=14.4Mhz */
+	{ 19200000, 2822400, 0xBB, 0x43, 0x9, 1},	/* MCLK=19.2Mhz */
+	{ 19680000, 2822400, 0xB9, 0x6D, 0xA, 1},	/* MCLK=19.68Mhz */
+	{ 19800000, 2822400, 0xB8, 0xFB, 0xB, 1},	/* MCLK=19.8Mhz */
+	/* for MASTER mode, fs = 48Khz */
+	{ 12000000, 3072000, 0xF3, 0x12, 0x7, 1},	/* MCLK=12Mhz */
+	{ 13000000, 3072000, 0xE8, 0xFD, 0x5, 1},	/* MCLK=13Mhz */
+	{ 13500000, 3072000, 0xE4, 0x82, 0x3, 1},	/* MCLK=13.5Mhz */
+	{ 14400000, 3072000, 0xDD, 0x3A, 0x0, 1},	/* MCLK=14.4Mhz */
+	{ 19200000, 3072000, 0xC1, 0xEB, 0x8, 1},	/* MCLK=19.2Mhz */
+	{ 19680000, 3072000, 0xBF, 0xEC, 0x0, 1},	/* MCLK=19.68Mhz */
+	{ 19800000, 3072000, 0xBF, 0x70, 0x0, 1},	/* MCLK=19.8Mhz */
+	/* for SLAVE mode with SRM */
+	{ 12000000, 2822400, 0xED, 0xBF, 0x5, 0},	/* MCLK=12Mhz */
+	{ 13000000, 2822400, 0xE4, 0x13, 0x0, 0},	/* MCLK=13Mhz */
+	{ 13500000, 2822400, 0xDF, 0xC6, 0x8, 0},	/* MCLK=13.5Mhz */
+	{ 14400000, 2822400, 0xD8, 0xCA, 0x1, 0},	/* MCLK=14.4Mhz */
+	{ 19200000, 2822400, 0xBE, 0x97, 0x9, 0},	/* MCLK=19.2Mhz */
+	{ 19680000, 2822400, 0xBC, 0xAC, 0xD, 0},	/* MCLK=19.68Mhz */
+	{ 19800000, 2822400, 0xBC, 0x35, 0xE, 0},	/* MCLK=19.8Mhz  */
+};
+
+enum clk_src {
+	DA7210_CLKSRC_MCLK
+};
+
+>>>>>>> refs/remotes/origin/master
 #define DA7210_VERSION "0.0.1"
 
 /*
@@ -257,6 +364,7 @@
  * mute		: 0x10
  * reserved	: 0x00 - 0x0F
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * ** FIXME **
  *
@@ -369,6 +477,8 @@ static int da7210_startup(struct snd_pcm_substream *substream,
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Reserved area are considered as "mute".
  */
 static const unsigned int hp_out_tlv[] = {
@@ -780,9 +890,18 @@ static const struct snd_soc_dapm_route da7210_audio_map[] = {
 /* Codec private data */
 struct da7210_priv {
 	struct regmap *regmap;
+<<<<<<< HEAD
 };
 
 static struct reg_default da7210_reg_defaults[] = {
+=======
+	unsigned int mclk_rate;
+	int master;
+};
+
+static struct reg_default da7210_reg_defaults[] = {
+	{ 0x00, 0x00 },
+>>>>>>> refs/remotes/origin/master
 	{ 0x01, 0x11 },
 	{ 0x03, 0x00 },
 	{ 0x04, 0x00 },
@@ -856,7 +975,10 @@ static bool da7210_volatile_register(struct device *dev,
 	default:
 		return false;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -866,6 +988,7 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
 			    struct snd_pcm_hw_params *params,
 			    struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
 	u32 dai_cfg1;
@@ -883,6 +1006,12 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
 	dai_cfg1 = 0xFC & da7210_read(codec, DA7210_DAI_CFG1);
 =======
 	u32 fs, bypass;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+	struct da7210_priv *da7210 = snd_soc_codec_get_drvdata(codec);
+	u32 dai_cfg1;
+	u32 fs, sysclk;
+>>>>>>> refs/remotes/origin/master
 
 	/* set DAI source to Left and Right ADC */
 	snd_soc_write(codec, DA7210_DAI_SRC_SEL,
@@ -892,6 +1021,7 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
 	snd_soc_write(codec, DA7210_DAI_CFG3, DA7210_DAI_OE | DA7210_DAI_EN);
 
 	dai_cfg1 = 0xFC & snd_soc_read(codec, DA7210_DAI_CFG1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	switch (params_format(params)) {
@@ -913,10 +1043,27 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
 		dai_cfg1 |= DA7210_DAI_WORD_S32_LE;
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	switch (params_width(params)) {
+	case 16:
+		dai_cfg1 |= DA7210_DAI_WORD_S16_LE;
+		break;
+	case 20:
+		dai_cfg1 |= DA7210_DAI_WORD_S20_3LE;
+		break;
+	case 24:
+		dai_cfg1 |= DA7210_DAI_WORD_S24_LE;
+		break;
+	case 32:
+		dai_cfg1 |= DA7210_DAI_WORD_S32_LE;
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	da7210_write(codec, DA7210_DAI_CFG1, dai_cfg1);
 
@@ -925,10 +1072,14 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
 =======
 	snd_soc_write(codec, DA7210_DAI_CFG1, dai_cfg1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_write(codec, DA7210_DAI_CFG1, dai_cfg1);
+>>>>>>> refs/remotes/origin/master
 
 	switch (params_rate(params)) {
 	case 8000:
 		fs		= DA7210_PLL_FS_8000;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		hpf_mask	= DA7210_VOICE_F0_MASK	| DA7210_VOICE_EN;
 		hpf_value	= DA7210_VOICE_F0_25	| DA7210_VOICE_EN;
@@ -1016,6 +1167,45 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 		bypass		= DA7210_PLL_BYP;
+=======
+		sysclk		= 3072000;
+		break;
+	case 11025:
+		fs		= DA7210_PLL_FS_11025;
+		sysclk		= 2822400;
+		break;
+	case 12000:
+		fs		= DA7210_PLL_FS_12000;
+		sysclk		= 3072000;
+		break;
+	case 16000:
+		fs		= DA7210_PLL_FS_16000;
+		sysclk		= 3072000;
+		break;
+	case 22050:
+		fs		= DA7210_PLL_FS_22050;
+		sysclk		= 2822400;
+		break;
+	case 32000:
+		fs		= DA7210_PLL_FS_32000;
+		sysclk		= 3072000;
+		break;
+	case 44100:
+		fs		= DA7210_PLL_FS_44100;
+		sysclk		= 2822400;
+		break;
+	case 48000:
+		fs		= DA7210_PLL_FS_48000;
+		sysclk		= 3072000;
+		break;
+	case 88200:
+		fs		= DA7210_PLL_FS_88200;
+		sysclk		= 2822400;
+		break;
+	case 96000:
+		fs		= DA7210_PLL_FS_96000;
+		sysclk		= 3072000;
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return -EINVAL;
@@ -1025,12 +1215,36 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
 	snd_soc_update_bits(codec, DA7210_STARTUP1, DA7210_SC_MST_EN, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_update_bits(codec, hpf_reg, hpf_mask, hpf_value);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	snd_soc_update_bits(codec, DA7210_PLL, DA7210_PLL_FS_MASK, fs);
 	snd_soc_update_bits(codec, DA7210_PLL_DIV3, DA7210_PLL_BYP, bypass);
 
+=======
+	snd_soc_update_bits(codec, DA7210_PLL, DA7210_PLL_FS_MASK, fs);
+
+	if (da7210->mclk_rate && (da7210->mclk_rate != sysclk)) {
+		/* PLL mode, disable PLL bypass */
+		snd_soc_update_bits(codec, DA7210_PLL_DIV3, DA7210_PLL_BYP, 0);
+
+		if (!da7210->master) {
+			/* PLL slave mode, also enable SRM */
+			snd_soc_update_bits(codec, DA7210_PLL,
+						   (DA7210_MCLK_SRM_EN |
+						    DA7210_MCLK_DET_EN),
+						   (DA7210_MCLK_SRM_EN |
+						    DA7210_MCLK_DET_EN));
+		}
+	} else {
+		/* PLL bypass mode, enable PLL bypass and Auto Detection */
+		snd_soc_update_bits(codec, DA7210_PLL, DA7210_MCLK_DET_EN,
+						       DA7210_MCLK_DET_EN);
+		snd_soc_update_bits(codec, DA7210_PLL_DIV3, DA7210_PLL_BYP,
+							    DA7210_PLL_BYP);
+	}
+>>>>>>> refs/remotes/origin/master
 	/* Enable active mode */
 	snd_soc_update_bits(codec, DA7210_STARTUP1,
 			    DA7210_SC_MST_EN, DA7210_SC_MST_EN);
@@ -1044,6 +1258,7 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
 static int da7210_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
 {
 	struct snd_soc_codec *codec = codec_dai->codec;
+<<<<<<< HEAD
 	u32 dai_cfg1;
 	u32 dai_cfg3;
 
@@ -1065,6 +1280,28 @@ static int da7210_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
 		dai_cfg1 |= DA7210_DAI_MODE_SLAVE;
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct da7210_priv *da7210 = snd_soc_codec_get_drvdata(codec);
+	u32 dai_cfg1;
+	u32 dai_cfg3;
+
+	dai_cfg1 = 0x7f & snd_soc_read(codec, DA7210_DAI_CFG1);
+	dai_cfg3 = 0xfc & snd_soc_read(codec, DA7210_DAI_CFG3);
+
+	if ((snd_soc_read(codec, DA7210_PLL) & DA7210_PLL_EN) &&
+		(!(snd_soc_read(codec, DA7210_PLL_DIV3) & DA7210_PLL_BYP)))
+		return -EINVAL;
+
+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+	case SND_SOC_DAIFMT_CBM_CFM:
+		da7210->master = 1;
+		dai_cfg1 |= DA7210_DAI_MODE_MASTER;
+		break;
+	case SND_SOC_DAIFMT_CBS_CFS:
+		da7210->master = 0;
+		dai_cfg1 |= DA7210_DAI_MODE_SLAVE;
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -EINVAL;
 	}
@@ -1078,14 +1315,20 @@ static int da7210_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
 		dai_cfg3 |= DA7210_DAI_FORMAT_I2SMODE;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case SND_SOC_DAIFMT_LEFT_J:
 		dai_cfg3 |= DA7210_DAI_FORMAT_LEFT_J;
 		break;
 	case SND_SOC_DAIFMT_RIGHT_J:
 		dai_cfg3 |= DA7210_DAI_FORMAT_RIGHT_J;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -EINVAL;
 	}
@@ -1097,16 +1340,22 @@ static int da7210_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
 	dai_cfg1 |= DA7210_DAI_FLEN_64BIT;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	da7210_write(codec, DA7210_DAI_CFG1, dai_cfg1);
 	da7210_write(codec, DA7210_DAI_CFG3, dai_cfg3);
 =======
 	snd_soc_write(codec, DA7210_DAI_CFG1, dai_cfg1);
 	snd_soc_write(codec, DA7210_DAI_CFG3, dai_cfg3);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_write(codec, DA7210_DAI_CFG1, dai_cfg1);
+	snd_soc_write(codec, DA7210_DAI_CFG3, dai_cfg3);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define DA7210_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
 
@@ -1116,6 +1365,8 @@ static struct snd_soc_dai_ops da7210_dai_ops = {
 	.hw_params	= da7210_hw_params,
 	.set_fmt	= da7210_set_dai_fmt,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int da7210_mute(struct snd_soc_dai *dai, int mute)
 {
 	struct snd_soc_codec *codec = dai->codec;
@@ -1131,12 +1382,110 @@ static int da7210_mute(struct snd_soc_dai *dai, int mute)
 #define DA7210_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
+<<<<<<< HEAD
+=======
+static int da7210_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+				 int clk_id, unsigned int freq, int dir)
+{
+	struct snd_soc_codec *codec = codec_dai->codec;
+	struct da7210_priv *da7210 = snd_soc_codec_get_drvdata(codec);
+
+	switch (clk_id) {
+	case DA7210_CLKSRC_MCLK:
+		switch (freq) {
+		case 12000000:
+		case 13000000:
+		case 13500000:
+		case 14400000:
+		case 19200000:
+		case 19680000:
+		case 19800000:
+			da7210->mclk_rate = freq;
+			return 0;
+		default:
+			dev_err(codec_dai->dev, "Unsupported MCLK value %d\n",
+				freq);
+			return -EINVAL;
+		}
+		break;
+	default:
+		dev_err(codec_dai->dev, "Unknown clock source %d\n", clk_id);
+		return -EINVAL;
+	}
+}
+
+/**
+ * da7210_set_dai_pll	:Configure the codec PLL
+ * @param codec_dai	: pointer to codec DAI
+ * @param pll_id	: da7210 has only one pll, so pll_id is always zero
+ * @param fref		: MCLK frequency, should be < 20MHz
+ * @param fout		: FsDM value, Refer page 44 & 45 of datasheet
+ * @return int		: Zero for success, negative error code for error
+ *
+ * Note: Supported PLL input frequencies are 12MHz, 13MHz, 13.5MHz, 14.4MHz,
+ *       19.2MHz, 19.6MHz and 19.8MHz
+ */
+static int da7210_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
+			      int source, unsigned int fref, unsigned int fout)
+{
+	struct snd_soc_codec *codec = codec_dai->codec;
+	struct da7210_priv *da7210 = snd_soc_codec_get_drvdata(codec);
+
+	u8 pll_div1, pll_div2, pll_div3, cnt;
+
+	/* In slave mode, there is only one set of divisors */
+	if (!da7210->master)
+		fout = 2822400;
+
+	/* Search pll div array for correct divisors */
+	for (cnt = 0; cnt < ARRAY_SIZE(da7210_pll_div); cnt++) {
+		/* check fref, mode  and fout */
+		if ((fref == da7210_pll_div[cnt].fref) &&
+		    (da7210->master ==  da7210_pll_div[cnt].mode) &&
+		    (fout == da7210_pll_div[cnt].fout)) {
+			/* all match, pick up divisors */
+			pll_div1 = da7210_pll_div[cnt].div1;
+			pll_div2 = da7210_pll_div[cnt].div2;
+			pll_div3 = da7210_pll_div[cnt].div3;
+			break;
+		}
+	}
+	if (cnt >= ARRAY_SIZE(da7210_pll_div))
+		goto err;
+
+	/* Disable active mode */
+	snd_soc_update_bits(codec, DA7210_STARTUP1, DA7210_SC_MST_EN, 0);
+	/* Write PLL dividers */
+	snd_soc_write(codec, DA7210_PLL_DIV1, pll_div1);
+	snd_soc_write(codec, DA7210_PLL_DIV2, pll_div2);
+	snd_soc_update_bits(codec, DA7210_PLL_DIV3,
+				   DA7210_PLL_DIV_L_MASK, pll_div3);
+
+	/* Enable PLL */
+	snd_soc_update_bits(codec, DA7210_PLL, DA7210_PLL_EN, DA7210_PLL_EN);
+
+	/* Enable active mode */
+	snd_soc_update_bits(codec, DA7210_STARTUP1, DA7210_SC_MST_EN,
+						    DA7210_SC_MST_EN);
+	return 0;
+err:
+	dev_err(codec_dai->dev, "Unsupported PLL input frequency %d\n", fref);
+	return -EINVAL;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* DAI operations */
 static const struct snd_soc_dai_ops da7210_dai_ops = {
 	.hw_params	= da7210_hw_params,
 	.set_fmt	= da7210_set_dai_fmt,
+<<<<<<< HEAD
 	.digital_mute	= da7210_mute,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.set_sysclk	= da7210_set_dai_sysclk,
+	.set_pll	= da7210_set_dai_pll,
+	.digital_mute	= da7210_mute,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct snd_soc_dai_driver da7210_dai = {
@@ -1165,12 +1514,15 @@ static int da7210_probe(struct snd_soc_codec *codec)
 {
 	struct da7210_priv *da7210 = snd_soc_codec_get_drvdata(codec);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	dev_info(codec->dev, "DA7210 Audio Codec %s\n", DA7210_VERSION);
 
 	codec->control_data	= da7210->control_data;
 	codec->hw_write		= (hw_write_t)i2c_master_send;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	dev_info(codec->dev, "DA7210 Audio Codec %s\n", DA7210_VERSION);
@@ -1181,6 +1533,7 @@ static int da7210_probe(struct snd_soc_codec *codec)
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 		return ret;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	/* FIXME
@@ -1206,12 +1559,21 @@ static int da7210_probe(struct snd_soc_codec *codec)
 	snd_soc_write(codec, DA7210_PLL_DIV3,
 >>>>>>> refs/remotes/origin/cm-10.0
 		     DA7210_MCLK_RANGE_10_20_MHZ | DA7210_PLL_BYP);
+=======
+
+	da7210->mclk_rate       = 0;    /* This will be set from set_sysclk() */
+	da7210->master          = 0;    /* This will be set from set_fmt() */
+
+	/* Enable internal regulator & bias current */
+	snd_soc_write(codec, DA7210_CONTROL, DA7210_REG_EN | DA7210_BIAS_EN);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * ADC settings
 	 */
 
 	/* Enable Left & Right MIC PGA and Mic Bias */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	da7210_write(codec, DA7210_MIC_L, DA7210_MIC_L_EN | DA7210_MICBIAS_EN);
 	da7210_write(codec, DA7210_MIC_R, DA7210_MIC_R_EN);
@@ -1223,6 +1585,8 @@ static int da7210_probe(struct snd_soc_codec *codec)
 	/* Enable Left and Right ADC */
 	da7210_write(codec, DA7210_ADC, DA7210_ADC_L_EN | DA7210_ADC_R_EN);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_soc_write(codec, DA7210_MIC_L, DA7210_MIC_L_EN | DA7210_MICBIAS_EN);
 	snd_soc_write(codec, DA7210_MIC_R, DA7210_MIC_R_EN);
 
@@ -1232,7 +1596,10 @@ static int da7210_probe(struct snd_soc_codec *codec)
 
 	/* Enable Left and Right ADC */
 	snd_soc_write(codec, DA7210_ADC, DA7210_ADC_L_EN | DA7210_ADC_R_EN);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * DAC settings
@@ -1240,14 +1607,19 @@ static int da7210_probe(struct snd_soc_codec *codec)
 
 	/* Enable Left and Right DAC */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	da7210_write(codec, DA7210_DAC_SEL,
 =======
 	snd_soc_write(codec, DA7210_DAC_SEL,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_write(codec, DA7210_DAC_SEL,
+>>>>>>> refs/remotes/origin/master
 		     DA7210_DAC_L_SRC_DAI_L | DA7210_DAC_L_EN |
 		     DA7210_DAC_R_SRC_DAI_R | DA7210_DAC_R_EN);
 
 	/* Enable Left and Right out PGA */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	da7210_write(codec, DA7210_OUTMIX_L, DA7210_OUT_L_EN);
 	da7210_write(codec, DA7210_OUTMIX_R, DA7210_OUT_R_EN);
@@ -1260,6 +1632,8 @@ static int da7210_probe(struct snd_soc_codec *codec)
 	/* Diable PLL and bypass it */
 	da7210_write(codec, DA7210_PLL, DA7210_PLL_FS_48000);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_soc_write(codec, DA7210_OUTMIX_L, DA7210_OUT_L_EN);
 	snd_soc_write(codec, DA7210_OUTMIX_R, DA7210_OUT_R_EN);
 
@@ -1308,6 +1682,7 @@ static int da7210_probe(struct snd_soc_codec *codec)
 	/* Enable Aux2 */
 	snd_soc_write(codec, DA7210_AUX2, DA7210_AUX2_EN);
 
+<<<<<<< HEAD
 	/* Diable PLL and bypass it */
 	snd_soc_write(codec, DA7210_PLL, DA7210_PLL_FS_48000);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1360,6 +1735,17 @@ static int da7210_probe(struct snd_soc_codec *codec)
 	/* Activate all enabled subsystem */
 	snd_soc_write(codec, DA7210_STARTUP1, DA7210_SC_MST_EN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Set PLL Master clock range 10-20 MHz, enable PLL bypass */
+	snd_soc_write(codec, DA7210_PLL_DIV3, DA7210_MCLK_RANGE_10_20_MHZ |
+					      DA7210_PLL_BYP);
+
+	/* Diable PLL and bypass it */
+	snd_soc_write(codec, DA7210_PLL, DA7210_PLL_FS_48000);
+
+	/* Activate all enabled subsystem */
+	snd_soc_write(codec, DA7210_STARTUP1, DA7210_SC_MST_EN);
+>>>>>>> refs/remotes/origin/master
 
 	dev_info(codec->dev, "DA7210 Audio Codec %s\n", DA7210_VERSION);
 
@@ -1369,12 +1755,15 @@ static int da7210_probe(struct snd_soc_codec *codec)
 static struct snd_soc_codec_driver soc_codec_dev_da7210 = {
 	.probe			= da7210_probe,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.read			= da7210_read,
 	.write			= da7210_write,
 	.reg_cache_size		= ARRAY_SIZE(da7210_reg),
 	.reg_word_size		= sizeof(u8),
 	.reg_cache_default	= da7210_reg,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.controls		= da7210_snd_controls,
 	.num_controls		= ARRAY_SIZE(da7210_snd_controls),
@@ -1385,7 +1774,30 @@ static struct snd_soc_codec_driver soc_codec_dev_da7210 = {
 	.num_dapm_routes	= ARRAY_SIZE(da7210_audio_map),
 };
 
+<<<<<<< HEAD
 static struct regmap_config da7210_regmap = {
+=======
+#if IS_ENABLED(CONFIG_I2C)
+
+static struct reg_default da7210_regmap_i2c_patch[] = {
+
+	/* System controller master disable */
+	{ DA7210_STARTUP1, 0x00 },
+	/* Set PLL Master clock range 10-20 MHz */
+	{ DA7210_PLL_DIV3, DA7210_MCLK_RANGE_10_20_MHZ },
+
+	/* to unlock */
+	{ DA7210_A_HID_UNLOCK, 0x8B},
+	{ DA7210_A_TEST_UNLOCK, 0xB4},
+	{ DA7210_A_PLL1, 0x01},
+	{ DA7210_A_CP_MODE, 0x7C},
+	/* to re-lock */
+	{ DA7210_A_HID_UNLOCK, 0x00},
+	{ DA7210_A_TEST_UNLOCK, 0x00},
+};
+
+static const struct regmap_config da7210_regmap_config_i2c = {
+>>>>>>> refs/remotes/origin/master
 	.reg_bits = 8,
 	.val_bits = 8,
 
@@ -1394,26 +1806,39 @@ static struct regmap_config da7210_regmap = {
 	.volatile_reg = da7210_volatile_register,
 	.readable_reg = da7210_readable_register,
 	.cache_type = REGCACHE_RBTREE,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 static int __devinit da7210_i2c_probe(struct i2c_client *i2c,
 			   	      const struct i2c_device_id *id)
+=======
+};
+
+static int da7210_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct da7210_priv *da7210;
 	int ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	da7210 = kzalloc(sizeof(struct da7210_priv), GFP_KERNEL);
 =======
 	da7210 = devm_kzalloc(&i2c->dev, sizeof(struct da7210_priv),
 			      GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	da7210 = devm_kzalloc(&i2c->dev, sizeof(struct da7210_priv),
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!da7210)
 		return -ENOMEM;
 
 	i2c_set_clientdata(i2c, da7210);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	da7210->control_data = i2c;
 	da7210->control_type = SND_SOC_I2C;
@@ -1425,12 +1850,17 @@ static int __devinit da7210_i2c_probe(struct i2c_client *i2c,
 =======
 
 	da7210->regmap = regmap_init_i2c(i2c, &da7210_regmap);
+=======
+
+	da7210->regmap = devm_regmap_init_i2c(i2c, &da7210_regmap_config_i2c);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(da7210->regmap)) {
 		ret = PTR_ERR(da7210->regmap);
 		dev_err(&i2c->dev, "regmap_init() failed: %d\n", ret);
 		return ret;
 	}
 
+<<<<<<< HEAD
 	ret =  snd_soc_register_codec(&i2c->dev,
 			&soc_codec_dev_da7210, &da7210_dai, 1);
 	if (ret < 0) {
@@ -1442,10 +1872,22 @@ static int __devinit da7210_i2c_probe(struct i2c_client *i2c,
 err_regmap:
 	regmap_exit(da7210->regmap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = regmap_register_patch(da7210->regmap, da7210_regmap_i2c_patch,
+				    ARRAY_SIZE(da7210_regmap_i2c_patch));
+	if (ret != 0)
+		dev_warn(&i2c->dev, "Failed to apply regmap patch: %d\n", ret);
+
+	ret =  snd_soc_register_codec(&i2c->dev,
+			&soc_codec_dev_da7210, &da7210_dai, 1);
+	if (ret < 0)
+		dev_err(&i2c->dev, "Failed to register codec: %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit da7210_i2c_remove(struct i2c_client *client)
 {
 <<<<<<< HEAD
@@ -1457,6 +1899,11 @@ static int __devexit da7210_i2c_remove(struct i2c_client *client)
 	snd_soc_unregister_codec(&client->dev);
 	regmap_exit(da7210->regmap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int da7210_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1469,30 +1916,147 @@ MODULE_DEVICE_TABLE(i2c, da7210_i2c_id);
 /* I2C codec control layer */
 static struct i2c_driver da7210_i2c_driver = {
 	.driver = {
+<<<<<<< HEAD
 		.name = "da7210-codec",
 		.owner = THIS_MODULE,
 	},
 	.probe		= da7210_i2c_probe,
 	.remove		= __devexit_p(da7210_i2c_remove),
+=======
+		.name = "da7210",
+		.owner = THIS_MODULE,
+	},
+	.probe		= da7210_i2c_probe,
+	.remove		= da7210_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= da7210_i2c_id,
 };
 #endif
 
+<<<<<<< HEAD
 static int __init da7210_modinit(void)
 {
 	int ret = 0;
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 	ret = i2c_add_driver(&da7210_i2c_driver);
 #endif
+=======
+#if defined(CONFIG_SPI_MASTER)
+
+static struct reg_default da7210_regmap_spi_patch[] = {
+	/* Dummy read to give two pulses over nCS for SPI */
+	{ DA7210_AUX2, 0x00 },
+	{ DA7210_AUX2, 0x00 },
+
+	/* System controller master disable */
+	{ DA7210_STARTUP1, 0x00 },
+	/* Set PLL Master clock range 10-20 MHz */
+	{ DA7210_PLL_DIV3, DA7210_MCLK_RANGE_10_20_MHZ },
+
+	/* to set PAGE1 of SPI register space */
+	{ DA7210_PAGE_CONTROL, 0x80 },
+	/* to unlock */
+	{ DA7210_A_HID_UNLOCK, 0x8B},
+	{ DA7210_A_TEST_UNLOCK, 0xB4},
+	{ DA7210_A_PLL1, 0x01},
+	{ DA7210_A_CP_MODE, 0x7C},
+	/* to re-lock */
+	{ DA7210_A_HID_UNLOCK, 0x00},
+	{ DA7210_A_TEST_UNLOCK, 0x00},
+	/* to set back PAGE0 of SPI register space */
+	{ DA7210_PAGE_CONTROL, 0x00 },
+};
+
+static const struct regmap_config da7210_regmap_config_spi = {
+	.reg_bits = 8,
+	.val_bits = 8,
+	.read_flag_mask = 0x01,
+	.write_flag_mask = 0x00,
+
+	.reg_defaults = da7210_reg_defaults,
+	.num_reg_defaults = ARRAY_SIZE(da7210_reg_defaults),
+	.volatile_reg = da7210_volatile_register,
+	.readable_reg = da7210_readable_register,
+	.cache_type = REGCACHE_RBTREE,
+};
+
+static int da7210_spi_probe(struct spi_device *spi)
+{
+	struct da7210_priv *da7210;
+	int ret;
+
+	da7210 = devm_kzalloc(&spi->dev, sizeof(struct da7210_priv),
+			      GFP_KERNEL);
+	if (!da7210)
+		return -ENOMEM;
+
+	spi_set_drvdata(spi, da7210);
+	da7210->regmap = devm_regmap_init_spi(spi, &da7210_regmap_config_spi);
+	if (IS_ERR(da7210->regmap)) {
+		ret = PTR_ERR(da7210->regmap);
+		dev_err(&spi->dev, "Failed to register regmap: %d\n", ret);
+		return ret;
+	}
+
+	ret = regmap_register_patch(da7210->regmap, da7210_regmap_spi_patch,
+				    ARRAY_SIZE(da7210_regmap_spi_patch));
+	if (ret != 0)
+		dev_warn(&spi->dev, "Failed to apply regmap patch: %d\n", ret);
+
+	ret = snd_soc_register_codec(&spi->dev,
+			&soc_codec_dev_da7210, &da7210_dai, 1);
+
+	return ret;
+}
+
+static int da7210_spi_remove(struct spi_device *spi)
+{
+	snd_soc_unregister_codec(&spi->dev);
+	return 0;
+}
+
+static struct spi_driver da7210_spi_driver = {
+	.driver = {
+		.name = "da7210",
+		.owner = THIS_MODULE,
+	},
+	.probe = da7210_spi_probe,
+	.remove = da7210_spi_remove
+};
+#endif
+
+static int __init da7210_modinit(void)
+{
+	int ret = 0;
+#if IS_ENABLED(CONFIG_I2C)
+	ret = i2c_add_driver(&da7210_i2c_driver);
+#endif
+#if defined(CONFIG_SPI_MASTER)
+	ret = spi_register_driver(&da7210_spi_driver);
+	if (ret) {
+		printk(KERN_ERR "Failed to register da7210 SPI driver: %d\n",
+		       ret);
+	}
+#endif
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 module_init(da7210_modinit);
 
 static void __exit da7210_exit(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 	i2c_del_driver(&da7210_i2c_driver);
 #endif
+=======
+#if IS_ENABLED(CONFIG_I2C)
+	i2c_del_driver(&da7210_i2c_driver);
+#endif
+#if defined(CONFIG_SPI_MASTER)
+	spi_unregister_driver(&da7210_spi_driver);
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 module_exit(da7210_exit);
 

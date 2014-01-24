@@ -673,7 +673,11 @@ void smt_add_para(struct s_smc *smc, struct s_pcon *pcon, u_short para,
 			sm_pm_get_ls(smc,port_to_mib(smc,port))) ;
 		break ;
 	case SMT_P_REASON :
+<<<<<<< HEAD
 		* (u_long *) to = 0 ;
+=======
+		*(u32 *)to = 0 ;
+>>>>>>> refs/remotes/origin/master
 		sp_len = 4 ;
 		goto sp_done ;
 	case SMT_P1033 :			/* time stamp */
@@ -1242,7 +1246,11 @@ static int smt_set_para(struct s_smc *smc, struct smt_para *pa, int index,
 			if (len < 8)
 				goto len_error ;
 			if (set)
+<<<<<<< HEAD
 				memcpy((char *) to,(char *) from+2,6) ;
+=======
+				memcpy(to,from+2,6) ;
+>>>>>>> refs/remotes/origin/master
 			to += 8 ;
 			from += 8 ;
 			len -= 8 ;
@@ -1251,7 +1259,11 @@ static int smt_set_para(struct s_smc *smc, struct smt_para *pa, int index,
 			if (len < 4)
 				goto len_error ;
 			if (set)
+<<<<<<< HEAD
 				memcpy((char *) to,(char *) from,4) ;
+=======
+				memcpy(to,from,4) ;
+>>>>>>> refs/remotes/origin/master
 			to += 4 ;
 			from += 4 ;
 			len -= 4 ;
@@ -1260,7 +1272,11 @@ static int smt_set_para(struct s_smc *smc, struct smt_para *pa, int index,
 			if (len < 8)
 				goto len_error ;
 			if (set)
+<<<<<<< HEAD
 				memcpy((char *) to,(char *) from,8) ;
+=======
+				memcpy(to,from,8) ;
+>>>>>>> refs/remotes/origin/master
 			to += 8 ;
 			from += 8 ;
 			len -= 8 ;
@@ -1269,7 +1285,11 @@ static int smt_set_para(struct s_smc *smc, struct smt_para *pa, int index,
 			if (len < 32)
 				goto len_error ;
 			if (set)
+<<<<<<< HEAD
 				memcpy((char *) to,(char *) from,32) ;
+=======
+				memcpy(to,from,32) ;
+>>>>>>> refs/remotes/origin/master
 			to += 32 ;
 			from += 32 ;
 			len -= 32 ;

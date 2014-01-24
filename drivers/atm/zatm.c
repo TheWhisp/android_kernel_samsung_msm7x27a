@@ -17,9 +17,13 @@
 #include <linux/uio.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/interrupt.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/dma-mapping.h>
 #include <linux/atm_zatm.h>
 #include <linux/capability.h>
@@ -27,6 +31,7 @@
 #include <linux/wait.h>
 #include <linux/slab.h>
 #include <asm/byteorder.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/string.h>
@@ -37,6 +42,11 @@
 #include <asm/io.h>
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/string.h>
+#include <asm/io.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 #include "uPD98401.h"
@@ -1104,8 +1114,13 @@ static irqreturn_t zatm_int(int irq,void *dev_id)
 /*----------------------------- (E)EPROM access -----------------------------*/
 
 
+<<<<<<< HEAD
 static void __devinit eprom_set(struct zatm_dev *zatm_dev,unsigned long value,
     unsigned short cmd)
+=======
+static void eprom_set(struct zatm_dev *zatm_dev, unsigned long value,
+		      unsigned short cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	int error;
 
@@ -1115,8 +1130,12 @@ static void __devinit eprom_set(struct zatm_dev *zatm_dev,unsigned long value,
 }
 
 
+<<<<<<< HEAD
 static unsigned long __devinit eprom_get(struct zatm_dev *zatm_dev,
     unsigned short cmd)
+=======
+static unsigned long eprom_get(struct zatm_dev *zatm_dev, unsigned short cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int value;
 	int error;
@@ -1128,8 +1147,13 @@ static unsigned long __devinit eprom_get(struct zatm_dev *zatm_dev,
 }
 
 
+<<<<<<< HEAD
 static void __devinit eprom_put_bits(struct zatm_dev *zatm_dev,
     unsigned long data,int bits,unsigned short cmd)
+=======
+static void eprom_put_bits(struct zatm_dev *zatm_dev, unsigned long data,
+			   int bits, unsigned short cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long value;
 	int i;
@@ -1143,8 +1167,13 @@ static void __devinit eprom_put_bits(struct zatm_dev *zatm_dev,
 }
 
 
+<<<<<<< HEAD
 static void __devinit eprom_get_byte(struct zatm_dev *zatm_dev,
     unsigned char *byte,unsigned short cmd)
+=======
+static void eprom_get_byte(struct zatm_dev *zatm_dev, unsigned char *byte,
+			   unsigned short cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -1159,8 +1188,13 @@ static void __devinit eprom_get_byte(struct zatm_dev *zatm_dev,
 }
 
 
+<<<<<<< HEAD
 static unsigned char __devinit eprom_try_esi(struct atm_dev *dev,
     unsigned short cmd,int offset,int swap)
+=======
+static unsigned char eprom_try_esi(struct atm_dev *dev, unsigned short cmd,
+				   int offset, int swap)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char buf[ZEPROM_SIZE];
 	struct zatm_dev *zatm_dev;
@@ -1180,7 +1214,11 @@ static unsigned char __devinit eprom_try_esi(struct atm_dev *dev,
 }
 
 
+<<<<<<< HEAD
 static void __devinit eprom_get_esi(struct atm_dev *dev)
+=======
+static void eprom_get_esi(struct atm_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (eprom_try_esi(dev,ZEPROM_V1_REG,ZEPROM_V1_ESI_OFF,1)) return;
 	(void) eprom_try_esi(dev,ZEPROM_V2_REG,ZEPROM_V2_ESI_OFF,0);
@@ -1190,7 +1228,11 @@ static void __devinit eprom_get_esi(struct atm_dev *dev)
 /*--------------------------------- entries ---------------------------------*/
 
 
+<<<<<<< HEAD
 static int __devinit zatm_init(struct atm_dev *dev)
+=======
+static int zatm_init(struct atm_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct zatm_dev *zatm_dev;
 	struct pci_dev *pci_dev;
@@ -1267,7 +1309,11 @@ static int __devinit zatm_init(struct atm_dev *dev)
 }
 
 
+<<<<<<< HEAD
 static int __devinit zatm_start(struct atm_dev *dev)
+=======
+static int zatm_start(struct atm_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct zatm_dev *zatm_dev = ZATM_DEV(dev);
 	struct pci_dev *pdev = zatm_dev->pci_dev;
@@ -1594,8 +1640,13 @@ static const struct atmdev_ops ops = {
 	.change_qos	= zatm_change_qos,
 };
 
+<<<<<<< HEAD
 static int __devinit zatm_init_one(struct pci_dev *pci_dev,
 				   const struct pci_device_id *ent)
+=======
+static int zatm_init_one(struct pci_dev *pci_dev,
+			 const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct atm_dev *dev;
 	struct zatm_dev *zatm_dev;
@@ -1646,7 +1697,11 @@ out_free:
 
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 static struct pci_device_id zatm_pci_tbl[] __devinitdata = {
+=======
+static struct pci_device_id zatm_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_VDEVICE(ZEITNET, PCI_DEVICE_ID_ZEITNET_1221), ZATM_COPPER },
 	{ PCI_VDEVICE(ZEITNET, PCI_DEVICE_ID_ZEITNET_1225), 0 },
 	{ 0, }

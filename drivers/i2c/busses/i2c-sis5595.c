@@ -142,7 +142,11 @@ static void sis5595_write(u8 reg, u8 data)
 	outb(data, sis5595_base + SMB_DAT);
 }
 
+<<<<<<< HEAD
 static int __devinit sis5595_setup(struct pci_dev *SIS5595_dev)
+=======
+static int sis5595_setup(struct pci_dev *SIS5595_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 a;
 	u8 val;
@@ -370,17 +374,25 @@ static struct i2c_adapter sis5595_adapter = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct pci_device_id sis5595_ids[] __devinitconst = {
 =======
 static DEFINE_PCI_DEVICE_TABLE(sis5595_ids) = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_PCI_DEVICE_TABLE(sis5595_ids) = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_SI, PCI_DEVICE_ID_SI_503) }, 
 	{ 0, }
 };
 
 MODULE_DEVICE_TABLE (pci, sis5595_ids);
 
+<<<<<<< HEAD
 static int __devinit sis5595_probe(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int sis5595_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 

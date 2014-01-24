@@ -10,6 +10,10 @@
 #include <linux/mm.h>
 #include <linux/pm.h>
 #include <linux/of_address.h>
+<<<<<<< HEAD
+=======
+#include <linux/pinctrl/machine.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/system_misc.h>
 #include <asm/mach/map.h>
@@ -18,10 +22,18 @@
 #include <mach/cpu.h>
 #include <mach/at91_dbgu.h>
 #include <mach/at91_pmc.h>
+<<<<<<< HEAD
 #include <mach/at91_shdwc.h>
 
 #include "soc.h"
 #include "generic.h"
+=======
+
+#include "at91_shdwc.h"
+#include "soc.h"
+#include "generic.h"
+#include "pm.h"
+>>>>>>> refs/remotes/origin/master
 
 struct at91_init_soc __initdata at91_boot_soc;
 
@@ -47,7 +59,11 @@ void __init at91_init_irq_default(void)
 void __init at91_init_interrupts(unsigned int *priority)
 {
 	/* Initialize the AIC interrupt controller */
+<<<<<<< HEAD
 	at91_aic_init(priority);
+=======
+	at91_aic_init(priority, at91_boot_soc.extern_irq);
+>>>>>>> refs/remotes/origin/master
 
 	/* Enable GPIO interrupts */
 	at91_gpio_irq_setup();
@@ -73,13 +89,21 @@ void __init at91_init_sram(int bank, unsigned long base, unsigned int length)
 {
 	struct map_desc *desc = &sram_desc[bank];
 
+<<<<<<< HEAD
 	desc->virtual = AT91_IO_VIRT_BASE - length;
+=======
+	desc->virtual = (unsigned long)AT91_IO_VIRT_BASE - length;
+>>>>>>> refs/remotes/origin/master
 	if (bank > 0)
 		desc->virtual -= sram_desc[bank - 1].length;
 
 	desc->pfn = __phys_to_pfn(base);
 	desc->length = length;
+<<<<<<< HEAD
 	desc->type = MT_DEVICE;
+=======
+	desc->type = MT_MEMORY_NONCACHED;
+>>>>>>> refs/remotes/origin/master
 
 	pr_info("AT91: sram at 0x%lx of 0x%x mapped at 0x%lx\n",
 		base, length, desc->virtual);
@@ -87,8 +111,13 @@ void __init at91_init_sram(int bank, unsigned long base, unsigned int length)
 	iotable_init(desc, 1);
 }
 
+<<<<<<< HEAD
 static struct map_desc at91_io_desc __initdata = {
 	.virtual	= AT91_VA_BASE_SYS,
+=======
+static struct map_desc at91_io_desc __initdata __maybe_unused = {
+	.virtual	= (unsigned long)AT91_VA_BASE_SYS,
+>>>>>>> refs/remotes/origin/master
 	.pfn		= __phys_to_pfn(AT91_BASE_SYS),
 	.length		= SZ_16K,
 	.type		= MT_DEVICE,
@@ -104,28 +133,48 @@ static void __init soc_detect(u32 dbgu_base)
 	switch (socid) {
 	case ARCH_ID_AT91RM9200:
 		at91_soc_initdata.type = AT91_SOC_RM9200;
+<<<<<<< HEAD
 		if (at91_soc_initdata.subtype == AT91_SOC_SUBTYPE_NONE)
+=======
+		if (at91_soc_initdata.subtype == AT91_SOC_SUBTYPE_UNKNOWN)
+>>>>>>> refs/remotes/origin/master
 			at91_soc_initdata.subtype = AT91_SOC_RM9200_BGA;
 		at91_boot_soc = at91rm9200_soc;
 		break;
 
 	case ARCH_ID_AT91SAM9260:
 		at91_soc_initdata.type = AT91_SOC_SAM9260;
+<<<<<<< HEAD
+=======
+		at91_soc_initdata.subtype = AT91_SOC_SUBTYPE_NONE;
+>>>>>>> refs/remotes/origin/master
 		at91_boot_soc = at91sam9260_soc;
 		break;
 
 	case ARCH_ID_AT91SAM9261:
 		at91_soc_initdata.type = AT91_SOC_SAM9261;
+<<<<<<< HEAD
+=======
+		at91_soc_initdata.subtype = AT91_SOC_SUBTYPE_NONE;
+>>>>>>> refs/remotes/origin/master
 		at91_boot_soc = at91sam9261_soc;
 		break;
 
 	case ARCH_ID_AT91SAM9263:
 		at91_soc_initdata.type = AT91_SOC_SAM9263;
+<<<<<<< HEAD
+=======
+		at91_soc_initdata.subtype = AT91_SOC_SUBTYPE_NONE;
+>>>>>>> refs/remotes/origin/master
 		at91_boot_soc = at91sam9263_soc;
 		break;
 
 	case ARCH_ID_AT91SAM9G20:
 		at91_soc_initdata.type = AT91_SOC_SAM9G20;
+<<<<<<< HEAD
+=======
+		at91_soc_initdata.subtype = AT91_SOC_SUBTYPE_NONE;
+>>>>>>> refs/remotes/origin/master
 		at91_boot_soc = at91sam9260_soc;
 		break;
 
@@ -138,6 +187,10 @@ static void __init soc_detect(u32 dbgu_base)
 
 	case ARCH_ID_AT91SAM9RL64:
 		at91_soc_initdata.type = AT91_SOC_SAM9RL;
+<<<<<<< HEAD
+=======
+		at91_soc_initdata.subtype = AT91_SOC_SUBTYPE_NONE;
+>>>>>>> refs/remotes/origin/master
 		at91_boot_soc = at91sam9rl_soc;
 		break;
 
@@ -145,11 +198,28 @@ static void __init soc_detect(u32 dbgu_base)
 		at91_soc_initdata.type = AT91_SOC_SAM9X5;
 		at91_boot_soc = at91sam9x5_soc;
 		break;
+<<<<<<< HEAD
+=======
+
+	case ARCH_ID_AT91SAM9N12:
+		at91_soc_initdata.type = AT91_SOC_SAM9N12;
+		at91_boot_soc = at91sam9n12_soc;
+		break;
+
+	case ARCH_ID_SAMA5D3:
+		at91_soc_initdata.type = AT91_SOC_SAMA5D3;
+		at91_boot_soc = sama5d3_soc;
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* at91sam9g10 */
 	if ((socid & ~AT91_CIDR_EXT) == ARCH_ID_AT91SAM9G10) {
 		at91_soc_initdata.type = AT91_SOC_SAM9G10;
+<<<<<<< HEAD
+=======
+		at91_soc_initdata.subtype = AT91_SOC_SUBTYPE_NONE;
+>>>>>>> refs/remotes/origin/master
 		at91_boot_soc = at91sam9261_soc;
 	}
 	/* at91sam9xe */
@@ -200,6 +270,26 @@ static void __init soc_detect(u32 dbgu_base)
 			break;
 		}
 	}
+<<<<<<< HEAD
+=======
+
+	if (at91_soc_initdata.type == AT91_SOC_SAMA5D3) {
+		switch (at91_soc_initdata.exid) {
+		case ARCH_EXID_SAMA5D31:
+			at91_soc_initdata.subtype = AT91_SOC_SAMA5D31;
+			break;
+		case ARCH_EXID_SAMA5D33:
+			at91_soc_initdata.subtype = AT91_SOC_SAMA5D33;
+			break;
+		case ARCH_EXID_SAMA5D34:
+			at91_soc_initdata.subtype = AT91_SOC_SAMA5D34;
+			break;
+		case ARCH_EXID_SAMA5D35:
+			at91_soc_initdata.subtype = AT91_SOC_SAMA5D35;
+			break;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static const char *soc_name[] = {
@@ -212,7 +302,13 @@ static const char *soc_name[] = {
 	[AT91_SOC_SAM9G45]	= "at91sam9g45",
 	[AT91_SOC_SAM9RL]	= "at91sam9rl",
 	[AT91_SOC_SAM9X5]	= "at91sam9x5",
+<<<<<<< HEAD
 	[AT91_SOC_NONE]		= "Unknown"
+=======
+	[AT91_SOC_SAM9N12]	= "at91sam9n12",
+	[AT91_SOC_SAMA5D3]	= "sama5d3",
+	[AT91_SOC_UNKNOWN]	= "Unknown",
+>>>>>>> refs/remotes/origin/master
 };
 
 const char *at91_get_soc_type(struct at91_socinfo *c)
@@ -234,7 +330,16 @@ static const char *soc_subtype_name[] = {
 	[AT91_SOC_SAM9X35]	= "at91sam9x35",
 	[AT91_SOC_SAM9G25]	= "at91sam9g25",
 	[AT91_SOC_SAM9X25]	= "at91sam9x25",
+<<<<<<< HEAD
 	[AT91_SOC_SUBTYPE_NONE]	= "Unknown"
+=======
+	[AT91_SOC_SAMA5D31]	= "sama5d31",
+	[AT91_SOC_SAMA5D33]	= "sama5d33",
+	[AT91_SOC_SAMA5D34]	= "sama5d34",
+	[AT91_SOC_SAMA5D35]	= "sama5d35",
+	[AT91_SOC_SUBTYPE_NONE]	= "None",
+	[AT91_SOC_SUBTYPE_UNKNOWN] = "Unknown",
+>>>>>>> refs/remotes/origin/master
 };
 
 const char *at91_get_soc_subtype(struct at91_socinfo *c)
@@ -248,8 +353,13 @@ void __init at91_map_io(void)
 	/* Map peripherals */
 	iotable_init(&at91_io_desc, 1);
 
+<<<<<<< HEAD
 	at91_soc_initdata.type = AT91_SOC_NONE;
 	at91_soc_initdata.subtype = AT91_SOC_SUBTYPE_NONE;
+=======
+	at91_soc_initdata.type = AT91_SOC_UNKNOWN;
+	at91_soc_initdata.subtype = AT91_SOC_SUBTYPE_UNKNOWN;
+>>>>>>> refs/remotes/origin/master
 
 	soc_detect(AT91_BASE_DBGU0);
 	if (!at91_soc_is_detected())
@@ -260,8 +370,14 @@ void __init at91_map_io(void)
 
 	pr_info("AT91: Detected soc type: %s\n",
 		at91_get_soc_type(&at91_soc_initdata));
+<<<<<<< HEAD
 	pr_info("AT91: Detected soc subtype: %s\n",
 		at91_get_soc_subtype(&at91_soc_initdata));
+=======
+	if (at91_soc_initdata.subtype != AT91_SOC_SUBTYPE_NONE)
+		pr_info("AT91: Detected soc subtype: %s\n",
+			at91_get_soc_subtype(&at91_soc_initdata));
+>>>>>>> refs/remotes/origin/master
 
 	if (!at91_soc_is_enabled())
 		panic("AT91: Soc not enabled");
@@ -334,18 +450,32 @@ static void at91_dt_rstc(void)
 }
 
 static struct of_device_id ramc_ids[] = {
+<<<<<<< HEAD
 	{ .compatible = "atmel,at91sam9260-sdramc" },
 	{ .compatible = "atmel,at91sam9g45-ddramc" },
+=======
+	{ .compatible = "atmel,at91rm9200-sdramc", .data = at91rm9200_standby },
+	{ .compatible = "atmel,at91sam9260-sdramc", .data = at91sam9_sdram_standby },
+	{ .compatible = "atmel,at91sam9g45-ddramc", .data = at91_ddr_standby },
+>>>>>>> refs/remotes/origin/master
 	{ /*sentinel*/ }
 };
 
 static void at91_dt_ramc(void)
 {
 	struct device_node *np;
+<<<<<<< HEAD
 
 	np = of_find_matching_node(NULL, ramc_ids);
 	if (!np)
 		panic("unable to find compatible ram conroller node in dtb\n");
+=======
+	const struct of_device_id *of_id;
+
+	np = of_find_matching_node(NULL, ramc_ids);
+	if (!np)
+		panic("unable to find compatible ram controller node in dtb\n");
+>>>>>>> refs/remotes/origin/master
 
 	at91_ramc_base[0] = of_iomap(np, 0);
 	if (!at91_ramc_base[0])
@@ -353,6 +483,15 @@ static void at91_dt_ramc(void)
 	/* the controller may have 2 banks */
 	at91_ramc_base[1] = of_iomap(np, 1);
 
+<<<<<<< HEAD
+=======
+	of_id = of_match_node(ramc_ids, np);
+	if (!of_id)
+		pr_warn("AT91: ramc no standby function available\n");
+	else
+		at91_pm_set_standby(of_id->data);
+
+>>>>>>> refs/remotes/origin/master
 	of_node_put(np);
 }
 
@@ -395,7 +534,11 @@ static void at91_dt_shdwc(void)
 
 	np = of_find_matching_node(NULL, shdwc_ids);
 	if (!np) {
+<<<<<<< HEAD
 		pr_debug("AT91: unable to find compatible shutdown (shdwc) conroller node in dtb\n");
+=======
+		pr_debug("AT91: unable to find compatible shutdown (shdwc) controller node in dtb\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -411,7 +554,11 @@ static void at91_dt_shdwc(void)
 
 	if (!of_property_read_u32(np, "atmel,wakeup-counter", &reg)) {
 		if (reg > AT91_SHDW_CPTWK0_MAX) {
+<<<<<<< HEAD
 			pr_warn("AT91: shdwc wakeup conter 0x%x > 0x%x reduce it to 0x%x\n",
+=======
+			pr_warn("AT91: shdwc wakeup counter 0x%x > 0x%x reduce it to 0x%x\n",
+>>>>>>> refs/remotes/origin/master
 				reg, AT91_SHDW_CPTWK0_MAX, AT91_SHDW_CPTWK0_MAX);
 			reg = AT91_SHDW_CPTWK0_MAX;
 		}
@@ -432,6 +579,22 @@ end:
 	of_node_put(np);
 }
 
+<<<<<<< HEAD
+=======
+void __init at91rm9200_dt_initialize(void)
+{
+	at91_dt_ramc();
+
+	/* Init clock subsystem */
+	at91_dt_clock_init();
+
+	/* Register the processor-specific clocks */
+	at91_boot_soc.register_clocks();
+
+	at91_boot_soc.init();
+}
+
+>>>>>>> refs/remotes/origin/master
 void __init at91_dt_initialize(void)
 {
 	at91_dt_rstc();
@@ -444,7 +607,12 @@ void __init at91_dt_initialize(void)
 	/* Register the processor-specific clocks */
 	at91_boot_soc.register_clocks();
 
+<<<<<<< HEAD
 	at91_boot_soc.init();
+=======
+	if (at91_boot_soc.init)
+		at91_boot_soc.init();
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -459,4 +627,9 @@ void __init at91_initialize(unsigned long main_clock)
 	at91_boot_soc.register_clocks();
 
 	at91_boot_soc.init();
+<<<<<<< HEAD
+=======
+
+	pinctrl_provide_dummies();
+>>>>>>> refs/remotes/origin/master
 }

@@ -12,9 +12,13 @@
 #include <linux/interrupt.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioport.h>
 #include <linux/pci.h>
 #include <linux/proc_fs.h>
@@ -25,6 +29,7 @@
 #include <linux/slab.h>
 
 #include "pci.h"
+<<<<<<< HEAD
 #include "msi.h"
 
 static int pci_msi_enable = 1;
@@ -45,6 +50,54 @@ int arch_msi_check_device(struct pci_dev *dev, int nvec, int type)
 
 #ifdef HAVE_DEFAULT_MSI_SETUP_IRQS
 int default_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
+=======
+
+static int pci_msi_enable = 1;
+
+#define msix_table_size(flags)	((flags & PCI_MSIX_FLAGS_QSIZE) + 1)
+
+
+/* Arch hooks */
+
+int __weak arch_setup_msi_irq(struct pci_dev *dev, struct msi_desc *desc)
+{
+	struct msi_chip *chip = dev->bus->msi;
+	int err;
+
+	if (!chip || !chip->setup_irq)
+		return -EINVAL;
+
+	err = chip->setup_irq(chip, dev, desc);
+	if (err < 0)
+		return err;
+
+	irq_set_chip_data(desc->irq, chip);
+
+	return 0;
+}
+
+void __weak arch_teardown_msi_irq(unsigned int irq)
+{
+	struct msi_chip *chip = irq_get_chip_data(irq);
+
+	if (!chip || !chip->teardown_irq)
+		return;
+
+	chip->teardown_irq(chip, irq);
+}
+
+int __weak arch_msi_check_device(struct pci_dev *dev, int nvec, int type)
+{
+	struct msi_chip *chip = dev->bus->msi;
+
+	if (!chip || !chip->check_device)
+		return 0;
+
+	return chip->check_device(chip, dev, nvec, type);
+}
+
+int __weak arch_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct msi_desc *entry;
 	int ret;
@@ -66,6 +119,7 @@ int default_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 
 	return 0;
 }
+<<<<<<< HEAD
 #endif
 
 #ifndef arch_teardown_msi_irqs
@@ -74,6 +128,13 @@ int default_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 #endif
 
 #ifdef HAVE_DEFAULT_MSI_TEARDOWN_IRQS
+=======
+
+/*
+ * We have a default implementation available as a separate non-weak
+ * function, as it is used by the Xen x86 PCI code
+ */
+>>>>>>> refs/remotes/origin/master
 void default_teardown_msi_irqs(struct pci_dev *dev)
 {
 	struct msi_desc *entry;
@@ -82,11 +143,19 @@ void default_teardown_msi_irqs(struct pci_dev *dev)
 		int i, nvec;
 		if (entry->irq == 0)
 			continue;
+<<<<<<< HEAD
 		nvec = 1 << entry->msi_attrib.multiple;
+=======
+		if (entry->nvec_used)
+			nvec = entry->nvec_used;
+		else
+			nvec = 1 << entry->msi_attrib.multiple;
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; i < nvec; i++)
 			arch_teardown_msi_irq(entry->irq + i);
 	}
 }
+<<<<<<< HEAD
 #endif
 
 <<<<<<< HEAD
@@ -97,6 +166,14 @@ void default_teardown_msi_irqs(struct pci_dev *dev)
 #endif
 
 #ifdef HAVE_DEFAULT_MSI_RESTORE_IRQS
+=======
+
+void __weak arch_teardown_msi_irqs(struct pci_dev *dev)
+{
+	return default_teardown_msi_irqs(dev);
+}
+
+>>>>>>> refs/remotes/origin/master
 void default_restore_msi_irqs(struct pci_dev *dev, int irq)
 {
 	struct msi_desc *entry;
@@ -114,6 +191,7 @@ void default_restore_msi_irqs(struct pci_dev *dev, int irq)
 	if (entry)
 		write_msi_msg(irq, &entry->msg);
 }
+<<<<<<< HEAD
 #endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -128,10 +206,28 @@ static void msi_set_enable(struct pci_dev *dev, int pos, int enable)
 	if (enable)
 		control |= PCI_MSI_FLAGS_ENABLE;
 	pci_write_config_word(dev, pos + PCI_MSI_FLAGS, control);
+=======
+
+void __weak arch_restore_msi_irqs(struct pci_dev *dev, int irq)
+{
+	return default_restore_msi_irqs(dev, irq);
+}
+
+static void msi_set_enable(struct pci_dev *dev, int enable)
+{
+	u16 control;
+
+	pci_read_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS, &control);
+	control &= ~PCI_MSI_FLAGS_ENABLE;
+	if (enable)
+		control |= PCI_MSI_FLAGS_ENABLE;
+	pci_write_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS, control);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void msix_set_enable(struct pci_dev *dev, int enable)
 {
+<<<<<<< HEAD
 	int pos;
 	u16 control;
 
@@ -143,6 +239,15 @@ static void msix_set_enable(struct pci_dev *dev, int enable)
 			control |= PCI_MSIX_FLAGS_ENABLE;
 		pci_write_config_word(dev, pos + PCI_MSIX_FLAGS, control);
 	}
+=======
+	u16 control;
+
+	pci_read_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, &control);
+	control &= ~PCI_MSIX_FLAGS_ENABLE;
+	if (enable)
+		control |= PCI_MSIX_FLAGS_ENABLE;
+	pci_write_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, control);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline __attribute_const__ u32 msi_mask(unsigned x)
@@ -169,7 +274,11 @@ static inline __attribute_const__ u32 msi_enabled_mask(u16 control)
  * reliably as devices without an INTx disable bit will then generate a
  * level IRQ which will never be cleared.
  */
+<<<<<<< HEAD
 static u32 __msi_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
+=======
+u32 default_msi_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 mask_bits = desc->masked;
 
@@ -183,9 +292,20 @@ static u32 __msi_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
 	return mask_bits;
 }
 
+<<<<<<< HEAD
 static void msi_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
 {
 	desc->masked = __msi_mask_irq(desc, mask, flag);
+=======
+__weak u32 arch_msi_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
+{
+	return default_msi_mask_irq(desc, mask, flag);
+}
+
+static void msi_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
+{
+	desc->masked = arch_msi_mask_irq(desc, mask, flag);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -195,7 +315,11 @@ static void msi_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
  * file.  This saves a few milliseconds when initialising devices with lots
  * of MSI-X interrupts.
  */
+<<<<<<< HEAD
 static u32 __msix_mask_irq(struct msi_desc *desc, u32 flag)
+=======
+u32 default_msix_mask_irq(struct msi_desc *desc, u32 flag)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 mask_bits = desc->masked;
 	unsigned offset = desc->msi_attrib.entry_nr * PCI_MSIX_ENTRY_SIZE +
@@ -208,9 +332,20 @@ static u32 __msix_mask_irq(struct msi_desc *desc, u32 flag)
 	return mask_bits;
 }
 
+<<<<<<< HEAD
 static void msix_mask_irq(struct msi_desc *desc, u32 flag)
 {
 	desc->masked = __msix_mask_irq(desc, flag);
+=======
+__weak u32 arch_msix_mask_irq(struct msi_desc *desc, u32 flag)
+{
+	return default_msix_mask_irq(desc, flag);
+}
+
+static void msix_mask_irq(struct msi_desc *desc, u32 flag)
+{
+	desc->masked = arch_msix_mask_irq(desc, flag);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void msi_set_mask_bit(struct irq_data *data, u32 flag)
@@ -249,6 +384,7 @@ void __read_msi_msg(struct msi_desc *entry, struct msi_msg *msg)
 		msg->data = readl(base + PCI_MSIX_ENTRY_DATA);
 	} else {
 		struct pci_dev *dev = entry->dev;
+<<<<<<< HEAD
 		int pos = entry->msi_attrib.pos;
 		u16 data;
 
@@ -261,6 +397,20 @@ void __read_msi_msg(struct msi_desc *entry, struct msi_msg *msg)
 		} else {
 			msg->address_hi = 0;
 			pci_read_config_word(dev, msi_data_reg(pos, 0), &data);
+=======
+		int pos = dev->msi_cap;
+		u16 data;
+
+		pci_read_config_dword(dev, pos + PCI_MSI_ADDRESS_LO,
+				      &msg->address_lo);
+		if (entry->msi_attrib.is_64) {
+			pci_read_config_dword(dev, pos + PCI_MSI_ADDRESS_HI,
+					      &msg->address_hi);
+			pci_read_config_word(dev, pos + PCI_MSI_DATA_64, &data);
+		} else {
+			msg->address_hi = 0;
+			pci_read_config_word(dev, pos + PCI_MSI_DATA_32, &data);
+>>>>>>> refs/remotes/origin/master
 		}
 		msg->data = data;
 	}
@@ -304,6 +454,7 @@ void __write_msi_msg(struct msi_desc *entry, struct msi_msg *msg)
 		writel(msg->data, base + PCI_MSIX_ENTRY_DATA);
 	} else {
 		struct pci_dev *dev = entry->dev;
+<<<<<<< HEAD
 		int pos = entry->msi_attrib.pos;
 		u16 msgctl;
 
@@ -322,6 +473,26 @@ void __write_msi_msg(struct msi_desc *entry, struct msi_msg *msg)
 		} else {
 			pci_write_config_word(dev, msi_data_reg(pos, 0),
 						msg->data);
+=======
+		int pos = dev->msi_cap;
+		u16 msgctl;
+
+		pci_read_config_word(dev, pos + PCI_MSI_FLAGS, &msgctl);
+		msgctl &= ~PCI_MSI_FLAGS_QSIZE;
+		msgctl |= entry->msi_attrib.multiple << 4;
+		pci_write_config_word(dev, pos + PCI_MSI_FLAGS, msgctl);
+
+		pci_write_config_dword(dev, pos + PCI_MSI_ADDRESS_LO,
+				       msg->address_lo);
+		if (entry->msi_attrib.is_64) {
+			pci_write_config_dword(dev, pos + PCI_MSI_ADDRESS_HI,
+					       msg->address_hi);
+			pci_write_config_word(dev, pos + PCI_MSI_DATA_64,
+					      msg->data);
+		} else {
+			pci_write_config_word(dev, pos + PCI_MSI_DATA_32,
+					      msg->data);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	entry->msg = *msg;
@@ -342,7 +513,14 @@ static void free_msi_irqs(struct pci_dev *dev)
 		int i, nvec;
 		if (!entry->irq)
 			continue;
+<<<<<<< HEAD
 		nvec = 1 << entry->msi_attrib.multiple;
+=======
+		if (entry->nvec_used)
+			nvec = entry->nvec_used;
+		else
+			nvec = 1 << entry->msi_attrib.multiple;
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; i < nvec; i++)
 			BUG_ON(irq_has_action(entry->irq + i));
 	}
@@ -355,7 +533,10 @@ static void free_msi_irqs(struct pci_dev *dev)
 				iounmap(entry->mask_base);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Its possible that we get into this path
@@ -368,7 +549,10 @@ static void free_msi_irqs(struct pci_dev *dev)
 			kobject_put(&entry->kobj);
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		list_del(&entry->list);
 		kfree(entry);
 	}
@@ -394,7 +578,10 @@ static void pci_intx_for_msi(struct pci_dev *dev, int enable)
 
 static void __pci_restore_msi_state(struct pci_dev *dev)
 {
+<<<<<<< HEAD
 	int pos;
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 control;
 	struct msi_desc *entry;
 
@@ -402,6 +589,7 @@ static void __pci_restore_msi_state(struct pci_dev *dev)
 		return;
 
 	entry = irq_get_msi_desc(dev->irq);
+<<<<<<< HEAD
 	pos = entry->msi_attrib.pos;
 
 	pci_intx_for_msi(dev, 0);
@@ -417,11 +605,26 @@ static void __pci_restore_msi_state(struct pci_dev *dev)
 	control &= ~PCI_MSI_FLAGS_QSIZE;
 	control |= (entry->msi_attrib.multiple << 4) | PCI_MSI_FLAGS_ENABLE;
 	pci_write_config_word(dev, pos + PCI_MSI_FLAGS, control);
+=======
+
+	pci_intx_for_msi(dev, 0);
+	msi_set_enable(dev, 0);
+	arch_restore_msi_irqs(dev, dev->irq);
+
+	pci_read_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS, &control);
+	msi_mask_irq(entry, msi_capable_mask(control), entry->masked);
+	control &= ~PCI_MSI_FLAGS_QSIZE;
+	control |= (entry->msi_attrib.multiple << 4) | PCI_MSI_FLAGS_ENABLE;
+	pci_write_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS, control);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __pci_restore_msix_state(struct pci_dev *dev)
 {
+<<<<<<< HEAD
 	int pos;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct msi_desc *entry;
 	u16 control;
 
@@ -429,12 +632,17 @@ static void __pci_restore_msix_state(struct pci_dev *dev)
 		return;
 	BUG_ON(list_empty(&dev->msi_list));
 	entry = list_first_entry(&dev->msi_list, struct msi_desc, list);
+<<<<<<< HEAD
 	pos = entry->msi_attrib.pos;
 	pci_read_config_word(dev, pos + PCI_MSIX_FLAGS, &control);
+=======
+	pci_read_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, &control);
+>>>>>>> refs/remotes/origin/master
 
 	/* route the table */
 	pci_intx_for_msi(dev, 0);
 	control |= PCI_MSIX_FLAGS_ENABLE | PCI_MSIX_FLAGS_MASKALL;
+<<<<<<< HEAD
 	pci_write_config_word(dev, pos + PCI_MSIX_FLAGS, control);
 
 	list_for_each_entry(entry, &dev->msi_list, list) {
@@ -443,11 +651,21 @@ static void __pci_restore_msix_state(struct pci_dev *dev)
 =======
 		arch_restore_msi_irqs(dev, entry->irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_write_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, control);
+
+	list_for_each_entry(entry, &dev->msi_list, list) {
+		arch_restore_msi_irqs(dev, entry->irq);
+>>>>>>> refs/remotes/origin/master
 		msix_mask_irq(entry, entry->masked);
 	}
 
 	control &= ~PCI_MSIX_FLAGS_MASKALL;
+<<<<<<< HEAD
 	pci_write_config_word(dev, pos + PCI_MSIX_FLAGS, control);
+=======
+	pci_write_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, control);
+>>>>>>> refs/remotes/origin/master
 }
 
 void pci_restore_msi_state(struct pci_dev *dev)
@@ -458,7 +676,10 @@ void pci_restore_msi_state(struct pci_dev *dev)
 EXPORT_SYMBOL_GPL(pci_restore_msi_state);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define to_msi_attr(obj) container_of(obj, struct msi_attribute, attr)
 #define to_msi_desc(obj) container_of(obj, struct msi_desc, kobj)
@@ -497,12 +718,20 @@ static struct msi_attribute mode_attribute =
 	__ATTR(mode, S_IRUGO, show_msi_mode, NULL);
 
 
+<<<<<<< HEAD
 struct attribute *msi_irq_default_attrs[] = {
+=======
+static struct attribute *msi_irq_default_attrs[] = {
+>>>>>>> refs/remotes/origin/master
 	&mode_attribute.attr,
 	NULL
 };
 
+<<<<<<< HEAD
 void msi_kobj_release(struct kobject *kobj)
+=======
+static void msi_kobj_release(struct kobject *kobj)
+>>>>>>> refs/remotes/origin/master
 {
 	struct msi_desc *entry = to_msi_desc(kobj);
 
@@ -551,7 +780,10 @@ out_unroll:
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * msi_capability_init - configure device's MSI capability structure
  * @dev: pointer to the pci_dev data structure of MSI device function
@@ -566,6 +798,7 @@ out_unroll:
 static int msi_capability_init(struct pci_dev *dev, int nvec)
 {
 	struct msi_desc *entry;
+<<<<<<< HEAD
 	int pos, ret;
 	u16 control;
 	unsigned mask;
@@ -574,12 +807,22 @@ static int msi_capability_init(struct pci_dev *dev, int nvec)
 	msi_set_enable(dev, pos, 0);	/* Disable MSI during set up */
 
 	pci_read_config_word(dev, msi_control_reg(pos), &control);
+=======
+	int ret;
+	u16 control;
+	unsigned mask;
+
+	msi_set_enable(dev, 0);	/* Disable MSI during set up */
+
+	pci_read_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS, &control);
+>>>>>>> refs/remotes/origin/master
 	/* MSI Entry Initialization */
 	entry = alloc_msi_entry(dev);
 	if (!entry)
 		return -ENOMEM;
 
 	entry->msi_attrib.is_msix	= 0;
+<<<<<<< HEAD
 	entry->msi_attrib.is_64		= is_64bit_address(control);
 	entry->msi_attrib.entry_nr	= 0;
 	entry->msi_attrib.maskbit	= is_mask_bit_support(control);
@@ -587,6 +830,18 @@ static int msi_capability_init(struct pci_dev *dev, int nvec)
 	entry->msi_attrib.pos		= pos;
 
 	entry->mask_pos = msi_mask_reg(pos, entry->msi_attrib.is_64);
+=======
+	entry->msi_attrib.is_64		= !!(control & PCI_MSI_FLAGS_64BIT);
+	entry->msi_attrib.entry_nr	= 0;
+	entry->msi_attrib.maskbit	= !!(control & PCI_MSI_FLAGS_MASKBIT);
+	entry->msi_attrib.default_irq	= dev->irq;	/* Save IOAPIC IRQ */
+	entry->msi_attrib.pos		= dev->msi_cap;
+
+	if (control & PCI_MSI_FLAGS_64BIT)
+		entry->mask_pos = dev->msi_cap + PCI_MSI_MASK_64;
+	else
+		entry->mask_pos = dev->msi_cap + PCI_MSI_MASK_32;
+>>>>>>> refs/remotes/origin/master
 	/* All MSIs are unmasked by default, Mask them all */
 	if (entry->msi_attrib.maskbit)
 		pci_read_config_dword(dev, entry->mask_pos, &entry->masked);
@@ -604,7 +859,10 @@ static int msi_capability_init(struct pci_dev *dev, int nvec)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = populate_msi_sysfs(dev);
 	if (ret) {
 		msi_mask_irq(entry, mask, ~mask);
@@ -612,34 +870,56 @@ static int msi_capability_init(struct pci_dev *dev, int nvec)
 		return ret;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* Set MSI enabled bits	 */
 	pci_intx_for_msi(dev, 0);
 	msi_set_enable(dev, pos, 1);
+=======
+	/* Set MSI enabled bits	 */
+	pci_intx_for_msi(dev, 0);
+	msi_set_enable(dev, 1);
+>>>>>>> refs/remotes/origin/master
 	dev->msi_enabled = 1;
 
 	dev->irq = entry->irq;
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __iomem *msix_map_region(struct pci_dev *dev, unsigned pos,
 							unsigned nr_entries)
+=======
+static void __iomem *msix_map_region(struct pci_dev *dev, unsigned nr_entries)
+>>>>>>> refs/remotes/origin/master
 {
 	resource_size_t phys_addr;
 	u32 table_offset;
 	u8 bir;
 
+<<<<<<< HEAD
 	pci_read_config_dword(dev, msix_table_offset_reg(pos), &table_offset);
 	bir = (u8)(table_offset & PCI_MSIX_FLAGS_BIRMASK);
 	table_offset &= ~PCI_MSIX_FLAGS_BIRMASK;
+=======
+	pci_read_config_dword(dev, dev->msix_cap + PCI_MSIX_TABLE,
+			      &table_offset);
+	bir = (u8)(table_offset & PCI_MSIX_TABLE_BIR);
+	table_offset &= PCI_MSIX_TABLE_OFFSET;
+>>>>>>> refs/remotes/origin/master
 	phys_addr = pci_resource_start(dev, bir) + table_offset;
 
 	return ioremap_nocache(phys_addr, nr_entries * PCI_MSIX_ENTRY_SIZE);
 }
 
+<<<<<<< HEAD
 static int msix_setup_entries(struct pci_dev *dev, unsigned pos,
 				void __iomem *base, struct msix_entry *entries,
 				int nvec)
+=======
+static int msix_setup_entries(struct pci_dev *dev, void __iomem *base,
+			      struct msix_entry *entries, int nvec)
+>>>>>>> refs/remotes/origin/master
 {
 	struct msi_desc *entry;
 	int i;
@@ -659,7 +939,11 @@ static int msix_setup_entries(struct pci_dev *dev, unsigned pos,
 		entry->msi_attrib.is_64		= 1;
 		entry->msi_attrib.entry_nr	= entries[i].entry;
 		entry->msi_attrib.default_irq	= dev->irq;
+<<<<<<< HEAD
 		entry->msi_attrib.pos		= pos;
+=======
+		entry->msi_attrib.pos		= dev->msix_cap;
+>>>>>>> refs/remotes/origin/master
 		entry->mask_base		= base;
 
 		list_add_tail(&entry->list, &dev->msi_list);
@@ -669,7 +953,11 @@ static int msix_setup_entries(struct pci_dev *dev, unsigned pos,
 }
 
 static void msix_program_entries(struct pci_dev *dev,
+<<<<<<< HEAD
 					struct msix_entry *entries)
+=======
+				 struct msix_entry *entries)
+>>>>>>> refs/remotes/origin/master
 {
 	struct msi_desc *entry;
 	int i = 0;
@@ -699,6 +987,7 @@ static void msix_program_entries(struct pci_dev *dev,
 static int msix_capability_init(struct pci_dev *dev,
 				struct msix_entry *entries, int nvec)
 {
+<<<<<<< HEAD
 	int pos, ret;
 	u16 control;
 	void __iomem *base;
@@ -716,6 +1005,24 @@ static int msix_capability_init(struct pci_dev *dev,
 		return -ENOMEM;
 
 	ret = msix_setup_entries(dev, pos, base, entries, nvec);
+=======
+	int ret;
+	u16 control;
+	void __iomem *base;
+
+	pci_read_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, &control);
+
+	/* Ensure MSI-X is disabled while it is set up */
+	control &= ~PCI_MSIX_FLAGS_ENABLE;
+	pci_write_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, control);
+
+	/* Request & Map MSI-X table region */
+	base = msix_map_region(dev, msix_table_size(control));
+	if (!base)
+		return -ENOMEM;
+
+	ret = msix_setup_entries(dev, base, entries, nvec);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -729,25 +1036,39 @@ static int msix_capability_init(struct pci_dev *dev,
 	 * interrupts coming in before they're fully set up.
 	 */
 	control |= PCI_MSIX_FLAGS_MASKALL | PCI_MSIX_FLAGS_ENABLE;
+<<<<<<< HEAD
 	pci_write_config_word(dev, pos + PCI_MSIX_FLAGS, control);
 
 	msix_program_entries(dev, entries);
 
 <<<<<<< HEAD
 =======
+=======
+	pci_write_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, control);
+
+	msix_program_entries(dev, entries);
+
+>>>>>>> refs/remotes/origin/master
 	ret = populate_msi_sysfs(dev);
 	if (ret) {
 		ret = 0;
 		goto error;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Set MSI-X enabled bits and unmask the function */
 	pci_intx_for_msi(dev, 0);
 	dev->msix_enabled = 1;
 
 	control &= ~PCI_MSIX_FLAGS_MASKALL;
+<<<<<<< HEAD
 	pci_write_config_word(dev, pos + PCI_MSIX_FLAGS, control);
+=======
+	pci_write_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, control);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -779,7 +1100,11 @@ error:
  * @nvec: how many MSIs have been requested ?
  * @type: are we checking for MSI or MSI-X ?
  *
+<<<<<<< HEAD
  * Look at global flags, the device itself, and its parent busses
+=======
+ * Look at global flags, the device itself, and its parent buses
+>>>>>>> refs/remotes/origin/master
  * to determine if MSI/-X are supported for the device. If MSI/-X is
  * supported return 0, else return an error code.
  **/
@@ -815,9 +1140,12 @@ static int pci_msi_check_device(struct pci_dev *dev, int nvec, int type)
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	if (!pci_find_capability(dev, type))
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -836,6 +1164,7 @@ static int pci_msi_check_device(struct pci_dev *dev, int nvec, int type)
  */
 int pci_enable_msi_block(struct pci_dev *dev, unsigned int nvec)
 {
+<<<<<<< HEAD
 	int status, pos, maxvec;
 	u16 msgctl;
 
@@ -843,6 +1172,15 @@ int pci_enable_msi_block(struct pci_dev *dev, unsigned int nvec)
 	if (!pos)
 		return -EINVAL;
 	pci_read_config_word(dev, pos + PCI_MSI_FLAGS, &msgctl);
+=======
+	int status, maxvec;
+	u16 msgctl;
+
+	if (!dev->msi_cap || dev->current_state != PCI_D0)
+		return -EINVAL;
+
+	pci_read_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS, &msgctl);
+>>>>>>> refs/remotes/origin/master
 	maxvec = 1 << ((msgctl & PCI_MSI_FLAGS_QMASK) >> 1);
 	if (nvec > maxvec)
 		return maxvec;
@@ -865,29 +1203,72 @@ int pci_enable_msi_block(struct pci_dev *dev, unsigned int nvec)
 }
 EXPORT_SYMBOL(pci_enable_msi_block);
 
+<<<<<<< HEAD
+=======
+int pci_enable_msi_block_auto(struct pci_dev *dev, unsigned int *maxvec)
+{
+	int ret, nvec;
+	u16 msgctl;
+
+	if (!dev->msi_cap || dev->current_state != PCI_D0)
+		return -EINVAL;
+
+	pci_read_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS, &msgctl);
+	ret = 1 << ((msgctl & PCI_MSI_FLAGS_QMASK) >> 1);
+
+	if (maxvec)
+		*maxvec = ret;
+
+	do {
+		nvec = ret;
+		ret = pci_enable_msi_block(dev, nvec);
+	} while (ret > 0);
+
+	if (ret < 0)
+		return ret;
+	return nvec;
+}
+EXPORT_SYMBOL(pci_enable_msi_block_auto);
+
+>>>>>>> refs/remotes/origin/master
 void pci_msi_shutdown(struct pci_dev *dev)
 {
 	struct msi_desc *desc;
 	u32 mask;
 	u16 ctrl;
+<<<<<<< HEAD
 	unsigned pos;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!pci_msi_enable || !dev || !dev->msi_enabled)
 		return;
 
 	BUG_ON(list_empty(&dev->msi_list));
 	desc = list_first_entry(&dev->msi_list, struct msi_desc, list);
+<<<<<<< HEAD
 	pos = desc->msi_attrib.pos;
 
 	msi_set_enable(dev, pos, 0);
+=======
+
+	msi_set_enable(dev, 0);
+>>>>>>> refs/remotes/origin/master
 	pci_intx_for_msi(dev, 1);
 	dev->msi_enabled = 0;
 
 	/* Return the device with MSI unmasked as initial states */
+<<<<<<< HEAD
 	pci_read_config_word(dev, pos + PCI_MSI_FLAGS, &ctrl);
 	mask = msi_capable_mask(ctrl);
 	/* Keep cached state to be restored */
 	__msi_mask_irq(desc, mask, ~mask);
+=======
+	pci_read_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS, &ctrl);
+	mask = msi_capable_mask(ctrl);
+	/* Keep cached state to be restored */
+	arch_msi_mask_irq(desc, mask, ~mask);
+>>>>>>> refs/remotes/origin/master
 
 	/* Restore dev->irq to its default pin-assertion irq */
 	dev->irq = desc->msi_attrib.default_irq;
@@ -901,10 +1282,15 @@ void pci_disable_msi(struct pci_dev *dev)
 	pci_msi_shutdown(dev);
 	free_msi_irqs(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kset_unregister(dev->msi_kset);
 	dev->msi_kset = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kset_unregister(dev->msi_kset);
+	dev->msi_kset = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(pci_disable_msi);
 
@@ -914,6 +1300,7 @@ EXPORT_SYMBOL(pci_disable_msi);
  */
 int pci_msix_table_size(struct pci_dev *dev)
 {
+<<<<<<< HEAD
 	int pos;
 	u16 control;
 
@@ -923,6 +1310,15 @@ int pci_msix_table_size(struct pci_dev *dev)
 
 	pci_read_config_word(dev, msi_control_reg(pos), &control);
 	return multi_msix_capable(control);
+=======
+	u16 control;
+
+	if (!dev->msix_cap)
+		return 0;
+
+	pci_read_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, &control);
+	return msix_table_size(control);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -945,7 +1341,11 @@ int pci_enable_msix(struct pci_dev *dev, struct msix_entry *entries, int nvec)
 	int status, nr_entries;
 	int i, j;
 
+<<<<<<< HEAD
 	if (!entries)
+=======
+	if (!entries || !dev->msix_cap || dev->current_state != PCI_D0)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	status = pci_msi_check_device(dev, nvec, PCI_CAP_ID_MSIX);
@@ -988,7 +1388,11 @@ void pci_msix_shutdown(struct pci_dev *dev)
 	/* Return the device with MSI-X masked as initial states */
 	list_for_each_entry(entry, &dev->msi_list, list) {
 		/* Keep cached states to be restored */
+<<<<<<< HEAD
 		__msix_mask_irq(entry, 1);
+=======
+		arch_msix_mask_irq(entry, 1);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	msix_set_enable(dev, 0);
@@ -1004,10 +1408,15 @@ void pci_disable_msix(struct pci_dev *dev)
 	pci_msix_shutdown(dev);
 	free_msi_irqs(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kset_unregister(dev->msi_kset);
 	dev->msi_kset = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kset_unregister(dev->msi_kset);
+	dev->msi_kset = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(pci_disable_msix);
 
@@ -1048,15 +1457,28 @@ EXPORT_SYMBOL(pci_msi_enabled);
 
 void pci_msi_init_pci_dev(struct pci_dev *dev)
 {
+<<<<<<< HEAD
 	int pos;
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&dev->msi_list);
 
 	/* Disable the msi hardware to avoid screaming interrupts
 	 * during boot.  This is the power on reset default so
 	 * usually this should be a noop.
 	 */
+<<<<<<< HEAD
 	pos = pci_find_capability(dev, PCI_CAP_ID_MSI);
 	if (pos)
 		msi_set_enable(dev, pos, 0);
 	msix_set_enable(dev, 0);
+=======
+	dev->msi_cap = pci_find_capability(dev, PCI_CAP_ID_MSI);
+	if (dev->msi_cap)
+		msi_set_enable(dev, 0);
+
+	dev->msix_cap = pci_find_capability(dev, PCI_CAP_ID_MSIX);
+	if (dev->msix_cap)
+		msix_set_enable(dev, 0);
+>>>>>>> refs/remotes/origin/master
 }

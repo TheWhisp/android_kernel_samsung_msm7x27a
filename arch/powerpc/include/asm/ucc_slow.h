@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (C) 2006 Freescale Semicondutor, Inc. All rights reserved.
+=======
+ * Copyright (C) 2006 Freescale Semiconductor, Inc. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * Authors: 	Shlomi Gridish <gridish@freescale.com>
  * 		Li Yang <leoli@freescale.com>
@@ -20,7 +24,11 @@
 #include <asm/immap_qe.h>
 #include <asm/qe.h>
 
+<<<<<<< HEAD
 #include "ucc.h"
+=======
+#include <asm/ucc.h>
+>>>>>>> refs/remotes/origin/master
 
 /* transmit BD's status */
 #define T_R	0x80000000	/* ready bit */

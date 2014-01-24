@@ -26,13 +26,19 @@
 #include <linux/io.h>
 
 #include <asm/mach/map.h>
+<<<<<<< HEAD
 
 #include <mach/i2c.h>
+=======
+#include <asm/system_info.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <mach/hardware.h>
 #include <mach/platform.h>
 #include "common.h"
 
 /*
+<<<<<<< HEAD
  * Watchdog timer
  */
 static struct resource watchdog_resources[] = {
@@ -210,6 +216,8 @@ struct platform_device lpc32xx_net_device = {
 
 >>>>>>> refs/remotes/origin/cm-10.0
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Returns the unique ID for the device
  */
 void lpc32xx_get_uid(u32 devid[4])
@@ -237,10 +245,14 @@ int clk_is_sysclk_mainosc(void)
  * System reset via the watchdog timer
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void lpc32xx_watchdog_reset(void)
 =======
 static void lpc32xx_watchdog_reset(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void lpc32xx_watchdog_reset(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Make sure WDT clocks are enabled */
 	__raw_writel(LPC32XX_CLKPWR_PWMCLK_WDOG_EN,
@@ -358,25 +370,41 @@ u32 clk_get_pclk_div(void)
 
 static struct map_desc lpc32xx_io_desc[] __initdata = {
 	{
+<<<<<<< HEAD
 		.virtual	= IO_ADDRESS(LPC32XX_AHB0_START),
+=======
+		.virtual	= (unsigned long)IO_ADDRESS(LPC32XX_AHB0_START),
+>>>>>>> refs/remotes/origin/master
 		.pfn		= __phys_to_pfn(LPC32XX_AHB0_START),
 		.length		= LPC32XX_AHB0_SIZE,
 		.type		= MT_DEVICE
 	},
 	{
+<<<<<<< HEAD
 		.virtual	= IO_ADDRESS(LPC32XX_AHB1_START),
+=======
+		.virtual	= (unsigned long)IO_ADDRESS(LPC32XX_AHB1_START),
+>>>>>>> refs/remotes/origin/master
 		.pfn		= __phys_to_pfn(LPC32XX_AHB1_START),
 		.length		= LPC32XX_AHB1_SIZE,
 		.type		= MT_DEVICE
 	},
 	{
+<<<<<<< HEAD
 		.virtual	= IO_ADDRESS(LPC32XX_FABAPB_START),
+=======
+		.virtual	= (unsigned long)IO_ADDRESS(LPC32XX_FABAPB_START),
+>>>>>>> refs/remotes/origin/master
 		.pfn		= __phys_to_pfn(LPC32XX_FABAPB_START),
 		.length		= LPC32XX_FABAPB_SIZE,
 		.type		= MT_DEVICE
 	},
 	{
+<<<<<<< HEAD
 		.virtual	= IO_ADDRESS(LPC32XX_IRAM_BASE),
+=======
+		.virtual	= (unsigned long)IO_ADDRESS(LPC32XX_IRAM_BASE),
+>>>>>>> refs/remotes/origin/master
 		.pfn		= __phys_to_pfn(LPC32XX_IRAM_BASE),
 		.length		= (LPC32XX_IRAM_BANK_SIZE * 2),
 		.type		= MT_DEVICE
@@ -388,6 +416,7 @@ void __init lpc32xx_map_io(void)
 	iotable_init(lpc32xx_io_desc, ARRAY_SIZE(lpc32xx_io_desc));
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 void lpc23xx_restart(char mode, const char *cmd)
@@ -395,6 +424,14 @@ void lpc23xx_restart(char mode, const char *cmd)
 	switch (mode) {
 	case 's':
 	case 'h':
+=======
+
+void lpc23xx_restart(enum reboot_mode mode, const char *cmd)
+{
+	switch (mode) {
+	case REBOOT_SOFT:
+	case REBOOT_HARD:
+>>>>>>> refs/remotes/origin/master
 		lpc32xx_watchdog_reset();
 		break;
 
@@ -407,4 +444,25 @@ void lpc23xx_restart(char mode, const char *cmd)
 	while (1)
 		;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static int __init lpc32xx_check_uid(void)
+{
+	u32 uid[4];
+
+	lpc32xx_get_uid(uid);
+
+	printk(KERN_INFO "LPC32XX unique ID: %08x%08x%08x%08x\n",
+		uid[3], uid[2], uid[1], uid[0]);
+
+	if (!system_serial_low && !system_serial_high) {
+		system_serial_low = uid[0];
+		system_serial_high = uid[1];
+	}
+
+	return 1;
+}
+arch_initcall(lpc32xx_check_uid);
+>>>>>>> refs/remotes/origin/master

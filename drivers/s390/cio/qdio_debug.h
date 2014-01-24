@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/cio/qdio_debug.h
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *  Copyright IBM Corp. 2008
  *
  *  Author: Jan Glauber (jang@linux.vnet.ibm.com)
@@ -18,12 +21,15 @@
 extern debug_info_t *qdio_dbf_setup;
 extern debug_info_t *qdio_dbf_error;
 
+<<<<<<< HEAD
 /* sort out low debug levels early to avoid wasted sprints */
 static inline int qdio_dbf_passes(debug_info_t *dbf_grp, int level)
 {
 	return (level <= dbf_grp->level);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define DBF_ERR		3	/* error conditions	*/
 #define DBF_WARN	4	/* warning conditions	*/
 #define DBF_INFO	6	/* informational	*/
@@ -39,10 +45,21 @@ static inline int qdio_dbf_passes(debug_info_t *dbf_grp, int level)
 		debug_text_event(qdio_dbf_setup, DBF_ERR, debug_buffer); \
 	} while (0)
 
+<<<<<<< HEAD
 #define DBF_HEX(addr, len) \
 	do { \
 		debug_event(qdio_dbf_setup, DBF_ERR, (void*)(addr), len); \
 	} while (0)
+=======
+static inline void DBF_HEX(void *addr, int len)
+{
+	while (len > 0) {
+		debug_event(qdio_dbf_setup, DBF_ERR, addr, len);
+		len -= qdio_dbf_setup->buf_size;
+		addr += qdio_dbf_setup->buf_size;
+	}
+}
+>>>>>>> refs/remotes/origin/master
 
 #define DBF_ERROR(text...) \
 	do { \
@@ -51,32 +68,63 @@ static inline int qdio_dbf_passes(debug_info_t *dbf_grp, int level)
 		debug_text_event(qdio_dbf_error, DBF_ERR, debug_buffer); \
 	} while (0)
 
+<<<<<<< HEAD
 #define DBF_ERROR_HEX(addr, len) \
 	do { \
 		debug_event(qdio_dbf_error, DBF_ERR, (void*)(addr), len); \
 	} while (0)
 
+=======
+static inline void DBF_ERROR_HEX(void *addr, int len)
+{
+	while (len > 0) {
+		debug_event(qdio_dbf_error, DBF_ERR, addr, len);
+		len -= qdio_dbf_error->buf_size;
+		addr += qdio_dbf_error->buf_size;
+	}
+}
+>>>>>>> refs/remotes/origin/master
 
 #define DBF_DEV_EVENT(level, device, text...) \
 	do { \
 		char debug_buffer[QDIO_DBF_LEN]; \
+<<<<<<< HEAD
 		if (qdio_dbf_passes(device->debug_area, level)) { \
+=======
+		if (debug_level_enabled(device->debug_area, level)) { \
+>>>>>>> refs/remotes/origin/master
 			snprintf(debug_buffer, QDIO_DBF_LEN, text); \
 			debug_text_event(device->debug_area, level, debug_buffer); \
 		} \
 	} while (0)
 
+<<<<<<< HEAD
 #define DBF_DEV_HEX(level, device, addr, len) \
 	do { \
 		debug_event(device->debug_area, level, (void*)(addr), len); \
 	} while (0)
+=======
+static inline void DBF_DEV_HEX(struct qdio_irq *dev, void *addr,
+			       int len, int level)
+{
+	while (len > 0) {
+		debug_event(dev->debug_area, level, addr, len);
+		len -= dev->debug_area->buf_size;
+		addr += dev->debug_area->buf_size;
+	}
+}
+>>>>>>> refs/remotes/origin/master
 
 void qdio_allocate_dbf(struct qdio_initialize *init_data,
 		       struct qdio_irq *irq_ptr);
 void qdio_setup_debug_entries(struct qdio_irq *irq_ptr,
 			      struct ccw_device *cdev);
+<<<<<<< HEAD
 void qdio_shutdown_debug_entries(struct qdio_irq *irq_ptr,
 				 struct ccw_device *cdev);
+=======
+void qdio_shutdown_debug_entries(struct qdio_irq *irq_ptr);
+>>>>>>> refs/remotes/origin/master
 int qdio_debug_init(void);
 void qdio_debug_exit(void);
 

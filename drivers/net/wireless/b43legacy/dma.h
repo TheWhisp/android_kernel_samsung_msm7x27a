@@ -6,10 +6,14 @@
 #include <linux/workqueue.h>
 #include <linux/linkage.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "b43legacy.h"
 
@@ -86,6 +90,7 @@ struct b43legacy_dmadesc32 {
 #define B43legacy_DMA32_DCTL_FRAMESTART		0x80000000
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /*** 64-bit DMA Engine. ***/
@@ -173,6 +178,8 @@ struct b43legacy_dmadesc_generic {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Misc DMA constants */
 #define B43legacy_DMA_RINGMEMSIZE	PAGE_SIZE
 #define B43legacy_DMA0_RX_FRAMEOFFSET	30
@@ -205,6 +212,7 @@ struct b43legacy_dmadesc_meta {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct b43legacy_dmaring;
 
 /* Lowlevel DMA operations that differ between 32bit and 64bit DMA. */
@@ -235,13 +243,18 @@ struct b43legacy_dmaring {
 	/* Lowlevel DMA ops. */
 	const struct b43legacy_dma_ops *ops;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum b43legacy_dmatype {
 	B43legacy_DMA_30BIT = 30,
 	B43legacy_DMA_32BIT = 32,
 };
 
 struct b43legacy_dmaring {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Kernel virtual base address of the ring memory. */
 	void *descbase;
 	/* Meta data about all descriptors. */
@@ -274,6 +287,7 @@ struct b43legacy_dmaring {
 	/* Boolean. Is this ring stopped at ieee80211 level? */
 	bool stopped;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Lock, only used for TX. */
 	spinlock_t lock;
 =======
@@ -281,6 +295,11 @@ struct b43legacy_dmaring {
 	 * This is the mac80211 "queue" value. */
 	u8 queue_prio;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* The QOS priority assigned to this ring. Only used for TX rings.
+	 * This is the mac80211 "queue" value. */
+	u8 queue_prio;
+>>>>>>> refs/remotes/origin/master
 	struct b43legacy_wldev *dev;
 #ifdef CONFIG_B43LEGACY_DEBUG
 	/* Maximum number of used slots. */

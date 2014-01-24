@@ -118,10 +118,14 @@ static int get_master_node(const struct ubifs_info *c, int lnum, void **pbuf,
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, lnum, sbuf, 0, c->leb_size);
 =======
 	err = ubifs_leb_read(c, lnum, sbuf, 0, c->leb_size, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubifs_leb_read(c, lnum, sbuf, 0, c->leb_size, 0);
+>>>>>>> refs/remotes/origin/master
 	if (err && err != -EBADMSG)
 		goto out_free;
 
@@ -218,6 +222,7 @@ static int write_rcvrd_mst_node(struct ubifs_info *c,
 
 	ubifs_prepare_node(c, mst, UBIFS_MST_NODE_SZ, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_leb_change(c->ubi, lnum, mst, sz, UBI_SHORTTERM);
 	if (err)
 		goto out;
@@ -228,6 +233,12 @@ static int write_rcvrd_mst_node(struct ubifs_info *c,
 		goto out;
 	err = ubifs_leb_change(c, lnum + 1, mst, sz, UBI_SHORTTERM);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubifs_leb_change(c, lnum, mst, sz);
+	if (err)
+		goto out;
+	err = ubifs_leb_change(c, lnum + 1, mst, sz);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out;
 out:
@@ -286,11 +297,16 @@ int ubifs_recover_master_node(struct ubifs_info *c)
 					goto out_err;
 				mst = mst1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			} else if (offs1 == 0 && offs2 + sz >= c->leb_size) {
 =======
 			} else if (offs1 == 0 &&
 				   c->leb_size - offs2 - sz < sz) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			} else if (offs1 == 0 &&
+				   c->leb_size - offs2 - sz < sz) {
+>>>>>>> refs/remotes/origin/master
 				/* 1st LEB was unmapped and written, 2nd not */
 				if (cor1)
 					goto out_err;
@@ -377,12 +393,21 @@ out_err:
 out_free:
 	ubifs_err("failed to recover master node");
 	if (mst1) {
+<<<<<<< HEAD
 		dbg_err("dumping first master node");
 		dbg_dump_node(c, mst1);
 	}
 	if (mst2) {
 		dbg_err("dumping second master node");
 		dbg_dump_node(c, mst2);
+=======
+		ubifs_err("dumping first master node");
+		ubifs_dump_node(c, mst1);
+	}
+	if (mst2) {
+		ubifs_err("dumping second master node");
+		ubifs_dump_node(c, mst2);
+>>>>>>> refs/remotes/origin/master
 	}
 	vfree(buf2);
 	vfree(buf1);
@@ -556,12 +581,17 @@ static int fix_unclean_leb(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
 
 			if (start) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				err = ubi_read(c->ubi, lnum, sleb->buf, 0,
 					       start);
 =======
 				err = ubifs_leb_read(c, lnum, sleb->buf, 0,
 						     start, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				err = ubifs_leb_read(c, lnum, sleb->buf, 0,
+						     start, 1);
+>>>>>>> refs/remotes/origin/master
 				if (err)
 					return err;
 			}
@@ -576,12 +606,16 @@ static int fix_unclean_leb(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
 				}
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			err = ubi_leb_change(c->ubi, lnum, sleb->buf, len,
 					     UBI_UNKNOWN);
 =======
 			err = ubifs_leb_change(c, lnum, sleb->buf, len,
 					       UBI_UNKNOWN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = ubifs_leb_change(c, lnum, sleb->buf, len);
+>>>>>>> refs/remotes/origin/master
 			if (err)
 				return err;
 		}
@@ -635,7 +669,12 @@ static void drop_last_node(struct ubifs_scan_leb *sleb, int *offs)
 		snod = list_entry(sleb->nodes.prev, struct ubifs_scan_node,
 				  list);
 
+<<<<<<< HEAD
 		dbg_rcvry("dropping last node at %d:%d", sleb->lnum, snod->offs);
+=======
+		dbg_rcvry("dropping last node at %d:%d",
+			  sleb->lnum, snod->offs);
+>>>>>>> refs/remotes/origin/master
 		*offs = snod->offs;
 		list_del(&snod->list);
 		kfree(snod);
@@ -705,6 +744,7 @@ struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
 			   ret == SCANNED_A_BAD_PAD_NODE ||
 			   ret == SCANNED_A_CORRUPT_NODE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dbg_rcvry("found corruption - %d", ret);
 =======
 			dbg_rcvry("found corruption (%d) at %d:%d",
@@ -713,6 +753,13 @@ struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
 			break;
 		} else {
 			dbg_err("unexpected return value %d", ret);
+=======
+			dbg_rcvry("found corruption (%d) at %d:%d",
+				  ret, lnum, offs);
+			break;
+		} else {
+			ubifs_err("unexpected return value %d", ret);
+>>>>>>> refs/remotes/origin/master
 			err = -EINVAL;
 			goto error;
 		}
@@ -732,8 +779,13 @@ struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
 			 * See header comment for this file for more
 			 * explanations about the reasons we have this check.
 			 */
+<<<<<<< HEAD
 			ubifs_err("corrupt empty space LEB %d:%d, corruption "
 				  "starts at %d", lnum, offs, corruption);
+=======
+			ubifs_err("corrupt empty space LEB %d:%d, corruption starts at %d",
+				  lnum, offs, corruption);
+>>>>>>> refs/remotes/origin/master
 			/* Make sure we dump interesting non-0xFF data */
 			offs += corruption;
 			buf += corruption;
@@ -818,7 +870,11 @@ struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
 
 corrupted_rescan:
 	/* Re-scan the corrupted data with verbose messages */
+<<<<<<< HEAD
 	dbg_err("corruptio %d", ret);
+=======
+	ubifs_err("corruption %d", ret);
+>>>>>>> refs/remotes/origin/master
 	ubifs_scan_a_node(c, buf, len, lnum, offs, 1);
 corrupted:
 	ubifs_scanned_corruption(c, lnum, offs, buf);
@@ -851,15 +907,21 @@ static int get_cs_sqnum(struct ubifs_info *c, int lnum, int offs,
 	if (c->leb_size - offs < UBIFS_CS_NODE_SZ)
 		goto out_err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, lnum, (void *)cs_node, offs, UBIFS_CS_NODE_SZ);
 =======
 	err = ubifs_leb_read(c, lnum, (void *)cs_node, offs,
 			     UBIFS_CS_NODE_SZ, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubifs_leb_read(c, lnum, (void *)cs_node, offs,
+			     UBIFS_CS_NODE_SZ, 0);
+>>>>>>> refs/remotes/origin/master
 	if (err && err != -EBADMSG)
 		goto out_free;
 	ret = ubifs_scan_a_node(c, cs_node, UBIFS_CS_NODE_SZ, lnum, offs, 0);
 	if (ret != SCANNED_A_NODE) {
+<<<<<<< HEAD
 		dbg_err("Not a valid node");
 		goto out_err;
 	}
@@ -871,6 +933,19 @@ static int get_cs_sqnum(struct ubifs_info *c, int lnum, int offs,
 		dbg_err("CS node cmt_no %llu != current cmt_no %llu",
 			(unsigned long long)le64_to_cpu(cs_node->cmt_no),
 			c->cmt_no);
+=======
+		ubifs_err("Not a valid node");
+		goto out_err;
+	}
+	if (cs_node->ch.node_type != UBIFS_CS_NODE) {
+		ubifs_err("Node a CS node, type is %d", cs_node->ch.node_type);
+		goto out_err;
+	}
+	if (le64_to_cpu(cs_node->cmt_no) != c->cmt_no) {
+		ubifs_err("CS node cmt_no %llu != current cmt_no %llu",
+			  (unsigned long long)le64_to_cpu(cs_node->cmt_no),
+			  c->cmt_no);
+>>>>>>> refs/remotes/origin/master
 		goto out_err;
 	}
 	*cs_sqnum = le64_to_cpu(cs_node->ch.sqnum);
@@ -933,8 +1008,13 @@ struct ubifs_scan_leb *ubifs_recover_log_leb(struct ubifs_info *c, int lnum,
 				}
 			}
 			if (snod->sqnum > cs_sqnum) {
+<<<<<<< HEAD
 				ubifs_err("unrecoverable log corruption "
 					  "in LEB %d", lnum);
+=======
+				ubifs_err("unrecoverable log corruption in LEB %d",
+					  lnum);
+>>>>>>> refs/remotes/origin/master
 				ubifs_scan_destroy(sleb);
 				return ERR_PTR(-EUCLEAN);
 			}
@@ -956,11 +1036,15 @@ struct ubifs_scan_leb *ubifs_recover_log_leb(struct ubifs_info *c, int lnum,
  * This function returns %0 on success and a negative error code on failure.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int recover_head(const struct ubifs_info *c, int lnum, int offs,
 			void *sbuf)
 =======
 static int recover_head(struct ubifs_info *c, int lnum, int offs, void *sbuf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int recover_head(struct ubifs_info *c, int lnum, int offs, void *sbuf)
+>>>>>>> refs/remotes/origin/master
 {
 	int len = c->max_write_size, err;
 
@@ -972,14 +1056,19 @@ static int recover_head(struct ubifs_info *c, int lnum, int offs, void *sbuf)
 
 	/* Read at the head location and check it is empty flash */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, lnum, sbuf, offs, len);
 =======
 	err = ubifs_leb_read(c, lnum, sbuf, offs, len, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubifs_leb_read(c, lnum, sbuf, offs, len, 1);
+>>>>>>> refs/remotes/origin/master
 	if (err || !is_empty(sbuf, len)) {
 		dbg_rcvry("cleaning head at %d:%d", lnum, offs);
 		if (offs == 0)
 			return ubifs_leb_unmap(c, lnum);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		err = ubi_read(c->ubi, lnum, sbuf, 0, offs);
 		if (err)
@@ -991,6 +1080,12 @@ static int recover_head(struct ubifs_info *c, int lnum, int offs, void *sbuf)
 			return err;
 		return ubifs_leb_change(c, lnum, sbuf, offs, UBI_UNKNOWN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ubifs_leb_read(c, lnum, sbuf, 0, offs, 1);
+		if (err)
+			return err;
+		return ubifs_leb_change(c, lnum, sbuf, offs);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -1014,10 +1109,14 @@ static int recover_head(struct ubifs_info *c, int lnum, int offs, void *sbuf)
  * This function returns %0 on success and a negative error code on failure.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ubifs_recover_inl_heads(const struct ubifs_info *c, void *sbuf)
 =======
 int ubifs_recover_inl_heads(struct ubifs_info *c, void *sbuf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ubifs_recover_inl_heads(struct ubifs_info *c, void *sbuf)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -1038,10 +1137,14 @@ int ubifs_recover_inl_heads(struct ubifs_info *c, void *sbuf)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  clean_an_unclean_leb - read and write a LEB to remove corruption.
 =======
  * clean_an_unclean_leb - read and write a LEB to remove corruption.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * clean_an_unclean_leb - read and write a LEB to remove corruption.
+>>>>>>> refs/remotes/origin/master
  * @c: UBIFS file-system description object
  * @ucleb: unclean LEB information
  * @sbuf: LEB-sized buffer to use
@@ -1053,10 +1156,14 @@ int ubifs_recover_inl_heads(struct ubifs_info *c, void *sbuf)
  * This function returns %0 on success and a negative error code on failure.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int clean_an_unclean_leb(const struct ubifs_info *c,
 =======
 static int clean_an_unclean_leb(struct ubifs_info *c,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int clean_an_unclean_leb(struct ubifs_info *c,
+>>>>>>> refs/remotes/origin/master
 				struct ubifs_unclean_leb *ucleb, void *sbuf)
 {
 	int err, lnum = ucleb->lnum, offs = 0, len = ucleb->endpt, quiet = 1;
@@ -1073,10 +1180,14 @@ static int clean_an_unclean_leb(struct ubifs_info *c,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, lnum, buf, offs, len);
 =======
 	err = ubifs_leb_read(c, lnum, buf, offs, len, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubifs_leb_read(c, lnum, buf, offs, len, 0);
+>>>>>>> refs/remotes/origin/master
 	if (err && err != -EBADMSG)
 		return err;
 
@@ -1137,10 +1248,14 @@ static int clean_an_unclean_leb(struct ubifs_info *c,
 
 	/* Write back the LEB atomically */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_leb_change(c->ubi, lnum, sbuf, len, UBI_UNKNOWN);
 =======
 	err = ubifs_leb_change(c, lnum, sbuf, len, UBI_UNKNOWN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubifs_leb_change(c, lnum, sbuf, len);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 
@@ -1161,10 +1276,14 @@ static int clean_an_unclean_leb(struct ubifs_info *c,
  * This function returns %0 on success and a negative error code on failure.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ubifs_clean_lebs(const struct ubifs_info *c, void *sbuf)
 =======
 int ubifs_clean_lebs(struct ubifs_info *c, void *sbuf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ubifs_clean_lebs(struct ubifs_info *c, void *sbuf)
+>>>>>>> refs/remotes/origin/master
 {
 	dbg_rcvry("recovery");
 	while (!list_empty(&c->unclean_leb_list)) {
@@ -1211,9 +1330,15 @@ static int grab_empty_leb(struct ubifs_info *c)
 	 */
 	lnum = ubifs_find_free_leb_for_idx(c);
 	if (lnum < 0) {
+<<<<<<< HEAD
 		dbg_err("could not find an empty LEB");
 		dbg_dump_lprops(c);
 		dbg_dump_budg(c, &c->bi);
+=======
+		ubifs_err("could not find an empty LEB");
+		ubifs_dump_lprops(c);
+		ubifs_dump_budg(c, &c->bi);
+>>>>>>> refs/remotes/origin/master
 		return lnum;
 	}
 
@@ -1291,7 +1416,11 @@ int ubifs_rcvry_gc_commit(struct ubifs_info *c)
 	}
 	mutex_unlock(&wbuf->io_mutex);
 	if (err < 0) {
+<<<<<<< HEAD
 		dbg_err("GC failed, error %d", err);
+=======
+		ubifs_err("GC failed, error %d", err);
+>>>>>>> refs/remotes/origin/master
 		if (err == -EAGAIN)
 			err = -EINVAL;
 		return err;
@@ -1530,10 +1659,14 @@ static int fix_size_in_place(struct ubifs_info *c, struct size_entry *e)
 		return 0;
 	/* Read the LEB */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, lnum, c->sbuf, 0, c->leb_size);
 =======
 	err = ubifs_leb_read(c, lnum, c->sbuf, 0, c->leb_size, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubifs_leb_read(c, lnum, c->sbuf, 0, c->leb_size, 1);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out;
 	/* Change the size field and recalculate the CRC */
@@ -1550,10 +1683,14 @@ static int fix_size_in_place(struct ubifs_info *c, struct size_entry *e)
 	len = ALIGN(len + 1, c->min_io_size);
 	/* Atomically write the fixed LEB back again */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_leb_change(c->ubi, lnum, c->sbuf, len, UBI_UNKNOWN);
 =======
 	err = ubifs_leb_change(c, lnum, c->sbuf, len, UBI_UNKNOWN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubifs_leb_change(c, lnum, c->sbuf, len);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out;
 	dbg_rcvry("inode %lu at %d:%d size %lld -> %lld",

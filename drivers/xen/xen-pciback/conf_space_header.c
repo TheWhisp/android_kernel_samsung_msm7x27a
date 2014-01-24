@@ -4,6 +4,11 @@
  * Author: Ryan Wilson <hap9@epoch.ncsc.mil>
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/pci.h>
 #include "pciback.h"
@@ -75,10 +80,15 @@ static int command_write(struct pci_dev *dev, int offset, u16 value, void *data)
 			       pci_name(dev));
 		err = pci_set_mwi(dev);
 		if (err) {
+<<<<<<< HEAD
 			printk(KERN_WARNING
 			       DRV_NAME ": %s: cannot enable "
 			       "memory-write-invalidate (%d)\n",
 			       pci_name(dev), err);
+=======
+			pr_warn("%s: cannot enable memory-write-invalidate (%d)\n",
+				pci_name(dev), err);
+>>>>>>> refs/remotes/origin/master
 			value &= ~PCI_COMMAND_INVALIDATE;
 		}
 	}
@@ -91,7 +101,11 @@ static int rom_write(struct pci_dev *dev, int offset, u32 value, void *data)
 	struct pci_bar_info *bar = data;
 
 	if (unlikely(!bar)) {
+<<<<<<< HEAD
 		printk(KERN_WARNING DRV_NAME ": driver data not found for %s\n",
+=======
+		pr_warn(DRV_NAME ": driver data not found for %s\n",
+>>>>>>> refs/remotes/origin/master
 		       pci_name(dev));
 		return XEN_PCI_ERR_op_failed;
 	}
@@ -125,7 +139,11 @@ static int bar_write(struct pci_dev *dev, int offset, u32 value, void *data)
 	struct pci_bar_info *bar = data;
 
 	if (unlikely(!bar)) {
+<<<<<<< HEAD
 		printk(KERN_WARNING DRV_NAME ": driver data not found for %s\n",
+=======
+		pr_warn(DRV_NAME ": driver data not found for %s\n",
+>>>>>>> refs/remotes/origin/master
 		       pci_name(dev));
 		return XEN_PCI_ERR_op_failed;
 	}
@@ -153,7 +171,11 @@ static int bar_read(struct pci_dev *dev, int offset, u32 * value, void *data)
 	struct pci_bar_info *bar = data;
 
 	if (unlikely(!bar)) {
+<<<<<<< HEAD
 		printk(KERN_WARNING DRV_NAME ": driver data not found for %s\n",
+=======
+		pr_warn(DRV_NAME ": driver data not found for %s\n",
+>>>>>>> refs/remotes/origin/master
 		       pci_name(dev));
 		return XEN_PCI_ERR_op_failed;
 	}
@@ -375,7 +397,11 @@ int xen_pcibk_config_header_add_fields(struct pci_dev *dev)
 
 	default:
 		err = -EINVAL;
+<<<<<<< HEAD
 		printk(KERN_ERR DRV_NAME ": %s: Unsupported header type %d!\n",
+=======
+		pr_err("%s: Unsupported header type %d!\n",
+>>>>>>> refs/remotes/origin/master
 		       pci_name(dev), dev->hdr_type);
 		break;
 	}

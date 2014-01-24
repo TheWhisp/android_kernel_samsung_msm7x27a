@@ -55,16 +55,24 @@
 #include <linux/kthread.h>
 #include <linux/freezer.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/console.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/console.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/hardware.h>
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/div64.h>
 #include <mach/bitfield.h>
+<<<<<<< HEAD
 #include <mach/pxafb.h>
+=======
+#include <linux/platform_data/video-pxafb.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Complain if VAR is out of range.
@@ -460,7 +468,11 @@ static int pxafb_adjust_timing(struct pxafb_info *fbi,
 static int pxafb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
 {
 	struct pxafb_info *fbi = (struct pxafb_info *)info;
+<<<<<<< HEAD
 	struct pxafb_mach_info *inf = fbi->dev->platform_data;
+=======
+	struct pxafb_mach_info *inf = dev_get_platdata(fbi->dev);
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	if (inf->fixed_modes) {
@@ -735,17 +747,23 @@ static int overlayfb_open(struct fb_info *info, int user)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ofb->usage++ == 0)
 		/* unblank the base framebuffer */
 		fb_blank(&ofb->fbi->fb, FB_BLANK_UNBLANK);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ofb->usage++ == 0) {
 		/* unblank the base framebuffer */
 		console_lock();
 		fb_blank(&ofb->fbi->fb, FB_BLANK_UNBLANK);
 		console_unlock();
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -878,8 +896,13 @@ static struct fb_ops overlay_fb_ops = {
 	.fb_set_par		= overlayfb_set_par,
 };
 
+<<<<<<< HEAD
 static void __devinit init_pxafb_overlay(struct pxafb_info *fbi,
 					 struct pxafb_layer *ofb, int id)
+=======
+static void init_pxafb_overlay(struct pxafb_info *fbi, struct pxafb_layer *ofb,
+			       int id)
+>>>>>>> refs/remotes/origin/master
 {
 	sprintf(ofb->fb.fix.id, "overlay%d", id + 1);
 
@@ -912,8 +935,13 @@ static inline int pxafb_overlay_supported(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit pxafb_overlay_map_video_memory(struct pxafb_info *pxafb,
 	struct pxafb_layer *ofb)
+=======
+static int pxafb_overlay_map_video_memory(struct pxafb_info *pxafb,
+					  struct pxafb_layer *ofb)
+>>>>>>> refs/remotes/origin/master
 {
 	/* We assume that user will use at most video_mem_size for overlay fb,
 	 * anyway, it's useless to use 16bpp main plane and 24bpp overlay
@@ -936,7 +964,11 @@ static int __devinit pxafb_overlay_map_video_memory(struct pxafb_info *pxafb,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devinit pxafb_overlay_init(struct pxafb_info *fbi)
+=======
+static void pxafb_overlay_init(struct pxafb_info *fbi)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, ret;
 
@@ -968,7 +1000,11 @@ static void __devinit pxafb_overlay_init(struct pxafb_info *fbi)
 	pr_info("PXA Overlay driver loaded successfully!\n");
 }
 
+<<<<<<< HEAD
 static void __devexit pxafb_overlay_exit(struct pxafb_info *fbi)
+=======
+static void pxafb_overlay_exit(struct pxafb_info *fbi)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -1239,7 +1275,11 @@ static unsigned int __smart_timing(unsigned time_ns, unsigned long lcd_clk)
 static void setup_smart_timing(struct pxafb_info *fbi,
 				struct fb_var_screeninfo *var)
 {
+<<<<<<< HEAD
 	struct pxafb_mach_info *inf = fbi->dev->platform_data;
+=======
+	struct pxafb_mach_info *inf = dev_get_platdata(fbi->dev);
+>>>>>>> refs/remotes/origin/master
 	struct pxafb_mode_info *mode = &inf->modes[0];
 	unsigned long lclk = clk_get_rate(fbi->clk);
 	unsigned t1, t2, t3, t4;
@@ -1267,14 +1307,22 @@ static void setup_smart_timing(struct pxafb_info *fbi,
 static int pxafb_smart_thread(void *arg)
 {
 	struct pxafb_info *fbi = arg;
+<<<<<<< HEAD
 	struct pxafb_mach_info *inf = fbi->dev->platform_data;
+=======
+	struct pxafb_mach_info *inf = dev_get_platdata(fbi->dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (!inf->smart_update) {
 		pr_err("%s: not properly initialized, thread terminated\n",
 				__func__);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	inf = fbi->dev->platform_data;
+=======
+	inf = dev_get_platdata(fbi->dev);
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("%s(): task starting\n", __func__);
 
@@ -1323,6 +1371,7 @@ static int pxafb_smart_init(struct pxafb_info *fbi)
 }
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 int pxafb_smart_queue(struct fb_info *info, uint16_t *cmds, int n_cmds)
 {
 	return 0;
@@ -1335,6 +1384,8 @@ int pxafb_smart_flush(struct fb_info *info)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int pxafb_smart_init(struct pxafb_info *fbi) { return 0; }
 #endif /* CONFIG_FB_PXA_SMARTPANEL */
 
@@ -1458,10 +1509,14 @@ static void pxafb_enable_controller(struct pxafb_info *fbi)
 
 	/* enable LCD controller clock */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_enable(fbi->clk);
 =======
 	clk_prepare_enable(fbi->clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_prepare_enable(fbi->clk);
+>>>>>>> refs/remotes/origin/master
 
 	if (fbi->lccr0 & LCCR0_LCDT)
 		return;
@@ -1502,10 +1557,14 @@ static void pxafb_disable_controller(struct pxafb_info *fbi)
 
 	/* disable LCD controller clock */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_disable(fbi->clk);
 =======
 	clk_disable_unprepare(fbi->clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(fbi->clk);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1736,7 +1795,11 @@ static const struct dev_pm_ops pxafb_pm_ops = {
 };
 #endif
 
+<<<<<<< HEAD
 static int __devinit pxafb_init_video_memory(struct pxafb_info *fbi)
+=======
+static int pxafb_init_video_memory(struct pxafb_info *fbi)
+>>>>>>> refs/remotes/origin/master
 {
 	int size = PAGE_ALIGN(fbi->video_mem_size);
 
@@ -1819,11 +1882,19 @@ decode_mode:
 		fbi->video_mem_size = video_mem_size;
 }
 
+<<<<<<< HEAD
 static struct pxafb_info * __devinit pxafb_init_fbinfo(struct device *dev)
 {
 	struct pxafb_info *fbi;
 	void *addr;
 	struct pxafb_mach_info *inf = dev->platform_data;
+=======
+static struct pxafb_info *pxafb_init_fbinfo(struct device *dev)
+{
+	struct pxafb_info *fbi;
+	void *addr;
+	struct pxafb_mach_info *inf = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* Alloc the pxafb_info and pseudo_palette in one step */
 	fbi = kmalloc(sizeof(struct pxafb_info) + sizeof(u32) * 16, GFP_KERNEL);
@@ -1883,9 +1954,15 @@ static struct pxafb_info * __devinit pxafb_init_fbinfo(struct device *dev)
 }
 
 #ifdef CONFIG_FB_PXA_PARAMETERS
+<<<<<<< HEAD
 static int __devinit parse_opt_mode(struct device *dev, const char *this_opt)
 {
 	struct pxafb_mach_info *inf = dev->platform_data;
+=======
+static int parse_opt_mode(struct device *dev, const char *this_opt)
+{
+	struct pxafb_mach_info *inf = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	const char *name = this_opt+5;
 	unsigned int namelen = strlen(name);
@@ -1942,9 +2019,15 @@ done:
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit parse_opt(struct device *dev, char *this_opt)
 {
 	struct pxafb_mach_info *inf = dev->platform_data;
+=======
+static int parse_opt(struct device *dev, char *this_opt)
+{
+	struct pxafb_mach_info *inf = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct pxafb_mode_info *mode = &inf->modes[0];
 	char s[64];
 
@@ -2042,7 +2125,11 @@ static int __devinit parse_opt(struct device *dev, char *this_opt)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit pxafb_parse_options(struct device *dev, char *options)
+=======
+static int pxafb_parse_options(struct device *dev, char *options)
+>>>>>>> refs/remotes/origin/master
 {
 	char *this_opt;
 	int ret;
@@ -2061,7 +2148,11 @@ static int __devinit pxafb_parse_options(struct device *dev, char *options)
 	return 0;
 }
 
+<<<<<<< HEAD
 static char g_options[256] __devinitdata = "";
+=======
+static char g_options[256] = "";
+>>>>>>> refs/remotes/origin/master
 
 #ifndef MODULE
 static int __init pxafb_setup_options(void)
@@ -2091,8 +2182,12 @@ MODULE_PARM_DESC(options, "LCD parameters (see Documentation/fb/pxafb.txt)");
 #ifdef DEBUG_VAR
 /* Check for various illegal bit-combinations. Currently only
  * a warning is given. */
+<<<<<<< HEAD
 static void __devinit pxafb_check_options(struct device *dev,
 					  struct pxafb_mach_info *inf)
+=======
+static void pxafb_check_options(struct device *dev, struct pxafb_mach_info *inf)
+>>>>>>> refs/remotes/origin/master
 {
 	if (inf->lcd_conn)
 		return;
@@ -2124,7 +2219,11 @@ static void __devinit pxafb_check_options(struct device *dev,
 #define pxafb_check_options(...)	do {} while (0)
 #endif
 
+<<<<<<< HEAD
 static int __devinit pxafb_probe(struct platform_device *dev)
+=======
+static int pxafb_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pxafb_info *fbi;
 	struct pxafb_mach_info *inf;
@@ -2133,7 +2232,11 @@ static int __devinit pxafb_probe(struct platform_device *dev)
 
 	dev_dbg(&dev->dev, "pxafb_probe\n");
 
+<<<<<<< HEAD
 	inf = dev->dev.platform_data;
+=======
+	inf = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	ret = -ENOMEM;
 	fbi = NULL;
 	if (!inf)
@@ -2216,10 +2319,14 @@ static int __devinit pxafb_probe(struct platform_device *dev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = request_irq(irq, pxafb_handle_irq, IRQF_DISABLED, "LCD", fbi);
 =======
 	ret = request_irq(irq, pxafb_handle_irq, 0, "LCD", fbi);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = request_irq(irq, pxafb_handle_irq, 0, "LCD", fbi);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&dev->dev, "request_irq failed: %d\n", ret);
 		ret = -EBUSY;
@@ -2291,13 +2398,20 @@ failed_free_res:
 	release_mem_region(r->start, resource_size(r));
 failed_fbi:
 	clk_put(fbi->clk);
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(fbi);
 failed:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit pxafb_remove(struct platform_device *dev)
+=======
+static int pxafb_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pxafb_info *fbi = platform_get_drvdata(dev);
 	struct resource *r;
@@ -2338,7 +2452,11 @@ static int __devexit pxafb_remove(struct platform_device *dev)
 
 static struct platform_driver pxafb_driver = {
 	.probe		= pxafb_probe,
+<<<<<<< HEAD
 	.remove 	= __devexit_p(pxafb_remove),
+=======
+	.remove 	= pxafb_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.owner	= THIS_MODULE,
 		.name	= "pxa2xx-fb",

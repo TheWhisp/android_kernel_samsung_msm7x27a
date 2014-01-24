@@ -5,10 +5,14 @@
  * Copyright    2001 by Frode Isaksen      <fisaksen@bewan.com>
  *              2001 by Kai Germaschewski  <kai.germaschewski@gmx.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -32,14 +36,19 @@ static inline void B_L1L2(struct st5481_bcs *bcs, int pr, void *arg)
  * Encode and transmit next frame.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void usb_b_out(struct st5481_bcs *bcs,int buf_nr)
 =======
 static void usb_b_out(struct st5481_bcs *bcs, int buf_nr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void usb_b_out(struct st5481_bcs *bcs, int buf_nr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct st5481_b_out *b_out = &bcs->b_out;
 	struct st5481_adapter *adapter = bcs->adapter;
 	struct urb *urb;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned int packet_size,offset;
 	int len,buf_size,bytes_sent;
@@ -49,6 +58,8 @@ static void usb_b_out(struct st5481_bcs *bcs, int buf_nr)
 	if (test_and_set_bit(buf_nr, &b_out->busy)) {
 		DBG(4,"ep %d urb %d busy",(bcs->channel+1)*2,buf_nr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int packet_size, offset;
 	int len, buf_size, bytes_sent;
 	int i;
@@ -56,12 +67,16 @@ static void usb_b_out(struct st5481_bcs *bcs, int buf_nr)
 
 	if (test_and_set_bit(buf_nr, &b_out->busy)) {
 		DBG(4, "ep %d urb %d busy", (bcs->channel + 1) * 2, buf_nr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	urb = b_out->urb[buf_nr];
 
 	// Adjust isoc buffer size according to flow state
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if(b_out->flow_event & (OUT_DOWN | OUT_UNDERRUN)) {
 		buf_size = NUM_ISO_PACKETS_B*SIZE_ISO_PACKETS_B_OUT + B_FLOW_ADJUST;
@@ -74,6 +89,8 @@ static void usb_b_out(struct st5481_bcs *bcs, int buf_nr)
 	} else {
 		buf_size = NUM_ISO_PACKETS_B*SIZE_ISO_PACKETS_B_OUT;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (b_out->flow_event & (OUT_DOWN | OUT_UNDERRUN)) {
 		buf_size = NUM_ISO_PACKETS_B * SIZE_ISO_PACKETS_B_OUT + B_FLOW_ADJUST;
 		packet_size = SIZE_ISO_PACKETS_B_OUT + B_FLOW_ADJUST;
@@ -84,7 +101,10 @@ static void usb_b_out(struct st5481_bcs *bcs, int buf_nr)
 		DBG(4, "B%d,adjust flow,remove %d bytes", bcs->channel + 1, B_FLOW_ADJUST);
 	} else {
 		buf_size = NUM_ISO_PACKETS_B * SIZE_ISO_PACKETS_B_OUT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		packet_size = 8;
 	}
 	b_out->flow_event = 0;
@@ -94,6 +114,7 @@ static void usb_b_out(struct st5481_bcs *bcs, int buf_nr)
 		if ((skb = b_out->tx_skb)) {
 			DBG_SKB(0x100, skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DBG(4,"B%d,len=%d",bcs->channel+1,skb->len);
 			
 			if (bcs->mode == L1_MODE_TRANS) {	
@@ -102,16 +123,25 @@ static void usb_b_out(struct st5481_bcs *bcs, int buf_nr)
 
 			if (bcs->mode == L1_MODE_TRANS) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			DBG(4, "B%d,len=%d", bcs->channel + 1, skb->len);
+
+			if (bcs->mode == L1_MODE_TRANS) {
+>>>>>>> refs/remotes/origin/master
 				bytes_sent = buf_size - len;
 				if (skb->len < bytes_sent)
 					bytes_sent = skb->len;
 				{	/* swap tx bytes to get hearable audio data */
 					register unsigned char *src  = skb->data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 					register unsigned char *dest = urb->transfer_buffer+len;
 =======
 					register unsigned char *dest = urb->transfer_buffer + len;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					register unsigned char *dest = urb->transfer_buffer + len;
+>>>>>>> refs/remotes/origin/master
 					register unsigned int count;
 					for (count = 0; count < bytes_sent; count++)
 						*dest++ = bitrev8(*src++);
@@ -121,10 +151,14 @@ static void usb_b_out(struct st5481_bcs *bcs, int buf_nr)
 				len += isdnhdlc_encode(&b_out->hdlc_state,
 						       skb->data, skb->len, &bytes_sent,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						       urb->transfer_buffer+len, buf_size-len);
 =======
 						       urb->transfer_buffer + len, buf_size-len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						       urb->transfer_buffer + len, buf_size-len);
+>>>>>>> refs/remotes/origin/master
 			}
 
 			skb_pull(skb, bytes_sent);
@@ -136,6 +170,7 @@ static void usb_b_out(struct st5481_bcs *bcs, int buf_nr)
 				dev_kfree_skb_any(skb);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 				if (!(bcs->tx_skb = skb_dequeue(&bcs->sq))) { */
 /* 					st5481B_sched_event(bcs, B_XMTBUFREADY); */
 /* 				} */
@@ -144,6 +179,8 @@ static void usb_b_out(struct st5481_bcs *bcs, int buf_nr)
 			if (bcs->mode == L1_MODE_TRANS) {
 				memset(urb->transfer_buffer+len, 0xff, buf_size-len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*				if (!(bcs->tx_skb = skb_dequeue(&bcs->sq))) { */
 /*					st5481B_sched_event(bcs, B_XMTBUFREADY); */
 /*				} */
@@ -151,12 +188,16 @@ static void usb_b_out(struct st5481_bcs *bcs, int buf_nr)
 		} else {
 			if (bcs->mode == L1_MODE_TRANS) {
 				memset(urb->transfer_buffer + len, 0xff, buf_size-len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				len = buf_size;
 			} else {
 				// Send flags
 				len += isdnhdlc_encode(&b_out->hdlc_state,
 						       NULL, 0, &bytes_sent,
+<<<<<<< HEAD
 <<<<<<< HEAD
 						       urb->transfer_buffer+len, buf_size-len);
 			}
@@ -166,6 +207,11 @@ static void usb_b_out(struct st5481_bcs *bcs, int buf_nr)
 			}
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						       urb->transfer_buffer + len, buf_size-len);
+			}
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	// Prepare the URB
@@ -180,10 +226,14 @@ static void usb_b_out(struct st5481_bcs *bcs, int buf_nr)
 	urb->dev = adapter->usb_dev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG_ISO_PACKET(0x200,urb);
 =======
 	DBG_ISO_PACKET(0x200, urb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG_ISO_PACKET(0x200, urb);
+>>>>>>> refs/remotes/origin/master
 
 	SUBMIT_URB(urb, GFP_NOIO);
 }
@@ -197,6 +247,7 @@ static void st5481B_start_xfer(void *context)
 	struct st5481_bcs *bcs = context;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG(4,"B%d",bcs->channel+1);
 
 	// Start transmitting (flags or data) on B channel
@@ -204,13 +255,18 @@ static void st5481B_start_xfer(void *context)
 	usb_b_out(bcs,0);
 	usb_b_out(bcs,1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	DBG(4, "B%d", bcs->channel + 1);
 
 	// Start transmitting (flags or data) on B channel
 
 	usb_b_out(bcs, 0);
 	usb_b_out(bcs, 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -233,10 +289,14 @@ static void led_blink(struct st5481_adapter *adapter)
 		leds &= ~GREEN_LED;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	st5481_usb_device_ctrl_msg(adapter, GPIO_OUT, leds, NULL, NULL);
 }
 
@@ -247,15 +307,20 @@ static void usb_b_out_complete(struct urb *urb)
 	struct st5481_adapter *adapter = bcs->adapter;
 	int buf_nr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	buf_nr = get_buf_nr(b_out->urb, urb);
 	test_and_clear_bit(buf_nr, &b_out->busy);
 
 	if (unlikely(urb->status < 0)) {
 		switch (urb->status) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case -ENOENT:
 			case -ESHUTDOWN:
@@ -273,6 +338,8 @@ static void usb_b_out_complete(struct urb *urb)
 
 	usb_b_out(bcs,buf_nr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case -ENOENT:
 		case -ESHUTDOWN:
 		case -ECONNRESET:
@@ -288,7 +355,10 @@ static void usb_b_out_complete(struct urb *urb)
 	}
 
 	usb_b_out(bcs, buf_nr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (adapter->number_of_leds == 2)
 		led_blink(adapter);
@@ -303,10 +373,14 @@ static void st5481B_mode(struct st5481_bcs *bcs, int mode)
 	struct st5481_adapter *adapter = bcs->adapter;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG(4,"B%d,mode=%d", bcs->channel + 1, mode);
 =======
 	DBG(4, "B%d,mode=%d", bcs->channel + 1, mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG(4, "B%d,mode=%d", bcs->channel + 1, mode);
+>>>>>>> refs/remotes/origin/master
 
 	if (bcs->mode == mode)
 		return;
@@ -328,6 +402,7 @@ static void st5481B_mode(struct st5481_bcs *bcs, int mode)
 			isdnhdlc_out_init(&b_out->hdlc_state, features);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		st5481_usb_pipe_reset(adapter, (bcs->channel+1)*2, NULL, NULL);
 	
 		// Enable B channel interrupts
@@ -337,6 +412,8 @@ static void st5481B_mode(struct st5481_bcs *bcs, int mode)
 		// Enable B channel FIFOs
 		st5481_usb_device_ctrl_msg(adapter, OUT_B1_COUNTER+(bcs->channel*2), 32, st5481B_start_xfer, bcs);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		st5481_usb_pipe_reset(adapter, (bcs->channel + 1) * 2, NULL, NULL);
 
 		// Enable B channel interrupts
@@ -345,7 +422,10 @@ static void st5481B_mode(struct st5481_bcs *bcs, int mode)
 
 		// Enable B channel FIFOs
 		st5481_usb_device_ctrl_msg(adapter, OUT_B1_COUNTER+(bcs->channel * 2), 32, st5481B_start_xfer, bcs);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (adapter->number_of_leds == 4) {
 			if (bcs->channel == 0) {
 				adapter->leds |= B1_LED;
@@ -356,16 +436,22 @@ static void st5481B_mode(struct st5481_bcs *bcs, int mode)
 	} else {
 		// Disble B channel interrupts
 <<<<<<< HEAD
+<<<<<<< HEAD
 		st5481_usb_device_ctrl_msg(adapter, FFMSK_B1+(bcs->channel*2), 0, NULL, NULL);
 
 		// Disable B channel FIFOs
 		st5481_usb_device_ctrl_msg(adapter, OUT_B1_COUNTER+(bcs->channel*2), 0, NULL, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		st5481_usb_device_ctrl_msg(adapter, FFMSK_B1+(bcs->channel * 2), 0, NULL, NULL);
 
 		// Disable B channel FIFOs
 		st5481_usb_device_ctrl_msg(adapter, OUT_B1_COUNTER+(bcs->channel * 2), 0, NULL, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (adapter->number_of_leds == 4) {
 			if (bcs->channel == 0) {
@@ -381,10 +467,14 @@ static void st5481B_mode(struct st5481_bcs *bcs, int mode)
 			b_out->tx_skb = NULL;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -395,6 +485,7 @@ static int st5481_setup_b_out(struct st5481_bcs *bcs)
 	struct usb_host_interface *altsetting = NULL;
 	struct usb_host_endpoint *endpoint;
 <<<<<<< HEAD
+<<<<<<< HEAD
   	struct st5481_b_out *b_out = &bcs->b_out;
 
 	DBG(4,"");
@@ -403,6 +494,11 @@ static int st5481_setup_b_out(struct st5481_bcs *bcs)
 
 	DBG(4, "");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct st5481_b_out *b_out = &bcs->b_out;
+
+	DBG(4, "");
+>>>>>>> refs/remotes/origin/master
 
 	intf = usb_ifnum_to_if(dev, 0);
 	if (intf)
@@ -414,18 +510,24 @@ static int st5481_setup_b_out(struct st5481_bcs *bcs)
 	endpoint = &altsetting->endpoint[EP_B1_OUT - 1 + bcs->channel * 2];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG(4,"endpoint address=%02x,packet size=%d",
 	    endpoint->desc.bEndpointAddress, le16_to_cpu(endpoint->desc.wMaxPacketSize));
 
 	// Allocate memory for 8000bytes/sec + extra bytes if underrun
 	return st5481_setup_isocpipes(b_out->urb, dev, 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	DBG(4, "endpoint address=%02x,packet size=%d",
 	    endpoint->desc.bEndpointAddress, le16_to_cpu(endpoint->desc.wMaxPacketSize));
 
 	// Allocate memory for 8000bytes/sec + extra bytes if underrun
 	return st5481_setup_isocpipes(b_out->urb, dev,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				      usb_sndisocpipe(dev, endpoint->desc.bEndpointAddress),
 				      NUM_ISO_PACKETS_B, SIZE_ISO_PACKETS_B_OUT,
 				      NUM_ISO_PACKETS_B * SIZE_ISO_PACKETS_B_OUT + B_FLOW_ADJUST,
@@ -437,10 +539,14 @@ static void st5481_release_b_out(struct st5481_bcs *bcs)
 	struct st5481_b_out *b_out = &bcs->b_out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG(4,"");
 =======
 	DBG(4, "");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG(4, "");
+>>>>>>> refs/remotes/origin/master
 
 	st5481_release_isocpipes(b_out->urb);
 }
@@ -450,10 +556,14 @@ int st5481_setup_b(struct st5481_bcs *bcs)
 	int retval;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG(4,"");
 =======
 	DBG(4, "");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG(4, "");
+>>>>>>> refs/remotes/origin/master
 
 	retval = st5481_setup_b_out(bcs);
 	if (retval)
@@ -473,6 +583,7 @@ int st5481_setup_b(struct st5481_bcs *bcs)
 	return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  err_b_out:
 	st5481_release_b_out(bcs);
  err:
@@ -481,6 +592,11 @@ err_b_out:
 	st5481_release_b_out(bcs);
 err:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+err_b_out:
+	st5481_release_b_out(bcs);
+err:
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -490,10 +606,14 @@ err:
 void st5481_release_b(struct st5481_bcs *bcs)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG(4,"");
 =======
 	DBG(4, "");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG(4, "");
+>>>>>>> refs/remotes/origin/master
 
 	st5481_release_in(&bcs->b_in);
 	st5481_release_b_out(bcs);
@@ -524,19 +644,27 @@ void st5481_b_l2l1(struct hisax_if *ifc, int pr, void *arg)
 	case PH_ACTIVATE | REQUEST:
 		mode = (long) arg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DBG(4,"B%d,PH_ACTIVATE_REQUEST %ld", bcs->channel + 1, mode);
 =======
 		DBG(4, "B%d,PH_ACTIVATE_REQUEST %ld", bcs->channel + 1, mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		DBG(4, "B%d,PH_ACTIVATE_REQUEST %ld", bcs->channel + 1, mode);
+>>>>>>> refs/remotes/origin/master
 		st5481B_mode(bcs, mode);
 		B_L1L2(bcs, PH_ACTIVATE | INDICATION, NULL);
 		break;
 	case PH_DEACTIVATE | REQUEST:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DBG(4,"B%d,PH_DEACTIVATE_REQUEST", bcs->channel + 1);
 =======
 		DBG(4, "B%d,PH_DEACTIVATE_REQUEST", bcs->channel + 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		DBG(4, "B%d,PH_DEACTIVATE_REQUEST", bcs->channel + 1);
+>>>>>>> refs/remotes/origin/master
 		st5481B_mode(bcs, L1_MODE_NULL);
 		B_L1L2(bcs, PH_DEACTIVATE | INDICATION, NULL);
 		break;

@@ -22,9 +22,12 @@
  * 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+<<<<<<< HEAD
 #define OMAP1_IO_OFFSET		0x01000000	/* Virtual IO = 0xfefb0000 */
 #define OMAP1_IO_ADDRESS(pa)	IOMEM((pa) - OMAP1_IO_OFFSET)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * ----------------------------------------------------------------------------
  * Omap1 specific IO mapping

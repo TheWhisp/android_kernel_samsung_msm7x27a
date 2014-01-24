@@ -14,9 +14,13 @@
 
 #include <media/rc-map.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 static struct rc_map_table rc6_mce[] = {
 
@@ -34,10 +38,14 @@ static struct rc_map_table rc6_mce[] = {
 	{ 0x800f040a, KEY_DELETE },
 	{ 0x800f040b, KEY_ENTER },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ 0x800f040c, KEY_POWER },		/* PC Power */
 =======
 	{ 0x800f040c, KEY_SLEEP },		/* Formerly PC Power */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ 0x800f040c, KEY_SLEEP },		/* Formerly PC Power */
+>>>>>>> refs/remotes/origin/master
 	{ 0x800f040d, KEY_MEDIA },		/* Windows MCE button */
 	{ 0x800f040e, KEY_MUTE },
 	{ 0x800f040f, KEY_INFO },
@@ -53,9 +61,12 @@ static struct rc_map_table rc6_mce[] = {
 	{ 0x800f0417, KEY_RECORD },
 	{ 0x800f0418, KEY_PAUSE },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ 0x800f046e, KEY_PLAYPAUSE },
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ 0x800f0419, KEY_STOP },
 	{ 0x800f041a, KEY_NEXT },
 	{ 0x800f041b, KEY_PREVIOUS },
@@ -108,7 +119,11 @@ static struct rc_map_list rc6_mce_map = {
 	.map = {
 		.scan    = rc6_mce,
 		.size    = ARRAY_SIZE(rc6_mce),
+<<<<<<< HEAD
 		.rc_type = RC_TYPE_RC6,
+=======
+		.rc_type = RC_TYPE_RC6_MCE,
+>>>>>>> refs/remotes/origin/master
 		.name    = RC_MAP_RC6_MCE,
 	}
 };

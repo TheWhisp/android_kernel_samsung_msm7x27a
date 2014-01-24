@@ -382,6 +382,7 @@ static int c2_alloc_qpn(struct c2_dev *c2dev, struct c2_qp *qp)
 {
 	int ret;
 
+<<<<<<< HEAD
         do {
 		spin_lock_irq(&c2dev->qp_table.lock);
 		ret = idr_get_new_above(&c2dev->qp_table.idr, qp,
@@ -390,6 +391,18 @@ static int c2_alloc_qpn(struct c2_dev *c2dev, struct c2_qp *qp)
         } while ((ret == -EAGAIN) &&
 	 	 idr_pre_get(&c2dev->qp_table.idr, GFP_KERNEL));
 	return ret;
+=======
+	idr_preload(GFP_KERNEL);
+	spin_lock_irq(&c2dev->qp_table.lock);
+
+	ret = idr_alloc_cyclic(&c2dev->qp_table.idr, qp, 0, 0, GFP_NOWAIT);
+	if (ret >= 0)
+		qp->qpn = ret;
+
+	spin_unlock_irq(&c2dev->qp_table.lock);
+	idr_preload_end();
+	return ret < 0 ? ret : 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void c2_free_qpn(struct c2_dev *c2dev, int qpn)
@@ -1010,13 +1023,21 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 void __devinit c2_init_qp_table(struct c2_dev *c2dev)
+=======
+void c2_init_qp_table(struct c2_dev *c2dev)
+>>>>>>> refs/remotes/origin/master
 {
 	spin_lock_init(&c2dev->qp_table.lock);
 	idr_init(&c2dev->qp_table.idr);
 }
 
+<<<<<<< HEAD
 void __devexit c2_cleanup_qp_table(struct c2_dev *c2dev)
+=======
+void c2_cleanup_qp_table(struct c2_dev *c2dev)
+>>>>>>> refs/remotes/origin/master
 {
 	idr_destroy(&c2dev->qp_table.idr);
 }

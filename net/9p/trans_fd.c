@@ -26,10 +26,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/in.h>
 #include <linux/module.h>
 #include <linux/net.h>
@@ -66,6 +71,10 @@ struct p9_fd_opts {
 	int rfd;
 	int wfd;
 	u16 port;
+<<<<<<< HEAD
+=======
+	int privport;
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -90,12 +99,21 @@ struct p9_trans_fd {
 enum {
 	/* Options that take integer arguments */
 	Opt_port, Opt_rfdno, Opt_wfdno, Opt_err,
+<<<<<<< HEAD
+=======
+	/* Options that take no arguments */
+	Opt_privport,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const match_table_t tokens = {
 	{Opt_port, "port=%u"},
 	{Opt_rfdno, "rfdno=%u"},
 	{Opt_wfdno, "wfdno=%u"},
+<<<<<<< HEAD
+=======
+	{Opt_privport, "privport"},
+>>>>>>> refs/remotes/origin/master
 	{Opt_err, NULL},
 };
 
@@ -164,6 +182,12 @@ static DEFINE_SPINLOCK(p9_poll_lock);
 static LIST_HEAD(p9_poll_pending_list);
 static DECLARE_WORK(p9_poll_work, p9_poll_workfn);
 
+<<<<<<< HEAD
+=======
+static unsigned int p9_ipport_resv_min = P9_DEF_MIN_RESVPORT;
+static unsigned int p9_ipport_resv_max = P9_DEF_MAX_RESVPORT;
+
+>>>>>>> refs/remotes/origin/master
 static void p9_mux_poll_stop(struct p9_conn *m)
 {
 	unsigned long flags;
@@ -197,10 +221,14 @@ static void p9_conn_cancel(struct p9_conn *m, int err)
 	LIST_HEAD(cancel_list);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_ERROR, "mux %p err %d\n", m, err);
 =======
 	p9_debug(P9_DEBUG_ERROR, "mux %p err %d\n", m, err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_ERROR, "mux %p err %d\n", m, err);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&m->client->lock, flags);
 
@@ -227,10 +255,14 @@ static void p9_conn_cancel(struct p9_conn *m, int err)
 
 	list_for_each_entry_safe(req, rtmp, &cancel_list, req_list) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_ERROR, "call back req %p\n", req);
 =======
 		p9_debug(P9_DEBUG_ERROR, "call back req %p\n", req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		p9_debug(P9_DEBUG_ERROR, "call back req %p\n", req);
+>>>>>>> refs/remotes/origin/master
 		list_del(&req->req_list);
 		p9_client_cb(m->client, req);
 	}
@@ -248,10 +280,17 @@ p9_fd_poll(struct p9_client *client, struct poll_table_struct *pt)
 	if (!ts)
 		return -EREMOTEIO;
 
+<<<<<<< HEAD
 	if (!ts->rd->f_op || !ts->rd->f_op->poll)
 		return -EIO;
 
 	if (!ts->wr->f_op || !ts->wr->f_op->poll)
+=======
+	if (!ts->rd->f_op->poll)
+		return -EIO;
+
+	if (!ts->wr->f_op->poll)
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 
 	ret = ts->rd->f_op->poll(ts->rd, pt);
@@ -289,10 +328,14 @@ static int p9_fd_read(struct p9_client *client, void *v, int len)
 
 	if (!(ts->rd->f_flags & O_NONBLOCK))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_ERROR, "blocking read ...\n");
 =======
 		p9_debug(P9_DEBUG_ERROR, "blocking read ...\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		p9_debug(P9_DEBUG_ERROR, "blocking read ...\n");
+>>>>>>> refs/remotes/origin/master
 
 	ret = kernel_read(ts->rd, ts->rd->f_pos, v, len);
 	if (ret <= 0 && ret != -ERESTARTSYS && ret != -EAGAIN)
@@ -317,10 +360,14 @@ static void p9_read_work(struct work_struct *work)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_TRANS, "start mux %p pos %d\n", m, m->rpos);
 =======
 	p9_debug(P9_DEBUG_TRANS, "start mux %p pos %d\n", m, m->rpos);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_TRANS, "start mux %p pos %d\n", m, m->rpos);
+>>>>>>> refs/remotes/origin/master
 
 	if (!m->rbuf) {
 		m->rbuf = m->tmp_buf;
@@ -330,21 +377,29 @@ static void p9_read_work(struct work_struct *work)
 
 	clear_bit(Rpending, &m->wsched);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_TRANS, "read mux %p pos %d size: %d = %d\n", m,
 					m->rpos, m->rsize, m->rsize-m->rpos);
 	err = p9_fd_read(m->client, m->rbuf + m->rpos,
 						m->rsize - m->rpos);
 	P9_DPRINTK(P9_DEBUG_TRANS, "mux %p got %d bytes\n", m, err);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	p9_debug(P9_DEBUG_TRANS, "read mux %p pos %d size: %d = %d\n",
 		 m, m->rpos, m->rsize, m->rsize-m->rpos);
 	err = p9_fd_read(m->client, m->rbuf + m->rpos,
 						m->rsize - m->rpos);
 	p9_debug(P9_DEBUG_TRANS, "mux %p got %d bytes\n", m, err);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (err == -EAGAIN) {
 		clear_bit(Rworksched, &m->wsched);
 		return;
+=======
+	if (err == -EAGAIN) {
+		goto end_clear;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (err <= 0)
@@ -355,6 +410,7 @@ static void p9_read_work(struct work_struct *work)
 	if ((!m->req) && (m->rpos == m->rsize)) { /* header read in */
 		u16 tag;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_TRANS, "got new header\n");
 
 		n = le32_to_cpu(*(__le32 *) m->rbuf); /* read packet size */
@@ -362,18 +418,24 @@ static void p9_read_work(struct work_struct *work)
 			P9_DPRINTK(P9_DEBUG_ERROR,
 				"requested packet size too big: %d\n", n);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		p9_debug(P9_DEBUG_TRANS, "got new header\n");
 
 		n = le32_to_cpu(*(__le32 *) m->rbuf); /* read packet size */
 		if (n >= m->client->msize) {
 			p9_debug(P9_DEBUG_ERROR,
 				 "requested packet size too big: %d\n", n);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			err = -EIO;
 			goto error;
 		}
 
 		tag = le16_to_cpu(*(__le16 *) (m->rbuf+5)); /* read tag */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_TRANS,
 			"mux %p pkt: size: %d bytes tag: %d\n", m, n, tag);
@@ -381,10 +443,15 @@ static void p9_read_work(struct work_struct *work)
 		p9_debug(P9_DEBUG_TRANS,
 			 "mux %p pkt: size: %d bytes tag: %d\n", m, n, tag);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		p9_debug(P9_DEBUG_TRANS,
+			 "mux %p pkt: size: %d bytes tag: %d\n", m, n, tag);
+>>>>>>> refs/remotes/origin/master
 
 		m->req = p9_tag_lookup(m->client, tag);
 		if (!m->req || (m->req->status != REQ_STATUS_SENT &&
 					m->req->status != REQ_STATUS_FLSH)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			P9_DPRINTK(P9_DEBUG_ERROR, "Unexpected packet tag %d\n",
 								 tag);
@@ -392,6 +459,10 @@ static void p9_read_work(struct work_struct *work)
 			p9_debug(P9_DEBUG_ERROR, "Unexpected packet tag %d\n",
 				 tag);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			p9_debug(P9_DEBUG_ERROR, "Unexpected packet tag %d\n",
+				 tag);
+>>>>>>> refs/remotes/origin/master
 			err = -EIO;
 			goto error;
 		}
@@ -413,10 +484,14 @@ static void p9_read_work(struct work_struct *work)
 	/* not an else because some packets (like clunk) have no payload */
 	if ((m->req) && (m->rpos == m->rsize)) { /* packet is read in */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_TRANS, "got new packet\n");
 =======
 		p9_debug(P9_DEBUG_TRANS, "got new packet\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		p9_debug(P9_DEBUG_TRANS, "got new packet\n");
+>>>>>>> refs/remotes/origin/master
 		spin_lock(&m->client->lock);
 		if (m->req->status != REQ_STATUS_ERROR)
 			m->req->status = REQ_STATUS_RCVD;
@@ -429,12 +504,19 @@ static void p9_read_work(struct work_struct *work)
 		m->req = NULL;
 	}
 
+<<<<<<< HEAD
+=======
+end_clear:
+	clear_bit(Rworksched, &m->wsched);
+
+>>>>>>> refs/remotes/origin/master
 	if (!list_empty(&m->req_list)) {
 		if (test_and_clear_bit(Rpending, &m->wsched))
 			n = POLLIN;
 		else
 			n = p9_fd_poll(m->client, NULL);
 
+<<<<<<< HEAD
 		if (n & POLLIN) {
 <<<<<<< HEAD
 			P9_DPRINTK(P9_DEBUG_TRANS, "sched read work %p\n", m);
@@ -446,6 +528,13 @@ static void p9_read_work(struct work_struct *work)
 			clear_bit(Rworksched, &m->wsched);
 	} else
 		clear_bit(Rworksched, &m->wsched);
+=======
+		if ((n & POLLIN) && !test_and_set_bit(Rworksched, &m->wsched)) {
+			p9_debug(P9_DEBUG_TRANS, "sched read work %p\n", m);
+			schedule_work(&m->rq);
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return;
 error:
@@ -475,10 +564,14 @@ static int p9_fd_write(struct p9_client *client, void *v, int len)
 
 	if (!(ts->wr->f_flags & O_NONBLOCK))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_ERROR, "blocking write ...\n");
 =======
 		p9_debug(P9_DEBUG_ERROR, "blocking write ...\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		p9_debug(P9_DEBUG_ERROR, "blocking write ...\n");
+>>>>>>> refs/remotes/origin/master
 
 	oldfs = get_fs();
 	set_fs(get_ds());
@@ -511,6 +604,7 @@ static void p9_write_work(struct work_struct *work)
 	}
 
 	if (!m->wsize) {
+<<<<<<< HEAD
 		if (list_empty(&m->unsent_req_list)) {
 			clear_bit(Wworksched, &m->wsched);
 			return;
@@ -525,6 +619,19 @@ static void p9_write_work(struct work_struct *work)
 =======
 		p9_debug(P9_DEBUG_TRANS, "move req %p\n", req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_lock(&m->client->lock);
+		if (list_empty(&m->unsent_req_list)) {
+			clear_bit(Wworksched, &m->wsched);
+			spin_unlock(&m->client->lock);
+			return;
+		}
+
+		req = list_entry(m->unsent_req_list.next, struct p9_req_t,
+			       req_list);
+		req->status = REQ_STATUS_SENT;
+		p9_debug(P9_DEBUG_TRANS, "move req %p\n", req);
+>>>>>>> refs/remotes/origin/master
 		list_move_tail(&req->req_list, &m->req_list);
 
 		m->wbuf = req->tc->sdata;
@@ -534,22 +641,31 @@ static void p9_write_work(struct work_struct *work)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_TRANS, "mux %p pos %d size %d\n", m, m->wpos,
 								m->wsize);
 	clear_bit(Wpending, &m->wsched);
 	err = p9_fd_write(m->client, m->wbuf + m->wpos, m->wsize - m->wpos);
 	P9_DPRINTK(P9_DEBUG_TRANS, "mux %p sent %d bytes\n", m, err);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	p9_debug(P9_DEBUG_TRANS, "mux %p pos %d size %d\n",
 		 m, m->wpos, m->wsize);
 	clear_bit(Wpending, &m->wsched);
 	err = p9_fd_write(m->client, m->wbuf + m->wpos, m->wsize - m->wpos);
 	p9_debug(P9_DEBUG_TRANS, "mux %p sent %d bytes\n", m, err);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (err == -EAGAIN) {
 		clear_bit(Wworksched, &m->wsched);
 		return;
 	}
+=======
+	if (err == -EAGAIN)
+		goto end_clear;
+
+>>>>>>> refs/remotes/origin/master
 
 	if (err < 0)
 		goto error;
@@ -562,12 +678,20 @@ static void p9_write_work(struct work_struct *work)
 	if (m->wpos == m->wsize)
 		m->wpos = m->wsize = 0;
 
+<<<<<<< HEAD
 	if (m->wsize == 0 && !list_empty(&m->unsent_req_list)) {
+=======
+end_clear:
+	clear_bit(Wworksched, &m->wsched);
+
+	if (m->wsize || !list_empty(&m->unsent_req_list)) {
+>>>>>>> refs/remotes/origin/master
 		if (test_and_clear_bit(Wpending, &m->wsched))
 			n = POLLOUT;
 		else
 			n = p9_fd_poll(m->client, NULL);
 
+<<<<<<< HEAD
 		if (n & POLLOUT) {
 <<<<<<< HEAD
 			P9_DPRINTK(P9_DEBUG_TRANS, "sched write work %p\n", m);
@@ -579,6 +703,14 @@ static void p9_write_work(struct work_struct *work)
 			clear_bit(Wworksched, &m->wsched);
 	} else
 		clear_bit(Wworksched, &m->wsched);
+=======
+		if ((n & POLLOUT) &&
+		   !test_and_set_bit(Wworksched, &m->wsched)) {
+			p9_debug(P9_DEBUG_TRANS, "sched write work %p\n", m);
+			schedule_work(&m->wq);
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return;
 
@@ -587,7 +719,11 @@ error:
 	clear_bit(Wworksched, &m->wsched);
 }
 
+<<<<<<< HEAD
 static int p9_pollwake(wait_queue_t *wait, unsigned mode, int sync, void *key)
+=======
+static int p9_pollwake(wait_queue_t *wait, unsigned int mode, int sync, void *key)
+>>>>>>> refs/remotes/origin/master
 {
 	struct p9_poll_wait *pwait =
 		container_of(wait, struct p9_poll_wait, wait);
@@ -628,10 +764,14 @@ p9_pollwait(struct file *filp, wait_queue_head_t *wait_address, poll_table *p)
 
 	if (!pwait) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_ERROR, "not enough wait_address slots\n");
 =======
 		p9_debug(P9_DEBUG_ERROR, "not enough wait_address slots\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		p9_debug(P9_DEBUG_ERROR, "not enough wait_address slots\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -654,11 +794,15 @@ static struct p9_conn *p9_conn_create(struct p9_client *client)
 	struct p9_conn *m;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_TRANS, "client %p msize %d\n", client,
 								client->msize);
 =======
 	p9_debug(P9_DEBUG_TRANS, "client %p msize %d\n", client, client->msize);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_TRANS, "client %p msize %d\n", client, client->msize);
+>>>>>>> refs/remotes/origin/master
 	m = kzalloc(sizeof(struct p9_conn), GFP_KERNEL);
 	if (!m)
 		return ERR_PTR(-ENOMEM);
@@ -676,19 +820,27 @@ static struct p9_conn *p9_conn_create(struct p9_client *client)
 	n = p9_fd_poll(client, &m->pt);
 	if (n & POLLIN) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_TRANS, "mux %p can read\n", m);
 =======
 		p9_debug(P9_DEBUG_TRANS, "mux %p can read\n", m);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		p9_debug(P9_DEBUG_TRANS, "mux %p can read\n", m);
+>>>>>>> refs/remotes/origin/master
 		set_bit(Rpending, &m->wsched);
 	}
 
 	if (n & POLLOUT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_TRANS, "mux %p can write\n", m);
 =======
 		p9_debug(P9_DEBUG_TRANS, "mux %p can write\n", m);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		p9_debug(P9_DEBUG_TRANS, "mux %p can write\n", m);
+>>>>>>> refs/remotes/origin/master
 		set_bit(Wpending, &m->wsched);
 	}
 
@@ -711,10 +863,14 @@ static void p9_poll_mux(struct p9_conn *m)
 	n = p9_fd_poll(m->client, NULL);
 	if (n < 0 || n & (POLLERR | POLLHUP | POLLNVAL)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_TRANS, "error mux %p err %d\n", m, n);
 =======
 		p9_debug(P9_DEBUG_TRANS, "error mux %p err %d\n", m, n);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		p9_debug(P9_DEBUG_TRANS, "error mux %p err %d\n", m, n);
+>>>>>>> refs/remotes/origin/master
 		if (n >= 0)
 			n = -ECONNRESET;
 		p9_conn_cancel(m, n);
@@ -722,6 +878,7 @@ static void p9_poll_mux(struct p9_conn *m)
 
 	if (n & POLLIN) {
 		set_bit(Rpending, &m->wsched);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_TRANS, "mux %p can read\n", m);
 		if (!test_and_set_bit(Rworksched, &m->wsched)) {
@@ -731,6 +888,11 @@ static void p9_poll_mux(struct p9_conn *m)
 		if (!test_and_set_bit(Rworksched, &m->wsched)) {
 			p9_debug(P9_DEBUG_TRANS, "sched read work %p\n", m);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		p9_debug(P9_DEBUG_TRANS, "mux %p can read\n", m);
+		if (!test_and_set_bit(Rworksched, &m->wsched)) {
+			p9_debug(P9_DEBUG_TRANS, "sched read work %p\n", m);
+>>>>>>> refs/remotes/origin/master
 			schedule_work(&m->rq);
 		}
 	}
@@ -738,16 +900,22 @@ static void p9_poll_mux(struct p9_conn *m)
 	if (n & POLLOUT) {
 		set_bit(Wpending, &m->wsched);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_TRANS, "mux %p can write\n", m);
 		if ((m->wsize || !list_empty(&m->unsent_req_list)) &&
 		    !test_and_set_bit(Wworksched, &m->wsched)) {
 			P9_DPRINTK(P9_DEBUG_TRANS, "sched write work %p\n", m);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		p9_debug(P9_DEBUG_TRANS, "mux %p can write\n", m);
 		if ((m->wsize || !list_empty(&m->unsent_req_list)) &&
 		    !test_and_set_bit(Wworksched, &m->wsched)) {
 			p9_debug(P9_DEBUG_TRANS, "sched write work %p\n", m);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			schedule_work(&m->wq);
 		}
 	}
@@ -771,12 +939,17 @@ static int p9_fd_request(struct p9_client *client, struct p9_req_t *req)
 	struct p9_conn *m = ts->conn;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_TRANS, "mux %p task %p tcall %p id %d\n", m,
 						current, req->tc, req->tc->id);
 =======
 	p9_debug(P9_DEBUG_TRANS, "mux %p task %p tcall %p id %d\n",
 		 m, current, req->tc, req->tc->id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_TRANS, "mux %p task %p tcall %p id %d\n",
+		 m, current, req->tc, req->tc->id);
+>>>>>>> refs/remotes/origin/master
 	if (m->err < 0)
 		return m->err;
 
@@ -801,10 +974,14 @@ static int p9_fd_cancel(struct p9_client *client, struct p9_req_t *req)
 	int ret = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_TRANS, "client %p req %p\n", client, req);
 =======
 	p9_debug(P9_DEBUG_TRANS, "client %p req %p\n", client, req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_TRANS, "client %p req %p\n", client, req);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&client->lock);
 
@@ -845,12 +1022,17 @@ static int parse_opts(char *params, struct p9_fd_opts *opts)
 	tmp_options = kstrdup(params, GFP_KERNEL);
 	if (!tmp_options) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_ERROR,
 				"failed to allocate copy of option string\n");
 =======
 		p9_debug(P9_DEBUG_ERROR,
 			 "failed to allocate copy of option string\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		p9_debug(P9_DEBUG_ERROR,
+			 "failed to allocate copy of option string\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 	options = tmp_options;
@@ -861,6 +1043,7 @@ static int parse_opts(char *params, struct p9_fd_opts *opts)
 		if (!*p)
 			continue;
 		token = match_token(p, tokens, args);
+<<<<<<< HEAD
 		if (token != Opt_err) {
 			r = match_int(&args[0], &option);
 			if (r < 0) {
@@ -871,6 +1054,13 @@ static int parse_opts(char *params, struct p9_fd_opts *opts)
 				p9_debug(P9_DEBUG_ERROR,
 					 "integer field, but no integer?\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ((token != Opt_err) && (token != Opt_privport)) {
+			r = match_int(&args[0], &option);
+			if (r < 0) {
+				p9_debug(P9_DEBUG_ERROR,
+					 "integer field, but no integer?\n");
+>>>>>>> refs/remotes/origin/master
 				continue;
 			}
 		}
@@ -884,6 +1074,12 @@ static int parse_opts(char *params, struct p9_fd_opts *opts)
 		case Opt_wfdno:
 			opts->wfd = option;
 			break;
+<<<<<<< HEAD
+=======
+		case Opt_privport:
+			opts->privport = 1;
+			break;
+>>>>>>> refs/remotes/origin/master
 		default:
 			continue;
 		}
@@ -920,13 +1116,19 @@ static int p9_fd_open(struct p9_client *client, int rfd, int wfd)
 static int p9_socket_open(struct p9_client *client, struct socket *csocket)
 {
 	struct p9_trans_fd *p;
+<<<<<<< HEAD
 	int ret, fd;
+=======
+	struct file *file;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	p = kmalloc(sizeof(struct p9_trans_fd), GFP_KERNEL);
 	if (!p)
 		return -ENOMEM;
 
 	csocket->sk->sk_allocation = GFP_NOIO;
+<<<<<<< HEAD
 	fd = sock_map_fd(csocket, 0);
 	if (fd < 0) {
 <<<<<<< HEAD
@@ -948,6 +1150,22 @@ static int p9_socket_open(struct p9_client *client, struct socket *csocket)
 
 	sys_close(fd);	/* still racy */
 
+=======
+	file = sock_alloc_file(csocket, 0, NULL);
+	if (IS_ERR(file)) {
+		pr_err("%s (%d): failed to map fd\n",
+		       __func__, task_pid_nr(current));
+		sock_release(csocket);
+		kfree(p);
+		return PTR_ERR(file);
+	}
+
+	get_file(file);
+	p->wr = p->rd = file;
+	client->trans = p;
+	client->status = Connected;
+
+>>>>>>> refs/remotes/origin/master
 	p->rd->f_flags |= O_NONBLOCK;
 
 	p->conn = p9_conn_create(client);
@@ -971,12 +1189,17 @@ static int p9_socket_open(struct p9_client *client, struct socket *csocket)
 static void p9_conn_destroy(struct p9_conn *m)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_TRANS, "mux %p prev %p next %p\n", m,
 		m->mux_list.prev, m->mux_list.next);
 =======
 	p9_debug(P9_DEBUG_TRANS, "mux %p prev %p next %p\n",
 		 m, m->mux_list.prev, m->mux_list.next);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_TRANS, "mux %p prev %p next %p\n",
+		 m, m->mux_list.prev, m->mux_list.next);
+>>>>>>> refs/remotes/origin/master
 
 	p9_mux_poll_stop(m);
 	cancel_work_sync(&m->rq);
@@ -1034,6 +1257,27 @@ static inline int valid_ipaddr4(const char *buf)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int p9_bind_privport(struct socket *sock)
+{
+	struct sockaddr_in cl;
+	int port, err = -EINVAL;
+
+	memset(&cl, 0, sizeof(cl));
+	cl.sin_family = AF_INET;
+	cl.sin_addr.s_addr = INADDR_ANY;
+	for (port = p9_ipport_resv_max; port >= p9_ipport_resv_min; port--) {
+		cl.sin_port = htons((ushort)port);
+		err = kernel_bind(sock, (struct sockaddr *)&cl, sizeof(cl));
+		if (err != -EADDRINUSE)
+			break;
+	}
+	return err;
+}
+
+
+>>>>>>> refs/remotes/origin/master
 static int
 p9_fd_create_tcp(struct p9_client *client, const char *addr, char *args)
 {
@@ -1058,6 +1302,7 @@ p9_fd_create_tcp(struct p9_client *client, const char *addr, char *args)
 			    SOCK_STREAM, IPPROTO_TCP, &csocket, 1);
 	if (err) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_EPRINTK(KERN_ERR, "p9_trans_tcp: problem creating socket\n");
 =======
 		pr_err("%s (%d): problem creating socket\n",
@@ -1066,10 +1311,28 @@ p9_fd_create_tcp(struct p9_client *client, const char *addr, char *args)
 		return err;
 	}
 
+=======
+		pr_err("%s (%d): problem creating socket\n",
+		       __func__, task_pid_nr(current));
+		return err;
+	}
+
+	if (opts.privport) {
+		err = p9_bind_privport(csocket);
+		if (err < 0) {
+			pr_err("%s (%d): problem binding to privport\n",
+			       __func__, task_pid_nr(current));
+			sock_release(csocket);
+			return err;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	err = csocket->ops->connect(csocket,
 				    (struct sockaddr *)&sin_server,
 				    sizeof(struct sockaddr_in), 0);
 	if (err < 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		P9_EPRINTK(KERN_ERR,
 			"p9_trans_tcp: problem connecting socket to %s\n",
@@ -1078,6 +1341,10 @@ p9_fd_create_tcp(struct p9_client *client, const char *addr, char *args)
 		pr_err("%s (%d): problem connecting socket to %s\n",
 		       __func__, task_pid_nr(current), addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s (%d): problem connecting socket to %s\n",
+		       __func__, task_pid_nr(current), addr);
+>>>>>>> refs/remotes/origin/master
 		sock_release(csocket);
 		return err;
 	}
@@ -1096,12 +1363,17 @@ p9_fd_create_unix(struct p9_client *client, const char *addr, char *args)
 
 	if (strlen(addr) >= UNIX_PATH_MAX) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_EPRINTK(KERN_ERR, "p9_trans_unix: address too long: %s\n",
 			addr);
 =======
 		pr_err("%s (%d): address too long: %s\n",
 		       __func__, task_pid_nr(current), addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s (%d): address too long: %s\n",
+		       __func__, task_pid_nr(current), addr);
+>>>>>>> refs/remotes/origin/master
 		return -ENAMETOOLONG;
 	}
 
@@ -1111,17 +1383,24 @@ p9_fd_create_unix(struct p9_client *client, const char *addr, char *args)
 			    SOCK_STREAM, 0, &csocket, 1);
 	if (err < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_EPRINTK(KERN_ERR, "p9_trans_unix: problem creating socket\n");
 =======
 		pr_err("%s (%d): problem creating socket\n",
 		       __func__, task_pid_nr(current));
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s (%d): problem creating socket\n",
+		       __func__, task_pid_nr(current));
+
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 	err = csocket->ops->connect(csocket, (struct sockaddr *)&sun_server,
 			sizeof(struct sockaddr_un) - 1, 0);
 	if (err < 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		P9_EPRINTK(KERN_ERR,
 			"p9_trans_unix: problem connecting socket: %s: %d\n",
@@ -1130,6 +1409,10 @@ p9_fd_create_unix(struct p9_client *client, const char *addr, char *args)
 		pr_err("%s (%d): problem connecting socket: %s: %d\n",
 		       __func__, task_pid_nr(current), addr, err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s (%d): problem connecting socket: %s: %d\n",
+		       __func__, task_pid_nr(current), addr, err);
+>>>>>>> refs/remotes/origin/master
 		sock_release(csocket);
 		return err;
 	}
@@ -1148,10 +1431,14 @@ p9_fd_create(struct p9_client *client, const char *addr, char *args)
 
 	if (opts.rfd == ~0 || opts.wfd == ~0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "v9fs: Insufficient options for proto=fd\n");
 =======
 		pr_err("Insufficient options for proto=fd\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Insufficient options for proto=fd\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOPROTOOPT;
 	}
 
@@ -1219,10 +1506,14 @@ static void p9_poll_workfn(struct work_struct *work)
 	unsigned long flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_TRANS, "start %p\n", current);
 =======
 	p9_debug(P9_DEBUG_TRANS, "start %p\n", current);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_TRANS, "start %p\n", current);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&p9_poll_lock, flags);
 	while (!list_empty(&p9_poll_pending_list)) {
@@ -1239,10 +1530,14 @@ static void p9_poll_workfn(struct work_struct *work)
 	spin_unlock_irqrestore(&p9_poll_lock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_TRANS, "finish\n");
 =======
 	p9_debug(P9_DEBUG_TRANS, "finish\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_TRANS, "finish\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 int p9_trans_fd_init(void)
@@ -1256,7 +1551,11 @@ int p9_trans_fd_init(void)
 
 void p9_trans_fd_exit(void)
 {
+<<<<<<< HEAD
 	flush_work_sync(&p9_poll_work);
+=======
+	flush_work(&p9_poll_work);
+>>>>>>> refs/remotes/origin/master
 	v9fs_unregister_trans(&p9_tcp_trans);
 	v9fs_unregister_trans(&p9_unix_trans);
 	v9fs_unregister_trans(&p9_fd_trans);

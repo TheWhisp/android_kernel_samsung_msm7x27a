@@ -19,8 +19,12 @@
  */
 #include <linux/module.h>
 
+<<<<<<< HEAD
 #include <plat/cpu.h>
 
+=======
+#include "soc.h"
+>>>>>>> refs/remotes/origin/master
 #include "control.h"
 #include "omap_opp_data.h"
 #include "pm.h"
@@ -169,4 +173,8 @@ int __init omap3_opp_init(void)
 
 	return r;
 }
+<<<<<<< HEAD
 device_initcall(omap3_opp_init);
+=======
+omap_device_initcall(omap3_opp_init);
+>>>>>>> refs/remotes/origin/master

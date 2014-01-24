@@ -57,6 +57,10 @@
 #include <linux/zorro.h>
 #include <linux/bitops.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/byteorder.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 #include <asm/amigaints.h>
 #include <asm/amigahw.h>
@@ -293,7 +297,10 @@ static int lance_rx(struct net_device *dev)
 			struct sk_buff *skb = netdev_alloc_skb(dev, len + 2);
 
 			if (!skb) {
+<<<<<<< HEAD
 				netdev_warn(dev, "Memory squeeze, deferring packet\n");
+=======
+>>>>>>> refs/remotes/origin/master
 				dev->stats.rx_dropped++;
 				rd->mblength = 0;
 				rd->rmd1_bits = LE_R1_OWN;
@@ -639,12 +646,21 @@ static void lance_set_multicast(struct net_device *dev)
 	netif_wake_queue(dev);
 }
 
+<<<<<<< HEAD
 static int __devinit a2065_init_one(struct zorro_dev *z,
 				    const struct zorro_device_id *ent);
 static void __devexit a2065_remove_one(struct zorro_dev *z);
 
 
 static struct zorro_device_id a2065_zorro_tbl[] __devinitdata = {
+=======
+static int a2065_init_one(struct zorro_dev *z,
+			  const struct zorro_device_id *ent);
+static void a2065_remove_one(struct zorro_dev *z);
+
+
+static struct zorro_device_id a2065_zorro_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ ZORRO_PROD_CBM_A2065_1 },
 	{ ZORRO_PROD_CBM_A2065_2 },
 	{ ZORRO_PROD_AMERISTAR_A2065 },
@@ -656,7 +672,11 @@ static struct zorro_driver a2065_driver = {
 	.name		= "a2065",
 	.id_table	= a2065_zorro_tbl,
 	.probe		= a2065_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(a2065_remove_one),
+=======
+	.remove		= a2065_remove_one,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct net_device_ops lance_netdev_ops = {
@@ -670,8 +690,13 @@ static const struct net_device_ops lance_netdev_ops = {
 	.ndo_set_mac_address	= eth_mac_addr,
 };
 
+<<<<<<< HEAD
 static int __devinit a2065_init_one(struct zorro_dev *z,
 				    const struct zorro_device_id *ent)
+=======
+static int a2065_init_one(struct zorro_dev *z,
+			  const struct zorro_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	struct lance_private *priv;
@@ -679,6 +704,10 @@ static int __devinit a2065_init_one(struct zorro_dev *z,
 	unsigned long base_addr = board + A2065_LANCE;
 	unsigned long mem_start = board + A2065_RAM;
 	struct resource *r1, *r2;
+<<<<<<< HEAD
+=======
+	u32 serial;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	r1 = request_mem_region(base_addr, sizeof(struct lance_regs),
@@ -703,6 +732,10 @@ static int __devinit a2065_init_one(struct zorro_dev *z,
 	r1->name = dev->name;
 	r2->name = dev->name;
 
+<<<<<<< HEAD
+=======
+	serial = be32_to_cpu(z->rom.er_SerialNumber);
+>>>>>>> refs/remotes/origin/master
 	dev->dev_addr[0] = 0x00;
 	if (z->id != ZORRO_PROD_AMERISTAR_A2065) {	/* Commodore */
 		dev->dev_addr[1] = 0x80;
@@ -711,11 +744,19 @@ static int __devinit a2065_init_one(struct zorro_dev *z,
 		dev->dev_addr[1] = 0x00;
 		dev->dev_addr[2] = 0x9f;
 	}
+<<<<<<< HEAD
 	dev->dev_addr[3] = (z->rom.er_SerialNumber >> 16) & 0xff;
 	dev->dev_addr[4] = (z->rom.er_SerialNumber >> 8) & 0xff;
 	dev->dev_addr[5] = z->rom.er_SerialNumber & 0xff;
 	dev->base_addr = ZTWO_VADDR(base_addr);
 	dev->mem_start = ZTWO_VADDR(mem_start);
+=======
+	dev->dev_addr[3] = (serial >> 16) & 0xff;
+	dev->dev_addr[4] = (serial >> 8) & 0xff;
+	dev->dev_addr[5] = serial & 0xff;
+	dev->base_addr = (unsigned long)ZTWO_VADDR(base_addr);
+	dev->mem_start = (unsigned long)ZTWO_VADDR(mem_start);
+>>>>>>> refs/remotes/origin/master
 	dev->mem_end = dev->mem_start + A2065_RAM_SIZE;
 
 	priv->ll = (volatile struct lance_regs *)dev->base_addr;
@@ -754,7 +795,11 @@ static int __devinit a2065_init_one(struct zorro_dev *z,
 }
 
 
+<<<<<<< HEAD
 static void __devexit a2065_remove_one(struct zorro_dev *z)
+=======
+static void a2065_remove_one(struct zorro_dev *z)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = zorro_get_drvdata(z);
 

@@ -42,10 +42,14 @@ mpu_base	I/O base address for activate MPU-401 mode
 mpu_irq		MPU-401 irq line (5, 7, 9, 10 or 0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 The /etc/modprobe.conf will have lines like this:
 =======
 A configuration file in /etc/modprobe.d/ directory will have lines like this:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+A configuration file in /etc/modprobe.d/ directory will have lines like this:
+>>>>>>> refs/remotes/origin/master
 
 options opl3 io=0x388
 options ad1848 io=0x530 irq=11 dma=3
@@ -56,18 +60,24 @@ ad1848 are the corresponding options for the MSS and OPL3 modules.
 
 Loading MSS and OPL3 needs to pre load the aedsp16 module to set up correctly
 <<<<<<< HEAD
+<<<<<<< HEAD
 the sound card. Installation dependencies must be written in the modprobe.conf
 file:
 
 install ad1848 /sbin/modprobe aedsp16 && /sbin/modprobe -i ad1848
 install opl3 /sbin/modprobe aedsp16 && /sbin/modprobe -i opl3
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 the sound card. Installation dependencies must be written in configuration
 files under /etc/modprobe.d/ directory:
 
 softdep ad1848 pre: aedsp16
 softdep opl3 pre: aedsp16
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 Then you must load the sound modules stack in this order:
 sound -> aedsp16 -> [ ad1848, opl3 ]

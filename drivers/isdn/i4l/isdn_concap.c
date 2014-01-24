@@ -1,9 +1,13 @@
 /* $Id: isdn_concap.c,v 1.1.2.2 2004/01/12 22:37:19 keil Exp $
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * Linux ISDN subsystem, protocol encapsulation
  *
  * This software may be used and distributed according to the terms
@@ -30,18 +34,24 @@
 
    - before any data is to be submitted the connection must explicitly
 <<<<<<< HEAD
+<<<<<<< HEAD
      be set up.
    - after the successful set up of the connection is signalled the
      connection is considered to be reliably up.
 
    Auto-dialing ist not compatible with this requirements. Thus, auto-dialing 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    be set up.
    - after the successful set up of the connection is signalled the
    connection is considered to be reliably up.
 
    Auto-dialing ist not compatible with this requirements. Thus, auto-dialing
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
    is completely bypassed.
 
    It might be possible to implement a (non standardized) datalink protocol
@@ -49,14 +59,19 @@
    mechanism. Such a protocol would need an auxiliary channel (i.e. user-user-
    signaling on the D-channel) while the B-channel is down.
 <<<<<<< HEAD
+<<<<<<< HEAD
    */
 =======
 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+*/
+>>>>>>> refs/remotes/origin/master
 
 
 static int isdn_concap_dl_data_req(struct concap_proto *concap, struct sk_buff *skb)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct net_device *ndev = concap -> net_dev;
 	isdn_net_dev *nd = ((isdn_net_local *) netdev_priv(ndev))->netdev;
@@ -66,6 +81,8 @@ static int isdn_concap_dl_data_req(struct concap_proto *concap, struct sk_buff *
 	if (!lp) {
 		IX25DEBUG( "isdn_concap_dl_data_req: %s : isdn_net_send_skb returned %d\n", concap -> net_dev -> name, 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct net_device *ndev = concap->net_dev;
 	isdn_net_dev *nd = ((isdn_net_local *) netdev_priv(ndev))->netdev;
 	isdn_net_local *lp = isdn_net_get_locked_lp(nd);
@@ -73,23 +90,31 @@ static int isdn_concap_dl_data_req(struct concap_proto *concap, struct sk_buff *
 	IX25DEBUG("isdn_concap_dl_data_req: %s \n", concap->net_dev->name);
 	if (!lp) {
 		IX25DEBUG("isdn_concap_dl_data_req: %s : isdn_net_send_skb returned %d\n", concap->net_dev->name, 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 	lp->huptimer = 0;
 	isdn_net_writebuf_skb(lp, skb);
 	spin_unlock_bh(&lp->xmit_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	IX25DEBUG( "isdn_concap_dl_data_req: %s : isdn_net_send_skb returned %d\n", concap -> net_dev -> name, 0);
 =======
 	IX25DEBUG("isdn_concap_dl_data_req: %s : isdn_net_send_skb returned %d\n", concap->net_dev->name, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	IX25DEBUG("isdn_concap_dl_data_req: %s : isdn_net_send_skb returned %d\n", concap->net_dev->name, 0);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 
 static int isdn_concap_dl_connect_req(struct concap_proto *concap)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct net_device *ndev = concap -> net_dev;
 	isdn_net_local *lp = netdev_priv(ndev);
@@ -100,6 +125,8 @@ static int isdn_concap_dl_connect_req(struct concap_proto *concap)
 	ret = isdn_net_dial_req( lp );
 	if ( ret ) IX25DEBUG("dialing failed\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct net_device *ndev = concap->net_dev;
 	isdn_net_local *lp = netdev_priv(ndev);
 	int ret;
@@ -108,12 +135,16 @@ static int isdn_concap_dl_connect_req(struct concap_proto *concap)
 	/* dial ... */
 	ret = isdn_net_dial_req(lp);
 	if (ret) IX25DEBUG("dialing failed\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 static int isdn_concap_dl_disconn_req(struct concap_proto *concap)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	IX25DEBUG( "isdn_concap_dl_disconn_req: %s \n", concap -> net_dev -> name);
 
@@ -123,6 +154,11 @@ static int isdn_concap_dl_disconn_req(struct concap_proto *concap)
 
 	isdn_net_hangup(concap->net_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	IX25DEBUG("isdn_concap_dl_disconn_req: %s \n", concap->net_dev->name);
+
+	isdn_net_hangup(concap->net_dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -136,16 +172,22 @@ struct concap_device_ops isdn_concap_reliable_dl_dops = {
    this sourcefile does not need to include any protocol specific header
    files. For now:
 <<<<<<< HEAD
+<<<<<<< HEAD
    */
 struct concap_proto * isdn_concap_new( int encap )
 {
 	switch ( encap ) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 */
 struct concap_proto *isdn_concap_new(int encap)
 {
 	switch (encap) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case ISDN_NET_ENCAP_X25IFACE:
 		return isdn_x25iface_proto_new();
 	}

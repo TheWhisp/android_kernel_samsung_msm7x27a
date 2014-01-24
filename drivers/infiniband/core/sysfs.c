@@ -36,9 +36,13 @@
 
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/stat.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/stat.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 
 #include <rdma/ib_mad.h>
@@ -183,10 +187,14 @@ static ssize_t rate_show(struct ib_port *p, struct port_attribute *unused,
 	struct ib_port_attr attr;
 	char *speed = "";
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int rate;
 =======
 	int rate;		/* in deci-Gb/sec */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rate;		/* in deci-Gb/sec */
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret;
 
 	ret = ib_query_port(p->ibdev, p->port_num, &attr);
@@ -195,12 +203,15 @@ static ssize_t rate_show(struct ib_port *p, struct port_attribute *unused,
 
 	switch (attr.active_speed) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case 2: speed = " DDR"; break;
 	case 4: speed = " QDR"; break;
 	}
 
 	rate = 25 * ib_width_enum_to_int(attr.active_width) * attr.active_speed;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case IB_SPEED_DDR:
 		speed = " DDR";
 		rate = 50;
@@ -228,7 +239,10 @@ static ssize_t rate_show(struct ib_port *p, struct port_attribute *unused,
 	}
 
 	rate *= ib_width_enum_to_int(attr.active_width);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (rate < 0)
 		return -EINVAL;
 
@@ -560,8 +574,15 @@ static int add_port(struct ib_device *device, int port_num,
 
 	p->gid_group.name  = "gids";
 	p->gid_group.attrs = alloc_group_attrs(show_port_gid, attr.gid_tbl_len);
+<<<<<<< HEAD
 	if (!p->gid_group.attrs)
 		goto err_remove_pma;
+=======
+	if (!p->gid_group.attrs) {
+		ret = -ENOMEM;
+		goto err_remove_pma;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	ret = sysfs_create_group(&p->kobj, &p->gid_group);
 	if (ret)
@@ -570,8 +591,15 @@ static int add_port(struct ib_device *device, int port_num,
 	p->pkey_group.name  = "pkeys";
 	p->pkey_group.attrs = alloc_group_attrs(show_port_pkey,
 						attr.pkey_tbl_len);
+<<<<<<< HEAD
 	if (!p->pkey_group.attrs)
 		goto err_remove_gid;
+=======
+	if (!p->pkey_group.attrs) {
+		ret = -ENOMEM;
+		goto err_remove_gid;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	ret = sysfs_create_group(&p->kobj, &p->pkey_group);
 	if (ret)
@@ -623,6 +651,10 @@ static ssize_t show_node_type(struct device *device,
 	switch (dev->node_type) {
 	case RDMA_NODE_IB_CA:	  return sprintf(buf, "%d: CA\n", dev->node_type);
 	case RDMA_NODE_RNIC:	  return sprintf(buf, "%d: RNIC\n", dev->node_type);
+<<<<<<< HEAD
+=======
+	case RDMA_NODE_USNIC:	  return sprintf(buf, "%d: usNIC\n", dev->node_type);
+>>>>>>> refs/remotes/origin/master
 	case RDMA_NODE_IB_SWITCH: return sprintf(buf, "%d: switch\n", dev->node_type);
 	case RDMA_NODE_IB_ROUTER: return sprintf(buf, "%d: router\n", dev->node_type);
 	default:		  return sprintf(buf, "%d: <unknown>\n", dev->node_type);
@@ -828,7 +860,11 @@ int ib_device_register_sysfs(struct ib_device *device,
 
 	class_dev->class      = &ib_class;
 	class_dev->parent     = device->dma_device;
+<<<<<<< HEAD
 	dev_set_name(class_dev, device->name);
+=======
+	dev_set_name(class_dev, "%s", device->name);
+>>>>>>> refs/remotes/origin/master
 	dev_set_drvdata(class_dev, device);
 
 	INIT_LIST_HEAD(&device->port_list);

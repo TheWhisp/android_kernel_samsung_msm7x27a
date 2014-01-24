@@ -14,9 +14,13 @@
 #include <linux/slab.h>
 #include <linux/blkdev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mtd/mtd.h>
 #include <linux/statfs.h>
 #include <linux/buffer_head.h>
@@ -96,6 +100,7 @@ void logfs_crash_dump(struct super_block *sb)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * TODO: move to lib/string.c
  */
 /**
@@ -120,6 +125,8 @@ void *memchr_inv(const void *s, int c, size_t n)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * FIXME: There should be a reserve for root, similar to ext2.
  */
 int logfs_statfs(struct dentry *dentry, struct kstatfs *stats)
@@ -344,6 +351,7 @@ static int logfs_get_sb_final(struct super_block *sb)
 		goto fail;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(rootdir);
 	if (!sb->s_root) {
 		iput(rootdir);
@@ -354,6 +362,11 @@ static int logfs_get_sb_final(struct super_block *sb)
 	if (!sb->s_root)
 		goto fail;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sb->s_root = d_make_root(rootdir);
+	if (!sb->s_root)
+		goto fail;
+>>>>>>> refs/remotes/origin/master
 
 	/* at that point we know that ->put_super() will be called */
 	super->s_erase_page = alloc_pages(GFP_KERNEL, 0);
@@ -521,14 +534,19 @@ static void logfs_kill_sb(struct super_block *sb)
 	sync_filesystem(sb);
 	logfs_write_anchor(sb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	free_areas(sb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	free_areas(sb);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * From this point on alias entries are simply dropped - and any
 	 * writes to the object store are considered bugs.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	super->s_flags |= LOGFS_SB_FLAG_SHUTDOWN;
 	log_super("LogFS: Now in shutdown\n");
@@ -538,6 +556,11 @@ static void logfs_kill_sb(struct super_block *sb)
 	generic_shutdown_super(sb);
 	super->s_flags |= LOGFS_SB_FLAG_SHUTDOWN;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	log_super("LogFS: Now in shutdown\n");
+	generic_shutdown_super(sb);
+	super->s_flags |= LOGFS_SB_FLAG_SHUTDOWN;
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(super->s_dirty_used_bytes || super->s_dirty_free_bytes);
 
@@ -564,7 +587,11 @@ static struct dentry *logfs_get_sb_device(struct logfs_super *super,
 	log_super("LogFS: Start mount %x\n", mount_count++);
 
 	err = -EINVAL;
+<<<<<<< HEAD
 	sb = sget(type, logfs_sb_test, logfs_sb_set, super);
+=======
+	sb = sget(type, logfs_sb_test, logfs_sb_set, flags | MS_NOATIME, super);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(sb)) {
 		super->s_devops->put_device(super);
 		kfree(super);
@@ -586,11 +613,16 @@ static struct dentry *logfs_get_sb_device(struct logfs_super *super,
 	 */
 	sb->s_maxbytes	= (1ull << 43) - 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	sb->s_max_links = LOGFS_LINK_MAX;
 >>>>>>> refs/remotes/origin/cm-10.0
 	sb->s_op	= &logfs_super_operations;
 	sb->s_flags	= flags | MS_NOATIME;
+=======
+	sb->s_max_links = LOGFS_LINK_MAX;
+	sb->s_op	= &logfs_super_operations;
+>>>>>>> refs/remotes/origin/master
 
 	err = logfs_read_sb(sb, sb->s_flags & MS_RDONLY);
 	if (err)
@@ -657,6 +689,10 @@ static struct file_system_type logfs_fs_type = {
 	.fs_flags	= FS_REQUIRES_DEV,
 
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("logfs");
+>>>>>>> refs/remotes/origin/master
 
 static int __init logfs_init(void)
 {
@@ -675,13 +711,19 @@ static int __init logfs_init(void)
 		goto out2;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return register_filesystem(&logfs_fs_type);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = register_filesystem(&logfs_fs_type);
 	if (!ret)
 		return 0;
 	logfs_destroy_inode_cache();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out2:
 	logfs_compr_exit();
 out1:

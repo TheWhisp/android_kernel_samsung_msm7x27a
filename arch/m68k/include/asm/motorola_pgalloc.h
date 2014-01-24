@@ -29,18 +29,34 @@ static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
 
 static inline pgtable_t pte_alloc_one(struct mm_struct *mm, unsigned long address)
 {
+<<<<<<< HEAD
 	struct page *page = alloc_pages(GFP_KERNEL|__GFP_REPEAT|__GFP_ZERO, 0);
 	pte_t *pte;
 
 	if(!page)
 		return NULL;
+=======
+	struct page *page;
+	pte_t *pte;
+
+	page = alloc_pages(GFP_KERNEL|__GFP_REPEAT|__GFP_ZERO, 0);
+	if(!page)
+		return NULL;
+	if (!pgtable_page_ctor(page)) {
+		__free_page(page);
+		return NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	pte = kmap(page);
 	__flush_page_to_ram(pte);
 	flush_tlb_kernel_page(pte);
 	nocache_page(pte);
 	kunmap(page);
+<<<<<<< HEAD
 	pgtable_page_ctor(page);
+=======
+>>>>>>> refs/remotes/origin/master
 	return page;
 }
 

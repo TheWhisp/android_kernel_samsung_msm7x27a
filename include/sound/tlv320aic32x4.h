@@ -26,6 +26,10 @@ struct aic32x4_pdata {
 	u32 power_cfg;
 	u32 micpga_routing;
 	bool swapdacs;
+<<<<<<< HEAD
+=======
+	int rstn_gpio;
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif

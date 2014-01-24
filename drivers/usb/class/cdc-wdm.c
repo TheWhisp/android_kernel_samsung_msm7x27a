@@ -13,6 +13,10 @@
  */
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
+=======
+#include <linux/ioctl.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/mutex.h>
@@ -24,9 +28,13 @@
 #include <asm/byteorder.h>
 #include <asm/unaligned.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/usb/cdc-wdm.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/usb/cdc-wdm.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Version Information
@@ -36,10 +44,13 @@
 #define DRIVER_DESC "USB Abstract Control Model driver for USB WCM Device Management"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define HUAWEI_VENDOR_ID	0x12D1
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct usb_device_id wdm_ids[] = {
 	{
 		.match_flags = USB_DEVICE_ID_MATCH_INT_CLASS |
@@ -47,6 +58,7 @@ static const struct usb_device_id wdm_ids[] = {
 		.bInterfaceClass = USB_CLASS_COMM,
 		.bInterfaceSubClass = USB_CDC_SUBCLASS_DMM
 	},
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	{
@@ -73,6 +85,8 @@ static const struct usb_device_id wdm_ids[] = {
 		.bInterfaceProtocol = 57, /* NOTE: CDC ECM control interface! */
 	},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 
@@ -90,9 +104,13 @@ MODULE_DEVICE_TABLE (usb, wdm_ids);
 #define WDM_RESPONDING		7
 #define WDM_SUSPENDING		8
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define WDM_RESETTING		9
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WDM_RESETTING		9
+>>>>>>> refs/remotes/origin/master
 #define WDM_OVERFLOW		10
 
 #define WDM_MAX			16
@@ -102,10 +120,15 @@ MODULE_DEVICE_TABLE (usb, wdm_ids);
 
 static DEFINE_MUTEX(wdm_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static DEFINE_SPINLOCK(wdm_device_list_lock);
 static LIST_HEAD(wdm_device_list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_SPINLOCK(wdm_device_list_lock);
+static LIST_HEAD(wdm_device_list);
+>>>>>>> refs/remotes/origin/master
 
 /* --- method tables --- */
 
@@ -128,9 +151,12 @@ struct wdm_device {
 	u16			wMaxCommand;
 	u16			wMaxPacketSize;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16			bMaxPacketSize0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	__le16			inum;
 	int			reslength;
 	int			length;
@@ -145,17 +171,27 @@ struct wdm_device {
 	int			werr;
 	int			rerr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	struct list_head	device_list;
 	int			(*manage_power)(struct usb_interface *, int);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int                     resp_count;
+
+	struct list_head	device_list;
+	int			(*manage_power)(struct usb_interface *, int);
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct usb_driver wdm_driver;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* return intfdata if we own the interface, else look up intf in the list */
 static struct wdm_device *wdm_find_device(struct usb_interface *intf)
 {
@@ -187,7 +223,10 @@ found:
 	return desc;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* --- callbacks --- */
 static void wdm_out_callback(struct urb *urb)
 {
@@ -262,6 +301,7 @@ static void wdm_int_callback(struct urb *urb)
 	int status = urb->status;
 	struct wdm_device *desc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct usb_ctrlrequest *req;
 	struct usb_cdc_notification *dr;
 
@@ -272,6 +312,11 @@ static void wdm_int_callback(struct urb *urb)
 
 	desc = urb->context;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_cdc_notification *dr;
+
+	desc = urb->context;
+>>>>>>> refs/remotes/origin/master
 	dr = (struct usb_cdc_notification *)desc->sbuf;
 
 	if (status) {
@@ -310,6 +355,13 @@ static void wdm_int_callback(struct urb *urb)
 			"NOTIFY_NETWORK_CONNECTION %s network",
 			dr->wValue ? "connected to" : "disconnected from");
 		goto exit;
+<<<<<<< HEAD
+=======
+	case USB_CDC_NOTIFY_SPEED_CHANGE:
+		dev_dbg(&desc->intf->dev, "SPEED_CHANGE received (len %u)",
+			urb->actual_length);
+		goto exit;
+>>>>>>> refs/remotes/origin/master
 	default:
 		clear_bit(WDM_POLL_RUNNING, &desc->flags);
 		dev_err(&desc->intf->dev,
@@ -318,6 +370,7 @@ static void wdm_int_callback(struct urb *urb)
 		goto exit;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	req->bRequestType = (USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE);
 	req->bRequest = USB_CDC_GET_ENCAPSULATED_RESPONSE;
@@ -343,6 +396,12 @@ static void wdm_int_callback(struct urb *urb)
 	clear_bit(WDM_READ, &desc->flags);
 	responding = test_and_set_bit(WDM_RESPONDING, &desc->flags);
 	if (!responding && !test_bit(WDM_DISCONNECTING, &desc->flags)
+=======
+	spin_lock(&desc->iuspin);
+	responding = test_and_set_bit(WDM_RESPONDING, &desc->flags);
+	if (!desc->resp_count++ && !responding
+		&& !test_bit(WDM_DISCONNECTING, &desc->flags)
+>>>>>>> refs/remotes/origin/master
 		&& !test_bit(WDM_SUSPENDING, &desc->flags)) {
 		rv = usb_submit_urb(desc->response, GFP_ATOMIC);
 		dev_dbg(&desc->intf->dev, "%s: usb_submit_urb %d",
@@ -388,6 +447,7 @@ static void free_urbs(struct wdm_device *desc)
 static void cleanup(struct wdm_device *desc)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	usb_free_coherent(interface_to_usbdev(desc->intf),
 			  desc->wMaxPacketSize,
 			  desc->sbuf,
@@ -403,6 +463,10 @@ static void cleanup(struct wdm_device *desc)
 	kfree(desc->sbuf);
 	kfree(desc->inbuf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(desc->sbuf);
+	kfree(desc->inbuf);
+>>>>>>> refs/remotes/origin/master
 	kfree(desc->orq);
 	kfree(desc->irq);
 	kfree(desc->ubuf);
@@ -458,6 +522,10 @@ static ssize_t wdm_write
 	r = usb_autopm_get_interface(desc->intf);
 	if (r < 0) {
 		kfree(buf);
+<<<<<<< HEAD
+=======
+		rv = usb_translate_errors(r);
+>>>>>>> refs/remotes/origin/master
 		goto outnp;
 	}
 
@@ -468,14 +536,23 @@ static ssize_t wdm_write
 		if (test_bit(WDM_IN_USE, &desc->flags))
 			r = -EAGAIN;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (test_bit(WDM_RESETTING, &desc->flags))
 		r = -EIO;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (r < 0) {
 		kfree(buf);
+=======
+	if (r < 0) {
+		kfree(buf);
+		rv = r;
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -507,6 +584,10 @@ static ssize_t wdm_write
 		desc->outbuf = NULL;
 		clear_bit(WDM_IN_USE, &desc->flags);
 		dev_err(&desc->intf->dev, "Tx URB error: %d\n", rv);
+<<<<<<< HEAD
+=======
+		rv = usb_translate_errors(rv);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		dev_dbg(&desc->intf->dev, "Tx URB has been submitted index=%d",
 			req->wIndex);
@@ -519,6 +600,41 @@ outnl:
 	return rv < 0 ? rv : count;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * clear WDM_READ flag and possibly submit the read urb if resp_count
+ * is non-zero.
+ *
+ * Called with desc->iuspin locked
+ */
+static int clear_wdm_read_flag(struct wdm_device *desc)
+{
+	int rv = 0;
+
+	clear_bit(WDM_READ, &desc->flags);
+
+	/* submit read urb only if the device is waiting for it */
+	if (!desc->resp_count || !--desc->resp_count)
+		goto out;
+
+	set_bit(WDM_RESPONDING, &desc->flags);
+	spin_unlock_irq(&desc->iuspin);
+	rv = usb_submit_urb(desc->response, GFP_KERNEL);
+	spin_lock_irq(&desc->iuspin);
+	if (rv) {
+		dev_err(&desc->intf->dev,
+			"usb_submit_urb failed with result %d\n", rv);
+
+		/* make sure the next notification trigger a submit */
+		clear_bit(WDM_RESPONDING, &desc->flags);
+		desc->resp_count = 0;
+	}
+out:
+	return rv;
+}
+
+>>>>>>> refs/remotes/origin/master
 static ssize_t wdm_read
 (struct file *file, char __user *buffer, size_t count, loff_t *ppos)
 {
@@ -562,12 +678,18 @@ retry:
 			goto err;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (test_bit(WDM_RESETTING, &desc->flags)) {
 			rv = -EIO;
 			goto err;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		usb_mark_last_busy(interface_to_usbdev(desc->intf));
 		if (rv < 0) {
 			rv = -ERESTARTSYS;
@@ -593,8 +715,15 @@ retry:
 
 		if (!desc->reslength) { /* zero length read */
 			dev_dbg(&desc->intf->dev, "%s: zero length - clearing WDM_READ\n", __func__);
+<<<<<<< HEAD
 			clear_bit(WDM_READ, &desc->flags);
 			spin_unlock_irq(&desc->iuspin);
+=======
+			rv = clear_wdm_read_flag(desc);
+			spin_unlock_irq(&desc->iuspin);
+			if (rv < 0)
+				goto err;
+>>>>>>> refs/remotes/origin/master
 			goto retry;
 		}
 		cntr = desc->length;
@@ -617,10 +746,15 @@ retry:
 	desc->length -= cntr;
 	/* in case we had outstanding data */
 	if (!desc->length)
+<<<<<<< HEAD
 		clear_bit(WDM_READ, &desc->flags);
 
 	spin_unlock_irq(&desc->iuspin);
 
+=======
+		clear_wdm_read_flag(desc);
+	spin_unlock_irq(&desc->iuspin);
+>>>>>>> refs/remotes/origin/master
 	rv = cntr;
 
 err:
@@ -633,11 +767,21 @@ static int wdm_flush(struct file *file, fl_owner_t id)
 	struct wdm_device *desc = file->private_data;
 
 	wait_event(desc->wait, !test_bit(WDM_IN_USE, &desc->flags));
+<<<<<<< HEAD
 	if (desc->werr < 0)
 		dev_err(&desc->intf->dev, "Error in flush path: %d\n",
 			desc->werr);
 
 	return desc->werr;
+=======
+
+	/* cannot dereference desc->intf if WDM_DISCONNECTING */
+	if (desc->werr < 0 && !test_bit(WDM_DISCONNECTING, &desc->flags))
+		dev_err(&desc->intf->dev, "Error in flush path: %d\n",
+			desc->werr);
+
+	return usb_translate_errors(desc->werr);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned int wdm_poll(struct file *file, struct poll_table_struct *wait)
@@ -649,10 +793,14 @@ static unsigned int wdm_poll(struct file *file, struct poll_table_struct *wait)
 	spin_lock_irqsave(&desc->iuspin, flags);
 	if (test_bit(WDM_DISCONNECTING, &desc->flags)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mask = POLLHUP | POLLERR;
 =======
 		mask = POLLERR;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mask = POLLHUP | POLLERR;
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&desc->iuspin, flags);
 		goto desc_out;
 	}
@@ -679,18 +827,24 @@ static int wdm_open(struct inode *inode, struct file *file)
 
 	mutex_lock(&wdm_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	intf = usb_find_interface(&wdm_driver, minor);
 	if (!intf)
 		goto out;
 
 	desc = usb_get_intfdata(intf);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	desc = wdm_find_device_by_minor(minor);
 	if (!desc)
 		goto out;
 
 	intf = desc->intf;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (test_bit(WDM_DISCONNECTING, &desc->flags))
 		goto out;
 	file->private_data = desc;
@@ -701,9 +855,12 @@ static int wdm_open(struct inode *inode, struct file *file)
 		goto out;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	intf->needs_remote_wakeup = 1;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* using write lock to protect desc->count */
 	mutex_lock(&desc->wlock);
@@ -715,16 +872,25 @@ static int wdm_open(struct inode *inode, struct file *file)
 			desc->count--;
 			dev_err(&desc->intf->dev,
 				"Error submitting int urb - %d\n", rv);
+<<<<<<< HEAD
+=======
+			rv = usb_translate_errors(rv);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		rv = 0;
 	}
 	mutex_unlock(&desc->wlock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (desc->count == 1)
 		desc->manage_power(intf, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (desc->count == 1)
+		desc->manage_power(intf, 1);
+>>>>>>> refs/remotes/origin/master
 	usb_autopm_put_interface(desc->intf);
 out:
 	mutex_unlock(&wdm_mutex);
@@ -743,6 +909,7 @@ static int wdm_release(struct inode *inode, struct file *file)
 	mutex_unlock(&desc->wlock);
 
 	if (!desc->count) {
+<<<<<<< HEAD
 		dev_dbg(&desc->intf->dev, "wdm_release: cleanup");
 		kill_urbs(desc);
 		if (!test_bit(WDM_DISCONNECTING, &desc->flags))
@@ -751,11 +918,44 @@ static int wdm_release(struct inode *inode, struct file *file)
 =======
 			desc->manage_power(desc->intf, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!test_bit(WDM_DISCONNECTING, &desc->flags)) {
+			dev_dbg(&desc->intf->dev, "wdm_release: cleanup");
+			kill_urbs(desc);
+			spin_lock_irq(&desc->iuspin);
+			desc->resp_count = 0;
+			spin_unlock_irq(&desc->iuspin);
+			desc->manage_power(desc->intf, 0);
+		} else {
+			/* must avoid dev_printk here as desc->intf is invalid */
+			pr_debug(KBUILD_MODNAME " %s: device gone - cleaning up\n", __func__);
+			cleanup(desc);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&wdm_mutex);
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static long wdm_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+{
+	struct wdm_device *desc = file->private_data;
+	int rv = 0;
+
+	switch (cmd) {
+	case IOCTL_WDM_MAX_COMMAND:
+		if (copy_to_user((void __user *)arg, &desc->wMaxCommand, sizeof(desc->wMaxCommand)))
+			rv = -EFAULT;
+		break;
+	default:
+		rv = -ENOTTY;
+	}
+	return rv;
+}
+
+>>>>>>> refs/remotes/origin/master
 static const struct file_operations wdm_fops = {
 	.owner =	THIS_MODULE,
 	.read =		wdm_read,
@@ -764,6 +964,11 @@ static const struct file_operations wdm_fops = {
 	.flush =	wdm_flush,
 	.release =	wdm_release,
 	.poll =		wdm_poll,
+<<<<<<< HEAD
+=======
+	.unlocked_ioctl = wdm_ioctl,
+	.compat_ioctl = wdm_ioctl,
+>>>>>>> refs/remotes/origin/master
 	.llseek =	noop_llseek,
 };
 
@@ -801,6 +1006,7 @@ static void wdm_rxwork(struct work_struct *work)
 
 /* --- hotplug --- */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int wdm_probe(struct usb_interface *intf, const struct usb_device_id *id)
 {
@@ -848,6 +1054,8 @@ next_desc:
 	if (!desc)
 		goto out;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int wdm_create(struct usb_interface *intf, struct usb_endpoint_descriptor *ep,
 		u16 bufsize, int (*manage_power)(struct usb_interface *, int))
 {
@@ -858,22 +1066,30 @@ static int wdm_create(struct usb_interface *intf, struct usb_endpoint_descriptor
 	if (!desc)
 		goto out;
 	INIT_LIST_HEAD(&desc->device_list);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&desc->rlock);
 	mutex_init(&desc->wlock);
 	spin_lock_init(&desc->iuspin);
 	init_waitqueue_head(&desc->wait);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	desc->wMaxCommand = maxcom;
 =======
 	desc->wMaxCommand = bufsize;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	desc->wMaxCommand = bufsize;
+>>>>>>> refs/remotes/origin/master
 	/* this will be expanded and needed in hardware endianness */
 	desc->inum = cpu_to_le16((u16)intf->cur_altsetting->desc.bInterfaceNumber);
 	desc->intf = intf;
 	INIT_WORK(&desc->rxwork, wdm_rxwork);
 
 	rv = -EINVAL;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	iface = intf->cur_altsetting;
 	if (iface->desc.bNumEndpoints != 1)
@@ -885,11 +1101,16 @@ static int wdm_create(struct usb_interface *intf, struct usb_endpoint_descriptor
 	desc->wMaxPacketSize = le16_to_cpu(ep->wMaxPacketSize);
 	desc->bMaxPacketSize0 = udev->descriptor.bMaxPacketSize0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!usb_endpoint_is_int_in(ep))
 		goto err;
 
 	desc->wMaxPacketSize = usb_endpoint_maxp(ep);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	desc->orq = kmalloc(sizeof(struct usb_ctrlrequest), GFP_KERNEL);
 	if (!desc->orq)
@@ -915,6 +1136,7 @@ static int wdm_create(struct usb_interface *intf, struct usb_endpoint_descriptor
 		goto err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	desc->sbuf = usb_alloc_coherent(interface_to_usbdev(intf),
 					desc->wMaxPacketSize,
 					GFP_KERNEL,
@@ -929,6 +1151,8 @@ static int wdm_create(struct usb_interface *intf, struct usb_endpoint_descriptor
 	if (!desc->inbuf)
 		goto err2;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	desc->sbuf = kmalloc(desc->wMaxPacketSize, GFP_KERNEL);
 	if (!desc->sbuf)
 		goto err;
@@ -936,7 +1160,10 @@ static int wdm_create(struct usb_interface *intf, struct usb_endpoint_descriptor
 	desc->inbuf = kmalloc(desc->wMaxCommand, GFP_KERNEL);
 	if (!desc->inbuf)
 		goto err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	usb_fill_int_urb(
 		desc->validity,
@@ -948,6 +1175,7 @@ static int wdm_create(struct usb_interface *intf, struct usb_endpoint_descriptor
 		desc,
 		ep->bInterval
 	);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	desc->validity->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
 
@@ -980,6 +1208,8 @@ err:
 	kfree(desc);
 =======
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	desc->irq->bRequestType = (USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE);
 	desc->irq->bRequest = USB_CDC_GET_ENCAPSULATED_RESPONSE;
@@ -1013,7 +1243,13 @@ err:
 out:
 	return rv;
 err:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&wdm_device_list_lock);
+	list_del(&desc->device_list);
+	spin_unlock(&wdm_device_list_lock);
+>>>>>>> refs/remotes/origin/master
 	cleanup(desc);
 	return rv;
 }
@@ -1023,11 +1259,15 @@ static int wdm_manage_power(struct usb_interface *intf, int on)
 	/* need autopm_get/put here to ensure the usbcore sees the new value */
 	int rv = usb_autopm_get_interface(intf);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 
 	intf->needs_remote_wakeup = on;
 	if (!rv)
 		usb_autopm_put_interface(intf);
 	return 0;
+<<<<<<< HEAD
 =======
 	if (rv < 0)
 		goto err;
@@ -1037,6 +1277,8 @@ static int wdm_manage_power(struct usb_interface *intf, int on)
 err:
 	return rv;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int wdm_probe(struct usb_interface *intf, const struct usb_device_id *id)
@@ -1086,11 +1328,14 @@ next_desc:
 
 err:
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> fcfe545... Squashed update of kernel from 3.4.75 to 3.4.76
 	return rv;
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return rv;
 }
 
@@ -1130,7 +1375,10 @@ err:
 }
 EXPORT_SYMBOL(usb_cdc_wdm_register);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void wdm_disconnect(struct usb_interface *intf)
 {
 	struct wdm_device *desc;
@@ -1138,12 +1386,17 @@ static void wdm_disconnect(struct usb_interface *intf)
 
 	usb_deregister_dev(intf, &wdm_class);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&wdm_mutex);
 	desc = usb_get_intfdata(intf);
 =======
 	desc = wdm_find_device(intf);
 	mutex_lock(&wdm_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	desc = wdm_find_device(intf);
+	mutex_lock(&wdm_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	/* the spinlock makes sure no new urbs are generated in the callbacks */
 	spin_lock_irqsave(&desc->iuspin, flags);
@@ -1159,8 +1412,21 @@ static void wdm_disconnect(struct usb_interface *intf)
 	cancel_work_sync(&desc->rxwork);
 	mutex_unlock(&desc->wlock);
 	mutex_unlock(&desc->rlock);
+<<<<<<< HEAD
 	if (!desc->count)
 		cleanup(desc);
+=======
+
+	/* the desc->intf pointer used as list key is now invalid */
+	spin_lock(&wdm_device_list_lock);
+	list_del(&desc->device_list);
+	spin_unlock(&wdm_device_list_lock);
+
+	if (!desc->count)
+		cleanup(desc);
+	else
+		dev_dbg(&intf->dev, "%s: %d open files - postponing cleanup\n", __func__, desc->count);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&wdm_mutex);
 }
 
@@ -1168,30 +1434,42 @@ static void wdm_disconnect(struct usb_interface *intf)
 static int wdm_suspend(struct usb_interface *intf, pm_message_t message)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct wdm_device *desc = usb_get_intfdata(intf);
 =======
 	struct wdm_device *desc = wdm_find_device(intf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wdm_device *desc = wdm_find_device(intf);
+>>>>>>> refs/remotes/origin/master
 	int rv = 0;
 
 	dev_dbg(&desc->intf->dev, "wdm%d_suspend\n", intf->minor);
 
 	/* if this is an autosuspend the caller does the locking */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(message.event & PM_EVENT_AUTO)) {
 =======
 	if (!PMSG_IS_AUTO(message)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!PMSG_IS_AUTO(message)) {
+>>>>>>> refs/remotes/origin/master
 		mutex_lock(&desc->rlock);
 		mutex_lock(&desc->wlock);
 	}
 	spin_lock_irq(&desc->iuspin);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((message.event & PM_EVENT_AUTO) &&
 =======
 	if (PMSG_IS_AUTO(message) &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (PMSG_IS_AUTO(message) &&
+>>>>>>> refs/remotes/origin/master
 			(test_bit(WDM_IN_USE, &desc->flags)
 			|| test_bit(WDM_RESPONDING, &desc->flags))) {
 		spin_unlock_irq(&desc->iuspin);
@@ -1205,10 +1483,14 @@ static int wdm_suspend(struct usb_interface *intf, pm_message_t message)
 		cancel_work_sync(&desc->rxwork);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(message.event & PM_EVENT_AUTO)) {
 =======
 	if (!PMSG_IS_AUTO(message)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!PMSG_IS_AUTO(message)) {
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&desc->wlock);
 		mutex_unlock(&desc->rlock);
 	}
@@ -1234,10 +1516,14 @@ static int recover_from_urb_loss(struct wdm_device *desc)
 static int wdm_resume(struct usb_interface *intf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct wdm_device *desc = usb_get_intfdata(intf);
 =======
 	struct wdm_device *desc = wdm_find_device(intf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wdm_device *desc = wdm_find_device(intf);
+>>>>>>> refs/remotes/origin/master
 	int rv;
 
 	dev_dbg(&desc->intf->dev, "wdm%d_resume\n", intf->minor);
@@ -1252,6 +1538,7 @@ static int wdm_resume(struct usb_interface *intf)
 static int wdm_pre_reset(struct usb_interface *intf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct wdm_device *desc = usb_get_intfdata(intf);
 
 	mutex_lock(&desc->rlock);
@@ -1260,6 +1547,9 @@ static int wdm_pre_reset(struct usb_interface *intf)
 =======
 	struct wdm_device *desc = wdm_find_device(intf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wdm_device *desc = wdm_find_device(intf);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * we notify everybody using poll of
@@ -1269,10 +1559,13 @@ static int wdm_pre_reset(struct usb_interface *intf)
 	 */
 	spin_lock_irq(&desc->iuspin);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	desc->rerr = -EINTR;
 	spin_unlock_irq(&desc->iuspin);
 	wake_up_all(&desc->wait);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	set_bit(WDM_RESETTING, &desc->flags);	/* inform read/write */
 	set_bit(WDM_READ, &desc->flags);	/* unblock read */
 	clear_bit(WDM_IN_USE, &desc->flags);	/* unblock write */
@@ -1283,24 +1576,33 @@ static int wdm_pre_reset(struct usb_interface *intf)
 	mutex_lock(&desc->wlock);
 	kill_urbs(desc);
 	cancel_work_sync(&desc->rxwork);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int wdm_post_reset(struct usb_interface *intf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct wdm_device *desc = usb_get_intfdata(intf);
 	int rv;
 
 	clear_bit(WDM_OVERFLOW, &desc->flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct wdm_device *desc = wdm_find_device(intf);
 	int rv;
 
 	clear_bit(WDM_OVERFLOW, &desc->flags);
 	clear_bit(WDM_RESETTING, &desc->flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rv = recover_from_urb_loss(desc);
 	mutex_unlock(&desc->wlock);
 	mutex_unlock(&desc->rlock);
@@ -1320,6 +1622,7 @@ static struct usb_driver wdm_driver = {
 	.post_reset =	wdm_post_reset,
 	.id_table =	wdm_ids,
 	.supports_autosuspend = 1,
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
@@ -1344,6 +1647,12 @@ module_exit(wdm_exit);
 =======
 module_usb_driver(wdm_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.disable_hub_initiated_lpm = 1,
+};
+
+module_usb_driver(wdm_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

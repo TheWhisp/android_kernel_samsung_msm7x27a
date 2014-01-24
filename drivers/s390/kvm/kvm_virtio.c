@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * kvm_virtio.c - virtio for kvm on s390
+=======
+ * virtio for kvm on s390
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright IBM Corp. 2008
  *
@@ -21,13 +25,21 @@
 #include <linux/interrupt.h>
 #include <linux/virtio_ring.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pfn.h>
 #include <asm/io.h>
 #include <asm/kvm_para.h>
 #include <asm/kvm_virtio.h>
+<<<<<<< HEAD
+=======
+#include <asm/sclp.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/setup.h>
 #include <asm/irq.h>
 
@@ -38,10 +50,14 @@
  */
 static void *kvm_devices;
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct work_struct hotplug_work;
 =======
 static struct work_struct hotplug_work;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct work_struct hotplug_work;
+>>>>>>> refs/remotes/origin/master
 
 struct kvm_device {
 	struct virtio_device vdev;
@@ -172,11 +188,23 @@ static void kvm_reset(struct virtio_device *vdev)
  * make a hypercall.  We hand the address  of the virtqueue so the Host
  * knows which virtqueue we're talking about.
  */
+<<<<<<< HEAD
 static void kvm_notify(struct virtqueue *vq)
 {
 	struct kvm_vqconfig *config = vq->priv;
 
 	kvm_hypercall1(KVM_S390_VIRTIO_NOTIFY, config->address);
+=======
+static bool kvm_notify(struct virtqueue *vq)
+{
+	long rc;
+	struct kvm_vqconfig *config = vq->priv;
+
+	rc = kvm_hypercall1(KVM_S390_VIRTIO_NOTIFY, config->address);
+	if (rc < 0)
+		return false;
+	return true;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -196,6 +224,12 @@ static struct virtqueue *kvm_find_vq(struct virtio_device *vdev,
 	if (index >= kdev->desc->num_vq)
 		return ERR_PTR(-ENOENT);
 
+<<<<<<< HEAD
+=======
+	if (!name)
+		return NULL;
+
+>>>>>>> refs/remotes/origin/master
 	config = kvm_vq_config(kdev->desc)+index;
 
 	err = vmem_add_mapping(config->address,
@@ -204,12 +238,17 @@ static struct virtqueue *kvm_find_vq(struct virtio_device *vdev,
 	if (err)
 		goto out;
 
+<<<<<<< HEAD
 	vq = vring_new_virtqueue(config->num, KVM_S390_VIRTIO_RING_ALIGN,
 <<<<<<< HEAD
 				 vdev, (void *) config->address,
 =======
 				 vdev, true, (void *) config->address,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vq = vring_new_virtqueue(index, config->num, KVM_S390_VIRTIO_RING_ALIGN,
+				 vdev, true, (void *) config->address,
+>>>>>>> refs/remotes/origin/master
 				 kvm_notify, callback, name);
 	if (!vq) {
 		err = -ENOMEM;
@@ -275,17 +314,27 @@ error:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const char *kvm_bus_name(struct virtio_device *vdev)
 {
 	return "";
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /*
  * The config ops structure as defined by virtio config
  */
 static struct virtio_config_ops kvm_vq_configspace_ops = {
+=======
+/*
+ * The config ops structure as defined by virtio config
+ */
+static const struct virtio_config_ops kvm_vq_configspace_ops = {
+>>>>>>> refs/remotes/origin/master
 	.get_features = kvm_get_features,
 	.finalize_features = kvm_finalize_features,
 	.get = kvm_get,
@@ -296,9 +345,13 @@ static struct virtio_config_ops kvm_vq_configspace_ops = {
 	.find_vqs = kvm_find_vqs,
 	.del_vqs = kvm_del_vqs,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.bus_name = kvm_bus_name,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.bus_name = kvm_bus_name,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -359,16 +412,22 @@ static void scan_devices(void)
 static int match_desc(struct device *dev, void *data)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((ulong)to_kvmdev(dev_to_virtio(dev))->desc == (ulong)data)
 		return 1;
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct virtio_device *vdev = dev_to_virtio(dev);
 	struct kvm_device *kdev = to_kvmdev(vdev);
 
 	return kdev->desc == data;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -405,6 +464,7 @@ static void hotplug_devices(struct work_struct *dummy)
  * we emulate the request_irq behaviour on top of s390 extints
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void kvm_extint_handler(unsigned int ext_int_code,
 			       unsigned int param32, unsigned long param64)
 {
@@ -415,6 +475,8 @@ static void kvm_extint_handler(unsigned int ext_int_code,
 	subcode = ext_int_code >> 16;
 	if ((subcode & 0xff00) != VIRTIO_SUBCODE_64)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void kvm_extint_handler(struct ext_code ext_code,
 			       unsigned int param32, unsigned long param64)
 {
@@ -422,9 +484,14 @@ static void kvm_extint_handler(struct ext_code ext_code,
 	u32 param;
 
 	if ((ext_code.subcode & 0xff00) != VIRTIO_SUBCODE_64)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	kstat_cpu(smp_processor_id()).irqs[EXTINT_VRT]++;
+=======
+		return;
+	inc_irq_stat(IRQEXT_VRT);
+>>>>>>> refs/remotes/origin/master
 
 	/* The LSB might be overloaded, we have to mask it */
 	vq = (struct virtqueue *)(param64 & ~1UL);
@@ -475,15 +542,24 @@ static int __init test_devices_support(unsigned long addr)
 }
 /*
  * Init function for virtio
+<<<<<<< HEAD
  * devices are in a single page above top of "normal" mem
+=======
+ * devices are in a single page above top of "normal" + standby mem
+>>>>>>> refs/remotes/origin/master
  */
 static int __init kvm_devices_init(void)
 {
 	int rc;
+<<<<<<< HEAD
+=======
+	unsigned long total_memory_size = sclp_get_rzm() * sclp_get_rnmax();
+>>>>>>> refs/remotes/origin/master
 
 	if (!MACHINE_IS_KVM)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	if (test_devices_support(real_memory_size) < 0)
 		return -ENODEV;
 
@@ -492,18 +568,36 @@ static int __init kvm_devices_init(void)
 		return rc;
 
 	kvm_devices = (void *) real_memory_size;
+=======
+	if (test_devices_support(total_memory_size) < 0)
+		return -ENODEV;
+
+	rc = vmem_add_mapping(total_memory_size, PAGE_SIZE);
+	if (rc)
+		return rc;
+
+	kvm_devices = (void *) total_memory_size;
+>>>>>>> refs/remotes/origin/master
 
 	kvm_root = root_device_register("kvm_s390");
 	if (IS_ERR(kvm_root)) {
 		rc = PTR_ERR(kvm_root);
 		printk(KERN_ERR "Could not register kvm_s390 root device");
+<<<<<<< HEAD
 		vmem_remove_mapping(real_memory_size, PAGE_SIZE);
+=======
+		vmem_remove_mapping(total_memory_size, PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
 	INIT_WORK(&hotplug_work, hotplug_devices);
 
+<<<<<<< HEAD
 	service_subclass_irq_register();
+=======
+	irq_subclass_register(IRQ_SUBCLASS_SERVICE_SIGNAL);
+>>>>>>> refs/remotes/origin/master
 	register_external_interrupt(0x2603, kvm_extint_handler);
 
 	scan_devices();
@@ -526,7 +620,11 @@ static __init int early_put_chars(u32 vtermno, const char *buf, int count)
 
 static int __init s390_virtio_console_init(void)
 {
+<<<<<<< HEAD
 	if (!MACHINE_IS_KVM)
+=======
+	if (sclp_has_vt220() || sclp_has_linemode())
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	return virtio_cons_early_init(early_put_chars);
 }

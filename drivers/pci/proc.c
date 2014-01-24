@@ -20,6 +20,7 @@ static int proc_initialized;	/* = 0 */
 static loff_t
 proc_bus_pci_lseek(struct file *file, loff_t off, int whence)
 {
+<<<<<<< HEAD
 	loff_t new = -1;
 	struct inode *inode = file->f_path.dentry->d_inode;
 
@@ -41,14 +42,22 @@ proc_bus_pci_lseek(struct file *file, loff_t off, int whence)
 		file->f_pos = new;
 	mutex_unlock(&inode->i_mutex);
 	return new;
+=======
+	struct pci_dev *dev = PDE_DATA(file_inode(file));
+	return fixed_size_llseek(file, off, whence, dev->cfg_size);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t
 proc_bus_pci_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
 {
+<<<<<<< HEAD
 	const struct inode *ino = file->f_path.dentry->d_inode;
 	const struct proc_dir_entry *dp = PDE(ino);
 	struct pci_dev *dev = dp->data;
+=======
+	struct pci_dev *dev = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	unsigned int pos = *ppos;
 	unsigned int cnt, size;
 
@@ -59,7 +68,11 @@ proc_bus_pci_read(struct file *file, char __user *buf, size_t nbytes, loff_t *pp
 	 */
 
 	if (capable(CAP_SYS_ADMIN))
+<<<<<<< HEAD
 		size = dp->size;
+=======
+		size = dev->cfg_size;
+>>>>>>> refs/remotes/origin/master
 	else if (dev->hdr_type == PCI_HEADER_TYPE_CARDBUS)
 		size = 128;
 	else
@@ -76,6 +89,11 @@ proc_bus_pci_read(struct file *file, char __user *buf, size_t nbytes, loff_t *pp
 	if (!access_ok(VERIFY_WRITE, buf, cnt))
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	pci_config_pm_runtime_get(dev);
+
+>>>>>>> refs/remotes/origin/master
 	if ((pos & 1) && cnt) {
 		unsigned char val;
 		pci_user_read_config_byte(dev, pos, &val);
@@ -121,6 +139,11 @@ proc_bus_pci_read(struct file *file, char __user *buf, size_t nbytes, loff_t *pp
 		cnt--;
 	}
 
+<<<<<<< HEAD
+=======
+	pci_config_pm_runtime_put(dev);
+
+>>>>>>> refs/remotes/origin/master
 	*ppos = pos;
 	return nbytes;
 }
@@ -128,11 +151,18 @@ proc_bus_pci_read(struct file *file, char __user *buf, size_t nbytes, loff_t *pp
 static ssize_t
 proc_bus_pci_write(struct file *file, const char __user *buf, size_t nbytes, loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct inode *ino = file->f_path.dentry->d_inode;
 	const struct proc_dir_entry *dp = PDE(ino);
 	struct pci_dev *dev = dp->data;
 	int pos = *ppos;
 	int size = dp->size;
+=======
+	struct inode *ino = file_inode(file);
+	struct pci_dev *dev = PDE_DATA(ino);
+	int pos = *ppos;
+	int size = dev->cfg_size;
+>>>>>>> refs/remotes/origin/master
 	int cnt;
 
 	if (pos >= size)
@@ -146,6 +176,11 @@ proc_bus_pci_write(struct file *file, const char __user *buf, size_t nbytes, lof
 	if (!access_ok(VERIFY_READ, buf, cnt))
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	pci_config_pm_runtime_get(dev);
+
+>>>>>>> refs/remotes/origin/master
 	if ((pos & 1) && cnt) {
 		unsigned char val;
 		__get_user(val, buf);
@@ -191,8 +226,15 @@ proc_bus_pci_write(struct file *file, const char __user *buf, size_t nbytes, lof
 		cnt--;
 	}
 
+<<<<<<< HEAD
 	*ppos = pos;
 	i_size_write(ino, dp->size);
+=======
+	pci_config_pm_runtime_put(dev);
+
+	*ppos = pos;
+	i_size_write(ino, dev->cfg_size);
+>>>>>>> refs/remotes/origin/master
 	return nbytes;
 }
 
@@ -204,8 +246,12 @@ struct pci_filp_private {
 static long proc_bus_pci_ioctl(struct file *file, unsigned int cmd,
 			       unsigned long arg)
 {
+<<<<<<< HEAD
 	const struct proc_dir_entry *dp = PDE(file->f_dentry->d_inode);
 	struct pci_dev *dev = dp->data;
+=======
+	struct pci_dev *dev = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 #ifdef HAVE_PCI_MMAP
 	struct pci_filp_private *fpriv = file->private_data;
 #endif /* HAVE_PCI_MMAP */
@@ -237,7 +283,11 @@ static long proc_bus_pci_ioctl(struct file *file, unsigned int cmd,
 	default:
 		ret = -EINVAL;
 		break;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -245,9 +295,13 @@ static long proc_bus_pci_ioctl(struct file *file, unsigned int cmd,
 #ifdef HAVE_PCI_MMAP
 static int proc_bus_pci_mmap(struct file *file, struct vm_area_struct *vma)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
 	const struct proc_dir_entry *dp = PDE(inode);
 	struct pci_dev *dev = dp->data;
+=======
+	struct pci_dev *dev = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	struct pci_filp_private *fpriv = file->private_data;
 	int i, ret;
 
@@ -417,7 +471,11 @@ int pci_proc_attach_device(struct pci_dev *dev)
 			     &proc_bus_pci_operations, dev);
 	if (!e)
 		return -ENOMEM;
+<<<<<<< HEAD
 	e->size = dev->cfg_size;
+=======
+	proc_set_size(e, dev->cfg_size);
+>>>>>>> refs/remotes/origin/master
 	dev->procent = e;
 
 	return 0;
@@ -425,6 +483,7 @@ int pci_proc_attach_device(struct pci_dev *dev)
 
 int pci_proc_detach_device(struct pci_dev *dev)
 {
+<<<<<<< HEAD
 	struct proc_dir_entry *e;
 
 	if ((e = dev->procent)) {
@@ -458,6 +517,16 @@ int pci_proc_detach_bus(struct pci_bus* bus)
 	struct proc_dir_entry *de = bus->procdir;
 	if (de)
 		remove_proc_entry(de->name, proc_bus_pci_dir);
+=======
+	proc_remove(dev->procent);
+	dev->procent = NULL;
+	return 0;
+}
+
+int pci_proc_detach_bus(struct pci_bus* bus)
+{
+	proc_remove(bus->procdir);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

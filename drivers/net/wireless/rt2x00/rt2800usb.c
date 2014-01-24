@@ -46,6 +46,7 @@
  * Allow hardware encryption to be disabled.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int modparam_nohwcrypt;
 =======
 static bool modparam_nohwcrypt;
@@ -53,6 +54,17 @@ static bool modparam_nohwcrypt;
 module_param_named(nohwcrypt, modparam_nohwcrypt, bool, S_IRUGO);
 MODULE_PARM_DESC(nohwcrypt, "Disable hardware encryption.");
 
+=======
+static bool modparam_nohwcrypt;
+module_param_named(nohwcrypt, modparam_nohwcrypt, bool, S_IRUGO);
+MODULE_PARM_DESC(nohwcrypt, "Disable hardware encryption.");
+
+static bool rt2800usb_hwcrypt_disabled(struct rt2x00_dev *rt2x00dev)
+{
+	return modparam_nohwcrypt;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Queue handlers.
  */
@@ -119,6 +131,7 @@ static bool rt2800usb_txstatus_pending(struct rt2x00_dev *rt2x00dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static bool rt2800usb_tx_sta_fifo_read_completed(struct rt2x00_dev *rt2x00dev,
 						 int urb_status, u32 tx_status)
 {
@@ -143,6 +156,8 @@ static bool rt2800usb_tx_sta_fifo_read_completed(struct rt2x00_dev *rt2x00dev,
 
 	return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline bool rt2800usb_entry_txstatus_timeout(struct queue_entry *entry)
 {
 	bool tout;
@@ -152,9 +167,15 @@ static inline bool rt2800usb_entry_txstatus_timeout(struct queue_entry *entry)
 
 	tout = time_after(jiffies, entry->last_action + msecs_to_jiffies(100));
 	if (unlikely(tout))
+<<<<<<< HEAD
 		WARNING(entry->queue->rt2x00dev,
 			"TX status timeout for entry %d in queue %d\n",
 			entry->entry_idx, entry->queue->qid);
+=======
+		rt2x00_warn(entry->queue->rt2x00dev,
+			    "TX status timeout for entry %d in queue %d\n",
+			    entry->entry_idx, entry->queue->qid);
+>>>>>>> refs/remotes/origin/master
 	return tout;
 
 }
@@ -172,21 +193,36 @@ static bool rt2800usb_txstatus_timeout(struct rt2x00_dev *rt2x00dev)
 	return false;
 }
 
+<<<<<<< HEAD
+=======
+#define TXSTATUS_READ_INTERVAL 1000000
+
+>>>>>>> refs/remotes/origin/master
 static bool rt2800usb_tx_sta_fifo_read_completed(struct rt2x00_dev *rt2x00dev,
 						 int urb_status, u32 tx_status)
 {
 	bool valid;
 
 	if (urb_status) {
+<<<<<<< HEAD
 		WARNING(rt2x00dev, "TX status read failed %d\n", urb_status);
+=======
+		rt2x00_warn(rt2x00dev, "TX status read failed %d\n",
+			    urb_status);
+>>>>>>> refs/remotes/origin/master
 
 		goto stop_reading;
 	}
 
 	valid = rt2x00_get_field32(tx_status, TX_STA_FIFO_VALID);
 	if (valid) {
+<<<<<<< HEAD
 		if (!kfifo_put(&rt2x00dev->txstatus_fifo, &tx_status))
 			WARNING(rt2x00dev, "TX status FIFO overrun\n");
+=======
+		if (!kfifo_put(&rt2x00dev->txstatus_fifo, tx_status))
+			rt2x00_warn(rt2x00dev, "TX status FIFO overrun\n");
+>>>>>>> refs/remotes/origin/master
 
 		queue_work(rt2x00dev->workqueue, &rt2x00dev->txdone_work);
 
@@ -199,8 +235,14 @@ static bool rt2800usb_tx_sta_fifo_read_completed(struct rt2x00_dev *rt2x00dev,
 		queue_work(rt2x00dev->workqueue, &rt2x00dev->txdone_work);
 
 	if (rt2800usb_txstatus_pending(rt2x00dev)) {
+<<<<<<< HEAD
 		/* Read register after 250 us */
 		hrtimer_start(&rt2x00dev->txstatus_timer, ktime_set(0, 250000),
+=======
+		/* Read register after 1 ms */
+		hrtimer_start(&rt2x00dev->txstatus_timer,
+			      ktime_set(0, TXSTATUS_READ_INTERVAL),
+>>>>>>> refs/remotes/origin/master
 			      HRTIMER_MODE_REL);
 		return false;
 	}
@@ -225,16 +267,24 @@ static void rt2800usb_async_read_tx_status(struct rt2x00_dev *rt2x00dev)
 	if (test_and_set_bit(TX_STATUS_READING, &rt2x00dev->flags))
 		return;
 
+<<<<<<< HEAD
 	/* Read TX_STA_FIFO register after 500 us */
 	hrtimer_start(&rt2x00dev->txstatus_timer, ktime_set(0, 500000),
 		      HRTIMER_MODE_REL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Read TX_STA_FIFO register after 2 ms */
+	hrtimer_start(&rt2x00dev->txstatus_timer,
+		      ktime_set(0, 2*TXSTATUS_READ_INTERVAL),
+		      HRTIMER_MODE_REL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rt2800usb_tx_dma_done(struct queue_entry *entry)
 {
 	struct rt2x00_dev *rt2x00dev = entry->queue->rt2x00dev;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	rt2x00usb_register_read_async(rt2x00dev, TX_STA_FIFO,
 				      rt2800usb_tx_sta_fifo_read_completed);
@@ -247,6 +297,8 @@ static void rt2800usb_tx_sta_fifo_timeout(unsigned long data)
 	rt2x00usb_register_read_async(rt2x00dev, TX_STA_FIFO,
 				      rt2800usb_tx_sta_fifo_read_completed);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rt2800usb_async_read_tx_status(rt2x00dev);
 }
 
@@ -259,7 +311,10 @@ static enum hrtimer_restart rt2800usb_tx_sta_fifo_timeout(struct hrtimer *timer)
 				      rt2800usb_tx_sta_fifo_read_completed);
 
 	return HRTIMER_NORESTART;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -307,7 +362,11 @@ static int rt2800usb_write_firmware(struct rt2x00_dev *rt2x00dev,
 					     0, USB_MODE_FIRMWARE,
 					     REGISTER_TIMEOUT_FIRMWARE);
 	if (status < 0) {
+<<<<<<< HEAD
 		ERROR(rt2x00dev, "Failed to write Firmware to device.\n");
+=======
+		rt2x00_err(rt2x00dev, "Failed to write Firmware to device\n");
+>>>>>>> refs/remotes/origin/master
 		return status;
 	}
 
@@ -334,12 +393,16 @@ static int rt2800usb_init_registers(struct rt2x00_dev *rt2x00dev)
 	rt2x00usb_register_write(rt2x00dev, PBF_SYS_CTRL, reg & ~0x00002000);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rt2x00usb_register_write(rt2x00dev, PWR_PIN_CFG, 0x00000003);
 
 	rt2x00usb_register_read(rt2x00dev, MAC_SYS_CTRL, &reg);
 =======
 	reg = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	reg = 0;
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&reg, MAC_SYS_CTRL_RESET_CSR, 1);
 	rt2x00_set_field32(&reg, MAC_SYS_CTRL_RESET_BBP, 1);
 	rt2x00usb_register_write(rt2x00dev, MAC_SYS_CTRL, reg);
@@ -370,7 +433,11 @@ static int rt2800usb_enable_radio(struct rt2x00_dev *rt2x00dev)
 	 * this limit so reduce the number to prevent errors.
 	 */
 	rt2x00_set_field32(&reg, USB_DMA_CFG_RX_BULK_AGG_LIMIT,
+<<<<<<< HEAD
 			   ((rt2x00dev->ops->rx->entry_num * DATA_FRAME_SIZE)
+=======
+			   ((rt2x00dev->rx->limit * DATA_FRAME_SIZE)
+>>>>>>> refs/remotes/origin/master
 			    / 1024) - 3);
 	rt2x00_set_field32(&reg, USB_DMA_CFG_RX_BULK_EN, 1);
 	rt2x00_set_field32(&reg, USB_DMA_CFG_TX_BULK_EN, 1);
@@ -436,8 +503,13 @@ static int rt2800usb_set_device_state(struct rt2x00_dev *rt2x00dev,
 	}
 
 	if (unlikely(retval))
+<<<<<<< HEAD
 		ERROR(rt2x00dev, "Device failed to enter state %d (%d).\n",
 		      state, retval);
+=======
+		rt2x00_err(rt2x00dev, "Device failed to enter state %d (%d)\n",
+			   state, retval);
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }
@@ -452,8 +524,12 @@ static void rt2800usb_watchdog(struct rt2x00_dev *rt2x00dev)
 
 	rt2x00usb_register_read(rt2x00dev, TXRXQ_PCNT, &reg);
 	if (rt2x00_get_field32(reg, TXRXQ_PCNT_TX0Q)) {
+<<<<<<< HEAD
 		WARNING(rt2x00dev, "TX HW queue 0 timed out,"
 			" invoke forced kick\n");
+=======
+		rt2x00_warn(rt2x00dev, "TX HW queue 0 timed out, invoke forced kick\n");
+>>>>>>> refs/remotes/origin/master
 
 		rt2x00usb_register_write(rt2x00dev, PBF_CFG, 0xf40012);
 
@@ -468,8 +544,12 @@ static void rt2800usb_watchdog(struct rt2x00_dev *rt2x00dev)
 
 	rt2x00usb_register_read(rt2x00dev, TXRXQ_PCNT, &reg);
 	if (rt2x00_get_field32(reg, TXRXQ_PCNT_TX1Q)) {
+<<<<<<< HEAD
 		WARNING(rt2x00dev, "TX HW queue 1 timed out,"
 			" invoke forced kick\n");
+=======
+		rt2x00_warn(rt2x00dev, "TX HW queue 1 timed out, invoke forced kick\n");
+>>>>>>> refs/remotes/origin/master
 
 		rt2x00usb_register_write(rt2x00dev, PBF_CFG, 0xf4000a);
 
@@ -512,16 +592,22 @@ static void rt2800usb_write_tx_desc(struct queue_entry *entry,
 	 * The size of TXINFO_W0_USB_DMA_TX_PKT_LEN is
 	 * TXWI + 802.11 header + L2 pad + payload + pad,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * so need to decrease size of TXINFO and USB end pad.
 	 */
 	rt2x00_set_field32(&word, TXINFO_W0_USB_DMA_TX_PKT_LEN,
 			   entry->skb->len - TXINFO_DESC_SIZE - 4);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * so need to decrease size of TXINFO.
 	 */
 	rt2x00_set_field32(&word, TXINFO_W0_USB_DMA_TX_PKT_LEN,
 			   roundup(entry->skb->len, 4) - TXINFO_DESC_SIZE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&word, TXINFO_W0_WIV,
 			   !test_bit(ENTRY_TXD_ENCRYPT_IV, &txdesc->flags));
 	rt2x00_set_field32(&word, TXINFO_W0_QSEL, 2);
@@ -536,6 +622,7 @@ static void rt2800usb_write_tx_desc(struct queue_entry *entry,
 	 */
 	skbdesc->flags |= SKBDESC_DESC_IN_SKB;
 	skbdesc->desc = txi;
+<<<<<<< HEAD
 	skbdesc->desc_len = TXINFO_DESC_SIZE + TXWI_DESC_SIZE;
 }
 
@@ -552,6 +639,11 @@ static void rt2800usb_write_tx_data(struct queue_entry *entry,
 	 * pad(1~3 bytes) is added after each 802.11 payload.
 	 * USB end pad(4 bytes) is added at each USB bulk out packet end.
 =======
+=======
+	skbdesc->desc_len = TXINFO_DESC_SIZE + entry->queue->winfo_size;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * TX data initialization
  */
@@ -560,11 +652,15 @@ static int rt2800usb_get_tx_data_len(struct queue_entry *entry)
 	/*
 	 * pad(1~3 bytes) is needed after each 802.11 payload.
 	 * USB end pad(4 bytes) is needed at each USB bulk out packet end.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * TX frame format is :
 	 * | TXINFO | TXWI | 802.11 header | L2 pad | payload | pad | USB end pad |
 	 *                 |<------------- tx_pkt_len ------------->|
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	len = roundup(entry->skb->len, 4) + 4;
 	err = skb_padto(entry->skb, len);
@@ -596,6 +692,8 @@ static void rt2800usb_work_txdone(struct work_struct *work)
 
 	rt2800_txdone(rt2x00dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return roundup(entry->skb->len, 4) + 4;
 }
@@ -636,9 +734,15 @@ rt2800usb_txdone_entry_check(struct queue_entry *entry, u32 reg)
 	tx_pid  = rt2x00_get_field32(word, TXWI_W1_PACKETID);
 
 	if (wcid != tx_wcid || ack != tx_ack || (!is_agg && pid != tx_pid)) {
+<<<<<<< HEAD
 		WARNING(entry->queue->rt2x00dev,
 			"TX status report missed for queue %d entry %d\n",
 			entry->queue->qid, entry->entry_idx);
+=======
+		rt2x00_dbg(entry->queue->rt2x00dev,
+			   "TX status report missed for queue %d entry %d\n",
+			   entry->queue->qid, entry->entry_idx);
+>>>>>>> refs/remotes/origin/master
 		return TXDONE_UNKNOWN;
 	}
 
@@ -662,8 +766,13 @@ static void rt2800usb_txdone(struct rt2x00_dev *rt2x00dev)
 		queue = rt2x00queue_get_tx_queue(rt2x00dev, qid);
 
 		if (unlikely(rt2x00queue_empty(queue))) {
+<<<<<<< HEAD
 			WARNING(rt2x00dev, "Got TX status for an empty "
 					   "queue %u, dropping\n", qid);
+=======
+			rt2x00_warn(rt2x00dev, "Got TX status for an empty queue %u, dropping\n",
+				    qid);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -671,8 +780,13 @@ static void rt2800usb_txdone(struct rt2x00_dev *rt2x00dev)
 
 		if (unlikely(test_bit(ENTRY_OWNER_DEVICE_DATA, &entry->flags) ||
 			     !test_bit(ENTRY_DATA_STATUS_PENDING, &entry->flags))) {
+<<<<<<< HEAD
 			WARNING(rt2x00dev, "Data pending for entry %u "
 					   "in queue %u\n", entry->entry_idx, qid);
+=======
+			rt2x00_warn(rt2x00dev, "Data pending for entry %u in queue %u\n",
+				    entry->entry_idx, qid);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -688,7 +802,10 @@ static void rt2800usb_txdone_nostatus(struct rt2x00_dev *rt2x00dev)
 {
 	struct data_queue *queue;
 	struct queue_entry *entry;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Process any trailing TX status reports for IO failures,
@@ -708,15 +825,20 @@ static void rt2800usb_txdone_nostatus(struct rt2x00_dev *rt2x00dev)
 			if (test_bit(ENTRY_DATA_IO_FAILED, &entry->flags))
 				rt2x00lib_txdone_noinfo(entry, TXDONE_FAILURE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			else if (rt2x00queue_status_timeout(entry))
 =======
 			else if (rt2800usb_entry_txstatus_timeout(entry))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			else if (rt2800usb_entry_txstatus_timeout(entry))
+>>>>>>> refs/remotes/origin/master
 				rt2x00lib_txdone_noinfo(entry, TXDONE_UNKNOWN);
 			else
 				break;
 		}
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	/*
@@ -727,6 +849,8 @@ static void rt2800usb_txdone_nostatus(struct rt2x00_dev *rt2x00dev)
 	if (rt2800usb_txstatus_pending(rt2x00dev))
 		mod_timer(&rt2x00dev->txstatus_timer, jiffies + msecs_to_jiffies(2));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rt2800usb_work_txdone(struct work_struct *work)
@@ -749,7 +873,10 @@ static void rt2800usb_work_txdone(struct work_struct *work)
 		if (rt2800usb_txstatus_pending(rt2x00dev))
 			rt2800usb_async_read_tx_status(rt2x00dev);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -785,20 +912,31 @@ static void rt2800usb_fill_rxdone(struct queue_entry *entry,
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * FIXME: we need to check for rx_pkt_len validity
 	 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Check for rx_pkt_len validity. Return if invalid, leaving
 	 * rxdesc->size zeroed out by the upper level.
 	 */
 	if (unlikely(rx_pkt_len == 0 ||
 			rx_pkt_len > entry->queue->data_size)) {
+<<<<<<< HEAD
 		ERROR(entry->queue->rt2x00dev,
 			"Bad frame size %d, forcing to 0\n", rx_pkt_len);
 		return;
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rt2x00_err(entry->queue->rt2x00dev,
+			   "Bad frame size %d, forcing to 0\n", rx_pkt_len);
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	rxd = (__le32 *)(entry->skb->data + rx_pkt_len);
 
 	/*
@@ -852,6 +990,7 @@ static void rt2800usb_fill_rxdone(struct queue_entry *entry,
 /*
  * Device probe functions.
  */
+<<<<<<< HEAD
 static int rt2800usb_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 {
 	if (rt2800_efuse_detect(rt2x00dev))
@@ -861,11 +1000,25 @@ static int rt2800usb_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 				      EEPROM_SIZE);
 
 	return rt2800_validate_eeprom(rt2x00dev);
+=======
+static int rt2800usb_read_eeprom(struct rt2x00_dev *rt2x00dev)
+{
+	int retval;
+
+	if (rt2800_efuse_detect(rt2x00dev))
+		retval = rt2800_read_eeprom_efuse(rt2x00dev);
+	else
+		retval = rt2x00usb_eeprom_read(rt2x00dev, rt2x00dev->eeprom,
+					       EEPROM_SIZE);
+
+	return retval;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int rt2800usb_probe_hw(struct rt2x00_dev *rt2x00dev)
 {
 	int retval;
+<<<<<<< HEAD
 	u32 reg;
 
 	/*
@@ -891,10 +1044,15 @@ static int rt2800usb_probe_hw(struct rt2x00_dev *rt2x00dev)
 	 * Initialize hw specifications.
 	 */
 	retval = rt2800_probe_hw_mode(rt2x00dev);
+=======
+
+	retval = rt2800_probe_hw(rt2x00dev);
+>>>>>>> refs/remotes/origin/master
 	if (retval)
 		return retval;
 
 	/*
+<<<<<<< HEAD
 	 * This device has multiple filters for control frames
 	 * and has a separate filter for PS Poll frames.
 	 */
@@ -925,6 +1083,11 @@ static int rt2800usb_probe_hw(struct rt2x00_dev *rt2x00dev)
 	 * Set the rssi offset.
 	 */
 	rt2x00dev->rssi_offset = DEFAULT_RSSI_OFFSET;
+=======
+	 * Set txstatus timer function.
+	 */
+	rt2x00dev->txstatus_timer.function = rt2800usb_tx_sta_fifo_timeout;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Overwrite TX done handler
@@ -950,10 +1113,15 @@ static const struct ieee80211_ops rt2800usb_mac80211_ops = {
 	.get_tkip_seq		= rt2800_get_tkip_seq,
 	.set_rts_threshold	= rt2800_set_rts_threshold,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.sta_add		= rt2x00mac_sta_add,
 	.sta_remove		= rt2x00mac_sta_remove,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.sta_add		= rt2x00mac_sta_add,
+	.sta_remove		= rt2x00mac_sta_remove,
+>>>>>>> refs/remotes/origin/master
 	.bss_info_changed	= rt2x00mac_bss_info_changed,
 	.conf_tx		= rt2800_conf_tx,
 	.get_tsf		= rt2800_get_tsf,
@@ -963,9 +1131,13 @@ static const struct ieee80211_ops rt2800usb_mac80211_ops = {
 	.get_survey		= rt2800_get_survey,
 	.get_ringparam		= rt2x00mac_get_ringparam,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.tx_frames_pending	= rt2x00mac_tx_frames_pending,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.tx_frames_pending	= rt2x00mac_tx_frames_pending,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct rt2800_ops rt2800usb_rt2800_ops = {
@@ -976,6 +1148,11 @@ static const struct rt2800_ops rt2800usb_rt2800_ops = {
 	.register_multiread	= rt2x00usb_register_multiread,
 	.register_multiwrite	= rt2x00usb_register_multiwrite,
 	.regbusy_read		= rt2x00usb_regbusy_read,
+<<<<<<< HEAD
+=======
+	.read_eeprom		= rt2800usb_read_eeprom,
+	.hwcrypt_disabled	= rt2800usb_hwcrypt_disabled,
+>>>>>>> refs/remotes/origin/master
 	.drv_write_firmware	= rt2800usb_write_firmware,
 	.drv_init_registers	= rt2800usb_init_registers,
 	.drv_get_txwi		= rt2800usb_get_txwi,
@@ -996,9 +1173,13 @@ static const struct rt2x00lib_ops rt2800usb_rt2x00_ops = {
 	.link_tuner		= rt2800_link_tuner,
 	.gain_calibration	= rt2800_gain_calibration,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.vco_calibration	= rt2800_vco_calibration,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.vco_calibration	= rt2800_vco_calibration,
+>>>>>>> refs/remotes/origin/master
 	.watchdog		= rt2800usb_watchdog,
 	.start_queue		= rt2800usb_start_queue,
 	.kick_queue		= rt2x00usb_kick_queue,
@@ -1007,10 +1188,14 @@ static const struct rt2x00lib_ops rt2800usb_rt2x00_ops = {
 	.tx_dma_done		= rt2800usb_tx_dma_done,
 	.write_tx_desc		= rt2800usb_write_tx_desc,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.write_tx_data		= rt2800usb_write_tx_data,
 =======
 	.write_tx_data		= rt2800_write_tx_data,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.write_tx_data		= rt2800_write_tx_data,
+>>>>>>> refs/remotes/origin/master
 	.write_beacon		= rt2800_write_beacon,
 	.clear_beacon		= rt2800_clear_beacon,
 	.get_tx_data_len	= rt2800usb_get_tx_data_len,
@@ -1022,6 +1207,7 @@ static const struct rt2x00lib_ops rt2800usb_rt2x00_ops = {
 	.config_erp		= rt2800_config_erp,
 	.config_ant		= rt2800_config_ant,
 	.config			= rt2800_config,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	.sta_add		= rt2800_sta_add,
@@ -1061,14 +1247,70 @@ static const struct rt2x00_ops rt2800usb_ops = {
 	.drv_data_size		= sizeof(struct rt2800_drv_data),
 >>>>>>> refs/remotes/origin/cm-10.0
 	.max_sta_intf		= 1,
+=======
+	.sta_add		= rt2800_sta_add,
+	.sta_remove		= rt2800_sta_remove,
+};
+
+static void rt2800usb_queue_init(struct data_queue *queue)
+{
+	struct rt2x00_dev *rt2x00dev = queue->rt2x00dev;
+	unsigned short txwi_size, rxwi_size;
+
+	rt2800_get_txwi_rxwi_size(rt2x00dev, &txwi_size, &rxwi_size);
+
+	switch (queue->qid) {
+	case QID_RX:
+		queue->limit = 128;
+		queue->data_size = AGGREGATION_SIZE;
+		queue->desc_size = RXINFO_DESC_SIZE;
+		queue->winfo_size = rxwi_size;
+		queue->priv_size = sizeof(struct queue_entry_priv_usb);
+		break;
+
+	case QID_AC_VO:
+	case QID_AC_VI:
+	case QID_AC_BE:
+	case QID_AC_BK:
+		queue->limit = 16;
+		queue->data_size = AGGREGATION_SIZE;
+		queue->desc_size = TXINFO_DESC_SIZE;
+		queue->winfo_size = txwi_size;
+		queue->priv_size = sizeof(struct queue_entry_priv_usb);
+		break;
+
+	case QID_BEACON:
+		queue->limit = 8;
+		queue->data_size = MGMT_FRAME_SIZE;
+		queue->desc_size = TXINFO_DESC_SIZE;
+		queue->winfo_size = txwi_size;
+		queue->priv_size = sizeof(struct queue_entry_priv_usb);
+		break;
+
+	case QID_ATIM:
+		/* fallthrough */
+	default:
+		BUG();
+		break;
+	}
+}
+
+static const struct rt2x00_ops rt2800usb_ops = {
+	.name			= KBUILD_MODNAME,
+	.drv_data_size		= sizeof(struct rt2800_drv_data),
+>>>>>>> refs/remotes/origin/master
 	.max_ap_intf		= 8,
 	.eeprom_size		= EEPROM_SIZE,
 	.rf_size		= RF_SIZE,
 	.tx_queues		= NUM_TX_QUEUES,
+<<<<<<< HEAD
 	.extra_tx_headroom	= TXINFO_DESC_SIZE + TXWI_DESC_SIZE,
 	.rx			= &rt2800usb_queue_rx,
 	.tx			= &rt2800usb_queue_tx,
 	.bcn			= &rt2800usb_queue_bcn,
+=======
+	.queue_init		= rt2800usb_queue_init,
+>>>>>>> refs/remotes/origin/master
 	.lib			= &rt2800usb_rt2x00_ops,
 	.drv			= &rt2800usb_rt2800_ops,
 	.hw			= &rt2800usb_mac80211_ops,
@@ -1091,9 +1333,13 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	/* AirTies */
 	{ USB_DEVICE(0x1eda, 0x2012) },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ USB_DEVICE(0x1eda, 0x2210) },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ USB_DEVICE(0x1eda, 0x2210) },
+>>>>>>> refs/remotes/origin/master
 	{ USB_DEVICE(0x1eda, 0x2310) },
 	/* Allwin */
 	{ USB_DEVICE(0x8516, 0x2070) },
@@ -1143,6 +1389,10 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x0411, 0x016f) },
 	{ USB_DEVICE(0x0411, 0x01a2) },
 	{ USB_DEVICE(0x0411, 0x01ee) },
+<<<<<<< HEAD
+=======
+	{ USB_DEVICE(0x0411, 0x01a8) },
+>>>>>>> refs/remotes/origin/master
 	/* Corega */
 	{ USB_DEVICE(0x07aa, 0x002f) },
 	{ USB_DEVICE(0x07aa, 0x003c) },
@@ -1158,17 +1408,27 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x07d1, 0x3c13) },
 	{ USB_DEVICE(0x07d1, 0x3c15) },
 	{ USB_DEVICE(0x07d1, 0x3c16) },
+<<<<<<< HEAD
 	{ USB_DEVICE(0x2001, 0x3c1b) },
 	/* Draytek */
 	{ USB_DEVICE(0x07fa, 0x7712) },
 <<<<<<< HEAD
 	/* Edimax */
 =======
+=======
+	{ USB_DEVICE(0x07d1, 0x3c17) },
+	{ USB_DEVICE(0x2001, 0x3c1b) },
+	/* Draytek */
+	{ USB_DEVICE(0x07fa, 0x7712) },
+>>>>>>> refs/remotes/origin/master
 	/* DVICO */
 	{ USB_DEVICE(0x0fe9, 0xb307) },
 	/* Edimax */
 	{ USB_DEVICE(0x7392, 0x4085) },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ USB_DEVICE(0x7392, 0x7711) },
 	{ USB_DEVICE(0x7392, 0x7717) },
 	{ USB_DEVICE(0x7392, 0x7718) },
@@ -1245,9 +1505,13 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x0471, 0x200f) },
 	/* Planex */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ USB_DEVICE(0x2019, 0x5201) },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ USB_DEVICE(0x2019, 0x5201) },
+>>>>>>> refs/remotes/origin/master
 	{ USB_DEVICE(0x2019, 0xab25) },
 	{ USB_DEVICE(0x2019, 0xed06) },
 	/* Quanta */
@@ -1295,8 +1559,16 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x15a9, 0x0006) },
 	/* Sweex */
 	{ USB_DEVICE(0x177f, 0x0153) },
+<<<<<<< HEAD
 	{ USB_DEVICE(0x177f, 0x0302) },
 	{ USB_DEVICE(0x177f, 0x0313) },
+=======
+	{ USB_DEVICE(0x177f, 0x0164) },
+	{ USB_DEVICE(0x177f, 0x0302) },
+	{ USB_DEVICE(0x177f, 0x0313) },
+	{ USB_DEVICE(0x177f, 0x0323) },
+	{ USB_DEVICE(0x177f, 0x0324) },
+>>>>>>> refs/remotes/origin/master
 	/* U-Media */
 	{ USB_DEVICE(0x157e, 0x300e) },
 	{ USB_DEVICE(0x157e, 0x3013) },
@@ -1311,25 +1583,41 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	/* Zyxel */
 	{ USB_DEVICE(0x0586, 0x3416) },
 	{ USB_DEVICE(0x0586, 0x3418) },
+<<<<<<< HEAD
+=======
+	{ USB_DEVICE(0x0586, 0x341a) },
+>>>>>>> refs/remotes/origin/master
 	{ USB_DEVICE(0x0586, 0x341e) },
 	{ USB_DEVICE(0x0586, 0x343e) },
 #ifdef CONFIG_RT2800USB_RT33XX
 	/* Belkin */
 	{ USB_DEVICE(0x050d, 0x945b) },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* D-Link */
 	{ USB_DEVICE(0x2001, 0x3c17) },
 	/* Panasonic */
 	{ USB_DEVICE(0x083a, 0xb511) },
 	/* Philips */
 	{ USB_DEVICE(0x0471, 0x20dd) },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Ralink */
 	{ USB_DEVICE(0x148f, 0x3370) },
 	{ USB_DEVICE(0x148f, 0x8070) },
 	/* Sitecom */
 	{ USB_DEVICE(0x0df6, 0x0050) },
+<<<<<<< HEAD
+=======
+	/* Sweex */
+	{ USB_DEVICE(0x177f, 0x0163) },
+	{ USB_DEVICE(0x177f, 0x0165) },
+>>>>>>> refs/remotes/origin/master
 #endif
 #ifdef CONFIG_RT2800USB_RT35XX
 	/* Allwin */
@@ -1337,12 +1625,18 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	/* Askey */
 	{ USB_DEVICE(0x1690, 0x0744) },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{ USB_DEVICE(0x1690, 0x0761) },
 	{ USB_DEVICE(0x1690, 0x0764) },
 	/* ASUS */
 	{ USB_DEVICE(0x0b05, 0x179d) },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Cisco */
 	{ USB_DEVICE(0x167b, 0x4001) },
 	/* EnGenius */
@@ -1352,22 +1646,34 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	/* Linksys */
 	{ USB_DEVICE(0x13b1, 0x002f) },
 	{ USB_DEVICE(0x1737, 0x0079) },
+<<<<<<< HEAD
+=======
+	/* Logitec */
+	{ USB_DEVICE(0x0789, 0x0170) },
+>>>>>>> refs/remotes/origin/master
 	/* Ralink */
 	{ USB_DEVICE(0x148f, 0x3572) },
 	/* Sitecom */
 	{ USB_DEVICE(0x0df6, 0x0041) },
 	{ USB_DEVICE(0x0df6, 0x0062) },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ USB_DEVICE(0x0df6, 0x0065) },
 	{ USB_DEVICE(0x0df6, 0x0066) },
 	{ USB_DEVICE(0x0df6, 0x0068) },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ USB_DEVICE(0x0df6, 0x0065) },
+	{ USB_DEVICE(0x0df6, 0x0066) },
+	{ USB_DEVICE(0x0df6, 0x0068) },
+>>>>>>> refs/remotes/origin/master
 	/* Toshiba */
 	{ USB_DEVICE(0x0930, 0x0a07) },
 	/* Zinwell */
 	{ USB_DEVICE(0x5a57, 0x0284) },
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_RT2800USB_RT53XX
 <<<<<<< HEAD
 	/* Azurewave */
@@ -1379,6 +1685,50 @@ static struct usb_device_id rt2800usb_device_table[] = {
 =======
 	/* Arcadyan */
 	{ USB_DEVICE(0x043e, 0x7a12) },
+=======
+#ifdef CONFIG_RT2800USB_RT3573
+	/* AirLive */
+	{ USB_DEVICE(0x1b75, 0x7733) },
+	/* ASUS */
+	{ USB_DEVICE(0x0b05, 0x17bc) },
+	{ USB_DEVICE(0x0b05, 0x17ad) },
+	/* Belkin */
+	{ USB_DEVICE(0x050d, 0x1103) },
+	/* Cameo */
+	{ USB_DEVICE(0x148f, 0xf301) },
+	/* D-Link */
+	{ USB_DEVICE(0x2001, 0x3c1f) },
+	/* Edimax */
+	{ USB_DEVICE(0x7392, 0x7733) },
+	/* Hawking */
+	{ USB_DEVICE(0x0e66, 0x0020) },
+	{ USB_DEVICE(0x0e66, 0x0021) },
+	/* I-O DATA */
+	{ USB_DEVICE(0x04bb, 0x094e) },
+	/* Linksys */
+	{ USB_DEVICE(0x13b1, 0x003b) },
+	/* Logitec */
+	{ USB_DEVICE(0x0789, 0x016b) },
+	/* NETGEAR */
+	{ USB_DEVICE(0x0846, 0x9012) },
+	{ USB_DEVICE(0x0846, 0x9013) },
+	{ USB_DEVICE(0x0846, 0x9019) },
+	/* Planex */
+	{ USB_DEVICE(0x2019, 0xed19) },
+	/* Ralink */
+	{ USB_DEVICE(0x148f, 0x3573) },
+	/* Sitecom */
+	{ USB_DEVICE(0x0df6, 0x0067) },
+	{ USB_DEVICE(0x0df6, 0x006a) },
+	{ USB_DEVICE(0x0df6, 0x006e) },
+	/* ZyXEL */
+	{ USB_DEVICE(0x0586, 0x3421) },
+#endif
+#ifdef CONFIG_RT2800USB_RT53XX
+	/* Arcadyan */
+	{ USB_DEVICE(0x043e, 0x7a12) },
+	{ USB_DEVICE(0x043e, 0x7a32) },
+>>>>>>> refs/remotes/origin/master
 	/* Azurewave */
 	{ USB_DEVICE(0x13d3, 0x3329) },
 	{ USB_DEVICE(0x13d3, 0x3365) },
@@ -1387,6 +1737,7 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x2001, 0x3c19) },
 	{ USB_DEVICE(0x2001, 0x3c1c) },
 	{ USB_DEVICE(0x2001, 0x3c1d) },
+<<<<<<< HEAD
 	/* LG innotek */
 	{ USB_DEVICE(0x043e, 0x7a22) },
 	/* Panasonic */
@@ -1400,6 +1751,45 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	/* Unknown */
 	{ USB_DEVICE(0x04da, 0x23f6) },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ USB_DEVICE(0x2001, 0x3c1e) },
+	{ USB_DEVICE(0x2001, 0x3c20) },
+	{ USB_DEVICE(0x2001, 0x3c22) },
+	{ USB_DEVICE(0x2001, 0x3c23) },
+	/* LG innotek */
+	{ USB_DEVICE(0x043e, 0x7a22) },
+	{ USB_DEVICE(0x043e, 0x7a42) },
+	/* Panasonic */
+	{ USB_DEVICE(0x04da, 0x1801) },
+	{ USB_DEVICE(0x04da, 0x1800) },
+	{ USB_DEVICE(0x04da, 0x23f6) },
+	/* Philips */
+	{ USB_DEVICE(0x0471, 0x2104) },
+	{ USB_DEVICE(0x0471, 0x2126) },
+	{ USB_DEVICE(0x0471, 0x2180) },
+	{ USB_DEVICE(0x0471, 0x2181) },
+	{ USB_DEVICE(0x0471, 0x2182) },
+	/* Ralink */
+	{ USB_DEVICE(0x148f, 0x5370) },
+	{ USB_DEVICE(0x148f, 0x5372) },
+#endif
+#ifdef CONFIG_RT2800USB_RT55XX
+	/* Arcadyan */
+	{ USB_DEVICE(0x043e, 0x7a32) },
+	/* AVM GmbH */
+	{ USB_DEVICE(0x057c, 0x8501) },
+	/* Buffalo */
+	{ USB_DEVICE(0x0411, 0x0241) },
+	/* D-Link */
+	{ USB_DEVICE(0x2001, 0x3c1a) },
+	{ USB_DEVICE(0x2001, 0x3c21) },
+	/* Proware */
+	{ USB_DEVICE(0x043e, 0x7a13) },
+	/* Ralink */
+	{ USB_DEVICE(0x148f, 0x5572) },
+	/* TRENDnet */
+	{ USB_DEVICE(0x20f4, 0x724a) },
+>>>>>>> refs/remotes/origin/master
 #endif
 #ifdef CONFIG_RT2800USB_UNKNOWN
 	/*
@@ -1421,13 +1811,24 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x0b05, 0x1761) },
 	{ USB_DEVICE(0x0b05, 0x1790) },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ USB_DEVICE(0x0b05, 0x179d) },
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ USB_DEVICE(0x0b05, 0x17a7) },
+>>>>>>> refs/remotes/origin/master
 	/* AzureWave */
 	{ USB_DEVICE(0x13d3, 0x3262) },
 	{ USB_DEVICE(0x13d3, 0x3284) },
 	{ USB_DEVICE(0x13d3, 0x3322) },
+<<<<<<< HEAD
+=======
+	{ USB_DEVICE(0x13d3, 0x3340) },
+	{ USB_DEVICE(0x13d3, 0x3399) },
+	{ USB_DEVICE(0x13d3, 0x3400) },
+	{ USB_DEVICE(0x13d3, 0x3401) },
+>>>>>>> refs/remotes/origin/master
 	/* Belkin */
 	{ USB_DEVICE(0x050d, 0x1003) },
 	/* Buffalo */
@@ -1440,6 +1841,7 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x18c5, 0x0008) },
 	/* D-Link */
 	{ USB_DEVICE(0x07d1, 0x3c0b) },
+<<<<<<< HEAD
 	{ USB_DEVICE(0x07d1, 0x3c17) },
 <<<<<<< HEAD
 	{ USB_DEVICE(0x2001, 0x3c17) },
@@ -1453,10 +1855,22 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	/* Encore */
 	{ USB_DEVICE(0x203d, 0x14a1) },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Encore */
+	{ USB_DEVICE(0x203d, 0x14a1) },
+	/* EnGenius */
+	{ USB_DEVICE(0x1740, 0x0600) },
+	{ USB_DEVICE(0x1740, 0x0602) },
+>>>>>>> refs/remotes/origin/master
 	/* Gemtek */
 	{ USB_DEVICE(0x15a9, 0x0010) },
 	/* Gigabyte */
 	{ USB_DEVICE(0x1044, 0x800c) },
+<<<<<<< HEAD
+=======
+	/* Hercules */
+	{ USB_DEVICE(0x06f8, 0xe036) },
+>>>>>>> refs/remotes/origin/master
 	/* Huawei */
 	{ USB_DEVICE(0x148f, 0xf101) },
 	/* I-O DATA */
@@ -1474,10 +1888,15 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x1d4d, 0x0010) },
 	/* Planex */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ USB_DEVICE(0x2019, 0x5201) },
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	{ USB_DEVICE(0x2019, 0xab24) },
+=======
+	{ USB_DEVICE(0x2019, 0xab24) },
+	{ USB_DEVICE(0x2019, 0xab29) },
+>>>>>>> refs/remotes/origin/master
 	/* Qcom */
 	{ USB_DEVICE(0x18e8, 0x6259) },
 	/* RadioShack */
@@ -1487,13 +1906,25 @@ static struct usb_device_id rt2800usb_device_table[] = {
 	{ USB_DEVICE(0x0df6, 0x004a) },
 	{ USB_DEVICE(0x0df6, 0x004d) },
 	{ USB_DEVICE(0x0df6, 0x0053) },
+<<<<<<< HEAD
+=======
+	{ USB_DEVICE(0x0df6, 0x0069) },
+	{ USB_DEVICE(0x0df6, 0x006f) },
+>>>>>>> refs/remotes/origin/master
 	/* SMC */
 	{ USB_DEVICE(0x083a, 0xa512) },
 	{ USB_DEVICE(0x083a, 0xc522) },
 	{ USB_DEVICE(0x083a, 0xd522) },
 	{ USB_DEVICE(0x083a, 0xf511) },
+<<<<<<< HEAD
 	/* Zyxel */
 	{ USB_DEVICE(0x0586, 0x341a) },
+=======
+	/* Sweex */
+	{ USB_DEVICE(0x177f, 0x0254) },
+	/* TP-LINK */
+	{ USB_DEVICE(0xf201, 0x5370) },
+>>>>>>> refs/remotes/origin/master
 #endif
 	{ 0, }
 };
@@ -1519,6 +1950,7 @@ static struct usb_driver rt2800usb_driver = {
 	.disconnect	= rt2x00usb_disconnect,
 	.suspend	= rt2x00usb_suspend,
 	.resume		= rt2x00usb_resume,
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
@@ -1537,3 +1969,10 @@ module_exit(rt2800usb_exit);
 =======
 module_usb_driver(rt2800usb_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.reset_resume	= rt2x00usb_resume,
+	.disable_hub_initiated_lpm = 1,
+};
+
+module_usb_driver(rt2800usb_driver);
+>>>>>>> refs/remotes/origin/master

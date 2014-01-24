@@ -17,6 +17,7 @@
  */
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_bit.h"
 #include "xfs_log.h"
 #include "xfs_inum.h"
@@ -35,6 +36,20 @@
 #include "xfs_attr.h"
 #include "xfs_buf_item.h"
 #include "xfs_trans_priv.h"
+=======
+#include "xfs_shared.h"
+#include "xfs_format.h"
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+#include "xfs_sb.h"
+#include "xfs_ag.h"
+#include "xfs_mount.h"
+#include "xfs_inode.h"
+#include "xfs_error.h"
+#include "xfs_trans.h"
+#include "xfs_trans_priv.h"
+#include "xfs_quota.h"
+>>>>>>> refs/remotes/origin/master
 #include "xfs_qm.h"
 
 STATIC void	xfs_trans_alloc_dqinfo(xfs_trans_t *);
@@ -105,8 +120,11 @@ xfs_trans_dup_dqinfo(
 		return;
 
 	xfs_trans_alloc_dqinfo(ntp);
+<<<<<<< HEAD
 	oqa = otp->t_dqinfo->dqa_usrdquots;
 	nqa = ntp->t_dqinfo->dqa_usrdquots;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Because the quota blk reservation is carried forward,
@@ -115,7 +133,13 @@ xfs_trans_dup_dqinfo(
 	if(otp->t_flags & XFS_TRANS_DQ_DIRTY)
 		ntp->t_flags |= XFS_TRANS_DQ_DIRTY;
 
+<<<<<<< HEAD
 	for (j = 0; j < 2; j++) {
+=======
+	for (j = 0; j < XFS_QM_TRANS_DQTYPES; j++) {
+		oqa = otp->t_dqinfo->dqs[j];
+		nqa = ntp->t_dqinfo->dqs[j];
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; i < XFS_QM_TRANS_MAXDQS; i++) {
 			if (oqa[i].qt_dquot == NULL)
 				break;
@@ -140,8 +164,11 @@ xfs_trans_dup_dqinfo(
 			oq->qt_ino_res = oq->qt_ino_res_used;
 
 		}
+<<<<<<< HEAD
 		oqa = otp->t_dqinfo->dqa_grpdquots;
 		nqa = ntp->t_dqinfo->dqa_grpdquots;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -159,8 +186,12 @@ xfs_trans_mod_dquot_byino(
 
 	if (!XFS_IS_QUOTA_RUNNING(mp) ||
 	    !XFS_IS_QUOTA_ON(mp) ||
+<<<<<<< HEAD
 	    ip->i_ino == mp->m_sb.sb_uquotino ||
 	    ip->i_ino == mp->m_sb.sb_gquotino)
+=======
+	    xfs_is_quota_inode(&mp->m_sb, ip->i_ino))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	if (tp->t_dqinfo == NULL)
@@ -168,6 +199,7 @@ xfs_trans_mod_dquot_byino(
 
 	if (XFS_IS_UQUOTA_ON(mp) && ip->i_udquot)
 		(void) xfs_trans_mod_dquot(tp, ip->i_udquot, field, delta);
+<<<<<<< HEAD
 	if (XFS_IS_OQUOTA_ON(mp) && ip->i_gdquot)
 		(void) xfs_trans_mod_dquot(tp, ip->i_gdquot, field, delta);
 }
@@ -182,6 +214,30 @@ xfs_trans_get_dqtrx(
 
 	qa = XFS_QM_ISUDQ(dqp) ?
 		tp->t_dqinfo->dqa_usrdquots : tp->t_dqinfo->dqa_grpdquots;
+=======
+	if (XFS_IS_GQUOTA_ON(mp) && ip->i_gdquot)
+		(void) xfs_trans_mod_dquot(tp, ip->i_gdquot, field, delta);
+	if (XFS_IS_PQUOTA_ON(mp) && ip->i_pdquot)
+		(void) xfs_trans_mod_dquot(tp, ip->i_pdquot, field, delta);
+}
+
+STATIC struct xfs_dqtrx *
+xfs_trans_get_dqtrx(
+	struct xfs_trans	*tp,
+	struct xfs_dquot	*dqp)
+{
+	int			i;
+	struct xfs_dqtrx	*qa;
+
+	if (XFS_QM_ISUDQ(dqp))
+		qa = tp->t_dqinfo->dqs[XFS_QM_TRANS_USR];
+	else if (XFS_QM_ISGDQ(dqp))
+		qa = tp->t_dqinfo->dqs[XFS_QM_TRANS_GRP];
+	else if (XFS_QM_ISPDQ(dqp))
+		qa = tp->t_dqinfo->dqs[XFS_QM_TRANS_PRJ];
+	else
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < XFS_QM_TRANS_MAXDQS; i++) {
 		if (qa[i].qt_dquot == NULL ||
@@ -294,11 +350,18 @@ xfs_trans_mod_dquot(
 
 
 /*
+<<<<<<< HEAD
  * Given an array of dqtrx structures, lock all the dquots associated
  * and join them to the transaction, provided they have been modified.
  * We know that the highest number of dquots (of one type - usr OR grp),
  * involved in a transaction is 2 and that both usr and grp combined - 3.
  * So, we don't attempt to make this very generic.
+=======
+ * Given an array of dqtrx structures, lock all the dquots associated and join
+ * them to the transaction, provided they have been modified.  We know that the
+ * highest number of dquots of one type - usr, grp OR prj - involved in a
+ * transaction is 2 so we don't need to make this very generic.
+>>>>>>> refs/remotes/origin/master
  */
 STATIC void
 xfs_trans_dqlockedjoin(
@@ -328,12 +391,21 @@ xfs_trans_dqlockedjoin(
  */
 void
 xfs_trans_apply_dquot_deltas(
+<<<<<<< HEAD
 	xfs_trans_t		*tp)
 {
 	int			i, j;
 	xfs_dquot_t		*dqp;
 	xfs_dqtrx_t		*qtrx, *qa;
 	xfs_disk_dquot_t	*d;
+=======
+	struct xfs_trans	*tp)
+{
+	int			i, j;
+	struct xfs_dquot	*dqp;
+	struct xfs_dqtrx	*qtrx, *qa;
+	struct xfs_disk_dquot	*d;
+>>>>>>> refs/remotes/origin/master
 	long			totalbdelta;
 	long			totalrtbdelta;
 
@@ -341,12 +413,19 @@ xfs_trans_apply_dquot_deltas(
 		return;
 
 	ASSERT(tp->t_dqinfo);
+<<<<<<< HEAD
 	qa = tp->t_dqinfo->dqa_usrdquots;
 	for (j = 0; j < 2; j++) {
 		if (qa[0].qt_dquot == NULL) {
 			qa = tp->t_dqinfo->dqa_grpdquots;
 			continue;
 		}
+=======
+	for (j = 0; j < XFS_QM_TRANS_DQTYPES; j++) {
+		qa = tp->t_dqinfo->dqs[j];
+		if (qa[0].qt_dquot == NULL)
+			continue;
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Lock all of the dquots and join them to the transaction.
@@ -414,7 +493,11 @@ xfs_trans_apply_dquot_deltas(
 			 * Start/reset the timer(s) if needed.
 			 */
 			if (d->d_id) {
+<<<<<<< HEAD
 				xfs_qm_adjust_dqlimits(tp->t_mountp, d);
+=======
+				xfs_qm_adjust_dqlimits(tp->t_mountp, dqp);
+>>>>>>> refs/remotes/origin/master
 				xfs_qm_adjust_dqtimers(tp->t_mountp, d);
 			}
 
@@ -497,10 +580,13 @@ xfs_trans_apply_dquot_deltas(
 			ASSERT(dqp->q_res_rtbcount >=
 				be64_to_cpu(dqp->q_core.d_rtbcount));
 		}
+<<<<<<< HEAD
 		/*
 		 * Do the group quotas next
 		 */
 		qa = tp->t_dqinfo->dqa_grpdquots;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -518,14 +604,24 @@ xfs_trans_unreserve_and_mod_dquots(
 	int			i, j;
 	xfs_dquot_t		*dqp;
 	xfs_dqtrx_t		*qtrx, *qa;
+<<<<<<< HEAD
 	boolean_t		locked;
+=======
+	bool                    locked;
+>>>>>>> refs/remotes/origin/master
 
 	if (!tp->t_dqinfo || !(tp->t_flags & XFS_TRANS_DQ_DIRTY))
 		return;
 
+<<<<<<< HEAD
 	qa = tp->t_dqinfo->dqa_usrdquots;
 
 	for (j = 0; j < 2; j++) {
+=======
+	for (j = 0; j < XFS_QM_TRANS_DQTYPES; j++) {
+		qa = tp->t_dqinfo->dqs[j];
+
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; i < XFS_QM_TRANS_MAXDQS; i++) {
 			qtrx = &qa[i];
 			/*
@@ -539,17 +635,28 @@ xfs_trans_unreserve_and_mod_dquots(
 			 * about the number of blocks used field, or deltas.
 			 * Also we don't bother to zero the fields.
 			 */
+<<<<<<< HEAD
 			locked = B_FALSE;
 			if (qtrx->qt_blk_res) {
 				xfs_dqlock(dqp);
 				locked = B_TRUE;
+=======
+			locked = false;
+			if (qtrx->qt_blk_res) {
+				xfs_dqlock(dqp);
+				locked = true;
+>>>>>>> refs/remotes/origin/master
 				dqp->q_res_bcount -=
 					(xfs_qcnt_t)qtrx->qt_blk_res;
 			}
 			if (qtrx->qt_ino_res) {
 				if (!locked) {
 					xfs_dqlock(dqp);
+<<<<<<< HEAD
 					locked = B_TRUE;
+=======
+					locked = true;
+>>>>>>> refs/remotes/origin/master
 				}
 				dqp->q_res_icount -=
 					(xfs_qcnt_t)qtrx->qt_ino_res;
@@ -558,7 +665,11 @@ xfs_trans_unreserve_and_mod_dquots(
 			if (qtrx->qt_rtblk_res) {
 				if (!locked) {
 					xfs_dqlock(dqp);
+<<<<<<< HEAD
 					locked = B_TRUE;
+=======
+					locked = true;
+>>>>>>> refs/remotes/origin/master
 				}
 				dqp->q_res_rtbcount -=
 					(xfs_qcnt_t)qtrx->qt_rtblk_res;
@@ -567,7 +678,10 @@ xfs_trans_unreserve_and_mod_dquots(
 				xfs_dqunlock(dqp);
 
 		}
+<<<<<<< HEAD
 		qa = tp->t_dqinfo->dqa_grpdquots;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -580,9 +694,17 @@ xfs_quota_warn(
 	/* no warnings for project quotas - we just return ENOSPC later */
 	if (dqp->dq_flags & XFS_DQ_PROJ)
 		return;
+<<<<<<< HEAD
 	quota_send_warning((dqp->dq_flags & XFS_DQ_USER) ? USRQUOTA : GRPQUOTA,
 			   be32_to_cpu(dqp->q_core.d_id), mp->m_super->s_dev,
 			   type);
+=======
+	quota_send_warning(make_kqid(&init_user_ns,
+				     (dqp->dq_flags & XFS_DQ_USER) ?
+				     USRQUOTA : GRPQUOTA,
+				     be32_to_cpu(dqp->q_core.d_id)),
+			   mp->m_super->s_dev, type);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -640,8 +762,13 @@ xfs_trans_dqresv(
 	if ((flags & XFS_QMOPT_FORCE_RES) == 0 &&
 	    dqp->q_core.d_id &&
 	    ((XFS_IS_UQUOTA_ENFORCED(dqp->q_mount) && XFS_QM_ISUDQ(dqp)) ||
+<<<<<<< HEAD
 	     (XFS_IS_OQUOTA_ENFORCED(dqp->q_mount) &&
 	      (XFS_QM_ISPDQ(dqp) || XFS_QM_ISGDQ(dqp))))) {
+=======
+	     (XFS_IS_GQUOTA_ENFORCED(dqp->q_mount) && XFS_QM_ISGDQ(dqp)) ||
+	     (XFS_IS_PQUOTA_ENFORCED(dqp->q_mount) && XFS_QM_ISPDQ(dqp)))) {
+>>>>>>> refs/remotes/origin/master
 		if (nblks > 0) {
 			/*
 			 * dquot is locked already. See if we'd go over the
@@ -736,8 +863,13 @@ error_return:
 
 /*
  * Given dquot(s), make disk block and/or inode reservations against them.
+<<<<<<< HEAD
  * The fact that this does the reservation against both the usr and
  * grp/prj quotas is important, because this follows a both-or-nothing
+=======
+ * The fact that this does the reservation against user, group and
+ * project quotas is important, because this follows a all-or-nothing
+>>>>>>> refs/remotes/origin/master
  * approach.
  *
  * flags = XFS_QMOPT_FORCE_RES evades limit enforcement. Used by chown.
@@ -748,6 +880,7 @@ error_return:
  */
 int
 xfs_trans_reserve_quota_bydquots(
+<<<<<<< HEAD
 	xfs_trans_t	*tp,
 	xfs_mount_t	*mp,
 	xfs_dquot_t	*udqp,
@@ -757,6 +890,18 @@ xfs_trans_reserve_quota_bydquots(
 	uint		flags)
 {
 	int		resvd = 0, error;
+=======
+	struct xfs_trans	*tp,
+	struct xfs_mount	*mp,
+	struct xfs_dquot	*udqp,
+	struct xfs_dquot	*gdqp,
+	struct xfs_dquot	*pdqp,
+	long			nblks,
+	long			ninos,
+	uint			flags)
+{
+	int		error;
+>>>>>>> refs/remotes/origin/master
 
 	if (!XFS_IS_QUOTA_RUNNING(mp) || !XFS_IS_QUOTA_ON(mp))
 		return 0;
@@ -771,11 +916,15 @@ xfs_trans_reserve_quota_bydquots(
 					(flags & ~XFS_QMOPT_ENOSPC));
 		if (error)
 			return error;
+<<<<<<< HEAD
 		resvd = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (gdqp) {
 		error = xfs_trans_dqresv(tp, mp, gdqp, nblks, ninos, flags);
+<<<<<<< HEAD
 		if (error) {
 			/*
 			 * can't do it, so backout previous reservation
@@ -787,12 +936,35 @@ xfs_trans_reserve_quota_bydquots(
 			}
 			return error;
 		}
+=======
+		if (error)
+			goto unwind_usr;
+	}
+
+	if (pdqp) {
+		error = xfs_trans_dqresv(tp, mp, pdqp, nblks, ninos, flags);
+		if (error)
+			goto unwind_grp;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
 	 * Didn't change anything critical, so, no need to log
 	 */
 	return 0;
+<<<<<<< HEAD
+=======
+
+unwind_grp:
+	flags |= XFS_QMOPT_FORCE_RES;
+	if (gdqp)
+		xfs_trans_dqresv(tp, mp, gdqp, -nblks, -ninos, flags);
+unwind_usr:
+	flags |= XFS_QMOPT_FORCE_RES;
+	if (udqp)
+		xfs_trans_dqresv(tp, mp, udqp, -nblks, -ninos, flags);
+	return error;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -816,8 +988,12 @@ xfs_trans_reserve_quota_nblks(
 	if (XFS_IS_PQUOTA_ON(mp))
 		flags |= XFS_QMOPT_ENOSPC;
 
+<<<<<<< HEAD
 	ASSERT(ip->i_ino != mp->m_sb.sb_uquotino);
 	ASSERT(ip->i_ino != mp->m_sb.sb_gquotino);
+=======
+	ASSERT(!xfs_is_quota_inode(&mp->m_sb, ip->i_ino));
+>>>>>>> refs/remotes/origin/master
 
 	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
 	ASSERT((flags & ~(XFS_QMOPT_FORCE_RES | XFS_QMOPT_ENOSPC)) ==
@@ -830,6 +1006,10 @@ xfs_trans_reserve_quota_nblks(
 	 */
 	return xfs_trans_reserve_quota_bydquots(tp, mp,
 						ip->i_udquot, ip->i_gdquot,
+<<<<<<< HEAD
+=======
+						ip->i_pdquot,
+>>>>>>> refs/remotes/origin/master
 						nblks, ninos, flags);
 }
 

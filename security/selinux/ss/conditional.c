@@ -176,10 +176,14 @@ int cond_init_bool_indexes(struct policydb *p)
 {
 	kfree(p->bool_val_to_struct);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	p->bool_val_to_struct = (struct cond_bool_datum **)
 =======
 	p->bool_val_to_struct =
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p->bool_val_to_struct =
+>>>>>>> refs/remotes/origin/master
 		kmalloc(p->p_bools.nprim * sizeof(struct cond_bool_datum *), GFP_KERNEL);
 	if (!p->bool_val_to_struct)
 		return -ENOMEM;
@@ -560,10 +564,14 @@ static int cond_write_av_list(struct policydb *p,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int cond_write_node(struct policydb *p, struct cond_node *node,
 =======
 static int cond_write_node(struct policydb *p, struct cond_node *node,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cond_write_node(struct policydb *p, struct cond_node *node,
+>>>>>>> refs/remotes/origin/master
 		    struct policy_file *fp)
 {
 	struct cond_expr *cur_expr;

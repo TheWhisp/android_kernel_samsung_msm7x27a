@@ -69,16 +69,22 @@ map this shared page using the KVM hypercall KVM_HC_PPC_MAP_MAGIC_PAGE.
 
 With this hypercall issued the guest always gets the magic page mapped at the
 <<<<<<< HEAD
+<<<<<<< HEAD
 desired location in effective and physical address space. For now, we always
 map the page to -4096. This way we can access it using absolute load and store
 functions. The following instruction reads the first field of the magic page:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 desired location. The first parameter indicates the effective address when the
 MMU is enabled. The second parameter indicates the address in real mode, if
 applicable to the target. For now, we always map the page to -4096. This way we
 can access it using absolute load and store functions. The following
 instruction reads the first field of the magic page:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ld	rX, -4096(0)
 
@@ -87,6 +93,7 @@ additional registers to the magic page. If you add fields to the magic page,
 also define a new hypercall feature to indicate that the host can give you more
 registers. Only if the host supports the additional features, make use of them.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 The magic page has the following layout as described in
 arch/powerpc/include/asm/kvm_para.h:
@@ -114,6 +121,10 @@ or 64 bit aligned, depending on them being 32 or 64 bit wide respectively.
 The magic page layout is described by struct kvm_vcpu_arch_shared
 in arch/powerpc/include/asm/kvm_para.h.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+The magic page layout is described by struct kvm_vcpu_arch_shared
+in arch/powerpc/include/asm/kvm_para.h.
+>>>>>>> refs/remotes/origin/master
 
 Magic page features
 ===================
@@ -140,8 +151,11 @@ The following bits are safe to be set inside the guest:
 
   MSR_EE
   MSR_RI
+<<<<<<< HEAD
   MSR_CR
   MSR_ME
+=======
+>>>>>>> refs/remotes/origin/master
 
 If any other bit changes in the MSR, please still use mtmsr(d).
 
@@ -207,3 +221,28 @@ following:
 That way we can inject an arbitrary amount of code as replacement for a single
 instruction. This allows us to check for pending interrupts when setting EE=1
 for example.
+<<<<<<< HEAD
+=======
+
+Hypercall ABIs in KVM on PowerPC
+=================================
+1) KVM hypercalls (ePAPR)
+
+These are ePAPR compliant hypercall implementation (mentioned above). Even
+generic hypercalls are implemented here, like the ePAPR idle hcall. These are
+available on all targets.
+
+2) PAPR hypercalls
+
+PAPR hypercalls are needed to run server PowerPC PAPR guests (-M pseries in QEMU).
+These are the same hypercalls that pHyp, the POWER hypervisor implements. Some of
+them are handled in the kernel, some are handled in user space. This is only
+available on book3s_64.
+
+3) OSI hypercalls
+
+Mac-on-Linux is another user of KVM on PowerPC, which has its own hypercall (long
+before KVM). This is supported to maintain compatibility. All these hypercalls get
+forwarded to user space. This is only useful on book3s_32, but can be used with
+book3s_64 as well.
+>>>>>>> refs/remotes/origin/master

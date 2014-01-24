@@ -21,10 +21,15 @@
 #define _LINUX_HWMON_SYSFS_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/device.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+
+>>>>>>> refs/remotes/origin/master
 struct sensor_device_attribute{
 	struct device_attribute dev_attr;
 	int index;

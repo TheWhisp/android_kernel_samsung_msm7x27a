@@ -20,7 +20,10 @@
 #include <linux/platform_device.h>
 #include <linux/regulator/driver.h>
 #include <linux/regulator/machine.h>
+<<<<<<< HEAD
 #include <linux/delay.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/gpio.h>
 #include <linux/mfd/tps65912.h>
@@ -119,6 +122,15 @@ struct tps65912_reg {
 	int eco_reg;
 };
 
+<<<<<<< HEAD
+=======
+static const struct regulator_linear_range tps65912_ldo_ranges[] = {
+	REGULATOR_LINEAR_RANGE(800000, 0, 32, 25000),
+	REGULATOR_LINEAR_RANGE(1650000, 33, 60, 50000),
+	REGULATOR_LINEAR_RANGE(3100000, 61, 63, 100000),
+};
+
+>>>>>>> refs/remotes/origin/master
 static int tps65912_get_range(struct tps65912_reg *pmic, int id)
 {
 	struct tps65912 *mfd = pmic->mfd;
@@ -185,6 +197,7 @@ static unsigned long tps65912_vsel_to_uv_range3(u8 vsel)
 	return uv;
 }
 
+<<<<<<< HEAD
 static unsigned long tps65912_vsel_to_uv_ldo(u8 vsel)
 {
 	unsigned long uv = 0;
@@ -199,6 +212,8 @@ static unsigned long tps65912_vsel_to_uv_ldo(u8 vsel)
 	return uv;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int tps65912_get_ctrl_register(int id)
 {
 	if (id >= TPS65912_REG_DCDC1 && id <= TPS65912_REG_LDO4)
@@ -372,8 +387,12 @@ static unsigned int tps65912_get_mode(struct regulator_dev *dev)
 	return mode;
 }
 
+<<<<<<< HEAD
 static int tps65912_list_voltage_dcdc(struct regulator_dev *dev,
 					unsigned selector)
+=======
+static int tps65912_list_voltage(struct regulator_dev *dev, unsigned selector)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tps65912_reg *pmic = rdev_get_drvdata(dev);
 	int range, voltage = 0, id = rdev_get_id(dev);
@@ -404,7 +423,11 @@ static int tps65912_list_voltage_dcdc(struct regulator_dev *dev,
 	return voltage;
 }
 
+<<<<<<< HEAD
 static int tps65912_get_voltage_dcdc(struct regulator_dev *dev)
+=======
+static int tps65912_get_voltage_sel(struct regulator_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tps65912_reg *pmic = rdev_get_drvdata(dev);
 	struct tps65912 *mfd = pmic->mfd;
@@ -418,7 +441,11 @@ static int tps65912_get_voltage_dcdc(struct regulator_dev *dev)
 	vsel = tps65912_reg_read(mfd, reg);
 	vsel &= 0x3F;
 
+<<<<<<< HEAD
 	return tps65912_list_voltage_dcdc(dev, vsel);
+=======
+	return vsel;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int tps65912_set_voltage_sel(struct regulator_dev *dev,
@@ -436,6 +463,7 @@ static int tps65912_set_voltage_sel(struct regulator_dev *dev,
 	return tps65912_reg_write(mfd, reg, selector | value);
 }
 
+<<<<<<< HEAD
 static int tps65912_get_voltage_ldo(struct regulator_dev *dev)
 {
 	struct tps65912_reg *pmic = rdev_get_drvdata(dev);
@@ -462,6 +490,8 @@ static int tps65912_list_voltage_ldo(struct regulator_dev *dev,
 	return tps65912_vsel_to_uv_ldo(selector);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Operations permitted on DCDCx */
 static struct regulator_ops tps65912_ops_dcdc = {
 	.is_enabled = tps65912_reg_is_enabled,
@@ -469,9 +499,15 @@ static struct regulator_ops tps65912_ops_dcdc = {
 	.disable = tps65912_reg_disable,
 	.set_mode = tps65912_set_mode,
 	.get_mode = tps65912_get_mode,
+<<<<<<< HEAD
 	.get_voltage = tps65912_get_voltage_dcdc,
 	.set_voltage_sel = tps65912_set_voltage_sel,
 	.list_voltage = tps65912_list_voltage_dcdc,
+=======
+	.get_voltage_sel = tps65912_get_voltage_sel,
+	.set_voltage_sel = tps65912_set_voltage_sel,
+	.list_voltage = tps65912_list_voltage,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Operations permitted on LDOx */
@@ -479,6 +515,7 @@ static struct regulator_ops tps65912_ops_ldo = {
 	.is_enabled = tps65912_reg_is_enabled,
 	.enable = tps65912_reg_enable,
 	.disable = tps65912_reg_disable,
+<<<<<<< HEAD
 	.get_voltage = tps65912_get_voltage_ldo,
 	.set_voltage_sel = tps65912_set_voltage_sel,
 	.list_voltage = tps65912_list_voltage_ldo,
@@ -487,12 +524,28 @@ static struct regulator_ops tps65912_ops_ldo = {
 static __devinit int tps65912_probe(struct platform_device *pdev)
 {
 	struct tps65912 *tps65912 = dev_get_drvdata(pdev->dev.parent);
+=======
+	.get_voltage_sel = tps65912_get_voltage_sel,
+	.set_voltage_sel = tps65912_set_voltage_sel,
+	.list_voltage = regulator_list_voltage_linear_range,
+	.map_voltage = regulator_map_voltage_linear_range,
+};
+
+static int tps65912_probe(struct platform_device *pdev)
+{
+	struct tps65912 *tps65912 = dev_get_drvdata(pdev->dev.parent);
+	struct regulator_config config = { };
+>>>>>>> refs/remotes/origin/master
 	struct tps_info *info;
 	struct regulator_init_data *reg_data;
 	struct regulator_dev *rdev;
 	struct tps65912_reg *pmic;
 	struct tps65912_board *pmic_plat_data;
+<<<<<<< HEAD
 	int i, err;
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	pmic_plat_data = dev_get_platdata(tps65912->dev);
 	if (!pmic_plat_data)
@@ -500,7 +553,11 @@ static __devinit int tps65912_probe(struct platform_device *pdev)
 
 	reg_data = pmic_plat_data->tps65912_pmic_init_data;
 
+<<<<<<< HEAD
 	pmic = kzalloc(sizeof(*pmic), GFP_KERNEL);
+=======
+	pmic = devm_kzalloc(&pdev->dev, sizeof(*pmic), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!pmic)
 		return -ENOMEM;
 
@@ -519,6 +576,7 @@ static __devinit int tps65912_probe(struct platform_device *pdev)
 		pmic->desc[i].name = info->name;
 		pmic->desc[i].id = i;
 		pmic->desc[i].n_voltages = 64;
+<<<<<<< HEAD
 		pmic->desc[i].ops = (i > TPS65912_REG_DCDC4 ?
 			&tps65912_ops_ldo : &tps65912_ops_dcdc);
 		pmic->desc[i].type = REGULATOR_VOLTAGE;
@@ -526,18 +584,43 @@ static __devinit int tps65912_probe(struct platform_device *pdev)
 		range = tps65912_get_range(pmic, i);
 		rdev = regulator_register(&pmic->desc[i],
 					tps65912->dev, reg_data, pmic, NULL);
+=======
+		if (i > TPS65912_REG_DCDC4) {
+			pmic->desc[i].ops = &tps65912_ops_ldo;
+			pmic->desc[i].linear_ranges = tps65912_ldo_ranges;
+			pmic->desc[i].n_linear_ranges =
+					ARRAY_SIZE(tps65912_ldo_ranges);
+		} else {
+			pmic->desc[i].ops = &tps65912_ops_dcdc;
+		}
+		pmic->desc[i].type = REGULATOR_VOLTAGE;
+		pmic->desc[i].owner = THIS_MODULE;
+		range = tps65912_get_range(pmic, i);
+
+		config.dev = tps65912->dev;
+		config.init_data = reg_data;
+		config.driver_data = pmic;
+
+		rdev = devm_regulator_register(&pdev->dev, &pmic->desc[i],
+					       &config);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(rdev)) {
 			dev_err(tps65912->dev,
 				"failed to register %s regulator\n",
 				pdev->name);
+<<<<<<< HEAD
 			err = PTR_ERR(rdev);
 			goto err;
+=======
+			return PTR_ERR(rdev);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* Save regulator for cleanup */
 		pmic->rdev[i] = rdev;
 	}
 	return 0;
+<<<<<<< HEAD
 
 err:
 	while (--i >= 0)
@@ -557,6 +640,8 @@ static int __devexit tps65912_remove(struct platform_device *pdev)
 
 	kfree(tps65912_reg);
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct platform_driver tps65912_driver = {
@@ -565,7 +650,10 @@ static struct platform_driver tps65912_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = tps65912_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(tps65912_remove),
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init tps65912_init(void)

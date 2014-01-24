@@ -22,11 +22,16 @@
 #define RPC_MIN_SLOT_TABLE	(2U)
 #define RPC_DEF_SLOT_TABLE	(16U)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define RPC_MAX_SLOT_TABLE	(128U)
 =======
 #define RPC_MAX_SLOT_TABLE_LIMIT	(65536U)
 #define RPC_MAX_SLOT_TABLE	RPC_MAX_SLOT_TABLE_LIMIT
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define RPC_MAX_SLOT_TABLE_LIMIT	(65536U)
+#define RPC_MAX_SLOT_TABLE	RPC_MAX_SLOT_TABLE_LIMIT
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This describes a timeout strategy
@@ -106,24 +111,31 @@ struct rpc_rqst {
 	int			rq_ntrans;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_NFS_V4_1)
 	struct list_head	rq_bc_list;	/* Callback service list */
 	unsigned long		rq_bc_pa_state;	/* Backchannel prealloc state */
 	struct list_head	rq_bc_pa_list;	/* Backchannel prealloc list */
 #endif /* CONFIG_NFS_V4_1 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_SUNRPC_BACKCHANNEL)
 	struct list_head	rq_bc_list;	/* Callback service list */
 	unsigned long		rq_bc_pa_state;	/* Backchannel prealloc state */
 	struct list_head	rq_bc_pa_list;	/* Backchannel prealloc list */
 #endif /* CONFIG_SUNRPC_BACKCHANEL */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #define rq_svec			rq_snd_buf.head
 #define rq_slen			rq_snd_buf.len
 
 struct rpc_xprt_ops {
 	void		(*set_buffer_size)(struct rpc_xprt *xprt, size_t sndsize, size_t rcvsize);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int		(*reserve_xprt)(struct rpc_task *task);
 	void		(*release_xprt)(struct rpc_xprt *xprt, struct rpc_task *task);
@@ -135,11 +147,23 @@ struct rpc_xprt_ops {
 	void		(*rpcbind)(struct rpc_task *task);
 	void		(*set_port)(struct rpc_xprt *xprt, unsigned short port);
 	void		(*connect)(struct rpc_task *task);
+=======
+	int		(*reserve_xprt)(struct rpc_xprt *xprt, struct rpc_task *task);
+	void		(*release_xprt)(struct rpc_xprt *xprt, struct rpc_task *task);
+	void		(*alloc_slot)(struct rpc_xprt *xprt, struct rpc_task *task);
+	void		(*rpcbind)(struct rpc_task *task);
+	void		(*set_port)(struct rpc_xprt *xprt, unsigned short port);
+	void		(*connect)(struct rpc_xprt *xprt, struct rpc_task *task);
+>>>>>>> refs/remotes/origin/master
 	void *		(*buf_alloc)(struct rpc_task *task, size_t size);
 	void		(*buf_free)(void *buffer);
 	int		(*send_request)(struct rpc_task *task);
 	void		(*set_retrans_timeout)(struct rpc_task *task);
+<<<<<<< HEAD
 	void		(*timer)(struct rpc_task *task);
+=======
+	void		(*timer)(struct rpc_xprt *xprt, struct rpc_task *task);
+>>>>>>> refs/remotes/origin/master
 	void		(*release_request)(struct rpc_task *task);
 	void		(*close)(struct rpc_xprt *xprt);
 	void		(*destroy)(struct rpc_xprt *xprt);
@@ -184,6 +208,7 @@ struct rpc_xprt {
 	struct rpc_wait_queue	binding;	/* requests waiting on rpcbind */
 	struct rpc_wait_queue	sending;	/* requests waiting to send */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct rpc_wait_queue	resend;		/* requests waiting to resend */
 	struct rpc_wait_queue	pending;	/* requests in flight */
 	struct rpc_wait_queue	backlog;	/* waiting for slot */
@@ -191,16 +216,25 @@ struct rpc_xprt {
 	struct rpc_rqst *	slot;		/* slot table storage */
 	unsigned int		max_reqs;	/* total slots */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct rpc_wait_queue	pending;	/* requests in flight */
 	struct rpc_wait_queue	backlog;	/* waiting for slot */
 	struct list_head	free;		/* free slots */
 	unsigned int		max_reqs;	/* max number of slots */
 	unsigned int		min_reqs;	/* min number of slots */
 	atomic_t		num_reqs;	/* total slots */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long		state;		/* transport state */
 	unsigned char		shutdown   : 1,	/* being shut down */
 				resvport   : 1; /* use a reserved port */
+=======
+	unsigned long		state;		/* transport state */
+	unsigned char		resvport   : 1; /* use a reserved port */
+	unsigned int		swapper;	/* we're swapping over this
+						   transport */
+>>>>>>> refs/remotes/origin/master
 	unsigned int		bind_index;	/* bind function index */
 
 	/*
@@ -229,10 +263,14 @@ struct rpc_xprt {
 	struct rpc_task *	snd_task;	/* Task blocked in send */
 	struct svc_xprt		*bc_xprt;	/* NFSv4.1 backchannel */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_NFS_V4_1)
 =======
 #if defined(CONFIG_SUNRPC_BACKCHANNEL)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SUNRPC_BACKCHANNEL)
+>>>>>>> refs/remotes/origin/master
 	struct svc_serv		*bc_serv;       /* The RPC service which will */
 						/* process the callback */
 	unsigned int		bc_alloc_count;	/* Total number of preallocs */
@@ -241,10 +279,14 @@ struct rpc_xprt {
 	struct list_head	bc_pa_list;	/* List of preallocated
 						 * backchannel rpc_rqst's */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* CONFIG_NFS_V4_1 */
 =======
 #endif /* CONFIG_SUNRPC_BACKCHANNEL */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_SUNRPC_BACKCHANNEL */
+>>>>>>> refs/remotes/origin/master
 	struct list_head	recv;
 
 	struct {
@@ -254,6 +296,7 @@ struct rpc_xprt {
 					connect_time,	/* jiffies waiting for connect */
 					sends,		/* how many complete requests */
 					recvs,		/* how many complete requests */
+<<<<<<< HEAD
 <<<<<<< HEAD
 					bad_xids;	/* lookup_rqst didn't find XID */
 
@@ -267,6 +310,8 @@ struct rpc_xprt {
 
 #if defined(CONFIG_NFS_V4_1)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					bad_xids,	/* lookup_rqst didn't find XID */
 					max_slots;	/* max rpc_slots used */
 
@@ -282,12 +327,16 @@ struct rpc_xprt {
 };
 
 #if defined(CONFIG_SUNRPC_BACKCHANNEL)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Backchannel flags
  */
 #define	RPC_BC_PA_IN_USE	0x0001		/* Preallocated backchannel */
 						/* buffer in use */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif /* CONFIG_NFS_V4_1 */
 
@@ -297,6 +346,11 @@ struct rpc_xprt {
 
 #if defined(CONFIG_SUNRPC_BACKCHANNEL)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_SUNRPC_BACKCHANNEL */
+
+#if defined(CONFIG_SUNRPC_BACKCHANNEL)
+>>>>>>> refs/remotes/origin/master
 static inline int bc_prealloc(struct rpc_rqst *req)
 {
 	return test_bit(RPC_BC_PA_IN_USE, &req->rq_bc_pa_state);
@@ -307,10 +361,17 @@ static inline int bc_prealloc(struct rpc_rqst *req)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* CONFIG_NFS_V4_1 */
 =======
 #endif /* CONFIG_SUNRPC_BACKCHANNEL */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_SUNRPC_BACKCHANNEL */
+
+#define XPRT_CREATE_INFINITE_SLOTS	(1U)
+#define XPRT_CREATE_NO_IDLE_TIMEOUT	(1U << 1)
+>>>>>>> refs/remotes/origin/master
 
 struct xprt_create {
 	int			ident;		/* XPRT_TRANSPORT identifier */
@@ -319,10 +380,16 @@ struct xprt_create {
 	struct sockaddr *	dstaddr;	/* remote peer address */
 	size_t			addrlen;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	const char		*servername;
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct svc_xprt		*bc_xprt;	/* NFSv4.1 backchannel */
+=======
+	const char		*servername;
+	struct svc_xprt		*bc_xprt;	/* NFSv4.1 backchannel */
+	unsigned int		flags;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct xprt_class {
@@ -340,15 +407,23 @@ struct rpc_xprt		*xprt_create_transport(struct xprt_create *args);
 void			xprt_connect(struct rpc_task *task);
 void			xprt_reserve(struct rpc_task *task);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int			xprt_reserve_xprt(struct rpc_task *task);
 int			xprt_reserve_xprt_cong(struct rpc_task *task);
 =======
+=======
+void			xprt_retry_reserve(struct rpc_task *task);
+>>>>>>> refs/remotes/origin/master
 int			xprt_reserve_xprt(struct rpc_xprt *xprt, struct rpc_task *task);
 int			xprt_reserve_xprt_cong(struct rpc_xprt *xprt, struct rpc_task *task);
 void			xprt_alloc_slot(struct rpc_xprt *xprt, struct rpc_task *task);
 void			xprt_lock_and_alloc_slot(struct rpc_xprt *xprt, struct rpc_task *task);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 int			xprt_prepare_transmit(struct rpc_task *task);
+=======
+bool			xprt_prepare_transmit(struct rpc_task *task);
+>>>>>>> refs/remotes/origin/master
 void			xprt_transmit(struct rpc_task *task);
 void			xprt_end_transmit(struct rpc_task *task);
 int			xprt_adjust_timeout(struct rpc_rqst *req);
@@ -358,12 +433,18 @@ void			xprt_release(struct rpc_task *task);
 struct rpc_xprt *	xprt_get(struct rpc_xprt *xprt);
 void			xprt_put(struct rpc_xprt *xprt);
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct rpc_xprt *	xprt_alloc(struct net *net, int size, int max_req);
 =======
 struct rpc_xprt *	xprt_alloc(struct net *net, size_t size,
 				unsigned int num_prealloc,
 				unsigned int max_req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct rpc_xprt *	xprt_alloc(struct net *net, size_t size,
+				unsigned int num_prealloc,
+				unsigned int max_req);
+>>>>>>> refs/remotes/origin/master
 void			xprt_free(struct rpc_xprt *);
 
 static inline __be32 *xprt_skip_transport_header(struct rpc_xprt *xprt, __be32 *p)
@@ -382,13 +463,21 @@ void			xprt_set_retrans_timeout_rtt(struct rpc_task *task);
 void			xprt_wake_pending_tasks(struct rpc_xprt *xprt, int status);
 void			xprt_wait_for_buffer_space(struct rpc_task *task, rpc_action action);
 void			xprt_write_space(struct rpc_xprt *xprt);
+<<<<<<< HEAD
 void			xprt_adjust_cwnd(struct rpc_task *task, int result);
+=======
+void			xprt_adjust_cwnd(struct rpc_xprt *xprt, struct rpc_task *task, int result);
+>>>>>>> refs/remotes/origin/master
 struct rpc_rqst *	xprt_lookup_rqst(struct rpc_xprt *xprt, __be32 xid);
 void			xprt_complete_rqst(struct rpc_task *task, int copied);
 void			xprt_release_rqst_cong(struct rpc_task *task);
 void			xprt_disconnect_done(struct rpc_xprt *xprt);
 void			xprt_force_disconnect(struct rpc_xprt *xprt);
 void			xprt_conditional_disconnect(struct rpc_xprt *xprt, unsigned int cookie);
+<<<<<<< HEAD
+=======
+int			xs_swapper(struct rpc_xprt *xprt, int enable);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Reserved bit positions in xprt->state
@@ -403,9 +492,13 @@ void			xprt_conditional_disconnect(struct rpc_xprt *xprt, unsigned int cookie);
 #define XPRT_CONNECTION_ABORT	(7)
 #define XPRT_CONNECTION_CLOSE	(8)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define XPRT_INITIALIZED	(9)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define XPRT_CONGESTED		(9)
+>>>>>>> refs/remotes/origin/master
 
 static inline void xprt_set_connected(struct rpc_xprt *xprt)
 {

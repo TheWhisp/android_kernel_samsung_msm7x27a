@@ -6,6 +6,7 @@
  * as published by the Free Software Foundation; either version
  * 2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #ifndef _ASM_POWERPC_NVRAM_H
 #define _ASM_POWERPC_NVRAM_H
@@ -29,6 +30,15 @@
 
 #include <linux/errno.h>
 #include <linux/list.h>
+=======
+#ifndef _ASM_POWERPC_NVRAM_H
+#define _ASM_POWERPC_NVRAM_H
+
+
+#include <linux/errno.h>
+#include <linux/list.h>
+#include <uapi/asm/nvram.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PPC_PSERIES
 extern int nvram_write_error_log(char * buff, int length,
@@ -56,6 +66,7 @@ extern int nvram_remove_partition(const char *name, int sig,
 extern int nvram_get_partition_size(loff_t data_index);
 extern loff_t nvram_find_partition(const char *name, int sig, int *out_size);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 /* PowerMac specific nvram stuffs */
@@ -67,6 +78,8 @@ enum {
 };
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 /* Return partition offset in nvram */
 extern int	pmac_get_partition(int partition);
 
@@ -83,6 +96,7 @@ extern ssize_t nvram_get_size(void);
 /* Normal access to NVRAM */
 extern unsigned char nvram_read_byte(int i);
 extern void nvram_write_byte(unsigned char c, int i);
+<<<<<<< HEAD
 #endif
 
 /* Some offsets in XPRAM */
@@ -109,4 +123,6 @@ struct pmac_machine_location {
 #define IOC_NVRAM_GET_OFFSET	_IOWR('p', 0x42, int)	/* Get NVRAM partition offset */
 #define IOC_NVRAM_SYNC		_IO('p', 0x43)		/* Sync NVRAM image */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_POWERPC_NVRAM_H */

@@ -5,6 +5,7 @@
  *
  * Licensed under the GPL-2 or later.
  */
+<<<<<<< HEAD
 
 #ifndef __BFIN_SPORT_H__
 #define __BFIN_SPORT_H__
@@ -69,6 +70,14 @@ struct sport_config {
 #ifdef __KERNEL__
 
 #include <linux/types.h>
+=======
+#ifndef __BFIN_SPORT_H__
+#define __BFIN_SPORT_H__
+
+
+#include <linux/types.h>
+#include <uapi/asm/bfin_sport.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * All Blackfin system MMRs are padded to 32bits even if the register
@@ -127,6 +136,7 @@ struct bfin_snd_platform_data {
 })
 
 #endif
+<<<<<<< HEAD
 
 /* SPORT_TCR1 Masks */
 #define TSPEN		0x0001	/* TX enable */
@@ -200,3 +210,5 @@ struct bfin_snd_platform_data {
 #define EX_MFD(x)	BFIN_EXTRACT(MFD, x)
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

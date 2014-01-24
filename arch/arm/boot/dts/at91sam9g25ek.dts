@@ -7,13 +7,19 @@
  * Licensed under GPLv2 or later.
  */
 /dts-v1/;
+<<<<<<< HEAD
 /include/ "at91sam9x5.dtsi"
 /include/ "at91sam9x5cm.dtsi"
+=======
+#include "at91sam9g25.dtsi"
+#include "at91sam9x5ek.dtsi"
+>>>>>>> refs/remotes/origin/master
 
 / {
 	model = "Atmel AT91SAM9G25-EK";
 	compatible = "atmel,at91sam9g25ek", "atmel,at91sam9x5ek", "atmel,at91sam9x5", "atmel,at91sam9";
 
+<<<<<<< HEAD
 	chosen {
 		bootargs = "128M console=ttyS0,115200 root=/dev/mtdblock1 rw rootfstype=ubifs ubi.mtd=1 root=ubi0:rootfs";
 	};
@@ -28,11 +34,16 @@
 				status = "okay";
 			};
 
+=======
+	ahb {
+		apb {
+>>>>>>> refs/remotes/origin/master
 			macb0: ethernet@f802c000 {
 				phy-mode = "rmii";
 				status = "okay";
 			};
 		};
+<<<<<<< HEAD
 
 		usb0: ohci@00600000 {
 			status = "okay";
@@ -45,5 +56,7 @@
 		usb1: ehci@00700000 {
 			status = "okay";
 		};
+=======
+>>>>>>> refs/remotes/origin/master
 	};
 };

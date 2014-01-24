@@ -31,6 +31,7 @@
 
 #ifdef CONFIG_ETRAX_KMALLOCED_MODULES
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MALLOC_MODULE(size) kmalloc(size, GFP_KERNEL)
 #define FREE_MODULE(region) kfree(region)
 #else
@@ -74,6 +75,10 @@ int apply_relocate(Elf32_Shdr *sechdrs,
 	return -ENOEXEC;
 }
 =======
+=======
+void *module_alloc(unsigned long size)
+{
+>>>>>>> refs/remotes/origin/master
 	return kmalloc(size, GFP_KERNEL);
 }
 
@@ -83,7 +88,10 @@ void module_free(struct module *mod, void *module_region)
 	kfree(module_region);
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int apply_relocate_add(Elf32_Shdr *sechdrs,
 		       const char *strtab,
@@ -124,6 +132,7 @@ int apply_relocate_add(Elf32_Shdr *sechdrs,
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 int module_finalize(const Elf_Ehdr *hdr,
 		    const Elf_Shdr *sechdrs,
@@ -137,3 +146,5 @@ void module_arch_cleanup(struct module *mod)
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

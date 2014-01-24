@@ -28,7 +28,10 @@
 #include <media/v4l2-ctrls.h>
 #include <media/v4l2-event.h>
 #include <linux/usb.h>
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/mutex.h>
 
 /* driver and module definitions */
@@ -94,7 +97,11 @@ static int keene_cmd_main(struct keene_device *radio, unsigned freq, bool play)
 	/* If bit 4 is set, then tune to the frequency.
 	   If bit 3 is set, then unmute; if bit 2 is set, then mute.
 	   If bit 1 is set, then enter idle mode; if bit 0 is set,
+<<<<<<< HEAD
 	   then enter transit mode.
+=======
+	   then enter transmit mode.
+>>>>>>> refs/remotes/origin/master
 	 */
 	radio->buffer[5] = (radio->muted ? 4 : 8) | (play ? 1 : 2) |
 							(freq ? 0x10 : 0);
@@ -124,7 +131,11 @@ static int keene_cmd_set(struct keene_device *radio)
 	/* If bit 0 is set, then transmit mono, otherwise stereo.
 	   If bit 2 is set, then enable 75 us preemphasis, otherwise
 	   it is 50 us. */
+<<<<<<< HEAD
 	radio->buffer[3] = (!radio->stereo) | (radio->preemph_75_us ? 4 : 0);
+=======
+	radio->buffer[3] = (radio->stereo ? 0 : 1) | (radio->preemph_75_us ? 4 : 0);
+>>>>>>> refs/remotes/origin/master
 	radio->buffer[4] = 0x00;
 	radio->buffer[5] = 0x00;
 	radio->buffer[6] = 0x00;
@@ -149,7 +160,10 @@ static void usb_keene_disconnect(struct usb_interface *intf)
 {
 	struct keene_device *radio = to_keene_dev(usb_get_intfdata(intf));
 
+<<<<<<< HEAD
 	v4l2_device_get(&radio->v4l2_dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&radio->lock);
 	usb_set_intfdata(intf, NULL);
 	video_unregister_device(&radio->vdev);
@@ -158,6 +172,26 @@ static void usb_keene_disconnect(struct usb_interface *intf)
 	v4l2_device_put(&radio->v4l2_dev);
 }
 
+<<<<<<< HEAD
+=======
+static int usb_keene_suspend(struct usb_interface *intf, pm_message_t message)
+{
+	struct keene_device *radio = to_keene_dev(usb_get_intfdata(intf));
+
+	return keene_cmd_main(radio, 0, false);
+}
+
+static int usb_keene_resume(struct usb_interface *intf)
+{
+	struct keene_device *radio = to_keene_dev(usb_get_intfdata(intf));
+
+	mdelay(50);
+	keene_cmd_set(radio);
+	keene_cmd_main(radio, radio->curfreq, true);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int vidioc_querycap(struct file *file, void *priv,
 					struct v4l2_capability *v)
 {
@@ -188,7 +222,11 @@ static int vidioc_g_modulator(struct file *file, void *priv,
 }
 
 static int vidioc_s_modulator(struct file *file, void *priv,
+<<<<<<< HEAD
 				struct v4l2_modulator *v)
+=======
+				const struct v4l2_modulator *v)
+>>>>>>> refs/remotes/origin/master
 {
 	struct keene_device *radio = video_drvdata(file);
 
@@ -200,6 +238,7 @@ static int vidioc_s_modulator(struct file *file, void *priv,
 }
 
 static int vidioc_s_frequency(struct file *file, void *priv,
+<<<<<<< HEAD
 				struct v4l2_frequency *f)
 {
 	struct keene_device *radio = video_drvdata(file);
@@ -209,6 +248,17 @@ static int vidioc_s_frequency(struct file *file, void *priv,
 	f->frequency = clamp(f->frequency,
 			FREQ_MIN * FREQ_MUL, FREQ_MAX * FREQ_MUL);
 	return keene_cmd_main(radio, f->frequency, true);
+=======
+				const struct v4l2_frequency *f)
+{
+	struct keene_device *radio = video_drvdata(file);
+	unsigned freq = f->frequency;
+
+	if (f->tuner != 0 || f->type != V4L2_TUNER_RADIO)
+		return -EINVAL;
+	freq = clamp(freq, FREQ_MIN * FREQ_MUL, FREQ_MAX * FREQ_MUL);
+	return keene_cmd_main(radio, freq, true);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int vidioc_g_frequency(struct file *file, void *priv,
@@ -256,6 +306,7 @@ static int keene_s_ctrl(struct v4l2_ctrl *ctrl)
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static int vidioc_subscribe_event(struct v4l2_fh *fh,
 				struct v4l2_event_subscription *sub)
 {
@@ -268,6 +319,8 @@ static int vidioc_subscribe_event(struct v4l2_fh *fh,
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* File system interface */
 static const struct v4l2_file_operations usb_keene_fops = {
 	.owner		= THIS_MODULE,
@@ -288,7 +341,11 @@ static const struct v4l2_ioctl_ops usb_keene_ioctl_ops = {
 	.vidioc_g_frequency = vidioc_g_frequency,
 	.vidioc_s_frequency = vidioc_s_frequency,
 	.vidioc_log_status = v4l2_ctrl_log_status,
+<<<<<<< HEAD
 	.vidioc_subscribe_event = vidioc_subscribe_event,
+=======
+	.vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
+>>>>>>> refs/remotes/origin/master
 	.vidioc_unsubscribe_event = v4l2_event_unsubscribe,
 };
 
@@ -347,7 +404,10 @@ static int usb_keene_probe(struct usb_interface *intf,
 	radio->pa = 118;
 	radio->tx = 0x32;
 	radio->stereo = true;
+<<<<<<< HEAD
 	radio->curfreq = 95.16 * FREQ_MUL;
+=======
+>>>>>>> refs/remotes/origin/master
 	if (hdl->error) {
 		retval = hdl->error;
 
@@ -371,6 +431,10 @@ static int usb_keene_probe(struct usb_interface *intf,
 	radio->vdev.ioctl_ops = &usb_keene_ioctl_ops;
 	radio->vdev.lock = &radio->lock;
 	radio->vdev.release = video_device_release_empty;
+<<<<<<< HEAD
+=======
+	radio->vdev.vfl_dir = VFL_DIR_TX;
+>>>>>>> refs/remotes/origin/master
 
 	radio->usbdev = interface_to_usbdev(intf);
 	radio->intf = intf;
@@ -379,6 +443,13 @@ static int usb_keene_probe(struct usb_interface *intf,
 	video_set_drvdata(&radio->vdev, radio);
 	set_bit(V4L2_FL_USE_FH_PRIO, &radio->vdev.flags);
 
+<<<<<<< HEAD
+=======
+	/* at least 11ms is needed in order to settle hardware */
+	msleep(20);
+	keene_cmd_main(radio, 95.16 * FREQ_MUL, false);
+
+>>>>>>> refs/remotes/origin/master
 	retval = video_register_device(&radio->vdev, VFL_TYPE_RADIO, -1);
 	if (retval < 0) {
 		dev_err(&intf->dev, "could not register video device\n");
@@ -404,6 +475,12 @@ static struct usb_driver usb_keene_driver = {
 	.probe			= usb_keene_probe,
 	.disconnect		= usb_keene_disconnect,
 	.id_table		= usb_keene_device_table,
+<<<<<<< HEAD
+=======
+	.suspend		= usb_keene_suspend,
+	.resume			= usb_keene_resume,
+	.reset_resume		= usb_keene_resume,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init keene_init(void)

@@ -4,9 +4,12 @@
  * Author:	Torsten Schenk <torsten.schenk@zoho.com>
  * Created:	Jan 01, 2011
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Version:	0.3.0
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright:	(C) Torsten Schenk
  *
  * This program is free software; you can redistribute it and/or modify
@@ -48,17 +51,26 @@ struct control_runtime {
 	bool digital_thru_switch;
 	bool usb_streaming;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 master_vol;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 output_vol[6];
 	u8 ovol_updated;
 	u8 output_mute;
 	s8 input_vol[2];
 	u8 ivol_updated;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
 int __devinit usb6fire_control_init(struct sfire_chip *chip);
+=======
+};
+
+int usb6fire_control_init(struct sfire_chip *chip);
+>>>>>>> refs/remotes/origin/master
 void usb6fire_control_abort(struct sfire_chip *chip);
 void usb6fire_control_destroy(struct sfire_chip *chip);
 #endif /* USB6FIRE_CONTROL_H */

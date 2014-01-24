@@ -25,10 +25,17 @@
  */
 
 
+<<<<<<< HEAD
 #include "hcfcfg.h"				// to get hcf_16 etc defined as well as
                                 // possible settings which inluence mdd.h or dhf.h
 #include "mdd.h"   				//to get COMP_ID_STA etc defined
 #include "dhf.h"   				//used to be "fhfmem.h", to get memblock,plugrecord,
+=======
+#include "hcfcfg.h"	/* to get hcf_16 etc defined as well as */
+			/* possible settings which influence mdd.h or dhf.h */
+#include "mdd.h"	/* to get COMP_ID_STA etc defined */
+#include "dhf.h"	/* used to be fhfmem.h, to get memblock,plugrecord, */
+>>>>>>> refs/remotes/origin/master
 
 static const hcf_8 fw_image_1_data[] = {
 	 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -4381,6 +4388,7 @@ static const hcf_8 fw_image_4_data[] = {
 
 static const CFG_IDENTITY_STRCT fw_image_infoidentity[] = {
 	{
+<<<<<<< HEAD
 		sizeof( CFG_IDENTITY_STRCT ) / sizeof(hcf_16) - 1,
 		CFG_FW_IDENTITY,
 		COMP_ID_FW_STA,
@@ -4389,51 +4397,99 @@ static const CFG_IDENTITY_STRCT fw_image_infoidentity[] = {
 		36							//Minor
 	},
 	{ 0000, 0000, 0000, 0000, 0000, 0000 }		//endsentinel
+=======
+		sizeof(CFG_IDENTITY_STRCT) / sizeof(hcf_16) - 1,
+		CFG_FW_IDENTITY,
+		COMP_ID_FW_STA,
+		3,			/* Variant */
+		2,			/* Major */
+		36			/* Minor */
+	},
+	{ 0000, 0000, 0000, 0000, 0000, 0000 }	/* endsentinel */
+>>>>>>> refs/remotes/origin/master
 };
 
 static const CFG_PROG_STRCT fw_image_code[] = {
 	{
 		8,
 		CFG_PROG,
+<<<<<<< HEAD
 		CFG_PROG_VOLATILE,			// mode
 		0x0186,		// sizeof(fw_image_1_data),
 		0x00000060,					// Target address in NIC Memory
 		0x0000,						// CRC: yes/no	TYPE: primary/station/tertiary
 		(hcf_8 FAR   *) fw_image_1_data
+=======
+		CFG_PROG_VOLATILE,	/* mode */
+		0x0186,			/* sizeof(fw_image_1_data), */
+		0x00000060,		/* Target address in NIC Memory */
+		0x0000,			/* CRC: yes/no	TYPE: primary/station/tertiary */
+		(hcf_8 *)fw_image_1_data
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		8,
 		CFG_PROG,
+<<<<<<< HEAD
 		CFG_PROG_VOLATILE,			// mode
 		0x2518,		// sizeof(fw_image_2_data),
 		0x00000C16,					// Target address in NIC Memory
 		0x0000,						// CRC: yes/no	TYPE: primary/station/tertiary
 		(hcf_8 FAR   *) fw_image_2_data
+=======
+		CFG_PROG_VOLATILE,	/* mode */
+		0x2518,			/* sizeof(fw_image_2_data), */
+		0x00000C16,		/* Target address in NIC Memory */
+		0x0000,			/* CRC: yes/no	TYPE: primary/station/tertiary */
+		(hcf_8 *)fw_image_2_data
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		8,
 		CFG_PROG,
+<<<<<<< HEAD
 		CFG_PROG_VOLATILE,			// mode
 		0x3daa,		// sizeof(fw_image_3_data),
 		0x001E312E,					// Target address in NIC Memory
 		0x0000,						// CRC: yes/no	TYPE: primary/station/tertiary
 		(hcf_8 FAR   *) fw_image_3_data
+=======
+		CFG_PROG_VOLATILE,	/* mode */
+		0x3daa,			/* sizeof(fw_image_3_data), */
+		0x001E312E,		/* Target address in NIC Memory */
+		0x0000,			/* CRC: yes/no	TYPE: primary/station/tertiary */
+		(hcf_8 *)fw_image_3_data
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		8,
 		CFG_PROG,
+<<<<<<< HEAD
 		CFG_PROG_VOLATILE,			// mode
 		0xaa66,		// sizeof(fw_image_4_data),
 		0x001F4000,					// Target address in NIC Memory
 		0x0000,						// CRC: yes/no	TYPE: primary/station/tertiary
 		(hcf_8 FAR   *) fw_image_4_data
+=======
+		CFG_PROG_VOLATILE,	/* mode */
+		0xaa66,			/* sizeof(fw_image_4_data), */
+		0x001F4000,		/* Target address in NIC Memory */
+		0x0000,			/* CRC: yes/no	TYPE: primary/station/tertiary */
+		(hcf_8 *)fw_image_4_data
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		5,
 		CFG_PROG,
+<<<<<<< HEAD
 		CFG_PROG_STOP,				// mode
 		0000,
  	0x000F368E,					// Start execution address
+=======
+		CFG_PROG_STOP,		/* mode */
+		0000,
+	0x000F368E,	/* Start execution address */
+>>>>>>> refs/remotes/origin/master
 	},
 	{ 0000, 0000, 0000, 0000, 00000000, 0000, 00000000}
 };
@@ -4444,7 +4500,11 @@ static const CFG_RANGE20_STRCT fw_image_infocompat[] = {
 		COMP_ROLE_SUPL,
 		COMP_ID_STA,
 		{
+<<<<<<< HEAD
 			{ 2, 2, 5 }  				//variant, bottom, top
+=======
+			{ 2, 2, 5 }	/* variant, bottom, top */
+>>>>>>> refs/remotes/origin/master
 		}
 	},
 	{	3 + ((20 * sizeof(CFG_RANGE_SPEC_STRCT)) / sizeof(hcf_16)),
@@ -4452,9 +4512,15 @@ static const CFG_RANGE20_STRCT fw_image_infocompat[] = {
 		COMP_ROLE_ACT,
 		COMP_ID_MFI,
 		{
+<<<<<<< HEAD
 			{ 4, 6, 7 }, 				//variant, bottom, top
 			{ 5, 6, 7 }, 				//variant, bottom, top
 			{ 6, 6, 7 }  				//variant, bottom, top
+=======
+			{ 4, 6, 7 },	/* variant, bottom, top */
+			{ 5, 6, 7 },	/* variant, bottom, top */
+			{ 6, 6, 7 }	/* variant, bottom, top */
+>>>>>>> refs/remotes/origin/master
 		}
 	},
 	{	3 + ((20 * sizeof(CFG_RANGE_SPEC_STRCT)) / sizeof(hcf_16)),
@@ -4462,6 +4528,7 @@ static const CFG_RANGE20_STRCT fw_image_infocompat[] = {
 		COMP_ROLE_ACT,
 		COMP_ID_CFI,
 		{
+<<<<<<< HEAD
 			{ 2, 1, 2 }  				//variant, bottom, top
 		}
 	},
@@ -4474,6 +4541,20 @@ memimage fw_image = {
 	0x000F368E,
 	00000000,					//(dummy) pdaplug
 	00000000,					//(dummy) priplug
+=======
+			{ 2, 1, 2 }	/* variant, bottom, top */
+		}
+	},
+	{ 0000, 0000, 0000, 0000, { { 0000, 0000, 0000 } } }	/* endsentinel */
+};
+
+memimage fw_image = {
+	"FUPU7D37dhfwci\001C",			/* signature, <format number>, C/Bin type */
+	(CFG_PROG_STRCT *) fw_image_code,
+	0x000F368E,
+	NULL,					/* (dummy) pdaplug */
+	NULL,					/* (dummy) priplug */
+>>>>>>> refs/remotes/origin/master
 	(CFG_RANGE20_STRCT *) fw_image_infocompat,
 	(CFG_IDENTITY_STRCT *) fw_image_infoidentity,
 };

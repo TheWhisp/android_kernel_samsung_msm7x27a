@@ -15,10 +15,13 @@ config ETRAX_SERIAL_PORTS
        int
        default 5
 
+<<<<<<< HEAD
 config ETRAX_DDR
        bool
        default y
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ETRAX_DDR2_MRS
 	hex "DDR2 MRS"
 	default "0"

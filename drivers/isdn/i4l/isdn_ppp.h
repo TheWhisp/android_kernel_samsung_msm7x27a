@@ -40,7 +40,10 @@ extern int isdn_ppp_unregister_compressor(struct isdn_ppp_compressor *ipc);
 
 #define IPPP_MAX_HEADER 10
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

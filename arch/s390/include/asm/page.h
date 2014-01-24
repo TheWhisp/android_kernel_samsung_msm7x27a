@@ -1,8 +1,13 @@
 /*
+<<<<<<< HEAD
  *  include/asm-s390/page.h
  *
  *  S390 version
  *    Copyright (C) 1999,2000 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+ *  S390 version
+ *    Copyright IBM Corp. 1999, 2000
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Hartmut Penner (hp@de.ibm.com)
  */
 
@@ -32,6 +37,7 @@
 #include <asm/setup.h>
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
 static inline void clear_page(void *page)
 {
 	if (MACHINE_HAS_PFMF) {
@@ -76,6 +82,41 @@ static inline void copy_page(void *to, void *from)
 			"	mvc	3584(256,%0),3584(%1)\n"
 			"	mvc	3840(256,%0),3840(%1)\n"
 			: : "a" (to), "a" (from) : "memory");
+=======
+static inline void storage_key_init_range(unsigned long start, unsigned long end)
+{
+#if PAGE_DEFAULT_KEY
+	__storage_key_init_range(start, end);
+#endif
+}
+
+static inline void clear_page(void *page)
+{
+	register unsigned long reg1 asm ("1") = 0;
+	register void *reg2 asm ("2") = page;
+	register unsigned long reg3 asm ("3") = 4096;
+	asm volatile(
+		"	mvcl	2,0"
+		: "+d" (reg2), "+d" (reg3) : "d" (reg1)
+		: "memory", "cc");
+}
+
+/*
+ * copy_page uses the mvcl instruction with 0xb0 padding byte in order to
+ * bypass caches when copying a page. Especially when copying huge pages
+ * this keeps L1 and L2 data caches alive.
+ */
+static inline void copy_page(void *to, void *from)
+{
+	register void *reg2 asm ("2") = to;
+	register unsigned long reg3 asm ("3") = 0x1000;
+	register void *reg4 asm ("4") = from;
+	register unsigned long reg5 asm ("5") = 0xb0001000;
+	asm volatile(
+		"	mvcl	2,4"
+		: "+d" (reg2), "+d" (reg3), "+d" (reg4), "+d" (reg5)
+		: : "memory", "cc");
+>>>>>>> refs/remotes/origin/master
 }
 
 #define clear_user_page(page, vaddr, pg)	clear_page(page)
@@ -146,6 +187,7 @@ static inline int page_reset_referenced(unsigned long addr)
 #define _PAGE_FP_BIT		0x08	/* HW fetch protection bit	*/
 #define _PAGE_ACC_BITS		0xf0	/* HW access control bits	*/
 
+<<<<<<< HEAD
 /*
  * Test and clear dirty bit in storage key.
  * We can't clear the changed bit atomically. This is a potential
@@ -181,6 +223,12 @@ void arch_alloc_page(struct page *page, int order);
 =======
 void arch_set_page_states(int make_stable);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct page;
+void arch_free_page(struct page *page, int order);
+void arch_alloc_page(struct page *page, int order);
+void arch_set_page_states(int make_stable);
+>>>>>>> refs/remotes/origin/master
 
 static inline int devmem_is_allowed(unsigned long pfn)
 {

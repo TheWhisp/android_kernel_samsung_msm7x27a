@@ -4,10 +4,14 @@
  * No surprises, and works with signed and unsigned chars.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "cache.h"
 =======
 #include "util.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "util.h"
+>>>>>>> refs/remotes/origin/master
 
 enum {
 	S = GIT_SPACE,

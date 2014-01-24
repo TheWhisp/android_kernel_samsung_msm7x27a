@@ -1,9 +1,12 @@
 #ifndef _SPEAKUP_H
 #define _SPEAKUP_H
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "spk_types.h"
 #include "i18n.h"
@@ -48,6 +51,7 @@
 #define IS_CHAR(x, type) (spk_chartab[((u_char)x)]&type)
 #define IS_TYPE(x, type) ((spk_chartab[((u_char)x)]&type) == type)
 
+<<<<<<< HEAD
 #define SET_DEFAULT -4
 #define E_RANGE -3
 #define E_TOOLONG -2
@@ -82,6 +86,35 @@ extern int synth_init(char *name);
 extern void synth_release(void);
 
 extern void do_flush(void);
+=======
+extern int speakup_thread(void *data);
+extern void spk_reset_default_chars(void);
+extern void spk_reset_default_chartab(void);
+extern void synth_start(void);
+void synth_insert_next_index(int sent_num);
+void spk_reset_index_count(int sc);
+void spk_get_index_count(int *linecount, int *sentcount);
+extern int spk_set_key_info(const u_char *key_info, u_char *k_buffer);
+extern char *spk_strlwr(char *s);
+extern char *spk_s2uchar(char *start, char *dest);
+extern int speakup_kobj_init(void);
+extern void speakup_kobj_exit(void);
+extern int spk_chartab_get_value(char *keyword);
+extern void speakup_register_var(struct var_t *var);
+extern void speakup_unregister_var(enum var_id_t var_id);
+extern struct st_var_header *spk_get_var_header(enum var_id_t var_id);
+extern struct st_var_header *spk_var_header_by_name(const char *name);
+extern struct punc_var_t *spk_get_punc_var(enum var_id_t var_id);
+extern int spk_set_num_var(int val, struct st_var_header *var, int how);
+extern int spk_set_string_var(const char *page, struct st_var_header *var, int len);
+extern int spk_set_mask_bits(const char *input, const int which, const int how);
+extern special_func spk_special_handler;
+extern int spk_handle_help(struct vc_data *vc, u_char type, u_char ch, u_short key);
+extern int synth_init(char *name);
+extern void synth_release(void);
+
+extern void spk_do_flush(void);
+>>>>>>> refs/remotes/origin/master
 extern void speakup_start_ttys(void);
 extern void synth_buffer_add(char ch);
 extern void synth_buffer_clear(void);
@@ -94,17 +127,26 @@ extern void synth_write(const char *buf, size_t count);
 extern int synth_supports_indexing(void);
 
 extern struct vc_data *spk_sel_cons;
+<<<<<<< HEAD
 extern unsigned short xs, ys, xe, ye; /* our region points */
+=======
+extern unsigned short spk_xs, spk_ys, spk_xe, spk_ye; /* our region points */
+>>>>>>> refs/remotes/origin/master
 
 extern wait_queue_head_t speakup_event;
 extern struct kobject *speakup_kobj;
 extern struct task_struct *speakup_task;
+<<<<<<< HEAD
 extern const u_char key_defaults[];
+=======
+extern const u_char spk_key_defaults[];
+>>>>>>> refs/remotes/origin/master
 
 /* Protect speakup synthesizer list */
 extern struct mutex spk_mutex;
 extern struct st_spk_t *speakup_console[];
 extern struct spk_synth *synth;
+<<<<<<< HEAD
 extern char pitch_buff[];
 extern u_char *our_keys[];
 extern short punc_masks[];
@@ -127,6 +169,26 @@ extern bool quiet_boot;
 >>>>>>> refs/remotes/origin/cm-10.0
 extern char *synth_name;
 extern struct bleep unprocessed_sound;
+=======
+extern char spk_pitch_buff[];
+extern u_char *spk_our_keys[];
+extern short spk_punc_masks[];
+extern char spk_str_caps_start[], spk_str_caps_stop[];
+extern const struct st_bits_data spk_punc_info[];
+extern u_char spk_key_buf[600];
+extern char *spk_characters[];
+extern char *spk_default_chars[];
+extern u_short spk_chartab[];
+extern int spk_no_intr, spk_say_ctrl, spk_say_word_ctl, spk_punc_level;
+extern int spk_reading_punc, spk_attrib_bleep, spk_bleeps;
+extern int spk_bleep_time, spk_bell_pos;
+extern int spk_spell_delay, spk_key_echo;
+extern short spk_punc_mask;
+extern short spk_pitch_shift, synth_flags;
+extern bool spk_quiet_boot;
+extern char *synth_name;
+extern struct bleep spk_unprocessed_sound;
+>>>>>>> refs/remotes/origin/master
 
 /* Prototypes from fakekey.c. */
 int speakup_add_virtual_keyboard(void);

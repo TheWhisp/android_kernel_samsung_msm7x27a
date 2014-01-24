@@ -68,6 +68,7 @@ unsigned long ram_end;
 static unsigned long dma_start __initdata;
 static unsigned long dma_size __initdata;
 
+<<<<<<< HEAD
 char c6x_command_line[COMMAND_LINE_SIZE];
 
 #if defined(CONFIG_CMDLINE_BOOL)
@@ -75,6 +76,8 @@ static const char default_command_line[COMMAND_LINE_SIZE] __section(.cmdline) =
 	CONFIG_CMDLINE;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct cpuinfo_c6x {
 	const char *cpu_name;
 	const char *cpu_voltage;
@@ -143,6 +146,13 @@ static void __init get_cpuinfo(void)
 		p->cpu_name = "C64x+";
 		p->cpu_voltage = "1.2";
 		break;
+<<<<<<< HEAD
+=======
+	case 21:
+		p->cpu_name = "C66X";
+		p->cpu_voltage = "1.2";
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		p->cpu_name = "unknown";
 		break;
@@ -290,10 +300,15 @@ notrace void __init machine_init(unsigned long dt_ptr)
 		fdt = dtb;
 
 	/* Do some early initialization based on the flat device tree */
+<<<<<<< HEAD
 	early_init_devtree(fdt);
 
 	/* parse_early_param needs a boot_command_line */
 	strlcpy(boot_command_line, c6x_command_line, COMMAND_LINE_SIZE);
+=======
+	early_init_dt_scan(fdt);
+
+>>>>>>> refs/remotes/origin/master
 	parse_early_param();
 }
 
@@ -305,7 +320,11 @@ void __init setup_arch(char **cmdline_p)
 	printk(KERN_INFO "Initializing kernel\n");
 
 	/* Initialize command line */
+<<<<<<< HEAD
 	*cmdline_p = c6x_command_line;
+=======
+	*cmdline_p = boot_command_line;
+>>>>>>> refs/remotes/origin/master
 
 	memory_end = ram_end;
 	memory_end &= ~(PAGE_SIZE - 1);

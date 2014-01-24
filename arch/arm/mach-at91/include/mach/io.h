@@ -23,6 +23,7 @@
 
 #define IO_SPACE_LIMIT		0xFFFFFFFF
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define __io(a)		__typesafe_io(a)
 #define __mem_pci(a)	(a)
@@ -48,5 +49,8 @@ static inline void at91_sys_write(unsigned int reg_offset, unsigned long value)
 =======
 #define __io(a)			__typesafe_io(a)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define __io(a)			__typesafe_io(a)
+>>>>>>> refs/remotes/origin/master
 
 #endif

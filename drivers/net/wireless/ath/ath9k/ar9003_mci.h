@@ -18,6 +18,10 @@
 #define AR9003_MCI_H
 
 #define MCI_FLAG_DISABLE_TIMESTAMP      0x00000001      /* Disable time stamp */
+<<<<<<< HEAD
+=======
+#define MCI_RECOVERY_DUR_TSF		(100 * 1000)    /* 100 ms */
+>>>>>>> refs/remotes/origin/master
 
 /* Default remote BT device MCI COEX version */
 #define MCI_GPM_COEX_MAJOR_VERSION_DEFAULT  3
@@ -125,6 +129,10 @@ enum ath_mci_gpm_coex_profile_type {
 	MCI_GPM_COEX_PROFILE_HID,
 	MCI_GPM_COEX_PROFILE_BNEP,
 	MCI_GPM_COEX_PROFILE_VOICE,
+<<<<<<< HEAD
+=======
+	MCI_GPM_COEX_PROFILE_A2DPVO,
+>>>>>>> refs/remotes/origin/master
 	MCI_GPM_COEX_PROFILE_MAX
 };
 
@@ -189,6 +197,7 @@ enum mci_bt_state {
 /* Type of state query */
 enum mci_state_type {
 	MCI_STATE_ENABLE,
+<<<<<<< HEAD
 	MCI_STATE_INIT_GPM_OFFSET,
 	MCI_STATE_NEXT_GPM_OFFSET,
 	MCI_STATE_LAST_GPM_OFFSET,
@@ -214,6 +223,19 @@ enum mci_state_type {
 	MCI_STATE_NEED_FTP_STOMP,
 	MCI_STATE_NEED_TUNING,
 	MCI_STATE_DEBUG,
+=======
+	MCI_STATE_SET_BT_AWAKE,
+	MCI_STATE_LAST_SCHD_MSG_OFFSET,
+	MCI_STATE_REMOTE_SLEEP,
+	MCI_STATE_RESET_REQ_WAKE,
+	MCI_STATE_SEND_WLAN_COEX_VERSION,
+	MCI_STATE_SEND_VERSION_QUERY,
+	MCI_STATE_SEND_STATUS_QUERY,
+	MCI_STATE_RECOVER_RX,
+	MCI_STATE_NEED_FTP_STOMP,
+	MCI_STATE_DEBUG,
+	MCI_STATE_NEED_FLUSH_BT_INFO,
+>>>>>>> refs/remotes/origin/master
 	MCI_STATE_MAX
 };
 
@@ -225,7 +247,12 @@ enum mci_gpm_coex_opcode {
 	MCI_GPM_COEX_WLAN_CHANNELS,
 	MCI_GPM_COEX_BT_PROFILE_INFO,
 	MCI_GPM_COEX_BT_STATUS_UPDATE,
+<<<<<<< HEAD
 	MCI_GPM_COEX_BT_UPDATE_FLAGS
+=======
+	MCI_GPM_COEX_BT_UPDATE_FLAGS,
+	MCI_GPM_COEX_NOOP,
+>>>>>>> refs/remotes/origin/master
 };
 
 #define MCI_GPM_NOMORE  0
@@ -260,6 +287,7 @@ enum mci_gpm_coex_opcode {
 bool ar9003_mci_send_message(struct ath_hw *ah, u8 header, u32 flag,
 			     u32 *payload, u8 len, bool wait_done,
 			     bool check_bt);
+<<<<<<< HEAD
 u32 ar9003_mci_state(struct ath_hw *ah, u32 state_type, u32 *p_data);
 void ar9003_mci_setup(struct ath_hw *ah, u32 gpm_addr, void *gpm_buf,
 		      u16 len, u32 sched_addr);
@@ -267,25 +295,44 @@ void ar9003_mci_cleanup(struct ath_hw *ah);
 void ar9003_mci_get_interrupt(struct ath_hw *ah, u32 *raw_intr,
 			      u32 *rx_msg_intr);
 
+=======
+u32 ar9003_mci_state(struct ath_hw *ah, u32 state_type);
+int ar9003_mci_setup(struct ath_hw *ah, u32 gpm_addr, void *gpm_buf,
+		     u16 len, u32 sched_addr);
+void ar9003_mci_cleanup(struct ath_hw *ah);
+void ar9003_mci_get_interrupt(struct ath_hw *ah, u32 *raw_intr,
+			      u32 *rx_msg_intr);
+u32 ar9003_mci_get_next_gpm_offset(struct ath_hw *ah, bool first, u32 *more);
+void ar9003_mci_set_bt_version(struct ath_hw *ah, u8 major, u8 minor);
+void ar9003_mci_send_wlan_channels(struct ath_hw *ah);
+>>>>>>> refs/remotes/origin/master
 /*
  * These functions are used by ath9k_hw.
  */
 
 #ifdef CONFIG_ATH9K_BTCOEX_SUPPORT
 
+<<<<<<< HEAD
 static inline bool ar9003_mci_is_ready(struct ath_hw *ah)
 {
 	return ah->btcoex_hw.mci.ready;
 }
+=======
+>>>>>>> refs/remotes/origin/master
 void ar9003_mci_stop_bt(struct ath_hw *ah, bool save_fullsleep);
 void ar9003_mci_init_cal_req(struct ath_hw *ah, bool *is_reusable);
 void ar9003_mci_init_cal_done(struct ath_hw *ah);
 void ar9003_mci_set_full_sleep(struct ath_hw *ah);
+<<<<<<< HEAD
 void ar9003_mci_2g5g_switch(struct ath_hw *ah, bool wait_done);
+=======
+void ar9003_mci_2g5g_switch(struct ath_hw *ah, bool force);
+>>>>>>> refs/remotes/origin/master
 void ar9003_mci_check_bt(struct ath_hw *ah);
 bool ar9003_mci_start_reset(struct ath_hw *ah, struct ath9k_channel *chan);
 int ar9003_mci_end_reset(struct ath_hw *ah, struct ath9k_channel *chan,
 			 struct ath9k_hw_cal_data *caldata);
+<<<<<<< HEAD
 void ar9003_mci_reset(struct ath_hw *ah, bool en_int, bool is_2g,
 		      bool is_full_sleep);
 void ar9003_mci_get_isr(struct ath_hw *ah, enum ath9k_int *masked);
@@ -296,6 +343,18 @@ static inline bool ar9003_mci_is_ready(struct ath_hw *ah)
 {
 	return false;
 }
+=======
+int ar9003_mci_reset(struct ath_hw *ah, bool en_int, bool is_2g,
+		     bool is_full_sleep);
+void ar9003_mci_get_isr(struct ath_hw *ah, enum ath9k_int *masked);
+void ar9003_mci_bt_gain_ctrl(struct ath_hw *ah);
+void ar9003_mci_set_power_awake(struct ath_hw *ah);
+void ar9003_mci_check_gpm_offset(struct ath_hw *ah);
+u16 ar9003_mci_get_max_txpower(struct ath_hw *ah, u8 ctlmode);
+
+#else
+
+>>>>>>> refs/remotes/origin/master
 static inline void ar9003_mci_stop_bt(struct ath_hw *ah, bool save_fullsleep)
 {
 }
@@ -330,6 +389,22 @@ static inline void ar9003_mci_reset(struct ath_hw *ah, bool en_int, bool is_2g,
 static inline void ar9003_mci_get_isr(struct ath_hw *ah, enum ath9k_int *masked)
 {
 }
+<<<<<<< HEAD
+=======
+static inline void ar9003_mci_bt_gain_ctrl(struct ath_hw *ah)
+{
+}
+static inline void ar9003_mci_set_power_awake(struct ath_hw *ah)
+{
+}
+static inline void ar9003_mci_check_gpm_offset(struct ath_hw *ah)
+{
+}
+static inline u16 ar9003_mci_get_max_txpower(struct ath_hw *ah, u8 ctlmode)
+{
+	return -1;
+}
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_ATH9K_BTCOEX_SUPPORT */
 
 #endif

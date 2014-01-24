@@ -89,10 +89,15 @@ static int __init ps3_rtc_init(void)
 		return -ENODEV;
 
 	pdev = platform_device_register_simple("rtc-ps3", -1, NULL, 0);
+<<<<<<< HEAD
 	if (IS_ERR(pdev))
 		return PTR_ERR(pdev);
 
 	return 0;
+=======
+
+	return PTR_ERR_OR_ZERO(pdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(ps3_rtc_init);

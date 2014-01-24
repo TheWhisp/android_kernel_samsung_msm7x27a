@@ -54,16 +54,26 @@ static int brnf_call_ip6tables __read_mostly = 1;
 static int brnf_call_arptables __read_mostly = 1;
 static int brnf_filter_vlan_tagged __read_mostly = 0;
 static int brnf_filter_pppoe_tagged __read_mostly = 0;
+<<<<<<< HEAD
+=======
+static int brnf_pass_vlan_indev __read_mostly = 0;
+>>>>>>> refs/remotes/origin/master
 #else
 #define brnf_call_iptables 1
 #define brnf_call_ip6tables 1
 #define brnf_call_arptables 1
 #define brnf_filter_vlan_tagged 0
 #define brnf_filter_pppoe_tagged 0
+<<<<<<< HEAD
 #endif
 
 <<<<<<< HEAD
 =======
+=======
+#define brnf_pass_vlan_indev 0
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #define IS_IP(skb) \
 	(!vlan_tx_tag_present(skb) && skb->protocol == htons(ETH_P_IP))
 
@@ -73,7 +83,10 @@ static int brnf_filter_pppoe_tagged __read_mostly = 0;
 #define IS_ARP(skb) \
 	(!vlan_tx_tag_present(skb) && skb->protocol == htons(ETH_P_ARP))
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline __be16 vlan_proto(const struct sk_buff *skb)
 {
 	if (vlan_tx_tag_present(skb))
@@ -112,7 +125,17 @@ static inline __be16 pppoe_proto(const struct sk_buff *skb)
 	 pppoe_proto(skb) == htons(PPP_IPV6) && \
 	 brnf_filter_pppoe_tagged)
 
+<<<<<<< HEAD
 static void fake_update_pmtu(struct dst_entry *dst, u32 mtu)
+=======
+static void fake_update_pmtu(struct dst_entry *dst, struct sock *sk,
+			     struct sk_buff *skb, u32 mtu)
+{
+}
+
+static void fake_redirect(struct dst_entry *dst, struct sock *sk,
+			  struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 }
 
@@ -122,8 +145,14 @@ static u32 *fake_cow_metrics(struct dst_entry *dst, unsigned long old)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct neighbour *fake_neigh_lookup(const struct dst_entry *dst, const void *daddr)
+=======
+static struct neighbour *fake_neigh_lookup(const struct dst_entry *dst,
+					   struct sk_buff *skb,
+					   const void *daddr)
+>>>>>>> refs/remotes/origin/master
 {
 	return NULL;
 }
@@ -133,17 +162,27 @@ static unsigned int fake_mtu(const struct dst_entry *dst)
 	return dst->dev->mtu;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct dst_ops fake_dst_ops = {
 	.family =		AF_INET,
 	.protocol =		cpu_to_be16(ETH_P_IP),
 	.update_pmtu =		fake_update_pmtu,
+<<<<<<< HEAD
 	.cow_metrics =		fake_cow_metrics,
 <<<<<<< HEAD
 =======
 	.neigh_lookup =		fake_neigh_lookup,
 	.mtu =			fake_mtu,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.redirect =		fake_redirect,
+	.cow_metrics =		fake_cow_metrics,
+	.neigh_lookup =		fake_neigh_lookup,
+	.mtu =			fake_mtu,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -166,10 +205,14 @@ void br_netfilter_rtable_init(struct net_bridge *br)
 	rt->dst.path = &rt->dst;
 	dst_init_metrics(&rt->dst, br_dst_default_metrics, true);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rt->dst.flags	= DST_NOXFRM;
 =======
 	rt->dst.flags	= DST_NOXFRM | DST_NOPEER | DST_FAKE_RTABLE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rt->dst.flags	= DST_NOXFRM | DST_NOPEER | DST_FAKE_RTABLE;
+>>>>>>> refs/remotes/origin/master
 	rt->dst.ops = &fake_dst_ops;
 }
 
@@ -388,6 +431,7 @@ static int br_nf_pre_routing_finish_bridge(struct sk_buff *skb)
 		goto free_skb;
 	dst = skb_dst(skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	neigh = dst_get_neighbour(dst);
 	if (dst->hh) {
 		neigh_hh_bridge(dst->hh, skb);
@@ -413,6 +457,31 @@ static int br_nf_pre_routing_finish_bridge(struct sk_buff *skb)
 =======
 		return neigh->output(neigh, skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	neigh = dst_neigh_lookup_skb(dst, skb);
+	if (neigh) {
+		int ret;
+
+		if (neigh->hh.hh_len) {
+			neigh_hh_bridge(&neigh->hh, skb);
+			skb->dev = nf_bridge->physindev;
+			ret = br_handle_frame_finish(skb);
+		} else {
+			/* the neighbour function below overwrites the complete
+			 * MAC header, so we save the Ethernet source address and
+			 * protocol number.
+			 */
+			skb_copy_from_linear_data_offset(skb,
+							 -(ETH_HLEN-ETH_ALEN),
+							 skb->nf_bridge->data,
+							 ETH_HLEN-ETH_ALEN);
+			/* tell br_dev_xmit to continue with forwarding */
+			nf_bridge->mask |= BRNF_BRIDGED_DNAT;
+			ret = neigh->output(neigh, skb);
+		}
+		neigh_release(neigh);
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 free_skb:
 	kfree_skb(skb);
@@ -532,6 +601,23 @@ bridged_dnat:
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static struct net_device *brnf_get_logical_dev(struct sk_buff *skb, const struct net_device *dev)
+{
+	struct net_device *vlan, *br;
+
+	br = bridge_parent(dev);
+	if (brnf_pass_vlan_indev == 0 || !vlan_tx_tag_present(skb))
+		return br;
+
+	vlan = __vlan_find_dev_deep(br, skb->vlan_proto,
+				    vlan_tx_tag_get(skb) & VLAN_VID_MASK);
+
+	return vlan ? vlan : br;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Some common code for IPv4/IPv6 */
 static struct net_device *setup_pre_routing(struct sk_buff *skb)
 {
@@ -544,12 +630,21 @@ static struct net_device *setup_pre_routing(struct sk_buff *skb)
 
 	nf_bridge->mask |= BRNF_NF_BRIDGE_PREROUTING;
 	nf_bridge->physindev = skb->dev;
+<<<<<<< HEAD
 	skb->dev = bridge_parent(skb->dev);
+=======
+	skb->dev = brnf_get_logical_dev(skb, skb->dev);
+>>>>>>> refs/remotes/origin/master
 	if (skb->protocol == htons(ETH_P_8021Q))
 		nf_bridge->mask |= BRNF_8021Q;
 	else if (skb->protocol == htons(ETH_P_PPP_SES))
 		nf_bridge->mask |= BRNF_PPPoE;
 
+<<<<<<< HEAD
+=======
+	/* Must drop socket now because of tproxy. */
+	skb_orphan(skb);
+>>>>>>> refs/remotes/origin/master
 	return skb->dev;
 }
 
@@ -572,7 +667,11 @@ static int check_hbh_len(struct sk_buff *skb)
 		int optlen = nh[off + 1] + 2;
 
 		switch (nh[off]) {
+<<<<<<< HEAD
 		case IPV6_TLV_PAD0:
+=======
+		case IPV6_TLV_PAD1:
+>>>>>>> refs/remotes/origin/master
 			optlen = 1;
 			break;
 
@@ -610,7 +709,11 @@ bad:
 
 /* Replicate the checks that IPv6 does on packet reception and pass the packet
  * to ip6tables, which doesn't support NAT, so things are fairly simple. */
+<<<<<<< HEAD
 static unsigned int br_nf_pre_routing_ipv6(unsigned int hook,
+=======
+static unsigned int br_nf_pre_routing_ipv6(const struct nf_hook_ops *ops,
+>>>>>>> refs/remotes/origin/master
 					   struct sk_buff *skb,
 					   const struct net_device *in,
 					   const struct net_device *out,
@@ -660,7 +763,12 @@ static unsigned int br_nf_pre_routing_ipv6(unsigned int hook,
  * receiving device) to make netfilter happy, the REDIRECT
  * target in particular.  Save the original destination IP
  * address to be able to detect DNAT afterwards. */
+<<<<<<< HEAD
 static unsigned int br_nf_pre_routing(unsigned int hook, struct sk_buff *skb,
+=======
+static unsigned int br_nf_pre_routing(const struct nf_hook_ops *ops,
+				      struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/master
 				      const struct net_device *in,
 				      const struct net_device *out,
 				      int (*okfn)(struct sk_buff *))
@@ -678,27 +786,39 @@ static unsigned int br_nf_pre_routing(unsigned int hook, struct sk_buff *skb,
 	br = p->br;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (skb->protocol == htons(ETH_P_IPV6) || IS_VLAN_IPV6(skb) ||
 	    IS_PPPOE_IPV6(skb)) {
 =======
 	if (IS_IPV6(skb) || IS_VLAN_IPV6(skb) || IS_PPPOE_IPV6(skb)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (IS_IPV6(skb) || IS_VLAN_IPV6(skb) || IS_PPPOE_IPV6(skb)) {
+>>>>>>> refs/remotes/origin/master
 		if (!brnf_call_ip6tables && !br->nf_call_ip6tables)
 			return NF_ACCEPT;
 
 		nf_bridge_pull_encap_header_rcsum(skb);
+<<<<<<< HEAD
 		return br_nf_pre_routing_ipv6(hook, skb, in, out, okfn);
+=======
+		return br_nf_pre_routing_ipv6(ops, skb, in, out, okfn);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!brnf_call_iptables && !br->nf_call_iptables)
 		return NF_ACCEPT;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (skb->protocol != htons(ETH_P_IP) && !IS_VLAN_IP(skb) &&
 	    !IS_PPPOE_IP(skb))
 =======
 	if (!IS_IP(skb) && !IS_VLAN_IP(skb) && !IS_PPPOE_IP(skb))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_IP(skb) && !IS_VLAN_IP(skb) && !IS_PPPOE_IP(skb))
+>>>>>>> refs/remotes/origin/master
 		return NF_ACCEPT;
 
 	nf_bridge_pull_encap_header_rcsum(skb);
@@ -728,11 +848,17 @@ static unsigned int br_nf_pre_routing(unsigned int hook, struct sk_buff *skb,
  * took place when the packet entered the bridge), but we
  * register an IPv4 PRE_ROUTING 'sabotage' hook that will
  * prevent this from happening. */
+<<<<<<< HEAD
 static unsigned int br_nf_local_in(unsigned int hook, struct sk_buff *skb,
+=======
+static unsigned int br_nf_local_in(const struct nf_hook_ops *ops,
+				   struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/master
 				   const struct net_device *in,
 				   const struct net_device *out,
 				   int (*okfn)(struct sk_buff *))
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct rtable *rt = skb_rtable(skb);
 
@@ -742,6 +868,9 @@ static unsigned int br_nf_local_in(unsigned int hook, struct sk_buff *skb,
 =======
 	br_drop_fake_rtable(skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	br_drop_fake_rtable(skb);
+>>>>>>> refs/remotes/origin/master
 	return NF_ACCEPT;
 }
 
@@ -752,10 +881,14 @@ static int br_nf_forward_finish(struct sk_buff *skb)
 	struct net_device *in;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (skb->protocol != htons(ETH_P_ARP) && !IS_VLAN_ARP(skb)) {
 =======
 	if (!IS_ARP(skb) && !IS_VLAN_ARP(skb)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_ARP(skb) && !IS_VLAN_ARP(skb)) {
+>>>>>>> refs/remotes/origin/master
 		in = nf_bridge->physindev;
 		if (nf_bridge->mask & BRNF_PKT_TYPE) {
 			skb->pkt_type = PACKET_OTHERHOST;
@@ -773,15 +906,24 @@ static int br_nf_forward_finish(struct sk_buff *skb)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 /* This is the 'purely bridged' case.  For IP, we pass the packet to
  * netfilter with indev and outdev set to the bridge device,
  * but we are still able to filter on the 'real' indev/outdev
  * because of the physdev module. For ARP, indev and outdev are the
  * bridge ports. */
+<<<<<<< HEAD
 static unsigned int br_nf_forward_ip(unsigned int hook, struct sk_buff *skb,
+=======
+static unsigned int br_nf_forward_ip(const struct nf_hook_ops *ops,
+				     struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/master
 				     const struct net_device *in,
 				     const struct net_device *out,
 				     int (*okfn)(struct sk_buff *))
@@ -803,6 +945,7 @@ static unsigned int br_nf_forward_ip(unsigned int hook, struct sk_buff *skb,
 		return NF_DROP;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (skb->protocol == htons(ETH_P_IP) || IS_VLAN_IP(skb) ||
 	    IS_PPPOE_IP(skb))
 		pf = PF_INET;
@@ -814,6 +957,12 @@ static unsigned int br_nf_forward_ip(unsigned int hook, struct sk_buff *skb,
 	else if (IS_IPV6(skb) || IS_VLAN_IPV6(skb) || IS_PPPOE_IPV6(skb))
 >>>>>>> refs/remotes/origin/cm-10.0
 		pf = PF_INET6;
+=======
+	if (IS_IP(skb) || IS_VLAN_IP(skb) || IS_PPPOE_IP(skb))
+		pf = NFPROTO_IPV4;
+	else if (IS_IPV6(skb) || IS_VLAN_IPV6(skb) || IS_PPPOE_IPV6(skb))
+		pf = NFPROTO_IPV6;
+>>>>>>> refs/remotes/origin/master
 	else
 		return NF_ACCEPT;
 
@@ -825,24 +974,41 @@ static unsigned int br_nf_forward_ip(unsigned int hook, struct sk_buff *skb,
 		nf_bridge->mask |= BRNF_PKT_TYPE;
 	}
 
+<<<<<<< HEAD
 	if (pf == PF_INET && br_parse_ip_options(skb))
+=======
+	if (pf == NFPROTO_IPV4 && br_parse_ip_options(skb))
+>>>>>>> refs/remotes/origin/master
 		return NF_DROP;
 
 	/* The physdev module checks on this */
 	nf_bridge->mask |= BRNF_BRIDGED;
 	nf_bridge->physoutdev = skb->dev;
+<<<<<<< HEAD
 	if (pf == PF_INET)
+=======
+	if (pf == NFPROTO_IPV4)
+>>>>>>> refs/remotes/origin/master
 		skb->protocol = htons(ETH_P_IP);
 	else
 		skb->protocol = htons(ETH_P_IPV6);
 
+<<<<<<< HEAD
 	NF_HOOK(pf, NF_INET_FORWARD, skb, bridge_parent(in), parent,
+=======
+	NF_HOOK(pf, NF_INET_FORWARD, skb, brnf_get_logical_dev(skb, in), parent,
+>>>>>>> refs/remotes/origin/master
 		br_nf_forward_finish);
 
 	return NF_STOLEN;
 }
 
+<<<<<<< HEAD
 static unsigned int br_nf_forward_arp(unsigned int hook, struct sk_buff *skb,
+=======
+static unsigned int br_nf_forward_arp(const struct nf_hook_ops *ops,
+				      struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/master
 				      const struct net_device *in,
 				      const struct net_device *out,
 				      int (*okfn)(struct sk_buff *))
@@ -860,10 +1026,14 @@ static unsigned int br_nf_forward_arp(unsigned int hook, struct sk_buff *skb,
 		return NF_ACCEPT;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (skb->protocol != htons(ETH_P_ARP)) {
 =======
 	if (!IS_ARP(skb)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_ARP(skb)) {
+>>>>>>> refs/remotes/origin/master
 		if (!IS_VLAN_ARP(skb))
 			return NF_ACCEPT;
 		nf_bridge_pull_encap_header(skb);
@@ -882,10 +1052,14 @@ static unsigned int br_nf_forward_arp(unsigned int hook, struct sk_buff *skb,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_NF_CONNTRACK_IPV4) || defined(CONFIG_NF_CONNTRACK_IPV4_MODULE)
 =======
 #if IS_ENABLED(CONFIG_NF_CONNTRACK_IPV4)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_NF_CONNTRACK_IPV4)
+>>>>>>> refs/remotes/origin/master
 static int br_nf_dev_queue_xmit(struct sk_buff *skb)
 {
 	int ret;
@@ -910,7 +1084,12 @@ static int br_nf_dev_queue_xmit(struct sk_buff *skb)
 #endif
 
 /* PF_BRIDGE/POST_ROUTING ********************************************/
+<<<<<<< HEAD
 static unsigned int br_nf_post_routing(unsigned int hook, struct sk_buff *skb,
+=======
+static unsigned int br_nf_post_routing(const struct nf_hook_ops *ops,
+				       struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/master
 				       const struct net_device *in,
 				       const struct net_device *out,
 				       int (*okfn)(struct sk_buff *))
@@ -926,6 +1105,7 @@ static unsigned int br_nf_post_routing(unsigned int hook, struct sk_buff *skb,
 		return NF_DROP;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (skb->protocol == htons(ETH_P_IP) || IS_VLAN_IP(skb) ||
 	    IS_PPPOE_IP(skb))
 		pf = PF_INET;
@@ -937,6 +1117,12 @@ static unsigned int br_nf_post_routing(unsigned int hook, struct sk_buff *skb,
 	else if (IS_IPV6(skb) || IS_VLAN_IPV6(skb) || IS_PPPOE_IPV6(skb))
 >>>>>>> refs/remotes/origin/cm-10.0
 		pf = PF_INET6;
+=======
+	if (IS_IP(skb) || IS_VLAN_IP(skb) || IS_PPPOE_IP(skb))
+		pf = NFPROTO_IPV4;
+	else if (IS_IPV6(skb) || IS_VLAN_IPV6(skb) || IS_PPPOE_IPV6(skb))
+		pf = NFPROTO_IPV6;
+>>>>>>> refs/remotes/origin/master
 	else
 		return NF_ACCEPT;
 
@@ -949,7 +1135,11 @@ static unsigned int br_nf_post_routing(unsigned int hook, struct sk_buff *skb,
 
 	nf_bridge_pull_encap_header(skb);
 	nf_bridge_save_header(skb);
+<<<<<<< HEAD
 	if (pf == PF_INET)
+=======
+	if (pf == NFPROTO_IPV4)
+>>>>>>> refs/remotes/origin/master
 		skb->protocol = htons(ETH_P_IP);
 	else
 		skb->protocol = htons(ETH_P_IPV6);
@@ -963,7 +1153,12 @@ static unsigned int br_nf_post_routing(unsigned int hook, struct sk_buff *skb,
 /* IP/SABOTAGE *****************************************************/
 /* Don't hand locally destined packets to PF_INET(6)/PRE_ROUTING
  * for the second time. */
+<<<<<<< HEAD
 static unsigned int ip_sabotage_in(unsigned int hook, struct sk_buff *skb,
+=======
+static unsigned int ip_sabotage_in(const struct nf_hook_ops *ops,
+				   struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/master
 				   const struct net_device *in,
 				   const struct net_device *out,
 				   int (*okfn)(struct sk_buff *))
@@ -982,49 +1177,77 @@ static struct nf_hook_ops br_nf_ops[] __read_mostly = {
 	{
 		.hook = br_nf_pre_routing,
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 		.pf = PF_BRIDGE,
+=======
+		.pf = NFPROTO_BRIDGE,
+>>>>>>> refs/remotes/origin/master
 		.hooknum = NF_BR_PRE_ROUTING,
 		.priority = NF_BR_PRI_BRNF,
 	},
 	{
 		.hook = br_nf_local_in,
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 		.pf = PF_BRIDGE,
+=======
+		.pf = NFPROTO_BRIDGE,
+>>>>>>> refs/remotes/origin/master
 		.hooknum = NF_BR_LOCAL_IN,
 		.priority = NF_BR_PRI_BRNF,
 	},
 	{
 		.hook = br_nf_forward_ip,
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 		.pf = PF_BRIDGE,
+=======
+		.pf = NFPROTO_BRIDGE,
+>>>>>>> refs/remotes/origin/master
 		.hooknum = NF_BR_FORWARD,
 		.priority = NF_BR_PRI_BRNF - 1,
 	},
 	{
 		.hook = br_nf_forward_arp,
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 		.pf = PF_BRIDGE,
+=======
+		.pf = NFPROTO_BRIDGE,
+>>>>>>> refs/remotes/origin/master
 		.hooknum = NF_BR_FORWARD,
 		.priority = NF_BR_PRI_BRNF,
 	},
 	{
 		.hook = br_nf_post_routing,
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 		.pf = PF_BRIDGE,
+=======
+		.pf = NFPROTO_BRIDGE,
+>>>>>>> refs/remotes/origin/master
 		.hooknum = NF_BR_POST_ROUTING,
 		.priority = NF_BR_PRI_LAST,
 	},
 	{
 		.hook = ip_sabotage_in,
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 		.pf = PF_INET,
+=======
+		.pf = NFPROTO_IPV4,
+>>>>>>> refs/remotes/origin/master
 		.hooknum = NF_INET_PRE_ROUTING,
 		.priority = NF_IP_PRI_FIRST,
 	},
 	{
 		.hook = ip_sabotage_in,
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 		.pf = PF_INET6,
+=======
+		.pf = NFPROTO_IPV6,
+>>>>>>> refs/remotes/origin/master
 		.hooknum = NF_INET_PRE_ROUTING,
 		.priority = NF_IP6_PRI_FIRST,
 	},
@@ -1032,7 +1255,11 @@ static struct nf_hook_ops br_nf_ops[] __read_mostly = {
 
 #ifdef CONFIG_SYSCTL
 static
+<<<<<<< HEAD
 int brnf_sysctl_call_tables(ctl_table * ctl, int write,
+=======
+int brnf_sysctl_call_tables(struct ctl_table *ctl, int write,
+>>>>>>> refs/remotes/origin/master
 			    void __user * buffer, size_t * lenp, loff_t * ppos)
 {
 	int ret;
@@ -1044,7 +1271,11 @@ int brnf_sysctl_call_tables(ctl_table * ctl, int write,
 	return ret;
 }
 
+<<<<<<< HEAD
 static ctl_table brnf_table[] = {
+=======
+static struct ctl_table brnf_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "bridge-nf-call-arptables",
 		.data		= &brnf_call_arptables,
@@ -1080,12 +1311,22 @@ static ctl_table brnf_table[] = {
 		.mode		= 0644,
 		.proc_handler	= brnf_sysctl_call_tables,
 	},
+<<<<<<< HEAD
 	{ }
 };
 
 static struct ctl_path brnf_path[] = {
 	{ .procname = "net", },
 	{ .procname = "bridge", },
+=======
+	{
+		.procname	= "bridge-nf-pass-vlan-input-dev",
+		.data		= &brnf_pass_vlan_indev,
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler	= brnf_sysctl_call_tables,
+	},
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 #endif
@@ -1104,7 +1345,11 @@ int __init br_netfilter_init(void)
 		return ret;
 	}
 #ifdef CONFIG_SYSCTL
+<<<<<<< HEAD
 	brnf_sysctl_header = register_sysctl_paths(brnf_path, brnf_table);
+=======
+	brnf_sysctl_header = register_net_sysctl(&init_net, "net/bridge", brnf_table);
+>>>>>>> refs/remotes/origin/master
 	if (brnf_sysctl_header == NULL) {
 		printk(KERN_WARNING
 		       "br_netfilter: can't register to sysctl.\n");
@@ -1121,7 +1366,11 @@ void br_netfilter_fini(void)
 {
 	nf_unregister_hooks(br_nf_ops, ARRAY_SIZE(br_nf_ops));
 #ifdef CONFIG_SYSCTL
+<<<<<<< HEAD
 	unregister_sysctl_table(brnf_sysctl_header);
+=======
+	unregister_net_sysctl_table(brnf_sysctl_header);
+>>>>>>> refs/remotes/origin/master
 #endif
 	dst_entries_destroy(&fake_dst_ops);
 }

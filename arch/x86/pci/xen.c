@@ -1,10 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Xen PCI Frontend Stub - puts some "dummy" functions in to the Linux
  *			   x86 PCI core to support the Xen PCI Frontend
  *
  *   Author: Ryan Wilson <hap9@epoch.ncsc.mil>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Xen PCI - handle PCI (INTx) and MSI infrastructure calls for PV, HVM and
  * initial domain support. We also handle the DSDT _PRT callbacks for GSI's
  * used in HVM and initial domain mode (PV does not parse ACPI, so it has no
@@ -14,7 +17,10 @@
  *   Author: Ryan Wilson <hap9@epoch.ncsc.mil>
  *           Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
  *           Stefano Stabellini <stefano.stabellini@eu.citrix.com>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 #include <linux/module.h>
 #include <linux/init.h>
@@ -32,12 +38,15 @@
 #include <asm/xen/pci.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ACPI
 static int acpi_register_gsi_xen_hvm(struct device *dev, u32 gsi,
 				 int trigger, int polarity)
 {
 	int rc, irq;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int xen_pcifront_enable_irq(struct pci_dev *dev)
 {
 	int rc;
@@ -74,11 +83,15 @@ static int xen_register_pirq(u32 gsi, int gsi_override, int triggering,
 			     bool set_pirq)
 {
 	int rc, pirq = -1, irq = -1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct physdev_map_pirq map_irq;
 	int shareable = 0;
 	char *name;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!xen_hvm_domain())
 		return -1;
@@ -86,15 +99,27 @@ static int xen_register_pirq(u32 gsi, int gsi_override, int triggering,
 	if (set_pirq)
 		pirq = gsi;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq = xen_irq_from_gsi(gsi);
+	if (irq > 0)
+		return irq;
+
+	if (set_pirq)
+		pirq = gsi;
+>>>>>>> refs/remotes/origin/master
 
 	map_irq.domid = DOMID_SELF;
 	map_irq.type = MAP_PIRQ_TYPE_GSI;
 	map_irq.index = gsi;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	map_irq.pirq = -1;
 =======
 	map_irq.pirq = pirq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	map_irq.pirq = pirq;
+>>>>>>> refs/remotes/origin/master
 
 	rc = HYPERVISOR_physdev_op(PHYSDEVOP_map_pirq, &map_irq);
 	if (rc) {
@@ -103,10 +128,14 @@ static int xen_register_pirq(u32 gsi, int gsi_override, int triggering,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (trigger == ACPI_EDGE_SENSITIVE) {
 =======
 	if (triggering == ACPI_EDGE_SENSITIVE) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (triggering == ACPI_EDGE_SENSITIVE) {
+>>>>>>> refs/remotes/origin/master
 		shareable = 0;
 		name = "ioapic-edge";
 	} else {
@@ -115,6 +144,7 @@ static int xen_register_pirq(u32 gsi, int gsi_override, int triggering,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	irq = xen_bind_pirq_gsi_to_irq(gsi, map_irq.pirq, shareable, name);
 
 	printk(KERN_DEBUG "xen: --> irq=%d, pirq=%d\n", irq, map_irq.pirq);
@@ -122,6 +152,8 @@ static int xen_register_pirq(u32 gsi, int gsi_override, int triggering,
 	return irq;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (gsi_override >= 0)
 		gsi = gsi_override;
 
@@ -179,7 +211,10 @@ static int acpi_register_gsi_xen(struct device *dev, u32 gsi,
 	return xen_register_gsi(gsi, -1 /* no GSI override */, trigger, polarity);
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #if defined(CONFIG_PCI_MSI)
@@ -190,7 +225,10 @@ struct xen_pci_frontend_ops *xen_pci_frontend;
 EXPORT_SYMBOL_GPL(xen_pci_frontend);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int xen_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 {
 	int irq, ret, i;
@@ -212,7 +250,11 @@ static int xen_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 		goto error;
 	i = 0;
 	list_for_each_entry(msidesc, &dev->msi_list, list) {
+<<<<<<< HEAD
 		irq = xen_bind_pirq_msi_to_irq(dev, msidesc, v[i], 0,
+=======
+		irq = xen_bind_pirq_msi_to_irq(dev, msidesc, v[i],
+>>>>>>> refs/remotes/origin/master
 					       (type == PCI_CAP_ID_MSIX) ?
 					       "pcifront-msi-x" :
 					       "pcifront-msi",
@@ -233,7 +275,10 @@ free:
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define XEN_PIRQ_MSI_DATA  (MSI_DATA_TRIGGER_EDGE | \
 		MSI_DATA_LEVEL_ASSERT | (3 << 8) | MSI_DATA_VECTOR(0))
 
@@ -260,11 +305,17 @@ static int xen_hvm_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 	struct msi_msg msg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (type == PCI_CAP_ID_MSI && nvec > 1)
 		return 1;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (type == PCI_CAP_ID_MSI && nvec > 1)
+		return 1;
+
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(msidesc, &dev->msi_list, list) {
 		__read_msi_msg(msidesc, &msg);
 		pirq = MSI_ADDR_EXT_DEST_ID(msg.address_hi) |
@@ -273,14 +324,20 @@ static int xen_hvm_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 		    xen_irq_from_pirq(pirq) < 0) {
 			pirq = xen_allocate_pirq_msi(dev, msidesc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (pirq < 0)
 				goto error;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (pirq < 0) {
 				irq = -ENODEV;
 				goto error;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			xen_msi_compose_msg(dev, pirq, &msg);
 			__write_msi_msg(msidesc, &msg);
 			dev_dbg(&dev->dev, "xen: msi bound to pirq=%d\n", pirq);
@@ -288,7 +345,11 @@ static int xen_hvm_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 			dev_dbg(&dev->dev,
 				"xen: msi already bound to pirq=%d\n", pirq);
 		}
+<<<<<<< HEAD
 		irq = xen_bind_pirq_msi_to_irq(dev, msidesc, pirq, 0,
+=======
+		irq = xen_bind_pirq_msi_to_irq(dev, msidesc, pirq,
+>>>>>>> refs/remotes/origin/master
 					       (type == PCI_CAP_ID_MSIX) ?
 					       "msi-x" : "msi",
 					       DOMID_SELF);
@@ -302,6 +363,7 @@ static int xen_hvm_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 error:
 	dev_err(&dev->dev,
 		"Xen PCI frontend has not registered MSI/MSI-X support!\n");
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return -ENODEV;
 }
@@ -369,24 +431,35 @@ static void xen_teardown_msi_irq(unsigned int irq)
 
 #ifdef CONFIG_XEN_DOM0
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return irq;
 }
 
 #ifdef CONFIG_XEN_DOM0
 static bool __read_mostly pci_seg_supported = true;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int xen_initdom_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 {
 	int ret = 0;
 	struct msi_desc *msidesc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (type == PCI_CAP_ID_MSI && nvec > 1)
 		return 1;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (type == PCI_CAP_ID_MSI && nvec > 1)
+		return 1;
+
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(msidesc, &dev->msi_list, list) {
 		struct physdev_map_pirq map_irq;
 		domid_t domid;
@@ -400,36 +473,52 @@ static int xen_initdom_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 		memset(&map_irq, 0, sizeof(map_irq));
 		map_irq.domid = domid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		map_irq.type = MAP_PIRQ_TYPE_MSI;
 		map_irq.index = -1;
 		map_irq.pirq = -1;
 		map_irq.bus = dev->bus->number;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		map_irq.type = MAP_PIRQ_TYPE_MSI_SEG;
 		map_irq.index = -1;
 		map_irq.pirq = -1;
 		map_irq.bus = dev->bus->number |
 			      (pci_domain_nr(dev->bus) << 16);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		map_irq.devfn = dev->devfn;
 
 		if (type == PCI_CAP_ID_MSIX) {
 			int pos;
 			u32 table_offset, bir;
 
+<<<<<<< HEAD
 			pos = pci_find_capability(dev, PCI_CAP_ID_MSIX);
 
 			pci_read_config_dword(dev, pos + PCI_MSIX_TABLE,
 					      &table_offset);
 			bir = (u8)(table_offset & PCI_MSIX_FLAGS_BIRMASK);
+=======
+			pos = dev->msix_cap;
+			pci_read_config_dword(dev, pos + PCI_MSIX_TABLE,
+					      &table_offset);
+			bir = (u8)(table_offset & PCI_MSIX_TABLE_BIR);
+>>>>>>> refs/remotes/origin/master
 
 			map_irq.table_base = pci_resource_start(dev, bir);
 			map_irq.entry_nr = msidesc->msi_attrib.entry_nr;
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = HYPERVISOR_physdev_op(PHYSDEVOP_map_pirq, &map_irq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		if (pci_seg_supported)
 			ret = HYPERVISOR_physdev_op(PHYSDEVOP_map_pirq,
@@ -444,7 +533,10 @@ static int xen_initdom_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 			if (ret != -EINVAL)
 				pci_seg_supported = false;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ret) {
 			dev_warn(&dev->dev, "xen map irq failed %d for %d domain\n",
 				 ret, domid);
@@ -452,7 +544,11 @@ static int xen_initdom_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 		}
 
 		ret = xen_bind_pirq_msi_to_irq(dev, msidesc,
+<<<<<<< HEAD
 					       map_irq.pirq, map_irq.index,
+=======
+					       map_irq.pirq,
+>>>>>>> refs/remotes/origin/master
 					       (type == PCI_CAP_ID_MSIX) ?
 					       "msi-x" : "msi",
 						domid);
@@ -463,6 +559,7 @@ static int xen_initdom_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 out:
 	return ret;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 #endif
@@ -505,6 +602,8 @@ static int xen_pcifront_enable_irq(struct pci_dev *dev)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void xen_initdom_restore_msi_irqs(struct pci_dev *dev, int irq)
 {
@@ -551,10 +650,23 @@ static void xen_teardown_msi_irq(unsigned int irq)
 {
 	xen_destroy_irq(irq);
 }
+<<<<<<< HEAD
 
 #endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u32 xen_nop_msi_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
+{
+	return 0;
+}
+static u32 xen_nop_msix_mask_irq(struct msi_desc *desc, u32 flag)
+{
+	return 0;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 int __init pci_xen_init(void)
 {
 	if (!xen_pv_domain() || xen_initial_domain())
@@ -576,6 +688,11 @@ int __init pci_xen_init(void)
 	x86_msi.setup_msi_irqs = xen_setup_msi_irqs;
 	x86_msi.teardown_msi_irq = xen_teardown_msi_irq;
 	x86_msi.teardown_msi_irqs = xen_teardown_msi_irqs;
+<<<<<<< HEAD
+=======
+	x86_msi.msi_mask_irq = xen_nop_msi_mask_irq;
+	x86_msi.msix_mask_irq = xen_nop_msix_mask_irq;
+>>>>>>> refs/remotes/origin/master
 #endif
 	return 0;
 }
@@ -601,6 +718,7 @@ int __init pci_xen_hvm_init(void)
 }
 
 #ifdef CONFIG_XEN_DOM0
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int xen_register_pirq(u32 gsi, int gsi_override, int triggering)
 {
@@ -677,6 +795,8 @@ static int xen_register_gsi(u32 gsi, int gsi_override, int triggering, int polar
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static __init void xen_setup_acpi_sci(void)
 {
 	int rc;
@@ -697,10 +817,14 @@ static __init void xen_setup_acpi_sci(void)
 	trigger = trigger ? ACPI_LEVEL_SENSITIVE : ACPI_EDGE_SENSITIVE;
 	polarity = polarity ? ACPI_ACTIVE_LOW : ACPI_ACTIVE_HIGH;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_INFO "xen: sci override: global_irq=%d trigger=%d "
 			"polarity=%d\n", gsi, trigger, polarity);
 
@@ -716,6 +840,7 @@ static __init void xen_setup_acpi_sci(void)
 	 * setup as we had setup IRQ 20 for it).
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Check whether the GSI != IRQ */
 	if (acpi_gsi_to_irq(gsi, &irq) == 0) {
 		if (irq >= 0 && irq != gsi)
@@ -725,6 +850,11 @@ static __init void xen_setup_acpi_sci(void)
 		/* Use the provided value if it's valid. */
 		if (irq >= 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (acpi_gsi_to_irq(gsi, &irq) == 0) {
+		/* Use the provided value if it's valid. */
+		if (irq >= 0)
+>>>>>>> refs/remotes/origin/master
 			gsi_override = irq;
 	}
 
@@ -734,6 +864,7 @@ static __init void xen_setup_acpi_sci(void)
 	return;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int acpi_register_gsi_xen(struct device *dev, u32 gsi,
 				 int trigger, int polarity)
@@ -771,6 +902,8 @@ void __init xen_setup_pirqs(void)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int __init pci_xen_initial_domain(void)
 {
 	int irq;
@@ -779,10 +912,18 @@ int __init pci_xen_initial_domain(void)
 	x86_msi.setup_msi_irqs = xen_initdom_setup_msi_irqs;
 	x86_msi.teardown_msi_irq = xen_teardown_msi_irq;
 	x86_msi.restore_msi_irqs = xen_initdom_restore_msi_irqs;
+<<<<<<< HEAD
 #endif
 	xen_setup_acpi_sci();
 	__acpi_register_gsi = acpi_register_gsi_xen;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	x86_msi.msi_mask_irq = xen_nop_msi_mask_irq;
+	x86_msi.msix_mask_irq = xen_nop_msix_mask_irq;
+#endif
+	xen_setup_acpi_sci();
+	__acpi_register_gsi = acpi_register_gsi_xen;
+>>>>>>> refs/remotes/origin/master
 	/* Pre-allocate legacy irqs */
 	for (irq = 0; irq < NR_IRQS_LEGACY; irq++) {
 		int trigger, polarity;
@@ -792,6 +933,7 @@ int __init pci_xen_initial_domain(void)
 
 		xen_register_pirq(irq, -1 /* no GSI override */,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			trigger ? ACPI_LEVEL_SENSITIVE : ACPI_EDGE_SENSITIVE);
 	}
 }
@@ -799,6 +941,8 @@ int __init pci_xen_initial_domain(void)
 
 #ifdef CONFIG_XEN_DOM0
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			trigger ? ACPI_LEVEL_SENSITIVE : ACPI_EDGE_SENSITIVE,
 			true /* Map GSI to PIRQ */);
 	}
@@ -809,7 +953,10 @@ int __init pci_xen_initial_domain(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct xen_device_domain_owner {
 	domid_t domain;
 	struct pci_dev *dev;

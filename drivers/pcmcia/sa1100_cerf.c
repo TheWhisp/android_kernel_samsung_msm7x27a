@@ -11,9 +11,13 @@
 #include <linux/init.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/hardware.h>
 #include <asm/mach-types.h>
@@ -23,6 +27,7 @@
 
 #define CERF_SOCKET	1
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct pcmcia_irqs irqs[] = {
 	{ CERF_SOCKET, CERF_IRQ_GPIO_CF_CD,   "CF_CD"   },
@@ -36,6 +41,8 @@ static int cerf_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 
 	return soc_pcmcia_request_irqs(skt, irqs, ARRAY_SIZE(irqs));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int cerf_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 {
 	int ret;
@@ -54,21 +61,29 @@ static int cerf_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 	skt->stat[SOC_STAT_RDY].name = "CF_IRQ";
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void cerf_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	soc_pcmcia_free_irqs(skt, irqs, ARRAY_SIZE(irqs));
 =======
 	gpio_free(CERF_GPIO_CF_RESET);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpio_free(CERF_GPIO_CF_RESET);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 cerf_pcmcia_socket_state(struct soc_pcmcia_socket *skt, struct pcmcia_state *state)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long levels = GPLR;
 
@@ -79,6 +94,8 @@ cerf_pcmcia_socket_state(struct soc_pcmcia_socket *skt, struct pcmcia_state *sta
 	state->wrprot	= 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	state->vs_3v	= 1;
 	state->vs_Xv	= 0;
 }
@@ -100,6 +117,7 @@ cerf_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (state->flags & SS_RESET) {
 		GPSR = CERF_GPIO_CF_RESET;
 	} else {
@@ -108,10 +126,14 @@ cerf_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
 =======
 	gpio_set_value(CERF_GPIO_CF_RESET, !!(state->flags & SS_RESET));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpio_set_value(CERF_GPIO_CF_RESET, !!(state->flags & SS_RESET));
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void cerf_pcmcia_socket_init(struct soc_pcmcia_socket *skt)
 {
@@ -125,12 +147,15 @@ static void cerf_pcmcia_socket_suspend(struct soc_pcmcia_socket *skt)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct pcmcia_low_level cerf_pcmcia_ops = { 
 	.owner			= THIS_MODULE,
 	.hw_init		= cerf_pcmcia_hw_init,
 	.hw_shutdown		= cerf_pcmcia_hw_shutdown,
 	.socket_state		= cerf_pcmcia_socket_state,
 	.configure_socket	= cerf_pcmcia_configure_socket,
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	.socket_init		= cerf_pcmcia_socket_init,
@@ -140,6 +165,11 @@ static struct pcmcia_low_level cerf_pcmcia_ops = {
 };
 
 int __devinit pcmcia_cerf_init(struct device *dev)
+=======
+};
+
+int pcmcia_cerf_init(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = -ENODEV;
 

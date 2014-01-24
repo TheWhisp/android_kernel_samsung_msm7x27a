@@ -1,9 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMU
 #include "vmlinux.lds_mm.S"
 #else
 #include "vmlinux.lds_no.S"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_MMU) && !defined(CONFIG_COLDFIRE)
 PHDRS
 {
@@ -17,5 +20,8 @@ PHDRS
 #endif
 #else
 #include "vmlinux-nommu.lds"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

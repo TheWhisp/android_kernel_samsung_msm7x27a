@@ -45,18 +45,24 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SERVER_STRING "227 Entering Passive Mode ("
 #define CLIENT_STRING "PORT "
 =======
 #define SERVER_STRING "227 "
 #define CLIENT_STRING "PORT"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SERVER_STRING "227 "
+#define CLIENT_STRING "PORT"
+>>>>>>> refs/remotes/origin/master
 
 
 /*
  * List of ports (up to IP_VS_APP_MAX_PORTS) to be handled by helper
  * First port is set to the default port.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static unsigned short ports[IP_VS_APP_MAX_PORTS] = {21, 0};
 module_param_array(ports, ushort, NULL, 0);
@@ -65,6 +71,11 @@ static unsigned int ports_count = 1;
 static unsigned short ports[IP_VS_APP_MAX_PORTS] = {21, 0};
 module_param_array(ports, ushort, &ports_count, 0444);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int ports_count = 1;
+static unsigned short ports[IP_VS_APP_MAX_PORTS] = {21, 0};
+module_param_array(ports, ushort, &ports_count, 0444);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(ports, "Ports to monitor for FTP control commands");
 
 
@@ -91,6 +102,7 @@ ip_vs_ftp_done_conn(struct ip_vs_app *app, struct ip_vs_conn *cp)
 /*
  * Get <addr,port> from the string "xxx.xxx.xxx.xxx,ppp,ppp", started
 <<<<<<< HEAD
+<<<<<<< HEAD
  * with the "pattern" and terminated with the "term" character.
  * <addr,port> is in network order.
  */
@@ -100,6 +112,8 @@ static int ip_vs_ftp_get_addrport(char *data, char *data_limit,
 				  char **start, char **end)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * with the "pattern", ignoring before "skip" and terminated with
  * the "term" character.
  * <addr,port> is in network order.
@@ -111,7 +125,10 @@ static int ip_vs_ftp_get_addrport(char *data, char *data_limit,
 				  char **start, char **end)
 {
 	char *s, c;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char p[6];
 	int i = 0;
 
@@ -127,12 +144,15 @@ static int ip_vs_ftp_get_addrport(char *data, char *data_limit,
 		return 0;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*start = data + plen;
 
 	for (data = *start; *data != term; data++) {
 		if (data == data_limit)
 			return -1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	s = data + plen;
 	if (skip) {
 		int found = 0;
@@ -154,17 +174,23 @@ static int ip_vs_ftp_get_addrport(char *data, char *data_limit,
 			return -1;
 		if (*data == term)
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	*end = data;
 
 	memset(p, 0, sizeof(p));
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (data = *start; data != *end; data++) {
 		if (*data >= '0' && *data <= '9') {
 			p[i] = p[i]*10 + *data - '0';
 		} else if (*data == ',' && i < 5) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (data = s; ; data++) {
 		c = *data;
 		if (c == term)
@@ -172,7 +198,10 @@ static int ip_vs_ftp_get_addrport(char *data, char *data_limit,
 		if (c >= '0' && c <= '9') {
 			p[i] = p[i]*10 + c - '0';
 		} else if (c == ',' && i < 5) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			i++;
 		} else {
 			/* unexpected character */
@@ -184,6 +213,7 @@ static int ip_vs_ftp_get_addrport(char *data, char *data_limit,
 		return -1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*addr = get_unaligned((__be32 *)p);
 	*port = get_unaligned((__be16 *)(p + 4));
 =======
@@ -191,6 +221,11 @@ static int ip_vs_ftp_get_addrport(char *data, char *data_limit,
 	*addr = get_unaligned((__be32 *) p);
 	*port = get_unaligned((__be16 *) (p + 4));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*start = s;
+	*addr = get_unaligned((__be32 *) p);
+	*port = get_unaligned((__be16 *) (p + 4));
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -218,7 +253,11 @@ static int ip_vs_ftp_out(struct ip_vs_app *app, struct ip_vs_conn *cp,
 	__be16 port;
 	struct ip_vs_conn *n_cp;
 	char buf[24];		/* xxx.xxx.xxx.xxx,ppp,ppp\000 */
+<<<<<<< HEAD
 	unsigned buf_len;
+=======
+	unsigned int buf_len;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 	enum ip_conntrack_info ctinfo;
 	struct nf_conn *ct;
@@ -251,11 +290,16 @@ static int ip_vs_ftp_out(struct ip_vs_app *app, struct ip_vs_conn *cp,
 		if (ip_vs_ftp_get_addrport(data, data_limit,
 					   SERVER_STRING,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					   sizeof(SERVER_STRING)-1, ')',
 =======
 					   sizeof(SERVER_STRING)-1,
 					   '(', ')',
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					   sizeof(SERVER_STRING)-1,
+					   '(', ')',
+>>>>>>> refs/remotes/origin/master
 					   &from.ip, &port,
 					   &start, &end) != 1)
 			return 1;
@@ -312,9 +356,18 @@ static int ip_vs_ftp_out(struct ip_vs_app *app, struct ip_vs_conn *cp,
 			 * hopefully it will succeed on the retransmitted
 			 * packet.
 			 */
+<<<<<<< HEAD
 			ret = nf_nat_mangle_tcp_packet(skb, ct, ctinfo,
 						       start-data, end-start,
 						       buf, buf_len);
+=======
+			rcu_read_lock();
+			ret = nf_nat_mangle_tcp_packet(skb, ct, ctinfo,
+						       iph->ihl * 4,
+						       start-data, end-start,
+						       buf, buf_len);
+			rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 			if (ret) {
 				ip_vs_nfct_expect_related(skb, ct, n_cp,
 							  IPPROTO_TCP, 0, 0);
@@ -416,10 +469,14 @@ static int ip_vs_ftp_in(struct ip_vs_app *app, struct ip_vs_conn *cp,
 	if (ip_vs_ftp_get_addrport(data_start, data_limit,
 				   CLIENT_STRING, sizeof(CLIENT_STRING)-1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   '\r', &to.ip, &port,
 =======
 				   ' ', '\r', &to.ip, &port,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   ' ', '\r', &to.ip, &port,
+>>>>>>> refs/remotes/origin/master
 				   &start, &end) != 1)
 		return 1;
 
@@ -489,6 +546,7 @@ static int __net_init __ip_vs_ftp_init(struct net *net)
 	struct netns_ipvs *ipvs = net_ipvs(net);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!ipvs)
 		return -ENOENT;
@@ -509,6 +567,16 @@ static int __net_init __ip_vs_ftp_init(struct net *net)
 =======
 	for (i = 0; i < ports_count; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ipvs)
+		return -ENOENT;
+
+	app = register_ip_vs_app(net, &ip_vs_ftp);
+	if (IS_ERR(app))
+		return PTR_ERR(app);
+
+	for (i = 0; i < ports_count; i++) {
+>>>>>>> refs/remotes/origin/master
 		if (!ports[i])
 			continue;
 		ret = register_ip_vs_app_inc(net, app, app->protocol, ports[i]);
@@ -520,9 +588,13 @@ static int __net_init __ip_vs_ftp_init(struct net *net)
 	return 0;
 
 err_unreg:
+<<<<<<< HEAD
 	unregister_ip_vs_app(net, app);
 err_exit:
 	kfree(ipvs->ftp_app);
+=======
+	unregister_ip_vs_app(net, &ip_vs_ftp);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 /*
@@ -530,10 +602,14 @@ err_exit:
  */
 static void __ip_vs_ftp_exit(struct net *net)
 {
+<<<<<<< HEAD
 	struct netns_ipvs *ipvs = net_ipvs(net);
 
 	unregister_ip_vs_app(net, ipvs->ftp_app);
 	kfree(ipvs->ftp_app);
+=======
+	unregister_ip_vs_app(net, &ip_vs_ftp);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct pernet_operations ip_vs_ftp_ops = {
@@ -541,11 +617,19 @@ static struct pernet_operations ip_vs_ftp_ops = {
 	.exit = __ip_vs_ftp_exit,
 };
 
+<<<<<<< HEAD
 int __init ip_vs_ftp_init(void)
+=======
+static int __init ip_vs_ftp_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int rv;
 
 	rv = register_pernet_subsys(&ip_vs_ftp_ops);
+<<<<<<< HEAD
+=======
+	/* rcu_barrier() is called by netns on error */
+>>>>>>> refs/remotes/origin/master
 	return rv;
 }
 
@@ -555,6 +639,10 @@ int __init ip_vs_ftp_init(void)
 static void __exit ip_vs_ftp_exit(void)
 {
 	unregister_pernet_subsys(&ip_vs_ftp_ops);
+<<<<<<< HEAD
+=======
+	/* rcu_barrier() is called by netns */
+>>>>>>> refs/remotes/origin/master
 }
 
 

@@ -1,8 +1,13 @@
 /*
  * Generic pidhash and scalable, time-bounded PID allocator
  *
+<<<<<<< HEAD
  * (C) 2002-2003 William Irwin, IBM
  * (C) 2004 William Irwin, Oracle
+=======
+ * (C) 2002-2003 Nadia Yvette Chambers, IBM
+ * (C) 2004 Nadia Yvette Chambers, Oracle
+>>>>>>> refs/remotes/origin/master
  * (C) 2002-2004 Ingo Molnar, Red Hat
  *
  * pid-structures are backing objects for tasks sharing a given ID to chain
@@ -28,10 +33,14 @@
 
 #include <linux/mm.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/init.h>
 #include <linux/rculist.h>
@@ -40,6 +49,11 @@
 #include <linux/pid_namespace.h>
 #include <linux/init_task.h>
 #include <linux/syscalls.h>
+<<<<<<< HEAD
+=======
+#include <linux/proc_ns.h>
+#include <linux/proc_fs.h>
+>>>>>>> refs/remotes/origin/master
 
 #define pid_hashfn(nr, ns)	\
 	hash_long((unsigned long)nr + (unsigned long)ns, pidhash_shift)
@@ -54,9 +68,12 @@ int pid_max = PID_MAX_DEFAULT;
 int pid_max_min = RESERVED_PIDS + 1;
 int pid_max_max = PID_MAX_LIMIT;
 
+<<<<<<< HEAD
 #define BITS_PER_PAGE		(PAGE_SIZE*8)
 #define BITS_PER_PAGE_MASK	(BITS_PER_PAGE-1)
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int mk_pid(struct pid_namespace *pid_ns,
 		struct pidmap *map, int off)
 {
@@ -80,6 +97,7 @@ struct pid_namespace init_pid_ns = {
 		[ 0 ... PIDMAP_ENTRIES-1] = { ATOMIC_INIT(BITS_PER_PAGE), NULL }
 	},
 	.last_pid = 0,
+<<<<<<< HEAD
 	.level = 0,
 	.child_reaper = &init_task,
 };
@@ -100,6 +118,16 @@ int is_container_init(struct task_struct *tsk)
 }
 EXPORT_SYMBOL(is_container_init);
 
+=======
+	.nr_hashed = PIDNS_HASH_ADDING,
+	.level = 0,
+	.child_reaper = &init_task,
+	.user_ns = &init_user_ns,
+	.proc_inum = PROC_PID_INIT_INO,
+};
+EXPORT_SYMBOL_GPL(init_pid_ns);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Note: disable interrupts while the pidmap_lock is held as an
  * interrupt might come in and do read_lock(&tasklist_lock).
@@ -142,12 +170,18 @@ static int pid_before(int base, int a, int b)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * We might be racing with someone else trying to set pid_ns->last_pid.
 =======
  * We might be racing with someone else trying to set pid_ns->last_pid
  * at the pid allocation time (there's also a sysctl for this, but racing
  * with this one is OK, see comment in kernel/pid_namespace.c about it).
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * We might be racing with someone else trying to set pid_ns->last_pid
+ * at the pid allocation time (there's also a sysctl for this, but racing
+ * with this one is OK, see comment in kernel/pid_namespace.c about it).
+>>>>>>> refs/remotes/origin/master
  * We want the winner to have the "later" value, because if the
  * "earlier" value prevails, then a pid may get reused immediately.
  *
@@ -203,15 +237,28 @@ static int alloc_pidmap(struct pid_namespace *pid_ns)
 				break;
 		}
 		if (likely(atomic_read(&map->nr_free))) {
+<<<<<<< HEAD
 			do {
+=======
+			for ( ; ; ) {
+>>>>>>> refs/remotes/origin/master
 				if (!test_and_set_bit(offset, map->page)) {
 					atomic_dec(&map->nr_free);
 					set_last_pid(pid_ns, last, pid);
 					return pid;
 				}
 				offset = find_next_offset(map, offset);
+<<<<<<< HEAD
 				pid = mk_pid(pid_ns, map, offset);
 			} while (offset < BITS_PER_PAGE && pid < pid_max);
+=======
+				if (offset >= BITS_PER_PAGE)
+					break;
+				pid = mk_pid(pid_ns, map, offset);
+				if (pid >= pid_max)
+					break;
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 		if (map < &pid_ns->pidmap[(pid_max-1)/BITS_PER_PAGE]) {
 			++map;
@@ -277,8 +324,34 @@ void free_pid(struct pid *pid)
 	unsigned long flags;
 
 	spin_lock_irqsave(&pidmap_lock, flags);
+<<<<<<< HEAD
 	for (i = 0; i <= pid->level; i++)
 		hlist_del_rcu(&pid->numbers[i].pid_chain);
+=======
+	for (i = 0; i <= pid->level; i++) {
+		struct upid *upid = pid->numbers + i;
+		struct pid_namespace *ns = upid->ns;
+		hlist_del_rcu(&upid->pid_chain);
+		switch(--ns->nr_hashed) {
+		case 2:
+		case 1:
+			/* When all that is left in the pid namespace
+			 * is the reaper wake up the reaper.  The reaper
+			 * may be sleeping in zap_pid_ns_processes().
+			 */
+			wake_up_process(ns->child_reaper);
+			break;
+		case PIDNS_HASH_ADDING:
+			/* Handle a fork failure of the first process */
+			WARN_ON(ns->child_reaper);
+			ns->nr_hashed = 0;
+			/* fall through */
+		case 0:
+			schedule_work(&ns->proc_work);
+			break;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&pidmap_lock, flags);
 
 	for (i = 0; i <= pid->level; i++)
@@ -300,6 +373,10 @@ struct pid *alloc_pid(struct pid_namespace *ns)
 		goto out;
 
 	tmp = ns;
+<<<<<<< HEAD
+=======
+	pid->level = ns->level;
+>>>>>>> refs/remotes/origin/master
 	for (i = ns->level; i >= 0; i--) {
 		nr = alloc_pidmap(tmp);
 		if (nr < 0)
@@ -310,22 +387,46 @@ struct pid *alloc_pid(struct pid_namespace *ns)
 		tmp = tmp->parent;
 	}
 
+<<<<<<< HEAD
 	get_pid_ns(ns);
 	pid->level = ns->level;
+=======
+	if (unlikely(is_child_reaper(pid))) {
+		if (pid_ns_prepare_proc(ns))
+			goto out_free;
+	}
+
+	get_pid_ns(ns);
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&pid->count, 1);
 	for (type = 0; type < PIDTYPE_MAX; ++type)
 		INIT_HLIST_HEAD(&pid->tasks[type]);
 
 	upid = pid->numbers + ns->level;
 	spin_lock_irq(&pidmap_lock);
+<<<<<<< HEAD
 	for ( ; upid >= pid->numbers; --upid)
 		hlist_add_head_rcu(&upid->pid_chain,
 				&pid_hash[pid_hashfn(upid->nr, upid->ns)]);
+=======
+	if (!(ns->nr_hashed & PIDNS_HASH_ADDING))
+		goto out_unlock;
+	for ( ; upid >= pid->numbers; --upid) {
+		hlist_add_head_rcu(&upid->pid_chain,
+				&pid_hash[pid_hashfn(upid->nr, upid->ns)]);
+		upid->ns->nr_hashed++;
+	}
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irq(&pidmap_lock);
 
 out:
 	return pid;
 
+<<<<<<< HEAD
+=======
+out_unlock:
+	spin_unlock_irq(&pidmap_lock);
+>>>>>>> refs/remotes/origin/master
 out_free:
 	while (++i <= ns->level)
 		free_pidmap(pid->numbers + i);
@@ -335,12 +436,27 @@ out_free:
 	goto out;
 }
 
+<<<<<<< HEAD
 struct pid *find_pid_ns(int nr, struct pid_namespace *ns)
 {
 	struct hlist_node *elem;
 	struct upid *pnr;
 
 	hlist_for_each_entry_rcu(pnr, elem,
+=======
+void disable_pid_allocation(struct pid_namespace *ns)
+{
+	spin_lock_irq(&pidmap_lock);
+	ns->nr_hashed &= ~PIDNS_HASH_ADDING;
+	spin_unlock_irq(&pidmap_lock);
+}
+
+struct pid *find_pid_ns(int nr, struct pid_namespace *ns)
+{
+	struct upid *pnr;
+
+	hlist_for_each_entry_rcu(pnr,
+>>>>>>> refs/remotes/origin/master
 			&pid_hash[pid_hashfn(nr, ns)], pid_chain)
 		if (pnr->nr == nr && pnr->ns == ns)
 			return container_of(pnr, struct pid,
@@ -352,13 +468,18 @@ EXPORT_SYMBOL_GPL(find_pid_ns);
 
 struct pid *find_vpid(int nr)
 {
+<<<<<<< HEAD
 	return find_pid_ns(nr, current->nsproxy->pid_ns);
+=======
+	return find_pid_ns(nr, task_active_pid_ns(current));
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(find_vpid);
 
 /*
  * attach_pid() must be called with the tasklist_lock write-held.
  */
+<<<<<<< HEAD
 void attach_pid(struct task_struct *task, enum pid_type type,
 		struct pid *pid)
 {
@@ -367,6 +488,12 @@ void attach_pid(struct task_struct *task, enum pid_type type,
 	link = &task->pids[type];
 	link->pid = pid;
 	hlist_add_head_rcu(&link->node, &pid->tasks[type]);
+=======
+void attach_pid(struct task_struct *task, enum pid_type type)
+{
+	struct pid_link *link = &task->pids[type];
+	hlist_add_head_rcu(&link->node, &link->pid->tasks[type]);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __change_pid(struct task_struct *task, enum pid_type type,
@@ -398,7 +525,11 @@ void change_pid(struct task_struct *task, enum pid_type type,
 		struct pid *pid)
 {
 	__change_pid(task, type, pid);
+<<<<<<< HEAD
 	attach_pid(task, type, pid);
+=======
+	attach_pid(task, type);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* transfer_pid is an optimization of attach_pid(new), detach_pid(old) */
@@ -416,9 +547,12 @@ struct task_struct *pid_task(struct pid *pid, enum pid_type type)
 		struct hlist_node *first;
 		first = rcu_dereference_check(hlist_first_rcu(&pid->tasks[type]),
 <<<<<<< HEAD
+<<<<<<< HEAD
 					      rcu_read_lock_held() ||
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					      lockdep_tasklist_lock_is_held());
 		if (first)
 			result = hlist_entry(first, struct task_struct, pids[(type)].node);
@@ -433,18 +567,28 @@ EXPORT_SYMBOL(pid_task);
 struct task_struct *find_task_by_pid_ns(pid_t nr, struct pid_namespace *ns)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_lockdep_assert(rcu_read_lock_held());
 =======
 	rcu_lockdep_assert(rcu_read_lock_held(),
 			   "find_task_by_pid_ns() needs rcu_read_lock()"
 			   " protection");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rcu_lockdep_assert(rcu_read_lock_held(),
+			   "find_task_by_pid_ns() needs rcu_read_lock()"
+			   " protection");
+>>>>>>> refs/remotes/origin/master
 	return pid_task(find_pid_ns(nr, ns), PIDTYPE_PID);
 }
 
 struct task_struct *find_task_by_vpid(pid_t vnr)
 {
+<<<<<<< HEAD
 	return find_task_by_pid_ns(vnr, current->nsproxy->pid_ns);
+=======
+	return find_task_by_pid_ns(vnr, task_active_pid_ns(current));
+>>>>>>> refs/remotes/origin/master
 }
 
 struct pid *get_task_pid(struct task_struct *task, enum pid_type type)
@@ -495,10 +639,18 @@ pid_t pid_nr_ns(struct pid *pid, struct pid_namespace *ns)
 	}
 	return nr;
 }
+<<<<<<< HEAD
 
 pid_t pid_vnr(struct pid *pid)
 {
 	return pid_nr_ns(pid, current->nsproxy->pid_ns);
+=======
+EXPORT_SYMBOL_GPL(pid_nr_ns);
+
+pid_t pid_vnr(struct pid *pid)
+{
+	return pid_nr_ns(pid, task_active_pid_ns(current));
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(pid_vnr);
 
@@ -509,7 +661,11 @@ pid_t __task_pid_nr_ns(struct task_struct *task, enum pid_type type,
 
 	rcu_read_lock();
 	if (!ns)
+<<<<<<< HEAD
 		ns = current->nsproxy->pid_ns;
+=======
+		ns = task_active_pid_ns(current);
+>>>>>>> refs/remotes/origin/master
 	if (likely(pid_alive(task))) {
 		if (type != PIDTYPE_PID)
 			task = task->group_leader;
@@ -560,6 +716,7 @@ struct pid *find_ge_pid(int nr, struct pid_namespace *ns)
 void __init pidhash_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i, pidhash_size;
 =======
 	unsigned int i, pidhash_size;
@@ -573,6 +730,15 @@ void __init pidhash_init(void)
 =======
 	pidhash_size = 1U << pidhash_shift;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int i, pidhash_size;
+
+	pid_hash = alloc_large_system_hash("PID", sizeof(*pid_hash), 0, 18,
+					   HASH_EARLY | HASH_SMALL,
+					   &pidhash_shift, NULL,
+					   0, 4096);
+	pidhash_size = 1U << pidhash_shift;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < pidhash_size; i++)
 		INIT_HLIST_HEAD(&pid_hash[i]);
@@ -580,6 +746,12 @@ void __init pidhash_init(void)
 
 void __init pidmap_init(void)
 {
+<<<<<<< HEAD
+=======
+	/* Veryify no one has done anything silly */
+	BUILD_BUG_ON(PID_MAX_LIMIT >= PIDNS_HASH_ADDING);
+
+>>>>>>> refs/remotes/origin/master
 	/* bump default and minimum pid_max based on number of cpus */
 	pid_max = min(pid_max_max, max_t(int, pid_max,
 				PIDS_PER_CPU_DEFAULT * num_possible_cpus()));

@@ -1,10 +1,14 @@
 /*
  * Copyright (C) Sistina Software, Inc.  1997-2003 All rights reserved.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2004-2009 Red Hat, Inc.  All rights reserved.
 =======
  * Copyright 2004-2011 Red Hat, Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2004-2011 Red Hat, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * This copyrighted material is made available to anyone wishing to use,
  * modify, copy, or redistribute it subject to the terms and conditions
@@ -16,18 +20,25 @@
 #include <linux/slab.h>
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/delay.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/gfs2_ondisk.h>
 
 #include "incore.h"
 #include "glock.h"
 #include "util.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include "sys.h"
 #include "trace_gfs2.h"
 
@@ -123,12 +134,16 @@ static inline void gfs2_update_request_times(struct gfs2_glock *gl)
 	preempt_enable();
 }
  
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void gdlm_ast(void *arg)
 {
 	struct gfs2_glock *gl = arg;
 	unsigned ret = gl->gl_state;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	gfs2_update_reply_times(gl);
@@ -137,6 +152,13 @@ static void gdlm_ast(void *arg)
 
 	if (gl->gl_lksb.sb_flags & DLM_SBF_VALNOTVALID)
 		memset(gl->gl_lvb, 0, GDLM_LVB_SIZE);
+=======
+	gfs2_update_reply_times(gl);
+	BUG_ON(gl->gl_lksb.sb_flags & DLM_SBF_DEMOTED);
+
+	if ((gl->gl_lksb.sb_flags & DLM_SBF_VALNOTVALID) && gl->gl_lksb.sb_lvbptr)
+		memset(gl->gl_lksb.sb_lvbptr, 0, GDLM_LVB_SIZE);
+>>>>>>> refs/remotes/origin/master
 
 	switch (gl->gl_lksb.sb_status) {
 	case -DLM_EUNLOCK: /* Unlocked, so glock can be freed */
@@ -216,6 +238,7 @@ static int make_mode(const unsigned int lmstate)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u32 make_flags(const u32 lkid, const unsigned int gfs_flags,
 		      const int req)
 {
@@ -227,6 +250,15 @@ static u32 make_flags(struct gfs2_glock *gl, const unsigned int gfs_flags,
 	u32 lkf = DLM_LKF_VALBLK;
 	u32 lkid = gl->gl_lksb.sb_lkid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u32 make_flags(struct gfs2_glock *gl, const unsigned int gfs_flags,
+		      const int req)
+{
+	u32 lkf = 0;
+
+	if (gl->gl_lksb.sb_lvbptr)
+		lkf |= DLM_LKF_VALBLK;
+>>>>>>> refs/remotes/origin/master
 
 	if (gfs_flags & LM_FLAG_TRY)
 		lkf |= DLM_LKF_NOQUEUE;
@@ -251,32 +283,48 @@ static u32 make_flags(struct gfs2_glock *gl, const unsigned int gfs_flags,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (lkid != 0) 
 		lkf |= DLM_LKF_CONVERT;
 
 	lkf |= DLM_LKF_VALBLK;
 =======
 	if (lkid != 0) {
+=======
+	if (gl->gl_lksb.sb_lkid != 0) {
+>>>>>>> refs/remotes/origin/master
 		lkf |= DLM_LKF_CONVERT;
 		if (test_bit(GLF_BLOCKING, &gl->gl_flags))
 			lkf |= DLM_LKF_QUECVT;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return lkf;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static void gfs2_reverse_hex(char *c, u64 value)
 {
+=======
+static void gfs2_reverse_hex(char *c, u64 value)
+{
+	*c = '0';
+>>>>>>> refs/remotes/origin/master
 	while (value) {
 		*c-- = hex_asc[value & 0x0f];
 		value >>= 4;
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int gdlm_lock(struct gfs2_glock *gl, unsigned int req_state,
 		     unsigned int flags)
 {
@@ -284,11 +332,14 @@ static int gdlm_lock(struct gfs2_glock *gl, unsigned int req_state,
 	int req;
 	u32 lkf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	req = make_mode(req_state);
 	lkf = make_flags(gl->gl_lksb.sb_lkid, flags, req);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	char strname[GDLM_STRNAME_BYTES] = "";
 
 	req = make_mode(req_state);
@@ -304,16 +355,23 @@ static int gdlm_lock(struct gfs2_glock *gl, unsigned int req_state,
 		gfs2_reverse_hex(strname + 23, gl->gl_name.ln_number);
 		gl->gl_dstamp = ktime_get_real();
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Submit the actual lock request.
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return dlm_lock(ls->ls_dlm, req, &gl->gl_lksb, lkf, gl->gl_strname,
 =======
 	return dlm_lock(ls->ls_dlm, req, &gl->gl_lksb, lkf, strname,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return dlm_lock(ls->ls_dlm, req, &gl->gl_lksb, lkf, strname,
+>>>>>>> refs/remotes/origin/master
 			GDLM_STRNAME_BYTES - 1, 0, gdlm_ast, gl, gdlm_bast);
 }
 
@@ -321,6 +379,10 @@ static void gdlm_put_lock(struct gfs2_glock *gl)
 {
 	struct gfs2_sbd *sdp = gl->gl_sbd;
 	struct lm_lockstruct *ls = &sdp->sd_lockstruct;
+<<<<<<< HEAD
+=======
+	int lvb_needs_unlock = 0;
+>>>>>>> refs/remotes/origin/master
 	int error;
 
 	if (gl->gl_lksb.sb_lkid == 0) {
@@ -329,12 +391,30 @@ static void gdlm_put_lock(struct gfs2_glock *gl)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	clear_bit(GLF_BLOCKING, &gl->gl_flags);
 	gfs2_glstats_inc(gl, GFS2_LKS_DCOUNT);
 	gfs2_sbstats_inc(gl, GFS2_LKS_DCOUNT);
 	gfs2_update_request_times(gl);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* don't want to skip dlm_unlock writing the lvb when lock is ex */
+
+	if (gl->gl_lksb.sb_lvbptr && (gl->gl_state == LM_ST_EXCLUSIVE))
+		lvb_needs_unlock = 1;
+
+	if (test_bit(SDF_SKIP_DLM_UNLOCK, &sdp->sd_flags) &&
+	    !lvb_needs_unlock) {
+		gfs2_glock_free(gl);
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	error = dlm_unlock(ls->ls_dlm, gl->gl_lksb.sb_lkid, DLM_LKF_VALBLK,
 			   NULL, gl);
 	if (error) {
@@ -352,8 +432,11 @@ static void gdlm_cancel(struct gfs2_glock *gl)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int gdlm_mount(struct gfs2_sbd *sdp, const char *fsname)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * dlm/gfs2 recovery coordination using dlm_recover callbacks
  *
@@ -499,29 +582,47 @@ static int gdlm_mount(struct gfs2_sbd *sdp, const char *fsname)
 static void control_lvb_read(struct lm_lockstruct *ls, uint32_t *lvb_gen,
 			     char *lvb_bits)
 {
+<<<<<<< HEAD
 	uint32_t gen;
 	memcpy(lvb_bits, ls->ls_control_lvb, GDLM_LVB_SIZE);
 	memcpy(&gen, lvb_bits, sizeof(uint32_t));
+=======
+	__le32 gen;
+	memcpy(lvb_bits, ls->ls_control_lvb, GDLM_LVB_SIZE);
+	memcpy(&gen, lvb_bits, sizeof(__le32));
+>>>>>>> refs/remotes/origin/master
 	*lvb_gen = le32_to_cpu(gen);
 }
 
 static void control_lvb_write(struct lm_lockstruct *ls, uint32_t lvb_gen,
 			      char *lvb_bits)
 {
+<<<<<<< HEAD
 	uint32_t gen;
 	memcpy(ls->ls_control_lvb, lvb_bits, GDLM_LVB_SIZE);
 	gen = cpu_to_le32(lvb_gen);
 	memcpy(ls->ls_control_lvb, &gen, sizeof(uint32_t));
+=======
+	__le32 gen;
+	memcpy(ls->ls_control_lvb, lvb_bits, GDLM_LVB_SIZE);
+	gen = cpu_to_le32(lvb_gen);
+	memcpy(ls->ls_control_lvb, &gen, sizeof(__le32));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int all_jid_bits_clear(char *lvb)
 {
+<<<<<<< HEAD
 	int i;
 	for (i = JID_BITMAP_OFFSET; i < GDLM_LVB_SIZE; i++) {
 		if (lvb[i])
 			return 0;
 	}
 	return 1;
+=======
+	return !memchr_inv(lvb + JID_BITMAP_OFFSET, 0,
+			GDLM_LVB_SIZE - JID_BITMAP_OFFSET);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sync_wait_cb(void *arg)
@@ -531,11 +632,15 @@ static void sync_wait_cb(void *arg)
 }
 
 static int sync_unlock(struct gfs2_sbd *sdp, struct dlm_lksb *lksb, char *name)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct lm_lockstruct *ls = &sdp->sd_lockstruct;
 	int error;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (fsname == NULL) {
 		fs_info(sdp, "no fsname found\n");
@@ -553,6 +658,8 @@ static int sync_unlock(struct gfs2_sbd *sdp, struct dlm_lksb *lksb, char *name)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	error = dlm_unlock(ls->ls_dlm, lksb->sb_lkid, 0, lksb, ls);
 	if (error) {
 		fs_err(sdp, "%s lkid %x error %d\n",
@@ -631,7 +738,10 @@ static void gfs2_control_func(struct work_struct *work)
 {
 	struct gfs2_sbd *sdp = container_of(work, struct gfs2_sbd, sd_control_work.work);
 	struct lm_lockstruct *ls = &sdp->sd_lockstruct;
+<<<<<<< HEAD
 	char lvb_bits[GDLM_LVB_SIZE];
+=======
+>>>>>>> refs/remotes/origin/master
 	uint32_t block_gen, start_gen, lvb_gen, flags;
 	int recover_set = 0;
 	int write_lvb = 0;
@@ -685,7 +795,11 @@ static void gfs2_control_func(struct work_struct *work)
 		return;
 	}
 
+<<<<<<< HEAD
 	control_lvb_read(ls, &lvb_gen, lvb_bits);
+=======
+	control_lvb_read(ls, &lvb_gen, ls->ls_lvb_bits);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&ls->ls_recover_spin);
 	if (block_gen != ls->ls_recover_block ||
@@ -715,10 +829,17 @@ static void gfs2_control_func(struct work_struct *work)
 
 			ls->ls_recover_result[i] = 0;
 
+<<<<<<< HEAD
 			if (!test_bit_le(i, lvb_bits + JID_BITMAP_OFFSET))
 				continue;
 
 			__clear_bit_le(i, lvb_bits + JID_BITMAP_OFFSET);
+=======
+			if (!test_bit_le(i, ls->ls_lvb_bits + JID_BITMAP_OFFSET))
+				continue;
+
+			__clear_bit_le(i, ls->ls_lvb_bits + JID_BITMAP_OFFSET);
+>>>>>>> refs/remotes/origin/master
 			write_lvb = 1;
 		}
 	}
@@ -742,7 +863,11 @@ static void gfs2_control_func(struct work_struct *work)
 				continue;
 			if (ls->ls_recover_submit[i] < start_gen) {
 				ls->ls_recover_submit[i] = 0;
+<<<<<<< HEAD
 				__set_bit_le(i, lvb_bits + JID_BITMAP_OFFSET);
+=======
+				__set_bit_le(i, ls->ls_lvb_bits + JID_BITMAP_OFFSET);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		/* even if there are no bits to set, we need to write the
@@ -756,7 +881,11 @@ static void gfs2_control_func(struct work_struct *work)
 	spin_unlock(&ls->ls_recover_spin);
 
 	if (write_lvb) {
+<<<<<<< HEAD
 		control_lvb_write(ls, start_gen, lvb_bits);
+=======
+		control_lvb_write(ls, start_gen, ls->ls_lvb_bits);
+>>>>>>> refs/remotes/origin/master
 		flags = DLM_LKF_CONVERT | DLM_LKF_VALBLK;
 	} else {
 		flags = DLM_LKF_CONVERT;
@@ -776,7 +905,11 @@ static void gfs2_control_func(struct work_struct *work)
 	 */
 
 	for (i = 0; i < recover_size; i++) {
+<<<<<<< HEAD
 		if (test_bit_le(i, lvb_bits + JID_BITMAP_OFFSET)) {
+=======
+		if (test_bit_le(i, ls->ls_lvb_bits + JID_BITMAP_OFFSET)) {
+>>>>>>> refs/remotes/origin/master
 			fs_info(sdp, "recover generation %u jid %d\n",
 				start_gen, i);
 			gfs2_recover_set(sdp, i);
@@ -809,7 +942,10 @@ static void gfs2_control_func(struct work_struct *work)
 static int control_mount(struct gfs2_sbd *sdp)
 {
 	struct lm_lockstruct *ls = &sdp->sd_lockstruct;
+<<<<<<< HEAD
 	char lvb_bits[GDLM_LVB_SIZE];
+=======
+>>>>>>> refs/remotes/origin/master
 	uint32_t start_gen, block_gen, mount_gen, lvb_gen;
 	int mounted_mode;
 	int retries = 0;
@@ -908,7 +1044,11 @@ locks_done:
 	 * lvb_gen will be non-zero.
 	 */
 
+<<<<<<< HEAD
 	control_lvb_read(ls, &lvb_gen, lvb_bits);
+=======
+	control_lvb_read(ls, &lvb_gen, ls->ls_lvb_bits);
+>>>>>>> refs/remotes/origin/master
 
 	if (lvb_gen == 0xFFFFFFFF) {
 		/* special value to force mount attempts to fail */
@@ -938,7 +1078,11 @@ locks_done:
 	 * and all lvb bits to be clear (no pending journal recoveries.)
 	 */
 
+<<<<<<< HEAD
 	if (!all_jid_bits_clear(lvb_bits)) {
+=======
+	if (!all_jid_bits_clear(ls->ls_lvb_bits)) {
+>>>>>>> refs/remotes/origin/master
 		/* journals need recovery, wait until all are clear */
 		fs_info(sdp, "control_mount wait for journal recovery\n");
 		goto restart;
@@ -1000,7 +1144,10 @@ static int dlm_recovery_wait(void *word)
 static int control_first_done(struct gfs2_sbd *sdp)
 {
 	struct lm_lockstruct *ls = &sdp->sd_lockstruct;
+<<<<<<< HEAD
 	char lvb_bits[GDLM_LVB_SIZE];
+=======
+>>>>>>> refs/remotes/origin/master
 	uint32_t start_gen, block_gen;
 	int error;
 
@@ -1042,8 +1189,13 @@ restart:
 	memset(ls->ls_recover_result, 0, ls->ls_recover_size*sizeof(uint32_t));
 	spin_unlock(&ls->ls_recover_spin);
 
+<<<<<<< HEAD
 	memset(lvb_bits, 0, sizeof(lvb_bits));
 	control_lvb_write(ls, start_gen, lvb_bits);
+=======
+	memset(ls->ls_lvb_bits, 0, GDLM_LVB_SIZE);
+	control_lvb_write(ls, start_gen, ls->ls_lvb_bits);
+>>>>>>> refs/remotes/origin/master
 
 	error = mounted_lock(sdp, DLM_LOCK_PR, DLM_LKF_CONVERT);
 	if (error)
@@ -1073,6 +1225,15 @@ static int set_recover_size(struct gfs2_sbd *sdp, struct dlm_slot *slots,
 	uint32_t old_size, new_size;
 	int i, max_jid;
 
+<<<<<<< HEAD
+=======
+	if (!ls->ls_lvb_bits) {
+		ls->ls_lvb_bits = kzalloc(GDLM_LVB_SIZE, GFP_NOFS);
+		if (!ls->ls_lvb_bits)
+			return -ENOMEM;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	max_jid = 0;
 	for (i = 0; i < num_slots; i++) {
 		if (max_jid < slots[i].slot - 1)
@@ -1108,6 +1269,10 @@ static int set_recover_size(struct gfs2_sbd *sdp, struct dlm_slot *slots,
 
 static void free_recover_size(struct lm_lockstruct *ls)
 {
+<<<<<<< HEAD
+=======
+	kfree(ls->ls_lvb_bits);
+>>>>>>> refs/remotes/origin/master
 	kfree(ls->ls_recover_submit);
 	kfree(ls->ls_recover_result);
 	ls->ls_recover_submit = NULL;
@@ -1256,6 +1421,10 @@ static int gdlm_mount(struct gfs2_sbd *sdp, const char *table)
 	ls->ls_recover_size = 0;
 	ls->ls_recover_submit = NULL;
 	ls->ls_recover_result = NULL;
+<<<<<<< HEAD
+=======
+	ls->ls_lvb_bits = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	error = set_recover_size(sdp, NULL, 0);
 	if (error)
@@ -1276,8 +1445,11 @@ static int gdlm_mount(struct gfs2_sbd *sdp, const char *table)
 	fsname++;
 
 	flags = DLM_LSFL_FS | DLM_LSFL_NEWEXCL;
+<<<<<<< HEAD
 	if (ls->ls_nodir)
 		flags |= DLM_LSFL_NODIR;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * create/join lockspace
@@ -1346,13 +1518,19 @@ static void gdlm_first_done(struct gfs2_sbd *sdp)
 		fs_err(sdp, "mount first_done error %d\n", error);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void gdlm_unmount(struct gfs2_sbd *sdp)
 {
 	struct lm_lockstruct *ls = &sdp->sd_lockstruct;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (test_bit(DFL_NO_DLM_OPS, &ls->ls_recover_flags))
 		goto release;
 
@@ -1361,20 +1539,32 @@ static void gdlm_unmount(struct gfs2_sbd *sdp)
 	spin_lock(&ls->ls_recover_spin);
 	set_bit(DFL_UNMOUNT, &ls->ls_recover_flags);
 	spin_unlock(&ls->ls_recover_spin);
+<<<<<<< HEAD
 	flush_delayed_work_sync(&sdp->sd_control_work);
 
 	/* mounted_lock and control_lock will be purged in dlm recovery */
 release:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	flush_delayed_work(&sdp->sd_control_work);
+
+	/* mounted_lock and control_lock will be purged in dlm recovery */
+release:
+>>>>>>> refs/remotes/origin/master
 	if (ls->ls_dlm) {
 		dlm_release_lockspace(ls->ls_dlm, 2);
 		ls->ls_dlm = NULL;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	free_recover_size(ls);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	free_recover_size(ls);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const match_table_t dlm_tokens = {
@@ -1389,10 +1579,15 @@ const struct lm_lockops gfs2_dlm_ops = {
 	.lm_proto_name = "lock_dlm",
 	.lm_mount = gdlm_mount,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.lm_first_done = gdlm_first_done,
 	.lm_recovery_result = gdlm_recovery_result,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.lm_first_done = gdlm_first_done,
+	.lm_recovery_result = gdlm_recovery_result,
+>>>>>>> refs/remotes/origin/master
 	.lm_unmount = gdlm_unmount,
 	.lm_put_lock = gdlm_put_lock,
 	.lm_lock = gdlm_lock,

@@ -5,10 +5,14 @@
  * Author       Roland Klabunde
  * Copyright    by Roland Klabunde   <R.Klabunde@Berkom.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -20,6 +24,7 @@
 
 /* Special registers for access to indirect accessible JADE regs */
 #define	DIRECT_IO_JADE	0x0000	/* Jade direct io access area */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define	COMM_JADE	0x0040	/* Jade communication area */	   	
 
@@ -87,6 +92,8 @@
     #define	jadeCCR1_XCONT				0x08
     #define	jadeCCR1_XFDIS				0x04
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define	COMM_JADE	0x0040	/* Jade communication area */
 
 /********************************************************************/
@@ -152,13 +159,17 @@
 #define	jadeCCR1_XCS0				0x10
 #define	jadeCCR1_XCONT				0x08
 #define	jadeCCR1_XFDIS				0x04
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define	jade_HDLC_TSAR					0x28				   /* RW*/
 #define	jade_HDLC_TSAX					0x29				   /* RW*/
 #define	jade_HDLC_RCCR					0x2A				   /* RW*/
 #define	jade_HDLC_XCCR					0x2B				   /* RW*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define	jade_HDLC_ISR 					0x2C				   /* R */
 #define	jade_HDLC_IMR 					0x2C				   /* W */
@@ -184,6 +195,8 @@
 	#define	jadeINDIRECT_HAH1			0x02
 	#define	jadeINDIRECT_HAH2			0x01
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define	jade_HDLC_ISR					0x2C				   /* R */
 #define	jade_HDLC_IMR					0x2C				   /* W */
 #define	jadeISR_RME					0x80
@@ -207,12 +220,16 @@
 #define	jade_HDLCCNTRACCESS				0x10
 #define	jadeINDIRECT_HAH1			0x02
 #define	jadeINDIRECT_HAH2			0x01
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define	jade_HDLC1SERRXPATH				0x1D
 #define	jade_HDLC1SERTXPATH				0x1E
 #define	jade_HDLC2SERRXPATH				0x1F
 #define	jade_HDLC2SERTXPATH				0x20
+<<<<<<< HEAD
 <<<<<<< HEAD
 	#define	jadeINDIRECT_SLIN1			0x10
 	#define	jadeINDIRECT_SLIN0			0x08
@@ -221,13 +238,18 @@
 	#define	jadeINDIRECT_HHR			0x01
 	#define	jadeINDIRECT_HHX			0x01
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define	jadeINDIRECT_SLIN1			0x10
 #define	jadeINDIRECT_SLIN0			0x08
 #define	jadeINDIRECT_LMOD1			0x04
 #define	jadeINDIRECT_LMOD0			0x02
 #define	jadeINDIRECT_HHR			0x01
 #define	jadeINDIRECT_HHX			0x01
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define	jade_RXAUDIOCH1CFG				0x11
 #define	jade_RXAUDIOCH2CFG				0x14

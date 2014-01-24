@@ -598,7 +598,10 @@ static DEVICE_ATTR(signalling, S_IRUGO,
 		   store_spi_host_signalling);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_spi_host_width(struct device *cdev,
 				      struct device_attribute *attr,
 				      char *buf)
@@ -621,7 +624,10 @@ static ssize_t show_spi_host_hba_id(struct device *cdev,
 static DEVICE_ATTR(hba_id, S_IRUGO,
 		   show_spi_host_hba_id, NULL);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DV_SET(x, y)			\
 	if(i->f->set_##x)		\
 		i->f->set_##x(sdev->sdev_target, y)
@@ -1013,10 +1019,17 @@ spi_dv_device(struct scsi_device *sdev)
 	u8 *buffer;
 	const int len = SPI_MAX_ECHO_BUFFER_SIZE*2;
 
+<<<<<<< HEAD
 	if (unlikely(scsi_device_get(sdev)))
 		return;
 
 	if (unlikely(spi_dv_in_progress(starget)))
+=======
+	if (unlikely(spi_dv_in_progress(starget)))
+		return;
+
+	if (unlikely(scsi_device_get(sdev)))
+>>>>>>> refs/remotes/origin/master
 		return;
 	spi_dv_in_progress(starget) = 1;
 
@@ -1406,10 +1419,15 @@ static DECLARE_ANON_TRANSPORT_CLASS(spi_device_class,
 static struct attribute *host_attributes[] = {
 	&dev_attr_signalling.attr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&dev_attr_host_width.attr,
 	&dev_attr_hba_id.attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&dev_attr_host_width.attr,
+	&dev_attr_hba_id.attr,
+>>>>>>> refs/remotes/origin/master
 	NULL
 };
 
@@ -1441,10 +1459,14 @@ static int spi_host_configure(struct transport_container *tc,
 	(si->f->set_##name ? S_IWUSR : 0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static mode_t target_attribute_is_visible(struct kobject *kobj,
 =======
 static umode_t target_attribute_is_visible(struct kobject *kobj,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static umode_t target_attribute_is_visible(struct kobject *kobj,
+>>>>>>> refs/remotes/origin/master
 					  struct attribute *attr, int i)
 {
 	struct device *cdev = container_of(kobj, struct device, kobj);

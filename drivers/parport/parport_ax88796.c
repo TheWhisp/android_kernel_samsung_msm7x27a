@@ -294,10 +294,14 @@ static int parport_ax88796_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	size = (res->end - res->start) + 1;
 =======
 	size = resource_size(res);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	size = resource_size(res);
+>>>>>>> refs/remotes/origin/master
 	spacing = size / 3;
 
 	dd->io = request_mem_region(res->start, size, pdev->name);
@@ -425,6 +429,7 @@ static struct platform_driver axdrv = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init parport_ax88796_init(void)
 {
 	return platform_driver_register(&axdrv);
@@ -440,6 +445,9 @@ module_exit(parport_ax88796_exit)
 =======
 module_platform_driver(axdrv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(axdrv);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
 MODULE_DESCRIPTION("AX88796 Parport parallel port driver");

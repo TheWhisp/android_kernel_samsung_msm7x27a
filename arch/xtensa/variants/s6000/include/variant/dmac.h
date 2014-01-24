@@ -8,7 +8,11 @@
  * Copyright (C) 2006 Tensilica Inc.
  * Copyright (C) 2008 Emlix GmbH <info@emlix.com>
  * Authors:	Fabian Godehardt <fg@emlix.com>
+<<<<<<< HEAD
  *		Oskar Schirmer <os@emlix.com>
+=======
+ *		Oskar Schirmer <oskar@scara.com>
+>>>>>>> refs/remotes/origin/master
  *		Daniel Gloeckner <dg@emlix.com>
  */
 
@@ -358,10 +362,14 @@ static inline void s6dmac_dp_setup_group(u32 dmac, int port,
 			int nrch, int frrep)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const static u8 mask[4] = {0, 3, 1, 2};
 =======
 	static const u8 mask[4] = {0, 3, 1, 2};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static const u8 mask[4] = {0, 3, 1, 2};
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(dmac != S6_REG_DPDMA);
 	if ((port < 0) || (port > 3) || (nrch < 1) || (nrch > 4))
 		return;

@@ -5,7 +5,11 @@
  *
  * GPL LICENSE SUMMARY
  *
+<<<<<<< HEAD
  * Copyright(c) 2007 - 2012 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2007 - 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of version 2 of the GNU General Public License as
@@ -22,7 +26,11 @@
  * USA
  *
  * The full GNU General Public License is included in this distribution
+<<<<<<< HEAD
  * in the file called LICENSE.GPL.
+=======
+ * in the file called COPYING.
+>>>>>>> refs/remotes/origin/master
  *
  * Contact Information:
  *  Intel Linux Wireless <ilw@linux.intel.com>
@@ -30,7 +38,11 @@
  *
  * BSD LICENSE
  *
+<<<<<<< HEAD
  * Copyright(c) 2005 - 2012 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2005 - 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,9 +77,17 @@
 
 #include <linux/ieee80211.h>
 #include <linux/mm.h> /* for page_address */
+<<<<<<< HEAD
 
 #include "iwl-shared.h"
 #include "iwl-debug.h"
+=======
+#include <linux/lockdep.h>
+
+#include "iwl-debug.h"
+#include "iwl-config.h"
+#include "iwl-fw.h"
+>>>>>>> refs/remotes/origin/master
 
 /**
  * DOC: Transport layer - what is it ?
@@ -104,6 +124,7 @@
  *	6) Eventually, the free function will be called.
  */
 
+<<<<<<< HEAD
 struct iwl_priv;
 struct iwl_shared;
 struct iwl_op_mode;
@@ -111,6 +132,8 @@ struct fw_img;
 struct sk_buff;
 struct dentry;
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * DOC: Host command section
  *
@@ -119,9 +142,12 @@ struct dentry;
  * completely agnostic to these differences.
  * The transport does provide helper functionnality (i.e. SYNC / ASYNC mode),
  */
+<<<<<<< HEAD
 #define SEQ_TO_SN(seq) (((seq) & IEEE80211_SCTL_SEQ) >> 4)
 #define SN_TO_SEQ(ssn) (((ssn) << 4) & IEEE80211_SCTL_SEQ)
 #define MAX_SN ((IEEE80211_SCTL_SEQ) >> 4)
+=======
+>>>>>>> refs/remotes/origin/master
 #define SEQ_TO_QUEUE(s)	(((s) >> 8) & 0x1f)
 #define QUEUE_TO_SEQ(q)	(((q) & 0x1f) << 8)
 #define SEQ_TO_INDEX(s)	((s) & 0xff)
@@ -160,8 +186,18 @@ struct iwl_cmd_header {
 	__le16 sequence;
 } __packed;
 
+<<<<<<< HEAD
 
 #define FH_RSCSR_FRAME_SIZE_MSK		0x00003FFF	/* bits 0-13 */
+=======
+/* iwl_cmd_header flags value */
+#define IWL_CMD_FAILED_MSK 0x40
+
+
+#define FH_RSCSR_FRAME_SIZE_MSK		0x00003FFF	/* bits 0-13 */
+#define FH_RSCSR_FRAME_INVALID		0x55550000
+#define FH_RSCSR_FRAME_ALIGN		0x40
+>>>>>>> refs/remotes/origin/master
 
 struct iwl_rx_packet {
 	/*
@@ -183,6 +219,7 @@ struct iwl_rx_packet {
  * enum CMD_MODE - how to send the host commands ?
  *
  * @CMD_SYNC: The caller will be stalled until the fw responds to the command
+<<<<<<< HEAD
  * @CMD_ASYNC: Return right away and don't want for the response
  * @CMD_WANT_SKB: valid only with CMD_SYNC. The caller needs the buffer of the
  *	response.
@@ -193,6 +230,17 @@ enum CMD_MODE {
 	CMD_ASYNC = BIT(0),
 	CMD_WANT_SKB = BIT(1),
 	CMD_ON_DEMAND = BIT(2),
+=======
+ * @CMD_ASYNC: Return right away and don't wait for the response
+ * @CMD_WANT_SKB: valid only with CMD_SYNC. The caller needs the buffer of the
+ *	response. The caller needs to call iwl_free_resp when done.
+ */
+enum CMD_MODE {
+	CMD_SYNC		= 0,
+	CMD_ASYNC		= BIT(0),
+	CMD_WANT_SKB		= BIT(1),
+	CMD_SEND_IN_RFKILL	= BIT(2),
+>>>>>>> refs/remotes/origin/master
 };
 
 #define DEF_CMD_PAYLOAD_SIZE 320
@@ -211,11 +259,20 @@ struct iwl_device_cmd {
 
 #define TFD_MAX_PAYLOAD_SIZE (sizeof(struct iwl_device_cmd))
 
+<<<<<<< HEAD
 #define IWL_MAX_CMD_TFDS	2
+=======
+/*
+ * number of transfer buffers (fragments) per transmit frame descriptor;
+ * this is just the driver's idea, the hardware supports 20
+ */
+#define IWL_MAX_CMD_TBS_PER_TFD	2
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct iwl_hcmd_dataflag - flag for each one of the chunks of the command
  *
+<<<<<<< HEAD
  * IWL_HCMD_DFL_NOCOPY: By default, the command is copied to the host command's
  *	ring. The transport layer doesn't map the command's buffer to DMA, but
  *	rather copies it to an previously allocated DMA buffer. This flag tells
@@ -224,6 +281,23 @@ struct iwl_device_cmd {
  */
 enum iwl_hcmd_dataflag {
 	IWL_HCMD_DFL_NOCOPY	= BIT(0),
+=======
+ * @IWL_HCMD_DFL_NOCOPY: By default, the command is copied to the host command's
+ *	ring. The transport layer doesn't map the command's buffer to DMA, but
+ *	rather copies it to a previously allocated DMA buffer. This flag tells
+ *	the transport layer not to copy the command, but to map the existing
+ *	buffer (that is passed in) instead. This saves the memcpy and allows
+ *	commands that are bigger than the fixed buffer to be submitted.
+ *	Note that a TFD entry after a NOCOPY one cannot be a normal copied one.
+ * @IWL_HCMD_DFL_DUP: Only valid without NOCOPY, duplicate the memory for this
+ *	chunk internally and free it again after the command completes. This
+ *	can (currently) be used only once per command.
+ *	Note that a TFD entry after a DUP one cannot be a normal copied one.
+ */
+enum iwl_hcmd_dataflag {
+	IWL_HCMD_DFL_NOCOPY	= BIT(0),
+	IWL_HCMD_DFL_DUP	= BIT(1),
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -236,20 +310,33 @@ enum iwl_hcmd_dataflag {
  * @handler_status: return value of the handler of the command
  *	(put in setup_rx_handlers) - valid for SYNC mode only
  * @flags: can be CMD_*
+<<<<<<< HEAD
  * @len: array of the lenths of the chunks in data
+=======
+ * @len: array of the lengths of the chunks in data
+>>>>>>> refs/remotes/origin/master
  * @dataflags: IWL_HCMD_DFL_*
  * @id: id of the host command
  */
 struct iwl_host_cmd {
+<<<<<<< HEAD
 	const void *data[IWL_MAX_CMD_TFDS];
+=======
+	const void *data[IWL_MAX_CMD_TBS_PER_TFD];
+>>>>>>> refs/remotes/origin/master
 	struct iwl_rx_packet *resp_pkt;
 	unsigned long _rx_page_addr;
 	u32 _rx_page_order;
 	int handler_status;
 
 	u32 flags;
+<<<<<<< HEAD
 	u16 len[IWL_MAX_CMD_TFDS];
 	u8 dataflags[IWL_MAX_CMD_TFDS];
+=======
+	u16 len[IWL_MAX_CMD_TBS_PER_TFD];
+	u8 dataflags[IWL_MAX_CMD_TBS_PER_TFD];
+>>>>>>> refs/remotes/origin/master
 	u8 id;
 };
 
@@ -260,35 +347,91 @@ static inline void iwl_free_resp(struct iwl_host_cmd *cmd)
 
 struct iwl_rx_cmd_buffer {
 	struct page *_page;
+<<<<<<< HEAD
+=======
+	int _offset;
+	bool _page_stolen;
+	u32 _rx_page_order;
+>>>>>>> refs/remotes/origin/master
 	unsigned int truesize;
 };
 
 static inline void *rxb_addr(struct iwl_rx_cmd_buffer *r)
 {
+<<<<<<< HEAD
 	return page_address(r->_page);
+=======
+	return (void *)((unsigned long)page_address(r->_page) + r->_offset);
+}
+
+static inline int rxb_offset(struct iwl_rx_cmd_buffer *r)
+{
+	return r->_offset;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline struct page *rxb_steal_page(struct iwl_rx_cmd_buffer *r)
 {
+<<<<<<< HEAD
 	struct page *p = r->_page;
 	r->_page = NULL;
 	return p;
+=======
+	r->_page_stolen = true;
+	get_page(r->_page);
+	return r->_page;
+}
+
+static inline void iwl_free_rxb(struct iwl_rx_cmd_buffer *r)
+{
+	__free_pages(r->_page, r->_rx_page_order);
+>>>>>>> refs/remotes/origin/master
 }
 
 #define MAX_NO_RECLAIM_CMDS	6
 
+<<<<<<< HEAD
+=======
+#define IWL_MASK(lo, hi) ((1 << (hi)) | ((1 << (hi)) - (1 << (lo))))
+
+/*
+ * Maximum number of HW queues the transport layer
+ * currently supports
+ */
+#define IWL_MAX_HW_QUEUES		32
+#define IWL_MAX_TID_COUNT	8
+#define IWL_FRAME_LIMIT	64
+
+/**
+ * enum iwl_wowlan_status - WoWLAN image/device status
+ * @IWL_D3_STATUS_ALIVE: firmware is still running after resume
+ * @IWL_D3_STATUS_RESET: device was reset while suspended
+ */
+enum iwl_d3_status {
+	IWL_D3_STATUS_ALIVE,
+	IWL_D3_STATUS_RESET,
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct iwl_trans_config - transport configuration
  *
  * @op_mode: pointer to the upper layer.
+<<<<<<< HEAD
  *	Must be set before any other call.
  * @cmd_queue: the index of the command queue.
  *	Must be set before start_fw.
+=======
+ * @cmd_queue: the index of the command queue.
+ *	Must be set before start_fw.
+ * @cmd_fifo: the fifo for host commands
+>>>>>>> refs/remotes/origin/master
  * @no_reclaim_cmds: Some devices erroneously don't set the
  *	SEQ_RX_FRAME bit on some notifications, this is the
  *	list of such notifications to filter. Max length is
  *	%MAX_NO_RECLAIM_CMDS.
  * @n_no_reclaim_cmds: # of commands in list
+<<<<<<< HEAD
  */
 struct iwl_trans_config {
 	struct iwl_op_mode *op_mode;
@@ -297,6 +440,33 @@ struct iwl_trans_config {
 	int n_no_reclaim_cmds;
 };
 
+=======
+ * @rx_buf_size_8k: 8 kB RX buffer size needed for A-MSDUs,
+ *	if unset 4k will be the RX buffer size
+ * @bc_table_dword: set to true if the BC table expects the byte count to be
+ *	in DWORD (as opposed to bytes)
+ * @queue_watchdog_timeout: time (in ms) after which queues
+ *	are considered stuck and will trigger device restart
+ * @command_names: array of command names, must be 256 entries
+ *	(one for each command); for debugging only
+ */
+struct iwl_trans_config {
+	struct iwl_op_mode *op_mode;
+
+	u8 cmd_queue;
+	u8 cmd_fifo;
+	const u8 *no_reclaim_cmds;
+	unsigned int n_no_reclaim_cmds;
+
+	bool rx_buf_size_8k;
+	bool bc_table_dword;
+	unsigned int queue_watchdog_timeout;
+	const char **command_names;
+};
+
+struct iwl_trans;
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct iwl_trans_ops - transport specific operations
  *
@@ -305,11 +475,17 @@ struct iwl_trans_config {
  * @start_hw: starts the HW- from that point on, the HW can send interrupts
  *	May sleep
  * @stop_hw: stops the HW- from that point on, the HW will be in low power but
+<<<<<<< HEAD
  *	will still issue interrupt if the HW RF kill is triggered.
+=======
+ *	will still issue interrupt if the HW RF kill is triggered unless
+ *	op_mode_leaving is true.
+>>>>>>> refs/remotes/origin/master
  *	May sleep
  * @start_fw: allocates and inits all the resources for the transport
  *	layer. Also kick a fw image.
  *	May sleep
+<<<<<<< HEAD
  * @fw_alive: called when the fw sends alive notification
  *	May sleep
  * @stop_device:stops the whole device (embedded CPU put to reset)
@@ -318,11 +494,28 @@ struct iwl_trans_config {
  *	suspend. This is optional, if not implemented WoWLAN will not be
  *	supported. This callback may sleep.
  * @send_cmd:send a host command
+=======
+ * @fw_alive: called when the fw sends alive notification. If the fw provides
+ *	the SCD base address in SRAM, then provide it here, or 0 otherwise.
+ *	May sleep
+ * @stop_device:stops the whole device (embedded CPU put to reset)
+ *	May sleep
+ * @d3_suspend: put the device into the correct mode for WoWLAN during
+ *	suspend. This is optional, if not implemented WoWLAN will not be
+ *	supported. This callback may sleep.
+ * @d3_resume: resume the device after WoWLAN, enabling the opmode to
+ *	talk to the WoWLAN image to get its status. This is optional, if not
+ *	implemented WoWLAN will not be supported. This callback may sleep.
+ * @send_cmd:send a host command. Must return -ERFKILL if RFkill is asserted.
+ *	If RFkill is asserted in the middle of a SYNC host command, it must
+ *	return -ERFKILL straight away.
+>>>>>>> refs/remotes/origin/master
  *	May sleep only if CMD_SYNC is set
  * @tx: send an skb
  *	Must be atomic
  * @reclaim: free packet until ssn. Returns a list of freed packets.
  *	Must be atomic
+<<<<<<< HEAD
  * @tx_agg_alloc: allocate resources for a TX BA session
  *	Must be atomic
  * @tx_agg_setup: setup a tx queue for AMPDU - will be called once the HW is
@@ -335,10 +528,18 @@ struct iwl_trans_config {
  *	any interrupt (incl. RFKILL).
  *	May sleep
  * @check_stuck_queue: check if a specific queue is stuck
+=======
+ * @txq_enable: setup a queue. To setup an AC queue, use the
+ *	iwl_trans_ac_txq_enable wrapper. fw_alive must have been called before
+ *	this one. The op_mode must not configure the HCMD queue. May sleep.
+ * @txq_disable: de-configure a Tx queue to send AMPDUs
+ *	Must be atomic
+>>>>>>> refs/remotes/origin/master
  * @wait_tx_queue_empty: wait until all tx queues are empty
  *	May sleep
  * @dbgfs_register: add the dbgfs files under this directory. Files will be
  *	automatically deleted.
+<<<<<<< HEAD
  * @suspend: stop the device unless WoWLAN is configured
  * @resume: resume activity of the device
  * @write8: write a u8 to a register at offset ofs from the BAR
@@ -347,20 +548,53 @@ struct iwl_trans_config {
  * @configure: configure parameters required by the transport layer from
  *	the op_mode. May be called several times before start_fw, can't be
  *	called after that.
+=======
+ * @write8: write a u8 to a register at offset ofs from the BAR
+ * @write32: write a u32 to a register at offset ofs from the BAR
+ * @read32: read a u32 register at offset ofs from the BAR
+ * @read_prph: read a DWORD from a periphery register
+ * @write_prph: write a DWORD to a periphery register
+ * @read_mem: read device's SRAM in DWORD
+ * @write_mem: write device's SRAM in DWORD. If %buf is %NULL, then the memory
+ *	will be zeroed.
+ * @configure: configure parameters required by the transport layer from
+ *	the op_mode. May be called several times before start_fw, can't be
+ *	called after that.
+ * @set_pmi: set the power pmi state
+ * @grab_nic_access: wake the NIC to be able to access non-HBUS regs.
+ *	Sleeping is not allowed between grab_nic_access and
+ *	release_nic_access.
+ * @release_nic_access: let the NIC go to sleep. The "flags" parameter
+ *	must be the same one that was sent before to the grab_nic_access.
+ * @set_bits_mask - set SRAM register according to value and mask.
+>>>>>>> refs/remotes/origin/master
  */
 struct iwl_trans_ops {
 
 	int (*start_hw)(struct iwl_trans *iwl_trans);
+<<<<<<< HEAD
 	void (*stop_hw)(struct iwl_trans *iwl_trans);
 	int (*start_fw)(struct iwl_trans *trans, const struct fw_img *fw);
 	void (*fw_alive)(struct iwl_trans *trans);
 	void (*stop_device)(struct iwl_trans *trans);
 
 	void (*wowlan_suspend)(struct iwl_trans *trans);
+=======
+	void (*stop_hw)(struct iwl_trans *iwl_trans, bool op_mode_leaving);
+	int (*start_fw)(struct iwl_trans *trans, const struct fw_img *fw,
+			bool run_in_rfkill);
+	void (*fw_alive)(struct iwl_trans *trans, u32 scd_addr);
+	void (*stop_device)(struct iwl_trans *trans);
+
+	void (*d3_suspend)(struct iwl_trans *trans, bool test);
+	int (*d3_resume)(struct iwl_trans *trans, enum iwl_d3_status *status,
+			 bool test);
+>>>>>>> refs/remotes/origin/master
 
 	int (*send_cmd)(struct iwl_trans *trans, struct iwl_host_cmd *cmd);
 
 	int (*tx)(struct iwl_trans *trans, struct sk_buff *skb,
+<<<<<<< HEAD
 		struct iwl_device_cmd *dev_cmd, enum iwl_rxon_context_id ctx,
 		u8 sta_id, u8 tid);
 	int (*reclaim)(struct iwl_trans *trans, int sta_id, int tid,
@@ -388,6 +622,37 @@ struct iwl_trans_ops {
 	u32 (*read32)(struct iwl_trans *trans, u32 ofs);
 	void (*configure)(struct iwl_trans *trans,
 			  const struct iwl_trans_config *trans_cfg);
+=======
+		  struct iwl_device_cmd *dev_cmd, int queue);
+	void (*reclaim)(struct iwl_trans *trans, int queue, int ssn,
+			struct sk_buff_head *skbs);
+
+	void (*txq_enable)(struct iwl_trans *trans, int queue, int fifo,
+			   int sta_id, int tid, int frame_limit, u16 ssn);
+	void (*txq_disable)(struct iwl_trans *trans, int queue);
+
+	int (*dbgfs_register)(struct iwl_trans *trans, struct dentry* dir);
+	int (*wait_tx_queue_empty)(struct iwl_trans *trans);
+
+	void (*write8)(struct iwl_trans *trans, u32 ofs, u8 val);
+	void (*write32)(struct iwl_trans *trans, u32 ofs, u32 val);
+	u32 (*read32)(struct iwl_trans *trans, u32 ofs);
+	u32 (*read_prph)(struct iwl_trans *trans, u32 ofs);
+	void (*write_prph)(struct iwl_trans *trans, u32 ofs, u32 val);
+	int (*read_mem)(struct iwl_trans *trans, u32 addr,
+			void *buf, int dwords);
+	int (*write_mem)(struct iwl_trans *trans, u32 addr,
+			 const void *buf, int dwords);
+	void (*configure)(struct iwl_trans *trans,
+			  const struct iwl_trans_config *trans_cfg);
+	void (*set_pmi)(struct iwl_trans *trans, bool state);
+	bool (*grab_nic_access)(struct iwl_trans *trans, bool silent,
+				unsigned long *flags);
+	void (*release_nic_access)(struct iwl_trans *trans,
+				   unsigned long *flags);
+	void (*set_bits_mask)(struct iwl_trans *trans, u32 reg, u32 mask,
+			      u32 value);
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -406,32 +671,71 @@ enum iwl_trans_state {
  *
  * @ops - pointer to iwl_trans_ops
  * @op_mode - pointer to the op_mode
+<<<<<<< HEAD
  * @shrd - pointer to iwl_shared which holds shared data from the upper layer
  * @reg_lock - protect hw register access
+=======
+ * @cfg - pointer to the configuration
+>>>>>>> refs/remotes/origin/master
  * @dev - pointer to struct device * that represents the device
  * @hw_id: a u32 with the ID of the device / subdevice.
  *	Set during transport allocation.
  * @hw_id_str: a string with info about HW ID. Set during transport allocation.
+<<<<<<< HEAD
  * @nvm_device_type: indicates OTP or eeprom
  * @pm_support: set to true in start_hw if link pm is supported
  * @wait_command_queue: the wait_queue for SYNC host commands
+=======
+ * @pm_support: set to true in start_hw if link pm is supported
+ * @dev_cmd_pool: pool for Tx cmd allocation - for internal use only.
+ *	The user should use iwl_trans_{alloc,free}_tx_cmd.
+ * @dev_cmd_headroom: room needed for the transport's private use before the
+ *	device_cmd for Tx - for internal use only
+ *	The user should use iwl_trans_{alloc,free}_tx_cmd.
+ * @rx_mpdu_cmd: MPDU RX command ID, must be assigned by opmode before
+ *	starting the firmware, used for tracing
+ * @rx_mpdu_cmd_hdr_size: used for tracing, amount of data before the
+ *	start of the 802.11 header in the @rx_mpdu_cmd
+>>>>>>> refs/remotes/origin/master
  */
 struct iwl_trans {
 	const struct iwl_trans_ops *ops;
 	struct iwl_op_mode *op_mode;
+<<<<<<< HEAD
 	struct iwl_shared *shrd;
 	enum iwl_trans_state state;
 	spinlock_t reg_lock;
+=======
+	const struct iwl_cfg *cfg;
+	enum iwl_trans_state state;
+>>>>>>> refs/remotes/origin/master
 
 	struct device *dev;
 	u32 hw_rev;
 	u32 hw_id;
 	char hw_id_str[52];
 
+<<<<<<< HEAD
 	int    nvm_device_type;
 	bool pm_support;
 
 	wait_queue_head_t wait_command_queue;
+=======
+	u8 rx_mpdu_cmd, rx_mpdu_cmd_hdr_size;
+
+	bool pm_support;
+
+	/* The following fields are internal only */
+	struct kmem_cache *dev_cmd_pool;
+	size_t dev_cmd_headroom;
+	char dev_cmd_pool_name[50];
+
+	struct dentry *dbgfs_dir;
+
+#ifdef CONFIG_LOCKDEP
+	struct lockdep_map sync_cmd_lockdep_map;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	/* pointer to trans specific struct */
 	/*Ensure that this pointer will always be aligned to sizeof pointer */
@@ -441,10 +745,13 @@ struct iwl_trans {
 static inline void iwl_trans_configure(struct iwl_trans *trans,
 				       const struct iwl_trans_config *trans_cfg)
 {
+<<<<<<< HEAD
 	/*
 	 * only set the op_mode for the moment. Later on, this function will do
 	 * more
 	 */
+=======
+>>>>>>> refs/remotes/origin/master
 	trans->op_mode = trans_cfg->op_mode;
 
 	trans->ops->configure(trans, trans_cfg);
@@ -457,15 +764,28 @@ static inline int iwl_trans_start_hw(struct iwl_trans *trans)
 	return trans->ops->start_hw(trans);
 }
 
+<<<<<<< HEAD
 static inline void iwl_trans_stop_hw(struct iwl_trans *trans)
 {
 	might_sleep();
 
 	trans->ops->stop_hw(trans);
+=======
+static inline void iwl_trans_stop_hw(struct iwl_trans *trans,
+				     bool op_mode_leaving)
+{
+	might_sleep();
+
+	trans->ops->stop_hw(trans, op_mode_leaving);
+
+	if (op_mode_leaving)
+		trans->op_mode = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	trans->state = IWL_TRANS_NO_FW;
 }
 
+<<<<<<< HEAD
 static inline void iwl_trans_fw_alive(struct iwl_trans *trans)
 {
 	might_sleep();
@@ -481,6 +801,26 @@ static inline int iwl_trans_start_fw(struct iwl_trans *trans,
 	might_sleep();
 
 	return trans->ops->start_fw(trans, fw);
+=======
+static inline void iwl_trans_fw_alive(struct iwl_trans *trans, u32 scd_addr)
+{
+	might_sleep();
+
+	trans->state = IWL_TRANS_FW_ALIVE;
+
+	trans->ops->fw_alive(trans, scd_addr);
+}
+
+static inline int iwl_trans_start_fw(struct iwl_trans *trans,
+				     const struct fw_img *fw,
+				     bool run_in_rfkill)
+{
+	might_sleep();
+
+	WARN_ON_ONCE(!trans->rx_mpdu_cmd);
+
+	return trans->ops->start_fw(trans, fw, run_in_rfkill);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void iwl_trans_stop_device(struct iwl_trans *trans)
@@ -492,6 +832,7 @@ static inline void iwl_trans_stop_device(struct iwl_trans *trans)
 	trans->state = IWL_TRANS_NO_FW;
 }
 
+<<<<<<< HEAD
 static inline void iwl_trans_wowlan_suspend(struct iwl_trans *trans)
 {
 	might_sleep();
@@ -562,16 +903,123 @@ static inline void iwl_trans_tx_agg_setup(struct iwl_trans *trans,
 static inline void iwl_trans_free(struct iwl_trans *trans)
 {
 	trans->ops->free(trans);
+=======
+static inline void iwl_trans_d3_suspend(struct iwl_trans *trans, bool test)
+{
+	might_sleep();
+	trans->ops->d3_suspend(trans, test);
+}
+
+static inline int iwl_trans_d3_resume(struct iwl_trans *trans,
+				      enum iwl_d3_status *status,
+				      bool test)
+{
+	might_sleep();
+	return trans->ops->d3_resume(trans, status, test);
+}
+
+static inline int iwl_trans_send_cmd(struct iwl_trans *trans,
+				     struct iwl_host_cmd *cmd)
+{
+	int ret;
+
+	if (unlikely(trans->state != IWL_TRANS_FW_ALIVE)) {
+		IWL_ERR(trans, "%s bad state = %d", __func__, trans->state);
+		return -EIO;
+	}
+
+	if (!(cmd->flags & CMD_ASYNC))
+		lock_map_acquire_read(&trans->sync_cmd_lockdep_map);
+
+	ret = trans->ops->send_cmd(trans, cmd);
+
+	if (!(cmd->flags & CMD_ASYNC))
+		lock_map_release(&trans->sync_cmd_lockdep_map);
+
+	return ret;
+}
+
+static inline struct iwl_device_cmd *
+iwl_trans_alloc_tx_cmd(struct iwl_trans *trans)
+{
+	u8 *dev_cmd_ptr = kmem_cache_alloc(trans->dev_cmd_pool, GFP_ATOMIC);
+
+	if (unlikely(dev_cmd_ptr == NULL))
+		return NULL;
+
+	return (struct iwl_device_cmd *)
+			(dev_cmd_ptr + trans->dev_cmd_headroom);
+}
+
+static inline void iwl_trans_free_tx_cmd(struct iwl_trans *trans,
+					 struct iwl_device_cmd *dev_cmd)
+{
+	u8 *dev_cmd_ptr = (u8 *)dev_cmd - trans->dev_cmd_headroom;
+
+	kmem_cache_free(trans->dev_cmd_pool, dev_cmd_ptr);
+}
+
+static inline int iwl_trans_tx(struct iwl_trans *trans, struct sk_buff *skb,
+			       struct iwl_device_cmd *dev_cmd, int queue)
+{
+	if (unlikely(trans->state != IWL_TRANS_FW_ALIVE))
+		IWL_ERR(trans, "%s bad state = %d", __func__, trans->state);
+
+	return trans->ops->tx(trans, skb, dev_cmd, queue);
+}
+
+static inline void iwl_trans_reclaim(struct iwl_trans *trans, int queue,
+				     int ssn, struct sk_buff_head *skbs)
+{
+	if (unlikely(trans->state != IWL_TRANS_FW_ALIVE))
+		IWL_ERR(trans, "%s bad state = %d", __func__, trans->state);
+
+	trans->ops->reclaim(trans, queue, ssn, skbs);
+}
+
+static inline void iwl_trans_txq_disable(struct iwl_trans *trans, int queue)
+{
+	if (unlikely(trans->state != IWL_TRANS_FW_ALIVE))
+		IWL_ERR(trans, "%s bad state = %d", __func__, trans->state);
+
+	trans->ops->txq_disable(trans, queue);
+}
+
+static inline void iwl_trans_txq_enable(struct iwl_trans *trans, int queue,
+					int fifo, int sta_id, int tid,
+					int frame_limit, u16 ssn)
+{
+	might_sleep();
+
+	if (unlikely((trans->state != IWL_TRANS_FW_ALIVE)))
+		IWL_ERR(trans, "%s bad state = %d", __func__, trans->state);
+
+	trans->ops->txq_enable(trans, queue, fifo, sta_id, tid,
+				 frame_limit, ssn);
+}
+
+static inline void iwl_trans_ac_txq_enable(struct iwl_trans *trans, int queue,
+					   int fifo)
+{
+	iwl_trans_txq_enable(trans, queue, fifo, -1,
+			     IWL_MAX_TID_COUNT, IWL_FRAME_LIMIT, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int iwl_trans_wait_tx_queue_empty(struct iwl_trans *trans)
 {
+<<<<<<< HEAD
 	WARN_ONCE(trans->state != IWL_TRANS_FW_ALIVE,
 		  "%s bad state = %d", __func__, trans->state);
+=======
+	if (unlikely(trans->state != IWL_TRANS_FW_ALIVE))
+		IWL_ERR(trans, "%s bad state = %d", __func__, trans->state);
+>>>>>>> refs/remotes/origin/master
 
 	return trans->ops->wait_tx_queue_empty(trans);
 }
 
+<<<<<<< HEAD
 static inline int iwl_trans_check_stuck_queue(struct iwl_trans *trans, int q)
 {
 	WARN_ONCE(trans->state != IWL_TRANS_FW_ALIVE,
@@ -628,4 +1076,111 @@ extern const struct iwl_trans_ops trans_ops_idi;
 struct iwl_trans *iwl_trans_idi_alloc(struct iwl_shared *shrd,
 				      void *pdev_void,
 				      const void *ent_void);
+=======
+static inline int iwl_trans_dbgfs_register(struct iwl_trans *trans,
+					   struct dentry *dir)
+{
+	return trans->ops->dbgfs_register(trans, dir);
+}
+
+static inline void iwl_trans_write8(struct iwl_trans *trans, u32 ofs, u8 val)
+{
+	trans->ops->write8(trans, ofs, val);
+}
+
+static inline void iwl_trans_write32(struct iwl_trans *trans, u32 ofs, u32 val)
+{
+	trans->ops->write32(trans, ofs, val);
+}
+
+static inline u32 iwl_trans_read32(struct iwl_trans *trans, u32 ofs)
+{
+	return trans->ops->read32(trans, ofs);
+}
+
+static inline u32 iwl_trans_read_prph(struct iwl_trans *trans, u32 ofs)
+{
+	return trans->ops->read_prph(trans, ofs);
+}
+
+static inline void iwl_trans_write_prph(struct iwl_trans *trans, u32 ofs,
+					u32 val)
+{
+	return trans->ops->write_prph(trans, ofs, val);
+}
+
+static inline int iwl_trans_read_mem(struct iwl_trans *trans, u32 addr,
+				     void *buf, int dwords)
+{
+	return trans->ops->read_mem(trans, addr, buf, dwords);
+}
+
+#define iwl_trans_read_mem_bytes(trans, addr, buf, bufsize)		      \
+	do {								      \
+		if (__builtin_constant_p(bufsize))			      \
+			BUILD_BUG_ON((bufsize) % sizeof(u32));		      \
+		iwl_trans_read_mem(trans, addr, buf, (bufsize) / sizeof(u32));\
+	} while (0)
+
+static inline u32 iwl_trans_read_mem32(struct iwl_trans *trans, u32 addr)
+{
+	u32 value;
+
+	if (WARN_ON(iwl_trans_read_mem(trans, addr, &value, 1)))
+		return 0xa5a5a5a5;
+
+	return value;
+}
+
+static inline int iwl_trans_write_mem(struct iwl_trans *trans, u32 addr,
+				      const void *buf, int dwords)
+{
+	return trans->ops->write_mem(trans, addr, buf, dwords);
+}
+
+static inline u32 iwl_trans_write_mem32(struct iwl_trans *trans, u32 addr,
+					u32 val)
+{
+	return iwl_trans_write_mem(trans, addr, &val, 1);
+}
+
+static inline void iwl_trans_set_pmi(struct iwl_trans *trans, bool state)
+{
+	trans->ops->set_pmi(trans, state);
+}
+
+static inline void
+iwl_trans_set_bits_mask(struct iwl_trans *trans, u32 reg, u32 mask, u32 value)
+{
+	trans->ops->set_bits_mask(trans, reg, mask, value);
+}
+
+#define iwl_trans_grab_nic_access(trans, silent, flags)	\
+	__cond_lock(nic_access,				\
+		    likely((trans)->ops->grab_nic_access(trans, silent, flags)))
+
+static inline void __releases(nic_access)
+iwl_trans_release_nic_access(struct iwl_trans *trans, unsigned long *flags)
+{
+	trans->ops->release_nic_access(trans, flags);
+	__release(nic_access);
+}
+
+/*****************************************************
+* driver (transport) register/unregister functions
+******************************************************/
+int __must_check iwl_pci_register_driver(void);
+void iwl_pci_unregister_driver(void);
+
+static inline void trans_lockdep_init(struct iwl_trans *trans)
+{
+#ifdef CONFIG_LOCKDEP
+	static struct lock_class_key __key;
+
+	lockdep_init_map(&trans->sync_cmd_lockdep_map, "sync_cmd_lockdep_map",
+			 &__key, 0);
+#endif
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __iwl_trans_h__ */

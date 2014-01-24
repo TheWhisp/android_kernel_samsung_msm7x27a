@@ -21,7 +21,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+<<<<<<< HEAD
 #include <linux/mutex.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/completion.h>
 #include <linux/delay.h>
 #include <linux/interrupt.h>
@@ -30,9 +33,13 @@
 #include <linux/gpio.h>
 #include <linux/regulator/consumer.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <media/v4l2-device.h>
 #include <media/v4l2-ioctl.h>
 #include <media/v4l2-common.h>
@@ -56,8 +63,11 @@ static const char *si4713_supply_names[SI4713_NUM_SUPPLIES] = {
 
 #define DEFAULT_RDS_PI			0x00
 #define DEFAULT_RDS_PTY			0x00
+<<<<<<< HEAD
 #define DEFAULT_RDS_PS_NAME		""
 #define DEFAULT_RDS_RADIO_TEXT		DEFAULT_RDS_PS_NAME
+=======
+>>>>>>> refs/remotes/origin/master
 #define DEFAULT_RDS_DEVIATION		0x00C8
 #define DEFAULT_RDS_PS_REPEAT_COUNT	0x0003
 #define DEFAULT_LIMITER_RTIME		0x1392
@@ -111,7 +121,10 @@ static const char *si4713_supply_names[SI4713_NUM_SUPPLIES] = {
 					(status & SI4713_ERR))
 /* mute definition */
 #define set_mute(p)	((p & 1) | ((p & 1) << 1));
+<<<<<<< HEAD
 #define get_mute(p)	(p & 0x01)
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef DEBUG
 #define DBG_BUFFER(device, message, buffer, size)			\
@@ -193,6 +206,7 @@ static int usecs_to_dev(unsigned long usecs, unsigned long const array[],
 	return rval;
 }
 
+<<<<<<< HEAD
 static unsigned long dev_to_usecs(int value, unsigned long const array[],
 			int size)
 {
@@ -208,6 +222,8 @@ static unsigned long dev_to_usecs(int value, unsigned long const array[],
 	return rval;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* si4713_handler: IRQ handler, just complete work */
 static irqreturn_t si4713_handler(int irq, void *dev)
 {
@@ -461,15 +477,22 @@ static int si4713_checkrev(struct si4713_device *sdev)
 	int rval;
 	u8 resp[SI4713_GETREV_NRESP];
 
+<<<<<<< HEAD
 	mutex_lock(&sdev->mutex);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	rval = si4713_send_command(sdev, SI4713_CMD_GET_REV,
 					NULL, 0,
 					resp, ARRAY_SIZE(resp),
 					DEFAULT_TIMEOUT);
 
 	if (rval < 0)
+<<<<<<< HEAD
 		goto unlock;
+=======
+		return rval;
+>>>>>>> refs/remotes/origin/master
 
 	if (resp[1] == SI4713_PRODUCT_NUMBER) {
 		v4l2_info(&sdev->sd, "chip found @ 0x%02x (%s)\n",
@@ -478,9 +501,12 @@ static int si4713_checkrev(struct si4713_device *sdev)
 		v4l2_err(&sdev->sd, "Invalid product number\n");
 		rval = -EINVAL;
 	}
+<<<<<<< HEAD
 
 unlock:
 	mutex_unlock(&sdev->mutex);
+=======
+>>>>>>> refs/remotes/origin/master
 	return rval;
 }
 
@@ -781,6 +807,7 @@ static int si4713_tx_rds_ps(struct si4713_device *sdev, u8 psid,
 
 static int si4713_set_power_state(struct si4713_device *sdev, u8 value)
 {
+<<<<<<< HEAD
 	int rval;
 
 	mutex_lock(&sdev->mutex);
@@ -792,6 +819,11 @@ static int si4713_set_power_state(struct si4713_device *sdev, u8 value)
 
 	mutex_unlock(&sdev->mutex);
 	return rval;
+=======
+	if (value)
+		return si4713_powerup(sdev);
+	return si4713_powerdown(sdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int si4713_set_mute(struct si4713_device *sdev, u16 mute)
@@ -800,17 +832,23 @@ static int si4713_set_mute(struct si4713_device *sdev, u16 mute)
 
 	mute = set_mute(mute);
 
+<<<<<<< HEAD
 	mutex_lock(&sdev->mutex);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (sdev->power_state)
 		rval = si4713_write_property(sdev,
 				SI4713_TX_LINE_INPUT_MUTE, mute);
 
+<<<<<<< HEAD
 	if (rval >= 0)
 		sdev->mute = get_mute(mute);
 
 	mutex_unlock(&sdev->mutex);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return rval;
 }
 
@@ -823,15 +861,22 @@ static int si4713_set_rds_ps_name(struct si4713_device *sdev, char *ps_name)
 	if (!strlen(ps_name))
 		memset(ps_name, 0, MAX_RDS_PS_NAME + 1);
 
+<<<<<<< HEAD
 	mutex_lock(&sdev->mutex);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (sdev->power_state) {
 		/* Write the new ps name and clear the padding */
 		for (i = 0; i < MAX_RDS_PS_NAME; i += (RDS_BLOCK / 2)) {
 			rval = si4713_tx_rds_ps(sdev, (i / (RDS_BLOCK / 2)),
 						ps_name + i);
 			if (rval < 0)
+<<<<<<< HEAD
 				goto unlock;
+=======
+				return rval;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* Setup the size to be sent */
@@ -844,12 +889,17 @@ static int si4713_set_rds_ps_name(struct si4713_device *sdev, char *ps_name)
 				SI4713_TX_RDS_PS_MESSAGE_COUNT,
 				rds_ps_nblocks(len));
 		if (rval < 0)
+<<<<<<< HEAD
 			goto unlock;
+=======
+			return rval;
+>>>>>>> refs/remotes/origin/master
 
 		rval = si4713_write_property(sdev,
 				SI4713_TX_RDS_PS_REPEAT_COUNT,
 				DEFAULT_RDS_PS_REPEAT_COUNT * 2);
 		if (rval < 0)
+<<<<<<< HEAD
 			goto unlock;
 	}
 
@@ -857,6 +907,11 @@ static int si4713_set_rds_ps_name(struct si4713_device *sdev, char *ps_name)
 
 unlock:
 	mutex_unlock(&sdev->mutex);
+=======
+			return rval;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return rval;
 }
 
@@ -867,6 +922,7 @@ static int si4713_set_rds_radio_text(struct si4713_device *sdev, char *rt)
 	u8 b_index = 0, cr_inserted = 0;
 	s8 left;
 
+<<<<<<< HEAD
 	mutex_lock(&sdev->mutex);
 
 	if (!sdev->power_state)
@@ -878,16 +934,34 @@ static int si4713_set_rds_radio_text(struct si4713_device *sdev, char *rt)
 
 	if (!strlen(rt))
 		goto copy;
+=======
+	if (!sdev->power_state)
+		return rval;
+
+	rval = si4713_tx_rds_buff(sdev, RDS_BLOCK_CLEAR, 0, 0, 0, &left);
+	if (rval < 0)
+		return rval;
+
+	if (!strlen(rt))
+		return rval;
+>>>>>>> refs/remotes/origin/master
 
 	do {
 		/* RDS spec says that if the last block isn't used,
 		 * then apply a carriage return
 		 */
+<<<<<<< HEAD
 		if (t_index < (RDS_RADIOTEXT_INDEX_MAX *
 			RDS_RADIOTEXT_BLK_SIZE)) {
 			for (i = 0; i < RDS_RADIOTEXT_BLK_SIZE; i++) {
 				if (!rt[t_index + i] || rt[t_index + i] ==
 					RDS_CARRIAGE_RETURN) {
+=======
+		if (t_index < (RDS_RADIOTEXT_INDEX_MAX * RDS_RADIOTEXT_BLK_SIZE)) {
+			for (i = 0; i < RDS_RADIOTEXT_BLK_SIZE; i++) {
+				if (!rt[t_index + i] ||
+				    rt[t_index + i] == RDS_CARRIAGE_RETURN) {
+>>>>>>> refs/remotes/origin/master
 					rt[t_index + i] = RDS_CARRIAGE_RETURN;
 					cr_inserted = 1;
 					break;
@@ -901,7 +975,11 @@ static int si4713_set_rds_radio_text(struct si4713_device *sdev, char *rt)
 				compose_u16(rt[t_index + 2], rt[t_index + 3]),
 				&left);
 		if (rval < 0)
+<<<<<<< HEAD
 			goto unlock;
+=======
+			return rval;
+>>>>>>> refs/remotes/origin/master
 
 		t_index += RDS_RADIOTEXT_BLK_SIZE;
 
@@ -909,16 +987,50 @@ static int si4713_set_rds_radio_text(struct si4713_device *sdev, char *rt)
 			break;
 	} while (left > 0);
 
+<<<<<<< HEAD
 copy:
 	strncpy(sdev->rds_info.radio_text, rt, MAX_RDS_RADIO_TEXT);
 
 unlock:
 	mutex_unlock(&sdev->mutex);
+=======
+	return rval;
+}
+
+/*
+ * si4713_update_tune_status - update properties from tx_tune_status
+ * command. Must be called with sdev->mutex held.
+ * @sdev: si4713_device structure for the device we are communicating
+ */
+static int si4713_update_tune_status(struct si4713_device *sdev)
+{
+	int rval;
+	u16 f = 0;
+	u8 p = 0, a = 0, n = 0;
+
+	rval = si4713_tx_tune_status(sdev, 0x00, &f, &p, &a, &n);
+
+	if (rval < 0)
+		goto exit;
+
+/*	TODO: check that power_level and antenna_capacitor really are not
+	changed by the hardware. If they are, then these controls should become
+	volatiles.
+	sdev->power_level = p;
+	sdev->antenna_capacitor = a;*/
+	sdev->tune_rnl = n;
+
+exit:
+>>>>>>> refs/remotes/origin/master
 	return rval;
 }
 
 static int si4713_choose_econtrol_action(struct si4713_device *sdev, u32 id,
+<<<<<<< HEAD
 		u32 **shadow, s32 *bit, s32 *mask, u16 *property, int *mul,
+=======
+		s32 *bit, s32 *mask, u16 *property, int *mul,
+>>>>>>> refs/remotes/origin/master
 		unsigned long **table, int *size)
 {
 	s32 rval = 0;
@@ -928,85 +1040,128 @@ static int si4713_choose_econtrol_action(struct si4713_device *sdev, u32 id,
 	case V4L2_CID_RDS_TX_PI:
 		*property = SI4713_TX_RDS_PI;
 		*mul = 1;
+<<<<<<< HEAD
 		*shadow = &sdev->rds_info.pi;
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case V4L2_CID_AUDIO_COMPRESSION_THRESHOLD:
 		*property = SI4713_TX_ACOMP_THRESHOLD;
 		*mul = 1;
+<<<<<<< HEAD
 		*shadow = &sdev->acomp_info.threshold;
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case V4L2_CID_AUDIO_COMPRESSION_GAIN:
 		*property = SI4713_TX_ACOMP_GAIN;
 		*mul = 1;
+<<<<<<< HEAD
 		*shadow = &sdev->acomp_info.gain;
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case V4L2_CID_PILOT_TONE_FREQUENCY:
 		*property = SI4713_TX_PILOT_FREQUENCY;
 		*mul = 1;
+<<<<<<< HEAD
 		*shadow = &sdev->pilot_info.frequency;
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case V4L2_CID_AUDIO_COMPRESSION_ATTACK_TIME:
 		*property = SI4713_TX_ACOMP_ATTACK_TIME;
 		*mul = ATTACK_TIME_UNIT;
+<<<<<<< HEAD
 		*shadow = &sdev->acomp_info.attack_time;
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case V4L2_CID_PILOT_TONE_DEVIATION:
 		*property = SI4713_TX_PILOT_DEVIATION;
 		*mul = 10;
+<<<<<<< HEAD
 		*shadow = &sdev->pilot_info.deviation;
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case V4L2_CID_AUDIO_LIMITER_DEVIATION:
 		*property = SI4713_TX_AUDIO_DEVIATION;
 		*mul = 10;
+<<<<<<< HEAD
 		*shadow = &sdev->limiter_info.deviation;
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case V4L2_CID_RDS_TX_DEVIATION:
 		*property = SI4713_TX_RDS_DEVIATION;
 		*mul = 1;
+<<<<<<< HEAD
 		*shadow = &sdev->rds_info.deviation;
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case V4L2_CID_RDS_TX_PTY:
 		*property = SI4713_TX_RDS_PS_MISC;
 		*bit = 5;
 		*mask = 0x1F << 5;
+<<<<<<< HEAD
 		*shadow = &sdev->rds_info.pty;
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case V4L2_CID_AUDIO_LIMITER_ENABLED:
 		*property = SI4713_TX_ACOMP_ENABLE;
 		*bit = 1;
 		*mask = 1 << 1;
+<<<<<<< HEAD
 		*shadow = &sdev->limiter_info.enabled;
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case V4L2_CID_AUDIO_COMPRESSION_ENABLED:
 		*property = SI4713_TX_ACOMP_ENABLE;
 		*bit = 0;
 		*mask = 1 << 0;
+<<<<<<< HEAD
 		*shadow = &sdev->acomp_info.enabled;
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case V4L2_CID_PILOT_TONE_ENABLED:
 		*property = SI4713_TX_COMPONENT_ENABLE;
 		*bit = 0;
 		*mask = 1 << 0;
+<<<<<<< HEAD
 		*shadow = &sdev->pilot_info.enabled;
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case V4L2_CID_AUDIO_LIMITER_RELEASE_TIME:
 		*property = SI4713_TX_LIMITER_RELEASE_TIME;
 		*table = limiter_times;
 		*size = ARRAY_SIZE(limiter_times);
+<<<<<<< HEAD
 		*shadow = &sdev->limiter_info.release_time;
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case V4L2_CID_AUDIO_COMPRESSION_RELEASE_TIME:
 		*property = SI4713_TX_ACOMP_RELEASE_TIME;
 		*table = acomp_rtimes;
 		*size = ARRAY_SIZE(acomp_rtimes);
+<<<<<<< HEAD
 		*shadow = &sdev->acomp_info.release_time;
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case V4L2_CID_TUNE_PREEMPHASIS:
 		*property = SI4713_TX_PREEMPHASIS;
 		*table = preemphasis_values;
 		*size = ARRAY_SIZE(preemphasis_values);
+<<<<<<< HEAD
 		*shadow = &sdev->preemphasis;
 		break;
 
@@ -1079,11 +1234,14 @@ static int si4713_write_econtrol_string(struct si4713_device *sdev,
 
 		rval = si4713_set_rds_radio_text(sdev, radio_text);
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
 		rval = -EINVAL;
 		break;
+<<<<<<< HEAD
 	};
 
 exit:
@@ -1217,12 +1375,22 @@ exit:
 
 static int si4713_s_frequency(struct v4l2_subdev *sd, struct v4l2_frequency *f);
 static int si4713_s_modulator(struct v4l2_subdev *sd, struct v4l2_modulator *);
+=======
+	}
+
+	return rval;
+}
+
+static int si4713_s_frequency(struct v4l2_subdev *sd, const struct v4l2_frequency *f);
+static int si4713_s_modulator(struct v4l2_subdev *sd, const struct v4l2_modulator *);
+>>>>>>> refs/remotes/origin/master
 /*
  * si4713_setup - Sets the device up with current configuration.
  * @sdev: si4713_device structure for the device we are communicating
  */
 static int si4713_setup(struct si4713_device *sdev)
 {
+<<<<<<< HEAD
 	struct v4l2_ext_control ctrl;
 	struct v4l2_frequency f;
 	struct v4l2_modulator vm;
@@ -1328,6 +1496,27 @@ static int si4713_setup(struct si4713_device *sdev)
 
 	kfree(tmp);
 
+=======
+	struct v4l2_frequency f;
+	struct v4l2_modulator vm;
+	int rval;
+
+	/* Device procedure needs to set frequency first */
+	f.tuner = 0;
+	f.frequency = sdev->frequency ? sdev->frequency : DEFAULT_FREQUENCY;
+	f.frequency = si4713_to_v4l2(f.frequency);
+	rval = si4713_s_frequency(&sdev->sd, &f);
+
+	vm.index = 0;
+	if (sdev->stereo)
+		vm.txsubchans = V4L2_TUNER_SUB_STEREO;
+	else
+		vm.txsubchans = V4L2_TUNER_SUB_MONO;
+	if (sdev->rds_enabled)
+		vm.txsubchans |= V4L2_TUNER_SUB_RDS;
+	si4713_s_modulator(&sdev->sd, &vm);
+
+>>>>>>> refs/remotes/origin/master
 	return rval;
 }
 
@@ -1341,6 +1530,7 @@ static int si4713_initialize(struct si4713_device *sdev)
 
 	rval = si4713_set_power_state(sdev, POWER_ON);
 	if (rval < 0)
+<<<<<<< HEAD
 		goto exit;
 
 	rval = si4713_checkrev(sdev);
@@ -1488,11 +1678,37 @@ static int si4713_read_econtrol_integers(struct si4713_device *sdev,
 {
 	s32 rval;
 	u32 *shadow = NULL, val = 0;
+=======
+		return rval;
+
+	rval = si4713_checkrev(sdev);
+	if (rval < 0)
+		return rval;
+
+	rval = si4713_set_power_state(sdev, POWER_OFF);
+	if (rval < 0)
+		return rval;
+
+
+	sdev->frequency = DEFAULT_FREQUENCY;
+	sdev->stereo = 1;
+	sdev->tune_rnl = DEFAULT_TUNE_RNL;
+	return 0;
+}
+
+/* si4713_s_ctrl - set the value of a control */
+static int si4713_s_ctrl(struct v4l2_ctrl *ctrl)
+{
+	struct si4713_device *sdev =
+		container_of(ctrl->handler, struct si4713_device, ctrl_handler);
+	u32 val = 0;
+>>>>>>> refs/remotes/origin/master
 	s32 bit = 0, mask = 0;
 	u16 property = 0;
 	int mul = 0;
 	unsigned long *table = NULL;
 	int size = 0;
+<<<<<<< HEAD
 
 	rval = si4713_choose_econtrol_action(sdev, control->id, &shadow, &bit,
 			&mask, &property, &mul, &table, &size);
@@ -1773,6 +1989,104 @@ exit:
 
 /* si4713_ioctl - deal with private ioctls (only rnl for now) */
 long si4713_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
+=======
+	bool force = false;
+	int c;
+	int ret = 0;
+
+	if (ctrl->id != V4L2_CID_AUDIO_MUTE)
+		return -EINVAL;
+	if (ctrl->is_new) {
+		if (ctrl->val) {
+			ret = si4713_set_mute(sdev, ctrl->val);
+			if (!ret)
+				ret = si4713_set_power_state(sdev, POWER_DOWN);
+			return ret;
+		}
+		ret = si4713_set_power_state(sdev, POWER_UP);
+		if (!ret)
+			ret = si4713_set_mute(sdev, ctrl->val);
+		if (!ret)
+			ret = si4713_setup(sdev);
+		if (ret)
+			return ret;
+		force = true;
+	}
+
+	if (!sdev->power_state)
+		return 0;
+
+	for (c = 1; !ret && c < ctrl->ncontrols; c++) {
+		ctrl = ctrl->cluster[c];
+
+		if (!force && !ctrl->is_new)
+			continue;
+
+		switch (ctrl->id) {
+		case V4L2_CID_RDS_TX_PS_NAME:
+			ret = si4713_set_rds_ps_name(sdev, ctrl->string);
+			break;
+
+		case V4L2_CID_RDS_TX_RADIO_TEXT:
+			ret = si4713_set_rds_radio_text(sdev, ctrl->string);
+			break;
+
+		case V4L2_CID_TUNE_ANTENNA_CAPACITOR:
+			/* don't handle this control if we force setting all
+			 * controls since in that case it will be handled by
+			 * V4L2_CID_TUNE_POWER_LEVEL. */
+			if (force)
+				break;
+			/* fall through */
+		case V4L2_CID_TUNE_POWER_LEVEL:
+			ret = si4713_tx_tune_power(sdev,
+				sdev->tune_pwr_level->val, sdev->tune_ant_cap->val);
+			if (!ret) {
+				/* Make sure we don't set this twice */
+				sdev->tune_ant_cap->is_new = false;
+				sdev->tune_pwr_level->is_new = false;
+			}
+			break;
+
+		default:
+			ret = si4713_choose_econtrol_action(sdev, ctrl->id, &bit,
+					&mask, &property, &mul, &table, &size);
+			if (ret < 0)
+				break;
+
+			val = ctrl->val;
+			if (mul) {
+				val = val / mul;
+			} else if (table) {
+				ret = usecs_to_dev(val, table, size);
+				if (ret < 0)
+					break;
+				val = ret;
+				ret = 0;
+			}
+
+			if (mask) {
+				ret = si4713_read_property(sdev, property, &val);
+				if (ret < 0)
+					break;
+				val = set_bits(val, ctrl->val, bit, mask);
+			}
+
+			ret = si4713_write_property(sdev, property, val);
+			if (ret < 0)
+				break;
+			if (mask)
+				val = ctrl->val;
+			break;
+		}
+	}
+
+	return ret;
+}
+
+/* si4713_ioctl - deal with private ioctls (only rnl for now) */
+static long si4713_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
+>>>>>>> refs/remotes/origin/master
 {
 	struct si4713_device *sdev = to_si4713_device(sd);
 	struct si4713_rnl *rnl = arg;
@@ -1782,7 +2096,10 @@ long si4713_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
 	if (!arg)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	mutex_lock(&sdev->mutex);
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (cmd) {
 	case SI4713_IOC_MEASURE_RNL:
 		frequency = v4l2_to_si4713(rnl->frequency);
@@ -1791,11 +2108,19 @@ long si4713_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
 			/* Set desired measurement frequency */
 			rval = si4713_tx_tune_measure(sdev, frequency, 0);
 			if (rval < 0)
+<<<<<<< HEAD
 				goto unlock;
 			/* get results from tune status */
 			rval = si4713_update_tune_status(sdev);
 			if (rval < 0)
 				goto unlock;
+=======
+				return rval;
+			/* get results from tune status */
+			rval = si4713_update_tune_status(sdev);
+			if (rval < 0)
+				return rval;
+>>>>>>> refs/remotes/origin/master
 		}
 		rnl->rnl = sdev->tune_rnl;
 		break;
@@ -1805,6 +2130,7 @@ long si4713_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
 		rval = -ENOIOCTLCMD;
 	}
 
+<<<<<<< HEAD
 unlock:
 	mutex_unlock(&sdev->mutex);
 	return rval;
@@ -1819,12 +2145,18 @@ static const struct v4l2_subdev_core_ops si4713_subdev_core_ops = {
 	.ioctl		= si4713_ioctl,
 };
 
+=======
+	return rval;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* si4713_g_modulator - get modulator attributes */
 static int si4713_g_modulator(struct v4l2_subdev *sd, struct v4l2_modulator *vm)
 {
 	struct si4713_device *sdev = to_si4713_device(sd);
 	int rval = 0;
 
+<<<<<<< HEAD
 	if (!sdev) {
 		rval = -ENODEV;
 		goto exit;
@@ -1834,6 +2166,13 @@ static int si4713_g_modulator(struct v4l2_subdev *sd, struct v4l2_modulator *vm)
 		rval = -EINVAL;
 		goto exit;
 	}
+=======
+	if (!sdev)
+		return -ENODEV;
+
+	if (vm->index > 0)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	strncpy(vm->name, "FM Modulator", 32);
 	vm->capability = V4L2_TUNER_CAP_STEREO | V4L2_TUNER_CAP_LOW |
@@ -1843,18 +2182,27 @@ static int si4713_g_modulator(struct v4l2_subdev *sd, struct v4l2_modulator *vm)
 	vm->rangelow = si4713_to_v4l2(FREQ_RANGE_LOW);
 	vm->rangehigh = si4713_to_v4l2(FREQ_RANGE_HIGH);
 
+<<<<<<< HEAD
 	mutex_lock(&sdev->mutex);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (sdev->power_state) {
 		u32 comp_en = 0;
 
 		rval = si4713_read_property(sdev, SI4713_TX_COMPONENT_ENABLE,
 						&comp_en);
 		if (rval < 0)
+<<<<<<< HEAD
 			goto unlock;
 
 		sdev->stereo = get_status_bit(comp_en, 1, 1 << 1);
 		sdev->rds_info.enabled = get_status_bit(comp_en, 2, 1 << 2);
+=======
+			return rval;
+
+		sdev->stereo = get_status_bit(comp_en, 1, 1 << 1);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Report current audio mode: mono or stereo */
@@ -1864,19 +2212,30 @@ static int si4713_g_modulator(struct v4l2_subdev *sd, struct v4l2_modulator *vm)
 		vm->txsubchans = V4L2_TUNER_SUB_MONO;
 
 	/* Report rds feature status */
+<<<<<<< HEAD
 	if (sdev->rds_info.enabled)
+=======
+	if (sdev->rds_enabled)
+>>>>>>> refs/remotes/origin/master
 		vm->txsubchans |= V4L2_TUNER_SUB_RDS;
 	else
 		vm->txsubchans &= ~V4L2_TUNER_SUB_RDS;
 
+<<<<<<< HEAD
 unlock:
 	mutex_unlock(&sdev->mutex);
 exit:
+=======
+>>>>>>> refs/remotes/origin/master
 	return rval;
 }
 
 /* si4713_s_modulator - set modulator attributes */
+<<<<<<< HEAD
 static int si4713_s_modulator(struct v4l2_subdev *sd, struct v4l2_modulator *vm)
+=======
+static int si4713_s_modulator(struct v4l2_subdev *sd, const struct v4l2_modulator *vm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct si4713_device *sdev = to_si4713_device(sd);
 	int rval = 0;
@@ -1899,13 +2258,20 @@ static int si4713_s_modulator(struct v4l2_subdev *sd, struct v4l2_modulator *vm)
 
 	rds = !!(vm->txsubchans & V4L2_TUNER_SUB_RDS);
 
+<<<<<<< HEAD
 	mutex_lock(&sdev->mutex);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (sdev->power_state) {
 		rval = si4713_read_property(sdev,
 						SI4713_TX_COMPONENT_ENABLE, &p);
 		if (rval < 0)
+<<<<<<< HEAD
 			goto unlock;
+=======
+			return rval;
+>>>>>>> refs/remotes/origin/master
 
 		p = set_bits(p, stereo, 1, 1 << 1);
 		p = set_bits(p, rds, 2, 1 << 2);
@@ -1913,6 +2279,7 @@ static int si4713_s_modulator(struct v4l2_subdev *sd, struct v4l2_modulator *vm)
 		rval = si4713_write_property(sdev,
 						SI4713_TX_COMPONENT_ENABLE, p);
 		if (rval < 0)
+<<<<<<< HEAD
 			goto unlock;
 	}
 
@@ -1921,6 +2288,14 @@ static int si4713_s_modulator(struct v4l2_subdev *sd, struct v4l2_modulator *vm)
 
 unlock:
 	mutex_unlock(&sdev->mutex);
+=======
+			return rval;
+	}
+
+	sdev->stereo = stereo;
+	sdev->rds_enabled = rds;
+
+>>>>>>> refs/remotes/origin/master
 	return rval;
 }
 
@@ -1930,9 +2305,14 @@ static int si4713_g_frequency(struct v4l2_subdev *sd, struct v4l2_frequency *f)
 	struct si4713_device *sdev = to_si4713_device(sd);
 	int rval = 0;
 
+<<<<<<< HEAD
 	f->type = V4L2_TUNER_RADIO;
 
 	mutex_lock(&sdev->mutex);
+=======
+	if (f->tuner)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	if (sdev->power_state) {
 		u16 freq;
@@ -1940,39 +2320,63 @@ static int si4713_g_frequency(struct v4l2_subdev *sd, struct v4l2_frequency *f)
 
 		rval = si4713_tx_tune_status(sdev, 0x00, &freq, &p, &a, &n);
 		if (rval < 0)
+<<<<<<< HEAD
 			goto unlock;
+=======
+			return rval;
+>>>>>>> refs/remotes/origin/master
 
 		sdev->frequency = freq;
 	}
 
 	f->frequency = si4713_to_v4l2(sdev->frequency);
 
+<<<<<<< HEAD
 unlock:
 	mutex_unlock(&sdev->mutex);
+=======
+>>>>>>> refs/remotes/origin/master
 	return rval;
 }
 
 /* si4713_s_frequency - set tuner or modulator radio frequency */
+<<<<<<< HEAD
 static int si4713_s_frequency(struct v4l2_subdev *sd, struct v4l2_frequency *f)
+=======
+static int si4713_s_frequency(struct v4l2_subdev *sd, const struct v4l2_frequency *f)
+>>>>>>> refs/remotes/origin/master
 {
 	struct si4713_device *sdev = to_si4713_device(sd);
 	int rval = 0;
 	u16 frequency = v4l2_to_si4713(f->frequency);
 
+<<<<<<< HEAD
 	/* Check frequency range */
 	if (frequency < FREQ_RANGE_LOW || frequency > FREQ_RANGE_HIGH)
 		return -EDOM;
 
 	mutex_lock(&sdev->mutex);
+=======
+	if (f->tuner)
+		return -EINVAL;
+
+	/* Check frequency range */
+	frequency = clamp_t(u16, frequency, FREQ_RANGE_LOW, FREQ_RANGE_HIGH);
+>>>>>>> refs/remotes/origin/master
 
 	if (sdev->power_state) {
 		rval = si4713_tx_tune_freq(sdev, frequency);
 		if (rval < 0)
+<<<<<<< HEAD
 			goto unlock;
+=======
+			return rval;
+>>>>>>> refs/remotes/origin/master
 		frequency = rval;
 		rval = 0;
 	}
 	sdev->frequency = frequency;
+<<<<<<< HEAD
 	f->frequency = si4713_to_v4l2(frequency);
 
 unlock:
@@ -1980,6 +2384,20 @@ unlock:
 	return rval;
 }
 
+=======
+
+	return rval;
+}
+
+static const struct v4l2_ctrl_ops si4713_ctrl_ops = {
+	.s_ctrl = si4713_s_ctrl,
+};
+
+static const struct v4l2_subdev_core_ops si4713_subdev_core_ops = {
+	.ioctl		= si4713_ioctl,
+};
+
+>>>>>>> refs/remotes/origin/master
 static const struct v4l2_subdev_tuner_ops si4713_subdev_tuner_ops = {
 	.g_frequency	= si4713_g_frequency,
 	.s_frequency	= si4713_s_frequency,
@@ -2001,6 +2419,10 @@ static int si4713_probe(struct i2c_client *client,
 {
 	struct si4713_device *sdev;
 	struct si4713_platform_data *pdata = client->dev.platform_data;
+<<<<<<< HEAD
+=======
+	struct v4l2_ctrl_handler *hdl;
+>>>>>>> refs/remotes/origin/master
 	int rval, i;
 
 	sdev = kzalloc(sizeof *sdev, GFP_KERNEL);
@@ -2034,12 +2456,96 @@ static int si4713_probe(struct i2c_client *client,
 
 	v4l2_i2c_subdev_init(&sdev->sd, client, &si4713_subdev_ops);
 
+<<<<<<< HEAD
 	mutex_init(&sdev->mutex);
 	init_completion(&sdev->work);
 
 	if (client->irq) {
 		rval = request_irq(client->irq,
 			si4713_handler, IRQF_TRIGGER_FALLING | IRQF_DISABLED,
+=======
+	init_completion(&sdev->work);
+
+	hdl = &sdev->ctrl_handler;
+	v4l2_ctrl_handler_init(hdl, 20);
+	sdev->mute = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_AUDIO_MUTE, 0, 1, 1, DEFAULT_MUTE);
+
+	sdev->rds_pi = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_RDS_TX_PI, 0, 0xffff, 1, DEFAULT_RDS_PI);
+	sdev->rds_pty = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_RDS_TX_PTY, 0, 31, 1, DEFAULT_RDS_PTY);
+	sdev->rds_deviation = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_RDS_TX_DEVIATION, 0, MAX_RDS_DEVIATION,
+			10, DEFAULT_RDS_DEVIATION);
+	/*
+	 * Report step as 8. From RDS spec, psname
+	 * should be 8. But there are receivers which scroll strings
+	 * sized as 8xN.
+	 */
+	sdev->rds_ps_name = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_RDS_TX_PS_NAME, 0, MAX_RDS_PS_NAME, 8, 0);
+	/*
+	 * Report step as 32 (2A block). From RDS spec,
+	 * radio text should be 32 for 2A block. But there are receivers
+	 * which scroll strings sized as 32xN. Setting default to 32.
+	 */
+	sdev->rds_radio_text = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_RDS_TX_RADIO_TEXT, 0, MAX_RDS_RADIO_TEXT, 32, 0);
+
+	sdev->limiter_enabled = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_AUDIO_LIMITER_ENABLED, 0, 1, 1, 1);
+	sdev->limiter_release_time = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_AUDIO_LIMITER_RELEASE_TIME, 250,
+			MAX_LIMITER_RELEASE_TIME, 10, DEFAULT_LIMITER_RTIME);
+	sdev->limiter_deviation = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_AUDIO_LIMITER_DEVIATION, 0,
+			MAX_LIMITER_DEVIATION, 10, DEFAULT_LIMITER_DEV);
+
+	sdev->compression_enabled = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_AUDIO_COMPRESSION_ENABLED, 0, 1, 1, 1);
+	sdev->compression_gain = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_AUDIO_COMPRESSION_GAIN, 0, MAX_ACOMP_GAIN, 1,
+			DEFAULT_ACOMP_GAIN);
+	sdev->compression_threshold = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_AUDIO_COMPRESSION_THRESHOLD, MIN_ACOMP_THRESHOLD,
+			MAX_ACOMP_THRESHOLD, 1,
+			DEFAULT_ACOMP_THRESHOLD);
+	sdev->compression_attack_time = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_AUDIO_COMPRESSION_ATTACK_TIME, 0,
+			MAX_ACOMP_ATTACK_TIME, 500, DEFAULT_ACOMP_ATIME);
+	sdev->compression_release_time = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_AUDIO_COMPRESSION_RELEASE_TIME, 100000,
+			MAX_ACOMP_RELEASE_TIME, 100000, DEFAULT_ACOMP_RTIME);
+
+	sdev->pilot_tone_enabled = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_PILOT_TONE_ENABLED, 0, 1, 1, 1);
+	sdev->pilot_tone_deviation = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_PILOT_TONE_DEVIATION, 0, MAX_PILOT_DEVIATION,
+			10, DEFAULT_PILOT_DEVIATION);
+	sdev->pilot_tone_freq = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_PILOT_TONE_FREQUENCY, 0, MAX_PILOT_FREQUENCY,
+			1, DEFAULT_PILOT_FREQUENCY);
+
+	sdev->tune_preemphasis = v4l2_ctrl_new_std_menu(hdl, &si4713_ctrl_ops,
+			V4L2_CID_TUNE_PREEMPHASIS,
+			V4L2_PREEMPHASIS_75_uS, 0, V4L2_PREEMPHASIS_50_uS);
+	sdev->tune_pwr_level = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_TUNE_POWER_LEVEL, 0, 120, 1, DEFAULT_POWER_LEVEL);
+	sdev->tune_ant_cap = v4l2_ctrl_new_std(hdl, &si4713_ctrl_ops,
+			V4L2_CID_TUNE_ANTENNA_CAPACITOR, 0, 191, 1, 0);
+
+	if (hdl->error) {
+		rval = hdl->error;
+		goto free_ctrls;
+	}
+	v4l2_ctrl_cluster(20, &sdev->mute);
+	sdev->sd.ctrl_handler = hdl;
+
+	if (client->irq) {
+		rval = request_irq(client->irq,
+			si4713_handler, IRQF_TRIGGER_FALLING,
+>>>>>>> refs/remotes/origin/master
 			client->name, sdev);
 		if (rval < 0) {
 			v4l2_err(&sdev->sd, "Could not request IRQ\n");
@@ -2061,6 +2567,11 @@ static int si4713_probe(struct i2c_client *client,
 free_irq:
 	if (client->irq)
 		free_irq(client->irq, sdev);
+<<<<<<< HEAD
+=======
+free_ctrls:
+	v4l2_ctrl_handler_free(hdl);
+>>>>>>> refs/remotes/origin/master
 put_reg:
 	regulator_bulk_free(ARRAY_SIZE(sdev->supplies), sdev->supplies);
 free_gpio:
@@ -2085,6 +2596,10 @@ static int si4713_remove(struct i2c_client *client)
 		free_irq(client->irq, sdev);
 
 	v4l2_device_unregister_subdev(sd);
+<<<<<<< HEAD
+=======
+	v4l2_ctrl_handler_free(sd->ctrl_handler);
+>>>>>>> refs/remotes/origin/master
 	regulator_bulk_free(ARRAY_SIZE(sdev->supplies), sdev->supplies);
 	if (gpio_is_valid(sdev->gpio_reset))
 		gpio_free(sdev->gpio_reset);
@@ -2110,6 +2625,7 @@ static struct i2c_driver si4713_i2c_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Module Interface */
 static int __init si4713_module_init(void)
 {
@@ -2127,3 +2643,6 @@ module_exit(si4713_module_exit);
 =======
 module_i2c_driver(si4713_i2c_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(si4713_i2c_driver);
+>>>>>>> refs/remotes/origin/master

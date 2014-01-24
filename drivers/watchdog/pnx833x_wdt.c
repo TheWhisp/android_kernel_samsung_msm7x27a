@@ -18,10 +18,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -36,9 +41,12 @@
 #include <asm/mach-pnx833x/pnx833x.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PFX "pnx833x: "
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define WATCHDOG_TIMEOUT 30		/* 30 sec Maximum timeout */
 #define WATCHDOG_COUNT_FREQUENCY 68000000U /* Watchdog counts at 68MHZ. */
 #define	PNX_WATCHDOG_TIMEOUT	(WATCHDOG_TIMEOUT * WATCHDOG_COUNT_FREQUENCY)
@@ -63,12 +71,17 @@ MODULE_PARM_DESC(timeout, "Watchdog timeout in Mhz. (68Mhz clock), default="
 			__MODULE_STRING(PNX_TIMEOUT_VALUE) "(30 seconds).");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 					__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
@@ -90,10 +103,14 @@ static void pnx833x_wdt_start(void)
 				PNX833X_CONFIG_CPU_COUNTERS_CONTROL) |= 0x1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Started watchdog timer.\n");
 =======
 	pr_info("Started watchdog timer\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Started watchdog timer\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void pnx833x_wdt_stop(void)
@@ -105,10 +122,14 @@ static void pnx833x_wdt_stop(void)
 			PNX833X_CONFIG_CPU_COUNTERS_CONTROL) &= 0xFFFFFFFE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Stopped watchdog timer.\n");
 =======
 	pr_info("Stopped watchdog timer\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Stopped watchdog timer\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void pnx833x_wdt_ping(void)
@@ -135,10 +156,14 @@ static int pnx833x_wdt_open(struct inode *inode, struct file *file)
 	pnx833x_wdt_ping();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Started watchdog timer.\n");
 =======
 	pr_info("Started watchdog timer\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Started watchdog timer\n");
+>>>>>>> refs/remotes/origin/master
 
 	return nonseekable_open(inode, file);
 }
@@ -258,11 +283,14 @@ static struct notifier_block pnx833x_wdt_notifier = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static char banner[] __initdata =
 	KERN_INFO PFX "Hardware Watchdog Timer for PNX833x: Version 0.1\n";
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init watchdog_init(void)
 {
 	int ret, cause;
@@ -272,26 +300,35 @@ static int __init watchdog_init(void)
 	/*If bit 31 is set then watchdog was cause of reset.*/
 	if (cause & 0x80000000) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO PFX "The system was previously reset due to "
 			"the watchdog firing - please investigate...\n");
 =======
 		pr_info("The system was previously reset due to the watchdog firing - please investigate...\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("The system was previously reset due to the watchdog firing - please investigate...\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = register_reboot_notifier(&pnx833x_wdt_notifier);
 	if (ret) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register reboot notifier (err=%d)\n", ret);
 =======
 		pr_err("cannot register reboot notifier (err=%d)\n", ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register reboot notifier (err=%d)\n", ret);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
 	ret = misc_register(&pnx833x_wdt_miscdev);
 	if (ret) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
@@ -300,16 +337,25 @@ static int __init watchdog_init(void)
 		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
 		       WATCHDOG_MINOR, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, ret);
+>>>>>>> refs/remotes/origin/master
 		unregister_reboot_notifier(&pnx833x_wdt_notifier);
 		return ret;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	printk(banner);
 =======
 	pr_info("Hardware Watchdog Timer for PNX833x: Version 0.1\n");
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Hardware Watchdog Timer for PNX833x: Version 0.1\n");
+
+>>>>>>> refs/remotes/origin/master
 	if (start_enabled)
 		pnx833x_wdt_start();
 
@@ -328,4 +374,7 @@ module_exit(watchdog_exit);
 MODULE_AUTHOR("Daniel Laird/Andre McCurdy");
 MODULE_DESCRIPTION("Hardware Watchdog Device for PNX833x");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

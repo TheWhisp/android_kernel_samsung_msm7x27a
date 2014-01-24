@@ -39,6 +39,7 @@ ttl_tg(struct sk_buff *skb, const struct xt_action_param *par)
 
 	switch (info->mode) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case IPT_TTL_SET:
 			new_ttl = info->ttl;
 			break;
@@ -56,6 +57,8 @@ ttl_tg(struct sk_buff *skb, const struct xt_action_param *par)
 			new_ttl = iph->ttl;
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case IPT_TTL_SET:
 		new_ttl = info->ttl;
 		break;
@@ -72,7 +75,10 @@ ttl_tg(struct sk_buff *skb, const struct xt_action_param *par)
 	default:
 		new_ttl = iph->ttl;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (new_ttl != iph->ttl) {
@@ -98,6 +104,7 @@ hl_tg6(struct sk_buff *skb, const struct xt_action_param *par)
 
 	switch (info->mode) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case IP6T_HL_SET:
 			new_hl = info->hop_limit;
 			break;
@@ -115,6 +122,8 @@ hl_tg6(struct sk_buff *skb, const struct xt_action_param *par)
 			new_hl = ip6h->hop_limit;
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case IP6T_HL_SET:
 		new_hl = info->hop_limit;
 		break;
@@ -131,7 +140,10 @@ hl_tg6(struct sk_buff *skb, const struct xt_action_param *par)
 	default:
 		new_hl = ip6h->hop_limit;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ip6h->hop_limit = new_hl;

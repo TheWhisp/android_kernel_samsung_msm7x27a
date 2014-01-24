@@ -29,10 +29,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -46,6 +51,7 @@
 #include <linux/uaccess.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 
 #define DRV_NAME "advantechwdt"
@@ -54,6 +60,10 @@
 
 #define DRV_NAME "advantechwdt"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#define DRV_NAME "advantechwdt"
+>>>>>>> refs/remotes/origin/master
 #define WATCHDOG_NAME "Advantech WDT"
 #define WATCHDOG_TIMEOUT 60		/* 60 sec default timeout */
 
@@ -88,12 +98,17 @@ MODULE_PARM_DESC(timeout,
 		__MODULE_STRING(WATCHDOG_TIMEOUT) ".");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 	"Watchdog cannot be stopped once started (default="
 		__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -223,11 +238,15 @@ static int advwdt_close(struct inode *inode, struct file *file)
 		advwdt_disable();
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 				"Unexpected close, not stopping watchdog!\n");
 =======
 		pr_crit("Unexpected close, not stopping watchdog!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/master
 		advwdt_ping();
 	}
 	clear_bit(0, &advwdt_is_open);
@@ -258,12 +277,17 @@ static struct miscdevice advwdt_miscdev = {
  *	Init & exit routines
  */
 
+<<<<<<< HEAD
 static int __devinit advwdt_probe(struct platform_device *dev)
+=======
+static int advwdt_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
 	if (wdt_stop != wdt_start) {
 		if (!request_region(wdt_stop, 1, WATCHDOG_NAME)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			printk(KERN_ERR PFX
 				"I/O address 0x%04x already in use\n",
@@ -272,6 +296,10 @@ static int __devinit advwdt_probe(struct platform_device *dev)
 			pr_err("I/O address 0x%04x already in use\n",
 			       wdt_stop);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("I/O address 0x%04x already in use\n",
+			       wdt_stop);
+>>>>>>> refs/remotes/origin/master
 			ret = -EIO;
 			goto out;
 		}
@@ -279,12 +307,16 @@ static int __devinit advwdt_probe(struct platform_device *dev)
 
 	if (!request_region(wdt_start, 1, WATCHDOG_NAME)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 				"I/O address 0x%04x already in use\n",
 								wdt_start);
 =======
 		pr_err("I/O address 0x%04x already in use\n", wdt_start);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("I/O address 0x%04x already in use\n", wdt_start);
+>>>>>>> refs/remotes/origin/master
 		ret = -EIO;
 		goto unreg_stop;
 	}
@@ -294,15 +326,20 @@ static int __devinit advwdt_probe(struct platform_device *dev)
 	if (advwdt_set_heartbeat(timeout)) {
 		advwdt_set_heartbeat(WATCHDOG_TIMEOUT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO PFX
 			"timeout value must be 1<=x<=63, using %d\n", timeout);
 =======
 		pr_info("timeout value must be 1<=x<=63, using %d\n", timeout);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("timeout value must be 1<=x<=63, using %d\n", timeout);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = misc_register(&advwdt_miscdev);
 	if (ret != 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
@@ -311,12 +348,17 @@ static int __devinit advwdt_probe(struct platform_device *dev)
 	}
 	printk(KERN_INFO PFX "initialized. timeout=%d sec (nowayout=%d)\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
 		       WATCHDOG_MINOR, ret);
 		goto unreg_regions;
 	}
 	pr_info("initialized. timeout=%d sec (nowayout=%d)\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		timeout, nowayout);
 out:
 	return ret;
@@ -328,7 +370,11 @@ unreg_stop:
 	goto out;
 }
 
+<<<<<<< HEAD
 static int __devexit advwdt_remove(struct platform_device *dev)
+=======
+static int advwdt_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	misc_deregister(&advwdt_miscdev);
 	release_region(wdt_start, 1);
@@ -346,7 +392,11 @@ static void advwdt_shutdown(struct platform_device *dev)
 
 static struct platform_driver advwdt_driver = {
 	.probe		= advwdt_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(advwdt_remove),
+=======
+	.remove		= advwdt_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= advwdt_shutdown,
 	.driver		= {
 		.owner	= THIS_MODULE,
@@ -359,11 +409,15 @@ static int __init advwdt_init(void)
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO
 	     "WDT driver for Advantech single board computer initialising.\n");
 =======
 	pr_info("WDT driver for Advantech single board computer initialising\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("WDT driver for Advantech single board computer initialising\n");
+>>>>>>> refs/remotes/origin/master
 
 	err = platform_driver_register(&advwdt_driver);
 	if (err)
@@ -388,10 +442,14 @@ static void __exit advwdt_exit(void)
 	platform_device_unregister(advwdt_platform_device);
 	platform_driver_unregister(&advwdt_driver);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Watchdog Module Unloaded.\n");
 =======
 	pr_info("Watchdog Module Unloaded\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Watchdog Module Unloaded\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(advwdt_init);
@@ -400,4 +458,7 @@ module_exit(advwdt_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Marek Michalkiewicz <marekm@linux.org.pl>");
 MODULE_DESCRIPTION("Advantech Single Board Computer WDT driver");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

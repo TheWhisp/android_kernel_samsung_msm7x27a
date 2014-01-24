@@ -45,20 +45,27 @@ static void __init iq80331_timer_init(void)
 		iop_init_time(266000000);
 }
 
+<<<<<<< HEAD
 static struct sys_timer iq80331_timer = {
 	.init		= iq80331_timer_init,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * IQ80331 PCI.
  */
 static int __init
 <<<<<<< HEAD
+<<<<<<< HEAD
 iq80331_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 iq80331_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+iq80331_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	int irq;
 
@@ -88,11 +95,18 @@ iq80331_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 }
 
 static struct hw_pci iq80331_pci __initdata = {
+<<<<<<< HEAD
 	.swizzle	= pci_std_swizzle,
 	.nr_controllers = 1,
 	.setup		= iop3xx_pci_setup,
 	.preinit	= iop3xx_pci_preinit_cond,
 	.scan		= iop3xx_pci_scan_bus,
+=======
+	.nr_controllers = 1,
+	.ops		= &iop3xx_ops,
+	.setup		= iop3xx_pci_setup,
+	.preinit	= iop3xx_pci_preinit_cond,
+>>>>>>> refs/remotes/origin/master
 	.map_irq	= iq80331_pci_map_irq,
 };
 
@@ -131,8 +145,20 @@ static struct platform_device iq80331_flash_device = {
 	.resource	= &iq80331_flash_resource,
 };
 
+<<<<<<< HEAD
 static void __init iq80331_init_machine(void)
 {
+=======
+static struct resource iq80331_gpio_res[] = {
+	DEFINE_RES_MEM((IOP3XX_PERIPHERAL_PHYS_BASE + 0x1780), 0x10),
+};
+
+static void __init iq80331_init_machine(void)
+{
+	platform_device_register_simple("gpio-iop", 0,
+					iq80331_gpio_res,
+					ARRAY_SIZE(iq80331_gpio_res));
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(&iop3xx_i2c0_device);
 	platform_device_register(&iop3xx_i2c1_device);
 	platform_device_register(&iop33x_uart0_device);
@@ -146,6 +172,7 @@ static void __init iq80331_init_machine(void)
 MACHINE_START(IQ80331, "Intel IQ80331")
 	/* Maintainer: Intel Corp. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 =======
 	.atag_offset	= 0x100,
@@ -158,4 +185,12 @@ MACHINE_START(IQ80331, "Intel IQ80331")
 =======
 	.restart	= iop3xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= iop3xx_map_io,
+	.init_irq	= iop33x_init_irq,
+	.init_time	= iq80331_timer_init,
+	.init_machine	= iq80331_init_machine,
+	.restart	= iop3xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

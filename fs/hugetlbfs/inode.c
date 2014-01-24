@@ -1,7 +1,11 @@
 /*
  * hugetlbpage-backed filesystem.  Based on ramfs.
  *
+<<<<<<< HEAD
  * William Irwin, 2002
+=======
+ * Nadia Yvette Chambers, 2002
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) 2002 Linus Torvalds.
  */
@@ -42,10 +46,16 @@ static const struct inode_operations hugetlbfs_dir_inode_operations;
 static const struct inode_operations hugetlbfs_inode_operations;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct hugetlbfs_config {
 	uid_t   uid;
 	gid_t   gid;
+=======
+struct hugetlbfs_config {
+	kuid_t   uid;
+	kgid_t   gid;
+>>>>>>> refs/remotes/origin/master
 	umode_t mode;
 	long	nr_blocks;
 	long	nr_inodes;
@@ -62,7 +72,10 @@ static inline struct hugetlbfs_inode_info *HUGETLBFS_I(struct inode *inode)
 	return container_of(inode, struct hugetlbfs_inode_info, vfs_inode);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct backing_dev_info hugetlbfs_backing_dev_info = {
 	.name		= "hugetlbfs",
 	.ra_pages	= 0,	/* No readahead */
@@ -100,7 +113,11 @@ static void huge_pagevec_release(struct pagevec *pvec)
 
 static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	loff_t len, vma_len;
 	int ret;
 	struct hstate *h = hstate_file(file);
@@ -113,6 +130,7 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
 	 * way when do_mmap_pgoff unwinds (may be important on powerpc
 	 * and ia64).
 	 */
+<<<<<<< HEAD
 	vma->vm_flags |= VM_HUGETLB | VM_RESERVED;
 	vma->vm_ops = &hugetlb_vm_ops;
 
@@ -121,6 +139,12 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
 =======
 	if (vma->vm_pgoff & (~huge_page_mask(h) >> PAGE_SHIFT))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vma->vm_flags |= VM_HUGETLB | VM_DONTEXPAND;
+	vma->vm_ops = &hugetlb_vm_ops;
+
+	if (vma->vm_pgoff & (~huge_page_mask(h) >> PAGE_SHIFT))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	vma_len = (loff_t)(vma->vm_end - vma->vm_start);
@@ -158,8 +182,13 @@ hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
 {
 	struct mm_struct *mm = current->mm;
 	struct vm_area_struct *vma;
+<<<<<<< HEAD
 	unsigned long start_addr;
 	struct hstate *h = hstate_file(file);
+=======
+	struct hstate *h = hstate_file(file);
+	struct vm_unmapped_area_info info;
+>>>>>>> refs/remotes/origin/master
 
 	if (len & ~huge_page_mask(h))
 		return -EINVAL;
@@ -180,6 +209,7 @@ hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
 			return addr;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	start_addr = mm->free_area_cache;
 
@@ -228,6 +258,15 @@ full_search:
 >>>>>>> refs/remotes/origin/cm-10.0
 		addr = ALIGN(vma->vm_end, huge_page_size(h));
 	}
+=======
+	info.flags = 0;
+	info.length = len;
+	info.low_limit = TASK_UNMAPPED_BASE;
+	info.high_limit = TASK_SIZE;
+	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
+	info.align_offset = 0;
+	return vm_unmapped_area(&info);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -415,6 +454,7 @@ static void truncate_hugepages(struct inode *inode, loff_t lstart)
 static void hugetlbfs_evict_inode(struct inode *inode)
 {
 	truncate_hugepages(inode, 0);
+<<<<<<< HEAD
 	end_writeback(inode);
 }
 
@@ -425,11 +465,26 @@ hugetlb_vmtruncate_list(struct prio_tree_root *root, pgoff_t pgoff)
 	struct prio_tree_iter iter;
 
 	vma_prio_tree_foreach(vma, &iter, root, pgoff, ULONG_MAX) {
+=======
+	clear_inode(inode);
+}
+
+static inline void
+hugetlb_vmtruncate_list(struct rb_root *root, pgoff_t pgoff)
+{
+	struct vm_area_struct *vma;
+
+	vma_interval_tree_foreach(vma, root, pgoff, ULONG_MAX) {
+>>>>>>> refs/remotes/origin/master
 		unsigned long v_offset;
 
 		/*
 		 * Can the expression below overflow on 32-bit arches?
+<<<<<<< HEAD
 		 * No, because the prio_tree returns us only those vmas
+=======
+		 * No, because the interval tree returns us only those vmas
+>>>>>>> refs/remotes/origin/master
 		 * which overlap the truncated area starting at pgoff,
 		 * and no vma on a 32-bit arch can span beyond the 4GB.
 		 */
@@ -438,8 +493,13 @@ hugetlb_vmtruncate_list(struct prio_tree_root *root, pgoff_t pgoff)
 		else
 			v_offset = 0;
 
+<<<<<<< HEAD
 		__unmap_hugepage_range(vma,
 				vma->vm_start + v_offset, vma->vm_end, NULL);
+=======
+		unmap_hugepage_range(vma, vma->vm_start + v_offset,
+				     vma->vm_end, NULL);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -454,7 +514,11 @@ static int hugetlb_vmtruncate(struct inode *inode, loff_t offset)
 
 	i_size_write(inode, offset);
 	mutex_lock(&mapping->i_mmap_mutex);
+<<<<<<< HEAD
 	if (!prio_tree_empty(&mapping->i_mmap))
+=======
+	if (!RB_EMPTY_ROOT(&mapping->i_mmap))
+>>>>>>> refs/remotes/origin/master
 		hugetlb_vmtruncate_list(&mapping->i_mmap, pgoff);
 	mutex_unlock(&mapping->i_mmap_mutex);
 	truncate_hugepages(inode, offset);
@@ -489,9 +553,12 @@ static int hugetlbfs_setattr(struct dentry *dentry, struct iattr *attr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct inode *hugetlbfs_get_inode(struct super_block *sb, uid_t uid, 
 					gid_t gid, int mode, dev_t dev)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct inode *hugetlbfs_get_root(struct super_block *sb,
 					struct hugetlbfs_config *config)
 {
@@ -516,10 +583,24 @@ static struct inode *hugetlbfs_get_root(struct super_block *sb,
 	return inode;
 }
 
+<<<<<<< HEAD
 static struct inode *hugetlbfs_get_inode(struct super_block *sb,
 					struct inode *dir,
 					umode_t mode, dev_t dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Hugetlbfs is not reclaimable; therefore its i_mmap_mutex will never
+ * be taken from reclaim -- unlike regular filesystems. This needs an
+ * annotation because huge_pmd_share() does an allocation under
+ * i_mmap_mutex.
+ */
+struct lock_class_key hugetlbfs_i_mmap_mutex_key;
+
+static struct inode *hugetlbfs_get_inode(struct super_block *sb,
+					struct inode *dir,
+					umode_t mode, dev_t dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 
@@ -528,12 +609,18 @@ static struct inode *hugetlbfs_get_inode(struct super_block *sb,
 		struct hugetlbfs_inode_info *info;
 		inode->i_ino = get_next_ino();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_mode = mode;
 		inode->i_uid = uid;
 		inode->i_gid = gid;
 =======
 		inode_init_owner(inode, dir, mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		inode_init_owner(inode, dir, mode);
+		lockdep_set_class(&inode->i_mapping->i_mmap_mutex,
+				&hugetlbfs_i_mmap_mutex_key);
+>>>>>>> refs/remotes/origin/master
 		inode->i_mapping->a_ops = &hugetlbfs_aops;
 		inode->i_mapping->backing_dev_info =&hugetlbfs_backing_dev_info;
 		inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
@@ -567,9 +654,13 @@ static struct inode *hugetlbfs_get_inode(struct super_block *sb,
 			break;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		lockdep_annotate_inode_mutex_key(inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		lockdep_annotate_inode_mutex_key(inode);
+>>>>>>> refs/remotes/origin/master
 	}
 	return inode;
 }
@@ -578,6 +669,7 @@ static struct inode *hugetlbfs_get_inode(struct super_block *sb,
  * File creation. Allocate an inode, and we're done..
  */
 static int hugetlbfs_mknod(struct inode *dir,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			struct dentry *dentry, int mode, dev_t dev)
 {
@@ -594,13 +686,18 @@ static int hugetlbfs_mknod(struct inode *dir,
 	}
 	inode = hugetlbfs_get_inode(dir->i_sb, current_fsuid(), gid, mode, dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			struct dentry *dentry, umode_t mode, dev_t dev)
 {
 	struct inode *inode;
 	int error = -ENOSPC;
 
 	inode = hugetlbfs_get_inode(dir->i_sb, dir, mode, dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (inode) {
 		dir->i_ctime = dir->i_mtime = CURRENT_TIME;
 		d_instantiate(dentry, inode);
@@ -611,10 +708,14 @@ static int hugetlbfs_mknod(struct inode *dir,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int hugetlbfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 =======
 static int hugetlbfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hugetlbfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval = hugetlbfs_mknod(dir, dentry, mode | S_IFDIR, 0);
 	if (!retval)
@@ -623,10 +724,14 @@ static int hugetlbfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mod
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int hugetlbfs_create(struct inode *dir, struct dentry *dentry, int mode, struct nameidata *nd)
 =======
 static int hugetlbfs_create(struct inode *dir, struct dentry *dentry, umode_t mode, struct nameidata *nd)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hugetlbfs_create(struct inode *dir, struct dentry *dentry, umode_t mode, bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	return hugetlbfs_mknod(dir, dentry, mode | S_IFREG, 0);
 }
@@ -636,6 +741,7 @@ static int hugetlbfs_symlink(struct inode *dir,
 {
 	struct inode *inode;
 	int error = -ENOSPC;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	gid_t gid;
 
@@ -650,6 +756,10 @@ static int hugetlbfs_symlink(struct inode *dir,
 
 	inode = hugetlbfs_get_inode(dir->i_sb, dir, S_IFLNK|S_IRWXUGO, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	inode = hugetlbfs_get_inode(dir->i_sb, dir, S_IFLNK|S_IRWXUGO, 0);
+>>>>>>> refs/remotes/origin/master
 	if (inode) {
 		int l = strlen(symname)+1;
 		error = page_symlink(inode, symname, l);
@@ -682,11 +792,19 @@ static int hugetlbfs_migrate_page(struct address_space *mapping,
 	int rc;
 
 	rc = migrate_huge_page_move_mapping(mapping, newpage, page);
+<<<<<<< HEAD
 	if (rc)
 		return rc;
 	migrate_page_copy(newpage, page);
 
 	return 0;
+=======
+	if (rc != MIGRATEPAGE_SUCCESS)
+		return rc;
+	migrate_page_copy(newpage, page);
+
+	return MIGRATEPAGE_SUCCESS;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int hugetlbfs_statfs(struct dentry *dentry, struct kstatfs *buf)
@@ -701,10 +819,13 @@ static int hugetlbfs_statfs(struct dentry *dentry, struct kstatfs *buf)
 		/* If no limits set, just report 0 for max/free/used
 		 * blocks, like simple_statfs() */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (sbinfo->max_blocks >= 0) {
 			buf->f_blocks = sbinfo->max_blocks;
 			buf->f_bavail = buf->f_bfree = sbinfo->free_blocks;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (sbinfo->spool) {
 			long free_pages;
 
@@ -714,7 +835,10 @@ static int hugetlbfs_statfs(struct dentry *dentry, struct kstatfs *buf)
 				- sbinfo->spool->used_hpages;
 			buf->f_bavail = buf->f_bfree = free_pages;
 			spin_unlock(&sbinfo->spool->lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			buf->f_files = sbinfo->max_inodes;
 			buf->f_ffree = sbinfo->free_inodes;
 		}
@@ -731,12 +855,18 @@ static void hugetlbfs_put_super(struct super_block *sb)
 	if (sbi) {
 		sb->s_fs_info = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (sbi->spool)
 			hugepage_put_subpool(sbi->spool);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(sbi);
 	}
 }
@@ -787,9 +917,12 @@ static void hugetlbfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(hugetlbfs_inode_cachep, HUGETLBFS_I(inode));
 }
 
@@ -871,13 +1004,25 @@ hugetlbfs_parse_options(char *options, struct hugetlbfs_config *pconfig)
 		case Opt_uid:
 			if (match_int(&args[0], &option))
  				goto bad_val;
+<<<<<<< HEAD
 			pconfig->uid = option;
+=======
+			pconfig->uid = make_kuid(current_user_ns(), option);
+			if (!uid_valid(pconfig->uid))
+				goto bad_val;
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		case Opt_gid:
 			if (match_int(&args[0], &option))
  				goto bad_val;
+<<<<<<< HEAD
 			pconfig->gid = option;
+=======
+			pconfig->gid = make_kgid(current_user_ns(), option);
+			if (!gid_valid(pconfig->gid))
+				goto bad_val;
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		case Opt_mode:
@@ -948,10 +1093,13 @@ static int
 hugetlbfs_fill_super(struct super_block *sb, void *data, int silent)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct inode * inode;
 	struct dentry * root;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	struct hugetlbfs_config config;
 	struct hugetlbfs_sb_info *sbinfo;
@@ -975,11 +1123,14 @@ hugetlbfs_fill_super(struct super_block *sb, void *data, int silent)
 	sbinfo->hstate = config.hstate;
 	spin_lock_init(&sbinfo->stat_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sbinfo->max_blocks = config.nr_blocks;
 	sbinfo->free_blocks = config.nr_blocks;
 	sbinfo->max_inodes = config.nr_inodes;
 	sbinfo->free_inodes = config.nr_inodes;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	sbinfo->max_inodes = config.nr_inodes;
 	sbinfo->free_inodes = config.nr_inodes;
 	sbinfo->spool = NULL;
@@ -988,13 +1139,17 @@ hugetlbfs_fill_super(struct super_block *sb, void *data, int silent)
 		if (!sbinfo->spool)
 			goto out_free;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	sb->s_maxbytes = MAX_LFS_FILESIZE;
 	sb->s_blocksize = huge_page_size(config.hstate);
 	sb->s_blocksize_bits = huge_page_shift(config.hstate);
 	sb->s_magic = HUGETLBFS_MAGIC;
 	sb->s_op = &hugetlbfs_ops;
 	sb->s_time_gran = 1;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	inode = hugetlbfs_get_inode(sb, config.uid, config.gid,
 					S_IFDIR | config.mode, 0);
@@ -1010,6 +1165,8 @@ hugetlbfs_fill_super(struct super_block *sb, void *data, int silent)
 	return 0;
 out_free:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	sb->s_root = d_make_root(hugetlbfs_get_root(sb, &config));
 	if (!sb->s_root)
 		goto out_free;
@@ -1017,11 +1174,15 @@ out_free:
 out_free:
 	if (sbinfo->spool)
 		kfree(sbinfo->spool);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(sbinfo);
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int hugetlb_get_quota(struct address_space *mapping, long delta)
 {
@@ -1053,6 +1214,8 @@ void hugetlb_put_quota(struct address_space *mapping, long delta)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct dentry *hugetlbfs_mount(struct file_system_type *fs_type,
 	int flags, const char *dev_name, void *data)
 {
@@ -1064,6 +1227,7 @@ static struct file_system_type hugetlbfs_fs_type = {
 	.mount		= hugetlbfs_mount,
 	.kill_sb	= kill_litter_super,
 };
+<<<<<<< HEAD
 
 static struct vfsmount *hugetlbfs_vfsmount;
 
@@ -1077,12 +1241,39 @@ struct file *hugetlb_file_setup(const char *name, size_t size,
 				vm_flags_t acctflag,
 				struct user_struct **user, int creat_flags)
 =======
+=======
+MODULE_ALIAS_FS("hugetlbfs");
+
+static struct vfsmount *hugetlbfs_vfsmount[HUGE_MAX_HSTATE];
+
+static int can_do_hugetlb_shm(void)
+{
+	kgid_t shm_group;
+	shm_group = make_kgid(&init_user_ns, sysctl_hugetlb_shm_group);
+	return capable(CAP_IPC_LOCK) || in_group_p(shm_group);
+}
+
+static int get_hstate_idx(int page_size_log)
+{
+	struct hstate *h = hstate_sizelog(page_size_log);
+
+	if (!h)
+		return -1;
+	return h - hstates;
+}
+
+static struct dentry_operations anon_ops = {
+	.d_dname = simple_dname
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Note that size should be aligned to proper hugepage size in caller side,
  * otherwise hugetlb_reserve_pages reserves one less hugepages than intended.
  */
 struct file *hugetlb_file_setup(const char *name, size_t size,
 				vm_flags_t acctflag, struct user_struct **user,
+<<<<<<< HEAD
 				int creat_flags)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
@@ -1095,26 +1286,50 @@ struct file *hugetlb_file_setup(const char *name, size_t size,
 
 	*user = NULL;
 	if (!hugetlbfs_vfsmount)
+=======
+				int creat_flags, int page_size_log)
+{
+	struct file *file = ERR_PTR(-ENOMEM);
+	struct inode *inode;
+	struct path path;
+	struct super_block *sb;
+	struct qstr quick_string;
+	int hstate_idx;
+
+	hstate_idx = get_hstate_idx(page_size_log);
+	if (hstate_idx < 0)
+		return ERR_PTR(-ENODEV);
+
+	*user = NULL;
+	if (!hugetlbfs_vfsmount[hstate_idx])
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-ENOENT);
 
 	if (creat_flags == HUGETLB_SHMFS_INODE && !can_do_hugetlb_shm()) {
 		*user = current_user();
 		if (user_shm_lock(size, *user)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk_once(KERN_WARNING "Using mlock ulimits for SHM_HUGETLB is deprecated\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			task_lock(current);
 			printk_once(KERN_WARNING
 				"%s (%d): Using mlock ulimits for SHM_HUGETLB is deprecated\n",
 				current->comm, current->pid);
 			task_unlock(current);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			*user = NULL;
 			return ERR_PTR(-EPERM);
 		}
 	}
 
+<<<<<<< HEAD
 	root = hugetlbfs_vfsmount->mnt_root;
 	quick_string.name = name;
 	quick_string.len = strlen(quick_string.name);
@@ -1135,6 +1350,24 @@ struct file *hugetlb_file_setup(const char *name, size_t size,
 		goto out_dentry;
 
 	error = -ENOMEM;
+=======
+	sb = hugetlbfs_vfsmount[hstate_idx]->mnt_sb;
+	quick_string.name = name;
+	quick_string.len = strlen(quick_string.name);
+	quick_string.hash = 0;
+	path.dentry = d_alloc_pseudo(sb, &quick_string);
+	if (!path.dentry)
+		goto out_shm_unlock;
+
+	d_set_d_op(path.dentry, &anon_ops);
+	path.mnt = mntget(hugetlbfs_vfsmount[hstate_idx]);
+	file = ERR_PTR(-ENOSPC);
+	inode = hugetlbfs_get_inode(sb, NULL, S_IFREG | S_IRWXUGO, 0);
+	if (!inode)
+		goto out_dentry;
+
+	file = ERR_PTR(-ENOMEM);
+>>>>>>> refs/remotes/origin/master
 	if (hugetlb_reserve_pages(inode, 0,
 			size >> huge_page_shift(hstate_inode(inode)), NULL,
 			acctflag))
@@ -1142,6 +1375,7 @@ struct file *hugetlb_file_setup(const char *name, size_t size,
 
 	d_instantiate(path.dentry, inode);
 	inode->i_size = size;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	inode->i_nlink = 0;
 =======
@@ -1152,6 +1386,13 @@ struct file *hugetlb_file_setup(const char *name, size_t size,
 	file = alloc_file(&path, FMODE_WRITE | FMODE_READ,
 			&hugetlbfs_file_operations);
 	if (!file)
+=======
+	clear_nlink(inode);
+
+	file = alloc_file(&path, FMODE_WRITE | FMODE_READ,
+			&hugetlbfs_file_operations);
+	if (IS_ERR(file))
+>>>>>>> refs/remotes/origin/master
 		goto out_dentry; /* inode is already attached */
 
 	return file;
@@ -1165,22 +1406,36 @@ out_shm_unlock:
 		user_shm_unlock(size, *user);
 		*user = NULL;
 	}
+<<<<<<< HEAD
 	return ERR_PTR(error);
+=======
+	return file;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init init_hugetlbfs_fs(void)
 {
+<<<<<<< HEAD
 	int error;
 	struct vfsmount *vfsmount;
+=======
+	struct hstate *h;
+	int error;
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	error = bdi_init(&hugetlbfs_backing_dev_info);
 	if (error)
 		return error;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	error = -ENOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	hugetlbfs_inode_cachep = kmem_cache_create("hugetlbfs_inode_cache",
 					sizeof(struct hugetlbfs_inode_info),
 					0, 0, init_once);
@@ -1191,6 +1446,7 @@ static int __init init_hugetlbfs_fs(void)
 	if (error)
 		goto out;
 
+<<<<<<< HEAD
 	vfsmount = kern_mount(&hugetlbfs_fs_type);
 
 	if (!IS_ERR(vfsmount)) {
@@ -1207,6 +1463,31 @@ static int __init init_hugetlbfs_fs(void)
 =======
 	kmem_cache_destroy(hugetlbfs_inode_cachep);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i = 0;
+	for_each_hstate(h) {
+		char buf[50];
+		unsigned ps_kb = 1U << (h->order + PAGE_SHIFT - 10);
+
+		snprintf(buf, sizeof(buf), "pagesize=%uK", ps_kb);
+		hugetlbfs_vfsmount[i] = kern_mount_data(&hugetlbfs_fs_type,
+							buf);
+
+		if (IS_ERR(hugetlbfs_vfsmount[i])) {
+			pr_err("hugetlb: Cannot mount internal hugetlbfs for "
+				"page size %uK", ps_kb);
+			error = PTR_ERR(hugetlbfs_vfsmount[i]);
+			hugetlbfs_vfsmount[i] = NULL;
+		}
+		i++;
+	}
+	/* Non default hstates are optional */
+	if (!IS_ERR_OR_NULL(hugetlbfs_vfsmount[default_hstate_idx]))
+		return 0;
+
+ out:
+	kmem_cache_destroy(hugetlbfs_inode_cachep);
+>>>>>>> refs/remotes/origin/master
  out2:
 	bdi_destroy(&hugetlbfs_backing_dev_info);
 	return error;
@@ -1214,8 +1495,24 @@ static int __init init_hugetlbfs_fs(void)
 
 static void __exit exit_hugetlbfs_fs(void)
 {
+<<<<<<< HEAD
 	kmem_cache_destroy(hugetlbfs_inode_cachep);
 	kern_unmount(hugetlbfs_vfsmount);
+=======
+	struct hstate *h;
+	int i;
+
+
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+	kmem_cache_destroy(hugetlbfs_inode_cachep);
+	i = 0;
+	for_each_hstate(h)
+		kern_unmount(hugetlbfs_vfsmount[i++]);
+>>>>>>> refs/remotes/origin/master
 	unregister_filesystem(&hugetlbfs_fs_type);
 	bdi_destroy(&hugetlbfs_backing_dev_info);
 }

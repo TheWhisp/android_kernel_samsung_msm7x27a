@@ -16,9 +16,13 @@
 #include <linux/of.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/processor.h>
 #include <asm/io.h>
@@ -56,6 +60,7 @@ EXPORT_SYMBOL_GPL(isa_bridge_pcidev);
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 fixup_hide_host_resource_fsl(struct pci_dev *dev)
 {
 	int i, class = dev->class >> 8;
@@ -77,6 +82,8 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_FREESCALE, PCI_ANY_ID, fixup_hide_host_re
 static void
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 fixup_cpc710_pci64(struct pci_dev* dev)
 {
 	/* Hide the PCI64 BARs from the kernel as their content doesn't
@@ -174,6 +181,7 @@ pcibios_make_OF_bus_map(void)
 #endif
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 typedef int (*pci_OF_scan_iterator)(struct device_node* node, void* data);
 
@@ -298,10 +306,13 @@ find_OF_pci_device_filter(struct device_node* node, void* data)
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Returns the PCI device matching a given OF node
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 int
 pci_device_from_OF_node(struct device_node* node, u8* bus, u8* devfn)
@@ -323,6 +334,8 @@ pci_device_from_OF_node(struct device_node* node, u8* bus, u8* devfn)
 	*bus = (reg[0] >> 16) & 0xff;
 	*devfn = ((reg[0] >> 8) & 0xff);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int pci_device_from_OF_node(struct device_node *node, u8 *bus, u8 *devfn)
 {
 	struct pci_dev *dev = NULL;
@@ -339,7 +352,10 @@ int pci_device_from_OF_node(struct device_node *node, u8 *bus, u8 *devfn)
 
 	*bus = (be32_to_cpup(&reg[0]) >> 16) & 0xff;
 	*devfn = (be32_to_cpup(&reg[0]) >> 8) & 0xff;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Ok, here we need some tweak. If we have already renumbered
 	 * all busses, we can't rely on the OF bus number any more.
@@ -379,17 +395,26 @@ pci_create_OF_bus_map(void)
 		of_prop->name = "pci-OF-bus-map";
 		of_prop->length = 256;
 		of_prop->value = &of_prop[1];
+<<<<<<< HEAD
 		prom_add_property(dn, of_prop);
+=======
+		of_add_property(dn, of_prop);
+>>>>>>> refs/remotes/origin/master
 		of_node_put(dn);
 	}
 }
 
+<<<<<<< HEAD
 void __devinit pcibios_setup_phb_io_space(struct pci_controller *hose)
+=======
+void pcibios_setup_phb_io_space(struct pci_controller *hose)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long io_offset;
 	struct resource *res = &hose->io_resource;
 
 	/* Fixup IO space offset */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	io_offset = (unsigned long)hose->io_base_virt - isa_io_base;
 	res->start = (res->start + io_offset) & 0xffffffffu;
@@ -399,6 +424,11 @@ void __devinit pcibios_setup_phb_io_space(struct pci_controller *hose)
 	res->start += io_offset;
 	res->end += io_offset;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	io_offset = pcibios_io_space_offset(hose);
+	res->start += io_offset;
+	res->end += io_offset;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init pcibios_init(void)
@@ -409,10 +439,14 @@ static int __init pcibios_init(void)
 	printk(KERN_INFO "PCI: Probing PCI hardware\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ppc_pci_flags & PPC_PCI_REASSIGN_ALL_BUS)
 =======
 	if (pci_has_flag(PCI_REASSIGN_ALL_BUS))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pci_has_flag(PCI_REASSIGN_ALL_BUS))
+>>>>>>> refs/remotes/origin/master
 		pci_assign_all_buses = 1;
 
 	/* Scan all of the recorded PCI controllers.  */
@@ -476,7 +510,11 @@ long sys_pciconfig_iobase(long which, unsigned long bus, unsigned long devfn)
 	case IOBASE_BRIDGE_NUMBER:
 		return (long)hose->first_busno;
 	case IOBASE_MEMORY:
+<<<<<<< HEAD
 		return (long)hose->pci_mem_offset;
+=======
+		return (long)hose->mem_offset[0];
+>>>>>>> refs/remotes/origin/master
 	case IOBASE_IO:
 		return (long)hose->io_base_phys;
 	case IOBASE_ISA_IO:

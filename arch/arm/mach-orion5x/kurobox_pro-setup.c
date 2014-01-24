@@ -8,10 +8,14 @@
  * warranty of any kind, whether express or implied.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -26,6 +30,7 @@
 #include <linux/ata_platform.h>
 #include <asm/mach-types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -33,6 +38,12 @@
 #include <asm/mach/pci.h>
 #include <mach/orion5x.h>
 #include <plat/orion_nand.h>
+=======
+#include <asm/mach/arch.h>
+#include <asm/mach/pci.h>
+#include <mach/orion5x.h>
+#include <linux/platform_data/mtd-orion_nand.h>
+>>>>>>> refs/remotes/origin/master
 #include "common.h"
 #include "mpp.h"
 
@@ -127,11 +138,16 @@ static struct platform_device kurobox_pro_nor_flash = {
  ****************************************************************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init kurobox_pro_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 static int __init kurobox_pro_pci_map_irq(const struct pci_dev *dev, u8 slot,
 	u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init kurobox_pro_pci_map_irq(const struct pci_dev *dev, u8 slot,
+	u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	int irq;
 
@@ -150,7 +166,10 @@ static int __init kurobox_pro_pci_map_irq(const struct pci_dev *dev, u8 slot,
 
 static struct hw_pci kurobox_pro_pci __initdata = {
 	.nr_controllers	= 2,
+<<<<<<< HEAD
 	.swizzle	= pci_std_swizzle,
+=======
+>>>>>>> refs/remotes/origin/master
 	.setup		= orion5x_pci_sys_setup,
 	.scan		= orion5x_pci_sys_scan_bus,
 	.map_irq	= kurobox_pro_pci_map_irq,
@@ -372,6 +391,7 @@ static void __init kurobox_pro_init(void)
 	orion5x_uart1_init();
 	orion5x_xor_init();
 
+<<<<<<< HEAD
 	orion5x_setup_dev_boot_win(KUROBOX_PRO_NOR_BOOT_BASE,
 				   KUROBOX_PRO_NOR_BOOT_SIZE);
 	platform_device_register(&kurobox_pro_nor_flash);
@@ -379,6 +399,19 @@ static void __init kurobox_pro_init(void)
 	if (machine_is_kurobox_pro()) {
 		orion5x_setup_dev0_win(KUROBOX_PRO_NAND_BASE,
 				       KUROBOX_PRO_NAND_SIZE);
+=======
+	mvebu_mbus_add_window_by_id(ORION_MBUS_DEVBUS_BOOT_TARGET,
+				    ORION_MBUS_DEVBUS_BOOT_ATTR,
+				    KUROBOX_PRO_NOR_BOOT_BASE,
+				    KUROBOX_PRO_NOR_BOOT_SIZE);
+	platform_device_register(&kurobox_pro_nor_flash);
+
+	if (machine_is_kurobox_pro()) {
+		mvebu_mbus_add_window_by_id(ORION_MBUS_DEVBUS_TARGET(0),
+					    ORION_MBUS_DEVBUS_ATTR(0),
+					    KUROBOX_PRO_NAND_BASE,
+					    KUROBOX_PRO_NAND_SIZE);
+>>>>>>> refs/remotes/origin/master
 		platform_device_register(&kurobox_pro_nand_flash);
 	}
 
@@ -392,20 +425,30 @@ static void __init kurobox_pro_init(void)
 MACHINE_START(KUROBOX_PRO, "Buffalo/Revogear Kurobox Pro")
 	/* Maintainer: Ronen Shitrit <rshitrit@marvell.com> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 =======
 	.atag_offset	= 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= kurobox_pro_init,
 	.map_io		= orion5x_map_io,
 	.init_early	= orion5x_init_early,
 	.init_irq	= orion5x_init_irq,
+<<<<<<< HEAD
 	.timer		= &orion5x_timer,
 	.fixup		= tag_fixup_mem32,
 <<<<<<< HEAD
 =======
 	.restart	= orion5x_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= orion5x_timer_init,
+	.fixup		= tag_fixup_mem32,
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
@@ -413,19 +456,29 @@ MACHINE_END
 MACHINE_START(LINKSTATION_PRO, "Buffalo Linkstation Pro/Live")
 	/* Maintainer: Byron Bradley <byron.bbradley@gmail.com> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 =======
 	.atag_offset	= 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= kurobox_pro_init,
 	.map_io		= orion5x_map_io,
 	.init_early	= orion5x_init_early,
 	.init_irq	= orion5x_init_irq,
+<<<<<<< HEAD
 	.timer		= &orion5x_timer,
 	.fixup		= tag_fixup_mem32,
 <<<<<<< HEAD
 =======
 	.restart	= orion5x_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= orion5x_timer_init,
+	.fixup		= tag_fixup_mem32,
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif

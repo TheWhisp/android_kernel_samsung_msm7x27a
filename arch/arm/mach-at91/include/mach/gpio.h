@@ -17,6 +17,7 @@
 #include <asm/irq.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PIN_BASE		NR_AIC_IRQS
 
 #define MAX_GPIO_BANKS		5
@@ -189,6 +190,8 @@
 #define	AT91_PIN_PE30	(PIN_BASE + 0x80 + 30)
 #define	AT91_PIN_PE31	(PIN_BASE + 0x80 + 31)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define MAX_GPIO_BANKS		5
 #define NR_BUILTIN_GPIO		(MAX_GPIO_BANKS * 32)
 
@@ -358,7 +361,10 @@
 #define	AT91_PIN_PE29	(0x80 + 29)
 #define	AT91_PIN_PE30	(0x80 + 30)
 #define	AT91_PIN_PE31	(0x80 + 31)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 /* setup setup routines, called from board init or driver probe() */
@@ -366,11 +372,14 @@ extern int __init_or_module at91_set_GPIO_periph(unsigned pin, int use_pullup);
 extern int __init_or_module at91_set_A_periph(unsigned pin, int use_pullup);
 extern int __init_or_module at91_set_B_periph(unsigned pin, int use_pullup);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int __init_or_module at91_set_gpio_input(unsigned pin, int use_pullup);
 extern int __init_or_module at91_set_gpio_output(unsigned pin, int value);
 extern int __init_or_module at91_set_deglitch(unsigned pin, int is_on);
 extern int __init_or_module at91_set_multi_drive(unsigned pin, int is_on);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern int __init_or_module at91_set_C_periph(unsigned pin, int use_pullup);
 extern int __init_or_module at91_set_D_periph(unsigned pin, int use_pullup);
 extern int __init_or_module at91_set_gpio_input(unsigned pin, int use_pullup);
@@ -380,7 +389,10 @@ extern int __init_or_module at91_set_debounce(unsigned pin, int is_on, int div);
 extern int __init_or_module at91_set_multi_drive(unsigned pin, int is_on);
 extern int __init_or_module at91_set_pulldown(unsigned pin, int is_on);
 extern int __init_or_module at91_disable_schmitt_trig(unsigned pin);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* callable at any time */
 extern int at91_set_gpio_value(unsigned pin, int value);
@@ -390,6 +402,7 @@ extern int at91_get_gpio_value(unsigned pin);
 extern void at91_gpio_suspend(void);
 extern void at91_gpio_resume(void);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*-------------------------------------------------------------------------*/
 
@@ -410,6 +423,16 @@ extern void at91_gpio_resume(void);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PINCTRL_AT91
+extern void at91_pinctrl_gpio_suspend(void);
+extern void at91_pinctrl_gpio_resume(void);
+#else
+static inline void at91_pinctrl_gpio_suspend(void) {}
+static inline void at91_pinctrl_gpio_resume(void) {}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif	/* __ASSEMBLY__ */
 
 #endif

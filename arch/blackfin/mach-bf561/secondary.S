@@ -24,6 +24,7 @@
 
 ENTRY(_coreb_trampoline_start)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Set the SYSCFG register */
 	R0 = 0x36;
 	SYSCFG = R0; /*Enable Cycle Counter and Nesting Of Interrupts(3rd Bit)*/
@@ -101,6 +102,8 @@ ENTRY(_coreb_trampoline_start)
 	[P0] = R0;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Enable Cycle Counter and Nesting Of Interrupts */
 #ifdef CONFIG_BFIN_SCRATCH_REG_CYCLES
 	R0 = SYSCFG_SNEN;
@@ -157,13 +160,17 @@ ENTRY(_coreb_trampoline_start)
 	p1.l = _initial_pda_coreb;
 	p1.h = _initial_pda_coreb;
 	r4 = RETX;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_DEBUG_DOUBLEFAULT
 	/* Only save these if we are storing them,
 	 * This happens here, since L1 gets clobbered
 	 * below
 	 */
 	GET_PDA(p0, r0);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	r7 = [p0 + PDA_DF_RETX];
 	p1.l = _init_saved_retx_coreb;
@@ -186,6 +193,8 @@ ENTRY(_coreb_trampoline_start)
 	[p1] = r7;
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	r0 = [p0 + PDA_DF_RETX];
 	r1 = [p0 + PDA_DF_DCPLB];
 	r2 = [p0 + PDA_DF_ICPLB];
@@ -196,7 +205,10 @@ ENTRY(_coreb_trampoline_start)
 	[p1 + PDA_INIT_DF_SEQSTAT] = r3;
 #endif
 	[p1 + PDA_INIT_RETX] = r4;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize stack pointer */
 	sp.l = lo(INITIAL_STACK);
@@ -210,6 +222,7 @@ ENTRY(_coreb_trampoline_start)
 
 	/* EVT15 = _real_start */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	p0.l = lo(EVT15);
 	p0.h = hi(EVT15);
@@ -225,6 +238,8 @@ ENTRY(_coreb_trampoline_start)
 	[p0] = p1;
 	csync;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	p1.l = _coreb_start;
 	p1.h = _coreb_start;
 	[p5 + (EVT15 - COREMMR_BASE)] = p1;
@@ -232,7 +247,10 @@ ENTRY(_coreb_trampoline_start)
 
 	r0 = EVT_IVG15 (z);
 	sti r0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	raise 15;
 	p0.l = .LWAIT_HERE;

@@ -18,14 +18,23 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/bitops.h>
 #include <linux/errno.h>
 #include <linux/fs.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/miscdevice.h>
 #include <linux/module.h>
@@ -35,14 +44,25 @@
 #include <linux/watchdog.h>
 #include <linux/clk.h>
 #include <linux/err.h>
+<<<<<<< HEAD
 
 #include <asm/mach-ath79/ath79.h>
 #include <asm/mach-ath79/ar71xx_regs.h>
+=======
+#include <linux/of.h>
+#include <linux/of_platform.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_NAME	"ath79-wdt"
 
 #define WDT_TIMEOUT	15	/* seconds */
 
+<<<<<<< HEAD
+=======
+#define WDOG_REG_CTRL		0x00
+#define WDOG_REG_TIMER		0x04
+
+>>>>>>> refs/remotes/origin/master
 #define WDOG_CTRL_LAST_RESET	BIT(31)
 #define WDOG_CTRL_ACTION_MASK	3
 #define WDOG_CTRL_ACTION_NONE	0	/* no action */
@@ -51,12 +71,17 @@
 #define WDOG_CTRL_ACTION_FCR	3	/* full chip reset */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started "
 			   "(default=" __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
@@ -74,6 +99,7 @@ static struct clk *wdt_clk;
 static unsigned long wdt_freq;
 static int boot_status;
 static int max_timeout;
+<<<<<<< HEAD
 
 static inline void ath79_wdt_keepalive(void)
 {
@@ -83,27 +109,58 @@ static inline void ath79_wdt_keepalive(void)
 	/* flush write */
 	ath79_reset_rr(AR71XX_RESET_REG_WDOG);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __iomem *wdt_base;
+
+static inline void ath79_wdt_wr(unsigned reg, u32 val)
+{
+	iowrite32(val, wdt_base + reg);
+}
+
+static inline u32 ath79_wdt_rr(unsigned reg)
+{
+	return ioread32(wdt_base + reg);
+}
+
+static inline void ath79_wdt_keepalive(void)
+{
+	ath79_wdt_wr(WDOG_REG_TIMER, wdt_freq * timeout);
+	/* flush write */
+	ath79_wdt_rr(WDOG_REG_TIMER);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void ath79_wdt_enable(void)
 {
 	ath79_wdt_keepalive();
+<<<<<<< HEAD
 	ath79_reset_wr(AR71XX_RESET_REG_WDOG_CTRL, WDOG_CTRL_ACTION_FCR);
 <<<<<<< HEAD
 =======
 	/* flush write */
 	ath79_reset_rr(AR71XX_RESET_REG_WDOG_CTRL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath79_wdt_wr(WDOG_REG_CTRL, WDOG_CTRL_ACTION_FCR);
+	/* flush write */
+	ath79_wdt_rr(WDOG_REG_CTRL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void ath79_wdt_disable(void)
 {
+<<<<<<< HEAD
 	ath79_reset_wr(AR71XX_RESET_REG_WDOG_CTRL, WDOG_CTRL_ACTION_NONE);
 <<<<<<< HEAD
 =======
 	/* flush write */
 	ath79_reset_rr(AR71XX_RESET_REG_WDOG_CTRL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath79_wdt_wr(WDOG_REG_CTRL, WDOG_CTRL_ACTION_NONE);
+	/* flush write */
+	ath79_wdt_rr(WDOG_REG_CTRL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ath79_wdt_set_timeout(int val)
@@ -134,11 +191,15 @@ static int ath79_wdt_release(struct inode *inode, struct file *file)
 		ath79_wdt_disable();
 	else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_crit(DRIVER_NAME ": device closed unexpectedly, "
 			"watchdog timer will not stop!\n");
 =======
 		pr_crit("device closed unexpectedly, watchdog timer will not stop!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("device closed unexpectedly, watchdog timer will not stop!\n");
+>>>>>>> refs/remotes/origin/master
 		ath79_wdt_keepalive();
 	}
 
@@ -246,18 +307,40 @@ static struct miscdevice ath79_wdt_miscdev = {
 	.fops = &ath79_wdt_fops,
 };
 
+<<<<<<< HEAD
 static int __devinit ath79_wdt_probe(struct platform_device *pdev)
 {
 	u32 ctrl;
 	int err;
 
 	wdt_clk = clk_get(&pdev->dev, "wdt");
+=======
+static int ath79_wdt_probe(struct platform_device *pdev)
+{
+	struct resource *res;
+	u32 ctrl;
+	int err;
+
+	if (wdt_base)
+		return -EBUSY;
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	wdt_base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(wdt_base))
+		return PTR_ERR(wdt_base);
+
+	wdt_clk = devm_clk_get(&pdev->dev, "wdt");
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(wdt_clk))
 		return PTR_ERR(wdt_clk);
 
 	err = clk_enable(wdt_clk);
 	if (err)
+<<<<<<< HEAD
 		goto err_clk_put;
+=======
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	wdt_freq = clk_get_rate(wdt_clk);
 	if (!wdt_freq) {
@@ -273,7 +356,11 @@ static int __devinit ath79_wdt_probe(struct platform_device *pdev)
 			max_timeout, timeout);
 	}
 
+<<<<<<< HEAD
 	ctrl = ath79_reset_rr(AR71XX_RESET_REG_WDOG_CTRL);
+=======
+	ctrl = ath79_wdt_rr(WDOG_REG_CTRL);
+>>>>>>> refs/remotes/origin/master
 	boot_status = (ctrl & WDOG_CTRL_LAST_RESET) ? WDIOF_CARDRESET : 0;
 
 	err = misc_register(&ath79_wdt_miscdev);
@@ -287,6 +374,7 @@ static int __devinit ath79_wdt_probe(struct platform_device *pdev)
 
 err_clk_disable:
 	clk_disable(wdt_clk);
+<<<<<<< HEAD
 err_clk_put:
 	clk_put(wdt_clk);
 	return err;
@@ -297,6 +385,15 @@ static int __devexit ath79_wdt_remove(struct platform_device *pdev)
 	misc_deregister(&ath79_wdt_miscdev);
 	clk_disable(wdt_clk);
 	clk_put(wdt_clk);
+=======
+	return err;
+}
+
+static int ath79_wdt_remove(struct platform_device *pdev)
+{
+	misc_deregister(&ath79_wdt_miscdev);
+	clk_disable(wdt_clk);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -305,12 +402,27 @@ static void ath97_wdt_shutdown(struct platform_device *pdev)
 	ath79_wdt_disable();
 }
 
+<<<<<<< HEAD
 static struct platform_driver ath79_wdt_driver = {
 	.remove		= __devexit_p(ath79_wdt_remove),
+=======
+#ifdef CONFIG_OF
+static const struct of_device_id ath79_wdt_match[] = {
+	{ .compatible = "qca,ar7130-wdt" },
+	{},
+};
+MODULE_DEVICE_TABLE(of, ath79_wdt_match);
+#endif
+
+static struct platform_driver ath79_wdt_driver = {
+	.probe		= ath79_wdt_probe,
+	.remove		= ath79_wdt_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= ath97_wdt_shutdown,
 	.driver		= {
 		.name	= DRIVER_NAME,
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 	},
 };
 
@@ -325,10 +437,20 @@ static void __exit ath79_wdt_exit(void)
 	platform_driver_unregister(&ath79_wdt_driver);
 }
 module_exit(ath79_wdt_exit);
+=======
+		.of_match_table = of_match_ptr(ath79_wdt_match),
+	},
+};
+
+module_platform_driver(ath79_wdt_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Atheros AR71XX/AR724X/AR913X hardware watchdog driver");
 MODULE_AUTHOR("Gabor Juhos <juhosg@openwrt.org");
 MODULE_AUTHOR("Imre Kaloz <kaloz@openwrt.org");
 MODULE_LICENSE("GPL v2");
 MODULE_ALIAS("platform:" DRIVER_NAME);
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

@@ -56,10 +56,14 @@ static const struct sis_laptop sis_laptop[] = {
 	{ 0x5513, 0x1043, 0x1107 },	/* ASUS A6K */
 	{ 0x5513, 0x1734, 0x105F },	/* FSC Amilo A1630 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ 0x5513, 0x1071, 0x8640 },     /* EasyNote K5305 */
 =======
 	{ 0x5513, 0x1071, 0x8640 },	/* EasyNote K5305 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ 0x5513, 0x1071, 0x8640 },	/* EasyNote K5305 */
+>>>>>>> refs/remotes/origin/master
 	/* end marker */
 	{ 0, }
 };
@@ -81,10 +85,14 @@ static int sis_short_ata40(struct pci_dev *dev)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	sis_old_port_base		-	return PCI configuration base for dev
 =======
  *	sis_old_port_base - return PCI configuration base for dev
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	sis_old_port_base - return PCI configuration base for dev
+>>>>>>> refs/remotes/origin/master
  *	@adev: device
  *
  *	Returns the base of the PCI configuration registers for this port
@@ -94,12 +102,15 @@ static int sis_short_ata40(struct pci_dev *dev)
 static int sis_old_port_base(struct ata_device *adev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return  0x40 + (4 * adev->link->ap->port_no) +  (2 * adev->devno);
 }
 
 /**
  *	sis_133_cable_detect	-	check for 40/80 pin
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0x40 + (4 * adev->link->ap->port_no) + (2 * adev->devno);
 }
 
@@ -128,7 +139,10 @@ static int sis_port_base(struct ata_device *adev)
 
 /**
  *	sis_133_cable_detect - check for 40/80 pin
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *	@ap: Port
  *	@deadline: deadline jiffies for the operation
  *
@@ -150,10 +164,14 @@ static int sis_133_cable_detect(struct ata_port *ap)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	sis_66_cable_detect	-	check for 40/80 pin
 =======
  *	sis_66_cable_detect - check for 40/80 pin
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	sis_66_cable_detect - check for 40/80 pin
+>>>>>>> refs/remotes/origin/master
  *	@ap: Port
  *
  *	Perform cable detection on the UDMA66, UDMA100 and early UDMA133
@@ -176,10 +194,14 @@ static int sis_66_cable_detect(struct ata_port *ap)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	sis_pre_reset		-	probe begin
 =======
  *	sis_pre_reset - probe begin
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	sis_pre_reset - probe begin
+>>>>>>> refs/remotes/origin/master
  *	@link: ATA link
  *	@deadline: deadline jiffies for the operation
  *
@@ -208,10 +230,14 @@ static int sis_pre_reset(struct ata_link *link, unsigned long deadline)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	sis_set_fifo	-	Set RWP fifo bits for this device
 =======
  *	sis_set_fifo - Set RWP fifo bits for this device
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	sis_set_fifo - Set RWP fifo bits for this device
+>>>>>>> refs/remotes/origin/master
  *	@ap: Port
  *	@adev: Device
  *
@@ -255,14 +281,19 @@ static void sis_set_fifo(struct ata_port *ap, struct ata_device *adev)
 static void sis_old_set_piomode (struct ata_port *ap, struct ata_device *adev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pci_dev *pdev	= to_pci_dev(ap->host->dev);
 =======
 	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
+>>>>>>> refs/remotes/origin/master
 	int port = sis_old_port_base(adev);
 	u8 t1, t2;
 	int speed = adev->pio_mode - XFER_PIO_0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	const u8 active[]   = { 0x00, 0x07, 0x04, 0x03, 0x01 };
 	const u8 recovery[] = { 0x00, 0x06, 0x04, 0x03, 0x03 };
@@ -270,6 +301,10 @@ static void sis_old_set_piomode (struct ata_port *ap, struct ata_device *adev)
 	static const u8 active[]   = { 0x00, 0x07, 0x04, 0x03, 0x01 };
 	static const u8 recovery[] = { 0x00, 0x06, 0x04, 0x03, 0x03 };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static const u8 active[]   = { 0x00, 0x07, 0x04, 0x03, 0x01 };
+	static const u8 recovery[] = { 0x00, 0x06, 0x04, 0x03, 0x03 };
+>>>>>>> refs/remotes/origin/master
 
 	sis_set_fifo(ap, adev);
 
@@ -301,18 +336,24 @@ static void sis_old_set_piomode (struct ata_port *ap, struct ata_device *adev)
 static void sis_100_set_piomode (struct ata_port *ap, struct ata_device *adev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pci_dev *pdev	= to_pci_dev(ap->host->dev);
 	int port = sis_old_port_base(adev);
 	int speed = adev->pio_mode - XFER_PIO_0;
 
 	const u8 actrec[] = { 0x00, 0x67, 0x44, 0x33, 0x31 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
 	int port = sis_old_port_base(adev);
 	int speed = adev->pio_mode - XFER_PIO_0;
 
 	static const u8 actrec[] = { 0x00, 0x67, 0x44, 0x33, 0x31 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	sis_set_fifo(ap, adev);
 
@@ -334,6 +375,7 @@ static void sis_100_set_piomode (struct ata_port *ap, struct ata_device *adev)
 static void sis_133_set_piomode (struct ata_port *ap, struct ata_device *adev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pci_dev *pdev	= to_pci_dev(ap->host->dev);
 	int port = 0x40;
 	u32 t1;
@@ -342,13 +384,18 @@ static void sis_133_set_piomode (struct ata_port *ap, struct ata_device *adev)
 
 	const u32 timing133[] = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
 	int port;
 	u32 t1;
 	int speed = adev->pio_mode - XFER_PIO_0;
 
 	static const u32 timing133[] = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		0x28269000,	/* Recovery << 24 | Act << 16 | Ini << 12 */
 		0x0C266000,
 		0x04263000,
@@ -356,10 +403,14 @@ static void sis_133_set_piomode (struct ata_port *ap, struct ata_device *adev)
 		0x05093000
 	};
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const u32 timing100[] = {
 =======
 	static const u32 timing100[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static const u32 timing100[] = {
+>>>>>>> refs/remotes/origin/master
 		0x1E1C6000,	/* Recovery << 24 | Act << 16 | Ini << 12 */
 		0x091C4000,
 		0x031C2000,
@@ -370,6 +421,7 @@ static void sis_133_set_piomode (struct ata_port *ap, struct ata_device *adev)
 	sis_set_fifo(ap, adev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* If bit 14 is set then the registers are mapped at 0x70 not 0x40 */
 	pci_read_config_dword(pdev, 0x54, &reg54);
 	if (reg54 & 0x40000000)
@@ -379,6 +431,9 @@ static void sis_133_set_piomode (struct ata_port *ap, struct ata_device *adev)
 =======
 	port = sis_port_base(adev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	port = sis_port_base(adev);
+>>>>>>> refs/remotes/origin/master
 	pci_read_config_dword(pdev, port, &t1);
 	t1 &= 0xC0C00FFF;	/* Mask out timing */
 
@@ -405,14 +460,19 @@ static void sis_133_set_piomode (struct ata_port *ap, struct ata_device *adev)
 static void sis_old_set_dmamode (struct ata_port *ap, struct ata_device *adev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pci_dev *pdev	= to_pci_dev(ap->host->dev);
 =======
 	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
+>>>>>>> refs/remotes/origin/master
 	int speed = adev->dma_mode - XFER_MW_DMA_0;
 	int drive_pci = sis_old_port_base(adev);
 	u16 timing;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	const u16 mwdma_bits[] = { 0x008, 0x302, 0x301 };
 	const u16 udma_bits[]  = { 0xE000, 0xC000, 0xA000 };
@@ -420,6 +480,10 @@ static void sis_old_set_dmamode (struct ata_port *ap, struct ata_device *adev)
 	static const u16 mwdma_bits[] = { 0x008, 0x302, 0x301 };
 	static const u16 udma_bits[]  = { 0xE000, 0xC000, 0xA000 };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static const u16 mwdma_bits[] = { 0x008, 0x302, 0x301 };
+	static const u16 udma_bits[]  = { 0xE000, 0xC000, 0xA000 };
+>>>>>>> refs/remotes/origin/master
 
 	pci_read_config_word(pdev, drive_pci, &timing);
 
@@ -453,15 +517,20 @@ static void sis_old_set_dmamode (struct ata_port *ap, struct ata_device *adev)
 static void sis_66_set_dmamode (struct ata_port *ap, struct ata_device *adev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pci_dev *pdev	= to_pci_dev(ap->host->dev);
 =======
 	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
+>>>>>>> refs/remotes/origin/master
 	int speed = adev->dma_mode - XFER_MW_DMA_0;
 	int drive_pci = sis_old_port_base(adev);
 	u16 timing;
 
 	/* MWDMA 0-2 and UDMA 0-5 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	const u16 mwdma_bits[] = { 0x008, 0x302, 0x301 };
 	const u16 udma_bits[]  = { 0xF000, 0xD000, 0xB000, 0xA000, 0x9000, 0x8000 };
@@ -469,6 +538,10 @@ static void sis_66_set_dmamode (struct ata_port *ap, struct ata_device *adev)
 	static const u16 mwdma_bits[] = { 0x008, 0x302, 0x301 };
 	static const u16 udma_bits[]  = { 0xF000, 0xD000, 0xB000, 0xA000, 0x9000, 0x8000 };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static const u16 mwdma_bits[] = { 0x008, 0x302, 0x301 };
+	static const u16 udma_bits[]  = { 0xF000, 0xD000, 0xB000, 0xA000, 0x9000, 0x8000 };
+>>>>>>> refs/remotes/origin/master
 
 	pci_read_config_word(pdev, drive_pci, &timing);
 
@@ -501,19 +574,27 @@ static void sis_66_set_dmamode (struct ata_port *ap, struct ata_device *adev)
 static void sis_100_set_dmamode (struct ata_port *ap, struct ata_device *adev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pci_dev *pdev	= to_pci_dev(ap->host->dev);
 =======
 	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
+>>>>>>> refs/remotes/origin/master
 	int speed = adev->dma_mode - XFER_MW_DMA_0;
 	int drive_pci = sis_old_port_base(adev);
 	u8 timing;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const u8 udma_bits[]  = { 0x8B, 0x87, 0x85, 0x83, 0x82, 0x81};
 =======
 	static const u8 udma_bits[]  = { 0x8B, 0x87, 0x85, 0x83, 0x82, 0x81};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static const u8 udma_bits[]  = { 0x8B, 0x87, 0x85, 0x83, 0x82, 0x81};
+>>>>>>> refs/remotes/origin/master
 
 	pci_read_config_byte(pdev, drive_pci + 1, &timing);
 
@@ -543,10 +624,14 @@ static void sis_100_set_dmamode (struct ata_port *ap, struct ata_device *adev)
 static void sis_133_early_set_dmamode (struct ata_port *ap, struct ata_device *adev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pci_dev *pdev	= to_pci_dev(ap->host->dev);
 =======
 	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
+>>>>>>> refs/remotes/origin/master
 	int speed = adev->dma_mode - XFER_MW_DMA_0;
 	int drive_pci = sis_old_port_base(adev);
 	u8 timing;
@@ -580,6 +665,7 @@ static void sis_133_early_set_dmamode (struct ata_port *ap, struct ata_device *a
 static void sis_133_set_dmamode (struct ata_port *ap, struct ata_device *adev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pci_dev *pdev	= to_pci_dev(ap->host->dev);
 	int speed = adev->dma_mode - XFER_MW_DMA_0;
 	int port = 0x40;
@@ -607,6 +693,8 @@ static void sis_133_set_dmamode (struct ata_port *ap, struct ata_device *adev)
 		/* if & 8 no UDMA133 - need info for ... */
 		t1 &= ~0x00000FF0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
 	int port;
 	u32 t1;
@@ -635,7 +723,10 @@ static void sis_133_set_dmamode (struct ata_port *ap, struct ata_device *adev)
 
 		t1 &= ~0x00000FF0;
 		/* enable UDMA */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		t1 |= 0x00000004;
 		if (t1 & 0x08)
 			t1 |= timing_u133[speed];
@@ -646,7 +737,10 @@ static void sis_133_set_dmamode (struct ata_port *ap, struct ata_device *adev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  *	sis_133_mode_filter - mode selection filter
  *	@adev: ATA device
@@ -668,7 +762,10 @@ static unsigned long sis_133_mode_filter(struct ata_device *adev, unsigned long 
 	return mask;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct scsi_host_template sis_sht = {
 	ATA_BMDMA_SHT(DRV_NAME),
 };
@@ -691,9 +788,13 @@ static struct ata_port_operations sis_133_ops = {
 	.set_dmamode		= sis_133_set_dmamode,
 	.cable_detect		= sis_133_cable_detect,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.mode_filter		= sis_133_mode_filter,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.mode_filter		= sis_133_mode_filter,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct ata_port_operations sis_133_early_ops = {
@@ -763,10 +864,14 @@ static const struct ata_port_info sis_info133 = {
 	.flags		= ATA_FLAG_SLAVE_POSS,
 	.pio_mask	= ATA_PIO4,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* No MWDMA */
 =======
 	.mwdma_mask	= ATA_MWDMA2,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.mwdma_mask	= ATA_MWDMA2,
+>>>>>>> refs/remotes/origin/master
 	.udma_mask	= ATA_UDMA6,
 	.port_ops	= &sis_133_ops,
 };
@@ -848,10 +953,14 @@ static void sis_fixup(struct pci_dev *pdev, struct sis_chipset *sis)
  *	@ent: Entry in sis_pci_tbl matching with @pdev
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	Called from kernel PCI layer.  We probe for combined mode (sigh),
 =======
  *	Called from kernel PCI layer. We probe for combined mode (sigh),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	Called from kernel PCI layer. We probe for combined mode (sigh),
+>>>>>>> refs/remotes/origin/master
  *	and then hand over control to libata, for it to do the rest.
  *
  *	LOCKING:
@@ -864,9 +973,12 @@ static void sis_fixup(struct pci_dev *pdev, struct sis_chipset *sis)
 static int sis_init_one (struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	const struct ata_port_info *ppi[] = { NULL, NULL };
 	struct pci_dev *host = NULL;
 	struct sis_chipset *chipset = NULL;
@@ -921,12 +1033,16 @@ static int sis_init_one (struct pci_dev *pdev, const struct pci_device_id *ent)
 	};
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev,
 			   "version " DRV_VERSION "\n");
 =======
 	ata_print_version_once(&pdev->dev, DRV_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	rc = pcim_enable_device(pdev);
 	if (rc)
@@ -962,6 +1078,7 @@ static int sis_init_one (struct pci_dev *pdev, const struct pci_device_id *ent)
 		switch(trueid) {
 		case 0x5518:	/* SIS 962/963 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			chipset = &sis133;
 			if ((idemisc & 0x40000000) == 0) {
 				pci_write_config_dword(pdev, 0x54, idemisc | 0x40000000);
@@ -974,6 +1091,8 @@ static int sis_init_one (struct pci_dev *pdev, const struct pci_device_id *ent)
 		case 0x1180:	/* SIS 966/966L */
 			chipset =  &sis133;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			dev_info(&pdev->dev,
 				 "SiS 962/963 MuTIOL IDE UDMA133 controller\n");
 			chipset = &sis133;
@@ -988,7 +1107,10 @@ static int sis_init_one (struct pci_dev *pdev, const struct pci_device_id *ent)
 			break;
 		case 0x1180:	/* SIS 966/966L */
 			chipset = &sis133;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -1038,7 +1160,11 @@ static int sis_init_one (struct pci_dev *pdev, const struct pci_device_id *ent)
 #ifdef CONFIG_PM
 static int sis_reinit_one(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = ata_pci_device_do_resume(pdev);
@@ -1071,6 +1197,7 @@ static struct pci_driver sis_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init sis_init(void)
 {
 	return pci_register_driver(&sis_pci_driver);
@@ -1083,10 +1210,16 @@ static void __exit sis_exit(void)
 
 module_init(sis_init);
 module_exit(sis_exit);
+=======
+module_pci_driver(sis_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("SCSI low-level driver for SiS ATA");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, sis_pci_tbl);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

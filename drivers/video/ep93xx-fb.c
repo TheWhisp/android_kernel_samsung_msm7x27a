@@ -5,10 +5,14 @@
  *
  * Copyright (C) 2007 Bluewater Systems Ltd
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Author: Ryan Mallon <ryan@bluewatersys.com>
 =======
  * Author: Ryan Mallon
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Ryan Mallon
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (c) 2009 H Hartley Sweeten <hsweeten@visionengravers.com>
  *
@@ -23,15 +27,25 @@
 
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/dma-mapping.h>
 #include <linux/slab.h>
 #include <linux/clk.h>
 #include <linux/fb.h>
+<<<<<<< HEAD
 
 #include <mach/fb.h>
+=======
+#include <linux/io.h>
+
+#include <linux/platform_data/video-ep93xx.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Vertical Frame Timing Registers */
 #define EP93XXFB_VLINES_TOTAL			0x0000	/* SW locked */
@@ -425,7 +439,11 @@ static struct fb_ops ep93xxfb_ops = {
 	.fb_mmap	= ep93xxfb_mmap,
 };
 
+<<<<<<< HEAD
 static int __init ep93xxfb_calc_fbsize(struct ep93xxfb_mach_info *mach_info)
+=======
+static int ep93xxfb_calc_fbsize(struct ep93xxfb_mach_info *mach_info)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, fb_size = 0;
 
@@ -447,7 +465,11 @@ static int __init ep93xxfb_calc_fbsize(struct ep93xxfb_mach_info *mach_info)
 	return fb_size;
 }
 
+<<<<<<< HEAD
 static int __init ep93xxfb_alloc_videomem(struct fb_info *info)
+=======
+static int ep93xxfb_alloc_videomem(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ep93xx_fbi *fbi = info->par;
 	char __iomem *virt_addr;
@@ -491,9 +513,15 @@ static void ep93xxfb_dealloc_videomem(struct fb_info *info)
 				  info->screen_base, info->fix.smem_start);
 }
 
+<<<<<<< HEAD
 static int __devinit ep93xxfb_probe(struct platform_device *pdev)
 {
 	struct ep93xxfb_mach_info *mach_info = pdev->dev.platform_data;
+=======
+static int ep93xxfb_probe(struct platform_device *pdev)
+{
+	struct ep93xxfb_mach_info *mach_info = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct fb_info *info;
 	struct ep93xx_fbi *fbi;
 	struct resource *res;
@@ -514,15 +542,24 @@ static int __devinit ep93xxfb_probe(struct platform_device *pdev)
 
 	err = fb_alloc_cmap(&info->cmap, 256, 0);
 	if (err)
+<<<<<<< HEAD
 		goto failed;
 
 	err = ep93xxfb_alloc_videomem(info);
 	if (err)
 		goto failed;
+=======
+		goto failed_cmap;
+
+	err = ep93xxfb_alloc_videomem(info);
+	if (err)
+		goto failed_videomem;
+>>>>>>> refs/remotes/origin/master
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res) {
 		err = -ENXIO;
+<<<<<<< HEAD
 		goto failed;
 	}
 
@@ -534,6 +571,11 @@ static int __devinit ep93xxfb_probe(struct platform_device *pdev)
 	}
 
 =======
+=======
+		goto failed_resource;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * FIXME - We don't do a request_mem_region here because we are
 	 * sharing the register space with the backlight driver (see
@@ -543,12 +585,21 @@ static int __devinit ep93xxfb_probe(struct platform_device *pdev)
 	 * NOTE: No locking is required; the backlight does not touch
 	 * any of the framebuffer registers.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	fbi->res = res;
 	fbi->mmio_base = ioremap(res->start, resource_size(res));
 	if (!fbi->mmio_base) {
 		err = -ENXIO;
 		goto failed;
+=======
+	fbi->res = res;
+	fbi->mmio_base = devm_ioremap(&pdev->dev, res->start,
+				      resource_size(res));
+	if (!fbi->mmio_base) {
+		err = -ENXIO;
+		goto failed_resource;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	strcpy(info->fix.id, pdev->name);
@@ -569,17 +620,26 @@ static int __devinit ep93xxfb_probe(struct platform_device *pdev)
 	if (err == 0) {
 		dev_err(info->dev, "No suitable video mode found\n");
 		err = -EINVAL;
+<<<<<<< HEAD
 		goto failed;
+=======
+		goto failed_resource;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (mach_info->setup) {
 		err = mach_info->setup(pdev);
 		if (err)
+<<<<<<< HEAD
 			return err;
+=======
+			goto failed_resource;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	err = ep93xxfb_check_var(&info->var, info);
 	if (err)
+<<<<<<< HEAD
 		goto failed;
 
 	fbi->clk = clk_get(info->dev, NULL);
@@ -587,6 +647,15 @@ static int __devinit ep93xxfb_probe(struct platform_device *pdev)
 		err = PTR_ERR(fbi->clk);
 		fbi->clk = NULL;
 		goto failed;
+=======
+		goto failed_check;
+
+	fbi->clk = devm_clk_get(&pdev->dev, NULL);
+	if (IS_ERR(fbi->clk)) {
+		err = PTR_ERR(fbi->clk);
+		fbi->clk = NULL;
+		goto failed_check;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ep93xxfb_set_par(info);
@@ -594,12 +663,17 @@ static int __devinit ep93xxfb_probe(struct platform_device *pdev)
 
 	err = register_framebuffer(info);
 	if (err)
+<<<<<<< HEAD
 		goto failed;
+=======
+		goto failed_check;
+>>>>>>> refs/remotes/origin/master
 
 	dev_info(info->dev, "registered. Mode = %dx%d-%d\n",
 		 info->var.xres, info->var.yres, info->var.bits_per_pixel);
 	return 0;
 
+<<<<<<< HEAD
 failed:
 	if (fbi->clk)
 		clk_put(fbi->clk);
@@ -617,23 +691,41 @@ failed:
 		fbi->mach_info->teardown(pdev);
 	kfree(info);
 	platform_set_drvdata(pdev, NULL);
+=======
+failed_check:
+	if (fbi->mach_info->teardown)
+		fbi->mach_info->teardown(pdev);
+failed_resource:
+	ep93xxfb_dealloc_videomem(info);
+failed_videomem:
+	fb_dealloc_cmap(&info->cmap);
+failed_cmap:
+	kfree(info);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit ep93xxfb_remove(struct platform_device *pdev)
+=======
+static int ep93xxfb_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = platform_get_drvdata(pdev);
 	struct ep93xx_fbi *fbi = info->par;
 
 	unregister_framebuffer(info);
 	clk_disable(fbi->clk);
+<<<<<<< HEAD
 	clk_put(fbi->clk);
 	iounmap(fbi->mmio_base);
 <<<<<<< HEAD
 	release_mem_region(fbi->res->start, resource_size(fbi->res));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ep93xxfb_dealloc_videomem(info);
 	fb_dealloc_cmap(&info->cmap);
 
@@ -641,19 +733,27 @@ static int __devexit ep93xxfb_remove(struct platform_device *pdev)
 		fbi->mach_info->teardown(pdev);
 
 	kfree(info);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static struct platform_driver ep93xxfb_driver = {
 	.probe		= ep93xxfb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ep93xxfb_remove),
+=======
+	.remove		= ep93xxfb_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name	= "ep93xx-fb",
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
 
 static int __devinit ep93xxfb_init(void)
 {
@@ -675,5 +775,12 @@ MODULE_AUTHOR("Ryan Mallon <ryan&bluewatersys.com>, "
 =======
 MODULE_AUTHOR("Ryan Mallon, "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(ep93xxfb_driver);
+
+MODULE_DESCRIPTION("EP93XX Framebuffer Driver");
+MODULE_ALIAS("platform:ep93xx-fb");
+MODULE_AUTHOR("Ryan Mallon, "
+>>>>>>> refs/remotes/origin/master
 	      "H Hartley Sweeten <hsweeten@visionengravers.com");
 MODULE_LICENSE("GPL");

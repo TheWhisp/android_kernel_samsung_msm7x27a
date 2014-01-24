@@ -68,10 +68,14 @@ struct icmp_mib {
 #define ICMPMSG_MIB_MAX	__ICMPMSG_MIB_MAX
 struct icmpmsg_mib {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long	mibs[ICMPMSG_MIB_MAX];
 =======
 	atomic_long_t	mibs[ICMPMSG_MIB_MAX];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_long_t	mibs[ICMPMSG_MIB_MAX];
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ICMP6 (IPv6-ICMP) */
@@ -89,10 +93,14 @@ struct icmpv6_mib_device {
 /* per network ns counters */
 struct icmpv6msg_mib {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long	mibs[ICMP6MSG_MIB_MAX];
 =======
 	atomic_long_t	mibs[ICMP6MSG_MIB_MAX];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_long_t	mibs[ICMP6MSG_MIB_MAX];
+>>>>>>> refs/remotes/origin/master
 };
 /* per device counters, (shared on all cpus) */
 struct icmpv6msg_mib_device {
@@ -124,6 +132,7 @@ struct linux_xfrm_mib {
 	unsigned long	mibs[LINUX_MIB_XFRMMAX];
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* 
  * FIXME: On x86 and some other CPUs the split into user and softirq parts
@@ -158,6 +167,8 @@ struct linux_xfrm_mib {
 #define SNMP_ADD_STATS(mib, field, addend)	\
 			this_cpu_add(mib[!in_softirq()]->mibs[field], addend)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SNMP_ARRAY_SZ 1
 
 #define DEFINE_SNMP_STAT(type, name)	\
@@ -190,13 +201,17 @@ struct linux_xfrm_mib {
 
 #define SNMP_ADD_STATS(mib, field, addend)	\
 			this_cpu_add(mib[0]->mibs[field], addend)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Use "__typeof__(*mib[0]) *ptr" instead of "__typeof__(mib[0]) ptr"
  * to make @ptr a non-percpu pointer.
  */
 #define SNMP_UPD_PO_STATS(mib, basefield, addend)	\
 	do { \
+<<<<<<< HEAD
 <<<<<<< HEAD
 		__typeof__(*mib[0]) *ptr; \
 		preempt_disable(); \
@@ -220,6 +235,17 @@ struct linux_xfrm_mib {
 		__this_cpu_inc(mib[0]->mibs[basefield##PKTS]);		\
 		__this_cpu_add(mib[0]->mibs[basefield##OCTETS], addend);	\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__typeof__(*mib[0]->mibs) *ptr = mib[0]->mibs;	\
+		this_cpu_inc(ptr[basefield##PKTS]);		\
+		this_cpu_add(ptr[basefield##OCTETS], addend);	\
+	} while (0)
+#define SNMP_UPD_PO_STATS_BH(mib, basefield, addend)	\
+	do { \
+		__typeof__(*mib[0]->mibs) *ptr = mib[0]->mibs;	\
+		__this_cpu_inc(ptr[basefield##PKTS]);		\
+		__this_cpu_add(ptr[basefield##OCTETS], addend);	\
+>>>>>>> refs/remotes/origin/master
 	} while (0)
 
 
@@ -232,6 +258,7 @@ struct linux_xfrm_mib {
 		ptr->mibs[field] += addend;				\
 		u64_stats_update_end(&ptr->syncp);			\
 	} while (0)
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define SNMP_ADD_STATS64_USER(mib, field, addend) 			\
 	do {								\
@@ -268,6 +295,8 @@ struct linux_xfrm_mib {
 		preempt_enable();					\
 	} while (0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define SNMP_ADD_STATS64_USER(mib, field, addend) 			\
 	do {								\
@@ -282,7 +311,10 @@ struct linux_xfrm_mib {
 #define SNMP_INC_STATS64_BH(mib, field) SNMP_ADD_STATS64_BH(mib, field, 1)
 #define SNMP_INC_STATS64_USER(mib, field) SNMP_ADD_STATS64_USER(mib, field, 1)
 #define SNMP_INC_STATS64(mib, field) SNMP_ADD_STATS64(mib, field, 1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define SNMP_UPD_PO_STATS64_BH(mib, basefield, addend)			\
 	do {								\
 		__typeof__(*mib[0]) *ptr;				\
@@ -293,14 +325,20 @@ struct linux_xfrm_mib {
 		u64_stats_update_end(&ptr->syncp);			\
 	} while (0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SNMP_UPD_PO_STATS64(mib, basefield, addend)			\
 	do {								\
 		local_bh_disable();					\
 		SNMP_UPD_PO_STATS64_BH(mib, basefield, addend);		\
 		local_bh_enable();					\
 	} while (0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 #define SNMP_INC_STATS64_BH(mib, field)		SNMP_INC_STATS_BH(mib, field)
 #define SNMP_INC_STATS64_USER(mib, field)	SNMP_INC_STATS_USER(mib, field)

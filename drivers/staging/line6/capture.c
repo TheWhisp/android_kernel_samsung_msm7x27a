@@ -10,9 +10,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/slab.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -111,10 +115,14 @@ void line6_unlink_audio_in_urbs(struct snd_line6_pcm *line6pcm)
 	finished.
 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void wait_clear_audio_in_urbs(struct snd_line6_pcm *line6pcm)
 =======
 void line6_wait_clear_audio_in_urbs(struct snd_line6_pcm *line6pcm)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void line6_wait_clear_audio_in_urbs(struct snd_line6_pcm *line6pcm)
+>>>>>>> refs/remotes/origin/master
 {
 	int timeout = HZ;
 	unsigned int i;
@@ -142,10 +150,14 @@ void line6_unlink_wait_clear_audio_in_urbs(struct snd_line6_pcm *line6pcm)
 {
 	line6_unlink_audio_in_urbs(line6pcm);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wait_clear_audio_in_urbs(line6pcm);
 =======
 	line6_wait_clear_audio_in_urbs(line6pcm);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	line6_wait_clear_audio_in_urbs(line6pcm);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -205,14 +217,20 @@ void line6_capture_check_period(struct snd_line6_pcm *line6pcm, int length)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void line6_free_capture_buffer(struct snd_line6_pcm *line6pcm)
 {
 	kfree(line6pcm->buffer_in);
 	line6pcm->buffer_in = NULL;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Callback for completed capture URB.
  */
@@ -230,6 +248,7 @@ static void audio_in_callback(struct urb *urb)
 		if (urb == line6pcm->urb_audio_in[index])
 			break;
 
+<<<<<<< HEAD
 #ifdef CONFIG_LINE6_USB_DUMP_PCM
 	for (i = 0; i < LINE6_ISO_PACKETS; ++i) {
 		struct usb_iso_packet_descriptor *fout =
@@ -240,6 +259,8 @@ static void audio_in_callback(struct urb *urb)
 	}
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&line6pcm->lock_audio_in, flags);
 
 	for (i = 0; i < LINE6_ISO_PACKETS; ++i) {
@@ -265,6 +286,7 @@ static void audio_in_callback(struct urb *urb)
 
 		/* the following assumes LINE6_ISO_PACKETS == 1: */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if LINE6_BACKUP_MONITOR_SIGNAL
 		memcpy(line6pcm->prev_fbuf, fbuf, fsize);
 #else
@@ -277,15 +299,22 @@ static void audio_in_callback(struct urb *urb)
 #endif
 			if (test_bit(BIT_PCM_ALSA_CAPTURE, &line6pcm->flags)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		line6pcm->prev_fbuf = fbuf;
 		line6pcm->prev_fsize = fsize;
 
 #ifdef CONFIG_LINE6_USB_IMPULSE_RESPONSE
 		if (!(line6pcm->flags & LINE6_BITS_PCM_IMPULSE))
 #endif
+<<<<<<< HEAD
 			if (test_bit(LINE6_INDEX_PCM_ALSA_CAPTURE_STREAM, &line6pcm->flags)
 >>>>>>> refs/remotes/origin/cm-10.0
 			    && (fsize > 0))
+=======
+			if (test_bit(LINE6_INDEX_PCM_ALSA_CAPTURE_STREAM,
+				     &line6pcm->flags) && (fsize > 0))
+>>>>>>> refs/remotes/origin/master
 				line6_capture_copy(line6pcm, fbuf, fsize);
 	}
 
@@ -301,6 +330,7 @@ static void audio_in_callback(struct urb *urb)
 
 #ifdef CONFIG_LINE6_USB_IMPULSE_RESPONSE
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!(line6pcm->flags & MASK_PCM_IMPULSE))
 #endif
 			if (test_bit(BIT_PCM_ALSA_CAPTURE, &line6pcm->flags))
@@ -309,6 +339,12 @@ static void audio_in_callback(struct urb *urb)
 #endif
 			if (test_bit(LINE6_INDEX_PCM_ALSA_CAPTURE_STREAM, &line6pcm->flags))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!(line6pcm->flags & LINE6_BITS_PCM_IMPULSE))
+#endif
+			if (test_bit(LINE6_INDEX_PCM_ALSA_CAPTURE_STREAM,
+				     &line6pcm->flags))
+>>>>>>> refs/remotes/origin/master
 				line6_capture_check_period(line6pcm, length);
 	}
 }
@@ -357,11 +393,14 @@ static int snd_line6_capture_hw_params(struct snd_pcm_substream *substream,
 	/* -- [FD] end */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = snd_pcm_lib_malloc_pages(substream,
 				       params_buffer_bytes(hw_params));
 	if (ret < 0)
 		return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = line6_pcm_acquire(line6pcm, LINE6_BIT_PCM_ALSA_CAPTURE_BUFFER);
 
 	if (ret < 0)
@@ -373,7 +412,10 @@ static int snd_line6_capture_hw_params(struct snd_pcm_substream *substream,
 		line6_pcm_release(line6pcm, LINE6_BIT_PCM_ALSA_CAPTURE_BUFFER);
 		return ret;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	line6pcm->period_in = params_period_bytes(hw_params);
 	return 0;
@@ -383,10 +425,15 @@ static int snd_line6_capture_hw_params(struct snd_pcm_substream *substream,
 static int snd_line6_capture_hw_free(struct snd_pcm_substream *substream)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct snd_line6_pcm *line6pcm = snd_pcm_substream_chip(substream);
 	line6_pcm_release(line6pcm, LINE6_BIT_PCM_ALSA_CAPTURE_BUFFER);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_line6_pcm *line6pcm = snd_pcm_substream_chip(substream);
+	line6_pcm_release(line6pcm, LINE6_BIT_PCM_ALSA_CAPTURE_BUFFER);
+>>>>>>> refs/remotes/origin/master
 	return snd_pcm_lib_free_pages(substream);
 }
 
@@ -401,10 +448,15 @@ int snd_line6_capture_trigger(struct snd_line6_pcm *line6pcm, int cmd)
 	case SNDRV_PCM_TRIGGER_RESUME:
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = line6_pcm_start(line6pcm, MASK_PCM_ALSA_CAPTURE);
 =======
 		err = line6_pcm_acquire(line6pcm, LINE6_BIT_PCM_ALSA_CAPTURE_STREAM);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = line6_pcm_acquire(line6pcm,
+					LINE6_BIT_PCM_ALSA_CAPTURE_STREAM);
+>>>>>>> refs/remotes/origin/master
 
 		if (err < 0)
 			return err;
@@ -416,10 +468,15 @@ int snd_line6_capture_trigger(struct snd_line6_pcm *line6pcm, int cmd)
 	case SNDRV_PCM_TRIGGER_SUSPEND:
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = line6_pcm_stop(line6pcm, MASK_PCM_ALSA_CAPTURE);
 =======
 		err = line6_pcm_release(line6pcm, LINE6_BIT_PCM_ALSA_CAPTURE_STREAM);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = line6_pcm_release(line6pcm,
+					LINE6_BIT_PCM_ALSA_CAPTURE_STREAM);
+>>>>>>> refs/remotes/origin/master
 
 		if (err < 0)
 			return err;

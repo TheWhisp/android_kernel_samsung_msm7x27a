@@ -27,10 +27,15 @@
  *
  * Functions:
  *      BBuGetFrameTime        - Calculate data frame transmitting time
+<<<<<<< HEAD
  *      BBvCaculateParameter   - Caculate PhyLength, PhyService and Phy Signal parameter for baseband Tx
  *      BBbVT3184Init          - VIA VT3184 baseband chip init code
  *      BBvLoopbackOn          - Turn on BaseBand Loopback mode
  *      BBvLoopbackOff         - Turn off BaseBand Loopback mode
+=======
+ *      BBvCalculateParameter   - Calculate PhyLength, PhyService and Phy Signal parameter for baseband Tx
+ *      BBbVT3184Init          - VIA VT3184 baseband chip init code
+>>>>>>> refs/remotes/origin/master
  *
  * Revision History:
  *
@@ -47,6 +52,7 @@
 #include "datarate.h"
 #include "rndis.h"
 
+<<<<<<< HEAD
 /*---------------------  Static Definitions -------------------------*/
 static int          msglevel                =MSG_LEVEL_INFO;
 //static int          msglevel                =MSG_LEVEL_DEBUG;
@@ -67,6 +73,12 @@ static int          msglevel                =MSG_LEVEL_INFO;
 
 
 BYTE abyVT3184_AGC[] = {
+=======
+static int          msglevel                =MSG_LEVEL_INFO;
+//static int          msglevel                =MSG_LEVEL_DEBUG;
+
+static u8 abyVT3184_AGC[] = {
+>>>>>>> refs/remotes/origin/master
     0x00,   //0
     0x00,   //1
     0x02,   //2
@@ -133,8 +145,12 @@ BYTE abyVT3184_AGC[] = {
     0x3E    //3F
 };
 
+<<<<<<< HEAD
 
 BYTE abyVT3184_AL2230[] = {
+=======
+static u8 abyVT3184_AL2230[] = {
+>>>>>>> refs/remotes/origin/master
         0x31,//00
         0x00,
         0x00,
@@ -393,10 +409,15 @@ BYTE abyVT3184_AL2230[] = {
         0x00
 };
 
+<<<<<<< HEAD
 
 
 //{{RobertYu:20060515, new BB setting for VT3226D0
 BYTE abyVT3184_VT3226D0[] = {
+=======
+//{{RobertYu:20060515, new BB setting for VT3226D0
+static u8 abyVT3184_VT3226D0[] = {
+>>>>>>> refs/remotes/origin/master
         0x31,//00
         0x00,
         0x00,
@@ -655,11 +676,17 @@ BYTE abyVT3184_VT3226D0[] = {
         0x00,
 };
 
+<<<<<<< HEAD
 const WORD awcFrameTime[MAX_RATE] =
 {10, 20, 55, 110, 24, 36, 48, 72, 96, 144, 192, 216};
 
 /*---------------------  Static Functions  --------------------------*/
 
+=======
+static const u16 awcFrameTime[MAX_RATE] =
+{10, 20, 55, 110, 24, 36, 48, 72, 96, 144, 192, 216};
+
+>>>>>>> refs/remotes/origin/master
 /*
 static
 unsigned long
@@ -674,7 +701,10 @@ void
 s_vClearSQ3Value(PSDevice pDevice);
 */
 
+<<<<<<< HEAD
 /*---------------------  Export Variables  --------------------------*/
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Description: Calculate data frame transmitting time
  *
@@ -690,11 +720,19 @@ s_vClearSQ3Value(PSDevice pDevice);
  *
  */
 unsigned int
+<<<<<<< HEAD
 BBuGetFrameTime (
      BYTE byPreambleType,
      BYTE byPktType,
      unsigned int cbFrameLength,
      WORD wRate
+=======
+BBuGetFrameTime(
+     u8 byPreambleType,
+     u8 byPktType,
+     unsigned int cbFrameLength,
+     u16 wRate
+>>>>>>> refs/remotes/origin/master
     )
 {
     unsigned int uFrameTime;
@@ -703,9 +741,13 @@ BBuGetFrameTime (
     unsigned int uRateIdx = (unsigned int)wRate;
     unsigned int uRate = 0;
 
+<<<<<<< HEAD
 
     if (uRateIdx > RATE_54M) {
         ASSERT(0);
+=======
+    if (uRateIdx > RATE_54M) {
+>>>>>>> refs/remotes/origin/master
         return 0;
     }
 
@@ -741,7 +783,11 @@ BBuGetFrameTime (
 }
 
 /*
+<<<<<<< HEAD
  * Description: Caculate Length, Service, and Signal fields of Phy for Tx
+=======
+ * Description: Calculate Length, Service, and Signal fields of Phy for Tx
+>>>>>>> refs/remotes/origin/master
  *
  * Parameters:
  *  In:
@@ -749,13 +795,21 @@ BBuGetFrameTime (
  *      cbFrameLength   - Tx Frame Length
  *      wRate           - Tx Rate
  *  Out:
+<<<<<<< HEAD
  *      pwPhyLen        - pointer to Phy Length field
  *      pbyPhySrv       - pointer to Phy Service field
  *      pbyPhySgn       - pointer to Phy Signal field
+=======
+ *	struct vnt_phy_field *phy
+ * 			- pointer to Phy Length field
+ *			- pointer to Phy Service field
+ * 			- pointer to Phy Signal field
+>>>>>>> refs/remotes/origin/master
  *
  * Return Value: none
  *
  */
+<<<<<<< HEAD
 void
 BBvCaculateParameter (
       PSDevice pDevice,
@@ -776,16 +830,35 @@ BBvCaculateParameter (
 
     cbBitCount = cbFrameLength * 8;
     bExtBit = FALSE;
+=======
+void BBvCalculateParameter(struct vnt_private *pDevice, u32 cbFrameLength,
+	u16 wRate, u8 byPacketType, struct vnt_phy_field *phy)
+{
+	u32 cbBitCount;
+	u32 cbUsCount = 0;
+	u32 cbTmp;
+	int bExtBit;
+	u8 byPreambleType = pDevice->byPreambleType;
+	int bCCK = pDevice->bCCK;
+
+    cbBitCount = cbFrameLength * 8;
+    bExtBit = false;
+>>>>>>> refs/remotes/origin/master
 
     switch (wRate) {
     case RATE_1M :
         cbUsCount = cbBitCount;
+<<<<<<< HEAD
         *pbyPhySgn = 0x00;
+=======
+	phy->signal = 0x00;
+>>>>>>> refs/remotes/origin/master
         break;
 
     case RATE_2M :
         cbUsCount = cbBitCount / 2;
         if (byPreambleType == 1)
+<<<<<<< HEAD
             *pbyPhySgn = 0x09;
         else // long preamble
             *pbyPhySgn = 0x01;
@@ -793,116 +866,208 @@ BBvCaculateParameter (
 
     case RATE_5M :
         if (bCCK == FALSE)
+=======
+		phy->signal = 0x09;
+        else // long preamble
+		phy->signal = 0x01;
+        break;
+
+    case RATE_5M :
+        if (bCCK == false)
+>>>>>>> refs/remotes/origin/master
             cbBitCount ++;
         cbUsCount = (cbBitCount * 10) / 55;
         cbTmp = (cbUsCount * 55) / 10;
         if (cbTmp != cbBitCount)
             cbUsCount ++;
         if (byPreambleType == 1)
+<<<<<<< HEAD
             *pbyPhySgn = 0x0a;
         else // long preamble
             *pbyPhySgn = 0x02;
+=======
+		phy->signal = 0x0a;
+        else // long preamble
+		phy->signal = 0x02;
+>>>>>>> refs/remotes/origin/master
         break;
 
     case RATE_11M :
 
+<<<<<<< HEAD
         if (bCCK == FALSE)
+=======
+        if (bCCK == false)
+>>>>>>> refs/remotes/origin/master
             cbBitCount ++;
         cbUsCount = cbBitCount / 11;
         cbTmp = cbUsCount * 11;
         if (cbTmp != cbBitCount) {
             cbUsCount ++;
             if ((cbBitCount - cbTmp) <= 3)
+<<<<<<< HEAD
                 bExtBit = TRUE;
         }
         if (byPreambleType == 1)
             *pbyPhySgn = 0x0b;
         else // long preamble
             *pbyPhySgn = 0x03;
+=======
+                bExtBit = true;
+        }
+        if (byPreambleType == 1)
+		phy->signal = 0x0b;
+        else // long preamble
+		phy->signal = 0x03;
+>>>>>>> refs/remotes/origin/master
         break;
 
     case RATE_6M :
         if(byPacketType == PK_TYPE_11A) {//11a, 5GHZ
+<<<<<<< HEAD
             *pbyPhySgn = 0x9B; //1001 1011
         }
         else {//11g, 2.4GHZ
             *pbyPhySgn = 0x8B; //1000 1011
+=======
+		phy->signal = 0x9b;
+        }
+        else {//11g, 2.4GHZ
+		phy->signal = 0x8b;
+>>>>>>> refs/remotes/origin/master
         }
         break;
 
     case RATE_9M :
         if(byPacketType == PK_TYPE_11A) {//11a, 5GHZ
+<<<<<<< HEAD
             *pbyPhySgn = 0x9F; //1001 1111
         }
         else {//11g, 2.4GHZ
             *pbyPhySgn = 0x8F; //1000 1111
+=======
+		phy->signal = 0x9f;
+        }
+        else {//11g, 2.4GHZ
+		phy->signal = 0x8f;
+>>>>>>> refs/remotes/origin/master
         }
         break;
 
     case RATE_12M :
         if(byPacketType == PK_TYPE_11A) {//11a, 5GHZ
+<<<<<<< HEAD
             *pbyPhySgn = 0x9A; //1001 1010
         }
         else {//11g, 2.4GHZ
             *pbyPhySgn = 0x8A; //1000 1010
+=======
+		phy->signal = 0x9a;
+        }
+        else {//11g, 2.4GHZ
+		phy->signal = 0x8a;
+>>>>>>> refs/remotes/origin/master
         }
         break;
 
     case RATE_18M :
         if(byPacketType == PK_TYPE_11A) {//11a, 5GHZ
+<<<<<<< HEAD
             *pbyPhySgn = 0x9E; //1001 1110
         }
         else {//11g, 2.4GHZ
             *pbyPhySgn = 0x8E; //1000 1110
+=======
+		phy->signal = 0x9e;
+        }
+        else {//11g, 2.4GHZ
+		phy->signal = 0x8e;
+>>>>>>> refs/remotes/origin/master
         }
         break;
 
     case RATE_24M :
         if(byPacketType == PK_TYPE_11A) {//11a, 5GHZ
+<<<<<<< HEAD
             *pbyPhySgn = 0x99; //1001 1001
         }
         else {//11g, 2.4GHZ
             *pbyPhySgn = 0x89; //1000 1001
+=======
+		phy->signal = 0x99;
+        }
+        else {//11g, 2.4GHZ
+		phy->signal = 0x89;
+>>>>>>> refs/remotes/origin/master
         }
         break;
 
     case RATE_36M :
         if(byPacketType == PK_TYPE_11A) {//11a, 5GHZ
+<<<<<<< HEAD
             *pbyPhySgn = 0x9D; //1001 1101
         }
         else {//11g, 2.4GHZ
             *pbyPhySgn = 0x8D; //1000 1101
+=======
+		phy->signal = 0x9d;
+        }
+        else {//11g, 2.4GHZ
+		phy->signal = 0x8d;
+>>>>>>> refs/remotes/origin/master
         }
         break;
 
     case RATE_48M :
         if(byPacketType == PK_TYPE_11A) {//11a, 5GHZ
+<<<<<<< HEAD
             *pbyPhySgn = 0x98; //1001 1000
         }
         else {//11g, 2.4GHZ
             *pbyPhySgn = 0x88; //1000 1000
+=======
+		phy->signal = 0x98;
+        }
+        else {//11g, 2.4GHZ
+		phy->signal = 0x88;
+>>>>>>> refs/remotes/origin/master
         }
         break;
 
     case RATE_54M :
         if (byPacketType == PK_TYPE_11A) {//11a, 5GHZ
+<<<<<<< HEAD
             *pbyPhySgn = 0x9C; //1001 1100
         }
         else {//11g, 2.4GHZ
             *pbyPhySgn = 0x8C; //1000 1100
+=======
+		phy->signal = 0x9c;
+        }
+        else {//11g, 2.4GHZ
+		phy->signal = 0x8c;
+>>>>>>> refs/remotes/origin/master
         }
         break;
 
     default :
         if (byPacketType == PK_TYPE_11A) {//11a, 5GHZ
+<<<<<<< HEAD
             *pbyPhySgn = 0x9C; //1001 1100
         }
         else {//11g, 2.4GHZ
             *pbyPhySgn = 0x8C; //1000 1100
+=======
+		phy->signal = 0x9c;
+        }
+        else {//11g, 2.4GHZ
+		phy->signal = 0x8c;
+>>>>>>> refs/remotes/origin/master
         }
         break;
     }
 
+<<<<<<< HEAD
     if (byPacketType == PK_TYPE_11B) {
         *pbyPhySrv = 0x00;
         if (bExtBit)
@@ -916,6 +1081,19 @@ BBvCaculateParameter (
 }
 
 
+=======
+	if (byPacketType == PK_TYPE_11B) {
+		phy->service = 0x00;
+		if (bExtBit)
+			phy->service |= 0x80;
+		phy->len = cpu_to_le16((u16)cbUsCount);
+	} else {
+		phy->service = 0x00;
+		phy->len = cpu_to_le16((u16)cbFrameLength);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Description: Set Antenna mode
  *
@@ -929,6 +1107,7 @@ BBvCaculateParameter (
  * Return Value: none
  *
  */
+<<<<<<< HEAD
 void
 BBvSetAntennaMode (PSDevice pDevice, BYTE byAntennaMode)
 {
@@ -961,6 +1140,12 @@ BBvSetAntennaMode (PSDevice pDevice, BYTE byAntennaMode)
     switch (byAntennaMode) {
         case ANT_TXA:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void BBvSetAntennaMode(struct vnt_private *pDevice, u8 byAntennaMode)
+{
+    switch (byAntennaMode) {
+        case ANT_TXA:
+>>>>>>> refs/remotes/origin/master
         case ANT_TXB:
             break;
         case ANT_RXA:
@@ -972,10 +1157,16 @@ BBvSetAntennaMode (PSDevice pDevice, BYTE byAntennaMode)
             break;
     }
 
+<<<<<<< HEAD
 
     CONTROLnsRequestOut(pDevice,
                     MESSAGE_TYPE_SET_ANTMD,
                     (WORD) byAntennaMode,
+=======
+    CONTROLnsRequestOut(pDevice,
+                    MESSAGE_TYPE_SET_ANTMD,
+                    (u16) byAntennaMode,
+>>>>>>> refs/remotes/origin/master
                     0,
                     0,
                     NULL);
@@ -995,6 +1186,7 @@ BBvSetAntennaMode (PSDevice pDevice, BYTE byAntennaMode)
  *
  */
 
+<<<<<<< HEAD
 BOOL BBbVT3184Init(PSDevice pDevice)
 {
 	int ntStatus;
@@ -1269,6 +1461,181 @@ void BBvLoopbackOff (PSDevice pDevice)
 }
 
 
+=======
+int BBbVT3184Init(struct vnt_private *priv)
+{
+	int status;
+	u16 lenght;
+	u8 *addr;
+	u8 *agc;
+	u16 lenght_agc;
+	u8 array[256];
+	u8 data;
+
+	status = CONTROLnsRequestIn(priv, MESSAGE_TYPE_READ, 0,
+		MESSAGE_REQUEST_EEPROM, EEP_MAX_CONTEXT_SIZE,
+						priv->abyEEPROM);
+	if (status != STATUS_SUCCESS)
+		return false;
+
+	/* zonetype initial */
+	priv->byOriginalZonetype = priv->abyEEPROM[EEP_OFS_ZONETYPE];
+
+	if (priv->config_file.ZoneType >= 0) {
+		if ((priv->config_file.ZoneType == 0) &&
+			(priv->abyEEPROM[EEP_OFS_ZONETYPE] != 0x00)) {
+			priv->abyEEPROM[EEP_OFS_ZONETYPE] = 0;
+			priv->abyEEPROM[EEP_OFS_MAXCHANNEL] = 0x0B;
+			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO
+						"Init Zone Type :USA\n");
+		} else if ((priv->config_file.ZoneType == 1) &&
+			(priv->abyEEPROM[EEP_OFS_ZONETYPE] != 0x01)) {
+			priv->abyEEPROM[EEP_OFS_ZONETYPE] = 0x01;
+			priv->abyEEPROM[EEP_OFS_MAXCHANNEL] = 0x0D;
+			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO
+						"Init Zone Type :Japan\n");
+		} else if ((priv->config_file.ZoneType == 2) &&
+			(priv->abyEEPROM[EEP_OFS_ZONETYPE] != 0x02)) {
+			priv->abyEEPROM[EEP_OFS_ZONETYPE] = 0x02;
+			priv->abyEEPROM[EEP_OFS_MAXCHANNEL] = 0x0D;
+			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO
+						"Init Zone Type :Europe\n");
+		} else {
+			if (priv->config_file.ZoneType !=
+					priv->abyEEPROM[EEP_OFS_ZONETYPE])
+				printk("zonetype in file[%02x]\
+					 mismatch with in EEPROM[%02x]\n",
+					priv->config_file.ZoneType,
+					priv->abyEEPROM[EEP_OFS_ZONETYPE]);
+			else
+				printk("Read Zonetype file success,\
+					use default zonetype setting[%02x]\n",
+					priv->config_file.ZoneType);
+		}
+	}
+
+	if (!priv->bZoneRegExist)
+		priv->byZoneType = priv->abyEEPROM[EEP_OFS_ZONETYPE];
+
+	priv->byRFType = priv->abyEEPROM[EEP_OFS_RFTYPE];
+
+	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Zone Type %x\n",
+							priv->byZoneType);
+
+	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"RF Type %d\n", priv->byRFType);
+
+	if ((priv->byRFType == RF_AL2230) ||
+				(priv->byRFType == RF_AL2230S)) {
+		priv->byBBRxConf = abyVT3184_AL2230[10];
+		lenght = sizeof(abyVT3184_AL2230);
+		addr = abyVT3184_AL2230;
+		agc = abyVT3184_AGC;
+		lenght_agc = sizeof(abyVT3184_AGC);
+
+		priv->abyBBVGA[0] = 0x1C;
+		priv->abyBBVGA[1] = 0x10;
+		priv->abyBBVGA[2] = 0x0;
+		priv->abyBBVGA[3] = 0x0;
+		priv->ldBmThreshold[0] = -70;
+		priv->ldBmThreshold[1] = -48;
+		priv->ldBmThreshold[2] = 0;
+		priv->ldBmThreshold[3] = 0;
+	} else if (priv->byRFType == RF_AIROHA7230) {
+		priv->byBBRxConf = abyVT3184_AL2230[10];
+		lenght = sizeof(abyVT3184_AL2230);
+		addr = abyVT3184_AL2230;
+		agc = abyVT3184_AGC;
+		lenght_agc = sizeof(abyVT3184_AGC);
+
+		addr[0xd7] = 0x06;
+
+		priv->abyBBVGA[0] = 0x1c;
+		priv->abyBBVGA[1] = 0x10;
+		priv->abyBBVGA[2] = 0x0;
+		priv->abyBBVGA[3] = 0x0;
+		priv->ldBmThreshold[0] = -70;
+		priv->ldBmThreshold[1] = -48;
+		priv->ldBmThreshold[2] = 0;
+		priv->ldBmThreshold[3] = 0;
+	} else if ((priv->byRFType == RF_VT3226) ||
+			(priv->byRFType == RF_VT3226D0)) {
+		priv->byBBRxConf = abyVT3184_VT3226D0[10];
+		lenght = sizeof(abyVT3184_VT3226D0);
+		addr = abyVT3184_VT3226D0;
+		agc = abyVT3184_AGC;
+		lenght_agc = sizeof(abyVT3184_AGC);
+
+		priv->abyBBVGA[0] = 0x20;
+		priv->abyBBVGA[1] = 0x10;
+		priv->abyBBVGA[2] = 0x0;
+		priv->abyBBVGA[3] = 0x0;
+		priv->ldBmThreshold[0] = -70;
+		priv->ldBmThreshold[1] = -48;
+		priv->ldBmThreshold[2] = 0;
+		priv->ldBmThreshold[3] = 0;
+		/* Fix VT3226 DFC system timing issue */
+		MACvRegBitsOn(priv, MAC_REG_SOFTPWRCTL2, SOFTPWRCTL_RFLEOPT);
+	} else if ((priv->byRFType == RF_VT3342A0)) {
+		priv->byBBRxConf = abyVT3184_VT3226D0[10];
+		lenght = sizeof(abyVT3184_VT3226D0);
+		addr = abyVT3184_VT3226D0;
+		agc = abyVT3184_AGC;
+		lenght_agc = sizeof(abyVT3184_AGC);
+
+		priv->abyBBVGA[0] = 0x20;
+		priv->abyBBVGA[1] = 0x10;
+		priv->abyBBVGA[2] = 0x0;
+		priv->abyBBVGA[3] = 0x0;
+		priv->ldBmThreshold[0] = -70;
+		priv->ldBmThreshold[1] = -48;
+		priv->ldBmThreshold[2] = 0;
+		priv->ldBmThreshold[3] = 0;
+		/* Fix VT3226 DFC system timing issue */
+		MACvRegBitsOn(priv, MAC_REG_SOFTPWRCTL2, SOFTPWRCTL_RFLEOPT);
+	} else {
+		return true;
+	}
+
+	memcpy(array, addr, lenght);
+
+	CONTROLnsRequestOut(priv, MESSAGE_TYPE_WRITE, 0,
+		MESSAGE_REQUEST_BBREG, lenght, array);
+
+	memcpy(array, agc, lenght_agc);
+
+	CONTROLnsRequestOut(priv, MESSAGE_TYPE_WRITE, 0,
+		MESSAGE_REQUEST_BBAGC, lenght_agc, array);
+
+	if ((priv->byRFType == RF_VT3226) ||
+		(priv->byRFType == RF_VT3342A0)) {
+		ControlvWriteByte(priv, MESSAGE_REQUEST_MACREG,
+						MAC_REG_ITRTMSET, 0x23);
+		MACvRegBitsOn(priv, MAC_REG_PAPEDELAY, 0x01);
+	} else if (priv->byRFType == RF_VT3226D0) {
+		ControlvWriteByte(priv, MESSAGE_REQUEST_MACREG,
+						MAC_REG_ITRTMSET, 0x11);
+		MACvRegBitsOn(priv, MAC_REG_PAPEDELAY, 0x01);
+	}
+
+	ControlvWriteByte(priv, MESSAGE_REQUEST_BBREG, 0x04, 0x7f);
+	ControlvWriteByte(priv, MESSAGE_REQUEST_BBREG, 0x0d, 0x01);
+
+	RFbRFTableDownload(priv);
+
+
+	/* Fix for TX USB resets from vendors driver */
+	CONTROLnsRequestIn(priv, MESSAGE_TYPE_READ, USB_REG4,
+		MESSAGE_REQUEST_MEM, sizeof(data), &data);
+
+	data |= 0x2;
+
+	CONTROLnsRequestOut(priv, MESSAGE_TYPE_WRITE, USB_REG4,
+		MESSAGE_REQUEST_MEM, sizeof(data), &data);
+
+	return true;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Description: Set ShortSlotTime mode
  *
@@ -1281,6 +1648,7 @@ void BBvLoopbackOff (PSDevice pDevice)
  * Return Value: none
  *
  */
+<<<<<<< HEAD
 void
 BBvSetShortSlotTime (PSDevice pDevice)
 {
@@ -1301,6 +1669,12 @@ BBvSetShortSlotTime (PSDevice pDevice)
     ControlvWriteByte(pDevice, MESSAGE_REQUEST_BBREG, 0x0A, pDevice->byBBRxConf);
 
 =======
+=======
+void BBvSetShortSlotTime(struct vnt_private *pDevice)
+{
+    u8 byBBVGA=0;
+
+>>>>>>> refs/remotes/origin/master
 	if (pDevice->bShortSlotTime)
         pDevice->byBBRxConf &= 0xDF;//1101 1111
 	else
@@ -1311,16 +1685,23 @@ BBvSetShortSlotTime (PSDevice pDevice)
         pDevice->byBBRxConf |= 0x20;//0010 0000
 
     ControlvWriteByte(pDevice, MESSAGE_REQUEST_BBREG, 0x0A, pDevice->byBBRxConf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 
 void BBvSetVGAGainOffset(PSDevice pDevice, BYTE byData)
+=======
+}
+
+void BBvSetVGAGainOffset(struct vnt_private *pDevice, u8 byData)
+>>>>>>> refs/remotes/origin/master
 {
 
     ControlvWriteByte(pDevice, MESSAGE_REQUEST_BBREG, 0xE7, byData);
 
     // patch for 3253B0 Baseband with Cardbus module
+<<<<<<< HEAD
 <<<<<<< HEAD
     if (byData == pDevice->abyBBVGA[0]) {
         pDevice->byBBRxConf |= 0x20;//0010 0000
@@ -1330,11 +1711,14 @@ void BBvSetVGAGainOffset(PSDevice pDevice, BYTE byData)
         pDevice->byBBRxConf |= 0x20;//0010 0000
     }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pDevice->bShortSlotTime)
 		pDevice->byBBRxConf &= 0xDF; /* 1101 1111 */
 	else
 		pDevice->byBBRxConf |= 0x20; /* 0010 0000 */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
     ControlvWriteByte(pDevice, MESSAGE_REQUEST_BBREG, 0x0A, pDevice->byBBRxConf);//CR10
 }
@@ -1361,6 +1745,11 @@ BBvSoftwareReset (PSDevice pDevice)
     ControlvWriteByte(pDevice, MESSAGE_REQUEST_BBREG, 0x9C, 0);
 }
 
+=======
+    ControlvWriteByte(pDevice, MESSAGE_REQUEST_BBREG, 0x0A, pDevice->byBBRxConf);//CR10
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Description: BBvSetDeepSleep
  *
@@ -1373,28 +1762,41 @@ BBvSoftwareReset (PSDevice pDevice)
  * Return Value: none
  *
  */
+<<<<<<< HEAD
 void
 BBvSetDeepSleep (PSDevice pDevice)
+=======
+void BBvSetDeepSleep(struct vnt_private *pDevice)
+>>>>>>> refs/remotes/origin/master
 {
     ControlvWriteByte(pDevice, MESSAGE_REQUEST_BBREG, 0x0c, 0x17);//CR12
     ControlvWriteByte(pDevice, MESSAGE_REQUEST_BBREG, 0x0D, 0xB9);//CR13
 }
 
+<<<<<<< HEAD
 void
 BBvExitDeepSleep (PSDevice pDevice)
+=======
+void BBvExitDeepSleep(struct vnt_private *pDevice)
+>>>>>>> refs/remotes/origin/master
 {
     ControlvWriteByte(pDevice, MESSAGE_REQUEST_BBREG, 0x0C, 0x00);//CR12
     ControlvWriteByte(pDevice, MESSAGE_REQUEST_BBREG, 0x0D, 0x01);//CR13
 }
 
+<<<<<<< HEAD
 
 static unsigned long s_ulGetLowSQ3(PSDevice pDevice)
+=======
+static unsigned long s_ulGetLowSQ3(struct vnt_private *pDevice)
+>>>>>>> refs/remotes/origin/master
 {
 	int ii;
 	unsigned long ulSQ3 = 0;
 	unsigned long ulMaxPacket;
 
     ulMaxPacket = pDevice->aulPktNum[RATE_54M];
+<<<<<<< HEAD
 <<<<<<< HEAD
     if ( pDevice->aulPktNum[RATE_54M] != 0 ) {
         ulSQ3 = pDevice->aulSQ3Val[RATE_54M] / pDevice->aulPktNum[RATE_54M];
@@ -1406,6 +1808,8 @@ static unsigned long s_ulGetLowSQ3(PSDevice pDevice)
         }
     }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pDevice->aulPktNum[RATE_54M] != 0)
         ulSQ3 = pDevice->aulSQ3Val[RATE_54M] / pDevice->aulPktNum[RATE_54M];
 
@@ -1414,12 +1818,19 @@ static unsigned long s_ulGetLowSQ3(PSDevice pDevice)
             ulMaxPacket = pDevice->aulPktNum[ii];
             ulSQ3 = pDevice->aulSQ3Val[ii] / pDevice->aulPktNum[ii];
         }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
     return ulSQ3;
 }
 
+<<<<<<< HEAD
 static unsigned long s_ulGetRatio(PSDevice pDevice)
+=======
+static unsigned long s_ulGetRatio(struct vnt_private *pDevice)
+>>>>>>> refs/remotes/origin/master
 {
 	int ii, jj;
 	unsigned long ulRatio = 0;
@@ -1434,10 +1845,14 @@ static unsigned long s_ulGetRatio(PSDevice pDevice)
         ulRatio += TOP_RATE_54M;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
     for ( ii=RATE_48M;ii>=RATE_1M;ii-- ) {
 =======
 	for (ii = RATE_48M; ii >= RATE_1M; ii--)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (ii = RATE_48M; ii >= RATE_1M; ii--)
+>>>>>>> refs/remotes/origin/master
         if ( pDevice->aulPktNum[ii] > ulMaxPacket ) {
             ulPacketNum = 0;
             for ( jj=RATE_54M;jj>=ii;jj--)
@@ -1447,6 +1862,7 @@ static unsigned long s_ulGetRatio(PSDevice pDevice)
             ulMaxPacket = pDevice->aulPktNum[ii];
         }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     }
 
@@ -1459,6 +1875,12 @@ static unsigned long s_ulGetRatio(PSDevice pDevice)
 static
 void
 s_vClearSQ3Value (PSDevice pDevice)
+=======
+    return ulRatio;
+}
+
+static void s_vClearSQ3Value(struct vnt_private *pDevice)
+>>>>>>> refs/remotes/origin/master
 {
     int ii;
     pDevice->uDiversityCnt = 0;
@@ -1469,7 +1891,10 @@ s_vClearSQ3Value (PSDevice pDevice)
     }
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Description: Antenna Diversity
  *
@@ -1485,8 +1910,13 @@ s_vClearSQ3Value (PSDevice pDevice)
  *
  */
 
+<<<<<<< HEAD
 void
 BBvAntennaDiversity (PSDevice pDevice, BYTE byRxRate, BYTE bySQ3)
+=======
+void BBvAntennaDiversity(struct vnt_private *pDevice,
+	u8 byRxRate, u8 bySQ3)
+>>>>>>> refs/remotes/origin/master
 {
 
     pDevice->uDiversityCnt++;
@@ -1601,7 +2031,10 @@ BBvAntennaDiversity (PSDevice pDevice, BYTE byRxRate, BYTE bySQ3)
     } //byAntennaState
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*+
  *
  * Description:
@@ -1620,9 +2053,14 @@ BBvAntennaDiversity (PSDevice pDevice, BYTE byRxRate, BYTE bySQ3)
  *
 -*/
 
+<<<<<<< HEAD
 void TimerSQ3CallBack(void *hDeviceContext)
 {
     PSDevice        pDevice = (PSDevice)hDeviceContext;
+=======
+void TimerSQ3CallBack(struct vnt_private *pDevice)
+{
+>>>>>>> refs/remotes/origin/master
 
     DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"TimerSQ3CallBack...");
     spin_lock_irq(&pDevice->lock);
@@ -1635,6 +2073,7 @@ void TimerSQ3CallBack(void *hDeviceContext)
     add_timer(&pDevice->TimerSQ3Tmax3);
     add_timer(&pDevice->TimerSQ3Tmax2);
 
+<<<<<<< HEAD
 
     spin_unlock_irq(&pDevice->lock);
 <<<<<<< HEAD
@@ -1644,6 +2083,11 @@ void TimerSQ3CallBack(void *hDeviceContext)
 }
 
 
+=======
+    spin_unlock_irq(&pDevice->lock);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*+
  *
  * Description:
@@ -1662,9 +2106,14 @@ void TimerSQ3CallBack(void *hDeviceContext)
  *
 -*/
 
+<<<<<<< HEAD
 void TimerSQ3Tmax3CallBack(void *hDeviceContext)
 {
     PSDevice        pDevice = (PSDevice)hDeviceContext;
+=======
+void TimerSQ3Tmax3CallBack(struct vnt_private *pDevice)
+{
+>>>>>>> refs/remotes/origin/master
 
     DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"TimerSQ3Tmax3CallBack...");
     spin_lock_irq(&pDevice->lock);
@@ -1689,6 +2138,7 @@ void TimerSQ3Tmax3CallBack(void *hDeviceContext)
 
     spin_unlock_irq(&pDevice->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
     return;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1701,6 +2151,13 @@ BBvUpdatePreEDThreshold(
 {
 
 
+=======
+}
+
+void BBvUpdatePreEDThreshold(struct vnt_private *pDevice, int bScanning)
+{
+
+>>>>>>> refs/remotes/origin/master
     switch(pDevice->byRFType)
     {
         case RF_AL2230:
@@ -1710,7 +2167,10 @@ BBvUpdatePreEDThreshold(
 
             if( bScanning )
             {   // need Max sensitivity //RSSI -69, -70,....
+<<<<<<< HEAD
                 if(pDevice->byBBPreEDIndex == 0) break;
+=======
+>>>>>>> refs/remotes/origin/master
                 pDevice->byBBPreEDIndex = 0;
                 ControlvWriteByte(pDevice, MESSAGE_REQUEST_BBREG, 0xC9, 0x00); //CR201(0xC9)
                 ControlvWriteByte(pDevice, MESSAGE_REQUEST_BBREG, 0xCE, 0x30); //CR206(0xCE)
@@ -1853,7 +2313,10 @@ BBvUpdatePreEDThreshold(
 
             if( bScanning )
             {   // need Max sensitivity  //RSSI -69, -70, ...
+<<<<<<< HEAD
                 if(pDevice->byBBPreEDIndex == 0) break;
+=======
+>>>>>>> refs/remotes/origin/master
                 pDevice->byBBPreEDIndex = 0;
                 ControlvWriteByte(pDevice, MESSAGE_REQUEST_BBREG, 0xC9, 0x00); //CR201(0xC9)
                 ControlvWriteByte(pDevice, MESSAGE_REQUEST_BBREG, 0xCE, 0x24); //CR206(0xCE)
@@ -2005,7 +2468,10 @@ BBvUpdatePreEDThreshold(
         case RF_VT3342A0: //RobertYu:20060627, testing table
             if( bScanning )
             {   // need Max sensitivity  //RSSI -67, -68, ...
+<<<<<<< HEAD
                 if(pDevice->byBBPreEDIndex == 0) break;
+=======
+>>>>>>> refs/remotes/origin/master
                 pDevice->byBBPreEDIndex = 0;
                 ControlvWriteByte(pDevice, MESSAGE_REQUEST_BBREG, 0xC9, 0x00); //CR201(0xC9)
                 ControlvWriteByte(pDevice, MESSAGE_REQUEST_BBREG, 0xCE, 0x38); //CR206(0xCE)

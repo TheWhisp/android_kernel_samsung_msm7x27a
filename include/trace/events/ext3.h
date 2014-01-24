@@ -24,8 +24,13 @@ TRACE_EVENT(ext3_free_inode,
 		__entry->dev	= inode->i_sb->s_dev;
 		__entry->ino	= inode->i_ino;
 		__entry->mode	= inode->i_mode;
+<<<<<<< HEAD
 		__entry->uid	= inode->i_uid;
 		__entry->gid	= inode->i_gid;
+=======
+		__entry->uid	= i_uid_read(inode);
+		__entry->gid	= i_gid_read(inode);
+>>>>>>> refs/remotes/origin/master
 		__entry->blocks	= inode->i_blocks;
 	),
 
@@ -290,6 +295,7 @@ DEFINE_EVENT(ext3__page_op, ext3_releasepage,
 );
 
 TRACE_EVENT(ext3_invalidatepage,
+<<<<<<< HEAD
 	TP_PROTO(struct page *page, unsigned long offset),
 
 	TP_ARGS(page, offset),
@@ -297,6 +303,16 @@ TRACE_EVENT(ext3_invalidatepage,
 	TP_STRUCT__entry(
 		__field(	pgoff_t, index			)
 		__field(	unsigned long, offset		)
+=======
+	TP_PROTO(struct page *page, unsigned int offset, unsigned int length),
+
+	TP_ARGS(page, offset, length),
+
+	TP_STRUCT__entry(
+		__field(	pgoff_t, index			)
+		__field(	unsigned int, offset		)
+		__field(	unsigned int, length		)
+>>>>>>> refs/remotes/origin/master
 		__field(	ino_t,	ino			)
 		__field(	dev_t,	dev			)
 
@@ -305,14 +321,25 @@ TRACE_EVENT(ext3_invalidatepage,
 	TP_fast_assign(
 		__entry->index	= page->index;
 		__entry->offset	= offset;
+<<<<<<< HEAD
+=======
+		__entry->length	= length;
+>>>>>>> refs/remotes/origin/master
 		__entry->ino	= page->mapping->host->i_ino;
 		__entry->dev	= page->mapping->host->i_sb->s_dev;
 	),
 
+<<<<<<< HEAD
 	TP_printk("dev %d,%d ino %lu page_index %lu offset %lu",
 		  MAJOR(__entry->dev), MINOR(__entry->dev),
 		  (unsigned long) __entry->ino,
 		  __entry->index, __entry->offset)
+=======
+	TP_printk("dev %d,%d ino %lu page_index %lu offset %u length %u",
+		  MAJOR(__entry->dev), MINOR(__entry->dev),
+		  (unsigned long) __entry->ino,
+		  __entry->index, __entry->offset, __entry->length)
+>>>>>>> refs/remotes/origin/master
 );
 
 TRACE_EVENT(ext3_discard_blocks,

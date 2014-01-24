@@ -2,7 +2,11 @@
  * A hwmon driver for the Analog Devices ADT7462
  * Copyright (C) 2008 IBM
  *
+<<<<<<< HEAD
  * Author: Darrick J. Wong <djwong@us.ibm.com>
+=======
+ * Author: Darrick J. Wong <darrick.wong@oracle.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +30,10 @@
 #include <linux/hwmon-sysfs.h>
 #include <linux/err.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <linux/delay.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/log2.h>
 #include <linux/slab.h>
 
@@ -66,12 +73,17 @@ static const unsigned short normal_i2c[] = { 0x58, 0x5C, I2C_CLIENT_END };
 #define ADT7462_REG_PWM_TEMP_RANGE_BASE_ADDR	0x60
 #define ADT7462_REG_PWM_TEMP_RANGE_MAX_ADDR	0x63
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define 	ADT7462_PWM_HYST_MASK		0x0F
 #define 	ADT7462_PWM_RANGE_MASK		0xF0
 =======
 #define	ADT7462_PWM_HYST_MASK			0x0F
 #define	ADT7462_PWM_RANGE_MASK			0xF0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	ADT7462_PWM_HYST_MASK			0x0F
+#define	ADT7462_PWM_RANGE_MASK			0xF0
+>>>>>>> refs/remotes/origin/master
 #define		ADT7462_PWM_RANGE_SHIFT		4
 #define ADT7462_REG_PWM_CFG_BASE_ADDR		0x21
 #define ADT7462_REG_PWM_CFG_MAX_ADDR		0x24
@@ -91,10 +103,14 @@ static const unsigned short normal_i2c[] = { 0x58, 0x5C, I2C_CLIENT_END };
 #define		ADT7462_PIN13_INPUT		0x40
 #define		ADT7462_PIN8_INPUT		0x80
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define 	ADT7462_PIN23_MASK		0x03
 =======
 #define		ADT7462_PIN23_MASK		0x03
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define		ADT7462_PIN23_MASK		0x03
+>>>>>>> refs/remotes/origin/master
 #define		ADT7462_PIN23_SHIFT		0
 #define		ADT7462_PIN26_MASK		0x0C	/* cfg2 */
 #define		ADT7462_PIN26_SHIFT		2
@@ -109,10 +125,14 @@ static const unsigned short normal_i2c[] = { 0x58, 0x5C, I2C_CLIENT_END };
 
 #define ADT7462_REG_ALARM1			0xB8
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define 	ADT7462_LT_ALARM		0x02
 =======
 #define	ADT7462_LT_ALARM			0x02
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	ADT7462_LT_ALARM			0x02
+>>>>>>> refs/remotes/origin/master
 #define		ADT7462_R1T_ALARM		0x04
 #define		ADT7462_R2T_ALARM		0x08
 #define		ADT7462_R3T_ALARM		0x10
@@ -149,6 +169,7 @@ static const unsigned short normal_i2c[] = { 0x58, 0x5C, I2C_CLIENT_END };
 
 #define ADT7462_TEMP_COUNT		4
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ADT7462_TEMP_REG(x)		(ADT7462_REG_TEMP_BASE_ADDR + (x * 2))
 #define ADT7462_TEMP_MIN_REG(x) 	(ADT7462_REG_MIN_TEMP_BASE_ADDR + (x))
 #define ADT7462_TEMP_MAX_REG(x) 	(ADT7462_REG_MAX_TEMP_BASE_ADDR + (x))
@@ -157,6 +178,11 @@ static const unsigned short normal_i2c[] = { 0x58, 0x5C, I2C_CLIENT_END };
 #define ADT7462_TEMP_MIN_REG(x)		(ADT7462_REG_MIN_TEMP_BASE_ADDR + (x))
 #define ADT7462_TEMP_MAX_REG(x)		(ADT7462_REG_MAX_TEMP_BASE_ADDR + (x))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ADT7462_TEMP_REG(x)		(ADT7462_REG_TEMP_BASE_ADDR + ((x) * 2))
+#define ADT7462_TEMP_MIN_REG(x)		(ADT7462_REG_MIN_TEMP_BASE_ADDR + (x))
+#define ADT7462_TEMP_MAX_REG(x)		(ADT7462_REG_MAX_TEMP_BASE_ADDR + (x))
+>>>>>>> refs/remotes/origin/master
 #define TEMP_FRAC_OFFSET		6
 
 #define ADT7462_FAN_COUNT		8
@@ -353,7 +379,11 @@ static int ADT7462_REG_VOLT_MAX(struct adt7462_data *data, int which)
 			return 0x4C;
 		break;
 	}
+<<<<<<< HEAD
 	return -ENODEV;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ADT7462_REG_VOLT_MIN(struct adt7462_data *data, int which)
@@ -412,7 +442,11 @@ static int ADT7462_REG_VOLT_MIN(struct adt7462_data *data, int which)
 			return 0x77;
 		break;
 	}
+<<<<<<< HEAD
 	return -ENODEV;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ADT7462_REG_VOLT(struct adt7462_data *data, int which)
@@ -720,7 +754,11 @@ static int find_trange_value(int trange)
 		if (trange_values[i] == trange)
 			return i;
 
+<<<<<<< HEAD
 	return -ENODEV;
+=======
+	return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct adt7462_data *adt7462_update_device(struct device *dev)
@@ -853,6 +891,7 @@ static ssize_t set_temp_min(struct device *dev,
 	long temp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &temp) || !temp_enabled(data, attr->index))
 =======
 	if (kstrtol(buf, 10, &temp) || !temp_enabled(data, attr->index))
@@ -861,6 +900,13 @@ static ssize_t set_temp_min(struct device *dev,
 
 	temp = DIV_ROUND_CLOSEST(temp, 1000) + 64;
 	temp = SENSORS_LIMIT(temp, 0, 255);
+=======
+	if (kstrtol(buf, 10, &temp) || !temp_enabled(data, attr->index))
+		return -EINVAL;
+
+	temp = DIV_ROUND_CLOSEST(temp, 1000) + 64;
+	temp = clamp_val(temp, 0, 255);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->lock);
 	data->temp_min[attr->index] = temp;
@@ -895,6 +941,7 @@ static ssize_t set_temp_max(struct device *dev,
 	long temp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &temp) || !temp_enabled(data, attr->index))
 =======
 	if (kstrtol(buf, 10, &temp) || !temp_enabled(data, attr->index))
@@ -903,6 +950,13 @@ static ssize_t set_temp_max(struct device *dev,
 
 	temp = DIV_ROUND_CLOSEST(temp, 1000) + 64;
 	temp = SENSORS_LIMIT(temp, 0, 255);
+=======
+	if (kstrtol(buf, 10, &temp) || !temp_enabled(data, attr->index))
+		return -EINVAL;
+
+	temp = DIV_ROUND_CLOSEST(temp, 1000) + 64;
+	temp = clamp_val(temp, 0, 255);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->lock);
 	data->temp_max[attr->index] = temp;
@@ -963,15 +1017,23 @@ static ssize_t set_volt_max(struct device *dev,
 	long temp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &temp) || !x)
 =======
 	if (kstrtol(buf, 10, &temp) || !x)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &temp) || !x)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	temp *= 1000; /* convert mV to uV */
 	temp = DIV_ROUND_CLOSEST(temp, x);
+<<<<<<< HEAD
 	temp = SENSORS_LIMIT(temp, 0, 255);
+=======
+	temp = clamp_val(temp, 0, 255);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->lock);
 	data->volt_max[attr->index] = temp;
@@ -1009,15 +1071,23 @@ static ssize_t set_volt_min(struct device *dev,
 	long temp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &temp) || !x)
 =======
 	if (kstrtol(buf, 10, &temp) || !x)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &temp) || !x)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	temp *= 1000; /* convert mV to uV */
 	temp = DIV_ROUND_CLOSEST(temp, x);
+<<<<<<< HEAD
 	temp = SENSORS_LIMIT(temp, 0, 255);
+=======
+	temp = clamp_val(temp, 0, 255);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->lock);
 	data->volt_min[attr->index] = temp;
@@ -1102,16 +1172,24 @@ static ssize_t set_fan_min(struct device *dev,
 	long temp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &temp) || !temp ||
 =======
 	if (kstrtol(buf, 10, &temp) || !temp ||
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &temp) || !temp ||
+>>>>>>> refs/remotes/origin/master
 	    !fan_enabled(data, attr->index))
 		return -EINVAL;
 
 	temp = FAN_RPM_TO_PERIOD(temp);
 	temp >>= 8;
+<<<<<<< HEAD
 	temp = SENSORS_LIMIT(temp, 1, 255);
+=======
+	temp = clamp_val(temp, 1, 255);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->lock);
 	data->fan_min[attr->index] = temp;
@@ -1155,10 +1233,14 @@ static ssize_t set_force_pwm_max(struct device *dev,
 	u8 reg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &temp))
 =======
 	if (kstrtol(buf, 10, &temp))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &temp))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->lock);
@@ -1191,6 +1273,7 @@ static ssize_t set_pwm(struct device *dev, struct device_attribute *devattr,
 	long temp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &temp))
 =======
 	if (kstrtol(buf, 10, &temp))
@@ -1198,6 +1281,12 @@ static ssize_t set_pwm(struct device *dev, struct device_attribute *devattr,
 		return -EINVAL;
 
 	temp = SENSORS_LIMIT(temp, 0, 255);
+=======
+	if (kstrtol(buf, 10, &temp))
+		return -EINVAL;
+
+	temp = clamp_val(temp, 0, 255);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->lock);
 	data->pwm[attr->index] = temp;
@@ -1225,6 +1314,7 @@ static ssize_t set_pwm_max(struct device *dev,
 	long temp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &temp))
 =======
 	if (kstrtol(buf, 10, &temp))
@@ -1232,6 +1322,12 @@ static ssize_t set_pwm_max(struct device *dev,
 		return -EINVAL;
 
 	temp = SENSORS_LIMIT(temp, 0, 255);
+=======
+	if (kstrtol(buf, 10, &temp))
+		return -EINVAL;
+
+	temp = clamp_val(temp, 0, 255);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->lock);
 	data->pwm_max = temp;
@@ -1261,6 +1357,7 @@ static ssize_t set_pwm_min(struct device *dev,
 	long temp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &temp))
 =======
 	if (kstrtol(buf, 10, &temp))
@@ -1268,6 +1365,12 @@ static ssize_t set_pwm_min(struct device *dev,
 		return -EINVAL;
 
 	temp = SENSORS_LIMIT(temp, 0, 255);
+=======
+	if (kstrtol(buf, 10, &temp))
+		return -EINVAL;
+
+	temp = clamp_val(temp, 0, 255);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->lock);
 	data->pwm_min[attr->index] = temp;
@@ -1299,6 +1402,7 @@ static ssize_t set_pwm_hyst(struct device *dev,
 	long temp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &temp))
 =======
 	if (kstrtol(buf, 10, &temp))
@@ -1307,6 +1411,13 @@ static ssize_t set_pwm_hyst(struct device *dev,
 
 	temp = DIV_ROUND_CLOSEST(temp, 1000);
 	temp = SENSORS_LIMIT(temp, 0, 15);
+=======
+	if (kstrtol(buf, 10, &temp))
+		return -EINVAL;
+
+	temp = DIV_ROUND_CLOSEST(temp, 1000);
+	temp = clamp_val(temp, 0, 15);
+>>>>>>> refs/remotes/origin/master
 
 	/* package things up */
 	temp &= ADT7462_PWM_HYST_MASK;
@@ -1349,18 +1460,27 @@ static ssize_t set_pwm_tmax(struct device *dev,
 	long trange;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &trange))
 =======
 	if (kstrtol(buf, 10, &trange))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &trange))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	/* trange = tmax - tmin */
 	tmin = (data->pwm_tmin[attr->index] - 64) * 1000;
 	trange_value = find_trange_value(trange - tmin);
+<<<<<<< HEAD
 
 	if (trange_value < 0)
 		return -EINVAL;
+=======
+	if (trange_value < 0)
+		return trange_value;
+>>>>>>> refs/remotes/origin/master
 
 	temp = trange_value << ADT7462_PWM_RANGE_SHIFT;
 	temp |= data->pwm_trange[attr->index] & ADT7462_PWM_HYST_MASK;
@@ -1394,6 +1514,7 @@ static ssize_t set_pwm_tmin(struct device *dev,
 	long temp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &temp))
 =======
 	if (kstrtol(buf, 10, &temp))
@@ -1402,6 +1523,13 @@ static ssize_t set_pwm_tmin(struct device *dev,
 
 	temp = DIV_ROUND_CLOSEST(temp, 1000) + 64;
 	temp = SENSORS_LIMIT(temp, 0, 255);
+=======
+	if (kstrtol(buf, 10, &temp))
+		return -EINVAL;
+
+	temp = DIV_ROUND_CLOSEST(temp, 1000) + 64;
+	temp = clamp_val(temp, 0, 255);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->lock);
 	data->pwm_tmin[attr->index] = temp;
@@ -1455,10 +1583,14 @@ static ssize_t set_pwm_auto(struct device *dev,
 	long temp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &temp))
 =======
 	if (kstrtol(buf, 10, &temp))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &temp))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	switch (temp) {
@@ -1518,10 +1650,14 @@ static ssize_t set_pwm_auto_temp(struct device *dev,
 	long temp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &temp))
 =======
 	if (kstrtol(buf, 10, &temp))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &temp))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	temp = cvt_auto_temp(temp);
@@ -1803,11 +1939,15 @@ static SENSOR_DEVICE_ATTR(pwm4_auto_channels_temp, S_IWUSR | S_IRUGO,
 		    show_pwm_auto_temp, set_pwm_auto_temp, 3);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct attribute *adt7462_attr[] =
 {
 =======
 static struct attribute *adt7462_attr[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct attribute *adt7462_attr[] = {
+>>>>>>> refs/remotes/origin/master
 	&sensor_dev_attr_temp1_max.dev_attr.attr,
 	&sensor_dev_attr_temp2_max.dev_attr.attr,
 	&sensor_dev_attr_temp3_max.dev_attr.attr,
@@ -2011,11 +2151,18 @@ static int adt7462_probe(struct i2c_client *client,
 	struct adt7462_data *data;
 	int err;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct adt7462_data), GFP_KERNEL);
 	if (!data) {
 		err = -ENOMEM;
 		goto exit;
 	}
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct adt7462_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(client, data);
 	mutex_init(&data->lock);
@@ -2026,7 +2173,11 @@ static int adt7462_probe(struct i2c_client *client,
 	data->attrs.attrs = adt7462_attr;
 	err = sysfs_create_group(&client->dev.kobj, &data->attrs);
 	if (err)
+<<<<<<< HEAD
 		goto exit_free;
+=======
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -2038,9 +2189,12 @@ static int adt7462_probe(struct i2c_client *client,
 
 exit_remove:
 	sysfs_remove_group(&client->dev.kobj, &data->attrs);
+<<<<<<< HEAD
 exit_free:
 	kfree(data);
 exit:
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -2050,6 +2204,7 @@ static int adt7462_remove(struct i2c_client *client)
 
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &data->attrs);
+<<<<<<< HEAD
 	kfree(data);
 	return 0;
 }
@@ -2077,3 +2232,13 @@ module_init(adt7462_init);
 module_exit(adt7462_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+}
+
+module_i2c_driver(adt7462_driver);
+
+MODULE_AUTHOR("Darrick J. Wong <darrick.wong@oracle.com>");
+MODULE_DESCRIPTION("ADT7462 driver");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

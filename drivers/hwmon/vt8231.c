@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vt8231.c - Part of lm_sensors, Linux kernel modules
 				for hardware monitoring
 
@@ -25,6 +26,8 @@
 /* Supports VIA VT8231 South Bridge embedded sensors
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * vt8231.c - Part of lm_sensors, Linux kernel modules
  *	      for hardware monitoring
  *
@@ -50,7 +53,10 @@
 /*
  * Supports VIA VT8231 South Bridge embedded sensors
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
@@ -79,6 +85,7 @@ static struct platform_device *pdev;
 #define VT8231_ENABLE_REG 0x74
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* The VT8231 registers
 
    The reset value for the input channel configuration is used (Reg 0x4A=0x07)
@@ -100,6 +107,8 @@ static struct platform_device *pdev;
    to match the motherboard configuration.
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The VT8231 registers
  *
@@ -121,7 +130,10 @@ static struct platform_device *pdev;
  * Note that the BIOS may set the configuration register to a different value
  * to match the motherboard configuration.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* fans numbered 0-1 */
 #define VT8231_REG_FAN_MIN(nr)	(0x3b + (nr))
@@ -134,6 +146,7 @@ static const u8 regvoltmax[] = { 0x3d, 0x2b, 0x2d, 0x2f, 0x31, 0x33 };
 static const u8 regvoltmin[] = { 0x3e, 0x2c, 0x2e, 0x30, 0x32, 0x34 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Temperatures are numbered 1-6 according to the Linux kernel specification.
 **
 ** In the VIA datasheet, however, the temperatures are numbered from zero.
@@ -142,6 +155,8 @@ static const u8 regvoltmin[] = { 0x3e, 0x2c, 0x2e, 0x30, 0x32, 0x34 };
 ** kernel sysfs device name to the VIA number in the sysfs callback.
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Temperatures are numbered 1-6 according to the Linux kernel specification.
  *
@@ -150,7 +165,10 @@ static const u8 regvoltmin[] = { 0x3e, 0x2c, 0x2e, 0x30, 0x32, 0x34 };
  * datasheet, we will use the VIA numbering within this driver and map the
  * kernel sysfs device name to the VIA number in the sysfs callback.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define VT8231_REG_TEMP_LOW01	0x49
 #define VT8231_REG_TEMP_LOW25	0x4d
@@ -172,15 +190,21 @@ static const u8 regtempmin[] = { 0x3a, 0x3e, 0x2c, 0x2e, 0x30, 0x32 };
 #define VT8231_REG_TEMP2_CONFIG 0x4c
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* temps 0-5 as numbered in VIA datasheet - see later for mapping to Linux
 ** numbering
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * temps 0-5 as numbered in VIA datasheet - see later for mapping to Linux
  * numbering
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define ISTEMP(i, ch_config) ((i) == 0 ? 1 : \
 			      ((ch_config) >> ((i)+1)) & 0x01)
 /* voltages 0-5 */
@@ -189,6 +213,7 @@ static const u8 regtempmin[] = { 0x3a, 0x3e, 0x2c, 0x2e, 0x30, 0x32 };
 
 #define DIV_FROM_REG(val) (1 << (val))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* NB  The values returned here are NOT temperatures.  The calibration curves
 **     for the thermistor curves are board-specific and must go in the
@@ -209,6 +234,8 @@ static const u8 regtempmin[] = { 0x3a, 0x3e, 0x2c, 0x2e, 0x30, 0x32 };
 ** So, 0 means 0 RPM
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * NB  The values returned here are NOT temperatures.  The calibration curves
  *     for the thermistor curves are board-specific and must go in the
@@ -229,12 +256,20 @@ static const u8 regtempmin[] = { 0x3a, 0x3e, 0x2c, 0x2e, 0x30, 0x32 };
  * This chip saturates back at 0, not at 255 like many the other chips.
  * So, 0 means 0 RPM
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static inline u8 FAN_TO_REG(long rpm, int div)
 {
 	if (rpm == 0)
 		return 0;
 	return SENSORS_LIMIT(1310720 / (rpm * div), 1, 255);
+=======
+static inline u8 FAN_TO_REG(long rpm, int div)
+{
+	if (rpm <= 0 || rpm > 1310720)
+		return 0;
+	return clamp_val(1310720 / (rpm * div), 1, 255);
+>>>>>>> refs/remotes/origin/master
 }
 
 #define FAN_FROM_REG(val, div) ((val) == 0 ? 0 : 1310720 / ((val) * (div)))
@@ -263,7 +298,11 @@ struct vt8231_data {
 
 static struct pci_dev *s_bridge;
 static int vt8231_probe(struct platform_device *pdev);
+<<<<<<< HEAD
 static int __devexit vt8231_remove(struct platform_device *pdev);
+=======
+static int vt8231_remove(struct platform_device *pdev);
+>>>>>>> refs/remotes/origin/master
 static struct vt8231_data *vt8231_update_device(struct device *dev);
 static void vt8231_init_device(struct vt8231_data *data);
 
@@ -316,18 +355,27 @@ static ssize_t set_in_min(struct device *dev, struct device_attribute *attr,
 	int nr = sensor_attr->index;
 	struct vt8231_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->in_min[nr] = SENSORS_LIMIT(((val * 958) / 10000) + 3, 0, 255);
+=======
+
+	mutex_lock(&data->update_lock);
+	data->in_min[nr] = clamp_val(((val * 958) / 10000) + 3, 0, 255);
+>>>>>>> refs/remotes/origin/master
 	vt8231_write_value(data, regvoltmin[nr], data->in_min[nr]);
 	mutex_unlock(&data->update_lock);
 	return count;
@@ -340,18 +388,27 @@ static ssize_t set_in_max(struct device *dev, struct device_attribute *attr,
 	int nr = sensor_attr->index;
 	struct vt8231_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->in_max[nr] = SENSORS_LIMIT(((val * 958) / 10000) + 3, 0, 255);
+=======
+
+	mutex_lock(&data->update_lock);
+	data->in_max[nr] = clamp_val(((val * 958) / 10000) + 3, 0, 255);
+>>>>>>> refs/remotes/origin/master
 	vt8231_write_value(data, regvoltmax[nr], data->in_max[nr]);
 	mutex_unlock(&data->update_lock);
 	return count;
@@ -390,19 +447,29 @@ static ssize_t set_in5_min(struct device *dev, struct device_attribute *attr,
 {
 	struct vt8231_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->in_min[5] = SENSORS_LIMIT(((val * 958 * 34) / (10000 * 54)) + 3,
 					0, 255);
+=======
+
+	mutex_lock(&data->update_lock);
+	data->in_min[5] = clamp_val(((val * 958 * 34) / (10000 * 54)) + 3,
+				    0, 255);
+>>>>>>> refs/remotes/origin/master
 	vt8231_write_value(data, regvoltmin[5], data->in_min[5]);
 	mutex_unlock(&data->update_lock);
 	return count;
@@ -413,19 +480,29 @@ static ssize_t set_in5_max(struct device *dev, struct device_attribute *attr,
 {
 	struct vt8231_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->in_max[5] = SENSORS_LIMIT(((val * 958 * 34) / (10000 * 54)) + 3,
 					0, 255);
+=======
+
+	mutex_lock(&data->update_lock);
+	data->in_max[5] = clamp_val(((val * 958 * 34) / (10000 * 54)) + 3,
+				    0, 255);
+>>>>>>> refs/remotes/origin/master
 	vt8231_write_value(data, regvoltmax[5], data->in_max[5]);
 	mutex_unlock(&data->update_lock);
 	return count;
@@ -476,18 +553,27 @@ static ssize_t set_temp0_max(struct device *dev, struct device_attribute *attr,
 {
 	struct vt8231_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->temp_max[0] = SENSORS_LIMIT((val + 500) / 1000, 0, 255);
+=======
+
+	mutex_lock(&data->update_lock);
+	data->temp_max[0] = clamp_val((val + 500) / 1000, 0, 255);
+>>>>>>> refs/remotes/origin/master
 	vt8231_write_value(data, regtempmax[0], data->temp_max[0]);
 	mutex_unlock(&data->update_lock);
 	return count;
@@ -497,18 +583,27 @@ static ssize_t set_temp0_min(struct device *dev, struct device_attribute *attr,
 {
 	struct vt8231_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->temp_min[0] = SENSORS_LIMIT((val + 500) / 1000, 0, 255);
+=======
+
+	mutex_lock(&data->update_lock);
+	data->temp_min[0] = clamp_val((val + 500) / 1000, 0, 255);
+>>>>>>> refs/remotes/origin/master
 	vt8231_write_value(data, regtempmin[0], data->temp_min[0]);
 	mutex_unlock(&data->update_lock);
 	return count;
@@ -548,18 +643,27 @@ static ssize_t set_temp_max(struct device *dev, struct device_attribute *attr,
 	int nr = sensor_attr->index;
 	struct vt8231_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->temp_max[nr] = SENSORS_LIMIT(TEMP_MAXMIN_TO_REG(val), 0, 255);
+=======
+
+	mutex_lock(&data->update_lock);
+	data->temp_max[nr] = clamp_val(TEMP_MAXMIN_TO_REG(val), 0, 255);
+>>>>>>> refs/remotes/origin/master
 	vt8231_write_value(data, regtempmax[nr], data->temp_max[nr]);
 	mutex_unlock(&data->update_lock);
 	return count;
@@ -571,33 +675,48 @@ static ssize_t set_temp_min(struct device *dev, struct device_attribute *attr,
 	int nr = sensor_attr->index;
 	struct vt8231_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->temp_min[nr] = SENSORS_LIMIT(TEMP_MAXMIN_TO_REG(val), 0, 255);
+=======
+
+	mutex_lock(&data->update_lock);
+	data->temp_min[nr] = clamp_val(TEMP_MAXMIN_TO_REG(val), 0, 255);
+>>>>>>> refs/remotes/origin/master
 	vt8231_write_value(data, regtempmin[nr], data->temp_min[nr]);
 	mutex_unlock(&data->update_lock);
 	return count;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Note that these map the Linux temperature sensor numbering (1-6) to the VIA
 ** temperature sensor numbering (0-5)
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Note that these map the Linux temperature sensor numbering (1-6) to the VIA
  * temperature sensor numbering (0-5)
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define define_temperature_sysfs(offset)				\
 static SENSOR_DEVICE_ATTR(temp##offset##_input, S_IRUGO,		\
 		show_temp, NULL, offset - 1);				\
@@ -609,11 +728,16 @@ static SENSOR_DEVICE_ATTR(temp##offset##_max_hyst, S_IRUGO | S_IWUSR,	\
 static DEVICE_ATTR(temp1_input, S_IRUGO, show_temp0, NULL);
 static DEVICE_ATTR(temp1_max, S_IRUGO | S_IWUSR, show_temp0_max, set_temp0_max);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEVICE_ATTR(temp1_max_hyst, S_IRUGO | S_IWUSR, show_temp0_min, set_temp0_min);
 =======
 static DEVICE_ATTR(temp1_max_hyst, S_IRUGO | S_IWUSR, show_temp0_min,
 		   set_temp0_min);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR(temp1_max_hyst, S_IRUGO | S_IWUSR, show_temp0_min,
+		   set_temp0_min);
+>>>>>>> refs/remotes/origin/master
 
 define_temperature_sysfs(2);
 define_temperature_sysfs(3);
@@ -658,15 +782,21 @@ static ssize_t set_fan_min(struct device *dev, struct device_attribute *attr,
 	int nr = sensor_attr->index;
 	struct vt8231_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->fan_min[nr] = FAN_TO_REG(val, DIV_FROM_REG(data->fan_div[nr]));
@@ -681,14 +811,19 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *attr,
 	struct vt8231_data *data = dev_get_drvdata(dev);
 	struct sensor_device_attribute *sensor_attr = to_sensor_dev_attr(attr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
 	unsigned long val;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long val;
+>>>>>>> refs/remotes/origin/master
 	int nr = sensor_attr->index;
 	int old = vt8231_read_value(data, VT8231_REG_FANDIV);
 	long min = FAN_FROM_REG(data->fan_min[nr],
 				 DIV_FROM_REG(data->fan_div[nr]));
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	mutex_lock(&data->update_lock);
@@ -701,6 +836,8 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *attr,
 		dev_err(dev, "fan_div value %ld not supported. "
 		        "Choose one of 1, 2, 4 or 8!\n", val);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
@@ -722,9 +859,15 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *attr,
 		data->fan_div[nr] = 3;
 		break;
 	default:
+<<<<<<< HEAD
 		dev_err(dev, "fan_div value %ld not supported. "
 			"Choose one of 1, 2, 4 or 8!\n", val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(dev,
+			"fan_div value %ld not supported. Choose one of 1, 2, 4 or 8!\n",
+			val);
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&data->update_lock);
 		return -EINVAL;
 	}
@@ -912,6 +1055,7 @@ static struct platform_driver vt8231_driver = {
 		.name	= "vt8231",
 	},
 	.probe	= vt8231_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(vt8231_remove),
 };
 
@@ -920,18 +1064,29 @@ static const struct pci_device_id vt8231_pci_ids[] = {
 =======
 static DEFINE_PCI_DEVICE_TABLE(vt8231_pci_ids) = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove	= vt8231_remove,
+};
+
+static const struct pci_device_id vt8231_pci_ids[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_8231_4) },
 	{ 0, }
 };
 
 MODULE_DEVICE_TABLE(pci, vt8231_pci_ids);
 
+<<<<<<< HEAD
 static int __devinit vt8231_pci_probe(struct pci_dev *dev,
 <<<<<<< HEAD
 			 	      const struct pci_device_id *id);
 =======
 				      const struct pci_device_id *id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int vt8231_pci_probe(struct pci_dev *dev,
+				      const struct pci_device_id *id);
+>>>>>>> refs/remotes/origin/master
 
 static struct pci_driver vt8231_pci_driver = {
 	.name		= "vt8231",
@@ -947,13 +1102,19 @@ static int vt8231_probe(struct platform_device *pdev)
 
 	/* Reserve the ISA region */
 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
+<<<<<<< HEAD
 	if (!request_region(res->start, VT8231_EXTENT,
 			    vt8231_driver.driver.name)) {
+=======
+	if (!devm_request_region(&pdev->dev, res->start, VT8231_EXTENT,
+				 vt8231_driver.driver.name)) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&pdev->dev, "Region 0x%lx-0x%lx already in use!\n",
 			(unsigned long)res->start, (unsigned long)res->end);
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!(data = kzalloc(sizeof(struct vt8231_data), GFP_KERNEL))) {
 =======
@@ -963,6 +1124,11 @@ static int vt8231_probe(struct platform_device *pdev)
 		err = -ENOMEM;
 		goto exit_release;
 	}
+=======
+	data = devm_kzalloc(&pdev->dev, sizeof(struct vt8231_data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	platform_set_drvdata(pdev, data);
 	data->addr = res->start;
@@ -973,18 +1139,25 @@ static int vt8231_probe(struct platform_device *pdev)
 
 	/* Register sysfs hooks */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((err = sysfs_create_group(&pdev->dev.kobj, &vt8231_group)))
 =======
 	err = sysfs_create_group(&pdev->dev.kobj, &vt8231_group);
 	if (err)
 >>>>>>> refs/remotes/origin/cm-10.0
 		goto exit_free;
+=======
+	err = sysfs_create_group(&pdev->dev.kobj, &vt8231_group);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	/* Must update device information to find out the config field */
 	data->uch_config = vt8231_read_value(data, VT8231_REG_UCH_CONFIG);
 
 	for (i = 0; i < ARRAY_SIZE(vt8231_group_temps); i++) {
 		if (ISTEMP(i, data->uch_config)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if ((err = sysfs_create_group(&pdev->dev.kobj,
 					&vt8231_group_temps[i])))
@@ -993,12 +1166,18 @@ static int vt8231_probe(struct platform_device *pdev)
 						 &vt8231_group_temps[i]);
 			if (err)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = sysfs_create_group(&pdev->dev.kobj,
+						 &vt8231_group_temps[i]);
+			if (err)
+>>>>>>> refs/remotes/origin/master
 				goto exit_remove_files;
 		}
 	}
 
 	for (i = 0; i < ARRAY_SIZE(vt8231_group_volts); i++) {
 		if (ISVOLT(i, data->uch_config)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if ((err = sysfs_create_group(&pdev->dev.kobj,
 					&vt8231_group_volts[i])))
@@ -1007,6 +1186,11 @@ static int vt8231_probe(struct platform_device *pdev)
 						 &vt8231_group_volts[i]);
 			if (err)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = sysfs_create_group(&pdev->dev.kobj,
+						 &vt8231_group_volts[i]);
+			if (err)
+>>>>>>> refs/remotes/origin/master
 				goto exit_remove_files;
 		}
 	}
@@ -1026,6 +1210,7 @@ exit_remove_files:
 		sysfs_remove_group(&pdev->dev.kobj, &vt8231_group_temps[i]);
 
 	sysfs_remove_group(&pdev->dev.kobj, &vt8231_group);
+<<<<<<< HEAD
 
 exit_free:
 	platform_set_drvdata(pdev, NULL);
@@ -1037,6 +1222,12 @@ exit_release:
 }
 
 static int __devexit vt8231_remove(struct platform_device *pdev)
+=======
+	return err;
+}
+
+static int vt8231_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vt8231_data *data = platform_get_drvdata(pdev);
 	int i;
@@ -1051,9 +1242,12 @@ static int __devexit vt8231_remove(struct platform_device *pdev)
 
 	sysfs_remove_group(&pdev->dev.kobj, &vt8231_group);
 
+<<<<<<< HEAD
 	release_region(data->addr, VT8231_EXTENT);
 	platform_set_drvdata(pdev, NULL);
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1113,6 +1307,7 @@ static struct vt8231_data *vt8231_update_device(struct device *dev)
 
 		/* Set alarm flags correctly */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!data->fan[0] && data->fan_min[0]) {
 			data->alarms |= 0x40;
 		} else if (data->fan[0] && !data->fan_min[0]) {
@@ -1125,6 +1320,8 @@ static struct vt8231_data *vt8231_update_device(struct device *dev)
 			data->alarms &= ~0x80;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!data->fan[0] && data->fan_min[0])
 			data->alarms |= 0x40;
 		else if (data->fan[0] && !data->fan_min[0])
@@ -1134,7 +1331,10 @@ static struct vt8231_data *vt8231_update_device(struct device *dev)
 			data->alarms |= 0x80;
 		else if (data->fan[1] && !data->fan_min[1])
 			data->alarms &= ~0x80;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		data->last_updated = jiffies;
 		data->valid = 1;
@@ -1145,7 +1345,11 @@ static struct vt8231_data *vt8231_update_device(struct device *dev)
 	return data;
 }
 
+<<<<<<< HEAD
 static int __devinit vt8231_device_add(unsigned short address)
+=======
+static int vt8231_device_add(unsigned short address)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource res = {
 		.start	= address,
@@ -1186,7 +1390,11 @@ exit:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit vt8231_pci_probe(struct pci_dev *dev,
+=======
+static int vt8231_pci_probe(struct pci_dev *dev,
+>>>>>>> refs/remotes/origin/master
 				const struct pci_device_id *id)
 {
 	u16 address, val;
@@ -1230,24 +1438,35 @@ static int __devinit vt8231_pci_probe(struct pci_dev *dev,
 		goto exit_unregister;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Always return failure here.  This is to allow other drivers to bind
 =======
 	/*
 	 * Always return failure here.  This is to allow other drivers to bind
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * Always return failure here.  This is to allow other drivers to bind
+>>>>>>> refs/remotes/origin/master
 	 * to this pci device.  We don't really want to have control over the
 	 * pci device, we only wanted to read as few register values from it.
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* We do, however, mark ourselves as using the PCI device to stop it
 	   getting unloaded. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We do, however, mark ourselves as using the PCI device to stop it
 	 * getting unloaded.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	s_bridge = pci_dev_get(dev);
 	return -ENODEV;
 

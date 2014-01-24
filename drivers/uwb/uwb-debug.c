@@ -160,6 +160,7 @@ static int cmd_ie_rm(struct uwb_rc *rc, struct uwb_dbg_cmd_ie *ie_to_rm)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int command_open(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
@@ -169,6 +170,8 @@ static int command_open(struct inode *inode, struct file *file)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t command_write(struct file *file, const char __user *buf,
 			 size_t len, loff_t *off)
 {
@@ -210,10 +213,14 @@ static ssize_t command_write(struct file *file, const char __user *buf,
 
 static const struct file_operations command_fops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open   = command_open,
 =======
 	.open	= simple_open,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open	= simple_open,
+>>>>>>> refs/remotes/origin/master
 	.write  = command_write,
 	.read   = NULL,
 	.llseek = no_llseek,

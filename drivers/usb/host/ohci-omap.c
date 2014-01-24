@@ -15,6 +15,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/signal.h>	/* IRQF_DISABLED */
 =======
 #include <linux/signal.h>
@@ -32,6 +33,32 @@
 #include <mach/irqs.h>
 #include <plat/fpga.h>
 #include <plat/usb.h>
+=======
+#include <linux/clk.h>
+#include <linux/dma-mapping.h>
+#include <linux/err.h>
+#include <linux/gpio.h>
+#include <linux/io.h>
+#include <linux/jiffies.h>
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/usb/otg.h>
+#include <linux/platform_device.h>
+#include <linux/signal.h>
+#include <linux/usb.h>
+#include <linux/usb/hcd.h>
+
+#include "ohci.h"
+
+#include <asm/io.h>
+#include <asm/mach-types.h>
+
+#include <mach/mux.h>
+
+#include <mach/hardware.h>
+#include <mach/irqs.h>
+#include <mach/usb.h>
+>>>>>>> refs/remotes/origin/master
 
 
 /* OMAP-1510 OHCI has its own MMU for DMA */
@@ -45,10 +72,14 @@
 #define OMAP1510_LB_MMU_RAM_H	0xfffec234
 #define OMAP1510_LB_MMU_RAM_L	0xfffec238
 
+<<<<<<< HEAD
 
 #ifndef CONFIG_ARCH_OMAP
 #error "This file is OMAP bus glue.  CONFIG_OMAP must be defined."
 #endif
+=======
+#define DRIVER_DESC "OHCI OMAP driver"
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_TPS65010
 #include <linux/i2c/tps65010.h>
@@ -71,8 +102,14 @@ extern int ocpi_enable(void);
 
 static struct clk *usb_host_ck;
 static struct clk *usb_dc_ck;
+<<<<<<< HEAD
 static int host_enabled;
 static int host_initialized;
+=======
+
+static const char hcd_name[] = "ohci-omap";
+static struct hc_driver __read_mostly ohci_omap_hc_driver;
+>>>>>>> refs/remotes/origin/master
 
 static void omap_ohci_clock_power(int on)
 {
@@ -95,14 +132,22 @@ static int omap_ohci_transceiver_power(int on)
 {
 	if (on) {
 		if (machine_is_omap_innovator() && cpu_is_omap1510())
+<<<<<<< HEAD
 			fpga_write(fpga_read(INNOVATOR_FPGA_CAM_USB_CONTROL)
+=======
+			__raw_writeb(__raw_readb(INNOVATOR_FPGA_CAM_USB_CONTROL)
+>>>>>>> refs/remotes/origin/master
 				| ((1 << 5/*usb1*/) | (1 << 3/*usb2*/)),
 			       INNOVATOR_FPGA_CAM_USB_CONTROL);
 		else if (machine_is_omap_osk())
 			tps65010_set_gpio_out_value(GPIO1, LOW);
 	} else {
 		if (machine_is_omap_innovator() && cpu_is_omap1510())
+<<<<<<< HEAD
 			fpga_write(fpga_read(INNOVATOR_FPGA_CAM_USB_CONTROL)
+=======
+			__raw_writeb(__raw_readb(INNOVATOR_FPGA_CAM_USB_CONTROL)
+>>>>>>> refs/remotes/origin/master
 				& ~((1 << 5/*usb1*/) | (1 << 3/*usb2*/)),
 			       INNOVATOR_FPGA_CAM_USB_CONTROL);
 		else if (machine_is_omap_osk())
@@ -171,6 +216,7 @@ static int omap_1510_local_bus_init(void)
 
 static void start_hnp(struct ohci_hcd *ohci)
 {
+<<<<<<< HEAD
 	const unsigned	port = ohci_to_hcd(ohci)->self.otg_port - 1;
 	unsigned long	flags;
 	u32 l;
@@ -183,6 +229,17 @@ static void start_hnp(struct ohci_hcd *ohci)
 
 	local_irq_save(flags);
 	ohci->transceiver->state = OTG_STATE_A_SUSPEND;
+=======
+	struct usb_hcd *hcd = ohci_to_hcd(ohci);
+	const unsigned	port = hcd->self.otg_port - 1;
+	unsigned long	flags;
+	u32 l;
+
+	otg_start_hnp(hcd->phy->otg);
+
+	local_irq_save(flags);
+	hcd->phy->state = OTG_STATE_A_SUSPEND;
+>>>>>>> refs/remotes/origin/master
 	writel (RH_PS_PSS, &ohci->regs->roothub.portstatus [port]);
 	l = omap_readl(OTG_CTRL);
 	l &= ~OTG_A_BUSREQ;
@@ -194,25 +251,39 @@ static void start_hnp(struct ohci_hcd *ohci)
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static int ohci_omap_init(struct usb_hcd *hcd)
 {
 	struct ohci_hcd		*ohci = hcd_to_ohci(hcd);
 	struct omap_usb_config	*config = hcd->self.controller->platform_data;
+=======
+static int ohci_omap_reset(struct usb_hcd *hcd)
+{
+	struct ohci_hcd		*ohci = hcd_to_ohci(hcd);
+	struct omap_usb_config	*config = dev_get_platdata(hcd->self.controller);
+>>>>>>> refs/remotes/origin/master
 	int			need_transceiver = (config->otg != 0);
 	int			ret;
 
 	dev_dbg(hcd->self.controller, "starting USB Controller\n");
 
 	if (config->otg) {
+<<<<<<< HEAD
 		ohci_to_hcd(ohci)->self.otg_port = config->otg;
 		/* default/minimum OTG power budget:  8 mA */
 		ohci_to_hcd(ohci)->power_budget = 8;
+=======
+		hcd->self.otg_port = config->otg;
+		/* default/minimum OTG power budget:  8 mA */
+		hcd->power_budget = 8;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* boards can use OTG transceivers in non-OTG modes */
 	need_transceiver = need_transceiver
 			|| machine_is_omap_h2() || machine_is_omap_h3();
 
+<<<<<<< HEAD
 	if (cpu_is_omap16xx())
 		ocpi_enable();
 
@@ -237,6 +308,26 @@ static int ohci_omap_init(struct usb_hcd *hcd)
 			}
 		} else {
 			dev_err(hcd->self.controller, "can't find transceiver\n");
+=======
+	/* XXX OMAP16xx only */
+	if (config->ocpi_enable)
+		config->ocpi_enable();
+
+#ifdef	CONFIG_USB_OTG
+	if (need_transceiver) {
+		hcd->phy = usb_get_phy(USB_PHY_TYPE_USB2);
+		if (!IS_ERR_OR_NULL(hcd->phy)) {
+			int	status = otg_set_host(hcd->phy->otg,
+						&ohci_to_hcd(ohci)->self);
+			dev_dbg(hcd->self.controller, "init %s phy, status %d\n",
+					hcd->phy->label, status);
+			if (status) {
+				usb_put_phy(hcd->phy);
+				return status;
+			}
+		} else {
+			dev_err(hcd->self.controller, "can't find phy\n");
+>>>>>>> refs/remotes/origin/master
 			return -ENODEV;
 		}
 		ohci->start_hnp = start_hnp;
@@ -250,9 +341,21 @@ static int ohci_omap_init(struct usb_hcd *hcd)
 		omap_1510_local_bus_init();
 	}
 
+<<<<<<< HEAD
 	if ((ret = ohci_init(ohci)) < 0)
 		return ret;
 
+=======
+	ret = ohci_setup(hcd);
+	if (ret < 0)
+		return ret;
+
+	if (config->otg || config->rwc) {
+		ohci->hc_control = OHCI_CTRL_RWC;
+		writel(OHCI_CTRL_RWC, &ohci->regs->control);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* board-specific power switching and overcurrent support */
 	if (machine_is_omap_osk() || machine_is_omap_innovator()) {
 		u32	rh = roothub_a (ohci);
@@ -293,6 +396,7 @@ static int ohci_omap_init(struct usb_hcd *hcd)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void ohci_omap_stop(struct usb_hcd *hcd)
 {
 	dev_dbg(hcd->self.controller, "stopping USB Controller\n");
@@ -301,6 +405,8 @@ static void ohci_omap_stop(struct usb_hcd *hcd)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*-------------------------------------------------------------------------*/
 
 /**
@@ -316,17 +422,27 @@ static int usb_hcd_omap_probe (const struct hc_driver *driver,
 {
 	int retval, irq;
 	struct usb_hcd *hcd = 0;
+<<<<<<< HEAD
 	struct ohci_hcd *ohci;
 
 	if (pdev->num_resources != 2) {
 		printk(KERN_ERR "hcd probe: invalid num_resources: %i\n",
+=======
+
+	if (pdev->num_resources != 2) {
+		dev_err(&pdev->dev, "invalid num_resources: %i\n",
+>>>>>>> refs/remotes/origin/master
 		       pdev->num_resources);
 		return -ENODEV;
 	}
 
 	if (pdev->resource[0].flags != IORESOURCE_MEM
 			|| pdev->resource[1].flags != IORESOURCE_IRQ) {
+<<<<<<< HEAD
 		printk(KERN_ERR "hcd probe: invalid resource type\n");
+=======
+		dev_err(&pdev->dev, "invalid resource type\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -366,17 +482,21 @@ static int usb_hcd_omap_probe (const struct hc_driver *driver,
 		goto err2;
 	}
 
+<<<<<<< HEAD
 	ohci = hcd_to_ohci(hcd);
 	ohci_hcd_init(ohci);
 
 	host_initialized = 0;
 	host_enabled = 1;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	irq = platform_get_irq(pdev, 0);
 	if (irq < 0) {
 		retval = -ENXIO;
 		goto err3;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	retval = usb_add_hcd(hcd, irq, IRQF_DISABLED);
 =======
@@ -390,6 +510,13 @@ static int usb_hcd_omap_probe (const struct hc_driver *driver,
 	if (!host_enabled)
 		omap_ohci_clock_power(0);
 
+=======
+	retval = usb_add_hcd(hcd, irq, 0);
+	if (retval)
+		goto err3;
+
+	device_wakeup_enable(hcd->self.controller);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 err3:
 	iounmap(hcd->regs);
@@ -418,6 +545,7 @@ err0:
 static inline void
 usb_hcd_omap_remove (struct usb_hcd *hcd, struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct ohci_hcd		*ohci = hcd_to_ohci (hcd);
 
 	usb_remove_hcd(hcd);
@@ -428,6 +556,14 @@ usb_hcd_omap_remove (struct usb_hcd *hcd, struct platform_device *pdev)
 		(void) otg_set_host(ohci->transceiver->otg, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
 		put_device(ohci->transceiver->dev);
+=======
+	dev_dbg(hcd->self.controller, "stopping USB Controller\n");
+	usb_remove_hcd(hcd);
+	omap_ohci_clock_power(0);
+	if (!IS_ERR_OR_NULL(hcd->phy)) {
+		(void) otg_set_host(hcd->phy->otg, 0);
+		usb_put_phy(hcd->phy);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (machine_is_omap_osk())
 		gpio_free(9);
@@ -440,6 +576,7 @@ usb_hcd_omap_remove (struct usb_hcd *hcd, struct platform_device *pdev)
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static int
 ohci_omap_start (struct usb_hcd *hcd)
 {
@@ -510,6 +647,8 @@ static const struct hc_driver ohci_omap_hc_driver = {
 
 /*-------------------------------------------------------------------------*/
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int ohci_hcd_omap_drv_probe(struct platform_device *dev)
 {
 	return usb_hcd_omap_probe(&ohci_omap_hc_driver, dev);
@@ -520,7 +659,10 @@ static int ohci_hcd_omap_drv_remove(struct platform_device *dev)
 	struct usb_hcd		*hcd = platform_get_drvdata(dev);
 
 	usb_hcd_omap_remove(hcd, dev);
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -529,20 +671,38 @@ static int ohci_hcd_omap_drv_remove(struct platform_device *dev)
 
 #ifdef	CONFIG_PM
 
+<<<<<<< HEAD
 static int ohci_omap_suspend(struct platform_device *dev, pm_message_t message)
 {
 	struct ohci_hcd	*ohci = hcd_to_ohci(platform_get_drvdata(dev));
+=======
+static int ohci_omap_suspend(struct platform_device *pdev, pm_message_t message)
+{
+	struct usb_hcd *hcd = platform_get_drvdata(pdev);
+	struct ohci_hcd *ohci = hcd_to_ohci(hcd);
+	bool do_wakeup = device_may_wakeup(&pdev->dev);
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (time_before(jiffies, ohci->next_statechange))
 		msleep(5);
 	ohci->next_statechange = jiffies;
 
+<<<<<<< HEAD
 	omap_ohci_clock_power(0);
 <<<<<<< HEAD
 	ohci_to_hcd(ohci)->state = HC_STATE_SUSPENDED;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
+=======
+	ret = ohci_suspend(hcd, do_wakeup);
+	if (ret)
+		return ret;
+
+	omap_ohci_clock_power(0);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ohci_omap_resume(struct platform_device *dev)
@@ -555,7 +715,11 @@ static int ohci_omap_resume(struct platform_device *dev)
 	ohci->next_statechange = jiffies;
 
 	omap_ohci_clock_power(1);
+<<<<<<< HEAD
 	ohci_finish_controller_resume(hcd);
+=======
+	ohci_resume(hcd, false);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -580,4 +744,33 @@ static struct platform_driver ohci_hcd_omap_driver = {
 	},
 };
 
+<<<<<<< HEAD
 MODULE_ALIAS("platform:ohci");
+=======
+static const struct ohci_driver_overrides omap_overrides __initconst = {
+	.product_desc	= "OMAP OHCI",
+	.reset		= ohci_omap_reset
+};
+
+static int __init ohci_omap_init(void)
+{
+	if (usb_disabled())
+		return -ENODEV;
+
+	pr_info("%s: " DRIVER_DESC "\n", hcd_name);
+
+	ohci_init_driver(&ohci_omap_hc_driver, &omap_overrides);
+	return platform_driver_register(&ohci_hcd_omap_driver);
+}
+module_init(ohci_omap_init);
+
+static void __exit ohci_omap_cleanup(void)
+{
+	platform_driver_unregister(&ohci_hcd_omap_driver);
+}
+module_exit(ohci_omap_cleanup);
+
+MODULE_DESCRIPTION(DRIVER_DESC);
+MODULE_ALIAS("platform:ohci");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

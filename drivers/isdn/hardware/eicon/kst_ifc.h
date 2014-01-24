@@ -1,6 +1,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2000.
  *
   This source file is supplied for the use with
@@ -22,6 +23,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2000.
  *
  This source file is supplied for the use with
@@ -42,7 +45,10 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 #ifndef __DIVA_EICON_TRACE_API__
@@ -59,6 +65,7 @@ typedef struct _diva_trace_ie {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	Structure used to represent "State\\BX\\Modem" directory
 	to user.
 	*/
@@ -67,6 +74,11 @@ typedef struct _diva_trace_ie {
   to user.
 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  Structure used to represent "State\\BX\\Modem" directory
+  to user.
+*/
+>>>>>>> refs/remotes/origin/master
 typedef struct _diva_trace_modem_state {
 	dword	ChannelNumber;
 
@@ -100,12 +112,17 @@ typedef struct _diva_trace_modem_state {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	Representation of "State\\BX\\FAX" directory
 	*/
 =======
   Representation of "State\\BX\\FAX" directory
 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  Representation of "State\\BX\\FAX" directory
+*/
+>>>>>>> refs/remotes/origin/master
 typedef struct _diva_trace_fax_state {
 	dword	ChannelNumber;
 	dword Event;
@@ -125,6 +142,7 @@ typedef struct _diva_trace_fax_state {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	Structure used to represent Interface State in the abstract
 	and interface/D-channel protocol independent form.
 	*/
@@ -133,6 +151,11 @@ typedef struct _diva_trace_fax_state {
   and interface/D-channel protocol independent form.
 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  Structure used to represent Interface State in the abstract
+  and interface/D-channel protocol independent form.
+*/
+>>>>>>> refs/remotes/origin/master
 typedef struct _diva_trace_interface_state {
 	char Layer1[DIVA_TRACE_LINE_TYPE_LEN];
 	char Layer2[DIVA_TRACE_LINE_TYPE_LEN];
@@ -205,6 +228,7 @@ typedef struct _diva_ifc_statistics {
 	diva_incoming_call_statistics_t	inc;
 	diva_outgoing_call_statistics_t outg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	diva_modem_call_statistics_t		mdm;
 	diva_fax_call_statistics_t			fax;
 	diva_prot_statistics_t					b1;
@@ -218,6 +242,8 @@ typedef struct _diva_ifc_statistics {
 	to user.
 	*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	diva_modem_call_statistics_t mdm;
 	diva_fax_call_statistics_t fax;
 	diva_prot_statistics_t b1;
@@ -230,7 +256,10 @@ typedef struct _diva_ifc_statistics {
   Structure used to represent "State\\BX" directory
   to user.
 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 typedef struct _diva_trace_line_state {
 	dword	ChannelNumber;
 
@@ -248,6 +277,7 @@ typedef struct _diva_trace_line_state {
 	char LocalSubAddress[DIVA_TRACE_LINE_TYPE_LEN];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	diva_trace_ie_t	call_BC;
 	diva_trace_ie_t	call_HLC;
 	diva_trace_ie_t	call_LLC;
@@ -256,6 +286,11 @@ typedef struct _diva_trace_line_state {
 	diva_trace_ie_t call_HLC;
 	diva_trace_ie_t call_LLC;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	diva_trace_ie_t call_BC;
+	diva_trace_ie_t call_HLC;
+	diva_trace_ie_t call_LLC;
+>>>>>>> refs/remotes/origin/master
 
 	dword Charges;
 
@@ -267,18 +302,24 @@ typedef struct _diva_trace_line_state {
 
 	diva_trace_modem_state_t modem;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	diva_trace_fax_state_t   fax;
 
 	diva_trace_interface_state_t* pInterface;
 
 	diva_ifc_statistics_t*				pInterfaceStat;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	diva_trace_fax_state_t fax;
 
 	diva_trace_interface_state_t *pInterface;
 
 	diva_ifc_statistics_t *pInterfaceStat;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 } diva_trace_line_state_t;
 
@@ -291,6 +332,7 @@ typedef struct _diva_trace_line_state {
 #define DIVA_SUPER_TRACE_NOTIFY_FAX_STAT_CHANGE         ('F')
 
 struct _diva_strace_library_interface;
+<<<<<<< HEAD
 <<<<<<< HEAD
 typedef void (*diva_trace_channel_state_change_proc_t)(void* user_context,
 							struct _diva_strace_library_interface* hLib,
@@ -399,6 +441,8 @@ diva_strace_library_interface_t* DivaSTraceLibraryCreateInstance (int Adapter,
                           byte* pmem);
 dword DivaSTraceGetMemotyRequirement (int channels);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 typedef void (*diva_trace_channel_state_change_proc_t)(void *user_context,
 						       struct _diva_strace_library_interface *hLib,
 						       int Adapter,
@@ -505,13 +549,19 @@ diva_strace_library_interface_t *DivaSTraceLibraryCreateInstance(int Adapter,
 								 const diva_trace_library_user_interface_t *user_proc,
 								 byte *pmem);
 dword DivaSTraceGetMemotyRequirement(int channels);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define DIVA_MAX_ADAPTERS  64
 #define DIVA_MAX_LINES     32
 
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 /* linux/arch/arm/mach-s3c2410/mach-vr1000.c
  *
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2003-2008 Simtec Electronics
  *   Ben Dooks <ben@simtec.co.uk>
  *
@@ -32,6 +36,7 @@
 #include <asm/mach/map.h>
 #include <asm/mach/irq.h>
 
+<<<<<<< HEAD
 #include <mach/bast-map.h>
 #include <mach/vr1000-map.h>
 #include <mach/vr1000-irq.h>
@@ -53,6 +58,29 @@
 
 #include "simtec.h"
 #include "common.h"
+=======
+#include <asm/irq.h>
+#include <asm/mach-types.h>
+
+#include <linux/platform_data/leds-s3c24xx.h>
+#include <linux/platform_data/i2c-s3c2410.h>
+#include <linux/platform_data/asoc-s3c24xx_simtec.h>
+
+#include <mach/hardware.h>
+#include <mach/regs-gpio.h>
+#include <mach/gpio-samsung.h>
+
+#include <plat/clock.h>
+#include <plat/cpu.h>
+#include <plat/devs.h>
+#include <plat/regs-serial.h>
+#include <plat/samsung-time.h>
+
+#include "bast.h"
+#include "common.h"
+#include "simtec.h"
+#include "vr1000.h"
+>>>>>>> refs/remotes/origin/master
 
 /* macros for virtual address mods for the io space entries */
 #define VA_C5(item) ((unsigned long)(item) + BAST_VAM_CS5)
@@ -143,7 +171,11 @@ static struct s3c2410_uartcfg vr1000_uartcfgs[] __initdata = {
 static struct plat_serial8250_port serial_platform_data[] = {
 	[0] = {
 		.mapbase	= VR1000_SERIAL_MAPBASE(0),
+<<<<<<< HEAD
 		.irq		= IRQ_VR1000_SERIAL + 0,
+=======
+		.irq		= VR1000_IRQ_SERIAL + 0,
+>>>>>>> refs/remotes/origin/master
 		.flags		= UPF_BOOT_AUTOCONF | UPF_IOREMAP,
 		.iotype		= UPIO_MEM,
 		.regshift	= 0,
@@ -151,7 +183,11 @@ static struct plat_serial8250_port serial_platform_data[] = {
 	},
 	[1] = {
 		.mapbase	= VR1000_SERIAL_MAPBASE(1),
+<<<<<<< HEAD
 		.irq		= IRQ_VR1000_SERIAL + 1,
+=======
+		.irq		= VR1000_IRQ_SERIAL + 1,
+>>>>>>> refs/remotes/origin/master
 		.flags		= UPF_BOOT_AUTOCONF | UPF_IOREMAP,
 		.iotype		= UPIO_MEM,
 		.regshift	= 0,
@@ -159,7 +195,11 @@ static struct plat_serial8250_port serial_platform_data[] = {
 	},
 	[2] = {
 		.mapbase	= VR1000_SERIAL_MAPBASE(2),
+<<<<<<< HEAD
 		.irq		= IRQ_VR1000_SERIAL + 2,
+=======
+		.irq		= VR1000_IRQ_SERIAL + 2,
+>>>>>>> refs/remotes/origin/master
 		.flags		= UPF_BOOT_AUTOCONF | UPF_IOREMAP,
 		.iotype		= UPIO_MEM,
 		.regshift	= 0,
@@ -167,7 +207,11 @@ static struct plat_serial8250_port serial_platform_data[] = {
 	},
 	[3] = {
 		.mapbase	= VR1000_SERIAL_MAPBASE(3),
+<<<<<<< HEAD
 		.irq		= IRQ_VR1000_SERIAL + 3,
+=======
+		.irq		= VR1000_IRQ_SERIAL + 3,
+>>>>>>> refs/remotes/origin/master
 		.flags		= UPF_BOOT_AUTOCONF | UPF_IOREMAP,
 		.iotype		= UPIO_MEM,
 		.regshift	= 0,
@@ -187,6 +231,7 @@ static struct platform_device serial_device = {
 /* DM9000 ethernet devices */
 
 static struct resource vr1000_dm9k0_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S3C2410_CS5 + VR1000_PA_DM9000,
 		.end   = S3C2410_CS5 + VR1000_PA_DM9000 + 3,
@@ -221,6 +266,19 @@ static struct resource vr1000_dm9k1_resource[] = {
 		.end   = IRQ_VR1000_DM9000N,
 		.flags = IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHLEVEL,
 	}
+=======
+	[0] = DEFINE_RES_MEM(S3C2410_CS5 + VR1000_PA_DM9000, 4),
+	[1] = DEFINE_RES_MEM(S3C2410_CS5 + VR1000_PA_DM9000 + 0x40, 0x40),
+	[2] = DEFINE_RES_NAMED(VR1000_IRQ_DM9000A, 1, NULL, IORESOURCE_IRQ \
+						| IORESOURCE_IRQ_HIGHLEVEL),
+};
+
+static struct resource vr1000_dm9k1_resource[] = {
+	[0] = DEFINE_RES_MEM(S3C2410_CS5 + VR1000_PA_DM9000 + 0x80, 4),
+	[1] = DEFINE_RES_MEM(S3C2410_CS5 + VR1000_PA_DM9000 + 0xC0, 0x40),
+	[2] = DEFINE_RES_NAMED(VR1000_IRQ_DM9000N, 1, NULL, IORESOURCE_IRQ \
+						| IORESOURCE_IRQ_HIGHLEVEL),
+>>>>>>> refs/remotes/origin/master
 };
 
 /* for the moment we limit ourselves to 16bit IO until some
@@ -358,6 +416,10 @@ static void __init vr1000_map_io(void)
 	s3c24xx_init_io(vr1000_iodesc, ARRAY_SIZE(vr1000_iodesc));
 	s3c24xx_init_clocks(0);
 	s3c24xx_init_uarts(vr1000_uartcfgs, ARRAY_SIZE(vr1000_uartcfgs));
+<<<<<<< HEAD
+=======
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init vr1000_init(void)
@@ -379,7 +441,12 @@ MACHINE_START(VR1000, "Thorcom-VR1000")
 	.atag_offset	= 0x100,
 	.map_io		= vr1000_map_io,
 	.init_machine	= vr1000_init,
+<<<<<<< HEAD
 	.init_irq	= s3c24xx_init_irq,
 	.timer		= &s3c24xx_timer,
+=======
+	.init_irq	= s3c2410_init_irq,
+	.init_time	= samsung_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.restart	= s3c2410_restart,
 MACHINE_END

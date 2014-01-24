@@ -1,9 +1,15 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/lib/uaccess_mvcos.c
  *
  *  Optimized user space space access functions based on mvcos.
  *
  *    Copyright (C) IBM Corp. 2006
+=======
+ *  Optimized user space space access functions based on mvcos.
+ *
+ *    Copyright IBM Corp. 2006
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Martin Schwidefsky (schwidefsky@de.ibm.com),
  *		 Gerald Schaefer (gerald.schaefer@de.ibm.com)
  */
@@ -14,7 +20,11 @@
 #include <asm/futex.h>
 #include "uaccess.h"
 
+<<<<<<< HEAD
 #ifndef __s390x__
+=======
+#ifndef CONFIG_64BIT
+>>>>>>> refs/remotes/origin/master
 #define AHI	"ahi"
 #define ALR	"alr"
 #define CLR	"clr"
@@ -67,6 +77,7 @@ static size_t copy_from_user_mvcos(size_t size, const void __user *ptr, void *x)
 	return size;
 }
 
+<<<<<<< HEAD
 static size_t copy_from_user_mvcos_check(size_t size, const void __user *ptr, void *x)
 {
 	if (size <= 256)
@@ -74,6 +85,8 @@ static size_t copy_from_user_mvcos_check(size_t size, const void __user *ptr, vo
 	return copy_from_user_mvcos(size, ptr, x);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static size_t copy_to_user_mvcos(size_t size, void __user *ptr, const void *x)
 {
 	register unsigned long reg0 asm("0") = 0x810000UL;
@@ -103,6 +116,7 @@ static size_t copy_to_user_mvcos(size_t size, void __user *ptr, const void *x)
 	return size;
 }
 
+<<<<<<< HEAD
 static size_t copy_to_user_mvcos_check(size_t size, void __user *ptr,
 				       const void *x)
 {
@@ -111,6 +125,8 @@ static size_t copy_to_user_mvcos_check(size_t size, void __user *ptr,
 	return copy_to_user_mvcos(size, ptr, x);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static size_t copy_in_user_mvcos(size_t size, void __user *to,
 				 const void __user *from)
 {
@@ -164,6 +180,7 @@ static size_t clear_user_mvcos(size_t size, void __user *to)
 
 static size_t strnlen_user_mvcos(size_t count, const char __user *src)
 {
+<<<<<<< HEAD
 	char buf[256];
 	int rc;
 	size_t done, len, len_str;
@@ -177,6 +194,21 @@ static size_t strnlen_user_mvcos(size_t count, const char __user *src)
 		len -= rc;
 		len_str = strnlen(buf, len);
 		done += len_str;
+=======
+	size_t done, len, offset, len_str;
+	char buf[256];
+
+	done = 0;
+	do {
+		offset = (size_t)src & ~PAGE_MASK;
+		len = min(256UL, PAGE_SIZE - offset);
+		len = min(count - done, len);
+		if (copy_from_user_mvcos(len, src, buf))
+			return 0;
+		len_str = strnlen(buf, len);
+		done += len_str;
+		src += len_str;
+>>>>>>> refs/remotes/origin/master
 	} while ((len_str == len) && (done < count));
 	return done + 1;
 }
@@ -184,6 +216,7 @@ static size_t strnlen_user_mvcos(size_t count, const char __user *src)
 static size_t strncpy_from_user_mvcos(size_t count, const char __user *src,
 				      char *dst)
 {
+<<<<<<< HEAD
 	int rc;
 	size_t done, len, len_str;
 
@@ -196,11 +229,28 @@ static size_t strncpy_from_user_mvcos(size_t count, const char __user *src,
 		len -= rc;
 		len_str = strnlen(dst, len);
 		done += len_str;
+=======
+	size_t done, len, offset, len_str;
+
+	if (unlikely(!count))
+		return 0;
+	done = 0;
+	do {
+		offset = (size_t)src & ~PAGE_MASK;
+		len = min(count - done, PAGE_SIZE - offset);
+		if (copy_from_user_mvcos(len, src, dst))
+			return -EFAULT;
+		len_str = strnlen(dst, len);
+		done += len_str;
+		src += len_str;
+		dst += len_str;
+>>>>>>> refs/remotes/origin/master
 	} while ((len_str == len) && (done < count));
 	return done;
 }
 
 struct uaccess_ops uaccess_mvcos = {
+<<<<<<< HEAD
 	.copy_from_user = copy_from_user_mvcos_check,
 	.copy_from_user_small = copy_from_user_std,
 	.copy_to_user = copy_to_user_mvcos_check,
@@ -218,6 +268,10 @@ struct uaccess_ops uaccess_mvcos_switch = {
 	.copy_from_user_small = copy_from_user_mvcos,
 	.copy_to_user = copy_to_user_mvcos,
 	.copy_to_user_small = copy_to_user_mvcos,
+=======
+	.copy_from_user = copy_from_user_mvcos,
+	.copy_to_user = copy_to_user_mvcos,
+>>>>>>> refs/remotes/origin/master
 	.copy_in_user = copy_in_user_mvcos,
 	.clear_user = clear_user_mvcos,
 	.strnlen_user = strnlen_user_mvcos,

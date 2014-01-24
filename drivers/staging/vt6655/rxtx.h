@@ -40,6 +40,7 @@
 /*---------------------  Export Functions  --------------------------*/
 
 /*
+<<<<<<< HEAD
 void
 vGenerateMACHeader(PSDevice pDevice, unsigned long dwTxBufferAddr, unsigned char *pbySkbData,
 	unsigned int cbPacketSize, bool bDMA0Used, unsigned int *pcbHeadSize,
@@ -79,6 +80,43 @@ vGenerateFIFOHeader(PSDevice pDevice, unsigned char byPktTyp, unsigned char *pby
 	PSEthernetHeader psEthHeader, unsigned char *pPacket, PSKeyItem pTransmitKey,
 	unsigned int uNodeIndex, unsigned int *puMACfragNum, unsigned int *pcbHeaderSize);
 
+=======
+  void
+  vGenerateMACHeader(PSDevice pDevice, unsigned long dwTxBufferAddr, unsigned char *pbySkbData,
+  unsigned int cbPacketSize, bool bDMA0Used, unsigned int *pcbHeadSize,
+  unsigned int *pcbAppendPayload);
+
+  void
+  vProcessRxMACHeader(PSDevice pDevice, unsigned long dwRxBufferAddr, unsigned int cbPacketSize,
+  bool bIsWEP, unsigned int *pcbHeadSize);
+*/
+
+void
+vGenerateMACHeader(
+	PSDevice         pDevice,
+	unsigned char *pbyBufferAddr,
+	unsigned short wDuration,
+	PSEthernetHeader psEthHeader,
+	bool bNeedEncrypt,
+	unsigned short wFragType,
+	unsigned int uDMAIdx,
+	unsigned int uFragIdx
+);
+
+unsigned int
+cbGetFragCount(
+	PSDevice         pDevice,
+	PSKeyItem        pTransmitKey,
+	unsigned int	cbFrameBodySize,
+	PSEthernetHeader psEthHeader
+);
+
+void
+vGenerateFIFOHeader(PSDevice pDevice, unsigned char byPktTyp, unsigned char *pbyTxBufferAddr,
+		    bool bNeedEncrypt, unsigned int	cbPayloadSize, unsigned int uDMAIdx, PSTxDesc pHeadTD,
+		    PSEthernetHeader psEthHeader, unsigned char *pPacket, PSKeyItem pTransmitKey,
+		    unsigned int uNodeIndex, unsigned int *puMACfragNum, unsigned int *pcbHeaderSize);
+>>>>>>> refs/remotes/origin/master
 
 void vDMA0_tx_80211(PSDevice  pDevice, struct sk_buff *skb, unsigned char *pbMPDU, unsigned int cbMPDULen);
 CMD_STATUS csMgmt_xmit(PSDevice pDevice, PSTxMgmtPacket pPacket);

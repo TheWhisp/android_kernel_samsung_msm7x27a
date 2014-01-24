@@ -14,16 +14,27 @@
 #include <linux/kthread.h>
 #include <linux/lockdep.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/sysctl.h>
+=======
+#include <linux/export.h>
+#include <linux/sysctl.h>
+#include <linux/utsname.h>
+#include <trace/events/sched.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The number of tasks checked:
  */
+<<<<<<< HEAD
 unsigned long __read_mostly sysctl_hung_task_check_count = PID_MAX_LIMIT;
+=======
+int __read_mostly sysctl_hung_task_check_count = PID_MAX_LIMIT;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Limit number of tasks checked in a batch.
@@ -95,6 +106,12 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
 		t->last_switch_count = switch_count;
 		return;
 	}
+<<<<<<< HEAD
+=======
+
+	trace_sched_process_hang(t);
+
+>>>>>>> refs/remotes/origin/master
 	if (!sysctl_hung_task_warnings)
 		return;
 	sysctl_hung_task_warnings--;
@@ -103,17 +120,35 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
 	 * Ok, the task did not get scheduled for more than 2 minutes,
 	 * complain:
 	 */
+<<<<<<< HEAD
 	printk(KERN_ERR "INFO: task %s:%d blocked for more than "
 			"%ld seconds.\n", t->comm, t->pid, timeout);
 	printk(KERN_ERR "\"echo 0 > /proc/sys/kernel/hung_task_timeout_secs\""
 			" disables this message.\n");
+=======
+	pr_err("INFO: task %s:%d blocked for more than %ld seconds.\n",
+		t->comm, t->pid, timeout);
+	pr_err("      %s %s %.*s\n",
+		print_tainted(), init_utsname()->release,
+		(int)strcspn(init_utsname()->version, " "),
+		init_utsname()->version);
+	pr_err("\"echo 0 > /proc/sys/kernel/hung_task_timeout_secs\""
+		" disables this message.\n");
+>>>>>>> refs/remotes/origin/master
 	sched_show_task(t);
 	debug_show_held_locks(t);
 
 	touch_nmi_watchdog();
 
+<<<<<<< HEAD
 	if (sysctl_hung_task_panic)
 		panic("hung_task: blocked tasks");
+=======
+	if (sysctl_hung_task_panic) {
+		trigger_all_cpu_backtrace();
+		panic("hung_task: blocked tasks");
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -124,29 +159,41 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
  * to exit the grace period. For classic RCU, a reschedule is required.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void rcu_lock_break(struct task_struct *g, struct task_struct *t)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool rcu_lock_break(struct task_struct *g, struct task_struct *t)
 {
 	bool can_cont;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	get_task_struct(g);
 	get_task_struct(t);
 	rcu_read_unlock();
 	cond_resched();
 	rcu_read_lock();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	put_task_struct(t);
 	put_task_struct(g);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	can_cont = pid_alive(g) && pid_alive(t);
 	put_task_struct(t);
 	put_task_struct(g);
 
 	return can_cont;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -174,12 +221,16 @@ static void check_hung_uninterruptible_tasks(unsigned long timeout)
 		if (!--batch_count) {
 			batch_count = HUNG_TASK_BATCHING;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			rcu_lock_break(g, t);
 			/* Exit if t or g was unhashed during refresh. */
 			if (t->state == TASK_DEAD || g->state == TASK_DEAD)
 =======
 			if (!rcu_lock_break(g, t))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!rcu_lock_break(g, t))
+>>>>>>> refs/remotes/origin/master
 				goto unlock;
 		}
 		/* use "==" to skip the TASK_KILLABLE tasks waiting on NFS */
@@ -216,6 +267,17 @@ int proc_dohung_task_timeout_secs(struct ctl_table *table, int write,
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static atomic_t reset_hung_task = ATOMIC_INIT(0);
+
+void reset_hung_task_detector(void)
+{
+	atomic_set(&reset_hung_task, 1);
+}
+EXPORT_SYMBOL_GPL(reset_hung_task_detector);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * kthread which checks for tasks stuck in D state
  */
@@ -229,6 +291,12 @@ static int watchdog(void *dummy)
 		while (schedule_timeout_interruptible(timeout_jiffies(timeout)))
 			timeout = sysctl_hung_task_timeout_secs;
 
+<<<<<<< HEAD
+=======
+		if (atomic_xchg(&reset_hung_task, 0))
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		check_hung_uninterruptible_tasks(timeout);
 	}
 

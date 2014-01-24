@@ -22,30 +22,40 @@
 #include <asm/thread_info.h>
 #include <asm/irqflags.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <asm/atomic_32.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/atomic_32.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/asm-offsets.h>
 #include <hv/hypervisor.h>
 #include <arch/abi.h>
 #include <arch/interrupts.h>
 #include <arch/spr_def.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT
 # error "No support for kernel preemption currently"
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define PTREGS_PTR(reg, ptreg) addli reg, sp, C_ABI_SAVE_AREA_SIZE + (ptreg)
 
 #define PTREGS_OFFSET_SYSCALL PTREGS_OFFSET_REG(TREG_SYSCALL_NR)
 
+<<<<<<< HEAD
 #if !CHIP_HAS_WH64()
 	/* By making this an empty macro, we can use wh64 in the code. */
 	.macro  wh64 reg
 	.endm
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.macro  push_reg reg, ptr=sp, delta=-4
 	{
 	 sw     \ptr, \reg
@@ -193,7 +203,11 @@ intvec_\vecname:
 	 * point sp at the top aligned address on the actual stack page.
 	 */
 	mfspr   r0, SPR_SYSTEM_SAVE_K_0
+<<<<<<< HEAD
 	mm      r0, r0, zero, LOG2_THREAD_SIZE, 31
+=======
+	mm      r0, r0, zero, LOG2_NR_CPU_IDS, 31
+>>>>>>> refs/remotes/origin/master
 
 0:
 	/*
@@ -211,6 +225,12 @@ intvec_\vecname:
 	 *    cache line 1: r14...r29
 	 *    cache line 0: 2 x frame, r0..r13
 	 */
+<<<<<<< HEAD
+=======
+#if STACK_TOP_DELTA != 64
+#error STACK_TOP_DELTA must be 64 for assumptions here and in task_pt_regs()
+#endif
+>>>>>>> refs/remotes/origin/master
 	andi    r0, r0, -64
 
 	/*
@@ -330,18 +350,26 @@ intvec_\vecname:
 	 movei  r3, -1   /* not used, but set for consistency */
 	}
 	.else
+<<<<<<< HEAD
 #if CHIP_HAS_AUX_PERF_COUNTERS()
+=======
+>>>>>>> refs/remotes/origin/master
 	.ifc \c_routine, op_handle_aux_perf_interrupt
 	{
 	 mfspr  r2, AUX_PERF_COUNT_STS
 	 movei  r3, -1   /* not used, but set for consistency */
 	}
 	.else
+<<<<<<< HEAD
 #endif
 	movei   r3, 0
 #if CHIP_HAS_AUX_PERF_COUNTERS()
 	.endif
 #endif
+=======
+	movei   r3, 0
+	.endif
+>>>>>>> refs/remotes/origin/master
 	.endif
 	.endif
 	.endif
@@ -358,7 +386,11 @@ intvec_\vecname:
 #ifdef __COLLECT_LINKER_FEEDBACK__
 	.pushsection .text.intvec_feedback,"ax"
 	.org    (\vecnum << 5)
+<<<<<<< HEAD
 	FEEDBACK_ENTER_EXPLICIT(intvec_\vecname, .intrpt1, 1 << 8)
+=======
+	FEEDBACK_ENTER_EXPLICIT(intvec_\vecname, .intrpt, 1 << 8)
+>>>>>>> refs/remotes/origin/master
 	jrp     lr
 	.popsection
 #endif
@@ -472,7 +504,11 @@ intvec_\vecname:
 	}
 	{
 	 auli   r21, r21, ha16(__per_cpu_offset)
+<<<<<<< HEAD
 	 mm     r20, r20, zero, 0, LOG2_THREAD_SIZE-1
+=======
+	 mm     r20, r20, zero, 0, LOG2_NR_CPU_IDS-1
+>>>>>>> refs/remotes/origin/master
 	}
 	s2a     r20, r20, r21
 	lw      tp, r20
@@ -566,7 +602,10 @@ intvec_\vecname:
 	.endif
 	mtspr   INTERRUPT_CRITICAL_SECTION, zero
 
+<<<<<<< HEAD
 #if CHIP_HAS_WH64()
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Prepare the first 256 stack bytes to be rapidly accessible
 	 * without having to fetch the background data.  We don't really
@@ -587,7 +626,10 @@ intvec_\vecname:
 	 addi   r52, r52, -64
 	}
 	wh64    r52
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_TRACE_IRQFLAGS
 	.ifnc \function,handle_nmi
@@ -766,7 +808,11 @@ intvec_\vecname:
 	.macro  dc_dispatch vecnum, vecname
 	.org    (\vecnum << 8)
 intvec_\vecname:
+<<<<<<< HEAD
 	j       hv_downcall_dispatch
+=======
+	j       _hv_downcall_dispatch
+>>>>>>> refs/remotes/origin/master
 	ENDPROC(intvec_\vecname)
 	.endm
 
@@ -804,12 +850,18 @@ handle_interrupt:
  * If so, we also expect a boolean in r31 indicating whether to
  * re-enable the oprofile interrupts.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Note that .Lresume_userspace is jumped to directly in several
  * places, and we need to make sure r30 is set correctly in those
  * callers as well.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 STD_ENTRY(interrupt_return)
 	/* If we're resuming to kernel space, don't check thread flags. */
@@ -819,6 +871,7 @@ STD_ENTRY(interrupt_return)
 	}
 	lw      r29, r29
 	andi    r29, r29, SPR_EX_CONTEXT_1_1__PL_MASK  /* mask off ICS */
+<<<<<<< HEAD
 	{
 	 bzt    r29, .Lresume_userspace
 	 PTREGS_PTR(r29, PTREGS_OFFSET_PC)
@@ -830,6 +883,39 @@ STD_ENTRY(interrupt_return)
 	 moveli r27, lo16(_cpu_idle_nap)
 	}
 	{
+=======
+	bzt     r29, .Lresume_userspace
+
+#ifdef CONFIG_PREEMPT
+	/* Returning to kernel space. Check if we need preemption. */
+	GET_THREAD_INFO(r29)
+	addli   r28, r29, THREAD_INFO_FLAGS_OFFSET
+	{
+	 lw     r28, r28
+	 addli  r29, r29, THREAD_INFO_PREEMPT_COUNT_OFFSET
+	}
+	{
+	 andi   r28, r28, _TIF_NEED_RESCHED
+	 lw     r29, r29
+	}
+	bzt     r28, 1f
+	bnz     r29, 1f
+	/* Disable interrupts explicitly for preemption. */
+	IRQ_DISABLE(r20,r21)
+	TRACE_IRQS_OFF
+	jal     preempt_schedule_irq
+	FEEDBACK_REENTER(interrupt_return)
+1:
+#endif
+
+	/* If we're resuming to _cpu_idle_nap, bump PC forward by 8. */
+	{
+	 PTREGS_PTR(r29, PTREGS_OFFSET_PC)
+	 moveli r27, lo16(_cpu_idle_nap)
+	}
+	{
+	 lw     r28, r29
+>>>>>>> refs/remotes/origin/master
 	 auli   r27, r27, ha16(_cpu_idle_nap)
 	}
 	{
@@ -847,7 +933,10 @@ STD_ENTRY(interrupt_return)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Use r33 to hold whether we have already loaded the callee-saves
 	 * into ptregs.  We don't want to do it twice in this loop, since
 	 * then we'd clobber whatever changes are made by ptrace, etc.
@@ -860,7 +949,10 @@ STD_ENTRY(interrupt_return)
 
 .Lretry_work_pending:
 	/*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Disable interrupts so as to make sure we don't
 	 * miss an interrupt that sets any of the thread flags (like
 	 * need_resched or sigpending) between sampling and the iret.
@@ -871,11 +963,14 @@ STD_ENTRY(interrupt_return)
 	TRACE_IRQS_OFF  /* Note: clobbers registers r0-r29 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Get base of stack in r32; note r30/31 are used as arguments here. */
 	GET_THREAD_INFO(r32)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Check to see if there is any work to do before returning to user. */
 	{
@@ -892,6 +987,7 @@ STD_ENTRY(interrupt_return)
 	/*
 	 * Make sure we have all the registers saved for signal
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * handling or single-step.  Call out to C code to figure out
 	 * exactly what we need to do for each flag bit, then if
 	 * necessary, reload the flags and recheck.
@@ -903,6 +999,8 @@ STD_ENTRY(interrupt_return)
 	}
 	bnz     r0, .Lresume_userspace
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * handling, notify-resume, or single-step.  Call out to C
 	 * code to figure out exactly what we need to do for each flag bit,
 	 * then if necessary, reload the flags and recheck.
@@ -915,7 +1013,10 @@ STD_ENTRY(interrupt_return)
 	movei   r33, 1
 1:	jal     do_work_pending
 	bnz     r0, .Lretry_work_pending
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * In the NMI case we
@@ -1221,23 +1322,36 @@ handle_syscall:
 	lw      r21, r20
 	addi    r21, r21, 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sw      r20, r21
 
 	/* Trace syscalls, if requested. */
 	GET_THREAD_INFO(r31)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 	 sw     r20, r21
 	 GET_THREAD_INFO(r31)
 	}
 
 	/* Trace syscalls, if requested. */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	addi	r31, r31, THREAD_INFO_FLAGS_OFFSET
 	lw	r30, r31
 	andi    r30, r30, _TIF_SYSCALL_TRACE
 	bzt	r30, .Lrestore_syscall_regs
+<<<<<<< HEAD
 	jal	do_syscall_trace
+=======
+	{
+	 PTREGS_PTR(r0, PTREGS_OFFSET_BASE)
+	 jal    do_syscall_trace_enter
+	}
+>>>>>>> refs/remotes/origin/master
 	FEEDBACK_REENTER(handle_syscall)
 
 	/*
@@ -1288,16 +1402,27 @@ handle_syscall:
 	lw	r30, r31
 	andi    r30, r30, _TIF_SYSCALL_TRACE
 	bzt     r30, 1f
+<<<<<<< HEAD
 	jal	do_syscall_trace
 	FEEDBACK_REENTER(handle_syscall)
 <<<<<<< HEAD
 1:	j       .Lresume_userspace   /* jump into middle of interrupt_return */
 =======
+=======
+	{
+	 PTREGS_PTR(r0, PTREGS_OFFSET_BASE)
+	 jal    do_syscall_trace_exit
+	}
+	FEEDBACK_REENTER(handle_syscall)
+>>>>>>> refs/remotes/origin/master
 1:	{
 	 movei  r30, 0               /* not an NMI */
 	 j      .Lresume_userspace   /* jump into middle of interrupt_return */
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 .Linvalid_syscall:
 	/* Report an invalid syscall back to the user program */
@@ -1307,13 +1432,19 @@ handle_syscall:
 	}
 	sw      r29, r28
 <<<<<<< HEAD
+<<<<<<< HEAD
 	j       .Lresume_userspace   /* jump into middle of interrupt_return */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 	 movei  r30, 0               /* not an NMI */
 	 j      .Lresume_userspace   /* jump into middle of interrupt_return */
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	STD_ENDPROC(handle_syscall)
 
 	/* Return the address for oprofile to suppress in backtraces. */
@@ -1330,15 +1461,38 @@ STD_ENTRY(ret_from_fork)
 	jal     schedule_tail
 	FEEDBACK_REENTER(ret_from_fork)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	j       .Lresume_userspace   /* jump into middle of interrupt_return */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 	 movei  r30, 0               /* not an NMI */
 	 j      .Lresume_userspace   /* jump into middle of interrupt_return */
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	STD_ENDPROC(ret_from_fork)
 
+=======
+	STD_ENDPROC(ret_from_fork)
+
+STD_ENTRY(ret_from_kernel_thread)
+	jal     sim_notify_fork
+	jal     schedule_tail
+	FEEDBACK_REENTER(ret_from_fork)
+	{
+	 move   r0, r31
+	 jalr   r30
+	}
+	FEEDBACK_REENTER(ret_from_kernel_thread)
+	{
+	 movei  r30, 0               /* not an NMI */
+	 j      .Lresume_userspace   /* jump into middle of interrupt_return */
+	}
+	STD_ENDPROC(ret_from_kernel_thread)
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Code for ill interrupt.
 	 */
@@ -1424,13 +1578,19 @@ handle_ill:
 	/* set PC and continue */
 	lw      r26, r24
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sw      r28, r26
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 	 sw     r28, r26
 	 GET_THREAD_INFO(r0)
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Clear TIF_SINGLESTEP to prevent recursion if we execute an ill.
@@ -1439,9 +1599,12 @@ handle_ill:
 	 * So what's another write between friends?
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	GET_THREAD_INFO(r0)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	addi    r1, r0, THREAD_INFO_FLAGS_OFFSET
 	{
@@ -1455,19 +1618,28 @@ handle_ill:
 	{
 	 lw     r0, r0          /* indirect thru thread_info to get task_info*/
 	 addi   r1, sp, C_ABI_SAVE_AREA_SIZE  /* put ptregs pointer into r1 */
+<<<<<<< HEAD
 	 move   r2, zero        /* load error code into r2 */
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	jal     send_sigtrap    /* issue a SIGTRAP */
 	FEEDBACK_REENTER(handle_ill)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	j       .Lresume_userspace   /* jump into middle of interrupt_return */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 	 movei  r30, 0               /* not an NMI */
 	 j      .Lresume_userspace   /* jump into middle of interrupt_return */
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 .Ldispatch_normal_ill:
 	{
@@ -1497,6 +1669,7 @@ STD_ENTRY_LOCAL(bad_intr)
 	panic   "Unhandled interrupt %#x: PC %#lx"
 	STD_ENDPROC(bad_intr)
 
+<<<<<<< HEAD
 /* Put address of pt_regs in reg and jump. */
 #define PTREGS_SYSCALL(x, reg)                          \
 	STD_ENTRY(_##x);                                \
@@ -1506,6 +1679,8 @@ STD_ENTRY_LOCAL(bad_intr)
 	};                                              \
 	STD_ENDPROC(_##x)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Special-case sigreturn to not write r0 to the stack on return.
  * This is technically more efficient, but it also avoids difficulties
@@ -1521,12 +1696,18 @@ STD_ENTRY_LOCAL(bad_intr)
 	};                                              \
 	STD_ENDPROC(_##x)
 
+<<<<<<< HEAD
 PTREGS_SYSCALL(sys_execve, r3)
 PTREGS_SYSCALL(sys_sigaltstack, r2)
 PTREGS_SYSCALL_SIGRETURN(sys_rt_sigreturn, r0)
 PTREGS_SYSCALL(sys_cmpxchg_badaddr, r1)
 
 /* Save additional callee-saves to pt_regs, put address in r4 and jump. */
+=======
+PTREGS_SYSCALL_SIGRETURN(sys_rt_sigreturn, r0)
+
+/* Save additional callee-saves to pt_regs and jump to standard function. */
+>>>>>>> refs/remotes/origin/master
 STD_ENTRY(_sys_clone)
 	push_extra_callee_saves r4
 	j       sys_clone
@@ -1569,12 +1750,18 @@ STD_ENTRY(_sys_clone)
 	__HEAD
 	.align 64
 	/* Align much later jump on the start of a cache line. */
+<<<<<<< HEAD
 #if !ATOMIC_LOCKS_FOUND_VIA_TABLE()
+=======
+>>>>>>> refs/remotes/origin/master
 	nop
 #if PAGE_SIZE >= 0x10000
 	nop
 #endif
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(sys_cmpxchg)
 
 	/*
@@ -1608,6 +1795,7 @@ ENTRY(sys_cmpxchg)
 # error Code here assumes PAGE_OFFSET can be loaded with just hi16()
 #endif
 
+<<<<<<< HEAD
 #if ATOMIC_LOCKS_FOUND_VIA_TABLE()
 	{
 	 /* Check for unaligned input. */
@@ -1647,6 +1835,8 @@ ENTRY(sys_cmpxchg)
 	}
 
 #else /* ATOMIC_LOCKS_FOUND_VIA_TABLE() */
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 	 /* Check for unaligned input. */
 	 bnz    sp, .Lcmpxchg_badaddr
@@ -1660,7 +1850,11 @@ ENTRY(sys_cmpxchg)
 	  * Because of C pointer arithmetic, we want to compute this:
 	  *
 	  * ((char*)atomic_locks +
+<<<<<<< HEAD
 	  *  (((r0 >> 3) & (1 << (ATOMIC_HASH_SIZE - 1))) << 2))
+=======
+	  *  (((r0 >> 3) & ((1 << ATOMIC_HASH_SHIFT) - 1)) << 2))
+>>>>>>> refs/remotes/origin/master
 	  *
 	  * Instead of two shifts we just ">> 1", and use 'mm'
 	  * to ignore the low and high bits we don't want.
@@ -1671,12 +1865,18 @@ ENTRY(sys_cmpxchg)
 
 	 /*
 	  * Ensure that the TLB is loaded before we take out the lock.
+<<<<<<< HEAD
 	  * On tilepro, this will start fetching the value all the way
 	  * into our L1 as well (and if it gets modified before we
 	  * grab the lock, it will be invalidated from our cache
 	  * before we reload it).  On tile64, we'll start fetching it
 	  * into our L1 if we're the home, and if we're not, we'll
 	  * still at least start fetching it into the home's L2.
+=======
+	  * This will start fetching the value all the way into our L1
+	  * as well (and if it gets modified before we grab the lock,
+	  * it will be invalidated from our cache before we reload it).
+>>>>>>> refs/remotes/origin/master
 	  */
 	 lw	r26, r0
 	}
@@ -1719,8 +1919,11 @@ ENTRY(sys_cmpxchg)
 	 j      .Lcmpxchg32_tns
 	}
 
+<<<<<<< HEAD
 #endif /* ATOMIC_LOCKS_FOUND_VIA_TABLE() */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Symbol for do_page_fault_ics() to use to compare against the PC. */
 .global __sys_cmpxchg_grab_lock
 __sys_cmpxchg_grab_lock:
@@ -1858,9 +2061,12 @@ __sys_cmpxchg_grab_lock:
 	.align 64
 .Lcmpxchg64:
 	{
+<<<<<<< HEAD
 #if ATOMIC_LOCKS_FOUND_VIA_TABLE()
 	 s2a	ATOMIC_LOCK_REG_NAME, r25, r21
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	 bzt     r23, .Lcmpxchg64_tns
 	}
 	j       .Lcmpxchg_badaddr
@@ -1926,8 +2132,13 @@ int_unalign:
 	push_extra_callee_saves r0
 	j       do_trap
 
+<<<<<<< HEAD
 /* Include .intrpt1 array of interrupt vectors */
 	.section ".intrpt1", "ax"
+=======
+/* Include .intrpt array of interrupt vectors */
+	.section ".intrpt", "ax"
+>>>>>>> refs/remotes/origin/master
 
 #define op_handle_perf_interrupt bad_intr
 #define op_handle_aux_perf_interrupt bad_intr
@@ -1995,10 +2206,15 @@ int_unalign:
 		     do_page_fault
 	int_hand     INT_SN_CPL, SN_CPL, bad_intr
 	int_hand     INT_DOUBLE_FAULT, DOUBLE_FAULT, do_trap
+<<<<<<< HEAD
 #if CHIP_HAS_AUX_PERF_COUNTERS()
 	int_hand     INT_AUX_PERF_COUNT, AUX_PERF_COUNT, \
 		     op_handle_aux_perf_interrupt, handle_nmi
 #endif
+=======
+	int_hand     INT_AUX_PERF_COUNT, AUX_PERF_COUNT, \
+		     op_handle_aux_perf_interrupt, handle_nmi
+>>>>>>> refs/remotes/origin/master
 
 	/* Synthetic interrupt delivered only by the simulator */
 	int_hand     INT_BREAKPOINT, BREAKPOINT, do_breakpoint

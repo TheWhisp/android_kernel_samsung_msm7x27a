@@ -23,9 +23,13 @@
 #include <linux/parport.h>
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/slab.h>
 #include <sound/core.h>
@@ -40,10 +44,14 @@
 static int index[SNDRV_CARDS]  = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS]   = SNDRV_DEFAULT_STR;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 =======
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/master
 
 static struct platform_device *platform_devices[SNDRV_CARDS]; 
 static int device_count;
@@ -90,9 +98,15 @@ static int snd_mts64_free(struct mts64 *mts)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_mts64_create(struct snd_card *card, 
 				      struct pardevice *pardev, 
 				      struct mts64 **rchip)
+=======
+static int snd_mts64_create(struct snd_card *card,
+			    struct pardevice *pardev,
+			    struct mts64 **rchip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mts64 *mts;
 
@@ -221,7 +235,11 @@ static int mts64_device_ready(struct parport *p)
  *  0 init ok
  *  -EIO failure
  */
+<<<<<<< HEAD
 static int __devinit mts64_device_init(struct parport *p)
+=======
+static int mts64_device_init(struct parport *p)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -297,7 +315,11 @@ static u8 mts64_map_midi_input(u8 c)
  *  0       device found
  *  -ENODEV no device
  */
+<<<<<<< HEAD
 static int __devinit mts64_probe(struct parport *p)
+=======
+static int mts64_probe(struct parport *p)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 c;
 
@@ -490,7 +512,11 @@ __out:
 	return changed;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new mts64_ctl_smpte_switch __devinitdata = {
+=======
+static struct snd_kcontrol_new mts64_ctl_smpte_switch = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_RAWMIDI,
 	.name  = "SMPTE Playback Switch",
 	.index = 0,
@@ -563,7 +589,11 @@ static int snd_mts64_ctl_smpte_time_put(struct snd_kcontrol *kctl,
 	return changed;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new mts64_ctl_smpte_time_hours __devinitdata = {
+=======
+static struct snd_kcontrol_new mts64_ctl_smpte_time_hours = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_RAWMIDI,
 	.name  = "SMPTE Time Hours",
 	.index = 0,
@@ -574,7 +604,11 @@ static struct snd_kcontrol_new mts64_ctl_smpte_time_hours __devinitdata = {
 	.put  = snd_mts64_ctl_smpte_time_put
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new mts64_ctl_smpte_time_minutes __devinitdata = {
+=======
+static struct snd_kcontrol_new mts64_ctl_smpte_time_minutes = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_RAWMIDI,
 	.name  = "SMPTE Time Minutes",
 	.index = 0,
@@ -585,7 +619,11 @@ static struct snd_kcontrol_new mts64_ctl_smpte_time_minutes __devinitdata = {
 	.put  = snd_mts64_ctl_smpte_time_put
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new mts64_ctl_smpte_time_seconds __devinitdata = {
+=======
+static struct snd_kcontrol_new mts64_ctl_smpte_time_seconds = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_RAWMIDI,
 	.name  = "SMPTE Time Seconds",
 	.index = 0,
@@ -596,7 +634,11 @@ static struct snd_kcontrol_new mts64_ctl_smpte_time_seconds __devinitdata = {
 	.put  = snd_mts64_ctl_smpte_time_put
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new mts64_ctl_smpte_time_frames __devinitdata = {
+=======
+static struct snd_kcontrol_new mts64_ctl_smpte_time_frames = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_RAWMIDI,
 	.name  = "SMPTE Time Frames",
 	.index = 0,
@@ -658,7 +700,11 @@ static int snd_mts64_ctl_smpte_fps_put(struct snd_kcontrol *kctl,
 	return changed;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new mts64_ctl_smpte_fps __devinitdata = {
+=======
+static struct snd_kcontrol_new mts64_ctl_smpte_fps = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_RAWMIDI,
 	.name  = "SMPTE Fps",
 	.index = 0,
@@ -670,11 +716,19 @@ static struct snd_kcontrol_new mts64_ctl_smpte_fps __devinitdata = {
 };
 
 
+<<<<<<< HEAD
 static int __devinit snd_mts64_ctl_create(struct snd_card *card, 
 					  struct mts64 *mts) 
 {
 	int err, i;
 	static struct snd_kcontrol_new *control[] __devinitdata = {
+=======
+static int snd_mts64_ctl_create(struct snd_card *card,
+				struct mts64 *mts)
+{
+	int err, i;
+	static struct snd_kcontrol_new *control[] = {
+>>>>>>> refs/remotes/origin/master
 		&mts64_ctl_smpte_switch,
 		&mts64_ctl_smpte_time_hours,
 		&mts64_ctl_smpte_time_minutes,
@@ -781,7 +835,11 @@ static struct snd_rawmidi_ops snd_mts64_rawmidi_input_ops = {
 };
 
 /* Create and initialize the rawmidi component */
+<<<<<<< HEAD
 static int __devinit snd_mts64_rawmidi_create(struct snd_card *card)
+=======
+static int snd_mts64_rawmidi_create(struct snd_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mts64 *mts = card->private_data;
 	struct snd_rawmidi *rmidi;
@@ -867,7 +925,11 @@ __out:
 	spin_unlock(&mts->lock);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_mts64_probe_port(struct parport *p)
+=======
+static int snd_mts64_probe_port(struct parport *p)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pardevice *pardev;
 	int res;
@@ -891,7 +953,11 @@ static int __devinit snd_mts64_probe_port(struct parport *p)
 	return res;
 }
 
+<<<<<<< HEAD
 static void __devinit snd_mts64_attach(struct parport *p)
+=======
+static void snd_mts64_attach(struct parport *p)
+>>>>>>> refs/remotes/origin/master
 {
 	struct platform_device *device;
 
@@ -947,7 +1013,11 @@ static void snd_mts64_card_private_free(struct snd_card *card)
 	snd_mts64_free(mts);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_mts64_probe(struct platform_device *pdev)
+=======
+static int snd_mts64_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pardevice *pardev;
 	struct parport *p;
@@ -1032,7 +1102,11 @@ __err:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_mts64_remove(struct platform_device *pdev)
+=======
+static int snd_mts64_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = platform_get_drvdata(pdev);
 
@@ -1045,9 +1119,16 @@ static int __devexit snd_mts64_remove(struct platform_device *pdev)
 
 static struct platform_driver snd_mts64_driver = {
 	.probe  = snd_mts64_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(snd_mts64_remove),
 	.driver = {
 		.name = PLATFORM_DRIVER
+=======
+	.remove = snd_mts64_remove,
+	.driver = {
+		.name = PLATFORM_DRIVER,
+		.owner	= THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	}
 };
 

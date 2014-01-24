@@ -20,18 +20,27 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/mm.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mm.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
 #include <linux/pci.h>
 #include <linux/mutex.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/async.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include "hda_codec.h"
 #include <sound/asoundef.h>
@@ -41,16 +50,22 @@
 #include "hda_local.h"
 #include "hda_beep.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <sound/hda_hwdep.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include "hda_jack.h"
 #include <sound/hda_hwdep.h>
 
 #define CREATE_TRACE_POINTS
 #include "hda_trace.h"
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * vendor / preset table
  */
@@ -94,7 +109,11 @@ int snd_hda_add_codec_preset(struct hda_codec_preset_list *preset)
 	mutex_unlock(&preset_mutex);
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_add_codec_preset);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_add_codec_preset);
+>>>>>>> refs/remotes/origin/master
 
 int snd_hda_delete_codec_preset(struct hda_codec_preset_list *preset)
 {
@@ -103,6 +122,7 @@ int snd_hda_delete_codec_preset(struct hda_codec_preset_list *preset)
 	mutex_unlock(&preset_mutex);
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_delete_codec_preset);
 
 #ifdef CONFIG_SND_HDA_POWER_SAVE
@@ -117,6 +137,33 @@ static inline void hda_keep_power_on(struct hda_codec *codec) {}
 static inline void hda_keep_power_on(struct hda_codec *codec) {}
 #define hda_codec_is_power_on(codec)	1
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(snd_hda_delete_codec_preset);
+
+#ifdef CONFIG_PM
+#define codec_in_pm(codec)	((codec)->in_pm)
+static void hda_power_work(struct work_struct *work);
+static void hda_keep_power_on(struct hda_codec *codec);
+#define hda_codec_is_power_on(codec)	((codec)->power_on)
+
+static void hda_call_pm_notify(struct hda_codec *codec, bool power_up)
+{
+	struct hda_bus *bus = codec->bus;
+
+	if ((power_up && codec->pm_up_notified) ||
+	    (!power_up && !codec->pm_up_notified))
+		return;
+	if (bus->ops.pm_notify)
+		bus->ops.pm_notify(bus, power_up);
+	codec->pm_up_notified = power_up;
+}
+
+#else
+#define codec_in_pm(codec)	0
+static inline void hda_keep_power_on(struct hda_codec *codec) {}
+#define hda_codec_is_power_on(codec)	1
+#define hda_call_pm_notify(codec, state) {}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /**
@@ -151,7 +198,11 @@ const char *snd_hda_get_jack_location(u32 cfg)
 	}
 	return "UNKNOWN";
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_get_jack_location);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_get_jack_location);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_get_jack_connectivity - Give a connectivity string of the jack
@@ -166,7 +217,11 @@ const char *snd_hda_get_jack_connectivity(u32 cfg)
 
 	return jack_locations[(cfg >> (AC_DEFCFG_LOCATION_SHIFT + 4)) & 3];
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_get_jack_connectivity);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_get_jack_connectivity);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_get_jack_type - Give a type string of the jack
@@ -187,26 +242,44 @@ const char *snd_hda_get_jack_type(u32 cfg)
 	return jack_types[(cfg & AC_DEFCFG_DEVICE)
 				>> AC_DEFCFG_DEVICE_SHIFT];
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_get_jack_type);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_get_jack_type);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Compose a 32bit command word to be sent to the HD-audio controller
  */
 static inline unsigned int
+<<<<<<< HEAD
 make_codec_cmd(struct hda_codec *codec, hda_nid_t nid, int direct,
+=======
+make_codec_cmd(struct hda_codec *codec, hda_nid_t nid, int flags,
+>>>>>>> refs/remotes/origin/master
 	       unsigned int verb, unsigned int parm)
 {
 	u32 val;
 
+<<<<<<< HEAD
 	if ((codec->addr & ~0xf) || (direct & ~1) || (nid & ~0x7f) ||
 	    (verb & ~0xfff) || (parm & ~0xffff)) {
 		printk(KERN_ERR "hda-codec: out of range cmd %x:%x:%x:%x:%x\n",
 		       codec->addr, direct, nid, verb, parm);
+=======
+	if ((codec->addr & ~0xf) || (nid & ~0x7f) ||
+	    (verb & ~0xfff) || (parm & ~0xffff)) {
+		printk(KERN_ERR "hda-codec: out of range cmd %x:%x:%x:%x\n",
+		       codec->addr, nid, verb, parm);
+>>>>>>> refs/remotes/origin/master
 		return ~0;
 	}
 
 	val = (u32)codec->addr << 28;
+<<<<<<< HEAD
 	val |= (u32)direct << 27;
+=======
+>>>>>>> refs/remotes/origin/master
 	val |= (u32)nid << 20;
 	val |= verb << 8;
 	val |= parm;
@@ -217,7 +290,11 @@ make_codec_cmd(struct hda_codec *codec, hda_nid_t nid, int direct,
  * Send and receive a verb
  */
 static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
+<<<<<<< HEAD
 			   unsigned int *res)
+=======
+			   int flags, unsigned int *res)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hda_bus *bus = codec->bus;
 	int err;
@@ -231,16 +308,30 @@ static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
 	snd_hda_power_up(codec);
 	mutex_lock(&bus->cmd_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = bus->ops.command(bus, cmd);
 	if (!err && res)
 		*res = bus->ops.get_response(bus, codec->addr);
 =======
 	trace_hda_send_cmd(codec, cmd);
 	err = bus->ops.command(bus, cmd);
+=======
+	if (flags & HDA_RW_NO_RESPONSE_FALLBACK)
+		bus->no_response_fallback = 1;
+	for (;;) {
+		trace_hda_send_cmd(codec, cmd);
+		err = bus->ops.command(bus, cmd);
+		if (err != -EAGAIN)
+			break;
+		/* process pending verbs */
+		bus->ops.get_response(bus, codec->addr);
+	}
+>>>>>>> refs/remotes/origin/master
 	if (!err && res) {
 		*res = bus->ops.get_response(bus, codec->addr);
 		trace_hda_get_response(codec, *res);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	mutex_unlock(&bus->cmd_mutex);
 	snd_hda_power_down(codec);
@@ -252,12 +343,26 @@ static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
 =======
 			trace_hda_bus_reset(bus);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bus->no_response_fallback = 0;
+	mutex_unlock(&bus->cmd_mutex);
+	snd_hda_power_down(codec);
+	if (!codec_in_pm(codec) && res && *res == -1 && bus->rirb_error) {
+		if (bus->response_reset) {
+			snd_printd("hda_codec: resetting BUS due to "
+				   "fatal communication error\n");
+			trace_hda_bus_reset(bus);
+>>>>>>> refs/remotes/origin/master
 			bus->ops.bus_reset(bus);
 		}
 		goto again;
 	}
 	/* clear reset-flag when the communication gets recovered */
+<<<<<<< HEAD
 	if (!err)
+=======
+	if (!err || codec_in_pm(codec))
+>>>>>>> refs/remotes/origin/master
 		bus->response_reset = 0;
 	return err;
 }
@@ -266,7 +371,11 @@ static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
  * snd_hda_codec_read - send a command and get the response
  * @codec: the HDA codec
  * @nid: NID to send the command
+<<<<<<< HEAD
  * @direct: direct flag
+=======
+ * @flags: optional bit flags
+>>>>>>> refs/remotes/origin/master
  * @verb: the verb to send
  * @parm: the parameter for the verb
  *
@@ -275,6 +384,7 @@ static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
  * Returns the obtained response value, or -1 for an error.
  */
 unsigned int snd_hda_codec_read(struct hda_codec *codec, hda_nid_t nid,
+<<<<<<< HEAD
 				int direct,
 				unsigned int verb, unsigned int parm)
 {
@@ -289,12 +399,28 @@ unsigned int snd_hda_codec_read(struct hda_codec *codec, hda_nid_t nid,
 	return res;
 }
 EXPORT_SYMBOL_HDA(snd_hda_codec_read);
+=======
+				int flags,
+				unsigned int verb, unsigned int parm)
+{
+	unsigned cmd = make_codec_cmd(codec, nid, flags, verb, parm);
+	unsigned int res;
+	if (codec_exec_verb(codec, cmd, flags, &res))
+		return -1;
+	return res;
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_read);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_codec_write - send a single command without waiting for response
  * @codec: the HDA codec
  * @nid: NID to send the command
+<<<<<<< HEAD
  * @direct: direct flag
+=======
+ * @flags: optional bit flags
+>>>>>>> refs/remotes/origin/master
  * @verb: the verb to send
  * @parm: the parameter for the verb
  *
@@ -302,6 +428,7 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_read);
  *
  * Returns 0 if successful, or a negative error code.
  */
+<<<<<<< HEAD
 int snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int direct,
 			 unsigned int verb, unsigned int parm)
 {
@@ -311,6 +438,17 @@ int snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int direct,
 			       codec->bus->sync_write ? &res : NULL);
 }
 EXPORT_SYMBOL_HDA(snd_hda_codec_write);
+=======
+int snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int flags,
+			unsigned int verb, unsigned int parm)
+{
+	unsigned int cmd = make_codec_cmd(codec, nid, flags, verb, parm);
+	unsigned int res;
+	return codec_exec_verb(codec, cmd, flags,
+			       codec->bus->sync_write ? &res : NULL);
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_write);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_sequence_write - sequence writes
@@ -325,7 +463,11 @@ void snd_hda_sequence_write(struct hda_codec *codec, const struct hda_verb *seq)
 	for (; seq->nid; seq++)
 		snd_hda_codec_write(codec, seq->nid, 0, seq->verb, seq->param);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_sequence_write);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_sequence_write);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_get_sub_nodes - get the range of sub nodes
@@ -347,6 +489,7 @@ int snd_hda_get_sub_nodes(struct hda_codec *codec, hda_nid_t nid,
 	*start_id = (parm >> 16) & 0x7fff;
 	return (int)(parm & 0x7fff);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_get_sub_nodes);
 
 <<<<<<< HEAD
@@ -373,14 +516,85 @@ static hda_nid_t *lookup_conn_list(struct snd_array *array, hda_nid_t nid)
 			return p;
 		len = p[1];
 		i += len + 2;
+=======
+EXPORT_SYMBOL_GPL(snd_hda_get_sub_nodes);
+
+/* connection list element */
+struct hda_conn_list {
+	struct list_head list;
+	int len;
+	hda_nid_t nid;
+	hda_nid_t conns[0];
+};
+
+/* look up the cached results */
+static struct hda_conn_list *
+lookup_conn_list(struct hda_codec *codec, hda_nid_t nid)
+{
+	struct hda_conn_list *p;
+	list_for_each_entry(p, &codec->conn_list, list) {
+		if (p->nid == nid)
+			return p;
+>>>>>>> refs/remotes/origin/master
 	}
 	return NULL;
 }
 
+<<<<<<< HEAD
+=======
+static int add_conn_list(struct hda_codec *codec, hda_nid_t nid, int len,
+			 const hda_nid_t *list)
+{
+	struct hda_conn_list *p;
+
+	p = kmalloc(sizeof(*p) + len * sizeof(hda_nid_t), GFP_KERNEL);
+	if (!p)
+		return -ENOMEM;
+	p->len = len;
+	p->nid = nid;
+	memcpy(p->conns, list, len * sizeof(hda_nid_t));
+	list_add(&p->list, &codec->conn_list);
+	return 0;
+}
+
+static void remove_conn_list(struct hda_codec *codec)
+{
+	while (!list_empty(&codec->conn_list)) {
+		struct hda_conn_list *p;
+		p = list_first_entry(&codec->conn_list, typeof(*p), list);
+		list_del(&p->list);
+		kfree(p);
+	}
+}
+
+/* read the connection and add to the cache */
+static int read_and_add_raw_conns(struct hda_codec *codec, hda_nid_t nid)
+{
+	hda_nid_t list[32];
+	hda_nid_t *result = list;
+	int len;
+
+	len = snd_hda_get_raw_connections(codec, nid, list, ARRAY_SIZE(list));
+	if (len == -ENOSPC) {
+		len = snd_hda_get_num_raw_conns(codec, nid);
+		result = kmalloc(sizeof(hda_nid_t) * len, GFP_KERNEL);
+		if (!result)
+			return -ENOMEM;
+		len = snd_hda_get_raw_connections(codec, nid, result, len);
+	}
+	if (len >= 0)
+		len = snd_hda_override_conn_list(codec, nid, len, result);
+	if (result != list)
+		kfree(result);
+	return len;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * snd_hda_get_conn_list - get connection list
  * @codec: the HDA codec
  * @nid: NID to parse
+<<<<<<< HEAD
  * @listp: the pointer to store NID list
 >>>>>>> refs/remotes/origin/cm-10.0
  *
@@ -461,12 +675,56 @@ int snd_hda_get_conn_list(struct hda_codec *codec, hda_nid_t nid,
 	goto again;
 }
 EXPORT_SYMBOL_HDA(snd_hda_get_conn_list);
+=======
+ * @len: number of connection list entries
+ * @listp: the pointer to store NID list
+ *
+ * Parses the connection list of the given widget and stores the pointer
+ * to the list of NIDs.
+ *
+ * Returns the number of connections, or a negative error code.
+ *
+ * Note that the returned pointer isn't protected against the list
+ * modification.  If snd_hda_override_conn_list() might be called
+ * concurrently, protect with a mutex appropriately.
+ */
+int snd_hda_get_conn_list(struct hda_codec *codec, hda_nid_t nid,
+			  const hda_nid_t **listp)
+{
+	bool added = false;
+
+	for (;;) {
+		int err;
+		const struct hda_conn_list *p;
+
+		/* if the connection-list is already cached, read it */
+		p = lookup_conn_list(codec, nid);
+		if (p) {
+			if (listp)
+				*listp = p->conns;
+			return p->len;
+		}
+		if (snd_BUG_ON(added))
+			return -EINVAL;
+
+		err = read_and_add_raw_conns(codec, nid);
+		if (err < 0)
+			return err;
+		added = true;
+	}
+}
+EXPORT_SYMBOL_GPL(snd_hda_get_conn_list);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_get_connections - copy connection list
  * @codec: the HDA codec
  * @nid: NID to parse
+<<<<<<< HEAD
  * @conn_list: connection list array
+=======
+ * @conn_list: connection list array; when NULL, checks only the size
+>>>>>>> refs/remotes/origin/master
  * @max_conns: max. number of connections to store
  *
  * Parses the connection list of the given widget and stores the list
@@ -475,11 +733,16 @@ EXPORT_SYMBOL_HDA(snd_hda_get_conn_list);
  * Returns the number of connections, or a negative error code.
  */
 int snd_hda_get_connections(struct hda_codec *codec, hda_nid_t nid,
+<<<<<<< HEAD
 			     hda_nid_t *conn_list, int max_conns)
+=======
+			    hda_nid_t *conn_list, int max_conns)
+>>>>>>> refs/remotes/origin/master
 {
 	const hda_nid_t *list;
 	int len = snd_hda_get_conn_list(codec, nid, &list);
 
+<<<<<<< HEAD
 	if (len <= 0)
 		return len;
 	if (len > max_conns) {
@@ -492,6 +755,42 @@ int snd_hda_get_connections(struct hda_codec *codec, hda_nid_t nid,
 	return len;
 }
 EXPORT_SYMBOL_HDA(snd_hda_get_connections);
+=======
+	if (len > 0 && conn_list) {
+		if (len > max_conns) {
+			snd_printk(KERN_ERR "hda_codec: "
+				   "Too many connections %d for NID 0x%x\n",
+				   len, nid);
+			return -EINVAL;
+		}
+		memcpy(conn_list, list, len * sizeof(hda_nid_t));
+	}
+
+	return len;
+}
+EXPORT_SYMBOL_GPL(snd_hda_get_connections);
+
+/* return CONNLIST_LEN parameter of the given widget */
+static unsigned int get_num_conns(struct hda_codec *codec, hda_nid_t nid)
+{
+	unsigned int wcaps = get_wcaps(codec, nid);
+	unsigned int parm;
+
+	if (!(wcaps & AC_WCAP_CONN_LIST) &&
+	    get_wcaps_type(wcaps) != AC_WID_VOL_KNB)
+		return 0;
+
+	parm = snd_hda_param_read(codec, nid, AC_PAR_CONNLIST_LEN);
+	if (parm == -1)
+		parm = 0;
+	return parm;
+}
+
+int snd_hda_get_num_raw_conns(struct hda_codec *codec, hda_nid_t nid)
+{
+	return snd_hda_get_raw_connections(codec, nid, NULL, 0);
+}
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_get_raw_connections - copy connection list without cache
@@ -506,11 +805,15 @@ EXPORT_SYMBOL_HDA(snd_hda_get_connections);
  */
 int snd_hda_get_raw_connections(struct hda_codec *codec, hda_nid_t nid,
 				hda_nid_t *conn_list, int max_conns)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int parm;
 	int i, conn_len, conns;
 	unsigned int shift, num_elems, mask;
+<<<<<<< HEAD
 	unsigned int wcaps;
 	hda_nid_t prev_nid;
 
@@ -531,6 +834,15 @@ int snd_hda_get_raw_connections(struct hda_codec *codec, hda_nid_t nid,
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	parm = snd_hda_param_read(codec, nid, AC_PAR_CONNLIST_LEN);
+=======
+	hda_nid_t prev_nid;
+	int null_count = 0;
+
+	parm = get_num_conns(codec, nid);
+	if (!parm)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (parm & AC_CLIST_LONG) {
 		/* long form */
 		shift = 16;
@@ -552,7 +864,12 @@ int snd_hda_get_raw_connections(struct hda_codec *codec, hda_nid_t nid,
 					  AC_VERB_GET_CONNECT_LIST, 0);
 		if (parm == -1 && codec->bus->rirb_error)
 			return -EIO;
+<<<<<<< HEAD
 		conn_list[0] = parm & mask;
+=======
+		if (conn_list)
+			conn_list[0] = parm & mask;
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 
@@ -571,8 +888,13 @@ int snd_hda_get_raw_connections(struct hda_codec *codec, hda_nid_t nid,
 		}
 		range_val = !!(parm & (1 << (shift-1))); /* ranges */
 		val = parm & mask;
+<<<<<<< HEAD
 		if (val == 0) {
 			snd_printk(KERN_WARNING "hda_codec: "
+=======
+		if (val == 0 && null_count++) {  /* no second chance */
+			snd_printdd("hda_codec: "
+>>>>>>> refs/remotes/origin/master
 				   "invalid CONNECT_LIST verb %x[%i]:%x\n",
 				    nid, i, parm);
 			return 0;
@@ -587,6 +909,7 @@ int snd_hda_get_raw_connections(struct hda_codec *codec, hda_nid_t nid,
 				continue;
 			}
 			for (n = prev_nid + 1; n <= val; n++) {
+<<<<<<< HEAD
 				if (conns >= max_conns) {
 					snd_printk(KERN_ERR "hda_codec: "
 						   "Too many connections %d for NID 0x%x\n",
@@ -603,12 +926,29 @@ int snd_hda_get_raw_connections(struct hda_codec *codec, hda_nid_t nid,
 				return -EINVAL;
 			}
 			conn_list[conns++] = val;
+=======
+				if (conn_list) {
+					if (conns >= max_conns)
+						return -ENOSPC;
+					conn_list[conns] = n;
+				}
+				conns++;
+			}
+		} else {
+			if (conn_list) {
+				if (conns >= max_conns)
+					return -ENOSPC;
+				conn_list[conns] = val;
+			}
+			conns++;
+>>>>>>> refs/remotes/origin/master
 		}
 		prev_nid = val;
 	}
 	return conns;
 }
 
+<<<<<<< HEAD
 static bool add_conn_list(struct snd_array *array, hda_nid_t nid)
 {
 	hda_nid_t *p = snd_array_new(array);
@@ -632,6 +972,8 @@ static int copy_conn_list(hda_nid_t nid, hda_nid_t *dst, int max_dst,
 	return len;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * snd_hda_override_conn_list - add/modify the connection-list to cache
  * @codec: the HDA codec
@@ -647,6 +989,7 @@ static int copy_conn_list(hda_nid_t nid, hda_nid_t *dst, int max_dst,
 int snd_hda_override_conn_list(struct hda_codec *codec, hda_nid_t nid, int len,
 			       const hda_nid_t *list)
 {
+<<<<<<< HEAD
 	struct snd_array *array = &codec->conn_lists;
 	hda_nid_t *p;
 	int i, old_used;
@@ -668,6 +1011,19 @@ int snd_hda_override_conn_list(struct hda_codec *codec, hda_nid_t nid, int len,
 	return -ENOMEM;
 }
 EXPORT_SYMBOL_HDA(snd_hda_override_conn_list);
+=======
+	struct hda_conn_list *p;
+
+	p = lookup_conn_list(codec, nid);
+	if (p) {
+		list_del(&p->list);
+		kfree(p);
+	}
+
+	return add_conn_list(codec, nid, len, list);
+}
+EXPORT_SYMBOL_GPL(snd_hda_override_conn_list);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_get_conn_index - get the connection index of the given NID
@@ -683,16 +1039,27 @@ EXPORT_SYMBOL_HDA(snd_hda_override_conn_list);
 int snd_hda_get_conn_index(struct hda_codec *codec, hda_nid_t mux,
 			   hda_nid_t nid, int recursive)
 {
+<<<<<<< HEAD
 	hda_nid_t conn[HDA_MAX_NUM_INPUTS];
 	int i, nums;
 
 	nums = snd_hda_get_connections(codec, mux, conn, ARRAY_SIZE(conn));
+=======
+	const hda_nid_t *conn;
+	int i, nums;
+
+	nums = snd_hda_get_conn_list(codec, mux, &conn);
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < nums; i++)
 		if (conn[i] == nid)
 			return i;
 	if (!recursive)
 		return -1;
+<<<<<<< HEAD
 	if (recursive > 5) {
+=======
+	if (recursive > 10) {
+>>>>>>> refs/remotes/origin/master
 		snd_printd("hda_codec: too deep connection for 0x%x\n", nid);
 		return -1;
 	}
@@ -706,8 +1073,70 @@ int snd_hda_get_conn_index(struct hda_codec *codec, hda_nid_t mux,
 	}
 	return -1;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_get_conn_index);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(snd_hda_get_conn_index);
+
+
+/* return DEVLIST_LEN parameter of the given widget */
+static unsigned int get_num_devices(struct hda_codec *codec, hda_nid_t nid)
+{
+	unsigned int wcaps = get_wcaps(codec, nid);
+	unsigned int parm;
+
+	if (!codec->dp_mst || !(wcaps & AC_WCAP_DIGITAL) ||
+	    get_wcaps_type(wcaps) != AC_WID_PIN)
+		return 0;
+
+	parm = snd_hda_param_read(codec, nid, AC_PAR_DEVLIST_LEN);
+	if (parm == -1 && codec->bus->rirb_error)
+		parm = 0;
+	return parm & AC_DEV_LIST_LEN_MASK;
+}
+
+/**
+ * snd_hda_get_devices - copy device list without cache
+ * @codec: the HDA codec
+ * @nid: NID of the pin to parse
+ * @dev_list: device list array
+ * @max_devices: max. number of devices to store
+ *
+ * Copy the device list. This info is dynamic and so not cached.
+ * Currently called only from hda_proc.c, so not exported.
+ */
+int snd_hda_get_devices(struct hda_codec *codec, hda_nid_t nid,
+			u8 *dev_list, int max_devices)
+{
+	unsigned int parm;
+	int i, dev_len, devices;
+
+	parm = get_num_devices(codec, nid);
+	if (!parm)	/* not multi-stream capable */
+		return 0;
+
+	dev_len = parm + 1;
+	dev_len = dev_len < max_devices ? dev_len : max_devices;
+
+	devices = 0;
+	while (devices < dev_len) {
+		parm = snd_hda_codec_read(codec, nid, 0,
+					  AC_VERB_GET_DEVICE_LIST, devices);
+		if (parm == -1 && codec->bus->rirb_error)
+			break;
+
+		for (i = 0; i < 8; i++) {
+			dev_list[devices] = (u8)parm;
+			parm >>= 4;
+			devices++;
+			if (devices >= dev_len)
+				break;
+		}
+	}
+	return devices;
+}
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_queue_unsol_event - add an unsolicited event to queue
@@ -727,12 +1156,18 @@ int snd_hda_queue_unsol_event(struct hda_bus *bus, u32 res, u32 res_ex)
 	unsigned int wp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!bus || !bus->workq)
 		return 0;
 
 	trace_hda_unsol_event(bus, res, res_ex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsol = bus->unsol;
 	if (!unsol)
 		return 0;
@@ -748,7 +1183,11 @@ int snd_hda_queue_unsol_event(struct hda_bus *bus, u32 res, u32 res_ex)
 
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_queue_unsol_event);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_queue_unsol_event);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * process queued unsolicited events
@@ -819,6 +1258,10 @@ static int snd_hda_bus_free(struct hda_bus *bus)
 		bus->ops.private_free(bus);
 	if (bus->workq)
 		destroy_workqueue(bus->workq);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	kfree(bus);
 	return 0;
 }
@@ -853,7 +1296,11 @@ static int snd_hda_bus_dev_register(struct snd_device *device)
  *
  * Returns 0 if successful, or a negative error code.
  */
+<<<<<<< HEAD
 int /*__devinit*/ snd_hda_bus_new(struct snd_card *card,
+=======
+int snd_hda_bus_new(struct snd_card *card,
+>>>>>>> refs/remotes/origin/master
 			      const struct hda_bus_template *temp,
 			      struct hda_bus **busp)
 {
@@ -908,7 +1355,11 @@ int /*__devinit*/ snd_hda_bus_new(struct snd_card *card,
 		*busp = bus;
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_bus_new);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_bus_new);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SND_HDA_GENERIC
 #define is_generic_config(codec) \
@@ -931,10 +1382,14 @@ find_codec_preset(struct hda_codec *codec)
 {
 	struct hda_codec_preset_list *tbl;
 	const struct hda_codec_preset *preset;
+<<<<<<< HEAD
 	int mod_requested = 0;
 
 	if (is_generic_config(codec))
 		return NULL; /* use the generic parser */
+=======
+	unsigned int mod_requested = 0;
+>>>>>>> refs/remotes/origin/master
 
  again:
 	mutex_lock(&preset_mutex);
@@ -1023,7 +1478,11 @@ static int get_codec_name(struct hda_codec *codec)
 /*
  * look for an AFG and MFG nodes
  */
+<<<<<<< HEAD
 static void /*__devinit*/ setup_fg_nodes(struct hda_codec *codec)
+=======
+static void setup_fg_nodes(struct hda_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, total_nodes, function_id;
 	hda_nid_t nid;
@@ -1108,6 +1567,7 @@ static struct hda_pincfg *look_up_pincfg(struct hda_codec *codec,
 	return NULL;
 }
 
+<<<<<<< HEAD
 /* write a config value for the given NID */
 static void set_pincfg(struct hda_codec *codec, hda_nid_t nid,
 		       unsigned int cfg)
@@ -1121,6 +1581,8 @@ static void set_pincfg(struct hda_codec *codec, hda_nid_t nid,
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* set the current pin config value for the given NID.
  * the value is cached, and read via snd_hda_codec_get_pincfg()
  */
@@ -1128,12 +1590,25 @@ int snd_hda_add_pincfg(struct hda_codec *codec, struct snd_array *list,
 		       hda_nid_t nid, unsigned int cfg)
 {
 	struct hda_pincfg *pin;
+<<<<<<< HEAD
 	unsigned int oldcfg;
 
 	if (get_wcaps_type(get_wcaps(codec, nid)) != AC_WID_PIN)
 		return -EINVAL;
 
 	oldcfg = snd_hda_codec_get_pincfg(codec, nid);
+=======
+
+	/* the check below may be invalid when pins are added by a fixup
+	 * dynamically (e.g. via snd_hda_codec_update_widgets()), so disabled
+	 * for now
+	 */
+	/*
+	if (get_wcaps_type(get_wcaps(codec, nid)) != AC_WID_PIN)
+		return -EINVAL;
+	*/
+
+>>>>>>> refs/remotes/origin/master
 	pin = look_up_pincfg(codec, list, nid);
 	if (!pin) {
 		pin = snd_array_new(list);
@@ -1142,6 +1617,7 @@ int snd_hda_add_pincfg(struct hda_codec *codec, struct snd_array *list,
 		pin->nid = nid;
 	}
 	pin->cfg = cfg;
+<<<<<<< HEAD
 
 	/* change only when needed; e.g. if the pincfg is already present
 	 * in user_pins[], don't write it
@@ -1149,6 +1625,8 @@ int snd_hda_add_pincfg(struct hda_codec *codec, struct snd_array *list,
 	cfg = snd_hda_codec_get_pincfg(codec, nid);
 	if (oldcfg != cfg)
 		set_pincfg(codec, nid, cfg);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1167,7 +1645,11 @@ int snd_hda_codec_set_pincfg(struct hda_codec *codec,
 {
 	return snd_hda_add_pincfg(codec, &codec->driver_pins, nid, cfg);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_codec_set_pincfg);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_codec_set_pincfg);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_codec_get_pincfg - Obtain a pin-default configuration
@@ -1183,9 +1665,22 @@ unsigned int snd_hda_codec_get_pincfg(struct hda_codec *codec, hda_nid_t nid)
 	struct hda_pincfg *pin;
 
 #ifdef CONFIG_SND_HDA_HWDEP
+<<<<<<< HEAD
 	pin = look_up_pincfg(codec, &codec->user_pins, nid);
 	if (pin)
 		return pin->cfg;
+=======
+	{
+		unsigned int cfg = 0;
+		mutex_lock(&codec->user_mutex);
+		pin = look_up_pincfg(codec, &codec->user_pins, nid);
+		if (pin)
+			cfg = pin->cfg;
+		mutex_unlock(&codec->user_mutex);
+		if (cfg)
+			return cfg;
+	}
+>>>>>>> refs/remotes/origin/master
 #endif
 	pin = look_up_pincfg(codec, &codec->driver_pins, nid);
 	if (pin)
@@ -1195,6 +1690,7 @@ unsigned int snd_hda_codec_get_pincfg(struct hda_codec *codec, hda_nid_t nid)
 		return pin->cfg;
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_codec_get_pincfg);
 
 /* restore all current pin configs */
@@ -1207,6 +1703,35 @@ static void restore_pincfgs(struct hda_codec *codec)
 			   snd_hda_codec_get_pincfg(codec, pin->nid));
 	}
 }
+=======
+EXPORT_SYMBOL_GPL(snd_hda_codec_get_pincfg);
+
+/* remember the current pinctl target value */
+int snd_hda_codec_set_pin_target(struct hda_codec *codec, hda_nid_t nid,
+				 unsigned int val)
+{
+	struct hda_pincfg *pin;
+
+	pin = look_up_pincfg(codec, &codec->init_pins, nid);
+	if (!pin)
+		return -EINVAL;
+	pin->target = val;
+	return 0;
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_set_pin_target);
+
+/* return the current pinctl target value */
+int snd_hda_codec_get_pin_target(struct hda_codec *codec, hda_nid_t nid)
+{
+	struct hda_pincfg *pin;
+
+	pin = look_up_pincfg(codec, &codec->init_pins, nid);
+	if (!pin)
+		return 0;
+	return pin->target;
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_get_pin_target);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_shutup_pins - Shut up all pins
@@ -1231,6 +1756,7 @@ void snd_hda_shutup_pins(struct hda_codec *codec)
 	}
 	codec->pins_shutup = 1;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_shutup_pins);
 
 <<<<<<< HEAD
@@ -1238,6 +1764,11 @@ EXPORT_SYMBOL_HDA(snd_hda_shutup_pins);
 =======
 #ifdef CONFIG_PM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(snd_hda_shutup_pins);
+
+#ifdef CONFIG_PM
+>>>>>>> refs/remotes/origin/master
 /* Restore the pin controls cleared previously via snd_hda_shutup_pins() */
 static void restore_shutup_pins(struct hda_codec *codec)
 {
@@ -1256,21 +1787,48 @@ static void restore_shutup_pins(struct hda_codec *codec)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+static void hda_jackpoll_work(struct work_struct *work)
+{
+	struct hda_codec *codec =
+		container_of(work, struct hda_codec, jackpoll_work.work);
+
+	snd_hda_jack_set_dirty_all(codec);
+	snd_hda_jack_poll_all(codec);
+
+	if (!codec->jackpoll_interval)
+		return;
+
+	queue_delayed_work(codec->bus->workq, &codec->jackpoll_work,
+			   codec->jackpoll_interval);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void init_hda_cache(struct hda_cache_rec *cache,
 			   unsigned int record_size);
 static void free_hda_cache(struct hda_cache_rec *cache);
 
+<<<<<<< HEAD
 /* restore the initial pin cfgs and release all pincfg lists */
 static void restore_init_pincfgs(struct hda_codec *codec)
 {
 	/* first free driver_pins and user_pins, then call restore_pincfg
 	 * so that only the values in init_pins are restored
 	 */
+=======
+/* release all pincfg lists */
+static void free_init_pincfgs(struct hda_codec *codec)
+{
+>>>>>>> refs/remotes/origin/master
 	snd_array_free(&codec->driver_pins);
 #ifdef CONFIG_SND_HDA_HWDEP
 	snd_array_free(&codec->user_pins);
 #endif
+<<<<<<< HEAD
 	restore_pincfgs(codec);
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_array_free(&codec->init_pins);
 }
 
@@ -1305,6 +1863,31 @@ get_hda_cvt_setup(struct hda_codec *codec, hda_nid_t nid)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Dynamic symbol binding for the codec parsers
+ */
+#ifdef MODULE
+#define load_parser_sym(sym)		((int (*)(struct hda_codec *))symbol_request(sym))
+#define unload_parser_addr(addr)	symbol_put_addr(addr)
+#else
+#define load_parser_sym(sym)		(sym)
+#define unload_parser_addr(addr)	do {} while (0)
+#endif
+
+#define load_parser(codec, sym) \
+	((codec)->parser = load_parser_sym(sym))
+
+static void unload_parser(struct hda_codec *codec)
+{
+	if (codec->parser) {
+		unload_parser_addr(codec->parser);
+		codec->parser = NULL;
+	}
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * codec destructor
  */
 static void snd_hda_codec_free(struct hda_codec *codec)
@@ -1312,17 +1895,25 @@ static void snd_hda_codec_free(struct hda_codec *codec)
 	if (!codec)
 		return;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	snd_hda_jack_tbl_clear(codec);
 >>>>>>> refs/remotes/origin/cm-10.0
 	restore_init_pincfgs(codec);
 #ifdef CONFIG_SND_HDA_POWER_SAVE
+=======
+	cancel_delayed_work_sync(&codec->jackpoll_work);
+	snd_hda_jack_tbl_clear(codec);
+	free_init_pincfgs(codec);
+#ifdef CONFIG_PM
+>>>>>>> refs/remotes/origin/master
 	cancel_delayed_work(&codec->power_work);
 	flush_workqueue(codec->bus->workq);
 #endif
 	list_del(&codec->list);
 	snd_array_free(&codec->mixers);
 	snd_array_free(&codec->nids);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	snd_array_free(&codec->conn_lists);
 =======
@@ -1333,6 +1924,16 @@ static void snd_hda_codec_free(struct hda_codec *codec)
 	codec->bus->caddr_tbl[codec->addr] = NULL;
 	if (codec->patch_ops.free)
 		codec->patch_ops.free(codec);
+=======
+	snd_array_free(&codec->cvt_setups);
+	snd_array_free(&codec->spdif_out);
+	remove_conn_list(codec);
+	codec->bus->caddr_tbl[codec->addr] = NULL;
+	if (codec->patch_ops.free)
+		codec->patch_ops.free(codec);
+	hda_call_pm_notify(codec, false); /* cancel leftover refcounts */
+	unload_parser(codec);
+>>>>>>> refs/remotes/origin/master
 	module_put(codec->owner);
 	free_hda_cache(&codec->amp_cache);
 	free_hda_cache(&codec->cmd_cache);
@@ -1340,10 +1941,21 @@ static void snd_hda_codec_free(struct hda_codec *codec)
 	kfree(codec->chip_name);
 	kfree(codec->modelname);
 	kfree(codec->wcaps);
+<<<<<<< HEAD
 	kfree(codec);
 }
 
 static void hda_set_power_state(struct hda_codec *codec, hda_nid_t fg,
+=======
+	codec->bus->num_codecs--;
+	kfree(codec);
+}
+
+static bool snd_hda_codec_get_supported_ps(struct hda_codec *codec,
+				hda_nid_t fg, unsigned int power_state);
+
+static unsigned int hda_set_power_state(struct hda_codec *codec,
+>>>>>>> refs/remotes/origin/master
 				unsigned int power_state);
 
 /**
@@ -1354,12 +1966,20 @@ static void hda_set_power_state(struct hda_codec *codec, hda_nid_t fg,
  *
  * Returns 0 if successful, or a negative error code.
  */
+<<<<<<< HEAD
 int /*__devinit*/ snd_hda_codec_new(struct hda_bus *bus,
+=======
+int snd_hda_codec_new(struct hda_bus *bus,
+>>>>>>> refs/remotes/origin/master
 				unsigned int codec_addr,
 				struct hda_codec **codecp)
 {
 	struct hda_codec *codec;
 	char component[31];
+<<<<<<< HEAD
+=======
+	hda_nid_t fg;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	if (snd_BUG_ON(!bus))
@@ -1383,6 +2003,10 @@ int /*__devinit*/ snd_hda_codec_new(struct hda_bus *bus,
 	codec->addr = codec_addr;
 	mutex_init(&codec->spdif_mutex);
 	mutex_init(&codec->control_mutex);
+<<<<<<< HEAD
+=======
+	mutex_init(&codec->hash_mutex);
+>>>>>>> refs/remotes/origin/master
 	init_hda_cache(&codec->amp_cache, sizeof(struct hda_amp_info));
 	init_hda_cache(&codec->cmd_cache, sizeof(struct hda_cache_head));
 	snd_array_init(&codec->mixers, sizeof(struct hda_nid_item), 32);
@@ -1390,6 +2014,7 @@ int /*__devinit*/ snd_hda_codec_new(struct hda_bus *bus,
 	snd_array_init(&codec->init_pins, sizeof(struct hda_pincfg), 16);
 	snd_array_init(&codec->driver_pins, sizeof(struct hda_pincfg), 16);
 	snd_array_init(&codec->cvt_setups, sizeof(struct hda_cvt_setup), 8);
+<<<<<<< HEAD
 	snd_array_init(&codec->conn_lists, sizeof(hda_nid_t), 64);
 <<<<<<< HEAD
 =======
@@ -1404,6 +2029,18 @@ int /*__devinit*/ snd_hda_codec_new(struct hda_bus *bus,
 	}
 
 #ifdef CONFIG_SND_HDA_POWER_SAVE
+=======
+	snd_array_init(&codec->spdif_out, sizeof(struct hda_spdif_out), 16);
+	snd_array_init(&codec->jacktbl, sizeof(struct hda_jack_tbl), 16);
+	snd_array_init(&codec->verbs, sizeof(struct hda_verb *), 8);
+	INIT_LIST_HEAD(&codec->conn_list);
+
+	INIT_DELAYED_WORK(&codec->jackpoll_work, hda_jackpoll_work);
+	codec->depop_delay = -1;
+
+#ifdef CONFIG_PM
+	spin_lock_init(&codec->power_lock);
+>>>>>>> refs/remotes/origin/master
 	INIT_DELAYED_WORK(&codec->power_work, hda_power_work);
 	/* snd_hda_codec_new() marks the codec as power-up, and leave it as is.
 	 * the caller has to power down appropriatley after initialization
@@ -1412,7 +2049,21 @@ int /*__devinit*/ snd_hda_codec_new(struct hda_bus *bus,
 	hda_keep_power_on(codec);
 #endif
 
+<<<<<<< HEAD
 	list_add_tail(&codec->list, &bus->codec_list);
+=======
+	if (codec->bus->modelname) {
+		codec->modelname = kstrdup(codec->bus->modelname, GFP_KERNEL);
+		if (!codec->modelname) {
+			snd_hda_codec_free(codec);
+			return -ENODEV;
+		}
+	}
+
+	list_add_tail(&codec->list, &bus->codec_list);
+	bus->num_codecs++;
+
+>>>>>>> refs/remotes/origin/master
 	bus->caddr_tbl[codec_addr] = codec;
 
 	codec->vendor_id = snd_hda_param_read(codec, AC_NODE_ROOT,
@@ -1435,7 +2086,12 @@ int /*__devinit*/ snd_hda_codec_new(struct hda_bus *bus,
 		goto error;
 	}
 
+<<<<<<< HEAD
 	err = read_widget_caps(codec, codec->afg ? codec->afg : codec->mfg);
+=======
+	fg = codec->afg ? codec->afg : codec->mfg;
+	err = read_widget_caps(codec, fg);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0) {
 		snd_printk(KERN_ERR "hda_codec: cannot malloc\n");
 		goto error;
@@ -1445,6 +2101,7 @@ int /*__devinit*/ snd_hda_codec_new(struct hda_bus *bus,
 		goto error;
 
 	if (!codec->subsystem_id) {
+<<<<<<< HEAD
 		hda_nid_t nid = codec->afg ? codec->afg : codec->mfg;
 		codec->subsystem_id =
 			snd_hda_codec_read(codec, nid, 0,
@@ -1455,6 +2112,27 @@ int /*__devinit*/ snd_hda_codec_new(struct hda_bus *bus,
 	hda_set_power_state(codec,
 			    codec->afg ? codec->afg : codec->mfg,
 			    AC_PWRST_D0);
+=======
+		codec->subsystem_id =
+			snd_hda_codec_read(codec, fg, 0,
+					   AC_VERB_GET_SUBSYSTEM_ID, 0);
+	}
+
+#ifdef CONFIG_PM
+	codec->d3_stop_clk = snd_hda_codec_get_supported_ps(codec, fg,
+					AC_PWRST_CLKSTOP);
+#endif
+	codec->epss = snd_hda_codec_get_supported_ps(codec, fg,
+					AC_PWRST_EPSS);
+#ifdef CONFIG_PM
+	if (!codec->d3_stop_clk || !codec->epss)
+		bus->power_keep_link_on = 1;
+#endif
+
+
+	/* power-up all before initialization */
+	hda_set_power_state(codec, AC_PWRST_D0);
+>>>>>>> refs/remotes/origin/master
 
 	snd_hda_codec_proc_new(codec);
 
@@ -1472,7 +2150,60 @@ int /*__devinit*/ snd_hda_codec_new(struct hda_bus *bus,
 	snd_hda_codec_free(codec);
 	return err;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_codec_new);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_codec_new);
+
+int snd_hda_codec_update_widgets(struct hda_codec *codec)
+{
+	hda_nid_t fg;
+	int err;
+
+	/* Assume the function group node does not change,
+	 * only the widget nodes may change.
+	 */
+	kfree(codec->wcaps);
+	fg = codec->afg ? codec->afg : codec->mfg;
+	err = read_widget_caps(codec, fg);
+	if (err < 0) {
+		snd_printk(KERN_ERR "hda_codec: cannot malloc\n");
+		return err;
+	}
+
+	snd_array_free(&codec->init_pins);
+	err = read_pin_defaults(codec);
+
+	return err;
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_update_widgets);
+
+
+#ifdef CONFIG_SND_HDA_CODEC_HDMI
+/* if all audio out widgets are digital, let's assume the codec as a HDMI/DP */
+static bool is_likely_hdmi_codec(struct hda_codec *codec)
+{
+	hda_nid_t nid = codec->start_nid;
+	int i;
+
+	for (i = 0; i < codec->num_nodes; i++, nid++) {
+		unsigned int wcaps = get_wcaps(codec, nid);
+		switch (get_wcaps_type(wcaps)) {
+		case AC_WID_AUD_IN:
+			return false; /* HDMI parser supports only HDMI out */
+		case AC_WID_AUD_OUT:
+			if (!(wcaps & AC_WCAP_DIGITAL))
+				return false;
+			break;
+		}
+	}
+	return true;
+}
+#else
+/* no HDMI codec parser support */
+#define is_likely_hdmi_codec(codec)	false
+#endif /* CONFIG_SND_HDA_CODEC_HDMI */
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_codec_configure - (Re-)configure the HD-audio codec
@@ -1485,6 +2216,10 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_new);
  */
 int snd_hda_codec_configure(struct hda_codec *codec)
 {
+<<<<<<< HEAD
+=======
+	int (*patch)(struct hda_codec *) = NULL;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	codec->preset = find_codec_preset(codec);
@@ -1494,6 +2229,7 @@ int snd_hda_codec_configure(struct hda_codec *codec)
 			return err;
 	}
 
+<<<<<<< HEAD
 	if (is_generic_config(codec)) {
 		err = snd_hda_parse_generic_codec(codec);
 		goto patched;
@@ -1548,6 +2284,52 @@ void snd_hda_codec_setup_stream(struct hda_codec *codec, hda_nid_t nid,
 	if (!p)
 		return;
 	/* update the stream-id if changed */
+=======
+	if (!is_generic_config(codec) && codec->preset)
+		patch = codec->preset->patch;
+	if (!patch) {
+		unload_parser(codec); /* to be sure */
+		if (is_likely_hdmi_codec(codec))
+			patch = load_parser(codec, snd_hda_parse_hdmi_codec);
+#ifdef CONFIG_SND_HDA_GENERIC
+		if (!patch)
+			patch = load_parser(codec, snd_hda_parse_generic_codec);
+#endif
+		if (!patch) {
+			printk(KERN_ERR "hda-codec: No codec parser is available\n");
+			return -ENODEV;
+		}
+	}
+
+	err = patch(codec);
+	if (err < 0) {
+		unload_parser(codec);
+		return err;
+	}
+
+	if (codec->patch_ops.unsol_event) {
+		err = init_unsol_queue(codec->bus);
+		if (err < 0)
+			return err;
+	}
+
+	/* audio codec should override the mixer name */
+	if (codec->afg || !*codec->bus->card->mixername)
+		snprintf(codec->bus->card->mixername,
+			 sizeof(codec->bus->card->mixername),
+			 "%s %s", codec->vendor_name, codec->chip_name);
+	return 0;
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_configure);
+
+/* update the stream-id if changed */
+static void update_pcm_stream_id(struct hda_codec *codec,
+				 struct hda_cvt_setup *p, hda_nid_t nid,
+				 u32 stream_tag, int channel_id)
+{
+	unsigned int oldval, newval;
+
+>>>>>>> refs/remotes/origin/master
 	if (p->stream_tag != stream_tag || p->channel_id != channel_id) {
 		oldval = snd_hda_codec_read(codec, nid, 0, AC_VERB_GET_CONV, 0);
 		newval = (stream_tag << 4) | channel_id;
@@ -1558,7 +2340,18 @@ void snd_hda_codec_setup_stream(struct hda_codec *codec, hda_nid_t nid,
 		p->stream_tag = stream_tag;
 		p->channel_id = channel_id;
 	}
+<<<<<<< HEAD
 	/* update the format-id if changed */
+=======
+}
+
+/* update the format-id if changed */
+static void update_pcm_format(struct hda_codec *codec, struct hda_cvt_setup *p,
+			      hda_nid_t nid, int format)
+{
+	unsigned int oldval;
+
+>>>>>>> refs/remotes/origin/master
 	if (p->format_id != format) {
 		oldval = snd_hda_codec_read(codec, nid, 0,
 					    AC_VERB_GET_STREAM_FORMAT, 0);
@@ -1570,6 +2363,44 @@ void snd_hda_codec_setup_stream(struct hda_codec *codec, hda_nid_t nid,
 		}
 		p->format_id = format;
 	}
+<<<<<<< HEAD
+=======
+}
+
+/**
+ * snd_hda_codec_setup_stream - set up the codec for streaming
+ * @codec: the CODEC to set up
+ * @nid: the NID to set up
+ * @stream_tag: stream tag to pass, it's between 0x1 and 0xf.
+ * @channel_id: channel id to pass, zero based.
+ * @format: stream format.
+ */
+void snd_hda_codec_setup_stream(struct hda_codec *codec, hda_nid_t nid,
+				u32 stream_tag,
+				int channel_id, int format)
+{
+	struct hda_codec *c;
+	struct hda_cvt_setup *p;
+	int type;
+	int i;
+
+	if (!nid)
+		return;
+
+	snd_printdd("hda_codec_setup_stream: "
+		    "NID=0x%x, stream=0x%x, channel=%d, format=0x%x\n",
+		    nid, stream_tag, channel_id, format);
+	p = get_hda_cvt_setup(codec, nid);
+	if (!p)
+		return;
+
+	if (codec->pcm_format_first)
+		update_pcm_format(codec, p, nid, format);
+	update_pcm_stream_id(codec, p, nid, stream_tag, channel_id);
+	if (!codec->pcm_format_first)
+		update_pcm_format(codec, p, nid, format);
+
+>>>>>>> refs/remotes/origin/master
 	p->active = 1;
 	p->dirty = 0;
 
@@ -1584,7 +2415,11 @@ void snd_hda_codec_setup_stream(struct hda_codec *codec, hda_nid_t nid,
 		}
 	}
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_codec_setup_stream);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_codec_setup_stream);
+>>>>>>> refs/remotes/origin/master
 
 static void really_cleanup_stream(struct hda_codec *codec,
 				  struct hda_cvt_setup *q);
@@ -1619,22 +2454,32 @@ void __snd_hda_codec_cleanup_stream(struct hda_codec *codec, hda_nid_t nid,
 			p->active = 0;
 	}
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(__snd_hda_codec_cleanup_stream);
+=======
+EXPORT_SYMBOL_GPL(__snd_hda_codec_cleanup_stream);
+>>>>>>> refs/remotes/origin/master
 
 static void really_cleanup_stream(struct hda_codec *codec,
 				  struct hda_cvt_setup *q)
 {
 	hda_nid_t nid = q->nid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_CHANNEL_STREAMID, 0);
 	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_STREAM_FORMAT, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (q->stream_tag || q->channel_id)
 		snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_CHANNEL_STREAMID, 0);
 	if (q->format_id)
 		snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_STREAM_FORMAT, 0
 );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(q, 0, sizeof(*q));
 	q->nid = nid;
 }
@@ -1656,10 +2501,14 @@ static void purify_inactive_streams(struct hda_codec *codec)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef SND_HDA_NEEDS_RESUME
 =======
 #ifdef CONFIG_PM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PM
+>>>>>>> refs/remotes/origin/master
 /* clean up all streams; called from suspend */
 static void hda_cleanup_all_streams(struct hda_codec *codec)
 {
@@ -1686,7 +2535,11 @@ static void hda_cleanup_all_streams(struct hda_codec *codec)
 #define INFO_AMP_VOL(ch)	(1 << (1 + (ch)))
 
 /* initialize the hash table */
+<<<<<<< HEAD
 static void /*__devinit*/ init_hda_cache(struct hda_cache_rec *cache,
+=======
+static void init_hda_cache(struct hda_cache_rec *cache,
+>>>>>>> refs/remotes/origin/master
 				     unsigned int record_size)
 {
 	memset(cache, 0, sizeof(*cache));
@@ -1729,6 +2582,10 @@ static struct hda_cache_head  *get_alloc_hash(struct hda_cache_rec *cache,
 		cur = snd_array_index(&cache->buf, info);
 		info->key = key;
 		info->val = 0;
+<<<<<<< HEAD
+=======
+		info->dirty = 0;
+>>>>>>> refs/remotes/origin/master
 		idx = key % (u16)ARRAY_SIZE(cache->hash);
 		info->next = cache->hash[idx];
 		cache->hash[idx] = cur;
@@ -1743,6 +2600,63 @@ get_alloc_amp_hash(struct hda_codec *codec, u32 key)
 	return (struct hda_amp_info *)get_alloc_hash(&codec->amp_cache, key);
 }
 
+<<<<<<< HEAD
+=======
+/* overwrite the value with the key in the caps hash */
+static int write_caps_hash(struct hda_codec *codec, u32 key, unsigned int val)
+{
+	struct hda_amp_info *info;
+
+	mutex_lock(&codec->hash_mutex);
+	info = get_alloc_amp_hash(codec, key);
+	if (!info) {
+		mutex_unlock(&codec->hash_mutex);
+		return -EINVAL;
+	}
+	info->amp_caps = val;
+	info->head.val |= INFO_AMP_CAPS;
+	mutex_unlock(&codec->hash_mutex);
+	return 0;
+}
+
+/* query the value from the caps hash; if not found, fetch the current
+ * value from the given function and store in the hash
+ */
+static unsigned int
+query_caps_hash(struct hda_codec *codec, hda_nid_t nid, int dir, u32 key,
+		unsigned int (*func)(struct hda_codec *, hda_nid_t, int))
+{
+	struct hda_amp_info *info;
+	unsigned int val;
+
+	mutex_lock(&codec->hash_mutex);
+	info = get_alloc_amp_hash(codec, key);
+	if (!info) {
+		mutex_unlock(&codec->hash_mutex);
+		return 0;
+	}
+	if (!(info->head.val & INFO_AMP_CAPS)) {
+		mutex_unlock(&codec->hash_mutex); /* for reentrance */
+		val = func(codec, nid, dir);
+		write_caps_hash(codec, key, val);
+	} else {
+		val = info->amp_caps;
+		mutex_unlock(&codec->hash_mutex);
+	}
+	return val;
+}
+
+static unsigned int read_amp_cap(struct hda_codec *codec, hda_nid_t nid,
+				 int direction)
+{
+	if (!(get_wcaps(codec, nid) & AC_WCAP_AMP_OVRD))
+		nid = codec->afg;
+	return snd_hda_param_read(codec, nid,
+				  direction == HDA_OUTPUT ?
+				  AC_PAR_AMP_OUT_CAP : AC_PAR_AMP_IN_CAP);
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * query_amp_caps - query AMP capabilities
  * @codec: the HD-auio codec
@@ -1757,6 +2671,7 @@ get_alloc_amp_hash(struct hda_codec *codec, u32 key)
  */
 u32 query_amp_caps(struct hda_codec *codec, hda_nid_t nid, int direction)
 {
+<<<<<<< HEAD
 	struct hda_amp_info *info;
 
 	info = get_alloc_amp_hash(codec, HDA_HASH_KEY(nid, direction, 0));
@@ -1775,6 +2690,13 @@ u32 query_amp_caps(struct hda_codec *codec, hda_nid_t nid, int direction)
 	return info->amp_caps;
 }
 EXPORT_SYMBOL_HDA(query_amp_caps);
+=======
+	return query_caps_hash(codec, nid, direction,
+			       HDA_HASH_KEY(nid, direction, 0),
+			       read_amp_cap);
+}
+EXPORT_SYMBOL_GPL(query_amp_caps);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_override_amp_caps - Override the AMP capabilities
@@ -1792,6 +2714,7 @@ EXPORT_SYMBOL_HDA(query_amp_caps);
 int snd_hda_override_amp_caps(struct hda_codec *codec, hda_nid_t nid, int dir,
 			      unsigned int caps)
 {
+<<<<<<< HEAD
 	struct hda_amp_info *info;
 
 	info = get_alloc_amp_hash(codec, HDA_HASH_KEY(nid, dir, 0));
@@ -1820,6 +2743,14 @@ query_caps_hash(struct hda_codec *codec, hda_nid_t nid, u32 key,
 }
 
 static unsigned int read_pin_cap(struct hda_codec *codec, hda_nid_t nid)
+=======
+	return write_caps_hash(codec, HDA_HASH_KEY(nid, dir, 0), caps);
+}
+EXPORT_SYMBOL_GPL(snd_hda_override_amp_caps);
+
+static unsigned int read_pin_cap(struct hda_codec *codec, hda_nid_t nid,
+				 int dir)
+>>>>>>> refs/remotes/origin/master
 {
 	return snd_hda_param_read(codec, nid, AC_PAR_PIN_CAP);
 }
@@ -1837,6 +2768,7 @@ static unsigned int read_pin_cap(struct hda_codec *codec, hda_nid_t nid)
  */
 u32 snd_hda_query_pin_caps(struct hda_codec *codec, hda_nid_t nid)
 {
+<<<<<<< HEAD
 	return query_caps_hash(codec, nid, HDA_HASH_PINCAP_KEY(nid),
 			       read_pin_cap);
 }
@@ -1880,6 +2812,14 @@ int snd_hda_jack_detect(struct hda_codec *codec, hda_nid_t nid)
 }
 EXPORT_SYMBOL_HDA(snd_hda_jack_detect);
 =======
+=======
+	return query_caps_hash(codec, nid, 0, HDA_HASH_PINCAP_KEY(nid),
+			       read_pin_cap);
+}
+EXPORT_SYMBOL_GPL(snd_hda_query_pin_caps);
+
+/**
+>>>>>>> refs/remotes/origin/master
  * snd_hda_override_pin_caps - Override the pin capabilities
  * @codec: the CODEC
  * @nid: the NID to override
@@ -1892,6 +2832,7 @@ EXPORT_SYMBOL_HDA(snd_hda_jack_detect);
 int snd_hda_override_pin_caps(struct hda_codec *codec, hda_nid_t nid,
 			      unsigned int caps)
 {
+<<<<<<< HEAD
 	struct hda_amp_info *info;
 	info = get_alloc_amp_hash(codec, HDA_HASH_PINCAP_KEY(nid));
 	if (!info)
@@ -1930,6 +2871,52 @@ static unsigned int get_vol_mute(struct hda_codec *codec,
  * write the current volume in info to the h/w and update the cache
  */
 static void put_vol_mute(struct hda_codec *codec, struct hda_amp_info *info,
+=======
+	return write_caps_hash(codec, HDA_HASH_PINCAP_KEY(nid), caps);
+}
+EXPORT_SYMBOL_GPL(snd_hda_override_pin_caps);
+
+/* read or sync the hash value with the current value;
+ * call within hash_mutex
+ */
+static struct hda_amp_info *
+update_amp_hash(struct hda_codec *codec, hda_nid_t nid, int ch,
+		int direction, int index, bool init_only)
+{
+	struct hda_amp_info *info;
+	unsigned int parm, val = 0;
+	bool val_read = false;
+
+ retry:
+	info = get_alloc_amp_hash(codec, HDA_HASH_KEY(nid, direction, index));
+	if (!info)
+		return NULL;
+	if (!(info->head.val & INFO_AMP_VOL(ch))) {
+		if (!val_read) {
+			mutex_unlock(&codec->hash_mutex);
+			parm = ch ? AC_AMP_GET_RIGHT : AC_AMP_GET_LEFT;
+			parm |= direction == HDA_OUTPUT ?
+				AC_AMP_GET_OUTPUT : AC_AMP_GET_INPUT;
+			parm |= index;
+			val = snd_hda_codec_read(codec, nid, 0,
+				 AC_VERB_GET_AMP_GAIN_MUTE, parm);
+			val &= 0xff;
+			val_read = true;
+			mutex_lock(&codec->hash_mutex);
+			goto retry;
+		}
+		info->vol[ch] = val;
+		info->head.val |= INFO_AMP_VOL(ch);
+	} else if (init_only)
+		return NULL;
+	return info;
+}
+
+/*
+ * write the current volume in info to the h/w
+ */
+static void put_vol_mute(struct hda_codec *codec, unsigned int amp_caps,
+>>>>>>> refs/remotes/origin/master
 			 hda_nid_t nid, int ch, int direction, int index,
 			 int val)
 {
@@ -1938,13 +2925,21 @@ static void put_vol_mute(struct hda_codec *codec, struct hda_amp_info *info,
 	parm = ch ? AC_AMP_SET_RIGHT : AC_AMP_SET_LEFT;
 	parm |= direction == HDA_OUTPUT ? AC_AMP_SET_OUTPUT : AC_AMP_SET_INPUT;
 	parm |= index << AC_AMP_SET_INDEX_SHIFT;
+<<<<<<< HEAD
 	if ((val & HDA_AMP_MUTE) && !(info->amp_caps & AC_AMPCAP_MUTE) &&
 	    (info->amp_caps & AC_AMPCAP_MIN_MUTE))
+=======
+	if ((val & HDA_AMP_MUTE) && !(amp_caps & AC_AMPCAP_MUTE) &&
+	    (amp_caps & AC_AMPCAP_MIN_MUTE))
+>>>>>>> refs/remotes/origin/master
 		; /* set the zero value as a fake mute */
 	else
 		parm |= val;
 	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_AMP_GAIN_MUTE, parm);
+<<<<<<< HEAD
 	info->vol[ch] = val;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1961,12 +2956,57 @@ int snd_hda_codec_amp_read(struct hda_codec *codec, hda_nid_t nid, int ch,
 			   int direction, int index)
 {
 	struct hda_amp_info *info;
+<<<<<<< HEAD
 	info = get_alloc_amp_hash(codec, HDA_HASH_KEY(nid, direction, index));
 	if (!info)
 		return 0;
 	return get_vol_mute(codec, info, nid, ch, direction, index);
 }
 EXPORT_SYMBOL_HDA(snd_hda_codec_amp_read);
+=======
+	unsigned int val = 0;
+
+	mutex_lock(&codec->hash_mutex);
+	info = update_amp_hash(codec, nid, ch, direction, index, false);
+	if (info)
+		val = info->vol[ch];
+	mutex_unlock(&codec->hash_mutex);
+	return val;
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_amp_read);
+
+static int codec_amp_update(struct hda_codec *codec, hda_nid_t nid, int ch,
+			    int direction, int idx, int mask, int val,
+			    bool init_only)
+{
+	struct hda_amp_info *info;
+	unsigned int caps;
+	unsigned int cache_only;
+
+	if (snd_BUG_ON(mask & ~0xff))
+		mask &= 0xff;
+	val &= mask;
+
+	mutex_lock(&codec->hash_mutex);
+	info = update_amp_hash(codec, nid, ch, direction, idx, init_only);
+	if (!info) {
+		mutex_unlock(&codec->hash_mutex);
+		return 0;
+	}
+	val |= info->vol[ch] & ~mask;
+	if (info->vol[ch] == val) {
+		mutex_unlock(&codec->hash_mutex);
+		return 0;
+	}
+	info->vol[ch] = val;
+	cache_only = info->head.dirty = codec->cached_write;
+	caps = info->amp_caps;
+	mutex_unlock(&codec->hash_mutex);
+	if (!cache_only)
+		put_vol_mute(codec, caps, nid, ch, direction, idx, val);
+	return 1;
+}
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_codec_amp_update - update the AMP value
@@ -1984,6 +3024,7 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_amp_read);
 int snd_hda_codec_amp_update(struct hda_codec *codec, hda_nid_t nid, int ch,
 			     int direction, int idx, int mask, int val)
 {
+<<<<<<< HEAD
 	struct hda_amp_info *info;
 
 	info = get_alloc_amp_hash(codec, HDA_HASH_KEY(nid, direction, idx));
@@ -1999,6 +3040,11 @@ int snd_hda_codec_amp_update(struct hda_codec *codec, hda_nid_t nid, int ch,
 	return 1;
 }
 EXPORT_SYMBOL_HDA(snd_hda_codec_amp_update);
+=======
+	return codec_amp_update(codec, nid, ch, direction, idx, mask, val, false);
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_amp_update);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_codec_amp_stereo - update the AMP stereo values
@@ -2024,6 +3070,7 @@ int snd_hda_codec_amp_stereo(struct hda_codec *codec, hda_nid_t nid,
 						idx, mask, val);
 	return ret;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_codec_amp_stereo);
 
 <<<<<<< HEAD
@@ -2031,6 +3078,35 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_amp_stereo);
 =======
 #ifdef CONFIG_PM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(snd_hda_codec_amp_stereo);
+
+/* Works like snd_hda_codec_amp_update() but it writes the value only at
+ * the first access.  If the amp was already initialized / updated beforehand,
+ * this does nothing.
+ */
+int snd_hda_codec_amp_init(struct hda_codec *codec, hda_nid_t nid, int ch,
+			   int dir, int idx, int mask, int val)
+{
+	return codec_amp_update(codec, nid, ch, dir, idx, mask, val, true);
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_amp_init);
+
+int snd_hda_codec_amp_init_stereo(struct hda_codec *codec, hda_nid_t nid,
+				  int dir, int idx, int mask, int val)
+{
+	int ch, ret = 0;
+
+	if (snd_BUG_ON(mask & ~0xff))
+		mask &= 0xff;
+	for (ch = 0; ch < 2; ch++)
+		ret |= snd_hda_codec_amp_init(codec, nid, ch, dir,
+					      idx, mask, val);
+	return ret;
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_amp_init_stereo);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * snd_hda_codec_resume_amp - Resume all AMP commands from the cache
  * @codec: HD-audio codec
@@ -2039,6 +3115,7 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_amp_stereo);
  */
 void snd_hda_codec_resume_amp(struct hda_codec *codec)
 {
+<<<<<<< HEAD
 	struct hda_amp_info *buffer = codec->amp_cache.buf.list;
 	int i;
 
@@ -2046,12 +3123,32 @@ void snd_hda_codec_resume_amp(struct hda_codec *codec)
 		u32 key = buffer->head.key;
 		hda_nid_t nid;
 		unsigned int idx, dir, ch;
+=======
+	int i;
+
+	mutex_lock(&codec->hash_mutex);
+	codec->cached_write = 0;
+	for (i = 0; i < codec->amp_cache.buf.used; i++) {
+		struct hda_amp_info *buffer;
+		u32 key;
+		hda_nid_t nid;
+		unsigned int idx, dir, ch;
+		struct hda_amp_info info;
+
+		buffer = snd_array_elem(&codec->amp_cache.buf, i);
+		if (!buffer->head.dirty)
+			continue;
+		buffer->head.dirty = 0;
+		info = *buffer;
+		key = info.head.key;
+>>>>>>> refs/remotes/origin/master
 		if (!key)
 			continue;
 		nid = key & 0xff;
 		idx = (key >> 16) & 0xff;
 		dir = (key >> 24) & 0xff;
 		for (ch = 0; ch < 2; ch++) {
+<<<<<<< HEAD
 			if (!(buffer->head.val & INFO_AMP_VOL(ch)))
 				continue;
 			put_vol_mute(codec, buffer, nid, ch, dir, idx,
@@ -2065,6 +3162,19 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_resume_amp);
 =======
 #endif /* CONFIG_PM */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!(info.head.val & INFO_AMP_VOL(ch)))
+				continue;
+			mutex_unlock(&codec->hash_mutex);
+			put_vol_mute(codec, info.amp_caps, nid, ch, dir, idx,
+				     info.vol[ch]);
+			mutex_lock(&codec->hash_mutex);
+		}
+	}
+	mutex_unlock(&codec->hash_mutex);
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_resume_amp);
+>>>>>>> refs/remotes/origin/master
 
 static u32 get_amp_max_value(struct hda_codec *codec, hda_nid_t nid, int dir,
 			     unsigned int ofs)
@@ -2104,7 +3214,11 @@ int snd_hda_mixer_amp_volume_info(struct snd_kcontrol *kcontrol,
 	}
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_mixer_amp_volume_info);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_mixer_amp_volume_info);
+>>>>>>> refs/remotes/origin/master
 
 
 static inline unsigned int
@@ -2161,7 +3275,11 @@ int snd_hda_mixer_amp_volume_get(struct snd_kcontrol *kcontrol,
 		*valp = read_amp_value(codec, nid, 1, dir, idx, ofs);
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_mixer_amp_volume_get);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_mixer_amp_volume_get);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_mixer_amp_volume_put - Put callback for a standard AMP mixer volume
@@ -2191,7 +3309,11 @@ int snd_hda_mixer_amp_volume_put(struct snd_kcontrol *kcontrol,
 	snd_hda_power_down(codec);
 	return change;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_mixer_amp_volume_put);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_mixer_amp_volume_put);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_mixer_amp_volume_put - TLV callback for a standard AMP mixer volume
@@ -2229,7 +3351,11 @@ int snd_hda_mixer_amp_tlv(struct snd_kcontrol *kcontrol, int op_flag,
 		return -EFAULT;
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_mixer_amp_tlv);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_mixer_amp_tlv);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_set_vmaster_tlv - Set TLV for a virtual master control
@@ -2257,16 +3383,28 @@ void snd_hda_set_vmaster_tlv(struct hda_codec *codec, hda_nid_t nid, int dir,
 	tlv[2] = -nums * step;
 	tlv[3] = step;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_set_vmaster_tlv);
 
 /* find a mixer control element with the given name */
 static struct snd_kcontrol *
 _snd_hda_find_mixer_ctl(struct hda_codec *codec,
 			const char *name, int idx)
+=======
+EXPORT_SYMBOL_GPL(snd_hda_set_vmaster_tlv);
+
+/* find a mixer control element with the given name */
+static struct snd_kcontrol *
+find_mixer_ctl(struct hda_codec *codec, const char *name, int dev, int idx)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_ctl_elem_id id;
 	memset(&id, 0, sizeof(id));
 	id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+<<<<<<< HEAD
+=======
+	id.device = dev;
+>>>>>>> refs/remotes/origin/master
 	id.index = idx;
 	if (snd_BUG_ON(strlen(name) >= sizeof(id.name)))
 		return NULL;
@@ -2284,6 +3422,7 @@ _snd_hda_find_mixer_ctl(struct hda_codec *codec,
 struct snd_kcontrol *snd_hda_find_mixer_ctl(struct hda_codec *codec,
 					    const char *name)
 {
+<<<<<<< HEAD
 	return _snd_hda_find_mixer_ctl(codec, name, 0);
 }
 EXPORT_SYMBOL_HDA(snd_hda_find_mixer_ctl);
@@ -2293,6 +3432,19 @@ static int find_empty_mixer_ctl_idx(struct hda_codec *codec, const char *name)
 	int idx;
 	for (idx = 0; idx < 16; idx++) { /* 16 ctlrs should be large enough */
 		if (!_snd_hda_find_mixer_ctl(codec, name, idx))
+=======
+	return find_mixer_ctl(codec, name, 0, 0);
+}
+EXPORT_SYMBOL_GPL(snd_hda_find_mixer_ctl);
+
+static int find_empty_mixer_ctl_idx(struct hda_codec *codec, const char *name,
+				    int start_idx)
+{
+	int i, idx;
+	/* 16 ctlrs should be large enough */
+	for (i = 0, idx = start_idx; i < 16; i++, idx++) {
+		if (!find_mixer_ctl(codec, name, 0, idx))
+>>>>>>> refs/remotes/origin/master
 			return idx;
 	}
 	return -EBUSY;
@@ -2344,7 +3496,11 @@ int snd_hda_ctl_add(struct hda_codec *codec, hda_nid_t nid,
 	item->flags = flags;
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_ctl_add);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_ctl_add);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_add_nid - Assign a NID to a control element
@@ -2375,7 +3531,11 @@ int snd_hda_add_nid(struct hda_codec *codec, struct snd_kcontrol *kctl,
 	       kctl->id.name, kctl->id.index, index);
 	return -EINVAL;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_add_nid);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_add_nid);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_ctls_clear - Clear all controls assigned to the given codec
@@ -2394,6 +3554,7 @@ void snd_hda_ctls_clear(struct hda_codec *codec)
 /* pseudo device locking
  * toggle card->shutdown to allow/disallow the device access (as a hack)
  */
+<<<<<<< HEAD
 static int hda_lock_devices(struct snd_card *card)
 {
 	spin_lock(&card->files_lock);
@@ -2408,10 +3569,55 @@ static int hda_lock_devices(struct snd_card *card)
 
 static void hda_unlock_devices(struct snd_card *card)
 {
+=======
+int snd_hda_lock_devices(struct hda_bus *bus)
+{
+	struct snd_card *card = bus->card;
+	struct hda_codec *codec;
+
+	spin_lock(&card->files_lock);
+	if (card->shutdown)
+		goto err_unlock;
+	card->shutdown = 1;
+	if (!list_empty(&card->ctl_files))
+		goto err_clear;
+
+	list_for_each_entry(codec, &bus->codec_list, list) {
+		int pcm;
+		for (pcm = 0; pcm < codec->num_pcms; pcm++) {
+			struct hda_pcm *cpcm = &codec->pcm_info[pcm];
+			if (!cpcm->pcm)
+				continue;
+			if (cpcm->pcm->streams[0].substream_opened ||
+			    cpcm->pcm->streams[1].substream_opened)
+				goto err_clear;
+		}
+	}
+	spin_unlock(&card->files_lock);
+	return 0;
+
+ err_clear:
+	card->shutdown = 0;
+ err_unlock:
+	spin_unlock(&card->files_lock);
+	return -EINVAL;
+}
+EXPORT_SYMBOL_GPL(snd_hda_lock_devices);
+
+void snd_hda_unlock_devices(struct hda_bus *bus)
+{
+	struct snd_card *card = bus->card;
+
+	card = bus->card;
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&card->files_lock);
 	card->shutdown = 0;
 	spin_unlock(&card->files_lock);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(snd_hda_unlock_devices);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_codec_reset - Clear all objects assigned to the codec
@@ -2425,6 +3631,7 @@ static void hda_unlock_devices(struct snd_card *card)
  */
 int snd_hda_codec_reset(struct hda_codec *codec)
 {
+<<<<<<< HEAD
 	struct snd_card *card = codec->bus->card;
 	int i, pcm;
 
@@ -2454,20 +3661,46 @@ int snd_hda_codec_reset(struct hda_codec *codec)
 #endif
 	snd_hda_ctls_clear(codec);
 	/* relase PCMs */
+=======
+	struct hda_bus *bus = codec->bus;
+	struct snd_card *card = bus->card;
+	int i;
+
+	if (snd_hda_lock_devices(bus) < 0)
+		return -EBUSY;
+
+	/* OK, let it free */
+	cancel_delayed_work_sync(&codec->jackpoll_work);
+#ifdef CONFIG_PM
+	cancel_delayed_work_sync(&codec->power_work);
+	flush_workqueue(bus->workq);
+#endif
+	snd_hda_ctls_clear(codec);
+	/* release PCMs */
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < codec->num_pcms; i++) {
 		if (codec->pcm_info[i].pcm) {
 			snd_device_free(card, codec->pcm_info[i].pcm);
 			clear_bit(codec->pcm_info[i].device,
+<<<<<<< HEAD
 				  codec->bus->pcm_dev_bits);
+=======
+				  bus->pcm_dev_bits);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (codec->patch_ops.free)
 		codec->patch_ops.free(codec);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	memset(&codec->patch_ops, 0, sizeof(codec->patch_ops));
 	snd_hda_jack_tbl_clear(codec);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memset(&codec->patch_ops, 0, sizeof(codec->patch_ops));
+	snd_hda_jack_tbl_clear(codec);
+>>>>>>> refs/remotes/origin/master
 	codec->proc_widget_hook = NULL;
 	codec->spec = NULL;
 	free_hda_cache(&codec->amp_cache);
@@ -2476,6 +3709,7 @@ int snd_hda_codec_reset(struct hda_codec *codec)
 	init_hda_cache(&codec->cmd_cache, sizeof(struct hda_cache_head));
 	/* free only driver_pins so that init_pins + user_pins are restored */
 	snd_array_free(&codec->driver_pins);
+<<<<<<< HEAD
 	restore_pincfgs(codec);
 	codec->num_pcms = 0;
 	codec->pcm_info = NULL;
@@ -2486,11 +3720,26 @@ int snd_hda_codec_reset(struct hda_codec *codec)
 >>>>>>> refs/remotes/origin/cm-10.0
 	codec->slave_dig_outs = NULL;
 	codec->spdif_status_reset = 0;
+=======
+	snd_array_free(&codec->cvt_setups);
+	snd_array_free(&codec->spdif_out);
+	snd_array_free(&codec->verbs);
+	codec->num_pcms = 0;
+	codec->pcm_info = NULL;
+	codec->preset = NULL;
+	codec->slave_dig_outs = NULL;
+	codec->spdif_status_reset = 0;
+	unload_parser(codec);
+>>>>>>> refs/remotes/origin/master
 	module_put(codec->owner);
 	codec->owner = NULL;
 
 	/* allow device access again */
+<<<<<<< HEAD
 	hda_unlock_devices(card);
+=======
+	snd_hda_unlock_devices(bus);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2499,10 +3748,14 @@ typedef int (*map_slave_func_t)(void *, struct snd_kcontrol *);
 /* apply the function to all matching slave ctls in the mixer list */
 static int map_slaves(struct hda_codec *codec, const char * const *slaves,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		      map_slave_func_t func, void *data)
 =======
 		      const char *suffix, map_slave_func_t func, void *data) 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      const char *suffix, map_slave_func_t func, void *data) 
+>>>>>>> refs/remotes/origin/master
 {
 	struct hda_nid_item *items;
 	const char * const *s;
@@ -2511,6 +3764,7 @@ static int map_slaves(struct hda_codec *codec, const char * const *slaves,
 	items = codec->mixers.list;
 	for (i = 0; i < codec->mixers.used; i++) {
 		struct snd_kcontrol *sctl = items[i].kctl;
+<<<<<<< HEAD
 		if (!sctl || !sctl->id.name ||
 		    sctl->id.iface != SNDRV_CTL_ELEM_IFACE_MIXER)
 			continue;
@@ -2518,6 +3772,11 @@ static int map_slaves(struct hda_codec *codec, const char * const *slaves,
 <<<<<<< HEAD
 			if (!strcmp(sctl->id.name, *s)) {
 =======
+=======
+		if (!sctl || sctl->id.iface != SNDRV_CTL_ELEM_IFACE_MIXER)
+			continue;
+		for (s = slaves; *s; s++) {
+>>>>>>> refs/remotes/origin/master
 			char tmpname[sizeof(sctl->id.name)];
 			const char *name = *s;
 			if (suffix) {
@@ -2526,7 +3785,10 @@ static int map_slaves(struct hda_codec *codec, const char * const *slaves,
 				name = tmpname;
 			}
 			if (!strcmp(sctl->id.name, name)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				err = func(data, sctl);
 				if (err)
 					return err;
@@ -2543,9 +3805,14 @@ static int check_slave_present(void *data, struct snd_kcontrol *sctl)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* guess the value corresponding to 0dB */
 static int get_kctl_0dB_offset(struct snd_kcontrol *kctl)
+=======
+/* guess the value corresponding to 0dB */
+static int get_kctl_0dB_offset(struct snd_kcontrol *kctl, int *step_to_check)
+>>>>>>> refs/remotes/origin/master
 {
 	int _tlv[4];
 	const int *tlv = NULL;
@@ -2560,8 +3827,24 @@ static int get_kctl_0dB_offset(struct snd_kcontrol *kctl)
 		set_fs(fs);
 	} else if (kctl->vd[0].access & SNDRV_CTL_ELEM_ACCESS_TLV_READ)
 		tlv = kctl->tlv.p;
+<<<<<<< HEAD
 	if (tlv && tlv[0] == SNDRV_CTL_TLVT_DB_SCALE)
 		val = -tlv[2] / tlv[3];
+=======
+	if (tlv && tlv[0] == SNDRV_CTL_TLVT_DB_SCALE) {
+		int step = tlv[3];
+		step &= ~TLV_DB_SCALE_MUTE;
+		if (!step)
+			return -1;
+		if (*step_to_check && *step_to_check != step) {
+			snd_printk(KERN_ERR "hda_codec: Mismatching dB step for vmaster slave (%d!=%d)\n",
+				   *step_to_check, step);
+			return -1;
+		}
+		*step_to_check = step;
+		val = -tlv[2] / step;
+	}
+>>>>>>> refs/remotes/origin/master
 	return val;
 }
 
@@ -2582,7 +3865,11 @@ static int put_kctl_with_value(struct snd_kcontrol *kctl, int val)
 /* initialize the slave volume with 0dB */
 static int init_slave_0dB(void *data, struct snd_kcontrol *slave)
 {
+<<<<<<< HEAD
 	int offset = get_kctl_0dB_offset(slave);
+=======
+	int offset = get_kctl_0dB_offset(slave, data);
+>>>>>>> refs/remotes/origin/master
 	if (offset > 0)
 		put_kctl_with_value(slave, offset);
 	return 0;
@@ -2594,7 +3881,10 @@ static int init_slave_unmute(void *data, struct snd_kcontrol *slave)
 	return put_kctl_with_value(slave, 1);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * snd_hda_add_vmaster - create a virtual master control and add slaves
  * @codec: HD-audio codec
@@ -2602,11 +3892,17 @@ static int init_slave_unmute(void *data, struct snd_kcontrol *slave)
  * @tlv: TLV data (optional)
  * @slaves: slave control names (optional)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @suffix: suffix string to each slave name (optional)
  * @init_slave_vol: initialize slaves to unmute/0dB
  * @ctl_ret: store the vmaster kcontrol in return
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @suffix: suffix string to each slave name (optional)
+ * @init_slave_vol: initialize slaves to unmute/0dB
+ * @ctl_ret: store the vmaster kcontrol in return
+>>>>>>> refs/remotes/origin/master
  *
  * Create a virtual master control with the given name.  The TLV data
  * must be either NULL or a valid data.
@@ -2618,26 +3914,38 @@ static int init_slave_unmute(void *data, struct snd_kcontrol *slave)
  * This function returns zero if successful or a negative error code.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int snd_hda_add_vmaster(struct hda_codec *codec, char *name,
 			unsigned int *tlv, const char * const *slaves)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int __snd_hda_add_vmaster(struct hda_codec *codec, char *name,
 			unsigned int *tlv, const char * const *slaves,
 			  const char *suffix, bool init_slave_vol,
 			  struct snd_kcontrol **ctl_ret)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_kcontrol *kctl;
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = map_slaves(codec, slaves, check_slave_present, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ctl_ret)
 		*ctl_ret = NULL;
 
 	err = map_slaves(codec, slaves, suffix, check_slave_present, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err != 1) {
 		snd_printdd("No slave found for %s\n", name);
 		return 0;
@@ -2650,6 +3958,7 @@ int __snd_hda_add_vmaster(struct hda_codec *codec, char *name,
 		return err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = map_slaves(codec, slaves, (map_slave_func_t)snd_ctl_add_slave,
 			 kctl);
 	if (err < 0)
@@ -2658,6 +3967,8 @@ int __snd_hda_add_vmaster(struct hda_codec *codec, char *name,
 }
 EXPORT_SYMBOL_HDA(snd_hda_add_vmaster);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = map_slaves(codec, slaves, suffix,
 			 (map_slave_func_t)snd_ctl_add_slave, kctl);
 	if (err < 0)
@@ -2665,15 +3976,27 @@ EXPORT_SYMBOL_HDA(snd_hda_add_vmaster);
 
 	/* init with master mute & zero volume */
 	put_kctl_with_value(kctl, 0);
+<<<<<<< HEAD
 	if (init_slave_vol)
 		map_slaves(codec, slaves, suffix,
 			   tlv ? init_slave_0dB : init_slave_unmute, kctl);
+=======
+	if (init_slave_vol) {
+		int step = 0;
+		map_slaves(codec, slaves, suffix,
+			   tlv ? init_slave_0dB : init_slave_unmute, &step);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (ctl_ret)
 		*ctl_ret = kctl;
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(__snd_hda_add_vmaster);
+=======
+EXPORT_SYMBOL_GPL(__snd_hda_add_vmaster);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * mute-LED control using vmaster
@@ -2682,7 +4005,11 @@ static int vmaster_mute_mode_info(struct snd_kcontrol *kcontrol,
 				  struct snd_ctl_elem_info *uinfo)
 {
 	static const char * const texts[] = {
+<<<<<<< HEAD
 		"Off", "On", "Follow Master"
+=======
+		"On", "Off", "Follow Master"
+>>>>>>> refs/remotes/origin/master
 	};
 	unsigned int index;
 
@@ -2750,7 +4077,11 @@ int snd_hda_add_vmaster_hook(struct hda_codec *codec,
 		return -ENOMEM;
 	return snd_hda_ctl_add(codec, 0, kctl);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_add_vmaster_hook);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_add_vmaster_hook);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Call the hook with the current value for synchronization
@@ -2760,6 +4091,14 @@ void snd_hda_sync_vmaster_hook(struct hda_vmaster_mute_hook *hook)
 {
 	if (!hook->hook || !hook->codec)
 		return;
+<<<<<<< HEAD
+=======
+	/* don't call vmaster hook in the destructor since it might have
+	 * been already destroyed
+	 */
+	if (hook->codec->bus->shutdown)
+		return;
+>>>>>>> refs/remotes/origin/master
 	switch (hook->mute_mode) {
 	case HDA_VMUTE_FOLLOW_MASTER:
 		snd_ctl_sync_vmaster_hook(hook->sw_kctl);
@@ -2769,9 +4108,14 @@ void snd_hda_sync_vmaster_hook(struct hda_vmaster_mute_hook *hook)
 		break;
 	}
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_sync_vmaster_hook);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(snd_hda_sync_vmaster_hook);
+
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_mixer_amp_switch_info - Info callback for a standard AMP mixer switch
@@ -2790,7 +4134,11 @@ int snd_hda_mixer_amp_switch_info(struct snd_kcontrol *kcontrol,
 	uinfo->value.integer.max = 1;
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_mixer_amp_switch_info);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_mixer_amp_switch_info);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_mixer_amp_switch_get - Get callback for a standard AMP mixer switch
@@ -2816,7 +4164,11 @@ int snd_hda_mixer_amp_switch_get(struct snd_kcontrol *kcontrol,
 			 HDA_AMP_MUTE) ? 0 : 1;
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_mixer_amp_switch_get);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_mixer_amp_switch_get);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_mixer_amp_switch_put - Put callback for a standard AMP mixer switch
@@ -2850,6 +4202,7 @@ int snd_hda_mixer_amp_switch_put(struct snd_kcontrol *kcontrol,
 	snd_hda_power_down(codec);
 	return change;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_mixer_amp_switch_put);
 
 #ifdef CONFIG_SND_HDA_INPUT_BEEP
@@ -2870,6 +4223,9 @@ int snd_hda_mixer_amp_switch_put_beep(struct snd_kcontrol *kcontrol,
 }
 EXPORT_SYMBOL_HDA(snd_hda_mixer_amp_switch_put_beep);
 #endif /* CONFIG_SND_HDA_INPUT_BEEP */
+=======
+EXPORT_SYMBOL_GPL(snd_hda_mixer_amp_switch_put);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * bound volume controls
@@ -2901,7 +4257,11 @@ int snd_hda_mixer_bind_switch_get(struct snd_kcontrol *kcontrol,
 	mutex_unlock(&codec->control_mutex);
 	return err;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_mixer_bind_switch_get);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_mixer_bind_switch_get);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_mixer_bind_switch_put - Put callback for a bound volume control
@@ -2931,7 +4291,11 @@ int snd_hda_mixer_bind_switch_put(struct snd_kcontrol *kcontrol,
 	mutex_unlock(&codec->control_mutex);
 	return err < 0 ? err : change;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_mixer_bind_switch_put);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_mixer_bind_switch_put);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_mixer_bind_ctls_info - Info callback for a generic bound control
@@ -2954,7 +4318,11 @@ int snd_hda_mixer_bind_ctls_info(struct snd_kcontrol *kcontrol,
 	mutex_unlock(&codec->control_mutex);
 	return err;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_mixer_bind_ctls_info);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_mixer_bind_ctls_info);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_mixer_bind_ctls_get - Get callback for a generic bound control
@@ -2977,7 +4345,11 @@ int snd_hda_mixer_bind_ctls_get(struct snd_kcontrol *kcontrol,
 	mutex_unlock(&codec->control_mutex);
 	return err;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_mixer_bind_ctls_get);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_mixer_bind_ctls_get);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_mixer_bind_ctls_put - Put callback for a generic bound control
@@ -3006,7 +4378,11 @@ int snd_hda_mixer_bind_ctls_put(struct snd_kcontrol *kcontrol,
 	mutex_unlock(&codec->control_mutex);
 	return err < 0 ? err : change;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_mixer_bind_ctls_put);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_mixer_bind_ctls_put);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_mixer_bind_tlv - TLV callback for a generic bound control
@@ -3029,7 +4405,11 @@ int snd_hda_mixer_bind_tlv(struct snd_kcontrol *kcontrol, int op_flag,
 	mutex_unlock(&codec->control_mutex);
 	return err;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_mixer_bind_tlv);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_mixer_bind_tlv);
+>>>>>>> refs/remotes/origin/master
 
 struct hda_ctl_ops snd_hda_bind_vol = {
 	.info = snd_hda_mixer_amp_volume_info,
@@ -3037,7 +4417,11 @@ struct hda_ctl_ops snd_hda_bind_vol = {
 	.put = snd_hda_mixer_amp_volume_put,
 	.tlv = snd_hda_mixer_amp_tlv
 };
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_bind_vol);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_bind_vol);
+>>>>>>> refs/remotes/origin/master
 
 struct hda_ctl_ops snd_hda_bind_sw = {
 	.info = snd_hda_mixer_amp_switch_info,
@@ -3045,7 +4429,11 @@ struct hda_ctl_ops snd_hda_bind_sw = {
 	.put = snd_hda_mixer_amp_switch_put,
 	.tlv = snd_hda_mixer_amp_tlv
 };
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_bind_sw);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_bind_sw);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * SPDIF out controls
@@ -3085,6 +4473,7 @@ static int snd_hda_spdif_default_get(struct snd_kcontrol *kcontrol,
 {
 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	ucontrol->value.iec958.status[0] = codec->spdif_status & 0xff;
 	ucontrol->value.iec958.status[1] = (codec->spdif_status >> 8) & 0xff;
@@ -3094,11 +4483,22 @@ static int snd_hda_spdif_default_get(struct snd_kcontrol *kcontrol,
 	int idx = kcontrol->private_value;
 	struct hda_spdif_out *spdif = snd_array_elem(&codec->spdif_out, idx);
 
+=======
+	int idx = kcontrol->private_value;
+	struct hda_spdif_out *spdif;
+
+	mutex_lock(&codec->spdif_mutex);
+	spdif = snd_array_elem(&codec->spdif_out, idx);
+>>>>>>> refs/remotes/origin/master
 	ucontrol->value.iec958.status[0] = spdif->status & 0xff;
 	ucontrol->value.iec958.status[1] = (spdif->status >> 8) & 0xff;
 	ucontrol->value.iec958.status[2] = (spdif->status >> 16) & 0xff;
 	ucontrol->value.iec958.status[3] = (spdif->status >> 24) & 0xff;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&codec->spdif_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -3184,16 +4584,23 @@ static int snd_hda_spdif_default_put(struct snd_kcontrol *kcontrol,
 {
 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hda_nid_t nid = kcontrol->private_value;
 =======
 	int idx = kcontrol->private_value;
 	struct hda_spdif_out *spdif = snd_array_elem(&codec->spdif_out, idx);
 	hda_nid_t nid = spdif->nid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int idx = kcontrol->private_value;
+	struct hda_spdif_out *spdif;
+	hda_nid_t nid;
+>>>>>>> refs/remotes/origin/master
 	unsigned short val;
 	int change;
 
 	mutex_lock(&codec->spdif_mutex);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	codec->spdif_status = ucontrol->value.iec958.status[0] |
 		((unsigned int)ucontrol->value.iec958.status[1] << 8) |
@@ -3208,6 +4615,10 @@ static int snd_hda_spdif_default_put(struct snd_kcontrol *kcontrol,
 		set_dig_out_convert(codec, nid, val & 0xff, (val >> 8) & 0xff);
 
 =======
+=======
+	spdif = snd_array_elem(&codec->spdif_out, idx);
+	nid = spdif->nid;
+>>>>>>> refs/remotes/origin/master
 	spdif->status = ucontrol->value.iec958.status[0] |
 		((unsigned int)ucontrol->value.iec958.status[1] << 8) |
 		((unsigned int)ucontrol->value.iec958.status[2] << 16) |
@@ -3218,7 +4629,10 @@ static int snd_hda_spdif_default_put(struct snd_kcontrol *kcontrol,
 	spdif->ctls = val;
 	if (change && nid != (u16)-1)
 		set_dig_out_convert(codec, nid, val & 0xff, (val >> 8) & 0xff);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&codec->spdif_mutex);
 	return change;
 }
@@ -3230,6 +4644,7 @@ static int snd_hda_spdif_out_switch_get(struct snd_kcontrol *kcontrol,
 {
 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	ucontrol->value.integer.value[0] = codec->spdif_ctls & AC_DIG1_ENABLE;
 	return 0;
@@ -3240,6 +4655,15 @@ static int snd_hda_spdif_out_switch_get(struct snd_kcontrol *kcontrol,
 	struct hda_spdif_out *spdif = snd_array_elem(&codec->spdif_out, idx);
 
 	ucontrol->value.integer.value[0] = spdif->ctls & AC_DIG1_ENABLE;
+=======
+	int idx = kcontrol->private_value;
+	struct hda_spdif_out *spdif;
+
+	mutex_lock(&codec->spdif_mutex);
+	spdif = snd_array_elem(&codec->spdif_out, idx);
+	ucontrol->value.integer.value[0] = spdif->ctls & AC_DIG1_ENABLE;
+	mutex_unlock(&codec->spdif_mutex);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -3254,11 +4678,15 @@ static inline void set_spdif_ctls(struct hda_codec *codec, hda_nid_t nid,
 					    HDA_AMP_MUTE, 0);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int snd_hda_spdif_out_switch_put(struct snd_kcontrol *kcontrol,
 					struct snd_ctl_elem_value *ucontrol)
 {
 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	hda_nid_t nid = kcontrol->private_value;
 =======
@@ -3266,10 +4694,16 @@ static int snd_hda_spdif_out_switch_put(struct snd_kcontrol *kcontrol,
 	struct hda_spdif_out *spdif = snd_array_elem(&codec->spdif_out, idx);
 	hda_nid_t nid = spdif->nid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int idx = kcontrol->private_value;
+	struct hda_spdif_out *spdif;
+	hda_nid_t nid;
+>>>>>>> refs/remotes/origin/master
 	unsigned short val;
 	int change;
 
 	mutex_lock(&codec->spdif_mutex);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	val = codec->spdif_ctls & ~AC_DIG1_ENABLE;
 	if (ucontrol->value.integer.value[0])
@@ -3286,13 +4720,21 @@ static int snd_hda_spdif_out_switch_put(struct snd_kcontrol *kcontrol,
 	}
 =======
 	val = spdif->ctls & ~AC_DIG1_ENABLE;
+=======
+	spdif = snd_array_elem(&codec->spdif_out, idx);
+	nid = spdif->nid;
+	val = spdif->ctls & ~AC_DIG1_ENABLE;
+>>>>>>> refs/remotes/origin/master
 	if (ucontrol->value.integer.value[0])
 		val |= AC_DIG1_ENABLE;
 	change = spdif->ctls != val;
 	spdif->ctls = val;
 	if (change && nid != (u16)-1)
 		set_spdif_ctls(codec, nid, val & 0xff, -1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&codec->spdif_mutex);
 	return change;
 }
@@ -3330,6 +4772,7 @@ static struct snd_kcontrol_new dig_mixes[] = {
 };
 
 /**
+<<<<<<< HEAD
  * snd_hda_create_spdif_out_ctls - create Output SPDIF-related controls
  * @codec: the HDA codec
  * @nid: audio out widget NID
@@ -3346,10 +4789,27 @@ int snd_hda_create_spdif_out_ctls(struct hda_codec *codec,
 				  hda_nid_t associated_nid,
 				  hda_nid_t cvt_nid)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * snd_hda_create_dig_out_ctls - create Output SPDIF-related controls
+ * @codec: the HDA codec
+ * @associated_nid: NID that new ctls associated with
+ * @cvt_nid: converter NID
+ * @type: HDA_PCM_TYPE_*
+ * Creates controls related with the digital output.
+ * Called from each patch supporting the digital out.
+ *
+ * Returns 0 if successful, or a negative error code.
+ */
+int snd_hda_create_dig_out_ctls(struct hda_codec *codec,
+				hda_nid_t associated_nid,
+				hda_nid_t cvt_nid,
+				int type)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct snd_kcontrol *kctl;
 	struct snd_kcontrol_new *dig_mix;
+<<<<<<< HEAD
 	int idx;
 <<<<<<< HEAD
 =======
@@ -3357,19 +4817,51 @@ int snd_hda_create_spdif_out_ctls(struct hda_codec *codec,
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	idx = find_empty_mixer_ctl_idx(codec, "IEC958 Playback Switch");
+=======
+	int idx = 0;
+	const int spdif_index = 16;
+	struct hda_spdif_out *spdif;
+	struct hda_bus *bus = codec->bus;
+
+	if (bus->primary_dig_out_type == HDA_PCM_TYPE_HDMI &&
+	    type == HDA_PCM_TYPE_SPDIF) {
+		idx = spdif_index;
+	} else if (bus->primary_dig_out_type == HDA_PCM_TYPE_SPDIF &&
+		   type == HDA_PCM_TYPE_HDMI) {
+		/* suppose a single SPDIF device */
+		for (dig_mix = dig_mixes; dig_mix->name; dig_mix++) {
+			kctl = find_mixer_ctl(codec, dig_mix->name, 0, 0);
+			if (!kctl)
+				break;
+			kctl->id.index = spdif_index;
+		}
+		bus->primary_dig_out_type = HDA_PCM_TYPE_HDMI;
+	}
+	if (!bus->primary_dig_out_type)
+		bus->primary_dig_out_type = type;
+
+	idx = find_empty_mixer_ctl_idx(codec, "IEC958 Playback Switch", idx);
+>>>>>>> refs/remotes/origin/master
 	if (idx < 0) {
 		printk(KERN_ERR "hda_codec: too many IEC958 outputs\n");
 		return -EBUSY;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spdif = snd_array_new(&codec->spdif_out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spdif = snd_array_new(&codec->spdif_out);
+	if (!spdif)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	for (dig_mix = dig_mixes; dig_mix->name; dig_mix++) {
 		kctl = snd_ctl_new1(dig_mix, codec);
 		if (!kctl)
 			return -ENOMEM;
 		kctl->id.index = idx;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		kctl->private_value = nid;
 		err = snd_hda_ctl_add(codec, nid, kctl);
@@ -3381,6 +4873,8 @@ int snd_hda_create_spdif_out_ctls(struct hda_codec *codec,
 				   AC_VERB_GET_DIGI_CONVERT_1, 0);
 	codec->spdif_status = convert_to_spdif_status(codec->spdif_ctls);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		kctl->private_value = codec->spdif_out.used - 1;
 		err = snd_hda_ctl_add(codec, associated_nid, kctl);
 		if (err < 0)
@@ -3390,6 +4884,7 @@ int snd_hda_create_spdif_out_ctls(struct hda_codec *codec,
 	spdif->ctls = snd_hda_codec_read(codec, cvt_nid, 0,
 					 AC_VERB_GET_DIGI_CONVERT_1, 0);
 	spdif->status = convert_to_spdif_status(spdif->ctls);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
@@ -3397,6 +4892,15 @@ EXPORT_SYMBOL_HDA(snd_hda_create_spdif_out_ctls);
 
 <<<<<<< HEAD
 =======
+=======
+	return 0;
+}
+EXPORT_SYMBOL_GPL(snd_hda_create_dig_out_ctls);
+
+/* get the hda_spdif_out entry from the given NID
+ * call within spdif_mutex lock
+ */
+>>>>>>> refs/remotes/origin/master
 struct hda_spdif_out *snd_hda_spdif_out_of_nid(struct hda_codec *codec,
 					       hda_nid_t nid)
 {
@@ -3409,6 +4913,7 @@ struct hda_spdif_out *snd_hda_spdif_out_of_nid(struct hda_codec *codec,
 	}
 	return NULL;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_spdif_out_of_nid);
 
 void snd_hda_spdif_ctls_unassign(struct hda_codec *codec, int idx)
@@ -3427,6 +4932,28 @@ void snd_hda_spdif_ctls_assign(struct hda_codec *codec, int idx, hda_nid_t nid)
 	unsigned short val;
 
 	mutex_lock(&codec->spdif_mutex);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_spdif_out_of_nid);
+
+void snd_hda_spdif_ctls_unassign(struct hda_codec *codec, int idx)
+{
+	struct hda_spdif_out *spdif;
+
+	mutex_lock(&codec->spdif_mutex);
+	spdif = snd_array_elem(&codec->spdif_out, idx);
+	spdif->nid = (u16)-1;
+	mutex_unlock(&codec->spdif_mutex);
+}
+EXPORT_SYMBOL_GPL(snd_hda_spdif_ctls_unassign);
+
+void snd_hda_spdif_ctls_assign(struct hda_codec *codec, int idx, hda_nid_t nid)
+{
+	struct hda_spdif_out *spdif;
+	unsigned short val;
+
+	mutex_lock(&codec->spdif_mutex);
+	spdif = snd_array_elem(&codec->spdif_out, idx);
+>>>>>>> refs/remotes/origin/master
 	if (spdif->nid != nid) {
 		spdif->nid = nid;
 		val = spdif->ctls;
@@ -3434,9 +4961,14 @@ void snd_hda_spdif_ctls_assign(struct hda_codec *codec, int idx, hda_nid_t nid)
 	}
 	mutex_unlock(&codec->spdif_mutex);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_spdif_ctls_assign);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(snd_hda_spdif_ctls_assign);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * SPDIF sharing with analog output
  */
@@ -3472,6 +5004,7 @@ static struct snd_kcontrol_new spdif_share_sw = {
 int snd_hda_create_spdif_share_sw(struct hda_codec *codec,
 				  struct hda_multi_out *mout)
 {
+<<<<<<< HEAD
 	if (!mout->dig_out_nid)
 		return 0;
 	/* ATTENTION: here mout is passed as private_data, instead of codec */
@@ -3479,6 +5012,20 @@ int snd_hda_create_spdif_share_sw(struct hda_codec *codec,
 			      snd_ctl_new1(&spdif_share_sw, mout));
 }
 EXPORT_SYMBOL_HDA(snd_hda_create_spdif_share_sw);
+=======
+	struct snd_kcontrol *kctl;
+
+	if (!mout->dig_out_nid)
+		return 0;
+
+	kctl = snd_ctl_new1(&spdif_share_sw, mout);
+	if (!kctl)
+		return -ENOMEM;
+	/* ATTENTION: here mout is passed as private_data, instead of codec */
+	return snd_hda_ctl_add(codec, mout->dig_out_nid, kctl);
+}
+EXPORT_SYMBOL_GPL(snd_hda_create_spdif_share_sw);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * SPDIF input
@@ -3566,7 +5113,11 @@ int snd_hda_create_spdif_in_ctls(struct hda_codec *codec, hda_nid_t nid)
 	struct snd_kcontrol_new *dig_mix;
 	int idx;
 
+<<<<<<< HEAD
 	idx = find_empty_mixer_ctl_idx(codec, "IEC958 Capture Switch");
+=======
+	idx = find_empty_mixer_ctl_idx(codec, "IEC958 Capture Switch", 0);
+>>>>>>> refs/remotes/origin/master
 	if (idx < 0) {
 		printk(KERN_ERR "hda_codec: too many IEC958 inputs\n");
 		return -EBUSY;
@@ -3586,6 +5137,7 @@ int snd_hda_create_spdif_in_ctls(struct hda_codec *codec, hda_nid_t nid)
 		AC_DIG1_ENABLE;
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_create_spdif_in_ctls);
 
 <<<<<<< HEAD
@@ -3593,11 +5145,19 @@ EXPORT_SYMBOL_HDA(snd_hda_create_spdif_in_ctls);
 =======
 #ifdef CONFIG_PM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(snd_hda_create_spdif_in_ctls);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * command cache
  */
 
+<<<<<<< HEAD
 /* build a 32bit cache key with the widget id and the command parameter */
+=======
+/* build a 31bit cache key with the widget id and the command parameter */
+>>>>>>> refs/remotes/origin/master
 #define build_cmd_cache_key(nid, verb)	((verb << 8) | nid)
 #define get_cmd_cache_nid(key)		((key) & 0xff)
 #define get_cmd_cache_cmd(key)		(((key) >> 8) & 0xffff)
@@ -3606,7 +5166,11 @@ EXPORT_SYMBOL_HDA(snd_hda_create_spdif_in_ctls);
  * snd_hda_codec_write_cache - send a single command with caching
  * @codec: the HDA codec
  * @nid: NID to send the command
+<<<<<<< HEAD
  * @direct: direct flag
+=======
+ * @flags: optional bit flags
+>>>>>>> refs/remotes/origin/master
  * @verb: the verb to send
  * @parm: the parameter for the verb
  *
@@ -3615,6 +5179,7 @@ EXPORT_SYMBOL_HDA(snd_hda_create_spdif_in_ctls);
  * Returns 0 if successful, or a negative error code.
  */
 int snd_hda_codec_write_cache(struct hda_codec *codec, hda_nid_t nid,
+<<<<<<< HEAD
 			      int direct, unsigned int verb, unsigned int parm)
 {
 	int err = snd_hda_codec_write(codec, nid, direct, verb, parm);
@@ -3623,24 +5188,55 @@ int snd_hda_codec_write_cache(struct hda_codec *codec, hda_nid_t nid,
 
 	if (err < 0)
 		return err;
+=======
+			      int flags, unsigned int verb, unsigned int parm)
+{
+	int err;
+	struct hda_cache_head *c;
+	u32 key;
+	unsigned int cache_only;
+
+	cache_only = codec->cached_write;
+	if (!cache_only) {
+		err = snd_hda_codec_write(codec, nid, flags, verb, parm);
+		if (err < 0)
+			return err;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* parm may contain the verb stuff for get/set amp */
 	verb = verb | (parm >> 8);
 	parm &= 0xff;
 	key = build_cmd_cache_key(nid, verb);
 	mutex_lock(&codec->bus->cmd_mutex);
 	c = get_alloc_hash(&codec->cmd_cache, key);
+<<<<<<< HEAD
 	if (c)
 		c->val = parm;
 	mutex_unlock(&codec->bus->cmd_mutex);
 	return 0;
 }
 EXPORT_SYMBOL_HDA(snd_hda_codec_write_cache);
+=======
+	if (c) {
+		c->val = parm;
+		c->dirty = cache_only;
+	}
+	mutex_unlock(&codec->bus->cmd_mutex);
+	return 0;
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_write_cache);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_codec_update_cache - check cache and write the cmd only when needed
  * @codec: the HDA codec
  * @nid: NID to send the command
+<<<<<<< HEAD
  * @direct: direct flag
+=======
+ * @flags: optional bit flags
+>>>>>>> refs/remotes/origin/master
  * @verb: the verb to send
  * @parm: the parameter for the verb
  *
@@ -3651,7 +5247,11 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_write_cache);
  * Returns 0 if successful, or a negative error code.
  */
 int snd_hda_codec_update_cache(struct hda_codec *codec, hda_nid_t nid,
+<<<<<<< HEAD
 			       int direct, unsigned int verb, unsigned int parm)
+=======
+			       int flags, unsigned int verb, unsigned int parm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hda_cache_head *c;
 	u32 key;
@@ -3667,9 +5267,15 @@ int snd_hda_codec_update_cache(struct hda_codec *codec, hda_nid_t nid,
 		return 0;
 	}
 	mutex_unlock(&codec->bus->cmd_mutex);
+<<<<<<< HEAD
 	return snd_hda_codec_write_cache(codec, nid, direct, verb, parm);
 }
 EXPORT_SYMBOL_HDA(snd_hda_codec_update_cache);
+=======
+	return snd_hda_codec_write_cache(codec, nid, flags, verb, parm);
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_update_cache);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_codec_resume_cache - Resume the all commands from the cache
@@ -3679,6 +5285,7 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_update_cache);
  */
 void snd_hda_codec_resume_cache(struct hda_codec *codec)
 {
+<<<<<<< HEAD
 	struct hda_cache_head *buffer = codec->cmd_cache.buf.list;
 	int i;
 
@@ -3691,6 +5298,31 @@ void snd_hda_codec_resume_cache(struct hda_codec *codec)
 	}
 }
 EXPORT_SYMBOL_HDA(snd_hda_codec_resume_cache);
+=======
+	int i;
+
+	mutex_lock(&codec->hash_mutex);
+	codec->cached_write = 0;
+	for (i = 0; i < codec->cmd_cache.buf.used; i++) {
+		struct hda_cache_head *buffer;
+		u32 key;
+
+		buffer = snd_array_elem(&codec->cmd_cache.buf, i);
+		key = buffer->key;
+		if (!key)
+			continue;
+		if (!buffer->dirty)
+			continue;
+		buffer->dirty = 0;
+		mutex_unlock(&codec->hash_mutex);
+		snd_hda_codec_write(codec, get_cmd_cache_nid(key), 0,
+				    get_cmd_cache_cmd(key), buffer->val);
+		mutex_lock(&codec->hash_mutex);
+	}
+	mutex_unlock(&codec->hash_mutex);
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_resume_cache);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_sequence_write_cache - sequence writes with caching
@@ -3708,6 +5340,7 @@ void snd_hda_sequence_write_cache(struct hda_codec *codec,
 		snd_hda_codec_write_cache(codec, seq->nid, 0, seq->verb,
 					  seq->param);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_sequence_write_cache);
 <<<<<<< HEAD
 #endif /* SND_HDA_NEEDS_RESUME */
@@ -3763,12 +5396,30 @@ static void hda_set_power_state(struct hda_codec *codec, hda_nid_t fg,
 void snd_hda_codec_set_power_to_all(struct hda_codec *codec, hda_nid_t fg,
 				    unsigned int power_state,
 				    bool eapd_workaround)
+=======
+EXPORT_SYMBOL_GPL(snd_hda_sequence_write_cache);
+
+/**
+ * snd_hda_codec_flush_cache - Execute all pending (cached) amps / verbs
+ * @codec: HD-audio codec
+ */
+void snd_hda_codec_flush_cache(struct hda_codec *codec)
+{
+	snd_hda_codec_resume_amp(codec);
+	snd_hda_codec_resume_cache(codec);
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_flush_cache);
+
+void snd_hda_codec_set_power_to_all(struct hda_codec *codec, hda_nid_t fg,
+				    unsigned int power_state)
+>>>>>>> refs/remotes/origin/master
 {
 	hda_nid_t nid = codec->start_nid;
 	int i;
 
 	for (i = 0; i < codec->num_nodes; i++, nid++) {
 		unsigned int wcaps = get_wcaps(codec, nid);
+<<<<<<< HEAD
 		if (!(wcaps & AC_WCAP_POWER))
 			continue;
 		/* don't power down the widget if it controls eapd and
@@ -3824,6 +5475,151 @@ static void hda_set_power_state(struct hda_codec *codec, hda_nid_t fg,
 	snd_hda_codec_set_power_to_all(codec, fg, power_state, true);
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		unsigned int state = power_state;
+		if (!(wcaps & AC_WCAP_POWER))
+			continue;
+		if (codec->power_filter) {
+			state = codec->power_filter(codec, nid, power_state);
+			if (state != power_state && power_state == AC_PWRST_D3)
+				continue;
+		}
+		snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_POWER_STATE,
+				    state);
+	}
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_set_power_to_all);
+
+/*
+ *  supported power states check
+ */
+static bool snd_hda_codec_get_supported_ps(struct hda_codec *codec, hda_nid_t fg,
+				unsigned int power_state)
+{
+	int sup = snd_hda_param_read(codec, fg, AC_PAR_POWER_STATE);
+
+	if (sup == -1)
+		return false;
+	if (sup & power_state)
+		return true;
+	else
+		return false;
+}
+
+/*
+ * wait until the state is reached, returns the current state
+ */
+static unsigned int hda_sync_power_state(struct hda_codec *codec,
+					 hda_nid_t fg,
+					 unsigned int power_state)
+{
+	unsigned long end_time = jiffies + msecs_to_jiffies(500);
+	unsigned int state, actual_state;
+
+	for (;;) {
+		state = snd_hda_codec_read(codec, fg, 0,
+					   AC_VERB_GET_POWER_STATE, 0);
+		if (state & AC_PWRST_ERROR)
+			break;
+		actual_state = (state >> 4) & 0x0f;
+		if (actual_state == power_state)
+			break;
+		if (time_after_eq(jiffies, end_time))
+			break;
+		/* wait until the codec reachs to the target state */
+		msleep(1);
+	}
+	return state;
+}
+
+/* don't power down the widget if it controls eapd and EAPD_BTLENABLE is set */
+unsigned int snd_hda_codec_eapd_power_filter(struct hda_codec *codec,
+					     hda_nid_t nid,
+					     unsigned int power_state)
+{
+	if (nid == codec->afg || nid == codec->mfg)
+		return power_state;
+	if (power_state == AC_PWRST_D3 &&
+	    get_wcaps_type(get_wcaps(codec, nid)) == AC_WID_PIN &&
+	    (snd_hda_query_pin_caps(codec, nid) & AC_PINCAP_EAPD)) {
+		int eapd = snd_hda_codec_read(codec, nid, 0,
+					      AC_VERB_GET_EAPD_BTLENABLE, 0);
+		if (eapd & 0x02)
+			return AC_PWRST_D0;
+	}
+	return power_state;
+}
+EXPORT_SYMBOL_GPL(snd_hda_codec_eapd_power_filter);
+
+/*
+ * set power state of the codec, and return the power state
+ */
+static unsigned int hda_set_power_state(struct hda_codec *codec,
+					unsigned int power_state)
+{
+	hda_nid_t fg = codec->afg ? codec->afg : codec->mfg;
+	int count;
+	unsigned int state;
+	int flags = 0;
+
+	/* this delay seems necessary to avoid click noise at power-down */
+	if (power_state == AC_PWRST_D3) {
+		if (codec->depop_delay < 0)
+			msleep(codec->epss ? 10 : 100);
+		else if (codec->depop_delay > 0)
+			msleep(codec->depop_delay);
+		flags = HDA_RW_NO_RESPONSE_FALLBACK;
+	}
+
+	/* repeat power states setting at most 10 times*/
+	for (count = 0; count < 10; count++) {
+		if (codec->patch_ops.set_power_state)
+			codec->patch_ops.set_power_state(codec, fg,
+							 power_state);
+		else {
+			state = power_state;
+			if (codec->power_filter)
+				state = codec->power_filter(codec, fg, state);
+			if (state == power_state || power_state != AC_PWRST_D3)
+				snd_hda_codec_read(codec, fg, flags,
+						   AC_VERB_SET_POWER_STATE,
+						   state);
+			snd_hda_codec_set_power_to_all(codec, fg, power_state);
+		}
+		state = hda_sync_power_state(codec, fg, power_state);
+		if (!(state & AC_PWRST_ERROR))
+			break;
+	}
+
+	return state;
+}
+
+/* sync power states of all widgets;
+ * this is called at the end of codec parsing
+ */
+static void sync_power_up_states(struct hda_codec *codec)
+{
+	hda_nid_t nid = codec->start_nid;
+	int i;
+
+	/* don't care if no filter is used */
+	if (!codec->power_filter)
+		return;
+
+	for (i = 0; i < codec->num_nodes; i++, nid++) {
+		unsigned int wcaps = get_wcaps(codec, nid);
+		unsigned int target;
+		if (!(wcaps & AC_WCAP_POWER))
+			continue;
+		target = codec->power_filter(codec, nid, AC_PWRST_D0);
+		if (target == AC_PWRST_D0)
+			continue;
+		if (!snd_hda_check_power_state(codec, nid, target))
+			snd_hda_codec_write(codec, nid, 0,
+					    AC_VERB_SET_POWER_STATE, target);
+	}
+}
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SND_HDA_HWDEP
 /* execute additional init verbs */
@@ -3836,6 +5632,7 @@ static void hda_exec_init_verbs(struct hda_codec *codec)
 static inline void hda_exec_init_verbs(struct hda_codec *codec) {}
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef SND_HDA_NEEDS_RESUME
 =======
@@ -3859,6 +5656,51 @@ static void hda_call_codec_suspend(struct hda_codec *codec)
 	codec->power_transition = 0;
 	codec->power_jiffies = jiffies;
 #endif
+=======
+#ifdef CONFIG_PM
+/*
+ * call suspend and power-down; used both from PM and power-save
+ * this function returns the power state in the end
+ */
+static unsigned int hda_call_codec_suspend(struct hda_codec *codec, bool in_wq)
+{
+	unsigned int state;
+
+	codec->in_pm = 1;
+
+	if (codec->patch_ops.suspend)
+		codec->patch_ops.suspend(codec);
+	hda_cleanup_all_streams(codec);
+	state = hda_set_power_state(codec, AC_PWRST_D3);
+	/* Cancel delayed work if we aren't currently running from it. */
+	if (!in_wq)
+		cancel_delayed_work_sync(&codec->power_work);
+	spin_lock(&codec->power_lock);
+	snd_hda_update_power_acct(codec);
+	trace_hda_power_down(codec);
+	codec->power_on = 0;
+	codec->power_transition = 0;
+	codec->power_jiffies = jiffies;
+	spin_unlock(&codec->power_lock);
+	codec->in_pm = 0;
+	return state;
+}
+
+/* mark all entries of cmd and amp caches dirty */
+static void hda_mark_cmd_cache_dirty(struct hda_codec *codec)
+{
+	int i;
+	for (i = 0; i < codec->cmd_cache.buf.used; i++) {
+		struct hda_cache_head *cmd;
+		cmd = snd_array_elem(&codec->cmd_cache.buf, i);
+		cmd->dirty = 1;
+	}
+	for (i = 0; i < codec->amp_cache.buf.used; i++) {
+		struct hda_amp_info *amp;
+		amp = snd_array_elem(&codec->amp_cache.buf, i);
+		amp->head.dirty = 1;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -3866,6 +5708,7 @@ static void hda_call_codec_suspend(struct hda_codec *codec)
  */
 static void hda_call_codec_resume(struct hda_codec *codec)
 {
+<<<<<<< HEAD
 	hda_set_power_state(codec,
 			    codec->afg ? codec->afg : codec->mfg,
 			    AC_PWRST_D0);
@@ -3876,6 +5719,20 @@ static void hda_call_codec_resume(struct hda_codec *codec)
 =======
 	snd_hda_jack_set_dirty_all(codec);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	codec->in_pm = 1;
+
+	hda_mark_cmd_cache_dirty(codec);
+
+	/* set as if powered on for avoiding re-entering the resume
+	 * in the resume / power-save sequence
+	 */
+	hda_keep_power_on(codec);
+	hda_set_power_state(codec, AC_PWRST_D0);
+	restore_shutup_pins(codec);
+	hda_exec_init_verbs(codec);
+	snd_hda_jack_set_dirty_all(codec);
+>>>>>>> refs/remotes/origin/master
 	if (codec->patch_ops.resume)
 		codec->patch_ops.resume(codec);
 	else {
@@ -3884,12 +5741,25 @@ static void hda_call_codec_resume(struct hda_codec *codec)
 		snd_hda_codec_resume_amp(codec);
 		snd_hda_codec_resume_cache(codec);
 	}
+<<<<<<< HEAD
 }
 <<<<<<< HEAD
 #endif /* SND_HDA_NEEDS_RESUME */
 =======
 #endif /* CONFIG_PM */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (codec->jackpoll_interval)
+		hda_jackpoll_work(&codec->jackpoll_work.work);
+	else
+		snd_hda_jack_report_sync(codec);
+
+	codec->in_pm = 0;
+	snd_hda_power_down(codec); /* flag down before returning */
+}
+#endif /* CONFIG_PM */
+>>>>>>> refs/remotes/origin/master
 
 
 /**
@@ -3900,7 +5770,11 @@ static void hda_call_codec_resume(struct hda_codec *codec)
  *
  * Returns 0 if successful, otherwise a negative error code.
  */
+<<<<<<< HEAD
 int /*__devinit*/ snd_hda_build_controls(struct hda_bus *bus)
+=======
+int snd_hda_build_controls(struct hda_bus *bus)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hda_codec *codec;
 
@@ -3919,7 +5793,55 @@ int /*__devinit*/ snd_hda_build_controls(struct hda_bus *bus)
 	}
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_build_controls);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_build_controls);
+
+/*
+ * add standard channel maps if not specified
+ */
+static int add_std_chmaps(struct hda_codec *codec)
+{
+	int i, str, err;
+
+	for (i = 0; i < codec->num_pcms; i++) {
+		for (str = 0; str < 2; str++) {
+			struct snd_pcm *pcm = codec->pcm_info[i].pcm;
+			struct hda_pcm_stream *hinfo =
+				&codec->pcm_info[i].stream[str];
+			struct snd_pcm_chmap *chmap;
+			const struct snd_pcm_chmap_elem *elem;
+
+			if (codec->pcm_info[i].own_chmap)
+				continue;
+			if (!pcm || !hinfo->substreams)
+				continue;
+			elem = hinfo->chmap ? hinfo->chmap : snd_pcm_std_chmaps;
+			err = snd_pcm_add_chmap_ctls(pcm, str, elem,
+						     hinfo->channels_max,
+						     0, &chmap);
+			if (err < 0)
+				return err;
+			chmap->channel_mask = SND_PCM_CHMAP_MASK_2468;
+		}
+	}
+	return 0;
+}
+
+/* default channel maps for 2.1 speakers;
+ * since HD-audio supports only stereo, odd number channels are omitted
+ */
+const struct snd_pcm_chmap_elem snd_pcm_2_1_chmaps[] = {
+	{ .channels = 2,
+	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR } },
+	{ .channels = 4,
+	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR,
+		   SNDRV_CHMAP_LFE, SNDRV_CHMAP_LFE } },
+	{ }
+};
+EXPORT_SYMBOL_GPL(snd_pcm_2_1_chmaps);
+>>>>>>> refs/remotes/origin/master
 
 int snd_hda_codec_build_controls(struct hda_codec *codec)
 {
@@ -3932,6 +5854,20 @@ int snd_hda_codec_build_controls(struct hda_codec *codec)
 		err = codec->patch_ops.build_controls(codec);
 	if (err < 0)
 		return err;
+<<<<<<< HEAD
+=======
+
+	/* we create chmaps here instead of build_pcms */
+	err = add_std_chmaps(codec);
+	if (err < 0)
+		return err;
+
+	if (codec->jackpoll_interval)
+		hda_jackpoll_work(&codec->jackpoll_work.work);
+	else
+		snd_hda_jack_report_sync(codec); /* call at the last init point */
+	sync_power_up_states(codec);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -4037,9 +5973,16 @@ unsigned int snd_hda_calc_stream_format(unsigned int rate,
 
 	return val;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_calc_stream_format);
 
 static unsigned int get_pcm_param(struct hda_codec *codec, hda_nid_t nid)
+=======
+EXPORT_SYMBOL_GPL(snd_hda_calc_stream_format);
+
+static unsigned int get_pcm_param(struct hda_codec *codec, hda_nid_t nid,
+				  int dir)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int val = 0;
 	if (nid != codec->afg &&
@@ -4054,11 +5997,20 @@ static unsigned int get_pcm_param(struct hda_codec *codec, hda_nid_t nid)
 
 static unsigned int query_pcm_param(struct hda_codec *codec, hda_nid_t nid)
 {
+<<<<<<< HEAD
 	return query_caps_hash(codec, nid, HDA_HASH_PARPCM_KEY(nid),
 			       get_pcm_param);
 }
 
 static unsigned int get_stream_param(struct hda_codec *codec, hda_nid_t nid)
+=======
+	return query_caps_hash(codec, nid, 0, HDA_HASH_PARPCM_KEY(nid),
+			       get_pcm_param);
+}
+
+static unsigned int get_stream_param(struct hda_codec *codec, hda_nid_t nid,
+				     int dir)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int streams = snd_hda_param_read(codec, nid, AC_PAR_STREAM);
 	if (!streams || streams == -1)
@@ -4070,7 +6022,11 @@ static unsigned int get_stream_param(struct hda_codec *codec, hda_nid_t nid)
 
 static unsigned int query_stream_param(struct hda_codec *codec, hda_nid_t nid)
 {
+<<<<<<< HEAD
 	return query_caps_hash(codec, nid, HDA_HASH_PARSTR_KEY(nid),
+=======
+	return query_caps_hash(codec, nid, 0, HDA_HASH_PARSTR_KEY(nid),
+>>>>>>> refs/remotes/origin/master
 			       get_stream_param);
 }
 
@@ -4088,10 +6044,14 @@ static unsigned int query_stream_param(struct hda_codec *codec, hda_nid_t nid)
  * Returns 0 if successful, otherwise a negative error code.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int snd_hda_query_supported_pcm(struct hda_codec *codec, hda_nid_t nid,
 =======
 int snd_hda_query_supported_pcm(struct hda_codec *codec, hda_nid_t nid,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int snd_hda_query_supported_pcm(struct hda_codec *codec, hda_nid_t nid,
+>>>>>>> refs/remotes/origin/master
 				u32 *ratesp, u64 *formatsp, unsigned int *bpsp)
 {
 	unsigned int i, val, wcaps;
@@ -4153,11 +6113,19 @@ int snd_hda_query_supported_pcm(struct hda_codec *codec, hda_nid_t nid,
 					bps = 20;
 			}
 		}
+<<<<<<< HEAD
+=======
+#if 0 /* FIXME: CS4206 doesn't work, which is the only codec supporting float */
+>>>>>>> refs/remotes/origin/master
 		if (streams & AC_SUPFMT_FLOAT32) {
 			formats |= SNDRV_PCM_FMTBIT_FLOAT_LE;
 			if (!bps)
 				bps = 32;
 		}
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 		if (streams == AC_SUPFMT_AC3) {
 			/* should be exclusive */
 			/* temporary hack: we have still no proper support
@@ -4184,9 +6152,13 @@ int snd_hda_query_supported_pcm(struct hda_codec *codec, hda_nid_t nid,
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_HDA(snd_hda_query_supported_pcm);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(snd_hda_query_supported_pcm);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_is_supported_format - Check the validity of the format
@@ -4253,7 +6225,11 @@ int snd_hda_is_supported_format(struct hda_codec *codec, hda_nid_t nid,
 
 	return 1;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_is_supported_format);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_is_supported_format);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * PCM stuff
@@ -4331,7 +6307,11 @@ int snd_hda_codec_prepare(struct hda_codec *codec,
 	mutex_unlock(&codec->bus->prepare_mutex);
 	return ret;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_codec_prepare);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_codec_prepare);
+>>>>>>> refs/remotes/origin/master
 
 void snd_hda_codec_cleanup(struct hda_codec *codec,
 			   struct hda_pcm_stream *hinfo,
@@ -4341,7 +6321,11 @@ void snd_hda_codec_cleanup(struct hda_codec *codec,
 	hinfo->ops.cleanup(hinfo, codec, substream);
 	mutex_unlock(&codec->bus->prepare_mutex);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_codec_cleanup);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_codec_cleanup);
+>>>>>>> refs/remotes/origin/master
 
 /* global */
 const char *snd_hda_pcm_type_name[HDA_PCM_NTYPES] = {
@@ -4350,12 +6334,22 @@ const char *snd_hda_pcm_type_name[HDA_PCM_NTYPES] = {
 
 /*
  * get the empty PCM device number to assign
+<<<<<<< HEAD
  *
  * note the max device number is limited by HDA_MAX_PCMS, currently 10
  */
 static int get_empty_pcm_device(struct hda_bus *bus, int type)
 {
 	/* audio device indices; not linear to keep compatibility */
+=======
+ */
+static int get_empty_pcm_device(struct hda_bus *bus, unsigned int type)
+{
+	/* audio device indices; not linear to keep compatibility */
+	/* assigned to static slots up to dev#10; if more needed, assign
+	 * the later slot dynamically (when CONFIG_SND_DYNAMIC_MINORS=y)
+	 */
+>>>>>>> refs/remotes/origin/master
 	static int audio_idx[HDA_PCM_NTYPES][5] = {
 		[HDA_PCM_TYPE_AUDIO] = { 0, 2, 4, 5, -1 },
 		[HDA_PCM_TYPE_SPDIF] = { 1, -1 },
@@ -4369,21 +6363,44 @@ static int get_empty_pcm_device(struct hda_bus *bus, int type)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	for (i = 0; audio_idx[type][i] >= 0 ; i++)
 		if (!test_and_set_bit(audio_idx[type][i], bus->pcm_dev_bits))
 			return audio_idx[type][i];
 
 <<<<<<< HEAD
 =======
+=======
+	for (i = 0; audio_idx[type][i] >= 0; i++) {
+#ifndef CONFIG_SND_DYNAMIC_MINORS
+		if (audio_idx[type][i] >= 8)
+			break;
+#endif
+		if (!test_and_set_bit(audio_idx[type][i], bus->pcm_dev_bits))
+			return audio_idx[type][i];
+	}
+
+#ifdef CONFIG_SND_DYNAMIC_MINORS
+>>>>>>> refs/remotes/origin/master
 	/* non-fixed slots starting from 10 */
 	for (i = 10; i < 32; i++) {
 		if (!test_and_set_bit(i, bus->pcm_dev_bits))
 			return i;
 	}
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	snd_printk(KERN_WARNING "Too many %s devices\n",
 		snd_hda_pcm_type_name[type]);
+=======
+#endif
+
+	snd_printk(KERN_WARNING "Too many %s devices\n",
+		snd_hda_pcm_type_name[type]);
+#ifndef CONFIG_SND_DYNAMIC_MINORS
+	snd_printk(KERN_WARNING "Consider building the kernel with CONFIG_SND_DYNAMIC_MINORS=y\n");
+#endif
+>>>>>>> refs/remotes/origin/master
 	return -EAGAIN;
 }
 
@@ -4480,7 +6497,11 @@ int snd_hda_codec_build_pcms(struct hda_codec *codec)
  *
  * This function returns 0 if successful, or a negative error code.
  */
+<<<<<<< HEAD
 int __devinit snd_hda_build_pcms(struct hda_bus *bus)
+=======
+int snd_hda_build_pcms(struct hda_bus *bus)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hda_codec *codec;
 
@@ -4491,7 +6512,11 @@ int __devinit snd_hda_build_pcms(struct hda_bus *bus)
 	}
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_build_pcms);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_build_pcms);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_check_board_config - compare the current codec with the config table
@@ -4547,7 +6572,11 @@ int snd_hda_check_board_config(struct hda_codec *codec,
 	}
 	return -1;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_check_board_config);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_check_board_config);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_check_board_codec_sid_config - compare the current codec
@@ -4579,6 +6608,7 @@ int snd_hda_check_board_codec_sid_config(struct hda_codec *codec,
 	/* Search for codec ID */
 	for (q = tbl; q->subvendor; q++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		unsigned long vendorid = (q->subdevice) | (q->subvendor << 16);
 
 		if (vendorid == codec->subsystem_id)
@@ -4587,6 +6617,11 @@ int snd_hda_check_board_codec_sid_config(struct hda_codec *codec,
 		unsigned int id = (q->subdevice | (q->subvendor << 16)) & mask;
 		if ((codec->subsystem_id & mask) == id)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		unsigned int mask = 0xffff0000 | q->subdevice_mask;
+		unsigned int id = (q->subdevice | (q->subvendor << 16)) & mask;
+		if ((codec->subsystem_id & mask) == id)
+>>>>>>> refs/remotes/origin/master
 			break;
 	}
 
@@ -4614,7 +6649,11 @@ int snd_hda_check_board_codec_sid_config(struct hda_codec *codec,
 	}
 	return -1;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_check_board_codec_sid_config);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_check_board_codec_sid_config);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_add_new_ctls - create controls from the array
@@ -4655,7 +6694,11 @@ int snd_hda_add_new_ctls(struct hda_codec *codec,
 				addr = codec->addr;
 			else if (!idx && !knew->index) {
 				idx = find_empty_mixer_ctl_idx(codec,
+<<<<<<< HEAD
 							       knew->name);
+=======
+							       knew->name, 0);
+>>>>>>> refs/remotes/origin/master
 				if (idx <= 0)
 					return err;
 			} else
@@ -4664,6 +6707,7 @@ int snd_hda_add_new_ctls(struct hda_codec *codec,
 	}
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_add_new_ctls);
 
 #ifdef CONFIG_SND_HDA_POWER_SAVE
@@ -4673,11 +6717,17 @@ static void hda_set_power_state(struct hda_codec *codec, hda_nid_t fg,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(snd_hda_add_new_ctls);
+
+#ifdef CONFIG_PM
+>>>>>>> refs/remotes/origin/master
 static void hda_power_work(struct work_struct *work)
 {
 	struct hda_codec *codec =
 		container_of(work, struct hda_codec, power_work.work);
 	struct hda_bus *bus = codec->bus;
+<<<<<<< HEAD
 
 	if (!codec->power_on || codec->power_count) {
 		codec->power_transition = 0;
@@ -4691,13 +6741,41 @@ static void hda_power_work(struct work_struct *work)
 	hda_call_codec_suspend(codec);
 	if (bus->ops.pm_notify)
 		bus->ops.pm_notify(bus);
+=======
+	unsigned int state;
+
+	spin_lock(&codec->power_lock);
+	if (codec->power_transition > 0) { /* during power-up sequence? */
+		spin_unlock(&codec->power_lock);
+		return;
+	}
+	if (!codec->power_on || codec->power_count) {
+		codec->power_transition = 0;
+		spin_unlock(&codec->power_lock);
+		return;
+	}
+	spin_unlock(&codec->power_lock);
+
+	state = hda_call_codec_suspend(codec, true);
+	if (!bus->power_keep_link_on && (state & AC_PWRST_CLK_STOP_OK))
+		hda_call_pm_notify(codec, false);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void hda_keep_power_on(struct hda_codec *codec)
 {
+<<<<<<< HEAD
 	codec->power_count++;
 	codec->power_on = 1;
 	codec->power_jiffies = jiffies;
+=======
+	spin_lock(&codec->power_lock);
+	codec->power_count++;
+	codec->power_on = 1;
+	codec->power_jiffies = jiffies;
+	spin_unlock(&codec->power_lock);
+	hda_call_pm_notify(codec, true);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* update the power on/off account with the current jiffies */
@@ -4711,6 +6789,7 @@ void snd_hda_update_power_acct(struct hda_codec *codec)
 	codec->power_jiffies += delta;
 }
 
+<<<<<<< HEAD
 /**
  * snd_hda_power_up - Power-up the codec
  * @codec: HD-audio codec
@@ -4740,10 +6819,50 @@ void snd_hda_power_up(struct hda_codec *codec)
 	codec->power_transition = 0;
 }
 EXPORT_SYMBOL_HDA(snd_hda_power_up);
+=======
+/* Transition to powered up, if wait_power_down then wait for a pending
+ * transition to D3 to complete. A pending D3 transition is indicated
+ * with power_transition == -1. */
+/* call this with codec->power_lock held! */
+static void __snd_hda_power_up(struct hda_codec *codec, bool wait_power_down)
+{
+	/* Return if power_on or transitioning to power_on, unless currently
+	 * powering down. */
+	if ((codec->power_on || codec->power_transition > 0) &&
+	    !(wait_power_down && codec->power_transition < 0))
+		return;
+	spin_unlock(&codec->power_lock);
+
+	cancel_delayed_work_sync(&codec->power_work);
+
+	spin_lock(&codec->power_lock);
+	/* If the power down delayed work was cancelled above before starting,
+	 * then there is no need to go through power up here.
+	 */
+	if (codec->power_on) {
+		if (codec->power_transition < 0)
+			codec->power_transition = 0;
+		return;
+	}
+
+	trace_hda_power_up(codec);
+	snd_hda_update_power_acct(codec);
+	codec->power_on = 1;
+	codec->power_jiffies = jiffies;
+	codec->power_transition = 1; /* avoid reentrance */
+	spin_unlock(&codec->power_lock);
+
+	hda_call_codec_resume(codec);
+
+	spin_lock(&codec->power_lock);
+	codec->power_transition = 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 #define power_save(codec)	\
 	((codec)->bus->power_save ? *(codec)->bus->power_save : 0)
 
+<<<<<<< HEAD
 /**
  * snd_hda_power_down - Power-down the codec
  * @codec: HD-audio codec
@@ -4758,11 +6877,46 @@ void snd_hda_power_down(struct hda_codec *codec)
 		return;
 	if (power_save(codec)) {
 		codec->power_transition = 1; /* avoid reentrance */
+=======
+/* Transition to powered down */
+static void __snd_hda_power_down(struct hda_codec *codec)
+{
+	if (!codec->power_on || codec->power_count || codec->power_transition)
+		return;
+
+	if (power_save(codec)) {
+		codec->power_transition = -1; /* avoid reentrance */
+>>>>>>> refs/remotes/origin/master
 		queue_delayed_work(codec->bus->workq, &codec->power_work,
 				msecs_to_jiffies(power_save(codec) * 1000));
 	}
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_power_down);
+=======
+
+/**
+ * snd_hda_power_save - Power-up/down/sync the codec
+ * @codec: HD-audio codec
+ * @delta: the counter delta to change
+ *
+ * Change the power-up counter via @delta, and power up or down the hardware
+ * appropriately.  For the power-down, queue to the delayed action.
+ * Passing zero to @delta means to synchronize the power state.
+ */
+void snd_hda_power_save(struct hda_codec *codec, int delta, bool d3wait)
+{
+	spin_lock(&codec->power_lock);
+	codec->power_count += delta;
+	trace_hda_power_count(codec);
+	if (delta > 0)
+		__snd_hda_power_up(codec, d3wait);
+	else
+		__snd_hda_power_down(codec);
+	spin_unlock(&codec->power_lock);
+}
+EXPORT_SYMBOL_GPL(snd_hda_power_save);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_check_amp_list_power - Check the amp list and update the power
@@ -4812,7 +6966,11 @@ int snd_hda_check_amp_list_power(struct hda_codec *codec,
 	}
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_check_amp_list_power);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_check_amp_list_power);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -4836,7 +6994,11 @@ int snd_hda_ch_mode_info(struct hda_codec *codec,
 		chmode[uinfo->value.enumerated.item].channels);
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_ch_mode_info);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_ch_mode_info);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_ch_mode_get - Get callback helper for the channel mode enum
@@ -4857,7 +7019,11 @@ int snd_hda_ch_mode_get(struct hda_codec *codec,
 	}
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_ch_mode_get);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_ch_mode_get);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_ch_mode_put - Put callback helper for the channel mode enum
@@ -4881,7 +7047,11 @@ int snd_hda_ch_mode_put(struct hda_codec *codec,
 		snd_hda_sequence_write_cache(codec, chmode[mode].sequence);
 	return 1;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_ch_mode_put);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_ch_mode_put);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * input MUX helper
@@ -4906,7 +7076,11 @@ int snd_hda_input_mux_info(const struct hda_input_mux *imux,
 	strcpy(uinfo->value.enumerated.name, imux->items[index].label);
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_input_mux_info);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_input_mux_info);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_input_mux_info_put - Put callback helper for the input-mux enum
@@ -4931,8 +7105,41 @@ int snd_hda_input_mux_put(struct hda_codec *codec,
 	*cur_val = idx;
 	return 1;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_input_mux_put);
 
+=======
+EXPORT_SYMBOL_GPL(snd_hda_input_mux_put);
+
+
+/*
+ * process kcontrol info callback of a simple string enum array
+ * when @num_items is 0 or @texts is NULL, assume a boolean enum array
+ */
+int snd_hda_enum_helper_info(struct snd_kcontrol *kcontrol,
+			     struct snd_ctl_elem_info *uinfo,
+			     int num_items, const char * const *texts)
+{
+	static const char * const texts_default[] = {
+		"Disabled", "Enabled"
+	};
+
+	if (!texts || !num_items) {
+		num_items = 2;
+		texts = texts_default;
+	}
+
+	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+	uinfo->count = 1;
+	uinfo->value.enumerated.items = num_items;
+	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
+		uinfo->value.enumerated.item = uinfo->value.enumerated.items - 1;
+	strcpy(uinfo->value.enumerated.name,
+	       texts[uinfo->value.enumerated.item]);
+	return 0;
+}
+EXPORT_SYMBOL_GPL(snd_hda_enum_helper_info);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Multi-channel / digital-out PCM helper functions
@@ -4942,6 +7149,7 @@ EXPORT_SYMBOL_HDA(snd_hda_input_mux_put);
 static void setup_dig_out_stream(struct hda_codec *codec, hda_nid_t nid,
 				 unsigned int stream_tag, unsigned int format)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* turn off SPDIF once; otherwise the IEC958 bits won't be updated */
 	if (codec->spdif_status_reset && (codec->spdif_ctls & AC_DIG1_ENABLE))
@@ -4955,6 +7163,24 @@ static void setup_dig_out_stream(struct hda_codec *codec, hda_nid_t nid,
 		set_dig_out_convert(codec, nid,
 				    spdif->ctls & ~AC_DIG1_ENABLE & 0xff,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hda_spdif_out *spdif;
+	unsigned int curr_fmt;
+	bool reset;
+
+	spdif = snd_hda_spdif_out_of_nid(codec, nid);
+	curr_fmt = snd_hda_codec_read(codec, nid, 0,
+				      AC_VERB_GET_STREAM_FORMAT, 0);
+	reset = codec->spdif_status_reset &&
+		(spdif->ctls & AC_DIG1_ENABLE) &&
+		curr_fmt != format;
+
+	/* turn off SPDIF if needed; otherwise the IEC958 bits won't be
+	   updated */
+	if (reset)
+		set_dig_out_convert(codec, nid,
+				    spdif->ctls & ~AC_DIG1_ENABLE & 0xff,
+>>>>>>> refs/remotes/origin/master
 				    -1);
 	snd_hda_codec_setup_stream(codec, nid, stream_tag, 0, format);
 	if (codec->slave_dig_outs) {
@@ -4965,6 +7191,7 @@ static void setup_dig_out_stream(struct hda_codec *codec, hda_nid_t nid,
 	}
 	/* turn on again (if needed) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (codec->spdif_status_reset && (codec->spdif_ctls & AC_DIG1_ENABLE))
 		set_dig_out_convert(codec, nid,
 				    codec->spdif_ctls & 0xff, -1);
@@ -4973,6 +7200,11 @@ static void setup_dig_out_stream(struct hda_codec *codec, hda_nid_t nid,
 		set_dig_out_convert(codec, nid,
 				    spdif->ctls & 0xff, -1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (reset)
+		set_dig_out_convert(codec, nid,
+				    spdif->ctls & 0xff, -1);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void cleanup_dig_out_stream(struct hda_codec *codec, hda_nid_t nid)
@@ -4997,6 +7229,7 @@ void snd_hda_bus_reboot_notify(struct hda_bus *bus)
 		return;
 	list_for_each_entry(codec, &bus->codec_list, list) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SND_HDA_POWER_SAVE
 		if (!codec->power_on)
 			continue;
@@ -5010,6 +7243,14 @@ void snd_hda_bus_reboot_notify(struct hda_bus *bus)
 	}
 }
 EXPORT_SYMBOL_HDA(snd_hda_bus_reboot_notify);
+=======
+		if (hda_codec_is_power_on(codec) &&
+		    codec->patch_ops.reboot_notify)
+			codec->patch_ops.reboot_notify(codec);
+	}
+}
+EXPORT_SYMBOL_GPL(snd_hda_bus_reboot_notify);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_multi_out_dig_open - open the digital out in the exclusive mode
@@ -5025,7 +7266,11 @@ int snd_hda_multi_out_dig_open(struct hda_codec *codec,
 	mutex_unlock(&codec->spdif_mutex);
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_multi_out_dig_open);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_multi_out_dig_open);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_multi_out_dig_prepare - prepare the digital out stream
@@ -5041,7 +7286,11 @@ int snd_hda_multi_out_dig_prepare(struct hda_codec *codec,
 	mutex_unlock(&codec->spdif_mutex);
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_multi_out_dig_prepare);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_multi_out_dig_prepare);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_multi_out_dig_cleanup - clean-up the digital out stream
@@ -5054,7 +7303,11 @@ int snd_hda_multi_out_dig_cleanup(struct hda_codec *codec,
 	mutex_unlock(&codec->spdif_mutex);
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_multi_out_dig_cleanup);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_multi_out_dig_cleanup);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_multi_out_dig_close - release the digital out stream
@@ -5067,7 +7320,11 @@ int snd_hda_multi_out_dig_close(struct hda_codec *codec,
 	mutex_unlock(&codec->spdif_mutex);
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_multi_out_dig_close);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_multi_out_dig_close);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_multi_out_analog_open - open analog outputs
@@ -5117,7 +7374,11 @@ int snd_hda_multi_out_analog_open(struct hda_codec *codec,
 	return snd_pcm_hw_constraint_step(substream->runtime, 0,
 					  SNDRV_PCM_HW_PARAM_CHANNELS, 2);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_multi_out_analog_open);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_multi_out_analog_open);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_multi_out_analog_prepare - Preapre the analog outputs.
@@ -5134,6 +7395,7 @@ int snd_hda_multi_out_analog_prepare(struct hda_codec *codec,
 	const hda_nid_t *nids = mout->dac_nids;
 	int chs = substream->runtime->channels;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct hda_spdif_out *spdif =
 			snd_hda_spdif_out_of_nid(codec, mout->dig_out_nid);
@@ -5141,16 +7403,27 @@ int snd_hda_multi_out_analog_prepare(struct hda_codec *codec,
 	int i;
 
 	mutex_lock(&codec->spdif_mutex);
+=======
+	struct hda_spdif_out *spdif;
+	int i;
+
+	mutex_lock(&codec->spdif_mutex);
+	spdif = snd_hda_spdif_out_of_nid(codec, mout->dig_out_nid);
+>>>>>>> refs/remotes/origin/master
 	if (mout->dig_out_nid && mout->share_spdif &&
 	    mout->dig_out_used != HDA_DIG_EXCLUSIVE) {
 		if (chs == 2 &&
 		    snd_hda_is_supported_format(codec, mout->dig_out_nid,
 						format) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    !(codec->spdif_status & IEC958_AES0_NONAUDIO)) {
 =======
 		    !(spdif->status & IEC958_AES0_NONAUDIO)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    !(spdif->status & IEC958_AES0_NONAUDIO)) {
+>>>>>>> refs/remotes/origin/master
 			mout->dig_out_used = HDA_DIG_ANALOG_DUP;
 			setup_dig_out_stream(codec, mout->dig_out_nid,
 					     stream_tag, format);
@@ -5171,18 +7444,24 @@ int snd_hda_multi_out_analog_prepare(struct hda_codec *codec,
 					   0, format);
 	/* extra outputs copied from front */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ARRAY_SIZE(mout->hp_out_nid); i++)
 		if (!mout->no_share_stream && mout->hp_out_nid[i])
 			snd_hda_codec_setup_stream(codec,
 						   mout->hp_out_nid[i],
 						   stream_tag, 0, format);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	for (i = 0; i < ARRAY_SIZE(mout->extra_out_nid); i++)
 		if (!mout->no_share_stream && mout->extra_out_nid[i])
 			snd_hda_codec_setup_stream(codec,
 						   mout->extra_out_nid[i],
 						   stream_tag, 0, format);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* surrounds */
 	for (i = 1; i < mout->num_dacs; i++) {
@@ -5193,9 +7472,29 @@ int snd_hda_multi_out_analog_prepare(struct hda_codec *codec,
 			snd_hda_codec_setup_stream(codec, nids[i], stream_tag,
 						   0, format);
 	}
+<<<<<<< HEAD
 	return 0;
 }
 EXPORT_SYMBOL_HDA(snd_hda_multi_out_analog_prepare);
+=======
+
+	/* extra surrounds */
+	for (i = 0; i < ARRAY_SIZE(mout->extra_out_nid); i++) {
+		int ch = 0;
+		if (!mout->extra_out_nid[i])
+			break;
+		if (chs >= (i + 1) * 2)
+			ch = i * 2;
+		else if (!mout->no_share_stream)
+			break;
+		snd_hda_codec_setup_stream(codec, mout->extra_out_nid[i],
+					   stream_tag, ch, format);
+	}
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(snd_hda_multi_out_analog_prepare);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_multi_out_analog_cleanup - clean up the setting for analog out
@@ -5211,12 +7510,18 @@ int snd_hda_multi_out_analog_cleanup(struct hda_codec *codec,
 	if (mout->hp_nid)
 		snd_hda_codec_cleanup_stream(codec, mout->hp_nid);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ARRAY_SIZE(mout->hp_out_nid); i++)
 		if (mout->hp_out_nid[i])
 			snd_hda_codec_cleanup_stream(codec,
 						     mout->hp_out_nid[i]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ARRAY_SIZE(mout->extra_out_nid); i++)
 		if (mout->extra_out_nid[i])
 			snd_hda_codec_cleanup_stream(codec,
@@ -5229,6 +7534,7 @@ int snd_hda_multi_out_analog_cleanup(struct hda_codec *codec,
 	mutex_unlock(&codec->spdif_mutex);
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_multi_out_analog_cleanup);
 
 /*
@@ -5910,6 +8216,102 @@ int snd_hda_get_pin_label(struct hda_codec *codec, hda_nid_t nid,
 EXPORT_SYMBOL_HDA(snd_hda_get_pin_label);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(snd_hda_multi_out_analog_cleanup);
+
+/**
+ * snd_hda_get_default_vref - Get the default (mic) VREF pin bits
+ *
+ * Guess the suitable VREF pin bits to be set as the pin-control value.
+ * Note: the function doesn't set the AC_PINCTL_IN_EN bit.
+ */
+unsigned int snd_hda_get_default_vref(struct hda_codec *codec, hda_nid_t pin)
+{
+	unsigned int pincap;
+	unsigned int oldval;
+	oldval = snd_hda_codec_read(codec, pin, 0,
+				    AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
+	pincap = snd_hda_query_pin_caps(codec, pin);
+	pincap = (pincap & AC_PINCAP_VREF) >> AC_PINCAP_VREF_SHIFT;
+	/* Exception: if the default pin setup is vref50, we give it priority */
+	if ((pincap & AC_PINCAP_VREF_80) && oldval != PIN_VREF50)
+		return AC_PINCTL_VREF_80;
+	else if (pincap & AC_PINCAP_VREF_50)
+		return AC_PINCTL_VREF_50;
+	else if (pincap & AC_PINCAP_VREF_100)
+		return AC_PINCTL_VREF_100;
+	else if (pincap & AC_PINCAP_VREF_GRD)
+		return AC_PINCTL_VREF_GRD;
+	return AC_PINCTL_VREF_HIZ;
+}
+EXPORT_SYMBOL_GPL(snd_hda_get_default_vref);
+
+/* correct the pin ctl value for matching with the pin cap */
+unsigned int snd_hda_correct_pin_ctl(struct hda_codec *codec,
+				     hda_nid_t pin, unsigned int val)
+{
+	static unsigned int cap_lists[][2] = {
+		{ AC_PINCTL_VREF_100, AC_PINCAP_VREF_100 },
+		{ AC_PINCTL_VREF_80, AC_PINCAP_VREF_80 },
+		{ AC_PINCTL_VREF_50, AC_PINCAP_VREF_50 },
+		{ AC_PINCTL_VREF_GRD, AC_PINCAP_VREF_GRD },
+	};
+	unsigned int cap;
+
+	if (!val)
+		return 0;
+	cap = snd_hda_query_pin_caps(codec, pin);
+	if (!cap)
+		return val; /* don't know what to do... */
+
+	if (val & AC_PINCTL_OUT_EN) {
+		if (!(cap & AC_PINCAP_OUT))
+			val &= ~(AC_PINCTL_OUT_EN | AC_PINCTL_HP_EN);
+		else if ((val & AC_PINCTL_HP_EN) && !(cap & AC_PINCAP_HP_DRV))
+			val &= ~AC_PINCTL_HP_EN;
+	}
+
+	if (val & AC_PINCTL_IN_EN) {
+		if (!(cap & AC_PINCAP_IN))
+			val &= ~(AC_PINCTL_IN_EN | AC_PINCTL_VREFEN);
+		else {
+			unsigned int vcap, vref;
+			int i;
+			vcap = (cap & AC_PINCAP_VREF) >> AC_PINCAP_VREF_SHIFT;
+			vref = val & AC_PINCTL_VREFEN;
+			for (i = 0; i < ARRAY_SIZE(cap_lists); i++) {
+				if (vref == cap_lists[i][0] &&
+				    !(vcap & cap_lists[i][1])) {
+					if (i == ARRAY_SIZE(cap_lists) - 1)
+						vref = AC_PINCTL_VREF_HIZ;
+					else
+						vref = cap_lists[i + 1][0];
+				}
+			}
+			val &= ~AC_PINCTL_VREFEN;
+			val |= vref;
+		}
+	}
+
+	return val;
+}
+EXPORT_SYMBOL_GPL(snd_hda_correct_pin_ctl);
+
+int _snd_hda_set_pin_ctl(struct hda_codec *codec, hda_nid_t pin,
+			 unsigned int val, bool cached)
+{
+	val = snd_hda_correct_pin_ctl(codec, pin, val);
+	snd_hda_codec_set_pin_target(codec, pin, val);
+	if (cached)
+		return snd_hda_codec_update_cache(codec, pin, 0,
+				AC_VERB_SET_PIN_WIDGET_CONTROL, val);
+	else
+		return snd_hda_codec_write(codec, pin, 0,
+					   AC_VERB_SET_PIN_WIDGET_CONTROL, val);
+}
+EXPORT_SYMBOL_GPL(_snd_hda_set_pin_ctl);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * snd_hda_add_imux_item - Add an item to input_mux
  *
@@ -5942,7 +8344,11 @@ int snd_hda_add_imux_item(struct hda_input_mux *imux, const char *label,
 	imux->num_items++;
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_hda_add_imux_item);
+=======
+EXPORT_SYMBOL_GPL(snd_hda_add_imux_item);
+>>>>>>> refs/remotes/origin/master
 
 
 #ifdef CONFIG_PM
@@ -5950,6 +8356,20 @@ EXPORT_SYMBOL_HDA(snd_hda_add_imux_item);
  * power management
  */
 
+<<<<<<< HEAD
+=======
+
+static void hda_async_suspend(void *data, async_cookie_t cookie)
+{
+	hda_call_codec_suspend(data, false);
+}
+
+static void hda_async_resume(void *data, async_cookie_t cookie)
+{
+	hda_call_codec_resume(data);
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * snd_hda_suspend - suspend the codecs
  * @bus: the HDA bus
@@ -5959,6 +8379,7 @@ EXPORT_SYMBOL_HDA(snd_hda_add_imux_item);
 int snd_hda_suspend(struct hda_bus *bus)
 {
 	struct hda_codec *codec;
+<<<<<<< HEAD
 
 	list_for_each_entry(codec, &bus->codec_list, list) {
 <<<<<<< HEAD
@@ -5977,19 +8398,44 @@ int snd_hda_suspend(struct hda_bus *bus)
 	return 0;
 }
 EXPORT_SYMBOL_HDA(snd_hda_suspend);
+=======
+	ASYNC_DOMAIN_EXCLUSIVE(domain);
+
+	list_for_each_entry(codec, &bus->codec_list, list) {
+		cancel_delayed_work_sync(&codec->jackpoll_work);
+		if (hda_codec_is_power_on(codec)) {
+			if (bus->num_codecs > 1)
+				async_schedule_domain(hda_async_suspend, codec,
+						      &domain);
+			else
+				hda_call_codec_suspend(codec, false);
+		}
+	}
+
+	if (bus->num_codecs > 1)
+		async_synchronize_full_domain(&domain);
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(snd_hda_suspend);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_hda_resume - resume the codecs
  * @bus: the HDA bus
  *
  * Returns 0 if successful.
+<<<<<<< HEAD
  *
  * This function is defined only when POWER_SAVE isn't set.
  * In the power-save mode, the codec is resumed dynamically.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 int snd_hda_resume(struct hda_bus *bus)
 {
 	struct hda_codec *codec;
+<<<<<<< HEAD
 
 	list_for_each_entry(codec, &bus->codec_list, list) {
 <<<<<<< HEAD
@@ -6003,6 +8449,23 @@ int snd_hda_resume(struct hda_bus *bus)
 	return 0;
 }
 EXPORT_SYMBOL_HDA(snd_hda_resume);
+=======
+	ASYNC_DOMAIN_EXCLUSIVE(domain);
+
+	list_for_each_entry(codec, &bus->codec_list, list) {
+		if (bus->num_codecs > 1)
+			async_schedule_domain(hda_async_resume, codec, &domain);
+		else
+			hda_call_codec_resume(codec);
+	}
+
+	if (bus->num_codecs > 1)
+		async_synchronize_full_domain(&domain);
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(snd_hda_resume);
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_PM */
 
 /*
@@ -6020,6 +8483,7 @@ EXPORT_SYMBOL_HDA(snd_hda_resume);
  */
 void *snd_array_new(struct snd_array *array)
 {
+<<<<<<< HEAD
 	if (array->used >= array->alloced) {
 		int num = array->alloced + array->alloc_align;
 <<<<<<< HEAD
@@ -6045,12 +8509,29 @@ void *snd_array_new(struct snd_array *array)
 			return NULL;
 		memset(nlist + oldsize, 0, size - oldsize);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (snd_BUG_ON(!array->elem_size))
+		return NULL;
+	if (array->used >= array->alloced) {
+		int num = array->alloced + array->alloc_align;
+		int size = (num + 1) * array->elem_size;
+		void *nlist;
+		if (snd_BUG_ON(num >= 4096))
+			return NULL;
+		nlist = krealloc(array->list, size, GFP_KERNEL | __GFP_ZERO);
+		if (!nlist)
+			return NULL;
+>>>>>>> refs/remotes/origin/master
 		array->list = nlist;
 		array->alloced = num;
 	}
 	return snd_array_elem(array, array->used++);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_array_new);
+=======
+EXPORT_SYMBOL_GPL(snd_array_new);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_array_free - free the given array elements
@@ -6063,6 +8544,7 @@ void snd_array_free(struct snd_array *array)
 	array->alloced = 0;
 	array->list = NULL;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_array_free);
 
 /**
@@ -6093,6 +8575,11 @@ EXPORT_SYMBOL_HDA(snd_print_pcm_rates);
 /**
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(snd_array_free);
+
+/**
+>>>>>>> refs/remotes/origin/master
  * snd_print_pcm_bits - Print the supported PCM fmt bits to the string buffer
  * @pcm: PCM caps bits
  * @buf: the string buffer to write
@@ -6111,6 +8598,7 @@ void snd_print_pcm_bits(int pcm, char *buf, int buflen)
 
 	buf[j] = '\0'; /* necessary when j == 0 */
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_HDA(snd_print_pcm_bits);
 
 <<<<<<< HEAD
@@ -6222,5 +8710,9 @@ EXPORT_SYMBOL_HDA(snd_hda_input_jack_free);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(snd_print_pcm_bits);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("HDA codec core");
 MODULE_LICENSE("GPL");

@@ -80,6 +80,10 @@
 #include <linux/slab.h>
 #include <linux/prefetch.h>
 #include <net/tcp.h>
+<<<<<<< HEAD
+=======
+#include <net/checksum.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/div64.h>
 #include <asm/irq.h>
@@ -484,7 +488,11 @@ static DEFINE_PCI_DEVICE_TABLE(s2io_tbl) = {
 
 MODULE_DEVICE_TABLE(pci, s2io_tbl);
 
+<<<<<<< HEAD
 static struct pci_error_handlers s2io_err_handler = {
+=======
+static const struct pci_error_handlers s2io_err_handler = {
+>>>>>>> refs/remotes/origin/master
 	.error_detected = s2io_io_error_detected,
 	.slot_reset = s2io_io_slot_reset,
 	.resume = s2io_io_resume,
@@ -494,7 +502,11 @@ static struct pci_driver s2io_driver = {
 	.name = "S2IO",
 	.id_table = s2io_tbl,
 	.probe = s2io_init_nic,
+<<<<<<< HEAD
 	.remove = __devexit_p(s2io_rem_nic),
+=======
+	.remove = s2io_rem_nic,
+>>>>>>> refs/remotes/origin/master
 	.err_handler = &s2io_err_handler,
 };
 
@@ -1040,7 +1052,11 @@ static int s2io_verify_pci_mode(struct s2io_nic *nic)
 static int s2io_on_nec_bridge(struct pci_dev *s2io_pdev)
 {
 	struct pci_dev *tdev = NULL;
+<<<<<<< HEAD
 	while ((tdev = pci_get_device(PCI_ANY_ID, PCI_ANY_ID, tdev)) != NULL) {
+=======
+	for_each_pci_dev(tdev) {
+>>>>>>> refs/remotes/origin/master
 		if (tdev->vendor == NEC_VENID && tdev->device == NEC_DEVID) {
 			if (tdev->bus == s2io_pdev->bus->parent) {
 				pci_dev_put(tdev);
@@ -2846,6 +2862,10 @@ static int s2io_poll_inta(struct napi_struct *napi, int budget)
 static void s2io_netpoll(struct net_device *dev)
 {
 	struct s2io_nic *nic = netdev_priv(dev);
+<<<<<<< HEAD
+=======
+	const int irq = nic->pdev->irq;
+>>>>>>> refs/remotes/origin/master
 	struct XENA_dev_config __iomem *bar0 = nic->bar0;
 	u64 val64 = 0xFFFFFFFFFFFFFFFFULL;
 	int i;
@@ -2855,7 +2875,11 @@ static void s2io_netpoll(struct net_device *dev)
 	if (pci_channel_offline(nic->pdev))
 		return;
 
+<<<<<<< HEAD
 	disable_irq(dev->irq);
+=======
+	disable_irq(irq);
+>>>>>>> refs/remotes/origin/master
 
 	writeq(val64, &bar0->rx_traffic_int);
 	writeq(val64, &bar0->tx_traffic_int);
@@ -2884,7 +2908,11 @@ static void s2io_netpoll(struct net_device *dev)
 			break;
 		}
 	}
+<<<<<<< HEAD
 	enable_irq(dev->irq);
+=======
+	enable_irq(irq);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -3376,7 +3404,11 @@ static int wait_for_cmd_complete(void __iomem *addr, u64 busy_bit,
 	} while (cnt < 20);
 	return ret;
 }
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * check_pci_device_id - Checks if the device id is supported
  * @id : device id
  * Description: Function to check if the pci device id is supported by driver.
@@ -3897,9 +3929,13 @@ static void remove_msix_isr(struct s2io_nic *sp)
 
 static void remove_inta_isr(struct s2io_nic *sp)
 {
+<<<<<<< HEAD
 	struct net_device *dev = sp->dev;
 
 	free_irq(sp->pdev->irq, dev);
+=======
+	free_irq(sp->pdev->irq, sp->dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* ********************************************************* *
@@ -5239,7 +5275,11 @@ static u64 do_s2io_read_unicast_mc(struct s2io_nic *sp, int offset)
 }
 
 /**
+<<<<<<< HEAD
  * s2io_set_mac_addr driver entry point
+=======
+ * s2io_set_mac_addr - driver entry point
+>>>>>>> refs/remotes/origin/master
  */
 
 static int s2io_set_mac_addr(struct net_device *dev, void *p)
@@ -6089,7 +6129,11 @@ static int s2io_bist_test(struct s2io_nic *sp, uint64_t *data)
 }
 
 /**
+<<<<<<< HEAD
  * s2io-link_test - verifies the link state of the nic
+=======
+ * s2io_link_test - verifies the link state of the nic
+>>>>>>> refs/remotes/origin/master
  * @sp ; private member of the device structure, which is a pointer to the
  * s2io_nic structure.
  * @data: variable that returns the result of each of the test conducted by
@@ -6117,9 +6161,15 @@ static int s2io_link_test(struct s2io_nic *sp, uint64_t *data)
 
 /**
  * s2io_rldram_test - offline test for access to the RldRam chip on the NIC
+<<<<<<< HEAD
  * @sp - private member of the device structure, which is a pointer to the
  * s2io_nic structure.
  * @data - variable that returns the result of each of the test
+=======
+ * @sp: private member of the device structure, which is a pointer to the
+ * s2io_nic structure.
+ * @data: variable that returns the result of each of the test
+>>>>>>> refs/remotes/origin/master
  * conducted by the driver.
  * Description:
  *  This is one of the offline test that tests the read and write
@@ -6947,9 +6997,15 @@ static  int rxd_owner_bit_reset(struct s2io_nic *sp)
 				if (sp->rxd_mode == RXD_MODE_3B)
 					ba = &ring->ba[j][k];
 				if (set_rxd_buffer_pointer(sp, rxdp, ba, &skb,
+<<<<<<< HEAD
 							   (u64 *)&temp0_64,
 							   (u64 *)&temp1_64,
 							   (u64 *)&temp2_64,
+=======
+							   &temp0_64,
+							   &temp1_64,
+							   &temp2_64,
+>>>>>>> refs/remotes/origin/master
 							   size) == -ENOMEM) {
 					return 0;
 				}
@@ -7046,7 +7102,11 @@ static int s2io_add_isr(struct s2io_nic *sp)
 		}
 	}
 	if (sp->config.intr_type == INTA) {
+<<<<<<< HEAD
 		err = request_irq((int)sp->pdev->irq, s2io_isr, IRQF_SHARED,
+=======
+		err = request_irq(sp->pdev->irq, s2io_isr, IRQF_SHARED,
+>>>>>>> refs/remotes/origin/master
 				  sp->name, dev);
 		if (err) {
 			DBG_PRINT(ERR_DBG, "%s: ISR registration failed\n",
@@ -7150,7 +7210,11 @@ static int s2io_card_up(struct s2io_nic *sp)
 	int i, ret = 0;
 	struct config_param *config;
 	struct mac_info *mac_control;
+<<<<<<< HEAD
 	struct net_device *dev = (struct net_device *)sp->dev;
+=======
+	struct net_device *dev = sp->dev;
+>>>>>>> refs/remotes/origin/master
 	u16 interruptible;
 
 	/* Initialize the H/W I/O registers */
@@ -7326,7 +7390,11 @@ static void s2io_tx_watchdog(struct net_device *dev)
 static int rx_osm_handler(struct ring_info *ring_data, struct RxD_t * rxdp)
 {
 	struct s2io_nic *sp = ring_data->nic;
+<<<<<<< HEAD
 	struct net_device *dev = (struct net_device *)ring_data->dev;
+=======
+	struct net_device *dev = ring_data->dev;
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *skb = (struct sk_buff *)
 		((unsigned long)rxdp->Host_Control);
 	int ring_no = ring_data->ring_no;
@@ -7509,7 +7577,11 @@ aggregate:
 
 static void s2io_link(struct s2io_nic *sp, int link)
 {
+<<<<<<< HEAD
 	struct net_device *dev = (struct net_device *)sp->dev;
+=======
+	struct net_device *dev = sp->dev;
+>>>>>>> refs/remotes/origin/master
 	struct swStat *swstats = &sp->mac_control.stats_info->sw_stat;
 
 	if (link != sp->last_link_state) {
@@ -7703,7 +7775,11 @@ static const struct net_device_ops s2io_netdev_ops = {
  *  returns 0 on success and negative on failure.
  */
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 s2io_init_nic(struct pci_dev *pdev, const struct pci_device_id *pre)
 {
 	struct s2io_nic *sp;
@@ -7908,9 +7984,12 @@ s2io_init_nic(struct pci_dev *pdev, const struct pci_device_id *pre)
 		goto bar1_remap_failed;
 	}
 
+<<<<<<< HEAD
 	dev->irq = pdev->irq;
 	dev->base_addr = (unsigned long)sp->bar0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Initializing the BAR1 address as the start of the FIFO pointer. */
 	for (j = 0; j < MAX_TX_FIFOS; j++) {
 		mac_control->tx_FIFO_start[j] = sp->bar1 + (j * 0x00020000);
@@ -7923,7 +8002,11 @@ s2io_init_nic(struct pci_dev *pdev, const struct pci_device_id *pre)
 		NETIF_F_TSO | NETIF_F_TSO6 |
 		NETIF_F_RXCSUM | NETIF_F_LRO;
 	dev->features |= dev->hw_features |
+<<<<<<< HEAD
 		NETIF_F_HW_VLAN_TX | NETIF_F_HW_VLAN_RX;
+=======
+		NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_CTAG_RX;
+>>>>>>> refs/remotes/origin/master
 	if (sp->device_type & XFRAME_II_DEVICE) {
 		dev->hw_features |= NETIF_F_UFO;
 		if (ufo)
@@ -8018,7 +8101,10 @@ s2io_init_nic(struct pci_dev *pdev, const struct pci_device_id *pre)
 	/*  Set the factory defined MAC address initially   */
 	dev->addr_len = ETH_ALEN;
 	memcpy(dev->dev_addr, sp->def_mac_addr, ETH_ALEN);
+<<<<<<< HEAD
 	memcpy(dev->perm_addr, dev->dev_addr, ETH_ALEN);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* initialize number of multicast & unicast MAC entries variables */
 	if (sp->device_type == XFRAME_I_DEVICE) {
@@ -8189,7 +8275,10 @@ mem_alloc_failed:
 	free_shared_mem(sp);
 	pci_disable_device(pdev);
 	pci_release_regions(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_netdev(dev);
 
 	return ret;
@@ -8204,7 +8293,11 @@ mem_alloc_failed:
  * from memory.
  */
 
+<<<<<<< HEAD
 static void __devexit s2io_rem_nic(struct pci_dev *pdev)
+=======
+static void s2io_rem_nic(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 	struct s2io_nic *sp;
@@ -8225,7 +8318,10 @@ static void __devexit s2io_rem_nic(struct pci_dev *pdev)
 	iounmap(sp->bar0);
 	iounmap(sp->bar1);
 	pci_release_regions(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_netdev(dev);
 	pci_disable_device(pdev);
 }
@@ -8243,7 +8339,12 @@ static int __init s2io_starter(void)
 
 /**
  * s2io_closer - Cleanup routine for the driver
+<<<<<<< HEAD
  * Description: This function is the cleanup routine for the driver. It unregist * ers the driver.
+=======
+ * Description: This function is the cleanup routine for the driver. It
+ * unregisters the driver.
+>>>>>>> refs/remotes/origin/master
  */
 
 static __exit void s2io_closer(void)
@@ -8284,7 +8385,11 @@ static int check_L2_lro_capable(u8 *buffer, struct iphdr **ip,
 		return -1;
 	}
 
+<<<<<<< HEAD
 	*ip = (struct iphdr *)((u8 *)buffer + ip_off);
+=======
+	*ip = (struct iphdr *)(buffer + ip_off);
+>>>>>>> refs/remotes/origin/master
 	ip_len = (u8)((*ip)->ihl);
 	ip_len <<= 2;
 	*tcp = (struct tcphdr *)((unsigned long)*ip + ip_len);
@@ -8341,16 +8446,24 @@ static void update_L3L4_header(struct s2io_nic *sp, struct lro *lro)
 {
 	struct iphdr *ip = lro->iph;
 	struct tcphdr *tcp = lro->tcph;
+<<<<<<< HEAD
 	__sum16 nchk;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct swStat *swstats = &sp->mac_control.stats_info->sw_stat;
 
 	DBG_PRINT(INFO_DBG, "%s: Been here...\n", __func__);
 
 	/* Update L3 header */
+<<<<<<< HEAD
 	ip->tot_len = htons(lro->total_len);
 	ip->check = 0;
 	nchk = ip_fast_csum((u8 *)lro->iph, ip->ihl);
 	ip->check = nchk;
+=======
+	csum_replace2(&ip->check, ip->tot_len, htons(lro->total_len));
+	ip->tot_len = htons(lro->total_len);
+>>>>>>> refs/remotes/origin/master
 
 	/* Update L4 header */
 	tcp->ack_seq = lro->tcp_ack;
@@ -8561,7 +8674,11 @@ static void queue_rx_frame(struct sk_buff *skb, u16 vlan_tag)
 
 	skb->protocol = eth_type_trans(skb, dev);
 	if (vlan_tag && sp->vlan_strip_flag)
+<<<<<<< HEAD
 		__vlan_hwaccel_put_tag(skb, vlan_tag);
+=======
+		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan_tag);
+>>>>>>> refs/remotes/origin/master
 	if (sp->config.napi)
 		netif_receive_skb(skb);
 	else

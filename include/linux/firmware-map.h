@@ -25,6 +25,10 @@
 
 int firmware_map_add_early(u64 start, u64 end, const char *type);
 int firmware_map_add_hotplug(u64 start, u64 end, const char *type);
+<<<<<<< HEAD
+=======
+int firmware_map_remove(u64 start, u64 end, const char *type);
+>>>>>>> refs/remotes/origin/master
 
 #else /* CONFIG_FIRMWARE_MEMMAP */
 
@@ -38,6 +42,14 @@ static inline int firmware_map_add_hotplug(u64 start, u64 end, const char *type)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static inline int firmware_map_remove(u64 start, u64 end, const char *type)
+{
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_FIRMWARE_MEMMAP */
 
 #endif /* _LINUX_FIRMWARE_MAP_H */

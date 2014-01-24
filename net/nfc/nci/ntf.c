@@ -170,9 +170,20 @@ static int nci_add_new_protocol(struct nci_dev *ndev,
 	if (rf_protocol == NCI_RF_PROTOCOL_T2T)
 		protocol = NFC_PROTO_MIFARE_MASK;
 	else if (rf_protocol == NCI_RF_PROTOCOL_ISO_DEP)
+<<<<<<< HEAD
 		protocol = NFC_PROTO_ISO14443_MASK;
 	else if (rf_protocol == NCI_RF_PROTOCOL_T3T)
 		protocol = NFC_PROTO_FELICA_MASK;
+=======
+		if (rf_tech_and_mode == NCI_NFC_A_PASSIVE_POLL_MODE)
+			protocol = NFC_PROTO_ISO14443_MASK;
+		else
+			protocol = NFC_PROTO_ISO14443_B_MASK;
+	else if (rf_protocol == NCI_RF_PROTOCOL_T3T)
+		protocol = NFC_PROTO_FELICA_MASK;
+	else if (rf_protocol == NCI_RF_PROTOCOL_NFC_DEP)
+		protocol = NFC_PROTO_NFC_DEP_MASK;
+>>>>>>> refs/remotes/origin/master
 	else
 		protocol = 0;
 
@@ -227,7 +238,11 @@ static void nci_add_new_target(struct nci_dev *ndev,
 
 	for (i = 0; i < ndev->n_targets; i++) {
 		target = &ndev->targets[i];
+<<<<<<< HEAD
 		if (target->idx == ntf->rf_discovery_id) {
+=======
+		if (target->logical_idx == ntf->rf_discovery_id) {
+>>>>>>> refs/remotes/origin/master
 			/* This target already exists, add the new protocol */
 			nci_add_new_protocol(ndev, target, ntf->rf_protocol,
 					     ntf->rf_tech_and_mode,
@@ -248,10 +263,17 @@ static void nci_add_new_target(struct nci_dev *ndev,
 				  ntf->rf_tech_and_mode,
 				  &ntf->rf_tech_specific_params);
 	if (!rc) {
+<<<<<<< HEAD
 		target->idx = ntf->rf_discovery_id;
 		ndev->n_targets++;
 
 		pr_debug("target_idx %d, n_targets %d\n", target->idx,
+=======
+		target->logical_idx = ntf->rf_discovery_id;
+		ndev->n_targets++;
+
+		pr_debug("logical idx %d, n_targets %d\n", target->logical_idx,
+>>>>>>> refs/remotes/origin/master
 			 ndev->n_targets);
 	}
 }
@@ -358,6 +380,36 @@ static int nci_extract_activation_params_iso_dep(struct nci_dev *ndev,
 	return NCI_STATUS_OK;
 }
 
+<<<<<<< HEAD
+=======
+static int nci_extract_activation_params_nfc_dep(struct nci_dev *ndev,
+			struct nci_rf_intf_activated_ntf *ntf, __u8 *data)
+{
+	struct activation_params_poll_nfc_dep *poll;
+	int i;
+
+	switch (ntf->activation_rf_tech_and_mode) {
+	case NCI_NFC_A_PASSIVE_POLL_MODE:
+	case NCI_NFC_F_PASSIVE_POLL_MODE:
+		poll = &ntf->activation_params.poll_nfc_dep;
+		poll->atr_res_len = min_t(__u8, *data++, 63);
+		pr_debug("atr_res_len %d\n", poll->atr_res_len);
+		if (poll->atr_res_len > 0) {
+			for (i = 0; i < poll->atr_res_len; i++)
+				poll->atr_res[poll->atr_res_len-1-i] = data[i];
+		}
+		break;
+
+	default:
+		pr_err("unsupported activation_rf_tech_and_mode 0x%x\n",
+		       ntf->activation_rf_tech_and_mode);
+		return NCI_STATUS_RF_PROTOCOL_ERROR;
+	}
+
+	return NCI_STATUS_OK;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void nci_target_auto_activated(struct nci_dev *ndev,
 				      struct nci_rf_intf_activated_ntf *ntf)
 {
@@ -372,10 +424,18 @@ static void nci_target_auto_activated(struct nci_dev *ndev,
 	if (rc)
 		return;
 
+<<<<<<< HEAD
 	target->idx = ntf->rf_discovery_id;
 	ndev->n_targets++;
 
 	pr_debug("target_idx %d, n_targets %d\n", target->idx, ndev->n_targets);
+=======
+	target->logical_idx = ntf->rf_discovery_id;
+	ndev->n_targets++;
+
+	pr_debug("logical idx %d, n_targets %d\n",
+		 target->logical_idx, ndev->n_targets);
+>>>>>>> refs/remotes/origin/master
 
 	nfc_targets_found(ndev->nfc_dev, ndev->targets, ndev->n_targets);
 }
@@ -450,6 +510,14 @@ static void nci_rf_intf_activated_ntf_packet(struct nci_dev *ndev,
 								    &ntf, data);
 			break;
 
+<<<<<<< HEAD
+=======
+		case NCI_RF_INTERFACE_NFC_DEP:
+			err = nci_extract_activation_params_nfc_dep(ndev,
+								    &ntf, data);
+			break;
+
+>>>>>>> refs/remotes/origin/master
 		case NCI_RF_INTERFACE_FRAME:
 			/* no activation params */
 			break;
@@ -469,6 +537,27 @@ exit:
 
 		/* set the available credits to initial value */
 		atomic_set(&ndev->credits_cnt, ndev->initial_num_credits);
+<<<<<<< HEAD
+=======
+
+		/* store general bytes to be reported later in dep_link_up */
+		if (ntf.rf_interface == NCI_RF_INTERFACE_NFC_DEP) {
+			ndev->remote_gb_len = 0;
+
+			if (ntf.activation_params_len > 0) {
+				/* ATR_RES general bytes at offset 15 */
+				ndev->remote_gb_len = min_t(__u8,
+					(ntf.activation_params
+					.poll_nfc_dep.atr_res_len
+					- NFC_ATR_RES_GT_OFFSET),
+					NFC_MAX_GT_LEN);
+				memcpy(ndev->remote_gb,
+				       (ntf.activation_params.poll_nfc_dep
+				       .atr_res + NFC_ATR_RES_GT_OFFSET),
+				       ndev->remote_gb_len);
+			}
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (atomic_read(&ndev->state) == NCI_DISCOVERY) {
@@ -496,7 +585,11 @@ static void nci_rf_deactivate_ntf_packet(struct nci_dev *ndev,
 	/* drop partial rx data packet */
 	if (ndev->rx_data_reassembly) {
 		kfree_skb(ndev->rx_data_reassembly);
+<<<<<<< HEAD
 		ndev->rx_data_reassembly = 0;
+=======
+		ndev->rx_data_reassembly = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* complete the data exchange transaction, if exists */

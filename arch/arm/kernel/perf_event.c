@@ -13,6 +13,7 @@
 #define pr_fmt(fmt) "hw perfevents: " fmt
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -185,11 +186,27 @@ static int
 armpmu_map_cache_event(u64 config)
 =======
 armpmu_map_cache_event(unsigned (*cache_map)
+=======
+#include <linux/kernel.h>
+#include <linux/platform_device.h>
+#include <linux/pm_runtime.h>
+#include <linux/uaccess.h>
+
+#include <asm/irq_regs.h>
+#include <asm/pmu.h>
+#include <asm/stacktrace.h>
+
+static int
+armpmu_map_cache_event(const unsigned (*cache_map)
+>>>>>>> refs/remotes/origin/master
 				      [PERF_COUNT_HW_CACHE_MAX]
 				      [PERF_COUNT_HW_CACHE_OP_MAX]
 				      [PERF_COUNT_HW_CACHE_RESULT_MAX],
 		       u64 config)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cache_type, cache_op, cache_result, ret;
 
@@ -206,10 +223,14 @@ armpmu_map_cache_event(unsigned (*cache_map)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = (int)(*armpmu->cache_map)[cache_type][cache_op][cache_result];
 =======
 	ret = (int)(*cache_map)[cache_type][cache_op][cache_result];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = (int)(*cache_map)[cache_type][cache_op][cache_result];
+>>>>>>> refs/remotes/origin/master
 
 	if (ret == CACHE_OP_UNSUPPORTED)
 		return -ENOENT;
@@ -218,6 +239,7 @@ armpmu_map_cache_event(unsigned (*cache_map)
 }
 
 static int
+<<<<<<< HEAD
 <<<<<<< HEAD
 armpmu_map_event(u64 config)
 {
@@ -234,11 +256,18 @@ armpmu_map_raw_event(u64 config)
 static int
 =======
 armpmu_map_event(const unsigned (*event_map)[PERF_COUNT_HW_MAX], u64 config)
+=======
+armpmu_map_hw_event(const unsigned (*event_map)[PERF_COUNT_HW_MAX], u64 config)
+>>>>>>> refs/remotes/origin/master
 {
 	int mapping;
 
 	if (config >= PERF_COUNT_HW_MAX)
+<<<<<<< HEAD
 		return -ENOENT;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	mapping = (*event_map)[config];
 	return mapping == HW_OP_UNSUPPORTED ? -ENOENT : mapping;
@@ -250,6 +279,7 @@ armpmu_map_raw_event(u32 raw_event_mask, u64 config)
 	return (int)(config & raw_event_mask);
 }
 
+<<<<<<< HEAD
 static int map_cpu_event(struct perf_event *event,
 			 const unsigned (*event_map)[PERF_COUNT_HW_MAX],
 			 unsigned (*cache_map)
@@ -257,12 +287,26 @@ static int map_cpu_event(struct perf_event *event,
 					[PERF_COUNT_HW_CACHE_OP_MAX]
 					[PERF_COUNT_HW_CACHE_RESULT_MAX],
 			 u32 raw_event_mask)
+=======
+int
+armpmu_map_event(struct perf_event *event,
+		 const unsigned (*event_map)[PERF_COUNT_HW_MAX],
+		 const unsigned (*cache_map)
+				[PERF_COUNT_HW_CACHE_MAX]
+				[PERF_COUNT_HW_CACHE_OP_MAX]
+				[PERF_COUNT_HW_CACHE_RESULT_MAX],
+		 u32 raw_event_mask)
+>>>>>>> refs/remotes/origin/master
 {
 	u64 config = event->attr.config;
 
 	switch (event->attr.type) {
 	case PERF_TYPE_HARDWARE:
+<<<<<<< HEAD
 		return armpmu_map_event(event_map, config);
+=======
+		return armpmu_map_hw_event(event_map, config);
+>>>>>>> refs/remotes/origin/master
 	case PERF_TYPE_HW_CACHE:
 		return armpmu_map_cache_event(cache_map, config);
 	case PERF_TYPE_RAW:
@@ -272,6 +316,7 @@ static int map_cpu_event(struct perf_event *event,
 	return -ENOENT;
 }
 
+<<<<<<< HEAD
 int
 >>>>>>> refs/remotes/origin/cm-10.0
 armpmu_event_set_period(struct perf_event *event,
@@ -282,6 +327,12 @@ armpmu_event_set_period(struct perf_event *event,
 =======
 	struct arm_pmu *armpmu = to_arm_pmu(event->pmu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int armpmu_event_set_period(struct perf_event *event)
+{
+	struct arm_pmu *armpmu = to_arm_pmu(event->pmu);
+	struct hw_perf_event *hwc = &event->hw;
+>>>>>>> refs/remotes/origin/master
 	s64 left = local64_read(&hwc->period_left);
 	s64 period = hwc->sample_period;
 	int ret = 0;
@@ -305,13 +356,18 @@ armpmu_event_set_period(struct perf_event *event,
 
 	local64_set(&hwc->prev_count, (u64)-left);
 
+<<<<<<< HEAD
 	armpmu->write_counter(idx, (u64)(-left) & 0xffffffff);
+=======
+	armpmu->write_counter(event, (u64)(-left) & 0xffffffff);
+>>>>>>> refs/remotes/origin/master
 
 	perf_event_update_userpage(event);
 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static u64
 armpmu_event_update(struct perf_event *event,
@@ -326,16 +382,27 @@ armpmu_event_update(struct perf_event *event,
 {
 	struct arm_pmu *armpmu = to_arm_pmu(event->pmu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+u64 armpmu_event_update(struct perf_event *event)
+{
+	struct arm_pmu *armpmu = to_arm_pmu(event->pmu);
+	struct hw_perf_event *hwc = &event->hw;
+>>>>>>> refs/remotes/origin/master
 	u64 delta, prev_raw_count, new_raw_count;
 
 again:
 	prev_raw_count = local64_read(&hwc->prev_count);
+<<<<<<< HEAD
 	new_raw_count = armpmu->read_counter(idx);
+=======
+	new_raw_count = armpmu->read_counter(event);
+>>>>>>> refs/remotes/origin/master
 
 	if (local64_cmpxchg(&hwc->prev_count, prev_raw_count,
 			     new_raw_count) != prev_raw_count)
 		goto again;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	new_raw_count &= armpmu->max_period;
 	prev_raw_count &= armpmu->max_period;
@@ -347,6 +414,9 @@ again:
 =======
 	delta = (new_raw_count - prev_raw_count) & armpmu->max_period;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	delta = (new_raw_count - prev_raw_count) & armpmu->max_period;
+>>>>>>> refs/remotes/origin/master
 
 	local64_add(delta, &event->count);
 	local64_sub(delta, &hwc->period_left);
@@ -357,6 +427,7 @@ again:
 static void
 armpmu_read(struct perf_event *event)
 {
+<<<<<<< HEAD
 	struct hw_perf_event *hwc = &event->hw;
 
 	/* Don't read disabled counters! */
@@ -368,11 +439,15 @@ armpmu_read(struct perf_event *event)
 
 	armpmu_event_update(event, hwc, hwc->idx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	armpmu_event_update(event);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 armpmu_stop(struct perf_event *event, int flags)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct hw_perf_event *hwc = &event->hw;
 
@@ -384,11 +459,17 @@ armpmu_stop(struct perf_event *event, int flags)
 	struct hw_perf_event *hwc = &event->hw;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct arm_pmu *armpmu = to_arm_pmu(event->pmu);
+	struct hw_perf_event *hwc = &event->hw;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * ARM pmu always has to update the counter, so ignore
 	 * PERF_EF_UPDATE, see comments in armpmu_start().
 	 */
 	if (!(hwc->state & PERF_HES_STOPPED)) {
+<<<<<<< HEAD
 		armpmu->disable(hwc, hwc->idx);
 		barrier(); /* why? */
 <<<<<<< HEAD
@@ -396,10 +477,15 @@ armpmu_stop(struct perf_event *event, int flags)
 =======
 		armpmu_event_update(event, hwc, hwc->idx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		armpmu->disable(event);
+		armpmu_event_update(event);
+>>>>>>> refs/remotes/origin/master
 		hwc->state |= PERF_HES_STOPPED | PERF_HES_UPTODATE;
 	}
 }
 
+<<<<<<< HEAD
 static void
 armpmu_start(struct perf_event *event, int flags)
 {
@@ -414,6 +500,13 @@ armpmu_start(struct perf_event *event, int flags)
 	struct hw_perf_event *hwc = &event->hw;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void armpmu_start(struct perf_event *event, int flags)
+{
+	struct arm_pmu *armpmu = to_arm_pmu(event->pmu);
+	struct hw_perf_event *hwc = &event->hw;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * ARM pmu always has to reprogram the period, so ignore
 	 * PERF_EF_RELOAD, see the comment below.
@@ -429,17 +522,23 @@ armpmu_start(struct perf_event *event, int flags)
 	 * get an interrupt too soon or *way* too late if the overflow has
 	 * happened since disabling.
 	 */
+<<<<<<< HEAD
 	armpmu_event_set_period(event, hwc, hwc->idx);
 <<<<<<< HEAD
 	armpmu->enable(hwc, hwc->idx);
 =======
 	armpmu->enable(hwc, hwc->idx, event->cpu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	armpmu_event_set_period(event);
+	armpmu->enable(event);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 armpmu_del(struct perf_event *event, int flags)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cpu_hw_events *cpuc = &__get_cpu_var(cpu_hw_events);
 =======
@@ -457,15 +556,25 @@ armpmu_del(struct perf_event *event, int flags)
 	cpuc->events[idx] = NULL;
 	clear_bit(idx, cpuc->used_mask);
 =======
+=======
+	struct arm_pmu *armpmu = to_arm_pmu(event->pmu);
+	struct pmu_hw_events *hw_events = armpmu->get_hw_events();
+	struct hw_perf_event *hwc = &event->hw;
+	int idx = hwc->idx;
+
+>>>>>>> refs/remotes/origin/master
 	armpmu_stop(event, PERF_EF_UPDATE);
 	hw_events->events[idx] = NULL;
 	clear_bit(idx, hw_events->used_mask);
 
+<<<<<<< HEAD
 	/* Clear event constraints. */
 	if (armpmu->clear_event_constraints)
 		armpmu->clear_event_constraints(event);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 	perf_event_update_userpage(event);
 }
 
@@ -473,16 +582,22 @@ static int
 armpmu_add(struct perf_event *event, int flags)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cpu_hw_events *cpuc = &__get_cpu_var(cpu_hw_events);
 =======
 	struct arm_pmu *armpmu = to_arm_pmu(event->pmu);
 	struct pmu_hw_events *hw_events = armpmu->get_hw_events();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct arm_pmu *armpmu = to_arm_pmu(event->pmu);
+	struct pmu_hw_events *hw_events = armpmu->get_hw_events();
+>>>>>>> refs/remotes/origin/master
 	struct hw_perf_event *hwc = &event->hw;
 	int idx;
 	int err = 0;
 
 	perf_pmu_disable(event->pmu);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	/* If we don't have a space for the counter then finish early. */
@@ -503,6 +618,11 @@ armpmu_add(struct perf_event *event, int flags)
 	/* If we don't have a space for the counter then finish early. */
 	idx = armpmu->get_event_idx(hw_events, hwc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* If we don't have a space for the counter then finish early. */
+	idx = armpmu->get_event_idx(hw_events, event);
+>>>>>>> refs/remotes/origin/master
 	if (idx < 0) {
 		err = idx;
 		goto out;
@@ -513,6 +633,7 @@ armpmu_add(struct perf_event *event, int flags)
 	 * sure it is disabled.
 	 */
 	event->hw.idx = idx;
+<<<<<<< HEAD
 	armpmu->disable(hwc, idx);
 <<<<<<< HEAD
 	cpuc->events[idx] = event;
@@ -520,6 +641,10 @@ armpmu_add(struct perf_event *event, int flags)
 =======
 	hw_events->events[idx] = event;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	armpmu->disable(event);
+	hw_events->events[idx] = event;
+>>>>>>> refs/remotes/origin/master
 
 	hwc->state = PERF_HES_STOPPED | PERF_HES_UPTODATE;
 	if (flags & PERF_EF_START)
@@ -534,6 +659,7 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pmu pmu;
 
 static int
@@ -547,31 +673,45 @@ validate_event(struct cpu_hw_events *cpuc,
 
 	return armpmu->get_event_idx(cpuc, &fake_event) >= 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 validate_event(struct pmu_hw_events *hw_events,
 	       struct perf_event *event)
 {
 	struct arm_pmu *armpmu = to_arm_pmu(event->pmu);
+<<<<<<< HEAD
 	struct hw_perf_event fake_event = event->hw;
 	struct pmu *leader_pmu = event->group_leader->pmu;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (is_software_event(event))
 		return 1;
 
+<<<<<<< HEAD
 	if (event->pmu != leader_pmu || event->state < PERF_EVENT_STATE_OFF)
+=======
+	if (event->state < PERF_EVENT_STATE_OFF)
+>>>>>>> refs/remotes/origin/master
 		return 1;
 
 	if (event->state == PERF_EVENT_STATE_OFF && !event->attr.enable_on_exec)
 		return 1;
 
+<<<<<<< HEAD
 	return armpmu->get_event_idx(hw_events, &fake_event) >= 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return armpmu->get_event_idx(hw_events, event) >= 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 validate_group(struct perf_event *event)
 {
 	struct perf_event *sibling, *leader = event->group_leader;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cpu_hw_events fake_pmu;
 
@@ -588,6 +728,8 @@ validate_group(struct perf_event *event)
 	if (!validate_event(&fake_pmu, event))
 		return -ENOSPC;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct pmu_hw_events fake_pmu;
 	DECLARE_BITMAP(fake_used_mask, ARMPMU_MAX_HWEVENTS);
 
@@ -608,11 +750,15 @@ validate_group(struct perf_event *event)
 
 	if (!validate_event(&fake_pmu, event))
 		return -EINVAL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static irqreturn_t armpmu_platform_irq(int irq, void *dev)
 {
 <<<<<<< HEAD
@@ -671,11 +817,24 @@ armpmu_generic_free_irq(int irq)
 {
         if (irq >= 0)
                 free_irq(irq, NULL);
+=======
+static irqreturn_t armpmu_dispatch_irq(int irq, void *dev)
+{
+	struct arm_pmu *armpmu = (struct arm_pmu *) dev;
+	struct platform_device *plat_device = armpmu->plat_device;
+	struct arm_pmu_platdata *plat = dev_get_platdata(&plat_device->dev);
+
+	if (plat && plat->handle_irq)
+		return plat->handle_irq(irq, dev, armpmu->handle_irq);
+	else
+		return armpmu->handle_irq(irq, dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 armpmu_release_hardware(struct arm_pmu *armpmu)
 {
+<<<<<<< HEAD
 	int i, irq, irqs;
 	struct platform_device *pmu_device = armpmu->plat_device;
 
@@ -689,19 +848,28 @@ armpmu_release_hardware(struct arm_pmu *armpmu)
 	}
 
 	release_pmu(armpmu->type);
+=======
+	armpmu->free_irq(armpmu);
+	pm_runtime_put_sync(&armpmu->plat_device->dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 armpmu_reserve_hardware(struct arm_pmu *armpmu)
 {
+<<<<<<< HEAD
 	struct arm_pmu_platdata *plat;
 	irq_handler_t handle_irq;
 	int i, err, irq, irqs;
+=======
+	int err;
+>>>>>>> refs/remotes/origin/master
 	struct platform_device *pmu_device = armpmu->plat_device;
 
 	if (!pmu_device)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	err = reserve_pmu(armpmu->type);
 	if (err) {
 		pr_warning("unable to reserve pmu\n");
@@ -796,6 +964,15 @@ armpmu_release_hardware(void)
 		cpumask_set_cpu(i, &armpmu->active_irqs);
 	}
 
+=======
+	pm_runtime_get_sync(&pmu_device->dev);
+	err = armpmu->request_irq(armpmu, armpmu_dispatch_irq);
+	if (err) {
+		armpmu_release_hardware(armpmu);
+		return err;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -810,13 +987,17 @@ hw_perf_event_destroy(struct perf_event *event)
 		armpmu_release_hardware(armpmu);
 		mutex_unlock(pmu_reserve_mutex);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 event_requires_mode_exclusion(struct perf_event_attr *attr)
 {
 	return attr->exclude_idle || attr->exclude_user ||
+<<<<<<< HEAD
 <<<<<<< HEAD
 		attr->exclude_kernel || attr->exclude_hv;
 }
@@ -834,11 +1015,15 @@ hw_perf_event_destroy(struct perf_event *event)
 =======
 	       attr->exclude_kernel || attr->exclude_hv;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       attr->exclude_kernel || attr->exclude_hv;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 __hw_perf_event_init(struct perf_event *event)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct hw_perf_event *hwc = &event->hw;
 	int mapping, err;
@@ -861,6 +1046,13 @@ __hw_perf_event_init(struct perf_event *event)
 
 	mapping = armpmu->map_event(event);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct arm_pmu *armpmu = to_arm_pmu(event->pmu);
+	struct hw_perf_event *hwc = &event->hw;
+	int mapping;
+
+	mapping = armpmu->map_event(event);
+>>>>>>> refs/remotes/origin/master
 
 	if (mapping < 0) {
 		pr_debug("event %x:%llx not supported\n", event->attr.type,
@@ -869,15 +1061,19 @@ __hw_perf_event_init(struct perf_event *event)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We don't assign an index until we actually place the event onto
 	 * hardware. Use -1 to signify that we haven't decided where to put it
 	 * yet. For SMP systems, each core has it's own PMU so we can't do any
 	 * clever allocation or constraints checking at this point.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	hwc->idx = -1;
 
@@ -905,6 +1101,8 @@ __hw_perf_event_init(struct perf_event *event)
 		hwc->sample_period  = armpmu->max_period;
 		hwc->last_period = hwc->sample_period;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	hwc->idx		= -1;
 	hwc->config_base	= 0;
 	hwc->config		= 0;
@@ -918,10 +1116,16 @@ __hw_perf_event_init(struct perf_event *event)
 	     event_requires_mode_exclusion(&event->attr)) {
 		pr_debug("ARM performance counters do not support "
 			 "mode exclusion\n");
+<<<<<<< HEAD
 		return -EPERM;
 	}
 
 
+=======
+		return -EOPNOTSUPP;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Store the event encoding into the config_base field.
 	 */
@@ -936,6 +1140,7 @@ __hw_perf_event_init(struct perf_event *event)
 		 */
 		hwc->sample_period  = armpmu->max_period >> 1;
 		hwc->last_period    = hwc->sample_period;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		local64_set(&hwc->period_left, hwc->sample_period);
 	}
@@ -948,10 +1153,22 @@ __hw_perf_event_init(struct perf_event *event)
 	}
 
 	return err;
+=======
+		local64_set(&hwc->period_left, hwc->sample_period);
+	}
+
+	if (event->group_leader != event) {
+		if (validate_group(event) != 0)
+			return -EINVAL;
+	}
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int armpmu_event_init(struct perf_event *event)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int err = 0;
 
@@ -980,6 +1197,8 @@ static int armpmu_event_init(struct perf_event *event)
 			atomic_inc(&active_events);
 		mutex_unlock(&pmu_reserve_mutex);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct arm_pmu *armpmu = to_arm_pmu(event->pmu);
 	int err = 0;
 	atomic_t *active_events = &armpmu->active_events;
@@ -1001,7 +1220,10 @@ static int armpmu_event_init(struct perf_event *event)
 		if (!err)
 			atomic_inc(active_events);
 		mutex_unlock(&armpmu->reserve_mutex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (err)
@@ -1016,6 +1238,7 @@ static int armpmu_event_init(struct perf_event *event)
 
 static void armpmu_enable(struct pmu *pmu)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Enable all of the perf events on hardware. */
 	int idx, enabled = 0;
@@ -1043,17 +1266,24 @@ static void armpmu_disable(struct pmu *pmu)
 	if (armpmu)
 		armpmu->stop();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct arm_pmu *armpmu = to_arm_pmu(pmu);
 	struct pmu_hw_events *hw_events = armpmu->get_hw_events();
 	int enabled = bitmap_weight(hw_events->used_mask, armpmu->num_events);
 
 	if (enabled)
+<<<<<<< HEAD
 		armpmu->start();
+=======
+		armpmu->start(armpmu);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void armpmu_disable(struct pmu *pmu)
 {
 	struct arm_pmu *armpmu = to_arm_pmu(pmu);
+<<<<<<< HEAD
 	armpmu->stop();
 }
 
@@ -1441,6 +1671,62 @@ init_hw_perf_events(void)
 	return 0;
 }
 early_initcall(init_hw_perf_events);
+=======
+	armpmu->stop(armpmu);
+}
+
+#ifdef CONFIG_PM_RUNTIME
+static int armpmu_runtime_resume(struct device *dev)
+{
+	struct arm_pmu_platdata *plat = dev_get_platdata(dev);
+
+	if (plat && plat->runtime_resume)
+		return plat->runtime_resume(dev);
+
+	return 0;
+}
+
+static int armpmu_runtime_suspend(struct device *dev)
+{
+	struct arm_pmu_platdata *plat = dev_get_platdata(dev);
+
+	if (plat && plat->runtime_suspend)
+		return plat->runtime_suspend(dev);
+
+	return 0;
+}
+#endif
+
+const struct dev_pm_ops armpmu_dev_pm_ops = {
+	SET_RUNTIME_PM_OPS(armpmu_runtime_suspend, armpmu_runtime_resume, NULL)
+};
+
+static void armpmu_init(struct arm_pmu *armpmu)
+{
+	atomic_set(&armpmu->active_events, 0);
+	mutex_init(&armpmu->reserve_mutex);
+
+	armpmu->pmu = (struct pmu) {
+		.pmu_enable	= armpmu_enable,
+		.pmu_disable	= armpmu_disable,
+		.event_init	= armpmu_event_init,
+		.add		= armpmu_add,
+		.del		= armpmu_del,
+		.start		= armpmu_start,
+		.stop		= armpmu_stop,
+		.read		= armpmu_read,
+	};
+}
+
+int armpmu_register(struct arm_pmu *armpmu, int type)
+{
+	armpmu_init(armpmu);
+	pm_runtime_enable(&armpmu->plat_device->dev);
+	pr_info("enabled with %s PMU driver, %d counters available\n",
+			armpmu->name, armpmu->num_events);
+	return perf_pmu_register(&armpmu->pmu, armpmu->name, type);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Callchain handling code.
@@ -1493,6 +1779,13 @@ perf_callchain_user(struct perf_callchain_entry *entry, struct pt_regs *regs)
 {
 	struct frame_tail __user *tail;
 
+<<<<<<< HEAD
+=======
+	if (perf_guest_cbs && perf_guest_cbs->is_in_guest()) {
+		/* We don't support guest os callchain now */
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	perf_callchain_store(entry, regs->ARM_pc);
 	tail = (struct frame_tail __user *)regs->ARM_fp - 1;
@@ -1521,9 +1814,47 @@ perf_callchain_kernel(struct perf_callchain_entry *entry, struct pt_regs *regs)
 {
 	struct stackframe fr;
 
+<<<<<<< HEAD
+=======
+	if (perf_guest_cbs && perf_guest_cbs->is_in_guest()) {
+		/* We don't support guest os callchain now */
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	fr.fp = regs->ARM_fp;
 	fr.sp = regs->ARM_sp;
 	fr.lr = regs->ARM_lr;
 	fr.pc = regs->ARM_pc;
 	walk_stackframe(&fr, callchain_trace, entry);
 }
+<<<<<<< HEAD
+=======
+
+unsigned long perf_instruction_pointer(struct pt_regs *regs)
+{
+	if (perf_guest_cbs && perf_guest_cbs->is_in_guest())
+		return perf_guest_cbs->get_guest_ip();
+
+	return instruction_pointer(regs);
+}
+
+unsigned long perf_misc_flags(struct pt_regs *regs)
+{
+	int misc = 0;
+
+	if (perf_guest_cbs && perf_guest_cbs->is_in_guest()) {
+		if (perf_guest_cbs->is_user_mode())
+			misc |= PERF_RECORD_MISC_GUEST_USER;
+		else
+			misc |= PERF_RECORD_MISC_GUEST_KERNEL;
+	} else {
+		if (user_mode(regs))
+			misc |= PERF_RECORD_MISC_USER;
+		else
+			misc |= PERF_RECORD_MISC_KERNEL;
+	}
+
+	return misc;
+}
+>>>>>>> refs/remotes/origin/master

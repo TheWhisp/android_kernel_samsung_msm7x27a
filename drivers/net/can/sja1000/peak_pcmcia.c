@@ -196,7 +196,11 @@ static void pcan_write_canreg(const struct sja1000_priv *priv, int port, u8 v)
 	int c = (priv->reg_base - card->ioport_addr) / PCC_CHAN_SIZE;
 
 	/* sja1000 register changes control the leds state */
+<<<<<<< HEAD
 	if (port == REG_MOD)
+=======
+	if (port == SJA1000_MOD)
+>>>>>>> refs/remotes/origin/master
 		switch (v) {
 		case MOD_RM:
 			/* Reset Mode: set led on */
@@ -509,11 +513,19 @@ static void pcan_free_channels(struct pcan_pccard *card)
 static inline int pcan_channel_present(struct sja1000_priv *priv)
 {
 	/* make sure SJA1000 is in reset mode */
+<<<<<<< HEAD
 	pcan_write_canreg(priv, REG_MOD, 1);
 	pcan_write_canreg(priv, REG_CDR, CDR_PELICAN);
 
 	/* read reset-values */
 	if (pcan_read_canreg(priv, REG_CDR) == CDR_PELICAN)
+=======
+	pcan_write_canreg(priv, SJA1000_MOD, 1);
+	pcan_write_canreg(priv, SJA1000_CDR, CDR_PELICAN);
+
+	/* read reset-values */
+	if (pcan_read_canreg(priv, SJA1000_CDR) == CDR_PELICAN)
+>>>>>>> refs/remotes/origin/master
 		return 1;
 
 	return 0;
@@ -632,7 +644,11 @@ static void pcan_free(struct pcmcia_device *pdev)
 /*
  * setup PCMCIA socket and probe for PEAK-System PC-CARD
  */
+<<<<<<< HEAD
 static int __devinit pcan_probe(struct pcmcia_device *pdev)
+=======
+static int pcan_probe(struct pcmcia_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pcan_pccard *card;
 	int err;
@@ -660,7 +676,10 @@ static int __devinit pcan_probe(struct pcmcia_device *pdev)
 
 	card = kzalloc(sizeof(struct pcan_pccard), GFP_KERNEL);
 	if (!card) {
+<<<<<<< HEAD
 		dev_err(&pdev->dev, "couldn't allocate card memory\n");
+=======
+>>>>>>> refs/remotes/origin/master
 		err = -ENOMEM;
 		goto probe_err_2;
 	}
@@ -686,8 +705,15 @@ static int __devinit pcan_probe(struct pcmcia_device *pdev)
 
 	/* detect available channels */
 	pcan_add_channels(card);
+<<<<<<< HEAD
 	if (!card->chan_count)
 		goto probe_err_4;
+=======
+	if (!card->chan_count) {
+		err = -ENOMEM;
+		goto probe_err_4;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* init the timer which controls the leds */
 	init_timer(&card->led_timer);
@@ -739,6 +765,7 @@ static struct pcmcia_driver pcan_driver = {
 	.remove = pcan_remove,
 	.id_table = pcan_table,
 };
+<<<<<<< HEAD
 
 static int __init pcan_init(void)
 {
@@ -751,3 +778,6 @@ static void __exit pcan_exit(void)
 	pcmcia_unregister_driver(&pcan_driver);
 }
 module_exit(pcan_exit);
+=======
+module_pcmcia_driver(pcan_driver);
+>>>>>>> refs/remotes/origin/master

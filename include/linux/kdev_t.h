@@ -1,6 +1,12 @@
 #ifndef _LINUX_KDEV_T_H
 #define _LINUX_KDEV_T_H
+<<<<<<< HEAD
 #ifdef __KERNEL__
+=======
+
+#include <uapi/linux/kdev_t.h>
+
+>>>>>>> refs/remotes/origin/master
 #define MINORBITS	20
 #define MINORMASK	((1U << MINORBITS) - 1)
 
@@ -87,6 +93,7 @@ static inline unsigned sysv_minor(u32 dev)
 	return dev & 0x3ffff;
 }
 
+<<<<<<< HEAD
 #else /* __KERNEL__ */
 
 /*
@@ -97,4 +104,6 @@ from the kernel sources. These must be the externally visible ones.
 #define MINOR(dev)	((dev) & 0xff)
 #define MKDEV(ma,mi)	((ma)<<8 | (mi))
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

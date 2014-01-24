@@ -1,12 +1,16 @@
 /* atmdev.h - ATM device driver declarations and various related items */
+<<<<<<< HEAD
  
 /* Written 1995-2000 by Werner Almesberger, EPFL LRC/ICA */
  
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef LINUX_ATMDEV_H
 #define LINUX_ATMDEV_H
 
 
+<<<<<<< HEAD
 #include <linux/atmapi.h>
 #include <linux/atm.h>
 #include <linux/atmioc.h>
@@ -223,6 +227,8 @@ struct atm_cirange {
 #include <net/sock.h>
 #include <asm/atomic.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/wait.h> /* wait_queue_head_t */
 #include <linux/time.h> /* struct timeval */
 #include <linux/net.h>
@@ -231,7 +237,11 @@ struct atm_cirange {
 #include <linux/uio.h>
 #include <net/sock.h>
 #include <linux/atomic.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <uapi/linux/atmdev.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PROC_FS
 #include <linux/proc_fs.h>
@@ -261,9 +271,13 @@ struct k_atm_dev_stats {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct device;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct device;
+>>>>>>> refs/remotes/origin/master
 
 enum {
 	ATM_VF_ADDR,		/* Address is in use. Set by anybody, cleared
@@ -322,6 +336,10 @@ struct atm_vcc {
 	struct atm_dev	*dev;		/* device back pointer */
 	struct atm_qos	qos;		/* QOS */
 	struct atm_sap	sap;		/* SAP */
+<<<<<<< HEAD
+=======
+	void (*release_cb)(struct atm_vcc *vcc); /* release_sock callback */
+>>>>>>> refs/remotes/origin/master
 	void (*push)(struct atm_vcc *vcc,struct sk_buff *skb);
 	void (*pop)(struct atm_vcc *vcc,struct sk_buff *skb); /* optional */
 	int (*push_oam)(struct atm_vcc *vcc,void *cell);
@@ -329,6 +347,10 @@ struct atm_vcc {
 	void		*dev_data;	/* per-device data */
 	void		*proto_data;	/* per-protocol data */
 	struct k_atm_aal_stats *stats;	/* pointer to AAL stats group */
+<<<<<<< HEAD
+=======
+	struct module *owner;		/* owner of ->push function */
+>>>>>>> refs/remotes/origin/master
 	/* SVC part --- may move later ------------------------------------- */
 	short		itf;		/* interface number */
 	struct sockaddr_atmsvc local;
@@ -461,6 +483,7 @@ void vcc_insert_socket(struct sock *sk);
 void atm_dev_release_vccs(struct atm_dev *dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * This is approximately the algorithm used by alloc_skb.
  *
@@ -473,6 +496,8 @@ static inline int atm_guess_pdu2truesize(int size)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline void atm_force_charge(struct atm_vcc *vcc,int truesize)
 {
@@ -548,6 +573,9 @@ void deregister_atm_ioctl(struct atm_ioctl *);
 int register_atmdevice_notifier(struct notifier_block *nb);
 void unregister_atmdevice_notifier(struct notifier_block *nb);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

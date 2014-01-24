@@ -3,16 +3,24 @@
  *
  * Debug traces for zfcp.
  *
+<<<<<<< HEAD
  * Copyright IBM Corporation 2002, 2010
+=======
+ * Copyright IBM Corp. 2002, 2013
+>>>>>>> refs/remotes/origin/master
  */
 
 #define KMSG_COMPONENT "zfcp"
 #define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ctype.h>
 #include <linux/slab.h>
 #include <asm/debug.h>
@@ -26,6 +34,16 @@ module_param(dbfsize, uint, 0400);
 MODULE_PARM_DESC(dbfsize,
 		 "number of pages for each debug feature area (default 4)");
 
+<<<<<<< HEAD
+=======
+static u32 dbflevel = 3;
+
+module_param(dbflevel, uint, 0400);
+MODULE_PARM_DESC(dbflevel,
+		 "log level for each debug feature area "
+		 "(default 3, range 0..6)");
+
+>>>>>>> refs/remotes/origin/master
 static inline unsigned int zfcp_dbf_plen(unsigned int offset)
 {
 	return sizeof(struct zfcp_dbf_pay) + offset - ZFCP_DBF_PAY_MAX_REC;
@@ -169,7 +187,10 @@ void zfcp_dbf_hba_bit_err(char *tag, struct zfcp_fsf_req *req)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * zfcp_dbf_hba_def_err - trace event for deferred error messages
  * @adapter: pointer to struct zfcp_adapter
  * @req_id: request id which caused the deferred error message
@@ -206,7 +227,10 @@ void zfcp_dbf_hba_def_err(struct zfcp_adapter *adapter, u64 req_id, u16 scount,
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * zfcp_dbf_hba_basic - trace event for basic adapter events
  * @adapter: pointer to struct zfcp_adapter
  */
@@ -343,7 +367,11 @@ void zfcp_dbf_san(char *tag, struct zfcp_dbf *dbf, void *data, u8 id, u16 len,
 
 /**
  * zfcp_dbf_san_req - trace event for issued SAN request
+<<<<<<< HEAD
  * @tag: indentifier for event
+=======
+ * @tag: identifier for event
+>>>>>>> refs/remotes/origin/master
  * @fsf_req: request containing issued CT data
  * d_id: destination ID
  */
@@ -360,7 +388,11 @@ void zfcp_dbf_san_req(char *tag, struct zfcp_fsf_req *fsf, u32 d_id)
 
 /**
  * zfcp_dbf_san_res - trace event for received SAN request
+<<<<<<< HEAD
  * @tag: indentifier for event
+=======
+ * @tag: identifier for event
+>>>>>>> refs/remotes/origin/master
  * @fsf_req: request containing issued CT data
  */
 void zfcp_dbf_san_res(char *tag, struct zfcp_fsf_req *fsf)
@@ -376,7 +408,11 @@ void zfcp_dbf_san_res(char *tag, struct zfcp_fsf_req *fsf)
 
 /**
  * zfcp_dbf_san_in_els - trace event for incoming ELS
+<<<<<<< HEAD
  * @tag: indentifier for event
+=======
+ * @tag: identifier for event
+>>>>>>> refs/remotes/origin/master
  * @fsf_req: request containing issued CT data
  */
 void zfcp_dbf_san_in_els(char *tag, struct zfcp_fsf_req *fsf)
@@ -453,7 +489,11 @@ static debug_info_t *zfcp_dbf_reg(const char *name, int size, int rec_size)
 		return NULL;
 
 	debug_register_view(d, &debug_hex_ascii_view);
+<<<<<<< HEAD
 	debug_set_level(d, 3);
+=======
+	debug_set_level(d, dbflevel);
+>>>>>>> refs/remotes/origin/master
 
 	return d;
 }

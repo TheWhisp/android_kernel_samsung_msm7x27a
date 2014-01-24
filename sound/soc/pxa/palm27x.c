@@ -25,7 +25,11 @@
 
 #include <asm/mach-types.h>
 #include <mach/audio.h>
+<<<<<<< HEAD
 #include <mach/palmasoc.h>
+=======
+#include <linux/platform_data/asoc-palm27x.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "../codecs/wm9712.h"
 #include "pxa2xx-ac97.h"
@@ -79,6 +83,7 @@ static int palm27x_ac97_init(struct snd_soc_pcm_runtime *rtd)
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
 	int err;
 
+<<<<<<< HEAD
 	/* add palm27x specific widgets */
 	err = snd_soc_dapm_new_controls(dapm, palm27x_dapm_widgets,
 				ARRAY_SIZE(palm27x_dapm_widgets));
@@ -90,6 +95,8 @@ static int palm27x_ac97_init(struct snd_soc_pcm_runtime *rtd)
 	if (err)
 		return err;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* connected pins */
 	if (machine_is_palmld())
 		snd_soc_dapm_enable_pin(dapm, "MIC1");
@@ -108,12 +115,15 @@ static int palm27x_ac97_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_nc_pin(dapm, "MIC2");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = snd_soc_dapm_sync(dapm);
 	if (err)
 		return err;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Jack detection API stuff */
 	err = snd_soc_jack_new(codec, "Headphone Jack",
 				SND_JACK_HEADPHONE, &hs_jack);
@@ -154,6 +164,7 @@ static struct snd_soc_dai_link palm27x_dai[] = {
 static struct snd_soc_card palm27x_asoc = {
 	.name = "Palm/PXA27x",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.owner = THIS_MODULE,
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -163,6 +174,17 @@ static struct snd_soc_card palm27x_asoc = {
 
 static struct platform_device *palm27x_snd_device;
 
+=======
+	.owner = THIS_MODULE,
+	.dai_link = palm27x_dai,
+	.num_links = ARRAY_SIZE(palm27x_dai),
+	.dapm_widgets = palm27x_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(palm27x_dapm_widgets),
+	.dapm_routes = audio_map,
+	.num_dapm_routes = ARRAY_SIZE(audio_map)
+};
+
+>>>>>>> refs/remotes/origin/master
 static int palm27x_asoc_probe(struct platform_device *pdev)
 {
 	int ret;
@@ -179,6 +201,7 @@ static int palm27x_asoc_probe(struct platform_device *pdev)
 	hs_jack_gpios[0].gpio = ((struct palm27x_asoc_info *)
 			(pdev->dev.platform_data))->jack_gpio;
 
+<<<<<<< HEAD
 	palm27x_snd_device = platform_device_alloc("soc-audio", -1);
 	if (!palm27x_snd_device)
 		return -ENOMEM;
@@ -200,11 +223,26 @@ put_device:
 static int __devexit palm27x_asoc_remove(struct platform_device *pdev)
 {
 	platform_device_unregister(palm27x_snd_device);
+=======
+	palm27x_asoc.dev = &pdev->dev;
+
+	ret = snd_soc_register_card(&palm27x_asoc);
+	if (ret)
+		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+			ret);
+	return ret;
+}
+
+static int palm27x_asoc_remove(struct platform_device *pdev)
+{
+	snd_soc_unregister_card(&palm27x_asoc);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver palm27x_wm9712_driver = {
 	.probe		= palm27x_asoc_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(palm27x_asoc_remove),
 	.driver		= {
 		.name		= "palm27x-asoc",
@@ -228,6 +266,17 @@ module_exit(palm27x_asoc_exit);
 =======
 module_platform_driver(palm27x_wm9712_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= palm27x_asoc_remove,
+	.driver		= {
+		.name		= "palm27x-asoc",
+		.owner		= THIS_MODULE,
+		.pm     = &snd_soc_pm_ops,
+	},
+};
+
+module_platform_driver(palm27x_wm9712_driver);
+>>>>>>> refs/remotes/origin/master
 
 /* Module information */
 MODULE_AUTHOR("Marek Vasut <marek.vasut@gmail.com>");

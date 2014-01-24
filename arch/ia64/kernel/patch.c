@@ -12,9 +12,12 @@
 #include <asm/processor.h>
 #include <asm/sections.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/unistd.h>
 
 /*

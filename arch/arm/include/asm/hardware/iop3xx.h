@@ -18,6 +18,7 @@
 /*
  * IOP3XX GPIO handling
  */
+<<<<<<< HEAD
 #define GPIO_IN			0
 #define GPIO_OUT		1
 #define GPIO_LOW		0
@@ -28,6 +29,11 @@
 extern void gpio_line_config(int line, int direction);
 extern int  gpio_line_get(int line);
 extern void gpio_line_set(int line, int value);
+=======
+#define IOP3XX_GPIO_LINE(x)	(x)
+
+#ifndef __ASSEMBLY__
+>>>>>>> refs/remotes/origin/master
 extern int init_atu;
 extern int iop3xx_get_init_atu(void);
 #endif
@@ -37,7 +43,11 @@ extern int iop3xx_get_init_atu(void);
  * IOP3XX processor registers
  */
 #define IOP3XX_PERIPHERAL_PHYS_BASE	0xffffe000
+<<<<<<< HEAD
 #define IOP3XX_PERIPHERAL_VIRT_BASE	0xfeffe000
+=======
+#define IOP3XX_PERIPHERAL_VIRT_BASE	0xfedfe000
+>>>>>>> refs/remotes/origin/master
 #define IOP3XX_PERIPHERAL_SIZE		0x00002000
 #define IOP3XX_PERIPHERAL_UPPER_PA (IOP3XX_PERIPHERAL_PHYS_BASE +\
 					IOP3XX_PERIPHERAL_SIZE - 1)
@@ -168,11 +178,14 @@ extern int iop3xx_get_init_atu(void);
 /* PERCR0 DOESN'T EXIST - index from 1! */
 #define IOP3XX_PERCR0		(volatile u32 *)IOP3XX_REG_ADDR(0x0710)
 
+<<<<<<< HEAD
 /* General Purpose I/O  */
 #define IOP3XX_GPOE		(volatile u32 *)IOP3XX_GPIO_REG(0x0000)
 #define IOP3XX_GPID		(volatile u32 *)IOP3XX_GPIO_REG(0x0004)
 #define IOP3XX_GPOD		(volatile u32 *)IOP3XX_GPIO_REG(0x0008)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Timers  */
 #define IOP3XX_TU_TMR0		(volatile u32 *)IOP3XX_TIMER_REG(0x0000)
 #define IOP3XX_TU_TMR1		(volatile u32 *)IOP3XX_TIMER_REG(0x0004)
@@ -217,6 +230,7 @@ extern int iop3xx_get_init_atu(void);
 #define IOP3XX_PCI_LOWER_MEM_PA	0x80000000
 #define IOP3XX_PCI_MEM_WINDOW_SIZE	0x08000000
 
+<<<<<<< HEAD
 #define IOP3XX_PCI_IO_WINDOW_SIZE	0x00010000
 #define IOP3XX_PCI_LOWER_IO_PA		0x90000000
 #define IOP3XX_PCI_LOWER_IO_VA		0xfe000000
@@ -238,12 +252,25 @@ void iop_init_time(unsigned long tickrate);
 =======
 
 #include <linux/types.h>
+=======
+#define IOP3XX_PCI_LOWER_IO_PA		0x90000000
+#define IOP3XX_PCI_LOWER_IO_BA		0x00000000
+
+#ifndef __ASSEMBLY__
+
+#include <linux/types.h>
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/master
 
 void iop3xx_map_io(void);
 void iop_init_cp6_handler(void);
 void iop_init_time(unsigned long tickrate);
+<<<<<<< HEAD
 void iop3xx_restart(char, const char *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void iop3xx_restart(enum reboot_mode, const char *);
+>>>>>>> refs/remotes/origin/master
 
 static inline u32 read_tmr0(void)
 {

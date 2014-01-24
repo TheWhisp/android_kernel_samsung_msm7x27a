@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+CONFIG_ARCH_VERSATILE=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_EXPERIMENTAL=y
 # CONFIG_LOCALVERSION_AUTO is not set
 CONFIG_SYSVIPC=y

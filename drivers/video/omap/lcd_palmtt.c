@@ -30,10 +30,14 @@ GPIO13 - screen blanking
 #include <linux/io.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
 =======
 #include <asm/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include "omapfb.h"
 
 static int palmtt_panel_init(struct lcd_panel *panel,
@@ -107,10 +111,14 @@ static int palmtt_panel_resume(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_driver palmtt_panel_driver = {
 =======
 static struct platform_driver palmtt_panel_driver = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_driver palmtt_panel_driver = {
+>>>>>>> refs/remotes/origin/master
 	.probe		= palmtt_panel_probe,
 	.remove		= palmtt_panel_remove,
 	.suspend	= palmtt_panel_suspend,
@@ -121,6 +129,7 @@ static struct platform_driver palmtt_panel_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init palmtt_panel_drv_init(void)
 {
@@ -137,3 +146,6 @@ module_exit(palmtt_panel_drv_cleanup);
 =======
 module_platform_driver(palmtt_panel_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(palmtt_panel_driver);
+>>>>>>> refs/remotes/origin/master

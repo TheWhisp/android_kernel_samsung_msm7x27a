@@ -20,7 +20,10 @@
 #include <linux/mmc/card.h>
 
 #include <plat/gpio-cfg.h>
+<<<<<<< HEAD
 #include <plat/regs-sdhci.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <plat/sdhci.h>
 
 void s5pv210_setup_sdhci0_cfg_gpio(struct platform_device *dev, int width)

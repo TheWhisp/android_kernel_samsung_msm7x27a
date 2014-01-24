@@ -29,15 +29,26 @@
 #include <linux/device.h>
 #include <linux/io.h>
 #include <linux/iommu.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/cacheflush.h>
 
 /* bitmap of the page sizes currently supported */
 #define GART_IOMMU_PGSIZES	(SZ_4K)
 
+<<<<<<< HEAD
 #define GART_CONFIG		0x24
 #define GART_ENTRY_ADDR		0x28
 #define GART_ENTRY_DATA		0x2c
+=======
+#define GART_REG_BASE		0x24
+#define GART_CONFIG		(0x24 - GART_REG_BASE)
+#define GART_ENTRY_ADDR		(0x28 - GART_REG_BASE)
+#define GART_ENTRY_DATA		(0x2c - GART_REG_BASE)
+>>>>>>> refs/remotes/origin/master
 #define GART_ENTRY_PHYS_ADDR_VALID	(1 << 31)
 
 #define GART_PAGE_SHIFT		12
@@ -158,11 +169,23 @@ static int gart_iommu_attach_dev(struct iommu_domain *domain,
 	struct gart_client *client, *c;
 	int err = 0;
 
+<<<<<<< HEAD
 	gart = dev_get_drvdata(dev->parent);
+=======
+	gart = gart_handle;
+>>>>>>> refs/remotes/origin/master
 	if (!gart)
 		return -EINVAL;
 	domain->priv = gart;
 
+<<<<<<< HEAD
+=======
+	domain->geometry.aperture_start = gart->iovmm_base;
+	domain->geometry.aperture_end   = gart->iovmm_base +
+					gart->page_count * GART_PAGE_SIZE - 1;
+	domain->geometry.force_aperture = true;
+
+>>>>>>> refs/remotes/origin/master
 	client = devm_kzalloc(gart->dev, sizeof(*c), GFP_KERNEL);
 	if (!client)
 		return -ENOMEM;
@@ -245,7 +268,11 @@ static int gart_iommu_map(struct iommu_domain *domain, unsigned long iova,
 	spin_lock_irqsave(&gart->pte_lock, flags);
 	pfn = __phys_to_pfn(pa);
 	if (!pfn_valid(pfn)) {
+<<<<<<< HEAD
 		dev_err(gart->dev, "Invalid page: %08x\n", pa);
+=======
+		dev_err(gart->dev, "Invalid page: %pa\n", &pa);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&gart->pte_lock, flags);
 		return -EINVAL;
 	}
@@ -272,7 +299,11 @@ static size_t gart_iommu_unmap(struct iommu_domain *domain, unsigned long iova,
 }
 
 static phys_addr_t gart_iommu_iova_to_phys(struct iommu_domain *domain,
+<<<<<<< HEAD
 					   unsigned long iova)
+=======
+					   dma_addr_t iova)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gart_device *gart = domain->priv;
 	unsigned long pte;
@@ -288,7 +319,12 @@ static phys_addr_t gart_iommu_iova_to_phys(struct iommu_domain *domain,
 
 	pa = (pte & GART_PAGE_MASK);
 	if (!pfn_valid(__phys_to_pfn(pa))) {
+<<<<<<< HEAD
 		dev_err(gart->dev, "No entry for %08lx:%08x\n", iova, pa);
+=======
+		dev_err(gart->dev, "No entry for %08llx:%pa\n",
+			 (unsigned long long)iova, &pa);
+>>>>>>> refs/remotes/origin/master
 		gart_dump_table(gart);
 		return -EINVAL;
 	}
@@ -343,7 +379,10 @@ static int tegra_gart_probe(struct platform_device *pdev)
 	struct gart_device *gart;
 	struct resource *res, *res_remap;
 	void __iomem *gart_regs;
+<<<<<<< HEAD
 	int err;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct device *dev = &pdev->dev;
 
 	if (gart_handle)
@@ -368,8 +407,12 @@ static int tegra_gart_probe(struct platform_device *pdev)
 	gart_regs = devm_ioremap(dev, res->start, resource_size(res));
 	if (!gart_regs) {
 		dev_err(dev, "failed to remap GART registers\n");
+<<<<<<< HEAD
 		err = -ENXIO;
 		goto fail;
+=======
+		return -ENXIO;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	gart->dev = &pdev->dev;
@@ -383,14 +426,19 @@ static int tegra_gart_probe(struct platform_device *pdev)
 	gart->savedata = vmalloc(sizeof(u32) * gart->page_count);
 	if (!gart->savedata) {
 		dev_err(dev, "failed to allocate context save area\n");
+<<<<<<< HEAD
 		err = -ENOMEM;
 		goto fail;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, gart);
 	do_gart_setup(gart, NULL);
 
 	gart_handle = gart;
+<<<<<<< HEAD
 	return 0;
 
 fail:
@@ -400,28 +448,51 @@ fail:
 		vfree(gart->savedata);
 	devm_kfree(dev, gart);
 	return err;
+=======
+	bus_set_iommu(&platform_bus_type, &gart_iommu_ops);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int tegra_gart_remove(struct platform_device *pdev)
 {
 	struct gart_device *gart = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 	struct device *dev = gart->dev;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	writel(0, gart->regs + GART_CONFIG);
 	if (gart->savedata)
 		vfree(gart->savedata);
+<<<<<<< HEAD
 	if (gart->regs)
 		devm_iounmap(dev, gart->regs);
 	devm_kfree(dev, gart);
+=======
+>>>>>>> refs/remotes/origin/master
 	gart_handle = NULL;
 	return 0;
 }
 
+<<<<<<< HEAD
 const struct dev_pm_ops tegra_gart_pm_ops = {
+=======
+static const struct dev_pm_ops tegra_gart_pm_ops = {
+>>>>>>> refs/remotes/origin/master
 	.suspend	= tegra_gart_suspend,
 	.resume		= tegra_gart_resume,
 };
 
+<<<<<<< HEAD
+=======
+static struct of_device_id tegra_gart_of_match[] = {
+	{ .compatible = "nvidia,tegra20-gart", },
+	{ },
+};
+MODULE_DEVICE_TABLE(of, tegra_gart_of_match);
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver tegra_gart_driver = {
 	.probe		= tegra_gart_probe,
 	.remove		= tegra_gart_remove,
@@ -429,12 +500,21 @@ static struct platform_driver tegra_gart_driver = {
 		.owner	= THIS_MODULE,
 		.name	= "tegra-gart",
 		.pm	= &tegra_gart_pm_ops,
+<<<<<<< HEAD
 	},
 };
 
 static int __devinit tegra_gart_init(void)
 {
 	bus_set_iommu(&platform_bus_type, &gart_iommu_ops);
+=======
+		.of_match_table = tegra_gart_of_match,
+	},
+};
+
+static int tegra_gart_init(void)
+{
+>>>>>>> refs/remotes/origin/master
 	return platform_driver_register(&tegra_gart_driver);
 }
 
@@ -448,4 +528,8 @@ module_exit(tegra_gart_exit);
 
 MODULE_DESCRIPTION("IOMMU API for GART in Tegra20");
 MODULE_AUTHOR("Hiroshi DOYU <hdoyu@nvidia.com>");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:tegra-gart");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL v2");

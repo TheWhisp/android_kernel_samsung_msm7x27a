@@ -1,10 +1,14 @@
 /*
+<<<<<<< HEAD
  *  include/asm-s390/unistd.h
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *  S390 version
  *
  *  Derived from "include/asm-i386/unistd.h"
  */
+<<<<<<< HEAD
 
 #ifndef _ASM_S390_UNISTD_H_
 #define _ASM_S390_UNISTD_H_
@@ -376,6 +380,13 @@
 #endif
 
 #ifdef __KERNEL__
+=======
+#ifndef _ASM_S390_UNISTD_H_
+#define _ASM_S390_UNISTD_H_
+
+#include <uapi/asm/unistd.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CONFIG_64BIT
 #define __IGNORE_select
@@ -394,7 +405,10 @@
 #define __IGNORE_recvmmsg
 #define __IGNORE_sendmmsg
 
+<<<<<<< HEAD
 #define __ARCH_WANT_IPC_PARSE_VERSION
+=======
+>>>>>>> refs/remotes/origin/master
 #define __ARCH_WANT_OLD_READDIR
 #define __ARCH_WANT_SYS_ALARM
 #define __ARCH_WANT_SYS_GETHOSTNAME
@@ -403,9 +417,13 @@
 #define __ARCH_WANT_SYS_UTIME
 #define __ARCH_WANT_SYS_SOCKETCALL
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define __ARCH_WANT_SYS_IPC
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define __ARCH_WANT_SYS_IPC
+>>>>>>> refs/remotes/origin/master
 #define __ARCH_WANT_SYS_FADVISE64
 #define __ARCH_WANT_SYS_GETPGRP
 #define __ARCH_WANT_SYS_LLSEEK
@@ -415,14 +433,18 @@
 #define __ARCH_WANT_SYS_OLDUMOUNT
 #define __ARCH_WANT_SYS_SIGPENDING
 #define __ARCH_WANT_SYS_SIGPROCMASK
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGACTION
 #define __ARCH_WANT_SYS_RT_SIGSUSPEND
+=======
+>>>>>>> refs/remotes/origin/master
 # ifndef CONFIG_64BIT
 #   define __ARCH_WANT_STAT64
 #   define __ARCH_WANT_SYS_TIME
 # endif
 # ifdef CONFIG_COMPAT
 #   define __ARCH_WANT_COMPAT_SYS_TIME
+<<<<<<< HEAD
 #   define __ARCH_WANT_COMPAT_SYS_RT_SIGSUSPEND
 # endif
 
@@ -435,4 +457,11 @@
 #define cond_syscall(x) asm(".weak\t" #x "\n\t.set\t" #x ",sys_ni_syscall")
 
 #endif /* __KERNEL__ */
+=======
+# endif
+#define __ARCH_WANT_SYS_FORK
+#define __ARCH_WANT_SYS_VFORK
+#define __ARCH_WANT_SYS_CLONE
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_S390_UNISTD_H_ */

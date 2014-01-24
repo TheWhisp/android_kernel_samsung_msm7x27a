@@ -87,10 +87,14 @@ static struct clocksource cksrc_puv3_oscr = {
 static struct irqaction puv3_timer_irq = {
 	.name		= "ost0",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED | IRQF_TIMER | IRQF_IRQPOLL,
 =======
 	.flags		= IRQF_TIMER | IRQF_IRQPOLL,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags		= IRQF_TIMER | IRQF_IRQPOLL,
+>>>>>>> refs/remotes/origin/master
 	.handler	= puv3_ost0_interrupt,
 	.dev_id		= &ckevt_puv3_osmr0,
 };

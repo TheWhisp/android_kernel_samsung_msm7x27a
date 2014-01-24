@@ -2,6 +2,11 @@
 # Makefile for the netfilter modules for Link Layer filtering on a bridge.
 #
 
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_NF_TABLES_BRIDGE) += nf_tables_bridge.o
+
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_BRIDGE_NF_EBTABLES) += ebtables.o
 
 # tables

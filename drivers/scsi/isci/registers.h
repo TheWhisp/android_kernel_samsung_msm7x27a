@@ -371,7 +371,10 @@ struct scu_iit_entry {
 	)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* ***************************************************************************** */
 #define SMU_CLOCK_GATING_CONTROL_IDLE_ENABLE_SHIFT    (0)
 #define SMU_CLOCK_GATING_CONTROL_IDLE_ENABLE_MASK     (0x00000001)
@@ -393,7 +396,10 @@ struct scu_iit_entry {
 #define SMU_CGUCR_GEN_BIT(name) \
 	SCU_GEN_BIT(SMU_CLOCK_GATING_CONTROL_##name)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* -------------------------------------------------------------------------- */
 
 #define SMU_CONTROL_STATUS_TASK_CONTEXT_RANGE_ENABLE_SHIFT      (0)
@@ -900,6 +906,7 @@ struct scu_iit_entry {
 	SCU_GEN_BIT(SCU_PTSG_PORT_TASK_SCHEDULER_STATUS_ ## name)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /*
  * *****************************************************************************
@@ -1018,6 +1025,8 @@ struct scu_iit_entry {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * *****************************************************************************
  * * SMU Registers
@@ -1136,14 +1145,20 @@ struct smu_registers {
 /* 0x00A4 SMDW */
 	u32 mmr_data_window;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 reserved_A8;
 	u32 reserved_AC;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* 0x00A8 CGUCR */
 	u32 clock_gating_control;
 /* 0x00AC CGUPC */
 	u32 clock_gating_performance;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* A whole bunch of reserved space */
 	u32 reserved_Bx[4];
 	u32 reserved_Cx[4];
@@ -1366,6 +1381,17 @@ struct scu_transport_layer_registers {
 #define SCU_SAS_LLCTL_GEN_BIT(name) \
 	SCU_GEN_BIT(SCU_SAS_LINK_LAYER_CONTROL_ ## name)
 
+<<<<<<< HEAD
+=======
+#define SCU_SAS_LINK_LAYER_TXCOMSAS_NEGTIME_DEFAULT                     (0xF0)
+#define SCU_SAS_LINK_LAYER_TXCOMSAS_NEGTIME_EXTENDED                    (0x1FF)
+#define SCU_SAS_LINK_LAYER_TXCOMSAS_NEGTIME_SHIFT                       (0)
+#define SCU_SAS_LINK_LAYER_TXCOMSAS_NEGTIME_MASK                        (0x3FF)
+
+#define SCU_SAS_LLTXCOMSAS_GEN_VAL(name, value) \
+	SCU_GEN_VALUE(SCU_SAS_LINK_LAYER_TXCOMSAS_ ## name, value)
+
+>>>>>>> refs/remotes/origin/master
 
 /* #define SCU_FRXHECR_DCNT_OFFSET      0x00B0 */
 #define SCU_PSZGCR_OFFSET           0x00E4
@@ -1564,18 +1590,24 @@ struct scu_sgpio_registers {
 /* 0x0018 SGPIO_SGVSCR */
 	u32 vendor_specific_code;
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 0x0020 SGPIO_SGODSR */
 	u32 ouput_data_select[8];
 /* Remainder of memory space 256 bytes */
 	u32 reserved_1444_14ff[0x31];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* 0x001C Reserved */
 	u32 reserved_001c;
 /* 0x0020 SGPIO_SGODSR */
 	u32 output_data_select[8];
 /* Remainder of memory space 256 bytes */
 	u32 reserved_1444_14ff[0x30];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 };
 

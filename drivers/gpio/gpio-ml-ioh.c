@@ -87,8 +87,12 @@ struct ioh_gpio_reg_data {
  * @gpio_use_sel:		Save GPIO_USE_SEL1~4 register for PM
  * @ch:				Indicate GPIO channel
  * @irq_base:		Save base of IRQ number for interrupt
+<<<<<<< HEAD
  * @spinlock:		Used for register access protection in
  *				interrupt context ioh_irq_type and PM;
+=======
+ * @spinlock:		Used for register access protection
+>>>>>>> refs/remotes/origin/master
  */
 struct ioh_gpio {
 	void __iomem *base;
@@ -97,7 +101,10 @@ struct ioh_gpio {
 	struct gpio_chip gpio;
 	struct ioh_gpio_reg_data ioh_gpio_reg;
 	u32 gpio_use_sel;
+<<<<<<< HEAD
 	struct mutex lock;
+=======
+>>>>>>> refs/remotes/origin/master
 	int ch;
 	int irq_base;
 	spinlock_t spinlock;
@@ -109,8 +116,14 @@ static void ioh_gpio_set(struct gpio_chip *gpio, unsigned nr, int val)
 {
 	u32 reg_val;
 	struct ioh_gpio *chip =	container_of(gpio, struct ioh_gpio, gpio);
+<<<<<<< HEAD
 
 	mutex_lock(&chip->lock);
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&chip->spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 	reg_val = ioread32(&chip->reg->regs[chip->ch].po);
 	if (val)
 		reg_val |= (1 << nr);
@@ -118,7 +131,11 @@ static void ioh_gpio_set(struct gpio_chip *gpio, unsigned nr, int val)
 		reg_val &= ~(1 << nr);
 
 	iowrite32(reg_val, &chip->reg->regs[chip->ch].po);
+<<<<<<< HEAD
 	mutex_unlock(&chip->lock);
+=======
+	spin_unlock_irqrestore(&chip->spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ioh_gpio_get(struct gpio_chip *gpio, unsigned nr)
@@ -134,8 +151,14 @@ static int ioh_gpio_direction_output(struct gpio_chip *gpio, unsigned nr,
 	struct ioh_gpio *chip =	container_of(gpio, struct ioh_gpio, gpio);
 	u32 pm;
 	u32 reg_val;
+<<<<<<< HEAD
 
 	mutex_lock(&chip->lock);
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&chip->spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 	pm = ioread32(&chip->reg->regs[chip->ch].pm) &
 					((1 << num_ports[chip->ch]) - 1);
 	pm |= (1 << nr);
@@ -148,7 +171,11 @@ static int ioh_gpio_direction_output(struct gpio_chip *gpio, unsigned nr,
 		reg_val &= ~(1 << nr);
 	iowrite32(reg_val, &chip->reg->regs[chip->ch].po);
 
+<<<<<<< HEAD
 	mutex_unlock(&chip->lock);
+=======
+	spin_unlock_irqrestore(&chip->spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -157,13 +184,23 @@ static int ioh_gpio_direction_input(struct gpio_chip *gpio, unsigned nr)
 {
 	struct ioh_gpio *chip =	container_of(gpio, struct ioh_gpio, gpio);
 	u32 pm;
+<<<<<<< HEAD
 
 	mutex_lock(&chip->lock);
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&chip->spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 	pm = ioread32(&chip->reg->regs[chip->ch].pm) &
 				((1 << num_ports[chip->ch]) - 1);
 	pm &= ~(1 << nr);
 	iowrite32(pm, &chip->reg->regs[chip->ch].pm);
+<<<<<<< HEAD
 	mutex_unlock(&chip->lock);
+=======
+	spin_unlock_irqrestore(&chip->spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -241,7 +278,11 @@ static void ioh_gpio_setup(struct ioh_gpio *chip, int num_port)
 	gpio->dbg_show = NULL;
 	gpio->base = -1;
 	gpio->ngpio = num_port;
+<<<<<<< HEAD
 	gpio->can_sleep = 0;
+=======
+	gpio->can_sleep = false;
+>>>>>>> refs/remotes/origin/master
 	gpio->to_irq = ioh_gpio_to_irq;
 }
 
@@ -384,7 +425,11 @@ static irqreturn_t ioh_gpio_handler(int irq, void *dev_id)
 	return ret;
 }
 
+<<<<<<< HEAD
 static __devinit void ioh_gpio_alloc_generic_chip(struct ioh_gpio *chip,
+=======
+static void ioh_gpio_alloc_generic_chip(struct ioh_gpio *chip,
+>>>>>>> refs/remotes/origin/master
 				unsigned int irq_start, unsigned int num)
 {
 	struct irq_chip_generic *gc;
@@ -405,7 +450,11 @@ static __devinit void ioh_gpio_alloc_generic_chip(struct ioh_gpio *chip,
 			       IRQ_NOREQUEST | IRQ_NOPROBE, 0);
 }
 
+<<<<<<< HEAD
 static int __devinit ioh_gpio_probe(struct pci_dev *pdev,
+=======
+static int ioh_gpio_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 				    const struct pci_device_id *id)
 {
 	int ret;
@@ -447,7 +496,10 @@ static int __devinit ioh_gpio_probe(struct pci_dev *pdev,
 		chip->base = base;
 		chip->reg = chip->base;
 		chip->ch = i;
+<<<<<<< HEAD
 		mutex_init(&chip->lock);
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_lock_init(&chip->spinlock);
 		ioh_gpio_setup(chip, num_ports[i]);
 		ret = gpiochip_add(&chip->gpio);
@@ -465,6 +517,10 @@ static int __devinit ioh_gpio_probe(struct pci_dev *pdev,
 			dev_warn(&pdev->dev,
 				"ml_ioh_gpio: Failed to get IRQ base num\n");
 			chip->irq_base = -1;
+<<<<<<< HEAD
+=======
+			ret = irq_base;
+>>>>>>> refs/remotes/origin/master
 			goto err_irq_alloc_descs;
 		}
 		chip->irq_base = irq_base;
@@ -496,8 +552,12 @@ err_irq_alloc_descs:
 err_gpiochip_add:
 	while (--i >= 0) {
 		chip--;
+<<<<<<< HEAD
 		ret = gpiochip_remove(&chip->gpio);
 		if (ret)
+=======
+		if (gpiochip_remove(&chip->gpio))
+>>>>>>> refs/remotes/origin/master
 			dev_err(&pdev->dev, "Failed gpiochip_remove(%d)\n", i);
 	}
 	kfree(chip_save);
@@ -517,7 +577,11 @@ err_pci_enable:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit ioh_gpio_remove(struct pci_dev *pdev)
+=======
+static void ioh_gpio_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	int i;
@@ -596,7 +660,11 @@ static int ioh_gpio_resume(struct pci_dev *pdev)
 #define ioh_gpio_resume NULL
 #endif
 
+<<<<<<< HEAD
 static DEFINE_PCI_DEVICE_TABLE(ioh_gpio_pcidev_id) = {
+=======
+static const struct pci_device_id ioh_gpio_pcidev_id[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_ROHM, 0x802E) },
 	{ 0, }
 };
@@ -606,11 +674,16 @@ static struct pci_driver ioh_gpio_driver = {
 	.name = "ml_ioh_gpio",
 	.id_table = ioh_gpio_pcidev_id,
 	.probe = ioh_gpio_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ioh_gpio_remove),
+=======
+	.remove = ioh_gpio_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend = ioh_gpio_suspend,
 	.resume = ioh_gpio_resume
 };
 
+<<<<<<< HEAD
 static int __init ioh_gpio_pci_init(void)
 {
 	return pci_register_driver(&ioh_gpio_driver);
@@ -622,6 +695,9 @@ static void __exit ioh_gpio_pci_exit(void)
 	pci_unregister_driver(&ioh_gpio_driver);
 }
 module_exit(ioh_gpio_pci_exit);
+=======
+module_pci_driver(ioh_gpio_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("OKI SEMICONDUCTOR ML-IOH series GPIO Driver");
 MODULE_LICENSE("GPL");

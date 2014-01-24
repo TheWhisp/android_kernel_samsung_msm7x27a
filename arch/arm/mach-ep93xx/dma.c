@@ -25,7 +25,11 @@
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 
+<<<<<<< HEAD
 #include <mach/dma.h>
+=======
+#include <linux/platform_data/dma-ep93xx.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/hardware.h>
 
 #include "soc.h"

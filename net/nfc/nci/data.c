@@ -49,7 +49,11 @@ void nci_data_exchange_complete(struct nci_dev *ndev, struct sk_buff *skb,
 
 	if (cb) {
 		ndev->data_exchange_cb = NULL;
+<<<<<<< HEAD
 		ndev->data_exchange_cb_context = 0;
+=======
+		ndev->data_exchange_cb_context = NULL;
+>>>>>>> refs/remotes/origin/master
 
 		/* forward skb to nfc core */
 		cb(cb_context, skb, err);
@@ -80,8 +84,11 @@ static inline void nci_push_data_hdr(struct nci_dev *ndev,
 
 	nci_mt_set((__u8 *)hdr, NCI_MT_DATA_PKT);
 	nci_pbf_set((__u8 *)hdr, pbf);
+<<<<<<< HEAD
 
 	skb->dev = (void *) ndev;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int nci_queue_tx_data_frags(struct nci_dev *ndev,
@@ -200,10 +207,17 @@ static void nci_add_rx_data_frag(struct nci_dev *ndev,
 			pr_err("error adding room for accumulated rx data\n");
 
 			kfree_skb(skb);
+<<<<<<< HEAD
 			skb = 0;
 
 			kfree_skb(ndev->rx_data_reassembly);
 			ndev->rx_data_reassembly = 0;
+=======
+			skb = NULL;
+
+			kfree_skb(ndev->rx_data_reassembly);
+			ndev->rx_data_reassembly = NULL;
+>>>>>>> refs/remotes/origin/master
 
 			err = -ENOMEM;
 			goto exit;
@@ -216,7 +230,11 @@ static void nci_add_rx_data_frag(struct nci_dev *ndev,
 
 		/* third, free old reassembly */
 		kfree_skb(ndev->rx_data_reassembly);
+<<<<<<< HEAD
 		ndev->rx_data_reassembly = 0;
+=======
+		ndev->rx_data_reassembly = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (pbf == NCI_PBF_CONT) {

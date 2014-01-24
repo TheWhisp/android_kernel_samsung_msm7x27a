@@ -35,9 +35,13 @@
 #include "au88x0.h"
 #include <linux/gameport.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_GAMEPORT) || (defined(MODULE) && defined(CONFIG_GAMEPORT_MODULE))
 
@@ -95,7 +99,11 @@ static int vortex_game_open(struct gameport *gameport, int mode)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit vortex_gameport_register(vortex_t * vortex)
+=======
+static int vortex_gameport_register(vortex_t *vortex)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gameport *gp;
 
@@ -103,7 +111,11 @@ static int __devinit vortex_gameport_register(vortex_t * vortex)
 	if (!gp) {
 		printk(KERN_ERR "vortex: cannot allocate memory for gameport\n");
 		return -ENOMEM;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	gameport_set_name(gp, "AU88x0 Gameport");
 	gameport_set_phys(gp, "pci%s/gameport0", pci_name(vortex->pci_dev));

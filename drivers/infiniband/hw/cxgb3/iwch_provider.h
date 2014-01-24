@@ -104,9 +104,13 @@ struct iwch_cq {
 	struct t3_cq cq;
 	spinlock_t lock;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spinlock_t comp_handler_lock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spinlock_t comp_handler_lock;
+>>>>>>> refs/remotes/origin/master
 	atomic_t refcnt;
 	wait_queue_head_t wait;
 	u32 __user *user_rptr_addr;

@@ -14,11 +14,17 @@
 #include <linux/serial.h>
 #include <linux/serial_sci.h>
 #include <linux/sh_timer.h>
+<<<<<<< HEAD
 #include <asm/rtc.h>
 <<<<<<< HEAD
 =======
 #include <cpu/serial.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sh_intc.h>
+#include <asm/rtc.h>
+#include <cpu/serial.h>
+>>>>>>> refs/remotes/origin/master
 
 enum {
 	UNUSED = 0,
@@ -78,12 +84,18 @@ static struct plat_sci_port scif0_platform_data = {
 			  SCSCR_RE  | SCSCR_CKE1 | SCSCR_CKE0,
 	.scbrr_algo_id	= SCBRR_ALGO_4,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		= { 56, 56, 56 },
 <<<<<<< HEAD
 =======
 	.ops		= &sh770x_sci_port_ops,
 	.regtype	= SCIx_SH7705_SCIF_REGTYPE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irqs		= SCIx_IRQ_MUXED(evt2irq(0x900)),
+	.ops		= &sh770x_sci_port_ops,
+	.regtype	= SCIx_SH7705_SCIF_REGTYPE,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif0_device = {
@@ -100,12 +112,18 @@ static struct plat_sci_port scif1_platform_data = {
 	.scscr		= SCSCR_TIE | SCSCR_RIE | SCSCR_TE | SCSCR_RE,
 	.scbrr_algo_id	= SCBRR_ALGO_4,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		= { 52, 52, 52 },
 <<<<<<< HEAD
 =======
 	.ops		= &sh770x_sci_port_ops,
 	.regtype	= SCIx_SH7705_SCIF_REGTYPE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irqs		= SCIx_IRQ_MUXED(evt2irq(0x880)),
+	.ops		= &sh770x_sci_port_ops,
+	.regtype	= SCIx_SH7705_SCIF_REGTYPE,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif1_device = {
@@ -123,7 +141,11 @@ static struct resource rtc_resources[] = {
 		.flags  = IORESOURCE_IO,
 	},
 	[1] =	{
+<<<<<<< HEAD
 		.start  = 20,
+=======
+		.start  = evt2irq(0x480),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -155,7 +177,11 @@ static struct resource tmu0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 16,
+=======
+		.start	= evt2irq(0x400),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -183,7 +209,11 @@ static struct resource tmu1_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 17,
+=======
+		.start	= evt2irq(0x420),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -210,7 +240,11 @@ static struct resource tmu2_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 18,
+=======
+		.start	= evt2irq(0x440),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };

@@ -402,7 +402,11 @@ static struct wsp_dma_table *wsp_pci_create_dma32_table(struct wsp_phb *phb,
 	return ERR_PTR(-ENOMEM);
 }
 
+<<<<<<< HEAD
 static void __devinit wsp_pci_dma_dev_setup(struct pci_dev *pdev)
+=======
+static void wsp_pci_dma_dev_setup(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dev_archdata *archdata = &pdev->dev.archdata;
 	struct pci_controller *hose = pci_bus_to_host(pdev->bus);
@@ -502,7 +506,11 @@ static void __init wsp_pcie_configure_hw(struct pci_controller *hose)
 		 (~(hose->mem_resources[0].end -
 		    hose->mem_resources[0].start)) & 0x3ffffff0000ul);
 	out_be64(hose->cfg_data + PCIE_REG_M32A_START_ADDR,
+<<<<<<< HEAD
 		 (hose->mem_resources[0].start - hose->pci_mem_offset) | 1);
+=======
+		 (hose->mem_resources[0].start - hose->mem_offset[0]) | 1);
+>>>>>>> refs/remotes/origin/master
 
 	/* Clear all TVT entries
 	 *

@@ -95,18 +95,24 @@ static void ntfs_end_buffer_async_read(struct buffer_head *bh, int uptodate)
 				ofs = init_size - file_ofs;
 			local_irq_save(flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			kaddr = kmap_atomic(page, KM_BIO_SRC_IRQ);
 			memset(kaddr + bh_offset(bh) + ofs, 0,
 					bh->b_size - ofs);
 			flush_dcache_page(page);
 			kunmap_atomic(kaddr, KM_BIO_SRC_IRQ);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			kaddr = kmap_atomic(page);
 			memset(kaddr + bh_offset(bh) + ofs, 0,
 					bh->b_size - ofs);
 			flush_dcache_page(page);
 			kunmap_atomic(kaddr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			local_irq_restore(flags);
 		}
 	} else {
@@ -156,18 +162,24 @@ static void ntfs_end_buffer_async_read(struct buffer_head *bh, int uptodate)
 		BUG_ON(!recs);
 		local_irq_save(flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kaddr = kmap_atomic(page, KM_BIO_SRC_IRQ);
 		for (i = 0; i < recs; i++)
 			post_read_mst_fixup((NTFS_RECORD*)(kaddr +
 					i * rec_size), rec_size);
 		kunmap_atomic(kaddr, KM_BIO_SRC_IRQ);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		kaddr = kmap_atomic(page);
 		for (i = 0; i < recs; i++)
 			post_read_mst_fixup((NTFS_RECORD*)(kaddr +
 					i * rec_size), rec_size);
 		kunmap_atomic(kaddr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		local_irq_restore(flags);
 		flush_dcache_page(page);
 		if (likely(page_uptodate && !PageError(page)))
@@ -521,10 +533,14 @@ retry_readpage:
 		attr_len = i_size;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	addr = kmap_atomic(page, KM_USER0);
 =======
 	addr = kmap_atomic(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	addr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/master
 	/* Copy the data to the page. */
 	memcpy(addr, (u8*)ctx->attr +
 			le16_to_cpu(ctx->attr->data.resident.value_offset),
@@ -533,10 +549,14 @@ retry_readpage:
 	memset(addr + attr_len, 0, PAGE_CACHE_SIZE - attr_len);
 	flush_dcache_page(page);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(addr, KM_USER0);
 =======
 	kunmap_atomic(addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(addr);
+>>>>>>> refs/remotes/origin/master
 put_unm_err_out:
 	ntfs_attr_put_search_ctx(ctx);
 unm_err_out:
@@ -771,10 +791,14 @@ lock_retry_remap:
 
 			/* Check if the buffer is zero. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			kaddr = kmap_atomic(page, KM_USER0);
 =======
 			kaddr = kmap_atomic(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/master
 			bpos = (unsigned long *)(kaddr + bh_offset(bh));
 			bend = (unsigned long *)((u8*)bpos + blocksize);
 			do {
@@ -782,10 +806,14 @@ lock_retry_remap:
 					break;
 			} while (likely(++bpos < bend));
 <<<<<<< HEAD
+<<<<<<< HEAD
 			kunmap_atomic(kaddr, KM_USER0);
 =======
 			kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 			if (bpos == bend) {
 				/*
 				 * Buffer is zero and sparse, no need to write
@@ -1404,7 +1432,11 @@ retry_writepage:
 		 * The page may have dirty, unmapped buffers.  Make them
 		 * freeable here, so the page does not leak.
 		 */
+<<<<<<< HEAD
 		block_invalidatepage(page, 0);
+=======
+		block_invalidatepage(page, 0, PAGE_CACHE_SIZE);
+>>>>>>> refs/remotes/origin/master
 		unlock_page(page);
 		ntfs_debug("Write outside i_size - truncated?");
 		return 0;
@@ -1528,10 +1560,14 @@ retry_writepage:
 		BUG_ON(err);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	addr = kmap_atomic(page, KM_USER0);
 =======
 	addr = kmap_atomic(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	addr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/master
 	/* Copy the data from the page to the mft record. */
 	memcpy((u8*)ctx->attr +
 			le16_to_cpu(ctx->attr->data.resident.value_offset),
@@ -1539,10 +1575,14 @@ retry_writepage:
 	/* Zero out of bounds area in the page cache page. */
 	memset(addr + attr_len, 0, PAGE_CACHE_SIZE - attr_len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(addr, KM_USER0);
 =======
 	kunmap_atomic(addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(addr);
+>>>>>>> refs/remotes/origin/master
 	flush_dcache_page(page);
 	flush_dcache_mft_record_page(ctx->ntfs_ino);
 	/* We are done with the page. */

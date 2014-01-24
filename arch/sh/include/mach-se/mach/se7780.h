@@ -12,6 +12,10 @@
  * License.  See the file "COPYING" in the main directory of this archive
  * for more details.
  */
+<<<<<<< HEAD
+=======
+#include <linux/sh_intc.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/addrspace.h>
 
 /* Box specific addresses.  */
@@ -80,6 +84,7 @@
 #define IRQPOS_PCCPW            (0 * 4)
 
 /* IDE interrupt */
+<<<<<<< HEAD
 #define IRQ_IDE0                67 /* iVDR */
 
 /* SMC interrupt */
@@ -87,6 +92,15 @@
 
 /* SM501 interrupt */
 #define SM501_IRQ               0
+=======
+#define IRQ_IDE0                evt2irq(0xa60) /* iVDR */
+
+/* SMC interrupt */
+#define SMC_IRQ                 evt2irq(0x300)
+
+/* SM501 interrupt */
+#define SM501_IRQ               evt2irq(0x200)
+>>>>>>> refs/remotes/origin/master
 
 /* interrupt pin */
 #define IRQPIN_EXTINT1          0 /* IRQ0 pin */

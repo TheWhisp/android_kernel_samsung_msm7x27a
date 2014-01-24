@@ -13,11 +13,15 @@
 #include <linux/types.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/fs.h>
 #include <linux/miscdevice.h>
 =======
 #include <linux/slab.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/watchdog.h>
 #include <linux/uaccess.h>
@@ -28,16 +32,22 @@
 #include <linux/mfd/wm831x/watchdog.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 		 "Watchdog cannot be stopped once started (default="
 		 __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static unsigned long wm831x_wdt_users;
 static struct miscdevice wm831x_wdt_miscdev;
@@ -47,6 +57,8 @@ static struct wm831x *wm831x;
 static unsigned int update_gpio;
 static unsigned int update_state;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct wm831x_wdt_drvdata {
 	struct watchdog_device wdt;
 	struct wm831x *wm831x;
@@ -54,11 +66,15 @@ struct wm831x_wdt_drvdata {
 	int update_gpio;
 	int update_state;
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* We can't use the sub-second values here but they're included
  * for completeness.  */
 static struct {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int time;  /* Seconds */
 	u16 val;   /* WDOG_TO value */
@@ -66,6 +82,10 @@ static struct {
 	unsigned int time;  /* Seconds */
 	u16 val;            /* WDOG_TO value */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int time;  /* Seconds */
+	u16 val;            /* WDOG_TO value */
+>>>>>>> refs/remotes/origin/master
 } wm831x_wdt_cfgs[] = {
 	{  1, 2 },
 	{  2, 3 },
@@ -76,6 +96,7 @@ static struct {
 	{ 33, 7 },  /* Actually 32.768s so include both, others round down */
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int wm831x_wdt_set_timeout(struct wm831x *wm831x, u16 value)
 {
@@ -104,6 +125,8 @@ static int wm831x_wdt_start(struct wm831x *wm831x)
 
 	mutex_lock(&wdt_mutex);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int wm831x_wdt_start(struct watchdog_device *wdt_dev)
 {
 	struct wm831x_wdt_drvdata *driver_data = watchdog_get_drvdata(wdt_dev);
@@ -111,7 +134,10 @@ static int wm831x_wdt_start(struct watchdog_device *wdt_dev)
 	int ret;
 
 	mutex_lock(&driver_data->lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = wm831x_reg_unlock(wm831x);
 	if (ret == 0) {
@@ -124,14 +150,19 @@ static int wm831x_wdt_start(struct watchdog_device *wdt_dev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&wdt_mutex);
 =======
 	mutex_unlock(&driver_data->lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&driver_data->lock);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int wm831x_wdt_stop(struct wm831x *wm831x)
 {
@@ -139,6 +170,8 @@ static int wm831x_wdt_stop(struct wm831x *wm831x)
 
 	mutex_lock(&wdt_mutex);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int wm831x_wdt_stop(struct watchdog_device *wdt_dev)
 {
 	struct wm831x_wdt_drvdata *driver_data = watchdog_get_drvdata(wdt_dev);
@@ -146,7 +179,10 @@ static int wm831x_wdt_stop(struct watchdog_device *wdt_dev)
 	int ret;
 
 	mutex_lock(&driver_data->lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = wm831x_reg_unlock(wm831x);
 	if (ret == 0) {
@@ -159,14 +195,19 @@ static int wm831x_wdt_stop(struct watchdog_device *wdt_dev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&wdt_mutex);
 =======
 	mutex_unlock(&driver_data->lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&driver_data->lock);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int wm831x_wdt_kick(struct wm831x *wm831x)
 {
@@ -179,6 +220,8 @@ static int wm831x_wdt_kick(struct wm831x *wm831x)
 		gpio_set_value_cansleep(update_gpio, update_state);
 		update_state = !update_state;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int wm831x_wdt_ping(struct watchdog_device *wdt_dev)
 {
 	struct wm831x_wdt_drvdata *driver_data = watchdog_get_drvdata(wdt_dev);
@@ -192,15 +235,21 @@ static int wm831x_wdt_ping(struct watchdog_device *wdt_dev)
 		gpio_set_value_cansleep(driver_data->update_gpio,
 					driver_data->update_state);
 		driver_data->update_state = !driver_data->update_state;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = 0;
 		goto out;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	reg = wm831x_reg_read(wm831x, WM831X_WATCHDOG);
 
 	if (!(reg & WM831X_WDOG_RST_SRC)) {
@@ -222,14 +271,19 @@ static int wm831x_wdt_ping(struct watchdog_device *wdt_dev)
 
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&wdt_mutex);
 =======
 	mutex_unlock(&driver_data->lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&driver_data->lock);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int wm831x_wdt_open(struct inode *inode, struct file *file)
 {
@@ -291,6 +345,8 @@ static ssize_t wm831x_wdt_write(struct file *file,
 
 static const struct watchdog_info ident = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int wm831x_wdt_set_timeout(struct watchdog_device *wdt_dev,
 				  unsigned int timeout)
 {
@@ -321,11 +377,15 @@ static int wm831x_wdt_set_timeout(struct watchdog_device *wdt_dev,
 }
 
 static const struct watchdog_info wm831x_wdt_info = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.options = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING | WDIOF_MAGICCLOSE,
 	.identity = "WM831x Watchdog",
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static long wm831x_wdt_ioctl(struct file *file, unsigned int cmd,
 			     unsigned long arg)
@@ -422,12 +482,15 @@ static struct miscdevice wm831x_wdt_miscdev = {
 	.name = "watchdog",
 	.fops = &wm831x_wdt_fops,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct watchdog_ops wm831x_wdt_ops = {
 	.owner = THIS_MODULE,
 	.start = wm831x_wdt_start,
 	.stop = wm831x_wdt_stop,
 	.ping = wm831x_wdt_ping,
 	.set_timeout = wm831x_wdt_set_timeout,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
@@ -447,11 +510,22 @@ static int __devinit wm831x_wdt_probe(struct platform_device *pdev)
 =======
 	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
 	struct wm831x_pdata *chip_pdata;
+=======
+};
+
+static int wm831x_wdt_probe(struct platform_device *pdev)
+{
+	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
+	struct wm831x_pdata *chip_pdata = dev_get_platdata(pdev->dev.parent);
+>>>>>>> refs/remotes/origin/master
 	struct wm831x_watchdog_pdata *pdata;
 	struct wm831x_wdt_drvdata *driver_data;
 	struct watchdog_device *wm831x_wdt;
 	int reg, ret, i;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = wm831x_reg_read(wm831x, WM831X_WATCHDOG);
 	if (ret < 0) {
@@ -465,7 +539,10 @@ static int __devinit wm831x_wdt_probe(struct platform_device *pdev)
 		dev_warn(wm831x->dev, "Watchdog is paused\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	driver_data = devm_kzalloc(&pdev->dev, sizeof(*driver_data),
 				   GFP_KERNEL);
 	if (!driver_data) {
@@ -495,6 +572,7 @@ static int __devinit wm831x_wdt_probe(struct platform_device *pdev)
 	else
 		wm831x_wdt->timeout = wm831x_wdt_cfgs[i].time;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* Apply any configuration */
 	if (pdev->dev.parent->platform_data) {
@@ -503,6 +581,13 @@ static int __devinit wm831x_wdt_probe(struct platform_device *pdev)
 	} else {
 		pdata = NULL;
 	}
+=======
+	/* Apply any configuration */
+	if (chip_pdata)
+		pdata = chip_pdata->watchdog;
+	else
+		pdata = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata) {
 		reg &= ~(WM831X_WDOG_SECACT_MASK | WM831X_WDOG_PRIMACT_MASK |
@@ -513,8 +598,15 @@ static int __devinit wm831x_wdt_probe(struct platform_device *pdev)
 		reg |= pdata->software << WM831X_WDOG_RST_SRC_SHIFT;
 
 		if (pdata->update_gpio) {
+<<<<<<< HEAD
 			ret = gpio_request(pdata->update_gpio,
 					   "Watchdog update");
+=======
+			ret = devm_gpio_request_one(&pdev->dev,
+						pdata->update_gpio,
+						GPIOF_OUT_INIT_LOW,
+						"Watchdog update");
+>>>>>>> refs/remotes/origin/master
 			if (ret < 0) {
 				dev_err(wm831x->dev,
 					"Failed to request update GPIO: %d\n",
@@ -522,6 +614,7 @@ static int __devinit wm831x_wdt_probe(struct platform_device *pdev)
 				goto err;
 			}
 
+<<<<<<< HEAD
 			ret = gpio_direction_output(pdata->update_gpio, 0);
 			if (ret != 0) {
 				dev_err(wm831x->dev,
@@ -535,6 +628,9 @@ static int __devinit wm831x_wdt_probe(struct platform_device *pdev)
 =======
 			driver_data->update_gpio = pdata->update_gpio;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			driver_data->update_gpio = pdata->update_gpio;
+>>>>>>> refs/remotes/origin/master
 
 			/* Make sure the watchdog takes hardware updates */
 			reg |= WM831X_WDOG_RST_SRC;
@@ -547,6 +643,7 @@ static int __devinit wm831x_wdt_probe(struct platform_device *pdev)
 		} else {
 			dev_err(wm831x->dev,
 				"Failed to unlock security key: %d\n", ret);
+<<<<<<< HEAD
 			goto err_gpio;
 		}
 	}
@@ -568,10 +665,17 @@ err_gpio:
 		update_gpio = 0;
 	}
 =======
+=======
+			goto err;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	ret = watchdog_register_device(&driver_data->wdt);
 	if (ret != 0) {
 		dev_err(wm831x->dev, "watchdog_register_device() failed: %d\n",
 			ret);
+<<<<<<< HEAD
 		goto err_gpio;
 	}
 
@@ -583,10 +687,20 @@ err_gpio:
 	if (driver_data->update_gpio)
 		gpio_free(driver_data->update_gpio);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err;
+	}
+
+	platform_set_drvdata(pdev, driver_data);
+
+	return 0;
+
+>>>>>>> refs/remotes/origin/master
 err:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit wm831x_wdt_remove(struct platform_device *pdev)
 {
 <<<<<<< HEAD
@@ -605,17 +719,30 @@ static int __devexit wm831x_wdt_remove(struct platform_device *pdev)
 		gpio_free(driver_data->update_gpio);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+static int wm831x_wdt_remove(struct platform_device *pdev)
+{
+	struct wm831x_wdt_drvdata *driver_data = platform_get_drvdata(pdev);
+
+	watchdog_unregister_device(&driver_data->wdt);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver wm831x_wdt_driver = {
 	.probe = wm831x_wdt_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(wm831x_wdt_remove),
+=======
+	.remove = wm831x_wdt_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "wm831x-watchdog",
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init wm831x_wdt_init(void)
 {
@@ -631,6 +758,9 @@ module_exit(wm831x_wdt_exit);
 =======
 module_platform_driver(wm831x_wdt_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(wm831x_wdt_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mark Brown");
 MODULE_DESCRIPTION("WM831x Watchdog");

@@ -15,6 +15,7 @@ enum { LDDCKPAT1R, LDDCKPAT2R, LDMT1R, LDMT2R, LDMT3R, LDDFR, LDSM1R,
 #define PALETTE_NR 16
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct sh_mobile_lcdc_priv;
 struct fb_info;
 struct backlight_device;
@@ -42,6 +43,8 @@ struct sh_mobile_lcdc_chan {
 	struct mutex open_lock;		/* protects the use counter */
 	int meram_enabled;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct backlight_device;
 struct fb_info;
 struct module;
@@ -75,6 +78,10 @@ struct sh_mobile_lcdc_entity {
 /*
  * struct sh_mobile_lcdc_chan - LCDC display channel
  *
+<<<<<<< HEAD
+=======
+ * @pan_y_offset: Panning linear offset in bytes (luma component)
+>>>>>>> refs/remotes/origin/master
  * @base_addr_y: Frame buffer viewport base address (luma component)
  * @base_addr_c: Frame buffer viewport base address (chroma component)
  * @pitch: Frame buffer line pitch
@@ -87,7 +94,11 @@ struct sh_mobile_lcdc_chan {
 	unsigned long *reg_offs;
 	unsigned long ldmt1r_value;
 	unsigned long enabled; /* ME and SE in LDCNT2R */
+<<<<<<< HEAD
 	void *meram;
+=======
+	void *cache;
+>>>>>>> refs/remotes/origin/master
 
 	struct mutex open_lock;		/* protects the use counter */
 	int use_count;
@@ -96,7 +107,11 @@ struct sh_mobile_lcdc_chan {
 	unsigned long fb_size;
 
 	dma_addr_t dma_handle;
+<<<<<<< HEAD
 	unsigned long pan_offset;
+=======
+	unsigned long pan_y_offset;
+>>>>>>> refs/remotes/origin/master
 
 	unsigned long frame_end;
 	wait_queue_head_t frame_end_wait;
@@ -112,6 +127,10 @@ struct sh_mobile_lcdc_chan {
 
 	unsigned long base_addr_y;
 	unsigned long base_addr_c;
+<<<<<<< HEAD
+=======
+	unsigned int line_size;
+>>>>>>> refs/remotes/origin/master
 
 	int (*notify)(struct sh_mobile_lcdc_chan *ch,
 		      enum sh_mobile_lcdc_entity_event event,
@@ -120,6 +139,10 @@ struct sh_mobile_lcdc_chan {
 
 	/* Backlight */
 	struct backlight_device *bl;
+<<<<<<< HEAD
+=======
+	unsigned int bl_brightness;
+>>>>>>> refs/remotes/origin/master
 
 	/* FB */
 	struct fb_info *info;
@@ -132,7 +155,10 @@ struct sh_mobile_lcdc_chan {
 	struct fb_deferred_io defio;
 	struct scatterlist *sglist;
 	int blank_status;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif

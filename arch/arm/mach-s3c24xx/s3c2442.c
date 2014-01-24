@@ -37,6 +37,10 @@
 #include <linux/io.h>
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
+=======
+#include <mach/gpio-samsung.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/atomic.h>
 #include <asm/irq.h>
 
@@ -44,13 +48,21 @@
 
 #include <plat/clock.h>
 #include <plat/cpu.h>
+<<<<<<< HEAD
 #include <plat/s3c244x.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <plat/pm.h>
 
 #include <plat/gpio-core.h>
 #include <plat/gpio-cfg.h>
 #include <plat/gpio-cfg-helpers.h>
 
+<<<<<<< HEAD
+=======
+#include "common.h"
+
+>>>>>>> refs/remotes/origin/master
 /* S3C2442 extended clock support */
 
 static unsigned long s3c2442_camif_upll_round(struct clk *clk,
@@ -172,9 +184,15 @@ int __init s3c2442_init(void)
 
 #ifdef CONFIG_PM
 	register_syscore_ops(&s3c2410_pm_syscore_ops);
+<<<<<<< HEAD
 #endif
 	register_syscore_ops(&s3c244x_pm_syscore_ops);
 	register_syscore_ops(&s3c24xx_irq_syscore_ops);
+=======
+	register_syscore_ops(&s3c24xx_irq_syscore_ops);
+#endif
+	register_syscore_ops(&s3c244x_pm_syscore_ops);
+>>>>>>> refs/remotes/origin/master
 
 	return device_register(&s3c2442_dev);
 }

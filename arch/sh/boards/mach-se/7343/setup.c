@@ -5,6 +5,10 @@
 #include <linux/serial_reg.h>
 #include <linux/usb/isp116x.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/irqdomain.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/machvec.h>
 #include <mach-se/mach/se7343.h>
 #include <asm/heartbeat.h>
@@ -145,11 +149,20 @@ static struct platform_device *sh7343se_platform_devices[] __initdata = {
 static int __init sh7343se_devices_setup(void)
 {
 	/* Wire-up dynamic vectors */
+<<<<<<< HEAD
 	serial_platform_data[0].irq = se7343_fpga_irq[SE7343_FPGA_IRQ_UARTA];
 	serial_platform_data[1].irq = se7343_fpga_irq[SE7343_FPGA_IRQ_UARTB];
 
 	usb_resources[2].start = usb_resources[2].end =
 		se7343_fpga_irq[SE7343_FPGA_IRQ_USB];
+=======
+	serial_platform_data[0].irq = irq_find_mapping(se7343_irq_domain,
+						       SE7343_FPGA_IRQ_UARTA);
+	serial_platform_data[1].irq = irq_find_mapping(se7343_irq_domain,
+						       SE7343_FPGA_IRQ_UARTB);
+	usb_resources[2].start = usb_resources[2].end =
+		irq_find_mapping(se7343_irq_domain, SE7343_FPGA_IRQ_USB);
+>>>>>>> refs/remotes/origin/master
 
 	return platform_add_devices(sh7343se_platform_devices,
 				    ARRAY_SIZE(sh7343se_platform_devices));

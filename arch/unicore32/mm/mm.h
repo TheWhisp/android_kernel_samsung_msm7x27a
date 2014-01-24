@@ -10,10 +10,15 @@
  * published by the Free Software Foundation.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/hwdef-copro.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/hwdef-copro.h>
+
+>>>>>>> refs/remotes/origin/master
 /* the upper-most page table pointer */
 extern pmd_t *top_pmd;
 extern int sysctl_overcommit_memory;
@@ -40,11 +45,17 @@ const struct mem_type *get_mem_type(unsigned int type);
 
 extern void __flush_dcache_page(struct address_space *, struct page *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void hook_fault_code(int nr, int (*fn)
 		(unsigned long, unsigned int, struct pt_regs *),
 		int sig, int code, const char *name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void hook_fault_code(int nr, int (*fn)
+		(unsigned long, unsigned int, struct pt_regs *),
+		int sig, int code, const char *name);
+>>>>>>> refs/remotes/origin/master
 
 void __init bootmem_init(void);
 void uc32_mm_memblock_reserve(void);

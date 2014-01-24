@@ -34,7 +34,11 @@ use strict;
 # $1 (first bracket) matches the dynamic amount of the stack growth
 #
 # use anything else and feel the pain ;)
+<<<<<<< HEAD
 my (@stack, $re, $dre, $x, $xs);
+=======
+my (@stack, $re, $dre, $x, $xs, $funcre);
+>>>>>>> refs/remotes/origin/master
 {
 	my $arch = shift;
 	if ($arch eq "") {
@@ -44,6 +48,10 @@ my (@stack, $re, $dre, $x, $xs);
 
 	$x	= "[0-9a-f]";	# hex character
 	$xs	= "[0-9a-f ]";	# hex character or space
+<<<<<<< HEAD
+=======
+	$funcre = qr/^$x* <(.*)>:$/;
+>>>>>>> refs/remotes/origin/master
 	if ($arch eq 'arm') {
 		#c0008ffc:	e24dd064	sub	sp, sp, #100	; 0x64
 		$re = qr/.*sub.*sp, sp, #(([0-9]{2}|[3-9])[0-9]{2})/o;
@@ -66,6 +74,13 @@ my (@stack, $re, $dre, $x, $xs);
 		#    2b6c:       4e56 fb70       linkw %fp,#-1168
 		#  1df770:       defc ffe4       addaw #-28,%sp
 		$re = qr/.*(?:linkw %fp,|addaw )#-([0-9]{1,4})(?:,%sp)?$/o;
+<<<<<<< HEAD
+=======
+	} elsif ($arch eq 'metag') {
+		#400026fc:       40 00 00 82     ADD       A0StP,A0StP,#0x8
+		$re = qr/.*ADD.*A0StP,A0StP,\#(0x$x{1,8})/o;
+		$funcre = qr/^$x* <[^\$](.*)>:$/;
+>>>>>>> refs/remotes/origin/master
 	} elsif ($arch eq 'mips64') {
 		#8800402c:       67bdfff0        daddiu  sp,sp,-16
 		$re = qr/.*daddiu.*sp,sp,-(([0-9]{2}|[3-9])[0-9]{2})/o;
@@ -109,7 +124,10 @@ my (@stack, $re, $dre, $x, $xs);
 #
 # main()
 #
+<<<<<<< HEAD
 my $funcre = qr/^$x* <(.*)>:$/;
+=======
+>>>>>>> refs/remotes/origin/master
 my ($func, $file, $lastslash);
 
 while (my $line = <STDIN>) {

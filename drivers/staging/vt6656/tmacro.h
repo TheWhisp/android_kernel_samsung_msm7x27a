@@ -29,6 +29,7 @@
 #ifndef __TMACRO_H__
 #define __TMACRO_H__
 
+<<<<<<< HEAD
 #include "ttype.h"
 
 /****** Common helper macros ***********************************************/
@@ -55,6 +56,26 @@
 #endif
 #if !defined(MAKEDWORD)
 #define MAKEDWORD(lw, hw)   ((DWORD)(((WORD)(lw)) | (((DWORD)((WORD)(hw))) << 16)))
+=======
+/****** Common helper macros ***********************************************/
+
+#if !defined(LOBYTE)
+#define LOBYTE(w)           ((u8)(w))
+#endif
+#if !defined(HIBYTE)
+#define HIBYTE(w)           ((u8)(((u16)(w) >> 8) & 0xFF))
+#endif
+
+#if !defined(LOWORD)
+#define LOWORD(d)           ((u16)(d))
+#endif
+#if !defined(HIWORD)
+#define HIWORD(d)           ((u16)((((u32)(d)) >> 16) & 0xFFFF))
+#endif
+
+#if !defined(MAKEWORD)
+#define MAKEWORD(lb, hb)    ((u16)(((u8)(lb)) | (((u16)((u8)(hb))) << 8)))
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif /* __TMACRO_H__ */

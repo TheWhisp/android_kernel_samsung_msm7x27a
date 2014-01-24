@@ -5,7 +5,11 @@
  *
  * GPL LICENSE SUMMARY
  *
+<<<<<<< HEAD
  * Copyright(c) 2007 - 2012 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2007 - 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of version 2 of the GNU General Public License as
@@ -22,7 +26,11 @@
  * USA
  *
  * The full GNU General Public License is included in this distribution
+<<<<<<< HEAD
  * in the file called LICENSE.GPL.
+=======
+ * in the file called COPYING.
+>>>>>>> refs/remotes/origin/master
  *
  * Contact Information:
  *  Intel Linux Wireless <ilw@linux.intel.com>
@@ -30,7 +38,11 @@
  *
  * BSD LICENSE
  *
+<<<<<<< HEAD
  * Copyright(c) 2005 - 2012 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2005 - 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,11 +84,27 @@ struct iwl_notif_wait_data {
 	wait_queue_head_t notif_waitq;
 };
 
+<<<<<<< HEAD
 /**
  * struct iwl_notification_wait - notification wait entry
  * @list: list head for global list
  * @fn: function called with the notification
  * @cmd: command ID
+=======
+#define MAX_NOTIF_CMDS	5
+
+/**
+ * struct iwl_notification_wait - notification wait entry
+ * @list: list head for global list
+ * @fn: Function called with the notification. If the function
+ *	returns true, the wait is over, if it returns false then
+ *	the waiter stays blocked. If no function is given, any
+ *	of the listed commands will unblock the waiter.
+ * @cmds: command IDs
+ * @n_cmds: number of command IDs
+ * @triggered: waiter should be woken up
+ * @aborted: wait was aborted
+>>>>>>> refs/remotes/origin/master
  *
  * This structure is not used directly, to wait for a
  * notification declare it on the stack, and call
@@ -93,11 +121,20 @@ struct iwl_notif_wait_data {
 struct iwl_notification_wait {
 	struct list_head list;
 
+<<<<<<< HEAD
 	void (*fn)(struct iwl_notif_wait_data *notif_data,
 		   struct iwl_rx_packet *pkt, void *data);
 	void *fn_data;
 
 	u8 cmd;
+=======
+	bool (*fn)(struct iwl_notif_wait_data *notif_data,
+		   struct iwl_rx_packet *pkt, void *data);
+	void *fn_data;
+
+	u8 cmds[MAX_NOTIF_CMDS];
+	u8 n_cmds;
+>>>>>>> refs/remotes/origin/master
 	bool triggered, aborted;
 };
 
@@ -112,8 +149,13 @@ void iwl_abort_notification_waits(struct iwl_notif_wait_data *notif_data);
 void __acquires(wait_entry)
 iwl_init_notification_wait(struct iwl_notif_wait_data *notif_data,
 			   struct iwl_notification_wait *wait_entry,
+<<<<<<< HEAD
 			   u8 cmd,
 			   void (*fn)(struct iwl_notif_wait_data *notif_data,
+=======
+			   const u8 *cmds, int n_cmds,
+			   bool (*fn)(struct iwl_notif_wait_data *notif_data,
+>>>>>>> refs/remotes/origin/master
 				      struct iwl_rx_packet *pkt, void *data),
 			   void *fn_data);
 

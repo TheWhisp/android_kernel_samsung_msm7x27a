@@ -515,6 +515,10 @@
 /*
  * clkpwr_timers_pwms_clk_ctrl_1 register definitions
  */
+<<<<<<< HEAD
+=======
+#define LPC32XX_CLKPWR_TMRPWMCLK_MPWM_EN	0x40
+>>>>>>> refs/remotes/origin/master
 #define LPC32XX_CLKPWR_TMRPWMCLK_TIMER3_EN	0x20
 #define LPC32XX_CLKPWR_TMRPWMCLK_TIMER2_EN	0x10
 #define LPC32XX_CLKPWR_TMRPWMCLK_TIMER1_EN	0x08
@@ -592,6 +596,7 @@
  * Timer/counter register offsets
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define LCP32XX_TIMER_IR(x)			io_p2v((x) + 0x00)
 #define LCP32XX_TIMER_TCR(x)			io_p2v((x) + 0x04)
 #define LCP32XX_TIMER_TC(x)			io_p2v((x) + 0x08)
@@ -610,6 +615,8 @@
 #define LCP32XX_TIMER_EMR(x)			io_p2v((x) + 0x3C)
 #define LCP32XX_TIMER_CTCR(x)			io_p2v((x) + 0x70)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define LPC32XX_TIMER_IR(x)			io_p2v((x) + 0x00)
 #define LPC32XX_TIMER_TCR(x)			io_p2v((x) + 0x04)
 #define LPC32XX_TIMER_TC(x)			io_p2v((x) + 0x08)
@@ -627,11 +634,15 @@
 #define LPC32XX_TIMER_CR3(x)			io_p2v((x) + 0x38)
 #define LPC32XX_TIMER_EMR(x)			io_p2v((x) + 0x3C)
 #define LPC32XX_TIMER_CTCR(x)			io_p2v((x) + 0x70)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * ir register definitions
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define LCP32XX_TIMER_CNTR_MTCH_BIT(n)		(1 << ((n) & 0x3))
 #define LCP32XX_TIMER_CNTR_CAPT_BIT(n)		(1 << (4 + ((n) & 0x3)))
@@ -639,10 +650,15 @@
 #define LPC32XX_TIMER_CNTR_MTCH_BIT(n)		(1 << ((n) & 0x3))
 #define LPC32XX_TIMER_CNTR_CAPT_BIT(n)		(1 << (4 + ((n) & 0x3)))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LPC32XX_TIMER_CNTR_MTCH_BIT(n)		(1 << ((n) & 0x3))
+#define LPC32XX_TIMER_CNTR_CAPT_BIT(n)		(1 << (4 + ((n) & 0x3)))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * tcr register definitions
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define LCP32XX_TIMER_CNTR_TCR_EN		0x1
 #define LCP32XX_TIMER_CNTR_TCR_RESET		0x2
@@ -650,10 +666,15 @@
 #define LPC32XX_TIMER_CNTR_TCR_EN		0x1
 #define LPC32XX_TIMER_CNTR_TCR_RESET		0x2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LPC32XX_TIMER_CNTR_TCR_EN		0x1
+#define LPC32XX_TIMER_CNTR_TCR_RESET		0x2
+>>>>>>> refs/remotes/origin/master
 
 /*
  * mcr register definitions
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define LCP32XX_TIMER_CNTR_MCR_MTCH(n)		(0x1 << ((n) * 3))
 #define LCP32XX_TIMER_CNTR_MCR_RESET(n)		(0x1 << (((n) * 3) + 1))
@@ -663,6 +684,11 @@
 #define LPC32XX_TIMER_CNTR_MCR_RESET(n)		(0x1 << (((n) * 3) + 1))
 #define LPC32XX_TIMER_CNTR_MCR_STOP(n)		(0x1 << (((n) * 3) + 2))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LPC32XX_TIMER_CNTR_MCR_MTCH(n)		(0x1 << ((n) * 3))
+#define LPC32XX_TIMER_CNTR_MCR_RESET(n)		(0x1 << (((n) * 3) + 1))
+#define LPC32XX_TIMER_CNTR_MCR_STOP(n)		(0x1 << (((n) * 3) + 2))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Standard UART register offsets
@@ -727,10 +753,30 @@
 #define LPC32XX_GPIO_P1_MUX_CLR			_GPREG(0x134)
 #define LPC32XX_GPIO_P1_MUX_STATE		_GPREG(0x138)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define LPC32XX_GPIO_P2_MUX_SET			_GPREG(0x028)
 #define LPC32XX_GPIO_P2_MUX_CLR			_GPREG(0x02C)
 #define LPC32XX_GPIO_P2_MUX_STATE		_GPREG(0x030)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LPC32XX_GPIO_P2_MUX_SET			_GPREG(0x028)
+#define LPC32XX_GPIO_P2_MUX_CLR			_GPREG(0x02C)
+#define LPC32XX_GPIO_P2_MUX_STATE		_GPREG(0x030)
+
+/*
+ * USB Otg Registers
+ */
+#define _OTGREG(x)			io_p2v(LPC32XX_USB_OTG_BASE + (x))
+#define LPC32XX_USB_OTG_CLK_CTRL	_OTGREG(0xFF4)
+#define LPC32XX_USB_OTG_CLK_STAT	_OTGREG(0xFF8)
+
+/* USB OTG CLK CTRL bit defines */
+#define LPC32XX_USB_OTG_AHB_M_CLOCK_ON	_BIT(4)
+#define LPC32XX_USB_OTG_OTG_CLOCK_ON	_BIT(3)
+#define LPC32XX_USB_OTG_I2C_CLOCK_ON	_BIT(2)
+#define LPC32XX_USB_OTG_DEV_CLOCK_ON	_BIT(1)
+#define LPC32XX_USB_OTG_HOST_CLOCK_ON	_BIT(0)
+>>>>>>> refs/remotes/origin/master
 
 #endif

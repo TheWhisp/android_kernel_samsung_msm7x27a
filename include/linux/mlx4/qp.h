@@ -34,6 +34,10 @@
 #define MLX4_QP_H
 
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <linux/if_ether.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mlx4/device.h>
 
@@ -55,11 +59,16 @@ enum mlx4_qp_optpar {
 	MLX4_QP_OPTPAR_RNR_RETRY		= 1 << 13,
 	MLX4_QP_OPTPAR_ACK_TIMEOUT		= 1 << 14,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MLX4_QP_OPTPAR_SCHED_QUEUE		= 1 << 16
 =======
 	MLX4_QP_OPTPAR_SCHED_QUEUE		= 1 << 16,
 	MLX4_QP_OPTPAR_COUNTER_INDEX		= 1 << 20
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MLX4_QP_OPTPAR_SCHED_QUEUE		= 1 << 16,
+	MLX4_QP_OPTPAR_COUNTER_INDEX		= 1 << 20
+>>>>>>> refs/remotes/origin/master
 };
 
 enum mlx4_qp_state {
@@ -80,9 +89,13 @@ enum {
 	MLX4_QP_ST_RD				= 0x2,
 	MLX4_QP_ST_UD				= 0x3,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	MLX4_QP_ST_XRC				= 0x6,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MLX4_QP_ST_XRC				= 0x6,
+>>>>>>> refs/remotes/origin/master
 	MLX4_QP_ST_MLX				= 0x7
 };
 
@@ -105,7 +118,10 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum {
 	MLX4_RSS_HASH_XOR			= 0,
 	MLX4_RSS_HASH_TOP			= 1,
@@ -133,6 +149,7 @@ struct mlx4_rss_context {
 	__be32			base_qpn_udp;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 struct mlx4_qp_path {
 	u8			fl;
@@ -143,6 +160,14 @@ struct mlx4_qp_path {
 =======
 	u8			counter_index;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct mlx4_qp_path {
+	u8			fl;
+	u8			vlan_control;
+	u8			disable_pkey_check;
+	u8			pkey_index;
+	u8			counter_index;
+>>>>>>> refs/remotes/origin/master
 	u8			grh_mylmc;
 	__be16			rlid;
 	u8			ackto;
@@ -153,6 +178,7 @@ struct mlx4_qp_path {
 	u8			rgid[16];
 	u8			sched_queue;
 	u8			vlan_index;
+<<<<<<< HEAD
 	u8			reserved3[2];
 <<<<<<< HEAD
 	u8			counter_index;
@@ -161,6 +187,35 @@ struct mlx4_qp_path {
 	u8			reserved4[2];
 >>>>>>> refs/remotes/origin/cm-10.0
 	u8			dmac[6];
+=======
+	u8			feup;
+	u8			fvl_rx;
+	u8			reserved4[2];
+	u8			dmac[ETH_ALEN];
+};
+
+enum { /* fl */
+	MLX4_FL_CV      = 1 << 6,
+	MLX4_FL_ETH_HIDE_CQE_VLAN       = 1 << 2
+};
+enum { /* vlan_control */
+	MLX4_VLAN_CTRL_ETH_TX_BLOCK_TAGGED	= 1 << 6,
+	MLX4_VLAN_CTRL_ETH_TX_BLOCK_PRIO_TAGGED	= 1 << 5, /* 802.1p priority tag */
+	MLX4_VLAN_CTRL_ETH_TX_BLOCK_UNTAGGED	= 1 << 4,
+	MLX4_VLAN_CTRL_ETH_RX_BLOCK_TAGGED	= 1 << 2,
+	MLX4_VLAN_CTRL_ETH_RX_BLOCK_PRIO_TAGGED	= 1 << 1, /* 802.1p priority tag */
+	MLX4_VLAN_CTRL_ETH_RX_BLOCK_UNTAGGED	= 1 << 0
+};
+
+enum { /* feup */
+	MLX4_FEUP_FORCE_ETH_UP          = 1 << 6, /* force Eth UP */
+	MLX4_FSM_FORCE_ETH_SRC_MAC      = 1 << 5, /* force Source MAC */
+	MLX4_FVL_FORCE_ETH_VLAN         = 1 << 3  /* force Eth vlan */
+};
+
+enum { /* fvl_rx */
+	MLX4_FVL_RX_FORCE_ETH_VLAN      = 1 << 0 /* enforce Eth rx vlan */
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mlx4_qp_context {
@@ -185,10 +240,14 @@ struct mlx4_qp_context {
 	__be32			params2;
 	__be32			rnr_nextrecvpsn;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__be32			srcd;
 =======
 	__be32			xrcd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__be32			xrcd;
+>>>>>>> refs/remotes/origin/master
 	__be32			cqn_recv;
 	__be64			db_rec_addr;
 	__be32			qkey;
@@ -206,6 +265,47 @@ struct mlx4_qp_context {
 	u32			reserved5[10];
 };
 
+<<<<<<< HEAD
+=======
+struct mlx4_update_qp_context {
+	__be64			qp_mask;
+	__be64			primary_addr_path_mask;
+	__be64			secondary_addr_path_mask;
+	u64			reserved1;
+	struct mlx4_qp_context	qp_context;
+	u64			reserved2[58];
+};
+
+enum {
+	MLX4_UPD_QP_MASK_PM_STATE	= 32,
+	MLX4_UPD_QP_MASK_VSD		= 33,
+};
+
+enum {
+	MLX4_UPD_QP_PATH_MASK_PKEY_INDEX		= 0 + 32,
+	MLX4_UPD_QP_PATH_MASK_FSM			= 1 + 32,
+	MLX4_UPD_QP_PATH_MASK_MAC_INDEX			= 2 + 32,
+	MLX4_UPD_QP_PATH_MASK_FVL			= 3 + 32,
+	MLX4_UPD_QP_PATH_MASK_CV			= 4 + 32,
+	MLX4_UPD_QP_PATH_MASK_VLAN_INDEX		= 5 + 32,
+	MLX4_UPD_QP_PATH_MASK_ETH_HIDE_CQE_VLAN		= 6 + 32,
+	MLX4_UPD_QP_PATH_MASK_ETH_TX_BLOCK_UNTAGGED	= 7 + 32,
+	MLX4_UPD_QP_PATH_MASK_ETH_TX_BLOCK_1P		= 8 + 32,
+	MLX4_UPD_QP_PATH_MASK_ETH_TX_BLOCK_TAGGED	= 9 + 32,
+	MLX4_UPD_QP_PATH_MASK_ETH_RX_BLOCK_UNTAGGED	= 10 + 32,
+	MLX4_UPD_QP_PATH_MASK_ETH_RX_BLOCK_1P		= 11 + 32,
+	MLX4_UPD_QP_PATH_MASK_ETH_RX_BLOCK_TAGGED	= 12 + 32,
+	MLX4_UPD_QP_PATH_MASK_FEUP			= 13 + 32,
+	MLX4_UPD_QP_PATH_MASK_SCHED_QUEUE		= 14 + 32,
+	MLX4_UPD_QP_PATH_MASK_IF_COUNTER_INDEX		= 15 + 32,
+	MLX4_UPD_QP_PATH_MASK_FVL_RX			= 16 + 32,
+};
+
+enum { /* param3 */
+	MLX4_STRIP_VLAN = 1 << 30
+};
+
+>>>>>>> refs/remotes/origin/master
 /* Which firmware version adds support for NEC (NoErrorCompletion) bit */
 #define MLX4_FW_VER_WQE_CTRL_NEC mlx4_fw_ver(2, 2, 232)
 
@@ -234,16 +334,22 @@ struct mlx4_wqe_ctrl_seg {
 	 * [3:2] C (generate completion queue entry)
 	 * [1]   SE (solicited event)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 */
 	__be32			srcrb_flags;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * [0]   FL (force loopback)
 	 */
 	union {
 		__be32			srcrb_flags;
 		__be16			srcrb_flags16[2];
 	};
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * imm is immediate data for send/RDMA write w/ immediate;
 	 * also invalidation key for send with invalidate; input
@@ -261,7 +367,12 @@ struct mlx4_wqe_mlx_seg {
 	u8			owner;
 	u8			reserved1[2];
 	u8			opcode;
+<<<<<<< HEAD
 	u8			reserved2[3];
+=======
+	__be16			sched_prio;
+	u8			reserved2;
+>>>>>>> refs/remotes/origin/master
 	u8			size;
 	/*
 	 * [17]    VL15
@@ -282,7 +393,11 @@ struct mlx4_wqe_datagram_seg {
 	__be32			dqpn;
 	__be32			qkey;
 	__be16			vlan;
+<<<<<<< HEAD
 	u8			mac[6];
+=======
+	u8			mac[ETH_ALEN];
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mlx4_wqe_lso_seg {
@@ -290,6 +405,14 @@ struct mlx4_wqe_lso_seg {
 	__be32			header[0];
 };
 
+<<<<<<< HEAD
+=======
+enum mlx4_wqe_bind_seg_flags2 {
+	MLX4_WQE_BIND_ZERO_BASED = (1 << 30),
+	MLX4_WQE_BIND_TYPE_2     = (1 << 31),
+};
+
+>>>>>>> refs/remotes/origin/master
 struct mlx4_wqe_bind_seg {
 	__be32			flags1;
 	__be32			flags2;
@@ -302,9 +425,15 @@ struct mlx4_wqe_bind_seg {
 enum {
 	MLX4_WQE_FMR_PERM_LOCAL_READ	= 1 << 27,
 	MLX4_WQE_FMR_PERM_LOCAL_WRITE	= 1 << 28,
+<<<<<<< HEAD
 	MLX4_WQE_FMR_PERM_REMOTE_READ	= 1 << 29,
 	MLX4_WQE_FMR_PERM_REMOTE_WRITE	= 1 << 30,
 	MLX4_WQE_FMR_PERM_ATOMIC	= 1 << 31
+=======
+	MLX4_WQE_FMR_AND_BIND_PERM_REMOTE_READ	= 1 << 29,
+	MLX4_WQE_FMR_AND_BIND_PERM_REMOTE_WRITE	= 1 << 30,
+	MLX4_WQE_FMR_AND_BIND_PERM_ATOMIC	= 1 << 31
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mlx4_wqe_fmr_seg {
@@ -329,12 +458,19 @@ struct mlx4_wqe_fmr_ext_seg {
 };
 
 struct mlx4_wqe_local_inval_seg {
+<<<<<<< HEAD
 	__be32			flags;
 	u32			reserved1;
 	__be32			mem_key;
 	u32			reserved2[2];
 	__be32			guest_id;
 	__be64			pa;
+=======
+	u64			reserved1;
+	__be32			mem_key;
+	u32			reserved2;
+	u64			reserved3[2];
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mlx4_wqe_raddr_seg {

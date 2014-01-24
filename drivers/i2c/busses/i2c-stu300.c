@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (C) 2007-2009 ST-Ericsson AB
+=======
+ * Copyright (C) 2007-2012 ST-Ericsson AB
+>>>>>>> refs/remotes/origin/master
  * License terms: GNU General Public License (GPL) version 2
  * ST DDC I2C master mode driver, used in e.g. U300 series platforms.
  * Author: Linus Walleij <linus.walleij@stericsson.com>
@@ -139,8 +143,11 @@ module_param(scl_frequency, uint,  0644);
  * struct stu300_dev - the stu300 driver state holder
  * @pdev: parent platform device
  * @adapter: corresponding I2C adapter
+<<<<<<< HEAD
  * @phybase: location of I/O area in memory
  * @physize: size of I/O area in memory
+=======
+>>>>>>> refs/remotes/origin/master
  * @clk: hardware block clock
  * @irq: assigned interrupt line
  * @cmd_issue_lock: this locks the following cmd_ variables
@@ -155,8 +162,11 @@ module_param(scl_frequency, uint,  0644);
 struct stu300_dev {
 	struct platform_device	*pdev;
 	struct i2c_adapter	adapter;
+<<<<<<< HEAD
 	resource_size_t		phybase;
 	resource_size_t		physize;
+=======
+>>>>>>> refs/remotes/origin/master
 	void __iomem		*virtbase;
 	struct clk		*clk;
 	int			irq;
@@ -863,14 +873,19 @@ static const struct i2c_algorithm stu300_algo = {
 	.functionality	= stu300_func,
 };
 
+<<<<<<< HEAD
 static int __init
 stu300_probe(struct platform_device *pdev)
+=======
+static int stu300_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct stu300_dev *dev;
 	struct i2c_adapter *adap;
 	struct resource *res;
 	int bus_nr;
 	int ret = 0;
+<<<<<<< HEAD
 	char clk_name[] = "I2C0";
 
 	dev = kzalloc(sizeof(struct stu300_dev), GFP_KERNEL);
@@ -935,6 +950,43 @@ stu300_probe(struct platform_device *pdev)
 	if (ret != 0) {
 		dev_err(&dev->pdev->dev, "error initializing hardware.\n");
 		goto err_init_hw;
+=======
+
+	dev = devm_kzalloc(&pdev->dev, sizeof(struct stu300_dev), GFP_KERNEL);
+	if (!dev) {
+		dev_err(&pdev->dev, "could not allocate device struct\n");
+		return -ENOMEM;
+	}
+
+	bus_nr = pdev->id;
+	dev->clk = devm_clk_get(&pdev->dev, NULL);
+	if (IS_ERR(dev->clk)) {
+		dev_err(&pdev->dev, "could not retrieve i2c bus clock\n");
+		return PTR_ERR(dev->clk);
+	}
+
+	dev->pdev = pdev;
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	dev->virtbase = devm_ioremap_resource(&pdev->dev, res);
+	dev_dbg(&pdev->dev, "initialize bus device I2C%d on virtual "
+		"base %p\n", bus_nr, dev->virtbase);
+	if (IS_ERR(dev->virtbase))
+		return PTR_ERR(dev->virtbase);
+
+	dev->irq = platform_get_irq(pdev, 0);
+	ret = devm_request_irq(&pdev->dev, dev->irq, stu300_irh, 0, NAME, dev);
+	if (ret < 0)
+		return ret;
+
+	dev->speed = scl_frequency;
+
+	clk_prepare_enable(dev->clk);
+	ret = stu300_init_hw(dev);
+	clk_disable(dev->clk);
+	if (ret != 0) {
+		dev_err(&dev->pdev->dev, "error initializing hardware.\n");
+		return -EIO;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* IRQ event handling initialization */
@@ -951,11 +1003,16 @@ stu300_probe(struct platform_device *pdev)
 	adap->nr = bus_nr;
 	adap->algo = &stu300_algo;
 	adap->dev.parent = &pdev->dev;
+<<<<<<< HEAD
+=======
+	adap->dev.of_node = pdev->dev.of_node;
+>>>>>>> refs/remotes/origin/master
 	i2c_set_adapdata(adap, dev);
 
 	/* i2c device drivers may be active on return from add_adapter() */
 	ret = i2c_add_numbered_adapter(adap);
 	if (ret) {
+<<<<<<< HEAD
 		dev_err(&dev->pdev->dev, "failure adding ST Micro DDC "
 		       "I2C adapter\n");
 		goto err_add_adapter;
@@ -985,22 +1042,48 @@ stu300_probe(struct platform_device *pdev)
 static int stu300_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	struct stu300_dev *dev = platform_get_drvdata(pdev);
+=======
+		dev_err(&pdev->dev, "failure adding ST Micro DDC "
+		       "I2C adapter\n");
+		return ret;
+	}
+
+	platform_set_drvdata(pdev, dev);
+	dev_info(&pdev->dev, "ST DDC I2C @ %p, irq %d\n",
+		 dev->virtbase, dev->irq);
+
+	return 0;
+}
+
+#ifdef CONFIG_PM_SLEEP
+static int stu300_suspend(struct device *device)
+{
+	struct stu300_dev *dev = dev_get_drvdata(device);
+>>>>>>> refs/remotes/origin/master
 
 	/* Turn off everything */
 	stu300_wr8(0x00, dev->virtbase + I2C_CR);
 	return 0;
 }
 
+<<<<<<< HEAD
 static int stu300_resume(struct platform_device *pdev)
 {
 	int ret = 0;
 	struct stu300_dev *dev = platform_get_drvdata(pdev);
+=======
+static int stu300_resume(struct device *device)
+{
+	int ret = 0;
+	struct stu300_dev *dev = dev_get_drvdata(device);
+>>>>>>> refs/remotes/origin/master
 
 	clk_enable(dev->clk);
 	ret = stu300_init_hw(dev);
 	clk_disable(dev->clk);
 
 	if (ret != 0)
+<<<<<<< HEAD
 		dev_err(&pdev->dev, "error re-initializing hardware.\n");
 	return ret;
 }
@@ -1011,12 +1094,26 @@ static int stu300_resume(struct platform_device *pdev)
 
 static int __exit
 stu300_remove(struct platform_device *pdev)
+=======
+		dev_err(device, "error re-initializing hardware.\n");
+	return ret;
+}
+
+static SIMPLE_DEV_PM_OPS(stu300_pm, stu300_suspend, stu300_resume);
+#define STU300_I2C_PM	(&stu300_pm)
+#else
+#define STU300_I2C_PM	NULL
+#endif
+
+static int stu300_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct stu300_dev *dev = platform_get_drvdata(pdev);
 
 	i2c_del_adapter(&dev->adapter);
 	/* Turn off everything */
 	stu300_wr8(0x00, dev->virtbase + I2C_CR);
+<<<<<<< HEAD
 	free_irq(dev->irq, dev);
 	iounmap(dev->virtbase);
 	release_mem_region(dev->phybase, dev->physize);
@@ -1026,20 +1123,42 @@ stu300_remove(struct platform_device *pdev)
 	return 0;
 }
 
+=======
+	return 0;
+}
+
+static const struct of_device_id stu300_dt_match[] = {
+	{ .compatible = "st,ddci2c" },
+	{},
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver stu300_i2c_driver = {
 	.driver = {
 		.name	= NAME,
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.remove		= __exit_p(stu300_remove),
 	.suspend        = stu300_suspend,
 	.resume         = stu300_resume,
+=======
+		.pm	= STU300_I2C_PM,
+		.of_match_table = stu300_dt_match,
+	},
+	.probe = stu300_probe,
+	.remove = stu300_remove,
+>>>>>>> refs/remotes/origin/master
 
 };
 
 static int __init stu300_init(void)
 {
+<<<<<<< HEAD
 	return platform_driver_probe(&stu300_i2c_driver, stu300_probe);
+=======
+	return platform_driver_register(&stu300_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit stu300_exit(void)

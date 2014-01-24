@@ -6,6 +6,10 @@
 	normal = black, lightgray
 	selected = lightgray, magenta
 	code = blue, lightgray
+<<<<<<< HEAD
+=======
+	addr = magenta, lightgray
+>>>>>>> refs/remotes/origin/master
 
 [tui]
 
@@ -18,3 +22,14 @@
 
 	# Default, disable using /dev/null
 	dir = /root/.debug
+<<<<<<< HEAD
+=======
+
+[annotate]
+
+	# Defaults
+	hide_src_code = false
+	use_offset = true
+	jump_arrows = true
+	show_nr_jumps = false
+>>>>>>> refs/remotes/origin/master

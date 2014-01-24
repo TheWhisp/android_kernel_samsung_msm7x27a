@@ -3,11 +3,16 @@ config SCSI_BNX2X_FCOE
 	depends on PCI
 	select NETDEVICES
 <<<<<<< HEAD
+<<<<<<< HEAD
 	select NETDEV_1000
 =======
 	select ETHERNET
 	select NET_VENDOR_BROADCOM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select ETHERNET
+	select NET_VENDOR_BROADCOM
+>>>>>>> refs/remotes/origin/master
 	select LIBFC
 	select LIBFCOE
 	select CNIC

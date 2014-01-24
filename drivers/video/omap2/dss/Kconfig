@@ -1,15 +1,21 @@
 menuconfig OMAP2_DSS
 <<<<<<< HEAD
+<<<<<<< HEAD
         tristate "OMAP2+ Display Subsystem support (EXPERIMENTAL)"
 =======
         tristate "OMAP2+ Display Subsystem support"
 >>>>>>> refs/remotes/origin/cm-10.0
         depends on ARCH_OMAP2PLUS
+=======
+        tristate "OMAP2+ Display Subsystem support"
+	select VIDEOMODE_HELPERS
+>>>>>>> refs/remotes/origin/master
         help
 	  OMAP2+ Display Subsystem support.
 
 if OMAP2_DSS
 
+<<<<<<< HEAD
 config OMAP2_VRAM_SIZE
 	int "VRAM size (MB)"
 	range 0 32
@@ -32,6 +38,28 @@ config OMAP2_DSS_DEBUG_SUPPORT
 config OMAP2_DSS_COLLECT_IRQ_STATS
 	bool "Collect DSS IRQ statistics"
 	depends on OMAP2_DSS_DEBUG_SUPPORT
+=======
+config OMAP2_DSS_DEBUG
+	bool "Debug support"
+	default n
+	help
+	  This enables printing of debug messages. Alternatively, debug messages
+	  can also be enabled by setting CONFIG_DYNAMIC_DEBUG and then setting
+	  appropriate flags in <debugfs>/dynamic_debug/control.
+
+config OMAP2_DSS_DEBUGFS
+	bool "Debugfs filesystem support"
+	depends on DEBUG_FS
+	default n
+	help
+	  This enables debugfs for OMAPDSS at <debugfs>/omapdss. This enables
+	  querying about clock configuration and register configuration of dss,
+	  dispc, dsi, hdmi and rfbi.
+
+config OMAP2_DSS_COLLECT_IRQ_STATS
+	bool "Collect DSS IRQ statistics"
+	depends on OMAP2_DSS_DEBUGFS
+>>>>>>> refs/remotes/origin/master
 	default n
 	help
 	  Collect DSS IRQ statistics, printable via debugfs.
@@ -48,6 +76,10 @@ config OMAP2_DSS_DPI
 
 config OMAP2_DSS_RFBI
 	bool "RFBI support"
+<<<<<<< HEAD
+=======
+	depends on BROKEN
+>>>>>>> refs/remotes/origin/master
         default n
 	help
 	  MIPI DBI support (RFBI, Remote Framebuffer Interface, in Texas
@@ -56,7 +88,11 @@ config OMAP2_DSS_RFBI
 	  DBI is a bus between the host processor and a peripheral,
 	  such as a display or a framebuffer chip.
 
+<<<<<<< HEAD
 	  See http://www.mipi.org/ for DBI spesifications.
+=======
+	  See http://www.mipi.org/ for DBI specifications.
+>>>>>>> refs/remotes/origin/master
 
 config OMAP2_DSS_VENC
 	bool "VENC support"
@@ -66,15 +102,26 @@ config OMAP2_DSS_VENC
 
 config OMAP4_DSS_HDMI
 	bool "HDMI support"
+<<<<<<< HEAD
 	depends on ARCH_OMAP4
+=======
+>>>>>>> refs/remotes/origin/master
         default y
 	help
 	  HDMI Interface. This adds the High Definition Multimedia Interface.
 	  See http://www.hdmi.org/ for HDMI specification.
 
+<<<<<<< HEAD
 config OMAP2_DSS_SDI
 	bool "SDI support"
 	depends on ARCH_OMAP3
+=======
+config OMAP4_DSS_HDMI_AUDIO
+	bool
+
+config OMAP2_DSS_SDI
+	bool "SDI support"
+>>>>>>> refs/remotes/origin/master
         default n
 	help
 	  SDI (Serial Display Interface) support.
@@ -84,7 +131,10 @@ config OMAP2_DSS_SDI
 
 config OMAP2_DSS_DSI
 	bool "DSI support"
+<<<<<<< HEAD
 	depends on ARCH_OMAP3 || ARCH_OMAP4
+=======
+>>>>>>> refs/remotes/origin/master
         default n
 	help
 	  MIPI DSI (Display Serial Interface) support.
@@ -92,6 +142,7 @@ config OMAP2_DSS_DSI
 	  DSI is a high speed half-duplex serial interface between the host
 	  processor and a peripheral, such as a display or a framebuffer chip.
 
+<<<<<<< HEAD
 	  See http://www.mipi.org/ for DSI spesifications.
 
 config OMAP2_DSS_FAKE_VSYNC
@@ -102,6 +153,9 @@ config OMAP2_DSS_FAKE_VSYNC
 	  when DSI has sent a frame. This is only needed with DSI or RFBI
 	  displays using manual mode, and you want VSYNC to, for example,
 	  time animation.
+=======
+	  See http://www.mipi.org/ for DSI specifications.
+>>>>>>> refs/remotes/origin/master
 
 config OMAP2_DSS_MIN_FCK_PER_PCK
 	int "Minimum FCK/PCK ratio (for scaling)"
@@ -122,6 +176,7 @@ config OMAP2_DSS_MIN_FCK_PER_PCK
 	  is very high.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config OMAP2_DSS_SLEEP_BEFORE_RESET
 	bool "Sleep 50ms before DSS reset"
 	default y
@@ -136,6 +191,8 @@ config OMAP2_DSS_SLEEP_BEFORE_RESET
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config OMAP2_DSS_SLEEP_AFTER_VENC_RESET
 	bool "Sleep 20ms after VENC reset"
 	default y

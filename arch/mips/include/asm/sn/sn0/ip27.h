@@ -21,6 +21,7 @@
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
 #define CAUSE_BERRINTR 		IE_IRQ5
 
 #define ECCF_CACHE_ERR  0
@@ -29,6 +30,16 @@
 #define ECCF_ERROREPC   3
 #define ECCF_PADDR      4
 #define ECCF_SIZE       (5 * sizeof(long))
+=======
+#define CAUSE_BERRINTR		IE_IRQ5
+
+#define ECCF_CACHE_ERR	0
+#define ECCF_TAGLO	1
+#define ECCF_ECC	2
+#define ECCF_ERROREPC	3
+#define ECCF_PADDR	4
+#define ECCF_SIZE	(5 * sizeof(long))
+>>>>>>> refs/remotes/origin/master
 
 #endif /* !__ASSEMBLY__ */
 
@@ -39,8 +50,13 @@
  * the processor number of the calling processor.  The proc parameters
  * must be a register.
  */
+<<<<<<< HEAD
 #define KL_GET_CPUNUM(proc) 				\
 	dli	proc, LOCAL_HUB(0); 			\
+=======
+#define KL_GET_CPUNUM(proc)				\
+	dli	proc, LOCAL_HUB(0);			\
+>>>>>>> refs/remotes/origin/master
 	ld	proc, PI_CPU_NUM(proc)
 
 #endif /* __ASSEMBLY__ */
@@ -71,6 +87,7 @@
 
 #define NUM_CAUSE_INTRS		8
 
+<<<<<<< HEAD
 #define SCACHE_LINESIZE	128
 #define SCACHE_LINEMASK	(SCACHE_LINESIZE - 1)
 
@@ -81,5 +98,17 @@
 
 #define SEND_NMI(_nasid, _slice)	\
           REMOTE_HUB_S((_nasid),  (PI_NMI_A + ((_slice) * PI_NMI_OFFSET)), 1)
+=======
+#define SCACHE_LINESIZE 128
+#define SCACHE_LINEMASK (SCACHE_LINESIZE - 1)
+
+#include <asm/sn/addrs.h>
+
+#define LED_CYCLE_MASK	0x0f
+#define LED_CYCLE_SHFT	4
+
+#define SEND_NMI(_nasid, _slice)	\
+	  REMOTE_HUB_S((_nasid),  (PI_NMI_A + ((_slice) * PI_NMI_OFFSET)), 1)
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_SN_SN0_IP27_H */

@@ -22,6 +22,15 @@
 #include <linux/err.h>
 #include <arch/abi.h>
 
+<<<<<<< HEAD
+=======
+/* The array of function pointers for syscalls. */
+extern void *sys_call_table[];
+#ifdef CONFIG_COMPAT
+extern void *compat_sys_call_table[];
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Only the low 32 bits of orig_r0 are meaningful, so we return int.
  * This importantly ignores the high bits on 64-bit, so comparisons

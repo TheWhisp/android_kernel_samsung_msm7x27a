@@ -31,6 +31,10 @@
 #include <linux/i2c.h>
 #include <linux/i2c-gpio.h>
 #include <asm/bootinfo.h>
+<<<<<<< HEAD
+=======
+#include <asm/idle.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/reboot.h>
 #include <asm/mach-au1x00/au1000.h>
 #include <prom.h>
@@ -135,33 +139,57 @@ static struct mtd_partition gpr_mtd_partitions[] = {
 	{
 		.name	= "kernel",
 		.size	= 0x00200000,
+<<<<<<< HEAD
 		.offset	= 0,
+=======
+		.offset = 0,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name	= "rootfs",
 		.size	= 0x00800000,
+<<<<<<< HEAD
 		.offset	= MTDPART_OFS_APPEND,
+=======
+		.offset = MTDPART_OFS_APPEND,
+>>>>>>> refs/remotes/origin/master
 		.mask_flags = MTD_WRITEABLE,
 	},
 	{
 		.name	= "config",
 		.size	= 0x00200000,
+<<<<<<< HEAD
 		.offset	= 0x01d00000,
+=======
+		.offset = 0x01d00000,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name	= "yamon",
 		.size	= 0x00100000,
+<<<<<<< HEAD
 		.offset	= 0x01c00000,
+=======
+		.offset = 0x01c00000,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name	= "yamon env vars",
 		.size	= 0x00040000,
+<<<<<<< HEAD
 		.offset	= MTDPART_OFS_APPEND,
+=======
+		.offset = MTDPART_OFS_APPEND,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name	= "kernel+rootfs",
 		.size	= 0x00a00000,
+<<<<<<< HEAD
 		.offset	= 0,
+=======
+		.offset = 0,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

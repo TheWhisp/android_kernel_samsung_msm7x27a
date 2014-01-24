@@ -90,8 +90,15 @@ int pwm_channel_alloc(int index, struct pwm_channel *ch)
 	unsigned long	flags;
 	int		status = 0;
 
+<<<<<<< HEAD
 	/* insist on PWM init, with this signal pinned out */
 	if (!pwm || !(pwm->mask & 1 << index))
+=======
+	if (!pwm)
+		return -EPROBE_DEFER;
+
+	if (!(pwm->mask & 1 << index))
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	if (index < 0 || index >= PWM_NCHAN || !ch)
@@ -330,10 +337,14 @@ static int __init pwm_probe(struct platform_device *pdev)
 	p->mask = *mp;
 	p->irq = irq;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	p->base = ioremap(r->start, r->end - r->start + 1);
 =======
 	p->base = ioremap(r->start, resource_size(r));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p->base = ioremap(r->start, resource_size(r));
+>>>>>>> refs/remotes/origin/master
 	if (!p->base)
 		goto fail;
 	p->clk = clk_get(&pdev->dev, "pwm_clk");
@@ -397,6 +408,7 @@ static struct platform_driver atmel_pwm_driver = {
 	 */
 };
 
+<<<<<<< HEAD
 static int __init pwm_init(void)
 {
 	return platform_driver_probe(&atmel_pwm_driver, pwm_probe);
@@ -408,6 +420,9 @@ static void __exit pwm_exit(void)
 	platform_driver_unregister(&atmel_pwm_driver);
 }
 module_exit(pwm_exit);
+=======
+module_platform_driver_probe(atmel_pwm_driver, pwm_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Driver for AT32/AT91 PWM module");
 MODULE_LICENSE("GPL");

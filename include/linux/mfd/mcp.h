@@ -11,10 +11,15 @@
 #define MCP_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/dma.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+
+>>>>>>> refs/remotes/origin/master
 struct mcp_ops;
 
 struct mcp {
@@ -25,6 +30,7 @@ struct mcp {
 	unsigned int	sclk_rate;
 	unsigned int	rw_timeout;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dma_device_t	dma_audio_rd;
 	dma_device_t	dma_audio_wr;
 	dma_device_t	dma_telco_rd;
@@ -34,6 +40,9 @@ struct mcp {
 =======
 	struct device	attached_device;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device	attached_device;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mcp_ops {
@@ -55,6 +64,7 @@ void mcp_disable(struct mcp *);
 
 struct mcp *mcp_host_alloc(struct device *, size_t);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int mcp_host_register(struct mcp *);
 void mcp_host_unregister(struct mcp *);
 =======
@@ -62,16 +72,24 @@ int mcp_host_add(struct mcp *, void *);
 void mcp_host_del(struct mcp *);
 void mcp_host_free(struct mcp *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int mcp_host_add(struct mcp *, void *);
+void mcp_host_del(struct mcp *);
+void mcp_host_free(struct mcp *);
+>>>>>>> refs/remotes/origin/master
 
 struct mcp_driver {
 	struct device_driver drv;
 	int (*probe)(struct mcp *);
 	void (*remove)(struct mcp *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int (*suspend)(struct mcp *, pm_message_t);
 	int (*resume)(struct mcp *);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 int mcp_driver_register(struct mcp_driver *);
@@ -81,12 +99,18 @@ void mcp_driver_unregister(struct mcp_driver *);
 #define mcp_set_drvdata(mcp,d)	dev_set_drvdata(&(mcp)->attached_device, d)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define mcp_priv(mcp)		((void *)((mcp)+1))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void *mcp_priv(struct mcp *mcp)
 {
 	return mcp + 1;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

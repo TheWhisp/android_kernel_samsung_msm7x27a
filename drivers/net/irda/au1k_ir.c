@@ -19,6 +19,7 @@
  *  59 Temple Place - Suite 330, Boston MA 02111-1307, USA.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/init.h>
@@ -42,6 +43,8 @@
 #error au1k_ir: unsupported board
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/init.h>
 #include <linux/module.h>
@@ -51,12 +54,17 @@
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/types.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ioport.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/irda/irda.h>
 #include <net/irda/irmod.h>
 #include <net/irda/wrapper.h>
 #include <net/irda/irda_device.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include "au1000_ircc.h"
 
@@ -119,6 +127,8 @@ static void ReleaseDB(struct au1k_private *aup, db_dest_t *pDB)
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-au1x00/au1000.h>
 
 /* registers */
@@ -308,26 +318,37 @@ static struct db_dest *GetFreeDB(struct au1k_private *aup)
 	return db;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
   DMA memory allocation, derived from pci_alloc_consistent.
   However, the Au1000 data cache is coherent (when programmed
   so), therefore we return KSEG0 address, not KSEG1.
 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void *dma_alloc(size_t size, dma_addr_t * dma_handle)
 =======
 static void *dma_alloc(size_t size, dma_addr_t *dma_handle)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void *dma_alloc(size_t size, dma_addr_t *dma_handle)
+>>>>>>> refs/remotes/origin/master
 {
 	void *ret;
 	int gfp = GFP_ATOMIC | GFP_DMA;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = (void *) __get_free_pages(gfp, get_order(size));
 =======
 	ret = (void *)__get_free_pages(gfp, get_order(size));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = (void *)__get_free_pages(gfp, get_order(size));
+>>>>>>> refs/remotes/origin/master
 
 	if (ret != NULL) {
 		memset(ret, 0, size);
@@ -338,9 +359,12 @@ static void *dma_alloc(size_t size, dma_addr_t *dma_handle)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void dma_free(void *vaddr, size_t size)
 {
 	vaddr = (void *)KSEG0ADDR(vaddr);
@@ -348,6 +372,7 @@ static void dma_free(void *vaddr, size_t size)
 }
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void 
 setup_hw_rings(struct au1k_private *aup, u32 rx_base, u32 tx_base)
@@ -400,6 +425,8 @@ out:
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void setup_hw_rings(struct au1k_private *aup, u32 rx_base, u32 tx_base)
 {
 	int i;
@@ -413,26 +440,36 @@ static void setup_hw_rings(struct au1k_private *aup, u32 rx_base, u32 tx_base)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int au1k_irda_init_iobuf(iobuff_t *io, int size)
 {
 	io->head = kmalloc(size, GFP_KERNEL);
 	if (io->head != NULL) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		io->truesize = size;
 		io->in_frame = FALSE;
 		io->state    = OUTSIDE_FRAME;
 		io->data     = io->head;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		io->truesize	= size;
 		io->in_frame	= FALSE;
 		io->state	= OUTSIDE_FRAME;
 		io->data	= io->head;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return io->head ? 0 : -ENOMEM;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const struct net_device_ops au1k_irda_netdev_ops = {
 	.ndo_open		= au1k_irda_start,
@@ -535,6 +572,8 @@ out1:
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Set the IrDA communications speed.
  */
@@ -773,11 +812,15 @@ static irqreturn_t au1k_irda_interrupt(int dummy, void *dev_id)
 
 	return IRQ_HANDLED;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int au1k_init(struct net_device *dev)
 {
 	struct au1k_private *aup = netdev_priv(dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i;
 	u32 control;
@@ -789,18 +832,24 @@ static int au1k_init(struct net_device *dev)
 #ifndef CONFIG_CPU_LITTLE_ENDIAN
 	control |= 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 enable, ring_address;
 	int i;
 
 	enable = IR_HC | IR_CE | IR_C;
 #ifndef CONFIG_CPU_LITTLE_ENDIAN
 	enable |= IR_BE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	aup->tx_head = 0;
 	aup->tx_tail = 0;
 	aup->rx_head = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (i=0; i<NUM_IR_DESC; i++) {
 		aup->rx_ring[i]->flags = AU_OWN;
@@ -823,6 +872,8 @@ static int au1k_init(struct net_device *dev)
 	writel(1<<2 | IR_ONE_PIN, IR_CONFIG_2); /* 48MHz */
 	writel(0, IR_RING_ADDR_CMPR);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < NUM_IR_DESC; i++)
 		aup->rx_ring[i]->flags = AU_OWN;
 
@@ -845,7 +896,10 @@ static int au1k_init(struct net_device *dev)
 
 	irda_write(aup, IR_CONFIG_2, IR_PHYCLK_48MHZ | IR_ONE_PIN);
 	irda_write(aup, IR_RING_ADDR_CMPR, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	au1k_irda_set_speed(dev, 9600);
 	return 0;
@@ -854,23 +908,30 @@ static int au1k_init(struct net_device *dev)
 static int au1k_irda_start(struct net_device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int retval;
 	char hwname[32];
 	struct au1k_private *aup = netdev_priv(dev);
 
 	if ((retval = au1k_init(dev))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct au1k_private *aup = netdev_priv(dev);
 	char hwname[32];
 	int retval;
 
 	retval = au1k_init(dev);
 	if (retval) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "%s: error in au1k_init\n", dev->name);
 		return retval;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((retval = request_irq(AU1000_IRDA_TX_INT, au1k_irda_interrupt, 
 					0, dev->name, dev))) {
@@ -883,6 +944,8 @@ static int au1k_irda_start(struct net_device *dev)
 		free_irq(AU1000_IRDA_TX_INT, dev);
 		printk(KERN_ERR "%s: unable to get IRQ %d\n", 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	retval = request_irq(aup->irq_tx, &au1k_irda_interrupt, 0,
 			     dev->name, dev);
 	if (retval) {
@@ -895,7 +958,10 @@ static int au1k_irda_start(struct net_device *dev)
 	if (retval) {
 		free_irq(aup->irq_tx, dev);
 		printk(KERN_ERR "%s: unable to get IRQ %d\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				dev->name, dev->irq);
 		return retval;
 	}
@@ -906,10 +972,13 @@ static int au1k_irda_start(struct net_device *dev)
 	netif_start_queue(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	writel(read_ir_reg(IR_CONFIG_2) | 1<<8, IR_CONFIG_2); /* int enable */
 
 	aup->timer.expires = RUN_AT((3*HZ)); 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* int enable */
 	irda_write(aup, IR_CONFIG_2, irda_read(aup, IR_CONFIG_2) | IR_IEN);
 
@@ -917,7 +986,10 @@ static int au1k_irda_start(struct net_device *dev)
 	au1k_irda_plat_set_phy_mode(aup, AU1000_IRDA_PHY_MODE_SIR);
 
 	aup->timer.expires = RUN_AT((3 * HZ));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	aup->timer.data = (unsigned long)dev;
 	return 0;
 }
@@ -927,19 +999,25 @@ static int au1k_irda_stop(struct net_device *dev)
 	struct au1k_private *aup = netdev_priv(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* disable interrupts */
 	writel(read_ir_reg(IR_CONFIG_2) & ~(1<<8), IR_CONFIG_2);
 	writel(0, IR_CONFIG_1); 
 	writel(0, IR_INTERFACE_CONFIG); /* disable clock */
 	au_sync();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	au1k_irda_plat_set_phy_mode(aup, AU1000_IRDA_PHY_MODE_OFF);
 
 	/* disable interrupts */
 	irda_write(aup, IR_CONFIG_2, irda_read(aup, IR_CONFIG_2) & ~IR_IEN);
 	irda_write(aup, IR_CONFIG_1, 0);
 	irda_write(aup, IR_ENABLE, 0); /* disable clock */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (aup->irlap) {
 		irlap_close(aup->irlap);
@@ -950,6 +1028,7 @@ static int au1k_irda_stop(struct net_device *dev)
 	del_timer(&aup->timer);
 
 	/* disable the interrupt */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	free_irq(AU1000_IRDA_TX_INT, dev);
 	free_irq(AU1000_IRDA_RX_INT, dev);
@@ -1029,13 +1108,18 @@ static void au1k_tx_ack(struct net_device *dev)
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	free_irq(aup->irq_tx, dev);
 	free_irq(aup->irq_rx, dev);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Au1000 transmit routine.
  */
@@ -1043,6 +1127,7 @@ static int au1k_irda_hard_xmit(struct sk_buff *skb, struct net_device *dev)
 {
 	struct au1k_private *aup = netdev_priv(dev);
 	int speed = irda_get_next_speed(skb);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	volatile ring_dest_t *ptxd;
 	u32 len;
@@ -1054,13 +1139,18 @@ static int au1k_irda_hard_xmit(struct sk_buff *skb, struct net_device *dev)
 		aup->newspeed = speed;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	volatile struct ring_dest *ptxd;
 	struct db_dest *pDB;
 	u32 len, flags;
 
 	if (speed != aup->speed && speed != -1)
 		aup->newspeed = speed;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if ((skb->len == 0) && (aup->newspeed)) {
 		if (aup->tx_tail == aup->tx_head) {
@@ -1079,6 +1169,7 @@ static int au1k_irda_hard_xmit(struct sk_buff *skb, struct net_device *dev)
 		netif_stop_queue(dev);
 		aup->tx_full = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return NETDEV_TX_BUSY;
 	}
 	else if (((aup->tx_head + 1) & (NUM_IR_DESC - 1)) == aup->tx_tail) {
@@ -1087,18 +1178,24 @@ static int au1k_irda_hard_xmit(struct sk_buff *skb, struct net_device *dev)
 		aup->tx_full = 1;
 		return NETDEV_TX_BUSY;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	} else if (((aup->tx_head + 1) & (NUM_IR_DESC - 1)) == aup->tx_tail) {
 		printk(KERN_DEBUG "%s: tx_full\n", dev->name);
 		netif_stop_queue(dev);
 		aup->tx_full = 1;
 		return 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pDB = aup->tx_db_inuse[aup->tx_head];
 
 #if 0
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (read_ir_reg(IR_RX_BYTE_CNT) != 0) {
 		printk("tx warning: rx byte cnt %x\n", 
@@ -1115,6 +1212,8 @@ static int au1k_irda_hard_xmit(struct sk_buff *skb, struct net_device *dev)
 	}
 	else {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (irda_read(aup, IR_RX_BYTE_CNT) != 0) {
 		printk(KERN_DEBUG "tx warning: rx byte cnt %x\n",
 				irda_read(aup, IR_RX_BYTE_CNT));
@@ -1127,12 +1226,16 @@ static int au1k_irda_hard_xmit(struct sk_buff *skb, struct net_device *dev)
 		ptxd->count_0 = skb->len & 0xff;
 		ptxd->count_1 = (skb->len >> 8) & 0xff;
 	} else {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* SIR */
 		len = async_wrap_skb(skb, (u8 *)pDB->vaddr, MAX_BUF_SIZE);
 		ptxd->count_0 = len & 0xff;
 		ptxd->count_1 = (len >> 8) & 0xff;
 		ptxd->flags |= IR_DIS_CRC;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		au_writel(au_readl(0xae00000c) & ~(1<<13), 0xae00000c);
 	}
@@ -1143,6 +1246,8 @@ static int au1k_irda_hard_xmit(struct sk_buff *skb, struct net_device *dev)
 	writel(0, IR_RING_PROMPT);
 	au_sync();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	ptxd->flags |= AU_OWN;
 	wmb();
@@ -1150,13 +1255,17 @@ static int au1k_irda_hard_xmit(struct sk_buff *skb, struct net_device *dev)
 	irda_write(aup, IR_CONFIG_1,
 		   irda_read(aup, IR_CONFIG_1) | IR_TX_ENABLE);
 	irda_write(aup, IR_RING_PROMPT, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dev_kfree_skb(skb);
 	aup->tx_head = (aup->tx_head + 1) & (NUM_IR_DESC - 1);
 	return NETDEV_TX_OK;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static inline void 
@@ -1247,6 +1356,8 @@ static irqreturn_t au1k_irda_interrupt(int dummy, void *dev_id)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The Tx ring has been full longer than the watchdog timeout
  * value. The transmitter must be hung?
@@ -1264,6 +1375,7 @@ static void au1k_tx_timeout(struct net_device *dev)
 	netif_wake_queue(dev);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /*
@@ -1404,6 +1516,9 @@ au1k_irda_ioctl(struct net_device *dev, struct ifreq *ifreq, int cmd)
 =======
 static int au1k_irda_ioctl(struct net_device *dev, struct ifreq *ifreq, int cmd)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int au1k_irda_ioctl(struct net_device *dev, struct ifreq *ifreq, int cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct if_irda_req *rq = (struct if_irda_req *)ifreq;
 	struct au1k_private *aup = netdev_priv(dev);
@@ -1445,12 +1560,15 @@ static int au1k_irda_ioctl(struct net_device *dev, struct ifreq *ifreq, int cmd)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_AUTHOR("Pete Popov <ppopov@mvista.com>");
 MODULE_DESCRIPTION("Au1000 IrDA Device Driver");
 
 module_init(au1k_irda_init);
 module_exit(au1k_irda_exit);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct net_device_ops au1k_irda_netdev_ops = {
 	.ndo_open		= au1k_irda_start,
 	.ndo_stop		= au1k_irda_stop,
@@ -1459,7 +1577,11 @@ static const struct net_device_ops au1k_irda_netdev_ops = {
 	.ndo_do_ioctl		= au1k_irda_ioctl,
 };
 
+<<<<<<< HEAD
 static int __devinit au1k_irda_net_init(struct net_device *dev)
+=======
+static int au1k_irda_net_init(struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct au1k_private *aup = netdev_priv(dev);
 	struct db_dest *pDB, *pDBfree;
@@ -1493,7 +1615,11 @@ static int __devinit au1k_irda_net_init(struct net_device *dev)
 
 	/* allocate the data buffers */
 	aup->db[0].vaddr =
+<<<<<<< HEAD
 		(void *)dma_alloc(MAX_BUF_SIZE * 2 * NUM_IR_DESC, &temp);
+=======
+		dma_alloc(MAX_BUF_SIZE * 2 * NUM_IR_DESC, &temp);
+>>>>>>> refs/remotes/origin/master
 	if (!aup->db[0].vaddr)
 		goto out3;
 
@@ -1548,7 +1674,11 @@ out1:
 	return retval;
 }
 
+<<<<<<< HEAD
 static int __devinit au1k_irda_probe(struct platform_device *pdev)
+=======
+static int au1k_irda_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct au1k_private *aup;
 	struct net_device *dev;
@@ -1581,12 +1711,20 @@ static int __devinit au1k_irda_probe(struct platform_device *pdev)
 		goto out;
 
 	err = -EBUSY;
+<<<<<<< HEAD
 	aup->ioarea = request_mem_region(r->start, r->end - r->start + 1,
+=======
+	aup->ioarea = request_mem_region(r->start, resource_size(r),
+>>>>>>> refs/remotes/origin/master
 					 pdev->name);
 	if (!aup->ioarea)
 		goto out;
 
+<<<<<<< HEAD
 	aup->iobase = ioremap_nocache(r->start, r->end - r->start + 1);
+=======
+	aup->iobase = ioremap_nocache(r->start, resource_size(r));
+>>>>>>> refs/remotes/origin/master
 	if (!aup->iobase)
 		goto out2;
 
@@ -1620,7 +1758,11 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit au1k_irda_remove(struct platform_device *pdev)
+=======
+static int au1k_irda_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = platform_get_drvdata(pdev);
 	struct au1k_private *aup = netdev_priv(dev);
@@ -1648,6 +1790,7 @@ static struct platform_driver au1k_irda_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= au1k_irda_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(au1k_irda_remove),
 };
 
@@ -1667,3 +1810,12 @@ MODULE_DESCRIPTION("Au1000 IrDA Device Driver");
 module_init(au1k_irda_load);
 module_exit(au1k_irda_unload);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= au1k_irda_remove,
+};
+
+module_platform_driver(au1k_irda_driver);
+
+MODULE_AUTHOR("Pete Popov <ppopov@mvista.com>");
+MODULE_DESCRIPTION("Au1000 IrDA Device Driver");
+>>>>>>> refs/remotes/origin/master

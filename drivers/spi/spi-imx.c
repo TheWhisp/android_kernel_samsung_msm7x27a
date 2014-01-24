@@ -38,7 +38,11 @@
 #include <linux/of_device.h>
 #include <linux/of_gpio.h>
 
+<<<<<<< HEAD
 #include <mach/spi.h>
+=======
+#include <linux/platform_data/spi-imx.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_NAME "spi_imx"
 
@@ -85,7 +89,12 @@ struct spi_imx_data {
 	struct completion xfer_done;
 	void __iomem *base;
 	int irq;
+<<<<<<< HEAD
 	struct clk *clk;
+=======
+	struct clk *clk_per;
+	struct clk *clk_ipg;
+>>>>>>> refs/remotes/origin/master
 	unsigned long spi_clk;
 
 	unsigned int count;
@@ -95,7 +104,11 @@ struct spi_imx_data {
 	const void *tx_buf;
 	unsigned int txfifo; /* number of words pushed in tx FIFO */
 
+<<<<<<< HEAD
 	struct spi_imx_devtype_data *devtype_data;
+=======
+	const struct spi_imx_devtype_data *devtype_data;
+>>>>>>> refs/remotes/origin/master
 	int chipselect[0];
 };
 
@@ -195,6 +208,10 @@ static unsigned int spi_imx_clkdiv_2(unsigned int fin,
 #define MX51_ECSPI_CONFIG_SCLKPOL(cs)	(1 << ((cs) +  4))
 #define MX51_ECSPI_CONFIG_SBBCTRL(cs)	(1 << ((cs) +  8))
 #define MX51_ECSPI_CONFIG_SSBPOL(cs)	(1 << ((cs) + 12))
+<<<<<<< HEAD
+=======
+#define MX51_ECSPI_CONFIG_SCLKCTL(cs)	(1 << ((cs) + 20))
+>>>>>>> refs/remotes/origin/master
 
 #define MX51_ECSPI_INT		0x10
 #define MX51_ECSPI_INT_TEEN		(1 <<  0)
@@ -285,9 +302,16 @@ static int __maybe_unused mx51_ecspi_config(struct spi_imx_data *spi_imx,
 	if (config->mode & SPI_CPHA)
 		cfg |= MX51_ECSPI_CONFIG_SCLKPHA(config->cs);
 
+<<<<<<< HEAD
 	if (config->mode & SPI_CPOL)
 		cfg |= MX51_ECSPI_CONFIG_SCLKPOL(config->cs);
 
+=======
+	if (config->mode & SPI_CPOL) {
+		cfg |= MX51_ECSPI_CONFIG_SCLKPOL(config->cs);
+		cfg |= MX51_ECSPI_CONFIG_SCLKCTL(config->cs);
+	}
+>>>>>>> refs/remotes/origin/master
 	if (config->mode & SPI_CS_HIGH)
 		cfg |= MX51_ECSPI_CONFIG_SSBPOL(config->cs);
 
@@ -616,6 +640,10 @@ static const struct of_device_id spi_imx_dt_ids[] = {
 	{ .compatible = "fsl,imx51-ecspi", .data = &imx51_ecspi_devtype_data, },
 	{ /* sentinel */ }
 };
+<<<<<<< HEAD
+=======
+MODULE_DEVICE_TABLE(of, spi_imx_dt_ids);
+>>>>>>> refs/remotes/origin/master
 
 static void spi_imx_chipselect(struct spi_device *spi, int is_active)
 {
@@ -624,7 +652,11 @@ static void spi_imx_chipselect(struct spi_device *spi, int is_active)
 	int active = is_active != BITBANG_CS_INACTIVE;
 	int dev_is_lowactive = !(spi->mode & SPI_CS_HIGH);
 
+<<<<<<< HEAD
 	if (gpio < 0)
+=======
+	if (!gpio_is_valid(gpio))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	gpio_set_value(gpio, dev_is_lowactive ^ active);
@@ -686,8 +718,11 @@ static int spi_imx_setupxfer(struct spi_device *spi,
 		config.speed_hz = spi->max_speed_hz;
 	if (!config.bpw)
 		config.bpw = spi->bits_per_word;
+<<<<<<< HEAD
 	if (!config.speed_hz)
 		config.speed_hz = spi->max_speed_hz;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize the functions for transfer */
 	if (config.bpw <= 8) {
@@ -696,11 +731,18 @@ static int spi_imx_setupxfer(struct spi_device *spi,
 	} else if (config.bpw <= 16) {
 		spi_imx->rx = spi_imx_buf_rx_u16;
 		spi_imx->tx = spi_imx_buf_tx_u16;
+<<<<<<< HEAD
 	} else if (config.bpw <= 32) {
 		spi_imx->rx = spi_imx_buf_rx_u32;
 		spi_imx->tx = spi_imx_buf_tx_u32;
 	} else
 		BUG();
+=======
+	} else {
+		spi_imx->rx = spi_imx_buf_rx_u32;
+		spi_imx->tx = spi_imx_buf_tx_u32;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	spi_imx->devtype_data->config(spi_imx, &config);
 
@@ -736,7 +778,11 @@ static int spi_imx_setup(struct spi_device *spi)
 	dev_dbg(&spi->dev, "%s: mode %d, %u bpw, %d hz\n", __func__,
 		 spi->mode, spi->bits_per_word, spi->max_speed_hz);
 
+<<<<<<< HEAD
 	if (gpio >= 0)
+=======
+	if (gpio_is_valid(gpio))
+>>>>>>> refs/remotes/origin/master
 		gpio_direction_output(gpio, spi->mode & SPI_CS_HIGH ? 0 : 1);
 
 	spi_imx_chipselect(spi, BITBANG_CS_INACTIVE);
@@ -748,7 +794,40 @@ static void spi_imx_cleanup(struct spi_device *spi)
 {
 }
 
+<<<<<<< HEAD
 static int __devinit spi_imx_probe(struct platform_device *pdev)
+=======
+static int
+spi_imx_prepare_message(struct spi_master *master, struct spi_message *msg)
+{
+	struct spi_imx_data *spi_imx = spi_master_get_devdata(master);
+	int ret;
+
+	ret = clk_enable(spi_imx->clk_per);
+	if (ret)
+		return ret;
+
+	ret = clk_enable(spi_imx->clk_ipg);
+	if (ret) {
+		clk_disable(spi_imx->clk_per);
+		return ret;
+	}
+
+	return 0;
+}
+
+static int
+spi_imx_unprepare_message(struct spi_master *master, struct spi_message *msg)
+{
+	struct spi_imx_data *spi_imx = spi_master_get_devdata(master);
+
+	clk_disable(spi_imx->clk_ipg);
+	clk_disable(spi_imx->clk_per);
+	return 0;
+}
+
+static int spi_imx_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np = pdev->dev.of_node;
 	const struct of_device_id *of_id =
@@ -780,10 +859,15 @@ static int __devinit spi_imx_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, master);
 
+<<<<<<< HEAD
+=======
+	master->bits_per_word_mask = SPI_BPW_RANGE_MASK(1, 32);
+>>>>>>> refs/remotes/origin/master
 	master->bus_num = pdev->id;
 	master->num_chipselect = num_cs;
 
 	spi_imx = spi_master_get_devdata(master);
+<<<<<<< HEAD
 	spi_imx->bitbang.master = spi_master_get(master);
 
 	for (i = 0; i < master->num_chipselect; i++) {
@@ -799,6 +883,24 @@ static int __devinit spi_imx_probe(struct platform_device *pdev)
 		if (ret) {
 			dev_err(&pdev->dev, "can't get cs gpios\n");
 			goto out_gpio_free;
+=======
+	spi_imx->bitbang.master = master;
+
+	for (i = 0; i < master->num_chipselect; i++) {
+		int cs_gpio = of_get_named_gpio(np, "cs-gpios", i);
+		if (!gpio_is_valid(cs_gpio) && mxc_platform_info)
+			cs_gpio = mxc_platform_info->chipselect[i];
+
+		spi_imx->chipselect[i] = cs_gpio;
+		if (!gpio_is_valid(cs_gpio))
+			continue;
+
+		ret = devm_gpio_request(&pdev->dev, spi_imx->chipselect[i],
+					DRIVER_NAME);
+		if (ret) {
+			dev_err(&pdev->dev, "can't get cs gpios\n");
+			goto out_master_put;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -807,6 +909,11 @@ static int __devinit spi_imx_probe(struct platform_device *pdev)
 	spi_imx->bitbang.txrx_bufs = spi_imx_transfer;
 	spi_imx->bitbang.master->setup = spi_imx_setup;
 	spi_imx->bitbang.master->cleanup = spi_imx_cleanup;
+<<<<<<< HEAD
+=======
+	spi_imx->bitbang.master->prepare_message = spi_imx_prepare_message;
+	spi_imx->bitbang.master->unprepare_message = spi_imx_unprepare_message;
+>>>>>>> refs/remotes/origin/master
 	spi_imx->bitbang.master->mode_bits = SPI_CPOL | SPI_CPHA | SPI_CS_HIGH;
 
 	init_completion(&spi_imx->xfer_done);
@@ -815,6 +922,7 @@ static int __devinit spi_imx_probe(struct platform_device *pdev)
 		(struct spi_imx_devtype_data *) pdev->id_entry->driver_data;
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (!res) {
 		dev_err(&pdev->dev, "can't get platform resource\n");
 		ret = -ENOMEM;
@@ -831,11 +939,18 @@ static int __devinit spi_imx_probe(struct platform_device *pdev)
 	if (!spi_imx->base) {
 		ret = -EINVAL;
 		goto out_release_mem;
+=======
+	spi_imx->base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(spi_imx->base)) {
+		ret = PTR_ERR(spi_imx->base);
+		goto out_master_put;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spi_imx->irq = platform_get_irq(pdev, 0);
 	if (spi_imx->irq < 0) {
 		ret = -EINVAL;
+<<<<<<< HEAD
 		goto out_iounmap;
 	}
 
@@ -854,6 +969,39 @@ static int __devinit spi_imx_probe(struct platform_device *pdev)
 
 	clk_enable(spi_imx->clk);
 	spi_imx->spi_clk = clk_get_rate(spi_imx->clk);
+=======
+		goto out_master_put;
+	}
+
+	ret = devm_request_irq(&pdev->dev, spi_imx->irq, spi_imx_isr, 0,
+			       DRIVER_NAME, spi_imx);
+	if (ret) {
+		dev_err(&pdev->dev, "can't get irq%d: %d\n", spi_imx->irq, ret);
+		goto out_master_put;
+	}
+
+	spi_imx->clk_ipg = devm_clk_get(&pdev->dev, "ipg");
+	if (IS_ERR(spi_imx->clk_ipg)) {
+		ret = PTR_ERR(spi_imx->clk_ipg);
+		goto out_master_put;
+	}
+
+	spi_imx->clk_per = devm_clk_get(&pdev->dev, "per");
+	if (IS_ERR(spi_imx->clk_per)) {
+		ret = PTR_ERR(spi_imx->clk_per);
+		goto out_master_put;
+	}
+
+	ret = clk_prepare_enable(spi_imx->clk_per);
+	if (ret)
+		goto out_master_put;
+
+	ret = clk_prepare_enable(spi_imx->clk_ipg);
+	if (ret)
+		goto out_put_per;
+
+	spi_imx->spi_clk = clk_get_rate(spi_imx->clk_per);
+>>>>>>> refs/remotes/origin/master
 
 	spi_imx->devtype_data->reset(spi_imx);
 
@@ -868,6 +1016,7 @@ static int __devinit spi_imx_probe(struct platform_device *pdev)
 
 	dev_info(&pdev->dev, "probed\n");
 
+<<<<<<< HEAD
 	return ret;
 
 out_clk_put:
@@ -896,10 +1045,31 @@ static int __devexit spi_imx_remove(struct platform_device *pdev)
 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	struct spi_imx_data *spi_imx = spi_master_get_devdata(master);
 	int i;
+=======
+	clk_disable(spi_imx->clk_ipg);
+	clk_disable(spi_imx->clk_per);
+	return ret;
+
+out_clk_put:
+	clk_disable_unprepare(spi_imx->clk_ipg);
+out_put_per:
+	clk_disable_unprepare(spi_imx->clk_per);
+out_master_put:
+	spi_master_put(master);
+
+	return ret;
+}
+
+static int spi_imx_remove(struct platform_device *pdev)
+{
+	struct spi_master *master = platform_get_drvdata(pdev);
+	struct spi_imx_data *spi_imx = spi_master_get_devdata(master);
+>>>>>>> refs/remotes/origin/master
 
 	spi_bitbang_stop(&spi_imx->bitbang);
 
 	writel(0, spi_imx->base + MXC_CSPICTRL);
+<<<<<<< HEAD
 	clk_disable(spi_imx->clk);
 	clk_put(spi_imx->clk);
 	free_irq(spi_imx->irq, spi_imx);
@@ -915,6 +1085,12 @@ static int __devexit spi_imx_remove(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, NULL);
 
+=======
+	clk_disable_unprepare(spi_imx->clk_ipg);
+	clk_disable_unprepare(spi_imx->clk_per);
+	spi_master_put(master);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -926,10 +1102,18 @@ static struct platform_driver spi_imx_driver = {
 		   },
 	.id_table = spi_imx_devtype,
 	.probe = spi_imx_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(spi_imx_remove),
+=======
+	.remove = spi_imx_remove,
+>>>>>>> refs/remotes/origin/master
 };
 module_platform_driver(spi_imx_driver);
 
 MODULE_DESCRIPTION("SPI Master Controller driver");
 MODULE_AUTHOR("Sascha Hauer, Pengutronix");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("platform:" DRIVER_NAME);
+>>>>>>> refs/remotes/origin/master

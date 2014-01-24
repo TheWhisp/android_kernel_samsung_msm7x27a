@@ -75,12 +75,21 @@ MODULE_LICENSE("GPL v2");
 
 static unsigned long port[MAXDEV];
 static unsigned long mem[MAXDEV];
+<<<<<<< HEAD
 static int __devinitdata irq[MAXDEV];
 static int __devinitdata clk[MAXDEV];
 static u8 __devinitdata cir[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
 static u8 __devinitdata cor[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
 static u8 __devinitdata bcr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
 static int __devinitdata indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
+=======
+static int irq[MAXDEV];
+static int clk[MAXDEV];
+static u8 cir[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+static u8 cor[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+static u8 bcr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+static int indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(port, ulong, NULL, S_IRUGO);
 MODULE_PARM_DESC(port, "I/O port number");
@@ -166,7 +175,11 @@ static void cc770_isa_port_write_reg_indirect(const struct cc770_priv *priv,
 	spin_unlock_irqrestore(&cc770_isa_port_lock, flags);
 }
 
+<<<<<<< HEAD
 static int __devinit cc770_isa_probe(struct platform_device *pdev)
+=======
+static int cc770_isa_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	struct cc770_priv *priv;
@@ -265,7 +278,11 @@ static int __devinit cc770_isa_probe(struct platform_device *pdev)
 	else
 		priv->clkout = COR_DEFAULT;
 
+<<<<<<< HEAD
 	dev_set_drvdata(&pdev->dev, dev);
+=======
+	platform_set_drvdata(pdev, dev);
+>>>>>>> refs/remotes/origin/master
 	SET_NETDEV_DEV(dev, &pdev->dev);
 
 	err = register_cc770dev(dev);
@@ -291,14 +308,23 @@ static int __devinit cc770_isa_probe(struct platform_device *pdev)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit cc770_isa_remove(struct platform_device *pdev)
 {
 	struct net_device *dev = dev_get_drvdata(&pdev->dev);
+=======
+static int cc770_isa_remove(struct platform_device *pdev)
+{
+	struct net_device *dev = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct cc770_priv *priv = netdev_priv(dev);
 	int idx = pdev->id;
 
 	unregister_cc770dev(dev);
+<<<<<<< HEAD
 	dev_set_drvdata(&pdev->dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (mem[idx]) {
 		iounmap(priv->reg_base);
@@ -316,7 +342,11 @@ static int __devexit cc770_isa_remove(struct platform_device *pdev)
 
 static struct platform_driver cc770_isa_driver = {
 	.probe = cc770_isa_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(cc770_isa_remove),
+=======
+	.remove = cc770_isa_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = KBUILD_MODNAME,
 		.owner = THIS_MODULE,

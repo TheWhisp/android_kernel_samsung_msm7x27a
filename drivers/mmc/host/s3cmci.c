@@ -23,17 +23,109 @@
 #include <linux/irq.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <mach/dma.h>
 
 #include <mach/regs-sdi.h>
 #include <mach/regs-gpio.h>
 
 #include <plat/mci.h>
+=======
+#include <plat/gpio-cfg.h>
+#include <mach/dma.h>
+#include <mach/gpio-samsung.h>
+
+#include <linux/platform_data/mmc-s3cmci.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "s3cmci.h"
 
 #define DRIVER_NAME "s3c-mci"
 
+<<<<<<< HEAD
+=======
+#define S3C2410_SDICON			(0x00)
+#define S3C2410_SDIPRE			(0x04)
+#define S3C2410_SDICMDARG		(0x08)
+#define S3C2410_SDICMDCON		(0x0C)
+#define S3C2410_SDICMDSTAT		(0x10)
+#define S3C2410_SDIRSP0			(0x14)
+#define S3C2410_SDIRSP1			(0x18)
+#define S3C2410_SDIRSP2			(0x1C)
+#define S3C2410_SDIRSP3			(0x20)
+#define S3C2410_SDITIMER		(0x24)
+#define S3C2410_SDIBSIZE		(0x28)
+#define S3C2410_SDIDCON			(0x2C)
+#define S3C2410_SDIDCNT			(0x30)
+#define S3C2410_SDIDSTA			(0x34)
+#define S3C2410_SDIFSTA			(0x38)
+
+#define S3C2410_SDIDATA			(0x3C)
+#define S3C2410_SDIIMSK			(0x40)
+
+#define S3C2440_SDIDATA			(0x40)
+#define S3C2440_SDIIMSK			(0x3C)
+
+#define S3C2440_SDICON_SDRESET		(1 << 8)
+#define S3C2410_SDICON_SDIOIRQ		(1 << 3)
+#define S3C2410_SDICON_FIFORESET	(1 << 1)
+#define S3C2410_SDICON_CLOCKTYPE	(1 << 0)
+
+#define S3C2410_SDICMDCON_LONGRSP	(1 << 10)
+#define S3C2410_SDICMDCON_WAITRSP	(1 << 9)
+#define S3C2410_SDICMDCON_CMDSTART	(1 << 8)
+#define S3C2410_SDICMDCON_SENDERHOST	(1 << 6)
+#define S3C2410_SDICMDCON_INDEX		(0x3f)
+
+#define S3C2410_SDICMDSTAT_CRCFAIL	(1 << 12)
+#define S3C2410_SDICMDSTAT_CMDSENT	(1 << 11)
+#define S3C2410_SDICMDSTAT_CMDTIMEOUT	(1 << 10)
+#define S3C2410_SDICMDSTAT_RSPFIN	(1 << 9)
+
+#define S3C2440_SDIDCON_DS_WORD		(2 << 22)
+#define S3C2410_SDIDCON_TXAFTERRESP	(1 << 20)
+#define S3C2410_SDIDCON_RXAFTERCMD	(1 << 19)
+#define S3C2410_SDIDCON_BLOCKMODE	(1 << 17)
+#define S3C2410_SDIDCON_WIDEBUS		(1 << 16)
+#define S3C2410_SDIDCON_DMAEN		(1 << 15)
+#define S3C2410_SDIDCON_STOP		(1 << 14)
+#define S3C2440_SDIDCON_DATSTART	(1 << 14)
+
+#define S3C2410_SDIDCON_XFER_RXSTART	(2 << 12)
+#define S3C2410_SDIDCON_XFER_TXSTART	(3 << 12)
+
+#define S3C2410_SDIDCON_BLKNUM_MASK	(0xFFF)
+
+#define S3C2410_SDIDSTA_SDIOIRQDETECT	(1 << 9)
+#define S3C2410_SDIDSTA_FIFOFAIL	(1 << 8)
+#define S3C2410_SDIDSTA_CRCFAIL		(1 << 7)
+#define S3C2410_SDIDSTA_RXCRCFAIL	(1 << 6)
+#define S3C2410_SDIDSTA_DATATIMEOUT	(1 << 5)
+#define S3C2410_SDIDSTA_XFERFINISH	(1 << 4)
+#define S3C2410_SDIDSTA_TXDATAON	(1 << 1)
+#define S3C2410_SDIDSTA_RXDATAON	(1 << 0)
+
+#define S3C2440_SDIFSTA_FIFORESET	(1 << 16)
+#define S3C2440_SDIFSTA_FIFOFAIL	(3 << 14)
+#define S3C2410_SDIFSTA_TFDET		(1 << 13)
+#define S3C2410_SDIFSTA_RFDET		(1 << 12)
+#define S3C2410_SDIFSTA_COUNTMASK	(0x7f)
+
+#define S3C2410_SDIIMSK_RESPONSECRC	(1 << 17)
+#define S3C2410_SDIIMSK_CMDSENT		(1 << 16)
+#define S3C2410_SDIIMSK_CMDTIMEOUT	(1 << 15)
+#define S3C2410_SDIIMSK_RESPONSEND	(1 << 14)
+#define S3C2410_SDIIMSK_SDIOIRQ		(1 << 12)
+#define S3C2410_SDIIMSK_FIFOFAIL	(1 << 11)
+#define S3C2410_SDIIMSK_CRCSTATUS	(1 << 10)
+#define S3C2410_SDIIMSK_DATACRC		(1 << 9)
+#define S3C2410_SDIIMSK_DATATIMEOUT	(1 << 8)
+#define S3C2410_SDIIMSK_DATAFINISH	(1 << 7)
+#define S3C2410_SDIIMSK_TXFIFOHALF	(1 << 4)
+#define S3C2410_SDIIMSK_RXFIFOLAST	(1 << 2)
+#define S3C2410_SDIIMSK_RXFIFOHALF	(1 << 0)
+
+>>>>>>> refs/remotes/origin/master
 enum dbg_channels {
 	dbg_err   = (1 << 0),
 	dbg_debug = (1 << 1),
@@ -248,10 +340,14 @@ static void s3cmci_check_sdio_irq(struct s3cmci_host *host)
 	if (host->sdio_irqen) {
 		if (gpio_get_value(S3C2410_GPE(8)) == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_DEBUG "%s: signalling irq\n", __func__);
 =======
 			pr_debug("%s: signalling irq\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("%s: signalling irq\n", __func__);
+>>>>>>> refs/remotes/origin/master
 			mmc_signal_sdio_irq(host->mmc);
 		}
 	}
@@ -349,10 +445,14 @@ static void s3cmci_disable_irq(struct s3cmci_host *host, bool transfer)
 	local_irq_save(flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	//printk(KERN_DEBUG "%s: transfer %d\n", __func__, transfer);
 =======
 	/* pr_debug("%s: transfer %d\n", __func__, transfer); */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* pr_debug("%s: transfer %d\n", __func__, transfer); */
+>>>>>>> refs/remotes/origin/master
 
 	host->irq_disabled = transfer;
 
@@ -922,6 +1022,7 @@ request_done:
 
 static void s3cmci_dma_setup(struct s3cmci_host *host,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     enum s3c2410_dmasrc source)
 {
 	static enum s3c2410_dmasrc last_source = -1;
@@ -930,6 +1031,11 @@ static void s3cmci_dma_setup(struct s3cmci_host *host,
 {
 	static enum dma_data_direction last_source = -1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     enum dma_data_direction source)
+{
+	static enum dma_data_direction last_source = -1;
+>>>>>>> refs/remotes/origin/master
 	static int setup_ok;
 
 	if (last_source == source)
@@ -1102,10 +1208,14 @@ static int s3cmci_prepare_dma(struct s3cmci_host *host, struct mmc_data *data)
 	BUG_ON((data->flags & BOTH_DIR) == BOTH_DIR);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	s3cmci_dma_setup(host, rw ? S3C2410_DMASRC_MEM : S3C2410_DMASRC_HW);
 =======
 	s3cmci_dma_setup(host, rw ? DMA_TO_DEVICE : DMA_FROM_DEVICE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s3cmci_dma_setup(host, rw ? DMA_TO_DEVICE : DMA_FROM_DEVICE);
+>>>>>>> refs/remotes/origin/master
 	s3c2410_dma_ctrl(host->dma, S3C2410_DMAOP_FLUSH);
 
 	dma_len = dma_map_sg(mmc_dev(host->mmc), data->sg, data->sg_len,
@@ -1255,12 +1365,18 @@ static void s3cmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	switch (ios->power_mode) {
 	case MMC_POWER_ON:
 	case MMC_POWER_UP:
+<<<<<<< HEAD
 		s3c2410_gpio_cfgpin(S3C2410_GPE(5), S3C2410_GPE5_SDCLK);
 		s3c2410_gpio_cfgpin(S3C2410_GPE(6), S3C2410_GPE6_SDCMD);
 		s3c2410_gpio_cfgpin(S3C2410_GPE(7), S3C2410_GPE7_SDDAT0);
 		s3c2410_gpio_cfgpin(S3C2410_GPE(8), S3C2410_GPE8_SDDAT1);
 		s3c2410_gpio_cfgpin(S3C2410_GPE(9), S3C2410_GPE9_SDDAT2);
 		s3c2410_gpio_cfgpin(S3C2410_GPE(10), S3C2410_GPE10_SDDAT3);
+=======
+		/* Configure GPE5...GPE10 pins in SD mode */
+		s3c_gpio_cfgall_range(S3C2410_GPE(5), 6, S3C_GPIO_SFN(2),
+				      S3C_GPIO_PULL_NONE);
+>>>>>>> refs/remotes/origin/master
 
 		if (host->pdata->set_power)
 			host->pdata->set_power(ios->power_mode, ios->vdd);
@@ -1562,7 +1678,11 @@ static inline void s3cmci_debugfs_remove(struct s3cmci_host *host) { }
 
 #endif /* CONFIG_DEBUG_FS */
 
+<<<<<<< HEAD
 static int __devinit s3cmci_probe(struct platform_device *pdev)
+=======
+static int s3cmci_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s3cmci_host *host;
 	struct mmc_host	*mmc;
@@ -1625,10 +1745,14 @@ static int __devinit s3cmci_probe(struct platform_device *pdev)
 	if (!host->mem) {
 		dev_err(&pdev->dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"failed to get io memory region resouce.\n");
 =======
 			"failed to get io memory region resource.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			"failed to get io memory region resource.\n");
+>>>>>>> refs/remotes/origin/master
 
 		ret = -ENOENT;
 		goto probe_free_gpio;
@@ -1653,10 +1777,14 @@ static int __devinit s3cmci_probe(struct platform_device *pdev)
 	host->irq = platform_get_irq(pdev, 0);
 	if (host->irq == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&pdev->dev, "failed to get interrupt resouce.\n");
 =======
 		dev_err(&pdev->dev, "failed to get interrupt resource.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pdev->dev, "failed to get interrupt resource.\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto probe_iounmap;
 	}
@@ -1849,7 +1977,11 @@ static void s3cmci_shutdown(struct platform_device *pdev)
 	clk_disable(host->clk);
 }
 
+<<<<<<< HEAD
 static int __devexit s3cmci_remove(struct platform_device *pdev)
+=======
+static int s3cmci_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mmc_host		*mmc  = platform_get_drvdata(pdev);
 	struct s3cmci_host	*host = mmc_priv(mmc);
@@ -1900,6 +2032,7 @@ static struct platform_device_id s3cmci_driver_ids[] = {
 
 MODULE_DEVICE_TABLE(platform, s3cmci_driver_ids);
 
+<<<<<<< HEAD
 
 #ifdef CONFIG_PM
 
@@ -1928,10 +2061,13 @@ static const struct dev_pm_ops s3cmci_pm = {
 #endif /* CONFIG_PM */
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver s3cmci_driver = {
 	.driver	= {
 		.name	= "s3c-sdi",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 		.pm	= s3cmci_pm_ops,
 	},
 	.id_table	= s3cmci_driver_ids,
@@ -1956,6 +2092,16 @@ module_exit(s3cmci_exit);
 =======
 module_platform_driver(s3cmci_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	},
+	.id_table	= s3cmci_driver_ids,
+	.probe		= s3cmci_probe,
+	.remove		= s3cmci_remove,
+	.shutdown	= s3cmci_shutdown,
+};
+
+module_platform_driver(s3cmci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Samsung S3C MMC/SD Card Interface driver");
 MODULE_LICENSE("GPL v2");

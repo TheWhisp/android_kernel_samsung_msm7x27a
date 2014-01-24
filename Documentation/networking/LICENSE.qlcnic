@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 Copyright (c) 2009-2010 QLogic Corporation
 QLogic Linux qlcnic NIC Driver
 
@@ -9,10 +10,16 @@ Copyright (c) 2009-2011 QLogic Corporation
 QLogic Linux qlcnic NIC Driver
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Copyright (c) 2009-2013 QLogic Corporation
+QLogic Linux qlcnic NIC Driver
+
+>>>>>>> refs/remotes/origin/master
 You may modify and redistribute the device driver code under the
 GNU General Public License (a copy of which is attached hereto as
 Exhibit A) published by the Free Software Foundation (version 2).
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 You may redistribute the hardware specific firmware binary file
 under the following terms:
@@ -57,12 +64,17 @@ EXHIBIT A
                    GNU GENERAL PUBLIC LICENSE
                       Version 2, June 1991
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 EXHIBIT A
 
 		    GNU GENERAL PUBLIC LICENSE
 		       Version 2, June 1991
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
  Copyright (C) 1989, 1991 Free Software Foundation, Inc.
  51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -70,10 +82,14 @@ EXHIBIT A
  of this license document, but changing it is not allowed.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                            Preamble
 =======
 			    Preamble
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    Preamble
+>>>>>>> refs/remotes/origin/master
 
   The licenses for most software are designed to take away your
 freedom to share and change it.  By contrast, the GNU General Public
@@ -124,10 +140,14 @@ patent must be licensed for everyone's free use or not licensed at all.
 modification follow.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                    GNU GENERAL PUBLIC LICENSE
 =======
 		    GNU GENERAL PUBLIC LICENSE
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    GNU GENERAL PUBLIC LICENSE
+>>>>>>> refs/remotes/origin/master
    TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 
   0. This License applies to any program or other work which contains
@@ -327,10 +347,14 @@ of preserving the free status of all derivatives of our free software and
 of promoting the sharing and reuse of software generally.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                            NO WARRANTY
 =======
 			    NO WARRANTY
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    NO WARRANTY
+>>>>>>> refs/remotes/origin/master
 
   11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
 FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW.  EXCEPT WHEN

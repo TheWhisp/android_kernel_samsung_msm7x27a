@@ -18,18 +18,24 @@
 #include <linux/cpufreq.h>
 
 #include <mach/regs-clock.h>
+<<<<<<< HEAD
 #include <mach/cpufreq.h>
 
 #define CPUFREQ_LEVEL_END	(L13 + 1)
 
 static int max_support_idx;
 static int min_support_idx = (CPUFREQ_LEVEL_END - 1);
+=======
+
+#include "exynos-cpufreq.h"
+>>>>>>> refs/remotes/origin/master
 
 static struct clk *cpu_clk;
 static struct clk *moutcore;
 static struct clk *mout_mpll;
 static struct clk *mout_apll;
 
+<<<<<<< HEAD
 struct cpufreq_clkdiv {
 	unsigned int	index;
 	unsigned int	clkdiv;
@@ -40,6 +46,15 @@ static unsigned int exynos4x12_volt_table[CPUFREQ_LEVEL_END];
 
 static struct cpufreq_frequency_table exynos4x12_freq_table[] = {
 	{L0, 1500 * 1000},
+=======
+static unsigned int exynos4x12_volt_table[] = {
+	1350000, 1287500, 1250000, 1187500, 1137500, 1087500, 1037500,
+	1000000,  987500,  975000,  950000,  925000,  900000,  900000
+};
+
+static struct cpufreq_frequency_table exynos4x12_freq_table[] = {
+	{L0, CPUFREQ_ENTRY_INVALID},
+>>>>>>> refs/remotes/origin/master
 	{L1, 1400 * 1000},
 	{L2, 1300 * 1000},
 	{L3, 1200 * 1000},
@@ -56,6 +71,7 @@ static struct cpufreq_frequency_table exynos4x12_freq_table[] = {
 	{0, CPUFREQ_TABLE_END},
 };
 
+<<<<<<< HEAD
 static struct cpufreq_clkdiv exynos4x12_clkdiv_table[CPUFREQ_LEVEL_END];
 
 static unsigned int clkdiv_cpu0_4212[CPUFREQ_LEVEL_END][8] = {
@@ -297,6 +313,56 @@ static unsigned int exynos4x12_apll_pms_table[CPUFREQ_LEVEL_END] = {
 static const unsigned int asv_voltage_4x12[CPUFREQ_LEVEL_END] = {
 	1350000, 1287500, 1250000, 1187500, 1137500, 1087500, 1037500,
 	1000000,  987500,  975000,  950000,  925000,  900000,  900000
+=======
+static struct apll_freq *apll_freq_4x12;
+
+static struct apll_freq apll_freq_4212[] = {
+	/*
+	 * values:
+	 * freq
+	 * clock divider for CORE, COREM0, COREM1, PERIPH, ATB, PCLK_DBG, APLL, CORE2
+	 * clock divider for COPY, HPM, RESERVED
+	 * PLL M, P, S
+	 */
+	APLL_FREQ(1500, 0, 3, 7, 0, 6, 1, 2, 0, 6, 2, 0, 250, 4, 0),
+	APLL_FREQ(1400, 0, 3, 7, 0, 6, 1, 2, 0, 6, 2, 0, 175, 3, 0),
+	APLL_FREQ(1300, 0, 3, 7, 0, 5, 1, 2, 0, 5, 2, 0, 325, 6, 0),
+	APLL_FREQ(1200, 0, 3, 7, 0, 5, 1, 2, 0, 5, 2, 0, 200, 4, 0),
+	APLL_FREQ(1100, 0, 3, 6, 0, 4, 1, 2, 0, 4, 2, 0, 275, 6, 0),
+	APLL_FREQ(1000, 0, 2, 5, 0, 4, 1, 1, 0, 4, 2, 0, 125, 3, 0),
+	APLL_FREQ(900,  0, 2, 5, 0, 3, 1, 1, 0, 3, 2, 0, 150, 4, 0),
+	APLL_FREQ(800,  0, 2, 5, 0, 3, 1, 1, 0, 3, 2, 0, 100, 3, 0),
+	APLL_FREQ(700,  0, 2, 4, 0, 3, 1, 1, 0, 3, 2, 0, 175, 3, 1),
+	APLL_FREQ(600,  0, 2, 4, 0, 3, 1, 1, 0, 3, 2, 0, 200, 4, 1),
+	APLL_FREQ(500,  0, 2, 4, 0, 3, 1, 1, 0, 3, 2, 0, 125, 3, 1),
+	APLL_FREQ(400,  0, 2, 4, 0, 3, 1, 1, 0, 3, 2, 0, 100, 3, 1),
+	APLL_FREQ(300,  0, 2, 4, 0, 2, 1, 1, 0, 3, 2, 0, 200, 4, 2),
+	APLL_FREQ(200,  0, 1, 3, 0, 1, 1, 1, 0, 3, 2, 0, 100, 3, 2),
+};
+
+static struct apll_freq apll_freq_4412[] = {
+	/*
+	 * values:
+	 * freq
+	 * clock divider for CORE, COREM0, COREM1, PERIPH, ATB, PCLK_DBG, APLL, CORE2
+	 * clock divider for COPY, HPM, CORES
+	 * PLL M, P, S
+	 */
+	APLL_FREQ(1500, 0, 3, 7, 0, 6, 1, 2, 0, 6, 0, 7, 250, 4, 0),
+	APLL_FREQ(1400, 0, 3, 7, 0, 6, 1, 2, 0, 6, 0, 6, 175, 3, 0),
+	APLL_FREQ(1300, 0, 3, 7, 0, 5, 1, 2, 0, 5, 0, 6, 325, 6, 0),
+	APLL_FREQ(1200, 0, 3, 7, 0, 5, 1, 2, 0, 5, 0, 5, 200, 4, 0),
+	APLL_FREQ(1100, 0, 3, 6, 0, 4, 1, 2, 0, 4, 0, 5, 275, 6, 0),
+	APLL_FREQ(1000, 0, 2, 5, 0, 4, 1, 1, 0, 4, 0, 4, 125, 3, 0),
+	APLL_FREQ(900,  0, 2, 5, 0, 3, 1, 1, 0, 3, 0, 4, 150, 4, 0),
+	APLL_FREQ(800,  0, 2, 5, 0, 3, 1, 1, 0, 3, 0, 3, 100, 3, 0),
+	APLL_FREQ(700,  0, 2, 4, 0, 3, 1, 1, 0, 3, 0, 3, 175, 3, 1),
+	APLL_FREQ(600,  0, 2, 4, 0, 3, 1, 1, 0, 3, 0, 2, 200, 4, 1),
+	APLL_FREQ(500,  0, 2, 4, 0, 3, 1, 1, 0, 3, 0, 2, 125, 3, 1),
+	APLL_FREQ(400,  0, 2, 4, 0, 3, 1, 1, 0, 3, 0, 1, 100, 3, 1),
+	APLL_FREQ(300,  0, 2, 4, 0, 2, 1, 1, 0, 3, 0, 1, 200, 4, 2),
+	APLL_FREQ(200,  0, 1, 3, 0, 1, 1, 1, 0, 3, 0, 0, 100, 3, 2),
+>>>>>>> refs/remotes/origin/master
 };
 
 static void exynos4x12_set_clkdiv(unsigned int div_index)
@@ -306,7 +372,11 @@ static void exynos4x12_set_clkdiv(unsigned int div_index)
 
 	/* Change Divider - CPU0 */
 
+<<<<<<< HEAD
 	tmp = exynos4x12_clkdiv_table[div_index].clkdiv;
+=======
+	tmp = apll_freq_4x12[div_index].clk_div_cpu0;
+>>>>>>> refs/remotes/origin/master
 
 	__raw_writel(tmp, EXYNOS4_CLKDIV_CPU);
 
@@ -314,7 +384,11 @@ static void exynos4x12_set_clkdiv(unsigned int div_index)
 		cpu_relax();
 
 	/* Change Divider - CPU1 */
+<<<<<<< HEAD
 	tmp = exynos4x12_clkdiv_table[div_index].clkdiv1;
+=======
+	tmp = apll_freq_4x12[div_index].clk_div_cpu1;
+>>>>>>> refs/remotes/origin/master
 
 	__raw_writel(tmp, EXYNOS4_CLKDIV_CPU1);
 	if (soc_is_exynos4212())
@@ -328,9 +402,15 @@ static void exynos4x12_set_clkdiv(unsigned int div_index)
 
 static void exynos4x12_set_apll(unsigned int index)
 {
+<<<<<<< HEAD
 	unsigned int tmp, pdiv;
 
 	/* 1. MUX_CORE_SEL = MPLL, ARMCLK uses MPLL for lock time */
+=======
+	unsigned int tmp, freq = apll_freq_4x12[index].freq;
+
+	/* MUX_CORE_SEL = MPLL, ARMCLK uses MPLL for lock time */
+>>>>>>> refs/remotes/origin/master
 	clk_set_parent(moutcore, mout_mpll);
 
 	do {
@@ -340,6 +420,7 @@ static void exynos4x12_set_apll(unsigned int index)
 		tmp &= 0x7;
 	} while (tmp != 0x2);
 
+<<<<<<< HEAD
 	/* 2. Set APLL Lock time */
 	pdiv = ((exynos4x12_apll_pms_table[index] >> 8) & 0x3f);
 
@@ -358,6 +439,11 @@ static void exynos4x12_set_apll(unsigned int index)
 	} while (!(tmp & (0x1 << EXYNOS4_APLLCON0_LOCKED_SHIFT)));
 
 	/* 5. MUX_CORE_SEL = APLL */
+=======
+	clk_set_rate(mout_apll, freq * 1000);
+
+	/* MUX_CORE_SEL = APLL */
+>>>>>>> refs/remotes/origin/master
 	clk_set_parent(moutcore, mout_apll);
 
 	do {
@@ -367,6 +453,7 @@ static void exynos4x12_set_apll(unsigned int index)
 	} while (tmp != (0x1 << EXYNOS4_CLKSRC_CPU_MUXCORE_SHIFT));
 }
 
+<<<<<<< HEAD
 bool exynos4x12_pms_change(unsigned int old_index, unsigned int new_index)
 {
 	unsigned int old_pm = exynos4x12_apll_pms_table[old_index] >> 8;
@@ -437,6 +524,24 @@ int exynos4x12_cpufreq_init(struct exynos_dvfs_info *info)
 
 	set_volt_table();
 
+=======
+static void exynos4x12_set_frequency(unsigned int old_index,
+				  unsigned int new_index)
+{
+	if (old_index > new_index) {
+		exynos4x12_set_clkdiv(new_index);
+		exynos4x12_set_apll(new_index);
+	} else if (old_index < new_index) {
+		exynos4x12_set_apll(new_index);
+		exynos4x12_set_clkdiv(new_index);
+	}
+}
+
+int exynos4x12_cpufreq_init(struct exynos_dvfs_info *info)
+{
+	unsigned long rate;
+
+>>>>>>> refs/remotes/origin/master
 	cpu_clk = clk_get(NULL, "armclk");
 	if (IS_ERR(cpu_clk))
 		return PTR_ERR(cpu_clk);
@@ -455,6 +560,7 @@ int exynos4x12_cpufreq_init(struct exynos_dvfs_info *info)
 	if (IS_ERR(mout_apll))
 		goto err_mout_apll;
 
+<<<<<<< HEAD
 	for (i = L0; i <  CPUFREQ_LEVEL_END; i++) {
 
 		exynos4x12_clkdiv_table[i].index = i;
@@ -515,11 +621,24 @@ int exynos4x12_cpufreq_init(struct exynos_dvfs_info *info)
 	info->pll_safe_idx = L7;
 	info->max_support_idx = max_support_idx;
 	info->min_support_idx = min_support_idx;
+=======
+	if (soc_is_exynos4212())
+		apll_freq_4x12 = apll_freq_4212;
+	else
+		apll_freq_4x12 = apll_freq_4412;
+
+	info->mpll_freq_khz = rate;
+	/* 800Mhz */
+	info->pll_safe_idx = L7;
+>>>>>>> refs/remotes/origin/master
 	info->cpu_clk = cpu_clk;
 	info->volt_table = exynos4x12_volt_table;
 	info->freq_table = exynos4x12_freq_table;
 	info->set_freq = exynos4x12_set_frequency;
+<<<<<<< HEAD
 	info->need_apll_change = exynos4x12_pms_change;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -533,4 +652,7 @@ err_moutcore:
 	pr_debug("%s: failed initialization\n", __func__);
 	return -EINVAL;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(exynos4x12_cpufreq_init);
+=======
+>>>>>>> refs/remotes/origin/master

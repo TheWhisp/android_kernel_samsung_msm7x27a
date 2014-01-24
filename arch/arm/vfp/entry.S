@@ -8,6 +8,7 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * Basic entry code, called from the kernel's undefined instruction trap.
  *  r0  = faulted instruction
@@ -17,15 +18,20 @@
  *  lr  = failure return
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 #include <asm/thread_info.h>
 #include <asm/vfpmacros.h>
 #include "../kernel/entry-header.S"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(do_vfp)
 #ifdef CONFIG_PREEMPT
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 @ VFP entry point.
 @
 @  r0  = instruction opcode (32-bit ARM or two 16-bit Thumb)
@@ -37,13 +43,19 @@ ENTRY(do_vfp)
 @
 ENTRY(do_vfp)
 #ifdef CONFIG_PREEMPT_COUNT
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
 	add	r11, r4, #1		@ increment it
 	str	r11, [r10, #TI_PREEMPT]
 #endif
 	enable_irq
+<<<<<<< HEAD
 	str	r2, [sp, #S_PC]		@ update regs->ARM_pc for Thumb 2 case
+=======
+>>>>>>> refs/remotes/origin/master
  	ldr	r4, .LCvfp
 	ldr	r11, [r10, #TI_CPU]	@ CPU number
 	add	r10, r10, #TI_VFPSTATE	@ r10 = workspace
@@ -52,10 +64,14 @@ ENDPROC(do_vfp)
 
 ENTRY(vfp_null_entry)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT
 =======
 #ifdef CONFIG_PREEMPT_COUNT
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PREEMPT_COUNT
+>>>>>>> refs/remotes/origin/master
 	get_thread_info	r10
 	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
 	sub	r11, r4, #1		@ decrement it
@@ -74,17 +90,25 @@ ENDPROC(vfp_null_entry)
 	__INIT
 ENTRY(vfp_testing_entry)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT
 =======
 #ifdef CONFIG_PREEMPT_COUNT
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PREEMPT_COUNT
+>>>>>>> refs/remotes/origin/master
 	get_thread_info	r10
 	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
 	sub	r11, r4, #1		@ decrement it
 	str	r11, [r10, #TI_PREEMPT]
 #endif
 	ldr	r0, VFP_arch_address
+<<<<<<< HEAD
 	str	r5, [r0]		@ known non-zero value
+=======
+	str	r0, [r0]		@ set to non-zero value
+>>>>>>> refs/remotes/origin/master
 	mov	pc, r9			@ we have handled the fault
 ENDPROC(vfp_testing_entry)
 

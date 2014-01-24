@@ -39,6 +39,7 @@
 #include <linux/mutex.h>
 #include <linux/pci_hotplug.h>
 
+<<<<<<< HEAD
 #define dbg(format, arg...)					\
 	do {							\
 		if (acpiphp_debug)				\
@@ -49,6 +50,9 @@
 #define info(format, arg...) printk(KERN_INFO "%s: " format, MY_NAME , ## arg)
 #define warn(format, arg...) printk(KERN_WARNING "%s: " format, MY_NAME , ## arg)
 
+=======
+struct acpiphp_context;
+>>>>>>> refs/remotes/origin/master
 struct acpiphp_bridge;
 struct acpiphp_slot;
 
@@ -59,6 +63,10 @@ struct slot {
 	struct hotplug_slot	*hotplug_slot;
 	struct acpiphp_slot	*acpi_slot;
 	struct hotplug_slot_info info;
+<<<<<<< HEAD
+=======
+	unsigned int sun;	/* ACPI _SUN (Slot User Number) value */
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline const char *slot_name(struct slot *slot)
@@ -73,6 +81,7 @@ static inline const char *slot_name(struct slot *slot)
  */
 struct acpiphp_bridge {
 	struct list_head list;
+<<<<<<< HEAD
 	acpi_handle handle;
 	struct acpiphp_slot *slots;
 
@@ -84,13 +93,25 @@ struct acpiphp_bridge {
 
 	u32 flags;
 
+=======
+	struct list_head slots;
+	struct kref ref;
+
+	struct acpiphp_context *context;
+
+	int nr_slots;
+
+>>>>>>> refs/remotes/origin/master
 	/* This bus (host bridge) or Secondary bus (PCI-to-PCI bridge) */
 	struct pci_bus *pci_bus;
 
 	/* PCI-to-PCI bridge device */
 	struct pci_dev *pci_dev;
+<<<<<<< HEAD
 
 	spinlock_t res_lock;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -100,16 +121,24 @@ struct acpiphp_bridge {
  * PCI slot information for each *physical* PCI slot
  */
 struct acpiphp_slot {
+<<<<<<< HEAD
 	struct acpiphp_slot *next;
 	struct acpiphp_bridge *bridge;	/* parent */
+=======
+	struct list_head node;
+	struct pci_bus *bus;
+>>>>>>> refs/remotes/origin/master
 	struct list_head funcs;		/* one slot may have different
 					   objects (i.e. for each function) */
 	struct slot *slot;
 	struct mutex crit_sect;
 
 	u8		device;		/* pci device# */
+<<<<<<< HEAD
 
 	unsigned long long sun;		/* ACPI _SUN (slot unique number) */
+=======
+>>>>>>> refs/remotes/origin/master
 	u32		flags;		/* see below */
 };
 
@@ -121,17 +150,44 @@ struct acpiphp_slot {
  * typically 8 objects per slot (i.e. for each PCI function)
  */
 struct acpiphp_func {
+<<<<<<< HEAD
 	struct acpiphp_slot *slot;	/* parent */
 	struct acpiphp_bridge *bridge;	/* Ejectable PCI-to-PCI bridge */
 
 	struct list_head sibling;
 	struct notifier_block nb;
 	acpi_handle	handle;
+=======
+	struct acpiphp_bridge *parent;
+	struct acpiphp_slot *slot;
+
+	struct list_head sibling;
+>>>>>>> refs/remotes/origin/master
 
 	u8		function;	/* pci function# */
 	u32		flags;		/* see below */
 };
 
+<<<<<<< HEAD
+=======
+struct acpiphp_context {
+	acpi_handle handle;
+	struct acpiphp_func func;
+	struct acpiphp_bridge *bridge;
+	unsigned int refcount;
+};
+
+static inline struct acpiphp_context *func_to_context(struct acpiphp_func *func)
+{
+	return container_of(func, struct acpiphp_context, func);
+}
+
+static inline acpi_handle func_to_handle(struct acpiphp_func *func)
+{
+	return func_to_context(func)->handle;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * struct acpiphp_attention_info - device specific attention registration
  *
@@ -145,6 +201,7 @@ struct acpiphp_attention_info
 	struct module *owner;
 };
 
+<<<<<<< HEAD
 /* PCI bus bridge HID */
 #define ACPI_PCI_HOST_HID		"PNP0A03"
 
@@ -173,20 +230,33 @@ struct acpiphp_attention_info
 #define SLOT_POWEREDON		(0x00000001)
 #define SLOT_ENABLED		(0x00000002)
 #define SLOT_MULTIFUNCTION	(0x00000004)
+=======
+/* ACPI _STA method value (ignore bit 4; battery present) */
+#define ACPI_STA_ALL			(0x0000000f)
+
+/* slot flags */
+
+#define SLOT_ENABLED		(0x00000001)
+>>>>>>> refs/remotes/origin/master
 
 /* function flags */
 
 #define FUNC_HAS_STA		(0x00000001)
 #define FUNC_HAS_EJ0		(0x00000002)
+<<<<<<< HEAD
 #define FUNC_HAS_PS0		(0x00000010)
 #define FUNC_HAS_PS1		(0x00000020)
 #define FUNC_HAS_PS2		(0x00000040)
 #define FUNC_HAS_PS3		(0x00000080)
 #define FUNC_HAS_DCK            (0x00000100)
+=======
+#define FUNC_HAS_DCK            (0x00000004)
+>>>>>>> refs/remotes/origin/master
 
 /* function prototypes */
 
 /* acpiphp_core.c */
+<<<<<<< HEAD
 extern int acpiphp_register_attention(struct acpiphp_attention_info*info);
 extern int acpiphp_unregister_attention(struct acpiphp_attention_info *info);
 extern int acpiphp_register_hotplug_slot(struct acpiphp_slot *slot);
@@ -208,5 +278,24 @@ extern u8 acpiphp_get_adapter_status (struct acpiphp_slot *slot);
 
 /* variables */
 extern int acpiphp_debug;
+=======
+int acpiphp_register_attention(struct acpiphp_attention_info*info);
+int acpiphp_unregister_attention(struct acpiphp_attention_info *info);
+int acpiphp_register_hotplug_slot(struct acpiphp_slot *slot, unsigned int sun);
+void acpiphp_unregister_hotplug_slot(struct acpiphp_slot *slot);
+
+/* acpiphp_glue.c */
+typedef int (*acpiphp_callback)(struct acpiphp_slot *slot, void *data);
+
+int acpiphp_enable_slot(struct acpiphp_slot *slot);
+int acpiphp_disable_and_eject_slot(struct acpiphp_slot *slot);
+u8 acpiphp_get_power_status(struct acpiphp_slot *slot);
+u8 acpiphp_get_attention_status(struct acpiphp_slot *slot);
+u8 acpiphp_get_latch_status(struct acpiphp_slot *slot);
+u8 acpiphp_get_adapter_status(struct acpiphp_slot *slot);
+
+/* variables */
+extern bool acpiphp_disabled;
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ACPIPHP_H */

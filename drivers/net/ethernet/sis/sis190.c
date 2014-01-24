@@ -415,7 +415,11 @@ static u16 mdio_read_latched(void __iomem *ioaddr, int phy_id, int reg)
 	return mdio_read(ioaddr, phy_id, reg);
 }
 
+<<<<<<< HEAD
 static u16 __devinit sis190_read_eeprom(void __iomem *ioaddr, u32 reg)
+=======
+static u16 sis190_read_eeprom(void __iomem *ioaddr, u32 reg)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 data = 0xffff;
 	unsigned int i;
@@ -729,7 +733,11 @@ static void sis190_tx_interrupt(struct net_device *dev,
  * The interrupt handler does all of the Rx thread work and cleans up after
  * the Tx thread.
  */
+<<<<<<< HEAD
 static irqreturn_t sis190_interrupt(int irq, void *__dev)
+=======
+static irqreturn_t sis190_irq(int irq, void *__dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = __dev;
 	struct sis190_private *tp = netdev_priv(dev);
@@ -772,11 +780,19 @@ out:
 static void sis190_netpoll(struct net_device *dev)
 {
 	struct sis190_private *tp = netdev_priv(dev);
+<<<<<<< HEAD
 	struct pci_dev *pdev = tp->pci_dev;
 
 	disable_irq(pdev->irq);
 	sis190_interrupt(pdev->irq, dev);
 	enable_irq(pdev->irq);
+=======
+	const int irq = tp->pci_dev->irq;
+
+	disable_irq(irq);
+	sis190_irq(irq, dev);
+	enable_irq(irq);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -1085,7 +1101,11 @@ static int sis190_open(struct net_device *dev)
 
 	sis190_request_timer(dev);
 
+<<<<<<< HEAD
 	rc = request_irq(dev->irq, sis190_interrupt, IRQF_SHARED, dev->name, dev);
+=======
+	rc = request_irq(pdev->irq, sis190_irq, IRQF_SHARED, dev->name, dev);
+>>>>>>> refs/remotes/origin/master
 	if (rc < 0)
 		goto err_release_timer_2;
 
@@ -1097,11 +1117,17 @@ err_release_timer_2:
 	sis190_delete_timer(dev);
 	sis190_rx_clear(tp);
 err_free_rx_1:
+<<<<<<< HEAD
 	pci_free_consistent(tp->pci_dev, RX_RING_BYTES, tp->RxDescRing,
 		tp->rx_dma);
 err_free_tx_0:
 	pci_free_consistent(tp->pci_dev, TX_RING_BYTES, tp->TxDescRing,
 		tp->tx_dma);
+=======
+	pci_free_consistent(pdev, RX_RING_BYTES, tp->RxDescRing, tp->rx_dma);
+err_free_tx_0:
+	pci_free_consistent(pdev, TX_RING_BYTES, tp->TxDescRing, tp->tx_dma);
+>>>>>>> refs/remotes/origin/master
 	goto out;
 }
 
@@ -1141,7 +1167,11 @@ static void sis190_down(struct net_device *dev)
 
 		spin_unlock_irq(&tp->lock);
 
+<<<<<<< HEAD
 		synchronize_irq(dev->irq);
+=======
+		synchronize_irq(tp->pci_dev->irq);
+>>>>>>> refs/remotes/origin/master
 
 		if (!poll_locked)
 			poll_locked++;
@@ -1161,7 +1191,11 @@ static int sis190_close(struct net_device *dev)
 
 	sis190_down(dev);
 
+<<<<<<< HEAD
 	free_irq(dev->irq, dev);
+=======
+	free_irq(pdev->irq, dev);
+>>>>>>> refs/remotes/origin/master
 
 	pci_free_consistent(pdev, TX_RING_BYTES, tp->TxDescRing, tp->tx_dma);
 	pci_free_consistent(pdev, RX_RING_BYTES, tp->RxDescRing, tp->rx_dma);
@@ -1381,7 +1415,11 @@ static void sis190_mii_probe_88e1111_fixup(struct sis190_private *tp)
  *	Identify and set current phy if found one,
  *	return error if it failed to found.
  */
+<<<<<<< HEAD
 static int __devinit sis190_mii_probe(struct net_device *dev)
+=======
+static int sis190_mii_probe(struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sis190_private *tp = netdev_priv(dev);
 	struct mii_if_info *mii_if = &tp->mii_if;
@@ -1453,7 +1491,11 @@ static void sis190_release_board(struct pci_dev *pdev)
 	free_netdev(dev);
 }
 
+<<<<<<< HEAD
 static struct net_device * __devinit sis190_init_board(struct pci_dev *pdev)
+=======
+static struct net_device *sis190_init_board(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sis190_private *tp;
 	struct net_device *dev;
@@ -1575,8 +1617,13 @@ static void sis190_set_rgmii(struct sis190_private *tp, u8 reg)
 	tp->features |= (reg & 0x80) ? F_HAS_RGMII : 0;
 }
 
+<<<<<<< HEAD
 static int __devinit sis190_get_mac_addr_from_eeprom(struct pci_dev *pdev,
 						     struct net_device *dev)
+=======
+static int sis190_get_mac_addr_from_eeprom(struct pci_dev *pdev,
+					   struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sis190_private *tp = netdev_priv(dev);
 	void __iomem *ioaddr = tp->mmio_addr;
@@ -1617,10 +1664,17 @@ static int __devinit sis190_get_mac_addr_from_eeprom(struct pci_dev *pdev,
  *	APC CMOS RAM is accessed through ISA bridge.
  *	MAC address is read into @net_dev->dev_addr.
  */
+<<<<<<< HEAD
 static int __devinit sis190_get_mac_addr_from_apc(struct pci_dev *pdev,
 						  struct net_device *dev)
 {
 	static const u16 __devinitdata ids[] = { 0x0965, 0x0966, 0x0968 };
+=======
+static int sis190_get_mac_addr_from_apc(struct pci_dev *pdev,
+					struct net_device *dev)
+{
+	static const u16 ids[] = { 0x0965, 0x0966, 0x0968 };
+>>>>>>> refs/remotes/origin/master
 	struct sis190_private *tp = netdev_priv(dev);
 	struct pci_dev *isa_bridge;
 	u8 reg, tmp8;
@@ -1695,8 +1749,12 @@ static inline void sis190_init_rxfilter(struct net_device *dev)
 	SIS_PCI_COMMIT();
 }
 
+<<<<<<< HEAD
 static int __devinit sis190_get_mac_addr(struct pci_dev *pdev,
 					 struct net_device *dev)
+=======
+static int sis190_get_mac_addr(struct pci_dev *pdev, struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 
@@ -1773,9 +1831,12 @@ static void sis190_get_regs(struct net_device *dev, struct ethtool_regs *regs,
 	struct sis190_private *tp = netdev_priv(dev);
 	unsigned long flags;
 
+<<<<<<< HEAD
 	if (regs->len > SIS190_REGS_SIZE)
 		regs->len = SIS190_REGS_SIZE;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&tp->lock, flags);
 	memcpy_fromio(p, tp->mmio_addr, regs->len);
 	spin_unlock_irqrestore(&tp->lock, flags);
@@ -1847,8 +1908,13 @@ static const struct net_device_ops sis190_netdev_ops = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit sis190_init_one(struct pci_dev *pdev,
 				     const struct pci_device_id *ent)
+=======
+static int sis190_init_one(struct pci_dev *pdev,
+			   const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	static int printed_version = 0;
 	struct sis190_private *tp;
@@ -1884,8 +1950,11 @@ static int __devinit sis190_init_one(struct pci_dev *pdev,
 	dev->netdev_ops = &sis190_netdev_ops;
 
 	SET_ETHTOOL_OPS(dev, &sis190_ethtool_ops);
+<<<<<<< HEAD
 	dev->irq = pdev->irq;
 	dev->base_addr = (unsigned long) 0xdead;
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->watchdog_timeo = SIS190_TX_TIMEOUT;
 
 	spin_lock_init(&tp->lock);
@@ -1902,7 +1971,11 @@ static int __devinit sis190_init_one(struct pci_dev *pdev,
 		netdev_info(dev, "%s: %s at %p (IRQ: %d), %pM\n",
 			    pci_name(pdev),
 			    sis_chip_info[ent->driver_data].name,
+<<<<<<< HEAD
 			    ioaddr, dev->irq, dev->dev_addr);
+=======
+			    ioaddr, pdev->irq, dev->dev_addr);
+>>>>>>> refs/remotes/origin/master
 		netdev_info(dev, "%s mode.\n",
 			    (tp->features & F_HAS_RGMII) ? "RGMII" : "GMII");
 	}
@@ -1920,7 +1993,11 @@ err_release_board:
 	goto out;
 }
 
+<<<<<<< HEAD
 static void __devexit sis190_remove_one(struct pci_dev *pdev)
+=======
+static void sis190_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 	struct sis190_private *tp = netdev_priv(dev);
@@ -1929,13 +2006,17 @@ static void __devexit sis190_remove_one(struct pci_dev *pdev)
 	cancel_work_sync(&tp->phy_task);
 	unregister_netdev(dev);
 	sis190_release_board(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct pci_driver sis190_pci_driver = {
 	.name		= DRV_NAME,
 	.id_table	= sis190_pci_tbl,
 	.probe		= sis190_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(sis190_remove_one),
 };
 
@@ -1951,3 +2032,9 @@ static void __exit sis190_cleanup_module(void)
 
 module_init(sis190_init_module);
 module_exit(sis190_cleanup_module);
+=======
+	.remove		= sis190_remove_one,
+};
+
+module_pci_driver(sis190_pci_driver);
+>>>>>>> refs/remotes/origin/master

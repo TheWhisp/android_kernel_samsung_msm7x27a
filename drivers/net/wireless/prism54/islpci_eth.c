@@ -455,7 +455,11 @@ islpci_eth_receive(islpci_private *priv)
 			      "Error mapping DMA address\n");
 
 			/* free the skbuf structure before aborting */
+<<<<<<< HEAD
 			dev_kfree_skb_irq((struct sk_buff *) skb);
+=======
+			dev_kfree_skb_irq(skb);
+>>>>>>> refs/remotes/origin/master
 			skb = NULL;
 			break;
 		}

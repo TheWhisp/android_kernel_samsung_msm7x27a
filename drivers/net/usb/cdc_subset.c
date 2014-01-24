@@ -336,6 +336,7 @@ static struct usb_driver cdc_subset_driver = {
 	.resume =	usbnet_resume,
 	.disconnect =	usbnet_disconnect,
 	.id_table =	products,
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
@@ -353,6 +354,12 @@ module_exit(cdc_subset_exit);
 =======
 module_usb_driver(cdc_subset_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.disable_hub_initiated_lpm = 1,
+};
+
+module_usb_driver(cdc_subset_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("David Brownell");
 MODULE_DESCRIPTION("Simple 'CDC Subset' USB networking links");

@@ -30,9 +30,13 @@
 #include <linux/sched.h>
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/miscdevice.h>
 #include <linux/wait.h>
 #include <linux/poll.h>
@@ -153,6 +157,23 @@ static void rfkill_led_trigger_activate(struct led_classdev *led)
 	rfkill_led_trigger_event(rfkill);
 }
 
+<<<<<<< HEAD
+=======
+const char *rfkill_get_led_trigger_name(struct rfkill *rfkill)
+{
+	return rfkill->led_trigger.name;
+}
+EXPORT_SYMBOL(rfkill_get_led_trigger_name);
+
+void rfkill_set_led_trigger_name(struct rfkill *rfkill, const char *name)
+{
+	BUG_ON(!rfkill);
+
+	rfkill->ledtrigname = name;
+}
+EXPORT_SYMBOL(rfkill_set_led_trigger_name);
+
+>>>>>>> refs/remotes/origin/master
 static int rfkill_led_trigger_register(struct rfkill *rfkill)
 {
 	rfkill->led_trigger.name = rfkill->ledtrigname
@@ -240,10 +261,14 @@ static bool __rfkill_set_hw_state(struct rfkill *rfkill,
 		rfkill->state &= ~RFKILL_BLOCK_HW;
 	*change = prev != blocked;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	any = rfkill->state & RFKILL_BLOCK_ANY;
 =======
 	any = !!(rfkill->state & RFKILL_BLOCK_ANY);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	any = !!(rfkill->state & RFKILL_BLOCK_ANY);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&rfkill->lock, flags);
 
 	rfkill_led_trigger_event(rfkill);
@@ -263,6 +288,10 @@ static bool __rfkill_set_hw_state(struct rfkill *rfkill,
 static void rfkill_set_block(struct rfkill *rfkill, bool blocked)
 {
 	unsigned long flags;
+<<<<<<< HEAD
+=======
+	bool prev, curr;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	if (unlikely(rfkill->dev.power.power_state.event & PM_EVENT_SLEEP))
@@ -277,6 +306,11 @@ static void rfkill_set_block(struct rfkill *rfkill, bool blocked)
 		rfkill->ops->query(rfkill, rfkill->data);
 
 	spin_lock_irqsave(&rfkill->lock, flags);
+<<<<<<< HEAD
+=======
+	prev = rfkill->state & RFKILL_BLOCK_SW;
+
+>>>>>>> refs/remotes/origin/master
 	if (rfkill->state & RFKILL_BLOCK_SW)
 		rfkill->state |= RFKILL_BLOCK_SW_PREV;
 	else
@@ -306,10 +340,20 @@ static void rfkill_set_block(struct rfkill *rfkill, bool blocked)
 	}
 	rfkill->state &= ~RFKILL_BLOCK_SW_SETCALL;
 	rfkill->state &= ~RFKILL_BLOCK_SW_PREV;
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&rfkill->lock, flags);
 
 	rfkill_led_trigger_event(rfkill);
 	rfkill_event(rfkill);
+=======
+	curr = rfkill->state & RFKILL_BLOCK_SW;
+	spin_unlock_irqrestore(&rfkill->lock, flags);
+
+	rfkill_led_trigger_event(rfkill);
+
+	if (prev != curr)
+		rfkill_event(rfkill);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_RFKILL_INPUT
@@ -332,7 +376,11 @@ static void __rfkill_switch_all(const enum rfkill_type type, bool blocked)
 
 	rfkill_global_states[type].cur = blocked;
 	list_for_each_entry(rfkill, &rfkill_list, node) {
+<<<<<<< HEAD
 		if (rfkill->type != type)
+=======
+		if (rfkill->type != type && type != RFKILL_TYPE_ALL)
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		rfkill_set_block(rfkill, blocked);
@@ -563,18 +611,31 @@ void rfkill_set_states(struct rfkill *rfkill, bool sw, bool hw)
 }
 EXPORT_SYMBOL(rfkill_set_states);
 
+<<<<<<< HEAD
 static ssize_t rfkill_name_show(struct device *dev,
 				struct device_attribute *attr,
 				char *buf)
+=======
+static ssize_t name_show(struct device *dev, struct device_attribute *attr,
+			 char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rfkill *rfkill = to_rfkill(dev);
 
 	return sprintf(buf, "%s\n", rfkill->name);
 }
+<<<<<<< HEAD
 
 static const char *rfkill_get_type_str(enum rfkill_type type)
 {
 	BUILD_BUG_ON(NUM_RFKILL_TYPES != RFKILL_TYPE_FM + 1);
+=======
+static DEVICE_ATTR_RO(name);
+
+static const char *rfkill_get_type_str(enum rfkill_type type)
+{
+	BUILD_BUG_ON(NUM_RFKILL_TYPES != RFKILL_TYPE_NFC + 1);
+>>>>>>> refs/remotes/origin/master
 
 	switch (type) {
 	case RFKILL_TYPE_WLAN:
@@ -591,59 +652,102 @@ static const char *rfkill_get_type_str(enum rfkill_type type)
 		return "gps";
 	case RFKILL_TYPE_FM:
 		return "fm";
+<<<<<<< HEAD
+=======
+	case RFKILL_TYPE_NFC:
+		return "nfc";
+>>>>>>> refs/remotes/origin/master
 	default:
 		BUG();
 	}
 }
 
+<<<<<<< HEAD
 static ssize_t rfkill_type_show(struct device *dev,
 				struct device_attribute *attr,
 				char *buf)
+=======
+static ssize_t type_show(struct device *dev, struct device_attribute *attr,
+			 char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rfkill *rfkill = to_rfkill(dev);
 
 	return sprintf(buf, "%s\n", rfkill_get_type_str(rfkill->type));
 }
+<<<<<<< HEAD
 
 static ssize_t rfkill_idx_show(struct device *dev,
 			       struct device_attribute *attr,
 			       char *buf)
+=======
+static DEVICE_ATTR_RO(type);
+
+static ssize_t index_show(struct device *dev, struct device_attribute *attr,
+			  char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rfkill *rfkill = to_rfkill(dev);
 
 	return sprintf(buf, "%d\n", rfkill->idx);
 }
+<<<<<<< HEAD
 
 static ssize_t rfkill_persistent_show(struct device *dev,
 			       struct device_attribute *attr,
 			       char *buf)
+=======
+static DEVICE_ATTR_RO(index);
+
+static ssize_t persistent_show(struct device *dev,
+			       struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rfkill *rfkill = to_rfkill(dev);
 
 	return sprintf(buf, "%d\n", rfkill->persistent);
 }
+<<<<<<< HEAD
 
 static ssize_t rfkill_hard_show(struct device *dev,
 				 struct device_attribute *attr,
 				 char *buf)
+=======
+static DEVICE_ATTR_RO(persistent);
+
+static ssize_t hard_show(struct device *dev, struct device_attribute *attr,
+			 char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rfkill *rfkill = to_rfkill(dev);
 
 	return sprintf(buf, "%d\n", (rfkill->state & RFKILL_BLOCK_HW) ? 1 : 0 );
 }
+<<<<<<< HEAD
 
 static ssize_t rfkill_soft_show(struct device *dev,
 				 struct device_attribute *attr,
 				 char *buf)
+=======
+static DEVICE_ATTR_RO(hard);
+
+static ssize_t soft_show(struct device *dev, struct device_attribute *attr,
+			 char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rfkill *rfkill = to_rfkill(dev);
 
 	return sprintf(buf, "%d\n", (rfkill->state & RFKILL_BLOCK_SW) ? 1 : 0 );
 }
 
+<<<<<<< HEAD
 static ssize_t rfkill_soft_store(struct device *dev,
 				  struct device_attribute *attr,
 				  const char *buf, size_t count)
+=======
+static ssize_t soft_store(struct device *dev, struct device_attribute *attr,
+			  const char *buf, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rfkill *rfkill = to_rfkill(dev);
 	unsigned long state;
@@ -653,10 +757,14 @@ static ssize_t rfkill_soft_store(struct device *dev,
 		return -EPERM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 0, &state);
 =======
 	err = kstrtoul(buf, 0, &state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = kstrtoul(buf, 0, &state);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 
@@ -667,8 +775,14 @@ static ssize_t rfkill_soft_store(struct device *dev,
 	rfkill_set_block(rfkill, state);
 	mutex_unlock(&rfkill_global_mutex);
 
+<<<<<<< HEAD
 	return err ?: count;
 }
+=======
+	return count;
+}
+static DEVICE_ATTR_RW(soft);
+>>>>>>> refs/remotes/origin/master
 
 static u8 user_state_from_blocked(unsigned long state)
 {
@@ -680,18 +794,28 @@ static u8 user_state_from_blocked(unsigned long state)
 	return RFKILL_USER_STATE_UNBLOCKED;
 }
 
+<<<<<<< HEAD
 static ssize_t rfkill_state_show(struct device *dev,
 				 struct device_attribute *attr,
 				 char *buf)
+=======
+static ssize_t state_show(struct device *dev, struct device_attribute *attr,
+			  char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rfkill *rfkill = to_rfkill(dev);
 
 	return sprintf(buf, "%d\n", user_state_from_blocked(rfkill->state));
 }
 
+<<<<<<< HEAD
 static ssize_t rfkill_state_store(struct device *dev,
 				  struct device_attribute *attr,
 				  const char *buf, size_t count)
+=======
+static ssize_t state_store(struct device *dev, struct device_attribute *attr,
+			   const char *buf, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rfkill *rfkill = to_rfkill(dev);
 	unsigned long state;
@@ -701,10 +825,14 @@ static ssize_t rfkill_state_store(struct device *dev,
 		return -EPERM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 0, &state);
 =======
 	err = kstrtoul(buf, 0, &state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = kstrtoul(buf, 0, &state);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 
@@ -716,6 +844,7 @@ static ssize_t rfkill_state_store(struct device *dev,
 	rfkill_set_block(rfkill, state == RFKILL_USER_STATE_SOFT_BLOCKED);
 	mutex_unlock(&rfkill_global_mutex);
 
+<<<<<<< HEAD
 	return err ?: count;
 }
 
@@ -744,6 +873,31 @@ static struct device_attribute rfkill_dev_attrs[] = {
 	__ATTR(hard, S_IRUGO, rfkill_hard_show, NULL),
 	__ATTR_NULL
 };
+=======
+	return count;
+}
+static DEVICE_ATTR_RW(state);
+
+static ssize_t claim_show(struct device *dev, struct device_attribute *attr,
+			  char *buf)
+{
+	return sprintf(buf, "%d\n", 0);
+}
+static DEVICE_ATTR_RO(claim);
+
+static struct attribute *rfkill_dev_attrs[] = {
+	&dev_attr_name.attr,
+	&dev_attr_type.attr,
+	&dev_attr_index.attr,
+	&dev_attr_persistent.attr,
+	&dev_attr_state.attr,
+	&dev_attr_claim.attr,
+	&dev_attr_soft.attr,
+	&dev_attr_hard.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(rfkill_dev);
+>>>>>>> refs/remotes/origin/master
 
 static void rfkill_release(struct device *dev)
 {
@@ -785,7 +939,10 @@ void rfkill_pause_polling(struct rfkill *rfkill)
 }
 EXPORT_SYMBOL(rfkill_pause_polling);
 
+<<<<<<< HEAD
 #ifdef CONFIG_RFKILL_PM
+=======
+>>>>>>> refs/remotes/origin/master
 void rfkill_resume_polling(struct rfkill *rfkill)
 {
 	BUG_ON(!rfkill);
@@ -820,17 +977,27 @@ static int rfkill_resume(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct class rfkill_class = {
 	.name		= "rfkill",
 	.dev_release	= rfkill_release,
+<<<<<<< HEAD
 	.dev_attrs	= rfkill_dev_attrs,
 	.dev_uevent	= rfkill_dev_uevent,
 #ifdef CONFIG_RFKILL_PM
 	.suspend	= rfkill_suspend,
 	.resume		= rfkill_resume,
 #endif
+=======
+	.dev_groups	= rfkill_dev_groups,
+	.dev_uevent	= rfkill_dev_uevent,
+	.suspend	= rfkill_suspend,
+	.resume		= rfkill_resume,
+>>>>>>> refs/remotes/origin/master
 };
 
 bool rfkill_blocked(struct rfkill *rfkill)

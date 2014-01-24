@@ -13,6 +13,7 @@
 #define __ASM_ARCH_HARDWARE_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * The EBSA110 has a weird "ISA IO" region:
  *
@@ -60,6 +61,11 @@
 #define ISAIO_BASE		0xf0000000
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ISAMEM_BASE		0xe0000000
+#define ISAIO_BASE		0xf0000000
+
+>>>>>>> refs/remotes/origin/master
 /*
  * RAM definitions
  */

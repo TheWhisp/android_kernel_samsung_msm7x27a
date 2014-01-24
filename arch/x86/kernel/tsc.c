@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/init.h>
@@ -6,13 +11,20 @@
 #include <linux/acpi_pmtmr.h>
 #include <linux/cpufreq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/dmi.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/clocksource.h>
 #include <linux/percpu.h>
 #include <linux/timex.h>
+<<<<<<< HEAD
+=======
+#include <linux/static_key.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/hpet.h>
 #include <asm/timer.h>
@@ -40,16 +52,255 @@ static int __read_mostly tsc_unstable;
 static int __read_mostly tsc_disabled = -1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int tsc_clocksource_reliable;
 =======
 int tsc_clocksource_reliable;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct static_key __use_tsc = STATIC_KEY_INIT;
+
+int tsc_clocksource_reliable;
+
+/*
+ * Use a ring-buffer like data structure, where a writer advances the head by
+ * writing a new data entry and a reader advances the tail when it observes a
+ * new entry.
+ *
+ * Writers are made to wait on readers until there's space to write a new
+ * entry.
+ *
+ * This means that we can always use an {offset, mul} pair to compute a ns
+ * value that is 'roughly' in the right direction, even if we're writing a new
+ * {offset, mul} pair during the clock read.
+ *
+ * The down-side is that we can no longer guarantee strict monotonicity anymore
+ * (assuming the TSC was that to begin with), because while we compute the
+ * intersection point of the two clock slopes and make sure the time is
+ * continuous at the point of switching; we can no longer guarantee a reader is
+ * strictly before or after the switch point.
+ *
+ * It does mean a reader no longer needs to disable IRQs in order to avoid
+ * CPU-Freq updates messing with his times, and similarly an NMI reader will
+ * no longer run the risk of hitting half-written state.
+ */
+
+struct cyc2ns {
+	struct cyc2ns_data data[2];	/*  0 + 2*24 = 48 */
+	struct cyc2ns_data *head;	/* 48 + 8    = 56 */
+	struct cyc2ns_data *tail;	/* 56 + 8    = 64 */
+}; /* exactly fits one cacheline */
+
+static DEFINE_PER_CPU_ALIGNED(struct cyc2ns, cyc2ns);
+
+struct cyc2ns_data *cyc2ns_read_begin(void)
+{
+	struct cyc2ns_data *head;
+
+	preempt_disable();
+
+	head = this_cpu_read(cyc2ns.head);
+	/*
+	 * Ensure we observe the entry when we observe the pointer to it.
+	 * matches the wmb from cyc2ns_write_end().
+	 */
+	smp_read_barrier_depends();
+	head->__count++;
+	barrier();
+
+	return head;
+}
+
+void cyc2ns_read_end(struct cyc2ns_data *head)
+{
+	barrier();
+	/*
+	 * If we're the outer most nested read; update the tail pointer
+	 * when we're done. This notifies possible pending writers
+	 * that we've observed the head pointer and that the other
+	 * entry is now free.
+	 */
+	if (!--head->__count) {
+		/*
+		 * x86-TSO does not reorder writes with older reads;
+		 * therefore once this write becomes visible to another
+		 * cpu, we must be finished reading the cyc2ns_data.
+		 *
+		 * matches with cyc2ns_write_begin().
+		 */
+		this_cpu_write(cyc2ns.tail, head);
+	}
+	preempt_enable();
+}
+
+/*
+ * Begin writing a new @data entry for @cpu.
+ *
+ * Assumes some sort of write side lock; currently 'provided' by the assumption
+ * that cpufreq will call its notifiers sequentially.
+ */
+static struct cyc2ns_data *cyc2ns_write_begin(int cpu)
+{
+	struct cyc2ns *c2n = &per_cpu(cyc2ns, cpu);
+	struct cyc2ns_data *data = c2n->data;
+
+	if (data == c2n->head)
+		data++;
+
+	/* XXX send an IPI to @cpu in order to guarantee a read? */
+
+	/*
+	 * When we observe the tail write from cyc2ns_read_end(),
+	 * the cpu must be done with that entry and its safe
+	 * to start writing to it.
+	 */
+	while (c2n->tail == data)
+		cpu_relax();
+
+	return data;
+}
+
+static void cyc2ns_write_end(int cpu, struct cyc2ns_data *data)
+{
+	struct cyc2ns *c2n = &per_cpu(cyc2ns, cpu);
+
+	/*
+	 * Ensure the @data writes are visible before we publish the
+	 * entry. Matches the data-depencency in cyc2ns_read_begin().
+	 */
+	smp_wmb();
+
+	ACCESS_ONCE(c2n->head) = data;
+}
+
+/*
+ * Accelerators for sched_clock()
+ * convert from cycles(64bits) => nanoseconds (64bits)
+ *  basic equation:
+ *              ns = cycles / (freq / ns_per_sec)
+ *              ns = cycles * (ns_per_sec / freq)
+ *              ns = cycles * (10^9 / (cpu_khz * 10^3))
+ *              ns = cycles * (10^6 / cpu_khz)
+ *
+ *      Then we use scaling math (suggested by george@mvista.com) to get:
+ *              ns = cycles * (10^6 * SC / cpu_khz) / SC
+ *              ns = cycles * cyc2ns_scale / SC
+ *
+ *      And since SC is a constant power of two, we can convert the div
+ *  into a shift.
+ *
+ *  We can use khz divisor instead of mhz to keep a better precision, since
+ *  cyc2ns_scale is limited to 10^6 * 2^10, which fits in 32 bits.
+ *  (mathieu.desnoyers@polymtl.ca)
+ *
+ *                      -johnstul@us.ibm.com "math is hard, lets go shopping!"
+ */
+
+#define CYC2NS_SCALE_FACTOR 10 /* 2^10, carefully chosen */
+
+static void cyc2ns_data_init(struct cyc2ns_data *data)
+{
+	data->cyc2ns_mul = 1U << CYC2NS_SCALE_FACTOR;
+	data->cyc2ns_shift = CYC2NS_SCALE_FACTOR;
+	data->cyc2ns_offset = 0;
+	data->__count = 0;
+}
+
+static void cyc2ns_init(int cpu)
+{
+	struct cyc2ns *c2n = &per_cpu(cyc2ns, cpu);
+
+	cyc2ns_data_init(&c2n->data[0]);
+	cyc2ns_data_init(&c2n->data[1]);
+
+	c2n->head = c2n->data;
+	c2n->tail = c2n->data;
+}
+
+static inline unsigned long long cycles_2_ns(unsigned long long cyc)
+{
+	struct cyc2ns_data *data, *tail;
+	unsigned long long ns;
+
+	/*
+	 * See cyc2ns_read_*() for details; replicated in order to avoid
+	 * an extra few instructions that came with the abstraction.
+	 * Notable, it allows us to only do the __count and tail update
+	 * dance when its actually needed.
+	 */
+
+	preempt_disable();
+	data = this_cpu_read(cyc2ns.head);
+	tail = this_cpu_read(cyc2ns.tail);
+
+	if (likely(data == tail)) {
+		ns = data->cyc2ns_offset;
+		ns += mul_u64_u32_shr(cyc, data->cyc2ns_mul, CYC2NS_SCALE_FACTOR);
+	} else {
+		data->__count++;
+
+		barrier();
+
+		ns = data->cyc2ns_offset;
+		ns += mul_u64_u32_shr(cyc, data->cyc2ns_mul, CYC2NS_SCALE_FACTOR);
+
+		barrier();
+
+		if (!--data->__count)
+			this_cpu_write(cyc2ns.tail, data);
+	}
+	preempt_enable();
+
+	return ns;
+}
+
+/* XXX surely we already have this someplace in the kernel?! */
+#define DIV_ROUND(n, d) (((n) + ((d) / 2)) / (d))
+
+static void set_cyc2ns_scale(unsigned long cpu_khz, int cpu)
+{
+	unsigned long long tsc_now, ns_now;
+	struct cyc2ns_data *data;
+	unsigned long flags;
+
+	local_irq_save(flags);
+	sched_clock_idle_sleep_event();
+
+	if (!cpu_khz)
+		goto done;
+
+	data = cyc2ns_write_begin(cpu);
+
+	rdtscll(tsc_now);
+	ns_now = cycles_2_ns(tsc_now);
+
+	/*
+	 * Compute a new multiplier as per the above comment and ensure our
+	 * time function is continuous; see the comment near struct
+	 * cyc2ns_data.
+	 */
+	data->cyc2ns_mul = DIV_ROUND(NSEC_PER_MSEC << CYC2NS_SCALE_FACTOR, cpu_khz);
+	data->cyc2ns_shift = CYC2NS_SCALE_FACTOR;
+	data->cyc2ns_offset = ns_now -
+		mul_u64_u32_shr(tsc_now, data->cyc2ns_mul, CYC2NS_SCALE_FACTOR);
+
+	cyc2ns_write_end(cpu, data);
+
+done:
+	sched_clock_idle_wakeup_event(0);
+	local_irq_restore(flags);
+}
+>>>>>>> refs/remotes/origin/master
 /*
  * Scheduler clock - returns current time in nanosec units.
  */
 u64 native_sched_clock(void)
 {
+<<<<<<< HEAD
 	u64 this_offset;
+=======
+	u64 tsc_now;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Fall back to jiffies if there's no TSC available:
@@ -59,16 +310,27 @@ u64 native_sched_clock(void)
 	 *   very important for it to be as fast as the platform
 	 *   can achieve it. )
 	 */
+<<<<<<< HEAD
 	if (unlikely(tsc_disabled)) {
+=======
+	if (!static_key_false(&__use_tsc)) {
+>>>>>>> refs/remotes/origin/master
 		/* No locking but a rare wrong value is not a big deal: */
 		return (jiffies_64 - INITIAL_JIFFIES) * (1000000000 / HZ);
 	}
 
 	/* read the Time Stamp Counter: */
+<<<<<<< HEAD
 	rdtscll(this_offset);
 
 	/* return the value in ns */
 	return __cycles_2_ns(this_offset);
+=======
+	rdtscll(tsc_now);
+
+	/* return the value in ns */
+	return cycles_2_ns(tsc_now);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* We need to define a real function for sched_clock, to override the
@@ -83,17 +345,39 @@ unsigned long long
 sched_clock(void) __attribute__((alias("native_sched_clock")));
 #endif
 
+<<<<<<< HEAD
+=======
+unsigned long long native_read_tsc(void)
+{
+	return __native_read_tsc();
+}
+EXPORT_SYMBOL(native_read_tsc);
+
+>>>>>>> refs/remotes/origin/master
 int check_tsc_unstable(void)
 {
 	return tsc_unstable;
 }
 EXPORT_SYMBOL_GPL(check_tsc_unstable);
 
+<<<<<<< HEAD
 #ifdef CONFIG_X86_TSC
 int __init notsc_setup(char *str)
 {
 	printk(KERN_WARNING "notsc: Kernel compiled with CONFIG_X86_TSC, "
 			"cannot disable TSC completely.\n");
+=======
+int check_tsc_disabled(void)
+{
+	return tsc_disabled;
+}
+EXPORT_SYMBOL_GPL(check_tsc_disabled);
+
+#ifdef CONFIG_X86_TSC
+int __init notsc_setup(char *str)
+{
+	pr_warn("Kernel compiled with CONFIG_X86_TSC, cannot disable TSC completely\n");
+>>>>>>> refs/remotes/origin/master
 	tsc_disabled = 1;
 	return 1;
 }
@@ -187,18 +471,24 @@ static unsigned long calc_pmtimer_ref(u64 deltatsc, u64 pm1, u64 pm2)
 
 #define CAL_MS		10
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CAL_LATCH	(CLOCK_TICK_RATE / (1000 / CAL_MS))
 #define CAL_PIT_LOOPS	1000
 
 #define CAL2_MS		50
 #define CAL2_LATCH	(CLOCK_TICK_RATE / (1000 / CAL2_MS))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define CAL_LATCH	(PIT_TICK_RATE / (1000 / CAL_MS))
 #define CAL_PIT_LOOPS	1000
 
 #define CAL2_MS		50
 #define CAL2_LATCH	(PIT_TICK_RATE / (1000 / CAL2_MS))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define CAL2_PIT_LOOPS	5000
 
 
@@ -307,24 +597,34 @@ static inline int pit_expect_msb(unsigned char val, u64 *tscp, unsigned long *de
 {
 	int count;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 tsc = 0;
 =======
 	u64 tsc = 0, prev_tsc = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 tsc = 0, prev_tsc = 0;
+>>>>>>> refs/remotes/origin/master
 
 	for (count = 0; count < 50000; count++) {
 		if (!pit_verify_msb(val))
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tsc = get_cycles();
 	}
 	*deltap = get_cycles() - tsc;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		prev_tsc = tsc;
 		tsc = get_cycles();
 	}
 	*deltap = get_cycles() - prev_tsc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*tscp = tsc;
 
 	/*
@@ -339,6 +639,7 @@ static inline int pit_expect_msb(unsigned char val, u64 *tscp, unsigned long *de
  * a maximum error rate of 500ppm (in practice the
  * real error is much smaller), but refuse to spend
 <<<<<<< HEAD
+<<<<<<< HEAD
  * more than 25ms on it.
  */
 #define MAX_QUICK_PIT_MS 25
@@ -347,6 +648,11 @@ static inline int pit_expect_msb(unsigned char val, u64 *tscp, unsigned long *de
  */
 #define MAX_QUICK_PIT_MS 50
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * more than 50ms on it.
+ */
+#define MAX_QUICK_PIT_MS 50
+>>>>>>> refs/remotes/origin/master
 #define MAX_QUICK_PIT_ITERATIONS (MAX_QUICK_PIT_MS * PIT_TICK_RATE / 1000 / 256)
 
 static unsigned long quick_pit_calibrate(void)
@@ -405,7 +711,11 @@ static unsigned long quick_pit_calibrate(void)
 			goto success;
 		}
 	}
+<<<<<<< HEAD
 	printk("Fast TSC calibration failed\n");
+=======
+	pr_err("Fast TSC calibration failed\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 success:
@@ -417,17 +727,22 @@ success:
 	 * As a result, we can depend on there not being
 	 * any odd delays anywhere, and the TSC reads are
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * reliable (within the error). We also adjust the
 	 * delta to the middle of the error bars, just
 	 * because it looks nicer.
 =======
 	 * reliable (within the error).
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * reliable (within the error).
+>>>>>>> refs/remotes/origin/master
 	 *
 	 * kHz = ticks / time-in-seconds / 1000;
 	 * kHz = (t2 - t1) / (I * 256 / PIT_TICK_RATE) / 1000
 	 * kHz = ((t2 - t1) * PIT_TICK_RATE) / (I * 256 * 1000)
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	delta += (long)(d2 - d1)/2;
 =======
@@ -435,6 +750,11 @@ success:
 	delta *= PIT_TICK_RATE;
 	do_div(delta, i*256*1000);
 	printk("Fast TSC calibration using PIT\n");
+=======
+	delta *= PIT_TICK_RATE;
+	do_div(delta, i*256*1000);
+	pr_info("Fast TSC calibration using PIT\n");
+>>>>>>> refs/remotes/origin/master
 	return delta;
 }
 
@@ -448,6 +768,19 @@ unsigned long native_calibrate_tsc(void)
 	unsigned long flags, latch, ms, fast_calibrate;
 	int hpet = is_hpet_enabled(), i, loopmin;
 
+<<<<<<< HEAD
+=======
+	/* Calibrate TSC using MSR for Intel Atom SoCs */
+	local_irq_save(flags);
+	i = try_msr_calibrate_tsc(&fast_calibrate);
+	local_irq_restore(flags);
+	if (i >= 0) {
+		if (i == 0)
+			pr_warn("Fast TSC calibration using MSR failed\n");
+		return fast_calibrate;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	local_irq_save(flags);
 	fast_calibrate = quick_pit_calibrate();
 	local_irq_restore(flags);
@@ -529,9 +862,14 @@ unsigned long native_calibrate_tsc(void)
 		 * use the reference value, as it is more precise.
 		 */
 		if (delta >= 90 && delta <= 110) {
+<<<<<<< HEAD
 			printk(KERN_INFO
 			       "TSC: PIT calibration matches %s. %d loops\n",
 			       hpet ? "HPET" : "PMTIMER", i + 1);
+=======
+			pr_info("PIT calibration matches %s. %d loops\n",
+				hpet ? "HPET" : "PMTIMER", i + 1);
+>>>>>>> refs/remotes/origin/master
 			return tsc_ref_min;
 		}
 
@@ -553,38 +891,63 @@ unsigned long native_calibrate_tsc(void)
 	 */
 	if (tsc_pit_min == ULONG_MAX) {
 		/* PIT gave no useful value */
+<<<<<<< HEAD
 		printk(KERN_WARNING "TSC: Unable to calibrate against PIT\n");
 
 		/* We don't have an alternative source, disable TSC */
 		if (!hpet && !ref1 && !ref2) {
 			printk("TSC: No reference (HPET/PMTIMER) available\n");
+=======
+		pr_warn("Unable to calibrate against PIT\n");
+
+		/* We don't have an alternative source, disable TSC */
+		if (!hpet && !ref1 && !ref2) {
+			pr_notice("No reference (HPET/PMTIMER) available\n");
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		}
 
 		/* The alternative source failed as well, disable TSC */
 		if (tsc_ref_min == ULONG_MAX) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "TSC: HPET/PMTIMER calibration "
 			       "failed.\n");
+=======
+			pr_warn("HPET/PMTIMER calibration failed\n");
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		}
 
 		/* Use the alternative source */
+<<<<<<< HEAD
 		printk(KERN_INFO "TSC: using %s reference calibration\n",
 		       hpet ? "HPET" : "PMTIMER");
+=======
+		pr_info("using %s reference calibration\n",
+			hpet ? "HPET" : "PMTIMER");
+>>>>>>> refs/remotes/origin/master
 
 		return tsc_ref_min;
 	}
 
 	/* We don't have an alternative source, use the PIT calibration value */
 	if (!hpet && !ref1 && !ref2) {
+<<<<<<< HEAD
 		printk(KERN_INFO "TSC: Using PIT calibration value\n");
+=======
+		pr_info("Using PIT calibration value\n");
+>>>>>>> refs/remotes/origin/master
 		return tsc_pit_min;
 	}
 
 	/* The alternative source failed, use the PIT calibration value */
 	if (tsc_ref_min == ULONG_MAX) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "TSC: HPET/PMTIMER calibration failed. "
 		       "Using PIT calibration\n");
+=======
+		pr_warn("HPET/PMTIMER calibration failed. Using PIT calibration.\n");
+>>>>>>> refs/remotes/origin/master
 		return tsc_pit_min;
 	}
 
@@ -593,9 +956,15 @@ unsigned long native_calibrate_tsc(void)
 	 * the PIT value as we know that there are PMTIMERs around
 	 * running at double speed. At least we let the user know:
 	 */
+<<<<<<< HEAD
 	printk(KERN_WARNING "TSC: PIT calibration deviates from %s: %lu %lu.\n",
 	       hpet ? "HPET" : "PMTIMER", tsc_pit_min, tsc_ref_min);
 	printk(KERN_INFO "TSC: Using PIT calibration value\n");
+=======
+	pr_warn("PIT calibration deviates from %s: %lu %lu\n",
+		hpet ? "HPET" : "PMTIMER", tsc_pit_min, tsc_ref_min);
+	pr_info("Using PIT calibration value\n");
+>>>>>>> refs/remotes/origin/master
 	return tsc_pit_min;
 }
 
@@ -621,6 +990,7 @@ int recalibrate_cpu_khz(void)
 EXPORT_SYMBOL(recalibrate_cpu_khz);
 
 
+<<<<<<< HEAD
 /* Accelerators for sched_clock()
  * convert from cycles(64bits) => nanoseconds (64bits)
  *  basic equation:
@@ -679,6 +1049,13 @@ void tsc_save_sched_clock_state(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (!sched_clock_stable)
+=======
+static unsigned long long cyc2ns_suspend;
+
+void tsc_save_sched_clock_state(void)
+{
+	if (!sched_clock_stable())
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	cyc2ns_suspend = sched_clock();
@@ -693,25 +1070,51 @@ void tsc_save_sched_clock_state(void)
  * suspend.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void restore_sched_clock_state(void)
 =======
 void tsc_restore_sched_clock_state(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void tsc_restore_sched_clock_state(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long long offset;
 	unsigned long flags;
 	int cpu;
 
+<<<<<<< HEAD
 	if (!sched_clock_stable)
+=======
+	if (!sched_clock_stable())
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	local_irq_save(flags);
 
+<<<<<<< HEAD
 	__this_cpu_write(cyc2ns_offset, 0);
 	offset = cyc2ns_suspend - sched_clock();
 
 	for_each_possible_cpu(cpu)
 		per_cpu(cyc2ns_offset, cpu) = offset;
+=======
+	/*
+	 * We're comming out of suspend, there's no concurrency yet; don't
+	 * bother being nice about the RCU stuff, just write to both
+	 * data fields.
+	 */
+
+	this_cpu_write(cyc2ns.data[0].cyc2ns_offset, 0);
+	this_cpu_write(cyc2ns.data[1].cyc2ns_offset, 0);
+
+	offset = cyc2ns_suspend - sched_clock();
+
+	for_each_possible_cpu(cpu) {
+		per_cpu(cyc2ns.data[0].cyc2ns_offset, cpu) = offset;
+		per_cpu(cyc2ns.data[1].cyc2ns_offset, cpu) = offset;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	local_irq_restore(flags);
 }
@@ -813,7 +1216,12 @@ static cycle_t read_tsc(struct clocksource *cs)
 
 static void resume_tsc(struct clocksource *cs)
 {
+<<<<<<< HEAD
 	clocksource_tsc.cycle_last = 0;
+=======
+	if (!boot_cpu_has(X86_FEATURE_NONSTOP_TSC_S3))
+		clocksource_tsc.cycle_last = 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct clocksource clocksource_tsc = {
@@ -826,10 +1234,14 @@ static struct clocksource clocksource_tsc = {
 				  CLOCK_SOURCE_MUST_VERIFY,
 #ifdef CONFIG_X86_64
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.vread                  = vread_tsc,
 =======
 	.archdata               = { .vclock_mode = VCLOCK_TSC },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.archdata               = { .vclock_mode = VCLOCK_TSC },
+>>>>>>> refs/remotes/origin/master
 #endif
 };
 
@@ -837,9 +1249,15 @@ void mark_tsc_unstable(char *reason)
 {
 	if (!tsc_unstable) {
 		tsc_unstable = 1;
+<<<<<<< HEAD
 		sched_clock_stable = 0;
 		disable_sched_clock_irqtime();
 		printk(KERN_INFO "Marking TSC unstable due to %s\n", reason);
+=======
+		clear_sched_clock_stable();
+		disable_sched_clock_irqtime();
+		pr_info("Marking TSC unstable due to %s\n", reason);
+>>>>>>> refs/remotes/origin/master
 		/* Change only the rating, when not registered */
 		if (clocksource_tsc.mult)
 			clocksource_mark_unstable(&clocksource_tsc);
@@ -852,6 +1270,7 @@ void mark_tsc_unstable(char *reason)
 
 EXPORT_SYMBOL_GPL(mark_tsc_unstable);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init dmi_mark_tsc_unstable(const struct dmi_system_id *d)
 {
@@ -876,6 +1295,8 @@ static struct dmi_system_id __initdata bad_tsc_dmi_table[] = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init check_system_tsc_reliable(void)
 {
 #ifdef CONFIG_MGEODE_LX
@@ -896,7 +1317,11 @@ static void __init check_system_tsc_reliable(void)
  * Make an educated guess if the TSC is trustworthy and synchronized
  * over all CPUs.
  */
+<<<<<<< HEAD
 __cpuinit int unsynchronized_tsc(void)
+=======
+int unsynchronized_tsc(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!cpu_has_tsc || tsc_unstable)
 		return 1;
@@ -990,9 +1415,15 @@ static void tsc_refine_calibration_work(struct work_struct *work)
 		goto out;
 
 	tsc_khz = freq;
+<<<<<<< HEAD
 	printk(KERN_INFO "Refined TSC clocksource calibration: "
 		"%lu.%03lu MHz.\n", (unsigned long)tsc_khz / 1000,
 					(unsigned long)tsc_khz % 1000);
+=======
+	pr_info("Refined TSC clocksource calibration: %lu.%03lu MHz\n",
+		(unsigned long)tsc_khz / 1000,
+		(unsigned long)tsc_khz % 1000);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	clocksource_register_khz(&clocksource_tsc, tsc_khz);
@@ -1012,6 +1443,12 @@ static int __init init_tsc_clocksource(void)
 		clocksource_tsc.flags &= ~CLOCK_SOURCE_IS_CONTINUOUS;
 	}
 
+<<<<<<< HEAD
+=======
+	if (boot_cpu_has(X86_FEATURE_NONSTOP_TSC_S3))
+		clocksource_tsc.flags |= CLOCK_SOURCE_SUSPEND_NONSTOP;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Trust the results of the earlier calibration on systems
 	 * exporting a reliable TSC.
@@ -1048,9 +1485,15 @@ void __init tsc_init(void)
 		return;
 	}
 
+<<<<<<< HEAD
 	printk("Detected %lu.%03lu MHz processor.\n",
 			(unsigned long)cpu_khz / 1000,
 			(unsigned long)cpu_khz % 1000);
+=======
+	pr_info("Detected %lu.%03lu MHz processor\n",
+		(unsigned long)cpu_khz / 1000,
+		(unsigned long)cpu_khz % 1000);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Secondary CPUs do not run through tsc_init(), so set up
@@ -1058,14 +1501,27 @@ void __init tsc_init(void)
 	 * speed as the bootup CPU. (cpufreq notifiers will fix this
 	 * up if their speed diverges)
 	 */
+<<<<<<< HEAD
 	for_each_possible_cpu(cpu)
 		set_cyc2ns_scale(cpu_khz, cpu);
+=======
+	for_each_possible_cpu(cpu) {
+		cyc2ns_init(cpu);
+		set_cyc2ns_scale(cpu_khz, cpu);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (tsc_disabled > 0)
 		return;
 
 	/* now allow native_sched_clock() to use rdtsc */
+<<<<<<< HEAD
 	tsc_disabled = 0;
+=======
+
+	tsc_disabled = 0;
+	static_key_slow_inc(&__use_tsc);
+>>>>>>> refs/remotes/origin/master
 
 	if (!no_sched_irq_time)
 		enable_sched_clock_irqtime();
@@ -1076,10 +1532,13 @@ void __init tsc_init(void)
 
 	use_tsc_delay();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Check and install the TSC clocksource */
 	dmi_check_system(bad_tsc_dmi_table);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (unsynchronized_tsc())
 		mark_tsc_unstable("TSCs unsynchronized");
@@ -1088,7 +1547,10 @@ void __init tsc_init(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 /*
  * If we have a constant TSC and are using the TSC for the delay loop,
@@ -1096,7 +1558,11 @@ void __init tsc_init(void)
  * been calibrated. This assumes that CONSTANT_TSC applies to all
  * cpus in the socket - this should be a safe assumption.
  */
+<<<<<<< HEAD
 unsigned long __cpuinit calibrate_delay_is_known(void)
+=======
+unsigned long calibrate_delay_is_known(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, cpu = smp_processor_id();
 
@@ -1109,4 +1575,7 @@ unsigned long __cpuinit calibrate_delay_is_known(void)
 	return 0;
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

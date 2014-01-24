@@ -123,23 +123,39 @@ extern struct list_head ipx_routes;
 extern rwlock_t ipx_routes_lock;
 
 extern struct list_head ipx_interfaces;
+<<<<<<< HEAD
 extern struct ipx_interface *ipx_interfaces_head(void);
+=======
+struct ipx_interface *ipx_interfaces_head(void);
+>>>>>>> refs/remotes/origin/master
 extern spinlock_t ipx_interfaces_lock;
 
 extern struct ipx_interface *ipx_primary_net;
 
+<<<<<<< HEAD
 extern int ipx_proc_init(void);
 extern void ipx_proc_exit(void);
 
 extern const char *ipx_frame_name(__be16);
 extern const char *ipx_device_name(struct ipx_interface *intrfc);
+=======
+int ipx_proc_init(void);
+void ipx_proc_exit(void);
+
+const char *ipx_frame_name(__be16);
+const char *ipx_device_name(struct ipx_interface *intrfc);
+>>>>>>> refs/remotes/origin/master
 
 static __inline__ void ipxitf_hold(struct ipx_interface *intrfc)
 {
 	atomic_inc(&intrfc->refcnt);
 }
 
+<<<<<<< HEAD
 extern void ipxitf_down(struct ipx_interface *intrfc);
+=======
+void ipxitf_down(struct ipx_interface *intrfc);
+>>>>>>> refs/remotes/origin/master
 
 static __inline__ void ipxitf_put(struct ipx_interface *intrfc)
 {

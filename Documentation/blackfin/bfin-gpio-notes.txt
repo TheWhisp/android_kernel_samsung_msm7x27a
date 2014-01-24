@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * File:         Documentation/blackfin/bfin-gpio-note.txt
 =======
  * File:         Documentation/blackfin/bfin-gpio-notes.txt
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * File:         Documentation/blackfin/bfin-gpio-notes.txt
+>>>>>>> refs/remotes/origin/master
  * Based on:
  * Author:
  *
@@ -57,7 +61,11 @@
 
 3. But there are some exceptions
     - Kernel permit the identical GPIO be requested both as GPIO and GPIO
+<<<<<<< HEAD
     interrut.
+=======
+    interrupt.
+>>>>>>> refs/remotes/origin/master
     Some drivers, like gpio-keys, need this behavior. Kernel only print out
     warning messages like,
 	bfin-gpio: GPIO 24 is already reserved by gpio-keys: BTN0, and you are

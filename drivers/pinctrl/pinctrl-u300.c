@@ -663,8 +663,11 @@ static const struct pinctrl_pin_desc u300_pads[] = {
 struct u300_pmx {
 	struct device *dev;
 	struct pinctrl_dev *pctl;
+<<<<<<< HEAD
 	u32 phybase;
 	u32 physize;
+=======
+>>>>>>> refs/remotes/origin/master
 	void __iomem *virtbase;
 };
 
@@ -836,18 +839,27 @@ static const struct u300_pin_group u300_pin_groups[] = {
 	},
 };
 
+<<<<<<< HEAD
 static int u300_list_groups(struct pinctrl_dev *pctldev, unsigned selector)
 {
 	if (selector >= ARRAY_SIZE(u300_pin_groups))
 		return -EINVAL;
 	return 0;
+=======
+static int u300_get_groups_count(struct pinctrl_dev *pctldev)
+{
+	return ARRAY_SIZE(u300_pin_groups);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const char *u300_get_group_name(struct pinctrl_dev *pctldev,
 				       unsigned selector)
 {
+<<<<<<< HEAD
 	if (selector >= ARRAY_SIZE(u300_pin_groups))
 		return NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	return u300_pin_groups[selector].name;
 }
 
@@ -855,8 +867,11 @@ static int u300_get_group_pins(struct pinctrl_dev *pctldev, unsigned selector,
 			       const unsigned **pins,
 			       unsigned *num_pins)
 {
+<<<<<<< HEAD
 	if (selector >= ARRAY_SIZE(u300_pin_groups))
 		return -EINVAL;
+=======
+>>>>>>> refs/remotes/origin/master
 	*pins = u300_pin_groups[selector].pins;
 	*num_pins = u300_pin_groups[selector].num_pins;
 	return 0;
@@ -868,8 +883,13 @@ static void u300_pin_dbg_show(struct pinctrl_dev *pctldev, struct seq_file *s,
 	seq_printf(s, " " DRIVER_NAME);
 }
 
+<<<<<<< HEAD
 static struct pinctrl_ops u300_pctrl_ops = {
 	.list_groups = u300_list_groups,
+=======
+static const struct pinctrl_ops u300_pctrl_ops = {
+	.get_groups_count = u300_get_groups_count,
+>>>>>>> refs/remotes/origin/master
 	.get_group_name = u300_get_group_name,
 	.get_group_pins = u300_get_group_pins,
 	.pin_dbg_show = u300_pin_dbg_show,
@@ -991,11 +1011,17 @@ static void u300_pmx_disable(struct pinctrl_dev *pctldev, unsigned selector,
 	u300_pmx_endisable(upmx, selector, false);
 }
 
+<<<<<<< HEAD
 static int u300_pmx_list_funcs(struct pinctrl_dev *pctldev, unsigned selector)
 {
 	if (selector >= ARRAY_SIZE(u300_pmx_functions))
 		return -EINVAL;
 	return 0;
+=======
+static int u300_pmx_get_funcs_count(struct pinctrl_dev *pctldev)
+{
+	return ARRAY_SIZE(u300_pmx_functions);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const char *u300_pmx_get_func_name(struct pinctrl_dev *pctldev,
@@ -1013,14 +1039,20 @@ static int u300_pmx_get_groups(struct pinctrl_dev *pctldev, unsigned selector,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct pinmux_ops u300_pmx_ops = {
 	.list_functions = u300_pmx_list_funcs,
+=======
+static const struct pinmux_ops u300_pmx_ops = {
+	.get_functions_count = u300_pmx_get_funcs_count,
+>>>>>>> refs/remotes/origin/master
 	.get_function_name = u300_pmx_get_func_name,
 	.get_function_groups = u300_pmx_get_groups,
 	.enable = u300_pmx_enable,
 	.disable = u300_pmx_disable,
 };
 
+<<<<<<< HEAD
 /*
  * GPIO ranges handled by the application-side COH901XXX GPIO controller
  * Very many pins can be converted into GPIO pins, but we only list those
@@ -1067,6 +1099,13 @@ int u300_pin_config_get(struct pinctrl_dev *pctldev,
 			unsigned long *config)
 {
 	struct pinctrl_gpio_range *range = u300_match_gpio_range(pin);
+=======
+static int u300_pin_config_get(struct pinctrl_dev *pctldev, unsigned pin,
+			       unsigned long *config)
+{
+	struct pinctrl_gpio_range *range =
+		pinctrl_find_gpio_range_from_pin(pctldev, pin);
+>>>>>>> refs/remotes/origin/master
 
 	/* We get config for those pins we CAN get it for and that's it */
 	if (!range)
@@ -1077,27 +1116,51 @@ int u300_pin_config_get(struct pinctrl_dev *pctldev,
 				    config);
 }
 
+<<<<<<< HEAD
 int u300_pin_config_set(struct pinctrl_dev *pctldev,
 			unsigned pin,
 			unsigned long config)
 {
 	struct pinctrl_gpio_range *range = u300_match_gpio_range(pin);
 	int ret;
+=======
+static int u300_pin_config_set(struct pinctrl_dev *pctldev, unsigned pin,
+			       unsigned long *configs, unsigned num_configs)
+{
+	struct pinctrl_gpio_range *range =
+		pinctrl_find_gpio_range_from_pin(pctldev, pin);
+	int ret, i;
+>>>>>>> refs/remotes/origin/master
 
 	if (!range)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	/* Note: none of these configurations take any argument */
 	ret = u300_gpio_config_set(range->gc,
 				   (pin - range->pin_base + range->base),
 				   pinconf_to_config_param(config));
 	if (ret)
 		return ret;
+=======
+	for (i = 0; i < num_configs; i++) {
+		/* Note: none of these configurations take any argument */
+		ret = u300_gpio_config_set(range->gc,
+			(pin - range->pin_base + range->base),
+			pinconf_to_config_param(configs[i]));
+		if (ret)
+			return ret;
+	} /* for each config */
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct pinconf_ops u300_pconf_ops = {
+=======
+static const struct pinconf_ops u300_pconf_ops = {
+>>>>>>> refs/remotes/origin/master
 	.is_generic = true,
 	.pin_config_get = u300_pin_config_get,
 	.pin_config_set = u300_pin_config_set,
@@ -1113,6 +1176,7 @@ static struct pinctrl_desc u300_pmx_desc = {
 	.owner = THIS_MODULE,
 };
 
+<<<<<<< HEAD
 static int __devinit u300_pmx_probe(struct platform_device *pdev)
 {
 	struct u300_pmx *upmx;
@@ -1122,6 +1186,12 @@ static int __devinit u300_pmx_probe(struct platform_device *pdev)
 	int i;
 
 	pr_err("U300 PMX PROBE\n");
+=======
+static int u300_pmx_probe(struct platform_device *pdev)
+{
+	struct u300_pmx *upmx;
+	struct resource *res;
+>>>>>>> refs/remotes/origin/master
 
 	/* Create state holders etc for this driver */
 	upmx = devm_kzalloc(&pdev->dev, sizeof(*upmx), GFP_KERNEL);
@@ -1131,6 +1201,7 @@ static int __devinit u300_pmx_probe(struct platform_device *pdev)
 	upmx->dev = &pdev->dev;
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (!res) {
 		ret = -ENOENT;
 		goto out_no_resource;
@@ -1149,10 +1220,16 @@ static int __devinit u300_pmx_probe(struct platform_device *pdev)
 		ret = -ENOMEM;
 		goto out_no_remap;
 	}
+=======
+	upmx->virtbase = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(upmx->virtbase))
+		return PTR_ERR(upmx->virtbase);
+>>>>>>> refs/remotes/origin/master
 
 	upmx->pctl = pinctrl_register(&u300_pmx_desc, &pdev->dev, upmx);
 	if (!upmx->pctl) {
 		dev_err(&pdev->dev, "could not register U300 pinmux driver\n");
+<<<<<<< HEAD
 		ret = -EINVAL;
 		goto out_no_pmx;
 	}
@@ -1161,6 +1238,9 @@ static int __devinit u300_pmx_probe(struct platform_device *pdev)
 	for (i = 0; i < ARRAY_SIZE(u300_gpio_ranges); i++) {
 		u300_gpio_ranges[i].gc = gpio_chip;
 		pinctrl_add_gpio_range(upmx->pctl, &u300_gpio_ranges[i]);
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, upmx);
@@ -1168,6 +1248,7 @@ static int __devinit u300_pmx_probe(struct platform_device *pdev)
 	dev_info(&pdev->dev, "initialized U300 pin control driver\n");
 
 	return 0;
+<<<<<<< HEAD
 
 out_no_pmx:
 	iounmap(upmx->virtbase);
@@ -1192,17 +1273,42 @@ static int __devexit u300_pmx_remove(struct platform_device *pdev)
 	release_mem_region(upmx->phybase, upmx->physize);
 	platform_set_drvdata(pdev, NULL);
 	devm_kfree(&pdev->dev, upmx);
+=======
+}
+
+static int u300_pmx_remove(struct platform_device *pdev)
+{
+	struct u300_pmx *upmx = platform_get_drvdata(pdev);
+
+	pinctrl_unregister(upmx->pctl);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static const struct of_device_id u300_pinctrl_match[] = {
+	{ .compatible = "stericsson,pinctrl-u300" },
+	{},
+};
+
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver u300_pmx_driver = {
 	.driver = {
 		.name = DRIVER_NAME,
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe = u300_pmx_probe,
 	.remove = __devexit_p(u300_pmx_remove),
+=======
+		.of_match_table = u300_pinctrl_match,
+	},
+	.probe = u300_pmx_probe,
+	.remove = u300_pmx_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init u300_pmx_init(void)

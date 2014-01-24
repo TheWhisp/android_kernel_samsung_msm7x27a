@@ -5,6 +5,7 @@
  *	Joonyoung Shim <jy0922.shim@samsung.com>
  *	Seung-Woo Kim <sw0312.kim@samsung.com>
  *
+<<<<<<< HEAD
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -27,12 +28,27 @@
 
 #include "drmP.h"
 #include "drm_crtc_helper.h"
+=======
+ * This program is free software; you can redistribute  it and/or modify it
+ * under  the terms of  the GNU General  Public License as published by the
+ * Free Software Foundation;  either version 2 of the  License, or (at your
+ * option) any later version.
+ */
+
+#include <drm/drmP.h>
+#include <drm/drm_crtc_helper.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <drm/exynos_drm.h>
 #include "exynos_drm_drv.h"
 #include "exynos_drm_encoder.h"
+<<<<<<< HEAD
 
 #define MAX_EDID 256
+=======
+#include "exynos_drm_connector.h"
+
+>>>>>>> refs/remotes/origin/master
 #define to_exynos_connector(x)	container_of(x, struct exynos_drm_connector,\
 				drm_connector)
 
@@ -40,6 +56,7 @@ struct exynos_drm_connector {
 	struct drm_connector	drm_connector;
 	uint32_t		encoder_id;
 	struct exynos_drm_manager *manager;
+<<<<<<< HEAD
 };
 
 /* convert exynos_video_timings to drm_display_mode */
@@ -103,15 +120,26 @@ convert_to_video_timing(struct fb_videomode *timing,
 		timing->vmode |= FB_VMODE_DOUBLE;
 }
 
+=======
+	uint32_t		dpms;
+};
+
+>>>>>>> refs/remotes/origin/master
 static int exynos_drm_connector_get_modes(struct drm_connector *connector)
 {
 	struct exynos_drm_connector *exynos_connector =
 					to_exynos_connector(connector);
 	struct exynos_drm_manager *manager = exynos_connector->manager;
 	struct exynos_drm_display_ops *display_ops = manager->display_ops;
+<<<<<<< HEAD
 	unsigned int count;
 
 	DRM_DEBUG_KMS("%s\n", __FILE__);
+=======
+	struct edid *edid = NULL;
+	unsigned int count = 0;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (!display_ops) {
 		DRM_DEBUG_KMS("display_ops is null.\n");
@@ -127,6 +155,7 @@ static int exynos_drm_connector_get_modes(struct drm_connector *connector)
 	 * because lcd panel has only one mode.
 	 */
 	if (display_ops->get_edid) {
+<<<<<<< HEAD
 		int ret;
 		void *edid;
 
@@ -153,6 +182,30 @@ static int exynos_drm_connector_get_modes(struct drm_connector *connector)
 	} else {
 		struct drm_display_mode *mode = drm_mode_create(connector->dev);
 		struct exynos_drm_panel_info *panel;
+=======
+		edid = display_ops->get_edid(manager->dev, connector);
+		if (IS_ERR_OR_NULL(edid)) {
+			ret = PTR_ERR(edid);
+			edid = NULL;
+			DRM_ERROR("Panel operation get_edid failed %d\n", ret);
+			goto out;
+		}
+
+		count = drm_add_edid_modes(connector, edid);
+		if (!count) {
+			DRM_ERROR("Add edid modes failed %d\n", count);
+			goto out;
+		}
+
+		drm_mode_connector_update_edid_property(connector, edid);
+	} else {
+		struct exynos_drm_panel_info *panel;
+		struct drm_display_mode *mode = drm_mode_create(connector->dev);
+		if (!mode) {
+			DRM_ERROR("failed to create a new display mode.\n");
+			return 0;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		if (display_ops->get_panel)
 			panel = display_ops->get_panel(manager->dev);
@@ -161,7 +214,13 @@ static int exynos_drm_connector_get_modes(struct drm_connector *connector)
 			return 0;
 		}
 
+<<<<<<< HEAD
 		convert_to_display_mode(mode, panel);
+=======
+		drm_display_mode_from_videomode(&panel->vm, mode);
+		mode->width_mm = panel->width_mm;
+		mode->height_mm = panel->height_mm;
+>>>>>>> refs/remotes/origin/master
 		connector->display_info.width_mm = mode->width_mm;
 		connector->display_info.height_mm = mode->height_mm;
 
@@ -172,6 +231,11 @@ static int exynos_drm_connector_get_modes(struct drm_connector *connector)
 		count = 1;
 	}
 
+<<<<<<< HEAD
+=======
+out:
+	kfree(edid);
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
@@ -182,15 +246,23 @@ static int exynos_drm_connector_mode_valid(struct drm_connector *connector,
 					to_exynos_connector(connector);
 	struct exynos_drm_manager *manager = exynos_connector->manager;
 	struct exynos_drm_display_ops *display_ops = manager->display_ops;
+<<<<<<< HEAD
 	struct fb_videomode timing;
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = MODE_BAD;
 
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+<<<<<<< HEAD
 	convert_to_video_timing(&timing, mode);
 
 	if (display_ops && display_ops->check_timing)
 		if (!display_ops->check_timing(manager->dev, (void *)&timing))
+=======
+	if (display_ops && display_ops->check_mode)
+		if (!display_ops->check_mode(manager->dev, mode))
+>>>>>>> refs/remotes/origin/master
 			ret = MODE_OK;
 
 	return ret;
@@ -204,8 +276,11 @@ struct drm_encoder *exynos_drm_best_encoder(struct drm_connector *connector)
 	struct drm_mode_object *obj;
 	struct drm_encoder *encoder;
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	obj = drm_mode_object_find(dev, exynos_connector->encoder_id,
 				   DRM_MODE_OBJECT_ENCODER);
 	if (!obj) {
@@ -225,6 +300,44 @@ static struct drm_connector_helper_funcs exynos_connector_helper_funcs = {
 	.best_encoder	= exynos_drm_best_encoder,
 };
 
+<<<<<<< HEAD
+=======
+void exynos_drm_display_power(struct drm_connector *connector, int mode)
+{
+	struct drm_encoder *encoder = exynos_drm_best_encoder(connector);
+	struct exynos_drm_connector *exynos_connector;
+	struct exynos_drm_manager *manager = exynos_drm_get_manager(encoder);
+	struct exynos_drm_display_ops *display_ops = manager->display_ops;
+
+	exynos_connector = to_exynos_connector(connector);
+
+	if (exynos_connector->dpms == mode) {
+		DRM_DEBUG_KMS("desired dpms mode is same as previous one.\n");
+		return;
+	}
+
+	if (display_ops && display_ops->power_on)
+		display_ops->power_on(manager->dev, mode);
+
+	exynos_connector->dpms = mode;
+}
+
+static void exynos_drm_connector_dpms(struct drm_connector *connector,
+					int mode)
+{
+	/*
+	 * in case that drm_crtc_helper_set_mode() is called,
+	 * encoder/crtc->funcs->dpms() will be just returned
+	 * because they already were DRM_MODE_DPMS_ON so only
+	 * exynos_drm_display_power() will be called.
+	 */
+	drm_helper_connector_dpms(connector, mode);
+
+	exynos_drm_display_power(connector, mode);
+
+}
+
+>>>>>>> refs/remotes/origin/master
 static int exynos_drm_connector_fill_modes(struct drm_connector *connector,
 				unsigned int max_width, unsigned int max_height)
 {
@@ -259,8 +372,11 @@ exynos_drm_connector_detect(struct drm_connector *connector, bool force)
 					manager->display_ops;
 	enum drm_connector_status status = connector_status_disconnected;
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (display_ops && display_ops->is_connected) {
 		if (display_ops->is_connected(manager->dev))
 			status = connector_status_connected;
@@ -276,15 +392,22 @@ static void exynos_drm_connector_destroy(struct drm_connector *connector)
 	struct exynos_drm_connector *exynos_connector =
 		to_exynos_connector(connector);
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	drm_sysfs_connector_remove(connector);
 	drm_connector_cleanup(connector);
 	kfree(exynos_connector);
 }
 
 static struct drm_connector_funcs exynos_connector_funcs = {
+<<<<<<< HEAD
 	.dpms		= drm_helper_connector_dpms,
+=======
+	.dpms		= exynos_drm_connector_dpms,
+>>>>>>> refs/remotes/origin/master
 	.fill_modes	= exynos_drm_connector_fill_modes,
 	.detect		= exynos_drm_connector_detect,
 	.destroy	= exynos_drm_connector_destroy,
@@ -299,6 +422,7 @@ struct drm_connector *exynos_drm_connector_create(struct drm_device *dev,
 	int type;
 	int err;
 
+<<<<<<< HEAD
 	DRM_DEBUG_KMS("%s\n", __FILE__);
 
 	exynos_connector = kzalloc(sizeof(*exynos_connector), GFP_KERNEL);
@@ -306,6 +430,11 @@ struct drm_connector *exynos_drm_connector_create(struct drm_device *dev,
 		DRM_ERROR("failed to allocate connector\n");
 		return NULL;
 	}
+=======
+	exynos_connector = kzalloc(sizeof(*exynos_connector), GFP_KERNEL);
+	if (!exynos_connector)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 
 	connector = &exynos_connector->drm_connector;
 
@@ -333,6 +462,11 @@ struct drm_connector *exynos_drm_connector_create(struct drm_device *dev,
 
 	exynos_connector->encoder_id = encoder->base.id;
 	exynos_connector->manager = manager;
+<<<<<<< HEAD
+=======
+	exynos_connector->dpms = DRM_MODE_DPMS_OFF;
+	connector->dpms = DRM_MODE_DPMS_OFF;
+>>>>>>> refs/remotes/origin/master
 	connector->encoder = encoder;
 
 	err = drm_mode_connector_attach_encoder(connector, encoder);

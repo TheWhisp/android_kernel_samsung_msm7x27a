@@ -293,6 +293,7 @@ C_ENTRY(_user_exception):
 	swi	r1, r0, TOPHYS(PER_CPU(ENTRY_SP)) /* save stack */
 	addi	r14, r14, 4	/* return address is 4 byte after call */
 
+<<<<<<< HEAD
 	mfs	r1, rmsr
 	nop
 	andi	r1, r1, MSR_UMS
@@ -311,6 +312,8 @@ C_ENTRY(_user_exception):
 
 /* User-mode state save.  */
 1:
+=======
+>>>>>>> refs/remotes/origin/master
 	lwi	r1, r0, TOPHYS(PER_CPU(CURRENT_SAVE)); /* get saved current */
 	tophys(r1,r1);
 	lwi	r1, r1, TS_THREAD_INFO;	/* get stack from task_struct */
@@ -372,6 +375,10 @@ C_ENTRY(_user_exception):
 	/* Note Microblaze barrel shift is optional, so don't rely on it */
 	add	r12, r12, r12;			/* convert num -> ptr */
 	add	r12, r12, r12;
+<<<<<<< HEAD
+=======
+	addi	r30, r0, 1			/* restarts allowed */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef DEBUG
 	/* Trac syscalls and stored them to syscall_debug_table */
@@ -419,12 +426,18 @@ C_ENTRY(ret_from_trap):
 	 * trigger rescheduling. */
 	/* get thread info from current task */
 	lwi	r11, CURRENT_TASK, TS_THREAD_INFO;
+<<<<<<< HEAD
 	lwi	r11, r11, TI_FLAGS;		/* get flags in thread info */
 	andi	r11, r11, _TIF_NEED_RESCHED;
+=======
+	lwi	r19, r11, TI_FLAGS;		/* get flags in thread info */
+	andi	r11, r19, _TIF_NEED_RESCHED;
+>>>>>>> refs/remotes/origin/master
 	beqi	r11, 5f;
 
 	bralid	r15, schedule;	/* Call scheduler */
 	nop;				/* delay slot */
+<<<<<<< HEAD
 
 	/* Maybe handle a signal */
 5:	/* get thread info from current task*/
@@ -440,6 +453,23 @@ C_ENTRY(ret_from_trap):
 
 /* Finally, return to user state.  */
 1:	set_bip;			/*  Ints masked for state restore */
+=======
+	bri	1b
+
+	/* Maybe handle a signal */
+5:	
+	andi	r11, r19, _TIF_SIGPENDING | _TIF_NOTIFY_RESUME;
+	beqi	r11, 4f;		/* Signals to handle, handle them */
+
+	addik	r5, r1, 0;		/* Arg 1: struct pt_regs *regs */
+	bralid	r15, do_notify_resume;	/* Handle any signals */
+	add	r6, r30, r0;		/* Arg 2: int in_syscall */
+	add	r30, r0, r0		/* no more restarts */
+	bri	1b
+
+/* Finally, return to user state.  */
+4:	set_bip;			/*  Ints masked for state restore */
+>>>>>>> refs/remotes/origin/master
 	swi	CURRENT_TASK, r0, PER_CPU(CURRENT_SAVE); /* save current */
 	VM_OFF;
 	tophys(r1,r1);
@@ -461,6 +491,7 @@ TRAP_return:		/* Make global symbol for debugging */
 	nop;
 
 
+<<<<<<< HEAD
 /* These syscalls need access to the struct pt_regs on the stack, so we
    implement them in assembly (they're basically all wrappers anyway).  */
 
@@ -477,6 +508,8 @@ C_ENTRY(sys_fork_wrapper):
 	brid	do_fork		/* Do real work (tail-call) */
 	add	r10, r0, r0;			/* Arg 5: (unused) */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* This the initial entry point for a new child thread, with an appropriate
    stack in place that makes it look the the child is in the middle of an
    syscall.  This function is actually `returned to' from switch_thread
@@ -484,11 +517,16 @@ C_ENTRY(sys_fork_wrapper):
    saved context).  */
 C_ENTRY(ret_from_fork):
 	bralid	r15, schedule_tail; /* ...which is schedule_tail's arg */
+<<<<<<< HEAD
 	add	r3, r5, r0;	/* switch_thread returns the prev task */
+=======
+	add	r5, r3, r0;	/* switch_thread returns the prev task */
+>>>>>>> refs/remotes/origin/master
 				/* ( in the delay slot ) */
 	brid	ret_from_trap;	/* Do normal trap return */
 	add	r3, r0, r0;	/* Child's fork call should return 0. */
 
+<<<<<<< HEAD
 C_ENTRY(sys_vfork):
 	brid	microblaze_vfork	/* Do real work (tail-call) */
 	addik	r5, r1, 0
@@ -507,6 +545,19 @@ C_ENTRY(sys_execve):
 	addik	r8, r1, 0;		/* add user context as 4th arg */
 
 C_ENTRY(sys_rt_sigreturn_wrapper):
+=======
+C_ENTRY(ret_from_kernel_thread):
+	bralid	r15, schedule_tail; /* ...which is schedule_tail's arg */
+	add	r5, r3, r0;	/* switch_thread returns the prev task */
+				/* ( in the delay slot ) */
+	brald	r15, r20	/* fn was left in r20 */
+	addk	r5, r0, r19	/* ... and argument - in r19 */
+	brid	ret_from_trap
+	add	r3, r0, r0
+
+C_ENTRY(sys_rt_sigreturn_wrapper):
+	addik	r30, r0, 0		/* no restarts */
+>>>>>>> refs/remotes/origin/master
 	brid	sys_rt_sigreturn	/* Do real work */
 	addik	r5, r1, 0;		/* add user context as 1st arg */
 
@@ -614,20 +665,35 @@ C_ENTRY(ret_from_exc):
 
 	/* We're returning to user mode, so check for various conditions that
 	   trigger rescheduling. */
+<<<<<<< HEAD
 	lwi	r11, CURRENT_TASK, TS_THREAD_INFO;	/* get thread info */
 	lwi	r11, r11, TI_FLAGS;	/* get flags in thread info */
 	andi	r11, r11, _TIF_NEED_RESCHED;
+=======
+1:
+	lwi	r11, CURRENT_TASK, TS_THREAD_INFO;	/* get thread info */
+	lwi	r19, r11, TI_FLAGS;	/* get flags in thread info */
+	andi	r11, r19, _TIF_NEED_RESCHED;
+>>>>>>> refs/remotes/origin/master
 	beqi	r11, 5f;
 
 /* Call the scheduler before returning from a syscall/trap. */
 	bralid	r15, schedule;	/* Call scheduler */
 	nop;				/* delay slot */
+<<<<<<< HEAD
 
 	/* Maybe handle a signal */
 5:	lwi	r11, CURRENT_TASK, TS_THREAD_INFO;	/* get thread info */
 	lwi	r11, r11, TI_FLAGS;	/* get flags in thread info */
 	andi	r11, r11, _TIF_SIGPENDING;
 	beqi	r11, 1f;		/* Signals to handle, handle them */
+=======
+	bri	1b
+
+	/* Maybe handle a signal */
+5:	andi	r11, r19, _TIF_SIGPENDING | _TIF_NOTIFY_RESUME;
+	beqi	r11, 4f;		/* Signals to handle, handle them */
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Handle a signal return; Pending signals should be in r18.
@@ -639,6 +705,7 @@ C_ENTRY(ret_from_exc):
 	 * traps), but signal handlers may want to examine or change the
 	 * complete register state.  Here we save anything not saved by
 	 * the normal entry sequence, so that it may be safely restored
+<<<<<<< HEAD
 	 * (in a possibly modified form) after do_signal returns. */
 	addik	r5, r1, 0;		/* Arg 1: struct pt_regs *regs */
 	addi	r7, r0, 0;		/* Arg 3: int in_syscall */
@@ -647,6 +714,16 @@ C_ENTRY(ret_from_exc):
 
 /* Finally, return to user state.  */
 1:	set_bip;			/* Ints masked for state restore */
+=======
+	 * (in a possibly modified form) after do_notify_resume returns. */
+	addik	r5, r1, 0;		/* Arg 1: struct pt_regs *regs */
+	bralid	r15, do_notify_resume;	/* Handle any signals */
+	addi	r6, r0, 0;		/* Arg 2: int in_syscall */
+	bri	1b
+
+/* Finally, return to user state.  */
+4:	set_bip;			/* Ints masked for state restore */
+>>>>>>> refs/remotes/origin/master
 	swi	CURRENT_TASK, r0, PER_CPU(CURRENT_SAVE); /* save current */
 	VM_OFF;
 	tophys(r1,r1);
@@ -726,6 +803,7 @@ ret_from_irq:
 	lwi	r11, r1, PT_MODE;
 	bnei	r11, 2f;
 
+<<<<<<< HEAD
 	lwi	r11, CURRENT_TASK, TS_THREAD_INFO;
 	lwi	r11, r11, TI_FLAGS; /* MS: get flags from thread info */
 	andi	r11, r11, _TIF_NEED_RESCHED;
@@ -743,6 +821,25 @@ ret_from_irq:
 	addik	r5, r1, 0; /* Arg 1: struct pt_regs *regs */
 	bralid	r15, do_signal;	/* Handle any signals */
 	add	r6, r0, r0; /* Arg 2: sigset_t *oldset */
+=======
+1:
+	lwi	r11, CURRENT_TASK, TS_THREAD_INFO;
+	lwi	r19, r11, TI_FLAGS; /* MS: get flags from thread info */
+	andi	r11, r19, _TIF_NEED_RESCHED;
+	beqi	r11, 5f
+	bralid	r15, schedule;
+	nop; /* delay slot */
+	bri	1b
+
+    /* Maybe handle a signal */
+5:	andi	r11, r19, _TIF_SIGPENDING | _TIF_NOTIFY_RESUME;
+	beqid	r11, no_intr_resched
+/* Handle a signal return; Pending signals should be in r18. */
+	addik	r5, r1, 0; /* Arg 1: struct pt_regs *regs */
+	bralid	r15, do_notify_resume;	/* Handle any signals */
+	addi	r6, r0, 0; /* Arg 2: int in_syscall */
+	bri	1b
+>>>>>>> refs/remotes/origin/master
 
 /* Finally, return to user state. */
 no_intr_resched:
@@ -860,15 +957,24 @@ dbtrap_call: /* Return point for kernel/user entry + 8 because of rtsd r15, 8 */
 	lwi	r11, r1, PT_MODE;
 	bnei	r11, 2f;
 /* MS: Return to user space - gdb */
+<<<<<<< HEAD
 	/* Get current task ptr into r11 */
 	lwi	r11, CURRENT_TASK, TS_THREAD_INFO;	/* get thread info */
 	lwi	r11, r11, TI_FLAGS;	/* get flags in thread info */
 	andi	r11, r11, _TIF_NEED_RESCHED;
+=======
+1:
+	/* Get current task ptr into r11 */
+	lwi	r11, CURRENT_TASK, TS_THREAD_INFO;	/* get thread info */
+	lwi	r19, r11, TI_FLAGS;	/* get flags in thread info */
+	andi	r11, r19, _TIF_NEED_RESCHED;
+>>>>>>> refs/remotes/origin/master
 	beqi	r11, 5f;
 
 	/* Call the scheduler before returning from a syscall/trap. */
 	bralid	r15, schedule;	/* Call scheduler */
 	nop;				/* delay slot */
+<<<<<<< HEAD
 
 	/* Maybe handle a signal */
 5:	lwi	r11, CURRENT_TASK, TS_THREAD_INFO;	/* get thread info */
@@ -883,6 +989,21 @@ dbtrap_call: /* Return point for kernel/user entry + 8 because of rtsd r15, 8 */
 
 /* Finally, return to user state.  */
 1:	swi	CURRENT_TASK, r0, PER_CPU(CURRENT_SAVE); /* save current */
+=======
+	bri	1b
+
+	/* Maybe handle a signal */
+5:	andi	r11, r19, _TIF_SIGPENDING | _TIF_NOTIFY_RESUME;
+	beqi	r11, 4f;		/* Signals to handle, handle them */
+
+	addik	r5, r1, 0;		/* Arg 1: struct pt_regs *regs */
+	bralid	r15, do_notify_resume;	/* Handle any signals */
+	addi  r6, r0, 0;	/* Arg 2: int in_syscall */
+	bri	1b
+
+/* Finally, return to user state.  */
+4:	swi	CURRENT_TASK, r0, PER_CPU(CURRENT_SAVE); /* save current */
+>>>>>>> refs/remotes/origin/master
 	VM_OFF;
 	tophys(r1,r1);
 	/* MS: Restore all regs */

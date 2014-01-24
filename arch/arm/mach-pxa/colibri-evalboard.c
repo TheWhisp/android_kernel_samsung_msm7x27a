@@ -23,8 +23,13 @@
 
 #include <mach/pxa27x.h>
 #include <mach/colibri.h>
+<<<<<<< HEAD
 #include <mach/mmc.h>
 #include <mach/ohci.h>
+=======
+#include <linux/platform_data/mmc-pxamci.h>
+#include <linux/platform_data/usb-ohci-pxa27x.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/pxa27x-udc.h>
 
 #include "generic.h"

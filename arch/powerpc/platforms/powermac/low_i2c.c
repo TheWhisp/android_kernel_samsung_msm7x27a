@@ -34,10 +34,14 @@
 #include <linux/sched.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/adb.h>
 #include <linux/pmu.h>
 #include <linux/delay.h>
@@ -371,7 +375,10 @@ static void kw_i2c_timeout(unsigned long data)
 
 	spin_lock_irqsave(&host->lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If the timer is pending, that means we raced with the
@@ -380,16 +387,23 @@ static void kw_i2c_timeout(unsigned long data)
 	if (timer_pending(&host->timeout_timer))
 		goto skip;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kw_i2c_handle_interrupt(host, kw_read_reg(reg_isr));
 	if (host->state != state_idle) {
 		host->timeout_timer.expires = jiffies + KW_POLL_TIMEOUT;
 		add_timer(&host->timeout_timer);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  skip:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ skip:
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&host->lock, flags);
 }
 
@@ -462,7 +476,11 @@ static int kw_i2c_xfer(struct pmac_i2c_bus *bus, u8 addrdir, int subsize,
 	 */
 	if (use_irq) {
 		/* Clear completion */
+<<<<<<< HEAD
 		INIT_COMPLETION(host->complete);
+=======
+		reinit_completion(&host->complete);
+>>>>>>> refs/remotes/origin/master
 		/* Ack stale interrupts */
 		kw_write_reg(reg_isr, kw_read_reg(reg_isr));
 		/* Arm timeout */
@@ -727,7 +745,11 @@ static int pmu_i2c_xfer(struct pmac_i2c_bus *bus, u8 addrdir, int subsize,
 			return -EINVAL;
 		}
 
+<<<<<<< HEAD
 		INIT_COMPLETION(comp);
+=======
+		reinit_completion(&comp);
+>>>>>>> refs/remotes/origin/master
 		req->data[0] = PMU_I2C_CMD;
 		req->reply[0] = 0xff;
 		req->nbytes = sizeof(struct pmu_i2c_hdr) + 1;
@@ -758,7 +780,11 @@ static int pmu_i2c_xfer(struct pmac_i2c_bus *bus, u8 addrdir, int subsize,
 
 		hdr->bus = PMU_I2C_BUS_STATUS;
 
+<<<<<<< HEAD
 		INIT_COMPLETION(comp);
+=======
+		reinit_completion(&comp);
+>>>>>>> refs/remotes/origin/master
 		req->data[0] = PMU_I2C_CMD;
 		req->reply[0] = 0xff;
 		req->nbytes = 2;
@@ -1513,6 +1539,10 @@ static int __init pmac_i2c_create_platform_devices(void)
 		if (bus->platform_dev == NULL)
 			return -ENOMEM;
 		bus->platform_dev->dev.platform_data = bus;
+<<<<<<< HEAD
+=======
+		bus->platform_dev->dev.of_node = bus->busnode;
+>>>>>>> refs/remotes/origin/master
 		platform_device_add(bus->platform_dev);
 	}
 

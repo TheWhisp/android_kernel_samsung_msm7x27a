@@ -21,13 +21,22 @@
 #include <linux/fs.h>
 #include <linux/mm.h>
 #include <linux/ctype.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 
 #include <video/exynos_mipi_dsim.h>
 
+<<<<<<< HEAD
 #include <mach/map.h>
 
 #include "exynos_mipi_dsi_regs.h"
+=======
+#include "exynos_mipi_dsi_regs.h"
+#include "exynos_mipi_dsi_lowlevel.h"
+>>>>>>> refs/remotes/origin/master
 
 void exynos_mipi_dsi_func_reset(struct mipi_dsim_device *dsim)
 {

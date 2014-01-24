@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2007-2011 Nicira Networks.
+=======
+ * Copyright (c) 2007-2012 Nicira, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -19,7 +23,13 @@
 #ifndef VPORT_H
 #define VPORT_H 1
 
+<<<<<<< HEAD
 #include <linux/list.h>
+=======
+#include <linux/if_tunnel.h>
+#include <linux/list.h>
+#include <linux/netlink.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/openvswitch.h>
 #include <linux/skbuff.h>
 #include <linux/spinlock.h>
@@ -32,13 +42,25 @@ struct vport_parms;
 
 /* The following definitions are for users of the vport subsytem: */
 
+<<<<<<< HEAD
+=======
+/* The following definitions are for users of the vport subsytem: */
+struct vport_net {
+	struct vport __rcu *gre_vport;
+};
+
+>>>>>>> refs/remotes/origin/master
 int ovs_vport_init(void);
 void ovs_vport_exit(void);
 
 struct vport *ovs_vport_add(const struct vport_parms *);
 void ovs_vport_del(struct vport *);
 
+<<<<<<< HEAD
 struct vport *ovs_vport_locate(const char *name);
+=======
+struct vport *ovs_vport_locate(struct net *net, const char *name);
+>>>>>>> refs/remotes/origin/master
 
 void ovs_vport_get_stats(struct vport *, struct ovs_vport_stats *);
 
@@ -49,6 +71,7 @@ int ovs_vport_send(struct vport *, struct sk_buff *);
 
 /* The following definitions are for implementers of vport devices: */
 
+<<<<<<< HEAD
 struct vport_percpu_stats {
 	u64 rx_bytes;
 	u64 rx_packets;
@@ -57,6 +80,8 @@ struct vport_percpu_stats {
 	struct u64_stats_sync sync;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct vport_err_stats {
 	u64 rx_dropped;
 	u64 rx_errors;
@@ -67,12 +92,21 @@ struct vport_err_stats {
 /**
  * struct vport - one port within a datapath
  * @rcu: RCU callback head for deferred destruction.
+<<<<<<< HEAD
  * @port_no: Index into @dp's @ports array.
  * @dp: Datapath to which this port belongs.
  * @node: Element in @dp's @port_list.
  * @upcall_pid: The Netlink port to use for packets received on this port that
  * miss the flow table.
  * @hash_node: Element in @dev_table hash table in vport.c.
+=======
+ * @dp: Datapath to which this port belongs.
+ * @upcall_portid: The Netlink port to use for packets received on this port that
+ * miss the flow table.
+ * @port_no: Index into @dp's @ports array.
+ * @hash_node: Element in @dev_table hash table in vport.c.
+ * @dp_hash_node: Element in @datapath->ports hash table in datapath.c.
+>>>>>>> refs/remotes/origin/master
  * @ops: Class structure.
  * @percpu_stats: Points to per-CPU statistics used and maintained by vport
  * @stats_lock: Protects @err_stats;
@@ -80,6 +114,7 @@ struct vport_err_stats {
  */
 struct vport {
 	struct rcu_head rcu;
+<<<<<<< HEAD
 	u16 port_no;
 	struct datapath	*dp;
 	struct list_head node;
@@ -89,6 +124,17 @@ struct vport {
 	const struct vport_ops *ops;
 
 	struct vport_percpu_stats __percpu *percpu_stats;
+=======
+	struct datapath	*dp;
+	u32 upcall_portid;
+	u16 port_no;
+
+	struct hlist_node hash_node;
+	struct hlist_node dp_hash_node;
+	const struct vport_ops *ops;
+
+	struct pcpu_tstats __percpu *percpu_stats;
+>>>>>>> refs/remotes/origin/master
 
 	spinlock_t stats_lock;
 	struct vport_err_stats err_stats;
@@ -112,7 +158,11 @@ struct vport_parms {
 	/* For ovs_vport_alloc(). */
 	struct datapath *dp;
 	u16 port_no;
+<<<<<<< HEAD
 	u32 upcall_pid;
+=======
+	u32 upcall_portid;
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -129,25 +179,39 @@ struct vport_parms {
  * existing vport to a &struct sk_buff.  May be %NULL for a vport that does not
  * have any configuration.
  * @get_name: Get the device's name.
+<<<<<<< HEAD
  * @get_config: Get the device's configuration.
  * @get_ifindex: Get the system interface index associated with the device.
  * May be null if the device does not have an ifindex.
  * @send: Send a packet on the device.  Returns the length of the packet sent.
+=======
+ * @send: Send a packet on the device.  Returns the length of the packet sent,
+ * zero for dropped packets or negative for error.
+>>>>>>> refs/remotes/origin/master
  */
 struct vport_ops {
 	enum ovs_vport_type type;
 
+<<<<<<< HEAD
 	/* Called with RTNL lock. */
+=======
+	/* Called with ovs_mutex. */
+>>>>>>> refs/remotes/origin/master
 	struct vport *(*create)(const struct vport_parms *);
 	void (*destroy)(struct vport *);
 
 	int (*set_options)(struct vport *, struct nlattr *);
 	int (*get_options)(const struct vport *, struct sk_buff *);
 
+<<<<<<< HEAD
 	/* Called with rcu_read_lock or RTNL lock. */
 	const char *(*get_name)(const struct vport *);
 	void (*get_config)(const struct vport *, void *);
 	int (*get_ifindex)(const struct vport *);
+=======
+	/* Called with rcu_read_lock or ovs_mutex. */
+	const char *(*get_name)(const struct vport *);
+>>>>>>> refs/remotes/origin/master
 
 	int (*send)(struct vport *, struct sk_buff *);
 };
@@ -162,6 +226,10 @@ enum vport_err_type {
 struct vport *ovs_vport_alloc(int priv_size, const struct vport_ops *,
 			      const struct vport_parms *);
 void ovs_vport_free(struct vport *);
+<<<<<<< HEAD
+=======
+void ovs_vport_deferred_free(struct vport *vport);
+>>>>>>> refs/remotes/origin/master
 
 #define VPORT_ALIGN 8
 
@@ -194,12 +262,29 @@ static inline struct vport *vport_from_priv(const void *priv)
 	return (struct vport *)(priv - ALIGN(sizeof(struct vport), VPORT_ALIGN));
 }
 
+<<<<<<< HEAD
 void ovs_vport_receive(struct vport *, struct sk_buff *);
+=======
+void ovs_vport_receive(struct vport *, struct sk_buff *,
+		       struct ovs_key_ipv4_tunnel *);
+>>>>>>> refs/remotes/origin/master
 void ovs_vport_record_error(struct vport *, enum vport_err_type err_type);
 
 /* List of statically compiled vport implementations.  Don't forget to also
  * add yours to the list at the top of vport.c. */
 extern const struct vport_ops ovs_netdev_vport_ops;
 extern const struct vport_ops ovs_internal_vport_ops;
+<<<<<<< HEAD
+=======
+extern const struct vport_ops ovs_gre_vport_ops;
+extern const struct vport_ops ovs_vxlan_vport_ops;
+
+static inline void ovs_skb_postpush_rcsum(struct sk_buff *skb,
+				      const void *start, unsigned int len)
+{
+	if (skb->ip_summed == CHECKSUM_COMPLETE)
+		skb->csum = csum_add(skb->csum, csum_partial(start, len, 0));
+}
+>>>>>>> refs/remotes/origin/master
 
 #endif /* vport.h */

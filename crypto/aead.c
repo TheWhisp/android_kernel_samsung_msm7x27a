@@ -22,10 +22,15 @@
 #include <linux/slab.h>
 #include <linux/seq_file.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/cryptouser.h>
 #include <net/netlink.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/cryptouser.h>
+#include <net/netlink.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "internal.h"
 
@@ -115,7 +120,10 @@ static int crypto_init_aead_ops(struct crypto_tfm *tfm, u32 type, u32 mask)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_NET
 static int crypto_aead_report(struct sk_buff *skb, struct crypto_alg *alg)
 {
@@ -129,9 +137,15 @@ static int crypto_aead_report(struct sk_buff *skb, struct crypto_alg *alg)
 	raead.maxauthsize = aead->maxauthsize;
 	raead.ivsize = aead->ivsize;
 
+<<<<<<< HEAD
 	NLA_PUT(skb, CRYPTOCFGA_REPORT_AEAD,
 		sizeof(struct crypto_report_aead), &raead);
 
+=======
+	if (nla_put(skb, CRYPTOCFGA_REPORT_AEAD,
+		    sizeof(struct crypto_report_aead), &raead))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 nla_put_failure:
@@ -144,7 +158,10 @@ static int crypto_aead_report(struct sk_buff *skb, struct crypto_alg *alg)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void crypto_aead_show(struct seq_file *m, struct crypto_alg *alg)
 	__attribute__ ((unused));
 static void crypto_aead_show(struct seq_file *m, struct crypto_alg *alg)
@@ -167,9 +184,13 @@ const struct crypto_type crypto_aead_type = {
 	.show = crypto_aead_show,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.report = crypto_aead_report,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.report = crypto_aead_report,
+>>>>>>> refs/remotes/origin/master
 };
 EXPORT_SYMBOL_GPL(crypto_aead_type);
 
@@ -206,7 +227,10 @@ static int crypto_init_nivaead_ops(struct crypto_tfm *tfm, u32 type, u32 mask)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_NET
 static int crypto_nivaead_report(struct sk_buff *skb, struct crypto_alg *alg)
 {
@@ -220,9 +244,15 @@ static int crypto_nivaead_report(struct sk_buff *skb, struct crypto_alg *alg)
 	raead.maxauthsize = aead->maxauthsize;
 	raead.ivsize = aead->ivsize;
 
+<<<<<<< HEAD
 	NLA_PUT(skb, CRYPTOCFGA_REPORT_AEAD,
 		sizeof(struct crypto_report_aead), &raead);
 
+=======
+	if (nla_put(skb, CRYPTOCFGA_REPORT_AEAD,
+		    sizeof(struct crypto_report_aead), &raead))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 nla_put_failure:
@@ -236,7 +266,10 @@ static int crypto_nivaead_report(struct sk_buff *skb, struct crypto_alg *alg)
 #endif
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void crypto_nivaead_show(struct seq_file *m, struct crypto_alg *alg)
 	__attribute__ ((unused));
 static void crypto_nivaead_show(struct seq_file *m, struct crypto_alg *alg)
@@ -259,9 +292,13 @@ const struct crypto_type crypto_nivaead_type = {
 	.show = crypto_nivaead_show,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.report = crypto_nivaead_report,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.report = crypto_nivaead_report,
+>>>>>>> refs/remotes/origin/master
 };
 EXPORT_SYMBOL_GPL(crypto_nivaead_type);
 
@@ -296,18 +333,28 @@ struct crypto_instance *aead_geniv_alloc(struct crypto_template *tmpl,
 	int err;
 
 	algt = crypto_get_attr_type(tb);
+<<<<<<< HEAD
 	err = PTR_ERR(algt);
 	if (IS_ERR(algt))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(algt))
+		return ERR_CAST(algt);
+>>>>>>> refs/remotes/origin/master
 
 	if ((algt->type ^ (CRYPTO_ALG_TYPE_AEAD | CRYPTO_ALG_GENIV)) &
 	    algt->mask)
 		return ERR_PTR(-EINVAL);
 
 	name = crypto_attr_alg_name(tb[1]);
+<<<<<<< HEAD
 	err = PTR_ERR(name);
 	if (IS_ERR(name))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(name))
+		return ERR_CAST(name);
+>>>>>>> refs/remotes/origin/master
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
 	if (!inst)
@@ -485,11 +532,15 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct crypto_alg *crypto_lookup_aead(const char *name, u32 type,
 					     u32 mask)
 =======
 struct crypto_alg *crypto_lookup_aead(const char *name, u32 type, u32 mask)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct crypto_alg *crypto_lookup_aead(const char *name, u32 type, u32 mask)
+>>>>>>> refs/remotes/origin/master
 {
 	struct crypto_alg *alg;
 
@@ -522,9 +573,13 @@ struct crypto_alg *crypto_lookup_aead(const char *name, u32 type, u32 mask)
 	return ERR_PTR(crypto_nivaead_default(alg, type, mask));
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(crypto_lookup_aead);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(crypto_lookup_aead);
+>>>>>>> refs/remotes/origin/master
 
 int crypto_grab_aead(struct crypto_aead_spawn *spawn, const char *name,
 		     u32 type, u32 mask)

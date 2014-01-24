@@ -728,6 +728,7 @@ static struct pcmcia_driver axnet_cs_driver = {
 	.suspend	= axnet_suspend,
 	.resume		= axnet_resume,
 };
+<<<<<<< HEAD
 
 static int __init init_axnet_cs(void)
 {
@@ -741,6 +742,9 @@ static void __exit exit_axnet_cs(void)
 
 module_init(init_axnet_cs);
 module_exit(exit_axnet_cs);
+=======
+module_pcmcia_driver(axnet_cs_driver);
+>>>>>>> refs/remotes/origin/master
 
 /*====================================================================*/
 

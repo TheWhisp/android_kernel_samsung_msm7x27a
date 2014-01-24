@@ -15,17 +15,23 @@
 #include <linux/slab.h>
 #include <linux/mbus.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/irq.h>
 #include <asm/mach/pci.h>
 #include <plat/pcie.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <video/vga.h>
 #include <asm/irq.h>
 #include <asm/mach/pci.h>
 #include <plat/pcie.h>
 #include <plat/addr-map.h>
 #include <mach/orion5x.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "common.h"
 
 /*****************************************************************************
@@ -44,7 +50,11 @@
 /*****************************************************************************
  * PCIe controller
  ****************************************************************************/
+<<<<<<< HEAD
 #define PCIE_BASE	((void __iomem *)ORION5X_PCIE_VIRT_BASE)
+=======
+#define PCIE_BASE	(ORION5X_PCIE_VIRT_BASE)
+>>>>>>> refs/remotes/origin/master
 
 void __init orion5x_pcie_id(u32 *dev, u32 *rev)
 {
@@ -117,7 +127,11 @@ static int pcie_rd_conf_wa(struct pci_bus *bus, u32 devfn,
 		return PCIBIOS_DEVICE_NOT_FOUND;
 	}
 
+<<<<<<< HEAD
 	ret = orion_pcie_rd_conf_wa((void __iomem *)ORION5X_PCIE_WA_VIRT_BASE,
+=======
+	ret = orion_pcie_rd_conf_wa(ORION5X_PCIE_WA_VIRT_BASE,
+>>>>>>> refs/remotes/origin/master
 				    bus, devfn, where, size, val);
 
 	return ret;
@@ -154,10 +168,14 @@ static int __init pcie_setup(struct pci_sys_data *sys)
 	 * Generic PCIe unit setup.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	orion_pcie_setup(PCIE_BASE, &orion5x_mbus_dram_info);
 =======
 	orion_pcie_setup(PCIE_BASE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	orion_pcie_setup(PCIE_BASE);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Check whether to apply Orion-1/Orion-NAS PCIe config
@@ -167,6 +185,7 @@ static int __init pcie_setup(struct pci_sys_data *sys)
 	if (dev == MV88F5181_DEV_ID || dev == MV88F5182_DEV_ID) {
 		printk(KERN_NOTICE "Applying Orion-1/Orion-NAS PCIe config "
 				   "read transaction workaround\n");
+<<<<<<< HEAD
 		orion5x_setup_pcie_wa_win(ORION5X_PCIE_WA_PHYS_BASE,
 					  ORION5X_PCIE_WA_SIZE);
 		pcie_ops.read = pcie_rd_conf_wa;
@@ -176,10 +195,26 @@ static int __init pcie_setup(struct pci_sys_data *sys)
 	 * Request resources.
 	 */
 	res = kzalloc(sizeof(struct resource) * 2, GFP_KERNEL);
+=======
+		mvebu_mbus_add_window_by_id(ORION_MBUS_PCIE_WA_TARGET,
+					    ORION_MBUS_PCIE_WA_ATTR,
+					    ORION5X_PCIE_WA_PHYS_BASE,
+					    ORION5X_PCIE_WA_SIZE);
+		pcie_ops.read = pcie_rd_conf_wa;
+	}
+
+	pci_ioremap_io(sys->busnr * SZ_64K, ORION5X_PCIE_IO_PHYS_BASE);
+
+	/*
+	 * Request resources.
+	 */
+	res = kzalloc(sizeof(struct resource), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!res)
 		panic("pcie_setup unable to alloc resources");
 
 	/*
+<<<<<<< HEAD
 	 * IORESOURCE_IO
 	 */
 <<<<<<< HEAD
@@ -215,6 +250,17 @@ static int __init pcie_setup(struct pci_sys_data *sys)
 =======
 	pci_add_resource_offset(&sys->resources, &res[1], sys->mem_offset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * IORESOURCE_MEM
+	 */
+	res->name = "PCIe Memory Space";
+	res->flags = IORESOURCE_MEM;
+	res->start = ORION5X_PCIE_MEM_PHYS_BASE;
+	res->end = res->start + ORION5X_PCIE_MEM_SIZE - 1;
+	if (request_resource(&iomem_resource, res))
+		panic("Request PCIe Memory resource failed\n");
+	pci_add_resource_offset(&sys->resources, res, sys->mem_offset);
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -222,7 +268,11 @@ static int __init pcie_setup(struct pci_sys_data *sys)
 /*****************************************************************************
  * PCI controller
  ****************************************************************************/
+<<<<<<< HEAD
 #define ORION5X_PCI_REG(x)	(ORION5X_PCI_VIRT_BASE | (x))
+=======
+#define ORION5X_PCI_REG(x)	(ORION5X_PCI_VIRT_BASE + (x))
+>>>>>>> refs/remotes/origin/master
 #define PCI_MODE		ORION5X_PCI_REG(0xd00)
 #define PCI_CMD			ORION5X_PCI_REG(0xc00)
 #define PCI_P2P_CONF		ORION5X_PCI_REG(0x1d14)
@@ -436,8 +486,14 @@ static void __init orion5x_pci_master_slave_enable(void)
 	orion5x_pci_hw_wr_conf(bus_nr, 0, func, reg, 4, val | 0x7);
 }
 
+<<<<<<< HEAD
 static void __init orion5x_setup_pci_wins(struct mbus_dram_target_info *dram)
 {
+=======
+static void __init orion5x_setup_pci_wins(void)
+{
+	const struct mbus_dram_target_info *dram = mv_mbus_dram_info();
+>>>>>>> refs/remotes/origin/master
 	u32 win_enable;
 	int bus;
 	int i;
@@ -454,7 +510,11 @@ static void __init orion5x_setup_pci_wins(struct mbus_dram_target_info *dram)
 	bus = orion5x_pci_local_bus_nr();
 
 	for (i = 0; i < dram->num_cs; i++) {
+<<<<<<< HEAD
 		struct mbus_dram_window *cs = dram->cs + i;
+=======
+		const struct mbus_dram_window *cs = dram->cs + i;
+>>>>>>> refs/remotes/origin/master
 		u32 func = PCI_CONF_FUNC_BAR_CS(cs->cs_index);
 		u32 reg;
 		u32 val;
@@ -502,10 +562,14 @@ static int __init pci_setup(struct pci_sys_data *sys)
 	 * Point PCI unit MBUS decode windows to DRAM space.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	orion5x_setup_pci_wins(&orion5x_mbus_dram_info);
 =======
 	orion5x_setup_pci_wins(&orion_mbus_dram_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	orion5x_setup_pci_wins();
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Master + Slave enable
@@ -517,14 +581,24 @@ static int __init pci_setup(struct pci_sys_data *sys)
 	 */
 	orion5x_setbits(PCI_CMD, PCI_CMD_HOST_REORDER);
 
+<<<<<<< HEAD
 	/*
 	 * Request resources
 	 */
 	res = kzalloc(sizeof(struct resource) * 2, GFP_KERNEL);
+=======
+	pci_ioremap_io(sys->busnr * SZ_64K, ORION5X_PCI_IO_PHYS_BASE);
+
+	/*
+	 * Request resources
+	 */
+	res = kzalloc(sizeof(struct resource), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!res)
 		panic("pci_setup unable to alloc resources");
 
 	/*
+<<<<<<< HEAD
 	 * IORESOURCE_IO
 	 */
 <<<<<<< HEAD
@@ -560,6 +634,17 @@ static int __init pci_setup(struct pci_sys_data *sys)
 =======
 	pci_add_resource_offset(&sys->resources, &res[1], sys->mem_offset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * IORESOURCE_MEM
+	 */
+	res->name = "PCI Memory Space";
+	res->flags = IORESOURCE_MEM;
+	res->start = ORION5X_PCI_MEM_PHYS_BASE;
+	res->end = res->start + ORION5X_PCI_MEM_SIZE - 1;
+	if (request_resource(&iomem_resource, res))
+		panic("Request PCI Memory resource failed\n");
+	pci_add_resource_offset(&sys->resources, res, sys->mem_offset);
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -568,7 +653,11 @@ static int __init pci_setup(struct pci_sys_data *sys)
 /*****************************************************************************
  * General PCIe + PCI
  ****************************************************************************/
+<<<<<<< HEAD
 static void __devinit rc_pci_fixup(struct pci_dev *dev)
+=======
+static void rc_pci_fixup(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Prevent enumeration of root complex.
@@ -602,10 +691,15 @@ int __init orion5x_pci_sys_setup(int nr, struct pci_sys_data *sys)
 	int ret = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	vga_base = ORION5X_PCIE_MEM_PHYS_BASE;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vga_base = ORION5X_PCIE_MEM_PHYS_BASE;
+
+>>>>>>> refs/remotes/origin/master
 	if (nr == 0) {
 		orion_pcie_set_local_bus_nr(PCIE_BASE, sys->busnr);
 		ret = pcie_setup(sys);
@@ -623,16 +717,22 @@ struct pci_bus __init *orion5x_pci_sys_scan_bus(int nr, struct pci_sys_data *sys
 
 	if (nr == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bus = pci_scan_bus(sys->busnr, &pcie_ops, sys);
 	} else if (nr == 1 && !orion5x_pci_disabled) {
 		bus = pci_scan_bus(sys->busnr, &pci_ops, sys);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		bus = pci_scan_root_bus(NULL, sys->busnr, &pcie_ops, sys,
 					&sys->resources);
 	} else if (nr == 1 && !orion5x_pci_disabled) {
 		bus = pci_scan_root_bus(NULL, sys->busnr, &pci_ops, sys,
 					&sys->resources);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		bus = NULL;
 		BUG();
@@ -642,10 +742,14 @@ struct pci_bus __init *orion5x_pci_sys_scan_bus(int nr, struct pci_sys_data *sys
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __init orion5x_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 int __init orion5x_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __init orion5x_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	int bus = dev->bus->number;
 

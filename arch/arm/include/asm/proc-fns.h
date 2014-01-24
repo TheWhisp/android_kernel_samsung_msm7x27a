@@ -60,20 +60,30 @@ extern struct processor {
 	/*
 	 * Set the page table
 	 */
+<<<<<<< HEAD
 	void (*switch_mm)(unsigned long pgd_phys, struct mm_struct *mm);
+=======
+	void (*switch_mm)(phys_addr_t pgd_phys, struct mm_struct *mm);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Set a possibly extended PTE.  Non-extended PTEs should
 	 * ignore 'ext'.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void (*set_pte_ext)(pte_t *ptep, pte_t pte, unsigned int ext);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ARM_LPAE
 	void (*set_pte_ext)(pte_t *ptep, pte_t pte);
 #else
 	void (*set_pte_ext)(pte_t *ptep, pte_t pte, unsigned int ext);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Suspend/resume */
 	unsigned int suspend_size;
@@ -86,6 +96,7 @@ extern void cpu_proc_init(void);
 extern void cpu_proc_fin(void);
 extern int cpu_do_idle(void);
 extern void cpu_dcache_clean_area(void *, int);
+<<<<<<< HEAD
 extern void cpu_do_switch_mm(unsigned long pgd_phys, struct mm_struct *mm);
 <<<<<<< HEAD
 extern void cpu_set_pte_ext(pte_t *ptep, pte_t pte, unsigned int ext);
@@ -99,6 +110,9 @@ extern void cpu_reset(unsigned long addr) __attribute__((noreturn));
 #define cpu_set_pte_ext(ptep,pte,ext)	processor.set_pte_ext(ptep,pte,ext)
 #define cpu_do_switch_mm(pgd,mm)	processor.switch_mm(pgd,mm)
 =======
+=======
+extern void cpu_do_switch_mm(phys_addr_t pgd_phys, struct mm_struct *mm);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ARM_LPAE
 extern void cpu_set_pte_ext(pte_t *ptep, pte_t pte);
 #else
@@ -121,7 +135,10 @@ extern void cpu_do_resume(void *);
 /* These three are private to arch/arm/kernel/suspend.c */
 #define cpu_do_suspend			processor.do_suspend
 #define cpu_do_resume			processor.do_resume
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 extern void cpu_resume(void);
@@ -133,6 +150,7 @@ extern void cpu_resume(void);
 #define cpu_switch_mm(pgd,mm) cpu_do_switch_mm(virt_to_phys(pgd),mm)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_ARM_LPAE
 #define cpu_get_pgd()	\
@@ -142,11 +160,36 @@ extern void cpu_resume(void);
 			: "=r" (pg), "=r" (pg2)		\
 			:				\
 			: "cc");			\
+=======
+#ifdef CONFIG_ARM_LPAE
+
+#define cpu_get_ttbr(nr)					\
+	({							\
+		u64 ttbr;					\
+		__asm__("mrrc	p15, " #nr ", %Q0, %R0, c2"	\
+			: "=r" (ttbr));				\
+		ttbr;						\
+	})
+
+#define cpu_set_ttbr(nr, val)					\
+	do {							\
+		u64 ttbr = val;					\
+		__asm__("mcrr	p15, " #nr ", %Q0, %R0, c2"	\
+			: : "r" (ttbr));			\
+	} while (0)
+
+#define cpu_get_pgd()	\
+	({						\
+		u64 pg = cpu_get_ttbr(0);		\
+>>>>>>> refs/remotes/origin/master
 		pg &= ~(PTRS_PER_PGD*sizeof(pgd_t)-1);	\
 		(pgd_t *)phys_to_virt(pg);		\
 	})
 #else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define cpu_get_pgd()	\
 	({						\
 		unsigned long pg;			\
@@ -156,9 +199,17 @@ extern void cpu_resume(void);
 		(pgd_t *)phys_to_virt(pg);		\
 	})
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+
+#else	/*!CONFIG_MMU */
+
+#define cpu_switch_mm(pgd,mm)	{ }
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

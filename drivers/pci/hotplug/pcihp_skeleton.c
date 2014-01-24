@@ -52,7 +52,11 @@ static LIST_HEAD(slot_list);
 	do {							\
 		if (debug)					\
 			printk (KERN_DEBUG "%s: " format "\n",	\
+<<<<<<< HEAD
 				MY_NAME , ## arg); 		\
+=======
+				MY_NAME , ## arg);		\
+>>>>>>> refs/remotes/origin/master
 	} while (0)
 #define err(format, arg...) printk(KERN_ERR "%s: " format "\n", MY_NAME , ## arg)
 #define info(format, arg...) printk(KERN_INFO "%s: " format "\n", MY_NAME , ## arg)
@@ -60,10 +64,14 @@ static LIST_HEAD(slot_list);
 
 /* local variables */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int debug;
 =======
 static bool debug;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool debug;
+>>>>>>> refs/remotes/origin/master
 static int num_slots;
 
 #define DRIVER_VERSION	"0.3"
@@ -256,7 +264,11 @@ static int __init init_slots(void)
 	struct slot *slot;
 	struct hotplug_slot *hotplug_slot;
 	struct hotplug_slot_info *info;
+<<<<<<< HEAD
 	int retval = -ENOMEM;
+=======
+	int retval;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	/*
@@ -265,6 +277,7 @@ static int __init init_slots(void)
 	 */
 	for (i = 0; i < num_slots; ++i) {
 		slot = kzalloc(sizeof(*slot), GFP_KERNEL);
+<<<<<<< HEAD
 		if (!slot)
 			goto error;
 
@@ -276,6 +289,25 @@ static int __init init_slots(void)
 		info = kzalloc(sizeof(*info), GFP_KERNEL);
 		if (!info)
 			goto error_hpslot;
+=======
+		if (!slot) {
+			retval = -ENOMEM;
+			goto error;
+		}
+
+		hotplug_slot = kzalloc(sizeof(*hotplug_slot), GFP_KERNEL);
+		if (!hotplug_slot) {
+			retval = -ENOMEM;
+			goto error_slot;
+		}
+		slot->hotplug_slot = hotplug_slot;
+
+		info = kzalloc(sizeof(*info), GFP_KERNEL);
+		if (!info) {
+			retval = -ENOMEM;
+			goto error_hpslot;
+		}
+>>>>>>> refs/remotes/origin/master
 		hotplug_slot->info = info;
 
 		slot->number = i;
@@ -285,7 +317,11 @@ static int __init init_slots(void)
 		hotplug_slot->release = &release_slot;
 		make_slot_name(slot);
 		hotplug_slot->ops = &skel_hotplug_slot_ops;
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Initialize the slot info structure with some known
 		 * good values.
@@ -294,7 +330,11 @@ static int __init init_slots(void)
 		get_attention_status(hotplug_slot, &info->attention_status);
 		get_latch_status(hotplug_slot, &info->latch_status);
 		get_adapter_status(hotplug_slot, &info->adapter_status);
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> refs/remotes/origin/master
 		dbg("registering slot %d\n", i);
 		retval = pci_hp_register(slot->hotplug_slot);
 		if (retval) {
@@ -334,7 +374,11 @@ static void __exit cleanup_slots(void)
 		pci_hp_deregister(slot->hotplug_slot);
 	}
 }
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> refs/remotes/origin/master
 static int __init pcihp_skel_init(void)
 {
 	int retval;

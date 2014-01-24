@@ -159,7 +159,11 @@ static struct autofs_sb_info *autofs_dev_ioctl_sbi(struct file *f)
 	struct inode *inode;
 
 	if (f) {
+<<<<<<< HEAD
 		inode = f->f_path.dentry->d_inode;
+=======
+		inode = file_inode(f);
+>>>>>>> refs/remotes/origin/master
 		sbi = autofs4_sbi(inode->i_sb);
 	}
 	return sbi;
@@ -183,17 +187,26 @@ static int autofs_dev_ioctl_protosubver(struct file *fp,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+/* Find the topmost mount satisfying test() */
+>>>>>>> refs/remotes/origin/master
 static int find_autofs_mount(const char *pathname,
 			     struct path *res,
 			     int test(struct path *path, void *data),
 			     void *data)
 {
 	struct path path;
+<<<<<<< HEAD
 	int err = kern_path(pathname, 0, &path);
+=======
+	int err = kern_path_mountpoint(AT_FDCWD, pathname, &path, 0);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 	err = -ENOENT;
 	while (path.dentry == path.mnt->mnt_root) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (path.mnt->mnt_sb->s_magic == AUTOFS_SUPER_MAGIC) {
 =======
@@ -205,6 +218,14 @@ static int find_autofs_mount(const char *pathname,
 					path_put(res);
 				*res = path;
 				err = 0;
+=======
+		if (path.dentry->d_sb->s_magic == AUTOFS_SUPER_MAGIC) {
+			if (test(&path, data)) {
+				path_get(&path);
+				*res = path;
+				err = 0;
+				break;
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		if (!follow_up(&path))
@@ -217,10 +238,14 @@ static int find_autofs_mount(const char *pathname,
 static int test_by_dev(struct path *path, void *p)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return path->mnt->mnt_sb->s_dev == *(dev_t *)p;
 =======
 	return path->dentry->d_sb->s_dev == *(dev_t *)p;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return path->dentry->d_sb->s_dev == *(dev_t *)p;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int test_by_type(struct path *path, void *p)
@@ -229,6 +254,7 @@ static int test_by_type(struct path *path, void *p)
 	return ino && ino->sbi->type & *(unsigned *)p;
 }
 
+<<<<<<< HEAD
 static void autofs_dev_ioctl_fd_install(unsigned int fd, struct file *file)
 {
 	struct files_struct *files = current->files;
@@ -247,6 +273,8 @@ static void autofs_dev_ioctl_fd_install(unsigned int fd, struct file *file)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Open a file descriptor on the autofs mount point corresponding
  * to the given path and device number (aka. new_encode_dev(sb->s_dev)).
@@ -255,7 +283,11 @@ static int autofs_dev_ioctl_open_mountpoint(const char *name, dev_t devid)
 {
 	int err, fd;
 
+<<<<<<< HEAD
 	fd = get_unused_fd();
+=======
+	fd = get_unused_fd_flags(O_CLOEXEC);
+>>>>>>> refs/remotes/origin/master
 	if (likely(fd >= 0)) {
 		struct file *filp;
 		struct path path;
@@ -269,14 +301,23 @@ static int autofs_dev_ioctl_open_mountpoint(const char *name, dev_t devid)
 		 * corresponding to the autofs fs we want to open.
 		 */
 
+<<<<<<< HEAD
 		filp = dentry_open(path.dentry, path.mnt, O_RDONLY,
 				   current_cred());
+=======
+		filp = dentry_open(&path, O_RDONLY, current_cred());
+		path_put(&path);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(filp)) {
 			err = PTR_ERR(filp);
 			goto out;
 		}
 
+<<<<<<< HEAD
 		autofs_dev_ioctl_fd_install(fd, filp);
+=======
+		fd_install(fd, filp);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return fd;
@@ -463,8 +504,13 @@ static int autofs_dev_ioctl_requester(struct file *fp,
 		err = 0;
 		autofs4_expire_wait(path.dentry);
 		spin_lock(&sbi->fs_lock);
+<<<<<<< HEAD
 		param->requester.uid = ino->uid;
 		param->requester.gid = ino->gid;
+=======
+		param->requester.uid = from_kuid_munged(current_user_ns(), ino->uid);
+		param->requester.gid = from_kgid_munged(current_user_ns(), ino->gid);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&sbi->fs_lock);
 	}
 	path_put(&path);
@@ -512,12 +558,20 @@ static int autofs_dev_ioctl_askumount(struct file *fp,
  * mount if there is one or 0 if it isn't a mountpoint.
  *
  * If we aren't supplied with a file descriptor then we
+<<<<<<< HEAD
  * lookup the nameidata of the path and check if it is the
  * root of a mount. If a type is given we are looking for
  * a particular autofs mount and if we don't find a match
  * we return fail. If the located nameidata path is the
  * root of a mount we return 1 along with the super magic
  * of the mount or 0 otherwise.
+=======
+ * lookup the path and check if it is the root of a mount.
+ * If a type is given we are looking for a particular autofs
+ * mount and if we don't find a match we return fail. If the
+ * located path is the root of a mount we return 1 along with
+ * the super magic of the mount or 0 otherwise.
+>>>>>>> refs/remotes/origin/master
  *
  * In both cases the the device number (as returned by
  * new_encode_dev()) is also returned.
@@ -545,6 +599,7 @@ static int autofs_dev_ioctl_ismountpoint(struct file *fp,
 
 	if (!fp || param->ioctlfd == -1) {
 		if (autofs_type_any(type))
+<<<<<<< HEAD
 			err = kern_path(name, LOOKUP_FOLLOW, &path);
 		else
 			err = find_autofs_mount(name, &path, test_by_type, &type);
@@ -557,12 +612,24 @@ static int autofs_dev_ioctl_ismountpoint(struct file *fp,
 			err = 1;
 			magic = path.mnt->mnt_sb->s_magic;
 =======
+=======
+			err = kern_path_mountpoint(AT_FDCWD,
+						   name, &path, LOOKUP_FOLLOW);
+		else
+			err = find_autofs_mount(name, &path,
+						test_by_type, &type);
+		if (err)
+			goto out;
+>>>>>>> refs/remotes/origin/master
 		devid = new_encode_dev(path.dentry->d_sb->s_dev);
 		err = 0;
 		if (path.mnt->mnt_root == path.dentry) {
 			err = 1;
 			magic = path.dentry->d_sb->s_magic;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		dev_t dev = sbi->sb->s_dev;
@@ -577,10 +644,14 @@ static int autofs_dev_ioctl_ismountpoint(struct file *fp,
 
 		if (follow_down_one(&path))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			magic = path.mnt->mnt_sb->s_magic;
 =======
 			magic = path.dentry->d_sb->s_magic;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			magic = path.dentry->d_sb->s_magic;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	param->ismountpoint.out.devid = devid;
@@ -695,12 +766,15 @@ static int _autofs_dev_ioctl(unsigned int command, struct autofs_dev_ioctl __use
 			goto out;
 		}
 
+<<<<<<< HEAD
 		if (!fp->f_op) {
 			err = -ENOTTY;
 			fput(fp);
 			goto out;
 		}
 
+=======
+>>>>>>> refs/remotes/origin/master
 		sbi = autofs_dev_ioctl_sbi(fp);
 		if (!sbi || sbi->magic != AUTOFS_SBI_MAGIC) {
 			err = -EINVAL;

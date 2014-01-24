@@ -8,6 +8,7 @@
  * Copyright (C) 1994, 95, 96, 97, 98, 99, 2000, 01, 02, 03  Ralf Baechle
  * Copyright (C) 1996 Stoned Elipot
  * Copyright (C) 1999 Silicon Graphics, Inc.
+<<<<<<< HEAD
  * Copyright (C) 2000, 2001, 2002, 2007  Maciej W. Rozycki
  */
 #include <linux/init.h>
@@ -20,6 +21,15 @@
 #include <linux/screen_info.h>
 #include <linux/memblock.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000, 2001, 2002, 2007	 Maciej W. Rozycki
+ */
+#include <linux/init.h>
+#include <linux/ioport.h>
+#include <linux/export.h>
+#include <linux/screen_info.h>
+#include <linux/memblock.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bootmem.h>
 #include <linux/initrd.h>
 #include <linux/root_dev.h>
@@ -27,6 +37,11 @@
 #include <linux/console.h>
 #include <linux/pfn.h>
 #include <linux/debugfs.h>
+<<<<<<< HEAD
+=======
+#include <linux/kexec.h>
+#include <linux/sizes.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/addrspace.h>
 #include <asm/bootinfo.h>
@@ -37,9 +52,12 @@
 #include <asm/setup.h>
 #include <asm/smp-ops.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/prom.h>
 
 struct cpuinfo_mips cpu_data[NR_CPUS] __read_mostly;
@@ -85,10 +103,19 @@ EXPORT_SYMBOL(mips_io_port_base);
 static struct resource code_resource = { .name = "Kernel code", };
 static struct resource data_resource = { .name = "Kernel data", };
 
+<<<<<<< HEAD
 void __init add_memory_region(phys_t start, phys_t size, long type)
 {
 	int x = boot_mem_map.nr_map;
 	struct boot_mem_map_entry *prev = boot_mem_map.map + x - 1;
+=======
+static void *detect_magic __initdata = detect_memory_region;
+
+void __init add_memory_region(phys_t start, phys_t size, long type)
+{
+	int x = boot_mem_map.nr_map;
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	/* Sanity check */
 	if (start + size < start) {
@@ -97,6 +124,7 @@ void __init add_memory_region(phys_t start, phys_t size, long type)
 	}
 
 	/*
+<<<<<<< HEAD
 	 * Try to merge with previous entry if any.  This is far less than
 	 * perfect but is sufficient for most real world cases.
 	 */
@@ -106,6 +134,31 @@ void __init add_memory_region(phys_t start, phys_t size, long type)
 	}
 
 	if (x == BOOT_MEM_MAP_MAX) {
+=======
+	 * Try to merge with existing entry, if any.
+	 */
+	for (i = 0; i < boot_mem_map.nr_map; i++) {
+		struct boot_mem_map_entry *entry = boot_mem_map.map + i;
+		unsigned long top;
+
+		if (entry->type != type)
+			continue;
+
+		if (start + size < entry->addr)
+			continue;			/* no overlap */
+
+		if (entry->addr + entry->size < start)
+			continue;			/* no overlap */
+
+		top = max(entry->addr + entry->size, start + size);
+		entry->addr = min(entry->addr, start);
+		entry->size = top - entry->addr;
+
+		return;
+	}
+
+	if (boot_mem_map.nr_map == BOOT_MEM_MAP_MAX) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("Ooops! Too many entries in the memory map!\n");
 		return;
 	}
@@ -116,6 +169,28 @@ void __init add_memory_region(phys_t start, phys_t size, long type)
 	boot_mem_map.nr_map++;
 }
 
+<<<<<<< HEAD
+=======
+void __init detect_memory_region(phys_t start, phys_t sz_min, phys_t sz_max)
+{
+	void *dm = &detect_magic;
+	phys_t size;
+
+	for (size = sz_min; size < sz_max; size <<= 1) {
+		if (!memcmp(dm, dm + size, sizeof(detect_magic)))
+			break;
+	}
+
+	pr_debug("Memory: %lluMB of RAM detected at 0x%llx (min: %lluMB, max: %lluMB)\n",
+		((unsigned long long) size) / SZ_1M,
+		(unsigned long long) start,
+		((unsigned long long) sz_min) / SZ_1M,
+		((unsigned long long) sz_max) / SZ_1M);
+
+	add_memory_region(start, size, BOOT_MEM_RAM);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void __init print_memory_map(void)
 {
 	int i;
@@ -131,11 +206,17 @@ static void __init print_memory_map(void)
 			printk(KERN_CONT "(usable)\n");
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		case BOOT_MEM_INIT_RAM:
 			printk(KERN_CONT "(usable after init)\n");
 			break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case BOOT_MEM_INIT_RAM:
+			printk(KERN_CONT "(usable after init)\n");
+			break;
+>>>>>>> refs/remotes/origin/master
 		case BOOT_MEM_ROM_DATA:
 			printk(KERN_CONT "(ROM data)\n");
 			break;
@@ -275,12 +356,22 @@ static void __init bootmem_init(void)
 	int i;
 
 	/*
+<<<<<<< HEAD
 	 * Init any data related to initrd. It's a nop if INITRD is
 	 * not selected. Once that done we can determine the low bound
 	 * of usable memory.
 	 */
 	reserved_end = max(init_initrd(),
 			   (unsigned long) PFN_UP(__pa_symbol(&_end)));
+=======
+	 * Sanity check any INITRD first. We don't take it into account
+	 * for bootmem setup initially, rely on the end-of-kernel-code
+	 * as our memory range starting point. Once bootmem is inited we
+	 * will reserve the area used for the initrd.
+	 */
+	init_initrd();
+	reserved_end = (unsigned long) PFN_UP(__pa_symbol(&_end));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * max_low_pfn is not a number of pages. The number of pages
@@ -337,6 +428,17 @@ static void __init bootmem_init(void)
 		max_low_pfn = PFN_DOWN(HIGHMEM_START);
 	}
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_BLK_DEV_INITRD
+	/*
+	 * mapstart should be after initrd_end
+	 */
+	if (initrd_end)
+		mapstart = max(mapstart, (unsigned long)PFN_UP(__pa(initrd_end)));
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Initialize the boot-time allocator with low memory only.
 	 */
@@ -368,10 +470,14 @@ static void __init bootmem_init(void)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		add_active_range(0, start, end);
 =======
 		memblock_add_node(PFN_PHYS(start), PFN_PHYS(end - start), 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memblock_add_node(PFN_PHYS(start), PFN_PHYS(end - start), 0);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -380,6 +486,7 @@ static void __init bootmem_init(void)
 	for (i = 0; i < boot_mem_map.nr_map; i++) {
 		unsigned long start, end, size;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/*
 		 * Reserve usable memory.
@@ -391,6 +498,8 @@ static void __init bootmem_init(void)
 		end   = PFN_DOWN(boot_mem_map.map[i].addr
 				    + boot_mem_map.map[i].size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		start = PFN_UP(boot_mem_map.map[i].addr);
 		end   = PFN_DOWN(boot_mem_map.map[i].addr
 				    + boot_mem_map.map[i].size);
@@ -409,7 +518,10 @@ static void __init bootmem_init(void)
 			continue;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * We are rounding up the start address of usable memory
 		 * and at the end of the usable range downwards.
@@ -462,7 +574,11 @@ static void __init bootmem_init(void)
  * At this stage the bootmem allocator is ready to use.
  *
  * NOTE: historically plat_mem_setup did the entire platform initialization.
+<<<<<<< HEAD
  *       This was rather impractical because it meant plat_mem_setup had to
+=======
+ *	 This was rather impractical because it meant plat_mem_setup had to
+>>>>>>> refs/remotes/origin/master
  * get away without any kind of memory allocator.  To keep old code from
  * breaking plat_setup was just renamed to plat_setup and a second platform
  * initialization hook for anything else was introduced.
@@ -482,7 +598,11 @@ static int __init early_parse_mem(char *p)
 	if (usermem == 0) {
 		boot_mem_map.nr_map = 0;
 		usermem = 1;
+<<<<<<< HEAD
  	}
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	start = 0;
 	size = memparse(p, &p);
 	if (*p == '@')
@@ -493,6 +613,7 @@ static int __init early_parse_mem(char *p)
 }
 early_param("mem", early_parse_mem);
 
+<<<<<<< HEAD
 static void __init arch_mem_init(char **cmdline_p)
 {
 <<<<<<< HEAD
@@ -500,11 +621,112 @@ static void __init arch_mem_init(char **cmdline_p)
 	phys_t init_mem, init_end, init_size;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PROC_VMCORE
+unsigned long setup_elfcorehdr, setup_elfcorehdr_size;
+static int __init early_parse_elfcorehdr(char *p)
+{
+	int i;
+
+	setup_elfcorehdr = memparse(p, &p);
+
+	for (i = 0; i < boot_mem_map.nr_map; i++) {
+		unsigned long start = boot_mem_map.map[i].addr;
+		unsigned long end = (boot_mem_map.map[i].addr +
+				     boot_mem_map.map[i].size);
+		if (setup_elfcorehdr >= start && setup_elfcorehdr < end) {
+			/*
+			 * Reserve from the elf core header to the end of
+			 * the memory segment, that should all be kdump
+			 * reserved memory.
+			 */
+			setup_elfcorehdr_size = end - setup_elfcorehdr;
+			break;
+		}
+	}
+	/*
+	 * If we don't find it in the memory map, then we shouldn't
+	 * have to worry about it, as the new kernel won't use it.
+	 */
+	return 0;
+}
+early_param("elfcorehdr", early_parse_elfcorehdr);
+#endif
+
+static void __init arch_mem_addpart(phys_t mem, phys_t end, int type)
+{
+	phys_t size;
+	int i;
+
+	size = end - mem;
+	if (!size)
+		return;
+
+	/* Make sure it is in the boot_mem_map */
+	for (i = 0; i < boot_mem_map.nr_map; i++) {
+		if (mem >= boot_mem_map.map[i].addr &&
+		    mem < (boot_mem_map.map[i].addr +
+			   boot_mem_map.map[i].size))
+			return;
+	}
+	add_memory_region(mem, size, type);
+}
+
+#ifdef CONFIG_KEXEC
+static inline unsigned long long get_total_mem(void)
+{
+	unsigned long long total;
+
+	total = max_pfn - min_low_pfn;
+	return total << PAGE_SHIFT;
+}
+
+static void __init mips_parse_crashkernel(void)
+{
+	unsigned long long total_mem;
+	unsigned long long crash_size, crash_base;
+	int ret;
+
+	total_mem = get_total_mem();
+	ret = parse_crashkernel(boot_command_line, total_mem,
+				&crash_size, &crash_base);
+	if (ret != 0 || crash_size <= 0)
+		return;
+
+	crashk_res.start = crash_base;
+	crashk_res.end	 = crash_base + crash_size - 1;
+}
+
+static void __init request_crashkernel(struct resource *res)
+{
+	int ret;
+
+	ret = request_resource(res, &crashk_res);
+	if (!ret)
+		pr_info("Reserving %ldMB of memory at %ldMB for crashkernel\n",
+			(unsigned long)((crashk_res.end -
+					 crashk_res.start + 1) >> 20),
+			(unsigned long)(crashk_res.start  >> 20));
+}
+#else /* !defined(CONFIG_KEXEC)		*/
+static void __init mips_parse_crashkernel(void)
+{
+}
+
+static void __init request_crashkernel(struct resource *res)
+{
+}
+#endif /* !defined(CONFIG_KEXEC)  */
+
+static void __init arch_mem_init(char **cmdline_p)
+{
+>>>>>>> refs/remotes/origin/master
 	extern void plat_mem_setup(void);
 
 	/* call board setup routine */
 	plat_mem_setup();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	init_mem = PFN_UP(__pa_symbol(&__init_begin)) << PAGE_SHIFT;
@@ -528,6 +750,21 @@ static void __init arch_mem_init(char **cmdline_p)
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * Make sure all kernel memory is in the maps.  The "UP" and
+	 * "DOWN" are opposite for initdata since if it crosses over
+	 * into another memory section you don't want that to be
+	 * freed when the initdata is freed.
+	 */
+	arch_mem_addpart(PFN_DOWN(__pa_symbol(&_text)) << PAGE_SHIFT,
+			 PFN_UP(__pa_symbol(&_edata)) << PAGE_SHIFT,
+			 BOOT_MEM_RAM);
+	arch_mem_addpart(PFN_UP(__pa_symbol(&__init_begin)) << PAGE_SHIFT,
+			 PFN_DOWN(__pa_symbol(&__init_end)) << PAGE_SHIFT,
+			 BOOT_MEM_INIT_RAM);
+
+>>>>>>> refs/remotes/origin/master
 	pr_info("Determined physical RAM map:\n");
 	print_memory_map();
 
@@ -556,6 +793,25 @@ static void __init arch_mem_init(char **cmdline_p)
 	}
 
 	bootmem_init();
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PROC_VMCORE
+	if (setup_elfcorehdr && setup_elfcorehdr_size) {
+		printk(KERN_INFO "kdump reserved memory at %lx-%lx\n",
+		       setup_elfcorehdr, setup_elfcorehdr_size);
+		reserve_bootmem(setup_elfcorehdr, setup_elfcorehdr_size,
+				BOOTMEM_DEFAULT);
+	}
+#endif
+
+	mips_parse_crashkernel();
+#ifdef CONFIG_KEXEC
+	if (crashk_res.start != crashk_res.end)
+		reserve_bootmem(crashk_res.start,
+				crashk_res.end - crashk_res.start + 1,
+				BOOTMEM_DEFAULT);
+#endif
+>>>>>>> refs/remotes/origin/master
 	device_tree_init();
 	sparse_init();
 	plat_swiotlb_setup();
@@ -574,9 +830,12 @@ static void __init resource_init(void)
 	data_resource.start = __pa_symbol(&_etext);
 	data_resource.end = __pa_symbol(&_edata) - 1;
 
+<<<<<<< HEAD
 	/*
 	 * Request address space for all standard RAM.
 	 */
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < boot_mem_map.nr_map; i++) {
 		struct resource *res;
 		unsigned long start, end;
@@ -592,9 +851,13 @@ static void __init resource_init(void)
 		switch (boot_mem_map.map[i].type) {
 		case BOOT_MEM_RAM:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		case BOOT_MEM_INIT_RAM:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case BOOT_MEM_INIT_RAM:
+>>>>>>> refs/remotes/origin/master
 		case BOOT_MEM_ROM_DATA:
 			res->name = "System RAM";
 			break;
@@ -616,6 +879,10 @@ static void __init resource_init(void)
 		 */
 		request_resource(res, &code_resource);
 		request_resource(res, &data_resource);
+<<<<<<< HEAD
+=======
+		request_crashkernel(res);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -642,6 +909,11 @@ void __init setup_arch(char **cmdline_p)
 
 	resource_init();
 	plat_smp_setup();
+<<<<<<< HEAD
+=======
+
+	cpu_cache_init();
+>>>>>>> refs/remotes/origin/master
 }
 
 unsigned long kernelsp[NR_CPUS];

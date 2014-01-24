@@ -22,7 +22,11 @@
 #include <asm/timex.h>
 #include <asm/processor.h>
 
+<<<<<<< HEAD
 int __devinit read_current_timer(unsigned long *timer_value)
+=======
+int read_current_timer(unsigned long *timer_value)
+>>>>>>> refs/remotes/origin/master
 {
 	*timer_value = mfspr(SPR_TTCR);
 	return 0;
@@ -30,9 +34,15 @@ int __devinit read_current_timer(unsigned long *timer_value)
 
 void __delay(unsigned long cycles)
 {
+<<<<<<< HEAD
 	cycles_t target = get_cycles() + cycles;
 
 	while (get_cycles() < target)
+=======
+	cycles_t start = get_cycles();
+
+	while ((get_cycles() - start) < cycles)
+>>>>>>> refs/remotes/origin/master
 		cpu_relax();
 }
 EXPORT_SYMBOL(__delay);
@@ -41,7 +51,11 @@ inline void __const_udelay(unsigned long xloops)
 {
 	unsigned long long loops;
 
+<<<<<<< HEAD
 	loops = xloops * loops_per_jiffy * HZ;
+=======
+	loops = (unsigned long long)xloops * loops_per_jiffy * HZ;
+>>>>>>> refs/remotes/origin/master
 
 	__delay(loops >> 32);
 }

@@ -7,7 +7,11 @@
  * License.  See the file "COPYING" in the main directory of this archive
  * for more details.
  *
+<<<<<<< HEAD
  * Copyright (C) 2001 - 2005 Tensilica Inc.
+=======
+ * Copyright (C) 2001 - 2008 Tensilica Inc.
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _XTENSA_ATOMIC_H
@@ -19,20 +23,32 @@
 #ifdef __KERNEL__
 #include <asm/processor.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 #include <asm/cmpxchg.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cmpxchg.h>
+>>>>>>> refs/remotes/origin/master
 
 #define ATOMIC_INIT(i)	{ (i) }
 
 /*
  * This Xtensa implementation assumes that the right mechanism
+<<<<<<< HEAD
  * for exclusion is for locking interrupts to level 1.
  *
  * Locking interrupts looks like this:
  *
  *    rsil a15, 1
+=======
+ * for exclusion is for locking interrupts to level EXCM_LEVEL.
+ *
+ * Locking interrupts looks like this:
+ *
+ *    rsil a15, LOCKLEVEL
+>>>>>>> refs/remotes/origin/master
  *    <code>
  *    wsr  a15, PS
  *    rsync
@@ -70,6 +86,7 @@
  */
 static inline void atomic_add(int i, atomic_t * v)
 {
+<<<<<<< HEAD
     unsigned int vval;
 
     __asm__ __volatile__(
@@ -83,6 +100,37 @@ static inline void atomic_add(int i, atomic_t * v)
 	: "a" (i), "a" (v)
 	: "a15", "memory"
 	);
+=======
+#if XCHAL_HAVE_S32C1I
+	unsigned long tmp;
+	int result;
+
+	__asm__ __volatile__(
+			"1:     l32i    %1, %3, 0\n"
+			"       wsr     %1, scompare1\n"
+			"       add     %0, %1, %2\n"
+			"       s32c1i  %0, %3, 0\n"
+			"       bne     %0, %1, 1b\n"
+			: "=&a" (result), "=&a" (tmp)
+			: "a" (i), "a" (v)
+			: "memory"
+			);
+#else
+	unsigned int vval;
+
+	__asm__ __volatile__(
+			"       rsil    a15, "__stringify(LOCKLEVEL)"\n"
+			"       l32i    %0, %2, 0\n"
+			"       add     %0, %0, %1\n"
+			"       s32i    %0, %2, 0\n"
+			"       wsr     a15, ps\n"
+			"       rsync\n"
+			: "=&a" (vval)
+			: "a" (i), "a" (v)
+			: "a15", "memory"
+			);
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -94,6 +142,7 @@ static inline void atomic_add(int i, atomic_t * v)
  */
 static inline void atomic_sub(int i, atomic_t *v)
 {
+<<<<<<< HEAD
     unsigned int vval;
 
     __asm__ __volatile__(
@@ -107,6 +156,37 @@ static inline void atomic_sub(int i, atomic_t *v)
 	: "a" (i), "a" (v)
 	: "a15", "memory"
 	);
+=======
+#if XCHAL_HAVE_S32C1I
+	unsigned long tmp;
+	int result;
+
+	__asm__ __volatile__(
+			"1:     l32i    %1, %3, 0\n"
+			"       wsr     %1, scompare1\n"
+			"       sub     %0, %1, %2\n"
+			"       s32c1i  %0, %3, 0\n"
+			"       bne     %0, %1, 1b\n"
+			: "=&a" (result), "=&a" (tmp)
+			: "a" (i), "a" (v)
+			: "memory"
+			);
+#else
+	unsigned int vval;
+
+	__asm__ __volatile__(
+			"       rsil    a15, "__stringify(LOCKLEVEL)"\n"
+			"       l32i    %0, %2, 0\n"
+			"       sub     %0, %0, %1\n"
+			"       s32i    %0, %2, 0\n"
+			"       wsr     a15, ps\n"
+			"       rsync\n"
+			: "=&a" (vval)
+			: "a" (i), "a" (v)
+			: "a15", "memory"
+			);
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -115,6 +195,7 @@ static inline void atomic_sub(int i, atomic_t *v)
 
 static inline int atomic_add_return(int i, atomic_t * v)
 {
+<<<<<<< HEAD
      unsigned int vval;
 
     __asm__ __volatile__(
@@ -130,10 +211,47 @@ static inline int atomic_add_return(int i, atomic_t * v)
 	);
 
     return vval;
+=======
+#if XCHAL_HAVE_S32C1I
+	unsigned long tmp;
+	int result;
+
+	__asm__ __volatile__(
+			"1:     l32i    %1, %3, 0\n"
+			"       wsr     %1, scompare1\n"
+			"       add     %0, %1, %2\n"
+			"       s32c1i  %0, %3, 0\n"
+			"       bne     %0, %1, 1b\n"
+			"       add     %0, %0, %2\n"
+			: "=&a" (result), "=&a" (tmp)
+			: "a" (i), "a" (v)
+			: "memory"
+			);
+
+	return result;
+#else
+	unsigned int vval;
+
+	__asm__ __volatile__(
+			"       rsil    a15,"__stringify(LOCKLEVEL)"\n"
+			"       l32i    %0, %2, 0\n"
+			"       add     %0, %0, %1\n"
+			"       s32i    %0, %2, 0\n"
+			"       wsr     a15, ps\n"
+			"       rsync\n"
+			: "=&a" (vval)
+			: "a" (i), "a" (v)
+			: "a15", "memory"
+			);
+
+	return vval;
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int atomic_sub_return(int i, atomic_t * v)
 {
+<<<<<<< HEAD
     unsigned int vval;
 
     __asm__ __volatile__(
@@ -149,6 +267,42 @@ static inline int atomic_sub_return(int i, atomic_t * v)
 	);
 
     return vval;
+=======
+#if XCHAL_HAVE_S32C1I
+	unsigned long tmp;
+	int result;
+
+	__asm__ __volatile__(
+			"1:     l32i    %1, %3, 0\n"
+			"       wsr     %1, scompare1\n"
+			"       sub     %0, %1, %2\n"
+			"       s32c1i  %0, %3, 0\n"
+			"       bne     %0, %1, 1b\n"
+			"       sub     %0, %0, %2\n"
+			: "=&a" (result), "=&a" (tmp)
+			: "a" (i), "a" (v)
+			: "memory"
+			);
+
+	return result;
+#else
+	unsigned int vval;
+
+	__asm__ __volatile__(
+			"       rsil    a15,"__stringify(LOCKLEVEL)"\n"
+			"       l32i    %0, %2, 0\n"
+			"       sub     %0, %0, %1\n"
+			"       s32i    %0, %2, 0\n"
+			"       wsr     a15, ps\n"
+			"       rsync\n"
+			: "=&a" (vval)
+			: "a" (i), "a" (v)
+			: "a15", "memory"
+			);
+
+	return vval;
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -230,15 +384,20 @@ static inline int atomic_sub_return(int i, atomic_t * v)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * atomic_add_unless - add unless the number is a given value
 =======
  * __atomic_add_unless - add unless the number is a given value
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * __atomic_add_unless - add unless the number is a given value
+>>>>>>> refs/remotes/origin/master
  * @v: pointer of type atomic_t
  * @a: the amount to add to v...
  * @u: ...unless v is equal to u.
  *
  * Atomically adds @a to @v, so long as it was not @u.
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Returns non-zero if @v was not @u, and zero otherwise.
  */
@@ -248,6 +407,11 @@ static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
  */
 static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Returns the old value of @v.
+ */
+static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/master
 {
 	int c, old;
 	c = atomic_read(v);
@@ -259,6 +423,7 @@ static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
 			break;
 		c = old;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return c != (u);
 }
@@ -287,10 +452,50 @@ static inline void atomic_clear_mask(unsigned int mask, atomic_t *v)
 	: "a" (v), "a" (all_f), "1" (mask)
 	: "a15", "memory"
 	);
+=======
+	return c;
+}
+
+
+static inline void atomic_clear_mask(unsigned int mask, atomic_t *v)
+{
+#if XCHAL_HAVE_S32C1I
+	unsigned long tmp;
+	int result;
+
+	__asm__ __volatile__(
+			"1:     l32i    %1, %3, 0\n"
+			"       wsr     %1, scompare1\n"
+			"       and     %0, %1, %2\n"
+			"       s32c1i  %0, %3, 0\n"
+			"       bne     %0, %1, 1b\n"
+			: "=&a" (result), "=&a" (tmp)
+			: "a" (~mask), "a" (v)
+			: "memory"
+			);
+#else
+	unsigned int all_f = -1;
+	unsigned int vval;
+
+	__asm__ __volatile__(
+			"       rsil    a15,"__stringify(LOCKLEVEL)"\n"
+			"       l32i    %0, %2, 0\n"
+			"       xor     %1, %4, %3\n"
+			"       and     %0, %0, %4\n"
+			"       s32i    %0, %2, 0\n"
+			"       wsr     a15, ps\n"
+			"       rsync\n"
+			: "=&a" (vval), "=a" (mask)
+			: "a" (v), "a" (all_f), "1" (mask)
+			: "a15", "memory"
+			);
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void atomic_set_mask(unsigned int mask, atomic_t *v)
 {
+<<<<<<< HEAD
     unsigned int vval;
 
     __asm__ __volatile__(
@@ -304,6 +509,37 @@ static inline void atomic_set_mask(unsigned int mask, atomic_t *v)
 	: "a" (mask), "a" (v)
 	: "a15", "memory"
 	);
+=======
+#if XCHAL_HAVE_S32C1I
+	unsigned long tmp;
+	int result;
+
+	__asm__ __volatile__(
+			"1:     l32i    %1, %3, 0\n"
+			"       wsr     %1, scompare1\n"
+			"       or      %0, %1, %2\n"
+			"       s32c1i  %0, %3, 0\n"
+			"       bne     %0, %1, 1b\n"
+			: "=&a" (result), "=&a" (tmp)
+			: "a" (mask), "a" (v)
+			: "memory"
+			);
+#else
+	unsigned int vval;
+
+	__asm__ __volatile__(
+			"       rsil    a15,"__stringify(LOCKLEVEL)"\n"
+			"       l32i    %0, %2, 0\n"
+			"       or      %0, %0, %1\n"
+			"       s32i    %0, %2, 0\n"
+			"       wsr     a15, ps\n"
+			"       rsync\n"
+			: "=&a" (vval)
+			: "a" (mask), "a" (v)
+			: "a15", "memory"
+			);
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Atomic operations are already serializing */
@@ -313,6 +549,7 @@ static inline void atomic_set_mask(unsigned int mask, atomic_t *v)
 #define smp_mb__after_atomic_inc()	barrier()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm-generic/atomic-long.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -320,3 +557,8 @@ static inline void atomic_set_mask(unsigned int mask, atomic_t *v)
 
 #endif /* _XTENSA_ATOMIC_H */
 
+=======
+#endif /* __KERNEL__ */
+
+#endif /* _XTENSA_ATOMIC_H */
+>>>>>>> refs/remotes/origin/master

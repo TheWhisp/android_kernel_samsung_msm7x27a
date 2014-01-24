@@ -21,9 +21,13 @@
 #include <linux/types.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/bug.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/page.h>
 
@@ -32,10 +36,14 @@
  * individual pages from an io device to the CPU in an efficient fashion.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/io_mapping.txt
 =======
  * See Documentation/io-mapping.txt
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See Documentation/io-mapping.txt
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifdef CONFIG_HAVE_ATOMIC_IOMAP

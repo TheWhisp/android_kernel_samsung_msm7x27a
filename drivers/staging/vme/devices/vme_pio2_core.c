@@ -10,7 +10,12 @@
  * option) any later version.
  */
 
+<<<<<<< HEAD
 #include <linux/version.h>
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -20,8 +25,13 @@
 #include <linux/ctype.h>
 #include <linux/gpio.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 
 #include "../vme.h"
+=======
+#include <linux/vme.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "vme_pio2.h"
 
 
@@ -41,8 +51,13 @@ static int variant_num;
 static bool loopback;
 
 static int pio2_match(struct vme_dev *);
+<<<<<<< HEAD
 static int __devinit pio2_probe(struct vme_dev *);
 static int __devexit pio2_remove(struct vme_dev *);
+=======
+static int pio2_probe(struct vme_dev *);
+static int pio2_remove(struct vme_dev *);
+>>>>>>> refs/remotes/origin/master
 
 static int pio2_get_led(struct pio2_card *card)
 {
@@ -155,12 +170,17 @@ static struct vme_driver pio2_driver = {
 	.name = driver_name,
 	.match = pio2_match,
 	.probe = pio2_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(pio2_remove),
+=======
+	.remove = pio2_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 
 static int __init pio2_init(void)
 {
+<<<<<<< HEAD
 	int retval = 0;
 
 	if (bus_num == 0) {
@@ -173,10 +193,21 @@ static int __init pio2_init(void)
 		printk(KERN_ERR
 			"%s: Driver only able to handle %d PIO2 Cards\n",
 			driver_name, PIO2_CARDS_MAX);
+=======
+	if (bus_num == 0) {
+		pr_err("No cards, skipping registration\n");
+		return -ENODEV;
+	}
+
+	if (bus_num > PIO2_CARDS_MAX) {
+		pr_err("Driver only able to handle %d PIO2 Cards\n",
+		       PIO2_CARDS_MAX);
+>>>>>>> refs/remotes/origin/master
 		bus_num = PIO2_CARDS_MAX;
 	}
 
 	/* Register the PIO2 driver */
+<<<<<<< HEAD
 	retval = vme_register_driver(&pio2_driver, bus_num);
 	if (retval != 0)
 		goto err_reg;
@@ -186,6 +217,9 @@ static int __init pio2_init(void)
 err_reg:
 err_nocard:
 	return retval;
+=======
+	return  vme_register_driver(&pio2_driver, bus_num);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int pio2_match(struct vme_dev *vdev)
@@ -223,7 +257,11 @@ static int pio2_match(struct vme_dev *vdev)
 	return 1;
 }
 
+<<<<<<< HEAD
 static int __devinit pio2_probe(struct vme_dev *vdev)
+=======
+static int pio2_probe(struct vme_dev *vdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pio2_card *card;
 	int retval;
@@ -233,7 +271,10 @@ static int __devinit pio2_probe(struct vme_dev *vdev)
 
 	card = kzalloc(sizeof(struct pio2_card), GFP_KERNEL);
 	if (card == NULL) {
+<<<<<<< HEAD
 		dev_err(&vdev->dev, "Unable to allocate card structure\n");
+=======
+>>>>>>> refs/remotes/origin/master
 		retval = -ENOMEM;
 		goto err_struct;
 	}
@@ -456,7 +497,11 @@ err_struct:
 	return retval;
 }
 
+<<<<<<< HEAD
 static int __devexit pio2_remove(struct vme_dev *vdev)
+=======
+static int pio2_remove(struct vme_dev *vdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int vec;
 	int i;

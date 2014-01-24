@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,8 +66,13 @@ union acpi_parse_object *acpi_ps_get_child(union acpi_parse_object *op);
  *
  * FUNCTION:    acpi_ps_get_arg
  *
+<<<<<<< HEAD
  * PARAMETERS:  Op              - Get an argument for this op
  *              Argn            - Nth argument to get
+=======
+ * PARAMETERS:  op              - Get an argument for this op
+ *              argn            - Nth argument to get
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      The argument (as an Op object). NULL if argument does not exist
  *
@@ -79,14 +88,20 @@ union acpi_parse_object *acpi_ps_get_arg(union acpi_parse_object *op, u32 argn)
 	ACPI_FUNCTION_ENTRY();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
 	if (Op->Common.aml_opcode == AML_INT_CONNECTION_OP)
 	{
 		return (Op->Common.Value.Arg);
 	}
 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Get the info structure for this opcode */
 
 	op_info = acpi_ps_get_opcode_info(op->common.aml_opcode);
@@ -121,8 +136,13 @@ union acpi_parse_object *acpi_ps_get_arg(union acpi_parse_object *op, u32 argn)
  *
  * FUNCTION:    acpi_ps_append_arg
  *
+<<<<<<< HEAD
  * PARAMETERS:  Op              - Append an argument to this Op.
  *              Arg             - Argument Op to append
+=======
+ * PARAMETERS:  op              - Append an argument to this Op.
+ *              arg             - Argument Op to append
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None.
  *
@@ -195,8 +215,13 @@ acpi_ps_append_arg(union acpi_parse_object *op, union acpi_parse_object *arg)
  *
  * FUNCTION:    acpi_ps_get_depth_next
  *
+<<<<<<< HEAD
  * PARAMETERS:  Origin          - Root of subtree to search
  *              Op              - Last (previous) Op that was found
+=======
+ * PARAMETERS:  origin          - Root of subtree to search
+ *              op              - Last (previous) Op that was found
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Next Op found in the search.
  *
@@ -268,7 +293,11 @@ union acpi_parse_object *acpi_ps_get_depth_next(union acpi_parse_object *origin,
  *
  * FUNCTION:    acpi_ps_get_child
  *
+<<<<<<< HEAD
  * PARAMETERS:  Op              - Get the child of this Op
+=======
+ * PARAMETERS:  op              - Get the child of this Op
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Child Op, Null if none is found.
  *
@@ -315,7 +344,13 @@ union acpi_parse_object *acpi_ps_get_child(union acpi_parse_object *op)
 		break;
 
 	default:
+<<<<<<< HEAD
 		/* All others have no children */
+=======
+
+		/* All others have no children */
+
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 

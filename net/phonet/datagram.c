@@ -5,8 +5,13 @@
  *
  * Copyright (C) 2008 Nokia Corporation.
  *
+<<<<<<< HEAD
  * Contact: Remi Denis-Courmont <remi.denis-courmont@nokia.com>
  * Original author: Sakari Ailus <sakari.ailus@nokia.com>
+=======
+ * Authors: Sakari Ailus <sakari.ailus@nokia.com>
+ *          Rémi Denis-Courmont
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,9 +36,13 @@
 
 #include <linux/phonet.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/phonet/phonet.h>
 
 static int pn_backlog_rcv(struct sock *sk, struct sk_buff *skb);
@@ -142,9 +151,12 @@ static int pn_recvmsg(struct kiocb *iocb, struct sock *sk,
 			MSG_CMSG_COMPAT))
 		goto out_nofree;
 
+<<<<<<< HEAD
 	if (addr_len)
 		*addr_len = sizeof(sa);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	skb = skb_recv_datagram(sk, flags, noblock, &rval);
 	if (skb == NULL)
 		goto out_nofree;
@@ -165,8 +177,15 @@ static int pn_recvmsg(struct kiocb *iocb, struct sock *sk,
 
 	rval = (flags & MSG_TRUNC) ? skb->len : copylen;
 
+<<<<<<< HEAD
 	if (msg->msg_name != NULL)
 		memcpy(msg->msg_name, &sa, sizeof(struct sockaddr_pn));
+=======
+	if (msg->msg_name != NULL) {
+		memcpy(msg->msg_name, &sa, sizeof(sa));
+		*addr_len = sizeof(sa);
+	}
+>>>>>>> refs/remotes/origin/master
 
 out:
 	skb_free_datagram(sk, skb);

@@ -12,6 +12,7 @@
 
 #include <linux/init.h>
 #include <linux/smp.h>
+<<<<<<< HEAD
 #include <asm/page.h>
 #include <asm/smp_scu.h>
 #include <asm/hardware/gic.h>
@@ -19,6 +20,19 @@
 #include <mach/common.h>
 #include <mach/hardware.h>
 
+=======
+#include <asm/cacheflush.h>
+#include <asm/page.h>
+#include <asm/smp_scu.h>
+#include <asm/mach/map.h>
+
+#include "common.h"
+#include "hardware.h"
+
+#define SCU_STANDBY_ENABLE	(1 << 5)
+
+u32 g_diag_reg;
+>>>>>>> refs/remotes/origin/master
 static void __iomem *scu_base;
 
 static struct map_desc scu_io_desc __initdata = {
@@ -41,6 +55,7 @@ void __init imx_scu_map_io(void)
 	scu_base = IMX_IO_ADDRESS(base);
 }
 
+<<<<<<< HEAD
 void __cpuinit platform_secondary_init(unsigned int cpu)
 {
 	/*
@@ -52,6 +67,17 @@ void __cpuinit platform_secondary_init(unsigned int cpu)
 }
 
 int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
+=======
+void imx_scu_standby_enable(void)
+{
+	u32 val = readl_relaxed(scu_base);
+
+	val |= SCU_STANDBY_ENABLE;
+	writel_relaxed(val, scu_base);
+}
+
+static int imx_boot_secondary(unsigned int cpu, struct task_struct *idle)
+>>>>>>> refs/remotes/origin/master
 {
 	imx_set_cpu_jump(cpu, v7_secondary_startup);
 	imx_enable_cpu(cpu, true);
@@ -62,16 +88,25 @@ int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
  * Initialise the CPU possible map early - this describes the CPUs
  * which may be present or become present in the system.
  */
+<<<<<<< HEAD
 void __init smp_init_cpus(void)
+=======
+static void __init imx_smp_init_cpus(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, ncores;
 
 	ncores = scu_get_core_count(scu_base);
 
+<<<<<<< HEAD
 	for (i = 0; i < ncores; i++)
 		set_cpu_possible(i, true);
 
 	set_smp_cross_call(gic_raise_softirq);
+=======
+	for (i = ncores; i < NR_CPUS; i++)
+		set_cpu_possible(i, false);
+>>>>>>> refs/remotes/origin/master
 }
 
 void imx_smp_prepare(void)
@@ -79,7 +114,36 @@ void imx_smp_prepare(void)
 	scu_enable(scu_base);
 }
 
+<<<<<<< HEAD
 void __init platform_smp_prepare_cpus(unsigned int max_cpus)
 {
 	imx_smp_prepare();
 }
+=======
+static void __init imx_smp_prepare_cpus(unsigned int max_cpus)
+{
+	imx_smp_prepare();
+
+	/*
+	 * The diagnostic register holds the errata bits.  Mostly bootloader
+	 * does not bring up secondary cores, so that when errata bits are set
+	 * in bootloader, they are set only for boot cpu.  But on a SMP
+	 * configuration, it should be equally done on every single core.
+	 * Read the register from boot cpu here, and will replicate it into
+	 * secondary cores when booting them.
+	 */
+	asm("mrc p15, 0, %0, c15, c0, 1" : "=r" (g_diag_reg) : : "cc");
+	__cpuc_flush_dcache_area(&g_diag_reg, sizeof(g_diag_reg));
+	outer_clean_range(__pa(&g_diag_reg), __pa(&g_diag_reg + 1));
+}
+
+struct smp_operations  imx_smp_ops __initdata = {
+	.smp_init_cpus		= imx_smp_init_cpus,
+	.smp_prepare_cpus	= imx_smp_prepare_cpus,
+	.smp_boot_secondary	= imx_boot_secondary,
+#ifdef CONFIG_HOTPLUG_CPU
+	.cpu_die		= imx_cpu_die,
+	.cpu_kill		= imx_cpu_kill,
+#endif
+};
+>>>>>>> refs/remotes/origin/master

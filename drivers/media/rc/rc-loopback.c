@@ -102,16 +102,20 @@ static int loop_set_rx_carrier_range(struct rc_dev *dev, u32 min, u32 max)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int loop_tx_ir(struct rc_dev *dev, int *txbuf, u32 n)
 {
 	struct loopback_dev *lodev = dev->priv;
 	u32 rxmask;
 	unsigned count;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int loop_tx_ir(struct rc_dev *dev, unsigned *txbuf, unsigned count)
 {
 	struct loopback_dev *lodev = dev->priv;
 	u32 rxmask;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	unsigned total_duration = 0;
 	unsigned i;
@@ -134,6 +138,11 @@ static int loop_tx_ir(struct rc_dev *dev, unsigned *txbuf, unsigned count)
 		return -EINVAL;
 	}
 
+=======
+	unsigned i;
+	DEFINE_IR_RAW_EVENT(rawir);
+
+>>>>>>> refs/remotes/origin/master
 	if (lodev->txcarrier < lodev->rxcarriermin ||
 	    lodev->txcarrier > lodev->rxcarriermax) {
 		dprintk("ignoring tx, carrier out of range\n");
@@ -153,10 +162,14 @@ static int loop_tx_ir(struct rc_dev *dev, unsigned *txbuf, unsigned count)
 	for (i = 0; i < count; i++) {
 		rawir.pulse = i % 2 ? false : true;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rawir.duration = abs(txbuf[i]) * 1000;
 =======
 		rawir.duration = txbuf[i] * 1000;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rawir.duration = txbuf[i] * 1000;
+>>>>>>> refs/remotes/origin/master
 		if (rawir.duration)
 			ir_raw_event_store_with_filter(dev, &rawir);
 	}
@@ -169,6 +182,7 @@ static int loop_tx_ir(struct rc_dev *dev, unsigned *txbuf, unsigned count)
 	ir_raw_event_handle(dev);
 
 out:
+<<<<<<< HEAD
 	/* Lirc expects this function to take as long as the total duration */
 	set_current_state(TASK_INTERRUPTIBLE);
 	schedule_timeout(usecs_to_jiffies(total_duration));
@@ -177,6 +191,9 @@ out:
 =======
 	return count;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return count;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void loop_set_idle(struct rc_dev *dev, bool enable)
@@ -232,7 +249,11 @@ static int __init loop_init(void)
 	rc->map_name		= RC_MAP_EMPTY;
 	rc->priv		= &loopdev;
 	rc->driver_type		= RC_DRIVER_IR_RAW;
+<<<<<<< HEAD
 	rc->allowed_protos	= RC_TYPE_ALL;
+=======
+	rc->allowed_protos	= RC_BIT_ALL;
+>>>>>>> refs/remotes/origin/master
 	rc->timeout		= 100 * 1000 * 1000; /* 100 ms */
 	rc->min_timeout		= 1;
 	rc->max_timeout		= UINT_MAX;
@@ -246,7 +267,10 @@ static int __init loop_init(void)
 	rc->s_idle		= loop_set_idle;
 	rc->s_learning_mode	= loop_set_learning_mode;
 	rc->s_carrier_report	= loop_set_carrier_report;
+<<<<<<< HEAD
 	rc->priv		= &loopdev;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	loopdev.txmask		= RXMASK_REGULAR;
 	loopdev.txcarrier	= 36000;

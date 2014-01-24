@@ -89,7 +89,11 @@ static irqreturn_t button_irq(int irq, void *_priv)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit mc13783_pwrbutton_probe(struct platform_device *pdev)
+=======
+static int mc13783_pwrbutton_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct mc13xxx_buttons_platform_data *pdata;
 	struct mc13xxx *mc13783 = dev_get_drvdata(pdev->dev.parent);
@@ -230,7 +234,11 @@ free_input_dev:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit mc13783_pwrbutton_remove(struct platform_device *pdev)
+=======
+static int mc13783_pwrbutton_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mc13783_pwrb *priv = platform_get_drvdata(pdev);
 	const struct mc13xxx_buttons_platform_data *pdata;
@@ -250,14 +258,21 @@ static int __devexit mc13783_pwrbutton_remove(struct platform_device *pdev)
 
 	input_unregister_device(priv->pwr);
 	kfree(priv);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static struct platform_driver mc13783_pwrbutton_driver = {
 	.probe		= mc13783_pwrbutton_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(mc13783_pwrbutton_remove),
+=======
+	.remove		= mc13783_pwrbutton_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "mc13783-pwrbutton",
 		.owner	= THIS_MODULE,

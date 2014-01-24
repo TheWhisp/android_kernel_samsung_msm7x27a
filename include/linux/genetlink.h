@@ -1,6 +1,7 @@
 #ifndef __LINUX_GENERIC_NETLINK_H
 #define __LINUX_GENERIC_NETLINK_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/netlink.h>
 
@@ -81,13 +82,21 @@ enum {
 #define CTRL_ATTR_MCAST_GRP_MAX (__CTRL_ATTR_MCAST_GRP_MAX - 1)
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/genetlink.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /* All generic netlink requests are serialized by a global lock.  */
 extern void genl_lock(void);
 extern void genl_unlock(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_PROVE_LOCKING
+=======
+#ifdef CONFIG_LOCKDEP
+>>>>>>> refs/remotes/origin/master
 extern int lockdep_genl_is_held(void);
 #endif
 
@@ -111,8 +120,14 @@ extern int lockdep_genl_is_held(void);
  */
 #define genl_dereference(p)					\
 	rcu_dereference_protected(p, lockdep_genl_is_held())
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __KERNEL__ */
+=======
+
+#define MODULE_ALIAS_GENL_FAMILY(family)\
+ MODULE_ALIAS_NET_PF_PROTO_NAME(PF_NETLINK, NETLINK_GENERIC, "-family-" family)
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* __LINUX_GENERIC_NETLINK_H */

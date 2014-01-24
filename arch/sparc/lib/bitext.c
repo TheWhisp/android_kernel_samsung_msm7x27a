@@ -119,11 +119,15 @@ void bit_map_clear(struct bit_map *t, int offset, int len)
 
 void bit_map_init(struct bit_map *t, unsigned long *map, int size)
 {
+<<<<<<< HEAD
 
 	if ((size & 07) != 0)
 		BUG();
 	memset(map, 0, size>>3);
 
+=======
+	bitmap_zero(map, size);
+>>>>>>> refs/remotes/origin/master
 	memset(t, 0, sizeof *t);
 	spin_lock_init(&t->lock);
 	t->map = map;

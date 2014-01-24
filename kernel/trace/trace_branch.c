@@ -32,6 +32,10 @@ probe_likely_condition(struct ftrace_branch_data *f, int val, int expect)
 {
 	struct ftrace_event_call *call = &event_branch;
 	struct trace_array *tr = branch_tracer;
+<<<<<<< HEAD
+=======
+	struct trace_array_cpu *data;
+>>>>>>> refs/remotes/origin/master
 	struct ring_buffer_event *event;
 	struct trace_branch *entry;
 	struct ring_buffer *buffer;
@@ -51,11 +55,20 @@ probe_likely_condition(struct ftrace_branch_data *f, int val, int expect)
 
 	local_irq_save(flags);
 	cpu = raw_smp_processor_id();
+<<<<<<< HEAD
 	if (atomic_inc_return(&tr->data[cpu]->disabled) != 1)
 		goto out;
 
 	pc = preempt_count();
 	buffer = tr->buffer;
+=======
+	data = per_cpu_ptr(tr->trace_buffer.data, cpu);
+	if (atomic_inc_return(&data->disabled) != 1)
+		goto out;
+
+	pc = preempt_count();
+	buffer = tr->trace_buffer.buffer;
+>>>>>>> refs/remotes/origin/master
 	event = trace_buffer_lock_reserve(buffer, TRACE_BRANCH,
 					  sizeof(*entry), flags, pc);
 	if (!event)
@@ -76,11 +89,19 @@ probe_likely_condition(struct ftrace_branch_data *f, int val, int expect)
 	entry->line = f->line;
 	entry->correct = val == expect;
 
+<<<<<<< HEAD
 	if (!filter_check_discard(call, entry, buffer, event))
 		ring_buffer_unlock_commit(buffer, event);
 
  out:
 	atomic_dec(&tr->data[cpu]->disabled);
+=======
+	if (!call_filter_check_discard(call, entry, buffer, event))
+		__buffer_unlock_commit(buffer, event);
+
+ out:
+	atomic_dec(&data->disabled);
+>>>>>>> refs/remotes/origin/master
 	local_irq_restore(flags);
 }
 
@@ -199,7 +220,11 @@ __init static int init_branch_tracer(void)
 	}
 	return register_tracer(&branch_trace);
 }
+<<<<<<< HEAD
 device_initcall(init_branch_tracer);
+=======
+core_initcall(init_branch_tracer);
+>>>>>>> refs/remotes/origin/master
 
 #else
 static inline

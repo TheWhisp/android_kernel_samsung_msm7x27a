@@ -25,12 +25,17 @@
 
 #include <plat/regs-serial.h>
 #include <mach/regs-gpio.h>
+<<<<<<< HEAD
 #include <plat/regs-ac97.h>
 #include <plat/regs-dma.h>
 #include <mach/regs-mem.h>
 #include <mach/regs-lcd.h>
 #include <mach/regs-sdi.h>
 #include <plat/regs-iis.h>
+=======
+#include <plat/regs-dma.h>
+#include <mach/regs-lcd.h>
+>>>>>>> refs/remotes/origin/master
 #include <plat/regs-spi.h>
 
 #define MAP(x) { (x)| DMA_CH_VALID, (x)| DMA_CH_VALID, (x)| DMA_CH_VALID, (x)| DMA_CH_VALID }
@@ -39,16 +44,23 @@ static struct s3c24xx_dma_map __initdata s3c2412_dma_mappings[] = {
 	[DMACH_XD0] = {
 		.name		= "xdreq0",
 		.channels	= MAP(S3C2412_DMAREQSEL_XDREQ0),
+<<<<<<< HEAD
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_XDREQ0),
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	[DMACH_XD1] = {
 		.name		= "xdreq1",
 		.channels	= MAP(S3C2412_DMAREQSEL_XDREQ1),
+<<<<<<< HEAD
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_XDREQ1),
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	[DMACH_SDI] = {
 		.name		= "sdi",
 		.channels	= MAP(S3C2412_DMAREQSEL_SDI),
+<<<<<<< HEAD
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_SDI),
 	},
 	[DMACH_SPI0] = {
@@ -60,70 +72,125 @@ static struct s3c24xx_dma_map __initdata s3c2412_dma_mappings[] = {
 		.name		= "spi1",
 		.channels	= MAP(S3C2412_DMAREQSEL_SPI1TX),
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_SPI1RX),
+=======
+	},
+	[DMACH_SPI0_RX] = {
+		.name		= "spi0-rx",
+		.channels	= MAP(S3C2412_DMAREQSEL_SPI0RX),
+	},
+	[DMACH_SPI0_TX] = {
+		.name		= "spi0-tx",
+		.channels	= MAP(S3C2412_DMAREQSEL_SPI0TX),
+	},
+	[DMACH_SPI1_RX] = {
+		.name		= "spi1-rx",
+		.channels	= MAP(S3C2412_DMAREQSEL_SPI1RX),
+	},
+	[DMACH_SPI1_TX] = {
+		.name		= "spi1-tx",
+		.channels	= MAP(S3C2412_DMAREQSEL_SPI1TX),
+>>>>>>> refs/remotes/origin/master
 	},
 	[DMACH_UART0] = {
 		.name		= "uart0",
 		.channels	= MAP(S3C2412_DMAREQSEL_UART0_0),
+<<<<<<< HEAD
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_UART0_0),
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	[DMACH_UART1] = {
 		.name		= "uart1",
 		.channels	= MAP(S3C2412_DMAREQSEL_UART1_0),
+<<<<<<< HEAD
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_UART1_0),
+=======
+>>>>>>> refs/remotes/origin/master
 	},
       	[DMACH_UART2] = {
 		.name		= "uart2",
 		.channels	= MAP(S3C2412_DMAREQSEL_UART2_0),
+<<<<<<< HEAD
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_UART2_0),
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	[DMACH_UART0_SRC2] = {
 		.name		= "uart0",
 		.channels	= MAP(S3C2412_DMAREQSEL_UART0_1),
+<<<<<<< HEAD
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_UART0_1),
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	[DMACH_UART1_SRC2] = {
 		.name		= "uart1",
 		.channels	= MAP(S3C2412_DMAREQSEL_UART1_1),
+<<<<<<< HEAD
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_UART1_1),
+=======
+>>>>>>> refs/remotes/origin/master
 	},
       	[DMACH_UART2_SRC2] = {
 		.name		= "uart2",
 		.channels	= MAP(S3C2412_DMAREQSEL_UART2_1),
+<<<<<<< HEAD
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_UART2_1),
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	[DMACH_TIMER] = {
 		.name		= "timer",
 		.channels	= MAP(S3C2412_DMAREQSEL_TIMER),
+<<<<<<< HEAD
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_TIMER),
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	[DMACH_I2S_IN] = {
 		.name		= "i2s-sdi",
 		.channels	= MAP(S3C2412_DMAREQSEL_I2SRX),
+<<<<<<< HEAD
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_I2SRX),
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	[DMACH_I2S_OUT] = {
 		.name		= "i2s-sdo",
 		.channels	= MAP(S3C2412_DMAREQSEL_I2STX),
+<<<<<<< HEAD
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_I2STX),
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	[DMACH_USB_EP1] = {
 		.name		= "usb-ep1",
 		.channels	= MAP(S3C2412_DMAREQSEL_USBEP1),
+<<<<<<< HEAD
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_USBEP1),
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	[DMACH_USB_EP2] = {
 		.name		= "usb-ep2",
 		.channels	= MAP(S3C2412_DMAREQSEL_USBEP2),
+<<<<<<< HEAD
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_USBEP2),
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	[DMACH_USB_EP3] = {
 		.name		= "usb-ep3",
 		.channels	= MAP(S3C2412_DMAREQSEL_USBEP3),
+<<<<<<< HEAD
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_USBEP3),
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	[DMACH_USB_EP4] = {
 		.name		= "usb-ep4",
 		.channels	= MAP(S3C2412_DMAREQSEL_USBEP4),
+<<<<<<< HEAD
 		.channels_rx	= MAP(S3C2412_DMAREQSEL_USBEP4),
 	},
 };
@@ -149,11 +216,25 @@ static void s3c2412_dma_select(struct s3c2410_dma_chan *chan,
 			       struct s3c24xx_dma_map *map)
 {
 	s3c2412_dma_direction(chan, map, chan->source);
+=======
+	},
+};
+
+static void s3c2412_dma_select(struct s3c2410_dma_chan *chan,
+			       struct s3c24xx_dma_map *map)
+{
+	unsigned long chsel = map->channels[0] & (~DMA_CH_VALID);
+	writel(chsel | S3C2412_DMAREQSEL_HW,
+	       chan->regs + S3C2412_DMA_DMAREQSEL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct s3c24xx_dma_selection __initdata s3c2412_dma_sel = {
 	.select		= s3c2412_dma_select,
+<<<<<<< HEAD
 	.direction	= s3c2412_dma_direction,
+=======
+>>>>>>> refs/remotes/origin/master
 	.dcon_mask	= 0,
 	.map		= s3c2412_dma_mappings,
 	.map_size	= ARRAY_SIZE(s3c2412_dma_mappings),

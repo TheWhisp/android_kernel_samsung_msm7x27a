@@ -14,6 +14,12 @@
 struct pci_sysdata {
 	int		domain;		/* PCI domain */
 	int		node;		/* NUMA node */
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ACPI
+	struct acpi_device *companion;	/* ACPI companion device */
+#endif
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_64
 	void		*iommu;		/* IOMMU private data */
 #endif
@@ -97,6 +103,7 @@ static inline void early_quirks(void) { }
 extern void pci_iommu_alloc(void);
 
 #ifdef CONFIG_PCI_MSI
+<<<<<<< HEAD
 /* MSI arch specific hooks */
 static inline int x86_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 {
@@ -149,6 +156,18 @@ void default_restore_msi_irqs(struct pci_dev *dev, int irq);
 =======
 #define default_restore_msi_irqs	NULL
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* implemented in arch/x86/kernel/apic/io_apic. */
+struct msi_desc;
+int native_setup_msi_irqs(struct pci_dev *dev, int nvec, int type);
+void native_teardown_msi_irq(unsigned int irq);
+void native_restore_msi_irqs(struct pci_dev *dev, int irq);
+int setup_msi_irq(struct pci_dev *dev, struct msi_desc *msidesc,
+		  unsigned int irq_base, unsigned int irq_offset);
+#else
+#define native_setup_msi_irqs		NULL
+#define native_teardown_msi_irq		NULL
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define PCI_DMA_BUS_IS_PHYS (dma_ops->is_phys)
@@ -156,7 +175,11 @@ void default_restore_msi_irqs(struct pci_dev *dev, int irq);
 #endif  /* __KERNEL__ */
 
 #ifdef CONFIG_X86_64
+<<<<<<< HEAD
 #include "pci_64.h"
+=======
+#include <asm/pci_64.h>
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* implement the pci_ DMA API in terms of the generic device dma_ one */
@@ -186,4 +209,19 @@ cpumask_of_pcibus(const struct pci_bus *bus)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+struct pci_setup_rom {
+	struct setup_data data;
+	uint16_t vendor;
+	uint16_t devid;
+	uint64_t pcilen;
+	unsigned long segment;
+	unsigned long bus;
+	unsigned long device;
+	unsigned long function;
+	uint8_t romdata[0];
+};
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_PCI_H */

@@ -77,13 +77,20 @@
  */
 
 enum drbd_req_event {
+<<<<<<< HEAD
 	created,
 	to_be_send,
 	to_be_submitted,
+=======
+	CREATED,
+	TO_BE_SENT,
+	TO_BE_SUBMITTED,
+>>>>>>> refs/remotes/origin/master
 
 	/* XXX yes, now I am inconsistent...
 	 * these are not "events" but "actions"
 	 * oh, well... */
+<<<<<<< HEAD
 	queue_for_net_write,
 	queue_for_net_read,
 	queue_for_send_oos,
@@ -110,6 +117,44 @@ enum drbd_req_event {
 	fail_frozen_disk_io,
 	restart_frozen_disk_io,
 	nothing, /* for tracing only */
+=======
+	QUEUE_FOR_NET_WRITE,
+	QUEUE_FOR_NET_READ,
+	QUEUE_FOR_SEND_OOS,
+
+	/* An empty flush is queued as P_BARRIER,
+	 * which will cause it to complete "successfully",
+	 * even if the local disk flush failed.
+	 *
+	 * Just like "real" requests, empty flushes (blkdev_issue_flush()) will
+	 * only see an error if neither local nor remote data is reachable. */
+	QUEUE_AS_DRBD_BARRIER,
+
+	SEND_CANCELED,
+	SEND_FAILED,
+	HANDED_OVER_TO_NETWORK,
+	OOS_HANDED_TO_NETWORK,
+	CONNECTION_LOST_WHILE_PENDING,
+	READ_RETRY_REMOTE_CANCELED,
+	RECV_ACKED_BY_PEER,
+	WRITE_ACKED_BY_PEER,
+	WRITE_ACKED_BY_PEER_AND_SIS, /* and set_in_sync */
+	CONFLICT_RESOLVED,
+	POSTPONE_WRITE,
+	NEG_ACKED,
+	BARRIER_ACKED, /* in protocol A and B */
+	DATA_RECEIVED, /* (remote read) */
+
+	READ_COMPLETED_WITH_ERROR,
+	READ_AHEAD_COMPLETED_WITH_ERROR,
+	WRITE_COMPLETED_WITH_ERROR,
+	ABORT_DISK_IO,
+	COMPLETED_OK,
+	RESEND,
+	FAIL_FROZEN_DISK_IO,
+	RESTART_FROZEN_DISK_IO,
+	NOTHING,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* encoding of request states for now.  we don't actually need that many bits.
@@ -118,18 +163,35 @@ enum drbd_req_event {
  * same time, so we should hold the request lock anyways.
  */
 enum drbd_req_state_bits {
+<<<<<<< HEAD
 	/* 210
 	 * 000: no local possible
 	 * 001: to be submitted
 	 *    UNUSED, we could map: 011: submitted, completion still pending
 	 * 110: completed ok
 	 * 010: completed with error
+=======
+	/* 3210
+	 * 0000: no local possible
+	 * 0001: to be submitted
+	 *    UNUSED, we could map: 011: submitted, completion still pending
+	 * 0110: completed ok
+	 * 0010: completed with error
+	 * 1001: Aborted (before completion)
+	 * 1x10: Aborted and completed -> free
+>>>>>>> refs/remotes/origin/master
 	 */
 	__RQ_LOCAL_PENDING,
 	__RQ_LOCAL_COMPLETED,
 	__RQ_LOCAL_OK,
+<<<<<<< HEAD
 
 	/* 76543
+=======
+	__RQ_LOCAL_ABORTED,
+
+	/* 87654
+>>>>>>> refs/remotes/origin/master
 	 * 00000: no network possible
 	 * 00001: to be send
 	 * 00011: to be send, on worker queue
@@ -138,8 +200,13 @@ enum drbd_req_state_bits {
 	 *        recv_ack (B) or implicit "ack" (A),
 	 *        still waiting for the barrier ack.
 	 *        master_bio may already be completed and invalidated.
+<<<<<<< HEAD
 	 * 11100: write_acked (C),
 	 *        data_received (for remote read, any protocol)
+=======
+	 * 11100: write acked (C),
+	 *        data received (for remote read, any protocol)
+>>>>>>> refs/remotes/origin/master
 	 *        or finally the barrier ack has arrived (B,A)...
 	 *        request can be freed
 	 * 01100: neg-acked (write, protocol C)
@@ -194,13 +261,38 @@ enum drbd_req_state_bits {
 
 	/* Should call drbd_al_complete_io() for this request... */
 	__RQ_IN_ACT_LOG,
+<<<<<<< HEAD
+=======
+
+	/* The peer has sent a retry ACK */
+	__RQ_POSTPONED,
+
+	/* would have been completed,
+	 * but was not, because of drbd_suspended() */
+	__RQ_COMPLETION_SUSP,
+
+	/* We expect a receive ACK (wire proto B) */
+	__RQ_EXP_RECEIVE_ACK,
+
+	/* We expect a write ACK (wite proto C) */
+	__RQ_EXP_WRITE_ACK,
+
+	/* waiting for a barrier ack, did an extra kref_get */
+	__RQ_EXP_BARR_ACK,
+>>>>>>> refs/remotes/origin/master
 };
 
 #define RQ_LOCAL_PENDING   (1UL << __RQ_LOCAL_PENDING)
 #define RQ_LOCAL_COMPLETED (1UL << __RQ_LOCAL_COMPLETED)
 #define RQ_LOCAL_OK        (1UL << __RQ_LOCAL_OK)
+<<<<<<< HEAD
 
 #define RQ_LOCAL_MASK      ((RQ_LOCAL_OK << 1)-1) /* 0x07 */
+=======
+#define RQ_LOCAL_ABORTED   (1UL << __RQ_LOCAL_ABORTED)
+
+#define RQ_LOCAL_MASK      ((RQ_LOCAL_ABORTED << 1)-1)
+>>>>>>> refs/remotes/origin/master
 
 #define RQ_NET_PENDING     (1UL << __RQ_NET_PENDING)
 #define RQ_NET_QUEUED      (1UL << __RQ_NET_QUEUED)
@@ -214,6 +306,7 @@ enum drbd_req_state_bits {
 
 #define RQ_WRITE           (1UL << __RQ_WRITE)
 #define RQ_IN_ACT_LOG      (1UL << __RQ_IN_ACT_LOG)
+<<<<<<< HEAD
 
 /* For waking up the frozen transfer log mod_req() has to return if the request
    should be counted in the epoch object*/
@@ -264,6 +357,18 @@ static inline struct drbd_request *_ar_id_to_req(struct drbd_conf *mdev,
 	}
 	return NULL;
 }
+=======
+#define RQ_POSTPONED	   (1UL << __RQ_POSTPONED)
+#define RQ_COMPLETION_SUSP (1UL << __RQ_COMPLETION_SUSP)
+#define RQ_EXP_RECEIVE_ACK (1UL << __RQ_EXP_RECEIVE_ACK)
+#define RQ_EXP_WRITE_ACK   (1UL << __RQ_EXP_WRITE_ACK)
+#define RQ_EXP_BARR_ACK    (1UL << __RQ_EXP_BARR_ACK)
+
+/* For waking up the frozen transfer log mod_req() has to return if the request
+   should be counted in the epoch object*/
+#define MR_WRITE       1
+#define MR_READ        2
+>>>>>>> refs/remotes/origin/master
 
 static inline void drbd_req_make_private_bio(struct drbd_request *req, struct bio *bio_src)
 {
@@ -273,6 +378,7 @@ static inline void drbd_req_make_private_bio(struct drbd_request *req, struct bi
 	req->private_bio = bio;
 
 	bio->bi_private  = req;
+<<<<<<< HEAD
 	bio->bi_end_io   = drbd_endio_pri;
 	bio->bi_next     = NULL;
 }
@@ -308,6 +414,12 @@ static inline int overlaps(sector_t s1, int l1, sector_t s2, int l2)
 	return !((s1 + (l1>>9) <= s2) || (s1 >= s2 + (l2>>9)));
 }
 
+=======
+	bio->bi_end_io   = drbd_request_endio;
+	bio->bi_next     = NULL;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Short lived temporary struct on the stack.
  * We could squirrel the error to be returned into
  * bio->bi_size, or similar. But that would be too ugly. */
@@ -316,6 +428,11 @@ struct bio_and_error {
 	int error;
 };
 
+<<<<<<< HEAD
+=======
+extern void start_new_tl_epoch(struct drbd_tconn *tconn);
+extern void drbd_req_destroy(struct kref *kref);
+>>>>>>> refs/remotes/origin/master
 extern void _req_may_be_done(struct drbd_request *req,
 		struct bio_and_error *m);
 extern int __req_mod(struct drbd_request *req, enum drbd_req_event what,
@@ -323,13 +440,25 @@ extern int __req_mod(struct drbd_request *req, enum drbd_req_event what,
 extern void complete_master_bio(struct drbd_conf *mdev,
 		struct bio_and_error *m);
 extern void request_timer_fn(unsigned long data);
+<<<<<<< HEAD
 extern void tl_restart(struct drbd_conf *mdev, enum drbd_req_event what);
+=======
+extern void tl_restart(struct drbd_tconn *tconn, enum drbd_req_event what);
+extern void _tl_restart(struct drbd_tconn *tconn, enum drbd_req_event what);
+
+/* this is in drbd_main.c */
+extern void drbd_restart_request(struct drbd_request *req);
+>>>>>>> refs/remotes/origin/master
 
 /* use this if you don't want to deal with calling complete_master_bio()
  * outside the spinlock, e.g. when walking some list on cleanup. */
 static inline int _req_mod(struct drbd_request *req, enum drbd_req_event what)
 {
+<<<<<<< HEAD
 	struct drbd_conf *mdev = req->mdev;
+=======
+	struct drbd_conf *mdev = req->w.mdev;
+>>>>>>> refs/remotes/origin/master
 	struct bio_and_error m;
 	int rv;
 
@@ -349,6 +478,7 @@ static inline int req_mod(struct drbd_request *req,
 		enum drbd_req_event what)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 	struct drbd_conf *mdev = req->mdev;
 	struct bio_and_error m;
 	int rv;
@@ -356,6 +486,15 @@ static inline int req_mod(struct drbd_request *req,
 	spin_lock_irqsave(&mdev->req_lock, flags);
 	rv = __req_mod(req, what, &m);
 	spin_unlock_irqrestore(&mdev->req_lock, flags);
+=======
+	struct drbd_conf *mdev = req->w.mdev;
+	struct bio_and_error m;
+	int rv;
+
+	spin_lock_irqsave(&mdev->tconn->req_lock, flags);
+	rv = __req_mod(req, what, &m);
+	spin_unlock_irqrestore(&mdev->tconn->req_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	if (m.bio)
 		complete_master_bio(mdev, &m);
@@ -363,7 +502,11 @@ static inline int req_mod(struct drbd_request *req,
 	return rv;
 }
 
+<<<<<<< HEAD
 static inline bool drbd_should_do_remote(union drbd_state s)
+=======
+static inline bool drbd_should_do_remote(union drbd_dev_state s)
+>>>>>>> refs/remotes/origin/master
 {
 	return s.pdsk == D_UP_TO_DATE ||
 		(s.pdsk >= D_INCONSISTENT &&
@@ -373,7 +516,11 @@ static inline bool drbd_should_do_remote(union drbd_state s)
 	   That is equivalent since before 96 IO was frozen in the C_WF_BITMAP*
 	   states. */
 }
+<<<<<<< HEAD
 static inline bool drbd_should_send_oos(union drbd_state s)
+=======
+static inline bool drbd_should_send_out_of_sync(union drbd_dev_state s)
+>>>>>>> refs/remotes/origin/master
 {
 	return s.conn == C_AHEAD || s.conn == C_WF_BITMAP_S;
 	/* pdsk = D_INCONSISTENT as a consequence. Protocol 96 check not necessary

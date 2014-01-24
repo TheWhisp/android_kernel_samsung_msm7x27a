@@ -13,6 +13,10 @@
 #include <linux/serial_sci.h>
 #include <linux/uio_driver.h>
 #include <linux/sh_timer.h>
+<<<<<<< HEAD
+=======
+#include <linux/sh_intc.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/clock.h>
 
 /* Serial */
@@ -22,7 +26,11 @@ static struct plat_sci_port scif0_platform_data = {
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_CKE1,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type           = PORT_SCIF,
+<<<<<<< HEAD
 	.irqs           = { 80, 80, 80, 80 },
+=======
+	.irqs           = SCIx_IRQ_MUXED(evt2irq(0xc00)),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif0_device = {
@@ -39,7 +47,11 @@ static struct plat_sci_port scif1_platform_data = {
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_CKE1,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type           = PORT_SCIF,
+<<<<<<< HEAD
 	.irqs           = { 81, 81, 81, 81 },
+=======
+	.irqs           = SCIx_IRQ_MUXED(evt2irq(0xc20)),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif1_device = {
@@ -56,7 +68,11 @@ static struct plat_sci_port scif2_platform_data = {
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_CKE1,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type           = PORT_SCIF,
+<<<<<<< HEAD
 	.irqs           = { 82, 82, 82, 82 },
+=======
+	.irqs           = SCIx_IRQ_MUXED(evt2irq(0xc40)),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif2_device = {
@@ -73,7 +89,11 @@ static struct plat_sci_port scif3_platform_data = {
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_CKE1,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type           = PORT_SCIF,
+<<<<<<< HEAD
 	.irqs           = { 83, 83, 83, 83 },
+=======
+	.irqs           = SCIx_IRQ_MUXED(evt2irq(0xc60)),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif3_device = {
@@ -92,8 +112,13 @@ static struct resource iic0_resources[] = {
 		.flags  = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = 96,
 		.end    = 99,
+=======
+		.start  = evt2irq(0xe00),
+		.end    = evt2irq(0xe60),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
        },
 };
@@ -113,8 +138,13 @@ static struct resource iic1_resources[] = {
 		.flags  = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = 44,
 		.end    = 47,
+=======
+		.start  = evt2irq(0x780),
+		.end    = evt2irq(0x7e0),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
        },
 };
@@ -129,7 +159,11 @@ static struct platform_device iic1_device = {
 static struct uio_info vpu_platform_data = {
 	.name = "VPU4",
 	.version = "0",
+<<<<<<< HEAD
 	.irq = 60,
+=======
+	.irq = evt2irq(0x980),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource vpu_resources[] = {
@@ -157,7 +191,11 @@ static struct platform_device vpu_device = {
 static struct uio_info veu_platform_data = {
 	.name = "VEU",
 	.version = "0",
+<<<<<<< HEAD
 	.irq = 54,
+=======
+	.irq = evt2irq(0x8c0),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource veu_resources[] = {
@@ -185,7 +223,11 @@ static struct platform_device veu_device = {
 static struct uio_info jpu_platform_data = {
 	.name = "JPU",
 	.version = "0",
+<<<<<<< HEAD
 	.irq = 27,
+=======
+	.irq = evt2irq(0x560),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource jpu_resources[] = {
@@ -224,7 +266,11 @@ static struct resource cmt_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 104,
+=======
+		.start	= evt2irq(0xf00),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -252,7 +298,11 @@ static struct resource tmu0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 16,
+=======
+		.start	= evt2irq(0x400),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -280,7 +330,11 @@ static struct resource tmu1_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 17,
+=======
+		.start	= evt2irq(0x420),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -307,7 +361,11 @@ static struct resource tmu2_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 18,
+=======
+		.start	= evt2irq(0x440),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };

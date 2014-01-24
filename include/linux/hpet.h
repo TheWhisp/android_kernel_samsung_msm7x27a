@@ -1,9 +1,14 @@
 #ifndef	__HPET__
 #define	__HPET__ 1
 
+<<<<<<< HEAD
 #include <linux/compiler.h>
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/hpet.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Offsets into HPET Registers
@@ -108,6 +113,7 @@ static inline void hpet_reserve_timer(struct hpet_data *hd, int timer)
 
 int hpet_alloc(struct hpet_data *);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 struct hpet_info {
@@ -128,4 +134,6 @@ struct hpet_info {
 
 #define MAX_HPET_TBS	8		/* maximum hpet timer blocks */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif				/* !__HPET__ */

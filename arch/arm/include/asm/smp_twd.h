@@ -19,6 +19,7 @@
 #define TWD_TIMER_CONTROL_IT_ENABLE	(1 << 2)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct clock_event_device;
 
 extern void __iomem *twd_base;
@@ -26,6 +27,8 @@ extern void __iomem *twd_base;
 void twd_timer_setup(struct clock_event_device *);
 void twd_timer_stop(struct clock_event_device *);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioport.h>
 
 struct twd_local_timer {
@@ -42,6 +45,7 @@ struct twd_local_timer name __initdata = {	\
 
 int twd_local_timer_register(struct twd_local_timer *);
 
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_ARM_TWD
 void twd_local_timer_of_register(void);
 #else
@@ -51,4 +55,6 @@ static inline void twd_local_timer_of_register(void)
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

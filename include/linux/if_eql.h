@@ -15,6 +15,7 @@
  *    McLean VA 22101
  *    Phone: 1-703-847-0040 ext 103
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_IF_EQL_H
 #define _LINUX_IF_EQL_H
@@ -41,6 +42,15 @@
 
 #include <linux/timer.h>
 #include <linux/spinlock.h>
+=======
+#ifndef _LINUX_IF_EQL_H
+#define _LINUX_IF_EQL_H
+
+
+#include <linux/timer.h>
+#include <linux/spinlock.h>
+#include <uapi/linux/if_eql.h>
+>>>>>>> refs/remotes/origin/master
 
 typedef struct slave {
 	struct list_head	list;
@@ -65,6 +75,7 @@ typedef struct equalizer {
 	struct timer_list	timer;
 } equalizer_t;  
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 typedef struct master_config {
@@ -84,4 +95,6 @@ typedef struct slaving_request {
 } slaving_request_t;
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_EQL_H */

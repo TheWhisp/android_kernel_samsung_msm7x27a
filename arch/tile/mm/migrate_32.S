@@ -40,8 +40,12 @@
 #define FRAME_R32	16
 #define FRAME_R33	20
 #define FRAME_R34	24
+<<<<<<< HEAD
 #define FRAME_R35	28
 #define FRAME_SIZE	32
+=======
+#define FRAME_SIZE	28
+>>>>>>> refs/remotes/origin/master
 
 
 
@@ -66,12 +70,20 @@
 #define r_my_cpumask	r5
 
 /* Locals (callee-save); must not be more than FRAME_xxx above. */
+<<<<<<< HEAD
 #define r_save_ics	r30
 #define r_context_lo	r31
 #define r_context_hi	r32
 #define r_access_lo	r33
 #define r_access_hi	r34
 #define r_asid		r35
+=======
+#define r_context_lo	r30
+#define r_context_hi	r31
+#define r_access_lo	r32
+#define r_access_hi	r33
+#define r_asid		r34
+>>>>>>> refs/remotes/origin/master
 
 STD_ENTRY(flush_and_install_context)
 	/*
@@ -104,11 +116,15 @@ STD_ENTRY(flush_and_install_context)
 	 sw r_tmp, r33
 	 addi r_tmp, sp, FRAME_R34
 	}
+<<<<<<< HEAD
 	{
 	 sw r_tmp, r34
 	 addi r_tmp, sp, FRAME_R35
 	}
 	sw r_tmp, r35
+=======
+	sw r_tmp, r34
+>>>>>>> refs/remotes/origin/master
 
 	/* Move some arguments to callee-save registers. */
 	{
@@ -121,6 +137,7 @@ STD_ENTRY(flush_and_install_context)
 	}
 	move r_asid, r_asid_in
 
+<<<<<<< HEAD
 	/* Disable interrupts, since we can't use our stack. */
 	{
 	 mfspr r_save_ics, INTERRUPT_CRITICAL_SECTION
@@ -128,6 +145,8 @@ STD_ENTRY(flush_and_install_context)
 	}
 	mtspr INTERRUPT_CRITICAL_SECTION, r_tmp
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* First, flush our L2 cache. */
 	{
 	 move r0, zero  /* cache_pa */
@@ -149,7 +168,11 @@ STD_ENTRY(flush_and_install_context)
 	 move r8, zero  /* asids */
 	 move r9, zero  /* asidcount */
 	}
+<<<<<<< HEAD
 	jal hv_flush_remote
+=======
+	jal _hv_flush_remote
+>>>>>>> refs/remotes/origin/master
 	bnz r0, .Ldone
 
 	/* Now install the new page table. */
@@ -163,9 +186,15 @@ STD_ENTRY(flush_and_install_context)
 	}
 	{
 	 move r4, r_asid
+<<<<<<< HEAD
 	 movei r5, HV_CTX_DIRECTIO
 	}
 	jal hv_install_context
+=======
+	 moveli r5, HV_CTX_DIRECTIO | CTX_PAGE_FLAG
+	}
+	jal _hv_install_context
+>>>>>>> refs/remotes/origin/master
 	bnz r0, .Ldone
 
 	/* Finally, flush the TLB. */
@@ -175,9 +204,12 @@ STD_ENTRY(flush_and_install_context)
 	}
 
 .Ldone:
+<<<<<<< HEAD
 	/* Reset interrupts back how they were before. */
 	mtspr INTERRUPT_CRITICAL_SECTION, r_save_ics
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Restore the callee-saved registers and return. */
 	addli lr, sp, FRAME_SIZE
 	{
@@ -202,10 +234,13 @@ STD_ENTRY(flush_and_install_context)
 	}
 	{
 	 lw r34, r_tmp
+<<<<<<< HEAD
 	 addli r_tmp, sp, FRAME_R35
 	}
 	{
 	 lw r35, r_tmp
+=======
+>>>>>>> refs/remotes/origin/master
 	 addi sp, sp, FRAME_SIZE
 	}
 	jrp lr

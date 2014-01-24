@@ -16,9 +16,12 @@
 #include <linux/module.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mmu_context.h>
 #include <asm/uaccess.h>
 #include <asm/io.h>
@@ -62,10 +65,14 @@ int register_trapped_io(struct trapped_io *tiop)
 	for (k = 0; k < tiop->num_resources; k++) {
 		res = tiop->resource + k;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		len += roundup((res->end - res->start) + 1, PAGE_SIZE);
 =======
 		len += roundup(resource_size(res), PAGE_SIZE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		len += roundup(resource_size(res), PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 		flags |= res->flags;
 	}
 
@@ -93,10 +100,14 @@ int register_trapped_io(struct trapped_io *tiop)
 		       res->flags & IORESOURCE_IO ? "io" : "mmio",
 		       (unsigned long)res->start);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		len += roundup((res->end - res->start) + 1, PAGE_SIZE);
 =======
 		len += roundup(resource_size(res), PAGE_SIZE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		len += roundup(resource_size(res), PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	tiop->magic = IO_TRAPPED_MAGIC;
@@ -140,10 +151,14 @@ void __iomem *match_trapped_io_handler(struct list_head *list,
 			}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			len = (res->end - res->start) + 1;
 =======
 			len = resource_size(res);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			len = resource_size(res);
+>>>>>>> refs/remotes/origin/master
 			voffs += roundup(len, PAGE_SIZE);
 		}
 	}
@@ -189,10 +204,14 @@ static unsigned long lookup_address(struct trapped_io *tiop,
 	for (k = 0; k < tiop->num_resources; k++) {
 		res = tiop->resource + k;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		len = roundup((res->end - res->start) + 1, PAGE_SIZE);
 =======
 		len = roundup(resource_size(res), PAGE_SIZE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		len = roundup(resource_size(res), PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 		if (address < (vaddr + len))
 			return res->start + (address - vaddr);
 		vaddr += len;

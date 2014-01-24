@@ -17,12 +17,24 @@
 #include <asm/memory.h>
 #include <asm/domain.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/unified.h>
 =======
 #include <asm/unified.h>
 #include <asm/compiler.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/unified.h>
+#include <asm/compiler.h>
+
+#if __LINUX_ARM_ARCH__ < 6
+#include <asm-generic/uaccess-unaligned.h>
+#else
+#define __get_user_unaligned __get_user
+#define __put_user_unaligned __put_user
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #define VERIFY_READ 0
 #define VERIFY_WRITE 1
@@ -107,6 +119,7 @@ extern int __get_user_2(void *);
 extern int __get_user_4(void *);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define __get_user_x(__r2,__p,__e,__s,__i...)				\
 	   __asm__ __volatile__ (					\
 		__asmeq("%0", "r0") __asmeq("%1", "r2")			\
@@ -130,6 +143,8 @@ extern int __get_user_4(void *);
 		case 4:							\
 	       		__get_user_x(__r2, __p, __e, 4, "lr");		\
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define __GUP_CLOBBER_1	"lr", "cc"
 #ifdef CONFIG_CPU_USE_DOMAINS
 #define __GUP_CLOBBER_2	"ip", "lr", "cc"
@@ -147,7 +162,11 @@ extern int __get_user_4(void *);
 		: "0" (__p), "r" (__l)					\
 		: __GUP_CLOBBER_##__s)
 
+<<<<<<< HEAD
 #define get_user(x,p)							\
+=======
+#define __get_user_check(x,p)							\
+>>>>>>> refs/remotes/origin/master
 	({								\
 		unsigned long __limit = current_thread_info()->addr_limit - 1; \
 		register const typeof(*(p)) __user *__p asm("r0") = (p);\
@@ -163,7 +182,10 @@ extern int __get_user_4(void *);
 			break;						\
 		case 4:							\
 			__get_user_x(__r2, __p, __e, __l, 4);		\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;						\
 		default: __e = __get_user_bad(); break;			\
 		}							\
@@ -171,11 +193,21 @@ extern int __get_user_4(void *);
 		__e;							\
 	})
 
+<<<<<<< HEAD
+=======
+#define get_user(x,p)							\
+	({								\
+		might_fault();						\
+		__get_user_check(x,p);					\
+	 })
+
+>>>>>>> refs/remotes/origin/master
 extern int __put_user_1(void *, unsigned int);
 extern int __put_user_2(void *, unsigned int);
 extern int __put_user_4(void *, unsigned int);
 extern int __put_user_8(void *, unsigned long long);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define __put_user_x(__r2,__p,__e,__s)					\
 	   __asm__ __volatile__ (					\
@@ -184,6 +216,8 @@ extern int __put_user_8(void *, unsigned long long);
 		: "=&r" (__e)						\
 		: "0" (__p), "r" (__r2)					\
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define __put_user_x(__r2,__p,__e,__l,__s)				\
 	   __asm__ __volatile__ (					\
 		__asmeq("%0", "r0") __asmeq("%2", "r2")			\
@@ -191,6 +225,7 @@ extern int __put_user_8(void *, unsigned long long);
 		"bl	__put_user_" #__s				\
 		: "=&r" (__e)						\
 		: "0" (__p), "r" (__r2), "r" (__l)			\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		: "ip", "lr", "cc")
 
@@ -213,6 +248,12 @@ extern int __put_user_8(void *, unsigned long long);
 		case 8:							\
 			__put_user_x(__r2, __p, __e, 8);		\
 =======
+=======
+		: "ip", "lr", "cc")
+
+#define __put_user_check(x,p)							\
+	({								\
+>>>>>>> refs/remotes/origin/master
 		unsigned long __limit = current_thread_info()->addr_limit - 1; \
 		register const typeof(*(p)) __r2 asm("r2") = (x);	\
 		register const typeof(*(p)) __user *__p asm("r0") = (p);\
@@ -230,13 +271,25 @@ extern int __put_user_8(void *, unsigned long long);
 			break;						\
 		case 8:							\
 			__put_user_x(__r2, __p, __e, __l, 8);		\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;						\
 		default: __e = __put_user_bad(); break;			\
 		}							\
 		__e;							\
 	})
 
+<<<<<<< HEAD
+=======
+#define put_user(x,p)							\
+	({								\
+		might_fault();						\
+		__put_user_check(x,p);					\
+	 })
+
+>>>>>>> refs/remotes/origin/master
 #else /* CONFIG_MMU */
 
 /*
@@ -245,8 +298,13 @@ extern int __put_user_8(void *, unsigned long long);
 #define USER_DS			KERNEL_DS
 
 #define segment_eq(a,b)		(1)
+<<<<<<< HEAD
 #define __addr_ok(addr)		(1)
 #define __range_ok(addr,size)	(0)
+=======
+#define __addr_ok(addr)		((void)(addr),1)
+#define __range_ok(addr,size)	((void)(addr),0)
+>>>>>>> refs/remotes/origin/master
 #define get_fs()		(KERNEL_DS)
 
 static inline void set_fs(mm_segment_t fs)
@@ -260,6 +318,12 @@ static inline void set_fs(mm_segment_t fs)
 
 #define access_ok(type,addr,size)	(__range_ok(addr,size) == 0)
 
+<<<<<<< HEAD
+=======
+#define user_addr_max() \
+	(segment_eq(get_fs(), USER_DS) ? TASK_SIZE : ~0UL)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The "__xxx" versions of the user access functions do not verify the
  * address space - it must have been done previously with a separate
@@ -287,6 +351,10 @@ do {									\
 	unsigned long __gu_addr = (unsigned long)(ptr);			\
 	unsigned long __gu_val;						\
 	__chk_user_ptr(ptr);						\
+<<<<<<< HEAD
+=======
+	might_fault();							\
+>>>>>>> refs/remotes/origin/master
 	switch (sizeof(*(ptr))) {					\
 	case 1:	__get_user_asm_byte(__gu_val,__gu_addr,err);	break;	\
 	case 2:	__get_user_asm_half(__gu_val,__gu_addr,err);	break;	\
@@ -299,10 +367,14 @@ do {									\
 #define __get_user_asm_byte(x,addr,err)				\
 	__asm__ __volatile__(					\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	"1:	" T(ldrb) "	%1,[%2],#0\n"			\
 =======
 	"1:	" TUSER(ldrb) "	%1,[%2],#0\n"			\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"1:	" TUSER(ldrb) "	%1,[%2],#0\n"			\
+>>>>>>> refs/remotes/origin/master
 	"2:\n"							\
 	"	.pushsection .fixup,\"ax\"\n"			\
 	"	.align	2\n"					\
@@ -339,10 +411,14 @@ do {									\
 #define __get_user_asm_word(x,addr,err)				\
 	__asm__ __volatile__(					\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	"1:	" T(ldr) "	%1,[%2],#0\n"			\
 =======
 	"1:	" TUSER(ldr) "	%1,[%2],#0\n"			\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"1:	" TUSER(ldr) "	%1,[%2],#0\n"			\
+>>>>>>> refs/remotes/origin/master
 	"2:\n"							\
 	"	.pushsection .fixup,\"ax\"\n"			\
 	"	.align	2\n"					\
@@ -376,6 +452,10 @@ do {									\
 	unsigned long __pu_addr = (unsigned long)(ptr);			\
 	__typeof__(*(ptr)) __pu_val = (x);				\
 	__chk_user_ptr(ptr);						\
+<<<<<<< HEAD
+=======
+	might_fault();							\
+>>>>>>> refs/remotes/origin/master
 	switch (sizeof(*(ptr))) {					\
 	case 1: __put_user_asm_byte(__pu_val,__pu_addr,err);	break;	\
 	case 2: __put_user_asm_half(__pu_val,__pu_addr,err);	break;	\
@@ -388,10 +468,14 @@ do {									\
 #define __put_user_asm_byte(x,__pu_addr,err)			\
 	__asm__ __volatile__(					\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	"1:	" T(strb) "	%1,[%2],#0\n"			\
 =======
 	"1:	" TUSER(strb) "	%1,[%2],#0\n"			\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"1:	" TUSER(strb) "	%1,[%2],#0\n"			\
+>>>>>>> refs/remotes/origin/master
 	"2:\n"							\
 	"	.pushsection .fixup,\"ax\"\n"			\
 	"	.align	2\n"					\
@@ -425,10 +509,14 @@ do {									\
 #define __put_user_asm_word(x,__pu_addr,err)			\
 	__asm__ __volatile__(					\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	"1:	" T(str) "	%1,[%2],#0\n"			\
 =======
 	"1:	" TUSER(str) "	%1,[%2],#0\n"			\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"1:	" TUSER(str) "	%1,[%2],#0\n"			\
+>>>>>>> refs/remotes/origin/master
 	"2:\n"							\
 	"	.pushsection .fixup,\"ax\"\n"			\
 	"	.align	2\n"					\
@@ -454,16 +542,22 @@ do {									\
 #define __put_user_asm_dword(x,__pu_addr,err)			\
 	__asm__ __volatile__(					\
 <<<<<<< HEAD
+<<<<<<< HEAD
  ARM(	"1:	" T(str) "	" __reg_oper1 ", [%1], #4\n"	)	\
  ARM(	"2:	" T(str) "	" __reg_oper0 ", [%1]\n"	)	\
  THUMB(	"1:	" T(str) "	" __reg_oper1 ", [%1]\n"	)	\
  THUMB(	"2:	" T(str) "	" __reg_oper0 ", [%1, #4]\n"	)	\
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  ARM(	"1:	" TUSER(str) "	" __reg_oper1 ", [%1], #4\n"	) \
  ARM(	"2:	" TUSER(str) "	" __reg_oper0 ", [%1]\n"	) \
  THUMB(	"1:	" TUSER(str) "	" __reg_oper1 ", [%1]\n"	) \
  THUMB(	"2:	" TUSER(str) "	" __reg_oper0 ", [%1, #4]\n"	) \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	"3:\n"							\
 	"	.pushsection .fixup,\"ax\"\n"			\
 	"	.align	2\n"					\
@@ -492,9 +586,12 @@ extern unsigned long __must_check __clear_user_std(void __user *addr, unsigned l
 #define __clear_user(addr,n)		(memset((void __force *)addr, 0, n), 0)
 #endif
 
+<<<<<<< HEAD
 extern unsigned long __must_check __strncpy_from_user(char *to, const char __user *from, unsigned long count);
 extern unsigned long __must_check __strnlen_user(const char __user *s, long n);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline unsigned long __must_check copy_from_user(void *to, const void __user *from, unsigned long n)
 {
 	if (access_ok(VERIFY_READ, from, n))
@@ -521,6 +618,7 @@ static inline unsigned long __must_check clear_user(void __user *to, unsigned lo
 	return n;
 }
 
+<<<<<<< HEAD
 static inline long __must_check strncpy_from_user(char *dst, const char __user *src, long count)
 {
 	long res = -EFAULT;
@@ -540,5 +638,11 @@ static inline long __must_check strnlen_user(const char __user *s, long n)
 
 	return res;
 }
+=======
+extern long strncpy_from_user(char *dest, const char __user *src, long count);
+
+extern __must_check long strlen_user(const char __user *str);
+extern __must_check long strnlen_user(const char __user *str, long n);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASMARM_UACCESS_H */

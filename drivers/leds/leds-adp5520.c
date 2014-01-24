@@ -5,10 +5,17 @@
  *
  * Loosely derived from leds-da903x:
  * Copyright (C) 2008 Compulab, Ltd.
+<<<<<<< HEAD
  * 	Mike Rapoport <mike@compulab.co.il>
  *
  * Copyright (C) 2006-2008 Marvell International Ltd.
  * 	Eric Miao <eric.miao@marvell.com>
+=======
+ *	Mike Rapoport <mike@compulab.co.il>
+ *
+ * Copyright (C) 2006-2008 Marvell International Ltd.
+ *	Eric Miao <eric.miao@marvell.com>
+>>>>>>> refs/remotes/origin/master
  *
  * Licensed under the GPL-2 or later.
  */
@@ -85,9 +92,15 @@ static int adp5520_led_setup(struct adp5520_led *led)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit adp5520_led_prepare(struct platform_device *pdev)
 {
 	struct adp5520_leds_platform_data *pdata = pdev->dev.platform_data;
+=======
+static int adp5520_led_prepare(struct platform_device *pdev)
+{
+	struct adp5520_leds_platform_data *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct device *dev = pdev->dev.parent;
 	int ret = 0;
 
@@ -101,9 +114,15 @@ static int __devinit adp5520_led_prepare(struct platform_device *pdev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit adp5520_led_probe(struct platform_device *pdev)
 {
 	struct adp5520_leds_platform_data *pdata = pdev->dev.platform_data;
+=======
+static int adp5520_led_probe(struct platform_device *pdev)
+{
+	struct adp5520_leds_platform_data *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct adp5520_led *led, *led_dat;
 	struct led_info *cur_led;
 	int ret, i;
@@ -119,7 +138,12 @@ static int __devinit adp5520_led_probe(struct platform_device *pdev)
 		return -EFAULT;
 	}
 
+<<<<<<< HEAD
 	led = kzalloc(sizeof(*led) * pdata->num_leds, GFP_KERNEL);
+=======
+	led = devm_kzalloc(&pdev->dev, sizeof(*led) * pdata->num_leds,
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (led == NULL) {
 		dev_err(&pdev->dev, "failed to alloc memory\n");
 		return -ENOMEM;
@@ -129,7 +153,11 @@ static int __devinit adp5520_led_probe(struct platform_device *pdev)
 
 	if (ret) {
 		dev_err(&pdev->dev, "failed to write\n");
+<<<<<<< HEAD
 		goto err_free;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (i = 0; i < pdata->num_leds; ++i) {
@@ -179,6 +207,7 @@ err:
 		}
 	}
 
+<<<<<<< HEAD
 err_free:
 	kfree(led);
 	return ret;
@@ -187,6 +216,14 @@ err_free:
 static int __devexit adp5520_led_remove(struct platform_device *pdev)
 {
 	struct adp5520_leds_platform_data *pdata = pdev->dev.platform_data;
+=======
+	return ret;
+}
+
+static int adp5520_led_remove(struct platform_device *pdev)
+{
+	struct adp5520_leds_platform_data *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct adp5520_led *led;
 	int i;
 
@@ -200,7 +237,10 @@ static int __devexit adp5520_led_remove(struct platform_device *pdev)
 		cancel_work_sync(&led[i].work);
 	}
 
+<<<<<<< HEAD
 	kfree(led);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -210,6 +250,7 @@ static struct platform_driver adp5520_led_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= adp5520_led_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(adp5520_led_remove),
 };
 
@@ -228,6 +269,12 @@ module_exit(adp5520_led_exit);
 =======
 module_platform_driver(adp5520_led_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= adp5520_led_remove,
+};
+
+module_platform_driver(adp5520_led_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("LEDS ADP5520(01) Driver");

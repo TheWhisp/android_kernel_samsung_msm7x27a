@@ -7,6 +7,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/map.h>
 
@@ -33,12 +34,19 @@ void omap1_set_vpp(struct platform_device *pdev, int enable)
 		}
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/map.h>
 
+<<<<<<< HEAD
 #include <plat/tc.h>
 #include <plat/flash.h>
+=======
+#include <mach/tc.h>
+#include <mach/flash.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/hardware.h>
 
@@ -52,5 +60,8 @@ void omap1_set_vpp(struct platform_device *pdev, int enable)
 	else
 		l &= ~OMAP_EMIFS_CONFIG_WP;
 	omap_writel(l, EMIFS_CONFIG);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

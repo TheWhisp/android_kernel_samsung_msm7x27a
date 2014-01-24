@@ -55,12 +55,18 @@
 #define AT91SAM9X5_BASE_USART2	0xf8024000
 
 /*
+<<<<<<< HEAD
  * Base addresses for early serial code (uncompress.h)
  */
 #define AT91_DBGU	AT91_BASE_DBGU0
 #define AT91_USART0	AT91SAM9X5_BASE_USART0
 #define AT91_USART1	AT91SAM9X5_BASE_USART1
 #define AT91_USART2	AT91SAM9X5_BASE_USART2
+=======
+ * System Peripherals
+ */
+#define AT91SAM9X5_BASE_RTC	0xfffffeb0
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Internal Memory.

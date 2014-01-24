@@ -1846,11 +1846,19 @@ struct vxge_hw_vpath_attr {
 	struct vxge_hw_fifo_attr	fifo_attr;
 };
 
+<<<<<<< HEAD
 enum vxge_hw_status __devinit vxge_hw_device_hw_info_get(
 	void __iomem *bar0,
 	struct vxge_hw_device_hw_info *hw_info);
 
 enum vxge_hw_status __devinit vxge_hw_device_config_default_get(
+=======
+enum vxge_hw_status vxge_hw_device_hw_info_get(
+	void __iomem *bar0,
+	struct vxge_hw_device_hw_info *hw_info);
+
+enum vxge_hw_status vxge_hw_device_config_default_get(
+>>>>>>> refs/remotes/origin/master
 	struct vxge_hw_device_config *device_config);
 
 /**
@@ -1877,7 +1885,11 @@ u16 vxge_hw_device_link_width_get(struct __vxge_hw_device *devh);
 const u8 *
 vxge_hw_device_product_name_get(struct __vxge_hw_device *devh);
 
+<<<<<<< HEAD
 enum vxge_hw_status __devinit vxge_hw_device_initialize(
+=======
+enum vxge_hw_status vxge_hw_device_initialize(
+>>>>>>> refs/remotes/origin/master
 	struct __vxge_hw_device **devh,
 	struct vxge_hw_device_attr *attr,
 	struct vxge_hw_device_config *device_config);
@@ -1922,7 +1934,11 @@ realloc:
 		/* misaligned, free current one and try allocating
 		 * size + VXGE_CACHE_LINE_SIZE memory
 		 */
+<<<<<<< HEAD
 		kfree((void *) vaddr);
+=======
+		kfree(vaddr);
+>>>>>>> refs/remotes/origin/master
 		size += VXGE_CACHE_LINE_SIZE;
 		realloc_flag = 1;
 		goto realloc;

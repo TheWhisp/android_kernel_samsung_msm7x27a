@@ -4,7 +4,11 @@
  * Arasan Compact Flash host controller source file
  *
  * Copyright (C) 2011 ST Microelectronics
+<<<<<<< HEAD
  * Viresh Kumar <viresh.kumar@st.com>
+=======
+ * Viresh Kumar <viresh.linux@gmail.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This file is licensed under the terms of the GNU General Public
  * License version 2. This program is licensed "as is" without any
@@ -31,6 +35,10 @@
 #include <linux/kernel.h>
 #include <linux/libata.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pata_arasan_cf_data.h>
 #include <linux/platform_device.h>
 #include <linux/pm.h>
@@ -184,10 +192,15 @@
 struct arasan_cf_dev {
 	/* pointer to ata_host structure */
 	struct ata_host *host;
+<<<<<<< HEAD
 	/* clk structure, only if HAVE_CLK is defined */
 #ifdef CONFIG_HAVE_CLK
 	struct clk *clk;
 #endif
+=======
+	/* clk structure */
+	struct clk *clk;
+>>>>>>> refs/remotes/origin/master
 
 	/* physical base address of controller */
 	dma_addr_t pbase;
@@ -210,8 +223,11 @@ struct arasan_cf_dev {
 	struct dma_chan *dma_chan;
 	/* Mask for DMA transfers */
 	dma_cap_mask_t mask;
+<<<<<<< HEAD
 	/* dma channel private data */
 	void *dma_priv;
+=======
+>>>>>>> refs/remotes/origin/master
 	/* DMA transfer work */
 	struct work_struct work;
 	/* DMA delayed finish work */
@@ -309,21 +325,48 @@ static void cf_card_detect(struct arasan_cf_dev *acdev, bool hotplugged)
 static int cf_init(struct arasan_cf_dev *acdev)
 {
 	struct arasan_cf_pdata *pdata = dev_get_platdata(acdev->host->dev);
+<<<<<<< HEAD
 	unsigned long flags;
 	int ret = 0;
 
 #ifdef CONFIG_HAVE_CLK
 	ret = clk_enable(acdev->clk);
+=======
+	unsigned int if_clk;
+	unsigned long flags;
+	int ret = 0;
+
+	ret = clk_prepare_enable(acdev->clk);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_dbg(acdev->host->dev, "clock enable failed");
 		return ret;
 	}
+<<<<<<< HEAD
 #endif
 
 	spin_lock_irqsave(&acdev->host->lock, flags);
 	/* configure CF interface clock */
 	writel((pdata->cf_if_clk <= CF_IF_CLK_200M) ? pdata->cf_if_clk :
 			CF_IF_CLK_166M, acdev->vbase + CLK_CFG);
+=======
+
+	ret = clk_set_rate(acdev->clk, 166000000);
+	if (ret) {
+		dev_warn(acdev->host->dev, "clock set rate failed");
+		clk_disable_unprepare(acdev->clk);
+		return ret;
+	}
+
+	spin_lock_irqsave(&acdev->host->lock, flags);
+	/* configure CF interface clock */
+	/* TODO: read from device tree */
+	if_clk = CF_IF_CLK_166M;
+	if (pdata && pdata->cf_if_clk <= CF_IF_CLK_200M)
+		if_clk = pdata->cf_if_clk;
+
+	writel(if_clk, acdev->vbase + CLK_CFG);
+>>>>>>> refs/remotes/origin/master
 
 	writel(TRUE_IDE_MODE | CFHOST_ENB, acdev->vbase + OP_MODE);
 	cf_interrupt_enable(acdev, CARD_DETECT_IRQ, 1);
@@ -344,9 +387,13 @@ static void cf_exit(struct arasan_cf_dev *acdev)
 	writel(readl(acdev->vbase + OP_MODE) & ~CFHOST_ENB,
 			acdev->vbase + OP_MODE);
 	spin_unlock_irqrestore(&acdev->host->lock, flags);
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_CLK
 	clk_disable(acdev->clk);
 #endif
+=======
+	clk_disable_unprepare(acdev->clk);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void dma_callback(void *dev)
@@ -356,12 +403,15 @@ static void dma_callback(void *dev)
 	complete(&acdev->dma_completion);
 }
 
+<<<<<<< HEAD
 static bool filter(struct dma_chan *chan, void *slave)
 {
 	chan->private = slave;
 	return true;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void dma_complete(struct arasan_cf_dev *acdev)
 {
 	struct ata_queued_cmd *qc = acdev->qc;
@@ -398,8 +448,12 @@ dma_xfer(struct arasan_cf_dev *acdev, dma_addr_t src, dma_addr_t dest, u32 len)
 	struct dma_async_tx_descriptor *tx;
 	struct dma_chan *chan = acdev->dma_chan;
 	dma_cookie_t cookie;
+<<<<<<< HEAD
 	unsigned long flags = DMA_PREP_INTERRUPT | DMA_COMPL_SKIP_SRC_UNMAP |
 		DMA_COMPL_SKIP_DEST_UNMAP;
+=======
+	unsigned long flags = DMA_PREP_INTERRUPT;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	tx = chan->device->device_prep_dma_memcpy(chan, dest, src, len, flags);
@@ -529,8 +583,12 @@ static void data_xfer(struct work_struct *work)
 
 	/* request dma channels */
 	/* dma_request_channel may sleep, so calling from process context */
+<<<<<<< HEAD
 	acdev->dma_chan = dma_request_channel(acdev->mask, filter,
 			acdev->dma_priv);
+=======
+	acdev->dma_chan = dma_request_slave_channel(acdev->host->dev, "data");
+>>>>>>> refs/remotes/origin/master
 	if (!acdev->dma_chan) {
 		dev_err(acdev->host->dev, "Unable to get dma_chan\n");
 		goto chan_request_fail;
@@ -657,7 +715,11 @@ static void arasan_cf_freeze(struct ata_port *ap)
 	ata_sff_freeze(ap);
 }
 
+<<<<<<< HEAD
 void arasan_cf_error_handler(struct ata_port *ap)
+=======
+static void arasan_cf_error_handler(struct ata_port *ap)
+>>>>>>> refs/remotes/origin/master
 {
 	struct arasan_cf_dev *acdev = ap->host->private_data;
 
@@ -673,17 +735,33 @@ void arasan_cf_error_handler(struct ata_port *ap)
 
 static void arasan_cf_dma_start(struct arasan_cf_dev *acdev)
 {
+<<<<<<< HEAD
 	u32 xfer_ctr = readl(acdev->vbase + XFER_CTR) & ~XFER_DIR_MASK;
 	u32 write = acdev->qc->tf.flags & ATA_TFLAG_WRITE;
+=======
+	struct ata_queued_cmd *qc = acdev->qc;
+	struct ata_port *ap = qc->ap;
+	struct ata_taskfile *tf = &qc->tf;
+	u32 xfer_ctr = readl(acdev->vbase + XFER_CTR) & ~XFER_DIR_MASK;
+	u32 write = tf->flags & ATA_TFLAG_WRITE;
+>>>>>>> refs/remotes/origin/master
 
 	xfer_ctr |= write ? XFER_WRITE : XFER_READ;
 	writel(xfer_ctr, acdev->vbase + XFER_CTR);
 
+<<<<<<< HEAD
 	acdev->qc->ap->ops->sff_exec_command(acdev->qc->ap, &acdev->qc->tf);
 	ata_sff_queue_work(&acdev->work);
 }
 
 unsigned int arasan_cf_qc_issue(struct ata_queued_cmd *qc)
+=======
+	ap->ops->sff_exec_command(ap, tf);
+	ata_sff_queue_work(&acdev->work);
+}
+
+static unsigned int arasan_cf_qc_issue(struct ata_queued_cmd *qc)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ata_port *ap = qc->ap;
 	struct arasan_cf_dev *acdev = ap->host->private_data;
@@ -787,13 +865,21 @@ static struct ata_port_operations arasan_cf_ops = {
 	.set_dmamode = arasan_cf_set_dmamode,
 };
 
+<<<<<<< HEAD
 static int __devinit arasan_cf_probe(struct platform_device *pdev)
+=======
+static int arasan_cf_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct arasan_cf_dev *acdev;
 	struct arasan_cf_pdata *pdata = dev_get_platdata(&pdev->dev);
 	struct ata_host *host;
 	struct ata_port *ap;
 	struct resource *res;
+<<<<<<< HEAD
+=======
+	u32 quirk;
+>>>>>>> refs/remotes/origin/master
 	irq_handler_t irq_handler = NULL;
 	int ret = 0;
 
@@ -813,12 +899,24 @@ static int __devinit arasan_cf_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+=======
+	if (pdata)
+		quirk = pdata->quirk;
+	else
+		quirk = CF_BROKEN_UDMA; /* as it is on spear1340 */
+
+>>>>>>> refs/remotes/origin/master
 	/* if irq is 0, support only PIO */
 	acdev->irq = platform_get_irq(pdev, 0);
 	if (acdev->irq)
 		irq_handler = arasan_cf_interrupt;
 	else
+<<<<<<< HEAD
 		pdata->quirk |= CF_BROKEN_MWDMA | CF_BROKEN_UDMA;
+=======
+		quirk |= CF_BROKEN_MWDMA | CF_BROKEN_UDMA;
+>>>>>>> refs/remotes/origin/master
 
 	acdev->pbase = res->start;
 	acdev->vbase = devm_ioremap_nocache(&pdev->dev, res->start,
@@ -828,13 +926,19 @@ static int __devinit arasan_cf_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_CLK
+=======
+>>>>>>> refs/remotes/origin/master
 	acdev->clk = clk_get(&pdev->dev, NULL);
 	if (IS_ERR(acdev->clk)) {
 		dev_warn(&pdev->dev, "Clock not found\n");
 		return PTR_ERR(acdev->clk);
 	}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* allocate host */
 	host = ata_host_alloc(&pdev->dev, 1);
@@ -857,6 +961,7 @@ static int __devinit arasan_cf_probe(struct platform_device *pdev)
 	INIT_WORK(&acdev->work, data_xfer);
 	INIT_DELAYED_WORK(&acdev->dwork, delayed_finish);
 	dma_cap_set(DMA_MEMCPY, acdev->mask);
+<<<<<<< HEAD
 	acdev->dma_priv = pdata->dma_priv;
 
 	/* Handle platform specific quirks */
@@ -868,6 +973,18 @@ static int __devinit arasan_cf_probe(struct platform_device *pdev)
 		if (pdata->quirk & CF_BROKEN_MWDMA)
 			ap->mwdma_mask = 0;
 		if (pdata->quirk & CF_BROKEN_UDMA)
+=======
+
+	/* Handle platform specific quirks */
+	if (quirk) {
+		if (quirk & CF_BROKEN_PIO) {
+			ap->ops->set_piomode = NULL;
+			ap->pio_mask = 0;
+		}
+		if (quirk & CF_BROKEN_MWDMA)
+			ap->mwdma_mask = 0;
+		if (quirk & CF_BROKEN_UDMA)
+>>>>>>> refs/remotes/origin/master
 			ap->udma_mask = 0;
 	}
 	ap->flags |= ATA_FLAG_PIO_POLLING | ATA_FLAG_NO_ATAPI;
@@ -899,6 +1016,7 @@ static int __devinit arasan_cf_probe(struct platform_device *pdev)
 			&arasan_cf_sht);
 
 free_clk:
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_CLK
 	clk_put(acdev->clk);
 #endif
@@ -908,17 +1026,31 @@ free_clk:
 static int __devexit arasan_cf_remove(struct platform_device *pdev)
 {
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	clk_put(acdev->clk);
+	return ret;
+}
+
+static int arasan_cf_remove(struct platform_device *pdev)
+{
+	struct ata_host *host = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct arasan_cf_dev *acdev = host->ports[0]->private_data;
 
 	ata_host_detach(host);
 	cf_exit(acdev);
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_CLK
 	clk_put(acdev->clk);
 #endif
+=======
+	clk_put(acdev->clk);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int arasan_cf_suspend(struct device *dev)
 {
@@ -933,6 +1065,11 @@ static int arasan_cf_suspend(struct device *dev)
 		dma_release_channel(acdev->dma_chan);
 	}
 =======
+=======
+#ifdef CONFIG_PM_SLEEP
+static int arasan_cf_suspend(struct device *dev)
+{
+>>>>>>> refs/remotes/origin/master
 	struct ata_host *host = dev_get_drvdata(dev);
 	struct arasan_cf_dev *acdev = host->ports[0]->private_data;
 
@@ -940,7 +1077,10 @@ static int arasan_cf_suspend(struct device *dev)
 		acdev->dma_chan->device->device_control(acdev->dma_chan,
 				DMA_TERMINATE_ALL, 0);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cf_exit(acdev);
 	return ata_host_suspend(host, PMSG_SUSPEND);
 }
@@ -948,11 +1088,15 @@ static int arasan_cf_suspend(struct device *dev)
 static int arasan_cf_resume(struct device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct platform_device *pdev = to_platform_device(dev);
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
 =======
 	struct ata_host *host = dev_get_drvdata(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ata_host *host = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct arasan_cf_dev *acdev = host->ports[0]->private_data;
 
 	cf_init(acdev);
@@ -960,6 +1104,7 @@ static int arasan_cf_resume(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static const struct dev_pm_ops arasan_cf_pm_ops = {
@@ -969,10 +1114,13 @@ static const struct dev_pm_ops arasan_cf_pm_ops = {
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static SIMPLE_DEV_PM_OPS(arasan_cf_pm_ops, arasan_cf_suspend, arasan_cf_resume);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static struct platform_driver arasan_cf_driver = {
 	.probe		= arasan_cf_probe,
@@ -1000,13 +1148,36 @@ static void __exit arasan_cf_exit(void)
 module_exit(arasan_cf_exit);
 =======
 		.pm	= &arasan_cf_pm_ops,
+=======
+#ifdef CONFIG_OF
+static const struct of_device_id arasan_cf_id_table[] = {
+	{ .compatible = "arasan,cf-spear1340" },
+	{}
+};
+MODULE_DEVICE_TABLE(of, arasan_cf_id_table);
+#endif
+
+static struct platform_driver arasan_cf_driver = {
+	.probe		= arasan_cf_probe,
+	.remove		= arasan_cf_remove,
+	.driver		= {
+		.name	= DRIVER_NAME,
+		.owner	= THIS_MODULE,
+		.pm	= &arasan_cf_pm_ops,
+		.of_match_table = of_match_ptr(arasan_cf_id_table),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
 module_platform_driver(arasan_cf_driver);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Viresh Kumar <viresh.kumar@st.com>");
+=======
+
+MODULE_AUTHOR("Viresh Kumar <viresh.linux@gmail.com>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("Arasan ATA Compact Flash driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:" DRIVER_NAME);

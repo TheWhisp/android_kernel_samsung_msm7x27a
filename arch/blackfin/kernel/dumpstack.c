@@ -168,6 +168,10 @@ void dump_stack(void)
 #endif
 	trace_buffer_save(tflags);
 	dump_bfin_trace_buffer();
+<<<<<<< HEAD
+=======
+	dump_stack_print_info(KERN_DEFAULT);
+>>>>>>> refs/remotes/origin/master
 	show_stack(current, &stack);
 	trace_buffer_restore(tflags);
 }

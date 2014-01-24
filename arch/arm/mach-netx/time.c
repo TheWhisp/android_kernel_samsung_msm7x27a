@@ -76,7 +76,10 @@ static int netx_set_next_event(unsigned long evt,
 
 static struct clock_event_device netx_clockevent = {
 	.name = "netx-timer" __stringify(TIMER_CLOCKEVENT),
+<<<<<<< HEAD
 	.shift = 32,
+=======
+>>>>>>> refs/remotes/origin/master
 	.features = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
 	.set_next_event = netx_set_next_event,
 	.set_mode = netx_set_mode,
@@ -107,7 +110,11 @@ static struct irqaction netx_timer_irq = {
 /*
  * Set up timer interrupt
  */
+<<<<<<< HEAD
 static void __init netx_timer_init(void)
+=======
+void __init netx_timer_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* disable timer initially */
 	writel(0, NETX_GPIO_COUNTER_CTRL(0));
@@ -140,6 +147,7 @@ static void __init netx_timer_init(void)
 	clocksource_mmio_init(NETX_GPIO_COUNTER_CURRENT(TIMER_CLOCKSOURCE),
 		"netx_timer", CLOCK_TICK_RATE, 200, 32, clocksource_mmio_readl_up);
 
+<<<<<<< HEAD
 	netx_clockevent.mult = div_sc(CLOCK_TICK_RATE, NSEC_PER_SEC,
 			netx_clockevent.shift);
 	netx_clockevent.max_delta_ns =
@@ -155,3 +163,11 @@ static void __init netx_timer_init(void)
 struct sys_timer netx_timer = {
 	.init		= netx_timer_init,
 };
+=======
+	/* with max_delta_ns >= delta2ns(0x800) the system currently runs fine.
+	 * Adding some safety ... */
+	netx_clockevent.cpumask = cpumask_of(0);
+	clockevents_config_and_register(&netx_clockevent, CLOCK_TICK_RATE,
+					0xa00, 0xfffffffe);
+}
+>>>>>>> refs/remotes/origin/master

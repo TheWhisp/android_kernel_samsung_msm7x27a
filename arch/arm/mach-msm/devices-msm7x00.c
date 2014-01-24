@@ -15,6 +15,7 @@
 
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include <linux/dma-mapping.h>
 
@@ -30,12 +31,56 @@
 #include <asm/clkdev.h>
 #include "devices.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/clkdev.h>
+
+#include <mach/irqs.h>
+#include <mach/msm_iomap.h>
+#include "devices.h"
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach/flash.h>
 #include <linux/mtd/nand.h>
 #include <linux/mtd/partitions.h>
 
+<<<<<<< HEAD
 #include <mach/mmc.h>
+=======
+#include "clock.h"
+#include "clock-pcom.h"
+#include <linux/platform_data/mmc-msm_sdcc.h>
+
+static struct resource msm_gpio_resources[] = {
+	{
+		.start	= 32 + 0,
+		.end	= 32 + 0,
+		.flags	= IORESOURCE_IRQ,
+	},
+	{
+		.start	= 32 + 1,
+		.end	= 32 + 1,
+		.flags	= IORESOURCE_IRQ,
+	},
+	{
+		.start	= 0xa9200800,
+		.end	= 0xa9200800 + SZ_4K - 1,
+		.flags	= IORESOURCE_MEM,
+		.name  = "gpio1"
+	},
+	{
+		.start	= 0xa9300C00,
+		.end	= 0xa9300C00 + SZ_4K - 1,
+		.flags	= IORESOURCE_MEM,
+		.name  = "gpio2"
+	},
+};
+
+struct platform_device msm_device_gpio_7201 = {
+	.name	= "gpio-msm-7201",
+	.num_resources	= ARRAY_SIZE(msm_gpio_resources),
+	.resource	= msm_gpio_resources,
+};
+>>>>>>> refs/remotes/origin/master
 
 static struct resource resources_uart1[] = {
 	{
@@ -100,6 +145,7 @@ struct platform_device msm_device_uart3 = {
 	.resource	= resources_uart3,
 };
 
+<<<<<<< HEAD
 static struct resource msm_uart1_dm_resources[] = {
 	{
 		.start = MSM_UART1DM_PHYS,
@@ -186,6 +232,8 @@ struct platform_device msm_device_uart_dm2 = {
 	},
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct resource resources_i2c[] = {
 	{
 		.start	= MSM_I2C_PHYS,
@@ -206,6 +254,7 @@ struct platform_device msm_device_i2c = {
 	.resource	= resources_i2c,
 };
 
+<<<<<<< HEAD
 #define GPIO_I2C_CLK 60
 #define GPIO_I2C_DAT 61
 void msm_set_i2c_mux(bool gpio, int *gpio_clk, int *gpio_dat)
@@ -230,6 +279,8 @@ void msm_set_i2c_mux(bool gpio, int *gpio_clk, int *gpio_dat)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct resource resources_hsusb[] = {
 	{
 		.start	= MSM_HSUSB_PHYS,
@@ -295,6 +346,7 @@ static struct resource resources_sdc1[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= INT_SDC1_1,
 		.end	= INT_SDC1_1,
 		.flags	= IORESOURCE_IRQ,
@@ -303,6 +355,8 @@ static struct resource resources_sdc1[] = {
 	{
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_DISABLED,
 		.name	= "status_irq"
 	},
@@ -326,6 +380,7 @@ static struct resource resources_sdc2[] = {
 		.name	= "cmd_irq",
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 		{
 		.start	= INT_SDC2_1,
 		.end	= INT_SDC2_1,
@@ -334,6 +389,8 @@ static struct resource resources_sdc2[] = {
 	},
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 		.flags	= IORESOURCE_IRQ | IORESOURCE_DISABLED,
 		.name	= "status_irq"
@@ -358,6 +415,7 @@ static struct resource resources_sdc3[] = {
 		.name	= "cmd_irq",
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 		{
 		.start	= INT_SDC3_1,
 		.end	= INT_SDC3_1,
@@ -366,6 +424,8 @@ static struct resource resources_sdc3[] = {
 	},
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 		.flags	= IORESOURCE_IRQ | IORESOURCE_DISABLED,
 		.name	= "status_irq"
@@ -390,6 +450,7 @@ static struct resource resources_sdc4[] = {
 		.name	= "cmd_irq",
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 		{
 		.start	= INT_SDC4_1,
 		.end	= INT_SDC4_1,
@@ -398,6 +459,8 @@ static struct resource resources_sdc4[] = {
 	},
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 		.flags	= IORESOURCE_IRQ | IORESOURCE_DISABLED,
 		.name	= "status_irq"
@@ -456,7 +519,12 @@ static struct platform_device *msm_sdcc_devices[] __initdata = {
 	&msm_device_sdc4,
 };
 
+<<<<<<< HEAD
 int __init msm_add_sdcc(unsigned int controller, struct mmc_platform_data *plat,
+=======
+int __init msm_add_sdcc(unsigned int controller,
+			struct msm_mmc_platform_data *plat,
+>>>>>>> refs/remotes/origin/master
 			unsigned int stat_irq, unsigned long stat_irq_flags)
 {
 	struct platform_device	*pdev;
@@ -547,6 +615,7 @@ struct platform_device msm_device_mdp = {
 	.resource = resources_mdp,
 };
 
+<<<<<<< HEAD
 static struct resource resources_tssc[] = {
 	{
 		.start	= MSM_TSSC_PHYS,
@@ -573,4 +642,58 @@ struct platform_device msm_device_touchscreen = {
 	.id = 0,
 	.num_resources = ARRAY_SIZE(resources_tssc),
 	.resource = resources_tssc,
+=======
+static struct clk_pcom_desc msm_clocks_7x01a[] = {
+	CLK_PCOM("adm_clk",	ADM_CLK,	NULL, 0),
+	CLK_PCOM("adsp_clk",	ADSP_CLK,	NULL, 0),
+	CLK_PCOM("ebi1_clk",	EBI1_CLK,	NULL, 0),
+	CLK_PCOM("ebi2_clk",	EBI2_CLK,	NULL, 0),
+	CLK_PCOM("ecodec_clk",	ECODEC_CLK,	NULL, 0),
+	CLK_PCOM("emdh_clk",	EMDH_CLK,	NULL, OFF),
+	CLK_PCOM("gp_clk",		GP_CLK,		NULL, 0),
+	CLK_PCOM("grp_clk",	GRP_3D_CLK,	NULL, OFF),
+	CLK_PCOM("i2c_clk",	I2C_CLK,	"msm_i2c.0", 0),
+	CLK_PCOM("icodec_rx_clk",	ICODEC_RX_CLK,	NULL, 0),
+	CLK_PCOM("icodec_tx_clk",	ICODEC_TX_CLK,	NULL, 0),
+	CLK_PCOM("imem_clk",	IMEM_CLK,	NULL, OFF),
+	CLK_PCOM("mdc_clk",	MDC_CLK,	NULL, 0),
+	CLK_PCOM("mdp_clk",	MDP_CLK,	NULL, OFF),
+	CLK_PCOM("pbus_clk",	PBUS_CLK,	NULL, 0),
+	CLK_PCOM("pcm_clk",	PCM_CLK,	NULL, 0),
+	CLK_PCOM("mddi_clk",	PMDH_CLK,	NULL, OFF | CLK_MINMAX),
+	CLK_PCOM("sdac_clk",	SDAC_CLK,	NULL, OFF),
+	CLK_PCOM("sdc_clk",	SDC1_CLK,	"msm_sdcc.1", OFF),
+	CLK_PCOM("sdc_pclk",	SDC1_P_CLK,	"msm_sdcc.1", OFF),
+	CLK_PCOM("sdc_clk",	SDC2_CLK,	"msm_sdcc.2", OFF),
+	CLK_PCOM("sdc_pclk",	SDC2_P_CLK,	"msm_sdcc.2", OFF),
+	CLK_PCOM("sdc_clk",	SDC3_CLK,	"msm_sdcc.3", OFF),
+	CLK_PCOM("sdc_pclk",	SDC3_P_CLK,	"msm_sdcc.3", OFF),
+	CLK_PCOM("sdc_clk",	SDC4_CLK,	"msm_sdcc.4", OFF),
+	CLK_PCOM("sdc_pclk",	SDC4_P_CLK,	"msm_sdcc.4", OFF),
+	CLK_PCOM("tsif_clk",	TSIF_CLK,	NULL, 0),
+	CLK_PCOM("tsif_ref_clk",	TSIF_REF_CLK,	NULL, 0),
+	CLK_PCOM("tv_dac_clk",	TV_DAC_CLK,	NULL, 0),
+	CLK_PCOM("tv_enc_clk",	TV_ENC_CLK,	NULL, 0),
+	CLK_PCOM("core",	UART1_CLK,	"msm_serial.0", OFF),
+	CLK_PCOM("core",	UART2_CLK,	"msm_serial.1", 0),
+	CLK_PCOM("core",	UART3_CLK,	"msm_serial.2", OFF),
+	CLK_PCOM("uart1dm_clk",	UART1DM_CLK,	NULL, OFF),
+	CLK_PCOM("uart2dm_clk",	UART2DM_CLK,	NULL, 0),
+	CLK_PCOM("usb_hs_clk",	USB_HS_CLK,	"msm_hsusb", OFF),
+	CLK_PCOM("usb_hs_pclk",	USB_HS_P_CLK,	"msm_hsusb", OFF),
+	CLK_PCOM("usb_otg_clk",	USB_OTG_CLK,	NULL, 0),
+	CLK_PCOM("vdc_clk",	VDC_CLK,	NULL, OFF ),
+	CLK_PCOM("vfe_clk",	VFE_CLK,	NULL, OFF),
+	CLK_PCOM("vfe_mdc_clk",	VFE_MDC_CLK,	NULL, OFF),
+};
+
+static struct pcom_clk_pdata msm_clock_7x01a_pdata = {
+	.lookup = msm_clocks_7x01a,
+	.num_lookups = ARRAY_SIZE(msm_clocks_7x01a),
+};
+
+struct platform_device msm_clock_7x01a = {
+	.name = "msm-clock-pcom",
+	.dev.platform_data = &msm_clock_7x01a_pdata,
+>>>>>>> refs/remotes/origin/master
 };

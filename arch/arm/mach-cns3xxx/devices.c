@@ -16,9 +16,14 @@
 #include <linux/compiler.h>
 #include <linux/dma-mapping.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <mach/cns3xxx.h>
 #include <mach/irqs.h>
 #include <mach/pm.h>
+=======
+#include "cns3xxx.h"
+#include "pm.h"
+>>>>>>> refs/remotes/origin/master
 #include "core.h"
 #include "devices.h"
 
@@ -99,10 +104,14 @@ static struct platform_device cns3xxx_sdhci_pdev = {
 void __init cns3xxx_sdhci_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 __iomem *gpioa = __io(CNS3XXX_MISC_BASE_VIRT + 0x0014);
 =======
 	u32 __iomem *gpioa = IOMEM(CNS3XXX_MISC_BASE_VIRT + 0x0014);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 __iomem *gpioa = IOMEM(CNS3XXX_MISC_BASE_VIRT + 0x0014);
+>>>>>>> refs/remotes/origin/master
 	u32 gpioa_pins = __raw_readl(gpioa);
 
 	/* MMC/SD pins share with GPIOA */

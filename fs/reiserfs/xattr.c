@@ -34,10 +34,14 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
 =======
 #include "reiserfs.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/master
 #include <linux/capability.h>
 #include <linux/dcache.h>
 #include <linux/namei.h>
@@ -48,12 +52,17 @@
 #include <linux/pagemap.h>
 #include <linux/xattr.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_xattr.h>
 #include <linux/reiserfs_acl.h>
 =======
 #include "xattr.h"
 #include "acl.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "xattr.h"
+#include "acl.h"
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <net/checksum.h>
 #include <linux/stat.h>
@@ -71,6 +80,7 @@
 static int xattr_create(struct inode *dir, struct dentry *dentry, int mode)
 {
 	BUG_ON(!mutex_is_locked(&dir->i_mutex));
+<<<<<<< HEAD
 	return dir->i_op->create(dir, dentry, mode, NULL);
 }
 #endif
@@ -80,6 +90,13 @@ static int xattr_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 =======
 static int xattr_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return dir->i_op->create(dir, dentry, mode, true);
+}
+#endif
+
+static int xattr_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	BUG_ON(!mutex_is_locked(&dir->i_mutex));
 	return dir->i_op->mkdir(dir, dentry, mode);
@@ -94,8 +111,12 @@ static int xattr_unlink(struct inode *dir, struct dentry *dentry)
 	int error;
 	BUG_ON(!mutex_is_locked(&dir->i_mutex));
 
+<<<<<<< HEAD
 	reiserfs_mutex_lock_nested_safe(&dentry->d_inode->i_mutex,
 					I_MUTEX_CHILD, dir->i_sb);
+=======
+	mutex_lock_nested(&dentry->d_inode->i_mutex, I_MUTEX_CHILD);
+>>>>>>> refs/remotes/origin/master
 	error = dir->i_op->unlink(dir, dentry);
 	mutex_unlock(&dentry->d_inode->i_mutex);
 
@@ -109,8 +130,12 @@ static int xattr_rmdir(struct inode *dir, struct dentry *dentry)
 	int error;
 	BUG_ON(!mutex_is_locked(&dir->i_mutex));
 
+<<<<<<< HEAD
 	reiserfs_mutex_lock_nested_safe(&dentry->d_inode->i_mutex,
 					I_MUTEX_CHILD, dir->i_sb);
+=======
+	mutex_lock_nested(&dentry->d_inode->i_mutex, I_MUTEX_CHILD);
+>>>>>>> refs/remotes/origin/master
 	error = dir->i_op->rmdir(dir, dentry);
 	if (!error)
 		dentry->d_inode->i_flags |= S_DEAD;
@@ -184,6 +209,10 @@ static struct dentry *open_xa_dir(const struct inode *inode, int flags)
  * modifying extended attributes. This includes operations such as permissions
  * or ownership changes, object deletions, etc. */
 struct reiserfs_dentry_buf {
+<<<<<<< HEAD
+=======
+	struct dir_context ctx;
+>>>>>>> refs/remotes/origin/master
 	struct dentry *xadir;
 	int count;
 	struct dentry *dentries[8];
@@ -236,15 +265,21 @@ static int reiserfs_for_each_xattr(struct inode *inode,
 {
 	struct dentry *dir;
 	int i, err = 0;
+<<<<<<< HEAD
 	loff_t pos = 0;
 	struct reiserfs_dentry_buf buf = {
 		.count = 0,
+=======
+	struct reiserfs_dentry_buf buf = {
+		.ctx.actor = fill_with_dentries,
+>>>>>>> refs/remotes/origin/master
 	};
 
 	/* Skip out, an xattr has no xattrs associated with it */
 	if (IS_PRIVATE(inode) || get_inode_sd_version(inode) == STAT_DATA_V1)
 		return 0;
 
+<<<<<<< HEAD
 	reiserfs_write_unlock(inode->i_sb);
 	dir = open_xa_dir(inode, XATTR_REPLACE);
 	if (IS_ERR(dir)) {
@@ -254,11 +289,20 @@ static int reiserfs_for_each_xattr(struct inode *inode,
 	} else if (!dir->d_inode) {
 		err = 0;
 		reiserfs_write_lock(inode->i_sb);
+=======
+	dir = open_xa_dir(inode, XATTR_REPLACE);
+	if (IS_ERR(dir)) {
+		err = PTR_ERR(dir);
+		goto out;
+	} else if (!dir->d_inode) {
+		err = 0;
+>>>>>>> refs/remotes/origin/master
 		goto out_dir;
 	}
 
 	mutex_lock_nested(&dir->d_inode->i_mutex, I_MUTEX_XATTR);
 
+<<<<<<< HEAD
 	reiserfs_write_lock(inode->i_sb);
 
 	buf.xadir = dir;
@@ -285,6 +329,30 @@ static int reiserfs_for_each_xattr(struct inode *inode,
 	mutex_unlock(&dir->d_inode->i_mutex);
 
 	/* Clean up after a failed readdir */
+=======
+	buf.xadir = dir;
+	while (1) {
+		err = reiserfs_readdir_inode(dir->d_inode, &buf.ctx);
+		if (err)
+			break;
+		if (!buf.count)
+			break;
+		for (i = 0; !err && i < buf.count && buf.dentries[i]; i++) {
+			struct dentry *dentry = buf.dentries[i];
+
+			if (!S_ISDIR(dentry->d_inode->i_mode))
+				err = action(dentry, data);
+
+			dput(dentry);
+			buf.dentries[i] = NULL;
+		}
+		if (err)
+			break;
+		buf.count = 0;
+	}
+	mutex_unlock(&dir->d_inode->i_mutex);
+
+>>>>>>> refs/remotes/origin/master
 	cleanup_dentry_buf(&buf);
 
 	if (!err) {
@@ -296,6 +364,7 @@ static int reiserfs_for_each_xattr(struct inode *inode,
 		int blocks = JOURNAL_PER_BALANCE_CNT * 2 + 2 +
 			     4 * REISERFS_QUOTA_TRANS_BLOCKS(inode->i_sb);
 		struct reiserfs_transaction_handle th;
+<<<<<<< HEAD
 		err = journal_begin(&th, inode->i_sb, blocks);
 		if (!err) {
 			int jerror;
@@ -304,6 +373,19 @@ static int reiserfs_for_each_xattr(struct inode *inode,
 					  I_MUTEX_XATTR, inode->i_sb);
 			err = action(dir, data);
 			jerror = journal_end(&th, inode->i_sb, blocks);
+=======
+		reiserfs_write_lock(inode->i_sb);
+		err = journal_begin(&th, inode->i_sb, blocks);
+		reiserfs_write_unlock(inode->i_sb);
+		if (!err) {
+			int jerror;
+			mutex_lock_nested(&dir->d_parent->d_inode->i_mutex,
+					  I_MUTEX_XATTR);
+			err = action(dir, data);
+			reiserfs_write_lock(inode->i_sb);
+			jerror = journal_end(&th, inode->i_sb, blocks);
+			reiserfs_write_unlock(inode->i_sb);
+>>>>>>> refs/remotes/origin/master
 			mutex_unlock(&dir->d_parent->d_inode->i_mutex);
 			err = jerror ?: err;
 		}
@@ -331,7 +413,23 @@ static int delete_one_xattr(struct dentry *dentry, void *data)
 static int chown_one_xattr(struct dentry *dentry, void *data)
 {
 	struct iattr *attrs = data;
+<<<<<<< HEAD
 	return reiserfs_setattr(dentry, attrs);
+=======
+	int ia_valid = attrs->ia_valid;
+	int err;
+
+	/*
+	 * We only want the ownership bits. Otherwise, we'll do
+	 * things like change a directory to a regular file if
+	 * ATTR_MODE is set.
+	 */
+	attrs->ia_valid &= (ATTR_UID|ATTR_GID);
+	err = reiserfs_setattr(dentry, attrs);
+	attrs->ia_valid = ia_valid;
+
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* No i_mutex, but the inode is unconnected. */
@@ -458,9 +556,13 @@ static int lookup_and_delete_xattr(struct inode *inode, const char *name)
 	}
 
 	if (dentry->d_inode) {
+<<<<<<< HEAD
 		reiserfs_write_lock(inode->i_sb);
 		err = xattr_unlink(xadir->d_inode, dentry);
 		reiserfs_write_unlock(inode->i_sb);
+=======
+		err = xattr_unlink(xadir->d_inode, dentry);
+>>>>>>> refs/remotes/origin/master
 		update_ctime(inode);
 	}
 
@@ -494,15 +596,21 @@ reiserfs_xattr_set_handle(struct reiserfs_transaction_handle *th,
 	if (get_inode_sd_version(inode) == STAT_DATA_V1)
 		return -EOPNOTSUPP;
 
+<<<<<<< HEAD
 	reiserfs_write_unlock(inode->i_sb);
 
 	if (!buffer) {
 		err = lookup_and_delete_xattr(inode, name);
 		reiserfs_write_lock(inode->i_sb);
+=======
+	if (!buffer) {
+		err = lookup_and_delete_xattr(inode, name);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 
 	dentry = xattr_lookup(inode, name, flags);
+<<<<<<< HEAD
 	if (IS_ERR(dentry)) {
 		reiserfs_write_lock(inode->i_sb);
 		return PTR_ERR(dentry);
@@ -512,6 +620,13 @@ reiserfs_xattr_set_handle(struct reiserfs_transaction_handle *th,
 
 	reiserfs_write_lock(inode->i_sb);
 
+=======
+	if (IS_ERR(dentry))
+		return PTR_ERR(dentry);
+
+	down_write(&REISERFS_I(inode)->i_xattr_sem);
+
+>>>>>>> refs/remotes/origin/master
 	xahash = xattr_hash(buffer, buffer_size);
 	while (buffer_pos < buffer_size || buffer_pos == 0) {
 		size_t chunk;
@@ -541,6 +656,10 @@ reiserfs_xattr_set_handle(struct reiserfs_transaction_handle *th,
 			rxh->h_hash = cpu_to_le32(xahash);
 		}
 
+<<<<<<< HEAD
+=======
+		reiserfs_write_lock(inode->i_sb);
+>>>>>>> refs/remotes/origin/master
 		err = __reiserfs_write_begin(page, page_offset, chunk + skip);
 		if (!err) {
 			if (buffer)
@@ -549,6 +668,10 @@ reiserfs_xattr_set_handle(struct reiserfs_transaction_handle *th,
 						    page_offset + chunk +
 						    skip);
 		}
+<<<<<<< HEAD
+=======
+		reiserfs_write_unlock(inode->i_sb);
+>>>>>>> refs/remotes/origin/master
 		unlock_page(page);
 		reiserfs_put_page(page);
 		buffer_pos += chunk;
@@ -566,6 +689,7 @@ reiserfs_xattr_set_handle(struct reiserfs_transaction_handle *th,
 			.ia_valid = ATTR_SIZE | ATTR_CTIME,
 		};
 
+<<<<<<< HEAD
 		reiserfs_write_unlock(inode->i_sb);
 		mutex_lock_nested(&dentry->d_inode->i_mutex, I_MUTEX_XATTR);
 <<<<<<< HEAD
@@ -580,6 +704,12 @@ reiserfs_xattr_set_handle(struct reiserfs_transaction_handle *th,
 
 		err = reiserfs_setattr(dentry, &newattrs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mutex_lock_nested(&dentry->d_inode->i_mutex, I_MUTEX_XATTR);
+		inode_dio_wait(dentry->d_inode);
+
+		err = reiserfs_setattr(dentry, &newattrs);
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&dentry->d_inode->i_mutex);
 	} else
 		update_ctime(inode);
@@ -603,18 +733,31 @@ int reiserfs_xattr_set(struct inode *inode, const char *name,
 
 	reiserfs_write_lock(inode->i_sb);
 	error = journal_begin(&th, inode->i_sb, jbegin_count);
+<<<<<<< HEAD
 	if (error) {
 		reiserfs_write_unlock(inode->i_sb);
+=======
+	reiserfs_write_unlock(inode->i_sb);
+	if (error) {
+>>>>>>> refs/remotes/origin/master
 		return error;
 	}
 
 	error = reiserfs_xattr_set_handle(&th, inode, name,
 					  buffer, buffer_size, flags);
 
+<<<<<<< HEAD
 	error2 = journal_end(&th, inode->i_sb, jbegin_count);
 	if (error == 0)
 		error = error2;
 	reiserfs_write_unlock(inode->i_sb);
+=======
+	reiserfs_write_lock(inode->i_sb);
+	error2 = journal_end(&th, inode->i_sb, jbegin_count);
+	reiserfs_write_unlock(inode->i_sb);
+	if (error == 0)
+		error = error2;
+>>>>>>> refs/remotes/origin/master
 
 	return error;
 }
@@ -809,6 +952,10 @@ int reiserfs_removexattr(struct dentry *dentry, const char *name)
 }
 
 struct listxattr_buf {
+<<<<<<< HEAD
+=======
+	struct dir_context ctx;
+>>>>>>> refs/remotes/origin/master
 	size_t size;
 	size_t pos;
 	char *buf;
@@ -854,8 +1001,13 @@ ssize_t reiserfs_listxattr(struct dentry * dentry, char *buffer, size_t size)
 {
 	struct dentry *dir;
 	int err = 0;
+<<<<<<< HEAD
 	loff_t pos = 0;
 	struct listxattr_buf buf = {
+=======
+	struct listxattr_buf buf = {
+		.ctx.actor = listxattr_filler,
+>>>>>>> refs/remotes/origin/master
 		.dentry = dentry,
 		.buf = buffer,
 		.size = buffer ? size : 0,
@@ -877,7 +1029,11 @@ ssize_t reiserfs_listxattr(struct dentry * dentry, char *buffer, size_t size)
 	}
 
 	mutex_lock_nested(&dir->d_inode->i_mutex, I_MUTEX_XATTR);
+<<<<<<< HEAD
 	err = reiserfs_readdir_dentry(dir, &buf, listxattr_filler, &pos);
+=======
+	err = reiserfs_readdir_inode(dir->d_inode, &buf.ctx);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&dir->d_inode->i_mutex);
 
 	if (!err)
@@ -888,6 +1044,7 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int reiserfs_check_acl(struct inode *inode, int mask, unsigned int flags)
 {
@@ -912,6 +1069,8 @@ static int reiserfs_check_acl(struct inode *inode, int mask, unsigned int flags)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int create_privroot(struct dentry *dentry)
 {
 	int err;
@@ -941,7 +1100,11 @@ static int create_privroot(struct dentry *dentry) { return 0; }
 #endif
 
 /* Actual operations that are exported to VFS-land */
+<<<<<<< HEAD
 const struct xattr_handler *reiserfs_xattr_handlers[] = {
+=======
+static const struct xattr_handler *reiserfs_xattr_handlers[] = {
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_REISERFS_FS_XATTR
 	&reiserfs_xattr_user_handler,
 	&reiserfs_xattr_trusted_handler,
@@ -976,10 +1139,14 @@ static int xattr_mount_check(struct super_block *s)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int reiserfs_permission(struct inode *inode, int mask, unsigned int flags)
 =======
 int reiserfs_permission(struct inode *inode, int mask)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int reiserfs_permission(struct inode *inode, int mask)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * We don't do permission checks on the internal objects.
@@ -988,6 +1155,7 @@ int reiserfs_permission(struct inode *inode, int mask)
 	if (IS_PRIVATE(inode))
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_REISERFS_FS_XATTR
 	/*
@@ -1004,6 +1172,12 @@ int reiserfs_permission(struct inode *inode, int mask)
 }
 
 static int xattr_hide_revalidate(struct dentry *dentry, struct nameidata *nd)
+=======
+	return generic_permission(inode, mask);
+}
+
+static int xattr_hide_revalidate(struct dentry *dentry, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	return -EPERM;
 }
@@ -1018,7 +1192,11 @@ int reiserfs_lookup_privroot(struct super_block *s)
 	int err = 0;
 
 	/* If we don't have the privroot located yet - go find it */
+<<<<<<< HEAD
 	reiserfs_mutex_lock_safe(&s->s_root->d_inode->i_mutex, s);
+=======
+	mutex_lock(&s->s_root->d_inode->i_mutex);
+>>>>>>> refs/remotes/origin/master
 	dentry = lookup_one_len(PRIVROOT_NAME, s->s_root,
 				strlen(PRIVROOT_NAME));
 	if (!IS_ERR(dentry)) {
@@ -1046,14 +1224,22 @@ int reiserfs_xattr_init(struct super_block *s, int mount_flags)
 		goto error;
 
 	if (!privroot->d_inode && !(mount_flags & MS_RDONLY)) {
+<<<<<<< HEAD
 		reiserfs_mutex_lock_safe(&s->s_root->d_inode->i_mutex, s);
+=======
+		mutex_lock(&s->s_root->d_inode->i_mutex);
+>>>>>>> refs/remotes/origin/master
 		err = create_privroot(REISERFS_SB(s)->priv_root);
 		mutex_unlock(&s->s_root->d_inode->i_mutex);
 	}
 
 	if (privroot->d_inode) {
 		s->s_xattr = reiserfs_xattr_handlers;
+<<<<<<< HEAD
 		reiserfs_mutex_lock_safe(&privroot->d_inode->i_mutex, s);
+=======
+		mutex_lock(&privroot->d_inode->i_mutex);
+>>>>>>> refs/remotes/origin/master
 		if (!REISERFS_SB(s)->xattr_root) {
 			struct dentry *dentry;
 			dentry = lookup_one_len(XAROOT_NAME, privroot,

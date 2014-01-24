@@ -29,18 +29,24 @@ typedef int (*dbg_leaf_callback)(struct ubifs_info *c,
 typedef int (*dbg_znode_callback)(struct ubifs_info *c,
 				  struct ubifs_znode *znode, void *priv);
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_DEBUG
 
 <<<<<<< HEAD
 #include <linux/random.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The UBIFS debugfs directory name pattern and maximum name length (3 for "ubi"
  * + 1 for "_" and plus 2x2 for 2 UBI numbers and 1 for the trailing zero byte.
  */
 #define UBIFS_DFS_DIR_NAME "ubi%d_%d"
 #define UBIFS_DFS_DIR_LEN  (3 + 1 + 2*2 + 1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ubifs_debug_info - per-FS debugging information.
@@ -48,12 +54,15 @@ typedef int (*dbg_znode_callback)(struct ubifs_info *c,
  * @old_zroot_level: old index root level - used by 'dbg_check_old_index()'
  * @old_zroot_sqnum: old index root sqnum - used by 'dbg_check_old_index()'
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @failure_mode: failure mode for recovery testing
  * @fail_delay: 0=>don't delay, 1=>delay a time, 2=>delay a number of calls
  * @fail_timeout: time in jiffies when delay of failure mode expires
  * @fail_cnt: current number of calls to failure mode I/O functions
  * @fail_cnt_max: number of calls by which to delay failure mode
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * @pc_happened: non-zero if an emulated power cut happened
  * @pc_delay: 0=>don't delay, 1=>delay a time, 2=>delay a number of calls
@@ -61,7 +70,10 @@ typedef int (*dbg_znode_callback)(struct ubifs_info *c,
  * @pc_cnt: current number of calls to failure mode I/O functions
  * @pc_cnt_max: number of calls by which to delay failure mode
  *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @chk_lpt_sz: used by LPT tree size checker
  * @chk_lpt_sz2: used by LPT tree size checker
  * @chk_lpt_wastage: used by LPT tree size checker
@@ -76,7 +88,10 @@ typedef int (*dbg_znode_callback)(struct ubifs_info *c,
  * @saved_idx_gc_cnt: saved value of @c->idx_gc_cnt
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @chk_gen: if general extra checks are enabled
  * @chk_index: if index xtra checks are enabled
  * @chk_orph: if orphans extra checks are enabled
@@ -84,26 +99,40 @@ typedef int (*dbg_znode_callback)(struct ubifs_info *c,
  * @chk_fs: if UBIFS contents extra checks are enabled
  * @tst_rcvry: if UBIFS recovery testing mode enabled
  *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @dfs_dir_name: name of debugfs directory containing this file-system's files
  * @dfs_dir: direntry object of the file-system debugfs directory
  * @dfs_dump_lprops: "dump lprops" debugfs knob
  * @dfs_dump_budg: "dump budgeting information" debugfs knob
  * @dfs_dump_tnc: "dump TNC" debugfs knob
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @dfs_chk_gen: debugfs knob to enable UBIFS general extra checks
  * @dfs_chk_index: debugfs knob to enable UBIFS index extra checks
  * @dfs_chk_orph: debugfs knob to enable UBIFS orphans extra checks
  * @dfs_chk_lprops: debugfs knob to enable UBIFS LEP properties extra checks
  * @dfs_chk_fs: debugfs knob to enable UBIFS contents extra checks
  * @dfs_tst_rcvry: debugfs knob to enable UBIFS recovery testing
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @dfs_ro_error: debugfs knob to switch UBIFS to R/O mode (different to
+ *                re-mounting to R/O mode because it does not flush any buffers
+ *                and UBIFS just starts returning -EROFS on all write
+ *               operations)
+>>>>>>> refs/remotes/origin/master
  */
 struct ubifs_debug_info {
 	struct ubifs_zbranch old_zroot;
 	int old_zroot_level;
 	unsigned long long old_zroot_sqnum;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int failure_mode;
 	int fail_delay;
@@ -111,6 +140,8 @@ struct ubifs_debug_info {
 	unsigned int fail_cnt;
 	unsigned int fail_cnt_max;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	int pc_happened;
 	int pc_delay;
@@ -118,7 +149,10 @@ struct ubifs_debug_info {
 	unsigned int pc_cnt;
 	unsigned int pc_cnt_max;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	long long chk_lpt_sz;
 	long long chk_lpt_sz2;
 	long long chk_lpt_wastage;
@@ -133,8 +167,11 @@ struct ubifs_debug_info {
 	int saved_idx_gc_cnt;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char dfs_dir_name[100];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int chk_gen:1;
 	unsigned int chk_index:1;
 	unsigned int chk_orph:1;
@@ -143,19 +180,29 @@ struct ubifs_debug_info {
 	unsigned int tst_rcvry:1;
 
 	char dfs_dir_name[UBIFS_DFS_DIR_LEN + 1];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dentry *dfs_dir;
 	struct dentry *dfs_dump_lprops;
 	struct dentry *dfs_dump_budg;
 	struct dentry *dfs_dump_tnc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dentry *dfs_chk_gen;
 	struct dentry *dfs_chk_index;
 	struct dentry *dfs_chk_orph;
 	struct dentry *dfs_chk_lprops;
 	struct dentry *dfs_chk_fs;
 	struct dentry *dfs_tst_rcvry;
+<<<<<<< HEAD
+=======
+	struct dentry *dfs_ro_error;
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -175,25 +222,39 @@ struct ubifs_global_debug_info {
 	unsigned int chk_lprops:1;
 	unsigned int chk_fs:1;
 	unsigned int tst_rcvry:1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define ubifs_assert(expr) do {                                                \
 	if (unlikely(!(expr))) {                                               \
+<<<<<<< HEAD
 		printk(KERN_CRIT "UBIFS assert failed in %s at %u (pid %d)\n", \
 		       __func__, __LINE__, current->pid);                      \
 		dbg_dump_stack();                                              \
+=======
+		pr_crit("UBIFS assert failed in %s at %u (pid %d)\n",          \
+		       __func__, __LINE__, current->pid);                      \
+		dump_stack();                                                  \
+>>>>>>> refs/remotes/origin/master
 	}                                                                      \
 } while (0)
 
 #define ubifs_assert_cmt_locked(c) do {                                        \
 	if (unlikely(down_write_trylock(&(c)->commit_sem))) {                  \
 		up_write(&(c)->commit_sem);                                    \
+<<<<<<< HEAD
 		printk(KERN_CRIT "commit lock is not locked!\n");              \
+=======
+		pr_crit("commit lock is not locked!\n");                       \
+>>>>>>> refs/remotes/origin/master
 		ubifs_assert(0);                                               \
 	}                                                                      \
 } while (0)
 
+<<<<<<< HEAD
 #define dbg_dump_stack() dump_stack()
 
 #define dbg_err(fmt, ...) do {                                                 \
@@ -228,10 +289,16 @@ const char *dbg_key_str1(const struct ubifs_info *c,
 
 #define ubifs_dbg_msg(type, fmt, ...) \
 	pr_debug("UBIFS DBG " type ": " fmt "\n", ##__VA_ARGS__)
+=======
+#define ubifs_dbg_msg(type, fmt, ...) \
+	pr_debug("UBIFS DBG " type " (pid %d): " fmt "\n", current->pid,       \
+		 ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/master
 
 #define DBG_KEY_BUF_LEN 48
 #define ubifs_dbg_msg_key(type, key, fmt, ...) do {                            \
 	char __tmp_key_buf[DBG_KEY_BUF_LEN];                                   \
+<<<<<<< HEAD
 	pr_debug("UBIFS DBG " type ": " fmt "%s\n", ##__VA_ARGS__,             \
 		 dbg_snprintf_key(c, key, __tmp_key_buf, DBG_KEY_BUF_LEN));    \
 } while (0)
@@ -242,21 +309,34 @@ const char *dbg_key_str1(const struct ubifs_info *c,
 >>>>>>> refs/remotes/origin/cm-10.0
 	       __func__, ##__VA_ARGS__)
 
+=======
+	pr_debug("UBIFS DBG " type " (pid %d): " fmt "%s\n", current->pid,     \
+		 ##__VA_ARGS__,                                                \
+		 dbg_snprintf_key(c, key, __tmp_key_buf, DBG_KEY_BUF_LEN));    \
+} while (0)
+
+>>>>>>> refs/remotes/origin/master
 /* General messages */
 #define dbg_gen(fmt, ...)   ubifs_dbg_msg("gen", fmt, ##__VA_ARGS__)
 /* Additional journal messages */
 #define dbg_jnl(fmt, ...)   ubifs_dbg_msg("jnl", fmt, ##__VA_ARGS__)
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Additional TNC messages */
 #define dbg_tnc(fmt, ...)   ubifs_dbg_msg("tnc", fmt, ##__VA_ARGS__)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define dbg_jnlk(key, fmt, ...) \
 	ubifs_dbg_msg_key("jnl", key, fmt, ##__VA_ARGS__)
 /* Additional TNC messages */
 #define dbg_tnc(fmt, ...)   ubifs_dbg_msg("tnc", fmt, ##__VA_ARGS__)
 #define dbg_tnck(key, fmt, ...) \
 	ubifs_dbg_msg_key("tnc", key, fmt, ##__VA_ARGS__)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Additional lprops messages */
 #define dbg_lp(fmt, ...)    ubifs_dbg_msg("lp", fmt, ##__VA_ARGS__)
 /* Additional LEB find messages */
@@ -264,10 +344,15 @@ const char *dbg_key_str1(const struct ubifs_info *c,
 /* Additional mount messages */
 #define dbg_mnt(fmt, ...)   ubifs_dbg_msg("mnt", fmt, ##__VA_ARGS__)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define dbg_mntk(key, fmt, ...) \
 	ubifs_dbg_msg_key("mnt", key, fmt, ##__VA_ARGS__)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define dbg_mntk(key, fmt, ...) \
+	ubifs_dbg_msg_key("mnt", key, fmt, ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/master
 /* Additional I/O messages */
 #define dbg_io(fmt, ...)    ubifs_dbg_msg("io", fmt, ##__VA_ARGS__)
 /* Additional commit messages */
@@ -283,6 +368,7 @@ const char *dbg_key_str1(const struct ubifs_info *c,
 /* Additional recovery messages */
 #define dbg_rcvry(fmt, ...) ubifs_dbg_msg("rcvry", fmt, ##__VA_ARGS__)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Debugging check flags.
@@ -320,6 +406,8 @@ extern unsigned int ubifs_msg_flags;
 extern unsigned int ubifs_chk_flags;
 extern unsigned int ubifs_tst_flags;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct ubifs_global_debug_info ubifs_dbg;
 
 static inline int dbg_is_chk_gen(const struct ubifs_info *c)
@@ -350,7 +438,10 @@ static inline int dbg_is_power_cut(const struct ubifs_info *c)
 {
 	return !!c->dbg->pc_happened;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int ubifs_debugging_init(struct ubifs_info *c);
 void ubifs_debugging_exit(struct ubifs_info *c);
@@ -361,6 +452,7 @@ const char *dbg_cstate(int cmt_state);
 const char *dbg_jhead(int jhead);
 const char *dbg_get_key_dump(const struct ubifs_info *c,
 			     const union ubifs_key *key);
+<<<<<<< HEAD
 <<<<<<< HEAD
 void dbg_dump_inode(const struct ubifs_info *c, const struct inode *inode);
 =======
@@ -391,6 +483,31 @@ void dbg_dump_pnode(struct ubifs_info *c, struct ubifs_pnode *pnode,
 void dbg_dump_tnc(struct ubifs_info *c);
 void dbg_dump_index(struct ubifs_info *c);
 void dbg_dump_lpt_lebs(const struct ubifs_info *c);
+=======
+const char *dbg_snprintf_key(const struct ubifs_info *c,
+			     const union ubifs_key *key, char *buffer, int len);
+void ubifs_dump_inode(struct ubifs_info *c, const struct inode *inode);
+void ubifs_dump_node(const struct ubifs_info *c, const void *node);
+void ubifs_dump_budget_req(const struct ubifs_budget_req *req);
+void ubifs_dump_lstats(const struct ubifs_lp_stats *lst);
+void ubifs_dump_budg(struct ubifs_info *c, const struct ubifs_budg_info *bi);
+void ubifs_dump_lprop(const struct ubifs_info *c,
+		      const struct ubifs_lprops *lp);
+void ubifs_dump_lprops(struct ubifs_info *c);
+void ubifs_dump_lpt_info(struct ubifs_info *c);
+void ubifs_dump_leb(const struct ubifs_info *c, int lnum);
+void ubifs_dump_sleb(const struct ubifs_info *c,
+		     const struct ubifs_scan_leb *sleb, int offs);
+void ubifs_dump_znode(const struct ubifs_info *c,
+		      const struct ubifs_znode *znode);
+void ubifs_dump_heap(struct ubifs_info *c, struct ubifs_lpt_heap *heap,
+		     int cat);
+void ubifs_dump_pnode(struct ubifs_info *c, struct ubifs_pnode *pnode,
+		      struct ubifs_nnode *parent, int iip);
+void ubifs_dump_tnc(struct ubifs_info *c);
+void ubifs_dump_index(struct ubifs_info *c);
+void ubifs_dump_lpt_lebs(const struct ubifs_info *c);
+>>>>>>> refs/remotes/origin/master
 
 int dbg_walk_index(struct ubifs_info *c, dbg_leaf_callback leaf_cb,
 		   dbg_znode_callback znode_cb, void *priv);
@@ -406,12 +523,17 @@ int dbg_check_ltab(struct ubifs_info *c);
 int dbg_chk_lpt_free_spc(struct ubifs_info *c);
 int dbg_chk_lpt_sz(struct ubifs_info *c, int action, int len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int dbg_check_synced_i_size(struct inode *inode);
 int dbg_check_dir_size(struct ubifs_info *c, const struct inode *dir);
 =======
 int dbg_check_synced_i_size(const struct ubifs_info *c, struct inode *inode);
 int dbg_check_dir(struct ubifs_info *c, const struct inode *dir);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int dbg_check_synced_i_size(const struct ubifs_info *c, struct inode *inode);
+int dbg_check_dir(struct ubifs_info *c, const struct inode *dir);
+>>>>>>> refs/remotes/origin/master
 int dbg_check_tnc(struct ubifs_info *c, int extra);
 int dbg_check_idx_size(struct ubifs_info *c, long long idx_size);
 int dbg_check_filesystem(struct ubifs_info *c);
@@ -424,6 +546,7 @@ int dbg_check_inode_size(struct ubifs_info *c, const struct inode *inode,
 int dbg_check_data_nodes_order(struct ubifs_info *c, struct list_head *head);
 int dbg_check_nondata_nodes_order(struct ubifs_info *c, struct list_head *head);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Force the use of in-the-gaps method for testing */
 static inline int dbg_force_in_the_gaps_enabled(void)
@@ -481,6 +604,13 @@ int dbg_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len,
 int dbg_leb_unmap(struct ubifs_info *c, int lnum);
 int dbg_leb_map(struct ubifs_info *c, int lnum, int dtype);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int dbg_leb_write(struct ubifs_info *c, int lnum, const void *buf, int offs,
+		  int len);
+int dbg_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len);
+int dbg_leb_unmap(struct ubifs_info *c, int lnum);
+int dbg_leb_map(struct ubifs_info *c, int lnum);
+>>>>>>> refs/remotes/origin/master
 
 /* Debugfs-related stuff */
 int dbg_debugfs_init(void);
@@ -488,6 +618,7 @@ void dbg_debugfs_exit(void);
 int dbg_debugfs_init_fs(struct ubifs_info *c);
 void dbg_debugfs_exit_fs(struct ubifs_info *c);
 
+<<<<<<< HEAD
 #else /* !CONFIG_UBIFS_FS_DEBUG */
 
 /* Use "if (0)" to make compiler check arguments even if debugging is off */
@@ -695,4 +826,6 @@ static inline int dbg_debugfs_init_fs(struct ubifs_info *c)       { return 0; }
 static inline int dbg_debugfs_exit_fs(struct ubifs_info *c)       { return 0; }
 
 #endif /* !CONFIG_UBIFS_FS_DEBUG */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !__UBIFS_DEBUG_H__ */

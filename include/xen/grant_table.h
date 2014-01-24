@@ -44,12 +44,20 @@
 
 #include <asm/xen/hypervisor.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/xen/grant_table.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include <xen/features.h>
 
+=======
+
+#include <xen/features.h>
+
+#define GNTTAB_RESERVED_XENSTORE 1
+
+>>>>>>> refs/remotes/origin/master
 /* NR_GRANT_FRAMES must be less than or equal to that configured in Xen */
 #define NR_GRANT_FRAMES 4
 
@@ -67,7 +75,10 @@ int gnttab_resume(void);
 int gnttab_grant_foreign_access(domid_t domid, unsigned long frame,
 				int readonly);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int gnttab_grant_foreign_access_subpage(domid_t domid, unsigned long frame,
 					int flags, unsigned page_off,
 					unsigned length);
@@ -86,7 +97,10 @@ bool gnttab_subpage_grants_available(void);
  * are, and false if they're not.
  */
 bool gnttab_trans_grants_available(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * End access through the given grant reference, iff the grant entry is no
@@ -134,7 +148,10 @@ void gnttab_cancel_free_callback(struct gnttab_free_callback *callback);
 void gnttab_grant_foreign_access_ref(grant_ref_t ref, domid_t domid,
 				     unsigned long frame, int readonly);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int gnttab_grant_foreign_access_subpage_ref(grant_ref_t ref, domid_t domid,
 					    unsigned long frame, int flags,
 					    unsigned page_off,
@@ -142,7 +159,10 @@ int gnttab_grant_foreign_access_subpage_ref(grant_ref_t ref, domid_t domid,
 int gnttab_grant_foreign_access_trans_ref(grant_ref_t ref, domid_t domid,
 					  int flags, domid_t trans_domid,
 					  grant_ref_t trans_gref);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 void gnttab_grant_foreign_transfer_ref(grant_ref_t, domid_t domid,
 				       unsigned long pfn);
@@ -178,6 +198,7 @@ gnttab_set_unmap_op(struct gnttab_unmap_grant_ref *unmap, phys_addr_t addr,
 	unmap->dev_bus_addr = 0;
 }
 
+<<<<<<< HEAD
 int arch_gnttab_map_shared(unsigned long *frames, unsigned long nr_gframes,
 			   unsigned long max_nr_gframes,
 <<<<<<< HEAD
@@ -185,12 +206,19 @@ int arch_gnttab_map_shared(unsigned long *frames, unsigned long nr_gframes,
 void arch_gnttab_unmap_shared(struct grant_entry *shared,
 			      unsigned long nr_gframes);
 =======
+=======
+int arch_gnttab_map_shared(xen_pfn_t *frames, unsigned long nr_gframes,
+			   unsigned long max_nr_gframes,
+>>>>>>> refs/remotes/origin/master
 			   void **__shared);
 int arch_gnttab_map_status(uint64_t *frames, unsigned long nr_gframes,
 			   unsigned long max_nr_gframes,
 			   grant_status_t **__shared);
 void arch_gnttab_unmap(void *shared, unsigned long nr_gframes);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern unsigned long xen_hvm_resume_frames;
 unsigned int gnttab_max_grant_frames(void);
@@ -199,14 +227,34 @@ unsigned int gnttab_max_grant_frames(void);
 
 int gnttab_map_refs(struct gnttab_map_grant_ref *map_ops,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    struct page **pages, unsigned int count);
 int gnttab_unmap_refs(struct gnttab_unmap_grant_ref *unmap_ops,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		    struct gnttab_map_grant_ref *kmap_ops,
 		    struct page **pages, unsigned int count);
 int gnttab_unmap_refs(struct gnttab_unmap_grant_ref *unmap_ops,
 		      struct gnttab_map_grant_ref *kunmap_ops,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		      struct page **pages, unsigned int count);
 
+=======
+		      struct page **pages, unsigned int count);
+
+/* Perform a batch of grant map/copy operations. Retry every batch slot
+ * for which the hypervisor returns GNTST_eagain. This is typically due
+ * to paged out target frames.
+ *
+ * Will retry for 1, 2, ... 255 ms, i.e. 256 times during 32 seconds.
+ *
+ * Return value in each iand every status field of the batch guaranteed
+ * to not be GNTST_eagain.
+ */
+void gnttab_batch_map(struct gnttab_map_grant_ref *batch, unsigned count);
+void gnttab_batch_copy(struct gnttab_copy *batch, unsigned count);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_GNTTAB_H__ */

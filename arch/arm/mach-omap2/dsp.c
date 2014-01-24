@@ -19,6 +19,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -32,11 +33,30 @@
 #include <plat/dsp.h>
 
 extern phys_addr_t omap_dsp_get_mempool_base(void);
+=======
+#include <linux/module.h>
+#include <linux/platform_device.h>
+
+#include <asm/memblock.h>
+
+#include "control.h"
+#include "cm2xxx_3xxx.h"
+#include "prm2xxx_3xxx.h"
+#ifdef CONFIG_TIDSPBRIDGE_DVFS
+#include "omap-pm.h"
+#endif
+
+#include <linux/platform_data/dsp-omap.h>
+>>>>>>> refs/remotes/origin/master
 
 static struct platform_device *omap_dsp_pdev;
 
 static struct omap_dsp_platform_data omap_dsp_pdata __initdata = {
+<<<<<<< HEAD
 #ifdef CONFIG_BRIDGE_DVFS
+=======
+#ifdef CONFIG_TIDSPBRIDGE_DVFS
+>>>>>>> refs/remotes/origin/master
 	.dsp_set_min_opp = omap_pm_dsp_set_min_opp,
 	.dsp_get_opp = omap_pm_dsp_get_opp,
 	.cpu_set_freq = omap_pm_cpu_set_freq,
@@ -48,8 +68,41 @@ static struct omap_dsp_platform_data omap_dsp_pdata __initdata = {
 	.dsp_cm_read = omap2_cm_read_mod_reg,
 	.dsp_cm_write = omap2_cm_write_mod_reg,
 	.dsp_cm_rmw_bits = omap2_cm_rmw_mod_reg_bits,
+<<<<<<< HEAD
 };
 
+=======
+
+	.set_bootaddr = omap_ctrl_write_dsp_boot_addr,
+	.set_bootmode = omap_ctrl_write_dsp_boot_mode,
+};
+
+static phys_addr_t omap_dsp_phys_mempool_base;
+
+void __init omap_dsp_reserve_sdram_memblock(void)
+{
+	phys_addr_t size = CONFIG_TIDSPBRIDGE_MEMPOOL_SIZE;
+	phys_addr_t paddr;
+
+	if (!size)
+		return;
+
+	paddr = arm_memblock_steal(size, SZ_1M);
+	if (!paddr) {
+		pr_err("%s: failed to reserve %llx bytes\n",
+				__func__, (unsigned long long)size);
+		return;
+	}
+
+	omap_dsp_phys_mempool_base = paddr;
+}
+
+static phys_addr_t omap_dsp_get_mempool_base(void)
+{
+	return omap_dsp_phys_mempool_base;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int __init omap_dsp_init(void)
 {
 	struct platform_device *pdev;
@@ -60,8 +113,14 @@ static int __init omap_dsp_init(void)
 
 	if (pdata->phys_mempool_base) {
 		pdata->phys_mempool_size = CONFIG_TIDSPBRIDGE_MEMPOOL_SIZE;
+<<<<<<< HEAD
 		pr_info("%s: %x bytes @ %x\n", __func__,
 			pdata->phys_mempool_size, pdata->phys_mempool_base);
+=======
+		pr_info("%s: %llx bytes @ %llx\n", __func__,
+			(unsigned long long)pdata->phys_mempool_size,
+			(unsigned long long)pdata->phys_mempool_base);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pdev = platform_device_alloc("omap-dsp", -1);

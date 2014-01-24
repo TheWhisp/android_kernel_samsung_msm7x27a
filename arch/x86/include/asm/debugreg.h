@@ -2,6 +2,7 @@
 #define _ASM_X86_DEBUGREG_H
 
 
+<<<<<<< HEAD
 /* Indicate the register numbers for a number of the specific
    debug registers.  Registers 0-3 contain the addresses we wish to trap on */
 #define DR_FIRSTADDR 0        /* u_debugreg[DR_FIRSTADDR] */
@@ -83,6 +84,10 @@ DECLARE_PER_CPU(unsigned long, cpu_dr7);
 
 =======
 #include <linux/bug.h>
+=======
+#include <linux/bug.h>
+#include <uapi/asm/debugreg.h>
+>>>>>>> refs/remotes/origin/master
 
 DECLARE_PER_CPU(unsigned long, cpu_dr7);
 
@@ -151,7 +156,10 @@ static inline void native_set_debugreg(int regno, unsigned long value)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void hw_breakpoint_disable(void)
 {
 	/* Zero the control register for HW Breakpoint */
@@ -174,7 +182,10 @@ extern void aout_dump_debugregs(struct user *dump);
 extern void hw_breakpoint_restore(void);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_64
 DECLARE_PER_CPU(int, debug_stack_usage);
 static inline void debug_stack_usage_inc(void)
@@ -197,7 +208,10 @@ static inline void debug_stack_usage_dec(void) { }
 #endif /* X86_64 */
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif	/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_DEBUGREG_H */

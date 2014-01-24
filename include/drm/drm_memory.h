@@ -35,7 +35,11 @@
 
 #include <linux/highmem.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
 #include "drmP.h"
+=======
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 
 /**
  * Cut down version of drm_memory_debug.h, which used to be called

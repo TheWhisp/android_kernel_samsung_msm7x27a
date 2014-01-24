@@ -10,9 +10,13 @@
 #include <linux/spinlock.h>
 #include <linux/seq_file.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/net_namespace.h>
 #include <net/tcp_states.h>
 #include <net/ipx.h>
@@ -106,19 +110,30 @@ out:
 static __inline__ struct sock *ipx_get_socket_idx(loff_t pos)
 {
 	struct sock *s = NULL;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ipx_interface *i;
 
 	list_for_each_entry(i, &ipx_interfaces, node) {
 		spin_lock_bh(&i->if_sklist_lock);
+<<<<<<< HEAD
 		sk_for_each(s, node, &i->if_sklist) {
+=======
+		sk_for_each(s, &i->if_sklist) {
+>>>>>>> refs/remotes/origin/master
 			if (!pos)
 				break;
 			--pos;
 		}
 		spin_unlock_bh(&i->if_sklist_lock);
 		if (!pos) {
+<<<<<<< HEAD
 			if (node)
+=======
+			if (s)
+>>>>>>> refs/remotes/origin/master
 				goto found;
 			break;
 		}
@@ -217,10 +232,18 @@ static int ipx_seq_socket_show(struct seq_file *seq, void *v)
 			   ntohs(ipxs->dest_addr.sock));
 	}
 
+<<<<<<< HEAD
 	seq_printf(seq, "%08X  %08X  %02X     %03d\n",
 		   sk_wmem_alloc_get(s),
 		   sk_rmem_alloc_get(s),
 		   s->sk_state, SOCK_INODE(s->sk_socket)->i_uid);
+=======
+	seq_printf(seq, "%08X  %08X  %02X     %03u\n",
+		   sk_wmem_alloc_get(s),
+		   sk_rmem_alloc_get(s),
+		   s->sk_state,
+		   from_kuid_munged(seq_user_ns(seq), sock_i_uid(s)));
+>>>>>>> refs/remotes/origin/master
 out:
 	return 0;
 }

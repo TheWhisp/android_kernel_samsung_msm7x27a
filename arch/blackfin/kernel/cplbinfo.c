@@ -17,8 +17,18 @@
 #include <asm/cplbinit.h>
 #include <asm/blackfin.h>
 
+<<<<<<< HEAD
 static char const page_strtbl[][3] = { "1K", "4K", "1M", "4M" };
 #define page(flags)    (((flags) & 0x30000) >> 16)
+=======
+static char const page_strtbl[][4] = {
+	"1K", "4K", "1M", "4M",
+#ifdef CONFIG_BF60x
+	"16K", "64K", "16M", "64M",
+#endif
+};
+#define page(flags)    (((flags) & 0x70000) >> 16)
+>>>>>>> refs/remotes/origin/master
 #define strpage(flags) page_strtbl[page(flags)]
 
 struct cplbinfo_data {
@@ -116,14 +126,22 @@ static const struct seq_operations cplbinfo_sops = {
 
 static int cplbinfo_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	struct proc_dir_entry *pde = PDE(file->f_path.dentry->d_inode);
 	char cplb_type;
 	unsigned int cpu;
+=======
+	char cplb_type;
+	unsigned int cpu = (unsigned long)PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	struct seq_file *m;
 	struct cplbinfo_data *cdata;
 
+<<<<<<< HEAD
 	cpu = (unsigned int)pde->data;
+=======
+>>>>>>> refs/remotes/origin/master
 	cplb_type = cpu & CPLBINFO_DCPLB_FLAG ? 'D' : 'I';
 	cpu &= ~CPLBINFO_DCPLB_FLAG;
 

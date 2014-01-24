@@ -15,9 +15,13 @@
 
 #include <linux/netdevice.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/fib_rules.h>
 #include <net/ipv6.h>
@@ -25,8 +29,12 @@
 #include <net/ip6_route.h>
 #include <net/netlink.h>
 
+<<<<<<< HEAD
 struct fib6_rule
 {
+=======
+struct fib6_rule {
+>>>>>>> refs/remotes/origin/master
 	struct fib_rule		common;
 	struct rt6key		src;
 	struct rt6key		dst;
@@ -59,26 +67,51 @@ static int fib6_rule_action(struct fib_rule *rule, struct flowi *flp,
 	struct fib6_table *table;
 	struct net *net = rule->fr_net;
 	pol_lookup_t lookup = arg->lookup_ptr;
+<<<<<<< HEAD
+=======
+	int err = 0;
+>>>>>>> refs/remotes/origin/master
 
 	switch (rule->action) {
 	case FR_ACT_TO_TBL:
 		break;
 	case FR_ACT_UNREACHABLE:
+<<<<<<< HEAD
+=======
+		err = -ENETUNREACH;
+>>>>>>> refs/remotes/origin/master
 		rt = net->ipv6.ip6_null_entry;
 		goto discard_pkt;
 	default:
 	case FR_ACT_BLACKHOLE:
+<<<<<<< HEAD
 		rt = net->ipv6.ip6_blk_hole_entry;
 		goto discard_pkt;
 	case FR_ACT_PROHIBIT:
+=======
+		err = -EINVAL;
+		rt = net->ipv6.ip6_blk_hole_entry;
+		goto discard_pkt;
+	case FR_ACT_PROHIBIT:
+		err = -EACCES;
+>>>>>>> refs/remotes/origin/master
 		rt = net->ipv6.ip6_prohibit_entry;
 		goto discard_pkt;
 	}
 
 	table = fib6_get_table(net, rule->table);
+<<<<<<< HEAD
 	if (table)
 		rt = lookup(net, table, flp6, flags);
 
+=======
+	if (!table) {
+		err = -EAGAIN;
+		goto out;
+	}
+
+	rt = lookup(net, table, flp6, flags);
+>>>>>>> refs/remotes/origin/master
 	if (rt != net->ipv6.ip6_null_entry) {
 		struct fib6_rule *r = (struct fib6_rule *)rule;
 
@@ -100,15 +133,24 @@ static int fib6_rule_action(struct fib_rule *rule, struct flowi *flp,
 					       r->src.plen))
 				goto again;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ipv6_addr_copy(&flp6->saddr, &saddr);
 =======
 			flp6->saddr = saddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			flp6->saddr = saddr;
+>>>>>>> refs/remotes/origin/master
 		}
 		goto out;
 	}
 again:
+<<<<<<< HEAD
 	dst_release(&rt->dst);
+=======
+	ip6_rt_put(rt);
+	err = -EAGAIN;
+>>>>>>> refs/remotes/origin/master
 	rt = NULL;
 	goto out;
 
@@ -116,9 +158,41 @@ discard_pkt:
 	dst_hold(&rt->dst);
 out:
 	arg->result = rt;
+<<<<<<< HEAD
 	return rt == NULL ? -EAGAIN : 0;
 }
 
+=======
+	return err;
+}
+
+static bool fib6_rule_suppress(struct fib_rule *rule, struct fib_lookup_arg *arg)
+{
+	struct rt6_info *rt = (struct rt6_info *) arg->result;
+	struct net_device *dev = NULL;
+
+	if (rt->rt6i_idev)
+		dev = rt->rt6i_idev->dev;
+
+	/* do not accept result if the route does
+	 * not meet the required prefix length
+	 */
+	if (rt->rt6i_dst.plen <= rule->suppress_prefixlen)
+		goto suppress_route;
+
+	/* do not accept result if the route uses a device
+	 * belonging to a forbidden interface group
+	 */
+	if (rule->suppress_ifgroup != -1 && dev && dev->group == rule->suppress_ifgroup)
+		goto suppress_route;
+
+	return false;
+
+suppress_route:
+	ip6_rt_put(rt);
+	return true;
+}
+>>>>>>> refs/remotes/origin/master
 
 static int fib6_rule_match(struct fib_rule *rule, struct flowi *fl, int flags)
 {
@@ -222,6 +296,7 @@ static int fib6_rule_fill(struct fib_rule *rule, struct sk_buff *skb,
 	frh->src_len = rule6->src.plen;
 	frh->tos = rule6->tclass;
 
+<<<<<<< HEAD
 	if (rule6->dst.plen)
 		NLA_PUT(skb, FRA_DST, sizeof(struct in6_addr),
 			&rule6->dst.addr);
@@ -230,6 +305,15 @@ static int fib6_rule_fill(struct fib_rule *rule, struct sk_buff *skb,
 		NLA_PUT(skb, FRA_SRC, sizeof(struct in6_addr),
 			&rule6->src.addr);
 
+=======
+	if ((rule6->dst.plen &&
+	     nla_put(skb, FRA_DST, sizeof(struct in6_addr),
+		     &rule6->dst.addr)) ||
+	    (rule6->src.plen &&
+	     nla_put(skb, FRA_SRC, sizeof(struct in6_addr),
+		     &rule6->src.addr)))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 nla_put_failure:
@@ -247,12 +331,20 @@ static size_t fib6_rule_nlmsg_payload(struct fib_rule *rule)
 	       + nla_total_size(16); /* src */
 }
 
+<<<<<<< HEAD
 static const struct fib_rules_ops __net_initdata fib6_rules_ops_template = {
+=======
+static const struct fib_rules_ops __net_initconst fib6_rules_ops_template = {
+>>>>>>> refs/remotes/origin/master
 	.family			= AF_INET6,
 	.rule_size		= sizeof(struct fib6_rule),
 	.addr_size		= sizeof(struct in6_addr),
 	.action			= fib6_rule_action,
 	.match			= fib6_rule_match,
+<<<<<<< HEAD
+=======
+	.suppress		= fib6_rule_suppress,
+>>>>>>> refs/remotes/origin/master
 	.configure		= fib6_rule_configure,
 	.compare		= fib6_rule_compare,
 	.fill			= fib6_rule_fill,

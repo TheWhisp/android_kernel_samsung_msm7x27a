@@ -25,10 +25,14 @@ static void pci_visws_disable_irq(struct pci_dev *dev) { }
 unsigned int pci_bus0, pci_bus1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init visws_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 static int __init visws_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init visws_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	int irq, bus = dev->bus->number;
 
@@ -66,11 +70,14 @@ out:
 	return irq;
 }
 
+<<<<<<< HEAD
 void __init pcibios_update_irq(struct pci_dev *dev, int irq)
 {
 	pci_write_config_byte(dev, PCI_INTERRUPT_LINE, irq);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 int __init pci_visws_init(void)
 {
 	pcibios_enable_irq = &pci_visws_enable_irq;

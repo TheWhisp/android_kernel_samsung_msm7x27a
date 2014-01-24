@@ -75,10 +75,14 @@
 #include <linux/interrupt.h>
 #include <linux/pci.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/core.h>
 #include <sound/info.h>
@@ -94,12 +98,17 @@
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
 static int fullduplex[SNDRV_CARDS]; // = {[0 ... (SNDRV_CARDS - 1)] = 1};
 =======
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
 static bool fullduplex[SNDRV_CARDS]; // = {[0 ... (SNDRV_CARDS - 1)] = 1};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
+static bool fullduplex[SNDRV_CARDS]; // = {[0 ... (SNDRV_CARDS - 1)] = 1};
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for RME Digi32 soundcard.");
@@ -1341,7 +1350,11 @@ snd_rme32_free_adat_pcm(struct snd_pcm *pcm)
 	rme32->adat_pcm = NULL;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_rme32_create(struct rme32 * rme32)
+=======
+static int snd_rme32_create(struct rme32 *rme32)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *pci = rme32->pci;
 	int err;
@@ -1365,10 +1378,14 @@ static int __devinit snd_rme32_create(struct rme32 * rme32)
 
 	if (request_irq(pci->irq, snd_rme32_interrupt, IRQF_SHARED,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"RME32", rme32)) {
 =======
 			KBUILD_MODNAME, rme32)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			KBUILD_MODNAME, rme32)) {
+>>>>>>> refs/remotes/origin/master
 		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
 		return -EBUSY;
 	}
@@ -1567,7 +1584,11 @@ snd_rme32_proc_read(struct snd_info_entry * entry, struct snd_info_buffer *buffe
 	}
 }
 
+<<<<<<< HEAD
 static void __devinit snd_rme32_proc_init(struct rme32 * rme32)
+=======
+static void snd_rme32_proc_init(struct rme32 *rme32)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_info_entry *entry;
 
@@ -1935,7 +1956,11 @@ static void snd_rme32_card_free(struct snd_card *card)
 	snd_rme32_free(card->private_data);
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 snd_rme32_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
 {
 	static int dev;
@@ -1991,6 +2016,7 @@ snd_rme32_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_rme32_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
@@ -2020,3 +2046,18 @@ static void __exit alsa_card_rme32_exit(void)
 
 module_init(alsa_card_rme32_init)
 module_exit(alsa_card_rme32_exit)
+=======
+static void snd_rme32_remove(struct pci_dev *pci)
+{
+	snd_card_free(pci_get_drvdata(pci));
+}
+
+static struct pci_driver rme32_driver = {
+	.name =		KBUILD_MODNAME,
+	.id_table =	snd_rme32_ids,
+	.probe =	snd_rme32_probe,
+	.remove =	snd_rme32_remove,
+};
+
+module_pci_driver(rme32_driver);
+>>>>>>> refs/remotes/origin/master

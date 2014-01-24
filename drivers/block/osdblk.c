@@ -266,11 +266,18 @@ static struct bio *bio_chain_clone(struct bio *old_chain, gfp_t gfpmask)
 	struct bio *tmp, *new_chain = NULL, *tail = NULL;
 
 	while (old_chain) {
+<<<<<<< HEAD
 		tmp = bio_kmalloc(gfpmask, old_chain->bi_max_vecs);
 		if (!tmp)
 			goto err_out;
 
 		__bio_clone(tmp, old_chain);
+=======
+		tmp = bio_clone_kmalloc(old_chain, gfpmask);
+		if (!tmp)
+			goto err_out;
+
+>>>>>>> refs/remotes/origin/master
 		tmp->bi_bdev = NULL;
 		gfpmask &= ~__GFP_WAIT;
 		tmp->bi_next = NULL;
@@ -599,7 +606,11 @@ static ssize_t class_osdblk_remove(struct class *c,
 	unsigned long ul;
 	struct list_head *tmp;
 
+<<<<<<< HEAD
 	rc = strict_strtoul(buf, 10, &ul);
+=======
+	rc = kstrtoul(buf, 10, &ul);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		return rc;
 

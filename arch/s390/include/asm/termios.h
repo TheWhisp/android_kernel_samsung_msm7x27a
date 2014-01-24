@@ -1,10 +1,14 @@
 /*
+<<<<<<< HEAD
  *  include/asm-s390/termios.h
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *  S390 version
  *
  *  Derived from "include/asm-i386/termios.h"
  */
+<<<<<<< HEAD
 
 #ifndef _S390_TERMIOS_H
 #define _S390_TERMIOS_H
@@ -48,6 +52,13 @@ struct termio {
 /* ioctl (fd, TIOCSERGETLSR, &result) where result may be as below */
 
 #ifdef __KERNEL__
+=======
+#ifndef _S390_TERMIOS_H
+#define _S390_TERMIOS_H
+
+#include <uapi/asm/termios.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /*	intr=^C		quit=^\		erase=del	kill=^U
 	eof=^D		vtime=\0	vmin=\1		sxtc=\0
@@ -62,6 +73,9 @@ struct termio {
 
 #include <asm-generic/termios-base.h>
 
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* _S390_TERMIOS_H */

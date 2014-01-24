@@ -36,7 +36,11 @@ extern int fg_console, last_console, want_console;
 int vc_allocate(unsigned int console);
 int vc_cons_allocated(unsigned int console);
 int vc_resize(struct vc_data *vc, unsigned int cols, unsigned int lines);
+<<<<<<< HEAD
 void vc_deallocate(unsigned int console);
+=======
+struct vc_data *vc_deallocate(unsigned int console);
+>>>>>>> refs/remotes/origin/master
 void reset_palette(struct vc_data *vc);
 void do_blank_screen(int entering_gfx);
 void do_unblank_screen(int leaving_gfx);
@@ -48,9 +52,13 @@ int con_get_cmap(unsigned char __user *cmap);
 void scrollback(struct vc_data *vc, int lines);
 void scrollfront(struct vc_data *vc, int lines);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void clear_buffer_attributes(struct vc_data *vc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void clear_buffer_attributes(struct vc_data *vc);
+>>>>>>> refs/remotes/origin/master
 void update_region(struct vc_data *vc, unsigned long start, int count);
 void redraw_screen(struct vc_data *vc, int is_switch);
 #define update_screen(x) redraw_screen(x, 0)
@@ -74,7 +82,10 @@ int con_set_unimap(struct vc_data *vc, ushort ct, struct unipair __user *list);
 int con_get_unimap(struct vc_data *vc, ushort ct, ushort __user *uct, struct unipair __user *list);
 int con_set_default_unimap(struct vc_data *vc);
 void con_free_unimap(struct vc_data *vc);
+<<<<<<< HEAD
 void con_protect_unimap(struct vc_data *vc, int rdonly);
+=======
+>>>>>>> refs/remotes/origin/master
 int con_copy_unimap(struct vc_data *dst_vc, struct vc_data *src_vc);
 
 #define vc_translate(vc, c) ((vc)->vc_translate[(c) |			\
@@ -137,17 +148,24 @@ void change_console(struct vc_data *new_vc);
 void reset_vc(struct vc_data *vc);
 extern int do_unbind_con_driver(const struct consw *csw, int first, int last,
 			     int deflt);
+<<<<<<< HEAD
 extern int unbind_con_driver(const struct consw *csw, int first, int last,
 			     int deflt);
+=======
+>>>>>>> refs/remotes/origin/master
 int vty_init(const struct file_operations *console_fops);
 
 static inline bool vt_force_oops_output(struct vc_data *vc)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (oops_in_progress && vc->vc_panic_force_write)
 =======
 	if (oops_in_progress && vc->vc_panic_force_write  && panic_timeout >= 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (oops_in_progress && vc->vc_panic_force_write  && panic_timeout >= 0)
+>>>>>>> refs/remotes/origin/master
 		return true;
 	return false;
 }
@@ -178,7 +196,10 @@ extern int unregister_vt_notifier(struct notifier_block *nb);
 extern void hide_boot_cursor(bool hide);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* keyboard  provided interfaces */
 extern int vt_do_diacrit(unsigned int cmd, void __user *up, int eperm);
 extern int vt_do_kdskbmode(int console, unsigned int arg);
@@ -205,5 +226,8 @@ extern void vt_kbd_con_start(int console);
 extern void vt_kbd_con_stop(int console);
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _VT_KERN_H */

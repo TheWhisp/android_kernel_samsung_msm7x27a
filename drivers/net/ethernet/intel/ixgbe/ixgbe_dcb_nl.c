@@ -1,7 +1,11 @@
 /*******************************************************************************
 
   Intel 10 Gigabit PCI Express Linux driver
+<<<<<<< HEAD
   Copyright(c) 1999 - 2012 Intel Corporation.
+=======
+  Copyright(c) 1999 - 2013 Intel Corporation.
+>>>>>>> refs/remotes/origin/master
 
   This program is free software; you can redistribute it and/or modify it
   under the terms and conditions of the GNU General Public License,
@@ -30,6 +34,10 @@
 #include <linux/dcbnl.h>
 #include "ixgbe_dcb_82598.h"
 #include "ixgbe_dcb_82599.h"
+<<<<<<< HEAD
+=======
+#include "ixgbe_sriov.h"
+>>>>>>> refs/remotes/origin/master
 
 /* Callbacks for DCB netlink in the kernel */
 #define BIT_DCB_MODE	0x01
@@ -151,16 +159,22 @@ static u8 ixgbe_dcbnl_get_state(struct net_device *netdev)
 
 static u8 ixgbe_dcbnl_set_state(struct net_device *netdev, u8 state)
 {
+<<<<<<< HEAD
 	int err = 0;
 	u8 prio_tc[MAX_USER_PRIORITY] = {0};
 	int i;
 	struct ixgbe_adapter *adapter = netdev_priv(netdev);
+=======
+	struct ixgbe_adapter *adapter = netdev_priv(netdev);
+	int err = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* Fail command if not in CEE mode */
 	if (!(adapter->dcbx_cap & DCB_CAP_DCBX_VER_CEE))
 		return 1;
 
 	/* verify there is something to do, if not then exit */
+<<<<<<< HEAD
 	if (!!state != !(adapter->flags & IXGBE_FLAG_DCB_ENABLED))
 		goto out;
 
@@ -179,6 +193,15 @@ static u8 ixgbe_dcbnl_set_state(struct net_device *netdev, u8 state)
 
 out:
 	return err ? 1 : 0;
+=======
+	if (!state == !(adapter->flags & IXGBE_FLAG_DCB_ENABLED))
+		goto out;
+
+	err = ixgbe_setup_tc(netdev,
+			     state ? adapter->dcb_cfg.num_tcs.pg_tcs : 0);
+out:
+	return !!err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ixgbe_dcbnl_get_perm_hw_addr(struct net_device *netdev,
@@ -314,7 +337,10 @@ static void ixgbe_dcbnl_get_pfc_cfg(struct net_device *netdev, int priority,
 	*setting = adapter->dcb_cfg.tc_config[priority].dcb_pfc;
 }
 
+<<<<<<< HEAD
 #ifdef IXGBE_FCOE
+=======
+>>>>>>> refs/remotes/origin/master
 static void ixgbe_dcbnl_devreset(struct net_device *dev)
 {
 	struct ixgbe_adapter *adapter = netdev_priv(dev);
@@ -333,11 +359,19 @@ static void ixgbe_dcbnl_devreset(struct net_device *dev)
 
 	clear_bit(__IXGBE_RESETTING, &adapter->state);
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 static u8 ixgbe_dcbnl_set_all(struct net_device *netdev)
 {
 	struct ixgbe_adapter *adapter = netdev_priv(netdev);
+<<<<<<< HEAD
+=======
+	struct ixgbe_dcb_config *dcb_cfg = &adapter->dcb_cfg;
+	struct ixgbe_hw *hw = &adapter->hw;
+>>>>>>> refs/remotes/origin/master
 	int ret = DCB_NO_HW_CHG;
 	int i;
 
@@ -350,6 +384,7 @@ static u8 ixgbe_dcbnl_set_all(struct net_device *netdev)
 	if (!adapter->dcb_set_bitmap)
 		return ret;
 
+<<<<<<< HEAD
 	if (adapter->dcb_cfg.pfc_mode_enable) {
 		switch (adapter->hw.mac.type) {
 		case ixgbe_mac_82599EB:
@@ -376,6 +411,8 @@ static u8 ixgbe_dcbnl_set_all(struct net_device *netdev)
 		}
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (adapter->dcb_set_bitmap & (BIT_PG_TX|BIT_PG_RX)) {
 		u16 refill[MAX_TRAFFIC_CLASS], max[MAX_TRAFFIC_CLASS];
 		u8 bwg_id[MAX_TRAFFIC_CLASS], prio_type[MAX_TRAFFIC_CLASS];
@@ -388,6 +425,7 @@ static u8 ixgbe_dcbnl_set_all(struct net_device *netdev)
 			max_frame = max(max_frame, IXGBE_FCOE_JUMBO_FRAME_SIZE);
 #endif
 
+<<<<<<< HEAD
 		ixgbe_dcb_calculate_tc_credits(&adapter->hw, &adapter->dcb_cfg,
 					       max_frame, DCB_TX_CONFIG);
 		ixgbe_dcb_calculate_tc_credits(&adapter->hw, &adapter->dcb_cfg,
@@ -405,6 +443,21 @@ static u8 ixgbe_dcbnl_set_all(struct net_device *netdev)
 
 		ixgbe_dcb_hw_ets_config(&adapter->hw, refill, max,
 					bwg_id, prio_type, prio_tc);
+=======
+		ixgbe_dcb_calculate_tc_credits(hw, dcb_cfg, max_frame,
+					       DCB_TX_CONFIG);
+		ixgbe_dcb_calculate_tc_credits(hw, dcb_cfg, max_frame,
+					       DCB_RX_CONFIG);
+
+		ixgbe_dcb_unpack_refill(dcb_cfg, DCB_TX_CONFIG, refill);
+		ixgbe_dcb_unpack_max(dcb_cfg, max);
+		ixgbe_dcb_unpack_bwgid(dcb_cfg, DCB_TX_CONFIG, bwg_id);
+		ixgbe_dcb_unpack_prio(dcb_cfg, DCB_TX_CONFIG, prio_type);
+		ixgbe_dcb_unpack_map(dcb_cfg, DCB_TX_CONFIG, prio_tc);
+
+		ixgbe_dcb_hw_ets_config(hw, refill, max, bwg_id,
+					prio_type, prio_tc);
+>>>>>>> refs/remotes/origin/master
 
 		for (i = 0; i < IEEE_8021QAZ_MAX_TCS; i++)
 			netdev_set_prio_tc_map(netdev, i, prio_tc[i]);
@@ -413,6 +466,7 @@ static u8 ixgbe_dcbnl_set_all(struct net_device *netdev)
 	}
 
 	if (adapter->dcb_set_bitmap & BIT_PFC) {
+<<<<<<< HEAD
 		u8 pfc_en;
 		u8 prio_tc[MAX_USER_PRIORITY];
 
@@ -426,6 +480,23 @@ static u8 ixgbe_dcbnl_set_all(struct net_device *netdev)
 
 	if (adapter->dcb_cfg.pfc_mode_enable)
 		adapter->hw.fc.current_mode = ixgbe_fc_pfc;
+=======
+		if (dcb_cfg->pfc_mode_enable) {
+			u8 pfc_en;
+			u8 prio_tc[MAX_USER_PRIORITY];
+
+			ixgbe_dcb_unpack_map(dcb_cfg, DCB_TX_CONFIG, prio_tc);
+			ixgbe_dcb_unpack_pfc(dcb_cfg, &pfc_en);
+			ixgbe_dcb_hw_pfc_config(hw, pfc_en, prio_tc);
+		} else {
+			hw->mac.ops.fc_enable(hw);
+		}
+
+		ixgbe_set_rx_drop_en(adapter);
+
+		ret = DCB_HW_CHG;
+	}
+>>>>>>> refs/remotes/origin/master
 
 #ifdef IXGBE_FCOE
 	/* Reprogam FCoE hardware offloads when the traffic class
@@ -489,7 +560,10 @@ static u8 ixgbe_dcbnl_getcap(struct net_device *netdev, int capid, u8 *cap)
 static int ixgbe_dcbnl_getnumtcs(struct net_device *netdev, int tcid, u8 *num)
 {
 	struct ixgbe_adapter *adapter = netdev_priv(netdev);
+<<<<<<< HEAD
 	u8 rval = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (adapter->flags & IXGBE_FLAG_DCB_ENABLED) {
 		switch (tcid) {
@@ -500,6 +574,7 @@ static int ixgbe_dcbnl_getnumtcs(struct net_device *netdev, int tcid, u8 *num)
 			*num = adapter->dcb_cfg.num_tcs.pfc_tcs;
 			break;
 		default:
+<<<<<<< HEAD
 			rval = -EINVAL;
 			break;
 		}
@@ -508,6 +583,16 @@ static int ixgbe_dcbnl_getnumtcs(struct net_device *netdev, int tcid, u8 *num)
 	}
 
 	return rval;
+=======
+			return -EINVAL;
+			break;
+		}
+	} else {
+		return -EINVAL;
+	}
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ixgbe_dcbnl_setnumtcs(struct net_device *netdev, int tcid, u8 num)
@@ -580,6 +665,10 @@ static int ixgbe_dcbnl_ieee_setets(struct net_device *dev,
 	int max_frame = dev->mtu + ETH_HLEN + ETH_FCS_LEN;
 	int i, err = 0;
 	__u8 max_tc = 0;
+<<<<<<< HEAD
+=======
+	__u8 map_chg = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!(adapter->dcbx_cap & DCB_CAP_DCBX_VER_IEEE))
 		return -EINVAL;
@@ -589,15 +678,36 @@ static int ixgbe_dcbnl_ieee_setets(struct net_device *dev,
 						  GFP_KERNEL);
 		if (!adapter->ixgbe_ieee_ets)
 			return -ENOMEM;
+<<<<<<< HEAD
 	}
 
 	memcpy(adapter->ixgbe_ieee_ets, ets, sizeof(*adapter->ixgbe_ieee_ets));
+=======
+
+		/* initialize UP2TC mappings to invalid value */
+		for (i = 0; i < IEEE_8021QAZ_MAX_TCS; i++)
+			adapter->ixgbe_ieee_ets->prio_tc[i] =
+				IEEE_8021QAZ_MAX_TCS;
+		/* if possible update UP2TC mappings from HW */
+		ixgbe_dcb_read_rtrup2tc(&adapter->hw,
+					adapter->ixgbe_ieee_ets->prio_tc);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < IEEE_8021QAZ_MAX_TCS; i++) {
 		if (ets->prio_tc[i] > max_tc)
 			max_tc = ets->prio_tc[i];
+<<<<<<< HEAD
 	}
 
+=======
+		if (ets->prio_tc[i] != adapter->ixgbe_ieee_ets->prio_tc[i])
+			map_chg = 1;
+	}
+
+	memcpy(adapter->ixgbe_ieee_ets, ets, sizeof(*adapter->ixgbe_ieee_ets));
+
+>>>>>>> refs/remotes/origin/master
 	if (max_tc)
 		max_tc++;
 
@@ -606,13 +716,21 @@ static int ixgbe_dcbnl_ieee_setets(struct net_device *dev,
 
 	if (max_tc != netdev_get_num_tc(dev))
 		err = ixgbe_setup_tc(dev, max_tc);
+<<<<<<< HEAD
+=======
+	else if (map_chg)
+		ixgbe_dcbnl_devreset(dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		goto err_out;
 
+<<<<<<< HEAD
 	for (i = 0; i < IEEE_8021QAZ_MAX_TCS; i++)
 		netdev_set_prio_tc_map(dev, i, ets->prio_tc[i]);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	err = ixgbe_dcb_hw_ets(&adapter->hw, ets, max_frame);
 err_out:
 	return err;
@@ -647,7 +765,13 @@ static int ixgbe_dcbnl_ieee_setpfc(struct net_device *dev,
 				   struct ieee_pfc *pfc)
 {
 	struct ixgbe_adapter *adapter = netdev_priv(dev);
+<<<<<<< HEAD
 	u8 *prio_tc;
+=======
+	struct ixgbe_hw *hw = &adapter->hw;
+	u8 *prio_tc;
+	int err;
+>>>>>>> refs/remotes/origin/master
 
 	if (!(adapter->dcbx_cap & DCB_CAP_DCBX_VER_IEEE))
 		return -EINVAL;
@@ -661,7 +785,20 @@ static int ixgbe_dcbnl_ieee_setpfc(struct net_device *dev,
 
 	prio_tc = adapter->ixgbe_ieee_ets->prio_tc;
 	memcpy(adapter->ixgbe_ieee_pfc, pfc, sizeof(*adapter->ixgbe_ieee_pfc));
+<<<<<<< HEAD
 	return ixgbe_dcb_hw_pfc_config(&adapter->hw, pfc->pfc_en, prio_tc);
+=======
+
+	/* Enable link flow control parameters if PFC is disabled */
+	if (pfc->pfc_en)
+		err = ixgbe_dcb_hw_pfc_config(hw, pfc->pfc_en, prio_tc);
+	else
+		err = hw->mac.ops.fc_enable(hw);
+
+	ixgbe_set_rx_drop_en(adapter);
+
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ixgbe_dcbnl_ieee_setapp(struct net_device *dev,
@@ -674,9 +811,17 @@ static int ixgbe_dcbnl_ieee_setapp(struct net_device *dev,
 		return err;
 
 	err = dcb_ieee_setapp(dev, app);
+<<<<<<< HEAD
 
 #ifdef IXGBE_FCOE
 	if (!err && app->selector == IEEE_8021QAZ_APP_SEL_ETHERTYPE &&
+=======
+	if (err)
+		return err;
+
+#ifdef IXGBE_FCOE
+	if (app->selector == IEEE_8021QAZ_APP_SEL_ETHERTYPE &&
+>>>>>>> refs/remotes/origin/master
 	    app->protocol == ETH_P_FCOE) {
 		u8 app_mask = dcb_ieee_getapp_mask(dev, app);
 
@@ -687,6 +832,26 @@ static int ixgbe_dcbnl_ieee_setapp(struct net_device *dev,
 		ixgbe_dcbnl_devreset(dev);
 	}
 #endif
+<<<<<<< HEAD
+=======
+
+	/* VF devices should use default UP when available */
+	if (app->selector == IEEE_8021QAZ_APP_SEL_ETHERTYPE &&
+	    app->protocol == 0) {
+		int vf;
+
+		adapter->default_up = app->priority;
+
+		for (vf = 0; vf < adapter->num_vfs; vf++) {
+			struct vf_data_storage *vfinfo = &adapter->vfinfo[vf];
+
+			if (!vfinfo->pf_qos)
+				ixgbe_set_vmvir(adapter, vfinfo->pf_vlan,
+						app->priority, vf);
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -714,6 +879,27 @@ static int ixgbe_dcbnl_ieee_delapp(struct net_device *dev,
 		ixgbe_dcbnl_devreset(dev);
 	}
 #endif
+<<<<<<< HEAD
+=======
+	/* IF default priority is being removed clear VF default UP */
+	if (app->selector == IEEE_8021QAZ_APP_SEL_ETHERTYPE &&
+	    app->protocol == 0 && adapter->default_up == app->priority) {
+		int vf;
+		long unsigned int app_mask = dcb_ieee_getapp_mask(dev, app);
+		int qos = app_mask ? find_first_bit(&app_mask, 8) : 0;
+
+		adapter->default_up = qos;
+
+		for (vf = 0; vf < adapter->num_vfs; vf++) {
+			struct vf_data_storage *vfinfo = &adapter->vfinfo[vf];
+
+			if (!vfinfo->pf_qos)
+				ixgbe_set_vmvir(adapter, vfinfo->pf_vlan,
+						qos, vf);
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 

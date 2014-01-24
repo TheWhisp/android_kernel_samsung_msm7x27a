@@ -17,6 +17,7 @@
  */
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_types.h"
 #include "xfs_bit.h"
 #include "xfs_log.h"
@@ -39,6 +40,29 @@
 =======
 struct workqueue_struct *xfs_alloc_wq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "xfs_format.h"
+#include "xfs_log_format.h"
+#include "xfs_shared.h"
+#include "xfs_trans_resv.h"
+#include "xfs_bit.h"
+#include "xfs_sb.h"
+#include "xfs_ag.h"
+#include "xfs_mount.h"
+#include "xfs_inode.h"
+#include "xfs_btree.h"
+#include "xfs_alloc_btree.h"
+#include "xfs_alloc.h"
+#include "xfs_extent_busy.h"
+#include "xfs_error.h"
+#include "xfs_cksum.h"
+#include "xfs_trace.h"
+#include "xfs_trans.h"
+#include "xfs_buf_item.h"
+#include "xfs_log.h"
+
+struct workqueue_struct *xfs_alloc_wq;
+>>>>>>> refs/remotes/origin/master
 
 #define XFS_ABSDIFF(a,b)	(((a) <= (b)) ? ((b) - (a)) : ((a) - (b)))
 
@@ -50,8 +74,11 @@ STATIC int xfs_alloc_ag_vextent_near(xfs_alloc_arg_t *);
 STATIC int xfs_alloc_ag_vextent_size(xfs_alloc_arg_t *);
 STATIC int xfs_alloc_ag_vextent_small(xfs_alloc_arg_t *,
 		xfs_btree_cur_t *, xfs_agblock_t *, xfs_extlen_t *, int *);
+<<<<<<< HEAD
 STATIC void xfs_alloc_busy_trim(struct xfs_alloc_arg *,
 		xfs_agblock_t, xfs_extlen_t, xfs_agblock_t *, xfs_extlen_t *);
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Lookup the record equal to [bno, len] in the btree given by cur.
@@ -73,10 +100,14 @@ xfs_alloc_lookup_eq(
  * in the btree given by cur.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 STATIC int				/* error */
 =======
 int				/* error */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int				/* error */
+>>>>>>> refs/remotes/origin/master
 xfs_alloc_lookup_ge(
 	struct xfs_btree_cur	*cur,	/* btree cursor */
 	xfs_agblock_t		bno,	/* starting block of extent */
@@ -159,7 +190,11 @@ xfs_alloc_compute_aligned(
 	xfs_extlen_t	len;
 
 	/* Trim busy sections out of found extent */
+<<<<<<< HEAD
 	xfs_alloc_busy_trim(args, foundbno, foundlen, &bno, &len);
+=======
+	xfs_extent_busy_trim(args, foundbno, foundlen, &bno, &len);
+>>>>>>> refs/remotes/origin/master
 
 	if (args->alignment > 1 && len >= args->minlen) {
 		xfs_agblock_t	aligned_bno = roundup(bno, args->alignment);
@@ -182,6 +217,10 @@ xfs_alloc_compute_diff(
 	xfs_agblock_t	wantbno,	/* target starting block */
 	xfs_extlen_t	wantlen,	/* target length */
 	xfs_extlen_t	alignment,	/* target alignment */
+<<<<<<< HEAD
+=======
+	char		userdata,	/* are we allocating data? */
+>>>>>>> refs/remotes/origin/master
 	xfs_agblock_t	freebno,	/* freespace's starting block */
 	xfs_extlen_t	freelen,	/* freespace's length */
 	xfs_agblock_t	*newbnop)	/* result: best start block from free */
@@ -196,7 +235,18 @@ xfs_alloc_compute_diff(
 	ASSERT(freelen >= wantlen);
 	freeend = freebno + freelen;
 	wantend = wantbno + wantlen;
+<<<<<<< HEAD
 	if (freebno >= wantbno) {
+=======
+	/*
+	 * We want to allocate from the start of a free extent if it is past
+	 * the desired block or if we are allocating user data and the free
+	 * extent is before desired block. The second case is there to allow
+	 * for contiguous allocation from the remaining free space if the file
+	 * grows in the short term.
+	 */
+	if (freebno >= wantbno || (userdata && freeend < wantend)) {
+>>>>>>> refs/remotes/origin/master
 		if ((newbno1 = roundup(freebno, alignment)) >= freeend)
 			newbno1 = NULLAGBLOCK;
 	} else if (freeend >= wantend && alignment > 1) {
@@ -439,6 +489,94 @@ xfs_alloc_fixup_trees(
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static bool
+xfs_agfl_verify(
+	struct xfs_buf	*bp)
+{
+	struct xfs_mount *mp = bp->b_target->bt_mount;
+	struct xfs_agfl	*agfl = XFS_BUF_TO_AGFL(bp);
+	int		i;
+
+	if (!uuid_equal(&agfl->agfl_uuid, &mp->m_sb.sb_uuid))
+		return false;
+	if (be32_to_cpu(agfl->agfl_magicnum) != XFS_AGFL_MAGIC)
+		return false;
+	/*
+	 * during growfs operations, the perag is not fully initialised,
+	 * so we can't use it for any useful checking. growfs ensures we can't
+	 * use it by using uncached buffers that don't have the perag attached
+	 * so we can detect and avoid this problem.
+	 */
+	if (bp->b_pag && be32_to_cpu(agfl->agfl_seqno) != bp->b_pag->pag_agno)
+		return false;
+
+	for (i = 0; i < XFS_AGFL_SIZE(mp); i++) {
+		if (be32_to_cpu(agfl->agfl_bno[i]) != NULLAGBLOCK &&
+		    be32_to_cpu(agfl->agfl_bno[i]) >= mp->m_sb.sb_agblocks)
+			return false;
+	}
+	return true;
+}
+
+static void
+xfs_agfl_read_verify(
+	struct xfs_buf	*bp)
+{
+	struct xfs_mount *mp = bp->b_target->bt_mount;
+	int		agfl_ok = 1;
+
+	/*
+	 * There is no verification of non-crc AGFLs because mkfs does not
+	 * initialise the AGFL to zero or NULL. Hence the only valid part of the
+	 * AGFL is what the AGF says is active. We can't get to the AGF, so we
+	 * can't verify just those entries are valid.
+	 */
+	if (!xfs_sb_version_hascrc(&mp->m_sb))
+		return;
+
+	agfl_ok = xfs_verify_cksum(bp->b_addr, BBTOB(bp->b_length),
+				   offsetof(struct xfs_agfl, agfl_crc));
+
+	agfl_ok = agfl_ok && xfs_agfl_verify(bp);
+
+	if (!agfl_ok) {
+		XFS_CORRUPTION_ERROR(__func__, XFS_ERRLEVEL_LOW, mp, bp->b_addr);
+		xfs_buf_ioerror(bp, EFSCORRUPTED);
+	}
+}
+
+static void
+xfs_agfl_write_verify(
+	struct xfs_buf	*bp)
+{
+	struct xfs_mount *mp = bp->b_target->bt_mount;
+	struct xfs_buf_log_item	*bip = bp->b_fspriv;
+
+	/* no verification of non-crc AGFLs */
+	if (!xfs_sb_version_hascrc(&mp->m_sb))
+		return;
+
+	if (!xfs_agfl_verify(bp)) {
+		XFS_CORRUPTION_ERROR(__func__, XFS_ERRLEVEL_LOW, mp, bp->b_addr);
+		xfs_buf_ioerror(bp, EFSCORRUPTED);
+		return;
+	}
+
+	if (bip)
+		XFS_BUF_TO_AGFL(bp)->agfl_lsn = cpu_to_be64(bip->bli_item.li_lsn);
+
+	xfs_update_cksum(bp->b_addr, BBTOB(bp->b_length),
+			 offsetof(struct xfs_agfl, agfl_crc));
+}
+
+const struct xfs_buf_ops xfs_agfl_buf_ops = {
+	.verify_read = xfs_agfl_read_verify,
+	.verify_write = xfs_agfl_write_verify,
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Read in the allocation group free block array.
  */
@@ -456,6 +594,7 @@ xfs_alloc_read_agfl(
 	error = xfs_trans_read_buf(
 			mp, tp, mp->m_ddev_targp,
 			XFS_AG_DADDR(mp, agno, XFS_AGFL_DADDR(mp)),
+<<<<<<< HEAD
 			XFS_FSS_TO_BB(mp, 1), 0, &bp);
 	if (error)
 		return error;
@@ -467,6 +606,13 @@ xfs_alloc_read_agfl(
 	ASSERT(!xfs_buf_geterror(bp));
 	xfs_buf_set_ref(bp, XFS_AGFL_REF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			XFS_FSS_TO_BB(mp, 1), 0, &bp, &xfs_agfl_buf_ops);
+	if (error)
+		return error;
+	ASSERT(!xfs_buf_geterror(bp));
+	xfs_buf_set_ref(bp, XFS_AGFL_REF);
+>>>>>>> refs/remotes/origin/master
 	*bpp = bp;
 	return 0;
 }
@@ -549,7 +695,11 @@ xfs_alloc_ag_vextent(
 		if (error)
 			return error;
 
+<<<<<<< HEAD
 		ASSERT(!xfs_alloc_busy_search(args->mp, args->agno,
+=======
+		ASSERT(!xfs_extent_busy_search(args->mp, args->agno,
+>>>>>>> refs/remotes/origin/master
 					      args->agbno, args->len));
 	}
 
@@ -584,12 +734,16 @@ xfs_alloc_ag_vextent_exact(
 	xfs_extlen_t	tlen;	/* length of trimmed extent */
 	xfs_agblock_t	tend;	/* end block of trimmed extent */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xfs_agblock_t	end;	/* end of allocated extent */
 	int		i;	/* success/failure of operation */
 	xfs_extlen_t	rlen;	/* length of returned extent */
 =======
 	int		i;	/* success/failure of operation */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int		i;	/* success/failure of operation */
+>>>>>>> refs/remotes/origin/master
 
 	ASSERT(args->alignment == 1);
 
@@ -622,7 +776,11 @@ xfs_alloc_ag_vextent_exact(
 	/*
 	 * Check for overlapping busy extents.
 	 */
+<<<<<<< HEAD
 	xfs_alloc_busy_trim(args, fbno, flen, &tbno, &tlen);
+=======
+	xfs_extent_busy_trim(args, fbno, flen, &tbno, &tlen);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Give up if the start of the extent is busy, or the freespace isn't
@@ -643,16 +801,22 @@ xfs_alloc_ag_vextent_exact(
 	 * Fix the length according to mod and prod if given.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	end = XFS_AGBLOCK_MIN(tend, args->agbno + args->maxlen);
 	args->len = end - args->agbno;
 =======
 	args->len = XFS_AGBLOCK_MIN(tend, args->agbno + args->maxlen)
 						- args->agbno;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	args->len = XFS_AGBLOCK_MIN(tend, args->agbno + args->maxlen)
+						- args->agbno;
+>>>>>>> refs/remotes/origin/master
 	xfs_alloc_fix_len(args);
 	if (!xfs_alloc_fix_minleft(args))
 		goto not_found;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	rlen = args->len;
 	ASSERT(args->agbno + rlen <= tend);
@@ -661,11 +825,16 @@ xfs_alloc_ag_vextent_exact(
 	/*
 	 * We are allocating agbno for rlen [agbno .. end]
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ASSERT(args->agbno + args->len <= tend);
 
 	/*
 	 * We are allocating agbno for args->len
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Allocate/initialize a cursor for the by-size btree.
 	 */
 	cnt_cur = xfs_allocbt_init_cursor(args->mp, args->tp, args->agbp,
@@ -753,7 +922,12 @@ xfs_alloc_find_best_extent(
 			xfs_alloc_fix_len(args);
 
 			sdiff = xfs_alloc_compute_diff(args->agbno, args->len,
+<<<<<<< HEAD
 						       args->alignment, *sbnoa,
+=======
+						       args->alignment,
+						       args->userdata, *sbnoa,
+>>>>>>> refs/remotes/origin/master
 						       *slena, &new);
 
 			/*
@@ -817,13 +991,21 @@ xfs_alloc_ag_vextent_near(
 	xfs_agblock_t	ltnew;		/* useful start bno of left side */
 	xfs_extlen_t	rlen;		/* length of returned extent */
 	int		forced = 0;
+<<<<<<< HEAD
 #if defined(DEBUG) && defined(__KERNEL__)
+=======
+#ifdef DEBUG
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Randomly don't execute the first algorithm.
 	 */
 	int		dofirst;	/* set to do first algorithm */
 
+<<<<<<< HEAD
 	dofirst = random32() & 1;
+=======
+	dofirst = prandom_u32() & 1;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 restart:
@@ -877,8 +1059,13 @@ restart:
 		xfs_extlen_t	blen=0;
 		xfs_agblock_t	bnew=0;
 
+<<<<<<< HEAD
 #if defined(DEBUG) && defined(__KERNEL__)
 		if (!dofirst)
+=======
+#ifdef DEBUG
+		if (dofirst)
+>>>>>>> refs/remotes/origin/master
 			break;
 #endif
 		/*
@@ -924,7 +1111,12 @@ restart:
 			if (args->len < blen)
 				continue;
 			ltdiff = xfs_alloc_compute_diff(args->agbno, args->len,
+<<<<<<< HEAD
 				args->alignment, ltbnoa, ltlena, &ltnew);
+=======
+				args->alignment, args->userdata, ltbnoa,
+				ltlena, &ltnew);
+>>>>>>> refs/remotes/origin/master
 			if (ltnew != NULLAGBLOCK &&
 			    (args->len > blen || ltdiff < bdiff)) {
 				bdiff = ltdiff;
@@ -1076,7 +1268,12 @@ restart:
 			args->len = XFS_EXTLEN_MIN(ltlena, args->maxlen);
 			xfs_alloc_fix_len(args);
 			ltdiff = xfs_alloc_compute_diff(args->agbno, args->len,
+<<<<<<< HEAD
 				args->alignment, ltbnoa, ltlena, &ltnew);
+=======
+				args->alignment, args->userdata, ltbnoa,
+				ltlena, &ltnew);
+>>>>>>> refs/remotes/origin/master
 
 			error = xfs_alloc_find_best_extent(args,
 						&bno_cur_lt, &bno_cur_gt,
@@ -1092,7 +1289,12 @@ restart:
 			args->len = XFS_EXTLEN_MIN(gtlena, args->maxlen);
 			xfs_alloc_fix_len(args);
 			gtdiff = xfs_alloc_compute_diff(args->agbno, args->len,
+<<<<<<< HEAD
 				args->alignment, gtbnoa, gtlena, &gtnew);
+=======
+				args->alignment, args->userdata, gtbnoa,
+				gtlena, &gtnew);
+>>>>>>> refs/remotes/origin/master
 
 			error = xfs_alloc_find_best_extent(args,
 						&bno_cur_gt, &bno_cur_lt,
@@ -1109,12 +1311,20 @@ restart:
 	 * If we couldn't get anything, give up.
 	 */
 	if (bno_cur_lt == NULL && bno_cur_gt == NULL) {
+<<<<<<< HEAD
+=======
+		xfs_btree_del_cursor(cnt_cur, XFS_BTREE_NOERROR);
+
+>>>>>>> refs/remotes/origin/master
 		if (!forced++) {
 			trace_xfs_alloc_near_busy(args);
 			xfs_log_force(args->mp, XFS_LOG_SYNC);
 			goto restart;
 		}
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		trace_xfs_alloc_size_neither(args);
 		args->agbno = NULLAGBLOCK;
 		return 0;
@@ -1150,7 +1360,11 @@ restart:
 	}
 	rlen = args->len;
 	(void)xfs_alloc_compute_diff(args->agbno, rlen, args->alignment,
+<<<<<<< HEAD
 				     ltbnoa, ltlena, &ltnew);
+=======
+				     args->userdata, ltbnoa, ltlena, &ltnew);
+>>>>>>> refs/remotes/origin/master
 	ASSERT(ltnew >= ltbno);
 	ASSERT(ltnew + rlen <= ltbnoa + ltlena);
 	ASSERT(ltnew + rlen <= be32_to_cpu(XFS_BUF_TO_AGF(args->agbp)->agf_length));
@@ -1424,7 +1638,11 @@ xfs_alloc_ag_vextent_small(
 		if (error)
 			goto error0;
 		if (fbno != NULLAGBLOCK) {
+<<<<<<< HEAD
 			xfs_alloc_busy_reuse(args->mp, args->agno, fbno, 1,
+=======
+			xfs_extent_busy_reuse(args->mp, args->agno, fbno, 1,
+>>>>>>> refs/remotes/origin/master
 					     args->userdata);
 
 			if (args->userdata) {
@@ -1900,12 +2118,19 @@ xfs_alloc_fix_freelist(
 	/*
 	 * Initialize the args structure.
 	 */
+<<<<<<< HEAD
+=======
+	memset(&targs, 0, sizeof(targs));
+>>>>>>> refs/remotes/origin/master
 	targs.tp = tp;
 	targs.mp = mp;
 	targs.agbp = agbp;
 	targs.agno = args->agno;
+<<<<<<< HEAD
 	targs.mod = targs.minleft = targs.wasdel = targs.userdata =
 		targs.minalignslop = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	targs.alignment = targs.minlen = targs.prod = targs.isfl = 1;
 	targs.type = XFS_ALLOCTYPE_THIS_AG;
 	targs.pag = pag;
@@ -1963,6 +2188,7 @@ xfs_alloc_get_freelist(
 	int		btreeblk) /* destination is a AGF btree */
 {
 	xfs_agf_t	*agf;	/* a.g. freespace structure */
+<<<<<<< HEAD
 	xfs_agfl_t	*agfl;	/* a.g. freelist structure */
 	xfs_buf_t	*agflbp;/* buffer for a.g. freelist structure */
 	xfs_agblock_t	bno;	/* block number returned */
@@ -1975,6 +2201,20 @@ xfs_alloc_get_freelist(
 	/*
 	 * Freelist is empty, give up.
 	 */
+=======
+	xfs_buf_t	*agflbp;/* buffer for a.g. freelist structure */
+	xfs_agblock_t	bno;	/* block number returned */
+	__be32		*agfl_bno;
+	int		error;
+	int		logflags;
+	xfs_mount_t	*mp = tp->t_mountp;
+	xfs_perag_t	*pag;	/* per allocation group data */
+
+	/*
+	 * Freelist is empty, give up.
+	 */
+	agf = XFS_BUF_TO_AGF(agbp);
+>>>>>>> refs/remotes/origin/master
 	if (!agf->agf_flcount) {
 		*bnop = NULLAGBLOCK;
 		return 0;
@@ -1982,6 +2222,7 @@ xfs_alloc_get_freelist(
 	/*
 	 * Read the array of free blocks.
 	 */
+<<<<<<< HEAD
 	mp = tp->t_mountp;
 	if ((error = xfs_alloc_read_agfl(mp, tp,
 			be32_to_cpu(agf->agf_seqno), &agflbp)))
@@ -1991,6 +2232,19 @@ xfs_alloc_get_freelist(
 	 * Get the block number and update the data structures.
 	 */
 	bno = be32_to_cpu(agfl->agfl_bno[be32_to_cpu(agf->agf_flfirst)]);
+=======
+	error = xfs_alloc_read_agfl(mp, tp, be32_to_cpu(agf->agf_seqno),
+				    &agflbp);
+	if (error)
+		return error;
+
+
+	/*
+	 * Get the block number and update the data structures.
+	 */
+	agfl_bno = XFS_BUF_TO_AGFL_BNO(mp, agflbp);
+	bno = be32_to_cpu(agfl_bno[be32_to_cpu(agf->agf_flfirst)]);
+>>>>>>> refs/remotes/origin/master
 	be32_add_cpu(&agf->agf_flfirst, 1);
 	xfs_trans_brelse(tp, agflbp);
 	if (be32_to_cpu(agf->agf_flfirst) == XFS_AGFL_SIZE(mp))
@@ -2039,11 +2293,20 @@ xfs_alloc_log_agf(
 		offsetof(xfs_agf_t, agf_freeblks),
 		offsetof(xfs_agf_t, agf_longest),
 		offsetof(xfs_agf_t, agf_btreeblks),
+<<<<<<< HEAD
+=======
+		offsetof(xfs_agf_t, agf_uuid),
+>>>>>>> refs/remotes/origin/master
 		sizeof(xfs_agf_t)
 	};
 
 	trace_xfs_agf(tp->t_mountp, XFS_BUF_TO_AGF(bp), fields, _RET_IP_);
 
+<<<<<<< HEAD
+=======
+	xfs_trans_buf_set_type(tp, bp, XFS_BLFT_AGF_BUF);
+
+>>>>>>> refs/remotes/origin/master
 	xfs_btree_offsets(fields, offsets, XFS_AGF_NUM_BITS, &first, &last);
 	xfs_trans_log_buf(tp, bp, (uint)first, (uint)last);
 }
@@ -2080,12 +2343,20 @@ xfs_alloc_put_freelist(
 	int			btreeblk) /* block came from a AGF btree */
 {
 	xfs_agf_t		*agf;	/* a.g. freespace structure */
+<<<<<<< HEAD
 	xfs_agfl_t		*agfl;	/* a.g. free block array */
+=======
+>>>>>>> refs/remotes/origin/master
 	__be32			*blockp;/* pointer to array entry */
 	int			error;
 	int			logflags;
 	xfs_mount_t		*mp;	/* mount structure */
 	xfs_perag_t		*pag;	/* per allocation group data */
+<<<<<<< HEAD
+=======
+	__be32			*agfl_bno;
+	int			startoff;
+>>>>>>> refs/remotes/origin/master
 
 	agf = XFS_BUF_TO_AGF(agbp);
 	mp = tp->t_mountp;
@@ -2093,7 +2364,10 @@ xfs_alloc_put_freelist(
 	if (!agflbp && (error = xfs_alloc_read_agfl(mp, tp,
 			be32_to_cpu(agf->agf_seqno), &agflbp)))
 		return error;
+<<<<<<< HEAD
 	agfl = XFS_BUF_TO_AGFL(agflbp);
+=======
+>>>>>>> refs/remotes/origin/master
 	be32_add_cpu(&agf->agf_fllast, 1);
 	if (be32_to_cpu(agf->agf_fllast) == XFS_AGFL_SIZE(mp))
 		agf->agf_fllast = 0;
@@ -2114,6 +2388,7 @@ xfs_alloc_put_freelist(
 	xfs_alloc_log_agf(tp, agbp, logflags);
 
 	ASSERT(be32_to_cpu(agf->agf_flcount) <= XFS_AGFL_SIZE(mp));
+<<<<<<< HEAD
 	blockp = &agfl->agfl_bno[be32_to_cpu(agf->agf_fllast)];
 	*blockp = cpu_to_be32(bno);
 	xfs_alloc_log_agf(tp, agbp, logflags);
@@ -2124,6 +2399,106 @@ xfs_alloc_put_freelist(
 	return 0;
 }
 
+=======
+
+	agfl_bno = XFS_BUF_TO_AGFL_BNO(mp, agflbp);
+	blockp = &agfl_bno[be32_to_cpu(agf->agf_fllast)];
+	*blockp = cpu_to_be32(bno);
+	startoff = (char *)blockp - (char *)agflbp->b_addr;
+
+	xfs_alloc_log_agf(tp, agbp, logflags);
+
+	xfs_trans_buf_set_type(tp, agflbp, XFS_BLFT_AGFL_BUF);
+	xfs_trans_log_buf(tp, agflbp, startoff,
+			  startoff + sizeof(xfs_agblock_t) - 1);
+	return 0;
+}
+
+static bool
+xfs_agf_verify(
+	struct xfs_mount *mp,
+	struct xfs_buf	*bp)
+ {
+	struct xfs_agf	*agf = XFS_BUF_TO_AGF(bp);
+
+	if (xfs_sb_version_hascrc(&mp->m_sb) &&
+	    !uuid_equal(&agf->agf_uuid, &mp->m_sb.sb_uuid))
+			return false;
+
+	if (!(agf->agf_magicnum == cpu_to_be32(XFS_AGF_MAGIC) &&
+	      XFS_AGF_GOOD_VERSION(be32_to_cpu(agf->agf_versionnum)) &&
+	      be32_to_cpu(agf->agf_freeblks) <= be32_to_cpu(agf->agf_length) &&
+	      be32_to_cpu(agf->agf_flfirst) < XFS_AGFL_SIZE(mp) &&
+	      be32_to_cpu(agf->agf_fllast) < XFS_AGFL_SIZE(mp) &&
+	      be32_to_cpu(agf->agf_flcount) <= XFS_AGFL_SIZE(mp)))
+		return false;
+
+	/*
+	 * during growfs operations, the perag is not fully initialised,
+	 * so we can't use it for any useful checking. growfs ensures we can't
+	 * use it by using uncached buffers that don't have the perag attached
+	 * so we can detect and avoid this problem.
+	 */
+	if (bp->b_pag && be32_to_cpu(agf->agf_seqno) != bp->b_pag->pag_agno)
+		return false;
+
+	if (xfs_sb_version_haslazysbcount(&mp->m_sb) &&
+	    be32_to_cpu(agf->agf_btreeblks) > be32_to_cpu(agf->agf_length))
+		return false;
+
+	return true;;
+
+}
+
+static void
+xfs_agf_read_verify(
+	struct xfs_buf	*bp)
+{
+	struct xfs_mount *mp = bp->b_target->bt_mount;
+	int		agf_ok = 1;
+
+	if (xfs_sb_version_hascrc(&mp->m_sb))
+		agf_ok = xfs_verify_cksum(bp->b_addr, BBTOB(bp->b_length),
+					  offsetof(struct xfs_agf, agf_crc));
+
+	agf_ok = agf_ok && xfs_agf_verify(mp, bp);
+
+	if (unlikely(XFS_TEST_ERROR(!agf_ok, mp, XFS_ERRTAG_ALLOC_READ_AGF,
+			XFS_RANDOM_ALLOC_READ_AGF))) {
+		XFS_CORRUPTION_ERROR(__func__, XFS_ERRLEVEL_LOW, mp, bp->b_addr);
+		xfs_buf_ioerror(bp, EFSCORRUPTED);
+	}
+}
+
+static void
+xfs_agf_write_verify(
+	struct xfs_buf	*bp)
+{
+	struct xfs_mount *mp = bp->b_target->bt_mount;
+	struct xfs_buf_log_item	*bip = bp->b_fspriv;
+
+	if (!xfs_agf_verify(mp, bp)) {
+		XFS_CORRUPTION_ERROR(__func__, XFS_ERRLEVEL_LOW, mp, bp->b_addr);
+		xfs_buf_ioerror(bp, EFSCORRUPTED);
+		return;
+	}
+
+	if (!xfs_sb_version_hascrc(&mp->m_sb))
+		return;
+
+	if (bip)
+		XFS_BUF_TO_AGF(bp)->agf_lsn = cpu_to_be64(bip->bli_item.li_lsn);
+
+	xfs_update_cksum(bp->b_addr, BBTOB(bp->b_length),
+			 offsetof(struct xfs_agf, agf_crc));
+}
+
+const struct xfs_buf_ops xfs_agf_buf_ops = {
+	.verify_read = xfs_agf_read_verify,
+	.verify_write = xfs_agf_write_verify,
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Read in the allocation group header (free/alloc section).
  */
@@ -2135,20 +2510,32 @@ xfs_read_agf(
 	int			flags,	/* XFS_BUF_ */
 	struct xfs_buf		**bpp)	/* buffer for the ag freelist header */
 {
+<<<<<<< HEAD
 	struct xfs_agf	*agf;		/* ag freelist header */
 	int		agf_ok;		/* set if agf is consistent */
 	int		error;
 
+=======
+	int		error;
+
+	trace_xfs_read_agf(mp, agno);
+
+>>>>>>> refs/remotes/origin/master
 	ASSERT(agno != NULLAGNUMBER);
 	error = xfs_trans_read_buf(
 			mp, tp, mp->m_ddev_targp,
 			XFS_AG_DADDR(mp, agno, XFS_AGF_DADDR(mp)),
+<<<<<<< HEAD
 			XFS_FSS_TO_BB(mp, 1), flags, bpp);
+=======
+			XFS_FSS_TO_BB(mp, 1), flags, bpp, &xfs_agf_buf_ops);
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		return error;
 	if (!*bpp)
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ASSERT(!XFS_BUF_GETERROR(*bpp));
 =======
@@ -2186,6 +2573,10 @@ xfs_read_agf(
 =======
 	xfs_buf_set_ref(*bpp, XFS_AGF_REF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ASSERT(!(*bpp)->b_error);
+	xfs_buf_set_ref(*bpp, XFS_AGF_REF);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2204,8 +2595,14 @@ xfs_alloc_read_agf(
 	struct xfs_perag	*pag;		/* per allocation group data */
 	int			error;
 
+<<<<<<< HEAD
 	ASSERT(agno != NULLAGNUMBER);
 
+=======
+	trace_xfs_alloc_read_agf(mp, agno);
+
+	ASSERT(agno != NULLAGNUMBER);
+>>>>>>> refs/remotes/origin/master
 	error = xfs_read_agf(mp, tp, agno,
 			(flags & XFS_ALLOC_FLAG_TRYLOCK) ? XBF_TRYLOCK : 0,
 			bpp);
@@ -2214,10 +2611,14 @@ xfs_alloc_read_agf(
 	if (!*bpp)
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ASSERT(!XFS_BUF_GETERROR(*bpp));
 =======
 	ASSERT(!(*bpp)->b_error);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ASSERT(!(*bpp)->b_error);
+>>>>>>> refs/remotes/origin/master
 
 	agf = XFS_BUF_TO_AGF(*bpp);
 	pag = xfs_perag_get(mp, agno);
@@ -2258,10 +2659,14 @@ xfs_alloc_read_agf(
  */
 int				/* error */
 <<<<<<< HEAD
+<<<<<<< HEAD
 xfs_alloc_vextent(
 =======
 __xfs_alloc_vextent(
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+xfs_alloc_vextent(
+>>>>>>> refs/remotes/origin/master
 	xfs_alloc_arg_t	*args)	/* allocation argument structure */
 {
 	xfs_agblock_t	agsize;	/* allocation group size */
@@ -2472,6 +2877,7 @@ error0:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static void
 xfs_alloc_vextent_worker(
@@ -2505,6 +2911,8 @@ xfs_alloc_vextent(
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Free an extent.
  * Just break up the extent address and hand off to xfs_free_ag_extent
@@ -2552,11 +2960,16 @@ xfs_free_extent(
 
 	error = xfs_free_ag_extent(tp, args.agbp, args.agno, args.agbno, len, 0);
 	if (!error)
+<<<<<<< HEAD
 		xfs_alloc_busy_insert(tp, args.agno, args.agbno, len, 0);
+=======
+		xfs_extent_busy_insert(tp, args.agno, args.agbno, len, 0);
+>>>>>>> refs/remotes/origin/master
 error0:
 	xfs_perag_put(args.pag);
 	return error;
 }
+<<<<<<< HEAD
 
 void
 xfs_alloc_busy_insert(
@@ -3128,3 +3541,5 @@ xfs_busy_extent_ag_cmp(
 	return container_of(a, struct xfs_busy_extent, list)->agno -
 		container_of(b, struct xfs_busy_extent, list)->agno;
 }
+=======
+>>>>>>> refs/remotes/origin/master

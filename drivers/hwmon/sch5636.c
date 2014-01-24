@@ -402,6 +402,7 @@ static int sch5636_remove(struct platform_device *pdev)
 		device_remove_file(&pdev->dev,
 				   &sch5636_fan_attr[i].dev_attr);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 	kfree(data);
 
@@ -409,12 +410,23 @@ static int sch5636_remove(struct platform_device *pdev)
 }
 
 static int __devinit sch5636_probe(struct platform_device *pdev)
+=======
+	return 0;
+}
+
+static int sch5636_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sch5636_data *data;
 	int i, err, val, revision[2];
 	char id[4];
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct sch5636_data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&pdev->dev, sizeof(struct sch5636_data),
+			    GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!data)
 		return -ENOMEM;
 
@@ -510,7 +522,11 @@ static int __devinit sch5636_probe(struct platform_device *pdev)
 	}
 
 	/* Note failing to register the watchdog is not a fatal error */
+<<<<<<< HEAD
 	data->watchdog = sch56xx_watchdog_register(data->addr,
+=======
+	data->watchdog = sch56xx_watchdog_register(&pdev->dev, data->addr,
+>>>>>>> refs/remotes/origin/master
 					(revision[0] << 8) | revision[1],
 					&data->update_lock, 0);
 

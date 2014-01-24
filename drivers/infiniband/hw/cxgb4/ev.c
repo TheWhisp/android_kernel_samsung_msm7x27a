@@ -43,6 +43,7 @@ static void post_qp_event(struct c4iw_dev *dev, struct c4iw_cq *chp,
 	struct ib_event event;
 	struct c4iw_qp_attributes attrs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long flag;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -54,6 +55,9 @@ static void post_qp_event(struct c4iw_dev *dev, struct c4iw_cq *chp,
 		     qhp->attr.state, qhp->wq.sq.qid, CQE_STATUS(err_cqe));
 		return;
 	}
+=======
+	unsigned long flag;
+>>>>>>> refs/remotes/origin/master
 
 	printk(KERN_ERR MOD "AE qpid 0x%x opcode %d status 0x%x "
 	       "type %d wrid.hi 0x%x wrid.lo 0x%x\n",
@@ -77,12 +81,18 @@ static void post_qp_event(struct c4iw_dev *dev, struct c4iw_cq *chp,
 		(*qhp->ibqp.event_handler)(&event, qhp->ibqp.qp_context);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	(*chp->ibcq.comp_handler)(&chp->ibcq, chp->ibcq.cq_context);
 =======
 	spin_lock_irqsave(&chp->comp_handler_lock, flag);
 	(*chp->ibcq.comp_handler)(&chp->ibcq, chp->ibcq.cq_context);
 	spin_unlock_irqrestore(&chp->comp_handler_lock, flag);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&chp->comp_handler_lock, flag);
+	(*chp->ibcq.comp_handler)(&chp->ibcq, chp->ibcq.cq_context);
+	spin_unlock_irqrestore(&chp->comp_handler_lock, flag);
+>>>>>>> refs/remotes/origin/master
 }
 
 void c4iw_ev_dispatch(struct c4iw_dev *dev, struct t4_cqe *err_cqe)
@@ -91,7 +101,11 @@ void c4iw_ev_dispatch(struct c4iw_dev *dev, struct t4_cqe *err_cqe)
 	struct c4iw_qp *qhp;
 	u32 cqid;
 
+<<<<<<< HEAD
 	spin_lock(&dev->lock);
+=======
+	spin_lock_irq(&dev->lock);
+>>>>>>> refs/remotes/origin/master
 	qhp = get_qhp(dev, CQE_QPID(err_cqe));
 	if (!qhp) {
 		printk(KERN_ERR MOD "BAD AE qpid 0x%x opcode %d "
@@ -100,7 +114,11 @@ void c4iw_ev_dispatch(struct c4iw_dev *dev, struct t4_cqe *err_cqe)
 		       CQE_OPCODE(err_cqe), CQE_STATUS(err_cqe),
 		       CQE_TYPE(err_cqe), CQE_WRID_HI(err_cqe),
 		       CQE_WRID_LOW(err_cqe));
+<<<<<<< HEAD
 		spin_unlock(&dev->lock);
+=======
+		spin_unlock_irq(&dev->lock);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -116,13 +134,21 @@ void c4iw_ev_dispatch(struct c4iw_dev *dev, struct t4_cqe *err_cqe)
 		       CQE_OPCODE(err_cqe), CQE_STATUS(err_cqe),
 		       CQE_TYPE(err_cqe), CQE_WRID_HI(err_cqe),
 		       CQE_WRID_LOW(err_cqe));
+<<<<<<< HEAD
 		spin_unlock(&dev->lock);
+=======
+		spin_unlock_irq(&dev->lock);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 	c4iw_qp_add_ref(&qhp->ibqp);
 	atomic_inc(&chp->refcnt);
+<<<<<<< HEAD
 	spin_unlock(&dev->lock);
+=======
+	spin_unlock_irq(&dev->lock);
+>>>>>>> refs/remotes/origin/master
 
 	/* Bad incoming write */
 	if (RQ_TYPE(err_cqe) &&
@@ -194,12 +220,15 @@ int c4iw_ev_handler(struct c4iw_dev *dev, u32 qid)
 {
 	struct c4iw_cq *chp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	chp = get_chp(dev, qid);
 	if (chp)
 		(*chp->ibcq.comp_handler)(&chp->ibcq, chp->ibcq.cq_context);
 	else
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flag;
 
 	chp = get_chp(dev, qid);
@@ -208,7 +237,10 @@ int c4iw_ev_handler(struct c4iw_dev *dev, u32 qid)
 		(*chp->ibcq.comp_handler)(&chp->ibcq, chp->ibcq.cq_context);
 		spin_unlock_irqrestore(&chp->comp_handler_lock, flag);
 	} else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		PDBG("%s unknown cqid 0x%x\n", __func__, qid);
 	return 0;
 }

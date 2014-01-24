@@ -30,9 +30,12 @@
 #include <linux/of_platform.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -45,13 +48,18 @@
 #include <sysdev/fsl_pci.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "mpc85xx.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "mpc85xx.h"
+>>>>>>> refs/remotes/origin/master
 #include "socrates_fpga_pic.h"
 
 static void __init socrates_pic_init(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct mpic *mpic;
 	struct resource r;
@@ -76,12 +84,17 @@ static void __init socrates_pic_init(void)
 	of_node_put(np);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct device_node *np;
 
 	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN,
 			0, 256, " OpenPIC  ");
 	BUG_ON(mpic == NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mpic_init(mpic);
 
 	np = of_find_compatible_node(NULL, NULL, "abb,socrates-fpga-pic");
@@ -98,6 +111,7 @@ static void __init socrates_pic_init(void)
  */
 static void __init socrates_setup_arch(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	struct device_node *np;
 #endif
@@ -126,6 +140,15 @@ machine_device_initcall(socrates, socrates_publish_devices);
 =======
 machine_device_initcall(socrates, mpc85xx_common_publish_devices);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ppc_md.progress)
+		ppc_md.progress("socrates_setup_arch()", 0);
+
+	fsl_pci_assign_primary();
+}
+
+machine_arch_initcall(socrates, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Called very early, device-tree isn't unflattened

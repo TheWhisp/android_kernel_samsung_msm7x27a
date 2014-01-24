@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "libgcc.h"
 
@@ -25,5 +29,8 @@ long long __lshrdi3(long long u, word_type b)
 
 	return w.ll;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(__lshrdi3);

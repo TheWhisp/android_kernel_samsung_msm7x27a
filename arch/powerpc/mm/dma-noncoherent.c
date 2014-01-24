@@ -31,9 +31,13 @@
 #include <linux/highmem.h>
 #include <linux/dma-mapping.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/tlbflush.h>
 
@@ -290,9 +294,13 @@ void __dma_free_coherent(size_t size, void *vaddr)
 			pte_clear(&init_mm, addr, ptep);
 			if (pfn_valid(pfn)) {
 				struct page *page = pfn_to_page(pfn);
+<<<<<<< HEAD
 
 				ClearPageReserved(page);
 				__free_page(page);
+=======
+				__free_reserved_page(page);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		addr += PAGE_SIZE;
@@ -369,6 +377,7 @@ static inline void __dma_sync_page_highmem(struct page *page,
 
 	do {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		start = (unsigned long)kmap_atomic(page + seg_nr,
 				KM_PPC_SYNC_PAGE) + seg_offset;
 
@@ -376,12 +385,17 @@ static inline void __dma_sync_page_highmem(struct page *page,
 		__dma_sync((void *)start, seg_size, direction);
 		kunmap_atomic((void *)start, KM_PPC_SYNC_PAGE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		start = (unsigned long)kmap_atomic(page + seg_nr) + seg_offset;
 
 		/* Sync this buffer segment */
 		__dma_sync((void *)start, seg_size, direction);
 		kunmap_atomic((void *)start);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		seg_nr++;
 
 		/* Calculate next buffer segment size */

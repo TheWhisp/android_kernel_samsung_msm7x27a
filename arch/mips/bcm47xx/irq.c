@@ -27,9 +27,13 @@
 #include <linux/irq.h>
 #include <asm/irq_cpu.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <bcm47xx.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <bcm47xx.h>
+>>>>>>> refs/remotes/origin/master
 
 void plat_irq_dispatch(void)
 {
@@ -56,7 +60,10 @@ void plat_irq_dispatch(void)
 void __init arch_init_irq(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_BCM47XX_BCMA
 	if (bcm47xx_bus_type == BCM47XX_BUS_TYPE_BCMA) {
 		bcma_write32(bcm47xx_bus.bcma.bus.drv_mips.core,
@@ -68,6 +75,9 @@ void __init arch_init_irq(void)
 		cp0_compare_irq = 7;
 	}
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mips_cpu_irq_init();
 }

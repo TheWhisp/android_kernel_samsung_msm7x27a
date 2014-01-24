@@ -27,10 +27,14 @@
 #include <linux/mutex.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 #define PHANTOM_VERSION		"n0.9.8"
@@ -328,7 +332,11 @@ static irqreturn_t phantom_isr(int irq, void *data)
  * Init and deinit driver
  */
 
+<<<<<<< HEAD
 static unsigned int __devinit phantom_get_free(void)
+=======
+static unsigned int phantom_get_free(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i;
 
@@ -339,7 +347,11 @@ static unsigned int __devinit phantom_get_free(void)
 	return i;
 }
 
+<<<<<<< HEAD
 static int __devinit phantom_probe(struct pci_dev *pdev,
+=======
+static int phantom_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 	const struct pci_device_id *pci_id)
 {
 	struct phantom_device *pht;
@@ -399,7 +411,11 @@ static int __devinit phantom_probe(struct pci_dev *pdev,
 	iowrite32(0, pht->caddr + PHN_IRQCTL);
 	ioread32(pht->caddr + PHN_IRQCTL); /* PCI posting */
 	retval = request_irq(pdev->irq, phantom_isr,
+<<<<<<< HEAD
 			IRQF_SHARED | IRQF_DISABLED, "phantom", pht);
+=======
+			IRQF_SHARED, "phantom", pht);
+>>>>>>> refs/remotes/origin/master
 	if (retval) {
 		dev_err(&pdev->dev, "can't establish ISR\n");
 		goto err_unmo;
@@ -439,7 +455,11 @@ err:
 	return retval;
 }
 
+<<<<<<< HEAD
 static void __devexit phantom_remove(struct pci_dev *pdev)
+=======
+static void phantom_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct phantom_device *pht = pci_get_drvdata(pdev);
 	unsigned int minor = MINOR(pht->cdev.dev);
@@ -491,7 +511,11 @@ static int phantom_resume(struct pci_dev *pdev)
 #define phantom_resume	NULL
 #endif
 
+<<<<<<< HEAD
 static struct pci_device_id phantom_pci_tbl[] __devinitdata = {
+=======
+static struct pci_device_id phantom_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .vendor = PCI_VENDOR_ID_PLX, .device = PCI_DEVICE_ID_PLX_9050,
 	  .subvendor = PCI_VENDOR_ID_PLX, .subdevice = PCI_DEVICE_ID_PLX_9050,
 	  .class = PCI_CLASS_BRIDGE_OTHER << 8, .class_mask = 0xffff00 },
@@ -503,7 +527,11 @@ static struct pci_driver phantom_pci_driver = {
 	.name = "phantom",
 	.id_table = phantom_pci_tbl,
 	.probe = phantom_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(phantom_remove),
+=======
+	.remove = phantom_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend = phantom_suspend,
 	.resume = phantom_resume
 };

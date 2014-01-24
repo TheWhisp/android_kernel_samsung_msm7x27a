@@ -47,6 +47,7 @@
 #include <asm/irq.h>
 #include <asm/mach-types.h>
 
+<<<<<<< HEAD
 #include <mach/regs-gpio.h>
 #include <mach/leds-gpio.h>
 #include <mach/regs-lcd.h>
@@ -57,12 +58,30 @@
 #include <plat/iic.h>
 
 #include <plat/common-smdk.h>
+=======
+#include <linux/platform_data/leds-s3c24xx.h>
+#include <mach/regs-lcd.h>
+#include <plat/regs-serial.h>
+#include <mach/fb.h>
+#include <linux/platform_data/mtd-nand-s3c2410.h>
+#include <linux/platform_data/usb-s3c2410_udc.h>
+#include <linux/platform_data/i2c-s3c2410.h>
+#include <mach/gpio-samsung.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <plat/gpio-cfg.h>
 #include <plat/devs.h>
 #include <plat/cpu.h>
 #include <plat/pm.h>
+<<<<<<< HEAD
 
 #include "common.h"
+=======
+#include <plat/samsung-time.h>
+
+#include "common.h"
+#include "common-smdk.h"
+>>>>>>> refs/remotes/origin/master
 
 static struct map_desc qt2410_iodesc[] __initdata = {
 	{ 0xe0000000, __phys_to_pfn(S3C2410_CS3+0x01000000), SZ_1M, MT_DEVICE }
@@ -180,6 +199,7 @@ static struct s3c2410fb_mach_info qt2410_fb_info __initdata = {
 /* CS8900 */
 
 static struct resource qt2410_cs89x0_resources[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start	= 0x19000000,
 		.end	= 0x19000000 + 16,
@@ -190,6 +210,10 @@ static struct resource qt2410_cs89x0_resources[] = {
 		.end	= IRQ_EINT9,
 		.flags	= IORESOURCE_IRQ,
 	},
+=======
+	[0] = DEFINE_RES_MEM(0x19000000, 17),
+	[1] = DEFINE_RES_IRQ(IRQ_EINT9),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device qt2410_cs89x0 = {
@@ -313,6 +337,10 @@ static void __init qt2410_map_io(void)
 	s3c24xx_init_io(qt2410_iodesc, ARRAY_SIZE(qt2410_iodesc));
 	s3c24xx_init_clocks(12*1000*1000);
 	s3c24xx_init_uarts(smdk2410_uartcfgs, ARRAY_SIZE(smdk2410_uartcfgs));
+<<<<<<< HEAD
+=======
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init qt2410_machine_init(void)
@@ -333,8 +361,14 @@ static void __init qt2410_machine_init(void)
 	}
 	s3c24xx_fb_set_platdata(&qt2410_fb_info);
 
+<<<<<<< HEAD
 	s3c_gpio_cfgpin(S3C2410_GPB(0), S3C2410_GPIO_OUTPUT);
 	s3c2410_gpio_setpin(S3C2410_GPB(0), 1);
+=======
+	/* set initial state of the LED GPIO */
+	WARN_ON(gpio_request_one(S3C2410_GPB(0), GPIOF_OUT_INIT_HIGH, NULL));
+	gpio_free(S3C2410_GPB(0));
+>>>>>>> refs/remotes/origin/master
 
 	s3c24xx_udc_set_platdata(&qt2410_udc_cfg);
 	s3c_i2c0_set_platdata(NULL);
@@ -349,8 +383,14 @@ static void __init qt2410_machine_init(void)
 MACHINE_START(QT2410, "QT2410")
 	.atag_offset	= 0x100,
 	.map_io		= qt2410_map_io,
+<<<<<<< HEAD
 	.init_irq	= s3c24xx_init_irq,
 	.init_machine	= qt2410_machine_init,
 	.timer		= &s3c24xx_timer,
+=======
+	.init_irq	= s3c2410_init_irq,
+	.init_machine	= qt2410_machine_init,
+	.init_time	= samsung_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.restart	= s3c2410_restart,
 MACHINE_END

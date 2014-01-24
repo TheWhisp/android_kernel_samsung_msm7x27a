@@ -1,7 +1,15 @@
+<<<<<<< HEAD
 CONFIG_EXPERIMENTAL=y
 # CONFIG_LOCALVERSION_AUTO is not set
 # CONFIG_SWAP is not set
 CONFIG_SYSVIPC=y
+=======
+# CONFIG_LOCALVERSION_AUTO is not set
+# CONFIG_SWAP is not set
+CONFIG_SYSVIPC=y
+CONFIG_NO_HZ=y
+CONFIG_HIGH_RES_TIMERS=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_LOG_BUF_SHIFT=14
 CONFIG_EXPERT=y
 # CONFIG_AIO is not set
@@ -11,6 +19,7 @@ CONFIG_MODULE_UNLOAD=y
 # CONFIG_LBDAF is not set
 # CONFIG_BLK_DEV_BSG is not set
 # CONFIG_IOSCHED_CFQ is not set
+<<<<<<< HEAD
 CONFIG_ARCH_U300=y
 CONFIG_MACH_U300=y
 CONFIG_MACH_U300_BS335=y
@@ -22,6 +31,11 @@ CONFIG_U300_DEBUG=y
 CONFIG_MACH_U300_SPIDUMMY=y
 CONFIG_NO_HZ=y
 CONFIG_HIGH_RES_TIMERS=y
+=======
+# CONFIG_ARCH_MULTI_V7 is not set
+CONFIG_ARCH_U300=y
+CONFIG_MACH_U300_SPIDUMMY=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_PREEMPT=y
 CONFIG_AEABI=y
 CONFIG_ZBOOT_ROM_TEXT=0x0
@@ -30,12 +44,15 @@ CONFIG_CMDLINE="root=/dev/ram0 rw rootfstype=rootfs console=ttyAMA0,115200n8 lpj
 CONFIG_CPU_IDLE=y
 CONFIG_FPE_NWFPE=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_PM=y
 # CONFIG_SUSPEND is not set
 CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
 # CONFIG_PREVENT_FIRMWARE_BUILD is not set
 # CONFIG_MISC_DEVICES is not set
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 # CONFIG_SUSPEND is not set
 CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
 # CONFIG_PREVENT_FIRMWARE_BUILD is not set
@@ -43,12 +60,16 @@ CONFIG_MTD=y
 CONFIG_MTD_CMDLINE_PARTS=y
 CONFIG_MTD_NAND=y
 CONFIG_MTD_NAND_FSMC=y
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # CONFIG_INPUT_MOUSEDEV is not set
 CONFIG_INPUT_EVDEV=y
 # CONFIG_KEYBOARD_ATKBD is not set
 # CONFIG_INPUT_MOUSE is not set
 # CONFIG_SERIO is not set
+<<<<<<< HEAD
 <<<<<<< HEAD
 CONFIG_SERIAL_AMBA_PL011=y
 CONFIG_SERIAL_AMBA_PL011_CONSOLE=y
@@ -58,15 +79,25 @@ CONFIG_LEGACY_PTY_COUNT=16
 CONFIG_SERIAL_AMBA_PL011=y
 CONFIG_SERIAL_AMBA_PL011_CONSOLE=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_LEGACY_PTY_COUNT=16
+CONFIG_SERIAL_AMBA_PL011=y
+CONFIG_SERIAL_AMBA_PL011_CONSOLE=y
+>>>>>>> refs/remotes/origin/master
 # CONFIG_HW_RANDOM is not set
 CONFIG_I2C=y
 # CONFIG_HWMON is not set
 CONFIG_WATCHDOG=y
 CONFIG_REGULATOR=y
+<<<<<<< HEAD
+=======
+CONFIG_REGULATOR_FIXED_VOLTAGE=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_FB=y
 CONFIG_BACKLIGHT_LCD_SUPPORT=y
 # CONFIG_LCD_CLASS_DEVICE is not set
 CONFIG_BACKLIGHT_CLASS_DEVICE=y
+<<<<<<< HEAD
 # CONFIG_HID_SUPPORT is not set
 # CONFIG_USB_SUPPORT is not set
 CONFIG_MMC=y
@@ -74,6 +105,12 @@ CONFIG_MMC=y
 =======
 CONFIG_MMC_CLKGATE=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+# CONFIG_USB_SUPPORT is not set
+CONFIG_MMC=y
+CONFIG_MMC_UNSAFE_RESUME=y
+# CONFIG_MMC_BLOCK_BOUNCE is not set
+>>>>>>> refs/remotes/origin/master
 CONFIG_MMC_ARMMMCI=y
 CONFIG_RTC_CLASS=y
 # CONFIG_RTC_HCTOSYS is not set
@@ -89,15 +126,21 @@ CONFIG_NLS_ISO8859_1=y
 CONFIG_PRINTK_TIME=y
 CONFIG_DEBUG_FS=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_DEBUG_KERNEL=y
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # CONFIG_SCHED_DEBUG is not set
 CONFIG_TIMER_STATS=y
 # CONFIG_DEBUG_PREEMPT is not set
 CONFIG_DEBUG_INFO=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 # CONFIG_RCU_CPU_STALL_DETECTOR is not set
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 # CONFIG_CRC32 is not set
+=======
+>>>>>>> refs/remotes/origin/master

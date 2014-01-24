@@ -18,9 +18,13 @@
 #include <linux/slab.h>
 #include <linux/swap.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/page.h>
 #include <asm/mmu_context.h>
@@ -28,9 +32,13 @@
 #include <asm/sections.h>
 #include <asm/tlb.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/fixmap.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/fixmap.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Use for MMU and noMMU because of PCI generic code */
 int mem_init_done;
@@ -52,10 +60,13 @@ char *klimit = _end;
 unsigned long memory_start;
 EXPORT_SYMBOL(memory_start);
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned long memory_end; /* due to mm/nommu.c */
 unsigned long memory_size;
 EXPORT_SYMBOL(memory_size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long memory_size;
 EXPORT_SYMBOL(memory_size);
 unsigned long lowmem_size;
@@ -82,15 +93,22 @@ static void __init highmem_init(void)
 	kmap_prot = PAGE_KERNEL;
 }
 
+<<<<<<< HEAD
 static unsigned long highmem_setup(void)
 {
 	unsigned long pfn;
 	unsigned long reservedpages = 0;
+=======
+static void highmem_setup(void)
+{
+	unsigned long pfn;
+>>>>>>> refs/remotes/origin/master
 
 	for (pfn = max_low_pfn; pfn < max_pfn; ++pfn) {
 		struct page *page = pfn_to_page(pfn);
 
 		/* FIXME not sure about */
+<<<<<<< HEAD
 		if (memblock_is_reserved(pfn << PAGE_SHIFT))
 			continue;
 		ClearPageReserved(page);
@@ -107,6 +125,13 @@ static unsigned long highmem_setup(void)
 }
 #endif /* CONFIG_HIGHMEM */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!memblock_is_reserved(pfn << PAGE_SHIFT))
+			free_highmem_page(page);
+	}
+}
+#endif /* CONFIG_HIGHMEM */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * paging_init() sets up the page tables - in fact we've already done this.
@@ -115,7 +140,10 @@ static void __init paging_init(void)
 {
 	unsigned long zones_size[MAX_NR_ZONES];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MMU
 	int idx;
 
@@ -123,11 +151,15 @@ static void __init paging_init(void)
 	for (idx = 0; idx < __end_of_fixed_addresses; idx++)
 		clear_fixmap(idx);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Clean every zones */
 	memset(zones_size, 0, sizeof(zones_size));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*
 	 * old: we can DMA to/from any address.put all page into ZONE_DMA
@@ -137,6 +169,8 @@ static void __init paging_init(void)
 
 	free_area_init(zones_size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HIGHMEM
 	highmem_init();
 
@@ -148,7 +182,10 @@ static void __init paging_init(void)
 
 	/* We don't have holes in memory map */
 	free_area_init_nodes(zones_size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init setup_memory(void)
@@ -163,6 +200,7 @@ void __init setup_memory(void)
 	for_each_memblock(memory, reg) {
 		memory_start = (u32)reg->base;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		memory_end = (u32) reg->base + reg->size;
 		if ((memory_start <= (u32)_text) &&
 					((u32)_text <= memory_end)) {
@@ -172,19 +210,28 @@ void __init setup_memory(void)
 				"size 0x%08x\n", __func__, (u32) memory_start,
 					(u32) memory_end, (u32) memory_size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		lowmem_size = reg->size;
 		if ((memory_start <= (u32)_text) &&
 			((u32)_text <= (memory_start + lowmem_size - 1))) {
 			memory_size = lowmem_size;
 			PAGE_OFFSET = memory_start;
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: Main mem: 0x%x, "
 				"size 0x%08x\n", __func__, (u32) memory_start,
 					(u32) memory_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_info("%s: Main mem: 0x%x, size 0x%08x\n",
+				__func__, (u32) memory_start,
+					(u32) memory_size);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!memory_start || !memory_end) {
 		panic("%s: Missing memory setting 0x%08x-0x%08x\n",
@@ -194,12 +241,18 @@ void __init setup_memory(void)
 		panic("%s: Missing memory setting 0x%08x, size=0x%08x\n",
 			__func__, (u32) memory_start, (u32) memory_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!memory_start || !memory_size) {
+		panic("%s: Missing memory setting 0x%08x, size=0x%08x\n",
+			__func__, (u32) memory_start, (u32) memory_size);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* reservation of region where is the kernel */
 	kernel_align_start = PAGE_DOWN((u32)_text);
 	/* ALIGN can be remove because _end in vmlinux.lds.S is align */
 	kernel_align_size = PAGE_UP((u32)klimit) - kernel_align_start;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	memblock_reserve(kernel_align_start, kernel_align_size);
 	printk(KERN_INFO "%s: kernel addr=0x%08x-0x%08x size=0x%08x\n",
@@ -212,6 +265,12 @@ void __init setup_memory(void)
 			+ kernel_align_size, kernel_align_size);
 	memblock_reserve(kernel_align_start, kernel_align_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("%s: kernel addr:0x%08x-0x%08x size=0x%08x\n",
+		__func__, kernel_align_start, kernel_align_start
+			+ kernel_align_size, kernel_align_size);
+	memblock_reserve(kernel_align_start, kernel_align_size);
+>>>>>>> refs/remotes/origin/master
 #endif
 	/*
 	 * Kernel:
@@ -221,12 +280,16 @@ void __init setup_memory(void)
 	 * min_low_pfn - the first page (mm/bootmem.c - node_boot_start)
 	 * max_low_pfn
 	 * max_mapnr - the first unused page (mm/bootmem.c - node_low_pfn)
+<<<<<<< HEAD
 	 * num_physpages - number of all pages
+=======
+>>>>>>> refs/remotes/origin/master
 	 */
 
 	/* memory start is from the kernel end (aligned) to higher addr */
 	min_low_pfn = memory_start >> PAGE_SHIFT; /* minimum for allocation */
 	/* RAM is assumed contiguous */
+<<<<<<< HEAD
 	num_physpages = max_mapnr = memory_size >> PAGE_SHIFT;
 <<<<<<< HEAD
 	max_pfn = max_low_pfn = memory_end >> PAGE_SHIFT;
@@ -242,6 +305,16 @@ void __init setup_memory(void)
 =======
 	printk(KERN_INFO "%s: max_pfn: %#lx\n", __func__, max_pfn);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	max_mapnr = memory_size >> PAGE_SHIFT;
+	max_low_pfn = ((u64)memory_start + (u64)lowmem_size) >> PAGE_SHIFT;
+	max_pfn = ((u64)memory_start + (u64)memory_size) >> PAGE_SHIFT;
+
+	pr_info("%s: max_mapnr: %#lx\n", __func__, max_mapnr);
+	pr_info("%s: min_low_pfn: %#lx\n", __func__, min_low_pfn);
+	pr_info("%s: max_low_pfn: %#lx\n", __func__, max_low_pfn);
+	pr_info("%s: max_pfn: %#lx\n", __func__, max_pfn);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Find an area to use for the bootmem bitmap.
@@ -255,6 +328,7 @@ void __init setup_memory(void)
 	memblock_reserve(PFN_UP(TOPHYS((u32)klimit)) << PAGE_SHIFT, map_size);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* free bootmem is whole main memory */
 	free_bootmem(memory_start, memory_size);
 
@@ -265,6 +339,8 @@ void __init setup_memory(void)
 		reserve_bootmem(reg->base, reg->size, BOOTMEM_DEFAULT);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Add active regions with valid PFNs */
 	for_each_memblock(memory, reg) {
 		unsigned long start_pfn, end_pfn;
@@ -272,7 +348,12 @@ void __init setup_memory(void)
 		start_pfn = memblock_region_memory_base_pfn(reg);
 		end_pfn = memblock_region_memory_end_pfn(reg);
 		memblock_set_node(start_pfn << PAGE_SHIFT,
+<<<<<<< HEAD
 					(end_pfn - start_pfn) << PAGE_SHIFT, 0);
+=======
+				  (end_pfn - start_pfn) << PAGE_SHIFT,
+				  &memblock.memory, 0);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* free bootmem is whole main memory */
@@ -298,13 +379,17 @@ void __init setup_memory(void)
 	/* XXX need to clip this if using highmem? */
 	sparse_memory_present_with_active_regions(0);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MMU
 	init_bootmem_done = 1;
 #endif
 	paging_init();
 }
 
+<<<<<<< HEAD
 void free_init_pages(char *what, unsigned long begin, unsigned long end)
 {
 	unsigned long addr;
@@ -331,18 +416,29 @@ void free_initrd_mem(unsigned long start, unsigned long end)
 	}
 	printk(KERN_NOTICE "Freeing initrd memory: %dk freed\n",
 					(int)(pages * (PAGE_SIZE / 1024)));
+=======
+#ifdef CONFIG_BLK_DEV_INITRD
+void free_initrd_mem(unsigned long start, unsigned long end)
+{
+	free_reserved_area((void *)start, (void *)end, -1, "initrd");
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
 void free_initmem(void)
 {
+<<<<<<< HEAD
 	free_init_pages("unused kernel memory",
 			(unsigned long)(&__init_begin),
 			(unsigned long)(&__init_end));
+=======
+	free_initmem_default(-1);
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init mem_init(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	high_memory = (void *)__va(memory_end);
 	/* this will put all memory onto the freelists */
@@ -392,6 +488,17 @@ void __init mem_init(void)
 		bsssize >> 10,
 		initsize >> 10);
 
+=======
+	high_memory = (void *)__va(memory_start + lowmem_size - 1);
+
+	/* this will put all memory onto the freelists */
+	free_all_bootmem();
+#ifdef CONFIG_HIGHMEM
+	highmem_setup();
+#endif
+
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MMU
 	pr_info("Kernel virtual memory layout:\n");
 	pr_info("  * 0x%08lx..0x%08lx  : fixmap\n", FIXADDR_START, FIXADDR_TOP);
@@ -404,7 +511,10 @@ void __init mem_init(void)
 	pr_info("  * 0x%08lx..0x%08lx  : vmalloc & ioremap\n",
 		(unsigned long)VMALLOC_START, VMALLOC_END);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mem_init_done = 1;
 }
 
@@ -435,9 +545,12 @@ static void mm_cmdline_setup(void)
 		if (maxmem && memory_size > maxmem) {
 			memory_size = maxmem;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			memory_end = memory_start + memory_size;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			memblock.memory.regions[0].size = memory_size;
 		}
 	}
@@ -477,6 +590,7 @@ asmlinkage void __init mmu_init(void)
 	unsigned int kstart, ksize;
 
 	if (!memblock.reserved.cnt) {
+<<<<<<< HEAD
 		printk(KERN_EMERG "Error memory count\n");
 		machine_restart(NULL);
 	}
@@ -494,11 +608,23 @@ asmlinkage void __init mmu_init(void)
 =======
 	if ((u32) memblock.memory.regions[0].size < 0x400000) {
 		printk(KERN_EMERG "Memory must be greater than 4MB\n");
+=======
+		pr_emerg("Error memory count\n");
+		machine_restart(NULL);
+	}
+
+	if ((u32) memblock.memory.regions[0].size < 0x400000) {
+		pr_emerg("Memory must be greater than 4MB\n");
+>>>>>>> refs/remotes/origin/master
 		machine_restart(NULL);
 	}
 
 	if ((u32) memblock.memory.regions[0].size < kernel_tlb) {
+<<<<<<< HEAD
 		printk(KERN_EMERG "Kernel size is greater than memory node\n");
+=======
+		pr_emerg("Kernel size is greater than memory node\n");
+>>>>>>> refs/remotes/origin/master
 		machine_restart(NULL);
 	}
 
@@ -512,7 +638,10 @@ asmlinkage void __init mmu_init(void)
 		memory_size = lowmem_size;
 #endif
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mm_cmdline_setup(); /* FIXME parse args from command line - not used */
 
@@ -527,10 +656,18 @@ asmlinkage void __init mmu_init(void)
 
 #if defined(CONFIG_BLK_DEV_INITRD)
 	/* Remove the init RAM disk from the available memory. */
+<<<<<<< HEAD
 /*	if (initrd_start) {
 		mem_pieces_remove(&phys_avail, __pa(initrd_start),
 				  initrd_end - initrd_start, 1);
 	}*/
+=======
+	if (initrd_start) {
+		unsigned long size;
+		size = initrd_end - initrd_start;
+		memblock_reserve(virt_to_phys(initrd_start), size);
+	}
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_BLK_DEV_INITRD */
 
 	/* Initialize the MMU hardware */
@@ -539,6 +676,7 @@ asmlinkage void __init mmu_init(void)
 	/* Map in all of RAM starting at CONFIG_KERNEL_START */
 	mapin_ram();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef HIGHMEM_START_BOOL
 	ioremap_base = HIGHMEM_START;
@@ -550,6 +688,8 @@ asmlinkage void __init mmu_init(void)
 	/* Initialize the context management stuff */
 	mmu_context_init();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Extend vmalloc and ioremap area as big as possible */
 #ifdef CONFIG_HIGHMEM
 	ioremap_base = ioremap_bot = PKMAP_BASE;
@@ -564,7 +704,10 @@ asmlinkage void __init mmu_init(void)
 	/* This will also cause that unflatten device tree will be allocated
 	 * inside 768MB limit */
 	memblock_set_current_limit(memory_start + lowmem_size - 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* This is only called until mem_init is done. */
@@ -576,18 +719,24 @@ void __init *early_get_page(void)
 	} else {
 		/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * Mem start + 32MB -> here is limit
 		 * because of mem mapping from head.S
 		 */
 		p = __va(memblock_alloc_base(PAGE_SIZE, PAGE_SIZE,
 					memory_start + 0x2000000));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 * Mem start + kernel_tlb -> here is limit
 		 * because of mem mapping from head.S
 		 */
 		p = __va(memblock_alloc_base(PAGE_SIZE, PAGE_SIZE,
 					memory_start + kernel_tlb));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return p;
 }

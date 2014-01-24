@@ -15,6 +15,11 @@
 #include <linux/io.h>
 #include <linux/ioport.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
+=======
+#include <linux/irqdomain.h>
+#include <linux/irqchip/chained_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bitops.h>
 #include <linux/workqueue.h>
 #include <linux/gpio.h>
@@ -22,8 +27,13 @@
 #include <linux/amba/bus.h>
 #include <linux/amba/pl061.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/pm.h>
 #include <asm/mach/irq.h>
+=======
+#include <linux/pinctrl/consumer.h>
+#include <linux/pm.h>
+>>>>>>> refs/remotes/origin/master
 
 #define GPIODIR 0x400
 #define GPIOIS  0x404
@@ -48,6 +58,7 @@ struct pl061_context_save_regs {
 #endif
 
 struct pl061_gpio {
+<<<<<<< HEAD
 	/* Each of the two spinlocks protects a different set of hardware
 	 * regiters and data structurs. This decouples the code of the IRQ from
 	 * the GPIO code. This also makes the case of a GPIO routine call from
@@ -58,6 +69,12 @@ struct pl061_gpio {
 	void __iomem		*base;
 	int			irq_base;
 	struct irq_chip_generic	*irq_gc;
+=======
+	spinlock_t		lock;
+
+	void __iomem		*base;
+	struct irq_domain	*domain;
+>>>>>>> refs/remotes/origin/master
 	struct gpio_chip	gc;
 
 #ifdef CONFIG_PM
@@ -65,6 +82,27 @@ struct pl061_gpio {
 #endif
 };
 
+<<<<<<< HEAD
+=======
+static int pl061_gpio_request(struct gpio_chip *chip, unsigned offset)
+{
+	/*
+	 * Map back to global GPIO space and request muxing, the direction
+	 * parameter does not matter for this controller.
+	 */
+	int gpio = chip->base + offset;
+
+	return pinctrl_request_gpio(gpio);
+}
+
+static void pl061_gpio_free(struct gpio_chip *chip, unsigned offset)
+{
+	int gpio = chip->base + offset;
+
+	pinctrl_free_gpio(gpio);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int pl061_direction_input(struct gpio_chip *gc, unsigned offset)
 {
 	struct pl061_gpio *chip = container_of(gc, struct pl061_gpio, gc);
@@ -127,24 +165,37 @@ static int pl061_to_irq(struct gpio_chip *gc, unsigned offset)
 {
 	struct pl061_gpio *chip = container_of(gc, struct pl061_gpio, gc);
 
+<<<<<<< HEAD
 	if (chip->irq_base <= 0)
 		return -EINVAL;
 
 	return chip->irq_base + offset;
+=======
+	return irq_create_mapping(chip->domain, offset);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int pl061_irq_type(struct irq_data *d, unsigned trigger)
 {
+<<<<<<< HEAD
 	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
 	struct pl061_gpio *chip = gc->private;
 	int offset = d->irq - chip->irq_base;
+=======
+	struct pl061_gpio *chip = irq_data_get_irq_chip_data(d);
+	int offset = irqd_to_hwirq(d);
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	u8 gpiois, gpioibe, gpioiev;
 
 	if (offset < 0 || offset >= PL061_GPIO_NR)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&gc->lock, flags);
+=======
+	spin_lock_irqsave(&chip->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	gpioiev = readb(chip->base + GPIOIEV);
 
@@ -173,7 +224,11 @@ static int pl061_irq_type(struct irq_data *d, unsigned trigger)
 
 	writeb(gpioiev, chip->base + GPIOIEV);
 
+<<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&gc->lock, flags);
+=======
+	spin_unlock_irqrestore(&chip->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -197,6 +252,7 @@ static void pl061_irq_handler(unsigned irq, struct irq_desc *desc)
 	chained_irq_exit(irqchip, desc);
 }
 
+<<<<<<< HEAD
 static void __init pl061_init_gc(struct pl061_gpio *chip, int irq_base)
 {
 	struct irq_chip_type *ct;
@@ -252,23 +308,118 @@ static int pl061_probe(struct amba_device *dev, const struct amba_id *id)
 
 	spin_lock_init(&chip->lock);
 
+=======
+static void pl061_irq_mask(struct irq_data *d)
+{
+	struct pl061_gpio *chip = irq_data_get_irq_chip_data(d);
+	u8 mask = 1 << (irqd_to_hwirq(d) % PL061_GPIO_NR);
+	u8 gpioie;
+
+	spin_lock(&chip->lock);
+	gpioie = readb(chip->base + GPIOIE) & ~mask;
+	writeb(gpioie, chip->base + GPIOIE);
+	spin_unlock(&chip->lock);
+}
+
+static void pl061_irq_unmask(struct irq_data *d)
+{
+	struct pl061_gpio *chip = irq_data_get_irq_chip_data(d);
+	u8 mask = 1 << (irqd_to_hwirq(d) % PL061_GPIO_NR);
+	u8 gpioie;
+
+	spin_lock(&chip->lock);
+	gpioie = readb(chip->base + GPIOIE) | mask;
+	writeb(gpioie, chip->base + GPIOIE);
+	spin_unlock(&chip->lock);
+}
+
+static struct irq_chip pl061_irqchip = {
+	.name		= "pl061 gpio",
+	.irq_mask	= pl061_irq_mask,
+	.irq_unmask	= pl061_irq_unmask,
+	.irq_set_type	= pl061_irq_type,
+};
+
+static int pl061_irq_map(struct irq_domain *d, unsigned int irq,
+			 irq_hw_number_t hwirq)
+{
+	struct pl061_gpio *chip = d->host_data;
+
+	irq_set_chip_and_handler_name(irq, &pl061_irqchip, handle_simple_irq,
+				      "pl061");
+	irq_set_chip_data(irq, chip);
+	irq_set_irq_type(irq, IRQ_TYPE_NONE);
+
+	return 0;
+}
+
+static const struct irq_domain_ops pl061_domain_ops = {
+	.map	= pl061_irq_map,
+	.xlate	= irq_domain_xlate_twocell,
+};
+
+static int pl061_probe(struct amba_device *adev, const struct amba_id *id)
+{
+	struct device *dev = &adev->dev;
+	struct pl061_platform_data *pdata = dev_get_platdata(dev);
+	struct pl061_gpio *chip;
+	int ret, irq, i, irq_base;
+
+	chip = devm_kzalloc(dev, sizeof(*chip), GFP_KERNEL);
+	if (chip == NULL)
+		return -ENOMEM;
+
+	if (pdata) {
+		chip->gc.base = pdata->gpio_base;
+		irq_base = pdata->irq_base;
+		if (irq_base <= 0)
+			return -ENODEV;
+	} else {
+		chip->gc.base = -1;
+		irq_base = 0;
+	}
+
+	if (!devm_request_mem_region(dev, adev->res.start,
+				     resource_size(&adev->res), "pl061"))
+		return -EBUSY;
+
+	chip->base = devm_ioremap(dev, adev->res.start,
+				  resource_size(&adev->res));
+	if (!chip->base)
+		return -ENOMEM;
+
+	spin_lock_init(&chip->lock);
+
+	chip->gc.request = pl061_gpio_request;
+	chip->gc.free = pl061_gpio_free;
+>>>>>>> refs/remotes/origin/master
 	chip->gc.direction_input = pl061_direction_input;
 	chip->gc.direction_output = pl061_direction_output;
 	chip->gc.get = pl061_get_value;
 	chip->gc.set = pl061_set_value;
 	chip->gc.to_irq = pl061_to_irq;
 	chip->gc.ngpio = PL061_GPIO_NR;
+<<<<<<< HEAD
 	chip->gc.label = dev_name(&dev->dev);
 	chip->gc.dev = &dev->dev;
+=======
+	chip->gc.label = dev_name(dev);
+	chip->gc.dev = dev;
+>>>>>>> refs/remotes/origin/master
 	chip->gc.owner = THIS_MODULE;
 
 	ret = gpiochip_add(&chip->gc);
 	if (ret)
+<<<<<<< HEAD
 		goto iounmap;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * irq_chip support
 	 */
+<<<<<<< HEAD
 
 	if (chip->irq_base <= 0)
 		return 0;
@@ -284,6 +435,21 @@ static int pl061_probe(struct amba_device *dev, const struct amba_id *id)
 	irq_set_chained_handler(irq, pl061_irq_handler);
 	irq_set_handler_data(irq, chip);
 
+=======
+	writeb(0, chip->base + GPIOIE); /* disable irqs */
+	irq = adev->irq[0];
+	if (irq < 0)
+		return -ENODEV;
+
+	irq_set_chained_handler(irq, pl061_irq_handler);
+	irq_set_handler_data(irq, chip);
+
+	chip->domain = irq_domain_add_simple(adev->dev.of_node, PL061_GPIO_NR,
+					     irq_base, &pl061_domain_ops, chip);
+	if (!chip->domain)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < PL061_GPIO_NR; i++) {
 		if (pdata) {
 			if (pdata->directions & (1 << i))
@@ -294,6 +460,7 @@ static int pl061_probe(struct amba_device *dev, const struct amba_id *id)
 		}
 	}
 
+<<<<<<< HEAD
 	amba_set_drvdata(dev, chip);
 
 	return 0;
@@ -306,6 +473,11 @@ free_mem:
 	kfree(chip);
 
 	return ret;
+=======
+	amba_set_drvdata(adev, chip);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_PM
@@ -385,7 +557,11 @@ static int __init pl061_gpio_init(void)
 {
 	return amba_driver_register(&pl061_gpio_driver);
 }
+<<<<<<< HEAD
 subsys_initcall(pl061_gpio_init);
+=======
+module_init(pl061_gpio_init);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Baruch Siach <baruch@tkos.co.il>");
 MODULE_DESCRIPTION("PL061 GPIO driver");

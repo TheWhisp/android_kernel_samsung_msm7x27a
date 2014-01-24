@@ -28,6 +28,7 @@
  * Authors: Thomas Hellstrom <thellstrom-at-vmware-dot-com>
  */
 
+<<<<<<< HEAD
 #include "ttm/ttm_lock.h"
 #include "ttm/ttm_module.h"
 <<<<<<< HEAD
@@ -35,6 +36,11 @@
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <drm/ttm/ttm_lock.h>
+#include <drm/ttm/ttm_module.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/wait.h>
 #include <linux/sched.h>

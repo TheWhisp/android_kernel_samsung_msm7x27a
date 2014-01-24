@@ -6,10 +6,14 @@
  *  Bits taken from various places.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/pci.h>
 #include <linux/slab.h>
@@ -17,6 +21,7 @@
 #include <linux/io.h>
 
 #include <asm/mach-types.h>
+<<<<<<< HEAD
 #include <asm/mach/pci.h>
 
 static int debug_pci;
@@ -24,6 +29,12 @@ static int debug_pci;
 static int use_firmware;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/mach/map.h>
+#include <asm/mach/pci.h>
+
+static int debug_pci;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * We can't use pci_find_device() here since we are
@@ -85,7 +96,11 @@ void pcibios_report_status(u_int status_mask, int warn)
  * Bug 3 is responsible for the sound DMA grinding to a halt.  We now
  * live with bug 2.
  */
+<<<<<<< HEAD
 static void __devinit pci_fixup_83c553(struct pci_dev *dev)
+=======
+static void pci_fixup_83c553(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Set memory region to start at address 0, and enable IO
@@ -137,7 +152,11 @@ static void __devinit pci_fixup_83c553(struct pci_dev *dev)
 }
 DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_WINBOND, PCI_DEVICE_ID_WINBOND_83C553, pci_fixup_83c553);
 
+<<<<<<< HEAD
 static void __devinit pci_fixup_unassign(struct pci_dev *dev)
+=======
+static void pci_fixup_unassign(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	dev->resource[0].end -= dev->resource[0].start;
 	dev->resource[0].start = 0;
@@ -149,7 +168,11 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_WINBOND2, PCI_DEVICE_ID_WINBOND2_89C940F,
  * if it is the host bridge by marking it as such.  These resources are of
  * no consequence to the PCI layer (they are handled elsewhere).
  */
+<<<<<<< HEAD
 static void __devinit pci_fixup_dec21285(struct pci_dev *dev)
+=======
+static void pci_fixup_dec21285(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -168,7 +191,11 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_DEC, PCI_DEVICE_ID_DEC_21285, pci_fixup_d
 /*
  * PCI IDE controllers use non-standard I/O port decoding, respect it.
  */
+<<<<<<< HEAD
 static void __devinit pci_fixup_ide_bases(struct pci_dev *dev)
+=======
+static void pci_fixup_ide_bases(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *r;
 	int i;
@@ -189,7 +216,11 @@ DECLARE_PCI_FIXUP_HEADER(PCI_ANY_ID, PCI_ANY_ID, pci_fixup_ide_bases);
 /*
  * Put the DEC21142 to sleep
  */
+<<<<<<< HEAD
 static void __devinit pci_fixup_dec21142(struct pci_dev *dev)
+=======
+static void pci_fixup_dec21142(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	pci_write_config_dword(dev, 0x40, 0x80000000);
 }
@@ -211,7 +242,11 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_DEC, PCI_DEVICE_ID_DEC_21142, pci_fixup_d
  * functional.  However, The CY82C693U _does not work_ in bus
  * master mode without locking the PCI bus solid.
  */
+<<<<<<< HEAD
 static void __devinit pci_fixup_cy82c693(struct pci_dev *dev)
+=======
+static void pci_fixup_cy82c693(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if ((dev->class >> 8) == PCI_CLASS_STORAGE_IDE) {
 		u32 base0, base1;
@@ -261,7 +296,11 @@ static void __devinit pci_fixup_cy82c693(struct pci_dev *dev)
 }
 DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CONTAQ, PCI_DEVICE_ID_CONTAQ_82C693, pci_fixup_cy82c693);
 
+<<<<<<< HEAD
 static void __init pci_fixup_it8152(struct pci_dev *dev)
+=======
+static void pci_fixup_it8152(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	/* fixup for ITE 8152 devices */
@@ -278,6 +317,7 @@ static void __init pci_fixup_it8152(struct pci_dev *dev)
 }
 DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ITE, PCI_DEVICE_ID_ITE_8152, pci_fixup_it8152);
 
+<<<<<<< HEAD
 
 
 void __devinit pcibios_update_irq(struct pci_dev *dev, int irq)
@@ -287,6 +327,8 @@ void __devinit pcibios_update_irq(struct pci_dev *dev, int irq)
 	pci_write_config_byte(dev, PCI_INTERRUPT_LINE, irq);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * If the bus contains any of these devices, then we must not turn on
  * parity checking of any kind.  Currently this is CyberPro 20x0 only.
@@ -302,6 +344,7 @@ static inline int pdev_bad_for_parity(struct pci_dev *dev)
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Adjust the device resources from bus-centric to Linux-centric.
  */
@@ -342,11 +385,14 @@ pbus_assign_bus_resources(struct pci_bus *bus, struct pci_sys_data *root)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * pcibios_fixup_bus - Called after each bus is probed,
  * but before its children are examined.
  */
 void pcibios_fixup_bus(struct pci_bus *bus)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct pci_sys_data *root = bus->sysdata;
 	struct pci_dev *dev;
@@ -359,6 +405,11 @@ void pcibios_fixup_bus(struct pci_bus *bus)
 	u16 features = PCI_COMMAND_SERR | PCI_COMMAND_PARITY | PCI_COMMAND_FAST_BACK;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pci_dev *dev;
+	u16 features = PCI_COMMAND_SERR | PCI_COMMAND_PARITY | PCI_COMMAND_FAST_BACK;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Walk the devices on this bus, working out what we can
 	 * and can't support.
@@ -367,10 +418,13 @@ void pcibios_fixup_bus(struct pci_bus *bus)
 		u16 status;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pdev_fixup_device_resources(root, dev);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		pci_read_config_word(dev, PCI_STATUS, &status);
 
 		/*
@@ -432,6 +486,7 @@ void pcibios_fixup_bus(struct pci_bus *bus)
 		bus->number, (features & PCI_COMMAND_FAST_BACK) ? "en" : "dis");
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /*
  * Convert from Linux-centric to bus-centric addresses for bridge devices.
@@ -489,6 +544,48 @@ static u8 __devinit pcibios_swizzle(struct pci_dev *dev, u8 *pin)
 
 	if (sys->swizzle)
 		slot = sys->swizzle(dev, pin);
+=======
+EXPORT_SYMBOL(pcibios_fixup_bus);
+
+void pcibios_add_bus(struct pci_bus *bus)
+{
+	struct pci_sys_data *sys = bus->sysdata;
+	if (sys->add_bus)
+		sys->add_bus(bus);
+}
+
+void pcibios_remove_bus(struct pci_bus *bus)
+{
+	struct pci_sys_data *sys = bus->sysdata;
+	if (sys->remove_bus)
+		sys->remove_bus(bus);
+}
+
+/*
+ * Swizzle the device pin each time we cross a bridge.  If a platform does
+ * not provide a swizzle function, we perform the standard PCI swizzling.
+ *
+ * The default swizzling walks up the bus tree one level at a time, applying
+ * the standard swizzle function at each step, stopping when it finds the PCI
+ * root bus.  This will return the slot number of the bridge device on the
+ * root bus and the interrupt pin on that device which should correspond
+ * with the downstream device interrupt.
+ *
+ * Platforms may override this, in which case the slot and pin returned
+ * depend entirely on the platform code.  However, please note that the
+ * PCI standard swizzle is implemented on plug-in cards and Cardbus based
+ * PCI extenders, so it can not be ignored.
+ */
+static u8 pcibios_swizzle(struct pci_dev *dev, u8 *pin)
+{
+	struct pci_sys_data *sys = dev->sysdata;
+	int slot, oldpin = *pin;
+
+	if (sys->swizzle)
+		slot = sys->swizzle(dev, pin);
+	else
+		slot = pci_common_swizzle(dev, pin);
+>>>>>>> refs/remotes/origin/master
 
 	if (debug_pci)
 		printk("PCI: %s swizzling pin %d => pin %d slot %d\n",
@@ -501,10 +598,14 @@ static u8 __devinit pcibios_swizzle(struct pci_dev *dev, u8 *pin)
  * Map a slot/pin to an IRQ.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pcibios_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 static int pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_sys_data *sys = dev->sysdata;
 	int irq = -1;
@@ -519,7 +620,44 @@ static int pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 	return irq;
 }
 
+<<<<<<< HEAD
 static void __init pcibios_init_hw(struct hw_pci *hw)
+=======
+static int pcibios_init_resources(int busnr, struct pci_sys_data *sys)
+{
+	int ret;
+	struct pci_host_bridge_window *window;
+
+	if (list_empty(&sys->resources)) {
+		pci_add_resource_offset(&sys->resources,
+			 &iomem_resource, sys->mem_offset);
+	}
+
+	list_for_each_entry(window, &sys->resources, list) {
+		if (resource_type(window->res) == IORESOURCE_IO)
+			return 0;
+	}
+
+	sys->io_res.start = (busnr * SZ_64K) ?  : pcibios_min_io;
+	sys->io_res.end = (busnr + 1) * SZ_64K - 1;
+	sys->io_res.flags = IORESOURCE_IO;
+	sys->io_res.name = sys->io_res_name;
+	sprintf(sys->io_res_name, "PCI%d I/O", busnr);
+
+	ret = request_resource(&ioport_resource, &sys->io_res);
+	if (ret) {
+		pr_err("PCI: unable to allocate I/O port region (%d)\n", ret);
+		return ret;
+	}
+	pci_add_resource_offset(&sys->resources, &sys->io_res,
+				sys->io_offset);
+
+	return 0;
+}
+
+static void pcibios_init_hw(struct device *parent, struct hw_pci *hw,
+			    struct list_head *head)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_sys_data *sys = NULL;
 	int ret;
@@ -533,6 +671,7 @@ static void __init pcibios_init_hw(struct hw_pci *hw)
 #ifdef CONFIG_PCI_DOMAINS
 		sys->domain  = hw->domain;
 #endif
+<<<<<<< HEAD
 		sys->hw      = hw;
 		sys->busnr   = busnr;
 		sys->swizzle = hw->swizzle;
@@ -543,10 +682,23 @@ static void __init pcibios_init_hw(struct hw_pci *hw)
 =======
 		INIT_LIST_HEAD(&sys->resources);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sys->busnr   = busnr;
+		sys->swizzle = hw->swizzle;
+		sys->map_irq = hw->map_irq;
+		sys->align_resource = hw->align_resource;
+		sys->add_bus = hw->add_bus;
+		sys->remove_bus = hw->remove_bus;
+		INIT_LIST_HEAD(&sys->resources);
+
+		if (hw->private_data)
+			sys->private_data = hw->private_data[nr];
+>>>>>>> refs/remotes/origin/master
 
 		ret = hw->setup(nr, sys);
 
 		if (ret > 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 			if (list_empty(&sys->resources)) {
@@ -558,13 +710,32 @@ static void __init pcibios_init_hw(struct hw_pci *hw)
 
 >>>>>>> refs/remotes/origin/cm-10.0
 			sys->bus = hw->scan(nr, sys);
+=======
+			ret = pcibios_init_resources(nr, sys);
+			if (ret)  {
+				kfree(sys);
+				break;
+			}
+
+			if (hw->scan)
+				sys->bus = hw->scan(nr, sys);
+			else
+				sys->bus = pci_scan_root_bus(parent, sys->busnr,
+						hw->ops, sys, &sys->resources);
+>>>>>>> refs/remotes/origin/master
 
 			if (!sys->bus)
 				panic("PCI: unable to scan bus!");
 
+<<<<<<< HEAD
 			busnr = sys->bus->subordinate + 1;
 
 			list_add(&sys->node, &hw->buses);
+=======
+			busnr = sys->bus->busn_res.end + 1;
+
+			list_add(&sys->node, head);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			kfree(sys);
 			if (ret < 0)
@@ -573,6 +744,7 @@ static void __init pcibios_init_hw(struct hw_pci *hw)
 	}
 }
 
+<<<<<<< HEAD
 void __init pci_common_init(struct hw_pci *hw)
 {
 	struct pci_sys_data *sys;
@@ -586,11 +758,23 @@ void __init pci_common_init(struct hw_pci *hw)
 	if (hw->preinit)
 		hw->preinit();
 	pcibios_init_hw(hw);
+=======
+void pci_common_init_dev(struct device *parent, struct hw_pci *hw)
+{
+	struct pci_sys_data *sys;
+	LIST_HEAD(head);
+
+	pci_add_flags(PCI_REASSIGN_ALL_RSRC);
+	if (hw->preinit)
+		hw->preinit();
+	pcibios_init_hw(parent, hw, &head);
+>>>>>>> refs/remotes/origin/master
 	if (hw->postinit)
 		hw->postinit();
 
 	pci_fixup_irqs(pcibios_swizzle, pcibios_map_irq);
 
+<<<<<<< HEAD
 	list_for_each_entry(sys, &hw->buses, node) {
 		struct pci_bus *bus = sys->bus;
 
@@ -599,6 +783,12 @@ void __init pci_common_init(struct hw_pci *hw)
 =======
 		if (!pci_has_flag(PCI_PROBE_ONLY)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	list_for_each_entry(sys, &head, node) {
+		struct pci_bus *bus = sys->bus;
+
+		if (!pci_has_flag(PCI_PROBE_ONLY)) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Size the bridge windows.
 			 */
@@ -608,11 +798,14 @@ void __init pci_common_init(struct hw_pci *hw)
 			 * Assign resources.
 			 */
 			pci_bus_assign_resources(bus);
+<<<<<<< HEAD
 
 			/*
 			 * Enable bridges
 			 */
 			pci_enable_bridges(bus);
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/*
@@ -623,7 +816,10 @@ void __init pci_common_init(struct hw_pci *hw)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_PCI_HOST_ITE8152
 void pcibios_set_master(struct pci_dev *dev)
 {
@@ -631,7 +827,10 @@ void pcibios_set_master(struct pci_dev *dev)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 char * __init pcibios_setup(char *str)
 {
 	if (!strcmp(str, "debug")) {
@@ -639,10 +838,14 @@ char * __init pcibios_setup(char *str)
 		return NULL;
 	} else if (!strcmp(str, "firmware")) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		use_firmware = 1;
 =======
 		pci_add_flags(PCI_PROBE_ONLY);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pci_add_flags(PCI_PROBE_ONLY);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 	return str;
@@ -666,6 +869,11 @@ char * __init pcibios_setup(char *str)
 resource_size_t pcibios_align_resource(void *data, const struct resource *res,
 				resource_size_t size, resource_size_t align)
 {
+<<<<<<< HEAD
+=======
+	struct pci_dev *dev = data;
+	struct pci_sys_data *sys = dev->sysdata;
+>>>>>>> refs/remotes/origin/master
 	resource_size_t start = res->start;
 
 	if (res->flags & IORESOURCE_IO && start & 0x300)
@@ -673,6 +881,12 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
 
 	start = (start + align - 1) & ~(align - 1);
 
+<<<<<<< HEAD
+=======
+	if (sys->align_resource)
+		return sys->align_resource(dev, res, start, size, align);
+
+>>>>>>> refs/remotes/origin/master
 	return start;
 }
 
@@ -743,3 +957,18 @@ int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
 
 	return 0;
 }
+<<<<<<< HEAD
+=======
+
+void __init pci_map_io_early(unsigned long pfn)
+{
+	struct map_desc pci_io_desc = {
+		.virtual	= PCI_IO_VIRT_BASE,
+		.type		= MT_DEVICE,
+		.length		= SZ_64K,
+	};
+
+	pci_io_desc.pfn = pfn;
+	iotable_init(&pci_io_desc, 1);
+}
+>>>>>>> refs/remotes/origin/master

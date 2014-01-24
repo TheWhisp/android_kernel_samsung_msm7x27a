@@ -10,7 +10,11 @@
  * License v2. See the file COPYING in the main directory of this archive for
  * more details.
  */
+<<<<<<< HEAD
 #include "drmP.h"
+=======
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 #include "udl_drv.h"
 
 /* -BULK_SIZE as per usb-skeleton. Can we get full page and avoid overhead? */
@@ -41,11 +45,16 @@ static int udl_parse_vendor_descriptor(struct drm_device *dev,
 	total_len = usb_get_descriptor(usbdev, 0x5f, /* vendor specific */
 				    0, desc, MAX_VENDOR_DESCRIPTOR_SIZE);
 	if (total_len > 5) {
+<<<<<<< HEAD
 		DRM_INFO("vendor descriptor length:%x data:%02x %02x %02x %02x" \
 			"%02x %02x %02x %02x %02x %02x %02x\n",
 			total_len, desc[0],
 			desc[1], desc[2], desc[3], desc[4], desc[5], desc[6],
 			desc[7], desc[8], desc[9], desc[10]);
+=======
+		DRM_INFO("vendor descriptor length:%x data:%11ph\n",
+			total_len, desc);
+>>>>>>> refs/remotes/origin/master
 
 		if ((desc[0] != total_len) || /* descriptor length */
 		    (desc[1] != 0x5f) ||   /* vendor descriptor type */
@@ -61,7 +70,11 @@ static int udl_parse_vendor_descriptor(struct drm_device *dev,
 			u8 length;
 			u16 key;
 
+<<<<<<< HEAD
 			key = *((u16 *) desc);
+=======
+			key = le16_to_cpu(*((u16 *) desc));
+>>>>>>> refs/remotes/origin/master
 			desc += sizeof(u16);
 			length = *desc;
 			desc++;

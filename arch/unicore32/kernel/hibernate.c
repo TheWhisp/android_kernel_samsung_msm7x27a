@@ -16,9 +16,12 @@
 #include <linux/bootmem.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>

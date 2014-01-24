@@ -186,28 +186,40 @@
 
 /* Control touchpad's No Deceleration option */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int no_decel = 1;
 =======
 static bool no_decel = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool no_decel = 1;
+>>>>>>> refs/remotes/origin/master
 module_param(no_decel, bool, 0644);
 MODULE_PARM_DESC(no_decel, "No Deceleration. Default = 1 (on)");
 
 /* Control touchpad's Reduced Reporting option */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int reduce_report;
 =======
 static bool reduce_report;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool reduce_report;
+>>>>>>> refs/remotes/origin/master
 module_param(reduce_report, bool, 0644);
 MODULE_PARM_DESC(reduce_report, "Reduced Reporting. Default = 0 (off)");
 
 /* Control touchpad's No Filter option */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int no_filter;
 =======
 static bool no_filter;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool no_filter;
+>>>>>>> refs/remotes/origin/master
 module_param(no_filter, bool, 0644);
 MODULE_PARM_DESC(no_filter, "No Filter. Default = 0 (off)");
 
@@ -388,12 +400,16 @@ static void synaptics_i2c_reschedule_work(struct synaptics_i2c *touch,
 
 	spin_lock_irqsave(&touch->lock, flags);
 
+<<<<<<< HEAD
 	/*
 	 * If work is already scheduled then subsequent schedules will not
 	 * change the scheduled time that's why we have to cancel it first.
 	 */
 	__cancel_delayed_work(&touch->dwork);
 	schedule_delayed_work(&touch->dwork, delay);
+=======
+	mod_delayed_work(system_wq, &touch->dwork, delay);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&touch->lock, flags);
 }
@@ -552,7 +568,11 @@ static struct synaptics_i2c *synaptics_i2c_touch_create(struct i2c_client *clien
 	return touch;
 }
 
+<<<<<<< HEAD
 static int __devinit synaptics_i2c_probe(struct i2c_client *client,
+=======
+static int synaptics_i2c_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 			       const struct i2c_device_id *dev_id)
 {
 	int ret;
@@ -583,10 +603,14 @@ static int __devinit synaptics_i2c_probe(struct i2c_client *client,
 
 		ret = request_irq(touch->client->irq, synaptics_i2c_irq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				  IRQF_DISABLED|IRQ_TYPE_EDGE_FALLING,
 =======
 				  IRQ_TYPE_EDGE_FALLING,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  IRQ_TYPE_EDGE_FALLING,
+>>>>>>> refs/remotes/origin/master
 				  DRIVER_NAME, touch);
 		if (ret) {
 			dev_warn(&touch->client->dev,
@@ -622,7 +646,11 @@ err_mem_free:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit synaptics_i2c_remove(struct i2c_client *client)
+=======
+static int synaptics_i2c_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct synaptics_i2c *touch = i2c_get_clientdata(client);
 
@@ -636,10 +664,14 @@ static int __devexit synaptics_i2c_remove(struct i2c_client *client)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 =======
 #ifdef CONFIG_PM_SLEEP
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int synaptics_i2c_suspend(struct device *dev)
 {
 	struct i2c_client *client = to_i2c_client(dev);
@@ -687,11 +719,16 @@ static struct i2c_driver synaptics_i2c_driver = {
 	},
 
 	.probe		= synaptics_i2c_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(synaptics_i2c_remove),
+=======
+	.remove		= synaptics_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 
 	.id_table	= synaptics_i2c_id_table,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init synaptics_i2c_init(void)
 {
@@ -708,6 +745,9 @@ module_exit(synaptics_i2c_exit);
 =======
 module_i2c_driver(synaptics_i2c_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(synaptics_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Synaptics I2C touchpad driver");
 MODULE_AUTHOR("Mike Rapoport, Igor Grinberg, Compulab");

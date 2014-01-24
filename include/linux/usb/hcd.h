@@ -22,6 +22,10 @@
 #ifdef __KERNEL__
 
 #include <linux/rwsem.h>
+<<<<<<< HEAD
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 
 #define MAX_TOPO_LEVEL		6
 
@@ -67,6 +71,17 @@
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
+=======
+struct giveback_urb_bh {
+	bool running;
+	spinlock_t lock;
+	struct list_head  head;
+	struct tasklet_struct bh;
+	struct usb_host_endpoint *completing_ep;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct usb_hcd {
 
 	/*
@@ -84,7 +99,11 @@ struct usb_hcd {
 
 	struct timer_list	rh_timer;	/* drives root-hub polling */
 	struct urb		*status_urb;	/* the current status urb */
+<<<<<<< HEAD
 #ifdef CONFIG_USB_SUSPEND
+=======
+#ifdef CONFIG_PM_RUNTIME
+>>>>>>> refs/remotes/origin/master
 	struct work_struct	wakeup_work;	/* for remote wakeup */
 #endif
 
@@ -93,6 +112,15 @@ struct usb_hcd {
 	 */
 	const struct hc_driver	*driver;	/* hw-specific hooks */
 
+<<<<<<< HEAD
+=======
+	/*
+	 * OTG and some Host controllers need software interaction with phys;
+	 * other external phys should be software-transparent
+	 */
+	struct usb_phy	*phy;
+
+>>>>>>> refs/remotes/origin/master
 	/* Flags that need to be manipulated atomically because they can
 	 * change while the host controller is running.  Always use
 	 * set_bit() or clear_bit() to change their values.
@@ -100,9 +128,12 @@ struct usb_hcd {
 	unsigned long		flags;
 #define HCD_FLAG_HW_ACCESSIBLE		0	/* at full power */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HCD_FLAG_SAW_IRQ		1
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define HCD_FLAG_POLL_RH		2	/* poll for rh status? */
 #define HCD_FLAG_POLL_PENDING		3	/* status has changed? */
 #define HCD_FLAG_WAKEUP_PENDING		4	/* root hub is resuming? */
@@ -114,9 +145,12 @@ struct usb_hcd {
 	 */
 #define HCD_HW_ACCESSIBLE(hcd)	((hcd)->flags & (1U << HCD_FLAG_HW_ACCESSIBLE))
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HCD_SAW_IRQ(hcd)	((hcd)->flags & (1U << HCD_FLAG_SAW_IRQ))
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define HCD_POLL_RH(hcd)	((hcd)->flags & (1U << HCD_FLAG_POLL_RH))
 #define HCD_POLL_PENDING(hcd)	((hcd)->flags & (1U << HCD_FLAG_POLL_PENDING))
 #define HCD_WAKEUP_PENDING(hcd)	((hcd)->flags & (1U << HCD_FLAG_WAKEUP_PENDING))
@@ -127,6 +161,10 @@ struct usb_hcd {
 	unsigned		rh_registered:1;/* is root hub registered? */
 	unsigned		rh_pollable:1;	/* may we poll the root hub? */
 	unsigned		msix_enabled:1;	/* driver has MSI-X enabled? */
+<<<<<<< HEAD
+=======
+	unsigned		remove_phy:1;	/* auto-remove USB phy */
+>>>>>>> refs/remotes/origin/master
 
 	/* The next flag is a stopgap, to be removed when all the HCDs
 	 * support the new root-hub polling mechanism. */
@@ -134,6 +172,7 @@ struct usb_hcd {
 	unsigned		wireless:1;	/* Wireless USB HCD */
 	unsigned		authorized_default:1;
 	unsigned		has_tt:1;	/* Integrated TT in root hub */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	int			irq;		/* irq allocated */
@@ -145,6 +184,19 @@ struct usb_hcd {
 	u64			rsrc_len;	/* memory/io resource length */
 	unsigned		power_budget;	/* in mA, 0 = no limit */
 
+=======
+	unsigned		amd_resume_bug:1; /* AMD remote wakeup quirk */
+
+	unsigned int		irq;		/* irq allocated */
+	void __iomem		*regs;		/* device memory/io */
+	resource_size_t		rsrc_start;	/* memory/io resource start */
+	resource_size_t		rsrc_len;	/* memory/io resource length */
+	unsigned		power_budget;	/* in mA, 0 = no limit */
+
+	struct giveback_urb_bh  high_prio_bh;
+	struct giveback_urb_bh  low_prio_bh;
+
+>>>>>>> refs/remotes/origin/master
 	/* bandwidth_mutex should be taken before adding or removing
 	 * any new bus bandwidth constraints:
 	 *   1. Before adding a configuration for a new device.
@@ -223,6 +275,7 @@ struct hc_driver {
 #define	HCD_LOCAL_MEM	0x0002		/* HC needs local memory */
 #define	HCD_SHARED	0x0004		/* Two (or more) usb_hcds share HW */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define	HCD_OLD_ENUM	0x0008		/* HC supports short enumeration */
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -230,6 +283,14 @@ struct hc_driver {
 #define	HCD_USB2	0x0020		/* USB 2.0 */
 #define	HCD_USB3	0x0040		/* USB 3.0 */
 #define	HCD_MASK	0x0070
+=======
+#define	HCD_USB11	0x0010		/* USB 1.1 */
+#define	HCD_USB2	0x0020		/* USB 2.0 */
+#define	HCD_USB25	0x0030		/* Wireless USB 1.0 (USB 2.5)*/
+#define	HCD_USB3	0x0040		/* USB 3.0 */
+#define	HCD_MASK	0x0070
+#define	HCD_BH		0x0100		/* URB complete in BH context */
+>>>>>>> refs/remotes/origin/master
 
 	/* called to init HCD and root hub */
 	int	(*reset) (struct usb_hcd *hcd);
@@ -347,6 +408,11 @@ struct hc_driver {
 	void	(*reset_bandwidth)(struct usb_hcd *, struct usb_device *);
 		/* Returns the hardware-chosen device address */
 	int	(*address_device)(struct usb_hcd *, struct usb_device *udev);
+<<<<<<< HEAD
+=======
+		/* prepares the hardware to send commands to the device */
+	int	(*enable_device)(struct usb_hcd *, struct usb_device *udev);
+>>>>>>> refs/remotes/origin/master
 		/* Notifies the HCD after a hub descriptor is fetched.
 		 * Will block.
 		 */
@@ -357,6 +423,7 @@ struct hc_driver {
 		 * address is set
 		 */
 	int	(*update_device)(struct usb_hcd *, struct usb_device *);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	int	(*set_usb2_hw_lpm)(struct usb_hcd *, struct usb_device *, int);
@@ -370,6 +437,32 @@ struct hc_driver {
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+	int	(*set_usb2_hw_lpm)(struct usb_hcd *, struct usb_device *, int);
+	/* USB 3.0 Link Power Management */
+		/* Returns the USB3 hub-encoded value for the U1/U2 timeout. */
+	int	(*enable_usb3_lpm_timeout)(struct usb_hcd *,
+			struct usb_device *, enum usb3_link_state state);
+		/* The xHCI host controller can still fail the command to
+		 * disable the LPM timeouts, so this can return an error code.
+		 */
+	int	(*disable_usb3_lpm_timeout)(struct usb_hcd *,
+			struct usb_device *, enum usb3_link_state state);
+	int	(*find_raw_port_number)(struct usb_hcd *, int);
+};
+
+static inline int hcd_giveback_urb_in_bh(struct usb_hcd *hcd)
+{
+	return hcd->driver->flags & HCD_BH;
+}
+
+static inline bool hcd_periodic_completion_in_progress(struct usb_hcd *hcd,
+		struct usb_host_endpoint *ep)
+{
+	return hcd->high_prio_bh.completing_ep == ep;
+}
+
+>>>>>>> refs/remotes/origin/master
 extern int usb_hcd_link_urb_to_ep(struct usb_hcd *hcd, struct urb *urb);
 extern int usb_hcd_check_unlink_urb(struct usb_hcd *hcd, struct urb *urb,
 		int status);
@@ -404,6 +497,7 @@ extern struct usb_hcd *usb_create_shared_hcd(const struct hc_driver *driver,
 extern struct usb_hcd *usb_get_hcd(struct usb_hcd *hcd);
 extern void usb_put_hcd(struct usb_hcd *hcd);
 extern int usb_hcd_is_primary_hcd(struct usb_hcd *hcd);
+<<<<<<< HEAD
 #ifdef CONFIG_USB
 extern int usb_add_hcd(struct usb_hcd *hcd,
 		unsigned int irqnum, unsigned long irqflags);
@@ -416,6 +510,12 @@ usb_add_hcd(struct usb_hcd *hcd, unsigned int irqnum, unsigned long irqflags)
 }
 static inline void usb_remove_hcd(struct usb_hcd *hcd) {}
 #endif
+=======
+extern int usb_add_hcd(struct usb_hcd *hcd,
+		unsigned int irqnum, unsigned long irqflags);
+extern void usb_remove_hcd(struct usb_hcd *hcd);
+extern int usb_hcd_find_raw_port_number(struct usb_hcd *hcd, int port1);
+>>>>>>> refs/remotes/origin/master
 
 struct platform_device;
 extern void usb_hcd_platform_shutdown(struct platform_device *dev);
@@ -428,7 +528,13 @@ extern int usb_hcd_pci_probe(struct pci_dev *dev,
 extern void usb_hcd_pci_remove(struct pci_dev *dev);
 extern void usb_hcd_pci_shutdown(struct pci_dev *dev);
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM_SLEEP
+=======
+extern int usb_hcd_amd_remote_wakeup_quirk(struct pci_dev *dev);
+
+#ifdef CONFIG_PM
+>>>>>>> refs/remotes/origin/master
 extern const struct dev_pm_ops usb_hcd_pci_pm_ops;
 #endif
 #endif /* CONFIG_PCI */
@@ -448,10 +554,18 @@ extern irqreturn_t usb_hcd_irq(int irq, void *__hcd);
 extern void usb_hc_died(struct usb_hcd *hcd);
 extern void usb_hcd_poll_rh_status(struct usb_hcd *hcd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void usb_wakeup_notification(struct usb_device *hdev,
 		unsigned int portnum);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void usb_wakeup_notification(struct usb_device *hdev,
+		unsigned int portnum);
+
+extern void usb_hcd_start_port_resume(struct usb_bus *bus, int portnum);
+extern void usb_hcd_end_port_resume(struct usb_bus *bus, int portnum);
+>>>>>>> refs/remotes/origin/master
 
 /* The D0/D1 toggle bits ... USE WITH CAUTION (they're almost hcd-internal) */
 #define usb_gettoggle(dev, ep, out) (((dev)->toggle[out] >> (ep)) & 1)
@@ -496,6 +610,10 @@ struct usb_tt {
 	struct usb_device	*hub;	/* upstream highspeed hub */
 	int			multi;	/* true means one TT per port */
 	unsigned		think_time;	/* think time in ns */
+<<<<<<< HEAD
+=======
+	void			*hcpriv;	/* HCD private data */
+>>>>>>> refs/remotes/origin/master
 
 	/* for control/bulk error recovery (CLEAR_TT_BUFFER) */
 	spinlock_t		lock;
@@ -554,9 +672,14 @@ extern void usb_ep0_reinit(struct usb_device *);
 		 * of (7/6 * 8 * bytecount) = 9.33 * bytecount */
 		/* bytecount = data payload byte count */
 
+<<<<<<< HEAD
 #define NS_TO_US(ns)	((ns + 500L) / 1000L)
 			/* convert & round nanoseconds to microseconds */
 
+=======
+#define NS_TO_US(ns)	DIV_ROUND_UP(ns, 1000L)
+			/* convert nanoseconds to microseconds, rounding up */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Full/low speed bandwidth allocation constants/support.
@@ -611,13 +734,18 @@ extern int hcd_bus_suspend(struct usb_device *rhdev, pm_message_t msg);
 extern int hcd_bus_resume(struct usb_device *rhdev, pm_message_t msg);
 #endif /* CONFIG_PM */
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_SUSPEND
+=======
+#ifdef CONFIG_PM_RUNTIME
+>>>>>>> refs/remotes/origin/master
 extern void usb_hcd_resume_root_hub(struct usb_hcd *hcd);
 #else
 static inline void usb_hcd_resume_root_hub(struct usb_hcd *hcd)
 {
 	return;
 }
+<<<<<<< HEAD
 #endif /* CONFIG_USB_SUSPEND */
 
 
@@ -642,6 +770,9 @@ static inline int usbfs_init(void) { return 0; }
 static inline void usbfs_cleanup(void) { }
 
 #endif /* CONFIG_USB_DEVICEFS */
+=======
+#endif /* CONFIG_PM_RUNTIME */
+>>>>>>> refs/remotes/origin/master
 
 /*-------------------------------------------------------------------------*/
 

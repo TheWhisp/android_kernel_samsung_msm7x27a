@@ -11,6 +11,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,6 +23,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 
@@ -52,6 +55,7 @@
 #include <linux/usb/gadget.h>
 #include <linux/usb/hcd.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/byteorder.h>
 #include <asm/io.h>
@@ -61,6 +65,8 @@
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/scatterlist.h>
 
 #include <asm/byteorder.h>
@@ -68,12 +74,16 @@
 #include <asm/irq.h>
 #include <asm/unaligned.h>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DRIVER_DESC	"USB Host+Gadget Emulator"
 #define DRIVER_VERSION	"02 May 2005"
 
 #define POWER_BUDGET	500	/* in mA; use 8 for low-power port testing */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const char	driver_name [] = "dummy_hcd";
 static const char	driver_desc [] = "USB Host+Gadget Emulator";
@@ -85,6 +95,8 @@ MODULE_AUTHOR ("David Brownell");
 MODULE_LICENSE ("GPL");
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const char	driver_name[] = "dummy_hcd";
 static const char	driver_desc[] = "USB Host+Gadget Emulator";
 
@@ -97,17 +109,30 @@ MODULE_LICENSE("GPL");
 struct dummy_hcd_module_parameters {
 	bool is_super_speed;
 	bool is_high_speed;
+<<<<<<< HEAD
+=======
+	unsigned int num;
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct dummy_hcd_module_parameters mod_data = {
 	.is_super_speed = false,
 	.is_high_speed = true,
+<<<<<<< HEAD
+=======
+	.num = 1,
+>>>>>>> refs/remotes/origin/master
 };
 module_param_named(is_super_speed, mod_data.is_super_speed, bool, S_IRUGO);
 MODULE_PARM_DESC(is_super_speed, "true to simulate SuperSpeed connection");
 module_param_named(is_high_speed, mod_data.is_high_speed, bool, S_IRUGO);
 MODULE_PARM_DESC(is_high_speed, "true to simulate HighSpeed connection");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param_named(num, mod_data.num, uint, S_IRUGO);
+MODULE_PARM_DESC(num, "number of emulated controllers");
+>>>>>>> refs/remotes/origin/master
 /*-------------------------------------------------------------------------*/
 
 /* gadget side driver data structres */
@@ -118,17 +143,23 @@ struct dummy_ep {
 	const struct usb_endpoint_descriptor *desc;
 	struct usb_ep			ep;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned			halted : 1;
 	unsigned			wedged : 1;
 	unsigned			already_seen : 1;
 	unsigned			setup_stage : 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned			halted:1;
 	unsigned			wedged:1;
 	unsigned			already_seen:1;
 	unsigned			setup_stage:1;
 	unsigned			stream_en:1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct dummy_request {
@@ -136,6 +167,7 @@ struct dummy_request {
 	struct usb_request		req;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline struct dummy_ep *usb_ep_to_dummy_ep (struct usb_ep *_ep)
 {
@@ -145,16 +177,25 @@ static inline struct dummy_ep *usb_ep_to_dummy_ep(struct usb_ep *_ep)
 {
 	return container_of(_ep, struct dummy_ep, ep);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct dummy_ep *usb_ep_to_dummy_ep(struct usb_ep *_ep)
+{
+	return container_of(_ep, struct dummy_ep, ep);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline struct dummy_request *usb_request_to_dummy_request
 		(struct usb_request *_req)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return container_of (_req, struct dummy_request, req);
 =======
 	return container_of(_req, struct dummy_request, req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return container_of(_req, struct dummy_request, req);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*-------------------------------------------------------------------------*/
@@ -174,6 +215,7 @@ static inline struct dummy_request *usb_request_to_dummy_request
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const char ep0name [] = "ep0";
 
 static const char *const ep_name [] = {
@@ -182,6 +224,11 @@ static const char ep0name[] = "ep0";
 
 static const char *const ep_name[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const char ep0name[] = "ep0";
+
+static const char *const ep_name[] = {
+>>>>>>> refs/remotes/origin/master
 	ep0name,				/* everyone has ep0 */
 
 	/* act like a pxa250: fifteen fixed function endpoints */
@@ -207,10 +254,15 @@ struct urbp {
 	struct urb		*urb;
 	struct list_head	urbp_list;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct sg_mapping_iter	miter;
 	u32			miter_started;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sg_mapping_iter	miter;
+	u32			miter_started;
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -221,7 +273,10 @@ enum dummy_rh_state {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct dummy_hcd {
 	struct dummy			*dum;
 	enum dummy_rh_state		rh_state;
@@ -240,7 +295,10 @@ struct dummy_hcd {
 	unsigned			resuming:1;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct dummy {
 	spinlock_t			lock;
 
@@ -248,14 +306,19 @@ struct dummy {
 	 * SLAVE/GADGET side support
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dummy_ep			ep [DUMMY_ENDPOINTS];
 =======
 	struct dummy_ep			ep[DUMMY_ENDPOINTS];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dummy_ep			ep[DUMMY_ENDPOINTS];
+>>>>>>> refs/remotes/origin/master
 	int				address;
 	struct usb_gadget		gadget;
 	struct usb_gadget_driver	*driver;
 	struct dummy_request		fifo_req;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u8				fifo_buf [FIFO_SIZE];
 	u16				devstatus;
@@ -264,15 +327,21 @@ struct dummy {
 	unsigned			active:1;
 	unsigned			old_active:1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8				fifo_buf[FIFO_SIZE];
 	u16				devstatus;
 	unsigned			udc_suspended:1;
 	unsigned			pullup:1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * MASTER/HOST side support
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	enum dummy_rh_state		rh_state;
 	struct timer_list		timer;
@@ -292,6 +361,8 @@ static inline struct dummy *hcd_to_dummy (struct usb_hcd *hcd)
 
 static inline struct usb_hcd *dummy_to_hcd (struct dummy *dum)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dummy_hcd		*hs_hcd;
 	struct dummy_hcd		*ss_hcd;
 };
@@ -302,11 +373,15 @@ static inline struct dummy_hcd *hcd_to_dummy_hcd(struct usb_hcd *hcd)
 }
 
 static inline struct usb_hcd *dummy_hcd_to_hcd(struct dummy_hcd *dum)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	return container_of((void *) dum, struct usb_hcd, hcd_priv);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline struct device *dummy_dev (struct dummy *dum)
 {
@@ -315,17 +390,23 @@ static inline struct device *dummy_dev (struct dummy *dum)
 
 static inline struct device *udc_dev (struct dummy *dum)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct device *dummy_dev(struct dummy_hcd *dum)
 {
 	return dummy_hcd_to_hcd(dum)->self.controller;
 }
 
 static inline struct device *udc_dev(struct dummy *dum)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	return dum->gadget.dev.parent;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline struct dummy *ep_to_dummy (struct dummy_ep *ep)
 {
@@ -344,6 +425,8 @@ static inline struct dummy *gadget_dev_to_dummy (struct device *dev)
 
 static struct dummy			*the_controller;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct dummy *ep_to_dummy(struct dummy_ep *ep)
 {
 	return container_of(ep->gadget, struct dummy, gadget);
@@ -363,14 +446,18 @@ static inline struct dummy *gadget_dev_to_dummy(struct device *dev)
 	return container_of(dev, struct dummy, gadget.dev);
 }
 
+<<<<<<< HEAD
 static struct dummy			the_controller;
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*-------------------------------------------------------------------------*/
 
 /* SLAVE/GADGET SIDE UTILITY ROUTINES */
 
 /* called with spinlock held */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void nuke (struct dummy *dum, struct dummy_ep *ep)
 {
@@ -385,6 +472,8 @@ static void nuke (struct dummy *dum, struct dummy_ep *ep)
 		req->req.complete (&ep->ep, &req->req);
 		spin_lock (&dum->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void nuke(struct dummy *dum, struct dummy_ep *ep)
 {
 	while (!list_empty(&ep->queue)) {
@@ -397,17 +486,24 @@ static void nuke(struct dummy *dum, struct dummy_ep *ep)
 		spin_unlock(&dum->lock);
 		req->req.complete(&ep->ep, &req->req);
 		spin_lock(&dum->lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 /* caller must hold lock */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void
 stop_activity (struct dummy *dum)
 =======
 static void stop_activity(struct dummy *dum)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void stop_activity(struct dummy *dum)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dummy_ep	*ep;
 
@@ -418,16 +514,22 @@ static void stop_activity(struct dummy *dum)
 
 	/* nuke any pending requests first, so driver i/o is quiesced */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	list_for_each_entry (ep, &dum->gadget.ep_list, ep.ep_list)
 		nuke (dum, ep);
 =======
 	list_for_each_entry(ep, &dum->gadget.ep_list, ep.ep_list)
 		nuke(dum, ep);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	list_for_each_entry(ep, &dum->gadget.ep_list, ep.ep_list)
+		nuke(dum, ep);
+>>>>>>> refs/remotes/origin/master
 
 	/* driver now does any non-usb quiescing necessary */
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* caller must hold lock */
 static void
@@ -485,6 +587,8 @@ set_link_state (struct dummy *dum)
 	dum->old_status = dum->port_status;
 	dum->old_active = dum->active;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * set_link_state_by_speed() - Sets the current state of the link according to
  *	the hcd speed
@@ -601,7 +705,10 @@ static void set_link_state(struct dummy_hcd *dum_hcd)
 
 	dum_hcd->old_status = dum_hcd->port_status;
 	dum_hcd->old_active = dum_hcd->active;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*-------------------------------------------------------------------------*/
@@ -617,21 +724,28 @@ static void set_link_state(struct dummy_hcd *dum_hcd)
 	(dum->port_status & USB_PORT_STAT_ENABLE)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int
 dummy_enable (struct usb_ep *_ep, const struct usb_endpoint_descriptor *desc)
 {
 	struct dummy		*dum;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int dummy_enable(struct usb_ep *_ep,
 		const struct usb_endpoint_descriptor *desc)
 {
 	struct dummy		*dum;
 	struct dummy_hcd	*dum_hcd;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dummy_ep		*ep;
 	unsigned		max;
 	int			retval;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ep = usb_ep_to_dummy_ep (_ep);
 	if (!_ep || !desc || ep->desc || _ep->name == ep0name
@@ -642,6 +756,8 @@ static int dummy_enable(struct usb_ep *_ep,
 		return -ESHUTDOWN;
 	max = le16_to_cpu(desc->wMaxPacketSize) & 0x3ff;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ep = usb_ep_to_dummy_ep(_ep);
 	if (!_ep || !desc || ep->desc || _ep->name == ep0name
 			|| desc->bDescriptorType != USB_DT_ENDPOINT)
@@ -660,7 +776,10 @@ static int dummy_enable(struct usb_ep *_ep,
 	 * For SS devices the wMaxPacketSize is limited by 1024.
 	 */
 	max = usb_endpoint_maxp(desc) & 0x7ff;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* drivers must not request bad settings, since lower levels
 	 * (hardware or its drivers) may not check.  some endpoints
@@ -672,6 +791,7 @@ static int dummy_enable(struct usb_ep *_ep,
 	 */
 	retval = -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch (desc->bmAttributes & 0x03) {
 	case USB_ENDPOINT_XFER_BULK:
 		if (strstr (ep->ep.name, "-iso")
@@ -680,6 +800,8 @@ static int dummy_enable(struct usb_ep *_ep,
 		}
 		switch (dum->gadget.speed) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (usb_endpoint_type(desc)) {
 	case USB_ENDPOINT_XFER_BULK:
 		if (strstr(ep->ep.name, "-iso")
@@ -691,7 +813,10 @@ static int dummy_enable(struct usb_ep *_ep,
 			if (max == 1024)
 				break;
 			goto done;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		case USB_SPEED_HIGH:
 			if (max == 512)
 				break;
@@ -707,17 +832,23 @@ static int dummy_enable(struct usb_ep *_ep,
 		break;
 	case USB_ENDPOINT_XFER_INT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (strstr (ep->ep.name, "-iso")) /* bulk is ok */
 			goto done;
 		/* real hardware might not handle all packet sizes */
 		switch (dum->gadget.speed) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (strstr(ep->ep.name, "-iso")) /* bulk is ok */
 			goto done;
 		/* real hardware might not handle all packet sizes */
 		switch (dum->gadget.speed) {
 		case USB_SPEED_SUPER:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		case USB_SPEED_HIGH:
 			if (max <= 1024)
 				break;
@@ -734,19 +865,25 @@ static int dummy_enable(struct usb_ep *_ep,
 		break;
 	case USB_ENDPOINT_XFER_ISOC:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (strstr (ep->ep.name, "-bulk")
 				|| strstr (ep->ep.name, "-int"))
 			goto done;
 		/* real hardware might not handle all packet sizes */
 		switch (dum->gadget.speed) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (strstr(ep->ep.name, "-bulk")
 				|| strstr(ep->ep.name, "-int"))
 			goto done;
 		/* real hardware might not handle all packet sizes */
 		switch (dum->gadget.speed) {
 		case USB_SPEED_SUPER:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		case USB_SPEED_HIGH:
 			if (max <= 1024)
 				break;
@@ -766,10 +903,13 @@ static int dummy_enable(struct usb_ep *_ep,
 
 	_ep->maxpacket = max;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ep->desc = desc;
 
 	dev_dbg (udc_dev(dum), "enabled %s (ep%d%s-%s) maxpacket %d\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (usb_ss_max_streams(_ep->comp_desc)) {
 		if (!usb_endpoint_xfer_bulk(desc)) {
 			dev_err(udc_dev(dum), "Can't enable stream support on "
@@ -781,11 +921,15 @@ static int dummy_enable(struct usb_ep *_ep,
 	ep->desc = desc;
 
 	dev_dbg(udc_dev(dum), "enabled %s (ep%d%s-%s) maxpacket %d stream %s\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		_ep->name,
 		desc->bEndpointAddress & 0x0f,
 		(desc->bEndpointAddress & USB_DIR_IN) ? "in" : "out",
 		({ char *val;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		 switch (desc->bmAttributes & 0x03) {
 		 case USB_ENDPOINT_XFER_BULK: val = "bulk"; break;
@@ -795,6 +939,8 @@ static int dummy_enable(struct usb_ep *_ep,
 		 }; val; }),
 		max);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 switch (usb_endpoint_type(desc)) {
 		 case USB_ENDPOINT_XFER_BULK:
 			 val = "bulk";
@@ -808,9 +954,14 @@ static int dummy_enable(struct usb_ep *_ep,
 		 default:
 			 val = "ctrl";
 			 break;
+<<<<<<< HEAD
 		 }; val; }),
 		max, ep->stream_en ? "enabled" : "disabled");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 } val; }),
+		max, ep->stream_en ? "enabled" : "disabled");
+>>>>>>> refs/remotes/origin/master
 
 	/* at this point real hardware should be NAKing transfers
 	 * to that endpoint, until a buffer is queued to it.
@@ -822,16 +973,21 @@ done:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int dummy_disable (struct usb_ep *_ep)
 =======
 static int dummy_disable(struct usb_ep *_ep)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int dummy_disable(struct usb_ep *_ep)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dummy_ep		*ep;
 	struct dummy		*dum;
 	unsigned long		flags;
 	int			retval;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ep = usb_ep_to_dummy_ep (_ep);
 	if (!_ep || !ep->desc || _ep->name == ep0name)
@@ -851,6 +1007,8 @@ static int dummy_disable(struct usb_ep *_ep)
 static struct usb_request *
 dummy_alloc_request (struct usb_ep *_ep, gfp_t mem_flags)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ep = usb_ep_to_dummy_ep(_ep);
 	if (!_ep || !ep->desc || _ep->name == ep0name)
 		return -EINVAL;
@@ -869,7 +1027,10 @@ dummy_alloc_request (struct usb_ep *_ep, gfp_t mem_flags)
 
 static struct usb_request *dummy_alloc_request(struct usb_ep *_ep,
 		gfp_t mem_flags)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct dummy_ep		*ep;
 	struct dummy_request	*req;
@@ -877,14 +1038,19 @@ static struct usb_request *dummy_alloc_request(struct usb_ep *_ep,
 	if (!_ep)
 		return NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ep = usb_ep_to_dummy_ep (_ep);
 =======
 	ep = usb_ep_to_dummy_ep(_ep);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ep = usb_ep_to_dummy_ep(_ep);
+>>>>>>> refs/remotes/origin/master
 
 	req = kzalloc(sizeof(*req), mem_flags);
 	if (!req)
 		return NULL;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	INIT_LIST_HEAD (&req->queue);
 	return &req->req;
@@ -893,11 +1059,14 @@ static struct usb_request *dummy_alloc_request(struct usb_ep *_ep,
 static void
 dummy_free_request (struct usb_ep *_ep, struct usb_request *_req)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&req->queue);
 	return &req->req;
 }
 
 static void dummy_free_request(struct usb_ep *_ep, struct usb_request *_req)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct dummy_ep		*ep;
@@ -926,6 +1095,15 @@ dummy_queue (struct usb_ep *_ep, struct usb_request *_req,
 	ep = usb_ep_to_dummy_ep(_ep);
 	if (!ep->desc && _ep->name != ep0name)
 		return;
+=======
+{
+	struct dummy_request	*req;
+
+	if (!_ep || !_req) {
+		WARN_ON(1);
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	req = usb_request_to_dummy_request(_req);
 	WARN_ON(!list_empty(&req->queue));
@@ -937,12 +1115,16 @@ static void fifo_complete(struct usb_ep *ep, struct usb_request *req)
 }
 
 static int dummy_queue(struct usb_ep *_ep, struct usb_request *_req,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		gfp_t mem_flags)
 {
 	struct dummy_ep		*ep;
 	struct dummy_request	*req;
 	struct dummy		*dum;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long		flags;
 
@@ -972,6 +1154,8 @@ static int dummy_queue(struct usb_ep *_ep, struct usb_request *_req,
 			list_empty (&dum->fifo_req.queue) &&
 			list_empty (&ep->queue) &&
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dummy_hcd	*dum_hcd;
 	unsigned long		flags;
 
@@ -1000,20 +1184,28 @@ static int dummy_queue(struct usb_ep *_ep, struct usb_request *_req,
 	if (ep->desc && (ep->desc->bEndpointAddress & USB_DIR_IN) &&
 			list_empty(&dum->fifo_req.queue) &&
 			list_empty(&ep->queue) &&
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			_req->length <= FIFO_SIZE) {
 		req = &dum->fifo_req;
 		req->req = *_req;
 		req->req.buf = dum->fifo_buf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		memcpy (dum->fifo_buf, _req->buf, _req->length);
 =======
 		memcpy(dum->fifo_buf, _req->buf, _req->length);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memcpy(dum->fifo_buf, _req->buf, _req->length);
+>>>>>>> refs/remotes/origin/master
 		req->req.context = dum;
 		req->req.complete = fifo_complete;
 
 		list_add_tail(&req->queue, &ep->queue);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		spin_unlock (&dum->lock);
 		_req->actual = _req->length;
@@ -1024,6 +1216,8 @@ static int dummy_queue(struct usb_ep *_ep, struct usb_request *_req,
 		list_add_tail(&req->queue, &ep->queue);
 	spin_unlock_irqrestore (&dum->lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&dum->lock);
 		_req->actual = _req->length;
 		_req->status = 0;
@@ -1032,7 +1226,10 @@ static int dummy_queue(struct usb_ep *_ep, struct usb_request *_req,
 	}  else
 		list_add_tail(&req->queue, &ep->queue);
 	spin_unlock_irqrestore(&dum->lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* real hardware would likely enable transfers here, in case
 	 * it'd been left NAKing.
@@ -1041,10 +1238,14 @@ static int dummy_queue(struct usb_ep *_ep, struct usb_request *_req,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int dummy_dequeue (struct usb_ep *_ep, struct usb_request *_req)
 =======
 static int dummy_dequeue(struct usb_ep *_ep, struct usb_request *_req)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int dummy_dequeue(struct usb_ep *_ep, struct usb_request *_req)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dummy_ep		*ep;
 	struct dummy		*dum;
@@ -1055,16 +1256,22 @@ static int dummy_dequeue(struct usb_ep *_ep, struct usb_request *_req)
 	if (!_ep || !_req)
 		return retval;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ep = usb_ep_to_dummy_ep (_ep);
 	dum = ep_to_dummy (ep);
 =======
 	ep = usb_ep_to_dummy_ep(_ep);
 	dum = ep_to_dummy(ep);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ep = usb_ep_to_dummy_ep(_ep);
+	dum = ep_to_dummy(ep);
+>>>>>>> refs/remotes/origin/master
 
 	if (!dum->driver)
 		return -ESHUTDOWN;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	local_irq_save (flags);
 	spin_lock (&dum->lock);
@@ -1072,17 +1279,23 @@ static int dummy_dequeue(struct usb_ep *_ep, struct usb_request *_req)
 		if (&req->req == _req) {
 			list_del_init (&req->queue);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	local_irq_save(flags);
 	spin_lock(&dum->lock);
 	list_for_each_entry(req, &ep->queue, queue) {
 		if (&req->req == _req) {
 			list_del_init(&req->queue);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			_req->status = -ECONNRESET;
 			retval = 0;
 			break;
 		}
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_unlock (&dum->lock);
 
@@ -1094,6 +1307,8 @@ static int dummy_dequeue(struct usb_ep *_ep, struct usb_request *_req)
 	}
 	local_irq_restore (flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&dum->lock);
 
 	if (retval == 0) {
@@ -1103,7 +1318,10 @@ static int dummy_dequeue(struct usb_ep *_ep, struct usb_request *_req)
 		_req->complete(_ep, _req);
 	}
 	local_irq_restore(flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -1116,22 +1334,31 @@ dummy_set_halt_and_wedge(struct usb_ep *_ep, int value, int wedged)
 	if (!_ep)
 		return -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ep = usb_ep_to_dummy_ep (_ep);
 	dum = ep_to_dummy (ep);
 =======
 	ep = usb_ep_to_dummy_ep(_ep);
 	dum = ep_to_dummy(ep);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ep = usb_ep_to_dummy_ep(_ep);
+	dum = ep_to_dummy(ep);
+>>>>>>> refs/remotes/origin/master
 	if (!dum->driver)
 		return -ESHUTDOWN;
 	if (!value)
 		ep->halted = ep->wedged = 0;
 	else if (ep->desc && (ep->desc->bEndpointAddress & USB_DIR_IN) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 			!list_empty (&ep->queue))
 =======
 			!list_empty(&ep->queue))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			!list_empty(&ep->queue))
+>>>>>>> refs/remotes/origin/master
 		return -EAGAIN;
 	else {
 		ep->halted = 1;
@@ -1173,6 +1400,7 @@ static const struct usb_ep_ops dummy_ep_ops = {
 
 /* there are both host and device side versions of this call ... */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int dummy_g_get_frame (struct usb_gadget *_gadget)
 {
 	struct timeval	tv;
@@ -1194,6 +1422,8 @@ static int dummy_wakeup (struct usb_gadget *_gadget)
 	if ((dum->port_status & USB_PORT_STAT_SUSPEND) == 0 &&
 			 dum->rh_state != DUMMY_RH_SUSPENDED)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int dummy_g_get_frame(struct usb_gadget *_gadget)
 {
 	struct timeval	tv;
@@ -1214,12 +1444,16 @@ static int dummy_wakeup(struct usb_gadget *_gadget)
 		return -ENOLINK;
 	if ((dum_hcd->port_status & USB_PORT_STAT_SUSPEND) == 0 &&
 			 dum_hcd->rh_state != DUMMY_RH_SUSPENDED)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 
 	/* FIXME: What if the root hub is suspended but the port isn't? */
 
 	/* hub notices our request, issues downstream resume, etc */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dum->resuming = 1;
 	dum->re_timeout = jiffies + msecs_to_jiffies(20);
@@ -1233,6 +1467,8 @@ static int dummy_set_selfpowered (struct usb_gadget *_gadget, int value)
 
 	dum = gadget_to_dummy (_gadget);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dum_hcd->resuming = 1;
 	dum_hcd->re_timeout = jiffies + msecs_to_jiffies(20);
 	mod_timer(&dummy_hcd_to_hcd(dum_hcd)->rh_timer, dum_hcd->re_timeout);
@@ -1244,7 +1480,10 @@ static int dummy_set_selfpowered(struct usb_gadget *_gadget, int value)
 	struct dummy	*dum;
 
 	dum = gadget_to_dummy_hcd(_gadget)->dum;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (value)
 		dum->devstatus |= (1 << USB_DEVICE_SELF_POWERED);
 	else
@@ -1252,6 +1491,7 @@ static int dummy_set_selfpowered(struct usb_gadget *_gadget, int value)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int dummy_pullup (struct usb_gadget *_gadget, int value)
 {
@@ -1269,6 +1509,8 @@ static int dummy_pullup (struct usb_gadget *_gadget, int value)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void dummy_udc_update_ep0(struct dummy *dum)
 {
 	if (dum->gadget.speed == USB_SPEED_SUPER)
@@ -1316,22 +1558,31 @@ static int dummy_udc_start(struct usb_gadget *g,
 static int dummy_udc_stop(struct usb_gadget *g,
 		struct usb_gadget_driver *driver);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct usb_gadget_ops dummy_ops = {
 	.get_frame	= dummy_g_get_frame,
 	.wakeup		= dummy_wakeup,
 	.set_selfpowered = dummy_set_selfpowered,
 	.pullup		= dummy_pullup,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.udc_start	= dummy_udc_start,
 	.udc_stop	= dummy_udc_stop,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.udc_start	= dummy_udc_start,
+	.udc_stop	= dummy_udc_stop,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*-------------------------------------------------------------------------*/
 
 /* "function" sysfs attribute */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t
 show_function (struct device *dev, struct device_attribute *attr, char *buf)
@@ -1345,6 +1596,9 @@ show_function (struct device *dev, struct device_attribute *attr, char *buf)
 static DEVICE_ATTR (function, S_IRUGO, show_function, NULL);
 =======
 static ssize_t show_function(struct device *dev, struct device_attribute *attr,
+=======
+static ssize_t function_show(struct device *dev, struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 		char *buf)
 {
 	struct dummy	*dum = gadget_dev_to_dummy(dev);
@@ -1353,8 +1607,12 @@ static ssize_t show_function(struct device *dev, struct device_attribute *attr,
 		return 0;
 	return scnprintf(buf, PAGE_SIZE, "%s\n", dum->driver->function);
 }
+<<<<<<< HEAD
 static DEVICE_ATTR(function, S_IRUGO, show_function, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR_RO(function);
+>>>>>>> refs/remotes/origin/master
 
 /*-------------------------------------------------------------------------*/
 
@@ -1373,6 +1631,7 @@ static DEVICE_ATTR(function, S_IRUGO, show_function, NULL);
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int
 usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 		int (*bind)(struct usb_gadget *))
@@ -1386,6 +1645,8 @@ usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 		return -EBUSY;
 	if (!bind || !driver->setup || driver->speed == USB_SPEED_UNKNOWN)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int dummy_udc_start(struct usb_gadget *g,
 		struct usb_gadget_driver *driver)
 {
@@ -1393,7 +1654,10 @@ static int dummy_udc_start(struct usb_gadget *g,
 	struct dummy		*dum = dum_hcd->dum;
 
 	if (driver->max_speed == USB_SPEED_UNKNOWN)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	/*
@@ -1403,6 +1667,7 @@ static int dummy_udc_start(struct usb_gadget *g,
 
 	dum->devstatus = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	INIT_LIST_HEAD (&dum->gadget.ep_list);
 	for (i = 0; i < DUMMY_ENDPOINTS; i++) {
@@ -1519,6 +1784,8 @@ static int dummy_udc_probe (struct platform_device *pdev)
 	/* maybe claim OTG support, though we won't complete HNP */
 	dum->gadget.is_otg = (dummy_to_hcd(dum)->self.otg_port != 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dum->driver = driver;
 	dev_dbg(udc_dev(dum), "binding gadget driver '%s'\n",
 			driver->driver.name);
@@ -1531,8 +1798,14 @@ static int dummy_udc_stop(struct usb_gadget *g,
 	struct dummy_hcd	*dum_hcd = gadget_to_dummy_hcd(g);
 	struct dummy		*dum = dum_hcd->dum;
 
+<<<<<<< HEAD
 	dev_dbg(udc_dev(dum), "unregister gadget driver '%s'\n",
 			driver->driver.name);
+=======
+	if (driver)
+		dev_dbg(udc_dev(dum), "unregister gadget driver '%s'\n",
+				driver->driver.name);
+>>>>>>> refs/remotes/origin/master
 
 	dum->driver = NULL;
 
@@ -1543,11 +1816,14 @@ static int dummy_udc_stop(struct usb_gadget *g,
 
 /* The gadget structure is stored inside the hcd structure and will be
  * released along with it. */
+<<<<<<< HEAD
 static void dummy_gadget_release(struct device *dev)
 {
 	return;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void init_dummy_udc_hw(struct dummy *dum)
 {
 	int i;
@@ -1563,7 +1839,11 @@ static void init_dummy_udc_hw(struct dummy *dum)
 		list_add_tail(&ep->ep.ep_list, &dum->gadget.ep_list);
 		ep->halted = ep->wedged = ep->already_seen =
 				ep->setup_stage = 0;
+<<<<<<< HEAD
 		ep->ep.maxpacket = ~0;
+=======
+		usb_ep_set_maxpacket_limit(&ep->ep, ~0);
+>>>>>>> refs/remotes/origin/master
 		ep->ep.max_streams = 16;
 		ep->last_io = jiffies;
 		ep->gadget = &dum->gadget;
@@ -1582,6 +1862,7 @@ static void init_dummy_udc_hw(struct dummy *dum)
 
 static int dummy_udc_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct dummy	*dum = &the_controller;
 	int		rc;
 
@@ -1648,6 +1929,17 @@ static int dummy_udc_resume (struct platform_device *pdev)
 
 	usb_hcd_poll_rh_status (dummy_to_hcd (dum));
 =======
+=======
+	struct dummy	*dum;
+	int		rc;
+
+	dum = *((void **)dev_get_platdata(&pdev->dev));
+	dum->gadget.name = gadget_name;
+	dum->gadget.ops = &dummy_ops;
+	dum->gadget.max_speed = USB_SPEED_SUPER;
+
+	dum->gadget.dev.parent = &pdev->dev;
+>>>>>>> refs/remotes/origin/master
 	init_dummy_udc_hw(dum);
 
 	rc = usb_add_gadget_udc(&pdev->dev, &dum->gadget);
@@ -1663,7 +1955,10 @@ static int dummy_udc_resume (struct platform_device *pdev)
 err_dev:
 	usb_del_gadget_udc(&dum->gadget);
 err_udc:
+<<<<<<< HEAD
 	device_unregister(&dum->gadget.dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -1671,10 +1966,15 @@ static int dummy_udc_remove(struct platform_device *pdev)
 {
 	struct dummy	*dum = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	usb_del_gadget_udc(&dum->gadget);
 	platform_set_drvdata(pdev, NULL);
 	device_remove_file(&dum->gadget.dev, &dev_attr_function);
 	device_unregister(&dum->gadget.dev);
+=======
+	device_remove_file(&dum->gadget.dev, &dev_attr_function);
+	usb_del_gadget_udc(&dum->gadget);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1706,7 +2006,10 @@ static int dummy_udc_resume(struct platform_device *pdev)
 	dev_dbg(&pdev->dev, "%s\n", __func__);
 	dummy_udc_pm(dum, dum_hcd, 0);
 	usb_hcd_poll_rh_status(dummy_hcd_to_hcd(dum_hcd));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1724,7 +2027,10 @@ static struct platform_driver dummy_udc_driver = {
 /*-------------------------------------------------------------------------*/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned int dummy_get_ep_idx(const struct usb_endpoint_descriptor *desc)
 {
 	unsigned int index;
@@ -1735,7 +2041,10 @@ static unsigned int dummy_get_ep_idx(const struct usb_endpoint_descriptor *desc)
 	return index;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* MASTER/HOST SIDE DRIVER
  *
  * this uses the hcd framework to hook up to host side drivers.
@@ -1749,8 +2058,11 @@ static unsigned int dummy_get_ep_idx(const struct usb_endpoint_descriptor *desc)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int dummy_urb_enqueue (
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int dummy_ep_stream_en(struct dummy_hcd *dum_hcd, struct urb *urb)
 {
 	const struct usb_endpoint_descriptor *desc = &urb->ep->desc;
@@ -1827,20 +2139,28 @@ static int dummy_validate_stream(struct dummy_hcd *dum_hcd, struct urb *urb)
 }
 
 static int dummy_urb_enqueue(
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct usb_hcd			*hcd,
 	struct urb			*urb,
 	gfp_t				mem_flags
 ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dummy	*dum;
 =======
 	struct dummy_hcd *dum_hcd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dummy_hcd *dum_hcd;
+>>>>>>> refs/remotes/origin/master
 	struct urbp	*urbp;
 	unsigned long	flags;
 	int		rc;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!urb->transfer_buffer && urb->transfer_buffer_length)
 		return -EINVAL;
@@ -1853,6 +2173,8 @@ static int dummy_urb_enqueue(
 	dum = hcd_to_dummy (hcd);
 	spin_lock_irqsave (&dum->lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	urbp = kmalloc(sizeof *urbp, mem_flags);
 	if (!urbp)
 		return -ENOMEM;
@@ -1868,6 +2190,7 @@ static int dummy_urb_enqueue(
 		goto done;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	rc = usb_hcd_link_urb_to_ep(hcd, urb);
 	if (rc) {
@@ -1894,6 +2217,14 @@ static int dummy_urb_enqueue(
  done:
 	spin_unlock_irqrestore(&dum->lock, flags);
 =======
+=======
+	rc = usb_hcd_link_urb_to_ep(hcd, urb);
+	if (rc) {
+		kfree(urbp);
+		goto done;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (!dum_hcd->udev) {
 		dum_hcd->udev = urb->dev;
 		usb_get_dev(dum_hcd->udev);
@@ -1911,22 +2242,30 @@ static int dummy_urb_enqueue(
 
  done:
 	spin_unlock_irqrestore(&dum_hcd->dum->lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
 static int dummy_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dummy	*dum;
 =======
 	struct dummy_hcd *dum_hcd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dummy_hcd *dum_hcd;
+>>>>>>> refs/remotes/origin/master
 	unsigned long	flags;
 	int		rc;
 
 	/* giveback happens automatically in timer callback,
 	 * so make sure the callback happens */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dum = hcd_to_dummy (hcd);
 	spin_lock_irqsave (&dum->lock, flags);
@@ -1946,6 +2285,8 @@ transfer(struct dummy *dum, struct urb *urb, struct dummy_ep *ep, int limit,
 		int *status)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dum_hcd = hcd_to_dummy_hcd(hcd);
 	spin_lock_irqsave(&dum_hcd->dum->lock, flags);
 
@@ -2029,28 +2370,41 @@ static int transfer(struct dummy_hcd *dum_hcd, struct urb *urb,
 		struct dummy_ep *ep, int limit, int *status)
 {
 	struct dummy		*dum = dum_hcd->dum;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dummy_request	*req;
 
 top:
 	/* if there's no request queued, the device is NAKing; return */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	list_for_each_entry (req, &ep->queue, queue) {
 =======
 	list_for_each_entry(req, &ep->queue, queue) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	list_for_each_entry(req, &ep->queue, queue) {
+>>>>>>> refs/remotes/origin/master
 		unsigned	host_len, dev_len, len;
 		int		is_short, to_host;
 		int		rescan = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (dummy_ep_stream_en(dum_hcd, urb)) {
 			if ((urb->stream_id != req->req.stream_id))
 				continue;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* 1..N packets of ep->ep.maxpacket each ... the last one
 		 * may be short (including zero length).
 		 *
@@ -2060,6 +2414,7 @@ top:
 		 */
 		host_len = urb->transfer_buffer_length - urb->actual_length;
 		dev_len = req->req.length - req->req.actual;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		len = min (host_len, dev_len);
 
@@ -2076,6 +2431,8 @@ top:
 				break;
 			len = min (len, (unsigned) limit);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		len = min(host_len, dev_len);
 
 		/* FIXME update emulated data toggle too */
@@ -2088,7 +2445,10 @@ top:
 			if (limit < ep->ep.maxpacket && limit < len)
 				break;
 			len = min_t(unsigned, len, limit);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (len == 0)
 				break;
 
@@ -2099,6 +2459,7 @@ top:
 			}
 			is_short = (len % ep->ep.maxpacket) != 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 			/* else transfer packet(s) */
 			ubuf = urb->transfer_buffer + urb->actual_length;
@@ -2113,6 +2474,8 @@ top:
 			urb->actual_length += len;
 			req->req.actual += len;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			len = dummy_perform_transfer(urb, req, len);
 
 			ep->last_io = jiffies;
@@ -2123,7 +2486,10 @@ top:
 				urb->actual_length += len;
 				req->req.actual += len;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* short packets terminate, maybe with overflow/underflow.
@@ -2165,18 +2531,24 @@ top:
 		/* device side completion --> continuable */
 		if (req->req.status != -EINPROGRESS) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			list_del_init (&req->queue);
 
 			spin_unlock (&dum->lock);
 			req->req.complete (&ep->ep, &req->req);
 			spin_lock (&dum->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			list_del_init(&req->queue);
 
 			spin_unlock(&dum->lock);
 			req->req.complete(&ep->ep, &req->req);
 			spin_lock(&dum->lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			/* requests might have been unlinked... */
 			rescan = 1;
@@ -2194,10 +2566,14 @@ top:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int periodic_bytes (struct dummy *dum, struct dummy_ep *ep)
 =======
 static int periodic_bytes(struct dummy *dum, struct dummy_ep *ep)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int periodic_bytes(struct dummy *dum, struct dummy_ep *ep)
+>>>>>>> refs/remotes/origin/master
 {
 	int	limit = ep->ep.maxpacket;
 
@@ -2206,20 +2582,27 @@ static int periodic_bytes(struct dummy *dum, struct dummy_ep *ep)
 
 		/* high bandwidth mode */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tmp = le16_to_cpu(ep->desc->wMaxPacketSize);
 =======
 		tmp = usb_endpoint_maxp(ep->desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tmp = usb_endpoint_maxp(ep->desc);
+>>>>>>> refs/remotes/origin/master
 		tmp = (tmp >> 11) & 0x03;
 		tmp *= 8 /* applies to entire frame */;
 		limit += limit * tmp;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return limit;
 }
 
 #define is_active(dum)	((dum->port_status & \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (dum->gadget.speed == USB_SPEED_SUPER) {
 		switch (usb_endpoint_type(ep->desc)) {
 		case USB_ENDPOINT_XFER_ISOC:
@@ -2239,11 +2622,15 @@ static int periodic_bytes(struct dummy *dum, struct dummy_ep *ep)
 }
 
 #define is_active(dum_hcd)	((dum_hcd->port_status & \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		(USB_PORT_STAT_CONNECTION | USB_PORT_STAT_ENABLE | \
 			USB_PORT_STAT_SUSPEND)) \
 		== (USB_PORT_STAT_CONNECTION | USB_PORT_STAT_ENABLE))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct dummy_ep *find_endpoint (struct dummy *dum, u8 address)
 {
@@ -2256,6 +2643,8 @@ static struct dummy_ep *find_endpoint (struct dummy *dum, u8 address)
 	for (i = 1; i < DUMMY_ENDPOINTS; i++) {
 		struct dummy_ep	*ep = &dum->ep [i];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct dummy_ep *find_endpoint(struct dummy *dum, u8 address)
 {
 	int		i;
@@ -2267,7 +2656,10 @@ static struct dummy_ep *find_endpoint(struct dummy *dum, u8 address)
 		return &dum->ep[0];
 	for (i = 1; i < DUMMY_ENDPOINTS; i++) {
 		struct dummy_ep	*ep = &dum->ep[i];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (!ep->desc)
 			continue;
@@ -2300,18 +2692,26 @@ static struct dummy_ep *find_endpoint(struct dummy *dum, u8 address)
  *	  error code on error
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int handle_control_request(struct dummy *dum, struct urb *urb,
 =======
 static int handle_control_request(struct dummy_hcd *dum_hcd, struct urb *urb,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int handle_control_request(struct dummy_hcd *dum_hcd, struct urb *urb,
+>>>>>>> refs/remotes/origin/master
 				  struct usb_ctrlrequest *setup,
 				  int *status)
 {
 	struct dummy_ep		*ep2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct dummy		*dum = dum_hcd->dum;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dummy		*dum = dum_hcd->dum;
+>>>>>>> refs/remotes/origin/master
 	int			ret_val = 1;
 	unsigned	w_index;
 	unsigned	w_value;
@@ -2344,7 +2744,10 @@ static int handle_control_request(struct dummy_hcd *dum_hcd, struct urb *urb,
 				dum->gadget.a_alt_hnp_support = 1;
 				break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			case USB_DEVICE_U1_ENABLE:
 				if (dummy_hcd_to_hcd(dum_hcd)->speed ==
 				    HCD_USB3)
@@ -2366,7 +2769,10 @@ static int handle_control_request(struct dummy_hcd *dum_hcd, struct urb *urb,
 				else
 					ret_val = -EOPNOTSUPP;
 				break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			default:
 				ret_val = -EOPNOTSUPP;
 			}
@@ -2394,7 +2800,10 @@ static int handle_control_request(struct dummy_hcd *dum_hcd, struct urb *urb,
 				w_value = USB_DEVICE_REMOTE_WAKEUP;
 				break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			case USB_DEVICE_U1_ENABLE:
 				if (dummy_hcd_to_hcd(dum_hcd)->speed ==
 				    HCD_USB3)
@@ -2416,7 +2825,10 @@ static int handle_control_request(struct dummy_hcd *dum_hcd, struct urb *urb,
 				else
 					ret_val = -EOPNOTSUPP;
 				break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			default:
 				ret_val = -EOPNOTSUPP;
 				break;
@@ -2479,15 +2891,21 @@ static int handle_control_request(struct dummy_hcd *dum_hcd, struct urb *urb,
  * both drivers except the callbacks aren't in_irq().
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void dummy_timer (unsigned long _dum)
 {
 	struct dummy		*dum = (struct dummy *) _dum;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void dummy_timer(unsigned long _dum_hcd)
 {
 	struct dummy_hcd	*dum_hcd = (struct dummy_hcd *) _dum_hcd;
 	struct dummy		*dum = dum_hcd->dum;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct urbp		*urbp, *tmp;
 	unsigned long		flags;
 	int			limit, total;
@@ -2505,22 +2923,29 @@ static void dummy_timer(unsigned long _dum_hcd)
 		total = 512/*bytes*/ * 13/*packets*/ * 8/*uframes*/;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	default:
 		dev_err (dummy_dev(dum), "bogus device speed\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case USB_SPEED_SUPER:
 		/* Bus speed is 500000 bytes/ms, so use a little less */
 		total = 490000;
 		break;
 	default:
 		dev_err(dummy_dev(dum_hcd), "bogus device speed\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	/* FIXME if HZ != 1000 this will probably misbehave ... */
 
 	/* look at each urb queued by the host side driver */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_irqsave (&dum->lock, flags);
 
@@ -2529,17 +2954,23 @@ static void dummy_timer(unsigned long _dum_hcd)
 				"timer fired with no URBs pending?\n");
 		spin_unlock_irqrestore (&dum->lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&dum->lock, flags);
 
 	if (!dum_hcd->udev) {
 		dev_err(dummy_dev(dum_hcd),
 				"timer fired with no URBs pending?\n");
 		spin_unlock_irqrestore(&dum->lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	for (i = 0; i < DUMMY_ENDPOINTS; i++) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (!ep_name [i])
 			break;
@@ -2549,6 +2980,8 @@ static void dummy_timer(unsigned long _dum_hcd)
 restart:
 	list_for_each_entry_safe (urbp, tmp, &dum->urbp_list, urbp_list) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!ep_name[i])
 			break;
 		dum->ep[i].already_seen = 0;
@@ -2556,7 +2989,10 @@ restart:
 
 restart:
 	list_for_each_entry_safe(urbp, tmp, &dum_hcd->urbp_list, urbp_list) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct urb		*urb;
 		struct dummy_request	*req;
 		u8			address;
@@ -2568,6 +3004,7 @@ restart:
 		if (urb->unlinked)
 			goto return_urb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		else if (dum->rh_state != DUMMY_RH_RUNNING)
 			continue;
 		type = usb_pipetype (urb->pipe);
@@ -2576,6 +3013,11 @@ restart:
 			continue;
 		type = usb_pipetype(urb->pipe);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		else if (dum_hcd->rh_state != DUMMY_RH_RUNNING)
+			continue;
+		type = usb_pipetype(urb->pipe);
+>>>>>>> refs/remotes/origin/master
 
 		/* used up this frame's non-periodic bandwidth?
 		 * FIXME there's infinite bandwidth for control and
@@ -2587,19 +3029,27 @@ restart:
 		/* find the gadget's ep for this request (if configured) */
 		address = usb_pipeendpoint (urb->pipe);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (usb_pipein (urb->pipe))
 =======
 		if (usb_pipein(urb->pipe))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (usb_pipein(urb->pipe))
+>>>>>>> refs/remotes/origin/master
 			address |= USB_DIR_IN;
 		ep = find_endpoint(dum, address);
 		if (!ep) {
 			/* set_configuration() disagreement */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_dbg (dummy_dev(dum),
 =======
 			dev_dbg(dummy_dev(dum_hcd),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_dbg(dummy_dev(dum_hcd),
+>>>>>>> refs/remotes/origin/master
 				"no ep configured for urb %p\n",
 				urb);
 			status = -EPROTO;
@@ -2610,20 +3060,28 @@ restart:
 			continue;
 		ep->already_seen = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ep == &dum->ep [0] && urb->error_count) {
 =======
 		if (ep == &dum->ep[0] && urb->error_count) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ep == &dum->ep[0] && urb->error_count) {
+>>>>>>> refs/remotes/origin/master
 			ep->setup_stage = 1;	/* a new urb */
 			urb->error_count = 0;
 		}
 		if (ep->halted && !ep->setup_stage) {
 			/* NOTE: must not be iso! */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_dbg (dummy_dev(dum), "ep %s halted, urb %p\n",
 =======
 			dev_dbg(dummy_dev(dum_hcd), "ep %s halted, urb %p\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_dbg(dummy_dev(dum_hcd), "ep %s halted, urb %p\n",
+>>>>>>> refs/remotes/origin/master
 					ep->ep.name, urb);
 			status = -EPIPE;
 			goto return_urb;
@@ -2631,6 +3089,7 @@ restart:
 		/* FIXME make sure both ends agree on maxpacket */
 
 		/* handle control requests */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (ep == &dum->ep [0] && ep->setup_stage) {
 			struct usb_ctrlrequest		setup;
@@ -2648,6 +3107,8 @@ restart:
 				req->req.complete (&ep->ep, &req->req);
 				spin_lock (&dum->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ep == &dum->ep[0] && ep->setup_stage) {
 			struct usb_ctrlrequest		setup;
 			int				value = 1;
@@ -2663,7 +3124,10 @@ restart:
 				spin_unlock(&dum->lock);
 				req->req.complete(&ep->ep, &req->req);
 				spin_lock(&dum->lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				ep->already_seen = 0;
 				goto restart;
 			}
@@ -2677,10 +3141,14 @@ restart:
 			ep->halted = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			value = handle_control_request(dum, urb, &setup,
 =======
 			value = handle_control_request(dum_hcd, urb, &setup,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			value = handle_control_request(dum_hcd, urb, &setup,
+>>>>>>> refs/remotes/origin/master
 						       &status);
 
 			/* gadget driver handles all other requests.  block
@@ -2688,16 +3156,22 @@ restart:
 			 */
 			if (value > 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				spin_unlock (&dum->lock);
 				value = dum->driver->setup (&dum->gadget,
 						&setup);
 				spin_lock (&dum->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				spin_unlock(&dum->lock);
 				value = dum->driver->setup(&dum->gadget,
 						&setup);
 				spin_lock(&dum->lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 				if (value >= 0) {
 					/* no delays (max 64KB data stage) */
@@ -2710,10 +3184,14 @@ restart:
 			if (value < 0) {
 				if (value != -EOPNOTSUPP)
 <<<<<<< HEAD
+<<<<<<< HEAD
 					dev_dbg (udc_dev(dum),
 =======
 					dev_dbg(udc_dev(dum),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					dev_dbg(udc_dev(dum),
+>>>>>>> refs/remotes/origin/master
 						"setup --> %d\n",
 						value);
 				status = -EPIPE;
@@ -2726,10 +3204,14 @@ restart:
 		/* non-control requests */
 		limit = total;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		switch (usb_pipetype (urb->pipe)) {
 =======
 		switch (usb_pipetype(urb->pipe)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		switch (usb_pipetype(urb->pipe)) {
+>>>>>>> refs/remotes/origin/master
 		case PIPE_ISOCHRONOUS:
 			/* FIXME is it urb->interval since the last xfer?
 			 * use urb->iso_frame_desc[i].
@@ -2737,10 +3219,14 @@ restart:
 			 * report random errors, to debug drivers.
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			limit = max (limit, periodic_bytes (dum, ep));
 =======
 			limit = max(limit, periodic_bytes(dum, ep));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			limit = max(limit, periodic_bytes(dum, ep));
+>>>>>>> refs/remotes/origin/master
 			status = -ENOSYS;
 			break;
 
@@ -2748,6 +3234,7 @@ restart:
 			/* FIXME is it urb->interval since the last xfer?
 			 * this almost certainly polls too fast.
 			 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			limit = max (limit, periodic_bytes (dum, ep));
 			/* FALLTHROUGH */
@@ -2758,6 +3245,8 @@ restart:
 			ep->last_io = jiffies;
 			total = transfer(dum, urb, ep, limit, &status);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			limit = max(limit, periodic_bytes(dum, ep));
 			/* FALLTHROUGH */
 
@@ -2765,7 +3254,10 @@ restart:
 treat_control_like_bulk:
 			ep->last_io = jiffies;
 			total = transfer(dum_hcd, urb, ep, limit, &status);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -2774,6 +3266,7 @@ treat_control_like_bulk:
 			continue;
 
 return_urb:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		list_del (&urbp->urbp_list);
 		kfree (urbp);
@@ -2785,6 +3278,8 @@ return_urb:
 		usb_hcd_giveback_urb(dummy_to_hcd(dum), urb, status);
 		spin_lock (&dum->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		list_del(&urbp->urbp_list);
 		kfree(urbp);
 		if (ep)
@@ -2794,11 +3289,15 @@ return_urb:
 		spin_unlock(&dum->lock);
 		usb_hcd_giveback_urb(dummy_hcd_to_hcd(dum_hcd), urb, status);
 		spin_lock(&dum->lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		goto restart;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (list_empty (&dum->urbp_list)) {
 		usb_put_dev (dum->udev);
@@ -2810,6 +3309,8 @@ return_urb:
 
 	spin_unlock_irqrestore (&dum->lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (list_empty(&dum_hcd->urbp_list)) {
 		usb_put_dev(dum_hcd->udev);
 		dum_hcd->udev = NULL;
@@ -2819,7 +3320,10 @@ return_urb:
 	}
 
 	spin_unlock_irqrestore(&dum->lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*-------------------------------------------------------------------------*/
@@ -2831,6 +3335,7 @@ return_urb:
 	| USB_PORT_STAT_C_OVERCURRENT \
 	| USB_PORT_STAT_C_RESET) << 16)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int dummy_hub_status (struct usb_hcd *hcd, char *buf)
 {
@@ -2861,6 +3366,8 @@ static int dummy_hub_status (struct usb_hcd *hcd, char *buf)
 done:
 	spin_unlock_irqrestore (&dum->lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int dummy_hub_status(struct usb_hcd *hcd, char *buf)
 {
 	struct dummy_hcd	*dum_hcd;
@@ -2889,6 +3396,7 @@ static int dummy_hub_status(struct usb_hcd *hcd, char *buf)
 	}
 done:
 	spin_unlock_irqrestore(&dum_hcd->dum->lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
 }
@@ -2899,6 +3407,33 @@ hub_descriptor (struct usb_hub_descriptor *desc)
 {
 	memset (desc, 0, sizeof *desc);
 =======
+=======
+	return retval;
+}
+
+/* usb 3.0 root hub device descriptor */
+static struct {
+	struct usb_bos_descriptor bos;
+	struct usb_ss_cap_descriptor ss_cap;
+} __packed usb3_bos_desc = {
+
+	.bos = {
+		.bLength		= USB_DT_BOS_SIZE,
+		.bDescriptorType	= USB_DT_BOS,
+		.wTotalLength		= cpu_to_le16(sizeof(usb3_bos_desc)),
+		.bNumDeviceCaps		= 1,
+	},
+	.ss_cap = {
+		.bLength		= USB_DT_USB_SS_CAP_SIZE,
+		.bDescriptorType	= USB_DT_DEVICE_CAPABILITY,
+		.bDevCapabilityType	= USB_SS_CAP_TYPE,
+		.wSpeedSupported	= cpu_to_le16(USB_5GBPS_OPERATION),
+		.bFunctionalitySupport	= ilog2(USB_5GBPS_OPERATION),
+	},
+};
+
+static inline void
+>>>>>>> refs/remotes/origin/master
 ss_hub_descriptor(struct usb_hub_descriptor *desc)
 {
 	memset(desc, 0, sizeof *desc);
@@ -2913,7 +3448,10 @@ ss_hub_descriptor(struct usb_hub_descriptor *desc)
 static inline void hub_descriptor(struct usb_hub_descriptor *desc)
 {
 	memset(desc, 0, sizeof *desc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	desc->bDescriptorType = 0x29;
 	desc->bDescLength = 9;
 	desc->wHubCharacteristics = cpu_to_le16(0x0001);
@@ -2923,10 +3461,14 @@ static inline void hub_descriptor(struct usb_hub_descriptor *desc)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int dummy_hub_control (
 =======
 static int dummy_hub_control(
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int dummy_hub_control(
+>>>>>>> refs/remotes/origin/master
 	struct usb_hcd	*hcd,
 	u16		typeReq,
 	u16		wValue,
@@ -2935,16 +3477,21 @@ static int dummy_hub_control(
 	u16		wLength
 ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dummy	*dum;
 =======
 	struct dummy_hcd *dum_hcd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dummy_hcd *dum_hcd;
+>>>>>>> refs/remotes/origin/master
 	int		retval = 0;
 	unsigned long	flags;
 
 	if (!HCD_HW_ACCESSIBLE(hcd))
 		return -ETIMEDOUT;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dum = hcd_to_dummy (hcd);
 	spin_lock_irqsave (&dum->lock, flags);
@@ -2953,6 +3500,11 @@ static int dummy_hub_control(
 
 	spin_lock_irqsave(&dum_hcd->dum->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dum_hcd = hcd_to_dummy_hcd(hcd);
+
+	spin_lock_irqsave(&dum_hcd->dum->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	switch (typeReq) {
 	case ClearHubFeature:
 		break;
@@ -2960,11 +3512,14 @@ static int dummy_hub_control(
 		switch (wValue) {
 		case USB_PORT_FEAT_SUSPEND:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (dum->port_status & USB_PORT_STAT_SUSPEND) {
 				/* 20msec resume signaling */
 				dum->resuming = 1;
 				dum->re_timeout = jiffies +
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (hcd->speed == HCD_USB3) {
 				dev_dbg(dummy_dev(dum_hcd),
 					 "USB_PORT_FEAT_SUSPEND req not "
@@ -2975,11 +3530,15 @@ static int dummy_hub_control(
 				/* 20msec resume signaling */
 				dum_hcd->resuming = 1;
 				dum_hcd->re_timeout = jiffies +
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						msecs_to_jiffies(20);
 			}
 			break;
 		case USB_PORT_FEAT_POWER:
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (dum->port_status & USB_PORT_STAT_POWER)
 				dev_dbg (dummy_dev(dum), "power-off\n");
@@ -2995,6 +3554,8 @@ static int dummy_hub_control(
 	case GetHubStatus:
 		*(__le32 *) buf = cpu_to_le32 (0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (hcd->speed == HCD_USB3) {
 				if (dum_hcd->port_status & USB_PORT_STAT_POWER)
 					dev_dbg(dummy_dev(dum_hcd),
@@ -3024,9 +3585,26 @@ static int dummy_hub_control(
 		else
 			hub_descriptor((struct usb_hub_descriptor *) buf);
 		break;
+<<<<<<< HEAD
 	case GetHubStatus:
 		*(__le32 *) buf = cpu_to_le32(0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	case DeviceRequest | USB_REQ_GET_DESCRIPTOR:
+		if (hcd->speed != HCD_USB3)
+			goto error;
+
+		if ((wValue >> 8) != USB_DT_BOS)
+			goto error;
+
+		memcpy(buf, &usb3_bos_desc, sizeof(usb3_bos_desc));
+		retval = sizeof(usb3_bos_desc);
+		break;
+
+	case GetHubStatus:
+		*(__le32 *) buf = cpu_to_le32(0);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case GetPortStatus:
 		if (wIndex != 1)
@@ -3035,6 +3613,7 @@ static int dummy_hub_control(
 		/* whoever resets or resumes must GetPortStatus to
 		 * complete it!!
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (dum->resuming &&
 				time_after_eq (jiffies, dum->re_timeout)) {
@@ -3070,6 +3649,8 @@ static int dummy_hub_control(
 		((__le16 *) buf)[0] = cpu_to_le16 (dum->port_status);
 		((__le16 *) buf)[1] = cpu_to_le16 (dum->port_status >> 16);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (dum_hcd->resuming &&
 				time_after_eq(jiffies, dum_hcd->re_timeout)) {
 			dum_hcd->port_status |= (USB_PORT_STAT_C_SUSPEND << 16);
@@ -3105,7 +3686,10 @@ static int dummy_hub_control(
 		set_link_state(dum_hcd);
 		((__le16 *) buf)[0] = cpu_to_le16(dum_hcd->port_status);
 		((__le16 *) buf)[1] = cpu_to_le16(dum_hcd->port_status >> 16);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case SetHubFeature:
 		retval = -EPIPE;
@@ -3113,10 +3697,13 @@ static int dummy_hub_control(
 	case SetPortFeature:
 		switch (wValue) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case USB_PORT_FEAT_SUSPEND:
 			if (dum->active) {
 				dum->port_status |= USB_PORT_STAT_SUSPEND;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case USB_PORT_FEAT_LINK_STATE:
 			if (hcd->speed != HCD_USB3) {
 				dev_dbg(dummy_dev(dum_hcd),
@@ -3149,26 +3736,36 @@ static int dummy_hub_control(
 			}
 			if (dum_hcd->active) {
 				dum_hcd->port_status |= USB_PORT_STAT_SUSPEND;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 				/* HNP would happen here; for now we
 				 * assume b_bus_req is always true.
 				 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 				set_link_state (dum);
 				if (((1 << USB_DEVICE_B_HNP_ENABLE)
 						& dum->devstatus) != 0)
 					dev_dbg (dummy_dev(dum),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				set_link_state(dum_hcd);
 				if (((1 << USB_DEVICE_B_HNP_ENABLE)
 						& dum_hcd->dum->devstatus) != 0)
 					dev_dbg(dummy_dev(dum_hcd),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 							"no HNP yet!\n");
 			}
 			break;
 		case USB_PORT_FEAT_POWER:
+<<<<<<< HEAD
 <<<<<<< HEAD
 			dum->port_status |= USB_PORT_STAT_POWER;
 			set_link_state (dum);
@@ -3238,6 +3835,8 @@ static int dummy_bus_resume (struct usb_hcd *hcd)
 	}
 	spin_unlock_irq (&dum->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (hcd->speed == HCD_USB3)
 				dum_hcd->port_status |= USB_SS_PORT_STAT_POWER;
 			else
@@ -3357,12 +3956,16 @@ static int dummy_bus_resume(struct usb_hcd *hcd)
 		hcd->state = HC_STATE_RUNNING;
 	}
 	spin_unlock_irq(&dum_hcd->dum->lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline ssize_t
 show_urb (char *buf, size_t size, struct urb *urb)
@@ -3396,6 +3999,8 @@ show_urbs (struct device *dev, struct device_attribute *attr, char *buf)
 	struct usb_hcd		*hcd = dev_get_drvdata (dev);
 	struct dummy		*dum = hcd_to_dummy (hcd);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline ssize_t show_urb(char *buf, size_t size, struct urb *urb)
 {
 	int ep = usb_pipeendpoint(urb->pipe);
@@ -3420,7 +4025,11 @@ static inline ssize_t show_urb(char *buf, size_t size, struct urb *urb)
 		default:
 			s = "?";
 			break;
+<<<<<<< HEAD
 		 }; s; }),
+=======
+		 } s; }),
+>>>>>>> refs/remotes/origin/master
 		ep, ep ? (usb_pipein(urb->pipe) ? "in" : "out") : "",
 		({ char *s; \
 		switch (usb_pipetype(urb->pipe)) { \
@@ -3436,20 +4045,32 @@ static inline ssize_t show_urb(char *buf, size_t size, struct urb *urb)
 		default: \
 			s = "-iso"; \
 			break; \
+<<<<<<< HEAD
 		}; s; }),
 		urb->actual_length, urb->transfer_buffer_length);
 }
 
 static ssize_t show_urbs(struct device *dev, struct device_attribute *attr,
+=======
+		} s; }),
+		urb->actual_length, urb->transfer_buffer_length);
+}
+
+static ssize_t urbs_show(struct device *dev, struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 		char *buf)
 {
 	struct usb_hcd		*hcd = dev_get_drvdata(dev);
 	struct dummy_hcd	*dum_hcd = hcd_to_dummy_hcd(hcd);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct urbp		*urbp;
 	size_t			size = 0;
 	unsigned long		flags;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_irqsave (&dum->lock, flags);
 	list_for_each_entry (urbp, &dum->urbp_list, urbp_list) {
@@ -3471,6 +4092,8 @@ static int dummy_start (struct usb_hcd *hcd)
 
 	dum = hcd_to_dummy (hcd);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&dum_hcd->dum->lock, flags);
 	list_for_each_entry(urbp, &dum_hcd->urbp_list, urbp_list) {
 		size_t		temp;
@@ -3483,7 +4106,11 @@ static int dummy_start (struct usb_hcd *hcd)
 
 	return size;
 }
+<<<<<<< HEAD
 static DEVICE_ATTR(urbs, S_IRUGO, show_urbs, NULL);
+=======
+static DEVICE_ATTR_RO(urbs);
+>>>>>>> refs/remotes/origin/master
 
 static int dummy_start_ss(struct dummy_hcd *dum_hcd)
 {
@@ -3508,13 +4135,17 @@ static int dummy_start_ss(struct dummy_hcd *dum_hcd)
 static int dummy_start(struct usb_hcd *hcd)
 {
 	struct dummy_hcd	*dum_hcd = hcd_to_dummy_hcd(hcd);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * MASTER side init ... we emulate a root hub that'll only ever
 	 * talk to one device (the slave side).  Also appears in sysfs,
 	 * just like more familiar pci-based HCDs.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_init (&dum->lock);
 	init_timer (&dum->timer);
@@ -3524,6 +4155,8 @@ static int dummy_start(struct usb_hcd *hcd)
 
 	INIT_LIST_HEAD (&dum->urbp_list);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!usb_hcd_is_primary_hcd(hcd))
 		return dummy_start_ss(dum_hcd);
 
@@ -3534,7 +4167,10 @@ static int dummy_start(struct usb_hcd *hcd)
 	dum_hcd->rh_state = DUMMY_RH_RUNNING;
 
 	INIT_LIST_HEAD(&dum_hcd->urbp_list);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	hcd->power_budget = POWER_BUDGET;
 	hcd->state = HC_STATE_RUNNING;
@@ -3545,6 +4181,7 @@ static int dummy_start(struct usb_hcd *hcd)
 #endif
 
 	/* FIXME 'urbs' should be a per-device thing, maybe in usbcore */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return device_create_file (dummy_dev(dum), &dev_attr_urbs);
 }
@@ -3559,6 +4196,8 @@ static void dummy_stop (struct usb_hcd *hcd)
 	usb_gadget_unregister_driver (dum->driver);
 	dev_info (dummy_dev(dum), "stopped\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return device_create_file(dummy_dev(dum_hcd), &dev_attr_urbs);
 }
 
@@ -3570,11 +4209,15 @@ static void dummy_stop(struct usb_hcd *hcd)
 	device_remove_file(dummy_dev(hcd_to_dummy_hcd(hcd)), &dev_attr_urbs);
 	usb_gadget_unregister_driver(dum->driver);
 	dev_info(dummy_dev(hcd_to_dummy_hcd(hcd)), "stopped\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int dummy_h_get_frame (struct usb_hcd *hcd)
 {
@@ -3601,6 +4244,8 @@ static const struct hc_driver dummy_hcd = {
 	.bus_suspend =		dummy_bus_suspend,
 	.bus_resume =		dummy_bus_resume,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int dummy_h_get_frame(struct usb_hcd *hcd)
 {
 	return dummy_g_get_frame(NULL);
@@ -3608,10 +4253,20 @@ static int dummy_h_get_frame(struct usb_hcd *hcd)
 
 static int dummy_setup(struct usb_hcd *hcd)
 {
+<<<<<<< HEAD
 	hcd->self.sg_tablesize = ~0;
 	if (usb_hcd_is_primary_hcd(hcd)) {
 		the_controller.hs_hcd = hcd_to_dummy_hcd(hcd);
 		the_controller.hs_hcd->dum = &the_controller;
+=======
+	struct dummy *dum;
+
+	dum = *((void **)dev_get_platdata(hcd->self.controller));
+	hcd->self.sg_tablesize = ~0;
+	if (usb_hcd_is_primary_hcd(hcd)) {
+		dum->hs_hcd = hcd_to_dummy_hcd(hcd);
+		dum->hs_hcd->dum = dum;
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Mark the first roothub as being USB 2.0.
 		 * The USB 3.0 roothub will be registered later by
@@ -3620,8 +4275,13 @@ static int dummy_setup(struct usb_hcd *hcd)
 		hcd->speed = HCD_USB2;
 		hcd->self.root_hub->speed = USB_SPEED_HIGH;
 	} else {
+<<<<<<< HEAD
 		the_controller.ss_hcd = hcd_to_dummy_hcd(hcd);
 		the_controller.ss_hcd->dum = &the_controller;
+=======
+		dum->ss_hcd = hcd_to_dummy_hcd(hcd);
+		dum->ss_hcd->dum = dum;
+>>>>>>> refs/remotes/origin/master
 		hcd->speed = HCD_USB3;
 		hcd->self.root_hub->speed = USB_SPEED_SUPER;
 	}
@@ -3730,11 +4390,15 @@ static struct hc_driver dummy_hcd = {
 
 	.alloc_streams =	dummy_alloc_streams,
 	.free_streams =		dummy_free_streams,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int dummy_hcd_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct usb_hcd		*hcd;
 =======
@@ -3783,6 +4447,16 @@ static int dummy_hcd_suspend (struct platform_device *pdev, pm_message_t state)
 	dum = hcd_to_dummy (hcd);
 	if (dum->rh_state == DUMMY_RH_RUNNING) {
 =======
+=======
+	struct dummy		*dum;
+	struct usb_hcd		*hs_hcd;
+	struct usb_hcd		*ss_hcd;
+	int			retval;
+
+	dev_info(&pdev->dev, "%s, driver " DRIVER_VERSION "\n", driver_desc);
+	dum = *((void **)dev_get_platdata(&pdev->dev));
+
+>>>>>>> refs/remotes/origin/master
 	if (!mod_data.is_super_speed)
 		dummy_hcd.flags = HCD_USB2;
 	hs_hcd = usb_create_hcd(&dummy_hcd, &pdev->dev, dev_name(&pdev->dev));
@@ -3814,7 +4488,11 @@ dealloc_usb2_hcd:
 	usb_remove_hcd(hs_hcd);
 put_usb2_hcd:
 	usb_put_hcd(hs_hcd);
+<<<<<<< HEAD
 	the_controller.hs_hcd = the_controller.ss_hcd = NULL;
+=======
+	dum->hs_hcd = dum->ss_hcd = NULL;
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -3832,8 +4510,13 @@ static int dummy_hcd_remove(struct platform_device *pdev)
 	usb_remove_hcd(dummy_hcd_to_hcd(dum->hs_hcd));
 	usb_put_hcd(dummy_hcd_to_hcd(dum->hs_hcd));
 
+<<<<<<< HEAD
 	the_controller.hs_hcd = NULL;
 	the_controller.ss_hcd = NULL;
+=======
+	dum->hs_hcd = NULL;
+	dum->ss_hcd = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -3849,7 +4532,10 @@ static int dummy_hcd_suspend(struct platform_device *pdev, pm_message_t state)
 	hcd = platform_get_drvdata(pdev);
 	dum_hcd = hcd_to_dummy_hcd(hcd);
 	if (dum_hcd->rh_state == DUMMY_RH_RUNNING) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dev_warn(&pdev->dev, "Root hub isn't suspended!\n");
 		rc = -EBUSY;
 	} else
@@ -3857,6 +4543,7 @@ static int dummy_hcd_suspend(struct platform_device *pdev, pm_message_t state)
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int dummy_hcd_resume (struct platform_device *pdev)
 {
@@ -3868,6 +4555,8 @@ static int dummy_hcd_resume (struct platform_device *pdev)
 	set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
 	usb_hcd_poll_rh_status (hcd);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int dummy_hcd_resume(struct platform_device *pdev)
 {
 	struct usb_hcd		*hcd;
@@ -3877,7 +4566,10 @@ static int dummy_hcd_resume(struct platform_device *pdev)
 	hcd = platform_get_drvdata(pdev);
 	set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
 	usb_hcd_poll_rh_status(hcd);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -3893,6 +4585,7 @@ static struct platform_driver dummy_hcd_driver = {
 };
 
 /*-------------------------------------------------------------------------*/
+<<<<<<< HEAD
 
 static struct platform_device *the_udc_pdev;
 static struct platform_device *the_hcd_pdev;
@@ -3909,6 +4602,17 @@ static int __init init (void)
 static int __init init(void)
 {
 	int	retval = -ENOMEM;
+=======
+#define MAX_NUM_UDC	2
+static struct platform_device *the_udc_pdev[MAX_NUM_UDC];
+static struct platform_device *the_hcd_pdev[MAX_NUM_UDC];
+
+static int __init init(void)
+{
+	int	retval = -ENOMEM;
+	int	i;
+	struct	dummy *dum[MAX_NUM_UDC];
+>>>>>>> refs/remotes/origin/master
 
 	if (usb_disabled())
 		return -ENODEV;
@@ -3916,6 +4620,7 @@ static int __init init(void)
 	if (!mod_data.is_high_speed && mod_data.is_super_speed)
 		return -EINVAL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	the_hcd_pdev = platform_device_alloc(driver_name, -1);
 	if (!the_hcd_pdev)
@@ -3927,10 +4632,56 @@ static int __init init(void)
 	retval = platform_driver_register(&dummy_hcd_driver);
 	if (retval < 0)
 		goto err_register_hcd_driver;
+=======
+	if (mod_data.num < 1 || mod_data.num > MAX_NUM_UDC) {
+		pr_err("Number of emulated UDC must be in range of 1…%d\n",
+				MAX_NUM_UDC);
+		return -EINVAL;
+	}
+
+	for (i = 0; i < mod_data.num; i++) {
+		the_hcd_pdev[i] = platform_device_alloc(driver_name, i);
+		if (!the_hcd_pdev[i]) {
+			i--;
+			while (i >= 0)
+				platform_device_put(the_hcd_pdev[i--]);
+			return retval;
+		}
+	}
+	for (i = 0; i < mod_data.num; i++) {
+		the_udc_pdev[i] = platform_device_alloc(gadget_name, i);
+		if (!the_udc_pdev[i]) {
+			i--;
+			while (i >= 0)
+				platform_device_put(the_udc_pdev[i--]);
+			goto err_alloc_udc;
+		}
+	}
+	for (i = 0; i < mod_data.num; i++) {
+		dum[i] = kzalloc(sizeof(struct dummy), GFP_KERNEL);
+		if (!dum[i]) {
+			retval = -ENOMEM;
+			goto err_add_pdata;
+		}
+		retval = platform_device_add_data(the_hcd_pdev[i], &dum[i],
+				sizeof(void *));
+		if (retval)
+			goto err_add_pdata;
+		retval = platform_device_add_data(the_udc_pdev[i], &dum[i],
+				sizeof(void *));
+		if (retval)
+			goto err_add_pdata;
+	}
+
+	retval = platform_driver_register(&dummy_hcd_driver);
+	if (retval < 0)
+		goto err_add_pdata;
+>>>>>>> refs/remotes/origin/master
 	retval = platform_driver_register(&dummy_udc_driver);
 	if (retval < 0)
 		goto err_register_udc_driver;
 
+<<<<<<< HEAD
 	retval = platform_device_add(the_hcd_pdev);
 	if (retval < 0)
 		goto err_add_hcd;
@@ -3957,17 +4708,68 @@ static int __init init(void)
 		 */
 		retval = -EINVAL;
 		goto err_probe_udc;
+=======
+	for (i = 0; i < mod_data.num; i++) {
+		retval = platform_device_add(the_hcd_pdev[i]);
+		if (retval < 0) {
+			i--;
+			while (i >= 0)
+				platform_device_del(the_hcd_pdev[i--]);
+			goto err_add_hcd;
+		}
+	}
+	for (i = 0; i < mod_data.num; i++) {
+		if (!dum[i]->hs_hcd ||
+				(!dum[i]->ss_hcd && mod_data.is_super_speed)) {
+			/*
+			 * The hcd was added successfully but its probe
+			 * function failed for some reason.
+			 */
+			retval = -EINVAL;
+			goto err_add_udc;
+		}
+	}
+
+	for (i = 0; i < mod_data.num; i++) {
+		retval = platform_device_add(the_udc_pdev[i]);
+		if (retval < 0) {
+			i--;
+			while (i >= 0)
+				platform_device_del(the_udc_pdev[i]);
+			goto err_add_udc;
+		}
+	}
+
+	for (i = 0; i < mod_data.num; i++) {
+		if (!platform_get_drvdata(the_udc_pdev[i])) {
+			/*
+			 * The udc was added successfully but its probe
+			 * function failed for some reason.
+			 */
+			retval = -EINVAL;
+			goto err_probe_udc;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	return retval;
 
 err_probe_udc:
+<<<<<<< HEAD
 	platform_device_del(the_udc_pdev);
 err_add_udc:
 	platform_device_del(the_hcd_pdev);
+=======
+	for (i = 0; i < mod_data.num; i++)
+		platform_device_del(the_udc_pdev[i]);
+err_add_udc:
+	for (i = 0; i < mod_data.num; i++)
+		platform_device_del(the_hcd_pdev[i]);
+>>>>>>> refs/remotes/origin/master
 err_add_hcd:
 	platform_driver_unregister(&dummy_udc_driver);
 err_register_udc_driver:
 	platform_driver_unregister(&dummy_hcd_driver);
+<<<<<<< HEAD
 err_register_hcd_driver:
 	platform_device_put(the_udc_pdev);
 err_alloc_udc:
@@ -3994,3 +4796,34 @@ module_exit (cleanup);
 =======
 module_exit(cleanup);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+err_add_pdata:
+	for (i = 0; i < mod_data.num; i++)
+		kfree(dum[i]);
+	for (i = 0; i < mod_data.num; i++)
+		platform_device_put(the_udc_pdev[i]);
+err_alloc_udc:
+	for (i = 0; i < mod_data.num; i++)
+		platform_device_put(the_hcd_pdev[i]);
+	return retval;
+}
+module_init(init);
+
+static void __exit cleanup(void)
+{
+	int i;
+
+	for (i = 0; i < mod_data.num; i++) {
+		struct dummy *dum;
+
+		dum = *((void **)dev_get_platdata(&the_udc_pdev[i]->dev));
+
+		platform_device_unregister(the_udc_pdev[i]);
+		platform_device_unregister(the_hcd_pdev[i]);
+		kfree(dum);
+	}
+	platform_driver_unregister(&dummy_udc_driver);
+	platform_driver_unregister(&dummy_hcd_driver);
+}
+module_exit(cleanup);
+>>>>>>> refs/remotes/origin/master

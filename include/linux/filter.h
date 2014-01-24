@@ -1,6 +1,7 @@
 /*
  * Linux Socket Filter Data Structures
  */
+<<<<<<< HEAD
 
 #ifndef __LINUX_FILTER_H__
 #define __LINUX_FILTER_H__
@@ -136,6 +137,26 @@ struct sock_fprog {	/* Required for SO_ATTACH_FILTER. */
 
 #ifdef __KERNEL__
 
+=======
+#ifndef __LINUX_FILTER_H__
+#define __LINUX_FILTER_H__
+
+#include <linux/atomic.h>
+#include <linux/compat.h>
+#include <linux/workqueue.h>
+#include <uapi/linux/filter.h>
+
+#ifdef CONFIG_COMPAT
+/*
+ * A struct sock_filter is architecture independent.
+ */
+struct compat_sock_fprog {
+	u16		len;
+	compat_uptr_t	filter;		/* struct sock_filter * */
+};
+#endif
+
+>>>>>>> refs/remotes/origin/master
 struct sk_buff;
 struct sock;
 
@@ -143,6 +164,7 @@ struct sk_filter
 {
 	atomic_t		refcnt;
 	unsigned int         	len;	/* Number of filter blocks */
+<<<<<<< HEAD
 	unsigned int		(*bpf_func)(const struct sk_buff *skb,
 					    const struct sock_filter *filter);
 	struct rcu_head		rcu;
@@ -152,11 +174,27 @@ struct sk_filter
 static inline unsigned int sk_filter_len(const struct sk_filter *fp)
 {
 	return fp->len * sizeof(struct sock_filter) + sizeof(*fp);
+=======
+	struct rcu_head		rcu;
+	unsigned int		(*bpf_func)(const struct sk_buff *skb,
+					    const struct sock_filter *filter);
+	union {
+		struct sock_filter     	insns[0];
+		struct work_struct	work;
+	};
+};
+
+static inline unsigned int sk_filter_size(unsigned int proglen)
+{
+	return max(sizeof(struct sk_filter),
+		   offsetof(struct sk_filter, insns[proglen]));
+>>>>>>> refs/remotes/origin/master
 }
 
 extern int sk_filter(struct sock *sk, struct sk_buff *skb);
 extern unsigned int sk_run_filter(const struct sk_buff *skb,
 				  const struct sock_filter *filter);
+<<<<<<< HEAD
 extern int sk_attach_filter(struct sock_fprog *fprog, struct sock *sk);
 extern int sk_detach_filter(struct sock *sk);
 <<<<<<< HEAD
@@ -170,11 +208,46 @@ extern void bpf_jit_compile(struct sk_filter *fp);
 extern void bpf_jit_free(struct sk_filter *fp);
 #define SK_RUN_FILTER(FILTER, SKB) (*FILTER->bpf_func)(SKB, FILTER->insns)
 #else
+=======
+extern int sk_unattached_filter_create(struct sk_filter **pfp,
+				       struct sock_fprog *fprog);
+extern void sk_unattached_filter_destroy(struct sk_filter *fp);
+extern int sk_attach_filter(struct sock_fprog *fprog, struct sock *sk);
+extern int sk_detach_filter(struct sock *sk);
+extern int sk_chk_filter(struct sock_filter *filter, unsigned int flen);
+extern int sk_get_filter(struct sock *sk, struct sock_filter __user *filter, unsigned len);
+extern void sk_decode_filter(struct sock_filter *filt, struct sock_filter *to);
+
+#ifdef CONFIG_BPF_JIT
+#include <stdarg.h>
+#include <linux/linkage.h>
+#include <linux/printk.h>
+
+extern void bpf_jit_compile(struct sk_filter *fp);
+extern void bpf_jit_free(struct sk_filter *fp);
+
+static inline void bpf_jit_dump(unsigned int flen, unsigned int proglen,
+				u32 pass, void *image)
+{
+	pr_err("flen=%u proglen=%u pass=%u image=%pK\n",
+	       flen, proglen, pass, image);
+	if (image)
+		print_hex_dump(KERN_ERR, "JIT code: ", DUMP_PREFIX_OFFSET,
+			       16, 1, image, proglen, false);
+}
+#define SK_RUN_FILTER(FILTER, SKB) (*FILTER->bpf_func)(SKB, FILTER->insns)
+#else
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/master
 static inline void bpf_jit_compile(struct sk_filter *fp)
 {
 }
 static inline void bpf_jit_free(struct sk_filter *fp)
 {
+<<<<<<< HEAD
+=======
+	kfree(fp);
+>>>>>>> refs/remotes/origin/master
 }
 #define SK_RUN_FILTER(FILTER, SKB) sk_run_filter(SKB, FILTER->insns)
 #endif
@@ -189,10 +262,20 @@ enum {
 	BPF_S_ALU_MUL_K,
 	BPF_S_ALU_MUL_X,
 	BPF_S_ALU_DIV_X,
+<<<<<<< HEAD
+=======
+	BPF_S_ALU_MOD_K,
+	BPF_S_ALU_MOD_X,
+>>>>>>> refs/remotes/origin/master
 	BPF_S_ALU_AND_K,
 	BPF_S_ALU_AND_X,
 	BPF_S_ALU_OR_K,
 	BPF_S_ALU_OR_X,
+<<<<<<< HEAD
+=======
+	BPF_S_ALU_XOR_K,
+	BPF_S_ALU_XOR_X,
+>>>>>>> refs/remotes/origin/master
 	BPF_S_ALU_LSH_K,
 	BPF_S_ALU_LSH_X,
 	BPF_S_ALU_RSH_K,
@@ -236,8 +319,18 @@ enum {
 	BPF_S_ANC_HATYPE,
 	BPF_S_ANC_RXHASH,
 	BPF_S_ANC_CPU,
+<<<<<<< HEAD
 };
 
 #endif /* __KERNEL__ */
 
+=======
+	BPF_S_ANC_ALU_XOR_X,
+	BPF_S_ANC_SECCOMP_LD_W,
+	BPF_S_ANC_VLAN_TAG,
+	BPF_S_ANC_VLAN_TAG_PRESENT,
+	BPF_S_ANC_PAY_OFFSET,
+};
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_FILTER_H__ */

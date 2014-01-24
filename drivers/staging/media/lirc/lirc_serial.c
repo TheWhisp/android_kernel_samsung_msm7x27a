@@ -48,6 +48,11 @@
  * Steve Davies <steve@daviesfam.org>  July 2001
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/errno.h>
 #include <linux/signal.h>
@@ -65,7 +70,11 @@
 #include <linux/delay.h>
 #include <linux/poll.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/irq.h>
 #include <linux/fcntl.h>
@@ -129,6 +138,10 @@ static void send_space_homebrew(long length);
 
 static struct lirc_serial hardware[] = {
 	[LIRC_HOMEBREW] = {
+<<<<<<< HEAD
+=======
+		.lock = __SPIN_LOCK_UNLOCKED(hardware[LIRC_HOMEBREW].lock),
+>>>>>>> refs/remotes/origin/master
 		.signal_pin        = UART_MSR_DCD,
 		.signal_pin_change = UART_MSR_DDCD,
 		.on  = (UART_MCR_RTS | UART_MCR_OUT2 | UART_MCR_DTR),
@@ -145,6 +158,10 @@ static struct lirc_serial hardware[] = {
 	},
 
 	[LIRC_IRDEO] = {
+<<<<<<< HEAD
+=======
+		.lock = __SPIN_LOCK_UNLOCKED(hardware[LIRC_IRDEO].lock),
+>>>>>>> refs/remotes/origin/master
 		.signal_pin        = UART_MSR_DSR,
 		.signal_pin_change = UART_MSR_DDSR,
 		.on  = UART_MCR_OUT2,
@@ -156,6 +173,10 @@ static struct lirc_serial hardware[] = {
 	},
 
 	[LIRC_IRDEO_REMOTE] = {
+<<<<<<< HEAD
+=======
+		.lock = __SPIN_LOCK_UNLOCKED(hardware[LIRC_IRDEO_REMOTE].lock),
+>>>>>>> refs/remotes/origin/master
 		.signal_pin        = UART_MSR_DSR,
 		.signal_pin_change = UART_MSR_DDSR,
 		.on  = (UART_MCR_RTS | UART_MCR_DTR | UART_MCR_OUT2),
@@ -167,6 +188,10 @@ static struct lirc_serial hardware[] = {
 	},
 
 	[LIRC_ANIMAX] = {
+<<<<<<< HEAD
+=======
+		.lock = __SPIN_LOCK_UNLOCKED(hardware[LIRC_ANIMAX].lock),
+>>>>>>> refs/remotes/origin/master
 		.signal_pin        = UART_MSR_DCD,
 		.signal_pin_change = UART_MSR_DDCD,
 		.on  = 0,
@@ -177,6 +202,10 @@ static struct lirc_serial hardware[] = {
 	},
 
 	[LIRC_IGOR] = {
+<<<<<<< HEAD
+=======
+		.lock = __SPIN_LOCK_UNLOCKED(hardware[LIRC_IGOR].lock),
+>>>>>>> refs/remotes/origin/master
 		.signal_pin        = UART_MSR_DSR,
 		.signal_pin_change = UART_MSR_DDSR,
 		.on  = (UART_MCR_RTS | UART_MCR_OUT2 | UART_MCR_DTR),
@@ -201,6 +230,10 @@ static struct lirc_serial hardware[] = {
 	 * See also http://www.nslu2-linux.org for this device
 	 */
 	[LIRC_NSLU2] = {
+<<<<<<< HEAD
+=======
+		.lock = __SPIN_LOCK_UNLOCKED(hardware[LIRC_NSLU2].lock),
+>>>>>>> refs/remotes/origin/master
 		.signal_pin        = UART_MSR_CTS,
 		.signal_pin_change = UART_MSR_DCTS,
 		.on  = (UART_MCR_RTS | UART_MCR_OUT2 | UART_MCR_DTR),
@@ -313,7 +346,11 @@ static void on(void)
 	 * status LED and ground
 	 */
 	if (type == LIRC_NSLU2) {
+<<<<<<< HEAD
 		gpio_line_set(NSLU2_LED_GRN, IXP4XX_GPIO_LOW);
+=======
+		gpio_set_value(NSLU2_LED_GRN, 0);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 #endif
@@ -327,7 +364,11 @@ static void off(void)
 {
 #ifdef CONFIG_LIRC_SERIAL_NSLU2
 	if (type == LIRC_NSLU2) {
+<<<<<<< HEAD
 		gpio_line_set(NSLU2_LED_GRN, IXP4XX_GPIO_HIGH);
+=======
+		gpio_set_value(NSLU2_LED_GRN, 1);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 #endif
@@ -420,8 +461,13 @@ static int init_timing_params(unsigned int new_duty_cycle,
 	period = 256 * 1000000L / freq;
 	pulse_width = period * duty_cycle / 100;
 	space_width = period - pulse_width;
+<<<<<<< HEAD
 	dprintk("in init_timing_params, freq=%d pulse=%ld, "
 		"space=%ld\n", freq, pulse_width, space_width);
+=======
+	dprintk("in init_timing_params, freq=%d pulse=%ld, space=%ld\n",
+		freq, pulse_width, space_width);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 #endif /* USE_RDTSC */
@@ -661,8 +707,12 @@ static irqreturn_t irq_handler(int i, void *blah)
 		counter++;
 		status = sinp(UART_MSR);
 		if (counter > RS_ISR_PASS_LIMIT) {
+<<<<<<< HEAD
 			printk(KERN_WARNING LIRC_DRIVER_NAME ": AIEEEE: "
 			       "We're caught!\n");
+=======
+			pr_warn("AIEEEE: We're caught!\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		if ((status & hardware[type].signal_pin_change)
@@ -697,11 +747,19 @@ static irqreturn_t irq_handler(int i, void *blah)
 			dcd = (status & hardware[type].signal_pin) ? 1 : 0;
 
 			if (dcd == last_dcd) {
+<<<<<<< HEAD
 				printk(KERN_WARNING LIRC_DRIVER_NAME
 				": ignoring spike: %d %d %lx %lx %lx %lx\n",
 				dcd, sense,
 				tv.tv_sec, lasttv.tv_sec,
 				tv.tv_usec, lasttv.tv_usec);
+=======
+				pr_warn("ignoring spike: %d %d %lx %lx %lx %lx\n",
+					dcd, sense,
+					tv.tv_sec, lasttv.tv_sec,
+					(unsigned long)tv.tv_usec,
+					(unsigned long)lasttv.tv_usec);
+>>>>>>> refs/remotes/origin/master
 				continue;
 			}
 
@@ -709,6 +767,7 @@ static irqreturn_t irq_handler(int i, void *blah)
 			if (tv.tv_sec < lasttv.tv_sec ||
 			    (tv.tv_sec == lasttv.tv_sec &&
 			     tv.tv_usec < lasttv.tv_usec)) {
+<<<<<<< HEAD
 				printk(KERN_WARNING LIRC_DRIVER_NAME
 				       ": AIEEEE: your clock just jumped "
 				       "backwards\n");
@@ -717,17 +776,33 @@ static irqreturn_t irq_handler(int i, void *blah)
 				       dcd, sense,
 				       tv.tv_sec, lasttv.tv_sec,
 				       tv.tv_usec, lasttv.tv_usec);
+=======
+				pr_warn("AIEEEE: your clock just jumped backwards\n");
+				pr_warn("%d %d %lx %lx %lx %lx\n",
+					dcd, sense,
+					tv.tv_sec, lasttv.tv_sec,
+					(unsigned long)tv.tv_usec,
+					(unsigned long)lasttv.tv_usec);
+>>>>>>> refs/remotes/origin/master
 				data = PULSE_MASK;
 			} else if (deltv > 15) {
 				data = PULSE_MASK; /* really long time */
 				if (!(dcd^sense)) {
 					/* sanity check */
+<<<<<<< HEAD
 					printk(KERN_WARNING LIRC_DRIVER_NAME
 					       ": AIEEEE: "
 					       "%d %d %lx %lx %lx %lx\n",
 					       dcd, sense,
 					       tv.tv_sec, lasttv.tv_sec,
 					       tv.tv_usec, lasttv.tv_usec);
+=======
+					pr_warn("AIEEEE: %d %d %lx %lx %lx %lx\n",
+						dcd, sense,
+						tv.tv_sec, lasttv.tv_sec,
+						(unsigned long)tv.tv_usec,
+						(unsigned long)lasttv.tv_usec);
+>>>>>>> refs/remotes/origin/master
 					/*
 					 * detecting pulse while this
 					 * MUST be a space!
@@ -770,8 +845,12 @@ static int hardware_init_port(void)
 	soutp(UART_IER, scratch);
 	if (scratch2 != 0 || scratch3 != 0x0f) {
 		/* we fail, there's nothing here */
+<<<<<<< HEAD
 		printk(KERN_ERR LIRC_DRIVER_NAME ": port existence test "
 		       "failed, cannot continue\n");
+=======
+		pr_err("port existence test failed, cannot continue\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -835,20 +914,43 @@ static int hardware_init_port(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit lirc_serial_probe(struct platform_device *dev)
 {
 	int i, nlow, nhigh, result;
 
+=======
+static int lirc_serial_probe(struct platform_device *dev)
+{
+	int i, nlow, nhigh, result;
+
+#ifdef CONFIG_LIRC_SERIAL_NSLU2
+	/* This GPIO is used for a LED on the NSLU2 */
+	result = devm_gpio_request(dev, NSLU2_LED_GRN, "lirc-serial");
+	if (result)
+		return result;
+	result = gpio_direction_output(NSLU2_LED_GRN, 0);
+	if (result)
+		return result;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	result = request_irq(irq, irq_handler,
 			     (share_irq ? IRQF_SHARED : 0),
 			     LIRC_DRIVER_NAME, (void *)&hardware);
 	if (result < 0) {
 		if (result == -EBUSY)
+<<<<<<< HEAD
 			printk(KERN_ERR LIRC_DRIVER_NAME ": IRQ %d busy\n",
 			       irq);
 		else if (result == -EINVAL)
 			printk(KERN_ERR LIRC_DRIVER_NAME
 			       ": Bad irq number or handler\n");
+=======
+			dev_err(&dev->dev, "IRQ %d busy\n", irq);
+		else if (result == -EINVAL)
+			dev_err(&dev->dev, "Bad irq number or handler\n");
+>>>>>>> refs/remotes/origin/master
 		return result;
 	}
 
@@ -863,6 +965,7 @@ static int __devinit lirc_serial_probe(struct platform_device *dev)
 				    LIRC_DRIVER_NAME) == NULL))
 	   || ((iommap == 0)
 	       && (request_region(io, 8, LIRC_DRIVER_NAME) == NULL))) {
+<<<<<<< HEAD
 		printk(KERN_ERR  LIRC_DRIVER_NAME
 		       ": port %04x already in use\n", io);
 		printk(KERN_WARNING LIRC_DRIVER_NAME
@@ -871,6 +974,13 @@ static int __devinit lirc_serial_probe(struct platform_device *dev)
 		       ": or compile the serial port driver as module and\n");
 		printk(KERN_WARNING LIRC_DRIVER_NAME
 		       ": make sure this module is loaded first\n");
+=======
+		dev_err(&dev->dev, "port %04x already in use\n", io);
+		dev_warn(&dev->dev, "use 'setserial /dev/ttySX uart none'\n");
+		dev_warn(&dev->dev,
+			 "or compile the serial port driver as module and\n");
+		dev_warn(&dev->dev, "make sure this module is loaded first\n");
+>>>>>>> refs/remotes/origin/master
 		result = -EBUSY;
 		goto exit_free_irq;
 	}
@@ -901,11 +1011,19 @@ static int __devinit lirc_serial_probe(struct platform_device *dev)
 			msleep(40);
 		}
 		sense = (nlow >= nhigh ? 1 : 0);
+<<<<<<< HEAD
 		printk(KERN_INFO LIRC_DRIVER_NAME  ": auto-detected active "
 		       "%s receiver\n", sense ? "low" : "high");
 	} else
 		printk(KERN_INFO LIRC_DRIVER_NAME  ": Manually using active "
 		       "%s receiver\n", sense ? "low" : "high");
+=======
+		dev_info(&dev->dev, "auto-detected active %s receiver\n",
+			 sense ? "low" : "high");
+	} else
+		dev_info(&dev->dev, "Manually using active %s receiver\n",
+			 sense ? "low" : "high");
+>>>>>>> refs/remotes/origin/master
 
 	dprintk("Interrupt %d, port %04x obtained\n", irq, io);
 	return 0;
@@ -921,7 +1039,11 @@ exit_free_irq:
 	return result;
 }
 
+<<<<<<< HEAD
 static int __devexit lirc_serial_remove(struct platform_device *dev)
+=======
+static int lirc_serial_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	free_irq(irq, (void *)&hardware);
 
@@ -966,7 +1088,11 @@ static void set_use_dec(void *data)
 	spin_unlock_irqrestore(&hardware[type].lock, flags);
 }
 
+<<<<<<< HEAD
 static ssize_t lirc_write(struct file *file, const char *buf,
+=======
+static ssize_t lirc_write(struct file *file, const char __user *buf,
+>>>>>>> refs/remotes/origin/master
 			 size_t n, loff_t *ppos)
 {
 	int i, count;
@@ -1142,7 +1268,11 @@ static int lirc_serial_resume(struct platform_device *dev)
 
 static struct platform_driver lirc_serial_driver = {
 	.probe		= lirc_serial_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(lirc_serial_remove),
+=======
+	.remove		= lirc_serial_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= lirc_serial_suspend,
 	.resume		= lirc_serial_resume,
 	.driver		= {
@@ -1233,6 +1363,13 @@ static int __init lirc_serial_init_module(void)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	/* make sure sense is either -1, 0, or 1 */
+	if (sense != -1)
+		sense = !!sense;
+
+>>>>>>> refs/remotes/origin/master
 	result = lirc_serial_init();
 	if (result)
 		return result;
@@ -1241,8 +1378,12 @@ static int __init lirc_serial_init_module(void)
 	driver.dev = &lirc_serial_dev->dev;
 	driver.minor = lirc_register_driver(&driver);
 	if (driver.minor < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR  LIRC_DRIVER_NAME
 		       ": register_chrdev failed!\n");
+=======
+		pr_err("register_chrdev failed!\n");
+>>>>>>> refs/remotes/origin/master
 		lirc_serial_exit();
 		return driver.minor;
 	}
@@ -1292,7 +1433,11 @@ MODULE_PARM_DESC(irq, "Interrupt (4 or 3)");
 module_param(share_irq, bool, S_IRUGO);
 MODULE_PARM_DESC(share_irq, "Share interrupts (0 = off, 1 = on)");
 
+<<<<<<< HEAD
 module_param(sense, bool, S_IRUGO);
+=======
+module_param(sense, int, S_IRUGO);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(sense, "Override autodetection of IR receiver circuit"
 		 " (0 = active high, 1 = active low )");
 

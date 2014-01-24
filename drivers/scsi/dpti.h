@@ -202,7 +202,10 @@ struct adpt_channel {
 
 // HBA state flags
 #define DPTI_STATE_RESET	(0x01)
+<<<<<<< HEAD
 #define DPTI_STATE_IOCTL	(0x02)
+=======
+>>>>>>> refs/remotes/origin/master
 
 typedef struct _adpt_hba {
 	struct _adpt_hba *next;

@@ -27,8 +27,12 @@ void xen_setup_mfn_list_list(void);
 void xen_setup_shared_info(void);
 void xen_build_mfn_list_list(void);
 void xen_setup_machphys_mapping(void);
+<<<<<<< HEAD
 pgd_t *xen_setup_kernel_pagetable(pgd_t *pgd, unsigned long max_pfn);
 void xen_ident_map_ISA(void);
+=======
+void xen_setup_kernel_pagetable(pgd_t *pgd, unsigned long max_pfn);
+>>>>>>> refs/remotes/origin/master
 void xen_reserve_top(void);
 extern unsigned long xen_max_p2m_pfn;
 
@@ -36,7 +40,10 @@ void xen_set_pat(u64);
 
 char * __init xen_memory_setup(void);
 void __init xen_arch_setup(void);
+<<<<<<< HEAD
 void __init xen_init_IRQ(void);
+=======
+>>>>>>> refs/remotes/origin/master
 void xen_enable_sysenter(void);
 void xen_enable_syscall(void);
 void xen_vcpu_restore(void);
@@ -46,6 +53,10 @@ void xen_hvm_init_shared_info(void);
 void xen_unplug_emulated_devices(void);
 
 void __init xen_build_dynamic_phys_to_machine(void);
+<<<<<<< HEAD
+=======
+unsigned long __init xen_revector_p2m_tree(void);
+>>>>>>> refs/remotes/origin/master
 
 void xen_init_irq_ops(void);
 void xen_setup_timer(int cpu);
@@ -74,7 +85,11 @@ static inline void xen_hvm_smp_init(void) {}
 
 #ifdef CONFIG_PARAVIRT_SPINLOCKS
 void __init xen_init_spinlocks(void);
+<<<<<<< HEAD
 void __cpuinit xen_init_lock_cpu(int cpu);
+=======
+void xen_init_lock_cpu(int cpu);
+>>>>>>> refs/remotes/origin/master
 void xen_uninit_lock_cpu(int cpu);
 #else
 static inline void xen_init_spinlocks(void)
@@ -92,19 +107,35 @@ struct dom0_vga_console_info;
 
 #ifdef CONFIG_XEN_DOM0
 void __init xen_init_vga(const struct dom0_vga_console_info *, size_t size);
+<<<<<<< HEAD
+=======
+void __init xen_init_apic(void);
+>>>>>>> refs/remotes/origin/master
 #else
 static inline void __init xen_init_vga(const struct dom0_vga_console_info *info,
 				       size_t size)
 {
 }
+<<<<<<< HEAD
+=======
+static inline void __init xen_init_apic(void)
+{
+}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* Declare an asm function, along with symbols needed to make it
    inlineable */
 #define DECL_ASM(ret, name, ...)		\
+<<<<<<< HEAD
 	ret name(__VA_ARGS__);			\
 	extern char name##_end[];		\
 	extern char name##_reloc[]		\
+=======
+	__visible ret name(__VA_ARGS__);	\
+	extern char name##_end[] __visible;	\
+	extern char name##_reloc[] __visible
+>>>>>>> refs/remotes/origin/master
 
 DECL_ASM(void, xen_irq_enable_direct, void);
 DECL_ASM(void, xen_irq_disable_direct, void);
@@ -112,11 +143,19 @@ DECL_ASM(unsigned long, xen_save_fl_direct, void);
 DECL_ASM(void, xen_restore_fl_direct, unsigned long);
 
 /* These are not functions, and cannot be called normally */
+<<<<<<< HEAD
 void xen_iret(void);
 void xen_sysexit(void);
 void xen_sysret32(void);
 void xen_sysret64(void);
 void xen_adjust_exception_frame(void);
+=======
+__visible void xen_iret(void);
+__visible void xen_sysexit(void);
+__visible void xen_sysret32(void);
+__visible void xen_sysret64(void);
+__visible void xen_adjust_exception_frame(void);
+>>>>>>> refs/remotes/origin/master
 
 extern int xen_panic_handler_init(void);
 

@@ -26,6 +26,7 @@
 #define HWLOCK_IRQ	0x02	/* Disable interrupts, don't save state */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct hwspinlock;
 
 #if defined(CONFIG_HWSPINLOCK) || defined(CONFIG_HWSPINLOCK_MODULE)
@@ -33,6 +34,8 @@ struct hwspinlock;
 int hwspin_lock_register(struct hwspinlock *lock);
 struct hwspinlock *hwspin_lock_unregister(unsigned int id);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct device;
 struct hwspinlock;
 struct hwspinlock_device;
@@ -71,7 +74,10 @@ struct hwspinlock_pdata {
 int hwspin_lock_register(struct hwspinlock_device *bank, struct device *dev,
 		const struct hwspinlock_ops *ops, int base_id, int num_locks);
 int hwspin_lock_unregister(struct hwspinlock_device *bank);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct hwspinlock *hwspin_lock_request(void);
 struct hwspinlock *hwspin_lock_request_specific(unsigned int id);
 int hwspin_lock_free(struct hwspinlock *hwlock);
@@ -128,9 +134,12 @@ static inline
 void __hwspin_unlock(struct hwspinlock *hwlock, int mode, unsigned long *flags)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int hwspin_lock_get_id(struct hwspinlock *hwlock)
@@ -138,6 +147,7 @@ static inline int hwspin_lock_get_id(struct hwspinlock *hwlock)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline int hwspin_lock_register(struct hwspinlock *hwlock)
 {
@@ -151,6 +161,8 @@ static inline struct hwspinlock *hwspin_lock_unregister(unsigned int id)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !CONFIG_HWSPINLOCK */
 
 /**

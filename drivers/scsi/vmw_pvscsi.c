@@ -18,10 +18,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Maintained by: Alok N Kataria <akataria@vmware.com>
 =======
  * Maintained by: Arvind Kumar <arvindkumar@vmware.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Maintained by: Arvind Kumar <arvindkumar@vmware.com>
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -299,7 +303,11 @@ static void ll_adapter_reset(const struct pvscsi_adapter *adapter)
 
 static void ll_bus_reset(const struct pvscsi_adapter *adapter)
 {
+<<<<<<< HEAD
 	dev_dbg(pvscsi_dev(adapter), "Reseting bus on %p\n", adapter);
+=======
+	dev_dbg(pvscsi_dev(adapter), "Resetting bus on %p\n", adapter);
+>>>>>>> refs/remotes/origin/master
 
 	pvscsi_write_cmd_desc(adapter, PVSCSI_CMD_RESET_BUS, NULL, 0);
 }
@@ -308,7 +316,11 @@ static void ll_device_reset(const struct pvscsi_adapter *adapter, u32 target)
 {
 	struct PVSCSICmdDescResetDevice cmd = { 0 };
 
+<<<<<<< HEAD
 	dev_dbg(pvscsi_dev(adapter), "Reseting device: target=%u\n", target);
+=======
+	dev_dbg(pvscsi_dev(adapter), "Resetting device: target=%u\n", target);
+>>>>>>> refs/remotes/origin/master
 
 	cmd.target = target;
 
@@ -401,7 +413,11 @@ static void pvscsi_unmap_buffers(const struct pvscsi_adapter *adapter,
 				 SCSI_SENSE_BUFFERSIZE, PCI_DMA_FROMDEVICE);
 }
 
+<<<<<<< HEAD
 static int __devinit pvscsi_allocate_rings(struct pvscsi_adapter *adapter)
+=======
+static int pvscsi_allocate_rings(struct pvscsi_adapter *adapter)
+>>>>>>> refs/remotes/origin/master
 {
 	adapter->rings_state = pci_alloc_consistent(adapter->dev, PAGE_SIZE,
 						    &adapter->ringStatePA);
@@ -1149,10 +1165,14 @@ static void pvscsi_release_resources(struct pvscsi_adapter *adapter)
  * These are statically allocated.  Trying to be clever was not worth it.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Dynamic allocation can fail, and we can't go deeep into the memory
 =======
  * Dynamic allocation can fail, and we can't go deep into the memory
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Dynamic allocation can fail, and we can't go deep into the memory
+>>>>>>> refs/remotes/origin/master
  * allocator, since we're a SCSI driver, and trying too hard to allocate
  * memory might generate disk I/O.  We also don't want to fail disk I/O
  * in that case because we can't get an allocation - the I/O could be
@@ -1160,7 +1180,11 @@ static void pvscsi_release_resources(struct pvscsi_adapter *adapter)
  * just use a statically allocated scatter list.
  *
  */
+<<<<<<< HEAD
 static int __devinit pvscsi_allocate_sg(struct pvscsi_adapter *adapter)
+=======
+static int pvscsi_allocate_sg(struct pvscsi_adapter *adapter)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pvscsi_ctx *ctx;
 	int i;
@@ -1187,7 +1211,10 @@ static int __devinit pvscsi_allocate_sg(struct pvscsi_adapter *adapter)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Query the device, fetch the config info and return the
  * maximum number of targets on the adapter. In case of
@@ -1243,6 +1270,7 @@ exit:
 	return numPhys;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int __devinit pvscsi_probe(struct pci_dev *pdev,
 				  const struct pci_device_id *id)
@@ -1253,6 +1281,13 @@ static int __devinit pvscsi_probe(struct pci_dev *pdev,
 =======
 	struct device *dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pvscsi_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+{
+	struct pvscsi_adapter *adapter;
+	struct Scsi_Host *host;
+	struct device *dev;
+>>>>>>> refs/remotes/origin/master
 	unsigned int i;
 	unsigned long flags = 0;
 	int error;
@@ -1343,7 +1378,10 @@ static int __devinit pvscsi_probe(struct pci_dev *pdev,
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Ask the device for max number of targets.
 	 */
 	host->max_id = pvscsi_get_max_targets(adapter);
@@ -1351,7 +1389,10 @@ static int __devinit pvscsi_probe(struct pci_dev *pdev,
 	dev_info(dev, "vmw_pvscsi: host->max_id: %u\n", host->max_id);
 
 	/*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * From this point on we should reset the adapter if anything goes
 	 * wrong.
 	 */
@@ -1423,7 +1464,10 @@ out_release_resources:
 out_free_host:
 	scsi_host_put(host);
 out_disable_device:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_disable_device(pdev);
 
 	return error;
@@ -1463,7 +1507,10 @@ static void pvscsi_remove(struct pci_dev *pdev)
 
 	scsi_host_put(host);
 
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_disable_device(pdev);
 }
 
@@ -1471,7 +1518,11 @@ static struct pci_driver pvscsi_pci_driver = {
 	.name		= "vmw_pvscsi",
 	.id_table	= pvscsi_pci_tbl,
 	.probe		= pvscsi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(pvscsi_remove),
+=======
+	.remove		= pvscsi_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown       = pvscsi_shutdown,
 };
 

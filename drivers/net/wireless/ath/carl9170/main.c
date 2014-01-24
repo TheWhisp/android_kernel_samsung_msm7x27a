@@ -49,10 +49,14 @@
 #include "cmd.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int modparam_nohwcrypt;
 =======
 static bool modparam_nohwcrypt;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool modparam_nohwcrypt;
+>>>>>>> refs/remotes/origin/master
 module_param_named(nohwcrypt, modparam_nohwcrypt, bool, S_IRUGO);
 MODULE_PARM_DESC(nohwcrypt, "Disable hardware crypto offload.");
 
@@ -350,18 +354,24 @@ static int carl9170_op_start(struct ieee80211_hw *hw)
 
 	/* reset QoS defaults */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	CARL9170_FILL_QUEUE(ar->edcf[0], 3, 15, 1023,  0); /* BEST EFFORT */
 	CARL9170_FILL_QUEUE(ar->edcf[1], 2, 7,    15, 94); /* VIDEO */
 	CARL9170_FILL_QUEUE(ar->edcf[2], 2, 3,     7, 47); /* VOICE */
 	CARL9170_FILL_QUEUE(ar->edcf[3], 7, 15, 1023,  0); /* BACKGROUND */
 	CARL9170_FILL_QUEUE(ar->edcf[4], 2, 3,     7,  0); /* SPECIAL */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	CARL9170_FILL_QUEUE(ar->edcf[AR9170_TXQ_VO], 2, 3,     7, 47);
 	CARL9170_FILL_QUEUE(ar->edcf[AR9170_TXQ_VI], 2, 7,    15, 94);
 	CARL9170_FILL_QUEUE(ar->edcf[AR9170_TXQ_BE], 3, 15, 1023,  0);
 	CARL9170_FILL_QUEUE(ar->edcf[AR9170_TXQ_BK], 7, 15, 1023,  0);
 	CARL9170_FILL_QUEUE(ar->edcf[AR9170_TXQ_SPECIAL], 2, 3, 7, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ar->current_factor = ar->current_density = -1;
 	/* "The first key is unique." */
@@ -370,8 +380,18 @@ static int carl9170_op_start(struct ieee80211_hw *hw)
 	ar->ps.last_action = jiffies;
 	ar->ps.last_slept = jiffies;
 	ar->erp_mode = CARL9170_ERP_AUTO;
+<<<<<<< HEAD
 	ar->rx_software_decryption = false;
 	ar->disable_offload = false;
+=======
+
+	/* Set "disable hw crypto offload" whenever the module parameter
+	 * nohwcrypt is true or if the firmware does not support it.
+	 */
+	ar->disable_offload = modparam_nohwcrypt |
+		ar->fw.disable_offload_fw;
+	ar->rx_software_decryption = ar->disable_offload;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ar->hw->queues; i++) {
 		ar->queue_stop_timeout[i] = jiffies;
@@ -426,11 +446,17 @@ static int carl9170_op_start(struct ieee80211_hw *hw)
 	carl9170_set_state_when(ar, CARL9170_IDLE, CARL9170_STARTED);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ieee80211_queue_delayed_work(ar->hw, &ar->stat_work,
 		round_jiffies(msecs_to_jiffies(CARL9170_STAT_WORK)));
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ieee80211_queue_delayed_work(ar->hw, &ar->stat_work,
+		round_jiffies(msecs_to_jiffies(CARL9170_STAT_WORK)));
+
+>>>>>>> refs/remotes/origin/master
 	ieee80211_wake_queues(ar->hw);
 	err = 0;
 
@@ -442,9 +468,13 @@ out:
 static void carl9170_cancel_worker(struct ar9170 *ar)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	cancel_delayed_work_sync(&ar->stat_work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cancel_delayed_work_sync(&ar->stat_work);
+>>>>>>> refs/remotes/origin/master
 	cancel_delayed_work_sync(&ar->tx_janitor);
 #ifdef CONFIG_CARL9170_LEDS
 	cancel_delayed_work_sync(&ar->led_work);
@@ -465,10 +495,14 @@ static void carl9170_op_stop(struct ieee80211_hw *hw)
 	mutex_lock(&ar->mutex);
 	if (IS_ACCEPTING_CMD(ar)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rcu_assign_pointer(ar->beacon_iter, NULL);
 =======
 		RCU_INIT_POINTER(ar->beacon_iter, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		RCU_INIT_POINTER(ar->beacon_iter, NULL);
+>>>>>>> refs/remotes/origin/master
 
 		carl9170_led_set_state(ar, 0);
 
@@ -487,13 +521,18 @@ static void carl9170_restart_work(struct work_struct *work)
 {
 	struct ar9170 *ar = container_of(work, struct ar9170,
 					 restart_work);
+<<<<<<< HEAD
 	int err;
+=======
+	int err = -EIO;
+>>>>>>> refs/remotes/origin/master
 
 	ar->usedkeys = 0;
 	ar->filter_state = 0;
 	carl9170_cancel_worker(ar);
 
 	mutex_lock(&ar->mutex);
+<<<<<<< HEAD
 	err = carl9170_usb_restart(ar);
 	if (net_ratelimit()) {
 		if (err) {
@@ -508,6 +547,21 @@ static void carl9170_restart_work(struct work_struct *work)
 	carl9170_zap_queues(ar);
 	mutex_unlock(&ar->mutex);
 	if (!err) {
+=======
+	if (!ar->force_usb_reset) {
+		err = carl9170_usb_restart(ar);
+		if (net_ratelimit()) {
+			if (err)
+				dev_err(&ar->udev->dev, "Failed to restart device (%d).\n", err);
+			else
+				dev_info(&ar->udev->dev, "device restarted successfully.\n");
+		}
+	}
+	carl9170_zap_queues(ar);
+	mutex_unlock(&ar->mutex);
+
+	if (!err && !ar->force_usb_reset) {
+>>>>>>> refs/remotes/origin/master
 		ar->restart_counter++;
 		atomic_set(&ar->pending_restarts, 0);
 
@@ -548,10 +602,17 @@ void carl9170_restart(struct ar9170 *ar, const enum carl9170_restart_reasons r)
 	if (!ar->registered)
 		return;
 
+<<<<<<< HEAD
 	if (IS_ACCEPTING_CMD(ar) && !ar->needs_full_reset)
 		ieee80211_queue_work(ar->hw, &ar->restart_work);
 	else
 		carl9170_usb_reset(ar);
+=======
+	if (!IS_ACCEPTING_CMD(ar) || ar->needs_full_reset)
+		ar->force_usb_reset = true;
+
+	ieee80211_queue_work(ar->hw, &ar->restart_work);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * At this point, the device instance might have vanished/disabled.
@@ -588,12 +649,37 @@ static int carl9170_init_interface(struct ar9170 *ar,
 
 	memcpy(common->macaddr, vif->addr, ETH_ALEN);
 
+<<<<<<< HEAD
 	if (modparam_nohwcrypt ||
 	    ((vif->type != NL80211_IFTYPE_STATION) &&
 	     (vif->type != NL80211_IFTYPE_AP))) {
 		ar->rx_software_decryption = true;
 		ar->disable_offload = true;
 	}
+=======
+	/* We have to fall back to software crypto, whenever
+	 * the user choose to participates in an IBSS. HW
+	 * offload for IBSS RSN is not supported by this driver.
+	 *
+	 * NOTE: If the previous main interface has already
+	 * disabled hw crypto offload, we have to keep this
+	 * previous disable_offload setting as it was.
+	 * Altough ideally, we should notify mac80211 and tell
+	 * it to forget about any HW crypto offload for now.
+	 */
+	ar->disable_offload |= ((vif->type != NL80211_IFTYPE_STATION) &&
+	    (vif->type != NL80211_IFTYPE_AP));
+
+	/* While the driver supports HW offload in a single
+	 * P2P client configuration, it doesn't support HW
+	 * offload in the favourit, concurrent P2P GO+CLIENT
+	 * configuration. Hence, HW offload will always be
+	 * disabled for P2P.
+	 */
+	ar->disable_offload |= vif->p2p;
+
+	ar->rx_software_decryption = ar->disable_offload;
+>>>>>>> refs/remotes/origin/master
 
 	err = carl9170_set_operating_mode(ar);
 	return err;
@@ -603,7 +689,11 @@ static int carl9170_op_add_interface(struct ieee80211_hw *hw,
 				     struct ieee80211_vif *vif)
 {
 	struct carl9170_vif_info *vif_priv = (void *) vif->drv_priv;
+<<<<<<< HEAD
 	struct ieee80211_vif *main_vif;
+=======
+	struct ieee80211_vif *main_vif, *old_main = NULL;
+>>>>>>> refs/remotes/origin/master
 	struct ar9170 *ar = hw->priv;
 	int vif_id = -1, err = 0;
 
@@ -625,6 +715,18 @@ static int carl9170_op_add_interface(struct ieee80211_hw *hw,
 		goto init;
 	}
 
+<<<<<<< HEAD
+=======
+	/* Because the AR9170 HW's MAC doesn't provide full support for
+	 * multiple, independent interfaces [of different operation modes].
+	 * We have to select ONE main interface [main mode of HW], but we
+	 * can have multiple slaves [AKA: entry in the ACK-table].
+	 *
+	 * The first (from HEAD/TOP) interface in the ar->vif_list is
+	 * always the main intf. All following intfs in this list
+	 * are considered to be slave intfs.
+	 */
+>>>>>>> refs/remotes/origin/master
 	main_vif = carl9170_get_main_vif(ar);
 
 	if (main_vif) {
@@ -633,15 +735,39 @@ static int carl9170_op_add_interface(struct ieee80211_hw *hw,
 			if (vif->type == NL80211_IFTYPE_STATION)
 				break;
 
+<<<<<<< HEAD
+=======
+			/* P2P GO [master] use-case
+			 * Because the P2P GO station is selected dynamically
+			 * by all participating peers of a WIFI Direct network,
+			 * the driver has be able to change the main interface
+			 * operating mode on the fly.
+			 */
+			if (main_vif->p2p && vif->p2p &&
+			    vif->type == NL80211_IFTYPE_AP) {
+				old_main = main_vif;
+				break;
+			}
+
+>>>>>>> refs/remotes/origin/master
 			err = -EBUSY;
 			rcu_read_unlock();
 
 			goto unlock;
 
+<<<<<<< HEAD
 		case NL80211_IFTYPE_AP:
 			if ((vif->type == NL80211_IFTYPE_STATION) ||
 			    (vif->type == NL80211_IFTYPE_WDS) ||
 			    (vif->type == NL80211_IFTYPE_AP))
+=======
+		case NL80211_IFTYPE_MESH_POINT:
+		case NL80211_IFTYPE_AP:
+			if ((vif->type == NL80211_IFTYPE_STATION) ||
+			    (vif->type == NL80211_IFTYPE_WDS) ||
+			    (vif->type == NL80211_IFTYPE_AP) ||
+			    (vif->type == NL80211_IFTYPE_MESH_POINT))
+>>>>>>> refs/remotes/origin/master
 				break;
 
 			err = -EBUSY;
@@ -669,6 +795,7 @@ static int carl9170_op_add_interface(struct ieee80211_hw *hw,
 	vif_priv->id = vif_id;
 	vif_priv->enable_beacon = false;
 	ar->vifs++;
+<<<<<<< HEAD
 	list_add_tail_rcu(&vif_priv->list, &ar->vif_list);
 	rcu_assign_pointer(ar->vif_priv[vif_id].vif, vif);
 
@@ -677,6 +804,43 @@ init:
 		rcu_assign_pointer(ar->beacon_iter, vif_priv);
 		rcu_read_unlock();
 
+=======
+	if (old_main) {
+		/* We end up in here, if the main interface is being replaced.
+		 * Put the new main interface at the HEAD of the list and the
+		 * previous inteface will automatically become second in line.
+		 */
+		list_add_rcu(&vif_priv->list, &ar->vif_list);
+	} else {
+		/* Add new inteface. If the list is empty, it will become the
+		 * main inteface, otherwise it will be slave.
+		 */
+		list_add_tail_rcu(&vif_priv->list, &ar->vif_list);
+	}
+	rcu_assign_pointer(ar->vif_priv[vif_id].vif, vif);
+
+init:
+	main_vif = carl9170_get_main_vif(ar);
+
+	if (main_vif == vif) {
+		rcu_assign_pointer(ar->beacon_iter, vif_priv);
+		rcu_read_unlock();
+
+		if (old_main) {
+			struct carl9170_vif_info *old_main_priv =
+				(void *) old_main->drv_priv;
+			/* downgrade old main intf to slave intf.
+			 * NOTE: We are no longer under rcu_read_lock.
+			 * But we are still holding ar->mutex, so the
+			 * vif data [id, addr] is safe.
+			 */
+			err = carl9170_mod_virtual_mac(ar, old_main_priv->id,
+						       old_main->addr);
+			if (err)
+				goto unlock;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		err = carl9170_init_interface(ar, vif);
 		if (err)
 			goto unlock;
@@ -701,10 +865,14 @@ unlock:
 		bitmap_release_region(&ar->vif_bitmap, vif_id, 0);
 		ar->vifs--;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rcu_assign_pointer(ar->vif_priv[vif_id].vif, NULL);
 =======
 		RCU_INIT_POINTER(ar->vif_priv[vif_id].vif, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		RCU_INIT_POINTER(ar->vif_priv[vif_id].vif, NULL);
+>>>>>>> refs/remotes/origin/master
 		list_del_rcu(&vif_priv->list);
 		mutex_unlock(&ar->mutex);
 		synchronize_rcu();
@@ -743,10 +911,14 @@ static void carl9170_op_remove_interface(struct ieee80211_hw *hw,
 	vif_priv->enable_beacon = false;
 	list_del_rcu(&vif_priv->list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_assign_pointer(ar->vif_priv[id].vif, NULL);
 =======
 	RCU_INIT_POINTER(ar->vif_priv[id].vif, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RCU_INIT_POINTER(ar->vif_priv[id].vif, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	if (vif == main_vif) {
 		rcu_read_unlock();
@@ -829,7 +1001,10 @@ static void carl9170_ps_work(struct work_struct *work)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int carl9170_update_survey(struct ar9170 *ar, bool flush, bool noise)
 {
 	int err;
@@ -867,7 +1042,10 @@ static void carl9170_stat_work(struct work_struct *work)
 	ieee80211_queue_delayed_work(ar->hw, &ar->stat_work,
 		round_jiffies(msecs_to_jiffies(CARL9170_STAT_WORK)));
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int carl9170_op_config(struct ieee80211_hw *hw, u32 changed)
 {
@@ -887,6 +1065,7 @@ static int carl9170_op_config(struct ieee80211_hw *hw, u32 changed)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (changed & IEEE80211_CONF_CHANGE_POWER) {
 		/* TODO */
 		err = 0;
@@ -894,23 +1073,35 @@ static int carl9170_op_config(struct ieee80211_hw *hw, u32 changed)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (changed & IEEE80211_CONF_CHANGE_SMPS) {
 		/* TODO */
 		err = 0;
 	}
 
 	if (changed & IEEE80211_CONF_CHANGE_CHANNEL) {
+<<<<<<< HEAD
+=======
+		enum nl80211_channel_type channel_type =
+			cfg80211_get_chandef_type(&hw->conf.chandef);
+
+>>>>>>> refs/remotes/origin/master
 		/* adjust slot time for 5 GHz */
 		err = carl9170_set_slot_time(ar);
 		if (err)
 			goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		err = carl9170_update_survey(ar, true, false);
 		if (err)
 			goto out;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		err = carl9170_set_channel(ar, hw->conf.channel,
 			hw->conf.channel_type, CARL9170_RFI_NONE);
@@ -919,11 +1110,21 @@ static int carl9170_op_config(struct ieee80211_hw *hw, u32 changed)
 
 <<<<<<< HEAD
 =======
+=======
+		err = carl9170_set_channel(ar, hw->conf.chandef.chan,
+					   channel_type);
+		if (err)
+			goto out;
+
+>>>>>>> refs/remotes/origin/master
 		err = carl9170_update_survey(ar, false, true);
 		if (err)
 			goto out;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		err = carl9170_set_dyn_sifs_ack(ar);
 		if (err)
 			goto out;
@@ -934,14 +1135,22 @@ static int carl9170_op_config(struct ieee80211_hw *hw, u32 changed)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (changed & IEEE80211_CONF_CHANGE_POWER) {
 		err = carl9170_set_mac_tpc(ar, ar->hw->conf.channel);
+=======
+	if (changed & IEEE80211_CONF_CHANGE_POWER) {
+		err = carl9170_set_mac_tpc(ar, ar->hw->conf.chandef.chan);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	mutex_unlock(&ar->mutex);
 	return err;
@@ -999,6 +1208,12 @@ static void carl9170_op_configure_filter(struct ieee80211_hw *hw,
 	if (ar->fw.rx_filter && changed_flags & ar->rx_filter_caps) {
 		u32 rx_filter = 0;
 
+<<<<<<< HEAD
+=======
+		if (!ar->fw.ba_filter)
+			rx_filter |= CARL9170_RX_FILTER_CTL_OTHER;
+
+>>>>>>> refs/remotes/origin/master
 		if (!(*new_flags & (FIF_FCSFAIL | FIF_PLCPFAIL)))
 			rx_filter |= CARL9170_RX_FILTER_BAD;
 
@@ -1130,11 +1345,16 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u64 carl9170_op_get_tsf(struct ieee80211_hw *hw)
 =======
 static u64 carl9170_op_get_tsf(struct ieee80211_hw *hw,
 			       struct ieee80211_vif *vif)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u64 carl9170_op_get_tsf(struct ieee80211_hw *hw,
+			       struct ieee80211_vif *vif)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ar9170 *ar = hw->priv;
 	struct carl9170_tsf_rsp tsf;
@@ -1162,9 +1382,13 @@ static int carl9170_op_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 	if (ar->disable_offload || !vif)
 		return -EOPNOTSUPP;
 
+<<<<<<< HEAD
 	/*
 	 * We have to fall back to software encryption, whenever
 	 * the user choose to participates in an IBSS or is connected
+=======
+	/* Fall back to software encryption whenever the driver is connected
+>>>>>>> refs/remotes/origin/master
 	 * to more than one network.
 	 *
 	 * This is very unfortunate, because some machines cannot handle
@@ -1198,6 +1422,10 @@ static int carl9170_op_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 		break;
 	case WLAN_CIPHER_SUITE_CCMP:
 		ktype = AR9170_ENC_ALG_AESCCMP;
+<<<<<<< HEAD
+=======
+		key->flags |= IEEE80211_KEY_FLAG_SW_MGMT_TX;
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return -EOPNOTSUPP;
@@ -1312,12 +1540,17 @@ static int carl9170_op_sta_add(struct ieee80211_hw *hw,
 			return 0;
 		}
 
+<<<<<<< HEAD
 		for (i = 0; i < CARL9170_NUM_TID; i++)
 <<<<<<< HEAD
 			rcu_assign_pointer(sta_info->agg[i], NULL);
 =======
 			RCU_INIT_POINTER(sta_info->agg[i], NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i < ARRAY_SIZE(sta_info->agg); i++)
+			RCU_INIT_POINTER(sta_info->agg[i], NULL);
+>>>>>>> refs/remotes/origin/master
 
 		sta_info->ampdu_max_len = 1 << (3 + sta->ht_cap.ampdu_factor);
 		sta_info->ht_sta = true;
@@ -1340,6 +1573,7 @@ static int carl9170_op_sta_remove(struct ieee80211_hw *hw,
 		sta_info->ht_sta = false;
 
 		rcu_read_lock();
+<<<<<<< HEAD
 		for (i = 0; i < CARL9170_NUM_TID; i++) {
 			struct carl9170_sta_tid *tid_info;
 
@@ -1349,6 +1583,13 @@ static int carl9170_op_sta_remove(struct ieee80211_hw *hw,
 =======
 			RCU_INIT_POINTER(sta_info->agg[i], NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i < ARRAY_SIZE(sta_info->agg); i++) {
+			struct carl9170_sta_tid *tid_info;
+
+			tid_info = rcu_dereference(sta_info->agg[i]);
+			RCU_INIT_POINTER(sta_info->agg[i], NULL);
+>>>>>>> refs/remotes/origin/master
 
 			if (!tid_info)
 				continue;
@@ -1369,11 +1610,16 @@ static int carl9170_op_sta_remove(struct ieee80211_hw *hw,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int carl9170_op_conf_tx(struct ieee80211_hw *hw, u16 queue,
 =======
 static int carl9170_op_conf_tx(struct ieee80211_hw *hw,
 			       struct ieee80211_vif *vif, u16 queue,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int carl9170_op_conf_tx(struct ieee80211_hw *hw,
+			       struct ieee80211_vif *vif, u16 queue,
+>>>>>>> refs/remotes/origin/master
 			       const struct ieee80211_tx_queue_params *param)
 {
 	struct ar9170 *ar = hw->priv;
@@ -1439,6 +1685,11 @@ static int carl9170_op_ampdu_action(struct ieee80211_hw *hw,
 		tid_info->state = CARL9170_TID_STATE_PROGRESS;
 		tid_info->tid = tid;
 		tid_info->max = sta_info->ampdu_max_len;
+<<<<<<< HEAD
+=======
+		tid_info->sta = sta;
+		tid_info->vif = vif;
+>>>>>>> refs/remotes/origin/master
 
 		INIT_LIST_HEAD(&tid_info->list);
 		INIT_LIST_HEAD(&tid_info->tmp_list);
@@ -1455,7 +1706,13 @@ static int carl9170_op_ampdu_action(struct ieee80211_hw *hw,
 		ieee80211_start_tx_ba_cb_irqsafe(vif, sta->addr, tid);
 		break;
 
+<<<<<<< HEAD
 	case IEEE80211_AMPDU_TX_STOP:
+=======
+	case IEEE80211_AMPDU_TX_STOP_CONT:
+	case IEEE80211_AMPDU_TX_STOP_FLUSH:
+	case IEEE80211_AMPDU_TX_STOP_FLUSH_CONT:
+>>>>>>> refs/remotes/origin/master
 		rcu_read_lock();
 		tid_info = rcu_dereference(sta_info->agg[tid]);
 		if (tid_info) {
@@ -1466,10 +1723,14 @@ static int carl9170_op_ampdu_action(struct ieee80211_hw *hw,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rcu_assign_pointer(sta_info->agg[tid], NULL);
 =======
 		RCU_INIT_POINTER(sta_info->agg[tid], NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		RCU_INIT_POINTER(sta_info->agg[tid], NULL);
+>>>>>>> refs/remotes/origin/master
 		rcu_read_unlock();
 
 		ieee80211_stop_tx_ba_cb_irqsafe(vif, sta->addr, tid);
@@ -1544,6 +1805,7 @@ static int carl9170_register_wps_button(struct ar9170 *ar)
 #endif /* CONFIG_CARL9170_WPC */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int carl9170_op_get_survey(struct ieee80211_hw *hw, int idx,
 				struct survey_info *survey)
 {
@@ -1563,6 +1825,8 @@ static int carl9170_op_get_survey(struct ieee80211_hw *hw, int idx,
 	survey->filled = SURVEY_INFO_NOISE_DBM;
 	survey->noise = ar->noise[0];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CARL9170_HWRNG
 static int carl9170_rng_get(struct ar9170 *ar)
 {
@@ -1716,11 +1980,18 @@ found:
 				  SURVEY_INFO_CHANNEL_TIME_TX;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 
 static void carl9170_op_flush(struct ieee80211_hw *hw, bool drop)
+=======
+	return 0;
+}
+
+static void carl9170_op_flush(struct ieee80211_hw *hw, u32 queues, bool drop)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ar9170 *ar = hw->priv;
 	unsigned int vid;
@@ -1765,7 +2036,10 @@ static void carl9170_op_sta_notify(struct ieee80211_hw *hw,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool carl9170_tx_frames_pending(struct ieee80211_hw *hw)
 {
 	struct ar9170 *ar = hw->priv;
@@ -1773,7 +2047,10 @@ static bool carl9170_tx_frames_pending(struct ieee80211_hw *hw)
 	return !!atomic_read(&ar->tx_total_queued);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct ieee80211_ops carl9170_ops = {
 	.start			= carl9170_op_start,
 	.stop			= carl9170_op_stop,
@@ -1795,9 +2072,13 @@ static const struct ieee80211_ops carl9170_ops = {
 	.get_stats		= carl9170_op_get_stats,
 	.ampdu_action		= carl9170_op_ampdu_action,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.tx_frames_pending	= carl9170_tx_frames_pending,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.tx_frames_pending	= carl9170_tx_frames_pending,
+>>>>>>> refs/remotes/origin/master
 };
 
 void *carl9170_alloc(size_t priv_size)
@@ -1850,15 +2131,25 @@ void *carl9170_alloc(size_t priv_size)
 	for (i = 0; i < ar->hw->queues; i++) {
 		skb_queue_head_init(&ar->tx_status[i]);
 		skb_queue_head_init(&ar->tx_pending[i]);
+<<<<<<< HEAD
+=======
+
+		INIT_LIST_HEAD(&ar->bar_list[i]);
+		spin_lock_init(&ar->bar_list_lock[i]);
+>>>>>>> refs/remotes/origin/master
 	}
 	INIT_WORK(&ar->ps_work, carl9170_ps_work);
 	INIT_WORK(&ar->ping_work, carl9170_ping_work);
 	INIT_WORK(&ar->restart_work, carl9170_restart_work);
 	INIT_WORK(&ar->ampdu_work, carl9170_ampdu_work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	INIT_DELAYED_WORK(&ar->stat_work, carl9170_stat_work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_DELAYED_WORK(&ar->stat_work, carl9170_stat_work);
+>>>>>>> refs/remotes/origin/master
 	INIT_DELAYED_WORK(&ar->tx_janitor, carl9170_tx_janitor);
 	INIT_LIST_HEAD(&ar->tx_ampdu_list);
 	rcu_assign_pointer(ar->tx_ampdu_iter,
@@ -1872,6 +2163,7 @@ void *carl9170_alloc(size_t priv_size)
 	hw->wiphy->interface_modes = 0;
 
 	hw->flags |= IEEE80211_HW_RX_INCLUDES_FCS |
+<<<<<<< HEAD
 		     IEEE80211_HW_REPORTS_TX_ACK_STATUS |
 		     IEEE80211_HW_SUPPORTS_PS |
 		     IEEE80211_HW_PS_NULLFUNC_STACK |
@@ -1880,6 +2172,16 @@ void *carl9170_alloc(size_t priv_size)
 		     IEEE80211_HW_NEED_DTIM_PERIOD |
 >>>>>>> refs/remotes/origin/cm-10.0
 		     IEEE80211_HW_SIGNAL_DBM;
+=======
+		     IEEE80211_HW_MFP_CAPABLE |
+		     IEEE80211_HW_REPORTS_TX_ACK_STATUS |
+		     IEEE80211_HW_SUPPORTS_PS |
+		     IEEE80211_HW_PS_NULLFUNC_STACK |
+		     IEEE80211_HW_NEED_DTIM_BEFORE_ASSOC |
+		     IEEE80211_HW_SUPPORTS_RC_TABLE |
+		     IEEE80211_HW_SIGNAL_DBM |
+		     IEEE80211_HW_SUPPORTS_HT_CCK_RATES;
+>>>>>>> refs/remotes/origin/master
 
 	if (!modparam_noht) {
 		/*
@@ -1899,6 +2201,7 @@ void *carl9170_alloc(size_t priv_size)
 	for (i = 0; i < ARRAY_SIZE(ar->noise); i++)
 		ar->noise[i] = -95; /* ATH_DEFAULT_NOISE_FLOOR */
 
+<<<<<<< HEAD
 	hw->wiphy->flags &= ~WIPHY_FLAG_PS_ON_BY_DEFAULT;
 <<<<<<< HEAD
 =======
@@ -1906,6 +2209,8 @@ void *carl9170_alloc(size_t priv_size)
 	/* As IBSS Encryption is software-based, IBSS RSN is supported. */
 	hw->wiphy->flags |= WIPHY_FLAG_IBSS_RSN;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ar;
 
 err_nomem:
@@ -1930,10 +2235,14 @@ static int carl9170_read_eeprom(struct ar9170 *ar)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < sizeof(ar->eeprom)/RB; i++) {
 =======
 	for (i = 0; i < sizeof(ar->eeprom) / RB; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < sizeof(ar->eeprom) / RB; i++) {
+>>>>>>> refs/remotes/origin/master
 		for (j = 0; j < RW; j++)
 			offsets[j] = cpu_to_le32(AR9170_EEPROM_START +
 						 RB * i + 4 * j);
@@ -1956,9 +2265,13 @@ static int carl9170_parse_eeprom(struct ar9170 *ar)
 	unsigned int rx_streams, tx_streams, tx_params = 0;
 	int bands = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int chans = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int chans = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (ar->eeprom.length == cpu_to_le16(0xffff))
 		return -ENODATA;
@@ -1983,19 +2296,26 @@ static int carl9170_parse_eeprom(struct ar9170 *ar)
 		ar->hw->wiphy->bands[IEEE80211_BAND_2GHZ] =
 			&carl9170_band_2GHz;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		chans += carl9170_band_2GHz.n_channels;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		chans += carl9170_band_2GHz.n_channels;
+>>>>>>> refs/remotes/origin/master
 		bands++;
 	}
 	if (ar->eeprom.operating_flags & AR9170_OPFLAG_5GHZ) {
 		ar->hw->wiphy->bands[IEEE80211_BAND_5GHZ] =
 			&carl9170_band_5GHz;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bands++;
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		chans += carl9170_band_5GHz.n_channels;
 		bands++;
 	}
@@ -2008,7 +2328,10 @@ static int carl9170_parse_eeprom(struct ar9170 *ar)
 		return -ENOMEM;
 	ar->num_channels = chans;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * I measured this, a bandswitch takes roughly
 	 * 135 ms and a frequency switch about 80.
@@ -2023,13 +2346,17 @@ static int carl9170_parse_eeprom(struct ar9170 *ar)
 
 	regulatory->current_rd = le16_to_cpu(ar->eeprom.reg_domain[0]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	regulatory->current_rd_ext = le16_to_cpu(ar->eeprom.reg_domain[1]);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* second part of wiphy init */
 	SET_IEEE80211_PERM_ADDR(ar->hw, ar->eeprom.mac_address);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return bands ? 0 : -EINVAL;
 =======
@@ -2039,11 +2366,22 @@ static int carl9170_parse_eeprom(struct ar9170 *ar)
 
 static int carl9170_reg_notifier(struct wiphy *wiphy,
 				 struct regulatory_request *request)
+=======
+	return 0;
+}
+
+static void carl9170_reg_notifier(struct wiphy *wiphy,
+				  struct regulatory_request *request)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_hw *hw = wiphy_to_ieee80211_hw(wiphy);
 	struct ar9170 *ar = hw->priv;
 
+<<<<<<< HEAD
 	return ath_reg_notifier_apply(wiphy, request, &ar->common.regulatory);
+=======
+	ath_reg_notifier_apply(wiphy, request, &ar->common.regulatory);
+>>>>>>> refs/remotes/origin/master
 }
 
 int carl9170_register(struct ar9170 *ar)
@@ -2066,12 +2404,15 @@ int carl9170_register(struct ar9170 *ar)
 		return err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = carl9170_fw_fix_eeprom(ar);
 	if (err)
 		return err;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	err = carl9170_parse_eeprom(ar);
 	if (err)
 		return err;
@@ -2122,14 +2463,20 @@ int carl9170_register(struct ar9170 *ar)
 #endif /* CONFIG_CARL9170_WPC */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CARL9170_HWRNG
 	err = carl9170_register_hwrng(ar);
 	if (err)
 		goto err_unreg;
 #endif /* CONFIG_CARL9170_HWRNG */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_info(&ar->udev->dev, "Atheros AR9170 is registered as '%s'\n",
 		 wiphy_name(ar->hw->wiphy));
 
@@ -2163,12 +2510,18 @@ void carl9170_unregister(struct ar9170 *ar)
 #endif /* CONFIG_CARL9170_WPC */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CARL9170_HWRNG
 	carl9170_unregister_hwrng(ar);
 #endif /* CONFIG_CARL9170_HWRNG */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	carl9170_cancel_worker(ar);
 	cancel_work_sync(&ar->restart_work);
 
@@ -2187,11 +2540,17 @@ void carl9170_free(struct ar9170 *ar)
 	ar->mem_bitmap = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(ar->survey);
 	ar->survey = NULL;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(ar->survey);
+	ar->survey = NULL;
+
+>>>>>>> refs/remotes/origin/master
 	mutex_destroy(&ar->mutex);
 
 	ieee80211_free_hw(ar->hw);

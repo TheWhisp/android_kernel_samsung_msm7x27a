@@ -2,10 +2,14 @@
  *	w1_int.c
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2004 Evgeniy Polyakov <johnpol@2ka.mipt.ru>
 =======
  * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
+>>>>>>> refs/remotes/origin/master
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -29,10 +33,15 @@
 #include <linux/kthread.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 #include <linux/moduleparam.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "w1.h"
 #include "w1_log.h"
@@ -83,14 +92,22 @@ static struct w1_master * w1_alloc_dev(u32 id, int slave_count, int slave_ttl,
 
 	INIT_LIST_HEAD(&dev->slist);
 	mutex_init(&dev->mutex);
+<<<<<<< HEAD
+=======
+	mutex_init(&dev->bus_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	memcpy(&dev->dev, device, sizeof(struct device));
 	dev_set_name(&dev->dev, "w1_bus_master%u", dev->id);
 	snprintf(dev->name, sizeof(dev->name), "w1_bus_master%u", dev->id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dev->dev.init_name = dev->name;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->dev.init_name = dev->name;
+>>>>>>> refs/remotes/origin/master
 
 	dev->driver = driver;
 
@@ -127,7 +144,11 @@ int w1_add_master_device(struct w1_bus_master *master)
 		return(-EINVAL);
         }
 	/* While it would be electrically possible to make a device that
+<<<<<<< HEAD
 	 * generated a strong pullup in bit bang mode, only hardare that
+=======
+	 * generated a strong pullup in bit bang mode, only hardware that
+>>>>>>> refs/remotes/origin/master
 	 * controls 1-wire time frames are even expected to support a strong
 	 * pullup.  w1_io.c would need to support calling set_pullup before
 	 * the last write_bit operation of a w1_write_8 which it currently

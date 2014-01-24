@@ -29,6 +29,7 @@
 
 /*
  * NOTE:: This is the main interface file between the Linux layer
+<<<<<<< HEAD
  *        and the harware layer. This file will use the definitions
  *        from _dts_glob and dts_defs etc.. which are defined for
  *        windows.
@@ -39,11 +40,20 @@
 
 enum crystalhd_state{
 =======
+=======
+ *        and the hardware layer. This file will use the definitions
+ *        from _dts_glob and dts_defs etc.. which are defined for
+ *        windows.
+ */
+>>>>>>> refs/remotes/origin/master
 
 #include "crystalhd.h"
 
 enum crystalhd_state {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	BC_LINK_INVALID		= 0x00,
 	BC_LINK_INIT		= 0x01,
 	BC_LINK_CAP_EN		= 0x02,
@@ -73,7 +83,12 @@ struct crystalhd_cmd {
 	struct crystalhd_hw	hw_ctx;
 };
 
+<<<<<<< HEAD
 typedef enum BC_STATUS(*crystalhd_cmd_proc)(struct crystalhd_cmd *, struct crystalhd_ioctl_data *);
+=======
+typedef enum BC_STATUS(*crystalhd_cmd_proc)(struct crystalhd_cmd *,
+					 struct crystalhd_ioctl_data *);
+>>>>>>> refs/remotes/origin/master
 
 struct crystalhd_cmd_tbl {
 	uint32_t		cmd_id;
@@ -81,6 +96,7 @@ struct crystalhd_cmd_tbl {
 	uint32_t		block_mon;
 };
 
+<<<<<<< HEAD
 enum BC_STATUS crystalhd_suspend(struct crystalhd_cmd *ctx, struct crystalhd_ioctl_data *idata);
 enum BC_STATUS crystalhd_resume(struct crystalhd_cmd *ctx);
 crystalhd_cmd_proc crystalhd_get_cmd_proc(struct crystalhd_cmd *ctx, uint32_t cmd,
@@ -88,6 +104,19 @@ crystalhd_cmd_proc crystalhd_get_cmd_proc(struct crystalhd_cmd *ctx, uint32_t cm
 enum BC_STATUS crystalhd_user_open(struct crystalhd_cmd *ctx, struct crystalhd_user **user_ctx);
 enum BC_STATUS crystalhd_user_close(struct crystalhd_cmd *ctx, struct crystalhd_user *uc);
 enum BC_STATUS crystalhd_setup_cmd_context(struct crystalhd_cmd *ctx, struct crystalhd_adp *adp);
+=======
+enum BC_STATUS crystalhd_suspend(struct crystalhd_cmd *ctx,
+				 struct crystalhd_ioctl_data *idata);
+enum BC_STATUS crystalhd_resume(struct crystalhd_cmd *ctx);
+crystalhd_cmd_proc crystalhd_get_cmd_proc(struct crystalhd_cmd *ctx,
+				 uint32_t cmd, struct crystalhd_user *uc);
+enum BC_STATUS crystalhd_user_open(struct crystalhd_cmd *ctx,
+				 struct crystalhd_user **user_ctx);
+enum BC_STATUS crystalhd_user_close(struct crystalhd_cmd *ctx,
+				 struct crystalhd_user *uc);
+enum BC_STATUS crystalhd_setup_cmd_context(struct crystalhd_cmd *ctx,
+				 struct crystalhd_adp *adp);
+>>>>>>> refs/remotes/origin/master
 enum BC_STATUS crystalhd_delete_cmd_context(struct crystalhd_cmd *ctx);
 bool crystalhd_cmd_interrupt(struct crystalhd_cmd *ctx);
 

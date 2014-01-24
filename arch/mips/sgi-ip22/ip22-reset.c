@@ -19,9 +19,12 @@
 #include <asm/io.h>
 #include <asm/irq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/reboot.h>
 #include <asm/sgialib.h>
 #include <asm/sgi/ioc.h>
@@ -105,7 +108,11 @@ static void debounce(unsigned long data)
 	del_timer(&debounce_timer);
 	if (sgint->istat1 & SGINT_ISTAT1_PWR) {
 		/* Interrupt still being sent. */
+<<<<<<< HEAD
 		debounce_timer.expires = jiffies + (HZ / 20); /* 0.05s  */
+=======
+		debounce_timer.expires = jiffies + (HZ / 20); /* 0.05s	*/
+>>>>>>> refs/remotes/origin/master
 		add_timer(&debounce_timer);
 
 		sgioc->panel = SGIOC_PANEL_POWERON | SGIOC_PANEL_POWERINTR |
@@ -170,7 +177,11 @@ static irqreturn_t panel_int(int irq, void *dev_id)
 }
 
 static int panic_event(struct notifier_block *this, unsigned long event,
+<<<<<<< HEAD
                       void *ptr)
+=======
+		      void *ptr)
+>>>>>>> refs/remotes/origin/master
 {
 	if (machine_state & MACHINE_PANICED)
 		return NOTIFY_DONE;

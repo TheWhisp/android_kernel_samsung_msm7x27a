@@ -23,5 +23,20 @@ struct crypto_authenc_key_param {
 	__be32 enckeylen;
 };
 
+<<<<<<< HEAD
 #endif	/* _CRYPTO_AUTHENC_H */
 
+=======
+struct crypto_authenc_keys {
+	const u8 *authkey;
+	const u8 *enckey;
+
+	unsigned int authkeylen;
+	unsigned int enckeylen;
+};
+
+int crypto_authenc_extractkeys(struct crypto_authenc_keys *keys, const u8 *key,
+			       unsigned int keylen);
+
+#endif	/* _CRYPTO_AUTHENC_H */
+>>>>>>> refs/remotes/origin/master

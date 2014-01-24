@@ -25,10 +25,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/compiler.h>
 #include <linux/init.h>
@@ -37,6 +42,10 @@
 #include <linux/watchdog.h>
 #include <linux/fs.h>
 #include <linux/of.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <linux/io.h>
 #include <linux/uaccess.h>
@@ -74,12 +83,17 @@ static char expect_close;
 static DEFINE_SPINLOCK(gef_wdt_spinlock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 	__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
@@ -121,10 +135,14 @@ static void gef_wdt_handler_enable(void)
 				   GEF_WDC_ENABLE_SHIFT)) {
 		gef_wdt_service();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE "gef_wdt: watchdog activated\n");
 =======
 		pr_notice("watchdog activated\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_notice("watchdog activated\n");
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -133,10 +151,14 @@ static void gef_wdt_handler_disable(void)
 	if (gef_wdt_toggle_wdc(GEF_WDC_ENABLED_TRUE,
 				   GEF_WDC_ENABLE_SHIFT))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE "gef_wdt: watchdog deactivated\n");
 =======
 		pr_notice("watchdog deactivated\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_notice("watchdog deactivated\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void gef_wdt_set_timeout(unsigned int timeout)
@@ -253,11 +275,15 @@ static int gef_wdt_release(struct inode *inode, struct file *file)
 		gef_wdt_handler_disable();
 	else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT
 		       "gef_wdt: unexpected close, not stopping timer!\n");
 =======
 		pr_crit("unexpected close, not stopping timer!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("unexpected close, not stopping timer!\n");
+>>>>>>> refs/remotes/origin/master
 		gef_wdt_service();
 	}
 	expect_close = 0;
@@ -283,7 +309,11 @@ static struct miscdevice gef_wdt_miscdev = {
 };
 
 
+<<<<<<< HEAD
 static int __devinit gef_wdt_probe(struct platform_device *dev)
+=======
+static int gef_wdt_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int timeout = 10;
 	u32 freq;
@@ -306,7 +336,11 @@ static int __devinit gef_wdt_probe(struct platform_device *dev)
 	return misc_register(&gef_wdt_miscdev);
 }
 
+<<<<<<< HEAD
 static int __devexit gef_wdt_remove(struct platform_device *dev)
+=======
+static int gef_wdt_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	misc_deregister(&gef_wdt_miscdev);
 
@@ -331,15 +365,23 @@ static struct platform_driver gef_wdt_driver = {
 		.of_match_table = gef_wdt_ids,
 	},
 	.probe		= gef_wdt_probe,
+<<<<<<< HEAD
+=======
+	.remove		= gef_wdt_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init gef_wdt_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "GE watchdog driver\n");
 =======
 	pr_info("GE watchdog driver\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("GE watchdog driver\n");
+>>>>>>> refs/remotes/origin/master
 	return platform_driver_register(&gef_wdt_driver);
 }
 
@@ -354,5 +396,8 @@ module_exit(gef_wdt_exit);
 MODULE_AUTHOR("Martyn Welch <martyn.welch@ge.com>");
 MODULE_DESCRIPTION("GE watchdog driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS("platform:gef_wdt");

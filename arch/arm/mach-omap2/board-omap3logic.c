@@ -4,8 +4,14 @@
  * Copyright (C) 2010 Li-Pro.Net
  * Stephan Linz <linz@li-pro.net>
  *
+<<<<<<< HEAD
  * Copyright (C) 2010 Logic Product Development, Inc.
  * Peter Barada <peter.barada@logicpd.com>
+=======
+ * Copyright (C) 2010-2012 Logic Product Development, Inc.
+ * Peter Barada <peter.barada@logicpd.com>
+ * Ashwin BIhari <ashwin.bihari@logicpd.com>
+>>>>>>> refs/remotes/origin/master
  *
  * Modified from Beagle, EVM, and RX51
  *
@@ -24,19 +30,29 @@
 #include <linux/gpio.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/regulator/fixed.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regulator/fixed.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/regulator/machine.h>
 
 #include <linux/i2c/twl.h>
 #include <linux/mmc/host.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
+=======
+#include <linux/usb/phy.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include "mux.h"
 #include "hsmmc.h"
 <<<<<<< HEAD
@@ -56,6 +72,15 @@
 #include <plat/gpmc-smsc911x.h>
 #include <plat/gpmc.h>
 #include <plat/sdrc.h>
+=======
+#include "common.h"
+#include "mux.h"
+#include "hsmmc.h"
+#include "control.h"
+#include "common-board-devices.h"
+#include "gpmc.h"
+#include "gpmc-smsc911x.h"
+>>>>>>> refs/remotes/origin/master
 
 #define OMAP3LOGIC_SMSC911X_CS			1
 
@@ -67,12 +92,17 @@
 #define OMAP3_TORPEDO_SMSC911X_GPIO_IRQ		129
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct regulator_consumer_supply omap3logic_vmmc1_supply = {
 	.supply			= "vmmc",
 =======
 static struct regulator_consumer_supply omap3logic_vmmc1_supply[] = {
 	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.0"),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct regulator_consumer_supply omap3logic_vmmc1_supply[] = {
+	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.0"),
+>>>>>>> refs/remotes/origin/master
 };
 
 /* VMMC1 for MMC1 pins CMD, CLK, DAT0..DAT3 (20 mA, plus card == max 220 mA) */
@@ -88,6 +118,7 @@ static struct regulator_init_data omap3logic_vmmc1 = {
 					| REGULATOR_CHANGE_STATUS,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_consumer_supplies  = 1,
 	.consumer_supplies      = &omap3logic_vmmc1_supply,
 =======
@@ -100,12 +131,20 @@ static struct twl4030_gpio_platform_data omap3logic_gpio_data = {
 	.gpio_base	= OMAP_MAX_GPIO_LINES,
 	.irq_base	= TWL4030_GPIO_IRQ_BASE,
 	.irq_end	= TWL4030_GPIO_IRQ_END,
+=======
+	.num_consumer_supplies  = ARRAY_SIZE(omap3logic_vmmc1_supply),
+	.consumer_supplies      = omap3logic_vmmc1_supply,
+};
+
+static struct twl4030_gpio_platform_data omap3logic_gpio_data = {
+>>>>>>> refs/remotes/origin/master
 	.use_leds	= true,
 	.pullups	= BIT(1),
 	.pulldowns	= BIT(2)  | BIT(6)  | BIT(7)  | BIT(8)
 			| BIT(13) | BIT(15) | BIT(16) | BIT(17),
 };
 
+<<<<<<< HEAD
 static struct twl4030_platform_data omap3logic_twldata = {
 	.irq_base	= TWL4030_IRQ_BASE,
 	.irq_end	= TWL4030_IRQ_END,
@@ -113,6 +152,18 @@ static struct twl4030_platform_data omap3logic_twldata = {
 	/* platform_data for children goes here */
 	.gpio		= &omap3logic_gpio_data,
 	.vmmc1		= &omap3logic_vmmc1,
+=======
+static struct twl4030_usb_data omap3logic_usb_data = {
+	.usb_mode	= T2_USB_MODE_ULPI,
+};
+
+
+static struct twl4030_platform_data omap3logic_twldata = {
+	/* platform_data for children goes here */
+	.gpio		= &omap3logic_gpio_data,
+	.vmmc1		= &omap3logic_vmmc1,
+	.usb		= &omap3logic_usb_data,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init omap3logic_i2c_init(void)
@@ -151,12 +202,16 @@ static void __init board_mmc_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	omap2_hsmmc_init(board_mmc_info);
 	/* link regulators to MMC adapters */
 	omap3logic_vmmc1_supply.dev = board_mmc_info[0].dev;
 =======
 	omap_hsmmc_init(board_mmc_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	omap_hsmmc_init(board_mmc_info);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct omap_smsc911x_platform_data __initdata board_smsc911x_data = {
@@ -211,6 +266,7 @@ static inline void __init board_smsc911x_init(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init omap3logic_init_early(void)
 {
 	omap2_init_common_infrastructure();
@@ -221,14 +277,35 @@ static void __init omap3logic_init_early(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_OMAP_MUX
 static struct omap_board_mux board_mux[] __initdata = {
+=======
+#ifdef CONFIG_OMAP_MUX
+static struct omap_board_mux board_mux[] __initdata = {
+	/* mUSB */
+	OMAP3_MUX(HSUSB0_CLK, OMAP_MUX_MODE0 | OMAP_PIN_INPUT),
+	OMAP3_MUX(HSUSB0_STP, OMAP_MUX_MODE0 | OMAP_PIN_OUTPUT),
+	OMAP3_MUX(HSUSB0_DIR, OMAP_MUX_MODE0 | OMAP_PIN_INPUT),
+	OMAP3_MUX(HSUSB0_NXT, OMAP_MUX_MODE0 | OMAP_PIN_INPUT),
+	OMAP3_MUX(HSUSB0_DATA0, OMAP_MUX_MODE0 | OMAP_PIN_INPUT),
+	OMAP3_MUX(HSUSB0_DATA1, OMAP_MUX_MODE0 | OMAP_PIN_INPUT),
+	OMAP3_MUX(HSUSB0_DATA2, OMAP_MUX_MODE0 | OMAP_PIN_INPUT),
+	OMAP3_MUX(HSUSB0_DATA3, OMAP_MUX_MODE0 | OMAP_PIN_INPUT),
+	OMAP3_MUX(HSUSB0_DATA4, OMAP_MUX_MODE0 | OMAP_PIN_INPUT),
+	OMAP3_MUX(HSUSB0_DATA5, OMAP_MUX_MODE0 | OMAP_PIN_INPUT),
+	OMAP3_MUX(HSUSB0_DATA6, OMAP_MUX_MODE0 | OMAP_PIN_INPUT),
+	OMAP3_MUX(HSUSB0_DATA7, OMAP_MUX_MODE0 | OMAP_PIN_INPUT),
+
+>>>>>>> refs/remotes/origin/master
 	{ .reg_offset = OMAP_MUX_TERMINATOR },
 };
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init omap3logic_init(void)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct regulator_consumer_supply dummy_supplies[] = {
 	REGULATOR_SUPPLY("vddvario", "smsc911x.0"),
 	REGULATOR_SUPPLY("vdd33a", "smsc911x.0"),
@@ -237,11 +314,15 @@ static struct regulator_consumer_supply dummy_supplies[] = {
 static void __init omap3logic_init(void)
 {
 	regulator_register_fixed(0, dummy_supplies, ARRAY_SIZE(dummy_supplies));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
 	omap3torpedo_fix_pbias_voltage();
 	omap3logic_i2c_init();
 	omap_serial_init();
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	omap_sdrc_init(NULL, NULL);
@@ -249,12 +330,22 @@ static void __init omap3logic_init(void)
 	board_mmc_init();
 	board_smsc911x_init();
 
+=======
+	omap_sdrc_init(NULL, NULL);
+	board_mmc_init();
+	board_smsc911x_init();
+
+	usb_bind_phy("musb-hdrc.0.auto", 0, "twl4030_usb");
+	usb_musb_init(NULL);
+
+>>>>>>> refs/remotes/origin/master
 	/* Ensure SDRC pins are mux'd for self-refresh */
 	omap_mux_init_signal("sdrc_cke0", OMAP_PIN_OUTPUT);
 	omap_mux_init_signal("sdrc_cke1", OMAP_PIN_OUTPUT);
 }
 
 MACHINE_START(OMAP3_TORPEDO, "Logic OMAP3 Torpedo board")
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boot_params	= 0x80000100,
 	.map_io		= omap3_map_io,
@@ -272,6 +363,8 @@ MACHINE_START(OMAP3530_LV_SOM, "OMAP Logic 3530 LV SOM board")
 	.init_machine	= omap3logic_init,
 	.timer		= &omap_timer,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.reserve	= omap_reserve,
 	.map_io		= omap3_map_io,
@@ -279,8 +372,14 @@ MACHINE_START(OMAP3530_LV_SOM, "OMAP Logic 3530 LV SOM board")
 	.init_irq	= omap3_init_irq,
 	.handle_irq	= omap3_intc_handle_irq,
 	.init_machine	= omap3logic_init,
+<<<<<<< HEAD
 	.timer		= &omap3_timer,
 	.restart	= omap_prcm_restart,
+=======
+	.init_late	= omap35xx_init_late,
+	.init_time	= omap3_sync32k_timer_init,
+	.restart	= omap3xxx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 
 MACHINE_START(OMAP3530_LV_SOM, "OMAP Logic 3530 LV SOM board")
@@ -291,7 +390,13 @@ MACHINE_START(OMAP3530_LV_SOM, "OMAP Logic 3530 LV SOM board")
 	.init_irq	= omap3_init_irq,
 	.handle_irq	= omap3_intc_handle_irq,
 	.init_machine	= omap3logic_init,
+<<<<<<< HEAD
 	.timer		= &omap3_timer,
 	.restart	= omap_prcm_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_late	= omap35xx_init_late,
+	.init_time	= omap3_sync32k_timer_init,
+	.restart	= omap3xxx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

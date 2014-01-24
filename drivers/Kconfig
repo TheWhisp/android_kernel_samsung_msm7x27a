@@ -2,6 +2,11 @@ menu "Device Drivers"
 
 source "drivers/base/Kconfig"
 
+<<<<<<< HEAD
+=======
+source "drivers/bus/Kconfig"
+
+>>>>>>> refs/remotes/origin/master
 source "drivers/connector/Kconfig"
 
 source "drivers/mtd/Kconfig"
@@ -41,10 +46,13 @@ source "drivers/net/Kconfig"
 source "drivers/isdn/Kconfig"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 source "drivers/telephony/Kconfig"
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # input before char - char/joystick depends on it. As does USB.
 
 source "drivers/input/Kconfig"
@@ -56,6 +64,7 @@ source "drivers/i2c/Kconfig"
 source "drivers/spi/Kconfig"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 source "drivers/slimbus/Kconfig"
 
 =======
@@ -66,15 +75,24 @@ source "drivers/slimbus/Kconfig"
 source "drivers/hsi/Kconfig"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+source "drivers/hsi/Kconfig"
+
+>>>>>>> refs/remotes/origin/master
 source "drivers/pps/Kconfig"
 
 source "drivers/ptp/Kconfig"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 source "drivers/pinctrl/Kconfig"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+source "drivers/pinctrl/Kconfig"
+
+>>>>>>> refs/remotes/origin/master
 source "drivers/gpio/Kconfig"
 
 source "drivers/w1/Kconfig"
@@ -114,12 +132,15 @@ source "drivers/memstick/Kconfig"
 source "drivers/leds/Kconfig"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 source "drivers/nfc/Kconfig"
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 source "drivers/switch/Kconfig"
 
+=======
+>>>>>>> refs/remotes/origin/master
 source "drivers/accessibility/Kconfig"
 
 source "drivers/infiniband/Kconfig"
@@ -136,15 +157,27 @@ source "drivers/auxdisplay/Kconfig"
 
 source "drivers/uio/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/vlynq/Kconfig"
 
 <<<<<<< HEAD
 =======
+=======
+source "drivers/vfio/Kconfig"
+
+source "drivers/vlynq/Kconfig"
+
+source "drivers/virt/Kconfig"
+
+>>>>>>> refs/remotes/origin/master
 source "drivers/virtio/Kconfig"
 
 source "drivers/hv/Kconfig"
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 source "drivers/xen/Kconfig"
 
 source "drivers/staging/Kconfig"
@@ -158,13 +191,19 @@ source "drivers/hwspinlock/Kconfig"
 source "drivers/clocksource/Kconfig"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+source "drivers/mailbox/Kconfig"
+
+>>>>>>> refs/remotes/origin/master
 source "drivers/iommu/Kconfig"
 
 source "drivers/remoteproc/Kconfig"
 
 source "drivers/rpmsg/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/virt/Kconfig"
 
 source "drivers/devfreq/Kconfig"
@@ -177,5 +216,32 @@ source "drivers/coresight/Kconfig"
 source "drivers/dpram/Kconfig"
 
 source "drivers/sensors/Kconfig"
+=======
+source "drivers/devfreq/Kconfig"
+
+source "drivers/extcon/Kconfig"
+
+source "drivers/memory/Kconfig"
+
+source "drivers/iio/Kconfig"
+
+source "drivers/ntb/Kconfig"
+
+source "drivers/vme/Kconfig"
+
+source "drivers/pwm/Kconfig"
+
+source "drivers/irqchip/Kconfig"
+
+source "drivers/ipack/Kconfig"
+
+source "drivers/reset/Kconfig"
+
+source "drivers/fmc/Kconfig"
+
+source "drivers/phy/Kconfig"
+
+source "drivers/powercap/Kconfig"
+>>>>>>> refs/remotes/origin/master
 
 endmenu

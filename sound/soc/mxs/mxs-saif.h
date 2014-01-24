@@ -117,15 +117,28 @@ struct mxs_saif {
 	unsigned int mclk_in_use;
 	void __iomem *base;
 	int irq;
+<<<<<<< HEAD
 	struct mxs_pcm_dma_params dma_param;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int id;
 	unsigned int master_id;
 	unsigned int cur_rate;
 	unsigned int ongoing;
 
+<<<<<<< HEAD
 	struct platform_device *soc_platform_pdev;
 	u32 fifo_underrun;
 	u32 fifo_overrun;
+=======
+	u32 fifo_underrun;
+	u32 fifo_overrun;
+
+	enum {
+		MXS_SAIF_STATE_STOPPED,
+		MXS_SAIF_STATE_RUNNING,
+	} state;
+>>>>>>> refs/remotes/origin/master
 };
 
 extern int mxs_saif_put_mclk(unsigned int saif_id);

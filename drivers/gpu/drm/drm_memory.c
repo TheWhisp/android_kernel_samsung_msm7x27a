@@ -35,6 +35,7 @@
 
 #include <linux/highmem.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "drmP.h"
 
 /**
@@ -61,6 +62,11 @@ int drm_mem_info(char *buf, char **start, off_t offset,
 #include "drmP.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <drm/drmP.h>
+
+>>>>>>> refs/remotes/origin/master
 #if __OS_HAS_AGP
 static void *agp_remap(unsigned long offset, unsigned long size,
 		       struct drm_device * dev)
@@ -110,7 +116,10 @@ void drm_free_agp(DRM_AGP_MEM * handle, int pages)
 {
 	agp_free_memory(handle);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(drm_free_agp);
+=======
+>>>>>>> refs/remotes/origin/master
 
 /** Wrapper around agp_bind_memory() */
 int drm_bind_agp(DRM_AGP_MEM * handle, unsigned int start)
@@ -123,7 +132,10 @@ int drm_unbind_agp(DRM_AGP_MEM * handle)
 {
 	return agp_unbind_memory(handle);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(drm_unbind_agp);
+=======
+>>>>>>> refs/remotes/origin/master
 
 #else  /*  __OS_HAS_AGP  */
 static inline void *agp_remap(unsigned long offset, unsigned long size,

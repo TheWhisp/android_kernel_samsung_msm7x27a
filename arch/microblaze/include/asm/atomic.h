@@ -2,12 +2,18 @@
 #define _ASM_MICROBLAZE_ATOMIC_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm-generic/atomic.h>
 =======
 #include <asm/cmpxchg.h>
 #include <asm-generic/atomic.h>
 #include <asm-generic/atomic64.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cmpxchg.h>
+#include <asm-generic/atomic.h>
+#include <asm-generic/atomic64.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Atomically test *v and decrement if it is greater than 0.
@@ -26,5 +32,9 @@ static inline int atomic_dec_if_positive(atomic_t *v)
 
 	return res;
 }
+<<<<<<< HEAD
+=======
+#define atomic_dec_if_positive atomic_dec_if_positive
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_MICROBLAZE_ATOMIC_H */

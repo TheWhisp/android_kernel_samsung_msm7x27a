@@ -13,10 +13,14 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 #include <linux/fs.h>
 #include <linux/mm.h>
@@ -36,6 +40,7 @@
 #include <linux/sysctl.h>
 #include <linux/cpu.h>
 #include <linux/syscalls.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/buffer_head.h>
 =======
@@ -65,6 +70,18 @@ static inline long sync_writeback_pages(unsigned long dirtied)
 	return dirtied + dirtied / 2;
 }
 =======
+=======
+#include <linux/buffer_head.h> /* __set_page_dirty_buffers */
+#include <linux/pagevec.h>
+#include <linux/timer.h>
+#include <linux/sched/rt.h>
+#include <linux/mm_inline.h>
+#include <trace/events/writeback.h>
+
+#include "internal.h"
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Sleep at most 200ms at a time in balance_dirty_pages().
  */
 #define MAX_PAUSE		max(HZ/5, 1)
@@ -87,7 +104,10 @@ static inline long sync_writeback_pages(unsigned long dirtied)
  * will look to see if it needs to force writeback or throttling.
  */
 static long ratelimit_pages = 32;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* The following parameters are exported via /proc/sys/vm */
 
@@ -125,10 +145,15 @@ unsigned long vm_dirty_bytes;
 unsigned int dirty_writeback_interval = 5 * 100; /* centiseconds */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(dirty_writeback_interval);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(dirty_writeback_interval);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The longest time for which data is allowed to remain dirty
  */
@@ -150,9 +175,13 @@ EXPORT_SYMBOL(laptop_mode);
 /* End of sysctl-exported parameters */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 unsigned long global_dirty_limit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned long global_dirty_limit;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Scale the writeback cache size proportional to the relative writeout speeds.
@@ -170,10 +199,27 @@ unsigned long global_dirty_limit;
  * measured in page writeback completions.
  *
  */
+<<<<<<< HEAD
 static struct prop_descriptor vm_completions;
 <<<<<<< HEAD
 static struct prop_descriptor vm_dirties;
 =======
+=======
+static struct fprop_global writeout_completions;
+
+static void writeout_period(unsigned long t);
+/* Timer for aging of writeout_completions */
+static struct timer_list writeout_period_timer =
+		TIMER_DEFERRED_INITIALIZER(writeout_period, 0, 0);
+static unsigned long writeout_period_time = 0;
+
+/*
+ * Length of period for aging writeout fractions of bdis. This is an
+ * arbitrarily chosen number. The longer the period, the slower fractions will
+ * reflect changes in current writeout rate.
+ */
+#define VM_COMPLETIONS_PERIOD_LEN (3*HZ)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Work out the current dirty-memory clamping and background writeout
@@ -254,7 +300,11 @@ static unsigned long highmem_dirtyable_memory(unsigned long total)
  * Returns the global number of pages potentially available for dirty
  * page cache.  This is the base value for the global dirty limits.
  */
+<<<<<<< HEAD
 unsigned long global_dirtyable_memory(void)
+=======
+static unsigned long global_dirtyable_memory(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long x;
 
@@ -374,6 +424,7 @@ bool zone_dirty_ok(struct zone *zone)
 	       zone_page_state(zone, NR_UNSTABLE_NFS) +
 	       zone_page_state(zone, NR_WRITEBACK) <= limit;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 /*
@@ -411,6 +462,8 @@ static void update_completion_period(void)
 	writeback_set_ratelimit();
 >>>>>>> refs/remotes/origin/cm-10.0
 }
+=======
+>>>>>>> refs/remotes/origin/master
 
 int dirty_background_ratio_handler(struct ctl_table *table, int write,
 		void __user *buffer, size_t *lenp,
@@ -445,16 +498,23 @@ int dirty_ratio_handler(struct ctl_table *table, int write,
 
 	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
 	if (ret == 0 && write && vm_dirty_ratio != old_ratio) {
+<<<<<<< HEAD
 		update_completion_period();
+=======
+		writeback_set_ratelimit();
+>>>>>>> refs/remotes/origin/master
 		vm_dirty_bytes = 0;
 	}
 	return ret;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int dirty_bytes_handler(struct ctl_table *table, int write,
 		void __user *buffer, size_t *lenp,
 		loff_t *ppos)
@@ -464,12 +524,28 @@ int dirty_bytes_handler(struct ctl_table *table, int write,
 
 	ret = proc_doulongvec_minmax(table, write, buffer, lenp, ppos);
 	if (ret == 0 && write && vm_dirty_bytes != old_bytes) {
+<<<<<<< HEAD
 		update_completion_period();
+=======
+		writeback_set_ratelimit();
+>>>>>>> refs/remotes/origin/master
 		vm_dirty_ratio = 0;
 	}
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static unsigned long wp_next_time(unsigned long cur_time)
+{
+	cur_time += VM_COMPLETIONS_PERIOD_LEN;
+	/* 0 has a special meaning... */
+	if (!cur_time)
+		return 1;
+	return cur_time;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Increment the BDI's writeout completion count and the global writeout
  * completion count. Called from test_clear_page_writeback().
@@ -477,11 +553,28 @@ int dirty_bytes_handler(struct ctl_table *table, int write,
 static inline void __bdi_writeout_inc(struct backing_dev_info *bdi)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	__inc_bdi_stat(bdi, BDI_WRITTEN);
 >>>>>>> refs/remotes/origin/cm-10.0
 	__prop_inc_percpu_max(&vm_completions, &bdi->completions,
 			      bdi->max_prop_frac);
+=======
+	__inc_bdi_stat(bdi, BDI_WRITTEN);
+	__fprop_inc_percpu_max(&writeout_completions, &bdi->completions,
+			       bdi->max_prop_frac);
+	/* First event after period switching was turned off? */
+	if (!unlikely(writeout_period_time)) {
+		/*
+		 * We can race with other __bdi_writeout_inc calls here but
+		 * it does not cause any harm since the resulting time when
+		 * timer will fire and what is in writeout_period_time will be
+		 * roughly the same.
+		 */
+		writeout_period_time = wp_next_time(jiffies);
+		mod_timer(&writeout_period_timer, writeout_period_time);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 void bdi_writeout_inc(struct backing_dev_info *bdi)
@@ -495,6 +588,7 @@ void bdi_writeout_inc(struct backing_dev_info *bdi)
 EXPORT_SYMBOL_GPL(bdi_writeout_inc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void task_dirty_inc(struct task_struct *tsk)
 {
 	prop_inc_single(&vm_dirties, &tsk->dirties);
@@ -502,12 +596,15 @@ void task_dirty_inc(struct task_struct *tsk)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Obtain an accurate fraction of the BDI's portion.
  */
 static void bdi_writeout_fraction(struct backing_dev_info *bdi,
 		long *numerator, long *denominator)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (bdi_cap_writeback_dirty(bdi)) {
 		prop_fraction_percpu(&vm_completions, &bdi->completions,
@@ -525,10 +622,14 @@ static inline void task_dirties_fraction(struct task_struct *tsk,
 =======
 	prop_fraction_percpu(&vm_completions, &bdi->completions,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fprop_fraction_percpu(&writeout_completions, &bdi->completions,
+>>>>>>> refs/remotes/origin/master
 				numerator, denominator);
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * task_dirty_limit - scale down dirty throttling threshold for one task
  *
@@ -566,6 +667,33 @@ static unsigned long task_dirty_limit(struct task_struct *tsk,
  * registered backing devices, which, for obvious reasons, can not
  * exceed 100%.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * On idle system, we can be called long after we scheduled because we use
+ * deferred timers so count with missed periods.
+ */
+static void writeout_period(unsigned long t)
+{
+	int miss_periods = (jiffies - writeout_period_time) /
+						 VM_COMPLETIONS_PERIOD_LEN;
+
+	if (fprop_new_period(&writeout_completions, miss_periods + 1)) {
+		writeout_period_time = wp_next_time(writeout_period_time +
+				miss_periods * VM_COMPLETIONS_PERIOD_LEN);
+		mod_timer(&writeout_period_timer, writeout_period_time);
+	} else {
+		/*
+		 * Aging has zeroed all fractions. Stop wasting CPU on period
+		 * updates.
+		 */
+		writeout_period_time = 0;
+	}
+}
+
+/*
+ * bdi_min_ratio keeps the sum of the minimum dirty shares of all
+ * registered backing devices, which, for obvious reasons, can not
+ * exceed 100%.
+>>>>>>> refs/remotes/origin/master
  */
 static unsigned int bdi_min_ratio;
 
@@ -602,7 +730,11 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned max_ratio)
 		ret = -EINVAL;
 	} else {
 		bdi->max_ratio = max_ratio;
+<<<<<<< HEAD
 		bdi->max_prop_frac = (PROP_FRAC_BASE * max_ratio) / 100;
+=======
+		bdi->max_prop_frac = (FPROP_FRAC_BASE * max_ratio) / 100;
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_bh(&bdi_lock);
 
@@ -610,6 +742,7 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned max_ratio)
 }
 EXPORT_SYMBOL(bdi_set_max_ratio);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Work out the current dirty-memory clamping and background writeout
@@ -742,6 +875,8 @@ unsigned long bdi_dirty_limit(struct backing_dev_info *bdi, unsigned long dirty)
 
 	return bdi_dirty;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned long dirty_freerun_ceiling(unsigned long thresh,
 					   unsigned long bg_thresh)
 {
@@ -797,6 +932,40 @@ unsigned long bdi_dirty_limit(struct backing_dev_info *bdi, unsigned long dirty)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ *                           setpoint - dirty 3
+ *        f(dirty) := 1.0 + (----------------)
+ *                           limit - setpoint
+ *
+ * it's a 3rd order polynomial that subjects to
+ *
+ * (1) f(freerun)  = 2.0 => rampup dirty_ratelimit reasonably fast
+ * (2) f(setpoint) = 1.0 => the balance point
+ * (3) f(limit)    = 0   => the hard limit
+ * (4) df/dx      <= 0	 => negative feedback control
+ * (5) the closer to setpoint, the smaller |df/dx| (and the reverse)
+ *     => fast response on large errors; small oscillation near setpoint
+ */
+static inline long long pos_ratio_polynom(unsigned long setpoint,
+					  unsigned long dirty,
+					  unsigned long limit)
+{
+	long long pos_ratio;
+	long x;
+
+	x = div_s64(((s64)setpoint - (s64)dirty) << RATELIMIT_CALC_SHIFT,
+		    limit - setpoint + 1);
+	pos_ratio = x;
+	pos_ratio = pos_ratio * x >> RATELIMIT_CALC_SHIFT;
+	pos_ratio = pos_ratio * x >> RATELIMIT_CALC_SHIFT;
+	pos_ratio += 1 << RATELIMIT_CALC_SHIFT;
+
+	return clamp(pos_ratio, 0LL, 2LL << RATELIMIT_CALC_SHIFT);
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Dirty position control.
  *
  * (o) global/bdi setpoints
@@ -894,6 +1063,7 @@ static unsigned long bdi_position_ratio(struct backing_dev_info *bdi,
 	/*
 	 * global setpoint
 	 *
+<<<<<<< HEAD
 	 *                           setpoint - dirty 3
 	 *        f(dirty) := 1.0 + (----------------)
 	 *                           limit - setpoint
@@ -914,6 +1084,82 @@ static unsigned long bdi_position_ratio(struct backing_dev_info *bdi,
 	pos_ratio = pos_ratio * x >> RATELIMIT_CALC_SHIFT;
 	pos_ratio = pos_ratio * x >> RATELIMIT_CALC_SHIFT;
 	pos_ratio += 1 << RATELIMIT_CALC_SHIFT;
+=======
+	 * See comment for pos_ratio_polynom().
+	 */
+	setpoint = (freerun + limit) / 2;
+	pos_ratio = pos_ratio_polynom(setpoint, dirty, limit);
+
+	/*
+	 * The strictlimit feature is a tool preventing mistrusted filesystems
+	 * from growing a large number of dirty pages before throttling. For
+	 * such filesystems balance_dirty_pages always checks bdi counters
+	 * against bdi limits. Even if global "nr_dirty" is under "freerun".
+	 * This is especially important for fuse which sets bdi->max_ratio to
+	 * 1% by default. Without strictlimit feature, fuse writeback may
+	 * consume arbitrary amount of RAM because it is accounted in
+	 * NR_WRITEBACK_TEMP which is not involved in calculating "nr_dirty".
+	 *
+	 * Here, in bdi_position_ratio(), we calculate pos_ratio based on
+	 * two values: bdi_dirty and bdi_thresh. Let's consider an example:
+	 * total amount of RAM is 16GB, bdi->max_ratio is equal to 1%, global
+	 * limits are set by default to 10% and 20% (background and throttle).
+	 * Then bdi_thresh is 1% of 20% of 16GB. This amounts to ~8K pages.
+	 * bdi_dirty_limit(bdi, bg_thresh) is about ~4K pages. bdi_setpoint is
+	 * about ~6K pages (as the average of background and throttle bdi
+	 * limits). The 3rd order polynomial will provide positive feedback if
+	 * bdi_dirty is under bdi_setpoint and vice versa.
+	 *
+	 * Note, that we cannot use global counters in these calculations
+	 * because we want to throttle process writing to a strictlimit BDI
+	 * much earlier than global "freerun" is reached (~23MB vs. ~2.3GB
+	 * in the example above).
+	 */
+	if (unlikely(bdi->capabilities & BDI_CAP_STRICTLIMIT)) {
+		long long bdi_pos_ratio;
+		unsigned long bdi_bg_thresh;
+
+		if (bdi_dirty < 8)
+			return min_t(long long, pos_ratio * 2,
+				     2 << RATELIMIT_CALC_SHIFT);
+
+		if (bdi_dirty >= bdi_thresh)
+			return 0;
+
+		bdi_bg_thresh = div_u64((u64)bdi_thresh * bg_thresh, thresh);
+		bdi_setpoint = dirty_freerun_ceiling(bdi_thresh,
+						     bdi_bg_thresh);
+
+		if (bdi_setpoint == 0 || bdi_setpoint == bdi_thresh)
+			return 0;
+
+		bdi_pos_ratio = pos_ratio_polynom(bdi_setpoint, bdi_dirty,
+						  bdi_thresh);
+
+		/*
+		 * Typically, for strictlimit case, bdi_setpoint << setpoint
+		 * and pos_ratio >> bdi_pos_ratio. In the other words global
+		 * state ("dirty") is not limiting factor and we have to
+		 * make decision based on bdi counters. But there is an
+		 * important case when global pos_ratio should get precedence:
+		 * global limits are exceeded (e.g. due to activities on other
+		 * BDIs) while given strictlimit BDI is below limit.
+		 *
+		 * "pos_ratio * bdi_pos_ratio" would work for the case above,
+		 * but it would look too non-natural for the case of all
+		 * activity in the system coming from a single strictlimit BDI
+		 * with bdi->max_ratio == 100%.
+		 *
+		 * Note that min() below somewhat changes the dynamics of the
+		 * control system. Normally, pos_ratio value can be well over 3
+		 * (when globally we are at freerun and bdi is well below bdi
+		 * setpoint). Now the maximum pos_ratio in the same situation
+		 * is 2. We might want to tweak this if we observe the control
+		 * system is too slow to adapt.
+		 */
+		return min(pos_ratio, bdi_pos_ratio);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We have computed basic pos_ratio above based on global situation. If
@@ -1177,7 +1423,11 @@ static void bdi_update_dirty_ratelimit(struct backing_dev_info *bdi,
 	 *	bdi->dirty_ratelimit = balanced_dirty_ratelimit;
 	 *
 	 * However to get a more stable dirty_ratelimit, the below elaborated
+<<<<<<< HEAD
 	 * code makes use of task_ratelimit to filter out sigular points and
+=======
+	 * code makes use of task_ratelimit to filter out singular points and
+>>>>>>> refs/remotes/origin/master
 	 * limit the step size.
 	 *
 	 * The below code essentially only uses the relative value of
@@ -1200,12 +1450,40 @@ static void bdi_update_dirty_ratelimit(struct backing_dev_info *bdi,
 	 * feel and care are stable dirty rate and small position error.
 	 *
 	 * |task_ratelimit - dirty_ratelimit| is used to limit the step size
+<<<<<<< HEAD
 	 * and filter out the sigular points of balanced_dirty_ratelimit. Which
+=======
+	 * and filter out the singular points of balanced_dirty_ratelimit. Which
+>>>>>>> refs/remotes/origin/master
 	 * keeps jumping around randomly and can even leap far away at times
 	 * due to the small 200ms estimation period of dirty_rate (we want to
 	 * keep that period small to reduce time lags).
 	 */
 	step = 0;
+<<<<<<< HEAD
+=======
+
+	/*
+	 * For strictlimit case, calculations above were based on bdi counters
+	 * and limits (starting from pos_ratio = bdi_position_ratio() and up to
+	 * balanced_dirty_ratelimit = task_ratelimit * write_bw / dirty_rate).
+	 * Hence, to calculate "step" properly, we have to use bdi_dirty as
+	 * "dirty" and bdi_setpoint as "setpoint".
+	 *
+	 * We rampup dirty_ratelimit forcibly if bdi_dirty is low because
+	 * it's possible that bdi_thresh is close to zero due to inactivity
+	 * of backing device (see the implementation of bdi_dirty_limit()).
+	 */
+	if (unlikely(bdi->capabilities & BDI_CAP_STRICTLIMIT)) {
+		dirty = bdi_dirty;
+		if (bdi_dirty < 8)
+			setpoint = bdi_dirty + 1;
+		else
+			setpoint = (bdi_thresh +
+				    bdi_dirty_limit(bdi, bg_thresh)) / 2;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (dirty < setpoint) {
 		x = min(bdi->balanced_dirty_ratelimit,
 			 min(balanced_dirty_ratelimit, task_ratelimit));
@@ -1300,7 +1578,11 @@ static void bdi_update_bandwidth(struct backing_dev_info *bdi,
 }
 
 /*
+<<<<<<< HEAD
  * After a task dirtied this many pages, balance_dirty_pages_ratelimited_nr()
+=======
+ * After a task dirtied this many pages, balance_dirty_pages_ratelimited()
+>>>>>>> refs/remotes/origin/master
  * will look to see if it needs to start dirty throttling.
  *
  * If dirty_poll_interval is too low, big NUMA machines will call the expensive
@@ -1408,21 +1690,79 @@ static long bdi_min_pause(struct backing_dev_info *bdi,
 	 * The minimal pause time will normally be half the target pause time.
 	 */
 	return pages >= DIRTY_POLL_THRESH ? 1 + t / 2 : t;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+static inline void bdi_dirty_limits(struct backing_dev_info *bdi,
+				    unsigned long dirty_thresh,
+				    unsigned long background_thresh,
+				    unsigned long *bdi_dirty,
+				    unsigned long *bdi_thresh,
+				    unsigned long *bdi_bg_thresh)
+{
+	unsigned long bdi_reclaimable;
+
+	/*
+	 * bdi_thresh is not treated as some limiting factor as
+	 * dirty_thresh, due to reasons
+	 * - in JBOD setup, bdi_thresh can fluctuate a lot
+	 * - in a system with HDD and USB key, the USB key may somehow
+	 *   go into state (bdi_dirty >> bdi_thresh) either because
+	 *   bdi_dirty starts high, or because bdi_thresh drops low.
+	 *   In this case we don't want to hard throttle the USB key
+	 *   dirtiers for 100 seconds until bdi_dirty drops under
+	 *   bdi_thresh. Instead the auxiliary bdi control line in
+	 *   bdi_position_ratio() will let the dirtier task progress
+	 *   at some rate <= (write_bw / 2) for bringing down bdi_dirty.
+	 */
+	*bdi_thresh = bdi_dirty_limit(bdi, dirty_thresh);
+
+	if (bdi_bg_thresh)
+		*bdi_bg_thresh = div_u64((u64)*bdi_thresh *
+					 background_thresh,
+					 dirty_thresh);
+
+	/*
+	 * In order to avoid the stacked BDI deadlock we need
+	 * to ensure we accurately count the 'dirty' pages when
+	 * the threshold is low.
+	 *
+	 * Otherwise it would be possible to get thresh+n pages
+	 * reported dirty, even though there are thresh-m pages
+	 * actually dirty; with m+n sitting in the percpu
+	 * deltas.
+	 */
+	if (*bdi_thresh < 2 * bdi_stat_error(bdi)) {
+		bdi_reclaimable = bdi_stat_sum(bdi, BDI_RECLAIMABLE);
+		*bdi_dirty = bdi_reclaimable +
+			bdi_stat_sum(bdi, BDI_WRITEBACK);
+	} else {
+		bdi_reclaimable = bdi_stat(bdi, BDI_RECLAIMABLE);
+		*bdi_dirty = bdi_reclaimable +
+			bdi_stat(bdi, BDI_WRITEBACK);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * balance_dirty_pages() must be called by processes which are generating dirty
  * data.  It looks at the number of dirty pages in the machine and will force
 <<<<<<< HEAD
+<<<<<<< HEAD
  * the caller to perform writeback if the system is over `vm_dirty_ratio'.
 =======
  * the caller to wait once crossing the (background_thresh + dirty_thresh) / 2.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * the caller to wait once crossing the (background_thresh + dirty_thresh) / 2.
+>>>>>>> refs/remotes/origin/master
  * If we're over `background_thresh' then the writeback threads are woken to
  * perform some writeout.
  */
 static void balance_dirty_pages(struct address_space *mapping,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				unsigned long write_chunk)
 {
@@ -1458,6 +1798,14 @@ static void balance_dirty_pages(struct address_space *mapping,
 	unsigned long background_thresh;
 	unsigned long dirty_thresh;
 	unsigned long bdi_thresh;
+=======
+				unsigned long pages_dirtied)
+{
+	unsigned long nr_reclaimable;	/* = file_dirty + unstable_nfs */
+	unsigned long nr_dirty;  /* = file_dirty + writeback + unstable_nfs */
+	unsigned long background_thresh;
+	unsigned long dirty_thresh;
+>>>>>>> refs/remotes/origin/master
 	long period;
 	long pause;
 	long max_pause;
@@ -1468,10 +1816,22 @@ static void balance_dirty_pages(struct address_space *mapping,
 	unsigned long dirty_ratelimit;
 	unsigned long pos_ratio;
 	struct backing_dev_info *bdi = mapping->backing_dev_info;
+<<<<<<< HEAD
+=======
+	bool strictlimit = bdi->capabilities & BDI_CAP_STRICTLIMIT;
+>>>>>>> refs/remotes/origin/master
 	unsigned long start_time = jiffies;
 
 	for (;;) {
 		unsigned long now = jiffies;
+<<<<<<< HEAD
+=======
+		unsigned long uninitialized_var(bdi_thresh);
+		unsigned long thresh;
+		unsigned long uninitialized_var(bdi_dirty);
+		unsigned long dirty;
+		unsigned long bg_thresh;
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Unstable writes are a feature of certain networked
@@ -1482,6 +1842,7 @@ static void balance_dirty_pages(struct address_space *mapping,
 		nr_reclaimable = global_page_state(NR_FILE_DIRTY) +
 					global_page_state(NR_UNSTABLE_NFS);
 		nr_dirty = nr_reclaimable + global_page_state(NR_WRITEBACK);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 		global_dirty_limits(&background_thresh, &dirty_thresh);
@@ -1506,12 +1867,44 @@ static void balance_dirty_pages(struct address_space *mapping,
 			current->nr_dirtied = 0;
 			current->nr_dirtied_pause =
 				dirty_poll_interval(nr_dirty, dirty_thresh);
+=======
+
+		global_dirty_limits(&background_thresh, &dirty_thresh);
+
+		if (unlikely(strictlimit)) {
+			bdi_dirty_limits(bdi, dirty_thresh, background_thresh,
+					 &bdi_dirty, &bdi_thresh, &bg_thresh);
+
+			dirty = bdi_dirty;
+			thresh = bdi_thresh;
+		} else {
+			dirty = nr_dirty;
+			thresh = dirty_thresh;
+			bg_thresh = background_thresh;
+		}
+
+		/*
+		 * Throttle it only when the background writeback cannot
+		 * catch-up. This avoids (excessively) small writeouts
+		 * when the bdi limits are ramping up in case of !strictlimit.
+		 *
+		 * In strictlimit case make decision based on the bdi counters
+		 * and limits. Small writeouts when the bdi limits are ramping
+		 * up are the price we consciously pay for strictlimit-ing.
+		 */
+		if (dirty <= dirty_freerun_ceiling(thresh, bg_thresh)) {
+			current->dirty_paused_when = now;
+			current->nr_dirtied = 0;
+			current->nr_dirtied_pause =
+				dirty_poll_interval(dirty, thresh);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
 		if (unlikely(!writeback_in_progress(bdi)))
 			bdi_start_background_writeback(bdi);
 
+<<<<<<< HEAD
 		/*
 		 * bdi_thresh is not treated as some limiting factor as
 		 * dirty_thresh, due to reasons
@@ -1604,6 +1997,14 @@ static void balance_dirty_pages(struct address_space *mapping,
 
 		dirty_exceeded = (bdi_dirty > bdi_thresh) &&
 				  (nr_dirty > dirty_thresh);
+=======
+		if (!strictlimit)
+			bdi_dirty_limits(bdi, dirty_thresh, background_thresh,
+					 &bdi_dirty, &bdi_thresh, NULL);
+
+		dirty_exceeded = (bdi_dirty > bdi_thresh) &&
+				 ((nr_dirty > dirty_thresh) || strictlimit);
+>>>>>>> refs/remotes/origin/master
 		if (dirty_exceeded && !bdi->dirty_exceeded)
 			bdi->dirty_exceeded = 1;
 
@@ -1709,7 +2110,10 @@ pause:
 
 		if (fatal_signal_pending(current))
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!dirty_exceeded && bdi->dirty_exceeded)
@@ -1727,14 +2131,20 @@ pause:
 	 * background_thresh, to keep the amount of dirty memory low.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((laptop_mode && pages_written) ||
 	    (!laptop_mode && (nr_reclaimable > background_thresh)))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (laptop_mode)
 		return;
 
 	if (nr_reclaimable > background_thresh)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		bdi_start_background_writeback(bdi);
 }
 
@@ -1749,8 +2159,11 @@ void set_page_dirty_balance(struct page *page, int page_mkwrite)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_PER_CPU(unsigned long, bdp_ratelimits) = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static DEFINE_PER_CPU(int, bdp_ratelimits);
 
 /*
@@ -1768,12 +2181,19 @@ static DEFINE_PER_CPU(int, bdp_ratelimits);
  * count and eventually get throttled.
  */
 DEFINE_PER_CPU(int, dirty_throttle_leaks) = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * balance_dirty_pages_ratelimited_nr - balance dirty memory state
  * @mapping: address_space which was dirtied
  * @nr_pages_dirtied: number of pages which the caller has just dirtied
+=======
+
+/**
+ * balance_dirty_pages_ratelimited - balance dirty memory state
+ * @mapping: address_space which was dirtied
+>>>>>>> refs/remotes/origin/master
  *
  * Processes which are dirtying memory should call in here once for each page
  * which was newly dirtied.  The function will periodically check the system's
@@ -1784,6 +2204,7 @@ DEFINE_PER_CPU(int, dirty_throttle_leaks) = 0;
  * limit we decrease the ratelimiting by a lot, to prevent individual processes
  * from overshooting the limit by (ratelimit_pages) each.
  */
+<<<<<<< HEAD
 void balance_dirty_pages_ratelimited_nr(struct address_space *mapping,
 					unsigned long nr_pages_dirtied)
 {
@@ -1811,6 +2232,10 @@ void balance_dirty_pages_ratelimited_nr(struct address_space *mapping,
 	}
 	preempt_enable();
 =======
+=======
+void balance_dirty_pages_ratelimited(struct address_space *mapping)
+{
+>>>>>>> refs/remotes/origin/master
 	struct backing_dev_info *bdi = mapping->backing_dev_info;
 	int ratelimit;
 	int *p;
@@ -1843,6 +2268,10 @@ void balance_dirty_pages_ratelimited_nr(struct address_space *mapping,
 	 */
 	p = &__get_cpu_var(dirty_throttle_leaks);
 	if (*p > 0 && current->nr_dirtied < ratelimit) {
+<<<<<<< HEAD
+=======
+		unsigned long nr_pages_dirtied;
+>>>>>>> refs/remotes/origin/master
 		nr_pages_dirtied = min(*p, ratelimit - current->nr_dirtied);
 		*p -= nr_pages_dirtied;
 		current->nr_dirtied += nr_pages_dirtied;
@@ -1851,9 +2280,14 @@ void balance_dirty_pages_ratelimited_nr(struct address_space *mapping,
 
 	if (unlikely(current->nr_dirtied >= ratelimit))
 		balance_dirty_pages(mapping, current->nr_dirtied);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(balance_dirty_pages_ratelimited_nr);
+=======
+}
+EXPORT_SYMBOL(balance_dirty_pages_ratelimited);
+>>>>>>> refs/remotes/origin/master
 
 void throttle_vm_writeout(gfp_t gfp_mask)
 {
@@ -1863,9 +2297,13 @@ void throttle_vm_writeout(gfp_t gfp_mask)
         for ( ; ; ) {
 		global_dirty_limits(&background_thresh, &dirty_thresh);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		dirty_thresh = hard_dirty_limit(dirty_thresh);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dirty_thresh = hard_dirty_limit(dirty_thresh);
+>>>>>>> refs/remotes/origin/master
 
                 /*
                  * Boost the allowable dirty threshold a bit for page
@@ -1895,7 +2333,10 @@ int dirty_writeback_centisecs_handler(ctl_table *table, int write,
 	void __user *buffer, size_t *length, loff_t *ppos)
 {
 	proc_dointvec(table, write, buffer, length, ppos);
+<<<<<<< HEAD
 	bdi_arm_supers_timer();
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1912,11 +2353,16 @@ void laptop_mode_timer_fn(unsigned long data)
 	 */
 	if (bdi_has_dirty_io(&q->backing_dev_info))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bdi_start_writeback(&q->backing_dev_info, nr_pages);
 =======
 		bdi_start_writeback(&q->backing_dev_info, nr_pages,
 					WB_REASON_LAPTOP_TIMER);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bdi_start_writeback(&q->backing_dev_info, nr_pages,
+					WB_REASON_LAPTOP_TIMER);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1956,6 +2402,7 @@ void laptop_sync_completion(void)
  * Here we set ratelimit_pages to a level which ensures that when all CPUs are
  * dirtying in parallel, we cannot go more than 3% (1/32) over the dirty memory
 <<<<<<< HEAD
+<<<<<<< HEAD
  * thresholds before writeback cuts in.
  *
  * But the limit should not be set too high.  Because it also controls the
@@ -1966,10 +2413,14 @@ void laptop_sync_completion(void)
 =======
  * thresholds.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * thresholds.
+>>>>>>> refs/remotes/origin/master
  */
 
 void writeback_set_ratelimit(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ratelimit_pages = vm_total_pages / (num_online_cpus() * 32);
 	if (ratelimit_pages < 16)
@@ -1994,6 +2445,33 @@ ratelimit_handler(struct notifier_block *self, unsigned long u, void *v)
 }
 
 static struct notifier_block __cpuinitdata ratelimit_nb = {
+=======
+	unsigned long background_thresh;
+	unsigned long dirty_thresh;
+	global_dirty_limits(&background_thresh, &dirty_thresh);
+	global_dirty_limit = dirty_thresh;
+	ratelimit_pages = dirty_thresh / (num_online_cpus() * 32);
+	if (ratelimit_pages < 16)
+		ratelimit_pages = 16;
+}
+
+static int
+ratelimit_handler(struct notifier_block *self, unsigned long action,
+		  void *hcpu)
+{
+
+	switch (action & ~CPU_TASKS_FROZEN) {
+	case CPU_ONLINE:
+	case CPU_DEAD:
+		writeback_set_ratelimit();
+		return NOTIFY_OK;
+	default:
+		return NOTIFY_DONE;
+	}
+}
+
+static struct notifier_block ratelimit_nb = {
+>>>>>>> refs/remotes/origin/master
 	.notifier_call	= ratelimit_handler,
 	.next		= NULL,
 };
@@ -2018,6 +2496,7 @@ static struct notifier_block __cpuinitdata ratelimit_nb = {
  */
 void __init page_writeback_init(void)
 {
+<<<<<<< HEAD
 	int shift;
 
 	writeback_set_ratelimit();
@@ -2029,6 +2508,12 @@ void __init page_writeback_init(void)
 	prop_descriptor_init(&vm_dirties, shift);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writeback_set_ratelimit();
+	register_cpu_notifier(&ratelimit_nb);
+
+	fprop_global_init(&writeout_completions);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -2352,35 +2837,59 @@ int __set_page_dirty_no_writeback(struct page *page)
  */
 void account_page_dirtied(struct page *page, struct address_space *mapping)
 {
+<<<<<<< HEAD
+=======
+	trace_writeback_dirty_page(page, mapping);
+
+>>>>>>> refs/remotes/origin/master
 	if (mapping_cap_account_dirty(mapping)) {
 		__inc_zone_page_state(page, NR_FILE_DIRTY);
 		__inc_zone_page_state(page, NR_DIRTIED);
 		__inc_bdi_stat(mapping->backing_dev_info, BDI_RECLAIMABLE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		task_dirty_inc(current);
 		task_io_account_write(PAGE_CACHE_SIZE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		__inc_bdi_stat(mapping->backing_dev_info, BDI_DIRTIED);
 		task_io_account_write(PAGE_CACHE_SIZE);
 		current->nr_dirtied++;
 		this_cpu_inc(bdp_ratelimits);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 EXPORT_SYMBOL(account_page_dirtied);
 
 /*
  * Helper function for set_page_writeback family.
+<<<<<<< HEAD
+=======
+ *
+ * The caller must hold mem_cgroup_begin/end_update_page_stat() lock
+ * while calling this function.
+ * See test_set_page_writeback for example.
+ *
+>>>>>>> refs/remotes/origin/master
  * NOTE: Unlike account_page_dirtied this does not rely on being atomic
  * wrt interrupts.
  */
 void account_page_writeback(struct page *page)
 {
+<<<<<<< HEAD
 	inc_zone_page_state(page, NR_WRITEBACK);
 <<<<<<< HEAD
 	inc_zone_page_state(page, NR_WRITTEN);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mem_cgroup_inc_page_stat(page, MEM_CGROUP_STAT_WRITEBACK);
+	inc_zone_page_state(page, NR_WRITEBACK);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(account_page_writeback);
 
@@ -2430,7 +2939,10 @@ EXPORT_SYMBOL(__set_page_dirty_nobuffers);
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Call this whenever redirtying a page, to de-account the dirty counters
  * (NR_DIRTIED, BDI_DIRTIED, tsk->nr_dirtied), so that they match the written
  * counters (NR_WRITTEN, BDI_WRITTEN) in long term. The mismatches will lead to
@@ -2449,7 +2961,10 @@ void account_page_redirty(struct page *page)
 EXPORT_SYMBOL(account_page_redirty);
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * When a writepage implementation decides that it doesn't want to write this
  * page for some reason, it should redirty the locked page via
  * redirty_page_for_writepage() and it should then unlock the page and return 0
@@ -2458,9 +2973,13 @@ int redirty_page_for_writepage(struct writeback_control *wbc, struct page *page)
 {
 	wbc->pages_skipped++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	account_page_redirty(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	account_page_redirty(page);
+>>>>>>> refs/remotes/origin/master
 	return __set_page_dirty_nobuffers(page);
 }
 EXPORT_SYMBOL(redirty_page_for_writepage);
@@ -2602,7 +3121,14 @@ int test_clear_page_writeback(struct page *page)
 {
 	struct address_space *mapping = page_mapping(page);
 	int ret;
+<<<<<<< HEAD
 
+=======
+	bool locked;
+	unsigned long memcg_flags;
+
+	mem_cgroup_begin_update_page_stat(page, &locked, &memcg_flags);
+>>>>>>> refs/remotes/origin/master
 	if (mapping) {
 		struct backing_dev_info *bdi = mapping->backing_dev_info;
 		unsigned long flags;
@@ -2623,6 +3149,7 @@ int test_clear_page_writeback(struct page *page)
 		ret = TestClearPageWriteback(page);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret)
 		dec_zone_page_state(page, NR_WRITEBACK);
 =======
@@ -2631,6 +3158,14 @@ int test_clear_page_writeback(struct page *page)
 		inc_zone_page_state(page, NR_WRITTEN);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret) {
+		mem_cgroup_dec_page_stat(page, MEM_CGROUP_STAT_WRITEBACK);
+		dec_zone_page_state(page, NR_WRITEBACK);
+		inc_zone_page_state(page, NR_WRITTEN);
+	}
+	mem_cgroup_end_update_page_stat(page, &locked, &memcg_flags);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -2638,7 +3173,14 @@ int test_set_page_writeback(struct page *page)
 {
 	struct address_space *mapping = page_mapping(page);
 	int ret;
+<<<<<<< HEAD
 
+=======
+	bool locked;
+	unsigned long memcg_flags;
+
+	mem_cgroup_begin_update_page_stat(page, &locked, &memcg_flags);
+>>>>>>> refs/remotes/origin/master
 	if (mapping) {
 		struct backing_dev_info *bdi = mapping->backing_dev_info;
 		unsigned long flags;
@@ -2665,6 +3207,10 @@ int test_set_page_writeback(struct page *page)
 	}
 	if (!ret)
 		account_page_writeback(page);
+<<<<<<< HEAD
+=======
+	mem_cgroup_end_update_page_stat(page, &locked, &memcg_flags);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 
 }
@@ -2677,6 +3223,7 @@ EXPORT_SYMBOL(test_set_page_writeback);
 int mapping_tagged(struct address_space *mapping, int tag)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 	rcu_read_lock();
 	ret = radix_tree_tagged(&mapping->page_tree, tag);
@@ -2687,3 +3234,28 @@ int mapping_tagged(struct address_space *mapping, int tag)
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(mapping_tagged);
+=======
+	return radix_tree_tagged(&mapping->page_tree, tag);
+}
+EXPORT_SYMBOL(mapping_tagged);
+
+/**
+ * wait_for_stable_page() - wait for writeback to finish, if necessary.
+ * @page:	The page to wait on.
+ *
+ * This function determines if the given page is related to a backing device
+ * that requires page contents to be held stable during writeback.  If so, then
+ * it will wait for any pending writeback to complete.
+ */
+void wait_for_stable_page(struct page *page)
+{
+	struct address_space *mapping = page_mapping(page);
+	struct backing_dev_info *bdi = mapping->backing_dev_info;
+
+	if (!bdi_cap_stable_pages_required(bdi))
+		return;
+
+	wait_on_page_writeback(page);
+}
+EXPORT_SYMBOL_GPL(wait_for_stable_page);
+>>>>>>> refs/remotes/origin/master

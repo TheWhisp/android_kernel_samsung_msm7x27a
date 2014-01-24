@@ -16,10 +16,20 @@
 #include <linux/mtd/onenand.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/i2c/pca953x.h>
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/pca953x.h>
+#include <linux/gpio.h>
+#include <linux/gpio-pxa.h>
+#include <linux/mfd/88pm860x.h>
+#include <linux/platform_data/mv_usb.h>
+#include <linux/spi/spi.h>
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
@@ -28,12 +38,17 @@
 #include <mach/mfp-pxa910.h>
 #include <mach/pxa910.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include "common.h"
 
 #define TTCDKB_NR_IRQS		(IRQ_BOARD_START + 24)
 =======
 #include <mach/irqs.h>
+=======
+#include <mach/irqs.h>
+#include <mach/regs-usb.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "common.h"
 
@@ -48,7 +63,10 @@
  * 24 board interrupts -- 88PM860x PMIC
  */
 #define TTCDKB_NR_IRQS		(MMP_NR_IRQS + 16 + 16 + 24)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static unsigned long ttc_dkb_pin_config[] __initdata = {
 	/* UART2 */
@@ -80,6 +98,13 @@ static unsigned long ttc_dkb_pin_config[] __initdata = {
 	DF_RDY0_DF_RDY0,
 };
 
+<<<<<<< HEAD
+=======
+static struct pxa_gpio_platform_data pxa910_gpio_pdata = {
+	.irq_base	= MMP_GPIO_TO_IRQ(0),
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct mtd_partition ttc_dkb_onenand_partitions[] = {
 	{
 		.name		= "bootloader",
@@ -105,10 +130,14 @@ static struct mtd_partition ttc_dkb_onenand_partitions[] = {
 		.name		= "filesystem",
 		.offset		= MTDPART_OFS_APPEND,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.size		= SZ_48M,
 =======
 		.size		= SZ_32M + SZ_16M,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.size		= SZ_32M + SZ_16M,
+>>>>>>> refs/remotes/origin/master
 		.mask_flags	= 0,
 	}
 };
@@ -138,10 +167,13 @@ static struct platform_device ttc_dkb_device_onenand = {
 
 static struct platform_device *ttc_dkb_devices[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&ttc_dkb_device_onenand,
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	&pxa910_device_gpio,
 	&pxa910_device_rtc,
 	&ttc_dkb_device_onenand,
@@ -154,8 +186,23 @@ static struct pca953x_platform_data max7312_data[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct i2c_board_info ttc_dkb_i2c_info[] = {
 	{
+=======
+static struct pm860x_platform_data ttc_dkb_pm8607_info = {
+	.irq_base       = IRQ_BOARD_START,
+};
+
+static struct i2c_board_info ttc_dkb_i2c_info[] = {
+	{
+		.type           = "88PM860x",
+		.addr           = 0x34,
+		.platform_data  = &ttc_dkb_pm8607_info,
+		.irq            = IRQ_PXA910_PMIC_INT,
+	},
+	{
+>>>>>>> refs/remotes/origin/master
 		.type		= "max7312",
 		.addr		= 0x23,
 		.irq		= MMP_GPIO_TO_IRQ(80),
@@ -163,13 +210,122 @@ static struct i2c_board_info ttc_dkb_i2c_info[] = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_USB_SUPPORT
+#if defined(CONFIG_USB_MV_UDC) || defined(CONFIG_USB_EHCI_MV_U2O)
+
+static struct mv_usb_platform_data ttc_usb_pdata = {
+	.vbus		= NULL,
+	.mode		= MV_USB_MODE_OTG,
+	.otg_force_a_bus_req = 1,
+	.phy_init	= pxa_usb_phy_init,
+	.phy_deinit	= pxa_usb_phy_deinit,
+	.set_vbus	= NULL,
+};
+#endif
+#endif
+
+#ifdef CONFIG_MTD_NAND_PXA3xx
+static struct pxa3xx_nand_platform_data dkb_nand_info = {
+	.enable_arbiter = 1,
+	.num_cs = 1,
+};
+#endif
+
+#ifdef CONFIG_MMP_DISP
+/* path config */
+#define CFG_IOPADMODE(iopad)   (iopad)  /* 0x0 ~ 0xd */
+#define SCLK_SOURCE_SELECT(x)  (x << 30) /* 0x0 ~ 0x3 */
+/* link config */
+#define CFG_DUMBMODE(mode)     (mode << 28) /* 0x0 ~ 0x6*/
+static struct mmp_mach_path_config dkb_disp_config[] = {
+	[0] = {
+		.name = "mmp-parallel",
+		.overlay_num = 2,
+		.output_type = PATH_OUT_PARALLEL,
+		.path_config = CFG_IOPADMODE(0x1)
+			| SCLK_SOURCE_SELECT(0x1),
+		.link_config = CFG_DUMBMODE(0x2),
+	},
+};
+
+static struct mmp_mach_plat_info dkb_disp_info = {
+	.name = "mmp-disp",
+	.clk_name = "disp0",
+	.path_num = 1,
+	.paths = dkb_disp_config,
+};
+
+static struct mmp_buffer_driver_mach_info dkb_fb_info = {
+	.name = "mmp-fb",
+	.path_name = "mmp-parallel",
+	.overlay_id = 0,
+	.dmafetch_id = 1,
+	.default_pixfmt = PIXFMT_RGB565,
+};
+
+static void dkb_tpo_panel_power(int on)
+{
+	int err;
+	u32 spi_reset = mfp_to_gpio(MFP_PIN_GPIO106);
+
+	if (on) {
+		err = gpio_request(spi_reset, "TPO_LCD_SPI_RESET");
+		if (err) {
+			pr_err("failed to request GPIO for TPO LCD RESET\n");
+			return;
+		}
+		gpio_direction_output(spi_reset, 0);
+		udelay(100);
+		gpio_set_value(spi_reset, 1);
+		gpio_free(spi_reset);
+	} else {
+		err = gpio_request(spi_reset, "TPO_LCD_SPI_RESET");
+		if (err) {
+			pr_err("failed to request LCD RESET gpio\n");
+			return;
+		}
+		gpio_set_value(spi_reset, 0);
+		gpio_free(spi_reset);
+	}
+}
+
+static struct mmp_mach_panel_info dkb_tpo_panel_info = {
+	.name = "tpo-hvga",
+	.plat_path_name = "mmp-parallel",
+	.plat_set_onoff = dkb_tpo_panel_power,
+};
+
+static struct spi_board_info spi_board_info[] __initdata = {
+	{
+		.modalias       = "tpo-hvga",
+		.platform_data  = &dkb_tpo_panel_info,
+		.bus_num        = 5,
+	}
+};
+
+static void __init add_disp(void)
+{
+	pxa_register_device(&pxa910_device_disp,
+		&dkb_disp_info, sizeof(dkb_disp_info));
+	spi_register_board_info(spi_board_info, ARRAY_SIZE(spi_board_info));
+	pxa_register_device(&pxa910_device_fb,
+		&dkb_fb_info, sizeof(dkb_fb_info));
+	pxa_register_device(&pxa910_device_panel,
+		&dkb_tpo_panel_info, sizeof(dkb_tpo_panel_info));
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static void __init ttc_dkb_init(void)
 {
 	mfp_config(ARRAY_AND_SIZE(ttc_dkb_pin_config));
 
 	/* on-chip devices */
 	pxa910_add_uart(1);
+<<<<<<< HEAD
 
 	/* off-chip devices */
 <<<<<<< HEAD
@@ -177,16 +333,52 @@ static void __init ttc_dkb_init(void)
 	pxa910_add_twsi(0, NULL, ARRAY_AND_SIZE(ttc_dkb_i2c_info));
 >>>>>>> refs/remotes/origin/cm-10.0
 	platform_add_devices(ARRAY_AND_SIZE(ttc_dkb_devices));
+=======
+#ifdef CONFIG_MTD_NAND_PXA3xx
+	pxa910_add_nand(&dkb_nand_info);
+#endif
+
+	/* off-chip devices */
+	pxa910_add_twsi(0, NULL, ARRAY_AND_SIZE(ttc_dkb_i2c_info));
+	platform_device_add_data(&pxa910_device_gpio, &pxa910_gpio_pdata,
+				 sizeof(struct pxa_gpio_platform_data));
+	platform_add_devices(ARRAY_AND_SIZE(ttc_dkb_devices));
+
+#ifdef CONFIG_USB_MV_UDC
+	pxa168_device_u2o.dev.platform_data = &ttc_usb_pdata;
+	platform_device_register(&pxa168_device_u2o);
+#endif
+
+#ifdef CONFIG_USB_EHCI_MV_U2O
+	pxa168_device_u2oehci.dev.platform_data = &ttc_usb_pdata;
+	platform_device_register(&pxa168_device_u2oehci);
+#endif
+
+#ifdef CONFIG_USB_MV_OTG
+	pxa168_device_u2ootg.dev.platform_data = &ttc_usb_pdata;
+	platform_device_register(&pxa168_device_u2ootg);
+#endif
+
+#ifdef CONFIG_MMP_DISP
+	add_disp();
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 MACHINE_START(TTC_DKB, "PXA910-based TTC_DKB Development Platform")
 	.map_io		= mmp_map_io,
 	.nr_irqs	= TTCDKB_NR_IRQS,
 	.init_irq       = pxa910_init_irq,
+<<<<<<< HEAD
 	.timer          = &pxa910_timer,
 	.init_machine   = ttc_dkb_init,
 <<<<<<< HEAD
 =======
 	.restart	= mmp_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa910_timer_init,
+	.init_machine   = ttc_dkb_init,
+	.restart	= mmp_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

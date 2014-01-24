@@ -4,10 +4,14 @@
  * Copyright (C) 2008 Nokia Corporation
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Contact: Jarkko Nikula <jhnikula@gmail.com>
 =======
  * Contact: Jarkko Nikula <jarkko.nikula@bitmer.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Contact: Jarkko Nikula <jarkko.nikula@bitmer.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,6 +37,7 @@
 #include <sound/soc.h>
 
 #include <asm/mach-types.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <linux/gpio.h>
 <<<<<<< HEAD
@@ -43,6 +48,13 @@
 
 #include "omap-mcbsp.h"
 #include "omap-pcm.h"
+=======
+#include <linux/gpio.h>
+#include <linux/module.h>
+#include <linux/platform_data/asoc-ti-mcbsp.h>
+
+#include "omap-mcbsp.h"
+>>>>>>> refs/remotes/origin/master
 
 #define N810_HEADSET_AMP_GPIO	10
 #define N810_SPEAKER_AMP_GPIO	101
@@ -63,6 +75,7 @@ static int n810_jack_func;
 static int n810_dmic_func;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void n810_ext_control(struct snd_soc_codec *codec)
 {
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
@@ -70,6 +83,10 @@ static void n810_ext_control(struct snd_soc_codec *codec)
 static void n810_ext_control(struct snd_soc_dapm_context *dapm)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void n810_ext_control(struct snd_soc_dapm_context *dapm)
+{
+>>>>>>> refs/remotes/origin/master
 	int hp = 0, line1l = 0;
 
 	switch (n810_jack_func) {
@@ -115,16 +132,25 @@ static int n810_startup(struct snd_pcm_substream *substream)
 				     SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	n810_ext_control(codec);
 =======
 	n810_ext_control(&codec->dapm);
 >>>>>>> refs/remotes/origin/cm-10.0
 	return clk_enable(sys_clkout2);
+=======
+	n810_ext_control(&codec->dapm);
+	return clk_prepare_enable(sys_clkout2);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void n810_shutdown(struct snd_pcm_substream *substream)
 {
+<<<<<<< HEAD
 	clk_disable(sys_clkout2);
+=======
+	clk_disable_unprepare(sys_clkout2);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int n810_hw_params(struct snd_pcm_substream *substream,
@@ -132,6 +158,7 @@ static int n810_hw_params(struct snd_pcm_substream *substream,
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
 	int err;
@@ -156,6 +183,10 @@ static int n810_hw_params(struct snd_pcm_substream *substream,
 	int err;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err;
+
+>>>>>>> refs/remotes/origin/master
 	/* Set the codec system clock for DAC and ADC */
 	err = snd_soc_dai_set_sysclk(codec_dai, 0, 12000000,
 					    SND_SOC_CLOCK_IN);
@@ -181,20 +212,28 @@ static int n810_set_spk(struct snd_kcontrol *kcontrol,
 			struct snd_ctl_elem_value *ucontrol)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
 =======
 	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
+>>>>>>> refs/remotes/origin/master
 
 	if (n810_spk_func == ucontrol->value.integer.value[0])
 		return 0;
 
 	n810_spk_func = ucontrol->value.integer.value[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	n810_ext_control(codec);
 =======
 	n810_ext_control(&card->dapm);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	n810_ext_control(&card->dapm);
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -211,20 +250,28 @@ static int n810_set_jack(struct snd_kcontrol *kcontrol,
 			 struct snd_ctl_elem_value *ucontrol)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
 =======
 	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
+>>>>>>> refs/remotes/origin/master
 
 	if (n810_jack_func == ucontrol->value.integer.value[0])
 		return 0;
 
 	n810_jack_func = ucontrol->value.integer.value[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	n810_ext_control(codec);
 =======
 	n810_ext_control(&card->dapm);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	n810_ext_control(&card->dapm);
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -241,20 +288,28 @@ static int n810_set_input(struct snd_kcontrol *kcontrol,
 			  struct snd_ctl_elem_value *ucontrol)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
 =======
 	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
+>>>>>>> refs/remotes/origin/master
 
 	if (n810_dmic_func == ucontrol->value.integer.value[0])
 		return 0;
 
 	n810_dmic_func = ucontrol->value.integer.value[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	n810_ext_control(codec);
 =======
 	n810_ext_control(&card->dapm);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	n810_ext_control(&card->dapm);
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -294,8 +349,13 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"Ext Spk", NULL, "LLOUT"},
 	{"Ext Spk", NULL, "RLOUT"},
 
+<<<<<<< HEAD
 	{"DMic Rate 64", NULL, "Mic Bias 2V"},
 	{"Mic Bias 2V", NULL, "DMic"},
+=======
+	{"DMic Rate 64", NULL, "Mic Bias"},
+	{"Mic Bias", NULL, "DMic"},
+>>>>>>> refs/remotes/origin/master
 };
 
 static const char *spk_function[] = {"Off", "On"};
@@ -321,9 +381,12 @@ static int n810_aic33_init(struct snd_soc_pcm_runtime *rtd)
 	struct snd_soc_codec *codec = rtd->codec;
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int err;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Not connected */
 	snd_soc_dapm_nc_pin(dapm, "MONO_LOUT");
@@ -335,6 +398,7 @@ static int n810_aic33_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_nc_pin(dapm, "LINE2L");
 	snd_soc_dapm_nc_pin(dapm, "LINE2R");
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Add N810 specific controls */
 	err = snd_soc_add_controls(codec, aic33_n810_controls,
@@ -353,6 +417,8 @@ static int n810_aic33_init(struct snd_soc_pcm_runtime *rtd)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -361,18 +427,24 @@ static struct snd_soc_dai_link n810_dai = {
 	.name = "TLV320AIC33",
 	.stream_name = "AIC33",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.cpu_dai_name = "omap-mcbsp-dai.1",
 	.platform_name = "omap-pcm-audio",
 	.codec_name = "tlv320aic3x-codec.2-0018",
 	.codec_dai_name = "tlv320aic3x-hifi",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.cpu_dai_name = "omap-mcbsp.2",
 	.platform_name = "omap-pcm-audio",
 	.codec_name = "tlv320aic3x-codec.2-0018",
 	.codec_dai_name = "tlv320aic3x-hifi",
 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
 		   SND_SOC_DAIFMT_CBM_CFM,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.init = n810_aic33_init,
 	.ops = &n810_ops,
 };
@@ -381,9 +453,12 @@ static struct snd_soc_dai_link n810_dai = {
 static struct snd_soc_card snd_soc_n810 = {
 	.name = "N810",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.dai_link = &n810_dai,
 	.num_links = 1,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.owner = THIS_MODULE,
 	.dai_link = &n810_dai,
 	.num_links = 1,
@@ -394,7 +469,10 @@ static struct snd_soc_card snd_soc_n810 = {
 	.num_dapm_widgets = ARRAY_SIZE(aic33_dapm_widgets),
 	.dapm_routes = audio_map,
 	.num_dapm_routes = ARRAY_SIZE(audio_map),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *n810_snd_device;
@@ -443,8 +521,16 @@ static int __init n810_soc_init(void)
 	clk_set_parent(sys_clkout2_src, func96m_clk);
 	clk_set_rate(sys_clkout2, 12000000);
 
+<<<<<<< HEAD
 	BUG_ON((gpio_request(N810_HEADSET_AMP_GPIO, "hs_amp") < 0) ||
 	       (gpio_request(N810_SPEAKER_AMP_GPIO, "spk_amp") < 0));
+=======
+	if (WARN_ON((gpio_request(N810_HEADSET_AMP_GPIO, "hs_amp") < 0) ||
+		    (gpio_request(N810_SPEAKER_AMP_GPIO, "spk_amp") < 0))) {
+		err = -EINVAL;
+		goto err4;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	gpio_direction_output(N810_HEADSET_AMP_GPIO, 0);
 	gpio_direction_output(N810_SPEAKER_AMP_GPIO, 0);
@@ -477,9 +563,13 @@ module_init(n810_soc_init);
 module_exit(n810_soc_exit);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_AUTHOR("Jarkko Nikula <jhnikula@gmail.com>");
 =======
 MODULE_AUTHOR("Jarkko Nikula <jarkko.nikula@bitmer.com>");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_AUTHOR("Jarkko Nikula <jarkko.nikula@bitmer.com>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("ALSA SoC Nokia N810");
 MODULE_LICENSE("GPL");

@@ -14,12 +14,20 @@
 #include <linux/ctype.h>
 #include <linux/string.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/kmsg_dump.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/reboot.h>
 #include <linux/sched.h>
 #include <linux/sysrq.h>
 #include <linux/smp.h>
 #include <linux/utsname.h>
 #include <linux/vmalloc.h>
+<<<<<<< HEAD
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/mm.h>
 #include <linux/init.h>
@@ -122,7 +130,11 @@ static kdbmsg_t kdbmsgs[] = {
 };
 #undef KDBMSG
 
+<<<<<<< HEAD
 static const int __nkdb_err = sizeof(kdbmsgs) / sizeof(kdbmsg_t);
+=======
+static const int __nkdb_err = ARRAY_SIZE(kdbmsgs);
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -138,6 +150,7 @@ static const int __nkdb_err = sizeof(kdbmsgs) / sizeof(kdbmsg_t);
 static char *__env[] = {
 #if defined(CONFIG_SMP)
  "PROMPT=[%d]kdb> ",
+<<<<<<< HEAD
  "MOREPROMPT=[%d]more> ",
 #else
  "PROMPT=kdb> ",
@@ -149,6 +162,14 @@ static char *__env[] = {
  "BTARGS=9",			/* 9 possible args in bt */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else
+ "PROMPT=kdb> ",
+#endif
+ "MOREPROMPT=more> ",
+ "RADIX=16",
+ "MDCOUNT=8",			/* lines of md output */
+>>>>>>> refs/remotes/origin/master
  KDB_PLATFORM_ENV,
  "DTABCOUNT=30",
  "NOSECT=1",
@@ -176,12 +197,19 @@ static char *__env[] = {
  (char *)0,
  (char *)0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  (char *)0,
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static const int __nenv = (sizeof(__env) / sizeof(char *));
+=======
+ (char *)0,
+};
+
+static const int __nenv = ARRAY_SIZE(__env);
+>>>>>>> refs/remotes/origin/master
 
 struct task_struct *kdb_curr_task(int cpu)
 {
@@ -687,6 +715,7 @@ static int kdb_defcmd(int argc, const char **argv)
 	}
 	if (argc != 3)
 		return KDB_ARGCOUNT;
+<<<<<<< HEAD
 	defcmd_set = kmalloc((defcmd_set_count + 1) * sizeof(*defcmd_set),
 			     GFP_KDB);
 	if (!defcmd_set) {
@@ -698,10 +727,23 @@ static int kdb_defcmd(int argc, const char **argv)
 	memcpy(defcmd_set, save_defcmd_set,
 	       defcmd_set_count * sizeof(*defcmd_set));
 	kfree(save_defcmd_set);
+=======
+	if (in_dbg_master()) {
+		kdb_printf("Command only available during kdb_init()\n");
+		return KDB_NOTIMP;
+	}
+	defcmd_set = kmalloc((defcmd_set_count + 1) * sizeof(*defcmd_set),
+			     GFP_KDB);
+	if (!defcmd_set)
+		goto fail_defcmd;
+	memcpy(defcmd_set, save_defcmd_set,
+	       defcmd_set_count * sizeof(*defcmd_set));
+>>>>>>> refs/remotes/origin/master
 	s = defcmd_set + defcmd_set_count;
 	memset(s, 0, sizeof(*s));
 	s->usable = 1;
 	s->name = kdb_strdup(argv[1], GFP_KDB);
+<<<<<<< HEAD
 	s->usage = kdb_strdup(argv[2], GFP_KDB);
 	s->help = kdb_strdup(argv[3], GFP_KDB);
 	if (s->usage[0] == '"') {
@@ -710,11 +752,42 @@ static int kdb_defcmd(int argc, const char **argv)
 	}
 	if (s->help[0] == '"') {
 		strcpy(s->help, s->help+1);
+=======
+	if (!s->name)
+		goto fail_name;
+	s->usage = kdb_strdup(argv[2], GFP_KDB);
+	if (!s->usage)
+		goto fail_usage;
+	s->help = kdb_strdup(argv[3], GFP_KDB);
+	if (!s->help)
+		goto fail_help;
+	if (s->usage[0] == '"') {
+		strcpy(s->usage, argv[2]+1);
+		s->usage[strlen(s->usage)-1] = '\0';
+	}
+	if (s->help[0] == '"') {
+		strcpy(s->help, argv[3]+1);
+>>>>>>> refs/remotes/origin/master
 		s->help[strlen(s->help)-1] = '\0';
 	}
 	++defcmd_set_count;
 	defcmd_in_progress = 1;
+<<<<<<< HEAD
 	return 0;
+=======
+	kfree(save_defcmd_set);
+	return 0;
+fail_help:
+	kfree(s->usage);
+fail_usage:
+	kfree(s->name);
+fail_name:
+	kfree(defcmd_set);
+fail_defcmd:
+	kdb_printf("Could not allocate new defcmd_set entry for %s\n", argv[1]);
+	defcmd_set = save_defcmd_set;
+	return KDB_NOTIMP;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1118,7 +1191,10 @@ void kdb_set_current_task(struct task_struct *p)
  *	KDB_CMD_GO	User typed 'go'.
  *	KDB_CMD_CPU	User switched to another cpu.
  *	KDB_CMD_SS	Single step.
+<<<<<<< HEAD
  *	KDB_CMD_SSB	Single step until branch.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static int kdb_local(kdb_reason_t reason, int error, struct pt_regs *regs,
 		     kdb_dbtrap_t db_result)
@@ -1157,6 +1233,7 @@ static int kdb_local(kdb_reason_t reason, int error, struct pt_regs *regs,
 			kdb_printf("due to Debug @ " kdb_machreg_fmt "\n",
 				   instruction_pointer(regs));
 			break;
+<<<<<<< HEAD
 		case KDB_DB_SSB:
 			/*
 			 * In the midst of ssb command. Just return.
@@ -1165,6 +1242,8 @@ static int kdb_local(kdb_reason_t reason, int error, struct pt_regs *regs,
 			return KDB_CMD_SSB;	/* Continue with SSB command */
 
 			break;
+=======
+>>>>>>> refs/remotes/origin/master
 		case KDB_DB_SS:
 			break;
 		case KDB_DB_SSBPT:
@@ -1199,6 +1278,12 @@ static int kdb_local(kdb_reason_t reason, int error, struct pt_regs *regs,
 			   instruction_pointer(regs));
 		kdb_dumpregs(regs);
 		break;
+<<<<<<< HEAD
+=======
+	case KDB_REASON_SYSTEM_NMI:
+		kdb_printf("due to System NonMaskable Interrupt\n");
+		break;
+>>>>>>> refs/remotes/origin/master
 	case KDB_REASON_NMI:
 		kdb_printf("due to NonMaskable Interrupt @ "
 			   kdb_machreg_fmt "\n",
@@ -1242,6 +1327,7 @@ static int kdb_local(kdb_reason_t reason, int error, struct pt_regs *regs,
 		*cmdbuf = '\0';
 		*(cmd_hist[cmd_head]) = '\0';
 
+<<<<<<< HEAD
 		if (KDB_FLAG(ONLY_DO_DUMP)) {
 			/* kdb is off but a catastrophic error requires a dump.
 			 * Take the dump and reboot.
@@ -1254,6 +1340,8 @@ static int kdb_local(kdb_reason_t reason, int error, struct pt_regs *regs,
 			/*NOTREACHED*/
 		}
 
+=======
+>>>>>>> refs/remotes/origin/master
 do_full_getstr:
 #if defined(CONFIG_SMP)
 		snprintf(kdb_prompt_str, CMD_BUFLEN, kdbgetenv("PROMPT"),
@@ -1299,7 +1387,10 @@ do_full_getstr:
 		if (diag == KDB_CMD_GO
 		 || diag == KDB_CMD_CPU
 		 || diag == KDB_CMD_SS
+<<<<<<< HEAD
 		 || diag == KDB_CMD_SSB
+=======
+>>>>>>> refs/remotes/origin/master
 		 || diag == KDB_CMD_KGDB)
 			break;
 
@@ -1386,6 +1477,7 @@ int kdb_main_loop(kdb_reason_t reason, kdb_reason_t reason2, int error,
 			break;
 		}
 
+<<<<<<< HEAD
 		if (result == KDB_CMD_SSB) {
 			KDB_STATE_SET(DOING_SS);
 			KDB_STATE_SET(DOING_SSB);
@@ -1398,6 +1490,10 @@ int kdb_main_loop(kdb_reason_t reason, kdb_reason_t reason2, int error,
 =======
 			if (!KDB_STATE(DOING_KGDB))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (result == KDB_CMD_KGDB) {
+			if (!KDB_STATE(DOING_KGDB))
+>>>>>>> refs/remotes/origin/master
 				kdb_printf("Entering please attach debugger "
 					   "or use $D#44+ or $3#33\n");
 			break;
@@ -1412,11 +1508,17 @@ int kdb_main_loop(kdb_reason_t reason, kdb_reason_t reason2, int error,
 		KDB_STATE_CLEAR(SSBPT);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Clean up any keyboard devices before leaving */
 	kdb_kbd_cleanup_state();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Clean up any keyboard devices before leaving */
+	kdb_kbd_cleanup_state();
+
+>>>>>>> refs/remotes/origin/master
 	return result;
 }
 
@@ -1995,15 +2097,24 @@ static int kdb_lsmod(int argc, const char **argv)
 
 	kdb_printf("Module                  Size  modstruct     Used by\n");
 	list_for_each_entry(mod, kdb_modules, list) {
+<<<<<<< HEAD
+=======
+		if (mod->state == MODULE_STATE_UNFORMED)
+			continue;
+>>>>>>> refs/remotes/origin/master
 
 		kdb_printf("%-20s%8u  0x%p ", mod->name,
 			   mod->core_size, (void *)mod);
 #ifdef CONFIG_MODULE_UNLOAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kdb_printf("%4d ", module_refcount(mod));
 =======
 		kdb_printf("%4ld ", module_refcount(mod));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kdb_printf("%4ld ", module_refcount(mod));
+>>>>>>> refs/remotes/origin/master
 #endif
 		if (mod->state == MODULE_STATE_GOING)
 			kdb_printf(" (Unloading)");
@@ -2058,8 +2169,20 @@ static int kdb_env(int argc, const char **argv)
  */
 static int kdb_dmesg(int argc, const char **argv)
 {
+<<<<<<< HEAD
 	char *syslog_data[4], *start, *end, c = '\0', *p;
 	int diag, logging, logsize, lines = 0, adjust = 0, n;
+=======
+	int diag;
+	int logging;
+	int lines = 0;
+	int adjust = 0;
+	int n = 0;
+	int skip = 0;
+	struct kmsg_dumper dumper = { .active = 1 };
+	size_t len;
+	char buf[201];
+>>>>>>> refs/remotes/origin/master
 
 	if (argc > 2)
 		return KDB_ARGCOUNT;
@@ -2082,6 +2205,7 @@ static int kdb_dmesg(int argc, const char **argv)
 		kdb_set(2, setargs);
 	}
 
+<<<<<<< HEAD
 	/* syslog_data[0,1] physical start, end+1.  syslog_data[2,3]
 	 * logical start, end+1. */
 	kdb_syslog_data(syslog_data);
@@ -2098,6 +2222,12 @@ static int kdb_dmesg(int argc, const char **argv)
 	}
 	if (c != '\n')
 		++n;
+=======
+	kmsg_dump_rewind_nolock(&dumper);
+	while (kmsg_dump_get_line_nolock(&dumper, 1, NULL, 0, NULL))
+		n++;
+
+>>>>>>> refs/remotes/origin/master
 	if (lines < 0) {
 		if (adjust >= n)
 			kdb_printf("buffer only contains %d lines, nothing "
@@ -2105,6 +2235,7 @@ static int kdb_dmesg(int argc, const char **argv)
 		else if (adjust - lines >= n)
 			kdb_printf("buffer only contains %d lines, last %d "
 				   "lines printed\n", n, n - adjust);
+<<<<<<< HEAD
 		if (adjust) {
 			for (; start < end && adjust; ++start) {
 				if (*KDB_WRAP(start) == '\n')
@@ -2120,6 +2251,13 @@ static int kdb_dmesg(int argc, const char **argv)
 		end = p;
 	} else if (lines > 0) {
 		int skip = n - (adjust + lines);
+=======
+		skip = adjust;
+		lines = abs(lines);
+	} else if (lines > 0) {
+		skip = n - lines - adjust;
+		lines = abs(lines);
+>>>>>>> refs/remotes/origin/master
 		if (adjust >= n) {
 			kdb_printf("buffer only contains %d lines, "
 				   "nothing printed\n", n);
@@ -2130,6 +2268,7 @@ static int kdb_dmesg(int argc, const char **argv)
 			kdb_printf("buffer only contains %d lines, first "
 				   "%d lines printed\n", n, lines);
 		}
+<<<<<<< HEAD
 		for (; start < end && skip; ++start) {
 			if (*KDB_WRAP(start) == '\n')
 				--skip;
@@ -2159,10 +2298,61 @@ static int kdb_dmesg(int argc, const char **argv)
 	}
 	if (c != '\n')
 		kdb_printf("\n");
+=======
+	} else {
+		lines = n;
+	}
+
+	if (skip >= n || skip < 0)
+		return 0;
+
+	kmsg_dump_rewind_nolock(&dumper);
+	while (kmsg_dump_get_line_nolock(&dumper, 1, buf, sizeof(buf), &len)) {
+		if (skip) {
+			skip--;
+			continue;
+		}
+		if (!lines--)
+			break;
+		if (KDB_FLAG(CMD_INTERRUPT))
+			return 0;
+
+		kdb_printf("%.*s\n", (int)len - 1, buf);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 #endif /* CONFIG_PRINTK */
+<<<<<<< HEAD
+=======
+
+/* Make sure we balance enable/disable calls, must disable first. */
+static atomic_t kdb_nmi_disabled;
+
+static int kdb_disable_nmi(int argc, const char *argv[])
+{
+	if (atomic_read(&kdb_nmi_disabled))
+		return 0;
+	atomic_set(&kdb_nmi_disabled, 1);
+	arch_kgdb_ops.enable_nmi(0);
+	return 0;
+}
+
+static int kdb_param_enable_nmi(const char *val, const struct kernel_param *kp)
+{
+	if (!atomic_add_unless(&kdb_nmi_disabled, -1, 0))
+		return -EINVAL;
+	arch_kgdb_ops.enable_nmi(1);
+	return 0;
+}
+
+static const struct kernel_param_ops kdb_param_ops_enable_nmi = {
+	.set = kdb_param_enable_nmi,
+};
+module_param_cb(enable_nmi, &kdb_param_ops_enable_nmi, NULL, 0600);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * kdb_cpu - This function implements the 'cpu' command.
  *	cpu	[<cpunum>]
@@ -2375,6 +2565,7 @@ static int kdb_pid(int argc, const char **argv)
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * kdb_ll - This function implements the 'll' command which follows a
  *	linked list and executes an arbitrary command for each
@@ -2438,6 +2629,8 @@ out:
 	return diag;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int kdb_kgdb(int argc, const char **argv)
 {
 	return KDB_CMD_KGDB;
@@ -2455,11 +2648,23 @@ static int kdb_help(int argc, const char **argv)
 	kdb_printf("-----------------------------"
 		   "-----------------------------\n");
 	for_each_kdbcmd(kt, i) {
+<<<<<<< HEAD
 		if (kt->cmd_name)
 			kdb_printf("%-15.15s %-20.20s %s\n", kt->cmd_name,
 				   kt->cmd_usage, kt->cmd_help);
 		if (KDB_FLAG(CMD_INTERRUPT))
 			return 0;
+=======
+		char *space = "";
+		if (KDB_FLAG(CMD_INTERRUPT))
+			return 0;
+		if (!kt->cmd_name)
+			continue;
+		if (strlen(kt->cmd_usage) > 20)
+			space = "\n                                    ";
+		kdb_printf("%-15.15s %-20s%s%s\n", kt->cmd_name,
+			   kt->cmd_usage, space, kt->cmd_help);
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -2764,7 +2969,11 @@ int kdb_register_repeat(char *cmd,
 			  (kdb_max_commands - KDB_BASE_CMD_MAX) * sizeof(*new));
 			kfree(kdb_commands);
 		}
+<<<<<<< HEAD
 		memset(new + kdb_max_commands, 0,
+=======
+		memset(new + kdb_max_commands - KDB_BASE_CMD_MAX, 0,
+>>>>>>> refs/remotes/origin/master
 		       kdb_command_extend * sizeof(*new));
 		kdb_commands = new;
 		kp = kdb_commands + kdb_max_commands - KDB_BASE_CMD_MAX;
@@ -2868,15 +3077,23 @@ static void __init kdb_inittab(void)
 	  "Stack traceback", 1, KDB_REPEAT_NONE);
 	kdb_register_repeat("btp", kdb_bt, "<pid>",
 	  "Display stack for process <pid>", 0, KDB_REPEAT_NONE);
+<<<<<<< HEAD
 	kdb_register_repeat("bta", kdb_bt, "[DRSTCZEUIMA]",
 	  "Display stack all processes", 0, KDB_REPEAT_NONE);
+=======
+	kdb_register_repeat("bta", kdb_bt, "[D|R|S|T|C|Z|E|U|I|M|A]",
+	  "Backtrace all processes matching state flag", 0, KDB_REPEAT_NONE);
+>>>>>>> refs/remotes/origin/master
 	kdb_register_repeat("btc", kdb_bt, "",
 	  "Backtrace current process on each cpu", 0, KDB_REPEAT_NONE);
 	kdb_register_repeat("btt", kdb_bt, "<vaddr>",
 	  "Backtrace process given its struct task address", 0,
 			    KDB_REPEAT_NONE);
+<<<<<<< HEAD
 	kdb_register_repeat("ll", kdb_ll, "<first-element> <linkoffset> <cmd>",
 	  "Execute cmd for each element in linked list", 0, KDB_REPEAT_NONE);
+=======
+>>>>>>> refs/remotes/origin/master
 	kdb_register_repeat("env", kdb_env, "",
 	  "Show environment variables", 0, KDB_REPEAT_NONE);
 	kdb_register_repeat("set", kdb_set, "",
@@ -2907,6 +3124,13 @@ static void __init kdb_inittab(void)
 	kdb_register_repeat("dmesg", kdb_dmesg, "[lines]",
 	  "Display syslog buffer", 0, KDB_REPEAT_NONE);
 #endif
+<<<<<<< HEAD
+=======
+	if (arch_kgdb_ops.enable_nmi) {
+		kdb_register_repeat("disable_nmi", kdb_disable_nmi, "",
+		  "Disable NMI entry to KDB", 0, KDB_REPEAT_NONE);
+	}
+>>>>>>> refs/remotes/origin/master
 	kdb_register_repeat("defcmd", kdb_defcmd, "name \"usage\" \"help\"",
 	  "Define a set of commands, down to endefcmd", 0, KDB_REPEAT_NONE);
 	kdb_register_repeat("kill", kdb_kill, "<-signal> <pid>",

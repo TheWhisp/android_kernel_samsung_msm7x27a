@@ -145,9 +145,18 @@ struct security_class_mapping secclass_map[] = {
 	    "node_bind", "name_connect", NULL } },
 	{ "memprotect", { "mmap_zero", NULL } },
 	{ "peer", { "recv", NULL } },
+<<<<<<< HEAD
 	{ "capability2", { "mac_override", "mac_admin", "syslog", NULL } },
 	{ "kernel_service", { "use_as_override", "create_files_as", NULL } },
 	{ "tun_socket",
 	  { COMMON_SOCK_PERMS, NULL } },
+=======
+	{ "capability2",
+	  { "mac_override", "mac_admin", "syslog", "wake_alarm", "block_suspend",
+	    NULL } },
+	{ "kernel_service", { "use_as_override", "create_files_as", NULL } },
+	{ "tun_socket",
+	  { COMMON_SOCK_PERMS, "attach_queue", NULL } },
+>>>>>>> refs/remotes/origin/master
 	{ NULL }
   };

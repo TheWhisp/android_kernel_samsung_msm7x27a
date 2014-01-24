@@ -37,6 +37,7 @@
 #include <mach/pxa27x.h>
 #include <mach/mfp-pxa27x.h>
 #include <mach/z2.h>
+<<<<<<< HEAD
 #include <mach/pxafb.h>
 #include <mach/mmc.h>
 #include <plat/pxa27x_keypad.h>
@@ -44,6 +45,12 @@
 =======
 #include <mach/pm.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/video-pxafb.h>
+#include <linux/platform_data/mmc-pxamci.h>
+#include <linux/platform_data/keypad-pxa27x.h>
+#include <mach/pm.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "generic.h"
 #include "devices.h"
@@ -209,6 +216,10 @@ static struct platform_pwm_backlight_data z2_backlight_data[] = {
 		.max_brightness	= 1023,
 		.dft_brightness	= 0,
 		.pwm_period_ns	= 1260320,
+<<<<<<< HEAD
+=======
+		.enable_gpio	= -1,
+>>>>>>> refs/remotes/origin/master
 	},
 	[1] = {
 		/* LCD Backlight */
@@ -216,6 +227,10 @@ static struct platform_pwm_backlight_data z2_backlight_data[] = {
 		.max_brightness	= 1023,
 		.dft_brightness	= 512,
 		.pwm_period_ns	= 1260320,
+<<<<<<< HEAD
+=======
+		.enable_gpio	= -1,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -348,7 +363,11 @@ static inline void z2_leds_init(void) {}
  * GPIO keyboard
  ******************************************************************************/
 #if defined(CONFIG_KEYBOARD_PXA27x) || defined(CONFIG_KEYBOARD_PXA27x_MODULE)
+<<<<<<< HEAD
 static unsigned int z2_matrix_keys[] = {
+=======
+static const unsigned int z2_matrix_keys[] = {
+>>>>>>> refs/remotes/origin/master
 	KEY(0, 0, KEY_OPTION),
 	KEY(1, 0, KEY_UP),
 	KEY(2, 0, KEY_DOWN),
@@ -408,11 +427,23 @@ static unsigned int z2_matrix_keys[] = {
 	KEY(5, 7, KEY_DOT),
 };
 
+<<<<<<< HEAD
 static struct pxa27x_keypad_platform_data z2_keypad_platform_data = {
 	.matrix_key_rows	= 7,
 	.matrix_key_cols	= 8,
 	.matrix_key_map		= z2_matrix_keys,
 	.matrix_key_map_size	= ARRAY_SIZE(z2_matrix_keys),
+=======
+static struct matrix_keymap_data z2_matrix_keymap_data = {
+	.keymap			= z2_matrix_keys,
+	.keymap_size		= ARRAY_SIZE(z2_matrix_keys),
+};
+
+static struct pxa27x_keypad_platform_data z2_keypad_platform_data = {
+	.matrix_key_rows	= 7,
+	.matrix_key_cols	= 8,
+	.matrix_keymap_data	= &z2_matrix_keymap_data,
+>>>>>>> refs/remotes/origin/master
 
 	.debounce_interval	= 30,
 };
@@ -577,10 +608,14 @@ static struct spi_board_info spi_board_info[] __initdata = {
 	.platform_data		= &z2_lbs_pdata,
 	.controller_data	= &z2_lbs_chip_info,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.irq			= gpio_to_irq(GPIO36_ZIPITZ2_WIFI_IRQ),
 =======
 	.irq			= PXA_GPIO_TO_IRQ(GPIO36_ZIPITZ2_WIFI_IRQ),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irq			= PXA_GPIO_TO_IRQ(GPIO36_ZIPITZ2_WIFI_IRQ),
+>>>>>>> refs/remotes/origin/master
 	.max_speed_hz		= 13000000,
 	.bus_num		= 1,
 	.chip_select		= 0,
@@ -622,9 +657,13 @@ static inline void z2_spi_init(void) {}
 #if defined(CONFIG_REGULATOR_TPS65023) || \
 	defined(CONFIG_REGULATOR_TPS65023_MODULE)
 static struct regulator_consumer_supply z2_tps65021_consumers[] = {
+<<<<<<< HEAD
 	{
 		.supply	= "vcc_core",
 	}
+=======
+	REGULATOR_SUPPLY("vcc_core", NULL),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct regulator_init_data z2_tps65021_info[] = {
@@ -686,7 +725,10 @@ static inline void z2_pmic_init(void) {}
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 static void z2_power_off(void)
 {
@@ -702,7 +744,10 @@ static void z2_power_off(void)
 #define z2_power_off   NULL
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  * Machine init
  ******************************************************************************/
@@ -725,6 +770,7 @@ static void __init z2_init(void)
 	z2_keys_init();
 	z2_pmic_init();
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 MACHINE_START(ZIPIT2, "Zipit Z2")
@@ -734,6 +780,8 @@ MACHINE_START(ZIPIT2, "Zipit Z2")
 	.timer		= &pxa_timer,
 	.init_machine	= z2_init,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pm_power_off = z2_power_off;
 }
@@ -744,8 +792,14 @@ MACHINE_START(ZIPIT2, "Zipit Z2")
 	.nr_irqs	= PXA_NR_IRQS,
 	.init_irq	= pxa27x_init_irq,
 	.handle_irq	= pxa27x_handle_irq,
+<<<<<<< HEAD
 	.timer		= &pxa_timer,
 	.init_machine	= z2_init,
 	.restart	= pxa_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.init_machine	= z2_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

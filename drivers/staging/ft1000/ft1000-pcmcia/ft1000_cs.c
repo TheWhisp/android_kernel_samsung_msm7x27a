@@ -30,6 +30,7 @@
 #include <linux/module.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/ptrace.h>
 #include <linux/slab.h>
 #include <linux/string.h>
@@ -63,10 +64,19 @@
 /*====================================================================*/
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/netdevice.h>
+#include <pcmcia/cistpl.h>
+#include <pcmcia/ds.h>
+
+/*====================================================================*/
+
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Wai Chan");
 MODULE_DESCRIPTION("FT1000 PCMCIA driver");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Newer, simpler way of listing specific interrupts */
 
@@ -115,6 +125,8 @@ typedef struct local_info_t {
 
 static void ft1000_reset(struct pcmcia_device * link)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*====================================================================*/
 
 static int ft1000_config(struct pcmcia_device *link);
@@ -126,11 +138,15 @@ static int ft1000_attach(struct pcmcia_device *link);
 /*====================================================================*/
 
 static void ft1000_reset(struct pcmcia_device *link)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	pcmcia_reset_card(link->socket);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*======================================================================
 
@@ -201,6 +217,8 @@ int ft1000_confcheck(struct pcmcia_device *link, void *priv_data)
 	return pcmcia_request_io(link);
 }				/* ft1000_confcheck */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int ft1000_attach(struct pcmcia_device *link)
 {
 	link->priv = NULL;
@@ -224,7 +242,10 @@ static int ft1000_confcheck(struct pcmcia_device *link, void *priv_data)
 {
 	return pcmcia_request_io(link);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*======================================================================
 
@@ -237,10 +258,14 @@ static int ft1000_confcheck(struct pcmcia_device *link, void *priv_data)
 static int ft1000_config(struct pcmcia_device *link)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int  ret;
 =======
 	int ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(&link->dev, "ft1000_cs: ft1000_config(0x%p)\n", link);
 
@@ -259,6 +284,7 @@ static int ft1000_config(struct pcmcia_device *link)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	((local_info_t *) link->priv)->dev = init_ft1000_card(link,
 								&ft1000_reset);
 	if (((local_info_t *) link->priv)->dev == NULL) {
@@ -266,6 +292,10 @@ static int ft1000_config(struct pcmcia_device *link)
 	link->priv = init_ft1000_card(link, &ft1000_reset);
 	if (!link->priv) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	link->priv = init_ft1000_card(link, &ft1000_reset);
+	if (!link->priv) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_INFO "ft1000: Could not register as network device\n");
 		goto failed;
 	}
@@ -274,6 +304,7 @@ static int ft1000_config(struct pcmcia_device *link)
 
 	return 0;
 failed:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ft1000_release(link);
 	return -ENODEV;
@@ -327,6 +358,8 @@ static int ft1000_suspend(struct pcmcia_device *link)
 
 	DEBUG(1, "ft1000_cs: ft1000_event(0x%06x)\n", event);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pcmcia_disable_device(link);
 	return -ENODEV;
 }
@@ -334,7 +367,10 @@ static int ft1000_suspend(struct pcmcia_device *link)
 static int ft1000_suspend(struct pcmcia_device *link)
 {
 	struct net_device *dev = link->priv;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (link->open)
 		netif_device_detach(dev);
@@ -343,6 +379,7 @@ static int ft1000_suspend(struct pcmcia_device *link)
 
 static int ft1000_resume(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*	struct net_device *dev = link->priv;
  */
@@ -356,6 +393,11 @@ static int ft1000_resume(struct pcmcia_device *link)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*====================================================================*/
 
 static const struct pcmcia_device_id ft1000_ids[] = {
@@ -369,6 +411,7 @@ MODULE_DEVICE_TABLE(pcmcia, ft1000_ids);
 
 static struct pcmcia_driver ft1000_cs_driver = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.owner = THIS_MODULE,
 	.drv = {
 		.name = "ft1000_cs",
@@ -379,6 +422,8 @@ static struct pcmcia_driver ft1000_cs_driver = {
 	.suspend    = ft1000_suspend,
 	.resume     = ft1000_resume,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.owner		= THIS_MODULE,
 	.name		= "ft1000_cs",
 	.probe		= ft1000_attach,
@@ -386,24 +431,33 @@ static struct pcmcia_driver ft1000_cs_driver = {
 	.id_table	= ft1000_ids,
 	.suspend	= ft1000_suspend,
 	.resume		= ft1000_resume,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init init_ft1000_cs(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(0, "ft1000_cs: loading\n");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return pcmcia_register_driver(&ft1000_cs_driver);
 }
 
 static void __exit exit_ft1000_cs(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(0, "ft1000_cs: unloading\n");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pcmcia_unregister_driver(&ft1000_cs_driver);
 }
 

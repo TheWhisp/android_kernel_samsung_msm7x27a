@@ -15,9 +15,12 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ":%s: " fmt, __func__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <scsi/scsi_host.h>
@@ -110,6 +113,7 @@ static struct iscsi_transport cxgb3i_iscsi_transport = {
 				| CAP_DATADGST | CAP_DIGEST_OFFLOAD |
 				CAP_PADDING_OFFLOAD | CAP_TEXT_NEGO,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.param_mask	= ISCSI_MAX_RECV_DLENGTH | ISCSI_MAX_XMIT_DLENGTH |
 				ISCSI_HDRDGST_EN | ISCSI_DATADGST_EN |
 				ISCSI_INITIAL_R2T_EN | ISCSI_MAX_R2T |
@@ -132,6 +136,9 @@ static struct iscsi_transport cxgb3i_iscsi_transport = {
 =======
 	.attr_is_visible	= cxgbi_attr_is_visible,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.attr_is_visible	= cxgbi_attr_is_visible,
+>>>>>>> refs/remotes/origin/master
 	.get_host_param	= cxgbi_get_host_param,
 	.set_host_param	= cxgbi_set_host_param,
 	/* session management */
@@ -993,10 +1000,15 @@ static int init_act_open(struct cxgbi_sock *csk)
 
 	csk->rss_qid = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	csk->l2t = t3_l2t_get(t3dev, dst_get_neighbour(dst), ndev);
 =======
 	csk->l2t = t3_l2t_get(t3dev, dst, ndev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	csk->l2t = t3_l2t_get(t3dev, dst, ndev,
+			      &csk->daddr.sin_addr.s_addr);
+>>>>>>> refs/remotes/origin/master
 	if (!csk->l2t) {
 		pr_err("NO l2t available.\n");
 		return -EINVAL;
@@ -1257,10 +1269,14 @@ static int cxgb3i_ddp_init(struct cxgbi_device *cdev)
 	struct ulp_iscsi_info uinfo;
 	unsigned int pgsz_factor[4];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int err;
 =======
 	int i, err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, err;
+>>>>>>> refs/remotes/origin/master
 
 	if (ddp) {
 		kref_get(&ddp->refcnt);
@@ -1287,10 +1303,15 @@ static int cxgb3i_ddp_init(struct cxgbi_device *cdev)
 	uinfo.tagmask = ddp->idx_mask << PPOD_IDX_SHIFT;
 	cxgbi_ddp_page_size_factor(pgsz_factor);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	for (i = 0; i < 4; i++)
 		uinfo.pgsz_factor[i] = pgsz_factor[i];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < 4; i++)
+		uinfo.pgsz_factor[i] = pgsz_factor[i];
+>>>>>>> refs/remotes/origin/master
 	uinfo.ulimit = uinfo.llimit + (ddp->nppods << PPOD_SIZE_SHIFT);
 
 	err = tdev->ctl(tdev, ULP_ISCSI_SET_PARAMS, &uinfo);

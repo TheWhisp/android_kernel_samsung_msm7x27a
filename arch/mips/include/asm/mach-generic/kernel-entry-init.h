@@ -12,8 +12,13 @@
 /* Intentionally empty macro, used in head.S. Override in
  * arch/mips/mach-xxx/kernel-entry-init.h when necessary.
  */
+<<<<<<< HEAD
 .macro	kernel_entry_setup
 .endm
+=======
+	.macro	kernel_entry_setup
+	.endm
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Do SMP slave processor setup necessary before we can savely execute C code.

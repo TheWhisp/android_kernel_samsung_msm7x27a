@@ -10,10 +10,14 @@
 #define _LINUX_SUNRPC_TIMER_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 struct rpc_rtt {
 	unsigned long timeo;	/* default timeout value */

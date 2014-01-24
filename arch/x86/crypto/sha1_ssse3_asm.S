@@ -28,6 +28,11 @@
  * (at your option) any later version.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/linkage.h>
+
+>>>>>>> refs/remotes/origin/master
 #define CTX	%rdi	// arg1
 #define BUF	%rsi	// arg2
 #define CNT	%rdx	// arg3
@@ -69,10 +74,15 @@
  * param: function's name
  */
 .macro SHA1_VECTOR_ASM  name
+<<<<<<< HEAD
 	.global	\name
 	.type	\name, @function
 	.align 32
 \name:
+=======
+	ENTRY(\name)
+
+>>>>>>> refs/remotes/origin/master
 	push	%rbx
 	push	%rbp
 	push	%r12
@@ -106,7 +116,11 @@
 	pop	%rbx
 	ret
 
+<<<<<<< HEAD
 	.size	\name, .-\name
+=======
+	ENDPROC(\name)
+>>>>>>> refs/remotes/origin/master
 .endm
 
 /*
@@ -468,7 +482,11 @@ W_PRECALC_SSSE3
  */
 SHA1_VECTOR_ASM     sha1_transform_ssse3
 
+<<<<<<< HEAD
 #ifdef SHA1_ENABLE_AVX_SUPPORT
+=======
+#ifdef CONFIG_AS_AVX
+>>>>>>> refs/remotes/origin/master
 
 .macro W_PRECALC_AVX
 

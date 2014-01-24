@@ -5,15 +5,24 @@
 #include <linux/init.h>
 #include <linux/device.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_data/sa11x0-serial.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/tty.h>
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <video/sa1100fb.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <video/sa1100fb.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <mach/hardware.h>
 #include <asm/mach-types.h>
 #include <asm/setup.h>
@@ -21,6 +30,7 @@
 #include <asm/mach/arch.h>
 #include <asm/mach/flash.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
 #include <asm/mach/serial_sa1100.h>
 #include <mach/mcp.h>
 #include <mach/shannon.h>
@@ -28,6 +38,11 @@
 =======
 #include <mach/irqs.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/mfd-mcp-sa11x0.h>
+#include <mach/shannon.h>
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "generic.h"
 
@@ -56,6 +71,7 @@ static struct flash_platform_data shannon_flash_data = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct resource shannon_flash_resource = {
 	.start		= SA1100_CS0_PHYS,
 	.end		= SA1100_CS0_PHYS + SZ_4M - 1,
@@ -65,6 +81,10 @@ static struct resource shannon_flash_resource = {
 static struct resource shannon_flash_resource =
 	DEFINE_RES_MEM(SA1100_CS0_PHYS, SZ_4M);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct resource shannon_flash_resource =
+	DEFINE_RES_MEM(SA1100_CS0_PHYS, SZ_4M);
+>>>>>>> refs/remotes/origin/master
 
 static struct mcp_plat_data shannon_mcp_data = {
 	.mccr0		= MCCR0_ADM,
@@ -72,9 +92,12 @@ static struct mcp_plat_data shannon_mcp_data = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init shannon_init(void)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct sa1100fb_mach_info shannon_lcd_info = {
 	.pixclock	= 152500,	.bpp		= 8,
 	.xres		= 640,		.yres		= 480,
@@ -93,7 +116,10 @@ static void __init shannon_init(void)
 {
 	sa11x0_ppc_configure_mcp();
 	sa11x0_register_lcd(&shannon_lcd_info);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	sa11x0_register_mtd(&shannon_flash_data, &shannon_flash_resource, 1);
 	sa11x0_register_mcp(&shannon_mcp_data);
 }
@@ -118,18 +144,28 @@ static void __init shannon_map_io(void)
 
 MACHINE_START(SHANNON, "Shannon (AKA: Tuxscreen)")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0xc0000100,
 	.map_io		= shannon_map_io,
 	.init_irq	= sa1100_init_irq,
 	.timer		= &sa1100_timer,
 	.init_machine	= shannon_init,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.map_io		= shannon_map_io,
 	.nr_irqs	= SA1100_NR_IRQS,
 	.init_irq	= sa1100_init_irq,
+<<<<<<< HEAD
 	.timer		= &sa1100_timer,
 	.init_machine	= shannon_init,
 	.restart	= sa11x0_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= sa1100_timer_init,
+	.init_machine	= shannon_init,
+	.init_late	= sa11x0_init_late,
+	.restart	= sa11x0_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

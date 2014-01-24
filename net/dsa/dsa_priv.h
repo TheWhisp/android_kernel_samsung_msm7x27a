@@ -12,6 +12,7 @@
 #define __DSA_PRIV_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/list.h>
 #include <linux/phy.h>
 #include <linux/timer.h>
@@ -108,6 +109,11 @@ static inline u8 dsa_upstream_port(struct dsa_switch *ds)
 #include <net/dsa.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/phy.h>
+#include <net/dsa.h>
+
+>>>>>>> refs/remotes/origin/master
 struct dsa_slave_priv {
 	/*
 	 * The linux network interface corresponding to this
@@ -129,6 +135,7 @@ struct dsa_slave_priv {
 	struct phy_device	*phy;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct dsa_switch_driver {
 	struct list_head	list;
@@ -172,6 +179,10 @@ void unregister_switch_driver(struct dsa_switch_driver *type);
 /* dsa.c */
 extern char dsa_driver_version[];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* dsa.c */
+extern char dsa_driver_version[];
+>>>>>>> refs/remotes/origin/master
 
 /* slave.c */
 void dsa_slave_mii_bus_init(struct dsa_switch *ds);
@@ -182,6 +193,7 @@ struct net_device *dsa_slave_create(struct dsa_switch *ds,
 /* tag_dsa.c */
 netdev_tx_t dsa_xmit(struct sk_buff *skb, struct net_device *dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /* tag_edsa.c */
 netdev_tx_t edsa_xmit(struct sk_buff *skb, struct net_device *dev);
@@ -189,6 +201,8 @@ netdev_tx_t edsa_xmit(struct sk_buff *skb, struct net_device *dev);
 /* tag_trailer.c */
 netdev_tx_t trailer_xmit(struct sk_buff *skb, struct net_device *dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct packet_type dsa_packet_type;
 
 /* tag_edsa.c */
@@ -198,7 +212,10 @@ extern struct packet_type edsa_packet_type;
 /* tag_trailer.c */
 netdev_tx_t trailer_xmit(struct sk_buff *skb, struct net_device *dev);
 extern struct packet_type trailer_packet_type;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 #endif

@@ -1,15 +1,25 @@
 /*
+<<<<<<< HEAD
  *  linux/drivers/s390/crypto/zcrypt_pcixcc.c
  *
  *  zcrypt 2.1.0
  *
  *  Copyright (C)  2001, 2006 IBM Corporation
+=======
+ *  zcrypt 2.1.0
+ *
+ *  Copyright IBM Corp. 2001, 2012
+>>>>>>> refs/remotes/origin/master
  *  Author(s): Robert Burroughs
  *	       Eric Rossman (edrossma@us.ibm.com)
  *
  *  Hotplug & misc device support: Jochen Roehrig (roehrig@de.ibm.com)
  *  Major cleanup & driver split: Martin Schwidefsky <schwidefsky@de.ibm.com>
  *				  Ralph Wuerthner <rwuerthn@de.ibm.com>
+<<<<<<< HEAD
+=======
+ *  MSGTYPE restruct:		  Holger Dengler <hd@linux.vnet.ibm.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,16 +42,24 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 #include "ap_bus.h"
 #include "zcrypt_api.h"
 #include "zcrypt_error.h"
+<<<<<<< HEAD
 #include "zcrypt_pcicc.h"
+=======
+#include "zcrypt_msgtype6.h"
+>>>>>>> refs/remotes/origin/master
 #include "zcrypt_pcixcc.h"
 #include "zcrypt_cca_key.h"
 
@@ -61,6 +79,7 @@
 
 #define PCIXCC_MAX_XCRB_MESSAGE_SIZE (12*1024)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PCIXCC_MAX_XCRB_RESPONSE_SIZE PCIXCC_MAX_XCRB_MESSAGE_SIZE
 #define PCIXCC_MAX_XCRB_DATA_SIZE (11*1024)
 #define PCIXCC_MAX_XCRB_REPLY_SIZE (5*1024)
@@ -68,6 +87,8 @@
 #define PCIXCC_MAX_RESPONSE_SIZE PCIXCC_MAX_XCRB_RESPONSE_SIZE
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define PCIXCC_CLEANUP_TIME	(15*HZ)
 
@@ -88,6 +109,7 @@ static struct ap_device_id zcrypt_pcixcc_ids[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_ZCRYPT_MONOLITHIC
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -105,16 +127,30 @@ static int zcrypt_pcixcc_probe(struct ap_device *ap_dev);
 static void zcrypt_pcixcc_remove(struct ap_device *ap_dev);
 static void zcrypt_pcixcc_receive(struct ap_device *, struct ap_message *,
 				 struct ap_message *);
+=======
+MODULE_DEVICE_TABLE(ap, zcrypt_pcixcc_ids);
+MODULE_AUTHOR("IBM Corporation");
+MODULE_DESCRIPTION("PCIXCC Cryptographic Coprocessor device driver, " \
+		   "Copyright IBM Corp. 2001, 2012");
+MODULE_LICENSE("GPL");
+
+static int zcrypt_pcixcc_probe(struct ap_device *ap_dev);
+static void zcrypt_pcixcc_remove(struct ap_device *ap_dev);
+>>>>>>> refs/remotes/origin/master
 
 static struct ap_driver zcrypt_pcixcc_driver = {
 	.probe = zcrypt_pcixcc_probe,
 	.remove = zcrypt_pcixcc_remove,
+<<<<<<< HEAD
 	.receive = zcrypt_pcixcc_receive,
+=======
+>>>>>>> refs/remotes/origin/master
 	.ids = zcrypt_pcixcc_ids,
 	.request_timeout = PCIXCC_CLEANUP_TIME,
 };
 
 /**
+<<<<<<< HEAD
  * The following is used to initialize the CPRBX passed to the PCIXCC/CEX2C
  * card in a type6 message. The 3 fields that must be filled in at execution
  * time are  req_parml, rpl_parml and usage_domain.
@@ -899,6 +935,8 @@ static struct zcrypt_ops zcrypt_pcixcc_with_rng_ops = {
 };
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * Micro-code detection function. Its sends a message to a pcixcc card
  * to find out the microcode level.
  * @ap_dev: pointer to the AP device.
@@ -1078,10 +1116,14 @@ static int zcrypt_pcixcc_probe(struct ap_device *ap_dev)
 	int rc = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	zdev = zcrypt_device_alloc(PCIXCC_MAX_RESPONSE_SIZE);
 =======
 	zdev = zcrypt_device_alloc(PCIXCC_MAX_XCRB_MESSAGE_SIZE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	zdev = zcrypt_device_alloc(PCIXCC_MAX_XCRB_MESSAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 	if (!zdev)
 		return -ENOMEM;
 	zdev->ap_dev = ap_dev;
@@ -1134,9 +1176,17 @@ static int zcrypt_pcixcc_probe(struct ap_device *ap_dev)
 		return rc;
 	}
 	if (rc)
+<<<<<<< HEAD
 		zdev->ops = &zcrypt_pcixcc_with_rng_ops;
 	else
 		zdev->ops = &zcrypt_pcixcc_ops;
+=======
+		zdev->ops = zcrypt_msgtype_request(MSGTYPE06_NAME,
+						   MSGTYPE06_VARIANT_DEFAULT);
+	else
+		zdev->ops = zcrypt_msgtype_request(MSGTYPE06_NAME,
+						   MSGTYPE06_VARIANT_NORNG);
+>>>>>>> refs/remotes/origin/master
 	ap_dev->reply = &zdev->reply;
 	ap_dev->private = zdev;
 	rc = zcrypt_device_register(zdev);
@@ -1146,6 +1196,10 @@ static int zcrypt_pcixcc_probe(struct ap_device *ap_dev)
 
  out_free:
 	ap_dev->private = NULL;
+<<<<<<< HEAD
+=======
+	zcrypt_msgtype_release(zdev->ops);
+>>>>>>> refs/remotes/origin/master
 	zcrypt_device_free(zdev);
 	return rc;
 }
@@ -1157,8 +1211,15 @@ static int zcrypt_pcixcc_probe(struct ap_device *ap_dev)
 static void zcrypt_pcixcc_remove(struct ap_device *ap_dev)
 {
 	struct zcrypt_device *zdev = ap_dev->private;
+<<<<<<< HEAD
 
 	zcrypt_device_unregister(zdev);
+=======
+	struct zcrypt_ops *zops = zdev->ops;
+
+	zcrypt_device_unregister(zdev);
+	zcrypt_msgtype_release(zops);
+>>>>>>> refs/remotes/origin/master
 }
 
 int __init zcrypt_pcixcc_init(void)
@@ -1172,6 +1233,7 @@ void zcrypt_pcixcc_exit(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_ZCRYPT_MONOLITHIC
 module_init(zcrypt_pcixcc_init);
 module_exit(zcrypt_pcixcc_exit);
@@ -1180,3 +1242,7 @@ module_exit(zcrypt_pcixcc_exit);
 module_init(zcrypt_pcixcc_init);
 module_exit(zcrypt_pcixcc_exit);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_init(zcrypt_pcixcc_init);
+module_exit(zcrypt_pcixcc_exit);
+>>>>>>> refs/remotes/origin/master

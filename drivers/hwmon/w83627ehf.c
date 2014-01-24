@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
     w83627ehf - Driver for the hardware monitoring functionality of
 		the Winbond W83627EHF Super-I/O chip
     Copyright (C) 2005  Jean Delvare <khali@linux-fr.org>
@@ -49,6 +50,11 @@
  *  w83627ehf - Driver for the hardware monitoring functionality of
  *		the Winbond W83627EHF Super-I/O chip
  *  Copyright (C) 2005-2011  Jean Delvare <khali@linux-fr.org>
+=======
+ *  w83627ehf - Driver for the hardware monitoring functionality of
+ *		the Winbond W83627EHF Super-I/O chip
+ *  Copyright (C) 2005-2012  Jean Delvare <khali@linux-fr.org>
+>>>>>>> refs/remotes/origin/master
  *  Copyright (C) 2006  Yuan Mu (Winbond),
  *			Rudolf Marek <r.marek@assembler.cz>
  *			David Hubbard <david.c.hubbard@gmail.com>
@@ -91,7 +97,10 @@
  *  nct6775f     9      4       3       9      0xb470 0xc1    0x5ca3
  *  nct6776f     9      5       3       9      0xC330 0xc1    0x5ca3
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
@@ -110,14 +119,20 @@
 #include "lm75.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum kinds { w83627ehf, w83627dhg, w83627dhg_p, w83667hg, w83667hg_b, nct6775,
 	nct6776 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum kinds {
 	w83627ehf, w83627dhg, w83627dhg_p, w83627uhg,
 	w83667hg, w83667hg_b, nct6775, nct6776,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* used to set data->name = w83627ehf_device_names[data->sio_kind] */
 static const char * const w83627ehf_device_names[] = {
@@ -125,9 +140,13 @@ static const char * const w83627ehf_device_names[] = {
 	"w83627dhg",
 	"w83627dhg",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	"w83627uhg",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"w83627uhg",
+>>>>>>> refs/remotes/origin/master
 	"w83667hg",
 	"w83667hg",
 	"nct6775",
@@ -164,9 +183,13 @@ MODULE_PARM_DESC(fan_debounce, "Enable debouncing for fan RPM signal");
 #define SIO_W83627DHG_ID	0xa020
 #define SIO_W83627DHG_P_ID	0xb070
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SIO_W83627UHG_ID	0xa230
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SIO_W83627UHG_ID	0xa230
+>>>>>>> refs/remotes/origin/master
 #define SIO_W83667HG_ID		0xa510
 #define SIO_W83667HG_B_ID	0xb350
 #define SIO_NCT6775_ID		0xb470
@@ -223,12 +246,15 @@ superio_exit(int ioreg)
 #define W83627EHF_REG_CONFIG		0x40
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Not currently used:
  * REG_MAN_ID has the value 0x5ca3 for all supported chips.
  * REG_CHIP_ID == 0x88/0xa1/0xc1 depending on chip model.
  * REG_MAN_ID is at port 0x4f
  * REG_CHIP_ID is at port 0x58 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Not currently used:
  * REG_MAN_ID has the value 0x5ca3 for all supported chips.
@@ -236,7 +262,10 @@ superio_exit(int ioreg)
  * REG_MAN_ID is at port 0x4f
  * REG_CHIP_ID is at port 0x58
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static const u16 W83627EHF_REG_FAN[] = { 0x28, 0x29, 0x2a, 0x3f, 0x553 };
 static const u16 W83627EHF_REG_FAN_MIN[] = { 0x3b, 0x3c, 0x3d, 0x3e, 0x55c };
@@ -271,11 +300,17 @@ static const u16 W83627EHF_REG_TEMP_CONFIG[] = { 0, 0x152, 0x252, 0 };
 #define W83627EHF_REG_ALARM3		0x45B
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define W83627EHF_REG_CASEOPEN_DET	0x42 /* SMI STATUS #2 */
 #define W83627EHF_REG_CASEOPEN_CLR	0x46 /* SMI MASK #3 */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define W83627EHF_REG_CASEOPEN_DET	0x42 /* SMI STATUS #2 */
+#define W83627EHF_REG_CASEOPEN_CLR	0x46 /* SMI MASK #3 */
+
+>>>>>>> refs/remotes/origin/master
 /* SmartFan registers */
 #define W83627EHF_REG_FAN_STEPUP_TIME 0x0f
 #define W83627EHF_REG_FAN_STEPDOWN_TIME 0x0e
@@ -311,10 +346,15 @@ static const u16 W83627EHF_REG_FAN_STEP_OUTPUT_W83667_B[]
 						= { 0x68, 0x6a, 0x6c };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static const u16 W83627EHF_REG_TEMP_OFFSET[] = { 0x454, 0x455, 0x456 };
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const u16 W83627EHF_REG_TEMP_OFFSET[] = { 0x454, 0x455, 0x456 };
+
+>>>>>>> refs/remotes/origin/master
 static const u16 NCT6775_REG_TARGET[] = { 0x101, 0x201, 0x301 };
 static const u16 NCT6775_REG_FAN_MODE[] = { 0x102, 0x202, 0x302 };
 static const u16 NCT6775_REG_FAN_STOP_OUTPUT[] = { 0x105, 0x205, 0x305 };
@@ -401,10 +441,14 @@ static const char *const nct6776_temp_label[] = {
 #define NUM_REG_TEMP	ARRAY_SIZE(NCT6775_REG_TEMP)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int is_word_sized(u16 reg)
 =======
 static int is_word_sized(u16 reg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int is_word_sized(u16 reg)
+>>>>>>> refs/remotes/origin/master
 {
 	return ((((reg & 0xff00) == 0x100
 	      || (reg & 0xff00) == 0x200)
@@ -431,8 +475,13 @@ static inline unsigned int step_time_from_reg(u8 reg, u8 mode)
 
 static inline u8 step_time_to_reg(unsigned int msec, u8 mode)
 {
+<<<<<<< HEAD
 	return SENSORS_LIMIT((mode ? (msec + 50) / 100 :
 						(msec + 200) / 400), 1, 255);
+=======
+	return clamp_val((mode ? (msec + 50) / 100 : (msec + 200) / 400),
+			 1, 255);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned int fan_from_reg8(u16 reg, unsigned int divreg)
@@ -474,6 +523,7 @@ div_from_reg(u8 reg)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int
 temp_from_reg(u16 reg, s16 regval)
 {
@@ -504,6 +554,8 @@ static inline u8 in_to_reg(u32 val, u8 nr)
 {
 	return SENSORS_LIMIT(((val + (scale_in[nr] / 2)) / scale_in[nr]), 0,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Some of the voltage inputs have internal scaling, the tables below
  * contain 8 (the ADC LSB in mV) * scaling factor * 100
@@ -522,9 +574,13 @@ static inline long in_from_reg(u8 reg, u8 nr, const u16 *scale_in)
 
 static inline u8 in_to_reg(u32 val, u8 nr, const u16 *scale_in)
 {
+<<<<<<< HEAD
 	return SENSORS_LIMIT(DIV_ROUND_CLOSEST(val * 100, scale_in[nr]), 0,
 >>>>>>> refs/remotes/origin/cm-10.0
 			     255);
+=======
+	return clamp_val(DIV_ROUND_CLOSEST(val * 100, scale_in[nr]), 0, 255);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -555,9 +611,13 @@ struct w83627ehf_data {
 	const u16 *REG_FAN_MAX_OUTPUT;
 	const u16 *REG_FAN_STEP_OUTPUT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	const u16 *scale_in;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const u16 *scale_in;
+>>>>>>> refs/remotes/origin/master
 
 	unsigned int (*fan_from_reg)(u16 reg, unsigned int divreg);
 	unsigned int (*fan_from_reg_min)(u16 reg, unsigned int divreg);
@@ -580,13 +640,18 @@ struct w83627ehf_data {
 	bool has_fan_div;
 	u8 temp_type[3];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	s8 temp_offset[3];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s8 temp_offset[3];
+>>>>>>> refs/remotes/origin/master
 	s16 temp[9];
 	s16 temp_max[9];
 	s16 temp_max_hyst[9];
 	u32 alarms;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	u8 pwm_mode[4]; /* 0->DC variable voltage, 1->PWM variable duty cycle */
@@ -598,6 +663,8 @@ struct w83627ehf_data {
 			     5->enhanced variable thermal cruise (also called
 				SmartFan IV) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 caseopen;
 
 	u8 pwm_mode[4]; /* 0->DC variable voltage, 1->PWM variable duty cycle */
@@ -609,7 +676,10 @@ struct w83627ehf_data {
 			   * 5->enhanced variable thermal cruise (also called
 			   * SmartFan IV)
 			   */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 pwm_enable_orig[4];	/* original value of pwm_enable */
 	u8 pwm_num;		/* number of pwm */
 	u8 pwm[4];
@@ -627,12 +697,25 @@ struct w83627ehf_data {
 
 	u16 have_temp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 in6_skip;
 =======
 	u16 have_temp_offset;
 	u8 in6_skip:1;
 	u8 temp3_val_only:1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 have_temp_offset;
+	u8 in6_skip:1;
+	u8 temp3_val_only:1;
+
+#ifdef CONFIG_PM
+	/* Remember extra register values over suspend/resume */
+	u8 vbat;
+	u8 fandiv1;
+	u8 fandiv2;
+#endif
+>>>>>>> refs/remotes/origin/master
 };
 
 struct w83627ehf_sio_data {
@@ -696,7 +779,10 @@ static int w83627ehf_write_value(struct w83627ehf_data *data, u16 reg,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* We left-align 8-bit temperature values to make the code simpler */
 static u16 w83627ehf_read_temp(struct w83627ehf_data *data, u16 reg)
 {
@@ -717,7 +803,10 @@ static int w83627ehf_write_temp(struct w83627ehf_data *data, u16 reg,
 	return w83627ehf_write_value(data, reg, value);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* This function assumes that the caller holds data->update_lock */
 static void nct6775_write_fan_div(struct w83627ehf_data *data, int nr)
 {
@@ -733,6 +822,10 @@ static void nct6775_write_fan_div(struct w83627ehf_data *data, int nr)
 		reg = (w83627ehf_read_value(data, NCT6775_REG_FANDIV1) & 0x7)
 		    | ((data->fan_div[1] << 4) & 0x70);
 		w83627ehf_write_value(data, NCT6775_REG_FANDIV1, reg);
+<<<<<<< HEAD
+=======
+		break;
+>>>>>>> refs/remotes/origin/master
 	case 2:
 		reg = (w83627ehf_read_value(data, NCT6775_REG_FANDIV2) & 0x70)
 		    | (data->fan_div[2] & 0x7);
@@ -800,7 +893,11 @@ static void w83627ehf_write_fan_div(struct w83627ehf_data *data, int nr)
 static void w83627ehf_write_fan_div_common(struct device *dev,
 					   struct w83627ehf_data *data, int nr)
 {
+<<<<<<< HEAD
 	struct w83627ehf_sio_data *sio_data = dev->platform_data;
+=======
+	struct w83627ehf_sio_data *sio_data = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (sio_data->kind == nct6776)
 		; /* no dividers, do nothing */
@@ -851,7 +948,11 @@ static void w83627ehf_update_fan_div(struct w83627ehf_data *data)
 static void w83627ehf_update_fan_div_common(struct device *dev,
 					    struct w83627ehf_data *data)
 {
+<<<<<<< HEAD
 	struct w83627ehf_sio_data *sio_data = dev->platform_data;
+=======
+	struct w83627ehf_sio_data *sio_data = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (sio_data->kind == nct6776)
 		; /* no dividers, do nothing */
@@ -908,7 +1009,11 @@ static void w83627ehf_update_pwm(struct w83627ehf_data *data)
 static void w83627ehf_update_pwm_common(struct device *dev,
 					struct w83627ehf_data *data)
 {
+<<<<<<< HEAD
 	struct w83627ehf_sio_data *sio_data = dev->platform_data;
+=======
+	struct w83627ehf_sio_data *sio_data = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (sio_data->kind == nct6775 || sio_data->kind == nct6776)
 		nct6775_update_pwm(data);
@@ -919,7 +1024,11 @@ static void w83627ehf_update_pwm_common(struct device *dev,
 static struct w83627ehf_data *w83627ehf_update_device(struct device *dev)
 {
 	struct w83627ehf_data *data = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct w83627ehf_sio_data *sio_data = dev->platform_data;
+=======
+	struct w83627ehf_sio_data *sio_data = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	int i;
 
@@ -933,11 +1042,17 @@ static struct w83627ehf_data *w83627ehf_update_device(struct device *dev)
 		/* Measured voltages and limits */
 		for (i = 0; i < data->in_num; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if ((i == 6) && data->in6_skip)
 				continue;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if ((i == 6) && data->in6_skip)
+				continue;
+
+>>>>>>> refs/remotes/origin/master
 			data->in[i] = w83627ehf_read_value(data,
 				      W83627EHF_REG_IN(i));
 			data->in_min[i] = w83627ehf_read_value(data,
@@ -962,22 +1077,33 @@ static struct w83627ehf_data *w83627ehf_update_device(struct device *dev)
 					   data->REG_FAN_MIN[i]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			/* If we failed to measure the fan speed and clock
 			   divider can be increased, let's try that for next
 			   time */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * If we failed to measure the fan speed and clock
 			 * divider can be increased, let's try that for next
 			 * time
 			 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (data->has_fan_div
 			    && (reg >= 0xff || (sio_data->kind == nct6775
 						&& reg == 0x00))
 			    && data->fan_div[i] < 0x07) {
+<<<<<<< HEAD
 				dev_dbg(dev, "Increasing fan%d "
 					"clock divider from %u to %u\n",
+=======
+				dev_dbg(dev,
+					"Increasing fan%d clock divider from %u to %u\n",
+>>>>>>> refs/remotes/origin/master
 					i + 1, div_from_reg(data->fan_div[i]),
 					div_from_reg(data->fan_div[i] + 1));
 				data->fan_div[i]++;
@@ -1031,6 +1157,7 @@ static struct w83627ehf_data *w83627ehf_update_device(struct device *dev)
 			if (!(data->have_temp & (1 << i)))
 				continue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			data->temp[i] = w83627ehf_read_value(data,
 						data->reg_temp[i]);
 			if (data->reg_temp_over[i])
@@ -1042,6 +1169,8 @@ static struct w83627ehf_data *w83627ehf_update_device(struct device *dev)
 				  = w83627ehf_read_value(data,
 						data->reg_temp_hyst[i]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			data->temp[i] = w83627ehf_read_temp(data,
 						data->reg_temp[i]);
 			if (data->reg_temp_over[i])
@@ -1052,11 +1181,19 @@ static struct w83627ehf_data *w83627ehf_update_device(struct device *dev)
 				data->temp_max_hyst[i]
 				  = w83627ehf_read_temp(data,
 						data->reg_temp_hyst[i]);
+<<<<<<< HEAD
+=======
+			if (i > 2)
+				continue;
+>>>>>>> refs/remotes/origin/master
 			if (data->have_temp_offset & (1 << i))
 				data->temp_offset[i]
 				  = w83627ehf_read_value(data,
 						W83627EHF_REG_TEMP_OFFSET[i]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		data->alarms = w83627ehf_read_value(data,
@@ -1067,11 +1204,17 @@ static struct w83627ehf_data *w83627ehf_update_device(struct device *dev)
 					W83627EHF_REG_ALARM3) << 16);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		data->caseopen = w83627ehf_read_value(data,
 						W83627EHF_REG_CASEOPEN_DET);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		data->caseopen = w83627ehf_read_value(data,
+						W83627EHF_REG_CASEOPEN_DET);
+
+>>>>>>> refs/remotes/origin/master
 		data->last_updated = jiffies;
 		data->valid = 1;
 	}
@@ -1093,11 +1236,16 @@ show_##reg(struct device *dev, struct device_attribute *attr, \
 		to_sensor_dev_attr(attr); \
 	int nr = sensor_attr->index; \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf, "%ld\n", in_from_reg(data->reg[nr], nr)); \
 =======
 	return sprintf(buf, "%ld\n", in_from_reg(data->reg[nr], nr, \
 		       data->scale_in)); \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%ld\n", in_from_reg(data->reg[nr], nr, \
+		       data->scale_in)); \
+>>>>>>> refs/remotes/origin/master
 }
 show_in_reg(in)
 show_in_reg(in_min)
@@ -1115,18 +1263,24 @@ store_in_##reg(struct device *dev, struct device_attribute *attr, \
 	unsigned long val; \
 	int err; \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val); \
 	if (err < 0) \
 		return err; \
 	mutex_lock(&data->update_lock); \
 	data->in_##reg[nr] = in_to_reg(val, nr); \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = kstrtoul(buf, 10, &val); \
 	if (err < 0) \
 		return err; \
 	mutex_lock(&data->update_lock); \
 	data->in_##reg[nr] = in_to_reg(val, nr, data->scale_in); \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	w83627ehf_write_value(data, W83627EHF_REG_IN_##REG(nr), \
 			      data->in_##reg[nr]); \
 	mutex_unlock(&data->update_lock); \
@@ -1240,10 +1394,14 @@ store_fan_min(struct device *dev, struct device_attribute *attr,
 	u8 new_div;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
 =======
 	err = kstrtoul(buf, 10, &val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -1271,13 +1429,17 @@ store_fan_min(struct device *dev, struct device_attribute *attr,
 		dev_info(dev, "fan%u low limit and alarm disabled\n", nr + 1);
 	} else if ((reg = 1350000U / val) >= 128 * 255) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* Speed below this value cannot possibly be represented,
 		   even with the highest divider (128) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Speed below this value cannot possibly be represented,
 		 * even with the highest divider (128)
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		data->fan_min[nr] = 254;
 		new_div = 7; /* 128 == (1 << 7) */
@@ -1289,10 +1451,19 @@ store_fan_min(struct device *dev, struct device_attribute *attr,
 		/* Speed above this value cannot possibly be represented,
 		   even with the lowest divider (1) */
 =======
+=======
+		data->fan_min[nr] = 254;
+		new_div = 7; /* 128 == (1 << 7) */
+		dev_warn(dev,
+			 "fan%u low limit %lu below minimum %u, set to minimum\n",
+			 nr + 1, val, data->fan_from_reg_min(254, 7));
+	} else if (!reg) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Speed above this value cannot possibly be represented,
 		 * even with the lowest divider (1)
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		data->fan_min[nr] = 1;
 		new_div = 0; /* 1 == (1 << 0) */
@@ -1305,12 +1476,23 @@ store_fan_min(struct device *dev, struct device_attribute *attr,
 		   that the min limit will correspond to a register value
 		   in the 96..192 range */
 =======
+=======
+		data->fan_min[nr] = 1;
+		new_div = 0; /* 1 == (1 << 0) */
+		dev_warn(dev,
+			 "fan%u low limit %lu above maximum %u, set to maximum\n",
+			 nr + 1, val, data->fan_from_reg_min(1, 0));
+	} else {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Automatically pick the best divider, i.e. the one such
 		 * that the min limit will correspond to a register value
 		 * in the 96..192 range
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		new_div = 0;
 		while (reg > 192 && new_div < 7) {
 			reg >>= 1;
@@ -1320,14 +1502,20 @@ store_fan_min(struct device *dev, struct device_attribute *attr,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Write both the fan clock divider (if it changed) and the new
 	   fan min (unconditionally) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Write both the fan clock divider (if it changed) and the new
 	 * fan min (unconditionally)
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (new_div != data->fan_div[nr]) {
 		dev_dbg(dev, "fan%u clock divider changed from %u to %u\n",
 			nr + 1, div_from_reg(data->fan_div[nr]),
@@ -1401,11 +1589,15 @@ show_##reg(struct device *dev, struct device_attribute *attr, \
 		to_sensor_dev_attr(attr); \
 	int nr = sensor_attr->index; \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf, "%d\n", \
 		       temp_from_reg(data->addr[nr], data->reg[nr])); \
 =======
 	return sprintf(buf, "%d\n", LM75_TEMP_FROM_REG(data->reg[nr])); \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", LM75_TEMP_FROM_REG(data->reg[nr])); \
+>>>>>>> refs/remotes/origin/master
 }
 show_temp_reg(reg_temp, temp);
 show_temp_reg(reg_temp_over, temp_max);
@@ -1423,6 +1615,7 @@ store_##reg(struct device *dev, struct device_attribute *attr, \
 	int err; \
 	long val; \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val); \
 	if (err < 0) \
 		return err; \
@@ -1431,13 +1624,18 @@ store_##reg(struct device *dev, struct device_attribute *attr, \
 	w83627ehf_write_value(data, data->addr[nr], \
 			      data->reg[nr]); \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = kstrtol(buf, 10, &val); \
 	if (err < 0) \
 		return err; \
 	mutex_lock(&data->update_lock); \
 	data->reg[nr] = LM75_TEMP_TO_REG(val); \
 	w83627ehf_write_temp(data, data->addr[nr], data->reg[nr]); \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock); \
 	return count; \
 }
@@ -1446,7 +1644,10 @@ store_temp_reg(reg_temp_hyst, temp_max_hyst);
 
 static ssize_t
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 show_temp_offset(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct w83627ehf_data *data = w83627ehf_update_device(dev);
@@ -1470,7 +1671,11 @@ store_temp_offset(struct device *dev, struct device_attribute *attr,
 	if (err < 0)
 		return err;
 
+<<<<<<< HEAD
 	val = SENSORS_LIMIT(DIV_ROUND_CLOSEST(val, 1000), -128, 127);
+=======
+	val = clamp_val(DIV_ROUND_CLOSEST(val, 1000), -128, 127);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->temp_offset[nr] = val;
@@ -1480,7 +1685,10 @@ store_temp_offset(struct device *dev, struct device_attribute *attr,
 }
 
 static ssize_t
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 show_temp_type(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct w83627ehf_data *data = w83627ehf_update_device(dev);
@@ -1568,7 +1776,10 @@ static struct sensor_device_attribute sda_temp_type[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct sensor_device_attribute sda_temp_offset[] = {
 	SENSOR_ATTR(temp1_offset, S_IRUGO | S_IWUSR, show_temp_offset,
 		    store_temp_offset, 0),
@@ -1578,7 +1789,10 @@ static struct sensor_device_attribute sda_temp_offset[] = {
 		    store_temp_offset, 2),
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define show_pwm_reg(reg) \
 static ssize_t show_##reg(struct device *dev, struct device_attribute *attr, \
 			  char *buf) \
@@ -1600,17 +1814,25 @@ store_pwm_mode(struct device *dev, struct device_attribute *attr,
 {
 	struct w83627ehf_data *data = dev_get_drvdata(dev);
 	struct sensor_device_attribute *sensor_attr = to_sensor_dev_attr(attr);
+<<<<<<< HEAD
 	struct w83627ehf_sio_data *sio_data = dev->platform_data;
+=======
+	struct w83627ehf_sio_data *sio_data = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	int nr = sensor_attr->index;
 	unsigned long val;
 	int err;
 	u16 reg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
 =======
 	err = kstrtoul(buf, 10, &val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -1643,6 +1865,7 @@ store_pwm(struct device *dev, struct device_attribute *attr,
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
 =======
 	err = kstrtoul(buf, 10, &val);
@@ -1651,6 +1874,13 @@ store_pwm(struct device *dev, struct device_attribute *attr,
 		return err;
 
 	val = SENSORS_LIMIT(val, 0, 255);
+=======
+	err = kstrtoul(buf, 10, &val);
+	if (err < 0)
+		return err;
+
+	val = clamp_val(val, 0, 255);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->pwm[nr] = val;
@@ -1664,7 +1894,11 @@ store_pwm_enable(struct device *dev, struct device_attribute *attr,
 			const char *buf, size_t count)
 {
 	struct w83627ehf_data *data = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct w83627ehf_sio_data *sio_data = dev->platform_data;
+=======
+	struct w83627ehf_sio_data *sio_data = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct sensor_device_attribute *sensor_attr = to_sensor_dev_attr(attr);
 	int nr = sensor_attr->index;
 	unsigned long val;
@@ -1672,10 +1906,14 @@ store_pwm_enable(struct device *dev, struct device_attribute *attr,
 	u16 reg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
 =======
 	err = kstrtoul(buf, 10, &val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -1730,6 +1968,7 @@ store_target_temp(struct device *dev, struct device_attribute *attr,
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
 =======
 	err = kstrtol(buf, 10, &val);
@@ -1738,6 +1977,13 @@ store_target_temp(struct device *dev, struct device_attribute *attr,
 		return err;
 
 	val = SENSORS_LIMIT(DIV_ROUND_CLOSEST(val, 1000), 0, 127);
+=======
+	err = kstrtol(buf, 10, &val);
+	if (err < 0)
+		return err;
+
+	val = clamp_val(DIV_ROUND_CLOSEST(val, 1000), 0, 127);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->target_temp[nr] = val;
@@ -1751,7 +1997,11 @@ store_tolerance(struct device *dev, struct device_attribute *attr,
 			const char *buf, size_t count)
 {
 	struct w83627ehf_data *data = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct w83627ehf_sio_data *sio_data = dev->platform_data;
+=======
+	struct w83627ehf_sio_data *sio_data = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct sensor_device_attribute *sensor_attr = to_sensor_dev_attr(attr);
 	int nr = sensor_attr->index;
 	u16 reg;
@@ -1759,15 +2009,23 @@ store_tolerance(struct device *dev, struct device_attribute *attr,
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
 =======
 	err = kstrtol(buf, 10, &val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
 	/* Limit the temp to 0C - 15C */
+<<<<<<< HEAD
 	val = SENSORS_LIMIT(DIV_ROUND_CLOSEST(val, 1000), 0, 15);
+=======
+	val = clamp_val(DIV_ROUND_CLOSEST(val, 1000), 0, 15);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	if (sio_data->kind == nct6775 || sio_data->kind == nct6776) {
@@ -1864,6 +2122,7 @@ store_##reg(struct device *dev, struct device_attribute *attr, \
 	unsigned long val; \
 	int err; \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val); \
 =======
 	err = kstrtoul(buf, 10, &val); \
@@ -1871,6 +2130,12 @@ store_##reg(struct device *dev, struct device_attribute *attr, \
 	if (err < 0) \
 		return err; \
 	val = SENSORS_LIMIT(val, 1, 255); \
+=======
+	err = kstrtoul(buf, 10, &val); \
+	if (err < 0) \
+		return err; \
+	val = clamp_val(val, 1, 255); \
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&data->update_lock); \
 	data->reg[nr] = val; \
 	w83627ehf_write_value(data, data->REG_##REG[nr], val); \
@@ -1907,10 +2172,14 @@ store_##reg(struct device *dev, struct device_attribute *attr, \
 	unsigned long val; \
 	int err; \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val); \
 =======
 	err = kstrtoul(buf, 10, &val); \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = kstrtoul(buf, 10, &val); \
+>>>>>>> refs/remotes/origin/master
 	if (err < 0) \
 		return err; \
 	val = step_time_to_reg(val, data->pwm_mode[nr]); \
@@ -1946,7 +2215,10 @@ static struct sensor_device_attribute sda_sf3_arrays_fan4[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct sensor_device_attribute sda_sf3_arrays_fan3[] = {
 	SENSOR_ATTR(pwm3_stop_time, S_IWUSR | S_IRUGO, show_fan_stop_time,
 		    store_fan_stop_time, 2),
@@ -1956,35 +2228,47 @@ static struct sensor_device_attribute sda_sf3_arrays_fan3[] = {
 		    store_fan_stop_output, 2),
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct sensor_device_attribute sda_sf3_arrays[] = {
 	SENSOR_ATTR(pwm1_stop_time, S_IWUSR | S_IRUGO, show_fan_stop_time,
 		    store_fan_stop_time, 0),
 	SENSOR_ATTR(pwm2_stop_time, S_IWUSR | S_IRUGO, show_fan_stop_time,
 		    store_fan_stop_time, 1),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SENSOR_ATTR(pwm3_stop_time, S_IWUSR | S_IRUGO, show_fan_stop_time,
 		    store_fan_stop_time, 2),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	SENSOR_ATTR(pwm1_start_output, S_IWUSR | S_IRUGO, show_fan_start_output,
 		    store_fan_start_output, 0),
 	SENSOR_ATTR(pwm2_start_output, S_IWUSR | S_IRUGO, show_fan_start_output,
 		    store_fan_start_output, 1),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SENSOR_ATTR(pwm3_start_output, S_IWUSR | S_IRUGO, show_fan_start_output,
 		    store_fan_start_output, 2),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	SENSOR_ATTR(pwm1_stop_output, S_IWUSR | S_IRUGO, show_fan_stop_output,
 		    store_fan_stop_output, 0),
 	SENSOR_ATTR(pwm2_stop_output, S_IWUSR | S_IRUGO, show_fan_stop_output,
 		    store_fan_stop_output, 1),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SENSOR_ATTR(pwm3_stop_output, S_IWUSR | S_IRUGO, show_fan_stop_output,
 		    store_fan_stop_output, 2),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -2016,7 +2300,10 @@ show_vid(struct device *dev, struct device_attribute *attr, char *buf)
 static DEVICE_ATTR(cpu0_vid, S_IRUGO, show_vid, NULL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Case open detection */
 
@@ -2059,7 +2346,10 @@ static struct sensor_device_attribute_2 sda_caseopen[] = {
 			clear_caseopen, 0x40, 0x40),
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Driver and device management
  */
@@ -2067,14 +2357,20 @@ static struct sensor_device_attribute_2 sda_caseopen[] = {
 static void w83627ehf_device_remove_files(struct device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* some entries in the following arrays may not have been used in
 	 * device_create_file(), but device_remove_file() will ignore them */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * some entries in the following arrays may not have been used in
 	 * device_create_file(), but device_remove_file() will ignore them
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 	struct w83627ehf_data *data = dev_get_drvdata(dev);
 
@@ -2088,10 +2384,15 @@ static void w83627ehf_device_remove_files(struct device *dev)
 			device_remove_file(dev, &attr->dev_attr);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	for (i = 0; i < ARRAY_SIZE(sda_sf3_arrays_fan3); i++)
 		device_remove_file(dev, &sda_sf3_arrays_fan3[i].dev_attr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < ARRAY_SIZE(sda_sf3_arrays_fan3); i++)
+		device_remove_file(dev, &sda_sf3_arrays_fan3[i].dev_attr);
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ARRAY_SIZE(sda_sf3_arrays_fan4); i++)
 		device_remove_file(dev, &sda_sf3_arrays_fan4[i].dev_attr);
 	for (i = 0; i < data->in_num; i++) {
@@ -2121,10 +2422,15 @@ static void w83627ehf_device_remove_files(struct device *dev)
 		device_remove_file(dev, &sda_temp_input[i].dev_attr);
 		device_remove_file(dev, &sda_temp_label[i].dev_attr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (i == 2 && data->temp3_val_only)
 			continue;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (i == 2 && data->temp3_val_only)
+			continue;
+>>>>>>> refs/remotes/origin/master
 		device_remove_file(dev, &sda_temp_max[i].dev_attr);
 		device_remove_file(dev, &sda_temp_max_hyst[i].dev_attr);
 		if (i > 2)
@@ -2132,22 +2438,32 @@ static void w83627ehf_device_remove_files(struct device *dev)
 		device_remove_file(dev, &sda_temp_alarm[i].dev_attr);
 		device_remove_file(dev, &sda_temp_type[i].dev_attr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		device_remove_file(dev, &sda_temp_offset[i].dev_attr);
 	}
 
 	device_remove_file(dev, &sda_caseopen[0].dev_attr);
 	device_remove_file(dev, &sda_caseopen[1].dev_attr);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	device_remove_file(dev, &dev_attr_name);
 	device_remove_file(dev, &dev_attr_cpu0_vid);
 }
 
 /* Get the monitoring functions started */
+<<<<<<< HEAD
 static inline void __devinit w83627ehf_init_device(struct w83627ehf_data *data,
+=======
+static inline void w83627ehf_init_device(struct w83627ehf_data *data,
+>>>>>>> refs/remotes/origin/master
 						   enum kinds kind)
 {
 	int i;
@@ -2184,11 +2500,17 @@ static inline void __devinit w83627ehf_init_device(struct w83627ehf_data *data,
 		diode = w83627ehf_read_value(data, W83627EHF_REG_DIODE);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case w83627uhg:
 		diode = 0x00;
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case w83627uhg:
+		diode = 0x00;
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		diode = 0x70;
 	}
@@ -2237,8 +2559,12 @@ static void w82627ehf_swap_tempreg(struct w83627ehf_data *data,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static void __devinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 w83627ehf_set_temp_reg_ehf(struct w83627ehf_data *data, int n_temp)
 {
 	int i;
@@ -2251,7 +2577,11 @@ w83627ehf_set_temp_reg_ehf(struct w83627ehf_data *data, int n_temp)
 	}
 }
 
+<<<<<<< HEAD
 static void __devinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 w83627ehf_check_fan_inputs(const struct w83627ehf_sio_data *sio_data,
 			   struct w83627ehf_data *data)
 {
@@ -2340,6 +2670,7 @@ w83627ehf_check_fan_inputs(const struct w83627ehf_sio_data *sio_data,
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int __devinit w83627ehf_probe(struct platform_device *pdev)
 {
@@ -2352,6 +2683,15 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 =======
 	u8 en_vrm10;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int w83627ehf_probe(struct platform_device *pdev)
+{
+	struct device *dev = &pdev->dev;
+	struct w83627ehf_sio_data *sio_data = dev_get_platdata(dev);
+	struct w83627ehf_data *data;
+	struct resource *res;
+	u8 en_vrm10;
+>>>>>>> refs/remotes/origin/master
 	int i, err = 0;
 
 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
@@ -2380,6 +2720,7 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 	/* 627EHG and 627EHF have 10 voltage inputs; 627DHG and 667HG have 9 */
 	data->in_num = (sio_data->kind == w83627ehf) ? 10 : 9;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* 667HG, NCT6775F, and NCT6776F have 3 pwms */
 	data->pwm_num = (sio_data->kind == w83667hg
 			 || sio_data->kind == w83667hg_b
@@ -2398,6 +2739,8 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 			data->in6_skip = 1;	/* either temp3 or in6 */
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* 667HG, NCT6775F, and NCT6776F have 3 pwms, and 627UHG has only 2 */
 	switch (sio_data->kind) {
 	default:
@@ -2416,7 +2759,10 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 
 	/* Default to 3 temperature inputs, code below will adjust as needed */
 	data->have_temp = 0x07;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Deal with temperature register setup first. */
 	if (sio_data->kind == nct6775 || sio_data->kind == nct6776) {
@@ -2491,10 +2837,13 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 			data->temp_label = nct6775_temp_label;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (sio_data->kind == w83667hg_b) {
 		u8 reg;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		data->have_temp_offset = data->have_temp & 0x07;
 		for (i = 0; i < 3; i++) {
 			if (data->temp_src[i] > 3)
@@ -2505,11 +2854,15 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 
 		w83627ehf_set_temp_reg_ehf(data, 4);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Temperature sources are selected with bank 0, registers 0x49
 		 * and 0x4a.
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		for (i = 0; i < ARRAY_SIZE(W83627EHF_REG_TEMP); i++) {
 			data->reg_temp[i] = W83627EHF_REG_TEMP[i];
@@ -2519,6 +2872,8 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 		}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		reg = w83627ehf_read_value(data, 0x4a);
 		data->temp_src[0] = reg >> 5;
 		reg = w83627ehf_read_value(data, 0x49);
@@ -2553,6 +2908,7 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 
 		data->temp_label = w83667hg_b_temp_label;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else {
 		/* Temperature sources are fixed */
 		for (i = 0; i < 3; i++) {
@@ -2562,6 +2918,8 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 			data->reg_temp_config[i] = W83627EHF_REG_TEMP_CONFIG[i];
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		data->have_temp_offset = data->have_temp & 0x07;
 		for (i = 0; i < 3; i++) {
 			if (data->temp_src[i] > 2)
@@ -2628,7 +2986,10 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 				data->in6_skip = 1;
 		}
 		data->have_temp_offset = data->have_temp & 0x07;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (sio_data->kind == nct6775) {
@@ -2688,14 +3049,20 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Setup input voltage scaling factors */
 	if (sio_data->kind == w83627uhg)
 		data->scale_in = scale_in_w83627uhg;
 	else
 		data->scale_in = scale_in_common;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Initialize the chip */
 	w83627ehf_init_device(data, sio_data->kind);
 
@@ -2705,21 +3072,28 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 	if (sio_data->kind == w83667hg || sio_data->kind == w83667hg_b ||
 	    sio_data->kind == nct6775 || sio_data->kind == nct6776) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* W83667HG has different pins for VID input and output, so
 		we can get the VID input values directly at logical device D
 		0xe3. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * W83667HG has different pins for VID input and output, so
 		 * we can get the VID input values directly at logical device D
 		 * 0xe3.
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		superio_select(sio_data->sioreg, W83667HG_LD_VID);
 		data->vid = superio_inb(sio_data->sioreg, 0xe3);
 		err = device_create_file(dev, &dev_attr_cpu0_vid);
 		if (err)
 			goto exit_release;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	} else {
 		superio_select(sio_data->sioreg, W83627EHF_LD_HWM);
@@ -2730,6 +3104,8 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 			   because the W83627DHG is more complex in this
 			   respect. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} else if (sio_data->kind != w83627uhg) {
 		superio_select(sio_data->sioreg, W83627EHF_LD_HWM);
 		if (superio_inb(sio_data->sioreg, SIO_REG_VID_CTRL) & 0x80) {
@@ -2740,20 +3116,33 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 			 * because the W83627DHG is more complex in this
 			 * respect.
 			 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (sio_data->kind == w83627ehf) {
 				en_vrm10 = superio_inb(sio_data->sioreg,
 						       SIO_REG_EN_VRM10);
 				if ((en_vrm10 & 0x08) && data->vrm == 90) {
+<<<<<<< HEAD
 					dev_warn(dev, "Setting VID input "
 						 "voltage to TTL\n");
+=======
+					dev_warn(dev,
+						 "Setting VID input voltage to TTL\n");
+>>>>>>> refs/remotes/origin/master
 					superio_outb(sio_data->sioreg,
 						     SIO_REG_EN_VRM10,
 						     en_vrm10 & ~0x08);
 				} else if (!(en_vrm10 & 0x08)
 					   && data->vrm == 100) {
+<<<<<<< HEAD
 					dev_warn(dev, "Setting VID input "
 						 "voltage to VRM10\n");
+=======
+					dev_warn(dev,
+						 "Setting VID input voltage to VRM10\n");
+>>>>>>> refs/remotes/origin/master
 					superio_outb(sio_data->sioreg,
 						     SIO_REG_EN_VRM10,
 						     en_vrm10 | 0x08);
@@ -2769,6 +3158,7 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 			if (err)
 				goto exit_release;
 		} else {
+<<<<<<< HEAD
 			dev_info(dev, "VID pins in output mode, CPU VID not "
 				 "available\n");
 		}
@@ -2821,6 +3211,13 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_info(dev,
+				 "VID pins in output mode, CPU VID not available\n");
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (fan_debounce &&
 	    (sio_data->kind == nct6775 || sio_data->kind == nct6776)) {
 		u8 tmp;
@@ -2838,6 +3235,7 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 
 	superio_exit(sio_data->sioreg);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* It looks like fan4 and fan5 pins can be alternatively used
 	   as fan on/off switches, but fan5 control is write only :/
@@ -2870,6 +3268,9 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 =======
 	w83627ehf_check_fan_inputs(sio_data, data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	w83627ehf_check_fan_inputs(sio_data, data);
+>>>>>>> refs/remotes/origin/master
 
 	/* Read fan clock dividers immediately */
 	w83627ehf_update_fan_div_common(dev, data);
@@ -2880,6 +3281,7 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 		data->pwm_enable_orig[i] = data->pwm_enable[i];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Read pwm data to save original values */
 	w83627ehf_update_pwm_common(dev, data);
 	for (i = 0; i < data->pwm_num; i++)
@@ -2887,6 +3289,8 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Register sysfs hooks */
 	for (i = 0; i < ARRAY_SIZE(sda_sf3_arrays); i++) {
 		err = device_create_file(dev, &sda_sf3_arrays[i].dev_attr);
@@ -2905,8 +3309,11 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* if fan4 is enabled create the sf3 files for it */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* if fan3 and fan4 are enabled create the sf3 files for them */
 	if ((data->has_fan & (1 << 2)) && data->pwm_num >= 3)
 		for (i = 0; i < ARRAY_SIZE(sda_sf3_arrays_fan3); i++) {
@@ -2915,7 +3322,10 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 			if (err)
 				goto exit_remove;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((data->has_fan & (1 << 3)) && data->pwm_num >= 4)
 		for (i = 0; i < ARRAY_SIZE(sda_sf3_arrays_fan4); i++) {
 			err = device_create_file(dev,
@@ -2984,10 +3394,15 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 				goto exit_remove;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (i == 2 && data->temp3_val_only)
 			continue;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (i == 2 && data->temp3_val_only)
+			continue;
+>>>>>>> refs/remotes/origin/master
 		if (data->reg_temp_over[i]) {
 			err = device_create_file(dev,
 				&sda_temp_max[i].dev_attr);
@@ -3008,7 +3423,10 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 				&sda_temp_type[i].dev_attr)))
 			goto exit_remove;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (data->have_temp_offset & (1 << i)) {
 			err = device_create_file(dev,
 						 &sda_temp_offset[i].dev_attr);
@@ -3025,7 +3443,10 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 		err = device_create_file(dev, &sda_caseopen[1].dev_attr);
 		if (err)
 			goto exit_remove;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	err = device_create_file(dev, &dev_attr_name);
@@ -3043,37 +3464,147 @@ static int __devinit w83627ehf_probe(struct platform_device *pdev)
 exit_remove:
 	w83627ehf_device_remove_files(dev);
 exit_release:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	release_region(res->start, IOREGION_LENGTH);
 exit:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit w83627ehf_remove(struct platform_device *pdev)
+=======
+static int w83627ehf_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct w83627ehf_data *data = platform_get_drvdata(pdev);
 
 	hwmon_device_unregister(data->hwmon_dev);
 	w83627ehf_device_remove_files(&pdev->dev);
 	release_region(data->addr, IOREGION_LENGTH);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM
+static int w83627ehf_suspend(struct device *dev)
+{
+	struct w83627ehf_data *data = w83627ehf_update_device(dev);
+	struct w83627ehf_sio_data *sio_data = dev_get_platdata(dev);
+
+	mutex_lock(&data->update_lock);
+	data->vbat = w83627ehf_read_value(data, W83627EHF_REG_VBAT);
+	if (sio_data->kind == nct6775) {
+		data->fandiv1 = w83627ehf_read_value(data, NCT6775_REG_FANDIV1);
+		data->fandiv2 = w83627ehf_read_value(data, NCT6775_REG_FANDIV2);
+	}
+	mutex_unlock(&data->update_lock);
+
+	return 0;
+}
+
+static int w83627ehf_resume(struct device *dev)
+{
+	struct w83627ehf_data *data = dev_get_drvdata(dev);
+	struct w83627ehf_sio_data *sio_data = dev_get_platdata(dev);
+	int i;
+
+	mutex_lock(&data->update_lock);
+	data->bank = 0xff;		/* Force initial bank selection */
+
+	/* Restore limits */
+	for (i = 0; i < data->in_num; i++) {
+		if ((i == 6) && data->in6_skip)
+			continue;
+
+		w83627ehf_write_value(data, W83627EHF_REG_IN_MIN(i),
+				      data->in_min[i]);
+		w83627ehf_write_value(data, W83627EHF_REG_IN_MAX(i),
+				      data->in_max[i]);
+	}
+
+	for (i = 0; i < 5; i++) {
+		if (!(data->has_fan_min & (1 << i)))
+			continue;
+
+		w83627ehf_write_value(data, data->REG_FAN_MIN[i],
+				      data->fan_min[i]);
+	}
+
+	for (i = 0; i < NUM_REG_TEMP; i++) {
+		if (!(data->have_temp & (1 << i)))
+			continue;
+
+		if (data->reg_temp_over[i])
+			w83627ehf_write_temp(data, data->reg_temp_over[i],
+					     data->temp_max[i]);
+		if (data->reg_temp_hyst[i])
+			w83627ehf_write_temp(data, data->reg_temp_hyst[i],
+					     data->temp_max_hyst[i]);
+		if (i > 2)
+			continue;
+		if (data->have_temp_offset & (1 << i))
+			w83627ehf_write_value(data,
+					      W83627EHF_REG_TEMP_OFFSET[i],
+					      data->temp_offset[i]);
+	}
+
+	/* Restore other settings */
+	w83627ehf_write_value(data, W83627EHF_REG_VBAT, data->vbat);
+	if (sio_data->kind == nct6775) {
+		w83627ehf_write_value(data, NCT6775_REG_FANDIV1, data->fandiv1);
+		w83627ehf_write_value(data, NCT6775_REG_FANDIV2, data->fandiv2);
+	}
+
+	/* Force re-reading all values */
+	data->valid = 0;
+	mutex_unlock(&data->update_lock);
+
+	return 0;
+}
+
+static const struct dev_pm_ops w83627ehf_dev_pm_ops = {
+	.suspend = w83627ehf_suspend,
+	.resume = w83627ehf_resume,
+	.freeze = w83627ehf_suspend,
+	.restore = w83627ehf_resume,
+};
+
+#define W83627EHF_DEV_PM_OPS	(&w83627ehf_dev_pm_ops)
+#else
+#define W83627EHF_DEV_PM_OPS	NULL
+#endif /* CONFIG_PM */
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver w83627ehf_driver = {
 	.driver = {
 		.owner	= THIS_MODULE,
 		.name	= DRVNAME,
+<<<<<<< HEAD
 	},
 	.probe		= w83627ehf_probe,
 	.remove		= __devexit_p(w83627ehf_remove),
+=======
+		.pm	= W83627EHF_DEV_PM_OPS,
+	},
+	.probe		= w83627ehf_probe,
+	.remove		= w83627ehf_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* w83627ehf_find() looks for a '627 in the Super-I/O config space */
 static int __init w83627ehf_find(int sioaddr, unsigned short *addr,
 				 struct w83627ehf_sio_data *sio_data)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	static const char __initdata sio_name_W83627EHF[] = "W83627EHF";
 	static const char __initdata sio_name_W83627EHG[] = "W83627EHG";
@@ -3084,6 +3615,8 @@ static int __init w83627ehf_find(int sioaddr, unsigned short *addr,
 	static const char __initdata sio_name_NCT6775[] = "NCT6775F";
 	static const char __initdata sio_name_NCT6776[] = "NCT6776F";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	static const char sio_name_W83627EHF[] __initconst = "W83627EHF";
 	static const char sio_name_W83627EHG[] __initconst = "W83627EHG";
 	static const char sio_name_W83627DHG[] __initconst = "W83627DHG";
@@ -3093,7 +3626,10 @@ static int __init w83627ehf_find(int sioaddr, unsigned short *addr,
 	static const char sio_name_W83667HG_B[] __initconst = "W83667HG-B";
 	static const char sio_name_NCT6775[] __initconst = "NCT6775F";
 	static const char sio_name_NCT6776[] __initconst = "NCT6776F";
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	u16 val;
 	const char *sio_name;
@@ -3123,12 +3659,18 @@ static int __init w83627ehf_find(int sioaddr, unsigned short *addr,
 		sio_name = sio_name_W83627DHG_P;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case SIO_W83627UHG_ID:
 		sio_data->kind = w83627uhg;
 		sio_name = sio_name_W83627UHG;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case SIO_W83667HG_ID:
 		sio_data->kind = w83667hg;
 		sio_name = sio_name_W83667HG;
@@ -3166,8 +3708,12 @@ static int __init w83627ehf_find(int sioaddr, unsigned short *addr,
 	/* Activate logical device if needed */
 	val = superio_inb(sioaddr, SIO_REG_ENABLE);
 	if (!(val & 0x01)) {
+<<<<<<< HEAD
 		pr_warn("Forcibly enabling Super-I/O. "
 			"Sensor is probably unusable.\n");
+=======
+		pr_warn("Forcibly enabling Super-I/O. Sensor is probably unusable.\n");
+>>>>>>> refs/remotes/origin/master
 		superio_outb(sioaddr, SIO_REG_ENABLE, val | 0x01);
 	}
 
@@ -3179,18 +3725,24 @@ static int __init w83627ehf_find(int sioaddr, unsigned short *addr,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* when Super-I/O functions move to a separate file, the Super-I/O
  * bus will manage the lifetime of the device and this module will only keep
  * track of the w83627ehf driver. But since we platform_device_alloc(), we
  * must keep track of the device */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * when Super-I/O functions move to a separate file, the Super-I/O
  * bus will manage the lifetime of the device and this module will only keep
  * track of the w83627ehf driver. But since we platform_device_alloc(), we
  * must keep track of the device
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device *pdev;
 
 static int __init sensors_w83627ehf_init(void)
@@ -3201,12 +3753,15 @@ static int __init sensors_w83627ehf_init(void)
 	struct w83627ehf_sio_data sio_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* initialize sio_data->kind and sio_data->sioreg.
 	 *
 	 * when Super-I/O functions move to a separate file, the Super-I/O
 	 * driver will probe 0x2e and 0x4e and auto-detect the presence of a
 	 * w83627ehf hardware monitor, and call probe() */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * initialize sio_data->kind and sio_data->sioreg.
 	 *
@@ -3214,7 +3769,10 @@ static int __init sensors_w83627ehf_init(void)
 	 * driver will probe 0x2e and 0x4e and auto-detect the presence of a
 	 * w83627ehf hardware monitor, and call probe()
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (w83627ehf_find(0x2e, &address, &sio_data) &&
 	    w83627ehf_find(0x4e, &address, &sio_data))
 		return -ENODEV;

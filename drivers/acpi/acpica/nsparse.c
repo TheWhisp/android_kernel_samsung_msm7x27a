@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -144,7 +148,11 @@ acpi_ns_one_complete_parse(u32 pass_number,
 			  pass_number));
 	status = acpi_ps_parse_aml(walk_state);
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 	acpi_ps_delete_parse_tree(parse_root);
 	return_ACPI_STATUS(status);
 }
@@ -172,11 +180,19 @@ acpi_ns_parse_table(u32 table_index, struct acpi_namespace_node *start_node)
 	/*
 	 * AML Parse, pass 1
 	 *
+<<<<<<< HEAD
 	 * In this pass, we load most of the namespace.  Control methods
 	 * are not parsed until later.  A parse tree is not created.  Instead,
 	 * each Parser Op subtree is deleted when it is finished.  This saves
 	 * a great deal of memory, and allows a small cache of parse objects
 	 * to service the entire parse.  The second pass of the parse then
+=======
+	 * In this pass, we load most of the namespace. Control methods
+	 * are not parsed until later. A parse tree is not created. Instead,
+	 * each Parser Op subtree is deleted when it is finished. This saves
+	 * a great deal of memory, and allows a small cache of parse objects
+	 * to service the entire parse. The second pass of the parse then
+>>>>>>> refs/remotes/origin/master
 	 * performs another complete parse of the AML.
 	 */
 	ACPI_DEBUG_PRINT((ACPI_DB_PARSE, "**** Start pass 1\n"));

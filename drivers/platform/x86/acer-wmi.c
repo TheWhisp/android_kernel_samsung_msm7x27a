@@ -44,9 +44,13 @@
 
 #include <acpi/acpi_drivers.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <acpi/video.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <acpi/video.h>
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Carlos Corbacho");
 MODULE_DESCRIPTION("Acer Laptop WMI Extras Driver");
@@ -98,15 +102,23 @@ MODULE_ALIAS("wmi:676AA15E-6A47-4D9F-A2CC-1E6D18D14026");
 
 enum acer_wmi_event_ids {
 	WMID_HOTKEY_EVENT = 0x1,
+<<<<<<< HEAD
+=======
+	WMID_ACCEL_EVENT = 0x5,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct key_entry acer_wmi_keymap[] = {
 	{KE_KEY, 0x01, {KEY_WLAN} },     /* WiFi */
 	{KE_KEY, 0x03, {KEY_WLAN} },     /* WiFi */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{KE_KEY, 0x04, {KEY_WLAN} },     /* WiFi */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{KE_KEY, 0x04, {KEY_WLAN} },     /* WiFi */
+>>>>>>> refs/remotes/origin/master
 	{KE_KEY, 0x12, {KEY_BLUETOOTH} },	/* BT */
 	{KE_KEY, 0x21, {KEY_PROG1} },    /* Backup */
 	{KE_KEY, 0x22, {KEY_PROG2} },    /* Arcade */
@@ -116,12 +128,15 @@ static const struct key_entry acer_wmi_keymap[] = {
 	{KE_IGNORE, 0x41, {KEY_MUTE} },
 	{KE_IGNORE, 0x42, {KEY_PREVIOUSSONG} },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{KE_IGNORE, 0x43, {KEY_NEXTSONG} },
 	{KE_IGNORE, 0x44, {KEY_PLAYPAUSE} },
 	{KE_IGNORE, 0x45, {KEY_STOP} },
 	{KE_IGNORE, 0x48, {KEY_VOLUMEUP} },
 	{KE_IGNORE, 0x49, {KEY_VOLUMEDOWN} },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{KE_IGNORE, 0x4d, {KEY_PREVIOUSSONG} },
 	{KE_IGNORE, 0x43, {KEY_NEXTSONG} },
 	{KE_IGNORE, 0x4e, {KEY_NEXTSONG} },
@@ -132,18 +147,33 @@ static const struct key_entry acer_wmi_keymap[] = {
 	{KE_IGNORE, 0x48, {KEY_VOLUMEUP} },
 	{KE_IGNORE, 0x49, {KEY_VOLUMEDOWN} },
 	{KE_IGNORE, 0x4a, {KEY_VOLUMEDOWN} },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{KE_IGNORE, 0x61, {KEY_SWITCHVIDEOMODE} },
 	{KE_IGNORE, 0x62, {KEY_BRIGHTNESSUP} },
 	{KE_IGNORE, 0x63, {KEY_BRIGHTNESSDOWN} },
 	{KE_KEY, 0x64, {KEY_SWITCHVIDEOMODE} },	/* Display Switch */
 	{KE_IGNORE, 0x81, {KEY_SLEEP} },
+<<<<<<< HEAD
 	{KE_KEY, 0x82, {KEY_TOUCHPAD_TOGGLE} },	/* Touch Pad On/Off */
 	{KE_IGNORE, 0x83, {KEY_TOUCHPAD_TOGGLE} },
+=======
+	{KE_KEY, 0x82, {KEY_TOUCHPAD_TOGGLE} },	/* Touch Pad Toggle */
+	{KE_KEY, KEY_TOUCHPAD_ON, {KEY_TOUCHPAD_ON} },
+	{KE_KEY, KEY_TOUCHPAD_OFF, {KEY_TOUCHPAD_OFF} },
+	{KE_IGNORE, 0x83, {KEY_TOUCHPAD_TOGGLE} },
+	{KE_KEY, 0x85, {KEY_TOUCHPAD_TOGGLE} },
+>>>>>>> refs/remotes/origin/master
 	{KE_END, 0}
 };
 
 static struct input_dev *acer_wmi_input_dev;
+<<<<<<< HEAD
+=======
+static struct input_dev *acer_wmi_accel_dev;
+>>>>>>> refs/remotes/origin/master
 
 struct event_return_value {
 	u8 function;
@@ -159,6 +189,10 @@ struct event_return_value {
 #define ACER_WMID3_GDS_THREEG		(1<<6)	/* 3G */
 #define ACER_WMID3_GDS_WIMAX		(1<<7)	/* WiMAX */
 #define ACER_WMID3_GDS_BLUETOOTH	(1<<11)	/* BT */
+<<<<<<< HEAD
+=======
+#define ACER_WMID3_GDS_TOUCHPAD		(1<<1)	/* Touchpad */
+>>>>>>> refs/remotes/origin/master
 
 struct lm_input_params {
 	u8 function_num;        /* Function Number */
@@ -175,8 +209,11 @@ struct lm_return_value {
 } __attribute__((packed));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct wmid3_gds_input_param {	/* Get Device Status input parameter */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct wmid3_gds_set_input_param {     /* Set Device Status input parameter */
 	u8 function_num;        /* Function Number */
 	u8 hotkey_number;       /* Hotkey Number */
@@ -185,7 +222,10 @@ struct wmid3_gds_set_input_param {     /* Set Device Status input parameter */
 } __attribute__((packed));
 
 struct wmid3_gds_get_input_param {     /* Get Device Status input parameter */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 function_num;	/* Function Number */
 	u8 hotkey_number;	/* Hotkey Number */
 	u16 devices;		/* Get Device */
@@ -204,13 +244,19 @@ struct hotkey_function_type_aa {
 	u16 handle;
 	u16 commun_func_bitmap;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 application_func_bitmap;
 	u16 media_func_bitmap;
 	u16 display_func_bitmap;
 	u16 others_func_bitmap;
 	u8 commun_fn_key_number;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed));
 
 /*
@@ -221,6 +267,10 @@ struct hotkey_function_type_aa {
 #define ACER_CAP_BLUETOOTH		(1<<2)
 #define ACER_CAP_BRIGHTNESS		(1<<3)
 #define ACER_CAP_THREEG			(1<<4)
+<<<<<<< HEAD
+=======
+#define ACER_CAP_ACCEL			(1<<5)
+>>>>>>> refs/remotes/origin/master
 #define ACER_CAP_ANY			(0xFFFFFFFF)
 
 /*
@@ -231,9 +281,13 @@ enum interface_flags {
 	ACER_AMW0_V2,
 	ACER_WMID,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ACER_WMID_v2,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ACER_WMID_v2,
+>>>>>>> refs/remotes/origin/master
 };
 
 #define ACER_DEFAULT_WIRELESS  0
@@ -250,10 +304,15 @@ static int force_series;
 static bool ec_raw_mode;
 static bool has_type_aa;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static u16 commun_func_bitmap;
 static u8 commun_fn_key_number;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u16 commun_func_bitmap;
+static u8 commun_fn_key_number;
+>>>>>>> refs/remotes/origin/master
 
 module_param(mailled, int, 0444);
 module_param(brightness, int, 0444);
@@ -359,7 +418,11 @@ static struct quirk_entry quirk_lenovo_ideapad_s205 = {
 };
 
 /* The Aspire One has a dummy ACPI-WMI interface - disable it */
+<<<<<<< HEAD
 static struct dmi_system_id __devinitdata acer_blacklist[] = {
+=======
+static struct dmi_system_id acer_blacklist[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.ident = "Acer Aspire One (SSD)",
 		.matches = {
@@ -516,7 +579,10 @@ static struct dmi_system_id acer_quirks[] = {
 	{
 		.callback = dmi_matched,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.ident = "Lenovo Ideapad S205 (Brazos)",
 		.matches = {
 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
@@ -526,7 +592,10 @@ static struct dmi_system_id acer_quirks[] = {
 	},
 	{
 		.callback = dmi_matched,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.ident = "Lenovo 3000 N200",
 		.matches = {
 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
@@ -534,11 +603,35 @@ static struct dmi_system_id acer_quirks[] = {
 		},
 		.driver_data = &quirk_fujitsu_amilo_li_1718,
 	},
+<<<<<<< HEAD
 	{}
 };
 
 <<<<<<< HEAD
 =======
+=======
+	{
+		.callback = dmi_matched,
+		.ident = "Lenovo Ideapad S205-10382JG",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "10382JG"),
+		},
+		.driver_data = &quirk_lenovo_ideapad_s205,
+	},
+	{
+		.callback = dmi_matched,
+		.ident = "Lenovo Ideapad S205-1038DPG",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "1038DPG"),
+		},
+		.driver_data = &quirk_lenovo_ideapad_s205,
+	},
+	{}
+};
+
+>>>>>>> refs/remotes/origin/master
 static int video_set_backlight_video_vendor(const struct dmi_system_id *d)
 {
 	interface->capability &= ~ACER_CAP_BRIGHTNESS;
@@ -555,10 +648,40 @@ static const struct dmi_system_id video_vendor_dmi_table[] = {
 			DMI_MATCH(DMI_PRODUCT_NAME, "TravelMate 4750"),
 		},
 	},
+<<<<<<< HEAD
 	{}
 };
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{
+		.callback = video_set_backlight_video_vendor,
+		.ident = "Acer Extensa 5235",
+		.matches = {
+			DMI_MATCH(DMI_BOARD_VENDOR, "Acer"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Extensa 5235"),
+		},
+	},
+	{
+		.callback = video_set_backlight_video_vendor,
+		.ident = "Acer TravelMate 5760",
+		.matches = {
+			DMI_MATCH(DMI_BOARD_VENDOR, "Acer"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "TravelMate 5760"),
+		},
+	},
+	{
+		.callback = video_set_backlight_video_vendor,
+		.ident = "Acer Aspire 5750",
+		.matches = {
+			DMI_MATCH(DMI_BOARD_VENDOR, "Acer"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire 5750"),
+		},
+	},
+	{}
+};
+
+>>>>>>> refs/remotes/origin/master
 /* Find which quirks are needed for a particular vendor/ model pair */
 static void find_quirks(void)
 {
@@ -618,11 +741,15 @@ struct acpi_buffer *result)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static acpi_status AMW0_get_u32(u32 *value, u32 cap,
 struct wmi_interface *iface)
 =======
 static acpi_status AMW0_get_u32(u32 *value, u32 cap)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static acpi_status AMW0_get_u32(u32 *value, u32 cap)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	u8 result;
@@ -693,10 +820,14 @@ static acpi_status AMW0_get_u32(u32 *value, u32 cap)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static acpi_status AMW0_set_u32(u32 value, u32 cap, struct wmi_interface *iface)
 =======
 static acpi_status AMW0_set_u32(u32 value, u32 cap)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static acpi_status AMW0_set_u32(u32 value, u32 cap)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wmab_args args;
 
@@ -890,7 +1021,11 @@ WMI_execute_u32(u32 method_id, u32 in, u32 *out)
 	struct acpi_buffer input = { (acpi_size) sizeof(u32), (void *)(&in) };
 	struct acpi_buffer result = { ACPI_ALLOCATE_BUFFER, NULL };
 	union acpi_object *obj;
+<<<<<<< HEAD
 	u32 tmp;
+=======
+	u32 tmp = 0;
+>>>>>>> refs/remotes/origin/master
 	acpi_status status;
 
 	status = wmi_evaluate_method(WMID_GUID1, 1, method_id, &input, &result);
@@ -899,6 +1034,7 @@ WMI_execute_u32(u32 method_id, u32 in, u32 *out)
 		return status;
 
 	obj = (union acpi_object *) result.pointer;
+<<<<<<< HEAD
 	if (obj && obj->type == ACPI_TYPE_BUFFER &&
 		(obj->buffer.length == sizeof(u32) ||
 		obj->buffer.length == sizeof(u64))) {
@@ -907,6 +1043,16 @@ WMI_execute_u32(u32 method_id, u32 in, u32 *out)
 		tmp = (u32) obj->integer.value;
 	} else {
 		tmp = 0;
+=======
+	if (obj) {
+		if (obj->type == ACPI_TYPE_BUFFER &&
+			(obj->buffer.length == sizeof(u32) ||
+			obj->buffer.length == sizeof(u64))) {
+			tmp = *((u32 *) obj->buffer.pointer);
+		} else if (obj->type == ACPI_TYPE_INTEGER) {
+			tmp = (u32) obj->integer.value;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (out)
@@ -918,11 +1064,15 @@ WMI_execute_u32(u32 method_id, u32 in, u32 *out)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static acpi_status WMID_get_u32(u32 *value, u32 cap,
 struct wmi_interface *iface)
 =======
 static acpi_status WMID_get_u32(u32 *value, u32 cap)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static acpi_status WMID_get_u32(u32 *value, u32 cap)
+>>>>>>> refs/remotes/origin/master
 {
 	acpi_status status;
 	u8 tmp;
@@ -959,10 +1109,14 @@ static acpi_status WMID_get_u32(u32 *value, u32 cap)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static acpi_status WMID_set_u32(u32 value, u32 cap, struct wmi_interface *iface)
 =======
 static acpi_status WMID_set_u32(u32 value, u32 cap)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static acpi_status WMID_set_u32(u32 value, u32 cap)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 method_id = 0;
 	char param;
@@ -1006,7 +1160,10 @@ static acpi_status WMID_set_u32(u32 value, u32 cap)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static acpi_status wmid3_get_device_status(u32 *value, u16 device)
 {
 	struct wmid3_gds_return_value return_value;
@@ -1182,7 +1339,10 @@ static acpi_status wmid_v2_set_u32(u32 value, u32 cap)
 	return wmid3_set_device_status(value, device);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void type_aa_dmi_decode(const struct dmi_header *header, void *dummy)
 {
 	struct hotkey_function_type_aa *type_aa;
@@ -1197,9 +1357,13 @@ static void type_aa_dmi_decode(const struct dmi_header *header, void *dummy)
 	pr_info("Function bitmap for Communication Button: 0x%x\n",
 		type_aa->commun_func_bitmap);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	commun_func_bitmap = type_aa->commun_func_bitmap;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	commun_func_bitmap = type_aa->commun_func_bitmap;
+>>>>>>> refs/remotes/origin/master
 
 	if (type_aa->commun_func_bitmap & ACER_WMID3_GDS_WIRELESS)
 		interface->capability |= ACER_CAP_WIRELESS;
@@ -1208,10 +1372,15 @@ static void type_aa_dmi_decode(const struct dmi_header *header, void *dummy)
 	if (type_aa->commun_func_bitmap & ACER_WMID3_GDS_BLUETOOTH)
 		interface->capability |= ACER_CAP_BLUETOOTH;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	commun_fn_key_number = type_aa->commun_fn_key_number;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	commun_fn_key_number = type_aa->commun_fn_key_number;
+>>>>>>> refs/remotes/origin/master
 }
 
 static acpi_status WMID_set_capabilities(void)
@@ -1226,17 +1395,32 @@ static acpi_status WMID_set_capabilities(void)
 		return status;
 
 	obj = (union acpi_object *) out.pointer;
+<<<<<<< HEAD
 	if (obj && obj->type == ACPI_TYPE_BUFFER &&
 		(obj->buffer.length == sizeof(u32) ||
 		obj->buffer.length == sizeof(u64))) {
 		devices = *((u32 *) obj->buffer.pointer);
 	} else if (obj->type == ACPI_TYPE_INTEGER) {
 		devices = (u32) obj->integer.value;
+=======
+	if (obj) {
+		if (obj->type == ACPI_TYPE_BUFFER &&
+			(obj->buffer.length == sizeof(u32) ||
+			obj->buffer.length == sizeof(u64))) {
+			devices = *((u32 *) obj->buffer.pointer);
+		} else if (obj->type == ACPI_TYPE_INTEGER) {
+			devices = (u32) obj->integer.value;
+		} else {
+			kfree(out.pointer);
+			return AE_ERROR;
+		}
+>>>>>>> refs/remotes/origin/master
 	} else {
 		kfree(out.pointer);
 		return AE_ERROR;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dmi_walk(type_aa_dmi_decode, NULL);
 	if (!has_type_aa) {
@@ -1250,6 +1434,8 @@ static acpi_status WMID_set_capabilities(void)
 	/* WMID always provides brightness methods */
 	interface->capability |= ACER_CAP_BRIGHTNESS;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_info("Function bitmap for Communication Device: 0x%x\n", devices);
 	if (devices & 0x07)
 		interface->capability |= ACER_CAP_WIRELESS;
@@ -1257,7 +1443,10 @@ static acpi_status WMID_set_capabilities(void)
 		interface->capability |= ACER_CAP_THREEG;
 	if (devices & 0x10)
 		interface->capability |= ACER_CAP_BLUETOOTH;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!(devices & 0x20))
 		max_brightness = 0x9;
@@ -1271,12 +1460,18 @@ static struct wmi_interface wmid_interface = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct wmi_interface wmid_v2_interface = {
 	.type = ACER_WMID_v2,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Generic Device (interface-independent)
  */
@@ -1288,6 +1483,7 @@ static acpi_status get_u32(u32 *value, u32 cap)
 	switch (interface->type) {
 	case ACER_AMW0:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		status = AMW0_get_u32(value, cap, interface);
 		break;
 	case ACER_AMW0_V2:
@@ -1298,6 +1494,8 @@ static acpi_status get_u32(u32 *value, u32 cap)
 	case ACER_WMID:
 		status = WMID_get_u32(value, cap, interface);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		status = AMW0_get_u32(value, cap);
 		break;
 	case ACER_AMW0_V2:
@@ -1315,7 +1513,10 @@ static acpi_status get_u32(u32 *value, u32 cap)
 			status = wmid_v2_get_u32(value, cap);
 		else if (wmi_has_guid(WMID_GUID2))
 			status = WMID_get_u32(value, cap);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -1330,16 +1531,22 @@ static acpi_status set_u32(u32 value, u32 cap)
 		switch (interface->type) {
 		case ACER_AMW0:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return AMW0_set_u32(value, cap, interface);
 		case ACER_AMW0_V2:
 			if (cap == ACER_CAP_MAILLED)
 				return AMW0_set_u32(value, cap, interface);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			return AMW0_set_u32(value, cap);
 		case ACER_AMW0_V2:
 			if (cap == ACER_CAP_MAILLED)
 				return AMW0_set_u32(value, cap);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			/*
 			 * On some models, some WMID methods don't toggle
@@ -1350,6 +1557,7 @@ static acpi_status set_u32(u32 value, u32 cap)
 			if (cap == ACER_CAP_WIRELESS ||
 				cap == ACER_CAP_BLUETOOTH) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				status = WMID_set_u32(value, cap, interface);
 				if (ACPI_FAILURE(status))
 					return status;
@@ -1359,6 +1567,8 @@ static acpi_status set_u32(u32 value, u32 cap)
 		case ACER_WMID:
 			return WMID_set_u32(value, cap, interface);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				status = WMID_set_u32(value, cap);
 				if (ACPI_FAILURE(status))
 					return status;
@@ -1374,7 +1584,10 @@ static acpi_status set_u32(u32 value, u32 cap)
 				return wmid_v2_set_u32(value, cap);
 			else if (wmi_has_guid(WMID_GUID2))
 				return WMID_set_u32(value, cap);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		default:
 			return AE_BAD_PARAMETER;
 		}
@@ -1410,7 +1623,11 @@ static struct led_classdev mail_led = {
 	.brightness_set = mail_led_set,
 };
 
+<<<<<<< HEAD
 static int __devinit acer_led_init(struct device *dev)
+=======
+static int acer_led_init(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return led_classdev_register(dev, &mail_led);
 }
@@ -1452,7 +1669,11 @@ static const struct backlight_ops acer_bl_ops = {
 	.update_status = update_bl_status,
 };
 
+<<<<<<< HEAD
 static int __devinit acer_backlight_init(struct device *dev)
+=======
+static int acer_backlight_init(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct backlight_properties props;
 	struct backlight_device *bd;
@@ -1481,6 +1702,7 @@ static void acer_backlight_exit(void)
 	backlight_device_unregister(acer_backlight_device);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static acpi_status wmid3_get_device_status(u32 *value, u16 device)
 {
@@ -1664,6 +1886,62 @@ static acpi_status set_device_status(u32 value, u32 cap)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Accelerometer device
+ */
+static acpi_handle gsensor_handle;
+
+static int acer_gsensor_init(void)
+{
+	acpi_status status;
+	struct acpi_buffer output;
+	union acpi_object out_obj;
+
+	output.length = sizeof(out_obj);
+	output.pointer = &out_obj;
+	status = acpi_evaluate_object(gsensor_handle, "_INI", NULL, &output);
+	if (ACPI_FAILURE(status))
+		return -1;
+
+	return 0;
+}
+
+static int acer_gsensor_open(struct input_dev *input)
+{
+	return acer_gsensor_init();
+}
+
+static int acer_gsensor_event(void)
+{
+	acpi_status status;
+	struct acpi_buffer output;
+	union acpi_object out_obj[5];
+
+	if (!has_cap(ACER_CAP_ACCEL))
+		return -1;
+
+	output.length = sizeof(out_obj);
+	output.pointer = out_obj;
+
+	status = acpi_evaluate_object(gsensor_handle, "RDVL", NULL, &output);
+	if (ACPI_FAILURE(status))
+		return -1;
+
+	if (out_obj->package.count != 4)
+		return -1;
+
+	input_report_abs(acer_wmi_accel_dev, ABS_X,
+		(s16)out_obj->package.elements[0].integer.value);
+	input_report_abs(acer_wmi_accel_dev, ABS_Y,
+		(s16)out_obj->package.elements[1].integer.value);
+	input_report_abs(acer_wmi_accel_dev, ABS_Z,
+		(s16)out_obj->package.elements[2].integer.value);
+	input_sync(acer_wmi_accel_dev);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Rfkill devices
  */
@@ -1692,11 +1970,15 @@ static void acer_rfkill_update(struct work_struct *ignored)
 
 	if (has_cap(ACER_CAP_THREEG) && wmi_has_guid(WMID_GUID3)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		status = wmid3_get_device_status(&state,
 				ACER_WMID3_GDS_THREEG);
 =======
 		status = get_u32(&state, ACER_WMID3_GDS_THREEG);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		status = get_u32(&state, ACER_WMID3_GDS_THREEG);
+>>>>>>> refs/remotes/origin/master
 		if (ACPI_SUCCESS(status))
 			rfkill_set_sw_state(threeg_rfkill, !state);
 	}
@@ -1711,10 +1993,14 @@ static int acer_rfkill_set(void *data, bool blocked)
 
 	if (rfkill_inited) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		status = set_device_status(!blocked, cap);
 =======
 		status = set_u32(!blocked, cap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		status = set_u32(!blocked, cap);
+>>>>>>> refs/remotes/origin/master
 		if (ACPI_FAILURE(status))
 			return -ENODEV;
 	}
@@ -1742,10 +2028,14 @@ static struct rfkill *acer_rfkill_register(struct device *dev,
 		return ERR_PTR(-ENOMEM);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	status = get_device_status(&state, cap);
 =======
 	status = get_u32(&state, cap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = get_u32(&state, cap);
+>>>>>>> refs/remotes/origin/master
 
 	err = rfkill_register(rfkill_dev);
 	if (err) {
@@ -1847,17 +2137,23 @@ static ssize_t show_bool_threeg(struct device *dev,
 	u32 result; \
 	acpi_status status;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (wmi_has_guid(WMID_GUID3))
 		status = wmid3_get_device_status(&result,
 				ACER_WMID3_GDS_THREEG);
 	else
 		status = get_u32(&result, ACER_CAP_THREEG);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pr_info("This threeg sysfs will be removed in 2012 - used by: %s\n",
 		current->comm);
 	status = get_u32(&result, ACER_CAP_THREEG);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_SUCCESS(status))
 		return sprintf(buf, "%u\n", result);
 	return sprintf(buf, "Read error\n");
@@ -1869,14 +2165,20 @@ static ssize_t set_bool_threeg(struct device *dev,
 	u32 tmp = simple_strtoul(buf, NULL, 10);
 	acpi_status status = set_u32(tmp, ACER_CAP_THREEG);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ACPI_FAILURE(status))
 			return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_info("This threeg sysfs will be removed in 2012 - used by: %s\n",
 		current->comm);
 	if (ACPI_FAILURE(status))
 		return -EINVAL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 static DEVICE_ATTR(threeg, S_IRUGO | S_IWUSR, show_bool_threeg,
@@ -1886,10 +2188,15 @@ static ssize_t show_interface(struct device *dev, struct device_attribute *attr,
 	char *buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pr_info("This interface sysfs will be removed in 2012 - used by: %s\n",
 		current->comm);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("This interface sysfs will be removed in 2012 - used by: %s\n",
+		current->comm);
+>>>>>>> refs/remotes/origin/master
 	switch (interface->type) {
 	case ACER_AMW0:
 		return sprintf(buf, "AMW0\n");
@@ -1898,10 +2205,15 @@ static ssize_t show_interface(struct device *dev, struct device_attribute *attr,
 	case ACER_WMID:
 		return sprintf(buf, "WMID\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case ACER_WMID_v2:
 		return sprintf(buf, "WMID v2\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case ACER_WMID_v2:
+		return sprintf(buf, "WMID v2\n");
+>>>>>>> refs/remotes/origin/master
 	default:
 		return sprintf(buf, "Error!\n");
 	}
@@ -1917,6 +2229,10 @@ static void acer_wmi_notify(u32 value, void *context)
 	acpi_status status;
 	u16 device_state;
 	const struct key_entry *key;
+<<<<<<< HEAD
+=======
+	u32 scancode;
+>>>>>>> refs/remotes/origin/master
 
 	status = wmi_get_event_data(value, &response);
 	if (status != AE_OK) {
@@ -1953,6 +2269,10 @@ static void acer_wmi_notify(u32 value, void *context)
 			pr_warn("Unknown key number - 0x%x\n",
 				return_value.key_num);
 		} else {
+<<<<<<< HEAD
+=======
+			scancode = return_value.key_num;
+>>>>>>> refs/remotes/origin/master
 			switch (key->keycode) {
 			case KEY_WLAN:
 			case KEY_BLUETOOTH:
@@ -1966,11 +2286,24 @@ static void acer_wmi_notify(u32 value, void *context)
 					rfkill_set_sw_state(bluetooth_rfkill,
 						!(device_state & ACER_WMID3_GDS_BLUETOOTH));
 				break;
+<<<<<<< HEAD
 			}
 			sparse_keymap_report_entry(acer_wmi_input_dev, key,
 						   1, true);
 		}
 		break;
+=======
+			case KEY_TOUCHPAD_TOGGLE:
+				scancode = (device_state & ACER_WMID3_GDS_TOUCHPAD) ?
+						KEY_TOUCHPAD_ON : KEY_TOUCHPAD_OFF;
+			}
+			sparse_keymap_report_event(acer_wmi_input_dev, scancode, 1, true);
+		}
+		break;
+	case WMID_ACCEL_EVENT:
+		acer_gsensor_event();
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		pr_warn("Unknown function number - %d - %d\n",
 			return_value.function, return_value.key_num);
@@ -2056,6 +2389,76 @@ static int acer_wmi_enable_lm(void)
 	return status;
 }
 
+<<<<<<< HEAD
+=======
+static acpi_status __init acer_wmi_get_handle_cb(acpi_handle ah, u32 level,
+						void *ctx, void **retval)
+{
+	*(acpi_handle *)retval = ah;
+	return AE_OK;
+}
+
+static int __init acer_wmi_get_handle(const char *name, const char *prop,
+					acpi_handle *ah)
+{
+	acpi_status status;
+	acpi_handle handle;
+
+	BUG_ON(!name || !ah);
+
+	handle = NULL;
+	status = acpi_get_devices(prop, acer_wmi_get_handle_cb,
+					(void *)name, &handle);
+
+	if (ACPI_SUCCESS(status)) {
+		*ah = handle;
+		return 0;
+	} else {
+		return -ENODEV;
+	}
+}
+
+static int __init acer_wmi_accel_setup(void)
+{
+	int err;
+
+	err = acer_wmi_get_handle("SENR", "BST0001", &gsensor_handle);
+	if (err)
+		return err;
+
+	interface->capability |= ACER_CAP_ACCEL;
+
+	acer_wmi_accel_dev = input_allocate_device();
+	if (!acer_wmi_accel_dev)
+		return -ENOMEM;
+
+	acer_wmi_accel_dev->open = acer_gsensor_open;
+
+	acer_wmi_accel_dev->name = "Acer BMA150 accelerometer";
+	acer_wmi_accel_dev->phys = "wmi/input1";
+	acer_wmi_accel_dev->id.bustype = BUS_HOST;
+	acer_wmi_accel_dev->evbit[0] = BIT_MASK(EV_ABS);
+	input_set_abs_params(acer_wmi_accel_dev, ABS_X, -16384, 16384, 0, 0);
+	input_set_abs_params(acer_wmi_accel_dev, ABS_Y, -16384, 16384, 0, 0);
+	input_set_abs_params(acer_wmi_accel_dev, ABS_Z, -16384, 16384, 0, 0);
+
+	err = input_register_device(acer_wmi_accel_dev);
+	if (err)
+		goto err_free_dev;
+
+	return 0;
+
+err_free_dev:
+	input_free_device(acer_wmi_accel_dev);
+	return err;
+}
+
+static void acer_wmi_accel_destroy(void)
+{
+	input_unregister_device(acer_wmi_accel_dev);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int __init acer_wmi_input_setup(void)
 {
 	acpi_status status;
@@ -2117,12 +2520,23 @@ static u32 get_wmid_devices(void)
 		return 0;
 
 	obj = (union acpi_object *) out.pointer;
+<<<<<<< HEAD
 	if (obj && obj->type == ACPI_TYPE_BUFFER &&
 		(obj->buffer.length == sizeof(u32) ||
 		obj->buffer.length == sizeof(u64))) {
 		devices = *((u32 *) obj->buffer.pointer);
 	} else if (obj->type == ACPI_TYPE_INTEGER) {
 		devices = (u32) obj->integer.value;
+=======
+	if (obj) {
+		if (obj->type == ACPI_TYPE_BUFFER &&
+			(obj->buffer.length == sizeof(u32) ||
+			obj->buffer.length == sizeof(u64))) {
+			devices = *((u32 *) obj->buffer.pointer);
+		} else if (obj->type == ACPI_TYPE_INTEGER) {
+			devices = (u32) obj->integer.value;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	kfree(out.pointer);
@@ -2132,7 +2546,11 @@ static u32 get_wmid_devices(void)
 /*
  * Platform device
  */
+<<<<<<< HEAD
 static int __devinit acer_platform_probe(struct platform_device *device)
+=======
+static int acer_platform_probe(struct platform_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -2175,8 +2593,12 @@ static int acer_platform_remove(struct platform_device *device)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int acer_platform_suspend(struct platform_device *dev,
 pm_message_t state)
+=======
+static int acer_suspend(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 value;
 	struct acer_data *data = &interface->data;
@@ -2198,7 +2620,11 @@ pm_message_t state)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int acer_platform_resume(struct platform_device *device)
+=======
+static int acer_resume(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acer_data *data = &interface->data;
 
@@ -2211,9 +2637,20 @@ static int acer_platform_resume(struct platform_device *device)
 	if (has_cap(ACER_CAP_BRIGHTNESS))
 		set_u32(data->brightness, ACER_CAP_BRIGHTNESS);
 
+<<<<<<< HEAD
 	return 0;
 }
 
+=======
+	if (has_cap(ACER_CAP_ACCEL))
+		acer_gsensor_init();
+
+	return 0;
+}
+
+static SIMPLE_DEV_PM_OPS(acer_pm, acer_suspend, acer_resume);
+
+>>>>>>> refs/remotes/origin/master
 static void acer_platform_shutdown(struct platform_device *device)
 {
 	struct acer_data *data = &interface->data;
@@ -2229,11 +2666,18 @@ static struct platform_driver acer_platform_driver = {
 	.driver = {
 		.name = "acer-wmi",
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe = acer_platform_probe,
 	.remove = acer_platform_remove,
 	.suspend = acer_platform_suspend,
 	.resume = acer_platform_resume,
+=======
+		.pm = &acer_pm,
+	},
+	.probe = acer_platform_probe,
+	.remove = acer_platform_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown = acer_platform_shutdown,
 };
 
@@ -2322,6 +2766,7 @@ static int __init acer_wmi_init(void)
 		interface = &wmid_interface;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (wmi_has_guid(WMID_GUID2) && interface) {
 		if (ACPI_FAILURE(WMID_set_capabilities())) {
 			pr_err("Unable to detect available WMID devices\n");
@@ -2329,6 +2774,8 @@ static int __init acer_wmi_init(void)
 		}
 	} else if (!wmi_has_guid(WMID_GUID2) && interface) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (wmi_has_guid(WMID_GUID3))
 		interface = &wmid_v2_interface;
 
@@ -2343,7 +2790,10 @@ static int __init acer_wmi_init(void)
 		/* WMID always provides brightness methods */
 		interface->capability |= ACER_CAP_BRIGHTNESS;
 	} else if (!wmi_has_guid(WMID_GUID2) && interface && !has_type_aa) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err("No WMID device detection method found\n");
 		return -ENODEV;
 	}
@@ -2368,6 +2818,7 @@ static int __init acer_wmi_init(void)
 	set_quirks();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (acpi_video_backlight_support() && has_cap(ACER_CAP_BRIGHTNESS)) {
 		interface->capability &= ~ACER_CAP_BRIGHTNESS;
 		pr_info("Brightness must be controlled by "
@@ -2382,6 +2833,16 @@ static int __init acer_wmi_init(void)
 				"acpi video driver\n");
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dmi_check_system(video_vendor_dmi_table))
+		acpi_video_dmi_promote_vendor();
+	if (acpi_video_backlight_support()) {
+		interface->capability &= ~ACER_CAP_BRIGHTNESS;
+		pr_info("Brightness must be controlled by acpi video driver\n");
+	} else {
+		pr_info("Disabling ACPI video driver\n");
+		acpi_video_unregister();
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (wmi_has_guid(WMID_GUID3)) {
@@ -2404,6 +2865,7 @@ static int __init acer_wmi_init(void)
 			return err;
 	}
 
+<<<<<<< HEAD
 	err = platform_driver_register(&acer_platform_driver);
 	if (err) {
 <<<<<<< HEAD
@@ -2411,6 +2873,13 @@ static int __init acer_wmi_init(void)
 =======
 		pr_err("Unable to register platform driver\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	acer_wmi_accel_setup();
+
+	err = platform_driver_register(&acer_platform_driver);
+	if (err) {
+		pr_err("Unable to register platform driver\n");
+>>>>>>> refs/remotes/origin/master
 		goto error_platform_register;
 	}
 
@@ -2451,6 +2920,11 @@ error_device_alloc:
 error_platform_register:
 	if (wmi_has_guid(ACERWMID_EVENT_GUID))
 		acer_wmi_input_destroy();
+<<<<<<< HEAD
+=======
+	if (has_cap(ACER_CAP_ACCEL))
+		acer_wmi_accel_destroy();
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
@@ -2460,6 +2934,12 @@ static void __exit acer_wmi_exit(void)
 	if (wmi_has_guid(ACERWMID_EVENT_GUID))
 		acer_wmi_input_destroy();
 
+<<<<<<< HEAD
+=======
+	if (has_cap(ACER_CAP_ACCEL))
+		acer_wmi_accel_destroy();
+
+>>>>>>> refs/remotes/origin/master
 	remove_sysfs(acer_platform_device);
 	remove_debugfs();
 	platform_device_unregister(acer_platform_device);

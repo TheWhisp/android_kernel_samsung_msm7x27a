@@ -3,6 +3,10 @@
 
 #include <linux/seq_file.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/time.h>
+>>>>>>> refs/remotes/origin/master
 
 struct pt_regs;
 struct mktime;
@@ -16,17 +20,23 @@ extern void (*mach_init_IRQ) (void);
 extern void (*mach_get_model) (char *model);
 extern void (*mach_get_hardware_list) (struct seq_file *m);
 /* machine dependent timer functions */
+<<<<<<< HEAD
 extern unsigned long (*mach_gettimeoffset)(void);
+=======
+>>>>>>> refs/remotes/origin/master
 extern int (*mach_hwclk)(int, struct rtc_time*);
 extern unsigned int (*mach_get_ss)(void);
 extern int (*mach_get_rtc_pll)(struct rtc_pll_info *);
 extern int (*mach_set_rtc_pll)(struct rtc_pll_info *);
 extern int (*mach_set_clock_mmss)(unsigned long);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void (*mach_gettod)(int *year, int *mon, int *day, int *hour,
 			    int *min, int *sec);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void (*mach_reset)( void );
 extern void (*mach_halt)( void );
 extern void (*mach_power_off)( void );
@@ -39,6 +49,7 @@ extern void (*mach_beep) (unsigned int, unsigned int);
 
 /* Hardware clock functions */
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void hw_timer_init(void);
 extern unsigned long hw_timer_offset(void);
 extern irqreturn_t arch_timer_interrupt(int irq, void *dummy);
@@ -46,10 +57,15 @@ extern irqreturn_t arch_timer_interrupt(int irq, void *dummy);
 extern void config_BSP(char *command, int len);
 extern void do_IRQ(int irq, struct pt_regs *fp);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern void hw_timer_init(irq_handler_t handler);
 extern unsigned long hw_timer_offset(void);
 
 extern void config_BSP(char *command, int len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _M68K_MACHDEP_H */

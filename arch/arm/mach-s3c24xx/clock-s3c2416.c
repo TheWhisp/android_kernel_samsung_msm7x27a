@@ -14,7 +14,10 @@
 #include <linux/init.h>
 #include <linux/clk.h>
 
+<<<<<<< HEAD
 #include <plat/s3c2416.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <plat/clock.h>
 #include <plat/clock-clksrc.h>
 #include <plat/cpu.h>
@@ -144,6 +147,11 @@ static struct clk_lookup s3c2416_clk_lookup[] = {
 	CLKDEV_INIT("s3c-sdhci.0", "mmc_busclk.0", &hsmmc0_clk),
 	CLKDEV_INIT("s3c-sdhci.0", "mmc_busclk.2", &hsmmc_mux0.clk),
 	CLKDEV_INIT("s3c-sdhci.1", "mmc_busclk.2", &hsmmc_mux1.clk),
+<<<<<<< HEAD
+=======
+	/* s3c2443-spi.0 is used on s3c2416 and s3c2450 as well */
+	CLKDEV_INIT("s3c2443-spi.0", "spi_busclk2", &hsspi_mux.clk),
+>>>>>>> refs/remotes/origin/master
 };
 
 void __init s3c2416_init_clocks(int xtal)
@@ -167,6 +175,9 @@ void __init s3c2416_init_clocks(int xtal)
 	s3c24xx_register_clock(&hsmmc0_clk);
 	clkdev_add_table(s3c2416_clk_lookup, ARRAY_SIZE(s3c2416_clk_lookup));
 
+<<<<<<< HEAD
 	s3c_pwmclk_init();
 
+=======
+>>>>>>> refs/remotes/origin/master
 }

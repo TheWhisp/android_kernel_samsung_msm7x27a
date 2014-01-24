@@ -20,6 +20,10 @@
  *	(sct@redhat.com), 1993, 1998
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/aio.h>
+>>>>>>> refs/remotes/origin/master
 #include "ext4_jbd2.h"
 #include "truncate.h"
 
@@ -145,6 +149,10 @@ static Indirect *ext4_get_branch(struct inode *inode, int depth,
 	struct super_block *sb = inode->i_sb;
 	Indirect *p = chain;
 	struct buffer_head *bh;
+<<<<<<< HEAD
+=======
+	int ret = -EIO;
+>>>>>>> refs/remotes/origin/master
 
 	*err = 0;
 	/* i_data is not going away, no lock needed */
@@ -153,8 +161,15 @@ static Indirect *ext4_get_branch(struct inode *inode, int depth,
 		goto no_block;
 	while (--depth) {
 		bh = sb_getblk(sb, le32_to_cpu(p->key));
+<<<<<<< HEAD
 		if (unlikely(!bh))
 			goto failure;
+=======
+		if (unlikely(!bh)) {
+			ret = -ENOMEM;
+			goto failure;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		if (!bh_uptodate_or_lock(bh)) {
 			if (bh_submit_read(bh) < 0) {
@@ -176,7 +191,11 @@ static Indirect *ext4_get_branch(struct inode *inode, int depth,
 	return NULL;
 
 failure:
+<<<<<<< HEAD
 	*err = -EIO;
+=======
+	*err = ret;
+>>>>>>> refs/remotes/origin/master
 no_block:
 	return p;
 }
@@ -288,6 +307,7 @@ static int ext4_blks_to_allocate(Indirect *branch, int k, unsigned int blks,
 }
 
 /**
+<<<<<<< HEAD
  *	ext4_alloc_blocks: multiple allocate blocks needed for a branch
  *	@handle: handle for this transaction
  *	@inode: inode which needs allocated blocks
@@ -414,6 +434,8 @@ failed_out:
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  *	ext4_alloc_branch - allocate and set up a chain of blocks.
  *	@handle: handle for this transaction
  *	@inode: owner
@@ -445,6 +467,7 @@ static int ext4_alloc_branch(handle_t *handle, struct inode *inode,
 			     int *blks, ext4_fsblk_t goal,
 			     ext4_lblk_t *offsets, Indirect *branch)
 {
+<<<<<<< HEAD
 	int blocksize = inode->i_sb->s_blocksize;
 	int i, n = 0;
 	int err = 0;
@@ -475,16 +498,58 @@ static int ext4_alloc_branch(handle_t *handle, struct inode *inode,
 		}
 
 		branch[n].bh = bh;
+=======
+	struct ext4_allocation_request	ar;
+	struct buffer_head *		bh;
+	ext4_fsblk_t			b, new_blocks[4];
+	__le32				*p;
+	int				i, j, err, len = 1;
+
+	/*
+	 * Set up for the direct block allocation
+	 */
+	memset(&ar, 0, sizeof(ar));
+	ar.inode = inode;
+	ar.len = *blks;
+	ar.logical = iblock;
+	if (S_ISREG(inode->i_mode))
+		ar.flags = EXT4_MB_HINT_DATA;
+
+	for (i = 0; i <= indirect_blks; i++) {
+		if (i == indirect_blks) {
+			ar.goal = goal;
+			new_blocks[i] = ext4_mb_new_blocks(handle, &ar, &err);
+		} else
+			goal = new_blocks[i] = ext4_new_meta_blocks(handle, inode,
+							goal, 0, NULL, &err);
+		if (err) {
+			i--;
+			goto failed;
+		}
+		branch[i].key = cpu_to_le32(new_blocks[i]);
+		if (i == 0)
+			continue;
+
+		bh = branch[i].bh = sb_getblk(inode->i_sb, new_blocks[i-1]);
+		if (unlikely(!bh)) {
+			err = -ENOMEM;
+			goto failed;
+		}
+>>>>>>> refs/remotes/origin/master
 		lock_buffer(bh);
 		BUFFER_TRACE(bh, "call get_create_access");
 		err = ext4_journal_get_create_access(handle, bh);
 		if (err) {
+<<<<<<< HEAD
 			/* Don't brelse(bh) here; it's done in
 			 * ext4_journal_forget() below */
+=======
+>>>>>>> refs/remotes/origin/master
 			unlock_buffer(bh);
 			goto failed;
 		}
 
+<<<<<<< HEAD
 		memset(bh->b_data, 0, blocksize);
 		branch[n].p = (__le32 *) bh->b_data + offsets[n];
 		branch[n].key = cpu_to_le32(new_blocks[n]);
@@ -499,6 +564,17 @@ static int ext4_alloc_branch(handle_t *handle, struct inode *inode,
 			for (i = 1; i < num; i++)
 				*(branch[n].p + i) = cpu_to_le32(++current_block);
 		}
+=======
+		memset(bh->b_data, 0, bh->b_size);
+		p = branch[i].p = (__le32 *) bh->b_data + offsets[i];
+		b = new_blocks[i];
+
+		if (i == indirect_blks)
+			len = ar.len;
+		for (j = 0; j < len; j++)
+			*p++ = cpu_to_le32(b++);
+
+>>>>>>> refs/remotes/origin/master
 		BUFFER_TRACE(bh, "marking uptodate");
 		set_buffer_uptodate(bh);
 		unlock_buffer(bh);
@@ -508,6 +584,7 @@ static int ext4_alloc_branch(handle_t *handle, struct inode *inode,
 		if (err)
 			goto failed;
 	}
+<<<<<<< HEAD
 	*blks = num;
 	return err;
 failed:
@@ -527,6 +604,18 @@ failed:
 
 	ext4_free_blocks(handle, inode, NULL, new_blocks[i], num, 0);
 
+=======
+	*blks = ar.len;
+	return 0;
+failed:
+	for (; i >= 0; i--) {
+		if (i != indirect_blks && branch[i].bh)
+			ext4_forget(handle, 1, inode, branch[i].bh,
+				    branch[i].bh->b_blocknr);
+		ext4_free_blocks(handle, inode, NULL, new_blocks[i],
+				 (i == indirect_blks) ? ar.len : 1, 0);
+	}
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -755,8 +844,12 @@ cleanup:
 		partial--;
 	}
 out:
+<<<<<<< HEAD
 	trace_ext4_ind_map_blocks_exit(inode, map->m_lblk,
 				map->m_pblk, map->m_len, err);
+=======
+	trace_ext4_ind_map_blocks_exit(inode, flags, map, err);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -789,7 +882,11 @@ ssize_t ext4_ind_direct_IO(int rw, struct kiocb *iocb,
 
 		if (final_size > inode->i_size) {
 			/* Credits for sb + inode write */
+<<<<<<< HEAD
 			handle = ext4_journal_start(inode, 2);
+=======
+			handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
+>>>>>>> refs/remotes/origin/master
 			if (IS_ERR(handle)) {
 				ret = PTR_ERR(handle);
 				goto out;
@@ -807,16 +904,36 @@ ssize_t ext4_ind_direct_IO(int rw, struct kiocb *iocb,
 
 retry:
 	if (rw == READ && ext4_should_dioread_nolock(inode)) {
+<<<<<<< HEAD
 		if (unlikely(!list_empty(&ei->i_completed_io_list))) {
 			mutex_lock(&inode->i_mutex);
 			ext4_flush_completed_IO(inode);
 			mutex_unlock(&inode->i_mutex);
+=======
+		/*
+		 * Nolock dioread optimization may be dynamically disabled
+		 * via ext4_inode_block_unlocked_dio(). Check inode's state
+		 * while holding extra i_dio_count ref.
+		 */
+		atomic_inc(&inode->i_dio_count);
+		smp_mb();
+		if (unlikely(ext4_test_inode_state(inode,
+						    EXT4_STATE_DIOREAD_LOCK))) {
+			inode_dio_done(inode);
+			goto locked;
+>>>>>>> refs/remotes/origin/master
 		}
 		ret = __blockdev_direct_IO(rw, iocb, inode,
 				 inode->i_sb->s_bdev, iov,
 				 offset, nr_segs,
 				 ext4_get_block, NULL, NULL, 0);
+<<<<<<< HEAD
 	} else {
+=======
+		inode_dio_done(inode);
+	} else {
+locked:
+>>>>>>> refs/remotes/origin/master
 		ret = blockdev_direct_IO(rw, iocb, inode, iov,
 				 offset, nr_segs, ext4_get_block);
 
@@ -835,7 +952,11 @@ retry:
 		int err;
 
 		/* Credits for sb + inode write */
+<<<<<<< HEAD
 		handle = ext4_journal_start(inode, 2);
+=======
+		handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(handle)) {
 			/* This is really bad luck. We've written the data
 			 * but cannot extend i_size. Bail out and pretend
@@ -897,6 +1018,7 @@ int ext4_ind_calc_metadata_amount(struct inode *inode, sector_t lblock)
 	return (blk_bits / EXT4_ADDR_PER_BLOCK_BITS(inode->i_sb)) + 1;
 }
 
+<<<<<<< HEAD
 int ext4_ind_trans_blocks(struct inode *inode, int nrblocks, int chunk)
 {
 	int indirects;
@@ -918,6 +1040,20 @@ int ext4_ind_trans_blocks(struct inode *inode, int nrblocks, int chunk)
 	 */
 	indirects = nrblocks * 2 + 1;
 	return indirects;
+=======
+/*
+ * Calculate number of indirect blocks touched by mapping @nrblocks logically
+ * contiguous blocks
+ */
+int ext4_ind_trans_blocks(struct inode *inode, int nrblocks)
+{
+	/*
+	 * With N contiguous data blocks, we need at most
+	 * N/EXT4_ADDR_PER_BLOCK(inode->i_sb) + 1 indirect blocks,
+	 * 2 dindirect blocks, and 1 tindirect block
+	 */
+	return DIV_ROUND_UP(nrblocks, EXT4_ADDR_PER_BLOCK(inode->i_sb)) + 4;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -925,6 +1061,7 @@ int ext4_ind_trans_blocks(struct inode *inode, int nrblocks, int chunk)
  * be able to restart the transaction at a conventient checkpoint to make
  * sure we don't overflow the journal.
  *
+<<<<<<< HEAD
  * start_transaction gets us a new handle for a truncate transaction,
  * and extend_transaction tries to extend the existing one a bit.  If
  * extend fails, we need to propagate the failure up and restart the
@@ -944,6 +1081,11 @@ static handle_t *start_transaction(struct inode *inode)
 
 /*
  * Try to extend this transaction for the purposes of truncation.
+=======
+ * Try to extend this transaction for the purposes of truncation.  If
+ * extend fails, we need to propagate the failure up and restart the
+ * transaction in the top-level truncate loop. --sct
+>>>>>>> refs/remotes/origin/master
  *
  * Returns 0 if we managed to create more room.  If we can't create more
  * room, and the transaction must be restarted we return 1.
@@ -1074,11 +1216,21 @@ static int ext4_clear_blocks(handle_t *handle, struct inode *inode,
 			     __le32 *last)
 {
 	__le32 *p;
+<<<<<<< HEAD
 	int	flags = EXT4_FREE_BLOCKS_FORGET | EXT4_FREE_BLOCKS_VALIDATED;
 	int	err;
 
 	if (S_ISDIR(inode->i_mode) || S_ISLNK(inode->i_mode))
 		flags |= EXT4_FREE_BLOCKS_METADATA;
+=======
+	int	flags = EXT4_FREE_BLOCKS_VALIDATED;
+	int	err;
+
+	if (S_ISDIR(inode->i_mode) || S_ISLNK(inode->i_mode))
+		flags |= EXT4_FREE_BLOCKS_FORGET | EXT4_FREE_BLOCKS_METADATA;
+	else if (ext4_should_journal_data(inode))
+		flags |= EXT4_FREE_BLOCKS_FORGET;
+>>>>>>> refs/remotes/origin/master
 
 	if (!ext4_data_block_valid(EXT4_SB(inode->i_sb), block_to_free,
 				   count)) {
@@ -1336,6 +1488,7 @@ static void ext4_free_branches(handle_t *handle, struct inode *inode,
 	}
 }
 
+<<<<<<< HEAD
 void ext4_ind_truncate(struct inode *inode)
 {
 	handle_t *handle;
@@ -1343,12 +1496,20 @@ void ext4_ind_truncate(struct inode *inode)
 	__le32 *i_data = ei->i_data;
 	int addr_per_block = EXT4_ADDR_PER_BLOCK(inode->i_sb);
 	struct address_space *mapping = inode->i_mapping;
+=======
+void ext4_ind_truncate(handle_t *handle, struct inode *inode)
+{
+	struct ext4_inode_info *ei = EXT4_I(inode);
+	__le32 *i_data = ei->i_data;
+	int addr_per_block = EXT4_ADDR_PER_BLOCK(inode->i_sb);
+>>>>>>> refs/remotes/origin/master
 	ext4_lblk_t offsets[4];
 	Indirect chain[4];
 	Indirect *partial;
 	__le32 nr = 0;
 	int n = 0;
 	ext4_lblk_t last_block, max_block;
+<<<<<<< HEAD
 	loff_t page_len;
 	unsigned blocksize = inode->i_sb->s_blocksize;
 	int err;
@@ -1356,12 +1517,16 @@ void ext4_ind_truncate(struct inode *inode)
 	handle = start_transaction(inode);
 	if (IS_ERR(handle))
 		return;		/* AKPM: return what? */
+=======
+	unsigned blocksize = inode->i_sb->s_blocksize;
+>>>>>>> refs/remotes/origin/master
 
 	last_block = (inode->i_size + blocksize-1)
 					>> EXT4_BLOCK_SIZE_BITS(inode->i_sb);
 	max_block = (EXT4_SB(inode->i_sb)->s_bitmap_maxbytes + blocksize-1)
 					>> EXT4_BLOCK_SIZE_BITS(inode->i_sb);
 
+<<<<<<< HEAD
 	if (inode->i_size % PAGE_CACHE_SIZE != 0) {
 		page_len = PAGE_CACHE_SIZE -
 			(inode->i_size & (PAGE_CACHE_SIZE - 1));
@@ -1398,6 +1563,15 @@ void ext4_ind_truncate(struct inode *inode)
 	down_write(&ei->i_data_sem);
 
 	ext4_discard_preallocations(inode);
+=======
+	if (last_block != max_block) {
+		n = ext4_block_to_path(inode, last_block, offsets, NULL);
+		if (n == 0)
+			return;
+	}
+
+	ext4_es_remove_extent(inode, last_block, EXT_MAX_BLOCKS - last_block);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * The orphan list entry will now protect us from any crash which
@@ -1413,7 +1587,11 @@ void ext4_ind_truncate(struct inode *inode)
 		 * It is unnecessary to free any data blocks if last_block is
 		 * equal to the indirect block limit.
 		 */
+<<<<<<< HEAD
 		goto out_unlock;
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 	} else if (n == 1) {		/* direct blocks */
 		ext4_free_data(handle, inode, NULL, i_data+offsets[0],
 			       i_data + EXT4_NDIR_BLOCKS);
@@ -1473,6 +1651,7 @@ do_indirects:
 	case EXT4_TIND_BLOCK:
 		;
 	}
+<<<<<<< HEAD
 
 out_unlock:
 	up_write(&ei->i_data_sem);
@@ -1498,5 +1677,93 @@ out_stop:
 
 	ext4_journal_stop(handle);
 	trace_ext4_truncate_exit(inode);
+=======
+}
+
+static int free_hole_blocks(handle_t *handle, struct inode *inode,
+			    struct buffer_head *parent_bh, __le32 *i_data,
+			    int level, ext4_lblk_t first,
+			    ext4_lblk_t count, int max)
+{
+	struct buffer_head *bh = NULL;
+	int addr_per_block = EXT4_ADDR_PER_BLOCK(inode->i_sb);
+	int ret = 0;
+	int i, inc;
+	ext4_lblk_t offset;
+	__le32 blk;
+
+	inc = 1 << ((EXT4_BLOCK_SIZE_BITS(inode->i_sb) - 2) * level);
+	for (i = 0, offset = 0; i < max; i++, i_data++, offset += inc) {
+		if (offset >= count + first)
+			break;
+		if (*i_data == 0 || (offset + inc) <= first)
+			continue;
+		blk = *i_data;
+		if (level > 0) {
+			ext4_lblk_t first2;
+			bh = sb_bread(inode->i_sb, le32_to_cpu(blk));
+			if (!bh) {
+				EXT4_ERROR_INODE_BLOCK(inode, le32_to_cpu(blk),
+						       "Read failure");
+				return -EIO;
+			}
+			first2 = (first > offset) ? first - offset : 0;
+			ret = free_hole_blocks(handle, inode, bh,
+					       (__le32 *)bh->b_data, level - 1,
+					       first2, count - offset,
+					       inode->i_sb->s_blocksize >> 2);
+			if (ret) {
+				brelse(bh);
+				goto err;
+			}
+		}
+		if (level == 0 ||
+		    (bh && all_zeroes((__le32 *)bh->b_data,
+				      (__le32 *)bh->b_data + addr_per_block))) {
+			ext4_free_data(handle, inode, parent_bh, &blk, &blk+1);
+			*i_data = 0;
+		}
+		brelse(bh);
+		bh = NULL;
+	}
+
+err:
+	return ret;
+}
+
+int ext4_free_hole_blocks(handle_t *handle, struct inode *inode,
+			  ext4_lblk_t first, ext4_lblk_t stop)
+{
+	int addr_per_block = EXT4_ADDR_PER_BLOCK(inode->i_sb);
+	int level, ret = 0;
+	int num = EXT4_NDIR_BLOCKS;
+	ext4_lblk_t count, max = EXT4_NDIR_BLOCKS;
+	__le32 *i_data = EXT4_I(inode)->i_data;
+
+	count = stop - first;
+	for (level = 0; level < 4; level++, max *= addr_per_block) {
+		if (first < max) {
+			ret = free_hole_blocks(handle, inode, NULL, i_data,
+					       level, first, count, num);
+			if (ret)
+				goto err;
+			if (count > max - first)
+				count -= max - first;
+			else
+				break;
+			first = 0;
+		} else {
+			first -= max;
+		}
+		i_data += num;
+		if (level == 0) {
+			num = 1;
+			max = 1;
+		}
+	}
+
+err:
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 

@@ -18,4 +18,10 @@ struct clk;
 extern int clk_register(struct clk *clk);
 extern void clk_unregister(struct clk *clk);
 
+<<<<<<< HEAD
+=======
+int davinci_clk_reset_assert(struct clk *c);
+int davinci_clk_reset_deassert(struct clk *c);
+
+>>>>>>> refs/remotes/origin/master
 #endif

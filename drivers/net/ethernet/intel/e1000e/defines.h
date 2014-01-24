@@ -1,7 +1,11 @@
 /*******************************************************************************
 
   Intel PRO/1000 Linux driver
+<<<<<<< HEAD
   Copyright(c) 1999 - 2012 Intel Corporation.
+=======
+  Copyright(c) 1999 - 2013 Intel Corporation.
+>>>>>>> refs/remotes/origin/master
 
   This program is free software; you can redistribute it and/or modify it
   under the terms and conditions of the GNU General Public License,
@@ -29,6 +33,7 @@
 #ifndef _E1000_DEFINES_H_
 #define _E1000_DEFINES_H_
 
+<<<<<<< HEAD
 #define E1000_TXD_POPTS_IXSM 0x01       /* Insert IP checksum */
 #define E1000_TXD_POPTS_TXSM 0x02       /* Insert TCP/UDP checksum */
 #define E1000_TXD_CMD_EOP    0x01000000 /* End of Packet */
@@ -48,6 +53,8 @@
 #define E1000_TXD_CMD_TSE    0x04000000 /* TCP Seg enable */
 #define E1000_TXD_STAT_TC    0x00000004 /* Tx Underrun */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Number of Transmit and Receive Descriptors must be a multiple of 8 */
 #define REQ_TX_DESCRIPTOR_MULTIPLE  8
 #define REQ_RX_DESCRIPTOR_MULTIPLE  8
@@ -74,7 +81,13 @@
 #define E1000_WUS_BC           E1000_WUFC_BC
 
 /* Extended Device Control */
+<<<<<<< HEAD
 #define E1000_CTRL_EXT_SDP3_DATA 0x00000080 /* Value of SW Definable Pin 3 */
+=======
+#define E1000_CTRL_EXT_LPCD  0x00000004     /* LCD Power Cycle Done */
+#define E1000_CTRL_EXT_SDP3_DATA 0x00000080 /* Value of SW Definable Pin 3 */
+#define E1000_CTRL_EXT_FORCE_SMBUS 0x00000800 /* Force SMBus mode */
+>>>>>>> refs/remotes/origin/master
 #define E1000_CTRL_EXT_EE_RST    0x00002000 /* Reinitialize from EEPROM */
 #define E1000_CTRL_EXT_SPD_BYPS  0x00008000 /* Speed Select Bypass */
 #define E1000_CTRL_EXT_RO_DIS    0x00020000 /* Relaxed Ordering disable */
@@ -83,8 +96,12 @@
 #define E1000_CTRL_EXT_LINK_MODE_PCIE_SERDES  0x00C00000
 #define E1000_CTRL_EXT_EIAME          0x01000000
 #define E1000_CTRL_EXT_DRV_LOAD       0x10000000 /* Driver loaded bit for FW */
+<<<<<<< HEAD
 #define E1000_CTRL_EXT_IAME           0x08000000 /* Interrupt acknowledge Auto-mask */
 #define E1000_CTRL_EXT_INT_TIMER_CLR  0x20000000 /* Clear Interrupt timers after IMS clear */
+=======
+#define E1000_CTRL_EXT_IAME		0x08000000 /* Int ACK Auto-mask */
+>>>>>>> refs/remotes/origin/master
 #define E1000_CTRL_EXT_PBA_CLR        0x80000000 /* PBA Clear */
 #define E1000_CTRL_EXT_LSECCK         0x00001000
 #define E1000_CTRL_EXT_PHYPDEN        0x00100000
@@ -105,6 +122,10 @@
 #define E1000_RXD_ERR_RXE       0x80    /* Rx Data Error */
 #define E1000_RXD_SPC_VLAN_MASK 0x0FFF  /* VLAN ID is in lower 12 bits */
 
+<<<<<<< HEAD
+=======
+#define E1000_RXDEXT_STATERR_TST   0x00000100	/* Time Stamp taken */
+>>>>>>> refs/remotes/origin/master
 #define E1000_RXDEXT_STATERR_CE    0x01000000
 #define E1000_RXDEXT_STATERR_SE    0x02000000
 #define E1000_RXDEXT_STATERR_SEQ   0x04000000
@@ -113,6 +134,7 @@
 
 /* mask to determine if packets should be dropped due to frame errors */
 #define E1000_RXD_ERR_FRAME_ERR_MASK ( \
+<<<<<<< HEAD
     E1000_RXD_ERR_CE  |                \
     E1000_RXD_ERR_SE  |                \
     E1000_RXD_ERR_SEQ |                \
@@ -126,6 +148,21 @@
     E1000_RXDEXT_STATERR_SEQ |            \
     E1000_RXDEXT_STATERR_CXE |            \
     E1000_RXDEXT_STATERR_RXE)
+=======
+	E1000_RXD_ERR_CE  |		\
+	E1000_RXD_ERR_SE  |		\
+	E1000_RXD_ERR_SEQ |		\
+	E1000_RXD_ERR_CXE |		\
+	E1000_RXD_ERR_RXE)
+
+/* Same mask, but for extended and packet split descriptors */
+#define E1000_RXDEXT_ERR_FRAME_ERR_MASK ( \
+	E1000_RXDEXT_STATERR_CE  |	\
+	E1000_RXDEXT_STATERR_SE  |	\
+	E1000_RXDEXT_STATERR_SEQ |	\
+	E1000_RXDEXT_STATERR_CXE |	\
+	E1000_RXDEXT_STATERR_RXE)
+>>>>>>> refs/remotes/origin/master
 
 #define E1000_MRQC_RSS_FIELD_MASK              0xFFFF0000
 #define E1000_MRQC_RSS_FIELD_IPV4_TCP          0x00010000
@@ -183,8 +220,12 @@
 #define E1000_RCTL_BSEX           0x02000000    /* Buffer size extension */
 #define E1000_RCTL_SECRC          0x04000000    /* Strip Ethernet CRC */
 
+<<<<<<< HEAD
 /*
  * Use byte values for the following shift parameters
+=======
+/* Use byte values for the following shift parameters
+>>>>>>> refs/remotes/origin/master
  * Usage:
  *     psrctl |= (((ROUNDUP(value0, 128) >> E1000_PSRCTL_BSIZE0_SHIFT) &
  *                  E1000_PSRCTL_BSIZE0_MASK) |
@@ -231,8 +272,16 @@
 #define E1000_CTRL_FRCDPX   0x00001000  /* Force Duplex */
 #define E1000_CTRL_LANPHYPC_OVERRIDE 0x00010000 /* SW control of LANPHYPC */
 #define E1000_CTRL_LANPHYPC_VALUE    0x00020000 /* SW value of LANPHYPC */
+<<<<<<< HEAD
 #define E1000_CTRL_SWDPIN0  0x00040000  /* SWDPIN 0 value */
 #define E1000_CTRL_SWDPIN1  0x00080000  /* SWDPIN 1 value */
+=======
+#define E1000_CTRL_MEHE     0x00080000  /* Memory Error Handling Enable */
+#define E1000_CTRL_SWDPIN0  0x00040000  /* SWDPIN 0 value */
+#define E1000_CTRL_SWDPIN1  0x00080000  /* SWDPIN 1 value */
+#define E1000_CTRL_ADVD3WUC 0x00100000  /* D3 WUC */
+#define E1000_CTRL_EN_PHY_PWR_MGMT 0x00200000 /* PHY PM enable */
+>>>>>>> refs/remotes/origin/master
 #define E1000_CTRL_SWDPIO0  0x00400000  /* SWDPIN 0 Input or output */
 #define E1000_CTRL_RST      0x04000000  /* Global reset */
 #define E1000_CTRL_RFCE     0x08000000  /* Receive Flow Control enable */
@@ -240,10 +289,16 @@
 #define E1000_CTRL_VME      0x40000000  /* IEEE VLAN mode enable */
 #define E1000_CTRL_PHY_RST  0x80000000  /* PHY Reset */
 
+<<<<<<< HEAD
 /*
  * Bit definitions for the Management Data IO (MDIO) and Management Data
  * Clock (MDC) pins in the Device Control Register.
  */
+=======
+#define E1000_PCS_LCTL_FORCE_FCTRL	0x80
+
+#define E1000_PCS_LSTS_AN_COMPLETE	0x10000
+>>>>>>> refs/remotes/origin/master
 
 /* Device Status */
 #define E1000_STATUS_FD         0x00000001      /* Full duplex.0=half,1=full */
@@ -252,19 +307,30 @@
 #define E1000_STATUS_FUNC_SHIFT 2
 #define E1000_STATUS_FUNC_1     0x00000004      /* Function 1 */
 #define E1000_STATUS_TXOFF      0x00000010      /* transmission paused */
+<<<<<<< HEAD
+=======
+#define E1000_STATUS_SPEED_MASK 0x000000C0
+>>>>>>> refs/remotes/origin/master
 #define E1000_STATUS_SPEED_10   0x00000000      /* Speed 10Mb/s */
 #define E1000_STATUS_SPEED_100  0x00000040      /* Speed 100Mb/s */
 #define E1000_STATUS_SPEED_1000 0x00000080      /* Speed 1000Mb/s */
 #define E1000_STATUS_LAN_INIT_DONE 0x00000200   /* Lan Init Completion by NVM */
 #define E1000_STATUS_PHYRA      0x00000400      /* PHY Reset Asserted */
+<<<<<<< HEAD
 #define E1000_STATUS_GIO_MASTER_ENABLE 0x00080000 /* Status of Master requests. */
 
 /* Constants used to interpret the masked PCI-X bus speed. */
+=======
+#define E1000_STATUS_GIO_MASTER_ENABLE	0x00080000	/* Master Req status */
+>>>>>>> refs/remotes/origin/master
 
 #define HALF_DUPLEX 1
 #define FULL_DUPLEX 2
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define ADVERTISE_10_HALF                 0x0001
 #define ADVERTISE_10_FULL                 0x0002
 #define ADVERTISE_100_HALF                0x0004
@@ -273,6 +339,7 @@
 #define ADVERTISE_1000_FULL               0x0020
 
 /* 1000/H is not supported, nor spec-compliant. */
+<<<<<<< HEAD
 #define E1000_ALL_SPEED_DUPLEX ( ADVERTISE_10_HALF |   ADVERTISE_10_FULL | \
 				ADVERTISE_100_HALF |  ADVERTISE_100_FULL | \
 						     ADVERTISE_1000_FULL)
@@ -281,6 +348,17 @@
 #define E1000_ALL_100_SPEED    (ADVERTISE_100_HALF |  ADVERTISE_100_FULL)
 #define E1000_ALL_10_SPEED      (ADVERTISE_10_HALF |   ADVERTISE_10_FULL)
 #define E1000_ALL_HALF_DUPLEX   (ADVERTISE_10_HALF |  ADVERTISE_100_HALF)
+=======
+#define E1000_ALL_SPEED_DUPLEX	( \
+	ADVERTISE_10_HALF | ADVERTISE_10_FULL | ADVERTISE_100_HALF | \
+	ADVERTISE_100_FULL | ADVERTISE_1000_FULL)
+#define E1000_ALL_NOT_GIG	( \
+	ADVERTISE_10_HALF | ADVERTISE_10_FULL | ADVERTISE_100_HALF | \
+	ADVERTISE_100_FULL)
+#define E1000_ALL_100_SPEED	(ADVERTISE_100_HALF | ADVERTISE_100_FULL)
+#define E1000_ALL_10_SPEED	(ADVERTISE_10_HALF | ADVERTISE_10_FULL)
+#define E1000_ALL_HALF_DUPLEX	(ADVERTISE_10_HALF | ADVERTISE_100_HALF)
+>>>>>>> refs/remotes/origin/master
 
 #define AUTONEG_ADVERTISE_SPEED_DEFAULT   E1000_ALL_SPEED_DUPLEX
 
@@ -318,6 +396,10 @@
 #define E1000_TXD_CMD_IP     0x02000000 /* IP packet */
 #define E1000_TXD_CMD_TSE    0x04000000 /* TCP Seg enable */
 #define E1000_TXD_STAT_TC    0x00000004 /* Tx Underrun */
+<<<<<<< HEAD
+=======
+#define E1000_TXD_EXTCMD_TSTAMP	0x00000010 /* IEEE1588 Timestamp packet */
+>>>>>>> refs/remotes/origin/master
 
 /* Transmit Control */
 #define E1000_TCTL_EN     0x00000002    /* enable Tx */
@@ -327,10 +409,16 @@
 #define E1000_TCTL_RTLC   0x01000000    /* Re-transmit on late collision */
 #define E1000_TCTL_MULR   0x10000000    /* Multiple request support */
 
+<<<<<<< HEAD
 /* Transmit Arbitration Count */
 
 /* SerDes Control */
 #define E1000_SCTL_DISABLE_SERDES_LOOPBACK 0x0400
+=======
+/* SerDes Control */
+#define E1000_SCTL_DISABLE_SERDES_LOOPBACK 0x0400
+#define E1000_SCTL_ENABLE_SERDES_LOOPBACK	0x0410
+>>>>>>> refs/remotes/origin/master
 
 /* Receive Checksum Control */
 #define E1000_RXCSUM_TUOFL     0x00000200   /* TCP / UDP checksum offload */
@@ -383,12 +471,31 @@
 
 #define E1000_KABGTXD_BGSQLBIAS           0x00050000
 
+<<<<<<< HEAD
+=======
+/* Low Power IDLE Control */
+#define E1000_LPIC_LPIET_SHIFT		24	/* Low Power Idle Entry Time */
+
+>>>>>>> refs/remotes/origin/master
 /* PBA constants */
 #define E1000_PBA_8K  0x0008    /* 8KB */
 #define E1000_PBA_16K 0x0010    /* 16KB */
 
+<<<<<<< HEAD
 #define E1000_PBS_16K E1000_PBA_16K
 
+=======
+#define E1000_PBA_RXA_MASK	0xFFFF
+
+#define E1000_PBS_16K E1000_PBA_16K
+
+/* Uncorrectable/correctable ECC Error counts and enable bits */
+#define E1000_PBECCSTS_CORR_ERR_CNT_MASK	0x000000FF
+#define E1000_PBECCSTS_UNCORR_ERR_CNT_MASK	0x0000FF00
+#define E1000_PBECCSTS_UNCORR_ERR_CNT_SHIFT	8
+#define E1000_PBECCSTS_ECC_ENABLE		0x00010000
+
+>>>>>>> refs/remotes/origin/master
 #define IFS_MAX       80
 #define IFS_MIN       40
 #define IFS_RATIO     4
@@ -408,7 +515,13 @@
 #define E1000_ICR_RXSEQ         0x00000008 /* Rx sequence error */
 #define E1000_ICR_RXDMT0        0x00000010 /* Rx desc min. threshold (0) */
 #define E1000_ICR_RXT0          0x00000080 /* Rx timer intr (ring 0) */
+<<<<<<< HEAD
 #define E1000_ICR_INT_ASSERTED  0x80000000 /* If this bit asserted, the driver should claim the interrupt */
+=======
+#define E1000_ICR_ECCER         0x00400000 /* Uncorrectable ECC Error */
+/* If this bit asserted, the driver should claim the interrupt */
+#define E1000_ICR_INT_ASSERTED	0x80000000
+>>>>>>> refs/remotes/origin/master
 #define E1000_ICR_RXQ0          0x00100000 /* Rx Queue 0 Interrupt */
 #define E1000_ICR_RXQ1          0x00200000 /* Rx Queue 1 Interrupt */
 #define E1000_ICR_TXQ0          0x00400000 /* Tx Queue 0 Interrupt */
@@ -422,8 +535,12 @@
 #define E1000_PBA_ECC_STAT_CLR      0x00000002 /* Clear ECC error counter */
 #define E1000_PBA_ECC_INT_EN        0x00000004 /* Enable ICR bit 5 for ECC */
 
+<<<<<<< HEAD
 /*
  * This defines the bits that are set in the Interrupt Mask
+=======
+/* This defines the bits that are set in the Interrupt Mask
+>>>>>>> refs/remotes/origin/master
  * Set/Read Register.  Each bit is documented below:
  *   o RXT0   = Receiver Timer Interrupt (ring 0)
  *   o TXDW   = Transmit Descriptor Written Back
@@ -432,11 +549,19 @@
  *   o LSC    = Link Status Change
  */
 #define IMS_ENABLE_MASK ( \
+<<<<<<< HEAD
     E1000_IMS_RXT0   |    \
     E1000_IMS_TXDW   |    \
     E1000_IMS_RXDMT0 |    \
     E1000_IMS_RXSEQ  |    \
     E1000_IMS_LSC)
+=======
+	E1000_IMS_RXT0   |    \
+	E1000_IMS_TXDW   |    \
+	E1000_IMS_RXDMT0 |    \
+	E1000_IMS_RXSEQ  |    \
+	E1000_IMS_LSC)
+>>>>>>> refs/remotes/origin/master
 
 /* Interrupt Mask Set */
 #define E1000_IMS_TXDW      E1000_ICR_TXDW      /* Transmit desc written back */
@@ -444,6 +569,10 @@
 #define E1000_IMS_RXSEQ     E1000_ICR_RXSEQ     /* Rx sequence error */
 #define E1000_IMS_RXDMT0    E1000_ICR_RXDMT0    /* Rx desc min. threshold */
 #define E1000_IMS_RXT0      E1000_ICR_RXT0      /* Rx timer intr */
+<<<<<<< HEAD
+=======
+#define E1000_IMS_ECCER     E1000_ICR_ECCER     /* Uncorrectable ECC Error */
+>>>>>>> refs/remotes/origin/master
 #define E1000_IMS_RXQ0      E1000_ICR_RXQ0      /* Rx Queue 0 Interrupt */
 #define E1000_IMS_RXQ1      E1000_ICR_RXQ1      /* Rx Queue 1 Interrupt */
 #define E1000_IMS_TXQ0      E1000_ICR_TXQ0      /* Tx Queue 0 Interrupt */
@@ -473,8 +602,12 @@
 /* 802.1q VLAN Packet Size */
 #define E1000_VLAN_FILTER_TBL_SIZE 128  /* VLAN Filter Table (4096 bits) */
 
+<<<<<<< HEAD
 /* Receive Address */
 /*
+=======
+/* Receive Address
+>>>>>>> refs/remotes/origin/master
  * Number of high/low register pairs in the RAR. The RAR (Receive Address
  * Registers) holds the directed and multicast addresses that we monitor.
  * Technically, we have 16 spots.  However, we reserve one of these spots
@@ -535,6 +668,31 @@
 #define E1000_RXCW_C          0x20000000        /* Receive config */
 #define E1000_RXCW_SYNCH      0x40000000        /* Receive config synch */
 
+<<<<<<< HEAD
+=======
+#define E1000_TSYNCTXCTL_VALID		0x00000001 /* Tx timestamp valid */
+#define E1000_TSYNCTXCTL_ENABLED	0x00000010 /* enable Tx timestamping */
+
+#define E1000_TSYNCRXCTL_VALID		0x00000001 /* Rx timestamp valid */
+#define E1000_TSYNCRXCTL_TYPE_MASK	0x0000000E /* Rx type mask */
+#define E1000_TSYNCRXCTL_TYPE_L2_V2	0x00
+#define E1000_TSYNCRXCTL_TYPE_L4_V1	0x02
+#define E1000_TSYNCRXCTL_TYPE_L2_L4_V2	0x04
+#define E1000_TSYNCRXCTL_TYPE_ALL	0x08
+#define E1000_TSYNCRXCTL_TYPE_EVENT_V2	0x0A
+#define E1000_TSYNCRXCTL_ENABLED	0x00000010 /* enable Rx timestamping */
+#define E1000_TSYNCRXCTL_SYSCFI		0x00000020 /* Sys clock frequency */
+
+#define E1000_RXMTRL_PTP_V1_SYNC_MESSAGE	0x00000000
+#define E1000_RXMTRL_PTP_V1_DELAY_REQ_MESSAGE	0x00010000
+
+#define E1000_RXMTRL_PTP_V2_SYNC_MESSAGE	0x00000000
+#define E1000_RXMTRL_PTP_V2_DELAY_REQ_MESSAGE	0x01000000
+
+#define E1000_TIMINCA_INCPERIOD_SHIFT	24
+#define E1000_TIMINCA_INCVALUE_MASK	0x00FFFFFF
+
+>>>>>>> refs/remotes/origin/master
 /* PCI Express Control */
 #define E1000_GCR_RXD_NO_SNOOP          0x00000001
 #define E1000_GCR_RXDSCW_NO_SNOOP       0x00000002
@@ -550,6 +708,7 @@
 			   E1000_GCR_TXDSCW_NO_SNOOP      | \
 			   E1000_GCR_TXDSCR_NO_SNOOP)
 
+<<<<<<< HEAD
 /* PHY Control Register */
 #define MII_CR_FULL_DUPLEX      0x0100  /* FDX =1, half duplex =0 */
 #define MII_CR_RESTART_AUTO_NEG 0x0200  /* Restart auto negotiation */
@@ -609,6 +768,8 @@
 
 #define PHY_CONTROL_LB   0x4000 /* PHY Loopback bit */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* NVM Control */
 #define E1000_EECD_SK        0x00000001 /* NVM Clock */
 #define E1000_EECD_CS        0x00000002 /* NVM Chip Select */
@@ -629,6 +790,7 @@
 #define E1000_EECD_SEC1VAL   0x00400000 /* Sector One Valid */
 #define E1000_EECD_SEC1VAL_VALID_MASK (E1000_EECD_AUTO_RD | E1000_EECD_PRES)
 
+<<<<<<< HEAD
 #define E1000_NVM_RW_REG_DATA   16   /* Offset to data in NVM read/write registers */
 #define E1000_NVM_RW_REG_DONE   2    /* Offset to READ/WRITE done bit */
 #define E1000_NVM_RW_REG_START  1    /* Start operation */
@@ -636,10 +798,26 @@
 #define E1000_NVM_POLL_WRITE    1    /* Flag for polling for write complete */
 #define E1000_NVM_POLL_READ     0    /* Flag for polling for read complete */
 #define E1000_FLASH_UPDATES  2000
+=======
+#define E1000_NVM_RW_REG_DATA	16	/* Offset to data in NVM r/w regs */
+#define E1000_NVM_RW_REG_DONE	2	/* Offset to READ/WRITE done bit */
+#define E1000_NVM_RW_REG_START	1	/* Start operation */
+#define E1000_NVM_RW_ADDR_SHIFT	2	/* Shift to the address bits */
+#define E1000_NVM_POLL_WRITE	1	/* Flag for polling write complete */
+#define E1000_NVM_POLL_READ	0	/* Flag for polling read complete */
+#define E1000_FLASH_UPDATES	2000
+>>>>>>> refs/remotes/origin/master
 
 /* NVM Word Offsets */
 #define NVM_COMPAT                 0x0003
 #define NVM_ID_LED_SETTINGS        0x0004
+<<<<<<< HEAD
+=======
+#define NVM_FUTURE_INIT_WORD1      0x0019
+#define NVM_COMPAT_VALID_CSUM      0x0001
+#define NVM_FUTURE_INIT_WORD1_VALID_CSUM	0x0040
+
+>>>>>>> refs/remotes/origin/master
 #define NVM_INIT_CONTROL2_REG      0x000F
 #define NVM_INIT_CONTROL3_PORT_B   0x0014
 #define NVM_INIT_3GIO_3            0x001A
@@ -648,8 +826,11 @@
 #define NVM_ALT_MAC_ADDR_PTR       0x0037
 #define NVM_CHECKSUM_REG           0x003F
 
+<<<<<<< HEAD
 #define E1000_NVM_INIT_CTRL2_MNGM 0x6000 /* Manageability Operation Mode mask */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define E1000_NVM_CFG_DONE_PORT_0  0x40000 /* MNG config cycle done */
 #define E1000_NVM_CFG_DONE_PORT_1  0x80000 /* ...for second port */
 
@@ -720,8 +901,12 @@
 #define MAX_PHY_REG_ADDRESS    0x1F  /* 5 bit address bus (0-0x1F) */
 #define MAX_PHY_MULTI_PAGE_REG 0xF
 
+<<<<<<< HEAD
 /* Bit definitions for valid PHY IDs. */
 /*
+=======
+/* Bit definitions for valid PHY IDs.
+>>>>>>> refs/remotes/origin/master
  * I = Integrated
  * E = External
  */
@@ -740,6 +925,10 @@
 #define I82577_E_PHY_ID      0x01540050
 #define I82578_E_PHY_ID      0x004DD040
 #define I82579_E_PHY_ID      0x01540090
+<<<<<<< HEAD
+=======
+#define I217_E_PHY_ID        0x015400A0
+>>>>>>> refs/remotes/origin/master
 
 /* M88E1000 Specific Registers */
 #define M88E1000_PHY_SPEC_CTRL     0x10  /* PHY Specific Control Register */
@@ -758,10 +947,13 @@
 #define M88E1000_PSCR_AUTO_X_1000T     0x0040
 /* Auto crossover enabled all speeds */
 #define M88E1000_PSCR_AUTO_X_MODE      0x0060
+<<<<<<< HEAD
 /*
  * 1=Enable Extended 10BASE-T distance (Lower 10BASE-T Rx Threshold)
  * 0=Normal 10BASE-T Rx Threshold
  */
+=======
+>>>>>>> refs/remotes/origin/master
 #define M88E1000_PSCR_ASSERT_CRS_ON_TX 0x0800 /* 1=Assert CRS on Transmit */
 
 /* M88E1000 PHY Specific Status Register */
@@ -775,14 +967,22 @@
 
 #define M88E1000_PSSR_CABLE_LENGTH_SHIFT 7
 
+<<<<<<< HEAD
 /*
  * Number of times we will attempt to autonegotiate before downshifting if we
+=======
+/* Number of times we will attempt to autonegotiate before downshifting if we
+>>>>>>> refs/remotes/origin/master
  * are the master
  */
 #define M88E1000_EPSCR_MASTER_DOWNSHIFT_MASK 0x0C00
 #define M88E1000_EPSCR_MASTER_DOWNSHIFT_1X   0x0000
+<<<<<<< HEAD
 /*
  * Number of times we will attempt to autonegotiate before downshifting if we
+=======
+/* Number of times we will attempt to autonegotiate before downshifting if we
+>>>>>>> refs/remotes/origin/master
  * are the slave
  */
 #define M88E1000_EPSCR_SLAVE_DOWNSHIFT_MASK  0x0300
@@ -799,6 +999,7 @@
 /* BME1000 PHY Specific Control Register */
 #define BME1000_PSCR_ENABLE_DOWNSHIFT   0x0800 /* 1 = enable downshift */
 
+<<<<<<< HEAD
 
 #define PHY_PAGE_SHIFT 5
 #define PHY_REG(page, reg) (((page) << PHY_PAGE_SHIFT) | \
@@ -806,6 +1007,9 @@
 
 /*
  * Bits...
+=======
+/* Bits...
+>>>>>>> refs/remotes/origin/master
  * 15-5: page
  * 4-0: register offset
  */
@@ -841,6 +1045,10 @@
 	GG82563_REG(194, 18) /* Inband Control */
 
 /* MDI Control */
+<<<<<<< HEAD
+=======
+#define E1000_MDIC_REG_MASK	0x001F0000
+>>>>>>> refs/remotes/origin/master
 #define E1000_MDIC_REG_SHIFT 16
 #define E1000_MDIC_PHY_SHIFT 21
 #define E1000_MDIC_OP_WRITE  0x04000000

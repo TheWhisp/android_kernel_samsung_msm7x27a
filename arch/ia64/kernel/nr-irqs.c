@@ -10,15 +10,21 @@
 #include <linux/kbuild.h>
 #include <linux/threads.h>
 #include <asm/native/irq.h>
+<<<<<<< HEAD
 #include <asm/xen/irq.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 void foo(void)
 {
 	union paravirt_nr_irqs_max {
 		char ia64_native_nr_irqs[IA64_NATIVE_NR_IRQS];
+<<<<<<< HEAD
 #ifdef CONFIG_XEN
 		char xen_nr_irqs[XEN_NR_IRQS];
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	};
 
 	DEFINE(NR_IRQS, sizeof (union paravirt_nr_irqs_max));

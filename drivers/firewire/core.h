@@ -2,10 +2,16 @@
 #define _FIREWIRE_CORE_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/compiler.h>
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/compiler.h>
+#include <linux/device.h>
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/list.h>
 #include <linux/idr.h>
@@ -15,10 +21,14 @@
 #include <linux/types.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 struct device;
 struct fw_card;
@@ -33,13 +43,19 @@ struct fw_packet;
 /* -card */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern __printf(2, 3)
 void fw_err(const struct fw_card *card, const char *fmt, ...);
 extern __printf(2, 3)
 void fw_notice(const struct fw_card *card, const char *fmt, ...);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* bitfields within the PHY registers */
 #define PHY_LINK_ACTIVE		0x80
 #define PHY_CONTENDER		0x40
@@ -117,10 +133,15 @@ struct fw_card_driver {
 	void (*flush_queue_iso)(struct fw_iso_context *ctx);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int (*flush_iso_completions)(struct fw_iso_context *ctx);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*flush_iso_completions)(struct fw_iso_context *ctx);
+
+>>>>>>> refs/remotes/origin/master
 	int (*stop_iso)(struct fw_iso_context *ctx);
 };
 
@@ -133,6 +154,7 @@ int fw_compute_block_crc(__be32 *block);
 void fw_schedule_bus_reset(struct fw_card *card, bool delayed, bool short_reset);
 void fw_schedule_bm_work(struct fw_card *card, unsigned long delay);
 
+<<<<<<< HEAD
 static inline struct fw_card *fw_card_get(struct fw_card *card)
 {
 	kref_get(&card->kref);
@@ -148,6 +170,8 @@ static inline void fw_card_put(struct fw_card *card)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* -cdev */
 
 extern const struct file_operations fw_device_ops;
@@ -164,7 +188,10 @@ extern struct idr fw_device_idr;
 extern int fw_cdev_major;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct fw_device *fw_device_get(struct fw_device *device)
 {
 	get_device(&device->device);
@@ -177,7 +204,10 @@ static inline void fw_device_put(struct fw_device *device)
 	put_device(&device->device);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct fw_device *fw_device_get_by_devt(dev_t devt);
 int fw_device_set_broadcast_channel(struct device *dev, void *gen);
 void fw_node_event(struct fw_card *card, struct fw_node *node, int event);
@@ -185,7 +215,15 @@ void fw_node_event(struct fw_card *card, struct fw_node *node, int event);
 
 /* -iso */
 
+<<<<<<< HEAD
 int fw_iso_buffer_map(struct fw_iso_buffer *buffer, struct vm_area_struct *vma);
+=======
+int fw_iso_buffer_alloc(struct fw_iso_buffer *buffer, int page_count);
+int fw_iso_buffer_map_dma(struct fw_iso_buffer *buffer, struct fw_card *card,
+			  enum dma_data_direction direction);
+int fw_iso_buffer_map_vma(struct fw_iso_buffer *buffer,
+			  struct vm_area_struct *vma);
+>>>>>>> refs/remotes/origin/master
 
 
 /* -topology */

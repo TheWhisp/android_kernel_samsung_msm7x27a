@@ -22,7 +22,11 @@
 #include "integrity.h"
 
 static struct rb_root integrity_iint_tree = RB_ROOT;
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(integrity_iint_lock);
+=======
+static DEFINE_RWLOCK(integrity_iint_lock);
+>>>>>>> refs/remotes/origin/master
 static struct kmem_cache *iint_cache __read_mostly;
 
 int iint_initialized;
@@ -35,8 +39,11 @@ static struct integrity_iint_cache *__integrity_iint_find(struct inode *inode)
 	struct integrity_iint_cache *iint;
 	struct rb_node *n = integrity_iint_tree.rb_node;
 
+<<<<<<< HEAD
 	assert_spin_locked(&integrity_iint_lock);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	while (n) {
 		iint = rb_entry(n, struct integrity_iint_cache, rb_node);
 
@@ -63,22 +70,40 @@ struct integrity_iint_cache *integrity_iint_find(struct inode *inode)
 	if (!IS_IMA(inode))
 		return NULL;
 
+<<<<<<< HEAD
 	spin_lock(&integrity_iint_lock);
 	iint = __integrity_iint_find(inode);
 	spin_unlock(&integrity_iint_lock);
+=======
+	read_lock(&integrity_iint_lock);
+	iint = __integrity_iint_find(inode);
+	read_unlock(&integrity_iint_lock);
+>>>>>>> refs/remotes/origin/master
 
 	return iint;
 }
 
 static void iint_free(struct integrity_iint_cache *iint)
 {
+<<<<<<< HEAD
 	iint->version = 0;
 	iint->flags = 0UL;
+=======
+	kfree(iint->ima_hash);
+	iint->ima_hash = NULL;
+	iint->version = 0;
+	iint->flags = 0UL;
+	iint->ima_file_status = INTEGRITY_UNKNOWN;
+	iint->ima_mmap_status = INTEGRITY_UNKNOWN;
+	iint->ima_bprm_status = INTEGRITY_UNKNOWN;
+	iint->ima_module_status = INTEGRITY_UNKNOWN;
+>>>>>>> refs/remotes/origin/master
 	iint->evm_status = INTEGRITY_UNKNOWN;
 	kmem_cache_free(iint_cache, iint);
 }
 
 /**
+<<<<<<< HEAD
  * integrity_inode_alloc - allocate an iint associated with an inode
  * @inode: pointer to the inode
  */
@@ -98,12 +123,36 @@ int integrity_inode_alloc(struct inode *inode)
 
 	mutex_lock(&inode->i_mutex);	/* i_flags */
 	spin_lock(&integrity_iint_lock);
+=======
+ * integrity_inode_get - find or allocate an iint associated with an inode
+ * @inode: pointer to the inode
+ * @return: allocated iint
+ *
+ * Caller must lock i_mutex
+ */
+struct integrity_iint_cache *integrity_inode_get(struct inode *inode)
+{
+	struct rb_node **p;
+	struct rb_node *node, *parent = NULL;
+	struct integrity_iint_cache *iint, *test_iint;
+
+	iint = integrity_iint_find(inode);
+	if (iint)
+		return iint;
+
+	iint = kmem_cache_alloc(iint_cache, GFP_NOFS);
+	if (!iint)
+		return NULL;
+
+	write_lock(&integrity_iint_lock);
+>>>>>>> refs/remotes/origin/master
 
 	p = &integrity_iint_tree.rb_node;
 	while (*p) {
 		parent = *p;
 		test_iint = rb_entry(parent, struct integrity_iint_cache,
 				     rb_node);
+<<<<<<< HEAD
 		rc = -EEXIST;
 		if (inode < test_iint->inode)
 			p = &(*p)->rb_left;
@@ -127,6 +176,22 @@ out_err:
 	iint_free(new_iint);
 
 	return rc;
+=======
+		if (inode < test_iint->inode)
+			p = &(*p)->rb_left;
+		else
+			p = &(*p)->rb_right;
+	}
+
+	iint->inode = inode;
+	node = &iint->rb_node;
+	inode->i_flags |= S_IMA;
+	rb_link_node(node, parent, p);
+	rb_insert_color(node, &integrity_iint_tree);
+
+	write_unlock(&integrity_iint_lock);
+	return iint;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -142,10 +207,17 @@ void integrity_inode_free(struct inode *inode)
 	if (!IS_IMA(inode))
 		return;
 
+<<<<<<< HEAD
 	spin_lock(&integrity_iint_lock);
 	iint = __integrity_iint_find(inode);
 	rb_erase(&iint->rb_node, &integrity_iint_tree);
 	spin_unlock(&integrity_iint_lock);
+=======
+	write_lock(&integrity_iint_lock);
+	iint = __integrity_iint_find(inode);
+	rb_erase(&iint->rb_node, &integrity_iint_tree);
+	write_unlock(&integrity_iint_lock);
+>>>>>>> refs/remotes/origin/master
 
 	iint_free(iint);
 }
@@ -157,7 +229,14 @@ static void init_once(void *foo)
 	memset(iint, 0, sizeof *iint);
 	iint->version = 0;
 	iint->flags = 0UL;
+<<<<<<< HEAD
 	mutex_init(&iint->mutex);
+=======
+	iint->ima_file_status = INTEGRITY_UNKNOWN;
+	iint->ima_mmap_status = INTEGRITY_UNKNOWN;
+	iint->ima_bprm_status = INTEGRITY_UNKNOWN;
+	iint->ima_module_status = INTEGRITY_UNKNOWN;
+>>>>>>> refs/remotes/origin/master
 	iint->evm_status = INTEGRITY_UNKNOWN;
 }
 

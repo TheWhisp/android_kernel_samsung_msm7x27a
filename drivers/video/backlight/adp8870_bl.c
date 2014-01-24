@@ -8,9 +8,12 @@
 
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/errno.h>
 #include <linux/pm.h>
@@ -165,10 +168,14 @@ static int adp8870_set_bits(struct i2c_client *client, int reg, uint8_t bit_mask
 	ret = adp8870_read(client, reg, &reg_val);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ret && ((reg_val & bit_mask) == 0)) {
 =======
 	if (!ret && ((reg_val & bit_mask) != bit_mask)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ret && ((reg_val & bit_mask) != bit_mask)) {
+>>>>>>> refs/remotes/origin/master
 		reg_val |= bit_mask;
 		ret = adp8870_write(client, reg, reg_val);
 	}
@@ -243,17 +250,29 @@ static int adp8870_led_setup(struct adp8870_led *led)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit adp8870_led_probe(struct i2c_client *client)
 {
 	struct adp8870_backlight_platform_data *pdata =
 		client->dev.platform_data;
+=======
+static int adp8870_led_probe(struct i2c_client *client)
+{
+	struct adp8870_backlight_platform_data *pdata =
+		dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	struct adp8870_bl *data = i2c_get_clientdata(client);
 	struct adp8870_led *led, *led_dat;
 	struct led_info *cur_led;
 	int ret, i;
 
+<<<<<<< HEAD
 
 	led = kcalloc(pdata->num_leds, sizeof(*led), GFP_KERNEL);
+=======
+	led = devm_kzalloc(&client->dev, pdata->num_leds * sizeof(*led),
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (led == NULL) {
 		dev_err(&client->dev, "failed to alloc memory\n");
 		return -ENOMEM;
@@ -261,17 +280,29 @@ static int __devinit adp8870_led_probe(struct i2c_client *client)
 
 	ret = adp8870_write(client, ADP8870_ISCLAW, pdata->led_fade_law);
 	if (ret)
+<<<<<<< HEAD
 		goto err_free;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	ret = adp8870_write(client, ADP8870_ISCT1,
 			(pdata->led_on_time & 0x3) << 6);
 	if (ret)
+<<<<<<< HEAD
 		goto err_free;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	ret = adp8870_write(client, ADP8870_ISCF,
 			FADE_VAL(pdata->led_fade_in, pdata->led_fade_out));
 	if (ret)
+<<<<<<< HEAD
 		goto err_free;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < pdata->num_leds; ++i) {
 		cur_led = &pdata->leds[i];
@@ -282,12 +313,20 @@ static int __devinit adp8870_led_probe(struct i2c_client *client)
 		if (led_dat->id > 7 || led_dat->id < 1) {
 			dev_err(&client->dev, "Invalid LED ID %d\n",
 				led_dat->id);
+<<<<<<< HEAD
+=======
+			ret = -EINVAL;
+>>>>>>> refs/remotes/origin/master
 			goto err;
 		}
 
 		if (pdata->bl_led_assign & (1 << (led_dat->id - 1))) {
 			dev_err(&client->dev, "LED %d used by Backlight\n",
 				led_dat->id);
+<<<<<<< HEAD
+=======
+			ret = -EBUSY;
+>>>>>>> refs/remotes/origin/master
 			goto err;
 		}
 
@@ -325,6 +364,7 @@ static int __devinit adp8870_led_probe(struct i2c_client *client)
 		cancel_work_sync(&led[i].work);
 	}
 
+<<<<<<< HEAD
  err_free:
 	kfree(led);
 
@@ -335,6 +375,15 @@ static int __devexit adp8870_led_remove(struct i2c_client *client)
 {
 	struct adp8870_backlight_platform_data *pdata =
 		client->dev.platform_data;
+=======
+	return ret;
+}
+
+static int adp8870_led_remove(struct i2c_client *client)
+{
+	struct adp8870_backlight_platform_data *pdata =
+		dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	struct adp8870_bl *data = i2c_get_clientdata(client);
 	int i;
 
@@ -343,16 +392,27 @@ static int __devexit adp8870_led_remove(struct i2c_client *client)
 		cancel_work_sync(&data->led[i].work);
 	}
 
+<<<<<<< HEAD
 	kfree(data->led);
 	return 0;
 }
 #else
 static int __devinit adp8870_led_probe(struct i2c_client *client)
+=======
+	return 0;
+}
+#else
+static int adp8870_led_probe(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit adp8870_led_remove(struct i2c_client *client)
+=======
+static int adp8870_led_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -580,7 +640,11 @@ static ssize_t adp8870_store(struct device *dev, const char *buf,
 	unsigned long val;
 	int ret;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 10, &val);
+=======
+	ret = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -660,7 +724,11 @@ static ssize_t adp8870_bl_l1_daylight_max_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct adp8870_bl *data = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	int ret = strict_strtoul(buf, 10, &data->cached_daylight_max);
+=======
+	int ret = kstrtoul(buf, 10, &data->cached_daylight_max);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -802,7 +870,11 @@ static ssize_t adp8870_bl_ambient_light_zone_store(struct device *dev,
 	uint8_t reg_val;
 	int ret;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 10, &val);
+=======
+	ret = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -851,14 +923,22 @@ static const struct attribute_group adp8870_bl_attr_group = {
 	.attrs = adp8870_bl_attributes,
 };
 
+<<<<<<< HEAD
 static int __devinit adp8870_probe(struct i2c_client *client,
+=======
+static int adp8870_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 					const struct i2c_device_id *id)
 {
 	struct backlight_properties props;
 	struct backlight_device *bl;
 	struct adp8870_bl *data;
 	struct adp8870_backlight_platform_data *pdata =
+<<<<<<< HEAD
 		client->dev.platform_data;
+=======
+		dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	uint8_t reg_val;
 	int ret;
 
@@ -882,7 +962,11 @@ static int __devinit adp8870_probe(struct i2c_client *client,
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (data == NULL)
 		return -ENOMEM;
 
@@ -898,16 +982,26 @@ static int __devinit adp8870_probe(struct i2c_client *client,
 	memset(&props, 0, sizeof(props));
 	props.type = BACKLIGHT_RAW;
 	props.max_brightness = props.brightness = ADP8870_MAX_BRIGHTNESS;
+<<<<<<< HEAD
 	bl = backlight_device_register(dev_driver_string(&client->dev),
 			&client->dev, data, &adp8870_bl_ops, &props);
 	if (IS_ERR(bl)) {
 		dev_err(&client->dev, "failed to register backlight\n");
 		ret = PTR_ERR(bl);
 		goto out2;
+=======
+	bl = devm_backlight_device_register(&client->dev,
+				dev_driver_string(&client->dev),
+				&client->dev, data, &adp8870_bl_ops, &props);
+	if (IS_ERR(bl)) {
+		dev_err(&client->dev, "failed to register backlight\n");
+		return PTR_ERR(bl);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	data->bl = bl;
 
+<<<<<<< HEAD
 	if (pdata->en_ambl_sens)
 		ret = sysfs_create_group(&bl->dev.kobj,
 			&adp8870_bl_attr_group);
@@ -915,6 +1009,15 @@ static int __devinit adp8870_probe(struct i2c_client *client,
 	if (ret) {
 		dev_err(&client->dev, "failed to register sysfs\n");
 		goto out1;
+=======
+	if (pdata->en_ambl_sens) {
+		ret = sysfs_create_group(&bl->dev.kobj,
+			&adp8870_bl_attr_group);
+		if (ret) {
+			dev_err(&client->dev, "failed to register sysfs\n");
+			return ret;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = adp8870_bl_setup(bl);
@@ -936,6 +1039,7 @@ out:
 	if (data->pdata->en_ambl_sens)
 		sysfs_remove_group(&data->bl->dev.kobj,
 			&adp8870_bl_attr_group);
+<<<<<<< HEAD
 out1:
 	backlight_device_unregister(bl);
 out2:
@@ -944,11 +1048,17 @@ out2:
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit adp8870_remove(struct i2c_client *client)
+=======
+static int adp8870_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adp8870_bl *data = i2c_get_clientdata(client);
 
@@ -961,6 +1071,7 @@ static int __devexit adp8870_remove(struct i2c_client *client)
 		sysfs_remove_group(&data->bl->dev.kobj,
 			&adp8870_bl_attr_group);
 
+<<<<<<< HEAD
 	backlight_device_unregister(data->bl);
 <<<<<<< HEAD
 	i2c_set_clientdata(client, NULL);
@@ -974,22 +1085,47 @@ static int __devexit adp8870_remove(struct i2c_client *client)
 #ifdef CONFIG_PM
 static int adp8870_i2c_suspend(struct i2c_client *client, pm_message_t message)
 {
+=======
+	return 0;
+}
+
+#ifdef CONFIG_PM_SLEEP
+static int adp8870_i2c_suspend(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+
+>>>>>>> refs/remotes/origin/master
 	adp8870_clr_bits(client, ADP8870_MDCR, NSTBY);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int adp8870_i2c_resume(struct i2c_client *client)
 {
+=======
+static int adp8870_i2c_resume(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+
+>>>>>>> refs/remotes/origin/master
 	adp8870_set_bits(client, ADP8870_MDCR, NSTBY | BLEN);
 
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define adp8870_i2c_suspend NULL
 #define adp8870_i2c_resume NULL
 #endif
 
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(adp8870_i2c_pm_ops, adp8870_i2c_suspend,
+			adp8870_i2c_resume);
+
+>>>>>>> refs/remotes/origin/master
 static const struct i2c_device_id adp8870_id[] = {
 	{ "adp8870", 0 },
 	{ }
@@ -998,6 +1134,7 @@ MODULE_DEVICE_TABLE(i2c, adp8870_id);
 
 static struct i2c_driver adp8870_driver = {
 	.driver = {
+<<<<<<< HEAD
 		.name = KBUILD_MODNAME,
 	},
 	.probe    = adp8870_probe,
@@ -1022,12 +1159,27 @@ module_exit(adp8870_exit);
 =======
 module_i2c_driver(adp8870_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name	= KBUILD_MODNAME,
+		.pm	= &adp8870_i2c_pm_ops,
+	},
+	.probe    = adp8870_probe,
+	.remove   = adp8870_remove,
+	.id_table = adp8870_id,
+};
+
+module_i2c_driver(adp8870_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("ADP8870 Backlight driver");
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_ALIAS("platform:adp8870-backlight");
 =======
 MODULE_ALIAS("i2c:adp8870-backlight");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("i2c:adp8870-backlight");
+>>>>>>> refs/remotes/origin/master

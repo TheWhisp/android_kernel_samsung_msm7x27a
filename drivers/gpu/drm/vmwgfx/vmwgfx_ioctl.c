@@ -26,11 +26,16 @@
  **************************************************************************/
 
 #include "vmwgfx_drv.h"
+<<<<<<< HEAD
 #include "vmwgfx_drm.h"
 <<<<<<< HEAD
 =======
 #include "vmwgfx_kms.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <drm/vmwgfx_drm.h>
+#include "vmwgfx_kms.h"
+>>>>>>> refs/remotes/origin/master
 
 int vmw_getparam_ioctl(struct drm_device *dev, void *data,
 		       struct drm_file *file_priv)
@@ -50,11 +55,14 @@ int vmw_getparam_ioctl(struct drm_device *dev, void *data,
 		param->value = vmw_fifo_have_3d(dev_priv) ? 1 : 0;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case DRM_VMW_PARAM_FIFO_OFFSET:
 		param->value = dev_priv->mmio_start;
 		break;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case DRM_VMW_PARAM_HW_CAPS:
 		param->value = dev_priv->capabilities;
 		break;
@@ -65,7 +73,10 @@ int vmw_getparam_ioctl(struct drm_device *dev, void *data,
 		param->value = dev_priv->vram_size;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case DRM_VMW_PARAM_FIFO_HW_VERSION:
 	{
 		__le32 __iomem *fifo_mem = dev_priv->mmio_virt;
@@ -79,7 +90,13 @@ int vmw_getparam_ioctl(struct drm_device *dev, void *data,
 				  SVGA_FIFO_3D_HWVERSION));
 		break;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case DRM_VMW_PARAM_MAX_SURF_MEMORY:
+		param->value = dev_priv->memory_size;
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		DRM_ERROR("Illegal vmwgfx get param request: %d\n",
 			  param->param);
@@ -89,6 +106,7 @@ int vmw_getparam_ioctl(struct drm_device *dev, void *data,
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int vmw_fifo_debug_ioctl(struct drm_device *dev, void *data,
 			 struct drm_file *file_priv)
@@ -112,6 +130,8 @@ int vmw_fifo_debug_ioctl(struct drm_device *dev, void *data,
 	}
 	return copy_to_user(buffer, fifo_state->last_buffer, arg->used_size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 int vmw_get_cap_3d_ioctl(struct drm_device *dev, void *data,
 			 struct drm_file *file_priv)
@@ -145,6 +165,11 @@ int vmw_get_cap_3d_ioctl(struct drm_device *dev, void *data,
 	memcpy_fromio(bounce, &fifo_mem[SVGA_FIFO_3D_CAPS], size);
 
 	ret = copy_to_user(buffer, bounce, size);
+<<<<<<< HEAD
+=======
+	if (ret)
+		ret = -EFAULT;
+>>>>>>> refs/remotes/origin/master
 	vfree(bounce);
 
 	if (unlikely(ret != 0))
@@ -164,8 +189,14 @@ int vmw_present_ioctl(struct drm_device *dev, void *data,
 	struct vmw_master *vmaster = vmw_master(file_priv->master);
 	struct drm_vmw_rect __user *clips_ptr;
 	struct drm_vmw_rect *clips = NULL;
+<<<<<<< HEAD
 	struct drm_mode_object *obj;
 	struct vmw_framebuffer *vfb;
+=======
+	struct drm_framebuffer *fb;
+	struct vmw_framebuffer *vfb;
+	struct vmw_resource *res;
+>>>>>>> refs/remotes/origin/master
 	uint32_t num_clips;
 	int ret;
 
@@ -195,6 +226,7 @@ int vmw_present_ioctl(struct drm_device *dev, void *data,
 		goto out_no_copy;
 	}
 
+<<<<<<< HEAD
 	ret = mutex_lock_interruptible(&dev->mode_config.mutex);
 	if (unlikely(ret != 0)) {
 		ret = -ERESTARTSYS;
@@ -208,16 +240,37 @@ int vmw_present_ioctl(struct drm_device *dev, void *data,
 		goto out_no_fb;
 	}
 	vfb = vmw_framebuffer_to_vfb(obj_to_fb(obj));
+=======
+	drm_modeset_lock_all(dev);
+
+	fb = drm_framebuffer_lookup(dev, arg->fb_id);
+	if (!fb) {
+		DRM_ERROR("Invalid framebuffer id.\n");
+		ret = -ENOENT;
+		goto out_no_fb;
+	}
+	vfb = vmw_framebuffer_to_vfb(fb);
+>>>>>>> refs/remotes/origin/master
 
 	ret = ttm_read_lock(&vmaster->lock, true);
 	if (unlikely(ret != 0))
 		goto out_no_ttm_lock;
 
+<<<<<<< HEAD
 	ret = vmw_user_surface_lookup_handle(dev_priv, tfile, arg->sid,
 					     &surface);
 	if (ret)
 		goto out_no_surface;
 
+=======
+	ret = vmw_user_resource_lookup_handle(dev_priv, tfile, arg->sid,
+					      user_surface_converter,
+					      &res);
+	if (ret)
+		goto out_no_surface;
+
+	surface = vmw_res_to_srf(res);
+>>>>>>> refs/remotes/origin/master
 	ret = vmw_kms_present(dev_priv, file_priv,
 			      vfb, surface, arg->sid,
 			      arg->dest_x, arg->dest_y,
@@ -229,9 +282,15 @@ int vmw_present_ioctl(struct drm_device *dev, void *data,
 out_no_surface:
 	ttm_read_unlock(&vmaster->lock);
 out_no_ttm_lock:
+<<<<<<< HEAD
 out_no_fb:
 	mutex_unlock(&dev->mode_config.mutex);
 out_no_mode_mutex:
+=======
+	drm_framebuffer_unreference(fb);
+out_no_fb:
+	drm_modeset_unlock_all(dev);
+>>>>>>> refs/remotes/origin/master
 out_no_copy:
 	kfree(clips);
 out_clips:
@@ -250,7 +309,11 @@ int vmw_present_readback_ioctl(struct drm_device *dev, void *data,
 	struct vmw_master *vmaster = vmw_master(file_priv->master);
 	struct drm_vmw_rect __user *clips_ptr;
 	struct drm_vmw_rect *clips = NULL;
+<<<<<<< HEAD
 	struct drm_mode_object *obj;
+=======
+	struct drm_framebuffer *fb;
+>>>>>>> refs/remotes/origin/master
 	struct vmw_framebuffer *vfb;
 	uint32_t num_clips;
 	int ret;
@@ -281,6 +344,7 @@ int vmw_present_readback_ioctl(struct drm_device *dev, void *data,
 		goto out_no_copy;
 	}
 
+<<<<<<< HEAD
 	ret = mutex_lock_interruptible(&dev->mode_config.mutex);
 	if (unlikely(ret != 0)) {
 		ret = -ERESTARTSYS;
@@ -299,6 +363,22 @@ int vmw_present_readback_ioctl(struct drm_device *dev, void *data,
 		DRM_ERROR("Framebuffer not dmabuf backed.\n");
 		ret = -EINVAL;
 		goto out_no_fb;
+=======
+	drm_modeset_lock_all(dev);
+
+	fb = drm_framebuffer_lookup(dev, arg->fb_id);
+	if (!fb) {
+		DRM_ERROR("Invalid framebuffer id.\n");
+		ret = -ENOENT;
+		goto out_no_fb;
+	}
+
+	vfb = vmw_framebuffer_to_vfb(fb);
+	if (!vfb->dmabuf) {
+		DRM_ERROR("Framebuffer not dmabuf backed.\n");
+		ret = -EINVAL;
+		goto out_no_ttm_lock;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = ttm_read_lock(&vmaster->lock, true);
@@ -311,9 +391,15 @@ int vmw_present_readback_ioctl(struct drm_device *dev, void *data,
 
 	ttm_read_unlock(&vmaster->lock);
 out_no_ttm_lock:
+<<<<<<< HEAD
 out_no_fb:
 	mutex_unlock(&dev->mode_config.mutex);
 out_no_mode_mutex:
+=======
+	drm_framebuffer_unreference(fb);
+out_no_fb:
+	drm_modeset_unlock_all(dev);
+>>>>>>> refs/remotes/origin/master
 out_no_copy:
 	kfree(clips);
 out_clips:
@@ -361,5 +447,8 @@ ssize_t vmw_fops_read(struct file *filp, char __user *buffer,
 
 	vmw_fifo_ping_host(dev_priv, SVGA_SYNC_GENERIC);
 	return drm_read(filp, buffer, count, offset);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

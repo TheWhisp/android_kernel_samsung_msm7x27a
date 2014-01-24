@@ -36,9 +36,13 @@
 #include <linux/kfifo.h>
 #include <linux/scatterlist.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/tcp.h>
 #include <scsi/scsi_cmnd.h>
 #include <scsi/scsi_device.h>
@@ -58,7 +62,11 @@ static struct scsi_transport_template *iscsi_sw_tcp_scsi_transport;
 static struct scsi_host_template iscsi_sw_tcp_sht;
 static struct iscsi_transport iscsi_sw_tcp_transport;
 
+<<<<<<< HEAD
 static unsigned int iscsi_max_lun = 512;
+=======
+static unsigned int iscsi_max_lun = ~0;
+>>>>>>> refs/remotes/origin/master
 module_param_named(max_lun, iscsi_max_lun, uint, S_IRUGO);
 
 static int iscsi_sw_tcp_dbg;
@@ -119,6 +127,10 @@ static inline int iscsi_sw_sk_state_check(struct sock *sk)
 	struct iscsi_conn *conn = sk->sk_user_data;
 
 	if ((sk->sk_state == TCP_CLOSE_WAIT || sk->sk_state == TCP_CLOSE) &&
+<<<<<<< HEAD
+=======
+	    (conn->session->state != ISCSI_STATE_LOGGING_OUT) &&
+>>>>>>> refs/remotes/origin/master
 	    !atomic_read(&sk->sk_rmem_alloc)) {
 		ISCSI_SW_TCP_DBG(conn, "TCP_CLOSE|TCP_CLOSE_WAIT\n");
 		iscsi_conn_failure(conn, ISCSI_ERR_TCP_CONN_CLOSE);
@@ -373,6 +385,7 @@ static inline int iscsi_sw_tcp_xmit_qlen(struct iscsi_conn *conn)
 static int iscsi_sw_tcp_pdu_xmit(struct iscsi_task *task)
 {
 	struct iscsi_conn *conn = task->conn;
+<<<<<<< HEAD
 	int rc;
 
 	while (iscsi_sw_tcp_xmit_qlen(conn)) {
@@ -384,6 +397,26 @@ static int iscsi_sw_tcp_pdu_xmit(struct iscsi_task *task)
 	}
 
 	return 0;
+=======
+	unsigned long pflags = current->flags;
+	int rc = 0;
+
+	current->flags |= PF_MEMALLOC;
+
+	while (iscsi_sw_tcp_xmit_qlen(conn)) {
+		rc = iscsi_sw_tcp_xmit(conn);
+		if (rc == 0) {
+			rc = -EAGAIN;
+			break;
+		}
+		if (rc < 0)
+			break;
+		rc = 0;
+	}
+
+	tsk_restore_flags(current, pflags, PF_MEMALLOC);
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -665,9 +698,16 @@ iscsi_sw_tcp_conn_bind(struct iscsi_cls_session *cls_session,
 
 	/* setup Socket parameters */
 	sk = sock->sk;
+<<<<<<< HEAD
 	sk->sk_reuse = 1;
 	sk->sk_sndtimeo = 15 * HZ; /* FIXME: make it configurable */
 	sk->sk_allocation = GFP_ATOMIC;
+=======
+	sk->sk_reuse = SK_CAN_REUSE;
+	sk->sk_sndtimeo = 15 * HZ; /* FIXME: make it configurable */
+	sk->sk_allocation = GFP_ATOMIC;
+	sk_set_memalloc(sk);
+>>>>>>> refs/remotes/origin/master
 
 	iscsi_sw_tcp_conn_set_callbacks(conn);
 	tcp_sw_conn->sendpage = tcp_sw_conn->sock->ops->sendpage;
@@ -688,6 +728,7 @@ static int iscsi_sw_tcp_conn_set_param(struct iscsi_cls_conn *cls_conn,
 {
 	struct iscsi_conn *conn = cls_conn->dd_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct iscsi_session *session = conn->session;
 	struct iscsi_tcp_conn *tcp_conn = conn->dd_data;
 	struct iscsi_sw_tcp_conn *tcp_sw_conn = tcp_conn->dd_data;
@@ -696,6 +737,10 @@ static int iscsi_sw_tcp_conn_set_param(struct iscsi_cls_conn *cls_conn,
 	struct iscsi_tcp_conn *tcp_conn = conn->dd_data;
 	struct iscsi_sw_tcp_conn *tcp_sw_conn = tcp_conn->dd_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iscsi_tcp_conn *tcp_conn = conn->dd_data;
+	struct iscsi_sw_tcp_conn *tcp_sw_conn = tcp_conn->dd_data;
+>>>>>>> refs/remotes/origin/master
 
 	switch(param) {
 	case ISCSI_PARAM_HDRDGST_EN:
@@ -707,6 +752,7 @@ static int iscsi_sw_tcp_conn_set_param(struct iscsi_cls_conn *cls_conn,
 			sock_no_sendpage : tcp_sw_conn->sock->ops->sendpage;
 		break;
 	case ISCSI_PARAM_MAX_R2T:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		sscanf(buf, "%d", &value);
 		if (value <= 0 || !is_power_of_2(value))
@@ -721,6 +767,9 @@ static int iscsi_sw_tcp_conn_set_param(struct iscsi_cls_conn *cls_conn,
 =======
 		return iscsi_tcp_set_max_r2t(conn, buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return iscsi_tcp_set_max_r2t(conn, buf);
+>>>>>>> refs/remotes/origin/master
 	default:
 		return iscsi_set_param(cls_conn, param, buf, buflen);
 	}
@@ -886,7 +935,10 @@ static void iscsi_sw_tcp_session_destroy(struct iscsi_cls_session *cls_session)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static umode_t iscsi_sw_tcp_attr_is_visible(int param_type, int param)
 {
 	switch (param_type) {
@@ -942,7 +994,10 @@ static umode_t iscsi_sw_tcp_attr_is_visible(int param_type, int param)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int iscsi_sw_tcp_slave_alloc(struct scsi_device *sdev)
 {
 	set_bit(QUEUE_FLAG_BIDI, &sdev->request_queue->queue_flags);
@@ -982,6 +1037,7 @@ static struct iscsi_transport iscsi_sw_tcp_transport = {
 	.caps			= CAP_RECOVERY_L0 | CAP_MULTI_R2T | CAP_HDRDGST
 				  | CAP_DATADGST,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.param_mask		= ISCSI_MAX_RECV_DLENGTH |
 				  ISCSI_MAX_XMIT_DLENGTH |
 				  ISCSI_HDRDGST_EN |
@@ -1011,6 +1067,8 @@ static struct iscsi_transport iscsi_sw_tcp_transport = {
 				  ISCSI_HOST_NETDEV_NAME,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* session management */
 	.create_session		= iscsi_sw_tcp_session_create,
 	.destroy_session	= iscsi_sw_tcp_session_destroy,
@@ -1019,9 +1077,13 @@ static struct iscsi_transport iscsi_sw_tcp_transport = {
 	.bind_conn		= iscsi_sw_tcp_conn_bind,
 	.destroy_conn		= iscsi_sw_tcp_conn_destroy,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.attr_is_visible	= iscsi_sw_tcp_attr_is_visible,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.attr_is_visible	= iscsi_sw_tcp_attr_is_visible,
+>>>>>>> refs/remotes/origin/master
 	.set_param		= iscsi_sw_tcp_conn_set_param,
 	.get_conn_param		= iscsi_sw_tcp_conn_get_param,
 	.get_session_param	= iscsi_session_get_param,

@@ -14,6 +14,10 @@
 #include <linux/io.h>
 #include <linux/gpio.h>
 #include <linux/sh_timer.h>
+<<<<<<< HEAD
+=======
+#include <linux/sh_intc.h>
+>>>>>>> refs/remotes/origin/master
 #include <cpu/shx3.h>
 #include <asm/mmzone.h>
 
@@ -32,7 +36,14 @@ static struct plat_sci_port scif0_platform_data = {
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		= { 40, 41, 43, 42 },
+=======
+	.irqs		= { evt2irq(0x700),
+			    evt2irq(0x720),
+			    evt2irq(0x760),
+			    evt2irq(0x740) },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif0_device = {
@@ -49,7 +60,14 @@ static struct plat_sci_port scif1_platform_data = {
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		= { 44, 45, 47, 46 },
+=======
+	.irqs		= { evt2irq(0x780),
+			    evt2irq(0x7a0),
+			    evt2irq(0x7e0),
+			    evt2irq(0x7c0) },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif1_device = {
@@ -66,7 +84,14 @@ static struct plat_sci_port scif2_platform_data = {
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		= { 52, 53, 55, 54 },
+=======
+	.irqs		= { evt2irq(0x880),
+			    evt2irq(0x8a0),
+			    evt2irq(0x8e0),
+			    evt2irq(0x8c0) },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif2_device = {
@@ -90,7 +115,11 @@ static struct resource tmu0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 16,
+=======
+		.start	= evt2irq(0x400),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -118,7 +147,11 @@ static struct resource tmu1_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 17,
+=======
+		.start	= evt2irq(0x420),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -145,7 +178,11 @@ static struct resource tmu2_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 18,
+=======
+		.start	= evt2irq(0x440),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -172,7 +209,11 @@ static struct resource tmu3_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 19,
+=======
+		.start	= evt2irq(0x460),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -199,7 +240,11 @@ static struct resource tmu4_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 20,
+=======
+		.start	= evt2irq(0x480),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -226,7 +271,11 @@ static struct resource tmu5_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 21,
+=======
+		.start	= evt2irq(0x4a0),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -484,9 +533,12 @@ void __init plat_irq_setup_pins(int mode)
 
 void __init plat_irq_setup(void)
 {
+<<<<<<< HEAD
 	reserve_intc_vectors(vectors_irq, ARRAY_SIZE(vectors_irq));
 	reserve_intc_vectors(vectors_irl, ARRAY_SIZE(vectors_irl));
 
+=======
+>>>>>>> refs/remotes/origin/master
 	register_intc_controller(&intc_desc);
 }
 

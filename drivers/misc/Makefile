@@ -7,14 +7,24 @@ obj-$(CONFIG_AD525X_DPOT)	+= ad525x_dpot.o
 obj-$(CONFIG_AD525X_DPOT_I2C)	+= ad525x_dpot-i2c.o
 obj-$(CONFIG_AD525X_DPOT_SPI)	+= ad525x_dpot-spi.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 0bj-$(CONFIG_INTEL_MID_PTI)	+= pti.o
 =======
 obj-$(CONFIG_INTEL_MID_PTI)	+= pti.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_INTEL_MID_PTI)	+= pti.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_ATMEL_PWM)		+= atmel_pwm.o
 obj-$(CONFIG_ATMEL_SSC)		+= atmel-ssc.o
 obj-$(CONFIG_ATMEL_TCLIB)	+= atmel_tclib.o
 obj-$(CONFIG_BMP085)		+= bmp085.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_BMP085_I2C)	+= bmp085-i2c.o
+obj-$(CONFIG_BMP085_SPI)	+= bmp085-spi.o
+obj-$(CONFIG_DUMMY_IRQ)		+= dummy-irq.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_ICS932S401)	+= ics932s401.o
 obj-$(CONFIG_LKDTM)		+= lkdtm.o
 obj-$(CONFIG_TIFM_CORE)       	+= tifm_core.o
@@ -24,10 +34,13 @@ obj-$(CONFIG_SENSORS_BH1780)	+= bh1780gli.o
 obj-$(CONFIG_SENSORS_BH1770)	+= bh1770glc.o
 obj-$(CONFIG_SENSORS_APDS990X)	+= apds990x.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_ANDROID_PMEM)      += pmem.o
 =======
 obj-$(CONFIG_ANDROID_PMEM)	+= pmem.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_SGI_IOC4)		+= ioc4.o
 obj-$(CONFIG_ENCLOSURE_SERVICES) += enclosure.o
 obj-$(CONFIG_KGDB_TESTS)	+= kgdbts.o
@@ -39,6 +52,7 @@ obj-$(CONFIG_APDS9802ALS)	+= apds9802als.o
 obj-$(CONFIG_ISL29003)		+= isl29003.o
 obj-$(CONFIG_ISL29020)		+= isl29020.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_USB_HSIC_SMSC_HUB) += smsc_hub.o
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -49,6 +63,12 @@ obj-$(CONFIG_TI_DAC7512)	+= ti_dac7512.o
 obj-$(CONFIG_UID_STAT)		+= uid_stat.o
 obj-$(CONFIG_C2PORT)		+= c2port/
 obj-$(CONFIG_IWMC3200TOP)      += iwmc3200top/
+=======
+obj-$(CONFIG_SENSORS_TSL2550)	+= tsl2550.o
+obj-$(CONFIG_DS1682)		+= ds1682.o
+obj-$(CONFIG_TI_DAC7512)	+= ti_dac7512.o
+obj-$(CONFIG_C2PORT)		+= c2port/
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_HMC6352)		+= hmc6352.o
 obj-y				+= eeprom/
 obj-y				+= cb710/
@@ -57,6 +77,7 @@ obj-$(CONFIG_VMWARE_BALLOON)	+= vmw_balloon.o
 obj-$(CONFIG_ARM_CHARLCD)	+= arm-charlcd.o
 obj-$(CONFIG_PCH_PHUB)		+= pch_phub.o
 obj-y				+= ti-st/
+<<<<<<< HEAD
 obj-$(CONFIG_AB8500_PWM)	+= ab8500-pwm.o
 obj-y				+= lis3lv02d/
 obj-y				+= carma/
@@ -94,3 +115,15 @@ obj-$(CONFIG_SEC_DEBUG) += sec_debug.o
 obj-$(CONFIG_SAMSUNG_JACK) += sec_jack.o
 obj-$(CONFIG_PN544) += pn544.o
 obj-$(CONFIG_FSAXXXX_USBSW)  += fsaxxxx_usbsw.o
+=======
+obj-y				+= lis3lv02d/
+obj-y				+= carma/
+obj-$(CONFIG_USB_SWITCH_FSA9480) += fsa9480.o
+obj-$(CONFIG_ALTERA_STAPL)	+=altera-stapl/
+obj-$(CONFIG_INTEL_MEI)		+= mei/
+obj-$(CONFIG_VMWARE_VMCI)	+= vmw_vmci/
+obj-$(CONFIG_LATTICE_ECP3_CONFIG)	+= lattice-ecp3-config.o
+obj-$(CONFIG_SRAM)		+= sram.o
+obj-y				+= mic/
+obj-$(CONFIG_GENWQE)		+= genwqe/
+>>>>>>> refs/remotes/origin/master

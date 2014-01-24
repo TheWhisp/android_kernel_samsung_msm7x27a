@@ -28,6 +28,10 @@
 
 /* Uncomment next line to get verbose printout */
 /* #define DEBUG */
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "ACPI : EC: " fmt
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -49,9 +53,12 @@
 #define ACPI_EC_DEVICE_NAME		"Embedded Controller"
 #define ACPI_EC_FILE_INFO		"info"
 
+<<<<<<< HEAD
 #undef PREFIX
 #define PREFIX				"ACPI: EC: "
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* EC status register */
 #define ACPI_EC_FLAG_OBF	0x01	/* Output buffer full */
 #define ACPI_EC_FLAG_IBF	0x02	/* Input buffer full */
@@ -131,26 +138,42 @@ static int EC_FLAGS_SKIP_DSDT_SCAN; /* Not all BIOS survive early DSDT scan */
 static inline u8 acpi_ec_read_status(struct acpi_ec *ec)
 {
 	u8 x = inb(ec->command_addr);
+<<<<<<< HEAD
 	pr_debug(PREFIX "---> status = 0x%2.2x\n", x);
+=======
+	pr_debug("---> status = 0x%2.2x\n", x);
+>>>>>>> refs/remotes/origin/master
 	return x;
 }
 
 static inline u8 acpi_ec_read_data(struct acpi_ec *ec)
 {
 	u8 x = inb(ec->data_addr);
+<<<<<<< HEAD
 	pr_debug(PREFIX "---> data = 0x%2.2x\n", x);
+=======
+	pr_debug("---> data = 0x%2.2x\n", x);
+>>>>>>> refs/remotes/origin/master
 	return x;
 }
 
 static inline void acpi_ec_write_cmd(struct acpi_ec *ec, u8 command)
 {
+<<<<<<< HEAD
 	pr_debug(PREFIX "<--- command = 0x%2.2x\n", command);
+=======
+	pr_debug("<--- command = 0x%2.2x\n", command);
+>>>>>>> refs/remotes/origin/master
 	outb(command, ec->command_addr);
 }
 
 static inline void acpi_ec_write_data(struct acpi_ec *ec, u8 data)
 {
+<<<<<<< HEAD
 	pr_debug(PREFIX "<--- data = 0x%2.2x\n", data);
+=======
+	pr_debug("<--- data = 0x%2.2x\n", data);
+>>>>>>> refs/remotes/origin/master
 	outb(data, ec->data_addr);
 }
 
@@ -158,10 +181,17 @@ static int ec_transaction_done(struct acpi_ec *ec)
 {
 	unsigned long flags;
 	int ret = 0;
+<<<<<<< HEAD
 	spin_lock_irqsave(&ec->curr_lock, flags);
 	if (!ec->curr || ec->curr->done)
 		ret = 1;
 	spin_unlock_irqrestore(&ec->curr_lock, flags);
+=======
+	spin_lock_irqsave(&ec->lock, flags);
+	if (!ec->curr || ec->curr->done)
+		ret = 1;
+	spin_unlock_irqrestore(&ec->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -175,6 +205,7 @@ static void start_transaction(struct acpi_ec *ec)
 static void advance_transaction(struct acpi_ec *ec, u8 status)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 	spin_lock_irqsave(&ec->curr_lock, flags);
 	if (!ec->curr)
 		goto unlock;
@@ -201,6 +232,41 @@ err:
 		++ec->curr->irq_count;
 unlock:
 	spin_unlock_irqrestore(&ec->curr_lock, flags);
+=======
+	struct transaction *t;
+
+	spin_lock_irqsave(&ec->lock, flags);
+	t = ec->curr;
+	if (!t)
+		goto unlock;
+	if (t->wlen > t->wi) {
+		if ((status & ACPI_EC_FLAG_IBF) == 0)
+			acpi_ec_write_data(ec,
+				t->wdata[t->wi++]);
+		else
+			goto err;
+	} else if (t->rlen > t->ri) {
+		if ((status & ACPI_EC_FLAG_OBF) == 1) {
+			t->rdata[t->ri++] = acpi_ec_read_data(ec);
+			if (t->rlen == t->ri)
+				t->done = true;
+		} else
+			goto err;
+	} else if (t->wlen == t->wi &&
+		   (status & ACPI_EC_FLAG_IBF) == 0)
+		t->done = true;
+	goto unlock;
+err:
+	/*
+	 * If SCI bit is set, then don't think it's a false IRQ
+	 * otherwise will take a not handled IRQ as a false one.
+	 */
+	if (in_interrupt() && !(status & ACPI_EC_FLAG_SCI))
+		++t->irq_count;
+
+unlock:
+	spin_unlock_irqrestore(&ec->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int acpi_ec_sync_query(struct acpi_ec *ec);
@@ -235,10 +301,17 @@ static int ec_poll(struct acpi_ec *ec)
 			}
 			advance_transaction(ec, acpi_ec_read_status(ec));
 		} while (time_before(jiffies, delay));
+<<<<<<< HEAD
 		pr_debug(PREFIX "controller reset, restart transaction\n");
 		spin_lock_irqsave(&ec->curr_lock, flags);
 		start_transaction(ec);
 		spin_unlock_irqrestore(&ec->curr_lock, flags);
+=======
+		pr_debug("controller reset, restart transaction\n");
+		spin_lock_irqsave(&ec->lock, flags);
+		start_transaction(ec);
+		spin_unlock_irqrestore(&ec->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 	return -ETIME;
 }
@@ -251,17 +324,29 @@ static int acpi_ec_transaction_unlocked(struct acpi_ec *ec,
 	if (EC_FLAGS_MSI)
 		udelay(ACPI_EC_MSI_UDELAY);
 	/* start transaction */
+<<<<<<< HEAD
 	spin_lock_irqsave(&ec->curr_lock, tmp);
+=======
+	spin_lock_irqsave(&ec->lock, tmp);
+>>>>>>> refs/remotes/origin/master
 	/* following two actions should be kept atomic */
 	ec->curr = t;
 	start_transaction(ec);
 	if (ec->curr->command == ACPI_EC_COMMAND_QUERY)
 		clear_bit(EC_FLAGS_QUERY_PENDING, &ec->flags);
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&ec->curr_lock, tmp);
 	ret = ec_poll(ec);
 	spin_lock_irqsave(&ec->curr_lock, tmp);
 	ec->curr = NULL;
 	spin_unlock_irqrestore(&ec->curr_lock, tmp);
+=======
+	spin_unlock_irqrestore(&ec->lock, tmp);
+	ret = ec_poll(ec);
+	spin_lock_irqsave(&ec->lock, tmp);
+	ec->curr = NULL;
+	spin_unlock_irqrestore(&ec->lock, tmp);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -290,7 +375,11 @@ static int acpi_ec_transaction(struct acpi_ec *ec, struct transaction *t)
 		return -EINVAL;
 	if (t->rdata)
 		memset(t->rdata, 0, t->rlen);
+<<<<<<< HEAD
 	mutex_lock(&ec->lock);
+=======
+	mutex_lock(&ec->mutex);
+>>>>>>> refs/remotes/origin/master
 	if (test_bit(EC_FLAGS_BLOCKED, &ec->flags)) {
 		status = -EINVAL;
 		goto unlock;
@@ -303,12 +392,21 @@ static int acpi_ec_transaction(struct acpi_ec *ec, struct transaction *t)
 		}
 	}
 	if (ec_wait_ibf0(ec)) {
+<<<<<<< HEAD
 		pr_err(PREFIX "input buffer is not empty, "
+=======
+		pr_err("input buffer is not empty, "
+>>>>>>> refs/remotes/origin/master
 				"aborting transaction\n");
 		status = -ETIME;
 		goto end;
 	}
+<<<<<<< HEAD
 	pr_debug(PREFIX "transaction start\n");
+=======
+	pr_debug("transaction start (cmd=0x%02x, addr=0x%02x)\n",
+			t->command, t->wdata ? t->wdata[0] : 0);
+>>>>>>> refs/remotes/origin/master
 	/* disable GPE during transaction if storm is detected */
 	if (test_bit(EC_FLAGS_GPE_STORM, &ec->flags)) {
 		/* It has to be disabled, so that it doesn't trigger. */
@@ -324,16 +422,29 @@ static int acpi_ec_transaction(struct acpi_ec *ec, struct transaction *t)
 		/* It is safe to enable the GPE outside of the transaction. */
 		acpi_enable_gpe(NULL, ec->gpe);
 	} else if (t->irq_count > ec_storm_threshold) {
+<<<<<<< HEAD
 		pr_info(PREFIX "GPE storm detected, "
 			"transactions will use polling mode\n");
 		set_bit(EC_FLAGS_GPE_STORM, &ec->flags);
 	}
 	pr_debug(PREFIX "transaction end\n");
+=======
+		pr_info("GPE storm detected(%d GPEs), "
+			"transactions will use polling mode\n",
+			t->irq_count);
+		set_bit(EC_FLAGS_GPE_STORM, &ec->flags);
+	}
+	pr_debug("transaction end\n");
+>>>>>>> refs/remotes/origin/master
 end:
 	if (ec->global_lock)
 		acpi_release_global_lock(glk);
 unlock:
+<<<<<<< HEAD
 	mutex_unlock(&ec->lock);
+=======
+	mutex_unlock(&ec->mutex);
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -401,7 +512,11 @@ int ec_burst_disable(void)
 
 EXPORT_SYMBOL(ec_burst_disable);
 
+<<<<<<< HEAD
 int ec_read(u8 addr, u8 * val)
+=======
+int ec_read(u8 addr, u8 *val)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	u8 temp_data;
@@ -450,7 +565,10 @@ int ec_transaction(u8 command,
 EXPORT_SYMBOL(ec_transaction);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Get the handle to the EC device */
 acpi_handle ec_get_handle(void)
 {
@@ -461,7 +579,10 @@ acpi_handle ec_get_handle(void)
 
 EXPORT_SYMBOL(ec_get_handle);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void acpi_ec_block_transactions(void)
 {
 	struct acpi_ec *ec = first_ec;
@@ -469,10 +590,17 @@ void acpi_ec_block_transactions(void)
 	if (!ec)
 		return;
 
+<<<<<<< HEAD
 	mutex_lock(&ec->lock);
 	/* Prevent transactions from being carried out */
 	set_bit(EC_FLAGS_BLOCKED, &ec->flags);
 	mutex_unlock(&ec->lock);
+=======
+	mutex_lock(&ec->mutex);
+	/* Prevent transactions from being carried out */
+	set_bit(EC_FLAGS_BLOCKED, &ec->flags);
+	mutex_unlock(&ec->mutex);
+>>>>>>> refs/remotes/origin/master
 }
 
 void acpi_ec_unblock_transactions(void)
@@ -482,10 +610,17 @@ void acpi_ec_unblock_transactions(void)
 	if (!ec)
 		return;
 
+<<<<<<< HEAD
 	mutex_lock(&ec->lock);
 	/* Allow transactions to be carried out again */
 	clear_bit(EC_FLAGS_BLOCKED, &ec->flags);
 	mutex_unlock(&ec->lock);
+=======
+	mutex_lock(&ec->mutex);
+	/* Allow transactions to be carried out again */
+	clear_bit(EC_FLAGS_BLOCKED, &ec->flags);
+	mutex_unlock(&ec->mutex);
+>>>>>>> refs/remotes/origin/master
 }
 
 void acpi_ec_unblock_transactions_early(void)
@@ -537,9 +672,15 @@ int acpi_ec_add_query_handler(struct acpi_ec *ec, u8 query_bit,
 	handler->handle = handle;
 	handler->func = func;
 	handler->data = data;
+<<<<<<< HEAD
 	mutex_lock(&ec->lock);
 	list_add(&handler->node, &ec->list);
 	mutex_unlock(&ec->lock);
+=======
+	mutex_lock(&ec->mutex);
+	list_add(&handler->node, &ec->list);
+	mutex_unlock(&ec->mutex);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -548,14 +689,22 @@ EXPORT_SYMBOL_GPL(acpi_ec_add_query_handler);
 void acpi_ec_remove_query_handler(struct acpi_ec *ec, u8 query_bit)
 {
 	struct acpi_ec_query_handler *handler, *tmp;
+<<<<<<< HEAD
 	mutex_lock(&ec->lock);
+=======
+	mutex_lock(&ec->mutex);
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry_safe(handler, tmp, &ec->list, node) {
 		if (query_bit == handler->query_bit) {
 			list_del(&handler->node);
 			kfree(handler);
 		}
 	}
+<<<<<<< HEAD
 	mutex_unlock(&ec->lock);
+=======
+	mutex_unlock(&ec->mutex);
+>>>>>>> refs/remotes/origin/master
 }
 
 EXPORT_SYMBOL_GPL(acpi_ec_remove_query_handler);
@@ -565,12 +714,20 @@ static void acpi_ec_run(void *cxt)
 	struct acpi_ec_query_handler *handler = cxt;
 	if (!handler)
 		return;
+<<<<<<< HEAD
 	pr_debug(PREFIX "start query execution\n");
+=======
+	pr_debug("start query execution\n");
+>>>>>>> refs/remotes/origin/master
 	if (handler->func)
 		handler->func(handler->data);
 	else if (handler->handle)
 		acpi_evaluate_object(handler->handle, NULL, NULL, NULL);
+<<<<<<< HEAD
 	pr_debug(PREFIX "stop query execution\n");
+=======
+	pr_debug("stop query execution\n");
+>>>>>>> refs/remotes/origin/master
 	kfree(handler);
 }
 
@@ -588,7 +745,12 @@ static int acpi_ec_sync_query(struct acpi_ec *ec)
 			if (!copy)
 				return -ENOMEM;
 			memcpy(copy, handler, sizeof(*copy));
+<<<<<<< HEAD
 			pr_debug(PREFIX "push query execution (0x%2x) on queue\n", value);
+=======
+			pr_debug("push query execution (0x%2x) on queue\n",
+				value);
+>>>>>>> refs/remotes/origin/master
 			return acpi_os_execute((copy->func) ?
 				OSL_NOTIFY_HANDLER : OSL_GPE_HANDLER,
 				acpi_ec_run, copy);
@@ -602,16 +764,26 @@ static void acpi_ec_gpe_query(void *ec_cxt)
 	struct acpi_ec *ec = ec_cxt;
 	if (!ec)
 		return;
+<<<<<<< HEAD
 	mutex_lock(&ec->lock);
 	acpi_ec_sync_query(ec);
 	mutex_unlock(&ec->lock);
+=======
+	mutex_lock(&ec->mutex);
+	acpi_ec_sync_query(ec);
+	mutex_unlock(&ec->mutex);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ec_check_sci(struct acpi_ec *ec, u8 state)
 {
 	if (state & ACPI_EC_FLAG_SCI) {
 		if (!test_and_set_bit(EC_FLAGS_QUERY_PENDING, &ec->flags)) {
+<<<<<<< HEAD
 			pr_debug(PREFIX "push gpe query to the queue\n");
+=======
+			pr_debug("push gpe query to the queue\n");
+>>>>>>> refs/remotes/origin/master
 			return acpi_os_execute(OSL_NOTIFY_HANDLER,
 				acpi_ec_gpe_query, ec);
 		}
@@ -623,10 +795,18 @@ static u32 acpi_ec_gpe_handler(acpi_handle gpe_device,
 	u32 gpe_number, void *data)
 {
 	struct acpi_ec *ec = data;
+<<<<<<< HEAD
 
 	pr_debug(PREFIX "~~~> interrupt\n");
 
 	advance_transaction(ec, acpi_ec_read_status(ec));
+=======
+	u8 status = acpi_ec_read_status(ec);
+
+	pr_debug("~~~> interrupt, status:0x%02x\n", status);
+
+	advance_transaction(ec, status);
+>>>>>>> refs/remotes/origin/master
 	if (ec_transaction_done(ec) &&
 	    (acpi_ec_read_status(ec) & ACPI_EC_FLAG_IBF) == 0) {
 		wake_up(&ec->wait);
@@ -692,10 +872,17 @@ static struct acpi_ec *make_acpi_ec(void)
 	if (!ec)
 		return NULL;
 	ec->flags = 1 << EC_FLAGS_QUERY_PENDING;
+<<<<<<< HEAD
 	mutex_init(&ec->lock);
 	init_waitqueue_head(&ec->wait);
 	INIT_LIST_HEAD(&ec->list);
 	spin_lock_init(&ec->curr_lock);
+=======
+	mutex_init(&ec->mutex);
+	init_waitqueue_head(&ec->wait);
+	INIT_LIST_HEAD(&ec->list);
+	spin_lock_init(&ec->lock);
+>>>>>>> refs/remotes/origin/master
 	return ec;
 }
 
@@ -770,7 +957,11 @@ static int ec_install_handlers(struct acpi_ec *ec)
 			 * The AE_NOT_FOUND error will be ignored and OS
 			 * continue to initialize EC.
 			 */
+<<<<<<< HEAD
 			printk(KERN_ERR "Fail in evaluating the _REG object"
+=======
+			pr_err("Fail in evaluating the _REG object"
+>>>>>>> refs/remotes/origin/master
 				" of EC device. Broken bios is suspected.\n");
 		} else {
 			acpi_remove_gpe_handler(NULL, ec->gpe,
@@ -789,10 +980,17 @@ static void ec_remove_handlers(struct acpi_ec *ec)
 	acpi_disable_gpe(NULL, ec->gpe);
 	if (ACPI_FAILURE(acpi_remove_address_space_handler(ec->handle,
 				ACPI_ADR_SPACE_EC, &acpi_ec_space_handler)))
+<<<<<<< HEAD
 		pr_err(PREFIX "failed to remove space handler\n");
 	if (ACPI_FAILURE(acpi_remove_gpe_handler(NULL, ec->gpe,
 				&acpi_ec_gpe_handler)))
 		pr_err(PREFIX "failed to remove gpe handler\n");
+=======
+		pr_err("failed to remove space handler\n");
+	if (ACPI_FAILURE(acpi_remove_gpe_handler(NULL, ec->gpe,
+				&acpi_ec_gpe_handler)))
+		pr_err("failed to remove gpe handler\n");
+>>>>>>> refs/remotes/origin/master
 	clear_bit(EC_FLAGS_HANDLERS_INSTALLED, &ec->flags);
 }
 
@@ -830,18 +1028,26 @@ static int acpi_ec_add(struct acpi_device *device)
 	device->driver_data = ec;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WARN(!request_region(ec->data_addr, 1, "EC data"),
 	     "Could not request EC data io port 0x%lx", ec->data_addr);
 	WARN(!request_region(ec->command_addr, 1, "EC cmd"),
 	     "Could not request EC cmd io port 0x%lx", ec->command_addr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = !!request_region(ec->data_addr, 1, "EC data");
 	WARN(!ret, "Could not request EC data io port 0x%lx", ec->data_addr);
 	ret = !!request_region(ec->command_addr, 1, "EC cmd");
 	WARN(!ret, "Could not request EC cmd io port 0x%lx", ec->command_addr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	pr_info(PREFIX "GPE = 0x%lx, I/O: command/status = 0x%lx, data = 0x%lx\n",
+=======
+
+	pr_info("GPE = 0x%lx, I/O: command/status = 0x%lx, data = 0x%lx\n",
+>>>>>>> refs/remotes/origin/master
 			  ec->gpe, ec->command_addr, ec->data_addr);
 
 	ret = ec_install_handlers(ec);
@@ -851,7 +1057,11 @@ static int acpi_ec_add(struct acpi_device *device)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int acpi_ec_remove(struct acpi_device *device, int type)
+=======
+static int acpi_ec_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_ec *ec;
 	struct acpi_ec_query_handler *handler, *tmp;
@@ -861,12 +1071,20 @@ static int acpi_ec_remove(struct acpi_device *device, int type)
 
 	ec = acpi_driver_data(device);
 	ec_remove_handlers(ec);
+<<<<<<< HEAD
 	mutex_lock(&ec->lock);
+=======
+	mutex_lock(&ec->mutex);
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry_safe(handler, tmp, &ec->list, node) {
 		list_del(&handler->node);
 		kfree(handler);
 	}
+<<<<<<< HEAD
 	mutex_unlock(&ec->lock);
+=======
+	mutex_unlock(&ec->mutex);
+>>>>>>> refs/remotes/origin/master
 	release_region(ec->data_addr, 1);
 	release_region(ec->command_addr, 1);
 	device->driver_data = NULL;
@@ -932,7 +1150,11 @@ static int ec_validate_ecdt(const struct dmi_system_id *id)
 /* MSI EC needs special treatment, enable it */
 static int ec_flag_msi(const struct dmi_system_id *id)
 {
+<<<<<<< HEAD
 	printk(KERN_DEBUG PREFIX "Detected MSI hardware, enabling workarounds.\n");
+=======
+	pr_debug("Detected MSI hardware, enabling workarounds.\n");
+>>>>>>> refs/remotes/origin/master
 	EC_FLAGS_MSI = 1;
 	EC_FLAGS_VALIDATE_ECDT = 1;
 	return 0;
@@ -949,7 +1171,11 @@ static int ec_enlarge_storm_threshold(const struct dmi_system_id *id)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct dmi_system_id __initdata ec_dmi_table[] = {
+=======
+static struct dmi_system_id ec_dmi_table[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 	{
 	ec_skip_dsdt_scan, "Compal JFL92", {
 	DMI_MATCH(DMI_BIOS_VENDOR, "COMPAL"),
@@ -1011,7 +1237,11 @@ int __init acpi_ec_ecdt_probe(void)
 	status = acpi_get_table(ACPI_SIG_ECDT, 1,
 				(struct acpi_table_header **)&ecdt_ptr);
 	if (ACPI_SUCCESS(status)) {
+<<<<<<< HEAD
 		pr_info(PREFIX "EC description table is found, configuring boot EC\n");
+=======
+		pr_info("EC description table is found, configuring boot EC\n");
+>>>>>>> refs/remotes/origin/master
 		boot_ec->command_addr = ecdt_ptr->control.address;
 		boot_ec->data_addr = ecdt_ptr->data.address;
 		boot_ec->gpe = ecdt_ptr->gpe;
@@ -1031,7 +1261,11 @@ int __init acpi_ec_ecdt_probe(void)
 
 	/* This workaround is needed only on some broken machines,
 	 * which require early EC, but fail to provide ECDT */
+<<<<<<< HEAD
 	printk(KERN_DEBUG PREFIX "Look up EC in DSDT\n");
+=======
+	pr_debug("Look up EC in DSDT\n");
+>>>>>>> refs/remotes/origin/master
 	status = acpi_get_devices(ec_device_ids[0].id, ec_parse_device,
 					boot_ec, NULL);
 	/* Check that acpi_get_devices actually find something */
@@ -1043,7 +1277,11 @@ int __init acpi_ec_ecdt_probe(void)
 		    saved_ec->data_addr != boot_ec->data_addr ||
 		    saved_ec->gpe != boot_ec->gpe ||
 		    saved_ec->handle != boot_ec->handle)
+<<<<<<< HEAD
 			pr_info(PREFIX "ASUSTek keeps feeding us with broken "
+=======
+			pr_info("ASUSTek keeps feeding us with broken "
+>>>>>>> refs/remotes/origin/master
 			"ECDT tables, which are very hard to workaround. "
 			"Trying to use DSDT EC info instead. Please send "
 			"output of acpidump to linux-acpi@vger.kernel.org\n");
@@ -1054,10 +1292,15 @@ int __init acpi_ec_ecdt_probe(void)
 		* which needs it, has fake EC._INI method, so use it as flag.
 		* Keep boot_ec struct as it will be needed soon.
 		*/
+<<<<<<< HEAD
 		acpi_handle dummy;
 		if (!dmi_name_in_vendors("ASUS") ||
 		    ACPI_FAILURE(acpi_get_handle(boot_ec->handle, "_INI",
 							&dummy)))
+=======
+		if (!dmi_name_in_vendors("ASUS") ||
+		    !acpi_has_method(boot_ec->handle, "_INI"))
+>>>>>>> refs/remotes/origin/master
 			return -ENODEV;
 	}
 install:

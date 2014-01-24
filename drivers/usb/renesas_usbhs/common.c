@@ -14,15 +14,24 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/module.h>
 #include <linux/pm_runtime.h>
 #include <linux/slab.h>
 #include <linux/sysfs.h>
+<<<<<<< HEAD
 #include "./common.h"
 
 <<<<<<< HEAD
 =======
+=======
+#include "common.h"
+
+>>>>>>> refs/remotes/origin/master
 /*
  *		image of renesas_usbhs
  *
@@ -46,7 +55,10 @@
  */
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define USBHSF_RUNTIME_PWCTRL	(1 << 0)
 
 /* status */
@@ -65,12 +77,17 @@
 #define usbhs_platform_call(priv, func, args...)\
 	(!(priv) ? -ENODEV :			\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 !((priv)->pfunc->func) ? 0 :		\
 	 (priv)->pfunc->func(args))
 =======
 	 !((priv)->pfunc.func) ? 0 :		\
 	 (priv)->pfunc.func(args))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 !((priv)->pfunc.func) ? 0 :		\
+	 (priv)->pfunc.func(args))
+>>>>>>> refs/remotes/origin/master
 
 /*
  *		common functions
@@ -104,14 +121,19 @@ struct usbhs_priv *usbhs_pdev_to_priv(struct platform_device *pdev)
  *		syscfg functions
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void usbhs_sys_clock_ctrl(struct usbhs_priv *priv, int enable)
 =======
 static void usbhs_sys_clock_ctrl(struct usbhs_priv *priv, int enable)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void usbhs_sys_clock_ctrl(struct usbhs_priv *priv, int enable)
+>>>>>>> refs/remotes/origin/master
 {
 	usbhs_bset(priv, SYSCFG, SCKE, enable ? SCKE : 0);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void usbhs_sys_hispeed_ctrl(struct usbhs_priv *priv, int enable)
 {
@@ -128,6 +150,8 @@ void usbhs_sys_host_ctrl(struct usbhs_priv *priv, int enable)
 	u16 mask = DCFM | DRPD | DPRPU;
 	u16 val  = DCFM | DRPD;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void usbhs_sys_host_ctrl(struct usbhs_priv *priv, int enable)
 {
 	u16 mask = DCFM | DRPD | DPRPU | HSE | USBE;
@@ -136,7 +160,10 @@ void usbhs_sys_host_ctrl(struct usbhs_priv *priv, int enable)
 
 	if (has_otg)
 		usbhs_bset(priv, DVSTCTR, (EXTLP | PWEN), (EXTLP | PWEN));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * if enable
@@ -150,12 +177,17 @@ void usbhs_sys_host_ctrl(struct usbhs_priv *priv, int enable)
 void usbhs_sys_function_ctrl(struct usbhs_priv *priv, int enable)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 mask = DCFM | DRPD | DPRPU;
 	u16 val  = DPRPU;
 =======
 	u16 mask = DCFM | DRPD | DPRPU | HSE | USBE;
 	u16 val  = DPRPU | HSE | USBE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 mask = DCFM | DRPD | DPRPU | HSE | USBE;
+	u16 val  = DPRPU | HSE | USBE;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * if enable
@@ -167,13 +199,24 @@ void usbhs_sys_function_ctrl(struct usbhs_priv *priv, int enable)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+void usbhs_sys_function_pullup(struct usbhs_priv *priv, int enable)
+{
+	usbhs_bset(priv, SYSCFG, DPRPU, enable ? DPRPU : 0);
+}
+
+>>>>>>> refs/remotes/origin/master
 void usbhs_sys_set_test_mode(struct usbhs_priv *priv, u16 mode)
 {
 	usbhs_write(priv, TESTMODE, mode);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *		frame functions
  */
@@ -183,6 +226,7 @@ int usbhs_frame_get_num(struct usbhs_priv *priv)
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  *		local functions
  */
@@ -198,6 +242,8 @@ static void usbhsc_bus_ctrl(struct usbhs_priv *priv, int enable)
 	}
 	usbhs_write(priv, DVSTCTR, data);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *		usb request functions
  */
 void usbhs_usbreq_get_val(struct usbhs_priv *priv, struct usb_ctrlrequest *req)
@@ -325,7 +371,10 @@ static void usbhsc_set_buswait(struct usbhs_priv *priv)
 	/* set bus wait if platform have */
 	if (wait)
 		usbhs_bset(priv, BUSWAIT, 0x000F, wait);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -350,15 +399,20 @@ static u32 usbhsc_default_pipe_type[] = {
 static void usbhsc_power_ctrl(struct usbhs_priv *priv, int enable)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct platform_device *pdev = usbhs_priv_to_pdev(priv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct platform_device *pdev = usbhs_priv_to_pdev(priv);
+>>>>>>> refs/remotes/origin/master
 	struct device *dev = usbhs_priv_to_dev(priv);
 
 	if (enable) {
 		/* enable PM */
 		pm_runtime_get_sync(dev);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* USB on */
 		usbhs_sys_clock_ctrl(priv, enable);
@@ -369,6 +423,8 @@ static void usbhsc_power_ctrl(struct usbhs_priv *priv, int enable)
 		usbhs_sys_clock_ctrl(priv, enable);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* enable platform power */
 		usbhs_platform_call(priv, power_ctrl, pdev, priv->base, enable);
 
@@ -381,13 +437,17 @@ static void usbhsc_power_ctrl(struct usbhs_priv *priv, int enable)
 		/* disable platform power */
 		usbhs_platform_call(priv, power_ctrl, pdev, priv->base, enable);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* disable PM */
 		pm_runtime_put_sync(dev);
 	}
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  *		notify hotplug
  */
@@ -397,11 +457,16 @@ static void usbhsc_notify_hotplug(struct work_struct *work)
 					       struct usbhs_priv,
 					       notify_hotplug_work.work);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *		hotplug
  */
 static void usbhsc_hotplug(struct usbhs_priv *priv)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct platform_device *pdev = usbhs_priv_to_pdev(priv);
 	struct usbhs_mod *mod = usbhs_mod_get_current(priv);
 	int id;
@@ -430,12 +495,18 @@ static void usbhsc_hotplug(struct usbhs_priv *priv)
 			usbhsc_power_ctrl(priv, enable);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* bus init */
 		usbhsc_set_buswait(priv);
 		usbhsc_bus_init(priv);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* module start */
 		usbhs_mod_call(priv, start, priv);
 
@@ -446,11 +517,17 @@ static void usbhsc_hotplug(struct usbhs_priv *priv)
 		usbhs_mod_call(priv, stop, priv);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		/* bus init */
 		usbhsc_bus_init(priv);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* bus init */
+		usbhsc_bus_init(priv);
+
+>>>>>>> refs/remotes/origin/master
 		/* power off */
 		if (usbhsc_flags_has(priv, USBHSF_RUNTIME_PWCTRL))
 			usbhsc_power_ctrl(priv, enable);
@@ -463,8 +540,11 @@ static void usbhsc_hotplug(struct usbhs_priv *priv)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int usbhsc_drvcllbck_notify_hotplug(struct platform_device *pdev)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *		notify hotplug
  */
@@ -477,7 +557,10 @@ static void usbhsc_notify_hotplug(struct work_struct *work)
 }
 
 static int usbhsc_drvcllbck_notify_hotplug(struct platform_device *pdev)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct usbhs_priv *priv = usbhs_pdev_to_priv(pdev);
 	int delay = usbhs_get_dparam(priv, detection_delay);
@@ -488,17 +571,23 @@ static int usbhsc_drvcllbck_notify_hotplug(struct platform_device *pdev)
 	 * use workqueue for usbhs_notify_hotplug
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	schedule_delayed_work(&priv->notify_hotplug_work, delay);
 =======
 	schedule_delayed_work(&priv->notify_hotplug_work,
 			      msecs_to_jiffies(delay));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	schedule_delayed_work(&priv->notify_hotplug_work,
+			      msecs_to_jiffies(delay));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 /*
  *		platform functions
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __devinit usbhs_probe(struct platform_device *pdev)
 =======
@@ -514,6 +603,14 @@ static int usbhs_probe(struct platform_device *pdev)
 =======
 	struct resource *res, *irq_res;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int usbhs_probe(struct platform_device *pdev)
+{
+	struct renesas_usbhs_platform_info *info = dev_get_platdata(&pdev->dev);
+	struct renesas_usbhs_driver_callback *dfunc;
+	struct usbhs_priv *priv;
+	struct resource *res, *irq_res;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	/* check platform information */
@@ -526,50 +623,72 @@ static int usbhs_probe(struct platform_device *pdev)
 	/* platform data */
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	irq = platform_get_irq(pdev, 0);
 	if (!res || (int)irq <= 0) {
 =======
 	irq_res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
 	if (!res || !irq_res) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq_res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+	if (!res || !irq_res) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&pdev->dev, "Not enough Renesas USB platform resources.\n");
 		return -ENODEV;
 	}
 
 	/* usb private data */
+<<<<<<< HEAD
 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+=======
+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!priv) {
 		dev_err(&pdev->dev, "Could not allocate priv\n");
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	priv->base = ioremap_nocache(res->start, resource_size(res));
 	if (!priv->base) {
 		dev_err(&pdev->dev, "ioremap error.\n");
 		ret = -ENOMEM;
 		goto probe_end_kfree;
 	}
+=======
+	priv->base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(priv->base))
+		return PTR_ERR(priv->base);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * care platform info
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	priv->pfunc	= &info->platform_callback;
 	priv->dparam	= &info->driver_param;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	memcpy(&priv->pfunc,
 	       &info->platform_callback,
 	       sizeof(struct renesas_usbhs_platform_callback));
 	memcpy(&priv->dparam,
 	       &info->driver_param,
 	       sizeof(struct renesas_usbhs_driver_param));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* set driver callback functions for platform */
 	dfunc			= &info->driver_callback;
 	dfunc->notify_hotplug	= usbhsc_drvcllbck_notify_hotplug;
 
 	/* set default param if platform doesn't have */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!priv->dparam->pipe_type) {
 		priv->dparam->pipe_type = usbhsc_default_pipe_type;
@@ -580,6 +699,8 @@ static int usbhs_probe(struct platform_device *pdev)
 	/* runtime power control ? */
 	if (priv->pfunc->get_vbus)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!priv->dparam.pipe_type) {
 		priv->dparam.pipe_type = usbhsc_default_pipe_type;
 		priv->dparam.pipe_size = ARRAY_SIZE(usbhsc_default_pipe_type);
@@ -590,12 +711,16 @@ static int usbhs_probe(struct platform_device *pdev)
 	/* FIXME */
 	/* runtime power control ? */
 	if (priv->pfunc.get_vbus)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		usbhsc_flags_set(priv, USBHSF_RUNTIME_PWCTRL);
 
 	/*
 	 * priv settings
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	priv->irq	= irq;
 =======
@@ -603,6 +728,11 @@ static int usbhs_probe(struct platform_device *pdev)
 	if (irq_res->flags & IORESOURCE_IRQ_SHAREABLE)
 		priv->irqflags = IRQF_SHARED;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	priv->irq	= irq_res->start;
+	if (irq_res->flags & IORESOURCE_IRQ_SHAREABLE)
+		priv->irqflags = IRQF_SHARED;
+>>>>>>> refs/remotes/origin/master
 	priv->pdev	= pdev;
 	INIT_DELAYED_WORK(&priv->notify_hotplug_work, usbhsc_notify_hotplug);
 	spin_lock_init(usbhs_priv_to_lock(priv));
@@ -610,6 +740,7 @@ static int usbhs_probe(struct platform_device *pdev)
 	/* call pipe and module init */
 	ret = usbhs_pipe_probe(priv);
 	if (ret < 0)
+<<<<<<< HEAD
 		goto probe_end_iounmap;
 
 <<<<<<< HEAD
@@ -618,6 +749,10 @@ static int usbhs_probe(struct platform_device *pdev)
 		goto probe_end_pipe_exit;
 
 =======
+=======
+		return ret;
+
+>>>>>>> refs/remotes/origin/master
 	ret = usbhs_fifo_probe(priv);
 	if (ret < 0)
 		goto probe_end_pipe_exit;
@@ -626,9 +761,14 @@ static int usbhs_probe(struct platform_device *pdev)
 	if (ret < 0)
 		goto probe_end_fifo_exit;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* dev_set_drvdata should be called after usbhs_mod_init */
 	dev_set_drvdata(&pdev->dev, priv);
+=======
+	/* dev_set_drvdata should be called after usbhs_mod_init */
+	platform_set_drvdata(pdev, priv);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * deviece reset here because
@@ -675,6 +815,7 @@ probe_end_call_remove:
 probe_end_mod_exit:
 	usbhs_mod_remove(priv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 probe_end_fifo_exit:
 	usbhs_fifo_remove(priv);
@@ -685,16 +826,29 @@ probe_end_iounmap:
 	iounmap(priv->base);
 probe_end_kfree:
 	kfree(priv);
+=======
+probe_end_fifo_exit:
+	usbhs_fifo_remove(priv);
+probe_end_pipe_exit:
+	usbhs_pipe_remove(priv);
+>>>>>>> refs/remotes/origin/master
 
 	dev_info(&pdev->dev, "probe failed\n");
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit usbhs_remove(struct platform_device *pdev)
 {
 	struct usbhs_priv *priv = usbhs_pdev_to_priv(pdev);
 	struct renesas_usbhs_platform_info *info = pdev->dev.platform_data;
+=======
+static int usbhs_remove(struct platform_device *pdev)
+{
+	struct usbhs_priv *priv = usbhs_pdev_to_priv(pdev);
+	struct renesas_usbhs_platform_info *info = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct renesas_usbhs_driver_callback *dfunc = &info->driver_callback;
 
 	dev_dbg(&pdev->dev, "usb remove\n");
@@ -710,21 +864,29 @@ static int __devexit usbhs_remove(struct platform_device *pdev)
 	usbhs_platform_call(priv, hardware_exit, pdev);
 	usbhs_mod_remove(priv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	usbhs_fifo_remove(priv);
 >>>>>>> refs/remotes/origin/cm-10.0
 	usbhs_pipe_remove(priv);
 	iounmap(priv->base);
 	kfree(priv);
+=======
+	usbhs_fifo_remove(priv);
+	usbhs_pipe_remove(priv);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_driver renesas_usbhs_driver = {
 	.driver		= {
 		.name	= "renesas_usbhs",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int usbhsc_suspend(struct device *dev)
 {
 	struct usbhs_priv *priv = dev_get_drvdata(dev);
@@ -746,12 +908,21 @@ static int usbhsc_resume(struct device *dev)
 	struct usbhs_priv *priv = dev_get_drvdata(dev);
 	struct platform_device *pdev = usbhs_priv_to_pdev(priv);
 
+<<<<<<< HEAD
 	usbhs_platform_call(priv, phy_reset, pdev);
 
 	if (!usbhsc_flags_has(priv, USBHSF_RUNTIME_PWCTRL))
 		usbhsc_power_ctrl(priv, 1);
 
 	usbhsc_hotplug(priv);
+=======
+	if (!usbhsc_flags_has(priv, USBHSF_RUNTIME_PWCTRL))
+		usbhsc_power_ctrl(priv, 1);
+
+	usbhs_platform_call(priv, phy_reset, pdev);
+
+	usbhsc_drvcllbck_notify_hotplug(pdev);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -779,6 +950,7 @@ static struct platform_driver renesas_usbhs_driver = {
 	.driver		= {
 		.name	= "renesas_usbhs",
 		.pm	= &usbhsc_pm_ops,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	},
 	.probe		= usbhs_probe,
@@ -801,6 +973,14 @@ module_exit(usbhs_exit);
 =======
 module_platform_driver(renesas_usbhs_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	},
+	.probe		= usbhs_probe,
+	.remove		= usbhs_remove,
+};
+
+module_platform_driver(renesas_usbhs_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Renesas USB driver");

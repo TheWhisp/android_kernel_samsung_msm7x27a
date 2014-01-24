@@ -37,9 +37,13 @@ MODULE_LICENSE("GPL");
 #include <linux/kernel.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/interrupt.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/slab.h>
 #include <linux/netdevice.h>
@@ -386,7 +390,11 @@ static int vlsi_seq_show(struct seq_file *seq, void *v)
 
 static int vlsi_seq_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, vlsi_seq_show, PDE(inode)->data);
+=======
+	return single_open(file, vlsi_seq_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations vlsi_proc_fops = {
@@ -546,7 +554,11 @@ static int vlsi_process_rx(struct vlsi_ring *r, struct ring_descr *rd)
 	int		crclen, len = 0;
 	struct sk_buff	*skb;
 	int		ret = 0;
+<<<<<<< HEAD
 	struct net_device *ndev = (struct net_device *)pci_get_drvdata(r->pdev);
+=======
+	struct net_device *ndev = pci_get_drvdata(r->pdev);
+>>>>>>> refs/remotes/origin/master
 	vlsi_irda_dev_t *idev = netdev_priv(ndev);
 
 	pci_dma_sync_single_for_cpu(r->pdev, rd_get_addr(rd), r->len, r->dir);
@@ -1630,7 +1642,11 @@ static int vlsi_irda_init(struct net_device *ndev)
 
 /**************************************************************/
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 vlsi_irda_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 {
 	struct net_device	*ndev;
@@ -1681,7 +1697,11 @@ vlsi_irda_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 			IRDA_WARNING("%s: failed to create proc entry\n",
 				     __func__);
 		} else {
+<<<<<<< HEAD
 			ent->size = 0;
+=======
+			proc_set_size(ent, 0);
+>>>>>>> refs/remotes/origin/master
 		}
 		idev->proc_entry = ent;
 	}
@@ -1702,7 +1722,11 @@ out:
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static void __devexit vlsi_irda_remove(struct pci_dev *pdev)
+=======
+static void vlsi_irda_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *ndev = pci_get_drvdata(pdev);
 	vlsi_irda_dev_t *idev;
@@ -1835,7 +1859,11 @@ static struct pci_driver vlsi_irda_driver = {
 	.name		= drivername,
 	.id_table	= vlsi_irda_table,
 	.probe		= vlsi_irda_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(vlsi_irda_remove),
+=======
+	.remove		= vlsi_irda_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= vlsi_irda_suspend,
 	.resume		= vlsi_irda_resume,

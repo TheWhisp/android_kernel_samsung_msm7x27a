@@ -7,6 +7,10 @@
  */
 
 #include <linux/fs.h>
+<<<<<<< HEAD
+=======
+#include <linux/magic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/mm.h>
 #include <linux/pagemap.h>
@@ -16,8 +20,13 @@
 #include <linux/mount.h>
 #include <linux/namei.h>
 #include "hostfs.h"
+<<<<<<< HEAD
 #include "init.h"
 #include "kern.h"
+=======
+#include <init.h>
+#include <kern.h>
+>>>>>>> refs/remotes/origin/master
 
 struct hostfs_inode_info {
 	int fd;
@@ -30,6 +39,7 @@ static inline struct hostfs_inode_info *HOSTFS_I(struct inode *inode)
 	return list_entry(inode, struct hostfs_inode_info, vfs_inode);
 }
 
+<<<<<<< HEAD
 #define FILE_HOSTFS_I(file) HOSTFS_I((file)->f_path.dentry->d_inode)
 
 static int hostfs_d_delete(const struct dentry *dentry)
@@ -40,13 +50,19 @@ static int hostfs_d_delete(const struct dentry *dentry)
 static const struct dentry_operations hostfs_dentry_ops = {
 	.d_delete		= hostfs_d_delete,
 };
+=======
+#define FILE_HOSTFS_I(file) HOSTFS_I(file_inode(file))
+>>>>>>> refs/remotes/origin/master
 
 /* Changed in hostfs_args before the kernel starts running */
 static char *root_ino = "";
 static int append = 0;
 
+<<<<<<< HEAD
 #define HOSTFS_SUPER_MAGIC 0x00c0ffee
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct inode_operations hostfs_iops;
 static const struct inode_operations hostfs_dir_iops;
 static const struct inode_operations hostfs_link_iops;
@@ -121,7 +137,11 @@ static char *dentry_name(struct dentry *dentry)
 	if (!name)
 		return NULL;
 
+<<<<<<< HEAD
 	return __dentry_name(dentry, name); /* will unlock */
+=======
+	return __dentry_name(dentry, name);
+>>>>>>> refs/remotes/origin/master
 }
 
 static char *inode_name(struct inode *ino)
@@ -229,10 +249,18 @@ static struct inode *hostfs_alloc_inode(struct super_block *sb)
 {
 	struct hostfs_inode_info *hi;
 
+<<<<<<< HEAD
 	hi = kzalloc(sizeof(*hi), GFP_KERNEL);
 	if (hi == NULL)
 		return NULL;
 	hi->fd = -1;
+=======
+	hi = kmalloc(sizeof(*hi), GFP_KERNEL);
+	if (hi == NULL)
+		return NULL;
+	hi->fd = -1;
+	hi->mode = 0;
+>>>>>>> refs/remotes/origin/master
 	inode_init_once(&hi->vfs_inode);
 	return &hi->vfs_inode;
 }
@@ -240,7 +268,11 @@ static struct inode *hostfs_alloc_inode(struct super_block *sb)
 static void hostfs_evict_inode(struct inode *inode)
 {
 	truncate_inode_pages(&inode->i_data, 0);
+<<<<<<< HEAD
 	end_writeback(inode);
+=======
+	clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 	if (HOSTFS_I(inode)->fd != -1) {
 		close_file(&HOSTFS_I(inode)->fd);
 		HOSTFS_I(inode)->fd = -1;
@@ -251,9 +283,12 @@ static void hostfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(HOSTFS_I(inode));
 }
 
@@ -263,6 +298,7 @@ static void hostfs_destroy_inode(struct inode *inode)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int hostfs_show_options(struct seq_file *seq, struct vfsmount *vfs)
 {
 	const char *root_path = vfs->mnt_sb->s_fs_info;
@@ -271,6 +307,11 @@ static int hostfs_show_options(struct seq_file *seq, struct dentry *root)
 {
 	const char *root_path = root->d_sb->s_fs_info;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hostfs_show_options(struct seq_file *seq, struct dentry *root)
+{
+	const char *root_path = root->d_sb->s_fs_info;
+>>>>>>> refs/remotes/origin/master
 	size_t offset = strlen(root_ino) + 1;
 
 	if (strlen(root_path) > offset)
@@ -287,16 +328,24 @@ static const struct super_operations hostfs_sbops = {
 	.show_options	= hostfs_show_options,
 };
 
+<<<<<<< HEAD
 int hostfs_readdir(struct file *file, void *ent, filldir_t filldir)
+=======
+int hostfs_readdir(struct file *file, struct dir_context *ctx)
+>>>>>>> refs/remotes/origin/master
 {
 	void *dir;
 	char *name;
 	unsigned long long next, ino;
 	int error, len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned int type;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int type;
+>>>>>>> refs/remotes/origin/master
 
 	name = dentry_name(file->f_path.dentry);
 	if (name == NULL)
@@ -305,6 +354,7 @@ int hostfs_readdir(struct file *file, void *ent, filldir_t filldir)
 	__putname(name);
 	if (dir == NULL)
 		return -error;
+<<<<<<< HEAD
 	next = file->f_pos;
 <<<<<<< HEAD
 	while ((name = read_dir(dir, &next, &ino, &len)) != NULL) {
@@ -317,6 +367,13 @@ int hostfs_readdir(struct file *file, void *ent, filldir_t filldir)
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (error) break;
 		file->f_pos = next;
+=======
+	next = ctx->pos;
+	while ((name = read_dir(dir, &next, &ino, &len, &type)) != NULL) {
+		if (!dir_emit(ctx, name, len, ino, type))
+			break;
+		ctx->pos = next;
+>>>>>>> refs/remotes/origin/master
 	}
 	close_dir(dir);
 	return 0;
@@ -382,10 +439,20 @@ retry:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int hostfs_fsync(struct file *file, int datasync)
 {
 	return fsync_file(HOSTFS_I(file->f_mapping->host)->fd, datasync);
 =======
+=======
+static int hostfs_file_release(struct inode *inode, struct file *file)
+{
+	filemap_write_and_wait(inode->i_mapping);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 int hostfs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
 {
 	struct inode *inode = file->f_mapping->host;
@@ -400,7 +467,10 @@ int hostfs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
 	mutex_unlock(&inode->i_mutex);
 
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations hostfs_file_fops = {
@@ -412,13 +482,21 @@ static const struct file_operations hostfs_file_fops = {
 	.write		= do_sync_write,
 	.mmap		= generic_file_mmap,
 	.open		= hostfs_file_open,
+<<<<<<< HEAD
 	.release	= NULL,
+=======
+	.release	= hostfs_file_release,
+>>>>>>> refs/remotes/origin/master
 	.fsync		= hostfs_fsync,
 };
 
 static const struct file_operations hostfs_dir_fops = {
 	.llseek		= generic_file_llseek,
+<<<<<<< HEAD
 	.readdir	= hostfs_readdir,
+=======
+	.iterate	= hostfs_readdir,
+>>>>>>> refs/remotes/origin/master
 	.read		= generic_read_dir,
 };
 
@@ -567,12 +645,18 @@ static int read_name(struct inode *ino, char *name)
 	ino->i_ino = st.ino;
 	ino->i_mode = st.mode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ino->i_nlink = st.nlink;
 =======
 	set_nlink(ino, st.nlink);
 >>>>>>> refs/remotes/origin/cm-10.0
 	ino->i_uid = st.uid;
 	ino->i_gid = st.gid;
+=======
+	set_nlink(ino, st.nlink);
+	i_uid_write(ino, st.uid);
+	i_gid_write(ino, st.gid);
+>>>>>>> refs/remotes/origin/master
 	ino->i_atime = st.atime;
 	ino->i_mtime = st.mtime;
 	ino->i_ctime = st.ctime;
@@ -582,11 +666,16 @@ static int read_name(struct inode *ino, char *name)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int hostfs_create(struct inode *dir, struct dentry *dentry, int mode,
 =======
 int hostfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
 		  struct nameidata *nd)
+=======
+int hostfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+		  bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 	char *name;
@@ -628,7 +717,11 @@ int hostfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 }
 
 struct dentry *hostfs_lookup(struct inode *ino, struct dentry *dentry,
+<<<<<<< HEAD
 			     struct nameidata *nd)
+=======
+			     unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 	char *name;
@@ -711,10 +804,14 @@ int hostfs_symlink(struct inode *ino, struct dentry *dentry, const char *to)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int hostfs_mkdir(struct inode *ino, struct dentry *dentry, int mode)
 =======
 int hostfs_mkdir(struct inode *ino, struct dentry *dentry, umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int hostfs_mkdir(struct inode *ino, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	char *file;
 	int err;
@@ -739,10 +836,14 @@ int hostfs_rmdir(struct inode *ino, struct dentry *dentry)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int hostfs_mknod(struct inode *dir, struct dentry *dentry, int mode, dev_t dev)
 =======
 static int hostfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hostfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 	char *name;
@@ -801,19 +902,27 @@ int hostfs_rename(struct inode *from_ino, struct dentry *from,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int hostfs_permission(struct inode *ino, int desired, unsigned int flags)
 =======
 int hostfs_permission(struct inode *ino, int desired)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int hostfs_permission(struct inode *ino, int desired)
+>>>>>>> refs/remotes/origin/master
 {
 	char *name;
 	int r = 0, w = 0, x = 0, err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (flags & IPERM_FLAG_RCU)
 =======
 	if (desired & MAY_NOT_BLOCK)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (desired & MAY_NOT_BLOCK)
+>>>>>>> refs/remotes/origin/master
 		return -ECHILD;
 
 	if (desired & MAY_READ) r = 1;
@@ -831,10 +940,14 @@ int hostfs_permission(struct inode *ino, int desired)
 	__putname(name);
 	if (!err)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = generic_permission(ino, desired, flags, NULL);
 =======
 		err = generic_permission(ino, desired);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = generic_permission(ino, desired);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -861,11 +974,19 @@ int hostfs_setattr(struct dentry *dentry, struct iattr *attr)
 	}
 	if (attr->ia_valid & ATTR_UID) {
 		attrs.ia_valid |= HOSTFS_ATTR_UID;
+<<<<<<< HEAD
 		attrs.ia_uid = attr->ia_uid;
 	}
 	if (attr->ia_valid & ATTR_GID) {
 		attrs.ia_valid |= HOSTFS_ATTR_GID;
 		attrs.ia_gid = attr->ia_gid;
+=======
+		attrs.ia_uid = from_kuid(&init_user_ns, attr->ia_uid);
+	}
+	if (attr->ia_valid & ATTR_GID) {
+		attrs.ia_valid |= HOSTFS_ATTR_GID;
+		attrs.ia_gid = from_kgid(&init_user_ns, attr->ia_gid);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (attr->ia_valid & ATTR_SIZE) {
 		attrs.ia_valid |= HOSTFS_ATTR_SIZE;
@@ -898,6 +1019,7 @@ int hostfs_setattr(struct dentry *dentry, struct iattr *attr)
 		return err;
 
 	if ((attr->ia_valid & ATTR_SIZE) &&
+<<<<<<< HEAD
 	    attr->ia_size != i_size_read(inode)) {
 		int error;
 
@@ -905,6 +1027,10 @@ int hostfs_setattr(struct dentry *dentry, struct iattr *attr)
 		if (err)
 			return err;
 	}
+=======
+	    attr->ia_size != i_size_read(inode))
+		truncate_setsize(inode, attr->ia_size);
+>>>>>>> refs/remotes/origin/master
 
 	setattr_copy(inode, attr);
 	mark_inode_dirty(inode);
@@ -912,6 +1038,7 @@ int hostfs_setattr(struct dentry *dentry, struct iattr *attr)
 }
 
 static const struct inode_operations hostfs_iops = {
+<<<<<<< HEAD
 	.create		= hostfs_create,
 	.link		= hostfs_link,
 	.unlink		= hostfs_unlink,
@@ -920,6 +1047,8 @@ static const struct inode_operations hostfs_iops = {
 	.rmdir		= hostfs_rmdir,
 	.mknod		= hostfs_mknod,
 	.rename		= hostfs_rename,
+=======
+>>>>>>> refs/remotes/origin/master
 	.permission	= hostfs_permission,
 	.setattr	= hostfs_setattr,
 };
@@ -985,7 +1114,11 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
 	sb->s_blocksize_bits = 10;
 	sb->s_magic = HOSTFS_SUPER_MAGIC;
 	sb->s_op = &hostfs_sbops;
+<<<<<<< HEAD
 	sb->s_d_op = &hostfs_dentry_ops;
+=======
+	sb->s_d_op = &simple_dentry_operations;
+>>>>>>> refs/remotes/origin/master
 	sb->s_maxbytes = MAX_LFS_FILESIZE;
 
 	/* NULL is printed as <NULL> by sprintf: avoid that. */
@@ -1021,6 +1154,7 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
 
 	err = -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(root_inode);
 	if (sb->s_root == NULL)
 		goto out_put;
@@ -1029,6 +1163,11 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
 	if (sb->s_root == NULL)
 		goto out;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sb->s_root = d_make_root(root_inode);
+	if (sb->s_root == NULL)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -1058,6 +1197,10 @@ static struct file_system_type hostfs_type = {
 	.kill_sb	= hostfs_kill_sb,
 	.fs_flags 	= 0,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("hostfs");
+>>>>>>> refs/remotes/origin/master
 
 static int __init init_hostfs(void)
 {

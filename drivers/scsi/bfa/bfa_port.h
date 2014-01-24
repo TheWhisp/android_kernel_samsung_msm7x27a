@@ -44,6 +44,7 @@ struct bfa_port_s {
 	void				*endis_cbarg;
 	bfa_status_t			endis_status;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct bfa_ioc_hbfail_notify_s	hbfail;
 };
 
@@ -53,6 +54,11 @@ void	     bfa_port_hbfail(void *arg);
 =======
 	struct bfa_ioc_notify_s		ioc_notify;
 	bfa_boolean_t			pbc_disabled;
+=======
+	struct bfa_ioc_notify_s		ioc_notify;
+	bfa_boolean_t			pbc_disabled;
+	bfa_boolean_t			dport_enabled;
+>>>>>>> refs/remotes/origin/master
 	struct bfa_mem_dma_s		port_dma;
 };
 
@@ -61,7 +67,10 @@ void	     bfa_port_hbfail(void *arg);
 void	     bfa_port_attach(struct bfa_port_s *port, struct bfa_ioc_s *ioc,
 				void *dev, struct bfa_trc_mod_s *trcmod);
 void	bfa_port_notify(void *arg, enum bfa_ioc_event_e event);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 bfa_status_t bfa_port_get_stats(struct bfa_port_s *port,
 				 union bfa_port_stats_u *stats,
@@ -76,7 +85,12 @@ u32     bfa_port_meminfo(void);
 void	     bfa_port_mem_claim(struct bfa_port_s *port,
 				 u8 *dma_kva, u64 dma_pa);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+void	bfa_port_set_dportenabled(struct bfa_port_s *port,
+				  bfa_boolean_t enabled);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * CEE declaration
@@ -131,5 +145,8 @@ bfa_status_t	bfa_cee_get_stats(struct bfa_cee_s *cee,
 bfa_status_t	bfa_cee_reset_stats(struct bfa_cee_s *cee,
 				bfa_cee_reset_stats_cbfn_t cbfn, void *cbarg);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* __BFA_PORT_H__ */

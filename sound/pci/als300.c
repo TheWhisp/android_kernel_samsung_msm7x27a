@@ -33,10 +33,14 @@
 #include <linux/delay.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/dma-mapping.h>
 #include <linux/interrupt.h>
@@ -120,8 +124,11 @@ MODULE_SUPPORTED_DEVICE("{{Avance Logic,ALS300},{Avance Logic,ALS300+}}");
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 
 module_param_array(index, int, NULL, 0444);
@@ -130,7 +137,10 @@ module_param_array(id, charp, NULL, 0444);
 MODULE_PARM_DESC(id, "ID string for ALS300 sound card.");
 module_param_array(enable, bool, NULL, 0444);
 MODULE_PARM_DESC(enable, "Enable ALS300 sound card.");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct snd_als300 {
 	unsigned long port;
@@ -286,11 +296,18 @@ static irqreturn_t snd_als300plus_interrupt(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_als300_remove(struct pci_dev *pci)
 {
 	snd_als300_dbgcallenter();
 	snd_card_free(pci_get_drvdata(pci));
 	pci_set_drvdata(pci, NULL);
+=======
+static void snd_als300_remove(struct pci_dev *pci)
+{
+	snd_als300_dbgcallenter();
+	snd_card_free(pci_get_drvdata(pci));
+>>>>>>> refs/remotes/origin/master
 	snd_als300_dbgcallleave();
 }
 
@@ -402,6 +419,11 @@ static int snd_als300_playback_open(struct snd_pcm_substream *substream)
 	struct snd_als300_substream_data *data = kzalloc(sizeof(*data),
 								GFP_KERNEL);
 
+<<<<<<< HEAD
+=======
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	snd_als300_dbgcallenter();
 	chip->playback_substream = substream;
 	runtime->hw = snd_als300_playback_hw;
@@ -433,6 +455,11 @@ static int snd_als300_capture_open(struct snd_pcm_substream *substream)
 	struct snd_als300_substream_data *data = kzalloc(sizeof(*data),
 								GFP_KERNEL);
 
+<<<<<<< HEAD
+=======
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	snd_als300_dbgcallenter();
 	chip->capture_substream = substream;
 	runtime->hw = snd_als300_capture_hw;
@@ -626,7 +653,11 @@ static struct snd_pcm_ops snd_als300_capture_ops = {
 	.pointer =	snd_als300_pointer,
 };
 
+<<<<<<< HEAD
 static int __devinit snd_als300_new_pcm(struct snd_als300 *chip)
+=======
+static int snd_als300_new_pcm(struct snd_als300 *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	int err;
@@ -687,9 +718,15 @@ static void snd_als300_init(struct snd_als300 *chip)
 	snd_als300_dbgcallleave();
 }
 
+<<<<<<< HEAD
 static int __devinit snd_als300_create(struct snd_card *card,
 				       struct pci_dev *pci, int chip_type,
 				       struct snd_als300 **rchip)
+=======
+static int snd_als300_create(struct snd_card *card,
+			     struct pci_dev *pci, int chip_type,
+			     struct snd_als300 **rchip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_als300 *chip;
 	void *irq_handler;
@@ -738,10 +775,14 @@ static int __devinit snd_als300_create(struct snd_card *card,
 
 	if (request_irq(pci->irq, irq_handler, IRQF_SHARED,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			card->shortname, chip)) {
 =======
 			KBUILD_MODNAME, chip)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/master
 		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
 		snd_als300_free(chip);
 		return -EBUSY;
@@ -777,10 +818,18 @@ static int __devinit snd_als300_create(struct snd_card *card,
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int snd_als300_suspend(struct pci_dev *pci, pm_message_t state)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int snd_als300_suspend(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct snd_als300 *chip = card->private_data;
 
 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
@@ -789,6 +838,7 @@ static int snd_als300_suspend(struct pci_dev *pci, pm_message_t state)
 
 	pci_disable_device(pci);
 	pci_save_state(pci);
+<<<<<<< HEAD
 	pci_set_power_state(pci, pci_choose_state(pci, state));
 	return 0;
 }
@@ -796,6 +846,16 @@ static int snd_als300_suspend(struct pci_dev *pci, pm_message_t state)
 static int snd_als300_resume(struct pci_dev *pci)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+	pci_set_power_state(pci, PCI_D3hot);
+	return 0;
+}
+
+static int snd_als300_resume(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct snd_als300 *chip = card->private_data;
 
 	pci_set_power_state(pci, PCI_D0);
@@ -814,9 +874,20 @@ static int snd_als300_resume(struct pci_dev *pci)
 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
 	return 0;
 }
+<<<<<<< HEAD
 #endif
 
 static int __devinit snd_als300_probe(struct pci_dev *pci,
+=======
+
+static SIMPLE_DEV_PM_OPS(snd_als300_pm, snd_als300_suspend, snd_als300_resume);
+#define SND_ALS300_PM_OPS	&snd_als300_pm
+#else
+#define SND_ALS300_PM_OPS	NULL
+#endif
+
+static int snd_als300_probe(struct pci_dev *pci,
+>>>>>>> refs/remotes/origin/master
                              const struct pci_device_id *pci_id)
 {
 	static int dev;
@@ -864,6 +935,7 @@ static int __devinit snd_als300_probe(struct pci_dev *pci,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct pci_driver driver = {
 <<<<<<< HEAD
 	.name = "ALS300",
@@ -891,3 +963,16 @@ static void __exit alsa_card_als300_exit(void)
 
 module_init(alsa_card_als300_init)
 module_exit(alsa_card_als300_exit)
+=======
+static struct pci_driver als300_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = snd_als300_ids,
+	.probe = snd_als300_probe,
+	.remove = snd_als300_remove,
+	.driver = {
+		.pm = SND_ALS300_PM_OPS,
+	},
+};
+
+module_pci_driver(als300_driver);
+>>>>>>> refs/remotes/origin/master

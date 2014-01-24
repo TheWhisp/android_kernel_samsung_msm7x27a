@@ -10,6 +10,7 @@ usbipd \- USB/IP server daemon
 provides USB/IP clients access to exported USB devices.
 
 Devices have to explicitly be exported using
+<<<<<<< HEAD
 .B usbip_bind_driver
 before usbipd makes them available to other hosts.
 
@@ -18,6 +19,28 @@ on TCP port 3240.
 
 .SH OPTIONS
 .HP
+=======
+.B usbip bind
+before usbipd makes them available to other hosts.
+
+The daemon accepts connections from USB/IP clients
+on TCP port 3240 by default.
+
+.SH OPTIONS
+.HP
+\fB\-4\fR, \fB\-\-ipv4\fR
+.IP
+Bind to IPv4. Default is both.
+.PP
+
+.HP
+\fB\-6\fR, \fB\-\-ipv6\fR
+.IP
+Bind to IPv6. Default is both.
+.PP
+
+.HP
+>>>>>>> refs/remotes/origin/master
 \fB\-D\fR, \fB\-\-daemon\fR
 .IP
 Run as a daemon process.
@@ -30,6 +53,27 @@ Print debugging information.
 .PP
 
 .HP
+<<<<<<< HEAD
+=======
+\fB\-PFILE\fR, \fB\-\-pid FILE\fR
+.IP
+Write process id to FILE.
+.br
+If no FILE specified, use /var/run/usbipd.pid
+.PP
+
+\fB\-tPORT\fR, \fB\-\-tcp\-port PORT\fR
+.IP
+Listen on TCP/IP port PORT.
+.PP
+
+\fB\-h\fR, \fB\-\-help\fR
+.IP
+Print the program help message and exit.
+.PP
+
+.HP
+>>>>>>> refs/remotes/origin/master
 \fB\-v\fR, \fB\-\-version\fR
 .IP
 Show version.
@@ -48,6 +92,7 @@ USB/IP client can connect and use exported devices.
     server:# usbipd -D
         - Start usbip daemon.
 
+<<<<<<< HEAD
     server:# usbip_bind_driver --list
         - List driver assignments for usb devices.
 
@@ -59,4 +104,16 @@ USB/IP client can connect and use exported devices.
 .SH "SEE ALSO"
 \fBusbip\fP\fB(8)\fB\fP,
 \fBusbip_attach_driver\fP\fB(8)\fB\fP
+=======
+    server:# usbip list --local
+        - List driver assignments for usb devices.
+
+    server:# usbip bind --busid=1-2
+        - Bind usbip-host.ko to the device of busid 1-2.
+        - A usb device 1-2 is now exportable to other hosts!
+        - Use 'usbip unbind --busid=1-2' when you want to shutdown exporting and use the device locally.
+
+.SH "SEE ALSO"
+\fBusbip\fP\fB(8)\fB\fP
+>>>>>>> refs/remotes/origin/master
 

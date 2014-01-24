@@ -24,6 +24,10 @@
 #include <linux/module.h>
 
 #include <xen/platform_pci.h>
+<<<<<<< HEAD
+=======
+#include "xen-ops.h"
+>>>>>>> refs/remotes/origin/master
 
 #define XEN_PLATFORM_ERR_MAGIC -1
 #define XEN_PLATFORM_ERR_PROTOCOL -2
@@ -36,10 +40,14 @@ EXPORT_SYMBOL_GPL(xen_platform_pci_unplug);
 static int xen_emul_unplug;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init check_platform_magic(void)
 =======
 static int check_platform_magic(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int check_platform_magic(void)
+>>>>>>> refs/remotes/origin/master
 {
 	short magic;
 	char protocol;

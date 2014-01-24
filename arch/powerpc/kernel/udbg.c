@@ -32,11 +32,17 @@ void __init udbg_early_init(void)
 	/* For LPAR machines that have an HVC console on vterm 0 */
 	udbg_init_debug_lpar();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #elif defined(CONFIG_PPC_EARLY_DEBUG_LPAR_HVSI)
 	/* For LPAR machines that have an HVSI console on vterm 0 */
 	udbg_init_debug_lpar_hvsi();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#elif defined(CONFIG_PPC_EARLY_DEBUG_LPAR_HVSI)
+	/* For LPAR machines that have an HVSI console on vterm 0 */
+	udbg_init_debug_lpar_hvsi();
+>>>>>>> refs/remotes/origin/master
 #elif defined(CONFIG_PPC_EARLY_DEBUG_G5)
 	/* For use on Apple G5 machines */
 	udbg_init_pmac_realmode();
@@ -50,16 +56,23 @@ void __init udbg_early_init(void)
 	/* Maple real mode debug */
 	udbg_init_maple_realmode();
 <<<<<<< HEAD
+<<<<<<< HEAD
 #elif defined(CONFIG_PPC_EARLY_DEBUG_ISERIES)
 	/* For iSeries - hit Ctrl-x Ctrl-x to see the output */
 	udbg_init_iseries();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #elif defined(CONFIG_PPC_EARLY_DEBUG_BEAT)
 	udbg_init_debug_beat();
 #elif defined(CONFIG_PPC_EARLY_DEBUG_PAS_REALMODE)
 	udbg_init_pas_realmode();
+<<<<<<< HEAD
 #elif defined(CONFIG_BOOTX_TEXT)
+=======
+#elif defined(CONFIG_PPC_EARLY_DEBUG_BOOTX)
+>>>>>>> refs/remotes/origin/master
 	udbg_init_btext();
 #elif defined(CONFIG_PPC_EARLY_DEBUG_44x)
 	/* PPC44x debug */
@@ -74,7 +87,13 @@ void __init udbg_early_init(void)
 #elif defined(CONFIG_PPC_EARLY_DEBUG_WSP)
 	udbg_init_wsp();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+#elif defined(CONFIG_PPC_EARLY_DEBUG_MEMCONS)
+	/* In memory console */
+	udbg_init_memcons();
+>>>>>>> refs/remotes/origin/master
 #elif defined(CONFIG_PPC_EARLY_DEBUG_EHV_BC)
 	udbg_init_ehv_bc();
 #elif defined(CONFIG_PPC_EARLY_DEBUG_PS3GELIC)
@@ -83,16 +102,24 @@ void __init udbg_early_init(void)
 	udbg_init_debug_opal_raw();
 #elif defined(CONFIG_PPC_EARLY_DEBUG_OPAL_HVSI)
 	udbg_init_debug_opal_hvsi();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_PPC_EARLY_DEBUG
 	console_loglevel = 10;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	register_early_udbg_console();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	register_early_udbg_console();
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
@@ -137,6 +164,7 @@ int udbg_write(const char *s, int n)
 	return n - remain;
 }
 
+<<<<<<< HEAD
 int udbg_read(char *buf, int buflen)
 {
 	char *p = buf;
@@ -160,6 +188,8 @@ int udbg_read(char *buf, int buflen)
 	return i;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define UDBG_BUFSIZE 256
 void udbg_printf(const char *fmt, ...)
 {
@@ -194,15 +224,22 @@ static struct console udbg_console = {
 	.index	= 0,
 };
 
+<<<<<<< HEAD
 static int early_console_initialized;
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Called by setup_system after ppc_md->probe and ppc_md->early_init.
  * Call it again after setting udbg_putc in ppc_md->setup_arch.
  */
 void __init register_early_udbg_console(void)
 {
+<<<<<<< HEAD
 	if (early_console_initialized)
+=======
+	if (early_console)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	if (!udbg_putc)
@@ -212,7 +249,11 @@ void __init register_early_udbg_console(void)
 		printk(KERN_INFO "early console immortal !\n");
 		udbg_console.flags &= ~CON_BOOT;
 	}
+<<<<<<< HEAD
 	early_console_initialized = 1;
+=======
+	early_console = &udbg_console;
+>>>>>>> refs/remotes/origin/master
 	register_console(&udbg_console);
 }
 

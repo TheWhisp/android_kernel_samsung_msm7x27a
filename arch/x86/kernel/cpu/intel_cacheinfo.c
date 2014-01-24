@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  *	Routines to indentify caches on Intel CPU.
+=======
+ *	Routines to identify caches on Intel CPU.
+>>>>>>> refs/remotes/origin/master
  *
  *	Changes:
  *	Venkatesh Pallipadi	: Adding cache identification through cpuid(4)
@@ -37,7 +41,11 @@ struct _cache_table {
 /* All the cache descriptor types we care about (no TLB or
    trace cache entries) */
 
+<<<<<<< HEAD
 static const struct _cache_table __cpuinitconst cache_table[] =
+=======
+static const struct _cache_table cache_table[] =
+>>>>>>> refs/remotes/origin/master
 {
 	{ 0x06, LVL_1_INST, 8 },	/* 4-way set assoc, 32 byte line size */
 	{ 0x08, LVL_1_INST, 16 },	/* 4-way set assoc, 32 byte line size */
@@ -152,6 +160,7 @@ union _cpuid4_leaf_ecx {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct amd_l3_cache {
 	struct	 amd_northbridge *nb;
 	unsigned indices;
@@ -172,20 +181,28 @@ struct _cpuid4_info_regs {
 };
 
 /* subset of above _cpuid4_info w/o shared_cpu_map */
+=======
+>>>>>>> refs/remotes/origin/master
 struct _cpuid4_info_regs {
 	union _cpuid4_leaf_eax eax;
 	union _cpuid4_leaf_ebx ebx;
 	union _cpuid4_leaf_ecx ecx;
 	unsigned long size;
+<<<<<<< HEAD
 	struct amd_l3_cache *l3;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct amd_northbridge *nb;
 };
 
 struct _cpuid4_info {
 	struct _cpuid4_info_regs base;
 	DECLARE_BITMAP(shared_cpu_map, NR_CPUS);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 unsigned short			num_cache_leaves;
@@ -227,7 +244,11 @@ union l3_cache {
 	unsigned val;
 };
 
+<<<<<<< HEAD
 static const unsigned short __cpuinitconst assocs[] = {
+=======
+static const unsigned short assocs[] = {
+>>>>>>> refs/remotes/origin/master
 	[1] = 1,
 	[2] = 2,
 	[4] = 4,
@@ -241,10 +262,17 @@ static const unsigned short __cpuinitconst assocs[] = {
 	[0xf] = 0xffff /* fully associative - no way to show this currently */
 };
 
+<<<<<<< HEAD
 static const unsigned char __cpuinitconst levels[] = { 1, 1, 2, 3 };
 static const unsigned char __cpuinitconst types[] = { 1, 2, 3, 3 };
 
 static void __cpuinit
+=======
+static const unsigned char levels[] = { 1, 1, 2, 3 };
+static const unsigned char types[] = { 1, 2, 3, 3 };
+
+static void
+>>>>>>> refs/remotes/origin/master
 amd_cpuid4(int leaf, union _cpuid4_leaf_eax *eax,
 		     union _cpuid4_leaf_ebx *ebx,
 		     union _cpuid4_leaf_ecx *ecx)
@@ -322,6 +350,7 @@ struct _cache_attr {
 			 unsigned int);
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_AMD_NB
 
 /*
@@ -336,32 +365,49 @@ static void __cpuinit amd_calc_l3_indices(struct amd_l3_cache *l3)
 	pci_read_config_dword(l3->nb->misc, 0x1C4, &val);
 =======
 static void __cpuinit amd_calc_l3_indices(struct amd_northbridge *nb)
+=======
+#if defined(CONFIG_AMD_NB) && defined(CONFIG_SYSFS)
+/*
+ * L3 cache descriptors
+ */
+static void amd_calc_l3_indices(struct amd_northbridge *nb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct amd_l3_cache *l3 = &nb->l3_cache;
 	unsigned int sc0, sc1, sc2, sc3;
 	u32 val = 0;
 
 	pci_read_config_dword(nb->misc, 0x1C4, &val);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* calculate subcache sizes */
 	l3->subcaches[0] = sc0 = !(val & BIT(0));
 	l3->subcaches[1] = sc1 = !(val & BIT(4));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (boot_cpu_data.x86 == 0x15) {
 		l3->subcaches[0] = sc0 += !(val & BIT(1));
 		l3->subcaches[1] = sc1 += !(val & BIT(5));
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	l3->subcaches[2] = sc2 = !(val & BIT(8))  + !(val & BIT(9));
 	l3->subcaches[3] = sc3 = !(val & BIT(12)) + !(val & BIT(13));
 
 	l3->indices = (max(max3(sc0, sc1, sc2), sc3) << 10) - 1;
 }
 
+<<<<<<< HEAD
 static void __cpuinit amd_init_l3_cache(struct _cpuid4_info_regs *this_leaf, int index)
 {
 <<<<<<< HEAD
@@ -393,6 +439,10 @@ static void __cpuinit amd_init_l3_cache(struct _cpuid4_info_regs *this_leaf, int
 
 	this_leaf->l3 = &l3_caches[node];
 =======
+=======
+static void amd_init_l3_cache(struct _cpuid4_info_regs *this_leaf, int index)
+{
+>>>>>>> refs/remotes/origin/master
 	int node;
 
 	/* only for L3, and not in virtualized environments */
@@ -403,7 +453,10 @@ static void __cpuinit amd_init_l3_cache(struct _cpuid4_info_regs *this_leaf, int
 	this_leaf->nb = node_to_amd_nb(node);
 	if (this_leaf->nb && !this_leaf->nb->l3_cache.indices)
 		amd_calc_l3_indices(this_leaf->nb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -414,18 +467,24 @@ static void __cpuinit amd_init_l3_cache(struct _cpuid4_info_regs *this_leaf, int
  * @returns: the disabled index if used or negative value if slot free.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int amd_get_l3_disable_slot(struct amd_l3_cache *l3, unsigned slot)
 {
 	unsigned int reg = 0;
 
 	pci_read_config_dword(l3->nb->misc, 0x1BC + slot * 4, &reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int amd_get_l3_disable_slot(struct amd_northbridge *nb, unsigned slot)
 {
 	unsigned int reg = 0;
 
 	pci_read_config_dword(nb->misc, 0x1BC + slot * 4, &reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* check whether this slot is activated already */
 	if (reg & (3UL << 30))
@@ -440,17 +499,23 @@ static ssize_t show_cache_disable(struct _cpuid4_info *this_leaf, char *buf,
 	int index;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!this_leaf->l3 ||
 	    !amd_nb_has_feature(AMD_NB_L3_INDEX_DISABLE))
 		return -EINVAL;
 
 	index = amd_get_l3_disable_slot(this_leaf->l3, slot);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!this_leaf->base.nb || !amd_nb_has_feature(AMD_NB_L3_INDEX_DISABLE))
 		return -EINVAL;
 
 	index = amd_get_l3_disable_slot(this_leaf->base.nb, slot);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (index >= 0)
 		return sprintf(buf, "%d\n", index);
 
@@ -468,10 +533,14 @@ SHOW_CACHE_DISABLE(0)
 SHOW_CACHE_DISABLE(1)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void amd_l3_disable_index(struct amd_l3_cache *l3, int cpu,
 =======
 static void amd_l3_disable_index(struct amd_northbridge *nb, int cpu,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void amd_l3_disable_index(struct amd_northbridge *nb, int cpu,
+>>>>>>> refs/remotes/origin/master
 				 unsigned slot, unsigned long idx)
 {
 	int i;
@@ -485,16 +554,22 @@ static void amd_l3_disable_index(struct amd_northbridge *nb, int cpu,
 		u32 reg = idx | (i << 20);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!l3->subcaches[i])
 			continue;
 
 		pci_write_config_dword(l3->nb->misc, 0x1BC + slot * 4, reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!nb->l3_cache.subcaches[i])
 			continue;
 
 		pci_write_config_dword(nb->misc, 0x1BC + slot * 4, reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * We need to WBINVD on a core on the node containing the L3
@@ -505,10 +580,14 @@ static void amd_l3_disable_index(struct amd_northbridge *nb, int cpu,
 
 		reg |= BIT(31);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pci_write_config_dword(l3->nb->misc, 0x1BC + slot * 4, reg);
 =======
 		pci_write_config_dword(nb->misc, 0x1BC + slot * 4, reg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pci_write_config_dword(nb->misc, 0x1BC + slot * 4, reg);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -523,15 +602,20 @@ static void amd_l3_disable_index(struct amd_northbridge *nb, int cpu,
  * @return: 0 on success, error status on failure
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int amd_set_l3_disable_slot(struct amd_l3_cache *l3, int cpu, unsigned slot,
 =======
 int amd_set_l3_disable_slot(struct amd_northbridge *nb, int cpu, unsigned slot,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int amd_set_l3_disable_slot(struct amd_northbridge *nb, int cpu, unsigned slot,
+>>>>>>> refs/remotes/origin/master
 			    unsigned long index)
 {
 	int ret = 0;
 
 	/*  check if @slot is already used or the index is already disabled */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = amd_get_l3_disable_slot(l3, slot);
 	if (ret >= 0)
@@ -546,6 +630,8 @@ int amd_set_l3_disable_slot(struct amd_northbridge *nb, int cpu, unsigned slot,
 
 	amd_l3_disable_index(l3, cpu, slot, index);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = amd_get_l3_disable_slot(nb, slot);
 	if (ret >= 0)
 		return -EEXIST;
@@ -558,7 +644,10 @@ int amd_set_l3_disable_slot(struct amd_northbridge *nb, int cpu, unsigned slot,
 		return -EEXIST;
 
 	amd_l3_disable_index(nb, cpu, slot, index);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -574,11 +663,15 @@ static ssize_t store_cache_disable(struct _cpuid4_info *this_leaf,
 		return -EPERM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!this_leaf->l3 ||
 	    !amd_nb_has_feature(AMD_NB_L3_INDEX_DISABLE))
 =======
 	if (!this_leaf->base.nb || !amd_nb_has_feature(AMD_NB_L3_INDEX_DISABLE))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!this_leaf->base.nb || !amd_nb_has_feature(AMD_NB_L3_INDEX_DISABLE))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	cpu = cpumask_first(to_cpumask(this_leaf->shared_cpu_map));
@@ -587,18 +680,24 @@ static ssize_t store_cache_disable(struct _cpuid4_info *this_leaf,
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = amd_set_l3_disable_slot(this_leaf->l3, cpu, slot, val);
 	if (err) {
 		if (err == -EEXIST)
 			printk(KERN_WARNING "L3 disable slot %d in use!\n",
 					    slot);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = amd_set_l3_disable_slot(this_leaf->base.nb, cpu, slot, val);
 	if (err) {
 		if (err == -EEXIST)
 			pr_warning("L3 slot %d in use/index already disabled!\n",
 				   slot);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 	return count;
@@ -624,10 +723,14 @@ static ssize_t
 show_subcaches(struct _cpuid4_info *this_leaf, char *buf, unsigned int cpu)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!this_leaf->l3 || !amd_nb_has_feature(AMD_NB_L3_PARTITIONING))
 =======
 	if (!this_leaf->base.nb || !amd_nb_has_feature(AMD_NB_L3_PARTITIONING))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!this_leaf->base.nb || !amd_nb_has_feature(AMD_NB_L3_PARTITIONING))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	return sprintf(buf, "%x\n", amd_get_subcaches(cpu));
@@ -643,10 +746,14 @@ store_subcaches(struct _cpuid4_info *this_leaf, const char *buf, size_t count,
 		return -EPERM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!this_leaf->l3 || !amd_nb_has_feature(AMD_NB_L3_PARTITIONING))
 =======
 	if (!this_leaf->base.nb || !amd_nb_has_feature(AMD_NB_L3_PARTITIONING))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!this_leaf->base.nb || !amd_nb_has_feature(AMD_NB_L3_PARTITIONING))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (strict_strtoul(buf, 16, &val) < 0)
@@ -661,6 +768,7 @@ store_subcaches(struct _cpuid4_info *this_leaf, const char *buf, size_t count,
 static struct _cache_attr subcaches =
 	__ATTR(subcaches, 0644, show_subcaches, store_subcaches);
 
+<<<<<<< HEAD
 #else	/* CONFIG_AMD_NB */
 #define amd_init_l3_cache(x, y)
 #endif /* CONFIG_AMD_NB */
@@ -668,6 +776,14 @@ static struct _cache_attr subcaches =
 static int
 __cpuinit cpuid4_cache_lookup_regs(int index,
 				   struct _cpuid4_info_regs *this_leaf)
+=======
+#else
+#define amd_init_l3_cache(x, y)
+#endif  /* CONFIG_AMD_NB && CONFIG_SYSFS */
+
+static int
+cpuid4_cache_lookup_regs(int index, struct _cpuid4_info_regs *this_leaf)
+>>>>>>> refs/remotes/origin/master
 {
 	union _cpuid4_leaf_eax	eax;
 	union _cpuid4_leaf_ebx	ebx;
@@ -675,7 +791,15 @@ __cpuinit cpuid4_cache_lookup_regs(int index,
 	unsigned		edx;
 
 	if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD) {
+<<<<<<< HEAD
 		amd_cpuid4(index, &eax, &ebx, &ecx);
+=======
+		if (cpu_has_topoext)
+			cpuid_count(0x8000001d, index, &eax.full,
+				    &ebx.full, &ecx.full, &edx);
+		else
+			amd_cpuid4(index, &eax, &ebx, &ecx);
+>>>>>>> refs/remotes/origin/master
 		amd_init_l3_cache(this_leaf, index);
 	} else {
 		cpuid_count(4, index, &eax.full, &ebx.full, &ecx.full, &edx);
@@ -694,6 +818,7 @@ __cpuinit cpuid4_cache_lookup_regs(int index,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __cpuinit find_num_cache_leaves(void)
 {
 	unsigned int		eax, ebx, ecx, edx;
@@ -704,12 +829,46 @@ static int __cpuinit find_num_cache_leaves(void)
 		++i;
 		/* Do cpuid(4) loop to find out num_cache_leaves */
 		cpuid_count(4, i, &eax, &ebx, &ecx, &edx);
+=======
+static int find_num_cache_leaves(struct cpuinfo_x86 *c)
+{
+	unsigned int		eax, ebx, ecx, edx, op;
+	union _cpuid4_leaf_eax	cache_eax;
+	int 			i = -1;
+
+	if (c->x86_vendor == X86_VENDOR_AMD)
+		op = 0x8000001d;
+	else
+		op = 4;
+
+	do {
+		++i;
+		/* Do cpuid(op) loop to find out num_cache_leaves */
+		cpuid_count(op, i, &eax, &ebx, &ecx, &edx);
+>>>>>>> refs/remotes/origin/master
 		cache_eax.full = eax;
 	} while (cache_eax.split.type != CACHE_TYPE_NULL);
 	return i;
 }
 
+<<<<<<< HEAD
 unsigned int __cpuinit init_intel_cacheinfo(struct cpuinfo_x86 *c)
+=======
+void init_amd_cacheinfo(struct cpuinfo_x86 *c)
+{
+
+	if (cpu_has_topoext) {
+		num_cache_leaves = find_num_cache_leaves(c);
+	} else if (c->extended_cpuid_level >= 0x80000006) {
+		if (cpuid_edx(0x80000006) & 0xf000)
+			num_cache_leaves = 4;
+		else
+			num_cache_leaves = 3;
+	}
+}
+
+unsigned int init_intel_cacheinfo(struct cpuinfo_x86 *c)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Cache sizes */
 	unsigned int trace = 0, l1i = 0, l1d = 0, l2 = 0, l3 = 0;
@@ -725,7 +884,11 @@ unsigned int __cpuinit init_intel_cacheinfo(struct cpuinfo_x86 *c)
 
 		if (is_initialized == 0) {
 			/* Init num_cache_leaves from boot CPU */
+<<<<<<< HEAD
 			num_cache_leaves = find_num_cache_leaves();
+=======
+			num_cache_leaves = find_num_cache_leaves(c);
+>>>>>>> refs/remotes/origin/master
 			is_initialized++;
 		}
 
@@ -734,6 +897,7 @@ unsigned int __cpuinit init_intel_cacheinfo(struct cpuinfo_x86 *c)
 		 * parameters cpuid leaf to find the cache details
 		 */
 		for (i = 0; i < num_cache_leaves; i++) {
+<<<<<<< HEAD
 			struct _cpuid4_info_regs this_leaf;
 			int retval;
 
@@ -764,6 +928,36 @@ unsigned int __cpuinit init_intel_cacheinfo(struct cpuinfo_x86 *c)
 				default:
 					break;
 				}
+=======
+			struct _cpuid4_info_regs this_leaf = {};
+			int retval;
+
+			retval = cpuid4_cache_lookup_regs(i, &this_leaf);
+			if (retval < 0)
+				continue;
+
+			switch (this_leaf.eax.split.level) {
+			case 1:
+				if (this_leaf.eax.split.type == CACHE_TYPE_DATA)
+					new_l1d = this_leaf.size/1024;
+				else if (this_leaf.eax.split.type == CACHE_TYPE_INST)
+					new_l1i = this_leaf.size/1024;
+				break;
+			case 2:
+				new_l2 = this_leaf.size/1024;
+				num_threads_sharing = 1 + this_leaf.eax.split.num_threads_sharing;
+				index_msb = get_count_order(num_threads_sharing);
+				l2_id = c->apicid & ~((1 << index_msb) - 1);
+				break;
+			case 3:
+				new_l3 = this_leaf.size/1024;
+				num_threads_sharing = 1 + this_leaf.eax.split.num_threads_sharing;
+				index_msb = get_count_order(num_threads_sharing);
+				l3_id = c->apicid & ~((1 << index_msb) - 1);
+				break;
+			default:
+				break;
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
@@ -862,6 +1056,7 @@ static DEFINE_PER_CPU(struct _cpuid4_info *, ici_cpuid4_info);
 
 #ifdef CONFIG_SMP
 
+<<<<<<< HEAD
 static int __cpuinit cache_shared_amd_cpu_map_setup(unsigned int cpu, int index)
 {
 	struct _cpuid4_info *this_leaf;
@@ -877,10 +1072,41 @@ static int __cpuinit cache_shared_amd_cpu_map_setup(unsigned int cpu, int index)
 			this_leaf = CPUID4_INFO_IDX(i, index);
 			for_each_cpu(sibling, cpu_llc_shared_mask(cpu)) {
 				if (!cpu_online(sibling))
+=======
+static int cache_shared_amd_cpu_map_setup(unsigned int cpu, int index)
+{
+	struct _cpuid4_info *this_leaf;
+	int i, sibling;
+
+	if (cpu_has_topoext) {
+		unsigned int apicid, nshared, first, last;
+
+		if (!per_cpu(ici_cpuid4_info, cpu))
+			return 0;
+
+		this_leaf = CPUID4_INFO_IDX(cpu, index);
+		nshared = this_leaf->base.eax.split.num_threads_sharing + 1;
+		apicid = cpu_data(cpu).apicid;
+		first = apicid - (apicid % nshared);
+		last = first + nshared - 1;
+
+		for_each_online_cpu(i) {
+			apicid = cpu_data(i).apicid;
+			if ((apicid < first) || (apicid > last))
+				continue;
+			if (!per_cpu(ici_cpuid4_info, i))
+				continue;
+			this_leaf = CPUID4_INFO_IDX(i, index);
+
+			for_each_online_cpu(sibling) {
+				apicid = cpu_data(sibling).apicid;
+				if ((apicid < first) || (apicid > last))
+>>>>>>> refs/remotes/origin/master
 					continue;
 				set_bit(sibling, this_leaf->shared_cpu_map);
 			}
 		}
+<<<<<<< HEAD
 	} else if ((c->x86 == 0x15) && ((index == 1) || (index == 2))) {
 		ret = 1;
 		for_each_cpu(i, cpu_sibling_mask(cpu)) {
@@ -888,17 +1114,35 @@ static int __cpuinit cache_shared_amd_cpu_map_setup(unsigned int cpu, int index)
 				continue;
 			this_leaf = CPUID4_INFO_IDX(i, index);
 			for_each_cpu(sibling, cpu_sibling_mask(cpu)) {
+=======
+	} else if (index == 3) {
+		for_each_cpu(i, cpu_llc_shared_mask(cpu)) {
+			if (!per_cpu(ici_cpuid4_info, i))
+				continue;
+			this_leaf = CPUID4_INFO_IDX(i, index);
+			for_each_cpu(sibling, cpu_llc_shared_mask(cpu)) {
+>>>>>>> refs/remotes/origin/master
 				if (!cpu_online(sibling))
 					continue;
 				set_bit(sibling, this_leaf->shared_cpu_map);
 			}
 		}
+<<<<<<< HEAD
 	}
 
 	return ret;
 }
 
 static void __cpuinit cache_shared_cpu_map_setup(unsigned int cpu, int index)
+=======
+	} else
+		return 0;
+
+	return 1;
+}
+
+static void cache_shared_cpu_map_setup(unsigned int cpu, int index)
+>>>>>>> refs/remotes/origin/master
 {
 	struct _cpuid4_info *this_leaf, *sibling_leaf;
 	unsigned long num_threads_sharing;
@@ -912,10 +1156,14 @@ static void __cpuinit cache_shared_cpu_map_setup(unsigned int cpu, int index)
 
 	this_leaf = CPUID4_INFO_IDX(cpu, index);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	num_threads_sharing = 1 + this_leaf->eax.split.num_threads_sharing;
 =======
 	num_threads_sharing = 1 + this_leaf->base.eax.split.num_threads_sharing;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	num_threads_sharing = 1 + this_leaf->base.eax.split.num_threads_sharing;
+>>>>>>> refs/remotes/origin/master
 
 	if (num_threads_sharing == 1)
 		cpumask_set_cpu(cpu, to_cpumask(this_leaf->shared_cpu_map));
@@ -937,7 +1185,11 @@ static void __cpuinit cache_shared_cpu_map_setup(unsigned int cpu, int index)
 		}
 	}
 }
+<<<<<<< HEAD
 static void __cpuinit cache_remove_shared_cpu_map(unsigned int cpu, int index)
+=======
+static void cache_remove_shared_cpu_map(unsigned int cpu, int index)
+>>>>>>> refs/remotes/origin/master
 {
 	struct _cpuid4_info	*this_leaf, *sibling_leaf;
 	int sibling;
@@ -950,16 +1202,28 @@ static void __cpuinit cache_remove_shared_cpu_map(unsigned int cpu, int index)
 	}
 }
 #else
+<<<<<<< HEAD
 static void __cpuinit cache_shared_cpu_map_setup(unsigned int cpu, int index)
 {
 }
 
 static void __cpuinit cache_remove_shared_cpu_map(unsigned int cpu, int index)
+=======
+static void cache_shared_cpu_map_setup(unsigned int cpu, int index)
+{
+}
+
+static void cache_remove_shared_cpu_map(unsigned int cpu, int index)
+>>>>>>> refs/remotes/origin/master
 {
 }
 #endif
 
+<<<<<<< HEAD
 static void __cpuinit free_cache_attributes(unsigned int cpu)
+=======
+static void free_cache_attributes(unsigned int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -967,13 +1231,17 @@ static void __cpuinit free_cache_attributes(unsigned int cpu)
 		cache_remove_shared_cpu_map(cpu, i);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(per_cpu(ici_cpuid4_info, cpu)->l3);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(per_cpu(ici_cpuid4_info, cpu));
 	per_cpu(ici_cpuid4_info, cpu) = NULL;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int
 __cpuinit cpuid4_cache_lookup(int index, struct _cpuid4_info *this_leaf)
@@ -987,11 +1255,15 @@ __cpuinit cpuid4_cache_lookup(int index, struct _cpuid4_info *this_leaf)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 static void __cpuinit get_cpu_leaves(void *_retval)
+=======
+static void get_cpu_leaves(void *_retval)
+>>>>>>> refs/remotes/origin/master
 {
 	int j, *retval = _retval, cpu = smp_processor_id();
 
 	/* Do cpuid and store the results */
 	for (j = 0; j < num_cache_leaves; j++) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		struct _cpuid4_info *this_leaf;
 		this_leaf = CPUID4_INFO_IDX(cpu, j);
@@ -1001,6 +1273,11 @@ static void __cpuinit get_cpu_leaves(void *_retval)
 
 		*retval = cpuid4_cache_lookup_regs(j, &this_leaf->base);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct _cpuid4_info *this_leaf = CPUID4_INFO_IDX(cpu, j);
+
+		*retval = cpuid4_cache_lookup_regs(j, &this_leaf->base);
+>>>>>>> refs/remotes/origin/master
 		if (unlikely(*retval < 0)) {
 			int i;
 
@@ -1012,7 +1289,11 @@ static void __cpuinit get_cpu_leaves(void *_retval)
 	}
 }
 
+<<<<<<< HEAD
 static int __cpuinit detect_cache_attributes(unsigned int cpu)
+=======
+static int detect_cache_attributes(unsigned int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	int			retval;
 
@@ -1036,11 +1317,15 @@ static int __cpuinit detect_cache_attributes(unsigned int cpu)
 #include <linux/kobject.h>
 #include <linux/sysfs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 extern struct sysdev_class cpu_sysdev_class; /* from drivers/base/cpu.c */
 =======
 #include <linux/cpu.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/cpu.h>
+>>>>>>> refs/remotes/origin/master
 
 /* pointer to kobject for cpuX/cache */
 static DEFINE_PER_CPU(struct kobject *, ici_cache_kobject);
@@ -1063,27 +1348,37 @@ static ssize_t show_##file_name(struct _cpuid4_info *this_leaf, char *buf, \
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 show_one_plus(level, eax.split.level, 0);
 show_one_plus(coherency_line_size, ebx.split.coherency_line_size, 1);
 show_one_plus(physical_line_partition, ebx.split.physical_line_partition, 1);
 show_one_plus(ways_of_associativity, ebx.split.ways_of_associativity, 1);
 show_one_plus(number_of_sets, ecx.split.number_of_sets, 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 show_one_plus(level, base.eax.split.level, 0);
 show_one_plus(coherency_line_size, base.ebx.split.coherency_line_size, 1);
 show_one_plus(physical_line_partition, base.ebx.split.physical_line_partition, 1);
 show_one_plus(ways_of_associativity, base.ebx.split.ways_of_associativity, 1);
 show_one_plus(number_of_sets, base.ecx.split.number_of_sets, 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t show_size(struct _cpuid4_info *this_leaf, char *buf,
 			 unsigned int cpu)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf, "%luK\n", this_leaf->size / 1024);
 =======
 	return sprintf(buf, "%luK\n", this_leaf->base.size / 1024);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%luK\n", this_leaf->base.size / 1024);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t show_shared_cpu_map_func(struct _cpuid4_info *this_leaf,
@@ -1121,10 +1416,14 @@ static ssize_t show_type(struct _cpuid4_info *this_leaf, char *buf,
 			 unsigned int cpu)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch (this_leaf->eax.split.type) {
 =======
 	switch (this_leaf->base.eax.split.type) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	switch (this_leaf->base.eax.split.type) {
+>>>>>>> refs/remotes/origin/master
 	case CACHE_TYPE_DATA:
 		return sprintf(buf, "Data\n");
 	case CACHE_TYPE_INST:
@@ -1167,7 +1466,11 @@ static struct attribute *default_attrs[] = {
 };
 
 #ifdef CONFIG_AMD_NB
+<<<<<<< HEAD
 static struct attribute ** __cpuinit amd_l3_attrs(void)
+=======
+static struct attribute **amd_l3_attrs(void)
+>>>>>>> refs/remotes/origin/master
 {
 	static struct attribute **attrs;
 	int n;
@@ -1175,7 +1478,11 @@ static struct attribute ** __cpuinit amd_l3_attrs(void)
 	if (attrs)
 		return attrs;
 
+<<<<<<< HEAD
 	n = sizeof (default_attrs) / sizeof (struct attribute *);
+=======
+	n = ARRAY_SIZE(default_attrs);
+>>>>>>> refs/remotes/origin/master
 
 	if (amd_nb_has_feature(AMD_NB_L3_INDEX_DISABLE))
 		n += 2;
@@ -1243,7 +1550,11 @@ static struct kobj_type ktype_percpu_entry = {
 	.sysfs_ops	= &sysfs_ops,
 };
 
+<<<<<<< HEAD
 static void __cpuinit cpuid4_cache_sysfs_exit(unsigned int cpu)
+=======
+static void cpuid4_cache_sysfs_exit(unsigned int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	kfree(per_cpu(ici_cache_kobject, cpu));
 	kfree(per_cpu(ici_index_kobject, cpu));
@@ -1252,7 +1563,11 @@ static void __cpuinit cpuid4_cache_sysfs_exit(unsigned int cpu)
 	free_cache_attributes(cpu);
 }
 
+<<<<<<< HEAD
 static int __cpuinit cpuid4_cache_sysfs_init(unsigned int cpu)
+=======
+static int cpuid4_cache_sysfs_init(unsigned int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -1285,6 +1600,7 @@ static DECLARE_BITMAP(cache_dev_map, NR_CPUS);
 
 /* Add/Remove cache interface for CPU device */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __cpuinit cache_add_dev(struct sys_device * sys_dev)
 {
 	unsigned int cpu = sys_dev->id;
@@ -1293,6 +1609,11 @@ static int __cpuinit cache_add_dev(struct device *dev)
 {
 	unsigned int cpu = dev->id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cache_add_dev(struct device *dev)
+{
+	unsigned int cpu = dev->id;
+>>>>>>> refs/remotes/origin/master
 	unsigned long i, j;
 	struct _index_kobject *this_object;
 	struct _cpuid4_info   *this_leaf;
@@ -1305,10 +1626,14 @@ static int __cpuinit cache_add_dev(struct device *dev)
 	retval = kobject_init_and_add(per_cpu(ici_cache_kobject, cpu),
 				      &ktype_percpu_entry,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				      &sys_dev->kobj, "%s", "cache");
 =======
 				      &dev->kobj, "%s", "cache");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      &dev->kobj, "%s", "cache");
+>>>>>>> refs/remotes/origin/master
 	if (retval < 0) {
 		cpuid4_cache_sysfs_exit(cpu);
 		return retval;
@@ -1324,10 +1649,14 @@ static int __cpuinit cache_add_dev(struct device *dev)
 		ktype_cache.default_attrs = default_attrs;
 #ifdef CONFIG_AMD_NB
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (this_leaf->l3)
 =======
 		if (this_leaf->base.nb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (this_leaf->base.nb)
+>>>>>>> refs/remotes/origin/master
 			ktype_cache.default_attrs = amd_l3_attrs();
 #endif
 		retval = kobject_init_and_add(&(this_object->kobj),
@@ -1350,6 +1679,7 @@ static int __cpuinit cache_add_dev(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __cpuinit cache_remove_dev(struct sys_device * sys_dev)
 {
 	unsigned int cpu = sys_dev->id;
@@ -1358,6 +1688,11 @@ static void __cpuinit cache_remove_dev(struct device *dev)
 {
 	unsigned int cpu = dev->id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void cache_remove_dev(struct device *dev)
+{
+	unsigned int cpu = dev->id;
+>>>>>>> refs/remotes/origin/master
 	unsigned long i;
 
 	if (per_cpu(ici_cpuid4_info, cpu) == NULL)
@@ -1372,6 +1707,7 @@ static void __cpuinit cache_remove_dev(struct device *dev)
 	cpuid4_cache_sysfs_exit(cpu);
 }
 
+<<<<<<< HEAD
 static int __cpuinit cacheinfo_cpu_callback(struct notifier_block *nfb,
 					unsigned long action, void *hcpu)
 {
@@ -1389,6 +1725,12 @@ static int __cpuinit cacheinfo_cpu_callback(struct notifier_block *nfb,
 	case CPU_DEAD_FROZEN:
 		cache_remove_dev(sys_dev);
 =======
+=======
+static int cacheinfo_cpu_callback(struct notifier_block *nfb,
+				  unsigned long action, void *hcpu)
+{
+	unsigned int cpu = (unsigned long)hcpu;
+>>>>>>> refs/remotes/origin/master
 	struct device *dev;
 
 	dev = get_cpu_device(cpu);
@@ -1400,17 +1742,28 @@ static int __cpuinit cacheinfo_cpu_callback(struct notifier_block *nfb,
 	case CPU_DEAD:
 	case CPU_DEAD_FROZEN:
 		cache_remove_dev(dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 static struct notifier_block __cpuinitdata cacheinfo_cpu_notifier = {
 	.notifier_call = cacheinfo_cpu_callback,
 };
 
 static int __cpuinit cache_sysfs_init(void)
+=======
+static struct notifier_block cacheinfo_cpu_notifier = {
+	.notifier_call = cacheinfo_cpu_callback,
+};
+
+static int __init cache_sysfs_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -1420,6 +1773,7 @@ static int __cpuinit cache_sysfs_init(void)
 	for_each_online_cpu(i) {
 		int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct sys_device *sys_dev = get_cpu_sysdev(i);
 
 		err = cache_add_dev(sys_dev);
@@ -1428,6 +1782,11 @@ static int __cpuinit cache_sysfs_init(void)
 
 		err = cache_add_dev(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct device *dev = get_cpu_device(i);
+
+		err = cache_add_dev(dev);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return err;
 	}

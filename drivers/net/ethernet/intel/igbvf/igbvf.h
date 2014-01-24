@@ -127,8 +127,13 @@ struct igbvf_buffer {
 		/* Tx */
 		struct {
 			unsigned long time_stamp;
+<<<<<<< HEAD
 			u16 length;
 			u16 next_to_watch;
+=======
+			union e1000_adv_tx_desc *next_to_watch;
+			u16 length;
+>>>>>>> refs/remotes/origin/master
 			u16 mapped_as_page;
 		};
 		/* Rx */
@@ -295,7 +300,11 @@ struct igbvf_info {
 
 /* hardware capability, feature, and workaround flags */
 #define IGBVF_FLAG_RX_CSUM_DISABLED             (1 << 0)
+<<<<<<< HEAD
 
+=======
+#define IGBVF_FLAG_RX_LB_VLAN_BSWAP		(1 << 1)
+>>>>>>> refs/remotes/origin/master
 #define IGBVF_RX_DESC_ADV(R, i)     \
 	(&((((R).desc))[i].rx_desc))
 #define IGBVF_TX_DESC_ADV(R, i)     \
@@ -312,6 +321,7 @@ enum igbvf_state_t {
 extern char igbvf_driver_name[];
 extern const char igbvf_driver_version[];
 
+<<<<<<< HEAD
 extern void igbvf_check_options(struct igbvf_adapter *);
 extern void igbvf_set_ethtool_ops(struct net_device *);
 
@@ -323,6 +333,19 @@ extern int igbvf_setup_tx_resources(struct igbvf_adapter *, struct igbvf_ring *)
 extern void igbvf_free_rx_resources(struct igbvf_ring *);
 extern void igbvf_free_tx_resources(struct igbvf_ring *);
 extern void igbvf_update_stats(struct igbvf_adapter *);
+=======
+void igbvf_check_options(struct igbvf_adapter *);
+void igbvf_set_ethtool_ops(struct net_device *);
+
+int igbvf_up(struct igbvf_adapter *);
+void igbvf_down(struct igbvf_adapter *);
+void igbvf_reinit_locked(struct igbvf_adapter *);
+int igbvf_setup_rx_resources(struct igbvf_adapter *, struct igbvf_ring *);
+int igbvf_setup_tx_resources(struct igbvf_adapter *, struct igbvf_ring *);
+void igbvf_free_rx_resources(struct igbvf_ring *);
+void igbvf_free_tx_resources(struct igbvf_ring *);
+void igbvf_update_stats(struct igbvf_adapter *);
+>>>>>>> refs/remotes/origin/master
 
 extern unsigned int copybreak;
 

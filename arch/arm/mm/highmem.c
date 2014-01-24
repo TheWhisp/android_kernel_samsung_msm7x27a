@@ -37,10 +37,14 @@ void kunmap(struct page *page)
 EXPORT_SYMBOL(kunmap);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void *__kmap_atomic(struct page *page)
 =======
 void *kmap_atomic(struct page *page)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void *kmap_atomic(struct page *page)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int idx;
 	unsigned long vaddr;
@@ -74,6 +78,7 @@ void *kmap_atomic(struct page *page)
 	 * Make sure it was indeed properly unmapped.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(!pte_none(*(TOP_PTE(vaddr))));
 #endif
 	set_pte_ext(TOP_PTE(vaddr), mk_pte(page, kmap_prot), 0);
@@ -88,6 +93,8 @@ void *kmap_atomic(struct page *page)
 }
 EXPORT_SYMBOL(__kmap_atomic);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(!pte_none(get_top_pte(vaddr)));
 #endif
 	/*
@@ -100,7 +107,10 @@ EXPORT_SYMBOL(__kmap_atomic);
 	return (void *)vaddr;
 }
 EXPORT_SYMBOL(kmap_atomic);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 void __kunmap_atomic(void *kvaddr)
 {
@@ -116,11 +126,15 @@ void __kunmap_atomic(void *kvaddr)
 #ifdef CONFIG_DEBUG_HIGHMEM
 		BUG_ON(vaddr != __fix_to_virt(FIX_KMAP_BEGIN + idx));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		set_pte_ext(TOP_PTE(vaddr), __pte(0), 0);
 		local_flush_tlb_kernel_page(vaddr);
 =======
 		set_top_pte(vaddr, __pte(0));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_top_pte(vaddr, __pte(0));
+>>>>>>> refs/remotes/origin/master
 #else
 		(void) idx;  /* to kill a warning */
 #endif
@@ -145,6 +159,7 @@ void *kmap_atomic_pfn(unsigned long pfn)
 	vaddr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
 #ifdef CONFIG_DEBUG_HIGHMEM
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(!pte_none(*(TOP_PTE(vaddr))));
 #endif
 	set_pte_ext(TOP_PTE(vaddr), pfn_pte(pfn, kmap_prot), 0);
@@ -154,6 +169,11 @@ void *kmap_atomic_pfn(unsigned long pfn)
 #endif
 	set_top_pte(vaddr, pfn_pte(pfn, kmap_prot));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BUG_ON(!pte_none(get_top_pte(vaddr)));
+#endif
+	set_top_pte(vaddr, pfn_pte(pfn, kmap_prot));
+>>>>>>> refs/remotes/origin/master
 
 	return (void *)vaddr;
 }
@@ -162,17 +182,24 @@ struct page *kmap_atomic_to_page(const void *ptr)
 {
 	unsigned long vaddr = (unsigned long)ptr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pte_t *pte;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (vaddr < FIXADDR_START)
 		return virt_to_page(ptr);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pte = TOP_PTE(vaddr);
 	return pte_page(*pte);
 =======
 	return pte_page(get_top_pte(vaddr));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return pte_page(get_top_pte(vaddr));
+>>>>>>> refs/remotes/origin/master
 }

@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
     g760a - Driver for the Global Mixed-mode Technology Inc. G760A
             fan speed PWM controller chip
 
@@ -14,6 +15,8 @@
     (at your option) any later version.
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * g760a - Driver for the Global Mixed-mode Technology Inc. G760A
  *	   fan speed PWM controller chip
  *
@@ -27,7 +30,10 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/module.h>
 #include <linux/init.h>
@@ -76,11 +82,16 @@ struct g760a_data {
 	u8 fan_sta; /* bit 0: set when actual fan speed more than 20%
 		     *   outside requested fan speed
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     * bit 1: set when fan speed below 1920 rpm */
 =======
 		     * bit 1: set when fan speed below 1920 rpm
 		     */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     * bit 1: set when fan speed below 1920 rpm
+		     */
+>>>>>>> refs/remotes/origin/master
 };
 
 #define G760A_DEFAULT_CLK 32768
@@ -121,10 +132,14 @@ static int g760a_write_value(struct i2c_client *client, enum g760a_regs reg,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /****************************************************************************
 =======
 /*
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * sysfs attributes
  */
 
@@ -192,6 +207,7 @@ static ssize_t set_pwm(struct device *dev, struct device_attribute *da,
 	unsigned long val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 10, &val))
 =======
 	if (kstrtoul(buf, 10, &val))
@@ -200,6 +216,13 @@ static ssize_t set_pwm(struct device *dev, struct device_attribute *da,
 
 	mutex_lock(&data->update_lock);
 	data->set_cnt = PWM_TO_CNT(SENSORS_LIMIT(val, 0, 255));
+=======
+	if (kstrtoul(buf, 10, &val))
+		return -EINVAL;
+
+	mutex_lock(&data->update_lock);
+	data->set_cnt = PWM_TO_CNT(clamp_val(val, 0, 255));
+>>>>>>> refs/remotes/origin/master
 	g760a_write_value(client, G760A_REG_SET_CNT, data->set_cnt);
 	mutex_unlock(&data->update_lock);
 
@@ -222,10 +245,14 @@ static const struct attribute_group g760a_group = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /****************************************************************************
 =======
 /*
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * new-style driver model code
  */
 
@@ -239,7 +266,12 @@ static int g760a_probe(struct i2c_client *client,
 				     I2C_FUNC_SMBUS_BYTE_DATA))
 		return -EIO;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct g760a_data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct g760a_data),
+			    GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!data)
 		return -ENOMEM;
 
@@ -255,7 +287,11 @@ static int g760a_probe(struct i2c_client *client,
 	/* Register sysfs hooks */
 	err = sysfs_create_group(&client->dev.kobj, &g760a_group);
 	if (err)
+<<<<<<< HEAD
 		goto error_sysfs_create_group;
+=======
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -267,9 +303,12 @@ static int g760a_probe(struct i2c_client *client,
 
 error_hwmon_device_register:
 	sysfs_remove_group(&client->dev.kobj, &g760a_group);
+<<<<<<< HEAD
 error_sysfs_create_group:
 	kfree(data);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -278,6 +317,7 @@ static int g760a_remove(struct i2c_client *client)
 	struct g760a_data *data = i2c_get_clientdata(client);
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &g760a_group);
+<<<<<<< HEAD
 	kfree(data);
 
 	return 0;
@@ -298,13 +338,22 @@ static void __exit g760a_exit(void)
 =======
 module_i2c_driver(g760a_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+}
+
+module_i2c_driver(g760a_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Herbert Valerio Riedel <hvr@gnu.org>");
 MODULE_DESCRIPTION("GMT G760A driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(g760a_init);
 module_exit(g760a_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

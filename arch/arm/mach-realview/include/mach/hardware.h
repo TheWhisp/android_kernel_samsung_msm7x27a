@@ -38,9 +38,13 @@
 #define IO_ADDRESS(x)		(x)
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define __io_address(n)		__io(IO_ADDRESS(n))
 =======
 #define __io_address(n)		IOMEM(IO_ADDRESS(n))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define __io_address(n)		IOMEM(IO_ADDRESS(n))
+>>>>>>> refs/remotes/origin/master
 
 #endif

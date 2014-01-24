@@ -77,6 +77,7 @@ _ENTRY(_start);
 	.globl	__start
 __start:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mr	r31,r3			/* save parameters */
 	mr	r30,r4
 	mr	r29,r5
@@ -85,6 +86,9 @@ __start:
 =======
 	mr	r31,r3			/* save device tree ptr */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mr	r31,r3			/* save device tree ptr */
+>>>>>>> refs/remotes/origin/master
 
 	/* We have to turn on the MMU right away so we get cache modes
 	 * set correctly.
@@ -229,10 +233,14 @@ DataAccess:
 	li	r10,0x00f0
 	mtspr	SPRN_DAR,r10	/* Tag DAR, to be used in DTLB Error */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	EXC_XFER_EE_LITE(0x300, handle_page_fault)
 =======
 	EXC_XFER_LITE(0x300, handle_page_fault)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	EXC_XFER_LITE(0x300, handle_page_fault)
+>>>>>>> refs/remotes/origin/master
 
 /* Instruction access exception.
  * This is "never generated" by the MPC8xx.  We jump to it for other
@@ -244,10 +252,14 @@ InstructionAccess:
 	mr	r4,r12
 	mr	r5,r9
 <<<<<<< HEAD
+<<<<<<< HEAD
 	EXC_XFER_EE_LITE(0x400, handle_page_fault)
 =======
 	EXC_XFER_LITE(0x400, handle_page_fault)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	EXC_XFER_LITE(0x400, handle_page_fault)
+>>>>>>> refs/remotes/origin/master
 
 /* External interrupt */
 	EXCEPTION(0x500, HardwareInterrupt, do_IRQ, EXC_XFER_LITE)
@@ -707,10 +719,13 @@ modified_instr:
 	b	151b
 #endif
 
+<<<<<<< HEAD
 	.globl	giveup_fpu
 giveup_fpu:
 	blr
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This is where the main kernel code starts.
  */
@@ -736,6 +751,7 @@ start_here:
  * Decide what sort of machine this is and initialize the MMU.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mr	r3,r31
 	mr	r4,r30
 	mr	r5,r29
@@ -745,6 +761,10 @@ start_here:
 	li	r3,0
 	mr	r4,r31
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	li	r3,0
+	mr	r4,r31
+>>>>>>> refs/remotes/origin/master
 	bl	machine_init
 	bl	MMU_init
 
@@ -886,6 +906,12 @@ initial_mmu:
 	addis	r11, r11, 0x0080	/* Add 8M */
 	mtspr	SPRN_MD_RPN, r11
 
+<<<<<<< HEAD
+=======
+	addi	r10, r10, 0x0100
+	mtspr	SPRN_MD_CTR, r10
+
+>>>>>>> refs/remotes/origin/master
 	addis	r8, r8, 0x0080		/* Add 8M */
 	mtspr	SPRN_MD_EPN, r8
 	mtspr	SPRN_MD_TWC, r9

@@ -17,9 +17,13 @@
 #include <linux/crc-ccitt.h>
 #include <linux/bitrev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 /* check if byte must be stuffed/escaped
  * I'm not sure which data should be encoded.
@@ -218,10 +222,14 @@ byte_stuff:
 					/* frame check error */
 					dev_err(cs->dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"Checksum failed, %u bytes corrupted!\n",
 =======
 						"Checksum failed, %u bytes corrupted!\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						"Checksum failed, %u bytes corrupted!\n",
+>>>>>>> refs/remotes/origin/master
 						skb->len);
 					gigaset_isdn_rcv_err(bcs);
 					dev_kfree_skb_any(skb);
@@ -551,10 +559,14 @@ static struct sk_buff *iraw_encode(struct sk_buff *skb)
 	 * 2 * original size + room for link layer header
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iraw_skb = dev_alloc_skb(2*skb->len + skb->mac_len);
 =======
 	iraw_skb = dev_alloc_skb(2 * skb->len + skb->mac_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iraw_skb = dev_alloc_skb(2 * skb->len + skb->mac_len);
+>>>>>>> refs/remotes/origin/master
 	if (!iraw_skb) {
 		dev_kfree_skb_any(skb);
 		return NULL;

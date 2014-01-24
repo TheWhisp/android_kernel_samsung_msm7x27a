@@ -12,10 +12,15 @@
 #define __ASM_SMP_OPS_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/errno.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/errno.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 
 #include <linux/cpumask.h>
@@ -62,10 +67,13 @@ static inline void register_smp_ops(struct plat_smp_ops *ops)
 #endif /* !CONFIG_SMP */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct plat_smp_ops up_smp_ops;
 extern struct plat_smp_ops cmp_smp_ops;
 extern struct plat_smp_ops vsmp_smp_ops;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int register_up_smp_ops(void)
 {
 #ifdef CONFIG_SMP_UP
@@ -104,6 +112,9 @@ static inline int register_vsmp_smp_ops(void)
 	return -ENODEV;
 #endif
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_SMP_OPS_H */

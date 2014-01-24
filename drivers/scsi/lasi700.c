@@ -168,7 +168,11 @@ static struct parisc_driver lasi700_driver = {
 	.name =		"lasi_scsi",
 	.id_table =	lasi700_ids,
 	.probe =	lasi700_probe,
+<<<<<<< HEAD
 	.remove =	__devexit_p(lasi700_driver_remove),
+=======
+	.remove =	lasi700_driver_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init

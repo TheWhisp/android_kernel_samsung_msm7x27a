@@ -61,7 +61,11 @@ static int options[MAX_UNITS];
 #include "8390.h"
 
 /* These identify the driver base version and may not be removed. */
+<<<<<<< HEAD
 static const char version[] __devinitconst =
+=======
+static const char version[] =
+>>>>>>> refs/remotes/origin/master
 	KERN_INFO DRV_NAME ".c:v" DRV_VERSION " " DRV_RELDATE
 	" D. Becker/P. Gortmaker\n";
 
@@ -119,7 +123,11 @@ enum ne2k_pci_chipsets {
 static struct {
 	char *name;
 	int flags;
+<<<<<<< HEAD
 } pci_clone_list[] __devinitdata = {
+=======
+} pci_clone_list[] = {
+>>>>>>> refs/remotes/origin/master
 	{"RealTek RTL-8029", REALTEK_FDX},
 	{"Winbond 89C940", 0},
 	{"Compex RL2000", 0},
@@ -215,8 +223,13 @@ static const struct net_device_ops ne2k_netdev_ops = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit ne2k_pci_init_one (struct pci_dev *pdev,
 				     const struct pci_device_id *ent)
+=======
+static int ne2k_pci_init_one(struct pci_dev *pdev,
+			     const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	int i;
@@ -374,7 +387,10 @@ static int __devinit ne2k_pci_init_one (struct pci_dev *pdev,
 	NS8390_init(dev, 0);
 
 	memcpy(dev->dev_addr, SA_prom, dev->addr_len);
+<<<<<<< HEAD
 	memcpy(dev->perm_addr, dev->dev_addr, dev->addr_len);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	i = register_netdev(dev);
 	if (i)
@@ -390,9 +406,13 @@ err_out_free_netdev:
 	free_netdev (dev);
 err_out_free_res:
 	release_region (ioaddr, NE_IO_EXTENT);
+<<<<<<< HEAD
 	pci_set_drvdata (pdev, NULL);
 	return -ENODEV;
 
+=======
+	return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -647,7 +667,11 @@ static const struct ethtool_ops ne2k_pci_ethtool_ops = {
 	.get_drvinfo		= ne2k_pci_get_drvinfo,
 };
 
+<<<<<<< HEAD
 static void __devexit ne2k_pci_remove_one (struct pci_dev *pdev)
+=======
+static void ne2k_pci_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 
@@ -656,7 +680,10 @@ static void __devexit ne2k_pci_remove_one (struct pci_dev *pdev)
 	release_region(dev->base_addr, NE_IO_EXTENT);
 	free_netdev(dev);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_PM
@@ -677,7 +704,11 @@ static int ne2k_pci_resume (struct pci_dev *pdev)
 	struct net_device *dev = pci_get_drvdata (pdev);
 	int rc;
 
+<<<<<<< HEAD
 	pci_set_power_state(pdev, 0);
+=======
+	pci_set_power_state(pdev, PCI_D0);
+>>>>>>> refs/remotes/origin/master
 	pci_restore_state(pdev);
 
 	rc = pci_enable_device(pdev);
@@ -696,7 +727,11 @@ static int ne2k_pci_resume (struct pci_dev *pdev)
 static struct pci_driver ne2k_driver = {
 	.name		= DRV_NAME,
 	.probe		= ne2k_pci_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ne2k_pci_remove_one),
+=======
+	.remove		= ne2k_pci_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= ne2k_pci_tbl,
 #ifdef CONFIG_PM
 	.suspend	= ne2k_pci_suspend,

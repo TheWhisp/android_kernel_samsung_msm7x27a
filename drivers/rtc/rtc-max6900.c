@@ -164,6 +164,7 @@ static int max6900_i2c_read_time(struct i2c_client *client, struct rtc_time *tm)
 
 static int max6900_i2c_clear_write_protect(struct i2c_client *client)
 {
+<<<<<<< HEAD
 	int rc;
 	rc = i2c_smbus_write_byte_data(client, MAX6900_REG_CONTROL_WRITE, 0);
 	if (rc < 0) {
@@ -172,6 +173,9 @@ static int max6900_i2c_clear_write_protect(struct i2c_client *client)
 		return -EIO;
 	}
 	return 0;
+=======
+	return i2c_smbus_write_byte_data(client, MAX6900_REG_CONTROL_WRITE, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -212,6 +216,7 @@ static int max6900_rtc_set_time(struct device *dev, struct rtc_time *tm)
 	return max6900_i2c_set_time(to_i2c_client(dev), tm);
 }
 
+<<<<<<< HEAD
 static int max6900_remove(struct i2c_client *client)
 {
 	struct rtc_device *rtc = i2c_get_clientdata(client);
@@ -222,6 +227,8 @@ static int max6900_remove(struct i2c_client *client)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct rtc_class_ops max6900_rtc_ops = {
 	.read_time = max6900_rtc_read_time,
 	.set_time = max6900_rtc_set_time,
@@ -237,8 +244,13 @@ max6900_probe(struct i2c_client *client, const struct i2c_device_id *id)
 
 	dev_info(&client->dev, "chip found, driver version " DRV_VERSION "\n");
 
+<<<<<<< HEAD
 	rtc = rtc_device_register(max6900_driver.driver.name,
 				  &client->dev, &max6900_rtc_ops, THIS_MODULE);
+=======
+	rtc = devm_rtc_device_register(&client->dev, max6900_driver.driver.name,
+					&max6900_rtc_ops, THIS_MODULE);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(rtc))
 		return PTR_ERR(rtc);
 
@@ -257,6 +269,7 @@ static struct i2c_driver max6900_driver = {
 		   .name = "rtc-max6900",
 		   },
 	.probe = max6900_probe,
+<<<<<<< HEAD
 	.remove = max6900_remove,
 	.id_table = max6900_id,
 };
@@ -274,14 +287,23 @@ static void __exit max6900_exit(void)
 =======
 module_i2c_driver(max6900_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.id_table = max6900_id,
+};
+
+module_i2c_driver(max6900_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Maxim MAX6900 RTC driver");
 MODULE_AUTHOR("Dale Farnsworth <dale@farnsworth.org>");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_VERSION);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(max6900_init);
 module_exit(max6900_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

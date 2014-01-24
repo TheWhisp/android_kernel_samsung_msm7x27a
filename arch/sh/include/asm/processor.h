@@ -18,7 +18,12 @@ enum cpu_type {
 	CPU_SH7619,
 
 	/* SH-2A types */
+<<<<<<< HEAD
 	CPU_SH7201, CPU_SH7203, CPU_SH7206, CPU_SH7263, CPU_MXG,
+=======
+	CPU_SH7201, CPU_SH7203, CPU_SH7206, CPU_SH7263, CPU_SH7264, CPU_SH7269,
+	CPU_MXG,
+>>>>>>> refs/remotes/origin/master
 
 	/* SH-3 types */
 	CPU_SH7705, CPU_SH7706, CPU_SH7707,
@@ -32,7 +37,11 @@ enum cpu_type {
 
 	/* SH-4A types */
 	CPU_SH7763, CPU_SH7770, CPU_SH7780, CPU_SH7781, CPU_SH7785, CPU_SH7786,
+<<<<<<< HEAD
 	CPU_SH7723, CPU_SH7724, CPU_SH7757, CPU_SHX3,
+=======
+	CPU_SH7723, CPU_SH7724, CPU_SH7757, CPU_SH7734, CPU_SHX3,
+>>>>>>> refs/remotes/origin/master
 
 	/* SH4AL-DSP types */
 	CPU_SH7343, CPU_SH7722, CPU_SH7366, CPU_SH7372,
@@ -85,10 +94,13 @@ struct sh_cpuinfo {
 	struct tlb_info itlb;
 	struct tlb_info dtlb;
 
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 	struct task_struct *idle;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int phys_bits;
 	unsigned long flags;
 } __attribute__ ((aligned(L1_CACHE_BYTES)));
@@ -102,12 +114,18 @@ extern struct sh_cpuinfo cpu_data[];
 #define cpu_relax()	barrier()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void default_idle(void);
 void cpu_idle_wait(void);
 void stop_this_cpu(void *);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void default_idle(void);
+void stop_this_cpu(void *);
+
+>>>>>>> refs/remotes/origin/master
 /* Forward decl */
 struct seq_operations;
 struct task_struct;
@@ -169,7 +187,10 @@ int vsyscall_init(void);
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * SH-2A has both 16 and 32-bit opcodes, do lame encoding checks.
  */
@@ -181,6 +202,7 @@ extern unsigned int instruction_size(unsigned int insn);
 #define instruction_size(insn)	(4)
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __ASSEMBLY__ */
 
@@ -188,6 +210,14 @@ extern unsigned int instruction_size(unsigned int insn);
 # include "processor_32.h"
 #else
 # include "processor_64.h"
+=======
+#endif /* __ASSEMBLY__ */
+
+#ifdef CONFIG_SUPERH32
+# include <asm/processor_32.h>
+#else
+# include <asm/processor_64.h>
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif /* __ASM_SH_PROCESSOR_H */

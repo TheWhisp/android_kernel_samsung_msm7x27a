@@ -14,6 +14,10 @@
  */
 
 #include <stdarg.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/init.h>
@@ -25,11 +29,18 @@
 #include <linux/delay.h>
 #include <linux/initrd.h>
 #include <linux/bitops.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kexec.h>
 #include <linux/debugfs.h>
 #include <linux/irq.h>
 #include <linux/memblock.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_fdt.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/prom.h>
 #include <asm/page.h>
@@ -37,14 +48,18 @@
 #include <asm/irq.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mmu.h>
 #include <asm/pgtable.h>
 #include <asm/sections.h>
 #include <asm/pci-bridge.h>
 
+<<<<<<< HEAD
 void __init early_init_dt_add_memory_arch(u64 base, u64 size)
 {
 	memblock_add(base, size);
@@ -95,10 +110,17 @@ char *stdout;
 
 int __init early_init_dt_scan_chosen_serial(unsigned long node,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_EARLY_PRINTK
+static char *stdout;
+
+static int __init early_init_dt_scan_chosen_serial(unsigned long node,
+>>>>>>> refs/remotes/origin/master
 				const char *uname, int depth, void *data)
 {
 	unsigned long l;
 	char *p;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned int addr;
 
@@ -127,6 +149,8 @@ int __init early_uart16550_console(void)
 {
 	return of_scan_flat_dt(early_init_dt_scan_serial_full, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("%s: depth: %d, uname: %s\n", __func__, depth, uname);
 
@@ -172,7 +196,10 @@ int __init early_uart16550_console(void)
 int __init of_early_console(void *version)
 {
 	return of_scan_flat_dt(early_init_dt_scan_chosen_serial, version);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -180,6 +207,7 @@ void __init early_init_devtree(void *params)
 {
 	pr_debug(" -> early_init_devtree(%p)\n", params);
 
+<<<<<<< HEAD
 	/* Setup flat device-tree pointer */
 	initial_boot_params = params;
 
@@ -206,12 +234,22 @@ void __init early_init_devtree(void *params)
 =======
 	memblock_allow_resize();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	early_init_dt_scan(params);
+	if (!strlen(boot_command_line))
+		strlcpy(boot_command_line, cmd_line, COMMAND_LINE_SIZE);
+
+	parse_early_param();
+
+	memblock_allow_resize();
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("Phys. mem: %lx\n", (unsigned long) memblock_phys_mem_size());
 
 	pr_debug(" <- early_init_devtree()\n");
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_BLK_DEV_INITRD
 void __init early_init_dt_setup_initrd_arch(unsigned long start,
 		unsigned long end)
@@ -222,6 +260,8 @@ void __init early_init_dt_setup_initrd_arch(unsigned long start,
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*******
  *
  * New implementation of the OF "find" APIs, return a refcounted

@@ -21,6 +21,7 @@ struct thread_struct {
 
 /*
  * User-space process size. This is hardcoded into a few places, so don't
+<<<<<<< HEAD
  * changed it unless everything's clear!
  */
 #ifndef CONFIG_ETRAX_VCS_SIM
@@ -28,6 +29,11 @@ struct thread_struct {
 #else
 #define TASK_SIZE	(0xA0000000UL)
 #endif
+=======
+ * change it unless everything's clear!
+ */
+#define TASK_SIZE	(0xB0000000UL)
+>>>>>>> refs/remotes/origin/master
 
 /* CCS I=1, enable interrupts. */
 #define INIT_THREAD { 0, 0, (1 << I_CCS_BITNR) }
@@ -48,9 +54,12 @@ struct thread_struct {
 #define start_thread(regs, ip, usp) \
 do { \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_fs(USER_DS); \
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	regs->erp = ip; \
 	regs->ccs |= 1 << (U_CCS_BITNR + CCS_SHIFT); \
 	wrusp(usp); \

@@ -21,9 +21,13 @@
 
 #include <linux/blkdev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/raid/md_u.h>
 #include <linux/seq_file.h>
 #include <linux/slab.h>
@@ -36,10 +40,14 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int multipath_map (multipath_conf_t *conf)
 =======
 static int multipath_map (struct mpconf *conf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int multipath_map (struct mpconf *conf)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, disks = conf->raid_disks;
 
@@ -51,10 +59,14 @@ static int multipath_map (struct mpconf *conf)
 	rcu_read_lock();
 	for (i = 0; i < disks; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mdk_rdev_t *rdev = rcu_dereference(conf->multipaths[i].rdev);
 =======
 		struct md_rdev *rdev = rcu_dereference(conf->multipaths[i].rdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct md_rdev *rdev = rcu_dereference(conf->multipaths[i].rdev);
+>>>>>>> refs/remotes/origin/master
 		if (rdev && test_bit(In_sync, &rdev->flags)) {
 			atomic_inc(&rdev->nr_pending);
 			rcu_read_unlock();
@@ -71,12 +83,17 @@ static void multipath_reschedule_retry (struct multipath_bh *mp_bh)
 {
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mddev_t *mddev = mp_bh->mddev;
 	multipath_conf_t *conf = mddev->private;
 =======
 	struct mddev *mddev = mp_bh->mddev;
 	struct mpconf *conf = mddev->private;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mddev *mddev = mp_bh->mddev;
+	struct mpconf *conf = mddev->private;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&conf->device_lock, flags);
 	list_add(&mp_bh->retry_list, &conf->retry_list);
@@ -94,10 +111,14 @@ static void multipath_end_bh_io (struct multipath_bh *mp_bh, int err)
 {
 	struct bio *bio = mp_bh->master_bio;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	multipath_conf_t *conf = mp_bh->mddev->private;
 =======
 	struct mpconf *conf = mp_bh->mddev->private;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mpconf *conf = mp_bh->mddev->private;
+>>>>>>> refs/remotes/origin/master
 
 	bio_endio(bio, err);
 	mempool_free(mp_bh, conf->pool);
@@ -108,12 +129,17 @@ static void multipath_end_request(struct bio *bio, int error)
 	int uptodate = test_bit(BIO_UPTODATE, &bio->bi_flags);
 	struct multipath_bh *mp_bh = bio->bi_private;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	multipath_conf_t *conf = mp_bh->mddev->private;
 	mdk_rdev_t *rdev = conf->multipaths[mp_bh->path].rdev;
 =======
 	struct mpconf *conf = mp_bh->mddev->private;
 	struct md_rdev *rdev = conf->multipaths[mp_bh->path].rdev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mpconf *conf = mp_bh->mddev->private;
+	struct md_rdev *rdev = conf->multipaths[mp_bh->path].rdev;
+>>>>>>> refs/remotes/origin/master
 
 	if (uptodate)
 		multipath_end_bh_io(mp_bh, 0);
@@ -133,6 +159,7 @@ static void multipath_end_request(struct bio *bio, int error)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int multipath_make_request(mddev_t *mddev, struct bio * bio)
 {
 	multipath_conf_t *conf = mddev->private;
@@ -141,16 +168,25 @@ static void multipath_make_request(struct mddev *mddev, struct bio * bio)
 {
 	struct mpconf *conf = mddev->private;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void multipath_make_request(struct mddev *mddev, struct bio * bio)
+{
+	struct mpconf *conf = mddev->private;
+>>>>>>> refs/remotes/origin/master
 	struct multipath_bh * mp_bh;
 	struct multipath_info *multipath;
 
 	if (unlikely(bio->bi_rw & REQ_FLUSH)) {
 		md_flush_request(mddev, bio);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
 =======
 		return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mp_bh = mempool_alloc(conf->pool, GFP_NOIO);
@@ -163,10 +199,14 @@ static void multipath_make_request(struct mddev *mddev, struct bio * bio)
 		bio_endio(bio, -EIO);
 		mempool_free(mp_bh, conf->pool);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
 =======
 		return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 	multipath = conf->multipaths + mp_bh->path;
 
@@ -178,6 +218,7 @@ static void multipath_make_request(struct mddev *mddev, struct bio * bio)
 	mp_bh->bio.bi_private = mp_bh;
 	generic_make_request(&mp_bh->bio);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 }
 
@@ -185,13 +226,18 @@ static void multipath_status (struct seq_file *seq, mddev_t *mddev)
 {
 	multipath_conf_t *conf = mddev->private;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 
 static void multipath_status (struct seq_file *seq, struct mddev *mddev)
 {
 	struct mpconf *conf = mddev->private;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 	
 	seq_printf (seq, " [%d/%d] [", conf->raid_disks,
@@ -206,12 +252,17 @@ static void multipath_status (struct seq_file *seq, struct mddev *mddev)
 static int multipath_congested(void *data, int bits)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mddev_t *mddev = data;
 	multipath_conf_t *conf = mddev->private;
 =======
 	struct mddev *mddev = data;
 	struct mpconf *conf = mddev->private;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mddev *mddev = data;
+	struct mpconf *conf = mddev->private;
+>>>>>>> refs/remotes/origin/master
 	int i, ret = 0;
 
 	if (mddev_congested(mddev, bits))
@@ -220,10 +271,14 @@ static int multipath_congested(void *data, int bits)
 	rcu_read_lock();
 	for (i = 0; i < mddev->raid_disks ; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mdk_rdev_t *rdev = rcu_dereference(conf->multipaths[i].rdev);
 =======
 		struct md_rdev *rdev = rcu_dereference(conf->multipaths[i].rdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct md_rdev *rdev = rcu_dereference(conf->multipaths[i].rdev);
+>>>>>>> refs/remotes/origin/master
 		if (rdev && !test_bit(Faulty, &rdev->flags)) {
 			struct request_queue *q = bdev_get_queue(rdev->bdev);
 
@@ -242,6 +297,7 @@ static int multipath_congested(void *data, int bits)
  * Careful, this can execute in IRQ contexts as well!
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void multipath_error (mddev_t *mddev, mdk_rdev_t *rdev)
 {
 	multipath_conf_t *conf = mddev->private;
@@ -250,6 +306,11 @@ static void multipath_error (struct mddev *mddev, struct md_rdev *rdev)
 {
 	struct mpconf *conf = mddev->private;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void multipath_error (struct mddev *mddev, struct md_rdev *rdev)
+{
+	struct mpconf *conf = mddev->private;
+>>>>>>> refs/remotes/origin/master
 	char b[BDEVNAME_SIZE];
 
 	if (conf->raid_disks - mddev->degraded <= 1) {
@@ -283,10 +344,14 @@ static void multipath_error (struct mddev *mddev, struct md_rdev *rdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void print_multipath_conf (multipath_conf_t *conf)
 =======
 static void print_multipath_conf (struct mpconf *conf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void print_multipath_conf (struct mpconf *conf)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct multipath_info *tmp;
@@ -311,6 +376,7 @@ static void print_multipath_conf (struct mpconf *conf)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int multipath_add_disk(mddev_t *mddev, mdk_rdev_t *rdev)
 {
 	multipath_conf_t *conf = mddev->private;
@@ -319,6 +385,11 @@ static int multipath_add_disk(struct mddev *mddev, struct md_rdev *rdev)
 {
 	struct mpconf *conf = mddev->private;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int multipath_add_disk(struct mddev *mddev, struct md_rdev *rdev)
+{
+	struct mpconf *conf = mddev->private;
+>>>>>>> refs/remotes/origin/master
 	struct request_queue *q;
 	int err = -EEXIST;
 	int path;
@@ -366,28 +437,38 @@ static int multipath_add_disk(struct mddev *mddev, struct md_rdev *rdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int multipath_remove_disk(mddev_t *mddev, int number)
 {
 	multipath_conf_t *conf = mddev->private;
 	int err = 0;
 	mdk_rdev_t *rdev;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int multipath_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
 {
 	struct mpconf *conf = mddev->private;
 	int err = 0;
 	int number = rdev->raid_disk;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct multipath_info *p = conf->multipaths + number;
 
 	print_multipath_conf(conf);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	rdev = p->rdev;
 	if (rdev) {
 =======
 	if (rdev == p->rdev) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rdev == p->rdev) {
+>>>>>>> refs/remotes/origin/master
 		if (test_bit(In_sync, &rdev->flags) ||
 		    atomic_read(&rdev->nr_pending)) {
 			printk(KERN_ERR "hot-remove-disk, slot %d is identified"
@@ -422,6 +503,7 @@ abort:
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void multipathd (mddev_t *mddev)
 =======
 static void multipathd (struct mddev *mddev)
@@ -435,6 +517,15 @@ static void multipathd (struct mddev *mddev)
 =======
 	struct mpconf *conf = mddev->private;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void multipathd(struct md_thread *thread)
+{
+	struct mddev *mddev = thread->mddev;
+	struct multipath_bh *mp_bh;
+	struct bio *bio;
+	unsigned long flags;
+	struct mpconf *conf = mddev->private;
+>>>>>>> refs/remotes/origin/master
 	struct list_head *head = &conf->retry_list;
 
 	md_check_recovery(mddev);
@@ -474,10 +565,14 @@ static void multipathd (struct mddev *mddev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static sector_t multipath_size(mddev_t *mddev, sector_t sectors, int raid_disks)
 =======
 static sector_t multipath_size(struct mddev *mddev, sector_t sectors, int raid_disks)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static sector_t multipath_size(struct mddev *mddev, sector_t sectors, int raid_disks)
+>>>>>>> refs/remotes/origin/master
 {
 	WARN_ONCE(sectors || raid_disks,
 		  "%s does not support generic reshape\n", __func__);
@@ -486,6 +581,7 @@ static sector_t multipath_size(struct mddev *mddev, sector_t sectors, int raid_d
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int multipath_run (mddev_t *mddev)
 {
 	multipath_conf_t *conf;
@@ -493,13 +589,18 @@ static int multipath_run (mddev_t *mddev)
 	struct multipath_info *disk;
 	mdk_rdev_t *rdev;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int multipath_run (struct mddev *mddev)
 {
 	struct mpconf *conf;
 	int disk_idx;
 	struct multipath_info *disk;
 	struct md_rdev *rdev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int working_disks;
 
 	if (md_check_no_bitmap(mddev))
@@ -517,10 +618,14 @@ static int multipath_run (struct mddev *mddev)
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	conf = kzalloc(sizeof(multipath_conf_t), GFP_KERNEL);
 =======
 	conf = kzalloc(sizeof(struct mpconf), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	conf = kzalloc(sizeof(struct mpconf), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	mddev->private = conf;
 	if (!conf) {
 		printk(KERN_ERR 
@@ -540,10 +645,14 @@ static int multipath_run (struct mddev *mddev)
 
 	working_disks = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	list_for_each_entry(rdev, &mddev->disks, same_set) {
 =======
 	rdev_for_each(rdev, mddev) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rdev_for_each(rdev, mddev) {
+>>>>>>> refs/remotes/origin/master
 		disk_idx = rdev->raid_disk;
 		if (disk_idx < 0 ||
 		    disk_idx >= mddev->raid_disks)
@@ -589,7 +698,12 @@ static int multipath_run (struct mddev *mddev)
 	}
 
 	{
+<<<<<<< HEAD
 		mddev->thread = md_register_thread(multipathd, mddev, NULL);
+=======
+		mddev->thread = md_register_thread(multipathd, mddev,
+						   "multipath");
+>>>>>>> refs/remotes/origin/master
 		if (!mddev->thread) {
 			printk(KERN_ERR "multipath: couldn't allocate thread"
 				" for %s\n", mdname(mddev));
@@ -626,6 +740,7 @@ out:
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int multipath_stop (mddev_t *mddev)
 {
 	multipath_conf_t *conf = mddev->private;
@@ -634,6 +749,11 @@ static int multipath_stop (struct mddev *mddev)
 {
 	struct mpconf *conf = mddev->private;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int multipath_stop (struct mddev *mddev)
+{
+	struct mpconf *conf = mddev->private;
+>>>>>>> refs/remotes/origin/master
 
 	md_unregister_thread(&mddev->thread);
 	blk_sync_queue(mddev->queue); /* the unplug fn references 'conf'*/
@@ -645,10 +765,14 @@ static int multipath_stop (struct mddev *mddev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct mdk_personality multipath_personality =
 =======
 static struct md_personality multipath_personality =
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct md_personality multipath_personality =
+>>>>>>> refs/remotes/origin/master
 {
 	.name		= "multipath",
 	.level		= LEVEL_MULTIPATH,

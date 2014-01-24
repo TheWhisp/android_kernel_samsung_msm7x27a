@@ -15,7 +15,10 @@ struct ceph_auth_client;
 struct ceph_authorizer;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct ceph_auth_handshake {
 	struct ceph_authorizer *authorizer;
 	void *authorizer_buf;
@@ -24,7 +27,10 @@ struct ceph_auth_handshake {
 	size_t authorizer_reply_buf_len;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct ceph_auth_client_ops {
 	const char *name;
 
@@ -55,15 +61,21 @@ struct ceph_auth_client_ops {
 	 */
 	int (*create_authorizer)(struct ceph_auth_client *ac, int peer_type,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 struct ceph_authorizer **a,
 				 void **buf, size_t *len,
 				 void **reply_buf, size_t *reply_len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				 struct ceph_auth_handshake *auth);
 	/* ensure that an existing authorizer is up to date */
 	int (*update_authorizer)(struct ceph_auth_client *ac, int peer_type,
 				 struct ceph_auth_handshake *auth);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int (*verify_authorizer_reply)(struct ceph_auth_client *ac,
 				       struct ceph_authorizer *a, size_t len);
 	void (*destroy_authorizer)(struct ceph_auth_client *ac,
@@ -88,10 +100,15 @@ struct ceph_auth_client {
 	const struct ceph_crypto_key *key;     /* our secret key */
 	unsigned want_keys;     /* which services we want */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	struct mutex mutex;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	struct mutex mutex;
+>>>>>>> refs/remotes/origin/master
 };
 
 extern struct ceph_auth_client *ceph_auth_init(const char *name,
@@ -112,7 +129,10 @@ extern int ceph_build_auth(struct ceph_auth_client *ac,
 
 extern int ceph_auth_is_authenticated(struct ceph_auth_client *ac);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern int ceph_auth_create_authorizer(struct ceph_auth_client *ac,
 				       int peer_type,
 				       struct ceph_auth_handshake *auth);
@@ -126,6 +146,9 @@ extern int ceph_auth_verify_authorizer_reply(struct ceph_auth_client *ac,
 					     size_t len);
 extern void ceph_auth_invalidate_authorizer(struct ceph_auth_client *ac,
 					    int peer_type);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

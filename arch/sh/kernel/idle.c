@@ -17,6 +17,7 @@
 #include <linux/irqflags.h>
 #include <linux/smp.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/pgalloc.h>
 #include <asm/system.h>
 #include <asm/atomic.h>
@@ -24,12 +25,15 @@
 
 void (*pm_idle)(void) = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/cpuidle.h>
 #include <linux/atomic.h>
 #include <asm/pgalloc.h>
 #include <asm/smp.h>
 #include <asm/bl_bit.h>
 
+<<<<<<< HEAD
 void (*pm_idle)(void);
 >>>>>>> refs/remotes/origin/cm-10.0
 
@@ -140,6 +144,28 @@ void cpu_idle(void)
 		schedule_preempt_disabled();
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+static void (*sh_idle)(void);
+
+void default_idle(void)
+{
+	set_bl_bit();
+	local_irq_enable();
+	/* Isn't this racy ? */
+	cpu_sleep();
+	clear_bl_bit();
+}
+
+void arch_cpu_idle_dead(void)
+{
+	play_dead();
+}
+
+void arch_cpu_idle(void)
+{
+	if (cpuidle_idle_call())
+		sh_idle();
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init select_idle_routine(void)
@@ -147,6 +173,7 @@ void __init select_idle_routine(void)
 	/*
 	 * If a platform has set its own idle routine, leave it alone.
 	 */
+<<<<<<< HEAD
 	if (pm_idle)
 		return;
 
@@ -158,6 +185,10 @@ void __init select_idle_routine(void)
 
 static void do_nothing(void *unused)
 {
+=======
+	if (!sh_idle)
+		sh_idle = default_idle;
+>>>>>>> refs/remotes/origin/master
 }
 
 void stop_this_cpu(void *unused)
@@ -168,6 +199,7 @@ void stop_this_cpu(void *unused)
 	for (;;)
 		cpu_sleep();
 }
+<<<<<<< HEAD
 
 /*
  * cpu_idle_wait - Used to ensure that all the CPUs discard old value of
@@ -184,3 +216,5 @@ void cpu_idle_wait(void)
 	smp_call_function(do_nothing, NULL, 1);
 }
 EXPORT_SYMBOL_GPL(cpu_idle_wait);
+=======
+>>>>>>> refs/remotes/origin/master

@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2006 - 2009 Intel Corporation.  All rights reserved.
 =======
  * Copyright (c) 2006 - 2011 Intel Corporation.  All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2006 - 2011 Intel Corporation.  All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This software is available to you under a choice of one of two
  * licenses.  You may choose to be licensed under the terms of the GNU
@@ -39,10 +43,14 @@
 #define TCPOPT_TIMESTAMP 8
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/skbuff.h>
 #include <linux/ip.h>
 #include <linux/tcp.h>
@@ -86,6 +94,7 @@ atomic_t cm_accel_dropped_pkts;
 atomic_t cm_resets_recvd;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int mini_cm_accelerated(struct nes_cm_core *,
 	struct nes_cm_node *);
 static struct nes_cm_listener *mini_cm_listen(struct nes_cm_core *,
@@ -101,6 +110,8 @@ static int mini_cm_reject(struct nes_cm_core *, struct ietf_mpa_frame *,
 static int mini_cm_recv_pkt(struct nes_cm_core *, struct nes_vnic *,
 	struct sk_buff *);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int mini_cm_accelerated(struct nes_cm_core *, struct nes_cm_node *);
 static struct nes_cm_listener *mini_cm_listen(struct nes_cm_core *, struct nes_vnic *, struct nes_cm_info *);
 static int mini_cm_del_listen(struct nes_cm_core *, struct nes_cm_listener *);
@@ -109,17 +120,24 @@ static int mini_cm_close(struct nes_cm_core *, struct nes_cm_node *);
 static int mini_cm_accept(struct nes_cm_core *, struct nes_cm_node *);
 static int mini_cm_reject(struct nes_cm_core *, struct nes_cm_node *);
 static int mini_cm_recv_pkt(struct nes_cm_core *, struct nes_vnic *, struct sk_buff *);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int mini_cm_dealloc_core(struct nes_cm_core *);
 static int mini_cm_get(struct nes_cm_core *);
 static int mini_cm_set(struct nes_cm_core *, u32, u32);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void form_cm_frame(struct sk_buff *, struct nes_cm_node *,
 	void *, u32, void *, u32, u8);
 =======
 static void form_cm_frame(struct sk_buff *, struct nes_cm_node *, void *, u32, void *, u32, u8);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void form_cm_frame(struct sk_buff *, struct nes_cm_node *, void *, u32, void *, u32, u8);
+>>>>>>> refs/remotes/origin/master
 static int add_ref_cm_node(struct nes_cm_node *);
 static int rem_ref_cm_node(struct nes_cm_core *, struct nes_cm_node *);
 
@@ -135,11 +153,15 @@ static int send_reset(struct nes_cm_node *, struct sk_buff *);
 static int send_ack(struct nes_cm_node *cm_node, struct sk_buff *skb);
 static int send_fin(struct nes_cm_node *cm_node, struct sk_buff *skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void process_packet(struct nes_cm_node *, struct sk_buff *,
 	struct nes_cm_core *);
 =======
 static void process_packet(struct nes_cm_node *, struct sk_buff *, struct nes_cm_core *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void process_packet(struct nes_cm_node *, struct sk_buff *, struct nes_cm_core *);
+>>>>>>> refs/remotes/origin/master
 
 static void active_open_err(struct nes_cm_node *, struct sk_buff *, int);
 static void passive_open_err(struct nes_cm_node *, struct sk_buff *, int);
@@ -147,11 +169,15 @@ static void cleanup_retrans_entry(struct nes_cm_node *);
 static void handle_rcv_mpa(struct nes_cm_node *, struct sk_buff *);
 static void free_retrans_entry(struct nes_cm_node *cm_node);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int handle_tcp_options(struct nes_cm_node *cm_node, struct tcphdr *tcph,
 	struct sk_buff *skb, int optionsize, int passive);
 =======
 static int handle_tcp_options(struct nes_cm_node *cm_node, struct tcphdr *tcph, struct sk_buff *skb, int optionsize, int passive);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int handle_tcp_options(struct nes_cm_node *cm_node, struct tcphdr *tcph, struct sk_buff *skb, int optionsize, int passive);
+>>>>>>> refs/remotes/origin/master
 
 /* CM event handler functions */
 static void cm_event_connected(struct nes_cm_event *);
@@ -162,14 +188,20 @@ static void cm_event_mpa_reject(struct nes_cm_event *);
 static void handle_recv_entry(struct nes_cm_node *cm_node, u32 rem_node);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* MPA build functions */
 static int cm_build_mpa_frame(struct nes_cm_node *, u8 **, u16 *, u8 *, u8);
 static void build_mpa_v2(struct nes_cm_node *, void *, u8);
 static void build_mpa_v1(struct nes_cm_node *, void *, u8);
 static void build_rdma0_msg(struct nes_cm_node *, struct nes_qp **);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void print_core(struct nes_cm_core *core);
 
 /* External CM API Interface */
@@ -200,7 +232,10 @@ atomic_t cm_connect_reqs;
 atomic_t cm_rejects;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int nes_add_ref_cm_node(struct nes_cm_node *cm_node)
 {
 	return add_ref_cm_node(cm_node);
@@ -210,11 +245,15 @@ int nes_rem_ref_cm_node(struct nes_cm_node *cm_node)
 {
 	return rem_ref_cm_node(cm_node->cm_core, cm_node);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * create_event
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct nes_cm_event *create_event(struct nes_cm_node *cm_node,
 		enum nes_cm_event_type type)
@@ -222,6 +261,10 @@ static struct nes_cm_event *create_event(struct nes_cm_node *cm_node,
 static struct nes_cm_event *create_event(struct nes_cm_node *	cm_node,
 					 enum nes_cm_event_type type)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct nes_cm_event *create_event(struct nes_cm_node *	cm_node,
+					 enum nes_cm_event_type type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nes_cm_event *event;
 
@@ -244,16 +287,22 @@ static struct nes_cm_event *create_event(struct nes_cm_node *	cm_node,
 
 	nes_debug(NES_DBG_CM, "cm_node=%p Created event=%p, type=%u, "
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"dst_addr=%08x[%x], src_addr=%08x[%x]\n",
 		cm_node, event, type, event->cm_info.loc_addr,
 		event->cm_info.loc_port, event->cm_info.rem_addr,
 		event->cm_info.rem_port);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		  "dst_addr=%08x[%x], src_addr=%08x[%x]\n",
 		  cm_node, event, type, event->cm_info.loc_addr,
 		  event->cm_info.loc_port, event->cm_info.rem_addr,
 		  event->cm_info.rem_port);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	nes_cm_post_event(event);
 	return event;
@@ -266,13 +315,19 @@ static struct nes_cm_event *create_event(struct nes_cm_node *	cm_node,
 static int send_mpa_request(struct nes_cm_node *cm_node, struct sk_buff *skb)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 start_addr = 0;
 	u8 *start_ptr = &start_addr;
 	u8 **start_buff = &start_ptr;
 	u16 buff_len = 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!skb) {
 		nes_debug(NES_DBG_CM, "skb set to NULL\n");
 		return -1;
@@ -280,12 +335,17 @@ static int send_mpa_request(struct nes_cm_node *cm_node, struct sk_buff *skb)
 
 	/* send an MPA Request frame */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	form_cm_frame(skb, cm_node, NULL, 0, &cm_node->mpa_frame,
 			cm_node->mpa_frame_size, SET_ACK);
 =======
 	cm_build_mpa_frame(cm_node, start_buff, &buff_len, NULL, MPA_KEY_REQUEST);
 	form_cm_frame(skb, cm_node, NULL, 0, *start_buff, buff_len, SET_ACK);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cm_build_mpa_frame(cm_node, start_buff, &buff_len, NULL, MPA_KEY_REQUEST);
+	form_cm_frame(skb, cm_node, NULL, 0, *start_buff, buff_len, SET_ACK);
+>>>>>>> refs/remotes/origin/master
 
 	return schedule_nes_timer(cm_node, skb, NES_TIMER_TYPE_SEND, 1, 0);
 }
@@ -295,15 +355,21 @@ static int send_mpa_request(struct nes_cm_node *cm_node, struct sk_buff *skb)
 static int send_mpa_reject(struct nes_cm_node *cm_node)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sk_buff  *skb = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *skb = NULL;
 	u8 start_addr = 0;
 	u8 *start_ptr = &start_addr;
 	u8 **start_buff = &start_ptr;
 	u16 buff_len = 0;
 	struct ietf_mpa_v1 *mpa_frame;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	skb = dev_alloc_skb(MAX_CM_BUFFER);
 	if (!skb) {
@@ -313,14 +379,20 @@ static int send_mpa_reject(struct nes_cm_node *cm_node)
 
 	/* send an MPA reject frame */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	form_cm_frame(skb, cm_node, NULL, 0, &cm_node->mpa_frame,
 			cm_node->mpa_frame_size, SET_ACK | SET_FIN);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	cm_build_mpa_frame(cm_node, start_buff, &buff_len, NULL, MPA_KEY_REPLY);
 	mpa_frame = (struct ietf_mpa_v1 *)*start_buff;
 	mpa_frame->flags |= IETF_MPA_FLAGS_REJECT;
 	form_cm_frame(skb, cm_node, NULL, 0, *start_buff, buff_len, SET_ACK | SET_FIN);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cm_node->state = NES_CM_STATE_FIN_WAIT1;
 	return schedule_nes_timer(cm_node, skb, NES_TIMER_TYPE_SEND, 1, 0);
@@ -333,10 +405,13 @@ static int send_mpa_reject(struct nes_cm_node *cm_node)
  */
 static int parse_mpa(struct nes_cm_node *cm_node, u8 *buffer, u32 *type,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		u32 len)
 {
 	struct ietf_mpa_frame *mpa_frame;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		     u32 len)
 {
 	struct ietf_mpa_v1 *mpa_frame;
@@ -344,20 +419,28 @@ static int parse_mpa(struct nes_cm_node *cm_node, u8 *buffer, u32 *type,
 	struct ietf_rtr_msg *rtr_msg;
 	int mpa_hdr_len;
 	int priv_data_len;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	*type = NES_MPA_REQUEST_ACCEPT;
 
 	/* assume req frame is in tcp data payload */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (len < sizeof(struct ietf_mpa_frame)) {
 =======
 	if (len < sizeof(struct ietf_mpa_v1)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (len < sizeof(struct ietf_mpa_v1)) {
+>>>>>>> refs/remotes/origin/master
 		nes_debug(NES_DBG_CM, "The received ietf buffer was too small (%x)\n", len);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mpa_frame = (struct ietf_mpa_frame *)buffer;
 	cm_node->mpa_frame_size = ntohs(mpa_frame->priv_data_len);
@@ -366,6 +449,8 @@ static int parse_mpa(struct nes_cm_node *cm_node, u8 *buffer, u32 *type,
 		nes_debug(NES_DBG_CM, "The received Length of Private"
 			" Data field exceeds 512 octets\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* points to the beginning of the frame, which could be MPA V1 or V2 */
 	mpa_frame = (struct ietf_mpa_v1 *)buffer;
 	mpa_hdr_len = sizeof(struct ietf_mpa_v1);
@@ -375,7 +460,10 @@ static int parse_mpa(struct nes_cm_node *cm_node, u8 *buffer, u32 *type,
 	if (priv_data_len > IETF_MAX_PRIV_DATA_LEN) {
 		nes_debug(NES_DBG_CM, "The received Length of Private"
 			  " Data field exceeds 512 octets\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	/*
@@ -384,12 +472,15 @@ static int parse_mpa(struct nes_cm_node *cm_node, u8 *buffer, u32 *type,
 	 *
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mpa_frame->rev != mpa_version) {
 		nes_debug(NES_DBG_CM, "The received mpa version"
 				" can not be interoperated\n");
 		return -EINVAL;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (mpa_frame->rev != IETF_MPA_V1 && mpa_frame->rev != IETF_MPA_V2) {
 		nes_debug(NES_DBG_CM, "The received mpa version"
 			  " is not supported\n");
@@ -406,7 +497,10 @@ static int parse_mpa(struct nes_cm_node *cm_node, u8 *buffer, u32 *type,
 		cm_node->mpa_frame_rev = mpa_frame->rev;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cm_node->state != NES_CM_STATE_MPAREQ_SENT) {
 		if (memcmp(mpa_frame->key, IEFT_MPA_KEY_REQ, IETF_MPA_KEY_SIZE)) {
 			nes_debug(NES_DBG_CM, "Unexpected MPA Key received \n");
@@ -420,23 +514,30 @@ static int parse_mpa(struct nes_cm_node *cm_node, u8 *buffer, u32 *type,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cm_node->mpa_frame_size + sizeof(struct ietf_mpa_frame) != len) {
 		nes_debug(NES_DBG_CM, "The received ietf buffer was not right"
 				" complete (%x + %x != %x)\n",
 				cm_node->mpa_frame_size,
 				(u32)sizeof(struct ietf_mpa_frame), len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (priv_data_len + mpa_hdr_len != len) {
 		nes_debug(NES_DBG_CM, "The received ietf buffer was not right"
 			" complete (%x + %x != %x)\n",
 			priv_data_len, mpa_hdr_len, len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	/* make sure it does not exceed the max size */
 	if (len > MAX_CM_BUFFER) {
 		nes_debug(NES_DBG_CM, "The received ietf buffer was too large"
+<<<<<<< HEAD
 <<<<<<< HEAD
 				" (%x + %x != %x)\n",
 				cm_node->mpa_frame_size,
@@ -448,6 +549,8 @@ static int parse_mpa(struct nes_cm_node *cm_node, u8 *buffer, u32 *type,
 	memcpy(cm_node->mpa_frame_buf, buffer + sizeof(struct ietf_mpa_frame),
 			cm_node->mpa_frame_size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			" (%x + %x != %x)\n",
 			priv_data_len, mpa_hdr_len, len);
 		return -EINVAL;
@@ -510,7 +613,10 @@ static int parse_mpa(struct nes_cm_node *cm_node, u8 *buffer, u32 *type,
 
 	/* copy entire MPA frame to our cm_node's frame */
 	memcpy(cm_node->mpa_frame_buf, buffer + mpa_hdr_len, cm_node->mpa_frame_size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (mpa_frame->flags & IETF_MPA_FLAGS_REJECT)
 		*type = NES_MPA_REQUEST_REJECT;
@@ -524,12 +630,17 @@ static int parse_mpa(struct nes_cm_node *cm_node, u8 *buffer, u32 *type,
  */
 static void form_cm_frame(struct sk_buff *skb,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nes_cm_node *cm_node, void *options, u32 optionsize,
 	void *data, u32 datasize, u8 flags)
 =======
 			  struct nes_cm_node *cm_node, void *options, u32 optionsize,
 			  void *data, u32 datasize, u8 flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  struct nes_cm_node *cm_node, void *options, u32 optionsize,
+			  void *data, u32 datasize, u8 flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tcphdr *tcph;
 	struct iphdr *iph;
@@ -538,6 +649,7 @@ static void form_cm_frame(struct sk_buff *skb,
 	u16 packetsize = sizeof(*iph);
 
 	packetsize += sizeof(*tcph);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	packetsize +=  optionsize + datasize;
 
@@ -548,6 +660,8 @@ static void form_cm_frame(struct sk_buff *skb,
 
 	ethh = (struct ethhdr *) buf;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	packetsize += optionsize + datasize;
 
 	skb_trim(skb, 0);
@@ -556,7 +670,10 @@ static void form_cm_frame(struct sk_buff *skb,
 	buf = skb_put(skb, packetsize + ETH_HLEN);
 
 	ethh = (struct ethhdr *)buf;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	buf += ETH_HLEN;
 
 	iph = (struct iphdr *)buf;
@@ -565,6 +682,7 @@ static void form_cm_frame(struct sk_buff *skb,
 	skb_reset_mac_header(skb);
 	skb_set_network_header(skb, ETH_HLEN);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skb_set_transport_header(skb, ETH_HLEN+sizeof(*iph));
 =======
 	skb_set_transport_header(skb, ETH_HLEN + sizeof(*iph));
@@ -572,6 +690,14 @@ static void form_cm_frame(struct sk_buff *skb,
 	buf += sizeof(*tcph);
 
 	skb->ip_summed = CHECKSUM_PARTIAL;
+=======
+	skb_set_transport_header(skb, ETH_HLEN + sizeof(*iph));
+	buf += sizeof(*tcph);
+
+	skb->ip_summed = CHECKSUM_PARTIAL;
+	if (!(cm_node->netdev->features & NETIF_F_IP_CSUM))
+		skb->ip_summed = CHECKSUM_NONE;
+>>>>>>> refs/remotes/origin/master
 	skb->protocol = htons(0x800);
 	skb->data_len = 0;
 	skb->mac_len = ETH_HLEN;
@@ -582,10 +708,14 @@ static void form_cm_frame(struct sk_buff *skb,
 
 	iph->version = IPVERSION;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iph->ihl = 5;		/* 5 * 4Byte words, IP headr len */
 =======
 	iph->ihl = 5;           /* 5 * 4Byte words, IP headr len */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iph->ihl = 5;           /* 5 * 4Byte words, IP headr len */
+>>>>>>> refs/remotes/origin/master
 	iph->tos = 0;
 	iph->tot_len = htons(packetsize);
 	iph->id = htons(++cm_node->tcp_cntxt.loc_id);
@@ -593,10 +723,14 @@ static void form_cm_frame(struct sk_buff *skb,
 	iph->frag_off = htons(0x4000);
 	iph->ttl = 0x40;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iph->protocol = 0x06;	/* IPPROTO_TCP */
 =======
 	iph->protocol = 0x06;   /* IPPROTO_TCP */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iph->protocol = 0x06;   /* IPPROTO_TCP */
+>>>>>>> refs/remotes/origin/master
 
 	iph->saddr = htonl(cm_node->loc_addr);
 	iph->daddr = htonl(cm_node->rem_addr);
@@ -610,6 +744,7 @@ static void form_cm_frame(struct sk_buff *skb,
 		tcph->ack_seq = htonl(cm_node->tcp_cntxt.loc_ack_num);
 		tcph->ack = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else
 		tcph->ack_seq = 0;
 =======
@@ -617,10 +752,16 @@ static void form_cm_frame(struct sk_buff *skb,
 		tcph->ack_seq = 0;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else {
+		tcph->ack_seq = 0;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (flags & SET_SYN) {
 		cm_node->tcp_cntxt.loc_seq_num++;
 		tcph->syn = 1;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	} else
 		cm_node->tcp_cntxt.loc_seq_num += datasize;
@@ -629,6 +770,11 @@ static void form_cm_frame(struct sk_buff *skb,
 		cm_node->tcp_cntxt.loc_seq_num += datasize;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else {
+		cm_node->tcp_cntxt.loc_seq_num += datasize;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (flags & SET_FIN) {
 		cm_node->tcp_cntxt.loc_seq_num++;
@@ -650,6 +796,7 @@ static void form_cm_frame(struct sk_buff *skb,
 	skb_shinfo(skb)->nr_frags = 0;
 	cm_packets_created++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 }
 
@@ -658,6 +805,10 @@ static void form_cm_frame(struct sk_buff *skb,
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * print_core - dump a cm core
  */
@@ -670,10 +821,14 @@ static void print_core(struct nes_cm_core *core)
 	nes_debug(NES_DBG_CM, "---------------------------------------------\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nes_debug(NES_DBG_CM, "State         : %u \n",  core->state);
 =======
 	nes_debug(NES_DBG_CM, "State         : %u \n", core->state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nes_debug(NES_DBG_CM, "State         : %u \n", core->state);
+>>>>>>> refs/remotes/origin/master
 
 	nes_debug(NES_DBG_CM, "Listen Nodes  : %u \n", atomic_read(&core->listen_node_cnt));
 	nes_debug(NES_DBG_CM, "Active Nodes  : %u \n", atomic_read(&core->node_cnt));
@@ -684,7 +839,10 @@ static void print_core(struct nes_cm_core *core)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * cm_build_mpa_frame - build a MPA V1 frame or MPA V2 frame
  */
@@ -800,11 +958,17 @@ static void build_rdma0_msg(struct nes_cm_node *cm_node, struct nes_qp **nesqp_a
 
 	case SEND_RDMA_READ_ZERO:
 	default:
+<<<<<<< HEAD
 		if (cm_node->send_rdma0_op != SEND_RDMA_READ_ZERO) {
 			printk(KERN_ERR "%s[%u]: Unsupported RDMA0 len operation=%u\n",
 				 __func__, __LINE__, cm_node->send_rdma0_op);
 			WARN_ON(1);
 		}
+=======
+		if (cm_node->send_rdma0_op != SEND_RDMA_READ_ZERO)
+			WARN(1, "Unsupported RDMA0 len operation=%u\n",
+			     cm_node->send_rdma0_op);
+>>>>>>> refs/remotes/origin/master
 		nes_debug(NES_DBG_CM, "Sending first rdma operation.\n");
 		wqe->wqe_words[NES_IWARP_SQ_WQE_MISC_IDX] =
 			cpu_to_le32(NES_IWARP_SQ_OP_RDMAR);
@@ -828,7 +992,10 @@ static void build_rdma0_msg(struct nes_cm_node *cm_node, struct nes_qp **nesqp_a
 	nesqp->skip_lsmm = 1;
 	nesqp->hwqp.sq_tail = 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * schedule_nes_timer
@@ -837,20 +1004,29 @@ static void build_rdma0_msg(struct nes_cm_node *cm_node, struct nes_qp **nesqp_a
  */
 int schedule_nes_timer(struct nes_cm_node *cm_node, struct sk_buff *skb,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		enum nes_timer_type type, int send_retrans,
 		int close_when_complete)
 {
 	unsigned long  flags;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		       enum nes_timer_type type, int send_retrans,
 		       int close_when_complete)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct nes_cm_core *cm_core = cm_node->cm_core;
 	struct nes_timer_entry *new_send;
 	int ret = 0;
 	u32 was_timer_set;
+=======
+	struct nes_cm_core *cm_core = cm_node->cm_core;
+	struct nes_timer_entry *new_send;
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 
 	new_send = kzalloc(sizeof(*new_send), GFP_ATOMIC);
 	if (!new_send)
@@ -868,10 +1044,14 @@ int schedule_nes_timer(struct nes_cm_node *cm_node, struct sk_buff *skb,
 
 	if (type == NES_TIMER_TYPE_CLOSE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		new_send->timetosend += (HZ/10);
 =======
 		new_send->timetosend += (HZ / 10);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		new_send->timetosend += (HZ / 10);
+>>>>>>> refs/remotes/origin/master
 		if (cm_node->recv_entry) {
 			kfree(new_send);
 			WARN_ON(1);
@@ -893,10 +1073,14 @@ int schedule_nes_timer(struct nes_cm_node *cm_node, struct sk_buff *skb,
 		if (ret != NETDEV_TX_OK) {
 			nes_debug(NES_DBG_CM, "Error sending packet %p "
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"(jiffies = %lu)\n", new_send, jiffies);
 =======
 				  "(jiffies = %lu)\n", new_send, jiffies);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  "(jiffies = %lu)\n", new_send, jiffies);
+>>>>>>> refs/remotes/origin/master
 			new_send->timetosend = jiffies;
 			ret = NETDEV_TX_OK;
 		} else {
@@ -910,12 +1094,17 @@ int schedule_nes_timer(struct nes_cm_node *cm_node, struct sk_buff *skb,
 		}
 	}
 
+<<<<<<< HEAD
 	was_timer_set = timer_pending(&cm_core->tcp_timer);
 
 	if (!was_timer_set) {
 		cm_core->tcp_timer.expires = new_send->timetosend;
 		add_timer(&cm_core->tcp_timer);
 	}
+=======
+	if (!timer_pending(&cm_core->tcp_timer))
+		mod_timer(&cm_core->tcp_timer, new_send->timetosend);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -926,9 +1115,13 @@ static void nes_retrans_expired(struct nes_cm_node *cm_node)
 	enum nes_cm_node_state state = cm_node->state;
 	cm_node->state = NES_CM_STATE_CLOSED;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	switch (state) {
 	case NES_CM_STATE_SYN_RCVD:
 	case NES_CM_STATE_CLOSING:
@@ -962,16 +1155,22 @@ static void handle_recv_entry(struct nes_cm_node *cm_node, u32 rem_node)
 		if (nesqp->cm_id) {
 			nes_debug(NES_DBG_CM, "QP%u: cm_id = %p, "
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"refcount = %d: HIT A "
 				"NES_TIMER_TYPE_CLOSE with something "
 				"to do!!!\n", nesqp->hwqp.qp_id, cm_id,
 				atomic_read(&nesqp->refcount));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				  "refcount = %d: HIT A "
 				  "NES_TIMER_TYPE_CLOSE with something "
 				  "to do!!!\n", nesqp->hwqp.qp_id, cm_id,
 				  atomic_read(&nesqp->refcount));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			nesqp->hw_tcp_state = NES_AEQE_TCP_STATE_CLOSED;
 			nesqp->last_aeq = NES_AEQE_AEID_RESET_SENT;
 			nesqp->ibqp_state = IB_QPS_ERR;
@@ -981,16 +1180,22 @@ static void handle_recv_entry(struct nes_cm_node *cm_node, u32 rem_node)
 			spin_unlock_irqrestore(&nesqp->lock, qplockflags);
 			nes_debug(NES_DBG_CM, "QP%u: cm_id = %p, "
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"refcount = %d: HIT A "
 				"NES_TIMER_TYPE_CLOSE with nothing "
 				"to do!!!\n", nesqp->hwqp.qp_id, cm_id,
 				atomic_read(&nesqp->refcount));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				  "refcount = %d: HIT A "
 				  "NES_TIMER_TYPE_CLOSE with nothing "
 				  "to do!!!\n", nesqp->hwqp.qp_id, cm_id,
 				  atomic_read(&nesqp->refcount));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	} else if (rem_node) {
 		/* TIME_WAIT state */
@@ -1020,18 +1225,26 @@ static void nes_cm_timer_tick(unsigned long pass)
 
 	struct list_head timer_list;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&timer_list);
 	spin_lock_irqsave(&cm_core->ht_lock, flags);
 
 	list_for_each_safe(list_node, list_core_temp,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				&cm_core->connected_nodes) {
 =======
 			   &cm_core->connected_nodes) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   &cm_core->connected_nodes) {
+>>>>>>> refs/remotes/origin/master
 		cm_node = container_of(list_node, struct nes_cm_node, list);
 		if ((cm_node->recv_entry) || (cm_node->send_entry)) {
 			add_ref_cm_node(cm_node);
@@ -1043,15 +1256,20 @@ static void nes_cm_timer_tick(unsigned long pass)
 	list_for_each_safe(list_node, list_core_temp, &timer_list) {
 		cm_node = container_of(list_node, struct nes_cm_node,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					timer_entry);
 =======
 				       timer_entry);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       timer_entry);
+>>>>>>> refs/remotes/origin/master
 		recv_entry = cm_node->recv_entry;
 
 		if (recv_entry) {
 			if (time_after(recv_entry->timetosend, jiffies)) {
 				if (nexttimeout > recv_entry->timetosend ||
+<<<<<<< HEAD
 <<<<<<< HEAD
 						!settimer) {
 					nexttimeout = recv_entry->timetosend;
@@ -1060,6 +1278,8 @@ static void nes_cm_timer_tick(unsigned long pass)
 			} else
 				handle_recv_entry(cm_node, 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				    !settimer) {
 					nexttimeout = recv_entry->timetosend;
 					settimer = 1;
@@ -1067,7 +1287,10 @@ static void nes_cm_timer_tick(unsigned long pass)
 			} else {
 				handle_recv_entry(cm_node, 1);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		spin_lock_irqsave(&cm_node->retrans_list_lock, flags);
@@ -1079,12 +1302,17 @@ static void nes_cm_timer_tick(unsigned long pass)
 				if (cm_node->state != NES_CM_STATE_TSA) {
 					if ((nexttimeout >
 <<<<<<< HEAD
+<<<<<<< HEAD
 						send_entry->timetosend) ||
 						!settimer) {
 =======
 					     send_entry->timetosend) ||
 					    !settimer) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					     send_entry->timetosend) ||
+					    !settimer) {
+>>>>>>> refs/remotes/origin/master
 						nexttimeout =
 							send_entry->timetosend;
 						settimer = 1;
@@ -1097,20 +1325,28 @@ static void nes_cm_timer_tick(unsigned long pass)
 
 			if ((cm_node->state == NES_CM_STATE_TSA) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 				(cm_node->state == NES_CM_STATE_CLOSED)) {
 =======
 			    (cm_node->state == NES_CM_STATE_CLOSED)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    (cm_node->state == NES_CM_STATE_CLOSED)) {
+>>>>>>> refs/remotes/origin/master
 				free_retrans_entry(cm_node);
 				break;
 			}
 
 			if (!send_entry->retranscount ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 				!send_entry->retrycount) {
 =======
 			    !send_entry->retrycount) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    !send_entry->retrycount) {
+>>>>>>> refs/remotes/origin/master
 				cm_packets_dropped++;
 				free_retrans_entry(cm_node);
 
@@ -1120,15 +1356,20 @@ static void nes_cm_timer_tick(unsigned long pass)
 				cm_node->state = NES_CM_STATE_CLOSED;
 				spin_lock_irqsave(&cm_node->retrans_list_lock,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					flags);
 =======
 						  flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						  flags);
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 			atomic_inc(&send_entry->skb->users);
 			cm_packets_retrans++;
 			nes_debug(NES_DBG_CM, "Retransmitting send_entry %p "
+<<<<<<< HEAD
 <<<<<<< HEAD
 				"for node %p, jiffies = %lu, time to send = "
 				"%lu, retranscount = %u, send_entry->seq_num = "
@@ -1142,6 +1383,8 @@ static void nes_cm_timer_tick(unsigned long pass)
 			spin_unlock_irqrestore(&cm_node->retrans_list_lock,
 				flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				  "for node %p, jiffies = %lu, time to send = "
 				  "%lu, retranscount = %u, send_entry->seq_num = "
 				  "0x%08X, cm_node->tcp_cntxt.rem_ack_num = "
@@ -1153,16 +1396,23 @@ static void nes_cm_timer_tick(unsigned long pass)
 
 			spin_unlock_irqrestore(&cm_node->retrans_list_lock,
 					       flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ret = nes_nic_cm_xmit(send_entry->skb, cm_node->netdev);
 			spin_lock_irqsave(&cm_node->retrans_list_lock, flags);
 			if (ret != NETDEV_TX_OK) {
 				nes_debug(NES_DBG_CM, "rexmit failed for "
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"node=%p\n", cm_node);
 =======
 					  "node=%p\n", cm_node);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  "node=%p\n", cm_node);
+>>>>>>> refs/remotes/origin/master
 				cm_packets_bounced++;
 				send_entry->retrycount--;
 				nexttimeout = jiffies + NES_SHORT_TIME;
@@ -1172,6 +1422,7 @@ static void nes_cm_timer_tick(unsigned long pass)
 				cm_packets_sent++;
 			}
 			nes_debug(NES_DBG_CM, "Packet Sent: retrans count = "
+<<<<<<< HEAD
 <<<<<<< HEAD
 				"%u, retry count = %u.\n",
 				send_entry->retranscount,
@@ -1186,6 +1437,8 @@ static void nes_cm_timer_tick(unsigned long pass)
 				if (nexttimeout > send_entry->timetosend ||
 					!settimer) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				  "%u, retry count = %u.\n",
 				  send_entry->retranscount,
 				  send_entry->retrycount);
@@ -1198,7 +1451,10 @@ static void nes_cm_timer_tick(unsigned long pass)
 							 min(timetosend, NES_MAX_TIMEOUT);
 				if (nexttimeout > send_entry->timetosend ||
 				    !settimer) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					nexttimeout = send_entry->timetosend;
 					settimer = 1;
 				}
@@ -1208,18 +1464,24 @@ static void nes_cm_timer_tick(unsigned long pass)
 					send_entry->close_when_complete;
 				nes_debug(NES_DBG_CM, "cm_node=%p state=%d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					cm_node, cm_node->state);
 				free_retrans_entry(cm_node);
 				if (close_when_complete)
 					rem_ref_cm_node(cm_node->cm_core,
 						cm_node);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					  cm_node, cm_node->state);
 				free_retrans_entry(cm_node);
 				if (close_when_complete)
 					rem_ref_cm_node(cm_node->cm_core,
 							cm_node);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		} while (0);
 
@@ -1228,6 +1490,7 @@ static void nes_cm_timer_tick(unsigned long pass)
 	}
 
 	if (settimer) {
+<<<<<<< HEAD
 		if (!timer_pending(&cm_core->tcp_timer)) {
 <<<<<<< HEAD
 			cm_core->tcp_timer.expires  = nexttimeout;
@@ -1236,6 +1499,10 @@ static void nes_cm_timer_tick(unsigned long pass)
 >>>>>>> refs/remotes/origin/cm-10.0
 			add_timer(&cm_core->tcp_timer);
 		}
+=======
+		if (!timer_pending(&cm_core->tcp_timer))
+			mod_timer(&cm_core->tcp_timer, nexttimeout);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1245,14 +1512,19 @@ static void nes_cm_timer_tick(unsigned long pass)
  */
 static int send_syn(struct nes_cm_node *cm_node, u32 sendack,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sk_buff *skb)
 =======
 		    struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	int flags = SET_SYN;
 	char optionsbuffer[sizeof(struct option_mss) +
+<<<<<<< HEAD
 <<<<<<< HEAD
 		sizeof(struct option_windowscale) + sizeof(struct option_base) +
 		TCP_OPTIONS_PADDING];
@@ -1260,6 +1532,10 @@ static int send_syn(struct nes_cm_node *cm_node, u32 sendack,
 			   sizeof(struct option_windowscale) + sizeof(struct option_base) +
 			   TCP_OPTIONS_PADDING];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   sizeof(struct option_windowscale) + sizeof(struct option_base) +
+			   TCP_OPTIONS_PADDING];
+>>>>>>> refs/remotes/origin/master
 
 	int optionssize = 0;
 	/* Sending MSS option */
@@ -1387,10 +1663,14 @@ static int send_fin(struct nes_cm_node *cm_node, struct sk_buff *skb)
  */
 static struct nes_cm_node *find_node(struct nes_cm_core *cm_core,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		u16 rem_port, nes_addr_t rem_addr, u16 loc_port, nes_addr_t loc_addr)
 =======
 				     u16 rem_port, nes_addr_t rem_addr, u16 loc_port, nes_addr_t loc_addr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     u16 rem_port, nes_addr_t rem_addr, u16 loc_port, nes_addr_t loc_addr)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	struct list_head *hte;
@@ -1405,6 +1685,7 @@ static struct nes_cm_node *find_node(struct nes_cm_core *cm_core,
 		/* compare quad, return node handle if a match */
 		nes_debug(NES_DBG_CM, "finding node %x:%x =? %x:%x ^ %x:%x =? %x:%x\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				cm_node->loc_addr, cm_node->loc_port,
 				loc_addr, loc_port,
 				cm_node->rem_addr, cm_node->rem_port,
@@ -1412,13 +1693,18 @@ static struct nes_cm_node *find_node(struct nes_cm_core *cm_core,
 		if ((cm_node->loc_addr == loc_addr) && (cm_node->loc_port == loc_port) &&
 				(cm_node->rem_addr == rem_addr) && (cm_node->rem_port == rem_port)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			  cm_node->loc_addr, cm_node->loc_port,
 			  loc_addr, loc_port,
 			  cm_node->rem_addr, cm_node->rem_port,
 			  rem_addr, rem_port);
 		if ((cm_node->loc_addr == loc_addr) && (cm_node->loc_port == loc_port) &&
 		    (cm_node->rem_addr == rem_addr) && (cm_node->rem_port == rem_port)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			add_ref_cm_node(cm_node);
 			spin_unlock_irqrestore(&cm_core->ht_lock, flags);
 			return cm_node;
@@ -1436,10 +1722,14 @@ static struct nes_cm_node *find_node(struct nes_cm_core *cm_core,
  */
 static struct nes_cm_listener *find_listener(struct nes_cm_core *cm_core,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		nes_addr_t dst_addr, u16 dst_port, enum nes_cm_listener_state listener_state)
 =======
 					     nes_addr_t dst_addr, u16 dst_port, enum nes_cm_listener_state listener_state)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					     nes_addr_t dst_addr, u16 dst_port, enum nes_cm_listener_state listener_state)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	struct nes_cm_listener *listen_node;
@@ -1450,6 +1740,7 @@ static struct nes_cm_listener *find_listener(struct nes_cm_core *cm_core,
 		/* compare node pair, return node handle if a match */
 		if (((listen_node->loc_addr == dst_addr) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 				listen_node->loc_addr == 0x00000000) &&
 				(listen_node->loc_port == dst_port) &&
 				(listener_state & listen_node->listener_state)) {
@@ -1458,6 +1749,11 @@ static struct nes_cm_listener *find_listener(struct nes_cm_core *cm_core,
 		    (listen_node->loc_port == dst_port) &&
 		    (listener_state & listen_node->listener_state)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     listen_node->loc_addr == 0x00000000) &&
+		    (listen_node->loc_port == dst_port) &&
+		    (listener_state & listen_node->listener_state)) {
+>>>>>>> refs/remotes/origin/master
 			atomic_inc(&listen_node->ref_count);
 			spin_unlock_irqrestore(&cm_core->listen_list_lock, flags);
 			return listen_node;
@@ -1483,10 +1779,14 @@ static int add_hte_node(struct nes_cm_core *cm_core, struct nes_cm_node *cm_node
 
 	nes_debug(NES_DBG_CM, "Adding Node %p to Active Connection HT\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cm_node);
 =======
 		  cm_node);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  cm_node);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&cm_core->ht_lock, flags);
 
@@ -1506,10 +1806,14 @@ static int add_hte_node(struct nes_cm_core *cm_core, struct nes_cm_node *cm_node
  */
 static int mini_cm_dec_refcnt_listen(struct nes_cm_core *cm_core,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nes_cm_listener *listener, int free_hanging_nodes)
 =======
 				     struct nes_cm_listener *listener, int free_hanging_nodes)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     struct nes_cm_listener *listener, int free_hanging_nodes)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = -EINVAL;
 	int err = 0;
@@ -1521,12 +1825,17 @@ static int mini_cm_dec_refcnt_listen(struct nes_cm_core *cm_core,
 
 	nes_debug(NES_DBG_CM, "attempting listener= %p free_nodes= %d, "
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"refcnt=%d\n", listener, free_hanging_nodes,
 		atomic_read(&listener->ref_count));
 =======
 		  "refcnt=%d\n", listener, free_hanging_nodes,
 		  atomic_read(&listener->ref_count));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  "refcnt=%d\n", listener, free_hanging_nodes,
+		  atomic_read(&listener->ref_count));
+>>>>>>> refs/remotes/origin/master
 	/* free non-accelerated child nodes for this listener */
 	INIT_LIST_HEAD(&reset_list);
 	if (free_hanging_nodes) {
@@ -1535,10 +1844,14 @@ static int mini_cm_dec_refcnt_listen(struct nes_cm_core *cm_core,
 				   &g_cm_core->connected_nodes) {
 			cm_node = container_of(list_pos, struct nes_cm_node,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				list);
 =======
 					       list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					       list);
+>>>>>>> refs/remotes/origin/master
 			if ((cm_node->listener == listener) &&
 			    (!cm_node->accelerated)) {
 				add_ref_cm_node(cm_node);
@@ -1551,10 +1864,14 @@ static int mini_cm_dec_refcnt_listen(struct nes_cm_core *cm_core,
 	list_for_each_safe(list_pos, list_temp, &reset_list) {
 		cm_node = container_of(list_pos, struct nes_cm_node,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				reset_entry);
 =======
 				       reset_entry);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       reset_entry);
+>>>>>>> refs/remotes/origin/master
 		{
 			struct nes_cm_node *loopback = cm_node->loopbackpartner;
 			enum nes_cm_node_state old_state;
@@ -1567,10 +1884,14 @@ static int mini_cm_dec_refcnt_listen(struct nes_cm_core *cm_core,
 					if (err) {
 						cm_node->state =
 <<<<<<< HEAD
+<<<<<<< HEAD
 							 NES_CM_STATE_CLOSED;
 =======
 							NES_CM_STATE_CLOSED;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+							NES_CM_STATE_CLOSED;
+>>>>>>> refs/remotes/origin/master
 						WARN_ON(1);
 					} else {
 						old_state = cm_node->state;
@@ -1616,6 +1937,7 @@ static int mini_cm_dec_refcnt_listen(struct nes_cm_core *cm_core,
 		spin_unlock_irqrestore(&cm_core->listen_list_lock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (listener->nesvnic) {
 			nes_manage_apbvt(listener->nesvnic, listener->loc_port,
 					PCI_FUNC(listener->nesvnic->nesdev->pcidev->devfn), NES_MANAGE_APBVT_DEL);
@@ -1625,6 +1947,11 @@ static int mini_cm_dec_refcnt_listen(struct nes_cm_core *cm_core,
 			nes_manage_apbvt(listener->nesvnic, listener->loc_port,
 					 PCI_FUNC(listener->nesvnic->nesdev->pcidev->devfn), NES_MANAGE_APBVT_DEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (listener->nesvnic)
+			nes_manage_apbvt(listener->nesvnic, listener->loc_port,
+					 PCI_FUNC(listener->nesvnic->nesdev->pcidev->devfn), NES_MANAGE_APBVT_DEL);
+>>>>>>> refs/remotes/origin/master
 
 		nes_debug(NES_DBG_CM, "destroying listener (%p)\n", listener);
 
@@ -1639,12 +1966,17 @@ static int mini_cm_dec_refcnt_listen(struct nes_cm_core *cm_core,
 		if (atomic_read(&listener->pend_accepts_cnt) > 0)
 			nes_debug(NES_DBG_CM, "destroying listener (%p)"
 <<<<<<< HEAD
+<<<<<<< HEAD
 					" with non-zero pending accepts=%u\n",
 					listener, atomic_read(&listener->pend_accepts_cnt));
 =======
 				  " with non-zero pending accepts=%u\n",
 				  listener, atomic_read(&listener->pend_accepts_cnt));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  " with non-zero pending accepts=%u\n",
+				  listener, atomic_read(&listener->pend_accepts_cnt));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -1656,10 +1988,14 @@ static int mini_cm_dec_refcnt_listen(struct nes_cm_core *cm_core,
  */
 static int mini_cm_del_listen(struct nes_cm_core *cm_core,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct nes_cm_listener *listener)
 =======
 			      struct nes_cm_listener *listener)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      struct nes_cm_listener *listener)
+>>>>>>> refs/remotes/origin/master
 {
 	listener->listener_state = NES_CM_LISTENER_PASSIVE_STATE;
 	listener->cm_id = NULL; /* going to be destroyed pretty soon */
@@ -1672,6 +2008,7 @@ static int mini_cm_del_listen(struct nes_cm_core *cm_core,
  */
 static inline int mini_cm_accelerated(struct nes_cm_core *cm_core,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct nes_cm_node *cm_node)
 {
 	u32 was_timer_set;
@@ -1681,6 +2018,10 @@ static inline int mini_cm_accelerated(struct nes_cm_core *cm_core,
 	u32 was_timer_set;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      struct nes_cm_node *cm_node)
+{
+>>>>>>> refs/remotes/origin/master
 	cm_node->accelerated = 1;
 
 	if (cm_node->accept_pend) {
@@ -1690,11 +2031,16 @@ static inline int mini_cm_accelerated(struct nes_cm_core *cm_core,
 		BUG_ON(atomic_read(&cm_node->listener->pend_accepts_cnt) < 0);
 	}
 
+<<<<<<< HEAD
 	was_timer_set = timer_pending(&cm_core->tcp_timer);
 	if (!was_timer_set) {
 		cm_core->tcp_timer.expires = jiffies + NES_SHORT_TIME;
 		add_timer(&cm_core->tcp_timer);
 	}
+=======
+	if (!timer_pending(&cm_core->tcp_timer))
+		mod_timer(&cm_core->tcp_timer, (jiffies + NES_SHORT_TIME));
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1715,14 +2061,19 @@ static int nes_addr_resolve_neigh(struct nes_vnic *nesvnic, u32 dst_ip, int arpi
 	if (IS_ERR(rt)) {
 		printk(KERN_ERR "%s: ip_route_output_key failed for 0x%08X\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, dst_ip);
 =======
 		       __func__, dst_ip);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__, dst_ip);
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
 	if (netif_is_bond_slave(nesvnic->netdev))
+<<<<<<< HEAD
 		netdev = nesvnic->netdev->master;
 	else
 		netdev = nesvnic->netdev;
@@ -1734,6 +2085,15 @@ static int nes_addr_resolve_neigh(struct nes_vnic *nesvnic, u32 dst_ip, int arpi
 
 	rcu_read_lock();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev = netdev_master_upper_dev_get(nesvnic->netdev);
+	else
+		netdev = nesvnic->netdev;
+
+	neigh = neigh_lookup(&arp_tbl, &rt->rt_gateway, netdev);
+
+	rcu_read_lock();
+>>>>>>> refs/remotes/origin/master
 	if (neigh) {
 		if (neigh->nud_state & NUD_VALID) {
 			nes_debug(NES_DBG_CM, "Neighbor MAC address for 0x%08X"
@@ -1742,6 +2102,7 @@ static int nes_addr_resolve_neigh(struct nes_vnic *nesvnic, u32 dst_ip, int arpi
 
 			if (arpindex >= 0) {
 				if (!memcmp(nesadapter->arp_table[arpindex].mac_addr,
+<<<<<<< HEAD
 <<<<<<< HEAD
 							neigh->ha, ETH_ALEN)){
 					/* Mac address same as in nes_arp_table */
@@ -1754,6 +2115,8 @@ static int nes_addr_resolve_neigh(struct nes_vnic *nesvnic, u32 dst_ip, int arpi
 						nesadapter->arp_table[arpindex].mac_addr,
 						dst_ip, NES_ARP_DELETE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					    neigh->ha, ETH_ALEN)) {
 					/* Mac address same as in nes_arp_table */
 					goto out;
@@ -1762,13 +2125,17 @@ static int nes_addr_resolve_neigh(struct nes_vnic *nesvnic, u32 dst_ip, int arpi
 				nes_manage_arp_cache(nesvnic->netdev,
 						     nesadapter->arp_table[arpindex].mac_addr,
 						     dst_ip, NES_ARP_DELETE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 
 			nes_manage_arp_cache(nesvnic->netdev, neigh->ha,
 					     dst_ip, NES_ARP_ADD);
 			rc = nes_arp_table(nesvnic->nesdev, dst_ip, NULL,
 					   NES_ARP_RESOLVE);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		}
 		neigh_release(neigh);
@@ -1780,6 +2147,8 @@ static int nes_addr_resolve_neigh(struct nes_vnic *nesvnic, u32 dst_ip, int arpi
 		rcu_read_unlock();
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			neigh_event_send(neigh, NULL);
 		}
@@ -1790,7 +2159,10 @@ out:
 	if (neigh)
 		neigh_release(neigh);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ip_rt_put(rt);
 	return rc;
 }
@@ -1800,12 +2172,17 @@ out:
  */
 static struct nes_cm_node *make_cm_node(struct nes_cm_core *cm_core,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct nes_vnic *nesvnic, struct nes_cm_info *cm_info,
 		struct nes_cm_listener *listener)
 =======
 					struct nes_vnic *nesvnic, struct nes_cm_info *cm_info,
 					struct nes_cm_listener *listener)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					struct nes_vnic *nesvnic, struct nes_cm_info *cm_info,
+					struct nes_cm_listener *listener)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nes_cm_node *cm_node;
 	struct timespec ts;
@@ -1825,15 +2202,21 @@ static struct nes_cm_node *make_cm_node(struct nes_cm_core *cm_core,
 	cm_node->loc_port = cm_info->loc_port;
 	cm_node->rem_port = cm_info->rem_port;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cm_node->send_write0 = send_first;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cm_node->mpa_frame_rev = mpa_version;
 	cm_node->send_rdma0_op = SEND_RDMA_READ_ZERO;
 	cm_node->ird_size = IETF_NO_IRD_ORD;
 	cm_node->ord_size = IETF_NO_IRD_ORD;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	nes_debug(NES_DBG_CM, "Make node addresses : loc = %pI4:%x, rem = %pI4:%x\n",
 		  &cm_node->loc_addr, cm_node->loc_port,
 		  &cm_node->rem_addr, cm_node->rem_port);
@@ -1844,10 +2227,14 @@ static struct nes_cm_node *make_cm_node(struct nes_cm_core *cm_core,
 
 	nes_debug(NES_DBG_CM, "listener=%p, cm_id=%p\n", cm_node->listener,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			cm_node->cm_id);
 =======
 		  cm_node->cm_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  cm_node->cm_id);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&cm_node->retrans_list_lock);
 
@@ -1859,18 +2246,24 @@ static struct nes_cm_node *make_cm_node(struct nes_cm_core *cm_core,
 	cm_node->tcp_cntxt.rcv_wscale = NES_CM_DEFAULT_RCV_WND_SCALE;
 	cm_node->tcp_cntxt.rcv_wnd = NES_CM_DEFAULT_RCV_WND_SCALED >>
 <<<<<<< HEAD
+<<<<<<< HEAD
 			NES_CM_DEFAULT_RCV_WND_SCALE;
 	ts = current_kernel_time();
 	cm_node->tcp_cntxt.loc_seq_num = htonl(ts.tv_nsec);
 	cm_node->tcp_cntxt.mss = nesvnic->max_frame_size - sizeof(struct iphdr) -
 			sizeof(struct tcphdr) - ETH_HLEN - VLAN_HLEN;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				     NES_CM_DEFAULT_RCV_WND_SCALE;
 	ts = current_kernel_time();
 	cm_node->tcp_cntxt.loc_seq_num = htonl(ts.tv_nsec);
 	cm_node->tcp_cntxt.mss = nesvnic->max_frame_size - sizeof(struct iphdr) -
 				 sizeof(struct tcphdr) - ETH_HLEN - VLAN_HLEN;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cm_node->tcp_cntxt.rcv_nxt = 0;
 	/* get a unique session ID , add thread_id to an upcounter to handle race */
 	atomic_inc(&cm_core->node_cnt);
@@ -1887,6 +2280,7 @@ static struct nes_cm_node *make_cm_node(struct nes_cm_core *cm_core,
 
 	/* get the mac addr for the remote node */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ipv4_is_loopback(htonl(cm_node->rem_addr)))
 		arpindex = nes_arp_table(nesdev, ntohl(nesvnic->local_ipaddr), NULL, NES_ARP_RESOLVE);
 	else {
@@ -1901,6 +2295,10 @@ static struct nes_cm_node *make_cm_node(struct nes_cm_core *cm_core,
 		arpindex = nes_addr_resolve_neigh(nesvnic, cm_info->rem_addr, oldarpindex);
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+	oldarpindex = nes_arp_table(nesdev, cm_node->rem_addr, NULL, NES_ARP_RESOLVE);
+	arpindex = nes_addr_resolve_neigh(nesvnic, cm_info->rem_addr, oldarpindex);
+>>>>>>> refs/remotes/origin/master
 	if (arpindex < 0) {
 		kfree(cm_node);
 		return NULL;
@@ -1933,10 +2331,14 @@ static int add_ref_cm_node(struct nes_cm_node *cm_node)
  */
 static int rem_ref_cm_node(struct nes_cm_core *cm_core,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nes_cm_node *cm_node)
 =======
 			   struct nes_cm_node *cm_node)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   struct nes_cm_node *cm_node)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	struct nes_qp *nesqp;
@@ -1968,6 +2370,7 @@ static int rem_ref_cm_node(struct nes_cm_core *cm_core,
 		if (cm_node->apbvt_set && cm_node->nesvnic) {
 			nes_manage_apbvt(cm_node->nesvnic, cm_node->loc_port,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				PCI_FUNC(
 				cm_node->nesvnic->nesdev->pcidev->devfn),
 				NES_MANAGE_APBVT_DEL);
@@ -1976,6 +2379,11 @@ static int rem_ref_cm_node(struct nes_cm_core *cm_core,
 						 cm_node->nesvnic->nesdev->pcidev->devfn),
 					 NES_MANAGE_APBVT_DEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 PCI_FUNC(
+						 cm_node->nesvnic->nesdev->pcidev->devfn),
+					 NES_MANAGE_APBVT_DEL);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1997,10 +2405,14 @@ static int rem_ref_cm_node(struct nes_cm_core *cm_core,
  */
 static int process_options(struct nes_cm_node *cm_node, u8 *optionsloc,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 optionsize, u32 syn_packet)
 =======
 			   u32 optionsize, u32 syn_packet)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   u32 optionsize, u32 syn_packet)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 tmp;
 	u32 offset = 0;
@@ -2019,12 +2431,17 @@ static int process_options(struct nes_cm_node *cm_node, u8 *optionsloc,
 		case OPTION_NUMBER_MSS:
 			nes_debug(NES_DBG_CM, "%s: MSS Length: %d Offset: %d "
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"Size: %d\n", __func__,
 				all_options->as_mss.length, offset, optionsize);
 =======
 				  "Size: %d\n", __func__,
 				  all_options->as_mss.length, offset, optionsize);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  "Size: %d\n", __func__,
+				  all_options->as_mss.length, offset, optionsize);
+>>>>>>> refs/remotes/origin/master
 			got_mss_option = 1;
 			if (all_options->as_mss.length != 4) {
 				return 1;
@@ -2032,10 +2449,14 @@ static int process_options(struct nes_cm_node *cm_node, u8 *optionsloc,
 				tmp = ntohs(all_options->as_mss.mss);
 				if (tmp > 0 && tmp <
 <<<<<<< HEAD
+<<<<<<< HEAD
 					cm_node->tcp_cntxt.mss)
 =======
 				    cm_node->tcp_cntxt.mss)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    cm_node->tcp_cntxt.mss)
+>>>>>>> refs/remotes/origin/master
 					cm_node->tcp_cntxt.mss = tmp;
 			}
 			break;
@@ -2043,6 +2464,7 @@ static int process_options(struct nes_cm_node *cm_node, u8 *optionsloc,
 			cm_node->tcp_cntxt.snd_wscale =
 				all_options->as_windowscale.shiftcount;
 			break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case OPTION_NUMBER_WRITE0:
 			cm_node->send_write0 = 1;
@@ -2055,6 +2477,11 @@ static int process_options(struct nes_cm_node *cm_node, u8 *optionsloc,
 			nes_debug(NES_DBG_CM, "TCP Option not understood: %x\n",
 				  all_options->as_base.optionnum);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		default:
+			nes_debug(NES_DBG_CM, "TCP Option not understood: %x\n",
+				  all_options->as_base.optionnum);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		offset += all_options->as_base.length;
@@ -2074,12 +2501,17 @@ static void handle_fin_pkt(struct nes_cm_node *cm_node)
 {
 	nes_debug(NES_DBG_CM, "Received FIN, cm_node = %p, state = %u. "
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"refcnt=%d\n", cm_node, cm_node->state,
 		atomic_read(&cm_node->ref_count));
 =======
 		  "refcnt=%d\n", cm_node, cm_node->state,
 		  atomic_read(&cm_node->ref_count));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  "refcnt=%d\n", cm_node, cm_node->state,
+		  atomic_read(&cm_node->ref_count));
+>>>>>>> refs/remotes/origin/master
 	switch (cm_node->state) {
 	case NES_CM_STATE_SYN_RCVD:
 	case NES_CM_STATE_SYN_SENT:
@@ -2146,8 +2578,11 @@ static void handle_rst_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 			"listener=%p state=%d\n", __func__, __LINE__, cm_node,
 			cm_node->listener, cm_node->state);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		active_open_err(cm_node, skb, reset);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		switch (cm_node->mpa_frame_rev) {
 		case IETF_MPA_V2:
 			cm_node->mpa_frame_rev = IETF_MPA_V1;
@@ -2162,7 +2597,10 @@ static void handle_rst_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 			active_open_err(cm_node, skb, reset);
 			break;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case NES_CM_STATE_MPAREQ_RCVD:
 		atomic_inc(&cm_node->passive_state);
@@ -2199,26 +2637,36 @@ static void handle_rst_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 static void handle_rcv_mpa(struct nes_cm_node *cm_node, struct sk_buff *skb)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	int	ret = 0;
 =======
 	int ret = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 	int datasize = skb->len;
 	u8 *dataloc = skb->data;
 
 	enum nes_cm_event_type type = NES_CM_EVENT_UNKNOWN;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32     res_type;
 =======
 	u32 res_type;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 res_type;
+
+>>>>>>> refs/remotes/origin/master
 	ret = parse_mpa(cm_node, dataloc, &res_type, datasize);
 	if (ret) {
 		nes_debug(NES_DBG_CM, "didn't like MPA Request\n");
 		if (cm_node->state == NES_CM_STATE_MPAREQ_SENT) {
 			nes_debug(NES_DBG_CM, "%s[%u] create abort for "
+<<<<<<< HEAD
 <<<<<<< HEAD
 				"cm_node=%p listener=%p state=%d\n", __func__,
 				__LINE__, cm_node, cm_node->listener,
@@ -2228,6 +2676,11 @@ static void handle_rcv_mpa(struct nes_cm_node *cm_node, struct sk_buff *skb)
 				  __LINE__, cm_node, cm_node->listener,
 				  cm_node->state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  "cm_node=%p listener=%p state=%d\n", __func__,
+				  __LINE__, cm_node, cm_node->listener,
+				  cm_node->state);
+>>>>>>> refs/remotes/origin/master
 			active_open_err(cm_node, skb, 1);
 		} else {
 			passive_open_err(cm_node, skb, 1);
@@ -2237,6 +2690,7 @@ static void handle_rcv_mpa(struct nes_cm_node *cm_node, struct sk_buff *skb)
 
 	switch (cm_node->state) {
 	case NES_CM_STATE_ESTABLISHED:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (res_type == NES_MPA_REQUEST_REJECT) {
 			/*BIG problem as we are receiving the MPA.. So should
@@ -2249,6 +2703,8 @@ static void handle_rcv_mpa(struct nes_cm_node *cm_node, struct sk_buff *skb)
 		atomic_set(&cm_node->passive_state,
 				NES_PASSIVE_STATE_INDICATED);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (res_type == NES_MPA_REQUEST_REJECT)
 			/*BIG problem as we are receiving the MPA.. So should
 			 * not be REJECT.. This is Passive Open.. We can
@@ -2258,7 +2714,10 @@ static void handle_rcv_mpa(struct nes_cm_node *cm_node, struct sk_buff *skb)
 		type = NES_CM_EVENT_MPA_REQ;
 		atomic_set(&cm_node->passive_state,
 			   NES_PASSIVE_STATE_INDICATED);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case NES_CM_STATE_MPAREQ_SENT:
 		cleanup_retrans_entry(cm_node);
@@ -2286,12 +2745,17 @@ static void indicate_pkt_err(struct nes_cm_node *cm_node, struct sk_buff *skb)
 	case NES_CM_STATE_MPAREQ_SENT:
 		nes_debug(NES_DBG_CM, "%s[%u] create abort for cm_node=%p "
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"listener=%p state=%d\n", __func__, __LINE__, cm_node,
 			cm_node->listener, cm_node->state);
 =======
 			  "listener=%p state=%d\n", __func__, __LINE__, cm_node,
 			  cm_node->listener, cm_node->state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  "listener=%p state=%d\n", __func__, __LINE__, cm_node,
+			  cm_node->listener, cm_node->state);
+>>>>>>> refs/remotes/origin/master
 		active_open_err(cm_node, skb, 1);
 		break;
 	case NES_CM_STATE_ESTABLISHED:
@@ -2306,18 +2770,24 @@ static void indicate_pkt_err(struct nes_cm_node *cm_node, struct sk_buff *skb)
 
 static int check_syn(struct nes_cm_node *cm_node, struct tcphdr *tcph,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sk_buff *skb)
 {
 	int err;
 
 	err = ((ntohl(tcph->ack_seq) == cm_node->tcp_cntxt.loc_seq_num))? 0 : 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		     struct sk_buff *skb)
 {
 	int err;
 
 	err = ((ntohl(tcph->ack_seq) == cm_node->tcp_cntxt.loc_seq_num)) ? 0 : 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		active_open_err(cm_node, skb, 1);
 
@@ -2326,10 +2796,14 @@ static int check_syn(struct nes_cm_node *cm_node, struct tcphdr *tcph,
 
 static int check_seq(struct nes_cm_node *cm_node, struct tcphdr *tcph,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sk_buff *skb)
 =======
 		     struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = 0;
 	u32 seq;
@@ -2338,14 +2812,19 @@ static int check_seq(struct nes_cm_node *cm_node, struct tcphdr *tcph,
 	u32 rcv_nxt = cm_node->tcp_cntxt.rcv_nxt;
 	u32 rcv_wnd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	seq = ntohl(tcph->seq);
 	ack_seq = ntohl(tcph->ack_seq);
 	rcv_wnd = cm_node->tcp_cntxt.rcv_wnd;
 	if (ack_seq != loc_seq_num)
 		err = 1;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	else if (!between(seq, rcv_nxt, (rcv_nxt+rcv_wnd)))
 		err = 1;
@@ -2358,6 +2837,8 @@ static int check_seq(struct nes_cm_node *cm_node, struct tcphdr *tcph,
 			"rcv_nxt=0x%08X rcv_wnd=0x%x\n", cm_node, seq, rcv_nxt,
 			rcv_wnd);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	else if (!between(seq, rcv_nxt, (rcv_nxt + rcv_wnd)))
 		err = 1;
 	if (err) {
@@ -2368,7 +2849,10 @@ static int check_seq(struct nes_cm_node *cm_node, struct tcphdr *tcph,
 		nes_debug(NES_DBG_CM, "seq ERROR cm_node =%p seq=0x%08X "
 			  "rcv_nxt=0x%08X rcv_wnd=0x%x\n", cm_node, seq, rcv_nxt,
 			  rcv_wnd);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return err;
 }
@@ -2379,6 +2863,7 @@ static int check_seq(struct nes_cm_node *cm_node, struct tcphdr *tcph,
  * that case will be just dropped.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static void handle_syn_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 	struct tcphdr *tcph)
@@ -2386,6 +2871,10 @@ static void handle_syn_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 static void handle_syn_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 			   struct tcphdr *tcph)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void handle_syn_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
+			   struct tcphdr *tcph)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	u32 inc_sequence;
@@ -2405,6 +2894,7 @@ static void handle_syn_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 		/* Passive OPEN */
 		if (atomic_read(&cm_node->listener->pend_accepts_cnt) >
 <<<<<<< HEAD
+<<<<<<< HEAD
 				cm_node->listener->backlog) {
 			nes_debug(NES_DBG_CM, "drop syn due to backlog "
 				"pressure \n");
@@ -2413,16 +2903,25 @@ static void handle_syn_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 			nes_debug(NES_DBG_CM, "drop syn due to backlog "
 				  "pressure \n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    cm_node->listener->backlog) {
+			nes_debug(NES_DBG_CM, "drop syn due to backlog "
+				  "pressure \n");
+>>>>>>> refs/remotes/origin/master
 			cm_backlog_drops++;
 			passive_open_err(cm_node, skb, 0);
 			break;
 		}
 		ret = handle_tcp_options(cm_node, tcph, skb, optionsize,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			1);
 =======
 					 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 1);
+>>>>>>> refs/remotes/origin/master
 		if (ret) {
 			passive_open_err(cm_node, skb, 0);
 			/* drop pkt */
@@ -2457,6 +2956,7 @@ static void handle_syn_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 
 static void handle_synack_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tcphdr *tcph)
 {
 
@@ -2464,6 +2964,10 @@ static void handle_synack_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 			      struct tcphdr *tcph)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      struct tcphdr *tcph)
+{
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	u32 inc_sequence;
 	int optionsize;
@@ -2483,10 +2987,14 @@ static void handle_synack_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 		if (ret) {
 			nes_debug(NES_DBG_CM, "cm_node=%p tcp_options failed\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				cm_node);
 =======
 				  cm_node);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  cm_node);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		cleanup_retrans_entry(cm_node);
@@ -2526,19 +3034,27 @@ static void handle_synack_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 
 static int handle_ack_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tcphdr *tcph)
 =======
 			  struct tcphdr *tcph)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  struct tcphdr *tcph)
+>>>>>>> refs/remotes/origin/master
 {
 	int datasize = 0;
 	u32 inc_sequence;
 	int ret = 0;
 	int optionsize;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	optionsize = (tcph->doff << 2) - sizeof(struct tcphdr);
 
 	if (check_seq(cm_node, tcph, skb))
@@ -2560,6 +3076,7 @@ static int handle_ack_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 			cm_node->tcp_cntxt.rcv_nxt = inc_sequence + datasize;
 			handle_rcv_mpa(cm_node, skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else  /* rcvd ACK only */
 			dev_kfree_skb_any(skb);
 =======
@@ -2567,6 +3084,11 @@ static int handle_ack_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 			dev_kfree_skb_any(skb);
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else { /* rcvd ACK only */
+			dev_kfree_skb_any(skb);
+		}
+>>>>>>> refs/remotes/origin/master
 		break;
 	case NES_CM_STATE_ESTABLISHED:
 		/* Passive OPEN */
@@ -2575,6 +3097,7 @@ static int handle_ack_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 			cm_node->tcp_cntxt.rcv_nxt = inc_sequence + datasize;
 			handle_rcv_mpa(cm_node, skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else
 			drop_packet(skb);
 =======
@@ -2582,12 +3105,18 @@ static int handle_ack_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 			drop_packet(skb);
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else {
+			drop_packet(skb);
+		}
+>>>>>>> refs/remotes/origin/master
 		break;
 	case NES_CM_STATE_MPAREQ_SENT:
 		cm_node->tcp_cntxt.rem_ack_num = ntohl(tcph->ack_seq);
 		if (datasize) {
 			cm_node->tcp_cntxt.rcv_nxt = inc_sequence + datasize;
 			handle_rcv_mpa(cm_node, skb);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		} else  /* Could be just an ack pkt.. */
 			dev_kfree_skb_any(skb);
@@ -2596,6 +3125,11 @@ static int handle_ack_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 			dev_kfree_skb_any(skb);
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else { /* Could be just an ack pkt.. */
+			dev_kfree_skb_any(skb);
+		}
+>>>>>>> refs/remotes/origin/master
 		break;
 	case NES_CM_STATE_LISTENING:
 		cleanup_retrans_entry(cm_node);
@@ -2637,6 +3171,7 @@ static int handle_ack_pkt(struct nes_cm_node *cm_node, struct sk_buff *skb,
 
 static int handle_tcp_options(struct nes_cm_node *cm_node, struct tcphdr *tcph,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sk_buff *skb, int optionsize, int passive)
 {
 	u8 *optionsloc = (u8 *)&tcph[1];
@@ -2646,6 +3181,8 @@ static int handle_tcp_options(struct nes_cm_node *cm_node, struct tcphdr *tcph,
 			nes_debug(NES_DBG_CM, "%s: Node %p, Sending RESET\n",
 				__func__, cm_node);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			      struct sk_buff *skb, int optionsize, int passive)
 {
 	u8 *optionsloc = (u8 *)&tcph[1];
@@ -2655,7 +3192,10 @@ static int handle_tcp_options(struct nes_cm_node *cm_node, struct tcphdr *tcph,
 				    (u32)tcph->syn)) {
 			nes_debug(NES_DBG_CM, "%s: Node %p, Sending RESET\n",
 				  __func__, cm_node);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (passive)
 				passive_open_err(cm_node, skb, 1);
 			else
@@ -2666,10 +3206,14 @@ static int handle_tcp_options(struct nes_cm_node *cm_node, struct tcphdr *tcph,
 
 	cm_node->tcp_cntxt.snd_wnd = ntohs(tcph->window) <<
 <<<<<<< HEAD
+<<<<<<< HEAD
 			cm_node->tcp_cntxt.snd_wscale;
 =======
 				     cm_node->tcp_cntxt.snd_wscale;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     cm_node->tcp_cntxt.snd_wscale;
+>>>>>>> refs/remotes/origin/master
 
 	if (cm_node->tcp_cntxt.snd_wnd > cm_node->tcp_cntxt.max_snd_wnd)
 		cm_node->tcp_cntxt.max_snd_wnd = cm_node->tcp_cntxt.snd_wnd;
@@ -2681,6 +3225,7 @@ static int handle_tcp_options(struct nes_cm_node *cm_node, struct tcphdr *tcph,
  * It will also send ABORT event.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static void active_open_err(struct nes_cm_node *cm_node, struct sk_buff *skb,
 	int reset)
@@ -2688,10 +3233,15 @@ static void active_open_err(struct nes_cm_node *cm_node, struct sk_buff *skb,
 static void active_open_err(struct nes_cm_node *cm_node, struct sk_buff *skb,
 			    int reset)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void active_open_err(struct nes_cm_node *cm_node, struct sk_buff *skb,
+			    int reset)
+>>>>>>> refs/remotes/origin/master
 {
 	cleanup_retrans_entry(cm_node);
 	if (reset) {
 		nes_debug(NES_DBG_CM, "ERROR active err called for cm_node=%p, "
+<<<<<<< HEAD
 <<<<<<< HEAD
 				"state=%d\n", cm_node, cm_node->state);
 		add_ref_cm_node(cm_node);
@@ -2699,13 +3249,18 @@ static void active_open_err(struct nes_cm_node *cm_node, struct sk_buff *skb,
 	} else
 		dev_kfree_skb_any(skb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			  "state=%d\n", cm_node, cm_node->state);
 		add_ref_cm_node(cm_node);
 		send_reset(cm_node, skb);
 	} else {
 		dev_kfree_skb_any(skb);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cm_node->state = NES_CM_STATE_CLOSED;
 	create_event(cm_node, NES_CM_EVENT_ABORTED);
@@ -2716,6 +3271,7 @@ static void active_open_err(struct nes_cm_node *cm_node, struct sk_buff *skb,
  * remove the cm_node.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static void passive_open_err(struct nes_cm_node *cm_node, struct sk_buff *skb,
 	int reset)
@@ -2723,16 +3279,24 @@ static void passive_open_err(struct nes_cm_node *cm_node, struct sk_buff *skb,
 static void passive_open_err(struct nes_cm_node *cm_node, struct sk_buff *skb,
 			     int reset)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void passive_open_err(struct nes_cm_node *cm_node, struct sk_buff *skb,
+			     int reset)
+>>>>>>> refs/remotes/origin/master
 {
 	cleanup_retrans_entry(cm_node);
 	cm_node->state = NES_CM_STATE_CLOSED;
 	if (reset) {
 		nes_debug(NES_DBG_CM, "passive_open_err sending RST for "
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"cm_node=%p state =%d\n", cm_node, cm_node->state);
 =======
 			  "cm_node=%p state =%d\n", cm_node, cm_node->state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  "cm_node=%p state =%d\n", cm_node, cm_node->state);
+>>>>>>> refs/remotes/origin/master
 		send_reset(cm_node, skb);
 	} else {
 		dev_kfree_skb_any(skb);
@@ -2748,9 +3312,13 @@ static void free_retrans_entry(struct nes_cm_node *cm_node)
 {
 	struct nes_timer_entry *send_entry;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	send_entry = cm_node->send_entry;
 	if (send_entry) {
 		cm_node->send_entry = NULL;
@@ -2775,6 +3343,7 @@ static void cleanup_retrans_entry(struct nes_cm_node *cm_node)
  */
 static void process_packet(struct nes_cm_node *cm_node, struct sk_buff *skb,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nes_cm_core *cm_core)
 {
 	enum nes_tcpip_pkt_type	pkt_type = NES_PKT_TYPE_UNKNOWN;
@@ -2796,6 +3365,8 @@ static void process_packet(struct nes_cm_node *cm_node, struct sk_buff *skb,
 	} else if (tcph->ack)
 		pkt_type = NES_PKT_TYPE_ACK;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			   struct nes_cm_core *cm_core)
 {
 	enum nes_tcpip_pkt_type pkt_type = NES_PKT_TYPE_UNKNOWN;
@@ -2818,7 +3389,10 @@ static void process_packet(struct nes_cm_node *cm_node, struct sk_buff *skb,
 	} else if (tcph->ack) {
 		pkt_type = NES_PKT_TYPE_ACK;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (tcph->fin)
 		fin_set = 1;
 
@@ -2850,15 +3424,20 @@ static void process_packet(struct nes_cm_node *cm_node, struct sk_buff *skb,
  */
 static struct nes_cm_listener *mini_cm_listen(struct nes_cm_core *cm_core,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nes_vnic *nesvnic, struct nes_cm_info *cm_info)
 =======
 					      struct nes_vnic *nesvnic, struct nes_cm_info *cm_info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					      struct nes_vnic *nesvnic, struct nes_cm_info *cm_info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nes_cm_listener *listener;
 	unsigned long flags;
 
 	nes_debug(NES_DBG_CM, "Search for 0x%08x : 0x%04x\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 		cm_info->loc_addr, cm_info->loc_port);
 
@@ -2866,12 +3445,17 @@ static struct nes_cm_listener *mini_cm_listen(struct nes_cm_core *cm_core,
 	listener = find_listener(cm_core, htonl(cm_info->loc_addr),
 			htons(cm_info->loc_port), NES_CM_LISTENER_EITHER_STATE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		  cm_info->loc_addr, cm_info->loc_port);
 
 	/* cannot have multiple matching listeners */
 	listener = find_listener(cm_core, htonl(cm_info->loc_addr),
 				 htons(cm_info->loc_port), NES_CM_LISTENER_EITHER_STATE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (listener && listener->listener_state == NES_CM_LISTENER_ACTIVE_STATE) {
 		/* find automatically incs ref count ??? */
 		atomic_dec(&listener->ref_count);
@@ -2918,6 +3502,7 @@ static struct nes_cm_listener *mini_cm_listen(struct nes_cm_core *cm_core,
 
 	nes_debug(NES_DBG_CM, "Api - listen(): addr=0x%08X, port=0x%04x,"
 <<<<<<< HEAD
+<<<<<<< HEAD
 			" listener = %p, backlog = %d, cm_id = %p.\n",
 			cm_info->loc_addr, cm_info->loc_port,
 			listener, listener->backlog, listener->cm_id);
@@ -2926,6 +3511,11 @@ static struct nes_cm_listener *mini_cm_listen(struct nes_cm_core *cm_core,
 		  cm_info->loc_addr, cm_info->loc_port,
 		  listener, listener->backlog, listener->cm_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  " listener = %p, backlog = %d, cm_id = %p.\n",
+		  cm_info->loc_addr, cm_info->loc_port,
+		  listener, listener->backlog, listener->cm_id);
+>>>>>>> refs/remotes/origin/master
 
 	return listener;
 }
@@ -2936,12 +3526,17 @@ static struct nes_cm_listener *mini_cm_listen(struct nes_cm_core *cm_core,
  */
 static struct nes_cm_node *mini_cm_connect(struct nes_cm_core *cm_core,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nes_vnic *nesvnic, u16 private_data_len,
 	void *private_data, struct nes_cm_info *cm_info)
 =======
 					   struct nes_vnic *nesvnic, u16 private_data_len,
 					   void *private_data, struct nes_cm_info *cm_info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					   struct nes_vnic *nesvnic, u16 private_data_len,
+					   void *private_data, struct nes_cm_info *cm_info)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 	struct nes_cm_node *cm_node;
@@ -2949,16 +3544,21 @@ static struct nes_cm_node *mini_cm_connect(struct nes_cm_core *cm_core,
 	struct nes_cm_node *loopbackremotenode;
 	struct nes_cm_info loopback_cm_info;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 mpa_frame_size = sizeof(struct ietf_mpa_frame) + private_data_len;
 	struct ietf_mpa_frame *mpa_frame = NULL;
 =======
 	u8 *start_buff;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 *start_buff;
+>>>>>>> refs/remotes/origin/master
 
 	/* create a CM connection node */
 	cm_node = make_cm_node(cm_core, nesvnic, cm_info, NULL);
 	if (!cm_node)
 		return NULL;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mpa_frame = &cm_node->mpa_frame;
 	memcpy(mpa_frame->key, IEFT_MPA_KEY_REQ, IETF_MPA_KEY_SIZE);
@@ -2967,6 +3567,8 @@ static struct nes_cm_node *mini_cm_connect(struct nes_cm_core *cm_core,
 	mpa_frame->priv_data_len = htons(private_data_len);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* set our node side to client (active) side */
 	cm_node->tcp_cntxt.client = 1;
@@ -2975,12 +3577,17 @@ static struct nes_cm_node *mini_cm_connect(struct nes_cm_core *cm_core,
 	if (cm_info->loc_addr == cm_info->rem_addr) {
 		loopbackremotelistener = find_listener(cm_core,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ntohl(nesvnic->local_ipaddr), cm_node->rem_port,
 				NES_CM_LISTENER_ACTIVE_STATE);
 =======
 						       ntohl(nesvnic->local_ipaddr), cm_node->rem_port,
 						       NES_CM_LISTENER_ACTIVE_STATE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						       ntohl(nesvnic->local_ipaddr), cm_node->rem_port,
+						       NES_CM_LISTENER_ACTIVE_STATE);
+>>>>>>> refs/remotes/origin/master
 		if (loopbackremotelistener == NULL) {
 			create_event(cm_node, NES_CM_EVENT_ABORTED);
 		} else {
@@ -2990,10 +3597,14 @@ static struct nes_cm_node *mini_cm_connect(struct nes_cm_core *cm_core,
 			loopback_cm_info.cm_id = loopbackremotelistener->cm_id;
 			loopbackremotenode = make_cm_node(cm_core, nesvnic,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				&loopback_cm_info, loopbackremotelistener);
 =======
 							  &loopback_cm_info, loopbackremotelistener);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+							  &loopback_cm_info, loopbackremotelistener);
+>>>>>>> refs/remotes/origin/master
 			if (!loopbackremotenode) {
 				rem_ref_cm_node(cm_node->cm_core, cm_node);
 				return NULL;
@@ -3005,10 +3616,14 @@ static struct nes_cm_node *mini_cm_connect(struct nes_cm_core *cm_core,
 			cm_node->loopbackpartner = loopbackremotenode;
 			memcpy(loopbackremotenode->mpa_frame_buf, private_data,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				private_data_len);
 =======
 			       private_data_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       private_data_len);
+>>>>>>> refs/remotes/origin/master
 			loopbackremotenode->mpa_frame_size = private_data_len;
 
 			/* we are done handling this state. */
@@ -3037,6 +3652,7 @@ static struct nes_cm_node *mini_cm_connect(struct nes_cm_core *cm_core,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* set our node side to client (active) side */
 	cm_node->tcp_cntxt.client = 1;
 	/* init our MPA frame ptr */
@@ -3044,11 +3660,16 @@ static struct nes_cm_node *mini_cm_connect(struct nes_cm_core *cm_core,
 
 	cm_node->mpa_frame_size = mpa_frame_size;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	start_buff = &cm_node->mpa_frame_buf[0] + sizeof(struct ietf_mpa_v2);
 	cm_node->mpa_frame_size = private_data_len;
 
 	memcpy(start_buff, private_data, private_data_len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* send a syn and goto syn sent state */
 	cm_node->state = NES_CM_STATE_SYN_SENT;
@@ -3058,6 +3679,7 @@ static struct nes_cm_node *mini_cm_connect(struct nes_cm_core *cm_core,
 		/* error in sending the syn free up the cm_node struct */
 		nes_debug(NES_DBG_CM, "Api - connect() FAILED: dest "
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"addr=0x%08X, port=0x%04x, cm_node=%p, cm_id = %p.\n",
 			cm_node->rem_addr, cm_node->rem_port, cm_node,
 			cm_node->cm_id);
@@ -3066,10 +3688,16 @@ static struct nes_cm_node *mini_cm_connect(struct nes_cm_core *cm_core,
 			  cm_node->rem_addr, cm_node->rem_port, cm_node,
 			  cm_node->cm_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  "addr=0x%08X, port=0x%04x, cm_node=%p, cm_id = %p.\n",
+			  cm_node->rem_addr, cm_node->rem_port, cm_node,
+			  cm_node->cm_id);
+>>>>>>> refs/remotes/origin/master
 		rem_ref_cm_node(cm_node->cm_core, cm_node);
 		cm_node = NULL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (cm_node)
 		nes_debug(NES_DBG_CM, "Api - connect(): dest addr=0x%08X,"
@@ -3077,13 +3705,18 @@ static struct nes_cm_node *mini_cm_connect(struct nes_cm_core *cm_core,
 			cm_node->rem_addr, cm_node->rem_port, cm_node,
 			cm_node->cm_id);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cm_node) {
 		nes_debug(NES_DBG_CM, "Api - connect(): dest addr=0x%08X,"
 			  "port=0x%04x, cm_node=%p, cm_id = %p.\n",
 			  cm_node->rem_addr, cm_node->rem_port, cm_node,
 			  cm_node->cm_id);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return cm_node;
 }
@@ -3094,11 +3727,15 @@ static struct nes_cm_node *mini_cm_connect(struct nes_cm_core *cm_core,
  * This function is never called
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int mini_cm_accept(struct nes_cm_core *cm_core,
 	struct ietf_mpa_frame *mpa_frame, struct nes_cm_node *cm_node)
 =======
 static int mini_cm_accept(struct nes_cm_core *cm_core, struct nes_cm_node *cm_node)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int mini_cm_accept(struct nes_cm_core *cm_core, struct nes_cm_node *cm_node)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -3108,11 +3745,15 @@ static int mini_cm_accept(struct nes_cm_core *cm_core, struct nes_cm_node *cm_no
  * mini_cm_reject - reject and teardown a connection
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int mini_cm_reject(struct nes_cm_core *cm_core,
 	struct ietf_mpa_frame *mpa_frame, struct nes_cm_node *cm_node)
 =======
 static int mini_cm_reject(struct nes_cm_core *cm_core, struct nes_cm_node *cm_node)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int mini_cm_reject(struct nes_cm_core *cm_core, struct nes_cm_node *cm_node)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 	int err = 0;
@@ -3123,10 +3764,14 @@ static int mini_cm_reject(struct nes_cm_core *cm_core, struct nes_cm_node *cm_no
 
 	nes_debug(NES_DBG_CM, "%s cm_node=%p type=%d state=%d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__func__, cm_node, cm_node->tcp_cntxt.client, cm_node->state);
 =======
 		  __func__, cm_node, cm_node->tcp_cntxt.client, cm_node->state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  __func__, cm_node, cm_node->tcp_cntxt.client, cm_node->state);
+>>>>>>> refs/remotes/origin/master
 
 	if (cm_node->tcp_cntxt.client)
 		return ret;
@@ -3148,6 +3793,7 @@ static int mini_cm_reject(struct nes_cm_core *cm_core, struct nes_cm_node *cm_no
 					if (err)
 						WARN_ON(1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				} else
 					cm_id->add_ref(cm_id);
 =======
@@ -3155,6 +3801,11 @@ static int mini_cm_reject(struct nes_cm_core *cm_core, struct nes_cm_node *cm_no
 					cm_id->add_ref(cm_id);
 				}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				} else {
+					cm_id->add_ref(cm_id);
+				}
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	} else {
@@ -3230,10 +3881,14 @@ static int mini_cm_close(struct nes_cm_core *cm_core, struct nes_cm_node *cm_nod
 		if (cm_node->send_entry)
 			printk(KERN_ERR "ERROR Close got called from STATE_TSA "
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"send_entry=%p\n", cm_node->send_entry);
 =======
 			       "send_entry=%p\n", cm_node->send_entry);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "send_entry=%p\n", cm_node->send_entry);
+>>>>>>> refs/remotes/origin/master
 		ret = rem_ref_cm_node(cm_core, cm_node);
 		break;
 	}
@@ -3247,10 +3902,14 @@ static int mini_cm_close(struct nes_cm_core *cm_core, struct nes_cm_node *cm_nod
  */
 static int mini_cm_recv_pkt(struct nes_cm_core *cm_core,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nes_vnic *nesvnic, struct sk_buff *skb)
 =======
 			    struct nes_vnic *nesvnic, struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    struct nes_vnic *nesvnic, struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nes_cm_node *cm_node = NULL;
 	struct nes_cm_listener *listener = NULL;
@@ -3263,6 +3922,7 @@ static int mini_cm_recv_pkt(struct nes_cm_core *cm_core,
 	if (!skb)
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (skb->len < sizeof(struct iphdr) + sizeof(struct tcphdr)) {
 		return 0;
 	}
@@ -3270,6 +3930,10 @@ static int mini_cm_recv_pkt(struct nes_cm_core *cm_core,
 	if (skb->len < sizeof(struct iphdr) + sizeof(struct tcphdr))
 		return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (skb->len < sizeof(struct iphdr) + sizeof(struct tcphdr))
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	iph = (struct iphdr *)skb->data;
 	tcph = (struct tcphdr *)(skb->data + sizeof(struct iphdr));
@@ -3288,12 +3952,17 @@ static int mini_cm_recv_pkt(struct nes_cm_core *cm_core,
 	do {
 		cm_node = find_node(cm_core,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			nfo.rem_port, nfo.rem_addr,
 			nfo.loc_port, nfo.loc_addr);
 =======
 				    nfo.rem_port, nfo.rem_addr,
 				    nfo.loc_port, nfo.loc_addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    nfo.rem_port, nfo.rem_addr,
+				    nfo.loc_port, nfo.loc_addr);
+>>>>>>> refs/remotes/origin/master
 
 		if (!cm_node) {
 			/* Only type of packet accepted are for */
@@ -3304,12 +3973,17 @@ static int mini_cm_recv_pkt(struct nes_cm_core *cm_core,
 			}
 			listener = find_listener(cm_core, nfo.loc_addr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				nfo.loc_port,
 				NES_CM_LISTENER_ACTIVE_STATE);
 =======
 						 nfo.loc_port,
 						 NES_CM_LISTENER_ACTIVE_STATE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						 nfo.loc_port,
+						 NES_CM_LISTENER_ACTIVE_STATE);
+>>>>>>> refs/remotes/origin/master
 			if (!listener) {
 				nfo.cm_id = NULL;
 				nfo.conn_type = 0;
@@ -3321,16 +3995,22 @@ static int mini_cm_recv_pkt(struct nes_cm_core *cm_core,
 			nfo.conn_type = listener->conn_type;
 			cm_node = make_cm_node(cm_core, nesvnic, &nfo,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				listener);
 			if (!cm_node) {
 				nes_debug(NES_DBG_CM, "Unable to allocate "
 					"node\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					       listener);
 			if (!cm_node) {
 				nes_debug(NES_DBG_CM, "Unable to allocate "
 					  "node\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				cm_packets_dropped++;
 				atomic_dec(&listener->ref_count);
 				dev_kfree_skb_any(skb);
@@ -3347,10 +4027,13 @@ static int mini_cm_recv_pkt(struct nes_cm_core *cm_core,
 			add_ref_cm_node(cm_node);
 		} else if (cm_node->state == NES_CM_STATE_TSA) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			rem_ref_cm_node(cm_core, cm_node);
 			atomic_inc(&cm_accel_dropped_pkts);
 			dev_kfree_skb_any(skb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (cm_node->nesqp->pau_mode)
 				nes_queue_mgt_skbs(skb, nesvnic, cm_node->nesqp);
 			else {
@@ -3358,7 +4041,10 @@ static int mini_cm_recv_pkt(struct nes_cm_core *cm_core,
 				atomic_inc(&cm_accel_dropped_pkts);
 				dev_kfree_skb_any(skb);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		skb_reset_network_header(skb);
@@ -3389,10 +4075,14 @@ static struct nes_cm_core *nes_cm_alloc_core(void)
 	cm_core->tcp_timer.function = nes_cm_timer_tick;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cm_core->mtu   = NES_CM_DEFAULT_MTU;
 =======
 	cm_core->mtu = NES_CM_DEFAULT_MTU;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cm_core->mtu = NES_CM_DEFAULT_MTU;
+>>>>>>> refs/remotes/origin/master
 	cm_core->state = NES_CM_STATE_INITED;
 	cm_core->free_tx_pkt_max = NES_CM_DEFAULT_FREE_PKTS;
 
@@ -3431,6 +4121,7 @@ static int mini_cm_dealloc_core(struct nes_cm_core *cm_core)
 	barrier();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (timer_pending(&cm_core->tcp_timer)) {
 		del_timer(&cm_core->tcp_timer);
 	}
@@ -3438,6 +4129,10 @@ static int mini_cm_dealloc_core(struct nes_cm_core *cm_core)
 	if (timer_pending(&cm_core->tcp_timer))
 		del_timer(&cm_core->tcp_timer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (timer_pending(&cm_core->tcp_timer))
+		del_timer(&cm_core->tcp_timer);
+>>>>>>> refs/remotes/origin/master
 
 	destroy_workqueue(cm_core->event_wq);
 	destroy_workqueue(cm_core->disconn_wq);
@@ -3493,12 +4188,17 @@ static int nes_cm_init_tsa_conn(struct nes_qp *nesqp, struct nes_cm_node *cm_nod
 
 	nesqp->nesqp_context->misc |= cpu_to_le32(NES_QPCONTEXT_MISC_IPV4 |
 <<<<<<< HEAD
+<<<<<<< HEAD
 			NES_QPCONTEXT_MISC_NO_NAGLE | NES_QPCONTEXT_MISC_DO_NOT_FRAG |
 			NES_QPCONTEXT_MISC_DROS);
 =======
 						  NES_QPCONTEXT_MISC_NO_NAGLE | NES_QPCONTEXT_MISC_DO_NOT_FRAG |
 						  NES_QPCONTEXT_MISC_DROS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						  NES_QPCONTEXT_MISC_NO_NAGLE | NES_QPCONTEXT_MISC_DO_NOT_FRAG |
+						  NES_QPCONTEXT_MISC_DROS);
+>>>>>>> refs/remotes/origin/master
 
 	if (cm_node->tcp_cntxt.snd_wscale || cm_node->tcp_cntxt.rcv_wscale)
 		nesqp->nesqp_context->misc |= cpu_to_le32(NES_QPCONTEXT_MISC_WSCALE);
@@ -3508,6 +4208,7 @@ static int nes_cm_init_tsa_conn(struct nes_qp *nesqp, struct nes_cm_node *cm_nod
 	nesqp->nesqp_context->mss |= cpu_to_le32(((u32)cm_node->tcp_cntxt.mss) << 16);
 
 	nesqp->nesqp_context->tcp_state_flow_label |= cpu_to_le32(
+<<<<<<< HEAD
 <<<<<<< HEAD
 			(u32)NES_QPCONTEXT_TCPSTATE_EST << NES_QPCONTEXT_TCPFLOW_TCP_STATE_SHIFT);
 
@@ -3519,6 +4220,8 @@ static int nes_cm_init_tsa_conn(struct nes_qp *nesqp, struct nes_cm_node *cm_nod
 			(cm_node->tcp_cntxt.rcv_wscale << NES_QPCONTEXT_PDWSCALE_RCV_WSCALE_SHIFT) &
 			NES_QPCONTEXT_PDWSCALE_RCV_WSCALE_MASK);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		(u32)NES_QPCONTEXT_TCPSTATE_EST << NES_QPCONTEXT_TCPFLOW_TCP_STATE_SHIFT);
 
 	nesqp->nesqp_context->pd_index_wscale |= cpu_to_le32(
@@ -3528,7 +4231,10 @@ static int nes_cm_init_tsa_conn(struct nes_qp *nesqp, struct nes_cm_node *cm_nod
 	nesqp->nesqp_context->pd_index_wscale |= cpu_to_le32(
 		(cm_node->tcp_cntxt.rcv_wscale << NES_QPCONTEXT_PDWSCALE_RCV_WSCALE_SHIFT) &
 		NES_QPCONTEXT_PDWSCALE_RCV_WSCALE_MASK);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	nesqp->nesqp_context->keepalive = cpu_to_le32(0x80);
 	nesqp->nesqp_context->ts_recent = 0;
@@ -3538,25 +4244,34 @@ static int nes_cm_init_tsa_conn(struct nes_qp *nesqp, struct nes_cm_node *cm_nod
 	nesqp->nesqp_context->rcv_nxt = cpu_to_le32(cm_node->tcp_cntxt.rcv_nxt);
 	nesqp->nesqp_context->rcv_wnd = cpu_to_le32(cm_node->tcp_cntxt.rcv_wnd <<
 <<<<<<< HEAD
+<<<<<<< HEAD
 			cm_node->tcp_cntxt.rcv_wscale);
 =======
 						    cm_node->tcp_cntxt.rcv_wscale);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						    cm_node->tcp_cntxt.rcv_wscale);
+>>>>>>> refs/remotes/origin/master
 	nesqp->nesqp_context->snd_max = cpu_to_le32(cm_node->tcp_cntxt.loc_seq_num);
 	nesqp->nesqp_context->snd_una = cpu_to_le32(cm_node->tcp_cntxt.loc_seq_num);
 	nesqp->nesqp_context->srtt = 0;
 	nesqp->nesqp_context->rttvar = cpu_to_le32(0x6);
 	nesqp->nesqp_context->ssthresh = cpu_to_le32(0x3FFFC000);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nesqp->nesqp_context->cwnd = cpu_to_le32(2*cm_node->tcp_cntxt.mss);
 =======
 	nesqp->nesqp_context->cwnd = cpu_to_le32(2 * cm_node->tcp_cntxt.mss);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nesqp->nesqp_context->cwnd = cpu_to_le32(2 * cm_node->tcp_cntxt.mss);
+>>>>>>> refs/remotes/origin/master
 	nesqp->nesqp_context->snd_wl1 = cpu_to_le32(cm_node->tcp_cntxt.rcv_nxt);
 	nesqp->nesqp_context->snd_wl2 = cpu_to_le32(cm_node->tcp_cntxt.loc_seq_num);
 	nesqp->nesqp_context->max_snd_wnd = cpu_to_le32(cm_node->tcp_cntxt.max_snd_wnd);
 
 	nes_debug(NES_DBG_CM, "QP%u: rcv_nxt = 0x%08X, snd_nxt = 0x%08X,"
+<<<<<<< HEAD
 <<<<<<< HEAD
 			" Setting MSS to %u, PDWscale = 0x%08X, rcv_wnd = %u, context misc = 0x%08X.\n",
 			nesqp->hwqp.qp_id, le32_to_cpu(nesqp->nesqp_context->rcv_nxt),
@@ -3565,13 +4280,18 @@ static int nes_cm_init_tsa_conn(struct nes_qp *nesqp, struct nes_cm_node *cm_nod
 			le32_to_cpu(nesqp->nesqp_context->rcv_wnd),
 			le32_to_cpu(nesqp->nesqp_context->misc));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		  " Setting MSS to %u, PDWscale = 0x%08X, rcv_wnd = %u, context misc = 0x%08X.\n",
 		  nesqp->hwqp.qp_id, le32_to_cpu(nesqp->nesqp_context->rcv_nxt),
 		  le32_to_cpu(nesqp->nesqp_context->snd_nxt),
 		  cm_node->tcp_cntxt.mss, le32_to_cpu(nesqp->nesqp_context->pd_index_wscale),
 		  le32_to_cpu(nesqp->nesqp_context->rcv_wnd),
 		  le32_to_cpu(nesqp->nesqp_context->misc));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	nes_debug(NES_DBG_CM, "  snd_wnd  = 0x%08X.\n", le32_to_cpu(nesqp->nesqp_context->snd_wnd));
 	nes_debug(NES_DBG_CM, "  snd_cwnd = 0x%08X.\n", le32_to_cpu(nesqp->nesqp_context->cwnd));
 	nes_debug(NES_DBG_CM, "  max_swnd = 0x%08X.\n", le32_to_cpu(nesqp->nesqp_context->max_snd_wnd));
@@ -3593,10 +4313,14 @@ int nes_cm_disconn(struct nes_qp *nesqp)
 	work = kzalloc(sizeof *work, GFP_ATOMIC);
 	if (!work)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return -ENOMEM; /* Timer will clean up */
 =======
 		return -ENOMEM;  /* Timer will clean up */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -ENOMEM;  /* Timer will clean up */
+>>>>>>> refs/remotes/origin/master
 
 	nes_add_ref(&nesqp->ibqp);
 	work->nesqp = nesqp;
@@ -3617,10 +4341,14 @@ static void nes_disconnect_worker(struct work_struct *work)
 	kfree(dwork);
 	nes_debug(NES_DBG_CM, "processing AEQE id 0x%04X for QP%u.\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			nesqp->last_aeq, nesqp->hwqp.qp_id);
 =======
 		  nesqp->last_aeq, nesqp->hwqp.qp_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  nesqp->last_aeq, nesqp->hwqp.qp_id);
+>>>>>>> refs/remotes/origin/master
 	nes_cm_disconn_true(nesqp);
 	nes_rem_ref(&nesqp->ibqp);
 }
@@ -3657,10 +4385,14 @@ static int nes_cm_disconn_true(struct nes_qp *nesqp)
 	if (!cm_id) {
 		nes_debug(NES_DBG_CM, "QP%u disconnect_worker cmid is NULL\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				nesqp->hwqp.qp_id);
 =======
 			  nesqp->hwqp.qp_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  nesqp->hwqp.qp_id);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&nesqp->lock, flags);
 		return -1;
 	}
@@ -3670,10 +4402,14 @@ static int nes_cm_disconn_true(struct nes_qp *nesqp)
 
 	original_hw_tcp_state = nesqp->hw_tcp_state;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	original_ibqp_state   = nesqp->ibqp_state;
 =======
 	original_ibqp_state = nesqp->ibqp_state;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	original_ibqp_state = nesqp->ibqp_state;
+>>>>>>> refs/remotes/origin/master
 	last_ae = nesqp->last_aeq;
 
 	if (nesqp->term_flags) {
@@ -3681,9 +4417,13 @@ static int nes_cm_disconn_true(struct nes_qp *nesqp)
 		issue_close = 1;
 		nesqp->cm_id = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		del_timer(&nesqp->terminate_timer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		del_timer(&nesqp->terminate_timer);
+>>>>>>> refs/remotes/origin/master
 		if (nesqp->flush_issued == 0) {
 			nesqp->flush_issued = 1;
 			issue_flush = 1;
@@ -3720,7 +4460,12 @@ static int nes_cm_disconn_true(struct nes_qp *nesqp)
 			ibevent.device = nesqp->ibqp.device;
 			ibevent.event = nesqp->terminate_eventtype;
 			ibevent.element.qp = &nesqp->ibqp;
+<<<<<<< HEAD
 			nesqp->ibqp.event_handler(&ibevent, nesqp->ibqp.qp_context);
+=======
+			if (nesqp->ibqp.event_handler)
+				nesqp->ibqp.event_handler(&ibevent, nesqp->ibqp.qp_context);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -3736,27 +4481,37 @@ static int nes_cm_disconn_true(struct nes_qp *nesqp)
 
 			nes_debug(NES_DBG_CM, "Generating a CM Disconnect Event"
 <<<<<<< HEAD
+<<<<<<< HEAD
 				" for  QP%u, SQ Head = %u, SQ Tail = %u. "
 				"cm_id = %p, refcount = %u.\n",
 				nesqp->hwqp.qp_id, nesqp->hwqp.sq_head,
 				nesqp->hwqp.sq_tail, cm_id,
 				atomic_read(&nesqp->refcount));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				  " for  QP%u, SQ Head = %u, SQ Tail = %u. "
 				  "cm_id = %p, refcount = %u.\n",
 				  nesqp->hwqp.qp_id, nesqp->hwqp.sq_head,
 				  nesqp->hwqp.sq_tail, cm_id,
 				  atomic_read(&nesqp->refcount));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			ret = cm_id->event_handler(cm_id, &cm_event);
 			if (ret)
 				nes_debug(NES_DBG_CM, "OFA CM event_handler "
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"returned, ret=%d\n", ret);
 =======
 					  "returned, ret=%d\n", ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  "returned, ret=%d\n", ret);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (issue_close) {
@@ -3775,6 +4530,7 @@ static int nes_cm_disconn_true(struct nes_qp *nesqp)
 
 			ret = cm_id->event_handler(cm_id, &cm_event);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (ret) {
 				nes_debug(NES_DBG_CM, "OFA CM event_handler returned, ret=%d\n", ret);
 			}
@@ -3782,6 +4538,10 @@ static int nes_cm_disconn_true(struct nes_qp *nesqp)
 			if (ret)
 				nes_debug(NES_DBG_CM, "OFA CM event_handler returned, ret=%d\n", ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ret)
+				nes_debug(NES_DBG_CM, "OFA CM event_handler returned, ret=%d\n", ret);
+>>>>>>> refs/remotes/origin/master
 
 			cm_id->rem_ref(cm_id);
 		}
@@ -3822,12 +4582,17 @@ static int nes_disconnect(struct nes_qp *nesqp, int abrupt)
 				nesibdev->ibdev.dereg_mr(nesqp->lsmm_mr);
 			pci_free_consistent(nesdev->pcidev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					nesqp->private_data_len+sizeof(struct ietf_mpa_frame),
 					nesqp->ietf_frame, nesqp->ietf_frame_pbase);
 =======
 					    nesqp->private_data_len + nesqp->ietf_frame_size,
 					    nesqp->ietf_frame, nesqp->ietf_frame_pbase);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					    nesqp->private_data_len + nesqp->ietf_frame_size,
+					    nesqp->ietf_frame, nesqp->ietf_frame_pbase);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -3867,14 +4632,22 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 	struct nes_pd *nespd;
 	u64 tagged_offset;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 mpa_frame_offset = 0;
 	struct ietf_mpa_v2 *mpa_v2_frame;
 	u8 start_addr = 0;
 	u8 *start_ptr = &start_addr;
 	u8 **start_buff = &start_ptr;
 	u16 buff_len = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sockaddr_in *laddr = (struct sockaddr_in *)&cm_id->local_addr;
+	struct sockaddr_in *raddr = (struct sockaddr_in *)&cm_id->remote_addr;
+>>>>>>> refs/remotes/origin/master
 
 	ibqp = nes_get_qp(cm_id->device, conn_param->qpn);
 	if (!ibqp)
@@ -3916,6 +4689,7 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 			netdev_refcnt_read(nesvnic->netdev));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* allocate the ietf frame and space for private data */
 	nesqp->ietf_frame = pci_alloc_consistent(nesdev->pcidev,
 		sizeof(struct ietf_mpa_frame) + conn_param->private_data_len,
@@ -3940,6 +4714,8 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 	nesqp->ietf_frame->rev = mpa_version;
 	nesqp->ietf_frame->flags = IETF_MPA_FLAGS_CRC;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	nesqp->ietf_frame_size = sizeof(struct ietf_mpa_v2);
 	/* allocate the ietf frame and space for private data */
 	nesqp->ietf_frame = pci_alloc_consistent(nesdev->pcidev,
@@ -3960,11 +4736,15 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 
 	cm_build_mpa_frame(cm_node, start_buff, &buff_len, nesqp->ietf_frame, MPA_KEY_REPLY);
 	nesqp->private_data_len = conn_param->private_data_len;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* setup our first outgoing iWarp send WQE (the IETF frame response) */
 	wqe = &nesqp->hwqp.sq_vbase[0];
 
+<<<<<<< HEAD
 	if (cm_id->remote_addr.sin_addr.s_addr !=
 <<<<<<< HEAD
 			cm_id->local_addr.sin_addr.s_addr) {
@@ -3988,6 +4768,9 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 				nesqp->ietf_frame, nesqp->ietf_frame_pbase);
 =======
 	    cm_id->local_addr.sin_addr.s_addr) {
+=======
+	if (raddr->sin_addr.s_addr != laddr->sin_addr.s_addr) {
+>>>>>>> refs/remotes/origin/master
 		u64temp = (unsigned long)nesqp;
 		nesibdev = nesvnic->nesibdev;
 		nespd = nesqp->nespd;
@@ -4005,7 +4788,10 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 			pci_free_consistent(nesdev->pcidev,
 					    nesqp->private_data_len + nesqp->ietf_frame_size,
 					    nesqp->ietf_frame, nesqp->ietf_frame_pbase);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return -ENOMEM;
 		}
 
@@ -4013,6 +4799,7 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 		ibmr->device = nespd->ibpd.device;
 		nesqp->lsmm_mr = ibmr;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		u64temp |= NES_SW_CONTEXT_ALIGN>>1;
 		set_wqe_64bit_value(wqe->wqe_words,
@@ -4031,6 +4818,8 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 			cpu_to_le32(conn_param->private_data_len +
 			sizeof(struct ietf_mpa_frame));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		u64temp |= NES_SW_CONTEXT_ALIGN >> 1;
 		set_wqe_64bit_value(wqe->wqe_words,
 				    NES_IWARP_SQ_WQE_COMP_CTX_LOW_IDX,
@@ -4045,7 +4834,10 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 				    (u64)(unsigned long)(*start_buff));
 		wqe->wqe_words[NES_IWARP_SQ_WQE_LENGTH0_IDX] =
 			cpu_to_le32(buff_len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		wqe->wqe_words[NES_IWARP_SQ_WQE_STAG0_IDX] = ibmr->lkey;
 		if (nesqp->sq_kmapped) {
 			nesqp->sq_kmapped = 0;
@@ -4055,10 +4847,14 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 		nesqp->nesqp_context->ird_ord_sizes |=
 			cpu_to_le32(NES_QPCONTEXT_ORDIRD_LSMM_PRESENT |
 <<<<<<< HEAD
+<<<<<<< HEAD
 			NES_QPCONTEXT_ORDIRD_WRPDU);
 =======
 				    NES_QPCONTEXT_ORDIRD_WRPDU);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    NES_QPCONTEXT_ORDIRD_WRPDU);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		nesqp->nesqp_context->ird_ord_sizes |=
 			cpu_to_le32(NES_QPCONTEXT_ORDIRD_WRPDU);
@@ -4073,17 +4869,21 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 	/*  nesqp->cm_node = (void *)cm_id->provider_data; */
 	cm_id->provider_data = nesqp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nesqp->active_conn   = 0;
 
 	if (cm_node->state == NES_CM_STATE_TSA)
 		nes_debug(NES_DBG_CM, "Already state = TSA for cm_node=%p\n",
 			cm_node);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	nesqp->active_conn = 0;
 
 	if (cm_node->state == NES_CM_STATE_TSA)
 		nes_debug(NES_DBG_CM, "Already state = TSA for cm_node=%p\n",
 			  cm_node);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	nes_cm_init_tsa_conn(nesqp, cm_node);
@@ -4110,6 +4910,17 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 			le32_to_cpu(nesqp->nesqp_context->ip0), NULL,
 			NES_ARP_RESOLVE) << 16);
 =======
+=======
+
+	nes_cm_init_tsa_conn(nesqp, cm_node);
+
+	nesqp->nesqp_context->tcpPorts[0] = cpu_to_le16(ntohs(laddr->sin_port));
+	nesqp->nesqp_context->tcpPorts[1] = cpu_to_le16(ntohs(raddr->sin_port));
+
+	nesqp->nesqp_context->ip0 = cpu_to_le32(ntohl(raddr->sin_addr.s_addr));
+
+	nesqp->nesqp_context->misc2 |= cpu_to_le32(
+>>>>>>> refs/remotes/origin/master
 		(u32)PCI_FUNC(nesdev->pcidev->devfn) <<
 		NES_QPCONTEXT_MISC2_SRC_IP_SHIFT);
 
@@ -4117,7 +4928,10 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 		cpu_to_le32(nes_arp_table(nesdev,
 					  le32_to_cpu(nesqp->nesqp_context->ip0), NULL,
 					  NES_ARP_RESOLVE) << 16);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	nesqp->nesqp_context->ts_val_delta = cpu_to_le32(
 		jiffies - nes_read_indexed(nesdev, NES_IDX_TCP_NOW));
@@ -4132,22 +4946,32 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 	memset(&nes_quad, 0, sizeof(nes_quad));
 	nes_quad.DstIpAdrIndex =
 		cpu_to_le32((u32)PCI_FUNC(nesdev->pcidev->devfn) << 24);
+<<<<<<< HEAD
 	if (ipv4_is_loopback(cm_id->remote_addr.sin_addr.s_addr))
 		nes_quad.SrcIpadr = nesvnic->local_ipaddr;
 	else
 		nes_quad.SrcIpadr = cm_id->remote_addr.sin_addr.s_addr;
 	nes_quad.TcpPorts[0] = cm_id->remote_addr.sin_port;
 	nes_quad.TcpPorts[1] = cm_id->local_addr.sin_port;
+=======
+	nes_quad.SrcIpadr = raddr->sin_addr.s_addr;
+	nes_quad.TcpPorts[0] = raddr->sin_port;
+	nes_quad.TcpPorts[1] = laddr->sin_port;
+>>>>>>> refs/remotes/origin/master
 
 	/* Produce hash key */
 	crc_value = get_crc_value(&nes_quad);
 	nesqp->hte_index = cpu_to_be32(crc_value ^ 0xffffffff);
 	nes_debug(NES_DBG_CM, "HTE Index = 0x%08X, CRC = 0x%08X\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		nesqp->hte_index, nesqp->hte_index & adapter->hte_index_mask);
 =======
 		  nesqp->hte_index, nesqp->hte_index & adapter->hte_index_mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  nesqp->hte_index, nesqp->hte_index & adapter->hte_index_mask);
+>>>>>>> refs/remotes/origin/master
 
 	nesqp->hte_index &= adapter->hte_index_mask;
 	nesqp->nesqp_context->hte_index = cpu_to_le32(nesqp->hte_index);
@@ -4155,6 +4979,7 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 	cm_node->cm_core->api->accelerated(cm_node->cm_core, cm_node);
 
 	nes_debug(NES_DBG_CM, "QP%u, Destination IP = 0x%08X:0x%04X, local = "
+<<<<<<< HEAD
 <<<<<<< HEAD
 			"0x%08X:0x%04X, rcv_nxt=0x%08X, snd_nxt=0x%08X, mpa + "
 			"private data length=%zu.\n", nesqp->hwqp.qp_id,
@@ -4178,6 +5003,15 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 		  le32_to_cpu(nesqp->nesqp_context->snd_nxt),
 		  buff_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  "0x%08X:0x%04X, rcv_nxt=0x%08X, snd_nxt=0x%08X, mpa + "
+		  "private data length=%u.\n", nesqp->hwqp.qp_id,
+		  ntohl(raddr->sin_addr.s_addr), ntohs(raddr->sin_port),
+		  ntohl(laddr->sin_addr.s_addr), ntohs(laddr->sin_port),
+		  le32_to_cpu(nesqp->nesqp_context->rcv_nxt),
+		  le32_to_cpu(nesqp->nesqp_context->snd_nxt),
+		  buff_len);
+>>>>>>> refs/remotes/origin/master
 
 	/* notify OF layer that accept event was successful */
 	cm_id->add_ref(cm_id);
@@ -4199,19 +5033,27 @@ int nes_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 		/* copy entire MPA frame to our cm_node's frame */
 		memcpy(cm_node->loopbackpartner->mpa_frame_buf,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			nesqp->ietf_frame->priv_data, nesqp->private_data_len);
 =======
 		       conn_param->private_data, conn_param->private_data_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       conn_param->private_data, conn_param->private_data_len);
+>>>>>>> refs/remotes/origin/master
 		create_event(cm_node->loopbackpartner, NES_CM_EVENT_CONNECTED);
 	}
 	if (ret)
 		printk(KERN_ERR "%s[%u] OFA CM event_handler returned, "
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"ret=%d\n", __func__, __LINE__, ret);
 =======
 		       "ret=%d\n", __func__, __LINE__, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       "ret=%d\n", __func__, __LINE__, ret);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -4224,6 +5066,7 @@ int nes_reject(struct iw_cm_id *cm_id, const void *pdata, u8 pdata_len)
 {
 	struct nes_cm_node *cm_node;
 	struct nes_cm_node *loopback;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	struct nes_cm_core *cm_core;
@@ -4254,6 +5097,8 @@ int nes_reject(struct iw_cm_id *cm_id, const void *pdata, u8 pdata_len)
 
 	return cm_core->api->reject(cm_core, &cm_node->mpa_frame, cm_node);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct nes_cm_core *cm_core;
 	u8 *start_buff;
 
@@ -4276,7 +5121,10 @@ int nes_reject(struct iw_cm_id *cm_id, const void *pdata, u8 pdata_len)
 		memcpy(start_buff, pdata, pdata_len);
 	}
 	return cm_core->api->reject(cm_core, cm_node);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -4293,7 +5141,15 @@ int nes_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 	struct nes_cm_node *cm_node;
 	struct nes_cm_info cm_info;
 	int apbvt_set = 0;
+<<<<<<< HEAD
 
+=======
+	struct sockaddr_in *laddr = (struct sockaddr_in *)&cm_id->local_addr;
+	struct sockaddr_in *raddr = (struct sockaddr_in *)&cm_id->remote_addr;
+
+	if (cm_id->remote_addr.ss_family != AF_INET)
+		return -ENOSYS;
+>>>>>>> refs/remotes/origin/master
 	ibqp = nes_get_qp(cm_id->device, conn_param->qpn);
 	if (!ibqp)
 		return -EINVAL;
@@ -4303,6 +5159,7 @@ int nes_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 	nesvnic = to_nesvnic(nesqp->ibqp.device);
 	if (!nesvnic)
 		return -EINVAL;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	nesdev  = nesvnic->nesdev;
 =======
@@ -4330,6 +5187,20 @@ int nes_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 		  ntohl(cm_id->local_addr.sin_addr.s_addr),
 		  ntohs(cm_id->local_addr.sin_port));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nesdev = nesvnic->nesdev;
+	if (!nesdev)
+		return -EINVAL;
+
+	if (!laddr->sin_port || !raddr->sin_port)
+		return -EINVAL;
+
+	nes_debug(NES_DBG_CM, "QP%u, current IP = 0x%08X, Destination IP = "
+		  "0x%08X:0x%04X, local = 0x%08X:0x%04X.\n", nesqp->hwqp.qp_id,
+		  ntohl(nesvnic->local_ipaddr), ntohl(raddr->sin_addr.s_addr),
+		  ntohs(raddr->sin_port), ntohl(laddr->sin_addr.s_addr),
+		  ntohs(laddr->sin_port));
+>>>>>>> refs/remotes/origin/master
 
 	atomic_inc(&cm_connects);
 	nesqp->active_conn = 1;
@@ -4341,6 +5212,7 @@ int nes_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 
 	nesqp->private_data_len = conn_param->private_data_len;
 	nesqp->nesqp_context->ird_ord_sizes |= cpu_to_le32((u32)conn_param->ord);
+<<<<<<< HEAD
 	nes_debug(NES_DBG_CM, "requested ord = 0x%08X.\n", (u32)conn_param->ord);
 	nes_debug(NES_DBG_CM, "mpa private data len =%u\n",
 <<<<<<< HEAD
@@ -4358,14 +5230,35 @@ int nes_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 		nes_manage_apbvt(nesvnic, ntohs(cm_id->local_addr.sin_port),
 				 PCI_FUNC(nesdev->pcidev->devfn), NES_MANAGE_APBVT_ADD);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* space for rdma0 read msg */
+	if (conn_param->ord == 0)
+		nesqp->nesqp_context->ird_ord_sizes |= cpu_to_le32(1);
+
+	nes_debug(NES_DBG_CM, "requested ord = 0x%08X.\n", (u32)conn_param->ord);
+	nes_debug(NES_DBG_CM, "mpa private data len =%u\n",
+		  conn_param->private_data_len);
+
+	if (laddr->sin_addr.s_addr != raddr->sin_addr.s_addr) {
+		nes_manage_apbvt(nesvnic, ntohs(laddr->sin_port),
+				 PCI_FUNC(nesdev->pcidev->devfn),
+				 NES_MANAGE_APBVT_ADD);
+>>>>>>> refs/remotes/origin/master
 		apbvt_set = 1;
 	}
 
 	/* set up the connection params for the node */
+<<<<<<< HEAD
 	cm_info.loc_addr = htonl(cm_id->local_addr.sin_addr.s_addr);
 	cm_info.loc_port = htons(cm_id->local_addr.sin_port);
 	cm_info.rem_addr = htonl(cm_id->remote_addr.sin_addr.s_addr);
 	cm_info.rem_port = htons(cm_id->remote_addr.sin_port);
+=======
+	cm_info.loc_addr = htonl(laddr->sin_addr.s_addr);
+	cm_info.loc_port = htons(laddr->sin_port);
+	cm_info.rem_addr = htonl(raddr->sin_addr.s_addr);
+	cm_info.rem_port = htons(raddr->sin_port);
+>>>>>>> refs/remotes/origin/master
 	cm_info.cm_id = cm_id;
 	cm_info.conn_type = NES_CM_IWARP_CONN_TYPE;
 
@@ -4373,6 +5266,7 @@ int nes_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 
 	/* create a connect CM node connection */
 	cm_node = g_cm_core->api->connect(g_cm_core, nesvnic,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		conn_param->private_data_len, (void *)conn_param->private_data,
 		&cm_info);
@@ -4382,14 +5276,22 @@ int nes_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 				PCI_FUNC(nesdev->pcidev->devfn),
 				NES_MANAGE_APBVT_DEL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					  conn_param->private_data_len, (void *)conn_param->private_data,
 					  &cm_info);
 	if (!cm_node) {
 		if (apbvt_set)
+<<<<<<< HEAD
 			nes_manage_apbvt(nesvnic, ntohs(cm_id->local_addr.sin_port),
 					 PCI_FUNC(nesdev->pcidev->devfn),
 					 NES_MANAGE_APBVT_DEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			nes_manage_apbvt(nesvnic, ntohs(laddr->sin_port),
+					 PCI_FUNC(nesdev->pcidev->devfn),
+					 NES_MANAGE_APBVT_DEL);
+>>>>>>> refs/remotes/origin/master
 
 		cm_id->rem_ref(cm_id);
 		return -ENOMEM;
@@ -4413,10 +5315,20 @@ int nes_create_listen(struct iw_cm_id *cm_id, int backlog)
 	struct nes_cm_listener *cm_node;
 	struct nes_cm_info cm_info;
 	int err;
+<<<<<<< HEAD
 
 	nes_debug(NES_DBG_CM, "cm_id = %p, local port = 0x%04X.\n",
 			cm_id, ntohs(cm_id->local_addr.sin_port));
 
+=======
+	struct sockaddr_in *laddr = (struct sockaddr_in *)&cm_id->local_addr;
+
+	nes_debug(NES_DBG_CM, "cm_id = %p, local port = 0x%04X.\n",
+		  cm_id, ntohs(laddr->sin_port));
+
+	if (cm_id->local_addr.ss_family != AF_INET)
+		return -ENOSYS;
+>>>>>>> refs/remotes/origin/master
 	nesvnic = to_nesvnic(cm_id->device);
 	if (!nesvnic)
 		return -EINVAL;
@@ -4425,11 +5337,19 @@ int nes_create_listen(struct iw_cm_id *cm_id, int backlog)
 			nesvnic, nesvnic->netdev, nesvnic->netdev->name);
 
 	nes_debug(NES_DBG_CM, "nesvnic->local_ipaddr=0x%08x, sin_addr.s_addr=0x%08x\n",
+<<<<<<< HEAD
 			nesvnic->local_ipaddr, cm_id->local_addr.sin_addr.s_addr);
 
 	/* setup listen params in our api call struct */
 	cm_info.loc_addr = nesvnic->local_ipaddr;
 	cm_info.loc_port = cm_id->local_addr.sin_port;
+=======
+			nesvnic->local_ipaddr, laddr->sin_addr.s_addr);
+
+	/* setup listen params in our api call struct */
+	cm_info.loc_addr = nesvnic->local_ipaddr;
+	cm_info.loc_port = laddr->sin_port;
+>>>>>>> refs/remotes/origin/master
 	cm_info.backlog = backlog;
 	cm_info.cm_id = cm_id;
 
@@ -4440,16 +5360,21 @@ int nes_create_listen(struct iw_cm_id *cm_id, int backlog)
 	if (!cm_node) {
 		printk(KERN_ERR "%s[%u] Error returned from listen API call\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, __LINE__);
 =======
 		       __func__, __LINE__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__, __LINE__);
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
 	cm_id->provider_data = cm_node;
 
 	if (!cm_node->reused_node) {
+<<<<<<< HEAD
 		err = nes_manage_apbvt(nesvnic,
 <<<<<<< HEAD
 			ntohs(cm_id->local_addr.sin_port),
@@ -4460,12 +5385,18 @@ int nes_create_listen(struct iw_cm_id *cm_id, int backlog)
 				err);
 =======
 				       ntohs(cm_id->local_addr.sin_port),
+=======
+		err = nes_manage_apbvt(nesvnic, ntohs(laddr->sin_port),
+>>>>>>> refs/remotes/origin/master
 				       PCI_FUNC(nesvnic->nesdev->pcidev->devfn),
 				       NES_MANAGE_APBVT_ADD);
 		if (err) {
 			printk(KERN_ERR "nes_manage_apbvt call returned %d.\n",
 			       err);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			g_cm_core->api->stop_listener(g_cm_core, (void *)cm_node);
 			return err;
 		}
@@ -4503,6 +5434,7 @@ int nes_cm_recv(struct sk_buff *skb, struct net_device *netdevice)
 {
 	int rc = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cm_packets_received++;
 	if ((g_cm_core) && (g_cm_core->api)) {
 		rc = g_cm_core->api->recv_pkt(g_cm_core, netdev_priv(netdevice), skb);
@@ -4511,6 +5443,8 @@ int nes_cm_recv(struct sk_buff *skb, struct net_device *netdevice)
 				" cm is not setup properly.\n");
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cm_packets_received++;
 	if ((g_cm_core) && (g_cm_core->api))
@@ -4518,7 +5452,10 @@ int nes_cm_recv(struct sk_buff *skb, struct net_device *netdevice)
 	else
 		nes_debug(NES_DBG_CM, "Unable to process packet for CM,"
 			  " cm is not setup properly.\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
@@ -4534,17 +5471,23 @@ int nes_cm_start(void)
 	/* create the primary CM core, pass this handle to subsequent core inits */
 	g_cm_core = nes_cm_alloc_core();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (g_cm_core) {
 		return 0;
 	} else {
 		return -ENOMEM;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (g_cm_core)
 		return 0;
 	else
 		return -ENOMEM;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -4566,9 +5509,12 @@ int nes_cm_stop(void)
 static void cm_event_connected(struct nes_cm_event *event)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 u64temp;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct nes_qp *nesqp;
 	struct nes_vnic *nesvnic;
 	struct nes_device *nesdev;
@@ -4578,12 +5524,21 @@ static void cm_event_connected(struct nes_cm_event *event)
 	struct iw_cm_id *cm_id;
 	struct iw_cm_event cm_event;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nes_hw_qp_wqe *wqe;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct nes_v4_quad nes_quad;
 	u32 crc_value;
 	int ret;
+=======
+	struct nes_v4_quad nes_quad;
+	u32 crc_value;
+	int ret;
+	struct sockaddr_in *laddr;
+	struct sockaddr_in *raddr;
+	struct sockaddr_in *cm_event_laddr;
+>>>>>>> refs/remotes/origin/master
 
 	/* get all our handles */
 	cm_node = event->cm_node;
@@ -4593,6 +5548,7 @@ static void cm_event_connected(struct nes_cm_event *event)
 	nesvnic = to_nesvnic(nesqp->ibqp.device);
 	nesdev = nesvnic->nesdev;
 	nesadapter = nesdev->nesadapter;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	if (nesqp->destroyed) {
@@ -4607,21 +5563,33 @@ static void cm_event_connected(struct nes_cm_event *event)
 			ntohs(cm_id->local_addr.sin_port),
 			jiffies);
 =======
+=======
+	laddr = (struct sockaddr_in *)&cm_id->local_addr;
+	raddr = (struct sockaddr_in *)&cm_id->remote_addr;
+	cm_event_laddr = (struct sockaddr_in *)&cm_event.local_addr;
+
+>>>>>>> refs/remotes/origin/master
 	if (nesqp->destroyed)
 		return;
 	atomic_inc(&cm_connecteds);
 	nes_debug(NES_DBG_CM, "QP%u attempting to connect to  0x%08X:0x%04X on"
 		  " local port 0x%04X. jiffies = %lu.\n",
+<<<<<<< HEAD
 		  nesqp->hwqp.qp_id,
 		  ntohl(cm_id->remote_addr.sin_addr.s_addr),
 		  ntohs(cm_id->remote_addr.sin_port),
 		  ntohs(cm_id->local_addr.sin_port),
 		  jiffies);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  nesqp->hwqp.qp_id, ntohl(raddr->sin_addr.s_addr),
+		  ntohs(raddr->sin_port), ntohs(laddr->sin_port), jiffies);
+>>>>>>> refs/remotes/origin/master
 
 	nes_cm_init_tsa_conn(nesqp, cm_node);
 
 	/* set the QP tsa context */
+<<<<<<< HEAD
 	nesqp->nesqp_context->tcpPorts[0] =
 		cpu_to_le16(ntohs(cm_id->local_addr.sin_port));
 	nesqp->nesqp_context->tcpPorts[1] =
@@ -4632,6 +5600,11 @@ static void cm_event_connected(struct nes_cm_event *event)
 	else
 		nesqp->nesqp_context->ip0 =
 			cpu_to_le32(ntohl(cm_id->remote_addr.sin_addr.s_addr));
+=======
+	nesqp->nesqp_context->tcpPorts[0] = cpu_to_le16(ntohs(laddr->sin_port));
+	nesqp->nesqp_context->tcpPorts[1] = cpu_to_le16(ntohs(raddr->sin_port));
+	nesqp->nesqp_context->ip0 = cpu_to_le32(ntohl(raddr->sin_addr.s_addr));
+>>>>>>> refs/remotes/origin/master
 
 	nesqp->nesqp_context->misc2 |= cpu_to_le32(
 			(u32)PCI_FUNC(nesdev->pcidev->devfn) <<
@@ -4648,6 +5621,7 @@ static void cm_event_connected(struct nes_cm_event *event)
 			NES_QPCONTEXT_ORDIRD_IWARP_MODE_SHIFT);
 
 	/* Adjust tail for not having a LSMM */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	nesqp->hwqp.sq_tail = 1;
 
@@ -4684,50 +5658,70 @@ static void cm_event_connected(struct nes_cm_event *event)
 	}
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*nesqp->hwqp.sq_tail = 1;*/
 
 	build_rdma0_msg(cm_node, &nesqp);
 
 	nes_write32(nesdev->regs + NES_WQE_ALLOC,
 		    (1 << 24) | 0x00800000 | nesqp->hwqp.qp_id);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	memset(&nes_quad, 0, sizeof(nes_quad));
 
 	nes_quad.DstIpAdrIndex =
 		cpu_to_le32((u32)PCI_FUNC(nesdev->pcidev->devfn) << 24);
+<<<<<<< HEAD
 	if (ipv4_is_loopback(cm_id->remote_addr.sin_addr.s_addr))
 		nes_quad.SrcIpadr = nesvnic->local_ipaddr;
 	else
 		nes_quad.SrcIpadr = cm_id->remote_addr.sin_addr.s_addr;
 	nes_quad.TcpPorts[0] = cm_id->remote_addr.sin_port;
 	nes_quad.TcpPorts[1] = cm_id->local_addr.sin_port;
+=======
+	nes_quad.SrcIpadr = raddr->sin_addr.s_addr;
+	nes_quad.TcpPorts[0] = raddr->sin_port;
+	nes_quad.TcpPorts[1] = laddr->sin_port;
+>>>>>>> refs/remotes/origin/master
 
 	/* Produce hash key */
 	crc_value = get_crc_value(&nes_quad);
 	nesqp->hte_index = cpu_to_be32(crc_value ^ 0xffffffff);
 	nes_debug(NES_DBG_CM, "HTE Index = 0x%08X, After CRC = 0x%08X\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			nesqp->hte_index, nesqp->hte_index & nesadapter->hte_index_mask);
 =======
 		  nesqp->hte_index, nesqp->hte_index & nesadapter->hte_index_mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  nesqp->hte_index, nesqp->hte_index & nesadapter->hte_index_mask);
+>>>>>>> refs/remotes/origin/master
 
 	nesqp->hte_index &= nesadapter->hte_index_mask;
 	nesqp->nesqp_context->hte_index = cpu_to_le32(nesqp->hte_index);
 
 	nesqp->ietf_frame = &cm_node->mpa_frame;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nesqp->private_data_len = (u8) cm_node->mpa_frame_size;
 =======
 	nesqp->private_data_len = (u8)cm_node->mpa_frame_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nesqp->private_data_len = (u8)cm_node->mpa_frame_size;
+>>>>>>> refs/remotes/origin/master
 	cm_node->cm_core->api->accelerated(cm_node->cm_core, cm_node);
 
 	/* notify OF layer we successfully created the requested connection */
 	cm_event.event = IW_CM_EVENT_CONNECT_REPLY;
 	cm_event.status = 0;
 	cm_event.provider_data = cm_id->provider_data;
+<<<<<<< HEAD
 	cm_event.local_addr.sin_family = AF_INET;
 	cm_event.local_addr.sin_port = cm_id->local_addr.sin_port;
 	cm_event.remote_addr = cm_id->remote_addr;
@@ -4742,25 +5736,45 @@ static void cm_event_connected(struct nes_cm_event *event)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	cm_event.local_addr.sin_addr.s_addr = event->cm_info.rem_addr;
+=======
+	cm_event_laddr->sin_family = AF_INET;
+	cm_event_laddr->sin_port = laddr->sin_port;
+	cm_event.remote_addr = cm_id->remote_addr;
+
+	cm_event.private_data = (void *)event->cm_node->mpa_frame_buf;
+	cm_event.private_data_len = (u8)event->cm_node->mpa_frame_size;
+	cm_event.ird = cm_node->ird_size;
+	cm_event.ord = cm_node->ord_size;
+
+	cm_event_laddr->sin_addr.s_addr = event->cm_info.rem_addr;
+>>>>>>> refs/remotes/origin/master
 	ret = cm_id->event_handler(cm_id, &cm_event);
 	nes_debug(NES_DBG_CM, "OFA CM event_handler returned, ret=%d\n", ret);
 
 	if (ret)
 		printk(KERN_ERR "%s[%u] OFA CM event_handler returned, "
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"ret=%d\n", __func__, __LINE__, ret);
 =======
 		       "ret=%d\n", __func__, __LINE__, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       "ret=%d\n", __func__, __LINE__, ret);
+>>>>>>> refs/remotes/origin/master
 	attr.qp_state = IB_QPS_RTS;
 	nes_modify_qp(&nesqp->ibqp, &attr, IB_QP_STATE, NULL);
 
 	nes_debug(NES_DBG_CM, "Exiting connect thread for QP%u. jiffies = "
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"%lu\n", nesqp->hwqp.qp_id, jiffies);
 =======
 		  "%lu\n", nesqp->hwqp.qp_id, jiffies);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  "%lu\n", nesqp->hwqp.qp_id, jiffies);
+>>>>>>> refs/remotes/origin/master
 
 	return;
 }
@@ -4782,6 +5796,7 @@ static void cm_event_connect_error(struct nes_cm_event *event)
 
 	cm_id = event->cm_node->cm_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cm_id) {
 		return;
 	}
@@ -4789,10 +5804,15 @@ static void cm_event_connect_error(struct nes_cm_event *event)
 	if (!cm_id)
 		return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!cm_id)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	nes_debug(NES_DBG_CM, "cm_node=%p, cm_id=%p\n", event->cm_node, cm_id);
 	nesqp = cm_id->provider_data;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!nesqp) {
 		return;
@@ -4801,6 +5821,10 @@ static void cm_event_connect_error(struct nes_cm_event *event)
 	if (!nesqp)
 		return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!nesqp)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	/* notify OF layer about this connection error event */
 	/* cm_id->rem_ref(cm_id); */
@@ -4814,6 +5838,7 @@ static void cm_event_connect_error(struct nes_cm_event *event)
 	cm_event.private_data = NULL;
 	cm_event.private_data_len = 0;
 
+<<<<<<< HEAD
 	nes_debug(NES_DBG_CM, "call CM_EVENT REJECTED, local_addr=%08x, "
 <<<<<<< HEAD
 		"remove_addr=%08x\n", cm_event.local_addr.sin_addr.s_addr,
@@ -4822,16 +5847,32 @@ static void cm_event_connect_error(struct nes_cm_event *event)
 		  "remove_addr=%08x\n", cm_event.local_addr.sin_addr.s_addr,
 		  cm_event.remote_addr.sin_addr.s_addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_INFINIBAND_NES_DEBUG
+	{
+		struct sockaddr_in *cm_event_laddr = (struct sockaddr_in *)
+						     &cm_event.local_addr;
+		struct sockaddr_in *cm_event_raddr = (struct sockaddr_in *)
+						     &cm_event.remote_addr;
+		nes_debug(NES_DBG_CM, "call CM_EVENT REJECTED, local_addr=%08x, remote_addr=%08x\n",
+			  cm_event_laddr->sin_addr.s_addr, cm_event_raddr->sin_addr.s_addr);
+	}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	ret = cm_id->event_handler(cm_id, &cm_event);
 	nes_debug(NES_DBG_CM, "OFA CM event_handler returned, ret=%d\n", ret);
 	if (ret)
 		printk(KERN_ERR "%s[%u] OFA CM event_handler returned, "
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"ret=%d\n", __func__, __LINE__, ret);
 =======
 		       "ret=%d\n", __func__, __LINE__, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       "ret=%d\n", __func__, __LINE__, ret);
+>>>>>>> refs/remotes/origin/master
 	cm_id->rem_ref(cm_id);
 
 	rem_ref_cm_node(event->cm_node->cm_core, event->cm_node);
@@ -4902,6 +5943,7 @@ static void cm_event_reset(struct nes_cm_event *event)
 static void cm_event_mpa_req(struct nes_cm_event *event)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct iw_cm_id   *cm_id;
 =======
 	struct iw_cm_id *cm_id;
@@ -4909,6 +5951,16 @@ static void cm_event_mpa_req(struct nes_cm_event *event)
 	struct iw_cm_event cm_event;
 	int ret;
 	struct nes_cm_node *cm_node;
+=======
+	struct iw_cm_id *cm_id;
+	struct iw_cm_event cm_event;
+	int ret;
+	struct nes_cm_node *cm_node;
+	struct sockaddr_in *cm_event_laddr = (struct sockaddr_in *)
+					     &cm_event.local_addr;
+	struct sockaddr_in *cm_event_raddr = (struct sockaddr_in *)
+					     &cm_event.remote_addr;
+>>>>>>> refs/remotes/origin/master
 
 	cm_node = event->cm_node;
 	if (!cm_node)
@@ -4918,15 +5970,20 @@ static void cm_event_mpa_req(struct nes_cm_event *event)
 	atomic_inc(&cm_connect_reqs);
 	nes_debug(NES_DBG_CM, "cm_node = %p - cm_id = %p, jiffies = %lu\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			cm_node, cm_id, jiffies);
 =======
 		  cm_node, cm_id, jiffies);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  cm_node, cm_id, jiffies);
+>>>>>>> refs/remotes/origin/master
 
 	cm_event.event = IW_CM_EVENT_CONNECT_REQUEST;
 	cm_event.status = 0;
 	cm_event.provider_data = (void *)cm_node;
 
+<<<<<<< HEAD
 	cm_event.local_addr.sin_family = AF_INET;
 	cm_event.local_addr.sin_port = htons(event->cm_info.loc_port);
 	cm_event.local_addr.sin_addr.s_addr = htonl(event->cm_info.loc_addr);
@@ -4942,21 +5999,39 @@ static void cm_event_mpa_req(struct nes_cm_event *event)
 	cm_event.ird = cm_node->ird_size;
 	cm_event.ord = cm_node->ord_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cm_event_laddr->sin_family = AF_INET;
+	cm_event_laddr->sin_port = htons(event->cm_info.loc_port);
+	cm_event_laddr->sin_addr.s_addr = htonl(event->cm_info.loc_addr);
+
+	cm_event_raddr->sin_family = AF_INET;
+	cm_event_raddr->sin_port = htons(event->cm_info.rem_port);
+	cm_event_raddr->sin_addr.s_addr = htonl(event->cm_info.rem_addr);
+	cm_event.private_data = cm_node->mpa_frame_buf;
+	cm_event.private_data_len = (u8)cm_node->mpa_frame_size;
+	cm_event.ird = cm_node->ird_size;
+	cm_event.ord = cm_node->ord_size;
+>>>>>>> refs/remotes/origin/master
 
 	ret = cm_id->event_handler(cm_id, &cm_event);
 	if (ret)
 		printk(KERN_ERR "%s[%u] OFA CM event_handler returned, ret=%d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, __LINE__, ret);
 =======
 		       __func__, __LINE__, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__, __LINE__, ret);
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 
 
 static void cm_event_mpa_reject(struct nes_cm_event *event)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct iw_cm_id   *cm_id;
 =======
@@ -4965,6 +6040,16 @@ static void cm_event_mpa_reject(struct nes_cm_event *event)
 	struct iw_cm_event cm_event;
 	struct nes_cm_node *cm_node;
 	int ret;
+=======
+	struct iw_cm_id *cm_id;
+	struct iw_cm_event cm_event;
+	struct nes_cm_node *cm_node;
+	int ret;
+	struct sockaddr_in *cm_event_laddr = (struct sockaddr_in *)
+					     &cm_event.local_addr;
+	struct sockaddr_in *cm_event_raddr = (struct sockaddr_in *)
+					     &cm_event.remote_addr;
+>>>>>>> refs/remotes/origin/master
 
 	cm_node = event->cm_node;
 	if (!cm_node)
@@ -4974,15 +6059,20 @@ static void cm_event_mpa_reject(struct nes_cm_event *event)
 	atomic_inc(&cm_connect_reqs);
 	nes_debug(NES_DBG_CM, "cm_node = %p - cm_id = %p, jiffies = %lu\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			cm_node, cm_id, jiffies);
 =======
 		  cm_node, cm_id, jiffies);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  cm_node, cm_id, jiffies);
+>>>>>>> refs/remotes/origin/master
 
 	cm_event.event = IW_CM_EVENT_CONNECT_REPLY;
 	cm_event.status = -ECONNREFUSED;
 	cm_event.provider_data = cm_id->provider_data;
 
+<<<<<<< HEAD
 	cm_event.local_addr.sin_family = AF_INET;
 	cm_event.local_addr.sin_port = htons(event->cm_info.loc_port);
 	cm_event.local_addr.sin_addr.s_addr = htonl(event->cm_info.loc_addr);
@@ -5000,22 +6090,42 @@ static void cm_event_mpa_reject(struct nes_cm_event *event)
 			cm_event.local_addr.sin_addr.s_addr,
 			cm_event.remote_addr.sin_addr.s_addr);
 =======
+=======
+	cm_event_laddr->sin_family = AF_INET;
+	cm_event_laddr->sin_port = htons(event->cm_info.loc_port);
+	cm_event_laddr->sin_addr.s_addr = htonl(event->cm_info.loc_addr);
+
+	cm_event_raddr->sin_family = AF_INET;
+	cm_event_raddr->sin_port = htons(event->cm_info.rem_port);
+	cm_event_raddr->sin_addr.s_addr = htonl(event->cm_info.rem_addr);
+
+	cm_event.private_data = cm_node->mpa_frame_buf;
+>>>>>>> refs/remotes/origin/master
 	cm_event.private_data_len = (u8)cm_node->mpa_frame_size;
 
 	nes_debug(NES_DBG_CM, "call CM_EVENT_MPA_REJECTED, local_addr=%08x, "
 		  "remove_addr=%08x\n",
+<<<<<<< HEAD
 		  cm_event.local_addr.sin_addr.s_addr,
 		  cm_event.remote_addr.sin_addr.s_addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  cm_event_laddr->sin_addr.s_addr,
+		  cm_event_raddr->sin_addr.s_addr);
+>>>>>>> refs/remotes/origin/master
 
 	ret = cm_id->event_handler(cm_id, &cm_event);
 	if (ret)
 		printk(KERN_ERR "%s[%u] OFA CM event_handler returned, ret=%d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, __LINE__, ret);
 =======
 		       __func__, __LINE__, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__, __LINE__, ret);
+>>>>>>> refs/remotes/origin/master
 
 	return;
 }
@@ -5035,10 +6145,14 @@ static int nes_cm_post_event(struct nes_cm_event *event)
 	INIT_WORK(&event->event_work, nes_cm_event_handler);
 	nes_debug(NES_DBG_CM, "cm_node=%p queue_work, event=%p\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		event->cm_node, event);
 =======
 		  event->cm_node, event);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  event->cm_node, event);
+>>>>>>> refs/remotes/origin/master
 
 	queue_work(event->cm_node->cm_core->event_wq, &event->event_work);
 
@@ -5056,10 +6170,14 @@ static void nes_cm_event_handler(struct work_struct *work)
 {
 	struct nes_cm_event *event = container_of(work, struct nes_cm_event,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			event_work);
 =======
 						  event_work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						  event_work);
+>>>>>>> refs/remotes/origin/master
 	struct nes_cm_core *cm_core;
 
 	if ((!event) || (!event->cm_node) || (!event->cm_node->cm_core))
@@ -5068,37 +6186,51 @@ static void nes_cm_event_handler(struct work_struct *work)
 	cm_core = event->cm_node->cm_core;
 	nes_debug(NES_DBG_CM, "event=%p, event->type=%u, events posted=%u\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		event, event->type, atomic_read(&cm_core->events_posted));
 =======
 		  event, event->type, atomic_read(&cm_core->events_posted));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  event, event->type, atomic_read(&cm_core->events_posted));
+>>>>>>> refs/remotes/origin/master
 
 	switch (event->type) {
 	case NES_CM_EVENT_MPA_REQ:
 		cm_event_mpa_req(event);
 		nes_debug(NES_DBG_CM, "cm_node=%p CM Event: MPA REQUEST\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			event->cm_node);
 		break;
 	case NES_CM_EVENT_RESET:
 		nes_debug(NES_DBG_CM, "cm_node = %p CM Event: RESET\n",
 			event->cm_node);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			  event->cm_node);
 		break;
 	case NES_CM_EVENT_RESET:
 		nes_debug(NES_DBG_CM, "cm_node = %p CM Event: RESET\n",
 			  event->cm_node);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		cm_event_reset(event);
 		break;
 	case NES_CM_EVENT_CONNECTED:
 		if ((!event->cm_node->cm_id) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 			(event->cm_node->state != NES_CM_STATE_TSA))
 =======
 		    (event->cm_node->state != NES_CM_STATE_TSA))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    (event->cm_node->state != NES_CM_STATE_TSA))
+>>>>>>> refs/remotes/origin/master
 			break;
 		cm_event_connected(event);
 		nes_debug(NES_DBG_CM, "CM Event: CONNECTED\n");
@@ -5106,10 +6238,14 @@ static void nes_cm_event_handler(struct work_struct *work)
 	case NES_CM_EVENT_MPA_REJECT:
 		if ((!event->cm_node->cm_id) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 				(event->cm_node->state == NES_CM_STATE_TSA))
 =======
 		    (event->cm_node->state == NES_CM_STATE_TSA))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    (event->cm_node->state == NES_CM_STATE_TSA))
+>>>>>>> refs/remotes/origin/master
 			break;
 		cm_event_mpa_reject(event);
 		nes_debug(NES_DBG_CM, "CM Event: REJECT\n");
@@ -5118,10 +6254,14 @@ static void nes_cm_event_handler(struct work_struct *work)
 	case NES_CM_EVENT_ABORTED:
 		if ((!event->cm_node->cm_id) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 			(event->cm_node->state == NES_CM_STATE_TSA))
 =======
 		    (event->cm_node->state == NES_CM_STATE_TSA))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    (event->cm_node->state == NES_CM_STATE_TSA))
+>>>>>>> refs/remotes/origin/master
 			break;
 		cm_event_connect_error(event);
 		nes_debug(NES_DBG_CM, "CM Event: ABORTED\n");

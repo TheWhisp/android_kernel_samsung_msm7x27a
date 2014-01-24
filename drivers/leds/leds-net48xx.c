@@ -15,6 +15,7 @@
 #include <linux/platform_device.h>
 #include <linux/leds.h>
 #include <linux/err.h>
+<<<<<<< HEAD
 #include <asm/io.h>
 #include <linux/nsc_gpio.h>
 #include <linux/scx200_gpio.h>
@@ -22,6 +23,12 @@
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/io.h>
+#include <linux/nsc_gpio.h>
+#include <linux/scx200_gpio.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRVNAME "net48xx-led"
 #define NET48XX_ERROR_LED_GPIO	20

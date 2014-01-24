@@ -7,6 +7,7 @@
 #define _ASM_GENERIC_PCI_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * pcibios_resource_to_bus - convert resource to PCI bus address
  * @dev: device which owns this resource
@@ -33,6 +34,8 @@ pcibios_bus_to_resource(struct pci_dev *dev, struct resource *res,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct resource *
 pcibios_select_root(struct pci_dev *pdev, struct resource *res)
 {

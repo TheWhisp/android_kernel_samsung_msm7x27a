@@ -5,8 +5,13 @@
  *
  * Copyright (C) 2008 Nokia Corporation.
  *
+<<<<<<< HEAD
  * Contact: Remi Denis-Courmont <remi.denis-courmont@nokia.com>
  * Original author: Sakari Ailus <sakari.ailus@nokia.com>
+=======
+ * Authors: Sakari Ailus <sakari.ailus@nokia.com>
+ *          Rémi Denis-Courmont
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -44,7 +49,11 @@ struct phonet_net {
 	struct phonet_routes routes;
 };
 
+<<<<<<< HEAD
 int phonet_net_id __read_mostly;
+=======
+static int phonet_net_id __read_mostly;
+>>>>>>> refs/remotes/origin/master
 
 static struct phonet_net *phonet_pernet(struct net *net)
 {
@@ -268,7 +277,11 @@ static int phonet_device_autoconf(struct net_device *dev)
 static void phonet_route_autodel(struct net_device *dev)
 {
 	struct phonet_net *pnn = phonet_pernet(dev_net(dev));
+<<<<<<< HEAD
 	unsigned i;
+=======
+	unsigned int i;
+>>>>>>> refs/remotes/origin/master
 	DECLARE_BITMAP(deleted, 64);
 
 	/* Remove left-over Phonet routes */
@@ -277,10 +290,14 @@ static void phonet_route_autodel(struct net_device *dev)
 	for (i = 0; i < 64; i++)
 		if (dev == pnn->routes.table[i]) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			rcu_assign_pointer(pnn->routes.table[i], NULL);
 =======
 			RCU_INIT_POINTER(pnn->routes.table[i], NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			RCU_INIT_POINTER(pnn->routes.table[i], NULL);
+>>>>>>> refs/remotes/origin/master
 			set_bit(i, deleted);
 		}
 	mutex_unlock(&pnn->routes.lock);
@@ -296,9 +313,15 @@ static void phonet_route_autodel(struct net_device *dev)
 
 /* notify Phonet of device events */
 static int phonet_device_notify(struct notifier_block *me, unsigned long what,
+<<<<<<< HEAD
 				void *arg)
 {
 	struct net_device *dev = arg;
+=======
+				void *ptr)
+{
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 
 	switch (what) {
 	case NETDEV_REGISTER:
@@ -324,7 +347,11 @@ static int __net_init phonet_init_net(struct net *net)
 {
 	struct phonet_net *pnn = phonet_pernet(net);
 
+<<<<<<< HEAD
 	if (!proc_net_fops_create(net, "phonet", 0, &pn_sock_seq_fops))
+=======
+	if (!proc_create("phonet", 0, net->proc_net, &pn_sock_seq_fops))
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	INIT_LIST_HEAD(&pnn->pndevs.list);
@@ -335,6 +362,7 @@ static int __net_init phonet_init_net(struct net *net)
 
 static void __net_exit phonet_exit_net(struct net *net)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct phonet_net *pnn = phonet_pernet(net);
 	struct net_device *dev;
@@ -356,6 +384,9 @@ static void __net_exit phonet_exit_net(struct net *net)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	proc_net_remove(net, "phonet");
+=======
+	remove_proc_entry("phonet", net->proc_net);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct pernet_operations phonet_net_ops = {
@@ -369,6 +400,7 @@ static struct pernet_operations phonet_net_ops = {
 int __init phonet_device_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int err = register_pernet_device(&phonet_net_ops);
 =======
 	int err = register_pernet_subsys(&phonet_net_ops);
@@ -377,6 +409,13 @@ int __init phonet_device_init(void)
 		return err;
 
 	proc_net_fops_create(&init_net, "pnresource", 0, &pn_res_seq_fops);
+=======
+	int err = register_pernet_subsys(&phonet_net_ops);
+	if (err)
+		return err;
+
+	proc_create("pnresource", 0, init_net.proc_net, &pn_res_seq_fops);
+>>>>>>> refs/remotes/origin/master
 	register_netdevice_notifier(&phonet_device_notifier);
 	err = phonet_netlink_register();
 	if (err)
@@ -389,11 +428,16 @@ void phonet_device_exit(void)
 	rtnl_unregister_all(PF_PHONET);
 	unregister_netdevice_notifier(&phonet_device_notifier);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unregister_pernet_device(&phonet_net_ops);
 =======
 	unregister_pernet_subsys(&phonet_net_ops);
 >>>>>>> refs/remotes/origin/cm-10.0
 	proc_net_remove(&init_net, "pnresource");
+=======
+	unregister_pernet_subsys(&phonet_net_ops);
+	remove_proc_entry("pnresource", init_net.proc_net);
+>>>>>>> refs/remotes/origin/master
 }
 
 int phonet_route_add(struct net_device *dev, u8 daddr)
@@ -422,10 +466,14 @@ int phonet_route_del(struct net_device *dev, u8 daddr)
 	mutex_lock(&routes->lock);
 	if (dev == routes->table[daddr])
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rcu_assign_pointer(routes->table[daddr], NULL);
 =======
 		RCU_INIT_POINTER(routes->table[daddr], NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		RCU_INIT_POINTER(routes->table[daddr], NULL);
+>>>>>>> refs/remotes/origin/master
 	else
 		dev = NULL;
 	mutex_unlock(&routes->lock);

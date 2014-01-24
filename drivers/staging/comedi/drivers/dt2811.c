@@ -18,10 +18,13 @@
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
+<<<<<<< HEAD
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 /*
 Driver: dt2811
@@ -45,6 +48,7 @@ Configuration options:
   [4] - D/A 1 range (same choices)
 */
 
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include "../comedidev.h"
 
@@ -58,51 +62,97 @@ static const struct comedi_lrange range_dt2811_pgh_ai_5_unipolar = {
 		RANGE(0, 2.5),
 		RANGE(0, 1.25),
 		RANGE(0, 0.625)
+=======
+#include <linux/module.h>
+#include "../comedidev.h"
+
+static const struct comedi_lrange range_dt2811_pgh_ai_5_unipolar = {
+	4, {
+		UNI_RANGE(5),
+		UNI_RANGE(2.5),
+		UNI_RANGE(1.25),
+		UNI_RANGE(0.625)
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
 static const struct comedi_lrange range_dt2811_pgh_ai_2_5_bipolar = {
 	4, {
+<<<<<<< HEAD
 		RANGE(-2.5, 2.5),
 		RANGE(-1.25, 1.25),
 		RANGE(-0.625, 0.625),
 		RANGE(-0.3125, 0.3125)
+=======
+		BIP_RANGE(2.5),
+		BIP_RANGE(1.25),
+		BIP_RANGE(0.625),
+		BIP_RANGE(0.3125)
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
 static const struct comedi_lrange range_dt2811_pgh_ai_5_bipolar = {
 	4, {
+<<<<<<< HEAD
 		RANGE(-5, 5),
 		RANGE(-2.5, 2.5),
 		RANGE(-1.25, 1.25),
 		RANGE(-0.625, 0.625)
+=======
+		BIP_RANGE(5),
+		BIP_RANGE(2.5),
+		BIP_RANGE(1.25),
+		BIP_RANGE(0.625)
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
 static const struct comedi_lrange range_dt2811_pgl_ai_5_unipolar = {
 	4, {
+<<<<<<< HEAD
 		RANGE(0, 5),
 		RANGE(0, 0.5),
 		RANGE(0, 0.05),
 		RANGE(0, 0.01)
+=======
+		UNI_RANGE(5),
+		UNI_RANGE(0.5),
+		UNI_RANGE(0.05),
+		UNI_RANGE(0.01)
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
 static const struct comedi_lrange range_dt2811_pgl_ai_2_5_bipolar = {
 	4, {
+<<<<<<< HEAD
 		RANGE(-2.5, 2.5),
 		RANGE(-0.25, 0.25),
 		RANGE(-0.025, 0.025),
 		RANGE(-0.005, 0.005)
+=======
+		BIP_RANGE(2.5),
+		BIP_RANGE(0.25),
+		BIP_RANGE(0.025),
+		BIP_RANGE(0.005)
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
 static const struct comedi_lrange range_dt2811_pgl_ai_5_bipolar = {
 	4, {
+<<<<<<< HEAD
 		RANGE(-5, 5),
 		RANGE(-0.5, 0.5),
 		RANGE(-0.05, 0.05),
 		RANGE(-0.01, 0.01)
+=======
+		BIP_RANGE(5),
+		BIP_RANGE(0.5),
+		BIP_RANGE(0.05),
+		BIP_RANGE(0.01)
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
@@ -211,6 +261,7 @@ struct dt2811_board {
 	const struct comedi_lrange *unip_5;
 };
 
+<<<<<<< HEAD
 static const struct dt2811_board boardtypes[] = {
 	{"dt2811-pgh",
 	 &range_dt2811_pgh_ai_5_bipolar,
@@ -266,6 +317,8 @@ static int dt2811_do_insn_bits(struct comedi_device *dev,
 			       struct comedi_subdevice *s,
 			       struct comedi_insn *insn, unsigned int *data);
 
+=======
+>>>>>>> refs/remotes/origin/master
 enum { card_2811_pgh, card_2811_pgl };
 
 struct dt2811_private {
@@ -281,8 +334,11 @@ struct dt2811_private {
 	unsigned int ao_readback[2];
 };
 
+<<<<<<< HEAD
 #define devpriv ((struct dt2811_private *)dev->private)
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct comedi_lrange *dac_range_types[] = {
 	&range_bipolar5,
 	&range_bipolar2_5,
@@ -291,6 +347,7 @@ static const struct comedi_lrange *dac_range_types[] = {
 
 #define DT2811_TIMEOUT 5
 
+<<<<<<< HEAD
 #if 0
 static irqreturn_t dt2811_interrupt(int irq, void *d)
 {
@@ -316,6 +373,88 @@ static irqreturn_t dt2811_interrupt(int irq, void *d)
 	return IRQ_HANDLED;
 }
 #endif
+=======
+static int dt2811_ai_insn(struct comedi_device *dev, struct comedi_subdevice *s,
+			  struct comedi_insn *insn, unsigned int *data)
+{
+	int chan = CR_CHAN(insn->chanspec);
+	int timeout = DT2811_TIMEOUT;
+	int i;
+
+	for (i = 0; i < insn->n; i++) {
+		outb(chan, dev->iobase + DT2811_ADGCR);
+
+		while (timeout
+		       && inb(dev->iobase + DT2811_ADCSR) & DT2811_ADBUSY)
+			timeout--;
+		if (!timeout)
+			return -ETIME;
+
+		data[i] = inb(dev->iobase + DT2811_ADDATLO);
+		data[i] |= inb(dev->iobase + DT2811_ADDATHI) << 8;
+		data[i] &= 0xfff;
+	}
+
+	return i;
+}
+
+static int dt2811_ao_insn(struct comedi_device *dev, struct comedi_subdevice *s,
+			  struct comedi_insn *insn, unsigned int *data)
+{
+	struct dt2811_private *devpriv = dev->private;
+	int i;
+	int chan;
+
+	chan = CR_CHAN(insn->chanspec);
+
+	for (i = 0; i < insn->n; i++) {
+		outb(data[i] & 0xff, dev->iobase + DT2811_DADAT0LO + 2 * chan);
+		outb((data[i] >> 8) & 0xff,
+		     dev->iobase + DT2811_DADAT0HI + 2 * chan);
+		devpriv->ao_readback[chan] = data[i];
+	}
+
+	return i;
+}
+
+static int dt2811_ao_insn_read(struct comedi_device *dev,
+			       struct comedi_subdevice *s,
+			       struct comedi_insn *insn, unsigned int *data)
+{
+	struct dt2811_private *devpriv = dev->private;
+	int i;
+	int chan;
+
+	chan = CR_CHAN(insn->chanspec);
+
+	for (i = 0; i < insn->n; i++)
+		data[i] = devpriv->ao_readback[chan];
+
+	return i;
+}
+
+static int dt2811_di_insn_bits(struct comedi_device *dev,
+			       struct comedi_subdevice *s,
+			       struct comedi_insn *insn, unsigned int *data)
+{
+	data[1] = inb(dev->iobase + DT2811_DIO);
+
+	return insn->n;
+}
+
+static int dt2811_do_insn_bits(struct comedi_device *dev,
+			       struct comedi_subdevice *s,
+			       struct comedi_insn *insn,
+			       unsigned int *data)
+{
+	if (comedi_dio_update_state(s, data))
+		outb(s->state, dev->iobase + DT2811_DIO);
+
+	data[1] = s->state;
+
+	return insn->n;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
   options[0]   Board base address
@@ -337,6 +476,7 @@ static irqreturn_t dt2811_interrupt(int irq, void *d)
 		 1 == bipolar 2.5V  (-2.5V -- +2.5V)
 		 2 == unipolar 5V  (0V -- +5V)
 */
+<<<<<<< HEAD
 
 static int dt2811_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 {
@@ -359,6 +499,19 @@ static int dt2811_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 
 	dev->iobase = iobase;
 	dev->board_name = this_board->name;
+=======
+static int dt2811_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+{
+	/* int i; */
+	const struct dt2811_board *board = comedi_board(dev);
+	struct dt2811_private *devpriv;
+	int ret;
+	struct comedi_subdevice *s;
+
+	ret = comedi_request_region(dev, it->options[0], DT2811_SIZE);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 #if 0
 	outb(0, dev->iobase + DT2811_ADCSR);
@@ -367,6 +520,7 @@ static int dt2811_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	i = inb(dev->iobase + DT2811_ADDATHI);
 #endif
 
+<<<<<<< HEAD
 #if 0
 	irq = it->options[1];
 	if (irq < 0) {
@@ -413,6 +567,15 @@ static int dt2811_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	ret = alloc_private(dev, sizeof(struct dt2811_private));
 	if (ret < 0)
 		return ret;
+=======
+	ret = comedi_alloc_subdevices(dev, 4);
+	if (ret)
+		return ret;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	switch (it->options[2]) {
 	case 0:
@@ -457,7 +620,11 @@ static int dt2811_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 		break;
 	}
 
+<<<<<<< HEAD
 	s = dev->subdevices + 0;
+=======
+	s = &dev->subdevices[0];
+>>>>>>> refs/remotes/origin/master
 	/* initialize the ADC subdevice */
 	s->type = COMEDI_SUBD_AI;
 	s->subdev_flags = SDF_READABLE | SDF_GROUND;
@@ -467,6 +634,7 @@ static int dt2811_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	switch (it->options[3]) {
 	case 0:
 	default:
+<<<<<<< HEAD
 		s->range_table = this_board->bip_5;
 		break;
 	case 1:
@@ -478,6 +646,19 @@ static int dt2811_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	}
 
 	s = dev->subdevices + 1;
+=======
+		s->range_table = board->bip_5;
+		break;
+	case 1:
+		s->range_table = board->bip_2_5;
+		break;
+	case 2:
+		s->range_table = board->unip_5;
+		break;
+	}
+
+	s = &dev->subdevices[1];
+>>>>>>> refs/remotes/origin/master
 	/* ao subdevice */
 	s->type = COMEDI_SUBD_AO;
 	s->subdev_flags = SDF_WRITABLE;
@@ -489,7 +670,11 @@ static int dt2811_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	devpriv->range_type_list[0] = dac_range_types[devpriv->dac_range[0]];
 	devpriv->range_type_list[1] = dac_range_types[devpriv->dac_range[1]];
 
+<<<<<<< HEAD
 	s = dev->subdevices + 2;
+=======
+	s = &dev->subdevices[2];
+>>>>>>> refs/remotes/origin/master
 	/* di subdevice */
 	s->type = COMEDI_SUBD_DI;
 	s->subdev_flags = SDF_READABLE;
@@ -498,7 +683,11 @@ static int dt2811_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	s->maxdata = 1;
 	s->range_table = &range_digital;
 
+<<<<<<< HEAD
 	s = dev->subdevices + 3;
+=======
+	s = &dev->subdevices[3];
+>>>>>>> refs/remotes/origin/master
 	/* do subdevice */
 	s->type = COMEDI_SUBD_DO;
 	s->subdev_flags = SDF_WRITABLE;
@@ -511,6 +700,7 @@ static int dt2811_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int dt2811_detach(struct comedi_device *dev)
 {
 	printk(KERN_INFO "comedi%d: dt2811: remove\n", dev->minor);
@@ -636,6 +826,32 @@ static int dt2811_do_insn_bits(struct comedi_device *dev,
 
 	return 2;
 }
+=======
+static const struct dt2811_board boardtypes[] = {
+	{
+		.name		= "dt2811-pgh",
+		.bip_5		= &range_dt2811_pgh_ai_5_bipolar,
+		.bip_2_5	= &range_dt2811_pgh_ai_2_5_bipolar,
+		.unip_5		= &range_dt2811_pgh_ai_5_unipolar,
+	}, {
+		.name		= "dt2811-pgl",
+		.bip_5		= &range_dt2811_pgl_ai_5_bipolar,
+		.bip_2_5	= &range_dt2811_pgl_ai_2_5_bipolar,
+		.unip_5		= &range_dt2811_pgl_ai_5_unipolar,
+	},
+};
+
+static struct comedi_driver dt2811_driver = {
+	.driver_name	= "dt2811",
+	.module		= THIS_MODULE,
+	.attach		= dt2811_attach,
+	.detach		= comedi_legacy_detach,
+	.board_name	= &boardtypes[0].name,
+	.num_names	= ARRAY_SIZE(boardtypes),
+	.offset		= sizeof(struct dt2811_board),
+};
+module_comedi_driver(dt2811_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

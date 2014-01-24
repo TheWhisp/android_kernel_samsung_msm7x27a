@@ -9,6 +9,7 @@
  *                                scott.feldman@intel.com)
  * Portions Copyright (C) Sun Microsystems 2008
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_ETHTOOL_H
 #define _LINUX_ETHTOOL_H
@@ -699,6 +700,14 @@ struct ethtool_rxnfc {
 };
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_ETHTOOL_H
+#define _LINUX_ETHTOOL_H
+
+#include <linux/compat.h>
+#include <uapi/linux/ethtool.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_COMPAT
 
 struct compat_ethtool_rx_flow_spec {
@@ -721,6 +730,7 @@ struct compat_ethtool_rxnfc {
 };
 
 #endif /* CONFIG_COMPAT */
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 /**
@@ -938,6 +948,13 @@ struct ethtool_rx_ntuple_list {
 extern int __ethtool_get_settings(struct net_device *dev,
 				  struct ethtool_cmd *cmd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include <linux/rculist.h>
+
+extern int __ethtool_get_settings(struct net_device *dev,
+				  struct ethtool_cmd *cmd);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * enum ethtool_phys_id_state - indicator state for physical identification
@@ -960,6 +977,7 @@ struct net_device;
 /* Some generic methods drivers may use in their ethtool_ops */
 u32 ethtool_op_get_link(struct net_device *dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 u32 ethtool_op_get_tx_csum(struct net_device *dev);
 int ethtool_op_set_tx_csum(struct net_device *dev, u32 data);
 int ethtool_op_set_tx_hw_csum(struct net_device *dev, u32 data);
@@ -975,6 +993,9 @@ int ethtool_op_set_flags(struct net_device *dev, u32 data, u32 supported);
 void ethtool_ntuple_flush(struct net_device *dev);
 bool ethtool_invalid_flags(struct net_device *dev, u32 data, u32 supported);
 =======
+=======
+int ethtool_op_get_ts_info(struct net_device *dev, struct ethtool_ts_info *eti);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ethtool_rxfh_indir_default - get default value for RX flow hash indirection
@@ -987,7 +1008,10 @@ static inline u32 ethtool_rxfh_indir_default(u32 index, u32 n_rx_rings)
 {
 	return index % n_rx_rings;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct ethtool_ops - optional netdev operations
@@ -1033,6 +1057,7 @@ static inline u32 ethtool_rxfh_indir_default(u32 index, u32 n_rx_rings)
  * @set_pauseparam: Set pause parameters.  Returns a negative error code
  *	or zero.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @get_rx_csum: Deprecated in favour of the netdev feature %NETIF_F_RXCSUM.
  *	Report whether receive checksums are turned on or off.
  * @set_rx_csum: Deprecated in favour of generic netdev features.  Turn
@@ -1051,6 +1076,8 @@ static inline u32 ethtool_rxfh_indir_default(u32 index, u32 n_rx_rings)
  *	segmentation offload on or off.  Returns a negative error code or zero.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @self_test: Run specified self-tests
  * @get_strings: Return a set of strings that describe the requested objects
  * @set_phys_id: Identify the physical devices, e.g. by flashing an LED
@@ -1073,6 +1100,7 @@ static inline u32 ethtool_rxfh_indir_default(u32 index, u32 n_rx_rings)
  * @complete: Function to be called after any other operation except
  *	@begin.  Will be called even if the other operation failed.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @get_ufo: Deprecated as redundant.  Report whether UDP fragmentation
  *	offload is enabled.
  * @set_ufo: Deprecated in favour of generic netdev features.  Turn UDP
@@ -1084,6 +1112,8 @@ static inline u32 ethtool_rxfh_indir_default(u32 index, u32 n_rx_rings)
  *	negative error code or zero.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @get_priv_flags: Report driver-specific feature flags.
  * @set_priv_flags: Set driver-specific feature flags.  Returns a negative
  *	error code or zero.
@@ -1098,6 +1128,7 @@ static inline u32 ethtool_rxfh_indir_default(u32 index, u32 n_rx_rings)
  *	flags from &enum ethtool_reset_flags.  Returns a negative
  *	error code or zero.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @set_rx_ntuple: Set an RX n-tuple rule.  Returns a negative error code
  *	or zero.
  * @get_rx_ntuple: Deprecated.
@@ -1105,6 +1136,8 @@ static inline u32 ethtool_rxfh_indir_default(u32 index, u32 n_rx_rings)
  *	Returns a negative error code or zero.
  * @set_rxfh_indir: Set the contents of the RX flow hash indirection table.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @get_rxfh_indir_size: Get the size of the RX flow hash indirection table.
  *	Returns zero if not supported for this specific device.
  * @get_rxfh_indir: Get the contents of the RX flow hash indirection table.
@@ -1112,7 +1145,10 @@ static inline u32 ethtool_rxfh_indir_default(u32 index, u32 n_rx_rings)
  *	Returns a negative error code or zero.
  * @set_rxfh_indir: Set the contents of the RX flow hash indirection table.
  *	Will not be called if @get_rxfh_indir_size returns zero.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *	Returns a negative error code or zero.
  * @get_channels: Get number of channels.
  * @set_channels: Set number of channels.  Returns a negative error code or
@@ -1121,6 +1157,7 @@ static inline u32 ethtool_rxfh_indir_default(u32 index, u32 n_rx_rings)
  * 		   and flag of the device.
  * @get_dump_data: Get dump data.
  * @set_dump: Set dump specific flags to the device.
+<<<<<<< HEAD
  *
  * All operations are optional (i.e. the function pointer may be set
  * to %NULL) and callers must take this into account.  Callers must
@@ -1130,6 +1167,20 @@ static inline u32 ethtool_rxfh_indir_default(u32 index, u32 n_rx_rings)
 =======
  * hold the RTNL lock.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @get_ts_info: Get the time stamping and PTP hardware clock capabilities.
+ *	Drivers supporting transmit time stamps in software should set this to
+ *	ethtool_op_get_ts_info().
+ * @get_module_info: Get the size and type of the eeprom contained within
+ *	a plug-in module.
+ * @get_module_eeprom: Get the eeprom information from the plug-in module
+ * @get_eee: Get Energy-Efficient (EEE) supported and status.
+ * @set_eee: Set EEE status (enable/disable) as well as LPI timers.
+ *
+ * All operations are optional (i.e. the function pointer may be set
+ * to %NULL) and callers must take this into account.  Callers must
+ * hold the RTNL lock.
+>>>>>>> refs/remotes/origin/master
  *
  * See the structures used by these operations for further documentation.
  *
@@ -1164,6 +1215,7 @@ struct ethtool_ops {
 	int	(*set_pauseparam)(struct net_device *,
 				  struct ethtool_pauseparam*);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32	(*get_rx_csum)(struct net_device *);
 	int	(*set_rx_csum)(struct net_device *, u32);
 	u32	(*get_tx_csum)(struct net_device *);
@@ -1174,6 +1226,8 @@ struct ethtool_ops {
 	int	(*set_tso)(struct net_device *, u32);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	void	(*self_test)(struct net_device *, struct ethtool_test *, u64 *);
 	void	(*get_strings)(struct net_device *, u32 stringset, u8 *);
 	int	(*set_phys_id)(struct net_device *, enum ethtool_phys_id_state);
@@ -1182,16 +1236,20 @@ struct ethtool_ops {
 	int	(*begin)(struct net_device *);
 	void	(*complete)(struct net_device *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32	(*get_ufo)(struct net_device *);
 	int	(*set_ufo)(struct net_device *, u32);
 	u32	(*get_flags)(struct net_device *);
 	int	(*set_flags)(struct net_device *, u32);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32	(*get_priv_flags)(struct net_device *);
 	int	(*set_priv_flags)(struct net_device *, u32);
 	int	(*get_sset_count)(struct net_device *, int);
 	int	(*get_rxnfc)(struct net_device *,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			     struct ethtool_rxnfc *, void *);
 	int	(*set_rxnfc)(struct net_device *, struct ethtool_rxnfc *);
@@ -1205,6 +1263,8 @@ struct ethtool_ops {
 	int	(*set_rxfh_indir)(struct net_device *,
 				  const struct ethtool_rxfh_indir *);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			     struct ethtool_rxnfc *, u32 *rule_locs);
 	int	(*set_rxnfc)(struct net_device *, struct ethtool_rxnfc *);
 	int	(*flash_device)(struct net_device *, struct ethtool_flash *);
@@ -1212,13 +1272,17 @@ struct ethtool_ops {
 	u32	(*get_rxfh_indir_size)(struct net_device *);
 	int	(*get_rxfh_indir)(struct net_device *, u32 *);
 	int	(*set_rxfh_indir)(struct net_device *, const u32 *);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	void	(*get_channels)(struct net_device *, struct ethtool_channels *);
 	int	(*set_channels)(struct net_device *, struct ethtool_channels *);
 	int	(*get_dump_flag)(struct net_device *, struct ethtool_dump *);
 	int	(*get_dump_data)(struct net_device *,
 				 struct ethtool_dump *, void *);
 	int	(*set_dump)(struct net_device *, struct ethtool_dump *);
+<<<<<<< HEAD
 
 };
 #endif /* __KERNEL__ */
@@ -1485,4 +1549,16 @@ enum ethtool_reset_flags {
 };
 #define ETH_RESET_SHARED_SHIFT	16
 
+=======
+	int	(*get_ts_info)(struct net_device *, struct ethtool_ts_info *);
+	int     (*get_module_info)(struct net_device *,
+				   struct ethtool_modinfo *);
+	int     (*get_module_eeprom)(struct net_device *,
+				     struct ethtool_eeprom *, u8 *);
+	int	(*get_eee)(struct net_device *, struct ethtool_eee *);
+	int	(*set_eee)(struct net_device *, struct ethtool_eee *);
+
+
+};
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_ETHTOOL_H */

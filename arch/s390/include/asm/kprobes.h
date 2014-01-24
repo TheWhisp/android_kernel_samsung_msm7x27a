@@ -17,7 +17,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
+<<<<<<< HEAD
  * Copyright (C) IBM Corporation, 2002, 2006
+=======
+ * Copyright IBM Corp. 2002, 2006
+>>>>>>> refs/remotes/origin/master
  *
  * 2002-Oct	Created by Vamsi Krishna S <vamsi_krishna@in.ibm.com> Kernel
  *		Probes initial implementation ( includes suggestions from
@@ -31,6 +35,11 @@
 #include <linux/ptrace.h>
 #include <linux/percpu.h>
 
+<<<<<<< HEAD
+=======
+#define __ARCH_WANT_KPROBES_INSN_SLOT
+
+>>>>>>> refs/remotes/origin/master
 struct pt_regs;
 struct kprobe;
 
@@ -57,7 +66,11 @@ typedef u16 kprobe_opcode_t;
 /* Architecture specific copy of original instruction */
 struct arch_specific_insn {
 	/* copy of original instruction */
+<<<<<<< HEAD
 	kprobe_opcode_t insn[MAX_INSN_SIZE];
+=======
+	kprobe_opcode_t *insn;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct prev_kprobe {

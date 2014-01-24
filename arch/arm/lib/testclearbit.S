@@ -13,9 +13,13 @@
                 .text
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(_test_and_clear_bit)
 	testop	bicne, strne
 ENDPROC(_test_and_clear_bit)
 =======
 testop	_test_and_clear_bit, bicne, strne
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+testop	_test_and_clear_bit, bicne, strne
+>>>>>>> refs/remotes/origin/master

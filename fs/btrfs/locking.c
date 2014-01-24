@@ -25,6 +25,7 @@
 #include "locking.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void spin_nested(struct extent_buffer *eb)
 {
 	spin_lock(&eb->lock);
@@ -136,6 +137,9 @@ static int btrfs_wake_function(wait_queue_t *wait, unsigned mode,
 	autoremove_wake_function(wait, mode, sync, key);
 =======
 void btrfs_assert_tree_read_locked(struct extent_buffer *eb);
+=======
+static void btrfs_assert_tree_read_locked(struct extent_buffer *eb);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * if we currently have a spinning reader or writer lock
@@ -178,7 +182,11 @@ void btrfs_clear_lock_blocking_rw(struct extent_buffer *eb, int rw)
 {
 	if (eb->lock_nested) {
 		read_lock(&eb->lock);
+<<<<<<< HEAD
 		if (&eb->lock_nested && current->pid == eb->lock_owner) {
+=======
+		if (eb->lock_nested && current->pid == eb->lock_owner) {
+>>>>>>> refs/remotes/origin/master
 			read_unlock(&eb->lock);
 			return;
 		}
@@ -189,13 +197,23 @@ void btrfs_clear_lock_blocking_rw(struct extent_buffer *eb, int rw)
 		write_lock(&eb->lock);
 		WARN_ON(atomic_read(&eb->spinning_writers));
 		atomic_inc(&eb->spinning_writers);
+<<<<<<< HEAD
 		if (atomic_dec_and_test(&eb->blocking_writers))
+=======
+		if (atomic_dec_and_test(&eb->blocking_writers) &&
+		    waitqueue_active(&eb->write_lock_wq))
+>>>>>>> refs/remotes/origin/master
 			wake_up(&eb->write_lock_wq);
 	} else if (rw == BTRFS_READ_LOCK_BLOCKING) {
 		BUG_ON(atomic_read(&eb->blocking_readers) == 0);
 		read_lock(&eb->lock);
 		atomic_inc(&eb->spinning_readers);
+<<<<<<< HEAD
 		if (atomic_dec_and_test(&eb->blocking_readers))
+=======
+		if (atomic_dec_and_test(&eb->blocking_readers) &&
+		    waitqueue_active(&eb->read_lock_wq))
+>>>>>>> refs/remotes/origin/master
 			wake_up(&eb->read_lock_wq);
 	}
 	return;
@@ -222,11 +240,18 @@ again:
 		read_unlock(&eb->lock);
 		return;
 	}
+<<<<<<< HEAD
 	read_unlock(&eb->lock);
 	wait_event(eb->write_lock_wq, atomic_read(&eb->blocking_writers) == 0);
 	read_lock(&eb->lock);
 	if (atomic_read(&eb->blocking_writers)) {
 		read_unlock(&eb->lock);
+=======
+	if (atomic_read(&eb->blocking_writers)) {
+		read_unlock(&eb->lock);
+		wait_event(eb->write_lock_wq,
+			   atomic_read(&eb->blocking_writers) == 0);
+>>>>>>> refs/remotes/origin/master
 		goto again;
 	}
 	atomic_inc(&eb->read_locks);
@@ -270,11 +295,15 @@ int btrfs_try_tree_write_lock(struct extent_buffer *eb)
 	atomic_inc(&eb->write_locks);
 	atomic_inc(&eb->spinning_writers);
 	eb->lock_owner = current->pid;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * returns with the extent buffer spinlocked.
  *
@@ -345,6 +374,8 @@ void btrfs_assert_tree_locked(struct extent_buffer *eb)
 	if (!test_bit(EXTENT_BUFFER_BLOCKING, &eb->bflags))
 		assert_spin_locked(&eb->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * drop a spinning read lock
  */
 void btrfs_tree_read_unlock(struct extent_buffer *eb)
@@ -381,7 +412,12 @@ void btrfs_tree_read_unlock_blocking(struct extent_buffer *eb)
 	}
 	btrfs_assert_tree_read_locked(eb);
 	WARN_ON(atomic_read(&eb->blocking_readers) == 0);
+<<<<<<< HEAD
 	if (atomic_dec_and_test(&eb->blocking_readers))
+=======
+	if (atomic_dec_and_test(&eb->blocking_readers) &&
+	    waitqueue_active(&eb->read_lock_wq))
+>>>>>>> refs/remotes/origin/master
 		wake_up(&eb->read_lock_wq);
 	atomic_dec(&eb->read_locks);
 }
@@ -429,8 +465,14 @@ void btrfs_tree_unlock(struct extent_buffer *eb)
 	if (blockers) {
 		WARN_ON(atomic_read(&eb->spinning_writers));
 		atomic_dec(&eb->blocking_writers);
+<<<<<<< HEAD
 		smp_wmb();
 		wake_up(&eb->write_lock_wq);
+=======
+		smp_mb();
+		if (waitqueue_active(&eb->write_lock_wq))
+			wake_up(&eb->write_lock_wq);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		WARN_ON(atomic_read(&eb->spinning_writers) != 1);
 		atomic_dec(&eb->spinning_writers);
@@ -443,8 +485,14 @@ void btrfs_assert_tree_locked(struct extent_buffer *eb)
 	BUG_ON(!atomic_read(&eb->write_locks));
 }
 
+<<<<<<< HEAD
 void btrfs_assert_tree_read_locked(struct extent_buffer *eb)
 {
 	BUG_ON(!atomic_read(&eb->read_locks));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void btrfs_assert_tree_read_locked(struct extent_buffer *eb)
+{
+	BUG_ON(!atomic_read(&eb->read_locks));
+>>>>>>> refs/remotes/origin/master
 }

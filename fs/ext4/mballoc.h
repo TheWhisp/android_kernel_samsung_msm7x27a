@@ -37,11 +37,19 @@
 /*
  */
 #ifdef CONFIG_EXT4_DEBUG
+<<<<<<< HEAD
 extern u8 mb_enable_debug;
 
 #define mb_debug(n, fmt, a...)	                                        \
 	do {								\
 		if ((n) <= mb_enable_debug) {		        	\
+=======
+extern ushort ext4_mballoc_debug;
+
+#define mb_debug(n, fmt, a...)	                                        \
+	do {								\
+		if ((n) <= ext4_mballoc_debug) {		        \
+>>>>>>> refs/remotes/origin/master
 			printk(KERN_DEBUG "(%s, %d): %s: ",		\
 			       __FILE__, __LINE__, __func__);		\
 			printk(fmt, ## a);				\
@@ -65,11 +73,14 @@ extern u8 mb_enable_debug;
 #define MB_DEFAULT_MIN_TO_SCAN		10
 
 /*
+<<<<<<< HEAD
  * How many groups mballoc will scan looking for the best chunk
  */
 #define MB_DEFAULT_MAX_GROUPS_TO_SCAN	5
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * with 'ext4_mb_stats' allocator will collect stats that will be
  * shown at umount. The collecting costs though!
  */
@@ -97,6 +108,7 @@ extern u8 mb_enable_debug;
 
 struct ext4_free_data {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* this links the free block information from group_info */
 	struct rb_node node;
 
@@ -113,6 +125,8 @@ struct ext4_free_data {
 	/* transaction which freed this extent */
 	tid_t	t_tid;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* MUST be the first member */
 	struct ext4_journal_cb_entry	efd_jce;
 
@@ -130,7 +144,10 @@ struct ext4_free_data {
 
 	/* transaction which freed this extent */
 	tid_t				efd_tid;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ext4_prealloc_space {
@@ -160,6 +177,7 @@ enum {
 struct ext4_free_extent {
 	ext4_lblk_t fe_logical;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ext4_grpblk_t fe_start;
 	ext4_group_t fe_group;
 	ext4_grpblk_t fe_len;
@@ -168,6 +186,11 @@ struct ext4_free_extent {
 	ext4_group_t fe_group;
 	ext4_grpblk_t fe_len;	/* In cluster units */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ext4_grpblk_t fe_start;	/* In cluster units */
+	ext4_group_t fe_group;
+	ext4_grpblk_t fe_len;	/* In cluster units */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -202,10 +225,14 @@ struct ext4_allocation_context {
 	struct ext4_free_extent ac_b_ex;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* copy of the bext found extent taken before preallocation efforts */
 =======
 	/* copy of the best found extent taken before preallocation efforts */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* copy of the best found extent taken before preallocation efforts */
+>>>>>>> refs/remotes/origin/master
 	struct ext4_free_extent ac_f_ex;
 
 	/* number of iterations done. we have to track to limit searching */
@@ -218,9 +245,12 @@ struct ext4_allocation_context {
 	__u8 ac_status;
 	__u8 ac_criteria;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__u8 ac_repeats;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	__u8 ac_2order;		/* if request is to allocate 2^N blocks and
 				 * N > 0, the field stores N, otherwise 0 */
 	__u8 ac_op;		/* operation, for history only */
@@ -245,19 +275,27 @@ struct ext4_buddy {
 	ext4_group_t bd_group;
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define EXT4_MB_BITMAP(e4b)	((e4b)->bd_bitmap)
 #define EXT4_MB_BUDDY(e4b)	((e4b)->bd_buddy)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline ext4_fsblk_t ext4_grp_offs_to_block(struct super_block *sb,
 					struct ext4_free_extent *fex)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return ext4_group_first_block_no(sb, fex->fe_group) + fex->fe_start;
 =======
 	return ext4_group_first_block_no(sb, fex->fe_group) +
 		(fex->fe_start << EXT4_SB(sb)->s_cluster_bits);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ext4_group_first_block_no(sb, fex->fe_group) +
+		(fex->fe_start << EXT4_SB(sb)->s_cluster_bits);
+>>>>>>> refs/remotes/origin/master
 }
 #endif

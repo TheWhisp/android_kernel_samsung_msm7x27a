@@ -100,7 +100,11 @@ static int mptfc_slave_alloc(struct scsi_device *sdev);
 static int mptfc_qcmd(struct Scsi_Host *shost, struct scsi_cmnd *SCpnt);
 static void mptfc_target_destroy(struct scsi_target *starget);
 static void mptfc_set_rport_loss_tmo(struct fc_rport *rport, uint32_t timeout);
+<<<<<<< HEAD
 static void __devexit mptfc_remove(struct pci_dev *pdev);
+=======
+static void mptfc_remove(struct pci_dev *pdev);
+>>>>>>> refs/remotes/origin/master
 static int mptfc_abort(struct scsi_cmnd *SCpnt);
 static int mptfc_dev_reset(struct scsi_cmnd *SCpnt);
 static int mptfc_bus_reset(struct scsi_cmnd *SCpnt);
@@ -109,7 +113,11 @@ static int mptfc_host_reset(struct scsi_cmnd *SCpnt);
 static struct scsi_host_template mptfc_driver_template = {
 	.module				= THIS_MODULE,
 	.proc_name			= "mptfc",
+<<<<<<< HEAD
 	.proc_info			= mptscsih_proc_info,
+=======
+	.show_info			= mptscsih_show_info,
+>>>>>>> refs/remotes/origin/master
 	.name				= "MPT FC Host",
 	.info				= mptscsih_info,
 	.queuecommand			= mptfc_qcmd,
@@ -1360,7 +1368,11 @@ static struct pci_driver mptfc_driver = {
 	.name		= "mptfc",
 	.id_table	= mptfc_pci_table,
 	.probe		= mptfc_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(mptfc_remove),
+=======
+	.remove		= mptfc_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= mptscsih_shutdown,
 #ifdef CONFIG_PM
 	.suspend	= mptscsih_suspend,
@@ -1496,8 +1508,12 @@ mptfc_init(void)
  *	@pdev: Pointer to pci_dev structure
  *
  */
+<<<<<<< HEAD
 static void __devexit
 mptfc_remove(struct pci_dev *pdev)
+=======
+static void mptfc_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	MPT_ADAPTER		*ioc = pci_get_drvdata(pdev);
 	struct mptfc_rport_info	*p, *n;

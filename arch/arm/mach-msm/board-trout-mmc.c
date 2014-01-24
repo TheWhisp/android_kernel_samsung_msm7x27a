@@ -2,10 +2,14 @@
 ** Author: Brian Swetland <swetland@google.com>
 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -16,11 +20,15 @@
 #include <linux/debugfs.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/gpio.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 #include <mach/vreg.h>
 
+<<<<<<< HEAD
 =======
 #include <asm/io.h>
 
@@ -28,16 +36,24 @@
 #include <mach/proc_comm.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/mmc.h>
+=======
+#include <linux/platform_data/mmc-msm_sdcc.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "devices.h"
 
 #include "board-trout.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "proc_comm.h"
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "proc_comm.h"
+
+>>>>>>> refs/remotes/origin/master
 #define DEBUG_SDSLOT_VDD 1
 
 /* ---- COMMON ---- */

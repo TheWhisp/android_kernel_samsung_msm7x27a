@@ -128,9 +128,14 @@ static void stop_ep_timer(struct iwch_ep *ep)
 {
 	PDBG("%s ep %p\n", __func__, ep);
 	if (!timer_pending(&ep->timer)) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s timer stopped when its not running!  ep %p state %u\n",
 			__func__, ep, ep->com.state);
 		WARN_ON(1);
+=======
+		WARN(1, "%s timer stopped when its not running!  ep %p state %u\n",
+			__func__, ep, ep->com.state);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	del_timer_sync(&ep->timer);
@@ -722,8 +727,15 @@ static void connect_reply_upcall(struct iwch_ep *ep, int status)
 	memset(&event, 0, sizeof(event));
 	event.event = IW_CM_EVENT_CONNECT_REPLY;
 	event.status = status;
+<<<<<<< HEAD
 	event.local_addr = ep->com.local_addr;
 	event.remote_addr = ep->com.remote_addr;
+=======
+	memcpy(&event.local_addr, &ep->com.local_addr,
+	       sizeof(ep->com.local_addr));
+	memcpy(&event.remote_addr, &ep->com.remote_addr,
+	       sizeof(ep->com.remote_addr));
+>>>>>>> refs/remotes/origin/master
 
 	if ((status == 0) || (status == -ECONNREFUSED)) {
 		event.private_data_len = ep->plen;
@@ -748,6 +760,7 @@ static void connect_request_upcall(struct iwch_ep *ep)
 	PDBG("%s ep %p tid %d\n", __func__, ep, ep->hwtid);
 	memset(&event, 0, sizeof(event));
 	event.event = IW_CM_EVENT_CONNECT_REQUEST;
+<<<<<<< HEAD
 	event.local_addr = ep->com.local_addr;
 	event.remote_addr = ep->com.remote_addr;
 	event.private_data_len = ep->plen;
@@ -755,12 +768,24 @@ static void connect_request_upcall(struct iwch_ep *ep)
 	event.provider_data = ep;
 <<<<<<< HEAD
 =======
+=======
+	memcpy(&event.local_addr, &ep->com.local_addr,
+	       sizeof(ep->com.local_addr));
+	memcpy(&event.remote_addr, &ep->com.remote_addr,
+	       sizeof(ep->com.local_addr));
+	event.private_data_len = ep->plen;
+	event.private_data = ep->mpa_pkt + sizeof(struct mpa_message);
+	event.provider_data = ep;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Until ird/ord negotiation via MPAv2 support is added, send max
 	 * supported values
 	 */
 	event.ird = event.ord = 8;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (state_read(&ep->parent_ep->com) != DEAD) {
 		get_ep(&ep->com);
 		ep->parent_ep->com.cm_id->event_handler(
@@ -779,13 +804,19 @@ static void established_upcall(struct iwch_ep *ep)
 	memset(&event, 0, sizeof(event));
 	event.event = IW_CM_EVENT_ESTABLISHED;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Until ird/ord negotiation via MPAv2 support is added, send max
 	 * supported values
 	 */
 	event.ird = event.ord = 8;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ep->com.cm_id) {
 		PDBG("%s ep %p tid %d\n", __func__, ep, ep->hwtid);
 		ep->com.cm_id->event_handler(ep->com.cm_id, &event);
@@ -1345,9 +1376,12 @@ static int pass_accept_req(struct t3cdev *tdev, struct sk_buff *skb, void *ctx)
 	struct cpl_pass_accept_req *req = cplhdr(skb);
 	unsigned int hwtid = GET_TID(req);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct neighbour *neigh;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dst_entry *dst;
 	struct l2t_entry *l2t;
 	struct rtable *rt;
@@ -1385,6 +1419,7 @@ static int pass_accept_req(struct t3cdev *tdev, struct sk_buff *skb, void *ctx)
 	}
 	dst = &rt->dst;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_read_lock();
 	neigh = dst_get_neighbour(dst);
 	l2t = t3_l2t_get(tdev, neigh, neigh->dev);
@@ -1392,6 +1427,9 @@ static int pass_accept_req(struct t3cdev *tdev, struct sk_buff *skb, void *ctx)
 =======
 	l2t = t3_l2t_get(tdev, dst, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	l2t = t3_l2t_get(tdev, dst, NULL, &req->peer_ip);
+>>>>>>> refs/remotes/origin/master
 	if (!l2t) {
 		printk(KERN_ERR MOD "%s - failed to allocate l2t entry!\n",
 		       __func__);
@@ -1697,7 +1735,11 @@ static int close_con_rpl(struct t3cdev *tdev, struct sk_buff *skb, void *ctx)
  * T3A does 3 things when a TERM is received:
  * 1) send up a CPL_RDMA_TERMINATE message with the TERM packet
  * 2) generate an async event on the QP with the TERMINATE opcode
+<<<<<<< HEAD
  * 3) post a TERMINATE opcde cqe into the associated CQ.
+=======
+ * 3) post a TERMINATE opcode cqe into the associated CQ.
+>>>>>>> refs/remotes/origin/master
  *
  * For (1), we save the message in the qp for later consumer consumption.
  * For (2), we move the QP into TERMINATE, post a QP event and disconnect.
@@ -1773,9 +1815,14 @@ static void ep_timeout(unsigned long arg)
 		__state_set(&ep->com, ABORTING);
 		break;
 	default:
+<<<<<<< HEAD
 		printk(KERN_ERR "%s unexpected state ep %p state %u\n",
 			__func__, ep, ep->com.state);
 		WARN_ON(1);
+=======
+		WARN(1, "%s unexpected state ep %p state %u\n",
+			__func__, ep, ep->com.state);
+>>>>>>> refs/remotes/origin/master
 		abort = 0;
 	}
 	spin_unlock_irqrestore(&ep->com.lock, flags);
@@ -1891,8 +1938,14 @@ err:
 static int is_loopback_dst(struct iw_cm_id *cm_id)
 {
 	struct net_device *dev;
+<<<<<<< HEAD
 
 	dev = ip_dev_find(&init_net, cm_id->remote_addr.sin_addr.s_addr);
+=======
+	struct sockaddr_in *raddr = (struct sockaddr_in *)&cm_id->remote_addr;
+
+	dev = ip_dev_find(&init_net, raddr->sin_addr.s_addr);
+>>>>>>> refs/remotes/origin/master
 	if (!dev)
 		return 0;
 	dev_put(dev);
@@ -1903,12 +1956,25 @@ int iwch_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 {
 	struct iwch_dev *h = to_iwch_dev(cm_id->device);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct neighbour *neigh;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct iwch_ep *ep;
 	struct rtable *rt;
 	int err = 0;
+=======
+	struct iwch_ep *ep;
+	struct rtable *rt;
+	int err = 0;
+	struct sockaddr_in *laddr = (struct sockaddr_in *)&cm_id->local_addr;
+	struct sockaddr_in *raddr = (struct sockaddr_in *)&cm_id->remote_addr;
+
+	if (cm_id->remote_addr.ss_family != PF_INET) {
+		err = -ENOSYS;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (is_loopback_dst(cm_id)) {
 		err = -ENOSYS;
@@ -1952,17 +2018,24 @@ int iwch_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 	}
 
 	/* find a route */
+<<<<<<< HEAD
 	rt = find_route(h->rdev.t3cdev_p,
 			cm_id->local_addr.sin_addr.s_addr,
 			cm_id->remote_addr.sin_addr.s_addr,
 			cm_id->local_addr.sin_port,
 			cm_id->remote_addr.sin_port, IPTOS_LOWDELAY);
+=======
+	rt = find_route(h->rdev.t3cdev_p, laddr->sin_addr.s_addr,
+			raddr->sin_addr.s_addr, laddr->sin_port,
+			raddr->sin_port, IPTOS_LOWDELAY);
+>>>>>>> refs/remotes/origin/master
 	if (!rt) {
 		printk(KERN_ERR MOD "%s - cannot find route.\n", __func__);
 		err = -EHOSTUNREACH;
 		goto fail3;
 	}
 	ep->dst = &rt->dst;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	rcu_read_lock();
@@ -1974,6 +2047,10 @@ int iwch_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 =======
 	ep->l2t = t3_l2t_get(ep->com.tdev, ep->dst, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ep->l2t = t3_l2t_get(ep->com.tdev, ep->dst, NULL,
+			     &raddr->sin_addr.s_addr);
+>>>>>>> refs/remotes/origin/master
 	if (!ep->l2t) {
 		printk(KERN_ERR MOD "%s - cannot alloc l2e.\n", __func__);
 		err = -ENOMEM;
@@ -1982,8 +2059,15 @@ int iwch_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 
 	state_set(&ep->com, CONNECTING);
 	ep->tos = IPTOS_LOWDELAY;
+<<<<<<< HEAD
 	ep->com.local_addr = cm_id->local_addr;
 	ep->com.remote_addr = cm_id->remote_addr;
+=======
+	memcpy(&ep->com.local_addr, &cm_id->local_addr,
+	       sizeof(ep->com.local_addr));
+	memcpy(&ep->com.remote_addr, &cm_id->remote_addr,
+	       sizeof(ep->com.remote_addr));
+>>>>>>> refs/remotes/origin/master
 
 	/* send connect request to rnic */
 	err = send_connect(ep);
@@ -2011,6 +2095,14 @@ int iwch_create_listen(struct iw_cm_id *cm_id, int backlog)
 
 	might_sleep();
 
+<<<<<<< HEAD
+=======
+	if (cm_id->local_addr.ss_family != PF_INET) {
+		err = -ENOSYS;
+		goto fail1;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	ep = alloc_ep(sizeof(*ep), GFP_KERNEL);
 	if (!ep) {
 		printk(KERN_ERR MOD "%s - cannot alloc ep.\n", __func__);
@@ -2022,7 +2114,12 @@ int iwch_create_listen(struct iw_cm_id *cm_id, int backlog)
 	cm_id->add_ref(cm_id);
 	ep->com.cm_id = cm_id;
 	ep->backlog = backlog;
+<<<<<<< HEAD
 	ep->com.local_addr = cm_id->local_addr;
+=======
+	memcpy(&ep->com.local_addr, &cm_id->local_addr,
+	       sizeof(ep->com.local_addr));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Allocate a server TID.

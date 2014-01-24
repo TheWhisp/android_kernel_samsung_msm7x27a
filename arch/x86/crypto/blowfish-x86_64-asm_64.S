@@ -20,6 +20,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/linkage.h>
+
+>>>>>>> refs/remotes/origin/master
 .file "blowfish-x86_64-asm.S"
 .text
 
@@ -116,11 +121,15 @@
 	bswapq 			RX0; \
 	xorq RX0, 		(RIO);
 
+<<<<<<< HEAD
 .align 8
 .global __blowfish_enc_blk
 .type   __blowfish_enc_blk,@function;
 
 __blowfish_enc_blk:
+=======
+ENTRY(__blowfish_enc_blk)
+>>>>>>> refs/remotes/origin/master
 	/* input:
 	 *	%rdi: ctx, CTX
 	 *	%rsi: dst
@@ -148,6 +157,7 @@ __blowfish_enc_blk:
 
 	movq %r10, RIO;
 	test %cl, %cl;
+<<<<<<< HEAD
 	jnz __enc_xor;
 
 	write_block();
@@ -161,6 +171,18 @@ __enc_xor:
 .type   blowfish_dec_blk,@function;
 
 blowfish_dec_blk:
+=======
+	jnz .L__enc_xor;
+
+	write_block();
+	ret;
+.L__enc_xor:
+	xor_block();
+	ret;
+ENDPROC(__blowfish_enc_blk)
+
+ENTRY(blowfish_dec_blk)
+>>>>>>> refs/remotes/origin/master
 	/* input:
 	 *	%rdi: ctx, CTX
 	 *	%rsi: dst
@@ -189,6 +211,10 @@ blowfish_dec_blk:
 	movq %r11, %rbp;
 
 	ret;
+<<<<<<< HEAD
+=======
+ENDPROC(blowfish_dec_blk)
+>>>>>>> refs/remotes/origin/master
 
 /**********************************************************************
   4-way blowfish, four blocks parallel
@@ -300,11 +326,15 @@ blowfish_dec_blk:
 	bswapq 			RX3; \
 	xorq RX3,		24(RIO);
 
+<<<<<<< HEAD
 .align 8
 .global __blowfish_enc_blk_4way
 .type   __blowfish_enc_blk_4way,@function;
 
 __blowfish_enc_blk_4way:
+=======
+ENTRY(__blowfish_enc_blk_4way)
+>>>>>>> refs/remotes/origin/master
 	/* input:
 	 *	%rdi: ctx, CTX
 	 *	%rsi: dst
@@ -336,7 +366,11 @@ __blowfish_enc_blk_4way:
 	movq %r11, RIO;
 
 	test %bpl, %bpl;
+<<<<<<< HEAD
 	jnz __enc_xor4;
+=======
+	jnz .L__enc_xor4;
+>>>>>>> refs/remotes/origin/master
 
 	write_block4();
 
@@ -344,18 +378,28 @@ __blowfish_enc_blk_4way:
 	popq %rbp;
 	ret;
 
+<<<<<<< HEAD
 __enc_xor4:
+=======
+.L__enc_xor4:
+>>>>>>> refs/remotes/origin/master
 	xor_block4();
 
 	popq %rbx;
 	popq %rbp;
 	ret;
+<<<<<<< HEAD
 
 .align 8
 .global blowfish_dec_blk_4way
 .type   blowfish_dec_blk_4way,@function;
 
 blowfish_dec_blk_4way:
+=======
+ENDPROC(__blowfish_enc_blk_4way)
+
+ENTRY(blowfish_dec_blk_4way)
+>>>>>>> refs/remotes/origin/master
 	/* input:
 	 *	%rdi: ctx, CTX
 	 *	%rsi: dst
@@ -387,4 +431,8 @@ blowfish_dec_blk_4way:
 	popq %rbp;
 
 	ret;
+<<<<<<< HEAD
 
+=======
+ENDPROC(blowfish_dec_blk_4way)
+>>>>>>> refs/remotes/origin/master

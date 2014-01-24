@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
  * Free Software Foundation;  either version 2 of the  License, or (at your
@@ -11,6 +12,13 @@
 #include <linux/mm.h>
 #include <linux/bootmem.h>
 =======
+=======
+ * This program is free software; you can redistribute	it and/or modify it
+ * under  the terms of	the GNU General	 Public License as published by the
+ * Free Software Foundation;  either version 2 of the  License, or (at your
+ * option) any later version.
+ *
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2003, 04, 11 Ralf Baechle (ralf@linux-mips.org)
  * Copyright (C) 2011 Wind River Systems,
  *   written by Ralf Baechle (ralf@linux-mips.org)
@@ -20,6 +28,7 @@
 #include <linux/mm.h>
 #include <linux/bootmem.h>
 #include <linux/export.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/init.h>
 #include <linux/types.h>
@@ -38,13 +47,23 @@ int pci_probe_only;
 
 unsigned int pci_probe = PCI_ASSIGN_ALL_BUSSES;
 =======
+=======
+#include <linux/init.h>
+#include <linux/types.h>
+#include <linux/pci.h>
+#include <linux/of_address.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/cpu-info.h>
 
 /*
  * If PCI_PROBE_ONLY in pci_flags is set, we don't change any PCI resource
  * assignments.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The PCI controller list.
@@ -97,6 +116,7 @@ pcibios_align_resource(void *data, const struct resource *res,
 	return start;
 }
 
+<<<<<<< HEAD
 static void __devinit pcibios_scanbus(struct pci_controller *hose)
 {
 	static int next_busno;
@@ -105,17 +125,27 @@ static void __devinit pcibios_scanbus(struct pci_controller *hose)
 =======
 	LIST_HEAD(resources);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void pcibios_scanbus(struct pci_controller *hose)
+{
+	static int next_busno;
+	static int need_domain_info;
+	LIST_HEAD(resources);
+>>>>>>> refs/remotes/origin/master
 	struct pci_bus *bus;
 
 	if (!hose->iommu)
 		PCI_DMA_BUS_IS_PHYS = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (hose->get_busno && pci_probe_only)
 		next_busno = (*hose->get_busno)();
 
 	bus = pci_scan_bus(next_busno, hose->pci_ops, hose);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (hose->get_busno && pci_has_flag(PCI_PROBE_ONLY))
 		next_busno = (*hose->get_busno)();
 
@@ -127,13 +157,20 @@ static void __devinit pcibios_scanbus(struct pci_controller *hose)
 	if (!bus)
 		pci_free_resource_list(&resources);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	hose->bus = bus;
 
 	need_domain_info = need_domain_info || hose->index;
 	hose->need_domain_info = need_domain_info;
 	if (bus) {
+<<<<<<< HEAD
 		next_busno = bus->subordinate + 1;
+=======
+		next_busno = bus->busn_res.end + 1;
+>>>>>>> refs/remotes/origin/master
 		/* Don't allow 8-bit bus number overflow inside the hose -
 		   reserve some space for bridges. */
 		if (next_busno > 224) {
@@ -142,6 +179,7 @@ static void __devinit pcibios_scanbus(struct pci_controller *hose)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!pci_probe_only) {
 =======
 		if (!pci_has_flag(PCI_PROBE_ONLY)) {
@@ -149,10 +187,16 @@ static void __devinit pcibios_scanbus(struct pci_controller *hose)
 			pci_bus_size_bridges(bus);
 			pci_bus_assign_resources(bus);
 			pci_enable_bridges(bus);
+=======
+		if (!pci_has_flag(PCI_PROBE_ONLY)) {
+			pci_bus_size_bridges(bus);
+			pci_bus_assign_resources(bus);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
 
+<<<<<<< HEAD
 static DEFINE_MUTEX(pci_scan_mutex);
 
 void __devinit register_pci_controller(struct pci_controller *hose)
@@ -160,6 +204,71 @@ void __devinit register_pci_controller(struct pci_controller *hose)
 	if (request_resource(&iomem_resource, hose->mem_resource) < 0)
 		goto out;
 	if (request_resource(&ioport_resource, hose->io_resource) < 0) {
+=======
+#ifdef CONFIG_OF
+void pci_load_of_ranges(struct pci_controller *hose, struct device_node *node)
+{
+	struct of_pci_range range;
+	struct of_pci_range_parser parser;
+
+	pr_info("PCI host bridge %s ranges:\n", node->full_name);
+	hose->of_node = node;
+
+	if (of_pci_range_parser_init(&parser, node))
+		return;
+
+	for_each_of_pci_range(&parser, &range) {
+		struct resource *res = NULL;
+
+		switch (range.flags & IORESOURCE_TYPE_BITS) {
+		case IORESOURCE_IO:
+			pr_info("  IO 0x%016llx..0x%016llx\n",
+				range.cpu_addr,
+				range.cpu_addr + range.size - 1);
+			hose->io_map_base =
+				(unsigned long)ioremap(range.cpu_addr,
+						       range.size);
+			res = hose->io_resource;
+			break;
+		case IORESOURCE_MEM:
+			pr_info(" MEM 0x%016llx..0x%016llx\n",
+				range.cpu_addr,
+				range.cpu_addr + range.size - 1);
+			res = hose->mem_resource;
+			break;
+		}
+		if (res != NULL)
+			of_pci_range_to_resource(&range, node, res);
+	}
+}
+
+struct device_node *pcibios_get_phb_of_node(struct pci_bus *bus)
+{
+	struct pci_controller *hose = bus->sysdata;
+
+	return of_node_get(hose->of_node);
+}
+#endif
+
+static DEFINE_MUTEX(pci_scan_mutex);
+
+void register_pci_controller(struct pci_controller *hose)
+{
+	struct resource *parent;
+
+	parent = hose->mem_resource->parent;
+	if (!parent)
+		parent = &iomem_resource;
+
+	if (request_resource(parent, hose->mem_resource) < 0)
+		goto out;
+
+	parent = hose->io_resource->parent;
+	if (!parent)
+		parent = &ioport_resource;
+
+	if (request_resource(parent, hose->io_resource) < 0) {
+>>>>>>> refs/remotes/origin/master
 		release_resource(hose->mem_resource);
 		goto out;
 	}
@@ -193,7 +302,10 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init pcibios_set_cache_line_size(void)
 {
 	struct cpuinfo_mips *c = &current_cpu_data;
@@ -214,16 +326,24 @@ static void __init pcibios_set_cache_line_size(void)
 	pr_debug("PCI: pci_cache_line_size set to %d bytes\n", lsize);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init pcibios_init(void)
 {
 	struct pci_controller *hose;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pcibios_set_cache_line_size();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pcibios_set_cache_line_size();
+
+>>>>>>> refs/remotes/origin/master
 	/* Scan all of the recorded PCI controllers.  */
 	for (hose = hose_head; hose; hose = hose->next)
 		pcibios_scanbus(hose);
@@ -276,6 +396,7 @@ static int pcibios_enable_resources(struct pci_dev *dev, int mask)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  *  If we set up a device for bus mastering, we need to check the latency
  *  timer as certain crappy BIOSes forget to set it properly.
@@ -305,6 +426,11 @@ unsigned int pcibios_assign_all_busses(void)
 {
 	return 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned int pcibios_assign_all_busses(void)
+{
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 int pcibios_enable_device(struct pci_dev *dev, int mask)
@@ -317,6 +443,7 @@ int pcibios_enable_device(struct pci_dev *dev, int mask)
 	return pcibios_plat_dev_init(dev);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void pcibios_fixup_device_resources(struct pci_dev *dev,
 	struct pci_bus *bus)
@@ -363,12 +490,16 @@ void __devinit pcibios_fixup_bus(struct pci_bus *bus)
 			pcibios_fixup_device_resources(dev, bus);
 =======
 void __devinit pcibios_fixup_bus(struct pci_bus *bus)
+=======
+void pcibios_fixup_bus(struct pci_bus *bus)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev = bus->self;
 
 	if (pci_has_flag(PCI_PROBE_ONLY) && dev &&
 	    (dev->class >> 8) == PCI_CLASS_BRIDGE_PCI) {
 		pci_read_bridge_bases(bus);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
@@ -420,6 +551,13 @@ EXPORT_SYMBOL(pcibios_bus_to_resource);
 EXPORT_SYMBOL(PCIBIOS_MIN_IO);
 EXPORT_SYMBOL(PCIBIOS_MIN_MEM);
 #endif
+=======
+	}
+}
+
+EXPORT_SYMBOL(PCIBIOS_MIN_IO);
+EXPORT_SYMBOL(PCIBIOS_MIN_MEM);
+>>>>>>> refs/remotes/origin/master
 
 int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
 			enum pci_mmap_state mmap_state, int write_combine)
@@ -445,9 +583,15 @@ int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
 		vma->vm_end - vma->vm_start, vma->vm_page_prot);
 }
 
+<<<<<<< HEAD
 char * (*pcibios_plat_setup)(char *str) __devinitdata;
 
 char *__devinit pcibios_setup(char *str)
+=======
+char * (*pcibios_plat_setup)(char *str) __initdata;
+
+char *__init pcibios_setup(char *str)
+>>>>>>> refs/remotes/origin/master
 {
 	if (pcibios_plat_setup)
 		return pcibios_plat_setup(str);

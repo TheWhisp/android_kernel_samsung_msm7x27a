@@ -87,10 +87,14 @@ static struct w83l785ts_data *w83l785ts_update_device(struct device *dev);
  * Driver data (common to all clients)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
  
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 static const struct i2c_device_id w83l785ts_id[] = {
 	{ "w83l785ts", 0 },
 	{ }
@@ -121,11 +125,15 @@ struct w83l785ts_data {
 
 	/* registers values */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	s8 temp[2]; /* 0: input
 		       1: critical limit */
 =======
 	s8 temp[2]; /* 0: input, 1: critical limit */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s8 temp[2]; /* 0: input, 1: critical limit */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -185,6 +193,7 @@ static int w83l785ts_detect(struct i2c_client *client,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int w83l785ts_probe(struct i2c_client *new_client,
 			   const struct i2c_device_id *id)
 {
@@ -198,6 +207,20 @@ static int w83l785ts_probe(struct i2c_client *new_client,
 	}
 
 	i2c_set_clientdata(new_client, data);
+=======
+static int w83l785ts_probe(struct i2c_client *client,
+			   const struct i2c_device_id *id)
+{
+	struct w83l785ts_data *data;
+	struct device *dev = &client->dev;
+	int err;
+
+	data = devm_kzalloc(dev, sizeof(struct w83l785ts_data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+
+	i2c_set_clientdata(client, data);
+>>>>>>> refs/remotes/origin/master
 	data->valid = 0;
 	mutex_init(&data->update_lock);
 
@@ -209,6 +232,7 @@ static int w83l785ts_probe(struct i2c_client *new_client,
 	 * Nothing yet, assume it is already started.
 	 */
 
+<<<<<<< HEAD
 	err = device_create_file(&new_client->dev,
 				 &sensor_dev_attr_temp1_input.dev_attr);
 	if (err)
@@ -216,11 +240,22 @@ static int w83l785ts_probe(struct i2c_client *new_client,
 
 	err = device_create_file(&new_client->dev,
 				 &sensor_dev_attr_temp1_max.dev_attr);
+=======
+	err = device_create_file(dev, &sensor_dev_attr_temp1_input.dev_attr);
+	if (err)
+		return err;
+
+	err = device_create_file(dev, &sensor_dev_attr_temp1_max.dev_attr);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto exit_remove;
 
 	/* Register sysfs hooks */
+<<<<<<< HEAD
 	data->hwmon_dev = hwmon_device_register(&new_client->dev);
+=======
+	data->hwmon_dev = hwmon_device_register(dev);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(data->hwmon_dev)) {
 		err = PTR_ERR(data->hwmon_dev);
 		goto exit_remove;
@@ -229,12 +264,17 @@ static int w83l785ts_probe(struct i2c_client *new_client,
 	return 0;
 
 exit_remove:
+<<<<<<< HEAD
 	device_remove_file(&new_client->dev,
 			   &sensor_dev_attr_temp1_input.dev_attr);
 	device_remove_file(&new_client->dev,
 			   &sensor_dev_attr_temp1_max.dev_attr);
 	kfree(data);
 exit:
+=======
+	device_remove_file(dev, &sensor_dev_attr_temp1_input.dev_attr);
+	device_remove_file(dev, &sensor_dev_attr_temp1_max.dev_attr);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -248,7 +288,10 @@ static int w83l785ts_remove(struct i2c_client *client)
 	device_remove_file(&client->dev,
 			   &sensor_dev_attr_temp1_max.dev_attr);
 
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -259,14 +302,20 @@ static u8 w83l785ts_read_value(struct i2c_client *client, u8 reg, u8 defval)
 	const char *prefix;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* We might be called during detection, at which point the client
 	   isn't yet fully initialized, so we can't use dev_dbg on it */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We might be called during detection, at which point the client
 	 * isn't yet fully initialized, so we can't use dev_dbg on it
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (i2c_get_clientdata(client)) {
 		dev = &client->dev;
 		prefix = "";
@@ -276,16 +325,22 @@ static u8 w83l785ts_read_value(struct i2c_client *client, u8 reg, u8 defval)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Frequent read errors have been reported on Asus boards, so we
 	 * retry on read errors. If it still fails (unlikely), return the
 	 * default value requested by the caller. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Frequent read errors have been reported on Asus boards, so we
 	 * retry on read errors. If it still fails (unlikely), return the
 	 * default value requested by the caller.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 1; i <= MAX_RETRIES; i++) {
 		value = i2c_smbus_read_byte_data(client, reg);
 		if (value >= 0) {
@@ -326,6 +381,7 @@ static struct w83l785ts_data *w83l785ts_update_device(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensors_w83l785ts_init(void)
 {
 	return i2c_add_driver(&w83l785ts_driver);
@@ -338,13 +394,19 @@ static void __exit sensors_w83l785ts_exit(void)
 =======
 module_i2c_driver(w83l785ts_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(w83l785ts_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jean Delvare <khali@linux-fr.org>");
 MODULE_DESCRIPTION("W83L785TS-S driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(sensors_w83l785ts_init);
 module_exit(sensors_w83l785ts_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

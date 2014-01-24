@@ -8,10 +8,14 @@
 #include <hwregs/asm/mmu_defs_asm.h>
 #include <hwregs/supp_reg.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/err.h>
 #include <linux/init.h>
@@ -88,7 +92,11 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
 		cpumask_set_cpu(i, &phys_cpu_present_map);
 }
 
+<<<<<<< HEAD
 void __devinit smp_prepare_boot_cpu(void)
+=======
+void smp_prepare_boot_cpu(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* PGD pointer has moved after per_cpu initialization so
 	 * update the MMU.
@@ -112,6 +120,7 @@ void __init smp_cpus_done(unsigned int max_cpus)
 
 /* Bring one cpu online.*/
 static int __init
+<<<<<<< HEAD
 smp_boot_one_cpu(int cpuid)
 {
 	unsigned timeout;
@@ -123,6 +132,14 @@ smp_boot_one_cpu(int cpuid)
 	if (IS_ERR(idle))
 		panic("SMP: fork failed for CPU:%d", cpuid);
 
+=======
+smp_boot_one_cpu(int cpuid, struct task_struct idle)
+{
+	unsigned timeout;
+	cpumask_t cpu_mask;
+
+	cpumask_clear(&cpu_mask);
+>>>>>>> refs/remotes/origin/master
 	task_thread_info(idle)->cpu = cpuid;
 
 	/* Information to the CPU that is about to boot */
@@ -146,9 +163,12 @@ smp_boot_one_cpu(int cpuid)
 		barrier();
 	}
 
+<<<<<<< HEAD
 	put_task_struct(idle);
 	idle = NULL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_CRIT "SMP: CPU:%d is stuck.\n", cpuid);
 	return -1;
 }
@@ -157,8 +177,11 @@ smp_boot_one_cpu(int cpuid)
  * specific stuff such as the local timer and the MMU. */
 void __init smp_callin(void)
 {
+<<<<<<< HEAD
 	extern void cpu_idle(void);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	int cpu = cpu_now_booting;
 	reg_intr_vect_rw_mask vect_mask = {0};
 
@@ -182,7 +205,11 @@ void __init smp_callin(void)
 	local_irq_enable();
 
 	set_cpu_online(cpu, true);
+<<<<<<< HEAD
 	cpu_idle();
+=======
+	cpu_startup_entry(CPUHP_ONLINE);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Stop execution on this CPU.*/
@@ -211,9 +238,15 @@ int setup_profiling_timer(unsigned int multiplier)
  */
 unsigned long cache_decay_ticks = 1;
 
+<<<<<<< HEAD
 int __cpuinit __cpu_up(unsigned int cpu)
 {
 	smp_boot_one_cpu(cpu);
+=======
+int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+{
+	smp_boot_one_cpu(cpu, tidle);
+>>>>>>> refs/remotes/origin/master
 	return cpu_online(cpu) ? 0 : -ENOSYS;
 }
 

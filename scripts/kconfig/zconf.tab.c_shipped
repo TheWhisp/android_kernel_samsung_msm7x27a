@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /* A Bison parser, made by GNU Bison 2.4.1.  */
 
@@ -14,6 +15,13 @@
       Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
    2009, 2010 Free Software Foundation, Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* A Bison parser, made by GNU Bison 2.5.  */
+
+/* Bison implementation for Yacc-like parsers in C
+   
+      Copyright (C) 1984, 1989-1990, 2000-2011 Free Software Foundation, Inc.
+>>>>>>> refs/remotes/origin/master
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -56,10 +64,14 @@
 
 /* Bison version.  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define YYBISON_VERSION "2.4.1"
 =======
 #define YYBISON_VERSION "2.4.3"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define YYBISON_VERSION "2.5"
+>>>>>>> refs/remotes/origin/master
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -102,9 +114,12 @@
 #include <stdbool.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define LKC_DIRECT_LINK
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "lkc.h"
 
 #define printd(mask, fmt...) if (cdebug & (mask)) printf(fmt)
@@ -119,15 +134,20 @@ static void zconfprint(const char *err, ...);
 static void zconf_error(const char *err, ...);
 static void zconferror(const char *err);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static bool zconf_endtoken(struct kconf_id *id, int starttoken, int endtoken);
 =======
 static bool zconf_endtoken(const struct kconf_id *id, int starttoken, int endtoken);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool zconf_endtoken(const struct kconf_id *id, int starttoken, int endtoken);
+>>>>>>> refs/remotes/origin/master
 
 struct symbol *symbol_hash[SYMBOL_HASHSIZE];
 
 static struct menu *current_menu, *current_entry;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define YYDEBUG 0
 #if YYDEBUG
@@ -135,16 +155,22 @@ static struct menu *current_menu, *current_entry;
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
 <<<<<<< HEAD
+<<<<<<< HEAD
 # define YYDEBUG 0
 =======
 # define YYDEBUG 1
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+# define YYDEBUG 1
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* Enabling verbose error messages.  */
@@ -216,10 +242,14 @@ typedef union YYSTYPE
 	struct expr *expr;
 	struct menu *menu;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct kconf_id *id;
 =======
 	const struct kconf_id *id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct kconf_id *id;
+>>>>>>> refs/remotes/origin/master
 
 
 
@@ -287,10 +317,14 @@ typedef short int yytype_int16;
 
 #ifndef YY_
 <<<<<<< HEAD
+<<<<<<< HEAD
 # if YYENABLE_NLS
 =======
 # if defined YYENABLE_NLS && YYENABLE_NLS
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+# if defined YYENABLE_NLS && YYENABLE_NLS
+>>>>>>> refs/remotes/origin/master
 #  if ENABLE_NLS
 #   include <libintl.h> /* INFRINGES ON USER NAME SPACE */
 #   define YY_(msgid) dgettext ("bison-runtime", msgid)
@@ -343,11 +377,19 @@ YYID (yyi)
 #    define alloca _alloca
 #   else
 #    define YYSTACK_ALLOC alloca
+<<<<<<< HEAD
 #    if ! defined _ALLOCA_H && ! defined _STDLIB_H && (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 #     include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
 #     ifndef _STDLIB_H
 #      define _STDLIB_H 1
+=======
+#    if ! defined _ALLOCA_H && ! defined EXIT_SUCCESS && (defined __STDC__ || defined __C99__FUNC__ \
+     || defined __cplusplus || defined _MSC_VER)
+#     include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
+#     ifndef EXIT_SUCCESS
+#      define EXIT_SUCCESS 0
+>>>>>>> refs/remotes/origin/master
 #     endif
 #    endif
 #   endif
@@ -370,24 +412,41 @@ YYID (yyi)
 #  ifndef YYSTACK_ALLOC_MAXIMUM
 #   define YYSTACK_ALLOC_MAXIMUM YYSIZE_MAXIMUM
 #  endif
+<<<<<<< HEAD
 #  if (defined __cplusplus && ! defined _STDLIB_H \
        && ! ((defined YYMALLOC || defined malloc) \
 	     && (defined YYFREE || defined free)))
 #   include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
 #   ifndef _STDLIB_H
 #    define _STDLIB_H 1
+=======
+#  if (defined __cplusplus && ! defined EXIT_SUCCESS \
+       && ! ((defined YYMALLOC || defined malloc) \
+	     && (defined YYFREE || defined free)))
+#   include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
+#   ifndef EXIT_SUCCESS
+#    define EXIT_SUCCESS 0
+>>>>>>> refs/remotes/origin/master
 #   endif
 #  endif
 #  ifndef YYMALLOC
 #   define YYMALLOC malloc
+<<<<<<< HEAD
 #   if ! defined malloc && ! defined _STDLIB_H && (defined __STDC__ || defined __C99__FUNC__ \
+=======
+#   if ! defined malloc && ! defined EXIT_SUCCESS && (defined __STDC__ || defined __C99__FUNC__ \
+>>>>>>> refs/remotes/origin/master
      || defined __cplusplus || defined _MSC_VER)
 void *malloc (YYSIZE_T); /* INFRINGES ON USER NAME SPACE */
 #   endif
 #  endif
 #  ifndef YYFREE
 #   define YYFREE free
+<<<<<<< HEAD
 #   if ! defined free && ! defined _STDLIB_H && (defined __STDC__ || defined __C99__FUNC__ \
+=======
+#   if ! defined free && ! defined EXIT_SUCCESS && (defined __STDC__ || defined __C99__FUNC__ \
+>>>>>>> refs/remotes/origin/master
      || defined __cplusplus || defined _MSC_VER)
 void free (void *); /* INFRINGES ON USER NAME SPACE */
 #   endif
@@ -416,6 +475,7 @@ union yyalloc
      ((N) * (sizeof (yytype_int16) + sizeof (YYSTYPE)) \
       + YYSTACK_GAP_MAXIMUM)
 
+<<<<<<< HEAD
 /* Copy COUNT objects from FROM to TO.  The source and destination do
    not overlap.  */
 # ifndef YYCOPY
@@ -433,6 +493,9 @@ union yyalloc
       while (YYID (0))
 #  endif
 # endif
+=======
+# define YYCOPY_NEEDED 1
+>>>>>>> refs/remotes/origin/master
 
 /* Relocate STACK from its old location to the new one.  The
    local variables YYSIZE and YYSTACKSIZE give the old and new number of
@@ -452,6 +515,29 @@ union yyalloc
 
 #endif
 
+<<<<<<< HEAD
+=======
+#if defined YYCOPY_NEEDED && YYCOPY_NEEDED
+/* Copy COUNT objects from FROM to TO.  The source and destination do
+   not overlap.  */
+# ifndef YYCOPY
+#  if defined __GNUC__ && 1 < __GNUC__
+#   define YYCOPY(To, From, Count) \
+      __builtin_memcpy (To, From, (Count) * sizeof (*(From)))
+#  else
+#   define YYCOPY(To, From, Count)		\
+      do					\
+	{					\
+	  YYSIZE_T yyi;				\
+	  for (yyi = 0; yyi < (Count); yyi++)	\
+	    (To)[yyi] = (From)[yyi];		\
+	}					\
+      while (YYID (0))
+#  endif
+# endif
+#endif /* !YYCOPY_NEEDED */
+
+>>>>>>> refs/remotes/origin/master
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  11
 /* YYLAST -- Last index in YYTABLE.  */
@@ -571,6 +657,7 @@ static const yytype_int8 yyrhs[] =
 static const yytype_uint16 yyrline[] =
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
        0,   108,   108,   108,   110,   110,   112,   114,   115,   116,
      117,   118,   119,   123,   127,   127,   127,   127,   127,   127,
      127,   127,   131,   132,   133,   134,   135,   136,   140,   141,
@@ -597,6 +684,20 @@ static const yytype_uint16 yyrline[] =
      453,   456,   457,   458,   462,   463,   466,   467,   470,   471,
      472,   473,   474,   475,   476,   479,   480,   483,   484
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+       0,   103,   103,   103,   105,   105,   107,   109,   110,   111,
+     112,   113,   114,   118,   122,   122,   122,   122,   122,   122,
+     122,   122,   126,   127,   128,   129,   130,   131,   135,   136,
+     142,   150,   156,   164,   174,   176,   177,   178,   179,   180,
+     181,   184,   192,   198,   208,   214,   220,   223,   225,   236,
+     237,   242,   251,   256,   264,   267,   269,   270,   271,   272,
+     273,   276,   282,   293,   299,   309,   311,   316,   324,   332,
+     335,   337,   338,   339,   344,   351,   358,   363,   371,   374,
+     376,   377,   378,   381,   389,   396,   403,   409,   416,   418,
+     419,   420,   423,   431,   433,   434,   437,   444,   446,   451,
+     452,   455,   456,   457,   461,   462,   465,   466,   469,   470,
+     471,   472,   473,   474,   475,   478,   479,   482,   483
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 
@@ -671,8 +772,13 @@ static const yytype_uint8 yyr2[] =
        3,     3,     2,     3,     3,     1,     1,     0,     1
 };
 
+<<<<<<< HEAD
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
    STATE-NUM when YYTABLE doesn't specify something else to do.  Zero
+=======
+/* YYDEFACT[STATE-NAME] -- Default reduction number in state STATE-NUM.
+   Performed when YYTABLE doesn't specify something else to do.  Zero
+>>>>>>> refs/remotes/origin/master
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
@@ -747,8 +853,12 @@ static const yytype_int16 yypgoto[] =
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
    positive, shift that token.  If negative, reduce the rule which
+<<<<<<< HEAD
    number is the opposite.  If zero, do what YYDEFACT says.
    If YYTABLE_NINF, syntax error.  */
+=======
+   number is the opposite.  If YYTABLE_NINF, syntax error.  */
+>>>>>>> refs/remotes/origin/master
 #define YYTABLE_NINF -86
 static const yytype_int16 yytable[] =
 {
@@ -784,6 +894,15 @@ static const yytype_int16 yytable[] =
      184
 };
 
+<<<<<<< HEAD
+=======
+#define yypact_value_is_default(yystate) \
+  ((yystate) == (-90))
+
+#define yytable_value_is_error(yytable_value) \
+  YYID (0)
+
+>>>>>>> refs/remotes/origin/master
 static const yytype_int16 yycheck[] =
 {
        1,    67,    68,    10,    93,    94,    76,     3,    76,    14,
@@ -857,10 +976,13 @@ static const yytype_uint8 yystos[] =
 /* Like YYERROR except do call yyerror.  This remains here temporarily
    to ease the transition to the new meaning of YYERROR, for GCC.
 <<<<<<< HEAD
+<<<<<<< HEAD
    Once GCC version 2 has supplanted version 1, this can go.  */
 
 #define YYFAIL		goto yyerrlab
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    Once GCC version 2 has supplanted version 1, this can go.  However,
    YYFAIL appears to be in use.  Nevertheless, it is formally deprecated
    in Bison 2.4.2's NEWS entry, where a plan to phase it out is
@@ -873,7 +995,10 @@ static const yytype_uint8 yystos[] =
      some users do, and we want to make it easy for users to remove
      YYFAIL uses, which will produce warnings from Bison 2.5.  */
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define YYRECOVERING()  (!!yyerrstatus)
 
@@ -883,7 +1008,10 @@ do								\
     {								\
       yychar = (Token);						\
       yylval = (Value);						\
+<<<<<<< HEAD
       yytoken = YYTRANSLATE (yychar);				\
+=======
+>>>>>>> refs/remotes/origin/master
       YYPOPSTACK (1);						\
       goto yybackup;						\
     }								\
@@ -925,6 +1053,7 @@ while (YYID (0))
 #endif
 
 
+<<<<<<< HEAD
 /* YY_LOCATION_PRINT -- Print the location on the stream.
    This macro was not mandated originally: define only if we know
    we won't break user code: when these are the locations we know.  */
@@ -942,6 +1071,12 @@ while (YYID (0))
 # else
 #  define YY_LOCATION_PRINT(File, Loc) ((void) 0)
 # endif
+=======
+/* This macro is provided for backward compatibility. */
+
+#ifndef YY_LOCATION_PRINT
+# define YY_LOCATION_PRINT(File, Loc) ((void) 0)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 
@@ -1133,7 +1268,10 @@ int yydebug;
 # define YYMAXDEPTH 10000
 #endif
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 #if YYERROR_VERBOSE
 
@@ -1236,6 +1374,7 @@ yytnamerr (char *yyres, const char *yystr)
 }
 # endif
 
+<<<<<<< HEAD
 /* Copy into YYRESULT an error message about the unexpected token
    YYCHAR while in state YYSTATE.  Return the number of bytes copied,
    including the terminating null byte.  If YYRESULT is null, do not
@@ -1345,6 +1484,144 @@ yysyntax_error (char *yyresult, int yystate, int yychar)
 }
 #endif /* YYERROR_VERBOSE */
 
+=======
+/* Copy into *YYMSG, which is of size *YYMSG_ALLOC, an error message
+   about the unexpected token YYTOKEN for the state stack whose top is
+   YYSSP.
+
+   Return 0 if *YYMSG was successfully written.  Return 1 if *YYMSG is
+   not large enough to hold the message.  In that case, also set
+   *YYMSG_ALLOC to the required number of bytes.  Return 2 if the
+   required number of bytes is too large to store.  */
+static int
+yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
+                yytype_int16 *yyssp, int yytoken)
+{
+  YYSIZE_T yysize0 = yytnamerr (0, yytname[yytoken]);
+  YYSIZE_T yysize = yysize0;
+  YYSIZE_T yysize1;
+  enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
+  /* Internationalized format string. */
+  const char *yyformat = 0;
+  /* Arguments of yyformat. */
+  char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
+  /* Number of reported tokens (one for the "unexpected", one per
+     "expected"). */
+  int yycount = 0;
+
+  /* There are many possibilities here to consider:
+     - Assume YYFAIL is not used.  It's too flawed to consider.  See
+       <http://lists.gnu.org/archive/html/bison-patches/2009-12/msg00024.html>
+       for details.  YYERROR is fine as it does not invoke this
+       function.
+     - If this state is a consistent state with a default action, then
+       the only way this function was invoked is if the default action
+       is an error action.  In that case, don't check for expected
+       tokens because there are none.
+     - The only way there can be no lookahead present (in yychar) is if
+       this state is a consistent state with a default action.  Thus,
+       detecting the absence of a lookahead is sufficient to determine
+       that there is no unexpected or expected token to report.  In that
+       case, just report a simple "syntax error".
+     - Don't assume there isn't a lookahead just because this state is a
+       consistent state with a default action.  There might have been a
+       previous inconsistent state, consistent state with a non-default
+       action, or user semantic action that manipulated yychar.
+     - Of course, the expected token list depends on states to have
+       correct lookahead information, and it depends on the parser not
+       to perform extra reductions after fetching a lookahead from the
+       scanner and before detecting a syntax error.  Thus, state merging
+       (from LALR or IELR) and default reductions corrupt the expected
+       token list.  However, the list is correct for canonical LR with
+       one exception: it will still contain any token that will not be
+       accepted due to an error action in a later state.
+  */
+  if (yytoken != YYEMPTY)
+    {
+      int yyn = yypact[*yyssp];
+      yyarg[yycount++] = yytname[yytoken];
+      if (!yypact_value_is_default (yyn))
+        {
+          /* Start YYX at -YYN if negative to avoid negative indexes in
+             YYCHECK.  In other words, skip the first -YYN actions for
+             this state because they are default actions.  */
+          int yyxbegin = yyn < 0 ? -yyn : 0;
+          /* Stay within bounds of both yycheck and yytname.  */
+          int yychecklim = YYLAST - yyn + 1;
+          int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
+          int yyx;
+
+          for (yyx = yyxbegin; yyx < yyxend; ++yyx)
+            if (yycheck[yyx + yyn] == yyx && yyx != YYTERROR
+                && !yytable_value_is_error (yytable[yyx + yyn]))
+              {
+                if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
+                  {
+                    yycount = 1;
+                    yysize = yysize0;
+                    break;
+                  }
+                yyarg[yycount++] = yytname[yyx];
+                yysize1 = yysize + yytnamerr (0, yytname[yyx]);
+                if (! (yysize <= yysize1
+                       && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+                  return 2;
+                yysize = yysize1;
+              }
+        }
+    }
+
+  switch (yycount)
+    {
+# define YYCASE_(N, S)                      \
+      case N:                               \
+        yyformat = S;                       \
+      break
+      YYCASE_(0, YY_("syntax error"));
+      YYCASE_(1, YY_("syntax error, unexpected %s"));
+      YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
+      YYCASE_(3, YY_("syntax error, unexpected %s, expecting %s or %s"));
+      YYCASE_(4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
+      YYCASE_(5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
+# undef YYCASE_
+    }
+
+  yysize1 = yysize + yystrlen (yyformat);
+  if (! (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+    return 2;
+  yysize = yysize1;
+
+  if (*yymsg_alloc < yysize)
+    {
+      *yymsg_alloc = 2 * yysize;
+      if (! (yysize <= *yymsg_alloc
+             && *yymsg_alloc <= YYSTACK_ALLOC_MAXIMUM))
+        *yymsg_alloc = YYSTACK_ALLOC_MAXIMUM;
+      return 1;
+    }
+
+  /* Avoid sprintf, as that infringes on the user's name space.
+     Don't have undefined behavior even if the translation
+     produced a string with the wrong number of "%s"s.  */
+  {
+    char *yyp = *yymsg;
+    int yyi = 0;
+    while ((*yyp = *yyformat) != '\0')
+      if (*yyp == '%' && yyformat[1] == 's' && yyi < yycount)
+        {
+          yyp += yytnamerr (yyp, yyarg[yyi++]);
+          yyformat += 2;
+        }
+      else
+        {
+          yyp++;
+          yyformat++;
+        }
+  }
+  return 0;
+}
+#endif /* YYERROR_VERBOSE */
+>>>>>>> refs/remotes/origin/master
 
 /*-----------------------------------------------.
 | Release the memory associated to this symbol.  |
@@ -1407,6 +1684,10 @@ yydestruct (yymsg, yytype, yyvaluep)
     }
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 /* Prevent warnings from -Wmissing-prototypes.  */
 #ifdef YYPARSE_PARAM
 #if defined __STDC__ || defined __cplusplus
@@ -1433,10 +1714,16 @@ YYSTYPE yylval;
 int yynerrs;
 
 
+<<<<<<< HEAD
 
 /*-------------------------.
 | yyparse or yypush_parse.  |
 `-------------------------*/
+=======
+/*----------.
+| yyparse.  |
+`----------*/
+>>>>>>> refs/remotes/origin/master
 
 #ifdef YYPARSE_PARAM
 #if (defined __STDC__ || defined __C99__FUNC__ \
@@ -1460,8 +1747,11 @@ yyparse ()
 #endif
 #endif
 {
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/master
     int yystate;
     /* Number of tokens to shift before error messages enabled.  */
     int yyerrstatus;
@@ -1616,7 +1906,11 @@ yybackup:
 
   /* First try to decide what to do without reference to lookahead token.  */
   yyn = yypact[yystate];
+<<<<<<< HEAD
   if (yyn == YYPACT_NINF)
+=======
+  if (yypact_value_is_default (yyn))
+>>>>>>> refs/remotes/origin/master
     goto yydefault;
 
   /* Not known => get a lookahead token if don't already have one.  */
@@ -1647,8 +1941,13 @@ yybackup:
   yyn = yytable[yyn];
   if (yyn <= 0)
     {
+<<<<<<< HEAD
       if (yyn == 0 || yyn == YYTABLE_NINF)
 	goto yyerrlab;
+=======
+      if (yytable_value_is_error (yyn))
+        goto yyerrlab;
+>>>>>>> refs/remotes/origin/master
       yyn = -yyn;
       goto yyreduce;
     }
@@ -1703,34 +2002,58 @@ yyreduce:
     {
         case 10:
 
+<<<<<<< HEAD
     { zconf_error("unexpected end statement"); ;}
+=======
+    { zconf_error("unexpected end statement"); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 11:
 
+<<<<<<< HEAD
     { zconf_error("unknown statement \"%s\"", (yyvsp[(2) - (4)].string)); ;}
+=======
+    { zconf_error("unknown statement \"%s\"", (yyvsp[(2) - (4)].string)); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 12:
 
     {
 	zconf_error("unexpected option \"%s\"", kconf_id_strings + (yyvsp[(2) - (4)].id)->name);
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 13:
 
+<<<<<<< HEAD
     { zconf_error("invalid statement"); ;}
+=======
+    { zconf_error("invalid statement"); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 28:
 
+<<<<<<< HEAD
     { zconf_error("unknown option \"%s\"", (yyvsp[(1) - (3)].string)); ;}
+=======
+    { zconf_error("unknown option \"%s\"", (yyvsp[(1) - (3)].string)); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 29:
 
+<<<<<<< HEAD
     { zconf_error("invalid option"); ;}
+=======
+    { zconf_error("invalid option"); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 30:
@@ -1740,7 +2063,11 @@ yyreduce:
 	sym->flags |= SYMBOL_OPTIONAL;
 	menu_add_entry(sym);
 	printd(DEBUG_PARSE, "%s:%d:config %s\n", zconf_curname(), zconf_lineno(), (yyvsp[(2) - (3)].string));
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 31:
@@ -1748,7 +2075,11 @@ yyreduce:
     {
 	menu_end_entry();
 	printd(DEBUG_PARSE, "%s:%d:endconfig\n", zconf_curname(), zconf_lineno());
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 32:
@@ -1758,7 +2089,11 @@ yyreduce:
 	sym->flags |= SYMBOL_OPTIONAL;
 	menu_add_entry(sym);
 	printd(DEBUG_PARSE, "%s:%d:menuconfig %s\n", zconf_curname(), zconf_lineno(), (yyvsp[(2) - (3)].string));
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 33:
@@ -1770,7 +2105,11 @@ yyreduce:
 		zconfprint("warning: menuconfig statement without prompt");
 	menu_end_entry();
 	printd(DEBUG_PARSE, "%s:%d:endconfig\n", zconf_curname(), zconf_lineno());
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 41:
@@ -1780,7 +2119,11 @@ yyreduce:
 	printd(DEBUG_PARSE, "%s:%d:type(%u)\n",
 		zconf_curname(), zconf_lineno(),
 		(yyvsp[(1) - (3)].id)->stype);
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 42:
@@ -1788,7 +2131,11 @@ yyreduce:
     {
 	menu_add_prompt(P_PROMPT, (yyvsp[(2) - (4)].string), (yyvsp[(3) - (4)].expr));
 	printd(DEBUG_PARSE, "%s:%d:prompt\n", zconf_curname(), zconf_lineno());
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 43:
@@ -1800,7 +2147,11 @@ yyreduce:
 	printd(DEBUG_PARSE, "%s:%d:default(%u)\n",
 		zconf_curname(), zconf_lineno(),
 		(yyvsp[(1) - (4)].id)->stype);
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 44:
@@ -1808,7 +2159,11 @@ yyreduce:
     {
 	menu_add_symbol(P_SELECT, sym_lookup((yyvsp[(2) - (4)].string), 0), (yyvsp[(3) - (4)].expr));
 	printd(DEBUG_PARSE, "%s:%d:select\n", zconf_curname(), zconf_lineno());
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 45:
@@ -1816,33 +2171,53 @@ yyreduce:
     {
 	menu_add_expr(P_RANGE, expr_alloc_comp(E_RANGE,(yyvsp[(2) - (5)].symbol), (yyvsp[(3) - (5)].symbol)), (yyvsp[(4) - (5)].expr));
 	printd(DEBUG_PARSE, "%s:%d:range\n", zconf_curname(), zconf_lineno());
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 48:
 
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct kconf_id *id = kconf_id_lookup((yyvsp[(2) - (3)].string), strlen((yyvsp[(2) - (3)].string)));
 =======
 	const struct kconf_id *id = kconf_id_lookup((yyvsp[(2) - (3)].string), strlen((yyvsp[(2) - (3)].string)));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct kconf_id *id = kconf_id_lookup((yyvsp[(2) - (3)].string), strlen((yyvsp[(2) - (3)].string)));
+>>>>>>> refs/remotes/origin/master
 	if (id && id->flags & TF_OPTION)
 		menu_add_option(id->token, (yyvsp[(3) - (3)].string));
 	else
 		zconfprint("warning: ignoring unknown option %s", (yyvsp[(2) - (3)].string));
 	free((yyvsp[(2) - (3)].string));
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 49:
 
+<<<<<<< HEAD
     { (yyval.string) = NULL; ;}
+=======
+    { (yyval.string) = NULL; }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 50:
 
+<<<<<<< HEAD
     { (yyval.string) = (yyvsp[(2) - (2)].string); ;}
+=======
+    { (yyval.string) = (yyvsp[(2) - (2)].string); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 51:
@@ -1853,14 +2228,22 @@ yyreduce:
 	menu_add_entry(sym);
 	menu_add_expr(P_CHOICE, NULL, NULL);
 	printd(DEBUG_PARSE, "%s:%d:choice\n", zconf_curname(), zconf_lineno());
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 52:
 
     {
 	(yyval.menu) = menu_add_menu();
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 53:
@@ -1870,7 +2253,11 @@ yyreduce:
 		menu_end_menu();
 		printd(DEBUG_PARSE, "%s:%d:endchoice\n", zconf_curname(), zconf_lineno());
 	}
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 61:
@@ -1878,7 +2265,11 @@ yyreduce:
     {
 	menu_add_prompt(P_PROMPT, (yyvsp[(2) - (4)].string), (yyvsp[(3) - (4)].expr));
 	printd(DEBUG_PARSE, "%s:%d:prompt\n", zconf_curname(), zconf_lineno());
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 62:
@@ -1891,7 +2282,11 @@ yyreduce:
 			(yyvsp[(1) - (3)].id)->stype);
 	} else
 		YYERROR;
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 63:
@@ -1899,7 +2294,11 @@ yyreduce:
     {
 	current_entry->sym->flags |= SYMBOL_OPTIONAL;
 	printd(DEBUG_PARSE, "%s:%d:optional\n", zconf_curname(), zconf_lineno());
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 64:
@@ -1911,7 +2310,11 @@ yyreduce:
 			zconf_curname(), zconf_lineno());
 	} else
 		YYERROR;
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 67:
@@ -1921,7 +2324,11 @@ yyreduce:
 	menu_add_entry(NULL);
 	menu_add_dep((yyvsp[(2) - (3)].expr));
 	(yyval.menu) = menu_add_menu();
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 68:
@@ -1931,14 +2338,22 @@ yyreduce:
 		menu_end_menu();
 		printd(DEBUG_PARSE, "%s:%d:endif\n", zconf_curname(), zconf_lineno());
 	}
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 74:
 
     {
 	menu_add_prompt(P_MENU, (yyvsp[(2) - (3)].string), NULL);
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 75:
@@ -1947,14 +2362,22 @@ yyreduce:
 	menu_add_entry(NULL);
 	menu_add_prompt(P_MENU, (yyvsp[(2) - (3)].string), NULL);
 	printd(DEBUG_PARSE, "%s:%d:menu\n", zconf_curname(), zconf_lineno());
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 76:
 
     {
 	(yyval.menu) = menu_add_menu();
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 77:
@@ -1964,7 +2387,11 @@ yyreduce:
 		menu_end_menu();
 		printd(DEBUG_PARSE, "%s:%d:endmenu\n", zconf_curname(), zconf_lineno());
 	}
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 83:
@@ -1972,7 +2399,11 @@ yyreduce:
     {
 	printd(DEBUG_PARSE, "%s:%d:source %s\n", zconf_curname(), zconf_lineno(), (yyvsp[(2) - (3)].string));
 	zconf_nextfile((yyvsp[(2) - (3)].string));
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 84:
@@ -1981,14 +2412,22 @@ yyreduce:
 	menu_add_entry(NULL);
 	menu_add_prompt(P_COMMENT, (yyvsp[(2) - (3)].string), NULL);
 	printd(DEBUG_PARSE, "%s:%d:comment\n", zconf_curname(), zconf_lineno());
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 85:
 
     {
 	menu_end_entry();
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 86:
@@ -1996,14 +2435,22 @@ yyreduce:
     {
 	printd(DEBUG_PARSE, "%s:%d:help\n", zconf_curname(), zconf_lineno());
 	zconf_starthelp();
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 87:
 
     {
 	current_entry->help = (yyvsp[(2) - (2)].string);
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 92:
@@ -2011,102 +2458,188 @@ yyreduce:
     {
 	menu_add_dep((yyvsp[(3) - (4)].expr));
 	printd(DEBUG_PARSE, "%s:%d:depends on\n", zconf_curname(), zconf_lineno());
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 96:
 
     {
 	menu_add_visibility((yyvsp[(2) - (2)].expr));
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 98:
 
     {
 	menu_add_prompt(P_PROMPT, (yyvsp[(1) - (2)].string), (yyvsp[(2) - (2)].expr));
+<<<<<<< HEAD
 ;}
+=======
+}
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 101:
 
+<<<<<<< HEAD
     { (yyval.id) = (yyvsp[(1) - (2)].id); ;}
+=======
+    { (yyval.id) = (yyvsp[(1) - (2)].id); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 102:
 
+<<<<<<< HEAD
     { (yyval.id) = (yyvsp[(1) - (2)].id); ;}
+=======
+    { (yyval.id) = (yyvsp[(1) - (2)].id); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 103:
 
+<<<<<<< HEAD
     { (yyval.id) = (yyvsp[(1) - (2)].id); ;}
+=======
+    { (yyval.id) = (yyvsp[(1) - (2)].id); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 106:
 
+<<<<<<< HEAD
     { (yyval.expr) = NULL; ;}
+=======
+    { (yyval.expr) = NULL; }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 107:
 
+<<<<<<< HEAD
     { (yyval.expr) = (yyvsp[(2) - (2)].expr); ;}
+=======
+    { (yyval.expr) = (yyvsp[(2) - (2)].expr); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 108:
 
+<<<<<<< HEAD
     { (yyval.expr) = expr_alloc_symbol((yyvsp[(1) - (1)].symbol)); ;}
+=======
+    { (yyval.expr) = expr_alloc_symbol((yyvsp[(1) - (1)].symbol)); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 109:
 
+<<<<<<< HEAD
     { (yyval.expr) = expr_alloc_comp(E_EQUAL, (yyvsp[(1) - (3)].symbol), (yyvsp[(3) - (3)].symbol)); ;}
+=======
+    { (yyval.expr) = expr_alloc_comp(E_EQUAL, (yyvsp[(1) - (3)].symbol), (yyvsp[(3) - (3)].symbol)); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 110:
 
+<<<<<<< HEAD
     { (yyval.expr) = expr_alloc_comp(E_UNEQUAL, (yyvsp[(1) - (3)].symbol), (yyvsp[(3) - (3)].symbol)); ;}
+=======
+    { (yyval.expr) = expr_alloc_comp(E_UNEQUAL, (yyvsp[(1) - (3)].symbol), (yyvsp[(3) - (3)].symbol)); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 111:
 
+<<<<<<< HEAD
     { (yyval.expr) = (yyvsp[(2) - (3)].expr); ;}
+=======
+    { (yyval.expr) = (yyvsp[(2) - (3)].expr); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 112:
 
+<<<<<<< HEAD
     { (yyval.expr) = expr_alloc_one(E_NOT, (yyvsp[(2) - (2)].expr)); ;}
+=======
+    { (yyval.expr) = expr_alloc_one(E_NOT, (yyvsp[(2) - (2)].expr)); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 113:
 
+<<<<<<< HEAD
     { (yyval.expr) = expr_alloc_two(E_OR, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr)); ;}
+=======
+    { (yyval.expr) = expr_alloc_two(E_OR, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr)); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 114:
 
+<<<<<<< HEAD
     { (yyval.expr) = expr_alloc_two(E_AND, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr)); ;}
+=======
+    { (yyval.expr) = expr_alloc_two(E_AND, (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr)); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 115:
 
+<<<<<<< HEAD
     { (yyval.symbol) = sym_lookup((yyvsp[(1) - (1)].string), 0); free((yyvsp[(1) - (1)].string)); ;}
+=======
+    { (yyval.symbol) = sym_lookup((yyvsp[(1) - (1)].string), 0); free((yyvsp[(1) - (1)].string)); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 116:
 
+<<<<<<< HEAD
     { (yyval.symbol) = sym_lookup((yyvsp[(1) - (1)].string), SYMBOL_CONST); free((yyvsp[(1) - (1)].string)); ;}
+=======
+    { (yyval.symbol) = sym_lookup((yyvsp[(1) - (1)].string), SYMBOL_CONST); free((yyvsp[(1) - (1)].string)); }
+>>>>>>> refs/remotes/origin/master
     break;
 
   case 117:
 
+<<<<<<< HEAD
     { (yyval.string) = NULL; ;}
+=======
+    { (yyval.string) = NULL; }
+>>>>>>> refs/remotes/origin/master
     break;
 
 
 
       default: break;
     }
+<<<<<<< HEAD
+=======
+  /* User semantic actions sometimes alter yychar, and that requires
+     that yytoken be updated with the new translation.  We take the
+     approach of translating immediately before every use of yytoken.
+     One alternative is translating here after every semantic action,
+     but that translation would be missed if the semantic action invokes
+     YYABORT, YYACCEPT, or YYERROR immediately after altering yychar or
+     if it invokes YYBACKUP.  In the case of YYABORT or YYACCEPT, an
+     incorrect destructor might then be invoked immediately.  In the
+     case of YYERROR or YYBACKUP, subsequent parser actions might lead
+     to an incorrect destructor call or verbose syntax error message
+     before the lookahead is translated.  */
+>>>>>>> refs/remotes/origin/master
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
 
   YYPOPSTACK (yylen);
@@ -2134,6 +2667,13 @@ yyreduce:
 | yyerrlab -- here on detecting error |
 `------------------------------------*/
 yyerrlab:
+<<<<<<< HEAD
+=======
+  /* Make sure we have latest lookahead translation.  See comments at
+     user semantic actions for why this is necessary.  */
+  yytoken = yychar == YYEMPTY ? YYEMPTY : YYTRANSLATE (yychar);
+
+>>>>>>> refs/remotes/origin/master
   /* If not already recovering from an error, report this error.  */
   if (!yyerrstatus)
     {
@@ -2141,6 +2681,7 @@ yyerrlab:
 #if ! YYERROR_VERBOSE
       yyerror (YY_("syntax error"));
 #else
+<<<<<<< HEAD
       {
 	YYSIZE_T yysize = yysyntax_error (0, yystate, yychar);
 	if (yymsg_alloc < yysize && yymsg_alloc < YYSTACK_ALLOC_MAXIMUM)
@@ -2172,6 +2713,38 @@ yyerrlab:
 	      goto yyexhaustedlab;
 	  }
       }
+=======
+# define YYSYNTAX_ERROR yysyntax_error (&yymsg_alloc, &yymsg, \
+                                        yyssp, yytoken)
+      {
+        char const *yymsgp = YY_("syntax error");
+        int yysyntax_error_status;
+        yysyntax_error_status = YYSYNTAX_ERROR;
+        if (yysyntax_error_status == 0)
+          yymsgp = yymsg;
+        else if (yysyntax_error_status == 1)
+          {
+            if (yymsg != yymsgbuf)
+              YYSTACK_FREE (yymsg);
+            yymsg = (char *) YYSTACK_ALLOC (yymsg_alloc);
+            if (!yymsg)
+              {
+                yymsg = yymsgbuf;
+                yymsg_alloc = sizeof yymsgbuf;
+                yysyntax_error_status = 2;
+              }
+            else
+              {
+                yysyntax_error_status = YYSYNTAX_ERROR;
+                yymsgp = yymsg;
+              }
+          }
+        yyerror (yymsgp);
+        if (yysyntax_error_status == 2)
+          goto yyexhaustedlab;
+      }
+# undef YYSYNTAX_ERROR
+>>>>>>> refs/remotes/origin/master
 #endif
     }
 
@@ -2230,7 +2803,11 @@ yyerrlab1:
   for (;;)
     {
       yyn = yypact[yystate];
+<<<<<<< HEAD
       if (yyn != YYPACT_NINF)
+=======
+      if (!yypact_value_is_default (yyn))
+>>>>>>> refs/remotes/origin/master
 	{
 	  yyn += YYTERROR;
 	  if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYTERROR)
@@ -2289,8 +2866,18 @@ yyexhaustedlab:
 
 yyreturn:
   if (yychar != YYEMPTY)
+<<<<<<< HEAD
      yydestruct ("Cleanup: discarding lookahead",
 		 yytoken, &yylval);
+=======
+    {
+      /* Make sure we have latest lookahead translation.  See comments at
+         user semantic actions for why this is necessary.  */
+      yytoken = YYTRANSLATE (yychar);
+      yydestruct ("Cleanup: discarding lookahead",
+                  yytoken, &yylval);
+    }
+>>>>>>> refs/remotes/origin/master
   /* Do not reclaim the symbols of the rule which action triggered
      this YYABORT or YYACCEPT.  */
   YYPOPSTACK (yylen);
@@ -2326,6 +2913,7 @@ void conf_parse(const char *name)
 
 	sym_init();
 	_menu_init();
+<<<<<<< HEAD
 	modules_sym = sym_lookup(NULL, 0);
 	modules_sym->type = S_BOOLEAN;
 	modules_sym->flags |= SYMBOL_AUTO;
@@ -2349,6 +2937,17 @@ void conf_parse(const char *name)
 		prop = prop_alloc(P_DEFAULT, modules_sym);
 		prop->expr = expr_alloc_symbol(sym_lookup("MODULES", 0));
 	}
+=======
+	rootmenu.prompt = menu_add_prompt(P_MENU, "Linux Kernel Configuration", NULL);
+
+	if (getenv("ZCONF_DEBUG"))
+		zconfdebug = 1;
+	zconfparse();
+	if (zconfnerrs)
+		exit(1);
+	if (!modules_sym)
+		modules_sym = sym_find( "n" );
+>>>>>>> refs/remotes/origin/master
 
 	rootmenu.prompt->text = _(rootmenu.prompt->text);
 	rootmenu.prompt->text = sym_expand_string_value(rootmenu.prompt->text);
@@ -2379,10 +2978,14 @@ static const char *zconf_tokenname(int token)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static bool zconf_endtoken(struct kconf_id *id, int starttoken, int endtoken)
 =======
 static bool zconf_endtoken(const struct kconf_id *id, int starttoken, int endtoken)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool zconf_endtoken(const struct kconf_id *id, int starttoken, int endtoken)
+>>>>>>> refs/remotes/origin/master
 {
 	if (id->token != endtoken) {
 		zconf_error("unexpected '%s' within %s block",
@@ -2428,12 +3031,16 @@ static void zconf_error(const char *err, ...)
 static void zconferror(const char *err)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if YYDEBUG
 	fprintf(stderr, "%s:%d: %s\n", zconf_curname(), zconf_lineno() + 1, err);
 #endif
 =======
 	fprintf(stderr, "%s:%d: %s\n", zconf_curname(), zconf_lineno() + 1, err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fprintf(stderr, "%s:%d: %s\n", zconf_curname(), zconf_lineno() + 1, err);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void print_quoted_string(FILE *out, const char *str)
@@ -2583,10 +3190,14 @@ void zconfdump(FILE *out)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "lex.zconf.c"
 =======
 #include "zconf.lex.c"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "zconf.lex.c"
+>>>>>>> refs/remotes/origin/master
 #include "util.c"
 #include "confdata.c"
 #include "expr.c"

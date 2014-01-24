@@ -17,6 +17,7 @@
  */
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_types.h"
 #include "xfs_bit.h"
 #include "xfs_log.h"
@@ -34,6 +35,20 @@
 #include "xfs_trans_priv.h"
 #include "xfs_error.h"
 #include "xfs_rw.h"
+=======
+#include "xfs_shared.h"
+#include "xfs_format.h"
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+#include "xfs_sb.h"
+#include "xfs_ag.h"
+#include "xfs_mount.h"
+#include "xfs_inode.h"
+#include "xfs_trans.h"
+#include "xfs_buf_item.h"
+#include "xfs_trans_priv.h"
+#include "xfs_error.h"
+>>>>>>> refs/remotes/origin/master
 #include "xfs_trace.h"
 
 /*
@@ -44,6 +59,7 @@ STATIC struct xfs_buf *
 xfs_trans_buf_item_match(
 	struct xfs_trans	*tp,
 	struct xfs_buftarg	*target,
+<<<<<<< HEAD
 	xfs_daddr_t		blkno,
 	int			len)
 {
@@ -62,6 +78,28 @@ xfs_trans_buf_item_match(
 		    XFS_BUF_ADDR(blip->bli_buf) == blkno &&
 		    XFS_BUF_COUNT(blip->bli_buf) == len)
 			return blip->bli_buf;
+=======
+	struct xfs_buf_map	*map,
+	int			nmaps)
+{
+	struct xfs_log_item_desc *lidp;
+	struct xfs_buf_log_item	*blip;
+	int			len = 0;
+	int			i;
+
+	for (i = 0; i < nmaps; i++)
+		len += map[i].bm_len;
+
+	list_for_each_entry(lidp, &tp->t_items, lid_trans) {
+		blip = (struct xfs_buf_log_item *)lidp->lid_item;
+		if (blip->bli_item.li_type == XFS_LI_BUF &&
+		    blip->bli_buf->b_target == target &&
+		    XFS_BUF_ADDR(blip->bli_buf) == map[0].bm_bn &&
+		    blip->bli_buf->b_length == len) {
+			ASSERT(blip->bli_buf->b_map_count == nmaps);
+			return blip->bli_buf;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return NULL;
@@ -85,11 +123,15 @@ _xfs_trans_bjoin(
 	struct xfs_buf_log_item	*bip;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ASSERT(XFS_BUF_ISBUSY(bp));
 	ASSERT(XFS_BUF_FSPRIVATE2(bp, void *) == NULL);
 =======
 	ASSERT(bp->b_transp == NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ASSERT(bp->b_transp == NULL);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * The xfs_buf_log_item pointer is stored in b_fsprivate.  If
@@ -98,12 +140,18 @@ _xfs_trans_bjoin(
 	 */
 	xfs_buf_item_init(bp, tp->t_mountp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bip = XFS_BUF_FSPRIVATE(bp, xfs_buf_log_item_t *);
 =======
 	bip = bp->b_fspriv;
 >>>>>>> refs/remotes/origin/cm-10.0
 	ASSERT(!(bip->bli_flags & XFS_BLI_STALE));
 	ASSERT(!(bip->bli_format.blf_flags & XFS_BLF_CANCEL));
+=======
+	bip = bp->b_fspriv;
+	ASSERT(!(bip->bli_flags & XFS_BLI_STALE));
+	ASSERT(!(bip->__bli_format.blf_flags & XFS_BLF_CANCEL));
+>>>>>>> refs/remotes/origin/master
 	ASSERT(!(bip->bli_flags & XFS_BLI_LOGGED));
 	if (reset_recur)
 		bip->bli_recur = 0;
@@ -123,10 +171,14 @@ _xfs_trans_bjoin(
 	 * in xfs_trans_get_buf() and friends above.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	XFS_BUF_SET_FSPRIVATE2(bp, tp);
 =======
 	bp->b_transp = tp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bp->b_transp = tp;
+>>>>>>> refs/remotes/origin/master
 
 }
 
@@ -148,16 +200,27 @@ xfs_trans_bjoin(
  * If the transaction pointer is NULL, make this just a normal
  * get_buf() call.
  */
+<<<<<<< HEAD
 xfs_buf_t *
 xfs_trans_get_buf(xfs_trans_t	*tp,
 		  xfs_buftarg_t	*target_dev,
 		  xfs_daddr_t	blkno,
 		  int		len,
 		  uint		flags)
+=======
+struct xfs_buf *
+xfs_trans_get_buf_map(
+	struct xfs_trans	*tp,
+	struct xfs_buftarg	*target,
+	struct xfs_buf_map	*map,
+	int			nmaps,
+	xfs_buf_flags_t		flags)
+>>>>>>> refs/remotes/origin/master
 {
 	xfs_buf_t		*bp;
 	xfs_buf_log_item_t	*bip;
 
+<<<<<<< HEAD
 	if (flags == 0)
 		flags = XBF_LOCK | XBF_MAPPED;
 
@@ -167,6 +230,10 @@ xfs_trans_get_buf(xfs_trans_t	*tp,
 	if (tp == NULL)
 		return xfs_buf_get(target_dev, blkno, len,
 				   flags | XBF_DONT_BLOCK);
+=======
+	if (!tp)
+		return xfs_buf_get_map(target, map, nmaps, flags);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If we find the buffer in the cache with this transaction
@@ -174,6 +241,7 @@ xfs_trans_get_buf(xfs_trans_t	*tp,
 	 * have it locked.  In this case we just increment the lock
 	 * recursion count and return the buffer to the caller.
 	 */
+<<<<<<< HEAD
 	bp = xfs_trans_buf_item_match(tp, target_dev, blkno, len);
 	if (bp != NULL) {
 <<<<<<< HEAD
@@ -181,11 +249,16 @@ xfs_trans_get_buf(xfs_trans_t	*tp,
 		if (XFS_FORCED_SHUTDOWN(tp->t_mountp))
 			XFS_BUF_SUPER_STALE(bp);
 =======
+=======
+	bp = xfs_trans_buf_item_match(tp, target, map, nmaps);
+	if (bp != NULL) {
+>>>>>>> refs/remotes/origin/master
 		ASSERT(xfs_buf_islocked(bp));
 		if (XFS_FORCED_SHUTDOWN(tp->t_mountp)) {
 			xfs_buf_stale(bp);
 			XFS_BUF_DONE(bp);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 		/*
@@ -203,6 +276,11 @@ xfs_trans_get_buf(xfs_trans_t	*tp,
 		ASSERT(bp->b_transp == tp);
 		bip = bp->b_fspriv;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		ASSERT(bp->b_transp == tp);
+		bip = bp->b_fspriv;
+>>>>>>> refs/remotes/origin/master
 		ASSERT(bip != NULL);
 		ASSERT(atomic_read(&bip->bli_refcount) > 0);
 		bip->bli_recur++;
@@ -210,6 +288,7 @@ xfs_trans_get_buf(xfs_trans_t	*tp,
 		return (bp);
 	}
 
+<<<<<<< HEAD
 	/*
 	 * We always specify the XBF_DONT_BLOCK flag within a transaction
 	 * so that get_buf does not try to push out a delayed write buffer
@@ -219,15 +298,22 @@ xfs_trans_get_buf(xfs_trans_t	*tp,
 	 * us to run out of stack space.
 	 */
 	bp = xfs_buf_get(target_dev, blkno, len, flags | XBF_DONT_BLOCK);
+=======
+	bp = xfs_buf_get_map(target, map, nmaps, flags);
+>>>>>>> refs/remotes/origin/master
 	if (bp == NULL) {
 		return NULL;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ASSERT(!XFS_BUF_GETERROR(bp));
 =======
 	ASSERT(!bp->b_error);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ASSERT(!bp->b_error);
+>>>>>>> refs/remotes/origin/master
 
 	_xfs_trans_bjoin(tp, bp, 1);
 	trace_xfs_trans_get_buf(bp->b_fspriv);
@@ -266,12 +352,17 @@ xfs_trans_getsb(xfs_trans_t	*tp,
 	 */
 	bp = mp->m_sb_bp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (XFS_BUF_FSPRIVATE2(bp, xfs_trans_t *) == tp) {
 		bip = XFS_BUF_FSPRIVATE(bp, xfs_buf_log_item_t*);
 =======
 	if (bp->b_transp == tp) {
 		bip = bp->b_fspriv;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bp->b_transp == tp) {
+		bip = bp->b_fspriv;
+>>>>>>> refs/remotes/origin/master
 		ASSERT(bip != NULL);
 		ASSERT(atomic_read(&bip->bli_refcount) > 0);
 		bip->bli_recur++;
@@ -306,6 +397,7 @@ int	xfs_error_mod = 33;
  * read_buf() call.
  */
 int
+<<<<<<< HEAD
 xfs_trans_read_buf(
 	xfs_mount_t	*mp,
 	xfs_trans_t	*tp,
@@ -314,11 +406,23 @@ xfs_trans_read_buf(
 	int		len,
 	uint		flags,
 	xfs_buf_t	**bpp)
+=======
+xfs_trans_read_buf_map(
+	struct xfs_mount	*mp,
+	struct xfs_trans	*tp,
+	struct xfs_buftarg	*target,
+	struct xfs_buf_map	*map,
+	int			nmaps,
+	xfs_buf_flags_t		flags,
+	struct xfs_buf		**bpp,
+	const struct xfs_buf_ops *ops)
+>>>>>>> refs/remotes/origin/master
 {
 	xfs_buf_t		*bp;
 	xfs_buf_log_item_t	*bip;
 	int			error;
 
+<<<<<<< HEAD
 	if (flags == 0)
 		flags = XBF_LOCK | XBF_MAPPED;
 
@@ -327,10 +431,16 @@ xfs_trans_read_buf(
 	 */
 	if (tp == NULL) {
 		bp = xfs_buf_read(target, blkno, len, flags | XBF_DONT_BLOCK);
+=======
+	*bpp = NULL;
+	if (!tp) {
+		bp = xfs_buf_read_map(target, map, nmaps, flags, ops);
+>>>>>>> refs/remotes/origin/master
 		if (!bp)
 			return (flags & XBF_TRYLOCK) ?
 					EAGAIN : XFS_ERROR(ENOMEM);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (XFS_BUF_GETERROR(bp) != 0) {
 			xfs_ioerror_alert("xfs_trans_read_buf", mp,
@@ -341,6 +451,13 @@ xfs_trans_read_buf(
 			error = bp->b_error;
 			xfs_buf_ioerror_alert(bp, __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (bp->b_error) {
+			error = bp->b_error;
+			xfs_buf_ioerror_alert(bp, __func__);
+			XFS_BUF_UNDONE(bp);
+			xfs_buf_stale(bp);
+>>>>>>> refs/remotes/origin/master
 			xfs_buf_relse(bp);
 			return error;
 		}
@@ -369,6 +486,7 @@ xfs_trans_read_buf(
 	 * If the buffer is not yet read in, then we read it in, increment
 	 * the lock recursion count, and return it to the caller.
 	 */
+<<<<<<< HEAD
 	bp = xfs_trans_buf_item_match(tp, target, blkno, len);
 	if (bp != NULL) {
 <<<<<<< HEAD
@@ -377,10 +495,15 @@ xfs_trans_read_buf(
 		ASSERT(XFS_BUF_FSPRIVATE(bp, void *) != NULL);
 		ASSERT((XFS_BUF_ISERROR(bp)) == 0);
 =======
+=======
+	bp = xfs_trans_buf_item_match(tp, target, map, nmaps);
+	if (bp != NULL) {
+>>>>>>> refs/remotes/origin/master
 		ASSERT(xfs_buf_islocked(bp));
 		ASSERT(bp->b_transp == tp);
 		ASSERT(bp->b_fspriv != NULL);
 		ASSERT(!bp->b_error);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (!(XFS_BUF_ISDONE(bp))) {
 			trace_xfs_trans_read_buf_io(bp, _RET_IP_);
@@ -395,6 +518,29 @@ xfs_trans_read_buf(
 =======
 				xfs_buf_ioerror_alert(bp, __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!(XFS_BUF_ISDONE(bp))) {
+			trace_xfs_trans_read_buf_io(bp, _RET_IP_);
+			ASSERT(!XFS_BUF_ISASYNC(bp));
+			ASSERT(bp->b_iodone == NULL);
+			XFS_BUF_READ(bp);
+			bp->b_ops = ops;
+
+			/*
+			 * XXX(hch): clean up the error handling here to be less
+			 * of a mess..
+			 */
+			if (XFS_FORCED_SHUTDOWN(mp)) {
+				trace_xfs_bdstrat_shut(bp, _RET_IP_);
+				xfs_bioerror_relse(bp);
+			} else {
+				xfs_buf_iorequest(bp);
+			}
+
+			error = xfs_buf_iowait(bp);
+			if (error) {
+				xfs_buf_ioerror_alert(bp, __func__);
+>>>>>>> refs/remotes/origin/master
 				xfs_buf_relse(bp);
 				/*
 				 * We can gracefully recover from most read
@@ -419,10 +565,14 @@ xfs_trans_read_buf(
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bip = XFS_BUF_FSPRIVATE(bp, xfs_buf_log_item_t*);
 =======
 		bip = bp->b_fspriv;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bip = bp->b_fspriv;
+>>>>>>> refs/remotes/origin/master
 		bip->bli_recur++;
 
 		ASSERT(atomic_read(&bip->bli_refcount) > 0);
@@ -431,6 +581,7 @@ xfs_trans_read_buf(
 		return 0;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * We always specify the XBF_DONT_BLOCK flag within a transaction
 	 * so that get_buf does not try to push out a delayed write buffer
@@ -440,11 +591,15 @@ xfs_trans_read_buf(
 	 * us to run out of stack space.
 	 */
 	bp = xfs_buf_read(target, blkno, len, flags | XBF_DONT_BLOCK);
+=======
+	bp = xfs_buf_read_map(target, map, nmaps, flags, ops);
+>>>>>>> refs/remotes/origin/master
 	if (bp == NULL) {
 		*bpp = NULL;
 		return (flags & XBF_TRYLOCK) ?
 					0 : XFS_ERROR(ENOMEM);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (XFS_BUF_GETERROR(bp) != 0) {
 	    XFS_BUF_SUPER_STALE(bp);
@@ -453,12 +608,17 @@ xfs_trans_read_buf(
 		xfs_ioerror_alert("xfs_trans_read_buf", mp,
 				  bp, blkno);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (bp->b_error) {
 		error = bp->b_error;
 		xfs_buf_stale(bp);
 		XFS_BUF_DONE(bp);
 		xfs_buf_ioerror_alert(bp, __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (tp->t_flags & XFS_TRANS_DIRTY)
 			xfs_force_shutdown(tp->t_mountp, SHUTDOWN_META_IO_ERROR);
 		xfs_buf_relse(bp);
@@ -487,6 +647,7 @@ xfs_trans_read_buf(
 	return 0;
 
 shutdown_abort:
+<<<<<<< HEAD
 	/*
 	 * the theory here is that buffer is good but we're
 	 * bailing out because the filesystem is being forcibly
@@ -504,13 +665,18 @@ shutdown_abort:
 >>>>>>> refs/remotes/origin/cm-10.0
 				     (XBF_STALE|XBF_DELWRI));
 
+=======
+>>>>>>> refs/remotes/origin/master
 	trace_xfs_trans_read_buf_shut(bp, _RET_IP_);
 	xfs_buf_relse(bp);
 	*bpp = NULL;
 	return XFS_ERROR(EIO);
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Release the buffer bp which was previously acquired with one of the
  * xfs_trans_... buffer allocation routines if the buffer has not
@@ -532,14 +698,18 @@ xfs_trans_brelse(xfs_trans_t	*tp,
 {
 	xfs_buf_log_item_t	*bip;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xfs_log_item_t		*lip;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Default to a normal brelse() call if the tp is NULL.
 	 */
 	if (tp == NULL) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ASSERT(XFS_BUF_FSPRIVATE2(bp, void *) == NULL);
 		/*
@@ -558,10 +728,14 @@ xfs_trans_brelse(xfs_trans_t	*tp,
 =======
 		ASSERT(bp->b_transp == NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ASSERT(bp->b_transp == NULL);
+>>>>>>> refs/remotes/origin/master
 		xfs_buf_relse(bp);
 		return;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ASSERT(XFS_BUF_FSPRIVATE2(bp, xfs_trans_t *) == tp);
 	bip = XFS_BUF_FSPRIVATE(bp, xfs_buf_log_item_t *);
@@ -572,6 +746,13 @@ xfs_trans_brelse(xfs_trans_t	*tp,
 	ASSERT(bip->bli_item.li_type == XFS_LI_BUF);
 	ASSERT(!(bip->bli_flags & XFS_BLI_STALE));
 	ASSERT(!(bip->bli_format.blf_flags & XFS_BLF_CANCEL));
+=======
+	ASSERT(bp->b_transp == tp);
+	bip = bp->b_fspriv;
+	ASSERT(bip->bli_item.li_type == XFS_LI_BUF);
+	ASSERT(!(bip->bli_flags & XFS_BLI_STALE));
+	ASSERT(!(bip->__bli_format.blf_flags & XFS_BLF_CANCEL));
+>>>>>>> refs/remotes/origin/master
 	ASSERT(atomic_read(&bip->bli_refcount) > 0);
 
 	trace_xfs_trans_brelse(bip);
@@ -638,6 +819,7 @@ xfs_trans_brelse(xfs_trans_t	*tp,
 		ASSERT(!(bip->bli_flags & XFS_BLI_INODE_ALLOC_BUF));
 		xfs_buf_item_relse(bp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bip = NULL;
 	}
 	XFS_BUF_SET_FSPRIVATE2(bp, NULL);
@@ -654,16 +836,25 @@ xfs_trans_brelse(xfs_trans_t	*tp,
 	xfs_buf_relse(bp);
 	return;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	bp->b_transp = NULL;
 	xfs_buf_relse(bp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Mark the buffer as not needing to be unlocked when the buf item's
+<<<<<<< HEAD
  * IOP_UNLOCK() routine is called.  The buffer must already be locked
+=======
+ * iop_unlock() routine is called.  The buffer must already be locked
+>>>>>>> refs/remotes/origin/master
  * and associated with the given transaction.
  */
 /* ARGSUSED */
@@ -671,6 +862,7 @@ void
 xfs_trans_bhold(xfs_trans_t	*tp,
 		xfs_buf_t	*bp)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	xfs_buf_log_item_t	*bip;
 
@@ -683,15 +875,23 @@ xfs_trans_bhold(xfs_trans_t	*tp,
 	ASSERT(!(bip->bli_format.blf_flags & XFS_BLF_CANCEL));
 	ASSERT(atomic_read(&bip->bli_refcount) > 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	xfs_buf_log_item_t	*bip = bp->b_fspriv;
 
 	ASSERT(bp->b_transp == tp);
 	ASSERT(bip != NULL);
 	ASSERT(!(bip->bli_flags & XFS_BLI_STALE));
+<<<<<<< HEAD
 	ASSERT(!(bip->bli_format.blf_flags & XFS_BLF_CANCEL));
 	ASSERT(atomic_read(&bip->bli_refcount) > 0);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ASSERT(!(bip->__bli_format.blf_flags & XFS_BLF_CANCEL));
+	ASSERT(atomic_read(&bip->bli_refcount) > 0);
+
+>>>>>>> refs/remotes/origin/master
 	bip->bli_flags |= XFS_BLI_HOLD;
 	trace_xfs_trans_bhold(bip);
 }
@@ -705,6 +905,7 @@ xfs_trans_bhold_release(xfs_trans_t	*tp,
 			xfs_buf_t	*bp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xfs_buf_log_item_t	*bip;
 
 	ASSERT(XFS_BUF_ISBUSY(bp));
@@ -713,10 +914,13 @@ xfs_trans_bhold_release(xfs_trans_t	*tp,
 
 	bip = XFS_BUF_FSPRIVATE(bp, xfs_buf_log_item_t *);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	xfs_buf_log_item_t	*bip = bp->b_fspriv;
 
 	ASSERT(bp->b_transp == tp);
 	ASSERT(bip != NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	ASSERT(!(bip->bli_flags & XFS_BLI_STALE));
 	ASSERT(!(bip->bli_format.blf_flags & XFS_BLF_CANCEL));
@@ -729,6 +933,14 @@ xfs_trans_bhold_release(xfs_trans_t	*tp,
 
 	bip->bli_flags &= ~XFS_BLI_HOLD;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ASSERT(!(bip->bli_flags & XFS_BLI_STALE));
+	ASSERT(!(bip->__bli_format.blf_flags & XFS_BLF_CANCEL));
+	ASSERT(atomic_read(&bip->bli_refcount) > 0);
+	ASSERT(bip->bli_flags & XFS_BLI_HOLD);
+
+	bip->bli_flags &= ~XFS_BLI_HOLD;
+>>>>>>> refs/remotes/origin/master
 	trace_xfs_trans_bhold_release(bip);
 }
 
@@ -748,6 +960,7 @@ xfs_trans_log_buf(xfs_trans_t	*tp,
 		  uint		last)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xfs_buf_log_item_t	*bip;
 
 	ASSERT(XFS_BUF_ISBUSY(bp));
@@ -757,14 +970,22 @@ xfs_trans_log_buf(xfs_trans_t	*tp,
 	ASSERT((XFS_BUF_IODONE_FUNC(bp) == NULL) ||
 	       (XFS_BUF_IODONE_FUNC(bp) == xfs_buf_iodone_callbacks));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	xfs_buf_log_item_t	*bip = bp->b_fspriv;
 
 	ASSERT(bp->b_transp == tp);
 	ASSERT(bip != NULL);
+<<<<<<< HEAD
 	ASSERT((first <= last) && (last < XFS_BUF_COUNT(bp)));
 	ASSERT(bp->b_iodone == NULL ||
 	       bp->b_iodone == xfs_buf_iodone_callbacks);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ASSERT(first <= last && last < BBTOB(bp->b_length));
+	ASSERT(bp->b_iodone == NULL ||
+	       bp->b_iodone == xfs_buf_iodone_callbacks);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Mark the buffer as needing to be written out eventually,
@@ -777,6 +998,7 @@ xfs_trans_log_buf(xfs_trans_t	*tp,
 	 * disk.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	XFS_BUF_DELAYWRITE(bp);
 	XFS_BUF_DONE(bp);
 
@@ -786,15 +1008,20 @@ xfs_trans_log_buf(xfs_trans_t	*tp,
 	bip->bli_item.li_cb = xfs_buf_iodone;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	XFS_BUF_DONE(bp);
 
 	ASSERT(atomic_read(&bip->bli_refcount) > 0);
 	bp->b_iodone = xfs_buf_iodone_callbacks;
 	bip->bli_item.li_cb = xfs_buf_iodone;
 
+<<<<<<< HEAD
 	xfs_buf_delwri_queue(bp);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	trace_xfs_trans_log_buf(bip);
 
 	/*
@@ -807,17 +1034,33 @@ xfs_trans_log_buf(xfs_trans_t	*tp,
 		bip->bli_flags &= ~XFS_BLI_STALE;
 		ASSERT(XFS_BUF_ISSTALE(bp));
 		XFS_BUF_UNSTALE(bp);
+<<<<<<< HEAD
 		bip->bli_format.blf_flags &= ~XFS_BLF_CANCEL;
+=======
+		bip->__bli_format.blf_flags &= ~XFS_BLF_CANCEL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	tp->t_flags |= XFS_TRANS_DIRTY;
 	bip->bli_item.li_desc->lid_flags |= XFS_LID_DIRTY;
+<<<<<<< HEAD
 	bip->bli_flags |= XFS_BLI_LOGGED;
 	xfs_buf_item_log(bip, first, last);
+=======
+
+	/*
+	 * If we have an ordered buffer we are not logging any dirty range but
+	 * it still needs to be marked dirty and that it has been logged.
+	 */
+	bip->bli_flags |= XFS_BLI_DIRTY | XFS_BLI_LOGGED;
+	if (!(bip->bli_flags & XFS_BLI_ORDERED))
+		xfs_buf_item_log(bip, first, last);
+>>>>>>> refs/remotes/origin/master
 }
 
 
 /*
+<<<<<<< HEAD
  * This called to invalidate a buffer that is being used within
  * a transaction.  Typically this is because the blocks in the
  * buffer are being freed, so we need to prevent it from being
@@ -834,12 +1077,42 @@ xfs_trans_log_buf(xfs_trans_t	*tp,
  * free it in xfs_buf_item_unpin().  Until it is cleaned up we
  * will keep the buffer locked so that the buffer and buf log item
  * are not reused.
+=======
+ * Invalidate a buffer that is being used within a transaction.
+ *
+ * Typically this is because the blocks in the buffer are being freed, so we
+ * need to prevent it from being written out when we're done.  Allowing it
+ * to be written again might overwrite data in the free blocks if they are
+ * reallocated to a file.
+ *
+ * We prevent the buffer from being written out by marking it stale.  We can't
+ * get rid of the buf log item at this point because the buffer may still be
+ * pinned by another transaction.  If that is the case, then we'll wait until
+ * the buffer is committed to disk for the last time (we can tell by the ref
+ * count) and free it in xfs_buf_item_unpin().  Until that happens we will
+ * keep the buffer locked so that the buffer and buf log item are not reused.
+ *
+ * We also set the XFS_BLF_CANCEL flag in the buf log format structure and log
+ * the buf item.  This will be used at recovery time to determine that copies
+ * of the buffer in the log before this should not be replayed.
+ *
+ * We mark the item descriptor and the transaction dirty so that we'll hold
+ * the buffer until after the commit.
+ *
+ * Since we're invalidating the buffer, we also clear the state about which
+ * parts of the buffer have been logged.  We also clear the flag indicating
+ * that this is an inode buffer since the data in the buffer will no longer
+ * be valid.
+ *
+ * We set the stale bit in the buffer as well since we're getting rid of it.
+>>>>>>> refs/remotes/origin/master
  */
 void
 xfs_trans_binval(
 	xfs_trans_t	*tp,
 	xfs_buf_t	*bp)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	xfs_buf_log_item_t	*bip;
 
@@ -854,6 +1127,13 @@ xfs_trans_binval(
 	ASSERT(bp->b_transp == tp);
 	ASSERT(bip != NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xfs_buf_log_item_t	*bip = bp->b_fspriv;
+	int			i;
+
+	ASSERT(bp->b_transp == tp);
+	ASSERT(bip != NULL);
+>>>>>>> refs/remotes/origin/master
 	ASSERT(atomic_read(&bip->bli_refcount) > 0);
 
 	trace_xfs_trans_binval(bip);
@@ -863,16 +1143,25 @@ xfs_trans_binval(
 		 * If the buffer is already invalidated, then
 		 * just return.
 		 */
+<<<<<<< HEAD
 		ASSERT(!(XFS_BUF_ISDELAYWRITE(bp)));
 		ASSERT(XFS_BUF_ISSTALE(bp));
 		ASSERT(!(bip->bli_flags & (XFS_BLI_LOGGED | XFS_BLI_DIRTY)));
 		ASSERT(!(bip->bli_format.blf_flags & XFS_BLF_INODE_BUF));
 		ASSERT(bip->bli_format.blf_flags & XFS_BLF_CANCEL);
+=======
+		ASSERT(XFS_BUF_ISSTALE(bp));
+		ASSERT(!(bip->bli_flags & (XFS_BLI_LOGGED | XFS_BLI_DIRTY)));
+		ASSERT(!(bip->__bli_format.blf_flags & XFS_BLF_INODE_BUF));
+		ASSERT(!(bip->__bli_format.blf_flags & XFS_BLFT_MASK));
+		ASSERT(bip->__bli_format.blf_flags & XFS_BLF_CANCEL);
+>>>>>>> refs/remotes/origin/master
 		ASSERT(bip->bli_item.li_desc->lid_flags & XFS_LID_DIRTY);
 		ASSERT(tp->t_flags & XFS_TRANS_DIRTY);
 		return;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Clear the dirty bit in the buffer and set the STALE flag
 	 * in the buf log item.  The STALE flag will be used in
@@ -905,6 +1194,19 @@ xfs_trans_binval(
 	bip->bli_format.blf_flags |= XFS_BLF_CANCEL;
 	memset((char *)(bip->bli_format.blf_data_map), 0,
 	      (bip->bli_format.blf_map_size * sizeof(uint)));
+=======
+	xfs_buf_stale(bp);
+
+	bip->bli_flags |= XFS_BLI_STALE;
+	bip->bli_flags &= ~(XFS_BLI_INODE_BUF | XFS_BLI_LOGGED | XFS_BLI_DIRTY);
+	bip->__bli_format.blf_flags &= ~XFS_BLF_INODE_BUF;
+	bip->__bli_format.blf_flags |= XFS_BLF_CANCEL;
+	bip->__bli_format.blf_flags &= ~XFS_BLFT_MASK;
+	for (i = 0; i < bip->bli_format_count; i++) {
+		memset(bip->bli_formats[i].blf_data_map, 0,
+		       (bip->bli_formats[i].blf_map_size * sizeof(uint)));
+	}
+>>>>>>> refs/remotes/origin/master
 	bip->bli_item.li_desc->lid_flags |= XFS_LID_DIRTY;
 	tp->t_flags |= XFS_TRANS_DIRTY;
 }
@@ -926,6 +1228,7 @@ xfs_trans_inode_buf(
 	xfs_buf_t	*bp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xfs_buf_log_item_t	*bip;
 
 	ASSERT(XFS_BUF_ISBUSY(bp));
@@ -934,20 +1237,33 @@ xfs_trans_inode_buf(
 
 	bip = XFS_BUF_FSPRIVATE(bp, xfs_buf_log_item_t *);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	xfs_buf_log_item_t	*bip = bp->b_fspriv;
 
 	ASSERT(bp->b_transp == tp);
 	ASSERT(bip != NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	ASSERT(atomic_read(&bip->bli_refcount) > 0);
 
 	bip->bli_flags |= XFS_BLI_INODE_BUF;
+=======
+	ASSERT(atomic_read(&bip->bli_refcount) > 0);
+
+	bip->bli_flags |= XFS_BLI_INODE_BUF;
+	xfs_trans_buf_set_type(tp, bp, XFS_BLFT_DINO_BUF);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * This call is used to indicate that the buffer is going to
  * be staled and was an inode buffer. This means it gets
+<<<<<<< HEAD
  * special processing during unpin - where any inodes 
+=======
+ * special processing during unpin - where any inodes
+>>>>>>> refs/remotes/origin/master
  * associated with the buffer should be removed from ail.
  * There is also special processing during recovery,
  * any replay of the inodes in the buffer needs to be
@@ -959,6 +1275,7 @@ xfs_trans_stale_inode_buf(
 	xfs_buf_t	*bp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xfs_buf_log_item_t	*bip;
 
 	ASSERT(XFS_BUF_ISBUSY(bp));
@@ -967,15 +1284,24 @@ xfs_trans_stale_inode_buf(
 
 	bip = XFS_BUF_FSPRIVATE(bp, xfs_buf_log_item_t *);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	xfs_buf_log_item_t	*bip = bp->b_fspriv;
 
 	ASSERT(bp->b_transp == tp);
 	ASSERT(bip != NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ASSERT(atomic_read(&bip->bli_refcount) > 0);
 
 	bip->bli_flags |= XFS_BLI_STALE_INODE;
 	bip->bli_item.li_cb = xfs_buf_iodone;
+<<<<<<< HEAD
+=======
+	xfs_trans_buf_set_type(tp, bp, XFS_BLFT_DINO_BUF);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -993,6 +1319,7 @@ xfs_trans_inode_alloc_buf(
 	xfs_buf_t	*bp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xfs_buf_log_item_t	*bip;
 
 	ASSERT(XFS_BUF_ISBUSY(bp));
@@ -1001,16 +1328,84 @@ xfs_trans_inode_alloc_buf(
 
 	bip = XFS_BUF_FSPRIVATE(bp, xfs_buf_log_item_t *);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	xfs_buf_log_item_t	*bip = bp->b_fspriv;
 
 	ASSERT(bp->b_transp == tp);
 	ASSERT(bip != NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	ASSERT(atomic_read(&bip->bli_refcount) > 0);
 
 	bip->bli_flags |= XFS_BLI_INODE_ALLOC_BUF;
 }
 
+=======
+	ASSERT(atomic_read(&bip->bli_refcount) > 0);
+
+	bip->bli_flags |= XFS_BLI_INODE_ALLOC_BUF;
+	xfs_trans_buf_set_type(tp, bp, XFS_BLFT_DINO_BUF);
+}
+
+/*
+ * Mark the buffer as ordered for this transaction. This means
+ * that the contents of the buffer are not recorded in the transaction
+ * but it is tracked in the AIL as though it was. This allows us
+ * to record logical changes in transactions rather than the physical
+ * changes we make to the buffer without changing writeback ordering
+ * constraints of metadata buffers.
+ */
+void
+xfs_trans_ordered_buf(
+	struct xfs_trans	*tp,
+	struct xfs_buf		*bp)
+{
+	struct xfs_buf_log_item	*bip = bp->b_fspriv;
+
+	ASSERT(bp->b_transp == tp);
+	ASSERT(bip != NULL);
+	ASSERT(atomic_read(&bip->bli_refcount) > 0);
+
+	bip->bli_flags |= XFS_BLI_ORDERED;
+	trace_xfs_buf_item_ordered(bip);
+}
+
+/*
+ * Set the type of the buffer for log recovery so that it can correctly identify
+ * and hence attach the correct buffer ops to the buffer after replay.
+ */
+void
+xfs_trans_buf_set_type(
+	struct xfs_trans	*tp,
+	struct xfs_buf		*bp,
+	enum xfs_blft		type)
+{
+	struct xfs_buf_log_item	*bip = bp->b_fspriv;
+
+	if (!tp)
+		return;
+
+	ASSERT(bp->b_transp == tp);
+	ASSERT(bip != NULL);
+	ASSERT(atomic_read(&bip->bli_refcount) > 0);
+
+	xfs_blft_to_flags(&bip->__bli_format, type);
+}
+
+void
+xfs_trans_buf_copy_type(
+	struct xfs_buf		*dst_bp,
+	struct xfs_buf		*src_bp)
+{
+	struct xfs_buf_log_item	*sbip = src_bp->b_fspriv;
+	struct xfs_buf_log_item	*dbip = dst_bp->b_fspriv;
+	enum xfs_blft		type;
+
+	type = xfs_blft_from_flags(&sbip->__bli_format);
+	xfs_blft_to_flags(&dbip->__bli_format, type);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Similar to xfs_trans_inode_buf(), this marks the buffer as a cluster of
@@ -1030,15 +1425,21 @@ xfs_trans_dquot_buf(
 	uint		type)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xfs_buf_log_item_t	*bip;
 
 	ASSERT(XFS_BUF_ISBUSY(bp));
 	ASSERT(XFS_BUF_FSPRIVATE2(bp, xfs_trans_t *) == tp);
 	ASSERT(XFS_BUF_FSPRIVATE(bp, void *) != NULL);
+=======
+	struct xfs_buf_log_item	*bip = bp->b_fspriv;
+
+>>>>>>> refs/remotes/origin/master
 	ASSERT(type == XFS_BLF_UDQUOT_BUF ||
 	       type == XFS_BLF_PDQUOT_BUF ||
 	       type == XFS_BLF_GDQUOT_BUF);
 
+<<<<<<< HEAD
 	bip = XFS_BUF_FSPRIVATE(bp, xfs_buf_log_item_t *);
 =======
 	xfs_buf_log_item_t	*bip = bp->b_fspriv;
@@ -1052,4 +1453,24 @@ xfs_trans_dquot_buf(
 	ASSERT(atomic_read(&bip->bli_refcount) > 0);
 
 	bip->bli_format.blf_flags |= type;
+=======
+	bip->__bli_format.blf_flags |= type;
+
+	switch (type) {
+	case XFS_BLF_UDQUOT_BUF:
+		type = XFS_BLFT_UDQUOT_BUF;
+		break;
+	case XFS_BLF_PDQUOT_BUF:
+		type = XFS_BLFT_PDQUOT_BUF;
+		break;
+	case XFS_BLF_GDQUOT_BUF:
+		type = XFS_BLFT_GDQUOT_BUF;
+		break;
+	default:
+		type = XFS_BLFT_UNKNOWN_BUF;
+		break;
+	}
+
+	xfs_trans_buf_set_type(tp, bp, type);
+>>>>>>> refs/remotes/origin/master
 }

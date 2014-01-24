@@ -1,5 +1,9 @@
 /*
  * Copyright 2012 Red Hat, Inc <mjg@redhat.com>
+<<<<<<< HEAD
+=======
+ * Copyright 2012 Intel Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -11,6 +15,7 @@
 #include <linux/init.h>
 #include <linux/device.h>
 #include <linux/sysfs.h>
+<<<<<<< HEAD
 #include <acpi/acpi.h>
 #include <acpi/acpi_bus.h>
 
@@ -24,6 +29,12 @@ struct bmp_header {
 
 static struct bmp_header bmp_header;
 
+=======
+#include <linux/efi-bgrt.h>
+
+static struct kobject *bgrt_kobj;
+
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_version(struct device *dev,
 			    struct device_attribute *attr, char *buf)
 {
@@ -59,6 +70,7 @@ static ssize_t show_yoffset(struct device *dev,
 }
 static DEVICE_ATTR(yoffset, S_IRUGO, show_yoffset, NULL);
 
+<<<<<<< HEAD
 static ssize_t show_image(struct file *file, struct kobject *kobj,
 	       struct bin_attribute *attr, char *buf, loff_t off, size_t count)
 {
@@ -84,6 +96,16 @@ static struct bin_attribute image_attr = {
 	},
 	.read = show_image,
 };
+=======
+static ssize_t image_read(struct file *file, struct kobject *kobj,
+	       struct bin_attribute *attr, char *buf, loff_t off, size_t count)
+{
+	memcpy(buf, attr->private + off, count);
+	return count;
+}
+
+static BIN_ATTR_RO(image, 0);	/* size gets filled in later */
+>>>>>>> refs/remotes/origin/master
 
 static struct attribute *bgrt_attributes[] = {
 	&dev_attr_version.attr,
@@ -94,12 +116,24 @@ static struct attribute *bgrt_attributes[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 static struct attribute_group bgrt_attribute_group = {
 	.attrs = bgrt_attributes,
+=======
+static struct bin_attribute *bgrt_bin_attributes[] = {
+	&bin_attr_image,
+	NULL,
+};
+
+static struct attribute_group bgrt_attribute_group = {
+	.attrs = bgrt_attributes,
+	.bin_attrs = bgrt_bin_attributes,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init bgrt_init(void)
 {
+<<<<<<< HEAD
 	acpi_status status;
 	int ret;
 	void __iomem *bgrt;
@@ -139,11 +173,25 @@ static int __init bgrt_init(void)
 		ret = -EINVAL;
 		goto out_iounmap;
 	}
+=======
+	int ret;
+
+	if (!bgrt_image)
+		return -ENODEV;
+
+	bin_attr_image.private = bgrt_image;
+	bin_attr_image.size = bgrt_image_size;
+
+	bgrt_kobj = kobject_create_and_add("bgrt", acpi_kobj);
+	if (!bgrt_kobj)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	ret = sysfs_create_group(bgrt_kobj, &bgrt_attribute_group);
 	if (ret)
 		goto out_kobject;
 
+<<<<<<< HEAD
 	ret = sysfs_create_bin_file(bgrt_kobj, &image_attr);
 	if (ret)
 		goto out_group;
@@ -171,5 +219,17 @@ module_init(bgrt_init);
 module_exit(bgrt_exit);
 
 MODULE_AUTHOR("Matthew Garrett");
+=======
+	return 0;
+
+out_kobject:
+	kobject_put(bgrt_kobj);
+	return ret;
+}
+
+module_init(bgrt_init);
+
+MODULE_AUTHOR("Matthew Garrett, Josh Triplett <josh@joshtriplett.org>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("BGRT boot graphic support");
 MODULE_LICENSE("GPL");

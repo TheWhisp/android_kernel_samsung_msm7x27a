@@ -39,6 +39,17 @@
 #define TTB_FLAGS_SMP	(TTB_IRGN_WBWA|TTB_S|TTB_RGN_OC_WBWA)
 #define PMD_FLAGS_SMP	(PMD_SECT_WBWA|PMD_SECT_S)
 
+<<<<<<< HEAD
+=======
+#ifndef __ARMEB__
+#  define rpgdl	r0
+#  define rpgdh	r1
+#else
+#  define rpgdl	r1
+#  define rpgdh	r0
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * cpu_v7_switch_mm(pgd_phys, tsk)
  *
@@ -47,10 +58,17 @@
  */
 ENTRY(cpu_v7_switch_mm)
 #ifdef CONFIG_MMU
+<<<<<<< HEAD
 	ldr	r1, [r1, #MM_CONTEXT_ID]	@ get mm->context.id
 	and	r3, r1, #0xff
 	mov	r3, r3, lsl #(48 - 32)		@ ASID
 	mcrr	p15, 0, r0, r3, c2		@ set TTB 0
+=======
+	mmid	r2, r2
+	asid	r2, r2
+	orr	rpgdh, rpgdh, r2, lsl #(48 - 32)	@ upper 32-bits of pgd
+	mcrr	p15, 0, rpgdl, rpgdh, c2		@ set TTB 0
+>>>>>>> refs/remotes/origin/master
 	isb
 #endif
 	mov	pc, lr
@@ -65,12 +83,25 @@ ENDPROC(cpu_v7_switch_mm)
  */
 ENTRY(cpu_v7_set_pte_ext)
 #ifdef CONFIG_MMU
+<<<<<<< HEAD
 	tst	r2, #L_PTE_PRESENT
 	beq	1f
 	tst	r3, #1 << (55 - 32)		@ L_PTE_DIRTY
 	orreq	r2, #L_PTE_RDONLY
 1:	strd	r2, r3, [r0]
 	mcr	p15, 0, r0, c7, c10, 1		@ flush_pte
+=======
+	tst	r2, #L_PTE_VALID
+	beq	1f
+	tst	r3, #1 << (57 - 32)		@ L_PTE_NONE
+	bicne	r2, #L_PTE_VALID
+	bne	1f
+	tst	r3, #1 << (55 - 32)		@ L_PTE_DIRTY
+	orreq	r2, #L_PTE_RDONLY
+1:	strd	r2, r3, [r0]
+	ALT_SMP(W(nop))
+	ALT_UP (mcr	p15, 0, r0, c7, c10, 1)		@ flush_pte
+>>>>>>> refs/remotes/origin/master
 #endif
 	mov	pc, lr
 ENDPROC(cpu_v7_set_pte_ext)
@@ -102,7 +133,12 @@ ENDPROC(cpu_v7_set_pte_ext)
 	 */
 	.macro	v7_ttb_setup, zero, ttbr0, ttbr1, tmp
 	ldr	\tmp, =swapper_pg_dir		@ swapper_pg_dir virtual address
+<<<<<<< HEAD
 	cmp	\ttbr1, \tmp			@ PHYS_OFFSET > PAGE_OFFSET? (branch below)
+=======
+	mov	\tmp, \tmp, lsr #ARCH_PGD_SHIFT
+	cmp	\ttbr1, \tmp			@ PHYS_OFFSET > PAGE_OFFSET?
+>>>>>>> refs/remotes/origin/master
 	mrc	p15, 0, \tmp, c2, c0, 2		@ TTB control register
 	orr	\tmp, \tmp, #TTB_EAE
 	ALT_SMP(orr	\tmp, \tmp, #TTB_FLAGS_SMP)
@@ -110,6 +146,7 @@ ENDPROC(cpu_v7_set_pte_ext)
 	ALT_SMP(orr	\tmp, \tmp, #TTB_FLAGS_SMP << 16)
 	ALT_UP(orr	\tmp, \tmp, #TTB_FLAGS_UP << 16)
 	/*
+<<<<<<< HEAD
 	 * TTBR0/TTBR1 split (PAGE_OFFSET):
 	 *   0x40000000: T0SZ = 2, T1SZ = 0 (not used)
 	 *   0x80000000: T0SZ = 0, T1SZ = 1
@@ -135,6 +172,25 @@ ENDPROC(cpu_v7_set_pte_ext)
 
 	__CPUINIT
 
+=======
+	 * Only use split TTBRs if PHYS_OFFSET <= PAGE_OFFSET (cmp above),
+	 * otherwise booting secondary CPUs would end up using TTBR1 for the
+	 * identity mapping set up in TTBR0.
+	 */
+	orrls	\tmp, \tmp, #TTBR1_SIZE				@ TTBCR.T1SZ
+	mcr	p15, 0, \tmp, c2, c0, 2				@ TTBCR
+	mov	\tmp, \ttbr1, lsr #(32 - ARCH_PGD_SHIFT)	@ upper bits
+	mov	\ttbr1, \ttbr1, lsl #ARCH_PGD_SHIFT		@ lower bits
+	addls	\ttbr1, \ttbr1, #TTBR1_OFFSET
+	mcrr	p15, 1, \ttbr1, \zero, c2			@ load TTBR1
+	mov	\tmp, \ttbr0, lsr #(32 - ARCH_PGD_SHIFT)	@ upper bits
+	mov	\ttbr0, \ttbr0, lsl #ARCH_PGD_SHIFT		@ lower bits
+	mcrr	p15, 0, \ttbr0, \zero, c2			@ load TTBR0
+	mcrr	p15, 1, \ttbr1, \zero, c2			@ load TTBR1
+	mcrr	p15, 0, \ttbr0, \zero, c2			@ load TTBR0
+	.endm
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *   AT
 	 *  TFR   EV X F   IHD LR    S
@@ -146,5 +202,8 @@ ENDPROC(cpu_v7_set_pte_ext)
 	.type	v7_crval, #object
 v7_crval:
 	crval	clear=0x0120c302, mmuset=0x30c23c7d, ucset=0x00c01c7c
+<<<<<<< HEAD
 
 	.previous
+=======
+>>>>>>> refs/remotes/origin/master

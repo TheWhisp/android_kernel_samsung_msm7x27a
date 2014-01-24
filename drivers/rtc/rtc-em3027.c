@@ -15,9 +15,13 @@
 #include <linux/rtc.h>
 #include <linux/bcd.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Registers */
 #define EM3027_REG_ON_OFF_CTRL	0x00
@@ -52,8 +56,22 @@ static int em3027_get_time(struct device *dev, struct rtc_time *tm)
 	unsigned char buf[7];
 
 	struct i2c_msg msgs[] = {
+<<<<<<< HEAD
 		{client->addr, 0, 1, &addr},		/* setup read addr */
 		{client->addr, I2C_M_RD, 7, buf},	/* read time/date */
+=======
+		{/* setup read addr */
+			.addr = client->addr,
+			.len = 1,
+			.buf = &addr
+		},
+		{/* read time/date */
+			.addr = client->addr,
+			.flags = I2C_M_RD,
+			.len = 7,
+			.buf = buf
+		},
+>>>>>>> refs/remotes/origin/master
 	};
 
 	/* read time/date registers */
@@ -79,7 +97,13 @@ static int em3027_set_time(struct device *dev, struct rtc_time *tm)
 	unsigned char buf[8];
 
 	struct i2c_msg msg = {
+<<<<<<< HEAD
 		client->addr, 0, 8, buf,	/* write time/date */
+=======
+		.addr = client->addr,
+		.len = 8,
+		.buf = buf,	/* write time/date */
+>>>>>>> refs/remotes/origin/master
 	};
 
 	buf[0] = EM3027_REG_WATCH_SEC;
@@ -113,7 +137,11 @@ static int em3027_probe(struct i2c_client *client,
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	rtc = rtc_device_register(em3027_driver.driver.name, &client->dev,
+=======
+	rtc = devm_rtc_device_register(&client->dev, em3027_driver.driver.name,
+>>>>>>> refs/remotes/origin/master
 				  &em3027_rtc_ops, THIS_MODULE);
 	if (IS_ERR(rtc))
 		return PTR_ERR(rtc);
@@ -123,6 +151,7 @@ static int em3027_probe(struct i2c_client *client,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int em3027_remove(struct i2c_client *client)
 {
 	struct rtc_device *rtc = i2c_get_clientdata(client);
@@ -133,6 +162,8 @@ static int em3027_remove(struct i2c_client *client)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct i2c_device_id em3027_id[] = {
 	{ "em3027", 0 },
 	{ }
@@ -143,6 +174,7 @@ static struct i2c_driver em3027_driver = {
 		   .name = "rtc-em3027",
 	},
 	.probe = &em3027_probe,
+<<<<<<< HEAD
 	.remove = &em3027_remove,
 	.id_table = em3027_id,
 };
@@ -160,13 +192,22 @@ static void __exit em3027_exit(void)
 =======
 module_i2c_driver(em3027_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.id_table = em3027_id,
+};
+
+module_i2c_driver(em3027_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mike Rapoport <mike@compulab.co.il>");
 MODULE_DESCRIPTION("EM Microelectronic EM3027 RTC driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(em3027_init);
 module_exit(em3027_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

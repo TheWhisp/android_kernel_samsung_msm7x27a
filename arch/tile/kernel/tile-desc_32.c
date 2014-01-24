@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* TILEPro opcode information.
  *
  * Copyright 2011 Tilera Corporation. All Rights Reserved.
@@ -20,7 +23,10 @@
  *
  */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* This define is BFD_RELOC_##x for real bfd, or -1 for everyone else. */
 #define BFD_RELOC(x) -1
 
@@ -29,6 +35,7 @@
 #define TREG_SN 56
 #define TREG_ZERO 63
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* FIXME: Rename this. */
 #include <asm/opcode-tile.h>
@@ -1225,6 +1232,8 @@ const struct tile_opcode tile_opcodes[395] =
 #define BITFIELD(start, size) ((start) | (((1 << (size)) - 1) << 6))
 #define CHILD(array_index) (TILE_OPC_NONE + (array_index))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/stddef.h>
 #include <asm/tile-desc.h>
 
@@ -2417,12 +2426,16 @@ const struct tilepro_opcode tilepro_opcodes[395] =
 };
 #define BITFIELD(start, size) ((start) | (((1 << (size)) - 1) << 6))
 #define CHILD(array_index) (TILEPRO_OPC_NONE + (array_index))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static const unsigned short decode_X0_fsm[1153] =
 {
   BITFIELD(22, 9) /* index 0 */,
   CHILD(513), CHILD(530), CHILD(547), CHILD(564), CHILD(596), CHILD(613),
+<<<<<<< HEAD
 <<<<<<< HEAD
   CHILD(630), TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE,
   TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE,
@@ -2437,6 +2450,8 @@ static const unsigned short decode_X0_fsm[1153] =
   TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE,
   TILE_OPC_NONE, TILE_OPC_NONE, CHILD(813), CHILD(813), CHILD(813),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   CHILD(630), TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
   TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
   TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
@@ -2451,7 +2466,10 @@ static const unsigned short decode_X0_fsm[1153] =
   TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
   TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
   TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   CHILD(813), CHILD(813), CHILD(813), CHILD(813), CHILD(813), CHILD(813),
   CHILD(813), CHILD(813), CHILD(813), CHILD(813), CHILD(813), CHILD(813),
   CHILD(813), CHILD(813), CHILD(813), CHILD(813), CHILD(813), CHILD(813),
@@ -2462,12 +2480,17 @@ static const unsigned short decode_X0_fsm[1153] =
   CHILD(813), CHILD(813), CHILD(813), CHILD(813), CHILD(813), CHILD(813),
   CHILD(813), CHILD(813), CHILD(813), CHILD(813), CHILD(813), CHILD(813),
   CHILD(813), CHILD(813), CHILD(813), CHILD(813), CHILD(813), CHILD(813),
+<<<<<<< HEAD
 <<<<<<< HEAD
   CHILD(813), CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(828),
 =======
   CHILD(813), CHILD(813), CHILD(813), CHILD(813), CHILD(828), CHILD(828),
   CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(828),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  CHILD(813), CHILD(813), CHILD(813), CHILD(813), CHILD(828), CHILD(828),
+  CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(828),
+>>>>>>> refs/remotes/origin/master
   CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(828),
   CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(828),
   CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(828),
@@ -2478,10 +2501,14 @@ static const unsigned short decode_X0_fsm[1153] =
   CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(828),
   CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(828),
 <<<<<<< HEAD
+<<<<<<< HEAD
   CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(828), CHILD(843),
 =======
   CHILD(828), CHILD(828), CHILD(843), CHILD(843), CHILD(843), CHILD(843),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  CHILD(828), CHILD(828), CHILD(843), CHILD(843), CHILD(843), CHILD(843),
+>>>>>>> refs/remotes/origin/master
   CHILD(843), CHILD(843), CHILD(843), CHILD(843), CHILD(843), CHILD(843),
   CHILD(843), CHILD(843), CHILD(843), CHILD(843), CHILD(843), CHILD(843),
   CHILD(843), CHILD(843), CHILD(843), CHILD(843), CHILD(843), CHILD(843),
@@ -2492,6 +2519,7 @@ static const unsigned short decode_X0_fsm[1153] =
   CHILD(843), CHILD(843), CHILD(843), CHILD(843), CHILD(843), CHILD(843),
   CHILD(843), CHILD(843), CHILD(843), CHILD(843), CHILD(843), CHILD(843),
   CHILD(843), CHILD(843), CHILD(843), CHILD(843), CHILD(843), CHILD(843),
+<<<<<<< HEAD
 <<<<<<< HEAD
   CHILD(843), CHILD(843), CHILD(843), CHILD(873), CHILD(878), CHILD(883),
   CHILD(903), CHILD(908), TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE,
@@ -2584,6 +2612,8 @@ static const unsigned short decode_X0_fsm[1153] =
   TILE_OPC_SRAH, TILE_OPC_SRA, TILE_OPC_SUBB, TILE_OPC_SUBH, TILE_OPC_SUB,
   TILE_OPC_XOR, TILE_OPC_DWORD_ALIGN,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   CHILD(873), CHILD(878), CHILD(883), CHILD(903), CHILD(908),
   TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
   TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
@@ -2689,11 +2719,15 @@ static const unsigned short decode_X0_fsm[1153] =
   TILEPRO_OPC_SLT_U, TILEPRO_OPC_SNEB, TILEPRO_OPC_SNEH, TILEPRO_OPC_SNE,
   TILEPRO_OPC_SRAB, TILEPRO_OPC_SRAH, TILEPRO_OPC_SRA, TILEPRO_OPC_SUBB,
   TILEPRO_OPC_SUBH, TILEPRO_OPC_SUB, TILEPRO_OPC_XOR, TILEPRO_OPC_DWORD_ALIGN,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   BITFIELD(18, 3) /* index 630 */,
   CHILD(639), CHILD(642), CHILD(645), CHILD(648), CHILD(651), CHILD(654),
   CHILD(657), CHILD(660),
   BITFIELD(21, 1) /* index 639 */,
+<<<<<<< HEAD
 <<<<<<< HEAD
   TILE_OPC_ADDS, TILE_OPC_NONE,
   BITFIELD(21, 1) /* index 642 */,
@@ -2752,6 +2786,8 @@ static const unsigned short decode_X0_fsm[1153] =
   TILE_OPC_SRAB_SN, TILE_OPC_SRAH_SN, TILE_OPC_SRA_SN, TILE_OPC_SUBB_SN,
   TILE_OPC_SUBH_SN, TILE_OPC_SUB_SN, TILE_OPC_XOR_SN, TILE_OPC_DWORD_ALIGN_SN,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   TILEPRO_OPC_ADDS, TILEPRO_OPC_NONE,
   BITFIELD(21, 1) /* index 642 */,
   TILEPRO_OPC_SUBS, TILEPRO_OPC_NONE,
@@ -2776,6 +2812,7 @@ static const unsigned short decode_X0_fsm[1153] =
   TILEPRO_OPC_MAXB_U_SN,
   BITFIELD(18, 4) /* index 680 */,
   TILEPRO_OPC_MAXH_SN, TILEPRO_OPC_MINB_U_SN, TILEPRO_OPC_MINH_SN,
+<<<<<<< HEAD
   TILEPRO_OPC_MNZB_SN, TILEPRO_OPC_MNZH_SN, TILEPRO_OPC_MNZ_SN,
   TILEPRO_OPC_MULHHA_SS_SN, TILEPRO_OPC_MULHHA_SU_SN,
   TILEPRO_OPC_MULHHA_UU_SN, TILEPRO_OPC_MULHHSA_UU_SN,
@@ -2978,6 +3015,52 @@ static const unsigned short decode_X0_fsm[1153] =
   BITFIELD(16, 1) /* index 1150 */,
   TILE_OPC_TBLIDXB3_SN, TILE_OPC_NONE,
 =======
+=======
+  TILEPRO_OPC_MNZB_SN, TILEPRO_OPC_MNZH_SN, TILEPRO_OPC_MNZ_SN,
+  TILEPRO_OPC_MULHHA_SS_SN, TILEPRO_OPC_MULHHA_SU_SN,
+  TILEPRO_OPC_MULHHA_UU_SN, TILEPRO_OPC_MULHHSA_UU_SN,
+  TILEPRO_OPC_MULHH_SS_SN, TILEPRO_OPC_MULHH_SU_SN, TILEPRO_OPC_MULHH_UU_SN,
+  TILEPRO_OPC_MULHLA_SS_SN, TILEPRO_OPC_MULHLA_SU_SN,
+  TILEPRO_OPC_MULHLA_US_SN,
+  BITFIELD(18, 4) /* index 697 */,
+  TILEPRO_OPC_MULHLA_UU_SN, TILEPRO_OPC_MULHLSA_UU_SN,
+  TILEPRO_OPC_MULHL_SS_SN, TILEPRO_OPC_MULHL_SU_SN, TILEPRO_OPC_MULHL_US_SN,
+  TILEPRO_OPC_MULHL_UU_SN, TILEPRO_OPC_MULLLA_SS_SN, TILEPRO_OPC_MULLLA_SU_SN,
+  TILEPRO_OPC_MULLLA_UU_SN, TILEPRO_OPC_MULLLSA_UU_SN,
+  TILEPRO_OPC_MULLL_SS_SN, TILEPRO_OPC_MULLL_SU_SN, TILEPRO_OPC_MULLL_UU_SN,
+  TILEPRO_OPC_MVNZ_SN, TILEPRO_OPC_MVZ_SN, TILEPRO_OPC_MZB_SN,
+  BITFIELD(18, 4) /* index 714 */,
+  TILEPRO_OPC_MZH_SN, TILEPRO_OPC_MZ_SN, TILEPRO_OPC_NOR_SN, CHILD(731),
+  TILEPRO_OPC_PACKHB_SN, TILEPRO_OPC_PACKLB_SN, TILEPRO_OPC_RL_SN,
+  TILEPRO_OPC_S1A_SN, TILEPRO_OPC_S2A_SN, TILEPRO_OPC_S3A_SN,
+  TILEPRO_OPC_SADAB_U_SN, TILEPRO_OPC_SADAH_SN, TILEPRO_OPC_SADAH_U_SN,
+  TILEPRO_OPC_SADB_U_SN, TILEPRO_OPC_SADH_SN, TILEPRO_OPC_SADH_U_SN,
+  BITFIELD(12, 2) /* index 731 */,
+  TILEPRO_OPC_OR_SN, TILEPRO_OPC_OR_SN, TILEPRO_OPC_OR_SN, CHILD(736),
+  BITFIELD(14, 2) /* index 736 */,
+  TILEPRO_OPC_OR_SN, TILEPRO_OPC_OR_SN, TILEPRO_OPC_OR_SN, CHILD(741),
+  BITFIELD(16, 2) /* index 741 */,
+  TILEPRO_OPC_OR_SN, TILEPRO_OPC_OR_SN, TILEPRO_OPC_OR_SN,
+  TILEPRO_OPC_MOVE_SN,
+  BITFIELD(18, 4) /* index 746 */,
+  TILEPRO_OPC_SEQB_SN, TILEPRO_OPC_SEQH_SN, TILEPRO_OPC_SEQ_SN,
+  TILEPRO_OPC_SHLB_SN, TILEPRO_OPC_SHLH_SN, TILEPRO_OPC_SHL_SN,
+  TILEPRO_OPC_SHRB_SN, TILEPRO_OPC_SHRH_SN, TILEPRO_OPC_SHR_SN,
+  TILEPRO_OPC_SLTB_SN, TILEPRO_OPC_SLTB_U_SN, TILEPRO_OPC_SLTEB_SN,
+  TILEPRO_OPC_SLTEB_U_SN, TILEPRO_OPC_SLTEH_SN, TILEPRO_OPC_SLTEH_U_SN,
+  TILEPRO_OPC_SLTE_SN,
+  BITFIELD(18, 4) /* index 763 */,
+  TILEPRO_OPC_SLTE_U_SN, TILEPRO_OPC_SLTH_SN, TILEPRO_OPC_SLTH_U_SN,
+  TILEPRO_OPC_SLT_SN, TILEPRO_OPC_SLT_U_SN, TILEPRO_OPC_SNEB_SN,
+  TILEPRO_OPC_SNEH_SN, TILEPRO_OPC_SNE_SN, TILEPRO_OPC_SRAB_SN,
+  TILEPRO_OPC_SRAH_SN, TILEPRO_OPC_SRA_SN, TILEPRO_OPC_SUBB_SN,
+  TILEPRO_OPC_SUBH_SN, TILEPRO_OPC_SUB_SN, TILEPRO_OPC_XOR_SN,
+  TILEPRO_OPC_DWORD_ALIGN_SN,
+  BITFIELD(18, 3) /* index 780 */,
+  CHILD(789), CHILD(792), CHILD(795), CHILD(798), CHILD(801), CHILD(804),
+  CHILD(807), CHILD(810),
+  BITFIELD(21, 1) /* index 789 */,
+>>>>>>> refs/remotes/origin/master
   TILEPRO_OPC_ADDS_SN, TILEPRO_OPC_NONE,
   BITFIELD(21, 1) /* index 792 */,
   TILEPRO_OPC_SUBS_SN, TILEPRO_OPC_NONE,
@@ -3145,12 +3228,16 @@ static const unsigned short decode_X0_fsm[1153] =
   TILEPRO_OPC_TBLIDXB2_SN, TILEPRO_OPC_NONE,
   BITFIELD(16, 1) /* index 1150 */,
   TILEPRO_OPC_TBLIDXB3_SN, TILEPRO_OPC_NONE,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const unsigned short decode_X1_fsm[1540] =
 {
   BITFIELD(54, 9) /* index 0 */,
+<<<<<<< HEAD
 <<<<<<< HEAD
   TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE,
   TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE,
@@ -3166,6 +3253,8 @@ static const unsigned short decode_X1_fsm[1540] =
   TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE,
   TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE, CHILD(766),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
   TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
   TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
@@ -3182,7 +3271,10 @@ static const unsigned short decode_X1_fsm[1540] =
   TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
   TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
   TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, CHILD(766),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   CHILD(766), CHILD(766), CHILD(766), CHILD(766), CHILD(766), CHILD(766),
   CHILD(766), CHILD(766), CHILD(766), CHILD(766), CHILD(766), CHILD(766),
   CHILD(766), CHILD(766), CHILD(766), CHILD(766), CHILD(766), CHILD(766),
@@ -3204,6 +3296,7 @@ static const unsigned short decode_X1_fsm[1540] =
   CHILD(826), CHILD(826), CHILD(826), CHILD(843), CHILD(843), CHILD(843),
   CHILD(843), CHILD(843), CHILD(843), CHILD(843), CHILD(843), CHILD(843),
   CHILD(843), CHILD(843), CHILD(843), CHILD(843), CHILD(843), CHILD(843),
+<<<<<<< HEAD
 <<<<<<< HEAD
   CHILD(843), CHILD(860), CHILD(899), CHILD(923), CHILD(932), TILE_OPC_NONE,
   TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE,
@@ -3535,6 +3628,8 @@ static const unsigned short decode_X1_fsm[1540] =
   BITFIELD(53, 1) /* index 1239 */,
   TILE_OPC_ILL, TILE_OPC_NONE,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   CHILD(843), CHILD(860), CHILD(899), CHILD(923), CHILD(932),
   TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
   TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
@@ -3903,11 +3998,15 @@ static const unsigned short decode_X1_fsm[1540] =
   TILEPRO_OPC_ILL, TILEPRO_OPC_ILL, TILEPRO_OPC_RAISE, TILEPRO_OPC_ILL,
   BITFIELD(53, 1) /* index 1239 */,
   TILEPRO_OPC_ILL, TILEPRO_OPC_NONE,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   BITFIELD(43, 3) /* index 1242 */,
   CHILD(1251), CHILD(1254), CHILD(1257), CHILD(1275), CHILD(1278),
   CHILD(1281), CHILD(1284), CHILD(1287),
   BITFIELD(53, 1) /* index 1251 */,
+<<<<<<< HEAD
 <<<<<<< HEAD
   TILE_OPC_INV, TILE_OPC_NONE,
   BITFIELD(53, 1) /* index 1254 */,
@@ -3931,6 +4030,8 @@ static const unsigned short decode_X1_fsm[1540] =
   BITFIELD(53, 1) /* index 1287 */,
   TILE_OPC_MF, TILE_OPC_NONE,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   TILEPRO_OPC_INV, TILEPRO_OPC_NONE,
   BITFIELD(53, 1) /* index 1254 */,
   TILEPRO_OPC_IRET, TILEPRO_OPC_NONE,
@@ -3952,11 +4053,15 @@ static const unsigned short decode_X1_fsm[1540] =
   TILEPRO_OPC_LW, TILEPRO_OPC_NONE,
   BITFIELD(53, 1) /* index 1287 */,
   TILEPRO_OPC_MF, TILEPRO_OPC_NONE,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   BITFIELD(43, 3) /* index 1290 */,
   CHILD(1299), CHILD(1302), CHILD(1305), CHILD(1308), CHILD(1311),
   CHILD(1314), CHILD(1317), CHILD(1320),
   BITFIELD(53, 1) /* index 1299 */,
+<<<<<<< HEAD
 <<<<<<< HEAD
   TILE_OPC_NAP, TILE_OPC_NONE,
   BITFIELD(53, 1) /* index 1302 */,
@@ -4027,6 +4132,8 @@ static const unsigned short decode_X1_fsm[1540] =
   BITFIELD(53, 1) /* index 1490 */,
   TILE_OPC_SRAI_SN, TILE_OPC_NONE,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   TILEPRO_OPC_NAP, TILEPRO_OPC_NONE,
   BITFIELD(53, 1) /* index 1302 */,
   TILEPRO_OPC_NOP, TILEPRO_OPC_NONE,
@@ -4099,11 +4206,15 @@ static const unsigned short decode_X1_fsm[1540] =
   TILEPRO_OPC_SRAIH_SN, TILEPRO_OPC_NONE,
   BITFIELD(53, 1) /* index 1490 */,
   TILEPRO_OPC_SRAI_SN, TILEPRO_OPC_NONE,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   BITFIELD(43, 3) /* index 1493 */,
   CHILD(1251), CHILD(1254), CHILD(1502), CHILD(1505), CHILD(1508),
   CHILD(1511), CHILD(1514), CHILD(1287),
   BITFIELD(53, 1) /* index 1502 */,
+<<<<<<< HEAD
 <<<<<<< HEAD
   TILE_OPC_LB_SN, TILE_OPC_NONE,
   BITFIELD(53, 1) /* index 1505 */,
@@ -4115,6 +4226,8 @@ static const unsigned short decode_X1_fsm[1540] =
   BITFIELD(53, 1) /* index 1514 */,
   TILE_OPC_LW_SN, TILE_OPC_NONE,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   TILEPRO_OPC_LB_SN, TILEPRO_OPC_NONE,
   BITFIELD(53, 1) /* index 1505 */,
   TILEPRO_OPC_LB_U_SN, TILEPRO_OPC_NONE,
@@ -4124,11 +4237,15 @@ static const unsigned short decode_X1_fsm[1540] =
   TILEPRO_OPC_LH_U_SN, TILEPRO_OPC_NONE,
   BITFIELD(53, 1) /* index 1514 */,
   TILEPRO_OPC_LW_SN, TILEPRO_OPC_NONE,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   BITFIELD(43, 3) /* index 1517 */,
   CHILD(1299), CHILD(1302), CHILD(1305), CHILD(1308), CHILD(1311),
   CHILD(1314), CHILD(1526), CHILD(1320),
   BITFIELD(53, 1) /* index 1526 */,
+<<<<<<< HEAD
 <<<<<<< HEAD
   TILE_OPC_TNS_SN, TILE_OPC_NONE,
   BITFIELD(43, 2) /* index 1529 */,
@@ -4138,6 +4255,8 @@ static const unsigned short decode_X1_fsm[1540] =
   BITFIELD(53, 1) /* index 1537 */,
   TILE_OPC_LW_NA_SN, TILE_OPC_NONE,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   TILEPRO_OPC_TNS_SN, TILEPRO_OPC_NONE,
   BITFIELD(43, 2) /* index 1529 */,
   CHILD(1534), TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
@@ -4145,12 +4264,16 @@ static const unsigned short decode_X1_fsm[1540] =
   CHILD(1537), TILEPRO_OPC_NONE,
   BITFIELD(53, 1) /* index 1537 */,
   TILEPRO_OPC_LW_NA_SN, TILEPRO_OPC_NONE,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const unsigned short decode_Y0_fsm[168] =
 {
   BITFIELD(27, 4) /* index 0 */,
+<<<<<<< HEAD
 <<<<<<< HEAD
   TILE_OPC_NONE, CHILD(17), CHILD(22), CHILD(27), CHILD(47), CHILD(52),
   CHILD(57), CHILD(62), CHILD(67), TILE_OPC_ADDI, CHILD(72), CHILD(102),
@@ -4211,6 +4334,8 @@ static const unsigned short decode_Y0_fsm[168] =
   TILE_OPC_TBLIDXB0, TILE_OPC_TBLIDXB1, TILE_OPC_TBLIDXB2, TILE_OPC_TBLIDXB3,
   TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   TILEPRO_OPC_NONE, CHILD(17), CHILD(22), CHILD(27), CHILD(47), CHILD(52),
   CHILD(57), CHILD(62), CHILD(67), TILEPRO_OPC_ADDI, CHILD(72), CHILD(102),
   TILEPRO_OPC_SEQI, CHILD(117), TILEPRO_OPC_SLTI, TILEPRO_OPC_SLTI_U,
@@ -4272,12 +4397,16 @@ static const unsigned short decode_Y0_fsm[168] =
   TILEPRO_OPC_TBLIDXB0, TILEPRO_OPC_TBLIDXB1, TILEPRO_OPC_TBLIDXB2,
   TILEPRO_OPC_TBLIDXB3, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
   TILEPRO_OPC_NONE,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const unsigned short decode_Y1_fsm[140] =
 {
   BITFIELD(59, 4) /* index 0 */,
+<<<<<<< HEAD
 <<<<<<< HEAD
   TILE_OPC_NONE, CHILD(17), CHILD(22), CHILD(27), CHILD(47), CHILD(52),
   CHILD(57), TILE_OPC_ADDI, CHILD(62), CHILD(92), TILE_OPC_SEQI, CHILD(107),
@@ -4331,6 +4460,8 @@ static const unsigned short decode_Y1_fsm[140] =
   BITFIELD(46, 2) /* index 135 */,
   TILE_OPC_NOP, TILE_OPC_NONE, TILE_OPC_NONE, TILE_OPC_NONE,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   TILEPRO_OPC_NONE, CHILD(17), CHILD(22), CHILD(27), CHILD(47), CHILD(52),
   CHILD(57), TILEPRO_OPC_ADDI, CHILD(62), CHILD(92), TILEPRO_OPC_SEQI,
   CHILD(107), TILEPRO_OPC_SLTI, TILEPRO_OPC_SLTI_U, TILEPRO_OPC_NONE,
@@ -4383,12 +4514,16 @@ static const unsigned short decode_Y1_fsm[140] =
   TILEPRO_OPC_ILL, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
   BITFIELD(46, 2) /* index 135 */,
   TILEPRO_OPC_NOP, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE, TILEPRO_OPC_NONE,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const unsigned short decode_Y2_fsm[24] =
 {
   BITFIELD(56, 3) /* index 0 */,
+<<<<<<< HEAD
 <<<<<<< HEAD
   CHILD(9), TILE_OPC_LB_U, TILE_OPC_LH, TILE_OPC_LH_U, TILE_OPC_LW,
   TILE_OPC_SB, TILE_OPC_SH, TILE_OPC_SW,
@@ -4399,6 +4534,8 @@ static const unsigned short decode_Y2_fsm[24] =
   BITFIELD(24, 2) /* index 19 */,
   TILE_OPC_LB, TILE_OPC_LB, TILE_OPC_LB, TILE_OPC_PREFETCH,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   CHILD(9), TILEPRO_OPC_LB_U, TILEPRO_OPC_LH, TILEPRO_OPC_LH_U,
   TILEPRO_OPC_LW, TILEPRO_OPC_SB, TILEPRO_OPC_SH, TILEPRO_OPC_SW,
   BITFIELD(20, 2) /* index 9 */,
@@ -4407,17 +4544,24 @@ static const unsigned short decode_Y2_fsm[24] =
   TILEPRO_OPC_LB, TILEPRO_OPC_LB, TILEPRO_OPC_LB, CHILD(19),
   BITFIELD(24, 2) /* index 19 */,
   TILEPRO_OPC_LB, TILEPRO_OPC_LB, TILEPRO_OPC_LB, TILEPRO_OPC_PREFETCH,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #undef BITFIELD
 #undef CHILD
 const unsigned short * const
 <<<<<<< HEAD
+<<<<<<< HEAD
 tile_bundle_decoder_fsms[TILE_NUM_PIPELINE_ENCODINGS] =
 =======
 tilepro_bundle_decoder_fsms[TILEPRO_NUM_PIPELINE_ENCODINGS] =
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+tilepro_bundle_decoder_fsms[TILEPRO_NUM_PIPELINE_ENCODINGS] =
+>>>>>>> refs/remotes/origin/master
 {
   decode_X0_fsm,
   decode_X1_fsm,
@@ -4426,65 +4570,92 @@ tilepro_bundle_decoder_fsms[TILEPRO_NUM_PIPELINE_ENCODINGS] =
   decode_Y2_fsm
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 const struct tile_operand tile_operands[43] =
 {
   {
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(TILE_IMM8_X0),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 const struct tilepro_operand tilepro_operands[43] =
 {
   {
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_IMM8_X0),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     8, 1, 0, 0, 0, 0,
     create_Imm8_X0, get_Imm8_X0
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(TILE_IMM8_X1),
 =======
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_IMM8_X1),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_IMM8_X1),
+>>>>>>> refs/remotes/origin/master
     8, 1, 0, 0, 0, 0,
     create_Imm8_X1, get_Imm8_X1
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(TILE_IMM8_Y0),
 =======
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_IMM8_Y0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_IMM8_Y0),
+>>>>>>> refs/remotes/origin/master
     8, 1, 0, 0, 0, 0,
     create_Imm8_Y0, get_Imm8_Y0
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(TILE_IMM8_Y1),
 =======
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_IMM8_Y1),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_IMM8_Y1),
+>>>>>>> refs/remotes/origin/master
     8, 1, 0, 0, 0, 0,
     create_Imm8_Y1, get_Imm8_Y1
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(TILE_IMM16_X0),
 =======
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_IMM16_X0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_IMM16_X0),
+>>>>>>> refs/remotes/origin/master
     16, 1, 0, 0, 0, 0,
     create_Imm16_X0, get_Imm16_X0
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(TILE_IMM16_X1),
 =======
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_IMM16_X1),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_IMM16_X1),
+>>>>>>> refs/remotes/origin/master
     16, 1, 0, 0, 0, 0,
     create_Imm16_X1, get_Imm16_X1
   },
   {
+<<<<<<< HEAD
 <<<<<<< HEAD
     TILE_OP_TYPE_ADDRESS, BFD_RELOC(TILE_JOFFLONG_X1),
     29, 1, 0, 0, 1, TILE_LOG2_BUNDLE_ALIGNMENT_IN_BYTES,
@@ -4493,125 +4664,179 @@ const struct tilepro_operand tilepro_operands[43] =
   {
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     TILEPRO_OP_TYPE_ADDRESS, BFD_RELOC(TILEPRO_JOFFLONG_X1),
     29, 1, 0, 0, 1, TILEPRO_LOG2_BUNDLE_ALIGNMENT_IN_BYTES,
     create_JOffLong_X1, get_JOffLong_X1
   },
   {
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     6, 0, 0, 1, 0, 0,
     create_Dest_X0, get_Dest_X0
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
     6, 0, 1, 0, 0, 0,
     create_SrcA_X0, get_SrcA_X0
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
     6, 0, 0, 1, 0, 0,
     create_Dest_X1, get_Dest_X1
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
     6, 0, 1, 0, 0, 0,
     create_SrcA_X1, get_SrcA_X1
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
     6, 0, 0, 1, 0, 0,
     create_Dest_Y0, get_Dest_Y0
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
     6, 0, 1, 0, 0, 0,
     create_SrcA_Y0, get_SrcA_Y0
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
     6, 0, 0, 1, 0, 0,
     create_Dest_Y1, get_Dest_Y1
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
     6, 0, 1, 0, 0, 0,
     create_SrcA_Y1, get_SrcA_Y1
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
     6, 0, 1, 0, 0, 0,
     create_SrcA_Y2, get_SrcA_Y2
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
     6, 0, 1, 0, 0, 0,
     create_SrcB_X0, get_SrcB_X0
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
     6, 0, 1, 0, 0, 0,
     create_SrcB_X1, get_SrcB_X1
   },
   {
 <<<<<<< HEAD
-    TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
-=======
-    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
->>>>>>> refs/remotes/origin/cm-10.0
-    6, 0, 1, 0, 0, 0,
-    create_SrcB_Y0, get_SrcB_Y0
-  },
-  {
 <<<<<<< HEAD
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
+    6, 0, 1, 0, 0, 0,
+    create_SrcB_Y0, get_SrcB_Y0
+  },
+  {
+<<<<<<< HEAD
+<<<<<<< HEAD
+    TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
     6, 0, 1, 0, 0, 0,
     create_SrcB_Y1, get_SrcB_Y1
   },
   {
+<<<<<<< HEAD
 <<<<<<< HEAD
     TILE_OP_TYPE_ADDRESS, BFD_RELOC(TILE_BROFF_X1),
     17, 1, 0, 0, 1, TILE_LOG2_BUNDLE_ALIGNMENT_IN_BYTES,
@@ -4620,17 +4845,23 @@ const struct tilepro_operand tilepro_operands[43] =
   {
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     TILEPRO_OP_TYPE_ADDRESS, BFD_RELOC(TILEPRO_BROFF_X1),
     17, 1, 0, 0, 1, TILEPRO_LOG2_BUNDLE_ALIGNMENT_IN_BYTES,
     create_BrOff_X1, get_BrOff_X1
   },
   {
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     6, 0, 1, 1, 0, 0,
     create_Dest_X0, get_Dest_X0
   },
   {
+<<<<<<< HEAD
 <<<<<<< HEAD
     TILE_OP_TYPE_ADDRESS, BFD_RELOC(NONE),
     28, 1, 0, 0, 1, TILE_LOG2_BUNDLE_ALIGNMENT_IN_BYTES,
@@ -4639,143 +4870,205 @@ const struct tilepro_operand tilepro_operands[43] =
   {
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     TILEPRO_OP_TYPE_ADDRESS, BFD_RELOC(NONE),
     28, 1, 0, 0, 1, TILEPRO_LOG2_BUNDLE_ALIGNMENT_IN_BYTES,
     create_JOff_X1, get_JOff_X1
   },
   {
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     6, 0, 0, 1, 0, 0,
     create_SrcBDest_Y2, get_SrcBDest_Y2
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
     6, 0, 1, 1, 0, 0,
     create_SrcA_X1, get_SrcA_X1
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_SPR, BFD_RELOC(TILE_MF_IMM15_X1),
 =======
     TILEPRO_OP_TYPE_SPR, BFD_RELOC(TILEPRO_MF_IMM15_X1),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_SPR, BFD_RELOC(TILEPRO_MF_IMM15_X1),
+>>>>>>> refs/remotes/origin/master
     15, 0, 0, 0, 0, 0,
     create_MF_Imm15_X1, get_MF_Imm15_X1
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(TILE_MMSTART_X0),
 =======
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_MMSTART_X0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_MMSTART_X0),
+>>>>>>> refs/remotes/origin/master
     5, 0, 0, 0, 0, 0,
     create_MMStart_X0, get_MMStart_X0
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(TILE_MMEND_X0),
 =======
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_MMEND_X0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_MMEND_X0),
+>>>>>>> refs/remotes/origin/master
     5, 0, 0, 0, 0, 0,
     create_MMEnd_X0, get_MMEnd_X0
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(TILE_MMSTART_X1),
 =======
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_MMSTART_X1),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_MMSTART_X1),
+>>>>>>> refs/remotes/origin/master
     5, 0, 0, 0, 0, 0,
     create_MMStart_X1, get_MMStart_X1
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(TILE_MMEND_X1),
 =======
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_MMEND_X1),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_MMEND_X1),
+>>>>>>> refs/remotes/origin/master
     5, 0, 0, 0, 0, 0,
     create_MMEnd_X1, get_MMEnd_X1
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_SPR, BFD_RELOC(TILE_MT_IMM15_X1),
 =======
     TILEPRO_OP_TYPE_SPR, BFD_RELOC(TILEPRO_MT_IMM15_X1),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_SPR, BFD_RELOC(TILEPRO_MT_IMM15_X1),
+>>>>>>> refs/remotes/origin/master
     15, 0, 0, 0, 0, 0,
     create_MT_Imm15_X1, get_MT_Imm15_X1
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
     6, 0, 1, 1, 0, 0,
     create_Dest_Y0, get_Dest_Y0
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(TILE_SHAMT_X0),
 =======
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_SHAMT_X0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_SHAMT_X0),
+>>>>>>> refs/remotes/origin/master
     5, 0, 0, 0, 0, 0,
     create_ShAmt_X0, get_ShAmt_X0
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(TILE_SHAMT_X1),
 =======
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_SHAMT_X1),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_SHAMT_X1),
+>>>>>>> refs/remotes/origin/master
     5, 0, 0, 0, 0, 0,
     create_ShAmt_X1, get_ShAmt_X1
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(TILE_SHAMT_Y0),
 =======
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_SHAMT_Y0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_SHAMT_Y0),
+>>>>>>> refs/remotes/origin/master
     5, 0, 0, 0, 0, 0,
     create_ShAmt_Y0, get_ShAmt_Y0
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(TILE_SHAMT_Y1),
 =======
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_SHAMT_Y1),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_SHAMT_Y1),
+>>>>>>> refs/remotes/origin/master
     5, 0, 0, 0, 0, 0,
     create_ShAmt_Y1, get_ShAmt_Y1
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
     6, 0, 1, 0, 0, 0,
     create_SrcBDest_Y2, get_SrcBDest_Y2
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(NONE),
 =======
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_DEST_IMM8_X1),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEPRO_DEST_IMM8_X1),
+>>>>>>> refs/remotes/origin/master
     8, 1, 0, 0, 0, 0,
     create_Dest_Imm8_X1, get_Dest_Imm8_X1
   },
   {
+<<<<<<< HEAD
 <<<<<<< HEAD
     TILE_OP_TYPE_ADDRESS, BFD_RELOC(TILE_SN_BROFF),
     10, 1, 0, 0, 1, TILE_LOG2_SN_INSTRUCTION_SIZE_IN_BYTES,
@@ -4784,40 +5077,57 @@ const struct tilepro_operand tilepro_operands[43] =
   {
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(TILE_SN_UIMM8),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     TILEPRO_OP_TYPE_ADDRESS, BFD_RELOC(NONE),
     10, 1, 0, 0, 1, TILEPRO_LOG2_SN_INSTRUCTION_SIZE_IN_BYTES,
     create_BrOff_SN, get_BrOff_SN
   },
   {
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(NONE),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     8, 0, 0, 0, 0, 0,
     create_Imm8_SN, get_Imm8_SN
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILE_OP_TYPE_IMMEDIATE, BFD_RELOC(TILE_SN_IMM8),
 =======
     TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(NONE),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_IMMEDIATE, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
     8, 1, 0, 0, 0, 0,
     create_Imm8_SN, get_Imm8_SN
   },
   {
 <<<<<<< HEAD
-    TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
-=======
-    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
->>>>>>> refs/remotes/origin/cm-10.0
-    2, 0, 0, 1, 0, 0,
-    create_Dest_SN, get_Dest_SN
-  },
-  {
 <<<<<<< HEAD
     TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 =======
     TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
+    2, 0, 0, 1, 0, 0,
+    create_Dest_SN, get_Dest_SN
+  },
+  {
+<<<<<<< HEAD
+<<<<<<< HEAD
+    TILE_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEPRO_OP_TYPE_REGISTER, BFD_RELOC(NONE),
+>>>>>>> refs/remotes/origin/master
     2, 0, 1, 0, 0, 0,
     create_Src_SN, get_Src_SN
   }
@@ -4830,16 +5140,22 @@ const struct tilepro_operand tilepro_operands[43] =
  * instruction the bundle contains in that pipe.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 const struct tile_opcode *
 find_opcode(tile_bundle_bits bits, tile_pipeline pipe)
 {
   const unsigned short *table = tile_bundle_decoder_fsms[pipe];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 const struct tilepro_opcode *
 find_opcode(tilepro_bundle_bits bits, tilepro_pipeline pipe)
 {
   const unsigned short *table = tilepro_bundle_decoder_fsms[pipe];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   int index = 0;
 
   while (1)
@@ -4850,37 +5166,50 @@ find_opcode(tilepro_bundle_bits bits, tilepro_pipeline pipe)
 
     unsigned short next = table[index + 1 + bitfield];
 <<<<<<< HEAD
+<<<<<<< HEAD
     if (next <= TILE_OPC_NONE)
       return &tile_opcodes[next];
 
     index = next - TILE_OPC_NONE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     if (next <= TILEPRO_OPC_NONE)
       return &tilepro_opcodes[next];
 
     index = next - TILEPRO_OPC_NONE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   }
 }
 
 
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 parse_insn_tile(tile_bundle_bits bits,
                 unsigned int pc,
                 struct tile_decoded_instruction
                 decoded[TILE_MAX_INSTRUCTIONS_PER_BUNDLE])
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 parse_insn_tilepro(tilepro_bundle_bits bits,
                    unsigned int pc,
                    struct tilepro_decoded_instruction
                    decoded[TILEPRO_MAX_INSTRUCTIONS_PER_BUNDLE])
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
   int num_instructions = 0;
   int pipe;
 
   int min_pipe, max_pipe;
+<<<<<<< HEAD
 <<<<<<< HEAD
   if ((bits & TILE_BUNDLE_Y_ENCODING_MASK) == 0)
   {
@@ -4892,6 +5221,8 @@ parse_insn_tilepro(tilepro_bundle_bits bits,
     min_pipe = TILE_PIPELINE_Y0;
     max_pipe = TILE_PIPELINE_Y2;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   if ((bits & TILEPRO_BUNDLE_Y_ENCODING_MASK) == 0)
   {
     min_pipe = TILEPRO_PIPELINE_X0;
@@ -4901,12 +5232,16 @@ parse_insn_tilepro(tilepro_bundle_bits bits,
   {
     min_pipe = TILEPRO_PIPELINE_Y0;
     max_pipe = TILEPRO_PIPELINE_Y2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   }
 
   /* For each pipe, find an instruction that fits. */
   for (pipe = min_pipe; pipe <= max_pipe; pipe++)
   {
+<<<<<<< HEAD
 <<<<<<< HEAD
     const struct tile_opcode *opc;
     struct tile_decoded_instruction *d;
@@ -4915,18 +5250,24 @@ parse_insn_tilepro(tilepro_bundle_bits bits,
     d = &decoded[num_instructions++];
     opc = find_opcode (bits, (tile_pipeline)pipe);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     const struct tilepro_opcode *opc;
     struct tilepro_decoded_instruction *d;
     int i;
 
     d = &decoded[num_instructions++];
     opc = find_opcode (bits, (tilepro_pipeline)pipe);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     d->opcode = opc;
 
     /* Decode each operand, sign extending, etc. as appropriate. */
     for (i = 0; i < opc->num_operands; i++)
     {
+<<<<<<< HEAD
 <<<<<<< HEAD
       const struct tile_operand *op =
         &tile_operands[opc->operands[pipe][i]];
@@ -4934,6 +5275,10 @@ parse_insn_tilepro(tilepro_bundle_bits bits,
       const struct tilepro_operand *op =
         &tilepro_operands[opc->operands[pipe][i]];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+      const struct tilepro_operand *op =
+        &tilepro_operands[opc->operands[pipe][i]];
+>>>>>>> refs/remotes/origin/master
       int opval = op->extract (bits);
       if (op->is_signed)
       {
@@ -4944,6 +5289,7 @@ parse_insn_tilepro(tilepro_bundle_bits bits,
 
       /* Adjust PC-relative scaled branch offsets. */
 <<<<<<< HEAD
+<<<<<<< HEAD
       if (op->type == TILE_OP_TYPE_ADDRESS)
       {
         opval *= TILE_BUNDLE_SIZE_IN_BYTES;
@@ -4952,6 +5298,11 @@ parse_insn_tilepro(tilepro_bundle_bits bits,
       {
         opval *= TILEPRO_BUNDLE_SIZE_IN_BYTES;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+      if (op->type == TILEPRO_OP_TYPE_ADDRESS)
+      {
+        opval *= TILEPRO_BUNDLE_SIZE_IN_BYTES;
+>>>>>>> refs/remotes/origin/master
         opval += (int)pc;
       }
 

@@ -84,8 +84,13 @@ struct nvt_dev {
 	} tx;
 
 	/* EFER Config register index/data pair */
+<<<<<<< HEAD
 	u8 cr_efir;
 	u8 cr_efdr;
+=======
+	u32 cr_efir;
+	u32 cr_efdr;
+>>>>>>> refs/remotes/origin/master
 
 	/* hardware I/O settings */
 	unsigned long cir_addr;
@@ -103,7 +108,10 @@ struct nvt_dev {
 
 	/* rx settings */
 	bool learning_enabled;
+<<<<<<< HEAD
 	bool carrier_detect_enabled;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* track cir wake state */
 	u8 wake_state;

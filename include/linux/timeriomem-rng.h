@@ -8,12 +8,16 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 #include <linux/completion.h>
 
 struct timeriomem_rng_data {
 	struct completion	completion;
 	unsigned int		present:1;
 
+=======
+struct timeriomem_rng_data {
+>>>>>>> refs/remotes/origin/master
 	void __iomem		*address;
 
 	/* measures in usecs */

@@ -67,8 +67,18 @@ static int try_one_irq(int irq, struct irq_desc *desc, bool force)
 
 	raw_spin_lock(&desc->lock);
 
+<<<<<<< HEAD
 	/* PER_CPU and nested thread interrupts are never polled */
 	if (irq_settings_is_per_cpu(desc) || irq_settings_is_nested_thread(desc))
+=======
+	/*
+	 * PER_CPU, nested thread interrupts and interrupts explicitely
+	 * marked polled are excluded from polling.
+	 */
+	if (irq_settings_is_per_cpu(desc) ||
+	    irq_settings_is_nested_thread(desc) ||
+	    irq_settings_is_polled(desc))
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	/*
@@ -268,7 +278,12 @@ try_misrouted_irq(unsigned int irq, struct irq_desc *desc,
 void note_interrupt(unsigned int irq, struct irq_desc *desc,
 		    irqreturn_t action_ret)
 {
+<<<<<<< HEAD
 	if (desc->istate & IRQS_POLL_INPROGRESS)
+=======
+	if (desc->istate & IRQS_POLL_INPROGRESS ||
+	    irq_settings_is_polled(desc))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	/* we get here again via the threaded handler */
@@ -325,10 +340,14 @@ void note_interrupt(unsigned int irq, struct irq_desc *desc,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int noirqdebug __read_mostly;
 =======
 bool noirqdebug __read_mostly;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool noirqdebug __read_mostly;
+>>>>>>> refs/remotes/origin/master
 
 int noirqdebug_setup(char *str)
 {

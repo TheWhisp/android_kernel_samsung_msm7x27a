@@ -39,9 +39,13 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "rds.h"
 #include "ib.h"
@@ -341,7 +345,12 @@ static int rds_ib_laddr_check(__be32 addr)
 	ret = rdma_bind_addr(cm_id, (struct sockaddr *)&sin);
 	/* due to this, we will claim to support iWARP devices unless we
 	   check node_type. */
+<<<<<<< HEAD
 	if (ret || cm_id->device->node_type != RDMA_NODE_IB_CA)
+=======
+	if (ret || !cm_id->device ||
+	    cm_id->device->node_type != RDMA_NODE_IB_CA)
+>>>>>>> refs/remotes/origin/master
 		ret = -EADDRNOTAVAIL;
 
 	rdsdebug("addr %pI4 ret %d node type %d\n",

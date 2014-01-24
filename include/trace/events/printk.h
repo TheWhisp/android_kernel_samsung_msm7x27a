@@ -6,6 +6,7 @@
 
 #include <linux/tracepoint.h>
 
+<<<<<<< HEAD
 TRACE_EVENT_CONDITION(console,
 	TP_PROTO(const char *log_buf, unsigned start, unsigned end,
 		 unsigned log_buf_len),
@@ -31,6 +32,20 @@ TRACE_EVENT_CONDITION(console,
 			       log_buf + (start & (log_buf_len - 1)),
 			       end - start);
 		((char *)__get_dynamic_array(msg))[end - start] = 0;
+=======
+TRACE_EVENT(console,
+	TP_PROTO(const char *text, size_t len),
+
+	TP_ARGS(text, len),
+
+	TP_STRUCT__entry(
+		__dynamic_array(char, msg, len + 1)
+	),
+
+	TP_fast_assign(
+		memcpy(__get_dynamic_array(msg), text, len);
+		((char *)__get_dynamic_array(msg))[len] = 0;
+>>>>>>> refs/remotes/origin/master
 	),
 
 	TP_printk("%s", __get_str(msg))

@@ -68,10 +68,15 @@
 #define WM8978_OUT4_MIXER_CONTROL		0x39
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define WM8978_MAX_REGISTER			0x39
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WM8978_MAX_REGISTER			0x39
+
+>>>>>>> refs/remotes/origin/master
 #define WM8978_CACHEREGNUM			58
 
 /* Clock divider Id's */

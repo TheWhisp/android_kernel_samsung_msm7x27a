@@ -13,9 +13,13 @@
 #include <linux/init.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/regulator/driver.h>
 #include <linux/regulator/machine.h>
@@ -79,9 +83,13 @@
 struct da903x_regulator_info {
 	struct regulator_desc desc;
 
+<<<<<<< HEAD
 	int	min_uV;
 	int	max_uV;
 	int	step_uV;
+=======
+	int	max_uV;
+>>>>>>> refs/remotes/origin/master
 	int	vol_reg;
 	int	vol_shift;
 	int	vol_nbits;
@@ -91,10 +99,13 @@ struct da903x_regulator_info {
 	int	enable_bit;
 };
 
+<<<<<<< HEAD
 static int da9034_ldo12_data[] = { 1700, 1750, 1800, 1850, 1900, 1950,
 				   2000, 2050, 2700, 2750, 2800, 2850,
 				   2900, 2950, 3000, 3050 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct device *to_da903x_dev(struct regulator_dev *rdev)
 {
 	return rdev_get_dev(rdev)->parent->parent;
@@ -103,20 +114,29 @@ static inline struct device *to_da903x_dev(struct regulator_dev *rdev)
 static inline int check_range(struct da903x_regulator_info *info,
 				int min_uV, int max_uV)
 {
+<<<<<<< HEAD
 	if (min_uV < info->min_uV || min_uV > info->max_uV)
+=======
+	if (min_uV < info->desc.min_uV || min_uV > info->max_uV)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	return 0;
 }
 
 /* DA9030/DA9034 common operations */
+<<<<<<< HEAD
 static int da903x_set_ldo_voltage(struct regulator_dev *rdev,
 				  int min_uV, int max_uV, unsigned *selector)
+=======
+static int da903x_set_voltage_sel(struct regulator_dev *rdev, unsigned selector)
+>>>>>>> refs/remotes/origin/master
 {
 	struct da903x_regulator_info *info = rdev_get_drvdata(rdev);
 	struct device *da9034_dev = to_da903x_dev(rdev);
 	uint8_t val, mask;
 
+<<<<<<< HEAD
 	if (check_range(info, min_uV, max_uV)) {
 		pr_err("invalid voltage range (%d, %d) uV\n", min_uV, max_uV);
 		return -EINVAL;
@@ -129,18 +149,34 @@ static int da903x_set_ldo_voltage(struct regulator_dev *rdev,
 >>>>>>> refs/remotes/origin/cm-10.0
 	*selector = val;
 	val <<= info->vol_shift;
+=======
+	if (rdev->desc->n_voltages == 1)
+		return -EINVAL;
+
+	val = selector << info->vol_shift;
+>>>>>>> refs/remotes/origin/master
 	mask = ((1 << info->vol_nbits) - 1)  << info->vol_shift;
 
 	return da903x_update(da9034_dev, info->vol_reg, val, mask);
 }
 
+<<<<<<< HEAD
 static int da903x_get_voltage(struct regulator_dev *rdev)
+=======
+static int da903x_get_voltage_sel(struct regulator_dev *rdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct da903x_regulator_info *info = rdev_get_drvdata(rdev);
 	struct device *da9034_dev = to_da903x_dev(rdev);
 	uint8_t val, mask;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	if (rdev->desc->n_voltages == 1)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	ret = da903x_read(da9034_dev, info->vol_reg, &val);
 	if (ret)
 		return ret;
@@ -148,7 +184,11 @@ static int da903x_get_voltage(struct regulator_dev *rdev)
 	mask = ((1 << info->vol_nbits) - 1)  << info->vol_shift;
 	val = (val & mask) >> info->vol_shift;
 
+<<<<<<< HEAD
 	return info->min_uV + info->step_uV * val;
+=======
+	return val;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int da903x_enable(struct regulator_dev *rdev)
@@ -183,6 +223,7 @@ static int da903x_is_enabled(struct regulator_dev *rdev)
 	return !!(reg_val & (1 << info->enable_bit));
 }
 
+<<<<<<< HEAD
 static int da903x_list_voltage(struct regulator_dev *rdev, unsigned selector)
 {
 	struct da903x_regulator_info *info = rdev_get_drvdata(rdev);
@@ -198,12 +239,18 @@ static int da903x_list_voltage(struct regulator_dev *rdev, unsigned selector)
 static int da9030_set_ldo1_15_voltage(struct regulator_dev *rdev,
 				      int min_uV, int max_uV,
 				      unsigned *selector)
+=======
+/* DA9030 specific operations */
+static int da9030_set_ldo1_15_voltage_sel(struct regulator_dev *rdev,
+					  unsigned selector)
+>>>>>>> refs/remotes/origin/master
 {
 	struct da903x_regulator_info *info = rdev_get_drvdata(rdev);
 	struct device *da903x_dev = to_da903x_dev(rdev);
 	uint8_t val, mask;
 	int ret;
 
+<<<<<<< HEAD
 	if (check_range(info, min_uV, max_uV)) {
 		pr_err("invalid voltage range (%d, %d) uV\n", min_uV, max_uV);
 		return -EINVAL;
@@ -216,6 +263,9 @@ static int da9030_set_ldo1_15_voltage(struct regulator_dev *rdev,
 >>>>>>> refs/remotes/origin/cm-10.0
 	*selector = val;
 	val <<= info->vol_shift;
+=======
+	val = selector << info->vol_shift;
+>>>>>>> refs/remotes/origin/master
 	mask = ((1 << info->vol_nbits) - 1)  << info->vol_shift;
 	val |= DA9030_LDO_UNLOCK; /* have to set UNLOCK bits */
 	mask |= DA9030_LDO_UNLOCK_MASK;
@@ -228,6 +278,7 @@ static int da9030_set_ldo1_15_voltage(struct regulator_dev *rdev,
 	return da903x_update(da903x_dev, info->vol_reg, val, mask);
 }
 
+<<<<<<< HEAD
 static int da9030_set_ldo14_voltage(struct regulator_dev *rdev,
 				    int min_uV, int max_uV,
 				    unsigned *selector)
@@ -236,12 +287,20 @@ static int da9030_set_ldo14_voltage(struct regulator_dev *rdev,
 	struct device *da903x_dev = to_da903x_dev(rdev);
 	uint8_t val, mask;
 	int thresh;
+=======
+static int da9030_map_ldo14_voltage(struct regulator_dev *rdev,
+				    int min_uV, int max_uV)
+{
+	struct da903x_regulator_info *info = rdev_get_drvdata(rdev);
+	int thresh, sel;
+>>>>>>> refs/remotes/origin/master
 
 	if (check_range(info, min_uV, max_uV)) {
 		pr_err("invalid voltage range (%d, %d) uV\n", min_uV, max_uV);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	thresh = (info->max_uV + info->min_uV) / 2;
 	if (min_uV < thresh) {
 <<<<<<< HEAD
@@ -288,12 +347,48 @@ static int da9030_get_ldo14_voltage(struct regulator_dev *rdev)
 /* DA9034 specific operations */
 static int da9034_set_dvc_voltage(struct regulator_dev *rdev,
 				  int min_uV, int max_uV, unsigned *selector)
+=======
+	thresh = (info->max_uV + info->desc.min_uV) / 2;
+	if (min_uV < thresh) {
+		sel = DIV_ROUND_UP(thresh - min_uV, info->desc.uV_step);
+		sel |= 0x4;
+	} else {
+		sel = DIV_ROUND_UP(min_uV - thresh, info->desc.uV_step);
+	}
+
+	return sel;
+}
+
+static int da9030_list_ldo14_voltage(struct regulator_dev *rdev,
+				     unsigned selector)
+{
+	struct da903x_regulator_info *info = rdev_get_drvdata(rdev);
+	int volt;
+
+	if (selector & 0x4)
+		volt = rdev->desc->min_uV +
+		       rdev->desc->uV_step * (3 - (selector & ~0x4));
+	else
+		volt = (info->max_uV + rdev->desc->min_uV) / 2 +
+		       rdev->desc->uV_step * (selector & ~0x4);
+
+	if (volt > info->max_uV)
+		return -EINVAL;
+
+	return volt;
+}
+
+/* DA9034 specific operations */
+static int da9034_set_dvc_voltage_sel(struct regulator_dev *rdev,
+				      unsigned selector)
+>>>>>>> refs/remotes/origin/master
 {
 	struct da903x_regulator_info *info = rdev_get_drvdata(rdev);
 	struct device *da9034_dev = to_da903x_dev(rdev);
 	uint8_t val, mask;
 	int ret;
 
+<<<<<<< HEAD
 	if (check_range(info, min_uV, max_uV)) {
 		pr_err("invalid voltage range (%d, %d) uV\n", min_uV, max_uV);
 		return -EINVAL;
@@ -306,6 +401,9 @@ static int da9034_set_dvc_voltage(struct regulator_dev *rdev,
 >>>>>>> refs/remotes/origin/cm-10.0
 	*selector = val;
 	val <<= info->vol_shift;
+=======
+	val = selector << info->vol_shift;
+>>>>>>> refs/remotes/origin/master
 	mask = ((1 << info->vol_nbits) - 1)  << info->vol_shift;
 
 	ret = da903x_update(da9034_dev, info->vol_reg, val, mask);
@@ -317,6 +415,7 @@ static int da9034_set_dvc_voltage(struct regulator_dev *rdev,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int da9034_set_ldo12_voltage(struct regulator_dev *rdev,
 				    int min_uV, int max_uV, unsigned *selector)
 {
@@ -374,6 +473,18 @@ static struct regulator_ops da903x_regulator_ldo_ops = {
 	.set_voltage	= da903x_set_ldo_voltage,
 	.get_voltage	= da903x_get_voltage,
 	.list_voltage	= da903x_list_voltage,
+=======
+static const struct regulator_linear_range da9034_ldo12_ranges[] = {
+	REGULATOR_LINEAR_RANGE(1700000, 0, 7, 50000),
+	REGULATOR_LINEAR_RANGE(2700000, 8, 15, 50000),
+};
+
+static struct regulator_ops da903x_regulator_ldo_ops = {
+	.set_voltage_sel = da903x_set_voltage_sel,
+	.get_voltage_sel = da903x_get_voltage_sel,
+	.list_voltage	= regulator_list_voltage_linear,
+	.map_voltage	= regulator_map_voltage_linear,
+>>>>>>> refs/remotes/origin/master
 	.enable		= da903x_enable,
 	.disable	= da903x_disable,
 	.is_enabled	= da903x_is_enabled,
@@ -381,9 +492,16 @@ static struct regulator_ops da903x_regulator_ldo_ops = {
 
 /* NOTE: this is dedicated for the insane DA9030 LDO14 */
 static struct regulator_ops da9030_regulator_ldo14_ops = {
+<<<<<<< HEAD
 	.set_voltage	= da9030_set_ldo14_voltage,
 	.get_voltage	= da9030_get_ldo14_voltage,
 	.list_voltage	= da903x_list_voltage,
+=======
+	.set_voltage_sel = da903x_set_voltage_sel,
+	.get_voltage_sel = da903x_get_voltage_sel,
+	.list_voltage	= da9030_list_ldo14_voltage,
+	.map_voltage	= da9030_map_ldo14_voltage,
+>>>>>>> refs/remotes/origin/master
 	.enable		= da903x_enable,
 	.disable	= da903x_disable,
 	.is_enabled	= da903x_is_enabled,
@@ -391,18 +509,32 @@ static struct regulator_ops da9030_regulator_ldo14_ops = {
 
 /* NOTE: this is dedicated for the DA9030 LDO1 and LDO15 that have locks  */
 static struct regulator_ops da9030_regulator_ldo1_15_ops = {
+<<<<<<< HEAD
 	.set_voltage	= da9030_set_ldo1_15_voltage,
 	.get_voltage	= da903x_get_voltage,
 	.list_voltage	= da903x_list_voltage,
+=======
+	.set_voltage_sel = da9030_set_ldo1_15_voltage_sel,
+	.get_voltage_sel = da903x_get_voltage_sel,
+	.list_voltage	= regulator_list_voltage_linear,
+	.map_voltage	= regulator_map_voltage_linear,
+>>>>>>> refs/remotes/origin/master
 	.enable		= da903x_enable,
 	.disable	= da903x_disable,
 	.is_enabled	= da903x_is_enabled,
 };
 
 static struct regulator_ops da9034_regulator_dvc_ops = {
+<<<<<<< HEAD
 	.set_voltage	= da9034_set_dvc_voltage,
 	.get_voltage	= da903x_get_voltage,
 	.list_voltage	= da903x_list_voltage,
+=======
+	.set_voltage_sel = da9034_set_dvc_voltage_sel,
+	.get_voltage_sel = da903x_get_voltage_sel,
+	.list_voltage	= regulator_list_voltage_linear,
+	.map_voltage	= regulator_map_voltage_linear,
+>>>>>>> refs/remotes/origin/master
 	.enable		= da903x_enable,
 	.disable	= da903x_disable,
 	.is_enabled	= da903x_is_enabled,
@@ -410,9 +542,16 @@ static struct regulator_ops da9034_regulator_dvc_ops = {
 
 /* NOTE: this is dedicated for the insane LDO12 */
 static struct regulator_ops da9034_regulator_ldo12_ops = {
+<<<<<<< HEAD
 	.set_voltage	= da9034_set_ldo12_voltage,
 	.get_voltage	= da9034_get_ldo12_voltage,
 	.list_voltage	= da9034_list_ldo12_voltage,
+=======
+	.set_voltage_sel = da903x_set_voltage_sel,
+	.get_voltage_sel = da903x_get_voltage_sel,
+	.list_voltage	= regulator_list_voltage_linear_range,
+	.map_voltage	= regulator_map_voltage_linear_range,
+>>>>>>> refs/remotes/origin/master
 	.enable		= da903x_enable,
 	.disable	= da903x_disable,
 	.is_enabled	= da903x_is_enabled,
@@ -427,10 +566,17 @@ static struct regulator_ops da9034_regulator_ldo12_ops = {
 		.id	= _pmic##_ID_LDO##_id,				\
 		.n_voltages = (step) ? ((max - min) / step + 1) : 1,	\
 		.owner	= THIS_MODULE,					\
+<<<<<<< HEAD
 	},								\
 	.min_uV		= (min) * 1000,					\
 	.max_uV		= (max) * 1000,					\
 	.step_uV	= (step) * 1000,				\
+=======
+		.min_uV	 = (min) * 1000,				\
+		.uV_step = (step) * 1000,				\
+	},								\
+	.max_uV		= (max) * 1000,					\
+>>>>>>> refs/remotes/origin/master
 	.vol_reg	= _pmic##_##vreg,				\
 	.vol_shift	= (shift),					\
 	.vol_nbits	= (nbits),					\
@@ -447,10 +593,17 @@ static struct regulator_ops da9034_regulator_ldo12_ops = {
 		.id	= _pmic##_ID_##_id,				\
 		.n_voltages = (step) ? ((max - min) / step + 1) : 1,	\
 		.owner	= THIS_MODULE,					\
+<<<<<<< HEAD
 	},								\
 	.min_uV		= (min) * 1000,					\
 	.max_uV		= (max) * 1000,					\
 	.step_uV	= (step) * 1000,				\
+=======
+		.min_uV = (min) * 1000,					\
+		.uV_step = (step) * 1000,				\
+	},								\
+	.max_uV		= (max) * 1000,					\
+>>>>>>> refs/remotes/origin/master
 	.vol_reg	= _pmic##_##vreg,				\
 	.vol_shift	= (0),						\
 	.vol_nbits	= (nbits),					\
@@ -539,10 +692,18 @@ static inline struct da903x_regulator_info *find_regulator_info(int id)
 	return NULL;
 }
 
+<<<<<<< HEAD
 static int __devinit da903x_regulator_probe(struct platform_device *pdev)
 {
 	struct da903x_regulator_info *ri = NULL;
 	struct regulator_dev *rdev;
+=======
+static int da903x_regulator_probe(struct platform_device *pdev)
+{
+	struct da903x_regulator_info *ri = NULL;
+	struct regulator_dev *rdev;
+	struct regulator_config config = { };
+>>>>>>> refs/remotes/origin/master
 
 	ri = find_regulator_info(pdev->id);
 	if (ri == NULL) {
@@ -553,7 +714,13 @@ static int __devinit da903x_regulator_probe(struct platform_device *pdev)
 	/* Workaround for the weird LDO12 voltage setting */
 	if (ri->desc.id == DA9034_ID_LDO12) {
 		ri->desc.ops = &da9034_regulator_ldo12_ops;
+<<<<<<< HEAD
 		ri->desc.n_voltages = ARRAY_SIZE(da9034_ldo12_data);
+=======
+		ri->desc.n_voltages = 16;
+		ri->desc.linear_ranges = da9034_ldo12_ranges;
+		ri->desc.n_linear_ranges = ARRAY_SIZE(da9034_ldo12_ranges);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (ri->desc.id == DA9030_ID_LDO14)
@@ -562,12 +729,20 @@ static int __devinit da903x_regulator_probe(struct platform_device *pdev)
 	if (ri->desc.id == DA9030_ID_LDO1 || ri->desc.id == DA9030_ID_LDO15)
 		ri->desc.ops = &da9030_regulator_ldo1_15_ops;
 
+<<<<<<< HEAD
 	rdev = regulator_register(&ri->desc, &pdev->dev,
 <<<<<<< HEAD
 				  pdev->dev.platform_data, ri);
 =======
 				  pdev->dev.platform_data, ri, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	config.dev = &pdev->dev;
+	config.init_data = dev_get_platdata(&pdev->dev);
+	config.driver_data = ri;
+
+	rdev = devm_regulator_register(&pdev->dev, &ri->desc, &config);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(rdev)) {
 		dev_err(&pdev->dev, "failed to register regulator %s\n",
 				ri->desc.name);
@@ -578,6 +753,7 @@ static int __devinit da903x_regulator_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit da903x_regulator_remove(struct platform_device *pdev)
 {
 	struct regulator_dev *rdev = platform_get_drvdata(pdev);
@@ -586,13 +762,18 @@ static int __devexit da903x_regulator_remove(struct platform_device *pdev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver da903x_regulator_driver = {
 	.driver	= {
 		.name	= "da903x-regulator",
 		.owner	= THIS_MODULE,
 	},
 	.probe		= da903x_regulator_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(da903x_regulator_remove),
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init da903x_regulator_init(void)

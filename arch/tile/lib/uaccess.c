@@ -22,6 +22,7 @@ int __range_ok(unsigned long addr, unsigned long size)
 		 is_arch_mappable_range(addr, size));
 }
 EXPORT_SYMBOL(__range_ok);
+<<<<<<< HEAD
 
 #ifdef CONFIG_DEBUG_COPY_FROM_USER
 void copy_from_user_overflow(void)
@@ -30,3 +31,5 @@ void copy_from_user_overflow(void)
 }
 EXPORT_SYMBOL(copy_from_user_overflow);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

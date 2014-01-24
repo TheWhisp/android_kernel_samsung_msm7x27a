@@ -247,6 +247,7 @@ static int __init oprofile_init(void)
 
 	/* always init architecture to setup backtrace support */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = oprofile_arch_init(&oprofile_ops);
 
 	timer_mode = err || timer;	/* fall back to timer mode on errors */
@@ -254,6 +255,8 @@ static int __init oprofile_init(void)
 		if (!err)
 			oprofile_arch_exit();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	timer_mode = 0;
 	err = oprofile_arch_init(&oprofile_ops);
 	if (!err) {
@@ -266,12 +269,16 @@ static int __init oprofile_init(void)
 	timer_mode = 1;
 	/* no nmi timer mode if oprofile.timer is set */
 	if (timer || op_nmi_timer_init(&oprofile_ops)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		err = oprofile_timer_init(&oprofile_ops);
 		if (err)
 			return err;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = oprofilefs_register();
 	if (!err)
@@ -287,6 +294,9 @@ static int __init oprofile_init(void)
 =======
 	return oprofilefs_register();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return oprofilefs_register();
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -294,12 +304,16 @@ static void __exit oprofile_exit(void)
 {
 	oprofilefs_unregister();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (timer_mode)
 		oprofile_timer_exit();
 	else
 =======
 	if (!timer_mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!timer_mode)
+>>>>>>> refs/remotes/origin/master
 		oprofile_arch_exit();
 }
 

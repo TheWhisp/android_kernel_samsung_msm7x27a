@@ -37,7 +37,11 @@
 
 #define CFAG12864BFB_NAME "cfag12864bfb"
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo cfag12864bfb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo cfag12864bfb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id = "cfag12864b",
 	.type = FB_TYPE_PACKED_PIXELS,
 	.visual = FB_VISUAL_MONO10,
@@ -48,7 +52,11 @@ static struct fb_fix_screeninfo cfag12864bfb_fix __devinitdata = {
 	.accel = FB_ACCEL_NONE,
 };
 
+<<<<<<< HEAD
 static struct fb_var_screeninfo cfag12864bfb_var __devinitdata = {
+=======
+static struct fb_var_screeninfo cfag12864bfb_var = {
+>>>>>>> refs/remotes/origin/master
 	.xres = CFAG12864B_WIDTH,
 	.yres = CFAG12864B_HEIGHT,
 	.xres_virtual = CFAG12864B_WIDTH,
@@ -80,7 +88,11 @@ static struct fb_ops cfag12864bfb_ops = {
 	.fb_mmap = cfag12864bfb_mmap,
 };
 
+<<<<<<< HEAD
 static int __devinit cfag12864bfb_probe(struct platform_device *device)
+=======
+static int cfag12864bfb_probe(struct platform_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = -EINVAL;
  	struct fb_info *info = framebuffer_alloc(0, &device->dev);
@@ -102,8 +114,12 @@ static int __devinit cfag12864bfb_probe(struct platform_device *device)
 
 	platform_set_drvdata(device, info);
 
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: %s frame buffer device\n", info->node,
 		info->fix.id);
+=======
+	fb_info(info, "%s frame buffer device\n", info->fix.id);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -114,7 +130,11 @@ none:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit cfag12864bfb_remove(struct platform_device *device)
+=======
+static int cfag12864bfb_remove(struct platform_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = platform_get_drvdata(device);
 
@@ -128,7 +148,11 @@ static int __devexit cfag12864bfb_remove(struct platform_device *device)
 
 static struct platform_driver cfag12864bfb_driver = {
 	.probe	= cfag12864bfb_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(cfag12864bfb_remove),
+=======
+	.remove = cfag12864bfb_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name	= CFAG12864BFB_NAME,
 	},

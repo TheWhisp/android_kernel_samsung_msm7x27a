@@ -3,7 +3,11 @@
  * temperature sensors
  * Copyright (C) 2007 IBM
  *
+<<<<<<< HEAD
  * Author: Darrick J. Wong <djwong@us.ibm.com>
+=======
+ * Author: Darrick J. Wong <darrick.wong@oracle.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,12 +25,18 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/jiffies.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/hwmon.h>
 #include <linux/hwmon-sysfs.h>
 #include <linux/err.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <linux/delay.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/log2.h>
 #include <linux/pci.h>
 #include <linux/platform_device.h>
@@ -115,9 +125,12 @@ struct i5k_amb_data {
 	struct i5k_device_attribute *attrs;
 	unsigned int num_attrs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long chipset_id;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static ssize_t show_name(struct device *dev, struct device_attribute *devattr,
@@ -164,16 +177,22 @@ static ssize_t store_amb_min(struct device *dev,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	struct i5k_amb_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long temp = simple_strtoul(buf, NULL, 10) / 500;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long temp;
 	int ret = kstrtoul(buf, 10, &temp);
 	if (ret < 0)
 		return ret;
 
 	temp = temp / 500;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (temp > 255)
 		temp = 255;
 
@@ -189,16 +208,22 @@ static ssize_t store_amb_mid(struct device *dev,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	struct i5k_amb_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long temp = simple_strtoul(buf, NULL, 10) / 500;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long temp;
 	int ret = kstrtoul(buf, 10, &temp);
 	if (ret < 0)
 		return ret;
 
 	temp = temp / 500;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (temp > 255)
 		temp = 255;
 
@@ -214,16 +239,22 @@ static ssize_t store_amb_max(struct device *dev,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	struct i5k_amb_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long temp = simple_strtoul(buf, NULL, 10) / 500;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long temp;
 	int ret = kstrtoul(buf, 10, &temp);
 	if (ret < 0)
 		return ret;
 
 	temp = temp / 500;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (temp > 255)
 		temp = 255;
 
@@ -281,7 +312,11 @@ static ssize_t show_label(struct device *dev,
 		       attr->index & DIMM_MASK);
 }
 
+<<<<<<< HEAD
 static int __devinit i5k_amb_hwmon_init(struct platform_device *pdev)
+=======
+static int i5k_amb_hwmon_init(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, j, k, d = 0;
 	u16 c;
@@ -427,7 +462,11 @@ exit_remove:
 	return res;
 }
 
+<<<<<<< HEAD
 static int __devinit i5k_amb_add(void)
+=======
+static int i5k_amb_add(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int res = -ENODEV;
 
@@ -446,7 +485,11 @@ err:
 	return res;
 }
 
+<<<<<<< HEAD
 static int __devinit i5k_find_amb_registers(struct i5k_amb_data *data,
+=======
+static int i5k_find_amb_registers(struct i5k_amb_data *data,
+>>>>>>> refs/remotes/origin/master
 					    unsigned long devid)
 {
 	struct pci_dev *pcidev;
@@ -475,17 +518,24 @@ static int __devinit i5k_find_amb_registers(struct i5k_amb_data *data,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	data->chipset_id = devid;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	res = 0;
 out:
 	pci_dev_put(pcidev);
 	return res;
 }
 
+<<<<<<< HEAD
 static int __devinit i5k_channel_probe(u16 *amb_present, unsigned long dev_id)
+=======
+static int i5k_channel_probe(u16 *amb_present, unsigned long dev_id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *pcidev;
 	u16 val16;
@@ -511,6 +561,7 @@ out:
 	return res;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static unsigned long i5k_channel_pci_id(struct i5k_amb_data *data,
 					unsigned long channel)
@@ -542,6 +593,19 @@ static struct {
 
 #ifdef MODULE
 static struct pci_device_id i5k_amb_ids[] __devinitdata = {
+=======
+static struct {
+	unsigned long err;
+	unsigned long fbd0;
+} chipset_ids[]  = {
+	{ PCI_DEVICE_ID_INTEL_5000_ERR, PCI_DEVICE_ID_INTEL_5000_FBD0 },
+	{ PCI_DEVICE_ID_INTEL_5400_ERR, PCI_DEVICE_ID_INTEL_5400_FBD0 },
+	{ 0, 0 }
+};
+
+#ifdef MODULE
+static struct pci_device_id i5k_amb_ids[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_5000_ERR) },
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_5400_ERR) },
 	{ 0, }
@@ -549,6 +613,7 @@ static struct pci_device_id i5k_amb_ids[] __devinitdata = {
 MODULE_DEVICE_TABLE(pci, i5k_amb_ids);
 #endif
 
+<<<<<<< HEAD
 static int __devinit i5k_amb_probe(struct platform_device *pdev)
 {
 	struct i5k_amb_data *data;
@@ -559,6 +624,13 @@ static int __devinit i5k_amb_probe(struct platform_device *pdev)
 =======
 	int i, res;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int i5k_amb_probe(struct platform_device *pdev)
+{
+	struct i5k_amb_data *data;
+	struct resource *reso;
+	int i, res;
+>>>>>>> refs/remotes/origin/master
 
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
 	if (!data)
@@ -568,37 +640,51 @@ static int __devinit i5k_amb_probe(struct platform_device *pdev)
 	i = 0;
 	do {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		res = i5k_find_amb_registers(data, chipset_ids[i]);
 		i++;
 	} while (res && chipset_ids[i]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		res = i5k_find_amb_registers(data, chipset_ids[i].err);
 		if (res == 0)
 			break;
 		i++;
 	} while (chipset_ids[i].err);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (res)
 		goto err;
 
 	/* Copy the DIMM presence map for the first two channels */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	res = i5k_channel_probe(&data->amb_present[0],
 				i5k_channel_pci_id(data, 0));
 =======
 	res = i5k_channel_probe(&data->amb_present[0], chipset_ids[i].fbd0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = i5k_channel_probe(&data->amb_present[0], chipset_ids[i].fbd0);
+>>>>>>> refs/remotes/origin/master
 	if (res)
 		goto err;
 
 	/* Copy the DIMM presence map for the optional second two channels */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	i5k_channel_probe(&data->amb_present[2],
 			  i5k_channel_pci_id(data, 1));
 =======
 	i5k_channel_probe(&data->amb_present[2], chipset_ids[i].fbd0 + 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i5k_channel_probe(&data->amb_present[2], chipset_ids[i].fbd0 + 1);
+>>>>>>> refs/remotes/origin/master
 
 	/* Set up resource regions */
 	reso = request_mem_region(data->amb_base, data->amb_len, DRVNAME);
@@ -623,7 +709,10 @@ static int __devinit i5k_amb_probe(struct platform_device *pdev)
 
 err_init_failed:
 	iounmap(data->amb_mmio);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 err_map_failed:
 	release_mem_region(data->amb_base, data->amb_len);
 err:
@@ -631,7 +720,11 @@ err:
 	return res;
 }
 
+<<<<<<< HEAD
 static int __devexit i5k_amb_remove(struct platform_device *pdev)
+=======
+static int i5k_amb_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct i5k_amb_data *data = platform_get_drvdata(pdev);
@@ -643,7 +736,10 @@ static int __devexit i5k_amb_remove(struct platform_device *pdev)
 	kfree(data->attrs);
 	iounmap(data->amb_mmio);
 	release_mem_region(data->amb_base, data->amb_len);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(data);
 	return 0;
 }
@@ -654,7 +750,11 @@ static struct platform_driver i5k_amb_driver = {
 		.name = DRVNAME,
 	},
 	.probe = i5k_amb_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(i5k_amb_remove),
+=======
+	.remove = i5k_amb_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init i5k_amb_init(void)
@@ -678,7 +778,11 @@ static void __exit i5k_amb_exit(void)
 	platform_driver_unregister(&i5k_amb_driver);
 }
 
+<<<<<<< HEAD
 MODULE_AUTHOR("Darrick J. Wong <djwong@us.ibm.com>");
+=======
+MODULE_AUTHOR("Darrick J. Wong <darrick.wong@oracle.com>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("Intel 5000 chipset FB-DIMM AMB temperature sensor");
 MODULE_LICENSE("GPL");
 

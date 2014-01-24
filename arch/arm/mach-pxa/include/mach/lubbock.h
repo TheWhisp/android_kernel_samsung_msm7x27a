@@ -10,6 +10,11 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
+=======
+#include <mach/irqs.h>
+
+>>>>>>> refs/remotes/origin/master
 #define LUBBOCK_ETH_PHYS	PXA_CS3_PHYS
 
 #define LUBBOCK_FPGA_PHYS	PXA_CS2_PHYS

@@ -94,6 +94,7 @@
 #include <linux/ioctl.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <linux/pci.h>
 
@@ -103,6 +104,8 @@
 static struct mtd_info *pmc551list;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/mtd/mtd.h>
 
@@ -146,7 +149,10 @@ static struct mtd_info *pmc551list;
 static int pmc551_point(struct mtd_info *mtd, loff_t from, size_t len,
 			size_t *retlen, void **virt, resource_size_t *phys);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int pmc551_erase(struct mtd_info *mtd, struct erase_info *instr)
 {
 	struct mypriv *priv = mtd->priv;
@@ -163,6 +169,7 @@ static int pmc551_erase(struct mtd_info *mtd, struct erase_info *instr)
 
 	end = instr->addr + instr->len - 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Is it past the end? */
 	if (end > mtd->size) {
@@ -175,6 +182,8 @@ static int pmc551_erase(struct mtd_info *mtd, struct erase_info *instr)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	eoff_hi = end & ~(priv->asize - 1);
 	soff_hi = instr->addr & ~(priv->asize - 1);
 	eoff_lo = end & (priv->asize - 1);
@@ -229,6 +238,7 @@ static int pmc551_point(struct mtd_info *mtd, loff_t from, size_t len,
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (from + len > mtd->size) {
 #ifdef CONFIG_MTD_PMC551_DEBUG
 		printk(KERN_DEBUG "pmc551_point() out of bounds (%ld > %ld)\n",
@@ -243,6 +253,8 @@ static int pmc551_point(struct mtd_info *mtd, loff_t from, size_t len,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	soff_hi = from & ~(priv->asize - 1);
 	soff_lo = from & (priv->asize - 1);
 
@@ -259,18 +271,26 @@ static int pmc551_point(struct mtd_info *mtd, loff_t from, size_t len,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void pmc551_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
 =======
 static int pmc551_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pmc551_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef CONFIG_MTD_PMC551_DEBUG
 	printk(KERN_DEBUG "pmc551_unpoint()\n");
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int pmc551_read(struct mtd_info *mtd, loff_t from, size_t len,
@@ -290,6 +310,7 @@ static int pmc551_read(struct mtd_info *mtd, loff_t from, size_t len,
 
 	end = from + len - 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Is it past the end? */
 	if (end > mtd->size) {
@@ -302,6 +323,8 @@ static int pmc551_read(struct mtd_info *mtd, loff_t from, size_t len,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	soff_hi = from & ~(priv->asize - 1);
 	eoff_hi = end & ~(priv->asize - 1);
 	soff_lo = from & (priv->asize - 1);
@@ -360,6 +383,7 @@ static int pmc551_write(struct mtd_info *mtd, loff_t to, size_t len,
 
 	end = to + len - 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Is it past the end?  or did the u32 wrap? */
 	if (end > mtd->size) {
 #ifdef CONFIG_MTD_PMC551_DEBUG
@@ -372,6 +396,8 @@ static int pmc551_write(struct mtd_info *mtd, loff_t to, size_t len,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	soff_hi = to & ~(priv->asize - 1);
 	eoff_hi = end & ~(priv->asize - 1);
 	soff_lo = to & (priv->asize - 1);
@@ -426,10 +452,14 @@ static int pmc551_write(struct mtd_info *mtd, loff_t to, size_t len,
  * returns the size of the memory region found.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u32 fixup_pmc551(struct pci_dev *dev)
 =======
 static int fixup_pmc551(struct pci_dev *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int fixup_pmc551(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef CONFIG_MTD_PMC551_BUGFIX
 	u32 dram_data;
@@ -740,10 +770,14 @@ static int __init init_pmc551(void)
 	int found = 0;
 	struct mtd_info *mtd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 length = 0;
 =======
 	int length = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int length = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (msize) {
 		msize = (1 << (ffs(msize) - 1)) << 20;
@@ -862,18 +896,24 @@ static int __init init_pmc551(void)
 		mtd->size = msize;
 		mtd->flags = MTD_CAP_RAM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mtd->erase = pmc551_erase;
 		mtd->read = pmc551_read;
 		mtd->write = pmc551_write;
 		mtd->point = pmc551_point;
 		mtd->unpoint = pmc551_unpoint;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		mtd->_erase = pmc551_erase;
 		mtd->_read = pmc551_read;
 		mtd->_write = pmc551_write;
 		mtd->_point = pmc551_point;
 		mtd->_unpoint = pmc551_unpoint;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		mtd->type = MTD_RAM;
 		mtd->name = "PMC551 RAM board";
 		mtd->erasesize = 0x10000;

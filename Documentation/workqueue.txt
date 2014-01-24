@@ -85,6 +85,7 @@ workqueue.
 Special purpose threads, called worker threads, execute the functions
 off of the queue, one after the other.  If no work is queued, the
 worker threads become idle.  These worker threads are managed in so
+<<<<<<< HEAD
 called thread-pools.
 
 The cmwq design differentiates between the user-facing workqueues that
@@ -93,11 +94,24 @@ which manages thread-pool and processes the queued work items.
 
 The backend is called gcwq.  There is one gcwq for each possible CPU
 and one gcwq to serve work items queued on unbound workqueues.
+=======
+called worker-pools.
+
+The cmwq design differentiates between the user-facing workqueues that
+subsystems and drivers queue work items on and the backend mechanism
+which manages worker-pools and processes the queued work items.
+
+There are two worker-pools, one for normal work items and the other
+for high priority ones, for each possible CPU and some extra
+worker-pools to serve work items queued on unbound workqueues - the
+number of these backing pools is dynamic.
+>>>>>>> refs/remotes/origin/master
 
 Subsystems and drivers can create and queue work items through special
 workqueue API functions as they see fit. They can influence some
 aspects of the way the work items are executed by setting flags on the
 workqueue they are putting the work item on. These flags include
+<<<<<<< HEAD
 things like CPU locality, reentrancy, concurrency limits and more. To
 get a detailed overview refer to the API description of
 alloc_workqueue() below.
@@ -108,6 +122,18 @@ and appended on the shared worklist of the gcwq.  For example, unless
 specifically overridden, a work item of a bound workqueue will be
 queued on the worklist of exactly that gcwq that is associated to the
 CPU the issuer is running on.
+=======
+things like CPU locality, concurrency limits, priority and more.  To
+get a detailed overview refer to the API description of
+alloc_workqueue() below.
+
+When a work item is queued to a workqueue, the target worker-pool is
+determined according to the queue parameters and workqueue attributes
+and appended on the shared worklist of the worker-pool.  For example,
+unless specifically overridden, a work item of a bound workqueue will
+be queued on the worklist of either normal or highpri worker-pool that
+is associated to the CPU the issuer is running on.
+>>>>>>> refs/remotes/origin/master
 
 For any worker pool implementation, managing the concurrency level
 (how many execution contexts are active) is an important issue.  cmwq
@@ -115,6 +141,7 @@ tries to keep the concurrency at a minimal but sufficient level.
 Minimal to save resources and sufficient in that the system is used at
 its full capacity.
 
+<<<<<<< HEAD
 Each gcwq bound to an actual CPU implements concurrency management by
 hooking into the scheduler.  The gcwq is notified whenever an active
 worker wakes up or sleeps and keeps track of the number of the
@@ -127,24 +154,52 @@ last running worker goes to sleep, it immediately schedules a new
 worker so that the CPU doesn't sit idle while there are pending work
 items.  This allows using a minimal number of workers without losing
 execution bandwidth.
+=======
+Each worker-pool bound to an actual CPU implements concurrency
+management by hooking into the scheduler.  The worker-pool is notified
+whenever an active worker wakes up or sleeps and keeps track of the
+number of the currently runnable workers.  Generally, work items are
+not expected to hog a CPU and consume many cycles.  That means
+maintaining just enough concurrency to prevent work processing from
+stalling should be optimal.  As long as there are one or more runnable
+workers on the CPU, the worker-pool doesn't start execution of a new
+work, but, when the last running worker goes to sleep, it immediately
+schedules a new worker so that the CPU doesn't sit idle while there
+are pending work items.  This allows using a minimal number of workers
+without losing execution bandwidth.
+>>>>>>> refs/remotes/origin/master
 
 Keeping idle workers around doesn't cost other than the memory space
 for kthreads, so cmwq holds onto idle ones for a while before killing
 them.
 
+<<<<<<< HEAD
 For an unbound wq, the above concurrency management doesn't apply and
 the gcwq for the pseudo unbound CPU tries to start executing all work
 items as soon as possible.  The responsibility of regulating
 concurrency level is on the users.  There is also a flag to mark a
 bound wq to ignore the concurrency management.  Please refer to the
 API section for details.
+=======
+For unbound workqueues, the number of backing pools is dynamic.
+Unbound workqueue can be assigned custom attributes using
+apply_workqueue_attrs() and workqueue will automatically create
+backing worker pools matching the attributes.  The responsibility of
+regulating concurrency level is on the users.  There is also a flag to
+mark a bound wq to ignore the concurrency management.  Please refer to
+the API section for details.
+>>>>>>> refs/remotes/origin/master
 
 Forward progress guarantee relies on that workers can be created when
 more execution contexts are necessary, which in turn is guaranteed
 through the use of rescue workers.  All work items which might be used
 on code paths that handle memory reclaim are required to be queued on
 wq's that have a rescue-worker reserved for execution under memory
+<<<<<<< HEAD
 pressure.  Else it is possible that the thread-pool deadlocks waiting
+=======
+pressure.  Else it is possible that the worker-pool deadlocks waiting
+>>>>>>> refs/remotes/origin/master
 for execution contexts to free up.
 
 
@@ -163,6 +218,7 @@ resources, scheduled and executed.
 
 @flags:
 
+<<<<<<< HEAD
   WQ_NON_REENTRANT
 
 	By default, a wq guarantees non-reentrance only on the same
@@ -182,6 +238,17 @@ resources, scheduled and executed.
 	tries to start execution of work items as soon as possible.
 	Unbound wq sacrifices locality but is useful for the following
 	cases.
+=======
+  WQ_UNBOUND
+
+	Work items queued to an unbound wq are served by the special
+	woker-pools which host workers which are not bound to any
+	specific CPU.  This makes the wq behave as a simple execution
+	context provider without concurrency management.  The unbound
+	worker-pools try to start execution of work items as soon as
+	possible.  Unbound wq sacrifices locality but is useful for
+	the following cases.
+>>>>>>> refs/remotes/origin/master
 
 	* Wide fluctuation in the concurrency level requirement is
 	  expected and using bound wq may end up creating large number
@@ -205,6 +272,7 @@ resources, scheduled and executed.
 
   WQ_HIGHPRI
 
+<<<<<<< HEAD
 	Work items of a highpri wq are queued at the head of the
 	worklist of the target gcwq and start execution regardless of
 	the current concurrency level.  In other words, highpri work
@@ -221,15 +289,31 @@ resources, scheduled and executed.
 	non-highpri work items from starting execution.
 
 	This flag is meaningless for unbound wq.
+=======
+	Work items of a highpri wq are queued to the highpri
+	worker-pool of the target cpu.  Highpri worker-pools are
+	served by worker threads with elevated nice level.
+
+	Note that normal and highpri worker-pools don't interact with
+	each other.  Each maintain its separate pool of workers and
+	implements concurrency management among its workers.
+>>>>>>> refs/remotes/origin/master
 
   WQ_CPU_INTENSIVE
 
 	Work items of a CPU intensive wq do not contribute to the
 	concurrency level.  In other words, runnable CPU intensive
+<<<<<<< HEAD
 	work items will not prevent other work items from starting
 	execution.  This is useful for bound work items which are
 	expected to hog CPU cycles so that their execution is
 	regulated by the system scheduler.
+=======
+	work items will not prevent other work items in the same
+	worker-pool from starting execution.  This is useful for bound
+	work items which are expected to hog CPU cycles so that their
+	execution is regulated by the system scheduler.
+>>>>>>> refs/remotes/origin/master
 
 	Although CPU intensive work items don't contribute to the
 	concurrency level, start of their executions is still
@@ -239,6 +323,7 @@ resources, scheduled and executed.
 
 	This flag is meaningless for unbound wq.
 
+<<<<<<< HEAD
   WQ_HIGHPRI | WQ_CPU_INTENSIVE
 
 	This combination makes the wq avoid interaction with
@@ -246,6 +331,11 @@ resources, scheduled and executed.
 	per-CPU execution context provider.  Work items queued on a
 	highpri CPU-intensive wq start execution as soon as resources
 	are available and don't affect execution of other work items.
+=======
+Note that the flag WQ_NON_REENTRANT no longer exists as all workqueues
+are now non-reentrant - any work item is guaranteed to be executed by
+at most one worker system-wide at any given time.
+>>>>>>> refs/remotes/origin/master
 
 @max_active:
 
@@ -268,9 +358,15 @@ recommended.
 
 Some users depend on the strict execution ordering of ST wq.  The
 combination of @max_active of 1 and WQ_UNBOUND is used to achieve this
+<<<<<<< HEAD
 behavior.  Work items on such wq are always queued to the unbound gcwq
 and only one work item can be active at any given time thus achieving
 the same ordering property as ST wq.
+=======
+behavior.  Work items on such wq are always queued to the unbound
+worker-pools and only one work item can be active at any given time thus
+achieving the same ordering property as ST wq.
+>>>>>>> refs/remotes/origin/master
 
 
 5. Example Execution Scenarios
@@ -328,6 +424,7 @@ If @max_active == 2,
  35		w2 wakes up and finishes
 
 Now, let's assume w1 and w2 are queued to a different wq q1 which has
+<<<<<<< HEAD
 WQ_HIGHPRI set,
 
  TIME IN MSECS	EVENT
@@ -342,6 +439,9 @@ WQ_HIGHPRI set,
  30		w0 finishes
 
 If q1 has WQ_CPU_INTENSIVE set,
+=======
+WQ_CPU_INTENSIVE set,
+>>>>>>> refs/remotes/origin/master
 
  TIME IN MSECS	EVENT
  0		w0 starts and burns CPU

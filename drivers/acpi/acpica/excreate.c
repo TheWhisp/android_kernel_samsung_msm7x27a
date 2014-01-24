@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -82,7 +86,11 @@ acpi_status acpi_ex_create_alias(struct acpi_walk_state *walk_state)
 	    (target_node->type == ACPI_TYPE_LOCAL_METHOD_ALIAS)) {
 		/*
 		 * Dereference an existing alias so that we don't create a chain
+<<<<<<< HEAD
 		 * of aliases.  With this code, we guarantee that an alias is
+=======
+		 * of aliases. With this code, we guarantee that an alias is
+>>>>>>> refs/remotes/origin/master
 		 * always exactly one level of indirection away from the
 		 * actual aliased name.
 		 */
@@ -94,7 +102,11 @@ acpi_status acpi_ex_create_alias(struct acpi_walk_state *walk_state)
 	/*
 	 * For objects that can never change (i.e., the NS node will
 	 * permanently point to the same object), we can simply attach
+<<<<<<< HEAD
 	 * the object to the new NS node.  For other objects (such as
+=======
+	 * the object to the new NS node. For other objects (such as
+>>>>>>> refs/remotes/origin/master
 	 * Integers, buffers, etc.), we have to point the Alias node
 	 * to the original Node.
 	 */
@@ -107,7 +119,10 @@ acpi_status acpi_ex_create_alias(struct acpi_walk_state *walk_state)
 	case ACPI_TYPE_BUFFER:
 	case ACPI_TYPE_PACKAGE:
 	case ACPI_TYPE_BUFFER_FIELD:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * These types open a new scope, so we need the NS node in order to access
 		 * any children.
@@ -117,7 +132,10 @@ acpi_status acpi_ex_create_alias(struct acpi_walk_state *walk_state)
 	case ACPI_TYPE_PROCESSOR:
 	case ACPI_TYPE_THERMAL:
 	case ACPI_TYPE_LOCAL_SCOPE:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * The new alias has the type ALIAS and points to the original
 		 * NS node, not the object itself.
@@ -128,7 +146,10 @@ acpi_status acpi_ex_create_alias(struct acpi_walk_state *walk_state)
 		break;
 
 	case ACPI_TYPE_METHOD:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Control method aliases need to be differentiated
 		 */
@@ -143,7 +164,11 @@ acpi_status acpi_ex_create_alias(struct acpi_walk_state *walk_state)
 
 		/*
 		 * The new alias assumes the type of the target, and it points
+<<<<<<< HEAD
 		 * to the same object.  The reference count of the object has an
+=======
+		 * to the same object. The reference count of the object has an
+>>>>>>> refs/remotes/origin/master
 		 * additional reference to prevent deletion out from under either the
 		 * target node or the alias Node
 		 */
@@ -200,7 +225,11 @@ acpi_status acpi_ex_create_event(struct acpi_walk_state *walk_state)
 	    acpi_ns_attach_object((struct acpi_namespace_node *)walk_state->
 				  operands[0], obj_desc, ACPI_TYPE_EVENT);
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Remove local reference to the object (on error, will cause deletion
 	 * of both object and semaphore if present.)
@@ -247,8 +276,12 @@ acpi_status acpi_ex_create_mutex(struct acpi_walk_state *walk_state)
 
 	/* Init object and attach to NS node */
 
+<<<<<<< HEAD
 	obj_desc->mutex.sync_level =
 	    (u8) walk_state->operands[1]->integer.value;
+=======
+	obj_desc->mutex.sync_level = (u8)walk_state->operands[1]->integer.value;
+>>>>>>> refs/remotes/origin/master
 	obj_desc->mutex.node =
 	    (struct acpi_namespace_node *)walk_state->operands[0];
 
@@ -256,7 +289,11 @@ acpi_status acpi_ex_create_mutex(struct acpi_walk_state *walk_state)
 	    acpi_ns_attach_object(obj_desc->mutex.node, obj_desc,
 				  ACPI_TYPE_MUTEX);
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Remove local reference to the object (on error, will cause deletion
 	 * of both object and semaphore if present.)
@@ -272,10 +309,14 @@ acpi_status acpi_ex_create_mutex(struct acpi_walk_state *walk_state)
  * PARAMETERS:  aml_start           - Pointer to the region declaration AML
  *              aml_length          - Max length of the declaration AML
 <<<<<<< HEAD
+<<<<<<< HEAD
  *              region_space        - space_iD for the region
 =======
  *              space_id            - Address space ID for the region
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *              space_id            - Address space ID for the region
+>>>>>>> refs/remotes/origin/master
  *              walk_state          - Current state
  *
  * RETURN:      Status
@@ -288,10 +329,14 @@ acpi_status
 acpi_ex_create_region(u8 * aml_start,
 		      u32 aml_length,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		      u8 region_space, struct acpi_walk_state *walk_state)
 =======
 		      u8 space_id, struct acpi_walk_state *walk_state)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      u8 space_id, struct acpi_walk_state *walk_state)
+>>>>>>> refs/remotes/origin/master
 {
 	acpi_status status;
 	union acpi_operand_object *obj_desc;
@@ -317,6 +362,7 @@ acpi_ex_create_region(u8 * aml_start,
 	 * range
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((region_space >= ACPI_NUM_PREDEFINED_REGIONS) &&
 	    (region_space < ACPI_USER_REGION_BEGIN) &&
 	    (region_space != ACPI_ADR_SPACE_DATA_TABLE)) {
@@ -328,6 +374,8 @@ acpi_ex_create_region(u8 * aml_start,
 	ACPI_DEBUG_PRINT((ACPI_DB_LOAD, "Region Type - %s (0x%X)\n",
 			  acpi_ut_get_region_name(region_space), region_space));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!acpi_is_valid_space_id(space_id)) {
 		/*
 		 * Print an error message, but continue. We don't want to abort
@@ -341,7 +389,10 @@ acpi_ex_create_region(u8 * aml_start,
 
 	ACPI_DEBUG_PRINT((ACPI_DB_LOAD, "Region Type - %s (0x%X)\n",
 			  acpi_ut_get_region_name(space_id), space_id));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Create the region descriptor */
 
@@ -368,10 +419,14 @@ acpi_ex_create_region(u8 * aml_start,
 	/* Init the region from the operands */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	obj_desc->region.space_id = region_space;
 =======
 	obj_desc->region.space_id = space_id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	obj_desc->region.space_id = space_id;
+>>>>>>> refs/remotes/origin/master
 	obj_desc->region.address = 0;
 	obj_desc->region.length = 0;
 	obj_desc->region.node = node;
@@ -380,7 +435,11 @@ acpi_ex_create_region(u8 * aml_start,
 
 	status = acpi_ns_attach_object(node, obj_desc, ACPI_TYPE_REGION);
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 
 	/* Remove local reference to the object */
 
@@ -398,7 +457,11 @@ acpi_ex_create_region(u8 * aml_start,
  *
  * DESCRIPTION: Create a new processor object and populate the fields
  *
+<<<<<<< HEAD
  *              Processor (Name[0], cpu_iD[1], pblock_addr[2], pblock_length[3])
+=======
+ *              Processor (Name[0], cpu_ID[1], pblock_addr[2], pblock_length[3])
+>>>>>>> refs/remotes/origin/master
  *
  ******************************************************************************/
 
@@ -553,7 +616,11 @@ acpi_ex_create_method(u8 * aml_start,
 
 	acpi_ut_remove_reference(obj_desc);
 
+<<<<<<< HEAD
       exit:
+=======
+exit:
+>>>>>>> refs/remotes/origin/master
 	/* Remove a reference to the operand */
 
 	acpi_ut_remove_reference(operand[1]);

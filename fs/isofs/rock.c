@@ -364,12 +364,18 @@ repeat:
 		case SIG('P', 'X'):
 			inode->i_mode = isonum_733(rr->u.PX.mode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			inode->i_nlink = isonum_733(rr->u.PX.n_links);
 =======
 			set_nlink(inode, isonum_733(rr->u.PX.n_links));
 >>>>>>> refs/remotes/origin/cm-10.0
 			inode->i_uid = isonum_733(rr->u.PX.uid);
 			inode->i_gid = isonum_733(rr->u.PX.gid);
+=======
+			set_nlink(inode, isonum_733(rr->u.PX.n_links));
+			i_uid_write(inode, isonum_733(rr->u.PX.uid));
+			i_gid_write(inode, isonum_733(rr->u.PX.gid));
+>>>>>>> refs/remotes/origin/master
 			break;
 		case SIG('P', 'N'):
 			{
@@ -501,10 +507,14 @@ repeat:
 			}
 			inode->i_mode = reloc->i_mode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			inode->i_nlink = reloc->i_nlink;
 =======
 			set_nlink(inode, reloc->i_nlink);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			set_nlink(inode, reloc->i_nlink);
+>>>>>>> refs/remotes/origin/master
 			inode->i_uid = reloc->i_uid;
 			inode->i_gid = reloc->i_gid;
 			inode->i_rdev = reloc->i_rdev;
@@ -687,9 +697,12 @@ static int rock_ridge_symlink_readpage(struct file *file, struct page *page)
 	init_rock_state(&rs, inode);
 	block = ei->i_iget5_block;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&sbi->s_mutex);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bh = sb_bread(inode->i_sb, block);
 	if (!bh)
 		goto out_noread;
@@ -760,9 +773,12 @@ repeat:
 	brelse(bh);
 	*rpnt = '\0';
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&sbi->s_mutex);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	SetPageUptodate(page);
 	kunmap(page);
 	unlock_page(page);
@@ -780,9 +796,12 @@ out_bad_span:
 fail:
 	brelse(bh);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&sbi->s_mutex);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 error:
 	SetPageError(page);
 	kunmap(page);

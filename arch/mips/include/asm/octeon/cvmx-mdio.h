@@ -35,7 +35,11 @@
 #ifndef __CVMX_MIO_H__
 #define __CVMX_MIO_H__
 
+<<<<<<< HEAD
 #include "cvmx-smix-defs.h"
+=======
+#include <asm/octeon/cvmx-smix-defs.h>
+>>>>>>> refs/remotes/origin/master
 
 /**
  * PHY register 0 from the 802.3 spec
@@ -246,6 +250,7 @@ typedef union {
 } cvmx_mdio_phy_reg_mmd_address_data_t;
 
 /* Operating request encodings. */
+<<<<<<< HEAD
 #define MDIO_CLAUSE_22_WRITE    0
 #define MDIO_CLAUSE_22_READ     1
 
@@ -261,6 +266,23 @@ typedef union {
 #define CVMX_MMD_DEVICE_PHY_XS       4
 #define CVMX_MMD_DEVICE_DTS_XS       5
 #define CVMX_MMD_DEVICE_TC           6
+=======
+#define MDIO_CLAUSE_22_WRITE	0
+#define MDIO_CLAUSE_22_READ	1
+
+#define MDIO_CLAUSE_45_ADDRESS	0
+#define MDIO_CLAUSE_45_WRITE	1
+#define MDIO_CLAUSE_45_READ_INC 2
+#define MDIO_CLAUSE_45_READ	3
+
+/* MMD identifiers, mostly for accessing devices within XENPAK modules. */
+#define CVMX_MMD_DEVICE_PMA_PMD	     1
+#define CVMX_MMD_DEVICE_WIS	     2
+#define CVMX_MMD_DEVICE_PCS	     3
+#define CVMX_MMD_DEVICE_PHY_XS	     4
+#define CVMX_MMD_DEVICE_DTS_XS	     5
+#define CVMX_MMD_DEVICE_TC	     6
+>>>>>>> refs/remotes/origin/master
 #define CVMX_MMD_DEVICE_CL22_EXT     29
 #define CVMX_MMD_DEVICE_VENDOR_1     30
 #define CVMX_MMD_DEVICE_VENDOR_2     31
@@ -291,7 +313,11 @@ static inline void __cvmx_mdio_set_clause22_mode(int bus_id)
  * registers controlling auto negotiation.
  *
  * @bus_id:   MDIO bus number. Zero on most chips, but some chips (ex CN56XX)
+<<<<<<< HEAD
  *                 support multiple busses.
+=======
+ *		   support multiple busses.
+>>>>>>> refs/remotes/origin/master
  * @phy_id:   The MII phy id
  * @location: Register location to read
  *
@@ -328,13 +354,21 @@ static inline int cvmx_mdio_read(int bus_id, int phy_id, int location)
  * registers controlling auto negotiation.
  *
  * @bus_id:   MDIO bus number. Zero on most chips, but some chips (ex CN56XX)
+<<<<<<< HEAD
  *                 support multiple busses.
+=======
+ *		   support multiple busses.
+>>>>>>> refs/remotes/origin/master
  * @phy_id:   The MII phy id
  * @location: Register location to write
  * @val:      Value to write
  *
  * Returns -1 on error
+<<<<<<< HEAD
  *         0 on success
+=======
+ *	   0 on success
+>>>>>>> refs/remotes/origin/master
  */
 static inline int cvmx_mdio_write(int bus_id, int phy_id, int location, int val)
 {
@@ -370,7 +404,11 @@ static inline int cvmx_mdio_write(int bus_id, int phy_id, int location, int val)
  * read PHY registers controlling auto negotiation.
  *
  * @bus_id:   MDIO bus number. Zero on most chips, but some chips (ex CN56XX)
+<<<<<<< HEAD
  *                 support multiple busses.
+=======
+ *		   support multiple busses.
+>>>>>>> refs/remotes/origin/master
  * @phy_id:   The MII phy id
  * @device:   MDIO Managable Device (MMD) id
  * @location: Register location to read
@@ -407,7 +445,11 @@ static inline int cvmx_mdio_45_read(int bus_id, int phy_id, int device,
 	} while (smi_wr.s.pending && --timeout);
 	if (timeout <= 0) {
 		cvmx_dprintf("cvmx_mdio_45_read: bus_id %d phy_id %2d "
+<<<<<<< HEAD
 			     "device %2d register %2d   TIME OUT(address)\n",
+=======
+			     "device %2d register %2d	TIME OUT(address)\n",
+>>>>>>> refs/remotes/origin/master
 		     bus_id, phy_id, device, location);
 		return -1;
 	}
@@ -425,7 +467,11 @@ static inline int cvmx_mdio_45_read(int bus_id, int phy_id, int device,
 
 	if (timeout <= 0) {
 		cvmx_dprintf("cvmx_mdio_45_read: bus_id %d phy_id %2d "
+<<<<<<< HEAD
 			     "device %2d register %2d   TIME OUT(data)\n",
+=======
+			     "device %2d register %2d	TIME OUT(data)\n",
+>>>>>>> refs/remotes/origin/master
 		     bus_id, phy_id, device, location);
 		return -1;
 	}
@@ -434,7 +480,11 @@ static inline int cvmx_mdio_45_read(int bus_id, int phy_id, int device,
 		return smi_rd.s.dat;
 	else {
 		cvmx_dprintf("cvmx_mdio_45_read: bus_id %d phy_id %2d "
+<<<<<<< HEAD
 			     "device %2d register %2d   INVALID READ\n",
+=======
+			     "device %2d register %2d	INVALID READ\n",
+>>>>>>> refs/remotes/origin/master
 		     bus_id, phy_id, device, location);
 		return -1;
 	}
@@ -445,14 +495,22 @@ static inline int cvmx_mdio_45_read(int bus_id, int phy_id, int device,
  * write PHY registers controlling auto negotiation.
  *
  * @bus_id:   MDIO bus number. Zero on most chips, but some chips (ex CN56XX)
+<<<<<<< HEAD
  *                 support multiple busses.
+=======
+ *		   support multiple busses.
+>>>>>>> refs/remotes/origin/master
  * @phy_id:   The MII phy id
  * @device:   MDIO Managable Device (MMD) id
  * @location: Register location to write
  * @val:      Value to write
  *
  * Returns -1 on error
+<<<<<<< HEAD
  *         0 on success
+=======
+ *	   0 on success
+>>>>>>> refs/remotes/origin/master
  */
 static inline int cvmx_mdio_45_write(int bus_id, int phy_id, int device,
 				     int location, int val)

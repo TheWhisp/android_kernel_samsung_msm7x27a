@@ -13,6 +13,7 @@ obj-				:=
 # Core
 
 obj-$(CONFIG_ARCH_EXYNOS)	+= common.o
+<<<<<<< HEAD
 obj-$(CONFIG_ARCH_EXYNOS4)	+= clock-exynos4.o
 obj-$(CONFIG_ARCH_EXYNOS5)	+= clock-exynos5.o
 obj-$(CONFIG_CPU_EXYNOS4210)	+= clock-exynos4210.o
@@ -69,3 +70,26 @@ obj-$(CONFIG_EXYNOS4_SETUP_KEYPAD)	+= setup-keypad.o
 obj-$(CONFIG_EXYNOS4_SETUP_SDHCI_GPIO)	+= setup-sdhci-gpio.o
 obj-$(CONFIG_EXYNOS4_SETUP_USB_PHY)	+= setup-usb-phy.o
 obj-$(CONFIG_EXYNOS4_SETUP_SPI)		+= setup-spi.o
+=======
+
+obj-$(CONFIG_S5P_PM)		+= pm.o
+obj-$(CONFIG_PM_GENERIC_DOMAINS) += pm_domains.o
+obj-$(CONFIG_CPU_IDLE)		+= cpuidle.o
+
+obj-$(CONFIG_ARCH_EXYNOS)	+= pmu.o
+
+obj-$(CONFIG_SMP)		+= platsmp.o headsmp.o
+
+obj-$(CONFIG_HOTPLUG_CPU)	+= hotplug.o
+
+obj-$(CONFIG_ARCH_EXYNOS)	+= exynos-smc.o
+obj-$(CONFIG_ARCH_EXYNOS)	+= firmware.o
+
+plus_sec := $(call as-instr,.arch_extension sec,+sec)
+AFLAGS_exynos-smc.o		:=-Wa,-march=armv7-a$(plus_sec)
+
+# machine support
+
+obj-$(CONFIG_ARCH_EXYNOS4)	+= mach-exynos4-dt.o
+obj-$(CONFIG_ARCH_EXYNOS5)	+= mach-exynos5-dt.o
+>>>>>>> refs/remotes/origin/master

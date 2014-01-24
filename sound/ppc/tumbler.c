@@ -31,6 +31,10 @@
 #include <linux/slab.h>
 #include <linux/interrupt.h>
 #include <linux/string.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <asm/io.h>
 #include <asm/irq.h>
@@ -844,7 +848,11 @@ static int snapper_put_capture_source(struct snd_kcontrol *kcontrol,
 
 /*
  */
+<<<<<<< HEAD
 static struct snd_kcontrol_new tumbler_mixers[] __devinitdata = {
+=======
+static struct snd_kcontrol_new tumbler_mixers[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	  .name = "Master Playback Volume",
 	  .info = tumbler_info_master_volume,
@@ -868,7 +876,11 @@ static struct snd_kcontrol_new tumbler_mixers[] __devinitdata = {
 	},
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snapper_mixers[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snapper_mixers[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	  .name = "Master Playback Volume",
 	  .info = tumbler_info_master_volume,
@@ -901,7 +913,11 @@ static struct snd_kcontrol_new snapper_mixers[] __devinitdata = {
 	},
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new tumbler_hp_sw __devinitdata = {
+=======
+static struct snd_kcontrol_new tumbler_hp_sw = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = "Headphone Playback Switch",
 	.info = snd_pmac_boolean_mono_info,
@@ -909,7 +925,11 @@ static struct snd_kcontrol_new tumbler_hp_sw __devinitdata = {
 	.put = tumbler_put_mute_switch,
 	.private_value = TUMBLER_MUTE_HP,
 };
+<<<<<<< HEAD
 static struct snd_kcontrol_new tumbler_speaker_sw __devinitdata = {
+=======
+static struct snd_kcontrol_new tumbler_speaker_sw = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = "Speaker Playback Switch",
 	.info = snd_pmac_boolean_mono_info,
@@ -917,7 +937,11 @@ static struct snd_kcontrol_new tumbler_speaker_sw __devinitdata = {
 	.put = tumbler_put_mute_switch,
 	.private_value = TUMBLER_MUTE_AMP,
 };
+<<<<<<< HEAD
 static struct snd_kcontrol_new tumbler_lineout_sw __devinitdata = {
+=======
+static struct snd_kcontrol_new tumbler_lineout_sw = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = "Line Out Playback Switch",
 	.info = snd_pmac_boolean_mono_info,
@@ -925,7 +949,11 @@ static struct snd_kcontrol_new tumbler_lineout_sw __devinitdata = {
 	.put = tumbler_put_mute_switch,
 	.private_value = TUMBLER_MUTE_LINE,
 };
+<<<<<<< HEAD
 static struct snd_kcontrol_new tumbler_drc_sw __devinitdata = {
+=======
+static struct snd_kcontrol_new tumbler_drc_sw = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = "DRC Switch",
 	.info = snd_pmac_boolean_mono_info,
@@ -1276,7 +1304,11 @@ static void tumbler_resume(struct snd_pmac *chip)
 #endif
 
 /* initialize tumbler */
+<<<<<<< HEAD
 static int __devinit tumbler_init(struct snd_pmac *chip)
+=======
+static int tumbler_init(struct snd_pmac *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int irq;
 	struct pmac_tumbler *mix = chip->mixer_data;
@@ -1349,7 +1381,11 @@ static void tumbler_cleanup(struct snd_pmac *chip)
 }
 
 /* exported */
+<<<<<<< HEAD
 int __devinit snd_pmac_tumbler_init(struct snd_pmac *chip)
+=======
+int snd_pmac_tumbler_init(struct snd_pmac *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, err;
 	struct pmac_tumbler *mix;

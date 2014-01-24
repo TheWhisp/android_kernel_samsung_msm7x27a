@@ -25,19 +25,30 @@
 #include <ctype.h>
 #include <errno.h>
 
+<<<<<<< HEAD
 #include "../../perf.h"
 #include "../util.h"
 <<<<<<< HEAD
 #include "../trace-event.h"
 =======
+=======
+#include "../util.h"
+#include <EXTERN.h>
+#include <perl.h>
+
+#include "../../perf.h"
+>>>>>>> refs/remotes/origin/master
 #include "../thread.h"
 #include "../event.h"
 #include "../trace-event.h"
 #include "../evsel.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include <EXTERN.h>
 #include <perl.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 void boot_Perf__Trace__Context(pTHX_ CV *cv);
 void boot_DynaLoader(pTHX_ CV *cv);
@@ -60,7 +71,11 @@ INTERP my_perl;
 #define FTRACE_MAX_EVENT				\
 	((1 << (sizeof(unsigned short) * 8)) - 1)
 
+<<<<<<< HEAD
 struct event *events[FTRACE_MAX_EVENT];
+=======
+struct event_format *events[FTRACE_MAX_EVENT];
+>>>>>>> refs/remotes/origin/master
 
 extern struct scripting_context *scripting_context;
 
@@ -185,7 +200,11 @@ static void define_flag_field(const char *ev_name,
 	LEAVE;
 }
 
+<<<<<<< HEAD
 static void define_event_symbols(struct event *event,
+=======
+static void define_event_symbols(struct event_format *event,
+>>>>>>> refs/remotes/origin/master
 				 const char *ev_name,
 				 struct print_arg *args)
 {
@@ -198,8 +217,12 @@ static void define_event_symbols(struct event *event,
 		zero_flag_atom = 0;
 		break;
 	case PRINT_FIELD:
+<<<<<<< HEAD
 		if (cur_field_name)
 			free(cur_field_name);
+=======
+		free(cur_field_name);
+>>>>>>> refs/remotes/origin/master
 		cur_field_name = strdup(args->field.name);
 		break;
 	case PRINT_FLAGS:
@@ -213,6 +236,15 @@ static void define_event_symbols(struct event *event,
 		define_symbolic_values(args->symbol.symbols, ev_name,
 				       cur_field_name);
 		break;
+<<<<<<< HEAD
+=======
+	case PRINT_HEX:
+		define_event_symbols(event, ev_name, args->hex.field);
+		define_event_symbols(event, ev_name, args->hex.size);
+		break;
+	case PRINT_BSTRING:
+	case PRINT_DYNAMIC_ARRAY:
+>>>>>>> refs/remotes/origin/master
 	case PRINT_STRING:
 		break;
 	case PRINT_TYPE:
@@ -224,7 +256,13 @@ static void define_event_symbols(struct event *event,
 		define_event_symbols(event, ev_name, args->op.left);
 		define_event_symbols(event, ev_name, args->op.right);
 		break;
+<<<<<<< HEAD
 	default:
+=======
+	case PRINT_FUNC:
+	default:
+		pr_err("Unsupported print arg type\n");
+>>>>>>> refs/remotes/origin/master
 		/* we should warn... */
 		return;
 	}
@@ -233,15 +271,27 @@ static void define_event_symbols(struct event *event,
 		define_event_symbols(event, ev_name, args->next);
 }
 
+<<<<<<< HEAD
 static inline struct event *find_cache_event(int type)
 {
 	static char ev_name[256];
 	struct event *event;
+=======
+static inline struct event_format *find_cache_event(struct perf_evsel *evsel)
+{
+	static char ev_name[256];
+	struct event_format *event;
+	int type = evsel->attr.config;
+>>>>>>> refs/remotes/origin/master
 
 	if (events[type])
 		return events[type];
 
+<<<<<<< HEAD
 	events[type] = event = trace_find_event(type);
+=======
+	events[type] = event = evsel->tp_format;
+>>>>>>> refs/remotes/origin/master
 	if (!event)
 		return NULL;
 
@@ -252,6 +302,7 @@ static inline struct event *find_cache_event(int type)
 	return event;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void perl_process_event(union perf_event *pevent __unused,
 			       struct perf_sample *sample,
@@ -265,17 +316,27 @@ static void perl_process_tracepoint(union perf_event *pevent __unused,
 				    struct machine *machine __unused,
 				    struct thread *thread)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void perl_process_tracepoint(struct perf_sample *sample,
+				    struct perf_evsel *evsel,
+				    struct thread *thread)
+>>>>>>> refs/remotes/origin/master
 {
 	struct format_field *field;
 	static char handler[256];
 	unsigned long long val;
 	unsigned long s, ns;
+<<<<<<< HEAD
 	struct event *event;
 	int type;
+=======
+	struct event_format *event;
+>>>>>>> refs/remotes/origin/master
 	int pid;
 	int cpu = sample->cpu;
 	void *data = sample->raw_data;
 	unsigned long long nsecs = sample->time;
+<<<<<<< HEAD
 	char *comm = thread->comm;
 
 	dSP;
@@ -293,6 +354,20 @@ static void perl_process_tracepoint(union perf_event *pevent __unused,
 		die("ug! no event found for type %d", type);
 
 	pid = trace_parse_common_pid(data);
+=======
+	const char *comm = thread__comm_str(thread);
+
+	dSP;
+
+	if (evsel->attr.type != PERF_TYPE_TRACEPOINT)
+		return;
+
+	event = find_cache_event(evsel);
+	if (!event)
+		die("ug! no event found for type %" PRIu64, (u64)evsel->attr.config);
+
+	pid = raw_field_value(event, "common_pid", data);
+>>>>>>> refs/remotes/origin/master
 
 	sprintf(handler, "%s::%s", event->system, event->name);
 
@@ -300,6 +375,10 @@ static void perl_process_tracepoint(union perf_event *pevent __unused,
 	ns = nsecs - s * NSECS_PER_SEC;
 
 	scripting_context->event_data = data;
+<<<<<<< HEAD
+=======
+	scripting_context->pevent = evsel->tp_format->pevent;
+>>>>>>> refs/remotes/origin/master
 
 	ENTER;
 	SAVETMPS;
@@ -325,7 +404,12 @@ static void perl_process_tracepoint(union perf_event *pevent __unused,
 				offset = field->offset;
 			XPUSHs(sv_2mortal(newSVpv((char *)data + offset, 0)));
 		} else { /* FIELD_IS_NUMERIC */
+<<<<<<< HEAD
 			val = read_size(data + field->offset, field->size);
+=======
+			val = read_size(event, data + field->offset,
+					field->size);
+>>>>>>> refs/remotes/origin/master
 			if (field->flags & FIELD_IS_SIGNED) {
 				XPUSHs(sv_2mortal(newSViv(val)));
 			} else {
@@ -354,12 +438,18 @@ static void perl_process_tracepoint(union perf_event *pevent __unused,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static void perl_process_event_generic(union perf_event *pevent __unused,
 				       struct perf_sample *sample,
 				       struct perf_evsel *evsel __unused,
 				       struct machine *machine __unused,
 				       struct thread *thread __unused)
+=======
+static void perl_process_event_generic(union perf_event *event,
+				       struct perf_sample *sample,
+				       struct perf_evsel *evsel)
+>>>>>>> refs/remotes/origin/master
 {
 	dSP;
 
@@ -369,7 +459,11 @@ static void perl_process_event_generic(union perf_event *pevent __unused,
 	ENTER;
 	SAVETMPS;
 	PUSHMARK(SP);
+<<<<<<< HEAD
 	XPUSHs(sv_2mortal(newSVpvn((const char *)pevent, pevent->header.size)));
+=======
+	XPUSHs(sv_2mortal(newSVpvn((const char *)event, event->header.size)));
+>>>>>>> refs/remotes/origin/master
 	XPUSHs(sv_2mortal(newSVpvn((const char *)&evsel->attr, sizeof(evsel->attr))));
 	XPUSHs(sv_2mortal(newSVpvn((const char *)sample, sizeof(*sample))));
 	XPUSHs(sv_2mortal(newSVpvn((const char *)sample->raw_data, sample->raw_size)));
@@ -381,6 +475,7 @@ static void perl_process_event_generic(union perf_event *pevent __unused,
 	LEAVE;
 }
 
+<<<<<<< HEAD
 static void perl_process_event(union perf_event *pevent,
 			       struct perf_sample *sample,
 			       struct perf_evsel *evsel,
@@ -392,6 +487,18 @@ static void perl_process_event(union perf_event *pevent,
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void perl_process_event(union perf_event *event,
+			       struct perf_sample *sample,
+			       struct perf_evsel *evsel,
+			       struct thread *thread,
+			       struct addr_location *al __maybe_unused)
+{
+	perl_process_tracepoint(sample, evsel, thread);
+	perl_process_event_generic(event, sample, evsel);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void run_start_sub(void)
 {
 	dSP; /* access to Perl stack */
@@ -462,9 +569,15 @@ static int perl_stop_script(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int perl_generate_script(const char *outfile)
 {
 	struct event *event = NULL;
+=======
+static int perl_generate_script(struct pevent *pevent, const char *outfile)
+{
+	struct event_format *event = NULL;
+>>>>>>> refs/remotes/origin/master
 	struct format_field *f;
 	char fname[PATH_MAX];
 	int not_first, count;
@@ -509,7 +622,11 @@ static int perl_generate_script(const char *outfile)
 	fprintf(ofp, "sub trace_begin\n{\n\t# optional\n}\n\n");
 	fprintf(ofp, "sub trace_end\n{\n\t# optional\n}\n\n");
 
+<<<<<<< HEAD
 	while ((event = trace_find_next_event(event))) {
+=======
+	while ((event = trace_find_next_event(pevent, event))) {
+>>>>>>> refs/remotes/origin/master
 		fprintf(ofp, "sub %s::%s\n{\n", event->system, event->name);
 		fprintf(ofp, "\tmy (");
 
@@ -614,8 +731,11 @@ static int perl_generate_script(const char *outfile)
 		"\tmy ($event_name, $cpu, $secs, $nsecs, $pid, $comm) = @_;\n\n"
 		"\tprintf(\"%%-20s %%5u %%05u.%%09u %%8u %%-20s \",\n\t       "
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"$event_name, $cpu, $secs, $nsecs, $pid, $comm);\n}");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		"$event_name, $cpu, $secs, $nsecs, $pid, $comm);\n}\n");
 
 	fprintf(ofp,
@@ -638,7 +758,10 @@ static int perl_generate_script(const char *outfile)
 		"\tuse Data::Dumper;\n"
 		"\tprint Dumper \\@event, \\@attr, \\@sample, \\@raw_data;\n"
 		"}\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	fclose(ofp);
 

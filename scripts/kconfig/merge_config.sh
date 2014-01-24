@@ -32,11 +32,19 @@ usage() {
 	echo "  -m    only merge the fragments, do not execute the make command"
 	echo "  -n    use allnoconfig instead of alldefconfig"
 	echo "  -r    list redundant entries when merging fragments"
+<<<<<<< HEAD
+=======
+	echo "  -O    dir to put generated output files"
+>>>>>>> refs/remotes/origin/master
 }
 
 MAKE=true
 ALLTARGET=alldefconfig
 WARNREDUN=false
+<<<<<<< HEAD
+=======
+OUTPUT=.
+>>>>>>> refs/remotes/origin/master
 
 while true; do
 	case $1 in
@@ -59,6 +67,19 @@ while true; do
 		shift
 		continue
 		;;
+<<<<<<< HEAD
+=======
+	"-O")
+		if [ -d $2 ];then
+			OUTPUT=$(echo $2 | sed 's/\/*$//')
+		else
+			echo "output directory $2 does not exist" 1>&2
+			exit 1
+		fi
+		shift 2
+		continue
+		;;
+>>>>>>> refs/remotes/origin/master
 	*)
 		break
 		;;
@@ -100,25 +121,50 @@ for MERGE_FILE in $MERGE_LIST ; do
 done
 
 if [ "$MAKE" = "false" ]; then
+<<<<<<< HEAD
 	cp $TMP_FILE .config
 	echo "#"
 	echo "# merged configuration written to .config (needs make)"
+=======
+	cp $TMP_FILE $OUTPUT/.config
+	echo "#"
+	echo "# merged configuration written to $OUTPUT/.config (needs make)"
+>>>>>>> refs/remotes/origin/master
 	echo "#"
 	clean_up
 	exit
 fi
 
+<<<<<<< HEAD
 # Use the merged file as the starting point for:
 # alldefconfig: Fills in any missing symbols with Kconfig default
 # allnoconfig: Fills in any missing symbols with # CONFIG_* is not set
 make KCONFIG_ALLCONFIG=$TMP_FILE $ALLTARGET
+=======
+# If we have an output dir, setup the O= argument, otherwise leave
+# it blank, since O=. will create an unnecessary ./source softlink
+OUTPUT_ARG=""
+if [ "$OUTPUT" != "." ] ; then
+	OUTPUT_ARG="O=$OUTPUT"
+fi
+
+
+# Use the merged file as the starting point for:
+# alldefconfig: Fills in any missing symbols with Kconfig default
+# allnoconfig: Fills in any missing symbols with # CONFIG_* is not set
+make KCONFIG_ALLCONFIG=$TMP_FILE $OUTPUT_ARG $ALLTARGET
+>>>>>>> refs/remotes/origin/master
 
 
 # Check all specified config values took (might have missed-dependency issues)
 for CFG in $(sed -n "$SED_CONFIG_EXP" $TMP_FILE); do
 
 	REQUESTED_VAL=$(grep -w -e "$CFG" $TMP_FILE)
+<<<<<<< HEAD
 	ACTUAL_VAL=$(grep -w -e "$CFG" .config)
+=======
+	ACTUAL_VAL=$(grep -w -e "$CFG" $OUTPUT/.config)
+>>>>>>> refs/remotes/origin/master
 	if [ "x$REQUESTED_VAL" != "x$ACTUAL_VAL" ] ; then
 		echo "Value requested for $CFG not in final .config"
 		echo "Requested value:  $REQUESTED_VAL"

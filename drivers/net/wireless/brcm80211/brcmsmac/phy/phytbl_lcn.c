@@ -1507,6 +1507,7 @@ static const u32 dot11lcn_gain_tbl_5G[] = {
 
 const struct phytbl_info dot11lcnphytbl_rx_gain_info_rev0[] = {
 	{&dot11lcn_gain_tbl_rev0,
+<<<<<<< HEAD
 	 sizeof(dot11lcn_gain_tbl_rev0) / sizeof(dot11lcn_gain_tbl_rev0[0]), 18,
 	 0, 32}
 	,
@@ -1517,11 +1518,22 @@ const struct phytbl_info dot11lcnphytbl_rx_gain_info_rev0[] = {
 	{&dot11lcn_gain_idx_tbl_rev0,
 	 sizeof(dot11lcn_gain_idx_tbl_rev0) /
 	 sizeof(dot11lcn_gain_idx_tbl_rev0[0]), 13, 0, 32}
+=======
+	 ARRAY_SIZE(dot11lcn_gain_tbl_rev0), 18,
+	 0, 32}
+	,
+	{&dot11lcn_aux_gain_idx_tbl_rev0,
+	 ARRAY_SIZE(dot11lcn_aux_gain_idx_tbl_rev0), 14, 0, 16}
+	,
+	{&dot11lcn_gain_idx_tbl_rev0,
+	 ARRAY_SIZE(dot11lcn_gain_idx_tbl_rev0), 13, 0, 32}
+>>>>>>> refs/remotes/origin/master
 	,
 };
 
 static const struct phytbl_info dot11lcnphytbl_rx_gain_info_rev1[] = {
 	{&dot11lcn_gain_tbl_rev1,
+<<<<<<< HEAD
 	 sizeof(dot11lcn_gain_tbl_rev1) / sizeof(dot11lcn_gain_tbl_rev1[0]), 18,
 	 0, 32}
 	,
@@ -1532,11 +1544,22 @@ static const struct phytbl_info dot11lcnphytbl_rx_gain_info_rev1[] = {
 	{&dot11lcn_gain_idx_tbl_rev0,
 	 sizeof(dot11lcn_gain_idx_tbl_rev0) /
 	 sizeof(dot11lcn_gain_idx_tbl_rev0[0]), 13, 0, 32}
+=======
+	 ARRAY_SIZE(dot11lcn_gain_tbl_rev1), 18,
+	 0, 32}
+	,
+	{&dot11lcn_aux_gain_idx_tbl_rev0,
+	 ARRAY_SIZE(dot11lcn_aux_gain_idx_tbl_rev0), 14, 0, 16}
+	,
+	{&dot11lcn_gain_idx_tbl_rev0,
+	 ARRAY_SIZE(dot11lcn_gain_idx_tbl_rev0), 13, 0, 32}
+>>>>>>> refs/remotes/origin/master
 	,
 };
 
 const struct phytbl_info dot11lcnphytbl_rx_gain_info_2G_rev2[] = {
 	{&dot11lcn_gain_tbl_2G,
+<<<<<<< HEAD
 	 sizeof(dot11lcn_gain_tbl_2G) / sizeof(dot11lcn_gain_tbl_2G[0]), 18, 0,
 	 32}
 	,
@@ -1550,11 +1573,26 @@ const struct phytbl_info dot11lcnphytbl_rx_gain_info_2G_rev2[] = {
 	,
 	{&dot11lcn_gain_val_tbl_2G,
 	 sizeof(dot11lcn_gain_val_tbl_2G) / sizeof(dot11lcn_gain_val_tbl_2G[0]),
+=======
+	 ARRAY_SIZE(dot11lcn_gain_tbl_2G), 18, 0,
+	 32}
+	,
+	{&dot11lcn_aux_gain_idx_tbl_2G,
+	 ARRAY_SIZE(dot11lcn_aux_gain_idx_tbl_2G), 14, 0, 16}
+	,
+	{&dot11lcn_gain_idx_tbl_2G,
+	 ARRAY_SIZE(dot11lcn_gain_idx_tbl_2G),
+	 13, 0, 32}
+	,
+	{&dot11lcn_gain_val_tbl_2G,
+	 ARRAY_SIZE(dot11lcn_gain_val_tbl_2G),
+>>>>>>> refs/remotes/origin/master
 	 17, 0, 8}
 };
 
 const struct phytbl_info dot11lcnphytbl_rx_gain_info_5G_rev2[] = {
 	{&dot11lcn_gain_tbl_5G,
+<<<<<<< HEAD
 	 sizeof(dot11lcn_gain_tbl_5G) / sizeof(dot11lcn_gain_tbl_5G[0]), 18, 0,
 	 32}
 	,
@@ -1568,11 +1606,26 @@ const struct phytbl_info dot11lcnphytbl_rx_gain_info_5G_rev2[] = {
 	,
 	{&dot11lcn_gain_val_tbl_5G,
 	 sizeof(dot11lcn_gain_val_tbl_5G) / sizeof(dot11lcn_gain_val_tbl_5G[0]),
+=======
+	 ARRAY_SIZE(dot11lcn_gain_tbl_5G), 18, 0,
+	 32}
+	,
+	{&dot11lcn_aux_gain_idx_tbl_5G,
+	 ARRAY_SIZE(dot11lcn_aux_gain_idx_tbl_5G), 14, 0, 16}
+	,
+	{&dot11lcn_gain_idx_tbl_5G,
+	 ARRAY_SIZE(dot11lcn_gain_idx_tbl_5G),
+	 13, 0, 32}
+	,
+	{&dot11lcn_gain_val_tbl_5G,
+	 ARRAY_SIZE(dot11lcn_gain_val_tbl_5G),
+>>>>>>> refs/remotes/origin/master
 	 17, 0, 8}
 };
 
 const struct phytbl_info dot11lcnphytbl_rx_gain_info_extlna_2G_rev2[] = {
 	{&dot11lcn_gain_tbl_extlna_2G,
+<<<<<<< HEAD
 	 sizeof(dot11lcn_gain_tbl_extlna_2G) /
 	 sizeof(dot11lcn_gain_tbl_extlna_2G[0]), 18, 0, 32}
 	,
@@ -1587,10 +1640,23 @@ const struct phytbl_info dot11lcnphytbl_rx_gain_info_extlna_2G_rev2[] = {
 	{&dot11lcn_gain_val_tbl_extlna_2G,
 	 sizeof(dot11lcn_gain_val_tbl_extlna_2G) /
 	 sizeof(dot11lcn_gain_val_tbl_extlna_2G[0]), 17, 0, 8}
+=======
+	 ARRAY_SIZE(dot11lcn_gain_tbl_extlna_2G), 18, 0, 32}
+	,
+	{&dot11lcn_aux_gain_idx_tbl_extlna_2G,
+	 ARRAY_SIZE(dot11lcn_aux_gain_idx_tbl_extlna_2G), 14, 0, 16}
+	,
+	{&dot11lcn_gain_idx_tbl_extlna_2G,
+	 ARRAY_SIZE(dot11lcn_gain_idx_tbl_extlna_2G), 13, 0, 32}
+	,
+	{&dot11lcn_gain_val_tbl_extlna_2G,
+	 ARRAY_SIZE(dot11lcn_gain_val_tbl_extlna_2G), 17, 0, 8}
+>>>>>>> refs/remotes/origin/master
 };
 
 const struct phytbl_info dot11lcnphytbl_rx_gain_info_extlna_5G_rev2[] = {
 	{&dot11lcn_gain_tbl_5G,
+<<<<<<< HEAD
 	 sizeof(dot11lcn_gain_tbl_5G) / sizeof(dot11lcn_gain_tbl_5G[0]), 18, 0,
 	 32}
 	,
@@ -1604,10 +1670,25 @@ const struct phytbl_info dot11lcnphytbl_rx_gain_info_extlna_5G_rev2[] = {
 	,
 	{&dot11lcn_gain_val_tbl_5G,
 	 sizeof(dot11lcn_gain_val_tbl_5G) / sizeof(dot11lcn_gain_val_tbl_5G[0]),
+=======
+	 ARRAY_SIZE(dot11lcn_gain_tbl_5G), 18, 0,
+	 32}
+	,
+	{&dot11lcn_aux_gain_idx_tbl_5G,
+	 ARRAY_SIZE(dot11lcn_aux_gain_idx_tbl_5G), 14, 0, 16}
+	,
+	{&dot11lcn_gain_idx_tbl_5G,
+	 ARRAY_SIZE(dot11lcn_gain_idx_tbl_5G),
+	 13, 0, 32}
+	,
+	{&dot11lcn_gain_val_tbl_5G,
+	 ARRAY_SIZE(dot11lcn_gain_val_tbl_5G),
+>>>>>>> refs/remotes/origin/master
 	 17, 0, 8}
 };
 
 const u32 dot11lcnphytbl_rx_gain_info_sz_rev0 =
+<<<<<<< HEAD
 	sizeof(dot11lcnphytbl_rx_gain_info_rev0) /
 	sizeof(dot11lcnphytbl_rx_gain_info_rev0[0]);
 
@@ -1618,6 +1699,15 @@ const u32 dot11lcnphytbl_rx_gain_info_2G_rev2_sz =
 const u32 dot11lcnphytbl_rx_gain_info_5G_rev2_sz =
 	sizeof(dot11lcnphytbl_rx_gain_info_5G_rev2) /
 	sizeof(dot11lcnphytbl_rx_gain_info_5G_rev2[0]);
+=======
+	ARRAY_SIZE(dot11lcnphytbl_rx_gain_info_rev0);
+
+const u32 dot11lcnphytbl_rx_gain_info_2G_rev2_sz =
+	ARRAY_SIZE(dot11lcnphytbl_rx_gain_info_2G_rev2);
+
+const u32 dot11lcnphytbl_rx_gain_info_5G_rev2_sz =
+	ARRAY_SIZE(dot11lcnphytbl_rx_gain_info_5G_rev2);
+>>>>>>> refs/remotes/origin/master
 
 static const u16 dot11lcn_min_sig_sq_tbl_rev0[] = {
 	0x014d,
@@ -2058,6 +2148,76 @@ static const u16 dot11lcn_sw_ctrl_tbl_4313_rev0[] = {
 	0x0005,
 };
 
+<<<<<<< HEAD
+=======
+static const u16 dot11lcn_sw_ctrl_tbl_4313_ipa_rev0_combo[] = {
+	0x0005,
+	0x0006,
+	0x0009,
+	0x000a,
+	0x0005,
+	0x0006,
+	0x0009,
+	0x000a,
+	0x0005,
+	0x0006,
+	0x0009,
+	0x000a,
+	0x0005,
+	0x0006,
+	0x0009,
+	0x000a,
+	0x0005,
+	0x0006,
+	0x0009,
+	0x000a,
+	0x0005,
+	0x0006,
+	0x0009,
+	0x000a,
+	0x0005,
+	0x0006,
+	0x0009,
+	0x000a,
+	0x0005,
+	0x0006,
+	0x0009,
+	0x000a,
+	0x0005,
+	0x0006,
+	0x0009,
+	0x000a,
+	0x0005,
+	0x0006,
+	0x0009,
+	0x000a,
+	0x0005,
+	0x0006,
+	0x0009,
+	0x000a,
+	0x0005,
+	0x0006,
+	0x0009,
+	0x000a,
+	0x0005,
+	0x0006,
+	0x0009,
+	0x000a,
+	0x0005,
+	0x0006,
+	0x0009,
+	0x000a,
+	0x0005,
+	0x0006,
+	0x0009,
+	0x000a,
+	0x0005,
+	0x0006,
+	0x0009,
+	0x000a,
+};
+
+>>>>>>> refs/remotes/origin/master
 static const u16 dot11lcn_sw_ctrl_tbl_rev0[] = {
 	0x0004,
 	0x0004,
@@ -2771,6 +2931,7 @@ static const u32 dot11lcn_papd_compdelta_tbl_rev0[] = {
 
 const struct phytbl_info dot11lcnphytbl_info_rev0[] = {
 	{&dot11lcn_min_sig_sq_tbl_rev0,
+<<<<<<< HEAD
 	 sizeof(dot11lcn_min_sig_sq_tbl_rev0) /
 	 sizeof(dot11lcn_min_sig_sq_tbl_rev0[0]), 2, 0, 16}
 	,
@@ -2825,35 +2986,105 @@ const struct phytbl_info dot11lcnphytbl_info_rev0[] = {
 	{&dot11lcn_papd_compdelta_tbl_rev0,
 	 sizeof(dot11lcn_papd_compdelta_tbl_rev0) /
 	 sizeof(dot11lcn_papd_compdelta_tbl_rev0[0]), 24, 0, 32}
+=======
+	 ARRAY_SIZE(dot11lcn_min_sig_sq_tbl_rev0), 2, 0, 16}
+	,
+	{&dot11lcn_noise_scale_tbl_rev0,
+	 ARRAY_SIZE(dot11lcn_noise_scale_tbl_rev0), 1, 0, 16}
+	,
+	{&dot11lcn_fltr_ctrl_tbl_rev0,
+	 ARRAY_SIZE(dot11lcn_fltr_ctrl_tbl_rev0), 11, 0, 32}
+	,
+	{&dot11lcn_ps_ctrl_tbl_rev0,
+	 ARRAY_SIZE(dot11lcn_ps_ctrl_tbl_rev0), 12, 0, 32}
+	,
+	{&dot11lcn_gain_idx_tbl_rev0,
+	 ARRAY_SIZE(dot11lcn_gain_idx_tbl_rev0), 13, 0, 32}
+	,
+	{&dot11lcn_aux_gain_idx_tbl_rev0,
+	 ARRAY_SIZE(dot11lcn_aux_gain_idx_tbl_rev0), 14, 0, 16}
+	,
+	{&dot11lcn_sw_ctrl_tbl_rev0,
+	 ARRAY_SIZE(dot11lcn_sw_ctrl_tbl_rev0), 15, 0, 16}
+	,
+	{&dot11lcn_nf_table_rev0,
+	 ARRAY_SIZE(dot11lcn_nf_table_rev0), 16,
+	 0, 8}
+	,
+	{&dot11lcn_gain_val_tbl_rev0,
+	 ARRAY_SIZE(dot11lcn_gain_val_tbl_rev0), 17, 0, 8}
+	,
+	{&dot11lcn_gain_tbl_rev0,
+	 ARRAY_SIZE(dot11lcn_gain_tbl_rev0), 18,
+	 0, 32}
+	,
+	{&dot11lcn_spur_tbl_rev0,
+	 ARRAY_SIZE(dot11lcn_spur_tbl_rev0), 20,
+	 0, 8}
+	,
+	{&dot11lcn_unsup_mcs_tbl_rev0,
+	 ARRAY_SIZE(dot11lcn_unsup_mcs_tbl_rev0), 23, 0, 16}
+	,
+	{&dot11lcn_iq_local_tbl_rev0,
+	 ARRAY_SIZE(dot11lcn_iq_local_tbl_rev0), 0, 0, 16}
+	,
+	{&dot11lcn_papd_compdelta_tbl_rev0,
+	 ARRAY_SIZE(dot11lcn_papd_compdelta_tbl_rev0), 24, 0, 32}
+>>>>>>> refs/remotes/origin/master
 	,
 };
 
 const struct phytbl_info dot11lcn_sw_ctrl_tbl_info_4313 = {
 	&dot11lcn_sw_ctrl_tbl_4313_rev0,
+<<<<<<< HEAD
 	sizeof(dot11lcn_sw_ctrl_tbl_4313_rev0) /
 	sizeof(dot11lcn_sw_ctrl_tbl_4313_rev0[0]), 15, 0, 16
+=======
+	ARRAY_SIZE(dot11lcn_sw_ctrl_tbl_4313_rev0), 15, 0, 16
+};
+
+const struct phytbl_info dot11lcn_sw_ctrl_tbl_info_4313_bt_ipa = {
+	&dot11lcn_sw_ctrl_tbl_4313_ipa_rev0_combo,
+	ARRAY_SIZE(dot11lcn_sw_ctrl_tbl_4313_ipa_rev0_combo), 15, 0, 16
+>>>>>>> refs/remotes/origin/master
 };
 
 const struct phytbl_info dot11lcn_sw_ctrl_tbl_info_4313_epa = {
 	&dot11lcn_sw_ctrl_tbl_4313_epa_rev0,
+<<<<<<< HEAD
 	sizeof(dot11lcn_sw_ctrl_tbl_4313_epa_rev0) /
 	sizeof(dot11lcn_sw_ctrl_tbl_4313_epa_rev0[0]), 15, 0, 16
+=======
+	ARRAY_SIZE(dot11lcn_sw_ctrl_tbl_4313_epa_rev0), 15, 0, 16
+>>>>>>> refs/remotes/origin/master
 };
 
 const struct phytbl_info dot11lcn_sw_ctrl_tbl_info_4313_bt_epa = {
 	&dot11lcn_sw_ctrl_tbl_4313_epa_rev0_combo,
+<<<<<<< HEAD
 	sizeof(dot11lcn_sw_ctrl_tbl_4313_epa_rev0_combo) /
 	sizeof(dot11lcn_sw_ctrl_tbl_4313_epa_rev0_combo[0]), 15, 0, 16
+=======
+	ARRAY_SIZE(dot11lcn_sw_ctrl_tbl_4313_epa_rev0_combo), 15, 0, 16
+>>>>>>> refs/remotes/origin/master
 };
 
 const struct phytbl_info dot11lcn_sw_ctrl_tbl_info_4313_bt_epa_p250 = {
 	&dot11lcn_sw_ctrl_tbl_4313_bt_epa_p250_rev0,
+<<<<<<< HEAD
 	sizeof(dot11lcn_sw_ctrl_tbl_4313_bt_epa_p250_rev0) /
 	sizeof(dot11lcn_sw_ctrl_tbl_4313_bt_epa_p250_rev0[0]), 15, 0, 16
 };
 
 const u32 dot11lcnphytbl_info_sz_rev0 =
 	sizeof(dot11lcnphytbl_info_rev0) / sizeof(dot11lcnphytbl_info_rev0[0]);
+=======
+	ARRAY_SIZE(dot11lcn_sw_ctrl_tbl_4313_bt_epa_p250_rev0), 15, 0, 16
+};
+
+const u32 dot11lcnphytbl_info_sz_rev0 =
+	ARRAY_SIZE(dot11lcnphytbl_info_rev0);
+>>>>>>> refs/remotes/origin/master
 
 const struct lcnphy_tx_gain_tbl_entry
 dot11lcnphy_2GHz_extPA_gaintable_rev0[128] = {
@@ -2988,6 +3219,7 @@ dot11lcnphy_2GHz_extPA_gaintable_rev0[128] = {
 };
 
 const struct lcnphy_tx_gain_tbl_entry dot11lcnphy_2GHz_gaintable_rev0[128] = {
+<<<<<<< HEAD
 	{7, 0, 31, 0, 72},
 	{7, 0, 31, 0, 70},
 	{7, 0, 31, 0, 68},
@@ -3116,6 +3348,136 @@ const struct lcnphy_tx_gain_tbl_entry dot11lcnphy_2GHz_gaintable_rev0[128] = {
 	{7, 0, 1, 0, 61},
 	{7, 0, 1, 0, 59},
 	{7, 0, 1, 0, 57},
+=======
+	{15, 0, 31, 0, 72},
+	{15, 0, 31, 0, 70},
+	{15, 0, 31, 0, 68},
+	{15, 0, 30, 0, 68},
+	{15, 0, 29, 0, 69},
+	{15, 0, 28, 0, 69},
+	{15, 0, 27, 0, 70},
+	{15, 0, 26, 0, 70},
+	{15, 0, 25, 0, 71},
+	{15, 0, 24, 0, 72},
+	{15, 0, 23, 0, 73},
+	{15, 0, 23, 0, 71},
+	{15, 0, 22, 0, 72},
+	{15, 0, 21, 0, 73},
+	{15, 0, 21, 0, 71},
+	{15, 0, 21, 0, 69},
+	{15, 0, 21, 0, 67},
+	{15, 0, 21, 0, 65},
+	{15, 0, 21, 0, 63},
+	{15, 0, 20, 0, 65},
+	{15, 0, 19, 0, 66},
+	{15, 0, 19, 0, 64},
+	{15, 0, 18, 0, 66},
+	{15, 0, 18, 0, 64},
+	{15, 0, 17, 0, 66},
+	{15, 0, 17, 0, 64},
+	{15, 0, 16, 0, 66},
+	{15, 0, 16, 0, 64},
+	{15, 0, 16, 0, 62},
+	{15, 0, 16, 0, 61},
+	{15, 0, 16, 0, 59},
+	{15, 0, 15, 0, 61},
+	{15, 0, 15, 0, 59},
+	{15, 0, 14, 0, 62},
+	{15, 0, 14, 0, 60},
+	{15, 0, 14, 0, 58},
+	{15, 0, 13, 0, 61},
+	{15, 0, 13, 0, 59},
+	{15, 0, 12, 0, 62},
+	{15, 0, 12, 0, 61},
+	{15, 0, 12, 0, 59},
+	{15, 0, 11, 0, 62},
+	{15, 0, 11, 0, 61},
+	{15, 0, 11, 0, 59},
+	{15, 0, 11, 0, 57},
+	{15, 0, 10, 0, 61},
+	{15, 0, 10, 0, 59},
+	{15, 0, 10, 0, 58},
+	{15, 0, 9, 0, 62},
+	{15, 0, 9, 0, 61},
+	{15, 0, 9, 0, 59},
+	{15, 0, 9, 0, 57},
+	{15, 0, 8, 0, 62},
+	{15, 0, 8, 0, 61},
+	{15, 0, 8, 0, 59},
+	{15, 0, 8, 0, 57},
+	{15, 0, 8, 0, 56},
+	{15, 0, 8, 0, 54},
+	{15, 0, 8, 0, 53},
+	{15, 0, 8, 0, 51},
+	{15, 0, 8, 0, 50},
+	{7, 0, 7, 0, 69},
+	{7, 0, 7, 0, 67},
+	{7, 0, 7, 0, 65},
+	{7, 0, 7, 0, 64},
+	{7, 0, 7, 0, 62},
+	{7, 0, 7, 0, 60},
+	{7, 0, 7, 0, 58},
+	{7, 0, 7, 0, 57},
+	{7, 0, 7, 0, 55},
+	{7, 0, 6, 0, 62},
+	{7, 0, 6, 0, 61},
+	{7, 0, 6, 0, 59},
+	{7, 0, 6, 0, 57},
+	{7, 0, 6, 0, 56},
+	{7, 0, 6, 0, 54},
+	{7, 0, 6, 0, 53},
+	{7, 0, 5, 0, 61},
+	{7, 0, 5, 0, 60},
+	{7, 0, 5, 0, 58},
+	{7, 0, 5, 0, 56},
+	{7, 0, 5, 0, 55},
+	{7, 0, 5, 0, 53},
+	{7, 0, 5, 0, 52},
+	{7, 0, 5, 0, 50},
+	{7, 0, 5, 0, 49},
+	{7, 0, 5, 0, 47},
+	{7, 0, 4, 0, 57},
+	{7, 0, 4, 0, 56},
+	{7, 0, 4, 0, 54},
+	{7, 0, 4, 0, 53},
+	{7, 0, 4, 0, 51},
+	{7, 0, 4, 0, 50},
+	{7, 0, 4, 0, 48},
+	{7, 0, 4, 0, 47},
+	{7, 0, 4, 0, 46},
+	{7, 0, 4, 0, 44},
+	{7, 0, 4, 0, 43},
+	{7, 0, 4, 0, 42},
+	{7, 0, 4, 0, 41},
+	{7, 0, 4, 0, 40},
+	{7, 0, 3, 0, 51},
+	{7, 0, 3, 0, 50},
+	{7, 0, 3, 0, 48},
+	{7, 0, 3, 0, 47},
+	{7, 0, 3, 0, 46},
+	{7, 0, 3, 0, 44},
+	{7, 0, 3, 0, 43},
+	{7, 0, 3, 0, 42},
+	{7, 0, 3, 0, 41},
+	{3, 0, 3, 0, 56},
+	{3, 0, 3, 0, 54},
+	{3, 0, 3, 0, 53},
+	{3, 0, 3, 0, 51},
+	{3, 0, 3, 0, 50},
+	{3, 0, 3, 0, 48},
+	{3, 0, 3, 0, 47},
+	{3, 0, 3, 0, 46},
+	{3, 0, 3, 0, 44},
+	{3, 0, 3, 0, 43},
+	{3, 0, 3, 0, 42},
+	{3, 0, 3, 0, 41},
+	{3, 0, 3, 0, 39},
+	{3, 0, 3, 0, 38},
+	{3, 0, 3, 0, 37},
+	{3, 0, 3, 0, 36},
+	{3, 0, 3, 0, 35},
+	{3, 0, 3, 0, 34},
+>>>>>>> refs/remotes/origin/master
 };
 
 const struct lcnphy_tx_gain_tbl_entry dot11lcnphy_5GHz_gaintable_rev0[128] = {

@@ -35,10 +35,14 @@
  */
 #define ST_PLCI_NONE			0	/* P-0 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ST_PLCI_OUTGOING 		1	/* P-0.1 */
 =======
 #define ST_PLCI_OUTGOING		1	/* P-0.1 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ST_PLCI_OUTGOING		1	/* P-0.1 */
+>>>>>>> refs/remotes/origin/master
 #define ST_PLCI_ALLOCATED		2	/* P-1 */
 #define ST_PLCI_ACTIVE			3	/* P-ACT */
 #define ST_PLCI_INCOMING		4	/* P-2 */
@@ -52,6 +56,7 @@
 
 #define EV_PLCI_CONNECT_REQ		1	/* P-0 -> P-0.1
 <<<<<<< HEAD
+<<<<<<< HEAD
                                                  */
 #define EV_PLCI_CONNECT_CONF_ERROR	2	/* P-0.1 -> P-0
                                                  */
@@ -67,6 +72,8 @@
 						   P-3 -> P-5
 						 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 						 */
 #define EV_PLCI_CONNECT_CONF_ERROR	2	/* P-0.1 -> P-0
 						 */
@@ -81,7 +88,10 @@
 #define EV_PLCI_CONNECT_REJECT		7	/* P-2 -> P-5
 						   P-3 -> P-5
 						*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define EV_PLCI_DISCONNECT_REQ		8	/* P-1 -> P-5
 						   P-2 -> P-5
 						   P-3 -> P-5
@@ -90,10 +100,14 @@
 						   P-Res -> P-5 (*)
 						   P-HELD -> P-5 (*)
 <<<<<<< HEAD
+<<<<<<< HEAD
 						   */
 =======
 						*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						*/
+>>>>>>> refs/remotes/origin/master
 #define EV_PLCI_DISCONNECT_IND		9	/* P-1 -> P-6
 						   P-2 -> P-6
 						   P-3 -> P-6
@@ -103,16 +117,21 @@
 						   P-Res -> P-6 (*)
 						   P-HELD -> P-6 (*)
 <<<<<<< HEAD
+<<<<<<< HEAD
 						   */
 =======
 						*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						*/
+>>>>>>> refs/remotes/origin/master
 #define EV_PLCI_FACILITY_IND_DOWN	10	/* P-0.1 -> P-5
 						   P-1 -> P-5
 						   P-ACT -> P-5
 						   P-2 -> P-5
 						   P-3 -> P-5
 						   P-4 -> P-5
+<<<<<<< HEAD
 <<<<<<< HEAD
 						   */
 #define EV_PLCI_DISCONNECT_RESP		11	/* P-6 -> P-0
@@ -137,6 +156,8 @@
 #define EV_PLCI_CD_IND			20	/* P-2 -> P-5
                                                  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 						*/
 #define EV_PLCI_DISCONNECT_RESP		11	/* P-6 -> P-0
 						 */
@@ -159,7 +180,10 @@
 						 */
 #define EV_PLCI_CD_IND			20	/* P-2 -> P-5
 						 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * per ncci state machine

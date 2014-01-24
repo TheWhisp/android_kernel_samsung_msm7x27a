@@ -4,7 +4,11 @@
  * Copyright (C) ST Microelectronics SA 2011
  *
  * License Terms: GNU General Public License, version 2
+<<<<<<< HEAD
  * Author: Viresh Kumar <viresh.kumar@st.com> for ST Microelectronics
+=======
+ * Author: Viresh Kumar <viresh.linux@gmail.com> for ST Microelectronics
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/spi/spi.h>
@@ -82,7 +86,11 @@ static struct stmpe_client_info spi_ci = {
 	.init = spi_init,
 };
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 stmpe_spi_probe(struct spi_device *spi)
 {
 	const struct spi_device_id *id = spi_get_device_id(spi);
@@ -101,9 +109,15 @@ stmpe_spi_probe(struct spi_device *spi)
 	return stmpe_probe(&spi_ci, id->driver_data);
 }
 
+<<<<<<< HEAD
 static int __devexit stmpe_spi_remove(struct spi_device *spi)
 {
 	struct stmpe *stmpe = dev_get_drvdata(&spi->dev);
+=======
+static int stmpe_spi_remove(struct spi_device *spi)
+{
+	struct stmpe *stmpe = spi_get_drvdata(spi);
+>>>>>>> refs/remotes/origin/master
 
 	return stmpe_remove(stmpe);
 }
@@ -122,14 +136,21 @@ MODULE_DEVICE_TABLE(spi, stmpe_id);
 static struct spi_driver stmpe_spi_driver = {
 	.driver = {
 		.name	= "stmpe-spi",
+<<<<<<< HEAD
 		.bus	= &spi_bus_type,
+=======
+>>>>>>> refs/remotes/origin/master
 		.owner	= THIS_MODULE,
 #ifdef CONFIG_PM
 		.pm	= &stmpe_dev_pm_ops,
 #endif
 	},
 	.probe		= stmpe_spi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(stmpe_spi_remove),
+=======
+	.remove		= stmpe_spi_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= stmpe_spi_id,
 };
 
@@ -147,4 +168,8 @@ module_exit(stmpe_exit);
 
 MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("STMPE MFD SPI Interface Driver");
+<<<<<<< HEAD
 MODULE_AUTHOR("Viresh Kumar <viresh.kumar@st.com>");
+=======
+MODULE_AUTHOR("Viresh Kumar <viresh.linux@gmail.com>");
+>>>>>>> refs/remotes/origin/master

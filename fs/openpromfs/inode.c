@@ -162,6 +162,7 @@ static const struct file_operations openpromfs_prop_ops = {
 	.release	= seq_release,
 };
 
+<<<<<<< HEAD
 static int openpromfs_readdir(struct file *, void *, filldir_t);
 
 static const struct file_operations openprom_operations = {
@@ -171,12 +172,27 @@ static const struct file_operations openprom_operations = {
 };
 
 static struct dentry *openpromfs_lookup(struct inode *, struct dentry *, struct nameidata *);
+=======
+static int openpromfs_readdir(struct file *, struct dir_context *);
+
+static const struct file_operations openprom_operations = {
+	.read		= generic_read_dir,
+	.iterate	= openpromfs_readdir,
+	.llseek		= generic_file_llseek,
+};
+
+static struct dentry *openpromfs_lookup(struct inode *, struct dentry *, unsigned int);
+>>>>>>> refs/remotes/origin/master
 
 static const struct inode_operations openprom_inode_operations = {
 	.lookup		= openpromfs_lookup,
 };
 
+<<<<<<< HEAD
 static struct dentry *openpromfs_lookup(struct inode *dir, struct dentry *dentry, struct nameidata *nd)
+=======
+static struct dentry *openpromfs_lookup(struct inode *dir, struct dentry *dentry, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct op_inode_info *ent_oi, *oi = OP_I(dir);
 	struct device_node *dp, *child;
@@ -243,10 +259,14 @@ found:
 		inode->i_op = &openprom_inode_operations;
 		inode->i_fop = &openprom_operations;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 2;
 =======
 		set_nlink(inode, 2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case op_inode_prop:
 		if (!strcmp(dp->name, "options") && (len == 17) &&
@@ -256,10 +276,14 @@ found:
 			inode->i_mode = S_IFREG | S_IRUGO;
 		inode->i_fop = &openpromfs_prop_ops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 1;
 =======
 		set_nlink(inode, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/master
 		inode->i_size = ent_oi->u.prop->length;
 		break;
 	}
@@ -268,18 +292,28 @@ found:
 	return NULL;
 }
 
+<<<<<<< HEAD
 static int openpromfs_readdir(struct file * filp, void * dirent, filldir_t filldir)
 {
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+static int openpromfs_readdir(struct file *file, struct dir_context *ctx)
+{
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct op_inode_info *oi = OP_I(inode);
 	struct device_node *dp = oi->u.node;
 	struct device_node *child;
 	struct property *prop;
+<<<<<<< HEAD
 	unsigned int ino;
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	mutex_lock(&op_mutex);
 	
+<<<<<<< HEAD
 	ino = inode->i_ino;
 	i = filp->f_pos;
 	switch (i) {
@@ -333,6 +367,55 @@ static int openpromfs_readdir(struct file * filp, void * dirent, filldir_t filld
 			prop = prop->next;
 		}
 	}
+=======
+	if (ctx->pos == 0) {
+		if (!dir_emit(ctx, ".", 1, inode->i_ino, DT_DIR))
+			goto out;
+		ctx->pos = 1;
+	}
+	if (ctx->pos == 1) {
+		if (!dir_emit(ctx, "..", 2,
+			    (dp->parent == NULL ?
+			     OPENPROM_ROOT_INO :
+			     dp->parent->unique_id), DT_DIR))
+			goto out;
+		ctx->pos = 2;
+	}
+	i = ctx->pos - 2;
+
+	/* First, the children nodes as directories.  */
+	child = dp->child;
+	while (i && child) {
+		child = child->sibling;
+		i--;
+	}
+	while (child) {
+		if (!dir_emit(ctx,
+			    child->path_component_name,
+			    strlen(child->path_component_name),
+			    child->unique_id, DT_DIR))
+			goto out;
+
+		ctx->pos++;
+		child = child->sibling;
+	}
+
+	/* Next, the properties as files.  */
+	prop = dp->properties;
+	while (i && prop) {
+		prop = prop->next;
+		i--;
+	}
+	while (prop) {
+		if (!dir_emit(ctx, prop->name, strlen(prop->name),
+			    prop->unique_id, DT_REG))
+			goto out;
+
+		ctx->pos++;
+		prop = prop->next;
+	}
+
+>>>>>>> refs/remotes/origin/master
 out:
 	mutex_unlock(&op_mutex);
 	return 0;
@@ -355,9 +438,12 @@ static void openprom_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(op_inode_cachep, OP_I(inode));
 }
 
@@ -421,19 +507,26 @@ static int openprom_fill_super(struct super_block *s, void *data, int silent)
 	oi->u.node = of_find_node_by_path("/");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	s->s_root = d_alloc_root(root_inode);
 =======
 	s->s_root = d_make_root(root_inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s->s_root = d_make_root(root_inode);
+>>>>>>> refs/remotes/origin/master
 	if (!s->s_root)
 		goto out_no_root_dentry;
 	return 0;
 
 out_no_root_dentry:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iput(root_inode);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = -ENOMEM;
 out_no_root:
 	printk("openprom_fill_super: get root inode failed\n");
@@ -452,6 +545,10 @@ static struct file_system_type openprom_fs_type = {
 	.mount		= openprom_mount,
 	.kill_sb	= kill_anon_super,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("openpromfs");
+>>>>>>> refs/remotes/origin/master
 
 static void op_inode_init_once(void *data)
 {
@@ -483,6 +580,14 @@ static int __init init_openprom_fs(void)
 static void __exit exit_openprom_fs(void)
 {
 	unregister_filesystem(&openprom_fs_type);
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(op_inode_cachep);
 }
 

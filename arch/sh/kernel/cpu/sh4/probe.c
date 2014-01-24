@@ -15,7 +15,11 @@
 #include <asm/processor.h>
 #include <asm/cache.h>
 
+<<<<<<< HEAD
 void __cpuinit cpu_probe(void)
+=======
+void cpu_probe(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long pvr, prr, cvr;
 	unsigned long size;
@@ -158,6 +162,12 @@ void __cpuinit cpu_probe(void)
 		case 0x40: /* yon-ten-go */
 			boot_cpu_data.type = CPU_SH7372;
 			break;
+<<<<<<< HEAD
+=======
+		case 0xE0: /* 0x4E0 */
+			boot_cpu_data.type = CPU_SH7734; /* SH7733/SH7734 */
+			break;
+>>>>>>> refs/remotes/origin/master
 
 		}
 		break;

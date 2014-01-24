@@ -1,6 +1,10 @@
 /*
  * arch/arm/mach-tegra/board.h
  *
+<<<<<<< HEAD
+=======
+ * Copyright (c) 2013 NVIDIA Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2010 Google, Inc.
  *
  * Author:
@@ -22,6 +26,7 @@
 #define __MACH_TEGRA_BOARD_H
 
 #include <linux/types.h>
+<<<<<<< HEAD
 
 void tegra_assert_system_reset(char mode, const char *cmd);
 
@@ -40,4 +45,20 @@ void __init tegra_dt_init_irq(void);
 int __init tegra_pcie_init(bool init_port0, bool init_port1);
 
 extern struct sys_timer tegra_timer;
+=======
+#include <linux/reboot.h>
+
+void __init tegra_map_common_io(void);
+void __init tegra_init_irq(void);
+
+int __init tegra_powergate_init(void);
+#if defined(CONFIG_ARCH_TEGRA_2x_SOC) && defined(CONFIG_DEBUG_FS)
+int __init tegra_powergate_debugfs_init(void);
+#else
+static inline int tegra_powergate_debugfs_init(void) { return 0; }
+#endif
+
+void __init tegra_paz00_wifikill_init(void);
+
+>>>>>>> refs/remotes/origin/master
 #endif

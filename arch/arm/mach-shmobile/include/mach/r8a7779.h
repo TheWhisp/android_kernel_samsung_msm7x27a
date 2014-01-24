@@ -3,6 +3,7 @@
 
 #include <linux/sh_clk.h>
 #include <linux/pm_domain.h>
+<<<<<<< HEAD
 
 /* Pin Function Controller:
  * GPIO_FN_xx - GPIO used to select pin function
@@ -323,6 +324,16 @@ enum {
 	GPIO_FN_VI1_G6, GPIO_FN_VI3_DATA6, GPIO_FN_GPS_SIGN, GPIO_FN_FRB,
 	GPIO_FN_RX4_B, GPIO_FN_SIM_CLK_B, GPIO_FN_VI1_G7, GPIO_FN_VI3_DATA7,
 	GPIO_FN_GPS_MAG, GPIO_FN_FCE, GPIO_FN_SCK4_B,
+=======
+#include <linux/sh_eth.h>
+#include <linux/platform_data/camera-rcar.h>
+
+/* HPB-DMA slave IDs */
+enum {
+	HPBDMA_SLAVE_DUMMY,
+	HPBDMA_SLAVE_SDHI0_TX,
+	HPBDMA_SLAVE_SDHI0_RX,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device;
@@ -343,10 +354,31 @@ static inline struct r8a7779_pm_ch *to_r8a7779_ch(struct generic_pm_domain *d)
 	return &container_of(d, struct r8a7779_pm_domain, genpd)->ch;
 }
 
+<<<<<<< HEAD
+=======
+extern void r8a7779_init_delay(void);
+extern void r8a7779_init_irq_extpin(int irlm);
+extern void r8a7779_init_irq_extpin_dt(int irlm);
+extern void r8a7779_init_irq_dt(void);
+extern void r8a7779_map_io(void);
+extern void r8a7779_earlytimer_init(void);
+extern void r8a7779_add_early_devices(void);
+extern void r8a7779_add_standard_devices(void);
+extern void r8a7779_add_standard_devices_dt(void);
+extern void r8a7779_add_ether_device(struct sh_eth_plat_data *pdata);
+extern void r8a7779_add_vin_device(int idx,
+				   struct rcar_vin_platform_data *pdata);
+extern void r8a7779_init_late(void);
+extern void r8a7779_clock_init(void);
+extern void r8a7779_pinmux_init(void);
+extern void r8a7779_pm_init(void);
+extern void r8a7779_register_twd(void);
+>>>>>>> refs/remotes/origin/master
 extern int r8a7779_sysc_power_down(struct r8a7779_pm_ch *r8a7779_ch);
 extern int r8a7779_sysc_power_up(struct r8a7779_pm_ch *r8a7779_ch);
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 extern struct r8a7779_pm_domain r8a7779_sh4a;
 extern struct r8a7779_pm_domain r8a7779_sgx;
 extern struct r8a7779_pm_domain r8a7779_vdp1;
@@ -360,4 +392,13 @@ extern void r8a7779_add_device_to_domain(struct r8a7779_pm_domain *r8a7779_pd,
 #define r8a7779_add_device_to_domain(pd, pdev) do { } while (0)
 #endif /* CONFIG_PM */
 
+=======
+extern void __init r8a7779_init_pm_domains(void);
+#else
+static inline void r8a7779_init_pm_domains(void) {}
+#endif /* CONFIG_PM */
+
+extern struct smp_operations r8a7779_smp_ops;
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_R8A7779_H__ */

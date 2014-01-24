@@ -37,8 +37,12 @@ isofs_cmp(struct dentry *dentry, const char *compare, int dlen)
 
 	qstr.name = compare;
 	qstr.len = dlen;
+<<<<<<< HEAD
 	return dentry->d_op->d_compare(NULL, NULL, NULL, NULL,
 			dentry->d_name.len, dentry->d_name.name, &qstr);
+=======
+	return dentry->d_op->d_compare(NULL, NULL, dentry->d_name.len, dentry->d_name.name, &qstr);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -163,15 +167,22 @@ isofs_find_entry(struct inode *dir, struct dentry *dentry,
 	return 0;
 }
 
+<<<<<<< HEAD
 struct dentry *isofs_lookup(struct inode *dir, struct dentry *dentry, struct nameidata *nd)
+=======
+struct dentry *isofs_lookup(struct inode *dir, struct dentry *dentry, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	int found;
 	unsigned long uninitialized_var(block);
 	unsigned long uninitialized_var(offset);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct isofs_sb_info *sbi = ISOFS_SB(dir->i_sb);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct inode *inode;
 	struct page *page;
 
@@ -180,15 +191,19 @@ struct dentry *isofs_lookup(struct inode *dir, struct dentry *dentry, struct nam
 		return ERR_PTR(-ENOMEM);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&sbi->s_mutex);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	found = isofs_find_entry(dir, dentry,
 				&block, &offset,
 				page_address(page),
 				1024 + page_address(page));
 	__free_page(page);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	inode = NULL;
 	if (found) {
@@ -203,5 +218,9 @@ struct dentry *isofs_lookup(struct inode *dir, struct dentry *dentry, struct nam
 	inode = found ? isofs_iget(dir->i_sb, block, offset) : NULL;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	inode = found ? isofs_iget(dir->i_sb, block, offset) : NULL;
+
+>>>>>>> refs/remotes/origin/master
 	return d_splice_alias(inode, dentry);
 }

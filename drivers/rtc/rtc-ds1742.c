@@ -22,9 +22,13 @@
 #include <linux/platform_device.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_VERSION "0.4"
 
@@ -55,11 +59,17 @@
 #define RTC_BATT_FLAG		0x80
 
 struct rtc_plat_data {
+<<<<<<< HEAD
 	struct rtc_device *rtc;
 	void __iomem *ioaddr_nvram;
 	void __iomem *ioaddr_rtc;
 	size_t size_nvram;
 	size_t size;
+=======
+	void __iomem *ioaddr_nvram;
+	void __iomem *ioaddr_rtc;
+	size_t size_nvram;
+>>>>>>> refs/remotes/origin/master
 	unsigned long last_jiffies;
 	struct bin_attribute nvram_attr;
 };
@@ -120,11 +130,15 @@ static int ds1742_rtc_read_time(struct device *dev, struct rtc_time *tm)
 	/* year is 1900 + tm->tm_year */
 	tm->tm_year = bcd2bin(year) + bcd2bin(century) * 100 - 1900;
 
+<<<<<<< HEAD
 	if (rtc_valid_tm(tm) < 0) {
 		dev_err(dev, "retrieved date/time is not valid.\n");
 		rtc_time_to_tm(0, tm);
 	}
 	return 0;
+=======
+	return rtc_valid_tm(tm);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct rtc_class_ops ds1742_rtc_ops = {
@@ -162,7 +176,11 @@ static ssize_t ds1742_nvram_write(struct file *filp, struct kobject *kobj,
 	return count;
 }
 
+<<<<<<< HEAD
 static int __devinit ds1742_rtc_probe(struct platform_device *pdev)
+=======
+static int ds1742_rtc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtc_device *rtc;
 	struct resource *res;
@@ -171,6 +189,7 @@ static int __devinit ds1742_rtc_probe(struct platform_device *pdev)
 	void __iomem *ioaddr;
 	int ret = 0;
 
+<<<<<<< HEAD
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res)
 		return -ENODEV;
@@ -191,6 +210,19 @@ static int __devinit ds1742_rtc_probe(struct platform_device *pdev)
 
 	pdata->ioaddr_nvram = ioaddr;
 	pdata->size_nvram = pdata->size - RTC_SIZE;
+=======
+	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+	if (!pdata)
+		return -ENOMEM;
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	ioaddr = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(ioaddr))
+		return PTR_ERR(ioaddr);
+
+	pdata->ioaddr_nvram = ioaddr;
+	pdata->size_nvram = resource_size(res) - RTC_SIZE;
+>>>>>>> refs/remotes/origin/master
 	pdata->ioaddr_rtc = ioaddr + pdata->size_nvram;
 
 	sysfs_bin_attr_init(&pdata->nvram_attr);
@@ -215,6 +247,7 @@ static int __devinit ds1742_rtc_probe(struct platform_device *pdev)
 
 	pdata->last_jiffies = jiffies;
 	platform_set_drvdata(pdev, pdata);
+<<<<<<< HEAD
 	rtc = rtc_device_register(pdev->name, &pdev->dev,
 				  &ds1742_rtc_ops, THIS_MODULE);
 	if (IS_ERR(rtc))
@@ -230,23 +263,44 @@ static int __devinit ds1742_rtc_probe(struct platform_device *pdev)
 }
 
 static int __devexit ds1742_rtc_remove(struct platform_device *pdev)
+=======
+	rtc = devm_rtc_device_register(&pdev->dev, pdev->name,
+				  &ds1742_rtc_ops, THIS_MODULE);
+	if (IS_ERR(rtc))
+		return PTR_ERR(rtc);
+
+	ret = sysfs_create_bin_file(&pdev->dev.kobj, &pdata->nvram_attr);
+
+	return ret;
+}
+
+static int ds1742_rtc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtc_plat_data *pdata = platform_get_drvdata(pdev);
 
 	sysfs_remove_bin_file(&pdev->dev.kobj, &pdata->nvram_attr);
+<<<<<<< HEAD
 	rtc_device_unregister(pdata->rtc);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver ds1742_rtc_driver = {
 	.probe		= ds1742_rtc_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ds1742_rtc_remove),
+=======
+	.remove		= ds1742_rtc_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "rtc-ds1742",
 		.owner	= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static __init int ds1742_init(void)
 {
@@ -263,6 +317,9 @@ module_exit(ds1742_exit);
 =======
 module_platform_driver(ds1742_rtc_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(ds1742_rtc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Atsushi Nemoto <anemo@mba.ocn.ne.jp>");
 MODULE_DESCRIPTION("Dallas DS1742 RTC driver");

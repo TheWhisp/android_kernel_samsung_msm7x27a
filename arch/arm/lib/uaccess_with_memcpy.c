@@ -18,9 +18,14 @@
 #include <linux/hardirq.h> /* for in_atomic() */
 #include <linux/gfp.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/highmem.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/highmem.h>
+#include <linux/hugetlb.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/current.h>
 #include <asm/page.h>
 
@@ -43,7 +48,39 @@ pin_page_for_write(const void __user *_addr, pte_t **ptep, spinlock_t **ptlp)
 		return 0;
 
 	pmd = pmd_offset(pud, addr);
+<<<<<<< HEAD
 	if (unlikely(pmd_none(*pmd) || pmd_bad(*pmd)))
+=======
+	if (unlikely(pmd_none(*pmd)))
+		return 0;
+
+	/*
+	 * A pmd can be bad if it refers to a HugeTLB or THP page.
+	 *
+	 * Both THP and HugeTLB pages have the same pmd layout
+	 * and should not be manipulated by the pte functions.
+	 *
+	 * Lock the page table for the destination and check
+	 * to see that it's still huge and whether or not we will
+	 * need to fault on write, or if we have a splitting THP.
+	 */
+	if (unlikely(pmd_thp_or_huge(*pmd))) {
+		ptl = &current->mm->page_table_lock;
+		spin_lock(ptl);
+		if (unlikely(!pmd_thp_or_huge(*pmd)
+			|| pmd_hugewillfault(*pmd)
+			|| pmd_trans_splitting(*pmd))) {
+			spin_unlock(ptl);
+			return 0;
+		}
+
+		*ptep = NULL;
+		*ptlp = ptl;
+		return 1;
+	}
+
+	if (unlikely(pmd_bad(*pmd)))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	pte = pte_offset_map_lock(current->mm, pmd, addr, &ptl);
@@ -97,7 +134,14 @@ __copy_to_user_memcpy(void __user *to, const void *from, unsigned long n)
 		from += tocopy;
 		n -= tocopy;
 
+<<<<<<< HEAD
 		pte_unmap_unlock(pte, ptl);
+=======
+		if (pte)
+			pte_unmap_unlock(pte, ptl);
+		else
+			spin_unlock(ptl);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (!atomic)
 		up_read(&current->mm->mmap_sem);
@@ -150,7 +194,14 @@ __clear_user_memset(void __user *addr, unsigned long n)
 		addr += tocopy;
 		n -= tocopy;
 
+<<<<<<< HEAD
 		pte_unmap_unlock(pte, ptl);
+=======
+		if (pte)
+			pte_unmap_unlock(pte, ptl);
+		else
+			spin_unlock(ptl);
+>>>>>>> refs/remotes/origin/master
 	}
 	up_read(&current->mm->mmap_sem);
 

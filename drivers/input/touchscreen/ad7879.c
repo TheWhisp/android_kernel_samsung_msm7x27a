@@ -34,9 +34,13 @@
 
 #include <linux/spi/ad7879.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include "ad7879.h"
 
 #define AD7879_REG_ZEROS		0
@@ -121,6 +125,10 @@ struct ad7879 {
 	unsigned int		irq;
 	bool			disabled;	/* P: input->mutex */
 	bool			suspended;	/* P: input->mutex */
+<<<<<<< HEAD
+=======
+	bool			swap_xy;
+>>>>>>> refs/remotes/origin/master
 	u16			conversion_data[AD7879_NR_SENSE];
 	char			phys[32];
 	u8			first_conversion_delay;
@@ -164,6 +172,12 @@ static int ad7879_report(struct ad7879 *ts)
 	z1 = ts->conversion_data[AD7879_SEQ_Z1] & MAX_12BIT;
 	z2 = ts->conversion_data[AD7879_SEQ_Z2] & MAX_12BIT;
 
+<<<<<<< HEAD
+=======
+	if (ts->swap_xy)
+		swap(x, y);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The samples processed here are already preprocessed by the AD7879.
 	 * The preprocessing function consists of a median and an averaging
@@ -254,20 +268,29 @@ static void __ad7879_enable(struct ad7879 *ts)
 static void __ad7879_disable(struct ad7879 *ts)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u16 reg = (ts->cmd_crtl2 & ~AD7879_PM(-1)) |
 		AD7879_PM(AD7879_PM_SHUTDOWN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 reg = (ts->cmd_crtl2 & ~AD7879_PM(-1)) |
+		AD7879_PM(AD7879_PM_SHUTDOWN);
+>>>>>>> refs/remotes/origin/master
 	disable_irq(ts->irq);
 
 	if (del_timer_sync(&ts->timer))
 		ad7879_ts_event_release(ts);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ad7879_write(ts, AD7879_REG_CTRL2, AD7879_PM(AD7879_PM_SHUTDOWN));
 =======
 	ad7879_write(ts, AD7879_REG_CTRL2, reg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad7879_write(ts, AD7879_REG_CTRL2, reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -292,15 +315,21 @@ static void ad7879_close(struct input_dev* input)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void ad7879_suspend(struct ad7879 *ts)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM_SLEEP
 static int ad7879_suspend(struct device *dev)
 {
 	struct ad7879 *ts = dev_get_drvdata(dev);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&ts->input->mutex);
 
 	if (!ts->suspended && !ts->disabled && ts->input->users)
@@ -310,12 +339,15 @@ static int ad7879_suspend(struct device *dev)
 
 	mutex_unlock(&ts->input->mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 EXPORT_SYMBOL(ad7879_suspend);
 
 void ad7879_resume(struct ad7879 *ts)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -324,7 +356,10 @@ static int ad7879_resume(struct device *dev)
 {
 	struct ad7879 *ts = dev_get_drvdata(dev);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&ts->input->mutex);
 
 	if (ts->suspended && !ts->disabled && ts->input->users)
@@ -334,9 +369,12 @@ static int ad7879_resume(struct device *dev)
 
 	mutex_unlock(&ts->input->mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 EXPORT_SYMBOL(ad7879_resume);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -344,7 +382,10 @@ EXPORT_SYMBOL(ad7879_resume);
 
 SIMPLE_DEV_PM_OPS(ad7879_pm_ops, ad7879_suspend, ad7879_resume);
 EXPORT_SYMBOL(ad7879_pm_ops);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void ad7879_toggle(struct ad7879 *ts, bool disable)
 {
@@ -380,16 +421,22 @@ static ssize_t ad7879_disable_store(struct device *dev,
 {
 	struct ad7879 *ts = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val;
 	int error;
 
 	error = strict_strtoul(buf, 10, &val);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int val;
 	int error;
 
 	error = kstrtouint(buf, 10, &val);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		return error;
 
@@ -555,6 +602,10 @@ struct ad7879 *ad7879_probe(struct device *dev, u8 devid, unsigned int irq,
 	ts->dev = dev;
 	ts->input = input_dev;
 	ts->irq = irq;
+<<<<<<< HEAD
+=======
+	ts->swap_xy = pdata->swap_xy;
+>>>>>>> refs/remotes/origin/master
 
 	setup_timer(&ts->timer, ad7879_timer, (unsigned long) ts);
 
@@ -632,7 +683,11 @@ struct ad7879 *ad7879_probe(struct device *dev, u8 devid, unsigned int irq,
 			AD7879_TMR(ts->pen_down_acc_interval);
 
 	err = request_threaded_irq(ts->irq, NULL, ad7879_irq,
+<<<<<<< HEAD
 				   IRQF_TRIGGER_FALLING,
+=======
+				   IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+>>>>>>> refs/remotes/origin/master
 				   dev_name(dev), ts);
 	if (err) {
 		dev_err(dev, "irq %d busy?\n", ts->irq);

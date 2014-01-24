@@ -206,7 +206,11 @@ struct ethoc {
 	unsigned int num_rx;
 	unsigned int cur_rx;
 
+<<<<<<< HEAD
 	void** vma;
+=======
+	void **vma;
+>>>>>>> refs/remotes/origin/master
 
 	struct net_device *netdev;
 	struct napi_struct napi;
@@ -292,7 +296,11 @@ static int ethoc_init_ring(struct ethoc *dev, unsigned long mem_start)
 {
 	struct ethoc_bd bd;
 	int i;
+<<<<<<< HEAD
 	void* vma;
+=======
+	void *vma;
+>>>>>>> refs/remotes/origin/master
 
 	dev->cur_tx = 0;
 	dev->dty_tx = 0;
@@ -447,8 +455,13 @@ static int ethoc_rx(struct net_device *dev, int limit)
 				netif_receive_skb(skb);
 			} else {
 				if (net_ratelimit())
+<<<<<<< HEAD
 					dev_warn(&dev->dev, "low on memory - "
 							"packet dropped\n");
+=======
+					dev_warn(&dev->dev,
+					    "low on memory - packet dropped\n");
+>>>>>>> refs/remotes/origin/master
 
 				dev->stats.rx_dropped++;
 				break;
@@ -555,9 +568,14 @@ static irqreturn_t ethoc_interrupt(int irq, void *dev_id)
 	pending = ethoc_read(priv, INT_SOURCE);
 	pending &= mask;
 
+<<<<<<< HEAD
 	if (unlikely(pending == 0)) {
 		return IRQ_NONE;
 	}
+=======
+	if (unlikely(pending == 0))
+		return IRQ_NONE;
+>>>>>>> refs/remotes/origin/master
 
 	ethoc_ack_irq(priv, pending);
 
@@ -620,7 +638,11 @@ static int ethoc_mdio_read(struct mii_bus *bus, int phy, int reg)
 	ethoc_write(priv, MIIADDRESS, MIIADDRESS_ADDR(phy, reg));
 	ethoc_write(priv, MIICOMMAND, MIICOMMAND_READ);
 
+<<<<<<< HEAD
 	for (i=0; i < 5; i++) {
+=======
+	for (i = 0; i < 5; i++) {
+>>>>>>> refs/remotes/origin/master
 		u32 status = ethoc_read(priv, MIISTATUS);
 		if (!(status & MIISTATUS_BUSY)) {
 			u32 data = ethoc_read(priv, MIIRX_DATA);
@@ -628,7 +650,11 @@ static int ethoc_mdio_read(struct mii_bus *bus, int phy, int reg)
 			ethoc_write(priv, MIICOMMAND, 0);
 			return data;
 		}
+<<<<<<< HEAD
 		usleep_range(100,200);
+=======
+		usleep_range(100, 200);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return -EBUSY;
@@ -643,14 +669,22 @@ static int ethoc_mdio_write(struct mii_bus *bus, int phy, int reg, u16 val)
 	ethoc_write(priv, MIITX_DATA, val);
 	ethoc_write(priv, MIICOMMAND, MIICOMMAND_WRITE);
 
+<<<<<<< HEAD
 	for (i=0; i < 5; i++) {
+=======
+	for (i = 0; i < 5; i++) {
+>>>>>>> refs/remotes/origin/master
 		u32 stat = ethoc_read(priv, MIISTATUS);
 		if (!(stat & MIISTATUS_BUSY)) {
 			/* reset MII command register */
 			ethoc_write(priv, MIICOMMAND, 0);
 			return 0;
 		}
+<<<<<<< HEAD
 		usleep_range(100,200);
+=======
+		usleep_range(100, 200);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return -EBUSY;
@@ -665,25 +699,41 @@ static void ethoc_mdio_poll(struct net_device *dev)
 {
 }
 
+<<<<<<< HEAD
 static int __devinit ethoc_mdio_probe(struct net_device *dev)
+=======
+static int ethoc_mdio_probe(struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ethoc *priv = netdev_priv(dev);
 	struct phy_device *phy;
 	int err;
 
+<<<<<<< HEAD
 	if (priv->phy_id != -1) {
 		phy = priv->mdio->phy_map[priv->phy_id];
 	} else {
 		phy = phy_find_first(priv->mdio);
 	}
+=======
+	if (priv->phy_id != -1)
+		phy = priv->mdio->phy_map[priv->phy_id];
+	else
+		phy = phy_find_first(priv->mdio);
+>>>>>>> refs/remotes/origin/master
 
 	if (!phy) {
 		dev_err(&dev->dev, "no PHY found\n");
 		return -ENXIO;
 	}
 
+<<<<<<< HEAD
 	err = phy_connect_direct(dev, phy, ethoc_mdio_poll, 0,
 			PHY_INTERFACE_MODE_GMII);
+=======
+	err = phy_connect_direct(dev, phy, ethoc_mdio_poll,
+				 PHY_INTERFACE_MODE_GMII);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		dev_err(&dev->dev, "could not attach to PHY\n");
 		return err;
@@ -771,6 +821,7 @@ static int ethoc_config(struct net_device *dev, struct ifmap *map)
 	return -ENOSYS;
 }
 
+<<<<<<< HEAD
 static int ethoc_set_mac_address(struct net_device *dev, void *addr)
 {
 	struct ethoc *priv = netdev_priv(dev);
@@ -778,14 +829,33 @@ static int ethoc_set_mac_address(struct net_device *dev, void *addr)
 
 	if (!is_valid_ether_addr(mac))
 		return -EADDRNOTAVAIL;
+=======
+static void ethoc_do_set_mac_address(struct net_device *dev)
+{
+	struct ethoc *priv = netdev_priv(dev);
+	unsigned char *mac = dev->dev_addr;
+>>>>>>> refs/remotes/origin/master
 
 	ethoc_write(priv, MAC_ADDR0, (mac[2] << 24) | (mac[3] << 16) |
 				     (mac[4] <<  8) | (mac[5] <<  0));
 	ethoc_write(priv, MAC_ADDR1, (mac[0] <<  8) | (mac[1] <<  0));
+<<<<<<< HEAD
 
 	memcpy(dev->dev_addr, mac, ETH_ALEN);
 	dev->addr_assign_type &= ~NET_ADDR_RANDOM;
 
+=======
+}
+
+static int ethoc_set_mac_address(struct net_device *dev, void *p)
+{
+	const struct sockaddr *addr = p;
+
+	if (!is_valid_ether_addr(addr->sa_data))
+		return -EADDRNOTAVAIL;
+	memcpy(dev->dev_addr, addr->sa_data, ETH_ALEN);
+	ethoc_do_set_mac_address(dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -902,10 +972,17 @@ static const struct net_device_ops ethoc_netdev_ops = {
 };
 
 /**
+<<<<<<< HEAD
  * ethoc_probe() - initialize OpenCores ethernet MAC
  * pdev:	platform device
  */
 static int __devinit ethoc_probe(struct platform_device *pdev)
+=======
+ * ethoc_probe - initialize OpenCores ethernet MAC
+ * pdev:	platform device
+ */
+static int ethoc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *netdev = NULL;
 	struct resource *res = NULL;
@@ -1022,15 +1099,24 @@ static int __devinit ethoc_probe(struct platform_device *pdev)
 	dev_dbg(&pdev->dev, "ethoc: num_tx: %d num_rx: %d\n",
 		priv->num_tx, priv->num_rx);
 
+<<<<<<< HEAD
 	priv->vma = devm_kzalloc(&pdev->dev, num_bd*sizeof(void*), GFP_KERNEL);
+=======
+	priv->vma = devm_kzalloc(&pdev->dev, num_bd*sizeof(void *), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!priv->vma) {
 		ret = -ENOMEM;
 		goto error;
 	}
 
 	/* Allow the platform setup code to pass in a MAC address. */
+<<<<<<< HEAD
 	if (pdev->dev.platform_data) {
 		struct ethoc_platform_data *pdata = pdev->dev.platform_data;
+=======
+	if (dev_get_platdata(&pdev->dev)) {
+		struct ethoc_platform_data *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 		memcpy(netdev->dev_addr, pdata->hwaddr, IFHWADDRLEN);
 		priv->phy_id = pdata->phy_id;
 	} else {
@@ -1038,7 +1124,11 @@ static int __devinit ethoc_probe(struct platform_device *pdev)
 
 #ifdef CONFIG_OF
 		{
+<<<<<<< HEAD
 		const uint8_t* mac;
+=======
+		const uint8_t *mac;
+>>>>>>> refs/remotes/origin/master
 
 		mac = of_get_property(pdev->dev.of_node,
 				      "local-mac-address",
@@ -1050,11 +1140,17 @@ static int __devinit ethoc_probe(struct platform_device *pdev)
 	}
 
 	/* Check that the given MAC address is valid. If it isn't, read the
+<<<<<<< HEAD
 	 * current MAC from the controller. */
+=======
+	 * current MAC from the controller.
+	 */
+>>>>>>> refs/remotes/origin/master
 	if (!is_valid_ether_addr(netdev->dev_addr))
 		ethoc_get_mac_address(netdev, netdev->dev_addr);
 
 	/* Check the MAC again for validity, if it still isn't choose and
+<<<<<<< HEAD
 	 * program a random one. */
 	if (!is_valid_ether_addr(netdev->dev_addr)) {
 		random_ether_addr(netdev->dev_addr);
@@ -1069,6 +1165,19 @@ static int __devinit ethoc_probe(struct platform_device *pdev)
 
 	if (random_mac)
 		netdev->addr_assign_type |= NET_ADDR_RANDOM;
+=======
+	 * program a random one.
+	 */
+	if (!is_valid_ether_addr(netdev->dev_addr)) {
+		eth_random_addr(netdev->dev_addr);
+		random_mac = true;
+	}
+
+	ethoc_do_set_mac_address(netdev);
+
+	if (random_mac)
+		netdev->addr_assign_type = NET_ADDR_RANDOM;
+>>>>>>> refs/remotes/origin/master
 
 	/* register MII bus */
 	priv->mdio = mdiobus_alloc();
@@ -1140,16 +1249,26 @@ out:
 }
 
 /**
+<<<<<<< HEAD
  * ethoc_remove() - shutdown OpenCores ethernet MAC
  * @pdev:	platform device
  */
 static int __devexit ethoc_remove(struct platform_device *pdev)
+=======
+ * ethoc_remove - shutdown OpenCores ethernet MAC
+ * @pdev:	platform device
+ */
+static int ethoc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *netdev = platform_get_drvdata(pdev);
 	struct ethoc *priv = netdev_priv(netdev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (netdev) {
 		netif_napi_del(&priv->napi);
 		phy_disconnect(priv->phy);
@@ -1190,7 +1309,11 @@ MODULE_DEVICE_TABLE(of, ethoc_match);
 
 static struct platform_driver ethoc_driver = {
 	.probe   = ethoc_probe,
+<<<<<<< HEAD
 	.remove  = __devexit_p(ethoc_remove),
+=======
+	.remove  = ethoc_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend = ethoc_suspend,
 	.resume  = ethoc_resume,
 	.driver  = {

@@ -35,16 +35,22 @@ OPTIONS
 
 -m::
 <<<<<<< HEAD
+<<<<<<< HEAD
 --module=MODNAME::
 	Specify module name in which perf-probe searches probe points
 	or lines.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 --module=MODNAME|PATH::
 	Specify module name in which perf-probe searches probe points
 	or lines. If a path of module file is passed, perf-probe
 	treat it as an offline module (this means you can add a probe on
         a module which has not been loaded yet).
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 -s::
 --source=PATH::
@@ -83,7 +89,12 @@ OPTIONS
 
 -F::
 --funcs::
+<<<<<<< HEAD
 	Show available functions in given module or kernel.
+=======
+	Show available functions in given module or kernel. With -x/--exec,
+	can also list functions in a user space executable / shared library.
+>>>>>>> refs/remotes/origin/master
 
 --filter=FILTER::
 	(Only for --vars and --funcs) Set filter. FILTER is a combination of glob
@@ -104,6 +115,18 @@ OPTIONS
 --max-probes::
 	Set the maximum number of probe points for an event. Default is 128.
 
+<<<<<<< HEAD
+=======
+-x::
+--exec=PATH::
+	Specify path to the executable or shared library file for user
+	space tracing. Can also be used with --funcs option.
+
+In absence of -m/-x options, perf probe checks if the first argument after
+the options is an absolute path name. If its an absolute path, perf probe
+uses it as a target module/target user space binary to probe.
+
+>>>>>>> refs/remotes/origin/master
 PROBE SYNTAX
 ------------
 Probe points are defined by following syntax.
@@ -188,6 +211,16 @@ Delete all probes on schedule().
 
  ./perf probe --del='schedule*'
 
+<<<<<<< HEAD
+=======
+Add probes at zfree() function on /bin/zsh
+
+ ./perf probe -x /bin/zsh zfree or ./perf probe /bin/zsh zfree
+
+Add probes at malloc() function on libc
+
+ ./perf probe -x /lib/libc.so.6 malloc or ./perf probe /lib/libc.so.6 malloc
+>>>>>>> refs/remotes/origin/master
 
 SEE ALSO
 --------

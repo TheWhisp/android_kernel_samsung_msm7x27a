@@ -6,6 +6,7 @@ Numa policy hit/miss statistics
 All units are pages. Hugepages have separate counters.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 numa_hit			A process wanted to allocate memory from this node,
 					and succeeded.
 numa_miss			A process wanted to allocate memory from another node,
@@ -20,6 +21,8 @@ interleave_hit 		Interleaving wanted to allocate from this node
 For easier reading you can use the numastat utility from the numactl package
 (ftp://ftp.suse.com/pub/people/ak/numa/numactl*). Note that it only works
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 numa_hit	A process wanted to allocate memory from this node,
 		and succeeded.
 
@@ -38,6 +41,9 @@ interleave_hit 	Interleaving wanted to allocate from this node
 
 For easier reading you can use the numastat utility from the numactl package
 (http://oss.sgi.com/projects/libnuma/). Note that it only works
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 well right now on machines with a small number of CPUs.
 

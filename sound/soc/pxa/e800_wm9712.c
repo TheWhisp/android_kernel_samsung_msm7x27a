@@ -81,9 +81,12 @@ static int e800_ac97_init(struct snd_soc_pcm_runtime *rtd)
 
 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -111,13 +114,18 @@ static struct snd_soc_dai_link e800_dai[] = {
 static struct snd_soc_card e800 = {
 	.name = "Toshiba e800",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.owner = THIS_MODULE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	.dai_link = e800_dai,
 	.num_links = ARRAY_SIZE(e800_dai),
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct platform_device *e800_snd_device;
 
@@ -174,12 +182,18 @@ static void __exit e800_exit(void)
 module_init(e800_init);
 module_exit(e800_exit);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct gpio e800_audio_gpios[] = {
 	{ GPIO_E800_SPK_AMP_ON, GPIOF_OUT_INIT_HIGH, "Headphone amp" },
 	{ GPIO_E800_HP_AMP_OFF, GPIOF_OUT_INIT_HIGH, "Speaker amp" },
 };
 
+<<<<<<< HEAD
 static int __devinit e800_probe(struct platform_device *pdev)
+=======
+static int e800_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = &e800;
 	int ret;
@@ -200,7 +214,11 @@ static int __devinit e800_probe(struct platform_device *pdev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit e800_remove(struct platform_device *pdev)
+=======
+static int e800_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = platform_get_drvdata(pdev);
 
@@ -213,6 +231,7 @@ static struct platform_driver e800_driver = {
 	.driver		= {
 		.name	= "e800-audio",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe		= e800_probe,
 	.remove		= __devexit_p(e800_remove),
@@ -220,12 +239,25 @@ static struct platform_driver e800_driver = {
 
 module_platform_driver(e800_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm     = &snd_soc_pm_ops,
+	},
+	.probe		= e800_probe,
+	.remove		= e800_remove,
+};
+
+module_platform_driver(e800_driver);
+>>>>>>> refs/remotes/origin/master
 
 /* Module information */
 MODULE_AUTHOR("Ian Molton <spyro@f2s.com>");
 MODULE_DESCRIPTION("ALSA SoC driver for e800");
 MODULE_LICENSE("GPL v2");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_ALIAS("platform:e800-audio");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:e800-audio");
+>>>>>>> refs/remotes/origin/master

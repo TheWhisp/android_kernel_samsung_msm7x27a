@@ -19,11 +19,14 @@ quiet_cmd_posttest = TEST    $@
       cmd_posttest = ($(OBJDUMP) -v | $(AWK) -f $(chkobjdump)) || $(OBJDUMP) -d -j .text $(objtree)/vmlinux | $(AWK) -f $(distill_awk) | $(obj)/test_get_len $(posttest_64bit) $(posttest_verbose)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 posttest: $(obj)/test_get_len vmlinux
 	$(call cmd,posttest)
 
 hostprogs-y	:= test_get_len
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 quiet_cmd_sanitytest = TEST    $@
       cmd_sanitytest = $(obj)/insn_sanity $(posttest_64bit) -m 1000000
 
@@ -32,6 +35,7 @@ posttest: $(obj)/test_get_len vmlinux $(obj)/insn_sanity
 	$(call cmd,sanitytest)
 
 hostprogs-y	+= test_get_len insn_sanity
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 # -I needed for generated C source and C source which in the kernel tree.
@@ -42,6 +46,12 @@ HOSTCFLAGS_test_get_len.o := -Wall -I$(objtree)/arch/x86/lib/ -I$(srctree)/arch/
 $(obj)/test_get_len.o: $(srctree)/arch/x86/lib/insn.c $(srctree)/arch/x86/lib/inat.c $(srctree)/arch/x86/include/asm/inat_types.h $(srctree)/arch/x86/include/asm/inat.h $(srctree)/arch/x86/include/asm/insn.h $(objtree)/arch/x86/lib/inat-tables.c
 
 =======
+=======
+
+# -I needed for generated C source and C source which in the kernel tree.
+HOSTCFLAGS_test_get_len.o := -Wall -I$(objtree)/arch/x86/lib/ -I$(srctree)/arch/x86/include/uapi/ -I$(srctree)/arch/x86/include/ -I$(srctree)/arch/x86/lib/ -I$(srctree)/include/uapi/
+
+>>>>>>> refs/remotes/origin/master
 HOSTCFLAGS_insn_sanity.o := -Wall -I$(objtree)/arch/x86/lib/ -I$(srctree)/arch/x86/include/ -I$(srctree)/arch/x86/lib/ -I$(srctree)/include/
 
 # Dependencies are also needed.
@@ -51,5 +61,10 @@ $(obj)/insn_sanity.o: $(srctree)/arch/x86/lib/insn.c $(srctree)/arch/x86/lib/ina
 
 HOST_EXTRACFLAGS += -I$(srctree)/tools/include
 hostprogs-y	+= relocs
+<<<<<<< HEAD
 relocs: $(obj)/relocs
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+relocs-objs     := relocs_32.o relocs_64.o relocs_common.o
+relocs: $(obj)/relocs
+>>>>>>> refs/remotes/origin/master

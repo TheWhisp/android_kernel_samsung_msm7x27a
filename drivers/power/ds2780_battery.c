@@ -39,7 +39,10 @@ struct ds2780_device_info {
 	struct device *dev;
 	struct power_supply bat;
 	struct device *w1_dev;
+<<<<<<< HEAD
 	struct task_struct *mutex_holder;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 enum current_types {
@@ -64,10 +67,14 @@ static inline struct power_supply *to_power_supply(struct device *dev)
 static inline int ds2780_battery_io(struct ds2780_device_info *dev_info,
 	char *buf, int addr, size_t count, int io)
 {
+<<<<<<< HEAD
 	if (dev_info->mutex_holder == current)
 		return w1_ds2780_io_nolock(dev_info->w1_dev, buf, addr, count, io);
 	else
 		return w1_ds2780_io(dev_info->w1_dev, buf, addr, count, io);
+=======
+	return w1_ds2780_io(dev_info->w1_dev, buf, addr, count, io);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int ds2780_read8(struct ds2780_device_info *dev_info, u8 *val,
@@ -759,12 +766,20 @@ static const struct attribute_group ds2780_attr_group = {
 	.attrs = ds2780_attributes,
 };
 
+<<<<<<< HEAD
 static int __devinit ds2780_battery_probe(struct platform_device *pdev)
+=======
+static int ds2780_battery_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 	struct ds2780_device_info *dev_info;
 
+<<<<<<< HEAD
 	dev_info = kzalloc(sizeof(*dev_info), GFP_KERNEL);
+=======
+	dev_info = devm_kzalloc(&pdev->dev, sizeof(*dev_info), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!dev_info) {
 		ret = -ENOMEM;
 		goto fail;
@@ -779,12 +794,19 @@ static int __devinit ds2780_battery_probe(struct platform_device *pdev)
 	dev_info->bat.properties	= ds2780_battery_props;
 	dev_info->bat.num_properties	= ARRAY_SIZE(ds2780_battery_props);
 	dev_info->bat.get_property	= ds2780_battery_get_property;
+<<<<<<< HEAD
 	dev_info->mutex_holder		= current;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = power_supply_register(&pdev->dev, &dev_info->bat);
 	if (ret) {
 		dev_err(dev_info->dev, "failed to register battery\n");
+<<<<<<< HEAD
 		goto fail_free_info;
+=======
+		goto fail;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = sysfs_create_group(&dev_info->bat.dev->kobj, &ds2780_attr_group);
@@ -809,8 +831,11 @@ static int __devinit ds2780_battery_probe(struct platform_device *pdev)
 		goto fail_remove_bin_file;
 	}
 
+<<<<<<< HEAD
 	dev_info->mutex_holder = NULL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 fail_remove_bin_file:
@@ -820,23 +845,34 @@ fail_remove_group:
 	sysfs_remove_group(&dev_info->bat.dev->kobj, &ds2780_attr_group);
 fail_unregister:
 	power_supply_unregister(&dev_info->bat);
+<<<<<<< HEAD
 fail_free_info:
 	kfree(dev_info);
+=======
+>>>>>>> refs/remotes/origin/master
 fail:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit ds2780_battery_remove(struct platform_device *pdev)
 {
 	struct ds2780_device_info *dev_info = platform_get_drvdata(pdev);
 
 	dev_info->mutex_holder = current;
 
+=======
+static int ds2780_battery_remove(struct platform_device *pdev)
+{
+	struct ds2780_device_info *dev_info = platform_get_drvdata(pdev);
+
+>>>>>>> refs/remotes/origin/master
 	/* remove attributes */
 	sysfs_remove_group(&dev_info->bat.dev->kobj, &ds2780_attr_group);
 
 	power_supply_unregister(&dev_info->bat);
 
+<<<<<<< HEAD
 	kfree(dev_info);
 	return 0;
 }
@@ -846,11 +882,17 @@ MODULE_ALIAS("platform:ds2780-battery");
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver ds2780_battery_driver = {
 	.driver = {
 		.name = "ds2780-battery",
 	},
 	.probe	  = ds2780_battery_probe,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.remove   = ds2780_battery_remove,
 };
@@ -873,11 +915,21 @@ module_exit(ds2780_battery_exit);
 
 module_platform_driver(ds2780_battery_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove   = ds2780_battery_remove,
+};
+
+module_platform_driver(ds2780_battery_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Clifton Barnes <cabarnes@indesign-llc.com>");
 MODULE_DESCRIPTION("Maxim/Dallas DS2780 Stand-Alone Fuel Gauage IC driver");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_ALIAS("platform:ds2780-battery");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:ds2780-battery");
+>>>>>>> refs/remotes/origin/master

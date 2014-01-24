@@ -10,6 +10,7 @@
 
 #include <asm/uaccess.h>
 
+<<<<<<< HEAD
 #define SI_PAD_SIZE32   ((SI_MAX_SIZE/sizeof(int)) - 3)
 
 typedef struct compat_siginfo {
@@ -72,6 +73,8 @@ typedef struct compat_siginfo {
 	} _sifields;
 } compat_siginfo_t;
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int __copy_conv_sigset_to_user(compat_sigset_t __user *d,
 	const sigset_t *s)
 {
@@ -80,9 +83,15 @@ static inline int __copy_conv_sigset_to_user(compat_sigset_t __user *d,
 	BUG_ON(sizeof(*d) != sizeof(*s));
 	BUG_ON(_NSIG_WORDS != 2);
 
+<<<<<<< HEAD
 	err  = __put_user(s->sig[0],       &d->sig[0]);
 	err |= __put_user(s->sig[0] >> 32, &d->sig[1]);
 	err |= __put_user(s->sig[1],       &d->sig[2]);
+=======
+	err  = __put_user(s->sig[0],	   &d->sig[0]);
+	err |= __put_user(s->sig[0] >> 32, &d->sig[1]);
+	err |= __put_user(s->sig[1],	   &d->sig[2]);
+>>>>>>> refs/remotes/origin/master
 	err |= __put_user(s->sig[1] >> 32, &d->sig[3]);
 
 	return err;

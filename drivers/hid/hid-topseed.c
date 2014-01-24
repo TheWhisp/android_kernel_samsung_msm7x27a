@@ -76,6 +76,7 @@ static struct hid_driver ts_driver = {
 	.id_table = ts_devices,
 	.input_mapping = ts_input_mapping,
 };
+<<<<<<< HEAD
 
 static int __init ts_init(void)
 {
@@ -89,4 +90,8 @@ static void __exit ts_exit(void)
 
 module_init(ts_init);
 module_exit(ts_exit);
+=======
+module_hid_driver(ts_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

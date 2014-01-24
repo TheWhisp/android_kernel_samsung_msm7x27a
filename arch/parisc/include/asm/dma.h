@@ -10,9 +10,12 @@
 
 #include <asm/io.h>		/* need byte IO */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>	
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define dma_outb	outb
 #define dma_inb		inb

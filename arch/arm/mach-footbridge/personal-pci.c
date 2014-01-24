@@ -19,11 +19,16 @@ static int irqmap_personal_server[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init personal_server_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 static int __init personal_server_map_irq(const struct pci_dev *dev, u8 slot,
 	u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init personal_server_map_irq(const struct pci_dev *dev, u8 slot,
+	u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char line;
 
@@ -45,8 +50,13 @@ static int __init personal_server_map_irq(const struct pci_dev *dev, u8 slot,
 static struct hw_pci personal_server_pci __initdata = {
 	.map_irq		= personal_server_map_irq,
 	.nr_controllers		= 1,
+<<<<<<< HEAD
 	.setup			= dc21285_setup,
 	.scan			= dc21285_scan_bus,
+=======
+	.ops			= &dc21285_ops,
+	.setup			= dc21285_setup,
+>>>>>>> refs/remotes/origin/master
 	.preinit		= dc21285_preinit,
 	.postinit		= dc21285_postinit,
 };

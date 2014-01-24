@@ -100,9 +100,12 @@
 #include <linux/device.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/uaccess.h>
 #include <linux/kdb.h>
 #include <linux/ctype.h>
@@ -263,10 +266,14 @@ EXPORT_SYMBOL_GPL(unregister_vt_notifier);
 static void notify_write(struct vc_data *vc, unsigned int unicode)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct vt_notifier_param param = { .vc = vc, unicode = unicode };
 =======
 	struct vt_notifier_param param = { .vc = vc, .c = unicode };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct vt_notifier_param param = { .vc = vc, .c = unicode };
+>>>>>>> refs/remotes/origin/master
 	atomic_notifier_call_chain(&vt_notifier_list, VT_WRITE, &param);
 }
 
@@ -545,6 +552,7 @@ void complement_pos(struct vc_data *vc, int offset)
 
 static void insert_char(struct vc_data *vc, unsigned int nr)
 {
+<<<<<<< HEAD
 	unsigned short *p, *q = (unsigned short *)vc->vc_pos;
 
 	p = q + vc->vc_cols - nr - vc->vc_x;
@@ -561,10 +569,21 @@ static void insert_char(struct vc_data *vc, unsigned int nr)
 			vc->vc_sw->con_putc(vc, vc->vc_video_erase_char, vc->vc_y, vc->vc_x + nr);
 		vc->vc_attr = oldattr;
 	}
+=======
+	unsigned short *p = (unsigned short *) vc->vc_pos;
+
+	scr_memmovew(p + nr, p, (vc->vc_cols - vc->vc_x - nr) * 2);
+	scr_memsetw(p, vc->vc_video_erase_char, nr * 2);
+	vc->vc_need_wrap = 0;
+	if (DO_UPDATE(vc))
+		do_update_region(vc, (unsigned long) p,
+			vc->vc_cols - vc->vc_x);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void delete_char(struct vc_data *vc, unsigned int nr)
 {
+<<<<<<< HEAD
 	unsigned int i = vc->vc_x;
 	unsigned short *p = (unsigned short *)vc->vc_pos;
 
@@ -584,6 +603,17 @@ static void delete_char(struct vc_data *vc, unsigned int nr)
 				     vc->vc_cols - 1 - nr);
 		vc->vc_attr = oldattr;
 	}
+=======
+	unsigned short *p = (unsigned short *) vc->vc_pos;
+
+	scr_memcpyw(p, p + nr, (vc->vc_cols - vc->vc_x - nr) * 2);
+	scr_memsetw(p + vc->vc_cols - vc->vc_x - nr, vc->vc_video_erase_char,
+			nr * 2);
+	vc->vc_need_wrap = 0;
+	if (DO_UPDATE(vc))
+		do_update_region(vc, (unsigned long) p,
+			vc->vc_cols - vc->vc_x);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int softcursor_original;
@@ -665,10 +695,14 @@ static inline void save_screen(struct vc_data *vc)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void clear_buffer_attributes(struct vc_data *vc)
 =======
 void clear_buffer_attributes(struct vc_data *vc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void clear_buffer_attributes(struct vc_data *vc)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned short *p = (unsigned short *)vc->vc_origin;
 	int count = vc->vc_screenbuf_size / 2;
@@ -858,7 +892,11 @@ static inline int resize_screen(struct vc_data *vc, int width, int height,
  *	If the caller passes a tty structure then update the termios winsize
  *	information and perform any necessary signal handling.
  *
+<<<<<<< HEAD
  *	Caller must hold the console semaphore. Takes the termios mutex and
+=======
+ *	Caller must hold the console semaphore. Takes the termios rwsem and
+>>>>>>> refs/remotes/origin/master
  *	ctrl_lock of the tty IFF a tty is passed.
  */
 
@@ -1002,7 +1040,11 @@ int vc_resize(struct vc_data *vc, unsigned int cols, unsigned int rows)
  *	the actual work.
  *
  *	Takes the console sem and the called methods then take the tty
+<<<<<<< HEAD
  *	termios_mutex and the tty ctrl_lock in that order.
+=======
+ *	termios_rwsem and the tty ctrl_lock in that order.
+>>>>>>> refs/remotes/origin/master
  */
 static int vt_resize(struct tty_struct *tty, struct winsize *ws)
 {
@@ -1015,6 +1057,7 @@ static int vt_resize(struct tty_struct *tty, struct winsize *ws)
 	return ret;
 }
 
+<<<<<<< HEAD
 void vc_deallocate(unsigned int currcons)
 {
 	WARN_CONSOLE_UNLOCKED();
@@ -1023,22 +1066,41 @@ void vc_deallocate(unsigned int currcons)
 		struct vc_data *vc = vc_cons[currcons].d;
 		struct vt_notifier_param param = { .vc = vc };
 
+=======
+struct vc_data *vc_deallocate(unsigned int currcons)
+{
+	struct vc_data *vc = NULL;
+
+	WARN_CONSOLE_UNLOCKED();
+
+	if (vc_cons_allocated(currcons)) {
+		struct vt_notifier_param param;
+
+		param.vc = vc = vc_cons[currcons].d;
+>>>>>>> refs/remotes/origin/master
 		atomic_notifier_call_chain(&vt_notifier_list, VT_DEALLOCATE, &param);
 		vcs_remove_sysfs(currcons);
 		vc->vc_sw->con_deinit(vc);
 		put_pid(vc->vt_pid);
 		module_put(vc->vc_sw->owner);
 		kfree(vc->vc_screenbuf);
+<<<<<<< HEAD
 		if (currcons >= MIN_NR_CONSOLES)
 			kfree(vc);
 		vc_cons[currcons].d = NULL;
 	}
+=======
+		vc_cons[currcons].d = NULL;
+	}
+	return vc;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  *	VT102 emulator
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define set_kbd(vc, x)	set_vc_kbd_mode(kbd_table + (vc)->vc_num, (x))
 #define clr_kbd(vc, x)	clr_vc_kbd_mode(kbd_table + (vc)->vc_num, (x))
@@ -1048,6 +1110,11 @@ void vc_deallocate(unsigned int currcons)
 #define clr_kbd(vc, x)	vt_clr_kbd_mode_bit((vc)->vc_num, (x))
 #define is_kbd(vc, x)	vt_get_kbd_mode_bit((vc)->vc_num, (x))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define set_kbd(vc, x)	vt_set_kbd_mode_bit((vc)->vc_num, (x))
+#define clr_kbd(vc, x)	vt_clr_kbd_mode_bit((vc)->vc_num, (x))
+#define is_kbd(vc, x)	vt_get_kbd_mode_bit((vc)->vc_num, (x))
+>>>>>>> refs/remotes/origin/master
 
 #define decarm		VC_REPEAT
 #define decckm		VC_CKMODE
@@ -1190,6 +1257,7 @@ static void csi_J(struct vc_data *vc, int vpar)
 		case 0:	/* erase from cursor to end of display */
 			count = (vc->vc_scr_end - vc->vc_pos) >> 1;
 			start = (unsigned short *)vc->vc_pos;
+<<<<<<< HEAD
 			if (DO_UPDATE(vc)) {
 				/* do in two stages */
 				vc->vc_sw->con_clear(vc, vc->vc_y, vc->vc_x, 1,
@@ -1198,10 +1266,13 @@ static void csi_J(struct vc_data *vc, int vpar)
 					      vc->vc_rows - vc->vc_y - 1,
 					      vc->vc_cols);
 			}
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 1:	/* erase from start to cursor */
 			count = ((vc->vc_pos - vc->vc_origin) >> 1) + 1;
 			start = (unsigned short *)vc->vc_origin;
+<<<<<<< HEAD
 			if (DO_UPDATE(vc)) {
 				/* do in two stages */
 				vc->vc_sw->con_clear(vc, 0, 0, vc->vc_y,
@@ -1209,26 +1280,39 @@ static void csi_J(struct vc_data *vc, int vpar)
 				vc->vc_sw->con_clear(vc, vc->vc_y, 0, 1,
 					      vc->vc_x + 1);
 			}
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 3: /* erase scroll-back buffer (and whole display) */
 			scr_memsetw(vc->vc_screenbuf, vc->vc_video_erase_char,
 				    vc->vc_screenbuf_size >> 1);
 			set_origin(vc);
+<<<<<<< HEAD
 			if (CON_IS_VISIBLE(vc))
 				update_screen(vc);
+=======
+>>>>>>> refs/remotes/origin/master
 			/* fall through */
 		case 2: /* erase whole display */
 			count = vc->vc_cols * vc->vc_rows;
 			start = (unsigned short *)vc->vc_origin;
+<<<<<<< HEAD
 			if (DO_UPDATE(vc))
 				vc->vc_sw->con_clear(vc, 0, 0,
 					      vc->vc_rows,
 					      vc->vc_cols);
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			return;
 	}
 	scr_memsetw(start, vc->vc_video_erase_char, 2 * count);
+<<<<<<< HEAD
+=======
+	if (DO_UPDATE(vc))
+		do_update_region(vc, (unsigned long) start, count);
+>>>>>>> refs/remotes/origin/master
 	vc->vc_need_wrap = 0;
 }
 
@@ -1241,29 +1325,43 @@ static void csi_K(struct vc_data *vc, int vpar)
 		case 0:	/* erase from cursor to end of line */
 			count = vc->vc_cols - vc->vc_x;
 			start = (unsigned short *)vc->vc_pos;
+<<<<<<< HEAD
 			if (DO_UPDATE(vc))
 				vc->vc_sw->con_clear(vc, vc->vc_y, vc->vc_x, 1,
 						     vc->vc_cols - vc->vc_x);
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 1:	/* erase from start of line to cursor */
 			start = (unsigned short *)(vc->vc_pos - (vc->vc_x << 1));
 			count = vc->vc_x + 1;
+<<<<<<< HEAD
 			if (DO_UPDATE(vc))
 				vc->vc_sw->con_clear(vc, vc->vc_y, 0, 1,
 						     vc->vc_x + 1);
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 2: /* erase whole line */
 			start = (unsigned short *)(vc->vc_pos - (vc->vc_x << 1));
 			count = vc->vc_cols;
+<<<<<<< HEAD
 			if (DO_UPDATE(vc))
 				vc->vc_sw->con_clear(vc, vc->vc_y, 0, 1,
 					      vc->vc_cols);
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			return;
 	}
 	scr_memsetw(start, vc->vc_video_erase_char, 2 * count);
 	vc->vc_need_wrap = 0;
+<<<<<<< HEAD
+=======
+	if (DO_UPDATE(vc))
+		do_update_region(vc, (unsigned long) start, count);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void csi_X(struct vc_data *vc, int vpar) /* erase the following vpar positions */
@@ -1361,6 +1459,7 @@ static void csi_m(struct vc_data *vc)
 			case 27:
 				vc->vc_reverse = 0;
 				break;
+<<<<<<< HEAD
 			case 38: /* ANSI X3.64-1979 (SCO-ish?)
 				  * Enables underscore, white foreground
 				  * with white underscore (Linux - use
@@ -1376,6 +1475,32 @@ static void csi_m(struct vc_data *vc)
 				  */
 				vc->vc_color = (vc->vc_def_color & 0x0f) | (vc->vc_color & 0xf0);
 				vc->vc_underline = 0;
+=======
+			case 38:
+			case 48: /* ITU T.416
+				  * Higher colour modes.
+				  * They break the usual properties of SGR codes
+				  * and thus need to be detected and ignored by
+				  * hand.  Strictly speaking, that standard also
+				  * wants : rather than ; as separators, contrary
+				  * to ECMA-48, but no one produces such codes
+				  * and almost no one accepts them.
+				  */
+				i++;
+				if (i > vc->vc_npar)
+					break;
+				if (vc->vc_par[i] == 5)      /* 256 colours */
+					i++;                 /* ubiquitous */
+				else if (vc->vc_par[i] == 2) /* 24 bit colours */
+					i += 3;              /* extremely rare */
+				/* Subcommands 3 (CMY) and 4 (CMYK) are so insane
+				 * that detecting them is not worth the few extra
+				 * bytes of kernel's size.
+				 */
+				break;
+			case 39:
+				vc->vc_color = (vc->vc_def_color & 0x0f) | (vc->vc_color & 0xf0);
+>>>>>>> refs/remotes/origin/master
 				break;
 			case 49:
 				vc->vc_color = (vc->vc_def_color & 0xf0) | (vc->vc_color & 0x0f);
@@ -1392,6 +1517,7 @@ static void csi_m(struct vc_data *vc)
 	update_attr(vc);
 }
 
+<<<<<<< HEAD
 static void respond_string(const char *p, struct tty_struct *tty)
 {
 	while (*p) {
@@ -1399,6 +1525,15 @@ static void respond_string(const char *p, struct tty_struct *tty)
 		p++;
 	}
 	con_schedule_flip(tty);
+=======
+static void respond_string(const char *p, struct tty_port *port)
+{
+	while (*p) {
+		tty_insert_flip_char(port, *p, 0);
+		p++;
+	}
+	tty_schedule_flip(port);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void cursor_report(struct vc_data *vc, struct tty_struct *tty)
@@ -1406,17 +1541,30 @@ static void cursor_report(struct vc_data *vc, struct tty_struct *tty)
 	char buf[40];
 
 	sprintf(buf, "\033[%d;%dR", vc->vc_y + (vc->vc_decom ? vc->vc_top + 1 : 1), vc->vc_x + 1);
+<<<<<<< HEAD
 	respond_string(buf, tty);
+=======
+	respond_string(buf, tty->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void status_report(struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	respond_string("\033[0n", tty);	/* Terminal ok */
 }
 
 static inline void respond_ID(struct tty_struct * tty)
 {
 	respond_string(VT102ID, tty);
+=======
+	respond_string("\033[0n", tty->port);	/* Terminal ok */
+}
+
+static inline void respond_ID(struct tty_struct *tty)
+{
+	respond_string(VT102ID, tty->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 void mouse_report(struct tty_struct *tty, int butt, int mrx, int mry)
@@ -1425,7 +1573,11 @@ void mouse_report(struct tty_struct *tty, int butt, int mrx, int mry)
 
 	sprintf(buf, "\033[M%c%c%c", (char)(' ' + butt), (char)('!' + mrx),
 		(char)('!' + mry));
+<<<<<<< HEAD
 	respond_string(buf, tty);
+=======
+	respond_string(buf, tty->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* invoked via ioctl(TIOCLINUX) and through set_selection */
@@ -1670,6 +1822,7 @@ static void reset_terminal(struct vc_data *vc, int do_clear)
 	vc->vc_decim		= 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_kbd(vc, decarm);
 	clr_kbd(vc, decckm);
 	clr_kbd(vc, kbdapplic);
@@ -1683,6 +1836,9 @@ static void reset_terminal(struct vc_data *vc, int do_clear)
 =======
 	vt_reset_keyboard(vc->vc_num);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vt_reset_keyboard(vc->vc_num);
+>>>>>>> refs/remotes/origin/master
 
 	vc->vc_cursor_type = cur_default;
 	vc->vc_complement_mask = vc->vc_s_complement_mask;
@@ -2001,10 +2157,14 @@ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
 			/* map 0,1,2,3 to 0,1,2,4 */
 			if (vc->vc_par[0] < 4)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				setledstate(kbd_table + vc->vc_num,
 =======
 				vt_set_led_state(vc->vc_num,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				vt_set_led_state(vc->vc_num,
+>>>>>>> refs/remotes/origin/master
 					    (vc->vc_par[0] < 3) ? vc->vc_par[0] : 4);
 			return;
 		case 'r':
@@ -2658,12 +2818,18 @@ int tioclinux(struct tty_struct *tty, unsigned long arg)
 			break;
 		case TIOCL_SELLOADLUT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ret = sel_loadlut(p);
 =======
 			console_lock();
 			ret = sel_loadlut(p);
 			console_unlock();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			console_lock();
+			ret = sel_loadlut(p);
+			console_unlock();
+>>>>>>> refs/remotes/origin/master
 			break;
 		case TIOCL_GETSHIFTSTATE:
 
@@ -2673,6 +2839,7 @@ int tioclinux(struct tty_struct *tty, unsigned long arg)
 	 * kernel-internal variable; programs not closely
 	 * related to the kernel should not use this.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 		data = shift_state;
 			ret = __put_user(data, p);
@@ -2684,6 +2851,8 @@ int tioclinux(struct tty_struct *tty, unsigned long arg)
 		case TIOCL_SETVESABLANK:
 			ret = set_vesa_blanking(p);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			data = vt_get_shift_state();
 			ret = __put_user(data, p);
 			break;
@@ -2697,7 +2866,10 @@ int tioclinux(struct tty_struct *tty, unsigned long arg)
 			console_lock();
 			ret = set_vesa_blanking(p);
 			console_unlock();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case TIOCL_GETKMSGREDIRECT:
 			data = vt_get_kmsg_redirect();
@@ -2715,11 +2887,17 @@ int tioclinux(struct tty_struct *tty, unsigned long arg)
 			break;
 		case TIOCL_GETFGCONSOLE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			/* No locking needed as this is a transiently
 			   correct return anyway if the caller hasn't
 			   disabled switching */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* No locking needed as this is a transiently
+			   correct return anyway if the caller hasn't
+			   disabled switching */
+>>>>>>> refs/remotes/origin/master
 			ret = fg_console;
 			break;
 		case TIOCL_SCROLLCONSOLE:
@@ -2727,15 +2905,21 @@ int tioclinux(struct tty_struct *tty, unsigned long arg)
 				ret = -EFAULT;
 			} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				scrollfront(vc_cons[fg_console].d, lines);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				/* Need the console lock here. Note that lots
 				   of other calls need fixing before the lock
 				   is actually useful ! */
 				console_lock();
 				scrollfront(vc_cons[fg_console].d, lines);
 				console_unlock();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				ret = 0;
 			}
 			break;
@@ -2816,11 +3000,15 @@ static void con_stop(struct tty_struct *tty)
 	if (!vc_cons_allocated(console_num))
 		return;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_vc_kbd_led(kbd_table + console_num, VC_SCROLLOCK);
 	set_leds();
 =======
 	vt_kbd_con_stop(console_num);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vt_kbd_con_stop(console_num);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2835,11 +3023,15 @@ static void con_start(struct tty_struct *tty)
 	if (!vc_cons_allocated(console_num))
 		return;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clr_vc_kbd_led(kbd_table + console_num, VC_SCROLLOCK);
 	set_leds();
 =======
 	vt_kbd_con_start(console_num);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vt_kbd_con_start(console_num);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void con_flush_chars(struct tty_struct *tty)
@@ -2860,6 +3052,7 @@ static void con_flush_chars(struct tty_struct *tty)
 /*
  * Allocate the console screen memory.
  */
+<<<<<<< HEAD
 static int con_open(struct tty_struct *tty, struct file *filp)
 {
 	unsigned int currcons = tty->index;
@@ -2891,10 +3084,57 @@ static int con_open(struct tty_struct *tty, struct file *filp)
 			return ret;
 		}
 	}
+=======
+static int con_install(struct tty_driver *driver, struct tty_struct *tty)
+{
+	unsigned int currcons = tty->index;
+	struct vc_data *vc;
+	int ret;
+
+	console_lock();
+	ret = vc_allocate(currcons);
+	if (ret)
+		goto unlock;
+
+	vc = vc_cons[currcons].d;
+
+	/* Still being freed */
+	if (vc->port.tty) {
+		ret = -ERESTARTSYS;
+		goto unlock;
+	}
+
+	ret = tty_port_install(&vc->port, driver, tty);
+	if (ret)
+		goto unlock;
+
+	tty->driver_data = vc;
+	vc->port.tty = tty;
+
+	if (!tty->winsize.ws_row && !tty->winsize.ws_col) {
+		tty->winsize.ws_row = vc_cons[currcons].d->vc_rows;
+		tty->winsize.ws_col = vc_cons[currcons].d->vc_cols;
+	}
+	if (vc->vc_utf)
+		tty->termios.c_iflag |= IUTF8;
+	else
+		tty->termios.c_iflag &= ~IUTF8;
+unlock:
+>>>>>>> refs/remotes/origin/master
 	console_unlock();
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static int con_open(struct tty_struct *tty, struct file *filp)
+{
+	/* everything done in install */
+	return 0;
+}
+
+
+>>>>>>> refs/remotes/origin/master
 static void con_close(struct tty_struct *tty, struct file *filp)
 {
 	/* Nothing to do - we defer to shutdown */
@@ -2907,11 +3147,20 @@ static void con_shutdown(struct tty_struct *tty)
 	console_lock();
 	vc->port.tty = NULL;
 	console_unlock();
+<<<<<<< HEAD
 	tty_shutdown(tty);
 }
 
 static int default_italic_color    = 2; // green (ASCII)
 static int default_underline_color = 3; // cyan (ASCII)
+=======
+}
+
+static int default_color           = 7; /* white */
+static int default_italic_color    = 2; // green (ASCII)
+static int default_underline_color = 3; // cyan (ASCII)
+module_param_named(color, default_color, int, S_IRUGO | S_IWUSR);
+>>>>>>> refs/remotes/origin/master
 module_param_named(italic, default_italic_color, int, S_IRUGO | S_IWUSR);
 module_param_named(underline, default_underline_color, int, S_IRUGO | S_IWUSR);
 
@@ -2933,7 +3182,11 @@ static void vc_init(struct vc_data *vc, unsigned int rows,
 		vc->vc_palette[k++] = default_grn[j] ;
 		vc->vc_palette[k++] = default_blu[j] ;
 	}
+<<<<<<< HEAD
 	vc->vc_def_color       = 0x07;   /* white */
+=======
+	vc->vc_def_color       = default_color;
+>>>>>>> refs/remotes/origin/master
 	vc->vc_ulcolor         = default_underline_color;
 	vc->vc_itcolor         = default_italic_color;
 	vc->vc_halfcolor       = 0x08;   /* grey */
@@ -3001,17 +3254,23 @@ static int __init con_init(void)
 	csi_J(vc, 0);
 	update_screen(vc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("Console: %s %s %dx%d",
 		vc->vc_can_do_color ? "colour" : "mono",
 		display_desc, vc->vc_cols, vc->vc_rows);
 	printable = 1;
 	printk("\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_info("Console: %s %s %dx%d\n",
 		vc->vc_can_do_color ? "colour" : "mono",
 		display_desc, vc->vc_cols, vc->vc_rows);
 	printable = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	console_unlock();
 
@@ -3023,6 +3282,10 @@ static int __init con_init(void)
 console_initcall(con_init);
 
 static const struct tty_operations con_ops = {
+<<<<<<< HEAD
+=======
+	.install = con_install,
+>>>>>>> refs/remotes/origin/master
 	.open = con_open,
 	.close = con_close,
 	.write = con_write,
@@ -3069,10 +3332,14 @@ int __init vty_init(const struct file_operations *console_fops)
 	if (!console_driver)
 		panic("Couldn't allocate console driver\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	console_driver->owner = THIS_MODULE;
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	console_driver->name = "tty";
 	console_driver->name_base = 1;
 	console_driver->major = TTY_MAJOR;
@@ -3198,6 +3465,7 @@ err:
 };
 
 
+<<<<<<< HEAD
 static int bind_con_driver(const struct consw *csw, int first, int last,
 			   int deflt)
 {
@@ -3209,6 +3477,8 @@ static int bind_con_driver(const struct consw *csw, int first, int last,
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_VT_HW_CONSOLE_BINDING
 static int con_is_graphics(const struct consw *csw, int first, int last)
 {
@@ -3226,6 +3496,7 @@ static int con_is_graphics(const struct consw *csw, int first, int last)
 	return retval;
 }
 
+<<<<<<< HEAD
 /**
  * unbind_con_driver - unbind a console driver
  * @csw: pointer to console driver to unregister
@@ -3254,6 +3525,8 @@ int unbind_con_driver(const struct consw *csw, int first, int last, int deflt)
 }
 EXPORT_SYMBOL(unbind_con_driver);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* unlocked version of unbind_con_driver() */
 int do_unbind_con_driver(const struct consw *csw, int first, int last, int deflt)
 {
@@ -3374,8 +3647,16 @@ static int vt_bind(struct con_driver *con)
 		if (first == 0 && last == MAX_NR_CONSOLES -1)
 			deflt = 1;
 
+<<<<<<< HEAD
 		if (first != -1)
 			bind_con_driver(csw, first, last, deflt);
+=======
+		if (first != -1) {
+			console_lock();
+			do_bind_con_driver(csw, first, last, deflt);
+			console_unlock();
+		}
+>>>>>>> refs/remotes/origin/master
 
 		first = -1;
 		last = -1;
@@ -3413,8 +3694,16 @@ static int vt_unbind(struct con_driver *con)
 		if (first == 0 && last == MAX_NR_CONSOLES -1)
 			deflt = 1;
 
+<<<<<<< HEAD
 		if (first != -1)
 			unbind_con_driver(csw, first, last, deflt);
+=======
+		if (first != -1) {
+			console_lock();
+			do_unbind_con_driver(csw, first, last, deflt);
+			console_unlock();
+		}
+>>>>>>> refs/remotes/origin/master
 
 		first = -1;
 		last = -1;
@@ -3572,7 +3861,10 @@ int con_debug_enter(struct vc_data *vc)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (vc->vc_cols < 999) {
 		int colcount;
 		char cols[4];
@@ -3586,7 +3878,10 @@ int con_debug_enter(struct vc_data *vc)
 			kdb_set(2, setargs);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_KGDB_KDB */
 	return ret;
 }
@@ -3689,6 +3984,7 @@ err:
 	return retval;
 }
 
+<<<<<<< HEAD
 /**
  * register_con_driver - register console driver to console layer
  * @csw: console driver
@@ -3712,6 +4008,11 @@ EXPORT_SYMBOL(register_con_driver);
 
 /**
  * unregister_con_driver - unregister console driver from console layer
+=======
+
+/**
+ * do_unregister_con_driver - unregister console driver from console layer
+>>>>>>> refs/remotes/origin/master
  * @csw: console driver
  *
  * DESCRIPTION: All drivers that registers to the console layer must
@@ -3721,6 +4022,7 @@ EXPORT_SYMBOL(register_con_driver);
  *
  * The driver must unbind first prior to unregistration.
  */
+<<<<<<< HEAD
 int unregister_con_driver(const struct consw *csw)
 {
 	int retval;
@@ -3732,6 +4034,8 @@ int unregister_con_driver(const struct consw *csw)
 }
 EXPORT_SYMBOL(unregister_con_driver);
 
+=======
+>>>>>>> refs/remotes/origin/master
 int do_unregister_con_driver(const struct consw *csw)
 {
 	int i, retval = -ENODEV;
@@ -3769,7 +4073,11 @@ EXPORT_SYMBOL_GPL(do_unregister_con_driver);
  *	when a driver wants to take over some existing consoles
  *	and become default driver for newly opened ones.
  *
+<<<<<<< HEAD
  *	take_over_console is basically a register followed by unbind
+=======
+ *	do_take_over_console is basically a register followed by unbind
+>>>>>>> refs/remotes/origin/master
  */
 int do_take_over_console(const struct consw *csw, int first, int last, int deflt)
 {
@@ -3790,6 +4098,7 @@ int do_take_over_console(const struct consw *csw, int first, int last, int deflt
 }
 EXPORT_SYMBOL_GPL(do_take_over_console);
 
+<<<<<<< HEAD
 /*
  *	If we support more console drivers, this function is used
  *	when a driver wants to take over some existing consoles
@@ -3814,6 +4123,8 @@ int take_over_console(const struct consw *csw, int first, int last, int deflt)
 
 	return err;
 }
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * give_up_console is a wrapper to unregister_con_driver. It will only
@@ -3821,7 +4132,13 @@ int take_over_console(const struct consw *csw, int first, int last, int deflt)
  */
 void give_up_console(const struct consw *csw)
 {
+<<<<<<< HEAD
 	unregister_con_driver(csw);
+=======
+	console_lock();
+	do_unregister_con_driver(csw);
+	console_unlock();
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init vtconsole_class_init(void)
@@ -4048,6 +4365,7 @@ static void set_palette(struct vc_data *vc)
 		vc->vc_sw->con_set_palette(vc, color_table);
 }
 
+<<<<<<< HEAD
 static int set_get_cmap(unsigned char __user *arg, int set)
 {
     int i, j, k;
@@ -4078,6 +4396,8 @@ static int set_get_cmap(unsigned char __user *arg, int set)
     return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Load palette into the DAC registers. arg points to a colour
  * map, 3 bytes per colour, 16 colours, range from 0 to 255.
@@ -4085,6 +4405,7 @@ static int set_get_cmap(unsigned char __user *arg, int set)
 
 int con_set_cmap(unsigned char __user *arg)
 {
+<<<<<<< HEAD
 	int rc;
 
 	console_lock();
@@ -4092,10 +4413,38 @@ int con_set_cmap(unsigned char __user *arg)
 	console_unlock();
 
 	return rc;
+=======
+	int i, j, k;
+	unsigned char colormap[3*16];
+
+	if (copy_from_user(colormap, arg, sizeof(colormap)))
+		return -EFAULT;
+
+	console_lock();
+	for (i = k = 0; i < 16; i++) {
+		default_red[i] = colormap[k++];
+		default_grn[i] = colormap[k++];
+		default_blu[i] = colormap[k++];
+	}
+	for (i = 0; i < MAX_NR_CONSOLES; i++) {
+		if (!vc_cons_allocated(i))
+			continue;
+		for (j = k = 0; j < 16; j++) {
+			vc_cons[i].d->vc_palette[k++] = default_red[j];
+			vc_cons[i].d->vc_palette[k++] = default_grn[j];
+			vc_cons[i].d->vc_palette[k++] = default_blu[j];
+		}
+		set_palette(vc_cons[i].d);
+	}
+	console_unlock();
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 int con_get_cmap(unsigned char __user *arg)
 {
+<<<<<<< HEAD
 	int rc;
 
 	console_lock();
@@ -4103,6 +4452,23 @@ int con_get_cmap(unsigned char __user *arg)
 	console_unlock();
 
 	return rc;
+=======
+	int i, k;
+	unsigned char colormap[3*16];
+
+	console_lock();
+	for (i = k = 0; i < 16; i++) {
+		colormap[k++] = default_red[i];
+		colormap[k++] = default_grn[i];
+		colormap[k++] = default_blu[i];
+	}
+	console_unlock();
+
+	if (copy_to_user(arg, colormap, sizeof(colormap)))
+		return -EFAULT;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 void reset_palette(struct vc_data *vc)
@@ -4138,11 +4504,14 @@ static int con_font_get(struct vc_data *vc, struct console_font_op *op)
 	int c;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (vc->vc_mode != KD_TEXT)
 		return -EINVAL;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (op->data) {
 		font.data = kmalloc(max_font_size, GFP_KERNEL);
 		if (!font.data)
@@ -4152,12 +4521,18 @@ static int con_font_get(struct vc_data *vc, struct console_font_op *op)
 
 	console_lock();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (vc->vc_sw->con_font_get)
 =======
 	if (vc->vc_mode != KD_TEXT)
 		rc = -EINVAL;
 	else if (vc->vc_sw->con_font_get)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (vc->vc_mode != KD_TEXT)
+		rc = -EINVAL;
+	else if (vc->vc_sw->con_font_get)
+>>>>>>> refs/remotes/origin/master
 		rc = vc->vc_sw->con_font_get(vc, &font);
 	else
 		rc = -ENOSYS;
@@ -4240,12 +4615,18 @@ static int con_font_set(struct vc_data *vc, struct console_font_op *op)
 		return PTR_ERR(font.data);
 	console_lock();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (vc->vc_sw->con_font_set)
 =======
 	if (vc->vc_mode != KD_TEXT)
 		rc = -EINVAL;
 	else if (vc->vc_sw->con_font_set)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (vc->vc_mode != KD_TEXT)
+		rc = -EINVAL;
+	else if (vc->vc_sw->con_font_set)
+>>>>>>> refs/remotes/origin/master
 		rc = vc->vc_sw->con_font_set(vc, &font, op->flags);
 	else
 		rc = -ENOSYS;
@@ -4262,10 +4643,13 @@ static int con_font_default(struct vc_data *vc, struct console_font_op *op)
 	int rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (vc->vc_mode != KD_TEXT)
 		return -EINVAL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!op->data)
 		s = NULL;
@@ -4276,12 +4660,18 @@ static int con_font_default(struct vc_data *vc, struct console_font_op *op)
 
 	console_lock();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (vc->vc_mode != KD_TEXT) {
 		console_unlock();
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (vc->vc_sw->con_font_default)
 		rc = vc->vc_sw->con_font_default(vc, &font, s);
 	else
@@ -4300,18 +4690,24 @@ static int con_font_copy(struct vc_data *vc, struct console_font_op *op)
 	int rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (vc->vc_mode != KD_TEXT)
 		return -EINVAL;
 
 	console_lock();
 	if (!vc->vc_sw->con_font_copy)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	console_lock();
 	if (vc->vc_mode != KD_TEXT)
 		rc = -EINVAL;
 	else if (!vc->vc_sw->con_font_copy)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		rc = -ENOSYS;
 	else if (con < 0 || !vc_cons_allocated(con))
 		rc = -ENOTTY;
@@ -4411,6 +4807,9 @@ EXPORT_SYMBOL(console_blanked);
 EXPORT_SYMBOL(vc_cons);
 EXPORT_SYMBOL(global_cursor_default);
 #ifndef VT_SINGLE_DRIVER
+<<<<<<< HEAD
 EXPORT_SYMBOL(take_over_console);
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(give_up_console);
 #endif

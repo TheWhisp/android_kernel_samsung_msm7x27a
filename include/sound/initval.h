@@ -50,6 +50,23 @@
 #define SNDRV_DEFAULT_DMA_SIZE	{ [0 ... (SNDRV_CARDS-1)] = SNDRV_AUTO_DMA_SIZE }
 #define SNDRV_DEFAULT_PTR	SNDRV_DEFAULT_STR
 
+<<<<<<< HEAD
+=======
+#ifdef SNDRV_LEGACY_FIND_FREE_IOPORT
+static long snd_legacy_find_free_ioport(long *port_table, long size)
+{
+	while (*port_table != -1) {
+		if (request_region(*port_table, size, "ALSA test")) {
+			release_region(*port_table, size);
+			return *port_table;
+		}
+		port_table++;
+	}
+	return -1;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifdef SNDRV_LEGACY_FIND_FREE_IRQ
 #include <linux/interrupt.h>
 
@@ -63,10 +80,14 @@ static int snd_legacy_find_free_irq(int *irq_table)
 	while (*irq_table != -1) {
 		if (!request_irq(*irq_table, snd_legacy_empty_irq_handler,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 IRQF_DISABLED | IRQF_PROBE_SHARED, "ALSA Test IRQ",
 =======
 				 IRQF_PROBE_SHARED, "ALSA Test IRQ",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 IRQF_PROBE_SHARED, "ALSA Test IRQ",
+>>>>>>> refs/remotes/origin/master
 				 (void *) irq_table)) {
 			free_irq(*irq_table, (void *) irq_table);
 			return *irq_table;

@@ -46,7 +46,10 @@
 #define USB_PR_DEVICE	0xff		/* Use device's value */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  /*
   * Bulk only data structures
   */
@@ -85,5 +88,8 @@ struct bulk_cs_wrap {
 #define US_BULK_RESET_REQUEST   0xff
 #define US_BULK_GET_MAX_LUN     0xfe
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

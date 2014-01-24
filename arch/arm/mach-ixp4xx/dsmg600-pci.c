@@ -45,10 +45,14 @@ void __init dsmg600_pci_preinit(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init dsmg600_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 static int __init dsmg600_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init dsmg600_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	static int pci_irq_table[MAX_DEV][IRQ_LINES] = {
 		{ IXP4XX_GPIO_IRQ(INTE), -1, -1 },
@@ -66,10 +70,16 @@ static int __init dsmg600_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 
 struct hw_pci __initdata dsmg600_pci = {
 	.nr_controllers = 1,
+<<<<<<< HEAD
 	.preinit	= dsmg600_pci_preinit,
 	.swizzle	= pci_std_swizzle,
 	.setup		= ixp4xx_setup,
 	.scan		= ixp4xx_scan_bus,
+=======
+	.ops		= &ixp4xx_ops,
+	.preinit	= dsmg600_pci_preinit,
+	.setup		= ixp4xx_setup,
+>>>>>>> refs/remotes/origin/master
 	.map_irq	= dsmg600_map_irq,
 };
 

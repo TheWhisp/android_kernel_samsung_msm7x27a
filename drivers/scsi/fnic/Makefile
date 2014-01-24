@@ -7,6 +7,11 @@ fnic-y	:= \
 	fnic_res.o \
 	fnic_fcs.o \
 	fnic_scsi.o \
+<<<<<<< HEAD
+=======
+	fnic_trace.o \
+	fnic_debugfs.o \
+>>>>>>> refs/remotes/origin/master
 	vnic_cq.o \
 	vnic_dev.o \
 	vnic_intr.o \

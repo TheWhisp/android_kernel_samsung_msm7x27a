@@ -108,20 +108,28 @@ static int __init sh5pci_init(void)
 
         if (request_irq(IRQ_ERR, pcish5_err_irq,
 <<<<<<< HEAD
+<<<<<<< HEAD
                         IRQF_DISABLED, "PCI Error",NULL) < 0) {
 =======
                         0, "PCI Error",NULL) < 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+                        0, "PCI Error",NULL) < 0) {
+>>>>>>> refs/remotes/origin/master
                 printk(KERN_ERR "PCISH5: Cannot hook PCI_PERR interrupt\n");
                 return -EINVAL;
         }
 
         if (request_irq(IRQ_SERR, pcish5_serr_irq,
 <<<<<<< HEAD
+<<<<<<< HEAD
                         IRQF_DISABLED, "PCI SERR interrupt", NULL) < 0) {
 =======
                         0, "PCI SERR interrupt", NULL) < 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+                        0, "PCI SERR interrupt", NULL) < 0) {
+>>>>>>> refs/remotes/origin/master
                 printk(KERN_ERR "PCISH5: Cannot hook PCI_SERR interrupt\n");
                 return -EINVAL;
         }

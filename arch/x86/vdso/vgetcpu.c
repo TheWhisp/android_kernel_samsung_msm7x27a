@@ -17,6 +17,7 @@ __vdso_getcpu(unsigned *cpu, unsigned *node, struct getcpu_cache *unused)
 {
 	unsigned int p;
 
+<<<<<<< HEAD
 	if (VVAR(vgetcpu_mode) == VGETCPU_RDTSCP) {
 		/* Load per CPU data from RDTSCP */
 		native_read_tscp(&p);
@@ -26,6 +27,12 @@ __vdso_getcpu(unsigned *cpu, unsigned *node, struct getcpu_cache *unused)
 	}
 	if (cpu)
 		*cpu = p & 0xfff;
+=======
+	p = __getcpu();
+
+	if (cpu)
+		*cpu = p & VGETCPU_CPU_MASK;
+>>>>>>> refs/remotes/origin/master
 	if (node)
 		*node = p >> 12;
 	return 0;

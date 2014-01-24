@@ -16,18 +16,24 @@
  *
  * None of this really applies for Power Macintoshes.  There is
  * basically just enough here to get kernel/dma.c to compile.
+<<<<<<< HEAD
  *
  * There may be some comments or restrictions made here which are
  * not valid for the PReP platform.  Take what you read
  * with a grain of salt.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <asm/io.h>
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef MAX_DMA_CHANNELS
 #define MAX_DMA_CHANNELS	8
@@ -38,10 +44,13 @@
 #define MAX_DMA_ADDRESS		(~0UL)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if !defined(CONFIG_PPC_ISERIES) || defined(CONFIG_PCI)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef HAVE_REALLY_SLOW_DMA_CONTROLLER
 #define dma_outb	outb_p
 #else
@@ -66,7 +75,10 @@
  *  - page registers for 5-7 don't use data bit 0, represent 128K pages
  *  - page registers for 0-3 use bit 0, represent 64K pages
  *
+<<<<<<< HEAD
  * On PReP, DMA transfers are limited to the lower 16MB of _physical_ memory.
+=======
+>>>>>>> refs/remotes/origin/master
  * On CHRP, the W83C553F (and VLSI Tollgate?) support full 32 bit addressing.
  * Note that addresses loaded into registers must be _physical_ addresses,
  * not logical addresses (which may differ if paging is active).
@@ -361,9 +373,12 @@ extern int isa_dma_bridge_buggy;
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif	/* !defined(CONFIG_PPC_ISERIES) || defined(CONFIG_PCI) */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __KERNEL__ */
 #endif	/* _ASM_POWERPC_DMA_H */

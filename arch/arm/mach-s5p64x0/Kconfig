@@ -10,6 +10,7 @@ if ARCH_S5P64X0
 config CPU_S5P6440
 	bool
 <<<<<<< HEAD
+<<<<<<< HEAD
 	select S3C_PL330_DMA
 	select S5P_HRT
 =======
@@ -18,11 +19,17 @@ config CPU_S5P6440
 	select S5P_SLEEP if PM
 	select SAMSUNG_WAKEMASK if PM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select S5P_SLEEP if PM
+	select SAMSUNG_DMADEV
+	select SAMSUNG_WAKEMASK if PM
+>>>>>>> refs/remotes/origin/master
 	help
 	  Enable S5P6440 CPU support
 
 config CPU_S5P6450
 	bool
+<<<<<<< HEAD
 <<<<<<< HEAD
 	select S3C_PL330_DMA
 	select S5P_HRT
@@ -33,6 +40,10 @@ config CPU_S5P6450
 	select SAMSUNG_DMADEV
 	select S5P_HRT
 	select S5P_SLEEP if PM
+=======
+	select S5P_SLEEP if PM
+	select SAMSUNG_DMADEV
+>>>>>>> refs/remotes/origin/master
 	select SAMSUNG_WAKEMASK if PM
 	help
 	  Enable S5P6450 CPU support
@@ -43,14 +54,20 @@ config S5P64X0_SETUP_FB_24BPP
 	  Common setup code for S5P64X0 based boards with a LCD display
 	  through RGB interface.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config S5P64X0_SETUP_I2C1
 	bool
 	help
 	  Common setup code for i2c bus 1.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config S5P64X0_SETUP_SPI
 	bool
 	help
@@ -61,12 +78,16 @@ config S5P64X0_SETUP_SDHCI_GPIO
 	help
 	  Common setup code for SDHCI gpio.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # machine support
 
 config MACH_SMDK6440
 	bool "SMDK6440"
 	select CPU_S5P6440
+<<<<<<< HEAD
 <<<<<<< HEAD
 	select S3C_DEV_I2C1
 	select S3C_DEV_RTC
@@ -84,20 +105,36 @@ config MACH_SMDK6440
 	select S3C_DEV_HSMMC
 	select S3C_DEV_HSMMC1
 	select S3C_DEV_HSMMC2
+=======
+	select S3C_DEV_FB
+	select S3C_DEV_HSMMC
+	select S3C_DEV_HSMMC1
+	select S3C_DEV_HSMMC2
+	select S3C_DEV_I2C1
+	select S3C_DEV_RTC
+	select S3C_DEV_WDT
+	select S5P64X0_SETUP_FB_24BPP
+	select S5P64X0_SETUP_I2C1
+	select S5P64X0_SETUP_SDHCI_GPIO
+>>>>>>> refs/remotes/origin/master
 	select SAMSUNG_DEV_ADC
 	select SAMSUNG_DEV_BACKLIGHT
 	select SAMSUNG_DEV_PWM
 	select SAMSUNG_DEV_TS
+<<<<<<< HEAD
 	select S5P64X0_SETUP_FB_24BPP
 	select S5P64X0_SETUP_I2C1
 	select S5P64X0_SETUP_SDHCI_GPIO
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  Machine support for the Samsung SMDK6440
 
 config MACH_SMDK6450
 	bool "SMDK6450"
 	select CPU_S5P6450
+<<<<<<< HEAD
 <<<<<<< HEAD
 	select S3C_DEV_I2C1
 	select S3C_DEV_RTC
@@ -118,13 +155,28 @@ config MACH_SMDK6450
 	select S3C_DEV_HSMMC
 	select S3C_DEV_HSMMC1
 	select S3C_DEV_HSMMC2
+=======
+	select S3C_DEV_FB
+	select S3C_DEV_HSMMC
+	select S3C_DEV_HSMMC1
+	select S3C_DEV_HSMMC2
+	select S3C_DEV_I2C1
+	select S3C_DEV_RTC
+	select S3C_DEV_WDT
+	select S5P64X0_SETUP_FB_24BPP
+	select S5P64X0_SETUP_I2C1
+	select S5P64X0_SETUP_SDHCI_GPIO
+>>>>>>> refs/remotes/origin/master
 	select SAMSUNG_DEV_ADC
 	select SAMSUNG_DEV_BACKLIGHT
 	select SAMSUNG_DEV_PWM
 	select SAMSUNG_DEV_TS
+<<<<<<< HEAD
 	select S5P64X0_SETUP_FB_24BPP
 	select S5P64X0_SETUP_I2C1
 	select S5P64X0_SETUP_SDHCI_GPIO
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  Machine support for the Samsung SMDK6450
 
@@ -139,5 +191,8 @@ config S5P64X0_SD_CH1_8BIT
 
 endmenu
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 endif

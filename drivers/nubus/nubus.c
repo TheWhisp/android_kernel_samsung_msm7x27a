@@ -18,12 +18,17 @@
 #include <linux/slab.h>
 #include <asm/setup.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/page.h>
 #include <asm/hwtest.h>
 #include <linux/proc_fs.h>
+=======
+#include <asm/page.h>
+#include <asm/hwtest.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mac_via.h>
 #include <asm/mac_oss.h>
 
@@ -958,6 +963,7 @@ void __init nubus_probe_slot(int slot)
 	}
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_PROC_FS)
 
 /* /proc/nubus stuff */
@@ -1008,6 +1014,8 @@ static int nubus_read_proc(char *page, char **start, off_t off,
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 void __init nubus_scan_bus(void)
 {
 	int slot;
@@ -1045,11 +1053,15 @@ static int __init nubus_init(void)
 	nubus_devices = NULL;
 	nubus_boards  = NULL;
 	nubus_scan_bus();
+<<<<<<< HEAD
 
 #ifdef CONFIG_PROC_FS
 	create_proc_read_entry("nubus", 0, NULL, nubus_read_proc, NULL);
 	nubus_proc_init();
 #endif
+=======
+	nubus_proc_init();
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

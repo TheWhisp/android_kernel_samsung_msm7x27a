@@ -50,6 +50,7 @@ static int c_ssize = 2;
 module_param(c_ssize, uint, S_IRUGO);
 MODULE_PARM_DESC(c_ssize, "Capture Sample Size(bytes)");
 
+<<<<<<< HEAD
 #define DMA_ADDR_INVALID	(~(dma_addr_t)0)
 
 #define ALT_SET(x, a)	do {(x) &= ~0xff; (x) |= (a); } while (0)
@@ -57,6 +58,8 @@ MODULE_PARM_DESC(c_ssize, "Capture Sample Size(bytes)");
 #define INTF_SET(x, i)	do {(x) &= 0xff; (x) |= ((i) << 8); } while (0)
 #define INTF_GET(x)	((x >> 8) & 0xff)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Keep everyone on toes */
 #define USB_XFERS	2
 
@@ -97,6 +100,10 @@ struct uac2_req {
 };
 
 struct uac2_rtd_params {
+<<<<<<< HEAD
+=======
+	struct snd_uac2_chip *uac2; /* parent chip */
+>>>>>>> refs/remotes/origin/master
 	bool ep_enabled; /* if the ep is enabled */
 	/* Size of the ring buffer */
 	size_t dma_bytes;
@@ -144,8 +151,14 @@ static struct snd_pcm_hardware uac2_pcm_hardware = {
 };
 
 struct audio_dev {
+<<<<<<< HEAD
 	/* Currently active {Interface[15:8] | AltSettings[7:0]} */
 	__u16 ac_alt, as_out_alt, as_in_alt;
+=======
+	u8 ac_intf, ac_alt;
+	u8 as_out_intf, as_out_alt;
+	u8 as_in_intf, as_in_alt;
+>>>>>>> refs/remotes/origin/master
 
 	struct usb_ep *in_ep, *out_ep;
 	struct usb_function func;
@@ -175,6 +188,7 @@ struct snd_uac2_chip *pdev_to_uac2(struct platform_device *p)
 }
 
 static inline
+<<<<<<< HEAD
 struct snd_uac2_chip *prm_to_uac2(struct uac2_rtd_params *r)
 {
 	struct snd_uac2_chip *uac2 = container_of(r,
@@ -187,6 +201,8 @@ struct snd_uac2_chip *prm_to_uac2(struct uac2_rtd_params *r)
 }
 
 static inline
+=======
+>>>>>>> refs/remotes/origin/master
 uint num_channels(uint chanmask)
 {
 	uint num = 0;
@@ -210,7 +226,11 @@ agdev_iso_complete(struct usb_ep *ep, struct usb_request *req)
 	struct uac2_req *ur = req->context;
 	struct snd_pcm_substream *substream;
 	struct uac2_rtd_params *prm = ur->pp;
+<<<<<<< HEAD
 	struct snd_uac2_chip *uac2 = prm_to_uac2(prm);
+=======
+	struct snd_uac2_chip *uac2 = prm->uac2;
+>>>>>>> refs/remotes/origin/master
 
 	/* i/f shutting down */
 	if (!prm->ep_enabled)
@@ -266,6 +286,7 @@ static int
 uac2_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 {
 	struct snd_uac2_chip *uac2 = snd_pcm_substream_chip(substream);
+<<<<<<< HEAD
 	struct audio_dev *agdev = uac2_to_agdev(uac2);
 	struct uac2_rtd_params *prm;
 	unsigned long flags;
@@ -279,6 +300,16 @@ uac2_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 		ep = agdev->out_ep;
 		prm = &uac2->c_prm;
 	}
+=======
+	struct uac2_rtd_params *prm;
+	unsigned long flags;
+	int err = 0;
+
+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+		prm = &uac2->p_prm;
+	else
+		prm = &uac2->c_prm;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&prm->lock, flags);
 
@@ -408,7 +439,11 @@ static struct snd_pcm_ops uac2_pcm_ops = {
 	.prepare = uac2_pcm_null,
 };
 
+<<<<<<< HEAD
 static int __devinit snd_uac2_probe(struct platform_device *pdev)
+=======
+static int snd_uac2_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_uac2_chip *uac2 = pdev_to_uac2(pdev);
 	struct snd_card *card;
@@ -463,12 +498,19 @@ snd_fail:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_uac2_remove(struct platform_device *pdev)
 {
 	struct snd_card *card = platform_get_drvdata(pdev);
 
 	platform_set_drvdata(pdev, NULL);
 
+=======
+static int snd_uac2_remove(struct platform_device *pdev)
+{
+	struct snd_card *card = platform_get_drvdata(pdev);
+
+>>>>>>> refs/remotes/origin/master
 	if (card)
 		return snd_card_free(card);
 
@@ -526,6 +568,7 @@ enum {
 	STR_AS_IN_ALT1,
 };
 
+<<<<<<< HEAD
 static const char ifassoc[] = "Source/Sink";
 static const char ifctrl[] = "Topology Control";
 static char clksrc_in[8];
@@ -552,6 +595,24 @@ static struct usb_string strings_fn[] = {
 	[STR_AS_OUT_ALT1].s = out_alt1,
 	[STR_AS_IN_ALT0].s = in_alt0,
 	[STR_AS_IN_ALT1].s = in_alt1,
+=======
+static char clksrc_in[8];
+static char clksrc_out[8];
+
+static struct usb_string strings_fn[] = {
+	[STR_ASSOC].s = "Source/Sink",
+	[STR_IF_CTRL].s = "Topology Control",
+	[STR_CLKSRC_IN].s = clksrc_in,
+	[STR_CLKSRC_OUT].s = clksrc_out,
+	[STR_USB_IT].s = "USBH Out",
+	[STR_IO_IT].s = "USBD Out",
+	[STR_USB_OT].s = "USBH In",
+	[STR_IO_OT].s = "USBD In",
+	[STR_AS_OUT_ALT0].s = "Playback Inactive",
+	[STR_AS_OUT_ALT1].s = "Playback Active",
+	[STR_AS_IN_ALT0].s = "Capture Inactive",
+	[STR_AS_IN_ALT1].s = "Capture Active",
+>>>>>>> refs/remotes/origin/master
 	{ },
 };
 
@@ -917,7 +978,11 @@ struct cntrl_range_lay3 {
 static inline void
 free_ep(struct uac2_rtd_params *prm, struct usb_ep *ep)
 {
+<<<<<<< HEAD
 	struct snd_uac2_chip *uac2 = prm_to_uac2(prm);
+=======
+	struct snd_uac2_chip *uac2 = prm->uac2;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	prm->ep_enabled = false;
@@ -952,8 +1017,13 @@ afunc_bind(struct usb_configuration *cfg, struct usb_function *fn)
 		return ret;
 	}
 	std_ac_if_desc.bInterfaceNumber = ret;
+<<<<<<< HEAD
 	ALT_SET(agdev->ac_alt, 0);
 	INTF_SET(agdev->ac_alt, ret);
+=======
+	agdev->ac_intf = ret;
+	agdev->ac_alt = 0;
+>>>>>>> refs/remotes/origin/master
 
 	ret = usb_interface_id(cfg, fn);
 	if (ret < 0) {
@@ -963,8 +1033,13 @@ afunc_bind(struct usb_configuration *cfg, struct usb_function *fn)
 	}
 	std_as_out_if0_desc.bInterfaceNumber = ret;
 	std_as_out_if1_desc.bInterfaceNumber = ret;
+<<<<<<< HEAD
 	ALT_SET(agdev->as_out_alt, 0);
 	INTF_SET(agdev->as_out_alt, ret);
+=======
+	agdev->as_out_intf = ret;
+	agdev->as_out_alt = 0;
+>>>>>>> refs/remotes/origin/master
 
 	ret = usb_interface_id(cfg, fn);
 	if (ret < 0) {
@@ -974,6 +1049,7 @@ afunc_bind(struct usb_configuration *cfg, struct usb_function *fn)
 	}
 	std_as_in_if0_desc.bInterfaceNumber = ret;
 	std_as_in_if1_desc.bInterfaceNumber = ret;
+<<<<<<< HEAD
 	ALT_SET(agdev->as_in_alt, 0);
 	INTF_SET(agdev->as_in_alt, ret);
 
@@ -989,14 +1065,44 @@ afunc_bind(struct usb_configuration *cfg, struct usb_function *fn)
 			"%s:%d Error!\n", __func__, __LINE__);
 	agdev->in_ep->driver_data = agdev;
 
+=======
+	agdev->as_in_intf = ret;
+	agdev->as_in_alt = 0;
+
+	agdev->out_ep = usb_ep_autoconfig(gadget, &fs_epout_desc);
+	if (!agdev->out_ep) {
+		dev_err(&uac2->pdev.dev,
+			"%s:%d Error!\n", __func__, __LINE__);
+		goto err;
+	}
+	agdev->out_ep->driver_data = agdev;
+
+	agdev->in_ep = usb_ep_autoconfig(gadget, &fs_epin_desc);
+	if (!agdev->in_ep) {
+		dev_err(&uac2->pdev.dev,
+			"%s:%d Error!\n", __func__, __LINE__);
+		goto err;
+	}
+	agdev->in_ep->driver_data = agdev;
+
+	uac2->p_prm.uac2 = uac2;
+	uac2->c_prm.uac2 = uac2;
+
+>>>>>>> refs/remotes/origin/master
 	hs_epout_desc.bEndpointAddress = fs_epout_desc.bEndpointAddress;
 	hs_epout_desc.wMaxPacketSize = fs_epout_desc.wMaxPacketSize;
 	hs_epin_desc.bEndpointAddress = fs_epin_desc.bEndpointAddress;
 	hs_epin_desc.wMaxPacketSize = fs_epin_desc.wMaxPacketSize;
 
+<<<<<<< HEAD
 	fn->descriptors = usb_copy_descriptors(fs_audio_desc);
 	if (gadget_is_dualspeed(gadget))
 		fn->hs_descriptors = usb_copy_descriptors(hs_audio_desc);
+=======
+	ret = usb_assign_descriptors(fn, fs_audio_desc, hs_audio_desc, NULL);
+	if (ret)
+		goto err;
+>>>>>>> refs/remotes/origin/master
 
 	prm = &agdev->uac2.c_prm;
 	prm->max_psize = hs_epout_desc.wMaxPacketSize;
@@ -1005,6 +1111,10 @@ afunc_bind(struct usb_configuration *cfg, struct usb_function *fn)
 		prm->max_psize = 0;
 		dev_err(&uac2->pdev.dev,
 			"%s:%d Error!\n", __func__, __LINE__);
+<<<<<<< HEAD
+=======
+		goto err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	prm = &agdev->uac2.p_prm;
@@ -1014,17 +1124,39 @@ afunc_bind(struct usb_configuration *cfg, struct usb_function *fn)
 		prm->max_psize = 0;
 		dev_err(&uac2->pdev.dev,
 			"%s:%d Error!\n", __func__, __LINE__);
+<<<<<<< HEAD
 	}
 
 	return alsa_uac2_init(agdev);
+=======
+		goto err;
+	}
+
+	ret = alsa_uac2_init(agdev);
+	if (ret)
+		goto err;
+	return 0;
+err:
+	kfree(agdev->uac2.p_prm.rbuf);
+	kfree(agdev->uac2.c_prm.rbuf);
+	usb_free_all_descriptors(fn);
+	if (agdev->in_ep)
+		agdev->in_ep->driver_data = NULL;
+	if (agdev->out_ep)
+		agdev->out_ep->driver_data = NULL;
+	return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 afunc_unbind(struct usb_configuration *cfg, struct usb_function *fn)
 {
 	struct audio_dev *agdev = func_to_agdev(fn);
+<<<<<<< HEAD
 	struct usb_composite_dev *cdev = cfg->cdev;
 	struct usb_gadget *gadget = cdev->gadget;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct uac2_rtd_params *prm;
 
 	alsa_uac2_exit(agdev);
@@ -1034,10 +1166,14 @@ afunc_unbind(struct usb_configuration *cfg, struct usb_function *fn)
 
 	prm = &agdev->uac2.c_prm;
 	kfree(prm->rbuf);
+<<<<<<< HEAD
 
 	if (gadget_is_dualspeed(gadget))
 		usb_free_descriptors(fn->hs_descriptors);
 	usb_free_descriptors(fn->descriptors);
+=======
+	usb_free_all_descriptors(fn);
+>>>>>>> refs/remotes/origin/master
 
 	if (agdev->in_ep)
 		agdev->in_ep->driver_data = NULL;
@@ -1064,7 +1200,11 @@ afunc_set_alt(struct usb_function *fn, unsigned intf, unsigned alt)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (intf == INTF_GET(agdev->ac_alt)) {
+=======
+	if (intf == agdev->ac_intf) {
+>>>>>>> refs/remotes/origin/master
 		/* Control I/f has only 1 AltSetting - 0 */
 		if (alt) {
 			dev_err(&uac2->pdev.dev,
@@ -1074,6 +1214,7 @@ afunc_set_alt(struct usb_function *fn, unsigned intf, unsigned alt)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	if (intf == INTF_GET(agdev->as_out_alt)) {
 		ep = agdev->out_ep;
 		prm = &uac2->c_prm;
@@ -1084,6 +1225,18 @@ afunc_set_alt(struct usb_function *fn, unsigned intf, unsigned alt)
 		prm = &uac2->p_prm;
 		config_ep_by_speed(gadget, fn, ep);
 		ALT_SET(agdev->as_in_alt, alt);
+=======
+	if (intf == agdev->as_out_intf) {
+		ep = agdev->out_ep;
+		prm = &uac2->c_prm;
+		config_ep_by_speed(gadget, fn, ep);
+		agdev->as_out_alt = alt;
+	} else if (intf == agdev->as_in_intf) {
+		ep = agdev->in_ep;
+		prm = &uac2->p_prm;
+		config_ep_by_speed(gadget, fn, ep);
+		agdev->as_in_alt = alt;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		dev_err(&uac2->pdev.dev,
 			"%s:%d Error!\n", __func__, __LINE__);
@@ -1117,7 +1270,10 @@ afunc_set_alt(struct usb_function *fn, unsigned intf, unsigned alt)
 		prm->ureq[i].pp = prm;
 
 		req->zero = 0;
+<<<<<<< HEAD
 		req->dma = DMA_ADDR_INVALID;
+=======
+>>>>>>> refs/remotes/origin/master
 		req->context = &prm->ureq[i];
 		req->length = prm->max_psize;
 		req->complete =	agdev_iso_complete;
@@ -1136,12 +1292,21 @@ afunc_get_alt(struct usb_function *fn, unsigned intf)
 	struct audio_dev *agdev = func_to_agdev(fn);
 	struct snd_uac2_chip *uac2 = &agdev->uac2;
 
+<<<<<<< HEAD
 	if (intf == INTF_GET(agdev->ac_alt))
 		return ALT_GET(agdev->ac_alt);
 	else if (intf == INTF_GET(agdev->as_out_alt))
 		return ALT_GET(agdev->as_out_alt);
 	else if (intf == INTF_GET(agdev->as_in_alt))
 		return ALT_GET(agdev->as_in_alt);
+=======
+	if (intf == agdev->ac_intf)
+		return agdev->ac_alt;
+	else if (intf == agdev->as_out_intf)
+		return agdev->as_out_alt;
+	else if (intf == agdev->as_in_intf)
+		return agdev->as_in_alt;
+>>>>>>> refs/remotes/origin/master
 	else
 		dev_err(&uac2->pdev.dev,
 			"%s:%d Invalid Interface %d!\n",
@@ -1157,10 +1322,17 @@ afunc_disable(struct usb_function *fn)
 	struct snd_uac2_chip *uac2 = &agdev->uac2;
 
 	free_ep(&uac2->p_prm, agdev->in_ep);
+<<<<<<< HEAD
 	ALT_SET(agdev->as_in_alt, 0);
 
 	free_ep(&uac2->c_prm, agdev->out_ep);
 	ALT_SET(agdev->as_out_alt, 0);
+=======
+	agdev->as_in_alt = 0;
+
+	free_ep(&uac2->c_prm, agdev->out_ep);
+	agdev->as_out_alt = 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -1267,7 +1439,11 @@ setup_rq_inf(struct usb_function *fn, const struct usb_ctrlrequest *cr)
 	u16 w_index = le16_to_cpu(cr->wIndex);
 	u8 intf = w_index & 0xff;
 
+<<<<<<< HEAD
 	if (intf != INTF_GET(agdev->ac_alt)) {
+=======
+	if (intf != agdev->ac_intf) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&uac2->pdev.dev,
 			"%s:%d Error!\n", __func__, __LINE__);
 		return -EOPNOTSUPP;
@@ -1316,7 +1492,11 @@ afunc_setup(struct usb_function *fn, const struct usb_ctrlrequest *cr)
 
 static int audio_bind_config(struct usb_configuration *cfg)
 {
+<<<<<<< HEAD
 	int id, res;
+=======
+	int res;
+>>>>>>> refs/remotes/origin/master
 
 	agdev_g = kzalloc(sizeof *agdev_g, GFP_KERNEL);
 	if (agdev_g == NULL) {
@@ -1324,6 +1504,7 @@ static int audio_bind_config(struct usb_configuration *cfg)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	id = usb_string_id(cfg->cdev);
 	if (id < 0)
 		return id;
@@ -1407,6 +1588,23 @@ static int audio_bind_config(struct usb_configuration *cfg)
 
 	strings_fn[STR_AS_IN_ALT1].id = id;
 	std_as_in_if1_desc.iInterface = id;
+=======
+	res = usb_string_ids_tab(cfg->cdev, strings_fn);
+	if (res)
+		return res;
+	iad_desc.iFunction = strings_fn[STR_ASSOC].id;
+	std_ac_if_desc.iInterface = strings_fn[STR_IF_CTRL].id;
+	in_clk_src_desc.iClockSource = strings_fn[STR_CLKSRC_IN].id;
+	out_clk_src_desc.iClockSource = strings_fn[STR_CLKSRC_OUT].id;
+	usb_out_it_desc.iTerminal = strings_fn[STR_USB_IT].id;
+	io_in_it_desc.iTerminal = strings_fn[STR_IO_IT].id;
+	usb_in_ot_desc.iTerminal = strings_fn[STR_USB_OT].id;
+	io_out_ot_desc.iTerminal = strings_fn[STR_IO_OT].id;
+	std_as_out_if0_desc.iInterface = strings_fn[STR_AS_OUT_ALT0].id;
+	std_as_out_if1_desc.iInterface = strings_fn[STR_AS_OUT_ALT1].id;
+	std_as_in_if0_desc.iInterface = strings_fn[STR_AS_IN_ALT0].id;
+	std_as_in_if1_desc.iInterface = strings_fn[STR_AS_IN_ALT1].id;
+>>>>>>> refs/remotes/origin/master
 
 	agdev_g->func.name = "uac2_func";
 	agdev_g->func.strings = fn_strings;

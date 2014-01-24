@@ -186,10 +186,14 @@ static void insert_recv_cqe(struct t4_wq *wq, struct t4_cq *cq)
 				 V_CQE_TYPE(0) |
 				 V_CQE_SWCQE(1) |
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 V_CQE_QPID(wq->rq.qid));
 =======
 				 V_CQE_QPID(wq->sq.qid));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 V_CQE_QPID(wq->sq.qid));
+>>>>>>> refs/remotes/origin/master
 	cqe.bits_type_ts = cpu_to_be64(V_CQE_GENBIT((u64)cq->gen));
 	cq->sw_queue[cq->sw_pidx] = cqe;
 	t4_swcq_produce(cq);
@@ -229,6 +233,7 @@ static void insert_sq_cqe(struct t4_wq *wq, struct t4_cq *cq,
 	t4_swcq_produce(cq);
 }
 
+<<<<<<< HEAD
 int c4iw_flush_sq(struct t4_wq *wq, struct t4_cq *cq, int count)
 {
 	int flushed = 0;
@@ -266,6 +271,188 @@ void c4iw_flush_hw_cq(struct t4_cq *cq)
 		t4_swcq_produce(cq);
 		t4_hwcq_consume(cq);
 		ret = t4_next_hw_cqe(cq, &cqe);
+=======
+static void advance_oldest_read(struct t4_wq *wq);
+
+int c4iw_flush_sq(struct c4iw_qp *qhp)
+{
+	int flushed = 0;
+	struct t4_wq *wq = &qhp->wq;
+	struct c4iw_cq *chp = to_c4iw_cq(qhp->ibqp.send_cq);
+	struct t4_cq *cq = &chp->cq;
+	int idx;
+	struct t4_swsqe *swsqe;
+	int error = (qhp->attr.state != C4IW_QP_STATE_CLOSING &&
+			qhp->attr.state != C4IW_QP_STATE_IDLE);
+
+	if (wq->sq.flush_cidx == -1)
+		wq->sq.flush_cidx = wq->sq.cidx;
+	idx = wq->sq.flush_cidx;
+	BUG_ON(idx >= wq->sq.size);
+	while (idx != wq->sq.pidx) {
+		if (error) {
+			swsqe = &wq->sq.sw_sq[idx];
+			BUG_ON(swsqe->flushed);
+			swsqe->flushed = 1;
+			insert_sq_cqe(wq, cq, swsqe);
+			if (wq->sq.oldest_read == swsqe) {
+				BUG_ON(swsqe->opcode != FW_RI_READ_REQ);
+				advance_oldest_read(wq);
+			}
+			flushed++;
+		} else {
+			t4_sq_consume(wq);
+		}
+		if (++idx == wq->sq.size)
+			idx = 0;
+	}
+	wq->sq.flush_cidx += flushed;
+	if (wq->sq.flush_cidx >= wq->sq.size)
+		wq->sq.flush_cidx -= wq->sq.size;
+	return flushed;
+}
+
+static void flush_completed_wrs(struct t4_wq *wq, struct t4_cq *cq)
+{
+	struct t4_swsqe *swsqe;
+	int cidx;
+
+	if (wq->sq.flush_cidx == -1)
+		wq->sq.flush_cidx = wq->sq.cidx;
+	cidx = wq->sq.flush_cidx;
+	BUG_ON(cidx > wq->sq.size);
+
+	while (cidx != wq->sq.pidx) {
+		swsqe = &wq->sq.sw_sq[cidx];
+		if (!swsqe->signaled) {
+			if (++cidx == wq->sq.size)
+				cidx = 0;
+		} else if (swsqe->complete) {
+
+			BUG_ON(swsqe->flushed);
+
+			/*
+			 * Insert this completed cqe into the swcq.
+			 */
+			PDBG("%s moving cqe into swcq sq idx %u cq idx %u\n",
+					__func__, cidx, cq->sw_pidx);
+			swsqe->cqe.header |= htonl(V_CQE_SWCQE(1));
+			cq->sw_queue[cq->sw_pidx] = swsqe->cqe;
+			t4_swcq_produce(cq);
+			swsqe->flushed = 1;
+			if (++cidx == wq->sq.size)
+				cidx = 0;
+			wq->sq.flush_cidx = cidx;
+		} else
+			break;
+	}
+}
+
+static void create_read_req_cqe(struct t4_wq *wq, struct t4_cqe *hw_cqe,
+		struct t4_cqe *read_cqe)
+{
+	read_cqe->u.scqe.cidx = wq->sq.oldest_read->idx;
+	read_cqe->len = htonl(wq->sq.oldest_read->read_len);
+	read_cqe->header = htonl(V_CQE_QPID(CQE_QPID(hw_cqe)) |
+			V_CQE_SWCQE(SW_CQE(hw_cqe)) |
+			V_CQE_OPCODE(FW_RI_READ_REQ) |
+			V_CQE_TYPE(1));
+	read_cqe->bits_type_ts = hw_cqe->bits_type_ts;
+}
+
+static void advance_oldest_read(struct t4_wq *wq)
+{
+
+	u32 rptr = wq->sq.oldest_read - wq->sq.sw_sq + 1;
+
+	if (rptr == wq->sq.size)
+		rptr = 0;
+	while (rptr != wq->sq.pidx) {
+		wq->sq.oldest_read = &wq->sq.sw_sq[rptr];
+
+		if (wq->sq.oldest_read->opcode == FW_RI_READ_REQ)
+			return;
+		if (++rptr == wq->sq.size)
+			rptr = 0;
+	}
+	wq->sq.oldest_read = NULL;
+}
+
+/*
+ * Move all CQEs from the HWCQ into the SWCQ.
+ * Deal with out-of-order and/or completions that complete
+ * prior unsignalled WRs.
+ */
+void c4iw_flush_hw_cq(struct c4iw_cq *chp)
+{
+	struct t4_cqe *hw_cqe, *swcqe, read_cqe;
+	struct c4iw_qp *qhp;
+	struct t4_swsqe *swsqe;
+	int ret;
+
+	PDBG("%s  cqid 0x%x\n", __func__, chp->cq.cqid);
+	ret = t4_next_hw_cqe(&chp->cq, &hw_cqe);
+
+	/*
+	 * This logic is similar to poll_cq(), but not quite the same
+	 * unfortunately.  Need to move pertinent HW CQEs to the SW CQ but
+	 * also do any translation magic that poll_cq() normally does.
+	 */
+	while (!ret) {
+		qhp = get_qhp(chp->rhp, CQE_QPID(hw_cqe));
+
+		/*
+		 * drop CQEs with no associated QP
+		 */
+		if (qhp == NULL)
+			goto next_cqe;
+
+		if (CQE_OPCODE(hw_cqe) == FW_RI_TERMINATE)
+			goto next_cqe;
+
+		if (CQE_OPCODE(hw_cqe) == FW_RI_READ_RESP) {
+
+			/*
+			 * drop peer2peer RTR reads.
+			 */
+			if (CQE_WRID_STAG(hw_cqe) == 1)
+				goto next_cqe;
+
+			/*
+			 * Eat completions for unsignaled read WRs.
+			 */
+			if (!qhp->wq.sq.oldest_read->signaled) {
+				advance_oldest_read(&qhp->wq);
+				goto next_cqe;
+			}
+
+			/*
+			 * Don't write to the HWCQ, create a new read req CQE
+			 * in local memory and move it into the swcq.
+			 */
+			create_read_req_cqe(&qhp->wq, hw_cqe, &read_cqe);
+			hw_cqe = &read_cqe;
+			advance_oldest_read(&qhp->wq);
+		}
+
+		/* if its a SQ completion, then do the magic to move all the
+		 * unsignaled and now in-order completions into the swcq.
+		 */
+		if (SQ_TYPE(hw_cqe)) {
+			swsqe = &qhp->wq.sq.sw_sq[CQE_WRID_SQ_IDX(hw_cqe)];
+			swsqe->cqe = *hw_cqe;
+			swsqe->complete = 1;
+			flush_completed_wrs(&qhp->wq, &chp->cq);
+		} else {
+			swcqe = &chp->cq.sw_queue[chp->cq.sw_pidx];
+			*swcqe = *hw_cqe;
+			swcqe->header |= cpu_to_be32(V_CQE_SWCQE(1));
+			t4_swcq_produce(&chp->cq);
+		}
+next_cqe:
+		t4_hwcq_consume(&chp->cq);
+		ret = t4_next_hw_cqe(&chp->cq, &hw_cqe);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -285,6 +472,7 @@ static int cqe_completes_wr(struct t4_cqe *cqe, struct t4_wq *wq)
 	return 1;
 }
 
+<<<<<<< HEAD
 void c4iw_count_scqes(struct t4_cq *cq, struct t4_wq *wq, int *count)
 {
 	struct t4_cqe *cqe;
@@ -304,6 +492,8 @@ void c4iw_count_scqes(struct t4_cq *cq, struct t4_wq *wq, int *count)
 	PDBG("%s cq %p count %d\n", __func__, cq, *count);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void c4iw_count_rcqes(struct t4_cq *cq, struct t4_wq *wq, int *count)
 {
 	struct t4_cqe *cqe;
@@ -316,10 +506,14 @@ void c4iw_count_rcqes(struct t4_cq *cq, struct t4_wq *wq, int *count)
 		cqe = &cq->sw_queue[ptr];
 		if (RQ_TYPE(cqe) && (CQE_OPCODE(cqe) != FW_RI_READ_RESP) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    (CQE_QPID(cqe) == wq->rq.qid) && cqe_completes_wr(cqe, wq))
 =======
 		    (CQE_QPID(cqe) == wq->sq.qid) && cqe_completes_wr(cqe, wq))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    (CQE_QPID(cqe) == wq->sq.qid) && cqe_completes_wr(cqe, wq))
+>>>>>>> refs/remotes/origin/master
 			(*count)++;
 		if (++ptr == cq->size)
 			ptr = 0;
@@ -327,6 +521,7 @@ void c4iw_count_rcqes(struct t4_cq *cq, struct t4_wq *wq, int *count)
 	PDBG("%s cq %p count %d\n", __func__, cq, *count);
 }
 
+<<<<<<< HEAD
 static void flush_completed_wrs(struct t4_wq *wq, struct t4_cq *cq)
 {
 	struct t4_swsqe *swsqe;
@@ -391,6 +586,8 @@ static void advance_oldest_read(struct t4_wq *wq)
 	wq->sq.oldest_read = NULL;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * poll_cq
  *
@@ -435,6 +632,25 @@ static int poll_cq(struct t4_wq *wq, struct t4_cq *cq, struct t4_cqe *cqe,
 	}
 
 	/*
+<<<<<<< HEAD
+=======
+	* skip hw cqe's if the wq is flushed.
+	*/
+	if (wq->flushed && !SW_CQE(hw_cqe)) {
+		ret = -EAGAIN;
+		goto skip_cqe;
+	}
+
+	/*
+	 * skip TERMINATE cqes...
+	 */
+	if (CQE_OPCODE(hw_cqe) == FW_RI_TERMINATE) {
+		ret = -EAGAIN;
+		goto skip_cqe;
+	}
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * Gotta tweak READ completions:
 	 *	1) the cqe doesn't contain the sq_wptr from the wr.
 	 *	2) opcode not reflected from the wr.
@@ -448,7 +664,11 @@ static int poll_cq(struct t4_wq *wq, struct t4_cq *cq, struct t4_cqe *cqe,
 		 * was generated by the kernel driver as part of peer-2-peer
 		 * connection setup.  So ignore the completion.
 		 */
+<<<<<<< HEAD
 		if (!wq->sq.oldest_read) {
+=======
+		if (CQE_WRID_STAG(hw_cqe) == 1) {
+>>>>>>> refs/remotes/origin/master
 			if (CQE_STATUS(hw_cqe))
 				t4_set_wq_in_error(wq);
 			ret = -EAGAIN;
@@ -456,6 +676,18 @@ static int poll_cq(struct t4_wq *wq, struct t4_cq *cq, struct t4_cqe *cqe,
 		}
 
 		/*
+<<<<<<< HEAD
+=======
+		 * Eat completions for unsignaled read WRs.
+		 */
+		if (!wq->sq.oldest_read->signaled) {
+			advance_oldest_read(wq);
+			ret = -EAGAIN;
+			goto skip_cqe;
+		}
+
+		/*
+>>>>>>> refs/remotes/origin/master
 		 * Don't write to the HWCQ, so create a new read req CQE
 		 * in local memory.
 		 */
@@ -465,6 +697,7 @@ static int poll_cq(struct t4_wq *wq, struct t4_cq *cq, struct t4_cqe *cqe,
 	}
 
 	if (CQE_STATUS(hw_cqe) || t4_wq_in_error(wq)) {
+<<<<<<< HEAD
 		*cqe_flushed = t4_wq_in_error(wq);
 		t4_set_wq_in_error(wq);
 		goto proc_cqe;
@@ -473,6 +706,10 @@ static int poll_cq(struct t4_wq *wq, struct t4_cq *cq, struct t4_cqe *cqe,
 	if (CQE_OPCODE(hw_cqe) == FW_RI_TERMINATE) {
 		ret = -EAGAIN;
 		goto skip_cqe;
+=======
+		*cqe_flushed = (CQE_STATUS(hw_cqe) == T4_ERR_SWFLUSH);
+		t4_set_wq_in_error(wq);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -531,7 +768,28 @@ proc_cqe:
 	 * completion.
 	 */
 	if (SQ_TYPE(hw_cqe)) {
+<<<<<<< HEAD
 		wq->sq.cidx = CQE_WRID_SQ_IDX(hw_cqe);
+=======
+		int idx = CQE_WRID_SQ_IDX(hw_cqe);
+		BUG_ON(idx > wq->sq.size);
+
+		/*
+		* Account for any unsignaled completions completed by
+		* this signaled completion.  In this case, cidx points
+		* to the first unsignaled one, and idx points to the
+		* signaled one.  So adjust in_use based on this delta.
+		* if this is not completing any unsigned wrs, then the
+		* delta will be 0. Handle wrapping also!
+		*/
+		if (idx < wq->sq.cidx)
+			wq->sq.in_use -= wq->sq.size + idx - wq->sq.cidx;
+		else
+			wq->sq.in_use -= idx - wq->sq.cidx;
+		BUG_ON(wq->sq.in_use < 0 && wq->sq.in_use < wq->sq.size);
+
+		wq->sq.cidx = (uint16_t)idx;
+>>>>>>> refs/remotes/origin/master
 		PDBG("%s completing sq idx %u\n", __func__, wq->sq.cidx);
 		*cookie = wq->sq.sw_sq[wq->sq.cidx].wr_id;
 		t4_sq_consume(wq);
@@ -540,6 +798,10 @@ proc_cqe:
 		*cookie = wq->rq.sw_rq[wq->rq.cidx].wr_id;
 		BUG_ON(t4_rq_empty(wq));
 		t4_rq_consume(wq);
+<<<<<<< HEAD
+=======
+		goto skip_cqe;
+>>>>>>> refs/remotes/origin/master
 	}
 
 flush_wq:
@@ -827,9 +1089,13 @@ struct ib_cq *c4iw_create_cq(struct ib_device *ibdev, int entries,
 	chp->ibcq.cqe = entries - 2;
 	spin_lock_init(&chp->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spin_lock_init(&chp->comp_handler_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_init(&chp->comp_handler_lock);
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&chp->refcnt, 1);
 	init_waitqueue_head(&chp->wait);
 	ret = insert_handle(rhp, &rhp->cqidr, chp, chp->cq.cqid);

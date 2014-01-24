@@ -15,6 +15,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #ifndef __ASM_OPENRISC_PTRACE_H
 #define __ASM_OPENRISC_PTRACE_H
@@ -36,6 +37,14 @@ struct user_regs_struct {
 #endif
 
 #ifdef __KERNEL__
+=======
+#ifndef __ASM_OPENRISC_PTRACE_H
+#define __ASM_OPENRISC_PTRACE_H
+
+
+#include <asm/spr_defs.h>
+#include <uapi/asm/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Make kernel PTrace/register structures opaque to userspace... userspace can
@@ -136,6 +145,9 @@ static inline long regs_return_value(struct pt_regs *regs)
 #define PT_ORIG_GPR11 132
 #define PT_SYSCALLNO  136
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_OPENRISC_PTRACE_H */

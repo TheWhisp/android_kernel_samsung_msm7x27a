@@ -42,6 +42,10 @@
 #include <linux/gpio.h>
 
 #include "bf5xx-sport.h"
+<<<<<<< HEAD
+=======
+#include "bf5xx-i2s-pcm.h"
+>>>>>>> refs/remotes/origin/master
 
 struct bf5xx_i2s_port {
 	u16 tcr1;
@@ -49,6 +53,16 @@ struct bf5xx_i2s_port {
 	u16 tcr2;
 	u16 rcr2;
 	int configured;
+<<<<<<< HEAD
+=======
+
+	unsigned int slots;
+	unsigned int tx_mask;
+	unsigned int rx_mask;
+
+	struct bf5xx_i2s_pcm_data tx_dma_data;
+	struct bf5xx_i2s_pcm_data rx_dma_data;
+>>>>>>> refs/remotes/origin/master
 };
 
 static int bf5xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
@@ -74,7 +88,12 @@ static int bf5xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
 		ret = -EINVAL;
 		break;
 	default:
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Unknown DAI format type\n", __func__);
+=======
+		dev_err(cpu_dai->dev, "%s: Unknown DAI format type\n",
+			__func__);
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		break;
 	}
@@ -88,7 +107,12 @@ static int bf5xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
 		ret = -EINVAL;
 		break;
 	default:
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Unknown DAI master type\n", __func__);
+=======
+		dev_err(cpu_dai->dev, "%s: Unknown DAI master type\n",
+			__func__);
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		break;
 	}
@@ -111,6 +135,10 @@ static int bf5xx_i2s_hw_params(struct snd_pcm_substream *substream,
 		bf5xx_i2s->tcr2 |= 7;
 		bf5xx_i2s->rcr2 |= 7;
 		sport_handle->wdsize = 1;
+<<<<<<< HEAD
+=======
+		break;
+>>>>>>> refs/remotes/origin/master
 	case SNDRV_PCM_FORMAT_S16_LE:
 		bf5xx_i2s->tcr2 |= 15;
 		bf5xx_i2s->rcr2 |= 15;
@@ -141,14 +169,22 @@ static int bf5xx_i2s_hw_params(struct snd_pcm_substream *substream,
 		ret = sport_config_rx(sport_handle, bf5xx_i2s->rcr1,
 				      bf5xx_i2s->rcr2, 0, 0);
 		if (ret) {
+<<<<<<< HEAD
 			pr_err("SPORT is busy!\n");
+=======
+			dev_err(dai->dev, "SPORT is busy!\n");
+>>>>>>> refs/remotes/origin/master
 			return -EBUSY;
 		}
 
 		ret = sport_config_tx(sport_handle, bf5xx_i2s->tcr1,
 				      bf5xx_i2s->tcr2, 0, 0);
 		if (ret) {
+<<<<<<< HEAD
 			pr_err("SPORT is busy!\n");
+=======
+			dev_err(dai->dev, "SPORT is busy!\n");
+>>>>>>> refs/remotes/origin/master
 			return -EBUSY;
 		}
 	}
@@ -162,18 +198,87 @@ static void bf5xx_i2s_shutdown(struct snd_pcm_substream *substream,
 	struct sport_device *sport_handle = snd_soc_dai_get_drvdata(dai);
 	struct bf5xx_i2s_port *bf5xx_i2s = sport_handle->private_data;
 
+<<<<<<< HEAD
 	pr_debug("%s enter\n", __func__);
+=======
+	dev_dbg(dai->dev, "%s enter\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	/* No active stream, SPORT is allowed to be configured again. */
 	if (!dai->active)
 		bf5xx_i2s->configured = 0;
 }
 
+<<<<<<< HEAD
+=======
+static int bf5xx_i2s_set_channel_map(struct snd_soc_dai *dai,
+		unsigned int tx_num, unsigned int *tx_slot,
+		unsigned int rx_num, unsigned int *rx_slot)
+{
+	struct sport_device *sport_handle = snd_soc_dai_get_drvdata(dai);
+	struct bf5xx_i2s_port *bf5xx_i2s = sport_handle->private_data;
+	unsigned int tx_mapped = 0, rx_mapped = 0;
+	unsigned int slot;
+	int i;
+
+	if ((tx_num > BFIN_TDM_DAI_MAX_SLOTS) ||
+			(rx_num > BFIN_TDM_DAI_MAX_SLOTS))
+		return -EINVAL;
+
+	for (i = 0; i < tx_num; i++) {
+		slot = tx_slot[i];
+		if ((slot < BFIN_TDM_DAI_MAX_SLOTS) &&
+				(!(tx_mapped & (1 << slot)))) {
+			bf5xx_i2s->tx_dma_data.map[i] = slot;
+			tx_mapped |= 1 << slot;
+		} else
+			return -EINVAL;
+	}
+	for (i = 0; i < rx_num; i++) {
+		slot = rx_slot[i];
+		if ((slot < BFIN_TDM_DAI_MAX_SLOTS) &&
+				(!(rx_mapped & (1 << slot)))) {
+			bf5xx_i2s->rx_dma_data.map[i] = slot;
+			rx_mapped |= 1 << slot;
+		} else
+			return -EINVAL;
+	}
+
+	return 0;
+}
+
+static int bf5xx_i2s_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+	unsigned int rx_mask, int slots, int width)
+{
+	struct sport_device *sport_handle = snd_soc_dai_get_drvdata(dai);
+	struct bf5xx_i2s_port *bf5xx_i2s = sport_handle->private_data;
+
+	if (slots % 8 != 0 || slots > 8)
+		return -EINVAL;
+
+	if (width != 32)
+		return -EINVAL;
+
+	bf5xx_i2s->slots = slots;
+	bf5xx_i2s->tx_mask = tx_mask;
+	bf5xx_i2s->rx_mask = rx_mask;
+
+	bf5xx_i2s->tx_dma_data.tdm_mode = slots != 0;
+	bf5xx_i2s->rx_dma_data.tdm_mode = slots != 0;
+
+	return sport_set_multichannel(sport_handle, slots, tx_mask, rx_mask, 0);
+}
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 static int bf5xx_i2s_suspend(struct snd_soc_dai *dai)
 {
 	struct sport_device *sport_handle = snd_soc_dai_get_drvdata(dai);
 
+<<<<<<< HEAD
 	pr_debug("%s : sport %d\n", __func__, dai->id);
+=======
+	dev_dbg(dai->dev, "%s : sport %d\n", __func__, dai->id);
+>>>>>>> refs/remotes/origin/master
 
 	if (dai->capture_active)
 		sport_rx_stop(sport_handle);
@@ -188,23 +293,40 @@ static int bf5xx_i2s_resume(struct snd_soc_dai *dai)
 	struct bf5xx_i2s_port *bf5xx_i2s = sport_handle->private_data;
 	int ret;
 
+<<<<<<< HEAD
 	pr_debug("%s : sport %d\n", __func__, dai->id);
+=======
+	dev_dbg(dai->dev, "%s : sport %d\n", __func__, dai->id);
+>>>>>>> refs/remotes/origin/master
 
 	ret = sport_config_rx(sport_handle, bf5xx_i2s->rcr1,
 				      bf5xx_i2s->rcr2, 0, 0);
 	if (ret) {
+<<<<<<< HEAD
 		pr_err("SPORT is busy!\n");
+=======
+		dev_err(dai->dev, "SPORT is busy!\n");
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 	}
 
 	ret = sport_config_tx(sport_handle, bf5xx_i2s->tcr1,
 				      bf5xx_i2s->tcr2, 0, 0);
 	if (ret) {
+<<<<<<< HEAD
 		pr_err("SPORT is busy!\n");
 		return -EBUSY;
 	}
 
 	return 0;
+=======
+		dev_err(dai->dev, "SPORT is busy!\n");
+		return -EBUSY;
+	}
+
+	return sport_set_multichannel(sport_handle, bf5xx_i2s->slots,
+			bf5xx_i2s->tx_mask, bf5xx_i2s->rx_mask, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 #else
@@ -212,6 +334,26 @@ static int bf5xx_i2s_resume(struct snd_soc_dai *dai)
 #define bf5xx_i2s_resume	NULL
 #endif
 
+<<<<<<< HEAD
+=======
+static int bf5xx_i2s_dai_probe(struct snd_soc_dai *dai)
+{
+	struct sport_device *sport_handle = snd_soc_dai_get_drvdata(dai);
+	struct bf5xx_i2s_port *bf5xx_i2s = sport_handle->private_data;
+	unsigned int i;
+
+	for (i = 0; i < BFIN_TDM_DAI_MAX_SLOTS; i++) {
+		bf5xx_i2s->tx_dma_data.map[i] = i;
+		bf5xx_i2s->rx_dma_data.map[i] = i;
+	}
+
+	dai->playback_dma_data = &bf5xx_i2s->tx_dma_data;
+	dai->capture_dma_data = &bf5xx_i2s->rx_dma_data;
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 #define BF5XX_I2S_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
 		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 | \
 		SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 | \
@@ -223,6 +365,7 @@ static int bf5xx_i2s_resume(struct snd_soc_dai *dai)
 	 SNDRV_PCM_FMTBIT_S24_LE | \
 	 SNDRV_PCM_FMTBIT_S32_LE)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct snd_soc_dai_ops bf5xx_i2s_dai_ops = {
 =======
@@ -244,26 +387,67 @@ static struct snd_soc_dai_driver bf5xx_i2s_dai = {
 	.capture = {
 		.channels_min = 1,
 		.channels_max = 2,
+=======
+static const struct snd_soc_dai_ops bf5xx_i2s_dai_ops = {
+	.shutdown	 = bf5xx_i2s_shutdown,
+	.hw_params	 = bf5xx_i2s_hw_params,
+	.set_fmt	 = bf5xx_i2s_set_dai_fmt,
+	.set_tdm_slot	 = bf5xx_i2s_set_tdm_slot,
+	.set_channel_map = bf5xx_i2s_set_channel_map,
+};
+
+static struct snd_soc_dai_driver bf5xx_i2s_dai = {
+	.probe = bf5xx_i2s_dai_probe,
+	.suspend = bf5xx_i2s_suspend,
+	.resume = bf5xx_i2s_resume,
+	.playback = {
+		.channels_min = 2,
+		.channels_max = 8,
+		.rates = BF5XX_I2S_RATES,
+		.formats = BF5XX_I2S_FORMATS,},
+	.capture = {
+		.channels_min = 2,
+		.channels_max = 8,
+>>>>>>> refs/remotes/origin/master
 		.rates = BF5XX_I2S_RATES,
 		.formats = BF5XX_I2S_FORMATS,},
 	.ops = &bf5xx_i2s_dai_ops,
 };
 
+<<<<<<< HEAD
 static int __devinit bf5xx_i2s_probe(struct platform_device *pdev)
+=======
+static const struct snd_soc_component_driver bf5xx_i2s_component = {
+	.name		= "bf5xx-i2s",
+};
+
+static int bf5xx_i2s_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sport_device *sport_handle;
 	int ret;
 
 	/* configure SPORT for I2S */
+<<<<<<< HEAD
 	sport_handle = sport_init(pdev, 4, 2 * sizeof(u32),
+=======
+	sport_handle = sport_init(pdev, 4, 8 * sizeof(u32),
+>>>>>>> refs/remotes/origin/master
 		sizeof(struct bf5xx_i2s_port));
 	if (!sport_handle)
 		return -ENODEV;
 
 	/* register with the ASoC layers */
+<<<<<<< HEAD
 	ret = snd_soc_register_dai(&pdev->dev, &bf5xx_i2s_dai);
 	if (ret) {
 		pr_err("Failed to register DAI: %d\n", ret);
+=======
+	ret = snd_soc_register_component(&pdev->dev, &bf5xx_i2s_component,
+					 &bf5xx_i2s_dai, 1);
+	if (ret) {
+		dev_err(&pdev->dev, "Failed to register DAI: %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 		sport_done(sport_handle);
 		return ret;
 	}
@@ -271,6 +455,7 @@ static int __devinit bf5xx_i2s_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit bf5xx_i2s_remove(struct platform_device *pdev)
 {
 	struct sport_device *sport_handle = platform_get_drvdata(pdev);
@@ -278,6 +463,15 @@ static int __devexit bf5xx_i2s_remove(struct platform_device *pdev)
 	pr_debug("%s enter\n", __func__);
 
 	snd_soc_unregister_dai(&pdev->dev);
+=======
+static int bf5xx_i2s_remove(struct platform_device *pdev)
+{
+	struct sport_device *sport_handle = platform_get_drvdata(pdev);
+
+	dev_dbg(&pdev->dev, "%s enter\n", __func__);
+
+	snd_soc_unregister_component(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	sport_done(sport_handle);
 
 	return 0;
@@ -285,13 +479,18 @@ static int __devexit bf5xx_i2s_remove(struct platform_device *pdev)
 
 static struct platform_driver bfin_i2s_driver = {
 	.probe  = bf5xx_i2s_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(bf5xx_i2s_remove),
+=======
+	.remove = bf5xx_i2s_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "bfin-i2s",
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init bfin_i2s_init(void)
 {
@@ -308,6 +507,9 @@ module_exit(bfin_i2s_exit);
 =======
 module_platform_driver(bfin_i2s_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(bfin_i2s_driver);
+>>>>>>> refs/remotes/origin/master
 
 /* Module information */
 MODULE_AUTHOR("Cliff Cai");

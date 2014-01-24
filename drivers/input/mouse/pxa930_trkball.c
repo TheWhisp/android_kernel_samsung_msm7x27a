@@ -13,9 +13,12 @@
 #include <linux/init.h>
 #include <linux/input.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
@@ -24,7 +27,11 @@
 #include <linux/slab.h>
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
 #include <mach/pxa930_trkball.h>
+=======
+#include <linux/platform_data/mouse-pxa930_trkball.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Trackball Controller Register Definitions */
 #define TBCR		(0x000C)
@@ -147,7 +154,11 @@ static void pxa930_trkball_close(struct input_dev *dev)
 	pxa930_trkball_disable(trkball);
 }
 
+<<<<<<< HEAD
 static int __devinit pxa930_trkball_probe(struct platform_device *pdev)
+=======
+static int pxa930_trkball_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pxa930_trkball *trkball;
 	struct input_dev *input;
@@ -188,10 +199,14 @@ static int __devinit pxa930_trkball_probe(struct platform_device *pdev)
 	pxa930_trkball_disable(trkball);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = request_irq(irq, pxa930_trkball_interrupt, IRQF_DISABLED,
 =======
 	error = request_irq(irq, pxa930_trkball_interrupt, 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = request_irq(irq, pxa930_trkball_interrupt, 0,
+>>>>>>> refs/remotes/origin/master
 			    pdev->name, trkball);
 	if (error) {
 		dev_err(&pdev->dev, "failed to request irq: %d\n", error);
@@ -238,7 +253,11 @@ failed:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit pxa930_trkball_remove(struct platform_device *pdev)
+=======
+static int pxa930_trkball_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pxa930_trkball *trkball = platform_get_drvdata(pdev);
 	int irq = platform_get_irq(pdev, 0);
@@ -256,6 +275,7 @@ static struct platform_driver pxa930_trkball_driver = {
 		.name	= "pxa930-trkball",
 	},
 	.probe		= pxa930_trkball_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(pxa930_trkball_remove),
 };
 <<<<<<< HEAD
@@ -275,6 +295,11 @@ module_exit(pxa930_trkball_exit);
 =======
 module_platform_driver(pxa930_trkball_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= pxa930_trkball_remove,
+};
+module_platform_driver(pxa930_trkball_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Yong Yao <yaoyong@marvell.com>");
 MODULE_DESCRIPTION("PXA930 Trackball Mouse Driver");

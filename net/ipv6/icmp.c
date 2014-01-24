@@ -29,6 +29,11 @@
  *	Kazunori MIYAZAWA @USAGI:       change output process to use ip6_append_data
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "IPv6: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/errno.h>
 #include <linux/types.h>
@@ -56,9 +61,13 @@
 #include <net/ipv6.h>
 #include <net/ip6_checksum.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <net/ping.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/ping.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/protocol.h>
 #include <net/raw.h>
 #include <net/rawv6.h>
@@ -71,9 +80,12 @@
 
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	The ICMP socket(s). This is the most convenient way to flow control
@@ -88,27 +100,46 @@ static inline struct sock *icmpv6_sk(struct net *net)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 static void icmpv6_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
 		       u8 type, u8 code, int offset, __be32 info)
 {
 	/* icmpv6_notify checks 8 bytes can be pulled, icmp6hdr is 8 bytes */
 	struct icmp6hdr *icmp6 = (struct icmp6hdr *) (skb->data + offset);
+<<<<<<< HEAD
+=======
+	struct net *net = dev_net(skb->dev);
+
+	if (type == ICMPV6_PKT_TOOBIG)
+		ip6_update_pmtu(skb, net, info, 0, 0);
+	else if (type == NDISC_REDIRECT)
+		ip6_redirect(skb, net, skb->dev->ifindex, 0);
+>>>>>>> refs/remotes/origin/master
 
 	if (!(type & ICMPV6_INFOMSG_MASK))
 		if (icmp6->icmp6_type == ICMPV6_ECHO_REQUEST)
 			ping_err(skb, offset, info);
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int icmpv6_rcv(struct sk_buff *skb);
 
 static const struct inet6_protocol icmpv6_protocol = {
 	.handler	=	icmpv6_rcv,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.err_handler	=	icmpv6_err,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.err_handler	=	icmpv6_err,
+>>>>>>> refs/remotes/origin/master
 	.flags		=	INET6_PROTO_NOPOLICY|INET6_PROTO_FINAL,
 };
 
@@ -136,6 +167,7 @@ static __inline__ void icmpv6_xmit_unlock(struct sock *sk)
 }
 
 /*
+<<<<<<< HEAD
  * Slightly more convenient version of icmpv6_send.
  */
 void icmpv6_param_prob(struct sk_buff *skb, u8 code, int pos)
@@ -145,6 +177,8 @@ void icmpv6_param_prob(struct sk_buff *skb, u8 code, int pos)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Figure out, may we reply to this packet with icmp error.
  *
  * We do not reply, if:
@@ -155,11 +189,16 @@ void icmpv6_param_prob(struct sk_buff *skb, u8 code, int pos)
  *	--ANK (980726)
  */
 
+<<<<<<< HEAD
 static int is_ineligible(struct sk_buff *skb)
+=======
+static bool is_ineligible(const struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	int ptr = (u8 *)(ipv6_hdr(skb) + 1) - skb->data;
 	int len = skb->len - ptr;
 	__u8 nexthdr = ipv6_hdr(skb)->nexthdr;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	__be16 frag_off;
@@ -175,6 +214,16 @@ static int is_ineligible(struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (ptr < 0)
 		return 0;
+=======
+	__be16 frag_off;
+
+	if (len < 0)
+		return true;
+
+	ptr = ipv6_skip_exthdr(skb, ptr, &nexthdr, &frag_off);
+	if (ptr < 0)
+		return false;
+>>>>>>> refs/remotes/origin/master
 	if (nexthdr == IPPROTO_ICMPV6) {
 		u8 _type, *tp;
 		tp = skb_header_pointer(skb,
@@ -182,9 +231,15 @@ static int is_ineligible(struct sk_buff *skb)
 			sizeof(_type), &_type);
 		if (tp == NULL ||
 		    !(*tp & ICMPV6_INFOMSG_MASK))
+<<<<<<< HEAD
 			return 1;
 	}
 	return 0;
+=======
+			return true;
+	}
+	return false;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -219,14 +274,25 @@ static inline bool icmpv6_xrlim_allow(struct sock *sk, u8 type,
 	} else {
 		struct rt6_info *rt = (struct rt6_info *)dst;
 		int tmo = net->ipv6.sysctl.icmpv6_time;
+<<<<<<< HEAD
+=======
+		struct inet_peer *peer;
+>>>>>>> refs/remotes/origin/master
 
 		/* Give more bandwidth to wider prefixes. */
 		if (rt->rt6i_dst.plen < 128)
 			tmo >>= ((128 - rt->rt6i_dst.plen)>>5);
 
+<<<<<<< HEAD
 		if (!rt->rt6i_peer)
 			rt6_bind_peer(rt, 1);
 		res = inet_peer_xrlim_allow(rt->rt6i_peer, tmo);
+=======
+		peer = inet_getpeer_v6(net->ipv6.peers, &rt->rt6i_dst.addr, 1);
+		res = inet_peer_xrlim_allow(peer, tmo);
+		if (peer)
+			inet_putpeer(peer);
+>>>>>>> refs/remotes/origin/master
 	}
 	dst_release(dst);
 	return res;
@@ -239,13 +305,18 @@ static inline bool icmpv6_xrlim_allow(struct sock *sk, u8 type,
  *	highest-order two bits set to 10
  */
 
+<<<<<<< HEAD
 static __inline__ int opt_unrec(struct sk_buff *skb, __u32 offset)
+=======
+static bool opt_unrec(struct sk_buff *skb, __u32 offset)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 _optval, *op;
 
 	offset += skb_network_offset(skb);
 	op = skb_header_pointer(skb, offset, sizeof(_optval), &_optval);
 	if (op == NULL)
+<<<<<<< HEAD
 		return 1;
 	return (*op & 0xC0) == 0x80;
 }
@@ -256,6 +327,14 @@ int icmpv6_push_pending_frames(struct sock *sk, struct flowi6 *fl6,
 =======
 static int icmpv6_push_pending_frames(struct sock *sk, struct flowi6 *fl6, struct icmp6hdr *thdr, int len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return true;
+	return (*op & 0xC0) == 0x80;
+}
+
+int icmpv6_push_pending_frames(struct sock *sk, struct flowi6 *fl6,
+			       struct icmp6hdr *thdr, int len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *skb;
 	struct icmp6hdr *icmp6h;
@@ -314,7 +393,11 @@ static int icmpv6_getfrag(void *from, char *to, int offset, int len, int odd, st
 	return 0;
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 static void mip6_addr_swap(struct sk_buff *skb)
 {
 	struct ipv6hdr *iph = ipv6_hdr(skb);
@@ -329,6 +412,7 @@ static void mip6_addr_swap(struct sk_buff *skb)
 			hao = (struct ipv6_destopt_hao *)
 					(skb_network_header(skb) + off);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ipv6_addr_copy(&tmp, &iph->saddr);
 			ipv6_addr_copy(&iph->saddr, &hao->addr);
 			ipv6_addr_copy(&hao->addr, &tmp);
@@ -337,6 +421,11 @@ static void mip6_addr_swap(struct sk_buff *skb)
 			iph->saddr = hao->addr;
 			hao->addr = tmp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			tmp = iph->saddr;
+			iph->saddr = hao->addr;
+			hao->addr = tmp;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
@@ -345,12 +434,17 @@ static inline void mip6_addr_swap(struct sk_buff *skb) {}
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dst_entry *icmpv6_route_lookup(struct net *net, struct sk_buff *skb,
 				      struct sock *sk, struct flowi6 *fl6)
 =======
 static struct dst_entry *icmpv6_route_lookup(struct net *net, struct sk_buff *skb,
 					     struct sock *sk, struct flowi6 *fl6)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct dst_entry *icmpv6_route_lookup(struct net *net, struct sk_buff *skb,
+				      struct sock *sk, struct flowi6 *fl6)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dst_entry *dst, *dst2;
 	struct flowi6 fl2;
@@ -365,7 +459,11 @@ static struct dst_entry *icmpv6_route_lookup(struct net *net, struct sk_buff *sk
 	 * anycast.
 	 */
 	if (((struct rt6_info *)dst)->rt6i_flags & RTF_ANYCAST) {
+<<<<<<< HEAD
 		LIMIT_NETDEBUG(KERN_DEBUG "icmpv6_send: acast source\n");
+=======
+		LIMIT_NETDEBUG(KERN_DEBUG "icmp6_send: acast source\n");
+>>>>>>> refs/remotes/origin/master
 		dst_release(dst);
 		return ERR_PTR(-EINVAL);
 	}
@@ -414,7 +512,11 @@ relookup_failed:
 /*
  *	Send an ICMP message in response to a packet in error
  */
+<<<<<<< HEAD
 void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
+=======
+static void icmp6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net *net = dev_net(skb->dev);
 	struct inet6_dev *idev = NULL;
@@ -433,13 +535,21 @@ void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
 	int err = 0;
 
 	if ((u8 *)hdr < skb->head ||
+<<<<<<< HEAD
 	    (skb->network_header + sizeof(*hdr)) > skb->tail)
+=======
+	    (skb_network_header(skb) + sizeof(*hdr)) > skb_tail_pointer(skb))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	/*
 	 *	Make sure we respect the rules
 	 *	i.e. RFC 1885 2.4(e)
+<<<<<<< HEAD
 	 *	Rule (e.1) is enforced by not using icmpv6_send
+=======
+	 *	Rule (e.1) is enforced by not using icmp6_send
+>>>>>>> refs/remotes/origin/master
 	 *	in any code that processes icmp errors.
 	 */
 	addr_type = ipv6_addr_type(&hdr->daddr);
@@ -467,7 +577,11 @@ void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
 	 *	Source addr check
 	 */
 
+<<<<<<< HEAD
 	if (addr_type & IPV6_ADDR_LINKLOCAL)
+=======
+	if (__ipv6_addr_needs_scope_id(addr_type))
+>>>>>>> refs/remotes/origin/master
 		iif = skb->dev->ifindex;
 
 	/*
@@ -477,7 +591,11 @@ void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
 	 *	and anycast addresses will be checked later.
 	 */
 	if ((addr_type == IPV6_ADDR_ANY) || (addr_type & IPV6_ADDR_MULTICAST)) {
+<<<<<<< HEAD
 		LIMIT_NETDEBUG(KERN_DEBUG "icmpv6_send: addr_any/mcast source\n");
+=======
+		LIMIT_NETDEBUG(KERN_DEBUG "icmp6_send: addr_any/mcast source\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -485,7 +603,11 @@ void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
 	 *	Never answer to a ICMP packet.
 	 */
 	if (is_ineligible(skb)) {
+<<<<<<< HEAD
 		LIMIT_NETDEBUG(KERN_DEBUG "icmpv6_send: no reply to icmp error\n");
+=======
+		LIMIT_NETDEBUG(KERN_DEBUG "icmp6_send: no reply to icmp error\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -493,6 +615,7 @@ void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
 
 	memset(&fl6, 0, sizeof(fl6));
 	fl6.flowi6_proto = IPPROTO_ICMPV6;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ipv6_addr_copy(&fl6.daddr, &hdr->saddr);
 	if (saddr)
@@ -502,6 +625,11 @@ void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
 	if (saddr)
 		fl6.saddr = *saddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fl6.daddr = hdr->saddr;
+	if (saddr)
+		fl6.saddr = *saddr;
+>>>>>>> refs/remotes/origin/master
 	fl6.flowi6_oif = iif;
 	fl6.fl6_icmp_type = type;
 	fl6.fl6_icmp_code = code;
@@ -523,10 +651,15 @@ void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
 	if (!fl6.flowi6_oif && ipv6_addr_is_multicast(&fl6.daddr))
 		fl6.flowi6_oif = np->mcast_oif;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	else if (!fl6.flowi6_oif)
 		fl6.flowi6_oif = np->ucast_oif;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (!fl6.flowi6_oif)
+		fl6.flowi6_oif = np->ucast_oif;
+>>>>>>> refs/remotes/origin/master
 
 	dst = icmpv6_route_lookup(net, skb, sk, &fl6);
 	if (IS_ERR(dst))
@@ -551,20 +684,30 @@ void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	idev = in6_dev_get(skb->dev);
 =======
 	rcu_read_lock();
 	idev = __in6_dev_get(skb->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rcu_read_lock();
+	idev = __in6_dev_get(skb->dev);
+>>>>>>> refs/remotes/origin/master
 
 	err = ip6_append_data(sk, icmpv6_getfrag, &msg,
 			      len + sizeof(struct icmp6hdr),
 			      sizeof(struct icmp6hdr), hlimit,
+<<<<<<< HEAD
 			      np->tclass, NULL, &fl6, (struct rt6_info*)dst,
+=======
+			      np->tclass, NULL, &fl6, (struct rt6_info *)dst,
+>>>>>>> refs/remotes/origin/master
 			      MSG_DONTWAIT, np->dontfrag);
 	if (err) {
 		ICMP6_INC_STATS_BH(net, idev, ICMP6_MIB_OUTERRORS);
 		ip6_flush_pending_frames(sk);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		goto out_put;
 	}
@@ -574,22 +717,38 @@ out_put:
 	if (likely(idev != NULL))
 		in6_dev_put(idev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		err = icmpv6_push_pending_frames(sk, &fl6, &tmp_hdr,
 						 len + sizeof(struct icmp6hdr));
 	}
 	rcu_read_unlock();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out_dst_release:
 	dst_release(dst);
 out:
 	icmpv6_xmit_unlock(sk);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 EXPORT_SYMBOL(icmpv6_send);
+=======
+
+/* Slightly more convenient version of icmp6_send.
+ */
+void icmpv6_param_prob(struct sk_buff *skb, u8 code, int pos)
+{
+	icmp6_send(skb, ICMPV6_PARAMPROB, code, pos);
+	kfree_skb(skb);
+}
+>>>>>>> refs/remotes/origin/master
 
 static void icmpv6_echo_reply(struct sk_buff *skb)
 {
@@ -617,6 +776,7 @@ static void icmpv6_echo_reply(struct sk_buff *skb)
 	memset(&fl6, 0, sizeof(fl6));
 	fl6.flowi6_proto = IPPROTO_ICMPV6;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&fl6.daddr, &ipv6_hdr(skb)->saddr);
 	if (saddr)
 		ipv6_addr_copy(&fl6.saddr, saddr);
@@ -625,6 +785,11 @@ static void icmpv6_echo_reply(struct sk_buff *skb)
 	if (saddr)
 		fl6.saddr = *saddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fl6.daddr = ipv6_hdr(skb)->saddr;
+	if (saddr)
+		fl6.saddr = *saddr;
+>>>>>>> refs/remotes/origin/master
 	fl6.flowi6_oif = skb->dev->ifindex;
 	fl6.fl6_icmp_type = ICMPV6_ECHO_REPLY;
 	security_skb_classify_flow(skb, flowi6_to_flowi(&fl6));
@@ -637,10 +802,15 @@ static void icmpv6_echo_reply(struct sk_buff *skb)
 	if (!fl6.flowi6_oif && ipv6_addr_is_multicast(&fl6.daddr))
 		fl6.flowi6_oif = np->mcast_oif;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	else if (!fl6.flowi6_oif)
 		fl6.flowi6_oif = np->ucast_oif;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (!fl6.flowi6_oif)
+		fl6.flowi6_oif = np->ucast_oif;
+>>>>>>> refs/remotes/origin/master
 
 	err = ip6_dst_lookup(sk, &dst, &fl6);
 	if (err)
@@ -657,10 +827,14 @@ static void icmpv6_echo_reply(struct sk_buff *skb)
 		hlimit = ip6_dst_hoplimit(dst);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	idev = in6_dev_get(skb->dev);
 =======
 	idev = __in6_dev_get(skb->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	idev = __in6_dev_get(skb->dev);
+>>>>>>> refs/remotes/origin/master
 
 	msg.skb = skb;
 	msg.offset = 0;
@@ -668,12 +842,17 @@ static void icmpv6_echo_reply(struct sk_buff *skb)
 
 	err = ip6_append_data(sk, icmpv6_getfrag, &msg, skb->len + sizeof(struct icmp6hdr),
 				sizeof(struct icmp6hdr), hlimit, np->tclass, NULL, &fl6,
+<<<<<<< HEAD
 				(struct rt6_info*)dst, MSG_DONTWAIT,
+=======
+				(struct rt6_info *)dst, MSG_DONTWAIT,
+>>>>>>> refs/remotes/origin/master
 				np->dontfrag);
 
 	if (err) {
 		ICMP6_INC_STATS_BH(net, idev, ICMP6_MIB_OUTERRORS);
 		ip6_flush_pending_frames(sk);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		goto out_put;
 	}
@@ -683,16 +862,22 @@ out_put:
 	if (likely(idev != NULL))
 		in6_dev_put(idev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		err = icmpv6_push_pending_frames(sk, &fl6, &tmp_hdr,
 						 skb->len + sizeof(struct icmp6hdr));
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dst_release(dst);
 out:
 	icmpv6_xmit_unlock(sk);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void icmpv6_notify(struct sk_buff *skb, u8 type, u8 code, __be32 info)
 =======
@@ -707,6 +892,14 @@ static void icmpv6_notify(struct sk_buff *skb, u8 type, u8 code, __be32 info)
 =======
 	__be16 frag_off;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void icmpv6_notify(struct sk_buff *skb, u8 type, u8 code, __be32 info)
+{
+	const struct inet6_protocol *ipprot;
+	int inner_offset;
+	__be16 frag_off;
+	u8 nexthdr;
+>>>>>>> refs/remotes/origin/master
 
 	if (!pskb_may_pull(skb, sizeof(struct ipv6hdr)))
 		return;
@@ -715,11 +908,16 @@ static void icmpv6_notify(struct sk_buff *skb, u8 type, u8 code, __be32 info)
 	if (ipv6_ext_hdr(nexthdr)) {
 		/* now skip over extension headers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inner_offset = ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr), &nexthdr);
 =======
 		inner_offset = ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr),
 						&nexthdr, &frag_off);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		inner_offset = ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr),
+						&nexthdr, &frag_off);
+>>>>>>> refs/remotes/origin/master
 		if (inner_offset<0)
 			return;
 	} else {
@@ -737,10 +935,15 @@ static void icmpv6_notify(struct sk_buff *skb, u8 type, u8 code, __be32 info)
 	   --ANK (980726)
 	 */
 
+<<<<<<< HEAD
 	hash = nexthdr & (MAX_INET_PROTOS - 1);
 
 	rcu_read_lock();
 	ipprot = rcu_dereference(inet6_protos[hash]);
+=======
+	rcu_read_lock();
+	ipprot = rcu_dereference(inet6_protos[nexthdr]);
+>>>>>>> refs/remotes/origin/master
 	if (ipprot && ipprot->err_handler)
 		ipprot->err_handler(skb, NULL, type, code, inner_offset, info);
 	rcu_read_unlock();
@@ -757,7 +960,10 @@ static int icmpv6_rcv(struct sk_buff *skb)
 	struct net_device *dev = skb->dev;
 	struct inet6_dev *idev = __in6_dev_get(dev);
 	const struct in6_addr *saddr, *daddr;
+<<<<<<< HEAD
 	const struct ipv6hdr *orig_hdr;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct icmp6hdr *hdr;
 	u8 type;
 
@@ -769,7 +975,11 @@ static int icmpv6_rcv(struct sk_buff *skb)
 				 XFRM_STATE_ICMP))
 			goto drop_no_count;
 
+<<<<<<< HEAD
 		if (!pskb_may_pull(skb, sizeof(*hdr) + sizeof(*orig_hdr)))
+=======
+		if (!pskb_may_pull(skb, sizeof(*hdr) + sizeof(struct ipv6hdr)))
+>>>>>>> refs/remotes/origin/master
 			goto drop_no_count;
 
 		nh = skb_network_offset(skb);
@@ -798,6 +1008,7 @@ static int icmpv6_rcv(struct sk_buff *skb)
 					     IPPROTO_ICMPV6, 0));
 		if (__skb_checksum_complete(skb)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			LIMIT_NETDEBUG(KERN_DEBUG
 				       "ICMPv6 checksum failed [%pI6c > %pI6c]\n",
 =======
@@ -805,6 +1016,12 @@ static int icmpv6_rcv(struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
 				       saddr, daddr);
 			goto discard_it;
+=======
+			LIMIT_NETDEBUG(KERN_DEBUG
+				       "ICMPv6 checksum failed [%pI6c > %pI6c]\n",
+				       saddr, daddr);
+			goto csum_error;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -824,10 +1041,14 @@ static int icmpv6_rcv(struct sk_buff *skb)
 
 	case ICMPV6_ECHO_REPLY:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ping_rcv(skb);
 =======
 		/* we couldn't care less */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ping_rcv(skb);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case ICMPV6_PKT_TOOBIG:
@@ -839,9 +1060,12 @@ static int icmpv6_rcv(struct sk_buff *skb)
 		if (!pskb_may_pull(skb, sizeof(struct ipv6hdr)))
 			goto discard_it;
 		hdr = icmp6_hdr(skb);
+<<<<<<< HEAD
 		orig_hdr = (struct ipv6hdr *) (hdr + 1);
 		rt6_pmtu_discovery(&orig_hdr->daddr, &orig_hdr->saddr, dev,
 				   ntohl(hdr->icmp6_mtu));
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 *	Drop through to notify
@@ -897,6 +1121,11 @@ static int icmpv6_rcv(struct sk_buff *skb)
 	kfree_skb(skb);
 	return 0;
 
+<<<<<<< HEAD
+=======
+csum_error:
+	ICMP6_INC_STATS_BH(dev_net(dev), idev, ICMP6_MIB_CSUMERRORS);
+>>>>>>> refs/remotes/origin/master
 discard_it:
 	ICMP6_INC_STATS_BH(dev_net(dev), idev, ICMP6_MIB_INERRORS);
 drop_no_count:
@@ -912,12 +1141,17 @@ void icmpv6_flow_init(struct sock *sk, struct flowi6 *fl6,
 {
 	memset(fl6, 0, sizeof(*fl6));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&fl6->saddr, saddr);
 	ipv6_addr_copy(&fl6->daddr, daddr);
 =======
 	fl6->saddr = *saddr;
 	fl6->daddr = *daddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fl6->saddr = *saddr;
+	fl6->daddr = *daddr;
+>>>>>>> refs/remotes/origin/master
 	fl6->flowi6_proto 	= IPPROTO_ICMPV6;
 	fl6->fl6_icmp_type	= type;
 	fl6->fl6_icmp_code	= 0;
@@ -944,9 +1178,13 @@ static int __net_init icmpv6_sk_init(struct net *net)
 		err = inet_ctl_sock_create(&sk, PF_INET6,
 					   SOCK_RAW, IPPROTO_ICMPV6, net);
 		if (err < 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR
 			       "Failed to initialize the ICMP6 control socket "
 			       "(err %d).\n",
+=======
+			pr_err("Failed to initialize the ICMP6 control socket (err %d)\n",
+>>>>>>> refs/remotes/origin/master
 			       err);
 			goto fail;
 		}
@@ -966,11 +1204,15 @@ static int __net_init icmpv6_sk_init(struct net *net)
 		 * sk_buff struct overhead.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sk->sk_sndbuf =
 			(2 * ((64 * 1024) + sizeof(struct sk_buff)));
 =======
 		sk->sk_sndbuf = 2 * SKB_TRUESIZE(64 * 1024);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sk->sk_sndbuf = 2 * SKB_TRUESIZE(64 * 1024);
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 
@@ -1007,16 +1249,33 @@ int __init icmpv6_init(void)
 	err = -EAGAIN;
 	if (inet6_add_protocol(&icmpv6_protocol, IPPROTO_ICMPV6) < 0)
 		goto fail;
+<<<<<<< HEAD
 	return 0;
 
 fail:
 	printk(KERN_ERR "Failed to register ICMP6 protocol\n");
+=======
+
+	err = inet6_register_icmp_sender(icmp6_send);
+	if (err)
+		goto sender_reg_err;
+	return 0;
+
+sender_reg_err:
+	inet6_del_protocol(&icmpv6_protocol, IPPROTO_ICMPV6);
+fail:
+	pr_err("Failed to register ICMP6 protocol\n");
+>>>>>>> refs/remotes/origin/master
 	unregister_pernet_subsys(&icmpv6_sk_ops);
 	return err;
 }
 
 void icmpv6_cleanup(void)
 {
+<<<<<<< HEAD
+=======
+	inet6_unregister_icmp_sender(icmp6_send);
+>>>>>>> refs/remotes/origin/master
 	unregister_pernet_subsys(&icmpv6_sk_ops);
 	inet6_del_protocol(&icmpv6_protocol, IPPROTO_ICMPV6);
 }
@@ -1087,11 +1346,18 @@ int icmpv6_err_convert(u8 type, u8 code, int *err)
 
 	return fatal;
 }
+<<<<<<< HEAD
 
 EXPORT_SYMBOL(icmpv6_err_convert);
 
 #ifdef CONFIG_SYSCTL
 ctl_table ipv6_icmp_table_template[] = {
+=======
+EXPORT_SYMBOL(icmpv6_err_convert);
+
+#ifdef CONFIG_SYSCTL
+struct ctl_table ipv6_icmp_table_template[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "ratelimit",
 		.data		= &init_net.ipv6.sysctl.icmpv6_time,

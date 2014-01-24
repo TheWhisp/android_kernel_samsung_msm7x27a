@@ -37,11 +37,17 @@
 
 #include <linux/suspend.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/proc_fs.h>
+=======
+#include <linux/debugfs.h>
+#include <linux/seq_file.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/sysfs.h>
 #include <linux/module.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #include <asm/irq.h>
@@ -74,6 +80,28 @@
 #include "iomap.h"
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "pm.h"
+=======
+#include <linux/atomic.h>
+#include <linux/cpu.h>
+
+#include <asm/fncpy.h>
+#include <asm/system_misc.h>
+#include <asm/irq.h>
+#include <asm/mach/time.h>
+#include <asm/mach/irq.h>
+
+#include <mach/tc.h>
+#include <mach/mux.h>
+#include <linux/omap-dma.h>
+#include <plat/dmtimer.h>
+
+#include <mach/irqs.h>
+
+#include "iomap.h"
+#include "clock.h"
+#include "pm.h"
+#include "sram.h"
+>>>>>>> refs/remotes/origin/master
 
 static unsigned int arm_sleep_save[ARM_SLEEP_SAVE_SIZE];
 static unsigned short dsp_sleep_save[DSP_SLEEP_SAVE_SIZE];
@@ -125,6 +153,7 @@ void omap1_pm_idle(void)
 	int do_sleep = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	local_irq_disable();
 	local_fiq_disable();
 	if (need_resched()) {
@@ -139,6 +168,11 @@ void omap1_pm_idle(void)
 
 #if defined(CONFIG_OMAP_MPU_TIMER) && !defined(CONFIG_OMAP_DM_TIMER)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	local_fiq_disable();
+
+#if defined(CONFIG_OMAP_MPU_TIMER) && !defined(CONFIG_OMAP_DM_TIMER)
+>>>>>>> refs/remotes/origin/master
 #warning Enable 32kHz OS timer in order to allow sleep states in idle
 	use_idlect1 = use_idlect1 & ~(1 << 9);
 #else
@@ -180,9 +214,12 @@ void omap1_pm_idle(void)
 
 		local_fiq_enable();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		local_irq_enable();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	omap_sram_suspend(omap_readl(ARM_IDLECT1),
@@ -190,9 +227,12 @@ void omap1_pm_idle(void)
 
 	local_fiq_enable();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	local_irq_enable();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -455,6 +495,7 @@ void omap1_pm_suspend(void)
 		omap_rev());
 }
 
+<<<<<<< HEAD
 #if defined(DEBUG) && defined(CONFIG_PROC_FS)
 static int g_read_completed;
 
@@ -472,6 +513,14 @@ static int omap_pm_read_proc(
 	int my_buffer_offset = 0;
 	char * const my_base = page_buffer;
 
+=======
+#ifdef CONFIG_DEBUG_FS
+/*
+ * Read system PM registers for debugging
+ */
+static int omap_pm_debug_show(struct seq_file *m, void *v)
+{
+>>>>>>> refs/remotes/origin/master
 	ARM_SAVE(ARM_CKCTL);
 	ARM_SAVE(ARM_IDLECT1);
 	ARM_SAVE(ARM_IDLECT2);
@@ -512,10 +561,14 @@ static int omap_pm_read_proc(
 		MPUI1610_SAVE(EMIFS_CONFIG);
 	}
 
+<<<<<<< HEAD
 	if (virtual_start == 0) {
 		g_read_completed = 0;
 
 		my_buffer_offset += sprintf(my_base + my_buffer_offset,
+=======
+	seq_printf(m,
+>>>>>>> refs/remotes/origin/master
 		   "ARM_CKCTL_REG:            0x%-8x     \n"
 		   "ARM_IDLECT1_REG:          0x%-8x     \n"
 		   "ARM_IDLECT2_REG:          0x%-8x     \n"
@@ -545,8 +598,13 @@ static int omap_pm_read_proc(
 		   ULPD_SHOW(ULPD_STATUS_REQ),
 		   ULPD_SHOW(ULPD_POWER_CTRL));
 
+<<<<<<< HEAD
 		if (cpu_is_omap7xx()) {
 			my_buffer_offset += sprintf(my_base + my_buffer_offset,
+=======
+	if (cpu_is_omap7xx()) {
+		seq_printf(m,
+>>>>>>> refs/remotes/origin/master
 			   "MPUI7XX_CTRL_REG	     0x%-8x \n"
 			   "MPUI7XX_DSP_STATUS_REG:      0x%-8x \n"
 			   "MPUI7XX_DSP_BOOT_CONFIG_REG: 0x%-8x \n"
@@ -559,8 +617,13 @@ static int omap_pm_read_proc(
 			   MPUI7XX_SHOW(MPUI_DSP_API_CONFIG),
 			   MPUI7XX_SHOW(EMIFF_SDRAM_CONFIG),
 			   MPUI7XX_SHOW(EMIFS_CONFIG));
+<<<<<<< HEAD
 		} else if (cpu_is_omap15xx()) {
 			my_buffer_offset += sprintf(my_base + my_buffer_offset,
+=======
+	} else if (cpu_is_omap15xx()) {
+		seq_printf(m,
+>>>>>>> refs/remotes/origin/master
 			   "MPUI1510_CTRL_REG             0x%-8x \n"
 			   "MPUI1510_DSP_STATUS_REG:      0x%-8x \n"
 			   "MPUI1510_DSP_BOOT_CONFIG_REG: 0x%-8x \n"
@@ -573,8 +636,13 @@ static int omap_pm_read_proc(
 			   MPUI1510_SHOW(MPUI_DSP_API_CONFIG),
 			   MPUI1510_SHOW(EMIFF_SDRAM_CONFIG),
 			   MPUI1510_SHOW(EMIFS_CONFIG));
+<<<<<<< HEAD
 		} else if (cpu_is_omap16xx()) {
 			my_buffer_offset += sprintf(my_base + my_buffer_offset,
+=======
+	} else if (cpu_is_omap16xx()) {
+		seq_printf(m,
+>>>>>>> refs/remotes/origin/master
 			   "MPUI1610_CTRL_REG             0x%-8x \n"
 			   "MPUI1610_DSP_STATUS_REG:      0x%-8x \n"
 			   "MPUI1610_DSP_BOOT_CONFIG_REG: 0x%-8x \n"
@@ -587,6 +655,7 @@ static int omap_pm_read_proc(
 			   MPUI1610_SHOW(MPUI_DSP_API_CONFIG),
 			   MPUI1610_SHOW(EMIFF_SDRAM_CONFIG),
 			   MPUI1610_SHOW(EMIFS_CONFIG));
+<<<<<<< HEAD
 		}
 
 		g_read_completed++;
@@ -616,6 +685,40 @@ static void (*saved_idle)(void) = NULL;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+
+	return 0;
+}
+
+static int omap_pm_debug_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, omap_pm_debug_show,
+				&inode->i_private);
+}
+
+static const struct file_operations omap_pm_debug_fops = {
+	.open		= omap_pm_debug_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+static void omap_pm_init_debugfs(void)
+{
+	struct dentry *d;
+
+	d = debugfs_create_dir("pm_debug", NULL);
+	if (!d)
+		return;
+
+	(void) debugfs_create_file("omap_pm", S_IWUSR | S_IRUGO,
+					d, NULL, &omap_pm_debug_fops);
+}
+
+#endif /* CONFIG_DEBUG_FS */
+
+>>>>>>> refs/remotes/origin/master
 /*
  *	omap_pm_prepare - Do preliminary suspend work.
  *
@@ -624,12 +727,16 @@ static int omap_pm_prepare(void)
 {
 	/* We cannot sleep in idle until we have resumed */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	saved_idle = pm_idle;
 	pm_idle = NULL;
 =======
 	disable_hlt();
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+	cpu_idle_poll_ctrl(true);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -666,10 +773,14 @@ static int omap_pm_enter(suspend_state_t state)
 static void omap_pm_finish(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pm_idle = saved_idle;
 =======
 	enable_hlt();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpu_idle_poll_ctrl(false);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -680,7 +791,10 @@ static irqreturn_t omap_wakeup_interrupt(int irq, void *dev)
 
 static struct irqaction omap_wakeup_irq = {
 	.name		= "peripheral wakeup",
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED,
+=======
+>>>>>>> refs/remotes/origin/master
 	.handler	= omap_wakeup_interrupt
 };
 
@@ -727,10 +841,14 @@ static int __init omap_pm_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pm_idle = omap1_pm_idle;
 =======
 	arm_pm_idle = omap1_pm_idle;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	arm_pm_idle = omap1_pm_idle;
+>>>>>>> refs/remotes/origin/master
 
 	if (cpu_is_omap7xx())
 		setup_irq(INT_7XX_WAKE_UP_REQ, &omap_wakeup_irq);
@@ -753,8 +871,13 @@ static int __init omap_pm_init(void)
 
 	suspend_set_ops(&omap_pm_ops);
 
+<<<<<<< HEAD
 #if defined(DEBUG) && defined(CONFIG_PROC_FS)
 	omap_pm_init_proc();
+=======
+#ifdef CONFIG_DEBUG_FS
+	omap_pm_init_debugfs();
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_OMAP_32K_TIMER

@@ -151,6 +151,7 @@ failjob_rls_job:
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 /*
  * bsg_goose_queue - restart queue in case it was stopped
  * @q: request q to be restarted
@@ -164,6 +165,8 @@ void bsg_goose_queue(struct request_queue *q)
 }
 EXPORT_SYMBOL_GPL(bsg_goose_queue);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * bsg_request_fn - generic handler for bsg requests
  * @q: request queue to manage
@@ -243,6 +246,7 @@ int bsg_setup_queue(struct device *dev, struct request_queue *q,
 	return 0;
 }
 EXPORT_SYMBOL_GPL(bsg_setup_queue);
+<<<<<<< HEAD
 
 /**
  * bsg_remove_queue - Deletes the bsg dev from the q
@@ -296,3 +300,5 @@ void bsg_remove_queue(struct request_queue *q)
 	bsg_unregister_queue(q);
 }
 EXPORT_SYMBOL_GPL(bsg_remove_queue);
+=======
+>>>>>>> refs/remotes/origin/master

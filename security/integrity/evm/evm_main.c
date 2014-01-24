@@ -16,6 +16,10 @@
 
 #include <linux/module.h>
 #include <linux/crypto.h>
+<<<<<<< HEAD
+=======
+#include <linux/audit.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/xattr.h>
 #include <linux/integrity.h>
 #include <linux/evm.h>
@@ -24,8 +28,17 @@
 
 int evm_initialized;
 
+<<<<<<< HEAD
 char *evm_hmac = "hmac(sha1)";
 char *evm_hash = "sha1";
+=======
+static char *integrity_status_msg[] = {
+	"pass", "fail", "no_label", "no_xattrs", "unknown"
+};
+char *evm_hmac = "hmac(sha1)";
+char *evm_hash = "sha1";
+int evm_hmac_version = CONFIG_EVM_HMAC_VERSION;
+>>>>>>> refs/remotes/origin/master
 
 char *evm_config_xattrnames[] = {
 #ifdef CONFIG_SECURITY_SELINUX
@@ -34,6 +47,12 @@ char *evm_config_xattrnames[] = {
 #ifdef CONFIG_SECURITY_SMACK
 	XATTR_NAME_SMACK,
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_IMA_APPRAISE
+	XATTR_NAME_IMA,
+#endif
+>>>>>>> refs/remotes/origin/master
 	XATTR_NAME_CAPS,
 	NULL
 };
@@ -115,7 +134,11 @@ static enum integrity_status evm_verify_hmac(struct dentry *dentry,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	xattr_len = rc - 1;
+=======
+	xattr_len = rc;
+>>>>>>> refs/remotes/origin/master
 
 	/* check value type */
 	switch (xattr_data->type) {
@@ -135,7 +158,11 @@ static enum integrity_status evm_verify_hmac(struct dentry *dentry,
 		if (rc)
 			break;
 		rc = integrity_digsig_verify(INTEGRITY_KEYRING_EVM,
+<<<<<<< HEAD
 					xattr_data->digest, xattr_len,
+=======
+					(const char *)xattr_data, xattr_len,
+>>>>>>> refs/remotes/origin/master
 					calc.digest, sizeof(calc.digest));
 		if (!rc) {
 			/* we probably want to replace rsa with hmac here */
@@ -258,9 +285,21 @@ static int evm_protect_xattr(struct dentry *dentry, const char *xattr_name,
 		if ((evm_status == INTEGRITY_PASS) ||
 		    (evm_status == INTEGRITY_NOXATTRS))
 			return 0;
+<<<<<<< HEAD
 		return -EPERM;
 	}
 	evm_status = evm_verify_current_integrity(dentry);
+=======
+		goto out;
+	}
+	evm_status = evm_verify_current_integrity(dentry);
+out:
+	if (evm_status != INTEGRITY_PASS)
+		integrity_audit_msg(AUDIT_INTEGRITY_METADATA, dentry->d_inode,
+				    dentry->d_name.name, "appraise_metadata",
+				    integrity_status_msg[evm_status],
+				    -EPERM, 0);
+>>>>>>> refs/remotes/origin/master
 	return evm_status == INTEGRITY_PASS ? 0 : -EPERM;
 }
 
@@ -353,6 +392,12 @@ int evm_inode_setattr(struct dentry *dentry, struct iattr *attr)
 	if ((evm_status == INTEGRITY_PASS) ||
 	    (evm_status == INTEGRITY_NOXATTRS))
 		return 0;
+<<<<<<< HEAD
+=======
+	integrity_audit_msg(AUDIT_INTEGRITY_METADATA, dentry->d_inode,
+			    dentry->d_name.name, "appraise_metadata",
+			    integrity_status_msg[evm_status], -EPERM, 0);
+>>>>>>> refs/remotes/origin/master
 	return -EPERM;
 }
 
@@ -401,7 +446,11 @@ int evm_inode_init_security(struct inode *inode,
 
 	evm_xattr->value = xattr_data;
 	evm_xattr->value_len = sizeof(*xattr_data);
+<<<<<<< HEAD
 	evm_xattr->name = kstrdup(XATTR_EVM_SUFFIX, GFP_NOFS);
+=======
+	evm_xattr->name = XATTR_EVM_SUFFIX;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 out:
 	kfree(xattr_data);
@@ -424,6 +473,7 @@ err:
 	return error;
 }
 
+<<<<<<< HEAD
 static void __exit cleanup_evm(void)
 {
 	evm_cleanup_secfs();
@@ -433,6 +483,8 @@ static void __exit cleanup_evm(void)
 		crypto_free_shash(hash_tfm);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * evm_display_config - list the EVM protected security extended attributes
  */

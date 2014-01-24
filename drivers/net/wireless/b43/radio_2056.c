@@ -4,10 +4,15 @@
   IEEE 802.11n 2056 radio device data tables
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   Copyright (c) 2010 Rafał Miłecki <zajec5@gmail.com>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  Copyright (c) 2010 Rafał Miłecki <zajec5@gmail.com>
+
+>>>>>>> refs/remotes/origin/master
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -1576,6 +1581,7 @@ static const struct b2056_inittab_entry b2056_inittab_rev6_syn[] = {
 	[B2056_SYN_PLL_XTAL6]		= { .ghz5 = 0x0007, .ghz2 = 0x0007, NOUPLOAD, },
 	[B2056_SYN_PLL_REFDIV]		= { .ghz5 = 0x0001, .ghz2 = 0x0001, NOUPLOAD, },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	[B2056_SYN_PLL_PFD]		= { .ghz5 = 0x0004, .ghz2 = 0x0004, NOUPLOAD, },
 	[B2056_SYN_PLL_CP1]		= { .ghz5 = 0x000f, .ghz2 = 0x000f, NOUPLOAD, },
 	[B2056_SYN_PLL_CP2]		= { .ghz5 = 0x0030, .ghz2 = 0x0030, NOUPLOAD, },
@@ -1585,6 +1591,8 @@ static const struct b2056_inittab_entry b2056_inittab_rev6_syn[] = {
 	[B2056_SYN_PLL_LOOPFILTER3]	= { .ghz5 = 0x0004, .ghz2 = 0x0004, NOUPLOAD, },
 	[B2056_SYN_PLL_LOOPFILTER4]	= { .ghz5 = 0x0006, .ghz2 = 0x0006, NOUPLOAD, },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	[B2056_SYN_PLL_PFD]		= { .ghz5 = 0x0006, .ghz2 = 0x0006, UPLOAD, },
 	[B2056_SYN_PLL_CP1]		= { .ghz5 = 0x000f, .ghz2 = 0x000f, NOUPLOAD, },
 	[B2056_SYN_PLL_CP2]		= { .ghz5 = 0x003f, .ghz2 = 0x003f, UPLOAD, },
@@ -1593,7 +1601,10 @@ static const struct b2056_inittab_entry b2056_inittab_rev6_syn[] = {
 	[B2056_SYN_PLL_LOOPFILTER2]	= { .ghz5 = 0x0006, .ghz2 = 0x0006, UPLOAD, },
 	[B2056_SYN_PLL_LOOPFILTER3]	= { .ghz5 = 0x0004, .ghz2 = 0x0004, NOUPLOAD, },
 	[B2056_SYN_PLL_LOOPFILTER4]	= { .ghz5 = 0x002b, .ghz2 = 0x002b, UPLOAD, },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	[B2056_SYN_PLL_LOOPFILTER5]	= { .ghz5 = 0x0001, .ghz2 = 0x0001, NOUPLOAD, },
 	[B2056_SYN_PLL_MMD1]		= { .ghz5 = 0x001c, .ghz2 = 0x001c, NOUPLOAD, },
 	[B2056_SYN_PLL_MMD2]		= { .ghz5 = 0x0002, .ghz2 = 0x0002, NOUPLOAD, },
@@ -2994,7 +3005,11 @@ static const struct b2056_inittab_entry b2056_inittab_rev8_rx[] = {
 	.rx		= prefix##_rx,			\
 	.rx_length	= ARRAY_SIZE(prefix##_rx)
 
+<<<<<<< HEAD
 struct b2056_inittabs_pts b2056_inittabs[] = {
+=======
+static const struct b2056_inittabs_pts b2056_inittabs[] = {
+>>>>>>> refs/remotes/origin/master
 	[3] = { INITTABSPTS(b2056_inittab_rev3) },
 	[4] = { INITTABSPTS(b2056_inittab_rev4) },
 	[5] = { INITTABSPTS(b2056_inittab_rev5) },
@@ -9049,7 +9064,11 @@ static void b2056_upload_inittab(struct b43_wldev *dev, bool ghz5,
 void b2056_upload_inittabs(struct b43_wldev *dev,
 			   bool ghz5, bool ignore_uploadflag)
 {
+<<<<<<< HEAD
 	struct b2056_inittabs_pts *pts;
+=======
+	const struct b2056_inittabs_pts *pts;
+>>>>>>> refs/remotes/origin/master
 
 	if (dev->phy.rev >= ARRAY_SIZE(b2056_inittabs)) {
 		B43_WARN_ON(1);
@@ -9070,10 +9089,16 @@ void b2056_upload_inittabs(struct b43_wldev *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void b2056_upload_syn_pll_cp2(struct b43_wldev *dev, bool ghz5)
 {
 	struct b2056_inittabs_pts *pts;
+=======
+void b2056_upload_syn_pll_cp2(struct b43_wldev *dev, bool ghz5)
+{
+	const struct b2056_inittabs_pts *pts;
+>>>>>>> refs/remotes/origin/master
 	const struct b2056_inittab_entry *e;
 
 	if (dev->phy.rev >= ARRAY_SIZE(b2056_inittabs)) {
@@ -9086,7 +9111,10 @@ void b2056_upload_syn_pll_cp2(struct b43_wldev *dev, bool ghz5)
 	b43_radio_write(dev, B2056_SYN_PLL_CP2, ghz5 ? e->ghz5 : e->ghz2);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 const struct b43_nphy_channeltab_entry_rev3 *
 b43_nphy_get_chantabent_rev3(struct b43_wldev *dev, u16 freq)
 {

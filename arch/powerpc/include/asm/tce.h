@@ -27,11 +27,14 @@
 /*
  * Tces come in two formats, one for the virtual bus and a different
 <<<<<<< HEAD
+<<<<<<< HEAD
  * format for PCI
  */
 #define TCE_VB  0
 #define TCE_PCI 1
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * format for PCI.  PCI TCEs can have hardware or software maintianed
  * coherency.
  */
@@ -40,7 +43,10 @@
 #define TCE_PCI_SWINV_CREATE	2
 #define TCE_PCI_SWINV_FREE	4
 #define TCE_PCI_SWINV_PAIR	8
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* TCE page size is 4096 bytes (1 << 12) */
 

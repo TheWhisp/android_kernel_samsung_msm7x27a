@@ -81,10 +81,14 @@ CONFIG_I2C_CHARDEV=m
 CONFIG_I2C_GPIO=m
 CONFIG_SPI=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_SPI_BFIN=y
 =======
 CONFIG_SPI_BFIN5XX=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_SPI_BFIN5XX=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_SPI_SPIDEV=m
 # CONFIG_HWMON is not set
 CONFIG_WATCHDOG=y

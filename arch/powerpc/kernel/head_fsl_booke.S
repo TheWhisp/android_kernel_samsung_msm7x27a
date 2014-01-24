@@ -64,6 +64,7 @@ _ENTRY(_start);
 	 */
 	nop
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Save parameters we are passed
  */
@@ -76,6 +77,8 @@ _ENTRY(_start);
 	li	r24,0		/* CPU number */
 	li	r23,0		/* phys kernel start (high) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Translate device tree address to physical, save in r30/r31 */
 	mfmsr	r16
@@ -100,7 +103,10 @@ _ENTRY(_start);
 	li	r25,0			/* phys kernel start (low) */
 	li	r24,0			/* CPU number */
 	li	r23,0			/* phys kernel start (high) */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* We try to not make any assumptions about how the boot loader
  * setup or used the TLBs.  We invalidate all mappings from the
@@ -206,16 +212,24 @@ _ENTRY(__early_start)
 	li	r0,0
 	stwu	r0,THREAD_SIZE-STACK_FRAME_OVERHEAD(r1)
 
+<<<<<<< HEAD
 	rlwinm  r22,r1,0,0,31-THREAD_SHIFT      /* current thread_info */
+=======
+	CURRENT_THREAD_INFO(r22, r1)
+>>>>>>> refs/remotes/origin/master
 	stw	r24, TI_CPU(r22)
 
 	bl	early_init
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_RELOCATABLE
 =======
 #ifdef CONFIG_DYNAMIC_MEMSTART
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_DYNAMIC_MEMSTART
+>>>>>>> refs/remotes/origin/master
 	lis	r3,kernstart_addr@ha
 	la	r3,kernstart_addr@l(r3)
 #ifdef CONFIG_PHYS_64BIT
@@ -230,6 +244,7 @@ _ENTRY(__early_start)
  * Decide what sort of machine this is and initialize the MMU.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mr	r3,r31
 	mr	r4,r30
 	mr	r5,r29
@@ -239,6 +254,10 @@ _ENTRY(__early_start)
 	mr	r3,r30
 	mr	r4,r31
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mr	r3,r30
+	mr	r4,r31
+>>>>>>> refs/remotes/origin/master
 	bl	machine_init
 	bl	MMU_init
 
@@ -273,9 +292,12 @@ _ENTRY(__early_start)
  *   r11 is low pte word
  *   r12 is pointer to the pte
 <<<<<<< HEAD
+<<<<<<< HEAD
  */
 #ifdef CONFIG_PTE_64BIT
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *   r10 is the pshift from the PGD, if we're a hugepage
  */
 #ifdef CONFIG_PTE_64BIT
@@ -294,7 +316,10 @@ _ENTRY(__early_start)
 	li	r10, 0;			/* clear r10 */			\
 1001:	lwz	r11, 4(r12);		/* Get pte entry */
 #else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define FIND_PTE	\
 	rlwinm	r12, r10, 13, 19, 29;	/* Compute pgdir/pmd offset */	\
 	lwzx	r11, r12, r11;		/* Get pgd/pmd entry */		\
@@ -303,11 +328,16 @@ _ENTRY(__early_start)
 	rlwimi	r12, r10, 23, 20, 28;	/* Compute pte address */	\
 	lwz	r11, 4(r12);		/* Get pte entry */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #else
 =======
 #endif /* HUGEPAGE */
 #else /* !PTE_64BIT */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* HUGEPAGE */
+#else /* !PTE_64BIT */
+>>>>>>> refs/remotes/origin/master
 #define FIND_PTE	\
 	rlwimi	r11, r10, 12, 20, 29;	/* Create L1 (pgdir/pmd) address */	\
 	lwz	r11, 0(r11);		/* Get L1 entry */			\
@@ -336,29 +366,46 @@ _ENTRY(__early_start)
 
 interrupt_base:
 	/* Critical Input Interrupt */
+<<<<<<< HEAD
 	CRITICAL_EXCEPTION(0x0100, CriticalInput, unknown_exception)
+=======
+	CRITICAL_EXCEPTION(0x0100, CRITICAL, CriticalInput, unknown_exception)
+>>>>>>> refs/remotes/origin/master
 
 	/* Machine Check Interrupt */
 #ifdef CONFIG_E200
 	/* no RFMCI, MCSRRs on E200 */
+<<<<<<< HEAD
 	CRITICAL_EXCEPTION(0x0200, MachineCheck, machine_check_exception)
+=======
+	CRITICAL_EXCEPTION(0x0200, MACHINE_CHECK, MachineCheck, \
+			   machine_check_exception)
+>>>>>>> refs/remotes/origin/master
 #else
 	MCHECK_EXCEPTION(0x0200, MachineCheck, machine_check_exception)
 #endif
 
 	/* Data Storage Interrupt */
 	START_EXCEPTION(DataStorage)
+<<<<<<< HEAD
 	NORMAL_EXCEPTION_PROLOG
+=======
+	NORMAL_EXCEPTION_PROLOG(DATA_STORAGE)
+>>>>>>> refs/remotes/origin/master
 	mfspr	r5,SPRN_ESR		/* Grab the ESR, save it, pass arg3 */
 	stw	r5,_ESR(r11)
 	mfspr	r4,SPRN_DEAR		/* Grab the DEAR, save it, pass arg2 */
 	andis.	r10,r5,(ESR_ILK|ESR_DLK)@h
 	bne	1f
 <<<<<<< HEAD
+<<<<<<< HEAD
 	EXC_XFER_EE_LITE(0x0300, handle_page_fault)
 =======
 	EXC_XFER_LITE(0x0300, handle_page_fault)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	EXC_XFER_LITE(0x0300, handle_page_fault)
+>>>>>>> refs/remotes/origin/master
 1:
 	addi	r3,r1,STACK_FRAME_OVERHEAD
 	EXC_XFER_EE_LITE(0x0300, CacheLockingException)
@@ -367,7 +414,11 @@ interrupt_base:
 	INSTRUCTION_STORAGE_EXCEPTION
 
 	/* External Input Interrupt */
+<<<<<<< HEAD
 	EXCEPTION(0x0500, ExternalInput, do_IRQ, EXC_XFER_LITE)
+=======
+	EXCEPTION(0x0500, EXTERNAL, ExternalInput, do_IRQ, EXC_XFER_LITE)
+>>>>>>> refs/remotes/origin/master
 
 	/* Alignment Interrupt */
 	ALIGNMENT_EXCEPTION
@@ -381,25 +432,43 @@ interrupt_base:
 #else
 #ifdef CONFIG_E200
 	/* E200 treats 'normal' floating point instructions as FP Unavail exception */
+<<<<<<< HEAD
 	EXCEPTION(0x0800, FloatingPointUnavailable, program_check_exception, EXC_XFER_EE)
 #else
 	EXCEPTION(0x0800, FloatingPointUnavailable, unknown_exception, EXC_XFER_EE)
+=======
+	EXCEPTION(0x0800, FP_UNAVAIL, FloatingPointUnavailable, \
+		  program_check_exception, EXC_XFER_EE)
+#else
+	EXCEPTION(0x0800, FP_UNAVAIL, FloatingPointUnavailable, \
+		  unknown_exception, EXC_XFER_EE)
+>>>>>>> refs/remotes/origin/master
 #endif
 #endif
 
 	/* System Call Interrupt */
 	START_EXCEPTION(SystemCall)
+<<<<<<< HEAD
 	NORMAL_EXCEPTION_PROLOG
 	EXC_XFER_EE_LITE(0x0c00, DoSyscall)
 
 	/* Auxiliary Processor Unavailable Interrupt */
 	EXCEPTION(0x2900, AuxillaryProcessorUnavailable, unknown_exception, EXC_XFER_EE)
+=======
+	NORMAL_EXCEPTION_PROLOG(SYSCALL)
+	EXC_XFER_EE_LITE(0x0c00, DoSyscall)
+
+	/* Auxiliary Processor Unavailable Interrupt */
+	EXCEPTION(0x2900, AP_UNAVAIL, AuxillaryProcessorUnavailable, \
+		  unknown_exception, EXC_XFER_EE)
+>>>>>>> refs/remotes/origin/master
 
 	/* Decrementer Interrupt */
 	DECREMENTER_EXCEPTION
 
 	/* Fixed Internal Timer Interrupt */
 	/* TODO: Add FIT support */
+<<<<<<< HEAD
 	EXCEPTION(0x3100, FixedIntervalTimer, unknown_exception, EXC_XFER_EE)
 
 	/* Watchdog Timer Interrupt */
@@ -407,11 +476,22 @@ interrupt_base:
 	CRITICAL_EXCEPTION(0x3200, WatchdogTimer, WatchdogException)
 #else
 	CRITICAL_EXCEPTION(0x3200, WatchdogTimer, unknown_exception)
+=======
+	EXCEPTION(0x3100, FIT, FixedIntervalTimer, \
+		  unknown_exception, EXC_XFER_EE)
+
+	/* Watchdog Timer Interrupt */
+#ifdef CONFIG_BOOKE_WDT
+	CRITICAL_EXCEPTION(0x3200, WATCHDOG, WatchdogTimer, WatchdogException)
+#else
+	CRITICAL_EXCEPTION(0x3200, WATCHDOG, WatchdogTimer, unknown_exception)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	/* Data TLB Error Interrupt */
 	START_EXCEPTION(DataTLBError)
 	mtspr	SPRN_SPRG_WSCRATCH0, r10 /* Save some working registers */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mtspr	SPRN_SPRG_WSCRATCH1, r11
 	mtspr	SPRN_SPRG_WSCRATCH2, r12
@@ -421,11 +501,24 @@ interrupt_base:
 =======
 	mfspr	r10, SPRN_SPRG_THREAD
 	stw	r11, THREAD_NORMSAVE(0)(r10)
+=======
+	mfspr	r10, SPRN_SPRG_THREAD
+	stw	r11, THREAD_NORMSAVE(0)(r10)
+#ifdef CONFIG_KVM_BOOKE_HV
+BEGIN_FTR_SECTION
+	mfspr	r11, SPRN_SRR1
+END_FTR_SECTION_IFSET(CPU_FTR_EMB_HV)
+#endif
+>>>>>>> refs/remotes/origin/master
 	stw	r12, THREAD_NORMSAVE(1)(r10)
 	stw	r13, THREAD_NORMSAVE(2)(r10)
 	mfcr	r13
 	stw	r13, THREAD_NORMSAVE(3)(r10)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DO_KVM	BOOKE_INTERRUPT_DTLB_MISS SPRN_SRR1
+>>>>>>> refs/remotes/origin/master
 	mfspr	r10, SPRN_DEAR		/* Get faulting address */
 
 	/* If we are faulting a kernel address, we have to use the
@@ -477,12 +570,17 @@ interrupt_base:
 #ifdef CONFIG_PTE_64BIT
 #ifdef CONFIG_SMP
 <<<<<<< HEAD
+<<<<<<< HEAD
 	subf	r10,r11,r12		/* create false data dep */
 	lwzx	r13,r11,r10		/* Get upper pte bits */
 =======
 	subf	r13,r11,r12		/* create false data dep */
 	lwzx	r13,r11,r13		/* Get upper pte bits */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	subf	r13,r11,r12		/* create false data dep */
+	lwzx	r13,r11,r13		/* Get upper pte bits */
+>>>>>>> refs/remotes/origin/master
 #else
 	lwz	r13,0(r12)		/* Get upper pte bits */
 #endif
@@ -497,19 +595,25 @@ interrupt_base:
 	 * and call the heavyweights to help us out.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mfspr	r11, SPRN_SPRG_RSCRATCH4
 	mtcr	r11
 	mfspr	r13, SPRN_SPRG_RSCRATCH3
 	mfspr	r12, SPRN_SPRG_RSCRATCH2
 	mfspr	r11, SPRN_SPRG_RSCRATCH1
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mfspr	r10, SPRN_SPRG_THREAD
 	lwz	r11, THREAD_NORMSAVE(3)(r10)
 	mtcr	r11
 	lwz	r13, THREAD_NORMSAVE(2)(r10)
 	lwz	r12, THREAD_NORMSAVE(1)(r10)
 	lwz	r11, THREAD_NORMSAVE(0)(r10)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mfspr	r10, SPRN_SPRG_RSCRATCH0
 	b	DataStorage
 
@@ -522,6 +626,7 @@ interrupt_base:
 	START_EXCEPTION(InstructionTLBError)
 	mtspr	SPRN_SPRG_WSCRATCH0, r10 /* Save some working registers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mtspr	SPRN_SPRG_WSCRATCH1, r11
 	mtspr	SPRN_SPRG_WSCRATCH2, r12
 	mtspr	SPRN_SPRG_WSCRATCH3, r13
@@ -530,11 +635,24 @@ interrupt_base:
 =======
 	mfspr	r10, SPRN_SPRG_THREAD
 	stw	r11, THREAD_NORMSAVE(0)(r10)
+=======
+	mfspr	r10, SPRN_SPRG_THREAD
+	stw	r11, THREAD_NORMSAVE(0)(r10)
+#ifdef CONFIG_KVM_BOOKE_HV
+BEGIN_FTR_SECTION
+	mfspr	r11, SPRN_SRR1
+END_FTR_SECTION_IFSET(CPU_FTR_EMB_HV)
+#endif
+>>>>>>> refs/remotes/origin/master
 	stw	r12, THREAD_NORMSAVE(1)(r10)
 	stw	r13, THREAD_NORMSAVE(2)(r10)
 	mfcr	r13
 	stw	r13, THREAD_NORMSAVE(3)(r10)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DO_KVM	BOOKE_INTERRUPT_ITLB_MISS SPRN_SRR1
+>>>>>>> refs/remotes/origin/master
 	mfspr	r10, SPRN_SRR0		/* Get faulting address */
 
 	/* If we are faulting a kernel address, we have to use the
@@ -579,12 +697,17 @@ interrupt_base:
 #ifdef CONFIG_PTE_64BIT
 #ifdef CONFIG_SMP
 <<<<<<< HEAD
+<<<<<<< HEAD
 	subf	r10,r11,r12		/* create false data dep */
 	lwzx	r13,r11,r10		/* Get upper pte bits */
 =======
 	subf	r13,r11,r12		/* create false data dep */
 	lwzx	r13,r11,r13		/* Get upper pte bits */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	subf	r13,r11,r12		/* create false data dep */
+	lwzx	r13,r11,r13		/* Get upper pte bits */
+>>>>>>> refs/remotes/origin/master
 #else
 	lwz	r13,0(r12)		/* Get upper pte bits */
 #endif
@@ -600,35 +723,54 @@ interrupt_base:
 	 * and call the heavyweights to help us out.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mfspr	r11, SPRN_SPRG_RSCRATCH4
 	mtcr	r11
 	mfspr	r13, SPRN_SPRG_RSCRATCH3
 	mfspr	r12, SPRN_SPRG_RSCRATCH2
 	mfspr	r11, SPRN_SPRG_RSCRATCH1
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mfspr	r10, SPRN_SPRG_THREAD
 	lwz	r11, THREAD_NORMSAVE(3)(r10)
 	mtcr	r11
 	lwz	r13, THREAD_NORMSAVE(2)(r10)
 	lwz	r12, THREAD_NORMSAVE(1)(r10)
 	lwz	r11, THREAD_NORMSAVE(0)(r10)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mfspr	r10, SPRN_SPRG_RSCRATCH0
 	b	InstructionStorage
 
 #ifdef CONFIG_SPE
 	/* SPE Unavailable */
 	START_EXCEPTION(SPEUnavailable)
+<<<<<<< HEAD
 	NORMAL_EXCEPTION_PROLOG
 	bne	load_up_spe
 	addi	r3,r1,STACK_FRAME_OVERHEAD
 	EXC_XFER_EE_LITE(0x2010, KernelSPE)
 #else
 	EXCEPTION(0x2020, SPEUnavailable, unknown_exception, EXC_XFER_EE)
+=======
+	NORMAL_EXCEPTION_PROLOG(SPE_ALTIVEC_UNAVAIL)
+	beq	1f
+	bl	load_up_spe
+	b	fast_exception_return
+1:	addi	r3,r1,STACK_FRAME_OVERHEAD
+	EXC_XFER_EE_LITE(0x2010, KernelSPE)
+#else
+	EXCEPTION(0x2020, SPE_ALTIVEC_UNAVAIL, SPEUnavailable, \
+		  unknown_exception, EXC_XFER_EE)
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_SPE */
 
 	/* SPE Floating Point Data */
 #ifdef CONFIG_SPE
+<<<<<<< HEAD
 	EXCEPTION(0x2030, SPEFloatingPointData, SPEFloatingPointException, EXC_XFER_EE);
 
 	/* SPE Floating Point Round */
@@ -644,11 +786,50 @@ interrupt_base:
 	EXCEPTION(0x2070, Doorbell, doorbell_exception, EXC_XFER_STD)
 
 	CRITICAL_EXCEPTION(0x2080, CriticalDoorbell, unknown_exception)
+=======
+	EXCEPTION(0x2030, SPE_FP_DATA_ALTIVEC_ASSIST, SPEFloatingPointData,
+		  SPEFloatingPointException, EXC_XFER_EE)
+
+	/* SPE Floating Point Round */
+	EXCEPTION(0x2050, SPE_FP_ROUND, SPEFloatingPointRound, \
+		  SPEFloatingPointRoundException, EXC_XFER_EE)
+#else
+	EXCEPTION(0x2040, SPE_FP_DATA_ALTIVEC_ASSIST, SPEFloatingPointData,
+		  unknown_exception, EXC_XFER_EE)
+	EXCEPTION(0x2050, SPE_FP_ROUND, SPEFloatingPointRound, \
+		  unknown_exception, EXC_XFER_EE)
+#endif /* CONFIG_SPE */
+
+	/* Performance Monitor */
+	EXCEPTION(0x2060, PERFORMANCE_MONITOR, PerformanceMonitor, \
+		  performance_monitor_exception, EXC_XFER_STD)
+
+	EXCEPTION(0x2070, DOORBELL, Doorbell, doorbell_exception, EXC_XFER_STD)
+
+	CRITICAL_EXCEPTION(0x2080, DOORBELL_CRITICAL, \
+			   CriticalDoorbell, unknown_exception)
+>>>>>>> refs/remotes/origin/master
 
 	/* Debug Interrupt */
 	DEBUG_DEBUG_EXCEPTION
 	DEBUG_CRIT_EXCEPTION
 
+<<<<<<< HEAD
+=======
+	GUEST_DOORBELL_EXCEPTION
+
+	CRITICAL_EXCEPTION(0, GUEST_DBELL_CRIT, CriticalGuestDoorbell, \
+			   unknown_exception)
+
+	/* Hypercall */
+	EXCEPTION(0, HV_SYSCALL, Hypercall, unknown_exception, EXC_XFER_EE)
+
+	/* Embedded Hypervisor Privilege */
+	EXCEPTION(0, HV_PRIV, Ehvpriv, unknown_exception, EXC_XFER_EE)
+
+interrupt_end:
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Local functions
  */
@@ -657,10 +838,14 @@ interrupt_base:
  * Both the instruction and data TLB miss get to this
  * point to load the TLB.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	r10 - available to use
 =======
  *	r10 - tsize encoding (if HUGETLB_PAGE) or available to use
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	r10 - tsize encoding (if HUGETLB_PAGE) or available to use
+>>>>>>> refs/remotes/origin/master
  *	r11 - TLB (info from Linux PTE)
  *	r12 - available to use
  *	r13 - upper bits of PTE (if PTE_64BIT) or available to use
@@ -671,7 +856,10 @@ interrupt_base:
  */
 finish_tlb_load:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HUGETLB_PAGE
 	cmpwi	6, r10, 0			/* check for huge page */
 	beq	6, finish_tlb_load_cont    	/* !huge */
@@ -732,13 +920,17 @@ finish_tlb_load:
 
 #endif /* CONFIG_HUGETLB_PAGE */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We set execute, because we don't have the granularity to
 	 * properly set this at the page level (Linux problem).
 	 * Many of these bits are software only.  Bits we don't set
 	 * here we (properly should) assume have the appropriate value.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	mfspr	r12, SPRN_MAS2
@@ -752,6 +944,9 @@ finish_tlb_load:
 =======
 finish_tlb_load_cont:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+finish_tlb_load_cont:
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PTE_64BIT
 	rlwinm	r12, r11, 32-2, 26, 31	/* Move in perm bits */
 	andi.	r10, r11, _PAGE_DIRTY
@@ -761,10 +956,14 @@ finish_tlb_load_cont:
 1:	rlwimi	r12, r13, 20, 0, 11	/* grab RPN[32:43] */
 	rlwimi	r12, r11, 20, 12, 19	/* grab RPN[44:51] */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mtspr	SPRN_MAS3, r12
 =======
 2:	mtspr	SPRN_MAS3, r12
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+2:	mtspr	SPRN_MAS3, r12
+>>>>>>> refs/remotes/origin/master
 BEGIN_MMU_FTR_SECTION
 	srwi	r10, r13, 12		/* grab RPN[12:31] */
 	mtspr	SPRN_MAS7, r10
@@ -772,9 +971,13 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_BIG_PHYS)
 #else
 	li	r10, (_PAGE_EXEC | _PAGE_PRESENT)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mr	r13, r11
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mr	r13, r11
+>>>>>>> refs/remotes/origin/master
 	rlwimi	r10, r11, 31, 29, 29	/* extract _PAGE_DIRTY into SW */
 	and	r12, r11, r10
 	andi.	r10, r11, _PAGE_USER	/* Test for _PAGE_USER */
@@ -782,10 +985,13 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_BIG_PHYS)
 	or	r10, r10, r12
 	iseleq	r12, r12, r10
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rlwimi	r11, r12, 0, 20, 31	/* Extract RPN from PTE and merge with perms */
 	mtspr	SPRN_MAS3, r11
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rlwimi	r13, r12, 0, 20, 31	/* Get RPN from PTE, merge w/ perms */
 	mtspr	SPRN_MAS3, r13
 #endif
@@ -806,7 +1012,10 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_BIG_PHYS)
 #endif
 3:	mtspr	SPRN_MAS2, r12
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_E200
 	/* Round robin TLB1 entries assignment */
 	mfspr	r12, SPRN_MAS0
@@ -833,6 +1042,7 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_BIG_PHYS)
 #endif /* CONFIG_E200 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tlbwe
 
 	/* Done...restore registers and get out of here.  */
@@ -842,6 +1052,8 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_BIG_PHYS)
 	mfspr	r12, SPRN_SPRG_RSCRATCH2
 	mfspr	r11, SPRN_SPRG_RSCRATCH1
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 tlb_write_entry:
 	tlbwe
 
@@ -859,7 +1071,10 @@ tlb_write_entry:
 	lwz	r13, THREAD_NORMSAVE(2)(r10)
 	lwz	r12, THREAD_NORMSAVE(1)(r10)
 	lwz	r11, THREAD_NORMSAVE(0)(r10)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mfspr	r10, SPRN_SPRG_RSCRATCH0
 	rfi					/* Force context change */
 
@@ -867,7 +1082,11 @@ tlb_write_entry:
 /* Note that the SPE support is closely modeled after the AltiVec
  * support.  Changes to one are likely to be applicable to the
  * other!  */
+<<<<<<< HEAD
 load_up_spe:
+=======
+_GLOBAL(load_up_spe)
+>>>>>>> refs/remotes/origin/master
 /*
  * Disable SPE for the task which had SPE previously,
  * and save its SPE registers in its thread_struct.
@@ -891,10 +1110,14 @@ load_up_spe:
 	beq	1f
 	addi	r4,r4,THREAD	/* want THREAD of last_task_used_spe */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SAVE_32EVRS(0,r10,r4)
 =======
 	SAVE_32EVRS(0,r10,r4,THREAD_EVR0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SAVE_32EVRS(0,r10,r4,THREAD_EVR0)
+>>>>>>> refs/remotes/origin/master
 	evxor	evr10, evr10, evr10	/* clear out evr10 */
 	evmwumiaa evr10, evr10, evr10	/* evr10 <- ACC = 0 * 0 + ACC */
 	li	r5,THREAD_ACC
@@ -915,14 +1138,19 @@ load_up_spe:
 	evlddx	evr4,r10,r5
 	evmra	evr4,evr4
 <<<<<<< HEAD
+<<<<<<< HEAD
 	REST_32EVRS(0,r10,r5)
 =======
 	REST_32EVRS(0,r10,r5,THREAD_EVR0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	REST_32EVRS(0,r10,r5,THREAD_EVR0)
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_SMP
 	subi	r4,r5,THREAD
 	stw	r4,last_task_used_spe@l(r3)
 #endif /* !CONFIG_SMP */
+<<<<<<< HEAD
 	/* restore registers and return */
 2:	REST_4GPRS(3, r11)
 	lwz	r10,_CCR(r11)
@@ -937,6 +1165,9 @@ load_up_spe:
 	REST_GPR(12, r11)
 	lwz	r11,GPR11(r11)
 	rfi
+=======
+	blr
+>>>>>>> refs/remotes/origin/master
 
 /*
  * SPE unavailable trap from kernel - print a message, but let
@@ -1006,12 +1237,26 @@ _GLOBAL(__setup_e500mc_ivors)
 	sync
 	blr
 
+<<<<<<< HEAD
 /*
  * extern void giveup_altivec(struct task_struct *prev)
  *
  * The e500 core does not have an AltiVec unit.
  */
 _GLOBAL(giveup_altivec)
+=======
+/* setup ehv ivors for */
+_GLOBAL(__setup_ehv_ivors)
+	li	r3,GuestDoorbell@l
+	mtspr	SPRN_IVOR38,r3
+	li	r3,CriticalGuestDoorbell@l
+	mtspr	SPRN_IVOR39,r3
+	li	r3,Hypercall@l
+	mtspr	SPRN_IVOR40,r3
+	li	r3,Ehvpriv@l
+	mtspr	SPRN_IVOR41,r3
+	sync
+>>>>>>> refs/remotes/origin/master
 	blr
 
 #ifdef CONFIG_SPE
@@ -1030,19 +1275,26 @@ _GLOBAL(giveup_spe)
 	lwz	r5,PT_REGS(r3)
 	cmpi	0,r5,0
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SAVE_32EVRS(0, r4, r3)
 =======
 	SAVE_32EVRS(0, r4, r3, THREAD_EVR0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SAVE_32EVRS(0, r4, r3, THREAD_EVR0)
+>>>>>>> refs/remotes/origin/master
 	evxor	evr6, evr6, evr6	/* clear out evr6 */
 	evmwumiaa evr6, evr6, evr6	/* evr6 <- ACC = 0 * 0 + ACC */
 	li	r4,THREAD_ACC
 	evstddx	evr6, r4, r3		/* save off accumulator */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mfspr	r6,SPRN_SPEFSCR
 	stw	r6,THREAD_SPEFSCR(r3)	/* save spefscr register value */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	beq	1f
 	lwz	r4,_MSR-STACK_FRAME_OVERHEAD(r5)
 	lis	r3,MSR_SPE@h
@@ -1058,6 +1310,7 @@ _GLOBAL(giveup_spe)
 #endif /* CONFIG_SPE */
 
 /*
+<<<<<<< HEAD
  * extern void giveup_fpu(struct task_struct *prev)
  *
  * Not all FSL Book-E cores have an FPU
@@ -1068,6 +1321,8 @@ _GLOBAL(giveup_fpu)
 #endif
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * extern void abort(void)
  *
  * At present, this routine just applies a system reset.
@@ -1145,6 +1400,37 @@ _GLOBAL(flush_dcache_L1)
 
 	blr
 
+<<<<<<< HEAD
+=======
+/* Flush L1 d-cache, invalidate and disable d-cache and i-cache */
+_GLOBAL(__flush_disable_L1)
+	mflr	r10
+	bl	flush_dcache_L1	/* Flush L1 d-cache */
+	mtlr	r10
+
+	mfspr	r4, SPRN_L1CSR0	/* Invalidate and disable d-cache */
+	li	r5, 2
+	rlwimi	r4, r5, 0, 3
+
+	msync
+	isync
+	mtspr	SPRN_L1CSR0, r4
+	isync
+
+1:	mfspr	r4, SPRN_L1CSR0	/* Wait for the invalidate to finish */
+	andi.	r4, r4, 2
+	bne	1b
+
+	mfspr	r4, SPRN_L1CSR1	/* Invalidate and disable i-cache */
+	li	r5, 2
+	rlwimi	r4, r5, 0, 3
+
+	mtspr	SPRN_L1CSR1, r4
+	isync
+
+	blr
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 /* When we get here, r24 needs to hold the CPU # */
 	.globl __secondary_start

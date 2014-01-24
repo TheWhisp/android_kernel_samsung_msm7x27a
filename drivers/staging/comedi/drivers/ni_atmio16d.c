@@ -12,11 +12,14 @@
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
+<<<<<<< HEAD
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
  */
 /*
 Driver: ni_atmio16d
@@ -35,11 +38,19 @@ Devices: [National Instruments] AT-MIO-16 (atmio16), AT-MIO-16D (atmio16d)
  *
  */
 
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include "../comedidev.h"
 
 #include <linux/ioport.h>
 
+=======
+#include <linux/module.h>
+#include <linux/interrupt.h>
+#include "../comedidev.h"
+
+#include "comedi_fc.h"
+>>>>>>> refs/remotes/origin/master
 #include "8255.h"
 
 /* Configuration and Status Registers */
@@ -101,7 +112,10 @@ Devices: [National Instruments] AT-MIO-16 (atmio16), AT-MIO-16D (atmio16d)
 #define CLOCK_100_HZ	0x8F25
 /* Other miscellaneous defines */
 #define ATMIO16D_SIZE	32	/* bus address range */
+<<<<<<< HEAD
 #define devpriv ((struct atmio16d_private *)dev->private)
+=======
+>>>>>>> refs/remotes/origin/master
 #define ATMIO16D_TIMEOUT 10
 
 struct atmio16_board_t {
@@ -110,6 +124,7 @@ struct atmio16_board_t {
 	int has_8255;
 };
 
+<<<<<<< HEAD
 static const struct atmio16_board_t atmio16_boards[] = {
 	{
 	 .name = "atmio16",
@@ -199,6 +214,34 @@ static const struct comedi_lrange range_atmio16d_ai_unipolar = { 4, {
 								     UNI_RANGE
 								     (0.02)
 								     }
+=======
+/* range structs */
+static const struct comedi_lrange range_atmio16d_ai_10_bipolar = {
+	4, {
+		BIP_RANGE(10),
+		BIP_RANGE(1),
+		BIP_RANGE(0.1),
+		BIP_RANGE(0.02)
+	}
+};
+
+static const struct comedi_lrange range_atmio16d_ai_5_bipolar = {
+	4, {
+		BIP_RANGE(5),
+		BIP_RANGE(0.5),
+		BIP_RANGE(0.05),
+		BIP_RANGE(0.01)
+	}
+};
+
+static const struct comedi_lrange range_atmio16d_ai_unipolar = {
+	4, {
+		UNI_RANGE(10),
+		UNI_RANGE(1),
+		UNI_RANGE(0.1),
+		UNI_RANGE(0.02)
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 /* private data struct */
@@ -255,6 +298,10 @@ static void reset_counters(struct comedi_device *dev)
 
 static void reset_atmio16d(struct comedi_device *dev)
 {
+<<<<<<< HEAD
+=======
+	struct atmio16d_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	/* now we need to initialize the board */
@@ -288,11 +335,15 @@ static void reset_atmio16d(struct comedi_device *dev)
 static irqreturn_t atmio16d_interrupt(int irq, void *d)
 {
 	struct comedi_device *dev = d;
+<<<<<<< HEAD
 	struct comedi_subdevice *s = dev->subdevices + 0;
 
 #ifdef DEBUG1
 	printk(KERN_DEBUG "atmio16d_interrupt!\n");
 #endif
+=======
+	struct comedi_subdevice *s = dev->read_subdev;
+>>>>>>> refs/remotes/origin/master
 
 	comedi_buf_put(s->async, inw(dev->iobase + AD_FIFO_REG));
 
@@ -304,6 +355,7 @@ static int atmio16d_ai_cmdtest(struct comedi_device *dev,
 			       struct comedi_subdevice *s,
 			       struct comedi_cmd *cmd)
 {
+<<<<<<< HEAD
 	int err = 0, tmp;
 #ifdef DEBUG1
 	printk(KERN_DEBUG "atmio16d_ai_cmdtest\n");
@@ -333,10 +385,23 @@ static int atmio16d_ai_cmdtest(struct comedi_device *dev,
 	cmd->stop_src &= TRIG_COUNT | TRIG_NONE;
 	if (!cmd->stop_src || tmp != cmd->stop_src)
 		err++;
+=======
+	int err = 0;
+
+	/* Step 1 : check if triggers are trivially valid */
+
+	err |= cfc_check_trigger_src(&cmd->start_src, TRIG_NOW);
+	err |= cfc_check_trigger_src(&cmd->scan_begin_src,
+					TRIG_FOLLOW | TRIG_TIMER);
+	err |= cfc_check_trigger_src(&cmd->convert_src, TRIG_TIMER);
+	err |= cfc_check_trigger_src(&cmd->scan_end_src, TRIG_COUNT);
+	err |= cfc_check_trigger_src(&cmd->stop_src, TRIG_COUNT | TRIG_NONE);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 1;
 
+<<<<<<< HEAD
 	/* step 2: make sure trigger sources are unique & mutually compatible */
 	/* note that mutual compatibility is not an issue here */
 	if (cmd->scan_begin_src != TRIG_FOLLOW &&
@@ -345,10 +410,19 @@ static int atmio16d_ai_cmdtest(struct comedi_device *dev,
 		err++;
 	if (cmd->stop_src != TRIG_COUNT && cmd->stop_src != TRIG_NONE)
 		err++;
+=======
+	/* Step 2a : make sure trigger sources are unique */
+
+	err |= cfc_check_trigger_is_unique(cmd->scan_begin_src);
+	err |= cfc_check_trigger_is_unique(cmd->stop_src);
+
+	/* Step 2b : and mutually compatible */
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 2;
 
+<<<<<<< HEAD
 	/* step 3: make sure arguments are trivially compatible */
 
 	if (cmd->start_arg != 0) {
@@ -361,10 +435,20 @@ static int atmio16d_ai_cmdtest(struct comedi_device *dev,
 			cmd->scan_begin_arg = 0;
 			err++;
 		}
+=======
+	/* Step 3: check if arguments are trivially valid */
+
+	err |= cfc_check_trigger_arg_is(&cmd->start_arg, 0);
+
+	if (cmd->scan_begin_src == TRIG_FOLLOW) {
+		/* internal trigger */
+		err |= cfc_check_trigger_arg_is(&cmd->scan_begin_arg, 0);
+>>>>>>> refs/remotes/origin/master
 	} else {
 #if 0
 		/* external trigger */
 		/* should be level/edge, hi/lo specification here */
+<<<<<<< HEAD
 		if (cmd->scan_begin_arg != 0) {
 			cmd->scan_begin_arg = 0;
 			err++;
@@ -394,6 +478,23 @@ static int atmio16d_ai_cmdtest(struct comedi_device *dev,
 			cmd->stop_arg = 0;
 			err++;
 		}
+=======
+		err |= cfc_check_trigger_arg_is(&cmd->scan_begin_arg, 0);
+#endif
+	}
+
+	err |= cfc_check_trigger_arg_min(&cmd->convert_arg, 10000);
+#if 0
+	err |= cfc_check_trigger_arg_max(&cmd->convert_arg, SLOWEST_TIMER);
+#endif
+
+	err |= cfc_check_trigger_arg_is(&cmd->scan_end_arg, cmd->chanlist_len);
+
+	if (cmd->stop_src == TRIG_COUNT) {
+		/* any count is allowed */
+	} else {	/* TRIG_NONE */
+		err |= cfc_check_trigger_arg_is(&cmd->stop_arg, 0);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (err)
@@ -405,13 +506,21 @@ static int atmio16d_ai_cmdtest(struct comedi_device *dev,
 static int atmio16d_ai_cmd(struct comedi_device *dev,
 			   struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
+=======
+	struct atmio16d_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	struct comedi_cmd *cmd = &s->async->cmd;
 	unsigned int timer, base_clock;
 	unsigned int sample_count, tmp, chan, gain;
 	int i;
+<<<<<<< HEAD
 #ifdef DEBUG1
 	printk(KERN_DEBUG "atmio16d_ai_cmd\n");
 #endif
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/* This is slowly becoming a working command interface. *
 	 * It is still uber-experimental */
 
@@ -566,14 +675,21 @@ static int atmio16d_ai_insn_read(struct comedi_device *dev,
 				 struct comedi_subdevice *s,
 				 struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct atmio16d_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i, t;
 	int chan;
 	int gain;
 	int status;
 
+<<<<<<< HEAD
 #ifdef DEBUG1
 	printk(KERN_DEBUG "atmio16d_ai_insn_read\n");
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	chan = CR_CHAN(insn->chanspec);
 	gain = CR_RANGE(insn->chanspec);
 
@@ -592,9 +708,12 @@ static int atmio16d_ai_insn_read(struct comedi_device *dev,
 		for (t = 0; t < ATMIO16D_TIMEOUT; t++) {
 			/* check conversion status */
 			status = inw(dev->iobase + STAT_REG);
+<<<<<<< HEAD
 #ifdef DEBUG1
 			printk(KERN_DEBUG "status=%x\n", status);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 			if (status & STAT_AD_CONVAVAIL) {
 				/* read the data now */
 				data[i] = inw(dev->iobase + AD_FIFO_REG);
@@ -604,18 +723,27 @@ static int atmio16d_ai_insn_read(struct comedi_device *dev,
 				break;
 			}
 			if (status & STAT_AD_OVERFLOW) {
+<<<<<<< HEAD
 				printk(KERN_INFO "atmio16d: a/d FIFO overflow\n");
 				outw(0, dev->iobase + AD_CLEAR_REG);
 
+=======
+				outw(0, dev->iobase + AD_CLEAR_REG);
+>>>>>>> refs/remotes/origin/master
 				return -ETIME;
 			}
 		}
 		/* end waiting, now check if it timed out */
+<<<<<<< HEAD
 		if (t == ATMIO16D_TIMEOUT) {
 			printk(KERN_INFO "atmio16d: timeout\n");
 
 			return -ETIME;
 		}
+=======
+		if (t == ATMIO16D_TIMEOUT)
+			return -ETIME;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return i;
@@ -625,10 +753,15 @@ static int atmio16d_ao_insn_read(struct comedi_device *dev,
 				 struct comedi_subdevice *s,
 				 struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
 	int i;
 #ifdef DEBUG1
 	printk(KERN_DEBUG "atmio16d_ao_insn_read\n");
 #endif
+=======
+	struct atmio16d_private *devpriv = dev->private;
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < insn->n; i++)
 		data[i] = devpriv->ao_readback[CR_CHAN(insn->chanspec)];
@@ -639,12 +772,19 @@ static int atmio16d_ao_insn_write(struct comedi_device *dev,
 				  struct comedi_subdevice *s,
 				  struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
 	int i;
 	int chan;
 	int d;
 #ifdef DEBUG1
 	printk(KERN_DEBUG "atmio16d_ao_insn_write\n");
 #endif
+=======
+	struct atmio16d_private *devpriv = dev->private;
+	int i;
+	int chan;
+	int d;
+>>>>>>> refs/remotes/origin/master
 
 	chan = CR_CHAN(insn->chanspec);
 
@@ -671,6 +811,7 @@ static int atmio16d_ao_insn_write(struct comedi_device *dev,
 
 static int atmio16d_dio_insn_bits(struct comedi_device *dev,
 				  struct comedi_subdevice *s,
+<<<<<<< HEAD
 				  struct comedi_insn *insn, unsigned int *data)
 {
 	if (insn->n != 2)
@@ -684,6 +825,17 @@ static int atmio16d_dio_insn_bits(struct comedi_device *dev,
 	data[1] = inw(dev->iobase + MIO_16_DIG_IN_REG);
 
 	return 2;
+=======
+				  struct comedi_insn *insn,
+				  unsigned int *data)
+{
+	if (comedi_dio_update_state(s, data))
+		outw(s->state, dev->iobase + MIO_16_DIG_OUT_REG);
+
+	data[1] = inw(dev->iobase + MIO_16_DIG_IN_REG);
+
+	return insn->n;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int atmio16d_dio_insn_config(struct comedi_device *dev,
@@ -691,6 +843,7 @@ static int atmio16d_dio_insn_config(struct comedi_device *dev,
 				    struct comedi_insn *insn,
 				    unsigned int *data)
 {
+<<<<<<< HEAD
 	int i;
 	int mask;
 
@@ -700,6 +853,22 @@ static int atmio16d_dio_insn_config(struct comedi_device *dev,
 		if (data[i])
 			s->io_bits |= mask;
 	}
+=======
+	struct atmio16d_private *devpriv = dev->private;
+	unsigned int chan = CR_CHAN(insn->chanspec);
+	unsigned int mask;
+	int ret;
+
+	if (chan < 4)
+		mask = 0x0f;
+	else
+		mask = 0xf0;
+
+	ret = comedi_dio_insn_config(dev, s, insn, data, mask);
+	if (ret)
+		return ret;
+
+>>>>>>> refs/remotes/origin/master
 	devpriv->com_reg_2_state &= ~(COMREG2_DOUTEN0 | COMREG2_DOUTEN1);
 	if (s->io_bits & 0x0f)
 		devpriv->com_reg_2_state |= COMREG2_DOUTEN0;
@@ -707,7 +876,11 @@ static int atmio16d_dio_insn_config(struct comedi_device *dev,
 		devpriv->com_reg_2_state |= COMREG2_DOUTEN1;
 	outw(devpriv->com_reg_2_state, dev->iobase + COM_REG_2);
 
+<<<<<<< HEAD
 	return i;
+=======
+	return insn->n;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -745,6 +918,7 @@ static int atmio16d_dio_insn_config(struct comedi_device *dev,
 static int atmio16d_attach(struct comedi_device *dev,
 			   struct comedi_devconfig *it)
 {
+<<<<<<< HEAD
 	unsigned int irq;
 	unsigned long iobase;
 	int ret;
@@ -787,6 +961,33 @@ static int atmio16d_attach(struct comedi_device *dev,
 		printk(KERN_INFO "( irq = %u )\n", irq);
 	} else {
 		printk(KERN_INFO "( no irq )");
+=======
+	const struct atmio16_board_t *board = comedi_board(dev);
+	struct atmio16d_private *devpriv;
+	struct comedi_subdevice *s;
+	int ret;
+
+	ret = comedi_request_region(dev, it->options[0], ATMIO16D_SIZE);
+	if (ret)
+		return ret;
+
+	ret = comedi_alloc_subdevices(dev, 4);
+	if (ret)
+		return ret;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	/* reset the atmio16d hardware */
+	reset_atmio16d(dev);
+
+	if (it->options[1]) {
+		ret = request_irq(it->options[1], atmio16d_interrupt, 0,
+				  dev->board_name, dev);
+		if (ret == 0)
+			dev->irq = it->options[1];
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* set device options */
@@ -801,6 +1002,7 @@ static int atmio16d_attach(struct comedi_device *dev,
 	devpriv->dac1_coding = it->options[12];
 
 	/* setup sub-devices */
+<<<<<<< HEAD
 	s = dev->subdevices + 0;
 	dev->read_subdev = s;
 	/* ai subdevice */
@@ -812,6 +1014,14 @@ static int atmio16d_attach(struct comedi_device *dev,
 	s->do_cmdtest = atmio16d_ai_cmdtest;
 	s->do_cmd = atmio16d_ai_cmd;
 	s->cancel = atmio16d_ai_cancel;
+=======
+	s = &dev->subdevices[0];
+	/* ai subdevice */
+	s->type = COMEDI_SUBD_AI;
+	s->subdev_flags = SDF_READABLE | SDF_GROUND;
+	s->n_chan = (devpriv->adc_mux ? 16 : 8);
+	s->insn_read = atmio16d_ai_insn_read;
+>>>>>>> refs/remotes/origin/master
 	s->maxdata = 0xfff;	/* 4095 decimal */
 	switch (devpriv->adc_range) {
 	case adc_bipolar10:
@@ -824,9 +1034,23 @@ static int atmio16d_attach(struct comedi_device *dev,
 		s->range_table = &range_atmio16d_ai_unipolar;
 		break;
 	}
+<<<<<<< HEAD
 
 	/* ao subdevice */
 	s++;
+=======
+	if (dev->irq) {
+		dev->read_subdev = s;
+		s->subdev_flags |= SDF_CMD_READ;
+		s->len_chanlist = 16;
+		s->do_cmdtest = atmio16d_ai_cmdtest;
+		s->do_cmd = atmio16d_ai_cmd;
+		s->cancel = atmio16d_ai_cancel;
+	}
+
+	/* ao subdevice */
+	s = &dev->subdevices[1];
+>>>>>>> refs/remotes/origin/master
 	s->type = COMEDI_SUBD_AO;
 	s->subdev_flags = SDF_WRITABLE;
 	s->n_chan = 2;
@@ -852,7 +1076,11 @@ static int atmio16d_attach(struct comedi_device *dev,
 	}
 
 	/* Digital I/O */
+<<<<<<< HEAD
 	s++;
+=======
+	s = &dev->subdevices[2];
+>>>>>>> refs/remotes/origin/master
 	s->type = COMEDI_SUBD_DIO;
 	s->subdev_flags = SDF_WRITABLE | SDF_READABLE;
 	s->n_chan = 8;
@@ -862,25 +1090,38 @@ static int atmio16d_attach(struct comedi_device *dev,
 	s->range_table = &range_digital;
 
 	/* 8255 subdevice */
+<<<<<<< HEAD
 	s++;
 	if (boardtype->has_8255)
+=======
+	s = &dev->subdevices[3];
+	if (board->has_8255)
+>>>>>>> refs/remotes/origin/master
 		subdev_8255_init(dev, s, NULL, dev->iobase);
 	else
 		s->type = COMEDI_SUBD_UNUSED;
 
 /* don't yet know how to deal with counter/timers */
 #if 0
+<<<<<<< HEAD
 	s++;
+=======
+	s = &dev->subdevices[4];
+>>>>>>> refs/remotes/origin/master
 	/* do */
 	s->type = COMEDI_SUBD_TIMER;
 	s->n_chan = 0;
 	s->maxdata = 0
 #endif
+<<<<<<< HEAD
 	    printk("\n");
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int atmio16d_detach(struct comedi_device *dev)
 {
 	printk(KERN_INFO "comedi%d: atmio16d: remove\n", dev->minor);
@@ -898,6 +1139,34 @@ static int atmio16d_detach(struct comedi_device *dev)
 
 	return 0;
 }
+=======
+static void atmio16d_detach(struct comedi_device *dev)
+{
+	reset_atmio16d(dev);
+	comedi_legacy_detach(dev);
+}
+
+static const struct atmio16_board_t atmio16_boards[] = {
+	{
+		.name		= "atmio16",
+		.has_8255	= 0,
+	}, {
+		.name		= "atmio16d",
+		.has_8255	= 1,
+	},
+};
+
+static struct comedi_driver atmio16d_driver = {
+	.driver_name	= "atmio16",
+	.module		= THIS_MODULE,
+	.attach		= atmio16d_attach,
+	.detach		= atmio16d_detach,
+	.board_name	= &atmio16_boards[0].name,
+	.num_names	= ARRAY_SIZE(atmio16_boards),
+	.offset		= sizeof(struct atmio16_board_t),
+};
+module_comedi_driver(atmio16d_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

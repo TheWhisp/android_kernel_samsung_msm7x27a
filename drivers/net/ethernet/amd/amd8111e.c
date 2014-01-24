@@ -793,7 +793,11 @@ static int amd8111e_rx_poll(struct napi_struct *napi, int budget)
 #if AMD8111E_VLAN_TAG_USED
 			if (vtag == TT_VLAN_TAGGED){
 				u16 vlan_tag = le16_to_cpu(lp->rx_ring[rx_index].tag_ctrl_info);
+<<<<<<< HEAD
 				__vlan_hwaccel_put_tag(skb, vlan_tag);
+=======
+				__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan_tag);
+>>>>>>> refs/remotes/origin/master
 			}
 #endif
 			netif_receive_skb(skb);
@@ -1702,7 +1706,11 @@ static int amd8111e_resume(struct pci_dev *pci_dev)
 }
 
 
+<<<<<<< HEAD
 static void __devexit amd8111e_remove_one(struct pci_dev *pdev)
+=======
+static void amd8111e_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 	if (dev) {
@@ -1711,7 +1719,10 @@ static void __devexit amd8111e_remove_one(struct pci_dev *pdev)
 		free_netdev(dev);
 		pci_release_regions(pdev);
 		pci_disable_device(pdev);
+<<<<<<< HEAD
 		pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 static void amd8111e_config_ipg(struct net_device* dev)
@@ -1774,7 +1785,11 @@ static void amd8111e_config_ipg(struct net_device* dev)
 
 }
 
+<<<<<<< HEAD
 static void __devinit amd8111e_probe_ext_phy(struct net_device* dev)
+=======
+static void amd8111e_probe_ext_phy(struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct amd8111e_priv *lp = netdev_priv(dev);
 	int i;
@@ -1810,10 +1825,17 @@ static const struct net_device_ops amd8111e_netdev_ops = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit amd8111e_probe_one(struct pci_dev *pdev,
 				  const struct pci_device_id *ent)
 {
 	int err,i,pm_cap;
+=======
+static int amd8111e_probe_one(struct pci_dev *pdev,
+				  const struct pci_device_id *ent)
+{
+	int err, i;
+>>>>>>> refs/remotes/origin/master
 	unsigned long reg_addr,reg_len;
 	struct amd8111e_priv* lp;
 	struct net_device* dev;
@@ -1842,9 +1864,16 @@ static int __devinit amd8111e_probe_one(struct pci_dev *pdev,
 	pci_set_master(pdev);
 
 	/* Find power-management capability. */
+<<<<<<< HEAD
 	if((pm_cap = pci_find_capability(pdev, PCI_CAP_ID_PM))==0){
 		printk(KERN_ERR "amd8111e: No Power Management capability, "
 		       "exiting.\n");
+=======
+	if (!pdev->pm_cap) {
+		printk(KERN_ERR "amd8111e: No Power Management capability, "
+		       "exiting.\n");
+		err = -ENODEV;
+>>>>>>> refs/remotes/origin/master
 		goto err_free_reg;
 	}
 
@@ -1852,6 +1881,10 @@ static int __devinit amd8111e_probe_one(struct pci_dev *pdev,
 	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(32)) < 0) {
 		printk(KERN_ERR "amd8111e: DMA not supported,"
 			"exiting.\n");
+<<<<<<< HEAD
+=======
+		err = -ENODEV;
+>>>>>>> refs/remotes/origin/master
 		goto err_free_reg;
 	}
 
@@ -1867,13 +1900,21 @@ static int __devinit amd8111e_probe_one(struct pci_dev *pdev,
 	SET_NETDEV_DEV(dev, &pdev->dev);
 
 #if AMD8111E_VLAN_TAG_USED
+<<<<<<< HEAD
 	dev->features |= NETIF_F_HW_VLAN_TX | NETIF_F_HW_VLAN_RX ;
+=======
+	dev->features |= NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_CTAG_RX ;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	lp = netdev_priv(dev);
 	lp->pci_dev = pdev;
 	lp->amd8111e_net_dev = dev;
+<<<<<<< HEAD
 	lp->pm_cap = pm_cap;
+=======
+	lp->pm_cap = pdev->pm_cap;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&lp->lock);
 
@@ -1905,7 +1946,11 @@ static int __devinit amd8111e_probe_one(struct pci_dev *pdev,
 	netif_napi_add(dev, &lp->napi, amd8111e_rx_poll, 32);
 
 #if AMD8111E_VLAN_TAG_USED
+<<<<<<< HEAD
 	dev->features |= NETIF_F_HW_VLAN_TX | NETIF_F_HW_VLAN_RX;
+=======
+	dev->features |= NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_CTAG_RX;
+>>>>>>> refs/remotes/origin/master
 #endif
 	/* Probe the external PHY */
 	amd8111e_probe_ext_phy(dev);
@@ -1965,7 +2010,10 @@ err_free_reg:
 
 err_disable_pdev:
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 
 }
@@ -1974,11 +2022,16 @@ static struct pci_driver amd8111e_driver = {
 	.name   	= MODULE_NAME,
 	.id_table	= amd8111e_pci_tbl,
 	.probe		= amd8111e_probe_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(amd8111e_remove_one),
+=======
+	.remove		= amd8111e_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= amd8111e_suspend,
 	.resume		= amd8111e_resume
 };
 
+<<<<<<< HEAD
 static int __init amd8111e_init(void)
 {
 	return pci_register_driver(&amd8111e_driver);
@@ -1991,3 +2044,6 @@ static void __exit amd8111e_cleanup(void)
 
 module_init(amd8111e_init);
 module_exit(amd8111e_cleanup);
+=======
+module_pci_driver(amd8111e_driver);
+>>>>>>> refs/remotes/origin/master

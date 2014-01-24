@@ -39,6 +39,7 @@
 #include "rf.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*---------------------  Static Definitions -------------------------*/
 
 /*---------------------  Static Classes  ----------------------------*/
@@ -95,6 +96,12 @@ static int msglevel = MSG_LEVEL_INFO;
 
 #ifdef WPA_SM_Transtatus
 	SWPAResult wpa_Result;
+=======
+static int msglevel = MSG_LEVEL_INFO;
+
+#ifdef WPA_SM_Transtatus
+SWPAResult wpa_Result;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 int private_ioctl(PSDevice pDevice, struct ifreq *rq)
@@ -117,7 +124,10 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 	PKnownBSS	pBSS;
 	PKnownNodeDB	pNode;
 	unsigned int	ii, jj;
+<<<<<<< HEAD
 	SCmdLinkStatus	sLinkStatus;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char	abySuppRates[] = {WLAN_EID_SUPP_RATES, 4, 0x02, 0x04, 0x0B, 0x16};
 	unsigned char	abyNullAddr[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 	unsigned long	dwKeyIndex = 0;
@@ -130,6 +140,7 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 	case WLAN_CMD_BSS_SCAN:
 		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "WLAN_CMD_BSS_SCAN..begin\n");
 		if (copy_from_user(&sScanCmd, pReq->data, sizeof(SCmdScan))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			result = -EFAULT;
 			break;
@@ -228,6 +239,12 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 
         if (copy_from_user(&sJoinCmd, pReq->data, sizeof(SCmdBSSJoin))) {
 =======
+=======
+			result = -EFAULT;
+			break;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		pItemSSID = (PWLAN_IE_SSID)sScanCmd.ssid;
 		if (pItemSSID->len > WLAN_SSID_MAXLEN + 1)
 			return -EINVAL;
@@ -251,14 +268,24 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 			BSSvClearBSSList((void *)pDevice, pDevice->bLinkPass);
 
 		if (pItemSSID->len != 0)
+<<<<<<< HEAD
 			bScheduleCommand((void *) pDevice, WLAN_CMD_BSSID_SCAN, abyScanSSID);
 		else
 			bScheduleCommand((void *) pDevice, WLAN_CMD_BSSID_SCAN, NULL);
+=======
+			bScheduleCommand((void *)pDevice, WLAN_CMD_BSSID_SCAN, abyScanSSID);
+		else
+			bScheduleCommand((void *)pDevice, WLAN_CMD_BSSID_SCAN, NULL);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irq(&pDevice->lock);
 		break;
 
 	case WLAN_CMD_ZONETYPE_SET:
+<<<<<<< HEAD
 		/* mike add :cann't support. */
+=======
+		/* mike add :can't support. */
+>>>>>>> refs/remotes/origin/master
 		result = -EOPNOTSUPP;
 		break;
 
@@ -312,11 +339,15 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 		}
 
 		if (copy_from_user(&sJoinCmd, pReq->data, sizeof(SCmdBSSJoin))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			result = -EFAULT;
 			break;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         pItemSSID = (PWLAN_IE_SSID)sJoinCmd.ssid;
         memset(pMgmt->abyDesireSSID, 0, WLAN_IEHDR_LEN + WLAN_SSID_MAXLEN + 1);
@@ -556,6 +587,8 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 
         if (copy_from_user(&sValue, pReq->data, sizeof(SCmdValue))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pItemSSID = (PWLAN_IE_SSID)sJoinCmd.ssid;
 		if (pItemSSID->len > WLAN_SSID_MAXLEN + 1)
 			return -EINVAL;
@@ -589,8 +622,13 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 		netif_stop_queue(pDevice->dev);
 		spin_lock_irq(&pDevice->lock);
 		pMgmt->eCurrState = WMAC_STATE_IDLE;
+<<<<<<< HEAD
 		bScheduleCommand((void *) pDevice, WLAN_CMD_BSSID_SCAN, pMgmt->abyDesireSSID);
 		bScheduleCommand((void *) pDevice, WLAN_CMD_SSID, NULL);
+=======
+		bScheduleCommand((void *)pDevice, WLAN_CMD_BSSID_SCAN, pMgmt->abyDesireSSID);
+		bScheduleCommand((void *)pDevice, WLAN_CMD_SSID, NULL);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irq(&pDevice->lock);
 		break;
 
@@ -632,10 +670,19 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 		pDevice->eEncryptionStatus = Ndis802_11Encryption1Enabled;
 		break;
 
+<<<<<<< HEAD
 	case WLAN_CMD_GET_LINK:
 		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "WLAN_CMD_GET_LINK status.\n");
 
 		memset(sLinkStatus.abySSID, 0 , WLAN_SSID_MAXLEN + 1);
+=======
+	case WLAN_CMD_GET_LINK: {
+		SCmdLinkStatus sLinkStatus;
+
+		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "WLAN_CMD_GET_LINK status.\n");
+
+		memset(&sLinkStatus, 0, sizeof(sLinkStatus));
+>>>>>>> refs/remotes/origin/master
 
 		if (pMgmt->eCurrMode == WMAC_MODE_IBSS_STA)
 			sLinkStatus.wBSSType = ADHOC;
@@ -654,7 +701,11 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 			memcpy(sLinkStatus.abySSID, pItemSSID->abySSID, pItemSSID->len);
 			memcpy(sLinkStatus.abyBSSID, pMgmt->abyCurrBSSID, WLAN_BSSID_LEN);
 			sLinkStatus.uLinkRate = pMgmt->sNodeDBTable[0].wTxDataRate;
+<<<<<<< HEAD
 			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO" Link Success!\n");
+=======
+			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO " Link Success!\n");
+>>>>>>> refs/remotes/origin/master
 		} else {
 			sLinkStatus.bLink = false;
 			sLinkStatus.uLinkRate = 0;
@@ -664,7 +715,11 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 			break;
 		}
 		break;
+<<<<<<< HEAD
 
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	case WLAN_CMD_GET_LISTLEN:
 		cbListCount = 0;
 		pBSS = &(pMgmt->sBSSList[0]);
@@ -698,7 +753,11 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 		}
 		pList->uItem = sList.uItem;
 		pBSS = &(pMgmt->sBSSList[0]);
+<<<<<<< HEAD
 		for (ii = 0, jj = 0; jj < MAX_BSS_NUM ; jj++) {
+=======
+		for (ii = 0, jj = 0; jj < MAX_BSS_NUM; jj++) {
+>>>>>>> refs/remotes/origin/master
 			pBSS = &(pMgmt->sBSSList[jj]);
 			if (pBSS->bActive) {
 				pList->sBSSIDList[ii].uChannel = pBSS->uChannel;
@@ -785,11 +844,15 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "WLAN_CMD_SET_HOSTAPD\n");
 
 		if (copy_from_user(&sValue, pReq->data, sizeof(SCmdValue))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			result = -EFAULT;
 			break;
 		}
 		if (sValue.dwValue == 1) {
+<<<<<<< HEAD
 <<<<<<< HEAD
             if (vt6655_hostap_set_hostapd(pDevice, 1, 1) == 0){
                 DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "Enable HOSTAP\n");
@@ -816,6 +879,8 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
         DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "WLAN_CMD_SET_802_1X\n");
         if (copy_from_user(&sValue, pReq->data, sizeof(SCmdValue))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (vt6655_hostap_set_hostapd(pDevice, 1, 1) == 0) {
 				DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "Enable HOSTAP\n");
 			} else {
@@ -835,12 +900,16 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 	case WLAN_CMD_SET_802_1X:
 		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "WLAN_CMD_SET_802_1X\n");
 		if (copy_from_user(&sValue, pReq->data, sizeof(SCmdValue))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			result = -EFAULT;
 			break;
 		}
 
 		if (sValue.dwValue == 1) {
+<<<<<<< HEAD
 <<<<<<< HEAD
             pDevice->bEnable8021x = true;
             DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "Enable 802.1x\n");
@@ -858,6 +927,8 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
         DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "WLAN_CMD_SET_HOST_WEP\n");
         if (copy_from_user(&sValue, pReq->data, sizeof(SCmdValue))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			pDevice->bEnable8021x = true;
 			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "Enable 802.1x\n");
 		} else {
@@ -869,12 +940,16 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 	case WLAN_CMD_SET_HOST_WEP:
 		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "WLAN_CMD_SET_HOST_WEP\n");
 		if (copy_from_user(&sValue, pReq->data, sizeof(SCmdValue))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			result = -EFAULT;
 			break;
 		}
 
 		if (sValue.dwValue == 1) {
+<<<<<<< HEAD
 <<<<<<< HEAD
             pDevice->bEnableHostWEP = true;
             DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "Enable HostWEP\n");
@@ -891,6 +966,8 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 
         if (copy_from_user(&sValue, pReq->data, sizeof(SCmdValue))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			pDevice->bEnableHostWEP = true;
 			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "Enable HostWEP\n");
 		} else {
@@ -903,11 +980,15 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "WLAN_CMD_SET_WPA\n");
 
 		if (copy_from_user(&sValue, pReq->data, sizeof(SCmdValue))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			result = -EFAULT;
 			break;
 		}
 		if (sValue.dwValue == 1) {
+<<<<<<< HEAD
 <<<<<<< HEAD
                      DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "up wpadev\n");
 		   memcpy(pDevice->wpadev->dev_addr, pDevice->dev->dev_addr, ETH_ALEN);
@@ -933,6 +1014,10 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 =======
 			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "up wpadev\n");
 			memcpy(pDevice->wpadev->dev_addr, pDevice->dev->dev_addr, ETH_ALEN);
+=======
+			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "up wpadev\n");
+			eth_hw_addr_inherit(pDevice->wpadev, pDevice->dev);
+>>>>>>> refs/remotes/origin/master
 			pDevice->bWPADEVUp = true;
 		} else {
 			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "close wpadev\n");
@@ -949,6 +1034,7 @@ int private_ioctl(PSDevice pDevice, struct ifreq *rq)
 			add_timer(&pMgmt->sTimerSecondCallback);
 		}
 		if (copy_from_user(&sStartAPCmd, pReq->data, sizeof(SCmdStartAP))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			result = -EFAULT;
 			break;
@@ -1185,6 +1271,12 @@ vConfigWEPKey (
 }
 */
 =======
+=======
+			result = -EFAULT;
+			break;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		if (sStartAPCmd.wBSSType == AP) {
 			pMgmt->eConfigMode = WMAC_CONFIG_AP;
 			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "ioct set to AP mode\n");
@@ -1244,11 +1336,16 @@ vConfigWEPKey (
 			pMgmt->abyIBSSSuppRates[3] |= BIT7;
 		}
 
+<<<<<<< HEAD
 		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "Support Rate= %x %x %x %x\n",
 			pMgmt->abyIBSSSuppRates[2],
 			pMgmt->abyIBSSSuppRates[3],
 			pMgmt->abyIBSSSuppRates[4],
 			pMgmt->abyIBSSSuppRates[5]);
+=======
+		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "Support Rate= %*ph\n",
+			4, pMgmt->abyIBSSSuppRates + 2);
+>>>>>>> refs/remotes/origin/master
 
 		netif_stop_queue(pDevice->dev);
 		spin_lock_irq(&pDevice->lock);
@@ -1364,4 +1461,7 @@ vConfigWEPKey (
 
 	return result;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

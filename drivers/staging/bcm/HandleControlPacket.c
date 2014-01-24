@@ -1,5 +1,6 @@
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 @file HandleControlPacket.c
 This file contains the routines to deal with
 sending and receiving of control packets.
@@ -20,6 +21,8 @@ static VOID handle_rx_control_packet(PMINI_ADAPTER Adapter, struct sk_buff *skb)
 	CHAR cntrl_msg_mask_bit = 0;
 	BOOLEAN drop_pkt_flag = TRUE ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @file HandleControlPacket.c
  * This file contains the routines to deal with
  * sending and receiving of control packets.
@@ -32,6 +35,7 @@ static VOID handle_rx_control_packet(PMINI_ADAPTER Adapter, struct sk_buff *skb)
  * Enqueue the control packet for Application.
  * @return None
  */
+<<<<<<< HEAD
 static VOID handle_rx_control_packet(PMINI_ADAPTER Adapter, struct sk_buff *skb)
 {
 	PPER_TARANG_DATA pTarang = NULL;
@@ -40,10 +44,20 @@ static VOID handle_rx_control_packet(PMINI_ADAPTER Adapter, struct sk_buff *skb)
 	CHAR cntrl_msg_mask_bit = 0;
 	BOOLEAN drop_pkt_flag = TRUE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static VOID handle_rx_control_packet(struct bcm_mini_adapter *Adapter, struct sk_buff *skb)
+{
+	struct bcm_tarang_data *pTarang = NULL;
+	bool HighPriorityMessage = false;
+	struct sk_buff *newPacket = NULL;
+	CHAR cntrl_msg_mask_bit = 0;
+	bool drop_pkt_flag = TRUE;
+>>>>>>> refs/remotes/origin/master
 	USHORT usStatus = *(PUSHORT)(skb->data);
 
 	if (netif_msg_pktdata(Adapter))
 		print_hex_dump(KERN_DEBUG, PFX "rx control: ", DUMP_PREFIX_NONE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			       16, 1, skb->data, skb->len, 0);
 
@@ -145,6 +159,8 @@ static VOID handle_rx_control_packet(PMINI_ADAPTER Adapter, struct sk_buff *skb)
 					pTarang->stDroppedAppCntrlMsgs.low_priority_message++ ;
 					break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				16, 1, skb->data, skb->len, 0);
 
 	switch (usStatus) {
@@ -214,13 +230,21 @@ static VOID handle_rx_control_packet(PMINI_ADAPTER Adapter, struct sk_buff *skb)
 		 *	cntrl_msg_mask_bit);
 		 */
 		if (pTarang->RxCntrlMsgBitMask & (1 << cntrl_msg_mask_bit))
+<<<<<<< HEAD
 			drop_pkt_flag = FALSE;
+=======
+			drop_pkt_flag = false;
+>>>>>>> refs/remotes/origin/master
 
 		if ((drop_pkt_flag == TRUE) ||
 				(pTarang->AppCtrlQueueLen > MAX_APP_QUEUE_LEN)
 				|| ((pTarang->AppCtrlQueueLen >
 					MAX_APP_QUEUE_LEN / 2) &&
+<<<<<<< HEAD
 				    (HighPriorityMessage == FALSE))) {
+=======
+				    (HighPriorityMessage == false))) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Assumption:-
 			 * 1. every tarang manages it own dropped pkt
@@ -254,12 +278,16 @@ static VOID handle_rx_control_packet(PMINI_ADAPTER Adapter, struct sk_buff *skb)
 			default:
 				pTarang->stDroppedAppCntrlMsgs.low_priority_message++;
 				break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 
 			continue;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         newPacket = skb_clone(skb, GFP_KERNEL);
         if (!newPacket)
@@ -310,6 +338,8 @@ int control_packet_handler  (PMINI_ADAPTER Adapter  /**< pointer to adapter obje
 	//			Adapter->bTriedToWakeUpFromlowPowerMode = TRUE;
 				InterfaceIdleModeWakeup (Adapter);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		newPacket = skb_clone(skb, GFP_KERNEL);
 		if (!newPacket)
 			break;
@@ -328,7 +358,11 @@ int control_packet_handler  (PMINI_ADAPTER Adapter  /**< pointer to adapter obje
  * @ingroup ctrl_pkt_functions
  * Thread to handle control pkt reception
  */
+<<<<<<< HEAD
 int control_packet_handler(PMINI_ADAPTER Adapter /* pointer to adapter object*/)
+=======
+int control_packet_handler(struct bcm_mini_adapter *Adapter /* pointer to adapter object*/)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *ctrl_packet = NULL;
 	unsigned long flags = 0;
@@ -349,8 +383,13 @@ int control_packet_handler(PMINI_ADAPTER Adapter /* pointer to adapter object*/)
 			return 0;
 		}
 		if (TRUE == Adapter->bWakeUpDevice) {
+<<<<<<< HEAD
 			Adapter->bWakeUpDevice = FALSE;
 			if ((FALSE == Adapter->bTriedToWakeUpFromlowPowerMode)
+=======
+			Adapter->bWakeUpDevice = false;
+			if ((false == Adapter->bTriedToWakeUpFromlowPowerMode)
+>>>>>>> refs/remotes/origin/master
 					&& ((TRUE == Adapter->IdleMode) ||
 					    (TRUE == Adapter->bShutStatus))) {
 				BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS,
@@ -361,11 +400,15 @@ int control_packet_handler(PMINI_ADAPTER Adapter /* pointer to adapter object*/)
 				 *					= TRUE;
 				 */
 				InterfaceIdleModeWakeup(Adapter);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			continue;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		while(atomic_read(&Adapter->cntrlpktCnt))
 		{
@@ -380,6 +423,8 @@ int control_packet_handler(PMINI_ADAPTER Adapter /* pointer to adapter object*/)
 			spin_unlock_irqrestore (&Adapter->control_queue_lock, flags);
 		 	handle_rx_control_packet(Adapter, ctrl_packet);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		while (atomic_read(&Adapter->cntrlpktCnt)) {
 			spin_lock_irqsave(&Adapter->control_queue_lock, flags);
 			ctrl_packet = Adapter->RxControlHead;
@@ -392,7 +437,10 @@ int control_packet_handler(PMINI_ADAPTER Adapter /* pointer to adapter object*/)
 			spin_unlock_irqrestore(&Adapter->control_queue_lock,
 						flags);
 			handle_rx_control_packet(Adapter, ctrl_packet);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			atomic_dec(&Adapter->cntrlpktCnt);
 		}
 
@@ -403,6 +451,7 @@ int control_packet_handler(PMINI_ADAPTER Adapter /* pointer to adapter object*/)
 
 INT flushAllAppQ(void)
 {
+<<<<<<< HEAD
 	PMINI_ADAPTER Adapter = GET_BCM_ADAPTER(gblpnetdev);
 <<<<<<< HEAD
 	PPER_TARANG_DATA	pTarang = NULL;
@@ -423,6 +472,10 @@ INT flushAllAppQ(void)
 	return STATUS_SUCCESS ;
 =======
 	PPER_TARANG_DATA pTarang = NULL;
+=======
+	struct bcm_mini_adapter *Adapter = GET_BCM_ADAPTER(gblpnetdev);
+	struct bcm_tarang_data *pTarang = NULL;
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *PacketToDrop = NULL;
 	for (pTarang = Adapter->pTarangs; pTarang; pTarang = pTarang->next) {
 		while (pTarang->RxAppControlHead != NULL) {
@@ -434,11 +487,18 @@ INT flushAllAppQ(void)
 		pTarang->AppCtrlQueueLen = 0;
 		/* dropped contrl packet statistics also should be reset. */
 		memset((PVOID)&pTarang->stDroppedAppCntrlMsgs, 0,
+<<<<<<< HEAD
 			sizeof(S_MIBS_DROPPED_APP_CNTRL_MESSAGES));
 
 	}
 	return STATUS_SUCCESS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			sizeof(struct bcm_mibs_dropped_cntrl_msg));
+
+	}
+	return STATUS_SUCCESS;
+>>>>>>> refs/remotes/origin/master
 }
 
 

@@ -12,9 +12,13 @@
 #include <linux/net.h>
 #include <linux/skbuff.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/sock.h>
 #include <net/af_rxrpc.h>
 #include "ar-internal.h"
@@ -146,10 +150,20 @@ int rxrpc_recvmsg(struct kiocb *iocb, struct socket *sock,
 
 		/* copy the peer address and timestamp */
 		if (!continue_call) {
+<<<<<<< HEAD
 			if (msg->msg_name && msg->msg_namelen > 0)
 				memcpy(msg->msg_name,
 				       &call->conn->trans->peer->srx,
 				       sizeof(call->conn->trans->peer->srx));
+=======
+			if (msg->msg_name) {
+				size_t len =
+					sizeof(call->conn->trans->peer->srx);
+				memcpy(msg->msg_name,
+				       &call->conn->trans->peer->srx, len);
+				msg->msg_namelen = len;
+			}
+>>>>>>> refs/remotes/origin/master
 			sock_recv_ts_and_drops(msg, &rx->sk, skb);
 		}
 

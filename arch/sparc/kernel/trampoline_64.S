@@ -32,13 +32,19 @@ itlb_load:
 dtlb_load:
 	.asciz	"SUNW,dtlb-load"
 
+<<<<<<< HEAD
 	/* XXX __cpuinit this thing XXX */
+=======
+>>>>>>> refs/remotes/origin/master
 #define TRAMP_STACK_SIZE	1024
 	.align	16
 tramp_stack:
 	.skip	TRAMP_STACK_SIZE
 
+<<<<<<< HEAD
 	__CPUINIT
+=======
+>>>>>>> refs/remotes/origin/master
 	.align		8
 	.globl		sparc64_cpu_startup, sparc64_cpu_startup_end
 sparc64_cpu_startup:
@@ -405,8 +411,12 @@ after_lock_tlb:
 
 	call		smp_callin
 	 nop
+<<<<<<< HEAD
 	call		cpu_idle
 	 mov		0, %o0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	call		cpu_panic
 	 nop
 1:	b,a,pt		%xcc, 1b

@@ -12,13 +12,17 @@
 
 #include <linux/const.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm-generic/4level-fixup.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/proc-fns.h>
 
 #ifndef CONFIG_MMU
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #include <asm-generic/4level-fixup.h>
@@ -34,16 +38,32 @@
 #include <asm/pgtable-hwdef.h>
 #include <asm/tlbflush.h>
 =======
+=======
+#include <asm-generic/4level-fixup.h>
+#include <asm/pgtable-nommu.h>
+
+#else
+
+>>>>>>> refs/remotes/origin/master
 #include <asm-generic/pgtable-nopud.h>
 #include <asm/memory.h>
 #include <asm/pgtable-hwdef.h>
 
+<<<<<<< HEAD
+=======
+
+#include <asm/tlbflush.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ARM_LPAE
 #include <asm/pgtable-3level.h>
 #else
 #include <asm/pgtable-2level.h>
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Just any arbitrary offset to the start of the vmalloc VM area: the
@@ -52,6 +72,7 @@
  * any out-of-bounds memory accesses will hopefully be caught.
  * The vmalloc() routines leaves a hole of 4kB between each vmalloced
  * area for the same reason. ;)
+<<<<<<< HEAD
 <<<<<<< HEAD
  *
  * Note that platforms may override VMALLOC_START, but they must provide
@@ -136,11 +157,16 @@
 #define PMD_SHIFT		21
 #define PGDIR_SHIFT		21
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  */
 #define VMALLOC_OFFSET		(8*1024*1024)
 #define VMALLOC_START		(((unsigned long)high_memory + VMALLOC_OFFSET) & ~(VMALLOC_OFFSET-1))
 #define VMALLOC_END		0xff000000UL
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define LIBRARY_TEXT_START	0x0c000000
 
@@ -153,6 +179,7 @@ extern void __pgd_error(const char *file, int line, pgd_t);
 #define pmd_ERROR(pmd)		__pmd_error(__FILE__, __LINE__, pmd)
 #define pgd_ERROR(pgd)		__pgd_error(__FILE__, __LINE__, pgd)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* !__ASSEMBLY__ */
 
 #define PMD_SIZE		(1UL << PMD_SHIFT)
@@ -161,12 +188,15 @@ extern void __pgd_error(const char *file, int line, pgd_t);
 #define PGDIR_MASK		(~(PGDIR_SIZE-1))
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is the lowest virtual address we can permit any user space
  * mapping to be mapped at.  This is particularly important for
  * non-high vector CPUs.
  */
+<<<<<<< HEAD
 #define FIRST_USER_ADDRESS	PAGE_SIZE
 
 <<<<<<< HEAD
@@ -225,6 +255,11 @@ extern void __pgd_error(const char *file, int line, pgd_t);
 #ifndef __ASSEMBLY__
 =======
 /*
+=======
+#define FIRST_USER_ADDRESS	(PAGE_SIZE * 2)
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Use TASK_SIZE as the ceiling argument for free_pgtables() and
  * free_pgd_range() to avoid freeing the modules pmd when LPAE is enabled (pmd
  * page shared between user and kernel).
@@ -232,7 +267,10 @@ extern void __pgd_error(const char *file, int line, pgd_t);
 #ifdef CONFIG_ARM_LPAE
 #define USER_PGTABLES_CEILING	TASK_SIZE
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The pgprot_* and protection_map entries will be fixed up in runtime
@@ -244,10 +282,20 @@ extern void __pgd_error(const char *file, int line, pgd_t);
 
 extern pgprot_t		pgprot_user;
 extern pgprot_t		pgprot_kernel;
+<<<<<<< HEAD
 
 #define _MOD_PROT(p, b)	__pgprot(pgprot_val(p) | (b))
 
 #define PAGE_NONE		_MOD_PROT(pgprot_user, L_PTE_XN | L_PTE_RDONLY)
+=======
+extern pgprot_t		pgprot_hyp_device;
+extern pgprot_t		pgprot_s2;
+extern pgprot_t		pgprot_s2_device;
+
+#define _MOD_PROT(p, b)	__pgprot(pgprot_val(p) | (b))
+
+#define PAGE_NONE		_MOD_PROT(pgprot_user, L_PTE_XN | L_PTE_RDONLY | L_PTE_NONE)
+>>>>>>> refs/remotes/origin/master
 #define PAGE_SHARED		_MOD_PROT(pgprot_user, L_PTE_USER | L_PTE_XN)
 #define PAGE_SHARED_EXEC	_MOD_PROT(pgprot_user, L_PTE_USER)
 #define PAGE_COPY		_MOD_PROT(pgprot_user, L_PTE_USER | L_PTE_RDONLY | L_PTE_XN)
@@ -256,8 +304,17 @@ extern pgprot_t		pgprot_kernel;
 #define PAGE_READONLY_EXEC	_MOD_PROT(pgprot_user, L_PTE_USER | L_PTE_RDONLY)
 #define PAGE_KERNEL		_MOD_PROT(pgprot_kernel, L_PTE_XN)
 #define PAGE_KERNEL_EXEC	pgprot_kernel
+<<<<<<< HEAD
 
 #define __PAGE_NONE		__pgprot(_L_PTE_DEFAULT | L_PTE_RDONLY | L_PTE_XN)
+=======
+#define PAGE_HYP		_MOD_PROT(pgprot_kernel, L_PTE_HYP)
+#define PAGE_HYP_DEVICE		_MOD_PROT(pgprot_hyp_device, L_PTE_HYP)
+#define PAGE_S2			_MOD_PROT(pgprot_s2, L_PTE_S2_RDONLY)
+#define PAGE_S2_DEVICE		_MOD_PROT(pgprot_s2_device, L_PTE_S2_RDWR)
+
+#define __PAGE_NONE		__pgprot(_L_PTE_DEFAULT | L_PTE_RDONLY | L_PTE_XN | L_PTE_NONE)
+>>>>>>> refs/remotes/origin/master
 #define __PAGE_SHARED		__pgprot(_L_PTE_DEFAULT | L_PTE_USER | L_PTE_XN)
 #define __PAGE_SHARED_EXEC	__pgprot(_L_PTE_DEFAULT | L_PTE_USER)
 #define __PAGE_COPY		__pgprot(_L_PTE_DEFAULT | L_PTE_USER | L_PTE_RDONLY | L_PTE_XN)
@@ -274,6 +331,7 @@ extern pgprot_t		pgprot_kernel;
 #define pgprot_writecombine(prot) \
 	__pgprot_modify(prot, L_PTE_MT_MASK, L_PTE_MT_BUFFERABLE)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #define pgprot_stronglyordered(prot) \
@@ -292,18 +350,29 @@ extern pgprot_t		pgprot_kernel;
 #define pgprot_writebackwacache(prot) \
 	__pgprot_modify(prot, L_PTE_MT_MASK, L_PTE_MT_WRITEALLOC)
 
+=======
+#define pgprot_stronglyordered(prot) \
+	__pgprot_modify(prot, L_PTE_MT_MASK, L_PTE_MT_UNCACHED)
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ARM_DMA_MEM_BUFFERABLE
 #define pgprot_dmacoherent(prot) \
 	__pgprot_modify(prot, L_PTE_MT_MASK, L_PTE_MT_BUFFERABLE | L_PTE_XN)
 #define __HAVE_PHYS_MEM_ACCESS_PROT
+<<<<<<< HEAD
 #define COHERENT_IS_NORMAL 1
+=======
+>>>>>>> refs/remotes/origin/master
 struct file;
 extern pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
 				     unsigned long size, pgprot_t vma_prot);
 #else
 #define pgprot_dmacoherent(prot) \
 	__pgprot_modify(prot, L_PTE_MT_MASK, L_PTE_MT_UNCACHED | L_PTE_XN)
+<<<<<<< HEAD
 #define COHERENT_IS_NORMAL 0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif /* __ASSEMBLY__ */
@@ -354,6 +423,7 @@ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
 #define pgd_offset_k(addr)	pgd_offset(&init_mm, addr)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * The "pgd_xxx()" functions here are trivial for a folded two-level
  * setup: the pgd is never bad, and a pmd always exists (as it's folded
@@ -399,6 +469,8 @@ static inline pte_t *pmd_page_vaddr(pmd_t pmd)
 #define pmd_addr_end(addr,end)	(end)
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define pmd_none(pmd)		(!pmd_val(pmd))
 #define pmd_present(pmd)	(pmd_val(pmd))
 
@@ -408,7 +480,10 @@ static inline pte_t *pmd_page_vaddr(pmd_t pmd)
 }
 
 #define pmd_page(pmd)		pfn_to_page(__phys_to_pfn(pmd_val(pmd) & PHYS_MASK))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CONFIG_HIGHPTE
 #define __pte_map(pmd)		pmd_page_vaddr(*(pmd))
@@ -426,19 +501,26 @@ static inline pte_t *pmd_page_vaddr(pmd_t pmd)
 #define pte_unmap(pte)			__pte_unmap(pte)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define pte_pfn(pte)		(pte_val(pte) >> PAGE_SHIFT)
 =======
 #define pte_pfn(pte)		((pte_val(pte) & PHYS_MASK) >> PAGE_SHIFT)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pte_pfn(pte)		((pte_val(pte) & PHYS_MASK) >> PAGE_SHIFT)
+>>>>>>> refs/remotes/origin/master
 #define pfn_pte(pfn,prot)	__pte(__pfn_to_phys(pfn) | pgprot_val(prot))
 
 #define pte_page(pte)		pfn_to_page(pte_pfn(pte))
 #define mk_pte(page,prot)	pfn_pte(page_to_pfn(page), prot)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define set_pte_ext(ptep,pte,ext) cpu_set_pte_ext(ptep,pte,ext)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define pte_clear(mm,addr,ptep)	set_pte_ext(ptep, __pte(0), 0)
 
 #define pte_none(pte)		(!pte_val(pte))
@@ -449,9 +531,13 @@ static inline pte_t *pmd_page_vaddr(pmd_t pmd)
 #define pte_exec(pte)		(!(pte_val(pte) & L_PTE_XN))
 #define pte_special(pte)	(0)
 
+<<<<<<< HEAD
 #define pte_present_user(pte) \
 	((pte_val(pte) & (L_PTE_PRESENT | L_PTE_USER)) == \
 	 (L_PTE_PRESENT | L_PTE_USER))
+=======
+#define pte_present_user(pte)  (pte_present(pte) && (pte_val(pte) & L_PTE_USER))
+>>>>>>> refs/remotes/origin/master
 
 #if __LINUX_ARM_ARCH__ < 6
 static inline void __sync_icache_dcache(pte_t pteval)
@@ -488,7 +574,12 @@ static inline pte_t pte_mkspecial(pte_t pte) { return pte; }
 
 static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
 {
+<<<<<<< HEAD
 	const pteval_t mask = L_PTE_XN | L_PTE_RDONLY | L_PTE_USER;
+=======
+	const pteval_t mask = L_PTE_XN | L_PTE_RDONLY | L_PTE_USER |
+		L_PTE_NONE | L_PTE_VALID;
+>>>>>>> refs/remotes/origin/master
 	pte_val(pte) = (pte_val(pte) & ~mask) | (pgprot_val(newprot) & mask);
 	return pte;
 }
@@ -547,6 +638,7 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
  * We provide our own arch_get_unmapped_area to cope with VIPT caches.
  */
 #define HAVE_ARCH_UNMAPPED_AREA
+<<<<<<< HEAD
 
 /*
  * remap a physical page `pfn' of size `size' with page protection `prot'
@@ -563,6 +655,12 @@ void identity_mapping_del(pgd_t *, unsigned long, unsigned long);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HAVE_ARCH_UNMAPPED_AREA_TOPDOWN
+
+#define pgtable_cache_init() do { } while (0)
+
+>>>>>>> refs/remotes/origin/master
 #endif /* !__ASSEMBLY__ */
 
 #endif /* CONFIG_MMU */
